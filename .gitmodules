@@ -1,0 +1,3 @@
+[submodule "GIFTs"]
+	path = GIFTs
+	url = https://github.com/mgoberfield/GIFTs.git
