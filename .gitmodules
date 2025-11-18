@@ -1,3 +1,6 @@
 [submodule "GIFTs"]
 	path = GIFTs
 	url = https://github.com/mgoberfield/GIFTs.git
+[submodule "data/iwxxm-translation"]
+	path = data/iwxxm-translation
+	url = https://github.com/wmo-im/iwxxm-translation.git
