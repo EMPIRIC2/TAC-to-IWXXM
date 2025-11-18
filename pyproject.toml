@@ -1,0 +1,56 @@
+[project]
+name = "metar-to-iwxxm"
+version = "0.1.0"
+description = "Utilities to decode METAR/SPECI TAC and encode IWXXM, leveraging GIFTs submodule"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+	{ name = "Joseph C McGuire" }
+]
+keywords = ["iwxxm", "metar", "aviation", "weather", "encoding", "decoding"]
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent"
+]
+
+dependencies = [
+	# Core parser dependency used by decoders
+	"tpg>=3.2",
+]
+
+# Optional groups for extended functionality
+[project.optional-dependencies]
+validator = [
+	"lxml>=4.9",
+]
+swa = [
+	"skyfield>=1.45",
+]
+all = ["metar-to-iwxxm[validator, swa]"]
+
+[project.urls]
+"Homepage" = "https://github.com/joseph-c-mcguire/metar-to-IWXXM"
+"Issues" = "https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues"
+
+[project.scripts]
+metar-iwxxm = "src.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["metar_to_IWXXM"]
+
+# Include the GIFTs submodule as package data for runtime use (XML schemas etc.)
+[tool.setuptools.package-data]
+"metar_to_IWXXM" = ["GIFTs/**/*"]
+
+# Ruff / lint placeholders (adjust if you add config)
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+
