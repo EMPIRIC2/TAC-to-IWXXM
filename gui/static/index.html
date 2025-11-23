@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>METAR → IWXXM Converter</title>
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>METAR → IWXXM Converter</h1>
+            <p>Drag & drop one or more METAR TAC files, or type a METAR manually
+                below. Click Convert to produce IWXXM XML (downloadable as
+                .txt).</p>
+
+            <div id="dropzone" class="dropzone" tabindex="0">Drop files here or
+                click to select<input id="fileInput" type="file" multiple
+                    accept=".tac,.txt,.metar" hidden /></div>
+
+            <label for="manualInput" class="manual-label">Manual METAR
+                Input</label>
+            <textarea id="manualInput"
+                placeholder="Type METAR/SPECI TAC here..."></textarea>
+
+            <div class="actions">
+                <button id="convertBtn">Convert</button>
+                <button id="zipBtn" class="secondary">Download ZIP</button>
+                <button id="clearBtn" class="secondary">Clear</button>
+            </div>
+
+            <div id="spinner" class="spinner hidden"></div>
+
+            <h2>Pending Files</h2>
+            <ul id="fileList" class="file-list"></ul>
+
+            <h2>Results</h2>
+            <div id="results" class="results"></div>
+        </div>
+
+        <footer>
+            <small>Conversion powered by GIFTs library. Outputs are raw IWXXM
+                XML serialized to .txt for convenience.</small>
+        </footer>
+
+        <script src="/static/app.js"></script>
+    </body>
+</html>

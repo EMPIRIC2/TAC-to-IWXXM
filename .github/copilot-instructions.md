@@ -1,0 +1,1 @@
+For Python package management please us uv `pip` and `venv`. Avoid using other package managers like `conda` or `poetry` unless absolutely necessary. Ensure that all dependencies are listed in a `pyproject.toml` or `requirements.txt` file for consistency across development environments.

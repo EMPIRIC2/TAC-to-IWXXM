@@ -18,6 +18,10 @@ classifiers = [
 dependencies = [
 	# Core parser dependency used by decoders
 	"tpg>=3.2",
+	# Web API / GUI
+	"fastapi>=0.110",
+	"uvicorn>=0.23",
+	"python-multipart>=0.0.20",
 ]
 
 # Optional groups for extended functionality
@@ -28,7 +32,11 @@ validator = [
 swa = [
 	"skyfield>=1.45",
 ]
-all = ["metar-to-iwxxm[validator, swa]"]
+test = [
+	"pytest>=7.0",
+	"httpx>=0.24",  # Required by TestClient
+]
+all = ["metar-to-iwxxm[validator, swa, test]"]
 
 [project.urls]
 "Homepage" = "https://github.com/joseph-c-mcguire/metar-to-IWXXM"
