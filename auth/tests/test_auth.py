@@ -13,10 +13,13 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-# Ensure repository root on path
+# Ensure src layout path precedence for imports
 ROOT = pathlib.Path(__file__).resolve().parents[2]
+AUTH_SRC = ROOT / "auth" / "src"
+if str(AUTH_SRC) not in sys.path:
+    sys.path.insert(0, str(AUTH_SRC))
 if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+    sys.path.append(str(ROOT))
 
 
 @pytest.fixture(scope="session")

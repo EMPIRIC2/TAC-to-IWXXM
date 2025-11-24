@@ -1,4 +1,4 @@
-"""Security utilities: password hashing, JWT, API key hashing, reset tokens."""
+"""Security utilities: password hashing, JWT, API key hashing, reset tokens (src layout)."""
 from __future__ import annotations
 
 import os

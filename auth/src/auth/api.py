@@ -38,10 +38,6 @@ init_db()
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
-# ---------------------------------------------------------------------------
-# Pydantic Schemas
-# ---------------------------------------------------------------------------
-
 
 class UserCreate(BaseModel):
     name: str
@@ -98,10 +94,6 @@ class PasswordResetConfirm(BaseModel):
 class Message(BaseModel):
     message: str
 
-# ---------------------------------------------------------------------------
-# Dependency
-# ---------------------------------------------------------------------------
-
 
 def get_db():
     db = SessionLocal()
@@ -109,9 +101,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-# Current user dependency via Authorization: Bearer <token>
 
 
 def get_current_user(db: Session = Depends(get_db), authorization: str | None = Header(default=None)) -> User:
@@ -129,20 +118,11 @@ def get_current_user(db: Session = Depends(get_db), authorization: str | None = 
             status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     return user
 
-# ---------------------------------------------------------------------------
-# Helper functions
-# ---------------------------------------------------------------------------
-
 
 def send_reset_email(email: str, token: str):
-    # Stub: in production integrate with SMTP provider
     base_url = os.getenv("FRONTEND_BASE_URL", "http://localhost:8000")
     reset_link = f"{base_url}/reset-password?token={token}"
     print(f"[auth] Password reset link for {email}: {reset_link}")
-
-# ---------------------------------------------------------------------------
-# Endpoints
-# ---------------------------------------------------------------------------
 
 
 @router.post("/register", response_model=UserOut)
@@ -210,7 +190,6 @@ def revoke_apikey(key_id: int, user: User = Depends(get_current_user), db: Sessi
 def request_reset(req: PasswordResetRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == req.email).first()
     if not user:
-        # Do not reveal absence of user for security
         return Message(message="If the email exists a reset link was sent")
     token_value = PasswordResetToken.generate_token()
     reset_token = PasswordResetToken(
@@ -228,12 +207,10 @@ def request_reset(req: PasswordResetRequest, db: Session = Depends(get_db)):
 def confirm_reset(req: PasswordResetConfirm, db: Session = Depends(get_db)):
     token = db.query(PasswordResetToken).filter(
         PasswordResetToken.token == req.token).first()
-    # Use timezone-aware current UTC time
     now_utc = dt.datetime.now(dt.UTC)
     if not token:
         raise HTTPException(status_code=400, detail="Invalid or expired token")
     expires_at = token.expires_at
-    # If DB returned naive datetime, assume UTC
     if expires_at.tzinfo is None:
         expires_at = expires_at.replace(tzinfo=dt.UTC)
     if token.used or expires_at < now_utc:

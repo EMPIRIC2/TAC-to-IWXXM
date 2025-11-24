@@ -1,14 +1,18 @@
-from backend.api import app
 import io
 import zipfile
 import sys
 import pathlib
 from fastapi.testclient import TestClient
 
-# Ensure repository root on path for backend package import
+# Ensure src layout path precedence for imports
 ROOT = pathlib.Path(__file__).resolve().parents[2]
+BACKEND_SRC = ROOT / "backend" / "src"
+if str(BACKEND_SRC) not in sys.path:
+    sys.path.insert(0, str(BACKEND_SRC))
 if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+    sys.path.append(str(ROOT))
+
+from backend.api import app
 
 
 client = TestClient(app)

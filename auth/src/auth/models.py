@@ -1,4 +1,4 @@
-"""SQLAlchemy models for authentication."""
+"""SQLAlchemy models for authentication (src layout)."""
 from __future__ import annotations
 
 import secrets
@@ -20,9 +20,9 @@ class User(Base):
     created_at: Mapped[dt.datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: dt.datetime.now(dt.UTC))
 
-    api_keys: Mapped[list[APIKey]] = relationship(
+    api_keys: Mapped[list["APIKey"]] = relationship(
         back_populates="user", cascade="all, delete-orphan")
-    reset_tokens: Mapped[list[PasswordResetToken]] = relationship(
+    reset_tokens: Mapped[list["PasswordResetToken"]] = relationship(
         back_populates="user", cascade="all, delete-orphan")
 
 
@@ -36,7 +36,7 @@ class APIKey(Base):
         DateTime(timezone=True), default=lambda: dt.datetime.now(dt.UTC))
     revoked: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    user: Mapped[User] = relationship(back_populates="api_keys")
+    user: Mapped["User"] = relationship(back_populates="api_keys")
 
     @staticmethod
     def generate_raw_key() -> str:
@@ -54,7 +54,7 @@ class PasswordResetToken(Base):
     created_at: Mapped[dt.datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: dt.datetime.now(dt.UTC))
 
-    user: Mapped[User] = relationship(back_populates="reset_tokens")
+    user: Mapped["User"] = relationship(back_populates="reset_tokens")
 
     @staticmethod
     def generate_token() -> str:
