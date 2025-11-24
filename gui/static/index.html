@@ -4,9 +4,42 @@
         <meta charset="UTF-8" />
         <title>METAR → IWXXM Converter</title>
         <link rel="stylesheet" href="/static/style.css" />
+        <style>
+            .user-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding: 10px;
+                background: #f8f9fa;
+                border-radius: 4px;
+            }
+            .user-info {
+                font-size: 14px;
+                color: #333;
+            }
+            .logout-btn {
+                padding: 8px 16px;
+                background: #dc3545;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            .logout-btn:hover {
+                background: #c82333;
+            }
+        </style>
     </head>
     <body>
         <div class="container">
+            <div class="user-header">
+                <div class="user-info">
+                    Welcome, <strong id="userName">User</strong>
+                </div>
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
+
             <h1>METAR → IWXXM Converter</h1>
             <p>Drag & drop one or more METAR TAC files, or type a METAR manually
                 below. Click Convert to produce IWXXM XML (downloadable as
@@ -41,6 +74,23 @@
                 XML serialized to .txt for convenience.</small>
         </footer>
 
+        <script>
+            // Check authentication
+            const token = sessionStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/static/login.html';
+            }
+            
+            // Display user name
+            const userName = sessionStorage.getItem('userName') || 'User';
+            document.getElementById('userName').textContent = userName;
+            
+            // Logout handler
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                sessionStorage.clear();
+                window.location.href = '/static/login.html';
+            });
+        </script>
         <script src="/static/app.js"></script>
     </body>
 </html>

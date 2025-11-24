@@ -15,9 +15,15 @@ from typing import Optional
 
 def _ensure_gifts_on_path() -> None:
     """Add GIFTs submodule directory to sys.path for imports."""
-    # backend/conversion.py -> repo_root
+    # Try multiple possible locations for GIFTs
+    # 1. Development: backend/conversion.py -> repo_root/GIFTs
     repo_root = pathlib.Path(__file__).resolve().parent.parent
     gifts_dir = repo_root / "GIFTs"
+
+    # 2. Docker container: /app/GIFTs (when installed as package)
+    if not gifts_dir.exists():
+        gifts_dir = pathlib.Path("/app/GIFTs")
+
     if gifts_dir.exists():
         if str(gifts_dir) not in sys.path:
             sys.path.insert(0, str(gifts_dir))

@@ -12,10 +12,10 @@ RUN apt-get update \
     && pip install --no-cache-dir uv
 
 # Copy project metadata first for better layer caching
-COPY pyproject.toml ./
+COPY auth/pyproject.toml ./
 
 # Copy only necessary source (avoid copying venv, caches)
-COPY src ./src
+COPY auth/src ./src
 
 # Install the package with uv into the system environment
 RUN uv pip install --system .
@@ -24,10 +24,10 @@ RUN uv pip install --system .
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
-EXPOSE 8100
+EXPOSE 8000
 
-# Simple healthcheck hitting a lightweight endpoint (registration route returns 405 without body, so use root docs if mounted)
+# Healthcheck using the new /health endpoint
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request, sys; urllib.request.urlopen('http://localhost:8100/auth/apikeys').read()" || exit 1
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()" || exit 1
 
-CMD ["python", "-m", "uvicorn", "auth.__main__:app", "--host", "0.0.0.0", "--port", "8100"]
+CMD ["python", "-m", "uvicorn", "auth.__main__:app", "--host", "0.0.0.0", "--port", "8000"]

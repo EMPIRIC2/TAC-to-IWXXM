@@ -7,15 +7,37 @@ import xml.etree.ElementTree as ET
 
 
 def _ensure_gifts_on_path() -> None:
-    repo_root = pathlib.Path(__file__).resolve().parents[2]
-    gifts_dir = repo_root / "GIFTs"
-    if gifts_dir.exists():
-        if str(gifts_dir) not in sys.path:
-            sys.path.insert(0, str(gifts_dir))
-    else:  # pragma: no cover
-        raise ImportError(
-            f"GIFTs submodule not found at {gifts_dir}. Run: git submodule update --init --recursive"
-        )
+    """Resolve and add the GIFTs directory to sys.path.
+
+    Handles both source layout (running from repo) and installed package
+    layout inside a container (site-packages). We attempt several plausible
+    ancestor locations plus explicit /app path used in Docker builds.
+    """
+    file_path = pathlib.Path(__file__).resolve()
+    candidates = []
+
+    # Ancestor traversals: parents[0] .. parents[5] (defensive upper bound)
+    for depth in range(0, 6):  # pragma: no cover (loop logic simple)
+        try:
+            parent = file_path.parents[depth]
+        except IndexError:
+            break
+        candidates.append(parent / "GIFTs")
+
+    # Explicit Docker workdir copy location
+    candidates.append(pathlib.Path("/app/GIFTs"))
+
+    for cand in candidates:
+        if cand.exists():
+            if str(cand) not in sys.path:
+                sys.path.insert(0, str(cand))
+            return
+
+    # If we reach here, none of the candidates existed.
+    raise ImportError(
+        "GIFTs submodule not found in any expected location. "
+        "Tried: " + ", ".join(str(c) for c in candidates)
+    )
 
 
 _ensure_gifts_on_path()

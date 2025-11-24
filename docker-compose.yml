@@ -1,4 +1,28 @@
 services:
+  auth:
+    build:
+      context: .
+      dockerfile: auth/Dockerfile
+    container_name: metar-iwxxm-auth
+    ports:
+      - "8002:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=sqlite:///./auth.db
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-dev-secret-change-in-production}
+      - FRONTEND_BASE_URL=http://localhost:8000
+    volumes:
+      - auth-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - metar-network
+    restart: unless-stopped
+
   backend:
     build:
       context: .
@@ -28,8 +52,12 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - BACKEND_URL=http://backend:8000
+      - AUTH_URL=http://auth:8000
+      - GUI_SRC_LAYOUT=1 # indicator that gui uses src/ layout (informational)
     depends_on:
       backend:
+        condition: service_healthy
+      auth:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
@@ -47,5 +75,6 @@ networks:
 
 volumes:
   # Optional: persist any data if needed in future
+  auth-data:
   backend-data:
   frontend-data:

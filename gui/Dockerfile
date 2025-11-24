@@ -4,16 +4,17 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
 
-# Copy component pyprojects and source needed for GUI (gui + auth + backend logic + GIFTs)
+# Copy component pyprojects and source needed for GUI (now src layout for gui)
 COPY gui/pyproject.toml gui/pyproject.toml
 COPY auth/pyproject.toml auth/pyproject.toml
 COPY backend/pyproject.toml backend/pyproject.toml
+# Copy full directories (includes gui/src/gui for package code and static assets outside src)
 COPY gui/ gui/
 COPY auth/ auth/
 COPY backend/ backend/
 COPY GIFTs/ GIFTs/
 
-# Install dependencies from each component
+# Install dependencies from each component (editable not required inside image)
 RUN pip install --no-cache-dir backend/ auth/ gui/
 
 # Non-root user
@@ -25,4 +26,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()" || exit 1
 
 ENV BACKEND_URL=http://backend:8000
-CMD ["python", "-m", "uvicorn", "gui.app:app", "--host", "0.0.0.0", "--port", "8000"]
+ENV AUTH_URL=http://auth:8000
+CMD ["python", "-m", "uvicorn", "gui.__main__:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -19,3 +19,9 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["backend*"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "httpx>=0.28.1",
+]
