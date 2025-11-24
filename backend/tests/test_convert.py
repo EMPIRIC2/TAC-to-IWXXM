@@ -1,3 +1,4 @@
+from backend.conversion import convert_metar_tac, ConversionError
 import sys
 import pathlib
 
@@ -9,7 +10,6 @@ if str(BACKEND_SRC) not in sys.path:
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 
-from backend.conversion import convert_metar_tac, ConversionError
 
 sample = "METAR CWFD 290000Z AUTO 20022KT ////SM // BKN003 BKN008 ///// A////"
 print("Sample TAC:", sample)

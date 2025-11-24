@@ -33,12 +33,14 @@ class ConversionError(Exception):
 
 def convert_metar_tac(tac_text: str) -> str:
     if metarDecoder is None or metarEncoder is None:
-        raise ConversionError("GIFTs metar modules unavailable (import failed).")
+        raise ConversionError(
+            "GIFTs metar modules unavailable (import failed).")
     try:
         decoder = metarDecoder.Annex3()  # type: ignore[attr-defined]
         encoder = metarEncoder.Annex3()  # type: ignore[attr-defined]
     except Exception as e:  # pragma: no cover
-        raise ConversionError(f"Failed to construct decoder/encoder: {e}") from e
+        raise ConversionError(
+            f"Failed to construct decoder/encoder: {e}") from e
     try:
         decoded = decoder(tac_text)
         xml_root = encoder(decoded, tac_text)

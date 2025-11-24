@@ -35,10 +35,14 @@ class ConversionResult(BaseModel):
         }
     )
 
-    name: str = Field(..., description="Output filename", examples=["manual_input.txt"])
-    content: str = Field(..., description="IWXXM XML document as UTF-8 text", min_length=1)
-    source: Optional[str] = Field(None, description="Source of input", examples=["manual"])
-    size_bytes: Optional[int] = Field(None, description="XML output size in bytes", ge=0)
+    name: str = Field(..., description="Output filename",
+                      examples=["manual_input.txt"])
+    content: str = Field(...,
+                         description="IWXXM XML document as UTF-8 text", min_length=1)
+    source: Optional[str] = Field(
+        None, description="Source of input", examples=["manual"])
+    size_bytes: Optional[int] = Field(
+        None, description="XML output size in bytes", ge=0)
 
 
 class ConversionResponse(BaseModel):
@@ -219,7 +223,8 @@ async def convert_zip(
     return StreamingResponse(
         mem,
         media_type="application/zip",
-        headers={"Content-Disposition": f"attachment; filename=iwxxm_batch_{stamp}.zip"},
+        headers={
+            "Content-Disposition": f"attachment; filename=iwxxm_batch_{stamp}.zip"},
     )
 
 
