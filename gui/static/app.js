@@ -1,3 +1,4 @@
+const API_BASE = (typeof window !== 'undefined' && window.METAR_API_BASE) ? window.METAR_API_BASE : '';
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
 const fileList = document.getElementById('fileList');
@@ -61,7 +62,8 @@ convertBtn.addEventListener('click', async () => {
     const fd = new FormData();
     pendingFiles.forEach(f => fd.append('files', f));
     fd.append('manual_text', manualInput.value);
-    const resp = await fetch('/api/convert', { method: 'POST', body: fd });
+    const token = sessionStorage.getItem('authToken');
+    const resp = await fetch(API_BASE + '/api/convert', { method: 'POST', body: fd, headers: token ? { 'Authorization': 'Bearer ' + token } : {} });
     if (!resp.ok) {
       let detail = await resp.text();
       throw new Error(detail);
@@ -124,7 +126,8 @@ zipBtn.addEventListener('click', async ()=>{
     const fd = new FormData();
     pendingFiles.forEach(f => fd.append('files', f));
     fd.append('manual_text', manualInput.value);
-    const resp = await fetch('/api/convert-zip', { method: 'POST', body: fd });
+    const token = sessionStorage.getItem('authToken');
+    const resp = await fetch(API_BASE + '/api/convert-zip', { method: 'POST', body: fd, headers: token ? { 'Authorization': 'Bearer ' + token } : {} });
     if(!resp.ok){
       throw new Error(await resp.text());
     }

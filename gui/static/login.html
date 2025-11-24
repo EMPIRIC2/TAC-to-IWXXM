@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Login - METAR → IWXXM</title>
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Login</h1>
+            <p>Enter your username and password to access the METAR → IWXXM
+                converter.</p>
+            <form id="loginForm">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" required />
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required />
+                <button type="submit">Login</button>
+            </form>
+            <div class="actions">
+                <button id="requestReset" class="secondary">Request Password
+                    Reset</button>
+            </div>
+            <div id="loginMsg"></div>
+        </div>
+        <script src="/static/login.js"></script>
+    </body>
+</html>

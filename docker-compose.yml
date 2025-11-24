@@ -1,0 +1,51 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: metar-iwxxm-backend
+    ports:
+      - "8001:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - metar-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: gui/Dockerfile
+    container_name: metar-iwxxm-frontend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - metar-network
+    restart: unless-stopped
+
+networks:
+  metar-network:
+    driver: bridge
+
+volumes:
+  # Optional: persist any data if needed in future
+  backend-data:
+  frontend-data:

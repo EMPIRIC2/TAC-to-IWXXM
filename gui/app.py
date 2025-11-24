@@ -9,12 +9,14 @@ Features:
 
 from __future__ import annotations
 
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends, Header
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Dict, Optional
 import pathlib
+import os
+import json
 import sys
 import io
 import zipfile
@@ -30,6 +32,15 @@ try:
     from backend.conversion import convert_metar_tac, ConversionError
 except Exception as e:  # pragma: no cover
     raise RuntimeError(f"Failed to import conversion module: {e}") from e
+try:
+    from auth import router as auth_router
+    from auth.security import decode_access_token
+    from auth.database import SessionLocal
+    from auth.models import User, APIKey
+except Exception as e:  # pragma: no cover
+    # Auth optional: continue without if failure
+    auth_router = None
+    decode_access_token = None
 
 
 # ============================================================================
@@ -194,14 +205,61 @@ app = FastAPI(
 static_dir = ROOT / "gui" / "static"
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
+# Include auth router if available
+if auth_router is not None:
+    app.include_router(auth_router)
+
+# ---------------------------------------------------------------------------
+# Auth dependency for protected routes
+# ---------------------------------------------------------------------------
+
+
+def get_db():
+    if SessionLocal is None:  # type: ignore
+        raise HTTPException(status_code=500, detail="Auth DB not initialized")
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+def current_user(authorization: str | None = Header(default=None), db=Depends(get_db)):
+    if decode_access_token is None:
+        raise HTTPException(
+            status_code=503, detail="Authentication not available")
+    if not authorization or not authorization.lower().startswith("bearer "):
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    token = authorization.split()[1]
+    username = decode_access_token(token)
+    if not username:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
+
 
 @app.get("/", response_class=HTMLResponse)
-def index() -> HTMLResponse:
-    """Serve the single-page GUI."""
+def index(user=Depends(current_user)) -> HTMLResponse:
+    """Serve the single-page GUI with injected backend URL configuration.
+
+    The backend URL is taken from the BACKEND_URL environment variable (if set).
+    It is exposed to the browser as window.METAR_API_BASE for API calls.
+    Falls back to same-origin ('') when not provided.
+    """
     index_path = static_dir / "index.html"
     if not index_path.exists():  # pragma: no cover
         raise HTTPException(status_code=500, detail="index.html missing")
-    return HTMLResponse(index_path.read_text(encoding="utf-8"))
+    backend_url = os.environ.get("BACKEND_URL", "").rstrip("/")
+    raw_html = index_path.read_text(encoding="utf-8")
+    injection = f"<script>window.METAR_API_BASE={json.dumps(backend_url)};</script>"
+    # Inject before closing body tag; if not found append at end.
+    if "</body>" in raw_html:
+        html = raw_html.replace("</body>", injection + "</body>")
+    else:
+        html = raw_html + injection
+    return HTMLResponse(html)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
@@ -249,6 +307,7 @@ async def convert(
         default="",
         description="Manual METAR/SPECI TAC text input"
     ),
+    user=Depends(current_user),
 ) -> ConversionResponse:
     """Convert uploaded METAR TAC files and/or manual text to IWXXM XML format.
 
@@ -358,6 +417,7 @@ async def convert_zip(
         default="",
         description="Manual METAR/SPECI TAC text to include in the ZIP archive"
     ),
+    user=Depends(current_user),
 ) -> StreamingResponse:
     """Convert inputs and stream a ZIP archive of IWXXM XML outputs.
 

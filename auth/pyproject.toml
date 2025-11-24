@@ -1,0 +1,27 @@
+[project]
+name = "metar-auth"
+version = "0.1.0"
+description = "Authentication service/library for METAR to IWXXM platform"
+requires-python = ">=3.9"
+dependencies = [
+	"fastapi>=0.110",
+	"uvicorn>=0.23",
+	"SQLAlchemy>=2.0",
+	"passlib[bcrypt]>=1.7",
+	"python-jose[cryptography]>=3.3.0",
+	"email-validator>=2.0.0.post2",
+	"httpx>=0.28.1",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["auth*"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+]

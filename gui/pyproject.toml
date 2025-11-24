@@ -1,0 +1,25 @@
+[project]
+name = "metar-gui"
+version = "0.1.0"
+description = "Frontend GUI for METAR to IWXXM conversion with auth integration"
+requires-python = ">=3.9"
+dependencies = [
+	"fastapi>=0.110",
+	"uvicorn>=0.23",
+	"python-multipart>=0.0.20",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gui*"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "selenium>=4.36.0",
+    "webdriver-manager>=4.0.2",
+]
