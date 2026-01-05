@@ -5,7 +5,14 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
-DATABASE_URL = os.getenv("AUTH_DB_URL", "sqlite:///./auth.db")
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:password@localhost:5432/postgres"
+)
 
 
 class Base(DeclarativeBase):
@@ -14,8 +21,8 @@ class Base(DeclarativeBase):
 
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False} if DATABASE_URL.startswith(
-        "sqlite") else {},
+    pool_pre_ping=True,  # Test connection before using
+    pool_recycle=3600,   # Recycle connections after 1 hour
 )
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 

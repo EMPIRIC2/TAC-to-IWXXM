@@ -8,7 +8,7 @@ services:
       - "8002:8000"
     environment:
       - PYTHONUNBUFFERED=1
-      - DATABASE_URL=sqlite:///./auth.db
+      - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:-dev-secret-change-in-production}
       - FRONTEND_BASE_URL=http://localhost:8000
     volumes:
