@@ -5,13 +5,17 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
-# Load environment variables from .env file
-from dotenv import load_dotenv
-load_dotenv()
+# In Docker, env vars come from docker-compose.yml
+# For local dev, you can use python-dotenv
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # dotenv not required in production
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:password@localhost:5432/postgres"
+    "sqlite:///./auth.db"  # Default to SQLite for local dev
 )
 
 
@@ -19,11 +23,42 @@ class Base(DeclarativeBase):
     pass
 
 
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,  # Test connection before using
-    pool_recycle=3600,   # Recycle connections after 1 hour
-)
+# Configure engine based on database type
+if DATABASE_URL.startswith("postgresql"):
+    # PostgreSQL with connection pooling for production
+    # Notes on pooler modes:
+    # - Transaction pooler (port 6543): Ideal for serverless/stateless apps, does NOT support PREPARE statements
+    # - Session pooler (port 5432): Better for long-lived connections, supports prepared statements
+
+    connect_args = {}
+
+    # Supabase transaction pooler doesn't support prepared statements
+    # Disable them using execution_options in connection
+    if "pooler.supabase.com" in DATABASE_URL and ":6543/" in DATABASE_URL:
+        # Transaction mode pooler - disable prepared statements
+        engine = create_engine(
+            DATABASE_URL,
+            pool_pre_ping=True,  # Test connection before using
+            pool_recycle=3600,   # Recycle connections after 1 hour
+            execution_options={
+                "postgresql_psycopg2_prepared_statements": False},
+        )
+    else:
+        # Standard PostgreSQL or session mode pooler
+        engine = create_engine(
+            DATABASE_URL,
+            pool_pre_ping=True,
+            pool_recycle=3600,
+            connect_args={
+                "sslmode": "require"} if "sslmode" not in DATABASE_URL else {},
+        )
+else:
+    # SQLite for local development
+    engine = create_engine(
+        DATABASE_URL,
+        # Allow SQLite to work with FastAPI
+        connect_args={"check_same_thread": False},
+    )
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 
