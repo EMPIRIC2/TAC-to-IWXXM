@@ -1,85 +1,58 @@
 @echo off
-REM Launch script for METAR to IWXXM Converter GUI (Windows Command Prompt)
-REM Usage: launch_gui.bat [port] [host]
+REM Launch script for METAR to IWXXM Converter Frontend (Windows Command Prompt)
+REM Usage: launch_gui.bat
 
 setlocal enabledelayedexpansion
 
 REM Get script directory and repository root
 set "SCRIPT_DIR=%~dp0"
 set "REPO_ROOT=%SCRIPT_DIR%.."
-set "VENV_DIR=%REPO_ROOT%\.venv"
-set "PYTHON_EXE=%VENV_DIR%\Scripts\python.exe"
+set "FRONTEND_DIR=%REPO_ROOT%\frontend"
 
-REM Default values
-set "HOST=0.0.0.0"
-set "PORT=8000"
-set "RELOAD_ARG=--no-reload"
-
-REM Parse arguments
-if not "%1"=="" set "PORT=%1"
-if not "%2"=="" set "HOST=%2"
+REM Check if frontend directory exists
+if not exist "%FRONTEND_DIR%" (
+    echo [ERROR] Frontend directory not found at: %FRONTEND_DIR%
+    echo [INFO] Please ensure the frontend submodule is initialized:
+    echo [INFO]   git submodule update --init --recursive
+    exit /b 1
+)
 if "%1"=="--help" goto :show_help
-if "%1"=="/?" goto :show_help
-if "%1"=="--reload" set "RELOAD_ARG=--reload"
-if "%2"=="--reload" set "RELOAD_ARG=--reload"
 
-cd /d "%REPO_ROOT%"
+REM Change to frontend directory
+cd /d "%FRONTEND_DIR%"
 
-REM Check if virtual environment exists
-if not exist "%VENV_DIR%" (
-    echo [ERROR] Virtual environment not found at %VENV_DIR%
-    echo.
-    echo Please create it first:
-    echo   python -m venv .venv
-    echo   .venv\Scripts\activate
-    echo   pip install fastapi uvicorn tpg python-multipart
-    exit /b 1
+REM Check if node_modules exists
+if not exist "%FRONTEND_DIR%\\node_modules" (
+    echo [INFO] Installing frontend dependencies...
+    call npm install
+    if errorlevel 1 (
+        echo [ERROR] Failed to install dependencies
+        exit /b 1
+    )
 )
 
-REM Check if Python executable exists
-if not exist "%PYTHON_EXE%" (
-    echo [ERROR] Python executable not found at %PYTHON_EXE%
-    exit /b 1
-)
-
-echo [INFO] Using virtual environment: %VENV_DIR%
-
-REM Check if dependencies are installed
-echo [INFO] Checking dependencies...
-"%PYTHON_EXE%" -c "import fastapi, uvicorn" 2>nul
-if errorlevel 1 (
-    echo [WARN] Required dependencies not found
-    echo [INFO] Installing dependencies...
-    "%PYTHON_EXE%" -m pip install fastapi uvicorn tpg python-multipart
-)
-
-REM Launch the application
+REM Launch the frontend dev server
 echo.
 echo ========================================
-echo  METAR to IWXXM Converter GUI
+echo  METAR to IWXXM Converter Frontend
 echo ========================================
-echo  Server:   http://%HOST%:%PORT%
-echo  API Docs: http://localhost:%PORT%/docs
-echo  ReDoc:    http://localhost:%PORT%/redoc
+echo  Server will start at http://localhost:5173
+echo  (Vite default port)
 echo ========================================
 echo.
 echo Press CTRL+C to stop the server
 echo.
 
-"%PYTHON_EXE%" -m uvicorn gui.app:app --host %HOST% --port %PORT% %RELOAD_ARG%
+call npm run dev
 goto :eof
 
 :show_help
-echo Usage: launch_gui.bat [PORT] [HOST] [--reload]
+echo Usage: launch_gui.bat
 echo.
-echo Arguments:
-echo   PORT      Port to listen on (default: 8000)
-echo   HOST      Host to bind to (default: 0.0.0.0)
-echo   --reload  Enable auto-reload on code changes
+echo This script launches the React/Vite frontend development server.
+echo No arguments required - Vite uses default port 5173.
 echo.
-echo Examples:
+echo Example:
 echo   launch_gui.bat
-echo   launch_gui.bat 5000
-echo   launch_gui.bat 5000 127.0.0.1
-echo   launch_gui.bat 8000 0.0.0.0 --reload
 goto :eof
+
