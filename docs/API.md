@@ -4,9 +4,21 @@
 
 The METAR to IWXXM Converter API provides endpoints for converting METAR/SPECI TAC messages to IWXXM XML format.
 
-**Base URL**: `http://localhost:8000`  
+**Frontend URL**: `http://localhost:8000` (nginx proxy to backend/auth)  
+**Backend API URL**: `http://localhost:8001` (direct access)  
+**Auth Service URL**: `http://localhost:8002` (direct access)  
 **Version**: 0.1.0  
-**Interactive Docs**: Visit `/docs` (Swagger UI) or `/redoc` (ReDoc)
+**Interactive Docs**: Visit `http://localhost:8001/docs` (Swagger UI) or `http://localhost:8001/redoc` (ReDoc)
+
+## Architecture
+
+The application uses a microservices architecture:
+
+- **Frontend**: React/Vite application served via nginx (port 8000)
+  - Proxies `/api/*` requests to backend service
+  - Proxies `/auth/*` requests to auth service
+- **Backend**: FastAPI service handling METAR conversions (port 8001)
+- **Auth**: FastAPI service handling authentication (port 8002)
 
 ## Endpoints
 

@@ -1,6 +1,6 @@
 # METAR to IWXXM Converter
 
-FastAPI-based single-page GUI and utility functions to decode METAR/SPECI TAC and serialize IWXXM XML using the GIFTs submodule.
+Modern React-based web application with microservices backend to decode METAR/SPECI TAC and serialize IWXXM XML using the GIFTs submodule.
 
 ## Features
 
@@ -22,9 +22,12 @@ FastAPI-based single-page GUI and utility functions to decode METAR/SPECI TAC an
 ### 2. Clone and Start Services
 
 ```powershell
-# Clone the repository
-git clone <repository-url>
+# Clone the repository with submodules
+git clone --recurse-submodules <repository-url>
 cd metar-to-IWXXM
+
+# If already cloned, initialize submodules
+git submodule update --init --recursive
 
 # Start all services (auth, backend, frontend)
 docker-compose up
@@ -91,9 +94,9 @@ cd backend
 uv pip install -e .
 cd ..
 
-# Install GUI
-cd gui
-uv pip install -e .
+# Install frontend dependencies (Node.js/npm required)
+cd frontend
+npm install
 cd ..
 ```
 
@@ -116,9 +119,13 @@ python -m uvicorn backend.api:app --host 0.0.0.0 --port 8001
 Terminal 3 - Frontend Service:
 
 ```powershell
-cd gui
-python -m uvicorn gui.__main__:app --host 0.0.0.0 --port 8000
+cd frontend
+npm run dev
 ```
+
+The frontend will start at <http://localhost:5173> (Vite default port).
+
+**Note**: For proper API integration, you may need to configure the frontend to proxy requests to the backend and auth services.
 
 ### 4. Configure Environment Variables
 
@@ -138,15 +145,15 @@ The application is split into three microservices:
 
 1. **Auth Service** (`auth/`): User authentication, JWT tokens, API keys, password reset
 2. **Backend Service** (`backend/`): METAR to IWXXM conversion logic (GIFTs integration)
-3. **Frontend Service** (`gui/`): Web interface, static file serving
+3. **Frontend Service** (`frontend/`): React/Vite web interface with nginx for production
 
 ### Authentication Flow
 
-1. User registers/logs in via the GUI
+1. User registers/logs in via the React frontend
 2. Auth service issues JWT token
-3. Token stored in browser `sessionStorage`
+3. Token stored in browser storage (managed by Supabase client)
 4. Token sent with each API request in `Authorization` header
-5. GUI validates token client-side and server-side validates on conversion requests
+5. Frontend validates token client-side; backend validates on conversion requests
 
 ## API Usage
 

@@ -1,7 +1,8 @@
 """Standalone backend API module for Docker deployment (src layout)."""
 from __future__ import annotations
 
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+import os
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, ConfigDict
@@ -19,6 +20,7 @@ if str(ROOT) not in sys.path:
 
 try:
     from backend.conversion import convert_metar_tac, ConversionError
+    from backend.security import verify_supabase_token
 except Exception as e:  # pragma: no cover
     raise RuntimeError(f"Failed to import conversion module: {e}") from e
 
@@ -90,12 +92,19 @@ app = FastAPI(
     description="Convert METAR/SPECI TAC messages to IWXXM XML format (backend only)",
 )
 
+# Restrict CORS to specific origins
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:8000")
+allowed_origins = [
+    frontend_url,
+    "http://localhost:3000",  # Vite dev server
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 
@@ -116,6 +125,7 @@ def health() -> HealthResponse:
 async def convert(
     files: List[UploadFile] = File(default=[], description="METAR TAC files"),
     manual_text: str = Form(default="", description="Manual METAR text"),
+    user: dict = Depends(verify_supabase_token),
 ) -> ConversionResponse:
     results: List[ConversionResult] = []
     errors: List[str] = []
@@ -177,7 +187,8 @@ async def convert(
 
 @app.post("/api/convert-zip", response_class=StreamingResponse, tags=["Conversion"])
 async def convert_zip(
-    files: List[UploadFile] = File(default=[]), manual_text: str = Form(default="")
+    files: List[UploadFile] = File(default=[]), manual_text: str = Form(default=""),
+    user: dict = Depends(verify_supabase_token),
 ) -> StreamingResponse:
     results: List[tuple[str, str]] = []
     errors: List[str] = []
