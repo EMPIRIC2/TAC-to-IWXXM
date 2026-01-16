@@ -46,6 +46,12 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+        - VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}
+        - VITE_APP_URL=${VITE_APP_URL:-http://localhost:8000}
+        - VITE_BACKEND_URL=${VITE_BACKEND_URL:-http://localhost:8001}
+        - VITE_AUTH_URL=${VITE_AUTH_URL:-http://localhost:8002}
     container_name: metar-iwxxm-frontend
     ports:
       - "8000:80"

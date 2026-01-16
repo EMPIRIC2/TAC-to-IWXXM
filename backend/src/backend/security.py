@@ -110,12 +110,12 @@ async def verify_supabase_token(
         # Get the public key
         key_data = jwks[kid]
 
-        # Verify token signature using RS256
+        # Verify token signature using RS256 or ES256
         try:
             payload = jwt.decode(
                 token,
                 key_data,
-                algorithms=["RS256"],
+                algorithms=["RS256", "ES256"],
                 audience="authenticated",
             )
             return payload
