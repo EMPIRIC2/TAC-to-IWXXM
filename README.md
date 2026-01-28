@@ -4,7 +4,10 @@ Modern React-based web application with microservices backend to decode METAR/SP
 
 ## Features
 
-- **Authentication**: User registration and login with JWT tokens
+- **Authentication**: Supabase-powered user authentication with JWT tokens
+  - Password-based login
+  - Magic link (passwordless) authentication
+  - Password reset flow
 - **Drag & drop** multiple `.tac` / `.txt` METAR files
 - **Manual METAR text input**
 - **Batch conversion** to IWXXM XML (returned as text for convenience)
@@ -18,22 +21,43 @@ Modern React-based web application with microservices backend to decode METAR/SP
 
 - Docker Desktop or Docker Engine with Docker Compose
 - Git
+- A Supabase account (free tier is sufficient) - [Sign up here](https://supabase.com)
 
-### 2. Clone and Start Services
+### 2. Set Up Supabase
 
-```powershell
+Follow the detailed guide in [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md) to:
+1. Create a Supabase project
+2. Get your API keys
+3. Configure authentication settings
+
+### 3. Configure Environment Variables
+
+```bash
+# Copy the example environment file
+cp .env.example .env
+```
+
+Edit `.env` and add your Supabase credentials:
+```env
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-anon-key-here
+```
+
+### 4. Clone and Start Services
+
+```bash
 # Clone the repository with submodules
-git clone --recurse-submodules <repository-url>
+git clone --recurse-submodules https://github.com/joseph-c-mcguire/metar-to-IWXXM.git
 cd metar-to-IWXXM
 
 # If already cloned, initialize submodules
 git submodule update --init --recursive
 
 # Start all services (auth, backend, frontend)
-docker-compose up
+docker-compose up --build
 ```
 
-### 3. Access the Application
+### 5. Access the Application
 
 1. Open your browser to <http://localhost:8000>
 2. You'll be redirected to the login page
@@ -41,21 +65,21 @@ docker-compose up
 4. Fill in your details:
    - Full Name
    - Email
-   - Address (optional)
-   - Username (min 3 characters)
    - Password (min 8 characters)
-5. Click "Register" then login with your credentials
-6. Start converting METAR reports to IWXXM XML!
+5. Check your email for the confirmation link
+6. After confirming, login with your credentials
+7. Start converting METAR reports to IWXXM XML!
 
-### 4. Service Endpoints
+
+### 6. Service Endpoints
 
 - **Frontend (GUI)**: <http://localhost:8000>
 - **Backend API**: <http://localhost:8001>
 - **Auth Service**: <http://localhost:8002>
 
-### 5. Stop Services
+### 7. Stop Services
 
-```powershell
+```bash
 # Stop services
 docker-compose down
 
@@ -65,25 +89,45 @@ docker-compose down -v
 
 ## Development Setup (Local)
 
-### 1. Create a virtual environment (Windows PowerShell)
+### 1. Prerequisites
 
+- Python 3.11+
+- Node.js 20+
+- npm or yarn
+- Git
+- Supabase account (for authentication)
+
+### 2. Set Up Supabase
+
+Follow the guide in [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md).
+
+### 3. Create a virtual environment
+
+**Windows PowerShell:**
 ```powershell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
-Or use `uv` for faster package management:
-
-```powershell
-uv venv
-.venv\Scripts\Activate.ps1
+**Linux/macOS:**
+```bash
+python -m venv .venv
+source .venv/bin/activate
 ```
 
-### 2. Install dependencies
+Or use `uv` for faster package management:
+```bash
+uv venv
+source .venv/bin/activate  # Linux/macOS
+# or
+.venv\Scripts\Activate.ps1  # Windows
+```
+
+### 4. Install dependencies
 
 Install each component in editable mode:
 
-```powershell
+```bash
 # Install auth service
 cd auth
 uv pip install -e .
@@ -94,66 +138,87 @@ cd backend
 uv pip install -e .
 cd ..
 
-# Install frontend dependencies (Node.js/npm required)
+# Install frontend dependencies
 cd frontend
 npm install
 cd ..
 ```
 
-### 3. Run Services Manually
+### 5. Configure Environment Variables
 
-Terminal 1 - Auth Service:
+**For Python services (root directory `.env`):**
+```bash
+cp .env.example .env
+# Edit .env with your Supabase credentials and other settings
+```
 
-```powershell
+**For frontend (create `frontend/.env.local`):**
+```bash
+cd frontend
+cp .env.example .env.local
+# Edit .env.local with your Supabase credentials
+```
+
+### 6. Run Services Manually
+
+**Terminal 1 - Auth Service:**
+```bash
 cd auth
-python -m uvicorn auth.__main__:app --host 0.0.0.0 --port 8002
+python -m uvicorn auth.__main__:app --host 0.0.0.0 --port 8002 --reload
 ```
 
-Terminal 2 - Backend Service:
-
-```powershell
+**Terminal 2 - Backend Service:**
+```bash
 cd backend
-python -m uvicorn backend.api:app --host 0.0.0.0 --port 8001
+python -m uvicorn backend.api:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-Terminal 3 - Frontend Service:
-
-```powershell
+**Terminal 3 - Frontend Service:**
+```bash
 cd frontend
 npm run dev
 ```
 
 The frontend will start at <http://localhost:5173> (Vite default port).
 
-**Note**: For proper API integration, you may need to configure the frontend to proxy requests to the backend and auth services.
-
-### 4. Configure Environment Variables
-
-For local development, create a `.env` file in the project root:
-
-```env
-JWT_SECRET_KEY=your-secret-key-here
-DATABASE_URL=sqlite:///./auth.db
-FRONTEND_BASE_URL=http://localhost:8000
-BACKEND_URL=http://localhost:8001
-AUTH_URL=http://localhost:8002
-```
-
 ## Architecture
 
 The application is split into three microservices:
 
-1. **Auth Service** (`auth/`): User authentication, JWT tokens, API keys, password reset
+1. **Auth Service** (`auth/`): User authentication via Supabase, JWT token validation
 2. **Backend Service** (`backend/`): METAR to IWXXM conversion logic (GIFTs integration)
 3. **Frontend Service** (`frontend/`): React/Vite web interface with nginx for production
 
 ### Authentication Flow
 
-1. User registers/logs in via the React frontend
-2. Auth service issues JWT token
-3. Token stored in browser storage (managed by Supabase client)
-4. Token sent with each API request in `Authorization` header
-5. Frontend validates token client-side; backend validates on conversion requests
+1. User registers/logs in via the React frontend using Supabase Auth
+2. Supabase issues JWT access token with PKCE flow
+3. Token stored in browser via Supabase client library
+4. Token sent with each API request in `Authorization: Bearer <token>` header
+5. Backend validates token by verifying JWT signature against Supabase JWKS endpoint
+6. Frontend handles session management and automatic token refresh
+
+### Technology Stack
+
+**Frontend:**
+- React 19 with TypeScript
+- Vite for build tooling
+- Supabase JS Client (@supabase/supabase-js)
+- React Router for navigation
+- React Dropzone for file uploads
+- Axios for HTTP requests
+- Nginx for production serving and reverse proxy
+
+**Backend:**
+- FastAPI (Python) for REST API
+- GIFTs library for METAR to IWXXM conversion
+- Jose for JWT verification
+- HTTPX for async HTTP requests (JWKS fetching)
+
+**Auth Service:**
+- FastAPI (Python)
+- Supabase for authentication
+- PostgreSQL database (via Supabase)
 
 ## API Usage
 
