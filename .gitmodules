@@ -4,6 +4,3 @@
 [submodule "data/iwxxm-translation"]
 	path = data/iwxxm-translation
 	url = https://github.com/wmo-im/iwxxm-translation.git
-[submodule "frontend"]
-	path = frontend
-	url = git@github.com:joseph-c-mcguire/Metartoiwxxmfrontend.git
