@@ -10,6 +10,7 @@ export default function PasswordReset() {
   const [error, setError] = useState('')
   const [step, setStep] = useState<'request' | 'change'>('request')
   const [emailSent, setEmailSent] = useState(false)
+  const [success, setSuccess] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -65,8 +66,8 @@ export default function PasswordReset() {
 
       if (error) throw error
 
-      alert('Password updated successfully!')
-      navigate('/login')
+      setSuccess('Password updated successfully!')
+      setTimeout(() => navigate('/login'), 2000)
     } catch (err: any) {
       setError(err.message || 'Failed to update password')
     } finally {
@@ -102,6 +103,7 @@ export default function PasswordReset() {
           
           <form onSubmit={handleChangePassword} style={styles.form}>
             {error && <div style={styles.error}>{error}</div>}
+            {success && <div style={styles.success}>{success}</div>}
 
             <div style={styles.formGroup}>
               <label style={styles.label}>New Password</label>
@@ -266,6 +268,13 @@ const styles = {
     padding: '10px',
     backgroundColor: '#fee',
     color: '#c33',
+    borderRadius: '4px',
+    fontSize: '14px',
+  },
+  success: {
+    padding: '10px',
+    backgroundColor: '#d4edda',
+    color: '#155724',
     borderRadius: '4px',
     fontSize: '14px',
   },

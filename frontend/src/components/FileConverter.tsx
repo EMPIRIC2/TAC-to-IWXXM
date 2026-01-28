@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { supabase } from '../utils/supabase/client'
 import { useNavigate } from 'react-router-dom'
@@ -26,16 +26,23 @@ export default function FileConverter() {
   const [results, setResults] = useState<ConversionResult[]>([])
   const [errors, setErrors] = useState<string[]>([])
   const [user, setUser] = useState<any>(null)
+  const [notification, setNotification] = useState<string>('')
   const navigate = useNavigate()
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001'
 
-  // Get user info
-  useState(() => {
+  // Get user info on mount
+  useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user)
     })
-  })
+  }, [])
+
+  // Show notification with auto-hide
+  const showNotification = (message: string) => {
+    setNotification(message)
+    setTimeout(() => setNotification(''), 3000)
+  }
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles((prev) => [...prev, ...acceptedFiles])
@@ -140,15 +147,16 @@ export default function FileConverter() {
       document.body.appendChild(link)
       link.click()
       link.remove()
+      showNotification('ZIP file downloaded successfully!')
     } catch (err: any) {
       console.error('Download error:', err)
-      alert('Failed to download ZIP file')
+      showNotification('Failed to download ZIP file')
     }
   }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
-    alert('Copied to clipboard!')
+    showNotification('Copied to clipboard!')
   }
 
   const downloadResult = (result: ConversionResult) => {
@@ -175,6 +183,12 @@ export default function FileConverter() {
 
   return (
     <div style={styles.container}>
+      {notification && (
+        <div style={styles.notification}>
+          {notification}
+        </div>
+      )}
+      
       <div style={styles.header}>
         <h1 style={styles.title}>METAR to IWXXM Converter</h1>
         <div style={styles.userInfo}>
@@ -309,6 +323,19 @@ const styles = {
   container: {
     minHeight: '100vh',
     backgroundColor: '#f5f5f5',
+    position: 'relative' as const,
+  },
+  notification: {
+    position: 'fixed' as const,
+    top: '20px',
+    right: '20px',
+    backgroundColor: '#28a745',
+    color: 'white',
+    padding: '12px 24px',
+    borderRadius: '4px',
+    boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+    zIndex: 1000,
+    animation: 'slideIn 0.3s ease-out',
   },
   header: {
     backgroundColor: 'white',
