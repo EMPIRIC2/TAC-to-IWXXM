@@ -44,6 +44,8 @@ python_functions = ["test_*"]
 testpaths = ["tests"]
 minversion = "7.0"
 addopts = "-v --strict-markers --tb=short"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 markers = [
     "unit: Unit tests",
     "integration: Integration tests",
