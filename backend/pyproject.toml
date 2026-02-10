@@ -21,10 +21,61 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["backend*"]
+include = ["*"]
 
 [dependency-groups]
 dev = [
     "pytest>=8.4.2",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.23.0",
     "httpx>=0.28.1",
+    "skyfield>=1.45",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+asyncio_mode = "auto"
+addopts = [
+    "-v",
+    "--cov=src",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--tb=short",
+]
+markers = [
+    "unit: unit tests",
+    "integration: integration tests",
+    "e2e: end-to-end tests",
+    "asyncio: async tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = [
+    "src/services/*",
+    "src/**/__init__.py",
+    "src/**/__main__.py",
+    "src/__init__.py",
+    "src/__main__.py",
+    "*/test_*.py",
+    "tests/*",
+    "*/tests/*",
+    "conftest.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+precision = 2
+

@@ -1,8 +1,23 @@
 """Quick test script to verify Supabase pooler connection."""
 from sqlalchemy import create_engine, text
+import os
+import pytest
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 # Test pooler connection (Session Mode - port 5432)
-DATABASE_URL = "postgresql+psycopg2://postgres.ktvxijislbtgqapllmuk:P2wT%5EgJ2iLBSwQ%21d4@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
+# Use environment variable, with fallback to default URL scheme
+DATABASE_URL = os.getenv(
+    "TEST_POOLER_URL",
+    "postgresql+psycopg2://postgres.project-ref:password@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
+)
+if "project-ref" in DATABASE_URL:
+    pytest.skip(
+        "TEST_POOLER_URL not set - skipping pooler connection test",
+        allow_module_level=True
+    )
 
 print(f"Testing connection to Supabase via IPv4 pooler (Session Mode)...")
 print(f"Host: aws-0-us-east-1.pooler.supabase.com:5432")

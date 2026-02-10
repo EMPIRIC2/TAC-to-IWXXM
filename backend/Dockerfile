@@ -18,8 +18,9 @@ COPY backend/pyproject.toml ./pyproject.toml
 COPY backend/src ./src
 COPY GIFTs ./GIFTs
 
-# Install backend package into system env
-RUN uv pip install --system .
+# Install both the backend package and GIFTs library into system env
+RUN uv pip install --system . && \
+    uv pip install --system ./GIFTs
 
 # Non-root user
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
@@ -29,4 +30,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()" || exit 1
 
-CMD ["python", "-m", "uvicorn", "backend.api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run backend as a module (entry point will be: src package)
+ENV PORT=8000 RELOAD=false
+CMD ["python", "-m", "src"]
+

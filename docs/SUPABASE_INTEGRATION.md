@@ -23,10 +23,11 @@ Use **Supabase's Transaction Pooler** which provides IPv4 connectivity:
 ### .env File
 ```bash
 # Working: Supabase Transaction Pooler (IPv4)
-DATABASE_URL=postgresql+psycopg2://postgres.ktvxijislbtgqapllmuk:P2wT%5EgJ2iLBSwQ%21d4@aws-0-us-west-2.pooler.supabase.com:6543/postgres
+DATABASE_URL=postgresql+psycopg2://postgres.PROJECT_REF:PASSWORD@aws-0-us-west-2.pooler.supabase.com:6543/postgres
 
 # Password encoding: ^ becomes %5E, ! becomes %21
 # Username format: postgres.PROJECT_REF (not just 'postgres')
+# Get actual values from Supabase Dashboard → Settings → Database
 ```
 
 ### Key Details
@@ -35,8 +36,8 @@ DATABASE_URL=postgresql+psycopg2://postgres.ktvxijislbtgqapllmuk:P2wT%5EgJ2iLBSw
 | Host | aws-0-us-west-2.pooler.supabase.com |
 | Port | 6543 |
 | Database | postgres |
-| Username | postgres.ktvxijislbtgqapllmuk |
-| Password | P2wT^gJ2iLBSwQ!d4 (URL-encoded: P2wT%5EgJ2iLBSwQ%21d4) |
+| Username | postgres.PROJECT_REF (get PROJECT_REF from Supabase) |
+| Password | *** (stored in .env, URL-encoded special characters) |
 | Connection Type | Transaction Mode Pooler |
 | IPv Support | IPv4 ✓, IPv6 ✓ |
 | Prepared Statements | Not supported (disabled in code) |

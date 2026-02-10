@@ -1,0 +1,7 @@
+{
+  "percent": 48.06,
+  "lines_total": 274,
+  "lines_covered": 132,
+  "timestamp": "2026-02-04T00:00:00Z",
+  "note": "Current baseline from 22 passing unit tests - 48% coverage achieved with API and schema tests"
+}
