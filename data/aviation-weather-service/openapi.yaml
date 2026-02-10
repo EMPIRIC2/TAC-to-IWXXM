@@ -1,0 +1,3038 @@
+openapi: 3.1.0
+info:
+  title: AviationWeather.gov API
+  description: |-
+    Schema for public data API of AviationWeather.gov.
+  termsOfService: /data/api/
+  version: "v4.0"
+
+tags:
+  - name: Weather Data
+    description: Decoded weather information
+  - name: Navigational Data
+    description: Decoded navigational information
+
+paths:
+  /api/data/metar:
+    get:
+      tags:
+        - Weather Data
+      summary: METARs
+      description: Decoded aviation weather observations. Station identifiers or a bounding box is required.
+      parameters:
+        - $ref: '#/components/parameters/ids'
+        - $ref: '#/components/parameters/bbox'
+        - name: format
+          in: query
+          description: Format
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - raw
+              - decoded
+              - json
+              - geojson
+              - xml
+              - iwxxm
+            default: raw
+        - name: taf
+          in: query
+          description: Include TAF
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - $ref: '#/components/parameters/hours'
+        - $ref: '#/components/parameters/date'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/METARJSON'
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/METARGeoJSON'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/METARXML'
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/METARtext'
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/taf:
+    get:
+      tags:
+        - Weather Data
+      summary: TAFs
+      description: Decoded Terminal Aerodrome Forecast products. Station identifiers or a bounding box is required.
+      parameters:
+        - $ref: "#/components/parameters/ids"
+        - $ref: "#/components/parameters/bbox"
+        - $ref: "#/components/parameters/RawJSONGeoXMLIWXXM"
+        - name: metar
+          in: query
+          description: Include METAR
+          required: false
+          schema:
+            type: boolean
+        - name: time
+          in: query
+          description: Process time by valid (default) or issuance time
+          required: false
+          schema:
+            type: string
+            enum:
+              - valid
+              - issue
+        - $ref: "#/components/parameters/date"
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TAFJSON"
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/TAFGeoJSON"
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TAFtext'
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/pirep:
+    get:
+      tags:
+        - Weather Data
+      summary: Pilot Reports
+      description: Pilot reports issued in PIREP or AIREP format. Bounding box, or center point identifier and radial distance, required.
+      parameters:
+        - name: id
+          in: query
+          description: Airport ID for center of search
+          required: false
+          explode: true
+          schema:
+            type: string
+        - name: distance
+          in: query
+          description: Radial distance to search
+          required: false
+          explode: true
+          schema:
+            type: number
+        - $ref: "#/components/parameters/bbox"
+        - name: format
+          in: query
+          description: Format
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - raw
+              - decoded
+              - json
+              - geojson
+              - xml
+            default: raw
+        - name: age
+          in: query
+          description: Hours Back
+          required: false
+          explode: true
+          schema:
+            type: number
+        - name: level
+          in: query
+          description: Level +-3000' to search
+          required: false
+          explode: true
+          schema:
+            type: number
+        - name: inten
+          in: query
+          description: Minimum intensity
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - lgt
+              - mod
+              - sev
+        - $ref: "#/components/parameters/date"
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PIREPJSON"
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/PIREPGeoJSON"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/PIREPXML"
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/PIREPtext'
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/airsigmet:
+    get:
+      tags:
+        - Weather Data
+      summary: Domestic SIGMETs
+      description: Domestic SIGMETs for the contiguous United States. Does not include SIGMETs issued by the US in international format.
+      parameters:
+        - $ref: "#/components/parameters/RawJSONGeoXMLIWXXM"
+        - name: types
+          in: query
+          description: Product type
+          required: false
+          deprecated: true
+          schema:
+            type: string
+            enum:
+              - sigmet
+              - airmet
+        - name: hazard
+          in: query
+          description: Hazard
+          required: false
+          schema:
+            type: string
+            enum:
+              - conv
+              - turb
+              - ice
+              - ifr
+        - name: level
+          in: query
+          description: The level +-3000' to search
+          required: false
+          explode: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: object
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AirSigmetJSON"
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/AirSigmetGeoJSON"
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/isigmet:
+    get:
+      tags:
+        - Weather Data
+      summary: International SIGMETs
+      description: Decoded international SIGMETs. This does not include SIGMETs issued by the United States in domestic format (i.e. convective and non-convective domestic SIGMETS).
+      parameters:
+        - $ref: "#/components/parameters/RawJSONGeoXMLIWXXM"
+        - name: hazard
+          in: query
+          description: Hazard
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - turb
+              - ice
+        - name: level
+          in: query
+          description: Level +-3000' to search
+          required: false
+          explode: true
+          schema:
+            type: number
+        - $ref: "#/components/parameters/date"
+      responses:
+        200:
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: object
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ISigmetJSON"
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/ISigmetGeoJSON"
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/gairmet:
+    get:
+      tags:
+        - Weather Data
+      summary: US Graphical AIRMETs
+      description: Decoded G-AIRMETs for the contiguous United States. See /api/data/airmet for similar advisories over Alaska.
+      parameters:
+        - name: product
+          in: query
+          description: Product type
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - sierra
+              - tango
+              - zulu
+        - $ref: "#/components/parameters/RawJSONGeoXML"
+        - name: hazard
+          in: query
+          description: Hazard
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - turb-hi
+              - turb-lo
+              - llws
+              - sfc_wind
+              - ifr
+              - mtn_obs
+              - ice
+              - fzlvl
+        - $ref: "#/components/parameters/date"
+        - name: fore
+          in: query
+          description: Forecast hour from selected forecast package
+          required: false
+          schema:
+            type: number
+            enum:
+              - 0
+              - 3
+              - 6
+              - 9
+              - 12
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GairmetJSON"
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/GairmetGeoJSON"
+            application/xml:
+              schema:
+                type: object
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/airmet:
+    get:
+      tags:
+        - Weather Data
+      summary: AIRMETs
+      description: Decoded domestic AIRMETs (Alaska only). See /api/data/gairmet for similar advisories over the contiguous United States.
+      parameters:
+        - $ref: "#/components/parameters/JSONGeoIWXXM"
+        - name: hazard
+          in: query
+          description: "Hazard"
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - turb
+              - ifr
+              - conv
+              - ice
+        - name: level
+          in: query
+          description: Level +-3000' to search
+          required: false
+          explode: true
+          schema:
+            type: number
+        - $ref: "#/components/parameters/date"
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                type: object
+            application/json:
+              schema:
+                type: object
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/tcf:
+    get:
+      tags:
+        - Weather Data
+      summary: TFM Convective Forecast (TCF)
+      description: Traffic Flow Management (TFM) Convective Forecast. See https://aviationweather.gov/tcf/ for more information.
+      parameters:
+        - $ref: "#/components/parameters/RawGeo"
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TcfGeoJSON"
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/cwa:
+    get:
+      tags:
+        - Weather Data
+      summary: CWSU Center Advisories
+      description: Center Weather Advisories issued by NWS Center Weather Service Units (CWSUs)
+      parameters:
+        - name: hazard
+          in: query
+          description: Hazard
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - ts
+              - turb
+              - ice
+              - ifr
+              - pcpn
+              - unk
+        - $ref: "#/components/parameters/RawJSONGeo"
+        - $ref: "#/components/parameters/date"
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CwaJSON"
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/CwaGeoJSON"
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/windtemp:
+    get:
+      tags:
+        - Weather Data
+      summary: Wind/Temp Point Data
+      description: Wind and temperature information from the legacy FD winds
+      parameters:
+        - name: region
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [us,bos,mia,chi,dfw,slc,sfo,alaska,hawaii,other_pac]
+          description: >
+            Region:
+             * `us` - All contiguous US sites
+             * `bos` - Northeast
+             * `mia` - Southeast
+             * `chi` - North central
+             * `dfw` - South central
+             * `slc` - Rocky Mountain
+             * `sfo` - Pacific Coast
+             * `alaska` - Alaska
+             * `hawaii` - Hawaii
+             * `other_pac` - Western Pacific
+        - name: level
+          in: query
+          description: Level
+          required: false
+          schema:
+            type: string
+            enum:
+              - low
+              - high
+        - name: fcst
+          in: query
+          description: Forecast cycle
+          required: false
+          schema:
+            type: string
+            enum:
+              - "06"
+              - "12"
+              - "24"
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/areafcst:
+    get:
+      tags:
+        - Weather Data
+      summary: US Area Forecasts
+      description: Text Area Forecasts for the United States outside the contiguous states (Alaska)
+      parameters:
+        - name: region
+          in: query
+          description: >
+            Date
+             * `aknorth` - Northern half of Alaska
+             * `akcentral` - Interior Alaska
+             * `aksouth` - Southcentral Alaska
+             * `aksouthwest` - Alaska Peninsula
+             * `aksoutheast` - Eastern Gulf of Alaska
+             * `akpanhandle` - Alaska
+          required: true
+          schema:
+            type: string
+            enum:
+              - aknorth
+              - akcentral
+              - akaleutian
+              - aksouth
+              - aksouthwest
+              - aksoutheast
+              - akpanhandle
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/fcstdisc:
+    get:
+      tags:
+        - Weather Data
+      summary: US Forecast Discussions
+      description: Aviation Forecast Discussions issued by NWS Weather Forecast Offices. Returns aviation section or full discussion issued within the past six hours.
+      parameters:
+        - name: cwa
+          in: query
+          description: County Warning Area (WFO)
+          required: false
+          examples:
+            -:
+              value: ""
+            KEAX:
+              summary: Kansas City
+              value: "keax"
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: >
+            Type of output:
+             * `afd` - aviation discussion
+             * `af` - full discussion
+          required: false
+          schema:
+            type: string
+            enum:
+              - afd
+              - af
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/mis:
+    get:
+      tags:
+        - Weather Data
+      summary: Meteorological Information Statement
+      description: Meteorological Information Statements issued by NWS Center Weather Service Units (CWSU)
+      parameters:
+        - name: loc
+          in: query
+          description: CWSU
+          required: false
+          examples:
+            -:
+              value: ""
+            zkc:
+              summary: Kansas City
+              value: "zkc"
+          schema:
+            type: string
+        - name: format
+          in: query
+          description: Format
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - json
+              - text
+            default: text
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/stationinfo:
+    get:
+      tags:
+        - Navigational Data
+      summary: Station info
+      description: Station observation location information
+      parameters:
+        - $ref: "#/components/parameters/ids"
+        - $ref: "#/components/parameters/bbox"
+        - $ref: "#/components/parameters/RawJSONGeoXML"
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StationInfoJSON"
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/StationInfoGeoJSON"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/StationInfoXML"
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/airport:
+    get:
+      tags:
+        - Navigational Data
+      summary: Airport info
+      description: Information about airports
+      parameters:
+        - $ref: "#/components/parameters/ids"
+        - $ref: "#/components/parameters/bbox"
+        - name: format
+          in: query
+          description: Format
+          required: false
+          explode: true
+          schema:
+            type: string
+            enum:
+              - decoded
+              - json
+              - geojson
+            default: decoded
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    icaoId:
+                      type: string
+                      examples: [KMCI]
+                    iataId:
+                      type: string
+                      examples: [MCI]
+                    faaId:
+                      type: string
+                      examples: [MCI]
+                    name:
+                      type: string
+                      examples: [KANSAS CITY/KANSAS CITY INTL]
+                    state:
+                      type: string
+                      examples: [MO]
+                    country:
+                      type: string
+                      examples: [US]
+                    source:
+                      type: string
+                      examples: [FAA]
+                    type:
+                      type: string
+                      examples: [ARP]
+                    lat:
+                      type: string
+                      examples: [39.2976]
+                    lon:
+                      type: string
+                      examples: [-94.7139]
+                    elev:
+                      type: string
+                      examples: [313]
+                    magdec:
+                      type: string
+                      examples: [02E]
+                    owner:
+                      type: string
+                      examples: [P]
+                    runways:
+                      type: array
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/navaid:
+    get:
+      tags:
+        - Navigational Data
+      summary: Navigational aid info
+      description: Navigational aid data
+      parameters:
+        - name: ids
+          in: query
+          description: three character identifier
+          required: false
+          examples:
+            -:
+              value: ""
+            barbq:
+              summary: MCI
+              value: MCI
+          schema:
+            type: string
+        - $ref: "#/components/parameters/bbox"
+        - $ref: "#/components/parameters/RawJSONGeo"
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      examples: [MCI]
+                    type:
+                      type: string
+                      examples: [VORTAC]
+                    name:
+                      type: string
+                      examples: [Kansas City]
+                    state:
+                      type: string
+                      examples: [MO]
+                    country:
+                      type: string
+                      examples: [US]
+                    lat:
+                      type: number
+                      examples: [39.2853]
+                    lon:
+                      type: number
+                      examples: [-94.7371]
+                    elev:
+                      type: number
+                      examples: [310]
+                    freq:
+                      type: number
+                      examples: [113.25]
+                    mag_dec:
+                      type: string
+                      examples: [05E]
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/fix:
+    get:
+      tags:
+        - Navigational Data
+      summary: Navigational fix/waypoint info
+      description: Navigational fix data
+      parameters:
+        - name: ids
+          in: query
+          description: 5 letter Fix ID(s)
+          required: false
+          examples:
+            -:
+              value: ""
+            barbq:
+              summary: BARBQ
+              value: BARBQ
+          schema:
+            type: string
+        - $ref: "#/components/parameters/bbox"
+        - $ref: "#/components/parameters/RawJSONGeo"
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      examples: [BARBQ]
+                    type:
+                      type: string
+                      examples: [I]
+                    lat:
+                      type: number
+                      examples: [39.0811]
+                    lon:
+                      type: number
+                      examples: [-94.7681]
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/feature:
+    get:
+      tags:
+        - Navigational Data
+      summary: Feature info
+      description: Additional geographic features
+      parameters:
+        - $ref: "#/components/parameters/bbox"
+        - $ref: "#/components/parameters/RawJSONGeo"
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/obstacle:
+    get:
+      tags:
+        - Navigational Data
+      summary: Obstacle info
+      description: Aviation obstacle information
+      parameters:
+        - $ref: "#/components/parameters/bbox"
+        - $ref: "#/components/parameters/RawJSONGeo"
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/400'
+
+  /api/data/dataserver:
+    get:
+      tags:
+        - Weather Data
+      summary: Data Server
+      description: Compatibility layer with previous Text Data Service. Station identifiers or a bounding box, as well as a time selection, are required.
+      parameters:
+        - name: requestType
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [retrieve]
+        - name: dataSource
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [metars,tafs,aircraftreports,aisigmets,gairmets]
+        - name: stationString
+          in: query
+          description: Station ID(s)
+          required: false
+          examples:
+            -:
+              value: ""
+            id:
+              summary: A single ICAO Id
+              value: KMCI
+            ids:
+              summary: A list of ICAO Ids separated by commas
+              value: KMCI,KORD,KBOS
+            states:
+              summary: A 2 letter state abbreviation preceded by a @
+              value: "@WA"
+          schema:
+            type: string
+        - name: boundingBox
+          in: query
+          description: Geographic bounding box (lat0, lon0, lat1, lon1)
+          required: false
+          examples:
+            -:
+              value: ""
+            box:
+              summary: A small box around Chicago
+              value: 40,-90,45,-85
+          schema:
+            type: string
+        - name: startTime
+          in: query
+          description: >
+            Start time
+             * `yyyymmdd_hhmm`
+             * `yyyy-mm-ddThh:mm:ssZ`
+          required: false
+          examples:
+            -:
+              value: ""
+            epoch_secs:
+              summary: A Unix epoch time in seconds
+              value: 1703052000
+            iso_date:
+              summary: ISO8601 Date
+              value: 2023-12-23T23:57:29Z
+          schema:
+            type: string
+        - name: endTime
+          in: query
+          description: >
+            End time
+             * `yyyymmdd_hhmm`
+             * `yyyy-mm-ddThh:mm:ssZ`
+          required: false
+          examples:
+            -:
+              value: ""
+            epoch_secs:
+              summary: A Unix epoch time in seconds
+              value: 1703383049
+            iso_date:
+              summary: ISO8601 Date
+              value: 2023-12-20T00:00:00Z
+          schema:
+            type: string
+        - name: hoursBeforeNow
+          in: query
+          description: Number of hours before now to search
+          required: false
+          explode: true
+          schema:
+            type: number
+        - name: format
+          in: query
+          description: Output format (TAFs not available in CSV format)
+          explode: false
+          schema:
+            type: string
+            default: xml
+            enum:
+              - xml
+              - csv
+        - name: mostRecentForEachStation
+          in: query
+          description: Most recent per station (METARs and TAFs only)
+          required: false
+          explode: false
+          schema:
+            type: string
+            enum:
+              - constraint
+              - postfilter
+        - name: radialDistance
+          in: query
+          description: Circular bounds defined by latitude, longitude and radial distance in statute miles (PIREPS only)
+          required: false
+          examples:
+            -:
+              value: ""
+            radial:
+              summary: A small area around Denver
+              value: 20;-105,39
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/400'
+
+components:
+  parameters:
+    date:
+      name: date
+      in: query
+      description: "String (`yyyymmdd_hhmm`) or ISO 8601 Date (`yyyy-mm-ddThh:mm:ssZ`)"
+      required: false
+      explode: true
+      examples:
+        -:
+          value: ""
+        datim:
+          summary: Date/time string
+          value: 20231220_0000
+        iso_date:
+          summary: ISO 8601 Date
+          value: 2023-12-20T00:00:00Z
+      schema:
+        type: string
+    bbox:
+      name: bbox
+      in: query
+      description: Geographic bounding box (lat0, lon0, lat1, lon1)
+      required: false
+      examples:
+        -:
+          value: ""
+        box:
+          summary: A small box around Chicago
+          value: 40,-90,45,-85
+      schema:
+        type: string
+    hours:
+      name: hours
+      in: query
+      description: Hours back to search
+      required: false
+      explode: true
+      schema:
+        type: number
+        default: 1.5
+    hoursRequired:
+      name: hours
+      in: query
+      description: Hours back to search
+      required: true
+      schema:
+        type: number
+    RawJSONGeoXML:
+      name: format
+      in: query
+      description: Format
+      required: false
+      explode: true
+      schema:
+        type: string
+        enum:
+          - raw
+          - json
+          - geojson
+          - xml
+        default: raw
+    RawJSONGeo:
+      name: format
+      in: query
+      description: Format
+      required: false
+      explode: true
+      schema:
+        type: string
+        enum:
+          - raw
+          - json
+          - geojson
+        default: raw
+    RawGeo:
+      name: format
+      in: query
+      description: Format
+      required: false
+      explode: true
+      schema:
+        type: string
+        enum:
+          - raw
+          - geojson
+        default: raw
+    RawJSONGeoXMLIWXXM:
+      name: format
+      in: query
+      description: Format
+      required: false
+      explode: true
+      schema:
+        type: string
+        enum:
+          - raw
+          - json
+          - geojson
+          - xml
+          - iwxxm
+        default: raw
+    JSONGeoIWXXM:
+      name: format
+      in: query
+      description: Format
+      required: false
+      explode: true
+      schema:
+        type: string
+        enum:
+          - json
+          - geojson
+          - iwxxm
+        default: json
+    JSONGeoUSWX:
+      name: format
+      in: query
+      description: Format
+      required: false
+      explode: true
+      schema:
+        type: string
+        enum:
+          - json
+          - geojson
+          - uswx
+        default: json
+    ids:
+      name: ids
+      in: query
+      description: Station ID(s)
+      required: false
+      examples:
+        -:
+          value: ""
+        id:
+          summary: A single ICAO Id
+          value: KMCI
+        ids:
+          summary: A list of ICAO Ids separated by commas
+          value: KMCI,KORD,KBOS
+        states:
+          summary: A 2 letter state abbreviation preceded by a @
+          value: "@WA"
+      schema:
+        type: string
+  responses:
+    'success':
+      description: Successful operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum: [success]
+    400:
+      description: Input validation errors
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorJSON"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/ErrorXML"
+    401:
+      description: Not Authorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorJSON"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/ErrorXML"
+    403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorJSON"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/ErrorXML"
+    404:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorJSON"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/ErrorXML"
+  schemas:
+    METARproperties:
+      type: object
+      properties:
+        icaoId:
+          type: string
+          default: ''
+          description: ICAO identifier
+          examples: [KORD]
+        receiptTime:
+          type: string
+          default: ''
+          description: The time the observation was received (yyyy-mm-dd hh:mm:ss.sssZ)
+          examples: ['2023-11-03 21:54:03.000Z']
+        obsTime:
+          type: integer
+          description: The observation time (UNIX timestamp)
+          examples: [1699048260]
+        reportTime:
+          type: string
+          default: ''
+          description: The time of the report (yyyy-mm-dd hh:mm:ss.sssZ)
+          examples: ['2023-11-03 22:00:00.000Z']
+        temp:
+          type: number
+          default: 0
+          description: Temperature in Celsius
+          examples: [14.4]
+        dewp:
+          type: number
+          default: null
+          description: Dewpoint temperature in Celsius
+          examples: [2.8]
+        wdir:
+          minimum: 0
+          default: null
+          description: Wind direction in degrees or VRB for variable winds
+          anyOf:
+            - type: integer
+            - type: string
+          examples: [230]
+        wspd:
+          type: integer
+          default: null
+          minimum: 0
+          description: Wind speed in knots
+          examples: [6]
+        wgst:
+          type: integer
+          default: null
+          minimum: 0
+          description: Wind gusts in knots
+          examples: [12]
+        visib:
+          default: null
+          description: Visibility in statute miles, 10+ is greater than 10 sm
+          anyOf:
+            - type: number
+            - type: string
+          examples: [3]
+        altim:
+          type: number
+          default: null
+          description: Altimeter setting in hectopascals
+          examples: [1016.3]
+        slp:
+          type: number
+          default: null
+          description: Sea level pressure in hectopascals
+          examples: [1016.2]
+        wxString:
+          type: string
+          default: null
+          description: Encoded present weather string
+          examples: ['-RA']
+        presTend:
+          type: number
+          default: null
+          description: Pressure tendency over last 3 hours in hectopascals
+          examples: [null]
+        maxT:
+          type: number
+          default: null
+          description: Maximum temperature over last 6 hours in Celsius
+          examples: [23.4]
+        minT:
+          type: number
+          default: null
+          description: Minimum temperature over last 6 hours in Celsius
+          examples: [12.3]
+        maxT24:
+          type: number
+          default: null
+          description: Maximum temperature over last 24 hours in Celsius
+          examples: [23.4]
+        minT24:
+          type: number
+          default: null
+          description: Minimum temperature over last 24 hours in Celsius
+          examples: [12.3]
+        precip:
+          type: number
+          default: null
+          minimum: 0
+          description: Precipitation over last hour in inches
+          examples: [0.01]
+        pcp3hr:
+          type: number
+          default: null
+          minimum: 0
+          description: Precipitation over last 3 hours in inches
+          examples: [0.1]
+        pcp6hr:
+          type: number
+          default: null
+          minimum: 0
+          description: Precipitation over last 6 hours in inches
+          examples: [0.23]
+        pcp24hr:
+          type: number
+          default: null
+          minimum: 0
+          description: Precipitation over last 24 hours in inches
+          examples: [0.53]
+        snow:
+          type: number
+          default: null
+          minimum: 0
+          description: Snow depth in inches
+          examples: [1]
+        vertVis:
+          type: integer
+          default: null
+          minimum: 0
+          description: Vertical visibility in feet
+          examples: [100]
+        metarType:
+          type: string
+          default: ''
+          description: Type of encoding
+          enum:
+            - METAR
+            - SPECI
+            - SYNOP
+            - BUOY
+            - CMAN
+          examples: [METAR]
+        rawOb:
+          type: string
+          default: ''
+          description: Raw text of observation
+          examples: [KORD 032151Z 23006KT 10SM BKN110 OVC250 14/03 A3000 RMK AO2 SLP162 VIRGA OHD T01440028]
+        lat:
+          type: number
+          default: 0
+          description: Latitude of site in degrees
+          examples: [41.9602]
+        lon:
+          type: number
+          default: 0
+          description: Longitude of site in degrees
+          examples: [-87.9316]
+        elev:
+          type: integer
+          default: 0
+          description: Elevation of site in meters
+          examples: [202]
+        name:
+          type: string
+          default: ''
+          description: Full name of the site
+          examples: [Chicago/O'Hare Intl, IL, US]
+        clouds:
+          $ref: "#/components/schemas/CloudInfo"
+        fltCat:
+          type: string
+          default: ''
+          description: Flight category restriction
+          examples: [IFR]
+    METARtext:
+      type: string
+      description: Raw text of observation
+      examples: [KORD 032151Z 23006KT 10SM BKN110 OVC250 14/03 A3000 RMK AO2 SLP162 VIRGA OHD T01440028]
+    METARJSON:
+      type: array
+      items:
+        $ref: "#/components/schemas/METARproperties"
+    METARGeoJSON:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [Feature]
+              id:
+                type: number
+              properties:
+                $ref: "#/components/schemas/METARproperties"
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Point]
+                  coordinates:
+                    type: array
+                    minItems: 2
+                    maxItems: 2
+                    items:
+                      type: number
+                    examples: [[-87.9316, 41.9602]]
+    METARXML:
+      xml:
+        name: response
+      type: object
+      properties:
+        request_index:
+          type: number
+        data_source:
+          properties:
+            name:
+              type: string
+              enum: [metar]
+              xml:
+                attribute: true
+        request:
+          properties:
+            type:
+              type: string
+              enum: [retrieve]
+              xml:
+                attribute: true
+        errors:
+        warnings:
+        time_taken_ms:
+          type: number
+        data:
+          type: array
+          xml:
+            name: data
+            wrapped: true
+          items:
+            type: object
+            xml:
+              name: METAR
+            properties:
+              raw_text:
+                type: string
+              station_id:
+                type: string
+                description: Station identifier
+                examples: [KORD]
+              observation_time:
+                type: string
+                description: The observation time
+                examples: ['2023-11-03 22:00:00.000Z']
+              latitude:
+                type: number
+                description: Latitude of site in degrees
+                examples: [41.9602]
+              longitude:
+                type: number
+                description: Longitude of site in degrees
+                examples: [-87.9316]
+              temp_c:
+                type: number
+                description: Temperature in Celsius
+                examples: [14.4]
+              dewpoint_c:
+                type: number
+                description: Dewpoint temperature in Celsius
+                examples: [2.8]
+              wind_dir_degrees:
+                minimum: 0
+                description: Wind direction in degrees or VRB for variable winds
+                anyOf:
+                  - type: integer
+                  - type: string
+                examples: [230]
+              wind_speed_kt:
+                type: number
+                description: Wind speed in knots
+                examples: [6]
+              visibility_statute_mi:
+                description: Visibility in statute miles, 10+ is greater than 10 sm
+                anyOf:
+                  - type: number
+                  - type: string
+                examples: [3]
+              altim_in_hg:
+                type: number
+                description: Altimeter setting in inches of mercury
+              sea_level_pressure_mb:
+                type: number
+                description: Mean sea level pressure in mb (hPa)
+              quality_control_flags:
+                type: object
+                properties:
+                  auto_station:
+                    type: boolean
+              flight_category:
+                type: string
+              metar_type:
+                type: string
+              elevation_m:
+                type: number
+    TAFproperties:
+      type: object
+      description: TAFs
+      properties:
+        icaoId:
+          type: string
+          default: ''
+          description: ICAO identifier
+          examples: [KORD]
+        dbPopTime:
+          type: string
+          default: ''
+          description: The time the product was received (yyyy-mm-dd hh:mm:ss.sssZ)
+          examples: ['2023-11-03 23:20:09.000Z']
+        bulletinTime:
+          type: string
+          default: ''
+          description: The official time of the bulletin (yyyy-mm-dd hh:mm:ss.sssZ)
+          examples: ['2023-11-03 23:20:00.000Z']
+        issueTime:
+          type: string
+          default: ''
+          description: The time the product was issued (yyyy-mm-dd hh:mm:ss.sssZ)
+          examples: ['2023-11-03 23:20:00.000Z']
+        validTimeFrom:
+          type: integer
+          default: 0
+          description: The time the period of validity starts (unix timestamp)
+          examples: [1699056000]
+        validTimeTo:
+          type: integer
+          default: 0
+          description: The time the period of validity ends (unix timestamp)
+          examples: [1699164000]
+        rawTAF:
+          type: string
+          default: ''
+          description: The raw text of the TAF
+          examples: [KORD 032320Z 0400/0506 VRB05KT P6SM FEW050 SCT080 OVC110 TEMPO 0401/0403 -SHRA BKN050 OVC080 FM040600 34006KT P6SM FEW015 SCT100 BKN150 FM041400 01008KT P6SM SCT020 SCT100 TEMPO 0415/0419 BKN015 FM050100 32004KT P6SM FEW020 SCT250]
+        mostRecent:
+          type: integer
+          default: 0
+          description: Most recent flag (1=most recent, 0=not)
+          examples: [1]
+        remarks:
+          type: string
+          default: ''
+          description: Any additional remarks for TAF
+          examples: [RMK PGG]
+        lat:
+          type: number
+          default: 0
+          description: Latitude of site in degrees
+          examples: [41.9602]
+        lon:
+          type: number
+          default: 0
+          description: Longitude of site in degrees
+          examples: [-87.9316]
+        elev:
+          type: integer
+          default: 0
+          description: Elevation of site in meters
+          examples: [202]
+        prior:
+          type: integer
+          default: 0
+          description: Priority of site for progressive disclosure (0-9)
+          examples: [0]
+        name:
+          type: string
+          default: ''
+          description: Full name of the site
+          examples: [Chicago/O'Hare Intl, IL, US]
+        fcsts:
+          type: array
+          description: Each forecast within the TAF
+          items:
+            type: object
+            required:
+              - timeFrom
+              - timeTo
+              - timeBec
+              - fcstChange
+              - probability
+              - wdir
+              - wspd
+              - wgst
+              - wshearHgt
+              - wshearDir
+              - wshearSpd
+              - visib
+              - altim
+              - vertVis
+              - wxString
+              - notDecoded
+              - clouds
+              - icgTurb
+              - temp
+            properties:
+              timeFrom:
+                type: integer
+                description: The time the forecast validity starts (UNIX timestamp)
+                examples: [1699056000]
+              timeTo:
+                type: integer
+                description: The time the forecast validity ends (UNIX timestamp)
+                examples: [1699077600]
+              timeBec:
+                type: integer
+                default: null
+                description: The time the forecast transition ends BECMG 0501/0503 - last time in sequence (UNIX timestamp)
+                examples: [1699153200]
+              fcstChange:
+                type: string
+                default: null
+                description: Change type for each forecast
+                enum:
+                  - TEMPO
+                  - FM
+                  - BECMG
+                  - PROB
+              probability:
+                type: integer
+                default: null
+                description: The probability of occurrence from PROB30 change group
+                examples: [30]
+              wdir:
+                default: null
+                description: Wind direction in degrees of VRB for variable winds
+                anyOf:
+                  - type: integer
+                  - type: string
+                examples: [VRB]
+              wspd:
+                type: integer
+                default: null
+                description: Wind speed in knots
+                examples: [5]
+              wgst:
+                type: integer
+                default: null
+                description: Wind gusts in knots
+                examples: [12]
+              wshearHgt:
+                type: integer
+                default: null
+                description: Wind shear layer top in feet
+                examples: [2000]
+              wshearDir:
+                type: integer
+                default: null
+                description: Wind direction at top of wind shear layer in degrees
+                examples: [200]
+              wshearSpd:
+                type: integer
+                default: null
+                description: Wind speed at top of wind shear layer in knots
+                examples: [40]
+              visib:
+                default: null
+                description: Visibility in statute miles, 6+ is greater than 6 sm
+                anyOf:
+                  - type: number
+                  - type: string
+                examples: [2]
+              altim:
+                type: number
+                default: null
+                description: Altimeter setting in hectoPascal
+                examples: [1016.2]
+              vertVis:
+                type: integer
+                default: null
+                description: Vertical visibility in feet
+                examples: [100]
+              wxString:
+                type: string
+                default: null
+                description: Encoded present weather string
+                examples: ['-SHRA']
+              notDecoded:
+                type: string
+                default: null
+                description: Any text that wasn't decoded
+                examples: [ROTOR CONEXIST]
+              clouds:
+                $ref: "#/components/schemas/CloudInfo"
+              icgTurb:
+                type: array
+                description: Icing and turbulence forecasts
+                items:
+                  type: object
+                  description: Icing or turbulence data
+                  required:
+                    - var
+                    - intensity
+                    - minAlt
+                    - maxAlt
+                  properties:
+                    var:
+                      type: string
+                      description: Variable - ice or turb
+                      enum:
+                        - ICE
+                        - TURB
+                      examples: [TURB]
+                    intensity:
+                      type: integer
+                      description: Intensity setting (0-9, see TAF implementation table)
+                      examples: [2]
+                    minAlt:
+                      type: integer
+                      description: Minimum altitude in feet
+                      examples: [9000]
+                    maxAlt:
+                      type: integer
+                      description: Maximum altitude in feet
+                      examples: [18000]
+                  x-examples:
+                    var: TURB
+                    intensity: 2
+                    minAlt: 9000
+                    maxAlt: 18000
+              temp:
+                type: array
+                description: The temp Schema
+                items:
+                  type: object
+                  description: A Schema
+                  required:
+                    - validTime
+                    - sfcTemp
+                    - maxOrMin
+                  properties:
+                    validTime:
+                      type: integer
+                      description: Valid time for max/min temperature (unix timestamp)
+                      examples: [1699369200]
+                    sfcTemp:
+                      type: integer
+                      description: Surface tmperature in Celsius
+                      examples: [1]
+                    maxOrMin:
+                      type: string
+                      description: Is the value a max or min
+                      enum:
+                        - MAX
+                        - MIN
+                      examples: [MAX]
+                  x-examples:
+                    validTime: 1699369200
+                    sfcTemp: 1
+                    maxOrMin: MAX
+    TAFtext:
+      type: string
+      examples: [KORD 032320Z 0400/0506 VRB05KT P6SM FEW050 SCT080 OVC110 TEMPO 0401/0403 -SHRA BKN050 OVC080 FM040600 34006KT P6SM FEW015 SCT100 BKN150 FM041400 01008KT P6SM SCT020 SCT100 TEMPO 0415/0419 BKN015 FM050100 32004KT P6SM FEW020 SCT250]
+    TAFJSON:
+      type: array
+      items:
+        $ref: "#/components/schemas/TAFproperties"
+    TAFGeoJSON:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [Feature]
+              id:
+                type: number
+              properties:
+                $ref: "#/components/schemas/TAFproperties"
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Point]
+                  coordinates:
+                    type: array
+                    minItems: 2
+                    maxItems: 2
+                    items:
+                      type: number
+                    examples: [[-87.9316, 41.9602]]
+    PIREPtext:
+      type: string
+      examples: ["COU UA /OV COU260020/TM 0012/FL140/TP E170/TB LGT-MOD CHOP 140-170/RM DURC /ZKC FDC/CW"]
+    PIREPJSON:
+      type: array
+      items:
+        type: object
+        properties:
+          receiptTime:
+            type: string
+            description: Time received by AWC
+            examples:
+              - "2023-11-07 18:08:15.000Z"
+          obsTime:
+            type: number
+            description: Observed time (UNIX epoch)
+            examples:
+              - 1699379880
+          qcField:
+            type: number
+            examples:
+              - 0
+          icaoId:
+            type: string
+            examples: ["KWBC"]
+          acType:
+            type: string
+            description: ICAO aircraft type
+            examples: ["LJ35"]
+          lat:
+            type: number
+            description: Latitude
+            examples: [40.938]
+          lon:
+            type: number
+            description: Longitude
+            examples: [-90.4311]
+          fltLvl:
+            type: string
+            description: Flight level (hundreds of feet)
+            examples: ["230"]
+          fltLvlType:
+            type: string
+            description: Phase of flight
+            enum: [GRND, DURC, DURD, CRUISE, OTHER, UNKN]
+          clouds:
+            $ref: "#/components/schemas/CloudInfo"
+          visib:
+            type: string
+            description: Visibility
+          wxString:
+            type: string
+            description: Observed weather
+          temp:
+            type: number
+            description: Temperature in Celsius
+          wdir:
+            type: number
+            description: Wind direction
+          wspd:
+            type: number
+            description: Wind speed
+          icgBas1:
+            type: number
+          icgTop1:
+            type: number
+            enum: ["RIME","CLEAR","MIXED"]
+            examples: ["RIME"]
+          icgInt1:
+            type: string
+            enum: ["NEG","NEGclr","TRC","TRC-LGT","LGT","LGT-MOD","MOD","MOD-SEV","HVY","SEV"]
+            examples: ["LGT"]
+          icgType1:
+            type: string
+          icgBas2:
+            type: number
+          icgTop2:
+            type: number
+          icgInt2:
+            type: string
+            enum: ["NEG","NEGclr","TRC","TRC-LGT","LGT","LGT-MOD","MOD","MOD-SEV","HVY","SEV"]
+          icgType2:
+            type: string
+            enum: ["RIME","CLEAR","MIXED"]
+          tbBas1:
+            type: number
+          tbTop1:
+            type: number
+          tbInt1:
+            type: string
+            enum: ["NEG","SMTH-LGT","LGT","LGT-MOD","MOD","MOD-SEV","SEV","MOD-EXTM","SEV-EXTM","EXTM"]
+            examples: ["LGT-MOD"]
+          tbType1:
+            type: string
+            enum: ["CAT","CHOP","LLWS","MWAVE"]
+            examples: ["CAT"]
+          tbFreq1:
+            type: string
+            enum: ["ISOL","OCNL","CONT"]
+            examples: ["OCNL"]
+          tbBas2:
+            type: number
+          tbTop2:
+            type: number
+          tbInt2:
+            type: string
+            enum: ["NEG","SMTH-LGT","LGT","LGT-MOD","MOD","MOD-SEV","SEV","MOD-EXTM","SEV-EXTM","EXTM"]
+          tbType2:
+            type: string
+            enum: ["CAT","CHOP","LLWS","MWAVE"]
+          tbFreq2:
+            type: string
+            enum: ["ISOL","OCNL","CONT"]
+          vertGust:
+            type: number
+          brkAction:
+            type: string
+            description: Breaking action conditions
+            enum: ["GOOD","GOOD-MED","MED","MED-POOR","POOR","NIL"]
+          pirepType:
+            type: string
+            description: Aircraft report type
+            enum: ["PIREP","Urgent PIREP","AIREP","AMDAR"]
+            examples: ["PIREP"]
+          rawOb:
+            type: string
+            description: Raw data
+            examples: ["COU UA /OV COU260020/TM 0012/FL140/TP E170/TB LGT-MOD CHOP 140-170/RM DURC /ZKC FDC/CW"]
+    PIREPGeoJSON:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [Feature]
+              id:
+                type: number
+              properties:
+                type: object
+                properties:
+                  receiptTime:
+                    type: string
+                    description: Time received by AWC
+                  obsTime:
+                    type: number
+                    description: Observed time (UNIX epoch)
+                  qcField:
+                    type: number
+                  icaoId:
+                    type: string
+                  acType:
+                    type: string
+                  lat:
+                    type: number
+                  lon:
+                    type: number
+                  fltLvl:
+                    type: string
+                  fltLvlType:
+                    type: string
+                  clouds:
+                   $ref: "#/components/schemas/CloudInfo"
+                  visib:
+                    type: string
+                  wxString:
+                    type: string
+                  temp:
+                    type: number
+                  wdir:
+                    type: number
+                  wspd:
+                    type: number
+                  icgBas1:
+                    type: number
+                  icgTop1:
+                    type: number
+                  icgInt1:
+                    type: string
+                  icgType1:
+                    type: string
+                  icgBas2:
+                    type: number
+                  icgTop2:
+                    type: number
+                  icgInt2:
+                    type: string
+                  icgType2:
+                    type: string
+                  tbBas1:
+                    type: number
+                  tbTop1:
+                    type: number
+                  tbInt1:
+                    type: string
+                  tbType1:
+                    type: string
+                  tbFreq1:
+                    type: string
+                  tbBas2:
+                    type: number
+                  tbTop2:
+                    type: number
+                  tbInt2:
+                    type: string
+                  tbType2:
+                    type: string
+                  tbFreq2:
+                    type: string
+                  vertGust:
+                    type: number
+                  brkAction:
+                    type: string
+                  pirepType:
+                    type: string
+                  rawOb:
+                    type: string
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Point]
+                  coordinates:
+                    type: array
+                    minItems: 2
+                    maxItems: 2
+                    items:
+                      type: number
+                    examples: [[-87.9316, 41.9602]]
+    PIREPXML:
+      xml:
+        name: response
+      type: object
+      properties:
+        request_index:
+          type: number
+        data_source:
+          properties:
+            name:
+              type: string
+              enum: [aircraftreports]
+              xml:
+                attribute: true
+        request:
+          properties:
+            type:
+              type: string
+              enum: [retrieve]
+              xml:
+                attribute: true
+        errors:
+        warnings:
+        time_taken_ms:
+          type: number
+        data:
+          type: array
+          xml:
+            name: data
+            wrapped: true
+          items:
+            type: object
+            xml:
+              name: PIREP
+            properties:
+              receipt_time:
+                type: string
+                examples: ["2024-12-04T19:22:42.000Z"]
+              observation_time:
+                type: string
+                examples: ["2024-12-04T19:20:00.000Z"]
+              quality_control_flags:
+                type: number
+              aircraft_ref:
+                type: string
+                examples: ["B738"]
+              latitude:
+                type: number
+                examples: ["41.3032"]
+              longitude:
+                type: number
+                examples: ["-95.8941"]
+              altitude_ft_msl:
+                type: number
+                examples: ["36000"]
+              sky_condition:
+                type: string
+              turbulence_condition:
+                properties:
+                  turbulence_type:
+                    type: string
+                    xml:
+                      attribute: true
+                  turbulence_intensity:
+                    type: string
+                    xml:
+                      attribute: true
+                  turbulence_base_ft_msl:
+                    type: string
+                    xml:
+                      attribute: true
+                  turbulence_top_ft_msl:
+                    type: string
+                    xml:
+                      attribute: true
+                  turbulence_freq:
+                    type: string
+                    xml:
+                      attribute: true
+              icing_condition:
+                properties:
+                  icing_type:
+                    type: string
+                    xml:
+                      attribute: true
+                  icing_intensity:
+                    type: string
+                    xml:
+                      attribute: true
+                  icing_base_ft_msl:
+                    type: number
+                    xml:
+                      attribute: true
+                  icing_top_ft_msl:
+                    type: number
+                    xml:
+                      attribute: true
+                  turbulence_freq:
+                    type: string
+                    xml:
+                      attribute: true
+              visibility_statute_mi:
+                type: string
+              wx_string:
+                type: string
+              temp_c:
+                type: number
+                description: Temperature in Celsius
+                examples: [14.4]
+              wind_dir_degrees:
+                description: Wind direction in degrees or VRB for variable winds
+                anyOf:
+                  - type: integer
+                  - type: string
+                examples: [230]
+              wind_speed_kt:
+                type: number
+                description: Wind speed in knots
+                examples: [6]
+              vert_gust_kt:
+                type: number
+                description: Wind gust in knots
+                examples: [12]
+              pirep_type:
+                type: string
+                enum: ["PIREP","Urgent PIREP","AIREP","AMDAR"]
+                examples: ["PIREP"]
+              raw_text:
+                type: string
+    StationInfoJSON:
+      type: array
+      items:
+        type: object
+        properties:
+          icaoId:
+            type: string
+            description: ICAO station identifier
+          iataId:
+            type: string
+            description: IATA station identifier
+          faaId:
+            type: string
+            description: FAA station identifier
+          site:
+            type: string
+            description: Site name
+          lat:
+            type: number
+            description: Latitude
+          lon:
+            type: number
+            description: Longitude
+          elev:
+            type: number
+            description: Elevation
+          state:
+            type: string
+            description: State or region
+          country:
+            type: string
+            description: Country
+          priority:
+            type: number
+            description: Priority display order
+          siteType:
+            type: array
+            description: METAR and/or TAF availability
+            items:
+              type: string
+    StationInfoGeoJSON:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [Feature]
+              id:
+                type: number
+              properties:
+                type: object
+                properties:
+                  icaoId:
+                    type: string
+                    description: ICAO station identifier
+                  iataId:
+                    type: string
+                    description: IATA station identifier
+                  faaId:
+                    type: string
+                    description: FAA station identifier
+                  site:
+                    type: string
+                    description: Site name
+                  elev:
+                    type: number
+                    description: Elevation
+                  state:
+                    type: string
+                    description: State or region
+                  country:
+                    type: string
+                    description: Country
+                  priority:
+                    type: number
+                    description: Priority display order
+                  siteType:
+                    type: array
+                    description: METAR and/or TAF availability
+                    items:
+                      type: string
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Point]
+                  coordinates:
+                    type: array
+                    minItems: 2
+                    maxItems: 2
+                    items:
+                      type: number
+                    examples: [[-87.9316, 41.9602]]
+    StationInfoXML:
+      xml:
+        name: response
+      type: object
+      properties:
+        request_index:
+          type: number
+        data_source:
+          properties:
+            name:
+              type: string
+              enum: [aircraftreports]
+              xml:
+                attribute: true
+        request:
+          properties:
+            type:
+              type: string
+              enum: [retrieve]
+              xml:
+                attribute: true
+        errors:
+        warnings:
+        time_taken_ms:
+          type: number
+        data:
+          type: array
+          xml:
+            name: data
+            wrapped: true
+          items:
+            type: object
+            xml:
+              name: Station
+            properties:
+              station_id:
+                type: string
+              iata_id:
+                type: string
+              wmo_id:
+                type: string
+              faa_id:
+                type: string
+              latitude:
+                type: string
+              longitude:
+                type: string
+              elevation_m:
+                type: string
+              site:
+                type: string
+              state:
+                type: string
+              country:
+                type: string
+              site_type:
+                type: object
+                properties:
+                  METAR:
+                  TAF:
+    CloudInfo:
+      type: array
+      default: []
+      description: Clouds
+      items:
+        type: object
+        description: Cloud layer
+        required:
+          - cover
+          - base
+        properties:
+          cover:
+            type: string
+            description: Cover coverage
+            enum:
+              - CLR
+              - CAVOK
+              - FEW
+              - SCT
+              - BKN
+              - OVC
+              - OVX
+            examples: [BKN]
+          base:
+            type: integer
+            description: Cloud base in feet
+            examples: [11000]
+          top:
+            type: integer
+            description: Cloud top in feet
+            examples: [28000]
+    AirSigmetJSON:
+      type: array
+      items:
+        type: object
+        properties:
+          icaoId:
+            type: string
+            examples: [KKCI]
+          alphaChar:
+            type: string
+            examples: [W]
+          seriesId:
+            type: string
+            examples: [NOVEMBER 7]
+          receiptTime:
+            type: string
+            description: Time received by AWC
+            examples: [2025-09-27T11:48:24.974Z]
+          creationTime:
+            type: string
+            description: Issuance time
+            examples: [2025-09-27T11:55:00.000Z8]
+          validTimeFrom:
+            type: integer
+            examples: [1758974100]
+          validTimeTo:
+            type: integer
+            examples: [1758981300]
+          airSigmetType:
+            type: string
+            description: Product type (always SIGMET)
+            enum:
+              - SIGMET
+          hazard:
+            type: string
+            description: Hazard type
+            examples: [CONVECTIVE]
+          qualifier:
+            type: string
+            examples: [OCNL]
+          altitudeHi1:
+            type: integer
+            examples: [35000]
+          altitudeHi2:
+            type: integer
+            examples: [35000]
+          altitudeLo1:
+            type: integer
+          altitudeLo2:
+            type: integer
+          movementDir:
+            type: integer
+            examples: [90]
+          movementSpd:
+            type: integer
+            examples: [10]
+          postProcessFlag:
+            type: integer
+            examples: [10]
+          severity:
+            type: integer
+            examples: [5]
+          rawAirSigmet:
+            type: string
+            description: Raw product
+            examples: [WSUS33 KKCI 271155\nSIGW \nCONVECTIVE SIGMET 24W\nVALID UNTIL 1355Z\nAZ CA\nFROM 10SSW EED-30NNE BZA-50S TRM-30NNW TRM-10SSW EED\nAREA TS MOV FROM 09010KT. TOPS TO FL350.\n\nOUTLOOK VALID 271355-271755\nFROM BCE-RSK-60SSW SJN-BZA-HEC-BCE\nWST ISSUANCES POSS. REFER TO MOST RECENT ACUS01 KWNS FROM STORM\nPREDICTION CENTER FOR SYNOPSIS AND METEOROLOGICAL DETAILS.]
+          coords:
+            type: array
+            items:
+              type: object
+              parameters:
+                lat:
+                  type: number
+                lon:
+                  type: number
+    AirSigmetGeoJSON:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [Feature]
+              id:
+                type: number
+              properties:
+                type: object
+                properties:
+                  icaoId:
+                    type: string
+                    examples: [KKCI]
+                  alphaChar:
+                    type: string
+                    examples: [W]
+                  seriesId:
+                    type: string
+                    examples: [NOVEMBER 7]
+                  validTimeFrom:
+                    type: string
+                    examples: [2025-09-27T11:55:00.000Z]
+                  validTimeTo:
+                    type: string
+                    examples: [2025-09-27T13:55:00.000Z]
+                  airSigmetType:
+                    type: string
+                    enum:
+                      - SIGMET
+                  hazard:
+                    type: string
+                    examples: [CONVECTIVE]
+                  altitudeHi1:
+                    type: integer
+                    examples: [35000]
+                  altitudeHi2:
+                    type: integer
+                    examples: [35000]
+                  altitudeLo1:
+                    type: integer
+                  altitudeLo2:
+                    type: integer
+                  movementDir:
+                    type: integer
+                    examples: [90]
+                  movementSpd:
+                    type: integer
+                    examples: [10]
+                  severity:
+                    type: integer
+                    examples: [5]
+                  rawAirSigmet:
+                    type: string
+                    examples: [WSUS33 KKCI 271155\nSIGW \nCONVECTIVE SIGMET 24W\nVALID UNTIL 1355Z\nAZ CA\nFROM 10SSW EED-30NNE BZA-50S TRM-30NNW TRM-10SSW EED\nAREA TS MOV FROM 09010KT. TOPS TO FL350.\n\nOUTLOOK VALID 271355-271755\nFROM BCE-RSK-60SSW SJN-BZA-HEC-BCE\nWST ISSUANCES POSS. REFER TO MOST RECENT ACUS01 KWNS FROM STORM\nPREDICTION CENTER FOR SYNOPSIS AND METEOROLOGICAL DETAILS.]
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Polygon]
+                  coordinates:
+                    type: array
+                    minItems: 4
+                    items:
+                      type: number
+    ISigmetJSON:
+      type: array
+      items:
+        type: object
+        properties:
+          icaoId:
+            type: string
+            description: Issuing office identifier
+            examples: [PAWU]
+          firId:
+            type: string
+            description: Flight Information Region identifier
+            examples: [PAZA]
+          firName:
+            type: string
+            description: Flight Information Region name
+            examples: [ANCHORAGE]
+          receiptTime:
+            type: string
+            description: Time received by AWC
+            examples: [2024-12-05 02:00:48.000Z]
+          validTimeFrom:
+            type: integer
+            examples: [1733364000]
+          validTimeTo:
+            type: integer
+            examples: [1733378400]
+          seriesId:
+            type: string
+            examples: [LIMA 2]
+          hazard:
+            type: string
+            description: Hazard type
+            examples: [TURB]
+          qualifier:
+            type: string
+            examples: [OCNL]
+          base:
+            type: integer
+            examples: [37000]
+          top:
+            type: integer
+            examples: [42000]
+          geom:
+            type: string
+            description: Geometry type
+            enum:
+            - AREA
+            - LINE
+          coords:
+            type: array
+            items:
+              type: object
+              parameters:
+                lat:
+                  type: number
+                lon:
+                  type: number
+          dir:
+            type: string
+          spd:
+            type: number
+          chng:
+            type: string
+    ISigmetGeoJSON:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [Feature]
+              id:
+                type: number
+              properties:
+                type: object
+                properties:
+                  icaoId:
+                    type: string
+                    examples: [PAWU]
+                  firId:
+                    type: string
+                    examples: [PAZA]
+                  firName:
+                    type: string
+                    examples: [ANCHORAGE]
+                  validTimeFrom:
+                    type: integer
+                    examples: [1733364000]
+                  validTimeTo:
+                    type: integer
+                    examples: [1733378400]
+                  seriesId:
+                    type: string
+                    examples: [LIMA 2]
+                  hazard:
+                    type: string
+                    examples: [TURB]
+                  qualifier:
+                    type: string
+                    examples: [OCNL]
+                  base:
+                    type: integer
+                    examples: [37000]
+                  top:
+                    type: integer
+                    examples: [42000]
+                  dir:
+                    type: string
+                  spd:
+                    type: number
+                  chng:
+                    type: string
+                  rawSigmet:
+                    type: string
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Polygon]
+                  coordinates:
+                    type: array
+                    minItems: 4
+                    items:
+                      type: number
+    GairmetJSON:
+      type: array
+      items:
+        type: object
+        properties:
+          tag:
+            type: string
+            description: Forecast component tag
+            examples: [1C]
+          forecastHour:
+            type: integer
+            examples: [0]
+          validTime:
+            type: string
+            examples: [2025-09-30T03:00:00.000Z]
+          hazard:
+            type: string
+            description: Hazard type
+            examples: [IFR]
+          geometryType:
+            type: string
+            enum:
+            - AREA
+            - LINE
+          latlonpairs:
+            type: integer
+            examples: [23]
+          due_to:
+            type: string
+            examples: [CIG BLW 010/VIS BLW 3SM PCPN/BR]
+          receiptTime:
+            type: integer
+            examples: [1759200749]
+          issueTime:
+            type: integer
+            examples: [1759200300]
+          expireTime:
+            type: integer
+            examples: [1759222800]
+          product:
+            type: string
+            enum:
+            - SIERRA
+            - TANGO
+            - ZULU
+          coords:
+            type: array
+            items:
+              type: object
+              parameters:
+                lat:
+                  type: number
+                lon:
+                  type: number
+    GairmetGeoJSON:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [Feature]
+              id:
+                type: number
+              properties:
+                type: object
+                properties:
+                  tag:
+                    type: string
+                    examples: [1C]
+                  forecastHour:
+                    type: integer
+                    examples: [0]
+                  receiptTime:
+                    type: string
+                    examples: [2025-09-30T02:52:29.446Z]
+                  issueTime:
+                    type: string
+                    examples: [2025-09-30T02:45:00.000Z]
+                  validTime:
+                    type: string
+                    examples: [2025-09-30T03:00:00.000Z]
+                  hazard:
+                    type: string
+                    examples: [IFR]
+                  due_to:
+                    type: string
+                    examples: [CIG BLW 010/VIS BLW 3SM PCPN/BR]
+                  product:
+                    type: string
+                    enum:
+                    - SIERRA
+                    - TANGO
+                    - ZULU
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Polygon]
+                  coordinates:
+                    type: array
+                    minItems: 4
+                    items:
+                      type: number
+    AirmetJSON:
+      type: array
+      items:
+        type: object
+        properties:
+          region:
+            type: string
+            description: Forecast zone identifier
+            examples: [FH]
+          receiptTime:
+            type: string
+            examples: [2025-09-30T03:00:00.000Z]
+          validTimeFrom:
+            type: integer
+            examples: [1733364000]
+          validTimeTo:
+            type: integer
+            examples: [1733378400]
+          hazard:
+            type: string
+            description: Hazard type
+            examples: [IFR]
+    AirmetGeoJSON:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [Feature]
+              id:
+                type: number
+              properties:
+                type: object
+                properties:
+                  region:
+                    type: string
+                    description: Forecast zone identifier
+                    examples: [FE]
+                  zone:
+                    type: string
+                    description: Forecast zone name
+                    examples: [Koyukuk and Upper Kobuk Valley]
+                  receiptTime:
+                    type: string
+                    examples: [2025-09-30T03:00:00.000Z]
+                  validTimeFrom:
+                    type: string
+                    examples: [2025-09-30T04:13:00.000Z]
+                  validTimeTo:
+                    type: string
+                    examples: [2025-09-30T16:00:00.000Z]
+                  hazard:
+                    type: string
+                    description: Hazard type
+                    examples: [IFR]
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Polygon]
+                  coordinates:
+                    type: array
+                    minItems: 4
+                    items:
+                      type: number
+    CwaJSON:
+      type: array
+      items:
+        type: object
+        properties:
+          cwsu:
+            type: string
+            description: Issuing CWSU identifier
+            examples: [ZJX]
+          name:
+            type: string
+            description: Issuing CWSU name
+            examples: [Jacksonville]
+          receiptTime:
+            type: string
+            examples: [2025-09-30T03:00:00.000Z]
+          validTimeFrom:
+            type: integer
+            examples: [1733364000]
+          validTimeTo:
+            type: integer
+            examples: [1733378400]
+          hazard:
+            type: string
+            description: Hazard type
+            examples: [IFR]
+          seriesId:
+            type: integer
+            examples: [101]
+          qualifier:
+            type: string
+          base:
+            type: integer
+          top:
+            type: integer
+          geom:
+            type: string
+            enum:
+            - AREA
+            - LINE
+          coords:
+            type: array
+            items:
+              type: object
+              parameters:
+                lat:
+                  type: number
+                lon:
+                  type: number
+          rawText:
+            type: string
+    CwaGeoJSON:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [Feature]
+              id:
+                type: number
+              properties:
+                type: object
+                properties:
+                  cwsu:
+                    type: string
+                    description: Issuing CWSU identifier
+                    examples: [ZJX]
+                  name:
+                    type: string
+                    description: Issuing CWSU name
+                    examples: [Jacksonville]
+                  validTimeFrom:
+                    type: integer
+                    examples: [1733364000]
+                  validTimeTo:
+                    type: integer
+                    examples: [1733378400]
+                  hazard:
+                    type: string
+                    description: Hazard type
+                    examples: [IFR]
+                  seriesId:
+                    type: integer
+                    examples: [101]
+                  qualifier:
+                    type: string
+                  base:
+                    type: integer
+                  top:
+                    type: integer
+                  cwaText:
+                    type: string
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Polygon]
+                  coordinates:
+                    type: array
+                    minItems: 4
+                    items:
+                      type: number
+    TcfGeoJSON:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [Feature]
+              id:
+                type: number
+              properties:
+                type: object
+                properties:
+                  validTime:
+                    type: string
+                    examples: [20250930_1100]
+                  issueTime:
+                    type: string
+                    examples: [20250930_1100]
+                  coverage:
+                    type: string
+                    description: Convective coverage
+                    enum:
+                    - sparse
+                    - medium
+                  confidence:
+                    type: string
+                    description: Forecast confidence
+                    enum:
+                    - high
+                  tops:
+                    type: number
+                    description: Echo top category
+                    enum:
+                    - 290
+                    - 340
+                    - 390
+                    - 400
+                  labelpos:
+                    type: array
+                    minItems: 2
+                    maxItems: 2
+                    items:
+                      type: number
+                    examples: [[-87.9316, 41.9602]]
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Polygon]
+                  coordinates:
+                    type: array
+                    minItems: 4
+                    items:
+                      type: number
+        issueTime:
+          type: string
+          description: Issuance date and time
+          examples: [20250930_0300]
+    ErrorJSON:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        error:
+          type: string
+    ErrorXML:
+      xml:
+        name: response
+      type: object
+      properties:
+        request_index:
+          type: number
+        data_source:
+          type: number
+        request:
+          properties:
+            type:
+              type: string
+              xml:
+                attribute: true
+        errors:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+            xml:
+              name: error
+        warnings:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+            xml:
+              name: warning
