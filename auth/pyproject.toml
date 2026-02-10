@@ -11,7 +11,22 @@ dependencies = [
 	"passlib[bcrypt]>=1.7",
 	"python-jose[cryptography]>=3.3.0",
 	"email-validator>=2.0.0.post2",
-	"httpx>=0.28.1",
+	"httpx>=0.23.0,<0.28",
+	"requests>=2.31",
+	"supabase>=2.7.0,<3.0",
+	"python-dotenv>=1.0.0",
+	"typing_extensions>=4.0.0",
+	"pytest>=8.3.5",
+	"pytest-cov>=7.0.0",
+	"pytest-asyncio>=1.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0,<8.4",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.20.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [build-system]
@@ -19,14 +34,42 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+packages = ["auth"]
+package-dir = {"auth" = "src"}
 
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["auth*"]
+[tool.pytest.ini_options]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+testpaths = ["tests"]
+minversion = "7.0"
+addopts = "-v --strict-markers --tb=short"
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "asyncio: Async tests",
+    "e2e: End-to-end tests",
+]
+filterwarnings = [
+    "ignore:enablePackrat",
+    "ignore:escChar",
+    "ignore:unquoteResults",
+    "ignore:@model_validator",
+    "ignore::DeprecationWarning:pyiceberg",
+]
 
-[dependency-groups]
-dev = [
-    "pytest>=8.4.2",
-    "python-dotenv>=1.0.0",
+[tool.coverage.run]
+omit = [
+    "*/tests/*",
+    "*/__init__.py",
+    "*/__main__.py",
+    "*/test_*.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
 ]

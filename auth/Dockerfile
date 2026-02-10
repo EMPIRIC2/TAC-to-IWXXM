@@ -14,6 +14,14 @@ RUN apt-get update \
 # Copy project metadata first for better layer caching
 COPY auth/pyproject.toml ./
 
+# Copy environment configuration files (development/testing)
+# NOTE: .env with secrets should be provided at runtime, not baked into image
+# For Docker:
+#   - Local development: mount .env file with -v or use docker-compose
+#   - Production: use Docker secrets, environment variables, or cloud secret management
+# This copies .env and .env.example if they exist
+COPY auth/.env* ./
+
 # Copy only necessary source (avoid copying venv, caches)
 COPY auth/src ./src
 

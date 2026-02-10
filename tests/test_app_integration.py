@@ -97,7 +97,7 @@ class TestBackendService:
 
     def test_backend_manual_convert(self, backend_client: TestClient) -> None:
         metar = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
-        r = backend_client.post("/api/convert", data={"manual_text": metar})
+        r = backend_client.post("/api/v1/convert", data={"manual_text": metar})
         assert r.status_code == 200
         data = r.json()
         assert data["successful"] == 1
