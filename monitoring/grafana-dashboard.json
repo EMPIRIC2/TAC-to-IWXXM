@@ -1,0 +1,374 @@
+{
+  "dashboard": {
+    "title": "METAR to IWXXM API Monitoring",
+    "tags": ["api", "monitoring", "metar", "iwxxm"],
+    "timezone": "utc",
+    "refresh": "1m",
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "API Health Status",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "up{job=\"metar-api\"}",
+            "legendFormat": "API Status"
+          }
+        ],
+        "options": {
+          "graphMode": "none",
+          "colorMode": "background",
+          "justifyMode": "auto",
+          "textMode": "value_and_name"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {"value": 1, "text": "Healthy", "color": "green"},
+              {"value": 0, "text": "Down", "color": "red"}
+            ]
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "API Uptime (24h)",
+        "type": "gauge",
+        "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "avg_over_time(up{job=\"metar-api\"}[24h]) * 100",
+            "legendFormat": "Uptime %"
+          }
+        ],
+        "options": {
+          "showThresholdLabels": true,
+          "showThresholdMarkers": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 95, "color": "yellow"},
+                {"value": 99, "color": "green"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Request Rate",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 0, "w": 12, "h": 4},
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"metar-api\"}[5m])",
+            "legendFormat": "{{method}} {{endpoint}}"
+          }
+        ],
+        "yaxes": [
+          {"label": "req/s", "format": "reqps"},
+          {"show": false}
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Response Time (P95)",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 4, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"metar-api\"}[5m]))",
+            "legendFormat": "{{endpoint}}"
+          }
+        ],
+        "yaxes": [
+          {"label": "seconds", "format": "s"},
+          {"show": false}
+        ],
+        "alert": {
+          "name": "High Response Time",
+          "conditions": [
+            {
+              "evaluator": {"params": [2], "type": "gt"},
+              "operator": {"type": "and"},
+              "query": {"params": ["A", "5m", "now"]},
+              "reducer": {"params": [], "type": "avg"},
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "alerting",
+          "for": "5m",
+          "frequency": "1m",
+          "message": "API response time exceeded 2 seconds (P95)",
+          "noDataState": "no_data",
+          "notifications": []
+        }
+      },
+      {
+        "id": 5,
+        "title": "Error Rate",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 4, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"metar-api\",status=~\"5..\"}[5m])",
+            "legendFormat": "5xx Errors"
+          },
+          {
+            "expr": "rate(http_requests_total{job=\"metar-api\",status=~\"4..\"}[5m])",
+            "legendFormat": "4xx Errors"
+          }
+        ],
+        "yaxes": [
+          {"label": "errors/s", "format": "reqps"},
+          {"show": false}
+        ],
+        "alert": {
+          "name": "High Error Rate",
+          "conditions": [
+            {
+              "evaluator": {"params": [0.1], "type": "gt"},
+              "operator": {"type": "and"},
+              "query": {"params": ["A", "5m", "now"]},
+              "reducer": {"params": [], "type": "avg"},
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "alerting",
+          "for": "5m",
+          "frequency": "1m",
+          "message": "API error rate exceeded threshold",
+          "noDataState": "no_data",
+          "notifications": []
+        }
+      },
+      {
+        "id": 6,
+        "title": "Conversion Success Rate",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 10, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "rate(metar_conversions_total{status=\"success\"}[5m]) / rate(metar_conversions_total[5m]) * 100",
+            "legendFormat": "Success Rate"
+          }
+        ],
+        "yaxes": [
+          {"label": "percent", "format": "percent", "min": 0, "max": 100},
+          {"show": false}
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Active Evaluation Jobs",
+        "type": "stat",
+        "gridPos": {"x": 12, "y": 10, "w": 6, "h": 3},
+        "targets": [
+          {
+            "expr": "evaluation_jobs_active",
+            "legendFormat": "Active Jobs"
+          }
+        ],
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value"
+        }
+      },
+      {
+        "id": 8,
+        "title": "Database Connection Pool",
+        "type": "graph",
+        "gridPos": {"x": 18, "y": 10, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "db_connection_pool_size{job=\"metar-api\"}",
+            "legendFormat": "Pool Size"
+          },
+          {
+            "expr": "db_connection_pool_active{job=\"metar-api\"}",
+            "legendFormat": "Active Connections"
+          }
+        ],
+        "yaxes": [
+          {"label": "connections", "format": "short"},
+          {"show": false}
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Smoke Test Results",
+        "type": "table",
+        "gridPos": {"x": 0, "y": 16, "w": 24, "h": 6},
+        "targets": [
+          {
+            "expr": "github_workflow_status{workflow=\"Smoke Tests on Deploy\"}",
+            "format": "table"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {},
+              "renameByName": {
+                "Time": "Timestamp",
+                "Value": "Status",
+                "environment": "Environment",
+                "passed": "Passed",
+                "failed": "Failed",
+                "total": "Total"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "API Endpoints Performance",
+        "type": "heatmap",
+        "gridPos": {"x": 0, "y": 22, "w": 24, "h": 8},
+        "targets": [
+          {
+            "expr": "rate(http_request_duration_seconds_bucket{job=\"metar-api\"}[5m])",
+            "format": "heatmap",
+            "legendFormat": "{{le}}"
+          }
+        ],
+        "yAxis": {
+          "format": "s"
+        },
+        "dataFormat": "tsbuckets",
+        "color": {
+          "mode": "spectrum",
+          "cardColor": "#b4ff00",
+          "colorScale": "sqrt",
+          "exponent": 0.5,
+          "colorScheme": "interpolateSpectral"
+        }
+      },
+      {
+        "id": 11,
+        "title": "Top 10 Airports by Translation Volume",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 30, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "topk(10, sum by (airport) (rate(translation_statistics_total[1h])))",
+            "legendFormat": "{{airport}}"
+          }
+        ],
+        "yaxes": [
+          {"label": "translations/hour", "format": "reqps"},
+          {"show": false}
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Regional Translation Statistics",
+        "type": "piechart",
+        "gridPos": {"x": 12, "y": 30, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "sum by (region) (translation_statistics_total)",
+            "legendFormat": "{{region}}"
+          }
+        ],
+        "options": {
+          "pieType": "donut",
+          "displayLabels": ["name", "percent"]
+        }
+      },
+      {
+        "id": 13,
+        "title": "Alert Summary",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 36, "w": 24, "h": 4},
+        "targets": [
+          {
+            "expr": "ALERTS{job=\"metar-api\",alertstate=\"firing\"}",
+            "legendFormat": "{{alertname}}"
+          }
+        ],
+        "options": {
+          "graphMode": "none",
+          "colorMode": "background",
+          "textMode": "value_and_name"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 1, "color": "red"}
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "name": "Deployments",
+          "datasource": "GitHub",
+          "enable": true,
+          "iconColor": "blue",
+          "tags": ["deployment"]
+        },
+        {
+          "name": "Incidents",
+          "datasource": "GitHub",
+          "enable": true,
+          "iconColor": "red",
+          "tags": ["incident", "api-health"]
+        }
+      ]
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "environment",
+          "type": "query",
+          "query": "label_values(up{job=\"metar-api\"}, environment)",
+          "current": {
+            "text": "production",
+            "value": "production"
+          },
+          "options": [],
+          "refresh": 1,
+          "includeAll": false,
+          "multi": false
+        },
+        {
+          "name": "endpoint",
+          "type": "query",
+          "query": "label_values(http_requests_total{job=\"metar-api\"}, endpoint)",
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "options": [],
+          "refresh": 1,
+          "includeAll": true,
+          "multi": true
+        }
+      ]
+    }
+  },
+  "overwrite": true
+}
