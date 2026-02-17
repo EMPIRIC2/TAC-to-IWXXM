@@ -60,16 +60,17 @@ services:
     repo: https://github.com/joseph-c-mcguire/metar-to-IWXXM
     branch: main  # Auto-deploy when this branch is pushed
     
-    # Build step: Install dependencies using uv package manager
+    # Build step: Install dependencies
     # Note: Commands run from rootDir (backend/), so use . for current dir
     buildCommand: |
-      pip install --upgrade pip uv && \
-      uv pip install --system --no-cache . && \
-      uv pip install --system --no-cache ../GIFTs
+      pip install --upgrade pip && \
+      pip install . && \
+      pip install ../GIFTs
     
     # Start command: Run FastAPI via Uvicorn
     # The app automatically respects $PORT (Render injects this)
-    startCommand: python -m src
+    # Note: uvicorn command runs from rootDir (backend/)
+    startCommand: uvicorn src.api:app --host 0.0.0.0 --port ${PORT:-8001}
     
     # Directories
     rootDir: backend
