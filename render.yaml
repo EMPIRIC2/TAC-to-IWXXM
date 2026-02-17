@@ -138,14 +138,9 @@ services:
       # Webhooks (optional; disabled by default)
       - key: ENABLE_WEBHOOKS
         value: "false"
-    
-    # Environment variables to be set manually in Render dashboard
-    # These are placeholders; Render won't read them from here
-    # Instead, you'll set them as "Environment Variables" in the Render web UI
-    envVarsFromGroup:
-      # Example: If you create an "Environment Group" in Render for shared secrets
-      # - name: postgres-credentials
-      # - name: api-secrets
+      
+      # To add environment groups, use this syntax:
+      # - fromGroup: my-env-group-name
 
 # ============================================================================
 # NOTES & TROUBLESHOOTING
