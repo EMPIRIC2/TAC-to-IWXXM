@@ -1,0 +1,45 @@
+{
+  "total_cases": 87,
+  "unique_stations": 82,
+  "countries": [
+    "ES",
+    "KE",
+    "ML",
+    "RW",
+    "TN",
+    "TZ"
+  ],
+  "regions": [
+    "africa",
+    "europe",
+    "middle_east",
+    "other"
+  ],
+  "weather_phenomena": [
+    "BR",
+    "DZ",
+    "GR",
+    "GS",
+    "HZ",
+    "RA",
+    "SHRA",
+    "SN"
+  ],
+  "cloud_types": [
+    "CB",
+    "TCU"
+  ],
+  "cloud_amounts": [
+    "BKN",
+    "CLR",
+    "FEW",
+    "OVC",
+    "SCT",
+    "SKC"
+  ],
+  "complexity_distribution": {
+    "simple": 50,
+    "medium": 29,
+    "complex": 8
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-02-16T17:48:45.713390",
+  "count": 1,
+  "test_cases": [
+    {
+      "station_id": "HKNK",
+      "raw_metar": "METAR HKNK 161700Z 00000KT 9999 -RA BKN017 18/10",
+      "latitude": -0.298067,
+      "longitude": 36.159302,
+      "country": "KE",
+      "elevation": 1900.1232,
+      "weather_phenomena": [
+        "RA"
+      ],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": null,
+      "region": "africa",
+      "source": "aviation_weather"
+    }
+  ]
+}
