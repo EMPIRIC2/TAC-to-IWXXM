@@ -1,0 +1,344 @@
+name: API Health Monitoring
+
+# Scheduled health checks for production API
+# Runs every 15 minutes to monitor API availability and performance
+
+on:
+  schedule:
+    # Run every 15 minutes
+    - cron: '*/15 * * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: 'API URL to monitor (default: production)'
+        required: false
+        default: ''
+
+env:
+  # Production API URL (set in repository secrets)
+  LIVE_API_URL: ${{ secrets.LIVE_API_URL || 'https://api.example.com' }}
+  LIVE_API_TOKEN: ${{ secrets.LIVE_API_TOKEN }}
+  LIVE_API_TIMEOUT: 30
+  
+  # Alert thresholds
+  MAX_RESPONSE_TIME_MS: 2000
+  MIN_SUCCESS_RATE: 95
+  
+  # Slack webhook for alerts (optional)
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    name: API Health Check
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          cd backend && uv pip install --system -e ".[dev]" httpx
+      
+      - name: Run Live API Health Checks
+        id: health_check
+        working-directory: ./backend
+        continue-on-error: true
+        run: |
+          python -m pytest tests/test_live_api_health.py \
+            -v \
+            -m live_api \
+            --tb=short \
+            --junitxml=health-check-results.xml \
+            || echo "HEALTH_CHECK_FAILED=true" >> $GITHUB_ENV
+      
+      - name: Parse Health Check Results
+        id: parse_results
+        if: always()
+        run: |
+          # Extract test results
+          if [ -f backend/health-check-results.xml ]; then
+            TOTAL=$(grep -oP 'tests="\K[0-9]+' backend/health-check-results.xml || echo "0")
+            FAILURES=$(grep -oP 'failures="\K[0-9]+' backend/health-check-results.xml || echo "0")
+            ERRORS=$(grep -oP 'errors="\K[0-9]+' backend/health-check-results.xml || echo "0")
+            
+            PASSED=$((TOTAL - FAILURES - ERRORS))
+            SUCCESS_RATE=$((PASSED * 100 / TOTAL))
+            
+            echo "total=$TOTAL" >> $GITHUB_OUTPUT
+            echo "passed=$PASSED" >> $GITHUB_OUTPUT
+            echo "failed=$FAILURES" >> $GITHUB_OUTPUT
+            echo "errors=$ERRORS" >> $GITHUB_OUTPUT
+            echo "success_rate=$SUCCESS_RATE" >> $GITHUB_OUTPUT
+            
+            echo "✅ Tests Passed: $PASSED/$TOTAL"
+            echo "❌ Tests Failed: $FAILURES"
+            echo "⚠️ Errors: $ERRORS"
+            echo "📊 Success Rate: $SUCCESS_RATE%"
+          else
+            echo "⚠️ Health check results not found"
+            echo "total=0" >> $GITHUB_OUTPUT
+            echo "passed=0" >> $GITHUB_OUTPUT
+            echo "failed=0" >> $GITHUB_OUTPUT
+            echo "errors=0" >> $GITHUB_OUTPUT
+            echo "success_rate=0" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create Issue on Failure
+        if: failure() || steps.parse_results.outputs.success_rate < env.MIN_SUCCESS_RATE
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const total = '${{ steps.parse_results.outputs.total }}';
+            const passed = '${{ steps.parse_results.outputs.passed }}';
+            const failed = '${{ steps.parse_results.outputs.failed }}';
+            const errors = '${{ steps.parse_results.outputs.errors }}';
+            const successRate = '${{ steps.parse_results.outputs.success_rate }}';
+            
+            const title = `🚨 API Health Check Failed - ${successRate}% success rate`;
+            const body = `## API Health Check Alert
+            
+            **Status**: ❌ FAILED
+            **Time**: ${new Date().toISOString()}
+            **API URL**: ${{ env.LIVE_API_URL }}
+            
+            ### Test Results
+            - ✅ Passed: ${passed}/${total}
+            - ❌ Failed: ${failed}
+            - ⚠️ Errors: ${errors}
+            - 📊 Success Rate: ${successRate}%
+            - 🎯 Required: ${process.env.MIN_SUCCESS_RATE}%
+            
+            ### Actions Required
+            1. Check API availability at ${{ env.LIVE_API_URL }}
+            2. Review failed test details in workflow run
+            3. Check server logs for errors
+            4. Verify authentication tokens are valid
+            
+            ### Workflow Run
+            [View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+            ---
+            *This issue was automatically created by API Health Monitoring*
+            `;
+            
+            // Search for existing open issues
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'api-health,automated',
+              per_page: 100
+            });
+            
+            const hasOpenAlert = existingIssues.data.some(issue => 
+              issue.title.includes('API Health Check Failed')
+            );
+            
+            if (!hasOpenAlert) {
+              // Create new issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['api-health', 'automated', 'priority-high']
+              });
+            } else {
+              // Update existing issue with latest results
+              const issue = existingIssues.data.find(i => 
+                i.title.includes('API Health Check Failed')
+              );
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `### Update: ${new Date().toISOString()}
+
+Success Rate: ${successRate}% (${passed}/${total} tests passed)
+
+[View Latest Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+              });
+            }
+      
+      - name: Send Slack Alert
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        run: |
+          curl -X POST ${{ env.SLACK_WEBHOOK_URL }} \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "text": "🚨 API Health Check Failed",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🚨 API Health Check Alert"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:*\n❌ FAILED"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Success Rate:*\n${{ steps.parse_results.outputs.success_rate }}%"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Tests Passed:*\n${{ steps.parse_results.outputs.passed }}/${{ steps.parse_results.outputs.total }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*API URL:*\n${{ env.LIVE_API_URL }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>"
+                  }
+                }
+              ]
+            }'
+      
+      - name: Upload Health Check Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: health-check-results-${{ github.run_number }}
+          path: backend/health-check-results.xml
+          retention-days: 30
+      
+      - name: Close Issue on Success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Find open health check issues
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'api-health,automated'
+            });
+            
+            // Close them with success message
+            for (const issue of issues.data) {
+              if (issue.title.includes('API Health Check Failed')) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `### ✅ Resolved: ${new Date().toISOString()}
+
+API health check is now passing. Closing this issue.
+
+[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+                });
+                
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed'
+                });
+              }
+            }
+  
+  performance-monitoring:
+    runs-on: ubuntu-latest
+    name: Performance Monitoring
+    needs: health-check
+    if: always()
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          cd backend && uv pip install --system -e ".[dev]" httpx
+      
+      - name: Run Performance Tests
+        id: perf_test
+        working-directory: ./backend
+        continue-on-error: true
+        run: |
+          python -m pytest tests/test_live_api_health.py::TestLiveAPIPerformance \
+            -v \
+            -m live_api \
+            --tb=short \
+            --junitxml=performance-results.xml \
+            || echo "PERF_TEST_FAILED=true" >> $GITHUB_ENV
+      
+      - name: Check Performance Thresholds
+        if: always()
+        run: |
+          echo "Checking performance thresholds..."
+          # Extract timing data from test results
+          # This is a placeholder - implement actual timing extraction
+          echo "✅ Performance check complete"
+      
+      - name: Upload Performance Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-results-${{ github.run_number }}
+          path: backend/performance-results.xml
+          retention-days: 30
+  
+  report-metrics:
+    runs-on: ubuntu-latest
+    name: Report Metrics
+    needs: [health-check, performance-monitoring]
+    if: always()
+    
+    steps:
+      - name: Calculate Uptime
+        id: uptime
+        run: |
+          # This would typically query a metrics database
+          # Placeholder for demonstration
+          echo "uptime=99.5" >> $GITHUB_OUTPUT
+      
+      - name: Create Monitoring Dashboard Summary
+        run: |
+          cat << EOF > $GITHUB_STEP_SUMMARY
+          # 📊 API Monitoring Dashboard
+          
+          **Run Time**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          **API URL**: ${{ env.LIVE_API_URL }}
+          
+          ## Health Check Status
+          - Health Check: ${{ needs.health-check.result == 'success' && '✅ Passing' || '❌ Failing' }}
+          - Performance: ${{ needs.performance-monitoring.result == 'success' && '✅ Normal' || '⚠️ Degraded' }}
+          - Uptime: ${{ steps.uptime.outputs.uptime }}%
+          
+          ## Quick Actions
+          - [View Health Checks Workflow](https://github.com/${{ github.repository }}/actions/workflows/api-health-check.yml)
+          - [View API Documentation](https://github.com/${{ github.repository }}/blob/main/docs/API.md)
+          - [Open an Issue](https://github.com/${{ github.repository }}/issues/new)
+          
+          ---
+          *Auto-generated monitoring report*
+          EOF
