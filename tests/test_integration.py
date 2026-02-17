@@ -6,15 +6,12 @@ import pytest
 from fastapi.testclient import TestClient
 
 # Ensure backend src is importable
-REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
-BACKEND_SRC = REPO_ROOT / "backend" / "src"
-if str(BACKEND_SRC) not in sys.path:
-    sys.path.insert(0, str(BACKEND_SRC))
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[0]
 if str(REPO_ROOT) not in sys.path:
-    sys.path.append(str(REPO_ROOT))
+    sys.path.insert(0, str(REPO_ROOT))
 
-from api import app
-from utilities.security import verify_supabase_token
+from backend.src.api import app
+from backend.src.utilities.security import verify_supabase_token
 
 
 SAMPLE_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"

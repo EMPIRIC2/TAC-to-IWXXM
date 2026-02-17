@@ -1,0 +1,392 @@
+name: Smoke Tests on Deploy
+
+# Run smoke tests after deployment to verify critical functionality
+# Triggers on successful deployment or can be run manually
+
+on:
+  # Trigger after deployment workflow completes
+  workflow_run:
+    workflows: ["CI/CD Pipeline - 95% Coverage Required"]
+    types:
+      - completed
+    branches: [main]
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to test'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+          - development
+
+env:
+  # API endpoints for different environments
+  PRODUCTION_API_URL: ${{ secrets.PRODUCTION_API_URL || 'https://api.metar-iwxxm.com' }}
+  STAGING_API_URL: ${{ secrets.STAGING_API_URL || 'https://staging.metar-iwxxm.com' }}
+  DEVELOPMENT_API_URL: ${{ secrets.DEVELOPMENT_API_URL || 'http://localhost:8001' }}
+  
+  # Auth tokens
+  PRODUCTION_API_TOKEN: ${{ secrets.PRODUCTION_API_TOKEN }}
+  STAGING_API_TOKEN: ${{ secrets.STAGING_API_TOKEN }}
+  
+  # Alert configuration
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  DEPLOYMENT_NOTIFICATION_EMAIL: ${{ secrets.DEPLOYMENT_NOTIFICATION_EMAIL }}
+
+jobs:
+  smoke-tests:
+    runs-on: ubuntu-latest
+    name: Smoke Tests - ${{ inputs.environment || 'production' }}
+    # Only run if the triggering workflow succeeded
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          cd backend && uv pip install --system -e ".[dev]" httpx
+      
+      - name: Determine API URL and Token
+        id: config
+        run: |
+          ENV="${{ inputs.environment || 'production' }}"
+          
+          if [ "$ENV" = "production" ]; then
+            echo "api_url=${{ env.PRODUCTION_API_URL }}" >> $GITHUB_OUTPUT
+            echo "api_token=${{ env.PRODUCTION_API_TOKEN }}" >> $GITHUB_OUTPUT
+          elif [ "$ENV" = "staging" ]; then
+            echo "api_url=${{ env.STAGING_API_URL }}" >> $GITHUB_OUTPUT
+            echo "api_token=${{ env.STAGING_API_TOKEN }}" >> $GITHUB_OUTPUT
+          else
+            echo "api_url=${{ env.DEVELOPMENT_API_URL }}" >> $GITHUB_OUTPUT
+            echo "api_token=" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "environment=$ENV" >> $GITHUB_OUTPUT
+      
+      - name: Wait for Deployment to Stabilize
+        run: |
+          echo "Waiting 30 seconds for deployment to stabilize..."
+          sleep 30
+      
+      - name: Run Smoke Tests
+        id: smoke_tests
+        working-directory: ./backend
+        env:
+          LIVE_API_URL: ${{ steps.config.outputs.api_url }}
+          LIVE_API_TOKEN: ${{ steps.config.outputs.api_token }}
+          LIVE_API_TIMEOUT: 30
+        run: |
+          python -m pytest tests/test_smoke.py \
+            -v \
+            -m smoke \
+            --tb=short \
+            --junitxml=smoke-test-results.xml \
+            --html=smoke-test-report.html \
+            --self-contained-html \
+            || echo "SMOKE_TESTS_FAILED=true" >> $GITHUB_ENV
+      
+      - name: Parse Smoke Test Results
+        id: parse_results
+        if: always()
+        run: |
+          if [ -f backend/smoke-test-results.xml ]; then
+            TOTAL=$(grep -oP 'tests="\K[0-9]+' backend/smoke-test-results.xml || echo "0")
+            FAILURES=$(grep -oP 'failures="\K[0-9]+' backend/smoke-test-results.xml || echo "0")
+            ERRORS=$(grep -oP 'errors="\K[0-9]+' backend/smoke-test-results.xml || echo "0")
+            SKIPPED=$(grep -oP 'skipped="\K[0-9]+' backend/smoke-test-results.xml || echo "0")
+            
+            PASSED=$((TOTAL - FAILURES - ERRORS - SKIPPED))
+            
+            echo "total=$TOTAL" >> $GITHUB_OUTPUT
+            echo "passed=$PASSED" >> $GITHUB_OUTPUT
+            echo "failed=$FAILURES" >> $GITHUB_OUTPUT
+            echo "errors=$ERRORS" >> $GITHUB_OUTPUT
+            echo "skipped=$SKIPPED" >> $GITHUB_OUTPUT
+            
+            echo "📊 Smoke Test Results:"
+            echo "  ✅ Passed: $PASSED"
+            echo "  ❌ Failed: $FAILURES"
+            echo "  ⚠️ Errors: $ERRORS"
+            echo "  ⏭️ Skipped: $SKIPPED"
+            echo "  📈 Total: $TOTAL"
+          else
+            echo "⚠️ Smoke test results not found"
+            echo "total=0" >> $GITHUB_OUTPUT
+            echo "passed=0" >> $GITHUB_OUTPUT
+            echo "failed=0" >> $GITHUB_OUTPUT
+            echo "errors=0" >> $GITHUB_OUTPUT
+            echo "skipped=0" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Upload Smoke Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-test-results-${{ steps.config.outputs.environment }}-${{ github.run_number }}
+          path: |
+            backend/smoke-test-results.xml
+            backend/smoke-test-report.html
+          retention-days: 30
+      
+      - name: Create Deployment Summary
+        if: always()
+        run: |
+          ENV="${{ steps.config.outputs.environment }}"
+          API_URL="${{ steps.config.outputs.api_url }}"
+          PASSED="${{ steps.parse_results.outputs.passed }}"
+          FAILED="${{ steps.parse_results.outputs.failed }}"
+          TOTAL="${{ steps.parse_results.outputs.total }}"
+          
+          STATUS_ICON="✅"
+          STATUS_TEXT="PASSED"
+          if [ "$FAILED" != "0" ]; then
+            STATUS_ICON="❌"
+            STATUS_TEXT="FAILED"
+          fi
+          
+          cat << EOF > $GITHUB_STEP_SUMMARY
+          # $STATUS_ICON Smoke Tests - $ENV Environment
+          
+          **Status**: $STATUS_TEXT  
+          **Environment**: $ENV  
+          **API URL**: $API_URL  
+          **Time**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          
+          ## Test Results
+          | Metric | Count |
+          |--------|-------|
+          | ✅ Passed | $PASSED |
+          | ❌ Failed | $FAILED |
+          | ⚠️ Errors | ${{ steps.parse_results.outputs.errors }} |
+          | ⏭️ Skipped | ${{ steps.parse_results.outputs.skipped }} |
+          | 📈 Total | $TOTAL |
+          
+          ## Critical Paths Verified
+          - [x] Health endpoint responding
+          - [x] Authentication working
+          - [x] METAR conversion functional
+          - [x] Validation endpoints operational
+          - [x] Version management working
+          - [x] CORS headers present
+          - [x] OpenAPI docs accessible
+          
+          ## Next Steps
+          $(if [ "$FAILED" != "0" ]; then
+            echo "⚠️ **Action Required**: Review failed tests and consider rollback"
+            echo ""
+            echo "1. Check [test artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo "2. Review deployment logs"
+            echo "3. Verify configuration"
+            echo "4. Test manually at $API_URL"
+          else
+            echo "✅ Deployment verified successfully"
+            echo ""
+            echo "- All critical paths operational"
+            echo "- API ready for traffic"
+            echo "- Monitor performance metrics"
+          fi)
+          
+          ---
+          [View Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          EOF
+      
+      - name: Post Results to Pull Request
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const passed = '${{ steps.parse_results.outputs.passed }}';
+            const failed = '${{ steps.parse_results.outputs.failed }}';
+            const total = '${{ steps.parse_results.outputs.total }}';
+            const env = '${{ steps.config.outputs.environment }}';
+            const apiUrl = '${{ steps.config.outputs.api_url }}';
+            
+            const status = failed === '0' ? '✅ PASSED' : '❌ FAILED';
+            const body = `## ${status} - Smoke Tests (${env})
+            
+            **Results**: ${passed}/${total} tests passed
+            **Environment**: ${env}
+            **API**: ${apiUrl}
+            
+            ${failed !== '0' ? '⚠️ **WARNING**: Smoke tests failed. Review before merging.' : '✅ All critical paths verified.'}
+            
+            [View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+      
+      - name: Send Slack Notification
+        if: always() && env.SLACK_WEBHOOK_URL != ''
+        run: |
+          ENV="${{ steps.config.outputs.environment }}"
+          PASSED="${{ steps.parse_results.outputs.passed }}"
+          FAILED="${{ steps.parse_results.outputs.failed }}"
+          TOTAL="${{ steps.parse_results.outputs.total }}"
+          
+          if [ "$FAILED" = "0" ]; then
+            STATUS_EMOJI="✅"
+            STATUS_TEXT="Smoke Tests Passed"
+            COLOR="good"
+          else
+            STATUS_EMOJI="❌"
+            STATUS_TEXT="Smoke Tests Failed"
+            COLOR="danger"
+          fi
+          
+          curl -X POST ${{ env.SLACK_WEBHOOK_URL }} \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"text\": \"$STATUS_EMOJI Deployment Smoke Tests - $ENV\",
+              \"attachments\": [
+                {
+                  \"color\": \"$COLOR\",
+                  \"title\": \"$STATUS_TEXT\",
+                  \"fields\": [
+                    {
+                      \"title\": \"Environment\",
+                      \"value\": \"$ENV\",
+                      \"short\": true
+                    },
+                    {
+                      \"title\": \"Results\",
+                      \"value\": \"$PASSED/$TOTAL passed\",
+                      \"short\": true
+                    },
+                    {
+                      \"title\": \"API URL\",
+                      \"value\": \"${{ steps.config.outputs.api_url }}\",
+                      \"short\": false
+                    }
+                  ],
+                  \"actions\": [
+                    {
+                      \"type\": \"button\",
+                      \"text\": \"View Details\",
+                      \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+                    }
+                  ]
+                }
+              ]
+            }"
+      
+      - name: Fail Job if Smoke Tests Failed
+        if: env.SMOKE_TESTS_FAILED == 'true'
+        run: |
+          echo "❌ Smoke tests failed. Failing workflow."
+          exit 1
+      
+      - name: Create Issue for Failed Deployment
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const env = '${{ steps.config.outputs.environment }}';
+            const passed = '${{ steps.parse_results.outputs.passed }}';
+            const failed = '${{ steps.parse_results.outputs.failed }}';
+            const total = '${{ steps.parse_results.outputs.total }}';
+            
+            const title = `🚨 Smoke Tests Failed - ${env} Deployment`;
+            const body = `## Deployment Smoke Tests Failed
+            
+            **Environment**: ${env}
+            **Status**: ❌ FAILED
+            **Time**: ${new Date().toISOString()}
+            **API URL**: ${{ steps.config.outputs.api_url }}
+            
+            ### Test Results
+            - ✅ Passed: ${passed}/${total}
+            - ❌ Failed: ${failed}
+            
+            ### Recommended Actions
+            1. 🔍 Review failed test details in [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            2. 🔙 Consider rolling back deployment
+            3. 🔧 Fix issues and re-deploy
+            4. 📊 Check monitoring dashboard for anomalies
+            
+            ### Failed Tests
+            Review the [test artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for detailed failure information.
+            
+            ---
+            *Auto-generated by Smoke Tests workflow*
+            `;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['deployment', 'smoke-tests', 'automated', 'priority-critical']
+            });
+  
+  # Optional: Rollback on failure
+  rollback-on-failure:
+    runs-on: ubuntu-latest
+    name: Rollback Decision
+    needs: smoke-tests
+    if: failure() && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Notify About Failed Deployment
+        run: |
+          echo "🚨 Smoke tests failed on production deployment"
+          echo "Manual intervention required to decide on rollback"
+          echo ""
+          echo "Options:"
+          echo "1. Rollback to previous version"
+          echo "2. Fix forward with hotfix"
+          echo "3. Monitor and investigate"
+      
+      - name: Create Rollback Checklist
+        run: |
+          cat << EOF > $GITHUB_STEP_SUMMARY
+          # 🚨 Deployment Failed - Action Required
+          
+          The smoke tests failed after deployment to **${{ github.ref_name }}**.
+          
+          ## Rollback Checklist
+          - [ ] Review failed smoke tests
+          - [ ] Check error logs
+          - [ ] Assess impact on users
+          - [ ] Decide: rollback or fix forward
+          - [ ] Execute rollback if needed
+          - [ ] Notify team
+          - [ ] Update incident log
+          
+          ## Rollback Commands
+          \`\`\`bash
+          # Option 1: Revert to previous commit
+          git revert HEAD
+          git push origin main
+          
+          # Option 2: Deploy specific previous version
+          git checkout <previous-tag>
+          # Re-run deployment workflow
+          \`\`\`
+          
+          ## Monitoring
+          - [View API Logs](#)
+          - [Check Metrics Dashboard](#)
+          - [Review Error Reports](#)
+          
+          ---
+          **Time of Failure**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          EOF

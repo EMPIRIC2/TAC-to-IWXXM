@@ -1,0 +1,251 @@
+#!/usr/bin/env python3
+"""
+Schematron validator using Saxon XSLT2 processor.
+
+Two-step process:
+1. Compile Schematron (.sch) to XSLT using ISO SVRL compiler
+2. Validate XML against the generated XSLT
+
+Usage:
+    python3 schematron_validator.py <xml_file> <sch_file> [--output json|xml]
+"""
+
+import json
+import logging
+import subprocess
+import sys
+import tempfile
+import xml.etree.ElementTree as ET
+from pathlib import Path
+from typing import Dict, List
+
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+logger = logging.getLogger(__name__)
+
+
+def compile_schematron(sch_file: str) -> str:
+    """
+    Compile Schematron file to XSLT using ISO SVRL compiler.
+    
+    Args:
+        sch_file: Path to Schematron file
+    
+    Returns:
+        Path to generated XSLT file
+    """
+    
+    sch_path = Path(sch_file)
+    
+    # Try to find iso_svrl.xsl in common locations
+    compiler_paths = [
+        Path('/opt/schematron/schematron/iso_svrl_for_use.xsl'),
+        Path('/opt/schematron/iso_svrl_for_use.xsl'),
+        Path('/schematron/iso_svrl_for_use.xsl'),
+    ]
+    
+    compiler_xsl = None
+    for path in compiler_paths:
+        if path.exists():
+            compiler_xsl = str(path)
+            break
+    
+    if not compiler_xsl:
+        # Fallback: assume the .sch file can be used directly as XSLT (for pre-compiled schemas)
+        logger.warning(f"ISO SVRL compiler not found, assuming .sch is XSLT-compatible")
+        return sch_file
+    
+    # Create temp file for compiled XSLT
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.xsl', delete=False) as tmp:
+        compiled_xsl = tmp.name
+    
+    # Compile Schematron to XSLT
+    saxon_jar = "/opt/saxon/saxon-he-11.4.jar"
+    resolver_jar = "/opt/saxon/xmlresolver-4.4.1.jar"
+    
+    cmd = [
+        'java', '-cp', f'{saxon_jar}:{resolver_jar}',
+        'net.sf.saxon.Transform',
+        '-xsl:' + compiler_xsl,
+        '-s:' + sch_file,
+        '-o:' + compiled_xsl
+    ]
+    
+    logger.debug(f"Compiling Schematron: {' '.join(cmd)}")
+    
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    
+    if result.returncode != 0:
+        logger.warning(f"Schematron compilation had issues: {result.stderr[:200]}")
+        # Continue anyway - sometimes warnings are not errors
+    
+    logger.debug(f"Schematron compiled to: {compiled_xsl}")
+    return compiled_xsl
+
+
+def validate_with_saxon(xml_file: str, sch_file: str, output_format: str = 'json') -> Dict:
+    """
+    Validate XML against Schematron using Saxon XSLT2 processor.
+    
+    Args:
+        xml_file: Path to XML file to validate
+        sch_file: Path to Schematron file
+        output_format: 'json' or 'xml'
+    
+    Returns:
+        Validation result dictionary
+    """
+    
+    try:
+        xml_path = Path(xml_file)
+        sch_path = Path(sch_file)
+        
+        if not xml_path.exists():
+            return {
+                'status': 'ERROR',
+                'error': f'XML file not found: {xml_file}'
+            }
+        
+        if not sch_path.exists():
+            return {
+                'status': 'ERROR',
+                'error': f'Schematron file not found: {sch_file}'
+            }
+        
+        logger.info(f"Validating {xml_path.name} against {sch_path.name}")
+        
+        # Step 1: Compile Schematron to XSLT (if not already compiled)
+        compiled_xsl = compile_schematron(str(sch_path))
+        
+        # Step 2: Use Saxon to validate XML against the compiled XSLT
+        saxon_jar = "/opt/saxon/saxon-he-11.4.jar"
+        resolver_jar = "/opt/saxon/xmlresolver-4.4.1.jar"
+        
+        # Create temporary output file for validation result
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as tmp:
+            output_file = tmp.name
+        
+        # Run Saxon transformation with both JARs in classpath
+        cmd = [
+            'java', '-cp', f'{saxon_jar}:{resolver_jar}',
+            'net.sf.saxon.Transform',
+            '-xsl:' + str(compiled_xsl),
+            '-s:' + str(xml_path),
+            '-o:' + output_file
+        ]
+        
+        logger.debug(f"Running: {' '.join(cmd)}")
+        
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        
+        if result.returncode != 0:
+            logger.error(f"Saxon validation error: {result.stderr}")
+            return {
+                'status': 'ERROR',
+                'error': result.stderr[:500],
+                'return_code': result.returncode
+            }
+        
+        # Parse validation output
+        try:
+            validation_tree = ET.parse(output_file)
+            validation_root = validation_tree.getroot()
+            
+            # Extract assertions and reports
+            assertions_failed = []
+            assertions_passed = []
+            
+            ns = {'s': 'http://purl.oclc.org/dsdl/schematron'}
+            
+            for failed in validation_root.findall('.//s:failed-assert', ns):
+                test = failed.get('test', '')
+                msg = failed.findtext('s:text', '', ns)
+                role = failed.get('role', 'error')
+                assertions_failed.append({
+                    'test': test,
+                    'message': msg,
+                    'role': role
+                })
+            
+            for report in validation_root.findall('.//s:successful-report', ns):
+                test = report.get('test', '')
+                msg = report.findtext('s:text', '', ns)
+                assertions_passed.append({
+                    'test': test,
+                    'message': msg
+                })
+            
+            # Determine overall status
+            passed = len(assertions_failed) == 0
+            
+            validation_result = {
+                'status': 'PASS' if passed else 'FAIL',
+                'valid': passed,
+                'assertions_passed': len(assertions_passed),
+                'assertions_failed': len(assertions_failed),
+                'failed_assertions': assertions_failed[:10],  # First 10
+                'passed_assertions': assertions_passed[:10] if passed else []
+            }
+            
+            logger.info(f"Validation: {validation_result['status']} ({len(assertions_passed)}✓ {len(assertions_failed)}✗)")
+            
+            return validation_result
+            
+        except ET.ParseError as e:
+            logger.error(f"Could not parse validation output: {e}")
+            return {
+                'status': 'ERROR',
+                'error': f'Parse error: {str(e)}'
+            }
+        finally:
+            # Clean up temp file
+            Path(output_file).unlink(missing_ok=True)
+    
+    except subprocess.TimeoutExpired:
+        return {
+            'status': 'ERROR',
+            'error': 'Validation timeout (>30s)'
+        }
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}", exc_info=True)
+        return {
+            'status': 'ERROR',
+            'error': str(e)[:500]
+        }
+
+
+def main():
+    """Main entry point."""
+    
+    if len(sys.argv) < 3:
+        print("Usage: python3 schematron_validator.py <xml_file> <sch_file> [--output json|xml]")
+        sys.exit(1)
+    
+    xml_file = sys.argv[1]
+    sch_file = sys.argv[2]
+    output_format = 'json'
+    
+    if '--output' in sys.argv:
+        idx = sys.argv.index('--output')
+        if idx + 1 < len(sys.argv):
+            output_format = sys.argv[idx + 1]
+    
+    # Run validation
+    result = validate_with_saxon(xml_file, sch_file, output_format)
+    
+    # Output result
+    if output_format == 'json':
+        print(json.dumps(result, indent=2))
+    else:
+        print(str(result))
+    
+    # Exit with appropriate code
+    sys.exit(0 if result.get('status') == 'PASS' else 1)
+
+
+if __name__ == '__main__':
+    main()

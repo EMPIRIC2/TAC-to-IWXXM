@@ -1,16 +1,33 @@
 """JWT security and authentication utilities via Auth Service proxy."""
 import os
 from typing import Dict, Any, Optional
+import logging
+from pathlib import Path
 
 import httpx
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
+logger = logging.getLogger(__name__)
+
+# Load .env file if it exists (for development)
+env_file = Path(__file__).parent.parent.parent.parent / ".env"
+if env_file.exists():
+    with open(env_file) as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                key, value = line.split('=', 1)
+                # Only set if not already in environment
+                if key not in os.environ:
+                    os.environ[key] = value
 
 # Configuration - Auth service URL
 AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://localhost:8003")
 # Development mode - bypass auth verification
 DISABLE_AUTH = os.getenv("DISABLE_AUTH", "").lower() in ("true", "1", "yes")
+
+logger.info(f"Security module loaded: DISABLE_AUTH={DISABLE_AUTH}, env value='{os.getenv('DISABLE_AUTH', '')}'")
 
 security = HTTPBearer(auto_error=False)
 
@@ -33,11 +50,21 @@ async def verify_supabase_token(
     Raises:
         HTTPException: If token is invalid, expired, or missing (unless in dev mode)
     """
+    # Check for auth bypass at runtime (in case env var changed after module load)
+    disable_auth_runtime = os.getenv("DISABLE_AUTH", "").lower() in ("true", "1", "yes")
+    
+    logger.debug(f"verify_supabase_token: DISABLE_AUTH={DISABLE_AUTH}, runtime={disable_auth_runtime}, has_credentials={credentials is not None}")
+    
     # Development mode bypass
-    if DISABLE_AUTH:
+    if DISABLE_AUTH or disable_auth_runtime:
+        logger.info("Auth bypassed (development mode)")
+        # Use actual admin user from environment, or fallback to dev user
+        admin_user_id = os.getenv("ADMIN_USER_ID", "dev-user-12345")
+        admin_email = os.getenv("ADMIN_EMAIL", "dev@example.com")
         return {
-            "user_id": "dev-user",
-            "email": "dev@example.com",
+            "sub": admin_user_id,  # Standard JWT claim
+            "user_id": admin_user_id,  # Also include for compatibility
+            "email": admin_email,
             "authenticated": False,
             "environment": "development"
         }

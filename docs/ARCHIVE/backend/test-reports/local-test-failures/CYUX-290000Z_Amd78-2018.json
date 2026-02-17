@@ -1,0 +1,129 @@
+{
+  "test_case": "CYUX-290000Z",
+  "amendment_version": "Amd78-2018",
+  "status": "FAIL",
+  "field_diffs": [
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "CHILD_COUNT_MISMATCH",
+      "expected_count": 6,
+      "actual_count": 3
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice/designator",
+      "type": "TAG_MISMATCH",
+      "expected": "designator",
+      "actual": "locationIndicatorICAO"
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "name",
+      "index": 3
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "locationIndicatorICAO",
+      "index": 4
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "ARP",
+      "index": 5
+    },
+    {
+      "path": "METAR/observationTime",
+      "type": "ATTRIBUTE_MISMATCH",
+      "attribute": "href",
+      "expected": "#uuid.1c079d32-e9f8-43a5-800b-039d5eff6c34",
+      "actual": "#uuid.84ec530c-efa8-48e5-bc7f-65b29896d7c1"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation",
+      "type": "CHILD_COUNT_MISMATCH",
+      "expected_count": 9,
+      "actual_count": 7
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation/airTemperature",
+      "type": "ATTRIBUTE_MISMATCH",
+      "attribute": "uom",
+      "expected": "Cel",
+      "actual": "N/A"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation/airTemperature",
+      "type": "EXTRA_ATTRIBUTE",
+      "attribute": "nilReason",
+      "actual": "http://codes.wmo.int/common/nil/notObservable"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation/airTemperature",
+      "type": "EXTRA_ATTRIBUTE",
+      "attribute": "nil",
+      "actual": "true"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation/dewpointTemperature",
+      "type": "ATTRIBUTE_MISMATCH",
+      "attribute": "uom",
+      "expected": "Cel",
+      "actual": "N/A"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation/dewpointTemperature",
+      "type": "EXTRA_ATTRIBUTE",
+      "attribute": "nilReason",
+      "actual": "http://codes.wmo.int/common/nil/notObservable"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation/dewpointTemperature",
+      "type": "EXTRA_ATTRIBUTE",
+      "attribute": "nil",
+      "actual": "true"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation/qnh",
+      "type": "ATTRIBUTE_MISMATCH",
+      "attribute": "uom",
+      "expected": "hPa",
+      "actual": "N/A"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation/qnh",
+      "type": "EXTRA_ATTRIBUTE",
+      "attribute": "nilReason",
+      "actual": "http://codes.wmo.int/common/nil/notObservable"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation/qnh",
+      "type": "EXTRA_ATTRIBUTE",
+      "attribute": "nil",
+      "actual": "true"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation",
+      "type": "MISSING_CHILD",
+      "child_tag": "presentWeather",
+      "index": 7
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation",
+      "type": "MISSING_CHILD",
+      "child_tag": "cloud",
+      "index": 8
+    }
+  ],
+  "lat_lon_diffs": [
+    {
+      "element_id": "unknown",
+      "status": "MISSING_IN_ACTUAL",
+      "expected_lat": 68.77,
+      "expected_lon": -81.25
+    }
+  ],
+  "metadata_diffs": [],
+  "generated_at": "2026-02-13T01:40:54.171103"
+}

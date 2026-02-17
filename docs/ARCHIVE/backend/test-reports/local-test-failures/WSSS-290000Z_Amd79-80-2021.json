@@ -1,0 +1,66 @@
+{
+  "test_case": "WSSS-290000Z",
+  "amendment_version": "Amd79-80-2021",
+  "status": "FAIL",
+  "field_diffs": [
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "CHILD_COUNT_MISMATCH",
+      "expected_count": 6,
+      "actual_count": 3
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice/name",
+      "type": "TAG_MISMATCH",
+      "expected": "name",
+      "actual": "locationIndicatorICAO"
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "locationIndicatorICAO",
+      "index": 3
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "designatorIATA",
+      "index": 4
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "ARP",
+      "index": 5
+    },
+    {
+      "path": "METAR/observationTime",
+      "type": "ATTRIBUTE_MISMATCH",
+      "attribute": "href",
+      "expected": "#uuid.42bc44db-5b92-4291-b329-562d211fd17e",
+      "actual": "#uuid.11a3d1b1-63a4-45a4-8947-baa2c1165b42"
+    },
+    {
+      "path": "METAR/trendForecast/MeteorologicalAerodromeTrendForecast/phenomenonTime/TimePeriod/beginPosition",
+      "type": "TEXT_MISMATCH",
+      "expected": "2021-11-29T01:30:00Z",
+      "actual": "2026-01-29T01:30:00Z"
+    },
+    {
+      "path": "METAR/trendForecast/MeteorologicalAerodromeTrendForecast/phenomenonTime/TimePeriod/endPosition",
+      "type": "TEXT_MISMATCH",
+      "expected": "2021-11-29T01:30:00Z",
+      "actual": "2026-01-29T01:30:00Z"
+    }
+  ],
+  "lat_lon_diffs": [
+    {
+      "element_id": "unknown",
+      "status": "MISSING_IN_ACTUAL",
+      "expected_lat": 1.350190043,
+      "expected_lon": 103.9940033
+    }
+  ],
+  "metadata_diffs": [],
+  "generated_at": "2026-02-13T01:40:54.852242"
+}
