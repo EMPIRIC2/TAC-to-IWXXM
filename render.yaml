@@ -55,7 +55,6 @@ services:
     
     # The environment (runtime) for this service
     runtime: python
-    pythonVersion: "3.12"
     
     # GitHub repository connection
     repo: https://github.com/joseph-c-mcguire/metar-to-IWXXM
@@ -77,16 +76,14 @@ services:
     # Health check configuration
     # FastAPI /health endpoint returns {"status": "healthy"|"degraded", ...}
     healthCheckPath: /health
-    healthCheckTimeout: 10
-    healthCheckInterval: 30
     
     # Scaling
     numInstances: 1
-    instanceType: starter  # Starter plan ($7/month) for development/testing
+    plan: starter  # Starter plan ($7/month) for development/testing
     
-    # Auto-deploy on push to main, but only if (optional) CI passes
-    # Set to false to require manual deploy
-    autoDeploy: true
+    # Auto-deploy on push to main
+    # Options: commit (default), checksPass (wait for CI), off (manual only)
+    autoDeployTrigger: commit
     
     # Environment variables
     # Note: Render doesn't support secret values in render.yaml (security practice)
@@ -171,11 +168,9 @@ services:
 #    - Subsequent startups skip table creation (idempotent)
 #
 # 4. SCHEMATRON VALIDATION
-#    - Currently set to SCHEMATRON_USE_DOCKER=true
-#    - If validation fails with Docker errors, either:
-#      a) Set SCHEMATRON_USE_DOCKER=false (disable feature)
-#      b) Implement HTTP-based validation service
-#      c) Mount Docker socket (not supported by Render)
+#    - Currently set to SCHEMATRON_USE_DOCKER=false (Docker not supported on Render)
+#    - Uses pure Python lxml validation instead (catches most violations)
+#    - Future: Deploy separate Schematron HTTP microservice for full XSLT2 support
 #
 # 5. LOGS & MONITORING
 #    - Render logs available in web UI
