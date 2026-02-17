@@ -61,10 +61,11 @@ services:
     branch: main  # Auto-deploy when this branch is pushed
     
     # Build step: Install dependencies using uv package manager
+    # Note: Commands run from rootDir (backend/), so use . for current dir
     buildCommand: |
       pip install --upgrade pip uv && \
-      uv pip install --system -e backend && \
-      uv pip install --system ./GIFTs
+      uv pip install --system -e . && \
+      uv pip install --system ../GIFTs
     
     # Start command: Run FastAPI via Uvicorn
     # The app automatically respects $PORT (Render injects this)
