@@ -64,8 +64,8 @@ services:
     # Note: Commands run from rootDir (backend/), so use . for current dir
     buildCommand: |
       pip install --upgrade pip uv && \
-      uv pip install --system -e . && \
-      uv pip install --system ../GIFTs
+      uv pip install --system --no-cache . && \
+      uv pip install --system --no-cache ../GIFTs
     
     # Start command: Run FastAPI via Uvicorn
     # The app automatically respects $PORT (Render injects this)
