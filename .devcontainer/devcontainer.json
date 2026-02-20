@@ -1,12 +1,1 @@
-{
-  "customizations": {
-    "codespaces": {
-      "repositories": {
-        "joseph-c-mcguire/Metartoiwxxmfrontend": {
-          "permissions": "read-all"
-        }
-      }
-    }
-  },
-  "postCreateCommand": "git submodule sync --recursive && git submodule update --init --recursive"
-}
+{  "name": "metar-to-iwxxm-workflow",  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",  "features": {    "ghcr.io/devcontainers/features/node:1": {      "version": "22"    },    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}  },  "remoteUser": "vscode",  "containerEnv": {    "PYTHONDONTWRITEBYTECODE": "1",    "PYTHONUNBUFFERED": "1",    "PIP_DISABLE_PIP_VERSION_CHECK": "1"  },  "postCreateCommand": "bash -lc 'set -e; if ! command -v uv >/dev/null 2>&1; then curl -LsSf https://astral.sh/uv/install.sh | sh; fi; export PATH=$HOME/.local/bin:$PATH; cd /workspaces/metar-to-IWXXM; [ -f backend/pyproject.toml ] && (cd backend && uv sync --dev); [ -f auth/pyproject.toml ] && (cd auth && uv sync --dev); [ -f GIFTs/pyproject.toml ] && (cd GIFTs && uv sync --dev); [ -f frontend/package.json ] && (cd frontend && npm ci || npm install)'",  "customizations": {    "vscode": {      "extensions": [        "ms-python.python",        "ms-python.vscode-pylance",        "ms-python.debugpy",        "charliermarsh.ruff",        "ms-azuretools.vscode-docker",        "dbaeumer.vscode-eslint",        "esbenp.prettier-vscode",        "ms-playwright.playwright"      ],      "settings": {        "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",        "python.analysis.typeCheckingMode": "basic",        "editor.formatOnSave": true,        "files.exclude": {          "**/__pycache__": true,          "**/.pytest_cache": true,          "**/.ruff_cache": true        }      }    }  },  "forwardPorts": [    3000,    5173,    8000,    8080,    5432  ],  "portsAttributes": {    "3000": {      "label": "Frontend",      "onAutoForward": "notify"    },    "5173": {      "label": "Vite",      "onAutoForward": "notify"    },    "8000": {      "label": "Backend API",      "onAutoForward": "notify"    },    "8080": {      "label": "Auth Service",      "onAutoForward": "notify"    },    "5432": {      "label": "Postgres",      "onAutoForward": "silent"    }  }}
