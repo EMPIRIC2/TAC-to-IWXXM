@@ -1,1 +1,5 @@
-For Python package management please us uv `pip` and `venv`. Avoid using other package managers like `conda` or `poetry` unless absolutely necessary. Ensure that all dependencies are listed in a `pyproject.toml` or `requirements.txt` file for consistency across development environments.
+- Use Python 3
+- Follow PEP8 and Google Python style guidance
+- Prefer short, maintainable code
+- Use `python -m venv .venv` + pip for dependencies unless repo already standardizes differently
+- Avoid committing secrets; use Codespaces/Repo/Org secrets

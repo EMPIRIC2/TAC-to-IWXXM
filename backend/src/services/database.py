@@ -104,7 +104,8 @@ async def init_db_engine(
             connect_args={
                 "command_timeout": 60,
                 "timeout": 60,
-                # Disable prepared statements for Supabase transaction pooler compatibility
+                # Disable prepared statement caches for PgBouncer transaction/statement pool modes
+                "statement_cache_size": 0,
                 "prepared_statement_cache_size": 0,
             },
         )

@@ -10,7 +10,7 @@ import json
 
 from sqlalchemy import (
     Column, String, DateTime, Text, Integer, Boolean, JSON, Index,
-    CheckConstraint, ForeignKey, ARRAY
+    CheckConstraint, ForeignKey, ARRAY, text
 )
 from sqlalchemy.dialects.postgresql import UUID as PGUUID, JSONB
 from sqlalchemy.orm import declarative_base, relationship, Mapped, mapped_column
@@ -29,11 +29,19 @@ class TranslationStatisticsModel(Base):
     __tablename__ = "translation_statistics"
     
     # Primary identifier
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, server_default="gen_random_uuid()")
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True),
+        primary_key=True,
+        server_default=text("gen_random_uuid()")
+    )
     translation_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), unique=True, nullable=False)
     
     # Timestamp
-    created_at: Mapped[datetime] = mapped_column(SA_DateTime(timezone=True), nullable=False, server_default="NOW()")
+    created_at: Mapped[datetime] = mapped_column(
+        SA_DateTime(timezone=True),
+        nullable=False,
+        server_default=text("NOW()")
+    )
     translation_timestamp: Mapped[datetime] = mapped_column(SA_DateTime(timezone=True), nullable=False)
     
     # Airport and region identification
@@ -93,7 +101,11 @@ class TranslationStatisticsSummaryModel(Base):
     """
     __tablename__ = "translation_statistics_summary"
     
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, server_default="gen_random_uuid()")
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True),
+        primary_key=True,
+        server_default=text("gen_random_uuid()")
+    )
     
     # Time period
     period_start: Mapped[datetime] = mapped_column(SA_DateTime(timezone=True), nullable=False)
@@ -112,7 +124,11 @@ class TranslationStatisticsSummaryModel(Base):
     success_rate: Mapped[float] = mapped_column(Integer, nullable=False)  # Stored as numeric
     average_duration_ms: Mapped[float] = mapped_column(Integer, nullable=False)  # Stored as numeric
     
-    last_updated: Mapped[datetime] = mapped_column(SA_DateTime(timezone=True), nullable=False, server_default="NOW()")
+    last_updated: Mapped[datetime] = mapped_column(
+        SA_DateTime(timezone=True),
+        nullable=False,
+        server_default=text("NOW()")
+    )
     
     __table_args__ = (
         CheckConstraint("interval_type IN ('1h', '1d', '7d', '30d')", name="ck_interval_type"),
