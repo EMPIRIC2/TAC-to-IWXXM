@@ -1,0 +1,11 @@
+{
+    "DockerRun.DisableDockerrc": true,
+    "terminal.integrated.env.linux": {
+        "DOCKER_BUILDKIT": "1",
+        "COMPOSE_DOCKER_CLI_BUILD": "1"
+    },
+    "docker.commands.composeUp": "docker compose -f docker-compose.yml up --build -d",
+    "docker.commands.composeDown": "docker compose -f docker-compose.yml down",
+    "docker.commands.composeBuild": "docker compose -f docker-compose.yml build",
+    "docker.commands.composeStart": "docker compose -f docker-compose.yml up -d"
+}

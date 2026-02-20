@@ -1,1 +1,66 @@
-{  "name": "metar-to-iwxxm-workflow",  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",  "features": {    "ghcr.io/devcontainers/features/node:1": {      "version": "22"    },    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}  },  "remoteUser": "vscode",  "containerEnv": {    "PYTHONDONTWRITEBYTECODE": "1",    "PYTHONUNBUFFERED": "1",    "PIP_DISABLE_PIP_VERSION_CHECK": "1"  },  "postCreateCommand": "bash -lc 'set -e; if ! command -v uv >/dev/null 2>&1; then curl -LsSf https://astral.sh/uv/install.sh | sh; fi; export PATH=$HOME/.local/bin:$PATH; cd /workspaces/metar-to-IWXXM; [ -f backend/pyproject.toml ] && (cd backend && uv sync --dev); [ -f auth/pyproject.toml ] && (cd auth && uv sync --dev); [ -f GIFTs/pyproject.toml ] && (cd GIFTs && uv sync --dev); [ -f frontend/package.json ] && (cd frontend && npm ci || npm install)'",  "customizations": {    "vscode": {      "extensions": [        "ms-python.python",        "ms-python.vscode-pylance",        "ms-python.debugpy",        "charliermarsh.ruff",        "ms-azuretools.vscode-docker",        "dbaeumer.vscode-eslint",        "esbenp.prettier-vscode",        "ms-playwright.playwright"      ],      "settings": {        "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",        "python.analysis.typeCheckingMode": "basic",        "editor.formatOnSave": true,        "files.exclude": {          "**/__pycache__": true,          "**/.pytest_cache": true,          "**/.ruff_cache": true        }      }    }  },  "forwardPorts": [    3000,    5173,    8000,    8080,    5432  ],  "portsAttributes": {    "3000": {      "label": "Frontend",      "onAutoForward": "notify"    },    "5173": {      "label": "Vite",      "onAutoForward": "notify"    },    "8000": {      "label": "Backend API",      "onAutoForward": "notify"    },    "8080": {      "label": "Auth Service",      "onAutoForward": "notify"    },    "5432": {      "label": "Postgres",      "onAutoForward": "silent"    }  }}
+{
+	"name": "metar-to-iwxxm-workflow",
+	"image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "22"
+		},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+	},
+	"remoteUser": "vscode",
+	"containerEnv": {
+		"PYTHONDONTWRITEBYTECODE": "1",
+		"PYTHONUNBUFFERED": "1",
+		"PIP_DISABLE_PIP_VERSION_CHECK": "1",
+		"DOCKER_BUILDKIT": "1",
+		"COMPOSE_DOCKER_CLI_BUILD": "1"
+	},
+	"postCreateCommand": "bash -lc 'set -e; if ! command -v gh >/dev/null 2>&1; then (sudo apt-get update && sudo apt-get install -y gh) || (apt-get update && apt-get install -y gh); fi; if ! command -v uv >/dev/null 2>&1; then curl -LsSf https://astral.sh/uv/install.sh | sh; fi; export PATH=$HOME/.local/bin:$PATH; cd /workspaces/metar-to-IWXXM; [ -f .env.example ] && [ ! -f .env ] && cp .env.example .env || true; [ -f backend/pyproject.toml ] && (cd backend && uv venv && uv pip install -e \".[dev]\"); [ -f auth/pyproject.toml ] && (cd auth && uv venv && uv pip install -e \".[dev]\"); [ -f GIFTs/pyproject.toml ] && (cd GIFTs && uv venv && (uv pip install -e \".[dev]\" || uv pip install -e .)); [ -f frontend/package.json ] && (cd frontend && npm ci || npm install)'",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-python.debugpy",
+				"charliermarsh.ruff",
+				"ms-azuretools.vscode-docker",
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"ms-playwright.playwright"
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
+				"python.analysis.typeCheckingMode": "basic",
+				"editor.formatOnSave": true,
+				"files.exclude": {
+					"**/__pycache__": true,
+					"**/.pytest_cache": true,
+					"**/.ruff_cache": true
+				}
+			}
+		}
+	},
+	"forwardPorts": [5173, 8000, 8001, 8002, 8003],
+	"portsAttributes": {
+		"5173": {
+			"label": "Frontend Dev (Vite)",
+			"onAutoForward": "notify"
+		},
+		"8000": {
+			"label": "Frontend (Docker)",
+			"onAutoForward": "notify"
+		},
+		"8001": {
+			"label": "Backend API",
+			"onAutoForward": "notify"
+		},
+		"8002": {
+			"label": "Auth Service (Docker)",
+			"onAutoForward": "notify"
+		},
+		"8003": {
+			"label": "Auth Service (Local)",
+			"onAutoForward": "notify"
+		}
+	}
+}
