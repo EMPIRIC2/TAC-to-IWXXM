@@ -173,10 +173,6 @@ jobs:
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
-
-      - name: Clone frontend source repository
-        run: |
-          git clone --depth 1 "${{ env.FRONTEND_SOURCE_REPO }}" _frontend_src
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -380,9 +376,18 @@ jobs:
       frontend_built: ${{ steps.filter.outputs.frontend_build }}
     
     steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
+      - name: Manual checkout
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+
+      - name: Clone frontend source repository
+        run: |
+          git clone --depth 1 "${{ env.FRONTEND_SOURCE_REPO }}" _frontend_src
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
