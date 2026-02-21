@@ -18,6 +18,15 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 
+def _is_session_not_found_error(error: Exception) -> bool:
+    """Return True when Supabase indicates the JWT session no longer exists."""
+    message = str(error).lower()
+    return (
+        "session_not_found" in message
+        or "session from session_id claim in jwt does not exist" in message
+    )
+
+
 class SupabaseAuthProxy:
     """Proxy for Supabase authentication operations."""
     
@@ -159,6 +168,9 @@ class SupabaseAuthProxy:
             logger.info("[LOGOUT] Successfully signed out user")
             return {"message": "Successfully signed out"}
         except Exception as e:
+            if _is_session_not_found_error(e):
+                logger.info("[LOGOUT] Session already invalidated in Supabase; treating as successful logout")
+                return {"message": "Successfully signed out"}
             logger.error(f"[LOGOUT] Error during logout: {type(e).__name__}: {str(e)}", exc_info=True)
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -247,7 +259,7 @@ class SupabaseAuthProxy:
         logger.info(f"[PASSWORD_RESET_REQUEST] Requesting password reset for {email}")
         try:
             self.client.auth.reset_password_email(email, {
-                "redirect_to": f"{os.getenv('FRONTEND_BASE_URL', 'http://localhost:8000')}/password-reset"
+                "redirect_to": f"{os.getenv('FRONTEND_BASE_URL', 'http://localhost:5173')}/password-reset"
             })
             logger.info(f"[PASSWORD_RESET_REQUEST] Password reset email sent for {email}")
             return {"message": "Password reset email sent"}

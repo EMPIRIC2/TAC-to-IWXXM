@@ -6,6 +6,7 @@ Implements indefinite retention policy (User Decision 1).
 """
 import logging
 import uuid
+import re
 from datetime import datetime
 from typing import Optional, Dict, List, Any, AsyncGenerator
 from contextlib import asynccontextmanager
@@ -20,6 +21,21 @@ from .database import get_db_session
 
 logger = logging.getLogger(__name__)
 
+_ICAO_FALLBACK_CODE = "ZZZZ"
+_ICAO_PATTERN = re.compile(r"^[A-Z0-9]{4}$")
+
+
+def _normalize_icao_code(icao_airport_code: Optional[str]) -> str:
+    """Normalize ICAO airport code for persistence.
+
+    Returns a guaranteed non-null 4-character placeholder when input is missing/invalid.
+    """
+    if isinstance(icao_airport_code, str):
+        candidate = icao_airport_code.strip().upper()
+        if _ICAO_PATTERN.match(candidate):
+            return candidate
+    return _ICAO_FALLBACK_CODE
+
 
 class StatisticsService:
     """Service for logging and querying translation statistics."""
@@ -28,7 +44,7 @@ class StatisticsService:
     async def log_translation(
         tac_message: str,
         iwxxm_version: str,
-        icao_airport_code: str,
+        icao_airport_code: Optional[str],
         translation_status: TranslationStatus,
         translation_duration_ms: int,
         iwxxm_output: Optional[str] = None,
@@ -67,12 +83,21 @@ class StatisticsService:
             # Generate unique translation ID
             translation_id = uuid.uuid4()
             timestamp = datetime.utcnow()
+            normalized_icao_code = _normalize_icao_code(icao_airport_code)
+            if normalized_icao_code != (icao_airport_code or ""):
+                logger.warning(
+                    "Invalid airport code %r normalized to fallback %s",
+                    icao_airport_code,
+                    _ICAO_FALLBACK_CODE,
+                )
             
             # Determine ICAO region
             try:
-                icao_region = get_icao_region(icao_airport_code)
+                icao_region = get_icao_region(normalized_icao_code)
             except ValueError as e:
-                logger.warning(f"Invalid airport code {icao_airport_code}: {e}, defaulting to NAM")
+                logger.warning(
+                    f"Invalid airport code {normalized_icao_code}: {e}, defaulting to NAM"
+                )
                 icao_region = "NAM"
             
             # Convert validation layers to strings
@@ -85,7 +110,7 @@ class StatisticsService:
             record = TranslationStatisticsModel(
                 translation_id=translation_id,
                 translation_timestamp=timestamp,
-                icao_airport_code=icao_airport_code,
+                icao_airport_code=normalized_icao_code,
                 icao_region=icao_region,
                 tac_message=tac_message,
                 iwxxm_version=iwxxm_version,
@@ -110,7 +135,9 @@ class StatisticsService:
                 # Don't re-raise - allow translation to continue even if logging fails
                 return None
             
-            logger.info(f"Logged translation {translation_id} for {icao_airport_code} ({icao_region}, {translation_status})")
+            logger.info(
+                f"Logged translation {translation_id} for {normalized_icao_code} ({icao_region}, {translation_status})"
+            )
             return str(translation_id)
             
         except Exception as e:

@@ -1,216 +1,89 @@
-# Render deployment configuration for METAR-to-IWXXM
-# 
-# This file defines a single Web Service for the FastAPI backend API.
-# 
-# Deployment flow:
-#   1. Render detects this file in the root of the main branch
-#   2. Builds the backend using the specified build command
-#   3. Starts the service with the python -m src command
-#   4. Health checks the /health endpoint every 30 seconds
-#   5. Auto-restarts on crashes
-#
-# Environment variables marked [REQUIRED] must be set in Render dashboard.
-# See steps below for manual setup.
-#
-# ============================================================================
-# SETUP STEPS (manual, in Render dashboard)
-# ============================================================================
-#
-# 1. Create a new Web Service (GitHub repo integration)
-# 2. Connect this repo (joseph-c-mcguire/metar-to-IWXXM)
-# 3. Set these Environment Variables:
-#
-#    [REQUIRED]
-#    DATABASE_URL=postgresql+asyncpg://user:password@host:port/database
-#      → Your external PostgreSQL connection string
-#      → Format: postgresql+asyncpg://user:password@host.provider.com:5432/dbname
-#      → If using Supabase: postgresql+asyncpg://postgres:[PASSWORD]@[HOST]:5432/postgres
-#
-#    [RECOMMENDED]
-#    ALLOWED_ORIGINS=https://<your-frontend-url>.com
-#      → CORS origins (comma-separated if multiple)
-#      → For local testing: http://localhost:3000,http://localhost:5173
-#
-#    [OPTIONAL - change if needed]
-#    TRANSLATION_CENTRE_NAME=Your Organization
-#    TRANSLATION_CENTRE_DESIGNATOR=XX
-#    ICAO_LOCATION_INDICATOR=XXXX
-#    SERVICE_ONLINE_SINCE=2026-02-17
-#    TECHNICAL_CONTACT_EMAIL=your-email@example.com
-#
-# 4. Deploy! Render will:
-#    - Clone the repo
-#    - Build via the build command below
-#    - Start the service
-#    - Auto-create database tables on first startup
-#    - Begin health checks
-#
-# ============================================================================
-# SERVICE DEFINITION
-# ============================================================================
-
 services:
   - type: web
     name: metar-to-iwxxm-api
-    
-    # The environment (runtime) for this service
     runtime: python
-    
-    # GitHub repository connection
     repo: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-    branch: main  # Auto-deploy when this branch is pushed
-    
-    # Build step: Install dependencies
-    # Note: Commands run from rootDir (backend/), so use . for current dir
+    branch: main
+    rootDir: backend
     buildCommand: |
       pip install --upgrade pip && \
       pip install . && \
       pip install ../GIFTs
-    
-    # Start command: Run FastAPI via Uvicorn
-    # The app automatically respects $PORT (Render injects this)
-    # Note: uvicorn command runs from rootDir (backend/)
-    startCommand: uvicorn src.api:app --host 0.0.0.0 --port ${PORT:-8001}
-    
-    # Directories
-    rootDir: backend
-    
-    # Health check configuration
-    # FastAPI /health endpoint returns {"status": "healthy"|"degraded", ...}
+    startCommand: uvicorn src.api:app --host 0.0.0.0 --port ${PORT}
     healthCheckPath: /health
-    
-    # Scaling
-    numInstances: 1
-    plan: starter  # Starter plan ($7/month) for development/testing
-    
-    # Auto-deploy on push to main
-    # Options: commit (default), checksPass (wait for CI), off (manual only)
     autoDeployTrigger: commit
-    
-    # Environment variables
-    # Note: Render doesn't support secret values in render.yaml (security practice)
-    # You MUST set DATABASE_URL and other secrets in the Render dashboard
+    numInstances: 1
+    plan: starter
     envVars:
-      
-      # Production mode: disable Uvicorn reload
       - key: RELOAD
         value: "false"
-      
-      # Authentication: disabled for initial testing
-      # Once auth service is deployed, set DISABLE_AUTH=false and configure AUTH_SERVICE_URL
       - key: DISABLE_AUTH
         value: "true"
-      
-      # Fallback development user (used when DISABLE_AUTH=true)
+      - key: AUTH_SERVICE_URL
+        value: https://metar-to-iwxxm-auth.onrender.com
       - key: ADMIN_USER_ID
         value: "dev-user-12345"
-      
       - key: ADMIN_EMAIL
         value: "dev@example.com"
-      
-      # Validation: DISABLED on Render (no Docker-in-Docker support)
-      # Render can't run Docker containers within the FastAPI container.
-      # Uses pure Python lxml validation instead (catches most business rule violations).
-      # Does NOT affect: METAR parsing, IWXXM generation, XSD validation, WMO codelists.
-      # Future: Deploy separate Schematron HTTP microservice for full XSLT2 support
       - key: SCHEMATRON_USE_DOCKER
         value: "false"
-      
-      # WMO online validation (disable if behind firewall or to speed up dev)
       - key: WMO_ONLINE_VALIDATION
         value: "true"
-      
-      # Logging level
       - key: LOG_LEVEL
         value: "INFO"
-      
-      # CORS configuration: examples for local dev and Render domains
-      # In Render dashboard, set ALLOWED_ORIGINS to your actual frontend URL
-      # Examples:
-      #   - Local dev: http://localhost:3000,http://localhost:5173
-      #   - Production: https://metar-to-iwxxm.onrender.com
-      # Placeholder below; MUST be overridden in Render dashboard
       - key: ALLOWED_ORIGINS
-        value: "*"
-      
-      # Statistics collection (optional)
+        value: https://metar-to-iwxxm-frontend.onrender.com
       - key: ENABLE_STATISTICS
         value: "true"
-      
-      # Webhooks (optional; disabled by default)
       - key: ENABLE_WEBHOOKS
         value: "false"
-      
-      # To add environment groups, use this syntax:
-      # - fromGroup: my-env-group-name
+      # REQUIRED in Render dashboard:
+      # DATABASE_URL
 
-# ============================================================================
-# NOTES & TROUBLESHOOTING
-# ============================================================================
-#
-# 1. FIRST DEPLOY
-#    - Should see logs: "Application startup complete"
-#    - Health check should pass (status = 200 with {"status": "healthy"})
-#    - If DB connection fails: DATABASE_URL is missing or invalid
-#
-# 2. AUTH CURRENTLY DISABLED
-#    - All requests bypass authentication
-#    - Before production: set DISABLE_AUTH=false
-#    - Configure AUTH_SERVICE_URL to point to deployed auth service
-#    - Or use GITHUB_CLIENT_ID + SESSION_SECRET for local OAuth
-#
-# 3. DATABASE AUTO-INITIALIZATION
-#    - No migrations to run (SQLAlchemy ORM auto-creates tables)
-#    - On first startup, backend creates: translation_statistics table
-#    - Subsequent startups skip table creation (idempotent)
-#
-# 4. SCHEMATRON VALIDATION
-#    - Currently set to SCHEMATRON_USE_DOCKER=false (Docker not supported on Render)
-#    - Uses pure Python lxml validation instead (catches most violations)
-#    - Future: Deploy separate Schematron HTTP microservice for full XSLT2 support
-#
-# 5. LOGS & MONITORING
-#    - Render logs available in web UI
-#    - Add Sentry for error tracking: export SENTRY_DSN in env vars
-#    - Add UptimeRobot for uptime monitoring
-#
-# 6. UPDATING DEPENDENCIES
-#    - Edit backend/pyproject.toml
-#    - Push to main
-#    - Render auto-rebuilds and redeploys
-#
-# 7. GIFTs LIBRARY
-#    - Included in build (installed from local ./GIFTs)
-#    - Requires the entire repo (including GIFTs/ subfolder)
-#    - If GIFTs is submodule, ensure Render can fetch it (public or via deploy key)
-#
-# 8. PERFORMANCE TUNING
-#    - Starter instance has 0.5 CPU + 512 MB RAM
-#    - If slow, upgrade to Standard ($12/month)
-#    - Database connection pooling: pool_size=10, max_overflow=20, pool_recycle=3600s
-#
-# ============================================================================
-# NEXT STEPS (after first deploy succeeds)
-# ============================================================================
-#
-# 1. Test the API:
-#    curl https://<your-backend>.onrender.com/health
-#
-# 2. Add frontend (separate Static Site service):
-#    - You can add frontend to this render.yaml or create manually
-#    - Frontend build: npm ci && npm run build
-#    - Publish dir: dist
-#    - Set VITE_API_URL env var to backend URL
-#
-# 3. Enable authentication:
-#    - Deploy auth service (from auth/ folder)
-#    - Or configure GitHub OAuth
-#    - Set DISABLE_AUTH=false
-#    - Set AUTH_SERVICE_URL or GITHUB_CLIENT_ID + GITHUB_CLIENT_SECRET
-#
-# 4. Set up monitoring:
-#    - Render metrics + logs
-#    - Sentry for errors
-#    - UptimeRobot for uptime checks
-#
-# ============================================================================
+  - type: web
+    name: metar-to-iwxxm-auth
+    runtime: python
+    repo: https://github.com/joseph-c-mcguire/metar-to-IWXXM
+    branch: main
+    rootDir: auth
+    buildCommand: |
+      pip install --upgrade pip && \
+      pip install .
+    startCommand: uvicorn auth.__main__:app --host 0.0.0.0 --port ${PORT}
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    numInstances: 1
+    plan: starter
+    envVars:
+      - key: LOG_LEVEL
+        value: "INFO"
+      - key: FRONTEND_BASE_URL
+        value: https://metar-to-iwxxm-frontend.onrender.com
+      - key: CORS_ORIGINS
+        value: https://metar-to-iwxxm-frontend.onrender.com
+      # REQUIRED in Render dashboard:
+      # SUPABASE_URL
+      # SUPABASE_ANON_KEY
+
+  - type: static_site
+    name: metar-to-iwxxm-frontend
+    repo: https://github.com/joseph-c-mcguire/metar-to-IWXXM
+    branch: main
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    autoDeployTrigger: commit
+    envVars:
+      - key: VITE_APP_URL
+        value: https://metar-to-iwxxm-frontend.onrender.com
+      - key: VITE_BACKEND_URL
+        value: https://metar-to-iwxxm-api.onrender.com
+      - key: VITE_AUTH_SERVICE_URL
+        value: https://metar-to-iwxxm-auth.onrender.com
+      # REQUIRED in Render dashboard:
+      # VITE_SUPABASE_URL
+      # VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

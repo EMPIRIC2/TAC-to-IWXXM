@@ -310,5 +310,44 @@ class TestSupabaseProxyLogin:
         assert result["user"]["email"] == "testuser@metar.test"
 
 
+class TestSupabaseProxyLogout:
+    """Test the Supabase proxy logout method."""
+
+    @patch('auth.supabase_proxy.SupabaseAuthProxy.__init__', return_value=None)
+    def test_logout_success(self, mock_init):
+        """Test successful logout through proxy."""
+        from auth.supabase_proxy import SupabaseAuthProxy
+
+        proxy = SupabaseAuthProxy()
+        proxy.client = Mock()
+        proxy.client.auth.set_session = Mock()
+        proxy.client.auth.sign_out = Mock()
+
+        result = proxy.sign_out("valid-token")
+
+        assert result["message"] == "Successfully signed out"
+        proxy.client.auth.set_session.assert_called_once_with("valid-token", "")
+        proxy.client.auth.sign_out.assert_called_once()
+
+    @patch('auth.supabase_proxy.SupabaseAuthProxy.__init__', return_value=None)
+    def test_logout_session_not_found_is_treated_as_success(self, mock_init):
+        """Test logout is idempotent when Supabase session no longer exists."""
+        from auth.supabase_proxy import SupabaseAuthProxy
+
+        proxy = SupabaseAuthProxy()
+        proxy.client = Mock()
+        proxy.client.auth.set_session = Mock(
+            side_effect=Exception(
+                "AuthApiError: Session from session_id claim in JWT does not exist (x-sb-error-code=session_not_found)"
+            )
+        )
+        proxy.client.auth.sign_out = Mock()
+
+        result = proxy.sign_out("stale-token")
+
+        assert result["message"] == "Successfully signed out"
+        proxy.client.auth.sign_out.assert_not_called()
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

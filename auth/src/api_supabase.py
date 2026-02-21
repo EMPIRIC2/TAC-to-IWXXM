@@ -29,6 +29,7 @@ from auth.supabase_proxy import get_supabase_proxy, SupabaseAuthProxy
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
+legacy_router = APIRouter(tags=["Auth"])
 
 
 # Custom email type that allows special domains for development
@@ -221,6 +222,15 @@ def login(
         raise
 
 
+def _logout_with_token(
+    token: str = Depends(get_token_from_header),
+    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
+):
+    """Shared logout implementation for canonical and legacy routes."""
+    result = proxy.sign_out(token)
+    return result
+
+
 @router.post("/logout", response_model=Message)
 def logout(
     token: str = Depends(get_token_from_header),
@@ -236,8 +246,20 @@ def logout(
         Success message
     """
     logger.info("[API] POST /auth/logout")
-    result = proxy.sign_out(token)
+    result = _logout_with_token(token=token, proxy=proxy)
     logger.info("[API] POST /auth/logout - success")
+    return result
+
+
+@legacy_router.post("/logout", response_model=Message)
+def legacy_logout(
+    token: str = Depends(get_token_from_header),
+    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
+):
+    """Compatibility alias for legacy clients still posting to /logout."""
+    logger.info("[API] POST /logout (compat alias)")
+    result = _logout_with_token(token=token, proxy=proxy)
+    logger.info("[API] POST /logout (compat alias) - success")
     return result
 
 

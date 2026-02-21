@@ -2,6 +2,7 @@
 import logging
 import time
 import os
+from typing import List
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,7 +13,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 load_dotenv()
 
-from auth.api_supabase import router
+from auth.api_supabase import router, legacy_router
 
 # Configure logging
 logging.basicConfig(
@@ -23,6 +24,37 @@ logger = logging.getLogger(__name__)
 
 logger.info("Auth service __main__ module loaded")
 logger.debug(f"SUPABASE_URL from env: {os.getenv('SUPABASE_URL', 'NOT SET')}")
+
+
+def _resolve_cors_origins() -> List[str]:
+    """Resolve CORS origins from env, with sane local defaults."""
+    default_origins = [
+        "http://localhost:5173",
+        "http://localhost:8000",
+        "http://localhost:3000",
+        "http://localhost:8001",
+        "http://localhost:8003",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:8000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8001",
+        "http://127.0.0.1:8003",
+    ]
+
+    configured_origins = os.getenv("CORS_ORIGINS", "").strip()
+    if configured_origins:
+        parsed = [origin.strip() for origin in configured_origins.split(",") if origin.strip()]
+        if parsed:
+            return parsed
+
+    frontend_base_url = os.getenv("FRONTEND_BASE_URL", "").strip()
+    if frontend_base_url and frontend_base_url not in default_origins:
+        default_origins.append(frontend_base_url)
+
+    return default_origins
+
+
+CORS_ORIGINS = _resolve_cors_origins()
 
 
 class HealthResponse(BaseModel):
@@ -39,7 +71,7 @@ async def lifespan(app: FastAPI):
     logger.info("🚀 AUTH SERVICE STARTING UP")
     logger.info("=" * 80)
     logger.info("Service Configuration:")
-    logger.info(f"  Port: 8003")
+    logger.info(f"  Port: {os.getenv('PORT', '8003')}")
     logger.info(f"  Host: 0.0.0.0 (all interfaces)")
     logger.info("")
     logger.info("Environment Variables:")
@@ -49,7 +81,7 @@ async def lifespan(app: FastAPI):
     logger.info("")
     logger.info("CORS Configuration:")
     logger.info("  Allowed Origins:")
-    for origin in ["http://localhost:8000", "http://localhost:3000", "http://localhost:8001", "http://localhost:8002"]:
+    for origin in CORS_ORIGINS:
         logger.info(f"    - {origin}")
     logger.info("  Allow Credentials: True")
     logger.info("  Allow Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD")
@@ -59,6 +91,7 @@ async def lifespan(app: FastAPI):
     logger.info("  POST   /auth/register")
     logger.info("  POST   /auth/login")
     logger.info("  POST   /auth/logout")
+    logger.info("  POST   /logout (compat alias)")
     logger.info("  GET    /auth/me")
     logger.info("  POST   /auth/refresh")
     logger.info("  POST   /auth/password-reset/request")
@@ -136,18 +169,7 @@ async def log_requests_and_cors(request: Request, call_next):
 # Must specify exact origins when credentials are enabled
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",      # Vite dev server (default)
-        "http://localhost:8000",      # Frontend production port
-        "http://localhost:3000",      # Alternative frontend port
-        "http://localhost:8001",      # Backend API
-        "http://localhost:8003",      # Auth service (self)
-        "http://127.0.0.1:5173",      # Explicit IP versions
-        "http://127.0.0.1:8000",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:8001",
-        "http://127.0.0.1:8003",
-    ],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
     allow_headers=["*"],
@@ -156,10 +178,11 @@ app.add_middleware(
 )
 
 logger.info("✓ CORS middleware configured with origins:")
-for origin in ["http://localhost:5173", "http://localhost:8000", "http://localhost:3000", "http://localhost:8001", "http://localhost:8003"]:
+for origin in CORS_ORIGINS:
     logger.info(f"  - {origin}")
 
 app.include_router(router)
+app.include_router(legacy_router)
 
 
 @app.get("/health", response_model=HealthResponse)

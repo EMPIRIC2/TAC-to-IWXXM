@@ -14,7 +14,7 @@
         "COMPOSE_DOCKER_CLI_BUILD": "1",
         "PATH": "/home/vscode/.local/bin:${PATH}"
     },
-    "onCreateCommand": "bash -lc 'set -e; curl -LsSf https://astral.sh/uv/install.sh | sh; export PATH=$HOME/.local/bin:$PATH; if ! command -v gh >/dev/null 2>&1; then if command -v apt-get >/dev/null 2>&1; then sudo apt-get update -qq && sudo apt-get install -y gh; elif command -v apk >/dev/null 2>&1; then sudo apk add --no-cache github-cli; fi; fi; if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then if command -v apt-get >/dev/null 2>&1; then sudo apt-get update -qq && sudo apt-get install -y nodejs npm; elif command -v apk >/dev/null 2>&1; then sudo apk add --no-cache nodejs npm; fi; fi'",
+    "onCreateCommand": "bash -lc 'set -e; curl -LsSf https://astral.sh/uv/install.sh | sh; export PATH=$HOME/.local/bin:$PATH; mkdir -p $HOME/.local/bin; if ! command -v gh >/dev/null 2>&1; then if command -v apt-get >/dev/null 2>&1; then sudo apt-get update -qq && sudo apt-get install -y gh; elif command -v apk >/dev/null 2>&1; then sudo apk add --no-cache github-cli; fi; fi; if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then if command -v apt-get >/dev/null 2>&1; then sudo apt-get update -qq && sudo apt-get install -y nodejs npm; elif command -v apk >/dev/null 2>&1; then sudo apk add --no-cache nodejs npm; fi; fi; for candidate in /usr/local/bin/node /usr/bin/node /usr/local/share/nvm/current/bin/node; do [ -x $candidate ] && ln -sfn $candidate $HOME/.local/bin/node && break; done; for candidate in /usr/local/bin/npm /usr/bin/npm /usr/local/share/nvm/current/bin/npm; do [ -x $candidate ] && ln -sfn $candidate $HOME/.local/bin/npm && break; done; command -v node >/dev/null 2>&1 || { echo Error: node is not installed or not on PATH after setup. >&2; exit 1; }; command -v npm >/dev/null 2>&1 || { echo Error: npm is not installed or not on PATH after setup. >&2; exit 1; }'",
     "postCreateCommand": "bash -lc 'set -e; export PATH=$HOME/.local/bin:$PATH; cd /workspaces/metar-to-IWXXM; [ -f .env.example ] && [ ! -f .env ] && cp .env.example .env || true; [ -f backend/pyproject.toml ] && (cd backend && uv venv && uv pip install -e \".[dev]\"); [ -f auth/pyproject.toml ] && (cd auth && uv venv && uv pip install -e \".[dev]\"); [ -f GIFTs/pyproject.toml ] && (cd GIFTs && uv venv && (uv pip install -e \".[dev]\" || uv pip install -e .)); [ -f frontend/package.json ] && (cd frontend && (npm ci || npm install) && npx vite --version)'",
     "customizations": {
         "vscode": {
@@ -45,7 +45,6 @@
         "5173": { "label": "Frontend Dev (Vite)", "onAutoForward": "notify" },
         "8000": { "label": "Frontend (Docker)", "onAutoForward": "notify" },
         "8001": { "label": "Backend API", "onAutoForward": "notify" },
-        "8002": { "label": "Auth Service (Docker)", "onAutoForward": "notify" },
-        "8003": { "label": "Auth Service (Local)", "onAutoForward": "notify" }
+        "8003": { "label": "Auth Service", "onAutoForward": "notify" }
     }
 }

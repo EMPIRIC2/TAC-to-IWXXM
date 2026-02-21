@@ -1,8 +1,52 @@
 """Pydantic schemas for METAR conversion API responses."""
+from enum import Enum
 from typing import List, Optional
 from datetime import datetime
 
 from pydantic import BaseModel, Field, ConfigDict
+
+
+class ConversionIssueSeverity(str, Enum):
+    """Severity level for conversion and validation issues."""
+
+    ERROR = "error"
+    WARNING = "warning"
+    INFO = "info"
+
+
+class ConversionIssue(BaseModel):
+    """Structured issue for a single conversion input item."""
+
+    source: str = Field(
+        ...,
+        description="Input source identifier (e.g., 'manual_input' or filename)",
+        examples=["manual_input", "EGLL_231750Z.txt"],
+    )
+    message: str = Field(..., description="Human-readable issue message", min_length=1)
+    hint: Optional[str] = Field(
+        None,
+        description="Concise suggested fix for the user",
+        examples=["Start the report with METAR or SPECI and a valid ICAO code"],
+    )
+    code: Optional[str] = Field(
+        None,
+        description="Machine-readable issue code",
+        examples=["MISSING_KEYWORD", "INVALID_ICAO_FORMAT"],
+    )
+    severity: ConversionIssueSeverity = Field(
+        default=ConversionIssueSeverity.ERROR,
+        description="Issue severity",
+    )
+    layer: Optional[str] = Field(
+        None,
+        description="Validation layer associated with the issue",
+        examples=["airport_icao", "tac_syntax"],
+    )
+    location: Optional[str] = Field(
+        None,
+        description="Optional location context from parser/validator",
+        examples=["line 1, column 12"],
+    )
 
 
 class ConversionResult(BaseModel):
@@ -29,13 +73,13 @@ class ConversionResult(BaseModel):
         description="Complete IWXXM XML document as UTF-8 text",
         min_length=1,
     )
-    source: Optional[str] = Field(
-        None,
+    source: str = Field(
+        ...,
         description="Source of input: 'manual' for text input, filename for uploads",
         examples=["manual", "KJFK.txt"]
     )
-    size_bytes: Optional[int] = Field(
-        None,
+    size_bytes: int = Field(
+        ...,
         description="Output XML document size in bytes",
         ge=0,
         examples=[1452, 2048]
@@ -63,6 +107,7 @@ class ConversionResponse(BaseModel):
                     },
                 ],
                 "errors": [],
+                "issues": [],
                 "total_processed": 2,
                 "successful": 2,
                 "failed": 0,
@@ -77,6 +122,10 @@ class ConversionResponse(BaseModel):
     errors: List[str] = Field(
         default_factory=list,
         description="Error messages for failed conversions"
+    )
+    issues: List[ConversionIssue] = Field(
+        default_factory=list,
+        description="Structured issues (errors/warnings/info) for failed or partial conversions",
     )
     total_processed: int = Field(
         ...,
@@ -103,6 +152,7 @@ class ErrorDetail(BaseModel):
 
     message: str
     errors: List[str] = Field(default_factory=list)
+    issues: List[ConversionIssue] = Field(default_factory=list)
     total_errors: int = Field(..., ge=0)
 
 

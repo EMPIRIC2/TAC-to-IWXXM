@@ -84,6 +84,51 @@ class TestConversionEndpoint:
         assert "source" in result
         assert "size_bytes" in result
 
+    def test_success_response_includes_issues_array(self, client):
+        """Test successful response includes issues key for contract consistency."""
+        r = client.post("/api/v1/convert", data={"manual_text": SAMPLE_METAR})
+        assert r.status_code == 200
+        data = r.json()
+        assert "issues" in data
+        assert isinstance(data["issues"], list)
+
+    def test_partial_success_includes_structured_issues(self, client):
+        """Test mixed valid/invalid input returns 200 with structured issues."""
+        files = [
+            ("files", ("valid.tac", SAMPLE_METAR, "text/plain")),
+            ("files", ("invalid.tac", "NILl", "text/plain")),
+        ]
+        r = client.post("/api/v1/convert", files=files)
+        assert r.status_code == 200
+
+        data = r.json()
+        assert data["successful"] == 1
+        assert data["failed"] == 1
+        assert "issues" in data
+        assert len(data["issues"]) >= 1
+
+        first_issue = data["issues"][0]
+        assert "source" in first_issue
+        assert "message" in first_issue
+        assert "severity" in first_issue
+
+    def test_all_failed_response_contains_structured_detail_issues(self, client):
+        """Test all-failed conversion response includes structured detail/issues payload."""
+        files = [
+            ("files", ("invalid_only.tac", "NILl", "text/plain")),
+        ]
+        r = client.post("/api/v1/convert", files=files)
+        assert r.status_code == 400
+
+        detail = r.json().get("detail", {})
+        assert "message" in detail
+        assert "errors" in detail
+        assert "issues" in detail
+        assert "total_errors" in detail
+        assert isinstance(detail["issues"], list)
+        assert len(detail["issues"]) >= 1
+        assert detail["issues"][0]["severity"] in {"error", "warning", "info"}
+
 
 class TestConversionZipEndpoint:
     """Test /api/v1/convert-zip endpoint."""
@@ -116,6 +161,37 @@ class TestConversionZipEndpoint:
 
 class TestErrorHandling:
     """Test error handling."""
+
+    def test_invalid_json_body_returns_structured_issues(self, client):
+        """Test malformed JSON request returns structured issue payload."""
+        r = client.post(
+            "/api/v1/convert",
+            content="{invalid-json",
+            headers={"Content-Type": "application/json"},
+        )
+        assert r.status_code == 422
+
+        detail = r.json().get("detail", {})
+        assert detail.get("message") == "Invalid JSON in request body"
+        assert isinstance(detail.get("issues"), list)
+        assert len(detail["issues"]) == 1
+        assert detail["issues"][0]["source"] == "request"
+        assert detail["issues"][0]["severity"] == "error"
+
+    def test_invalid_json_schema_returns_structured_issues(self, client):
+        """Test invalid JSON schema request returns structured issue payload."""
+        r = client.post(
+            "/api/v1/convert",
+            json={"version": "2025-2"},  # missing required metars
+        )
+        assert r.status_code == 422
+
+        detail = r.json().get("detail", {})
+        assert detail.get("message") == "Validation error in request body"
+        assert isinstance(detail.get("issues"), list)
+        assert len(detail["issues"]) == 1
+        assert detail["issues"][0]["source"] == "request"
+        assert detail["issues"][0]["severity"] == "error"
     
     def test_empty_files_error(self, client):
         """Test empty file error handling."""
