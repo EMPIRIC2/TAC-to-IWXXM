@@ -68,9 +68,10 @@ services:
       - key: VITE_AUTH_SERVICE_URL
         value: https://metar-to-iwxxm-auth-v2.onrender.com
       - key: BACKEND_UPSTREAM
-        value: https://metar-to-iwxxm-api.onrender.com
+        value: http://metar-to-iwxxm-api:10000
       - key: AUTH_UPSTREAM
-        value: https://metar-to-iwxxm-auth-v2.onrender.com
-      # REQUIRED in Render dashboard:
-      # VITE_SUPABASE_URL
-      # VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+        value: http://metar-to-iwxxm-auth-v2:8000
+      - key: VITE_SUPABASE_URL
+        value: https://ktvxijislbtgqapllmuk.supabase.co
+      - key: VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+        value: sb_publishable_eqkNmJv86m9u7Gmym9Wf8Q_NC1fUZ8x
