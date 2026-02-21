@@ -11,6 +11,7 @@ env:
   BACKEND_IMAGE: ${{ github.repository }}/backend
   AUTH_IMAGE: ${{ github.repository }}/auth
   FRONTEND_IMAGE: ${{ github.repository }}/frontend
+  FRONTEND_SOURCE_REPO: https://github.com/joseph-c-mcguire/Metartoiwxxmfrontend.git
   COVERAGE_THRESHOLD: 95
 
 jobs:
@@ -165,8 +166,10 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
+      - name: Clone frontend source repository
+        run: |
+          git clone --depth 1 "${{ env.FRONTEND_SOURCE_REPO }}" _frontend_src
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -427,8 +430,8 @@ jobs:
         if: steps.filter.outputs.frontend_build == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: ./_frontend_src
+          file: ./_frontend_src/Dockerfile
           target: production
           platforms: linux/amd64
           push: true
