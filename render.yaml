@@ -3,7 +3,7 @@ services:
     name: metar-to-iwxxm-api
     runtime: image
     image:
-      url: ghcr.io/joseph-c-mcguire/metar-to-IWXXM/backend:main-latest
+      url: ghcr.io/joseph-c-mcguire/metar-to-iwxxm/backend:main-latest
     healthCheckPath: /health
     numInstances: 1
     plan: starter
@@ -37,7 +37,7 @@ services:
     name: metar-to-iwxxm-auth-v2
     runtime: image
     image:
-      url: ghcr.io/joseph-c-mcguire/metar-to-IWXXM/auth:main-latest
+      url: ghcr.io/joseph-c-mcguire/metar-to-iwxxm/auth:main-latest
     healthCheckPath: /health
     numInstances: 1
     plan: starter
@@ -56,7 +56,7 @@ services:
     name: metar-to-iwxxm-frontend-v4-web
     runtime: image
     image:
-      url: ghcr.io/joseph-c-mcguire/metar-to-IWXXM/frontend:main-latest
+      url: ghcr.io/joseph-c-mcguire/metar-to-iwxxm/frontend:main-latest
     healthCheckPath: /
     numInstances: 1
     plan: starter

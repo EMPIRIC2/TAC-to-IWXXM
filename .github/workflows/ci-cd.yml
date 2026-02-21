@@ -12,6 +12,7 @@ env:
   AUTH_IMAGE: joseph-c-mcguire/metar-to-iwxxm/auth
   FRONTEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/frontend
   FRONTEND_SOURCE_REPO: https://github.com/joseph-c-mcguire/Metartoiwxxmfrontend.git
+  RENDER_DEPLOY_MODE: source
   COVERAGE_THRESHOLD: 95
 
 jobs:
@@ -481,8 +482,12 @@ jobs:
           DEPLOY_HOOK: ${{ env.RENDER_BACKEND_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
         run: |
-          ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
-          curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
+          if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
+            ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
+            curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
+          else
+            curl -fsSL "${DEPLOY_HOOK}"
+          fi
 
       - name: Deploy auth image to Render
         if: needs.build-and-push.outputs.auth_built == 'true' && env.RENDER_AUTH_DEPLOY_HOOK != ''
@@ -490,8 +495,12 @@ jobs:
           DEPLOY_HOOK: ${{ env.RENDER_AUTH_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.AUTH_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
         run: |
-          ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
-          curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
+          if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
+            ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
+            curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
+          else
+            curl -fsSL "${DEPLOY_HOOK}"
+          fi
 
       - name: Deploy frontend image to Render
         if: needs.build-and-push.outputs.frontend_built == 'true' && env.RENDER_FRONTEND_DEPLOY_HOOK != ''
@@ -499,8 +508,12 @@ jobs:
           DEPLOY_HOOK: ${{ env.RENDER_FRONTEND_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
         run: |
-          ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
-          curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
+          if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
+            ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
+            curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
+          else
+            curl -fsSL "${DEPLOY_HOOK}"
+          fi
   
   # ============================================================================
   # TEST SUMMARY & FINAL STATUS
