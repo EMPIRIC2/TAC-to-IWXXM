@@ -103,8 +103,9 @@ jobs:
           git checkout --detach FETCH_HEAD
 
       - name: Initialize required submodules only
-        with:
-          submodules: recursive
+        run: |
+          git submodule update --init --depth 1 frontend
+          git submodule update --init --depth 1 GIFTs
       
       - name: Set up Python
         uses: actions/setup-python@v4
