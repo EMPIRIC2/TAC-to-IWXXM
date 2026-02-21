@@ -1,17 +1,10 @@
 services:
   - type: web
     name: metar-to-iwxxm-api
-    runtime: python
-    repo: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-    branch: main
-    rootDir: backend
-    buildCommand: |
-      pip install --upgrade pip && \
-      pip install . && \
-      pip install ../GIFTs
-    startCommand: uvicorn src.api:app --host 0.0.0.0 --port ${PORT}
+    runtime: image
+    image:
+      url: ghcr.io/joseph-c-mcguire/metar-to-IWXXM/backend:main-latest
     healthCheckPath: /health
-    autoDeployTrigger: commit
     numInstances: 1
     plan: starter
     envVars:
@@ -42,16 +35,10 @@ services:
 
   - type: web
     name: metar-to-iwxxm-auth
-    runtime: python
-    repo: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-    branch: main
-    rootDir: auth
-    buildCommand: |
-      pip install --upgrade pip && \
-      pip install .
-    startCommand: uvicorn auth.__main__:app --host 0.0.0.0 --port ${PORT}
+    runtime: image
+    image:
+      url: ghcr.io/joseph-c-mcguire/metar-to-IWXXM/auth:main-latest
     healthCheckPath: /health
-    autoDeployTrigger: commit
     numInstances: 1
     plan: starter
     envVars:
@@ -67,13 +54,12 @@ services:
 
   - type: web
     name: metar-to-iwxxm-frontend
-    runtime: static
-    repo: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-    branch: main
-    rootDir: frontend
-    buildCommand: npm ci && npm run build
-    staticPublishPath: dist
-    autoDeployTrigger: commit
+    runtime: image
+    image:
+      url: ghcr.io/joseph-c-mcguire/metar-to-IWXXM/frontend:main-latest
+    healthCheckPath: /
+    numInstances: 1
+    plan: starter
     envVars:
       - key: VITE_APP_URL
         value: https://metar-to-iwxxm-frontend.onrender.com
@@ -84,7 +70,3 @@ services:
       # REQUIRED in Render dashboard:
       # VITE_SUPABASE_URL
       # VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
