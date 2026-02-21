@@ -465,8 +465,14 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
+      - name: Report deploy hook configuration
+        run: |
+          [ -n "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}" ] && echo "✅ RENDER_BACKEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_BACKEND_DEPLOY_HOOK is missing"
+          [ -n "${{ secrets.RENDER_AUTH_DEPLOY_HOOK }}" ] && echo "✅ RENDER_AUTH_DEPLOY_HOOK is set" || echo "⚠️  RENDER_AUTH_DEPLOY_HOOK is missing"
+          [ -n "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}" ] && echo "✅ RENDER_FRONTEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_FRONTEND_DEPLOY_HOOK is missing"
+
       - name: Deploy backend image to Render
-        if: needs.build-and-push.outputs.backend_built == 'true'
+        if: needs.build-and-push.outputs.backend_built == 'true' && secrets.RENDER_BACKEND_DEPLOY_HOOK != ''
         env:
           DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
@@ -475,7 +481,7 @@ jobs:
           curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
 
       - name: Deploy auth image to Render
-        if: needs.build-and-push.outputs.auth_built == 'true'
+        if: needs.build-and-push.outputs.auth_built == 'true' && secrets.RENDER_AUTH_DEPLOY_HOOK != ''
         env:
           DEPLOY_HOOK: ${{ secrets.RENDER_AUTH_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.AUTH_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
@@ -484,7 +490,7 @@ jobs:
           curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
 
       - name: Deploy frontend image to Render
-        if: needs.build-and-push.outputs.frontend_built == 'true'
+        if: needs.build-and-push.outputs.frontend_built == 'true' && secrets.RENDER_FRONTEND_DEPLOY_HOOK != ''
         env:
           DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
