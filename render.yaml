@@ -13,7 +13,7 @@ services:
       - key: DISABLE_AUTH
         value: "true"
       - key: AUTH_SERVICE_URL
-        value: https://metar-to-iwxxm-auth.onrender.com
+        value: https://metar-to-iwxxm-auth-v2.onrender.com
       - key: ADMIN_USER_ID
         value: "dev-user-12345"
       - key: ADMIN_EMAIL
@@ -25,7 +25,7 @@ services:
       - key: LOG_LEVEL
         value: "INFO"
       - key: ALLOWED_ORIGINS
-        value: https://metar-to-iwxxm-frontend.onrender.com
+        value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
       - key: ENABLE_STATISTICS
         value: "true"
       - key: ENABLE_WEBHOOKS
@@ -34,7 +34,7 @@ services:
       # DATABASE_URL
 
   - type: web
-    name: metar-to-iwxxm-auth
+    name: metar-to-iwxxm-auth-v2
     runtime: image
     image:
       url: ghcr.io/joseph-c-mcguire/metar-to-IWXXM/auth:main-latest
@@ -45,15 +45,15 @@ services:
       - key: LOG_LEVEL
         value: "INFO"
       - key: FRONTEND_BASE_URL
-        value: https://metar-to-iwxxm-frontend.onrender.com
+        value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
       - key: CORS_ORIGINS
-        value: https://metar-to-iwxxm-frontend.onrender.com
+        value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
       # REQUIRED in Render dashboard:
       # SUPABASE_URL
       # SUPABASE_ANON_KEY
 
   - type: web
-    name: metar-to-iwxxm-frontend
+    name: metar-to-iwxxm-frontend-v4-web
     runtime: image
     image:
       url: ghcr.io/joseph-c-mcguire/metar-to-IWXXM/frontend:main-latest
@@ -62,15 +62,15 @@ services:
     plan: starter
     envVars:
       - key: VITE_APP_URL
-        value: https://metar-to-iwxxm-frontend.onrender.com
+        value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
       - key: VITE_BACKEND_URL
-        value: https://metar-to-iwxxm-frontend.onrender.com
+        value: https://metar-to-iwxxm-api.onrender.com
       - key: VITE_AUTH_SERVICE_URL
-        value: https://metar-to-iwxxm-frontend.onrender.com
+        value: https://metar-to-iwxxm-auth-v2.onrender.com
       - key: BACKEND_UPSTREAM
         value: https://metar-to-iwxxm-api.onrender.com
       - key: AUTH_UPSTREAM
-        value: https://metar-to-iwxxm-auth.onrender.com
+        value: https://metar-to-iwxxm-auth-v2.onrender.com
       # REQUIRED in Render dashboard:
       # VITE_SUPABASE_URL
       # VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY

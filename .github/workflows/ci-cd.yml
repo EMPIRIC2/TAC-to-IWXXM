@@ -384,7 +384,7 @@ jobs:
         if: steps.filter.outputs.backend_build == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./backend
+          context: .
           file: ./backend/docker/Dockerfile
           platforms: linux/amd64
           push: true
@@ -396,7 +396,7 @@ jobs:
         if: steps.filter.outputs.auth_build == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./auth
+          context: .
           file: ./auth/Dockerfile
           platforms: linux/amd64
           push: true
