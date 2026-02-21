@@ -162,11 +162,13 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
-                body: `### Update: ${new Date().toISOString()}
-
-Success Rate: ${successRate}% (${passed}/${total} tests passed)
-
-[View Latest Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+                body: [
+                  `### Update: ${new Date().toISOString()}`,
+                  '',
+                  `Success Rate: ${successRate}% (${passed}/${total} tests passed)`,
+                  '',
+                  `[View Latest Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
+                ].join('\n')
               });
             }
       
