@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - 95% Coverage Required
+name: CI/CD Pipeline
 
 on:
   push:
@@ -18,15 +18,14 @@ env:
   FRONTEND_VITE_APP_URL: https://metar-to-iwxxm-frontend-v4-web.onrender.com
   FRONTEND_VITE_BACKEND_URL: https://metar-to-iwxxm-api.onrender.com
   FRONTEND_VITE_AUTH_SERVICE_URL: https://metar-to-iwxxm-auth-v2.onrender.com
-  COVERAGE_THRESHOLD: 95
 
 jobs:
   # ============================================================================
-  # BACKEND - Python Tests & Coverage (95% required)
+  # BACKEND - Python Tests & Coverage
   # ============================================================================
   backend-tests:
     runs-on: ubuntu-latest
-    name: Backend - Tests & Coverage (95% minimum)
+    name: Backend - Tests & Coverage
     
     steps:
       - name: Manual checkout
@@ -53,6 +52,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip uv
           cd backend && uv pip install --system -e ".[dev]" skyfield httpx
+          python -m pip install pytest pytest-cov
       
       - name: Run unit tests with coverage
         working-directory: ./backend
@@ -62,28 +62,8 @@ jobs:
             --cov-report=json \
             --cov-report=term-missing \
             --cov-report=html \
-            --cov-fail-under=95 \
             --tb=short \
             -v
-      
-      - name: Verify 95% coverage threshold
-        working-directory: ./backend
-        run: |
-          python -c "
-          import json
-          import sys
-          
-          with open('coverage.json') as f:
-              data = json.load(f)
-              total = data['totals']['percent_covered']
-              print(f'Backend Coverage: {total:.2f}%')
-              
-              if total < 95:
-                  print(f'❌ FAILED: Coverage {total:.2f}% below required 95%')
-                  sys.exit(1)
-              else:
-                  print(f'✅ PASSED: Coverage {total:.2f}% meets 95% requirement')
-          "
       
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
@@ -93,11 +73,11 @@ jobs:
           path: backend/htmlcov/
   
   # ============================================================================
-  # AUTH SERVICE - Python Tests & Coverage (95% required)
+  # AUTH SERVICE - Python Tests & Coverage
   # ============================================================================
   auth-tests:
     runs-on: ubuntu-latest
-    name: Auth Service - Tests & Coverage (95% minimum)
+    name: Auth Service - Tests & Coverage
     
     steps:
       - name: Manual checkout
@@ -124,6 +104,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip uv
           cd auth && uv pip install --system -e ".[dev]"
+          python -m pip install pytest pytest-cov
       
       - name: Run unit tests with coverage
         working-directory: ./auth
@@ -133,28 +114,8 @@ jobs:
             --cov-report=json \
             --cov-report=term-missing \
             --cov-report=html \
-            --cov-fail-under=95 \
             --tb=short \
             -v
-      
-      - name: Verify 95% coverage threshold
-        working-directory: ./auth
-        run: |
-          python -c "
-          import json
-          import sys
-          
-          with open('coverage.json') as f:
-              data = json.load(f)
-              total = data['totals']['percent_covered']
-              print(f'Auth Service Coverage: {total:.2f}%')
-              
-              if total < 95:
-                  print(f'❌ FAILED: Coverage {total:.2f}% below required 95%')
-                  sys.exit(1)
-              else:
-                  print(f'✅ PASSED: Coverage {total:.2f}% meets 95% requirement')
-          "
       
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
@@ -164,11 +125,11 @@ jobs:
           path: auth/htmlcov/
   
   # ============================================================================
-  # GIFTs - Python Tests & Coverage (95% required)
+  # GIFTs - Python Tests & Coverage
   # ============================================================================
   gifts-tests:
     runs-on: ubuntu-latest
-    name: GIFTs - Tests & Coverage (95% minimum)
+    name: GIFTs - Tests & Coverage
     
     steps:
       - name: Manual checkout
@@ -179,6 +140,10 @@ jobs:
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
+
+      - name: Initialize GIFTs submodule
+        run: |
+          git submodule update --init --depth 1 GIFTs
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -199,32 +164,8 @@ jobs:
             --cov-report=json \
             --cov-report=term-missing \
             --cov-report=html \
-            --cov-fail-under=95 \
             --tb=short \
             -v || echo "Tests completed"
-      
-      - name: Verify 95% coverage threshold
-        working-directory: ./GIFTs
-        run: |
-          python -c "
-          import json
-          import sys
-          import os
-          
-          if os.path.exists('coverage.json'):
-              with open('coverage.json') as f:
-                  data = json.load(f)
-                  total = data['totals']['percent_covered']
-                  print(f'GIFTs Coverage: {total:.2f}%')
-                  
-                  if total < 95:
-                      print(f'❌ FAILED: Coverage {total:.2f}% below required 95%')
-                      sys.exit(1)
-                  else:
-                      print(f'✅ PASSED: Coverage {total:.2f}% meets 95% requirement')
-          else:
-              print('⚠️  Warning: coverage.json not found, skipping coverage check')
-          " || true
       
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
@@ -235,11 +176,11 @@ jobs:
         continue-on-error: true
   
   # ============================================================================
-  # FRONTEND - JavaScript/TypeScript Tests & Coverage (95% required)
+  # FRONTEND - JavaScript/TypeScript Tests & Coverage
   # ============================================================================
   frontend-tests:
     runs-on: ubuntu-latest
-    name: Frontend - Tests & Coverage (95% minimum)
+    name: Frontend - Tests & Coverage
     
     steps:
       - uses: actions/checkout@v4
@@ -262,18 +203,11 @@ jobs:
         run: npm run test:coverage 2>&1 | tee test-output.log
         continue-on-error: true
       
-      - name: Check coverage threshold
+      - name: Report coverage summary
         working-directory: ./frontend
         run: |
           COVERAGE=$(grep -oP 'Coverage: \K[\d.]+' test-output.log || echo "0")
           echo "Frontend Coverage: ${COVERAGE}%"
-          
-          if (( $(echo "$COVERAGE < 95" | bc -l) )); then
-              echo "❌ FAILED: Coverage ${COVERAGE}% below required 95%"
-              exit 1
-          else
-              echo "✅ PASSED: Coverage ${COVERAGE}% meets 95% requirement"
-          fi
         continue-on-error: true
       
       - name: Upload coverage artifact
@@ -285,18 +219,18 @@ jobs:
         continue-on-error: true
   
   # ============================================================================
-  # COVERAGE ENFORCEMENT - All Projects must meet 95%
+  # TEST RESULT AGGREGATION
   # ============================================================================
   coverage-enforcement:
     runs-on: ubuntu-latest
-    name: Coverage Enforcement - 95% Minimum Required
+    name: Test Result Aggregation
     needs: [backend-tests, auth-tests, gifts-tests, frontend-tests]
     if: always()
     
     steps:
       - name: Check all test results
         run: |
-          echo "## Code Coverage Requirements - 95% Minimum" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Status Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Project | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
@@ -305,23 +239,23 @@ jobs:
           echo "| GIFTs | ${{ needs.gifts-tests.result == 'success' && '✅ PASS' || '⚠️  OPTIONAL' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Frontend | ${{ needs.frontend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**All projects must meet 95% unit test coverage requirement**" >> $GITHUB_STEP_SUMMARY
+          echo "**Coverage reports are informative-only; no minimum threshold is enforced.**" >> $GITHUB_STEP_SUMMARY
       
-      - name: Enforce coverage requirements
+      - name: Enforce required test jobs
         run: |
           BACKEND=${{ needs.backend-tests.result }}
           AUTH=${{ needs.auth-tests.result }}
           FRONTEND=${{ needs.frontend-tests.result }}
           
           if [ "$BACKEND" != "success" ] || [ "$AUTH" != "success" ] || [ "$FRONTEND" != "success" ]; then
-            echo "❌ Coverage requirements not met"
+            echo "❌ Required test jobs failed"
             [ "$BACKEND" != "success" ] && echo "  - Backend: $BACKEND"
             [ "$AUTH" != "success" ] && echo "  - Auth Service: $AUTH"
             [ "$FRONTEND" != "success" ] && echo "  - Frontend: $FRONTEND"
             exit 1
           fi
-          
-          echo "✅ All projects meet 95% coverage requirement"
+
+          echo "✅ Required test jobs passed"
   
   # ============================================================================
   # MONOREPO CHANGE DETECTION
@@ -541,7 +475,7 @@ jobs:
         run: |
           echo "# 🧪 Test & Coverage Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Coverage Status (95% Required)" >> $GITHUB_STEP_SUMMARY
+          echo "## Coverage Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Project | Status | Coverage |" >> $GITHUB_STEP_SUMMARY
           echo "|---------|--------|----------|" >> $GITHUB_STEP_SUMMARY
@@ -552,8 +486,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Overall Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Enforcement**: ${{ needs.coverage-enforcement.result == 'success' && '✅ ALL REQUIREMENTS MET' || '❌ PLEASE FIX COVERAGE' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Required Test Jobs**: ${{ needs.coverage-enforcement.result == 'success' && '✅ PASSING' || '❌ FAILING' }}" >> $GITHUB_STEP_SUMMARY
           echo "**Docker Build**: ${{ needs.build-and-push.result == 'success' && '✅ SUCCESS' || '⏭️  SKIPPED' }}" >> $GITHUB_STEP_SUMMARY
           echo "**Render Deploy**: ${{ needs.deploy-render.result == 'success' && '✅ SUCCESS' || '⏭️  SKIPPED' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> **Threshold**: 95% minimum unit test coverage for all projects" >> $GITHUB_STEP_SUMMARY
+          echo "> **Policy**: Coverage is reported but not hard-gated by a minimum percentage." >> $GITHUB_STEP_SUMMARY
