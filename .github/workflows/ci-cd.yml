@@ -463,36 +463,40 @@ jobs:
     name: Deploy Render Services
     needs: [build-and-push]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    env:
+      RENDER_BACKEND_DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+      RENDER_AUTH_DEPLOY_HOOK: ${{ secrets.RENDER_AUTH_DEPLOY_HOOK }}
+      RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
 
     steps:
       - name: Report deploy hook configuration
         run: |
-          [ -n "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}" ] && echo "✅ RENDER_BACKEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_BACKEND_DEPLOY_HOOK is missing"
-          [ -n "${{ secrets.RENDER_AUTH_DEPLOY_HOOK }}" ] && echo "✅ RENDER_AUTH_DEPLOY_HOOK is set" || echo "⚠️  RENDER_AUTH_DEPLOY_HOOK is missing"
-          [ -n "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}" ] && echo "✅ RENDER_FRONTEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_FRONTEND_DEPLOY_HOOK is missing"
+          [ -n "${RENDER_BACKEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_BACKEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_BACKEND_DEPLOY_HOOK is missing"
+          [ -n "${RENDER_AUTH_DEPLOY_HOOK}" ] && echo "✅ RENDER_AUTH_DEPLOY_HOOK is set" || echo "⚠️  RENDER_AUTH_DEPLOY_HOOK is missing"
+          [ -n "${RENDER_FRONTEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_FRONTEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_FRONTEND_DEPLOY_HOOK is missing"
 
       - name: Deploy backend image to Render
-        if: needs.build-and-push.outputs.backend_built == 'true' && secrets.RENDER_BACKEND_DEPLOY_HOOK != ''
+        if: needs.build-and-push.outputs.backend_built == 'true' && env.RENDER_BACKEND_DEPLOY_HOOK != ''
         env:
-          DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+          DEPLOY_HOOK: ${{ env.RENDER_BACKEND_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
         run: |
           ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
           curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
 
       - name: Deploy auth image to Render
-        if: needs.build-and-push.outputs.auth_built == 'true' && secrets.RENDER_AUTH_DEPLOY_HOOK != ''
+        if: needs.build-and-push.outputs.auth_built == 'true' && env.RENDER_AUTH_DEPLOY_HOOK != ''
         env:
-          DEPLOY_HOOK: ${{ secrets.RENDER_AUTH_DEPLOY_HOOK }}
+          DEPLOY_HOOK: ${{ env.RENDER_AUTH_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.AUTH_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
         run: |
           ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
           curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
 
       - name: Deploy frontend image to Render
-        if: needs.build-and-push.outputs.frontend_built == 'true' && secrets.RENDER_FRONTEND_DEPLOY_HOOK != ''
+        if: needs.build-and-push.outputs.frontend_built == 'true' && env.RENDER_FRONTEND_DEPLOY_HOOK != ''
         env:
-          DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
+          DEPLOY_HOOK: ${{ env.RENDER_FRONTEND_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
         run: |
           ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
