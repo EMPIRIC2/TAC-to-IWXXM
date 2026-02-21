@@ -8,9 +8,9 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  BACKEND_IMAGE: ${{ github.repository }}/backend
-  AUTH_IMAGE: ${{ github.repository }}/auth
-  FRONTEND_IMAGE: ${{ github.repository }}/frontend
+  BACKEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/backend
+  AUTH_IMAGE: joseph-c-mcguire/metar-to-iwxxm/auth
+  FRONTEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/frontend
   FRONTEND_SOURCE_REPO: https://github.com/joseph-c-mcguire/Metartoiwxxmfrontend.git
   COVERAGE_THRESHOLD: 95
 
