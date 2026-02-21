@@ -1,10 +1,7 @@
-name: CI/CD Pipeline with 95% Coverage Requirement
+name: Legacy CI Pipeline with 95% Coverage Requirement (Manual)
 
 on:
-  push:
-    branches: [ main, dev ]
-  pull_request:
-    branches: [ main, dev ]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io

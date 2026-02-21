@@ -8,7 +8,9 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/backend
+  BACKEND_IMAGE: ${{ github.repository }}/backend
+  AUTH_IMAGE: ${{ github.repository }}/auth
+  FRONTEND_IMAGE: ${{ github.repository }}/frontend
   COVERAGE_THRESHOLD: 95
 
 jobs:
@@ -290,16 +292,63 @@ jobs:
           echo "✅ All projects meet 95% coverage requirement"
   
   # ============================================================================
+  # MONOREPO CHANGE DETECTION
+  # ============================================================================
+  detect-changes:
+    runs-on: ubuntu-latest
+    name: Detect Monorepo Changes
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    outputs:
+      backend_changed: ${{ steps.filter.outputs.backend }}
+      auth_changed: ${{ steps.filter.outputs.auth }}
+      frontend_changed: ${{ steps.filter.outputs.frontend }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - 'GIFTs/**'
+              - 'schemas/**'
+              - 'scripts/**'
+              - 'docker-compose.yml'
+              - 'render.yaml'
+            auth:
+              - 'auth/**'
+              - 'scripts/**'
+              - 'docker-compose.yml'
+              - 'render.yaml'
+            frontend:
+              - 'frontend/**'
+              - 'scripts/**'
+              - 'docker-compose.yml'
+              - 'render.yaml'
+
+  # ============================================================================
   # BUILD & PUSH DOCKER IMAGES
   # ============================================================================
   build-and-push:
     runs-on: ubuntu-latest
-    name: Build & Push Docker (Backend & Auth)
-    needs: [backend-tests, auth-tests, frontend-tests, coverage-enforcement]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
+    name: Build & Push Docker Images
+    needs: [backend-tests, auth-tests, frontend-tests, coverage-enforcement, detect-changes]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
       packages: write
+
+    outputs:
+      image_tag: ${{ steps.tags.outputs.image_tag }}
+      backend_built: ${{ steps.filter.outputs.backend_build }}
+      auth_built: ${{ steps.filter.outputs.auth_build }}
+      frontend_built: ${{ steps.filter.outputs.frontend_build }}
     
     steps:
       - uses: actions/checkout@v4
@@ -315,26 +364,95 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
+      - name: Generate image tags
+        id: tags
+        run: |
+          TS="$(date -u +'%Y%m%d%H%M%S')"
+          SHORT_SHA="${GITHUB_SHA::7}"
+          IMAGE_TAG="${TS}-${SHORT_SHA}"
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve services to build
+        id: filter
+        run: |
+          echo "backend_build=${{ needs.detect-changes.outputs.backend_changed == 'true' && 'true' || 'false' }}" >> "$GITHUB_OUTPUT"
+          echo "auth_build=${{ needs.detect-changes.outputs.auth_changed == 'true' && 'true' || 'false' }}" >> "$GITHUB_OUTPUT"
+          echo "frontend_build=${{ needs.detect-changes.outputs.frontend_changed == 'true' && 'true' || 'false' }}" >> "$GITHUB_OUTPUT"
+
       - name: Build and push backend Docker image
-        uses: docker/build-push-action@v4
-        continue-on-error: true
+        if: steps.filter.outputs.backend_build == 'true'
+        uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ./backend/Dockerfile
+          context: ./backend
+          file: ./backend/docker/Dockerfile
+          platforms: linux/amd64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          labels: version=latest,coverage=95+,test-requirement=passed
-      
-      - name: Build and push auth service Docker image
-        uses: docker/build-push-action@v4
-        continue-on-error: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
+            ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:main-latest
+
+      - name: Build and push auth Docker image
+        if: steps.filter.outputs.auth_build == 'true'
+        uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./auth
           file: ./auth/Dockerfile
+          platforms: linux/amd64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-auth:latest
-          labels: version=latest,coverage=95+,test-requirement=passed
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.AUTH_IMAGE }}:${{ steps.tags.outputs.image_tag }}
+            ${{ env.REGISTRY }}/${{ env.AUTH_IMAGE }}:main-latest
+
+      - name: Build and push frontend Docker image
+        if: steps.filter.outputs.frontend_build == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          target: production
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:main-latest
+
+  # ============================================================================
+  # DEPLOY TO RENDER VIA DEPLOY HOOKS
+  # ============================================================================
+  deploy-render:
+    runs-on: ubuntu-latest
+    name: Deploy Render Services
+    needs: [build-and-push]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy backend image to Render
+        if: needs.build-and-push.outputs.backend_built == 'true'
+        env:
+          DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
+          curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
+
+      - name: Deploy auth image to Render
+        if: needs.build-and-push.outputs.auth_built == 'true'
+        env:
+          DEPLOY_HOOK: ${{ secrets.RENDER_AUTH_DEPLOY_HOOK }}
+          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.AUTH_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
+          curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
+
+      - name: Deploy frontend image to Render
+        if: needs.build-and-push.outputs.frontend_built == 'true'
+        env:
+          DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
+          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
+          curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
   
   # ============================================================================
   # TEST SUMMARY & FINAL STATUS
@@ -343,7 +461,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Test & Coverage Summary
     if: always()
-    needs: [backend-tests, auth-tests, gifts-tests, frontend-tests, coverage-enforcement, build-and-push]
+    needs: [backend-tests, auth-tests, gifts-tests, frontend-tests, coverage-enforcement, build-and-push, deploy-render]
     
     steps:
       - name: Generate final summary
@@ -363,5 +481,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Enforcement**: ${{ needs.coverage-enforcement.result == 'success' && '✅ ALL REQUIREMENTS MET' || '❌ PLEASE FIX COVERAGE' }}" >> $GITHUB_STEP_SUMMARY
           echo "**Docker Build**: ${{ needs.build-and-push.result == 'success' && '✅ SUCCESS' || '⏭️  SKIPPED' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Render Deploy**: ${{ needs.deploy-render.result == 'success' && '✅ SUCCESS' || '⏭️  SKIPPED' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "> **Threshold**: 95% minimum unit test coverage for all projects" >> $GITHUB_STEP_SUMMARY
