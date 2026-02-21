@@ -13,6 +13,11 @@ env:
   FRONTEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/frontend
   FRONTEND_SOURCE_REPO: https://github.com/joseph-c-mcguire/Metartoiwxxmfrontend.git
   RENDER_DEPLOY_MODE: source
+  FRONTEND_VITE_SUPABASE_URL: https://ktvxijislbtgqapllmuk.supabase.co
+  FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: sb_publishable_eqkNmJv86m9u7Gmym9Wf8Q_NC1fUZ8x
+  FRONTEND_VITE_APP_URL: https://metar-to-iwxxm-frontend-v4-web.onrender.com
+  FRONTEND_VITE_BACKEND_URL: https://metar-to-iwxxm-api.onrender.com
+  FRONTEND_VITE_AUTH_SERVICE_URL: https://metar-to-iwxxm-auth-v2.onrender.com
   COVERAGE_THRESHOLD: 95
 
 jobs:
@@ -452,6 +457,12 @@ jobs:
           target: production
           platforms: linux/amd64
           push: true
+          build-args: |
+            VITE_SUPABASE_URL=${{ env.FRONTEND_VITE_SUPABASE_URL }}
+            VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${{ env.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
+            VITE_APP_URL=${{ env.FRONTEND_VITE_APP_URL }}
+            VITE_BACKEND_URL=${{ env.FRONTEND_VITE_BACKEND_URL }}
+            VITE_AUTH_SERVICE_URL=${{ env.FRONTEND_VITE_AUTH_SERVICE_URL }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:main-latest
