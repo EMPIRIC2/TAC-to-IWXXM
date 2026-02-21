@@ -65,8 +65,9 @@ services:
       # SUPABASE_URL
       # SUPABASE_ANON_KEY
 
-  - type: static_site
+  - type: web
     name: metar-to-iwxxm-frontend
+    runtime: static
     repo: https://github.com/joseph-c-mcguire/metar-to-IWXXM
     branch: main
     rootDir: frontend
