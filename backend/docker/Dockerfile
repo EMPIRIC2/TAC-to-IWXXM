@@ -7,9 +7,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 # Install minimal deps and uv
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl git \
+    && apt-get install -y --no-install-recommends curl git ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir uv
+    && pip install --no-cache-dir --upgrade pip
 
 # Copy project metadata first for layer caching
 COPY backend/pyproject.toml ./pyproject.toml
@@ -18,8 +18,8 @@ COPY backend/pyproject.toml ./pyproject.toml
 COPY backend/src ./src
 
 # Install both the backend package and GIFTs library into system env
-RUN uv pip install --system . && \
-    uv pip install --system gifts
+RUN pip install --no-cache-dir . && \
+    pip install --no-cache-dir gifts
 
 # Non-root user
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
