@@ -23,8 +23,11 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
+      - name: Initialize required submodules only
+        run: |
+          git submodule update --init --depth 1 frontend
+          git submodule update --init --depth 1 GIFTs
       
       - name: Set up Python
         uses: actions/setup-python@v4
