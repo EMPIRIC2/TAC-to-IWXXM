@@ -114,3 +114,21 @@ Pass criteria:
 3. Trigger deploys using deploy hooks with explicit `imgURL` tags/digests.
 4. Re-run step 2 E2E checks after image-backed cutover.
 5. Optionally decommission/suspend superseded services after burn-in.
+
+---
+
+## Root Causes Fixed During This Run
+
+1. Render sync drift:
+  - `render.yaml` previously referenced service names/URLs that did not match active production services.
+  - Updated blueprint entries to active canonical names (`metar-to-iwxxm-auth-v2`, `metar-to-iwxxm-frontend-v4-web`) and corresponding URLs.
+
+2. Empty/failing GHCR publishing:
+  - Frontend repo main was missing tracked `Dockerfile`/`nginx.conf`; CI could not build frontend image from submodule source.
+  - Added tracked container files in frontend repo commit `e44e8d2`.
+  - Backend/auth Docker build contexts in CI were incompatible with Dockerfile `COPY` paths from repository root.
+  - Updated CI contexts to `.` for backend/auth image builds.
+
+3. Build pipeline blocked by strict coverage gate:
+  - Main-branch image publishing was blocked when tests failed, leaving GHCR unpopulated.
+  - Updated CI so `build-and-push` depends on monorepo change detection rather than coverage gate for main pushes.
