@@ -317,11 +317,13 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issue.number,
-                  body: `### ✅ Resolved: ${new Date().toISOString()}
-
-E2E tests are now passing. Full stack integration verified.
-
-[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+                  body: [
+                    `### ✅ Resolved: ${new Date().toISOString()}`,
+                    '',
+                    'E2E tests are now passing. Full stack integration verified.',
+                    '',
+                    `[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
+                  ].join('\n')
                 });
                 
                 await github.rest.issues.update({
