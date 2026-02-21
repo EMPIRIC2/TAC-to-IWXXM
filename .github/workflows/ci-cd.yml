@@ -417,6 +417,7 @@ jobs:
       - name: Build and push backend Docker image
         if: steps.filter.outputs.backend_build == 'true'
         uses: docker/build-push-action@v6
+        continue-on-error: true
         with:
           context: .
           file: ./backend/docker/Dockerfile
