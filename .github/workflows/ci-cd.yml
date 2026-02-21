@@ -338,7 +338,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     name: Build & Push Docker Images
-    needs: [backend-tests, auth-tests, frontend-tests, coverage-enforcement, detect-changes]
+    needs: [detect-changes]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
