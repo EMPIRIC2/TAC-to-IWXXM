@@ -22,11 +22,14 @@ jobs:
     name: Backend - Tests & Coverage (95% minimum)
     
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          submodules: false
-          lfs: false
+      - name: Manual checkout
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
 
       - name: Initialize required submodules only
         run: |
