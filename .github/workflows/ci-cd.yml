@@ -463,6 +463,7 @@ jobs:
             VITE_APP_URL=${{ env.FRONTEND_VITE_APP_URL }}
             VITE_BACKEND_URL=${{ env.FRONTEND_VITE_BACKEND_URL }}
             VITE_AUTH_SERVICE_URL=${{ env.FRONTEND_VITE_AUTH_SERVICE_URL }}
+            VITE_FRONTEND_DEPLOY_MARK=${{ github.sha }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:main-latest
