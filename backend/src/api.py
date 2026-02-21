@@ -30,6 +30,8 @@ try:
     from .utilities.security import verify_supabase_token
     from .utilities.tac_parser import extract_airport_code
     from .schemas.conversion import (
+        ConversionIssue,
+        ConversionIssueSeverity,
         ConversionResult,
         ConversionResponse,
         ConversionRequest,
@@ -54,6 +56,8 @@ except ImportError as e:
     from utilities.security import verify_supabase_token
     from utilities.tac_parser import extract_airport_code
     from schemas.conversion import (
+        ConversionIssue,
+        ConversionIssueSeverity,
         ConversionResult,
         ConversionResponse,
         ConversionRequest,
@@ -104,33 +108,141 @@ app = FastAPI(
     }
 )
 
+
+class ConvertRequestLoggingMiddleware:
+    """Log request/response details for convert flow, including OPTIONS preflight."""
+
+    def __init__(self, app) -> None:
+        self.app = app
+
+    async def __call__(self, scope, receive, send) -> None:
+        if scope.get("type") != "http":
+            await self.app(scope, receive, send)
+            return
+
+        path = scope.get("path", "")
+        method = scope.get("method", "")
+
+        if path != "/api/v1/convert":
+            await self.app(scope, receive, send)
+            return
+
+        headers = {
+            key.decode("latin1").lower(): value.decode("latin1")
+            for key, value in scope.get("headers", [])
+        }
+
+        logger.info(
+            "[PREFLIGHT] %s %s origin=%s acr_method=%s acr_headers=%s content_type=%s",
+            method,
+            path,
+            headers.get("origin", "none"),
+            headers.get("access-control-request-method", "none"),
+            headers.get("access-control-request-headers", "none"),
+            headers.get("content-type", "none"),
+        )
+
+        async def send_wrapper(message):
+            if message.get("type") == "http.response.start":
+                status_code = message.get("status")
+                logger.info(
+                    "[PREFLIGHT] %s %s -> status=%s",
+                    method,
+                    path,
+                    status_code,
+                )
+            await send(message)
+
+        await self.app(scope, receive, send_wrapper)
+
 # Configure CORS with dynamic allowed origins from environment
+def is_dev_cors_relaxation_enabled() -> bool:
+    """Enable relaxed CORS behavior for local debugging when explicitly requested."""
+    return os.getenv("ENABLE_DEV_CORS_RELAXATION", "").lower() in (
+        "true",
+        "1",
+        "yes",
+        "on",
+    )
+
+
+def add_origin_if_missing(origins: list, origin: str) -> list:
+    """Append origin if not present."""
+    if origin and origin not in origins:
+        origins.append(origin)
+    return origins
+
+
+def add_loopback_origin_variants(origins: list) -> list:
+    """Ensure localhost and 127.0.0.1 variants are both allowed for local dev."""
+    expanded_origins = list(origins)
+    for origin in origins:
+        if "localhost" in origin:
+            loopback_variant = origin.replace("localhost", "127.0.0.1")
+            add_origin_if_missing(expanded_origins, loopback_variant)
+        if "127.0.0.1" in origin:
+            localhost_variant = origin.replace("127.0.0.1", "localhost")
+            add_origin_if_missing(expanded_origins, localhost_variant)
+    return expanded_origins
+
+
 def get_cors_origins() -> list:
     """Get allowed CORS origins from environment or use defaults."""
     allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "")
+    relaxed_cors = is_dev_cors_relaxation_enabled()
     
     if allowed_origins_env:
         # Parse comma-separated list from env var
         origins = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
-        return origins
+        if relaxed_cors:
+            add_origin_if_missing(origins, "http://localhost:5173")
+        return add_loopback_origin_variants(origins)
     
     # Default origins if env var not set
     frontend_url = os.getenv("FRONTEND_URL", "http://localhost:8000")
-    return [
+    origins = [
         frontend_url,
-        "http://localhost:3000",  # Vite dev server
+        "http://localhost:3000",
     ]
+    if relaxed_cors:
+        add_origin_if_missing(origins, "http://localhost:5173")
+    return add_loopback_origin_variants(origins)
+
+
+def get_cors_allowed_headers() -> list:
+    """Get allowed CORS request headers."""
+    if is_dev_cors_relaxation_enabled():
+        return ["*"]
+    return ["Authorization", "Content-Type"]
 
 
 allowed_origins = get_cors_origins()
+allowed_headers = get_cors_allowed_headers()
+dev_cors_relaxed = is_dev_cors_relaxation_enabled()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_headers=allowed_headers,
 )
+
+app.add_middleware(ConvertRequestLoggingMiddleware)
+
+logger.info(
+    "[CORS] Configured relaxed_mode=%s allow_origins=%s allow_methods=%s allow_headers=%s allow_credentials=%s",
+    dev_cors_relaxed,
+    allowed_origins,
+    ["GET", "POST", "OPTIONS"],
+    allowed_headers,
+    True,
+)
+
+if dev_cors_relaxed:
+    logger.warning(
+        "[CORS] ENABLE_DEV_CORS_RELAXATION is active: localhost:5173 added and preflight headers set to '*'"
+    )
 
 
 # Add Translation Centre identification headers (ICAO OPMET compliance)
@@ -597,24 +709,62 @@ async def convert(
     validate_output: bool = Form(default=False, description="Enable full 7-layer IWXXM validation after conversion"),
     user: dict = Depends(verify_supabase_token),
 ) -> ConversionResponse:
+    logger.info(
+        "[CONVERT] Request received method=%s path=%s origin=%s content_type=%s has_auth_header=%s",
+        request.method,
+        request.url.path,
+        request.headers.get("origin", "none"),
+        request.headers.get("content-type", "none"),
+        bool(request.headers.get("authorization")),
+    )
+
     # Try to parse JSON body if Content-Type is application/json
     request_body = None
     if request.headers.get("content-type", "").startswith("application/json"):
+        logger.info("[CONVERT] Processing JSON body payload")
         try:
             body_data = await request.json()
         except Exception as e:
+            logger.warning("[CONVERT] Invalid JSON body: %s", str(e))
             raise HTTPException(
                 status_code=422,
-                detail=f"Invalid JSON in request body: {str(e)}"
+                detail=ErrorDetail(
+                    message="Invalid JSON in request body",
+                    errors=[str(e)],
+                    issues=[
+                        ConversionIssue(
+                            source="request",
+                            message=str(e),
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Send a valid JSON payload with a 'metars' array.",
+                            code="INVALID_JSON_BODY",
+                        )
+                    ],
+                    total_errors=1,
+                ).model_dump(),
             )
         
         try:
             request_body = ConversionRequest(**body_data)
         except Exception as e:
             # Pydantic validation error - return 422
+            logger.warning("[CONVERT] JSON validation error: %s", str(e))
             raise HTTPException(
                 status_code=422,
-                detail=f"Validation error: {str(e)}"
+                detail=ErrorDetail(
+                    message="Validation error in request body",
+                    errors=[str(e)],
+                    issues=[
+                        ConversionIssue(
+                            source="request",
+                            message=str(e),
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Provide a non-empty 'metars' array and a valid version string.",
+                            code="REQUEST_VALIDATION_ERROR",
+                        )
+                    ],
+                    total_errors=1,
+                ).model_dump(),
             )
     """Convert METAR/SPECI TAC text to IWXXM XML format.
 
@@ -705,6 +855,13 @@ async def convert(
         validation_level = request_body.validation_level or "basic"
         manual_text = ""  # Override form input
         files = None  # Override file input
+
+        logger.info(
+            "[CONVERT] JSON mode metars=%s version=%s validation_level=%s",
+            len(metars or []),
+            iwxxm_version,
+            validation_level,
+        )
         
         # Map validation_level to validate_output
         validate_output = validation_level in ["comprehensive", "schematron", "icao_opmet"]
@@ -719,18 +876,71 @@ async def convert(
         iwxxm_version = normalize_version(iwxxm_version)
         get_version_config(iwxxm_version)
     except ValueError as e:
+        logger.warning("[CONVERT] Invalid IWXXM version requested: %s", iwxxm_version)
         raise HTTPException(
             status_code=400,
             detail=ErrorDetail(
                 message=f"Invalid IWXXM version: {e}",
                 errors=[str(e)],
+                issues=[
+                    ConversionIssue(
+                        source="request",
+                        message=str(e),
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Use a supported IWXXM version such as 2025-2 or 2023-1.",
+                        code="INVALID_IWXXM_VERSION",
+                    )
+                ],
                 total_errors=1
             ).model_dump(),
         )
     
     results: List[ConversionResult] = []
     errors: List[str] = []
+    issues: List[ConversionIssue] = []
     total_inputs = 0
+
+    def add_issue(
+        source: str,
+        message: str,
+        severity: ConversionIssueSeverity = ConversionIssueSeverity.ERROR,
+        hint: Optional[str] = None,
+        code: Optional[str] = None,
+        layer: Optional[str] = None,
+        location: Optional[str] = None,
+    ) -> None:
+        issues.append(
+            ConversionIssue(
+                source=source,
+                message=message,
+                severity=severity,
+                hint=hint,
+                code=code,
+                layer=layer,
+                location=location,
+            )
+        )
+
+    def add_aggregated_validation_issues(source: str, aggregated_result) -> None:
+        if not aggregated_result:
+            return
+        for layer_result in getattr(aggregated_result, "results", []):
+            for validation_issue in getattr(layer_result, "issues", []):
+                severity = ConversionIssueSeverity.WARNING
+                level = str(getattr(validation_issue, "level", "")).lower()
+                if level == "error" or level == "critical":
+                    severity = ConversionIssueSeverity.ERROR
+                elif level == "info":
+                    severity = ConversionIssueSeverity.INFO
+                add_issue(
+                    source=source,
+                    message=str(getattr(validation_issue, "message", "Validation issue")),
+                    severity=severity,
+                    hint=getattr(validation_issue, "suggestion", None),
+                    code=getattr(validation_issue, "code", None),
+                    layer=str(getattr(validation_issue, "layer", "")) or None,
+                    location=getattr(validation_issue, "location", None),
+                )
     
     # Initialize validation service for input validation
     validation_service = ValidationService()
@@ -742,6 +952,15 @@ async def convert(
     metars_list = []
     if request_body is not None and request_body.metars:
         metars_list = request_body.metars
+
+    logger.info(
+        "[CONVERT] Input summary files=%s manual_text=%s json_metars=%s validate_output=%s iwxxm_version=%s",
+        len(files or []),
+        bool(manual_text and manual_text.strip()),
+        len(metars_list),
+        validate_output,
+        iwxxm_version,
+    )
     
     # Process metars from JSON request body
     for metar_text in metars_list:
@@ -763,6 +982,14 @@ async def convert(
                     validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                     error_msg = f"{metar_name}: Validation failed - {validation_summary}"
                     errors.append(error_msg)
+                    add_issue(
+                        source=metar_name,
+                        message=f"Validation failed: {validation_summary}",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Fix TAC format and ICAO code issues, then retry conversion.",
+                        code="VALIDATION_FAILED",
+                    )
+                    add_aggregated_validation_issues(metar_name, validation_result)
                     # Log failed validation
                     try:
                         translation_id = await statistics_service.log_translation(
@@ -785,8 +1012,16 @@ async def convert(
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log failed translation: {log_err}")
+                    continue
             except ValidationServiceError as ve:
                 errors.append(f"{metar_name}: {str(ve)}")
+                add_issue(
+                    source=metar_name,
+                    message=str(ve),
+                    severity=ConversionIssueSeverity.ERROR,
+                    hint="Ensure the METAR starts with METAR/SPECI and includes a valid ICAO station and timestamp.",
+                    code="VALIDATION_SERVICE_ERROR",
+                )
                 # Log validation error
                 try:
                     translation_id = await statistics_service.log_translation(
@@ -809,6 +1044,7 @@ async def convert(
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log validation error: {log_err}")
+                continue
             else:
                 # Start timing for successful conversion
                 import time
@@ -872,6 +1108,13 @@ async def convert(
                 except ConversionError as ce:
                     error_msg = f"{metar_name}: Conversion error - {str(ce)}"
                     errors.append(error_msg)
+                    add_issue(
+                        source=metar_name,
+                        message=f"Conversion error: {ce}",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Check METAR TAC structure and required tokens (station/time/wind).",
+                        code="CONVERSION_ERROR",
+                    )
                     logger.error(error_msg)
                     try:
                         end_time = time.perf_counter()
@@ -901,10 +1144,24 @@ async def convert(
                 except Exception as e:
                     error_msg = f"{metar_name}: Unexpected error - {str(e)}"
                     errors.append(error_msg)
+                    add_issue(
+                        source=metar_name,
+                        message=f"Unexpected backend error: {e}",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Retry once. If it persists, contact support with this message.",
+                        code="UNEXPECTED_BACKEND_ERROR",
+                    )
                     logger.exception(error_msg)
         except Exception as e:
             error_msg = f"{metar_name}: Unhandled error - {str(e)}"
             errors.append(error_msg)
+            add_issue(
+                source=metar_name,
+                message=f"Unhandled backend error: {e}",
+                severity=ConversionIssueSeverity.ERROR,
+                hint="Retry once. If it persists, contact support with this message.",
+                code="UNHANDLED_BACKEND_ERROR",
+            )
             logger.exception(error_msg)
 
     if manual_text.strip():
@@ -920,6 +1177,14 @@ async def convert(
                     validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                     error_msg = f"manual_input: Validation failed - {validation_summary}"
                     errors.append(error_msg)
+                    add_issue(
+                        source="manual_input",
+                        message=f"Validation failed: {validation_summary}",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Fix TAC format and ICAO code issues, then retry conversion.",
+                        code="VALIDATION_FAILED",
+                    )
+                    add_aggregated_validation_issues("manual_input", validation_result)
                     # Log failed validation
                     try:
                         translation_id = await statistics_service.log_translation(
@@ -942,30 +1207,41 @@ async def convert(
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log failed translation: {log_err}")
+                    # Do not attempt conversion when input validation fails
+                    raise ValidationServiceError("manual_validation_failed")
             except ValidationServiceError as ve:
-                errors.append(f"manual_input: {str(ve)}")
-                # Log validation error
-                try:
-                    translation_id = await statistics_service.log_translation(
-                        tac_message=manual_text.strip(),
-                        iwxxm_output=None,
-                        iwxxm_version=iwxxm_version,
-                        translation_status=TranslationStatus.FAILED,
-                        validation_layers_passed=[],
-                        validation_errors={"error": str(ve)},
-                        translation_duration_ms=0,
-                        icao_airport_code=extract_airport_code(manual_text.strip()),
-                        user_id=user.get("sub")
+                if str(ve) != "manual_validation_failed":
+                    errors.append(f"manual_input: {str(ve)}")
+                    add_issue(
+                        source="manual_input",
+                        message=str(ve),
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Ensure the METAR starts with METAR/SPECI and includes a valid ICAO station and timestamp.",
+                        code="VALIDATION_SERVICE_ERROR",
                     )
-                    airport_code = extract_airport_code(manual_text.strip())
-                    await webhook_service.notify_translation_failed(
-                        translation_id=translation_id,
-                        airport_code=airport_code or "UNKNOWN",
-                        error_type="validation_error",
-                        error_message=str(ve)
-                    )
-                except Exception as log_err:
-                    logger.error(f"Failed to log validation error: {log_err}")
+                if str(ve) != "manual_validation_failed":
+                    # Log validation error
+                    try:
+                        translation_id = await statistics_service.log_translation(
+                            tac_message=manual_text.strip(),
+                            iwxxm_output=None,
+                            iwxxm_version=iwxxm_version,
+                            translation_status=TranslationStatus.FAILED,
+                            validation_layers_passed=[],
+                            validation_errors={"error": str(ve)},
+                            translation_duration_ms=0,
+                            icao_airport_code=extract_airport_code(manual_text.strip()),
+                            user_id=user.get("sub")
+                        )
+                        airport_code = extract_airport_code(manual_text.strip())
+                        await webhook_service.notify_translation_failed(
+                            translation_id=translation_id,
+                            airport_code=airport_code or "UNKNOWN",
+                            error_type="validation_error",
+                            error_message=str(ve)
+                        )
+                    except Exception as log_err:
+                        logger.error(f"Failed to log validation error: {log_err}")
             else:
                 # Start timing for successful conversion
                 import time
@@ -995,6 +1271,14 @@ async def convert(
                     else:
                         warning_msg = f"manual_input: IWXXM validation issues found - {len(validation_result_from_conversion.all_issues)} issues"
                         logger.warning(warning_msg)
+                        add_issue(
+                            source="manual_input",
+                            message=warning_msg,
+                            severity=ConversionIssueSeverity.WARNING,
+                            hint="Output converted, but IWXXM validation reported issues.",
+                            code="OUTPUT_VALIDATION_WARNING",
+                            layer="iwxxm_output",
+                        )
                         validation_errors_dict = {
                             "validation_issues": [str(issue) for issue in validation_result_from_conversion.all_issues[:10]]
                         }
@@ -1034,6 +1318,13 @@ async def convert(
                 )
         except ConversionError as e:
             errors.append(f"manual_input: {e}")
+            add_issue(
+                source="manual_input",
+                message=str(e),
+                severity=ConversionIssueSeverity.ERROR,
+                hint="Check METAR TAC structure and required tokens (station/time/wind).",
+                code="CONVERSION_ERROR",
+            )
             # Log conversion error
             try:
                 translation_id = await statistics_service.log_translation(
@@ -1059,6 +1350,13 @@ async def convert(
                 data = (await uf.read()).decode("utf-8", errors="ignore")
                 if not data.strip():
                     errors.append(f"{uf.filename}: empty file")
+                    add_issue(
+                        source=uf.filename or "unknown_file",
+                        message="Empty input file",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Upload a file containing a METAR/SPECI TAC message.",
+                        code="EMPTY_FILE",
+                    )
                     continue
                 
                 # Validate METAR input (Layers 1-2: ICAO and TAC syntax)
@@ -1069,6 +1367,14 @@ async def convert(
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                         error_msg = f"{uf.filename}: Validation failed - {validation_summary}"
                         errors.append(error_msg)
+                        add_issue(
+                            source=uf.filename or "unknown_file",
+                            message=f"Validation failed: {validation_summary}",
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Fix TAC format and ICAO code issues, then retry conversion.",
+                            code="VALIDATION_FAILED",
+                        )
+                        add_aggregated_validation_issues(uf.filename or "unknown_file", validation_result)
                         # Log failed validation
                         try:
                             translation_id = await statistics_service.log_translation(
@@ -1094,6 +1400,13 @@ async def convert(
                         continue
                 except ValidationServiceError as ve:
                     errors.append(f"{uf.filename}: {str(ve)}")
+                    add_issue(
+                        source=uf.filename or "unknown_file",
+                        message=str(ve),
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Ensure the METAR starts with METAR/SPECI and includes a valid ICAO station and timestamp.",
+                        code="VALIDATION_SERVICE_ERROR",
+                    )
                     # Log validation error
                     try:
                         translation_id = await statistics_service.log_translation(
@@ -1146,12 +1459,28 @@ async def convert(
                         else:
                             warning_msg = f"{uf.filename}: IWXXM validation issues found - {len(validation_result.all_issues)} issues"
                             logger.warning(warning_msg)
+                            add_issue(
+                                source=uf.filename or "unknown_file",
+                                message=warning_msg,
+                                severity=ConversionIssueSeverity.WARNING,
+                                hint="Output converted, but IWXXM validation reported issues.",
+                                code="OUTPUT_VALIDATION_WARNING",
+                                layer="iwxxm_output",
+                            )
                             validation_errors_dict = {
                                 "validation_issues": [str(issue) for issue in validation_result.all_issues[:10]]
                             }
                             # Add validation issues as warnings but still include the result
                     except Exception as ve:
                         logger.warning(f"{uf.filename}: Output validation failed: {ve}")
+                        add_issue(
+                            source=uf.filename or "unknown_file",
+                            message=f"Output validation failed: {ve}",
+                            severity=ConversionIssueSeverity.WARNING,
+                            hint="Conversion succeeded, but post-conversion validation could not complete.",
+                            code="OUTPUT_VALIDATION_FAILED",
+                            layer="iwxxm_output",
+                        )
                         validation_errors_dict = {"validation_error": str(ve)}
                 
                 # Log successful translation
@@ -1188,6 +1517,13 @@ async def convert(
                 )
             except ConversionError as e:
                 errors.append(f"{uf.filename}: {e}")
+                add_issue(
+                    source=uf.filename or "unknown_file",
+                    message=str(e),
+                    severity=ConversionIssueSeverity.ERROR,
+                    hint="Check METAR TAC structure and required tokens (station/time/wind).",
+                    code="CONVERSION_ERROR",
+                )
                 # Log conversion error
                 try:
                     translation_id = await statistics_service.log_translation(
@@ -1212,6 +1548,13 @@ async def convert(
                     logger.error(f"Failed to log conversion error: {log_err}")
             except Exception as e:
                 errors.append(f"{uf.filename}: unexpected error {e}")
+                add_issue(
+                    source=uf.filename or "unknown_file",
+                    message=f"Unexpected backend error: {e}",
+                    severity=ConversionIssueSeverity.ERROR,
+                    hint="Retry once. If it persists, contact support with this message.",
+                    code="UNEXPECTED_BACKEND_ERROR",
+                )
                 # Log unexpected error
                 try:
                     translation_id = await statistics_service.log_translation(
@@ -1236,16 +1579,26 @@ async def convert(
                     logger.error(f"Failed to log unexpected error: {log_err}")
 
     if not results and errors:
+        logger.error(
+            "[CONVERT] All conversions failed total_inputs=%s total_errors=%s first_error=%s",
+            total_inputs,
+            len(errors),
+            errors[0] if errors else "none",
+        )
         raise HTTPException(
             status_code=400,
             detail=ErrorDetail(
-                message="All conversions failed", errors=errors, total_errors=len(errors)
+                message="All conversions failed",
+                errors=errors,
+                issues=issues,
+                total_errors=len(errors)
             ).model_dump(),
         )
 
     return ConversionResponse(
         results=results,
         errors=errors,
+        issues=issues,
         total_processed=total_inputs,
         successful=len(results),
         failed=len(errors),

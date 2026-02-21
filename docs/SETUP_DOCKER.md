@@ -13,9 +13,9 @@ DISABLE_AUTH=true docker-compose up --build
 ```
 
 Access the application at:
-- **Frontend**: http://localhost:8000
+- **Frontend (Vite dev server)**: http://localhost:5173
 - **Backend API**: http://localhost:8001
-- **Auth Service**: http://localhost:8002
+- **Auth Service**: http://localhost:8003
 - **API Docs**: http://localhost:8001/docs
 
 ### Production Mode (With Supabase)
@@ -38,9 +38,9 @@ docker-compose up --build
 
 | Service | Port | Role | Technology |
 |---------|------|------|-----------|
-| **Auth** | 8002 | Authentication proxy to Supabase | Python 3.12 + FastAPI |
+| **Auth** | 8003 | Authentication proxy to Supabase | Python 3.12 + FastAPI |
 | **Backend** | 8001 | METAR-to-IWXXM conversion API | Python 3.12 + FastAPI + GIFTs |
-| **Frontend** | 8000 | Web UI for conversions | Node.js + React + Nginx |
+| **Frontend** | 5173 | Web UI for conversions (dev mode) | Node.js + React + Vite |
 
 ## Environment Variables
 
@@ -52,10 +52,10 @@ docker-compose up --build
 
 ### Optional (Defaults provided)
 - `DISABLE_AUTH` - Set to `true` for development (no Supabase required)
-- `VITE_APP_URL` - Frontend app URL (default: http://localhost:8000)
+- `VITE_APP_URL` - Frontend app URL (default: http://localhost:5173)
 - `VITE_BACKEND_URL` - Backend API URL (default: http://localhost:8001)
-- `VITE_AUTH_URL` - Auth service URL (default: http://localhost:8002)
-- `FRONTEND_BASE_URL` - Base URL for auth service callbacks (default: http://localhost:8000)
+- `VITE_AUTH_SERVICE_URL` - Auth service URL (default: http://localhost:8003)
+- `FRONTEND_BASE_URL` - Base URL for auth service callbacks (default: http://localhost:5173)
 
 ## Common Commands
 
@@ -122,15 +122,15 @@ docker-compose logs backend  # or auth, frontend
 
 ```
 ┌─────────────────────────────────────────────────┐
-│               Frontend (Nginx)                   │
-│  Port 8000 → React SPA + METAR converter UI   │
+│            Frontend (Vite Dev Server)            │
+│  Port 5173 → React SPA + METAR converter UI      │
 └──────────────────┬──────────────────────────────┘
                    │
        ┌───────────┴───────────┐
        ▼                       ▼
     ┌──────────────┐    ┌──────────────┐
     │   Backend    │    │     Auth     │
-    │  Port 8001   │    │  Port 8002   │
+    │  Port 8001   │    │  Port 8003   │
     │ + GIFTs Lib  │    │ + Supabase   │
     │              │    │              │
     │ Converts     │    │ Verifies JWT │
@@ -147,9 +147,9 @@ docker-compose logs backend  # or auth, frontend
 ├── auth/
 │   └── Dockerfile         # Auth service image
 ├── backend/
-│   └── Dockerfile         # Backend API image
+│   └── docker/Dockerfile  # Backend API image
 ├── frontend/
-│   └── Dockerfile         # Frontend image
+│   └── Dockerfile         # Frontend image (dev + prod targets)
 └── GIFTs/                 # METAR encoding library
 ```
 

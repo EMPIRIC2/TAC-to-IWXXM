@@ -150,6 +150,25 @@ ALLOWED_ORIGINS=*
 
 ---
 
+### `ENABLE_DEV_CORS_RELAXATION`
+
+Opt-in local debugging switch for difficult CORS preflight failures.
+
+| Setting | Value |
+|---------|-------|
+| **Format** | Boolean (`true/false`, `1/0`, `yes/no`) |
+| **Default** | `false` |
+| **Effect when true** | Adds `http://localhost:5173` to allowed origins and sets `allow_headers=["*"]` |
+| **Use case** | Local debugging of `OPTIONS /api/v1/convert` returning 400 |
+| **Production** | Keep `false`; prefer explicit `ALLOWED_ORIGINS` |
+
+**Example:**
+```env
+ENABLE_DEV_CORS_RELAXATION=true
+```
+
+---
+
 ## ICAO/WMO Configuration
 
 ### `TRANSLATION_CENTRE_NAME`

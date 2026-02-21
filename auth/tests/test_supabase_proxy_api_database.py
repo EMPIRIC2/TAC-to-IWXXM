@@ -1660,6 +1660,25 @@ class TestSupabaseProxySignOutErrorHandling:
             mock_client.auth.sign_out.assert_called_once()
             assert result["message"] == "Successfully signed out"
 
+    def test_sign_out_session_not_found_is_idempotent(self, monkeypatch):
+        """Test sign_out succeeds when Supabase session is already gone."""
+        monkeypatch.setenv("SUPABASE_URL", "https://test.supabase.co")
+        monkeypatch.setenv("SUPABASE_ANON_KEY", "test-key-123")
+
+        with patch("auth.supabase_proxy.create_client") as mock_create:
+            mock_client = Mock()
+            mock_create.return_value = mock_client
+            mock_client.auth.set_session = Mock(
+                side_effect=Exception("session_not_found: Session from session_id claim in JWT does not exist")
+            )
+            mock_client.auth.sign_out = Mock()
+
+            proxy = SupabaseAuthProxy()
+            result = proxy.sign_out("token")
+
+            assert result["message"] == "Successfully signed out"
+            mock_client.auth.sign_out.assert_not_called()
+
 
 class TestSupabaseProxyRefreshSessionErrorPaths:
     """Test refresh_session error re-raising."""

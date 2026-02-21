@@ -176,6 +176,12 @@ class TestLogout:
         assert response.status_code == 401
         assert "Missing authorization header" in response.json()["detail"]
 
+    def test_logout_legacy_alias_missing_token(self, client):
+        """Legacy /logout alias exists and enforces auth header."""
+        response = client.post("/logout")
+        assert response.status_code == 401
+        assert "Missing authorization header" in response.json()["detail"]
+
 
 class TestGetCurrentUser:
     """Test /auth/me endpoint."""
