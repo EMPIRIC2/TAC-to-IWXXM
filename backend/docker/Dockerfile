@@ -16,11 +16,10 @@ COPY backend/pyproject.toml ./pyproject.toml
 
 # Copy only source and required data (GIFTs for conversion)
 COPY backend/src ./src
-COPY GIFTs ./GIFTs
 
 # Install both the backend package and GIFTs library into system env
 RUN uv pip install --system . && \
-    uv pip install --system ./GIFTs
+    uv pip install --system gifts
 
 # Non-root user
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
