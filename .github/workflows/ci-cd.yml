@@ -338,7 +338,6 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     name: Build & Push Docker Images
-    needs: [detect-changes]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
@@ -376,9 +375,9 @@ jobs:
       - name: Resolve services to build
         id: filter
         run: |
-          echo "backend_build=${{ needs.detect-changes.outputs.backend_changed == 'true' && 'true' || 'false' }}" >> "$GITHUB_OUTPUT"
-          echo "auth_build=${{ needs.detect-changes.outputs.auth_changed == 'true' && 'true' || 'false' }}" >> "$GITHUB_OUTPUT"
-          echo "frontend_build=${{ needs.detect-changes.outputs.frontend_changed == 'true' && 'true' || 'false' }}" >> "$GITHUB_OUTPUT"
+          echo "backend_build=true" >> "$GITHUB_OUTPUT"
+          echo "auth_build=true" >> "$GITHUB_OUTPUT"
+          echo "frontend_build=true" >> "$GITHUB_OUTPUT"
 
       - name: Build and push backend Docker image
         if: steps.filter.outputs.backend_build == 'true'
