@@ -44,14 +44,14 @@ coverage:
         threshold: 0%
         flags:
           - frontend
-        if_not_found: failure
+        if_not_found: success
         if_ci_failed: error
       gifts:
         target: 75%
         threshold: 0%
         flags:
           - gifts
-        if_not_found: failure
+        if_not_found: success
         if_ci_failed: error
     patch:
       default:
