@@ -138,6 +138,50 @@ class TestLargeBatchProcessing:
             assert len(namelist) > 0
 
 
+class TestConvertContractAlignment:
+    """Ensure frontend-facing convert contract remains aligned with backend."""
+
+    def test_form_metadata_fields_echoed(self, client):
+        response = client.post(
+            "/api/v1/convert",
+            data={
+                "manual_text": "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015",
+                "iwxxm_version": "2025-2",
+                "validation_level": "schema",
+                "stop_on_error": "true",
+                "bulletin_id": "saaa00",
+                "issuing_center": "kwbc",
+            },
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["metadata"]["bulletin_id"] == "SAAA00"
+        assert data["metadata"]["issuing_center"] == "KWBC"
+        assert data["metadata"]["validation_level"] == "schema"
+        assert data["metadata"]["stop_on_error"] is True
+
+    def test_stop_on_error_halts_after_first_failure(self, client):
+        multiline = "\n".join([
+            "INVALID METAR",
+            "METAR EGLL 161220Z 09010KT 9999 SCT030 10/05 Q1018",
+        ])
+
+        response = client.post(
+            "/api/v1/convert",
+            data={
+                "manual_text": multiline,
+                "iwxxm_version": "2025-2",
+                "stop_on_error": "true",
+            },
+        )
+
+        assert response.status_code in [200, 400]
+        if response.status_code == 200:
+            data = response.json()
+            assert data["total_processed"] == 1
+
+
 # =============================================================================
 # Extended Coverage: Concurrent Request Handling
 # =============================================================================

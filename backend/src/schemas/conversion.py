@@ -145,6 +145,10 @@ class ConversionResponse(BaseModel):
         description="Number of failed conversions",
         examples=[0, 1]
     )
+    metadata: dict = Field(
+        default_factory=dict,
+        description="Echoed request metadata such as bulletin_id, issuing_center, and validation options",
+    )
 
 
 class ErrorDetail(BaseModel):
@@ -203,4 +207,14 @@ class ConversionRequest(BaseModel):
     stop_on_error: bool = Field(
         default=False,
         description="Stop processing on first error"
+    )
+    bulletin_id: Optional[str] = Field(
+        default=None,
+        description="Optional bulletin identifier to associate with the request",
+        examples=["SAAA00"],
+    )
+    issuing_center: Optional[str] = Field(
+        default=None,
+        description="Optional issuing centre ICAO location indicator",
+        examples=["KWBC"],
     )

@@ -96,6 +96,33 @@ class TestSmokeConversion:
             assert "content" in result
             assert len(result["content"]) > 0
 
+    def test_multiline_manual_input_is_processed_as_individual_entries(self, client):
+        """Each non-empty manual input line is treated as an individual TAC entry."""
+        multiline = "\n".join([
+            "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015",
+            "",
+            "METAR EGLL 161220Z 09010KT 9999 SCT030 10/05 Q1018",
+        ])
+
+        response = client.post(
+            "/api/v1/convert",
+            data={
+                "manual_text": multiline,
+                "iwxxm_version": "2025-2",
+                "bulletin_id": "saaa00",
+                "issuing_center": "kwbc",
+                "validation_level": "comprehensive",
+                "stop_on_error": "false",
+            },
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total_processed"] >= 2
+        assert "metadata" in data
+        assert data["metadata"]["bulletin_id"] == "SAAA00"
+        assert data["metadata"]["issuing_center"] == "KWBC"
+
 
 @pytest.mark.smoke
 class TestSmokeValidation:
