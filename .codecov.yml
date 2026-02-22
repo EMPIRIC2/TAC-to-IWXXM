@@ -16,6 +16,8 @@ coverage:
         - auth/src/
     frontend:
       carryforward: true
+      paths:
+        - frontend/src/
     gifts:
       carryforward: true
   status:
