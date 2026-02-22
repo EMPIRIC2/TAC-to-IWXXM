@@ -2,7 +2,7 @@
     "name": "metar-to-iwxxm-workflow",
     "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
     "features": {
-        "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+        "ghcr.io/devcontainers/features/node:1": { "version": "18" },
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
     },
     "remoteUser": "vscode",
