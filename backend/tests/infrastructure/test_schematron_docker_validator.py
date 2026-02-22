@@ -19,9 +19,18 @@ from utilities.schematron_validator_docker import (
     SchematronValidationResult
 )
 
-# Check if schema exists before running tests
-SCHEMA_PATH = Path('/root/metar-to-IWXXM/schemas/iwxxm/IWXXM/rule/iwxxm.sch')
-SKIP_DOCKER_TESTS = not SCHEMA_PATH.exists()
+REPO_ROOT = Path(__file__).resolve().parents[2]
+SCHEMA_PATH = REPO_ROOT / 'schemas' / 'iwxxm' / 'IWXXM' / 'rule' / 'iwxxm.sch'
+
+
+def _path_exists(path: Path) -> bool:
+    try:
+        return path.exists()
+    except (PermissionError, OSError):
+        return False
+
+
+SKIP_DOCKER_TESTS = not _path_exists(SCHEMA_PATH)
 
 
 class TestSchematronValidationResult:
@@ -65,10 +74,9 @@ class TestSchematronValidatorDocker:
     @pytest.fixture
     def validator(self):
         """Create a validator instance for testing."""
-        # Use actual path in development environment
-        schema_path = Path('/root/metar-to-IWXXM/schemas/iwxxm/IWXXM/rule/iwxxm.sch')
-        if not schema_path.exists():
-            pytest.skip(f"Schema not found: {schema_path}")
+        schema_path = SCHEMA_PATH
+        if not _path_exists(schema_path):
+            pytest.skip(f"Schema not found or inaccessible: {schema_path}")
         
         return SchematronValidatorDocker(
             schema_path=str(schema_path),
