@@ -184,10 +184,9 @@ class ConversionRequest(BaseModel):
     )
 
     metars: List[str] = Field(
-        ...,
-        description="List of METAR message strings to convert",
-        min_items=1,
-        max_items=1000,
+        default_factory=list,
+        description="Optional list of METAR message strings to convert",
+        max_length=1000,
         examples=[["KJFK 121853Z 24008KT 10SM FEW250 M04/M17 A3034"]]
     )
     version: str = Field(

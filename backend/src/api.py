@@ -759,7 +759,7 @@ async def convert(
                             source="request",
                             message=str(e),
                             severity=ConversionIssueSeverity.ERROR,
-                            hint="Provide a non-empty 'metars' array and a valid version string.",
+                            hint="Provide valid JSON fields (for example: 'metars', 'version').",
                             code="REQUEST_VALIDATION_ERROR",
                         )
                     ],
@@ -1685,13 +1685,32 @@ async def convert_zip(
     """
     # Handle JSON request body (for metars list)
     if request_body is not None:
-        metars_list = request_body.metars
+        metars_list = request_body.metars or []
         iwxxm_version = request_body.version
         validation_level = request_body.validation_level or "basic"
         manual_text = ""  # Override form input
         files = None  # Override file input
     else:
         metars_list = []
+
+    if not (metars_list or (manual_text and manual_text.strip()) or (files and len(files) > 0)):
+        raise HTTPException(
+            status_code=400,
+            detail=ErrorDetail(
+                message="No conversion input provided",
+                errors=["Provide at least one METAR TAC input via manual_text, files, or JSON metars."],
+                issues=[
+                    ConversionIssue(
+                        source="request",
+                        message="Empty conversion request",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Send manual_text, files, or JSON metars in the request body.",
+                        code="NO_INPUT",
+                    )
+                ],
+                total_errors=1,
+            ).model_dump(),
+        )
     
     # Validate and normalize IWXXM version
     try:
