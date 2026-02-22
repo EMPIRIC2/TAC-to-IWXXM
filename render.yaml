@@ -30,6 +30,14 @@ services:
         value: "true"
       - key: ENABLE_WEBHOOKS
         value: "false"
+      - key: OBSERVABILITY_ENV
+        value: "render-live"
+      - key: LOKI_PUSH_URL
+        value: http://metar-to-iwxxm-loki:10000/loki/api/v1/push
+      - key: LOKI_USERNAME
+        sync: false
+      - key: LOKI_PASSWORD
+        sync: false
       # REQUIRED in Render dashboard:
       # DATABASE_URL
 
@@ -48,6 +56,14 @@ services:
         value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
       - key: CORS_ORIGINS
         value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
+      - key: OBSERVABILITY_ENV
+        value: "render-live"
+      - key: LOKI_PUSH_URL
+        value: http://metar-to-iwxxm-loki:10000/loki/api/v1/push
+      - key: LOKI_USERNAME
+        sync: false
+      - key: LOKI_PASSWORD
+        sync: false
       # REQUIRED in Render dashboard:
       # SUPABASE_URL
       # SUPABASE_ANON_KEY
@@ -75,3 +91,125 @@ services:
         value: https://ktvxijislbtgqapllmuk.supabase.co
       - key: VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
         value: sb_publishable_eqkNmJv86m9u7Gmym9Wf8Q_NC1fUZ8x
+
+  - type: pserv
+    name: metar-to-iwxxm-loki
+    runtime: image
+    image:
+      url: grafana/loki:3.1.1
+    plan: starter
+    disk:
+      name: loki-data
+      mountPath: /loki
+      sizeGB: 10
+    envVars:
+      - key: OBSERVABILITY_ENV
+        value: "render-live"
+    startCommand: |
+      /bin/sh -c '
+      cat <<EOF >/tmp/loki-config.yaml
+      auth_enabled: false
+      server:
+        http_listen_port: 10000
+      common:
+        path_prefix: /loki
+        storage:
+          filesystem:
+            chunks_directory: /loki/chunks
+            rules_directory: /loki/rules
+        replication_factor: 1
+        ring:
+          kvstore:
+            store: inmemory
+      schema_config:
+        configs:
+          - from: 2024-01-01
+            store: tsdb
+            object_store: filesystem
+            schema: v13
+            index:
+              prefix: index_
+              period: 24h
+      compactor:
+        working_directory: /loki/compactor
+      limits_config:
+        retention_period: 168h
+      EOF
+      /usr/bin/loki -config.file=/tmp/loki-config.yaml
+      '
+
+  - type: pserv
+    name: metar-to-iwxxm-prometheus
+    runtime: image
+    image:
+      url: prom/prometheus:v2.55.1
+    plan: starter
+    disk:
+      name: prometheus-data
+      mountPath: /prometheus
+      sizeGB: 10
+    startCommand: |
+      /bin/sh -c '
+      cat <<EOF >/tmp/prometheus.yml
+      global:
+        scrape_interval: 30s
+        evaluation_interval: 30s
+      scrape_configs:
+        - job_name: metar-api
+          metrics_path: /metrics
+          static_configs:
+            - targets: ["metar-to-iwxxm-api:10000"]
+        - job_name: metar-auth
+          metrics_path: /metrics
+          static_configs:
+            - targets: ["metar-to-iwxxm-auth-v2:8000"]
+        - job_name: prometheus
+          metrics_path: /metrics
+          static_configs:
+            - targets: ["localhost:10000"]
+      EOF
+      /bin/prometheus --config.file=/tmp/prometheus.yml --storage.tsdb.path=/prometheus --web.listen-address=0.0.0.0:10000
+      '
+
+  - type: web
+    name: metar-to-iwxxm-grafana
+    runtime: image
+    image:
+      url: grafana/grafana:11.2.0
+    healthCheckPath: /api/health
+    numInstances: 1
+    plan: starter
+    disk:
+      name: grafana-data
+      mountPath: /var/lib/grafana
+      sizeGB: 10
+    envVars:
+      - key: GF_SECURITY_ADMIN_USER
+        sync: false
+      - key: GF_SECURITY_ADMIN_PASSWORD
+        sync: false
+      - key: GF_AUTH_ANONYMOUS_ENABLED
+        value: "false"
+      - key: GF_USERS_ALLOW_SIGN_UP
+        value: "false"
+      - key: GF_SERVER_HTTP_PORT
+        value: "10000"
+    startCommand: |
+      /bin/sh -c '
+      mkdir -p /tmp/grafana/provisioning/datasources
+      cat <<EOF >/tmp/grafana/provisioning/datasources/datasources.yml
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          url: http://metar-to-iwxxm-prometheus:10000
+          isDefault: true
+        - name: Loki
+          type: loki
+          access: proxy
+          url: http://metar-to-iwxxm-loki:10000
+      EOF
+      export GF_PATHS_PROVISIONING=/tmp/grafana/provisioning
+      /run.sh
+      '

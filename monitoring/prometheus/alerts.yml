@@ -1,0 +1,56 @@
+groups:
+  - name: metar_iwxxm_alerts
+    rules:
+      - alert: MetarApiDown
+        expr: up{job="metar-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "METAR API target is down"
+          description: "Prometheus cannot scrape metar-api for more than 2 minutes."
+
+      - alert: MetarAuthDown
+        expr: up{job="metar-auth"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Auth target is down"
+          description: "Prometheus cannot scrape metar-auth for more than 2 minutes."
+
+      - alert: HighApiErrorRate
+        expr: sum(rate(http_requests_total{service="backend",status=~"5.."}[5m])) / clamp_min(sum(rate(http_requests_total{service="backend"}[5m])), 0.001) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High backend 5xx error rate"
+          description: "Backend 5xx ratio is above 5% over 5 minutes."
+
+      - alert: TranslationSuccessRateLow
+        expr: sum(rate(metar_conversions_total{status="success"}[15m])) / clamp_min(sum(rate(metar_conversions_total[15m])), 0.001) < 0.95
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Translation success rate below 95%"
+          description: "METAR conversion success ratio is below 95% over 15 minutes."
+
+      - alert: AuthLoginFailureRatioHigh
+        expr: sum(rate(auth_logins_total{result="failure"}[10m])) / clamp_min(sum(rate(auth_logins_total[10m])), 0.001) > 0.10
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Auth login failure ratio is high"
+          description: "Authentication login failure ratio exceeded 10% over 10 minutes."
+
+      - alert: TranslationP95HighByVersion
+        expr: histogram_quantile(0.95, sum by (le, iwxxm_version) (rate(metar_conversion_duration_seconds_bucket[10m]))) > 2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Translation p95 latency high for IWXXM version"
+          description: "Translation p95 latency exceeded 2s for version {{ $labels.iwxxm_version }} over 10 minutes."

@@ -120,6 +120,15 @@ pytest tests/test_conversion_validation_edge_cases.py -m edge_case -v
 pytest tests/test_metar_pairs_comprehensive.py tests/test_conversion_validation_edge_cases.py -v -m "not integration"
 ```
 
+### Load Testing (Locust)
+
+For sustained throughput, latency distribution, and Prometheus metric export, use the Locust harness in:
+
+- `backend/tests/load/locustfile.py`
+- `docs/testing/LOAD_TESTING_LOCUST.md`
+
+This supports local/staging profiles and both auth modes (`bypass`, `bearer`).
+
 ---
 
 ## Acceptable Differences (Tolerance Rules)

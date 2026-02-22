@@ -14,12 +14,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from auth.api_supabase import router, legacy_router
+from auth.observability import setup_logging, install_fastapi_observability
 
 # Configure logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+setup_logging("auth")
 logger = logging.getLogger(__name__)
 
 logger.info("Auth service __main__ module loaded")
@@ -113,6 +111,8 @@ app = FastAPI(
     description="Authentication middleware proxy to Supabase",
     lifespan=lifespan
 )
+
+install_fastapi_observability(app=app, service_name="auth")
 
 logger.info("Initializing Auth Service with CORS middleware...")
 
