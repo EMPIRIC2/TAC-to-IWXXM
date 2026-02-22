@@ -19,7 +19,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 try:
     # Try relative imports first (when run as module in Docker)
-    logger.info("DEBUG: Attempting relative imports...")
     from .utilities.conversion import convert_metar_tac_with_metadata, ConversionError
     from .utilities.security import verify_supabase_token
     from .utilities.tac_parser import extract_airport_code
