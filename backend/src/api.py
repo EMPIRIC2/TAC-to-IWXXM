@@ -961,6 +961,25 @@ async def convert(
         validate_output,
         iwxxm_version,
     )
+
+    if not (metars_list or (manual_text and manual_text.strip()) or (files and len(files) > 0)):
+        raise HTTPException(
+            status_code=400,
+            detail=ErrorDetail(
+                message="No conversion input provided",
+                errors=["Provide at least one METAR TAC input via manual_text, files, or JSON metars."],
+                issues=[
+                    ConversionIssue(
+                        source="request",
+                        message="Empty conversion request",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Send manual_text, files, or JSON metars in the request body.",
+                        code="NO_INPUT",
+                    )
+                ],
+                total_errors=1,
+            ).model_dump(),
+        )
     
     # Process metars from JSON request body
     for metar_text in metars_list:
