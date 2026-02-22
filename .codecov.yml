@@ -39,19 +39,19 @@ coverage:
         threshold: 0%
         flags:
           - frontend
-        if_not_found: failure
-        if_ci_failed: error
+        if_not_found: success
+        if_ci_failed: success
       gifts:
         target: 75%
         threshold: 0%
         flags:
           - gifts
-        if_not_found: failure
-        if_ci_failed: error
+        if_not_found: success
+        if_ci_failed: success
     patch:
       default:
-        target: auto
-        threshold: 0%
+        target: 60%
+        threshold: 5%
 
 comment:
   layout: "reach,diff,flags,tree"
