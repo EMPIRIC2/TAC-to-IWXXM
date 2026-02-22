@@ -1,0 +1,15 @@
+title = "metar-to-iwxxm gitleaks config"
+
+[allowlist]
+description = "Allow known non-sensitive test/public artifacts"
+paths = [
+  '''^auth/tests/''',
+  '''^tests/''',
+  '''^frontend/dist/''',
+  '''^frontend/utils/supabase/info\.tsx$'''
+]
+regexes = [
+  '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.\.\.''',
+  '''https://api\.example\.com''',
+  '''admin@metar\.local'''
+]
