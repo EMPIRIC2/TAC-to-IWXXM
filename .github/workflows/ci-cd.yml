@@ -57,7 +57,7 @@ jobs:
       - name: Run unit tests with coverage
         working-directory: ./backend
         run: |
-          python -m pytest tests/ \
+          python -m pytest tests/unit \
             --cov=src \
             --cov-report=json \
             --cov-report=term-missing \
@@ -304,7 +304,8 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     name: Build & Push Docker Images
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [coverage-enforcement]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.coverage-enforcement.result == 'success'
     permissions:
       contents: read
       packages: write
