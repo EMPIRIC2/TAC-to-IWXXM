@@ -1,66 +1,52 @@
-#!/usr/bin/env python3
+"""Connectivity tests for a running local auth service.
+
+These tests are integration-style smoke checks and are skipped when the
+service is not reachable at localhost:8002.
 """
-Quick test to check if auth service is reachable
-"""
+
+import pytest
 import requests
-import time
 
-print("Testing auth service connectivity...")
-print("=" * 60)
+AUTH_URL = "http://localhost:8002"
 
-auth_url = "http://localhost:8002"
 
-# Test 1: Health check
-print("\n[Test 1] Health check endpoint")
-try:
-    response = requests.get(f"{auth_url}/health", timeout=5)
-    print(f"✓ Status: {response.status_code}")
-    print(f"✓ Response: {response.json()}")
-except requests.exceptions.ConnectionError:
-    print("✗ Connection refused - Auth service not running?")
-    print("  Start it with: cd auth && uv run uvicorn src.__main__:app --reload --port 8002")
-    exit(1)
-except Exception as e:
-    print(f"✗ Error: {e}")
-    exit(1)
+def _service_available() -> bool:
+    try:
+        response = requests.get(f"{AUTH_URL}/health", timeout=3)
+        return response.status_code == 200
+    except requests.RequestException:
+        return False
 
-# Test 2: CORS preflight (OPTIONS)
-print("\n[Test 2] CORS preflight (OPTIONS) to /auth/login")
-try:
+
+pytestmark = pytest.mark.skipif(
+    not _service_available(),
+    reason="Auth service is not running on localhost:8002",
+)
+
+
+def test_health_endpoint_reachable() -> None:
+    response = requests.get(f"{AUTH_URL}/health", timeout=5)
+    assert response.status_code == 200
+
+
+def test_login_options_preflight() -> None:
     response = requests.options(
-        f"{auth_url}/auth/login",
+        f"{AUTH_URL}/auth/login",
         headers={
             "Origin": "http://localhost:8000",
             "Access-Control-Request-Method": "POST",
-            "Access-Control-Request-Headers": "Content-Type"
+            "Access-Control-Request-Headers": "Content-Type",
         },
-        timeout=5
+        timeout=5,
     )
-    print(f"✓ Status: {response.status_code}")
-    print(f"✓ CORS Headers:")
-    cors_headers = {k: v for k, v in response.headers.items() if 'access-control' in k.lower()}
-    for key, value in cors_headers.items():
-        print(f"    {key}: {value}")
-except Exception as e:
-    print(f"✗ Error: {e}")
+    assert response.status_code in (200, 204)
 
-# Test 3: POST to login (should fail with 401 or validation error)
-print("\n[Test 3] POST to /auth/login (empty body - should get validation error)")
-try:
+
+def test_login_with_invalid_credentials() -> None:
     response = requests.post(
-        f"{auth_url}/auth/login",
+        f"{AUTH_URL}/auth/login",
         json={"email": "test@test.com", "password": "wrongpassword"},
         headers={"Content-Type": "application/json"},
-        timeout=5
+        timeout=5,
     )
-    print(f"✓ Status: {response.status_code}")
-    if response.status_code >= 400:
-        print(f"✓ Error response (expected): {response.json()}")
-    else:
-        print(f"Response: {response.json()}")
-except Exception as e:
-    print(f"✗ Error: {e}")
-
-print("\n" + "=" * 60)
-print("✓ Auth service is reachable and responding!")
-print("=" * 60)
+    assert response.status_code >= 400
