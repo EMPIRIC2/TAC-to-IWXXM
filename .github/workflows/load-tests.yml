@@ -1,0 +1,408 @@
+name: Load Tests (Locust)
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Locust profile (local_* for self-hosted only; staging_* for hosted targets)'
+        required: false
+        default: 'staging_bypass'
+        type: choice
+        options:
+          - staging_bypass
+          - staging_auth
+          - local_bypass
+          - local_auth
+      users:
+        description: 'Concurrent users'
+        required: false
+        default: '20'
+      spawn_rate:
+        description: 'User spawn rate per second'
+        required: false
+        default: '2'
+      run_time:
+        description: 'Locust runtime (e.g. 5m, 10m)'
+        required: false
+        default: '5m'
+
+env:
+  LOCUST_PROFILE: ${{ github.event.inputs.profile || 'staging_bypass' }}
+  LOCUST_USERS: ${{ github.event.inputs.users || '20' }}
+  LOCUST_SPAWN_RATE: ${{ github.event.inputs.spawn_rate || '2' }}
+  LOCUST_RUN_TIME: ${{ github.event.inputs.run_time || '5m' }}
+  LOCUST_HOST: ${{ secrets.LOAD_TEST_TARGET_URL }}
+  LOCUST_AUTH_BASE_URL: ${{ secrets.LOAD_TEST_AUTH_URL }}
+  LOCUST_AUTH_EMAIL: ${{ secrets.LOAD_TEST_EMAIL }}
+  LOCUST_AUTH_PASSWORD: ${{ secrets.LOAD_TEST_PASSWORD }}
+  LOCUST_PROMETHEUS_ENABLED: 'true'
+  LOCUST_PROMETHEUS_PORT: '9646'
+  OBSERVABILITY_ENV: 'ci'
+  LOAD_TEST_LOKI_PUSH_URL: ${{ secrets.LOAD_TEST_LOKI_PUSH_URL }}
+  LOAD_TEST_LOKI_USERNAME: ${{ secrets.LOAD_TEST_LOKI_USERNAME }}
+  LOAD_TEST_LOKI_PASSWORD: ${{ secrets.LOAD_TEST_LOKI_PASSWORD }}
+
+jobs:
+  run-load-tests:
+    if: github.event_name != 'schedule' || github.event.schedule == '0 3 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Locust tooling
+        working-directory: ./backend
+        run: |
+          python -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install locust prometheus-client
+
+      - name: Validate load test config
+        working-directory: ./backend
+        run: |
+          . .venv/bin/activate
+          python - <<'PY'
+          import os
+
+          profile = os.getenv('LOCUST_PROFILE', 'staging_bypass')
+          host = os.getenv('LOCUST_HOST', '').strip()
+          auth_mode = 'bearer' if profile.endswith('_auth') else 'bypass'
+
+          if profile.startswith('staging') and not host:
+            raise SystemExit('LOCUST_HOST is required for staging profiles (set LOAD_TEST_TARGET_URL secret).')
+
+          if auth_mode == 'bearer':
+            required = [
+              'LOCUST_AUTH_BASE_URL',
+              'LOCUST_AUTH_EMAIL',
+              'LOCUST_AUTH_PASSWORD',
+            ]
+            missing = [name for name in required if not os.getenv(name, '').strip()]
+            if missing:
+              raise SystemExit(f'Missing required auth secrets for bearer mode: {", ".join(missing)}')
+
+          print(f'Profile={profile} Host={host or "(profile default)"} AuthMode={auth_mode}')
+          PY
+
+      - name: Run headless Locust
+        id: locust
+        working-directory: ./backend
+        continue-on-error: true
+        run: |
+          . .venv/bin/activate
+          mkdir -p test-reports/load
+          locust -f tests/load/locustfile.py \
+            --headless \
+            --users "${LOCUST_USERS}" \
+            --spawn-rate "${LOCUST_SPAWN_RATE}" \
+            --run-time "${LOCUST_RUN_TIME}" \
+            --csv test-reports/load/locust \
+            --html test-reports/load/locust.html \
+            --only-summary \
+            || echo "LOCUST_FAILED=true" >> "$GITHUB_ENV"
+
+      - name: Summarize results
+        if: always()
+        working-directory: ./backend
+        run: |
+          . .venv/bin/activate
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          stats_path = Path('test-reports/load/locust_stats.csv')
+          summary = [
+            '# Load Test Summary',
+            '',
+            f'- Profile: {__import__("os").getenv("LOCUST_PROFILE", "unknown")}',
+            f'- Users: {__import__("os").getenv("LOCUST_USERS", "")}',
+            f'- Spawn rate: {__import__("os").getenv("LOCUST_SPAWN_RATE", "")}',
+            f'- Runtime: {__import__("os").getenv("LOCUST_RUN_TIME", "")}',
+            '',
+          ]
+
+          if not stats_path.exists():
+            summary.append('No locust_stats.csv produced.')
+            Path('/tmp/load-summary.md').write_text('\n'.join(summary), encoding='utf-8')
+            raise SystemExit(0)
+
+          with stats_path.open('r', encoding='utf-8') as handle:
+            rows = list(csv.DictReader(handle))
+
+          aggregate = next((row for row in rows if row.get('Name') == 'Aggregated'), None)
+          if not aggregate:
+            summary.append('No Aggregated row found in locust_stats.csv.')
+          else:
+            summary.extend([
+              '| Metric | Value |',
+              '|---|---:|',
+              f"| Requests | {aggregate.get('Request Count', '0')} |",
+              f"| Failures | {aggregate.get('Failure Count', '0')} |",
+              f"| Median (ms) | {aggregate.get('Median Response Time', '0')} |",
+              f"| p95 (ms) | {aggregate.get('95%', '0')} |",
+              f"| p99 (ms) | {aggregate.get('99%', '0')} |",
+              f"| Avg (ms) | {aggregate.get('Average Response Time', '0')} |",
+              f"| RPS | {aggregate.get('Requests/s', '0')} |",
+              f"| Failures/s | {aggregate.get('Failures/s', '0')} |",
+            ])
+
+          Path('/tmp/load-summary.md').write_text('\n'.join(summary), encoding='utf-8')
+          PY
+          cat /tmp/load-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload load test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: locust-load-results-${{ github.run_number }}
+          path: |
+            backend/test-reports/load/locust.html
+            backend/test-reports/load/locust_*.csv
+          retention-days: 30
+
+      - name: Publish load test event to Loki
+        if: always() && env.LOAD_TEST_LOKI_PUSH_URL != ''
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import time
+          import requests
+
+          push_url = os.getenv('LOAD_TEST_LOKI_PUSH_URL', '').strip()
+          username = os.getenv('LOAD_TEST_LOKI_USERNAME', '').strip()
+          password = os.getenv('LOAD_TEST_LOKI_PASSWORD', '').strip()
+          if not push_url:
+            raise SystemExit(0)
+
+          run_url = f"https://github.com/{os.getenv('GITHUB_REPOSITORY')}/actions/runs/{os.getenv('GITHUB_RUN_ID')}"
+          line = json.dumps({
+            'event': 'load_test_completed',
+            'profile': os.getenv('LOCUST_PROFILE', 'unknown'),
+            'users': os.getenv('LOCUST_USERS', ''),
+            'spawn_rate': os.getenv('LOCUST_SPAWN_RATE', ''),
+            'run_time': os.getenv('LOCUST_RUN_TIME', ''),
+            'run_url': run_url,
+            'workflow': os.getenv('GITHUB_WORKFLOW', ''),
+          })
+
+          payload = {
+            'streams': [
+              {
+                'stream': {
+                  'service': 'load-tests',
+                  'environment': os.getenv('OBSERVABILITY_ENV', 'ci'),
+                  'source': 'github-actions',
+                },
+                'values': [[str(int(time.time() * 1_000_000_000)), line]],
+              }
+            ]
+          }
+
+          auth = (username, password) if username and password else None
+          requests.post(push_url, json=payload, timeout=5, auth=auth)
+          PY
+
+      - name: Fail workflow on locust failures
+        if: env.LOCUST_FAILED == 'true'
+        run: |
+          echo 'Locust reported failures. See summary + artifacts.'
+          exit 1
+
+  run-load-tests-auth-scheduled:
+    if: github.event_name == 'schedule' && github.event.schedule == '0 4 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LOCUST_PROFILE: staging_auth
+      LOCUST_USERS: '15'
+      LOCUST_SPAWN_RATE: '1'
+      LOCUST_RUN_TIME: '10m'
+      LOCUST_HOST: ${{ secrets.LOAD_TEST_TARGET_URL }}
+      LOCUST_AUTH_BASE_URL: ${{ secrets.LOAD_TEST_AUTH_URL }}
+      LOCUST_AUTH_EMAIL: ${{ secrets.LOAD_TEST_EMAIL }}
+      LOCUST_AUTH_PASSWORD: ${{ secrets.LOAD_TEST_PASSWORD }}
+      LOCUST_PROMETHEUS_ENABLED: 'true'
+      LOCUST_PROMETHEUS_PORT: '9646'
+      OBSERVABILITY_ENV: 'ci'
+      LOAD_TEST_LOKI_PUSH_URL: ${{ secrets.LOAD_TEST_LOKI_PUSH_URL }}
+      LOAD_TEST_LOKI_USERNAME: ${{ secrets.LOAD_TEST_LOKI_USERNAME }}
+      LOAD_TEST_LOKI_PASSWORD: ${{ secrets.LOAD_TEST_LOKI_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check auth configuration
+        id: auth_ready
+        run: |
+          missing=()
+          [ -n "${LOCUST_HOST}" ] || missing+=("LOAD_TEST_TARGET_URL")
+          [ -n "${LOCUST_AUTH_BASE_URL}" ] || missing+=("LOAD_TEST_AUTH_URL")
+          [ -n "${LOCUST_AUTH_EMAIL}" ] || missing+=("LOAD_TEST_EMAIL")
+          [ -n "${LOCUST_AUTH_PASSWORD}" ] || missing+=("LOAD_TEST_PASSWORD")
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "## Auth load test skipped" >> "$GITHUB_STEP_SUMMARY"
+            echo "Missing secrets: ${missing[*]}" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Python
+        if: steps.auth_ready.outputs.ready == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Locust tooling
+        if: steps.auth_ready.outputs.ready == 'true'
+        working-directory: ./backend
+        run: |
+          python -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install locust prometheus-client
+
+      - name: Run authenticated headless Locust
+        if: steps.auth_ready.outputs.ready == 'true'
+        id: locust_auth
+        working-directory: ./backend
+        continue-on-error: true
+        run: |
+          . .venv/bin/activate
+          mkdir -p test-reports/load/auth
+          locust -f tests/load/locustfile.py \
+            --headless \
+            --users "${LOCUST_USERS}" \
+            --spawn-rate "${LOCUST_SPAWN_RATE}" \
+            --run-time "${LOCUST_RUN_TIME}" \
+            --csv test-reports/load/auth/locust \
+            --html test-reports/load/auth/locust.html \
+            --only-summary \
+            || echo "LOCUST_AUTH_FAILED=true" >> "$GITHUB_ENV"
+
+      - name: Summarize authenticated results
+        if: always() && steps.auth_ready.outputs.ready == 'true'
+        working-directory: ./backend
+        run: |
+          . .venv/bin/activate
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          stats_path = Path('test-reports/load/auth/locust_stats.csv')
+          summary = [
+            '# Authenticated Load Test Summary',
+            '',
+            '- Profile: staging_auth',
+            '- Users: 15',
+            '- Spawn rate: 1',
+            '- Runtime: 10m',
+            '',
+          ]
+
+          if not stats_path.exists():
+            summary.append('No locust_stats.csv produced.')
+            Path('/tmp/load-auth-summary.md').write_text('\n'.join(summary), encoding='utf-8')
+            raise SystemExit(0)
+
+          with stats_path.open('r', encoding='utf-8') as handle:
+            rows = list(csv.DictReader(handle))
+
+          aggregate = next((row for row in rows if row.get('Name') == 'Aggregated'), None)
+          if not aggregate:
+            summary.append('No Aggregated row found in locust_stats.csv.')
+          else:
+            summary.extend([
+              '| Metric | Value |',
+              '|---|---:|',
+              f"| Requests | {aggregate.get('Request Count', '0')} |",
+              f"| Failures | {aggregate.get('Failure Count', '0')} |",
+              f"| Median (ms) | {aggregate.get('Median Response Time', '0')} |",
+              f"| p95 (ms) | {aggregate.get('95%', '0')} |",
+              f"| p99 (ms) | {aggregate.get('99%', '0')} |",
+              f"| Avg (ms) | {aggregate.get('Average Response Time', '0')} |",
+              f"| RPS | {aggregate.get('Requests/s', '0')} |",
+              f"| Failures/s | {aggregate.get('Failures/s', '0')} |",
+            ])
+
+          Path('/tmp/load-auth-summary.md').write_text('\n'.join(summary), encoding='utf-8')
+          PY
+          cat /tmp/load-auth-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload authenticated load artifacts
+        if: always() && steps.auth_ready.outputs.ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: locust-load-auth-results-${{ github.run_number }}
+          path: |
+            backend/test-reports/load/auth/locust.html
+            backend/test-reports/load/auth/locust_*.csv
+          retention-days: 30
+
+      - name: Publish authenticated load test event to Loki
+        if: always() && steps.auth_ready.outputs.ready == 'true' && env.LOAD_TEST_LOKI_PUSH_URL != ''
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import time
+          import requests
+
+          push_url = os.getenv('LOAD_TEST_LOKI_PUSH_URL', '').strip()
+          username = os.getenv('LOAD_TEST_LOKI_USERNAME', '').strip()
+          password = os.getenv('LOAD_TEST_LOKI_PASSWORD', '').strip()
+          if not push_url:
+            raise SystemExit(0)
+
+          run_url = f"https://github.com/{os.getenv('GITHUB_REPOSITORY')}/actions/runs/{os.getenv('GITHUB_RUN_ID')}"
+          line = json.dumps({
+            'event': 'load_test_authenticated_completed',
+            'profile': 'staging_auth',
+            'users': os.getenv('LOCUST_USERS', ''),
+            'spawn_rate': os.getenv('LOCUST_SPAWN_RATE', ''),
+            'run_time': os.getenv('LOCUST_RUN_TIME', ''),
+            'run_url': run_url,
+            'workflow': os.getenv('GITHUB_WORKFLOW', ''),
+          })
+
+          payload = {
+            'streams': [
+              {
+                'stream': {
+                  'service': 'load-tests',
+                  'environment': os.getenv('OBSERVABILITY_ENV', 'ci'),
+                  'source': 'github-actions',
+                },
+                'values': [[str(int(time.time() * 1_000_000_000)), line]],
+              }
+            ]
+          }
+
+          auth = (username, password) if username and password else None
+          requests.post(push_url, json=payload, timeout=5, auth=auth)
+          PY
+
+      - name: Fail workflow on authenticated locust failures
+        if: env.LOCUST_AUTH_FAILED == 'true'
+        run: |
+          echo 'Authenticated Locust run reported failures. See summary + artifacts.'
+          exit 1

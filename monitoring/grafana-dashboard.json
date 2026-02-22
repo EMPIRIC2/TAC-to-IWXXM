@@ -261,13 +261,13 @@
       },
       {
         "id": 11,
-        "title": "Top 10 Airports by Translation Volume",
+        "title": "Top Regions by Translation Volume",
         "type": "graph",
         "gridPos": {"x": 0, "y": 30, "w": 12, "h": 6},
         "targets": [
           {
-            "expr": "topk(10, sum by (airport) (rate(translation_statistics_total[1h])))",
-            "legendFormat": "{{airport}}"
+            "expr": "topk(10, sum by (icao_region) (rate(metar_conversions_total[1h])))",
+            "legendFormat": "{{icao_region}}"
           }
         ],
         "yaxes": [
@@ -282,8 +282,8 @@
         "gridPos": {"x": 12, "y": 30, "w": 12, "h": 6},
         "targets": [
           {
-            "expr": "sum by (region) (translation_statistics_total)",
-            "legendFormat": "{{region}}"
+            "expr": "sum by (icao_region) (metar_conversions_total)",
+            "legendFormat": "{{icao_region}}"
           }
         ],
         "options": {
@@ -319,6 +319,38 @@
             }
           }
         }
+      },
+      {
+        "id": 14,
+        "title": "Auth Login Failure Ratio",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 40, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "sum(rate(auth_logins_total{result=\"failure\"}[5m])) / clamp_min(sum(rate(auth_logins_total[5m])), 0.001) * 100",
+            "legendFormat": "Failure Ratio"
+          }
+        ],
+        "yaxes": [
+          {"label": "percent", "format": "percent", "min": 0, "max": 100},
+          {"show": false}
+        ]
+      },
+      {
+        "id": 15,
+        "title": "Translation P95 by IWXXM Version",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 40, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum by (le, iwxxm_version) (rate(metar_conversion_duration_seconds_bucket[5m])))",
+            "legendFormat": "{{iwxxm_version}}"
+          }
+        ],
+        "yaxes": [
+          {"label": "seconds", "format": "s"},
+          {"show": false}
+        ]
       }
     ],
     "annotations": {

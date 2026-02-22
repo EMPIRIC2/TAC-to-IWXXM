@@ -1,0 +1,13 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://metar-to-iwxxm-prometheus:10000
+    isDefault: true
+
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://metar-to-iwxxm-loki:10000

@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..schemas.icao_opmet import TranslationRecord, TranslationStatus, ValidationLayer
 from ..config.icao_opmet import get_icao_region, should_log_statistics
 from ..models import TranslationStatisticsModel
+from ..utilities.observability import record_translation_metric
 from .database import get_db_session
 
 logger = logging.getLogger(__name__)
@@ -137,6 +138,17 @@ class StatisticsService:
             
             logger.info(
                 f"Logged translation {translation_id} for {normalized_icao_code} ({icao_region}, {translation_status})"
+            )
+            translation_status_value = (
+                translation_status.value
+                if isinstance(translation_status, TranslationStatus)
+                else str(translation_status)
+            )
+            record_translation_metric(
+                status=translation_status_value,
+                iwxxm_version=iwxxm_version,
+                icao_region=icao_region,
+                duration_ms=translation_duration_ms,
             )
             return str(translation_id)
             

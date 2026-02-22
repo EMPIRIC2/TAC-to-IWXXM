@@ -10,14 +10,8 @@ import sys
 import logging
 from typing import List, Optional, Union, Any
 
-# Setup logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
-
-logger.info("DEBUG: Starting api.py imports...")
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends, Request, Body
 from fastapi.responses import StreamingResponse
@@ -45,13 +39,12 @@ try:
     from .services.validation import ValidationService, ValidationError as ValidationServiceError
     from .services.statistics import statistics_service
     from .services.webhooks import webhook_service
+    from .utilities.observability import setup_logging, install_fastapi_observability
     from .routers import evaluation, validation, icao_opmet
     from .config.icao_opmet import get_translation_centre_info, get_icao_region
     from .services.database import database_lifespan
-    logger.info("DEBUG: Relative imports successful")
 except ImportError as e:
     # Fall back to direct imports (when sys.path is set for local development)
-    logger.info(f"DEBUG: Relative import failed: {e}, trying direct imports...")
     from utilities.conversion import convert_metar_tac_with_metadata, ConversionError
     from utilities.security import verify_supabase_token
     from utilities.tac_parser import extract_airport_code
@@ -71,10 +64,13 @@ except ImportError as e:
     from services.validation import ValidationService, ValidationError as ValidationServiceError
     from services.statistics import statistics_service
     from services.webhooks import webhook_service
+    from utilities.observability import setup_logging, install_fastapi_observability
     from routers import evaluation, validation, icao_opmet
     from config.icao_opmet import get_translation_centre_info, get_icao_region
     from services.database import database_lifespan
-    logger.info("DEBUG: Direct imports successful")
+
+setup_logging("backend")
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="METAR to IWXXM Backend API",
@@ -107,6 +103,8 @@ app = FastAPI(
         "persistAuthorization": True,
     }
 )
+
+install_fastapi_observability(app=app, service_name="backend")
 
 
 class ConvertRequestLoggingMiddleware:

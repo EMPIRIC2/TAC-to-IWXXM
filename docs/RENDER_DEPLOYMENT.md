@@ -1,5 +1,7 @@
 # Deploying to Render (Backend + Auth + Frontend)
 
+For observability stack setup (Grafana + Prometheus + Loki), see `docs/RENDER_OBSERVABILITY.md`.
+
 This guide covers the current `render.yaml` topology:
 
 - `metar-to-iwxxm-api` (Web Service, FastAPI backend)
