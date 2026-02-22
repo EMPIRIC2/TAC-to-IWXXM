@@ -12,7 +12,7 @@ env:
   AUTH_IMAGE: joseph-c-mcguire/metar-to-iwxxm/auth
   FRONTEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/frontend
   FRONTEND_SOURCE_REPO: https://github.com/joseph-c-mcguire/Metartoiwxxmfrontend.git
-  RENDER_DEPLOY_MODE: source
+  RENDER_DEPLOY_MODE: image
   FRONTEND_VITE_SUPABASE_URL: https://ktvxijislbtgqapllmuk.supabase.co
   FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: sb_publishable_eqkNmJv86m9u7Gmym9Wf8Q_NC1fUZ8x
   FRONTEND_VITE_APP_URL: https://metar-to-iwxxm-frontend-v4-web.onrender.com
