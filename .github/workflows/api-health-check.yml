@@ -16,6 +16,10 @@ on:
         required: false
         default: ''
 
+permissions:
+  contents: read
+  issues: write
+
 env:
   # Production API URL (set in repository secrets)
   LIVE_API_URL: ${{ secrets.LIVE_API_URL || 'https://api.example.com' }}
@@ -71,7 +75,11 @@ jobs:
             ERRORS=$(grep -oP 'errors="\K[0-9]+' backend/health-check-results.xml || echo "0")
             
             PASSED=$((TOTAL - FAILURES - ERRORS))
-            SUCCESS_RATE=$((PASSED * 100 / TOTAL))
+            if [ "$TOTAL" -gt 0 ]; then
+              SUCCESS_RATE=$((PASSED * 100 / TOTAL))
+            else
+              SUCCESS_RATE=0
+            fi
             
             echo "total=$TOTAL" >> $GITHUB_OUTPUT
             echo "passed=$PASSED" >> $GITHUB_OUTPUT
@@ -97,79 +105,84 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const total = '${{ steps.parse_results.outputs.total }}';
-            const passed = '${{ steps.parse_results.outputs.passed }}';
-            const failed = '${{ steps.parse_results.outputs.failed }}';
-            const errors = '${{ steps.parse_results.outputs.errors }}';
-            const successRate = '${{ steps.parse_results.outputs.success_rate }}';
-            
-            const title = `🚨 API Health Check Failed - ${successRate}% success rate`;
-            const body = `## API Health Check Alert
-            
-            **Status**: ❌ FAILED
-            **Time**: ${new Date().toISOString()}
-            **API URL**: ${{ env.LIVE_API_URL }}
-            
-            ### Test Results
-            - ✅ Passed: ${passed}/${total}
-            - ❌ Failed: ${failed}
-            - ⚠️ Errors: ${errors}
-            - 📊 Success Rate: ${successRate}%
-            - 🎯 Required: ${process.env.MIN_SUCCESS_RATE}%
-            
-            ### Actions Required
-            1. Check API availability at ${{ env.LIVE_API_URL }}
-            2. Review failed test details in workflow run
-            3. Check server logs for errors
-            4. Verify authentication tokens are valid
-            
-            ### Workflow Run
-            [View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            
-            ---
-            *This issue was automatically created by API Health Monitoring*
-            `;
-            
-            // Search for existing open issues
-            const existingIssues = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              labels: 'api-health,automated',
-              per_page: 100
-            });
-            
-            const hasOpenAlert = existingIssues.data.some(issue => 
-              issue.title.includes('API Health Check Failed')
-            );
-            
-            if (!hasOpenAlert) {
-              // Create new issue
-              await github.rest.issues.create({
+            try {
+              const total = '${{ steps.parse_results.outputs.total }}';
+              const passed = '${{ steps.parse_results.outputs.passed }}';
+              const failed = '${{ steps.parse_results.outputs.failed }}';
+              const errors = '${{ steps.parse_results.outputs.errors }}';
+              const successRate = '${{ steps.parse_results.outputs.success_rate }}';
+
+              const title = `🚨 API Health Check Failed - ${successRate}% success rate`;
+              const body = `## API Health Check Alert
+
+              **Status**: ❌ FAILED
+              **Time**: ${new Date().toISOString()}
+              **API URL**: ${{ env.LIVE_API_URL }}
+
+              ### Test Results
+              - ✅ Passed: ${passed}/${total}
+              - ❌ Failed: ${failed}
+              - ⚠️ Errors: ${errors}
+              - 📊 Success Rate: ${successRate}%
+              - 🎯 Required: ${process.env.MIN_SUCCESS_RATE}%
+
+              ### Actions Required
+              1. Check API availability at ${{ env.LIVE_API_URL }}
+              2. Review failed test details in workflow run
+              3. Check server logs for errors
+              4. Verify authentication tokens are valid
+
+              ### Workflow Run
+              [View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+              ---
+              *This issue was automatically created by API Health Monitoring*
+              `;
+
+              const existingIssues = await github.rest.issues.listForRepo({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: title,
-                body: body,
-                labels: ['api-health', 'automated', 'priority-high']
+                state: 'open',
+                labels: 'api-health,automated',
+                per_page: 100
               });
-            } else {
-              // Update existing issue with latest results
-              const issue = existingIssues.data.find(i => 
-                i.title.includes('API Health Check Failed')
+
+              const hasOpenAlert = existingIssues.data.some(issue =>
+                issue.title.includes('API Health Check Failed')
               );
-              
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue.number,
-                body: [
-                  `### Update: ${new Date().toISOString()}`,
-                  '',
-                  `Success Rate: ${successRate}% (${passed}/${total} tests passed)`,
-                  '',
-                  `[View Latest Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
-                ].join('\n')
-              });
+
+              if (!hasOpenAlert) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: title,
+                  body: body,
+                  labels: ['api-health', 'automated', 'priority-high']
+                });
+              } else {
+                const issue = existingIssues.data.find(i =>
+                  i.title.includes('API Health Check Failed')
+                );
+
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: [
+                    `### Update: ${new Date().toISOString()}`,
+                    '',
+                    `Success Rate: ${successRate}% (${passed}/${total} tests passed)`,
+                    '',
+                    `[View Latest Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
+                  ].join('\n')
+                });
+              }
+            } catch (error) {
+              if (error && error.status === 403) {
+                core.warning('Skipping issue creation: GITHUB_TOKEN lacks issues:write in this run context.');
+              } else {
+                throw error;
+              }
             }
       
       - name: Send Slack Alert
@@ -231,36 +244,42 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            // Find open health check issues
-            const issues = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              labels: 'api-health,automated'
-            });
-            
-            // Close them with success message
-            for (const issue of issues.data) {
-              if (issue.title.includes('API Health Check Failed')) {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue.number,
-                  body: [
-                    `### ✅ Resolved: ${new Date().toISOString()}`,
-                    '',
-                    'API health check is now passing. Closing this issue.',
-                    '',
-                    `[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
-                  ].join('\n')
-                });
-                
-                await github.rest.issues.update({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue.number,
-                  state: 'closed'
-                });
+            try {
+              const issues = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                labels: 'api-health,automated'
+              });
+
+              for (const issue of issues.data) {
+                if (issue.title.includes('API Health Check Failed')) {
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    body: [
+                      `### ✅ Resolved: ${new Date().toISOString()}`,
+                      '',
+                      'API health check is now passing. Closing this issue.',
+                      '',
+                      `[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
+                    ].join('\n')
+                  });
+
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    state: 'closed'
+                  });
+                }
+              }
+            } catch (error) {
+              if (error && error.status === 403) {
+                core.warning('Skipping issue close/update: GITHUB_TOKEN lacks issues:write in this run context.');
+              } else {
+                throw error;
               }
             }
   
