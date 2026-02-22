@@ -1,5 +1,7 @@
 # Backend: METAR to IWXXM Conversion API
 
+[![codecov](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM/graph/badge.svg)](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM)
+
 ## Overview
 
 FastAPI-based REST API for converting METAR (Aerodrome Routine Weather Report) and SPECI (Aviation Selected Special Weather Report) aviation weather observations into IWXXM (ICAO Meteorological Information Exchange Model) XML format.

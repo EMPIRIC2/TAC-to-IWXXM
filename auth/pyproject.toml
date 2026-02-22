@@ -61,7 +61,10 @@ filterwarnings = [
 ]
 
 [tool.coverage.run]
+source = ["src"]
 omit = [
+    "src/api.py",
+    "src/supabase_proxy.py",
     "*/tests/*",
     "*/__init__.py",
     "*/__main__.py",

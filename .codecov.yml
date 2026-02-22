@@ -1,0 +1,59 @@
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  precision: 2
+  round: down
+  range: "0...100"
+  flags:
+    backend:
+      paths:
+        - backend/
+    auth:
+      paths:
+        - auth/
+    frontend:
+      paths:
+        - frontend/
+    gifts:
+      paths:
+        - GIFTs/
+  status:
+    project:
+      backend:
+        target: 75%
+        threshold: 0%
+        flags:
+          - backend
+        if_not_found: failure
+        if_ci_failed: error
+      auth:
+        target: 75%
+        threshold: 0%
+        flags:
+          - auth
+        if_not_found: failure
+        if_ci_failed: error
+      frontend:
+        target: 75%
+        threshold: 0%
+        flags:
+          - frontend
+        if_not_found: failure
+        if_ci_failed: error
+      gifts:
+        target: 75%
+        threshold: 0%
+        flags:
+          - gifts
+        if_not_found: failure
+        if_ci_failed: error
+    patch:
+      default:
+        target: auto
+        threshold: 0%
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false

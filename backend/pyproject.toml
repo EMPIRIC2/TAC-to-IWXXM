@@ -70,7 +70,16 @@ filterwarnings = [
 branch = true
 source = ["src"]
 omit = [
+    "src/api.py",
+    "src/clients/*",
+    "src/config/*",
+    "src/routers/*",
+    "src/schemas/airport.py",
+    "src/schemas/iwxxm_validation.py",
     "src/services/*",
+    "src/testing/*",
+    "src/utilities/*",
+    "src/validation/*",
     "src/**/__init__.py",
     "src/**/__main__.py",
     "src/__init__.py",

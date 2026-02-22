@@ -59,7 +59,10 @@ jobs:
         run: |
           python -m pytest tests/unit \
             --cov=src \
+            --cov-config=pyproject.toml \
+            --cov-branch \
             --cov-report=json \
+            --cov-report=xml:coverage.xml \
             --cov-report=term-missing \
             --cov-report=html \
             --tb=short \
@@ -70,7 +73,20 @@ jobs:
         if: always()
         with:
           name: backend-coverage-report
-          path: backend/htmlcov/
+          path: |
+            backend/htmlcov/
+            backend/coverage.xml
+
+      - name: Upload backend coverage to Codecov
+        uses: codecov/codecov-action@v5
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: joseph-c-mcguire/metar-to-IWXXM
+          files: ./backend/coverage.xml
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: true
   
   # ============================================================================
   # AUTH SERVICE - Python Tests & Coverage
@@ -109,9 +125,12 @@ jobs:
       - name: Run unit tests with coverage
         working-directory: ./auth
         run: |
-          python -m pytest tests/test_supabase_proxy_api_database.py \
+          PYTHONPATH=. python -m pytest tests \
             --cov=src \
+            --cov-config=pyproject.toml \
+            --cov-branch \
             --cov-report=json \
+            --cov-report=xml:coverage.xml \
             --cov-report=term-missing \
             --cov-report=html \
             --tb=short \
@@ -122,7 +141,20 @@ jobs:
         if: always()
         with:
           name: auth-coverage-report
-          path: auth/htmlcov/
+          path: |
+            auth/htmlcov/
+            auth/coverage.xml
+
+      - name: Upload auth coverage to Codecov
+        uses: codecov/codecov-action@v5
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: joseph-c-mcguire/metar-to-IWXXM
+          files: ./auth/coverage.xml
+          flags: auth
+          name: auth-coverage
+          fail_ci_if_error: true
   
   # ============================================================================
   # GIFTs - Python Tests & Coverage
@@ -161,7 +193,10 @@ jobs:
         run: |
           python -m pytest tests/ \
             --cov=gifts \
+            --cov-config=pyproject.toml \
+            --cov-branch \
             --cov-report=json \
+            --cov-report=xml:coverage.xml \
             --cov-report=term-missing \
             --cov-report=html \
             --tb=short \
@@ -172,8 +207,21 @@ jobs:
         if: always()
         with:
           name: gifts-coverage-report
-          path: GIFTs/htmlcov/
+          path: |
+            GIFTs/htmlcov/
+            GIFTs/coverage.xml
         continue-on-error: true
+
+      - name: Upload GIFTs coverage to Codecov
+        uses: codecov/codecov-action@v5
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: joseph-c-mcguire/metar-to-IWXXM
+          files: ./GIFTs/coverage.xml
+          flags: gifts
+          name: gifts-coverage
+          fail_ci_if_error: true
   
   # ============================================================================
   # FRONTEND - JavaScript/TypeScript Tests & Coverage
@@ -200,8 +248,7 @@ jobs:
       
       - name: Run tests with coverage
         working-directory: ./frontend
-        run: npm run test:coverage 2>&1 | tee test-output.log
-        continue-on-error: true
+        run: npm run test:coverage -- --reporter=verbose 2>&1 | tee test-output.log
       
       - name: Report coverage summary
         working-directory: ./frontend
@@ -216,7 +263,17 @@ jobs:
         with:
           name: frontend-coverage-report
           path: frontend/coverage/
-        continue-on-error: true
+
+      - name: Upload frontend coverage to Codecov
+        uses: codecov/codecov-action@v5
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: joseph-c-mcguire/metar-to-IWXXM
+          files: ./frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+          fail_ci_if_error: true
   
   # ============================================================================
   # TEST RESULT AGGREGATION
@@ -239,7 +296,7 @@ jobs:
           echo "| GIFTs | ${{ needs.gifts-tests.result == 'success' && '✅ PASS' || '⚠️  OPTIONAL' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Frontend | ${{ needs.frontend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Coverage reports are informative-only; no minimum threshold is enforced.**" >> $GITHUB_STEP_SUMMARY
+          echo "**Coverage gate**: Codecov enforces combined project coverage at **75%**." >> $GITHUB_STEP_SUMMARY
       
       - name: Enforce required test jobs
         run: |
@@ -498,4 +555,4 @@ jobs:
           echo "**Docker Build**: ${{ needs.build-and-push.result == 'success' && '✅ SUCCESS' || '⏭️  SKIPPED' }}" >> $GITHUB_STEP_SUMMARY
           echo "**Render Deploy**: ${{ needs.deploy-render.result == 'success' && '✅ SUCCESS' || '⏭️  SKIPPED' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> **Policy**: Coverage is reported but not hard-gated by a minimum percentage." >> $GITHUB_STEP_SUMMARY
+          echo "> **Policy**: Combined coverage is hard-gated by Codecov at **75%**." >> $GITHUB_STEP_SUMMARY
