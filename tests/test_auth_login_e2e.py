@@ -8,17 +8,35 @@ Tests the complete login flow including:
 """
 import pytest
 import requests
-from typing import Dict, Any
+import os
+import pathlib
 
 # Configuration
-AUTH_SERVICE_URL = "http://localhost:8002"
-ADMIN_EMAIL = "admin@metar.local"
-ADMIN_PASSWORD = "Admin123456!"
+
+def _load_env_file() -> None:
+    env_path = pathlib.Path(__file__).resolve().parents[1] / ".env"
+    if not env_path.exists():
+        return
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key, value = stripped.split("=", 1)
+        os.environ.setdefault(key.strip(), value.strip())
+
+
+_load_env_file()
+
+AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://localhost:8002")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@metar.local")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 
 
 @pytest.fixture(scope="module")
 def auth_service_available():
     """Check if auth service is running."""
+    if not ADMIN_PASSWORD:
+        pytest.skip("ADMIN_PASSWORD not configured in environment")
     try:
         response = requests.get(f"{AUTH_SERVICE_URL}/health", timeout=5)
         assert response.status_code == 200

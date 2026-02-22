@@ -423,6 +423,13 @@ jobs:
           [ -n "${RENDER_AUTH_DEPLOY_HOOK}" ] && echo "✅ RENDER_AUTH_DEPLOY_HOOK is set" || echo "⚠️  RENDER_AUTH_DEPLOY_HOOK is missing"
           [ -n "${RENDER_FRONTEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_FRONTEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_FRONTEND_DEPLOY_HOOK is missing"
 
+      - name: Enforce backend deploy hook presence
+        run: |
+          if [ -z "${RENDER_BACKEND_DEPLOY_HOOK}" ]; then
+            echo "❌ Missing required secret: RENDER_BACKEND_DEPLOY_HOOK"
+            exit 1
+          fi
+
       - name: Deploy backend image to Render
         if: env.RENDER_BACKEND_DEPLOY_HOOK != ''
         env:
