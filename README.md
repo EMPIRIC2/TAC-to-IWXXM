@@ -1,5 +1,7 @@
 # METAR to IWXXM Converter
 
+[![codecov](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM/graph/badge.svg)](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM)
+
 Modern React-based web application with microservices backend to decode METAR/SPECI TAC and serialize IWXXM XML using the GIFTs submodule.
 
 ## Features

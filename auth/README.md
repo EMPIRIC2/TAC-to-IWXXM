@@ -1,5 +1,7 @@
 # Authentication Service - Supabase Middleware Proxy
 
+[![codecov](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM/graph/badge.svg)](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM)
+
 A middleware authentication service that proxies requests between the frontend/backend and Supabase, providing centralized auth management, security isolation, and easier monitoring.
 
 ## Purpose
@@ -165,7 +167,7 @@ Comprehensive test suite with 95% coverage target:
 pytest
 
 # Run with coverage report
-pytest --cov=auth --cov-report=html --cov-report=term
+pytest --cov=src --cov-branch --cov-report=html --cov-report=term-missing --cov-report=xml
 
 # Run specific test file
 pytest tests/test_api.py
