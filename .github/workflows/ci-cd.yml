@@ -39,8 +39,14 @@ jobs:
 
       - name: Initialize required submodules only
         run: |
+          git submodule sync --recursive
           git submodule update --init --depth 1 frontend
-          git submodule update --init --depth 1 GIFTs
+          git submodule update --init GIFTs || {
+            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
+            git -C GIFTs fetch --tags --force origin
+            git submodule update --init GIFTs
+          }
+          git -C GIFTs rev-parse --short HEAD
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -107,8 +113,14 @@ jobs:
 
       - name: Initialize required submodules only
         run: |
+          git submodule sync --recursive
           git submodule update --init --depth 1 frontend
-          git submodule update --init --depth 1 GIFTs
+          git submodule update --init GIFTs || {
+            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
+            git -C GIFTs fetch --tags --force origin
+            git submodule update --init GIFTs
+          }
+          git -C GIFTs rev-parse --short HEAD
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -175,7 +187,13 @@ jobs:
 
       - name: Initialize GIFTs submodule
         run: |
-          git submodule update --init --depth 1 GIFTs
+          git submodule sync --recursive
+          git submodule update --init GIFTs || {
+            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
+            git -C GIFTs fetch --tags --force origin
+            git submodule update --init GIFTs
+          }
+          git -C GIFTs rev-parse --short HEAD
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -194,7 +212,6 @@ jobs:
           python -m pytest tests/ \
             --cov=gifts \
             --cov-config=pyproject.toml \
-            --cov-branch \
             --cov-report=json \
             --cov-report=xml:coverage.xml \
             --cov-report=term-missing \
@@ -296,7 +313,7 @@ jobs:
           echo "| GIFTs | ${{ needs.gifts-tests.result == 'success' && '✅ PASS' || '⚠️  OPTIONAL' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Frontend | ${{ needs.frontend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Coverage gate**: Codecov enforces combined project coverage at **75%**." >> $GITHUB_STEP_SUMMARY
+          echo "**Coverage gate**: Codecov enforces **per-service** coverage at **75%** (backend, auth, frontend, GIFTs)." >> $GITHUB_STEP_SUMMARY
       
       - name: Enforce required test jobs
         run: |
@@ -385,7 +402,13 @@ jobs:
 
       - name: Initialize required submodules
         run: |
-          git submodule update --init --depth 1 GIFTs
+          git submodule sync --recursive
+          git submodule update --init GIFTs || {
+            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
+            git -C GIFTs fetch --tags --force origin
+            git submodule update --init GIFTs
+          }
+          git -C GIFTs rev-parse --short HEAD
 
       - name: Clone frontend source repository
         run: |
@@ -555,4 +578,4 @@ jobs:
           echo "**Docker Build**: ${{ needs.build-and-push.result == 'success' && '✅ SUCCESS' || '⏭️  SKIPPED' }}" >> $GITHUB_STEP_SUMMARY
           echo "**Render Deploy**: ${{ needs.deploy-render.result == 'success' && '✅ SUCCESS' || '⏭️  SKIPPED' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> **Policy**: Combined coverage is hard-gated by Codecov at **75%**." >> $GITHUB_STEP_SUMMARY
+          echo "> **Policy**: Per-service coverage is hard-gated by Codecov at **75%**." >> $GITHUB_STEP_SUMMARY

@@ -49,6 +49,36 @@ npm install && npm run dev  # Runs on port 5173
 
 ---
 
+## Current CI/CD Status
+
+Primary workflow: `.github/workflows/ci-cd.yml`
+
+- Runs test + coverage jobs for `backend`, `auth`, `GIFTs`, and `frontend`
+- Uploads coverage reports to Codecov with per-service flags
+- Enforces per-service Codecov gates at 75% via `.codecov.yml`
+- Builds and pushes Docker images on `main` after required test jobs pass
+
+### Coverage policy (current)
+
+- `backend`: 75%
+- `auth`: 75%
+- `frontend`: 75%
+- `gifts`: 75%
+
+### Submodule reliability policy
+
+`GIFTs` must use non-shallow submodule initialization in CI. If checkout issues occur (`not our ref`, `did not contain <sha>`), use:
+
+```bash
+git submodule sync --recursive
+git submodule update --init GIFTs
+git -C GIFTs fetch --tags --force origin
+git submodule update --init GIFTs
+git submodule status GIFTs
+```
+
+---
+
 ## Architecture Overview
 
 ### Services
@@ -310,6 +340,22 @@ npm run test:e2e         # Playwright E2E tests
 ---
 
 ## Troubleshooting
+
+### Git submodule failures
+
+Symptoms in CI:
+
+- `fatal: Fetched in submodule path 'GIFTs', but it did not contain <sha>`
+- `remote error: upload-pack: not our ref <sha>`
+
+Recovery:
+
+```bash
+git submodule sync --recursive
+git submodule update --init GIFTs
+git -C GIFTs fetch --tags --force origin
+git submodule update --init GIFTs
+```
 
 ### "Failed to fetch" errors
 - **Check**: Is auth service running on port 8003?

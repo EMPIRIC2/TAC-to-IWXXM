@@ -283,24 +283,22 @@ Each pattern includes:
 
 ### CI/CD Recommendations
 
-```yaml
-# .github/workflows/test.yml
-jobs:
-  test-fast:
-    # Per-commit - unit tests only
-    run: pytest backend/tests/test_metar_pairs_comprehensive.py -v
-    timeout: 2m
+Current workflows in this repository:
 
-  test-comprehensive:
-    # Nightly/weekly - include integration
-    run: pytest backend/tests/ -m "not slow" -v
-    timeout: 5m
+- `.github/workflows/ci-cd.yml` (primary CI/CD)
+- `.github/workflows/e2e-tests.yml` (scheduled/full-stack checks)
+- `.github/workflows/test-coverage-95.yml` (manual legacy)
 
-  test-full:
-    # Monthly - all including slow integration
-    run: pytest backend/tests/ -v
-    timeout: 10m
-```
+Primary CI (`ci-cd.yml`) now:
+
+- runs coverage for `backend`, `auth`, `GIFTs`, `frontend`
+- uploads coverage to Codecov using flags
+- enforces per-service coverage gates at 75%
+
+Submodule guidance for CI:
+
+- avoid shallow-only checkout for `GIFTs`
+- use retry + explicit `git -C GIFTs fetch --tags --force origin` fallback when initializing submodules
 
 ---
 

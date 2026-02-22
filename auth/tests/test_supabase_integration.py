@@ -26,6 +26,7 @@ import pathlib
 import pytest
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.pool import NullPool
 
 # Ensure src layout path precedence
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -34,11 +35,17 @@ if str(AUTH_SRC) not in sys.path:
     sys.path.insert(0, str(AUTH_SRC))
 
 
-# Mark all tests in this file as requiring PostgreSQL
+# Mark all tests in this file as explicit opt-in integration tests.
+# This prevents accidental execution in standard CI/unit runs where DATABASE_URL
+# may be populated indirectly (for example via local .env loading).
 pytestmark = pytest.mark.skipif(
-    not os.getenv("DATABASE_URL") or "postgresql" not in os.getenv(
-        "DATABASE_URL", ""),
-    reason="Requires DATABASE_URL environment variable with PostgreSQL connection"
+    os.getenv("RUN_SUPABASE_INTEGRATION_TESTS", "").lower() not in {"1", "true", "yes"}
+    or not os.getenv("DATABASE_URL")
+    or "postgresql" not in os.getenv("DATABASE_URL", ""),
+    reason=(
+        "Requires RUN_SUPABASE_INTEGRATION_TESTS=true and DATABASE_URL with "
+        "PostgreSQL connection"
+    ),
 )
 
 
