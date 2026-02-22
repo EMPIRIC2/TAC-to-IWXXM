@@ -207,3 +207,8 @@ marimo/_lsp/
 __marimo__/
 *.venv*
 *.db
+
+# Local tooling binaries/artifacts
+.tools/grafana/
+.local/
+
