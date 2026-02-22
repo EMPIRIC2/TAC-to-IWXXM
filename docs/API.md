@@ -4,9 +4,9 @@
 
 The METAR to IWXXM Converter API provides endpoints for converting METAR/SPECI TAC messages to IWXXM XML format.
 
-**Frontend URL**: `http://localhost:8000` (nginx proxy to backend/auth)  
+**Frontend URL**: `http://localhost:5173` (dev) or `http://localhost:8000` (prod)  
 **Backend API URL**: `http://localhost:8001` (direct access)  
-**Auth Service URL**: `http://localhost:8002` (direct access)  
+**Auth Service URL**: `http://localhost:8003` (direct access)  
 **Version**: 0.1.0  
 **Interactive Docs**: Visit `http://localhost:8001/docs` (Swagger UI) or `http://localhost:8001/redoc` (ReDoc)
 
@@ -15,10 +15,10 @@ The METAR to IWXXM Converter API provides endpoints for converting METAR/SPECI T
 The application uses a microservices architecture:
 
 - **Frontend**: React/Vite application served via nginx (port 8000)
-  - Proxies `/api/*` requests to backend service
+  - Proxies `/api/v1/*` requests to backend service
   - Proxies `/auth/*` requests to auth service
 - **Backend**: FastAPI service handling METAR conversions (port 8001)
-- **Auth**: FastAPI service handling authentication (port 8002)
+- **Auth**: FastAPI service handling authentication (port 8003)
 
 ## Endpoints
 
@@ -44,7 +44,7 @@ Check service health and GIFTs library availability.
 ### Convert METAR to IWXXM
 
 ```
-POST /api/convert
+POST /api/v1/convert
 ```
 
 Convert uploaded METAR TAC files and/or manual text to IWXXM XML.
@@ -75,16 +75,16 @@ Convert uploaded METAR TAC files and/or manual text to IWXXM XML.
 
 ```bash
 # Manual text input
-curl -X POST http://localhost:8000/api/convert \
+curl -X POST http://localhost:8000/api/v1/convert \
      -F "manual_text=METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
 
 # File upload
-curl -X POST http://localhost:8000/api/convert \
+curl -X POST http://localhost:8000/api/v1/convert \
      -F "files=@metar1.tac" \
      -F "files=@metar2.tac"
 
 # Combined
-curl -X POST http://localhost:8000/api/convert \
+curl -X POST http://localhost:8000/api/v1/convert \
      -F "files=@metar.tac" \
      -F "manual_text=METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
 ```
@@ -94,7 +94,7 @@ curl -X POST http://localhost:8000/api/convert \
 ### Convert to ZIP Archive
 
 ```
-POST /api/convert-zip
+POST /api/v1/convert-zip
 ```
 
 Convert inputs and stream a ZIP archive of IWXXM XML outputs.
@@ -110,7 +110,7 @@ Convert inputs and stream a ZIP archive of IWXXM XML outputs.
 **Example**:
 
 ```bash
-curl -X POST http://localhost:8000/api/convert-zip \
+curl -X POST http://localhost:8000/api/v1/convert-zip \
      -F "files=@metar1.tac" \
      -F "files=@metar2.tac" \
      -F "manual_text=METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005" \
@@ -202,9 +202,9 @@ Returned for unexpected server errors.
 
 FastAPI automatically generates interactive API documentation:
 
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-- **OpenAPI JSON**: http://localhost:8000/openapi.json
+- **Swagger UI**: http://localhost:8001/docs
+- **ReDoc**: http://localhost:8001/redoc
+- **OpenAPI JSON**: http://localhost:8001/openapi.json
 
 These interfaces allow you to:
 - Explore all endpoints with detailed schemas
@@ -230,7 +230,7 @@ Since this API follows OpenAPI 3.0 specification, you can generate client librar
 
 ```bash
 # Download OpenAPI spec
-curl http://localhost:8000/openapi.json > openapi.json
+curl http://localhost:8001/openapi.json > openapi.json
 
 # Generate Python client (example using openapi-generator)
 openapi-generator-cli generate -i openapi.json -g python -o ./client

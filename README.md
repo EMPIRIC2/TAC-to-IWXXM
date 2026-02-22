@@ -374,6 +374,33 @@ metar-to-IWXXM/
 
 ## Troubleshooting
 
+### CI/CD Troubleshooting
+
+#### GIFTs submodule checkout fails in GitHub Actions
+
+If a workflow fails with errors like `did not contain <sha>` or `not our ref`, run:
+
+```bash
+git submodule sync --recursive
+git submodule update --init GIFTs
+git -C GIFTs fetch --tags --force origin
+git submodule update --init GIFTs
+git submodule status GIFTs
+```
+
+Use a non-shallow fetch for `GIFTs` in CI. The main workflow at `.github/workflows/ci-cd.yml` now retries GIFTs initialization with an explicit remote fetch.
+
+#### Coverage checks fail in PRs
+
+Coverage is gated per service through Codecov (not combined-only):
+
+- `backend` ≥ 75%
+- `auth` ≥ 75%
+- `frontend` ≥ 75%
+- `gifts` ≥ 75%
+
+Policy source of truth is `.codecov.yml`, and uploads happen in `.github/workflows/ci-cd.yml`.
+
 ### Docker Troubleshooting
 
 #### Services won't start

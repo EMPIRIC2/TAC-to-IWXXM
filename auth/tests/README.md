@@ -4,16 +4,18 @@ This directory contains comprehensive tests for the authentication service, incl
 
 ## Test Files
 
-### `test_auth.py`
-Main test suite covering:
-- User registration and login
-- API key management
-- Password reset flow
-- Database connectivity
-- Model operations
-- Security functions (password hashing, JWT tokens)
-- API endpoint edge cases
-- Error handling
+### `test_login_email_validation.py`
+Primary active auth/proxy suite covering:
+- Email and login validation behavior
+- Supabase proxy integration surfaces (sync path)
+- API/auth flow edge-case handling
+
+### `test_api_supabase_database_extra.py`
+Focused unit tests for active Supabase-proxy routes and database helpers:
+- Register/login/logout/refresh/verify route delegation
+- Password reset request/confirm route behavior
+- Header token parsing and permissive email validation
+- Database initialization helper behavior
 
 ### `test_supabase_integration.py`
 Supabase-specific integration tests covering:
@@ -57,8 +59,8 @@ pytest auth/tests/ -v
 ### Run Specific Test Files
 
 ```bash
-# Run only basic auth tests (uses SQLite)
-pytest auth/tests/test_auth.py -v
+# Run active auth/proxy unit tests
+pytest auth/tests/test_login_email_validation.py -v
 
 # Run only Supabase integration tests (requires DATABASE_URL)
 pytest auth/tests/test_supabase_integration.py -v
@@ -71,7 +73,7 @@ pytest auth/tests/test_supabase_integration.py -v
 pytest auth/tests/test_supabase_integration.py::TestSupabaseConnection -v
 
 # Run a specific test function
-pytest auth/tests/test_auth.py::test_register_and_login -v
+pytest auth/tests/test_api_supabase_database_extra.py::test_verify_token_returns_success_and_raises_on_invalid -v
 
 # Run tests matching a pattern
 pytest auth/tests/ -k "password" -v
@@ -130,11 +132,10 @@ docker compose run --rm auth pytest tests/ -v
 - `test_jwt_token_creation_and_decoding()` - JWT token lifecycle
 - `test_api_key_hashing()` - API key hashing validation
 
-### API Endpoint Tests
-- `test_register_and_login()` - User registration and login flow
-- `test_apikey_flow()` - API key creation and revocation
-- `test_password_reset_flow()` - Password reset process
-- Edge case tests for invalid inputs and error handling
+### API/Proxy Endpoint Tests
+- Sync route delegation for register/login/logout/me/refresh
+- Password reset request/confirm
+- Verify token success and invalid-token handling
 
 ### Supabase Integration Tests
 - Connection validation and DNS resolution
@@ -227,7 +228,7 @@ jobs:
         pip install -e ".[dev]"
     
     - name: Run tests without Supabase
-      run: pytest auth/tests/test_auth.py -v
+      run: DATABASE_URL=sqlite:///./auth.db pytest auth/tests/ -v
     
     - name: Run Supabase tests
       if: ${{ secrets.DATABASE_URL }}
