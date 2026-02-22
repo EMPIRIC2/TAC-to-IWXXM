@@ -16,13 +16,8 @@ coverage:
         - auth/src/
     frontend:
       carryforward: true
-      paths:
-        - frontend/src/
     gifts:
       carryforward: true
-      paths:
-        - GIFTs/gifts/
-        - GIFTs/validation/
   status:
     project:
       default:
