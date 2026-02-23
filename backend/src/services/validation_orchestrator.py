@@ -112,6 +112,14 @@ class ValidationOrchestrator:
                 layer=ValidationLayer.XML_WELLFORMED,
                 issues=[issue]
             )
+
+    def validate_wellformed(self, xml_content: str) -> ValidationResult:
+        """Public XML well-formedness validation helper."""
+        return self._validate_wellformed(xml_content)
+
+    def validate_xml_schema(self, xml_content: str, version: str) -> XSDValidationResult:
+        """Public XML schema validation helper."""
+        return self.xsd_validator.validate(xml_content, version)
     
     def validate_complete(
         self,
@@ -219,7 +227,7 @@ class ValidationOrchestrator:
             layers_run.append(ValidationLayer.XML_WELLFORMED)
             
             try:
-                result = self._validate_wellformed(xml_content)
+                result = self.validate_wellformed(xml_content)
                 
                 if result.issues:
                     all_issues.extend(result.issues)
@@ -253,7 +261,7 @@ class ValidationOrchestrator:
             layers_run.append(ValidationLayer.XML_SCHEMA)
             
             try:
-                result = self.xsd_validator.validate(xml_content, version)
+                result = self.validate_xml_schema(xml_content, version)
                 
                 if result.issues:
                     all_issues.extend(result.issues)
@@ -299,28 +307,67 @@ class ValidationOrchestrator:
                 
                 # Layer 5: SCHEMATRON
                 if ValidationLayer.SCHEMATRON in parallel_layers:
-                    futures[ValidationLayer.SCHEMATRON] = executor.submit(
-                        self.schematron_validator.validate,
-                        xml_content,
-                        version
-                    )
+                    try:
+                        futures[ValidationLayer.SCHEMATRON] = executor.submit(
+                            self.schematron_validator.validate,
+                            xml_content,
+                            version
+                        )
+                    except Exception as e:
+                        logger.warning(f"Schematron setup warning: {e}")
+                        layers_run.append(ValidationLayer.SCHEMATRON)
+                        issue = ValidationIssue(
+                            layer=ValidationLayer.SCHEMATRON,
+                            level=ValidationSeverity.WARNING,
+                            message=f"Schematron validation unavailable: {str(e)}",
+                            code="SCHEMATRON_SETUP_WARNING",
+                        )
+                        all_issues.append(issue)
+                        issues_by_layer[ValidationLayer.SCHEMATRON] = [issue]
+                        layers_passed.append(ValidationLayer.SCHEMATRON)
                 
                 # Layer 6: GML_REFERENCES
                 if ValidationLayer.GML_REFERENCES in parallel_layers:
-                    futures[ValidationLayer.GML_REFERENCES] = executor.submit(
-                        self.gml_validator.validate,
-                        xml_content,
-                        version
-                    )
+                    try:
+                        futures[ValidationLayer.GML_REFERENCES] = executor.submit(
+                            self.gml_validator.validate,
+                            xml_content,
+                            version
+                        )
+                    except Exception as e:
+                        logger.warning(f"GML setup warning: {e}")
+                        layers_run.append(ValidationLayer.GML_REFERENCES)
+                        issue = ValidationIssue(
+                            layer=ValidationLayer.GML_REFERENCES,
+                            level=ValidationSeverity.WARNING,
+                            message=f"GML reference validation unavailable: {str(e)}",
+                            code="GML_SETUP_WARNING",
+                        )
+                        all_issues.append(issue)
+                        issues_by_layer[ValidationLayer.GML_REFERENCES] = [issue]
+                        layers_passed.append(ValidationLayer.GML_REFERENCES)
                 
                 # Layer 7: WMO_CODELISTS
                 if ValidationLayer.WMO_CODELISTS in parallel_layers:
-                    codelists_dir = self.schema_registry.get_codelists_dir(version)
-                    parser = get_codelist_parser(version, codelists_dir)
-                    futures[ValidationLayer.WMO_CODELISTS] = executor.submit(
-                        parser.validate_xml_codelists,
-                        xml_content
-                    )
+                    try:
+                        codelists_dir = self.schema_registry.get_codelists_dir(version)
+                        parser = get_codelist_parser(version, codelists_dir)
+                        futures[ValidationLayer.WMO_CODELISTS] = executor.submit(
+                            parser.validate_xml_codelists,
+                            xml_content
+                        )
+                    except Exception as e:
+                        logger.warning(f"WMO codelist setup warning: {e}")
+                        layers_run.append(ValidationLayer.WMO_CODELISTS)
+                        issue = ValidationIssue(
+                            layer=ValidationLayer.WMO_CODELISTS,
+                            level=ValidationSeverity.WARNING,
+                            message=f"WMO codelist validation unavailable: {str(e)}",
+                            code="WMO_CODELISTS_SETUP_WARNING",
+                        )
+                        all_issues.append(issue)
+                        issues_by_layer[ValidationLayer.WMO_CODELISTS] = [issue]
+                        layers_passed.append(ValidationLayer.WMO_CODELISTS)
                 
                 # Collect results
                 for layer, future in futures.items():
@@ -344,9 +391,9 @@ class ValidationOrchestrator:
                         
                         issue = ValidationIssue(
                             layer=layer,
-                            severity=ValidationSeverity.ERROR,
+                            level=ValidationSeverity.ERROR,
                             message=f"Validation error: {str(e)}",
-                            details={"error_type": type(e).__name__}
+                            code="VALIDATION_ERROR",
                         )
                         all_issues.append(issue)
                         issues_by_layer[layer] = [issue]

@@ -8,7 +8,7 @@ import zipfile
 import datetime
 import sys
 import logging
-from typing import List, Optional, Union, Any, Tuple
+from typing import List, Optional, Union, Any, Tuple, Dict
 
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -314,10 +314,14 @@ def split_manual_entries(manual_text: str) -> List[str]:
 
 
 async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Optional[str]]:
-    """Read uploaded text file using strict UTF-8 decoding."""
-    raw_bytes = await upload_file.read()
+    """Read uploaded text file using strict UTF-8 decoding with a size limit."""
+    max_upload_bytes = 10 * 1024 * 1024  # 10 MiB
+    raw_bytes = await upload_file.read(max_upload_bytes + 1)
     if not raw_bytes or not raw_bytes.strip():
         return None, "empty file"
+
+    if len(raw_bytes) > max_upload_bytes:
+        return None, f"file too large (limit {max_upload_bytes} bytes)"
 
     try:
         decoded = raw_bytes.decode("utf-8")
@@ -337,6 +341,67 @@ def is_xml_input(filename: Optional[str], content: str) -> bool:
     if lowered_name.endswith(".xml"):
         return True
     return content.lstrip().startswith("<")
+
+
+def classify_and_validate_upload_content(
+    *,
+    filename: Optional[str],
+    content: str,
+    iwxxm_version: str,
+    endpoint_path: str,
+    validation_orchestrator: Optional[Any],
+) -> Optional[Dict[str, str]]:
+    """Return a standardized XML rejection payload for TAC-only conversion endpoints."""
+    if not is_xml_input(filename, content):
+        return None
+
+    if not validation_orchestrator:
+        return {
+            "message": "XML validation is unavailable in this environment.",
+            "hint": "Retry later or use TAC input for conversion.",
+            "code": "XML_VALIDATION_UNAVAILABLE",
+            "layer": "xml_input",
+        }
+
+    xml_wellformed_result = validation_orchestrator.validate_wellformed(content)
+    if not xml_wellformed_result.passed:
+        issue_message = (
+            xml_wellformed_result.issues[0].message
+            if xml_wellformed_result.issues
+            else "XML is not well-formed"
+        )
+        return {
+            "message": issue_message,
+            "hint": "Fix XML syntax before upload.",
+            "code": "XML_NOT_WELLFORMED",
+            "layer": "xml_input",
+        }
+
+    xml_schema_result = validation_orchestrator.validate_xml_schema(content, iwxxm_version)
+    blocking_schema_issues = [
+        issue for issue in xml_schema_result.issues
+        if getattr(issue, "level", None)
+        and str(issue.level).lower().endswith("error")
+    ]
+    if not xml_schema_result.is_valid or blocking_schema_issues:
+        schema_message = (
+            blocking_schema_issues[0].message
+            if blocking_schema_issues
+            else "XML schema validation failed"
+        )
+        return {
+            "message": schema_message,
+            "hint": "Use an IWXXM XML file matching the selected IWXXM schema version.",
+            "code": "XML_SCHEMA_VALIDATION_FAILED",
+            "layer": "xml_input",
+        }
+
+    return {
+        "message": f"XML input is valid, but {endpoint_path} is TAC only.",
+        "hint": "Use TAC files for conversion. Use XML validation endpoints for XML-only checks.",
+        "code": "XML_INPUT_NOT_CONVERTIBLE",
+        "layer": "xml_input",
+    }
 
 
 def normalize_code(value: Optional[str], max_length: int) -> Optional[str]:
@@ -1465,76 +1530,22 @@ async def convert(
                         break
                     continue
 
-                if is_xml_input(uf.filename, data):
-                    if not validation_orchestrator:
-                        errors.append(f"{source_name}: XML validation is currently unavailable")
-                        add_issue(
-                            source=source_name,
-                            message="XML validation is unavailable in this environment.",
-                            severity=ConversionIssueSeverity.ERROR,
-                            hint="Retry later or use TAC input for conversion.",
-                            code="XML_VALIDATION_UNAVAILABLE",
-                            layer="xml_input",
-                        )
-                        if stop_on_error:
-                            break
-                        continue
-
-                    xml_wellformed_result = validation_orchestrator._validate_wellformed(data)
-                    if not xml_wellformed_result.passed:
-                        issue_message = (
-                            xml_wellformed_result.issues[0].message
-                            if xml_wellformed_result.issues
-                            else "XML is not well-formed"
-                        )
-                        errors.append(f"{source_name}: {issue_message}")
-                        add_issue(
-                            source=source_name,
-                            message=issue_message,
-                            severity=ConversionIssueSeverity.ERROR,
-                            hint="Fix XML syntax before upload.",
-                            code="XML_NOT_WELLFORMED",
-                            layer="xml_input",
-                        )
-                        if stop_on_error:
-                            break
-                        continue
-
-                    xml_schema_result = validation_orchestrator.xsd_validator.validate(data, iwxxm_version)
-                    blocking_schema_issues = [
-                        issue for issue in xml_schema_result.issues
-                        if getattr(issue, "level", None)
-                        and str(issue.level).lower().endswith("error")
-                    ]
-                    if not xml_schema_result.is_valid or blocking_schema_issues:
-                        schema_message = (
-                            blocking_schema_issues[0].message
-                            if blocking_schema_issues
-                            else "XML schema validation failed"
-                        )
-                        errors.append(f"{source_name}: {schema_message}")
-                        add_issue(
-                            source=source_name,
-                            message=schema_message,
-                            severity=ConversionIssueSeverity.ERROR,
-                            hint="Use an IWXXM XML file matching the selected IWXXM schema version.",
-                            code="XML_SCHEMA_VALIDATION_FAILED",
-                            layer="xml_input",
-                        )
-                        if stop_on_error:
-                            break
-                        continue
-
-                    errors.append(
-                        f"{source_name}: XML input validated but conversion endpoint only converts TAC text"
-                    )
+                xml_rejection = classify_and_validate_upload_content(
+                    filename=uf.filename,
+                    content=data,
+                    iwxxm_version=iwxxm_version,
+                    endpoint_path="/api/v1/convert",
+                    validation_orchestrator=validation_orchestrator,
+                )
+                if xml_rejection:
+                    errors.append(f"{source_name}: {xml_rejection['message']}")
                     add_issue(
                         source=source_name,
-                        message="XML input is valid, but /api/v1/convert only converts TAC inputs.",
+                        message=xml_rejection["message"],
                         severity=ConversionIssueSeverity.ERROR,
-                        hint="Use TAC files for conversion. Use XML validation endpoints for XML-only checks.",
-                        code="XML_INPUT_NOT_CONVERTIBLE",
-                        layer="xml_input",
+                        hint=xml_rejection["hint"],
+                        code=xml_rejection["code"],
+                        layer=xml_rejection["layer"],
                     )
                     if stop_on_error:
                         break
@@ -1906,6 +1917,7 @@ async def convert_zip(
     errors: List[str] = []
     translation_ids: List[str] = []  # Track for bulk notification
     validation_service = ValidationService()
+    validation_orchestrator = get_validation_orchestrator()
 
     for manual_index, manual_entry in enumerate(manual_entries, 1):
         start_time = None
@@ -1971,10 +1983,15 @@ async def convert_zip(
                     errors.append(f"{source_name}: {read_error}")
                     continue
 
-                if is_xml_input(uf.filename, data):
-                    errors.append(
-                        f"{source_name}: XML input validated path unsupported for /api/v1/convert-zip (TAC only)"
-                    )
+                xml_rejection = classify_and_validate_upload_content(
+                    filename=uf.filename,
+                    content=data,
+                    iwxxm_version=iwxxm_version,
+                    endpoint_path="/api/v1/convert-zip",
+                    validation_orchestrator=validation_orchestrator,
+                )
+                if xml_rejection:
+                    errors.append(f"{source_name}: {xml_rejection['message']}")
                     continue
                 
                 # Start timing
