@@ -209,6 +209,5 @@ __marimo__/
 *.db
 
 # Local tooling binaries/artifacts
-.tools/grafana/
+.tools/
 .local/
-
