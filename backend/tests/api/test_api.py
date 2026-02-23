@@ -61,6 +61,16 @@ class TestConversionEndpoint:
         data = r.json()
         assert len(data["results"]) > 0
         assert "<iwxxm:METAR" in data["results"][0]["content"]
+
+    def test_multiple_manual_lines_conversion(self, client):
+        """Test conversion of multiple manual TAC strings in one request."""
+        manual_text = "\n".join([SAMPLE_METAR, SAMPLE_METAR_2])
+        r = client.post("/api/v1/convert", data={"manual_text": manual_text})
+        assert r.status_code == 200
+        data = r.json()
+        assert data["total_processed"] == 2
+        assert data["successful"] == 2
+        assert len(data["results"]) == 2
     
     def test_multiple_files_conversion(self, client):
         """Test conversion of multiple files."""
@@ -73,6 +83,46 @@ class TestConversionEndpoint:
         data = r.json()
         assert len(data["results"]) == 2
         assert data["total_processed"] == 2
+
+    def test_manual_and_files_combined_conversion(self, client):
+        """Test combined manual text and file uploads in a single conversion request."""
+        files = [
+            ("files", ("m1.tac", SAMPLE_METAR_3, "text/plain")),
+        ]
+        r = client.post(
+            "/api/v1/convert",
+            data={"manual_text": SAMPLE_METAR},
+            files=files,
+        )
+        assert r.status_code == 200
+        payload = r.json()
+        assert payload["total_processed"] == 2
+        assert payload["successful"] == 2
+        assert len(payload["results"]) == 2
+
+    def test_xml_file_input_returns_validation_error(self, client):
+        """XML uploads should be validated and rejected by conversion endpoint."""
+        files = [
+            ("files", ("sample.xml", "<root><valid /></root>", "application/xml")),
+        ]
+        r = client.post("/api/v1/convert", files=files)
+        assert r.status_code == 400
+
+        detail = r.json().get("detail", {})
+        assert "errors" in detail
+        assert any("xml" in err.lower() for err in detail["errors"])
+
+    def test_invalid_utf8_file_rejected(self, client):
+        """Reject files that are not UTF-8 encoded."""
+        files = [
+            ("files", ("bad.tac", b"\xff\xfe\xfa", "text/plain")),
+        ]
+        r = client.post("/api/v1/convert", files=files)
+        assert r.status_code == 400
+
+        detail = r.json().get("detail", {})
+        assert "errors" in detail
+        assert any("utf-8" in err.lower() for err in detail["errors"])
     
     def test_result_structure(self, client):
         """Test result object structure."""
@@ -158,6 +208,36 @@ class TestConversionZipEndpoint:
             names = zf.namelist()
             assert "manual_input.xml" in names
 
+    def test_zip_xml_input_writes_errors_file(self, client):
+        """ZIP conversion should report XML uploads in errors.txt."""
+        files = [
+            ("files", ("sample.xml", "<root><valid /></root>", "application/xml")),
+        ]
+        r = client.post("/api/v1/convert-zip", files=files)
+        assert r.status_code == 200
+
+        zbytes = io.BytesIO(r.content)
+        with zipfile.ZipFile(zbytes) as zf:
+            names = zf.namelist()
+            assert "errors.txt" in names
+            errors_txt = zf.read("errors.txt").decode("utf-8")
+            assert "TAC only" in errors_txt
+
+    def test_zip_invalid_utf8_writes_errors_file(self, client):
+        """ZIP conversion should report invalid UTF-8 uploads in errors.txt."""
+        files = [
+            ("files", ("bad.tac", b"\xff\xfe\xfa", "text/plain")),
+        ]
+        r = client.post("/api/v1/convert-zip", files=files)
+        assert r.status_code == 200
+
+        zbytes = io.BytesIO(r.content)
+        with zipfile.ZipFile(zbytes) as zf:
+            names = zf.namelist()
+            assert "errors.txt" in names
+            errors_txt = zf.read("errors.txt").decode("utf-8")
+            assert "UTF-8" in errors_txt
+
 
 class TestErrorHandling:
     """Test error handling."""
@@ -184,10 +264,10 @@ class TestErrorHandling:
             "/api/v1/convert",
             json={"version": "2025-2"},  # missing required metars
         )
-        assert r.status_code == 422
+        assert r.status_code == 400
 
         detail = r.json().get("detail", {})
-        assert detail.get("message") == "Validation error in request body"
+        assert detail.get("message") == "No conversion input provided"
         assert isinstance(detail.get("issues"), list)
         assert len(detail["issues"]) == 1
         assert detail["issues"][0]["source"] == "request"

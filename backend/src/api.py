@@ -8,7 +8,7 @@ import zipfile
 import datetime
 import sys
 import logging
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Union, Any, Tuple
 
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -287,7 +287,23 @@ async def parse_files(request: Request) -> List[UploadFile]:
         return files
     except Exception as e:
         logger.warning(f"Error parsing files from request: {e}")
-        return []
+        raise HTTPException(
+            status_code=400,
+            detail=ErrorDetail(
+                message="Invalid file upload payload",
+                errors=[str(e)],
+                issues=[
+                    ConversionIssue(
+                        source="request",
+                        message="Unable to parse multipart file upload payload.",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Ensure the request uses multipart/form-data and each file field is named 'files'.",
+                        code="INVALID_MULTIPART_PAYLOAD",
+                    )
+                ],
+                total_errors=1,
+            ).model_dump(),
+        )
 
 
 def split_manual_entries(manual_text: str) -> List[str]:
@@ -295,6 +311,32 @@ def split_manual_entries(manual_text: str) -> List[str]:
     if not manual_text:
         return []
     return [line.strip() for line in manual_text.splitlines() if line.strip()]
+
+
+async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Optional[str]]:
+    """Read uploaded text file using strict UTF-8 decoding."""
+    raw_bytes = await upload_file.read()
+    if not raw_bytes or not raw_bytes.strip():
+        return None, "empty file"
+
+    try:
+        decoded = raw_bytes.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return None, f"file must be UTF-8 encoded ({exc})"
+
+    content = decoded.strip()
+    if not content:
+        return None, "empty file"
+
+    return content, None
+
+
+def is_xml_input(filename: Optional[str], content: str) -> bool:
+    """Determine if uploaded content looks like XML input."""
+    lowered_name = (filename or "").lower()
+    if lowered_name.endswith(".xml"):
+        return True
+    return content.lstrip().startswith("<")
 
 
 def normalize_code(value: Optional[str], max_length: int) -> Optional[str]:
@@ -1324,7 +1366,7 @@ async def convert(
             xml_text, validation_result_from_conversion = convert_metar_tac_with_metadata(
                 manual_entry,
                 iwxxm_version=iwxxm_version,
-                validate=False
+                validate=validate_output
             )
 
             duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -1333,7 +1375,9 @@ async def convert(
 
             if validate_output and validation_result_from_conversion:
                 if validation_result_from_conversion.is_valid:
-                    layers_passed.extend([layer.value for layer in ValidationLayer])
+                    for layer in ValidationLayer:
+                        if layer.value not in layers_passed:
+                            layers_passed.append(layer.value)
                 else:
                     warning_msg = (
                         f"{manual_source}: IWXXM validation issues found - "
@@ -1405,15 +1449,92 @@ async def convert(
             start_time = None
             translation_id = None
             try:
-                data = (await uf.read()).decode("utf-8", errors="ignore")
-                if not data.strip():
-                    errors.append(f"{uf.filename}: empty file")
+                data, read_error = await read_uploaded_text(uf)
+                source_name = uf.filename or "unknown_file"
+
+                if read_error:
+                    errors.append(f"{source_name}: {read_error}")
                     add_issue(
-                        source=uf.filename or "unknown_file",
-                        message="Empty input file",
+                        source=source_name,
+                        message=f"Invalid input file: {read_error}",
                         severity=ConversionIssueSeverity.ERROR,
-                        hint="Upload a file containing a METAR/SPECI TAC message.",
-                        code="EMPTY_FILE",
+                        hint="Upload a UTF-8 file containing a METAR/SPECI TAC message.",
+                        code="INVALID_INPUT_FILE",
+                    )
+                    if stop_on_error:
+                        break
+                    continue
+
+                if is_xml_input(uf.filename, data):
+                    if not validation_orchestrator:
+                        errors.append(f"{source_name}: XML validation is currently unavailable")
+                        add_issue(
+                            source=source_name,
+                            message="XML validation is unavailable in this environment.",
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Retry later or use TAC input for conversion.",
+                            code="XML_VALIDATION_UNAVAILABLE",
+                            layer="xml_input",
+                        )
+                        if stop_on_error:
+                            break
+                        continue
+
+                    xml_wellformed_result = validation_orchestrator._validate_wellformed(data)
+                    if not xml_wellformed_result.passed:
+                        issue_message = (
+                            xml_wellformed_result.issues[0].message
+                            if xml_wellformed_result.issues
+                            else "XML is not well-formed"
+                        )
+                        errors.append(f"{source_name}: {issue_message}")
+                        add_issue(
+                            source=source_name,
+                            message=issue_message,
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Fix XML syntax before upload.",
+                            code="XML_NOT_WELLFORMED",
+                            layer="xml_input",
+                        )
+                        if stop_on_error:
+                            break
+                        continue
+
+                    xml_schema_result = validation_orchestrator.xsd_validator.validate(data, iwxxm_version)
+                    blocking_schema_issues = [
+                        issue for issue in xml_schema_result.issues
+                        if getattr(issue, "level", None)
+                        and str(issue.level).lower().endswith("error")
+                    ]
+                    if not xml_schema_result.is_valid or blocking_schema_issues:
+                        schema_message = (
+                            blocking_schema_issues[0].message
+                            if blocking_schema_issues
+                            else "XML schema validation failed"
+                        )
+                        errors.append(f"{source_name}: {schema_message}")
+                        add_issue(
+                            source=source_name,
+                            message=schema_message,
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Use an IWXXM XML file matching the selected IWXXM schema version.",
+                            code="XML_SCHEMA_VALIDATION_FAILED",
+                            layer="xml_input",
+                        )
+                        if stop_on_error:
+                            break
+                        continue
+
+                    errors.append(
+                        f"{source_name}: XML input validated but conversion endpoint only converts TAC text"
+                    )
+                    add_issue(
+                        source=source_name,
+                        message="XML input is valid, but /api/v1/convert only converts TAC inputs.",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Use TAC files for conversion. Use XML validation endpoints for XML-only checks.",
+                        code="XML_INPUT_NOT_CONVERTIBLE",
+                        layer="xml_input",
                     )
                     if stop_on_error:
                         break
@@ -1425,16 +1546,16 @@ async def convert(
                     if not validation_result.passed:
                         # Build summary from validation result
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
-                        error_msg = f"{uf.filename}: Validation failed - {validation_summary}"
+                        error_msg = f"{source_name}: Validation failed - {validation_summary}"
                         errors.append(error_msg)
                         add_issue(
-                            source=uf.filename or "unknown_file",
+                            source=source_name,
                             message=f"Validation failed: {validation_summary}",
                             severity=ConversionIssueSeverity.ERROR,
                             hint="Fix TAC format and ICAO code issues, then retry conversion.",
                             code="VALIDATION_FAILED",
                         )
-                        add_aggregated_validation_issues(uf.filename or "unknown_file", validation_result)
+                        add_aggregated_validation_issues(source_name, validation_result)
                         # Log failed validation
                         try:
                             translation_id = await statistics_service.log_translation(
@@ -1461,7 +1582,7 @@ async def convert(
                 except ValidationServiceError as ve:
                     errors.append(f"{uf.filename}: {str(ve)}")
                     add_issue(
-                        source=uf.filename or "unknown_file",
+                        source=source_name,
                         message=str(ve),
                         severity=ConversionIssueSeverity.ERROR,
                         hint="Ensure the METAR starts with METAR/SPECI and includes a valid ICAO station and timestamp.",
@@ -1496,7 +1617,7 @@ async def convert(
                 start_time = time.perf_counter()
                 
                 # Only convert if validation passed
-                xml_text, _ = convert_metar_tac_with_metadata(data, iwxxm_version=iwxxm_version)
+                xml_text, _ = convert_metar_tac_with_metadata(data, iwxxm_version=iwxxm_version, validate=False)
                 
                 # Calculate duration
                 duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -1522,7 +1643,7 @@ async def convert(
                             warning_msg = f"{uf.filename}: IWXXM validation issues found - {len(validation_result.all_issues)} issues"
                             logger.warning(warning_msg)
                             add_issue(
-                                source=uf.filename or "unknown_file",
+                                source=source_name,
                                 message=warning_msg,
                                 severity=ConversionIssueSeverity.WARNING,
                                 hint="Output converted, but IWXXM validation reported issues.",
@@ -1536,7 +1657,7 @@ async def convert(
                     except Exception as ve:
                         logger.warning(f"{uf.filename}: Output validation failed: {ve}")
                         add_issue(
-                            source=uf.filename or "unknown_file",
+                            source=source_name,
                             message=f"Output validation failed: {ve}",
                             severity=ConversionIssueSeverity.WARNING,
                             hint="Conversion succeeded, but post-conversion validation could not complete.",
@@ -1573,7 +1694,7 @@ async def convert(
                     ConversionResult(
                         name=out_name,
                         content=xml_text,
-                        source=uf.filename,
+                        source=source_name,
                         size_bytes=len(xml_text.encode("utf-8")),
                     )
                 )
@@ -1844,9 +1965,16 @@ async def convert_zip(
             start_time = None
             translation_id = None
             try:
-                data = (await uf.read()).decode("utf-8", errors="ignore").strip()
-                if not data:
-                    errors.append(f"{uf.filename}: empty file")
+                source_name = uf.filename or "unknown_file"
+                data, read_error = await read_uploaded_text(uf)
+                if read_error:
+                    errors.append(f"{source_name}: {read_error}")
+                    continue
+
+                if is_xml_input(uf.filename, data):
+                    errors.append(
+                        f"{source_name}: XML input validated path unsupported for /api/v1/convert-zip (TAC only)"
+                    )
                     continue
                 
                 # Start timing
@@ -1858,7 +1986,7 @@ async def convert_zip(
                 # Calculate duration
                 duration_ms = int((time.perf_counter() - start_time) * 1000)
                 
-                fname = pathlib.Path(uf.filename or "unknown").stem + ".xml"
+                fname = pathlib.Path(source_name).stem + ".xml"
                 results.append((fname, xml_text))
                 
                 # Log successful translation
