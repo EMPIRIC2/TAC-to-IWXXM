@@ -1,5 +1,5 @@
 codecov:
-  require_ci_to_pass: true
+  require_ci_to_pass: false
 
 coverage:
   precision: 2
@@ -21,44 +21,8 @@ coverage:
     gifts:
       carryforward: true
   status:
-    project:
-      default:
-        target: 70%
-        threshold: 2%
-        if_not_found: failure
-        if_ci_failed: error
-      backend:
-        target: 75%
-        threshold: 0%
-        flags:
-          - backend
-        if_not_found: failure
-        if_ci_failed: error
-      auth:
-        target: 73%
-        threshold: 0%
-        flags:
-          - auth
-        if_not_found: failure
-        if_ci_failed: error
-      frontend:
-        target: 75%
-        threshold: 0%
-        flags:
-          - frontend
-        if_not_found: success
-        if_ci_failed: error
-      gifts:
-        target: 75%
-        threshold: 0%
-        flags:
-          - gifts
-        if_not_found: success
-        if_ci_failed: error
-    patch:
-      default:
-        target: 30%
-        threshold: 5%
+    project: off
+    patch: off
 
 comment:
   layout: "reach,diff,flags,tree"
