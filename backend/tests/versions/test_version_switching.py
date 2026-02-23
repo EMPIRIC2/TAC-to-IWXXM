@@ -15,6 +15,7 @@ from src.config.iwxxm_versions import (
     is_version_supported,
     get_namespace_uri,
     get_schema_url,
+    resolve_schema_file,
 )
 
 
@@ -70,6 +71,13 @@ class TestVersionConfiguration:
         """Test schema URLs are version-specific."""
         assert "2025-2" in get_schema_url("2025-2")
         assert "2023-1" in get_schema_url("2023-1")
+
+    def test_detected_schema_paths_exist(self):
+        """Test detected local schema paths resolve to existing resources."""
+        xsd_path = resolve_schema_file("2025-2", "xsd")
+        assert xsd_path.exists()
+        codelists_dir = resolve_schema_file("2025-2", "codelists")
+        assert codelists_dir.exists()
 
 
 class TestVersionSupport:

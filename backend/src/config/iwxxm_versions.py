@@ -5,6 +5,7 @@ Defines supported IWXXM versions, their namespaces, schema locations,
 and version-specific metadata for dynamic version switching.
 """
 
+import os
 from typing import Dict, List, Any
 from pathlib import Path
 
@@ -14,7 +15,52 @@ class VersionDeprecatedError(ValueError):
     pass
 
 # Project root path
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
+def _detect_project_root() -> Path:
+    """Detect project root across local/devcontainer and deployment layouts."""
+    def has_versioned_schemas(root: Path) -> bool:
+        return (root / "schemas" / "iwxxm" / "2025-2" / "IWXXM").exists()
+
+    env_project_root = os.getenv("IWXXM_PROJECT_ROOT")
+    if env_project_root:
+        candidate = Path(env_project_root).expanduser().resolve()
+        if candidate.exists() and has_versioned_schemas(candidate):
+            return candidate
+
+    env_schemas_root = os.getenv("IWXXM_SCHEMAS_ROOT")
+    if env_schemas_root:
+        schemas_candidate = Path(env_schemas_root).expanduser().resolve()
+        if schemas_candidate.exists():
+            if schemas_candidate.name == "iwxxm" and schemas_candidate.parent.name == "schemas":
+                root_candidate = schemas_candidate.parent.parent
+                if has_versioned_schemas(root_candidate):
+                    return root_candidate
+            if (schemas_candidate / "iwxxm").exists():
+                root_candidate = schemas_candidate.parent
+                if has_versioned_schemas(root_candidate):
+                    return root_candidate
+
+    current_file = Path(__file__).resolve()
+    parents = [current_file.parent, *current_file.parents]
+
+    # Prefer roots that contain actual versioned IWXXM schema directories.
+    for parent in parents:
+        if has_versioned_schemas(parent):
+            return parent
+
+    # Next prefer canonical IWXXM layout used by mirrored schema repositories.
+    for parent in parents:
+        if (parent / "schemas" / "iwxxm" / "IWXXM").exists():
+            return parent
+
+    # Fallback: any schemas/iwxxm folder.
+    for parent in parents:
+        if (parent / "schemas" / "iwxxm").exists():
+            return parent
+
+    return current_file.parent.parent.parent.parent
+
+
+PROJECT_ROOT = _detect_project_root()
 
 # Default IWXXM version (highest/latest priority)
 DEFAULT_VERSION = "2025-2"
@@ -292,6 +338,19 @@ def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
         raise ValueError(f"Unknown file type: {file_type}")
     
     if not filepath.exists():
+        fallback_base = PROJECT_ROOT / "schemas" / "iwxxm" / "IWXXM"
+        if file_type == "xsd":
+            fallback_path = fallback_base / config["schema_file"]
+        elif file_type == "schematron":
+            fallback_path = fallback_base / config["schematron_file"]
+        elif file_type == "codelists":
+            fallback_path = fallback_base / config["codelists_dir"]
+        else:
+            fallback_path = filepath
+
+        if fallback_path.exists():
+            return fallback_path
+
         raise FileNotFoundError(
             f"Schema file not found: {filepath}. "
             f"Ensure submodules are initialized: git submodule update --init --recursive"

@@ -33,7 +33,7 @@ services:
       - key: OBSERVABILITY_ENV
         value: "render-live"
       - key: LOKI_PUSH_URL
-        value: http://metar-to-iwxxm-loki:10000/loki/api/v1/push
+        value: http://metar-to-iwxxm-loki:3100/loki/api/v1/push
       - key: LOKI_USERNAME
         sync: false
       - key: LOKI_PASSWORD
@@ -59,7 +59,7 @@ services:
       - key: OBSERVABILITY_ENV
         value: "render-live"
       - key: LOKI_PUSH_URL
-        value: http://metar-to-iwxxm-loki:10000/loki/api/v1/push
+        value: http://metar-to-iwxxm-loki:3100/loki/api/v1/push
       - key: LOKI_USERNAME
         sync: false
       - key: LOKI_PASSWORD
@@ -110,7 +110,7 @@ services:
       cat <<EOF >/tmp/loki-config.yaml
       auth_enabled: false
       server:
-        http_listen_port: 10000
+        http_listen_port: 3100
       common:
         path_prefix: /loki
         storage:
@@ -166,9 +166,9 @@ services:
         - job_name: prometheus
           metrics_path: /metrics
           static_configs:
-            - targets: ["localhost:10000"]
+            - targets: ["localhost:9090"]
       EOF
-      /bin/prometheus --config.file=/tmp/prometheus.yml --storage.tsdb.path=/prometheus --web.listen-address=0.0.0.0:10000
+      /bin/prometheus --config.file=/tmp/prometheus.yml --storage.tsdb.path=/prometheus --web.listen-address=0.0.0.0:9090
       '
 
   - type: web
@@ -203,12 +203,12 @@ services:
         - name: Prometheus
           type: prometheus
           access: proxy
-          url: http://metar-to-iwxxm-prometheus:10000
+          url: http://metar-to-iwxxm-prometheus:9090
           isDefault: true
         - name: Loki
           type: loki
           access: proxy
-          url: http://metar-to-iwxxm-loki:10000
+          url: http://metar-to-iwxxm-loki:3100
       EOF
       export GF_PATHS_PROVISIONING=/tmp/grafana/provisioning
       /run.sh

@@ -79,7 +79,7 @@ Recommended SLO query examples:
 
 Backend and auth services push structured JSON logs to Loki via:
 
-- `LOKI_PUSH_URL=http://metar-to-iwxxm-loki:10000/loki/api/v1/push`
+- `LOKI_PUSH_URL=http://metar-to-iwxxm-loki:3100/loki/api/v1/push`
 
 Frontend remains on Render-native logs in phase 1.
 
