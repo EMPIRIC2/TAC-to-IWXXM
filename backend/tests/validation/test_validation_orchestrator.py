@@ -164,6 +164,34 @@ class TestValidationOrchestrator:
         
         # All three should be attempted
         assert len(result.layers_run) <= 3
+
+    def test_missing_codelists_setup_returns_warning_issue(self, monkeypatch):
+        """Missing codelists should not raise and should produce a warning issue."""
+        orchestrator = ValidationOrchestrator()
+
+        def _raise_missing_codelists(version):
+            raise FileNotFoundError("missing rule directory")
+
+        monkeypatch.setattr(
+            orchestrator.schema_registry,
+            "get_codelists_dir",
+            _raise_missing_codelists,
+        )
+
+        result = orchestrator.validate_complete(
+            tac_text=SAMPLE_TAC,
+            xml_content=SAMPLE_XML,
+            version="2025-2",
+            layers=[ValidationLayer.WMO_CODELISTS],
+            stop_on_error=False,
+        )
+
+        assert ValidationLayer.WMO_CODELISTS in result.layers_run
+        assert ValidationLayer.WMO_CODELISTS in result.issues_by_layer
+        assert any(
+            issue.code == "WMO_CODELISTS_SETUP_WARNING"
+            for issue in result.issues_by_layer[ValidationLayer.WMO_CODELISTS]
+        )
     
     def test_version_parameter_propagation(self):
         """Test that version parameter is used by all validators."""

@@ -4,10 +4,10 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    url: http://metar-to-iwxxm-prometheus:10000
+    url: http://metar-to-iwxxm-prometheus:9090
     isDefault: true
 
   - name: Loki
     type: loki
     access: proxy
-    url: http://metar-to-iwxxm-loki:10000
+    url: http://metar-to-iwxxm-loki:3100
