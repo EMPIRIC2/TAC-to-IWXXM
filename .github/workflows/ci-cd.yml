@@ -417,12 +417,30 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       
-      - name: Log in to Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to Container Registry (with retry)
+        env:
+          REGISTRY_USERNAME: ${{ github.actor }}
+          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          for attempt in 1 2 3 4 5; do
+            echo "GHCR login attempt ${attempt}/5"
+
+            if timeout 90 sh -c 'printf "%s" "$REGISTRY_PASSWORD" | docker login "$REGISTRY" -u "$REGISTRY_USERNAME" --password-stdin'; then
+              echo "Registry login succeeded"
+              exit 0
+            fi
+
+            if [ "$attempt" -lt 5 ]; then
+              sleep_seconds=$((attempt * 10))
+              echo "Login attempt ${attempt} failed; retrying in ${sleep_seconds}s"
+              sleep "$sleep_seconds"
+            fi
+          done
+
+          echo "Registry login failed after 5 attempts"
+          exit 1
 
       - name: Generate image tags
         id: tags
