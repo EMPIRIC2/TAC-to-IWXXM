@@ -8,6 +8,44 @@ PIDS=()
 NPM_BIN=""
 AUTO_KILL_PORTS="${AUTO_KILL_PORTS:-prompt}"
 
+usage() {
+  cat <<'EOF'
+Usage: ./start-dev-servers.sh [OPTION]
+
+Options:
+  --kill, -k      Automatically kill processes using required ports.
+  --no-kill       Never kill conflicting processes (fail fast).
+  --prompt        Prompt before killing conflicting processes (default).
+  --help, -h      Show this help message.
+EOF
+}
+
+parse_args() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --kill|-k)
+        AUTO_KILL_PORTS="true"
+        ;;
+      --no-kill)
+        AUTO_KILL_PORTS="false"
+        ;;
+      --prompt)
+        AUTO_KILL_PORTS="prompt"
+        ;;
+      --help|-h)
+        usage
+        exit 0
+        ;;
+      *)
+        echo "Error: unknown option '$1'." >&2
+        usage >&2
+        exit 1
+        ;;
+    esac
+    shift
+  done
+}
+
 require_command() {
   local cmd="$1"
   local hint="$2"
@@ -80,7 +118,7 @@ check_and_handle_port() {
         done
       else
         echo "Error: port ${port} is already in use by PID ${pid} (${process_name})." >&2
-        echo "Non-interactive shell detected; rerun with AUTO_KILL_PORTS=true to auto-kill." >&2
+        echo "Non-interactive shell detected; rerun with --kill (or AUTO_KILL_PORTS=true) to auto-kill." >&2
         exit 1
       fi
     done <<< "${port_pids}"
@@ -221,6 +259,8 @@ cleanup() {
   wait || true
   echo "All servers stopped."
 }
+
+parse_args "$@"
 
 trap cleanup INT TERM EXIT
 
