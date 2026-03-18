@@ -209,7 +209,7 @@ class TestSupabaseTableOperations:
 
                 # Insert data
                 conn.execute(text("""
-                    INSERT INTO test_insert_query (value) 
+                    INSERT INTO test_insert_query (value)
                     VALUES ('test_value_1'), ('test_value_2')
                 """))
                 conn.commit()
@@ -223,7 +223,7 @@ class TestSupabaseTableOperations:
 
                 # Query specific value
                 result = conn.execute(text("""
-                    SELECT value FROM test_insert_query 
+                    SELECT value FROM test_insert_query
                     WHERE value = 'test_value_1'
                 """))
                 value = result.scalar()
@@ -264,7 +264,7 @@ class TestSupabaseTableOperations:
 
                 # Verify data was not inserted
                 result = conn.execute(text("""
-                    SELECT COUNT(*) FROM test_transaction 
+                    SELECT COUNT(*) FROM test_transaction
                     WHERE value = 'will_rollback'
                 """))
                 count = result.scalar()
@@ -293,15 +293,15 @@ class TestSupabaseTableOperations:
                 conn.commit()
 
                 conn.execute(text("""
-                    INSERT INTO test_update_delete (value) 
+                    INSERT INTO test_update_delete (value)
                     VALUES ('original')
                 """))
                 conn.commit()
 
                 # Update
                 conn.execute(text("""
-                    UPDATE test_update_delete 
-                    SET value = 'updated' 
+                    UPDATE test_update_delete
+                    SET value = 'updated'
                     WHERE value = 'original'
                 """))
                 conn.commit()
@@ -642,7 +642,7 @@ class TestSupabasePerformance:
 
                 # Create index
                 conn.execute(text("""
-                    CREATE INDEX IF NOT EXISTS idx_test_value 
+                    CREATE INDEX IF NOT EXISTS idx_test_value
                     ON test_index(value)
                 """))
                 conn.commit()

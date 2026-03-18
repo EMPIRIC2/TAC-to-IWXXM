@@ -1,3 +1,4 @@
+---
 name: E2E Tests with Real Services
 
 # End-to-end tests with real database, auth, and services
@@ -7,7 +8,7 @@ on:
   schedule:
     # Run daily at 2 AM UTC
     - cron: '0 2 * * *'
-  
+
   # Run on main branch pushes
   push:
     branches: [main]
@@ -15,7 +16,7 @@ on:
       - 'backend/**'
       - 'auth/**'
       - 'docker-compose.yml'
-  
+
   # Allow manual trigger
   workflow_dispatch:
     inputs:
@@ -35,15 +36,15 @@ on:
 env:
   # Test database configuration
   DATABASE_URL: postgresql+asyncpg://postgres:testpass@localhost:5432/metar_iwxxm_test
-  
+
   # Supabase test configuration
   SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
   SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
-  
+
   # Test user credentials
   E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
   E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
-  
+
   # Disable webhooks for E2E tests
   ENABLE_WEBHOOKS: false
 
@@ -51,7 +52,7 @@ jobs:
   setup-services:
     runs-on: ubuntu-latest
     name: Setup Test Services
-    
+
     services:
       postgres:
         image: postgres:15
@@ -66,48 +67,58 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-    
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
-          submodules: recursive
-      
+          submodules: false
+
+      - name: Initialize required submodules only
+        run: |
+          git submodule sync -- frontend GIFTs
+          git submodule update --init --depth 1 frontend
+          git submodule update --init GIFTs || {
+            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
+            git -C GIFTs fetch --tags --force origin
+            git submodule update --init GIFTs
+          }
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip uv
           cd backend && uv pip install --system -e ".[dev]" httpx asyncpg
-      
+
       - name: Initialize Test Database
         run: |
           echo "Setting up test database schema..."
           # Add database initialization script here if needed
           # For now, tests will handle schema creation
-      
+
       - name: Verify Services
         run: |
           echo "Verifying PostgreSQL..."
-          psql ${{ env.DATABASE_URL }} -c "SELECT version();" || echo "Database connection test"
-          
+          psql "${{ env.DATABASE_URL }}" -c "SELECT version();" || echo "Database connection test"
+
           echo "Verifying Supabase configuration..."
           if [ -z "${{ env.SUPABASE_URL }}" ]; then
             echo "⚠️ SUPABASE_URL not configured - some tests will be skipped"
           else
             echo "✅ Supabase URL configured"
           fi
-      
+
       - name: Run E2E Tests - ${{ inputs.test_subset || 'all' }}
         id: e2e_tests
         working-directory: ./backend
         continue-on-error: true
         run: |
           TEST_SUBSET="${{ inputs.test_subset || 'all' }}"
-          
+
           if [ "$TEST_SUBSET" = "all" ]; then
             python -m pytest tests/test_e2e_full_stack.py \
               -v \
@@ -122,8 +133,8 @@ jobs:
               -m e2e \
               --tb=short \
               --junitxml=e2e-test-results.xml
-          fi || echo "E2E_TESTS_FAILED=true" >> $GITHUB_ENV
-      
+          fi || echo "E2E_TESTS_FAILED=true" >> "$GITHUB_ENV"
+
       - name: Parse E2E Test Results
         id: parse_results
         if: always()
@@ -133,15 +144,17 @@ jobs:
             FAILURES=$(grep -oP 'failures="\K[0-9]+' backend/e2e-test-results.xml || echo "0")
             ERRORS=$(grep -oP 'errors="\K[0-9]+' backend/e2e-test-results.xml || echo "0")
             SKIPPED=$(grep -oP 'skipped="\K[0-9]+' backend/e2e-test-results.xml || echo "0")
-            
+
             PASSED=$((TOTAL - FAILURES - ERRORS - SKIPPED))
-            
-            echo "total=$TOTAL" >> $GITHUB_OUTPUT
-            echo "passed=$PASSED" >> $GITHUB_OUTPUT
-            echo "failed=$FAILURES" >> $GITHUB_OUTPUT
-            echo "errors=$ERRORS" >> $GITHUB_OUTPUT
-            echo "skipped=$SKIPPED" >> $GITHUB_OUTPUT
-            
+
+            {
+              echo "total=$TOTAL"
+              echo "passed=$PASSED"
+              echo "failed=$FAILURES"
+              echo "errors=$ERRORS"
+              echo "skipped=$SKIPPED"
+            } >> "$GITHUB_OUTPUT"
+
             echo "📊 E2E Test Results:"
             echo "  ✅ Passed: $PASSED"
             echo "  ❌ Failed: $FAILURES"
@@ -149,7 +162,7 @@ jobs:
             echo "  ⏭️ Skipped: $SKIPPED"
             echo "  📈 Total: $TOTAL"
           fi
-      
+
       - name: Upload E2E Test Results
         uses: actions/upload-artifact@v4
         if: always()
@@ -159,7 +172,7 @@ jobs:
             backend/e2e-test-results.xml
             backend/e2e-test-report.html
           retention-days: 30
-      
+
       - name: Create E2E Test Summary
         if: always()
         run: |
@@ -168,21 +181,21 @@ jobs:
           ERRORS="${{ steps.parse_results.outputs.errors }}"
           SKIPPED="${{ steps.parse_results.outputs.skipped }}"
           TOTAL="${{ steps.parse_results.outputs.total }}"
-          
+
           STATUS_ICON="✅"
           STATUS_TEXT="PASSED"
           if [ "$FAILED" != "0" ] || [ "$ERRORS" != "0" ]; then
             STATUS_ICON="❌"
             STATUS_TEXT="FAILED"
           fi
-          
-          cat << EOF > $GITHUB_STEP_SUMMARY
+
+          cat << EOF > "$GITHUB_STEP_SUMMARY"
           # $STATUS_ICON E2E Tests with Real Services
-          
-          **Status**: $STATUS_TEXT  
-          **Test Subset**: ${{ inputs.test_subset || 'all' }}  
+
+          **Status**: $STATUS_TEXT
+          **Test Subset**: ${{ inputs.test_subset || 'all' }}
           **Time**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
-          
+
           ## Test Results
           | Metric | Count |
           |--------|-------|
@@ -191,7 +204,7 @@ jobs:
           | ⚠️ Errors | $ERRORS |
           | ⏭️ Skipped | $SKIPPED |
           | 📈 Total | $TOTAL |
-          
+
           ## Tests Executed
           - [x] Health and connectivity
           - [x] Authentication flow with Supabase
@@ -202,12 +215,12 @@ jobs:
           - [x] Error handling and recovery
           - [x] Performance and scalability
           - [x] Data persistence and state
-          
+
           ## Environment
           - Database: PostgreSQL 15
           - Authentication: Supabase
           - Python: 3.11
-          
+
           $(if [ "$FAILED" != "0" ] || [ "$ERRORS" != "0" ]; then
             echo "## ⚠️ Action Required"
             echo ""
@@ -227,11 +240,11 @@ jobs:
             echo "- Authentication flow functional"
             echo "- End-to-end workflows operational"
           fi)
-          
+
           ---
           [View Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
           EOF
-      
+
       - name: Create Issue on E2E Failure
         if: failure()
         uses: actions/github-script@v7
@@ -241,42 +254,42 @@ jobs:
             const failed = '${{ steps.parse_results.outputs.failed }}';
             const errors = '${{ steps.parse_results.outputs.errors }}';
             const total = '${{ steps.parse_results.outputs.total }}';
-            
+
             const title = `🚨 E2E Tests Failed - Full Stack Integration Issue`;
             const body = `## E2E Test Failure Alert
-            
+
             **Status**: ❌ FAILED
             **Time**: ${new Date().toISOString()}
             **Test Subset**: ${{ inputs.test_subset || 'all' }}
-            
+
             ### Test Results
             - ✅ Passed: ${passed}/${total}
             - ❌ Failed: ${failed}
             - ⚠️ Errors: ${errors}
-            
+
             ### Environment
             - Database: PostgreSQL (test instance)
             - Authentication: Supabase (test configuration)
             - Services: Real service integration
-            
+
             ### Investigation Steps
             1. Review [test artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
             2. Check database connectivity and schema
             3. Verify Supabase test configuration
             4. Review service dependencies
             5. Check for environment-specific issues
-            
+
             ### Common Causes
             - Database connection issues
             - Supabase configuration changes
             - Service dependency failures
             - Test data inconsistencies
             - Environment variable misconfigurations
-            
+
             ---
             *Auto-generated by E2E Tests workflow*
             `;
-            
+
             // Check for existing E2E issues
             const existingIssues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -284,11 +297,11 @@ jobs:
               state: 'open',
               labels: 'e2e-tests,automated'
             });
-            
-            const hasOpenIssue = existingIssues.data.some(issue => 
+
+            const hasOpenIssue = existingIssues.data.some(issue =>
               issue.title.includes('E2E Tests Failed')
             );
-            
+
             if (!hasOpenIssue) {
               await github.rest.issues.create({
                 owner: context.repo.owner,
@@ -298,7 +311,7 @@ jobs:
                 labels: ['e2e-tests', 'automated', 'priority-medium', 'testing']
               });
             }
-      
+
       - name: Close E2E Issue on Success
         if: success()
         uses: actions/github-script@v7
@@ -310,7 +323,7 @@ jobs:
               state: 'open',
               labels: 'e2e-tests,automated'
             });
-            
+
             for (const issue of issues.data) {
               if (issue.title.includes('E2E Tests Failed')) {
                 await github.rest.issues.createComment({
@@ -325,7 +338,7 @@ jobs:
                     `[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
                   ].join('\n')
                 });
-                
+
                 await github.rest.issues.update({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -341,7 +354,7 @@ jobs:
     name: Performance Benchmarks
     needs: setup-services
     if: always() && github.event_name == 'schedule'
-    
+
     services:
       postgres:
         image: postgres:15
@@ -356,20 +369,20 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip uv
           cd backend && uv pip install --system -e ".[dev]" httpx asyncpg
-      
+
       - name: Run Performance Benchmarks
         working-directory: ./backend
         run: |
@@ -378,7 +391,7 @@ jobs:
             -m "e2e and slow" \
             --tb=short \
             --junitxml=benchmark-results.xml
-      
+
       - name: Upload Benchmark Results
         uses: actions/upload-artifact@v4
         if: always()
@@ -386,7 +399,7 @@ jobs:
           name: performance-benchmarks-${{ github.run_number }}
           path: backend/benchmark-results.xml
           retention-days: 90
-      
+
       - name: Compare with Baseline
         run: |
           echo "Performance benchmark comparison would go here"

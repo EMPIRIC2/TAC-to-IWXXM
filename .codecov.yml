@@ -21,8 +21,34 @@ coverage:
     gifts:
       carryforward: true
   status:
-    project: off
-    patch: off
+    project:
+      default:
+        target: 95%
+        threshold: 0%
+    patch:
+      default:
+        target: 95%
+        threshold: 0%
+    backend:
+      default:
+        flags: [backend]
+        target: 95%
+        threshold: 0%
+    auth:
+      default:
+        flags: [auth]
+        target: 95%
+        threshold: 0%
+    frontend:
+      default:
+        flags: [frontend]
+        target: 95%
+        threshold: 0%
+    gifts:
+      default:
+        flags: [gifts]
+        target: 95%
+        threshold: 0%
 
 comment:
   layout: "reach,diff,flags,tree"

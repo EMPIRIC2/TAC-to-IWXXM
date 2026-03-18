@@ -67,7 +67,7 @@ try:
 
         # Insert test data
         connection.execute(text("""
-            INSERT INTO test_pooler_connection (message) 
+            INSERT INTO test_pooler_connection (message)
             VALUES ('Test from metar-to-IWXXM via transaction pooler')
         """))
         connection.commit()

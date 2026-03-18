@@ -13,18 +13,14 @@ test scenarios including:
 Run with: pytest backend/tests/test_evaluation_endpoints_comprehensive.py -v
 """
 
+from datetime import datetime, timedelta
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, AsyncMock, MagicMock
-from datetime import datetime, timedelta
 
 from src.api import app
 from src.utilities.security import verify_supabase_token
-from src.schemas.evaluation import (
-    EvaluationMode,
-    JobStatus,
-    ComparisonStatus,
-)
 
 
 @pytest.fixture
@@ -32,7 +28,7 @@ def client():
     """Create test client with mocked authentication."""
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project"}
-    
+
     app.dependency_overrides[verify_supabase_token] = override_verify_token
     client = TestClient(app)
     yield client
@@ -62,7 +58,7 @@ class TestCreateEvaluationJob:
             json=MagicMock(return_value=[{"id": "job-123"}]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.post(
             "/api/v1/eval/jobs",
             json={
@@ -71,10 +67,10 @@ class TestCreateEvaluationJob:
                 "hours": 2,
             }
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert "job_id" in data
         assert data["status"] == "pending"
         assert data["station_count"] == 3
@@ -86,7 +82,7 @@ class TestCreateEvaluationJob:
             json=MagicMock(return_value=[{"id": "job-456"}]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.post(
             "/api/v1/eval/jobs",
             json={
@@ -96,10 +92,10 @@ class TestCreateEvaluationJob:
                 "large_airports_only": True,
             }
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["status"] == "pending"
         assert data["station_count"] == 50
 
@@ -109,7 +105,7 @@ class TestCreateEvaluationJob:
             json=MagicMock(return_value=[{"id": "job-789"}]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.post(
             "/api/v1/eval/jobs",
             json={
@@ -118,10 +114,10 @@ class TestCreateEvaluationJob:
                 "scheduled_service_only": True,
             }
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["status"] == "pending"
         # Station count should be > 0 (depends on sampler data)
         assert data["station_count"] > 0
@@ -135,7 +131,7 @@ class TestCreateEvaluationJob:
                 "hours": 1,
             }
         )
-        
+
         assert response.status_code == 400
         assert "station_ids required" in response.json()["detail"]
 
@@ -145,7 +141,7 @@ class TestCreateEvaluationJob:
             json=MagicMock(return_value=[{"id": "job-default"}]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.post(
             "/api/v1/eval/jobs",
             json={
@@ -153,7 +149,7 @@ class TestCreateEvaluationJob:
                 "hours": 1,
             }
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["station_count"] == 100  # Default sample size
@@ -162,7 +158,7 @@ class TestCreateEvaluationJob:
         """Test endpoint requires authentication."""
         # Create client without auth override
         client = TestClient(app)
-        
+
         response = client.post(
             "/api/v1/eval/jobs",
             json={
@@ -171,7 +167,7 @@ class TestCreateEvaluationJob:
                 "hours": 1,
             }
         )
-        
+
         assert response.status_code == 401
 
     def test_create_job_invalid_mode(self, client):
@@ -183,7 +179,7 @@ class TestCreateEvaluationJob:
                 "hours": 1,
             }
         )
-        
+
         assert response.status_code == 422  # Pydantic validation error
 
 
@@ -205,12 +201,12 @@ class TestGetJobStatus:
             }]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.get("/api/v1/eval/jobs/job-123")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["job_id"] == "job-123"
         assert data["status"] == "pending"
         assert data["progress"] == 0
@@ -232,12 +228,12 @@ class TestGetJobStatus:
             }]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.get("/api/v1/eval/jobs/job-456")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["status"] == "running"
         assert data["progress"] == 5
         assert data["total"] == 10
@@ -264,12 +260,12 @@ class TestGetJobStatus:
             }]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.get("/api/v1/eval/jobs/job-789")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["status"] == "completed"
         assert data["progress"] == 10
         assert data["summary"] is not None
@@ -293,12 +289,12 @@ class TestGetJobStatus:
             }]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.get("/api/v1/eval/jobs/job-error")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["status"] == "failed"
         assert data["error_message"] == "Network timeout fetching data"
 
@@ -308,9 +304,9 @@ class TestGetJobStatus:
             json=MagicMock(return_value=[]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.get("/api/v1/eval/jobs/nonexistent-job")
-        
+
         assert response.status_code == 404
         assert "not found" in response.json()["detail"].lower()
 
@@ -321,9 +317,9 @@ class TestGetJobStatus:
             json=MagicMock(return_value=[]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.get("/api/v1/eval/jobs/other-user-job")
-        
+
         assert response.status_code == 404
 
 
@@ -344,12 +340,12 @@ class TestListUserJobs:
                 raise_for_status=MagicMock()
             ),
         ]
-        
+
         response = client.get("/api/v1/eval/jobs")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["jobs"] == []
         assert data["total"] == 0
         assert data["page"] == 1
@@ -382,7 +378,7 @@ class TestListUserJobs:
                 "summary_stats": None,
             },
         ]
-        
+
         mock_supabase_client.get.side_effect = [
             AsyncMock(
                 json=MagicMock(return_value=jobs_data),
@@ -393,12 +389,12 @@ class TestListUserJobs:
                 raise_for_status=MagicMock()
             ),
         ]
-        
+
         response = client.get("/api/v1/eval/jobs")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert len(data["jobs"]) == 2
         assert data["total"] == 2
         assert data["jobs"][0]["job_id"] == "job-1"
@@ -412,7 +408,7 @@ class TestListUserJobs:
                       "progress": 10, "created_at": datetime.utcnow().isoformat(),
                       "completed_at": datetime.utcnow().isoformat(), "summary_stats": None}
                      for i in range(20, 40)]
-        
+
         mock_supabase_client.get.side_effect = [
             AsyncMock(
                 json=MagicMock(return_value=jobs_data),
@@ -423,12 +419,12 @@ class TestListUserJobs:
                 raise_for_status=MagicMock()
             ),
         ]
-        
+
         response = client.get("/api/v1/eval/jobs?page=2&per_page=20")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert len(data["jobs"]) == 20
         assert data["total"] == 100
         assert data["page"] == 2
@@ -437,13 +433,13 @@ class TestListUserJobs:
     def test_list_jobs_invalid_page(self, client):
         """Test listing jobs with invalid page number."""
         response = client.get("/api/v1/eval/jobs?page=0")
-        
+
         assert response.status_code == 422  # Validation error
 
     def test_list_jobs_invalid_per_page(self, client):
         """Test listing jobs with invalid per_page value."""
         response = client.get("/api/v1/eval/jobs?per_page=200")
-        
+
         assert response.status_code == 422  # Exceeds max (100)
 
 
@@ -472,7 +468,7 @@ class TestGetJobResults:
                 "errors": [],
             },
         ]
-        
+
         mock_supabase_client.get.side_effect = [
             # Job ownership verification
             AsyncMock(
@@ -490,12 +486,12 @@ class TestGetJobResults:
                 raise_for_status=MagicMock()
             ),
         ]
-        
+
         response = client.get("/api/v1/eval/jobs/job-123/results")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["job_id"] == "job-123"
         assert len(data["results"]) == 1
         assert data["results"][0]["station_id"] == "KJFK"
@@ -518,7 +514,7 @@ class TestGetJobResults:
             }
             for i in range(50)
         ]
-        
+
         mock_supabase_client.get.side_effect = [
             AsyncMock(
                 json=MagicMock(return_value=[{"id": "job-big", "user_id": "test-user-id"}]),
@@ -533,12 +529,12 @@ class TestGetJobResults:
                 raise_for_status=MagicMock()
             ),
         ]
-        
+
         response = client.get("/api/v1/eval/jobs/job-big/results?page=1&per_page=50")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert len(data["results"]) == 50
         assert data["total_results"] == 150
         assert data["total_pages"] == 3
@@ -565,7 +561,7 @@ class TestGetJobResults:
                 "errors": [],
             },
         ]
-        
+
         mock_supabase_client.get.side_effect = [
             AsyncMock(
                 json=MagicMock(return_value=[{"id": "job-filter", "user_id": "test-user-id"}]),
@@ -580,12 +576,12 @@ class TestGetJobResults:
                 raise_for_status=MagicMock()
             ),
         ]
-        
+
         response = client.get("/api/v1/eval/jobs/job-filter/results?status_filter=fail")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert len(data["results"]) == 1
         assert data["results"][0]["comparison_status"] == "fail"
 
@@ -595,9 +591,9 @@ class TestGetJobResults:
             json=MagicMock(return_value=[]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.get("/api/v1/eval/jobs/nonexistent/results")
-        
+
         assert response.status_code == 404
 
     def test_get_results_wrong_user(self, client, mock_supabase_client):
@@ -606,9 +602,9 @@ class TestGetJobResults:
             json=MagicMock(return_value=[]),
             raise_for_status=MagicMock()
         )
-        
+
         response = client.get("/api/v1/eval/jobs/other-user-job/results")
-        
+
         assert response.status_code == 404
 
 
@@ -624,7 +620,7 @@ class TestEvaluationEndToEnd:
             json=MagicMock(return_value=[{"id": job_id}]),
             raise_for_status=MagicMock()
         )
-        
+
         # 1. Create job
         create_response = client.post(
             "/api/v1/eval/jobs",
@@ -636,7 +632,7 @@ class TestEvaluationEndToEnd:
         )
         assert create_response.status_code == 200
         created_job_id = create_response.json()["job_id"]
-        
+
         # 2. Check status (simulate completed job)
         mock_supabase_client.get.return_value = AsyncMock(
             json=MagicMock(return_value=[{
@@ -657,11 +653,11 @@ class TestEvaluationEndToEnd:
             }]),
             raise_for_status=MagicMock()
         )
-        
+
         status_response = client.get(f"/api/v1/eval/jobs/{created_job_id}")
         assert status_response.status_code == 200
         assert status_response.json()["status"] == "completed"
-        
+
         # 3. Get results
         mock_supabase_client.get.side_effect = [
             AsyncMock(
@@ -677,6 +673,6 @@ class TestEvaluationEndToEnd:
                 raise_for_status=MagicMock()
             ),
         ]
-        
+
         results_response = client.get(f"/api/v1/eval/jobs/{created_job_id}/results")
         assert results_response.status_code == 200

@@ -42,7 +42,7 @@ def mock_supabase():
 
 class TestHealthEndpoint:
     """Test health check endpoint."""
-    
+
     def test_health_check(self, client):
         """Health check returns 200."""
         response = client.get("/health")
@@ -54,14 +54,14 @@ class TestHealthEndpoint:
 
 class TestRegistration:
     """Test user registration endpoint."""
-    
+
     @pytest.mark.skip(reason="Requires proper Supabase mock or live backend")
     def test_register_success(self, client):
         """Successful registration via Supabase."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             mock_proxy.sign_up.return_value = {
                 "user": {
                     "id": "user-123",
@@ -74,19 +74,19 @@ class TestRegistration:
                     "expires_at": 1234567890
                 }
             }
-            
+
             response = client.post("/auth/register", json={
                 "email": "test@example.com",
                 "password": "password123",
                 "name": "Test User",
                 "username": "testuser"
             })
-            
+
             assert response.status_code == 201
             data = response.json()
             assert data["user"]["email"] == "test@example.com"
             assert data["session"]["access_token"] == "token-123"
-    
+
     def test_register_missing_password(self, client):
         """Registration fails with short password."""
         response = client.post("/auth/register", json={
@@ -99,14 +99,14 @@ class TestRegistration:
 
 class TestLogin:
     """Test user login endpoint."""
-    
+
     @pytest.mark.skip(reason="Requires proper Supabase mock or live backend")
     def test_login_success(self, client):
         """Successful login via Supabase."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             mock_proxy.sign_in.return_value = {
                 "user": {
                     "id": "user-123",
@@ -119,57 +119,57 @@ class TestLogin:
                     "expires_at": 1234567890
                 }
             }
-            
+
             response = client.post("/auth/login", json={
                 "email": "test@example.com",
                 "password": "password123"
             })
-            
+
             assert response.status_code == 200
             data = response.json()
             assert data["user"]["id"] == "user-123"
-    
+
     def test_login_invalid_credentials(self, client):
         """Login fails with invalid credentials."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             from fastapi import HTTPException, status
             mock_proxy.sign_in.side_effect = HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid credentials"
             )
-            
+
             response = client.post("/auth/login", json={
                 "email": "test@example.com",
                 "password": "wrongpassword"
             })
-            
+
             assert response.status_code == 401
 
 
 class TestLogout:
     """Test logout endpoint."""
-    
+
     @pytest.mark.skip(reason="Requires proper Supabase mock or live backend")
     def test_logout_success(self, client):
         """Successful logout via Supabase."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             mock_proxy.sign_out.return_value = {"message": "Successfully signed out"}
-            
+
             response = client.post(
                 "/auth/logout",
                 headers={"Authorization": "Bearer token-123"}
             )
-            
+
             assert response.status_code == 200
             data = response.json()
             assert "message" in data
-    
+
     def test_logout_missing_token(self, client):
         """Logout fails without Authorization header."""
         response = client.post("/auth/logout")
@@ -185,70 +185,70 @@ class TestLogout:
 
 class TestGetCurrentUser:
     """Test /auth/me endpoint."""
-    
+
     @pytest.mark.skip(reason="Requires proper Supabase mock or live backend")
     def test_me_success(self, client):
         """Get current user info with valid token."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             mock_proxy.get_user.return_value = {
                 "id": "user-123",
                 "email": "test@example.com",
                 "metadata": {"name": "Test User"}
             }
-            
+
             response = client.get(
                 "/auth/me",
                 headers={"Authorization": "Bearer token-123"}
             )
-            
+
             assert response.status_code == 200
             data = response.json()
             assert data["id"] == "user-123"
             assert data["email"] == "test@example.com"
-    
+
     def test_me_invalid_token(self, client):
         """Get current user fails with invalid token."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             from fastapi import HTTPException, status
             mock_proxy.get_user.side_effect = HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid or expired token"
             )
-            
+
             response = client.get(
                 "/auth/me",
                 headers={"Authorization": "Bearer invalid-token"}
             )
-            
+
             assert response.status_code == 401
 
 
 class TestRefreshToken:
     """Test token refresh endpoint."""
-    
+
     @pytest.mark.skip(reason="Requires proper Supabase mock or live backend")
     def test_refresh_success(self, client):
         """Successful token refresh."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             mock_proxy.refresh_session.return_value = {
                 "access_token": "new-token-123",
                 "refresh_token": "new-refresh-123",
                 "expires_at": 1234567890
             }
-            
+
             response = client.post("/auth/refresh", json={
                 "refresh_token": "old-refresh-token"
             })
-            
+
             assert response.status_code == 200
             data = response.json()
             assert data["access_token"] == "new-token-123"
@@ -256,90 +256,90 @@ class TestRefreshToken:
 
 class TestPasswordReset:
     """Test password reset endpoints."""
-    
+
     def test_password_reset_request(self, client):
         """Request password reset email."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             mock_proxy.reset_password_email.return_value = {
                 "message": "Password reset email sent"
             }
-            
+
             response = client.post("/auth/password-reset/request", json={
                 "email": "test@example.com"
             })
-            
+
             assert response.status_code == 200
             data = response.json()
             assert "message" in data
-    
+
     @pytest.mark.skip(reason="Requires proper Supabase mock or live backend")
     def test_password_reset_confirm(self, client):
         """Confirm password reset with new password."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             mock_proxy.update_password.return_value = {
                 "message": "Password updated successfully"
             }
-            
+
             response = client.post(
                 "/auth/password-reset/confirm",
                 json={"new_password": "newpassword123"},
                 headers={"Authorization": "Bearer reset-token"}
             )
-            
+
             assert response.status_code == 200
 
 
 class TestTokenVerification:
     """Test token verification endpoint (for backend use)."""
-    
+
     @pytest.mark.skip(reason="Requires proper Supabase mock or live backend")
     def test_verify_valid_token(self, client):
         """Verify returns user info for valid token."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             mock_proxy.verify_token.return_value = True
             mock_proxy.get_user.return_value = {
                 "id": "user-123",
                 "email": "test@example.com",
                 "metadata": {}
             }
-            
+
             response = client.get(
                 "/auth/verify",
                 headers={"Authorization": "Bearer token-123"}
             )
-            
+
             assert response.status_code == 200
             data = response.json()
             assert data["id"] == "user-123"
-    
+
     def test_verify_invalid_token(self, client):
         """Verify fails for invalid token."""
         with patch("auth.api_supabase.get_supabase_proxy") as mock_get:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
-            
+
             mock_proxy.verify_token.return_value = False
-            
+
             response = client.get(
                 "/auth/verify",
                 headers={"Authorization": "Bearer invalid-token"}
             )
-            
+
             assert response.status_code == 401
 
 
 class TestAuthorizationHeaderParsing:
     """Test Authorization header parsing."""
-    
+
     def test_missing_bearer_prefix(self, client):
         """Request fails without Bearer prefix."""
         response = client.get(
@@ -348,7 +348,7 @@ class TestAuthorizationHeaderParsing:
         )
         assert response.status_code == 401
         assert "Invalid authorization header format" in response.json()["detail"]
-    
+
     def test_no_auth_header(self, client):
         """Request fails without Authorization header."""
         response = client.get("/auth/me")
@@ -358,7 +358,7 @@ class TestAuthorizationHeaderParsing:
 
 class TestCORSHeaders:
     """Test CORS headers are present."""
-    
+
     def test_cors_headers_present(self, client):
         """CORS headers are included in responses."""
         response = client.get("/health")

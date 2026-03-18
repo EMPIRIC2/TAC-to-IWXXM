@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ValidationLevel(str, Enum):
@@ -152,7 +152,7 @@ class AggregatedValidationResult(BaseModel):
         total_issues = sum(len(r.issues) for r in results)
         layers = [r.layer for r in results]
         total_time = sum(r.execution_time_ms or 0 for r in results)
-        
+
         return cls(
             passed=passed,
             layers_validated=layers,

@@ -1,18 +1,18 @@
 """JWT security and authentication utilities via Auth Service proxy."""
-import os
-from typing import Dict, Any, Optional
 import logging
+import os
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 import httpx
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 logger = logging.getLogger(__name__)
 
 # Load .env file if it exists (for development)
 env_file = Path(__file__).parent.parent.parent.parent / ".env"
-if env_file.exists():
+if env_file.exists():  # pragma: no cover
     with open(env_file) as f:
         for line in f:
             line = line.strip()
@@ -37,7 +37,7 @@ async def verify_supabase_token(
 ) -> Dict[str, Any]:
     """
     Verify JWT token via Auth Service proxy.
-    
+
     The auth service validates the token with Supabase and returns user info.
     In development mode (DISABLE_AUTH=true), this is bypassed for testing.
 
@@ -52,14 +52,14 @@ async def verify_supabase_token(
     """
     # Check for auth bypass at runtime (in case env var changed after module load)
     disable_auth_runtime = os.getenv("DISABLE_AUTH", "").lower() in ("true", "1", "yes")
-    
+
     logger.info(
         "[AUTH] verify_supabase_token disable_auth=%s runtime_disable_auth=%s has_credentials=%s",
         DISABLE_AUTH,
         disable_auth_runtime,
         credentials is not None,
     )
-    
+
     # Development mode bypass
     if DISABLE_AUTH or disable_auth_runtime:
         logger.info("Auth bypassed (development mode)")
@@ -73,14 +73,14 @@ async def verify_supabase_token(
             "authenticated": False,
             "environment": "development"
         }
-    
+
     if not credentials:
         logger.warning("[AUTH] Missing authorization credentials")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Missing authorization credentials"
         )
-        
+
     token = credentials.credentials
     logger.info(
         "[AUTH] Token received scheme=%s token_length=%s",
@@ -98,7 +98,7 @@ async def verify_supabase_token(
                 timeout=5.0
             )
             logger.info("[AUTH] Auth service verify response status=%s", response.status_code)
-            
+
             if response.status_code == 200:
                 return response.json()
             elif response.status_code == 401:
@@ -113,7 +113,7 @@ async def verify_supabase_token(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail="Auth service error"
                 )
-                
+
     except httpx.TimeoutException:
         logger.error("[AUTH] Auth service timeout")
         raise HTTPException(

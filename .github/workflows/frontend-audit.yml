@@ -1,0 +1,48 @@
+---
+name: Frontend Audit
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-audit.yml'
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-audit.yml'
+  workflow_dispatch:
+
+jobs:
+  frontend-audit:
+    runs-on: ubuntu-latest
+    name: Frontend - npm audit (0 vulnerabilities)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          # Frontend npm audit does not require submodules; avoid unrelated
+          # checkout failures from optional/missing submodule URL mappings.
+          submodules: false
+
+      - name: Initialize frontend submodule only
+        run: |
+          git submodule sync -- frontend
+          git submodule update --init --depth 1 frontend
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm install --legacy-peer-deps
+
+      - name: Run npm audit gate
+        working-directory: ./frontend
+        run: npm run audit:ci

@@ -106,7 +106,7 @@ These failures didn't exist before because tests were skipped. Now they're disco
 ### Bug 1: test_token_validation_and_user_context
 ```
 404 Not Found: evaluation_jobs table
-URL: https://ktvxijislbtgqapllmuk.supabase.co/rest/v1/evaluation_jobs?user_id=eq.test-user-id
+URL: https://YOUR_PROJECT_REF.supabase.co/rest/v1/evaluation_jobs?user_id=eq.test-user-id
 → Missing database table or incorrect query
 ```
 

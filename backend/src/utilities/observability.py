@@ -16,26 +16,42 @@ from fastapi import FastAPI, Request
 from fastapi.responses import Response
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
 
+# Module-level registry avoids relying on prometheus_client's private internals
+# while still preventing duplicate-registration errors on module reload.
+_METRICS: dict[str, Any] = {}
 
-HTTP_REQUESTS_TOTAL = Counter(
+
+def _get_or_create_counter(name: str, documentation: str, labelnames: list[str]) -> Counter:
+    if name not in _METRICS:
+        _METRICS[name] = Counter(name, documentation, labelnames)
+    return _METRICS[name]  # type: ignore[return-value]
+
+
+def _get_or_create_histogram(name: str, documentation: str, labelnames: list[str]) -> Histogram:
+    if name not in _METRICS:
+        _METRICS[name] = Histogram(name, documentation, labelnames)
+    return _METRICS[name]  # type: ignore[return-value]
+
+
+HTTP_REQUESTS_TOTAL = _get_or_create_counter(
     "http_requests_total",
     "Total HTTP requests",
     ["service", "method", "endpoint", "status"],
 )
 
-HTTP_REQUEST_DURATION_SECONDS = Histogram(
+HTTP_REQUEST_DURATION_SECONDS = _get_or_create_histogram(
     "http_request_duration_seconds",
     "HTTP request latency in seconds",
     ["service", "method", "endpoint"],
 )
 
-METAR_CONVERSIONS_TOTAL = Counter(
+METAR_CONVERSIONS_TOTAL = _get_or_create_counter(
     "metar_conversions_total",
     "Total METAR conversions by status",
     ["status", "iwxxm_version", "icao_region"],
 )
 
-METAR_CONVERSION_DURATION_SECONDS = Histogram(
+METAR_CONVERSION_DURATION_SECONDS = _get_or_create_histogram(
     "metar_conversion_duration_seconds",
     "METAR conversion duration in seconds",
     ["status", "iwxxm_version", "icao_region"],

@@ -1,11 +1,12 @@
 """Security utilities: password hashing, JWT, API key hashing, reset tokens."""
 from __future__ import annotations
 
-import os
-import hashlib
 import datetime as dt
+import hashlib
+import os
 from typing import Optional
-from jose import jwt, JWTError
+
+from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
@@ -28,7 +29,7 @@ def verify_password(password: str, hashed: str) -> bool:
 
 
 def create_access_token(sub: str) -> str:
-    expire = dt.datetime.now(dt.UTC) + dt.timedelta(minutes=JWT_EXPIRE_MINUTES)
+    expire = dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=JWT_EXPIRE_MINUTES)
     to_encode = {"sub": sub, "exp": expire}
     return jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGO)
 
@@ -46,7 +47,7 @@ def hash_api_key(raw_key: str) -> str:
 
 
 def create_reset_expiry() -> dt.datetime:
-    return dt.datetime.now(dt.UTC) + dt.timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES)
+    return dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES)
 
 
 __all__ = [

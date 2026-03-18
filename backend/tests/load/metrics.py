@@ -8,7 +8,6 @@ from threading import Lock
 from locust import events
 from prometheus_client import Counter, Histogram, start_http_server
 
-
 REQUEST_LATENCY_MS = Histogram(
     "locust_request_latency_ms",
     "Request latency in milliseconds",

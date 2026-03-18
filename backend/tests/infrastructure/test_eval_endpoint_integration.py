@@ -15,13 +15,10 @@ Note: These tests require network access and API availability.
 Mock the API client for offline testing.
 """
 
-from typing import Dict, List
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
 import pytest
-
 from _integration_helpers import IntegrationTestHelper, IntegrationTestResult
-
 
 # Real-world test stations (global distribution)
 INTEGRATION_TEST_STATIONS = {

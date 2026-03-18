@@ -4,10 +4,8 @@ ICAO OPMET Data Exchange compliance configuration.
 Implements Translation Centre settings and ICAO region mappings
 as per user decisions for the METAR to IWXXM Translation Centre.
 """
-from typing import Dict, Optional
 import os
-from datetime import datetime
-
+from typing import Dict
 
 # =============================================================================
 # Translation Centre Identification (ICAO Doc 10003, Section 7)
@@ -61,7 +59,7 @@ ICAO_REGION_MAP: Dict[str, str] = {
     "HA": "AFI", "HB": "AFI", "HC": "AFI", "HD": "AFI", "HE": "AFI",
     "HH": "AFI", "HK": "AFI", "HL": "AFI", "HR": "AFI", "HS": "AFI",
     "HT": "AFI", "HU": "AFI",
-    
+
     # Asia Pacific (APAC)
     "AG": "APAC", "AN": "APAC", "AY": "APAC",
     "BI": "APAC", "BK": "APAC",
@@ -80,7 +78,7 @@ ICAO_REGION_MAP: Dict[str, str] = {
     "ZB": "APAC", "ZG": "APAC", "ZH": "APAC", "ZJ": "APAC", "ZK": "APAC",
     "ZL": "APAC", "ZM": "APAC", "ZP": "APAC", "ZS": "APAC", "ZU": "APAC",
     "ZW": "APAC", "ZY": "APAC",
-    
+
     # European (EUR)
     "EB": "EUR", "ED": "EUR", "EE": "EUR", "EF": "EUR", "EG": "EUR",
     "EH": "EUR", "EI": "EUR", "EK": "EUR", "EL": "EUR", "EN": "EUR",
@@ -95,7 +93,7 @@ ICAO_REGION_MAP: Dict[str, str] = {
     "UH": "EUR", "UI": "EUR", "UK": "EUR", "UL": "EUR", "UM": "EUR",
     "UN": "EUR", "UO": "EUR", "UR": "EUR", "US": "EUR", "UT": "EUR",
     "UU": "EUR", "UW": "EUR",
-    
+
     # Middle East (MID)
     "DA": "MID", "DB": "MID", "DF": "MID", "DG": "MID", "DI": "MID",
     "DN": "MID", "DT": "MID", "DX": "MID",
@@ -105,7 +103,7 @@ ICAO_REGION_MAP: Dict[str, str] = {
     "OE": "MID", "OI": "MID", "OJ": "MID", "OK": "MID", "OL": "MID", "OM": "MID",
     "OO": "MID", "OP": "MID", "OR": "MID", "OS": "MID", "OT": "MID",
     "OY": "MID",
-    
+
     # North American (NAM)
     "BG": "NAM",
     "C": "NAM",   # All C-prefix (Canada)
@@ -115,7 +113,7 @@ ICAO_REGION_MAP: Dict[str, str] = {
     "PM": "NAM", "PO": "NAM", "PP": "NAM", "PT": "NAM", "PW": "NAM",
     "TI": "NAM", "TJ": "NAM", "TK": "NAM", "TL": "NAM", "TN": "NAM",
     "TT": "NAM", "TX": "NAM",
-    
+
     # South American (SAM)
     "SA": "SAM", "SB": "SAM", "SC": "SAM", "SD": "SAM", "SE": "SAM",
     "SF": "SAM", "SG": "SAM", "SI": "SAM", "SJ": "SAM", "SK": "SAM",
@@ -127,16 +125,16 @@ ICAO_REGION_MAP: Dict[str, str] = {
 def get_icao_region(airport_code: str) -> str:
     """
     Determine ICAO region from airport code.
-    
+
     Args:
         airport_code: 4-letter ICAO airport identifier
-        
+
     Returns:
         ICAO region code (AFI, APAC, EUR, MID, NAM, SAM, NAT, WAFR, ESAF)
-        
+
     Raises:
         ValueError: If airport code format is invalid
-        
+
     Note:
         - Returns "NAM" for all K-prefix (USA continental)
         - Returns "NAM" for all C-prefix (Canada)
@@ -146,19 +144,19 @@ def get_icao_region(airport_code: str) -> str:
     """
     if not airport_code or len(airport_code) != 4:
         raise ValueError(f"Invalid ICAO airport code: {airport_code}")
-    
+
     airport_code = airport_code.upper()
-    
+
     # Single-letter prefix handling (K, C, M)
     first_letter = airport_code[0]
     if first_letter in ["K", "C", "M"]:
         return "NAM"
-    
+
     # Two-letter prefix lookup
     two_letter_prefix = airport_code[:2]
     if two_letter_prefix in ICAO_REGION_MAP:
         return ICAO_REGION_MAP[two_letter_prefix]
-    
+
     # Fallback for unmapped codes (rare edge cases)
     # Use first letter heuristics
     if first_letter in ["E", "L", "U"]:
@@ -230,7 +228,7 @@ DEFAULT_IWXXM_VERSION = "2025-2"
 def get_translation_centre_info() -> Dict[str, any]:
     """
     Get Translation Centre metadata for IWXXM documents.
-    
+
     Returns:
         Dictionary with Translation Centre information
     """

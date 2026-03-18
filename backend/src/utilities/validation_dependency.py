@@ -1,17 +1,15 @@
 """Validation dependencies for FastAPI request preprocessing."""
-import sys
-import pathlib
-from typing import Optional, List
+from typing import List, Optional
 
 from fastapi import HTTPException
 
 try:
     # Try relative imports first (when run as module in Docker)
-    from ..schemas.validation import ValidationRequest, ValidationLayer, AggregatedValidationResult
+    from ..schemas.validation import AggregatedValidationResult, ValidationLayer
     from ..services.validation import ValidationService
 except ImportError:
     # Fall back to direct imports
-    from schemas.validation import ValidationRequest, ValidationLayer, AggregatedValidationResult
+    from schemas.validation import AggregatedValidationResult, ValidationLayer
     from services.validation import ValidationService
 
 
@@ -33,25 +31,25 @@ async def validate_metar_input(
     iwxxm_version: Optional[str] = None,
 ) -> AggregatedValidationResult:
     """Validate METAR TAC input with validation layers.
-    
+
     Can be used as a dependency or called directly for preprocessing.
-    
+
     Args:
         content: METAR TAC content to validate
         layers: Optional specific layers to validate (None = all)
         iwxxm_version: Optional IWXXM version context
-        
+
     Returns:
         AggregatedValidationResult with validation details
-        
+
     Raises:
         HTTPException: If validation service fails
     """
     if not content or not content.strip():
         raise HTTPException(status_code=400, detail="METAR content cannot be empty")
-    
+
     service = get_validation_service()
-    
+
     try:
         result = service.validate(
             content=content.strip(),
@@ -72,25 +70,25 @@ async def validate_iwxxm_input(
     iwxxm_version: Optional[str] = None,
 ) -> AggregatedValidationResult:
     """Validate IWXXM XML input with validation layers.
-    
+
     Can be used as a dependency or called directly for preprocessing.
-    
+
     Args:
         content: IWXXM XML content to validate
         layers: Optional specific layers to validate (None = all)
         iwxxm_version: Optional IWXXM version context
-        
+
     Returns:
         AggregatedValidationResult with validation details
-        
+
     Raises:
         HTTPException: If validation service fails
     """
     if not content or not content.strip():
         raise HTTPException(status_code=400, detail="IWXXM content cannot be empty")
-    
+
     service = get_validation_service()
-    
+
     try:
         result = service.validate(
             content=content.strip(),

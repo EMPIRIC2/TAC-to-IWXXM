@@ -4,10 +4,11 @@ ICAO OPMET Data Exchange Guidelines (Section 7) - Translation Statistics Schemas
 Implements data models for tracking translation centre statistics as per
 ICAO Doc 10003 - Manual on the Digital Exchange of Aeronautical Meteorological Information.
 """
-from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ICAORegion(str, Enum):
@@ -45,7 +46,7 @@ class ValidationLayer(str, Enum):
 class TranslationRecord(BaseModel):
     """
     Individual translation record for ICAO OPMET statistics.
-    
+
     Captures metadata about each TAC→IWXXM translation performed by the centre.
     Supports indefinite retention as per user decision 1.
     """
@@ -152,7 +153,7 @@ class TranslationRecord(BaseModel):
 class TranslationStatistics(BaseModel):
     """
     Aggregated translation statistics for ICAO OPMET compliance.
-    
+
     Provides summary metrics for a given time period and optional filters.
     """
 

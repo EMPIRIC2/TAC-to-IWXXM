@@ -53,9 +53,9 @@ except Exception as e:
     if "IPv6" in error_str or "getaddrinfo" in error_str or "Name or service not known" in error_str:
         print("Error: IPv6-only DNS (expected on this system)")
         print("\nNote: Your system doesn't support IPv6, so the direct connection")
-        print("to db.ktvxijislbtgqapllmuk.supabase.co won't work.")
+        print("to db.YOUR_PROJECT_REF.supabase.co won't work.")
         print("\nSolution: Enable the Connection Pooler in Supabase dashboard:")
-        print("1. Go to: https://supabase.com/dashboard/project/ktvxijislbtgqapllmuk/settings/database")
+        print("1. Go to: https://supabase.com/dashboard/project/YOUR_PROJECT_REF/settings/database")
         print("2. In 'Connection pooling' section, select 'Session' or 'Transaction' mode")
         print("3. Copy the pooler connection string (uses aws-0-us-east-1.pooler.supabase.com)")
         print("4. Update DATABASE_URL in .env with the pooler connection string")

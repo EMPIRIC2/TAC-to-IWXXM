@@ -5,16 +5,14 @@ Validates IWXXM XML documents against official WMO XSD schemas.
 Uses lxml for efficient schema compilation and validation with caching.
 """
 
-from functools import lru_cache
-from pathlib import Path
-from typing import List, Optional, Dict
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
+from typing import Dict, List, Optional
 
 from lxml import etree
 
+from ..schemas.validation import ValidationIssue, ValidationLayer, ValidationSeverity
 from .schema_registry import get_schema_registry
-from ..schemas.validation import ValidationIssue, ValidationSeverity, ValidationLayer
 
 logger = logging.getLogger(__name__)
 
@@ -31,22 +29,22 @@ class XSDValidator:
     """
     Validates IWXXM XML against XSD schemas with version-aware caching.
     """
-    
+
     def __init__(self):
         """Initialize XSD validator with schema registry."""
         self.registry = get_schema_registry()
         self._schema_cache: Dict[str, etree.XMLSchema] = {}
-    
+
     def _get_compiled_schema(self, version: str) -> etree.XMLSchema:
         """
         Get compiled XSD schema for version with caching.
-        
+
         Args:
             version: IWXXM version (e.g., '2025-2')
-        
+
         Returns:
             Compiled lxml XMLSchema object
-        
+
         Raises:
             FileNotFoundError: If XSD file not found
             etree.XMLSchemaParseError: If schema parsing fails critically
@@ -60,32 +58,32 @@ class XSDValidator:
             else:
                 logger.debug(f"Using cached XSD schema for version {version}")
                 return cached_schema
-        
+
         # Get XSD path from registry
         xsd_path = self.registry.get_xsd_path(version)
-        
+
         if not xsd_path or not xsd_path.exists():
             raise FileNotFoundError(
                 f"XSD schema not found for version {version}: {xsd_path}"
             )
-        
+
         logger.info(f"Compiling XSD schema for version {version}: {xsd_path}")
-        
+
         try:
             # Parse XSD document
             xsd_doc = etree.parse(str(xsd_path))
-            
+
             # Compile schema with catalog resolution
             # The schemas have imports/includes that need proper resolution
             # Note: Some versions (2025-2) have known schema import issues that don't prevent validation
             schema = etree.XMLSchema(xsd_doc)
-            
+
             # Cache compiled schema (even with warnings, it can be used for validation)
             self._schema_cache[version] = schema
-            
+
             logger.info(f"Successfully compiled XSD schema for version {version}")
             return schema
-            
+
         except etree.XMLSchemaParseError as e:
             # Some schemas have parse warnings but still function for validation
             error_msg = str(e)
@@ -104,24 +102,24 @@ class XSDValidator:
         except Exception as e:
             logger.error(f"Unexpected error compiling schema: {e}")
             raise
-    
+
     def validate(
-        self, 
-        xml_content: str, 
+        self,
+        xml_content: str,
         version: str
     ) -> XSDValidationResult:
         """
         Validate XML content against XSD schema.
-        
+
         Args:
             xml_content: XML string to validate
             version: IWXXM version (e.g., '2025-2')
-        
+
         Returns:
             XSDValidationResult with validation outcomes
         """
         issues = []
-        
+
         try:
             # Parse XML document
             try:
@@ -141,7 +139,7 @@ class XSDValidator:
                     issues=issues,
                     schema_version=version
                 )
-            
+
             # Get compiled schema
             try:
                 schema = self._get_compiled_schema(version)
@@ -197,7 +195,7 @@ class XSDValidator:
                     issues=issues,
                     schema_version=version
                 )
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 issue = ValidationIssue(
                     layer=ValidationLayer.XML_SCHEMA,
                     level=ValidationSeverity.ERROR,
@@ -210,14 +208,14 @@ class XSDValidator:
                     issues=issues,
                     schema_version=version
                 )
-            
+
             # Check if schema is None (cached as non-blocking issue)
             if schema is None:
                 logger.warning(f"Schema for {version} is None - skipping validation")
                 issue = ValidationIssue(
                     layer=ValidationLayer.XML_SCHEMA,
                     level=ValidationSeverity.WARNING,
-                    message=f"Schema validation skipped due to known schema issues",
+                    message="Schema validation skipped due to known schema issues",
                     code="SCHEMA_SKIPPED"
                 )
                 issues.append(issue)
@@ -226,10 +224,10 @@ class XSDValidator:
                     issues=issues,
                     schema_version=version
                 )
-            
+
             # Perform validation
             is_valid = schema.validate(xml_doc)
-            
+
             if not is_valid:
                 # Extract validation errors
                 for error in schema.error_log:
@@ -241,20 +239,20 @@ class XSDValidator:
                         code=error.type_name or "XSD_VALIDATION_ERROR"
                     )
                     issues.append(issue)
-                
+
                 logger.warning(
                     f"XSD validation failed for version {version}: "
                     f"{len(issues)} errors"
                 )
             else:
                 logger.debug(f"XSD validation passed for version {version}")
-            
+
             return XSDValidationResult(
                 is_valid=is_valid,
                 issues=issues,
                 schema_version=version
             )
-            
+
         except Exception as e:
             logger.error(f"Unexpected error during XSD validation: {e}")
             issue = ValidationIssue(
@@ -269,11 +267,11 @@ class XSDValidator:
                 issues=issues,
                 schema_version=version
             )
-    
+
     def clear_cache(self, version: Optional[str] = None):
         """
         Clear cached compiled schemas.
-        
+
         Args:
             version: Specific version to clear, or None for all
         """
@@ -293,7 +291,7 @@ _validator_instance: Optional[XSDValidator] = None
 def get_xsd_validator() -> XSDValidator:
     """
     Get singleton XSD validator instance.
-    
+
     Returns:
         XSDValidator instance
     """
@@ -306,11 +304,11 @@ def get_xsd_validator() -> XSDValidator:
 def validate_xml_schema(xml_content: str, version: str) -> XSDValidationResult:
     """
     Convenience function to validate XML against XSD schema.
-    
+
     Args:
         xml_content: XML string to validate
         version: IWXXM version (e.g., '2025-2')
-    
+
     Returns:
         XSDValidationResult with validation outcomes
     """

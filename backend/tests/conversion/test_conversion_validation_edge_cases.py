@@ -13,9 +13,11 @@ Run with: pytest -m edge_case -v
 These tests are meant to be fixed as solutions are implemented.
 """
 
+from io import StringIO
+
 import pytest
 from lxml import etree
-from io import StringIO
+
 from src.utilities.conversion import convert_metar_tac_with_metadata
 
 
@@ -42,19 +44,19 @@ class TestEdgeCasesCavok:
         """
         # Test CAVOK METAR
         cavok_metar = "METAR KJFK 231751Z 18012KT CAVOK 23/14 A3012 RMK AO2 SLP201"
-        
+
         iwxxm_xml, validation_result = convert_metar_tac_with_metadata(
             tac_text=cavok_metar,
             iwxxm_version="2025-2",
             use_test_overrides=False,
         )
-        
+
         # Parse and check for visibility element
         parser = etree.XMLParser(remove_blank_text=True)
         doc = etree.parse(StringIO(iwxxm_xml), parser)
         root = doc.getroot()
         nsmap = root.nsmap
-        
+
         # CAVOK should not have RVR but might have visibility
         visibility_elems = root.findall(".//iwxxm:visibility", namespaces=nsmap)
         # This will xfail if visibility is present (documenting the issue)
@@ -84,18 +86,18 @@ class TestEdgeCasesCloudLayers:
         - Actual: includes optional cloud type element
         """
         metar_with_clouds = "METAR KJFK 231751Z 18012KT 10SM FEW050 SCT100 BKN200 23/14 A3012"
-        
+
         iwxxm_xml, _ = convert_metar_tac_with_metadata(
             tac_text=metar_with_clouds,
             iwxxm_version="2025-2",
             use_test_overrides=False,
         )
-        
+
         parser = etree.XMLParser(remove_blank_text=True)
         doc = etree.parse(StringIO(iwxxm_xml), parser)
         root = doc.getroot()
         nsmap = root.nsmap
-        
+
         # Cloud layers should be present
         cloud_layers = root.findall(".//iwxxm:layer", namespaces=nsmap)
         assert len(cloud_layers) > 0, "Should have cloud layers"
@@ -124,17 +126,17 @@ class TestEdgeCasesTempoTrend:
         - Actual: enhanced trend with visibility/weather specifics
         """
         metar_with_trend = "METAR KJFK 231751Z 18012KT 10SM FEW050 23/14 A3012 NOSIG"
-        
+
         iwxxm_xml, _ = convert_metar_tac_with_metadata(
             tac_text=metar_with_trend,
             iwxxm_version="2025-2",
             use_test_overrides=False,
         )
-        
+
         # Should produce valid XML
         assert iwxxm_xml is not None
         assert len(iwxxm_xml) > 0
-        
+
         # Parse to validate structure
         parser = etree.XMLParser(remove_blank_text=True)
         doc = etree.parse(StringIO(iwxxm_xml), parser)
@@ -164,7 +166,7 @@ class TestEdgeCasesRVR:
         - Actual: represented as min/max range or special attribute value
         """
         metar_with_rvr = "METAR KJFK 231751Z 18012KT R32L/1500U 10SM FEW050 23/14 A3012"
-        
+
         try:
             iwxxm_xml, _ = convert_metar_tac_with_metadata(
                 tac_text=metar_with_rvr,
@@ -190,7 +192,7 @@ class TestEdgeCasesRVR:
         - Actual: min/max range with variation indicator
         """
         metar_variable_rvr = "METAR KJFK 231751Z 18012KT R32L/1000V1500U 10SM FEW050 23/14 A3012"
-        
+
         try:
             iwxxm_xml, _ = convert_metar_tac_with_metadata(
                 tac_text=metar_variable_rvr,
@@ -225,13 +227,13 @@ class TestEdgeCasesWeather:
         - Actual: explicit intensity element or attribute
         """
         metar_heavy_rain = "METAR KJFK 231751Z 18012KT +RA 10SM FEW050 23/14 A3012"
-        
+
         iwxxm_xml, _ = convert_metar_tac_with_metadata(
             tac_text=metar_heavy_rain,
             iwxxm_version="2025-2",
             use_test_overrides=False,
         )
-        
+
         assert iwxxm_xml is not None
         assert "+RA" in metar_heavy_rain or "RA" in iwxxm_xml.lower()
 
@@ -249,13 +251,13 @@ class TestEdgeCasesWeather:
         - Actual: combined thunderstorm+precipitation element
         """
         metar_ts_rain = "METAR KJFK 231751Z 18012KT +TSRA 10SM FEW050CB 23/14 A3012"
-        
+
         iwxxm_xml, _ = convert_metar_tac_with_metadata(
             tac_text=metar_ts_rain,
             iwxxm_version="2025-2",
             use_test_overrides=False,
         )
-        
+
         assert iwxxm_xml is not None
 
 
@@ -282,19 +284,19 @@ class TestEdgeCasesAltimeter:
         - Actual: 1020.55 or 1020.56 hPa (floating point rounding)
         """
         metar_altimeter = "METAR KJFK 231751Z 18012KT 10SM FEW050 23/14 A3012 RMK AO2"
-        
+
         iwxxm_xml, _ = convert_metar_tac_with_metadata(
             tac_text=metar_altimeter,
             iwxxm_version="2025-2",
             use_test_overrides=False,
         )
-        
+
         # Parse and verify QNH/altimeter is present
         parser = etree.XMLParser(remove_blank_text=True)
         doc = etree.parse(StringIO(iwxxm_xml), parser)
         root = doc.getroot()
         nsmap = root.nsmap
-        
+
         qnh = root.findall(".//iwxxm:qnh", namespaces=nsmap)
         assert len(qnh) > 0, "Should have QNH element"
 
@@ -322,7 +324,7 @@ class TestEdgeCasesWindShear:
         - Actual: detailed shear with altitude range elements
         """
         metar_with_remark = "METAR KJFK 231751Z 18012KT 10SM FEW050 23/14 A3012 RMK AO2 WS ALL RWY"
-        
+
         try:
             iwxxm_xml, _ = convert_metar_tac_with_metadata(
                 tac_text=metar_with_remark,
@@ -357,13 +359,13 @@ class TestEdgeCasesAmendmentVersions:
         - Amd78-2018 tests may have extra or missing elements vs Amd79+ data
         """
         metar = "METAR KJFK 231751Z 18012KT 10SM FEW050 23/14 A3012"
-        
+
         iwxxm_xml, _ = convert_metar_tac_with_metadata(
             tac_text=metar,
             iwxxm_version="2023-1",  # Test with 2023-1 which is post-2018
             use_test_overrides=False,
         )
-        
+
         assert iwxxm_xml is not None
 
     @pytest.mark.edge_case
@@ -379,7 +381,7 @@ class TestEdgeCasesAmendmentVersions:
         - 2021 and 2023 test sets may show convergence as encoder matures
         """
         metar = "METAR KJFK 231751Z 18012KT 10SM FEW050 23/14 A3012 RMK AO2"
-        
+
         # Test both versions
         for version in ["2021-2", "2023-1"]:
             try:

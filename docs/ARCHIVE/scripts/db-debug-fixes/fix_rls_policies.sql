@@ -1,5 +1,5 @@
 -- Fix infinite recursion in RLS policies
--- Execute this in Supabase SQL Editor: https://supabase.com/dashboard/project/ktvxijislbtgqapllmuk/sql
+-- Execute this in Supabase SQL Editor: https://supabase.com/dashboard/project/YOUR_PROJECT_REF/sql
 
 -- Drop all existing policies on user_profiles
 DROP POLICY IF EXISTS user_profiles_select_policy ON user_profiles;

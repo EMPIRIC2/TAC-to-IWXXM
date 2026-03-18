@@ -18,10 +18,10 @@ Skip with: pytest -m "not live_api"
 """
 
 import os
-import pytest
-import httpx
 from datetime import datetime
 
+import httpx
+import pytest
 
 # Configuration
 LIVE_API_URL = os.getenv("LIVE_API_URL", "http://localhost:8000")
@@ -41,7 +41,7 @@ async def live_client():
     headers = {}
     if LIVE_API_TOKEN:
         headers["Authorization"] = f"Bearer {LIVE_API_TOKEN}"
-    
+
     # Check if API is available before running tests
     try:
         async with httpx.AsyncClient(
@@ -53,7 +53,7 @@ async def live_client():
             await test_client.get("/health")
     except (httpx.ConnectError, httpx.TimeoutException):
         pytest.skip(f"Live API not available at {LIVE_API_URL}")
-    
+
     # If we get here, API is available
     async with httpx.AsyncClient(
         base_url=LIVE_API_URL,
@@ -81,13 +81,13 @@ class TestLiveAPIHealth:
         start_time = datetime.now()
         response = await live_client.get("/health")
         duration = (datetime.now() - start_time).total_seconds()
-        
+
         assert response.status_code == 200, f"Health check failed: {response.text}"
-        
+
         data = response.json()
         assert "status" in data
         assert data["status"] in ["healthy", "ok"]
-        
+
         # Performance check
         assert duration < HEALTH_CHECK_THRESHOLD, (
             f"Health check too slow: {duration:.2f}s > {HEALTH_CHECK_THRESHOLD}s"
@@ -99,7 +99,7 @@ class TestLiveAPIHealth:
         """Test health endpoint returns expected structure."""
         response = await live_client.get("/health")
         data = response.json()
-        
+
         # Should contain status and GIFTs availability
         assert "status" in data
         assert "gifts_available" in data or "message" in data
@@ -111,18 +111,18 @@ class TestLiveAPIHealth:
         start_time = datetime.now()
         response = await live_client.get("/api/v1/versions")
         duration = (datetime.now() - start_time).total_seconds()
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert "versions" in data
         assert isinstance(data["versions"], list)
         assert len(data["versions"]) > 0
-        
+
         # Verify 2025-2 is present
         version_ids = [v["version"] for v in data["versions"]]
         assert "2025-2" in version_ids or "3.0.0" in version_ids
-        
+
         # Performance check
         assert duration < VERSION_CHECK_THRESHOLD
 
@@ -131,10 +131,10 @@ class TestLiveAPIHealth:
     async def test_schema_status_endpoint(self, live_client):
         """Test /api/v1/schema-status endpoint."""
         response = await live_client.get("/api/v1/schema-status")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Should contain version information
         assert "supported_versions" in data or "schemas" in data
 
@@ -143,10 +143,10 @@ class TestLiveAPIHealth:
     async def test_translation_centre_info(self, live_client):
         """Test /api/v1/translation/centre-info endpoint."""
         response = await live_client.get("/api/v1/translation/centre-info")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert "centre_name" in data
         assert "centre_designator" in data
         assert "icao_location_indicator" in data
@@ -162,13 +162,13 @@ class TestLiveAPIHealth:
             "EGLL": "EUR",
             "RJTT": "APAC",
         }
-        
+
         for airport_code, expected_region in test_airports.items():
             response = await live_client.get(f"/api/v1/translation/airport-region/{airport_code}")
-            
+
             assert response.status_code == 200
             data = response.json()
-            
+
             assert data["airport_code"] == airport_code
             assert data["icao_region"] == expected_region
 
@@ -182,7 +182,7 @@ class TestLiveAPIAuthentication:
         """Test /api/v1/convert endpoint with authentication."""
         if not LIVE_API_TOKEN:
             pytest.skip("LIVE_API_TOKEN not configured")
-        
+
         start_time = datetime.now()
         response = await live_client.post(
             "/api/v1/convert",
@@ -192,18 +192,18 @@ class TestLiveAPIAuthentication:
             }
         )
         duration = (datetime.now() - start_time).total_seconds()
-        
+
         assert response.status_code == 200, f"Conversion failed: {response.text}"
-        
+
         data = response.json()
         assert "results" in data
         assert len(data["results"]) > 0
-        
+
         result = data["results"][0]
         assert result["status"] == "success"
         assert "iwxxm_xml" in result
         assert len(result["iwxxm_xml"]) > 0
-        
+
         # Performance check
         assert duration < CONVERSION_THRESHOLD, (
             f"Conversion too slow: {duration:.2f}s > {CONVERSION_THRESHOLD}s"
@@ -221,7 +221,7 @@ class TestLiveAPIAuthentication:
                     "manual_text": "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015",
                 }
             )
-            
+
             # Should require authentication
             assert response.status_code == 401
 
@@ -231,12 +231,12 @@ class TestLiveAPIAuthentication:
         """Test /api/v1/validation/layers endpoint."""
         if not LIVE_API_TOKEN:
             pytest.skip("LIVE_API_TOKEN not configured")
-        
+
         response = await live_client.get("/api/v1/validation/layers")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert "layers" in data
         assert len(data["layers"]) == 7  # All 7 validation layers
 
@@ -246,7 +246,7 @@ class TestLiveAPIAuthentication:
         """Test /api/v1/validation/validate endpoint."""
         if not LIVE_API_TOKEN:
             pytest.skip("LIVE_API_TOKEN not configured")
-        
+
         start_time = datetime.now()
         response = await live_client.post(
             "/api/v1/validation/validate",
@@ -255,13 +255,13 @@ class TestLiveAPIAuthentication:
             }
         )
         duration = (datetime.now() - start_time).total_seconds()
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert "passed" in data
         assert "results" in data
-        
+
         # Performance check
         assert duration < VALIDATION_THRESHOLD
 
@@ -275,20 +275,20 @@ class TestLiveAPIPerformance:
     async def test_concurrent_health_checks(self, verify_live_api_configured):
         """Test API handles concurrent health check requests."""
         import asyncio
-        
+
         async def health_check():
             async with httpx.AsyncClient(base_url=LIVE_API_URL, timeout=LIVE_API_TIMEOUT) as client:
                 response = await client.get("/health")
                 return response.status_code
-        
+
         # Run 10 concurrent health checks
         start_time = datetime.now()
         results = await asyncio.gather(*[health_check() for _ in range(10)])
         duration = (datetime.now() - start_time).total_seconds()
-        
+
         # All should succeed
         assert all(status == 200 for status in results)
-        
+
         # Should complete reasonably fast
         assert duration < 5.0, f"Concurrent requests too slow: {duration:.2f}s"
 
@@ -299,13 +299,13 @@ class TestLiveAPIPerformance:
         """Test multiple sequential conversions."""
         if not LIVE_API_TOKEN:
             pytest.skip("LIVE_API_TOKEN not configured")
-        
+
         test_metars = [
             "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015",
             "METAR EGLL 161200Z 27015KT 9999 FEW040 18/12 Q1015",
             "METAR RJTT 161200Z 09008KT 10SM FEW030 20/15 A2995",
         ]
-        
+
         start_time = datetime.now()
         for metar in test_metars:
             response = await live_client.post(
@@ -313,10 +313,10 @@ class TestLiveAPIPerformance:
                 json={"manual_text": metar, "iwxxm_version": "2025-2"}
             )
             assert response.status_code == 200
-        
+
         duration = (datetime.now() - start_time).total_seconds()
         avg_duration = duration / len(test_metars)
-        
+
         # Average should be reasonable
         assert avg_duration < CONVERSION_THRESHOLD
 
@@ -329,7 +329,7 @@ class TestLiveAPIErrorHandling:
     async def test_invalid_endpoint_returns_404(self, live_client):
         """Test accessing non-existent endpoint returns 404."""
         response = await live_client.get("/api/v1/nonexistent")
-        
+
         assert response.status_code == 404
 
     @pytest.mark.live_api
@@ -338,12 +338,12 @@ class TestLiveAPIErrorHandling:
         """Test malformed request returns 400."""
         if not LIVE_API_TOKEN:
             pytest.skip("LIVE_API_TOKEN not configured")
-        
+
         response = await live_client.post(
             "/api/v1/convert",
             json={"invalid_field": "value"}
         )
-        
+
         # Should return 400 or 422 for validation error
         assert response.status_code in [400, 422]
 
@@ -353,15 +353,15 @@ class TestLiveAPIErrorHandling:
         """Test invalid METAR is handled gracefully."""
         if not LIVE_API_TOKEN:
             pytest.skip("LIVE_API_TOKEN not configured")
-        
+
         response = await live_client.post(
             "/api/v1/convert",
             json={"manual_text": "INVALID METAR STRING"}
         )
-        
+
         # Should return 200 with error in results, or 400
         assert response.status_code in [200, 400]
-        
+
         if response.status_code == 200:
             data = response.json()
             assert "results" in data
@@ -391,9 +391,9 @@ class TestLiveAPIAvailability:
     async def test_api_returns_valid_json(self, live_client):
         """Test API returns valid JSON responses."""
         response = await live_client.get("/health")
-        
+
         assert response.status_code == 200
-        
+
         # Should be able to parse as JSON
         try:
             data = response.json()
@@ -406,10 +406,10 @@ class TestLiveAPIAvailability:
     async def test_api_cors_headers(self, live_client):
         """Test API returns appropriate CORS headers."""
         response = await live_client.options("/health")
-        
+
         # Should handle OPTIONS request
         assert response.status_code in [200, 204]
-        
+
         # May have CORS headers
         # This is informational, not a failure
         if "access-control-allow-origin" in response.headers:
@@ -428,7 +428,7 @@ class TestLiveAPIMonitoring:
             ("/api/v1/versions", "Version Info"),
             ("/api/v1/translation/centre-info", "Centre Info"),
         ]
-        
+
         failures = []
         for endpoint, name in endpoints:
             try:
@@ -437,7 +437,7 @@ class TestLiveAPIMonitoring:
                     failures.append(f"{name} ({endpoint}): Status {response.status_code}")
             except Exception as e:
                 failures.append(f"{name} ({endpoint}): {str(e)}")
-        
+
         assert len(failures) == 0, f"Critical path failures: {', '.join(failures)}"
 
     @pytest.mark.live_api
@@ -450,14 +450,14 @@ class TestLiveAPIMonitoring:
             ("/api/v1/schema-status", VERSION_CHECK_THRESHOLD),
             ("/api/v1/translation/centre-info", VERSION_CHECK_THRESHOLD),
         ]
-        
+
         slow_endpoints = []
         for endpoint, threshold in endpoints:
             start_time = datetime.now()
             response = await live_client.get(endpoint)
             duration = (datetime.now() - start_time).total_seconds()
-            
+
             if duration > threshold:
                 slow_endpoints.append(f"{endpoint}: {duration:.2f}s > {threshold}s")
-        
+
         assert len(slow_endpoints) == 0, f"Slow endpoints: {', '.join(slow_endpoints)}"

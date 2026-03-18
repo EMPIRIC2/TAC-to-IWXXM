@@ -13,24 +13,24 @@ Endpoints:
 Registration and password reset are API-only (no GUI forms).
 """
 from __future__ import annotations
-from fastapi import Header
 
-import os
 import datetime as dt
+import os
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, EmailStr, Field, ConfigDict
+
+from fastapi import APIRouter, Depends, Header, HTTPException, status
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from sqlalchemy.orm import Session
 
 from auth.database import SessionLocal, init_db
-from auth.models import User, APIKey, PasswordResetToken
+from auth.models import APIKey, PasswordResetToken, User
 from auth.security import (
-    hash_password,
-    verify_password,
     create_access_token,
+    create_reset_expiry,
     decode_access_token,
     hash_api_key,
-    create_reset_expiry,
+    hash_password,
+    verify_password,
 )
 
 # Initialize DB at import time (simple approach; consider migrations for prod)

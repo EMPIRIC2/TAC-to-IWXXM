@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 from typing import Optional
 
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class AirportCoordinates(BaseModel):
@@ -28,7 +28,7 @@ class AirportCoordinates(BaseModel):
     longitude: float = Field(..., description="Longitude in decimal degrees", ge=-180, le=180)
     elevation_ft: Optional[int] = Field(None, description="Elevation in feet", ge=-1500)
     vertical_datum: Optional[str] = Field(
-        "EGM_96", 
+        "EGM_96",
         description="Vertical datum for elevation (EGM_96, NAVD88, AHD, etc.)"
     )
 
@@ -106,7 +106,7 @@ class Airport(BaseModel):
 class AirportValidator:
     """
     Singleton validator for airport ICAO codes.
-    
+
     Loads airport data from airports.json and provides validation methods.
     """
 
@@ -157,10 +157,10 @@ class AirportValidator:
     def validate_icao(self, icao_code: str) -> bool:
         """
         Check if an ICAO code is valid.
-        
+
         Args:
             icao_code: ICAO code to validate (case-insensitive)
-            
+
         Returns:
             True if valid, False otherwise
         """
@@ -174,10 +174,10 @@ class AirportValidator:
     def get_airport(self, icao_code: str) -> Optional[Airport]:
         """
         Get airport data for an ICAO code.
-        
+
         Args:
             icao_code: ICAO code to look up (case-insensitive)
-            
+
         Returns:
             Airport object if found, None otherwise
         """
@@ -188,17 +188,17 @@ class AirportValidator:
     def search_by_prefix(self, prefix: str, limit: int = 10) -> list[Airport]:
         """
         Search airports by ICAO code prefix.
-        
+
         Args:
             prefix: ICAO code prefix (case-insensitive)
             limit: Maximum number of results
-            
+
         Returns:
             List of matching airports
         """
         if not prefix:
             return []
-        
+
         prefix_upper = prefix.upper()
         matches = [
             airport
@@ -210,17 +210,17 @@ class AirportValidator:
     def search_by_name(self, query: str, limit: int = 10) -> list[Airport]:
         """
         Search airports by name or city (case-insensitive).
-        
+
         Args:
             query: Search query
             limit: Maximum number of results
-            
+
         Returns:
             List of matching airports
         """
         if not query:
             return []
-        
+
         query_lower = query.lower()
         matches = [
             airport
@@ -246,7 +246,7 @@ _validator_instance: Optional[AirportValidator] = None
 def get_airport_validator() -> AirportValidator:
     """
     Get the global AirportValidator instance.
-    
+
     Returns:
         Singleton AirportValidator instance
     """

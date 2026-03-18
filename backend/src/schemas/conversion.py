@@ -1,9 +1,9 @@
 """Pydantic schemas for METAR conversion API responses."""
+from datetime import datetime
 from enum import Enum
 from typing import List, Optional
-from datetime import datetime
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ConversionIssueSeverity(str, Enum):

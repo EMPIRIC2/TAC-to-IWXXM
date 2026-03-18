@@ -1,8 +1,9 @@
 """Edge case tests for conversion utilities to improve coverage."""
 import pathlib
 import sys
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 # Ensure src layout path precedence
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -11,12 +12,12 @@ if str(BACKEND_SRC) not in sys.path:
     sys.path.insert(0, str(BACKEND_SRC))
 
 from src.utilities.conversion import (
-    convert_metar_tac,
-    convert_metar_tac_with_metadata,
     ConversionError,
     _ensure_gifts_on_path,
     _load_aerodrome_db,
     _lookup_aerodrome,
+    convert_metar_tac,
+    convert_metar_tac_with_metadata,
 )
 
 
@@ -47,7 +48,7 @@ class TestGiftsPathHandling:
         """Test aerodrome lookup handles malformed database entries."""
         mock_db = MagicMock()
         mock_db.read_text.return_value = "# Comment line\n\nKJFK|JFK\nMALFORMED"
-        
+
         with patch('src.utilities.conversion._load_aerodrome_db', return_value=mock_db):
             result = _lookup_aerodrome("KJFK")
             # Should find KJFK even with malformed entries
@@ -58,7 +59,7 @@ class TestGiftsPathHandling:
         """Test aerodrome lookup falls back to GiftsLocationDBAdapter gracefully."""
         # When CSV lookup fails, should try GiftsLocationDBAdapter
         from src.utilities.gifts_locationdb_adapter import GiftsLocationDBAdapter
-        
+
         adapter = GiftsLocationDBAdapter()
         # Just verify the adapter exists and is usable
         assert adapter is not None
@@ -74,7 +75,7 @@ class TestGiftsPathHandling:
         """Test aerodrome lookup integrated into conversion pipeline."""
         # Integration test - verify conversion works with aerodrome DB
         metar_tac = "METAR KJFK 231751Z 31008KT 10SM FEW250 23/14 A3012 RMK AO2"
-        
+
         try:
             iwxxm_xml, validation_result = convert_metar_tac_with_metadata(
                 tac_text=metar_tac,
@@ -83,7 +84,7 @@ class TestGiftsPathHandling:
             # If conversion succeeds, aerodrome lookup worked
             assert iwxxm_xml is not None
             assert len(iwxxm_xml) > 0
-        except Exception as e:
+        except Exception:
             # Conversion might fail for other reasons, that's OK
             # We're just verifying aerodrome lookup doesn't crash
             pass
@@ -109,7 +110,7 @@ class TestConversionErrorHandling:
         # NOTE: With new OpenAIP integration, failures are handled gracefully
         mock_decoder_class = MagicMock()
         mock_decoder_class.side_effect = Exception("Decoder init failed")
-        
+
         with patch('utilities.gifts_adapter.metarDecoder.Annex3', mock_decoder_class):
             with pytest.raises(ConversionError) as exc_info:
                 convert_metar_tac("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005")
@@ -124,7 +125,7 @@ class TestConversionErrorHandling:
             "NOT A METAR",  # Invalid format
             "METAR",  # Incomplete
         ]
-        
+
         for invalid_metar in invalid_metars:
             try:
                 result = convert_metar_tac(invalid_metar)
@@ -135,13 +136,12 @@ class TestConversionErrorHandling:
 
     def test_convert_with_serialization_error(self):
         """Test conversion when XML serialization fails."""
-        import xml.etree.ElementTree as ET
         mock_decoder = MagicMock()
         mock_decoder.return_value = {"ident": {"str": "KJFK"}}
         mock_encoder = MagicMock()
         mock_root = MagicMock()
         mock_encoder.return_value = mock_root
-        
+
         with patch('src.utilities.conversion.metarDecoder.Annex3', return_value=mock_decoder):
             with patch('src.utilities.conversion.metarEncoder.Annex3', return_value=mock_encoder):
                 with patch('xml.etree.ElementTree.tostring', side_effect=Exception("Serialization error")):
@@ -154,7 +154,7 @@ class TestConversionErrorHandling:
         """Test conversion when decoding/encoding raises exception."""
         mock_decoder = MagicMock()
         mock_decoder.side_effect = Exception("Decoding failed")
-        
+
         with patch('utilities.gifts_adapter.metarDecoder.Annex3', return_value=mock_decoder):
             with pytest.raises(ConversionError) as exc_info:
                 convert_metar_tac("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005")
@@ -168,7 +168,7 @@ class TestConversionWithMetadata:
         """Test successful conversion with metadata enrichment."""
         mock_db = MagicMock()
         mock_db.read_text.return_value = "KJFK|JFK||Kennedy Intl|40.64|-73.78|13\n"
-        
+
         with patch('src.utilities.conversion._load_aerodrome_db', return_value=mock_db):
             result, validation_result = convert_metar_tac_with_metadata(
                 "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
@@ -194,7 +194,7 @@ class TestConversionWithMetadata:
             "METAR EGLL 231750Z 27015KT 9999 FEW040 17/14 Q1010",
             "METAR RJAA 231800Z 18012KT 10SM FEW050 18/15 A3005",
         ]
-        
+
         for metar_tac in test_metars:
             try:
                 result, validation_result = convert_metar_tac_with_metadata(
@@ -213,7 +213,7 @@ class TestConversionWithMetadata:
         """Test conversion when aerodrome DB exists but is empty."""
         mock_db = MagicMock()
         mock_db.read_text.return_value = ""  # Empty DB
-        
+
         with patch('src.utilities.conversion._load_aerodrome_db', return_value=mock_db):
             # Should still work - aerodrome lookup fails gracefully
             result, validation_result = convert_metar_tac_with_metadata(
@@ -229,7 +229,7 @@ class TestConversionWithMetadata:
         mock_encoder = MagicMock()
         mock_root = MagicMock()
         mock_encoder.return_value = mock_root
-        
+
         with patch('src.utilities.conversion.metarDecoder.Annex3', return_value=mock_decoder):
             with patch('src.utilities.conversion.metarEncoder.Annex3', return_value=mock_encoder):
                 with patch('xml.etree.ElementTree.tostring', side_effect=Exception("Serialization error")):

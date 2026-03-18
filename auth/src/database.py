@@ -2,8 +2,9 @@
 from __future__ import annotations
 
 import os
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 # In Docker, env vars come from docker-compose.yml
 # For local dev, you can use python-dotenv
@@ -80,4 +81,4 @@ def _ensure_models_imported():
 _ensure_models_imported()
 
 
-__all__ = ["SessionLocal", "Base", "init_db"]
+__all__ = ["DATABASE_URL", "engine", "SessionLocal", "Base", "init_db"]
