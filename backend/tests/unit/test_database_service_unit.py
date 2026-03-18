@@ -205,7 +205,9 @@ async def test_test_db_connection_success_and_failure(monkeypatch) -> None:
 
     monkeypatch.setattr(db, "get_db_session", fake_good_session)
     assert await db.test_db_connection() is True
-    assert session.executed == ["SELECT 1"]
+    # TextClause object from text() wrapping
+    assert len(session.executed) == 1
+    assert str(session.executed[0]) == "SELECT 1"
 
     monkeypatch.setattr(db, "get_db_session", fake_bad_session)
     assert await db.test_db_connection() is False

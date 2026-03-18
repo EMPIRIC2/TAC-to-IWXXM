@@ -165,7 +165,7 @@ class TestUserModel:
         reset_token = PasswordResetToken(
             token="test_token",
             user_id=user.id,
-            expires_at=dt.datetime.now(dt.UTC) + dt.timedelta(hours=1),
+            expires_at=dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=1),
         )
         db_session.add(reset_token)
         db_session.commit()
@@ -213,7 +213,7 @@ class TestUserModel:
         reset_token = PasswordResetToken(
             token="test_token",
             user_id=user.id,
-            expires_at=dt.datetime.now(dt.UTC) + dt.timedelta(hours=1),
+            expires_at=dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=1),
         )
         db_session.add(reset_token)
         db_session.commit()
@@ -369,7 +369,7 @@ class TestPasswordResetTokenModel:
         db_session.add(user)
         db_session.commit()
 
-        expires = dt.datetime.now(dt.UTC) + dt.timedelta(hours=1)
+        expires = dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=1)
         token = PasswordResetToken(
             token="reset_token_value",
             user_id=user.id,
@@ -401,7 +401,7 @@ class TestPasswordResetTokenModel:
         token = PasswordResetToken(
             token="token",
             user_id=user.id,
-            expires_at=dt.datetime.now(dt.UTC) + dt.timedelta(hours=1),
+            expires_at=dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=1),
         )
         db_session.add(token)
         db_session.commit()
@@ -422,7 +422,7 @@ class TestPasswordResetTokenModel:
         db_session.add(user)
         db_session.commit()
 
-        expires = dt.datetime.now(dt.UTC) + dt.timedelta(hours=1)
+        expires = dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=1)
 
         token1 = PasswordResetToken(
             token="same_token",
@@ -457,7 +457,7 @@ class TestPasswordResetTokenModel:
         token = PasswordResetToken(
             token="token",
             user_id=user.id,
-            expires_at=dt.datetime.now(dt.UTC) + dt.timedelta(hours=1),
+            expires_at=dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=1),
         )
         db_session.add(token)
         db_session.commit()
@@ -492,7 +492,7 @@ class TestPasswordResetTokenModel:
         token = PasswordResetToken(
             token="token",
             user_id=user.id,
-            expires_at=dt.datetime.now(dt.UTC) + dt.timedelta(hours=1),
+            expires_at=dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=1),
         )
         db_session.add(token)
         db_session.commit()
@@ -516,7 +516,7 @@ class TestPasswordResetTokenModel:
         db_session.commit()
 
         # Expired token
-        expired_time = dt.datetime.now(dt.UTC) - dt.timedelta(hours=1)
+        expired_time = dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=1)
         expired = PasswordResetToken(
             token="expired",
             user_id=user.id,
@@ -525,7 +525,7 @@ class TestPasswordResetTokenModel:
         db_session.add(expired)
 
         # Valid token
-        valid_time = dt.datetime.now(dt.UTC) + dt.timedelta(hours=1)
+        valid_time = dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=1)
         valid = PasswordResetToken(
             token="valid",
             user_id=user.id,
@@ -538,16 +538,16 @@ class TestPasswordResetTokenModel:
         db_session.refresh(expired)
         db_session.refresh(valid)
 
-        now = dt.datetime.now(dt.UTC)
+        now = dt.datetime.now(dt.timezone.utc)
 
         # Handle both naive and aware datetimes from SQLite
         expired_dt = expired.expires_at
         valid_dt = valid.expires_at
 
         if expired_dt.tzinfo is None:
-            expired_dt = expired_dt.replace(tzinfo=dt.UTC)
+            expired_dt = expired_dt.replace(tzinfo=dt.timezone.utc)
         if valid_dt.tzinfo is None:
-            valid_dt = valid_dt.replace(tzinfo=dt.UTC)
+            valid_dt = valid_dt.replace(tzinfo=dt.timezone.utc)
 
         assert expired_dt < now
         assert valid_dt > now

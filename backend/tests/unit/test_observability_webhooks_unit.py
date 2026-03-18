@@ -667,10 +667,12 @@ async def test_notify_bulk_completed_calls_send_webhook(monkeypatch):
 
 
 def test_get_or_create_metric_helpers_reuse_existing_collectors(monkeypatch):
+    from prometheus_client import REGISTRY
+    
     fake_counter = object()
     fake_hist = object()
-    monkeypatch.setitem(observability_module.REGISTRY._names_to_collectors, "existing_counter", fake_counter)
-    monkeypatch.setitem(observability_module.REGISTRY._names_to_collectors, "existing_hist", fake_hist)
+    monkeypatch.setitem(REGISTRY._names_to_collectors, "existing_counter", fake_counter)
+    monkeypatch.setitem(REGISTRY._names_to_collectors, "existing_hist", fake_hist)
 
     assert observability_module._get_or_create_counter("existing_counter", "doc", ["x"]) is fake_counter
     assert observability_module._get_or_create_histogram("existing_hist", "doc", ["x"]) is fake_hist

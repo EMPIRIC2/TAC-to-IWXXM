@@ -111,7 +111,7 @@ class TestJWTTokens:
         from jose import jwt
 
         # Create expired token
-        expire = dt.datetime.now(dt.UTC) - dt.timedelta(minutes=1)
+        expire = dt.datetime.now(dt.timezone.utc) - dt.timedelta(minutes=1)
         payload = {"sub": "testuser", "exp": expire}
         expired_token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
 
@@ -123,7 +123,7 @@ class TestJWTTokens:
         from jose import jwt
 
         # Create token without sub
-        expire = dt.datetime.now(dt.UTC) + dt.timedelta(minutes=5)
+        expire = dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=5)
         payload = {"exp": expire}
         token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
 
@@ -151,11 +151,11 @@ class TestJWTTokens:
 
         unverified = jwt.decode(token, "", options={"verify_signature": False})
         exp_timestamp = unverified["exp"]
-        exp_datetime = dt.datetime.fromtimestamp(exp_timestamp, tz=dt.UTC)
+        exp_datetime = dt.datetime.fromtimestamp(exp_timestamp, tz=dt.timezone.utc)
 
         # Token should expire in approximately JWT_EXPIRE_MINUTES minutes
         # Use a generous window to account for execution time
-        now = dt.datetime.now(dt.UTC)
+        now = dt.datetime.now(dt.timezone.utc)
         expected_min = now + dt.timedelta(minutes=JWT_EXPIRE_MINUTES - 1)
         expected_max = now + dt.timedelta(minutes=JWT_EXPIRE_MINUTES + 1)
 
@@ -246,16 +246,16 @@ class TestResetTokenExpiry:
 
     def test_reset_expiry_is_future(self):
         """Test that expiry is in the future."""
-        now = dt.datetime.now(dt.UTC)
+        now = dt.datetime.now(dt.timezone.utc)
         expiry = create_reset_expiry()
 
         assert expiry > now
 
     def test_reset_expiry_correct_duration(self):
         """Test that expiry is set to the correct duration."""
-        before = dt.datetime.now(dt.UTC)
+        before = dt.datetime.now(dt.timezone.utc)
         expiry = create_reset_expiry()
-        after = dt.datetime.now(dt.UTC)
+        after = dt.datetime.now(dt.timezone.utc)
 
         expected_min = before + dt.timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES)
         expected_max = after + dt.timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES)
@@ -267,7 +267,7 @@ class TestResetTokenExpiry:
         expiry = create_reset_expiry()
 
         assert expiry.tzinfo is not None
-        assert expiry.tzinfo == dt.UTC
+        assert expiry.tzinfo == dt.timezone.utc
 
 
 class TestSecurityConfiguration:
