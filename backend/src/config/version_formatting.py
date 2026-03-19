@@ -6,7 +6,6 @@ when generating IWXXM XML for different versions.
 """
 
 from typing import Dict, TypedDict
-from enum import Enum
 
 
 class CoordinatePrecisionRule(TypedDict):
@@ -110,10 +109,10 @@ INCLUDE_DESIGNATOR = {
 
 def get_coordinate_decimals(version: str) -> int:
     """Get number of decimal places for coordinates in a version.
-    
+
     Args:
         version: IWXXM version (e.g., "2025-2")
-    
+
     Returns:
         Number of decimal places (2-8)
     """
@@ -122,10 +121,10 @@ def get_coordinate_decimals(version: str) -> int:
 
 def get_elevation_rounding(version: str) -> int:
     """Get elevation rounding rule for a version.
-    
+
     Args:
         version: IWXXM version
-    
+
     Returns:
         Number of decimal places to round to (0 = round to integer)
     """
@@ -134,12 +133,12 @@ def get_elevation_rounding(version: str) -> int:
 
 def format_coordinates(lat: float, lon: float, version: str) -> str:
     """Format coordinates for a specific IWXXM version.
-    
+
     Args:
         lat: Latitude
         lon: Longitude
         version: IWXXM version
-    
+
     Returns:
         Formatted coordinate string for gml:pos
     """
@@ -149,11 +148,11 @@ def format_coordinates(lat: float, lon: float, version: str) -> str:
 
 def format_elevation(elevation_m: float, version: str) -> int:
     """Format elevation for a specific IWXXM version.
-    
+
     Args:
         elevation_m: Elevation in meters
         version: IWXXM version
-    
+
     Returns:
         Formatted elevation value
     """

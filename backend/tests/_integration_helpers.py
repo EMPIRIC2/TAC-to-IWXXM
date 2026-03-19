@@ -11,7 +11,7 @@ Can be used standalone or integrated into test fixtures.
 
 import asyncio
 from dataclasses import dataclass
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional
 
 from src.clients.aviation_weather_client import AviationWeatherClient
 from src.utilities.conversion import convert_metar_tac

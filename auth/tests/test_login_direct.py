@@ -29,25 +29,25 @@ try:
         },
         timeout=10
     )
-    
+
     print(f"\n   Status: {response.status_code}")
     print(f"   Headers:")
     for key, value in response.headers.items():
         if 'access-control' in key.lower() or 'content-type' in key.lower():
             print(f"     {key}: {value}")
-    
+
     print(f"\n   Body:")
     try:
         data = response.json()
         print(json.dumps(data, indent=2))
     except:
         print(response.text)
-    
+
     if response.status_code == 200:
         print("\n✓ Login successful!")
     else:
         print(f"\n✗ Login failed with status {response.status_code}")
-        
+
 except requests.exceptions.ConnectionError as e:
     print(f"\n✗ Connection error: {e}")
     print("   Is the auth service running?")

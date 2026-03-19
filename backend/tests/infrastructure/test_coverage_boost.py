@@ -1,10 +1,9 @@
 """Targeted tests to boost coverage to 95%."""
-import pathlib
-import sys
 import io
+from unittest.mock import MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock, AsyncMock
 
 from src.api import app, verify_supabase_token
 from src.utilities.conversion import ConversionError
@@ -15,7 +14,7 @@ def client():
     """Create test client with mocked authentication."""
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project"}
-    
+
     app.dependency_overrides[verify_supabase_token] = override_verify_token
     test_client = TestClient(app)
     yield test_client
@@ -39,7 +38,7 @@ class TestAPIConversionErrorPaths:
     def test_convert_file_conversion_error_path(self, client):
         """Test file ConversionError handling (line 108)."""
         test_file = io.BytesIO(b"METAR KJFK 231751Z")
-        
+
         with patch('src.api.convert_metar_tac_with_metadata', side_effect=ConversionError("Parse error")):
             response = client.post(
                 "/api/v1/convert",
@@ -50,7 +49,7 @@ class TestAPIConversionErrorPaths:
     def test_convert_file_generic_exception_path(self, client):
         """Test file generic Exception handling (line 110-111)."""
         test_file = io.BytesIO(b"METAR KJFK 231751Z")
-        
+
         with patch('src.api.convert_metar_tac_with_metadata', side_effect=RuntimeError("Unexpected error")):
             response = client.post(
                 "/api/v1/convert",
@@ -74,7 +73,7 @@ class TestAPIConversionErrorPaths:
     def test_zip_empty_file_error(self, client):
         """Test zip empty file handling (line 157-158)."""
         empty_file = io.BytesIO(b"   ")  # Only whitespace
-        
+
         response = client.post(
             "/api/v1/convert-zip",
             files={"files": ("empty.txt", empty_file, "text/plain")}
@@ -87,7 +86,7 @@ class TestAPIConversionErrorPaths:
     def test_zip_file_conversion_error(self, client):
         """Test zip file ConversionError handling (line 162)."""
         test_file = io.BytesIO(b"METAR KJFK 231751Z")
-        
+
         with patch('src.api.convert_metar_tac_with_metadata', side_effect=ConversionError("Conversion failed")):
             response = client.post(
                 "/api/v1/convert-zip",
@@ -100,7 +99,7 @@ class TestAPIConversionErrorPaths:
     def test_zip_file_generic_exception(self, client):
         """Test zip file generic Exception handling (line 164-165)."""
         test_file = io.BytesIO(b"METAR KJFK 231751Z")
-        
+
         with patch('src.api.convert_metar_tac_with_metadata', side_effect=RuntimeError("Unexpected")):
             response = client.post(
                 "/api/v1/convert-zip",
@@ -141,7 +140,7 @@ class TestIWXXMValidationFunctions:
     def test_extract_iwxxm_namespace_invalid(self):
         """Test namespace validation with invalid namespace."""
         from schemas.iwxxm_validation import extract_iwxxm_namespace_version
-        
+
         with pytest.raises(ValueError) as exc_info:
             extract_iwxxm_namespace_version("http://invalid.com/namespace")
         assert "Invalid IWXXM namespace" in str(exc_info.value)
@@ -149,7 +148,7 @@ class TestIWXXMValidationFunctions:
     def test_extract_iwxxm_namespace_unsupported_version(self):
         """Test namespace validation with unsupported version."""
         from schemas.iwxxm_validation import extract_iwxxm_namespace_version
-        
+
         with pytest.raises(ValueError) as exc_info:
             extract_iwxxm_namespace_version("http://icao.int/iwxxm/9999.9")
         assert "Unsupported IWXXM version" in str(exc_info.value)
@@ -157,7 +156,7 @@ class TestIWXXMValidationFunctions:
     def test_extract_iwxxm_namespace_valid(self):
         """Test namespace validation with valid namespace."""
         from schemas.iwxxm_validation import extract_iwxxm_namespace_version
-        
+
         result = extract_iwxxm_namespace_version("http://icao.int/iwxxm/2023-1")
         assert result == "2023-1"
 
@@ -175,7 +174,7 @@ class TestConversionUtilityEdgeCases:
     def test_load_aerodrome_db_docker_path(self):
         """Test aerodrome DB loading from Docker path (line 110)."""
         from src.utilities.conversion import _load_aerodrome_db
-        
+
         # Mock both source and Docker paths to not exist
         with patch('pathlib.Path.exists', return_value=False):
             result = _load_aerodrome_db()
@@ -184,11 +183,11 @@ class TestConversionUtilityEdgeCases:
     def test_lookup_aerodrome_empty_parts(self):
         """Test aerodrome lookup with empty parts (line 128)."""
         from src.utilities.conversion import _lookup_aerodrome
-        
+
         mock_db = MagicMock()
         # Line with only separators
         mock_db.read_text.return_value = "||||\nKJFK|JFK||Test"
-        
+
         with patch('src.utilities.conversion._load_aerodrome_db', return_value=mock_db):
             result = _lookup_aerodrome("KJFK")
             assert result is not None
@@ -197,11 +196,11 @@ class TestConversionUtilityEdgeCases:
     def test_lookup_aerodrome_position_assembly(self):
         """Test aerodrome position string assembly (line 173)."""
         from src.utilities.conversion import _lookup_aerodrome
-        
+
         mock_db = MagicMock()
         # Test with some empty position fields
         mock_db.read_text.return_value = "KJFK|JFK||Test|40.64||13"
-        
+
         with patch('src.utilities.conversion._load_aerodrome_db', return_value=mock_db):
             result = _lookup_aerodrome("KJFK")
             assert result is not None

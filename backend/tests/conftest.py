@@ -2,6 +2,7 @@
 import os
 import sys
 from pathlib import Path
+
 import pytest
 
 # Add tests directory to path so we can import test_fixtures
@@ -14,7 +15,7 @@ pytest_plugins = ["test_fixtures"]
 def pytest_configure(config):
     """Configure pytest."""
     config.addinivalue_line(
-        "markers", 
+        "markers",
         "live_api: tests that require internet connection to aviationweather.gov (use -m 'not live_api' to skip)"
     )
     config.addinivalue_line(
@@ -30,7 +31,7 @@ def pytest_configure(config):
 @pytest.fixture(autouse=True)
 def check_live_api_tests(request):
     """Enable live_api tests by default, skip only if explicitly disabled.
-    
+
     Set environment variable ENABLE_LIVE_API_TESTS=false to skip.
     Default behavior is to run these tests.
     """

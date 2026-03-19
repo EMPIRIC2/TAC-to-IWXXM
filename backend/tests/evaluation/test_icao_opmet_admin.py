@@ -15,10 +15,11 @@ This test suite covers:
 Run with: pytest backend/tests/test_icao_opmet_admin.py -v
 """
 
+from datetime import datetime, timedelta
+from unittest.mock import AsyncMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, AsyncMock, MagicMock
-from datetime import datetime, timedelta
 
 from src.api import app
 from src.utilities.security import verify_supabase_token
@@ -29,7 +30,7 @@ def client():
     """Create test client with mocked regular user authentication."""
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project", "role": "user"}
-    
+
     app.dependency_overrides[verify_supabase_token] = override_verify_token
     client = TestClient(app)
     yield client
@@ -41,7 +42,7 @@ def admin_client():
     """Create test client with mocked admin authentication."""
     async def override_verify_token_admin():
         return {"sub": "admin-user-id", "aud": "test-project", "role": "admin"}
-    
+
     app.dependency_overrides[verify_supabase_token] = override_verify_token_admin
     client = TestClient(app)
     yield client
@@ -70,10 +71,10 @@ class TestTranslationCentreInfo:
     def test_centre_info_public_access(self, unauthenticated_client):
         """Test centre info is accessible without authentication."""
         response = unauthenticated_client.get("/api/v1/translation/centre-info")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert "centre_name" in data
         assert "centre_designator" in data
         assert "icao_location_indicator" in data
@@ -84,7 +85,7 @@ class TestTranslationCentreInfo:
         """Test centre info response structure."""
         response = client.get("/api/v1/translation/centre-info")
         data = response.json()
-        
+
         assert isinstance(data["supported_iwxxm_versions"], list)
         assert isinstance(data["supported_products"], list)
         assert "METAR" in data["supported_products"]
@@ -94,7 +95,7 @@ class TestTranslationCentreInfo:
         """Test centre info includes contact information."""
         response = client.get("/api/v1/translation/centre-info")
         data = response.json()
-        
+
         # Contact email should be present (may be None)
         assert "contact_email" in data
 
@@ -118,7 +119,7 @@ class TestTranslationStatistics:
             "translations_by_version": {},
             "validation_layer_success_rates": {},
         }
-        
+
         response = admin_client.post(
             "/api/v1/translation/statistics",
             json={
@@ -126,10 +127,10 @@ class TestTranslationStatistics:
                 "end_date": "2026-02-13T23:59:59Z",
             }
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["total_translations"] == 1000
         assert data["successful_translations"] == 950
         assert data["success_rate"] == 95.0
@@ -149,7 +150,7 @@ class TestTranslationStatistics:
             "translations_by_version": {},
             "validation_layer_success_rates": {},
         }
-        
+
         response = admin_client.post(
             "/api/v1/translation/statistics",
             json={
@@ -158,7 +159,7 @@ class TestTranslationStatistics:
                 "icao_region": "NAM",
             }
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["total_translations"] == 200
@@ -178,7 +179,7 @@ class TestTranslationStatistics:
             "translations_by_version": {"2025-2": 500},
             "validation_layer_success_rates": {},
         }
-        
+
         response = admin_client.post(
             "/api/v1/translation/statistics",
             json={
@@ -187,7 +188,7 @@ class TestTranslationStatistics:
                 "iwxxm_version": "2025-2",
             }
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["total_translations"] == 500
@@ -207,7 +208,7 @@ class TestTranslationStatistics:
             "translations_by_version": {},
             "validation_layer_success_rates": {},
         }
-        
+
         response = admin_client.post(
             "/api/v1/translation/statistics",
             json={
@@ -216,7 +217,7 @@ class TestTranslationStatistics:
                 "airport_code": "KJFK",
             }
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["total_translations"] == 50
@@ -230,7 +231,7 @@ class TestTranslationStatistics:
                 "end_date": "2026-02-01T00:00:00Z",  # Before start_date
             }
         )
-        
+
         assert response.status_code == 400
         assert "end_date must be after start_date" in response.json()["detail"]
 
@@ -238,7 +239,7 @@ class TestTranslationStatistics:
         """Test statistics query rejects date ranges exceeding 90 days."""
         start_date = datetime(2026, 1, 1)
         end_date = start_date + timedelta(days=100)
-        
+
         response = admin_client.post(
             "/api/v1/translation/statistics",
             json={
@@ -246,7 +247,7 @@ class TestTranslationStatistics:
                 "end_date": end_date.isoformat() + "Z",
             }
         )
-        
+
         # Should return 422 validation error for invalid date range
         assert response.status_code in [400, 422]
 
@@ -269,7 +270,7 @@ class TestTranslationStatistics:
                 "EGLL": 95,
             },
         }
-        
+
         response = admin_client.post(
             "/api/v1/translation/statistics",
             json={
@@ -277,7 +278,7 @@ class TestTranslationStatistics:
                 "end_date": "2026-02-13T23:59:59Z",
             }
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         # Just verify basic structure - translations_by_airport is optional
@@ -298,7 +299,7 @@ class TestTranslationStatistics:
             "translations_by_version": {},
             "validation_layer_success_rates": {"AIRPORT_ICAO": 95.0, "TAC_SYNTAX": 90.0},
         }
-        
+
         response = admin_client.post(
             "/api/v1/translation/statistics",
             json={
@@ -306,7 +307,7 @@ class TestTranslationStatistics:
                 "end_date": "2026-02-13T23:59:59Z",
             }
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert "validation_layer_success_rates" in data
@@ -322,7 +323,7 @@ class TestTranslationStatistics:
                 "end_date": "2026-02-13T23:59:59Z",
             }
         )
-        
+
         # Currently passes due to commented auth
         # TODO: Update to assert 403 when admin auth is enabled
         assert response.status_code in [200, 403]
@@ -336,7 +337,7 @@ class TestTranslationStatistics:
                 "end_date": "2026-02-13T23:59:59Z",
             }
         )
-        
+
         # Should require authentication (when uncommented in router)
         # TODO: Update to assert 401 when auth is enabled
         assert response.status_code in [200, 401]
@@ -360,9 +361,9 @@ class TestRecentStatistics:
             "translations_by_version": {},
             "validation_layer_success_rates": {},
         }
-        
+
         response = admin_client.get("/api/v1/translation/statistics/recent")
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["total_translations"] == 100
@@ -382,9 +383,9 @@ class TestRecentStatistics:
             "translations_by_version": {},
             "validation_layer_success_rates": {},
         }
-        
+
         response = admin_client.get("/api/v1/translation/statistics/recent?hours=48")
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["total_translations"] == 200
@@ -404,23 +405,23 @@ class TestRecentStatistics:
             "translations_by_version": {},
             "validation_layer_success_rates": {},
         }
-        
+
         response = admin_client.get(
             "/api/v1/translation/statistics/recent?hours=12&icao_region=EUR&iwxxm_version=2025-2"
         )
-        
+
         assert response.status_code == 200
 
     def test_recent_statistics_hours_too_small(self, admin_client):
         """Test recent statistics rejects hours < 1."""
         response = admin_client.get("/api/v1/translation/statistics/recent?hours=0")
-        
+
         assert response.status_code == 422  # Validation error
 
     def test_recent_statistics_hours_too_large(self, admin_client):
         """Test recent statistics rejects hours > 168 (7 days)."""
         response = admin_client.get("/api/v1/translation/statistics/recent?hours=200")
-        
+
         assert response.status_code == 422  # Validation error
 
 
@@ -462,15 +463,15 @@ class TestStatisticsByRegion:
                 "avg_duration": 245.0,
             },
         }
-        
+
         response = admin_client.get(
             "/api/v1/translation/statistics/by-region"
             "?start_date=2026-02-01T00:00:00Z&end_date=2026-02-13T23:59:59Z"
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Should have stats for all 6 ICAO regions
         assert len(data) == 6
         assert "NAM" in data
@@ -481,7 +482,7 @@ class TestStatisticsByRegion:
     def test_statistics_by_region_missing_dates(self, admin_client):
         """Test by-region endpoint requires start_date and end_date."""
         response = admin_client.get("/api/v1/translation/statistics/by-region")
-        
+
         assert response.status_code == 422  # Missing required params
 
 
@@ -491,37 +492,37 @@ class TestAirportRegion:
     def test_airport_region_kjfk(self, unauthenticated_client):
         """Test getting ICAO region for KJFK (North America)."""
         response = unauthenticated_client.get("/api/v1/translation/airport-region/KJFK")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["airport_code"] == "KJFK"
         assert data["icao_region"] == "NAM"
 
     def test_airport_region_egll(self, client):
         """Test getting ICAO region for EGLL (Europe)."""
         response = client.get("/api/v1/translation/airport-region/EGLL")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["airport_code"] == "EGLL"
         assert data["icao_region"] == "EUR"
 
     def test_airport_region_rjtt(self, client):
         """Test getting ICAO region for RJTT (Asia-Pacific)."""
         response = client.get("/api/v1/translation/airport-region/RJTT")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["airport_code"] == "RJTT"
         assert data["icao_region"] == "APAC"
 
     def test_airport_region_unknown_code(self, client):
         """Test getting region for unknown airport code."""
         response = client.get("/api/v1/translation/airport-region/XXXX")
-        
+
         # Should return unknown or raise 404
         assert response.status_code in [200, 404]
 
@@ -536,12 +537,12 @@ class TestTranslationHealth:
             "database_connected": True,
             "last_translation": datetime.utcnow().isoformat(),
         }
-        
+
         response = unauthenticated_client.get("/api/v1/translation/health")
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         assert "status" in data
 
 
@@ -555,13 +556,13 @@ class TestAdminRoleEnforcement:
             ("/api/v1/translation/statistics/recent", "GET", None),
             ("/api/v1/translation/statistics/by-region?start_date=2026-02-01T00:00:00Z&end_date=2026-02-13T23:59:59Z", "GET", None),
         ]
-        
+
         for url, method, json_data in endpoints:
             if method == "POST":
                 response = client.post(url, json=json_data)
             else:
                 response = client.get(url)
-            
+
             assert response.status_code == 403, f"Expected 403 for {method} {url}"
             assert "admin" in response.json()["detail"].lower()
 
@@ -580,16 +581,16 @@ class TestAdminRoleEnforcement:
             "translations_by_version": {},
             "validation_layer_success_rates": {},
         }
-        
+
         endpoints = [
             ("/api/v1/translation/statistics", "POST", {"start_date": "2026-02-01T00:00:00Z", "end_date": "2026-02-13T23:59:59Z"}),
             ("/api/v1/translation/statistics/recent", "GET", None),
         ]
-        
+
         for url, method, json_data in endpoints:
             if method == "POST":
                 response = admin_client.post(url, json=json_data)
             else:
                 response = admin_client.get(url)
-            
+
             assert response.status_code == 200, f"Expected 200 for {method} {url}"

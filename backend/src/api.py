@@ -1,72 +1,72 @@
 """Standalone backend API module for Docker deployment."""
 from __future__ import annotations
 
-import os
-import io
-import pathlib
-import zipfile
 import datetime
-import sys
+import io
 import logging
-from typing import List, Optional, Union, Any, Tuple, Dict
+import os
+import pathlib
+import sys
+import zipfile
+from typing import Any, Dict, List, Optional, Tuple
 
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends, Request, Body
-from fastapi.responses import StreamingResponse
+from fastapi import Depends, FastAPI, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 
 try:
     # Try relative imports first (when run as module in Docker)
-    from .utilities.conversion import convert_metar_tac_with_metadata, ConversionError
-    from .utilities.security import verify_supabase_token
-    from .utilities.tac_parser import extract_airport_code
+    from .config.icao_opmet import get_icao_region, get_translation_centre_info
+    from .routers import evaluation, icao_opmet, validation
     from .schemas.conversion import (
         ConversionIssue,
         ConversionIssueSeverity,
-        ConversionResult,
-        ConversionResponse,
         ConversionRequest,
+        ConversionResponse,
+        ConversionResult,
         ErrorDetail,
         HealthResponse,
     )
-    from .schemas.airport import Airport, get_airport_validator
-    from .schemas.validation import ValidationLayer, ValidateRequest
     from .schemas.icao_opmet import TranslationStatus
-    from .services.validation_orchestrator import get_validation_orchestrator
-    from .services.validation import ValidationService, ValidationError as ValidationServiceError
-    from .services.statistics import statistics_service
-    from .services.webhooks import webhook_service
-    from .utilities.observability import setup_logging, install_fastapi_observability
-    from .routers import evaluation, validation, icao_opmet
-    from .config.icao_opmet import get_translation_centre_info, get_icao_region
+    from .schemas.validation import ValidateRequest, ValidationLayer
     from .services.database import database_lifespan
-except ImportError as e:
+    from .services.statistics import statistics_service
+    from .services.validation import ValidationError as ValidationServiceError
+    from .services.validation import ValidationService
+    from .services.validation_orchestrator import get_validation_orchestrator
+    from .services.webhooks import webhook_service
+    from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from .utilities.observability import install_fastapi_observability, setup_logging
+    from .utilities.security import verify_supabase_token
+    from .utilities.tac_parser import extract_airport_code
+except ImportError:
     # Fall back to direct imports (when sys.path is set for local development)
-    from utilities.conversion import convert_metar_tac_with_metadata, ConversionError
-    from utilities.security import verify_supabase_token
-    from utilities.tac_parser import extract_airport_code
+    from config.icao_opmet import get_icao_region, get_translation_centre_info
+    from routers import evaluation, icao_opmet, validation
     from schemas.conversion import (
         ConversionIssue,
         ConversionIssueSeverity,
-        ConversionResult,
-        ConversionResponse,
         ConversionRequest,
+        ConversionResponse,
+        ConversionResult,
         ErrorDetail,
         HealthResponse,
     )
-    from schemas.airport import Airport, get_airport_validator
-    from schemas.validation import ValidationLayer, ValidateRequest
     from schemas.icao_opmet import TranslationStatus
-    from services.validation_orchestrator import get_validation_orchestrator
-    from services.validation import ValidationService, ValidationError as ValidationServiceError
-    from services.statistics import statistics_service
-    from services.webhooks import webhook_service
-    from utilities.observability import setup_logging, install_fastapi_observability
-    from routers import evaluation, validation, icao_opmet
-    from config.icao_opmet import get_translation_centre_info, get_icao_region
+    from schemas.validation import ValidateRequest, ValidationLayer
     from services.database import database_lifespan
+    from services.statistics import statistics_service
+    from services.validation import ValidationError as ValidationServiceError
+    from services.validation import ValidationService
+    from services.validation_orchestrator import get_validation_orchestrator
+    from services.webhooks import webhook_service
+    from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from utilities.observability import install_fastapi_observability, setup_logging
+    from utilities.security import verify_supabase_token
+    from utilities.tac_parser import extract_airport_code
 
 setup_logging("backend")
 logger = logging.getLogger(__name__)
@@ -187,14 +187,14 @@ def get_cors_origins() -> list:
     """Get allowed CORS origins from environment or use defaults."""
     allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "")
     relaxed_cors = is_dev_cors_relaxation_enabled()
-    
+
     if allowed_origins_env:
         # Parse comma-separated list from env var
         origins = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
         if relaxed_cors:
             add_origin_if_missing(origins, "http://localhost:5173")
         return add_loopback_origin_variants(origins)
-    
+
     # Default origins if env var not set
     frontend_url = os.getenv("FRONTEND_URL", "http://localhost:8000")
     origins = [
@@ -247,12 +247,12 @@ if dev_cors_relaxed:
 async def add_translation_centre_headers(request: Request, call_next):
     """
     Add ICAO Translation Centre identification headers to all responses.
-    
+
     Implements ICAO OPMET Data Exchange Guidelines Section 7 requirements
     for Translation Centre identification in HTTP responses.
     """
     response = await call_next(request)
-    
+
     # Add Translation Centre metadata headers
     try:
         centre_info = get_translation_centre_info()
@@ -265,7 +265,7 @@ async def add_translation_centre_headers(request: Request, call_next):
             response.headers["X-ICAO-Location-Indicator"] = centre_info["icaoLocationIndicator"]
     except Exception as e:
         logger.debug(f"Translation Centre headers not configured: {e}")
-    
+
     return response
 
 
@@ -425,9 +425,9 @@ def normalize_validation_level(value: Optional[str]) -> str:
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
-    
+
     from fastapi.openapi.utils import get_openapi
-    
+
     openapi_schema = get_openapi(
         title=app.title,
         version=app.version,
@@ -435,7 +435,7 @@ def custom_openapi():
         routes=app.routes,
         tags=app.openapi_tags,
     )
-    
+
     # Add Bearer token security scheme
     openapi_schema["components"]["securitySchemes"] = {
         "BearerAuth": {
@@ -445,7 +445,7 @@ def custom_openapi():
             "description": "Enter your JWT token from the auth service (login at auth service or use DISABLE_AUTH=true for dev)",
         }
     }
-    
+
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
@@ -456,7 +456,7 @@ app.openapi = custom_openapi
 # Include routers
 logger.info(f"DEBUG: validation module = {validation}")
 logger.info(f"DEBUG: validation.router = {validation.router}")
-logger.info(f"DEBUG: evaluation module = {evaluation}")  
+logger.info(f"DEBUG: evaluation module = {evaluation}")
 logger.info(f"DEBUG: evaluation.router = {evaluation.router}")
 
 try:
@@ -493,10 +493,10 @@ async def parse_optional_files(request: Request) -> List[UploadFile]:
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 def health() -> HealthResponse:
     """Check API health and component availability.
-    
+
     Verifies that the API is running and GIFTs library is available for conversions.
     Returns overall status and version information.
-    
+
     ## Response
     - **status** (string): "healthy" or "degraded"
     - **version** (string): API version
@@ -516,10 +516,10 @@ def health() -> HealthResponse:
 @app.get("/api/v1/versions", tags=["Conversion"])
 def get_supported_versions():
     """Get list of supported IWXXM versions.
-    
+
     Returns information about all supported IWXXM versions including
     version strings, release dates, and status (latest, previous, legacy).
-    
+
     ## Response
     ```json
     {
@@ -556,10 +556,10 @@ def get_supported_versions():
     ```
     """
     try:
-        from .config.iwxxm_versions import SUPPORTED_VERSIONS, DEFAULT_VERSION, DEPRECATED_VERSIONS
+        from .config.iwxxm_versions import DEFAULT_VERSION, DEPRECATED_VERSIONS, SUPPORTED_VERSIONS
     except ImportError:
-        from config.iwxxm_versions import SUPPORTED_VERSIONS, DEFAULT_VERSION, DEPRECATED_VERSIONS
-    
+        from config.iwxxm_versions import DEFAULT_VERSION, DEPRECATED_VERSIONS, SUPPORTED_VERSIONS
+
     versions_list = []
     for version, config in SUPPORTED_VERSIONS.items():
         versions_list.append({
@@ -569,7 +569,7 @@ def get_supported_versions():
             "release_date": config.get("release_date", ""),
             "wmo_amendment": config.get("wmo_amendment", 0)
         })
-    
+
     return {
         "default_version": DEFAULT_VERSION,
         "supported_versions": sorted(
@@ -587,13 +587,13 @@ def get_supported_versions():
 @app.get("/api/v1/schema-status", tags=["Conversion"])
 def get_schema_status():
     """Get comprehensive schema status including RC versions and mirroring info.
-    
+
     Returns detailed information about all IWXXM schema versions including:
     - Stable releases and Release Candidates (RC)
     - Discovery dates and source URLs
     - Mirroring status
     - Channel classification
-    
+
     ## Response
     ```json
     {
@@ -624,23 +624,15 @@ def get_schema_status():
     ```
     """
     try:
-        from .config.iwxxm_versions import (
-            get_versions_by_channel,
-            get_all_versions_with_metadata,
-            DEFAULT_VERSION
-        )
+        from .config.iwxxm_versions import DEFAULT_VERSION, get_all_versions_with_metadata, get_versions_by_channel
     except ImportError:
-        from config.iwxxm_versions import (
-            get_versions_by_channel,
-            get_all_versions_with_metadata,
-            DEFAULT_VERSION
-        )
-    
+        from config.iwxxm_versions import DEFAULT_VERSION, get_all_versions_with_metadata, get_versions_by_channel
+
     stable_versions = get_versions_by_channel("stable")
     rc_versions = get_versions_by_channel("rc")
     all_versions = get_versions_by_channel("all")
     all_metadata = get_all_versions_with_metadata()
-    
+
     # Build metadata summary
     metadata_summary = {}
     for version, data in all_metadata.items():
@@ -653,11 +645,11 @@ def get_schema_status():
             "source_url": discovery_meta.get("source_url", ""),
             "mirrored": discovery_meta.get("mirrored", False)
         }
-        
+
         # Add RC-specific fields
         if "RC" in version.upper():
             metadata_summary[version]["promoted_to_stable"] = data.get("promoted_to_stable")
-    
+
     return {
         "stable": stable_versions,
         "rc": rc_versions,
@@ -680,9 +672,9 @@ async def validate_comprehensive(
     user: dict = Depends(verify_supabase_token),
 ):
     """Perform comprehensive 7-layer IWXXM validation.
-    
+
     Validates METAR TAC input through all 7 validation layers:
-    
+
     1. **Layer 1 (AIRPORT_ICAO)**: Validates ICAO airport code against database
     2. **Layer 2 (TAC_SYNTAX)**: Validates TAC/METAR syntax basics
     3. **Layer 3 (XML_WELLFORMED)**: Checks XML is well-formed
@@ -690,9 +682,9 @@ async def validate_comprehensive(
     5. **Layer 5 (SCHEMATRON)**: Validates business rules from official Schematron
     6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references
     7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists
-    
+
     **Authentication**: Requires valid Supabase JWT token
-    
+
     **Request Parameters**:
     - **manual_text** (required): METAR TAC text to validate
     - **xml_content** (optional): Pre-converted XML to validate (if omitted, TAC will be converted)
@@ -701,7 +693,7 @@ async def validate_comprehensive(
       - "ALL": Run all 7 layers
       - Or specify: ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_SCHEMA", "SCHEMATRON", ...]
     - **stop_on_error**: Stop at first blocking layer failure (default: true)
-    
+
     **Response**:
     ```json
     {
@@ -723,7 +715,7 @@ async def validate_comprehensive(
             iwxxm_version = request_body.version
             validation_level = request_body.validation_level or "comprehensive"
             manual_text = ""  # Don't use form input
-            
+
             # Map validation_level to layers
             if validation_level == "comprehensive":
                 layers = ["ALL"]
@@ -735,21 +727,21 @@ async def validate_comprehensive(
                 layers = ["WMO_CODELISTS", "GML_REFERENCES"]
             else:
                 layers = ["AIRPORT_ICAO", "TAC_SYNTAX"]
-        
+
         # Normalize version
         try:
-            from .config.iwxxm_versions import normalize_version, get_version_config
+            from .config.iwxxm_versions import get_version_config, normalize_version
         except ImportError:
-            from config.iwxxm_versions import normalize_version, get_version_config
-        
+            from config.iwxxm_versions import get_version_config, normalize_version
+
         iwxxm_version = normalize_version(iwxxm_version)
-        
+
         # Validate version is supported
         try:
             get_version_config(iwxxm_version)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
-        
+
         # Convert TAC to XML if not provided
         if not xml_content:
             try:
@@ -759,7 +751,7 @@ async def validate_comprehensive(
                     status_code=400,
                     detail=f"Failed to convert TAC to XML: {str(e)}"
                 )
-        
+
         # Parse layer selection
         selected_layers = []
         if "ALL" in layers:
@@ -775,7 +767,7 @@ async def validate_comprehensive(
                         detail=f"Invalid validation layer: {layer_name}. "
                                f"Valid options: {[l.name for l in ValidationLayer]}"
                     )
-        
+
         # Run comprehensive validation
         orchestrator = get_validation_orchestrator()
         result = orchestrator.validate_complete(
@@ -785,7 +777,7 @@ async def validate_comprehensive(
             layers=selected_layers,
             stop_on_error=stop_on_error
         )
-        
+
         # Format response
         return {
             "is_valid": result.is_valid,
@@ -818,7 +810,7 @@ async def validate_comprehensive(
             },
             "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -875,7 +867,7 @@ async def convert(
                     total_errors=1,
                 ).model_dump(),
             )
-        
+
         try:
             request_body = ConversionRequest(**body_data)
         except Exception as e:
@@ -923,7 +915,7 @@ async def convert(
       - Validation issues are logged but don't prevent conversion results
 
     **Validation**:
-    - **Input Validation (Always On)**: 
+    - **Input Validation (Always On)**:
       - Layer 1: ICAO airport code validation
       - Layer 2: TAC syntax validation
     - **Output Validation (Optional)**:
@@ -997,7 +989,7 @@ async def convert(
             iwxxm_version,
             validation_level,
         )
-        
+
         # Map validation_level to validate_output
         validate_output = validation_level in ["comprehensive", "schematron", "icao_opmet", "schema"]
 
@@ -1005,13 +997,13 @@ async def convert(
     validate_output = bool(validate_output) or validation_level in ["comprehensive", "schematron", "icao_opmet", "schema"]
     bulletin_id = normalize_code(bulletin_id, 6)
     issuing_center = normalize_code(issuing_center, 4)
-    
+
     # Validate and normalize IWXXM version
     try:
-        from .config.iwxxm_versions import normalize_version, get_version_config
+        from .config.iwxxm_versions import get_version_config, normalize_version
     except ImportError:
-        from config.iwxxm_versions import normalize_version, get_version_config
-    
+        from config.iwxxm_versions import get_version_config, normalize_version
+
     try:
         iwxxm_version = normalize_version(iwxxm_version)
         get_version_config(iwxxm_version)
@@ -1034,7 +1026,7 @@ async def convert(
                 total_errors=1
             ).model_dump(),
         )
-    
+
     results: List[ConversionResult] = []
     errors: List[str] = []
     issues: List[ConversionIssue] = []
@@ -1081,10 +1073,10 @@ async def convert(
                     layer=str(getattr(validation_issue, "layer", "")) or None,
                     location=getattr(validation_issue, "location", None),
                 )
-    
+
     # Initialize validation service for input validation
     validation_service = ValidationService()
-    
+
     # Initialize validation orchestrator for output validation if requested
     validation_orchestrator = get_validation_orchestrator() if validate_output else None
 
@@ -1133,19 +1125,19 @@ async def convert(
                 total_errors=1,
             ).model_dump(),
         )
-    
+
     # Process metars from JSON request body
     for metar_text in metars_list:
         if not metar_text.strip():
             continue
-            
+
         total_inputs += 1
         start_time = None
         translation_id = None
         try:
             # Use the same validation and conversion logic as manual_text
             metar_name = f"metar_{total_inputs}.txt"
-            
+
             # Validate METAR input (Layers 1-2: ICAO and TAC syntax)
             try:
                 validation_result = validation_service.validate_all_layers(metar_text.strip())
@@ -1225,17 +1217,17 @@ async def convert(
                 # Start timing for successful conversion
                 import time
                 start_time = time.perf_counter()
-                
+
                 # Convert METAR to IWXXM
                 try:
                     iwxxm_content, _ = convert_metar_tac_with_metadata(
                         metar_text.strip(),
                         iwxxm_version=iwxxm_version
                     )
-                    
+
                     # Optional output validation (Layers 3-7)
                     validation_layers_passed = [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
-                    
+
                     if validation_orchestrator:
                         validation_result = validation_orchestrator.validate(
                             iwxxm_content,
@@ -1244,7 +1236,7 @@ async def convert(
                         )
                         if validation_result.passed:
                             validation_layers_passed.extend([ValidationLayer.XML_WELLFORMED, ValidationLayer.XML_SCHEMA, ValidationLayer.SCHEMATRON, ValidationLayer.GML_REFERENCES, ValidationLayer.WMO_CODELISTS])
-                    
+
                     # Add to results
                     result = ConversionResult(
                         name=metar_name,
@@ -1253,12 +1245,12 @@ async def convert(
                         size_bytes=len(iwxxm_content.encode('utf-8')),
                     )
                     results.append(result)
-                    
+
                     # Log successful translation
                     try:
                         end_time = time.perf_counter()
                         duration_ms = (end_time - start_time) * 1000
-                        
+
                         translation_id = await statistics_service.log_translation(
                             tac_message=metar_text.strip(),
                             iwxxm_output=iwxxm_content,
@@ -1269,7 +1261,7 @@ async def convert(
                             icao_airport_code=extract_airport_code(metar_text.strip()),
                             user_id=user.get("sub")
                         )
-                        
+
                         airport_code = extract_airport_code(metar_text.strip())
                         await webhook_service.notify_translation_completed(
                             translation_id=translation_id,
@@ -1280,7 +1272,7 @@ async def convert(
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log successful translation: {log_err}")
-                        
+
                 except ConversionError as ce:
                     error_msg = f"{metar_name}: Conversion error - {str(ce)}"
                     errors.append(error_msg)
@@ -1295,7 +1287,7 @@ async def convert(
                     try:
                         end_time = time.perf_counter()
                         duration_ms = (end_time - start_time) * 1000 if start_time else 0
-                        
+
                         await statistics_service.log_translation(
                             tac_message=metar_text.strip(),
                             iwxxm_output=None,
@@ -1307,7 +1299,7 @@ async def convert(
                             icao_airport_code=extract_airport_code(metar_text.strip()),
                             user_id=user.get("sub")
                         )
-                        
+
                         airport_code = extract_airport_code(metar_text.strip())
                         await webhook_service.notify_translation_failed(
                             translation_id=translation_id or "unknown",
@@ -1550,7 +1542,7 @@ async def convert(
                     if stop_on_error:
                         break
                     continue
-                
+
                 # Validate METAR input (Layers 1-2: ICAO and TAC syntax)
                 try:
                     validation_result = validation_service.validate_all_layers(data.strip())
@@ -1622,21 +1614,21 @@ async def convert(
                     if stop_on_error:
                         break
                     continue
-                
+
                 # Start timing for successful conversion
                 import time
                 start_time = time.perf_counter()
-                
+
                 # Only convert if validation passed
                 xml_text, _ = convert_metar_tac_with_metadata(data, iwxxm_version=iwxxm_version, validate=False)
-                
+
                 # Calculate duration
                 duration_ms = int((time.perf_counter() - start_time) * 1000)
-                
+
                 # Track validation layers passed
                 layers_passed = [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
                 validation_errors_dict = {}
-                
+
                 # Optionally validate output IWXXM XML (Layers 3-7)
                 if validate_output and validation_orchestrator:
                     try:
@@ -1676,7 +1668,7 @@ async def convert(
                             layer="iwxxm_output",
                         )
                         validation_errors_dict = {"validation_error": str(ve)}
-                
+
                 # Log successful translation
                 try:
                     translation_id = await statistics_service.log_translation(
@@ -1699,7 +1691,7 @@ async def convert(
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log successful translation: {log_err}")
-                
+
                 out_name = pathlib.Path(uf.filename or "unknown").stem + ".txt"
                 results.append(
                     ConversionResult(
@@ -1822,7 +1814,7 @@ async def convert_zip(
                 status_code=422,
                 detail=f"Invalid JSON in request body: {str(e)}"
             )
-        
+
         try:
             request_body = ConversionRequest(**body_data)
         except Exception as e:
@@ -1893,13 +1885,13 @@ async def convert_zip(
                 total_errors=1,
             ).model_dump(),
         )
-    
+
     # Validate and normalize IWXXM version
     try:
-        from .config.iwxxm_versions import normalize_version, get_version_config
+        from .config.iwxxm_versions import get_version_config, normalize_version
     except ImportError:
-        from config.iwxxm_versions import normalize_version, get_version_config
-    
+        from config.iwxxm_versions import get_version_config, normalize_version
+
     try:
         iwxxm_version = normalize_version(iwxxm_version)
         get_version_config(iwxxm_version)
@@ -1912,7 +1904,7 @@ async def convert_zip(
                 total_errors=1
             ).model_dump(),
         )
-    
+
     results: List[tuple[str, str]] = []
     errors: List[str] = []
     translation_ids: List[str] = []  # Track for bulk notification
@@ -1993,19 +1985,19 @@ async def convert_zip(
                 if xml_rejection:
                     errors.append(f"{source_name}: {xml_rejection['message']}")
                     continue
-                
+
                 # Start timing
                 import time
                 start_time = time.perf_counter()
-                
+
                 xml_text, _ = convert_metar_tac_with_metadata(data, iwxxm_version=iwxxm_version)
-                
+
                 # Calculate duration
                 duration_ms = int((time.perf_counter() - start_time) * 1000)
-                
+
                 fname = pathlib.Path(source_name).stem + ".xml"
                 results.append((fname, xml_text))
-                
+
                 # Log successful translation
                 try:
                     translation_id = await statistics_service.log_translation(
@@ -2070,17 +2062,17 @@ async def convert_zip(
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log unexpected error: {log_err}")
-    
+
     # Process metars from JSON request body
     for idx, metar_text in enumerate(metars_list, 1):
         if not metar_text.strip():
             continue
-        
+
         start_time = None
         translation_id = None
         try:
             metar_name = f"metar_{idx}.txt"
-            
+
             # Validate METAR input (Layers 1-2: ICAO and TAC syntax)
             try:
                 validation_result = validation_service.validate_all_layers(metar_text.strip())
@@ -2137,19 +2129,19 @@ async def convert_zip(
                 except Exception as log_err:
                     logger.error(f"Failed to log validation error: {log_err}")
                 continue  # Skip to next METAR
-            
+
             # Start timing
             import time
             start_time = time.perf_counter()
-            
+
             xml_text, _ = convert_metar_tac_with_metadata(metar_text.strip(), iwxxm_version=iwxxm_version)
-            
+
             # Calculate duration
             duration_ms = int((time.perf_counter() - start_time) * 1000)
-            
+
             fname = f"metar_{idx}.xml"
             results.append((fname, xml_text))
-            
+
             # Log successful translation
             try:
                 translation_id = await statistics_service.log_translation(
@@ -2213,7 +2205,7 @@ async def convert_zip(
                 )
             except Exception as log_err:
                 logger.error(f"Failed to log unexpected error: {log_err}")
-    
+
     # Send bulk completion webhook if conversions were successful
     if translation_ids:
         try:

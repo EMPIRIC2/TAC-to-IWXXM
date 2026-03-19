@@ -3,21 +3,21 @@ Webhook Notification Service for ICAO OPMET compliance.
 
 Sends HTTP webhook notifications for translation events (User Decision 2).
 """
-import logging
-import hmac
-import hashlib
-import json
-from typing import Optional, Dict, Any, List
-from datetime import datetime
 import asyncio
+import hashlib
+import hmac
+import json
+import logging
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 import httpx
 
 from ..config.icao_opmet import (
-    should_send_webhooks,
-    WEBHOOK_URLS,
-    WEBHOOK_SECRET,
     WEBHOOK_EVENTS,
+    WEBHOOK_SECRET,
+    WEBHOOK_URLS,
+    should_send_webhooks,
 )
 
 logger = logging.getLogger(__name__)
@@ -25,43 +25,43 @@ logger = logging.getLogger(__name__)
 
 class WebhookService:
     """Service for sending webhook notifications."""
-    
+
     def __init__(self):
         self.client = None
         self.enabled = should_send_webhooks()
-    
+
     async def __aenter__(self):
         """Async context manager entry."""
         if self.enabled:
             self.client = httpx.AsyncClient(timeout=10.0)
         return self
-    
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Async context manager exit."""
         if self.client:
             await self.client.aclose()
-    
+
     def _generate_signature(self, payload: str) -> str:
         """
         Generate HMAC-SHA256 signature for webhook payload.
-        
+
         Args:
             payload: JSON payload string
-            
+
         Returns:
             Hex-encoded HMAC signature
         """
         if not WEBHOOK_SECRET:
             return ""
-        
+
         signature = hmac.new(
             WEBHOOK_SECRET.encode('utf-8'),
             payload.encode('utf-8'),
             hashlib.sha256
         ).hexdigest()
-        
+
         return signature
-    
+
     async def send_webhook(
         self,
         event: str,
@@ -70,27 +70,27 @@ class WebhookService:
     ) -> bool:
         """
         Send webhook notification to all configured endpoints.
-        
+
         Args:
             event: Event type (e.g., "translation.success")
             data: Event data payload
             metadata: Optional additional metadata
-            
+
         Returns:
             True if all webhooks sent successfully, False otherwise
         """
         if not self.enabled:
             logger.debug("Webhooks disabled, skipping notification")
             return True
-        
+
         if event not in WEBHOOK_EVENTS:
             logger.debug(f"Event {event} not in configured webhook events")
             return True
-        
+
         if not WEBHOOK_URLS:
             logger.warning("No webhook URLs configured")
             return False
-        
+
         # Prepare payload
         payload = {
             "event": event,
@@ -102,10 +102,10 @@ class WebhookService:
                 "service": "metar-to-iwxxm",
             },
         }
-        
+
         payload_str = json.dumps(payload, default=str)
         signature = self._generate_signature(payload_str)
-        
+
         # Prepare headers
         headers = {
             "Content-Type": "application/json",
@@ -113,26 +113,26 @@ class WebhookService:
             "X-Webhook-Event": event,
             "X-Webhook-Timestamp": payload["timestamp"],
         }
-        
+
         if signature:
             headers["X-Webhook-Signature"] = f"sha256={signature}"
-        
+
         # Send to all webhook URLs
         tasks = [
             self._send_single_webhook(url, payload_str, headers)
             for url in WEBHOOK_URLS
         ]
-        
+
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        
+
         # Check if all succeeded
         success = all(
             isinstance(result, bool) and result
             for result in results
         )
-        
+
         return success
-    
+
     async def _send_single_webhook(
         self,
         url: str,
@@ -141,32 +141,32 @@ class WebhookService:
     ) -> bool:
         """
         Send webhook to a single URL.
-        
+
         Args:
             url: Webhook endpoint URL
             payload: JSON payload string
             headers: HTTP headers
-            
+
         Returns:
             True if successful, False otherwise
         """
         try:
             if not self.client:
                 self.client = httpx.AsyncClient(timeout=10.0)
-            
+
             response = await self.client.post(
                 url,
                 content=payload,
                 headers=headers,
             )
-            
+
             if response.status_code in [200, 201, 202, 204]:
                 logger.info(f"Webhook sent successfully to {url} (status={response.status_code})")
                 return True
             else:
                 logger.warning(f"Webhook to {url} returned status {response.status_code}")
                 return False
-                
+
         except httpx.TimeoutException:
             logger.error(f"Webhook to {url} timed out")
             return False
@@ -176,7 +176,7 @@ class WebhookService:
         except Exception as e:
             logger.error(f"Unexpected error sending webhook to {url}: {e}", exc_info=True)
             return False
-    
+
     async def notify_translation_completed(
         self,
         translation_id: str,
@@ -187,7 +187,7 @@ class WebhookService:
     ):
         """
         Send notification for completed translation.
-        
+
         Args:
             translation_id: Unique translation UUID
             airport_code: ICAO airport code
@@ -205,7 +205,7 @@ class WebhookService:
                 "duration_ms": duration_ms,
             },
         )
-    
+
     async def notify_translation_success(
         self,
         translation_id: str,
@@ -216,7 +216,7 @@ class WebhookService:
     ):
         """
         Send notification for successful translation.
-        
+
         Args:
             translation_id: Unique translation UUID
             airport_code: ICAO airport code
@@ -234,7 +234,7 @@ class WebhookService:
                 "duration_ms": duration_ms,
             },
         )
-    
+
     async def notify_translation_failed(
         self,
         translation_id: str,
@@ -244,7 +244,7 @@ class WebhookService:
     ):
         """
         Send notification for failed translation.
-        
+
         Args:
             translation_id: Unique translation UUID
             airport_code: ICAO airport code
@@ -260,7 +260,7 @@ class WebhookService:
                 "error_message": error_message,
             },
         )
-    
+
     async def notify_validation_failed(
         self,
         translation_id: str,
@@ -270,7 +270,7 @@ class WebhookService:
     ):
         """
         Send notification for validation failure.
-        
+
         Args:
             translation_id: Unique translation UUID
             airport_code: ICAO airport code
@@ -289,7 +289,7 @@ class WebhookService:
                 "error_details": error_details,
             },
         )
-    
+
     async def notify_bulk_completed(
         self,
         total_files: int,
@@ -299,7 +299,7 @@ class WebhookService:
     ):
         """
         Send notification for bulk conversion completion.
-        
+
         Args:
             total_files: Total number of files processed
             successful: Number of successful conversions

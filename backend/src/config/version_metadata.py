@@ -5,13 +5,14 @@ Centralizes version-specific configuration including namespaces, element orderin
 translation metadata requirements, and formatting rules for IWXXM versions 2016-2025-2.
 """
 
-from typing import Dict, List, Optional
 from dataclasses import dataclass, field
+from typing import Dict, List, Optional
+
 
 @dataclass
 class VersionMetadata:
     """Metadata for a specific IWXXM version."""
-    
+
     version: str
     namespace: str
     schema_query_binding: str  # "xslt1" or "xslt2"
@@ -21,7 +22,7 @@ class VersionMetadata:
     coordinate_precision_decimals: int  # Format precision for gml:pos
     elevation_rounding: Optional[int]  # None = no rounding, 0/1 = round to that precision
     element_order_priority: List[str] = field(default_factory=list)  # Element ordering for aerodrome
-    
+
     def __repr__(self) -> str:
         return f"VersionMetadata(version={self.version}, ns={self.namespace.split('/')[-1]})"
 
@@ -41,7 +42,7 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
             "interpretation", "designator", "name", "locationIndicatorICAO", "ARP"
         ]
     ),
-    
+
     "2018": VersionMetadata(
         version="2018",
         namespace="http://icao.int/iwxxm/3.0",
@@ -55,7 +56,7 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
             "interpretation", "designator", "name", "locationIndicatorICAO", "ARP"
         ]
     ),
-    
+
     "2021-2": VersionMetadata(
         version="2021-2",
         namespace="http://icao.int/iwxxm/2021-2",
@@ -69,7 +70,7 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
             "interpretation", "name", "locationIndicatorICAO", "ARP"
         ]
     ),
-    
+
     "2023-1": VersionMetadata(
         version="2023-1",
         namespace="http://icao.int/iwxxm/2023-1",
@@ -83,7 +84,7 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
             "interpretation", "name", "locationIndicatorICAO", "ARP"
         ]
     ),
-    
+
     "2025-2": VersionMetadata(
         version="2025-2",
         namespace="http://icao.int/iwxxm/2025-2",
@@ -102,10 +103,10 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
 
 def get_version_metadata(version: str) -> Optional[VersionMetadata]:
     """Get metadata for a specific IWXXM version.
-    
+
     Args:
         version: Version string (e.g., "2025-2")
-    
+
     Returns:
         VersionMetadata if version exists, None otherwise
     """
@@ -114,20 +115,20 @@ def get_version_metadata(version: str) -> Optional[VersionMetadata]:
 
 def normalize_version(version_str: str) -> str:
     """Normalize version string to canonical form.
-    
+
     Handles aliases:
     - "2025" or "2025-1" → "2025-2"
     - "3.0" → "2018"
     - "2.1" → "2016"
-    
+
     Args:
         version_str: Input version string
-    
+
     Returns:
         Canonical version string
     """
     normalized = version_str.strip()
-    
+
     # Handle namespace-style versions
     if normalized.endswith(".1"):
         # "2.1" → "2016"
@@ -135,15 +136,15 @@ def normalize_version(version_str: str) -> str:
     elif normalized.endswith(".0") and normalized.startswith("3"):
         # "3.0" → "2018"
         return "2018"
-    
+
     # Handle "2025" or "2025-1" → "2025-2"
     if normalized in ("2025", "2025-1"):
         return "2025-2"
-    
+
     # Return as-is if already canonical
     if normalized in VERSION_METADATA:
         return normalized
-    
+
     return normalized
 
 

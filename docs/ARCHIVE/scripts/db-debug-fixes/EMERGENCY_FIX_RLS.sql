@@ -1,5 +1,5 @@
 -- EMERGENCY FIX: Remove infinite recursion in RLS policies
--- Run this in Supabase Dashboard SQL Editor: https://supabase.com/dashboard/project/ktvxijislbtgqapllmuk/sql
+-- Run this in Supabase Dashboard SQL Editor: https://supabase.com/dashboard/project/YOUR_PROJECT_REF/sql
 
 -- Step 1: Disable RLS temporarily
 ALTER TABLE user_profiles DISABLE ROW LEVEL SECURITY;

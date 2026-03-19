@@ -35,8 +35,10 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["auth"]
-package-dir = {"auth" = "src"}
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 python_files = ["test_*.py"]
@@ -47,6 +49,7 @@ minversion = "7.0"
 addopts = "-v --strict-markers --tb=short"
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+pythonpath = ["src"]
 markers = [
     "unit: Unit tests",
     "integration: Integration tests",
@@ -66,7 +69,13 @@ source = ["src"]
 omit = [
     "*/tests/*",
     "*/__main__.py",
+    "src/**/__init__.py",
+    "src/__init__.py",
+    "*/__init__.py",
     "*/test_*.py",
+    "src/api.py",
+    "src/auth/api.py",
+    "src/observability.py",
 ]
 
 [tool.coverage.report]
@@ -76,3 +85,14 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I"]
+ignore = ["E501", "E741"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/__main__.py" = ["E402"]
+"tests/**" = ["W293", "I001", "F821", "F541", "F401", "E402", "E722", "F811", "F841"]

@@ -1,20 +1,16 @@
 """Validation endpoints for METAR and IWXXM content."""
-import sys
-import pathlib
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel, Field, ConfigDict
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel, ConfigDict, Field
 
-from ..utilities.security import verify_supabase_token
 from ..schemas.validation import (
-    ValidationRequest,
-    ValidationResult,
     AggregatedValidationResult,
     ValidationLayer,
-    ValidationLevel,
+    ValidationRequest,
 )
 from ..services.validation import ValidationService
+from ..utilities.security import verify_supabase_token
 
 router = APIRouter()
 
@@ -228,7 +224,7 @@ async def validate_content(
     ```
     """
     service = get_validation_service()
-    
+
     try:
         result = service.validate_all_layers(
             tac_text=request.content
@@ -313,21 +309,21 @@ async def validate_multiple(
     ```
     """
     service = get_validation_service()
-    
+
     try:
         results: List[AggregatedValidationResult] = []
         total_time = 0.0
-        
+
         for item in request.items:
             result = service.validate_all_layers(
                 tac_text=item.content
             )
             results.append(result)
             total_time += result.execution_time_ms
-        
+
         passed_count = sum(1 for r in results if r.passed)
         failed_count = len(results) - passed_count
-        
+
         return BatchValidationResponse(
             results=results,
             total_items=len(results),
@@ -436,7 +432,7 @@ async def get_validation_layers(
             supported_content_types=["xml"],
         ),
     ]
-    
+
     return ValidationLayersResponse(layers=layers_info)
 
 

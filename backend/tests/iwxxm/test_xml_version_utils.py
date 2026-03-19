@@ -5,12 +5,11 @@ Provides functions for comparing IWXXM XML across different schema versions.
 Handles namespace differences and version-specific validation.
 """
 
+import pathlib
 import re
+import sys
 from typing import Optional, Tuple
 from xml.etree import ElementTree as ET
-
-import sys
-import pathlib
 
 # Add src to path for imports
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -24,37 +23,37 @@ from schemas.iwxxm_validation import get_namespace_version, is_supported_iwxxm_v
 def normalize_namespace_for_comparison(xml_string: str, target_version: str) -> str:
     """
     Normalize XML namespace to a specific version for comparison.
-    
+
     Replaces namespace URIs while preserving document structure.
     Only use for comparison purposes, not for production XML.
-    
+
     Args:
         xml_string: Original XML content
         target_version: Target version (e.g., "2025-2")
-        
+
     Returns:
         XML with normalized namespace
-        
+
     Raises:
         ValueError: If target_version is not supported
     """
     if not is_supported_iwxxm_version(target_version):
         raise ValueError(f"Unsupported target version: {target_version}")
-    
+
     # Replace iwxxm namespace in schemaLocation
     normalized = re.sub(
         r'http://icao\.int/iwxxm/[0-9]{4}-[0-9]',
         f'http://icao.int/iwxxm/{target_version}',
         xml_string
     )
-    
+
     # Replace schema URLs to match version
     normalized = re.sub(
         r'https://schemas\.wmo\.int/iwxxm/[0-9]{4}-[0-9][^/]*/iwxxm\.xsd',
         f'https://schemas.wmo.int/iwxxm/{target_version}/iwxxm.xsd',
         normalized
     )
-    
+
     return normalized
 
 
@@ -65,15 +64,15 @@ def compare_xml_ignoring_namespace_version(
 ) -> Tuple[bool, Optional[str]]:
     """
     Compare two IWXXM XML documents, ignoring namespace version differences.
-    
+
     Useful for comparing expected XML (2023-1) with produced XML (2025-2)
     when only structural comparison is needed.
-    
+
     Args:
         xml1: First XML document
         xml2: Second XML document
         strip_dynamic_attrs: Whether to remove dynamic attributes (UUIDs, timestamps)
-        
+
     Returns:
         Tuple of (is_equal, error_message)
         - is_equal: True if documents are structurally equivalent
@@ -83,23 +82,23 @@ def compare_xml_ignoring_namespace_version(
         # Get versions
         version1 = get_namespace_version(xml1)
         version2 = get_namespace_version(xml2)
-        
+
         # Normalize both to common version for comparison
         target = version1  # Use first version as target
         normalized1 = normalize_namespace_for_comparison(xml1, target)
         normalized2 = normalize_namespace_for_comparison(xml2, target)
-        
+
         # Parse normalized documents
         root1 = ET.fromstring(normalized1)
         root2 = ET.fromstring(normalized2)
-        
+
         # Compare structure
         is_equal = _compare_elements(root1, root2)
         if not is_equal:
             return False, f"XML structure differs (version {version1} vs {version2})"
-        
+
         return True, None
-        
+
     except Exception as e:
         return False, f"Comparison error: {str(e)}"
 
@@ -107,23 +106,23 @@ def compare_xml_ignoring_namespace_version(
 def get_version_compatibility(version1: str, version2: str) -> str:
     """
     Describe compatibility between two IWXXM versions.
-    
+
     Args:
         version1: First version
         version2: Second version
-        
+
     Returns:
         Compatibility description
     """
     if version1 == version2:
         return "exact_match"
-    
+
     if version1 == "2023-1" and version2 == "2025-2":
         return "2023-1_to_2025-2_upgrade"
-    
+
     if version1 == "2025-2" and version2 == "2023-1":
         return "2025-2_to_2023-1_downgrade"
-    
+
     return "incompatible"
 
 
@@ -132,34 +131,34 @@ def _compare_elements(elem1: ET.Element, elem2: ET.Element) -> bool:
     # Extract tag without namespace for comparison
     tag1 = _extract_tag_name(elem1.tag)
     tag2 = _extract_tag_name(elem2.tag)
-    
+
     if tag1 != tag2:
         return False
-    
+
     if elem1.text and elem2.text:
         if elem1.text.strip() != elem2.text.strip():
             return False
-    
+
     if elem1.tail and elem2.tail:
         if elem1.tail.strip() != elem2.tail.strip():
             return False
-    
+
     # Compare non-dynamic attributes
-    attrs1 = {k: v for k, v in elem1.attrib.items() 
+    attrs1 = {k: v for k, v in elem1.attrib.items()
               if not _is_dynamic_attr(k, v)}
-    attrs2 = {k: v for k, v in elem2.attrib.items() 
+    attrs2 = {k: v for k, v in elem2.attrib.items()
               if not _is_dynamic_attr(k, v)}
-    
+
     # Normalize attribute keys/values to ignore namespace versions
     attrs1 = _normalize_attributes(attrs1)
     attrs2 = _normalize_attributes(attrs2)
-    
+
     if attrs1 != attrs2:
         return False
-    
+
     if len(elem1) != len(elem2):
         return False
-    
+
     return all(_compare_elements(c1, c2) for c1, c2 in zip(elem1, elem2))
 
 

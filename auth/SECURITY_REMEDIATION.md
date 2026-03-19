@@ -17,14 +17,14 @@
 ### Root Cause
 These are diagnostic/debugging scripts used to test Supabase connection methods. They contained actual database credentials from the main `.env` file:
 - `P2wT%5EgJ2iLBSwQ%21d4` (database password, URL-encoded)
-- `ktvxijislbtgqapllmuk` (project reference UUID)
+- `YOUR_PROJECT_REF` (project reference UUID)
 
 ## Remediation Applied
 
 ### Before (Vulnerable)
 ```python
 # BEFORE: Hardcoded secrets
-DATABASE_URL = "postgresql+psycopg2://postgres.ktvxijislbtgqapllmuk:P2wT%5EgJ2iLBSwQ%21d4@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
+DATABASE_URL = "postgresql+psycopg2://postgres.YOUR_PROJECT_REF:P2wT%5EgJ2iLBSwQ%21d4@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
 ```
 
 ### After (Secure)
@@ -95,7 +95,7 @@ if "project-ref" in DATABASE_URL:
 
 ### Scan 1: Hardcoded Database Credentials
 ```bash
-grep -r "P2wT%5E\|ktvxijislbtgqapllmuk.*:" tests/
+grep -r "P2wT%5E\|YOUR_PROJECT_REF.*:" tests/
 Result: ✅ No matches found
 ```
 
@@ -147,7 +147,7 @@ All test files have been verified to:
 ### Short-term
 1. Review git history for any exposed credentials
    ```bash
-   git log -p --all -S "ktvxijislbtgqapllmuk" -- tests/
+   git log -p --all -S "YOUR_PROJECT_REF" -- tests/
    ```
 2. Consider rotating database password if it was ever in public repository
 

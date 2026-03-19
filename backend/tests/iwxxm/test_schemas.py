@@ -13,8 +13,8 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 
 from schemas.conversion import (
-    ConversionResult,
     ConversionResponse,
+    ConversionResult,
     ErrorDetail,
     HealthResponse,
 )

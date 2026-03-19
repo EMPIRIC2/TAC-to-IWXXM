@@ -12,23 +12,23 @@ import json
 import logging
 import math
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass, asdict, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 from xml.dom import minidom
 
-from _xml_utils import _local, parse_xml, _norm_text
+from _xml_utils import _local, _norm_text
 
 logger = logging.getLogger(__name__)
 
 
 def normalize_xml_string(xml_content: str) -> str:
     """Normalize XML string by prettifying to handle minified/formatted equivalently.
-    
+
     Args:
         xml_content: XML string (minified or prettified)
-    
+
     Returns:
         Normalized (prettified) XML string
     """
@@ -49,7 +49,7 @@ def normalize_xml_string(xml_content: str) -> str:
 
 def filter_whitespace_text_nodes(elem: ET.Element) -> None:
     """Remove whitespace-only text nodes from an element tree (in-place).
-    
+
     Args:
         elem: Root element to process
     """
@@ -58,7 +58,7 @@ def filter_whitespace_text_nodes(elem: ET.Element) -> None:
         elem.text = None
     if elem.tail and not elem.tail.strip():
         elem.tail = None
-    
+
     # Recurse to children
     for child in elem:
         filter_whitespace_text_nodes(child)
@@ -66,10 +66,10 @@ def filter_whitespace_text_nodes(elem: ET.Element) -> None:
 
 def parse_xml_normalized(xml_content: str) -> ET.Element:
     """Parse XML content, normalizing first to handle minified/prettified equivalently.
-    
+
     Args:
         xml_content: Raw XML string
-    
+
     Returns:
         Parsed ElementTree Element with whitespace-only nodes filtered
     """
@@ -274,12 +274,12 @@ def compare_xml_with_tolerance(
         ignore_attrs = set()
 
     # Normalize both elements to remove whitespace text node ambiguity
-    logger.debug(f"Normalizing elements for comparison")
-    
+    logger.debug("Normalizing elements for comparison")
+
     # Convert to strings for normalization
     exp_str = ET.tostring(expected_elem, encoding='unicode')
     act_str = ET.tostring(actual_elem, encoding='unicode')
-    
+
     # Re-parse with normalization
     expected_elem = parse_xml_normalized(exp_str)
     actual_elem = parse_xml_normalized(act_str)
@@ -378,7 +378,7 @@ def _deep_diff(
             # Skip href attributes with UUID references (dynamic internal links)
             if k == "href" and "#uuid" in exp_attrs[k] and "#uuid" in act_attrs[k]:
                 continue
-            
+
             # Try numeric tolerance comparison
             try:
                 exp_val = float(exp_attrs[k])
@@ -425,7 +425,7 @@ def _deep_diff(
     coordinate_tags = {"pos", "posList", "Position", "AirportPosition", "Location"}
     # Airport name variations are acceptable (database vs official names)
     name_tags = {"name"}
-    
+
     if tag not in timestamp_tags and tag not in coordinate_tags:
         exp_text = _norm_text(expected.text)
         act_text = _norm_text(actual.text)

@@ -1,6 +1,4 @@
 import io
-import pathlib
-import sys
 import zipfile
 
 import pytest
@@ -8,7 +6,6 @@ from fastapi.testclient import TestClient
 
 from src.api import app
 from src.utilities.security import verify_supabase_token
-
 
 SAMPLE_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
 SAMPLE_METAR_2 = "METAR KLAX 231753Z 25008KT 10SM FEW020 18/12 A2992"
@@ -21,7 +18,7 @@ def client():
     # Mock the verify_supabase_token dependency
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project"}
-    
+
     app.dependency_overrides[verify_supabase_token] = override_verify_token
     client = TestClient(app)
     yield client
@@ -30,12 +27,12 @@ def client():
 
 class TestHealthEndpoint:
     """Test health check endpoint."""
-    
+
     def test_health_status_succeeds(self, client):
         """Test health check returns 200."""
         r = client.get("/health")
         assert r.status_code == 200
-    
+
     def test_health_response_structure(self, client):
         """Test health response has required fields."""
         r = client.get("/health")
@@ -43,7 +40,7 @@ class TestHealthEndpoint:
         assert "status" in data
         assert "version" in data
         assert "gifts_available" in data
-    
+
     def test_health_status_values(self, client):
         """Test health status is valid value."""
         r = client.get("/health")
@@ -53,7 +50,7 @@ class TestHealthEndpoint:
 
 class TestConversionEndpoint:
     """Test /api/v1/convert endpoint."""
-    
+
     def test_manual_text_conversion(self, client):
         """Test conversion of manual text."""
         r = client.post("/api/v1/convert", data={"manual_text": SAMPLE_METAR})
@@ -71,7 +68,7 @@ class TestConversionEndpoint:
         assert data["total_processed"] == 2
         assert data["successful"] == 2
         assert len(data["results"]) == 2
-    
+
     def test_multiple_files_conversion(self, client):
         """Test conversion of multiple files."""
         files = [
@@ -123,7 +120,7 @@ class TestConversionEndpoint:
         detail = r.json().get("detail", {})
         assert "errors" in detail
         assert any("utf-8" in err.lower() for err in detail["errors"])
-    
+
     def test_result_structure(self, client):
         """Test result object structure."""
         r = client.post("/api/v1/convert", data={"manual_text": SAMPLE_METAR})
@@ -182,7 +179,7 @@ class TestConversionEndpoint:
 
 class TestConversionZipEndpoint:
     """Test /api/v1/convert-zip endpoint."""
-    
+
     def test_zip_conversion(self, client):
         """Test ZIP conversion endpoint."""
         files = [
@@ -192,17 +189,17 @@ class TestConversionZipEndpoint:
         r = client.post("/api/v1/convert-zip", files=files)
         assert r.status_code == 200
         assert "application/zip" in r.headers.get("content-type", "")
-        
+
         zbytes = io.BytesIO(r.content)
         with zipfile.ZipFile(zbytes) as zf:
             xml_files = [n for n in zf.namelist() if n.endswith(".xml")]
             assert len(xml_files) >= 2
-    
+
     def test_zip_manual_input(self, client):
         """Test ZIP with manual input."""
         r = client.post("/api/v1/convert-zip", data={"manual_text": SAMPLE_METAR})
         assert r.status_code == 200
-        
+
         zbytes = io.BytesIO(r.content)
         with zipfile.ZipFile(zbytes) as zf:
             names = zf.namelist()
@@ -272,7 +269,7 @@ class TestErrorHandling:
         assert len(detail["issues"]) == 1
         assert detail["issues"][0]["source"] == "request"
         assert detail["issues"][0]["severity"] == "error"
-    
+
     def test_empty_files_error(self, client):
         """Test empty file error handling."""
         files = [
@@ -280,7 +277,7 @@ class TestErrorHandling:
         ]
         r = client.post("/api/v1/convert", files=files)
         assert r.status_code == 400
-    
+
     def test_response_counts(self, client):
         """Test that response counts are consistent."""
         r = client.post("/api/v1/convert", data={"manual_text": SAMPLE_METAR})

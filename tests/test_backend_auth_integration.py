@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'auth', 'src'))
 from auth.database import Base as AuthBase
 from auth.models import User
 from auth.security import hash_password, create_access_token
+from auth.api_supabase import get_supabase_proxy
 from auth.__main__ import app as auth_app
 
 # Import from backend service
@@ -57,9 +58,62 @@ def auth_client(auth_db_engine, monkeypatch):
     
     # Patch the SessionLocal
     monkeypatch.setattr("auth.database.SessionLocal", TestingSessionLocal)
+
+    class FakeProxy:
+        def sign_up(self, email, password, metadata):
+            _ = password
+            return {
+                "user": {
+                    "id": "user-1",
+                    "email": email,
+                    "metadata": metadata,
+                },
+                "session": {
+                    "access_token": "fake-access-token",
+                    "refresh_token": "fake-refresh-token",
+                    "expires_at": 1893456000,
+                },
+            }
+
+        def sign_in(self, email, password):
+            _ = password
+            return {
+                "user": {
+                    "id": "user-1",
+                    "email": email,
+                    "metadata": {"username": "testuser"},
+                },
+                "session": {
+                    "access_token": "fake-access-token",
+                    "refresh_token": "fake-refresh-token",
+                    "expires_at": 1893456000,
+                },
+            }
+
+        def sign_out(self, token):
+            _ = token
+            return {"message": "Logged out successfully"}
+
+        def get_user(self, token):
+            if not token.startswith("fake-"):
+                raise Exception("invalid token")
+            return {
+                "id": "user-1",
+                "email": "test@example.com",
+                "metadata": {"username": "testuser"},
+            }
+
+        def reset_password_email(self, email):
+            _ = email
+            return {"message": "Password reset email sent"}
+
+    auth_app.dependency_overrides[get_supabase_proxy] = lambda: FakeProxy()
     
     client = TestClient(auth_app)
-    return client
+    try:
+        yield client
+    finally:
+        auth_app.dependency_overrides.clear()
 
 
 @pytest.fixture
@@ -98,30 +152,28 @@ class TestAuthServiceIntegration:
             "email": "newuser@example.com",
             "address": "456 New St",
             "username": "newuser",
-            "password": "securepass123"
+            "password": "Securepass123!"
         }
         
         response = auth_client.post("/auth/register", json=user_data)
-        assert response.status_code == 200
+        assert response.status_code == 201
         data = response.json()
-        assert data["username"] == "newuser"
-        assert data["email"] == "newuser@example.com"
-        assert "password" not in data
-        assert "password_hash" not in data
+        assert data["user"]["email"] == "newuser@example.com"
     
     def test_login_returns_token(self, auth_client, test_user):
         """Test that login returns a valid JWT token."""
         login_data = {
-            "username": "testuser",
+            "email": test_user.email,
             "password": "testpass123"
         }
         
         response = auth_client.post("/auth/login", json=login_data)
         assert response.status_code == 200
         data = response.json()
-        assert "access_token" in data
-        assert data["token_type"] == "bearer"
-        assert data["user"]["username"] == "testuser"
+        assert "access_token" in data["session"]
+        assert "refresh_token" in data["session"]
+        assert data["session"]["expires_at"] > 0
+        assert data["user"]["metadata"]["username"] == "testuser"
     
     def test_authenticated_endpoint_requires_token(self, auth_client):
         """Test that /auth/me requires authentication."""
@@ -132,14 +184,14 @@ class TestAuthServiceIntegration:
     def test_authenticated_endpoint_with_valid_token(self, auth_client, test_user):
         """Test that /auth/me works with valid token."""
         # Get token
-        token = create_access_token(sub=test_user.username)
+        token = "fake-access-token"
         
         # Use token
         headers = {"Authorization": f"Bearer {token}"}
         response = auth_client.get("/auth/me", headers=headers)
         assert response.status_code == 200
         data = response.json()
-        assert data["username"] == "testuser"
+        assert data["metadata"]["username"] == "testuser"
 
 
 class TestAuthTokenGeneration:
@@ -187,57 +239,28 @@ class TestAPIKeyManagement:
     """Test API key generation and management."""
     
     def test_create_api_key(self, auth_client, test_user):
-        """Test creating an API key for a user."""
-        token = create_access_token(sub=test_user.username)
+        """Supabase-proxy auth service does not expose API key management endpoints."""
+        token = "fake-access-token"
         headers = {"Authorization": f"Bearer {token}"}
         
         response = auth_client.post("/auth/apikeys", headers=headers)
-        assert response.status_code == 200
-        data = response.json()
-        
-        assert "id" in data
-        assert "raw_key" in data
-        assert len(data["raw_key"]) > 20  # Should be a substantial key
+        assert response.status_code == 404
     
     def test_list_api_keys(self, auth_client, test_user):
-        """Test listing API keys for a user."""
-        token = create_access_token(sub=test_user.username)
+        """Supabase-proxy auth service does not expose API key management endpoints."""
+        token = "fake-access-token"
         headers = {"Authorization": f"Bearer {token}"}
         
-        # Create a key first
-        auth_client.post("/auth/apikeys", headers=headers)
-        
-        # List keys
         response = auth_client.get("/auth/apikeys", headers=headers)
-        assert response.status_code == 200
-        keys = response.json()
-        
-        assert isinstance(keys, list)
-        assert len(keys) >= 1
-        assert "id" in keys[0]
-        assert "created_at" in keys[0]
-        assert "revoked" in keys[0]
+        assert response.status_code == 404
     
     def test_revoke_api_key(self, auth_client, test_user):
-        """Test revoking an API key."""
-        token = create_access_token(sub=test_user.username)
+        """Supabase-proxy auth service does not expose API key management endpoints."""
+        token = "fake-access-token"
         headers = {"Authorization": f"Bearer {token}"}
-        
-        # Create a key
-        create_response = auth_client.post("/auth/apikeys", headers=headers)
-        key_id = create_response.json()["id"]
-        
-        # Revoke it
-        response = auth_client.delete(f"/auth/apikeys/{key_id}", headers=headers)
-        assert response.status_code == 200
-        data = response.json()
-        assert "message" in data
-        
-        # Verify it's revoked
-        list_response = auth_client.get("/auth/apikeys", headers=headers)
-        keys = list_response.json()
-        revoked_key = next(k for k in keys if k["id"] == key_id)
-        assert revoked_key["revoked"] is True
+
+        response = auth_client.delete("/auth/apikeys/1", headers=headers)
+        assert response.status_code == 404
 
 
 class TestPasswordReset:

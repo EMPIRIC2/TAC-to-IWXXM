@@ -1,11 +1,10 @@
 """Integration-style API contract tests aligned with frontend api.ts types."""
 
-from fastapi.testclient import TestClient
 import pytest
+from fastapi.testclient import TestClient
 
 from src.api import app
 from src.utilities.security import verify_supabase_token
-
 
 VALID_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
 INVALID_METAR = "NILl"

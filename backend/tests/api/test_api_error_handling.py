@@ -1,14 +1,10 @@
 """Comprehensive tests for API endpoint error handling."""
-import pathlib
-import sys
-import io
-import pytest
+from unittest.mock import patch
+
 from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock, AsyncMock
 
 from src.api import app
 from src.utilities.conversion import ConversionError
-
 
 client = TestClient(app)
 

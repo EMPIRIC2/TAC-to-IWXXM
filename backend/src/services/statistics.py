@@ -5,18 +5,16 @@ Logs translation operations to PostgreSQL for ICAO OPMET compliance.
 Implements indefinite retention policy (User Decision 1).
 """
 import logging
-import uuid
 import re
+import uuid
 from datetime import datetime
-from typing import Optional, Dict, List, Any, AsyncGenerator
-from contextlib import asynccontextmanager
+from typing import Any, Dict, List, Optional
 
-from sqlalchemy import select, func, and_
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import and_, func, select
 
-from ..schemas.icao_opmet import TranslationRecord, TranslationStatus, ValidationLayer
 from ..config.icao_opmet import get_icao_region, should_log_statistics
 from ..models import TranslationStatisticsModel
+from ..schemas.icao_opmet import TranslationStatus, ValidationLayer
 from ..utilities.observability import record_translation_metric
 from .database import get_db_session
 
@@ -40,7 +38,7 @@ def _normalize_icao_code(icao_airport_code: Optional[str]) -> str:
 
 class StatisticsService:
     """Service for logging and querying translation statistics."""
-    
+
     @staticmethod
     async def log_translation(
         tac_message: str,
@@ -58,7 +56,7 @@ class StatisticsService:
     ) -> Optional[str]:
         """
         Log a translation operation to the database.
-        
+
         Args:
             tac_message: Original METAR TAC message
             iwxxm_version: Target IWXXM version (2025-2 or 2023-1)
@@ -72,14 +70,14 @@ class StatisticsService:
             session_id: User session identifier
             bulletin_reception_time: Original bulletin reception time
             bulletin_id: WMO bulletin identifier
-            
+
         Returns:
             Translation UUID if logged successfully, None otherwise
         """
         if not should_log_statistics():
             logger.debug("Statistics logging disabled")
             return None
-        
+
         try:
             # Generate unique translation ID
             translation_id = uuid.uuid4()
@@ -91,7 +89,7 @@ class StatisticsService:
                     icao_airport_code,
                     _ICAO_FALLBACK_CODE,
                 )
-            
+
             # Determine ICAO region
             try:
                 icao_region = get_icao_region(normalized_icao_code)
@@ -100,13 +98,13 @@ class StatisticsService:
                     f"Invalid airport code {normalized_icao_code}: {e}, defaulting to NAM"
                 )
                 icao_region = "NAM"
-            
+
             # Convert validation layers to strings
             validation_layer_strings = [
                 layer.value if isinstance(layer, ValidationLayer) else str(layer)
                 for layer in (validation_layers_passed or [])
             ]
-            
+
             # Create ORM model instance
             record = TranslationStatisticsModel(
                 translation_id=translation_id,
@@ -125,7 +123,7 @@ class StatisticsService:
                 bulletin_reception_time=bulletin_reception_time,
                 bulletin_id=bulletin_id,
             )
-            
+
             # Insert into database
             try:
                 async with get_db_session() as session:
@@ -135,7 +133,7 @@ class StatisticsService:
                 logger.error(f"Failed to commit translation statistics to database: {commit_error}")
                 # Don't re-raise - allow translation to continue even if logging fails
                 return None
-            
+
             logger.info(
                 f"Logged translation {translation_id} for {normalized_icao_code} ({icao_region}, {translation_status})"
             )
@@ -151,11 +149,11 @@ class StatisticsService:
                 duration_ms=translation_duration_ms,
             )
             return str(translation_id)
-            
+
         except Exception as e:
             logger.error(f"Failed to log translation statistics: {e}", exc_info=True)
             return None
-    
+
     @staticmethod
     async def get_statistics(
         start_date: datetime,
@@ -168,7 +166,7 @@ class StatisticsService:
     ) -> Dict[str, Any]:
         """
         Query aggregated translation statistics.
-        
+
         Args:
             start_date: Statistics period start
             end_date: Statistics period end
@@ -177,7 +175,7 @@ class StatisticsService:
             airport_code: Optional airport code filter
             include_airport_breakdown: Include per-airport statistics
             include_error_details: Include detailed error analysis
-            
+
         Returns:
             Dictionary with aggregated statistics
         """
@@ -188,18 +186,18 @@ class StatisticsService:
                     TranslationStatisticsModel.translation_timestamp >= start_date,
                     TranslationStatisticsModel.translation_timestamp < end_date,
                 ]
-                
+
                 if icao_region:
                     filters.append(TranslationStatisticsModel.icao_region == icao_region)
-                
+
                 if iwxxm_version:
                     filters.append(TranslationStatisticsModel.iwxxm_version == iwxxm_version)
-                
+
                 if airport_code:
                     filters.append(TranslationStatisticsModel.icao_airport_code == airport_code)
-                
+
                 where_clause = and_(*filters)
-                
+
                 # Overall statistics query
                 overall_query = select(
                     func.count(TranslationStatisticsModel.id).label('total'),
@@ -215,34 +213,34 @@ class StatisticsService:
                     func.avg(TranslationStatisticsModel.translation_duration_ms).label('avg_duration'),
                     func.percentile_cont(0.5).within_group(TranslationStatisticsModel.translation_duration_ms).label('median_duration'),
                 ).where(where_clause)
-                
+
                 result = await session.execute(overall_query)
                 row = result.first()
-                
+
                 total = row.total or 0
                 successful = row.successful or 0
                 failed = row.failed or 0
                 partial = row.partial or 0
                 success_rate = (successful / total * 100) if total > 0 else 0.0
-                
+
                 # Region breakdown
                 region_query = select(
                     TranslationStatisticsModel.icao_region,
                     func.count(TranslationStatisticsModel.id).label('count'),
                 ).where(where_clause).group_by(TranslationStatisticsModel.icao_region).order_by(func.count(TranslationStatisticsModel.id).desc())
-                
+
                 region_result = await session.execute(region_query)
                 translations_by_region = {r.icao_region: r.count for r in region_result.all()}
-                
+
                 # Version breakdown
                 version_query = select(
                     TranslationStatisticsModel.iwxxm_version,
                     func.count(TranslationStatisticsModel.id).label('count'),
                 ).where(where_clause).group_by(TranslationStatisticsModel.iwxxm_version).order_by(func.count(TranslationStatisticsModel.id).desc())
-                
+
                 version_result = await session.execute(version_query)
                 translations_by_version = {v.iwxxm_version: v.count for v in version_result.all()}
-                
+
                 # Airport breakdown (if requested)
                 translations_by_airport = None
                 if include_airport_breakdown:
@@ -254,10 +252,10 @@ class StatisticsService:
                     ).order_by(
                         func.count(TranslationStatisticsModel.id).desc()
                     ).limit(50)
-                    
+
                     airport_result = await session.execute(airport_query)
                     translations_by_airport = {a.icao_airport_code: a.count for a in airport_result.all()}
-                
+
                 # Common validation errors (if requested)
                 common_validation_errors = None
                 if include_error_details and total > 0:
@@ -271,13 +269,13 @@ class StatisticsService:
                     ).order_by(
                         func.count(TranslationStatisticsModel.id).desc()
                     ).limit(10)
-                    
+
                     error_result = await session.execute(error_query)
                     common_validation_errors = [
                         {"status": e.translation_status, "count": e.count}
                         for e in error_result.all()
                     ]
-                
+
                 return {
                     "period_start": start_date,
                     "period_end": end_date,
@@ -294,7 +292,7 @@ class StatisticsService:
                     "validation_layer_success_rates": {},
                     "common_validation_errors": common_validation_errors,
                 }
-                
+
         except Exception as e:
             logger.error(f"Failed to query translation statistics: {e}", exc_info=True)
             # Return empty statistics on error
@@ -314,7 +312,7 @@ class StatisticsService:
                 "validation_layer_success_rates": {},
                 "common_validation_errors": None,
             }
-    
+
     @staticmethod
     async def get_statistics_by_region(
         start_date: datetime,
@@ -322,11 +320,11 @@ class StatisticsService:
     ) -> Dict[str, Dict[str, Any]]:
         """
         Get translation statistics grouped by ICAO region.
-        
+
         Args:
             start_date: Statistics period start
             end_date: Statistics period end
-            
+
         Returns:
             Dictionary mapping region codes to statistics
         """
@@ -349,25 +347,25 @@ class StatisticsService:
                 ).order_by(
                     func.count(TranslationStatisticsModel.id).desc()
                 )
-                
+
                 result = await session.execute(query)
                 rows = result.all()
-                
+
                 result_dict = {}
                 for row in rows:
                     total = row.total
                     successful = row.successful
                     success_rate = (successful / total * 100) if total > 0 else 0.0
-                    
+
                     result_dict[row.icao_region] = {
                         "total_translations": total,
                         "successful_translations": successful,
                         "success_rate": round(success_rate, 2),
                         "average_duration_ms": round(float(row.avg_duration or 0), 2),
                     }
-                
+
                 return result_dict
-                
+
         except Exception as e:
             logger.error(f"Failed to query region statistics: {e}", exc_info=True)
             return {}

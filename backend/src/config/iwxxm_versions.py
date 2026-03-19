@@ -6,8 +6,9 @@ and version-specific metadata for dynamic version switching.
 """
 
 import os
-from typing import Dict, List, Any
 from pathlib import Path
+from typing import Any, Dict, List
+
 
 # Custom exception for deprecated versions
 class VersionDeprecatedError(ValueError):
@@ -239,13 +240,13 @@ VALID_VERSION_STRINGS = list(ALL_VERSIONS.keys())
 def get_version_config(version: str) -> Dict[str, Any]:
     """
     Get configuration for a specific IWXXM version.
-    
+
     Args:
         version: IWXXM version string (e.g., "2025-2", "2023-1", "2025-2RC1")
-        
+
     Returns:
         Configuration dictionary for the version
-        
+
     Raises:
         VersionDeprecatedError: If version is deprecated
         ValueError: If version is not supported or invalid
@@ -258,10 +259,10 @@ def get_version_config(version: str) -> Dict[str, Any]:
             f"{dep_info['deprecated_date']}. {dep_info['reason']}. "
             f"Supported versions: {VALID_VERSION_STRINGS}"
         )
-    
+
     # Normalize version (handle remapping)
     normalized = normalize_version(version)
-    
+
     # Check again after normalization
     if normalized in DEPRECATED_VERSIONS:
         dep_info = DEPRECATED_VERSIONS[normalized]
@@ -270,39 +271,39 @@ def get_version_config(version: str) -> Dict[str, Any]:
             f"{dep_info['deprecated_date']}. {dep_info['reason']}. "
             f"Supported versions: {VALID_VERSION_STRINGS}"
         )
-    
+
     # Check both stable and RC versions
     if normalized not in ALL_VERSIONS:
         raise ValueError(
             f"IWXXM version '{version}' is not supported. "
             f"Supported versions: {VALID_VERSION_STRINGS}"
         )
-    
+
     return ALL_VERSIONS[normalized]
 
 
 def normalize_version(version: str) -> str:
     """
     Normalize version string, applying remapping rules.
-    
+
     Args:
         version: Raw version string from user input
-        
+
     Returns:
         Normalized version string
     """
     if not version:
         return DEFAULT_VERSION
-    
+
     # Strip whitespace and check again
     version = str(version).strip()
     if not version:
         return DEFAULT_VERSION
-    
+
     # Apply remapping if exists
     if version in VERSION_REMAPPING:
         return VERSION_REMAPPING[version]
-    
+
     return version
 
 
@@ -314,20 +315,20 @@ def get_supported_versions() -> List[str]:
 def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
     """
     Resolve file path for schema, Schematron, or codelists.
-    
+
     Args:
         version: IWXXM version string
         file_type: Type of file ("xsd", "schematron", "codelists")
-        
+
     Returns:
         Path to the requested file/directory
-        
+
     Raises:
         ValueError: If version or file_type is invalid
         FileNotFoundError: If file doesn't exist
     """
     config = get_version_config(version)
-    
+
     if file_type == "xsd":
         filepath = config["local_schema_base"] / config["schema_file"]
     elif file_type == "schematron":
@@ -336,7 +337,7 @@ def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
         filepath = config["local_schema_base"] / config["codelists_dir"]
     else:
         raise ValueError(f"Unknown file type: {file_type}")
-    
+
     if not filepath.exists():
         fallback_base = PROJECT_ROOT / "schemas" / "iwxxm" / "IWXXM"
         if file_type == "xsd":
@@ -355,24 +356,24 @@ def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
             f"Schema file not found: {filepath}. "
             f"Ensure submodules are initialized: git submodule update --init --recursive"
         )
-    
+
     return filepath
 
 
 def get_breaking_changes(from_version: str, to_version: str) -> List[Dict[str, Any]]:
     """
     Get list of breaking changes when migrating from one version to another.
-    
+
     Args:
         from_version: Source IWXXM version
         to_version: Target IWXXM version
-        
+
     Returns:
         List of breaking change definitions with XPath and action
     """
     to_config = get_version_config(to_version)
     changes = to_config.get("breaking_changes_from_prior", {})
-    
+
     return changes.get(from_version, [])
 
 
@@ -401,10 +402,10 @@ def is_version_supported(version: str) -> bool:
 def is_rc_version(version: str) -> bool:
     """
     Check if a version string is a Release Candidate.
-    
+
     Args:
         version: IWXXM version string
-        
+
     Returns:
         True if version is an RC, False otherwise
     """
@@ -414,10 +415,10 @@ def is_rc_version(version: str) -> bool:
 def get_version_channel(version: str) -> str:
     """
     Get the channel for a specific version.
-    
+
     Args:
         version: IWXXM version string
-        
+
     Returns:
         Channel string: "stable", "rc", or "unknown"
     """
@@ -432,10 +433,10 @@ def get_version_channel(version: str) -> str:
 def get_versions_by_channel(channel: str = "all") -> List[str]:
     """
     Get list of versions filtered by channel.
-    
+
     Args:
         channel: Channel filter ("stable", "rc", "all")
-        
+
     Returns:
         List of version strings for the specified channel
     """
@@ -445,10 +446,10 @@ def get_versions_by_channel(channel: str = "all") -> List[str]:
 def get_version_discovery_date(version: str) -> str:
     """
     Get the discovery/release date for a version.
-    
+
     Args:
         version: IWXXM version string
-        
+
     Returns:
         ISO 8601 timestamp of discovery, or empty string if unknown
     """
@@ -459,9 +460,9 @@ def get_version_discovery_date(version: str) -> str:
 def register_rc_version(version: str, config: Dict[str, Any]) -> None:
     """
     Register a newly discovered RC version.
-    
+
     This is called by the schema discovery service when a new RC is detected.
-    
+
     Args:
         version: RC version string (e.g., "2025-2RC1")
         config: Configuration dictionary for the RC version
@@ -470,7 +471,7 @@ def register_rc_version(version: str, config: Dict[str, Any]) -> None:
     ALL_VERSIONS[version] = config
     SUPPORTED_VERSIONS_BY_CHANNEL["rc"] = list(RC_VERSIONS.keys())
     SUPPORTED_VERSIONS_BY_CHANNEL["all"] = list(ALL_VERSIONS.keys())
-    
+
     # Update valid version strings
     global VALID_VERSION_STRINGS
     VALID_VERSION_STRINGS = list(ALL_VERSIONS.keys())
@@ -479,7 +480,7 @@ def register_rc_version(version: str, config: Dict[str, Any]) -> None:
 def get_all_versions_with_metadata() -> Dict[str, Dict[str, Any]]:
     """
     Get all versions with their full configuration and discovery metadata.
-    
+
     Returns:
         Dictionary mapping version strings to combined config + metadata
     """

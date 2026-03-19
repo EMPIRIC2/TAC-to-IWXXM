@@ -3,7 +3,7 @@
 # Direct PostgreSQL connection via Session Pooler (better than Transaction pooler for this)
 # Session pooler: port 5432, supports persistent connections and full SQL support
 
-$url = "https://ktvxijislbtgqapllmuk.supabase.co"
+$url = "https://YOUR_PROJECT_REF.supabase.co"
 $projectRef = $url.Split('//')[1].Split('.')[0]
 $password = "P2wT^gJ2iLBSwQ!d4"
 $host = "aws-0-us-west-2.pooler.supabase.com"

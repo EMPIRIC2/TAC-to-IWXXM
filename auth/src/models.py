@@ -1,9 +1,10 @@
 """SQLAlchemy models for authentication."""
 from __future__ import annotations
 
-import secrets
 import datetime as dt
-from sqlalchemy import String, Integer, DateTime, Boolean, ForeignKey, Text
+import secrets
+
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 # Import Base to ensure models are registered
@@ -20,7 +21,7 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[dt.datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: dt.datetime.now(dt.UTC))
+        DateTime(timezone=True), default=lambda: dt.datetime.now(dt.timezone.utc))
 
     api_keys: Mapped[list["APIKey"]] = relationship(
         back_populates="user", cascade="all, delete-orphan")
@@ -35,7 +36,7 @@ class APIKey(Base):
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"))
     created_at: Mapped[dt.datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: dt.datetime.now(dt.UTC))
+        DateTime(timezone=True), default=lambda: dt.datetime.now(dt.timezone.utc))
     revoked: Mapped[bool] = mapped_column(Boolean, default=False)
 
     user: Mapped["User"] = relationship(back_populates="api_keys")
@@ -54,7 +55,7 @@ class PasswordResetToken(Base):
     expires_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True))
     used: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[dt.datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: dt.datetime.now(dt.UTC))
+        DateTime(timezone=True), default=lambda: dt.datetime.now(dt.timezone.utc))
 
     user: Mapped["User"] = relationship(back_populates="reset_tokens")
 

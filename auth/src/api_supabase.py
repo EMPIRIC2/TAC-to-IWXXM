@@ -12,19 +12,13 @@ Endpoints that proxy authentication requests to Supabase:
 """
 from __future__ import annotations
 
-import os
 import logging
-import sys
-from typing import Optional, Dict, Any
-if sys.version_info >= (3, 9):
-    from typing import Annotated
-else:
-    from typing_extensions import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status, Header
-from pydantic import BaseModel, EmailStr, Field, field_validator
-from pydantic_core import PydanticCustomError
+from typing import Any, Dict, Optional
 
-from auth.supabase_proxy import get_supabase_proxy, SupabaseAuthProxy
+from fastapi import APIRouter, Depends, Header, HTTPException, status
+from pydantic import BaseModel, Field, field_validator
+
+from auth.supabase_proxy import SupabaseAuthProxy, get_supabase_proxy
 
 logger = logging.getLogger(__name__)
 
@@ -37,22 +31,22 @@ def validate_email_permissive(email: str) -> str:
     """Validate email with permissive rules for development domains."""
     if not email or '@' not in email:
         raise ValueError("Invalid email format")
-    
+
     local_part, domain = email.rsplit('@', 1)
-    
+
     if not local_part or not domain:
         raise ValueError("Invalid email format")
-    
+
     # Allow special domains for development (.local, .test, .localhost, etc.)
     allowed_dev_domains = ['.local', '.test', '.localhost', '.dev', '.example']
     is_dev_domain = any(domain.endswith(dev) or domain == dev[1:] for dev in allowed_dev_domains)
-    
+
     if is_dev_domain:
         logger.debug(f"Allowing development email domain: {email}")
         return email.lower()
-    
+
     # For production domains, use standard validation
-    from email_validator import validate_email, EmailNotValidError
+    from email_validator import EmailNotValidError, validate_email
     try:
         validated = validate_email(email, check_deliverability=False)
         return validated.normalized
@@ -67,7 +61,7 @@ class RegisterRequest(BaseModel):
     password: str = Field(min_length=8)
     name: Optional[str] = None
     username: Optional[str] = Field(None, min_length=3, max_length=50)
-    
+
     @field_validator('email')
     @classmethod
     def validate_email_field(cls, v: str) -> str:
@@ -78,7 +72,7 @@ class LoginRequest(BaseModel):
     """User login request."""
     email: str
     password: str
-    
+
     @field_validator('email')
     @classmethod
     def validate_email_field(cls, v: str) -> str:
@@ -113,7 +107,7 @@ class RefreshRequest(BaseModel):
 class PasswordResetRequest(BaseModel):
     """Password reset email request."""
     email: str
-    
+
     @field_validator('email')
     @classmethod
     def validate_email_field(cls, v: str) -> str:
@@ -132,13 +126,13 @@ class Message(BaseModel):
 
 def get_token_from_header(authorization: Optional[str] = Header(None)) -> str:
     """Extract and validate bearer token from Authorization header.
-    
+
     Args:
         authorization: Authorization header value
-        
+
     Returns:
         Access token string
-        
+
     Raises:
         HTTPException: If token is missing or invalid format
     """
@@ -147,14 +141,14 @@ def get_token_from_header(authorization: Optional[str] = Header(None)) -> str:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Missing authorization header"
         )
-    
+
     parts = authorization.split()
     if len(parts) != 2 or parts[0].lower() != "bearer":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authorization header format. Expected: Bearer <token>"
         )
-    
+
     return parts[1]
 
 
@@ -164,11 +158,11 @@ def register(
     proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
 ):
     """Register a new user via Supabase.
-    
+
     Args:
         request: Registration details (email, password, metadata)
         proxy: Supabase authentication proxy
-        
+
     Returns:
         User information and session tokens
     """
@@ -178,7 +172,7 @@ def register(
         metadata["name"] = request.name
     if request.username:
         metadata["username"] = request.username
-    
+
     result = proxy.sign_up(request.email, request.password, metadata)
     logger.info(f"[API] POST /auth/register - success for {request.email}")
     return result
@@ -190,21 +184,21 @@ def login(
     proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
 ):
     """Authenticate user via Supabase.
-    
+
     Args:
         request: Login credentials (email, password)
         proxy: Supabase authentication proxy
-        
+
     Returns:
         User information and session tokens
     """
     logger.info("=" * 80)
-    logger.info(f"[API] 🔐 POST /auth/login - STARTING")
+    logger.info("[API] 🔐 POST /auth/login - STARTING")
     logger.info(f"  Email: {request.email}")
     logger.info(f"  Password length: {len(request.password)} chars")
     logger.info(f"  Request type: {type(request)}")
     logger.info("=" * 80)
-    
+
     try:
         result = proxy.sign_in(request.email, request.password)
         logger.info("=" * 80)
@@ -237,11 +231,11 @@ def logout(
     proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
 ):
     """Sign out the current user.
-    
+
     Args:
         token: User's access token from Authorization header
         proxy: Supabase authentication proxy
-        
+
     Returns:
         Success message
     """
@@ -269,11 +263,11 @@ def get_current_user(
     proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
 ):
     """Get current user information from access token.
-    
+
     Args:
         token: User's access token from Authorization header
         proxy: Supabase authentication proxy
-        
+
     Returns:
         User information
     """
@@ -289,11 +283,11 @@ def refresh_token(
     proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
 ):
     """Refresh an expired access token.
-    
+
     Args:
         request: Refresh token
         proxy: Supabase authentication proxy
-        
+
     Returns:
         New session tokens
     """
@@ -309,11 +303,11 @@ def request_password_reset(
     proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
 ):
     """Send password reset email via Supabase.
-    
+
     Args:
         request: Email address for password reset
         proxy: Supabase authentication proxy
-        
+
     Returns:
         Success message
     """
@@ -330,12 +324,12 @@ def confirm_password_reset(
     proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
 ):
     """Update password after reset.
-    
+
     Args:
         request: New password
         token: Reset token from Authorization header
         proxy: Supabase authentication proxy
-        
+
     Returns:
         Success message
     """
@@ -351,13 +345,13 @@ def verify_token(
     proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
 ):
     """Verify if a token is valid.
-    
+
     Used by backend services to validate user tokens.
-    
+
     Args:
         token: Access token to verify
         proxy: Supabase authentication proxy
-        
+
     Returns:
         User info if valid, 401 if invalid
     """

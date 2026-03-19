@@ -113,40 +113,40 @@ def is_supported_iwxxm_version(version: str) -> bool:
 def extract_iwxxm_namespace_version(namespace_uri: str) -> str:
     """
     Extract IWXXM version from namespace URI.
-    
+
     Example:
         "http://icao.int/iwxxm/2023-1" → "2023-1"
         "http://icao.int/iwxxm/2025-2" → "2025-2"
-    
+
     Args:
         namespace_uri: The IWXXM namespace URI
-        
+
     Returns:
         Version string (e.g., "2023-1")
-        
+
     Raises:
         ValueError: If namespace doesn't match expected format
     """
     if not namespace_uri.startswith("http://icao.int/iwxxm/"):
         raise ValueError(f"Invalid IWXXM namespace: {namespace_uri}")
-    
+
     version = namespace_uri.replace("http://icao.int/iwxxm/", "")
     if not is_supported_iwxxm_version(version):
         raise ValueError(f"Unsupported IWXXM version: {version}")
-    
+
     return version
 
 
 def get_namespace_version(xml_string: str) -> str:
     """
     Extract IWXXM version from XML string namespace declaration.
-    
+
     Args:
         xml_string: XML content containing IWXXM namespace
-        
+
     Returns:
         Version string (e.g., "2023-1" or "3.0")
-        
+
     Raises:
         ValueError: If IWXXM namespace not found or unsupported
     """
@@ -155,9 +155,9 @@ def get_namespace_version(xml_string: str) -> str:
     match = re.search(r'xmlns:iwxxm="http://icao\.int/iwxxm/([0-9]+(?:\.[0-9]|-[0-9])?)"', xml_string[:500])
     if not match:
         raise ValueError("IWXXM namespace not found in XML")
-    
+
     version = match.group(1)
     if not is_supported_iwxxm_version(version):
         raise ValueError(f"Unsupported IWXXM version: {version}")
-    
+
     return version

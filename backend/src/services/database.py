@@ -3,12 +3,13 @@ Database connection management for PostgreSQL using SQLAlchemy.
 
 Provides async session management for statistics and other database operations.
 """
-import os
 import logging
-from typing import Optional, AsyncGenerator
+import os
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator, Optional
 
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker, AsyncEngine
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 logger = logging.getLogger(__name__)
 
@@ -20,15 +21,15 @@ _async_session_maker: Optional[async_sessionmaker] = None
 def get_database_url() -> str:
     """
     Get PostgreSQL connection URL from environment.
-    
+
     Supports multiple environment variable formats:
     - DATABASE_URL (standard PostgreSQL URL)
     - SUPABASE_DB_URL (Supabase specific)
     - Individual components (POSTGRES_HOST, POSTGRES_DB, etc.)
-    
+
     Returns:
         PostgreSQL connection URL with SQLAlchemy async dialect
-        
+
     Raises:
         ValueError: If no valid database configuration found
     """
@@ -38,22 +39,22 @@ def get_database_url() -> str:
         # Both are valid SQL Alchemy URLs - psycopg2 dialect becomes asyncpg for async support
         database_url = database_url.replace("postgresql+psycopg2://", "postgresql+asyncpg://")
         return database_url
-    
+
     # Try Supabase-specific URL
     if supabase_url := os.getenv("SUPABASE_DB_URL"):
         supabase_url = supabase_url.replace("postgresql+psycopg2://", "postgresql+asyncpg://")
         return supabase_url
-    
+
     # Build from components
     host = os.getenv("POSTGRES_HOST", "localhost")
     port = os.getenv("POSTGRES_PORT", "5432")
     database = os.getenv("POSTGRES_DB", "postgres")
     user = os.getenv("POSTGRES_USER", "postgres")
     password = os.getenv("POSTGRES_PASSWORD", "")
-    
+
     if not password:
         logger.warning("No PostgreSQL password configured, using passwordless connection")
-    
+
     # Use postgresql+asyncpg:// for SQLAlchemy 2.0 async with asyncpg driver
     return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}"
 
@@ -67,30 +68,30 @@ async def init_db_engine(
 ) -> AsyncEngine:
     """
     Initialize async database engine and session maker.
-    
+
     Args:
         echo: Enable SQLAlchemy logging
         pool_size: Number of connections to keep in pool
         max_overflow: Maximum overflow connections beyond pool_size
         pool_pre_ping: Test connections before using them
         pool_recycle: Recycle connections after this many seconds
-        
+
     Returns:
         AsyncEngine instance
-        
+
     Raises:
         Exception: If connection fails
     """
     global _engine, _async_session_maker
-    
+
     if _engine is not None:
         logger.info("Database engine already initialized")
         return _engine
-    
+
     try:
         database_url = get_database_url()
         logger.info(f"Initializing database engine with URL: {database_url[:50]}...")
-        
+
         # Create async engine
         _engine = create_async_engine(
             database_url,
@@ -109,7 +110,7 @@ async def init_db_engine(
                 "prepared_statement_cache_size": 0,
             },
         )
-        
+
         # Create async session maker
         _async_session_maker = async_sessionmaker(
             _engine,
@@ -117,10 +118,10 @@ async def init_db_engine(
             expire_on_commit=False,
             autoflush=False,
         )
-        
+
         logger.info("Database engine initialized successfully")
         return _engine
-        
+
     except Exception as e:
         logger.error(f"Failed to initialize database engine: {e}", exc_info=True)
         raise
@@ -129,7 +130,7 @@ async def init_db_engine(
 async def close_db_engine():
     """Close database engine and dispose of connections."""
     global _engine, _async_session_maker
-    
+
     if _engine is not None:
         logger.info("Closing database engine")
         await _engine.dispose()
@@ -141,7 +142,7 @@ async def close_db_engine():
 def get_db_engine() -> Optional[AsyncEngine]:
     """
     Get existing database engine.
-    
+
     Returns:
         AsyncEngine instance or None if not initialized
     """
@@ -152,20 +153,20 @@ def get_db_engine() -> Optional[AsyncEngine]:
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     """
     Context manager for acquiring database sessions.
-    
+
     Usage:
         async with get_db_session() as session:
             result = await session.execute(select(SomeModel))
-    
+
     Yields:
         AsyncSession instance
-        
+
     Raises:
         RuntimeError: If engine not initialized
     """
     if _async_session_maker is None:
         raise RuntimeError("Database engine not initialized. Call init_db_engine() first.")
-    
+
     async with _async_session_maker() as session:
         try:
             yield session
@@ -180,13 +181,13 @@ get_db_connection = get_db_session
 async def test_db_connection() -> bool:
     """
     Test database connection.
-    
+
     Returns:
         True if connection successful, False otherwise
     """
     try:
         async with get_db_session() as session:
-            result = await session.execute("SELECT 1")
+            await session.execute(text("SELECT 1"))
             return True
     except Exception as e:
         logger.error(f"Database connection test failed: {e}")
@@ -196,7 +197,7 @@ async def test_db_connection() -> bool:
 async def get_db_stats() -> dict:
     """
     Get database engine statistics.
-    
+
     Returns:
         Dictionary with pool statistics
     """
@@ -205,7 +206,7 @@ async def get_db_stats() -> dict:
             "status": "not_initialized",
             "pool_size": 0,
         }
-    
+
     pool = _engine.pool
     return {
         "status": "active",
@@ -219,7 +220,7 @@ async def get_db_stats() -> dict:
 async def database_lifespan(app):
     """
     FastAPI lifespan context manager for database engine.
-    
+
     Usage:
         app = FastAPI(lifespan=database_lifespan)
     """
@@ -239,17 +240,17 @@ async def database_lifespan(app):
 async def create_tables():
     """
     Create all database tables defined in ORM models.
-    
+
     This is called during application startup to ensure tables exist.
     It's safe to call multiple times - SQLAlchemy will skip existing tables.
     """
     if _engine is None:
         logger.error("Database engine not initialized, cannot create tables")
         return
-    
+
     try:
         from ..models import Base
-        
+
         logger.info("Creating database tables if they don't exist...")
         async with _engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)

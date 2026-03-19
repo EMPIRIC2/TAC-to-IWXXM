@@ -10,7 +10,6 @@ from locust import HttpUser, between, task
 from tests.load.auth import AuthProvider, build_auth_provider
 from tests.load.config import LoadProfile, load_profile
 
-
 SAMPLE_METARS = [
     "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015 RMK AO2 SLP210",
     "METAR EGLL 161200Z 27015KT 9999 FEW040 18/12 Q1015",

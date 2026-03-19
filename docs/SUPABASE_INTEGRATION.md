@@ -7,7 +7,7 @@ The auth service is now **successfully connected to Supabase PostgreSQL** using 
 ## Problem & Solution
 
 ### The Problem
-Your system lacks IPv6 support, and Supabase's direct PostgreSQL connection (`db.ktvxijislbtgqapllmuk.supabase.co`) only provides IPv6 connectivity. This caused DNS resolution failures:
+Your system lacks IPv6 support, and Supabase's direct PostgreSQL connection (`db.YOUR_PROJECT_REF.supabase.co`) only provides IPv6 connectivity. This caused DNS resolution failures:
 ```
 socket.gaierror: [Errno 11001] getaddrinfo failed
 ```
@@ -117,7 +117,7 @@ All services are **healthy and running**:
 
 ### 1. Direct Connection (IPv6 Only) ❌
 ```
-postgresql://postgres:PASSWORD@db.ktvxijislbtgqapllmuk.supabase.co:5432/postgres
+postgresql://postgres:PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres
 ```
 - **Pros**: Low latency, no pooler overhead
 - **Cons**: IPv6 only, fails on systems without IPv6
@@ -125,7 +125,7 @@ postgresql://postgres:PASSWORD@db.ktvxijislbtgqapllmuk.supabase.co:5432/postgres
 
 ### 2. Session Pooler (IPv4) ✅ Alternative
 ```
-postgresql://postgres.ktvxijislbtgqapllmuk:PASSWORD@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+postgresql://postgres.YOUR_PROJECT_REF:PASSWORD@aws-0-us-west-2.pooler.supabase.com:5432/postgres
 ```
 - **Port**: 5432 (Session mode)
 - **Use Case**: Long-lived connections, persistent servers
@@ -134,7 +134,7 @@ postgresql://postgres.ktvxijislbtgqapllmuk:PASSWORD@aws-0-us-west-2.pooler.supab
 
 ### 3. Transaction Pooler (IPv4) ✅ Currently Used
 ```
-postgresql://postgres.ktvxijislbtgqapllmuk:PASSWORD@aws-0-us-west-2.pooler.supabase.com:6543/postgres
+postgresql://postgres.YOUR_PROJECT_REF:PASSWORD@aws-0-us-west-2.pooler.supabase.com:6543/postgres
 ```
 - **Port**: 6543 (Transaction mode)
 - **Use Case**: Stateless apps, serverless functions, short-lived connections
@@ -145,7 +145,7 @@ postgresql://postgres.ktvxijislbtgqapllmuk:PASSWORD@aws-0-us-west-2.pooler.supab
 
 ### If connection fails with "Tenant or user not found"
 1. Verify the **region** is correct (us-west-2, not us-east-1)
-2. Verify the **project reference** is correct (ktvxijislbtgqapllmuk)
+2. Verify the **project reference** is correct (YOUR_PROJECT_REF)
 3. Verify the **password** hasn't been reset
 4. Check Supabase dashboard: Settings → Database → Connection pooling
 

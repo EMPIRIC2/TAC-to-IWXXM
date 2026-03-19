@@ -1,0 +1,41 @@
+---
+name: GitHub YAML Lint
+
+on:
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - .github/**/*.yml
+      - .github/**/*.yaml
+  push:
+    branches: [main, dev]
+    paths:
+      - .github/**/*.yml
+      - .github/**/*.yaml
+  workflow_dispatch:
+
+jobs:
+  github-yaml-lint:
+    name: GitHub YAML Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Lint GitHub Actions workflows (actionlint)
+        uses: reviewdog/action-actionlint@v1
+
+      - name: Lint YAML in .github (yamllint)
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: .github
+          config_data: |
+            extends: default
+            rules:
+              line-length:
+                max: 200
+                level: warning
+              truthy: disable

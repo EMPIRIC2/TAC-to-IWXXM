@@ -15,7 +15,6 @@ All other XML elements and attributes must match exactly.
 Failures generate detailed JSON diff reports for root cause analysis.
 """
 
-import json
 import re
 from pathlib import Path
 from typing import List, Tuple
@@ -24,12 +23,13 @@ import pytest
 
 from src.utilities.conversion import convert_metar_tac_with_metadata
 
+
 def extract_iwxxm_version(xml_content: str) -> str:
     """Extract IWXXM version from XML namespace URI.
-    
+
     Args:
         xml_content: XML string containing IWXXM namespace declaration
-        
+
     Returns:
         Version string like "2023-1" or "2025-2", defaults to "2025-2" if not found
     """
@@ -37,12 +37,12 @@ def extract_iwxxm_version(xml_content: str) -> str:
     match = re.search(r'xmlns:iwxxm="http://icao\.int/iwxxm/(\d{4}-\d+)"', xml_content)
     if match:
         return match.group(1)
-    
+
     # Fallback: check xsi:schemaLocation
     match = re.search(r'http://icao\.int/iwxxm/(\d{4}-\d+)/iwxxm\.xsd', xml_content)
     if match:
         return match.group(1)
-    
+
     # Default to latest version
     return "2025-2"
 
@@ -127,15 +127,15 @@ class TestMetarConversionComprehensive:
         # Reference time ensures trend forecast dates computed from observation, not current date
         expected_xml = xml_file.read_text()
         iwxxm_version = extract_iwxxm_version(expected_xml)
-        
+
         reference_time = None
         try:
             expected_root = ET.fromstring(expected_xml)
-            
+
             # Extract namespace URI dynamically instead of hardcoding
             ns_match = re.search(r'xmlns:iwxxm="([^"]+)"', expected_xml)
             iwxxm_ns = ns_match.group(1) if ns_match else 'http://icao.int/iwxxm/2023-1'
-            
+
             # Find iwxxm:issueTime/gml:TimeInstant/gml:timePosition
             namespaces = {
                 'iwxxm': iwxxm_ns,
@@ -151,7 +151,7 @@ class TestMetarConversionComprehensive:
         # Convert METAR TAC to IWXXM XML with enriched aerodrome metadata
         # Use detected version for compatibility + test mode for WMO reference compliance
         converted_xml, validation_result = convert_metar_tac_with_metadata(
-            tac_text, 
+            tac_text,
             iwxxm_version=iwxxm_version,  # Auto-detected from reference XML
             reference_time=reference_time,
             use_test_overrides=True,  # Use WMO reference datum expectations
@@ -161,7 +161,7 @@ class TestMetarConversionComprehensive:
 
         # Read expected XML
         expected_xml_str = xml_file.read_text()
-        
+
         # Parse both expected and converted XML
         expected_elem = parse_xml(expected_xml_str)
         actual_elem = parse_xml(converted_xml)
@@ -224,13 +224,12 @@ class TestMetarConversionComprehensive:
         This test generates JSON reports for 2025-2 conversions using
         aviation-weather-service data, allowing comparison with WMO reference data.
         Reports are always generated regardless of pass/fail status for analysis.
-        
+
         Args:
             tac_file: Path to METAR TAC input file
             xml_file: Path to expected IWXXM XML output file (2023-1 reference)
             amendment_version: Amendment version (e.g., "Amd79-80-2023")
         """
-        import xml.etree.ElementTree as ET
 
         from _comparative_xml_utils import (
             compare_xml_with_tolerance,
@@ -255,7 +254,7 @@ class TestMetarConversionComprehensive:
 
         # Read expected XML (2023-1 reference)
         expected_xml_str = xml_file.read_text()
-        
+
         # Parse both expected and converted XML
         expected_elem = parse_xml(expected_xml_str)
         actual_elem = parse_xml(converted_xml)

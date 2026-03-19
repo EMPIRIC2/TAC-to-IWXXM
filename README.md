@@ -1,5 +1,7 @@
 # METAR to IWXXM Converter
 
+[![CI/CD](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/workflows/ci-cd.yml)
+[![E2E](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/workflows/e2e-tests.yml)
 [![codecov](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM/graph/badge.svg)](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM)
 
 Modern React-based web application with microservices backend to decode METAR/SPECI TAC and serialize IWXXM XML using the GIFTs submodule.

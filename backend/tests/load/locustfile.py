@@ -6,12 +6,6 @@ from locust import events
 
 from tests.load.config import load_profile
 from tests.load.metrics import on_locust_init, on_locust_request  # noqa: F401
-from tests.load.scenarios import (
-    ConversionApiUser,
-    EvaluationApiUser,
-    PublicApiUser,
-    ValidationApiUser,
-)
 
 
 @events.test_start.add_listener

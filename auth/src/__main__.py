@@ -1,20 +1,20 @@
 """Entry point for running the auth service via `python -m auth`."""
 import logging
-import time
 import os
-from typing import List
+import time
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from pydantic import BaseModel
+from typing import List
 
 # Load environment variables FIRST
 from dotenv import load_dotenv
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
 load_dotenv()
 
-from auth.api_supabase import router, legacy_router
-from auth.observability import setup_logging, install_fastapi_observability
+from auth.api_supabase import legacy_router, router
+from auth.observability import install_fastapi_observability, setup_logging
 
 # Configure logging
 setup_logging("auth")
@@ -70,7 +70,7 @@ async def lifespan(app: FastAPI):
     logger.info("=" * 80)
     logger.info("Service Configuration:")
     logger.info(f"  Port: {os.getenv('PORT', '8003')}")
-    logger.info(f"  Host: 0.0.0.0 (all interfaces)")
+    logger.info("  Host: 0.0.0.0 (all interfaces)")
     logger.info("")
     logger.info("Environment Variables:")
     logger.info(f"  SUPABASE_URL: {os.getenv('SUPABASE_URL', 'NOT SET')}")
@@ -98,9 +98,9 @@ async def lifespan(app: FastAPI):
     logger.info("=" * 80)
     logger.info("✓ AUTH SERVICE READY - Listening for requests...")
     logger.info("=" * 80)
-    
+
     yield
-    
+
     # Shutdown
     logger.info("🛑 AUTH SERVICE SHUTTING DOWN")
 
@@ -120,18 +120,18 @@ logger.info("Initializing Auth Service with CORS middleware...")
 @app.middleware("http")
 async def log_requests_and_cors(request: Request, call_next):
     start_time = time.time()
-    
+
     # Detailed logging for CORS preflight requests
     origin = request.headers.get("origin", "NO-ORIGIN")
     method = request.method
-    
+
     if method == "OPTIONS":
         logger.warning("=" * 80)
-        logger.warning(f"🔍 CORS PREFLIGHT REQUEST DETECTED")
+        logger.warning("🔍 CORS PREFLIGHT REQUEST DETECTED")
         logger.warning(f"  Origin: {origin}")
         logger.warning(f"  Method: {method}")
         logger.warning(f"  Path: {request.url.path}")
-        logger.warning(f"  All Headers:")
+        logger.warning("  All Headers:")
         for key, value in request.headers.items():
             logger.warning(f"    {key}: {value}")
         logger.warning("=" * 80)
@@ -140,24 +140,24 @@ async def log_requests_and_cors(request: Request, call_next):
         logger.info(f"→ [{request.method}] {request.url.path} from {request.client.host}")
         logger.debug(f"  Origin: {origin}")
         logger.debug(f"  Headers: {dict(request.headers)}")
-    
+
     # Process request
     try:
         response = await call_next(request)
         duration = (time.time() - start_time) * 1000
-        
+
         if method == "OPTIONS":
             logger.warning("=" * 80)
-            logger.warning(f"✓ CORS PREFLIGHT RESPONSE")
+            logger.warning("✓ CORS PREFLIGHT RESPONSE")
             logger.warning(f"  Status: {response.status_code}")
-            logger.warning(f"  Response Headers:")
+            logger.warning("  Response Headers:")
             for key, value in response.headers.items():
                 if key.lower().startswith("access-control"):
                     logger.warning(f"    {key}: {value}")
             logger.warning("=" * 80)
         else:
             logger.info(f"← [{request.method}] {request.url.path} - {response.status_code} ({duration:.2f}ms)")
-        
+
         return response
     except Exception as e:
         duration = (time.time() - start_time) * 1000

@@ -1,12 +1,12 @@
 """Tests for validation router endpoints."""
 
+from unittest.mock import MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock
 
 from src.api import app
 from src.utilities.security import verify_supabase_token
-from src.schemas.validation import ValidationLayer, ValidationLevel
 
 
 @pytest.fixture
@@ -14,7 +14,7 @@ def client():
     """Create test client with mocked authentication."""
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project"}
-    
+
     app.dependency_overrides[verify_supabase_token] = override_verify_token
     client = TestClient(app)
     yield client
@@ -33,7 +33,7 @@ class TestValidationLayersEndpoint:
         """Test layers response has expected structure."""
         response = client.get("/api/v1/validation/layers")
         data = response.json()
-        
+
         assert "layers" in data
         assert isinstance(data["layers"], list)
         assert len(data["layers"]) == 7
@@ -42,7 +42,7 @@ class TestValidationLayersEndpoint:
         """Test each layer has required fields."""
         response = client.get("/api/v1/validation/layers")
         data = response.json()
-        
+
         for layer in data["layers"]:
             assert "layer" in layer
             assert "description" in layer
@@ -55,7 +55,7 @@ class TestValidationLayersEndpoint:
         """Test that response includes all validation layer types."""
         response = client.get("/api/v1/validation/layers")
         data = response.json()
-        
+
         layer_names = [layer["layer"] for layer in data["layers"]]
         expected = [
             "airport_icao",
@@ -66,20 +66,20 @@ class TestValidationLayersEndpoint:
             "gml_references",
             "wmo_codelists"
         ]
-        
+
         assert set(layer_names) == set(expected)
 
     def test_layers_blocking_status(self, client):
         """Test blocking status for critical layers."""
         response = client.get("/api/v1/validation/layers")
         data = response.json()
-        
+
         layer_dict = {layer["layer"]: layer for layer in data["layers"]}
-        
+
         # TAC syntax layers should be blocking
         assert layer_dict["airport_icao"]["blocking"] is True
         assert layer_dict["tac_syntax"]["blocking"] is True
-        
+
         # XML validation layers should not be blocking
         assert layer_dict["xml_wellformed"]["blocking"] is False
         assert layer_dict["schematron"]["blocking"] is False
@@ -96,7 +96,7 @@ class TestValidateSingleEndpoint:
         )
         assert response.status_code == 200
         data = response.json()
-        
+
         assert "passed" in data
         assert "layers_validated" in data
         assert "total_issues" in data
@@ -109,7 +109,7 @@ class TestValidateSingleEndpoint:
             json={"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
         )
         data = response.json()
-        
+
         assert isinstance(data["passed"], bool)
         assert isinstance(data["layers_validated"], list)
         assert isinstance(data["total_issues"], int)
@@ -125,7 +125,7 @@ class TestValidateSingleEndpoint:
         )
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["passed"] is False
         assert data["total_issues"] > 0
 
@@ -137,7 +137,7 @@ class TestValidateSingleEndpoint:
         )
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["passed"] is False
 
     def test_validate_empty_content(self, client):
@@ -163,16 +163,16 @@ class TestValidateSingleEndpoint:
             mock_instance = MagicMock()
             mock_instance.validate_all_layers.side_effect = RuntimeError("Service error")
             mock_service_class.return_value = mock_instance
-            
+
             # Need to get fresh service
             import src.routers.validation as val_router
             val_router._validation_service = mock_instance
-            
+
             response = client.post(
                 "/api/v1/validation/validate",
                 json={"content": "METAR FAOR 101200Z"}
             )
-            
+
             assert response.status_code == 500
             assert "error" in response.json()["detail"].lower()
 
@@ -183,7 +183,7 @@ class TestValidateSingleEndpoint:
             json={"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
         )
         data = response.json()
-        
+
         # Valid METAR should return results
         if response.status_code == 200 and "results" in data:
             assert len(data["results"]) > 0
@@ -209,7 +209,7 @@ class TestValidateMultipleEndpoint:
         )
         # Should return success or validation error
         assert response.status_code in [200, 400, 422, 500]
-        
+
         if response.status_code == 200:
             data = response.json()
             assert "total_items" in data
@@ -229,7 +229,7 @@ class TestValidateMultipleEndpoint:
         )
         # Should succeed or fail gracefully
         assert response.status_code in [200, 400, 422, 500]
-        
+
         if response.status_code == 200:
             data = response.json()
             assert data["total_items"] == 3
@@ -246,7 +246,7 @@ class TestValidateMultipleEndpoint:
                 ]
             }
         )
-        
+
         if response.status_code == 200:
             data = response.json()
             # Verify response structure if successful
@@ -265,7 +265,7 @@ class TestValidateMultipleEndpoint:
                 ]
             }
         )
-        
+
         if response.status_code == 200:
             data = response.json()
             # At least the first layer should pass for valid content
@@ -283,7 +283,7 @@ class TestValidateMultipleEndpoint:
                 ]
             }
         )
-        
+
         if response.status_code == 200:
             data = response.json()
             assert data["total_items"] == 2
@@ -328,7 +328,7 @@ class TestValidateMultipleEndpoint:
                 ]
             }
         )
-        
+
         if response.status_code == 200:
             data = response.json()
             assert data["total_items"] == 2
