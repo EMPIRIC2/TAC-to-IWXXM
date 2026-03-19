@@ -14,13 +14,35 @@ env:
   FRONTEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/frontend
   FRONTEND_SOURCE_REPO: https://github.com/joseph-c-mcguire/Metartoiwxxmfrontend.git
   RENDER_DEPLOY_MODE: image
-  FRONTEND_VITE_SUPABASE_URL: https://YOUR_PROJECT_REF.supabase.co
-  FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: sb_publishable_eqkNmJv86m9u7Gmym9Wf8Q_NC1fUZ8x
+  FRONTEND_VITE_SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
+  FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
   FRONTEND_VITE_APP_URL: https://metar-to-iwxxm-frontend-v4-web.onrender.com
   FRONTEND_VITE_BACKEND_URL: https://metar-to-iwxxm-api.onrender.com
   FRONTEND_VITE_AUTH_SERVICE_URL: https://metar-to-iwxxm-auth-v2.onrender.com
 
 jobs:
+  # ============================================================================
+  # CONFIG GUARD — fail fast if placeholder Supabase credentials are committed
+  # ============================================================================
+  config-guard:
+    runs-on: ubuntu-latest
+    name: Config Placeholder Guard
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pytest
+        run: pip install pytest --quiet
+
+      - name: Run placeholder regression tests
+        run: pytest tests/test_config_placeholders.py -v
+
   # ============================================================================
   # BACKEND - Python Tests & Coverage
   # ============================================================================
@@ -358,7 +380,7 @@ jobs:
   coverage-enforcement:
     runs-on: ubuntu-latest
     name: Test Result Aggregation
-    needs: [backend-tests, auth-tests, gifts-tests, frontend-tests]
+    needs: [config-guard, backend-tests, auth-tests, gifts-tests, frontend-tests]
     if: always()
 
     steps:
@@ -369,6 +391,7 @@ jobs:
             echo ""
             echo "| Project | Status |"
             echo "|---------|--------|"
+            echo "| Config Guard | ${{ needs.config-guard.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| Backend | ${{ needs.backend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| Auth Service | ${{ needs.auth-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| GIFTs | ${{ needs.gifts-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
@@ -380,13 +403,15 @@ jobs:
 
       - name: Enforce required test jobs
         run: |
+          CONFIG=${{ needs.config-guard.result }}
           BACKEND=${{ needs.backend-tests.result }}
           AUTH=${{ needs.auth-tests.result }}
           FRONTEND=${{ needs.frontend-tests.result }}
           GIFTS=${{ needs.gifts-tests.result }}
 
-          if [ "$BACKEND" != "success" ] || [ "$AUTH" != "success" ] || [ "$FRONTEND" != "success" ] || [ "$GIFTS" != "success" ]; then
+          if [ "$CONFIG" != "success" ] || [ "$BACKEND" != "success" ] || [ "$AUTH" != "success" ] || [ "$FRONTEND" != "success" ] || [ "$GIFTS" != "success" ]; then
             echo "❌ Required test jobs failed"
+            [ "$CONFIG" != "success" ] && echo "  - Config Guard: $CONFIG"
             [ "$BACKEND" != "success" ] && echo "  - Backend: $BACKEND"
             [ "$AUTH" != "success" ] && echo "  - Auth Service: $AUTH"
             [ "$FRONTEND" != "success" ] && echo "  - Frontend: $FRONTEND"

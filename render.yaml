@@ -87,10 +87,12 @@ services:
         value: http://metar-to-iwxxm-api:10000
       - key: AUTH_UPSTREAM
         value: http://metar-to-iwxxm-auth-v2:8000
+      # Set these in the Render dashboard; sync:false prevents blueprint_sync
+      # from overwriting the correct live values with placeholder strings.
       - key: VITE_SUPABASE_URL
-        value: https://YOUR_PROJECT_REF.supabase.co
+        sync: false
       - key: VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
-        value: sb_publishable_eqkNmJv86m9u7Gmym9Wf8Q_NC1fUZ8x
+        sync: false
 
   - type: pserv
     name: metar-to-iwxxm-loki
