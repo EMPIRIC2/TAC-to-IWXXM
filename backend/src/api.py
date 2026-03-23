@@ -1076,6 +1076,25 @@ async def convert(
                     location=getattr(validation_issue, "location", None),
                 )
 
+    def emit_recent_wx_issues(source: str, norm_warnings: List[dict]) -> None:
+        """Emit structured conversion issues for recent-weather rewrites."""
+        for warning in norm_warnings:
+            add_issue(
+                source=source,
+                message=(
+                    f"Recent weather token '{warning['original']}' rewritten to "
+                    f"'{warning['replacement']}' for WMO D-6 compliance "
+                    f"(truncated descriptor-only code; UP phenomenon added)."
+                ),
+                severity=ConversionIssueSeverity.INFO,
+                hint=(
+                    f"'{warning['original']}' is not a valid Annex 3 recent weather code. "
+                    f"Using '{warning['replacement']}' (unidentified precipitation) instead."
+                ),
+                code="RECENT_WX_NORMALIZED",
+                layer="tac_normalization",
+            )
+
     # Initialize validation service for input validation
     validation_service = ValidationService()
 
@@ -1346,8 +1365,7 @@ async def convert(
         manual_name = f"{manual_source}.txt"
         start_time = None
         translation_id = None
-        # Pre-normalize truncated recent-weather tokens before early validation
-        # so manual inputs like RESH don't fail while valid forms still pass.
+        # Normalize once and share this result across validation and conversion.
         _normalized_entry, _norm_warnings = normalize_recent_weather_tokens(manual_entry)
 
         try:
@@ -1425,23 +1443,7 @@ async def convert(
             import time
             start_time = time.perf_counter()
 
-            # Warn when manual recent-weather tokens were normalized.
-            for _w in _norm_warnings:
-                add_issue(
-                    source=manual_source,
-                    message=(
-                        f"Recent weather token '{_w['original']}' rewritten to "
-                        f"'{_w['replacement']}' for WMO D-6 compliance "
-                        f"(truncated descriptor-only code; UP phenomenon added)."
-                    ),
-                    severity=ConversionIssueSeverity.INFO,
-                    hint=(
-                        f"'{_w['original']}' is not a valid Annex 3 recent weather code. "
-                        f"Using '{_w['replacement']}' (unidentified precipitation) instead."
-                    ),
-                    code="RECENT_WX_NORMALIZED",
-                    layer="tac_normalization",
-                )
+            emit_recent_wx_issues(manual_source, _norm_warnings)
 
             xml_text, validation_result_from_conversion = convert_metar_tac_with_metadata(
                 _normalized_entry,

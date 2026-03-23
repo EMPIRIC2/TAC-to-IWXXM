@@ -1,4 +1,4 @@
-import { expect, test } from '../frontend/node_modules/@playwright/test';
+import { expect, test } from '@playwright/test';
 
 const AUTH_SERVICE_URL = process.env.PLAYWRIGHT_AUTH_SERVICE_URL ?? 'http://localhost:8003';
 
@@ -22,7 +22,8 @@ test.describe('Auth Service Integration', () => {
     const response = await request.get(`${AUTH_SERVICE_URL}/health`, { timeout: 5000 });
 
     expect(response.ok()).toBe(true);
-    await expect(response.json()).resolves.toMatchObject({
+    const body = await response.json();
+    expect(body).toMatchObject({
       service: 'auth',
       status: 'healthy',
     });

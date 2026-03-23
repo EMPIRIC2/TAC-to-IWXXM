@@ -193,5 +193,7 @@ def test_lenient_false_resh_strict_behaviour():
         validate=False,
         lenient=True,
     )
+    # Strict mode should not silently mirror lenient output.
+    assert result_strict != result_lenient
     # Lenient result should not contain a TAC failure marker
     assert "translationFailedTAC" not in result_lenient

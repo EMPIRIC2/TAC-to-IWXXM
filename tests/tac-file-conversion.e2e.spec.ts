@@ -1,4 +1,4 @@
-import { expect, test } from '../frontend/node_modules/@playwright/test';
+import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
   loginAndOpenConverter,

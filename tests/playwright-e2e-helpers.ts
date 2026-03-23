@@ -1,4 +1,4 @@
-import { expect, Page } from '../frontend/node_modules/@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 export const ADMIN_EMAIL = process.env.PLAYWRIGHT_ADMIN_EMAIL ?? 'admin@metar.local';
 export const ADMIN_PASSWORD = process.env.PLAYWRIGHT_ADMIN_PASSWORD ?? 'Admin123456!';

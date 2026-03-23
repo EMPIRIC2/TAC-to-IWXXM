@@ -3,7 +3,7 @@ COMPOSE := docker compose
 
 .PHONY: lint lint-backend lint-auth lint-frontend lint-gifts \
 	lint-fix lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
-	dev-servers dev-servers-kill \
+	dev dev-kill dev-servers dev-servers-kill \
 	setup-backend setup-auth setup-frontend setup-gifts \
 	test-unit test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
 	test-e2e-playwright \
@@ -45,6 +45,10 @@ dev:
 dev-kill:
 	bash ./start-dev-servers.sh --kill
 
+dev-servers: dev
+
+dev-servers-kill: dev-kill
+
 setup-backend:
 	cd backend && python3 -m pip install -e .
 
@@ -75,7 +79,7 @@ test-unit-gifts:
 	cd GIFTs && python3 -m pytest tests/ --cov=gifts --cov-config=pyproject.toml --cov-report=xml:coverage.xml --cov-report=term-missing --cov-fail-under=95 -v
 
 test-e2e-playwright:
-	cd frontend && npx playwright test
+	cd frontend && NODE_PATH=./node_modules npx playwright test
 
 coverage-backend:
 	cd backend && python3 -m pytest tests/unit --cov=src --cov-config=pyproject.toml --cov-branch --cov-report=xml:coverage.xml --cov-report=term-missing -v

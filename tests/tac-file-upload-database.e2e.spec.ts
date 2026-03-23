@@ -1,8 +1,24 @@
-import { expect, test } from '../frontend/node_modules/@playwright/test';
+import { expect, test } from '@playwright/test';
 import * as fs from 'fs';
+import * as path from 'path';
 import { loginAndOpenConverter } from './playwright-e2e-helpers';
 
-const tacFilesDir = '/root/metar-to-IWXXM/data/iwxxm-translation/Amd79-80-2023/metar';
+const DEFAULT_TAC_RELATIVE_PATH = 'data/iwxxm-translation/Amd79-80-2023/metar';
+
+function resolveTacFilesDir(): string {
+  const configured = process.env.PLAYWRIGHT_TAC_FIXTURES_DIR;
+  if (configured && fs.existsSync(configured)) {
+    return configured;
+  }
+
+  const candidateFromRepoRoot = path.resolve(process.cwd(), DEFAULT_TAC_RELATIVE_PATH);
+  if (fs.existsSync(candidateFromRepoRoot)) {
+    return candidateFromRepoRoot;
+  }
+
+  const candidateFromFrontendCwd = path.resolve(process.cwd(), '..', DEFAULT_TAC_RELATIVE_PATH);
+  return candidateFromFrontendCwd;
+}
 
 type TacFixture = {
   content: string;
@@ -11,6 +27,7 @@ type TacFixture = {
 };
 
 function getTacFiles(): TacFixture[] {
+  const tacFilesDir = resolveTacFilesDir();
   if (!fs.existsSync(tacFilesDir)) {
     return [];
   }
@@ -41,7 +58,7 @@ test.describe('TAC File Upload to Database', () => {
     const testFile = tacFiles[0];
     await loginAndOpenConverter(page);
 
-    await page.route('**/functions/v1/make-server-2e3cda33/database/upload', async (route) => {
+    await page.route('**/functions/v1/**/database/upload', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',

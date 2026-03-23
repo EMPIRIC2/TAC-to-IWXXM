@@ -20,7 +20,7 @@ that the rest of the conversion pipeline continues unchanged.
 from __future__ import annotations
 
 import re
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 # Matches exactly RE + descriptor (SH or FZ) with nothing after — these are
 # the only descriptor-only tokens that are both (a) observed in the wild and
@@ -30,7 +30,7 @@ _TRUNCATED_REWX_RE = re.compile(r'^RE(SH|FZ)$', re.IGNORECASE)
 
 def normalize_recent_weather_tokens(
     tac_text: str,
-) -> Tuple[str, List[dict]]:
+) -> Tuple[str, List[Dict[str, Any]]]:
     """Rewrite truncated recent-weather tokens to WMO D-6 compliant forms.
 
     Operates at the token (whitespace-delimited word) level so that valid
@@ -48,7 +48,7 @@ def normalize_recent_weather_tokens(
         list of dicts with keys ``index``, ``original``, ``replacement``, and
         ``rule``.  The list is empty when no rewrites were made.
     """
-    warnings: List[dict] = []
+    warnings: List[Dict[str, Any]] = []
 
     # Preserve leading/trailing whitespace on the outer string but work on
     # individual tokens so we don't alter separators inside the message.
@@ -56,10 +56,17 @@ def normalize_recent_weather_tokens(
     if not stripped:
         return tac_text, warnings
 
-    tokens = stripped.split(' ')
-    result_tokens: List[str] = []
+    # Split into alternating tokens and whitespace so we can rewrite only
+    # tokens while preserving all original separators exactly.
+    parts = re.split(r'(\s+)', stripped)
+    token_index = 0
 
-    for idx, token in enumerate(tokens):
+    for i, part in enumerate(parts):
+        # Odd entries are captured separators from the split regex.
+        if i % 2 == 1:
+            continue
+
+        token = part
         # Some parsers/users append '=' to the last token; strip it before
         # matching so we can still recognise e.g. 'RESH=' as a RESH token.
         trailing_eq = token.endswith('=')
@@ -79,18 +86,25 @@ def normalize_recent_weather_tokens(
             )
 
             warnings.append({
-                'index': idx,
+                'index': token_index,
                 'original': token,
                 'replacement': replacement,
                 'rule': rule,
             })
-            result_tokens.append(replacement)
-        else:
-            result_tokens.append(token)
+            parts[i] = replacement
 
-    normalized = ' '.join(result_tokens)
+        token_index += 1
+
+    normalized = ''.join(parts)
     # Re-attach any leading/trailing whitespace from the original input so we
     # don't silently alter strings that the caller may be sensitive about.
     leading = tac_text[:len(tac_text) - len(tac_text.lstrip())]
     trailing = tac_text[len(tac_text.rstrip()):]
     return leading + normalized + trailing, warnings
+
+
+def normalize_recent_weather_for_tac(
+    tac_text: str,
+) -> Tuple[str, List[Dict[str, Any]]]:
+    """Centralized wrapper for TAC recent-weather normalization."""
+    return normalize_recent_weather_tokens(tac_text)

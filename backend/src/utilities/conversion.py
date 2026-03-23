@@ -275,12 +275,46 @@ def _lookup_aerodrome(icao: str, use_test_overrides: bool = False):
     return None
 
 
-__all__ = ["convert_metar_tac", "ConversionError", "convert_metar_tac_with_metadata", "normalize_recent_weather_tokens"]
-
 try:
-    from .metar_normalizer import normalize_recent_weather_tokens  # noqa: E402
+    from .metar_normalizer import (  # noqa: E402
+        normalize_recent_weather_for_tac,
+        normalize_recent_weather_tokens,
+    )
 except ImportError:
-    from metar_normalizer import normalize_recent_weather_tokens  # type: ignore  # noqa: E402
+    from metar_normalizer import (  # type: ignore  # noqa: E402
+        normalize_recent_weather_for_tac,
+        normalize_recent_weather_tokens,
+    )
+
+__all__ = [
+    "convert_metar_tac",
+    "ConversionError",
+    "convert_metar_tac_with_metadata",
+    "normalize_recent_weather_tokens",
+]
+
+
+def _apply_recent_weather_normalization(
+    tac_text: str,
+    *,
+    lenient: bool,
+) -> str:
+    """Optionally normalize recent-weather tokens and log rewrites."""
+    if not lenient:
+        return tac_text
+
+    normalized_tac, norm_warnings = normalize_recent_weather_for_tac(tac_text)
+    for warning in norm_warnings:
+        logger.warning(
+            "METAR recent-weather pre-normalization: '%s' at token index %d "
+            "rewritten to '%s' (rule: %s)",
+            warning["original"],
+            warning["index"],
+            warning["replacement"],
+            warning["rule"],
+        )
+
+    return normalized_tac
 
 
 def convert_metar_tac_with_metadata(
@@ -386,15 +420,7 @@ def convert_metar_tac_with_metadata(
                 time.gmtime = original_gmtime
                 time.time = original_time
 
-        # Pre-normalize non-standard recent-weather tokens (lenient mode)
-        if lenient:
-            tac_text, _norm_warnings = normalize_recent_weather_tokens(tac_text)
-            for w in _norm_warnings:
-                logger.warning(
-                    "METAR recent-weather pre-normalization: '%s' at token index %d "
-                    "rewritten to '%s' (rule: %s)",
-                    w['original'], w['index'], w['replacement'], w['rule'],
-                )
+        tac_text = _apply_recent_weather_normalization(tac_text, lenient=lenient)
 
         # Decode with patched time if reference_time provided
         with patched_gmtime(reference_time):
