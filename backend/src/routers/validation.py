@@ -92,8 +92,8 @@ class BatchValidationRequest(BaseModel):
     items: List[ValidationRequest] = Field(
         ...,
         description="Items to validate",
-        min_items=1,
-        max_items=100,
+        min_length=1,
+        max_length=100,
     )
     layers: Optional[List[ValidationLayer]] = Field(
         None,

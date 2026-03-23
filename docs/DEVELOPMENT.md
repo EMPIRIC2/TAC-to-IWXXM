@@ -333,15 +333,51 @@ pytest --cov=src --cov-report=html
 
 ### Integration Tests
 ```bash
-# Playwright browser E2E (run from repository root)
+# Playwright browser E2E — full suite (requires admin credentials)
 make test-e2e-playwright
 
-# Equivalent direct command
+# Credential-free smoke subset (safe for CI / local dev without secrets)
+make test-e2e-playwright-smoke
+
+# Equivalent direct command (full suite)
 cd frontend && npx playwright test
 ```
 
 Playwright browser E2E specs are located in the repository-level `tests/` directory (`*.e2e.spec.ts`).
 The Playwright runner starts all required local services through `start-dev-servers.sh` for full-stack coverage.
+
+#### Test suites
+
+| Target | Admin credentials | Tests |
+|---|---|---|
+| `test-e2e-playwright` | Required | All 21 tests (login flows, admin nav, file upload) |
+| `test-e2e-playwright-smoke` | **Not required** | 9 tests: service health, auth integration, mocked conversions |
+
+`tests/00-preflight.e2e.spec.ts` sorts first alphabetically and runs before any login-dependent
+spec file.  When credentials are missing or wrong it fails immediately with a single descriptive
+message rather than producing 12+ repeated timeout failures from every test that calls
+`loginAsAdmin`.
+
+### Playwright E2E Environment Controls
+
+- `PLAYWRIGHT_ADMIN_EMAIL`, `PLAYWRIGHT_ADMIN_PASSWORD`: required for admin authentication flows.
+- `PLAYWRIGHT_TAC_FIXTURES_DIR`: override TAC fixture location for upload tests.
+- `PLAYWRIGHT_REQUIRE_TAC_FIXTURES=1`: fail fast if TAC fixtures are unavailable (default on CI).
+- `PLAYWRIGHT_SERVICE_WAIT_TIMEOUT_MS`: startup service health wait timeout in milliseconds.
+- `PLAYWRIGHT_FRONTEND_HEALTH_URL`, `PLAYWRIGHT_BACKEND_HEALTH_URL`, `PLAYWRIGHT_AUTH_HEALTH_URL`: optional health endpoint overrides.
+- `PLAYWRIGHT_FORCE_SERVICE_HEALTH_WAIT=1`: force health checks for non-local base URLs.
+- `PLAYWRIGHT_SKIP_LOCAL_HEALTH_WAIT=1`: disable startup health checks.
+
+Example:
+
+```bash
+cd frontend
+export PLAYWRIGHT_ADMIN_EMAIL="admin@example.com"
+export PLAYWRIGHT_ADMIN_PASSWORD="<password>"
+export PLAYWRIGHT_REQUIRE_TAC_FIXTURES=1
+export PLAYWRIGHT_SERVICE_WAIT_TIMEOUT_MS=180000
+npx playwright test
+```
 
 ---
 

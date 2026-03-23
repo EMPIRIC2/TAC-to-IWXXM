@@ -4,10 +4,17 @@ import * as path from 'path';
 import { loginAndOpenConverter } from './playwright-e2e-helpers';
 
 const DEFAULT_TAC_RELATIVE_PATH = 'data/iwxxm-translation/Amd79-80-2023/metar';
+const REQUIRE_TAC_FIXTURES =
+  process.env.PLAYWRIGHT_REQUIRE_TAC_FIXTURES === '1' || process.env.CI === 'true';
 
-function resolveTacFilesDir(): string {
+function resolveTacFilesDir(): string | null {
   const configured = process.env.PLAYWRIGHT_TAC_FIXTURES_DIR;
-  if (configured && fs.existsSync(configured)) {
+  if (configured) {
+    if (!fs.existsSync(configured)) {
+      throw new Error(
+        `PLAYWRIGHT_TAC_FIXTURES_DIR is set but does not exist: ${configured}`
+      );
+    }
     return configured;
   }
 
@@ -17,7 +24,22 @@ function resolveTacFilesDir(): string {
   }
 
   const candidateFromFrontendCwd = path.resolve(process.cwd(), '..', DEFAULT_TAC_RELATIVE_PATH);
-  return candidateFromFrontendCwd;
+  if (fs.existsSync(candidateFromFrontendCwd)) {
+    return candidateFromFrontendCwd;
+  }
+
+  if (REQUIRE_TAC_FIXTURES) {
+    throw new Error(
+      [
+        'No TAC fixtures directory found for Playwright upload tests.',
+        `Checked: ${candidateFromRepoRoot}`,
+        `Checked: ${candidateFromFrontendCwd}`,
+        'Set PLAYWRIGHT_TAC_FIXTURES_DIR or disable strict fixture requirement with PLAYWRIGHT_REQUIRE_TAC_FIXTURES=0 for local runs.',
+      ].join(' ')
+    );
+  }
+
+  return null;
 }
 
 type TacFixture = {
@@ -28,7 +50,7 @@ type TacFixture = {
 
 function getTacFiles(): TacFixture[] {
   const tacFilesDir = resolveTacFilesDir();
-  if (!fs.existsSync(tacFilesDir)) {
+  if (!tacFilesDir) {
     return [];
   }
 

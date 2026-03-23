@@ -1,12 +1,17 @@
 import { expect, test } from '@playwright/test';
 import {
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
   convertManualMetar,
   loginAndOpenConverter,
   openConverterWithMockSession,
 } from './playwright-e2e-helpers';
 
 test.describe('TAC File Conversion', () => {
-  test('manual METAR input converts to IWXXM', async ({ page }) => {
+  test('manual METAR input converts to IWXXM', async ({ page }, testInfo) => {
+    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+      testInfo.skip();
+    }
     await loginAndOpenConverter(page);
 
     await convertManualMetar(
@@ -18,7 +23,10 @@ test.describe('TAC File Conversion', () => {
     await expect(page.locator('pre').filter({ hasText: /iwxxm|metar:/i }).first()).toBeVisible();
   });
 
-  test('COR METAR input produces correction output', async ({ page }) => {
+  test('COR METAR input produces correction output', async ({ page }, testInfo) => {
+    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+      testInfo.skip();
+    }
     await loginAndOpenConverter(page);
 
     await convertManualMetar(
@@ -31,7 +39,10 @@ test.describe('TAC File Conversion', () => {
     await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
   });
 
-  test('clear removes manual input', async ({ page }) => {
+  test('clear removes manual input', async ({ page }, testInfo) => {
+    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+      testInfo.skip();
+    }
     await loginAndOpenConverter(page);
 
     const manualInput = page.getByLabel(/Enter METAR data manually/i);

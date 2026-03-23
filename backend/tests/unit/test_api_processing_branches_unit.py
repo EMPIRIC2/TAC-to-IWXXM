@@ -1039,3 +1039,30 @@ def test_convert_json_conversion_error_emits_translation_failed_notification(cli
     assert call["airport_code"] == "KDEN"
     assert call["error_type"] == "conversion_error"
     assert "forced conversion failure" in call["error_message"]
+
+
+def test_convert_file_validation_service_error_emits_translation_failed_notification(client, monkeypatch):
+    async def fake_read_uploaded_text(_upload_file):
+        return "METAR KSEA 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    class _ValidationErrorService:
+        def validate_all_layers(self, _tac: str) -> AggregatedValidationResult:
+            raise api_module.ValidationServiceError("validation service unavailable")
+
+    capture = _CaptureWebhookService()
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "ValidationService", _ValidationErrorService)
+    monkeypatch.setattr(api_module, "webhook_service", capture)
+
+    response = client.post(
+        "/api/v1/convert",
+        files=[("files", ("sample.txt", "ignored", "text/plain"))],
+    )
+
+    assert response.status_code == 400
+    assert len(capture.failed_calls) == 1
+    call = capture.failed_calls[0]
+    assert call["translation_id"] == "test-translation-id"
+    assert call["airport_code"] == "KSEA"
+    assert call["error_type"] == "validation_error"
+    assert "validation service unavailable" in call["error_message"]

@@ -1,18 +1,10 @@
 import { expect, Page } from '@playwright/test';
 
-function getRequiredEnvVar(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(
-      `Missing required environment variable "${name}" for Playwright admin login. ` +
-        'Set this variable (for example in your CI secrets or local env) before running these tests.'
-    );
-  }
-  return value;
-}
-
-export const ADMIN_EMAIL = getRequiredEnvVar('PLAYWRIGHT_ADMIN_EMAIL');
-export const ADMIN_PASSWORD = getRequiredEnvVar('PLAYWRIGHT_ADMIN_PASSWORD');
+// Credentials are read lazily (at login time) rather than at module import so that
+// test files that import this module but never call loginAsAdmin() can run without
+// PLAYWRIGHT_ADMIN_EMAIL / PLAYWRIGHT_ADMIN_PASSWORD being set (e.g. smoke subset).
+export const ADMIN_EMAIL = process.env.PLAYWRIGHT_ADMIN_EMAIL ?? '';
+export const ADMIN_PASSWORD = process.env.PLAYWRIGHT_ADMIN_PASSWORD ?? '';
 
 export async function gotoLogin(page: Page): Promise<void> {
   await page.goto('/');
@@ -20,6 +12,13 @@ export async function gotoLogin(page: Page): Promise<void> {
 }
 
 export async function loginAsAdmin(page: Page): Promise<void> {
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    throw new Error(
+      'PLAYWRIGHT_ADMIN_EMAIL and PLAYWRIGHT_ADMIN_PASSWORD must be set to run login-dependent tests.\n' +
+        'Example: PLAYWRIGHT_ADMIN_EMAIL=admin@example.com PLAYWRIGHT_ADMIN_PASSWORD=secret npx playwright test'
+    );
+  }
+
   await gotoLogin(page);
   await page.locator('#email').fill(ADMIN_EMAIL);
   await page.locator('#password').fill(ADMIN_PASSWORD);
