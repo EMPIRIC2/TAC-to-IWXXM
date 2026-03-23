@@ -89,7 +89,7 @@ def test_convert_manual_recent_weather_resh_is_normalized_before_validation(clie
     class _StrictRecentWxValidationService:
         def validate_all_layers(self, tac_text: str) -> AggregatedValidationResult:
             if " RESH " in f" {tac_text} ":
-                layer = ValidationResult(passed=True, layer=ValidationLayer.TAC_SYNTAX)
+                layer = ValidationResult(passed=False, layer=ValidationLayer.TAC_SYNTAX)
                 layer.add_issue(level="error", message="truncated recent weather", code="BAD_REWX")
                 return AggregatedValidationResult.from_results([layer])
 

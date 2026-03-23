@@ -305,7 +305,7 @@ def _apply_recent_weather_normalization(
 
     normalized_tac, norm_warnings = normalize_recent_weather_for_tac(tac_text)
     for warning in norm_warnings:
-        logger.warning(
+        logger.info(
             "METAR recent-weather pre-normalization: '%s' at token index %d "
             "rewritten to '%s' (rule: %s)",
             warning["original"],

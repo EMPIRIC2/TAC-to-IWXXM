@@ -1,7 +1,18 @@
 import { expect, Page } from '@playwright/test';
 
-export const ADMIN_EMAIL = process.env.PLAYWRIGHT_ADMIN_EMAIL ?? 'admin@metar.local';
-export const ADMIN_PASSWORD = process.env.PLAYWRIGHT_ADMIN_PASSWORD ?? 'Admin123456!';
+function getRequiredEnvVar(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `Missing required environment variable "${name}" for Playwright admin login. ` +
+        'Set this variable (for example in your CI secrets or local env) before running these tests.'
+    );
+  }
+  return value;
+}
+
+export const ADMIN_EMAIL = getRequiredEnvVar('PLAYWRIGHT_ADMIN_EMAIL');
+export const ADMIN_PASSWORD = getRequiredEnvVar('PLAYWRIGHT_ADMIN_PASSWORD');
 
 export async function gotoLogin(page: Page): Promise<void> {
   await page.goto('/');
