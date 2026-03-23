@@ -842,3 +842,200 @@ def test_convert_and_convert_zip_version_import_fallback(client, monkeypatch):
         data={"manual_text": "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013", "iwxxm_version": "2025-2"},
     )
     assert zip_response.status_code == 200
+
+
+class _CaptureWebhookService:
+    def __init__(self):
+        self.success_calls = []
+        self.failed_calls = []
+        self.completed_calls = []
+
+    async def notify_translation_success(
+        self,
+        translation_id: str,
+        airport_code: str,
+        icao_region: str,
+        iwxxm_version: str,
+        duration_ms: int,
+    ) -> None:
+        self.success_calls.append(
+            {
+                "translation_id": translation_id,
+                "airport_code": airport_code,
+                "icao_region": icao_region,
+                "iwxxm_version": iwxxm_version,
+                "duration_ms": duration_ms,
+            }
+        )
+
+    async def notify_translation_failed(
+        self,
+        translation_id: str,
+        airport_code: str,
+        error_type: str,
+        error_message: str,
+    ) -> None:
+        self.failed_calls.append(
+            {
+                "translation_id": translation_id,
+                "airport_code": airport_code,
+                "error_type": error_type,
+                "error_message": error_message,
+            }
+        )
+
+    async def notify_translation_completed(
+        self,
+        translation_id: str,
+        airport_code: str,
+        iwxxm_version: str,
+        file_size_bytes: int,
+        duration_ms: int,
+    ) -> None:
+        self.completed_calls.append(
+            {
+                "translation_id": translation_id,
+                "airport_code": airport_code,
+                "iwxxm_version": iwxxm_version,
+                "file_size_bytes": file_size_bytes,
+                "duration_ms": duration_ms,
+            }
+        )
+
+
+def test_convert_manual_success_emits_translation_success_notification(client, monkeypatch):
+    capture = _CaptureWebhookService()
+    monkeypatch.setattr(api_module, "webhook_service", capture)
+    monkeypatch.setattr(api_module, "get_icao_region", lambda _icao: "NAM")
+
+    response = client.post(
+        "/api/v1/convert",
+        data={"manual_text": "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["successful"] == 1
+    assert len(capture.success_calls) == 1
+    assert len(capture.failed_calls) == 0
+    assert len(capture.completed_calls) == 0
+
+    call = capture.success_calls[0]
+    assert call["translation_id"] == "test-translation-id"
+    assert call["airport_code"] == "KJFK"
+    assert call["icao_region"] == "NAM"
+    assert call["iwxxm_version"] == "2025-2"
+    assert call["duration_ms"] >= 0
+
+
+def test_convert_manual_validation_failure_emits_translation_failed_notification(client, monkeypatch):
+    class _ValidationFailService:
+        def validate_all_layers(self, _tac: str) -> AggregatedValidationResult:
+            failed = ValidationResult(passed=False, layer=ValidationLayer.AIRPORT_ICAO)
+            failed.add_issue(level="error", message="bad tac", code="BAD_TAC")
+            return AggregatedValidationResult.from_results([failed])
+
+    capture = _CaptureWebhookService()
+    monkeypatch.setattr(api_module, "ValidationService", _ValidationFailService)
+    monkeypatch.setattr(api_module, "webhook_service", capture)
+
+    response = client.post(
+        "/api/v1/convert",
+        data={"manual_text": "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"},
+    )
+
+    assert response.status_code == 400
+    assert len(capture.failed_calls) == 1
+    assert len(capture.success_calls) == 0
+    assert len(capture.completed_calls) == 0
+
+    call = capture.failed_calls[0]
+    assert call["translation_id"] == "test-translation-id"
+    assert call["airport_code"] == "KJFK"
+    assert call["error_type"] == "validation_failed"
+    assert "validation issue" in call["error_message"]
+
+
+def test_convert_json_success_emits_translation_completed_notification(client, monkeypatch):
+    capture = _CaptureWebhookService()
+    monkeypatch.setattr(api_module, "webhook_service", capture)
+
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": ["METAR KDEN 010000Z 00000KT CAVOK 10/08 Q1013"],
+            "version": "2025-2",
+            "stop_on_error": False,
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["successful"] == 1
+    assert len(capture.completed_calls) == 1
+    assert len(capture.success_calls) == 0
+    assert len(capture.failed_calls) == 0
+
+    call = capture.completed_calls[0]
+    assert call["translation_id"] == "test-translation-id"
+    assert call["airport_code"] == "KDEN"
+    assert call["iwxxm_version"] == "2025-2"
+    assert call["file_size_bytes"] > 0
+    assert call["duration_ms"] >= 0
+
+
+def test_convert_file_success_emits_translation_success_notification(client, monkeypatch):
+    async def fake_read_uploaded_text(_upload_file):
+        return "METAR KSEA 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    capture = _CaptureWebhookService()
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "webhook_service", capture)
+    monkeypatch.setattr(api_module, "get_icao_region", lambda _icao: "PAC")
+
+    response = client.post(
+        "/api/v1/convert",
+        files=[("files", ("sample.txt", "ignored", "text/plain"))],
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["successful"] == 1
+    assert len(capture.success_calls) == 1
+    assert len(capture.failed_calls) == 0
+    assert len(capture.completed_calls) == 0
+
+    call = capture.success_calls[0]
+    assert call["translation_id"] == "test-translation-id"
+    assert call["airport_code"] == "KSEA"
+    assert call["icao_region"] == "PAC"
+    assert call["iwxxm_version"] == "2025-2"
+
+
+def test_convert_json_conversion_error_emits_translation_failed_notification(client, monkeypatch):
+    def always_fail_convert(*_args: Any, **_kwargs: Any):
+        raise ConversionError("forced conversion failure")
+
+    capture = _CaptureWebhookService()
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", always_fail_convert)
+    monkeypatch.setattr(api_module, "webhook_service", capture)
+
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": ["METAR KDEN 010000Z 00000KT CAVOK 10/08 Q1013"],
+            "version": "2025-2",
+            "stop_on_error": False,
+        },
+    )
+
+    assert response.status_code == 400
+    assert len(capture.failed_calls) == 1
+    assert len(capture.success_calls) == 0
+    assert len(capture.completed_calls) == 0
+
+    call = capture.failed_calls[0]
+    assert call["translation_id"] == "unknown"
+    assert call["airport_code"] == "KDEN"
+    assert call["error_type"] == "conversion_error"
+    assert "forced conversion failure" in call["error_message"]

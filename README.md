@@ -293,9 +293,15 @@ npm test -- --watch
 # From root directory (requires all three services running locally)
 pytest tests/ -v
 
+# Full-stack browser E2E (Playwright)
+make test-e2e-playwright
+
 # Run specific integration tests
 pytest tests/test_backend_auth_service_integration.py -v
 ```
+
+Browser E2E coverage lives in the top-level `tests/` directory as `*.e2e.spec.ts` files.
+When Playwright runs, it starts the full stack through `start-dev-servers.sh` (frontend + auth + backend).
 
 ## Project Structure
 
@@ -348,8 +354,9 @@ metar-to-IWXXM/
 │   ├── AUTH_MIDDLEWARE_ARCHITECTURE.md  # Detailed auth architecture
 │   ├── SUPABASE_INTEGRATION.md          # Supabase setup guide
 │   └── API.md                           # API documentation
-├── tests/                         # Root integration tests
+├── tests/                         # Root integration + browser E2E tests
 │   ├── test_backend_auth_service_integration.py
+│   ├── *.e2e.spec.ts             # Playwright browser E2E suites
 │   └── ... (other integration tests)
 ├── scripts/                       # Utility scripts
 │   ├── launch_api.sh              # Launch script

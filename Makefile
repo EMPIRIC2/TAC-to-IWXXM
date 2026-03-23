@@ -2,12 +2,17 @@ SHELL := /bin/bash
 COMPOSE := docker compose
 
 .PHONY: lint lint-backend lint-auth lint-frontend lint-gifts \
+	lint-fix lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
+	dev-servers dev-servers-kill \
 	setup-backend setup-auth setup-frontend setup-gifts \
 	test-unit test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
+	test-e2e-playwright \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts \
 	coverage-modules coverage-submodules coverage-all ci badge-audit audit-frontend
 
 lint: lint-backend lint-auth lint-frontend lint-gifts
+
+lint-fix: lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts
 
 lint-backend:
 	cd backend && python3 -m pip install -q ruff && python3 -m ruff check src tests
@@ -20,6 +25,25 @@ lint-frontend:
 
 lint-gifts:
 	cd GIFTs && python3 -m pip install -q flake8 && flake8 gifts tests
+
+lint-fix-backend:
+	cd backend && python3 -m pip install -q ruff && python3 -m ruff check --fix src tests
+
+lint-fix-auth:
+	cd auth && python3 -m pip install -q ruff && python3 -m ruff check --fix src tests
+
+lint-fix-frontend:
+	cd frontend && npm install --legacy-peer-deps && npm run lint -- --fix
+
+lint-fix-gifts:
+	@echo "No auto-fix configured for GIFTs (flake8 is check-only). Running lint check instead."
+	$(MAKE) lint-gifts
+
+dev:
+	bash ./start-dev-servers.sh
+
+dev-kill:
+	bash ./start-dev-servers.sh --kill
 
 setup-backend:
 	cd backend && python3 -m pip install -e .
@@ -49,6 +73,9 @@ audit-frontend:
 
 test-unit-gifts:
 	cd GIFTs && python3 -m pytest tests/ --cov=gifts --cov-config=pyproject.toml --cov-report=xml:coverage.xml --cov-report=term-missing --cov-fail-under=95 -v
+
+test-e2e-playwright:
+	cd frontend && npx playwright test
 
 coverage-backend:
 	cd backend && python3 -m pytest tests/unit --cov=src --cov-config=pyproject.toml --cov-branch --cov-report=xml:coverage.xml --cov-report=term-missing -v

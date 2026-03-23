@@ -152,6 +152,10 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         ConversionError=RuntimeError,
         convert_metar_tac_with_metadata=lambda *args, **kwargs: ("<xml/>", None),
     )
+    fake_util_metar_normalizer = _stub_module(
+        "utilities.metar_normalizer",
+        normalize_recent_weather_tokens=lambda tac: (tac, []),
+    )
     fake_util_observability = _stub_module(
         "utilities.observability",
         install_fastapi_observability=lambda **_kwargs: None,
@@ -188,6 +192,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "services.webhooks": fake_services_webhooks,
         "utilities": _stub_module("utilities"),
         "utilities.conversion": fake_util_conversion,
+        "utilities.metar_normalizer": fake_util_metar_normalizer,
         "utilities.observability": fake_util_observability,
         "utilities.security": fake_util_security,
         "utilities.tac_parser": fake_util_tac,

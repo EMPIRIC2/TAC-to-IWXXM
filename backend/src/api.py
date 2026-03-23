@@ -39,6 +39,7 @@ try:
     from .services.validation_orchestrator import get_validation_orchestrator
     from .services.webhooks import webhook_service
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from .utilities.metar_normalizer import normalize_recent_weather_tokens
     from .utilities.observability import install_fastapi_observability, setup_logging
     from .utilities.security import verify_supabase_token
     from .utilities.tac_parser import extract_airport_code
@@ -64,6 +65,7 @@ except ImportError:
     from services.validation_orchestrator import get_validation_orchestrator
     from services.webhooks import webhook_service
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from utilities.metar_normalizer import normalize_recent_weather_tokens
     from utilities.observability import install_fastapi_observability, setup_logging
     from utilities.security import verify_supabase_token
     from utilities.tac_parser import extract_airport_code
@@ -1344,10 +1346,13 @@ async def convert(
         manual_name = f"{manual_source}.txt"
         start_time = None
         translation_id = None
+        # Pre-normalize truncated recent-weather tokens before early validation
+        # so manual inputs like RESH don't fail while valid forms still pass.
+        _normalized_entry, _norm_warnings = normalize_recent_weather_tokens(manual_entry)
 
         try:
             try:
-                validation_result = validation_service.validate_all_layers(manual_entry)
+                validation_result = validation_service.validate_all_layers(_normalized_entry)
                 if not validation_result.passed:
                     validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                     errors.append(f"{manual_source}: Validation failed - {validation_summary}")
@@ -1420,10 +1425,29 @@ async def convert(
             import time
             start_time = time.perf_counter()
 
+            # Warn when manual recent-weather tokens were normalized.
+            for _w in _norm_warnings:
+                add_issue(
+                    source=manual_source,
+                    message=(
+                        f"Recent weather token '{_w['original']}' rewritten to "
+                        f"'{_w['replacement']}' for WMO D-6 compliance "
+                        f"(truncated descriptor-only code; UP phenomenon added)."
+                    ),
+                    severity=ConversionIssueSeverity.INFO,
+                    hint=(
+                        f"'{_w['original']}' is not a valid Annex 3 recent weather code. "
+                        f"Using '{_w['replacement']}' (unidentified precipitation) instead."
+                    ),
+                    code="RECENT_WX_NORMALIZED",
+                    layer="tac_normalization",
+                )
+
             xml_text, validation_result_from_conversion = convert_metar_tac_with_metadata(
-                manual_entry,
+                _normalized_entry,
                 iwxxm_version=iwxxm_version,
-                validate=validate_output
+                validate=validate_output,
+                lenient=False,  # normalization already applied above
             )
 
             duration_ms = int((time.perf_counter() - start_time) * 1000)

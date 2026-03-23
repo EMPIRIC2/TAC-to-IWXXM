@@ -333,9 +333,15 @@ pytest --cov=src --cov-report=html
 
 ### Integration Tests
 ```bash
-cd frontend
-npm run test:e2e         # Playwright E2E tests
+# Playwright browser E2E (run from repository root)
+make test-e2e-playwright
+
+# Equivalent direct command
+cd frontend && npx playwright test
 ```
+
+Playwright browser E2E specs are located in the repository-level `tests/` directory (`*.e2e.spec.ts`).
+The Playwright runner starts all required local services through `start-dev-servers.sh` for full-stack coverage.
 
 ---
 

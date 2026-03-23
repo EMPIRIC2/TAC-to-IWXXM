@@ -85,6 +85,82 @@ def test_convert_handles_manual_text_with_mocked_converter(client):
     assert "<iwxxm:METAR" in payload["results"][0]["content"]
 
 
+def test_convert_manual_recent_weather_resh_is_normalized_before_validation(client, monkeypatch):
+    class _StrictRecentWxValidationService:
+        def validate_all_layers(self, tac_text: str) -> AggregatedValidationResult:
+            if " RESH " in f" {tac_text} ":
+                layer = ValidationResult(passed=True, layer=ValidationLayer.TAC_SYNTAX)
+                layer.add_issue(level="error", message="truncated recent weather", code="BAD_REWX")
+                return AggregatedValidationResult.from_results([layer])
+
+            return AggregatedValidationResult.from_results(
+                [ValidationResult(passed=True, layer=ValidationLayer.TAC_SYNTAX)]
+            )
+
+    def _assert_normalized_convert(
+        tac: str,
+        iwxxm_version: str = "2025-2",
+        validate: bool = False,
+        **_kwargs: Any,
+    ):
+        assert "RESHUP" in tac
+        assert " RESH " not in f" {tac} "
+        xml = f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>"
+        return xml, None
+
+    monkeypatch.setattr(api_module, "ValidationService", _StrictRecentWxValidationService)
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", _assert_normalized_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        data={
+            "manual_text": "METAR TTPP 121000Z 00000KT 9999 FEW010 26/25 Q1013 RESH NOSIG",
+            "stop_on_error": "true",
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["successful"] == 1
+    assert payload["failed"] == 0
+    assert any(issue["code"] == "RECENT_WX_NORMALIZED" for issue in payload["issues"])
+
+
+def test_convert_manual_recent_weather_reshra_passes_without_rewrite(client, monkeypatch):
+    class _RecentWxValidationService:
+        def validate_all_layers(self, _tac_text: str) -> AggregatedValidationResult:
+            return AggregatedValidationResult.from_results(
+                [ValidationResult(passed=True, layer=ValidationLayer.TAC_SYNTAX)]
+            )
+
+    def _assert_no_rewrite_convert(
+        tac: str,
+        iwxxm_version: str = "2025-2",
+        validate: bool = False,
+        **_kwargs: Any,
+    ):
+        assert "RESHRA" in tac
+        assert "RESHUP" not in tac
+        xml = f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>"
+        return xml, None
+
+    monkeypatch.setattr(api_module, "ValidationService", _RecentWxValidationService)
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", _assert_no_rewrite_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        data={
+            "manual_text": "METAR TTPP 121000Z 00000KT 9999 FEW010 26/25 Q1013 RESHRA NOSIG",
+            "stop_on_error": "true",
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["successful"] == 1
+    assert payload["failed"] == 0
+
+
 def test_convert_handles_file_upload_with_mocked_converter(client):
     response = client.post(
         "/api/v1/convert",

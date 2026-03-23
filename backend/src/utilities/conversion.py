@@ -275,7 +275,12 @@ def _lookup_aerodrome(icao: str, use_test_overrides: bool = False):
     return None
 
 
-__all__ = ["convert_metar_tac", "ConversionError", "convert_metar_tac_with_metadata"]
+__all__ = ["convert_metar_tac", "ConversionError", "convert_metar_tac_with_metadata", "normalize_recent_weather_tokens"]
+
+try:
+    from .metar_normalizer import normalize_recent_weather_tokens  # noqa: E402
+except ImportError:
+    from metar_normalizer import normalize_recent_weather_tokens  # type: ignore  # noqa: E402
 
 
 def convert_metar_tac_with_metadata(
@@ -285,7 +290,8 @@ def convert_metar_tac_with_metadata(
     use_test_overrides: bool = False,
     validate: bool = True,
     validation_layers: Optional[List[str]] = None,
-    raise_on_validation_error: bool = False
+    raise_on_validation_error: bool = False,
+    lenient: bool = True,
 ) -> Tuple[str, Optional[ComprehensiveValidationResult]]:
     """Convert TAC to IWXXM and validate output (validation enabled by default).
 
@@ -305,6 +311,10 @@ def convert_metar_tac_with_metadata(
         validate: Run validation after conversion (DEFAULT: True). Set to False for performance.
         validation_layers: Which layers to run (None = recommended layers: XSD, Schematron, WMO Codes).
         raise_on_validation_error: Raise ConversionError if validation fails (default: False).
+        lenient: If True (default), pre-normalize truncated recent-weather tokens
+                 (e.g. RESH→RESHUP) before GIFTs decoding so that common manual-
+                 input variants do not cause TAC parse failures.  Set to False to
+                 preserve strict Annex 3 / WMO-conformant behaviour.
 
     Returns:
         Tuple of (xml_string, validation_result)
@@ -375,6 +385,16 @@ def convert_metar_tac_with_metadata(
                 # Restore originals
                 time.gmtime = original_gmtime
                 time.time = original_time
+
+        # Pre-normalize non-standard recent-weather tokens (lenient mode)
+        if lenient:
+            tac_text, _norm_warnings = normalize_recent_weather_tokens(tac_text)
+            for w in _norm_warnings:
+                logger.warning(
+                    "METAR recent-weather pre-normalization: '%s' at token index %d "
+                    "rewritten to '%s' (rule: %s)",
+                    w['original'], w['index'], w['replacement'], w['rule'],
+                )
 
         # Decode with patched time if reference_time provided
         with patched_gmtime(reference_time):
