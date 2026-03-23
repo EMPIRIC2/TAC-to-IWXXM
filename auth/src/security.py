@@ -11,7 +11,7 @@ from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
-JWT_SECRET = os.getenv("AUTH_JWT_SECRET", "dev-insecure-secret-change")
+JWT_SECRET = os.getenv("AUTH_JWT_SECRET", "dev-insecure-secret-change-minimum-32bytes")
 JWT_ALGO = "HS256"
 JWT_EXPIRE_MINUTES = int(os.getenv("AUTH_JWT_EXPIRE_MINUTES", "60"))
 

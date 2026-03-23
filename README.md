@@ -293,8 +293,50 @@ npm test -- --watch
 # From root directory (requires all three services running locally)
 pytest tests/ -v
 
+# Full-stack browser E2E (Playwright) — requires admin credentials
+make test-e2e-playwright
+
+# Credential-free smoke subset (no admin login required — CI / local dev-friendly)
+make test-e2e-playwright-smoke
+
 # Run specific integration tests
 pytest tests/test_backend_auth_service_integration.py -v
+```
+
+Browser E2E coverage lives in the top-level `tests/` directory as `*.e2e.spec.ts` files.
+When Playwright runs, it starts the full stack through `start-dev-servers.sh` (frontend + auth + backend).
+
+### Playwright suites
+
+| Target | Requires admin credentials | What it runs |
+|---|---|---|
+| `make test-e2e-playwright` | Yes | All 21 tests including login flows |
+| `make test-e2e-playwright-smoke` | **No** | `auth-service-integration` + `tac-file-conversion` (9 tests, mock sessions) |
+
+`tests/00-preflight.e2e.spec.ts` runs first in the full suite and fails immediately with a
+single clear message when credentials are missing or invalid, preventing 12+ repeated
+timeout failures from cluttering the output.
+
+Playwright E2E environment variables:
+
+- `PLAYWRIGHT_ADMIN_EMAIL` and `PLAYWRIGHT_ADMIN_PASSWORD`: required for admin-login E2E flows.
+- `PLAYWRIGHT_TAC_FIXTURES_DIR`: optional override for TAC fixture directory used by upload tests.
+- `PLAYWRIGHT_REQUIRE_TAC_FIXTURES`: set to `1` to fail fast when TAC fixtures are missing.
+  - This is enabled automatically on CI.
+- `PLAYWRIGHT_SERVICE_WAIT_TIMEOUT_MS`: timeout for startup health checks (default `120000`).
+- `PLAYWRIGHT_FRONTEND_HEALTH_URL`, `PLAYWRIGHT_BACKEND_HEALTH_URL`, `PLAYWRIGHT_AUTH_HEALTH_URL`: optional health endpoint overrides used during global setup.
+- `PLAYWRIGHT_FORCE_SERVICE_HEALTH_WAIT=1`: force health waiting even when using non-local base URLs.
+- `PLAYWRIGHT_SKIP_LOCAL_HEALTH_WAIT=1`: skip startup health checks.
+
+Example full E2E run with explicit environment:
+
+```bash
+cd frontend
+export PLAYWRIGHT_ADMIN_EMAIL="admin@example.com"
+export PLAYWRIGHT_ADMIN_PASSWORD="<password>"
+export PLAYWRIGHT_REQUIRE_TAC_FIXTURES=1
+export PLAYWRIGHT_SERVICE_WAIT_TIMEOUT_MS=180000
+npx playwright test
 ```
 
 ## Project Structure
@@ -348,8 +390,9 @@ metar-to-IWXXM/
 │   ├── AUTH_MIDDLEWARE_ARCHITECTURE.md  # Detailed auth architecture
 │   ├── SUPABASE_INTEGRATION.md          # Supabase setup guide
 │   └── API.md                           # API documentation
-├── tests/                         # Root integration tests
+├── tests/                         # Root integration + browser E2E tests
 │   ├── test_backend_auth_service_integration.py
+│   ├── *.e2e.spec.ts             # Playwright browser E2E suites
 │   └── ... (other integration tests)
 ├── scripts/                       # Utility scripts
 │   ├── launch_api.sh              # Launch script

@@ -227,7 +227,7 @@ class TestAuthTokenGeneration:
         from auth.security import JWT_SECRET, JWT_ALGO, decode_access_token
         
         # Create expired token
-        expire = dt.datetime.now(dt.UTC) - dt.timedelta(minutes=1)
+        expire = dt.datetime.now(dt.timezone.utc) - dt.timedelta(minutes=1)
         payload = {"sub": "testuser", "exp": expire}
         expired_token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
         
@@ -410,7 +410,7 @@ class TestSecurityUtilities:
         import datetime as dt
         
         expiry = create_reset_expiry()
-        now = dt.datetime.now(dt.UTC)
+        now = dt.datetime.now(dt.timezone.utc)
         
         assert expiry > now
         # Should be roughly 30 minutes in the future

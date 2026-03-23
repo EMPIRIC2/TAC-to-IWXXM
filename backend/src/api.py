@@ -39,6 +39,7 @@ try:
     from .services.validation_orchestrator import get_validation_orchestrator
     from .services.webhooks import webhook_service
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from .utilities.metar_normalizer import normalize_recent_weather_tokens
     from .utilities.observability import install_fastapi_observability, setup_logging
     from .utilities.security import verify_supabase_token
     from .utilities.tac_parser import extract_airport_code
@@ -64,6 +65,7 @@ except ImportError:
     from services.validation_orchestrator import get_validation_orchestrator
     from services.webhooks import webhook_service
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from utilities.metar_normalizer import normalize_recent_weather_tokens
     from utilities.observability import install_fastapi_observability, setup_logging
     from utilities.security import verify_supabase_token
     from utilities.tac_parser import extract_airport_code
@@ -256,13 +258,15 @@ async def add_translation_centre_headers(request: Request, call_next):
     # Add Translation Centre metadata headers
     try:
         centre_info = get_translation_centre_info()
-        # Only add headers with non-None values
+        # Only add headers with non-None values.
+        # .strip() guards against CRLF line-endings in env vars read from
+        # Windows-format .env files (b'TEST\r' is rejected by h11 as illegal).
         if centre_info.get("translationCentreDesignator"):
-            response.headers["X-Translation-Centre"] = centre_info["translationCentreDesignator"]
+            response.headers["X-Translation-Centre"] = centre_info["translationCentreDesignator"].strip()
         if centre_info.get("translationCentreName"):
-            response.headers["X-Translation-Centre-Name"] = centre_info["translationCentreName"]
+            response.headers["X-Translation-Centre-Name"] = centre_info["translationCentreName"].strip()
         if centre_info.get("icaoLocationIndicator"):
-            response.headers["X-ICAO-Location-Indicator"] = centre_info["icaoLocationIndicator"]
+            response.headers["X-ICAO-Location-Indicator"] = centre_info["icaoLocationIndicator"].strip()
     except Exception as e:
         logger.debug(f"Translation Centre headers not configured: {e}")
 
@@ -1074,6 +1078,25 @@ async def convert(
                     location=getattr(validation_issue, "location", None),
                 )
 
+    def emit_recent_wx_issues(source: str, norm_warnings: List[dict]) -> None:
+        """Emit structured conversion issues for recent-weather rewrites."""
+        for warning in norm_warnings:
+            add_issue(
+                source=source,
+                message=(
+                    f"Recent weather token '{warning['original']}' rewritten to "
+                    f"'{warning['replacement']}' for WMO D-6 compliance "
+                    f"(truncated descriptor-only code; UP phenomenon added)."
+                ),
+                severity=ConversionIssueSeverity.INFO,
+                hint=(
+                    f"'{warning['original']}' is not a valid Annex 3 recent weather code. "
+                    f"Using '{warning['replacement']}' (unidentified precipitation) instead."
+                ),
+                code="RECENT_WX_NORMALIZED",
+                layer="tac_normalization",
+            )
+
     # Initialize validation service for input validation
     validation_service = ValidationService()
 
@@ -1131,6 +1154,8 @@ async def convert(
         if not metar_text.strip():
             continue
 
+        normalized_metar_text, norm_warnings = normalize_recent_weather_tokens(metar_text.strip())
+
         total_inputs += 1
         start_time = None
         translation_id = None
@@ -1140,7 +1165,7 @@ async def convert(
 
             # Validate METAR input (Layers 1-2: ICAO and TAC syntax)
             try:
-                validation_result = validation_service.validate_all_layers(metar_text.strip())
+                validation_result = validation_service.validate_all_layers(normalized_metar_text)
                 if not validation_result.passed:
                     # Build summary from validation result
                     validation_summary = f"{validation_result.total_issues} validation issue(s) found"
@@ -1218,11 +1243,14 @@ async def convert(
                 import time
                 start_time = time.perf_counter()
 
+                emit_recent_wx_issues(metar_name, norm_warnings)
+
                 # Convert METAR to IWXXM
                 try:
                     iwxxm_content, _ = convert_metar_tac_with_metadata(
-                        metar_text.strip(),
-                        iwxxm_version=iwxxm_version
+                        normalized_metar_text,
+                        iwxxm_version=iwxxm_version,
+                        lenient=False,
                     )
 
                     # Optional output validation (Layers 3-7)
@@ -1258,11 +1286,11 @@ async def convert(
                             translation_status=TranslationStatus.SUCCESS,
                             validation_layers_passed=validation_layers_passed,
                             translation_duration_ms=duration_ms,
-                            icao_airport_code=extract_airport_code(metar_text.strip()),
+                            icao_airport_code=extract_airport_code(normalized_metar_text),
                             user_id=user.get("sub")
                         )
 
-                        airport_code = extract_airport_code(metar_text.strip())
+                        airport_code = extract_airport_code(normalized_metar_text)
                         await webhook_service.notify_translation_completed(
                             translation_id=translation_id,
                             airport_code=airport_code or "UNKNOWN",
@@ -1296,11 +1324,11 @@ async def convert(
                             validation_layers_passed=[ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX],
                             validation_errors={"error": str(ce)},
                             translation_duration_ms=duration_ms,
-                            icao_airport_code=extract_airport_code(metar_text.strip()),
+                            icao_airport_code=extract_airport_code(normalized_metar_text),
                             user_id=user.get("sub")
                         )
 
-                        airport_code = extract_airport_code(metar_text.strip())
+                        airport_code = extract_airport_code(normalized_metar_text)
                         await webhook_service.notify_translation_failed(
                             translation_id=translation_id or "unknown",
                             airport_code=airport_code or "UNKNOWN",
@@ -1344,10 +1372,12 @@ async def convert(
         manual_name = f"{manual_source}.txt"
         start_time = None
         translation_id = None
+        # Normalize once and share this result across validation and conversion.
+        _normalized_entry, _norm_warnings = normalize_recent_weather_tokens(manual_entry)
 
         try:
             try:
-                validation_result = validation_service.validate_all_layers(manual_entry)
+                validation_result = validation_service.validate_all_layers(_normalized_entry)
                 if not validation_result.passed:
                     validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                     errors.append(f"{manual_source}: Validation failed - {validation_summary}")
@@ -1420,10 +1450,13 @@ async def convert(
             import time
             start_time = time.perf_counter()
 
+            emit_recent_wx_issues(manual_source, _norm_warnings)
+
             xml_text, validation_result_from_conversion = convert_metar_tac_with_metadata(
-                manual_entry,
+                _normalized_entry,
                 iwxxm_version=iwxxm_version,
-                validate=validate_output
+                validate=validate_output,
+                lenient=False,  # normalization already applied above
             )
 
             duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -1604,10 +1637,12 @@ async def convert(
                             icao_airport_code=extract_airport_code(data.strip()),
                             user_id=user.get("sub")
                         )
+                        airport_code = extract_airport_code(data.strip())
                         await webhook_service.notify_translation_failed(
                             translation_id=translation_id,
-                            tac_message=data.strip(),
-                            error=str(ve)
+                            airport_code=airport_code or "UNKNOWN",
+                            error_type="validation_error",
+                            error_message=str(ve)
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log validation error: {log_err}")

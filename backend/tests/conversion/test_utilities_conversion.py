@@ -119,3 +119,83 @@ def test_convert_cor_metar_with_metadata():
     assert 'translationFailedTAC' not in result
     assert validation_result is not None
     assert validation_result.is_valid is True
+
+
+# ---------------------------------------------------------------------------
+# Recent weather normalization (issue #668): RESH -> RESHUP
+# ---------------------------------------------------------------------------
+
+METAR_WITH_RESH = (
+    "METAR TTPP 121000Z 00000KT 9999 VCSH FEW010CB 26/25 Q1013 RESH NOSIG"
+)
+METAR_WITH_RESHRA = (
+    "METAR TTPP 121000Z 00000KT 9999 VCSH FEW010CB 26/25 Q1013 RESHRA NOSIG"
+)
+
+
+def test_resh_conversion_succeeds_lenient_mode():
+    """METAR with bare RESH token must not raise ConversionError in lenient mode (default).
+
+    Also verifies that the encoder does not produce a TAC-failure element,
+    confirming that RESHUP (the normalised form) was decoded and encoded
+    successfully.
+    """
+    result, _ = convert_metar_tac_with_metadata(
+        METAR_WITH_RESH,
+        validate=False,
+        lenient=True,
+    )
+    assert isinstance(result, str)
+    assert len(result) > 0
+    assert "translationFailedTAC" not in result
+
+
+def test_resh_normalizer_rewrites_before_conversion():
+    """normalize_recent_weather_tokens rewrites RESH->RESHUP before GIFTs decoding.
+
+    This test verifies the normalizer step independently of the full pipeline so
+    results are stable even when GIFTs module state is polluted by earlier tests.
+    """
+    from src.utilities.metar_normalizer import normalize_recent_weather_tokens
+
+    normalised, warnings = normalize_recent_weather_tokens(METAR_WITH_RESH)
+    assert "RESHUP" in normalised
+    assert " RESH " not in normalised
+    assert len(warnings) == 1
+    assert warnings[0]["original"] == "RESH"
+    assert warnings[0]["replacement"] == "RESHUP"
+
+
+def test_reshra_conversion_still_works_baseline():
+    """RESHRA (already valid) must still convert successfully with lenient mode on (regression guard)."""
+    result, _ = convert_metar_tac_with_metadata(
+        METAR_WITH_RESHRA,
+        validate=False,
+        lenient=True,
+    )
+    assert isinstance(result, str)
+    assert len(result) > 0
+    assert "translationFailedTAC" not in result
+
+
+def test_lenient_false_resh_strict_behaviour():
+    """When lenient=False, RESH is NOT rewritten and the decoder may record a parse failure."""
+    # We do not assert that this raises ConversionError because GIFTs degrades gracefully
+    # (it encodes a translationFailedTAC element rather than raising), but we DO assert that
+    # the normalised XML from lenient=True does NOT appear when lenient is off.
+    result_strict, _ = convert_metar_tac_with_metadata(
+        METAR_WITH_RESH,
+        validate=False,
+        lenient=False,
+    )
+    result_lenient, _ = convert_metar_tac_with_metadata(
+        METAR_WITH_RESH,
+        validate=False,
+        lenient=True,
+    )
+    # Strict mode should not silently mirror lenient output.
+    assert result_strict != result_lenient
+    # In strict mode, GIFTs should preserve TAC parse failure markers for bare RESH.
+    assert "translationFailedTAC" in result_strict
+    # Lenient result should not contain a TAC failure marker
+    assert "translationFailedTAC" not in result_lenient

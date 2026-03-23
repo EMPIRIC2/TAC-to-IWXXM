@@ -2,12 +2,17 @@ SHELL := /bin/bash
 COMPOSE := docker compose
 
 .PHONY: lint lint-backend lint-auth lint-frontend lint-gifts \
+	lint-fix lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
+	dev dev-kill dev-servers dev-servers-kill \
 	setup-backend setup-auth setup-frontend setup-gifts \
 	test-unit test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
+	test-e2e-playwright test-e2e-playwright-smoke \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts \
-	coverage-modules coverage-submodules coverage-all ci badge-audit audit-frontend
+	coverage-modules coverage-submodules coverage-all ci acci badge-audit audit-frontend
 
 lint: lint-backend lint-auth lint-frontend lint-gifts
+
+lint-fix: lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts
 
 lint-backend:
 	cd backend && python3 -m pip install -q ruff && python3 -m ruff check src tests
@@ -20,6 +25,29 @@ lint-frontend:
 
 lint-gifts:
 	cd GIFTs && python3 -m pip install -q flake8 && flake8 gifts tests
+
+lint-fix-backend:
+	cd backend && python3 -m pip install -q ruff && python3 -m ruff check --fix src tests
+
+lint-fix-auth:
+	cd auth && python3 -m pip install -q ruff && python3 -m ruff check --fix src tests
+
+lint-fix-frontend:
+	cd frontend && npm install --legacy-peer-deps && npm run lint -- --fix
+
+lint-fix-gifts:
+	@echo "No auto-fix configured for GIFTs (flake8 is check-only). Running lint check instead."
+	$(MAKE) lint-gifts
+
+dev:
+	bash ./start-dev-servers.sh
+
+dev-kill:
+	bash ./start-dev-servers.sh --kill
+
+dev-servers: dev
+
+dev-servers-kill: dev-kill
 
 setup-backend:
 	cd backend && python3 -m pip install -e .
@@ -49,6 +77,18 @@ audit-frontend:
 
 test-unit-gifts:
 	cd GIFTs && python3 -m pytest tests/ --cov=gifts --cov-config=pyproject.toml --cov-report=xml:coverage.xml --cov-report=term-missing --cov-fail-under=95 -v
+
+test-e2e-playwright:
+	cd frontend && NODE_PATH=./node_modules npx playwright test
+
+# Smoke subset: runs only the spec files that require no admin credentials.
+# Safe to use in CI or local when PLAYWRIGHT_ADMIN_EMAIL / PLAYWRIGHT_ADMIN_PASSWORD
+# are not available.  Covers startup health, auth service integration, front-end
+# rendering and all mock-session conversion flows.
+test-e2e-playwright-smoke:
+	cd frontend && NODE_PATH=./node_modules npx playwright test \
+		auth-service-integration.e2e.spec.ts \
+		tac-file-conversion.e2e.spec.ts
 
 coverage-backend:
 	cd backend && python3 -m pytest tests/unit --cov=src --cov-config=pyproject.toml --cov-branch --cov-report=xml:coverage.xml --cov-report=term-missing -v
@@ -87,7 +127,18 @@ coverage-all: coverage-modules coverage-submodules
 
 test-integration:
 	python3 -m pip install -q pytest requests httpx
-	@required_vars="SUPABASE_URL SUPABASE_ANON_KEY VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY"; \
+	@set -a; \
+	for env_file in .env frontend/.env auth/.env backend/.env; do \
+		if [ -f "$$env_file" ]; then \
+			while IFS= read -r line || [ -n "$$line" ]; do \
+				line="$${line%$$'\r'}"; \
+				[[ -z "$$line" || "$$line" =~ ^[[:space:]]*# ]] && continue; \
+				export "$$line"; \
+			done < "$$env_file"; \
+		fi; \
+	done; \
+	set +a; \
+	required_vars="SUPABASE_URL SUPABASE_ANON_KEY VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY"; \
 	missing=""; \
 	for var in $$required_vars; do \
 		if [ -z "$${!var}" ]; then \
@@ -127,3 +178,7 @@ badge-audit:
 	python3 .github/scripts/badge_audit.py
 
 ci: lint test-unit test-integration badge-audit
+
+# All CI checks in one command: linting, unit tests, integration tests,
+# smoke E2E, frontend dependency audit, and badge verification.
+acci: lint test-unit test-integration test-e2e-playwright-smoke audit-frontend badge-audit

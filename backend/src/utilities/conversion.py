@@ -275,7 +275,46 @@ def _lookup_aerodrome(icao: str, use_test_overrides: bool = False):
     return None
 
 
-__all__ = ["convert_metar_tac", "ConversionError", "convert_metar_tac_with_metadata"]
+try:
+    from .metar_normalizer import (  # noqa: E402
+        normalize_recent_weather_for_tac,
+        normalize_recent_weather_tokens,
+    )
+except ImportError:
+    from metar_normalizer import (  # type: ignore  # noqa: E402
+        normalize_recent_weather_for_tac,
+        normalize_recent_weather_tokens,
+    )
+
+__all__ = [
+    "convert_metar_tac",
+    "ConversionError",
+    "convert_metar_tac_with_metadata",
+    "normalize_recent_weather_tokens",
+]
+
+
+def _apply_recent_weather_normalization(
+    tac_text: str,
+    *,
+    lenient: bool,
+) -> str:
+    """Optionally normalize recent-weather tokens and log rewrites."""
+    if not lenient:
+        return tac_text
+
+    normalized_tac, norm_warnings = normalize_recent_weather_for_tac(tac_text)
+    for warning in norm_warnings:
+        logger.info(
+            "METAR recent-weather pre-normalization: '%s' at token index %d "
+            "rewritten to '%s' (rule: %s)",
+            warning["original"],
+            warning["index"],
+            warning["replacement"],
+            warning["rule"],
+        )
+
+    return normalized_tac
 
 
 def convert_metar_tac_with_metadata(
@@ -285,7 +324,8 @@ def convert_metar_tac_with_metadata(
     use_test_overrides: bool = False,
     validate: bool = True,
     validation_layers: Optional[List[str]] = None,
-    raise_on_validation_error: bool = False
+    raise_on_validation_error: bool = False,
+    lenient: bool = True,
 ) -> Tuple[str, Optional[ComprehensiveValidationResult]]:
     """Convert TAC to IWXXM and validate output (validation enabled by default).
 
@@ -305,6 +345,10 @@ def convert_metar_tac_with_metadata(
         validate: Run validation after conversion (DEFAULT: True). Set to False for performance.
         validation_layers: Which layers to run (None = recommended layers: XSD, Schematron, WMO Codes).
         raise_on_validation_error: Raise ConversionError if validation fails (default: False).
+        lenient: If True (default), pre-normalize truncated recent-weather tokens
+                 (e.g. RESH→RESHUP) before GIFTs decoding so that common manual-
+                 input variants do not cause TAC parse failures.  Set to False to
+                 preserve strict Annex 3 / WMO-conformant behaviour.
 
     Returns:
         Tuple of (xml_string, validation_result)
@@ -375,6 +419,8 @@ def convert_metar_tac_with_metadata(
                 # Restore originals
                 time.gmtime = original_gmtime
                 time.time = original_time
+
+        tac_text = _apply_recent_weather_normalization(tac_text, lenient=lenient)
 
         # Decode with patched time if reference_time provided
         with patched_gmtime(reference_time):
