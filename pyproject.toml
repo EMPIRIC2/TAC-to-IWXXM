@@ -1,12 +1,14 @@
 [project]
 name = "metar-iwxxm-workspace"
 version = "0.0.0"
-description = "METAR to IWXXM monorepo workspace root (scaffold — expanded in T1.2)"
+description = "METAR to IWXXM monorepo — uv workspace root (ADR-005)"
 requires-python = ">=3.12"
 dependencies = []
 
 [tool.uv]
 package = false
+# Python 3.12 pinned per ADR-005; members added as packages scaffold (T1.4+).
+# Target members: packages/shared, packages/auth, packages/gifts, apps/backend
 
 [dependency-groups]
 dev = [
@@ -18,7 +20,7 @@ dev = [
   "httpx>=0.28",
 ]
 
-# Workspace members populated in T1.2 (apps/backend, packages/*).
+# Workspace members populated incrementally during Phase 1 (T1.4 packages/shared first).
 [tool.uv.workspace]
 members = []
 

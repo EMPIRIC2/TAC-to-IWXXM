@@ -84,7 +84,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
 | T1.1 | Write TC-M001 clone-smoke test skeleton | Test | completed | test-plan.md TC-M001 | — | — |
-| T1.2 | Add root `pyproject.toml` uv workspace | Config | pending | spec.md §Repository, REQ-005 | T1.1 | — |
+| T1.2 | Add root `pyproject.toml` uv workspace | Config | completed | spec.md §Repository, REQ-005 | T1.1 | — |
 | T1.3 | Add `pnpm-workspace.yaml` | Config | pending | spec.md §Repository | T1.2 | — |
 | T1.4 | Scaffold `packages/shared` (Python + TS exports) | Code | pending | spec.md §packages/shared | T1.2, T1.3 | — |
 | T1.5 | Write workspace import smoke test | Test | pending | test-plan.md TC-M001 | T1.4 | — |
