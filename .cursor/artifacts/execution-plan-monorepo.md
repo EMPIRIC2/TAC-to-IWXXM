@@ -11,8 +11,8 @@
 |-------|-------|
 | **Active phase** | Phase 1: Monorepo Scaffold |
 | **Active milestone** | M1: Workspace Root |
-| **Active task** | T1.5 |
-| **Tasks completed** | 4 / 63 |
+| **Active task** | T1.6 |
+| **Tasks completed** | 5 / 63 |
 | **Last updated** | 2026-06-14 |
 
 ## Tech Stack Summary
@@ -87,7 +87,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | T1.2 | Add root `pyproject.toml` uv workspace | Config | completed | spec.md §Repository, REQ-005 | T1.1 | — |
 | T1.3 | Add `pnpm-workspace.yaml` | Config | completed | spec.md §Repository | T1.2 | — |
 | T1.4 | Scaffold `packages/shared` (Python + TS exports) | Code | completed | spec.md §packages/shared | T1.2, T1.3 | — |
-| T1.5 | Write workspace import smoke test | Test | pending | test-plan.md TC-M001 | T1.4 | — |
+| T1.5 | Write workspace import smoke test | Test | completed | test-plan.md TC-M001 | T1.4 | — |
 | T1.6 | Add Makefile `install`, `dev`, `test`, `test-unit`, `tests:e2e`, `vendor-sync` | Config | pending | config-spec-monorepo.md | T1.2, T1.3 | — |
 | T1.7 | Configure basedpyright for workspace | Config | pending | User decision | T1.2 | — |
 | T1.8 | Configure root ruff (shared rules) | Config | pending | User decision | T1.2 | — |

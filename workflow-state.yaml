@@ -168,11 +168,11 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T1.2
+        current_task: T1.6
         phase: 1
         milestone: M1
     notes:
-      - "T1.1 completed: TC-M001 clone-smoke test skeleton (red phase)"
+      - "T1.1–T1.5 completed on feat/M1-workspace-root"
 
 stages_pending: []
 
@@ -428,4 +428,28 @@ git_history:
       base: phase/1-monorepo-scaffold
       status: active
       created_at: "2026-06-14T12:45:00Z"
-  commits: []
+  commits:
+    - sha: 73cda40
+      branch: feat/M1-workspace-root
+      message: "[T1.1] test: add TC-M001 monorepo clone-smoke test skeleton"
+      stage: "07-build"
+      files_changed: 4
+      timestamp: "2026-06-14T12:50:00Z"
+    - sha: d50745a
+      branch: feat/M1-workspace-root
+      message: "[T1.2] config: add root uv workspace with Python 3.12 pin"
+      stage: "07-build"
+      files_changed: 5
+      timestamp: "2026-06-14T12:55:00Z"
+    - sha: 96c030a
+      branch: feat/M1-workspace-root
+      message: "[T1.3] config: add pnpm workspace with Node 22 pin"
+      stage: "07-build"
+      files_changed: 4
+      timestamp: "2026-06-14T13:00:00Z"
+    - sha: 8c8aaab
+      branch: feat/M1-workspace-root
+      message: "[T1.4] feat: scaffold packages/shared Python and TS exports"
+      stage: "07-build"
+      files_changed: 11
+      timestamp: "2026-06-14T13:05:00Z"
