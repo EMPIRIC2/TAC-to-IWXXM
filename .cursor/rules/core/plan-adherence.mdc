@@ -1,0 +1,53 @@
+---
+description: Enforces that all work maps to the approved product plan (features, components, dependencies)
+globs: ""
+alwaysApply: true
+---
+
+# Plan Adherence
+
+Before implementing any feature, creating any file, or adding any dependency, verify it
+traces to the approved product plan.
+
+## Feature Scope
+
+All implementation work must map to an approved feature in `docs/feature-list.md`:
+
+{{FEATURE_TABLE}}
+
+| Feature | Scope |
+|---------|-------|
+| F1 | METAR → IWXXM conversion |
+| F2 | IWXXM validation |
+| F3 | Airport data services |
+| F4 | IWXXM version handling |
+
+Fill the feature table during stage 01-requirements. Until then, treat `[Scope Drift]`
+as advisory when mapping exploratory work to planned features.
+
+If work does not map to an approved feature, raise `[Scope Drift]` via AskQuestion:
+- Cite the code or file being created
+- Explain which feature it was intended for
+- First option: "Map to feature FN — here's why..."
+- Last option: "Let me explain / provide more context"
+
+### Out of Scope (do not implement)
+
+Document permanent exclusions in `docs/spec.md` §Non-Goals and `docs/feature-list.md`.
+Do not implement capabilities listed there without an evolve cycle (16-evolve).
+
+## Component Verification
+
+New files must map to an approved component from `docs/spec.md` §Component Overview.
+
+Fill the component table during 01-requirements / 04-tech-plan. Files outside approved
+locations require justification. Raise `[Scope Drift]` if a new component is introduced
+that is not in the spec.
+
+## Dependency Verification
+
+Before adding any new dependency, check `docs/dependency-inventory.md`. If the dependency
+is not listed:
+1. Raise `[Decision]` with a recommendation
+2. On approval, back-add to `docs/dependency-inventory.md`
+3. Record the decision in `workflow-state.yaml` §`decisions_log`

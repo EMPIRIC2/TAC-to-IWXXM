@@ -1,0 +1,42 @@
+---
+description: >
+  When catching or investigating any failure (hotfix, Modal health, build, e2e, CI),
+  use docs/bug-reports/, tests/bugs/, and the bug-investigation skill workflow.
+alwaysApply: true
+---
+
+# Bug investigation (failures)
+
+When you **catch, triage, or fix a failure** (error, crash, wrong output, timeout, CI red,
+Modal log error), follow [`.cursor/skills/bug-investigation/SKILL.md`](../skills/bug-investigation/SKILL.md).
+
+## Required artifacts
+
+| Artifact | Path |
+|----------|------|
+| Bug report | `docs/bug-reports/BUG-YYYY-MM-DD-[slug].md` (from `docs/bug-reports/_template.md`) |
+| Repro / regression test | `tests/bugs/test_bug_YYYY_MM_DD_[slug].py` |
+| Fix | Minimal change under `src/` (or approved config); one bug per PR when possible |
+
+## Required content in the bug report
+
+1. **Error description** — plain-language what broke
+2. **Error logs** — verbatim logs/stack traces in a fenced block
+3. **Investigation** — persistent timeline, hypotheses, root cause (update the MD as you work)
+4. **Repro test** — path, red/green status, TDD iteration log
+
+## Required process
+
+1. **Interview** the user with **AskQuestion** (batched intake per bug-investigation skill).
+2. **Reproduce** via a dedicated test; run pytest and expect **red**.
+3. **Confirm** repro with AskQuestion before changing production code.
+4. **Find root cause**; log in the bug report; confirm with AskQuestion.
+5. **Apply fix**; test must turn **green**; run full suite before close.
+
+Do not skip the repro test. Do not merge a fix without a prior failing test for that bug.
+Do not combine multiple bugs in one report or one test module.
+
+## Stage skills
+
+- [14-hotfix](../skills/14-hotfix/SKILL.md) — deploy, PR, layered verification
+- [15-modal-health](../skills/15-modal-health/SKILL.md) — Modal CLI + live E2E; opens or links BUG report for code issues

@@ -1,0 +1,106 @@
+---
+description: Enforces atomic commits, branch workflow, and PR structure per execution plan
+alwaysApply: true
+---
+
+# Atomic Commits & PR Workflow
+
+## Commits
+
+Every commit must be **atomic** — one logical change, codebase valid after each commit.
+
+1. **One task per commit**: Each task (T1.1, T1.2, ...) from the execution plan gets its
+   own commit. Do not bundle multiple tasks into one commit.
+
+2. **Commit message format**: `[task-id] type: description`
+   - Task commits: `[T1.1] test: add tests for preprocessing`
+   - Fix commits: `[T1.2] fix: correct input validation`
+   - Config commits: `chore: configure ruff linter`
+   - Refactor commits: `[M1] refactor: extract shared utilities`
+   - Doc commits: `docs: add staging runbook`
+   - Hotfix commits: `hotfix: [description] (#issue if applicable)`
+   - Skill/rule commits: `chore(skills): update connectivity gates`
+
+3. **Post-commit checks**: After every commit, the codebase must:
+   - Pass all existing tests
+   - Pass the linter
+   - Pass the typechecker
+   If any check fails, fix it in the same commit (amend) — do not leave a broken commit.
+
+4. **After push to origin**: Run GitHub verification per
+   [ci-after-push.mdc](ci-after-push.mdc) — `bash scripts/ci/watch_github_ci.sh [branch]`
+   until required workflows pass (`ci.yml` always; `deploy-preflight.yml` on `main`), or fix
+   and push again.
+
+5. **No WIP commits**: Every commit is complete and reviewable. If work is in progress,
+   do not commit until the task is done.
+
+6. **Commit-as-you-go**: Skills must commit before:
+   - Transitioning to the next pipeline stage
+   - Asking the user a blocking AskQuestion
+   - Running a gate check
+   - Ending a session/turn
+   Never leave uncommitted work across session boundaries.
+
+7. **Record in workflow-state**: After every commit, append to
+   `workflow-state.yaml` §`git_history.commits` with sha, branch, message,
+   stage, files_changed, and timestamp. See
+   `.cursor/skills/workflow-state-reference.md` §Git history.
+
+## Branches
+
+Follow the branch naming from `.cursor/skills/workflow-state-reference.md` §Git history:
+
+| Change type | Branch pattern | Base |
+|-------------|----------------|------|
+| Feature / milestone | `feat/{slug}` or `feat/M{N}-{slug}` | `main` or phase branch |
+| Bug fix (hotfix) | `fix/{slug}` | `main` |
+| Docs-only change | `docs/{slug}` | `main` |
+| Skill / tooling | `chore/{slug}` | `main` |
+| Infra / deploy | `infra/{slug}` | `main` |
+| Evolve cycle | `evolve/{cycle-id}-{slug}` | `main` |
+| Milestone (build phase) | `feat/M[N]-[slug]` | phase branch |
+| Phase | `phase/[N]-[slug]` | `main` |
+
+- Create the branch before starting the first task of a milestone.
+- Record every branch in `workflow-state.yaml` §`git_history.branches`.
+- When a branch is merged or closed, update its status (never delete the entry).
+
+## Pull Requests
+
+### Minor PR (per milestone)
+
+When all tasks in a milestone are complete:
+
+1. Verify all milestone tasks are `completed` in the execution plan
+2. Run tests, linter, typechecker — all must pass
+3. Create a PR from the milestone branch to the phase branch
+4. PR title: `[M1] [Milestone Name]`
+5. Auto-generate PR body from the milestone's task list, spec references, and results
+6. Include the PR checklist from the execution plan §Git Strategy
+7. Present the PR to the user for review — do not merge without approval
+8. Opening a PR does **not** end the implementation session by default; after recording it
+   in the PR Plan table, continue with the next milestone or phase when `build-execution.mdc`
+   allows (unless the user asked to stop at each PR)
+
+### Major PR (per phase)
+
+When all milestones in a phase are complete and the phase gate check passes:
+
+1. Verify phase gate criteria are met (see Phase Gate Check in execution plan)
+2. Record the gate check in the Phase Gate Log
+3. Create a PR from the phase branch to main
+4. PR title: `Phase [N]: [Phase Name]`
+5. PR body includes: gate check results, milestone summaries, test results
+6. Present the PR to the user for review — do not merge without approval
+7. After recording the PR in the PR Plan table, continue runnable work in the same session when
+   `build-execution.mdc` allows (unless the user asked to stop at each PR)
+
+After creating a PR, update the PR Plan table in the execution plan with the PR URL
+and status (`open` / `merged` / `closed`).
+
+## Release changelog
+
+Commits and PRs are structured, but **no file is auto-updated** for end users. When cutting a
+release or completing deploy, aggregate merged work into `docs/CHANGELOG.md` and/or the deploy
+report (see `.cursor/skills/considerations.md`).

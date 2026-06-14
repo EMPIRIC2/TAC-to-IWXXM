@@ -1,0 +1,49 @@
+---
+description: After every git push, watch GitHub CI until green on that branch
+alwaysApply: false
+---
+
+# CI after push (blocking)
+
+**A push is not done until required workflows are green** on that branch. Do not end the
+session, open a PR as ready, or mark work complete after `git push` without watching.
+
+## Workflows (monorepo)
+
+| Branch | Workflow | Must pass |
+|--------|----------|-----------|
+| Any | `.github/workflows/ci-cd.yml` | `backend-tests` (and other jobs for touched areas) |
+
+Workflows live at **monorepo root** (`../` from this backend package when checked out alone).
+
+## After every push (required)
+
+```bash
+# From monorepo root
+gh run list --branch "$(git branch --show-current)" --workflow ci-cd.yml --limit 3
+gh run watch <run-id>
+```
+
+| Outcome | Action |
+|---------|--------|
+| **success** | Record run URL; proceed |
+| **failure** | `gh run view <run-id> --log-failed` → fix → push → re-watch |
+| **User waives** | AskQuestion only; note waiver in PR/summary |
+
+## Before the first push (local parity — backend)
+
+```bash
+cd backend  # or repo path containing pyproject.toml
+uv sync --group dev
+uv run ruff check src tests
+uv run ruff format --check src tests
+uv run pytest tests
+```
+
+When frontend changes in the same PR, also run frontend lint/test per monorepo CI.
+
+## Related
+
+- `atomic-commits.mdc` — local checks before commit
+- `14-hotfix` / `09-qa` skills — full parity lists
+- `docs/deploy.md` §Runbook

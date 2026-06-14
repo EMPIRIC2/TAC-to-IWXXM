@@ -1,0 +1,43 @@
+---
+description: Enforces spec-adherence, phased workflow, tech choices, and question-raising before code changes
+alwaysApply: true
+---
+
+# Spec Adherence
+
+Before making any code change, verify:
+
+1. **Spec exists**: Check that a relevant standing spec in `docs/` covers the work
+   (`feature-list.md`, `spec.md`, `api-contract.md`, `test-plan.md`, `deploy.md`).
+   Session/ephemeral plans (`execution-plan`, `config-spec`, `research-brief`) live in
+   `workflow-state.yaml` §`artifacts` — not as standing docs. If no spec covers this
+   change, raise a `[Decision]` via AskQuestion: proceed without a spec, or create one first.
+
+2. **Phased workflow**: Check `workflow-state.yaml` for the active stage and build session
+   artifacts (execution plan from 04-tech-plan / build-planner). Work must belong to the
+   active phase/milestone.
+   - If the work is in a **future phase**, stop and raise a `[Decision]`.
+   - If a task has **unmet dependencies**, do not start it.
+   - After completing a task, update status in the execution plan artifact and
+     `workflow-state.yaml` §`stages.*`.
+
+3. **Phase gates**: Before starting a new phase, verify gate criteria in the execution plan
+   artifact. If any criterion is not met, raise `[Decision]` — do not silently proceed.
+   Record gate results in `workflow-state.yaml` §`artifacts`.
+
+4. **Tech choices**: Use only tools, libraries, and patterns documented in the specs.
+   Primary references: `docs/spec.md`, `docs/dependency-inventory.md`, ADRs in `docs/adr/`.
+   New dependencies require `[Decision]` and back-add to `dependency-inventory.md`.
+
+5. **Uncertainty = question**: Raise via AskQuestion with category `[Decision]`,
+   `[Ambiguity]`, or `[Uncertainty]`. Never silently guess.
+
+6. **Back-add on-the-fly decisions**: Update standing specs in `docs/` and log in
+   `workflow-state.yaml` §`decisions_log`. Add or update `.cursor/rules/` when a new
+   convention is created (03-plan-tooling).
+
+7. **Task status bookkeeping**: `workflow-state.yaml` is the persistent pipeline state;
+   execution plan tables track build tasks. Keep both in sync after each task.
+
+8. **Citation**: Reference the spec section in commit/PR descriptions when decisions trace
+   to approved docs (e.g., "per spec.md §Component Details").

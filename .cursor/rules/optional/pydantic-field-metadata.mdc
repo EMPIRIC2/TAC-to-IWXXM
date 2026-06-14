@@ -1,0 +1,50 @@
+---
+description: Pydantic Field() metadata must use Annotated patterns (no validate_default misuse)
+globs:
+  - src/**/*.py
+  - tests/**/*.py
+---
+# Pydantic field metadata
+
+Pydantic v2 field-specific metadata (`validate_default`, `min_length`, `ge`, etc.) must be
+attached correctly or Pydantic emits `UnsupportedFieldAttributeWarning` at import time.
+
+## Do not
+
+- Pass `validate_default=True` (or any `validate_default=`) inside `Field()` on a model
+  attribute — it has no effect and triggers warnings.
+- Attach `Field(...)` to a single member of a union on the model attribute line, e.g.
+  `tags: list[TagInput] | None = Field(default=None, max_length=10)`.
+- Use a PEP 695 `type` alias with embedded `Field()` metadata:
+  `type Slug = Annotated[str, Field(min_length=1)]`.
+
+## Do instead
+
+- Put constraints on the model field directly when the whole annotation is one type:
+
+```python
+tags: list[TagInput] = Field(default_factory=list, max_length=10)
+chunk_index: int = Field(..., ge=0)
+```
+
+- For optional unions, use a default without `Field()` on the union, or split into separate
+  optional fields / validators per `docs/config-spec.md` patterns.
+
+- For reusable constrained types, use `TypeAlias` (not `type`):
+
+```python
+from typing import Annotated, TypeAlias
+
+NonEmptySlug: TypeAlias = Annotated[str, Field(min_length=1)]
+```
+
+- To validate defaults explicitly, use `@field_validator` or `@model_validator` — not
+  `validate_default` in `Field()`.
+
+## Verification
+
+- Hook: `.cursor/hooks/pydantic_field_check.py` (afterFileEdit on Python files).
+- Test: `tests/unit/test_pydantic_field_metadata.py` imports owned schema modules with
+  warnings promoted.
+- Filter third-party import warnings in `pyproject.toml` when needed; do not copy their patterns
+  into project-owned models.

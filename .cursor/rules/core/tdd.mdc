@@ -1,0 +1,38 @@
+---
+description: Enforces test-driven development — write tests before implementation
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Test-Driven Development
+
+When implementing any feature or component:
+
+1. **Test first**: Write the test before the implementation. The test should fail initially
+   (red phase), then pass after implementation (green phase), then be cleaned up (refactor
+   phase).
+
+2. **Coverage requirement**: Every new public function, class, or module must have a
+   corresponding test. Reference `docs/test-plan.md` for test case definitions and
+   `docs/acceptance-criteria.md` for pass/fail thresholds.
+
+3. **Test location**: Place tests in the project's `tests/` directory. Mirror the source
+   directory structure:
+   - `src/pipeline/preprocess.py` → `tests/pipeline/test_preprocess.py`
+   - Tracked bugs (14-hotfix / 15-modal-health): `tests/bugs/test_bug_YYYY_MM_DD_[slug].py`
+     with report `docs/bug-reports/BUG-YYYY-MM-DD-[slug].md` — see `bug-investigation.mdc`
+
+4. **Test naming**: Use descriptive names stating the expected behavior:
+   - `test_[function]_[scenario]_[expected_result]`
+   - Example: `test_normalize_empty_input_raises_value_error`
+
+5. **Run tests**: After implementation, run the relevant tests to verify they pass before
+   moving to the next task. Do not accumulate untested code.
+
+6. **No skipping**: Do not implement code without a corresponding test unless the user
+   explicitly approves. If a test is hard to write, that signals a design problem — raise
+   it as a `[Decision]` via AskQuestion.
+
+7. **Spec alignment**: Test assertions should match the metrics and thresholds in
+   `docs/test-plan.md` and `docs/acceptance-criteria.md`. If a test needs a threshold not
+   in the specs, raise it as `[Ambiguity]` before choosing a value.

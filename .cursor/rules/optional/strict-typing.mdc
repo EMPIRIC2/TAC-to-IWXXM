@@ -1,0 +1,27 @@
+---
+description: Enforce strict typing — Ruff on Python; optional TS strict when frontends change
+alwaysApply: false
+---
+
+# Strict typing
+
+Adopt explicit typing policy in `docs/adr/` or `docs/spec.md` during 04-tech-plan.
+
+## Python (this backend)
+
+- Prefer concrete types, `TypedDict`, and `Mapping[str, object]` over loose dicts.
+- Run Ruff with project config in `pyproject.toml`.
+- Add `basedpyright` when the project adopts it (record ADR).
+
+## Before claiming done (backend)
+
+```bash
+uv run ruff check src tests
+uv run ruff format --check src tests
+```
+
+## TypeScript (monorepo frontend)
+
+When PR touches `frontend/`: run `npm run lint` in that package per CI.
+
+See also `ci-after-push.mdc` for full CI parity.

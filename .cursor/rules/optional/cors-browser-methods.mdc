@@ -1,0 +1,23 @@
+---
+description: >
+  Browser-facing FastAPI CORS must allow every HTTP verb exposed on routes.
+  Prevents Failed to fetch when adding DELETE/PUT/PATCH.
+globs:
+  - src/**/*.py
+  - tests/**/test_cors*.py
+  - tests/smoke/test_staging_connectivity.py
+---
+
+# CORS browser HTTP methods
+
+When changing CORS configuration or adding browser-facing routes:
+
+1. **`allow_methods` must include every verb** registered on that app (at minimum
+   `GET`, `POST`, `DELETE`, `OPTIONS`; add `PUT`/`PATCH` if routes use them).
+2. **Do not ship a new route verb** without an H0c OPTIONS test in unit tests using
+   `Access-Control-Request-Method: <VERB>`.
+3. After deploy, verify live OPTIONS preflight (see `connectivity-gates.md`).
+4. Add regression tests under `tests/bugs/` for CORS-related failures.
+
+Symptom **Failed to fetch** with correct origin usually means missing verb in
+`access-control-allow-methods`, not auth.
