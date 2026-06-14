@@ -2,6 +2,12 @@ version = 1
 revision = 3
 requires-python = ">=3.12"
 
+[manifest]
+members = [
+    "metar-iwxxm-workspace",
+    "metar-shared",
+]
+
 [[package]]
 name = "anyio"
 version = "4.13.0"
@@ -193,6 +199,7 @@ source = { virtual = "." }
 dev = [
     { name = "basedpyright" },
     { name = "httpx" },
+    { name = "metar-shared" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
@@ -205,11 +212,17 @@ dev = [
 dev = [
     { name = "basedpyright", specifier = ">=1.29" },
     { name = "httpx", specifier = ">=0.28" },
+    { name = "metar-shared", editable = "packages/shared" },
     { name = "pytest", specifier = ">=8.4" },
     { name = "pytest-asyncio", specifier = ">=0.24" },
     { name = "pytest-cov", specifier = ">=6.0" },
     { name = "ruff", specifier = ">=0.9" },
 ]
+
+[[package]]
+name = "metar-shared"
+version = "0.1.0"
+source = { editable = "packages/shared" }
 
 [[package]]
 name = "nodejs-wheel-binaries"

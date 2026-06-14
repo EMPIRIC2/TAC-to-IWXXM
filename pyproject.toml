@@ -18,11 +18,15 @@ dev = [
   "pytest-cov>=6.0",
   "pytest-asyncio>=0.24",
   "httpx>=0.28",
+  "metar-shared",
 ]
+
+[tool.uv.sources]
+metar-shared = { workspace = true }
 
 # Workspace members populated incrementally during Phase 1 (T1.4 packages/shared first).
 [tool.uv.workspace]
-members = []
+members = ["packages/shared"]
 
 [tool.basedpyright]
 pythonVersion = "3.12"
