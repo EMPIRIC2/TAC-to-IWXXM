@@ -20,20 +20,17 @@ dev = [
   "httpx>=0.28",
   "metar-shared",
   "gifts",
-  # Auth runtime deps for M4 middleware migration tests until packages/auth wired (T4.3)
-  "fastapi>=0.110",
-  "python-jose[cryptography]>=3.3",
-  "passlib[bcrypt]>=1.7",
-  "email-validator>=2.0",
+  "metar-auth",
 ]
 
 [tool.uv.sources]
 metar-shared = { workspace = true }
 gifts = { workspace = true }
+metar-auth = { workspace = true }
 
-# Workspace members populated incrementally during Phase 1–2 (T1.4 shared, T3.3 gifts).
+# Workspace members populated incrementally during Phase 1–2 (T1.4 shared, T3.3 gifts, T4.3 auth).
 [tool.uv.workspace]
-members = ["packages/shared", "packages/gifts"]
+members = ["packages/shared", "packages/gifts", "packages/auth"]
 
 [tool.basedpyright]
 pythonVersion = "3.12"

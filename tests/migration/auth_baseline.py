@@ -21,7 +21,16 @@ AUTH_SRC_CANDIDATES = (
 
 
 def resolve_auth_src_root() -> Path:
-    """Prefer monorepo ``packages/auth/src``; fall back to legacy ``auth/src``."""
+    """Prefer uv workspace install; fall back to packages/auth or legacy auth/src."""
+    try:
+        importlib.import_module("auth.security")
+        import auth.security as security_mod
+
+        security_path = Path(security_mod.__file__).resolve()
+        return security_path.parent.parent
+    except ImportError:
+        pass
+
     for candidate in AUTH_SRC_CANDIDATES:
         security = candidate / "auth" / "security.py"
         if security.is_file():

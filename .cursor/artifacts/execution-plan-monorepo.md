@@ -11,8 +11,8 @@
 |-------|-------|
 | **Active phase** | Phase 2: Vendor & Packages |
 | **Active milestone** | M4: Auth Package |
-| **Active task** | T4.3 — Wire `packages/auth` as uv workspace member |
-| **Tasks completed** | 22 / 63 |
+| **Active task** | T4.4 — Achieve 95% coverage on packages/auth |
+| **Tasks completed** | 23 / 63 |
 | **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary
@@ -137,8 +137,8 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 |---|------|------|--------|-------------|------------|-----------|
 | T4.1 | Write packages/auth middleware unit tests | Test | completed | test-plan.md TC-M005 | — | — |
 | T4.2 | Move `auth/` → `packages/auth/` | Code | completed | migration-plan.md Step 2, M4 | T4.1 | — |
-| T4.3 | Wire `packages/auth` as uv workspace member | Config | in_progress | ADR-002 | T4.2 | — |
-| T4.4 | Achieve 95% coverage on packages/auth | Test | pending | User decision | T4.3 | — |
+| T4.3 | Wire `packages/auth` as uv workspace member | Config | completed | ADR-002 | T4.2 | — |
+| T4.4 | Achieve 95% coverage on packages/auth | Test | in_progress | User decision | T4.3 | — |
 
 **Parallelizable**: M2 and M4 after T1 gate (independent until Phase 3).
 

@@ -25,12 +25,19 @@ class TestWorkspaceImportSmoke:
         assert hasattr(module, "metarEncoder")
         assert hasattr(module, "metarDecoder")
 
+    def test_auth_workspace_member_importable(self) -> None:
+        module = importlib.import_module("auth.security")
+        assert hasattr(module, "create_access_token")
+        assert hasattr(module, "decode_access_token")
+
     def test_uv_workspace_member_declared_in_root_pyproject(self) -> None:
         content = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
         assert "packages/shared" in content
         assert "packages/gifts" in content
+        assert "packages/auth" in content
         assert "metar-shared" in content
         assert "gifts = { workspace = true }" in content
+        assert "metar-auth = { workspace = true }" in content
 
     def test_pnpm_workspace_discovers_shared_package(self) -> None:
         content = (ROOT / "pnpm-workspace.yaml").read_text(encoding="utf-8")
