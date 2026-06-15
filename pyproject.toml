@@ -19,17 +19,16 @@ dev = [
   "pytest-asyncio>=0.24",
   "httpx>=0.28",
   "metar-shared",
-  # GIFTs runtime deps for TC-M003 migration tests until packages/gifts is wired (T3.3)
-  "skyfield>=1.45",
-  "lxml>=4.9",
+  "gifts",
 ]
 
 [tool.uv.sources]
 metar-shared = { workspace = true }
+gifts = { workspace = true }
 
-# Workspace members populated incrementally during Phase 1 (T1.4 packages/shared first).
+# Workspace members populated incrementally during Phase 1–2 (T1.4 shared, T3.3 gifts).
 [tool.uv.workspace]
-members = ["packages/shared"]
+members = ["packages/shared", "packages/gifts"]
 
 [tool.basedpyright]
 pythonVersion = "3.12"

@@ -20,10 +20,17 @@ class TestWorkspaceImportSmoke:
         assert hasattr(module, "METAR_CORS_ORIGINS_ENV")
         assert module.METAR_CORS_ORIGINS_ENV == "METAR_CORS_ORIGINS"
 
+    def test_gifts_workspace_member_importable(self) -> None:
+        module = importlib.import_module("gifts")
+        assert hasattr(module, "metarEncoder")
+        assert hasattr(module, "metarDecoder")
+
     def test_uv_workspace_member_declared_in_root_pyproject(self) -> None:
         content = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        assert 'members = ["packages/shared"]' in content
+        assert "packages/shared" in content
+        assert "packages/gifts" in content
         assert "metar-shared" in content
+        assert "gifts = { workspace = true }" in content
 
     def test_pnpm_workspace_discovers_shared_package(self) -> None:
         content = (ROOT / "pnpm-workspace.yaml").read_text(encoding="utf-8")

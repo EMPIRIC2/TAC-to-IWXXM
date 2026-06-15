@@ -5,6 +5,7 @@ Resolves ``packages/gifts`` (monorepo target) with legacy ``GIFTs/`` fallback.
 
 from __future__ import annotations
 
+import importlib
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -56,7 +57,13 @@ def _initialize_gifts_code_registry() -> None:
 
 
 def ensure_gifts_importable() -> None:
-    """Add the resolved GIFTs package root to ``sys.path``."""
+    """Ensure GIFTs is importable — prefer uv workspace install, else sys.path."""
+    try:
+        importlib.import_module("gifts")
+        return
+    except ImportError:
+        pass
+
     gifts_root = resolve_gifts_root()
     gifts_path = str(gifts_root)
     if gifts_path not in sys.path:
