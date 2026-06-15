@@ -4,7 +4,7 @@ UV := uv
 PNPM := pnpm
 
 .PHONY: install test test-unit vendor-sync \
-	test-unit-workspace test-unit-workspace-py test-unit-workspace-js test-unit-legacy \
+	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-workspace-js test-unit-legacy \
 	lint lint-backend lint-auth lint-frontend lint-gifts \
 	lint-fix lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
 	dev dev-kill dev-servers dev-servers-kill \
@@ -22,12 +22,16 @@ install:
 	$(PNPM) install
 
 test-unit-workspace-py:
-	$(UV) run pytest tests/migration/test_workspace_import_smoke.py tests/unit packages/shared/tests -v
+	$(UV) run pytest tests/migration/test_workspace_import_smoke.py tests/unit -v
+
+test-unit-shared-py:
+	$(UV) run pytest packages/shared/tests --cov=metar_shared \
+		--cov-config=packages/shared/pyproject.toml --cov-branch --cov-fail-under=95 -v
+
+test-unit-workspace: test-unit-workspace-py test-unit-shared-py test-unit-workspace-js
 
 test-unit-workspace-js:
 	$(PNPM) --filter @metar/shared test
-
-test-unit-workspace: test-unit-workspace-py test-unit-workspace-js
 
 test-unit: test-unit-workspace
 
