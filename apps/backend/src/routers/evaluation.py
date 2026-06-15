@@ -116,20 +116,19 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
     try:
         await update_job_status(job_id, "running")
 
-        # Get station list
-        sampler = StationSampler()
-
         if request.mode == EvaluationMode.SINGLE:
             if not request.station_ids:
                 raise ValueError("station_ids required for single mode")
             stations = request.station_ids
         elif request.mode == EvaluationMode.RANDOM:
+            sampler = StationSampler()
             stations = sampler.sample_random_stations(
                 count=request.sample_size or 100,
                 large_airports_only=request.large_airports_only,
                 scheduled_service_only=request.scheduled_service_only
             )
         else:  # ALL
+            sampler = StationSampler()
             stations = sampler.get_all_major_airports(
                 large_only=request.large_airports_only,
                 scheduled_service_only=request.scheduled_service_only
@@ -243,13 +242,12 @@ async def create_evaluation_job(
     if request.mode == EvaluationMode.SINGLE and not request.station_ids:
         raise HTTPException(status_code=400, detail="station_ids required for single mode")
 
-    # Determine station count
-    sampler = StationSampler()
     if request.mode == EvaluationMode.SINGLE:
         station_count = len(request.station_ids)
     elif request.mode == EvaluationMode.RANDOM:
         station_count = request.sample_size or 100
     else:  # ALL
+        sampler = StationSampler()
         all_stations = sampler.get_all_major_airports(
             large_only=request.large_airports_only,
             scheduled_service_only=request.scheduled_service_only

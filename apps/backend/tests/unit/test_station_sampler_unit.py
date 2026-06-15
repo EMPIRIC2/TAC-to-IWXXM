@@ -62,11 +62,14 @@ def test_get_all_major_airports_and_station_info(airports_csv: Path) -> None:
 def test_find_airports_csv_raises_when_no_candidate_exists(monkeypatch: pytest.MonkeyPatch) -> None:
     class _MissingPath:
         def __init__(self, *_args, **_kwargs):
-            pass
+            self._parents = ()
+
+        def resolve(self):
+            return self
 
         @property
-        def parent(self):
-            return self
+        def parents(self):
+            return self._parents
 
         def __truediv__(self, _other):
             return self

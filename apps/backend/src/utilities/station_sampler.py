@@ -18,12 +18,12 @@ class StationSampler:
     @staticmethod
     def _find_airports_csv() -> pathlib.Path:
         """Find the airports CSV file."""
-        # Try multiple locations
         candidates = [
-            pathlib.Path(__file__).parent.parent.parent.parent / "data" / "af-airports.csv",
             pathlib.Path("/app/data/af-airports.csv"),
             pathlib.Path("./data/af-airports.csv"),
         ]
+        for parent in pathlib.Path(__file__).resolve().parents:
+            candidates.append(parent / "data" / "af-airports.csv")
 
         for candidate in candidates:
             if candidate.exists():
