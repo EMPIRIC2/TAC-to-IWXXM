@@ -59,6 +59,7 @@ addopts = [
 markers = [
     "unit: unit tests",
     "integration: integration tests",
+    "h0i: H0i cross-package connectivity gate (in-process)",
     "e2e: end-to-end tests",
     "smoke: quick smoke tests for CI/CD pipelines (~30 seconds)",
     "asyncio: async tests",
