@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
-# Sync wmo-im iwxxm-* snapshots into vendor/schemas/ (T2.3 implements full logic).
+# Sync wmo-im iwxxm-* snapshots into vendor/schemas/ per vendor/manifest.json.
 set -euo pipefail
 
-echo "vendor-sync: scripts/vendor/sync-iwxxm.sh is not implemented yet (T2.3)." >&2
-echo "Populate vendor/schemas via milestone M2 before running make vendor-sync." >&2
-exit 1
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+MANIFEST="${ROOT}/vendor/manifest.json"
+
+if [[ "${1:-}" == "--from-manifest" ]]; then
+  shift
+  if [[ -n "${1:-}" ]]; then
+    MANIFEST="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+  fi
+fi
+
+exec uv run python "${ROOT}/scripts/vendor/sync_iwxxm.py" --manifest "${MANIFEST}"
