@@ -1,14 +1,47 @@
 SHELL := /bin/bash
 COMPOSE := docker compose
+UV := uv
+PNPM := pnpm
 
-.PHONY: lint lint-backend lint-auth lint-frontend lint-gifts \
+.PHONY: install test test-unit vendor-sync \
+	test-unit-workspace test-unit-workspace-py test-unit-workspace-js test-unit-legacy \
+	lint lint-backend lint-auth lint-frontend lint-gifts \
 	lint-fix lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
 	dev dev-kill dev-servers dev-servers-kill \
 	setup-backend setup-auth setup-frontend setup-gifts \
-	test-unit test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
+	test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
 	test-e2e-playwright test-e2e-playwright-smoke \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts \
 	coverage-modules coverage-submodules coverage-all ci acci badge-audit audit-frontend
+
+# --- Monorepo workspace (Phase 1+, config-spec-monorepo.md) ---
+
+install:
+	$(UV) sync
+	corepack enable
+	$(PNPM) install
+
+test-unit-workspace-py:
+	$(UV) run pytest tests/migration/test_workspace_import_smoke.py tests/unit packages/shared/tests -v
+
+test-unit-workspace-js:
+	$(PNPM) --filter @metar/shared test
+
+test-unit-workspace: test-unit-workspace-py test-unit-workspace-js
+
+test-unit: test-unit-workspace
+
+test: test-unit
+
+tests\:e2e:
+	@if [ -f apps/e2e/package.json ]; then \
+		cd apps/e2e && $(PNPM) exec playwright test; \
+	else \
+		$(MAKE) test-e2e-playwright; \
+	fi
+
+vendor-sync:
+	bash scripts/vendor/sync-iwxxm.sh
 
 lint: lint-backend lint-auth lint-frontend lint-gifts
 
@@ -61,7 +94,7 @@ setup-frontend:
 setup-gifts:
 	cd GIFTs && python3 -m pip install -e .
 
-test-unit: test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts
+test-unit-legacy: test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts
 
 test-unit-backend:
 	cd backend && python3 -m pytest tests/unit --cov=src --cov-config=pyproject.toml --cov-branch --cov-report=xml:coverage.xml --cov-report=term-missing --cov-fail-under=95 -v
@@ -177,8 +210,8 @@ coverage: coverage-modules
 badge-audit:
 	python3 .github/scripts/badge_audit.py
 
-ci: lint test-unit test-integration badge-audit
+ci: lint test-unit-legacy test-integration badge-audit
 
 # All CI checks in one command: linting, unit tests, integration tests,
 # smoke E2E, frontend dependency audit, and badge verification.
-acci: lint test-unit test-integration test-e2e-playwright-smoke audit-frontend badge-audit
+acci: lint test-unit-legacy test-integration test-e2e-playwright-smoke audit-frontend badge-audit
