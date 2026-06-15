@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UMLProfile profiletype="uml2">
+	<Documentation id="CB9BF865-0" name="UML Profile for IWXXM" version="1.0" notes="This profile defines a set of stereotypes and tagged values for describing IWXXM application schemas in UML."/>
+	<Content>
+		<Stereotypes>
+			<Stereotype name="applicationSchema" notes="An XML Schema in a single XML namespace." cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="Package"/>
+				</AppliesTo>
+				<TaggedValues>
+					<Tag name="targetNamespace" type="String" description="Target XML namespace of the application schema." unit="" values="" default=""/>
+					<Tag name="xmlns" type="String" description="Namespace prefix to be used as short form of the target namespace." unit="" values="" default=""/>
+					<Tag name="version" type="String" description="Current version of the application schema." unit="" values="" default=""/>
+					<Tag name="xsdDocument" type="String" description="Name of an XML Schema document to create representing the content of this package." unit="" values="" default=""/>
+					<Tag name="gmlProfileSchema" type="String" description="URL of the schema location of a GML profile (optional)." unit="" values="" default=""/>
+				</TaggedValues>
+			</Stereotype>
+			<Stereotype name="leaf" notes="Single XML Schema document." cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="Package"/>
+				</AppliesTo>
+				<TaggedValues>
+					<Tag name="xsdDocument" type="String" description="Name of an XML Schema document to create representing the content of this package." unit="" values="" default=""/>
+					<Tag name="xsdEncodingRule" type="enumeration" description="XML Schema encoding rule to apply." unit="" values="iso19136_2007,iso19139_2007,iso19136_2007_METCE_Extensions" default="iso19136_2007_METCE_Extensions"/>
+				</TaggedValues>
+			</Stereotype>
+			<Stereotype name="featureType" notes="XML element whose XML Schema-type is derived from gml:AbstractFeatureType." cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="Class"/>
+				</AppliesTo>
+				<TaggedValues>
+					<Tag name="noPropertyType" type="boolean" description="Suppresses creation of a standard property type that supports inline or by-reference encoding (applies to ISO 19136:2007 encoding rule)." unit="" values="true,false" default="false"/>
+					<Tag name="byValuePropertyType" type="boolean" description="Creates a property type that requires its instance to be encoded inline (applies to ISO 19136:2007 encoding rule)." unit="" values="true,false" default="false"/>
+					<Tag name="isCollection" type="boolean" description="Identifies the type as an objection collection." unit="" values="true,false" default="false"/>
+				</TaggedValues>
+			</Stereotype>
+			<Stereotype name="type" notes="XML element whose XML Schema-type is derived from gml:AbstractGMLType." cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="Class"/>
+				</AppliesTo>
+				<TaggedValues>
+					<Tag name="noPropertyType" type="boolean" description="Suppresses creation of a standard property type that supports inline or by-reference encoding (applies to ISO 19136:2007 encoding rule)." unit="" values="true,false" default="false"/>
+					<Tag name="byValuePropertyType" type="boolean" description="Creates a property type that requires its instance to be encoded inline (applies to ISO 19136:2007 encoding rule)." unit="" values="true,false" default="false"/>
+					<Tag name="isCollection" type="boolean" description="Identifies the type as an objection collection." unit="" values="true,false" default="false"/>
+				</TaggedValues>
+			</Stereotype>
+			<Stereotype name="dataType" notes="XML element with a complex content model; does not have identity and must appear inline." cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="Class"/>
+				</AppliesTo>
+				<TaggedValues>
+					<Tag name="noPropertyType" type="boolean" description="Suppresses creation of a standard property type that supports inline or by-reference encoding (applies to ISO 19136:2007 encoding rule)." unit="" values="true,false" default="false"/>
+					<Tag name="isCollection" type="boolean" description="Identifies the type as an objection collection." unit="" values="true,false" default="false"/>
+				</TaggedValues>
+			</Stereotype>
+			<Stereotype name="union" notes="Choice group whose members are GML Objects or Features, or objects corresponding to DataTypes." cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="Class"/>
+				</AppliesTo>
+				<TaggedValues>
+					<Tag name="noPropertyType" type="boolean" description="Suppresses creation of a standard property type that supports inline or by-reference encoding (applies to ISO 19136:2007 encoding rule)." unit="" values="true,false" default="false"/>
+				</TaggedValues>
+			</Stereotype>
+			<Stereotype name="enumeration" notes="Enumeration of string values." cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="Class"/>
+					<Apply type="Enumeration"/>
+				</AppliesTo>
+			</Stereotype>
+			<Stereotype name="codeList" notes="Union of an enumeration of string values and a pattern." cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="Class"/>
+				</AppliesTo>
+				<TaggedValues>
+					<Tag name="asDictionary" type="boolean" description="Encode code list as externally managed dictionary (applies to ISO 19136:2007 encoding rule)." unit="" values="true,false" default="true"/>
+					<Tag name="vocabulary" type="String" description="URI of the vocabulary/code list in the WMO Codes Registry or in some external registry. The value has to be provided, if an online version of the vocabulary is used." unit="" values="" default=""/>
+					<Tag name="extensibility" type="enumeration" description="This refers to extensions by a third party, not to extensions by the owner of the vocabulary; the owner will always be able to revise the vocabulary. I.e., if the value is 'none', the referenced vocabulary may not be extended by third parties; if the value is 'narrower', the vocabulary may be extended by narrower terms that have an existing term as a parent; if the value is 'any', the vocabulary may be extended by additional terms on any level. This value must be 'all', empty or missing, if the value 'vocabulary' is empty or missing; in this case any vocabulary may be used." unit="" values="none,narrower,open,any" default="none"/>
+				</TaggedValues>
+			</Stereotype>
+			<Stereotype name="IWXXMXML" notes="IWXXM XML implementation.  Objects created as an instance of a Class are being used as containers for constraints describing respective requirements of the soft-typed XML implementations.  By assigning this non-GML stereotype to these objects no irrelevant XML elements will be generated by GML transformation tools. " cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="ClassifierRole"/>
+				</AppliesTo>
+			</Stereotype>
+			<Stereotype name="attribute" notes="Regular properties for attribute." cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="Attribute"/>
+				</AppliesTo>
+				<TaggedValues>
+					<Tag name="sequenceNumber" type="int" description="Unique integer value for properties of the type used to sort properties (applies to ISO 19136:2007 encoding rule)" unit="" values="" default=""/>
+					<Tag name="xsdAsAttribute" type="boolean" description="Serialises UML attribute as XSD attribute (applies to ISO 19136:2007 encoding rule)." unit="" values="true,false" default="true"/>
+				</TaggedValues>
+			</Stereotype>
+			<Stereotype name="association" notes="Regular properties for associationEnd." cx="90" cy="70" bgcolor="-1" fontcolor="-1" bordercolor="-1" borderwidth="-1" hideicon="0">
+				<AppliesTo>
+					<Apply type="AssociationEnd"/>
+				</AppliesTo>
+				<TaggedValues>
+					<Tag name="sequenceNumber" type="int" description="Unique integer value for properties of the type used to sort properties (applies to ISO 19136:2007 encoding rule)" unit="" values="" default=""/>
+				</TaggedValues>
+			</Stereotype>
+		</Stereotypes>
+		<TaggedValueTypes/>
+	</Content>
+</UMLProfile>

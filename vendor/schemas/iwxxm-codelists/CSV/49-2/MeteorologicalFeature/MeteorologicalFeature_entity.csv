@@ -1,0 +1,28 @@
+id,notation,status,description,label,related
+http://codes.wmo.int/49-2/MeteorologicalFeature/DUSTSTORM,DUSTSTORM,experimental,Duststorm,Duststorm,http://codes.wmo.int/bufr4/codeflag/0-08-011/24
+http://codes.wmo.int/49-2/MeteorologicalFeature/CONVERGENCE_LINE,CONVERGENCE_LINE,experimental,Convergence line,Convergence line,http://codes.wmo.int/bufr4/codeflag/0-08-011/9
+http://codes.wmo.int/49-2/MeteorologicalFeature/QUASI-STATIONARY_FRONT_AT_THE_SURFACE,QUASI-STATIONARY_FRONT_AT_THE_SURFACE,experimental,Quasi-stationary front at the surface,Quasi-stationary front at the surface,http://codes.wmo.int/bufr4/codeflag/0-08-011/0
+http://codes.wmo.int/49-2/MeteorologicalFeature/JETSTREAM,JETSTREAM,experimental,Jet stream,Jet stream,http://codes.wmo.int/bufr4/codeflag/0-08-011/10
+http://codes.wmo.int/49-2/MeteorologicalFeature/THUNDERSTORM,THUNDERSTORM,experimental,Thunderstorm,Thunderstorm,http://codes.wmo.int/bufr4/codeflag/0-08-011/21
+http://codes.wmo.int/49-2/MeteorologicalFeature/ATMOSPHERICS,ATMOSPHERICS,experimental,Atmospherics,Atmospherics,http://codes.wmo.int/bufr4/codeflag/0-08-011/18
+http://codes.wmo.int/49-2/MeteorologicalFeature/VOLCANO,VOLCANO,experimental,Volcano,Volcano,http://codes.wmo.int/bufr4/codeflag/0-08-011/17
+http://codes.wmo.int/49-2/MeteorologicalFeature/TROPICAL_CYCLONE,TROPICAL_CYCLONE,experimental,Tropical cyclone,Tropical cyclone,http://codes.wmo.int/bufr4/codeflag/0-08-011/22
+http://codes.wmo.int/49-2/MeteorologicalFeature/INSTABILITY_LINE,INSTABILITY_LINE,experimental,Instability line,Instability line,http://codes.wmo.int/bufr4/codeflag/0-08-011/7
+http://codes.wmo.int/49-2/MeteorologicalFeature/SPECIAL_CLOUDS,SPECIAL_CLOUDS,experimental,Special clouds,Special clouds,http://codes.wmo.int/bufr4/codeflag/0-08-011/20
+http://codes.wmo.int/49-2/MeteorologicalFeature/COLD_FRONT_ABOVE_THE_SURFACE,COLD_FRONT_ABOVE_THE_SURFACE,experimental,Cold front above the surface,Cold front above the surface,http://codes.wmo.int/bufr4/codeflag/0-08-011/5
+http://codes.wmo.int/49-2/MeteorologicalFeature/OCCLUSION,OCCLUSION,experimental,Occlusion,Occlusion,http://codes.wmo.int/bufr4/codeflag/0-08-011/6
+http://codes.wmo.int/49-2/MeteorologicalFeature/AIRFRAME_ICING,AIRFRAME_ICING,experimental,Airframe icing,Airframe icing,http://codes.wmo.int/bufr4/codeflag/0-08-011/15
+http://codes.wmo.int/49-2/MeteorologicalFeature/INTERTROPICAL_FRONT,INTERTROPICAL_FRONT,experimental,Intertropical front,Intertropical front,http://codes.wmo.int/bufr4/codeflag/0-08-011/8
+http://codes.wmo.int/49-2/MeteorologicalFeature/TURBULENCE,TURBULENCE,experimental,Turbulence,Turbulence,http://codes.wmo.int/bufr4/codeflag/0-08-011/13
+http://codes.wmo.int/49-2/MeteorologicalFeature/PHENOMENON,PHENOMENON,experimental,Phenomenon,Phenomenon,http://codes.wmo.int/bufr4/codeflag/0-08-011/16
+http://codes.wmo.int/49-2/MeteorologicalFeature/WARM_FRONT_ABOVE_THE_SURFACE,WARM_FRONT_ABOVE_THE_SURFACE,experimental,Warm front above the surface,Warm front above the surface,http://codes.wmo.int/bufr4/codeflag/0-08-011/3
+http://codes.wmo.int/49-2/MeteorologicalFeature/QUASI-STATIONARY_FRONT_ABOVE_THE_SURFACE,QUASI-STATIONARY_FRONT_ABOVE_THE_SURFACE,experimental,Quasi-stationary front above the surface,Quasi-stationary front above the surface,http://codes.wmo.int/bufr4/codeflag/0-08-011/1
+http://codes.wmo.int/49-2/MeteorologicalFeature/MOUNTAIN_WAVE,MOUNTAIN_WAVE,experimental,Mountain wave,Mountain wave,http://codes.wmo.int/bufr4/codeflag/0-08-011/23
+http://codes.wmo.int/49-2/MeteorologicalFeature/WARM_FRONT_AT_THE_SURFACE,WARM_FRONT_AT_THE_SURFACE,experimental,Warm front at the surface,Warm front at the surface,http://codes.wmo.int/bufr4/codeflag/0-08-011/2
+http://codes.wmo.int/49-2/MeteorologicalFeature/CLOUD_CLEAR,CLOUD_CLEAR,experimental,Cloud clear,Cloud clear,http://codes.wmo.int/bufr4/codeflag/0-08-011/11
+http://codes.wmo.int/49-2/MeteorologicalFeature/COLD_FRONT_AT_THE_SURFACE,COLD_FRONT_AT_THE_SURFACE,experimental,Cold front at the surface,Cold front at the surface,http://codes.wmo.int/bufr4/codeflag/0-08-011/4
+http://codes.wmo.int/49-2/MeteorologicalFeature/STORM,STORM,experimental,Storm,Storm,http://codes.wmo.int/bufr4/codeflag/0-08-011/14
+http://codes.wmo.int/49-2/MeteorologicalFeature/SANDSTORM,SANDSTORM,experimental,Sandstorm,Sandstorm,http://codes.wmo.int/bufr4/codeflag/0-08-011/25
+http://codes.wmo.int/49-2/MeteorologicalFeature/CLOUD,CLOUD,experimental,Cloud,Cloud,http://codes.wmo.int/bufr4/codeflag/0-08-011/12
+http://codes.wmo.int/49-2/MeteorologicalFeature/TROPOPAUSE,TROPOPAUSE,experimental,Tropopause,Tropopause,
+http://codes.wmo.int/49-2/MeteorologicalFeature/RADIATION,RADIATION,experimental,Radiation,Radiation,

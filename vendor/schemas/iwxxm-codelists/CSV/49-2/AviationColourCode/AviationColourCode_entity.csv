@@ -1,0 +1,8 @@
+id,notation,status,description,label,related
+http://codes.wmo.int/49-2/AviationColourCode/GREEN,GREEN,stable,"Volcano is in normal, non-eruptive state.  Or, after a change from a higher alert level: Volcanic activity considered to have ceased, and volcano reverted to its normal, non-eruptive state.",Green,
+http://codes.wmo.int/49-2/AviationColourCode/NIL,NIL,stable,Nil,Nil,
+http://codes.wmo.int/49-2/AviationColourCode/NOT_GIVEN,NOT_GIVEN,stable,Not Given,Not Given,
+http://codes.wmo.int/49-2/AviationColourCode/ORANGE,ORANGE,stable,"Volcano is exhibiting heightened unrest with increased likelihood of eruption.  Or, volcanic eruption is underway with no or minor ash emission [specify ash-plume height if possible].",Orange,
+http://codes.wmo.int/49-2/AviationColourCode/RED,RED,stable,"Eruption is forecasted to be imminent with significant emission of ash into the atmosphere likely. Or, eruption is underway with significant emission of ash into the atmosphere [specify ash-plume height if possible].",Red,
+http://codes.wmo.int/49-2/AviationColourCode/UNKNOWN,UNKNOWN,stable,Unknown,Unknown,
+http://codes.wmo.int/49-2/AviationColourCode/YELLOW,YELLOW,stable,"Volcano is experiencing signs of elevated unrest above known background levels. Or, after a change from higher alert level: Volcanic activity has decreased significantly but continues to be closely monitored for possible renewed increase.",Yellow,

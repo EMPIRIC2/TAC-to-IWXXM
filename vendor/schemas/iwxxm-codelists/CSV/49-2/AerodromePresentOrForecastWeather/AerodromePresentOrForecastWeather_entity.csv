@@ -1,0 +1,403 @@
+id,notation,status,description,label,related
+http://codes.wmo.int/306/4678/+DS,+DS,stable,Heavy duststorm,Heavy duststorm,http://codes.wmo.int/306/4678/+DS
+http://codes.wmo.int/306/4678/+DZ,+DZ,stable,Heavy precipitation of drizzle,Heavy precipitation of drizzle,http://codes.wmo.int/306/4678/+DZ
+http://codes.wmo.int/306/4678/+DZPL,+DZPL,stable,Heavy precipitation of drizzle and ice pellets,Heavy precipitation of drizzle and ice pellets,http://codes.wmo.int/306/4678/+DZPL
+http://codes.wmo.int/306/4678/+DZPLRA,+DZPLRA,stable,"Heavy precipitation of drizzle, ice pellets and rain","Heavy precipitation of drizzle, ice pellets and rain",http://codes.wmo.int/306/4678/+DZPLRA
+http://codes.wmo.int/306/4678/+DZRA,+DZRA,stable,Heavy precipitation of drizzle and rain,Heavy precipitation of drizzle and rain,http://codes.wmo.int/306/4678/+DZRA
+http://codes.wmo.int/306/4678/+DZRAPL,+DZRAPL,stable,"Heavy precipitation of drizzle, rain and ice pellets","Heavy precipitation of drizzle, rain and ice pellets",http://codes.wmo.int/306/4678/+DZRAPL
+http://codes.wmo.int/306/4678/+DZRASG,+DZRASG,stable,"Heavy precipitation of drizzle, rain and snow grains","Heavy precipitation of drizzle, rain and snow grains",http://codes.wmo.int/306/4678/+DZRASG
+http://codes.wmo.int/306/4678/+DZRASN,+DZRASN,stable,"Heavy precipitation of drizzle, rain and snow","Heavy precipitation of drizzle, rain and snow",http://codes.wmo.int/306/4678/+DZRASN
+http://codes.wmo.int/306/4678/+DZSG,+DZSG,stable,Heavy precipitation of drizzle and snow grains,Heavy precipitation of drizzle and snow grains,http://codes.wmo.int/306/4678/+DZSG
+http://codes.wmo.int/306/4678/+DZSGRA,+DZSGRA,stable,"Heavy precipitation of drizzle, snow grains and rain","Heavy precipitation of drizzle, snow grains and rain",http://codes.wmo.int/306/4678/+DZSGRA
+http://codes.wmo.int/306/4678/+DZSN,+DZSN,stable,Heavy precipitation of drizzle and snow,Heavy precipitation of drizzle and snow,http://codes.wmo.int/306/4678/+DZSN
+http://codes.wmo.int/306/4678/+DZSNRA,+DZSNRA,stable,"Heavy precipitation of drizzle, snow and rain","Heavy precipitation of drizzle, snow and rain",http://codes.wmo.int/306/4678/+DZSNRA
+http://codes.wmo.int/306/4678/+FC,+FC,stable,Well-developed funnel cloud(s) (tornado or water-spout),Well-developed funnel cloud(s) (tornado or water-spout),http://codes.wmo.int/306/4678/+FC
+http://codes.wmo.int/306/4678/+FZDZ,+FZDZ,stable,Heavy precipitation of freezing drizzle,Heavy precipitation of freezing drizzle,http://codes.wmo.int/306/4678/+FZDZ
+http://codes.wmo.int/306/4678/+FZDZRA,+FZDZRA,stable,Heavy precipitation of freezing drizzle and rain,Heavy precipitation of freezing drizzle and rain,http://codes.wmo.int/306/4678/+FZDZRA
+http://codes.wmo.int/306/4678/+FZRA,+FZRA,stable,Heavy precipitation of freezng rain,Heavy precipitation of freezng rain,http://codes.wmo.int/306/4678/+FZRA
+http://codes.wmo.int/306/4678/+FZRADZ,+FZRADZ,stable,Heavy precipitation of freezing rain and drizzle,Heavy precipitation of freezing rain and drizzle,http://codes.wmo.int/306/4678/+FZRADZ
+http://codes.wmo.int/306/4678/+FZUP,+FZUP,stable,Heavy unidentified freezing precipitation,Heavy unidentified freezing precipitation,http://codes.wmo.int/306/4678/+FZUP
+http://codes.wmo.int/306/4678/+PL,+PL,stable,Heavy precipitation of ice pellets,Heavy precipitation of ice pellets,http://codes.wmo.int/306/4678/+PL
+http://codes.wmo.int/306/4678/+PLDZ,+PLDZ,stable,Heavy precipitation of ice pellets and drizzle,Heavy precipitation of ice pellets and drizzle,http://codes.wmo.int/306/4678/+PLDZ
+http://codes.wmo.int/306/4678/+PLDZRA,+PLDZRA,stable,"Heavy precipitation of ice pellets, drizzle and rain","Heavy precipitation of ice pellets, drizzle and rain",http://codes.wmo.int/306/4678/+PLDZRA
+http://codes.wmo.int/306/4678/+PLRA,+PLRA,stable,Heavy precipitation of ice pellets and rain,Heavy precipitation of ice pellets and rain,http://codes.wmo.int/306/4678/+PLRA
+http://codes.wmo.int/306/4678/+PLRADZ,+PLRADZ,stable,"Heavy precipitation of ice pellets, rain and drizzle","Heavy precipitation of ice pellets, rain and drizzle",http://codes.wmo.int/306/4678/+PLRADZ
+http://codes.wmo.int/306/4678/+PLRASN,+PLRASN,stable,"Heavy precipitation of ice pellets, rain and snow","Heavy precipitation of ice pellets, rain and snow",http://codes.wmo.int/306/4678/+PLRASN
+http://codes.wmo.int/306/4678/+PLSG,+PLSG,stable,Heavy precipitation of ice pellets and snow grains,Heavy precipitation of ice pellets and snow grains,http://codes.wmo.int/306/4678/+PLSG
+http://codes.wmo.int/306/4678/+PLSGSN,+PLSGSN,stable,"Heavy precipitation of ice pellets, snow grains and snow","Heavy precipitation of ice pellets, snow grains and snow",http://codes.wmo.int/306/4678/+PLSGSN
+http://codes.wmo.int/306/4678/+PLSN,+PLSN,stable,Heavy precipitation of ice pellets and snow,Heavy precipitation of ice pellets and snow,http://codes.wmo.int/306/4678/+PLSN
+http://codes.wmo.int/306/4678/+PLSNRA,+PLSNRA,stable,"Heavy precipitation of ice pellets, snow and rain","Heavy precipitation of ice pellets, snow and rain",http://codes.wmo.int/306/4678/+PLSNRA
+http://codes.wmo.int/306/4678/+PLSNSG,+PLSNSG,stable,"Heavy precipitation of ice pellets, snow and snow grains","Heavy precipitation of ice pellets, snow and snow grains",http://codes.wmo.int/306/4678/+PLSNSG
+http://codes.wmo.int/306/4678/+RA,+RA,stable,Heavy precipitation of rain,Heavy precipitation of rain,http://codes.wmo.int/306/4678/+RA
+http://codes.wmo.int/306/4678/+RADZ,+RADZ,stable,Heavy precipitation of rain and drizzle,Heavy precipitation of rain and drizzle,http://codes.wmo.int/306/4678/+RADZ
+http://codes.wmo.int/306/4678/+RADZPL,+RADZPL,stable,"Heavy precipitation of rain, drizzle and ice pellets","Heavy precipitation of rain, drizzle and ice pellets",http://codes.wmo.int/306/4678/+RADZPL
+http://codes.wmo.int/306/4678/+RADZSG,+RADZSG,stable,"Heavy precipitation of rain, drizzle and snow grains","Heavy precipitation of rain, drizzle and snow grains",http://codes.wmo.int/306/4678/+RADZSG
+http://codes.wmo.int/306/4678/+RADZSN,+RADZSN,stable,"Heavy precipitation of rain, drizzle and snow","Heavy precipitation of rain, drizzle and snow",http://codes.wmo.int/306/4678/+RADZSN
+http://codes.wmo.int/306/4678/+RAPL,+RAPL,stable,Heavy precipitation of rain and ice pellets,Heavy precipitation of rain and ice pellets,http://codes.wmo.int/306/4678/+RAPL
+http://codes.wmo.int/306/4678/+RAPLDZ,+RAPLDZ,stable,"Heavy precipitation of rain, ice pellets and drizzle","Heavy precipitation of rain, ice pellets and drizzle",http://codes.wmo.int/306/4678/+RAPLDZ
+http://codes.wmo.int/306/4678/+RAPLSN,+RAPLSN,stable,"Heavy precipitation of rain, ice pellets and snow","Heavy precipitation of rain, ice pellets and snow",http://codes.wmo.int/306/4678/+RAPLSN
+http://codes.wmo.int/306/4678/+RASG,+RASG,stable,Heavy precipitation of rain and snow grains,Heavy precipitation of rain and snow grains,http://codes.wmo.int/306/4678/+RASG
+http://codes.wmo.int/306/4678/+RASGDZ,+RASGDZ,stable,"Heavy precipitation of rain, snow grains and drizzle","Heavy precipitation of rain, snow grains and drizzle",http://codes.wmo.int/306/4678/+RASGDZ
+http://codes.wmo.int/306/4678/+RASGSN,+RASGSN,stable,"Heavy precipitation of rain, snow grains and snow","Heavy precipitation of rain, snow grains and snow",http://codes.wmo.int/306/4678/+RASGSN
+http://codes.wmo.int/306/4678/+RASN,+RASN,stable,Heavy precipitation of rain and snow,Heavy precipitation of rain and snow,http://codes.wmo.int/306/4678/+RASN
+http://codes.wmo.int/306/4678/+RASNDZ,+RASNDZ,stable,"Heavy precipitation of rain, snow and drizzle","Heavy precipitation of rain, snow and drizzle",http://codes.wmo.int/306/4678/+RASNDZ
+http://codes.wmo.int/306/4678/+RASNPL,+RASNPL,stable,"Heavy precipitation of rain, snow and ice pellets","Heavy precipitation of rain, snow and ice pellets",http://codes.wmo.int/306/4678/+RASNPL
+http://codes.wmo.int/306/4678/+RASNSG,+RASNSG,stable,"Heavy precipitation of rain, snow and snow grains","Heavy precipitation of rain, snow and snow grains",http://codes.wmo.int/306/4678/+RASNSG
+http://codes.wmo.int/306/4678/+SG,+SG,stable,Heavy precipitation of snow grains,Heavy precipitation of snow grains,http://codes.wmo.int/306/4678/+SG
+http://codes.wmo.int/306/4678/+SGDZ,+SGDZ,stable,Heavy precipitation of snow grains and drizzle,Heavy precipitation of snow grains and drizzle,http://codes.wmo.int/306/4678/+SGDZ
+http://codes.wmo.int/306/4678/+SGDZRA,+SGDZRA,stable,"Heavy precipitation of snow grains, drizzle and rain","Heavy precipitation of snow grains, drizzle and rain",http://codes.wmo.int/306/4678/+SGDZRA
+http://codes.wmo.int/306/4678/+SGPL,+SGPL,stable,Heavy precipitation of snow grains and ice pellets,Heavy precipitation of snow grains and ice pellets,http://codes.wmo.int/306/4678/+SGPL
+http://codes.wmo.int/306/4678/+SGPLSN,+SGPLSN,stable,"Heavy precipitation of snow grains, ice pellets and snow","Heavy precipitation of snow grains, ice pellets and snow",http://codes.wmo.int/306/4678/+SGPLSN
+http://codes.wmo.int/306/4678/+SGRA,+SGRA,stable,Heavy precipitation of snow grains and rain,Heavy precipitation of snow grains and rain,http://codes.wmo.int/306/4678/+SGRA
+http://codes.wmo.int/306/4678/+SGRADZ,+SGRADZ,stable,"Heavy precipitation of snow grains, rain and drizzle","Heavy precipitation of snow grains, rain and drizzle",http://codes.wmo.int/306/4678/+SGRADZ
+http://codes.wmo.int/306/4678/+SGRASN,+SGRASN,stable,"Heavy precipitation of snow grains, rain and snow","Heavy precipitation of snow grains, rain and snow",http://codes.wmo.int/306/4678/+SGRASN
+http://codes.wmo.int/306/4678/+SGSN,+SGSN,stable,Heavy precipitation of snow grains and snow,Heavy precipitation of snow grains and snow,http://codes.wmo.int/306/4678/+SGSN
+http://codes.wmo.int/306/4678/+SGSNPL,+SGSNPL,stable,"Heavy precipitation of snow grains, snow and ice pellets","Heavy precipitation of snow grains, snow and ice pellets",http://codes.wmo.int/306/4678/+SGSNPL
+http://codes.wmo.int/306/4678/+SGSNRA,+SGSNRA,stable,"Heavy precipitation of snow grains, snow and rain","Heavy precipitation of snow grains, snow and rain",http://codes.wmo.int/306/4678/+SGSNRA
+http://codes.wmo.int/306/4678/+SHGR,+SHGR,stable,Heavy showery precipitation of hail,Heavy showery precipitation of hail,http://codes.wmo.int/306/4678/+SHGR
+http://codes.wmo.int/306/4678/+SHGRRA,+SHGRRA,stable,Heavy showery precipitation of hail and rain,Heavy showery precipitation of hail and rain,http://codes.wmo.int/306/4678/+SHGRRA
+http://codes.wmo.int/306/4678/+SHGRRASN,+SHGRRASN,stable,"Heavy showery precipitation of hail, rain and snow","Heavy showery precipitation of hail, rain and snow",http://codes.wmo.int/306/4678/+SHGRRASN
+http://codes.wmo.int/306/4678/+SHGRSN,+SHGRSN,stable,Heavy showery precipitation of hail and snow,Heavy showery precipitation of hail and snow,http://codes.wmo.int/306/4678/+SHGRSN
+http://codes.wmo.int/306/4678/+SHGRSNRA,+SHGRSNRA,stable,"Heavy showery precipitation of hail, snow and rain","Heavy showery precipitation of hail, snow and rain",http://codes.wmo.int/306/4678/+SHGRSNRA
+http://codes.wmo.int/306/4678/+SHGS,+SHGS,stable,Heavy showery precipitation of snow pellets/small hail,Heavy showery precipitation of snow pellets/small hail,http://codes.wmo.int/306/4678/+SHGS
+http://codes.wmo.int/306/4678/+SHGSRA,+SHGSRA,stable,Heavy showery precipitation of snow pellets/small hail and rain,Heavy showery precipitation of snow pellets/small hail and rain,http://codes.wmo.int/306/4678/+SHGSRA
+http://codes.wmo.int/306/4678/+SHGSRASN,+SHGSRASN,stable,"Heavy showery precipitation of snow pellets/small hail, rain and snow","Heavy showery precipitation of snow pellets/small hail, rain and snow",http://codes.wmo.int/306/4678/+SHGSRASN
+http://codes.wmo.int/306/4678/+SHGSSN,+SHGSSN,stable,Heavy showery precipitation of snow pellets/small hail and snow,Heavy showery precipitation of snow pellets/small hail and snow,http://codes.wmo.int/306/4678/+SHGSSN
+http://codes.wmo.int/306/4678/+SHGSSNRA,+SHGSSNRA,stable,"Heavy showery precipitation of snow pellets/small hail, snow and rain","Heavy showery precipitation of snow pellets/small hail, snow and rain",http://codes.wmo.int/306/4678/+SHGSSNRA
+http://codes.wmo.int/306/4678/+SHRA,+SHRA,stable,Heavy showery precipitation of rain,Heavy showery precipitation of rain,http://codes.wmo.int/306/4678/+SHRA
+http://codes.wmo.int/306/4678/+SHRAGR,+SHRAGR,stable,Heavy showery precipitation of rain and hail,Heavy showery precipitation of rain and hail,http://codes.wmo.int/306/4678/+SHRAGR
+http://codes.wmo.int/306/4678/+SHRAGRSN,+SHRAGRSN,stable,"Heavy showery precipitation of rain, hail and snow","Heavy showery precipitation of rain, hail and snow",http://codes.wmo.int/306/4678/+SHRAGRSN
+http://codes.wmo.int/306/4678/+SHRAGS,+SHRAGS,stable,Heavy showery precipitation of rain and snow pellets/small hail,Heavy showery precipitation of rain and snow pellets/small hail,http://codes.wmo.int/306/4678/+SHRAGS
+http://codes.wmo.int/306/4678/+SHRAGSSN,+SHRAGSSN,stable,"Heavy showery precipitation of rain, snow pellets/small hail and snow","Heavy showery precipitation of rain, snow pellets/small hail and snow",http://codes.wmo.int/306/4678/+SHRAGSSN
+http://codes.wmo.int/306/4678/+SHRASN,+SHRASN,stable,Heavy showery precipitation of rain and snow,Heavy showery precipitation of rain and snow,http://codes.wmo.int/306/4678/+SHRASN
+http://codes.wmo.int/306/4678/+SHRASNGR,+SHRASNGR,stable,"Heavy showery precipitation of rain, snow and hail","Heavy showery precipitation of rain, snow and hail",http://codes.wmo.int/306/4678/+SHRASNGR
+http://codes.wmo.int/306/4678/+SHRASNGS,+SHRASNGS,stable,"Heavy showery precipitation of rain, snow and snow pellets/small hail","Heavy showery precipitation of rain, snow and snow pellets/small hail",http://codes.wmo.int/306/4678/+SHRASNGS
+http://codes.wmo.int/306/4678/+SHSN,+SHSN,stable,Heavy showery precipitation of snow,Heavy showery precipitation of snow,http://codes.wmo.int/306/4678/+SHSN
+http://codes.wmo.int/306/4678/+SHSNGR,+SHSNGR,stable,Heavy showery precipitation of snow and hail,Heavy showery precipitation of snow and hail,http://codes.wmo.int/306/4678/+SHSNGR
+http://codes.wmo.int/306/4678/+SHSNGRRA,+SHSNGRRA,stable,"Heavy showery precipitation of snow, hail and rain","Heavy showery precipitation of snow, hail and rain",http://codes.wmo.int/306/4678/+SHSNGRRA
+http://codes.wmo.int/306/4678/+SHSNGS,+SHSNGS,stable,Heavy showery precipitation of snow and snow pellets/small hail,Heavy showery precipitation of snow and snow pellets/small hail,http://codes.wmo.int/306/4678/+SHSNGS
+http://codes.wmo.int/306/4678/+SHSNGSRA,+SHSNGSRA,stable,"Heavy showery precipitation of snow, snow pellets/small hail and rain","Heavy showery precipitation of snow, snow pellets/small hail and rain",http://codes.wmo.int/306/4678/+SHSNGSRA
+http://codes.wmo.int/306/4678/+SHSNRA,+SHSNRA,stable,Heavy showery precipitation of snow and rain,Heavy showery precipitation of snow and rain,http://codes.wmo.int/306/4678/+SHSNRA
+http://codes.wmo.int/306/4678/+SHSNRAGR,+SHSNRAGR,stable,"Heavy showery precipitation of snow, rain and hail","Heavy showery precipitation of snow, rain and hail",http://codes.wmo.int/306/4678/+SHSNRAGR
+http://codes.wmo.int/306/4678/+SHSNRAGS,+SHSNRAGS,stable,"Heavy showery precipitation of snow, rain and snow pellets/small hail","Heavy showery precipitation of snow, rain and snow pellets/small hail",http://codes.wmo.int/306/4678/+SHSNRAGS
+http://codes.wmo.int/306/4678/+SHUP,+SHUP,stable,Heavy unidentified showery precipitation,Heavy unidentified showery precipitation,http://codes.wmo.int/306/4678/+SHUP
+http://codes.wmo.int/306/4678/+SN,+SN,stable,Heavy precipitation of snow,Heavy precipitation of snow,http://codes.wmo.int/306/4678/+SN
+http://codes.wmo.int/306/4678/+SNDZ,+SNDZ,stable,Heavy precipitation of snow and drizzle,Heavy precipitation of snow and drizzle,http://codes.wmo.int/306/4678/+SNDZ
+http://codes.wmo.int/306/4678/+SNDZRA,+SNDZRA,stable,"Heavy precipitation of snow, drizzle and rain","Heavy precipitation of snow, drizzle and rain",http://codes.wmo.int/306/4678/+SNDZRA
+http://codes.wmo.int/306/4678/+SNPL,+SNPL,stable,Heavy precipitation of snow and ice pellets,Heavy precipitation of snow and ice pellets,http://codes.wmo.int/306/4678/+SNPL
+http://codes.wmo.int/306/4678/+SNPLRA,+SNPLRA,stable,"Heavy precipitation of snow, ice pellets and rain","Heavy precipitation of snow, ice pellets and rain",http://codes.wmo.int/306/4678/+SNPLRA
+http://codes.wmo.int/306/4678/+SNPLSG,+SNPLSG,stable,"Heavy precipitation of snow, ice pellets and snow grains","Heavy precipitation of snow, ice pellets and snow grains",http://codes.wmo.int/306/4678/+SNPLSG
+http://codes.wmo.int/306/4678/+SNRA,+SNRA,stable,Heavy precipitation of snow and rain,Heavy precipitation of snow and rain,http://codes.wmo.int/306/4678/+SNRA
+http://codes.wmo.int/306/4678/+SNRADZ,+SNRADZ,stable,"Heavy precipitation of snow, rain and drizzle","Heavy precipitation of snow, rain and drizzle",http://codes.wmo.int/306/4678/+SNRADZ
+http://codes.wmo.int/306/4678/+SNRAPL,+SNRAPL,stable,"Heavy precipitation of snow, rain and ice pellets","Heavy precipitation of snow, rain and ice pellets",http://codes.wmo.int/306/4678/+SNRAPL
+http://codes.wmo.int/306/4678/+SNRASG,+SNRASG,stable,"Heavy precipitation of snow, rain and snow grains","Heavy precipitation of snow, rain and snow grains",http://codes.wmo.int/306/4678/+SNRASG
+http://codes.wmo.int/306/4678/+SNSG,+SNSG,stable,Heavy precipitation of snow and snow grains,Heavy precipitation of snow and snow grains,http://codes.wmo.int/306/4678/+SNSG
+http://codes.wmo.int/306/4678/+SNSGPL,+SNSGPL,stable,"Heavy precipitation of snow, snow grains and ice pellets","Heavy precipitation of snow, snow grains and ice pellets",http://codes.wmo.int/306/4678/+SNSGPL
+http://codes.wmo.int/306/4678/+SNSGRA,+SNSGRA,stable,"Heavy precipitation of snow, snow grains and rain","Heavy precipitation of snow, snow grains and rain",http://codes.wmo.int/306/4678/+SNSGRA
+http://codes.wmo.int/306/4678/+SS,+SS,stable,Heavy sandstorm,Heavy sandstorm,http://codes.wmo.int/306/4678/+SS
+http://codes.wmo.int/306/4678/+TSGR,+TSGR,stable,Thunderstorm with heavy precipitation of hail,Thunderstorm with heavy precipitation of hail,http://codes.wmo.int/306/4678/+TSGR
+http://codes.wmo.int/306/4678/+TSGRRA,+TSGRRA,stable,Thunderstorm with heavy precipitation of hail and rain,Thunderstorm with heavy precipitation of hail and rain,http://codes.wmo.int/306/4678/+TSGRRA
+http://codes.wmo.int/306/4678/+TSGRRASN,+TSGRRASN,stable,"Thunderstorm with heavy precipitation of hail, rain and snow","Thunderstorm with heavy precipitation of hail, rain and snow",http://codes.wmo.int/306/4678/+TSGRRASN
+http://codes.wmo.int/306/4678/+TSGRSN,+TSGRSN,stable,Thunderstorm with heavy precipitation of hail and snow,Thunderstorm with heavy precipitation of hail and snow,http://codes.wmo.int/306/4678/+TSGRSN
+http://codes.wmo.int/306/4678/+TSGRSNRA,+TSGRSNRA,stable,"Thunderstorm with heavy precipitation of hail, snow and rain","Thunderstorm with heavy precipitation of hail, snow and rain",http://codes.wmo.int/306/4678/+TSGRSNRA
+http://codes.wmo.int/306/4678/+TSGS,+TSGS,stable,Thunderstorm with heavy precipitation of snow pellets/small hail,Thunderstorm with heavy precipitation of snow pellets/small hail,http://codes.wmo.int/306/4678/+TSGS
+http://codes.wmo.int/306/4678/+TSGSRA,+TSGSRA,stable,Thunderstorm with heavy precipitation of snow pellets/small hail and rain,Thunderstorm with heavy precipitation of snow pellets/small hail and rain,http://codes.wmo.int/306/4678/+TSGSRA
+http://codes.wmo.int/306/4678/+TSGSRASN,+TSGSRASN,stable,"Thunderstorm with heavy precipitation of snow pellets/small hail, rain and snow","Thunderstorm with heavy precipitation of snow pellets/small hail, rain and snow",http://codes.wmo.int/306/4678/+TSGSRASN
+http://codes.wmo.int/306/4678/+TSGSSN,+TSGSSN,stable,Thunderstorm with heavy precipitation of snow pellets/small hail and snow,Thunderstorm with heavy precipitation of snow pellets/small hail and snow,http://codes.wmo.int/306/4678/+TSGSSN
+http://codes.wmo.int/306/4678/+TSGSSNRA,+TSGSSNRA,stable,"Thunderstorm with heavy precipitation of snow pellets/small hail, snow and rain","Thunderstorm with heavy precipitation of snow pellets/small hail, snow and rain",http://codes.wmo.int/306/4678/+TSGSSNRA
+http://codes.wmo.int/306/4678/+TSRA,+TSRA,stable,Thunderstorm with heavy precipitation of rain,Thunderstorm with heavy precipitation of rain,http://codes.wmo.int/306/4678/+TSRA
+http://codes.wmo.int/306/4678/+TSRAGR,+TSRAGR,stable,Thunderstorm with heavy precipitation of rain and hail,Thunderstorm with heavy precipitation of rain and hail,http://codes.wmo.int/306/4678/+TSRAGR
+http://codes.wmo.int/306/4678/+TSRAGRSN,+TSRAGRSN,stable,"Thunderstorm with heavy precipitation of rain, hail and snow","Thunderstorm with heavy precipitation of rain, hail and snow",http://codes.wmo.int/306/4678/+TSRAGRSN
+http://codes.wmo.int/306/4678/+TSRAGS,+TSRAGS,stable,Thunderstorm with heavy precipitation of rain and snow pellets/small hail,Thunderstorm with heavy precipitation of rain and snow pellets/small hail,http://codes.wmo.int/306/4678/+TSRAGS
+http://codes.wmo.int/306/4678/+TSRAGSSN,+TSRAGSSN,stable,"Thunderstorm with heavy precipitation of rain, snow pellets/small hail and snow","Thunderstorm with heavy precipitation of rain, snow pellets/small hail and snow",http://codes.wmo.int/306/4678/+TSRAGSSN
+http://codes.wmo.int/306/4678/+TSRASN,+TSRASN,stable,Thunderstorm with heavy precipitation of rain and snow,Thunderstorm with heavy precipitation of rain and snow,http://codes.wmo.int/306/4678/+TSRASN
+http://codes.wmo.int/306/4678/+TSRASNGR,+TSRASNGR,stable,"Thunderstorm with heavy precipitation of rain, snow and hail","Thunderstorm with heavy precipitation of rain, snow and hail",http://codes.wmo.int/306/4678/+TSRASNGR
+http://codes.wmo.int/306/4678/+TSRASNGS,+TSRASNGS,stable,"Thunderstorm with heavy precipitation of rain, snow and snow pellets/small hail","Thunderstorm with heavy precipitation of rain, snow and snow pellets/small hail",http://codes.wmo.int/306/4678/+TSRASNGS
+http://codes.wmo.int/306/4678/+TSSN,+TSSN,stable,Thunderstorm with heavy precipitation of snow,Thunderstorm with heavy precipitation of snow,http://codes.wmo.int/306/4678/+TSSN
+http://codes.wmo.int/306/4678/+TSSNGR,+TSSNGR,stable,Thunderstorm with heavy precipitation of snow and hail,Thunderstorm with heavy precipitation of snow and hail,http://codes.wmo.int/306/4678/+TSSNGR
+http://codes.wmo.int/306/4678/+TSSNGRRA,+TSSNGRRA,stable,"Thunderstorm with heavy precipitation of snow, hail and rain","Thunderstorm with heavy precipitation of snow, hail and rain",http://codes.wmo.int/306/4678/+TSSNGRRA
+http://codes.wmo.int/306/4678/+TSSNGS,+TSSNGS,stable,Thunderstorm with heavy precipitation of snow and snow pellets/small hail,Thunderstorm with heavy precipitation of snow and snow pellets/small hail,http://codes.wmo.int/306/4678/+TSSNGS
+http://codes.wmo.int/306/4678/+TSSNGSRA,+TSSNGSRA,stable,"Thunderstorm with heavy precipitation of snow, snow pellets/small hail and rain","Thunderstorm with heavy precipitation of snow, snow pellets/small hail and rain",http://codes.wmo.int/306/4678/+TSSNGSRA
+http://codes.wmo.int/306/4678/+TSSNRA,+TSSNRA,stable,Thunderstorm with heavy precipitation of snow and rain,Thunderstorm with heavy precipitation of snow and rain,http://codes.wmo.int/306/4678/+TSSNRA
+http://codes.wmo.int/306/4678/+TSSNRAGR,+TSSNRAGR,stable,"Thunderstorm with heavy precipitation of snow, rain and hail","Thunderstorm with heavy precipitation of snow, rain and hail",http://codes.wmo.int/306/4678/+TSSNRAGR
+http://codes.wmo.int/306/4678/+TSSNRAGS,+TSSNRAGS,stable,"Thunderstorm with heavy precipitation of snow, rain and snow pellets/small hail","Thunderstorm with heavy precipitation of snow, rain and snow pellets/small hail",http://codes.wmo.int/306/4678/+TSSNRAGS
+http://codes.wmo.int/306/4678/+TSUP,+TSUP,stable,Thunderstorm with heavy precipitation of unidentified precipitation,Thunderstorm with heavy precipitation of unidentified precipitation,http://codes.wmo.int/306/4678/+TSUP
+http://codes.wmo.int/306/4678/+UP,+UP,stable,Heavy unidentified precipitation,Heavy unidentified precipitation,http://codes.wmo.int/306/4678/+UP
+http://codes.wmo.int/306/4678/-DS,-DS,stable,Light duststorm,Light duststorm,http://codes.wmo.int/306/4678/-DS
+http://codes.wmo.int/306/4678/-DZ,-DZ,stable,Light precipitation of drizzle,Light precipitation of drizzle,http://codes.wmo.int/306/4678/-DZ
+http://codes.wmo.int/306/4678/-DZPL,-DZPL,stable,Light precipitation of drizzle and ice pellets,Light precipitation of drizzle and ice pellets,http://codes.wmo.int/306/4678/-DZPL
+http://codes.wmo.int/306/4678/-DZPLRA,-DZPLRA,stable,"Light precipitation of drizzle, ice pellets and rain","Light precipitation of drizzle, ice pellets and rain",http://codes.wmo.int/306/4678/-DZPLRA
+http://codes.wmo.int/306/4678/-DZRA,-DZRA,stable,Light precipitation of drizzle and rain,Light precipitation of drizzle and rain,http://codes.wmo.int/306/4678/-DZRA
+http://codes.wmo.int/306/4678/-DZRAPL,-DZRAPL,stable,"Light precipitation of drizzle, rain and ice pellets","Light precipitation of drizzle, rain and ice pellets",http://codes.wmo.int/306/4678/-DZRAPL
+http://codes.wmo.int/306/4678/-DZRASG,-DZRASG,stable,"Light precipitation of drizzle, rain and snow grains","Light precipitation of drizzle, rain and snow grains",http://codes.wmo.int/306/4678/-DZRASG
+http://codes.wmo.int/306/4678/-DZRASN,-DZRASN,stable,"Light precipitation of drizzle, rain and snow","Light precipitation of drizzle, rain and snow",http://codes.wmo.int/306/4678/-DZRASN
+http://codes.wmo.int/306/4678/-DZSG,-DZSG,stable,Light precipitation of drizzle and snow grains,Light precipitation of drizzle and snow grains,http://codes.wmo.int/306/4678/-DZSG
+http://codes.wmo.int/306/4678/-DZSGRA,-DZSGRA,stable,"Light precipitation of drizzle, snow grains and rain","Light precipitation of drizzle, snow grains and rain",http://codes.wmo.int/306/4678/-DZSGRA
+http://codes.wmo.int/306/4678/-DZSN,-DZSN,stable,Light precipitation of drizzle and snow,Light precipitation of drizzle and snow,http://codes.wmo.int/306/4678/-DZSN
+http://codes.wmo.int/306/4678/-DZSNRA,-DZSNRA,stable,"Light precipitation of drizzle, snow and rain","Light precipitation of drizzle, snow and rain",http://codes.wmo.int/306/4678/-DZSNRA
+http://codes.wmo.int/306/4678/-FZDZ,-FZDZ,stable,Light precipitation of freezing drizzle,Light precipitation of freezing drizzle,http://codes.wmo.int/306/4678/-FZDZ
+http://codes.wmo.int/306/4678/-FZDZRA,-FZDZRA,stable,Light precipitation of freezing drizzle and rain,Light precipitation of freezing drizzle and rain,http://codes.wmo.int/306/4678/-FZDZRA
+http://codes.wmo.int/306/4678/-FZRA,-FZRA,stable,Light precipitation of freezng rain,Light precipitation of freezng rain,http://codes.wmo.int/306/4678/-FZRA
+http://codes.wmo.int/306/4678/-FZRADZ,-FZRADZ,stable,Light precipitation of freezing rain and drizzle,Light precipitation of freezing rain and drizzle,http://codes.wmo.int/306/4678/-FZRADZ
+http://codes.wmo.int/306/4678/-FZUP,-FZUP,stable,Light unidentified freezing precipitation,Light unidentified freezing precipitation,http://codes.wmo.int/306/4678/-FZUP
+http://codes.wmo.int/306/4678/-PL,-PL,stable,Light precipitation of ice pellets,Light precipitation of ice pellets,http://codes.wmo.int/306/4678/-PL
+http://codes.wmo.int/306/4678/-PLDZ,-PLDZ,stable,Light precipitation of ice pellets and drizzle,Light precipitation of ice pellets and drizzle,http://codes.wmo.int/306/4678/-PLDZ
+http://codes.wmo.int/306/4678/-PLDZRA,-PLDZRA,stable,"Light precipitation of ice pellets, drizzle and rain","Light precipitation of ice pellets, drizzle and rain",http://codes.wmo.int/306/4678/-PLDZRA
+http://codes.wmo.int/306/4678/-PLRA,-PLRA,stable,Light precipitation of ice pellets and rain,Light precipitation of ice pellets and rain,http://codes.wmo.int/306/4678/-PLRA
+http://codes.wmo.int/306/4678/-PLRADZ,-PLRADZ,stable,"Light precipitation of ice pellets, rain and drizzle","Light precipitation of ice pellets, rain and drizzle",http://codes.wmo.int/306/4678/-PLRADZ
+http://codes.wmo.int/306/4678/-PLRASN,-PLRASN,stable,"Light precipitation of ice pellets, rain and snow","Light precipitation of ice pellets, rain and snow",http://codes.wmo.int/306/4678/-PLRASN
+http://codes.wmo.int/306/4678/-PLSG,-PLSG,stable,Light precipitation of ice pellets and snow grains,Light precipitation of ice pellets and snow grains,http://codes.wmo.int/306/4678/-PLSG
+http://codes.wmo.int/306/4678/-PLSGSN,-PLSGSN,stable,"Light precipitation of ice pellets, snow grains and snow","Light precipitation of ice pellets, snow grains and snow",http://codes.wmo.int/306/4678/-PLSGSN
+http://codes.wmo.int/306/4678/-PLSN,-PLSN,stable,Light precipitation of ice pellets and snow,Light precipitation of ice pellets and snow,http://codes.wmo.int/306/4678/-PLSN
+http://codes.wmo.int/306/4678/-PLSNRA,-PLSNRA,stable,"Light precipitation of ice pellets, snow and rain","Light precipitation of ice pellets, snow and rain",http://codes.wmo.int/306/4678/-PLSNRA
+http://codes.wmo.int/306/4678/-PLSNSG,-PLSNSG,stable,"Light precipitation of ice pellets, snow and snow grains","Light precipitation of ice pellets, snow and snow grains",http://codes.wmo.int/306/4678/-PLSNSG
+http://codes.wmo.int/306/4678/-RA,-RA,stable,Light precipitation of rain,Light precipitation of rain,http://codes.wmo.int/306/4678/-RA
+http://codes.wmo.int/306/4678/-RADZ,-RADZ,stable,Light precipitation of rain and drizzle,Light precipitation of rain and drizzle,http://codes.wmo.int/306/4678/-RADZ
+http://codes.wmo.int/306/4678/-RADZPL,-RADZPL,stable,"Light precipitation of rain, drizzle and ice pellets","Light precipitation of rain, drizzle and ice pellets",http://codes.wmo.int/306/4678/-RADZPL
+http://codes.wmo.int/306/4678/-RADZSG,-RADZSG,stable,"Light precipitation of rain, drizzle and snow grains","Light precipitation of rain, drizzle and snow grains",http://codes.wmo.int/306/4678/-RADZSG
+http://codes.wmo.int/306/4678/-RADZSN,-RADZSN,stable,"Light precipitation of rain, drizzle and snow","Light precipitation of rain, drizzle and snow",http://codes.wmo.int/306/4678/-RADZSN
+http://codes.wmo.int/306/4678/-RAPL,-RAPL,stable,Light precipitation of rain and ice pellets,Light precipitation of rain and ice pellets,http://codes.wmo.int/306/4678/-RAPL
+http://codes.wmo.int/306/4678/-RAPLDZ,-RAPLDZ,stable,"Light precipitation of rain, ice pellets and drizzle","Light precipitation of rain, ice pellets and drizzle",http://codes.wmo.int/306/4678/-RAPLDZ
+http://codes.wmo.int/306/4678/-RAPLSN,-RAPLSN,stable,"Light precipitation of rain, ice pellets and snow","Light precipitation of rain, ice pellets and snow",http://codes.wmo.int/306/4678/-RAPLSN
+http://codes.wmo.int/306/4678/-RASG,-RASG,stable,Light precipitation of rain and snow grains,Light precipitation of rain and snow grains,http://codes.wmo.int/306/4678/-RASG
+http://codes.wmo.int/306/4678/-RASGDZ,-RASGDZ,stable,"Light precipitation of rain, snow grains and drizzle","Light precipitation of rain, snow grains and drizzle",http://codes.wmo.int/306/4678/-RASGDZ
+http://codes.wmo.int/306/4678/-RASGSN,-RASGSN,stable,"Light precipitation of rain, snow grains and snow","Light precipitation of rain, snow grains and snow",http://codes.wmo.int/306/4678/-RASGSN
+http://codes.wmo.int/306/4678/-RASN,-RASN,stable,Light precipitation of rain and snow,Light precipitation of rain and snow,http://codes.wmo.int/306/4678/-RASN
+http://codes.wmo.int/306/4678/-RASNDZ,-RASNDZ,stable,"Light precipitation of rain, snow and drizzle","Light precipitation of rain, snow and drizzle",http://codes.wmo.int/306/4678/-RASNDZ
+http://codes.wmo.int/306/4678/-RASNPL,-RASNPL,stable,"Light precipitation of rain, snow and ice pellets","Light precipitation of rain, snow and ice pellets",http://codes.wmo.int/306/4678/-RASNPL
+http://codes.wmo.int/306/4678/-RASNSG,-RASNSG,stable,"Light precipitation of rain, snow and snow grains","Light precipitation of rain, snow and snow grains",http://codes.wmo.int/306/4678/-RASNSG
+http://codes.wmo.int/306/4678/-SG,-SG,stable,Light precipitation of snow grains,Light precipitation of snow grains,http://codes.wmo.int/306/4678/-SG
+http://codes.wmo.int/306/4678/-SGDZ,-SGDZ,stable,Light precipitation of snow grains and drizzle,Light precipitation of snow grains and drizzle,http://codes.wmo.int/306/4678/-SGDZ
+http://codes.wmo.int/306/4678/-SGDZRA,-SGDZRA,stable,"Light precipitation of snow grains, drizzle and rain","Light precipitation of snow grains, drizzle and rain",http://codes.wmo.int/306/4678/-SGDZRA
+http://codes.wmo.int/306/4678/-SGPL,-SGPL,stable,Light precipitation of snow grains and ice pellets,Light precipitation of snow grains and ice pellets,http://codes.wmo.int/306/4678/-SGPL
+http://codes.wmo.int/306/4678/-SGPLSN,-SGPLSN,stable,"Light precipitation of snow grains, ice pellets and snow","Light precipitation of snow grains, ice pellets and snow",http://codes.wmo.int/306/4678/-SGPLSN
+http://codes.wmo.int/306/4678/-SGRA,-SGRA,stable,Light precipitation of snow grains and rain,Light precipitation of snow grains and rain,http://codes.wmo.int/306/4678/-SGRA
+http://codes.wmo.int/306/4678/-SGRADZ,-SGRADZ,stable,"Light precipitation of snow grains, rain and drizzle","Light precipitation of snow grains, rain and drizzle",http://codes.wmo.int/306/4678/-SGRADZ
+http://codes.wmo.int/306/4678/-SGRASN,-SGRASN,stable,"Light precipitation of snow grains, rain and snow","Light precipitation of snow grains, rain and snow",http://codes.wmo.int/306/4678/-SGRASN
+http://codes.wmo.int/306/4678/-SGSN,-SGSN,stable,Light precipitation of snow grains and snow,Light precipitation of snow grains and snow,http://codes.wmo.int/306/4678/-SGSN
+http://codes.wmo.int/306/4678/-SGSNPL,-SGSNPL,stable,"Light precipitation of snow grains, snow and ice pellets","Light precipitation of snow grains, snow and ice pellets",http://codes.wmo.int/306/4678/-SGSNPL
+http://codes.wmo.int/306/4678/-SGSNRA,-SGSNRA,stable,"Light precipitation of snow grains, snow and rain","Light precipitation of snow grains, snow and rain",http://codes.wmo.int/306/4678/-SGSNRA
+http://codes.wmo.int/306/4678/-SHGR,-SHGR,stable,Light showery precipitation of hail,Light showery precipitation of hail,http://codes.wmo.int/306/4678/-SHGR
+http://codes.wmo.int/306/4678/-SHGRRA,-SHGRRA,stable,Light showery precipitation of hail and rain,Light showery precipitation of hail and rain,http://codes.wmo.int/306/4678/-SHGRRA
+http://codes.wmo.int/306/4678/-SHGRRASN,-SHGRRASN,stable,"Light showery precipitation of hail, rain and snow","Light showery precipitation of hail, rain and snow",http://codes.wmo.int/306/4678/-SHGRRASN
+http://codes.wmo.int/306/4678/-SHGRSN,-SHGRSN,stable,Light showery precipitation of hail and snow,Light showery precipitation of hail and snow,http://codes.wmo.int/306/4678/-SHGRSN
+http://codes.wmo.int/306/4678/-SHGRSNRA,-SHGRSNRA,stable,"Light showery precipitation of hail, snow and rain","Light showery precipitation of hail, snow and rain",http://codes.wmo.int/306/4678/-SHGRSNRA
+http://codes.wmo.int/306/4678/-SHGS,-SHGS,stable,Light showery precipitation of snow pellets/small hail,Light showery precipitation of snow pellets/small hail,http://codes.wmo.int/306/4678/-SHGS
+http://codes.wmo.int/306/4678/-SHGSRA,-SHGSRA,stable,Light showery precipitation of snow pellets/small hail and rain,Light showery precipitation of snow pellets/small hail and rain,http://codes.wmo.int/306/4678/-SHGSRA
+http://codes.wmo.int/306/4678/-SHGSRASN,-SHGSRASN,stable,"Light showery precipitation of snow pellets/small hail, rain and snow","Light showery precipitation of snow pellets/small hail, rain and snow",http://codes.wmo.int/306/4678/-SHGSRASN
+http://codes.wmo.int/306/4678/-SHGSSN,-SHGSSN,stable,Light showery precipitation of snow pellets/small hail and snow,Light showery precipitation of snow pellets/small hail and snow,http://codes.wmo.int/306/4678/-SHGSSN
+http://codes.wmo.int/306/4678/-SHGSSNRA,-SHGSSNRA,stable,"Light showery precipitation of snow pellets/small hail, snow and rain","Light showery precipitation of snow pellets/small hail, snow and rain",http://codes.wmo.int/306/4678/-SHGSSNRA
+http://codes.wmo.int/306/4678/-SHRA,-SHRA,stable,Light showery precipitation of rain,Light showery precipitation of rain,http://codes.wmo.int/306/4678/-SHRA
+http://codes.wmo.int/306/4678/-SHRAGR,-SHRAGR,stable,Light showery precipitation of rain and hail,Light showery precipitation of rain and hail,http://codes.wmo.int/306/4678/-SHRAGR
+http://codes.wmo.int/306/4678/-SHRAGRSN,-SHRAGRSN,stable,"Light showery precipitation of rain, hail and snow","Light showery precipitation of rain, hail and snow",http://codes.wmo.int/306/4678/-SHRAGRSN
+http://codes.wmo.int/306/4678/-SHRAGS,-SHRAGS,stable,Light showery precipitation of rain and snow pellets/small hail,Light showery precipitation of rain and snow pellets/small hail,http://codes.wmo.int/306/4678/-SHRAGS
+http://codes.wmo.int/306/4678/-SHRAGSSN,-SHRAGSSN,stable,"Light showery precipitation of rain, snow pellets/small hail and snow","Light showery precipitation of rain, snow pellets/small hail and snow",http://codes.wmo.int/306/4678/-SHRAGSSN
+http://codes.wmo.int/306/4678/-SHRASN,-SHRASN,stable,Light showery precipitation of rain and snow,Light showery precipitation of rain and snow,http://codes.wmo.int/306/4678/-SHRASN
+http://codes.wmo.int/306/4678/-SHRASNGR,-SHRASNGR,stable,"Light showery precipitation of rain, snow and hail","Light showery precipitation of rain, snow and hail",http://codes.wmo.int/306/4678/-SHRASNGR
+http://codes.wmo.int/306/4678/-SHRASNGS,-SHRASNGS,stable,"Light showery precipitation of rain, snow and snow pellets/small hail","Light showery precipitation of rain, snow and snow pellets/small hail",http://codes.wmo.int/306/4678/-SHRASNGS
+http://codes.wmo.int/306/4678/-SHSN,-SHSN,stable,Light showery precipitation of snow,Light showery precipitation of snow,http://codes.wmo.int/306/4678/-SHSN
+http://codes.wmo.int/306/4678/-SHSNGR,-SHSNGR,stable,Light showery precipitation of snow and hail,Light showery precipitation of snow and hail,http://codes.wmo.int/306/4678/-SHSNGR
+http://codes.wmo.int/306/4678/-SHSNGRRA,-SHSNGRRA,stable,"Light showery precipitation of snow, hail and rain","Light showery precipitation of snow, hail and rain",http://codes.wmo.int/306/4678/-SHSNGRRA
+http://codes.wmo.int/306/4678/-SHSNGS,-SHSNGS,stable,Light showery precipitation of snow and snow pellets/small hail,Light showery precipitation of snow and snow pellets/small hail,http://codes.wmo.int/306/4678/-SHSNGS
+http://codes.wmo.int/306/4678/-SHSNGSRA,-SHSNGSRA,stable,"Light showery precipitation of snow, snow pellets/small hail and rain","Light showery precipitation of snow, snow pellets/small hail and rain",http://codes.wmo.int/306/4678/-SHSNGSRA
+http://codes.wmo.int/306/4678/-SHSNRA,-SHSNRA,stable,Light showery precipitation of snow and rain,Light showery precipitation of snow and rain,http://codes.wmo.int/306/4678/-SHSNRA
+http://codes.wmo.int/306/4678/-SHSNRAGR,-SHSNRAGR,stable,"Light showery precipitation of snow, rain and hail","Light showery precipitation of snow, rain and hail",http://codes.wmo.int/306/4678/-SHSNRAGR
+http://codes.wmo.int/306/4678/-SHSNRAGS,-SHSNRAGS,stable,"Light showery precipitation of snow, rain and snow pellets/small hail","Light showery precipitation of snow, rain and snow pellets/small hail",http://codes.wmo.int/306/4678/-SHSNRAGS
+http://codes.wmo.int/306/4678/-SHUP,-SHUP,stable,Light unidentified showery precipitation,Light unidentified showery precipitation,http://codes.wmo.int/306/4678/-SHUP
+http://codes.wmo.int/306/4678/-SN,-SN,stable,Light precipitation of snow,Light precipitation of snow,http://codes.wmo.int/306/4678/-SN
+http://codes.wmo.int/306/4678/-SNDZ,-SNDZ,stable,Light precipitation of snow and drizzle,Light precipitation of snow and drizzle,http://codes.wmo.int/306/4678/-SNDZ
+http://codes.wmo.int/306/4678/-SNDZRA,-SNDZRA,stable,"Light precipitation of snow, drizzle and rain","Light precipitation of snow, drizzle and rain",http://codes.wmo.int/306/4678/-SNDZRA
+http://codes.wmo.int/306/4678/-SNPL,-SNPL,stable,Light precipitation of snow and ice pellets,Light precipitation of snow and ice pellets,http://codes.wmo.int/306/4678/-SNPL
+http://codes.wmo.int/306/4678/-SNPLRA,-SNPLRA,stable,"Light precipitation of snow, ice pellets and rain","Light precipitation of snow, ice pellets and rain",http://codes.wmo.int/306/4678/-SNPLRA
+http://codes.wmo.int/306/4678/-SNPLSG,-SNPLSG,stable,"Light precipitation of snow, ice pellets and snow grains","Light precipitation of snow, ice pellets and snow grains",http://codes.wmo.int/306/4678/-SNPLSG
+http://codes.wmo.int/306/4678/-SNRA,-SNRA,stable,Light precipitation of snow and rain,Light precipitation of snow and rain,http://codes.wmo.int/306/4678/-SNRA
+http://codes.wmo.int/306/4678/-SNRADZ,-SNRADZ,stable,"Light precipitation of snow, rain and drizzle","Light precipitation of snow, rain and drizzle",http://codes.wmo.int/306/4678/-SNRADZ
+http://codes.wmo.int/306/4678/-SNRAPL,-SNRAPL,stable,"Light precipitation of snow, rain and ice pellets","Light precipitation of snow, rain and ice pellets",http://codes.wmo.int/306/4678/-SNRAPL
+http://codes.wmo.int/306/4678/-SNRASG,-SNRASG,stable,"Light precipitation of snow, rain and snow grains","Light precipitation of snow, rain and snow grains",http://codes.wmo.int/306/4678/-SNRASG
+http://codes.wmo.int/306/4678/-SNSG,-SNSG,stable,Light precipitation of snow and snow grains,Light precipitation of snow and snow grains,http://codes.wmo.int/306/4678/-SNSG
+http://codes.wmo.int/306/4678/-SNSGPL,-SNSGPL,stable,"Light precipitation of snow, snow grains and ice pellets","Light precipitation of snow, snow grains and ice pellets",http://codes.wmo.int/306/4678/-SNSGPL
+http://codes.wmo.int/306/4678/-SNSGRA,-SNSGRA,stable,"Light precipitation of snow, snow grains and rain","Light precipitation of snow, snow grains and rain",http://codes.wmo.int/306/4678/-SNSGRA
+http://codes.wmo.int/306/4678/-SS,-SS,stable,Light sandstorm,Light sandstorm,http://codes.wmo.int/306/4678/-SS
+http://codes.wmo.int/306/4678/-TSGR,-TSGR,stable,Thunderstorm with light precipitation of hail,Thunderstorm with light precipitation of hail,http://codes.wmo.int/306/4678/-TSGR
+http://codes.wmo.int/306/4678/-TSGRRA,-TSGRRA,stable,Thunderstorm with light precipitation of hail and rain,Thunderstorm with light precipitation of hail and rain,http://codes.wmo.int/306/4678/-TSGRRA
+http://codes.wmo.int/306/4678/-TSGRRASN,-TSGRRASN,stable,"Thunderstorm with light precipitation of hail, rain and snow","Thunderstorm with light precipitation of hail, rain and snow",http://codes.wmo.int/306/4678/-TSGRRASN
+http://codes.wmo.int/306/4678/-TSGRSN,-TSGRSN,stable,Thunderstorm with light precipitation of hail and snow,Thunderstorm with light precipitation of hail and snow,http://codes.wmo.int/306/4678/-TSGRSN
+http://codes.wmo.int/306/4678/-TSGRSNRA,-TSGRSNRA,stable,"Thunderstorm with light precipitation of hail, snow and rain","Thunderstorm with light precipitation of hail, snow and rain",http://codes.wmo.int/306/4678/-TSGRSNRA
+http://codes.wmo.int/306/4678/-TSGS,-TSGS,stable,Thunderstorm with light precipitation of snow pellets/small hail,Thunderstorm with light precipitation of snow pellets/small hail,http://codes.wmo.int/306/4678/-TSGS
+http://codes.wmo.int/306/4678/-TSGSRA,-TSGSRA,stable,Thunderstorm with light precipitation of snow pellets/small hail and rain,Thunderstorm with light precipitation of snow pellets/small hail and rain,http://codes.wmo.int/306/4678/-TSGSRA
+http://codes.wmo.int/306/4678/-TSGSRASN,-TSGSRASN,stable,"Thunderstorm with light precipitation of snow pellets/small hail, rain and snow","Thunderstorm with light precipitation of snow pellets/small hail, rain and snow",http://codes.wmo.int/306/4678/-TSGSRASN
+http://codes.wmo.int/306/4678/-TSGSSN,-TSGSSN,stable,Thunderstorm with light precipitation of snow pellets/small hail and snow,Thunderstorm with light precipitation of snow pellets/small hail and snow,http://codes.wmo.int/306/4678/-TSGSSN
+http://codes.wmo.int/306/4678/-TSGSSNRA,-TSGSSNRA,stable,"Thunderstorm with light precipitation of snow pellets/small hail, snow and rain","Thunderstorm with light precipitation of snow pellets/small hail, snow and rain",http://codes.wmo.int/306/4678/-TSGSSNRA
+http://codes.wmo.int/306/4678/-TSRA,-TSRA,stable,Thunderstorm with light precipitation of rain,Thunderstorm with light precipitation of rain,http://codes.wmo.int/306/4678/-TSRA
+http://codes.wmo.int/306/4678/-TSRAGR,-TSRAGR,stable,Thunderstorm with light precipitation of rain and hail,Thunderstorm with light precipitation of rain and hail,http://codes.wmo.int/306/4678/-TSRAGR
+http://codes.wmo.int/306/4678/-TSRAGRSN,-TSRAGRSN,stable,"Thunderstorm with light precipitation of rain, hail and snow","Thunderstorm with light precipitation of rain, hail and snow",http://codes.wmo.int/306/4678/-TSRAGRSN
+http://codes.wmo.int/306/4678/-TSRAGS,-TSRAGS,stable,Thunderstorm with light precipitation of rain and snow pellets/small hail,Thunderstorm with light precipitation of rain and snow pellets/small hail,http://codes.wmo.int/306/4678/-TSRAGS
+http://codes.wmo.int/306/4678/-TSRAGSSN,-TSRAGSSN,stable,"Thunderstorm with light precipitation of rain, snow pellets/small hail and snow","Thunderstorm with light precipitation of rain, snow pellets/small hail and snow",http://codes.wmo.int/306/4678/-TSRAGSSN
+http://codes.wmo.int/306/4678/-TSRASN,-TSRASN,stable,Thunderstorm with light precipitation of rain and snow,Thunderstorm with light precipitation of rain and snow,http://codes.wmo.int/306/4678/-TSRASN
+http://codes.wmo.int/306/4678/-TSRASNGR,-TSRASNGR,stable,"Thunderstorm with light precipitation of rain, snow and hail","Thunderstorm with light precipitation of rain, snow and hail",http://codes.wmo.int/306/4678/-TSRASNGR
+http://codes.wmo.int/306/4678/-TSRASNGS,-TSRASNGS,stable,"Thunderstorm with light precipitation of rain, snow and snow pellets/small hail","Thunderstorm with light precipitation of rain, snow and snow pellets/small hail",http://codes.wmo.int/306/4678/-TSRASNGS
+http://codes.wmo.int/306/4678/-TSSN,-TSSN,stable,Thunderstorm with light precipitation of snow,Thunderstorm with light precipitation of snow,http://codes.wmo.int/306/4678/-TSSN
+http://codes.wmo.int/306/4678/-TSSNGR,-TSSNGR,stable,Thunderstorm with light precipitation of snow and hail,Thunderstorm with light precipitation of snow and hail,http://codes.wmo.int/306/4678/-TSSNGR
+http://codes.wmo.int/306/4678/-TSSNGRRA,-TSSNGRRA,stable,"Thunderstorm with light precipitation of snow, hail and rain","Thunderstorm with light precipitation of snow, hail and rain",http://codes.wmo.int/306/4678/-TSSNGRRA
+http://codes.wmo.int/306/4678/-TSSNGS,-TSSNGS,stable,Thunderstorm with light precipitation of snow and snow pellets/small hail,Thunderstorm with light precipitation of snow and snow pellets/small hail,http://codes.wmo.int/306/4678/-TSSNGS
+http://codes.wmo.int/306/4678/-TSSNGSRA,-TSSNGSRA,stable,"Thunderstorm with light precipitation of snow, snow pellets/small hail and rain","Thunderstorm with light precipitation of snow, snow pellets/small hail and rain",http://codes.wmo.int/306/4678/-TSSNGSRA
+http://codes.wmo.int/306/4678/-TSSNRA,-TSSNRA,stable,Thunderstorm with light precipitation of snow and rain,Thunderstorm with light precipitation of snow and rain,http://codes.wmo.int/306/4678/-TSSNRA
+http://codes.wmo.int/306/4678/-TSSNRAGR,-TSSNRAGR,stable,"Thunderstorm with light precipitation of snow, rain and hail","Thunderstorm with light precipitation of snow, rain and hail",http://codes.wmo.int/306/4678/-TSSNRAGR
+http://codes.wmo.int/306/4678/-TSSNRAGS,-TSSNRAGS,stable,"Thunderstorm with light precipitation of snow, rain and snow pellets/small hail","Thunderstorm with light precipitation of snow, rain and snow pellets/small hail",http://codes.wmo.int/306/4678/-TSSNRAGS
+http://codes.wmo.int/306/4678/-TSUP,-TSUP,stable,Thunderstorm with light unidentified precipitation,Thunderstorm with light unidentified precipitation,http://codes.wmo.int/306/4678/-TSUP
+http://codes.wmo.int/306/4678/-UP,-UP,stable,Light unidentified precipitation,Light unidentified precipitation,http://codes.wmo.int/306/4678/-UP
+http://codes.wmo.int/306/4678/BCFG,BCFG,stable,Patches of fog,Patches of fog,http://codes.wmo.int/306/4678/BCFG
+http://codes.wmo.int/306/4678/BLDU,BLDU,stable,Blowing dust,Blowing dust,http://codes.wmo.int/306/4678/BLDU
+http://codes.wmo.int/306/4678/BLSA,BLSA,stable,Blowing sand,Blowing sand,http://codes.wmo.int/306/4678/BLSA
+http://codes.wmo.int/306/4678/BLSN,BLSN,stable,Blowing snow,Blowing snow,http://codes.wmo.int/306/4678/BLSN
+http://codes.wmo.int/306/4678/BR,BR,stable,Mist,Mist,http://codes.wmo.int/306/4678/BR
+http://codes.wmo.int/306/4678/DRDU,DRDU,stable,Low drifting dust,Low drifting dust,http://codes.wmo.int/306/4678/DRDU
+http://codes.wmo.int/306/4678/DRSA,DRSA,stable,Low drifting sand,Low drifting sand,http://codes.wmo.int/306/4678/DRSA
+http://codes.wmo.int/306/4678/DRSN,DRSN,stable,Low drifting snow,Low drifting snow,http://codes.wmo.int/306/4678/DRSN
+http://codes.wmo.int/306/4678/DS,DS,stable,Duststorm,Duststorm,http://codes.wmo.int/306/4678/DS
+http://codes.wmo.int/306/4678/DU,DU,stable,Dust,Dust,http://codes.wmo.int/306/4678/DU
+http://codes.wmo.int/306/4678/DZ,DZ,stable,Precipitation of drizzle,Precipitation of drizzle,http://codes.wmo.int/306/4678/DZ
+http://codes.wmo.int/306/4678/DZPL,DZPL,stable,Precipitation of drizzle and ice pellets,Precipitation of drizzle and ice pellets,http://codes.wmo.int/306/4678/DZPL
+http://codes.wmo.int/306/4678/DZPLRA,DZPLRA,stable,"Precipitation of drizzle, ice pellets and rain","Precipitation of drizzle, ice pellets and rain",http://codes.wmo.int/306/4678/DZPLRA
+http://codes.wmo.int/306/4678/DZRA,DZRA,stable,Precipitation of drizzle and rain,Precipitation of drizzle and rain,http://codes.wmo.int/306/4678/DZRA
+http://codes.wmo.int/306/4678/DZRAPL,DZRAPL,stable,"Precipitation of drizzle, rain and ice pellets","Precipitation of drizzle, rain and ice pellets",http://codes.wmo.int/306/4678/DZRAPL
+http://codes.wmo.int/306/4678/DZRASG,DZRASG,stable,"Precipitation of drizzle, rain and snow grains","Precipitation of drizzle, rain and snow grains",http://codes.wmo.int/306/4678/DZRASG
+http://codes.wmo.int/306/4678/DZRASN,DZRASN,stable,"Precipitation of drizzle, rain and snow","Precipitation of drizzle, rain and snow",http://codes.wmo.int/306/4678/DZRASN
+http://codes.wmo.int/306/4678/DZSG,DZSG,stable,Precipitation of drizzle and snow grains,Precipitation of drizzle and snow grains,http://codes.wmo.int/306/4678/DZSG
+http://codes.wmo.int/306/4678/DZSGRA,DZSGRA,stable,"Precipitation of drizzle, snow grains and rain","Precipitation of drizzle, snow grains and rain",http://codes.wmo.int/306/4678/DZSGRA
+http://codes.wmo.int/306/4678/DZSN,DZSN,stable,Precipitation of drizzle and snow,Precipitation of drizzle and snow,http://codes.wmo.int/306/4678/DZSN
+http://codes.wmo.int/306/4678/DZSNRA,DZSNRA,stable,"Precipitation of drizzle, snow and rain","Precipitation of drizzle, snow and rain",http://codes.wmo.int/306/4678/DZSNRA
+http://codes.wmo.int/306/4678/FC,FC,stable,Funnel cloud(s) (tornado or water-spout),Funnel cloud(s) (tornado or water-spout),http://codes.wmo.int/306/4678/FC
+http://codes.wmo.int/306/4678/FG,FG,stable,Fog,Fog,http://codes.wmo.int/306/4678/FG
+http://codes.wmo.int/306/4678/FU,FU,stable,Smoke,Smoke,http://codes.wmo.int/306/4678/FU
+http://codes.wmo.int/306/4678/FZDZ,FZDZ,stable,Precipitation of freezing drizzle,Precipitation of freezing drizzle,http://codes.wmo.int/306/4678/FZDZ
+http://codes.wmo.int/306/4678/FZDZRA,FZDZRA,stable,Precipitation of freezing drizzle and rain,Precipitation of freezing drizzle and rain,http://codes.wmo.int/306/4678/FZDZRA
+http://codes.wmo.int/306/4678/FZFG,FZFG,stable,Freezing fog,Freezing fog,http://codes.wmo.int/306/4678/FZFG
+http://codes.wmo.int/306/4678/FZRA,FZRA,stable,Precipitation of freezng rain,Precipitation of freezng rain,http://codes.wmo.int/306/4678/FZRA
+http://codes.wmo.int/306/4678/FZRADZ,FZRADZ,stable,Precipitation of freezing rain and drizzle,Precipitation of freezing rain and drizzle,http://codes.wmo.int/306/4678/FZRADZ
+http://codes.wmo.int/306/4678/FZUP,FZUP,stable,Unidentified freezing precipitation,Unidentified freezing precipitation,http://codes.wmo.int/306/4678/FZUP
+http://codes.wmo.int/306/4678/HZ,HZ,stable,Haze,Haze,http://codes.wmo.int/306/4678/HZ
+http://codes.wmo.int/306/4678/MIFG,MIFG,stable,Shallow fog,Shallow fog,http://codes.wmo.int/306/4678/MIFG
+http://codes.wmo.int/306/4678/PL,PL,stable,Precipitation of ice pellets,Precipitation of ice pellets,http://codes.wmo.int/306/4678/PL
+http://codes.wmo.int/306/4678/PLDZ,PLDZ,stable,Precipitation of ice pellets and drizzle,Precipitation of ice pellets and drizzle,http://codes.wmo.int/306/4678/PLDZ
+http://codes.wmo.int/306/4678/PLDZRA,PLDZRA,stable,"Precipitation of ice pellets, drizzle and rain","Precipitation of ice pellets, drizzle and rain",http://codes.wmo.int/306/4678/PLDZRA
+http://codes.wmo.int/306/4678/PLRA,PLRA,stable,Precipitation of ice pellets and rain,Precipitation of ice pellets and rain,http://codes.wmo.int/306/4678/PLRA
+http://codes.wmo.int/306/4678/PLRADZ,PLRADZ,stable,"Precipitation of ice pellets, rain and drizzle","Precipitation of ice pellets, rain and drizzle",http://codes.wmo.int/306/4678/PLRADZ
+http://codes.wmo.int/306/4678/PLRASN,PLRASN,stable,"Precipitation of ice pellets, rain and snow","Precipitation of ice pellets, rain and snow",http://codes.wmo.int/306/4678/PLRASN
+http://codes.wmo.int/306/4678/PLSG,PLSG,stable,Precipitation of ice pellets and snow grains,Precipitation of ice pellets and snow grains,http://codes.wmo.int/306/4678/PLSG
+http://codes.wmo.int/306/4678/PLSGSN,PLSGSN,stable,"Precipitation of ice pellets, snow grains and snow","Precipitation of ice pellets, snow grains and snow",http://codes.wmo.int/306/4678/PLSGSN
+http://codes.wmo.int/306/4678/PLSN,PLSN,stable,Precipitation of ice pellets and snow,Precipitation of ice pellets and snow,http://codes.wmo.int/306/4678/PLSN
+http://codes.wmo.int/306/4678/PLSNRA,PLSNRA,stable,"Precipitation of ice pellets, snow and rain","Precipitation of ice pellets, snow and rain",http://codes.wmo.int/306/4678/PLSNRA
+http://codes.wmo.int/306/4678/PLSNSG,PLSNSG,stable,"Precipitation of ice pellets, snow and snow grains","Precipitation of ice pellets, snow and snow grains",http://codes.wmo.int/306/4678/PLSNSG
+http://codes.wmo.int/306/4678/PO,PO,stable,Dust/sand whirls (dust devils),Dust/sand whirls (dust devils),http://codes.wmo.int/306/4678/PO
+http://codes.wmo.int/306/4678/PRFG,PRFG,stable,Partial fog (covering part of the aerodrome),Partial fog (covering part of the aerodrome),http://codes.wmo.int/306/4678/PRFG
+http://codes.wmo.int/306/4678/RA,RA,stable,Precipitation of rain,Precipitation of rain,http://codes.wmo.int/306/4678/RA
+http://codes.wmo.int/306/4678/RADZ,RADZ,stable,Precipitation of rain and drizzle,Precipitation of rain and drizzle,http://codes.wmo.int/306/4678/RADZ
+http://codes.wmo.int/306/4678/RADZPL,RADZPL,stable,"Precipitation of rain, drizzle and ice pellets","Precipitation of rain, drizzle and ice pellets",http://codes.wmo.int/306/4678/RADZPL
+http://codes.wmo.int/306/4678/RADZSG,RADZSG,stable,"Precipitation of rain, drizzle and snow grains","Precipitation of rain, drizzle and snow grains",http://codes.wmo.int/306/4678/RADZSG
+http://codes.wmo.int/306/4678/RADZSN,RADZSN,stable,"Precipitation of rain, drizzle and snow","Precipitation of rain, drizzle and snow",http://codes.wmo.int/306/4678/RADZSN
+http://codes.wmo.int/306/4678/RAPL,RAPL,stable,Precipitation of rain and ice pellets,Precipitation of rain and ice pellets,http://codes.wmo.int/306/4678/RAPL
+http://codes.wmo.int/306/4678/RAPLDZ,RAPLDZ,stable,"Precipitation of rain, ice pellets and drizzle","Precipitation of rain, ice pellets and drizzle",http://codes.wmo.int/306/4678/RAPLDZ
+http://codes.wmo.int/306/4678/RAPLSN,RAPLSN,stable,"Precipitation of rain, ice pellets and snow","Precipitation of rain, ice pellets and snow",http://codes.wmo.int/306/4678/RAPLSN
+http://codes.wmo.int/306/4678/RASG,RASG,stable,Precipitation of rain and snow grains,Precipitation of rain and snow grains,http://codes.wmo.int/306/4678/RASG
+http://codes.wmo.int/306/4678/RASGDZ,RASGDZ,stable,"Precipitation of rain, snow grains and drizzle","Precipitation of rain, snow grains and drizzle",http://codes.wmo.int/306/4678/RASGDZ
+http://codes.wmo.int/306/4678/RASGSN,RASGSN,stable,"Precipitation of rain, snow grains and snow","Precipitation of rain, snow grains and snow",http://codes.wmo.int/306/4678/RASGSN
+http://codes.wmo.int/306/4678/RASN,RASN,stable,Precipitation of rain and snow,Precipitation of rain and snow,http://codes.wmo.int/306/4678/RASN
+http://codes.wmo.int/306/4678/RASNDZ,RASNDZ,stable,"Precipitation of rain, snow and drizzle","Precipitation of rain, snow and drizzle",http://codes.wmo.int/306/4678/RASNDZ
+http://codes.wmo.int/306/4678/RASNPL,RASNPL,stable,"Precipitation of rain, snow and ice pellets","Precipitation of rain, snow and ice pellets",http://codes.wmo.int/306/4678/RASNPL
+http://codes.wmo.int/306/4678/RASNSG,RASNSG,stable,"Precipitation of rain, snow and snow grains","Precipitation of rain, snow and snow grains",http://codes.wmo.int/306/4678/RASNSG
+http://codes.wmo.int/306/4678/SA,SA,stable,Sand,Sand,http://codes.wmo.int/306/4678/SA
+http://codes.wmo.int/306/4678/SG,SG,stable,Precipitation of snow grains,Precipitation of snow grains,http://codes.wmo.int/306/4678/SG
+http://codes.wmo.int/306/4678/SGDZ,SGDZ,stable,Precipitation of snow grains and drizzle,Precipitation of snow grains and drizzle,http://codes.wmo.int/306/4678/SGDZ
+http://codes.wmo.int/306/4678/SGDZRA,SGDZRA,stable,"Precipitation of snow grains, drizzle and rain","Precipitation of snow grains, drizzle and rain",http://codes.wmo.int/306/4678/SGDZRA
+http://codes.wmo.int/306/4678/SGPL,SGPL,stable,Precipitation of snow grains and ice pellets,Precipitation of snow grains and ice pellets,http://codes.wmo.int/306/4678/SGPL
+http://codes.wmo.int/306/4678/SGPLSN,SGPLSN,stable,"Precipitation of snow grains, ice pellets and snow","Precipitation of snow grains, ice pellets and snow",http://codes.wmo.int/306/4678/SGPLSN
+http://codes.wmo.int/306/4678/SGRA,SGRA,stable,Precipitation of snow grains and rain,Precipitation of snow grains and rain,http://codes.wmo.int/306/4678/SGRA
+http://codes.wmo.int/306/4678/SGRADZ,SGRADZ,stable,"Precipitation of snow grains, rain and drizzle","Precipitation of snow grains, rain and drizzle",http://codes.wmo.int/306/4678/SGRADZ
+http://codes.wmo.int/306/4678/SGRASN,SGRASN,stable,"Precipitation of snow grains, rain and snow","Precipitation of snow grains, rain and snow",http://codes.wmo.int/306/4678/SGRASN
+http://codes.wmo.int/306/4678/SGSN,SGSN,stable,Precipitation of snow grains and snow,Precipitation of snow grains and snow,http://codes.wmo.int/306/4678/SGSN
+http://codes.wmo.int/306/4678/SGSNPL,SGSNPL,stable,"Precipitation of snow grains, snow and ice pellets","Precipitation of snow grains, snow and ice pellets",http://codes.wmo.int/306/4678/SGSNPL
+http://codes.wmo.int/306/4678/SGSNRA,SGSNRA,stable,"Precipitation of snow grains, snow and rain","Precipitation of snow grains, snow and rain",http://codes.wmo.int/306/4678/SGSNRA
+http://codes.wmo.int/306/4678/SHGR,SHGR,stable,Showery precipitation of hail,Showery precipitation of hail,http://codes.wmo.int/306/4678/SHGR
+http://codes.wmo.int/306/4678/SHGRRA,SHGRRA,stable,Showery precipitation of hail and rain,Showery precipitation of hail and rain,http://codes.wmo.int/306/4678/SHGRRA
+http://codes.wmo.int/306/4678/SHGRRASN,SHGRRASN,stable,"Showery precipitation of hail, rain and snow","Showery precipitation of hail, rain and snow",http://codes.wmo.int/306/4678/SHGRRASN
+http://codes.wmo.int/306/4678/SHGRSN,SHGRSN,stable,Showery precipitation of hail and snow,Showery precipitation of hail and snow,http://codes.wmo.int/306/4678/SHGRSN
+http://codes.wmo.int/306/4678/SHGRSNRA,SHGRSNRA,stable,"Showery precipitation of hail, snow and rain","Showery precipitation of hail, snow and rain",http://codes.wmo.int/306/4678/SHGRSNRA
+http://codes.wmo.int/306/4678/SHGS,SHGS,stable,Showery precipitation of snow pellets/small hail,Showery precipitation of snow pellets/small hail,http://codes.wmo.int/306/4678/SHGS
+http://codes.wmo.int/306/4678/SHGSRA,SHGSRA,stable,Showery precipitation of snow pellets/small hail and rain,Showery precipitation of snow pellets/small hail and rain,http://codes.wmo.int/306/4678/SHGSRA
+http://codes.wmo.int/306/4678/SHGSRASN,SHGSRASN,stable,"Showery precipitation of snow pellets/small hail, rain and snow","Showery precipitation of snow pellets/small hail, rain and snow",http://codes.wmo.int/306/4678/SHGSRASN
+http://codes.wmo.int/306/4678/SHGSSN,SHGSSN,stable,Showery precipitation of snow pellets/small hail and snow,Showery precipitation of snow pellets/small hail and snow,http://codes.wmo.int/306/4678/SHGSSN
+http://codes.wmo.int/306/4678/SHGSSNRA,SHGSSNRA,stable,"Showery precipitation of snow pellets/small hail, snow and rain","Showery precipitation of snow pellets/small hail, snow and rain",http://codes.wmo.int/306/4678/SHGSSNRA
+http://codes.wmo.int/306/4678/SHRA,SHRA,stable,Showery precipitation of rain,Showery precipitation of rain,http://codes.wmo.int/306/4678/SHRA
+http://codes.wmo.int/306/4678/SHRAGR,SHRAGR,stable,Showery precipitation of rain and hail,Showery precipitation of rain and hail,http://codes.wmo.int/306/4678/SHRAGR
+http://codes.wmo.int/306/4678/SHRAGRSN,SHRAGRSN,stable,"Showery precipitation of rain, hail and snow","Showery precipitation of rain, hail and snow",http://codes.wmo.int/306/4678/SHRAGRSN
+http://codes.wmo.int/306/4678/SHRAGS,SHRAGS,stable,Showery precipitation of rain and snow pellets/small hail,Showery precipitation of rain and snow pellets/small hail,http://codes.wmo.int/306/4678/SHRAGS
+http://codes.wmo.int/306/4678/SHRAGSSN,SHRAGSSN,stable,"Showery precipitation of rain, snow pellets/small hail and snow","Showery precipitation of rain, snow pellets/small hail and snow",http://codes.wmo.int/306/4678/SHRAGSSN
+http://codes.wmo.int/306/4678/SHRASN,SHRASN,stable,Showery precipitation of rain and snow,Showery precipitation of rain and snow,http://codes.wmo.int/306/4678/SHRASN
+http://codes.wmo.int/306/4678/SHRASNGR,SHRASNGR,stable,"Showery precipitation of rain, snow and hail","Showery precipitation of rain, snow and hail",http://codes.wmo.int/306/4678/SHRASNGR
+http://codes.wmo.int/306/4678/SHRASNGS,SHRASNGS,stable,"Showery precipitation of rain, snow and snow pellets/small hail","Showery precipitation of rain, snow and snow pellets/small hail",http://codes.wmo.int/306/4678/SHRASNGS
+http://codes.wmo.int/306/4678/SHSN,SHSN,stable,Showery precipitation of snow,Showery precipitation of snow,http://codes.wmo.int/306/4678/SHSN
+http://codes.wmo.int/306/4678/SHSNGR,SHSNGR,stable,Showery precipitation of snow and hail,Showery precipitation of snow and hail,http://codes.wmo.int/306/4678/SHSNGR
+http://codes.wmo.int/306/4678/SHSNGRRA,SHSNGRRA,stable,"Showery precipitation of snow, hail and rain","Showery precipitation of snow, hail and rain",http://codes.wmo.int/306/4678/SHSNGRRA
+http://codes.wmo.int/306/4678/SHSNGS,SHSNGS,stable,Showery precipitation of snow and snow pellets/small hail,Showery precipitation of snow and snow pellets/small hail,http://codes.wmo.int/306/4678/SHSNGS
+http://codes.wmo.int/306/4678/SHSNGSRA,SHSNGSRA,stable,"Showery precipitation of snow, snow pellets/small hail and rain","Showery precipitation of snow, snow pellets/small hail and rain",http://codes.wmo.int/306/4678/SHSNGSRA
+http://codes.wmo.int/306/4678/SHSNRA,SHSNRA,stable,Showery precipitation of snow and rain,Showery precipitation of snow and rain,http://codes.wmo.int/306/4678/SHSNRA
+http://codes.wmo.int/306/4678/SHSNRAGR,SHSNRAGR,stable,"Showery precipitation of snow, rain and hail","Showery precipitation of snow, rain and hail",http://codes.wmo.int/306/4678/SHSNRAGR
+http://codes.wmo.int/306/4678/SHSNRAGS,SHSNRAGS,stable,"Showery precipitation of snow, rain and snow pellets/small hail","Showery precipitation of snow, rain and snow pellets/small hail",http://codes.wmo.int/306/4678/SHSNRAGS
+http://codes.wmo.int/306/4678/SHUP,SHUP,stable,Unidentified showery precipitation,Unidentified showery precipitation,http://codes.wmo.int/306/4678/SHUP
+http://codes.wmo.int/306/4678/SN,SN,stable,Precipitation of snow,Precipitation of snow,http://codes.wmo.int/306/4678/SN
+http://codes.wmo.int/306/4678/SNDZ,SNDZ,stable,Precipitation of snow and drizzle,Precipitation of snow and drizzle,http://codes.wmo.int/306/4678/SNDZ
+http://codes.wmo.int/306/4678/SNDZRA,SNDZRA,stable,"Precipitation of snow, drizzle and rain","Precipitation of snow, drizzle and rain",http://codes.wmo.int/306/4678/SNDZRA
+http://codes.wmo.int/306/4678/SNPL,SNPL,stable,Precipitation of snow and ice pellets,Precipitation of snow and ice pellets,http://codes.wmo.int/306/4678/SNPL
+http://codes.wmo.int/306/4678/SNPLRA,SNPLRA,stable,"Precipitation of snow, ice pellets and rain","Precipitation of snow, ice pellets and rain",http://codes.wmo.int/306/4678/SNPLRA
+http://codes.wmo.int/306/4678/SNPLSG,SNPLSG,stable,"Precipitation of snow, ice pellets and snow grains","Precipitation of snow, ice pellets and snow grains",http://codes.wmo.int/306/4678/SNPLSG
+http://codes.wmo.int/306/4678/SNRA,SNRA,stable,Precipitation of snow and rain,Precipitation of snow and rain,http://codes.wmo.int/306/4678/SNRA
+http://codes.wmo.int/306/4678/SNRADZ,SNRADZ,stable,"Precipitation of snow, rain and drizzle","Precipitation of snow, rain and drizzle",http://codes.wmo.int/306/4678/SNRADZ
+http://codes.wmo.int/306/4678/SNRAPL,SNRAPL,stable,"Precipitation of snow, rain and ice pellets","Precipitation of snow, rain and ice pellets",http://codes.wmo.int/306/4678/SNRAPL
+http://codes.wmo.int/306/4678/SNRASG,SNRASG,stable,"Precipitation of snow, rain and snow grains","Precipitation of snow, rain and snow grains",http://codes.wmo.int/306/4678/SNRASG
+http://codes.wmo.int/306/4678/SNSG,SNSG,stable,Precipitation of snow and snow grains,Precipitation of snow and snow grains,http://codes.wmo.int/306/4678/SNSG
+http://codes.wmo.int/306/4678/SNSGPL,SNSGPL,stable,"Precipitation of snow, snow grains and ice pellets","Precipitation of snow, snow grains and ice pellets",http://codes.wmo.int/306/4678/SNSGPL
+http://codes.wmo.int/306/4678/SNSGRA,SNSGRA,stable,"Precipitation of snow, snow grains and rain","Precipitation of snow, snow grains and rain",http://codes.wmo.int/306/4678/SNSGRA
+http://codes.wmo.int/306/4678/SQ,SQ,stable,Squalls,Squalls,http://codes.wmo.int/306/4678/SQ
+http://codes.wmo.int/306/4678/SS,SS,stable,Sandstorm,Sandstorm,http://codes.wmo.int/306/4678/SS
+http://codes.wmo.int/306/4678/TS,TS,stable,Thunderstorm,Thunderstorm,http://codes.wmo.int/306/4678/TS
+http://codes.wmo.int/306/4678/TSGR,TSGR,stable,Thunderstorm with precipitation of hail,Thunderstorm with precipitation of hail,http://codes.wmo.int/306/4678/TSGR
+http://codes.wmo.int/306/4678/TSGRRA,TSGRRA,stable,Thunderstorm with precipitation of hail and rain,Thunderstorm with precipitation of hail and rain,http://codes.wmo.int/306/4678/TSGRRA
+http://codes.wmo.int/306/4678/TSGRRASN,TSGRRASN,stable,"Thunderstorm with precipitation of hail, rain and snow","Thunderstorm with precipitation of hail, rain and snow",http://codes.wmo.int/306/4678/TSGRRASN
+http://codes.wmo.int/306/4678/TSGRSN,TSGRSN,stable,Thunderstorm with precipitation of hail and snow,Thunderstorm with precipitation of hail and snow,http://codes.wmo.int/306/4678/TSGRSN
+http://codes.wmo.int/306/4678/TSGRSNRA,TSGRSNRA,stable,"Thunderstorm with precipitation of hail, snow and rain","Thunderstorm with precipitation of hail, snow and rain",http://codes.wmo.int/306/4678/TSGRSNRA
+http://codes.wmo.int/306/4678/TSGS,TSGS,stable,Thunderstorm with precipitation of snow pellets/small hail,Thunderstorm with precipitation of snow pellets/small hail,http://codes.wmo.int/306/4678/TSGS
+http://codes.wmo.int/306/4678/TSGSRA,TSGSRA,stable,Thunderstorm with precipitation of snow pellets/small hail and rain,Thunderstorm with precipitation of snow pellets/small hail and rain,http://codes.wmo.int/306/4678/TSGSRA
+http://codes.wmo.int/306/4678/TSGSRASN,TSGSRASN,stable,"Thunderstorm with precipitation of snow pellets/small hail, rain and snow","Thunderstorm with precipitation of snow pellets/small hail, rain and snow",http://codes.wmo.int/306/4678/TSGSRASN
+http://codes.wmo.int/306/4678/TSGSSN,TSGSSN,stable,Thunderstorm with precipitation of snow pellets/small hail and snow,Thunderstorm with precipitation of snow pellets/small hail and snow,http://codes.wmo.int/306/4678/TSGSSN
+http://codes.wmo.int/306/4678/TSGSSNRA,TSGSSNRA,stable,"Thunderstorm with precipitation of snow pellets/small hail, snow and rain","Thunderstorm with precipitation of snow pellets/small hail, snow and rain",http://codes.wmo.int/306/4678/TSGSSNRA
+http://codes.wmo.int/306/4678/TSRA,TSRA,stable,Thunderstorm with precipitation of rain,Thunderstorm with precipitation of rain,http://codes.wmo.int/306/4678/TSRA
+http://codes.wmo.int/306/4678/TSRAGR,TSRAGR,stable,Thunderstorm with precipitation of rain and hail,Thunderstorm with precipitation of rain and hail,http://codes.wmo.int/306/4678/TSRAGR
+http://codes.wmo.int/306/4678/TSRAGRSN,TSRAGRSN,stable,"Thunderstorm with precipitation of rain, hail and snow","Thunderstorm with precipitation of rain, hail and snow",http://codes.wmo.int/306/4678/TSRAGRSN
+http://codes.wmo.int/306/4678/TSRAGS,TSRAGS,stable,Thunderstorm with precipitation of rain and snow pellets/small hail,Thunderstorm with precipitation of rain and snow pellets/small hail,http://codes.wmo.int/306/4678/TSRAGS
+http://codes.wmo.int/306/4678/TSRAGSSN,TSRAGSSN,stable,"Thunderstorm with precipitation of rain, snow pellets/small hail and snow","Thunderstorm with precipitation of rain, snow pellets/small hail and snow",http://codes.wmo.int/306/4678/TSRAGSSN
+http://codes.wmo.int/306/4678/TSRASN,TSRASN,stable,Thunderstorm with precipitation of rain and snow,Thunderstorm with precipitation of rain and snow,http://codes.wmo.int/306/4678/TSRASN
+http://codes.wmo.int/306/4678/TSRASNGR,TSRASNGR,stable,"Thunderstorm with precipitation of rain, snow and hail","Thunderstorm with precipitation of rain, snow and hail",http://codes.wmo.int/306/4678/TSRASNGR
+http://codes.wmo.int/306/4678/TSRASNGS,TSRASNGS,stable,"Thunderstorm with precipitation of rain, snow and snow pellets/small hail","Thunderstorm with precipitation of rain, snow and snow pellets/small hail",http://codes.wmo.int/306/4678/TSRASNGS
+http://codes.wmo.int/306/4678/TSSN,TSSN,stable,Thunderstorm with precipitation of snow,Thunderstorm with precipitation of snow,http://codes.wmo.int/306/4678/TSSN
+http://codes.wmo.int/306/4678/TSSNGR,TSSNGR,stable,Thunderstorm with precipitation of snow and hail,Thunderstorm with precipitation of snow and hail,http://codes.wmo.int/306/4678/TSSNGR
+http://codes.wmo.int/306/4678/TSSNGRRA,TSSNGRRA,stable,"Thunderstorm with precipitation of snow, hail and rain","Thunderstorm with precipitation of snow, hail and rain",http://codes.wmo.int/306/4678/TSSNGRRA
+http://codes.wmo.int/306/4678/TSSNGS,TSSNGS,stable,Thunderstorm with precipitation of snow and snow pellets/small hail,Thunderstorm with precipitation of snow and snow pellets/small hail,http://codes.wmo.int/306/4678/TSSNGS
+http://codes.wmo.int/306/4678/TSSNGSRA,TSSNGSRA,stable,"Thunderstorm with precipitation of snow, snow pellets/small hail and rain","Thunderstorm with precipitation of snow, snow pellets/small hail and rain",http://codes.wmo.int/306/4678/TSSNGSRA
+http://codes.wmo.int/306/4678/TSSNRA,TSSNRA,stable,Thunderstorm with precipitation of snow and rain,Thunderstorm with precipitation of snow and rain,http://codes.wmo.int/306/4678/TSSNRA
+http://codes.wmo.int/306/4678/TSSNRAGR,TSSNRAGR,stable,"Thunderstorm with precipitation of snow, rain and hail","Thunderstorm with precipitation of snow, rain and hail",http://codes.wmo.int/306/4678/TSSNRAGR
+http://codes.wmo.int/306/4678/TSSNRAGS,TSSNRAGS,stable,"Thunderstorm with precipitation of snow, rain and snow pellets/small hail","Thunderstorm with precipitation of snow, rain and snow pellets/small hail",http://codes.wmo.int/306/4678/TSSNRAGS
+http://codes.wmo.int/306/4678/TSUP,TSUP,stable,Thunderstorm with unidentified precipitation,Thunderstorm with unidentified precipitation,http://codes.wmo.int/306/4678/TSUP
+http://codes.wmo.int/306/4678/UP,UP,stable,Unidentified precipitation,Unidentified precipitation,http://codes.wmo.int/306/4678/UP
+http://codes.wmo.int/306/4678/VA,VA,stable,Volcanic ash,Volcanic ash,http://codes.wmo.int/306/4678/VA
+http://codes.wmo.int/306/4678/VCBLDU,VCBLDU,stable,Blowing dust in the vicinity,Blowing dust in the vicinity,http://codes.wmo.int/306/4678/VCBLDU
+http://codes.wmo.int/306/4678/VCBLSA,VCBLSA,stable,Blowing sand in the vicinity,Blowing sand in the vicinity,http://codes.wmo.int/306/4678/VCBLSA
+http://codes.wmo.int/306/4678/VCBLSN,VCBLSN,stable,Blowing snow in the vicinity,Blowing snow in the vicinity,http://codes.wmo.int/306/4678/VCBLSN
+http://codes.wmo.int/306/4678/VCDS,VCDS,stable,Duststorm in the vicinity,Duststorm in the vicinity,http://codes.wmo.int/306/4678/VCDS
+http://codes.wmo.int/306/4678/VCFC,VCFC,stable,Funnel cloud(s) (tornado or water-spout) in the vicinity,Funnel cloud(s) (tornado or water-spout) in the vicinity,http://codes.wmo.int/306/4678/VCFC
+http://codes.wmo.int/306/4678/VCFG,VCFG,stable,Fog in the vicinity,Fog in the vicinity,http://codes.wmo.int/306/4678/VCFG
+http://codes.wmo.int/306/4678/VCPO,VCPO,stable,Dust/sand whirls (dust devils) in the vicinity,Dust/sand whirls (dust devils) in the vicinity,http://codes.wmo.int/306/4678/VCPO
+http://codes.wmo.int/306/4678/VCSH,VCSH,stable,Shower(s) in the vicinity,Shower(s) in the vicinity,http://codes.wmo.int/306/4678/VCSH
+http://codes.wmo.int/306/4678/VCSS,VCSS,stable,Sandstorm in the vicinity,Sandstorm in the vicinity,http://codes.wmo.int/306/4678/VCSS
+http://codes.wmo.int/306/4678/VCTS,VCTS,stable,Thunderstorm in the vicinity,Thunderstorm in the vicinity,http://codes.wmo.int/306/4678/VCTS
+http://codes.wmo.int/306/4678/VCVA,VCVA,stable,Volcanic ash in the vicinity,Volcanic ash in the vicinity,http://codes.wmo.int/306/4678/VCVA

@@ -1,0 +1,9 @@
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix reg:   <http://purl.org/linked-data/registry#> .
+
+<iwxxm>
+        a                     skos:Collection , reg:Delegated , reg:NamespaceForward ;
+        rdfs:label            "iwxxm forward" ;
+        reg:delegationTarget  <http://codes.wmo.int/49-2/observation-type/IWXXM> ;
+        reg:forwardingCode    "301" .

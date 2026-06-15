@@ -1,0 +1,15 @@
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix reg:   <http://purl.org/linked-data/registry#> .
+@prefix ldp:   <http://www.w3.org/ns/ldp#> .
+
+<IWXXM>
+        a                        skos:Collection , ldp:Container , reg:Register ;
+        rdfs:label               "ICAO IWXXM observation types" ;
+        dct:publisher            <http://codes.wmo.int/system/organization/wmo> ;
+        reg:containedItemClass   skos:Collection ;
+        reg:manager              <http://codes.wmo.int/system/organization/www-dm> ;
+        reg:owner                <http://codes.wmo.int/system/organization/wmo> ;
+        reg:subregister          <http://codes.wmo.int/49-2/observation-type/IWXXM/2.1> , <http://codes.wmo.int/49-2/observation-type/IWXXM/1.0> ;
+        ldp:membershipPredicate  skos:member .
