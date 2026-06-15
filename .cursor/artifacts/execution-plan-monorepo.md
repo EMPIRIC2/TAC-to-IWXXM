@@ -11,8 +11,8 @@
 |-------|-------|
 | **Active phase** | Phase 2: Vendor & Packages |
 | **Active milestone** | M2: Vendor Snapshots |
-| **Active task** | T2.2 — Create vendor/manifest.json |
-| **Tasks completed** | 11 / 63 |
+| **Active task** | T3.1 — TC-M003 golden conversion tests |
+| **Tasks completed** | 15 / 63 |
 | **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary
@@ -116,10 +116,10 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
 | T2.1 | Write TC-M002 manifest integrity tests | Test | completed | test-plan.md TC-M002 | — | — |
-| T2.2 | Create `vendor/manifest.json` from submodule SHAs | Config | pending | spec.md §vendor/schemas, ADR-001 | T2.1 | iwxxm-* |
-| T2.3 | Implement `scripts/vendor/sync-iwxxm.sh` | Code | pending | migration-plan.md Step 1 | T2.2 | — |
-| T2.4 | Populate `vendor/schemas/*` via sync script | Config | pending | M2 feature-list | T2.3 | iwxxm-* |
-| T2.5 | Write vendor schema presence tests | Test | pending | test-plan.md §Vendor | T2.4 | vendor trees |
+| T2.2 | Create `vendor/manifest.json` from submodule SHAs | Config | completed | spec.md §vendor/schemas, ADR-001 | T2.1 | iwxxm-* |
+| T2.3 | Implement `scripts/vendor/sync-iwxxm.sh` | Code | completed | migration-plan.md Step 1 | T2.2 | — |
+| T2.4 | Populate `vendor/schemas/*` via sync script | Config | completed | M2 feature-list | T2.3 | iwxxm-* |
+| T2.5 | Write vendor schema presence tests | Test | completed | test-plan.md §Vendor | T2.4 | vendor trees |
 
 #### M3: GIFTs Package
 

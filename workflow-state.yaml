@@ -168,10 +168,10 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T2.2
+        current_task: T3.1
         phase: 2
-        milestone: M2
-        notes: "T2.1 complete; TC-M002 red until T2.2+T2.4"
+        milestone: M3
+        notes: "M2 complete; TC-M002 green; starting GIFTs package"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
 
@@ -458,9 +458,33 @@ artifacts:
       stage: "07-build"
       files_changed: 3
       timestamp: "2026-06-14T14:00:00Z"
-    - sha: pending
+    - sha: a035f2d
       branch: feat/M2-vendor-snapshots
       message: "[T2.1] test: add TC-M002 vendor manifest integrity tests"
       stage: "07-build"
-      files_changed: 5
+      files_changed: 6
       timestamp: "2026-06-15T00:30:00Z"
+    - sha: 448419c
+      branch: feat/M2-vendor-snapshots
+      message: "[T2.2] config: add vendor manifest pins from submodule SHAs"
+      stage: "07-build"
+      files_changed: 1
+      timestamp: "2026-06-15T00:29:00Z"
+    - sha: 7a35f3e
+      branch: feat/M2-vendor-snapshots
+      message: "[T2.3] feat: implement vendor sync script for iwxxm snapshots"
+      stage: "07-build"
+      files_changed: 2
+      timestamp: "2026-06-15T00:30:00Z"
+    - sha: 8781a34
+      branch: feat/M2-vendor-snapshots
+      message: "[T2.4] config: populate vendor/schemas from legacy submodule trees"
+      stage: "07-build"
+      files_changed: 1000
+      timestamp: "2026-06-15T00:31:00Z"
+    - sha: e241c73
+      branch: feat/M2-vendor-snapshots
+      message: "[T2.5] test: add vendor schema presence tests for M2 gate"
+      stage: "07-build"
+      files_changed: 1
+      timestamp: "2026-06-15T00:31:00Z"
