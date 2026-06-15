@@ -9,10 +9,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase 2: Vendor & Packages |
+| **Active phase** | Phase 3: Apps & Auth Merge |
 | **Active milestone** | M5: Backend App + Auth Merge |
-| **Active task** | T5.1 — Write `test_cors_policy.py` for `METAR_CORS_ORIGINS` |
-| **Tasks completed** | 24 / 63 |
+| **Active task** | T5.2 — Move `backend/` → `apps/backend/` |
+| **Tasks completed** | 25 / 63 |
 | **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary
@@ -161,7 +161,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T5.1 | Write `test_cors_policy.py` for `METAR_CORS_ORIGINS` | Test | pending | test-plan.md H0c | — | — |
+| T5.1 | Write `test_cors_policy.py` for `METAR_CORS_ORIGINS` | Test | completed | test-plan.md H0c | — | — |
 | T5.2 | Move `backend/` → `apps/backend/` | Code | pending | migration-plan.md Step 3 | T2.4, T3.3, T4.3 | vendor |
 | T5.3 | Mount auth routers at `/auth/*`; remove AUTH_SERVICE_URL | Code | pending | ADR-002, TC-M005 | T5.2, T4.3 | — |
 | T5.4 | Rename `ALLOWED_ORIGINS` → `METAR_CORS_ORIGINS` | Config | pending | config-spec-monorepo.md | T5.1, T5.3 | — |
@@ -290,7 +290,7 @@ main
 | PR-1 | Minor | M1 | feat/M1-workspace-root | phase/1-monorepo-scaffold | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672 |
 | PR-2 | Minor | M2 | feat/M2-vendor-snapshots | phase/2-vendor-packages | pending |
 | PR-3 | Minor | M3 | feat/M3-gifts-package | phase/2-vendor-packages | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673 |
-| PR-4 | Minor | M4 | feat/M4-auth-package | phase/2-vendor-packages | pending |
+| PR-4 | Minor | M4 | feat/M4-auth-package | phase/2-vendor-packages | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/674 |
 | PR-5 | Minor | M5 | feat/M5-backend-auth-merge | phase/3-apps-auth-merge | pending |
 | PR-6 | Minor | M6 | feat/M6-frontend-app | phase/3-apps-auth-merge | pending |
 | PR-7 | Minor | M7 | feat/M7-e2e-workspace | phase/3-apps-auth-merge | pending |
