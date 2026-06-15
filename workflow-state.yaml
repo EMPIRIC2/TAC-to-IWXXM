@@ -168,13 +168,14 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T5.1
+        current_task: T6.1
         phase: 3
-        milestone: M5
-        notes: "M4 complete (T4.1–T4.4); auth package wired at 95% coverage"
+        milestone: M6
+        notes: "T5.8 complete — F2–F4 product regression smoke green (12 tests)"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
       - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
+      - "M5 complete (T5.1–T5.8); minor PR pending"
 
 stages_pending: []
 
@@ -420,7 +421,7 @@ artifacts:
     status: complete
 
   git_history:
-  current_branch: feat/M4-auth-package
+  current_branch: feat/M5-backend-auth-merge
   branches:
     - name: phase/1-monorepo-scaffold
       base: main
@@ -491,9 +492,15 @@ artifacts:
       stage: "07-build"
       files_changed: 1000
       timestamp: "2026-06-15T00:31:00Z"
-    - sha: e241c73
-      branch: feat/M2-vendor-snapshots
-      message: "[T2.5] test: add vendor schema presence tests for M2 gate"
+    - sha: dd64064
+      branch: feat/M5-backend-auth-merge
+      message: "[T5.6] test: achieve 95% coverage on apps/backend"
       stage: "07-build"
-      files_changed: 1
-      timestamp: "2026-06-15T00:31:00Z"
+      files_changed: 4
+      timestamp: "2026-06-15T16:05:00Z"
+    - sha: fea14ab
+      branch: feat/M5-backend-auth-merge
+      message: "[T5.7] test: add H0i in-process connectivity integration suite"
+      stage: "07-build"
+      files_changed: 2
+      timestamp: "2026-06-15T16:06:00Z"
