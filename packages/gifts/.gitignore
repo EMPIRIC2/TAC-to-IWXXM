@@ -1,0 +1,28 @@
+# Compiled python modules and metadata
+__pycache__
+*.py[cod]
+*.egg-info
+*.rdf
+#
+# Emacs backup/versioning files
+*~
+\#*#
+
+# Setuptools build and distribution folders
+/.cache
+/.eggs
+/.gifts/
+/build/
+/dist/
+/data/
+# IDEs
+/.idea
+
+# Testing debris
+/.coverage
+/.coveragerc
+/.mypy_cache
+/.pytest_cache
+driver.py
+sfstns.db
+/wiki/

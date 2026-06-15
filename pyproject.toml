@@ -45,6 +45,7 @@ exclude = [
   "vendor",
   "frontend/dist",
   "GIFTs/.venv",
+  "packages/gifts/.venv",
 ]
 reportMissingTypeStubs = false
 reportUnknownMemberType = "warning"

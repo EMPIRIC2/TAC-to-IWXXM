@@ -168,10 +168,10 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T3.2
+        current_task: T3.3
         phase: 2
         milestone: M3
-        notes: "T3.1 complete; TC-M003 green with golden baselines"
+        notes: "T3.2 complete; packages/gifts populated from GIFTs submodule tree"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
 

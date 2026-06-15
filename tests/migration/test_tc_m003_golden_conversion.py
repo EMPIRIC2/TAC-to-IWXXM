@@ -10,10 +10,7 @@ import json
 from pathlib import Path
 
 import pytest
-from tests.migration.gifts_baseline import (
-    GIFTS_ROOT,
-    convert_tac_bulletin_to_observation_xml,
-)
+from tests.migration.gifts_baseline import convert_tac_bulletin_to_observation_xml
 
 from metar_shared.xml_canonical import canonicalize_xml, compare_canonical_xml
 
@@ -51,8 +48,12 @@ class TestTcM003GoldenConversionRegression:
 
     @pytest.fixture(autouse=True)
     def _require_gifts_tree(self) -> None:
-        if not GIFTS_ROOT.is_dir():
-            pytest.skip("GIFTs/ not present — TC-M003 runs after GIFTs checkout")
+        from tests.migration.gifts_baseline import resolve_gifts_root
+
+        try:
+            resolve_gifts_root()
+        except FileNotFoundError:
+            pytest.skip("GIFTs source not present under packages/gifts or GIFTs/")
 
     def test_golden_manifest_present(self, golden_manifest: dict) -> None:
         """Precondition: golden fixtures exported under test-data/golden/."""

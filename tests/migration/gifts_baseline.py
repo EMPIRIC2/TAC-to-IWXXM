@@ -1,6 +1,6 @@
 """GIFTs conversion helper for TC-M003 migration regression tests.
 
-Uses the legacy ``GIFTs/`` tree until ``packages/gifts`` is wired (T3.2+).
+Resolves ``packages/gifts`` (monorepo target) with legacy ``GIFTs/`` fallback.
 """
 
 from __future__ import annotations
@@ -10,7 +10,21 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-GIFTS_ROOT = ROOT / "GIFTs"
+PACKAGES_GIFTS_ROOT = ROOT / "packages" / "gifts"
+LEGACY_GIFTS_ROOT = ROOT / "GIFTs"
+GIFTS_ROOT = PACKAGES_GIFTS_ROOT
+
+
+def resolve_gifts_root() -> Path:
+    """Prefer monorepo ``packages/gifts``; fall back to legacy submodule path."""
+    for candidate in (PACKAGES_GIFTS_ROOT, LEGACY_GIFTS_ROOT):
+        if (candidate / "gifts" / "metarEncoder.py").is_file():
+            return candidate
+    msg = (
+        "GIFTs package not found under packages/gifts or GIFTs/ "
+        "(required for TC-M003)"
+    )
+    raise FileNotFoundError(msg)
 
 # Fixed bulletin metadata keeps golden output stable across runs (REQ-018).
 FIXED_RECEPTION_TIME = "2023-06-23T17:51:00Z"
@@ -42,11 +56,9 @@ def _initialize_gifts_code_registry() -> None:
 
 
 def ensure_gifts_importable() -> None:
-    """Add ``GIFTs/`` to ``sys.path`` when present."""
-    if not GIFTS_ROOT.is_dir():
-        msg = f"GIFTs directory not found at {GIFTS_ROOT} (required for TC-M003)"
-        raise FileNotFoundError(msg)
-    gifts_path = str(GIFTS_ROOT)
+    """Add the resolved GIFTs package root to ``sys.path``."""
+    gifts_root = resolve_gifts_root()
+    gifts_path = str(gifts_root)
     if gifts_path not in sys.path:
         sys.path.insert(0, gifts_path)
 
