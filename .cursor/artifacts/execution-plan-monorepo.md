@@ -11,8 +11,8 @@
 |-------|-------|
 | **Active phase** | Phase 3: Apps & Auth Merge |
 | **Active milestone** | M5: Backend App + Auth Merge |
-| **Active task** | T5.5 — Write TC-M005 auth-merge integration tests |
-| **Tasks completed** | 28 / 63 |
+| **Active task** | T5.6 — Achieve 95% coverage on apps/backend |
+| **Tasks completed** | 29 / 63 |
 | **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary
@@ -165,7 +165,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | T5.2 | Move `backend/` → `apps/backend/` | Code | completed | migration-plan.md Step 3 | T2.4, T3.3, T4.3 | vendor |
 | T5.3 | Mount auth routers at `/auth/*`; remove AUTH_SERVICE_URL | Code | completed | ADR-002, TC-M005 | T5.2, T4.3 | — |
 | T5.4 | Rename `ALLOWED_ORIGINS` → `METAR_CORS_ORIGINS` | Config | completed | config-spec-monorepo.md | T5.1, T5.3 | — |
-| T5.5 | Write TC-M005 auth-merge integration tests | Test | pending | test-plan.md TC-M005 | T5.4 | — |
+| T5.5 | Write TC-M005 auth-merge integration tests | Test | completed | test-plan.md TC-M005 | T5.4 | — |
 | T5.6 | Achieve 95% coverage on apps/backend | Test | pending | User decision | T5.5 | — |
 | T5.7 | Write H0i integration test suite | Test | pending | test-plan.md H0i | T5.5 | — |
 | T5.8 | Product regression smoke (F2–F4 post-move) | Test | pending | feature-list F2–F4, REQ-016 | T5.6 | — |
