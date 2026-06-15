@@ -168,10 +168,10 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T3.4
+        current_task: T3.5
         phase: 2
         milestone: M3
-        notes: "T3.3 complete; packages/gifts wired as uv workspace member"
+        notes: "T3.4 complete; gifts lint migrated to ruff"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
 

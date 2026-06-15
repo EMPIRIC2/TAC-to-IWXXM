@@ -37,19 +37,15 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "flake8>=3.7,<4a0",
     "pytest>=8.3",
     "pytest-cov>=6.0.0",
     "pytest-asyncio>=0.23.0",
 ]
 
 dev = [
-    "flake8>=3.7,<4a0",
     "pytest>=8.3",
     "pytest-cov>=6.0.0",
     "pytest-asyncio>=0.23.0",
-    "black>=24.0.0",
-    "isort>=5.12.0",
 ]
 
 [tool.setuptools]
@@ -116,30 +112,6 @@ directory = "htmlcov"
 [tool.coverage.json]
 output = "coverage.json"
 
-[tool.isort]
-profile = "black"
-line_length = 120
-skip_glob = ["*/migrations/*", "*/site-packages/*"]
-
-[tool.black]
-line-length = 120
-target-version = ["py39"]
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-  | migrations
-)/
-'''
-
 [project.urls]
 Homepage = "https://github.com/wmo-im/GIFTs"
 Documentation = "https://github.com/wmo-im/GIFTs/wiki"
@@ -148,10 +120,7 @@ Repository = "https://github.com/wmo-im/GIFTs"
 
 [dependency-groups]
 dev = [
-    "flake8>=3.7,<4a0",
     "pytest>=8.3",
     "pytest-cov>=6.0.0",
     "pytest-asyncio>=0.23.0",
-    "black>=24.0.0",
-    "isort>=5.12.0",
 ]

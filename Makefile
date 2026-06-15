@@ -61,7 +61,7 @@ lint-frontend:
 	cd frontend && npm install --legacy-peer-deps && npm run lint
 
 lint-gifts:
-	cd GIFTs && python3 -m pip install -q flake8 && flake8 gifts tests
+	$(UV) run ruff check packages/gifts/gifts packages/gifts/tests
 
 lint-fix-backend:
 	cd backend && python3 -m pip install -q ruff && python3 -m ruff check --fix src tests
@@ -73,8 +73,7 @@ lint-fix-frontend:
 	cd frontend && npm install --legacy-peer-deps && npm run lint -- --fix
 
 lint-fix-gifts:
-	@echo "No auto-fix configured for GIFTs (flake8 is check-only). Running lint check instead."
-	$(MAKE) lint-gifts
+	$(UV) run ruff check --fix packages/gifts/gifts packages/gifts/tests
 
 dev:
 	bash ./start-dev-servers.sh
