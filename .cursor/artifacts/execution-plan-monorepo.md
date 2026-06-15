@@ -11,8 +11,8 @@
 |-------|-------|
 | **Active phase** | Phase 2: Vendor & Packages |
 | **Active milestone** | M4: Auth Package |
-| **Active task** | T4.2 — Move `auth/` → `packages/auth/` |
-| **Tasks completed** | 21 / 63 |
+| **Active task** | T4.3 — Wire `packages/auth` as uv workspace member |
+| **Tasks completed** | 22 / 63 |
 | **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary
@@ -135,9 +135,9 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T4.1 | Write packages/auth middleware unit tests | Test | pending | test-plan.md TC-M005 | — | — |
-| T4.2 | Move `auth/` → `packages/auth/` | Code | pending | migration-plan.md Step 2, M4 | T4.1 | — |
-| T4.3 | Wire `packages/auth` as uv workspace member | Config | pending | ADR-002 | T4.2 | — |
+| T4.1 | Write packages/auth middleware unit tests | Test | completed | test-plan.md TC-M005 | — | — |
+| T4.2 | Move `auth/` → `packages/auth/` | Code | completed | migration-plan.md Step 2, M4 | T4.1 | — |
+| T4.3 | Wire `packages/auth` as uv workspace member | Config | in_progress | ADR-002 | T4.2 | — |
 | T4.4 | Achieve 95% coverage on packages/auth | Test | pending | User decision | T4.3 | — |
 
 **Parallelizable**: M2 and M4 after T1 gate (independent until Phase 3).
@@ -289,7 +289,7 @@ main
 |----|------|-----------------|--------|--------|--------|
 | PR-1 | Minor | M1 | feat/M1-workspace-root | phase/1-monorepo-scaffold | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672 |
 | PR-2 | Minor | M2 | feat/M2-vendor-snapshots | phase/2-vendor-packages | pending |
-| PR-3 | Minor | M3 | feat/M3-gifts-package | phase/2-vendor-packages | pending |
+| PR-3 | Minor | M3 | feat/M3-gifts-package | phase/2-vendor-packages | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673 |
 | PR-4 | Minor | M4 | feat/M4-auth-package | phase/2-vendor-packages | pending |
 | PR-5 | Minor | M5 | feat/M5-backend-auth-merge | phase/3-apps-auth-merge | pending |
 | PR-6 | Minor | M6 | feat/M6-frontend-app | phase/3-apps-auth-merge | pending |

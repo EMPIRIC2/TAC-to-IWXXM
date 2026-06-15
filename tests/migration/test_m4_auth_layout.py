@@ -8,24 +8,25 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGES_AUTH = ROOT / "packages" / "auth"
-LEGACY_AUTH = ROOT / "auth"
 
 
 @pytest.mark.migration
 class TestM4AuthPackageLayout:
-    """Auth source tree pre/post move expectations for M4."""
+    """packages/auth contains the in-repo auth library source tree."""
 
-    def test_legacy_auth_directory_exists(self) -> None:
-        assert LEGACY_AUTH.is_dir(), "auth/ must exist until T4.2 move completes"
-
-    def test_legacy_auth_has_security_module(self) -> None:
-        security = LEGACY_AUTH / "src" / "auth" / "security.py"
-        assert security.is_file(), "auth/src/auth/security.py required for JWT middleware"
-
-    def test_legacy_auth_has_supabase_proxy(self) -> None:
-        proxy = LEGACY_AUTH / "src" / "auth" / "supabase_proxy.py"
-        assert proxy.is_file(), "auth/src/auth/supabase_proxy.py required for TC-M005"
-
-    @pytest.mark.skip(reason="packages/auth populated in T4.2")
     def test_packages_auth_directory_exists(self) -> None:
         assert PACKAGES_AUTH.is_dir(), "packages/auth must exist after T4.2"
+
+    def test_packages_auth_has_security_module(self) -> None:
+        security = PACKAGES_AUTH / "src" / "auth" / "security.py"
+        assert security.is_file(), "packages/auth/src/auth/security.py required for JWT middleware"
+
+    def test_packages_auth_has_supabase_proxy(self) -> None:
+        proxy = PACKAGES_AUTH / "src" / "auth" / "supabase_proxy.py"
+        assert proxy.is_file(), "packages/auth/src/auth/supabase_proxy.py required for TC-M005"
+
+    def test_packages_auth_has_pyproject(self) -> None:
+        assert (PACKAGES_AUTH / "pyproject.toml").is_file()
+
+    def test_packages_auth_has_tests_tree(self) -> None:
+        assert (PACKAGES_AUTH / "tests").is_dir()
