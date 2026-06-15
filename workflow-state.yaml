@@ -168,10 +168,10 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T4.1
+        current_task: T4.2
         phase: 2
         milestone: M4
-        notes: "T3.5 complete; packages/gifts at 95.41% coverage gate"
+        notes: "T4.1 complete; M4 auth middleware migration tests added"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
 

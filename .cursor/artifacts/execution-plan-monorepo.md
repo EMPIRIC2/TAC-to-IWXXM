@@ -11,8 +11,8 @@
 |-------|-------|
 | **Active phase** | Phase 2: Vendor & Packages |
 | **Active milestone** | M4: Auth Package |
-| **Active task** | T4.1 — Write packages/auth middleware unit tests |
-| **Tasks completed** | 20 / 63 |
+| **Active task** | T4.2 — Move `auth/` → `packages/auth/` |
+| **Tasks completed** | 21 / 63 |
 | **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary
@@ -129,7 +129,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | T3.2 | Move `GIFTs/` → `packages/gifts/` | Code | completed | migration-plan.md Step 2, M3 | T3.1 | — |
 | T3.3 | Wire `packages/gifts` as uv workspace member | Config | completed | spec.md §packages/gifts | T3.2 | — |
 | T3.4 | Migrate gifts lint to ruff; remove flake8/black/isort | Config | completed | User decision | T3.3 | — |
-| T3.5 | Achieve 95% coverage on packages/gifts | Test | pending | User decision | T3.4 | — |
+| T3.5 | Achieve 95% coverage on packages/gifts | Test | completed | User decision | T3.4 | — |
 
 #### M4: Auth Package
 
