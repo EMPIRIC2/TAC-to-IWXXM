@@ -9,11 +9,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase 1: Monorepo Scaffold |
-| **Active milestone** | M1: Workspace Root |
-| **Active task** | T1.6 |
-| **Tasks completed** | 5 / 63 |
-| **Last updated** | 2026-06-14 |
+| **Active phase** | Phase 2: Vendor & Packages |
+| **Active milestone** | M2: Vendor Snapshots |
+| **Active task** | T2.2 — Create vendor/manifest.json |
+| **Tasks completed** | 11 / 63 |
+| **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary
 
@@ -88,11 +88,11 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | T1.3 | Add `pnpm-workspace.yaml` | Config | completed | spec.md §Repository | T1.2 | — |
 | T1.4 | Scaffold `packages/shared` (Python + TS exports) | Code | completed | spec.md §packages/shared | T1.2, T1.3 | — |
 | T1.5 | Write workspace import smoke test | Test | completed | test-plan.md TC-M001 | T1.4 | — |
-| T1.6 | Add Makefile `install`, `dev`, `test`, `test-unit`, `tests:e2e`, `vendor-sync` | Config | pending | config-spec-monorepo.md | T1.2, T1.3 | — |
-| T1.7 | Configure basedpyright for workspace | Config | pending | User decision | T1.2 | — |
-| T1.8 | Configure root ruff (shared rules) | Config | pending | User decision | T1.2 | — |
-| T1.9 | Configure 95% coverage gates per package/app | Config | pending | User decision | T1.2 | — |
-| T1.10 | Achieve 95% coverage on packages/shared | Test | pending | ADR-007 | T1.4, T1.9 | — |
+| T1.6 | Add Makefile `install`, `dev`, `test`, `test-unit`, `tests:e2e`, `vendor-sync` | Config | completed | config-spec-monorepo.md | T1.2, T1.3 | — |
+| T1.7 | Configure basedpyright for workspace | Config | completed | User decision | T1.2 | — |
+| T1.8 | Configure root ruff (shared rules) | Config | completed | User decision | T1.2 | — |
+| T1.9 | Configure 95% coverage gates per package/app | Config | completed | User decision | T1.2 | — |
+| T1.10 | Achieve 95% coverage on packages/shared | Test | completed | ADR-007 | T1.4, T1.9 | — |
 
 **Parallelizable**: T1.7, T1.8, T1.9 (after T1.2); T1.10 after T1.4.
 
@@ -115,7 +115,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T2.1 | Write TC-M002 manifest integrity tests | Test | pending | test-plan.md TC-M002 | — | — |
+| T2.1 | Write TC-M002 manifest integrity tests | Test | completed | test-plan.md TC-M002 | — | — |
 | T2.2 | Create `vendor/manifest.json` from submodule SHAs | Config | pending | spec.md §vendor/schemas, ADR-001 | T2.1 | iwxxm-* |
 | T2.3 | Implement `scripts/vendor/sync-iwxxm.sh` | Code | pending | migration-plan.md Step 1 | T2.2 | — |
 | T2.4 | Populate `vendor/schemas/*` via sync script | Config | pending | M2 feature-list | T2.3 | iwxxm-* |
@@ -287,7 +287,7 @@ main
 
 | PR | Type | Milestone/Phase | Branch | Target | Status |
 |----|------|-----------------|--------|--------|--------|
-| PR-1 | Minor | M1 | feat/M1-workspace-root | phase/1-monorepo-scaffold | pending |
+| PR-1 | Minor | M1 | feat/M1-workspace-root | phase/1-monorepo-scaffold | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672 |
 | PR-2 | Minor | M2 | feat/M2-vendor-snapshots | phase/2-vendor-packages | pending |
 | PR-3 | Minor | M3 | feat/M3-gifts-package | phase/2-vendor-packages | pending |
 | PR-4 | Minor | M4 | feat/M4-auth-package | phase/2-vendor-packages | pending |
@@ -319,7 +319,7 @@ Statuses: `pending` | `in_progress` | `completed` | `blocked` | `deferred`
 
 | Phase | Gate Check Date | Result | Notes |
 |-------|----------------|--------|-------|
-| 1 | — | — | — |
+| 1 | 2026-06-14 | pass | M1 complete: install, test-unit, ruff, basedpyright, coverage config |
 | 2 | — | — | — |
 | 3 | — | — | — |
 | 4 | — | — | — |

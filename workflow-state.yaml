@@ -168,11 +168,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T1.6
-        phase: 1
-        milestone: M1
+        current_task: T2.2
+        phase: 2
+        milestone: M2
+        notes: "T2.1 complete; TC-M002 red until T2.2+T2.4"
     notes:
-      - "T1.1–T1.5 completed on feat/M1-workspace-root"
+      - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
 
 stages_pending: []
 
@@ -417,8 +418,8 @@ artifacts:
     stage: 03-plan-tooling
     status: complete
 
-git_history:
-  current_branch: feat/M1-workspace-root
+  git_history:
+  current_branch: feat/M2-vendor-snapshots
   branches:
     - name: phase/1-monorepo-scaffold
       base: main
@@ -428,6 +429,10 @@ git_history:
       base: phase/1-monorepo-scaffold
       status: active
       created_at: "2026-06-14T12:45:00Z"
+    - name: feat/M2-vendor-snapshots
+      base: feat/M1-workspace-root
+      status: active
+      created_at: "2026-06-14T14:05:00Z"
   commits:
     - sha: 73cda40
       branch: feat/M1-workspace-root
@@ -447,9 +452,15 @@ git_history:
       stage: "07-build"
       files_changed: 4
       timestamp: "2026-06-14T13:00:00Z"
-    - sha: 8c8aaab
+    - sha: 24ad012
       branch: feat/M1-workspace-root
-      message: "[T1.4] feat: scaffold packages/shared Python and TS exports"
+      message: "[T1.6] config: add monorepo Makefile install, test, and vendor-sync targets"
       stage: "07-build"
-      files_changed: 11
-      timestamp: "2026-06-14T13:05:00Z"
+      files_changed: 3
+      timestamp: "2026-06-14T14:00:00Z"
+    - sha: pending
+      branch: feat/M2-vendor-snapshots
+      message: "[T2.1] test: add TC-M002 vendor manifest integrity tests"
+      stage: "07-build"
+      files_changed: 5
+      timestamp: "2026-06-15T00:30:00Z"
