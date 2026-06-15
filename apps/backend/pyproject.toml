@@ -1,0 +1,107 @@
+[project]
+name = "metar-backend"
+version = "0.1.0"
+description = "Backend API for METAR to IWXXM conversion"
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn>=0.23",
+    "python-multipart>=0.0.20",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "pyjwt>=2.8.0",
+	"python-jose[cryptography]>=3.3.0",
+	"httpx>=0.28.1",
+    "requests>=2.31.0",
+    "prometheus-client>=0.22.1",
+	"lxml>=4.9.0",
+    "skyfield>=1.45",
+	"sqlalchemy>=2.0.0",
+	"asyncpg>=0.29.0",
+	"psycopg[binary]>=3.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["*"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.23.0",
+    "locust>=2.32.8",
+    "httpx>=0.28.1",
+    "requests>=2.31.0",
+    "skyfield>=1.45",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "src"]
+asyncio_mode = "auto"
+addopts = [
+    "-v",
+    "--cov=src",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--tb=short",
+]
+markers = [
+    "unit: unit tests",
+    "integration: integration tests",
+    "e2e: end-to-end tests",
+    "smoke: quick smoke tests for CI/CD pipelines (~30 seconds)",
+    "asyncio: async tests",
+    "edge_case: known failures and edge cases under investigation",
+    "slow: slow-running tests that may be skipped in fast CI runs",
+    "live_api: tests that make real HTTP requests to external APIs",
+    "iwxxm_2023_1: tests specific to IWXXM 2023-1 version",
+    "iwxxm_2025_2: tests specific to IWXXM 2025-2 version",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = [
+    "src/**/__main__.py",
+    "src/__main__.py",
+    "src/**/__init__.py",
+    "src/__init__.py",
+    "*/__init__.py",
+    "*/test_*.py",
+    "tests/*",
+    "*/tests/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+precision = 2
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I"]
+ignore = ["E501", "E741"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E402", "W293", "F841", "E722", "F811", "F401", "E712"]
+"src/config/icao_opmet.py" = ["F601"]

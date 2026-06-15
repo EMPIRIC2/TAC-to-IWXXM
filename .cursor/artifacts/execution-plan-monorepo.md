@@ -11,8 +11,8 @@
 |-------|-------|
 | **Active phase** | Phase 3: Apps & Auth Merge |
 | **Active milestone** | M5: Backend App + Auth Merge |
-| **Active task** | T5.2 — Move `backend/` → `apps/backend/` |
-| **Tasks completed** | 25 / 63 |
+| **Active task** | T5.3 — Mount auth routers at `/auth/*`; remove AUTH_SERVICE_URL |
+| **Tasks completed** | 26 / 63 |
 | **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary
@@ -162,7 +162,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
 | T5.1 | Write `test_cors_policy.py` for `METAR_CORS_ORIGINS` | Test | completed | test-plan.md H0c | — | — |
-| T5.2 | Move `backend/` → `apps/backend/` | Code | pending | migration-plan.md Step 3 | T2.4, T3.3, T4.3 | vendor |
+| T5.2 | Move `backend/` → `apps/backend/` | Code | completed | migration-plan.md Step 3 | T2.4, T3.3, T4.3 | vendor |
 | T5.3 | Mount auth routers at `/auth/*`; remove AUTH_SERVICE_URL | Code | pending | ADR-002, TC-M005 | T5.2, T4.3 | — |
 | T5.4 | Rename `ALLOWED_ORIGINS` → `METAR_CORS_ORIGINS` | Config | pending | config-spec-monorepo.md | T5.1, T5.3 | — |
 | T5.5 | Write TC-M005 auth-merge integration tests | Test | pending | test-plan.md TC-M005 | T5.4 | — |
