@@ -168,10 +168,10 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T6.1
+        current_task: T6.2
         phase: 3
         milestone: M6
-        notes: "T5.8 complete — F2–F4 product regression smoke green (12 tests)"
+        notes: "T6.1 complete — VITE_API_BASE_URL client tests red (await T6.3)"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
       - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
@@ -421,7 +421,7 @@ artifacts:
     status: complete
 
   git_history:
-  current_branch: feat/M5-backend-auth-merge
+  current_branch: feat/M6-frontend-app
   branches:
     - name: phase/1-monorepo-scaffold
       base: main
@@ -443,6 +443,18 @@ artifacts:
       base: feat/M3-gifts-package
       status: active
       created_at: "2026-06-15T01:00:00Z"
+    - name: feat/M5-backend-auth-merge
+      base: feat/M4-auth-package
+      status: active
+      created_at: "2026-06-15T01:00:00Z"
+    - name: phase/3-apps-auth-merge
+      base: feat/M4-auth-package
+      status: active
+      created_at: "2026-06-15T16:20:00Z"
+    - name: feat/M6-frontend-app
+      base: feat/M5-backend-auth-merge
+      status: active
+      created_at: "2026-06-15T16:23:00Z"
   commits:
     - sha: 73cda40
       branch: feat/M1-workspace-root
@@ -498,9 +510,9 @@ artifacts:
       stage: "07-build"
       files_changed: 4
       timestamp: "2026-06-15T16:05:00Z"
-    - sha: fea14ab
+    - sha: dbc40f0
       branch: feat/M5-backend-auth-merge
-      message: "[T5.7] test: add H0i in-process connectivity integration suite"
+      message: "[T5.8] test: add F2-F4 product regression smoke suite"
       stage: "07-build"
-      files_changed: 2
-      timestamp: "2026-06-15T16:06:00Z"
+      files_changed: 3
+      timestamp: "2026-06-15T16:15:00Z"

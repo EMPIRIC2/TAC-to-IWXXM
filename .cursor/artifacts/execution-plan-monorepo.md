@@ -11,8 +11,8 @@
 |-------|-------|
 | **Active phase** | Phase 3: Apps & Auth Merge |
 | **Active milestone** | M5: Backend App + Auth Merge |
-| **Active task** | T6.1 — Write Vitest tests for unified `VITE_API_BASE_URL` client |
-| **Tasks completed** | 32 / 63 |
+| **Active task** | T6.2 — Move `frontend/` → `apps/frontend/` |
+| **Tasks completed** | 33 / 63 |
 | **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary
@@ -174,7 +174,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T6.1 | Write Vitest tests for unified `VITE_API_BASE_URL` client | Test | pending | test-plan.md H5 | — | — |
+| T6.1 | Write Vitest tests for unified `VITE_API_BASE_URL` client | Test | completed | test-plan.md H5 | — | — |
 | T6.2 | Move `frontend/` → `apps/frontend/` | Code | pending | migration-plan.md Step 3 | T6.1 | — |
 | T6.3 | Replace split VITE URLs with `VITE_API_BASE_URL`; wire `VITE_SUPABASE_*`, `VITE_APP_URL` | Code | pending | deploy.md §Integration, config-spec | T6.2 | — |
 | T6.4 | Migrate to pnpm; add `tsconfig.json` | Config | pending | REQ-005 | T6.3 | — |
@@ -291,7 +291,7 @@ main
 | PR-2 | Minor | M2 | feat/M2-vendor-snapshots | phase/2-vendor-packages | pending |
 | PR-3 | Minor | M3 | feat/M3-gifts-package | phase/2-vendor-packages | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673 |
 | PR-4 | Minor | M4 | feat/M4-auth-package | phase/2-vendor-packages | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/674 |
-| PR-5 | Minor | M5 | feat/M5-backend-auth-merge | phase/3-apps-auth-merge | pending |
+| PR-5 | Minor | M5 | feat/M5-backend-auth-merge | phase/3-apps-auth-merge | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/675 |
 | PR-6 | Minor | M6 | feat/M6-frontend-app | phase/3-apps-auth-merge | pending |
 | PR-7 | Minor | M7 | feat/M7-e2e-workspace | phase/3-apps-auth-merge | pending |
 | PR-8 | Minor | M8–M10 | feat/M8-deploy-ci | phase/4-ci-deploy-validate | pending |
