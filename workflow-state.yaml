@@ -168,12 +168,13 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T4.2
-        phase: 2
-        milestone: M4
-        notes: "T4.1 complete; M4 auth middleware migration tests added"
+        current_task: T5.1
+        phase: 3
+        milestone: M5
+        notes: "M4 complete (T4.1–T4.4); auth package wired at 95% coverage"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
+      - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
 
 stages_pending: []
 
@@ -419,7 +420,7 @@ artifacts:
     status: complete
 
   git_history:
-  current_branch: feat/M3-gifts-package
+  current_branch: feat/M4-auth-package
   branches:
     - name: phase/1-monorepo-scaffold
       base: main
@@ -435,6 +436,10 @@ artifacts:
       created_at: "2026-06-14T14:05:00Z"
     - name: feat/M3-gifts-package
       base: feat/M2-vendor-snapshots
+      status: active
+      created_at: "2026-06-15T01:00:00Z"
+    - name: feat/M4-auth-package
+      base: feat/M3-gifts-package
       status: active
       created_at: "2026-06-15T01:00:00Z"
   commits:
