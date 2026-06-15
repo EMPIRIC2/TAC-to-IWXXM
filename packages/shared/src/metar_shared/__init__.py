@@ -8,6 +8,11 @@ from metar_shared.constants import (
     VITE_SUPABASE_URL_ENV,
 )
 from metar_shared.env import parse_comma_separated_origins
+from metar_shared.xml_canonical import (
+    canonicalize_xml,
+    compare_canonical_xml,
+    diff_canonical_xml,
+)
 
 __all__ = [
     "METAR_CORS_ORIGINS_ENV",
@@ -16,4 +21,7 @@ __all__ = [
     "VITE_SUPABASE_PUBLISHABLE_KEY_ENV",
     "VITE_SUPABASE_URL_ENV",
     "parse_comma_separated_origins",
+    "canonicalize_xml",
+    "compare_canonical_xml",
+    "diff_canonical_xml",
 ]

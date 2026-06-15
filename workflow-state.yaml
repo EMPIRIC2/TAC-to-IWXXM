@@ -168,10 +168,10 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T3.1
+        current_task: T3.2
         phase: 2
         milestone: M3
-        notes: "M2 complete; TC-M002 green; starting GIFTs package"
+        notes: "T3.1 complete; TC-M003 green with golden baselines"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
 
@@ -419,7 +419,7 @@ artifacts:
     status: complete
 
   git_history:
-  current_branch: feat/M2-vendor-snapshots
+  current_branch: feat/M3-gifts-package
   branches:
     - name: phase/1-monorepo-scaffold
       base: main
@@ -433,6 +433,10 @@ artifacts:
       base: feat/M1-workspace-root
       status: active
       created_at: "2026-06-14T14:05:00Z"
+    - name: feat/M3-gifts-package
+      base: feat/M2-vendor-snapshots
+      status: active
+      created_at: "2026-06-15T01:00:00Z"
   commits:
     - sha: 73cda40
       branch: feat/M1-workspace-root

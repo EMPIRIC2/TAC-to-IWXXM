@@ -19,6 +19,9 @@ dev = [
   "pytest-asyncio>=0.24",
   "httpx>=0.28",
   "metar-shared",
+  # GIFTs runtime deps for TC-M003 migration tests until packages/gifts is wired (T3.3)
+  "skyfield>=1.45",
+  "lxml>=4.9",
 ]
 
 [tool.uv.sources]

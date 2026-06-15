@@ -10,9 +10,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 2: Vendor & Packages |
-| **Active milestone** | M2: Vendor Snapshots |
-| **Active task** | T3.1 — TC-M003 golden conversion tests |
-| **Tasks completed** | 15 / 63 |
+| **Active milestone** | M3: GIFTs Package |
+| **Active task** | T3.2 — Move `GIFTs/` → `packages/gifts/` |
+| **Tasks completed** | 16 / 63 |
 | **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary
@@ -125,7 +125,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T3.1 | Write TC-M003 golden conversion regression tests | Test | pending | test-plan.md TC-M003 | T2.4 | golden fixtures |
+| T3.1 | Write TC-M003 golden conversion regression tests | Test | completed | test-plan.md TC-M003 | T2.4 | golden fixtures |
 | T3.2 | Move `GIFTs/` → `packages/gifts/` | Code | pending | migration-plan.md Step 2, M3 | T3.1 | — |
 | T3.3 | Wire `packages/gifts` as uv workspace member | Config | pending | spec.md §packages/gifts | T3.2 | — |
 | T3.4 | Migrate gifts lint to ruff; remove flake8/black/isort | Config | pending | User decision | T3.3 | — |
