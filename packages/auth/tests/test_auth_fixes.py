@@ -45,7 +45,7 @@ class TestAuthFixes:
         assert len(logging.root.handlers) > 0 or len(logger.handlers) >= 0
 
     def test_required_routes_registered(self) -> None:
-        routes = [route.path for route in app.routes]
+        routes = list(app.openapi()["paths"].keys())
         required_routes = [
             "/auth/register",
             "/auth/login",
