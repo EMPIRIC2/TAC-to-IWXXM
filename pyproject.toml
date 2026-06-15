@@ -27,10 +27,11 @@ dev = [
 metar-shared = { workspace = true }
 gifts = { workspace = true }
 metar-auth = { workspace = true }
+metar-backend = { workspace = true }
 
 # Workspace members populated incrementally during Phase 1–2 (T1.4 shared, T3.3 gifts, T4.3 auth).
 [tool.uv.workspace]
-members = ["packages/shared", "packages/gifts", "packages/auth"]
+members = ["packages/shared", "packages/gifts", "packages/auth", "apps/backend"]
 
 [tool.basedpyright]
 pythonVersion = "3.12"

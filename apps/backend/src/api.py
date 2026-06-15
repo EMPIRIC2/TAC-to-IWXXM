@@ -99,6 +99,10 @@ app = FastAPI(
             "name": "ICAO OPMET Statistics",
             "description": "Translation Centre statistics and ICAO OPMET Data Exchange compliance",
         },
+        {
+            "name": "Auth",
+            "description": "Authentication endpoints (Supabase proxy) — merged from packages/auth",
+        },
     ],
     swagger_ui_parameters={
         "persistAuthorization": True,
@@ -187,12 +191,13 @@ def add_loopback_origin_variants(origins: list) -> list:
 
 def get_cors_origins() -> list:
     """Get allowed CORS origins from environment or use defaults."""
-    allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "")
+    from metar_shared import METAR_CORS_ORIGINS_ENV, parse_comma_separated_origins
+
+    allowed_origins_env = os.getenv(METAR_CORS_ORIGINS_ENV, "")
     relaxed_cors = is_dev_cors_relaxation_enabled()
 
     if allowed_origins_env:
-        # Parse comma-separated list from env var
-        origins = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
+        origins = list(parse_comma_separated_origins(allowed_origins_env))
         if relaxed_cors:
             add_origin_if_missing(origins, "http://localhost:5173")
         return add_loopback_origin_variants(origins)
@@ -480,6 +485,16 @@ try:
     logger.info("DEBUG: included ICAO OPMET router successfully")
 except Exception as e:
     logger.error(f"DEBUG: Failed to include ICAO OPMET router: {e}", exc_info=True)
+
+try:
+    from auth.api_supabase import legacy_router as auth_legacy_router
+    from auth.api_supabase import router as auth_router
+
+    app.include_router(auth_router)
+    app.include_router(auth_legacy_router)
+    logger.info("DEBUG: included auth routers at /auth/* successfully")
+except Exception as e:
+    logger.error(f"DEBUG: Failed to include auth routers: {e}", exc_info=True)
 
 logger.info(f"DEBUG: total routes = {len(app.routes)}")
 

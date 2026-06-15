@@ -2,8 +2,10 @@
 name = "metar-backend"
 version = "0.1.0"
 description = "Backend API for METAR to IWXXM conversion"
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 dependencies = [
+    "metar-auth",
+    "metar-shared",
     "fastapi>=0.110",
     "uvicorn>=0.23",
     "python-multipart>=0.0.20",

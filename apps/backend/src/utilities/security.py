@@ -1,10 +1,10 @@
-"""JWT security and authentication utilities via Auth Service proxy."""
+"""JWT security and authentication utilities via inlined auth package."""
 import logging
 import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-import httpx
+from auth.supabase_proxy import get_supabase_proxy
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
@@ -22,8 +22,6 @@ if env_file.exists():  # pragma: no cover
                 if key not in os.environ:
                     os.environ[key] = value
 
-# Configuration - Auth service URL
-AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://localhost:8003")
 # Development mode - bypass auth verification
 DISABLE_AUTH = os.getenv("DISABLE_AUTH", "").lower() in ("true", "1", "yes")
 
@@ -36,16 +34,15 @@ async def verify_supabase_token(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
 ) -> Dict[str, Any]:
     """
-    Verify JWT token via Auth Service proxy.
+    Verify JWT token via the inlined auth package (Supabase proxy).
 
-    The auth service validates the token with Supabase and returns user info.
     In development mode (DISABLE_AUTH=true), this is bypassed for testing.
 
     Args:
         credentials: HTTP Bearer token from Authorization header
 
     Returns:
-        Decoded user information from auth service (or mock development data)
+        Decoded user information from Supabase (or mock development data)
 
     Raises:
         HTTPException: If token is invalid, expired, or missing (unless in dev mode)
@@ -89,43 +86,31 @@ async def verify_supabase_token(
     )
 
     try:
-        # Call auth service to verify token
-        logger.info("[AUTH] Verifying token via auth service url=%s", AUTH_SERVICE_URL)
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                f"{AUTH_SERVICE_URL}/auth/verify",
-                headers={"Authorization": f"Bearer {token}"},
-                timeout=5.0
+        proxy = get_supabase_proxy()
+    except ValueError as exc:
+        logger.error("[AUTH] Auth package not configured: %s", exc)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Authentication not configured",
+        ) from exc
+
+    try:
+        logger.info("[AUTH] Verifying token via inlined auth package")
+        if not proxy.verify_token(token):
+            logger.warning("[AUTH] Invalid or expired token")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or expired token",
             )
-            logger.info("[AUTH] Auth service verify response status=%s", response.status_code)
 
-            if response.status_code == 200:
-                return response.json()
-            elif response.status_code == 401:
-                logger.warning("[AUTH] Auth service rejected token")
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid or expired token"
-                )
-            else:
-                logger.error("[AUTH] Auth service unexpected status=%s", response.status_code)
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail="Auth service error"
-                )
-
-    except httpx.TimeoutException:
-        logger.error("[AUTH] Auth service timeout")
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Auth service timeout"
-        )
-    except httpx.ConnectError:
-        logger.error("[AUTH] Auth service connection failure")
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Cannot connect to auth service"
-        )
+        user_info = proxy.get_user(token)
+        return {
+            "sub": user_info["id"],
+            "user_id": user_info["id"],
+            "email": user_info["email"],
+            "authenticated": True,
+            "metadata": user_info.get("metadata", {}),
+        }
     except HTTPException:
         raise
     except Exception as e:
@@ -136,10 +121,10 @@ async def verify_supabase_token(
         )
 
 
-# Legacy functions kept for backwards compatibility but now proxy through auth service
+# Legacy functions kept for backwards compatibility but now handled inline
 async def fetch_jwks() -> Dict[str, Any]:
-    """Legacy function - now handled by auth service."""
-    raise NotImplementedError("JWKS fetching now handled by auth service proxy")
+    """Legacy function - JWKS validation is handled by the auth package."""
+    raise NotImplementedError("JWKS fetching now handled by auth package")
 
 
 __all__ = ["verify_supabase_token", "fetch_jwks"]

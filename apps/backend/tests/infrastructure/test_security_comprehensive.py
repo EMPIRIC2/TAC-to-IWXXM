@@ -1,58 +1,71 @@
 """Comprehensive tests for security and authentication."""
 import pathlib
 import sys
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 
-import httpx
 import pytest
 from fastapi import HTTPException
 from fastapi.security import HTTPAuthorizationCredentials
 
 # Ensure src layout path precedence
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-BACKEND_SRC = ROOT / "backend" / "src"
+BACKEND_SRC = ROOT / "src"
 if str(BACKEND_SRC) not in sys.path:
     sys.path.insert(0, str(BACKEND_SRC))
 
 from src.utilities.security import verify_supabase_token
 
 
+class _FakeProxy:
+    def __init__(
+        self,
+        *,
+        verify: bool = True,
+        user: dict | None = None,
+        get_user_error: Exception | None = None,
+    ) -> None:
+        self._verify = verify
+        self._user = user or {
+            "id": "user123",
+            "email": "test@example.com",
+            "metadata": {},
+        }
+        self._get_user_error = get_user_error
+
+    def verify_token(self, _token: str) -> bool:
+        return self._verify
+
+    def get_user(self, _token: str) -> dict:
+        if self._get_user_error:
+            raise self._get_user_error
+        return self._user
+
+
 class TestVerifySupabaseToken:
-    """Test token verification via auth service proxy."""
+    """Test token verification via inlined auth package."""
 
     @pytest.mark.asyncio
     async def test_verify_token_success(self):
-        """Test successful token verification via auth service."""
+        """Test successful token verification via auth package."""
         mock_credentials = HTTPAuthorizationCredentials(
             scheme="Bearer",
             credentials="valid.token.here"
         )
 
-        expected_response = {
-            "sub": "user123",
-            "email": "test@example.com",
-            "aud": "authenticated"
-        }
-
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json = MagicMock(return_value=expected_response)
-
-        mock_client = AsyncMock()
-        mock_client.get = AsyncMock(return_value=mock_response)
-        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-        mock_client.__aexit__ = AsyncMock(return_value=None)
+        proxy = _FakeProxy(
+            user={
+                "id": "user123",
+                "email": "test@example.com",
+                "metadata": {},
+            }
+        )
 
         with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch('src.utilities.security.get_supabase_proxy', return_value=proxy):
                 result = await verify_supabase_token(mock_credentials)
                 assert result["sub"] == "user123"
                 assert result["email"] == "test@example.com"
-
-                # Verify the auth service was called with correct token
-                mock_client.get.assert_called_once()
-                call_args = mock_client.get.call_args
-                assert "Bearer valid.token.here" in str(call_args)
+                assert result["authenticated"] is True
 
     @pytest.mark.asyncio
     async def test_verify_token_invalid(self):
@@ -62,83 +75,50 @@ class TestVerifySupabaseToken:
             credentials="invalid.token.here"
         )
 
-        mock_response = AsyncMock()
-        mock_response.status_code = 401
-
-        mock_client = AsyncMock()
-        mock_client.get = AsyncMock(return_value=mock_response)
-        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-        mock_client.__aexit__ = AsyncMock(return_value=None)
+        proxy = _FakeProxy(verify=False)
 
         with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch('src.utilities.security.get_supabase_proxy', return_value=proxy):
                 with pytest.raises(HTTPException) as exc_info:
                     await verify_supabase_token(mock_credentials)
                 assert exc_info.value.status_code == 401
                 assert "Invalid or expired token" in exc_info.value.detail
 
     @pytest.mark.asyncio
-    async def test_verify_token_auth_service_error(self):
-        """Test token verification when auth service returns error."""
+    async def test_verify_token_auth_not_configured(self):
+        """Test token verification when Supabase env is missing."""
         mock_credentials = HTTPAuthorizationCredentials(
             scheme="Bearer",
             credentials="test.token.here"
         )
 
-        mock_response = AsyncMock()
-        mock_response.status_code = 500
-
-        mock_client = AsyncMock()
-        mock_client.get = AsyncMock(return_value=mock_response)
-        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-        mock_client.__aexit__ = AsyncMock(return_value=None)
-
         with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('httpx.AsyncClient', return_value=mock_client):
-                with pytest.raises(HTTPException) as exc_info:
-                    await verify_supabase_token(mock_credentials)
-                assert exc_info.value.status_code == 500
-                assert "Auth service error" in exc_info.value.detail
-
-    @pytest.mark.asyncio
-    async def test_verify_token_timeout(self):
-        """Test token verification when auth service times out."""
-        mock_credentials = HTTPAuthorizationCredentials(
-            scheme="Bearer",
-            credentials="test.token.here"
-        )
-
-        mock_client = AsyncMock()
-        mock_client.get = AsyncMock(side_effect=httpx.TimeoutException("Request timeout"))
-        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-        mock_client.__aexit__ = AsyncMock(return_value=None)
-
-        with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch(
+                'src.utilities.security.get_supabase_proxy',
+                side_effect=ValueError("SUPABASE_URL and SUPABASE_ANON_KEY must be set"),
+            ):
                 with pytest.raises(HTTPException) as exc_info:
                     await verify_supabase_token(mock_credentials)
                 assert exc_info.value.status_code == 503
-                assert "Auth service timeout" in exc_info.value.detail
+                assert "not configured" in exc_info.value.detail.lower()
 
     @pytest.mark.asyncio
-    async def test_verify_token_connection_error(self):
-        """Test token verification when cannot connect to auth service."""
+    async def test_verify_token_get_user_failure(self):
+        """Test token verification when user lookup fails."""
         mock_credentials = HTTPAuthorizationCredentials(
             scheme="Bearer",
             credentials="test.token.here"
         )
 
-        mock_client = AsyncMock()
-        mock_client.get = AsyncMock(side_effect=httpx.ConnectError("Connection refused"))
-        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-        mock_client.__aexit__ = AsyncMock(return_value=None)
+        proxy = _FakeProxy(
+            get_user_error=HTTPException(status_code=401, detail="Failed to get user")
+        )
 
         with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch('src.utilities.security.get_supabase_proxy', return_value=proxy):
                 with pytest.raises(HTTPException) as exc_info:
                     await verify_supabase_token(mock_credentials)
-                assert exc_info.value.status_code == 503
-                assert "Cannot connect to auth service" in exc_info.value.detail
+                assert exc_info.value.status_code == 401
 
     @pytest.mark.asyncio
     async def test_verify_token_unexpected_error(self):
@@ -148,35 +128,10 @@ class TestVerifySupabaseToken:
             credentials="test.token.here"
         )
 
-        mock_client = AsyncMock()
-        mock_client.get = AsyncMock(side_effect=RuntimeError("Unexpected error"))
-        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-        mock_client.__aexit__ = AsyncMock(return_value=None)
+        proxy = _FakeProxy(get_user_error=RuntimeError("Unexpected error"))
 
         with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('httpx.AsyncClient', return_value=mock_client):
-                with pytest.raises(HTTPException) as exc_info:
-                    await verify_supabase_token(mock_credentials)
-                assert exc_info.value.status_code == 500
-
-    @pytest.mark.asyncio
-    async def test_verify_token_user_not_found(self):
-        """Test token verification when user is not found."""
-        mock_credentials = HTTPAuthorizationCredentials(
-            scheme="Bearer",
-            credentials="valid.token.here"
-        )
-
-        mock_response = AsyncMock()
-        mock_response.status_code = 404
-
-        mock_client = AsyncMock()
-        mock_client.get = AsyncMock(return_value=mock_response)
-        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-        mock_client.__aexit__ = AsyncMock(return_value=None)
-
-        with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch('src.utilities.security.get_supabase_proxy', return_value=proxy):
                 with pytest.raises(HTTPException) as exc_info:
                     await verify_supabase_token(mock_credentials)
                 assert exc_info.value.status_code == 500
@@ -189,27 +144,18 @@ class TestVerifySupabaseToken:
             credentials="valid.token.here"
         )
 
-        expected_response = {
-            "id": "user-id-123",
-            "sub": "user123",
-            "email": "test@example.com",
-            "aud": "authenticated",
-            "iss": "https://xyz.supabase.co/auth/v1",
-            "exp": 1234567890
-        }
-
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json = MagicMock(return_value=expected_response)
-
-        mock_client = AsyncMock()
-        mock_client.get = AsyncMock(return_value=mock_response)
-        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-        mock_client.__aexit__ = AsyncMock(return_value=None)
+        proxy = _FakeProxy(
+            user={
+                "id": "user-id-123",
+                "email": "test@example.com",
+                "metadata": {"role": "admin"},
+            }
+        )
 
         with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch('src.utilities.security.get_supabase_proxy', return_value=proxy):
                 result = await verify_supabase_token(mock_credentials)
-                assert result == expected_response
-
-
+                assert result["sub"] == "user-id-123"
+                assert result["user_id"] == "user-id-123"
+                assert result["email"] == "test@example.com"
+                assert result["metadata"] == {"role": "admin"}

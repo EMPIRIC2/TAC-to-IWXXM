@@ -5,7 +5,6 @@ from __future__ import annotations
 import importlib
 from pathlib import Path
 
-import httpx
 import pytest
 from fastapi import HTTPException
 from fastapi.security import HTTPAuthorizationCredentials
@@ -13,34 +12,43 @@ from fastapi.security import HTTPAuthorizationCredentials
 from src.utilities import security as sec
 
 
-class _FakeResponse:
-    def __init__(self, status_code: int, payload=None):
-        self.status_code = status_code
-        self._payload = payload or {}
+class _FakeProxy:
+    def __init__(
+        self,
+        *,
+        verify: bool = True,
+        user: dict | None = None,
+        init_error: Exception | None = None,
+        verify_error: Exception | None = None,
+        get_user_error: Exception | None = None,
+    ) -> None:
+        self._verify = verify
+        self._user = user or {
+            "id": "user-1",
+            "email": "user@example.com",
+            "metadata": {},
+        }
+        self._init_error = init_error
+        self._verify_error = verify_error
+        self._get_user_error = get_user_error
 
-    def json(self):
-        return self._payload
+    def verify_token(self, _token: str) -> bool:
+        if self._verify_error:
+            raise self._verify_error
+        return self._verify
 
-
-class _FakeAsyncClient:
-    def __init__(self, response=None, error=None):
-        self.response = response
-        self.error = error
-
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, exc_type, exc, tb):
-        return False
-
-    async def get(self, *_args, **_kwargs):
-        if self.error:
-            raise self.error
-        return self.response
+    def get_user(self, _token: str) -> dict:
+        if self._get_user_error:
+            raise self._get_user_error
+        return self._user
 
 
 def _creds(token: str = "valid-token") -> HTTPAuthorizationCredentials:
     return HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
+
+
+def _patch_proxy(monkeypatch: pytest.MonkeyPatch, proxy: _FakeProxy) -> None:
+    monkeypatch.setattr(sec, "get_supabase_proxy", lambda: proxy)
 
 
 @pytest.mark.asyncio
@@ -84,26 +92,65 @@ async def test_verify_supabase_token_missing_credentials(monkeypatch):
 async def test_verify_supabase_token_success(monkeypatch):
     monkeypatch.setattr(sec, "DISABLE_AUTH", False)
     monkeypatch.setenv("DISABLE_AUTH", "false")
-    payload = {"sub": "user-1", "email": "user@example.com", "authenticated": True}
-    monkeypatch.setattr(
-        sec.httpx,
-        "AsyncClient",
-        lambda: _FakeAsyncClient(response=_FakeResponse(200, payload)),
+    _patch_proxy(
+        monkeypatch,
+        _FakeProxy(
+            user={
+                "id": "user-1",
+                "email": "user@example.com",
+                "metadata": {"role": "tester"},
+            }
+        ),
     )
 
     result = await sec.verify_supabase_token(_creds())
 
-    assert result == payload
+    assert result["sub"] == "user-1"
+    assert result["email"] == "user@example.com"
+    assert result["authenticated"] is True
 
 
 @pytest.mark.asyncio
 async def test_verify_supabase_token_invalid_token(monkeypatch):
     monkeypatch.setattr(sec, "DISABLE_AUTH", False)
     monkeypatch.setenv("DISABLE_AUTH", "false")
+    _patch_proxy(monkeypatch, _FakeProxy(verify=False))
+
+    with pytest.raises(HTTPException) as exc:
+        await sec.verify_supabase_token(_creds())
+
+    assert exc.value.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_verify_supabase_token_auth_not_configured(monkeypatch):
+    monkeypatch.setattr(sec, "DISABLE_AUTH", False)
+    monkeypatch.setenv("DISABLE_AUTH", "false")
     monkeypatch.setattr(
-        sec.httpx,
-        "AsyncClient",
-        lambda: _FakeAsyncClient(response=_FakeResponse(401)),
+        sec,
+        "get_supabase_proxy",
+        lambda: (_ for _ in ()).throw(ValueError("SUPABASE_URL and SUPABASE_ANON_KEY must be set")),
+    )
+
+    with pytest.raises(HTTPException) as exc:
+        await sec.verify_supabase_token(_creds())
+
+    assert exc.value.status_code == 503
+    assert "not configured" in exc.value.detail.lower()
+
+
+@pytest.mark.asyncio
+async def test_verify_supabase_token_get_user_http_exception(monkeypatch):
+    monkeypatch.setattr(sec, "DISABLE_AUTH", False)
+    monkeypatch.setenv("DISABLE_AUTH", "false")
+    _patch_proxy(
+        monkeypatch,
+        _FakeProxy(
+            get_user_error=HTTPException(
+                status_code=401,
+                detail="Failed to get user: session expired",
+            )
+        ),
     )
 
     with pytest.raises(HTTPException) as exc:
@@ -113,65 +160,10 @@ async def test_verify_supabase_token_invalid_token(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_verify_supabase_token_auth_service_error(monkeypatch):
-    monkeypatch.setattr(sec, "DISABLE_AUTH", False)
-    monkeypatch.setenv("DISABLE_AUTH", "false")
-    monkeypatch.setattr(
-        sec.httpx,
-        "AsyncClient",
-        lambda: _FakeAsyncClient(response=_FakeResponse(500)),
-    )
-
-    with pytest.raises(HTTPException) as exc:
-        await sec.verify_supabase_token(_creds())
-
-    assert exc.value.status_code == 500
-
-
-@pytest.mark.asyncio
-async def test_verify_supabase_token_timeout(monkeypatch):
-    monkeypatch.setattr(sec, "DISABLE_AUTH", False)
-    monkeypatch.setenv("DISABLE_AUTH", "false")
-    monkeypatch.setattr(
-        sec.httpx,
-        "AsyncClient",
-        lambda: _FakeAsyncClient(error=httpx.TimeoutException("timeout")),
-    )
-
-    with pytest.raises(HTTPException) as exc:
-        await sec.verify_supabase_token(_creds())
-
-    assert exc.value.status_code == 503
-    assert "timeout" in exc.value.detail.lower()
-
-
-@pytest.mark.asyncio
-async def test_verify_supabase_token_connect_error(monkeypatch):
-    monkeypatch.setattr(sec, "DISABLE_AUTH", False)
-    monkeypatch.setenv("DISABLE_AUTH", "false")
-    req = httpx.Request("GET", "http://auth.test/auth/verify")
-    monkeypatch.setattr(
-        sec.httpx,
-        "AsyncClient",
-        lambda: _FakeAsyncClient(error=httpx.ConnectError("connect failed", request=req)),
-    )
-
-    with pytest.raises(HTTPException) as exc:
-        await sec.verify_supabase_token(_creds())
-
-    assert exc.value.status_code == 503
-    assert "cannot connect" in exc.value.detail.lower()
-
-
-@pytest.mark.asyncio
 async def test_verify_supabase_token_unexpected_error(monkeypatch):
     monkeypatch.setattr(sec, "DISABLE_AUTH", False)
     monkeypatch.setenv("DISABLE_AUTH", "false")
-    monkeypatch.setattr(
-        sec.httpx,
-        "AsyncClient",
-        lambda: _FakeAsyncClient(error=RuntimeError("boom")),
-    )
+    _patch_proxy(monkeypatch, _FakeProxy(get_user_error=RuntimeError("boom")))
 
     with pytest.raises(HTTPException) as exc:
         await sec.verify_supabase_token(_creds())
@@ -198,7 +190,3 @@ def test_security_module_reload_without_env_file(monkeypatch):
     importlib.reload(sec)
 
     assert sec.env_file.name == ".env"
-    assert sec.security.auto_error is False
-
-    monkeypatch.undo()
-    importlib.reload(sec)

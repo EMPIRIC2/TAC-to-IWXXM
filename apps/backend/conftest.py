@@ -10,7 +10,6 @@ from src.schemas.airport import get_airport_validator
 # Set test environment variables BEFORE any imports of modules that use os.getenv()
 # This must be done at module load time before pytest collects tests
 os.environ.setdefault("DISABLE_AUTH", "false")
-os.environ.setdefault("AUTH_SERVICE_URL", "http://localhost:8003")
 os.environ.setdefault("ENABLE_WEBHOOKS", "false")
 # Use postgresql+asyncpg:// for SQLAlchemy async engine with psycopg driver
 # The async engine will convert this appropriately for asyncpg
