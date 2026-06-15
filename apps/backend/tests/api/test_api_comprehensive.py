@@ -14,7 +14,7 @@ class TestCorsConfiguration:
 
     def test_cors_origins_from_environment(self):
         """Test CORS origins loaded from environment variable."""
-        with patch.dict(os.environ, {"ALLOWED_ORIGINS": "https://example.com,http://localhost:3000"}):
+        with patch.dict(os.environ, {"METAR_CORS_ORIGINS": "https://example.com,http://localhost:3000"}):
             origins = get_cors_origins()
 
             assert "https://example.com" in origins
@@ -22,7 +22,7 @@ class TestCorsConfiguration:
 
     def test_cors_origins_with_spaces(self):
         """Test CORS origins with extra whitespace."""
-        with patch.dict(os.environ, {"ALLOWED_ORIGINS": " https://example.com , http://localhost:3000 "}):
+        with patch.dict(os.environ, {"METAR_CORS_ORIGINS": " https://example.com , http://localhost:3000 "}):
             origins = get_cors_origins()
 
             assert "https://example.com" in origins
@@ -32,7 +32,7 @@ class TestCorsConfiguration:
 
     def test_cors_origins_empty_env_var(self):
         """Test CORS origins when env var is empty string."""
-        with patch.dict(os.environ, {"ALLOWED_ORIGINS": ""}, clear=False):
+        with patch.dict(os.environ, {"METAR_CORS_ORIGINS": ""}, clear=False):
             origins = get_cors_origins()
 
             # Should use defaults
@@ -52,21 +52,21 @@ class TestCorsConfiguration:
     def test_cors_origins_custom_frontend_url(self):
         """Test CORS origins with custom FRONTEND_URL."""
         custom_url = "https://custom.example.com"
-        with patch.dict(os.environ, {"FRONTEND_URL": custom_url, "ALLOWED_ORIGINS": ""}):
+        with patch.dict(os.environ, {"FRONTEND_URL": custom_url, "METAR_CORS_ORIGINS": ""}):
             origins = get_cors_origins()
 
             assert custom_url in origins
 
     def test_cors_origins_single_origin(self):
         """Test CORS origins with single origin."""
-        with patch.dict(os.environ, {"ALLOWED_ORIGINS": "https://single.example.com"}):
+        with patch.dict(os.environ, {"METAR_CORS_ORIGINS": "https://single.example.com"}):
             origins = get_cors_origins()
 
             assert "https://single.example.com" in origins
 
     def test_cors_origins_with_trailing_comma(self):
         """Test CORS origins with trailing comma."""
-        with patch.dict(os.environ, {"ALLOWED_ORIGINS": "https://example.com,"}):
+        with patch.dict(os.environ, {"METAR_CORS_ORIGINS": "https://example.com,"}):
             origins = get_cors_origins()
 
             assert "https://example.com" in origins

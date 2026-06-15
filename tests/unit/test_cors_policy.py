@@ -52,7 +52,23 @@ class TestMetarCorsOriginsPolicy:
             "https://staging-frontend.onrender.com"
         ]
 
-    @pytest.mark.skip(reason="Awaiting apps/backend CORS middleware wiring (T5.4)")
-    def test_backend_cors_middleware_uses_metar_cors_origins(self) -> None:
-        """Import apps.backend and assert CORSMiddleware allow_origins from env."""
-        pytest.importorskip("apps.backend")
+    def test_backend_cors_middleware_uses_metar_cors_origins(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """apps/backend get_cors_origins must read METAR_CORS_ORIGINS."""
+        import sys
+        from pathlib import Path
+
+        backend_root = Path(__file__).resolve().parents[2] / "apps" / "backend"
+        backend_src = str(backend_root)
+        if backend_src not in sys.path:
+            sys.path.insert(0, backend_src)
+
+        monkeypatch.setenv(
+            METAR_CORS_ORIGINS_ENV, "https://staging-frontend.onrender.com"
+        )
+
+        from src.api import get_cors_origins
+
+        origins = get_cors_origins()
+        assert "https://staging-frontend.onrender.com" in origins

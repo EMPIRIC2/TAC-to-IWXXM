@@ -18,7 +18,7 @@ def test_is_dev_cors_relaxation_enabled_truthy(monkeypatch, value):
 
 def test_get_cors_origins_from_env_with_relaxation_and_loopback(monkeypatch):
     monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "true")
-    monkeypatch.setenv("ALLOWED_ORIGINS", "http://localhost:3000, https://example.test")
+    monkeypatch.setenv("METAR_CORS_ORIGINS", "http://localhost:3000, https://example.test")
 
     origins = api_module.get_cors_origins()
 
@@ -31,7 +31,7 @@ def test_get_cors_origins_from_env_with_relaxation_and_loopback(monkeypatch):
 
 def test_get_cors_origins_defaults(monkeypatch):
     monkeypatch.delenv("ENABLE_DEV_CORS_RELAXATION", raising=False)
-    monkeypatch.delenv("ALLOWED_ORIGINS", raising=False)
+    monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
     monkeypatch.setenv("FRONTEND_URL", "http://localhost:8000")
 
     origins = api_module.get_cors_origins()
