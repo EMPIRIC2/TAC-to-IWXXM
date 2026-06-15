@@ -112,7 +112,7 @@ audit-frontend:
 	cd frontend && npm ci && npm run audit:ci
 
 test-unit-gifts:
-	cd GIFTs && python3 -m pytest tests/ --cov=gifts --cov-config=pyproject.toml --cov-report=xml:coverage.xml --cov-report=term-missing --cov-fail-under=95 -v
+	cd packages/gifts && $(UV) run pytest tests/ --cov=gifts --cov=validation --cov-config=pyproject.toml --cov-branch --cov-report=xml:coverage.xml --cov-report=term-missing --cov-fail-under=95 -v
 
 test-e2e-playwright:
 	cd frontend && NODE_PATH=./node_modules npx playwright test
@@ -136,7 +136,7 @@ coverage-frontend:
 	cd frontend && npm run test:coverage
 
 coverage-gifts:
-	cd GIFTs && python3 -m pytest tests/ --cov=gifts --cov-config=pyproject.toml --cov-report=xml:coverage.xml --cov-report=term-missing -v
+	cd packages/gifts && $(UV) run pytest tests/ --cov=gifts --cov=validation --cov-config=pyproject.toml --cov-report=xml:coverage.xml --cov-report=term-missing -v
 
 coverage-modules: coverage-backend coverage-auth coverage-frontend coverage-gifts
 

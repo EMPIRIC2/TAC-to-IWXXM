@@ -24,3 +24,7 @@ class TestCoverageConfig:
     def test_shared_package_fail_under_95(self) -> None:
         content = (ROOT / "packages/shared/pyproject.toml").read_text(encoding="utf-8")
         assert "fail_under = 95" in content
+
+    def test_gifts_package_fail_under_95(self) -> None:
+        content = (ROOT / "packages/gifts/pyproject.toml").read_text(encoding="utf-8")
+        assert "fail_under = 95" in content

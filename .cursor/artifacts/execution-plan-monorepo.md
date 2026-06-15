@@ -10,9 +10,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 2: Vendor & Packages |
-| **Active milestone** | M3: GIFTs Package |
-| **Active task** | T3.5 — Achieve 95% coverage on packages/gifts |
-| **Tasks completed** | 19 / 63 |
+| **Active milestone** | M4: Auth Package |
+| **Active task** | T4.1 — Write packages/auth middleware unit tests |
+| **Tasks completed** | 20 / 63 |
 | **Last updated** | 2026-06-15 |
 
 ## Tech Stack Summary

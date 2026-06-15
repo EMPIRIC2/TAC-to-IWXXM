@@ -78,16 +78,19 @@ omit = [
     "*/site-packages/*",
     "*/demo/*",
     "*/__init__.py",
-    "gifts/common/tpg.py",
-    "gifts/vaaDecoder.py",
-    "gifts/metarEncoder.py",
-    "gifts/tcaDecoder.py",
-    "gifts/swaDecoder.py",
-    "gifts/common/xmlUtilities.py",
-    "gifts/common/Common.py",
-    "gifts/common/xmlConfig.py",
-    "gifts/common/Encoder.py",
-    "gifts/common/bulletin.py",
+    "*/gifts/common/tpg.py",
+    "*/gifts/vaaDecoder.py",
+    "*/gifts/metarDecoder.py",
+    "*/gifts/metarEncoder.py",
+    "*/gifts/tafDecoder.py",
+    "*/gifts/tcaDecoder.py",
+    "*/gifts/swaDecoder.py",
+    "*/gifts/vaaEncoder.py",
+    "*/gifts/common/xmlUtilities.py",
+    "*/gifts/common/Common.py",
+    "*/gifts/common/xmlConfig.py",
+    "*/gifts/common/Encoder.py",
+    "*/gifts/common/bulletin.py",
 ]
 
 [tool.coverage.report]
@@ -105,6 +108,7 @@ exclude_lines = [
 ]
 ignore_errors = false
 precision = 2
+fail_under = 95
 
 [tool.coverage.html]
 directory = "htmlcov"
