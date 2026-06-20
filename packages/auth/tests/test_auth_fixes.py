@@ -3,9 +3,9 @@
 import inspect
 import logging
 
-from src.__main__ import app
-from src.api_supabase import router
-from src.supabase_proxy import SupabaseAuthProxy
+from auth.__main__ import app
+from auth.api_supabase import router
+from auth.supabase_proxy import SupabaseAuthProxy
 
 
 class TestAuthFixes:
@@ -41,7 +41,7 @@ class TestAuthFixes:
         assert not async_methods, f"Methods unexpectedly async: {async_methods}"
 
     def test_logging_configured(self) -> None:
-        logger = logging.getLogger("src.supabase_proxy")
+        logger = logging.getLogger("supabase_proxy")
         assert len(logging.root.handlers) > 0 or len(logger.handlers) >= 0
 
     def test_required_routes_registered(self) -> None:
