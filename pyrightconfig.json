@@ -11,6 +11,7 @@
     "**/node_modules",
     "**/__pycache__",
     "vendor",
+    "apps/frontend/dist",
     "frontend/dist",
     "schemas"
   ],

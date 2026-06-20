@@ -21,6 +21,7 @@ dev = [
   "metar-shared",
   "gifts",
   "metar-auth",
+  "metar-backend",
 ]
 
 [tool.uv.sources]
@@ -45,6 +46,7 @@ exclude = [
   "**/node_modules",
   "**/__pycache__",
   "vendor",
+  "apps/frontend/dist",
   "frontend/dist",
   "GIFTs/.venv",
   "packages/gifts/.venv",
