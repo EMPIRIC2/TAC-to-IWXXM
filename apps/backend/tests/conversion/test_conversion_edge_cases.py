@@ -13,7 +13,6 @@ if str(BACKEND_SRC) not in sys.path:
 
 from src.utilities.conversion import (
     ConversionError,
-    _ensure_gifts_on_path,
     _load_aerodrome_db,
     _lookup_aerodrome,
     convert_metar_tac,
@@ -22,13 +21,11 @@ from src.utilities.conversion import (
 
 
 class TestGiftsPathHandling:
-    """Test GIFTs path resolution edge cases."""
+    """Test GIFTs workspace import availability."""
 
-    def test_ensure_gifts_on_path_raises_when_not_found(self):
-        """Test that _ensure_gifts_on_path raises ImportError when GIFTs not found."""
-        # This is a difficult test since GIFTs is present in the actual environment
-        # We test that the function exists and is callable
-        assert callable(_ensure_gifts_on_path)
+    def test_gifts_modules_importable(self):
+        """GIFTs is installed via uv workspace (packages/gifts)."""
+        from gifts import metarDecoder, metarEncoder  # noqa: F401
 
     def test_load_aerodrome_db_returns_none_when_missing(self):
         """Test aerodrome DB returns None when file doesn't exist."""

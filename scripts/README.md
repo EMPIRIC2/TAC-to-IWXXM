@@ -180,23 +180,19 @@ All scripts require:
    npm --version
    ```
 
-2. **Frontend Submodule** - Must be initialized:
-   ```bash
-   git submodule update --init --recursive
-   ```
+2. **Frontend app** — lives at `apps/frontend` in the monorepo:
 
-3. **Dependencies** - Scripts will auto-install if missing, or install manually:
    ```bash
-   cd frontend
-   npm install
+   cd apps/frontend
+   pnpm install
    ```
 
 ---
 
 ## What These Scripts Do
 
-1. ✅ Check if frontend submodule exists
-2. ✅ Install npm dependencies if node_modules is missing
+1. ✅ Check if `apps/frontend` exists
+2. ✅ Install npm/pnpm dependencies if node_modules is missing
 3. ✅ Launch the Vite development server
 4. ✅ Server starts at `http://localhost:5173` (Vite default)
 
@@ -293,10 +289,10 @@ This will:
 
 ## Troubleshooting
 
-### Frontend submodule not found
+### Frontend app not found
 
 ```bash
-git submodule update --init --recursive
+make install
 ```
 
 ### Dependencies not installing

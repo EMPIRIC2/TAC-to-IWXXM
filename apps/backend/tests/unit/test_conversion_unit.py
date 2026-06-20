@@ -193,32 +193,6 @@ def test_load_aerodrome_db_finds_repo_candidate(monkeypatch, tmp_path):
     assert found == db_path
 
 
-def test_ensure_gifts_on_path_adds_first_existing_candidate(monkeypatch, tmp_path):
-    utilities_dir = tmp_path / "backend" / "src" / "utilities"
-    utilities_dir.mkdir(parents=True)
-    fake_file = utilities_dir / "conversion.py"
-    fake_file.write_text("# test", encoding="utf-8")
-    gifts_dir = tmp_path / "GIFTs"
-    gifts_dir.mkdir()
-    inserted = []
-
-    monkeypatch.setattr(conv, "__file__", str(fake_file))
-    monkeypatch.setattr(conv.sys, "path", inserted)
-
-    conv._ensure_gifts_on_path()
-
-    assert inserted == [str(gifts_dir)]
-
-def test_ensure_gifts_on_path_raises_when_no_candidates_exist(monkeypatch, tmp_path):
-    utilities_dir = tmp_path / "backend" / "src" / "utilities"
-    utilities_dir.mkdir(parents=True)
-    fake_file = utilities_dir / "conversion.py"
-    fake_file.write_text("# test", encoding="utf-8")
-
-    monkeypatch.setattr(conv, "__file__", str(fake_file))
-
-    with pytest.raises(ImportError, match="GIFTs submodule not found"):
-        conv._ensure_gifts_on_path()
 def test_lookup_aerodrome_csv_exception_falls_back_to_gifts_table(monkeypatch, tmp_path):
     db = tmp_path / "aerodromes.tbl"
     db.write_text("# comment\nKDEN|DEN|||||\n", encoding="utf-8")
@@ -483,28 +457,6 @@ def test_convert_with_metadata_validation_exception_returns_none(monkeypatch):
 # ---------------------------------------------------------------------------
 
 
-def test_ensure_gifts_on_path_already_in_sys_path_skips_insert(monkeypatch, tmp_path):
-    """GIFTs dir found but already in sys.path - skips insert and returns (covers 58->60)."""
-    utilities_dir = tmp_path / "backend" / "src" / "utilities"
-    utilities_dir.mkdir(parents=True)
-    fake_file = utilities_dir / "conversion.py"
-    fake_file.write_text("# test", encoding="utf-8")
-
-    gifts_dir = tmp_path / "GIFTs"
-    gifts_dir.mkdir()
-
-    # Pre-populate sys.path with the GIFTs dir so insert is skipped
-    sys_path_copy = [str(gifts_dir)]
-    monkeypatch.setattr(conv, "__file__", str(fake_file))
-    monkeypatch.setattr(conv.sys, "path", sys_path_copy)
-
-    conv._ensure_gifts_on_path()
-
-    # Path should remain unchanged (no duplicate insert)
-    assert sys_path_copy == [str(gifts_dir)]
-
-
-def test_load_aerodrome_db_shallow_path_triggers_index_error(monkeypatch):
     """Shallow __file__ path exhausts parents, triggering IndexError break (covers 146-147)."""
     monkeypatch.setattr(conv, "__file__", "/conversion.py")
 

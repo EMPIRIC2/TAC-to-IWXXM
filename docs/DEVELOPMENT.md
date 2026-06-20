@@ -65,17 +65,10 @@ Primary workflow: `.github/workflows/ci-cd.yml`
 - `frontend`: 75%
 - `gifts`: 75%
 
-### Submodule reliability policy
+### Submodule reliability policy (legacy — removed 2026-06)
 
-`GIFTs` must use non-shallow submodule initialization in CI. If checkout issues occur (`not our ref`, `did not contain <sha>`), use:
-
-```bash
-git submodule sync --recursive
-git submodule update --init GIFTs
-git -C GIFTs fetch --tags --force origin
-git submodule update --init GIFTs
-git submodule status GIFTs
-```
+The monorepo no longer uses nested git repos. Run `make install` from the repo root
+to install Python (uv) and JavaScript (pnpm) workspace members.
 
 ---
 
@@ -383,20 +376,12 @@ npx playwright test
 
 ## Troubleshooting
 
-### Git submodule failures
+### Workspace install (monorepo)
 
-Symptoms in CI:
-
-- `fatal: Fetched in submodule path 'GIFTs', but it did not contain <sha>`
-- `remote error: upload-pack: not our ref <sha>`
-
-Recovery:
+If CI or local setup fails to resolve `packages/gifts` or `apps/frontend`, run:
 
 ```bash
-git submodule sync --recursive
-git submodule update --init GIFTs
-git -C GIFTs fetch --tags --force origin
-git submodule update --init GIFTs
+make install
 ```
 
 ### "Failed to fetch" errors

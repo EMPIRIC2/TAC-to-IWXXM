@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     "metar-auth",
     "metar-shared",
+    "gifts",
     "fastapi>=0.110",
     "uvicorn>=0.23",
     "python-multipart>=0.0.20",
@@ -109,3 +110,8 @@ ignore = ["E501", "E741"]
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["E402", "W293", "F841", "E722", "F811", "F401", "E712"]
 "src/config/icao_opmet.py" = ["F601"]
+
+[tool.uv.sources]
+gifts = { workspace = true }
+metar-auth = { workspace = true }
+metar-shared = { workspace = true }

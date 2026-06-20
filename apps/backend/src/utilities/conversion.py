@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 import pathlib
 import re
-import sys
 import xml.etree.ElementTree as ET
 from typing import TYPE_CHECKING, List, Optional, Tuple
 
@@ -32,45 +31,9 @@ except (ImportError, ModuleNotFoundError):
 
 
 
-def _ensure_gifts_on_path() -> None:
-    """Resolve and add the GIFTs directory to sys.path.
-
-    Handles both source layout (running from repo) and installed package
-    layout inside a container (site-packages). We attempt several plausible
-    ancestor locations plus explicit /app path used in Docker builds.
-    """
-    file_path = pathlib.Path(__file__).resolve()
-    candidates = []
-
-    # Ancestor traversals: parents[0] .. parents[5] (defensive upper bound)
-    for depth in range(0, 6):  # pragma: no cover (loop logic simple)
-        try:
-            parent = file_path.parents[depth]
-        except IndexError:
-            break
-        candidates.append(parent / "GIFTs")
-
-    # Explicit Docker workdir copy location
-    candidates.append(pathlib.Path("/app/GIFTs"))
-
-    for cand in candidates:
-        if cand.exists():
-            if str(cand) not in sys.path:
-                sys.path.insert(0, str(cand))
-            return
-
-    # If we reach here, none of the candidates existed.
-    raise ImportError(
-        "GIFTs submodule not found in any expected location. "
-        "Tried: " + ", ".join(str(c) for c in candidates)
-    )
-
-
-_ensure_gifts_on_path()
-
-try:  # pragma: no cover
+try:
     from gifts import metarDecoder, metarEncoder  # type: ignore
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     metarDecoder = None  # type: ignore
     metarEncoder = None  # type: ignore
 
@@ -474,15 +437,6 @@ def convert_metar_tac_with_metadata(
                 # Set vertical datum in GIFTs config for this conversion
                 if vertical_datum:
                     try:
-                        # Import GIFTs config module to set vertical datum dynamically
-                        import sys
-                        from pathlib import Path
-
-                        # Ensure GIFTs is on path
-                        gifts_root = Path(__file__).parent.parent.parent.parent / "GIFTs"
-                        if gifts_root.exists() and str(gifts_root) not in sys.path:
-                            sys.path.insert(0, str(gifts_root))
-
                         from gifts.common import xmlConfig
                         xmlConfig.verticalDatum = vertical_datum
                         logger.debug(f"Set vertical datum for {icao}: {vertical_datum}")

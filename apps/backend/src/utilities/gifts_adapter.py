@@ -6,37 +6,9 @@ to support dynamic IWXXM version switching while maintaining compatibility.
 """
 
 import logging
-import pathlib
-import sys
 from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
-
-
-def _ensure_gifts_on_path() -> None:
-    """Resolve and add the GIFTs directory to sys.path."""
-    file_path = pathlib.Path(__file__).resolve()
-    candidates = []
-
-    # Ancestor traversals
-    for depth in range(0, 6):
-        try:
-            parent = file_path.parents[depth]
-        except IndexError:
-            break
-        candidates.append(parent / "GIFTs")
-
-    # Explicit Docker workdir copy location
-    candidates.append(pathlib.Path("/app/GIFTs"))
-
-    for cand in candidates:
-        if cand.exists():
-            if str(cand) not in sys.path:
-                sys.path.insert(0, str(cand))
-            logger.debug(f"Added GIFTs to path: {cand}")
-            return
-
-    logger.warning(f"GIFTs directory not found in: {', '.join(str(c) for c in candidates)}")
 
 
 def _wrap_in_bulletin(tac_text: str) -> str:
@@ -68,10 +40,7 @@ def _wrap_in_bulletin(tac_text: str) -> str:
     return f"{header}{tac}"
 
 
-# Ensure GIFTs is on path before importing
-_ensure_gifts_on_path()
-
-# Import GIFTs modules
+# Import GIFTs modules (workspace package packages/gifts)
 try:
     from gifts import metarDecoder, metarEncoder  # type: ignore
     logger.info("GIFTs modules imported successfully")
@@ -79,7 +48,6 @@ except ImportError as e:
     logger.error(f"Failed to import GIFTs modules: {e}")
     metarDecoder = None  # type: ignore
     metarEncoder = None  # type: ignore
-
 
 
 class GIFTsEncoder:

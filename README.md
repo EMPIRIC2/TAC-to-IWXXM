@@ -4,7 +4,7 @@
 [![E2E](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/workflows/e2e-tests.yml)
 [![codecov](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM/graph/badge.svg)](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM)
 
-Modern React-based web application with microservices backend to decode METAR/SPECI TAC and serialize IWXXM XML using the GIFTs submodule.
+Modern React-based web application with microservices backend to decode METAR/SPECI TAC and serialize IWXXM XML using the in-repo GIFTs package (`packages/gifts`).
 
 ## Features
 
@@ -44,6 +44,17 @@ Backend Service (Port 8001)
     ↓
 GIFTs Library (IWXXM Generation)
 ```
+
+### Planned monorepo (approved 2026-06-14)
+
+The repo is migrating to a **single-git monorepo** — no submodules. Target layout:
+
+- `apps/backend`, `apps/frontend`, `apps/e2e`
+- `packages/auth`, `packages/gifts`, `packages/shared`
+- `vendor/schemas/*` — read-only snapshots from [wmo-im](https://github.com/wmo-im)
+
+Auth will merge into the backend API (two Render services instead of three). See
+[docs/spec.md](docs/spec.md) and [docs/migration-plan.md](docs/migration-plan.md).
 
 **Key Benefits:**
 - ✅ Supabase credentials never exposed to frontend
@@ -127,9 +138,9 @@ docker-compose down -v
 ### Clone and Initialize
 
 ```bash
-git clone --recurse-submodules <repository-url>
+git clone <repository-url>
 cd metar-to-IWXXM
-git submodule update --init --recursive
+make install
 ```
 
 ### Backend Setup
@@ -384,8 +395,12 @@ metar-to-IWXXM/
 │   ├── Dockerfile
 │   ├── nginx.conf                 # Production server config
 │   └── README.md
-├── GIFTs/                         # Git submodule
-│   └── gifts/                      # KHTML to IWXXM conversion
+├── packages/
+│   ├── gifts/                     # GIFTs IWXXM conversion library
+│   ├── auth/                      # Auth middleware library
+│   └── shared/                    # Shared types and constants
+├── vendor/
+│   └── schemas/                   # Read-only wmo-im schema snapshots
 ├── docs/
 │   ├── AUTH_MIDDLEWARE_ARCHITECTURE.md  # Detailed auth architecture
 │   ├── SUPABASE_INTEGRATION.md          # Supabase setup guide
@@ -412,7 +427,7 @@ metar-to-IWXXM/
 - **Backend API**: FastAPI, SQLAlchemy 2.0, Python 3.8+
 - **Auth Service**: FastAPI, Supabase Python SDK, CORS middleware
 - **Database**: Supabase Postgres (managed)
-- **Conversion**: GIFTs submodule (KHTML to IWXXM)
+- **Conversion**: GIFTs package (`packages/gifts`, IWXXM generation)
 - **Containerization**: Docker, Docker Compose
 - **Package Management**: uv (Python), npm (Node.js)
 - **Testing**: pytest, pytest-cov, pytest-asyncio, Vitest
@@ -421,19 +436,10 @@ metar-to-IWXXM/
 
 ### CI/CD Troubleshooting
 
-#### GIFTs submodule checkout fails in GitHub Actions
+#### Workspace install fails in GitHub Actions
 
-If a workflow fails with errors like `did not contain <sha>` or `not our ref`, run:
-
-```bash
-git submodule sync --recursive
-git submodule update --init GIFTs
-git -C GIFTs fetch --tags --force origin
-git submodule update --init GIFTs
-git submodule status GIFTs
-```
-
-Use a non-shallow fetch for `GIFTs` in CI. The main workflow at `.github/workflows/ci-cd.yml` now retries GIFTs initialization with an explicit remote fetch.
+Ensure CI uses the monorepo layout (`uv sync` at repo root; no external submodule checkout).
+See `.github/workflows/ci-cd.yml` for the current pipeline.
 
 #### Coverage checks fail in PRs
 

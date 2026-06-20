@@ -168,10 +168,10 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T11.1
+        current_task: T11.2
         phase: 4
         milestone: M11
-        notes: "M10 complete (T10.1–T10.4); TC-M004 tests red until T11.1 submodule removal"
+        notes: "T11.1 complete — submodules removed; TC-M004 gitmodules test green"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
       - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
@@ -422,7 +422,7 @@ artifacts:
     status: complete
 
   git_history:
-  current_branch: feat/M8-deploy-ci
+  current_branch: feat/M11-big-bang-finalize
   branches:
     - name: phase/1-monorepo-scaffold
       base: main
@@ -460,6 +460,10 @@ artifacts:
       base: feat/M6-frontend-app
       status: active
       created_at: "2026-06-17T00:00:00Z"
+    - name: feat/M11-big-bang-finalize
+      base: feat/M8-deploy-ci
+      status: active
+      created_at: "2026-06-20T15:53:00Z"
   commits:
     - sha: 73cda40
       branch: feat/M1-workspace-root
@@ -521,3 +525,9 @@ artifacts:
       stage: "07-build"
       files_changed: 3
       timestamp: "2026-06-15T16:15:00Z"
+    - sha: 3aeb52c
+      branch: feat/M11-big-bang-finalize
+      message: "[T11.1] config: remove git submodules and .gitmodules"
+      stage: "07-build"
+      files_changed: 7
+      timestamp: "2026-06-20T15:53:00Z"
