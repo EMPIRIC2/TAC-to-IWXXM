@@ -2,16 +2,16 @@
   "include": [
     "apps",
     "packages",
-    "tests",
-    "backend",
-    "auth",
-    "GIFTs"
+    "tests"
   ],
   "exclude": [
     "**/node_modules",
     "**/__pycache__",
     "vendor",
     "apps/frontend/dist",
+    "backend",
+    "auth",
+    "GIFTs",
     "frontend/dist",
     "schemas"
   ],
