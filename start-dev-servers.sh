@@ -4,6 +4,31 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+load_repo_env() {
+  local env_file="${ROOT_DIR}/.env"
+  local line key value
+
+  if [[ ! -f "${env_file}" ]]; then
+    return 0
+  fi
+
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    line="${line%%#*}"
+    line="${line%"${line##*[![:space:]]}"}"
+    [[ -z "${line}" || "${line}" != *=* ]] && continue
+
+    key="${line%%=*}"
+    key="${key%"${key##*[![:space:]]}"}"
+    value="${line#*=}"
+    value="${value#"${value%%[![:space:]]*}"}"
+    value="${value//$'\r'/}"
+
+    if [[ -n "${key}" && -z "${!key+x}" ]]; then
+      export "${key}=${value}"
+    fi
+  done < "${env_file}"
+}
+
 PIDS=()
 NPM_BIN=""
 AUTO_KILL_PORTS="${AUTO_KILL_PORTS:-prompt}"
@@ -127,7 +152,6 @@ check_and_handle_port() {
 
 preflight_ports() {
   check_and_handle_port 8001
-  check_and_handle_port 8003
   check_and_handle_port 5173
 }
 
@@ -262,45 +286,67 @@ cleanup() {
 
 parse_args "$@"
 
+load_repo_env
+
 trap cleanup INT TERM EXIT
 
 run_backend() {
-  ensure_python_service "${ROOT_DIR}/backend"
+  local backend_dir="${ROOT_DIR}/apps/backend"
 
-  if ! .venv/bin/python -c "import requests" >/dev/null 2>&1; then
-    echo "Installing missing backend dependency 'requests'..."
-    .venv/bin/python -m pip install -e .
+  if [[ ! -d "${backend_dir}" ]]; then
+    echo "Error: monorepo backend not found at ${backend_dir}" >&2
+    exit 1
   fi
 
-  .venv/bin/python -m uvicorn src.api:app --reload --host 0.0.0.0 --port 8001
-}
+  cd "${backend_dir}"
 
-run_auth() {
-  ensure_python_service "${ROOT_DIR}/auth"
-  .venv/bin/python -m uvicorn src.__main__:app --reload --host 0.0.0.0 --port 8003
+  if ! command -v uv >/dev/null 2>&1; then
+    echo "Error: uv is required to run apps/backend (install via make install)." >&2
+    exit 1
+  fi
+
+  export METAR_CORS_ORIGINS="${METAR_CORS_ORIGINS:-http://localhost:5173}"
+  export DISABLE_AUTH="${DISABLE_AUTH:-true}"
+  export SUPABASE_URL="${SUPABASE_URL:-}"
+  export SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY:-${SUPABASE_PUBLISHABLE_KEY:-}}"
+
+  uv run uvicorn src.api:app --reload --host 0.0.0.0 --port 8001
 }
 
 run_frontend() {
-  cd "${ROOT_DIR}/frontend"
+  local frontend_dir="${ROOT_DIR}/apps/frontend"
+
+  if [[ ! -d "${frontend_dir}" ]]; then
+    echo "Error: monorepo frontend not found at ${frontend_dir}" >&2
+    exit 1
+  fi
+
+  cd "${frontend_dir}"
 
   ensure_node_npm
 
-  if [[ ! -d "node_modules" ]]; then
-    echo "Installing frontend dependencies..."
-    "${NPM_BIN}" install
+  if ! command -v pnpm >/dev/null 2>&1; then
+    echo "Error: pnpm is required to run apps/frontend (install via make install)." >&2
+    exit 1
   fi
 
-  "${NPM_BIN}" run dev -- --host 0.0.0.0 --port 5173
+  if [[ ! -d "node_modules" ]]; then
+    echo "Installing frontend dependencies..."
+    pnpm install
+  fi
+
+  export VITE_APP_URL="${VITE_APP_URL:-http://localhost:5173}"
+  export VITE_API_BASE_URL="${VITE_API_BASE_URL:-http://localhost:8001}"
+  export VITE_SUPABASE_URL="${VITE_SUPABASE_URL:-${SUPABASE_URL:-}}"
+  export VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY="${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-${SUPABASE_ANON_KEY:-${SUPABASE_PUBLISHABLE_KEY:-}}}"
+
+  pnpm exec vite --host 0.0.0.0 --port 5173
 }
 
 preflight_ports
 
-echo "Starting backend on :8001 (reload enabled)..."
+echo "Starting merged API (backend + auth) on :8001 (reload enabled)..."
 run_backend &
-PIDS+=("$!")
-
-echo "Starting auth on :8003 (reload enabled)..."
-run_auth &
 PIDS+=("$!")
 
 echo "Starting frontend on :5173 (Vite dev server)..."
