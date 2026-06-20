@@ -167,11 +167,11 @@ stages:
     completed_at: null
     substeps:
       task_loop:
-        status: in_progress
-        current_task: T11.4
+        status: completed
+        current_task: null
         phase: 4
         milestone: M11
-        notes: "T11.4 partial — services resumed; H0c+H4 green; H5 pending monorepo frontend CI deploy"
+        notes: "T11.4 complete — H0c+H4+H5 green on staging; TC-M001–M005 pass; Phase 4 gate criteria met on main"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
       - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"

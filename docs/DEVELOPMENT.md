@@ -13,7 +13,7 @@ Complete setup, local development, and testing for the METAR to IWXXM monorepo.
 | Docker (optional) | Compose v2 | Two-service local stack |
 | Supabase project | — | Auth and optional Postgres |
 
-No git submodules — clone is a plain `git clone`.
+Vendor schemas ship in-repo — a plain `git clone` is all you need.
 
 ## Quick start (local)
 

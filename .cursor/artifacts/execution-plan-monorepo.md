@@ -10,9 +10,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 4: CI, Deploy & Validate |
-| **Active milestone** | M11: Big-Bang Finalize |
-| **Active task** | T11.4 — Run H4/H5 connectivity on staging (UJ-OPS-001) |
-| **Tasks completed** | 57 / 63 |
+| **Active milestone** | M11: Big-Bang Finalize — **complete** |
+| **Active task** | — (all Phase 4 tasks complete; pending Phase 4 gate PR) |
+| **Tasks completed** | 63 / 63 |
 | **Last updated** | 2026-06-20 |
 
 ## Tech Stack Summary
@@ -240,17 +240,17 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | T11.1 | Remove `.gitmodules`; deinit submodules | Config | completed | migration-plan.md Step 8, ADR-003 | T10.4 | — |
 | T11.2 | Run full suite + TC-M001–M005 migration gate | Test | completed | migration-plan.md §Validation | T11.1 | — |
 | T11.3 | Update README, DEVELOPMENT.md, archive stale deploy docs | Docs | completed | migration-plan.md Step 9 | T11.2 | — |
-| T11.4 | Run H4/H5 connectivity on staging (UJ-OPS-001) | Test | in_progress | user-journeys.md UJ-OPS-001 | T9.5, T11.2 | — |
+| T11.4 | Run H4/H5 connectivity on staging (UJ-OPS-001) | Test | completed | user-journeys.md UJ-OPS-001 | T9.5, T11.2 | — |
 
 #### Phase 4 Gate Check
 
-- [ ] `.gitmodules` absent (TC-M004)
-- [ ] CI green on `feat/monorepo-big-bang` branch
-- [ ] render.yaml validates; two deployables + no observability pservs
-- [ ] TC-M001–M005 pass
-- [ ] H4 CORS + H5 bundle verification pass on staging
-- [ ] 95% coverage on all packages and apps
-- [ ] `DISABLE_AUTH=false` verified on staging
+- [x] `.gitmodules` absent (TC-M004)
+- [x] CI green on `main` (big-bang merged; ADR-003)
+- [x] render.yaml validates; two deployables + no observability pservs
+- [x] TC-M001–M005 pass (122 passed, 1 skipped — 2026-06-20)
+- [x] H4 CORS + H5 bundle verification pass on staging (2026-06-20)
+- [x] 95% coverage on all packages and apps (CI)
+- [x] `DISABLE_AUTH=false` verified on staging (auth routes require bearer token)
 
 ---
 
