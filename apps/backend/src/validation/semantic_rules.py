@@ -11,9 +11,10 @@ from typing import List, Optional
 
 class IssueSeverity(str, Enum):
     """Severity levels for validation issues."""
-    ERROR = "error"      # Data physically impossible
+
+    ERROR = "error"  # Data physically impossible
     WARNING = "warning"  # Unusual but possible
-    INFO = "info"        # Note: Data seems inconsistent but could be valid
+    INFO = "info"  # Note: Data seems inconsistent but could be valid
 
 
 @dataclass
@@ -49,14 +50,10 @@ class TemperatureValidationRule:
     def __init__(self):
         """Initialize temperature validation rule."""
         self.rule_name = "temperature_dewpoint_relationship"
-        self.min_dew_spread = 0.0    # °C, minimum T - Td
-        self.max_dew_spread = 50.0   # °C, maximum realistic T - Td
+        self.min_dew_spread = 0.0  # °C, minimum T - Td
+        self.max_dew_spread = 50.0  # °C, maximum realistic T - Td
 
-    def validate(
-        self,
-        temperature: Optional[float],
-        dewpoint: Optional[float]
-    ) -> List[ValidationIssue]:
+    def validate(self, temperature: Optional[float], dewpoint: Optional[float]) -> List[ValidationIssue]:
         """Validate temperature and dewpoint relationship.
 
         Args:
@@ -74,52 +71,54 @@ class TemperatureValidationRule:
 
         # Check 1: Dewpoint cannot exceed temperature (fundamental rule)
         if dewpoint > temperature:
-            issues.append(ValidationIssue(
-                rule_name=self.rule_name,
-                severity=IssueSeverity.ERROR,
-                message=f"Temperature ({temperature}°C) < Dewpoint ({dewpoint}°C): "
-                       f"IMPOSSIBLE - dewpoint cannot exceed temperature",
-                expected="Temperature ≥ Dewpoint",
-                actual=f"T={temperature}°C, Td={dewpoint}°C",
-                affected_field="temperature, dewpoint",
-                suggested_fix=f"Data error: Swap values (T={dewpoint}°C, Td={temperature}°C)"
-            ))
+            issues.append(
+                ValidationIssue(
+                    rule_name=self.rule_name,
+                    severity=IssueSeverity.ERROR,
+                    message=f"Temperature ({temperature}°C) < Dewpoint ({dewpoint}°C): "
+                    f"IMPOSSIBLE - dewpoint cannot exceed temperature",
+                    expected="Temperature ≥ Dewpoint",
+                    actual=f"T={temperature}°C, Td={dewpoint}°C",
+                    affected_field="temperature, dewpoint",
+                    suggested_fix=f"Data error: Swap values (T={dewpoint}°C, Td={temperature}°C)",
+                )
+            )
             return issues
 
         # Check 2: Reasonable spread between T and Td
         spread = temperature - dewpoint
 
         if spread < self.min_dew_spread:
-            issues.append(ValidationIssue(
-                rule_name=self.rule_name,
-                severity=IssueSeverity.WARNING,
-                message=f"Very small T-Td spread ({spread:.1f}°C): "
-                       f"Indicates near-saturation (unusual but possible)",
-                expected=f"T - Td typically ≥ {self.min_dew_spread}°C",
-                actual=f"T-Td = {spread:.1f}°C",
-                affected_field="temperature, dewpoint",
-                suggested_fix="Verify data source for accuracy"
-            ))
+            issues.append(
+                ValidationIssue(
+                    rule_name=self.rule_name,
+                    severity=IssueSeverity.WARNING,
+                    message=f"Very small T-Td spread ({spread:.1f}°C): "
+                    f"Indicates near-saturation (unusual but possible)",
+                    expected=f"T - Td typically ≥ {self.min_dew_spread}°C",
+                    actual=f"T-Td = {spread:.1f}°C",
+                    affected_field="temperature, dewpoint",
+                    suggested_fix="Verify data source for accuracy",
+                )
+            )
 
         if spread > self.max_dew_spread:
-            issues.append(ValidationIssue(
-                rule_name=self.rule_name,
-                severity=IssueSeverity.WARNING,
-                message=f"Very large T-Td spread ({spread:.1f}°C): "
-                       f"Indicates very dry air (possible in deserts/upper atmosphere)",
-                expected=f"T - Td typically ≤ {self.max_dew_spread}°C",
-                actual=f"T-Td = {spread:.1f}°C",
-                affected_field="temperature, dewpoint",
-                suggested_fix="Verify high-altitude or desert station"
-            ))
+            issues.append(
+                ValidationIssue(
+                    rule_name=self.rule_name,
+                    severity=IssueSeverity.WARNING,
+                    message=f"Very large T-Td spread ({spread:.1f}°C): "
+                    f"Indicates very dry air (possible in deserts/upper atmosphere)",
+                    expected=f"T - Td typically ≤ {self.max_dew_spread}°C",
+                    actual=f"T-Td = {spread:.1f}°C",
+                    affected_field="temperature, dewpoint",
+                    suggested_fix="Verify high-altitude or desert station",
+                )
+            )
 
         return issues
 
-    def calculate_relative_humidity(
-        self,
-        temperature: float,
-        dewpoint: float
-    ) -> float:
+    def calculate_relative_humidity(self, temperature: float, dewpoint: float) -> float:
         """Calculate approximate relative humidity from T and Td.
 
         Uses Magnus formula approximation.
@@ -155,32 +154,29 @@ class CloudLayerValidationRule:
 
     # Coverage hierarchy (lower = more sky visible)
     COVERAGE_RANK = {
-        "CLR": 0,    # Clear (SKC code equivalent)
-        "SKC": 0,    # Sky Clear
-        "FEW": 1,    # 1-2 oktas (12.5-25%)
-        "SCT": 2,    # 3-4 oktas (37.5-50%)
-        "BKN": 3,    # 5-7 oktas (62.5-87.5%)
-        "OVC": 4,    # 8 oktas (100%)
+        "CLR": 0,  # Clear (SKC code equivalent)
+        "SKC": 0,  # Sky Clear
+        "FEW": 1,  # 1-2 oktas (12.5-25%)
+        "SCT": 2,  # 3-4 oktas (37.5-50%)
+        "BKN": 3,  # 5-7 oktas (62.5-87.5%)
+        "OVC": 4,  # 8 oktas (100%)
     }
 
     # Altitude constraints (in meters)
-    MIN_ALTITUDE_M = 100       # Minimum reported cloud base
-    MAX_ALTITUDE_M = 30000     # Maximum reportable altitude (50,000 ft)
-    TYPICAL_MAX_M = 6000       # Typical max for surface obs (~20,000 ft)
+    MIN_ALTITUDE_M = 100  # Minimum reported cloud base
+    MAX_ALTITUDE_M = 30000  # Maximum reportable altitude (50,000 ft)
+    TYPICAL_MAX_M = 6000  # Typical max for surface obs (~20,000 ft)
 
     # Gap analysis thresholds
-    SMALL_GAP_M = 500          # Small gap between layers (< 500m)
-    LARGE_GAP_M = 3000         # Large gap (> 3km)
-    EXTREME_GAP_M = 8000       # Extreme gap (> 8km)
+    SMALL_GAP_M = 500  # Small gap between layers (< 500m)
+    LARGE_GAP_M = 3000  # Large gap (> 3km)
+    EXTREME_GAP_M = 8000  # Extreme gap (> 8km)
 
     def __init__(self):
         """Initialize cloud layer validation rule."""
         self.rule_name = "cloud_layer_consistency"
 
-    def _check_altitude_validity(
-        self,
-        layers: List[dict]
-    ) -> List[ValidationIssue]:
+    def _check_altitude_validity(self, layers: List[dict]) -> List[ValidationIssue]:
         """Check each layer's altitude is within valid range.
 
         Returns issues for out-of-range altitudes.
@@ -196,48 +192,49 @@ class CloudLayerValidationRule:
 
             # Check minimum altitude
             if alt < self.MIN_ALTITUDE_M and alt > 0:
-                issues.append(ValidationIssue(
-                    rule_name=self.rule_name,
-                    severity=IssueSeverity.WARNING,
-                    message=f"Layer {i}: Cloud altitude below minimum threshold "
-                           f"({alt}m < {self.MIN_ALTITUDE_M}m)",
-                    expected=f"Cloud base >= {self.MIN_ALTITUDE_M}m or 0 for ground",
-                    actual=f"{alt}m for {coverage}",
-                    affected_field=f"cloud_layers[{i}].altitude_m",
-                    suggested_fix="Verify altitude measurement"
-                ))
+                issues.append(
+                    ValidationIssue(
+                        rule_name=self.rule_name,
+                        severity=IssueSeverity.WARNING,
+                        message=f"Layer {i}: Cloud altitude below minimum threshold ({alt}m < {self.MIN_ALTITUDE_M}m)",
+                        expected=f"Cloud base >= {self.MIN_ALTITUDE_M}m or 0 for ground",
+                        actual=f"{alt}m for {coverage}",
+                        affected_field=f"cloud_layers[{i}].altitude_m",
+                        suggested_fix="Verify altitude measurement",
+                    )
+                )
 
             # Check maximum altitude
             if alt > self.MAX_ALTITUDE_M:
-                issues.append(ValidationIssue(
-                    rule_name=self.rule_name,
-                    severity=IssueSeverity.WARNING,
-                    message=f"Layer {i}: Cloud altitude exceeds maximum "
-                           f"({alt}m > {self.MAX_ALTITUDE_M}m)",
-                    expected=f"Cloud base <= {self.MAX_ALTITUDE_M}m",
-                    actual=f"{alt}m for {coverage}",
-                    affected_field=f"cloud_layers[{i}].altitude_m",
-                    suggested_fix="Verify altitude measurement or check data source"
-                ))
+                issues.append(
+                    ValidationIssue(
+                        rule_name=self.rule_name,
+                        severity=IssueSeverity.WARNING,
+                        message=f"Layer {i}: Cloud altitude exceeds maximum ({alt}m > {self.MAX_ALTITUDE_M}m)",
+                        expected=f"Cloud base <= {self.MAX_ALTITUDE_M}m",
+                        actual=f"{alt}m for {coverage}",
+                        affected_field=f"cloud_layers[{i}].altitude_m",
+                        suggested_fix="Verify altitude measurement or check data source",
+                    )
+                )
 
             # Warn if unusual but possible (above typical max)
             if alt > self.TYPICAL_MAX_M and alt <= self.MAX_ALTITUDE_M:
-                issues.append(ValidationIssue(
-                    rule_name=self.rule_name,
-                    severity=IssueSeverity.INFO,
-                    message=f"Layer {i}: High altitude cloud ({alt}m above {self.TYPICAL_MAX_M}m)",
-                    expected=f"Typical clouds below {self.TYPICAL_MAX_M}m",
-                    actual=f"{alt}m for {coverage}",
-                    affected_field=f"cloud_layers[{i}].altitude_m",
-                    suggested_fix="Expected for high-altitude cirrus or upper-level reporting"
-                ))
+                issues.append(
+                    ValidationIssue(
+                        rule_name=self.rule_name,
+                        severity=IssueSeverity.INFO,
+                        message=f"Layer {i}: High altitude cloud ({alt}m above {self.TYPICAL_MAX_M}m)",
+                        expected=f"Typical clouds below {self.TYPICAL_MAX_M}m",
+                        actual=f"{alt}m for {coverage}",
+                        affected_field=f"cloud_layers[{i}].altitude_m",
+                        suggested_fix="Expected for high-altitude cirrus or upper-level reporting",
+                    )
+                )
 
         return issues
 
-    def _check_altitude_gaps(
-        self,
-        layers: List[dict]
-    ) -> List[ValidationIssue]:
+    def _check_altitude_gaps(self, layers: List[dict]) -> List[ValidationIssue]:
         """Analyze gaps between cloud layers for anomalies.
 
         Returns issues for unusual gap patterns.
@@ -262,36 +259,35 @@ class CloudLayerValidationRule:
 
             # Check for extreme gaps (possible reporting error)
             if gap > self.EXTREME_GAP_M:
-                issues.append(ValidationIssue(
-                    rule_name=self.rule_name,
-                    severity=IssueSeverity.WARNING,
-                    message=f"Extreme gap between layers {i} and {i+1}: {gap}m",
-                    expected=f"Typical gaps < {self.EXTREME_GAP_M}m",
-                    actual=f"{current_cov} at {current_alt}m, "
-                          f"{next_cov} at {next_alt}m (gap={gap}m)",
-                    affected_field=f"cloud_layers[{i}:{i+1}]",
-                    suggested_fix="Verify layer altitudes"
-                ))
+                issues.append(
+                    ValidationIssue(
+                        rule_name=self.rule_name,
+                        severity=IssueSeverity.WARNING,
+                        message=f"Extreme gap between layers {i} and {i + 1}: {gap}m",
+                        expected=f"Typical gaps < {self.EXTREME_GAP_M}m",
+                        actual=f"{current_cov} at {current_alt}m, {next_cov} at {next_alt}m (gap={gap}m)",
+                        affected_field=f"cloud_layers[{i}:{i + 1}]",
+                        suggested_fix="Verify layer altitudes",
+                    )
+                )
 
             # Info level for large but possible gaps
             elif gap > self.LARGE_GAP_M:
-                issues.append(ValidationIssue(
-                    rule_name=self.rule_name,
-                    severity=IssueSeverity.INFO,
-                    message=f"Large gap between layers {i} and {i+1}: {gap}m",
-                    expected=f"Typical gaps < {self.LARGE_GAP_M}m",
-                    actual=f"{current_cov} at {current_alt}m, "
-                          f"{next_cov} at {next_alt}m",
-                    affected_field=f"cloud_layers[{i}:{i+1}]",
-                    suggested_fix="Clear air layer between clouds (normal for vertical structure)"
-                ))
+                issues.append(
+                    ValidationIssue(
+                        rule_name=self.rule_name,
+                        severity=IssueSeverity.INFO,
+                        message=f"Large gap between layers {i} and {i + 1}: {gap}m",
+                        expected=f"Typical gaps < {self.LARGE_GAP_M}m",
+                        actual=f"{current_cov} at {current_alt}m, {next_cov} at {next_alt}m",
+                        affected_field=f"cloud_layers[{i}:{i + 1}]",
+                        suggested_fix="Clear air layer between clouds (normal for vertical structure)",
+                    )
+                )
 
         return issues
 
-    def _check_coverage_consistency(
-        self,
-        layers: List[dict]
-    ) -> List[ValidationIssue]:
+    def _check_coverage_consistency(self, layers: List[dict]) -> List[ValidationIssue]:
         """Validate coverage patterns are physically consistent.
 
         Returns issues for illogical coverage sequences.
@@ -314,24 +310,22 @@ class CloudLayerValidationRule:
             # (can't have FEW at 1000m, then OVC at 2000m)
             # FEW=rank 1, OVC=rank 4, so next_rank (4) > current_rank (1) = increases
             if next_rank > current_rank:
-                issues.append(ValidationIssue(
-                    rule_name=self.rule_name,
-                    severity=IssueSeverity.WARNING,
-                    message=f"Cloud coverage increases upward (layer {i} → {i+1}): "
-                           f"{current_cov} → {next_cov}",
-                    expected="Cloud coverage should decrease or stay same with altitude",
-                    actual=f"Layer {i}: {current_cov} (rank {current_rank}), "
-                          f"Layer {i+1}: {next_cov} (rank {next_rank})",
-                    affected_field=f"cloud_layers[{i}:{i+1}]",
-                    suggested_fix="Verify coverage observations match altitude structure"
-                ))
+                issues.append(
+                    ValidationIssue(
+                        rule_name=self.rule_name,
+                        severity=IssueSeverity.WARNING,
+                        message=f"Cloud coverage increases upward (layer {i} → {i + 1}): {current_cov} → {next_cov}",
+                        expected="Cloud coverage should decrease or stay same with altitude",
+                        actual=f"Layer {i}: {current_cov} (rank {current_rank}), "
+                        f"Layer {i + 1}: {next_cov} (rank {next_rank})",
+                        affected_field=f"cloud_layers[{i}:{i + 1}]",
+                        suggested_fix="Verify coverage observations match altitude structure",
+                    )
+                )
 
         return issues
 
-    def validate(
-        self,
-        cloud_layers: List[dict]
-    ) -> List[ValidationIssue]:
+    def validate(self, cloud_layers: List[dict]) -> List[ValidationIssue]:
         """Validate cloud layer sequence (Task 3.2 enhanced).
 
         Performs comprehensive checks:
@@ -359,15 +353,17 @@ class CloudLayerValidationRule:
         # Check 1: Clear sky exclusivity (highest priority)
         clear_layers = [l for l in cloud_layers if l.get("coverage") in ["CLR", "SKC"]]
         if clear_layers and len(cloud_layers) > 1:
-            issues.append(ValidationIssue(
-                rule_name=self.rule_name,
-                severity=IssueSeverity.ERROR,
-                message="CLR/SKC (clear sky) cannot coexist with other cloud layers",
-                expected="If CLR or SKC present, must be only layer",
-                actual=f"{len(cloud_layers)} layers including {len(clear_layers)} clear layer",
-                affected_field="cloud_layers",
-                suggested_fix="Remove redundant layers after CLR/SKC"
-            ))
+            issues.append(
+                ValidationIssue(
+                    rule_name=self.rule_name,
+                    severity=IssueSeverity.ERROR,
+                    message="CLR/SKC (clear sky) cannot coexist with other cloud layers",
+                    expected="If CLR or SKC present, must be only layer",
+                    actual=f"{len(cloud_layers)} layers including {len(clear_layers)} clear layer",
+                    affected_field="cloud_layers",
+                    suggested_fix="Remove redundant layers after CLR/SKC",
+                )
+            )
             return issues
 
         # Check 2: Altitude validity for each layer
@@ -385,16 +381,17 @@ class CloudLayerValidationRule:
             next_alt = layers_by_alt[i + 1].get("altitude_m", 0)
 
             if current_alt >= next_alt and current_alt > 0 and next_alt > 0:
-                issues.append(ValidationIssue(
-                    rule_name=self.rule_name,
-                    severity=IssueSeverity.WARNING,
-                    message=f"Cloud altitudes not strictly increasing: "
-                           f"{current_alt}m >= {next_alt}m",
-                    expected="Cloud bases strictly increase with height",
-                    actual=f"Layer {i}: {current_alt}m, Layer {i+1}: {next_alt}m",
-                    affected_field=f"cloud_layers[{i}:{i+1}]",
-                    suggested_fix="Verify altitude measurements"
-                ))
+                issues.append(
+                    ValidationIssue(
+                        rule_name=self.rule_name,
+                        severity=IssueSeverity.WARNING,
+                        message=f"Cloud altitudes not strictly increasing: {current_alt}m >= {next_alt}m",
+                        expected="Cloud bases strictly increase with height",
+                        actual=f"Layer {i}: {current_alt}m, Layer {i + 1}: {next_alt}m",
+                        affected_field=f"cloud_layers[{i}:{i + 1}]",
+                        suggested_fix="Verify altitude measurements",
+                    )
+                )
 
         # Check 5: Coverage consistency
         issues.extend(self._check_coverage_consistency(layers_by_alt))
@@ -425,7 +422,7 @@ class VisibilityWeatherValidationRule:
             "typical_m": "200-500",
             "description": "Fog: very restricted visibility",
             "severity_error_min": 0,
-            "severity_error_max": 1050  # Above 1000m is not fog anymore
+            "severity_error_max": 1050,  # Above 1000m is not fog anymore
         },
         "BR": {
             "min_m": 500,
@@ -433,7 +430,7 @@ class VisibilityWeatherValidationRule:
             "typical_m": "2000-4000",
             "description": "Mist: light fog conditions",
             "severity_error_min": 250,
-            "severity_error_max": 5500
+            "severity_error_max": 5500,
         },
         "RA": {
             "min_m": 1000,
@@ -441,7 +438,7 @@ class VisibilityWeatherValidationRule:
             "typical_m": "2000-5000",
             "description": "Rain: moderate visibility reduction",
             "severity_error_min": 500,
-            "severity_error_max": 15000
+            "severity_error_max": 15000,
         },
         "SN": {
             "min_m": 100,
@@ -449,7 +446,7 @@ class VisibilityWeatherValidationRule:
             "typical_m": "500-2000",
             "description": "Snow: usually < 2000m",
             "severity_error_min": 50,
-            "severity_error_max": 8000
+            "severity_error_max": 8000,
         },
         "TS": {
             "min_m": 500,
@@ -457,7 +454,7 @@ class VisibilityWeatherValidationRule:
             "typical_m": "variable",
             "description": "Thunderstorm: highly variable",
             "severity_error_min": 300,
-            "severity_error_max": 25000
+            "severity_error_max": 25000,
         },
         "HZ": {
             "min_m": 1000,
@@ -465,7 +462,7 @@ class VisibilityWeatherValidationRule:
             "typical_m": "3000-8000",
             "description": "Haze: moderate visibility",
             "severity_error_min": 500,
-            "severity_error_max": 15000
+            "severity_error_max": 15000,
         },
         "DZ": {
             "min_m": 500,
@@ -473,7 +470,7 @@ class VisibilityWeatherValidationRule:
             "typical_m": "2000-4000",
             "description": "Drizzle: light precipitation",
             "severity_error_min": 300,
-            "severity_error_max": 8000
+            "severity_error_max": 8000,
         },
     }
 
@@ -489,11 +486,7 @@ class VisibilityWeatherValidationRule:
         """Initialize visibility-weather validation rule."""
         self.rule_name = "visibility_weather_consistency"
 
-    def _check_single_phenomenon(
-        self,
-        phenomenon: str,
-        visibility: int
-    ) -> List[ValidationIssue]:
+    def _check_single_phenomenon(self, phenomenon: str, visibility: int) -> List[ValidationIssue]:
         """Check visibility for a single weather phenomenon.
 
         Returns list of issues.
@@ -523,25 +516,22 @@ class VisibilityWeatherValidationRule:
 
         direction = "low" if (visibility < min_vis or visibility < error_min) else "high"
 
-        issues.append(ValidationIssue(
-            rule_name=self.rule_name,
-            severity=severity,
-            message=f"{phenomenon} reported with unusually {direction} visibility: "
-                   f"{visibility}m{message_suffix} ({expected['description']})",
-            expected=f"{phenomenon}: {min_vis}-{max_vis}m "
-                    f"(typical: {expected['typical_m']}m)",
-            actual=f"Visibility: {visibility}m",
-            affected_field="weather_phenomena, visibility",
-            suggested_fix=f"Verify {phenomenon} code or visibility measurement"
-        ))
+        issues.append(
+            ValidationIssue(
+                rule_name=self.rule_name,
+                severity=severity,
+                message=f"{phenomenon} reported with unusually {direction} visibility: "
+                f"{visibility}m{message_suffix} ({expected['description']})",
+                expected=f"{phenomenon}: {min_vis}-{max_vis}m (typical: {expected['typical_m']}m)",
+                actual=f"Visibility: {visibility}m",
+                affected_field="weather_phenomena, visibility",
+                suggested_fix=f"Verify {phenomenon} code or visibility measurement",
+            )
+        )
 
         return issues
 
-    def _check_phenomenon_combinations(
-        self,
-        phenomena: List[str],
-        visibility: int
-    ) -> List[ValidationIssue]:
+    def _check_phenomenon_combinations(self, phenomena: List[str], visibility: int) -> List[ValidationIssue]:
         """Check visibility against combinations of phenomena.
 
         Multiple phenomena compound effects on visibility.
@@ -564,23 +554,23 @@ class VisibilityWeatherValidationRule:
                 restrictive_max = min(vis1["max_m"], vis2["max_m"])
 
                 if visibility > restrictive_max:
-                    issues.append(ValidationIssue(
-                        rule_name=self.rule_name,
-                        severity=IssueSeverity.INFO,
-                        message=f"Multiple phenomena ({p1} + {p2}): visibility higher than expected "
-                               f"for combined effect ({visibility}m > typical {restrictive_max}m)",
-                        expected=f"{description} - visibility typically < {restrictive_max}m",
-                        actual=f"Visibility: {visibility}m",
-                        affected_field="weather_phenomena",
-                        suggested_fix="Verify if phenomena should be reported together"
-                    ))
+                    issues.append(
+                        ValidationIssue(
+                            rule_name=self.rule_name,
+                            severity=IssueSeverity.INFO,
+                            message=f"Multiple phenomena ({p1} + {p2}): visibility higher than expected "
+                            f"for combined effect ({visibility}m > typical {restrictive_max}m)",
+                            expected=f"{description} - visibility typically < {restrictive_max}m",
+                            actual=f"Visibility: {visibility}m",
+                            affected_field="weather_phenomena",
+                            suggested_fix="Verify if phenomena should be reported together",
+                        )
+                    )
 
         return issues
 
     def validate(
-        self,
-        visibility_meters: Optional[int],
-        weather_phenomena: Optional[List[str]] = None
+        self, visibility_meters: Optional[int], weather_phenomena: Optional[List[str]] = None
     ) -> List[ValidationIssue]:
         """Validate visibility aligns with weather phenomena (Task 3.3 enhanced).
 
@@ -656,30 +646,19 @@ class SemanticValidationEngine:
         all_issues = []
 
         # Run temperature validation
-        all_issues.extend(
-            self.temperature_rule.validate(temperature, dewpoint)
-        )
+        all_issues.extend(self.temperature_rule.validate(temperature, dewpoint))
 
         # Run cloud layer validation
         if cloud_layers:
-            all_issues.extend(
-                self.cloud_rule.validate(cloud_layers)
-            )
+            all_issues.extend(self.cloud_rule.validate(cloud_layers))
 
         # Run visibility-weather validation
         if weather_phenomena:
-            all_issues.extend(
-                self.visibility_rule.validate(visibility_meters, weather_phenomena)
-            )
+            all_issues.extend(self.visibility_rule.validate(visibility_meters, weather_phenomena))
 
         return all_issues
 
-    def generate_report(
-        self,
-        issues: List[ValidationIssue],
-        station_id: str = "UNKNOWN",
-        raw_metar: str = ""
-    ) -> dict:
+    def generate_report(self, issues: List[ValidationIssue], station_id: str = "UNKNOWN", raw_metar: str = "") -> dict:
         """Generate structured validation report.
 
         Args:
@@ -702,7 +681,7 @@ class SemanticValidationEngine:
                 "total_issues": len(issues),
                 "errors": error_count,
                 "warnings": warning_count,
-                "info": info_count
+                "info": info_count,
             },
             "issues": [
                 {
@@ -712,8 +691,8 @@ class SemanticValidationEngine:
                     "expected": issue.expected,
                     "actual": issue.actual,
                     "field": issue.affected_field,
-                    "suggested_fix": issue.suggested_fix
+                    "suggested_fix": issue.suggested_fix,
                 }
                 for issue in issues
-            ]
+            ],
         }

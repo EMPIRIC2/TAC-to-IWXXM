@@ -129,7 +129,7 @@ class TestCloudLayerValidationRule:
         layers = [
             {"coverage": "FEW", "altitude_m": 800},
             {"coverage": "SCT", "altitude_m": 2000},
-            {"coverage": "OVC", "altitude_m": 5000}
+            {"coverage": "OVC", "altitude_m": 5000},
         ]
         issues = rule.validate(layers)
         # Should have no critical errors
@@ -150,10 +150,7 @@ class TestCloudLayerValidationRule:
     # Invalid arrangements
     def test_invalid_clear_sky_with_other_layers(self, rule):
         """Test INVALID: CLR coexists with other layers."""
-        layers = [
-            {"coverage": "CLR", "altitude_m": 0},
-            {"coverage": "FEW", "altitude_m": 1000}
-        ]
+        layers = [{"coverage": "CLR", "altitude_m": 0}, {"coverage": "FEW", "altitude_m": 1000}]
         issues = rule.validate(layers)
 
         # Should have at least 1 error about clear sky exclusivity
@@ -161,10 +158,7 @@ class TestCloudLayerValidationRule:
 
     def test_invalid_skc_with_other_layers(self, rule):
         """Test INVALID: SKC coexists with other layers."""
-        layers = [
-            {"coverage": "SKC", "altitude_m": 0},
-            {"coverage": "OVC", "altitude_m": 2000}
-        ]
+        layers = [{"coverage": "SKC", "altitude_m": 0}, {"coverage": "OVC", "altitude_m": 2000}]
         issues = rule.validate(layers)
         assert len([i for i in issues if i.severity == IssueSeverity.ERROR]) >= 1
 
@@ -209,8 +203,7 @@ class TestVisibilityWeatherValidationRule:
         # Should have at least a warning/error
         assert len(issues) >= 1
         # Fog > 1000m is unusual
-        assert any(i.severity in [IssueSeverity.ERROR, IssueSeverity.WARNING]
-                  for i in issues)
+        assert any(i.severity in [IssueSeverity.ERROR, IssueSeverity.WARNING] for i in issues)
 
     def test_invalid_snow_no_low_visibility(self, rule):
         """Test INVALID: Snow with unusually high visibility."""
@@ -234,7 +227,7 @@ class TestVisibilityWeatherValidationRule:
         """Test with unknown weather code - skip that phenomenon."""
         issues = rule.validate(
             visibility_meters=5000,
-            weather_phenomena=["XX"]  # Unknown code
+            weather_phenomena=["XX"],  # Unknown code
         )
         # Should skip unknown code, no issues
         assert len(issues) == 0
@@ -252,7 +245,7 @@ class TestSemanticValidationEngine:
         """Test engine runs temperature validation."""
         issues = engine.validate_metar_data(
             temperature=10.0,
-            dewpoint=15.0  # Invalid: Td > T
+            dewpoint=15.0,  # Invalid: Td > T
         )
 
         assert len([i for i in issues if i.severity == IssueSeverity.ERROR]) >= 1
@@ -261,7 +254,7 @@ class TestSemanticValidationEngine:
         """Test engine runs cloud validation."""
         cloud_layers = [
             {"coverage": "CLR", "altitude_m": 0},
-            {"coverage": "FEW", "altitude_m": 1000}  # Invalid: CLR with others
+            {"coverage": "FEW", "altitude_m": 1000},  # Invalid: CLR with others
         ]
 
         issues = engine.validate_metar_data(cloud_layers=cloud_layers)
@@ -271,7 +264,7 @@ class TestSemanticValidationEngine:
         """Test engine runs visibility validation."""
         issues = engine.validate_metar_data(
             visibility_meters=5000,
-            weather_phenomena=["FG"]  # Invalid: Fog > 1000m
+            weather_phenomena=["FG"],  # Invalid: Fog > 1000m
         )
 
         assert len(issues) >= 1
@@ -281,12 +274,9 @@ class TestSemanticValidationEngine:
         issues = engine.validate_metar_data(
             temperature=15.0,
             dewpoint=10.0,  # Valid
-            cloud_layers=[
-                {"coverage": "BKN", "altitude_m": 1000},
-                {"coverage": "OVC", "altitude_m": 3000}
-            ],  # Valid
+            cloud_layers=[{"coverage": "BKN", "altitude_m": 1000}, {"coverage": "OVC", "altitude_m": 3000}],  # Valid
             visibility_meters=3000,
-            weather_phenomena=["RA"]  # Valid
+            weather_phenomena=["RA"],  # Valid
         )
 
         # All valid, so no errors
@@ -296,14 +286,10 @@ class TestSemanticValidationEngine:
         """Test engine generates proper report."""
         issues = engine.validate_metar_data(
             temperature=10.0,
-            dewpoint=15.0  # Invalid
+            dewpoint=15.0,  # Invalid
         )
 
-        report = engine.generate_report(
-            issues,
-            station_id="KJFK",
-            raw_metar="METAR KJFK..."
-        )
+        report = engine.generate_report(issues, station_id="KJFK", raw_metar="METAR KJFK...")
 
         assert report["station_id"] == "KJFK"
         assert "METAR KJFK" in report["raw_metar"]
@@ -323,13 +309,13 @@ class TestIntegrationWithTestData:
         """Test typical well-formed METAR data."""
         # METAR KJFK 151851Z 31008KT 10SM FEW250 M04/M17 A3034 RMK AO2 SLP279 T10441172
         issues = engine.validate_metar_data(
-            temperature=-4.0,    # -04°C
-            dewpoint=-17.0,      # -17°C
+            temperature=-4.0,  # -04°C
+            dewpoint=-17.0,  # -17°C
             cloud_layers=[
                 {"coverage": "FEW", "altitude_m": 7620}  # 250 × 30.48m
             ],
             visibility_meters=16000,  # 10 statute miles
-            weather_phenomena=[]  # No weather
+            weather_phenomena=[],  # No weather
         )
 
         # Should pass all validation
@@ -345,7 +331,7 @@ class TestIntegrationWithTestData:
                 {"coverage": "BKN", "altitude_m": 300}  # 10 × 30m
             ],
             visibility_meters=3000,
-            weather_phenomena=["RA", "SHRA"]  # Rain, rain showers
+            weather_phenomena=["RA", "SHRA"],  # Rain, rain showers
         )
 
         # Should pass - all consistent

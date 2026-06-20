@@ -3,6 +3,7 @@
 This file ensures backend src is importable in tests and sets up environment.
 All other pytest configuration is in pyproject.toml.
 """
+
 import os
 
 import pytest
@@ -22,7 +23,7 @@ os.environ.setdefault("IWXXM_VERSION", "2025-2")
 @pytest.fixture(scope="session", autouse=True)
 def ensure_airport_data():
     """Ensure airport data is loaded before any tests run.
-    
+
     This fixture runs once per test session and ensures the AirportValidator
     singleton has loaded the airports.json data file. This is required for
     METAR conversion tests that need airport metadata.
@@ -32,4 +33,3 @@ def ensure_airport_data():
     assert validator.count() > 0, "Airport data not loaded"
 
     return validator
-

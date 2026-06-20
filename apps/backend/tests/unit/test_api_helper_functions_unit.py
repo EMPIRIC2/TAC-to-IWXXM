@@ -214,7 +214,9 @@ async def test_add_translation_centre_headers_sets_known_headers(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_add_translation_centre_headers_tolerates_config_exception(monkeypatch):
-    monkeypatch.setattr(api_module, "get_translation_centre_info", lambda: (_ for _ in ()).throw(RuntimeError("no config")))
+    monkeypatch.setattr(
+        api_module, "get_translation_centre_info", lambda: (_ for _ in ()).throw(RuntimeError("no config"))
+    )
 
     async def _next(_request):
         return Response("ok")

@@ -1,4 +1,5 @@
 """Unit tests for VersionMigrator – 0% coverage target."""
+
 import xml.etree.ElementTree as ET
 from unittest.mock import patch
 
@@ -52,24 +53,27 @@ class TestVersionMigratorMigrate:
 
     def test_invalid_xml_raises(self):
         m = VersionMigrator()
-        with patch("src.utilities.version_migration.get_breaking_changes", return_value=[
-            {"action": "remove", "element": "foo", "xpath": "//foo", "reason": "gone"}
-        ]):
+        with patch(
+            "src.utilities.version_migration.get_breaking_changes",
+            return_value=[{"action": "remove", "element": "foo", "xpath": "//foo", "reason": "gone"}],
+        ):
             with pytest.raises(ET.ParseError):
                 m.migrate(INVALID_XML, "2023-1", "2025-2")
 
     def test_remove_action_removes_element(self):
-        xml = '''<?xml version="1.0"?>
+        xml = """<?xml version="1.0"?>
 <root xmlns:iwxxm="http://icao.int/iwxxm">
   <iwxxm:OldElement>old data</iwxxm:OldElement>
   <iwxxm:KeeperElement>keep this</iwxxm:KeeperElement>
-</root>'''
-        breaking = [{
-            "action": "remove",
-            "element": "OldElement",
-            "xpath": ".//{http://icao.int/iwxxm}OldElement",
-            "reason": "Deprecated in 2025-2",
-        }]
+</root>"""
+        breaking = [
+            {
+                "action": "remove",
+                "element": "OldElement",
+                "xpath": ".//{http://icao.int/iwxxm}OldElement",
+                "reason": "Deprecated in 2025-2",
+            }
+        ]
         m = VersionMigrator()
         with patch("src.utilities.version_migration.get_breaking_changes", return_value=breaking):
             result_xml, warnings = m.migrate(xml, "2023-1", "2025-2")
@@ -77,15 +81,17 @@ class TestVersionMigratorMigrate:
         assert "OldElement" not in result_xml
 
     def test_warnings_accumulated(self):
-        xml = '''<root xmlns:iwxxm="http://icao.int/iwxxm">
+        xml = """<root xmlns:iwxxm="http://icao.int/iwxxm">
   <iwxxm:Gone>x</iwxxm:Gone>
-</root>'''
-        breaking = [{
-            "action": "remove",
-            "element": "Gone",
-            "xpath": ".//{http://icao.int/iwxxm}Gone",
-            "reason": "Gone in 2025-2",
-        }]
+</root>"""
+        breaking = [
+            {
+                "action": "remove",
+                "element": "Gone",
+                "xpath": ".//{http://icao.int/iwxxm}Gone",
+                "reason": "Gone in 2025-2",
+            }
+        ]
         m = VersionMigrator()
         with patch("src.utilities.version_migration.get_breaking_changes", return_value=breaking):
             result_xml, warnings = m.migrate(xml, "2023-1", "2025-2")
@@ -101,12 +107,14 @@ class TestVersionMigratorMigrate:
 
     def test_unsupported_action_is_skipped(self):
         """Unknown actions should be silently ignored."""
-        breaking = [{
-            "action": "transform",  # not implemented
-            "element": "Elem",
-            "xpath": "//Elem",
-            "reason": "change",
-        }]
+        breaking = [
+            {
+                "action": "transform",  # not implemented
+                "element": "Elem",
+                "xpath": "//Elem",
+                "reason": "change",
+            }
+        ]
         m = VersionMigrator()
         with patch("src.utilities.version_migration.get_breaking_changes", return_value=breaking):
             result_xml, warnings = m.migrate(SIMPLE_XML, "2023-1", "2025-2")

@@ -40,14 +40,15 @@ class TestMetarCorsOriginsPolicy:
         assert parse_comma_separated_origins("   ") == []
         assert parse_comma_separated_origins(None) == []
 
-    def test_staging_origin_from_env(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_staging_origin_from_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """When set, METAR_CORS_ORIGINS must be parseable for API CORS middleware."""
         monkeypatch.setenv(
             METAR_CORS_ORIGINS_ENV, "https://staging-frontend.onrender.com"
         )
-        assert os.environ[METAR_CORS_ORIGINS_ENV] == "https://staging-frontend.onrender.com"
+        assert (
+            os.environ[METAR_CORS_ORIGINS_ENV]
+            == "https://staging-frontend.onrender.com"
+        )
         assert parse_comma_separated_origins(os.environ[METAR_CORS_ORIGINS_ENV]) == [
             "https://staging-frontend.onrender.com"
         ]

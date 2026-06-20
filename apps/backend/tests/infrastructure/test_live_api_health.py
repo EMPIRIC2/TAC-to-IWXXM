@@ -48,7 +48,7 @@ async def live_client():
             base_url=LIVE_API_URL,
             headers=headers,
             timeout=5.0,  # Short timeout for availability check
-            follow_redirects=True
+            follow_redirects=True,
         ) as test_client:
             await test_client.get("/health")
     except (httpx.ConnectError, httpx.TimeoutException):
@@ -56,10 +56,7 @@ async def live_client():
 
     # If we get here, API is available
     async with httpx.AsyncClient(
-        base_url=LIVE_API_URL,
-        headers=headers,
-        timeout=LIVE_API_TIMEOUT,
-        follow_redirects=True
+        base_url=LIVE_API_URL, headers=headers, timeout=LIVE_API_TIMEOUT, follow_redirects=True
     ) as client:
         yield client
 
@@ -89,9 +86,7 @@ class TestLiveAPIHealth:
         assert data["status"] in ["healthy", "ok"]
 
         # Performance check
-        assert duration < HEALTH_CHECK_THRESHOLD, (
-            f"Health check too slow: {duration:.2f}s > {HEALTH_CHECK_THRESHOLD}s"
-        )
+        assert duration < HEALTH_CHECK_THRESHOLD, f"Health check too slow: {duration:.2f}s > {HEALTH_CHECK_THRESHOLD}s"
 
     @pytest.mark.live_api
     @pytest.mark.asyncio
@@ -189,7 +184,7 @@ class TestLiveAPIAuthentication:
             json={
                 "manual_text": "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015 RMK AO2 SLP210",
                 "iwxxm_version": "2025-2",
-            }
+            },
         )
         duration = (datetime.now() - start_time).total_seconds()
 
@@ -205,9 +200,7 @@ class TestLiveAPIAuthentication:
         assert len(result["iwxxm_xml"]) > 0
 
         # Performance check
-        assert duration < CONVERSION_THRESHOLD, (
-            f"Conversion too slow: {duration:.2f}s > {CONVERSION_THRESHOLD}s"
-        )
+        assert duration < CONVERSION_THRESHOLD, f"Conversion too slow: {duration:.2f}s > {CONVERSION_THRESHOLD}s"
 
     @pytest.mark.live_api
     @pytest.mark.asyncio
@@ -219,7 +212,7 @@ class TestLiveAPIAuthentication:
                 "/api/v1/convert",
                 json={
                     "manual_text": "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015",
-                }
+                },
             )
 
             # Should require authentication
@@ -252,7 +245,7 @@ class TestLiveAPIAuthentication:
             "/api/v1/validation/validate",
             json={
                 "content": "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015",
-            }
+            },
         )
         duration = (datetime.now() - start_time).total_seconds()
 
@@ -308,10 +301,7 @@ class TestLiveAPIPerformance:
 
         start_time = datetime.now()
         for metar in test_metars:
-            response = await live_client.post(
-                "/api/v1/convert",
-                json={"manual_text": metar, "iwxxm_version": "2025-2"}
-            )
+            response = await live_client.post("/api/v1/convert", json={"manual_text": metar, "iwxxm_version": "2025-2"})
             assert response.status_code == 200
 
         duration = (datetime.now() - start_time).total_seconds()
@@ -339,10 +329,7 @@ class TestLiveAPIErrorHandling:
         if not LIVE_API_TOKEN:
             pytest.skip("LIVE_API_TOKEN not configured")
 
-        response = await live_client.post(
-            "/api/v1/convert",
-            json={"invalid_field": "value"}
-        )
+        response = await live_client.post("/api/v1/convert", json={"invalid_field": "value"})
 
         # Should return 400 or 422 for validation error
         assert response.status_code in [400, 422]
@@ -354,10 +341,7 @@ class TestLiveAPIErrorHandling:
         if not LIVE_API_TOKEN:
             pytest.skip("LIVE_API_TOKEN not configured")
 
-        response = await live_client.post(
-            "/api/v1/convert",
-            json={"manual_text": "INVALID METAR STRING"}
-        )
+        response = await live_client.post("/api/v1/convert", json={"manual_text": "INVALID METAR STRING"})
 
         # Should return 200 with error in results, or 400
         assert response.status_code in [200, 400]

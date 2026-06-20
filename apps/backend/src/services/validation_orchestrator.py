@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ComprehensiveValidationResult:
     """Result of comprehensive multi-layer validation."""
+
     is_valid: bool
     layers_run: List[ValidationLayer]
     layers_passed: List[ValidationLayer]
@@ -61,9 +62,9 @@ class ValidationOrchestrator:
 
     def _is_validation_passed(self, result) -> bool:
         """Check if validation passed, handling both ValidationResult and specialized types."""
-        if hasattr(result, 'passed'):
+        if hasattr(result, "passed"):
             return result.passed
-        elif hasattr(result, 'is_valid'):
+        elif hasattr(result, "is_valid"):
             return result.is_valid
         else:
             logger.warning(f"Unknown result type {type(result)}: cannot determine pass/fail")
@@ -82,30 +83,22 @@ class ValidationOrchestrator:
         issues = []
 
         try:
-            etree.fromstring(xml_content.encode('utf-8'))
+            etree.fromstring(xml_content.encode("utf-8"))
 
             logger.debug("XML wellformedness check passed")
-            return ValidationResult(
-                passed=True,
-                layer=ValidationLayer.XML_WELLFORMED,
-                issues=[]
-            )
+            return ValidationResult(passed=True, layer=ValidationLayer.XML_WELLFORMED, issues=[])
 
         except etree.XMLSyntaxError as e:
             issue = ValidationIssue(
                 layer=ValidationLayer.XML_WELLFORMED,
                 level=ValidationSeverity.ERROR,
                 message=f"XML is not well-formed: {str(e)}",
-                location=f"line {getattr(e, 'lineno', '?')}, column {getattr(e, 'offset', '?')}"
+                location=f"line {getattr(e, 'lineno', '?')}, column {getattr(e, 'offset', '?')}",
             )
             issues.append(issue)
 
             logger.warning(f"XML wellformedness check failed: {str(e)}")
-            return ValidationResult(
-                passed=False,
-                layer=ValidationLayer.XML_WELLFORMED,
-                issues=[issue]
-            )
+            return ValidationResult(passed=False, layer=ValidationLayer.XML_WELLFORMED, issues=[issue])
 
     def validate_wellformed(self, xml_content: str) -> ValidationResult:
         """Public XML well-formedness validation helper."""
@@ -121,7 +114,7 @@ class ValidationOrchestrator:
         xml_content: str,
         version: str,
         layers: Optional[List[ValidationLayer]] = None,
-        stop_on_error: bool = True
+        stop_on_error: bool = True,
     ) -> ComprehensiveValidationResult:
         """
         Perform comprehensive validation across all selected layers.
@@ -175,7 +168,7 @@ class ValidationOrchestrator:
                             all_issues=all_issues,
                             issues_by_layer=issues_by_layer,
                             version=version,
-                            stopped_at_layer=stopped_at_layer
+                            stopped_at_layer=stopped_at_layer,
                         )
             except Exception as e:
                 logger.error(f"Layer 1 validation error: {e}")
@@ -209,7 +202,7 @@ class ValidationOrchestrator:
                             all_issues=all_issues,
                             issues_by_layer=issues_by_layer,
                             version=version,
-                            stopped_at_layer=stopped_at_layer
+                            stopped_at_layer=stopped_at_layer,
                         )
             except Exception as e:
                 logger.error(f"Layer 2 validation error: {e}")
@@ -243,7 +236,7 @@ class ValidationOrchestrator:
                             all_issues=all_issues,
                             issues_by_layer=issues_by_layer,
                             version=version,
-                            stopped_at_layer=stopped_at_layer
+                            stopped_at_layer=stopped_at_layer,
                         )
             except Exception as e:
                 logger.error(f"Layer 3 validation error: {e}")
@@ -277,7 +270,7 @@ class ValidationOrchestrator:
                             all_issues=all_issues,
                             issues_by_layer=issues_by_layer,
                             version=version,
-                            stopped_at_layer=stopped_at_layer
+                            stopped_at_layer=stopped_at_layer,
                         )
             except Exception as e:
                 logger.error(f"Layer 4 validation error: {e}")
@@ -285,11 +278,9 @@ class ValidationOrchestrator:
 
         # Layers 5-7: Non-blocking, run in parallel
         parallel_layers = [
-            layer for layer in [
-                ValidationLayer.SCHEMATRON,
-                ValidationLayer.GML_REFERENCES,
-                ValidationLayer.WMO_CODELISTS
-            ] if layer in layers
+            layer
+            for layer in [ValidationLayer.SCHEMATRON, ValidationLayer.GML_REFERENCES, ValidationLayer.WMO_CODELISTS]
+            if layer in layers
         ]
 
         if parallel_layers:
@@ -303,9 +294,7 @@ class ValidationOrchestrator:
                 if ValidationLayer.SCHEMATRON in parallel_layers:
                     try:
                         futures[ValidationLayer.SCHEMATRON] = executor.submit(
-                            self.schematron_validator.validate,
-                            xml_content,
-                            version
+                            self.schematron_validator.validate, xml_content, version
                         )
                     except Exception as e:
                         logger.warning(f"Schematron setup warning: {e}")
@@ -324,9 +313,7 @@ class ValidationOrchestrator:
                 if ValidationLayer.GML_REFERENCES in parallel_layers:
                     try:
                         futures[ValidationLayer.GML_REFERENCES] = executor.submit(
-                            self.gml_validator.validate,
-                            xml_content,
-                            version
+                            self.gml_validator.validate, xml_content, version
                         )
                     except Exception as e:
                         logger.warning(f"GML setup warning: {e}")
@@ -347,8 +334,7 @@ class ValidationOrchestrator:
                         codelists_dir = self.schema_registry.get_codelists_dir(version)
                         parser = get_codelist_parser(version, codelists_dir)
                         futures[ValidationLayer.WMO_CODELISTS] = executor.submit(
-                            parser.validate_xml_codelists,
-                            xml_content
+                            parser.validate_xml_codelists, xml_content
                         )
                     except Exception as e:
                         logger.warning(f"WMO codelist setup warning: {e}")
@@ -408,7 +394,7 @@ class ValidationOrchestrator:
             all_issues=all_issues,
             issues_by_layer=issues_by_layer,
             version=version,
-            stopped_at_layer=stopped_at_layer
+            stopped_at_layer=stopped_at_layer,
         )
 
 

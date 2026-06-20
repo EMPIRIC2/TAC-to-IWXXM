@@ -4,6 +4,7 @@ GIFTs LocationDB adapter - provides geolocation data in format GIFTs expects.
 GIFTs encoder expects a dictionary-like object with:
 - .get(icao_code) method returning "name|iata|designator|latitude,longitude"
 """
+
 import logging
 from typing import Optional
 
@@ -70,9 +71,7 @@ class GiftsLocationDBAdapter:
 
         # Build complete record from all sources
         record = self.record_builder.build_record(
-            icao,
-            openaip_data=openaip_data,
-            airport_validator=self.airport_validator
+            icao, openaip_data=openaip_data, airport_validator=self.airport_validator
         )
 
         # Convert to GIFTs format

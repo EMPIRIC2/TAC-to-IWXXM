@@ -26,62 +26,90 @@ import time
 import uuid
 import xml.etree.ElementTree as ET
 
-CardinalPtsToDegreesS = {'N': '360', 'NNE': '22.5', 'NE': '45', 'ENE': '67.5',
-                         'E': '90', 'ESE': '112.5', 'SE': '135', 'SSE': '157.5',
-                         'S': '180', 'SSW': '202.5', 'SW': '225', 'WSW': '247.5',
-                         'W': '270', 'WNW': '292.5', 'NW': '315', 'NNW': '337.5', }
+CardinalPtsToDegreesS = {
+    "N": "360",
+    "NNE": "22.5",
+    "NE": "45",
+    "ENE": "67.5",
+    "E": "90",
+    "ESE": "112.5",
+    "SE": "135",
+    "SSE": "157.5",
+    "S": "180",
+    "SSW": "202.5",
+    "SW": "225",
+    "WSW": "247.5",
+    "W": "270",
+    "WNW": "292.5",
+    "NW": "315",
+    "NNW": "337.5",
+}
 
-CardinalPtsToDegreesF = {'N': 360., 'NNE': 22.5, 'NE': 45., 'ENE': 67.5,
-                         'E': 90., 'ESE': 112.5, 'SE': 135., 'SSE': 157.5,
-                         'S': 180., 'SSW': 202.5, 'SW': 225., 'WSW': 247.5,
-                         'W': 270., 'WNW': 292.5, 'NW': 315., 'NNW': 337.5, }
+CardinalPtsToDegreesF = {
+    "N": 360.0,
+    "NNE": 22.5,
+    "NE": 45.0,
+    "ENE": 67.5,
+    "E": 90.0,
+    "ESE": 112.5,
+    "SE": 135.0,
+    "SSE": 157.5,
+    "S": 180.0,
+    "SSW": 202.5,
+    "SW": 225.0,
+    "WSW": 247.5,
+    "W": 270.0,
+    "WNW": 292.5,
+    "NW": 315.0,
+    "NNW": 337.5,
+}
 
 
-def parseCodeRegistryTables(srcDirectory, neededCodes, preferredLanguage='en'):
+def parseCodeRegistryTables(srcDirectory, neededCodes, preferredLanguage="en"):
     #
     # Nil Reasons are always needed/required
-    if 'nil' not in neededCodes:
-        neededCodes.append('nil')
+    if "nil" not in neededCodes:
+        neededCodes.append("nil")
     #
     # Get the list of RDF files in the srcDirectory
-    neededCodeFiles = [(needed, os.path.join(srcDirectory, rdfFile)) for rdfFile in os.listdir(srcDirectory)
-                       for needed in neededCodes if needed in rdfFile]
+    neededCodeFiles = [
+        (needed, os.path.join(srcDirectory, rdfFile)) for rdfFile in os.listdir(srcDirectory) for needed in neededCodes if needed in rdfFile
+    ]
     #
-    events = 'start', 'start-ns'
+    events = "start", "start-ns"
     codes = {}
     #
     for containerId, fname in neededCodeFiles:
-
         top = None
-        nameSpaces = {'xml': 'http://www.w3.org/XML/1998/namespace'}
-        neededNS = ['skos', 'rdf', 'rdfs']
+        nameSpaces = {"xml": "http://www.w3.org/XML/1998/namespace"}
+        neededNS = ["skos", "rdf", "rdfs"]
 
         for event, elem in ET.iterparse(fname, events):
-            if event == 'start' and top is None:
+            if event == "start" and top is None:
                 top = elem
-            elif neededNS and event == 'start-ns':
+            elif neededNS and event == "start-ns":
                 if elem[0] in neededNS:
                     nameSpaces[elem[0]] = elem[1]
                     neededNS.remove(elem[0])
         #
         # Now that we have the required namespaces for searches
-        Concept = '{%s}Concept' % nameSpaces.get('skos')
-        about = '{%s}about' % nameSpaces.get('rdf')
-        label = '{%s}label[@{%s}lang="%s"]' % (nameSpaces.get('rdfs'), nameSpaces.get('xml'), preferredLanguage)
-        enlabel = '{%s}label[@{%s}lang="%s"]' % (nameSpaces.get('rdfs'), nameSpaces.get('xml'), 'en')
-        nolang = '{%s}label' % nameSpaces.get('rdfs')
+        Concept = "{%s}Concept" % nameSpaces.get("skos")
+        about = "{%s}about" % nameSpaces.get("rdf")
+        label = '{%s}label[@{%s}lang="%s"]' % (nameSpaces.get("rdfs"), nameSpaces.get("xml"), preferredLanguage)
+        enlabel = '{%s}label[@{%s}lang="%s"]' % (nameSpaces.get("rdfs"), nameSpaces.get("xml"), "en")
+        nolang = "{%s}label" % nameSpaces.get("rdfs")
 
         root = ET.ElementTree(top)
         kvp = []
         for concept in root.iter(Concept):
             try:
                 uri = concept.get(about)
-                key = uri[uri.rfind('/') + 1:]
-                text = ''
+                key = uri[uri.rfind("/") + 1 :]
+                text = ""
                 try:
                     text = concept.find(label).text
                 except AttributeError:
-                    if preferredLanguage != 'en':
+                    if preferredLanguage != "en":
                         text = concept.find(enlabel).text
                     else:
                         text = concept.find(nolang).text
@@ -101,7 +129,7 @@ def fix_date(tms):
 
     now = time.time()
     t = time.mktime(tuple(tms))
-    if t > now + 3*86400.0:       # previous month
+    if t > now + 3 * 86400.0:  # previous month
         if tms[1] > 1:
             tms[1] -= 1
         else:
@@ -116,14 +144,14 @@ def fix_date(tms):
 
 
 def is_a_number(s):
-    return s.replace('-', '', 1).replace('.', '', 1).isdigit()
+    return s.replace("-", "", 1).replace(".", "", 1).isdigit()
 
 
-def getUUID(prefix='uuid.'):
-    return '%s%s' % (prefix, uuid.uuid4())
+def getUUID(prefix="uuid."):
+    return "%s%s" % (prefix, uuid.uuid4())
 
 
-def computeLatLon(lat, lon, bearing, distance, radius=3440.):
+def computeLatLon(lat, lon, bearing, distance, radius=3440.0):
     #
     # Assumes flat earth, "far" from singularities, i.e. the poles, and small distances.
     #
@@ -137,23 +165,26 @@ def computeLatLon(lat, lon, bearing, distance, radius=3440.):
     elif nlon > 180:
         nlon -= 360
 
-    return '%.3f %.3f' % (nlat, nlon)
+    return "%.3f %.3f" % (nlat, nlon)
 
 
-def checkVisibility(value, uom='m'):
+def checkVisibility(value, uom="m"):
     #
     # Returns values (in meters) according to Annex 3 Amd 77
     if isinstance(value, str):
+
         def returnFunction(x):
             return str(x)
+
         value = float(value)
     else:
+
         def returnFunction(x):
             return int(x)
 
-    if uom == '[mi_i]':
+    if uom == "[mi_i]":
         value *= 1609.34
-    elif uom == '[ft_i]':
+    elif uom == "[ft_i]":
         value *= 0.3048
 
     mod = 1
@@ -170,19 +201,22 @@ def checkVisibility(value, uom='m'):
     return returnFunction(value - (value % mod))
 
 
-def checkRVR(value, uom='m'):
+def checkRVR(value, uom="m"):
 
     if isinstance(value, str):
+
         def returnFunction(x):
             return str(x)
+
         value = float(value)
     else:
+
         def returnFunction(x):
             return int(x)
 
-    if uom == '[mi_i]':
+    if uom == "[mi_i]":
         value *= 1609.34
-    elif uom == '[ft_i]':
+    elif uom == "[ft_i]":
         value *= 0.3048
 
     value = int(value)

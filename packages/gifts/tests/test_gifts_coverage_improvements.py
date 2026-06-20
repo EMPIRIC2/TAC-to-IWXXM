@@ -4,7 +4,7 @@ import os
 import sys
 
 # Add gifts to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import gifts
 
@@ -197,23 +197,23 @@ class TestValidationModuleExtended:
 
     def test_validation_module_importable(self):
         """Test validation modules are importable (structure check)."""
-        val_dir = os.path.join(os.path.dirname(__file__), '..', 'validation')
+        val_dir = os.path.join(os.path.dirname(__file__), "..", "validation")
 
-        assert os.path.exists(os.path.join(val_dir, 'iwxxmValidator.py'))
-        assert os.path.exists(os.path.join(val_dir, 'checkGMLReferences.py'))
-        assert os.path.exists(os.path.join(val_dir, 'codeListsToSchematron.py'))
+        assert os.path.exists(os.path.join(val_dir, "iwxxmValidator.py"))
+        assert os.path.exists(os.path.join(val_dir, "checkGMLReferences.py"))
+        assert os.path.exists(os.path.join(val_dir, "codeListsToSchematron.py"))
 
     def test_validation_file_structure(self):
         """Test validation file structure is intact."""
-        val_dir = os.path.join(os.path.dirname(__file__), '..', 'validation')
+        val_dir = os.path.join(os.path.dirname(__file__), "..", "validation")
 
         # Check all expected files exist
         files = {
-            'iwxxmValidator.py': 'main validator',
-            'checkGMLReferences.py': 'GML checker',
-            'codeListsToSchematron.py': 'codelist converter',
-            'catalog.template.xml': 'XML catalog template',
-            'README.md': 'documentation'
+            "iwxxmValidator.py": "main validator",
+            "checkGMLReferences.py": "GML checker",
+            "codeListsToSchematron.py": "codelist converter",
+            "catalog.template.xml": "XML catalog template",
+            "README.md": "documentation",
         }
 
         for filename, desc in files.items():
@@ -222,8 +222,8 @@ class TestValidationModuleExtended:
 
     def test_validation_bin_contents(self):
         """Test validation bin directory structure."""
-        val_dir = os.path.join(os.path.dirname(__file__), '..', 'validation')
-        bin_dir = os.path.join(val_dir, 'bin')
+        val_dir = os.path.join(os.path.dirname(__file__), "..", "validation")
+        bin_dir = os.path.join(val_dir, "bin")
 
         # Bin directory should exist
         assert os.path.isdir(bin_dir)
@@ -236,33 +236,33 @@ class TestDemoModuleExtended:
 
     def test_demo_module_completeness(self):
         """Test demo module has all expected files."""
-        demo_dir = os.path.join(os.path.dirname(__file__), '..', 'demo')
+        demo_dir = os.path.join(os.path.dirname(__file__), "..", "demo")
 
-        expected_files = ['iwxxmd.py', 'demo1.py', 'iwxxmd.cfg', 'README.md']
+        expected_files = ["iwxxmd.py", "demo1.py", "iwxxmd.cfg", "README.md"]
         for filename in expected_files:
             path = os.path.join(demo_dir, filename)
             assert os.path.exists(path), f"Missing demo file: {filename}"
 
     def test_demo_sample_data_formats(self):
         """Test demo sample data files are present and readable."""
-        demo_dir = os.path.join(os.path.dirname(__file__), '..', 'demo')
+        demo_dir = os.path.join(os.path.dirname(__file__), "..", "demo")
 
-        sample_files = ['metars.txt', 'tafs.txt', 'tca.txt', 'vaa.txt']
+        sample_files = ["metars.txt", "tafs.txt", "tca.txt", "vaa.txt"]
         for filename in sample_files:
             path = os.path.join(demo_dir, filename)
             assert os.path.exists(path), f"Missing sample: {filename}"
 
             # Verify readable and has content
-            with open(path, 'r') as f:
+            with open(path, "r") as f:
                 content = f.read()
                 assert len(content) > 0, f"{filename} should have content"
 
     def test_demo_database_files(self):
         """Test demo database files exist."""
-        demo_dir = os.path.join(os.path.dirname(__file__), '..', 'demo')
+        demo_dir = os.path.join(os.path.dirname(__file__), "..", "demo")
 
         # Check for aerodromes database
-        db_path = os.path.join(demo_dir, 'aerodromes.db')
+        db_path = os.path.join(demo_dir, "aerodromes.db")
         assert os.path.exists(db_path), "aerodromes.db should exist"
 
 
@@ -272,21 +272,33 @@ class TestGiftsIntegration:
     def test_gifts_main_modules(self):
         """Test all main GIFTs modules are importable."""
         # Test core module imports
-        assert hasattr(gifts, 'METAR')
-        assert hasattr(gifts, 'TAF')
-        assert hasattr(gifts, 'SWA')
-        assert hasattr(gifts, 'TCA')
-        assert hasattr(gifts, 'VAA')
+        assert hasattr(gifts, "METAR")
+        assert hasattr(gifts, "TAF")
+        assert hasattr(gifts, "SWA")
+        assert hasattr(gifts, "TCA")
+        assert hasattr(gifts, "VAA")
 
     def test_gifts_module_structure(self):
         """Test GIFTs module structure."""
-        gifts_dir = os.path.join(os.path.dirname(__file__), '..', 'gifts')
+        gifts_dir = os.path.join(os.path.dirname(__file__), "..", "gifts")
 
         # Should have main encoders
         required_modules = [
-            'METAR.py', 'TAF.py', 'SWA.py', 'TCA.py', 'VAA.py',
-            'metarEncoder.py', 'tafEncoder.py', 'swaEncoder.py', 'tcaEncoder.py', 'vaaEncoder.py',
-            'metarDecoder.py', 'tafDecoder.py', 'swaDecoder.py', 'tcaDecoder.py', 'vaaDecoder.py'
+            "METAR.py",
+            "TAF.py",
+            "SWA.py",
+            "TCA.py",
+            "VAA.py",
+            "metarEncoder.py",
+            "tafEncoder.py",
+            "swaEncoder.py",
+            "tcaEncoder.py",
+            "vaaEncoder.py",
+            "metarDecoder.py",
+            "tafDecoder.py",
+            "swaDecoder.py",
+            "tcaDecoder.py",
+            "vaaDecoder.py",
         ]
 
         for module in required_modules:
@@ -295,13 +307,13 @@ class TestGiftsIntegration:
 
     def test_gifts_common_submodule(self):
         """Test GIFTs common submodule."""
-        gifts_dir = os.path.join(os.path.dirname(__file__), '..', 'gifts')
-        common_dir = os.path.join(gifts_dir, 'common')
+        gifts_dir = os.path.join(os.path.dirname(__file__), "..", "gifts")
+        common_dir = os.path.join(gifts_dir, "common")
 
         assert os.path.isdir(common_dir), "common directory should exist"
 
         # Check for key files
-        key_files = ['__init__.py', 'Encoder.py', 'bulletin.py', 'Common.py', 'xmlUtilities.py']
+        key_files = ["__init__.py", "Encoder.py", "bulletin.py", "Common.py", "xmlUtilities.py"]
         for filename in key_files:
             path = os.path.join(common_dir, filename)
             assert os.path.exists(path), f"Missing common file: {filename}"
@@ -337,7 +349,7 @@ class TestCoverageImprovementMetrics:
 
         # Module should initialize successfully
         assert gifts is not None
-        assert hasattr(gifts, '__version__') or hasattr(gifts, '__path__')
+        assert hasattr(gifts, "__version__") or hasattr(gifts, "__path__")
 
 
 class TestFileAccessPatterns:
@@ -345,16 +357,16 @@ class TestFileAccessPatterns:
 
     def test_data_directory_access(self):
         """Test gifts data directory is accessible."""
-        gifts_dir = os.path.join(os.path.dirname(__file__), '..', 'gifts')
-        data_dir = os.path.join(gifts_dir, 'data')
+        gifts_dir = os.path.join(os.path.dirname(__file__), "..", "gifts")
+        data_dir = os.path.join(gifts_dir, "data")
 
         if os.path.exists(data_dir):
             assert os.access(data_dir, os.R_OK)
 
     def test_database_directory_access(self):
         """Test gifts database directory is accessible."""
-        gifts_dir = os.path.join(os.path.dirname(__file__), '..', 'gifts')
-        db_dir = os.path.join(gifts_dir, 'database')
+        gifts_dir = os.path.join(os.path.dirname(__file__), "..", "gifts")
+        db_dir = os.path.join(gifts_dir, "database")
 
         if os.path.exists(db_dir):
             assert os.access(db_dir, os.R_OK)

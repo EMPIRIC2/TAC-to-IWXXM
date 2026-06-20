@@ -88,7 +88,9 @@ def test_lookup_aerodrome_falls_back_to_gifts_table(monkeypatch, tmp_path):
     db.write_text("KDEN|DEN|ALTD|Denver Intl|39.8617|-104.6731|1655\n", encoding="utf-8")
 
     monkeypatch.setattr(conv, "_load_aerodrome_db", lambda: db)
-    monkeypatch.setattr("src.schemas.airport.get_airport_validator", lambda: SimpleNamespace(get_airport=lambda _icao: None))
+    monkeypatch.setattr(
+        "src.schemas.airport.get_airport_validator", lambda: SimpleNamespace(get_airport=lambda _icao: None)
+    )
 
     result = conv._lookup_aerodrome("KDEN")
 
@@ -108,8 +110,14 @@ def test_convert_with_metadata_adapter_init_fail(monkeypatch):
 
 
 def test_convert_with_metadata_invalid_reference_time(monkeypatch):
-    monkeypatch.setattr("src.utilities.gifts_adapter.get_decoder", lambda version=None: SimpleNamespace(decode=lambda _tac: {"ident": {"str": "KJFK"}}))
-    monkeypatch.setattr("src.utilities.gifts_adapter.get_encoder", lambda version=None: SimpleNamespace(encode=lambda _decoded, _tac: SimpleNamespace(tag="root")))
+    monkeypatch.setattr(
+        "src.utilities.gifts_adapter.get_decoder",
+        lambda version=None: SimpleNamespace(decode=lambda _tac: {"ident": {"str": "KJFK"}}),
+    )
+    monkeypatch.setattr(
+        "src.utilities.gifts_adapter.get_encoder",
+        lambda version=None: SimpleNamespace(encode=lambda _decoded, _tac: SimpleNamespace(tag="root")),
+    )
     monkeypatch.setattr(conv, "_lookup_aerodrome", lambda *_args, **_kwargs: None)
 
     with pytest.raises(conv.ConversionError, match="Invalid reference_time format"):
@@ -117,8 +125,14 @@ def test_convert_with_metadata_invalid_reference_time(monkeypatch):
 
 
 def test_convert_with_metadata_encoder_none(monkeypatch):
-    monkeypatch.setattr("src.utilities.gifts_adapter.get_decoder", lambda version=None: SimpleNamespace(decode=lambda _tac: {"ident": {"str": "KJFK"}}))
-    monkeypatch.setattr("src.utilities.gifts_adapter.get_encoder", lambda version=None: SimpleNamespace(encode=lambda _decoded, _tac: None))
+    monkeypatch.setattr(
+        "src.utilities.gifts_adapter.get_decoder",
+        lambda version=None: SimpleNamespace(decode=lambda _tac: {"ident": {"str": "KJFK"}}),
+    )
+    monkeypatch.setattr(
+        "src.utilities.gifts_adapter.get_encoder",
+        lambda version=None: SimpleNamespace(encode=lambda _decoded, _tac: None),
+    )
     monkeypatch.setattr(conv, "_lookup_aerodrome", lambda *_args, **_kwargs: None)
 
     with pytest.raises(conv.ConversionError, match="Encoder returned None"):
@@ -126,8 +140,14 @@ def test_convert_with_metadata_encoder_none(monkeypatch):
 
 
 def test_convert_with_metadata_serialization_error(monkeypatch):
-    monkeypatch.setattr("src.utilities.gifts_adapter.get_decoder", lambda version=None: SimpleNamespace(decode=lambda _tac: {"ident": {"str": "KJFK"}}))
-    monkeypatch.setattr("src.utilities.gifts_adapter.get_encoder", lambda version=None: SimpleNamespace(encode=lambda _decoded, _tac: SimpleNamespace(tag="root")))
+    monkeypatch.setattr(
+        "src.utilities.gifts_adapter.get_decoder",
+        lambda version=None: SimpleNamespace(decode=lambda _tac: {"ident": {"str": "KJFK"}}),
+    )
+    monkeypatch.setattr(
+        "src.utilities.gifts_adapter.get_encoder",
+        lambda version=None: SimpleNamespace(encode=lambda _decoded, _tac: SimpleNamespace(tag="root")),
+    )
     monkeypatch.setattr(conv.ET, "tostring", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("boom")))
     monkeypatch.setattr(conv, "_lookup_aerodrome", lambda *_args, **_kwargs: None)
 
@@ -144,7 +164,9 @@ def test_convert_with_metadata_validation_raise_on_error(monkeypatch):
     monkeypatch.setattr(conv.ET, "tostring", lambda *_args, **_kwargs: "<iwxxm:METAR/>")
 
     bad_issue = SimpleNamespace(level=SimpleNamespace(value="ERROR"), code="E1", message="failed")
-    fake_result = SimpleNamespace(is_valid=False, layers_passed=[], layers_failed=["XML_SCHEMA"], all_issues=[bad_issue])
+    fake_result = SimpleNamespace(
+        is_valid=False, layers_passed=[], layers_failed=["XML_SCHEMA"], all_issues=[bad_issue]
+    )
     fake_orchestrator = SimpleNamespace(validate_complete=lambda **_kwargs: fake_result)
     monkeypatch.setattr("src.services.validation_orchestrator.get_validation_orchestrator", lambda: fake_orchestrator)
 
@@ -165,7 +187,9 @@ def test_convert_with_metadata_validation_continue_on_error(monkeypatch):
     monkeypatch.setattr(conv.ET, "tostring", lambda *_args, **_kwargs: "<iwxxm:METAR/>")
 
     bad_issue = SimpleNamespace(level=SimpleNamespace(value="ERROR"), code="E1", message="failed")
-    fake_result = SimpleNamespace(is_valid=False, layers_passed=[], layers_failed=["XML_SCHEMA"], all_issues=[bad_issue])
+    fake_result = SimpleNamespace(
+        is_valid=False, layers_passed=[], layers_failed=["XML_SCHEMA"], all_issues=[bad_issue]
+    )
     fake_orchestrator = SimpleNamespace(validate_complete=lambda **_kwargs: fake_result)
     monkeypatch.setattr("src.services.validation_orchestrator.get_validation_orchestrator", lambda: fake_orchestrator)
 
@@ -175,8 +199,10 @@ def test_convert_with_metadata_validation_continue_on_error(monkeypatch):
         raise_on_validation_error=False,
     )
 
-    assert xml.startswith("<?xml version=\"1.0\"?>")
+    assert xml.startswith('<?xml version="1.0"?>')
     assert validation_result is not None
+
+
 def test_load_aerodrome_db_finds_repo_candidate(monkeypatch, tmp_path):
     utilities_dir = tmp_path / "backend" / "src" / "utilities"
     utilities_dir.mkdir(parents=True)
@@ -279,8 +305,6 @@ def test_lookup_aerodrome_uses_database_coordinates_when_no_override(monkeypatch
     }
 
 
-
-
 def test_convert_with_metadata_success_injects_metadata_and_runs_default_validation(monkeypatch):
     captured = {}
 
@@ -341,7 +365,7 @@ def test_convert_with_metadata_success_injects_metadata_and_runs_default_validat
             validate=True,
         )
 
-    assert xml == "<?xml version=\"1.0\"?>\n<iwxxm:METAR/>"
+    assert xml == '<?xml version="1.0"?>\n<iwxxm:METAR/>'
     assert validation_result is fake_result
     assert captured["gmtime_year"] == 2024
     assert captured["timestamp_year"] == 2024
@@ -404,11 +428,10 @@ def test_convert_with_metadata_logs_vertical_datum_warning_and_uses_custom_layer
             validation_layers=["XML_SCHEMA"],
         )
 
-    assert xml.startswith("<?xml version=\"1.0\"?>")
+    assert xml.startswith('<?xml version="1.0"?>')
     assert validation_result is not None
     assert captured["layers"] == ["XML_SCHEMA"]
     assert "Failed to set vertical datum" in caplog.text
-
 
 
 def test_convert_with_metadata_without_dict_ident_skips_lookup(monkeypatch):
@@ -431,7 +454,9 @@ def test_convert_with_metadata_without_dict_ident_skips_lookup(monkeypatch):
 def test_convert_with_metadata_validation_exception_returns_none(monkeypatch):
     decoder = SimpleNamespace(decode=lambda _tac: {"ident": {"str": "KJFK"}})
     encoder = SimpleNamespace(encode=lambda _decoded, _tac: SimpleNamespace(tag="root"))
-    failing_orchestrator = SimpleNamespace(validate_complete=lambda **_kwargs: (_ for _ in ()).throw(RuntimeError("boom")))
+    failing_orchestrator = SimpleNamespace(
+        validate_complete=lambda **_kwargs: (_ for _ in ()).throw(RuntimeError("boom"))
+    )
 
     monkeypatch.setattr("src.utilities.gifts_adapter.get_decoder", lambda version=None: decoder)
     monkeypatch.setattr("src.utilities.gifts_adapter.get_encoder", lambda version=None: encoder)
@@ -451,11 +476,9 @@ def test_convert_with_metadata_validation_exception_returns_none(monkeypatch):
     assert xml.startswith('<?xml version="1.0"?>')
     assert validation_result is None
 
-
-# ---------------------------------------------------------------------------
-# Additional branch coverage tests
-# ---------------------------------------------------------------------------
-
+    # ---------------------------------------------------------------------------
+    # Additional branch coverage tests
+    # ---------------------------------------------------------------------------
 
     """Shallow __file__ path exhausts parents, triggering IndexError break (covers 146-147)."""
     monkeypatch.setattr(conv, "__file__", "/conversion.py")
@@ -540,7 +563,7 @@ def test_convert_with_metadata_empty_meta_fields_covers_skip_branches(monkeypatc
 
     xml, _ = conv.convert_metar_tac_with_metadata("METAR KJFK 010000Z", validate=False)
 
-    assert xml.startswith("<?xml version=\"1.0\"?>")
+    assert xml.startswith('<?xml version="1.0"?>')
     # Only iataID (non-empty) and original 'index' should survive in rebuilt ident
     assert decoded_state["ident"].get("iataID") == "TST"
     assert "name" not in decoded_state["ident"]
@@ -571,5 +594,5 @@ def test_convert_with_metadata_sets_vertical_datum_on_gifts_config(monkeypatch):
 
     xml, _ = conv.convert_metar_tac_with_metadata("METAR KJFK 010000Z", validate=False)
 
-    assert xml.startswith("<?xml version=\"1.0\"?>")
+    assert xml.startswith('<?xml version="1.0"?>')
     assert fake_xml_config.verticalDatum == "EGM_08"

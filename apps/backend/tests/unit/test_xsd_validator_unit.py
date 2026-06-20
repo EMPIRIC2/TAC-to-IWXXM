@@ -181,9 +181,7 @@ def test_get_compiled_schema_known_2025_issue_caches_none(monkeypatch):
     monkeypatch.setattr(
         etree,
         "XMLSchema",
-        lambda _doc: (_ for _ in ()).throw(
-            etree.XMLSchemaParseError("substitutionGroup unresolved for 2025 schema")
-        ),
+        lambda _doc: (_ for _ in ()).throw(etree.XMLSchemaParseError("substitutionGroup unresolved for 2025 schema")),
     )
 
     with pytest.raises(etree.XMLSchemaParseError):
@@ -212,7 +210,11 @@ def test_singleton_and_wrapper(monkeypatch):
 
     validator = XSDValidator()
     monkeypatch.setattr("src.utilities.xsd_validator.get_xsd_validator", lambda: validator)
-    monkeypatch.setattr(validator, "validate", lambda xml_content, version: SimpleNamespace(is_valid=True, issues=[], schema_version=version))
+    monkeypatch.setattr(
+        validator,
+        "validate",
+        lambda xml_content, version: SimpleNamespace(is_valid=True, issues=[], schema_version=version),
+    )
 
     result = validate_xml_schema("<root/>", "2025-2")
     assert result.is_valid is True

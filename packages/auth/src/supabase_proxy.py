@@ -3,6 +3,7 @@
 This module provides a middleware layer between the frontend/backend and Supabase,
 allowing centralized authentication management, logging, and monitoring.
 """
+
 from __future__ import annotations
 
 import logging
@@ -22,10 +23,7 @@ logger = logging.getLogger(__name__)
 def _is_session_not_found_error(error: Exception) -> bool:
     """Return True when Supabase indicates the JWT session no longer exists."""
     message = str(error).lower()
-    return (
-        "session_not_found" in message
-        or "session from session_id claim in jwt does not exist" in message
-    )
+    return "session_not_found" in message or "session from session_id claim in jwt does not exist" in message
 
 
 class SupabaseAuthProxy:
@@ -55,24 +53,19 @@ class SupabaseAuthProxy:
         """
         logger.info(f"[REGISTER] Starting registration for email: {email}")
         try:
-            payload = {
-                "email": email,
-                "password": password,
-                "options": {
-                    "data": metadata or {}
-                }
-            }
+            payload = {"email": email, "password": password, "options": {"data": metadata or {}}}
             logger.debug(f"[REGISTER] Calling Supabase sign_up with payload: {payload}")
 
             response = self.client.auth.sign_up(payload)
 
-            logger.info(f"[REGISTER] Supabase response: user={response.user is not None}, session={response.session is not None}")
+            logger.info(
+                f"[REGISTER] Supabase response: user={response.user is not None}, session={response.session is not None}"
+            )
 
             if not response.user:
                 logger.error(f"[REGISTER] No user in response for {email}")
                 raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Registration failed - no user data returned"
+                    status_code=status.HTTP_400_BAD_REQUEST, detail="Registration failed - no user data returned"
                 )
 
             result = {
@@ -85,7 +78,9 @@ class SupabaseAuthProxy:
                     "access_token": response.session.access_token if response.session else None,
                     "refresh_token": response.session.refresh_token if response.session else None,
                     "expires_at": response.session.expires_at if response.session else None,
-                } if response.session else None
+                }
+                if response.session
+                else None,
             }
 
             logger.info(f"[REGISTER] Successfully registered user {email} with ID {response.user.id}")
@@ -93,11 +88,10 @@ class SupabaseAuthProxy:
         except HTTPException:
             raise
         except Exception as e:
-            logger.error(f"[REGISTER] Error during registration for {email}: {type(e).__name__}: {str(e)}", exc_info=True)
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Registration failed: {str(e)}"
+            logger.error(
+                f"[REGISTER] Error during registration for {email}: {type(e).__name__}: {str(e)}", exc_info=True
             )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Registration failed: {str(e)}")
 
     def sign_in(self, email: str, password: str) -> Dict[str, Any]:
         """Sign in with email and password.
@@ -111,22 +105,18 @@ class SupabaseAuthProxy:
         """
         logger.info(f"[LOGIN] Starting login for email: {email}")
         try:
-            payload = {
-                "email": email,
-                "password": password
-            }
+            payload = {"email": email, "password": password}
             logger.debug("[LOGIN] Calling Supabase sign_in_with_password")
 
             response = self.client.auth.sign_in_with_password(payload)
 
-            logger.info(f"[LOGIN] Supabase response: user={response.user is not None}, session={response.session is not None}")
+            logger.info(
+                f"[LOGIN] Supabase response: user={response.user is not None}, session={response.session is not None}"
+            )
 
             if not response.user or not response.session:
                 logger.warning(f"[LOGIN] Failed login attempt for {email} - invalid credentials or missing session")
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid credentials"
-                )
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
             result = {
                 "user": {
@@ -138,7 +128,7 @@ class SupabaseAuthProxy:
                     "access_token": response.session.access_token,
                     "refresh_token": response.session.refresh_token,
                     "expires_at": response.session.expires_at,
-                }
+                },
             }
 
             logger.info(f"[LOGIN] Successfully logged in user {email}")
@@ -147,10 +137,7 @@ class SupabaseAuthProxy:
             raise
         except Exception as e:
             logger.error(f"[LOGIN] Error during login for {email}: {type(e).__name__}: {str(e)}", exc_info=True)
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Authentication failed: {str(e)}"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Authentication failed: {str(e)}")
 
     def sign_out(self, access_token: str) -> Dict[str, str]:
         """Sign out the current user.
@@ -173,10 +160,7 @@ class SupabaseAuthProxy:
                 logger.info("[LOGOUT] Session already invalidated in Supabase; treating as successful logout")
                 return {"message": "Successfully signed out"}
             logger.error(f"[LOGOUT] Error during logout: {type(e).__name__}: {str(e)}", exc_info=True)
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Sign out failed: {str(e)}"
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Sign out failed: {str(e)}")
 
     def get_user(self, access_token: str) -> Dict[str, Any]:
         """Get user information from access token.
@@ -193,10 +177,7 @@ class SupabaseAuthProxy:
 
             if not response.user:
                 logger.warning("[GET_USER] Invalid or expired token")
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid or expired token"
-                )
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
 
             logger.info(f"[GET_USER] Retrieved user {response.user.email}")
             return {
@@ -208,10 +189,7 @@ class SupabaseAuthProxy:
             raise
         except Exception as e:
             logger.error(f"[GET_USER] Error retrieving user: {type(e).__name__}: {str(e)}", exc_info=True)
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Failed to get user: {str(e)}"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Failed to get user: {str(e)}")
 
     def refresh_session(self, refresh_token: str) -> Dict[str, Any]:
         """Refresh an expired session.
@@ -228,10 +206,7 @@ class SupabaseAuthProxy:
 
             if not response.session:
                 logger.warning("[REFRESH_TOKEN] Invalid refresh token")
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid refresh token"
-                )
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
             logger.info("[REFRESH_TOKEN] Successfully refreshed session")
             return {
@@ -243,10 +218,7 @@ class SupabaseAuthProxy:
             raise
         except Exception as e:
             logger.error(f"[REFRESH_TOKEN] Error refreshing session: {type(e).__name__}: {str(e)}", exc_info=True)
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Failed to refresh session: {str(e)}"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Failed to refresh session: {str(e)}")
 
     def reset_password_email(self, email: str) -> Dict[str, str]:
         """Send password reset email.
@@ -259,9 +231,9 @@ class SupabaseAuthProxy:
         """
         logger.info(f"[PASSWORD_RESET_REQUEST] Requesting password reset for {email}")
         try:
-            self.client.auth.reset_password_email(email, {
-                "redirect_to": f"{os.getenv('FRONTEND_BASE_URL', 'http://localhost:5173')}/password-reset"
-            })
+            self.client.auth.reset_password_email(
+                email, {"redirect_to": f"{os.getenv('FRONTEND_BASE_URL', 'http://localhost:5173')}/password-reset"}
+            )
             logger.info(f"[PASSWORD_RESET_REQUEST] Password reset email sent for {email}")
             return {"message": "Password reset email sent"}
         except Exception as e:
@@ -288,10 +260,7 @@ class SupabaseAuthProxy:
             return {"message": "Password updated successfully"}
         except Exception as e:
             logger.error(f"[UPDATE_PASSWORD] Error: {type(e).__name__}: {str(e)}", exc_info=True)
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Failed to update password: {str(e)}"
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to update password: {str(e)}")
 
     def verify_token(self, access_token: str) -> bool:
         """Verify if an access token is valid.

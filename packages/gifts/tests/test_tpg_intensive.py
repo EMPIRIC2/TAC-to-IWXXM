@@ -4,10 +4,7 @@ Focus on lines 58-59, 66-73, 188, 230, 250, 255, 260, 313-314, 326-329, etc.
 """
 
 import pytest
-from gifts.common.tpg import (
-    Error, Token, LexicalError, SyntacticError, SemanticError, WrongToken,
-    NamedGroupLexer
-)
+from gifts.common.tpg import Error, Token, LexicalError, SyntacticError, SemanticError, WrongToken, NamedGroupLexer
 
 
 class TestTPGErrorClasses:
@@ -77,31 +74,31 @@ class TestTPGToken:
 
     def test_token_basic(self):
         """Test basic token creation"""
-        tok = Token('ID', 'variable', 'var', 1, 0, 1, 8, 0, 8, 0)
-        assert tok.name == 'ID'
-        assert tok.text == 'variable'
+        tok = Token("ID", "variable", "var", 1, 0, 1, 8, 0, 8, 0)
+        assert tok.name == "ID"
+        assert tok.text == "variable"
         assert tok.line == 1
         assert tok.column == 0
 
     def test_token_with_values(self):
         """Test token with different values"""
-        tok = Token('NUMBER', '42', 42, 5, 10, 5, 12, 10, 12, 0)
-        assert tok.name == 'NUMBER'
-        assert tok.text == '42'
+        tok = Token("NUMBER", "42", 42, 5, 10, 5, 12, 10, 12, 0)
+        assert tok.name == "NUMBER"
+        assert tok.text == "42"
         assert tok.line == 5
         assert tok.column == 10
 
     def test_token_multiline(self):
         """Test token with multiline positions"""
-        tok = Token('STRING', 'hello\\nworld', 'hello\nworld', 10, 5, 12, 5, 100, 105, 0)
+        tok = Token("STRING", "hello\\nworld", "hello\nworld", 10, 5, 12, 5, 100, 105, 0)
         assert tok.line == 10
         assert tok.column == 5
 
     def test_token_end_position(self):
         """Test token end positions"""
-        tok = Token('KEYWORD', 'while', 'while', 1, 0, 1, 5, 0, 5, 0)
+        tok = Token("KEYWORD", "while", "while", 1, 0, 1, 5, 0, 5, 0)
         # Token should have end_line and end_column
-        assert hasattr(tok, 'line')
+        assert hasattr(tok, "line")
 
 
 class TestTPGNamedGroupLexer:
@@ -116,29 +113,29 @@ class TestTPGNamedGroupLexer:
     def test_lexer_add_token(self):
         """Test adding tokens to lexer"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('ID', r'[a-zA-Z_]\w*')
-        assert 'ID' in lexer.tokens
+        lexer.def_token("ID", r"[a-zA-Z_]\w*")
+        assert "ID" in lexer.tokens
         assert len(lexer.token_re) == 1
 
     def test_lexer_add_separator(self):
         """Test adding separators to lexer"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_separator('SPACE', r'\s+')
-        assert 'SPACE' in lexer.tokens
+        lexer.def_separator("SPACE", r"\s+")
+        assert "SPACE" in lexer.tokens
 
     def test_lexer_add_multiple_tokens(self):
         """Test adding multiple tokens"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('ID', r'[a-zA-Z_]\w*')
-        lexer.def_token('NUMBER', r'\d+')
-        lexer.def_separator('SPACE', r'\s+')
+        lexer.def_token("ID", r"[a-zA-Z_]\w*")
+        lexer.def_token("NUMBER", r"\d+")
+        lexer.def_separator("SPACE", r"\s+")
         assert len(lexer.tokens) == 3
 
     def test_lexer_build(self):
         """Test building the lexer regex"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('ID', r'[a-zA-Z_]\w*')
-        lexer.def_token('NUMBER', r'\d+')
+        lexer.def_token("ID", r"[a-zA-Z_]\w*")
+        lexer.def_token("NUMBER", r"\d+")
         lexer.build()
         # After build, token_re should be a compiled regex
         assert lexer.token_re is not None
@@ -146,16 +143,16 @@ class TestTPGNamedGroupLexer:
     def test_lexer_duplicate_token_error(self):
         """Test duplicate token definition raises error"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('ID', r'[a-zA-Z_]\w*')
+        lexer.def_token("ID", r"[a-zA-Z_]\w*")
         with pytest.raises(SemanticError):
-            lexer.def_token('ID', r'[a-z]+')
+            lexer.def_token("ID", r"[a-z]+")
 
     def test_lexer_start(self):
         """Test starting lexical analysis"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('ID', r'[a-zA-Z_][a-zA-Z0-9_]*')
-        lexer.def_token('NUMBER', r'[0-9]+')
-        lexer.def_separator('SPACE', r'\s+')
+        lexer.def_token("ID", r"[a-zA-Z_][a-zA-Z0-9_]*")
+        lexer.def_token("NUMBER", r"[0-9]+")
+        lexer.def_separator("SPACE", r"\s+")
         lexer.start("hello123 world456")
         assert lexer.input == "hello123 world456"
         assert lexer.pos >= 0  # pos advances after first token
@@ -164,7 +161,7 @@ class TestTPGNamedGroupLexer:
     def test_lexer_eof(self):
         """Test EOF detection"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('ID', r'[a-zA-Z_]\w*')
+        lexer.def_token("ID", r"[a-zA-Z_]\w*")
         lexer.start("test")
         # Move to EOF
         while not lexer.eof() and lexer.cur_token is not None:
@@ -177,26 +174,27 @@ class TestTPGNamedGroupLexer:
 
         def to_int(text):
             return int(text)
-        lexer.def_token('NUMBER', r'\d+', to_int)
-        assert 'NUMBER' in lexer.tokens
+
+        lexer.def_token("NUMBER", r"\d+", to_int)
+        assert "NUMBER" in lexer.tokens
 
     def test_lexer_with_static_value(self):
         """Test lexer with static token value"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('TRUE', r'true', True)
-        assert 'TRUE' in lexer.tokens
+        lexer.def_token("TRUE", r"true", True)
+        assert "TRUE" in lexer.tokens
 
     def test_lexer_word_bounded(self):
         """Test word boundary in lexer"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('IF', r'if')
+        lexer.def_token("IF", r"if")
         # With word_bounded=True, should add word boundaries
         assert lexer is not None
 
     def test_lexer_no_word_boundary(self):
         """Test lexer without word boundaries"""
         lexer = NamedGroupLexer(False, 0)
-        lexer.def_token('PLUS', r'\+')
+        lexer.def_token("PLUS", r"\+")
         assert lexer is not None
 
 
@@ -206,7 +204,8 @@ class TestTPGParser:
     def test_parser_exists(self):
         """Test parser class exists"""
         from gifts.common import tpg
-        assert hasattr(tpg, 'Parser')
+
+        assert hasattr(tpg, "Parser")
 
 
 class TestTPGIntegration:
@@ -223,15 +222,15 @@ class TestTPGIntegration:
         """
 
         # Should be able to reference tpg module elements
-        assert hasattr(tpg, 'Lexer')
-        assert hasattr(tpg, 'Parser')
+        assert hasattr(tpg, "Lexer")
+        assert hasattr(tpg, "Parser")
 
     def test_lexer_token_sequence(self):
         """Test lexer processing token sequence"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('INT', r'\d+')
-        lexer.def_token('PLUS', r'\+')
-        lexer.def_separator('SPACE', r'\s+')
+        lexer.def_token("INT", r"\d+")
+        lexer.def_token("PLUS", r"\+")
+        lexer.def_separator("SPACE", r"\s+")
 
         lexer.start("1 + 2 + 3")
         assert lexer.input == "1 + 2 + 3"
@@ -249,8 +248,8 @@ class TestTPGIntegration:
     def test_lexer_position_tracking(self):
         """Test lexer tracks positions correctly"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('WORD', r'[a-z]+')
-        lexer.def_separator('SPACE', r'\s+')
+        lexer.def_token("WORD", r"[a-z]+")
+        lexer.def_separator("SPACE", r"\s+")
 
         lexer.start("hello world test")
         initial_pos = lexer.pos
@@ -277,21 +276,21 @@ class TestTPGEdgeCases:
 
     def test_token_with_special_characters(self):
         """Test token with special characters in text"""
-        tok = Token('STRING', '"hello\\n"', 'hello\n', 1, 0, 1, 9, 0, 9, 0)
+        tok = Token("STRING", '"hello\\n"', "hello\n", 1, 0, 1, 9, 0, 9, 0)
         assert '"' not in tok.name
         assert tok.text == '"hello\\n"'
 
     def test_lexer_empty_input(self):
         """Test lexer with empty input"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('ID', r'[a-z]+')
+        lexer.def_token("ID", r"[a-z]+")
         lexer.start("")
         assert lexer.input == ""
 
     def test_lexer_only_separators(self):
         """Test lexer with only separators"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_separator('SPACE', r'\s+')
+        lexer.def_separator("SPACE", r"\s+")
         lexer.start("   \t  ")
         # Should handle input with only whitespace
 
@@ -314,6 +313,7 @@ class TestTPGLexerOptions:
     def test_lexer_options_compile_options(self):
         """Test lexer with compile options"""
         import re
+
         lexer = NamedGroupLexer(True, re.IGNORECASE)
         # Should store compile options
         assert lexer is not None
@@ -337,16 +337,16 @@ class TestTPGTokenComparison:
 
     def test_token_equality(self):
         """Test token comparison"""
-        tok1 = Token('ID', 'var', 'var', 1, 0, 1, 3, 0, 3, 0)
-        tok2 = Token('ID', 'var', 'var', 1, 0, 1, 3, 0, 3, 0)
+        tok1 = Token("ID", "var", "var", 1, 0, 1, 3, 0, 3, 0)
+        tok2 = Token("ID", "var", "var", 1, 0, 1, 3, 0, 3, 0)
         # Tokens created the same way
         assert tok1.name == tok2.name
         assert tok1.text == tok2.text
 
     def test_token_different(self):
         """Test different tokens"""
-        tok1 = Token('ID', 'var', 'var', 1, 0, 1, 3, 0, 3, 0)
-        tok2 = Token('ID', 'other', 'other', 1, 0, 1, 5, 0, 5, 0)
+        tok1 = Token("ID", "var", "var", 1, 0, 1, 3, 0, 3, 0)
+        tok2 = Token("ID", "other", "other", 1, 0, 1, 5, 0, 5, 0)
         assert tok1.text != tok2.text
 
 
@@ -356,7 +356,7 @@ class TestTPGLexerBack:
     def test_lexer_back_to_none(self):
         """Test backing up to None (reset)"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('ID', r'[a-z]+')
+        lexer.def_token("ID", r"[a-z]+")
         lexer.start("test")
         lexer.back(None)
         assert lexer.pos == 0
@@ -366,7 +366,7 @@ class TestTPGLexerBack:
     def test_lexer_back_to_token(self):
         """Test backtracking to a specific token"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('WORD', r'[a-z]+')
+        lexer.def_token("WORD", r"[a-z]+")
         lexer.start("hello world")
         # Get first token
         first_token = lexer.cur_token
@@ -388,26 +388,26 @@ class TestTPGLexerNextToken:
     def test_lexer_next_token_basic(self):
         """Test getting next token"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('ID', r'[a-z]+')
-        lexer.def_separator('SPACE', r'\s+')
+        lexer.def_token("ID", r"[a-z]+")
+        lexer.def_separator("SPACE", r"\s+")
         lexer.start("hello world")
 
         # Get first token
         if lexer.cur_token:
             first_name = lexer.cur_token.name
-            assert first_name in ['ID', 'SPACE']
+            assert first_name in ["ID", "SPACE"]
 
     def test_lexer_process_multiple_tokens(self):
         """Test processing multiple tokens"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('INT', r'\d+')
-        lexer.def_token('OP', r'[+\-*/]')
-        lexer.def_separator('SPACE', r'\s+')
+        lexer.def_token("INT", r"\d+")
+        lexer.def_token("OP", r"[+\-*/]")
+        lexer.def_separator("SPACE", r"\s+")
 
         lexer.start("1 + 2 * 3")
         count = 0
         while lexer.cur_token is not None and count < 10:
-            if lexer.cur_token.name in ['INT', 'OP']:
+            if lexer.cur_token.name in ["INT", "OP"]:
                 pass  # Process token
             try:
                 lexer.next_token()
@@ -426,22 +426,22 @@ class TestTPGTokenDefaults:
         def uppercase(text):
             return text.upper()
 
-        lexer.def_token('WORD', r'[a-z]+', uppercase)
-        assert 'WORD' in lexer.tokens
-        value_func, is_real = lexer.tokens['WORD']
+        lexer.def_token("WORD", r"[a-z]+", uppercase)
+        assert "WORD" in lexer.tokens
+        value_func, is_real = lexer.tokens["WORD"]
         assert is_real is True
 
     def test_separator_default_value(self):
         """Test separator with default identity function"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_separator('SPACE', r'\s+')
-        value_func, is_real = lexer.tokens['SPACE']
+        lexer.def_separator("SPACE", r"\s+")
+        value_func, is_real = lexer.tokens["SPACE"]
         assert is_real is False
 
     def test_token_static_value(self):
         """Test token that always returns static value"""
         lexer = NamedGroupLexer(True, 0)
-        lexer.def_token('NULL', r'null', None)
-        assert 'NULL' in lexer.tokens
-        value_func, is_real = lexer.tokens['NULL']
+        lexer.def_token("NULL", r"null", None)
+        assert "NULL" in lexer.tokens
+        value_func, is_real = lexer.tokens["NULL"]
         assert is_real is True

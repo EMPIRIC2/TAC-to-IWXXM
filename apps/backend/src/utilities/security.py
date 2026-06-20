@@ -1,4 +1,5 @@
 """JWT security and authentication utilities via inlined auth package."""
+
 import logging
 import os
 from pathlib import Path
@@ -16,8 +17,8 @@ if env_file.exists():  # pragma: no cover
     with open(env_file) as f:
         for line in f:
             line = line.strip()
-            if line and not line.startswith('#') and '=' in line:
-                key, value = line.split('=', 1)
+            if line and not line.startswith("#") and "=" in line:
+                key, value = line.split("=", 1)
                 # Only set if not already in environment
                 if key not in os.environ:
                     os.environ[key] = value
@@ -68,15 +69,12 @@ async def verify_supabase_token(
             "user_id": admin_user_id,  # Also include for compatibility
             "email": admin_email,
             "authenticated": False,
-            "environment": "development"
+            "environment": "development",
         }
 
     if not credentials:
         logger.warning("[AUTH] Missing authorization credentials")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing authorization credentials"
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing authorization credentials")
 
     token = credentials.credentials
     logger.info(
@@ -116,8 +114,7 @@ async def verify_supabase_token(
     except Exception as e:
         logger.error("[AUTH] Unexpected token verification failure: %s", str(e), exc_info=True)
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Token verification failed: {str(e)}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Token verification failed: {str(e)}"
         )
 
 

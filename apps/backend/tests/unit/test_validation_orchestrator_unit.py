@@ -596,7 +596,6 @@ class TestValidationOrchestratorBranches:
         assert ValidationLayer.GML_REFERENCES in result.layers_passed
         assert ValidationLayer.WMO_CODELISTS in result.layers_passed
 
-
     def test_validate_complete_layer2_fails_no_stop_continues_to_layer3(self, monkeypatch):
         """Layer 2 fail with stop_on_error=False should continue into layer 3 (covers 201->219)."""
         orchestrator = ValidationOrchestrator()
@@ -701,9 +700,7 @@ class TestValidationOrchestratorBranches:
         orchestrator = ValidationOrchestrator()
 
         issue = make_issue(ValidationLayer.SCHEMATRON, "SCH_FAIL")
-        failing_result = ValidationResult(
-            passed=False, layer=ValidationLayer.SCHEMATRON, issues=[issue]
-        )
+        failing_result = ValidationResult(passed=False, layer=ValidationLayer.SCHEMATRON, issues=[issue])
 
         class _FailingWithIssues:
             def validate(self, *_args, **_kwargs):

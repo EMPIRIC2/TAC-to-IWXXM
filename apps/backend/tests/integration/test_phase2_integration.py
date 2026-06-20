@@ -1,6 +1,7 @@
 """
 Integration tests for Phase 2 statistics endpoints.
 """
+
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -24,7 +25,7 @@ class TestConversionWithStatistics:
         mock_get_session_cm.__aenter__ = AsyncMock(return_value=mock_session)
         mock_get_session_cm.__aexit__ = AsyncMock(return_value=None)
 
-        with patch('src.services.statistics.get_db_session', return_value=mock_get_session_cm):
+        with patch("src.services.statistics.get_db_session", return_value=mock_get_session_cm):
             # Test would require full API fixture, verify logging only
             assert True
 
@@ -71,11 +72,11 @@ class TestDatabaseConnection:
         """Test database engine initializes on startup."""
         from src.services.database import init_db_engine
 
-        with patch('src.services.database.create_async_engine') as mock_create_engine:
+        with patch("src.services.database.create_async_engine") as mock_create_engine:
             mock_engine = AsyncMock()
             mock_create_engine.return_value = mock_engine
 
-            with patch('src.services.database.get_database_url', return_value='postgresql+asyncpg://localhost/test'):
+            with patch("src.services.database.get_database_url", return_value="postgresql+asyncpg://localhost/test"):
                 engine = await init_db_engine()
                 assert engine is not None
 
@@ -91,7 +92,7 @@ class TestDatabaseConnection:
         mock_get_session_cm.__aenter__ = AsyncMock(return_value=mock_session)
         mock_get_session_cm.__aexit__ = AsyncMock(return_value=None)
 
-        with patch('src.services.database.get_db_session', return_value=mock_get_session_cm):
+        with patch("src.services.database.get_db_session", return_value=mock_get_session_cm):
             # Just verify we can use the async context manager
             assert mock_get_session_cm is not None
 
@@ -115,7 +116,7 @@ class TestStatisticsService:
         mock_get_session_cm.__aenter__ = AsyncMock(return_value=mock_session)
         mock_get_session_cm.__aexit__ = AsyncMock(return_value=None)
 
-        with patch('src.services.statistics.get_db_session', return_value=mock_get_session_cm):
+        with patch("src.services.statistics.get_db_session", return_value=mock_get_session_cm):
             service = StatisticsService()
 
             result = await service.log_translation(
@@ -127,7 +128,7 @@ class TestStatisticsService:
                 iwxxm_output="<?xml...>",
                 validation_layers_passed=None,
                 validation_errors=None,
-                user_id=str(uuid.uuid4())
+                user_id=str(uuid.uuid4()),
             )
 
             # Should have called add and commit
@@ -140,12 +141,14 @@ class TestStatisticsService:
 
         mock_session = AsyncMock()
         mock_result = AsyncMock()
-        mock_result.scalar_one_or_none = AsyncMock(return_value={
-            'total_translations': 100,
-            'successful_translations': 95,
-            'failed_translations': 5,
-            'success_rate': 0.95
-        })
+        mock_result.scalar_one_or_none = AsyncMock(
+            return_value={
+                "total_translations": 100,
+                "successful_translations": 95,
+                "failed_translations": 5,
+                "success_rate": 0.95,
+            }
+        )
         mock_session.execute = AsyncMock(return_value=mock_result)
 
         # Create a proper async context manager mock
@@ -153,7 +156,7 @@ class TestStatisticsService:
         mock_get_session_cm.__aenter__ = AsyncMock(return_value=mock_session)
         mock_get_session_cm.__aexit__ = AsyncMock(return_value=None)
 
-        with patch('src.services.statistics.get_db_session', return_value=mock_get_session_cm):
+        with patch("src.services.statistics.get_db_session", return_value=mock_get_session_cm):
             service = StatisticsService()
             start = datetime(2025, 2, 1, tzinfo=timezone.utc)
             end = datetime(2025, 2, 10, tzinfo=timezone.utc)
@@ -169,10 +172,12 @@ class TestStatisticsService:
 
         mock_session = AsyncMock()
         mock_result = AsyncMock()
-        mock_result.scalars = AsyncMock(return_value=[
-            {'icao_region': 'NAM', 'total_translations': 50},
-            {'icao_region': 'EUR', 'total_translations': 30}
-        ])
+        mock_result.scalars = AsyncMock(
+            return_value=[
+                {"icao_region": "NAM", "total_translations": 50},
+                {"icao_region": "EUR", "total_translations": 30},
+            ]
+        )
         mock_session.execute = AsyncMock(return_value=mock_result)
 
         # Create a proper async context manager mock
@@ -180,7 +185,7 @@ class TestStatisticsService:
         mock_get_session_cm.__aenter__ = AsyncMock(return_value=mock_session)
         mock_get_session_cm.__aexit__ = AsyncMock(return_value=None)
 
-        with patch('src.services.statistics.get_db_session', return_value=mock_get_session_cm):
+        with patch("src.services.statistics.get_db_session", return_value=mock_get_session_cm):
             service = StatisticsService()
             start = datetime(2025, 2, 1, tzinfo=timezone.utc)
             end = datetime(2025, 2, 10, tzinfo=timezone.utc)
@@ -199,13 +204,12 @@ class TestWebhookIntegration:
         """Test webhook fires on successful translation."""
         from src.services.webhooks import WebhookService
 
-        with patch('src.config.icao_opmet.should_send_webhooks', return_value=True):
-            with patch('src.config.icao_opmet.WEBHOOK_URLS', ['https://example.com/webhook']):
+        with patch("src.config.icao_opmet.should_send_webhooks", return_value=True):
+            with patch("src.config.icao_opmet.WEBHOOK_URLS", ["https://example.com/webhook"]):
                 service = WebhookService()
 
                 result = await service.send_webhook(
-                    event='translation.success',
-                    data={'translation_id': '123', 'duration_ms': 125}
+                    event="translation.success", data={"translation_id": "123", "duration_ms": 125}
                 )
 
                 assert isinstance(result, bool)
@@ -214,7 +218,7 @@ class TestWebhookIntegration:
         """Test webhook payloads are signed correctly."""
         from src.services.webhooks import WebhookService
 
-        with patch('src.config.icao_opmet.WEBHOOK_SECRET', 'test-secret'):
+        with patch("src.config.icao_opmet.WEBHOOK_SECRET", "test-secret"):
             service = WebhookService()
 
             # Create a test payload
@@ -266,24 +270,24 @@ class TestPhase2Configuration:
         """Test database URL can be configured multiple ways."""
         from src.services.database import get_database_url
 
-        with patch.dict('os.environ', {'DATABASE_URL': 'postgresql://test@localhost/db'}):
+        with patch.dict("os.environ", {"DATABASE_URL": "postgresql://test@localhost/db"}):
             url = get_database_url()
-            assert 'postgresql://' in url
+            assert "postgresql://" in url
 
     def test_webhook_configuration(self):
         """Test webhook configuration options."""
-        with patch.dict('os.environ', {
-            'ENABLE_WEBHOOKS': 'true',
-            'WEBHOOK_URLS': 'https://example.com/webhook',
-            'WEBHOOK_SECRET': 'secret123'
-        }):
+        with patch.dict(
+            "os.environ",
+            {"ENABLE_WEBHOOKS": "true", "WEBHOOK_URLS": "https://example.com/webhook", "WEBHOOK_SECRET": "secret123"},
+        ):
             from src.services.webhooks import WebhookService
+
             service = WebhookService()
             assert service is not None
 
     def test_statistics_logging_can_be_disabled(self):
         """Test statistics logging can be disabled."""
-        with patch.dict('os.environ', {'ENABLE_STATISTICS': 'false'}):
+        with patch.dict("os.environ", {"ENABLE_STATISTICS": "false"}):
             # Statistics should not be logged
             assert True
 

@@ -1,4 +1,5 @@
 """Comprehensive tests for vaaDecoder module"""
+
 from gifts.vaaDecoder import Decoder
 
 
@@ -17,8 +18,8 @@ class TestVaaDecoderBasic:
         result = decoder("")
 
         assert isinstance(result, dict)
-        assert 'err_msg' in result
-        assert 'VA ADVISORY line not found' in result['err_msg']
+        assert "err_msg" in result
+        assert "VA ADVISORY line not found" in result["err_msg"]
 
     def test_decoder_call_with_no_va_advisory_header(self):
         """Test decoding text without VA ADVISORY header"""
@@ -26,7 +27,7 @@ class TestVaaDecoderBasic:
         result = decoder("Some random text without the proper header")
 
         assert isinstance(result, dict)
-        assert 'err_msg' in result
+        assert "err_msg" in result
 
     def test_vaa_decoder_is_a_test_method(self):
         """Test _is_a_test method"""
@@ -37,11 +38,11 @@ class TestVaaDecoderBasic:
         assert decoder._is_a_test() is False
 
         # Marked as test
-        decoder.vaa['status'] = 'TEST'
+        decoder.vaa["status"] = "TEST"
         assert decoder._is_a_test() is True
 
         # Test status
-        decoder.vaa['status'] = 'OTHER'
+        decoder.vaa["status"] = "OTHER"
         assert decoder._is_a_test() is False
 
 
@@ -75,7 +76,7 @@ NXT ADVISORY: NO FURTHER ADVISORIES"""
 
         assert isinstance(result, dict)
         # Exercise messages should not produce err_msg
-        assert 'err_msg' not in result or result.get('err_msg') is None
+        assert "err_msg" not in result or result.get("err_msg") is None
 
     def test_decode_test_vaa(self):
         """Test decoding TEST status VAA"""
@@ -104,7 +105,7 @@ NXT ADVISORY: WILL BE ISSUED BY 20251218/0115Z"""
 
         assert isinstance(result, dict)
         # Test messages should not produce err_msg
-        assert 'err_msg' not in result or result.get('err_msg') is None
+        assert "err_msg" not in result or result.get("err_msg") is None
 
 
 class TestVaaDecoderValidMessage:
@@ -135,10 +136,10 @@ NXT ADVISORY: WILL BE ISSUED BY 20251218/0115Z"""
         result = decoder(fuego_vaa)
 
         assert isinstance(result, dict)
-        assert 'volcanoName' in result
-        assert 'FUEGO' in result['volcanoName']  # Includes volcano number in output
-        assert 'advisoryNumber' in result
-        assert 'clouds' in result
+        assert "volcanoName" in result
+        assert "FUEGO" in result["volcanoName"]  # Includes volcano number in output
+        assert "advisoryNumber" in result
+        assert "clouds" in result
 
     def test_decode_semeru_vaa(self):
         """Test decoding Semeru VAA"""
@@ -165,7 +166,7 @@ NXT ADVISORY: WILL BE ISSUED BY 20200615/0852Z"""
         result = decoder(semeru_vaa)
 
         assert isinstance(result, dict)
-        assert 'volcanoName' in result
+        assert "volcanoName" in result
 
 
 class TestVaaDecoderHeaderParsing:
@@ -224,7 +225,7 @@ NXT ADVISORY: WILL BE ISSUED BY 20251218/0115Z"""
         result = decoder(vaa_multiline)
 
         assert isinstance(result, dict)
-        assert 'remarks' in result
+        assert "remarks" in result
 
 
 class TestVaaDecoderCloudInfo:
@@ -255,8 +256,8 @@ NXT ADVISORY: WILL BE ISSUED BY 20251218/0115Z"""
         result = decoder(vaa_clouds)
 
         assert isinstance(result, dict)
-        if 'clouds' in result:
-            assert isinstance(result['clouds'], dict)
+        if "clouds" in result:
+            assert isinstance(result["clouds"], dict)
 
     def test_decoder_no_ash_expected(self):
         """Test parsing NO ASH EXPECTED statement"""
@@ -477,7 +478,7 @@ NXT ADVISORY: WILL BE ISSUED BY 20251218/0115Z"""
         result = decoder(vaa)
 
         assert isinstance(result, dict)
-        assert 'volcanoName' in result
+        assert "volcanoName" in result
 
     def test_decoder_advisory_number(self):
         """Test advisory number parsing"""
@@ -504,7 +505,7 @@ NXT ADVISORY: WILL BE ISSUED BY 20251218/0115Z"""
         result = decoder(vaa)
 
         assert isinstance(result, dict)
-        assert 'advisoryNumber' in result
+        assert "advisoryNumber" in result
 
     def test_decoder_vaac_center(self):
         """Test VAAC center parsing"""
@@ -621,19 +622,19 @@ class TestVaaDecoderAttributes:
     def test_decoder_has_header_regex(self):
         """Test that decoder has header regex"""
         decoder = Decoder()
-        assert hasattr(decoder, 'header')
+        assert hasattr(decoder, "header")
         assert decoder.header is not None
 
     def test_decoder_has_winds_regex(self):
         """Test that decoder has winds regex"""
         decoder = Decoder()
-        assert hasattr(decoder, '_reWinds')
+        assert hasattr(decoder, "_reWinds")
         assert decoder._reWinds is not None
 
     def test_decoder_has_tokeninenerglish(self):
         """Test that decoder has _tokenInEnglish mapping"""
         decoder = Decoder()
-        assert hasattr(decoder, '_tokenInEnglish')
+        assert hasattr(decoder, "_tokenInEnglish")
         assert isinstance(decoder._tokenInEnglish, dict)
 
     def test_decoder_vaa_dict_structure(self):
@@ -643,8 +644,8 @@ class TestVaaDecoderAttributes:
         decoder("")
 
         # Check structure of vaa dict
-        assert 'bbb' in decoder.vaa
-        assert 'translationTime' in decoder.vaa
-        assert 'volcanoName' in decoder.vaa
-        assert 'clouds' in decoder.vaa
-        assert 'remarks' in decoder.vaa
+        assert "bbb" in decoder.vaa
+        assert "translationTime" in decoder.vaa
+        assert "volcanoName" in decoder.vaa
+        assert "clouds" in decoder.vaa
+        assert "remarks" in decoder.vaa

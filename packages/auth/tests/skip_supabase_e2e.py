@@ -3,6 +3,7 @@
 End-to-end test of Supabase integration with the auth service.
 Demonstrates complete user lifecycle: register → login → create API key → use API key.
 """
+
 import requests
 import json
 import uuid
@@ -18,9 +19,9 @@ def test_complete_flow():
     username = f"supa_test_{unique_id}"
     email = f"supa_{unique_id}@test.com"
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("SUPABASE INTEGRATION - END-TO-END TEST")
-    print("="*70)
+    print("=" * 70)
 
     # 1. Register a new user
     print("\n1️⃣  REGISTERING USER...")
@@ -29,7 +30,7 @@ def test_complete_flow():
         "email": email,
         "password": "SupabaseTest123!",
         "name": "Supabase Test User",
-        "address": "Cloud Street, Supabase City"
+        "address": "Cloud Street, Supabase City",
     }
 
     r = requests.post(f"{BASE_URL}/auth/register", json=register_data)
@@ -41,10 +42,7 @@ def test_complete_flow():
 
     # 2. Login with the user
     print("\n2️⃣  LOGGING IN...")
-    login_data = {
-        "username": register_data["username"],
-        "password": register_data["password"]
-    }
+    login_data = {"username": register_data["username"], "password": register_data["password"]}
 
     r = requests.post(f"{BASE_URL}/auth/login", json=login_data)
     assert r.status_code == 200, f"Login failed: {r.text}"
@@ -84,8 +82,7 @@ def test_complete_flow():
     # 6. Request password reset
     print("\n6️⃣  REQUESTING PASSWORD RESET...")
     reset_data = {"email": register_data["email"]}
-    r = requests.post(
-        f"{BASE_URL}/auth/password-reset/request", json=reset_data)
+    r = requests.post(f"{BASE_URL}/auth/password-reset/request", json=reset_data)
     assert r.status_code == 200, f"Password reset request failed: {r.text}"
     print(f"   ✓ Password reset token generated")
 
@@ -96,9 +93,9 @@ def test_complete_flow():
     assert r.status_code == 200, f"Login verification failed: {r.text}"
     print(f"   ✓ User data persisted in Supabase ✓")
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("✅ ALL TESTS PASSED - SUPABASE INTEGRATION WORKING!")
-    print("="*70)
+    print("=" * 70)
     print("\n📊 Summary:")
     print(f"   - Database: Supabase PostgreSQL (us-west-2)")
     print(f"   - Connection: IPv4 Transaction Pooler (aws-0-us-west-2.pooler.supabase.com:6543)")
@@ -121,5 +118,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n❌ UNEXPECTED ERROR: {e}")
         import traceback
+
         traceback.print_exc()
         exit(1)

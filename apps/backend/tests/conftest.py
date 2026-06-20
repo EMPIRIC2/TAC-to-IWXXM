@@ -1,4 +1,5 @@
 """Pytest configuration for backend tests."""
+
 import os
 import sys
 from pathlib import Path
@@ -16,16 +17,10 @@ def pytest_configure(config):
     """Configure pytest."""
     config.addinivalue_line(
         "markers",
-        "live_api: tests that require internet connection to aviationweather.gov (use -m 'not live_api' to skip)"
+        "live_api: tests that require internet connection to aviationweather.gov (use -m 'not live_api' to skip)",
     )
-    config.addinivalue_line(
-        "markers",
-        "smoke: quick smoke tests for CI/CD pipelines (~30 seconds)"
-    )
-    config.addinivalue_line(
-        "markers",
-        "e2e: end-to-end tests requiring real services (database, auth, etc.)"
-    )
+    config.addinivalue_line("markers", "smoke: quick smoke tests for CI/CD pipelines (~30 seconds)")
+    config.addinivalue_line("markers", "e2e: end-to-end tests requiring real services (database, auth, etc.)")
 
 
 @pytest.fixture(autouse=True)

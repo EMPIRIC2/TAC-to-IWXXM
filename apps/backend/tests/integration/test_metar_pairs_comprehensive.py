@@ -39,12 +39,13 @@ def extract_iwxxm_version(xml_content: str) -> str:
         return match.group(1)
 
     # Fallback: check xsi:schemaLocation
-    match = re.search(r'http://icao\.int/iwxxm/(\d{4}-\d+)/iwxxm\.xsd', xml_content)
+    match = re.search(r"http://icao\.int/iwxxm/(\d{4}-\d+)/iwxxm\.xsd", xml_content)
     if match:
         return match.group(1)
 
     # Default to latest version
     return "2025-2"
+
 
 def _collect_metar_pairs(data_dir: Path) -> List[Tuple[Path, Path, str]]:
     """Collect all (tac_file, xml_file, version_name) tuples from test data directories.
@@ -89,9 +90,7 @@ class TestMetarConversionComprehensive:
         "tac_file,xml_file,amendment_version",
         METAR_PAIRS,
     )
-    def test_metar_converts_to_matching_iwxxm(
-        self, tac_file: Path, xml_file: Path, amendment_version: str
-    ):
+    def test_metar_converts_to_matching_iwxxm(self, tac_file: Path, xml_file: Path, amendment_version: str):
         """Convert METAR TAC to IWXXM and verify output matches expected XML.
 
         Args:
@@ -134,14 +133,11 @@ class TestMetarConversionComprehensive:
 
             # Extract namespace URI dynamically instead of hardcoding
             ns_match = re.search(r'xmlns:iwxxm="([^"]+)"', expected_xml)
-            iwxxm_ns = ns_match.group(1) if ns_match else 'http://icao.int/iwxxm/2023-1'
+            iwxxm_ns = ns_match.group(1) if ns_match else "http://icao.int/iwxxm/2023-1"
 
             # Find iwxxm:issueTime/gml:TimeInstant/gml:timePosition
-            namespaces = {
-                'iwxxm': iwxxm_ns,
-                'gml': 'http://www.opengis.net/gml/3.2'
-            }
-            time_elem = expected_root.find('.//iwxxm:issueTime//gml:timePosition', namespaces)
+            namespaces = {"iwxxm": iwxxm_ns, "gml": "http://www.opengis.net/gml/3.2"}
+            time_elem = expected_root.find(".//iwxxm:issueTime//gml:timePosition", namespaces)
             if time_elem is not None and time_elem.text:
                 reference_time = time_elem.text.strip()
         except Exception:
@@ -155,7 +151,7 @@ class TestMetarConversionComprehensive:
             iwxxm_version=iwxxm_version,  # Auto-detected from reference XML
             reference_time=reference_time,
             use_test_overrides=True,  # Use WMO reference datum expectations
-            validate=False  # Disable validation to avoid overhead in these tests
+            validate=False,  # Disable validation to avoid overhead in these tests
         )
         assert converted_xml, f"Conversion failed for {tac_file.name}"
 
@@ -189,26 +185,18 @@ class TestMetarConversionComprehensive:
             ]
 
             if report.field_diffs:
-                msg_parts.append(
-                    f"\n{len(report.field_diffs)} Field Differences:"
-                )
+                msg_parts.append(f"\n{len(report.field_diffs)} Field Differences:")
                 for diff in report.field_diffs[:5]:  # Show first 5
                     msg_parts.append(f"  - {diff}")
                 if len(report.field_diffs) > 5:
-                    msg_parts.append(
-                        f"  ... and {len(report.field_diffs) - 5} more"
-                    )
+                    msg_parts.append(f"  ... and {len(report.field_diffs) - 5} more")
 
             if report.lat_lon_diffs:
-                msg_parts.append(
-                    f"\n{len(report.lat_lon_diffs)} Lat/Lon Differences:"
-                )
+                msg_parts.append(f"\n{len(report.lat_lon_diffs)} Lat/Lon Differences:")
                 for diff in report.lat_lon_diffs[:3]:
                     msg_parts.append(f"  - {diff}")
 
-            msg_parts.append(
-                f"\nFull diff report: {REPORT_DIR}/{tac_file.stem}_{amendment_version}.json"
-            )
+            msg_parts.append(f"\nFull diff report: {REPORT_DIR}/{tac_file.stem}_{amendment_version}.json")
 
             pytest.fail("\n".join(msg_parts))
 
@@ -216,9 +204,7 @@ class TestMetarConversionComprehensive:
         "tac_file,xml_file,amendment_version",
         METAR_PAIRS,
     )
-    def test_metar_converts_to_iwxxm_2025_2(
-        self, tac_file: Path, xml_file: Path, amendment_version: str
-    ):
+    def test_metar_converts_to_iwxxm_2025_2(self, tac_file: Path, xml_file: Path, amendment_version: str):
         """Convert METAR TAC to IWXXM 2025-2 and generate comparison reports.
 
         This test generates JSON reports for 2025-2 conversions using
@@ -248,7 +234,7 @@ class TestMetarConversionComprehensive:
             tac_text,
             iwxxm_version="2025-2",  # Force 2025-2 for live comparison
             use_test_overrides=True,
-            validate=False
+            validate=False,
         )
         assert converted_xml, f"Conversion failed for {tac_file.name}"
 
@@ -304,9 +290,7 @@ class TestMetarConversionStats:
 
         for version, expected_count in expected_counts.items():
             actual_count = by_version.get(version, 0)
-            assert (
-                actual_count == expected_count
-            ), f"{version}: expected {expected_count} pairs, got {actual_count}"
+            assert actual_count == expected_count, f"{version}: expected {expected_count} pairs, got {actual_count}"
 
     def test_report_directory_writable(self):
         """Verify test report directory can be created and written to."""

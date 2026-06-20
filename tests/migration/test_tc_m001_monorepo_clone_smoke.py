@@ -75,7 +75,9 @@ class TestTcM001MonorepoCloneSmoke:
             f"{result.stdout}\n{result.stderr}"
         )
 
-    @pytest.mark.skip(reason="Health check wired when make dev targets monorepo apps (T1.6+)")
+    @pytest.mark.skip(
+        reason="Health check wired when make dev targets monorepo apps (T1.6+)"
+    )
     def test_backend_health_returns_200(self) -> None:
         """Step 3: ``/health`` returns 200 after ``make dev`` or docker-compose."""
         import httpx

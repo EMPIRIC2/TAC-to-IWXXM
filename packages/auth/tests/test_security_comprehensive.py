@@ -3,6 +3,7 @@
 Tests password hashing, JWT tokens, API key hashing, and reset token utilities.
 Target: 95%+ coverage.
 """
+
 import pytest
 import datetime as dt
 import os
@@ -279,9 +280,11 @@ class TestSecurityConfiguration:
             # Re-import to get new env value
             import importlib
             import auth.security
+
             importlib.reload(auth.security)
 
             from auth.security import JWT_SECRET
+
             assert JWT_SECRET == "test-secret"
 
     def test_jwt_expire_from_env(self):
@@ -289,9 +292,11 @@ class TestSecurityConfiguration:
         with mock.patch.dict(os.environ, {"AUTH_JWT_EXPIRE_MINUTES": "120"}):
             import importlib
             import auth.security
+
             importlib.reload(auth.security)
 
             from auth.security import JWT_EXPIRE_MINUTES
+
             assert JWT_EXPIRE_MINUTES == 120
 
     def test_reset_expire_from_env(self):
@@ -299,9 +304,11 @@ class TestSecurityConfiguration:
         with mock.patch.dict(os.environ, {"AUTH_RESET_EXPIRE_MINUTES": "60"}):
             import importlib
             import auth.security
+
             importlib.reload(auth.security)
 
             from auth.security import RESET_TOKEN_EXPIRE_MINUTES
+
             assert RESET_TOKEN_EXPIRE_MINUTES == 60
 
     def test_default_jwt_secret(self):

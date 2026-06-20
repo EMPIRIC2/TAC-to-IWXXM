@@ -30,13 +30,15 @@ class Encoder:
     def __init__(self):
         #
         self._Logger = logging.getLogger(__name__)
-        self.NameSpaces = {'aixm': 'http://www.aixm.aero/schema/5.1.1',
-                           'gml': 'http://www.opengis.net/gml/3.2',
-                           '': des.IWXXM_URI,
-                           'xlink': 'http://www.w3.org/1999/xlink',
-                           'xsi': 'http://www.w3.org/2001/XMLSchema-instance'}
+        self.NameSpaces = {
+            "aixm": "http://www.aixm.aero/schema/5.1.1",
+            "gml": "http://www.opengis.net/gml/3.2",
+            "": des.IWXXM_URI,
+            "xlink": "http://www.w3.org/1999/xlink",
+            "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+        }
         try:
-            self.codes = deu.parseCodeRegistryTables(des.CodesFilePath, [des.NIL], 'en')
+            self.codes = deu.parseCodeRegistryTables(des.CodesFilePath, [des.NIL], "en")
         except AssertionError as msg:
             self._Logger.warning(msg)
 
@@ -61,60 +63,55 @@ class Encoder:
     def preamble(self):
         #
         # The root element created here
-        self.XMLDocument = ET.Element('VolcanicAshAdvisory')
+        self.XMLDocument = ET.Element("VolcanicAshAdvisory")
         #
         for prefix, uri in self.NameSpaces.items():
-            if prefix == '':
-                self.XMLDocument.set('xmlns', uri)
+            if prefix == "":
+                self.XMLDocument.set("xmlns", uri)
             else:
-                self.XMLDocument.set('xmlns:%s' % prefix, uri)
+                self.XMLDocument.set("xmlns:%s" % prefix, uri)
         #
-        self.XMLDocument.set('xsi:schemaLocation', '%s %s' % (des.IWXXM_URI, des.IWXXM_URL))
+        self.XMLDocument.set("xsi:schemaLocation", "%s %s" % (des.IWXXM_URI, des.IWXXM_URL))
         #
         # Set its many attributes
-        if 'status' in self.decodedTAC:
-            self.XMLDocument.set('permissibleUsage', 'NON-OPERATIONAL')
-            if self.decodedTAC['status'] == 'TEST':
-                self.XMLDocument.set('permissibleUsageReason', 'TEST')
+        if "status" in self.decodedTAC:
+            self.XMLDocument.set("permissibleUsage", "NON-OPERATIONAL")
+            if self.decodedTAC["status"] == "TEST":
+                self.XMLDocument.set("permissibleUsageReason", "TEST")
             else:
-                self.XMLDocument.set('permissibleUsageReason', 'EXERCISE')
+                self.XMLDocument.set("permissibleUsageReason", "EXERCISE")
         else:
-            self.XMLDocument.set('permissibleUsage', 'OPERATIONAL')
+            self.XMLDocument.set("permissibleUsage", "OPERATIONAL")
         #
         # bbb code
-        self.XMLDocument.set('reportStatus', {'A': 'AMENDMENT', 'C': 'CORRECTION'}.get(
-            self.decodedTAC['bbb'], 'NORMAL'))
+        self.XMLDocument.set("reportStatus", {"A": "AMENDMENT", "C": "CORRECTION"}.get(self.decodedTAC["bbb"], "NORMAL"))
         #
         if des.TRANSLATOR:
-
-            self.XMLDocument.set('translationCentreName', des.TranslationCentreName)
-            self.XMLDocument.set('translationCentreDesignator', des.TranslationCentreDesignator)
-            self.XMLDocument.set('translationTime', self.decodedTAC['translationTime'])
-            self.XMLDocument.set('translatedBulletinReceptionTime',
-                                 self.decodedTAC['translatedBulletinReceptionTime'])
-            self.XMLDocument.set('translatedBulletinID', self.decodedTAC['translatedBulletinID'])
+            self.XMLDocument.set("translationCentreName", des.TranslationCentreName)
+            self.XMLDocument.set("translationCentreDesignator", des.TranslationCentreDesignator)
+            self.XMLDocument.set("translationTime", self.decodedTAC["translationTime"])
+            self.XMLDocument.set("translatedBulletinReceptionTime", self.decodedTAC["translatedBulletinReceptionTime"])
+            self.XMLDocument.set("translatedBulletinID", self.decodedTAC["translatedBulletinID"])
             #
             # If TAC translation failed in some way
-            if 'err_msg' in self.decodedTAC:
-
-                self.XMLDocument.set('translationFailedTAC', self.tacString)
+            if "err_msg" in self.decodedTAC:
+                self.XMLDocument.set("translationFailedTAC", self.tacString)
                 # self.XMLDocument.set('permissibleUsageSupplementary', self.decodedTAC.get('err_msg'))
                 self.nilPresent = True
 
-        self.XMLDocument.set('gml:id', deu.getUUID())
+        self.XMLDocument.set("gml:id", deu.getUUID())
         #
         # For translation failed messages, no operational content shall be provided in XML
         if self.nilPresent:
-
             self.issueTime(self.XMLDocument, None)
             self.vaac(self.XMLDocument, None)
 
         else:
-            self.issueTime(self.XMLDocument, self.decodedTAC.get('issueTime', None))
-            self.vaac(self.XMLDocument, self.decodedTAC.get('centre', None))
+            self.issueTime(self.XMLDocument, self.decodedTAC.get("issueTime", None))
+            self.vaac(self.XMLDocument, self.decodedTAC.get("centre", None))
 
         if not self.nilPresent:
-            if 'issueTime' not in self.decodedTAC and self.decodedTAC['status'] == 'TEST':
+            if "issueTime" not in self.decodedTAC and self.decodedTAC["status"] == "TEST":
                 self.nilPresent = True
 
         if self.nilPresent:
@@ -123,231 +120,231 @@ class Encoder:
         # Details about the volcano is set
         self.volcano(self.XMLDocument)
         #
-        child = ET.SubElement(self.XMLDocument, 'stateOrRegion')
-        if 'UNKNOWN' not in self.decodedTAC['region']:
-            child.text = self.decodedTAC['region']
+        child = ET.SubElement(self.XMLDocument, "stateOrRegion")
+        if "UNKNOWN" not in self.decodedTAC["region"]:
+            child.text = self.decodedTAC["region"]
         else:
-            child.set('nilReason', self.codes[des.NIL][des.UNKNWN][0])
-            child.set('xsi:nil', 'true')
+            child.set("nilReason", self.codes[des.NIL][des.UNKNWN][0])
+            child.set("xsi:nil", "true")
 
-        child = ET.SubElement(self.XMLDocument, 'sourceElevationAMSL')
-        if self.decodedTAC['source'] is None:
-            child.set('xsi:nil', 'true')
-            child.set('nilReason', self.codes[des.NIL][des.UNKNWN][0])
+        child = ET.SubElement(self.XMLDocument, "sourceElevationAMSL")
+        if self.decodedTAC["source"] is None:
+            child.set("xsi:nil", "true")
+            child.set("nilReason", self.codes[des.NIL][des.UNKNWN][0])
         else:
-            child.text = self.decodedTAC['source']['elevation']
-            child.set('uom', {'FT': '[ft_i]'}.get(self.decodedTAC['source']['uom'], 'm'))
+            child.text = self.decodedTAC["source"]["elevation"]
+            child.set("uom", {"FT": "[ft_i]"}.get(self.decodedTAC["source"]["uom"], "m"))
 
-        child = ET.SubElement(self.XMLDocument, 'advisoryNumber')
-        child.text = self.decodedTAC['advisoryNumber']
+        child = ET.SubElement(self.XMLDocument, "advisoryNumber")
+        child.text = self.decodedTAC["advisoryNumber"]
 
-        child = ET.SubElement(self.XMLDocument, 'informationSource')
-        child.text = self.decodedTAC['sources']
+        child = ET.SubElement(self.XMLDocument, "informationSource")
+        child.text = self.decodedTAC["sources"]
         #
-        child = ET.SubElement(self.XMLDocument, 'eruptionDetails')
-        if 'UNKNOWN' in self.decodedTAC['details']:
-            child.set('nilReason', self.codes[des.NIL][des.UNKNWN][0])
-            child.set('xsi:nil', 'true')
+        child = ET.SubElement(self.XMLDocument, "eruptionDetails")
+        if "UNKNOWN" in self.decodedTAC["details"]:
+            child.set("nilReason", self.codes[des.NIL][des.UNKNWN][0])
+            child.set("xsi:nil", "true")
 
         else:
-            child.text = self.decodedTAC['details']
+            child.text = self.decodedTAC["details"]
 
     def issueTime(self, parent, timeStamp):
 
-        indent = ET.SubElement(parent, 'issueTime')
+        indent = ET.SubElement(parent, "issueTime")
         if timeStamp is None:
             return
 
-        indent1 = ET.SubElement(indent, 'gml:TimeInstant')
-        indent1.set('gml:id', deu.getUUID())
-        indent2 = ET.SubElement(indent1, 'gml:timePosition')
-        indent2.text = timeStamp['str']
+        indent1 = ET.SubElement(indent, "gml:TimeInstant")
+        indent1.set("gml:id", deu.getUUID())
+        indent2 = ET.SubElement(indent1, "gml:timePosition")
+        indent2.text = timeStamp["str"]
 
     def vaac(self, parent, centre):
 
-        indent = ET.SubElement(parent, 'issuingVolcanicAshAdvisoryCentre')
+        indent = ET.SubElement(parent, "issuingVolcanicAshAdvisoryCentre")
         if centre is None:
             return
 
-        indent1 = ET.SubElement(indent, 'Unit')
-        indent1.set('gml:id', deu.getUUID())
-        indent1.set('xmlns', self.NameSpaces['aixm'])
-        self._vaacUUID = '#%s' % indent1.get('gml:id')
+        indent1 = ET.SubElement(indent, "Unit")
+        indent1.set("gml:id", deu.getUUID())
+        indent1.set("xmlns", self.NameSpaces["aixm"])
+        self._vaacUUID = "#%s" % indent1.get("gml:id")
 
-        indent2 = ET.SubElement(indent1, 'timeSlice')
-        indent3 = ET.SubElement(indent2, 'UnitTimeSlice')
-        indent3.set('gml:id', deu.getUUID())
-        indent4 = ET.SubElement(indent3, 'gml:validTime')
-        indent4 = ET.SubElement(indent3, 'interpretation')
-        indent4.text = 'SNAPSHOT'
-        indent4 = ET.SubElement(indent3, 'name')
+        indent2 = ET.SubElement(indent1, "timeSlice")
+        indent3 = ET.SubElement(indent2, "UnitTimeSlice")
+        indent3.set("gml:id", deu.getUUID())
+        indent4 = ET.SubElement(indent3, "gml:validTime")
+        indent4 = ET.SubElement(indent3, "interpretation")
+        indent4.text = "SNAPSHOT"
+        indent4 = ET.SubElement(indent3, "name")
         indent4.text = centre
-        indent4 = ET.SubElement(indent3, 'type')
-        indent4.text = 'OTHER:VAAC'
+        indent4 = ET.SubElement(indent3, "type")
+        indent4.text = "OTHER:VAAC"
 
     def volcano(self, parent):
 
-        indent = ET.SubElement(parent, 'volcano')
-        indent1 = ET.SubElement(indent, 'EruptingVolcano')
-        indent1.set('xmlns', 'http://def.wmo.int/metce/2013')
-        indent1.set('gml:id', deu.getUUID())
+        indent = ET.SubElement(parent, "volcano")
+        indent1 = ET.SubElement(indent, "EruptingVolcano")
+        indent1.set("xmlns", "http://def.wmo.int/metce/2013")
+        indent1.set("gml:id", deu.getUUID())
 
-        indent2 = ET.SubElement(indent1, 'name')
-        indent2.text = self.decodedTAC['volcanoName']
+        indent2 = ET.SubElement(indent1, "name")
+        indent2.text = self.decodedTAC["volcanoName"]
 
-        indent2 = ET.SubElement(indent1, 'position')
-        if 'UNKNOWN' in self.decodedTAC['volcanoLocation']:
-            indent2.set('nilReason', self.codes[des.NIL][des.UNKNWN][0])
-            indent2.set('xsi:nil', 'true')
+        indent2 = ET.SubElement(indent1, "position")
+        if "UNKNOWN" in self.decodedTAC["volcanoLocation"]:
+            indent2.set("nilReason", self.codes[des.NIL][des.UNKNWN][0])
+            indent2.set("xsi:nil", "true")
 
         else:
-            indent3 = ET.SubElement(indent2, 'gml:Point')
-            indent3.set('axisLabels', des.axisLabels)
-            indent3.set('srsName', des.srsName)
-            indent3.set('srsDimension', des.srsDimension)
-            indent3.set('gml:id', deu.getUUID())
-            indent4 = ET.SubElement(indent3, 'gml:pos')
-            indent4.text = self.decodedTAC['volcanoLocation']
+            indent3 = ET.SubElement(indent2, "gml:Point")
+            indent3.set("axisLabels", des.axisLabels)
+            indent3.set("srsName", des.srsName)
+            indent3.set("srsDimension", des.srsDimension)
+            indent3.set("gml:id", deu.getUUID())
+            indent4 = ET.SubElement(indent3, "gml:pos")
+            indent4.text = self.decodedTAC["volcanoLocation"]
         #
         # If an eruption datetime is provided
         try:
-            indent2 = ET.Element('eruptionDate')
-            indent2.text = self.decodedTAC['eruptionDate']
+            indent2 = ET.Element("eruptionDate")
+            indent2.text = self.decodedTAC["eruptionDate"]
             indent1.append(indent2)
 
         except KeyError:
-            indent1.tag = 'Volcano'
+            indent1.tag = "Volcano"
 
     def observations(self):
         #
         # Order the forecast hours
-        fhrs = list(self.decodedTAC['clouds'].keys())
+        fhrs = list(self.decodedTAC["clouds"].keys())
         fhrs.sort(key=int)
         for fhr in fhrs:
             try:
-                self.forecast(self.XMLDocument, self.decodedTAC['clouds'][fhr]['cldLyrs'], fhr)
+                self.forecast(self.XMLDocument, self.decodedTAC["clouds"][fhr]["cldLyrs"], fhr)
             except Exception:
                 self._Logger.exception(self.tacString)
 
     def observed(self, parent, layers):
 
-        indent = ET.SubElement(parent, 'observation')
-        indent1 = ET.SubElement(indent, 'VolcanicAshObservedOrEstimatedConditions')
+        indent = ET.SubElement(parent, "observation")
+        indent1 = ET.SubElement(indent, "VolcanicAshObservedOrEstimatedConditions")
         try:
-            niltype = layers[0]['nil']
-            if niltype == 'vanotid':
-                indent1.set('status', 'NOT_IDENTIFIABLE')
-            elif niltype == 'notavbl':
-                indent1.set('status', 'NOT_AVAILABLE')
+            niltype = layers[0]["nil"]
+            if niltype == "vanotid":
+                indent1.set("status", "NOT_IDENTIFIABLE")
+            elif niltype == "notavbl":
+                indent1.set("status", "NOT_AVAILABLE")
             else:
-                indent1.set('status', 'NOT_PROVIDED')
+                indent1.set("status", "NOT_PROVIDED")
 
         except KeyError:
-            indent1.set('status', 'PROVIDED')
+            indent1.set("status", "PROVIDED")
 
-        indent1.set('isEstimated', str(self.decodedTAC.get('estimated', 'false')).lower())
-        indent1.set('gml:id', deu.getUUID())
+        indent1.set("isEstimated", str(self.decodedTAC.get("estimated", "false")).lower())
+        indent1.set("gml:id", deu.getUUID())
         #
         # Sometimes date-time group is missing. The decoder allows for this.
         try:
-            self.itime(indent1, self.decodedTAC['clouds']['0']['dtg'])
+            self.itime(indent1, self.decodedTAC["clouds"]["0"]["dtg"])
         except KeyError:
             self.itime(indent1, None)
 
-        if indent1.get('status') == 'PROVIDED':
-            self.doAshClouds(indent1, 'VolcanicAshCloudObservedOrEstimated', layers)
-        elif indent1.get('status') == 'NOT_IDENTIFIABLE':
-            self.doWindInLayers(indent1, [x['movement'] for x in layers if 'movement' in x])
+        if indent1.get("status") == "PROVIDED":
+            self.doAshClouds(indent1, "VolcanicAshCloudObservedOrEstimated", layers)
+        elif indent1.get("status") == "NOT_IDENTIFIABLE":
+            self.doWindInLayers(indent1, [x["movement"] for x in layers if "movement" in x])
 
     def forecast(self, parent, layers, fhr):
         "Encode observed and forecast ash conditions"
 
-        if fhr == '0':
+        if fhr == "0":
             self.observed(parent, layers)
             return
 
-        indent = ET.SubElement(parent, 'forecast')
-        indent1 = ET.SubElement(indent, 'VolcanicAshForecastConditions')
-        indent1.set('gml:id', deu.getUUID())
+        indent = ET.SubElement(parent, "forecast")
+        indent1 = ET.SubElement(indent, "VolcanicAshForecastConditions")
+        indent1.set("gml:id", deu.getUUID())
         try:
-            nilType = layers[0]['nil']
-            if nilType == 'noashexp':
-                indent1.set('status', 'NO_VOLCANIC_ASH_EXPECTED')
-            elif nilType == 'notavbl':
-                indent1.set('status', 'NOT_AVAILABLE')
-            elif nilType == 'notprvd':
-                indent1.set('status', 'NOT_PROVIDED')
+            nilType = layers[0]["nil"]
+            if nilType == "noashexp":
+                indent1.set("status", "NO_VOLCANIC_ASH_EXPECTED")
+            elif nilType == "notavbl":
+                indent1.set("status", "NOT_AVAILABLE")
+            elif nilType == "notprvd":
+                indent1.set("status", "NOT_PROVIDED")
 
         except KeyError:
-            indent1.set('status', 'PROVIDED')
+            indent1.set("status", "PROVIDED")
         #
         # Sometimes date-time group is missing. Decoder allows for this.
         try:
-            self.itime(indent1, self.decodedTAC['clouds'][fhr]['dtg'])
+            self.itime(indent1, self.decodedTAC["clouds"][fhr]["dtg"])
         except KeyError:
             self.itime(indent1, None)
         #
         # Return early if not further information
-        if indent1.get('status') != 'PROVIDED':
+        if indent1.get("status") != "PROVIDED":
             return
 
-        self.doAshClouds(indent1, 'VolcanicAshCloudForecast', layers)
+        self.doAshClouds(indent1, "VolcanicAshCloudForecast", layers)
 
     def doWindInLayers(self, parent, layers):
         "Encode mean wind vector in layer(s) found at time of observation"
 
         for lyr in layers:
             try:
-                indent1 = ET.Element('wind')
-                indent2 = ET.SubElement(indent1, 'WindObservedOrEstimated')
-                indent2.set('gml:id', deu.getUUID())
+                indent1 = ET.Element("wind")
+                indent2 = ET.SubElement(indent1, "WindObservedOrEstimated")
+                indent2.set("gml:id", deu.getUUID())
                 #
                 # Upper and lower bounds with AIXM
-                indent3 = ET.SubElement(indent2, 'verticalLayer')
-                indent4 = ET.SubElement(indent3, 'aixm:AirspaceLayer')
-                indent4.set('gml:id', deu.getUUID())
-                indent5 = ET.SubElement(indent4, 'aixm:upperLimit')
-                indent5.set('uom', 'FL')
-                if lyr['top'] is not None:
-                    indent5.text = lyr['top']
+                indent3 = ET.SubElement(indent2, "verticalLayer")
+                indent4 = ET.SubElement(indent3, "aixm:AirspaceLayer")
+                indent4.set("gml:id", deu.getUUID())
+                indent5 = ET.SubElement(indent4, "aixm:upperLimit")
+                indent5.set("uom", "FL")
+                if lyr["top"] is not None:
+                    indent5.text = lyr["top"]
                 else:
-                    indent5.text = lyr['bottom']
+                    indent5.text = lyr["bottom"]
 
-                indent5 = ET.SubElement(indent4, 'aixm:upperLimitReference')
-                indent5.text = 'STD'
+                indent5 = ET.SubElement(indent4, "aixm:upperLimitReference")
+                indent5.text = "STD"
 
-                indent5 = ET.SubElement(indent4, 'aixm:lowerLimit')
+                indent5 = ET.SubElement(indent4, "aixm:lowerLimit")
                 #
                 # Flight level or SFC
-                if lyr['bottom'].isdigit():
-                    indent5.text = lyr['bottom']
-                    indent5.set('uom', 'FL')
-                    indent5 = ET.SubElement(indent4, 'aixm:lowerLimitReference')
-                    indent5.text = 'STD'
+                if lyr["bottom"].isdigit():
+                    indent5.text = lyr["bottom"]
+                    indent5.set("uom", "FL")
+                    indent5 = ET.SubElement(indent4, "aixm:lowerLimitReference")
+                    indent5.text = "STD"
 
                 else:
-                    indent5.text = 'GND'
-                    indent5 = ET.SubElement(indent4, 'aixm:lowerLimitReference')
-                    indent5.text = 'SFC'
+                    indent5.text = "GND"
+                    indent5 = ET.SubElement(indent4, "aixm:lowerLimitReference")
+                    indent5.text = "SFC"
 
             except KeyError:
                 continue
             #
             # Mean wind direction
             try:
-                if 'VRB' in lyr['dir']:
-                    indent2.set('variableWindDirection', 'true')
+                if "VRB" in lyr["dir"]:
+                    indent2.set("variableWindDirection", "true")
                 else:
-                    indent2.set('variableWindDirection', 'false')
-                    indent3 = ET.Element('windDirection')
-                    indent3.text = lyr['dir']
-                    indent3.set('uom', 'deg')
+                    indent2.set("variableWindDirection", "false")
+                    indent3 = ET.Element("windDirection")
+                    indent3.text = lyr["dir"]
+                    indent3.set("uom", "deg")
                     indent2.append(indent3)
                 #
                 # Mean wind speed
-                indent3 = ET.SubElement(indent2, 'windSpeed')
-                indent3.text = lyr['spd']
-                indent3.set('uom', lyr['uom'])
+                indent3 = ET.SubElement(indent2, "windSpeed")
+                indent3.text = lyr["spd"]
+                indent3.set("uom", lyr["uom"])
                 #
                 # Attach successful mean wind layer to parent
                 parent.append(indent1)
@@ -358,23 +355,22 @@ class Encoder:
     def doAshClouds(self, parent, elementName, layers):
 
         for lyr in layers:
-
-            indent1 = ET.SubElement(parent, 'ashCloud')
+            indent1 = ET.SubElement(parent, "ashCloud")
             indent2 = ET.SubElement(indent1, elementName)
-            indent2.set('gml:id', deu.getUUID())
-            indent3 = ET.SubElement(indent2, 'ashCloudExtent')
+            indent2.set("gml:id", deu.getUUID())
+            indent3 = ET.SubElement(indent2, "ashCloudExtent")
             self.airspaceVolume(indent3, lyr)
             #
             # Optional. Motion of the observed ash clouds
             try:
-                indent3 = ET.Element('directionOfMotion')
-                indent3.text = lyr['movement']['dir']
-                indent3.set('uom', 'deg')
+                indent3 = ET.Element("directionOfMotion")
+                indent3.text = lyr["movement"]["dir"]
+                indent3.set("uom", "deg")
                 indent2.append(indent3)
 
-                indent3 = ET.Element('speedOfMotion')
-                indent3.text = lyr['movement']['spd']
-                indent3.set('uom', lyr['movement']['uom'])
+                indent3 = ET.Element("speedOfMotion")
+                indent3.text = lyr["movement"]["spd"]
+                indent3.set("uom", lyr["movement"]["uom"])
                 indent2.append(indent3)
 
             except KeyError:
@@ -382,91 +378,90 @@ class Encoder:
 
     def itime(self, parent, dtg):
 
-        indent = ET.SubElement(parent, 'phenomenonTime')
+        indent = ET.SubElement(parent, "phenomenonTime")
 
         if dtg is None:
-            indent.set('nilReason', self.codes[des.NIL][des.MSSG][0])
+            indent.set("nilReason", self.codes[des.NIL][des.MSSG][0])
 
         else:
-            indent1 = ET.SubElement(indent, 'gml:TimeInstant')
-            indent1.set('gml:id', deu.getUUID())
-            indent2 = ET.SubElement(indent1, 'gml:timePosition')
+            indent1 = ET.SubElement(indent, "gml:TimeInstant")
+            indent1.set("gml:id", deu.getUUID())
+            indent2 = ET.SubElement(indent1, "gml:timePosition")
             indent2.text = dtg
 
     def airspaceVolume(self, parent, lyr):
         "Construct AIXM Airspace Volume"
 
-        indent1 = ET.SubElement(parent, 'aixm:AirspaceVolume')
-        indent1.set('gml:id', deu.getUUID())
-        indent2 = ET.SubElement(indent1, 'aixm:upperLimit')
+        indent1 = ET.SubElement(parent, "aixm:AirspaceVolume")
+        indent1.set("gml:id", deu.getUUID())
+        indent2 = ET.SubElement(indent1, "aixm:upperLimit")
         try:
-            indent2.text = lyr['top']
-            indent2.set('uom', 'FL')
-            indent2 = ET.SubElement(indent1, 'aixm:upperLimitReference')
-            indent2.text = 'STD'
+            indent2.text = lyr["top"]
+            indent2.set("uom", "FL")
+            indent2 = ET.SubElement(indent1, "aixm:upperLimitReference")
+            indent2.text = "STD"
 
         except KeyError:
-            indent2.set('nilReason', des.MSSG)
-            indent2.set('xsi:nil', 'true')
+            indent2.set("nilReason", des.MSSG)
+            indent2.set("xsi:nil", "true")
 
-        indent2 = ET.SubElement(indent1, 'aixm:lowerLimit')
+        indent2 = ET.SubElement(indent1, "aixm:lowerLimit")
         try:
-            if lyr['bottom'].isdigit():
-                indent2.text = lyr['bottom']
-                indent2.set('uom', 'FL')
-                indent2 = ET.SubElement(indent1, 'aixm:lowerLimitReference')
-                indent2.text = 'STD'
+            if lyr["bottom"].isdigit():
+                indent2.text = lyr["bottom"]
+                indent2.set("uom", "FL")
+                indent2 = ET.SubElement(indent1, "aixm:lowerLimitReference")
+                indent2.text = "STD"
 
             else:
-                indent2.text = 'GND'
-                indent2 = ET.SubElement(indent1, 'aixm:lowerLimitReference')
-                indent2.text = 'SFC'
+                indent2.text = "GND"
+                indent2 = ET.SubElement(indent1, "aixm:lowerLimitReference")
+                indent2.text = "SFC"
 
         except (AttributeError, KeyError):
-            indent2.set('nilReason', des.MSSG)
-            indent2.set('xsi:nil', 'true')
+            indent2.set("nilReason", des.MSSG)
+            indent2.set("xsi:nil", "true")
 
-        if 'pnts' in lyr:
+        if "pnts" in lyr:
+            indent2 = ET.SubElement(indent1, "aixm:horizontalProjection")
+            indent3 = ET.SubElement(indent2, "aixm:Surface")
+            indent3.set("gml:id", deu.getUUID())
+            indent3.set("axisLabels", des.axisLabels)
+            indent3.set("srsName", des.srsName)
+            indent3.set("srsDimension", des.srsDimension)
 
-            indent2 = ET.SubElement(indent1, 'aixm:horizontalProjection')
-            indent3 = ET.SubElement(indent2, 'aixm:Surface')
-            indent3.set('gml:id', deu.getUUID())
-            indent3.set('axisLabels', des.axisLabels)
-            indent3.set('srsName', des.srsName)
-            indent3.set('srsDimension', des.srsDimension)
-
-            indent4 = ET.SubElement(indent3, 'gml:patches')
-            indent5 = ET.SubElement(indent4, 'gml:PolygonPatch')
-            indent6 = ET.SubElement(indent5, 'gml:exterior')
-            indent7 = ET.SubElement(indent6, 'gml:LinearRing')
-            indent8 = ET.SubElement(indent7, 'gml:posList')
-            indent8.set('count', str(len(lyr['pnts'])))
-            indent8.text = ' '.join(lyr['pnts'])
+            indent4 = ET.SubElement(indent3, "gml:patches")
+            indent5 = ET.SubElement(indent4, "gml:PolygonPatch")
+            indent6 = ET.SubElement(indent5, "gml:exterior")
+            indent7 = ET.SubElement(indent6, "gml:LinearRing")
+            indent8 = ET.SubElement(indent7, "gml:posList")
+            indent8.set("count", str(len(lyr["pnts"])))
+            indent8.text = " ".join(lyr["pnts"])
 
     def postContent(self):
         "Final bits of the advisory"
         #
         # Remarks
-        indent = ET.SubElement(self.XMLDocument, 'remarks')
-        if 'NIL' in self.decodedTAC['remarks']:
-            indent.set('nilReason', self.codes[des.NIL][des.MSSG][0])
+        indent = ET.SubElement(self.XMLDocument, "remarks")
+        if "NIL" in self.decodedTAC["remarks"]:
+            indent.set("nilReason", self.codes[des.NIL][des.MSSG][0])
         else:
-            indent.text = self.decodedTAC['remarks']
+            indent.text = self.decodedTAC["remarks"]
         #
         # Next advisory time, if there is one
-        indent = ET.SubElement(self.XMLDocument, 'nextAdvisoryTime')
+        indent = ET.SubElement(self.XMLDocument, "nextAdvisoryTime")
         try:
-            indent2 = ET.Element('gml:timePosition')
-            indent2.text = self.decodedTAC['nextdtg']['str']
+            indent2 = ET.Element("gml:timePosition")
+            indent2.text = self.decodedTAC["nextdtg"]["str"]
 
-            indent1 = ET.SubElement(indent, 'gml:TimeInstant')
-            indent1.set('gml:id', deu.getUUID())
+            indent1 = ET.SubElement(indent, "gml:TimeInstant")
+            indent1.set("gml:id", deu.getUUID())
             indent1.append(indent2)
 
-            if self.decodedTAC['nextdtg']['cnd'] == 'nst':
-                indent2.set('indeterminatePosition', 'before')
-            elif self.decodedTAC['nextdtg']['cnd'] == 'nlt':
-                indent2.set('indeterminatePosition', 'before')
+            if self.decodedTAC["nextdtg"]["cnd"] == "nst":
+                indent2.set("indeterminatePosition", "before")
+            elif self.decodedTAC["nextdtg"]["cnd"] == "nlt":
+                indent2.set("indeterminatePosition", "before")
 
         except KeyError:
-            indent.set('nilReason', self.codes[des.NIL][des.NA][0])
+            indent.set("nilReason", self.codes[des.NIL][des.NA][0])

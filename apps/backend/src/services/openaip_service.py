@@ -4,6 +4,7 @@ Service for managing OpenAIP airport data caching and access.
 Provides hybrid access: primarily uses cached local data for performance,
 with optional live API fallback for missing airports or cache refresh.
 """
+
 import json
 import logging
 from datetime import datetime, timedelta
@@ -47,13 +48,10 @@ class OpenAIPService:
             # Extract metadata and airports
             metadata = data.get("_metadata", {})
             self._cache = data.get("airports", data)  # Handle both formats
-            self._cache_timestamp = datetime.fromisoformat(
-                metadata.get("fetched_at", datetime.utcnow().isoformat())
-            )
+            self._cache_timestamp = datetime.fromisoformat(metadata.get("fetched_at", datetime.utcnow().isoformat()))
 
             logger.info(
-                f"Loaded OpenAIP cache with {len(self._cache)} airports "
-                f"(last updated: {self._cache_timestamp})"
+                f"Loaded OpenAIP cache with {len(self._cache)} airports (last updated: {self._cache_timestamp})"
             )
             return True
         except Exception as e:
@@ -93,10 +91,7 @@ class OpenAIPService:
         # Try live API if available
         if self.api_key:
             if airport := self._fetch_from_api(icao):
-                self._live_cache[icao] = {
-                    "data": airport,
-                    "_cached_at": datetime.utcnow().isoformat()
-                }
+                self._live_cache[icao] = {"data": airport, "_cached_at": datetime.utcnow().isoformat()}
                 return airport
 
         return None

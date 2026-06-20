@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 class ValidationError(Exception):
     """Raised when validation fails critically."""
+
     pass
 
 
@@ -131,7 +132,7 @@ class ValidationService:
 
         try:
             # Check for METAR/SPECI keyword
-            if not re.search(r'\b(METAR|SPECI)\b', tac_text.upper()):
+            if not re.search(r"\b(METAR|SPECI)\b", tac_text.upper()):
                 result.add_issue(
                     level=ValidationLevel.ERROR,
                     message="Missing METAR/SPECI keyword",
@@ -140,7 +141,7 @@ class ValidationService:
                 )
 
             # Check for timestamp (DDHHMM followed by Z)
-            if not re.search(r'\b\d{6}Z\b', tac_text):
+            if not re.search(r"\b\d{6}Z\b", tac_text):
                 result.add_issue(
                     level=ValidationLevel.WARNING,
                     message="No valid timestamp found (DDHHMM format + Z)",
@@ -157,7 +158,7 @@ class ValidationService:
                 )
 
             # Check for common formatting issues
-            if '\t' in tac_text:
+            if "\t" in tac_text:
                 result.add_issue(
                     level=ValidationLevel.INFO,
                     message="TAC contains tab characters (may cause parsing issues)",
@@ -228,7 +229,7 @@ class ValidationService:
             return icao
 
         # If no METAR/SPECI keyword, try first 4-character code
-        match = re.search(r'\b([A-Z][A-Z0-9]{3})\b', tac_text.upper())
+        match = re.search(r"\b([A-Z][A-Z0-9]{3})\b", tac_text.upper())
         if match:
             return match.group(1)
 

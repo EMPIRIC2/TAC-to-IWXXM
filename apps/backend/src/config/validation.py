@@ -33,6 +33,7 @@ class ValidationSettings(BaseSettings):
 
     class Config:
         """Pydantic configuration."""
+
         env_prefix = ""  # No prefix, use exact env var names
         case_sensitive = False  # Case-insensitive env var matching
         env_file = ".env"  # Load from .env file if present

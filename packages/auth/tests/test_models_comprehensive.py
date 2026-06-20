@@ -3,6 +3,7 @@
 Tests all database models: User, APIKey, PasswordResetToken.
 Target: 95%+ coverage.
 """
+
 import pytest
 import datetime as dt
 from sqlalchemy import create_engine
@@ -223,9 +224,7 @@ class TestUserModel:
         db_session.commit()
 
         # Reset token should be deleted
-        remaining_tokens = db_session.query(PasswordResetToken).filter(
-            PasswordResetToken.user_id == user_id
-        ).all()
+        remaining_tokens = db_session.query(PasswordResetToken).filter(PasswordResetToken.user_id == user_id).all()
         assert len(remaining_tokens) == 0
 
 

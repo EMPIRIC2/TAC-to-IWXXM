@@ -1,4 +1,5 @@
 """Client for OpenAIP airport database."""
+
 import asyncio
 import json
 from dataclasses import dataclass, field
@@ -56,11 +57,7 @@ class OpenAIPClient:
     For live API access, you need an OpenAIP API key.
     """
 
-    def __init__(
-        self,
-        data_path: Optional[Path] = None,
-        api_key: Optional[str] = None
-    ):
+    def __init__(self, data_path: Optional[Path] = None, api_key: Optional[str] = None):
         """Initialize OpenAIP client.
 
         Args:
@@ -82,7 +79,7 @@ class OpenAIPClient:
 
         for file_path in airport_files:
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
 
                     # Parse GeoJSON FeatureCollection
@@ -124,7 +121,7 @@ class OpenAIPClient:
             elevation=elevation,
             geometry=geometry,
             iata_code=properties.get("iata"),
-            source="openaip"
+            source="openaip",
         )
 
     def get_airport_by_icao(self, icao: str) -> Optional[Airport]:
@@ -140,10 +137,7 @@ class OpenAIPClient:
         return self._cache.get(icao.upper())
 
     def search_airports(
-        self,
-        country: Optional[str] = None,
-        bbox: Optional[Tuple[float, float, float, float]] = None,
-        limit: int = 1000
+        self, country: Optional[str] = None, bbox: Optional[Tuple[float, float, float, float]] = None, limit: int = 1000
     ) -> List[Airport]:
         """Search airports with filters.
 
@@ -201,14 +195,12 @@ class OpenAIPClient:
             "countries": len(countries),
             "with_elevation": with_elevation,
             "with_coordinates": with_coordinates,
-            "data_source": "local_cache"
+            "data_source": "local_cache",
         }
 
 
 async def download_openaip_data(
-    output_dir: Path,
-    countries: Optional[List[str]] = None,
-    api_key: Optional[str] = None
+    output_dir: Path, countries: Optional[List[str]] = None, api_key: Optional[str] = None
 ) -> None:
     """Download OpenAIP airport data for specified countries.
 
@@ -236,15 +228,13 @@ async def download_openaip_data(
         for country in countries:
             try:
                 response = await client.get(
-                    base_url,
-                    params={"country": country},
-                    headers={"x-openaip-api-key": api_key}
+                    base_url, params={"country": country}, headers={"x-openaip-api-key": api_key}
                 )
                 response.raise_for_status()
 
                 # Save to file
                 output_file = output_dir / f"{country}_apt.geojson"
-                with open(output_file, 'w', encoding='utf-8') as f:
+                with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(response.json(), f, indent=2)
 
                 print(f"Downloaded {country}: {output_file}")

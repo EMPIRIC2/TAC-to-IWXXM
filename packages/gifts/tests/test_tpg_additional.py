@@ -1,9 +1,8 @@
 """
 Additional TPG tests for CacheNamedGroupLexer and other uncovered sections
 """
-from gifts.common.tpg import (
-    NamedGroupLexer, CacheNamedGroupLexer, ContextSensitiveLexer
-)
+
+from gifts.common.tpg import NamedGroupLexer, CacheNamedGroupLexer, ContextSensitiveLexer
 
 
 class TestCacheNamedGroupLexerFull:
@@ -11,11 +10,12 @@ class TestCacheNamedGroupLexerFull:
 
     def test_cache_lexer_builds_full_token_cache(self):
         """Test that cache lexer pre-builds entire token cache"""
+
         class CacheLexer(CacheNamedGroupLexer):
             def __init__(self):
                 CacheNamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('WS', r'\s+')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("WS", r"\s+")
 
         lexer = CacheLexer()
         lexer.start("one two three")
@@ -23,45 +23,47 @@ class TestCacheNamedGroupLexerFull:
         # Cache should be populated
         assert len(lexer.cache) > 0
         # Last token should be EOF
-        assert lexer.cache[-1].name == 'EOF'
+        assert lexer.cache[-1].name == "EOF"
 
     def test_cache_lexer_access_tokens_by_index(self):
         """Test accessing cached tokens by index"""
+
         class CacheLexer(CacheNamedGroupLexer):
             def __init__(self):
                 CacheNamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('WS', r'\s+')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("WS", r"\s+")
 
         lexer = CacheLexer()
         lexer.start("hello world test")
 
         # Access tokens sequentially
         token1 = lexer.cur_token
-        assert token1.value == 'hello'
+        assert token1.value == "hello"
 
         lexer.next_token()
         token2 = lexer.cur_token
-        assert token2.value == 'world'
+        assert token2.value == "world"
 
         lexer.next_token()
         token3 = lexer.cur_token
-        assert token3.value == 'test'
+        assert token3.value == "test"
 
     def test_cache_lexer_speed_multiple_passes(self):
         """Test cache lexer handles multiple sequential accesses"""
+
         class CacheLexer(CacheNamedGroupLexer):
             def __init__(self):
                 CacheNamedGroupLexer.__init__(self, True, 0)
-                self.def_token('NUM', r'\d+', int)
-                self.def_separator('WS', r'\s+')
+                self.def_token("NUM", r"\d+", int)
+                self.def_separator("WS", r"\s+")
 
         lexer = CacheLexer()
         lexer.start("1 2 3 4 5")
 
         # Read all tokens
         values = []
-        while lexer.cur_token.name != 'EOF':
+        while lexer.cur_token.name != "EOF":
             values.append(lexer.cur_token.value)
             lexer.next_token()
 
@@ -69,12 +71,13 @@ class TestCacheNamedGroupLexerFull:
 
     def test_cache_lexer_with_newlines(self):
         """Test cache lexer handles newlines correctly"""
+
         class CacheLexer(CacheNamedGroupLexer):
             def __init__(self):
                 CacheNamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('NL', r'\n')
-                self.def_separator('WS', r' ')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("NL", r"\n")
+                self.def_separator("WS", r" ")
 
         lexer = CacheLexer()
         lexer.start("one\ntwo\nthree")
@@ -82,7 +85,7 @@ class TestCacheNamedGroupLexerFull:
         # Verify line tracking
         line1 = lexer.line
 
-        while lexer.cur_token.name != 'EOF':
+        while lexer.cur_token.name != "EOF":
             lexer.next_token()
 
         line_end = lexer.line
@@ -96,23 +99,23 @@ class TestContextSensitiveLexer:
         """Test ContextSensitiveLexer basic initialization"""
         lexer = ContextSensitiveLexer(True, 0)
 
-        assert hasattr(lexer, 'tokens')
-        assert hasattr(lexer, 'separators')
+        assert hasattr(lexer, "tokens")
+        assert hasattr(lexer, "separators")
 
     def test_context_sensitive_lexer_def_token(self):
         """Test adding tokens to ContextSensitiveLexer"""
         lexer = ContextSensitiveLexer(True, 0)
-        lexer.def_token('WORD', r'\w+')
-        lexer.def_token('NUMBER', r'\d+')
+        lexer.def_token("WORD", r"\w+")
+        lexer.def_token("NUMBER", r"\d+")
 
         # Should have two tokens
-        assert 'WORD' in lexer.tokens
-        assert 'NUMBER' in lexer.tokens
+        assert "WORD" in lexer.tokens
+        assert "NUMBER" in lexer.tokens
 
     def test_context_sensitive_lexer_def_separator(self):
         """Test adding separators to ContextSensitiveLexer"""
         lexer = ContextSensitiveLexer(True, 0)
-        lexer.def_separator('WS', r'\s+')
+        lexer.def_separator("WS", r"\s+")
 
         assert len(lexer.separators) > 0
 
@@ -122,10 +125,11 @@ class TestLexerSpecialMethods:
 
     def test_back_with_none_resets_position(self):
         """Test that back(None) resets lexer to start"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
+                self.def_token("WORD", r"\w+")
 
         lexer = SimpleLexer()
         lexer.start("hello")
@@ -142,10 +146,11 @@ class TestLexerSpecialMethods:
 
     def test_eof_method_before_end(self):
         """Test eof() returns False before reaching end"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
+                self.def_token("WORD", r"\w+")
 
         lexer = SimpleLexer()
         lexer.start("hello")
@@ -154,10 +159,11 @@ class TestLexerSpecialMethods:
 
     def test_eof_method_at_end(self):
         """Test eof() returns True at end"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
+                self.def_token("WORD", r"\w+")
 
         lexer = SimpleLexer()
         lexer.start("hello")
@@ -171,11 +177,12 @@ class TestTokenIndexing:
 
     def test_cache_token_indices(self):
         """Test that cached tokens have correct indices"""
+
         class CacheLexer(CacheNamedGroupLexer):
             def __init__(self):
                 CacheNamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('WS', r'\s+')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("WS", r"\s+")
 
         lexer = CacheLexer()
         lexer.start("one two")
@@ -192,11 +199,12 @@ class TestTokenPositionTracking:
 
     def test_token_start_stop_positions(self):
         """Test that tokens have correct start and stop positions"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('WS', r'\s+')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("WS", r"\s+")
 
         lexer = SimpleLexer()
         lexer.start("hello world")
@@ -212,11 +220,12 @@ class TestTokenPositionTracking:
 
     def test_token_line_column_positions(self):
         """Test token line and column information"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('NL', r'\n')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("NL", r"\n")
 
         lexer = SimpleLexer()
         lexer.start("one\ntwo")
@@ -234,11 +243,12 @@ class TestLexerColumnWrapping:
 
     def test_column_resets_after_newline(self):
         """Test that column resets after newline"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, False, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('NL', r'\n')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("NL", r"\n")
 
         lexer = SimpleLexer()
         lexer.start("abc\ndef")
@@ -259,10 +269,11 @@ class TestLexerStartMethod:
 
     def test_named_group_lexer_start_clears_previous_state(self):
         """Test that start() clears previous lexer state"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
+                self.def_token("WORD", r"\w+")
 
         lexer = SimpleLexer()
 
@@ -275,15 +286,16 @@ class TestLexerStartMethod:
         lexer.max_pos
 
         # Both should process correctly
-        assert lexer.cur_token.value == 'world'
+        assert lexer.cur_token.value == "world"
 
     def test_cache_lexer_start_rebuilds_cache(self):
         """Test that cache lexer rebuilds cache on each start()"""
+
         class CacheLexer(CacheNamedGroupLexer):
             def __init__(self):
                 CacheNamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('WS', r'\s+')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("WS", r"\s+")
 
         lexer = CacheLexer()
 
@@ -304,19 +316,21 @@ class TestValueFunctionEdgeCases:
 
     def test_value_function_preserves_token_name(self):
         """Test that value function doesn't affect token name"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('NUM', r'\d+', lambda x: x + "!")
+                self.def_token("NUM", r"\d+", lambda x: x + "!")
 
         lexer = SimpleLexer()
         lexer.start("123")
 
-        assert lexer.cur_token.name == 'NUM'
-        assert lexer.cur_token.value == '123!'
+        assert lexer.cur_token.name == "NUM"
+        assert lexer.cur_token.value == "123!"
 
     def test_complex_value_function(self):
         """Test value function with complex logic"""
+
         def hex_converter(text):
             try:
                 return int(text, 16)
@@ -326,7 +340,7 @@ class TestValueFunctionEdgeCases:
         class HexLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, False, 0)
-                self.def_token('HEX', r'0x[0-9a-f]+', hex_converter)
+                self.def_token("HEX", r"0x[0-9a-f]+", hex_converter)
 
         lexer = HexLexer()
         lexer.start("0x10")
@@ -339,11 +353,12 @@ class TestMaxPosFurtherestAdvance:
 
     def test_max_pos_with_backtracking(self):
         """Test max_pos tracks furthest position even with backtracking"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('WS', r'\s+')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("WS", r"\s+")
 
         lexer = SimpleLexer()
         lexer.start("one two three")
@@ -351,7 +366,7 @@ class TestMaxPosFurtherestAdvance:
         max_before = lexer.max_pos
 
         # Advance through tokens
-        while lexer.cur_token.name != 'EOF':
+        while lexer.cur_token.name != "EOF":
             lexer.next_token()
 
         max_after = lexer.max_pos
@@ -364,10 +379,11 @@ class TestLastTokenTracking:
 
     def test_last_token_updated_on_advance(self):
         """Test that last_token is updated when advancing"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
+                self.def_token("WORD", r"\w+")
 
         lexer = SimpleLexer()
         lexer.start("hello")
@@ -384,21 +400,22 @@ class TestSeparatorHandling:
 
     def test_multiple_separators_in_row(self):
         """Test multiple separators in sequence are handled"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('WS', r'\s+')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("WS", r"\s+")
 
         lexer = SimpleLexer()
         lexer.start("word1    word2")  # Multiple spaces
 
         token1 = lexer.cur_token
-        assert token1.value == 'word1'
+        assert token1.value == "word1"
 
         lexer.next_token()
         token2 = lexer.cur_token
-        assert token2.value == 'word2'
+        assert token2.value == "word2"
 
 
 class TestTokenTextExtraction:
@@ -406,11 +423,12 @@ class TestTokenTextExtraction:
 
     def test_extract_includes_separators(self):
         """Test that extract includes separator text"""
+
         class SimpleLexer(NamedGroupLexer):
             def __init__(self):
                 NamedGroupLexer.__init__(self, True, 0)
-                self.def_token('WORD', r'\w+')
-                self.def_separator('WS', r'\s+')
+                self.def_token("WORD", r"\w+")
+                self.def_separator("WS", r"\s+")
 
         lexer = SimpleLexer()
         lexer.start("word one   word two")
@@ -418,12 +436,12 @@ class TestTokenTextExtraction:
         start_token = lexer.cur_token
 
         # Advance to last token
-        while lexer.cur_token.name != 'EOF':
+        while lexer.cur_token.name != "EOF":
             lexer.next_token()
 
         # Go back one
         len(lexer.input) - 4
         # Text should include both tokens and spaces
-        text = lexer.input[start_token.start:]
-        assert 'one' in text
-        assert 'two' in text
+        text = lexer.input[start_token.start :]
+        assert "one" in text
+        assert "two" in text

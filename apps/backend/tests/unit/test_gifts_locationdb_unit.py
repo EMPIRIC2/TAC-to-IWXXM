@@ -1,4 +1,5 @@
 """Unit tests for GiftsLocationDBAdapter – 0% coverage target."""
+
 from unittest.mock import MagicMock, patch
 
 from src.utilities.gifts_locationdb_adapter import GiftsLocationDBAdapter
@@ -6,8 +7,10 @@ from src.utilities.gifts_locationdb_adapter import GiftsLocationDBAdapter
 
 def _make_adapter(openaip_service=None):
     """Helper to create adapter with mocked sub-components."""
-    with patch("src.utilities.gifts_locationdb_adapter.AirportRecordBuilder") as MockBuilder, \
-         patch("src.utilities.gifts_locationdb_adapter.get_airport_validator", return_value=None):
+    with (
+        patch("src.utilities.gifts_locationdb_adapter.AirportRecordBuilder") as MockBuilder,
+        patch("src.utilities.gifts_locationdb_adapter.get_airport_validator", return_value=None),
+    ):
         mock_builder_instance = MagicMock()
         MockBuilder.return_value = mock_builder_instance
         adapter = GiftsLocationDBAdapter(openaip_service=openaip_service or MagicMock())
@@ -17,25 +20,31 @@ def _make_adapter(openaip_service=None):
 
 class TestGiftsLocationDBAdapterInit:
     def test_init_creates_openaip_service_if_none(self):
-        with patch("src.utilities.gifts_locationdb_adapter.OpenAIPService") as MockService, \
-             patch("src.utilities.gifts_locationdb_adapter.AirportRecordBuilder"), \
-             patch("src.utilities.gifts_locationdb_adapter.get_airport_validator", return_value=None):
+        with (
+            patch("src.utilities.gifts_locationdb_adapter.OpenAIPService") as MockService,
+            patch("src.utilities.gifts_locationdb_adapter.AirportRecordBuilder"),
+            patch("src.utilities.gifts_locationdb_adapter.get_airport_validator", return_value=None),
+        ):
             adapter = GiftsLocationDBAdapter(openaip_service=None)
             MockService.assert_called_once()
 
     def test_init_uses_provided_service(self):
         mock_service = MagicMock()
-        with patch("src.utilities.gifts_locationdb_adapter.AirportRecordBuilder"), \
-             patch("src.utilities.gifts_locationdb_adapter.get_airport_validator", return_value=None):
+        with (
+            patch("src.utilities.gifts_locationdb_adapter.AirportRecordBuilder"),
+            patch("src.utilities.gifts_locationdb_adapter.get_airport_validator", return_value=None),
+        ):
             adapter = GiftsLocationDBAdapter(openaip_service=mock_service)
             assert adapter.openaip_service is mock_service
 
     def test_init_handles_missing_validator(self):
-        with patch("src.utilities.gifts_locationdb_adapter.AirportRecordBuilder"), \
-             patch(
-                 "src.utilities.gifts_locationdb_adapter.get_airport_validator",
-                 side_effect=Exception("not available"),
-             ):
+        with (
+            patch("src.utilities.gifts_locationdb_adapter.AirportRecordBuilder"),
+            patch(
+                "src.utilities.gifts_locationdb_adapter.get_airport_validator",
+                side_effect=Exception("not available"),
+            ),
+        ):
             adapter = GiftsLocationDBAdapter(openaip_service=MagicMock())
             assert adapter.airport_validator is None
 

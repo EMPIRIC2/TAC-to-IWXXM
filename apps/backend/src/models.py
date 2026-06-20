@@ -3,6 +3,7 @@ SQLAlchemy ORM models for the backend.
 
 This module defines the database models for translation statistics and related data.
 """
+
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 from uuid import UUID
@@ -31,21 +32,16 @@ class TranslationStatisticsModel(Base):
     Stores translations of meteorological observations from METAR TAC format
     to IWXXM XML format with metadata and validation results.
     """
+
     __tablename__ = "translation_statistics"
 
     # Primary identifier
-    id: Mapped[UUID] = mapped_column(
-        PGUUID(as_uuid=True),
-        primary_key=True,
-        server_default=text("gen_random_uuid()")
-    )
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
     translation_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), unique=True, nullable=False)
 
     # Timestamp
     created_at: Mapped[datetime] = mapped_column(
-        SA_DateTime(timezone=True),
-        nullable=False,
-        server_default=text("NOW()")
+        SA_DateTime(timezone=True), nullable=False, server_default=text("NOW()")
     )
     translation_timestamp: Mapped[datetime] = mapped_column(SA_DateTime(timezone=True), nullable=False)
 
@@ -78,8 +74,12 @@ class TranslationStatisticsModel(Base):
     # Constraints
     __table_args__ = (
         CheckConstraint("length(icao_airport_code) = 4", name="ck_airport_code_length"),
-        CheckConstraint("icao_region IN ('AFI', 'APAC', 'ESAF', 'EUR', 'MID', 'NAM', 'NAT', 'SAM', 'WAFR')", name="ck_icao_region"),
-        CheckConstraint("translation_status IN ('success', 'partial', 'failed', 'validation_error')", name="ck_translation_status"),
+        CheckConstraint(
+            "icao_region IN ('AFI', 'APAC', 'ESAF', 'EUR', 'MID', 'NAM', 'NAT', 'SAM', 'WAFR')", name="ck_icao_region"
+        ),
+        CheckConstraint(
+            "translation_status IN ('success', 'partial', 'failed', 'validation_error')", name="ck_translation_status"
+        ),
         CheckConstraint("translation_duration_ms >= 0", name="ck_duration_positive"),
         CheckConstraint("iwxxm_version IN ('2025-2', '2023-1')", name="ck_iwxxm_version"),
         # Indexes for common query patterns
@@ -104,13 +104,10 @@ class TranslationStatisticsSummaryModel(Base):
 
     Stores pre-computed aggregations of translation statistics for faster queries.
     """
+
     __tablename__ = "translation_statistics_summary"
 
-    id: Mapped[UUID] = mapped_column(
-        PGUUID(as_uuid=True),
-        primary_key=True,
-        server_default=text("gen_random_uuid()")
-    )
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
 
     # Time period
     period_start: Mapped[datetime] = mapped_column(SA_DateTime(timezone=True), nullable=False)
@@ -130,14 +127,15 @@ class TranslationStatisticsSummaryModel(Base):
     average_duration_ms: Mapped[float] = mapped_column(Integer, nullable=False)  # Stored as numeric
 
     last_updated: Mapped[datetime] = mapped_column(
-        SA_DateTime(timezone=True),
-        nullable=False,
-        server_default=text("NOW()")
+        SA_DateTime(timezone=True), nullable=False, server_default=text("NOW()")
     )
 
     __table_args__ = (
         CheckConstraint("interval_type IN ('1h', '1d', '7d', '30d')", name="ck_interval_type"),
-        CheckConstraint("icao_region IN ('AFI', 'APAC', 'ESAF', 'EUR', 'MID', 'NAM', 'NAT', 'SAM', 'WAFR')", name="ck_summary_region"),
+        CheckConstraint(
+            "icao_region IN ('AFI', 'APAC', 'ESAF', 'EUR', 'MID', 'NAM', 'NAT', 'SAM', 'WAFR')",
+            name="ck_summary_region",
+        ),
         CheckConstraint("iwxxm_version IN ('2025-2', '2023-1')", name="ck_summary_version"),
         Index("idx_summary_period", "period_start", "period_end"),
     )

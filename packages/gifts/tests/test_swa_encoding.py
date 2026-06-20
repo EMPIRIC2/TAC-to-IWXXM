@@ -9,8 +9,20 @@ decoder = SD.Decoder()
 encoder = SE.Encoder()
 des.TRANSLATOR = True
 
-first_siblings = ['issueTime', 'issuingSpaceWeatherCentre', 'advisoryNumber', 'phenomenon', 'phenomenon', 'analysis',
-                  'analysis', 'analysis', 'analysis', 'analysis', 'remarks', 'nextAdvisoryTime']
+first_siblings = [
+    "issueTime",
+    "issuingSpaceWeatherCentre",
+    "advisoryNumber",
+    "phenomenon",
+    "phenomenon",
+    "analysis",
+    "analysis",
+    "analysis",
+    "analysis",
+    "analysis",
+    "remarks",
+    "nextAdvisoryTime",
+]
 
 
 def test_swaFailureModes():
@@ -18,22 +30,22 @@ def test_swaFailureModes():
     text = """FNXX01 KWNP 151247
 """
     result = decoder(text)
-    assert 'err_msg' in result
-    result['translatedBulletinReceptionTime'] = time.strftime('%Y-%m-%dT%H:%M:%SZ')
-    result['translatedBulletinID'] = text.split('\n')[0].replace(' ', '')
+    assert "err_msg" in result
+    result["translatedBulletinReceptionTime"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    result["translatedBulletinID"] = text.split("\n")[0].replace(" ", "")
     result = encoder(result, text)
-    assert len(result.get('translationFailedTAC')) > 0
+    assert len(result.get("translationFailedTAC")) > 0
 
     text = """FNXX01 KWNP 311315
 SWX ADVISORY
 SWXC: BOULDER"""
 
     result = decoder(text)
-    assert 'err_msg' in result
-    result['translatedBulletinReceptionTime'] = time.strftime('%Y-%m-%dT%H:%M:%SZ')
-    result['translatedBulletinID'] = text.split('\n')[0].replace(' ', '')
+    assert "err_msg" in result
+    result["translatedBulletinReceptionTime"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    result["translatedBulletinID"] = text.split("\n")[0].replace(" ", "")
     result = encoder(result, text)
-    assert len(result.get('translationFailedTAC')) > 0
+    assert len(result.get("translationFailedTAC")) > 0
 
     text = """
 524
@@ -44,11 +56,11 @@ SWXC: BOULDER
 <--PARSER HALT HERE"""
 
     result = decoder(text)
-    assert 'err_msg' in result
-    result['translatedBulletinReceptionTime'] = time.strftime('%Y-%m-%dT%H:%M:%SZ')
-    result['translatedBulletinID'] = text.split('\n')[2].replace(' ', '')
+    assert "err_msg" in result
+    result["translatedBulletinReceptionTime"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    result["translatedBulletinID"] = text.split("\n")[2].replace(" ", "")
     result = encoder(result, text)
-    assert len(result.get('translationFailedTAC')) > 0
+    assert len(result.get("translationFailedTAC")) > 0
 
 
 def test_swaTest():
@@ -58,12 +70,12 @@ SWX ADVISORY
 STATUS: TEST="""
 
     result = decoder(text)
-    assert 'err_msg' not in result
-    assert 'status' in result
-    assert result['status'] == 'TEST'
+    assert "err_msg" not in result
+    assert "status" in result
+    assert result["status"] == "TEST"
 
-    result['translatedBulletinReceptionTime'] = time.strftime('%Y-%m-%dT%H:%M:%SZ')
-    result['translatedBulletinID'] = text.split('\n')[0].replace(' ', '')
+    result["translatedBulletinReceptionTime"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    result["translatedBulletinID"] = text.split("\n")[0].replace(" ", "")
 
     result = encoder(result, text)
     assert len(result) == 2
@@ -93,18 +105,18 @@ THE SUNLIT SIDE OF THE EARTH EXP. CONT HF COM DEGRADATION LIKELY OVER THE NXT 7 
 NXT ADVISORY:       20161108/0700Z"""
 
     result = decoder(text)
-    assert 'err_msg' not in result
-    assert 'status' in result
-    assert result['status'] == 'TEST'
+    assert "err_msg" not in result
+    assert "status" in result
+    assert result["status"] == "TEST"
 
-    result['translatedBulletinReceptionTime'] = time.strftime('%Y-%m-%dT%H:%M:%SZ')
-    result['translatedBulletinID'] = text.split('\n')[0].replace(' ', '')
+    result["translatedBulletinReceptionTime"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    result["translatedBulletinID"] = text.split("\n")[0].replace(" ", "")
 
     result = encoder(result, text)
     assert len(result) == 12
 
     save = first_siblings.pop(3)
-    first_siblings.insert(3, 'replacedAdvisoryNumber')
+    first_siblings.insert(3, "replacedAdvisoryNumber")
 
     for num, child in enumerate(result):
         assert child.tag == first_siblings[num]
@@ -135,12 +147,12 @@ NXT ADVISORY:       NO FURTHER ADVISORIES=
 """
 
     result = decoder(text)
-    assert 'err_msg' not in result
-    assert 'status' in result
-    assert result['status'] == 'EXERCISE'
+    assert "err_msg" not in result
+    assert "status" in result
+    assert result["status"] == "EXERCISE"
 
-    result['translatedBulletinReceptionTime'] = time.strftime('%Y-%m-%dT%H:%M:%SZ')
-    result['translatedBulletinID'] = text.split('\n')[0].replace(' ', '')
+    result["translatedBulletinReceptionTime"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    result["translatedBulletinID"] = text.split("\n")[0].replace(" ", "")
     result = encoder(result, text)
 
     for num, child in enumerate(result):
@@ -169,14 +181,14 @@ AND HF COM AVBL IN THE AURORAL ZONE. THIS STORMING EXP TO SUBSIDE IN THE FCST PE
 NXT ADVISORY:       WILL BE ISSUED BY 20161108/0100Z"""
 
     result = decoder(text)
-    assert 'err_msg' not in result
-    assert 'status' not in result
+    assert "err_msg" not in result
+    assert "status" not in result
 
-    result['translatedBulletinReceptionTime'] = time.strftime('%Y-%m-%dT%H:%M:%SZ')
-    result['translatedBulletinID'] = text.split('\n')[0].replace(' ', '')
+    result["translatedBulletinReceptionTime"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    result["translatedBulletinID"] = text.split("\n")[0].replace(" ", "")
     result = encoder(result, text)
 
-    first_siblings.insert(3, 'replacedAdvisoryNumber')
+    first_siblings.insert(3, "replacedAdvisoryNumber")
 
     for num, child in enumerate(result):
         assert child.tag == first_siblings[num]
@@ -200,11 +212,11 @@ AND HF COM AVBL IN THE AURORAL ZONE. THIS STORMING EXP TO SUBSIDE IN THE FCST PE
 NXT ADVISORY:       WILL BE ISSUED BY 20161108/0100Z"""
 
     result = decoder(text)
-    assert 'err_msg' not in result
-    assert 'status' not in result
+    assert "err_msg" not in result
+    assert "status" not in result
 
-    result['translatedBulletinReceptionTime'] = time.strftime('%Y-%m-%dT%H:%M:%SZ')
-    result['translatedBulletinID'] = text.split('\n')[0].replace(' ', '')
+    result["translatedBulletinReceptionTime"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    result["translatedBulletinID"] = text.split("\n")[0].replace(" ", "")
     result = encoder(result, text)
 
     for num, child in enumerate(result):
@@ -236,11 +248,10 @@ THE SUNLIT SIDE OF THE EARTH EXP. CONT HF COM DEGRADATION LIKELY OVER THE NXT 7 
 THIS IS A TEST SWX ADVISORY.
 NXT ADVISORY:       20161108/0700Z="""
     result = decoder(test)
-    assert 'err_msg' not in result
+    assert "err_msg" not in result
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     test_swaFailureModes()
     test_swaTest()
     test_swaExercise()

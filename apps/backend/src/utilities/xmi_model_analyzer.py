@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class UMLElement:
     """Represents a UML element (class, attribute, association)."""
+
     xmi_id: str  # Unique XMI ID
     name: str  # Element name
     element_type: str  # class, attribute, operation, association
@@ -36,6 +37,7 @@ class UMLElement:
 @dataclass
 class BreakingChange:
     """Represents a detected breaking change between versions."""
+
     change_type: str  # removed, renamed, type_changed, cardinality_changed
     element: str  # Element name/path
     element_type: str  # class, attribute, operation
@@ -62,9 +64,9 @@ class XMIModelAnalyzer:
     """
 
     NAMESPACES = {
-        'xmi': 'http://www.omg.org/spec/XMI/20131001',
-        'uml': 'http://www.omg.org/spec/UML/20131001',
-        'ecore': 'http://www.eclipse.org/emf/2002/Ecore',
+        "xmi": "http://www.omg.org/spec/XMI/20131001",
+        "uml": "http://www.omg.org/spec/UML/20131001",
+        "ecore": "http://www.eclipse.org/emf/2002/Ecore",
     }
 
     def __init__(self):
@@ -97,29 +99,29 @@ class XMIModelAnalyzer:
             # Extract all packagedElements (classes, etc.)
             for elem in root.iter():
                 # Extract XMI ID
-                xmi_id = elem.get('{http://www.omg.org/spec/XMI/20131001}id')
+                xmi_id = elem.get("{http://www.omg.org/spec/XMI/20131001}id")
                 if not xmi_id:
                     continue
 
                 # Determine element type
-                xmi_type = elem.get('{http://www.omg.org/spec/XMI/20131001}type', '')
-                element_type = xmi_type.split(':')[-1] if ':' in xmi_type else xmi_type
+                xmi_type = elem.get("{http://www.omg.org/spec/XMI/20131001}type", "")
+                element_type = xmi_type.split(":")[-1] if ":" in xmi_type else xmi_type
 
                 # Extract name
-                name = elem.get('name', f'[unnamed-{xmi_id}]')
+                name = elem.get("name", f"[unnamed-{xmi_id}]")
 
                 # Extract owner
                 owner_id = None
                 for parent in elem.iterancestors():
-                    parent_id = parent.get('{http://www.omg.org/spec/XMI/20131001}id')
+                    parent_id = parent.get("{http://www.omg.org/spec/XMI/20131001}id")
                     if parent_id:
                         owner_id = parent_id
                         break
 
                 # Extract stereotype
                 stereotype = None
-                for stereotype_elem in elem.findall('{http://www.omg.org/spec/UML/20131001}stereotype'):
-                    stereotype = stereotype_elem.get('href', stereotype_elem.text)
+                for stereotype_elem in elem.findall("{http://www.omg.org/spec/UML/20131001}stereotype"):
+                    stereotype = stereotype_elem.get("href", stereotype_elem.text)
                     break
 
                 # Add to registry
@@ -129,7 +131,7 @@ class XMIModelAnalyzer:
                     element_type=element_type,
                     owner_id=owner_id,
                     stereotype=stereotype,
-                    attributes={k: v for k, v in elem.attrib.items() if not k.startswith('{')}
+                    attributes={k: v for k, v in elem.attrib.items() if not k.startswith("{")},
                 )
                 elements[xmi_id] = uml_elem
 
@@ -150,11 +152,7 @@ class XMIModelAnalyzer:
         Returns:
             Dictionary of class elements only
         """
-        return {
-            xmi_id: elem
-            for xmi_id, elem in elements.items()
-            if elem.element_type in ('Class', 'ClassifierRole')
-        }
+        return {xmi_id: elem for xmi_id, elem in elements.items() if elem.element_type in ("Class", "ClassifierRole")}
 
     def extract_attributes(self, elements: Dict[str, UMLElement], class_id: str) -> List[UMLElement]:
         """
@@ -170,7 +168,7 @@ class XMIModelAnalyzer:
         return [
             elem
             for elem in elements.values()
-            if elem.element_type in ('Property', 'Attribute') and elem.owner_id == class_id
+            if elem.element_type in ("Property", "Attribute") and elem.owner_id == class_id
         ]
 
     def diff_models(
@@ -178,7 +176,7 @@ class XMIModelAnalyzer:
         old_elements: Dict[str, UMLElement],
         new_elements: Dict[str, UMLElement],
         old_version: str,
-        new_version: str
+        new_version: str,
     ) -> List[BreakingChange]:
         """
         Diff two UML models to detect breaking changes.
@@ -202,12 +200,12 @@ class XMIModelAnalyzer:
         for name, old_elem in old_element_names.items():
             if name not in new_element_names:
                 change = BreakingChange(
-                    change_type='removed',
+                    change_type="removed",
                     element=name,
                     element_type=old_elem.element_type,
                     old_version=old_version,
                     new_version=new_version,
-                    reason=f"{old_elem.element_type} '{name}' removed in {new_version}"
+                    reason=f"{old_elem.element_type} '{name}' removed in {new_version}",
                 )
                 changes.append(change)
 
@@ -221,12 +219,12 @@ class XMIModelAnalyzer:
                             # Could be a rename - check string similarity
                             if self._string_similarity(old_name, new_name) > 0.7:
                                 change = BreakingChange(
-                                    change_type='renamed',
+                                    change_type="renamed",
                                     element=old_name,
                                     element_type=old_elem.element_type,
                                     old_version=old_version,
                                     new_version=new_version,
-                                    reason=f"{old_elem.element_type} '{old_name}' renamed to '{new_name}'"
+                                    reason=f"{old_elem.element_type} '{old_name}' renamed to '{new_name}'",
                                 )
                                 changes.append(change)
 
@@ -254,10 +252,7 @@ class XMIModelAnalyzer:
         matches = sum(1 for c1, c2 in zip(s1, s2) if c1 == c2)
         return matches / max(len1, len2)
 
-    def generate_breaking_change_report(
-        self,
-        changes: List[BreakingChange]
-    ) -> Dict[str, any]:
+    def generate_breaking_change_report(self, changes: List[BreakingChange]) -> Dict[str, any]:
         """
         Generate a structured breaking change report.
 
@@ -267,34 +262,24 @@ class XMIModelAnalyzer:
         Returns:
             Dictionary with categorized breaking changes
         """
-        report = {
-            'total_changes': len(changes),
-            'by_type': {},
-            'by_element_type': {},
-            'details': changes
-        }
+        report = {"total_changes": len(changes), "by_type": {}, "by_element_type": {}, "details": changes}
 
         # Categorize by change type
         for change in changes:
-            if change.change_type not in report['by_type']:
-                report['by_type'][change.change_type] = []
-            report['by_type'][change.change_type].append(change)
+            if change.change_type not in report["by_type"]:
+                report["by_type"][change.change_type] = []
+            report["by_type"][change.change_type].append(change)
 
         # Categorize by element type
         for change in changes:
-            if change.element_type not in report['by_element_type']:
-                report['by_element_type'][change.element_type] = []
-            report['by_element_type'][change.element_type].append(change)
+            if change.element_type not in report["by_element_type"]:
+                report["by_element_type"][change.element_type] = []
+            report["by_element_type"][change.element_type].append(change)
 
         return report
 
 
-def analyze_xmi_versions(
-    old_xmi_path: Path,
-    new_xmi_path: Path,
-    old_version: str,
-    new_version: str
-) -> Dict[str, any]:
+def analyze_xmi_versions(old_xmi_path: Path, new_xmi_path: Path, old_version: str, new_version: str) -> Dict[str, any]:
     """
     Convenience function to analyze breaking changes between XMI versions.
 
@@ -313,12 +298,7 @@ def analyze_xmi_versions(
         old_elements = analyzer.load_xmi_model(old_xmi_path)
         new_elements = analyzer.load_xmi_model(new_xmi_path)
 
-        changes = analyzer.diff_models(
-            old_elements,
-            new_elements,
-            old_version,
-            new_version
-        )
+        changes = analyzer.diff_models(old_elements, new_elements, old_version, new_version)
 
         report = analyzer.generate_breaking_change_report(changes)
 
@@ -331,8 +311,4 @@ def analyze_xmi_versions(
 
     except Exception as e:
         logger.error(f"Failed to analyze XMI versions: {e}")
-        return {
-            'total_changes': 0,
-            'error': str(e),
-            'details': []
-        }
+        return {"total_changes": 0, "error": str(e), "details": []}

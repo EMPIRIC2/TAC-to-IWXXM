@@ -4,6 +4,7 @@ Tests for ICAO OPMET Data Exchange compliance features.
 Tests Translation Centre configuration, ICAO region mapping,
 and statistics endpoints.
 """
+
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
@@ -175,7 +176,7 @@ class TestICAOOPMETEndpoints:
         mock_get_session_cm.__aexit__ = AsyncMock(return_value=None)
 
         # Patch the get_db_session function to return our mock context manager
-        with patch('src.services.database.get_db_session', return_value=mock_get_session_cm):
+        with patch("src.services.database.get_db_session", return_value=mock_get_session_cm):
             yield
 
     @pytest.fixture
@@ -278,7 +279,7 @@ class TestICAOOPMETEndpoints:
             json={
                 "start_date": "2026-02-13T00:00:00Z",
                 "end_date": "2026-02-01T00:00:00Z",
-            }
+            },
         )
         assert response.status_code == 400
         assert "end_date must be after start_date" in response.json()["detail"]
@@ -293,7 +294,7 @@ class TestICAOOPMETEndpoints:
             json={
                 "start_date": start_date.isoformat() + "Z",
                 "end_date": end_date.isoformat() + "Z",
-            }
+            },
         )
         assert response.status_code == 400
         assert "cannot exceed 90 days" in response.json()["detail"]
@@ -319,18 +320,20 @@ class TestICAOOPMETEndpoints:
 
         # Mock the service method directly to return expected data
         expected_data = {
-            'AFI': {'total_translations': 10, 'successful_translations': 9},
-            'APAC': {'total_translations': 20, 'successful_translations': 18},
-            'ESAF': {'total_translations': 12, 'successful_translations': 11},
-            'EUR': {'total_translations': 30, 'successful_translations': 27},
-            'MID': {'total_translations': 15, 'successful_translations': 14},
-            'NAM': {'total_translations': 50, 'successful_translations': 48},
-            'NAT': {'total_translations': 18, 'successful_translations': 17},
-            'SAM': {'total_translations': 25, 'successful_translations': 23},
-            'WAFR': {'total_translations': 8, 'successful_translations': 7},
+            "AFI": {"total_translations": 10, "successful_translations": 9},
+            "APAC": {"total_translations": 20, "successful_translations": 18},
+            "ESAF": {"total_translations": 12, "successful_translations": 11},
+            "EUR": {"total_translations": 30, "successful_translations": 27},
+            "MID": {"total_translations": 15, "successful_translations": 14},
+            "NAM": {"total_translations": 50, "successful_translations": 48},
+            "NAT": {"total_translations": 18, "successful_translations": 17},
+            "SAM": {"total_translations": 25, "successful_translations": 23},
+            "WAFR": {"total_translations": 8, "successful_translations": 7},
         }
 
-        with patch.object(StatisticsService, 'get_statistics_by_region', new_callable=AsyncMock, return_value=expected_data):
+        with patch.object(
+            StatisticsService, "get_statistics_by_region", new_callable=AsyncMock, return_value=expected_data
+        ):
             end_date = datetime.utcnow()
             start_date = end_date - timedelta(days=1)
 

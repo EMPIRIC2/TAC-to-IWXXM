@@ -1,4 +1,5 @@
 """Database setup for authentication module."""
+
 from __future__ import annotations
 
 import os
@@ -10,13 +11,14 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 # For local dev, you can use python-dotenv
 try:
     from dotenv import load_dotenv
+
     load_dotenv()
 except ImportError:
     pass  # dotenv not required in production
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "sqlite:///./auth.db"  # Default to SQLite for local dev
+    "sqlite:///./auth.db",  # Default to SQLite for local dev
 )
 
 
@@ -40,9 +42,8 @@ if DATABASE_URL.startswith("postgresql"):
         engine = create_engine(
             DATABASE_URL,
             pool_pre_ping=True,  # Test connection before using
-            pool_recycle=3600,   # Recycle connections after 1 hour
-            execution_options={
-                "postgresql_psycopg2_prepared_statements": False},
+            pool_recycle=3600,  # Recycle connections after 1 hour
+            execution_options={"postgresql_psycopg2_prepared_statements": False},
         )
     else:
         # Standard PostgreSQL or session mode pooler
@@ -50,8 +51,7 @@ if DATABASE_URL.startswith("postgresql"):
             DATABASE_URL,
             pool_pre_ping=True,
             pool_recycle=3600,
-            connect_args={
-                "sslmode": "require"} if "sslmode" not in DATABASE_URL else {},
+            connect_args={"sslmode": "require"} if "sslmode" not in DATABASE_URL else {},
         )
 else:
     # SQLite for local development

@@ -26,11 +26,7 @@ class SchemaMirrorService:
     manifest and lockfile for reproducible validation.
     """
 
-    def __init__(
-        self,
-        base_path: Path,
-        timeout_seconds: int = 60
-    ):
+    def __init__(self, base_path: Path, timeout_seconds: int = 60):
         """
         Initialize the mirror service.
 
@@ -49,7 +45,7 @@ class SchemaMirrorService:
         root_xsd_url: str,
         include_examples: bool = True,
         include_html: bool = True,
-        include_xmi: bool = True
+        include_xmi: bool = True,
     ) -> Dict[str, any]:
         """
         Mirror a complete schema version tree.
@@ -101,13 +97,8 @@ class SchemaMirrorService:
             "mirrored_at": datetime.now(timezone.utc).isoformat(),
             "root_url": root_xsd_url,
             "base_url": base_url,
-            "resources": {
-                "schemas": True,
-                "examples": include_examples,
-                "html": include_html,
-                "xmi": include_xmi
-            },
-            "files": manifest
+            "resources": {"schemas": True, "examples": include_examples, "html": include_html, "xmi": include_xmi},
+            "files": manifest,
         }
 
         manifest_path = version_dir / ".manifest.json"
@@ -123,15 +114,10 @@ class SchemaMirrorService:
             "version": version,
             "files_mirrored": len(manifest),
             "manifest_path": str(manifest_path),
-            "version_dir": str(version_dir)
+            "version_dir": str(version_dir),
         }
 
-    async def _download_xsd_tree(
-        self,
-        xsd_url: str,
-        target_dir: Path,
-        manifest: Dict[str, Dict]
-    ):
+    async def _download_xsd_tree(self, xsd_url: str, target_dir: Path, manifest: Dict[str, Dict]):
         """
         Recursively download XSD and all imports/includes.
 
@@ -175,7 +161,7 @@ class SchemaMirrorService:
                 manifest[str(local_file.relative_to(target_dir))] = {
                     "url": xsd_url,
                     "sha256": sha256,
-                    "size_bytes": len(content)
+                    "size_bytes": len(content),
                 }
 
                 logger.debug(f"Downloaded: {xsd_url} -> {local_file}")
@@ -183,23 +169,14 @@ class SchemaMirrorService:
                 # Parse for imports/includes (simple regex, not full XML parse)
                 if filename.endswith(".xsd"):
                     await self._process_xsd_imports(
-                        content.decode("utf-8", errors="ignore"),
-                        xsd_url,
-                        target_dir,
-                        manifest
+                        content.decode("utf-8", errors="ignore"), xsd_url, target_dir, manifest
                     )
 
             except Exception as e:
                 logger.error(f"Error downloading {xsd_url}: {e}")
                 raise
 
-    async def _process_xsd_imports(
-        self,
-        xsd_content: str,
-        base_url: str,
-        target_dir: Path,
-        manifest: Dict
-    ):
+    async def _process_xsd_imports(self, xsd_content: str, base_url: str, target_dir: Path, manifest: Dict):
         """
         Extract and download XSD imports/includes.
 
@@ -213,8 +190,7 @@ class SchemaMirrorService:
 
         # Match <xs:import> and <xs:include> schemaLocation attributes
         pattern = re.compile(
-            r'<(?:xs:)?(?:import|include)[^>]*?schemaLocation\s*=\s*["\']([^"\']+)["\']',
-            re.IGNORECASE
+            r'<(?:xs:)?(?:import|include)[^>]*?schemaLocation\s*=\s*["\']([^"\']+)["\']', re.IGNORECASE
         )
 
         for match in pattern.finditer(xsd_content):
@@ -235,11 +211,7 @@ class SchemaMirrorService:
             await self._download_xsd_tree(schema_url, target_dir, manifest)
 
     async def _download_directory(
-        self,
-        directory_url: str,
-        target_dir: Path,
-        manifest: Dict,
-        skip_on_404: bool = False
+        self, directory_url: str, target_dir: Path, manifest: Dict, skip_on_404: bool = False
     ):
         """
         Download all files from a directory listing (Apache-style index).
@@ -282,10 +254,7 @@ class SchemaMirrorService:
                         # Recursively download subdirectory
                         subdir_name = href.rstrip("/")
                         await self._download_directory(
-                            file_url,
-                            target_dir / subdir_name,
-                            manifest,
-                            skip_on_404=skip_on_404
+                            file_url, target_dir / subdir_name, manifest, skip_on_404=skip_on_404
                         )
                     else:
                         # Download file
@@ -302,12 +271,7 @@ class SchemaMirrorService:
                 if not skip_on_404:
                     raise
 
-    async def _download_file(
-        self,
-        file_url: str,
-        target_dir: Path,
-        manifest: Dict
-    ):
+    async def _download_file(self, file_url: str, target_dir: Path, manifest: Dict):
         """
         Download a single file and add to manifest.
 
@@ -351,11 +315,7 @@ class SchemaMirrorService:
                 else:
                     rel_path = local_file.relative_to(self.base_path)
 
-                manifest[str(rel_path)] = {
-                    "url": file_url,
-                    "sha256": sha256,
-                    "size_bytes": len(content)
-                }
+                manifest[str(rel_path)] = {"url": file_url, "sha256": sha256, "size_bytes": len(content)}
 
                 logger.debug(f"Downloaded: {file_url} -> {local_file}")
 
@@ -378,11 +338,7 @@ class SchemaMirrorService:
             with lockfile_path.open("r") as f:
                 lockfile = json.load(f)
         else:
-            lockfile = {
-                "format_version": "1.0",
-                "updated_at": datetime.now(timezone.utc).isoformat(),
-                "versions": {}
-            }
+            lockfile = {"format_version": "1.0", "updated_at": datetime.now(timezone.utc).isoformat(), "versions": {}}
 
         # Add/update version entry
         lockfile["versions"][version] = {
@@ -390,7 +346,7 @@ class SchemaMirrorService:
             "root_url": manifest_data["root_url"],
             "base_url": manifest_data.get("base_url"),
             "file_count": len(manifest_data["files"]),
-            "resources": manifest_data.get("resources", {})
+            "resources": manifest_data.get("resources", {}),
         }
         lockfile["updated_at"] = datetime.now(timezone.utc).isoformat()
 
@@ -435,10 +391,7 @@ class SchemaMirrorService:
                 sha256 = hashlib.sha256(content).hexdigest()
 
             if sha256 != file_info["sha256"]:
-                logger.error(
-                    f"Checksum mismatch for {rel_path}: "
-                    f"expected {file_info['sha256']}, got {sha256}"
-                )
+                logger.error(f"Checksum mismatch for {rel_path}: expected {file_info['sha256']}, got {sha256}")
                 return False
 
         logger.info(f"Integrity verified for {version}: all checksums match")
@@ -451,7 +404,7 @@ async def mirror_schema_version(
     base_path: Path,
     include_examples: bool = True,
     include_html: bool = True,
-    include_xmi: bool = True
+    include_xmi: bool = True,
 ) -> Dict:
     """
     Convenience function to mirror a single schema version.
@@ -469,9 +422,5 @@ async def mirror_schema_version(
     """
     service = SchemaMirrorService(base_path)
     return await service.mirror_version(
-        version,
-        root_xsd_url,
-        include_examples=include_examples,
-        include_html=include_html,
-        include_xmi=include_xmi
+        version, root_xsd_url, include_examples=include_examples, include_html=include_html, include_xmi=include_xmi
     )

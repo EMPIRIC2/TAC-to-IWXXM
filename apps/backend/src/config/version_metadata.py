@@ -38,11 +38,8 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
         translation_metadata_optional=True,
         coordinate_precision_decimals=2,
         elevation_rounding=1,
-        element_order_priority=[
-            "interpretation", "designator", "name", "locationIndicatorICAO", "ARP"
-        ]
+        element_order_priority=["interpretation", "designator", "name", "locationIndicatorICAO", "ARP"],
     ),
-
     "2018": VersionMetadata(
         version="2018",
         namespace="http://icao.int/iwxxm/3.0",
@@ -52,11 +49,8 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
         translation_metadata_optional=True,
         coordinate_precision_decimals=2,
         elevation_rounding=1,
-        element_order_priority=[
-            "interpretation", "designator", "name", "locationIndicatorICAO", "ARP"
-        ]
+        element_order_priority=["interpretation", "designator", "name", "locationIndicatorICAO", "ARP"],
     ),
-
     "2021-2": VersionMetadata(
         version="2021-2",
         namespace="http://icao.int/iwxxm/2021-2",
@@ -66,11 +60,8 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
         translation_metadata_optional=True,
         coordinate_precision_decimals=6,
         elevation_rounding=0,
-        element_order_priority=[
-            "interpretation", "name", "locationIndicatorICAO", "ARP"
-        ]
+        element_order_priority=["interpretation", "name", "locationIndicatorICAO", "ARP"],
     ),
-
     "2023-1": VersionMetadata(
         version="2023-1",
         namespace="http://icao.int/iwxxm/2023-1",
@@ -80,11 +71,8 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
         translation_metadata_optional=True,
         coordinate_precision_decimals=6,
         elevation_rounding=0,
-        element_order_priority=[
-            "interpretation", "name", "locationIndicatorICAO", "ARP"
-        ]
+        element_order_priority=["interpretation", "name", "locationIndicatorICAO", "ARP"],
     ),
-
     "2025-2": VersionMetadata(
         version="2025-2",
         namespace="http://icao.int/iwxxm/2025-2",
@@ -94,9 +82,7 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
         translation_metadata_optional=True,
         coordinate_precision_decimals=8,  # High precision (ICAO Annex 3)
         elevation_rounding=0,
-        element_order_priority=[
-            "interpretation", "name", "locationIndicatorICAO", "designatorIATA", "ARP"
-        ]
+        element_order_priority=["interpretation", "name", "locationIndicatorICAO", "designatorIATA", "ARP"],
     ),
 }
 

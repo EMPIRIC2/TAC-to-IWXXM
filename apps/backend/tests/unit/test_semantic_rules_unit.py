@@ -1,4 +1,5 @@
 """Unit tests for semantic_rules.py (validation) – 0% coverage target."""
+
 from src.validation.semantic_rules import (
     CloudLayerValidationRule,
     IssueSeverity,
@@ -25,8 +26,7 @@ class TestValidationIssue:
 
     def test_optional_suggested_fix(self):
         issue = ValidationIssue(
-            rule_name="r", severity=IssueSeverity.INFO,
-            message="m", expected="e", actual="a", affected_field="f"
+            rule_name="r", severity=IssueSeverity.INFO, message="m", expected="e", actual="a", affected_field="f"
         )
         assert issue.suggested_fix is None
 

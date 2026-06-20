@@ -35,7 +35,7 @@ def parse_cloud_layers(raw_metar: str):
     Where coverage code followed by altitude in hundreds of feet.
     """
     # Pattern: coverage_code (FEW/SCT/BKN/OVC/SKC/CLR) followed by digits
-    pattern = r'(FEW|SCT|BKN|OVC|SKC|CLR|VV)(\d{3})?'
+    pattern = r"(FEW|SCT|BKN|OVC|SKC|CLR|VV)(\d{3})?"
     matches = re.findall(pattern, raw_metar)
 
     layers = []
@@ -44,16 +44,10 @@ def parse_cloud_layers(raw_metar: str):
             # Convert hundreds of feet to meters
             altitude_ft = int(altitude_hundreds) * 100
             altitude_m = round(altitude_ft * 0.3048)  # ft to m conversion
-            layers.append({
-                "coverage": coverage,
-                "altitude_m": altitude_m
-            })
+            layers.append({"coverage": coverage, "altitude_m": altitude_m})
         else:
             # CLR/SKC without altitude
-            layers.append({
-                "coverage": coverage,
-                "altitude_m": 0
-            })
+            layers.append({"coverage": coverage, "altitude_m": 0})
 
     return layers
 
@@ -94,25 +88,21 @@ class TestCloudLayerValidationWithRealData:
 
             if has_error:
                 invalid_count += 1
-                errors.append({
-                    "station": case.station_id,
-                    "metar": metar_text,
-                    "layers": layers,
-                    "issues": [
-                        {
-                            "severity": j.severity.name,
-                            "message": j.message
-                        }
-                        for j in issues
-                    ]
-                })
+                errors.append(
+                    {
+                        "station": case.station_id,
+                        "metar": metar_text,
+                        "layers": layers,
+                        "issues": [{"severity": j.severity.name, "message": j.message} for j in issues],
+                    }
+                )
             else:
                 valid_count += 1
 
         # Report results
-        print(f"\n\n{'='*70}")
+        print(f"\n\n{'=' * 70}")
         print("Cloud Layer Validation Results (Task 3.2)")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Total test cases: {len(test_cases)}")
         print(f"Cases with clouds: {valid_count + invalid_count}")
         print(f"Valid cloud sequences: {valid_count}")
@@ -130,12 +120,13 @@ class TestCloudLayerValidationWithRealData:
                 print(f"  [{error['station']}] {error['metar'][:60]}")
                 print(f"    Layers: {[l['coverage'] for l in error['layers']]}")
                 print(f"    Issues: {len(error['issues'])}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         # Expect at least 90% of real data to pass validation
         if valid_count + invalid_count > 0:
-            assert (valid_count / (valid_count + invalid_count)) >= 0.90, \
+            assert (valid_count / (valid_count + invalid_count)) >= 0.90, (
                 f"Too many invalid cloud sequences: {invalid_count} errors"
+            )
 
     def test_altitude_ordering_statistics(self, rule, test_cases):
         """Compute altitude statistics for cloud layers."""
@@ -182,9 +173,9 @@ class TestCloudLayerValidationWithRealData:
             min_range = max_range = avg_range = 0
 
         # Report statistics
-        print(f"\n\n{'='*70}")
+        print(f"\n\n{'=' * 70}")
         print("Cloud Layer Altitude Statistics (Task 3.2)")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Multi-layer sequences: {len(layer_counts)}")
         print(f"Layers per sequence: avg {avg_layers:.1f}, max {max_layers}")
         print("\nAltitude gaps (between layers):")
@@ -195,7 +186,7 @@ class TestCloudLayerValidationWithRealData:
         print(f"  Min range: {min_range:.0f}m")
         print(f"  Max range: {max_range:.0f}m")
         print(f"  Avg range: {avg_range:.0f}m")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         # Sanity checks
         assert max_layers >= 1, "Should have multi-layer sequences"
@@ -223,9 +214,9 @@ class TestCloudLayerValidationWithRealData:
             pytest.skip("No cloud data")
 
         # Report statistics
-        print(f"\n\n{'='*70}")
+        print(f"\n\n{'=' * 70}")
         print("Cloud Coverage Distribution (Task 3.2)")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print("Coverage type frequencies:")
         for coverage in sorted(coverage_counts.keys()):
             count = coverage_counts[coverage]
@@ -234,10 +225,11 @@ class TestCloudLayerValidationWithRealData:
 
         print("\nMost common sequences (first 5):")
         from collections import Counter
+
         seq_counts = Counter(coverage_sequences)
         for seq, count in seq_counts.most_common(5):
             print(f"  {seq}: {count} times")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
 
 if __name__ == "__main__":

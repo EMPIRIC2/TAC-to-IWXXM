@@ -26,9 +26,11 @@ class ElevationService:
         datum_file = Path(__file__).parent.parent / "data" / "vertical_datum_map.json"
 
         try:
-            with open(datum_file, 'r', encoding='utf-8') as f:
+            with open(datum_file, "r", encoding="utf-8") as f:
                 self.datum_map = json.load(f)
-            logger.info(f"Loaded vertical datum mappings for {len(self.datum_map.get('country_defaults', {}))} countries")
+            logger.info(
+                f"Loaded vertical datum mappings for {len(self.datum_map.get('country_defaults', {}))} countries"
+            )
         except FileNotFoundError:
             logger.warning(f"Vertical datum mapping file not found: {datum_file}")
             self.datum_map = {"country_defaults": {}, "airport_overrides": {}, "datum_info": {}}
@@ -77,14 +79,14 @@ class ElevationService:
             IWXXM-compliant code (e.g., 'NAVD88', 'OTHER:CGVD2013')
         """
         # IWXXM natively supports: EGM_96, NAVD88, AHD
-        supported = {'EGM_96', 'EGM96', 'NAVD88', 'AHD'}
+        supported = {"EGM_96", "EGM96", "NAVD88", "AHD"}
 
         if datum in supported:
             # Normalize EGM96 to EGM_96
-            return 'EGM_96' if datum == 'EGM96' else datum
+            return "EGM_96" if datum == "EGM96" else datum
 
         # Check if it's already in OTHER: format
-        if datum.startswith('OTHER:'):
+        if datum.startswith("OTHER:"):
             return datum
 
         # Check datum_info for proper IWXXM code
@@ -101,7 +103,7 @@ class ElevationService:
         default_elevation_ft: Optional[int] = None,
         country_code: Optional[str] = None,
         version: str = "2025-2",  # Add version parameter with default
-        use_test_overrides: bool = False  # Add test override flag
+        use_test_overrides: bool = False,  # Add test override flag
     ) -> Tuple[Optional[int], str]:
         """
         Get elevation and vertical datum for an airport with version-aware formatting.
@@ -125,6 +127,7 @@ class ElevationService:
         if elevation_m is not None:
             try:
                 from ..config.version_formatting import format_elevation
+
                 elevation_m = format_elevation(float(elevation_m), version)
             except Exception as e:
                 logger.debug(f"Could not apply version formatting: {e}")
@@ -136,7 +139,7 @@ class ElevationService:
         icao: str,
         default_elevation_ft: Optional[int] = None,
         country_code: Optional[str] = None,
-        use_test_overrides: bool = False
+        use_test_overrides: bool = False,
     ) -> Tuple[Optional[int], str]:
         """Get raw elevation data without version-specific formatting.
 
@@ -215,8 +218,7 @@ class ElevationService:
 
             if lat is not None and lon is not None:
                 logger.debug(
-                    f"Using coordinate override for {icao}: {lat}, {lon} "
-                    f"(source: {override.get('source', 'unknown')})"
+                    f"Using coordinate override for {icao}: {lat}, {lon} (source: {override.get('source', 'unknown')})"
                 )
                 return lat, lon
 
@@ -246,18 +248,13 @@ class ElevationService:
             Dictionary with datum information or None
         """
         # Strip OTHER: prefix if present
-        clean_datum = datum.replace('OTHER:', '').replace('_', '')
+        clean_datum = datum.replace("OTHER:", "").replace("_", "")
 
         datum_info = self.datum_map.get("datum_info", {})
         return datum_info.get(clean_datum) or datum_info.get(datum)
 
     def add_airport_override(
-        self,
-        icao: str,
-        elevation_m: int,
-        vertical_datum: str,
-        source: str = "user_provided",
-        notes: str = ""
+        self, icao: str, elevation_m: int, vertical_datum: str, source: str = "user_provided", notes: str = ""
     ) -> None:
         """
         Add or update an airport-specific elevation override.
@@ -274,7 +271,7 @@ class ElevationService:
             "vertical_datum": vertical_datum,
             "elevation_m": elevation_m,
             "source": source,
-            "notes": notes
+            "notes": notes,
         }
 
         logger.info(f"Added elevation override for {icao}: {elevation_m}m ({vertical_datum})")
@@ -284,7 +281,7 @@ class ElevationService:
         datum_file = Path(__file__).parent.parent / "data" / "vertical_datum_map.json"
 
         try:
-            with open(datum_file, 'w', encoding='utf-8') as f:
+            with open(datum_file, "w", encoding="utf-8") as f:
                 json.dump(self.datum_map, f, indent=2, ensure_ascii=False)
             logger.info(f"Saved vertical datum mapping to {datum_file}")
         except Exception as e:

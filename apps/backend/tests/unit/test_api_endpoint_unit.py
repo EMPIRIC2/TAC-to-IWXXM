@@ -29,7 +29,7 @@ def client(monkeypatch):
         return {"sub": "test-user", "aud": "test-aud"}
 
     def fake_convert(_tac: str, iwxxm_version: str = "2025-2", validate: bool = False, **_kwargs: Any):
-        xml = f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>"
+        xml = f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>'
         return xml, None
 
     monkeypatch.setattr(api_module, "ValidationService", _FakeValidationService)
@@ -105,7 +105,7 @@ def test_convert_manual_recent_weather_resh_is_normalized_before_validation(clie
     ):
         assert "RESHUP" in tac
         assert " RESH " not in f" {tac} "
-        xml = f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>"
+        xml = f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>'
         return xml, None
 
     monkeypatch.setattr(api_module, "ValidationService", _StrictRecentWxValidationService)
@@ -141,7 +141,7 @@ def test_convert_manual_recent_weather_reshra_passes_without_rewrite(client, mon
     ):
         assert "RESHRA" in tac
         assert "RESHUP" not in tac
-        xml = f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>"
+        xml = f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>'
         return xml, None
 
     monkeypatch.setattr(api_module, "ValidationService", _RecentWxValidationService)
@@ -182,7 +182,7 @@ def test_convert_json_recent_weather_resh_is_normalized_before_validation(client
         assert "RESHUP" in tac
         assert " RESH " not in f" {tac} "
         assert kwargs.get("lenient") is False
-        xml = f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>"
+        xml = f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>'
         return xml, None
 
     monkeypatch.setattr(api_module, "ValidationService", _StrictRecentWxValidationService)
@@ -220,7 +220,7 @@ def test_convert_json_recent_weather_reshra_passes_without_rewrite(client, monke
         assert "RESHRA" in tac
         assert "RESHUP" not in tac
         assert kwargs.get("lenient") is False
-        xml = f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>"
+        xml = f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>'
         return xml, None
 
     monkeypatch.setattr(api_module, "ValidationService", _RecentWxValidationService)

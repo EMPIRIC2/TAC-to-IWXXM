@@ -1,4 +1,5 @@
 """Unit tests for SchematronValidatorDocker – 0% coverage target."""
+
 import json
 import subprocess
 from unittest.mock import MagicMock, patch
@@ -58,13 +59,15 @@ class TestSchematronValidatorDockerValidate:
         validator = self._make_validator(tmp_path)
         mock_result = MagicMock()
         mock_result.returncode = 0
-        mock_result.stdout = json.dumps({
-            "status": "PASS",
-            "assertions_passed": 5,
-            "assertions_failed": 0,
-            "failed_constraints": [],
-            "passed_constraints": [],
-        })
+        mock_result.stdout = json.dumps(
+            {
+                "status": "PASS",
+                "assertions_passed": 5,
+                "assertions_failed": 0,
+                "failed_constraints": [],
+                "passed_constraints": [],
+            }
+        )
         mock_result.stderr = ""
 
         with patch("src.utilities.schematron_validator_docker.subprocess.run", return_value=mock_result):
@@ -78,13 +81,15 @@ class TestSchematronValidatorDockerValidate:
         validator = self._make_validator(tmp_path)
         mock_result = MagicMock()
         mock_result.returncode = 1
-        mock_result.stdout = json.dumps({
-            "status": "FAIL",
-            "assertions_passed": 0,
-            "assertions_failed": 2,
-            "failed_constraints": [{"id": "c1", "msg": "error"}],
-            "passed_constraints": [],
-        })
+        mock_result.stdout = json.dumps(
+            {
+                "status": "FAIL",
+                "assertions_passed": 0,
+                "assertions_failed": 2,
+                "failed_constraints": [{"id": "c1", "msg": "error"}],
+                "passed_constraints": [],
+            }
+        )
         mock_result.stderr = "some warning"
 
         with patch("src.utilities.schematron_validator_docker.subprocess.run", return_value=mock_result):
@@ -127,9 +132,15 @@ class TestSchematronValidatorDockerValidate:
 
         mock_result = MagicMock()
         mock_result.returncode = 0
-        mock_result.stdout = json.dumps({"status": "PASS", "assertions_passed": 0,
-                                         "assertions_failed": 0, "failed_constraints": [],
-                                         "passed_constraints": []})
+        mock_result.stdout = json.dumps(
+            {
+                "status": "PASS",
+                "assertions_passed": 0,
+                "assertions_failed": 0,
+                "failed_constraints": [],
+                "passed_constraints": [],
+            }
+        )
         mock_result.stderr = ""
 
         with patch("src.utilities.schematron_validator_docker.subprocess.run", return_value=mock_result) as mock_run:
@@ -194,6 +205,8 @@ class TestSchematronValidatorDockerHelpers:
     def test_validate_against_schematron_wrapper(self, tmp_path):
         schema = tmp_path / "test.sch"
         schema.write_text("<schema/>")
-        with patch.object(SchematronValidatorDocker, "validate", return_value=SchematronValidationResult(valid=True, status="PASS")):
+        with patch.object(
+            SchematronValidatorDocker, "validate", return_value=SchematronValidationResult(valid=True, status="PASS")
+        ):
             result = validate_against_schematron("<xml/>", str(schema))
         assert result.valid is True

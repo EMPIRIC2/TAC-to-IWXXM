@@ -3,6 +3,7 @@
 Generates diverse test cases using live data from AviationWeather.gov,
 OpenAIP, and WMO codelists.
 """
+
 import json
 import logging
 import random
@@ -117,8 +118,8 @@ class CoverageReport:
             "complexity_distribution": {
                 "simple": self.simple_cases,
                 "medium": self.medium_cases,
-                "complex": self.complex_cases
-            }
+                "complex": self.complex_cases,
+            },
         }
 
 
@@ -137,7 +138,7 @@ class METARTestGenerator:
         "south_america": (-80, -55, -35, 15),
         "africa": (-20, -35, 55, 35),
         "middle_east": (30, 10, 60, 45),
-        "australia": (110, -45, 155, -10)
+        "australia": (110, -45, 155, -10),
     }
 
     def __init__(
@@ -146,7 +147,7 @@ class METARTestGenerator:
         openaip_client: Optional[OpenAIPClient] = None,
         wmo_client: Optional[WMOCodelistsClient] = None,
         reconciliation_service: Optional[AirportReconciliationService] = None,
-        cache_dir: Optional[Path] = None
+        cache_dir: Optional[Path] = None,
     ):
         """Initialize test generator.
 
@@ -163,23 +164,19 @@ class METARTestGenerator:
         backend_dir = Path(__file__).parent.parent.parent
         data_dir = backend_dir.parent / "data"
 
-        self.openaip = openaip_client or OpenAIPClient(
-            data_path=data_dir / "open-aip"
-        )
+        self.openaip = openaip_client or OpenAIPClient(data_path=data_dir / "open-aip")
 
         # Find IWXXM codelists directory
         schemas_dir = backend_dir.parent / "schemas" / "iwxxm" / "IWXXM"
         codelists_dirs = list(schemas_dir.glob("*/rule"))
         codelists_dir = sorted(codelists_dirs)[-1] if codelists_dirs else None
 
-        self.wmo = wmo_client or (
-            WMOCodelistsClient(codelists_dir) if codelists_dir else None
-        )
+        self.wmo = wmo_client or (WMOCodelistsClient(codelists_dir) if codelists_dir else None)
 
         self.reconciliation = reconciliation_service or AirportReconciliationService(
             openaip_client=self.openaip,
             aviation_weather_client=self.aviation_weather,
-            gifts_data_path=data_dir / "af-airports.csv"
+            gifts_data_path=data_dir / "af-airports.csv",
         )
 
         self.cache_dir = cache_dir or Path("test-data/generated-tests")
@@ -197,53 +194,63 @@ class METARTestGenerator:
             "cloud_types": [],
             "cloud_amounts": [],
             "visibility": None,
-            "temperature": None
+            "temperature": None,
         }
 
         # Extract weather phenomena (simplified)
         weather_codes = [
-            'RA', 'SN', 'DZ', 'FG', 'BR', 'HZ', 'TS', 'GR', 'GS',
-            'TSRA', 'TSGR', 'FZRA', 'FZDZ', 'SHRA', 'SHSN', 'NSW'
+            "RA",
+            "SN",
+            "DZ",
+            "FG",
+            "BR",
+            "HZ",
+            "TS",
+            "GR",
+            "GS",
+            "TSRA",
+            "TSGR",
+            "FZRA",
+            "FZDZ",
+            "SHRA",
+            "SHSN",
+            "NSW",
         ]
         for code in weather_codes:
             if code in raw_metar:
                 features["weather_phenomena"].append(code)
 
         # Extract cloud amounts
-        cloud_amounts = ['FEW', 'SCT', 'BKN', 'OVC', 'CLR', 'SKC']
+        cloud_amounts = ["FEW", "SCT", "BKN", "OVC", "CLR", "SKC"]
         for amount in cloud_amounts:
             if amount in raw_metar:
                 features["cloud_amounts"].append(amount)
 
         # Extract cloud types
-        cloud_types = ['CB', 'TCU']
+        cloud_types = ["CB", "TCU"]
         for ctype in cloud_types:
             if ctype in raw_metar:
                 features["cloud_types"].append(ctype)
 
         # Extract visibility (simplified - just check for presence)
-        if any(vis in raw_metar for vis in ['SM', 'KM', 'M ']):
+        if any(vis in raw_metar for vis in ["SM", "KM", "M "]):
             features["visibility"] = "present"
 
         # Extract temperature (check for temp/dewpoint pattern)
         import re
-        temp_pattern = r'\s(\d{2}|M\d{2})/(\d{2}|M\d{2})\s'
+
+        temp_pattern = r"\s(\d{2}|M\d{2})/(\d{2}|M\d{2})\s"
         if re.search(temp_pattern, raw_metar):
             features["temperature"] = "present"
 
         return features
 
-    def _enrich_with_metadata(
-        self,
-        metar_data: Dict[str, Any]
-    ) -> METARTestCase:
+    def _enrich_with_metadata(self, metar_data: Dict[str, Any]) -> METARTestCase:
         """Enrich METAR data with airport metadata."""
         # Handle different field names from various APIs
-        station_id = (metar_data.get('station_id') or
-                     metar_data.get('icaoId') or
-                     metar_data.get('icao') or '')
+        station_id = metar_data.get("station_id") or metar_data.get("icaoId") or metar_data.get("icao") or ""
 
-        raw_metar = metar_data.get('raw_text') or metar_data.get('rawOb') or ''
+        raw_metar = metar_data.get("raw_text") or metar_data.get("rawOb") or ""
 
         # Parse meteorological features
         features = self._parse_metar_features(raw_metar)
@@ -253,17 +260,16 @@ class METARTestGenerator:
 
         # Determine region from coordinates
         region = self._determine_region(
-            metar_data.get('latitude') or metar_data.get('lat'),
-            metar_data.get('longitude') or metar_data.get('lon')
+            metar_data.get("latitude") or metar_data.get("lat"), metar_data.get("longitude") or metar_data.get("lon")
         )
 
         return METARTestCase(
             station_id=station_id,
             raw_metar=raw_metar,
-            latitude=airport.latitude if airport else (metar_data.get('latitude') or metar_data.get('lat')),
-            longitude=airport.longitude if airport else (metar_data.get('longitude') or metar_data.get('lon')),
-            country=airport.country if airport else metar_data.get('country'),
-            elevation=airport.elevation if airport else (metar_data.get('elevation_m') or metar_data.get('elev')),
+            latitude=airport.latitude if airport else (metar_data.get("latitude") or metar_data.get("lat")),
+            longitude=airport.longitude if airport else (metar_data.get("longitude") or metar_data.get("lon")),
+            country=airport.country if airport else metar_data.get("country"),
+            elevation=airport.elevation if airport else (metar_data.get("elevation_m") or metar_data.get("elev")),
             weather_phenomena=features["weather_phenomena"],
             cloud_types=features["cloud_types"],
             cloud_amounts=features["cloud_amounts"],
@@ -271,7 +277,7 @@ class METARTestGenerator:
             temperature=features["temperature"],
             region=region,
             timestamp=datetime.now(),
-            source="aviation_weather"
+            source="aviation_weather",
         )
 
     def _determine_region(self, lat: Optional[float], lon: Optional[float]) -> Optional[str]:
@@ -285,12 +291,7 @@ class METARTestGenerator:
 
         return "other"
 
-    def diverse_sample(
-        self,
-        count: int = 200,
-        hours: int = 3,
-        use_cache: bool = True
-    ) -> List[METARTestCase]:
+    def diverse_sample(self, count: int = 200, hours: int = 3, use_cache: bool = True) -> List[METARTestCase]:
         """Generate diverse sample of METARs from all world regions.
 
         Args:
@@ -319,11 +320,7 @@ class METARTestGenerator:
         for region_name, bbox in self.WORLD_REGIONS.items():
             logger.info(f"  Fetching from {region_name}...")
             try:
-                metars = self.aviation_weather.fetch_metars_by_bbox_sync(
-                    bbox=bbox,
-                    hours=hours,
-                    format_type='json'
-                )
+                metars = self.aviation_weather.fetch_metars_by_bbox_sync(bbox=bbox, hours=hours, format_type="json")
 
                 # Sample if we have too many
                 if len(metars) > metars_per_region:
@@ -352,11 +349,7 @@ class METARTestGenerator:
         return all_test_cases
 
     def regional_sample(
-        self,
-        region: str,
-        count: int = 50,
-        hours: int = 3,
-        use_cache: bool = True
+        self, region: str, count: int = 50, hours: int = 3, use_cache: bool = True
     ) -> List[METARTestCase]:
         """Generate sample from specific region.
 
@@ -380,11 +373,7 @@ class METARTestGenerator:
         logger.info(f"Generating regional sample: {region} ({count} cases)")
 
         bbox = self.WORLD_REGIONS[region]
-        metars = self.aviation_weather.fetch_metars_by_bbox_sync(
-            bbox=bbox,
-            hours=hours,
-            format_type='json'
-        )
+        metars = self.aviation_weather.fetch_metars_by_bbox_sync(bbox=bbox, hours=hours, format_type="json")
 
         # Sample if needed
         if len(metars) > count:
@@ -401,10 +390,7 @@ class METARTestGenerator:
         return test_cases
 
     def phenomenon_coverage(
-        self,
-        required_phenomena: Optional[List[str]] = None,
-        hours: int = 6,
-        use_cache: bool = True
+        self, required_phenomena: Optional[List[str]] = None, hours: int = 6, use_cache: bool = True
     ) -> List[METARTestCase]:
         """Generate test cases ensuring coverage of specific weather phenomena.
 
@@ -417,7 +403,7 @@ class METARTestGenerator:
             List of METARTestCase objects with required phenomena
         """
         if required_phenomena is None:
-            required_phenomena = ['RA', 'SN', 'TS', 'FG', 'BR', 'CB', 'TCU']
+            required_phenomena = ["RA", "SN", "TS", "FG", "BR", "CB", "TCU"]
 
         cache_file = self.cache_dir / f"phenomena_coverage_{hours}h.json"
 
@@ -430,11 +416,7 @@ class METARTestGenerator:
         all_metars = []
         for region_name, bbox in self.WORLD_REGIONS.items():
             try:
-                metars = self.aviation_weather.fetch_metars_by_bbox_sync(
-                    bbox=bbox,
-                    hours=hours,
-                    format_type='json'
-                )
+                metars = self.aviation_weather.fetch_metars_by_bbox_sync(bbox=bbox, hours=hours, format_type="json")
                 all_metars.extend(metars)
             except Exception:
                 continue
@@ -448,7 +430,7 @@ class METARTestGenerator:
 
         # First pass - find all phenomena
         for metar_data in all_metars:
-            raw_metar = metar_data.get('raw_text') or metar_data.get('rawOb', '')
+            raw_metar = metar_data.get("raw_text") or metar_data.get("rawOb", "")
 
             # Check which required phenomena are present
             for phenomenon in required_phenomena:
@@ -489,20 +471,20 @@ class METARTestGenerator:
                     "visibility": tc.visibility,
                     "temperature": tc.temperature,
                     "region": tc.region,
-                    "source": tc.source
+                    "source": tc.source,
                 }
                 for tc in test_cases
-            ]
+            ],
         }
 
-        with open(cache_file, 'w') as f:
+        with open(cache_file, "w") as f:
             json.dump(data, f, indent=2)
 
         logger.info(f"Saved {len(test_cases)} test cases to {cache_file}")
 
     def _load_from_cache(self, cache_file: Path) -> List[METARTestCase]:
         """Load test cases from cache file."""
-        with open(cache_file, 'r') as f:
+        with open(cache_file, "r") as f:
             data = json.load(f)
 
         test_cases = []
@@ -520,7 +502,7 @@ class METARTestGenerator:
                 visibility=tc_data.get("visibility"),
                 temperature=tc_data.get("temperature"),
                 region=tc_data.get("region"),
-                source=tc_data.get("source", "cache")
+                source=tc_data.get("source", "cache"),
             )
             test_cases.append(test_case)
             self.coverage.add_test_case(test_case)
@@ -537,7 +519,7 @@ class METARTestGenerator:
         if output_file is None:
             output_file = self.cache_dir / "coverage_report.json"
 
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             json.dump(self.coverage.to_dict(), f, indent=2)
 
         logger.info(f"Saved coverage report to {output_file}")

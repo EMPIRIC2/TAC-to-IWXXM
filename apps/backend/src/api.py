@@ -1,4 +1,5 @@
 """Standalone backend API module for Docker deployment."""
+
 from __future__ import annotations
 
 import datetime
@@ -106,7 +107,7 @@ app = FastAPI(
     ],
     swagger_ui_parameters={
         "persistAuthorization": True,
-    }
+    },
 )
 
 install_fastapi_observability(app=app, service_name="backend")
@@ -130,10 +131,7 @@ class ConvertRequestLoggingMiddleware:
             await self.app(scope, receive, send)
             return
 
-        headers = {
-            key.decode("latin1").lower(): value.decode("latin1")
-            for key, value in scope.get("headers", [])
-        }
+        headers = {key.decode("latin1").lower(): value.decode("latin1") for key, value in scope.get("headers", [])}
 
         logger.info(
             "[PREFLIGHT] %s %s origin=%s acr_method=%s acr_headers=%s content_type=%s",
@@ -157,6 +155,7 @@ class ConvertRequestLoggingMiddleware:
             await send(message)
 
         await self.app(scope, receive, send_wrapper)
+
 
 # Configure CORS with dynamic allowed origins from environment
 def is_dev_cors_relaxation_enabled() -> bool:
@@ -244,9 +243,7 @@ logger.info(
 )
 
 if dev_cors_relaxed:
-    logger.warning(
-        "[CORS] ENABLE_DEV_CORS_RELAXATION is active: localhost:5173 added and preflight headers set to '*'"
-    )
+    logger.warning("[CORS] ENABLE_DEV_CORS_RELAXATION is active: localhost:5173 added and preflight headers set to '*'")
 
 
 # Add Translation Centre identification headers (ICAO OPMET compliance)
@@ -291,7 +288,7 @@ async def parse_files(request: Request) -> List[UploadFile]:
         for key, value in form.multi_items():
             if key == "files":
                 # Only add if it's actually an UploadFile, not an empty string
-                if hasattr(value, 'filename') and value.filename:
+                if hasattr(value, "filename") and value.filename:
                     files.append(value)
         return files
     except Exception as e:
@@ -375,9 +372,7 @@ def classify_and_validate_upload_content(
     xml_wellformed_result = validation_orchestrator.validate_wellformed(content)
     if not xml_wellformed_result.passed:
         issue_message = (
-            xml_wellformed_result.issues[0].message
-            if xml_wellformed_result.issues
-            else "XML is not well-formed"
+            xml_wellformed_result.issues[0].message if xml_wellformed_result.issues else "XML is not well-formed"
         )
         return {
             "message": issue_message,
@@ -388,16 +383,12 @@ def classify_and_validate_upload_content(
 
     xml_schema_result = validation_orchestrator.validate_xml_schema(content, iwxxm_version)
     blocking_schema_issues = [
-        issue for issue in xml_schema_result.issues
-        if getattr(issue, "level", None)
-        and str(issue.level).lower().endswith("error")
+        issue
+        for issue in xml_schema_result.issues
+        if getattr(issue, "level", None) and str(issue.level).lower().endswith("error")
     ]
     if not xml_schema_result.is_valid or blocking_schema_issues:
-        schema_message = (
-            blocking_schema_issues[0].message
-            if blocking_schema_issues
-            else "XML schema validation failed"
-        )
+        schema_message = blocking_schema_issues[0].message if blocking_schema_issues else "XML schema validation failed"
         return {
             "message": schema_message,
             "hint": "Use an IWXXM XML file matching the selected IWXXM schema version.",
@@ -508,7 +499,6 @@ async def parse_optional_files(request: Request) -> List[UploadFile]:
     return [f for f in files_data if isinstance(f, UploadFile)]
 
 
-
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 def health() -> HealthResponse:
     """Check API health and component availability.
@@ -581,25 +571,21 @@ def get_supported_versions():
 
     versions_list = []
     for version, config in SUPPORTED_VERSIONS.items():
-        versions_list.append({
-            "version": version,
-            "name": config.get("name", ""),
-            "status": config.get("status", ""),
-            "release_date": config.get("release_date", ""),
-            "wmo_amendment": config.get("wmo_amendment", 0)
-        })
+        versions_list.append(
+            {
+                "version": version,
+                "name": config.get("name", ""),
+                "status": config.get("status", ""),
+                "release_date": config.get("release_date", ""),
+                "wmo_amendment": config.get("wmo_amendment", 0),
+            }
+        )
 
     return {
         "default_version": DEFAULT_VERSION,
-        "supported_versions": sorted(
-            versions_list,
-            key=lambda x: x["release_date"],
-            reverse=True
-        ),
-        "notes": {
-            "2025-1": "Version 2025-1 does not exist; requests are auto-remapped to 2025-2"
-        },
-        "deprecated_versions": list(DEPRECATED_VERSIONS.keys())
+        "supported_versions": sorted(versions_list, key=lambda x: x["release_date"], reverse=True),
+        "notes": {"2025-1": "Version 2025-1 does not exist; requests are auto-remapped to 2025-2"},
+        "deprecated_versions": list(DEPRECATED_VERSIONS.keys()),
     }
 
 
@@ -662,7 +648,7 @@ def get_schema_status():
             "status": data.get("status", "unknown"),
             "discovered": discovery_meta.get("discovered", ""),
             "source_url": discovery_meta.get("source_url", ""),
-            "mirrored": discovery_meta.get("mirrored", False)
+            "mirrored": discovery_meta.get("mirrored", False),
         }
 
         # Add RC-specific fields
@@ -674,19 +660,28 @@ def get_schema_status():
         "rc": rc_versions,
         "all": all_versions,
         "default": DEFAULT_VERSION,
-        "metadata": metadata_summary
+        "metadata": metadata_summary,
     }
 
 
-@app.post("/api/v1/validate", tags=["Validation"], responses={
-    401: {"description": "Unauthorized - Invalid or missing authentication token"},
-})
+@app.post(
+    "/api/v1/validate",
+    tags=["Validation"],
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+    },
+)
 async def validate_comprehensive(
     request_body: Optional[ValidateRequest] = None,
     manual_text: str = Form(default="", description="METAR TAC text to validate"),
-    xml_content: str = Form(default="", description="Optional XML to validate (if omitted, TAC will be converted first)"),
+    xml_content: str = Form(
+        default="", description="Optional XML to validate (if omitted, TAC will be converted first)"
+    ),
     iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
-    layers: List[str] = Form(default=["ALL"], description="Validation layers to run (ALL, or specific: AIRPORT_ICAO, TAC_SYNTAX, XML_WELLFORMED, XML_SCHEMA, SCHEMATRON, GML_REFERENCES, WMO_CODELISTS)"),
+    layers: List[str] = Form(
+        default=["ALL"],
+        description="Validation layers to run (ALL, or specific: AIRPORT_ICAO, TAC_SYNTAX, XML_WELLFORMED, XML_SCHEMA, SCHEMATRON, GML_REFERENCES, WMO_CODELISTS)",
+    ),
     stop_on_error: bool = Form(default=True, description="Stop at first blocking layer failure"),
     user: dict = Depends(verify_supabase_token),
 ):
@@ -766,10 +761,7 @@ async def validate_comprehensive(
             try:
                 xml_content, _ = convert_metar_tac_with_metadata(manual_text, iwxxm_version=iwxxm_version)
             except ConversionError as e:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Failed to convert TAC to XML: {str(e)}"
-                )
+                raise HTTPException(status_code=400, detail=f"Failed to convert TAC to XML: {str(e)}")
 
         # Parse layer selection
         selected_layers = []
@@ -784,7 +776,7 @@ async def validate_comprehensive(
                     raise HTTPException(
                         status_code=400,
                         detail=f"Invalid validation layer: {layer_name}. "
-                               f"Valid options: {[l.name for l in ValidationLayer]}"
+                        f"Valid options: {[l.name for l in ValidationLayer]}",
                     )
 
         # Run comprehensive validation
@@ -794,7 +786,7 @@ async def validate_comprehensive(
             xml_content=xml_content,
             version=iwxxm_version,
             layers=selected_layers,
-            stop_on_error=stop_on_error
+            stop_on_error=stop_on_error,
         )
 
         # Format response
@@ -811,7 +803,7 @@ async def validate_comprehensive(
                     "level": issue.level.name,
                     "message": issue.message,
                     "location": issue.location,
-                    "code": issue.code
+                    "code": issue.code,
                 }
                 for issue in result.all_issues
             ],
@@ -821,13 +813,13 @@ async def validate_comprehensive(
                         "level": issue.level.name,
                         "message": issue.message,
                         "location": issue.location,
-                        "code": issue.code
+                        "code": issue.code,
                     }
                     for issue in issues
                 ]
                 for layer, issues in result.issues_by_layer.items()
             },
-            "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None
+            "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
         }
 
     except HTTPException:
@@ -837,16 +829,26 @@ async def validate_comprehensive(
         raise HTTPException(status_code=500, detail=f"Validation failed: {str(e)}")
 
 
-@app.post("/api/v1/convert", response_model=ConversionResponse, tags=["Conversion"], responses={
-    401: {"description": "Unauthorized - Invalid or missing authentication token"},
-})
+@app.post(
+    "/api/v1/convert",
+    response_model=ConversionResponse,
+    tags=["Conversion"],
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+    },
+)
 async def convert(
     request: Request,
     files: Any = Depends(parse_files),
     manual_text: str = Form(default="", description="Optional manual text input (METAR TAC format)"),
-    iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)"),
+    iwxxm_version: str = Form(
+        default="2025-2",
+        description="Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
+    ),
     validate_output: bool = Form(default=False, description="Enable full 7-layer IWXXM validation after conversion"),
-    validation_level: str = Form(default="basic", description="Validation depth: basic, schema, schematron, icao_opmet, comprehensive"),
+    validation_level: str = Form(
+        default="basic", description="Validation depth: basic, schema, schematron, icao_opmet, comprehensive"
+    ),
     stop_on_error: bool = Form(default=False, description="Stop processing remaining inputs after first error"),
     bulletin_id: str = Form(default="", description="Optional bulletin identifier"),
     issuing_center: str = Form(default="", description="Optional issuing centre ICAO code"),
@@ -1013,7 +1015,12 @@ async def convert(
         validate_output = validation_level in ["comprehensive", "schematron", "icao_opmet", "schema"]
 
     validation_level = normalize_validation_level(validation_level)
-    validate_output = bool(validate_output) or validation_level in ["comprehensive", "schematron", "icao_opmet", "schema"]
+    validate_output = bool(validate_output) or validation_level in [
+        "comprehensive",
+        "schematron",
+        "icao_opmet",
+        "schema",
+    ]
     bulletin_id = normalize_code(bulletin_id, 6)
     issuing_center = normalize_code(issuing_center, 4)
 
@@ -1042,7 +1049,7 @@ async def convert(
                         code="INVALID_IWXXM_VERSION",
                     )
                 ],
-                total_errors=1
+                total_errors=1,
             ).model_dump(),
         )
 
@@ -1205,14 +1212,14 @@ async def convert(
                             validation_errors={"validation": validation_summary},
                             translation_duration_ms=0,
                             icao_airport_code=extract_airport_code(metar_text.strip()),
-                            user_id=user.get("sub")
+                            user_id=user.get("sub"),
                         )
                         airport_code = extract_airport_code(metar_text.strip())
                         await webhook_service.notify_translation_failed(
                             translation_id=translation_id,
                             airport_code=airport_code or "UNKNOWN",
                             error_type="validation_failed",
-                            error_message=validation_summary
+                            error_message=validation_summary,
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log failed translation: {log_err}")
@@ -1239,14 +1246,14 @@ async def convert(
                         validation_errors={"error": str(ve)},
                         translation_duration_ms=0,
                         icao_airport_code=extract_airport_code(metar_text.strip()),
-                        user_id=user.get("sub")
+                        user_id=user.get("sub"),
                     )
                     airport_code = extract_airport_code(metar_text.strip())
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
                         error_type="validation_error",
-                        error_message=str(ve)
+                        error_message=str(ve),
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log validation error: {log_err}")
@@ -1256,6 +1263,7 @@ async def convert(
             else:
                 # Start timing for successful conversion
                 import time
+
                 start_time = time.perf_counter()
 
                 emit_recent_wx_issues(metar_name, norm_warnings)
@@ -1275,17 +1283,31 @@ async def convert(
                         validation_result = validation_orchestrator.validate(
                             iwxxm_content,
                             iwxxm_version=iwxxm_version,
-                            layers=[ValidationLayer.XML_WELLFORMED, ValidationLayer.XML_SCHEMA, ValidationLayer.SCHEMATRON, ValidationLayer.GML_REFERENCES, ValidationLayer.WMO_CODELISTS]
+                            layers=[
+                                ValidationLayer.XML_WELLFORMED,
+                                ValidationLayer.XML_SCHEMA,
+                                ValidationLayer.SCHEMATRON,
+                                ValidationLayer.GML_REFERENCES,
+                                ValidationLayer.WMO_CODELISTS,
+                            ],
                         )
                         if validation_result.passed:
-                            validation_layers_passed.extend([ValidationLayer.XML_WELLFORMED, ValidationLayer.XML_SCHEMA, ValidationLayer.SCHEMATRON, ValidationLayer.GML_REFERENCES, ValidationLayer.WMO_CODELISTS])
+                            validation_layers_passed.extend(
+                                [
+                                    ValidationLayer.XML_WELLFORMED,
+                                    ValidationLayer.XML_SCHEMA,
+                                    ValidationLayer.SCHEMATRON,
+                                    ValidationLayer.GML_REFERENCES,
+                                    ValidationLayer.WMO_CODELISTS,
+                                ]
+                            )
 
                     # Add to results
                     result = ConversionResult(
                         name=metar_name,
                         content=iwxxm_content,
                         source="json",
-                        size_bytes=len(iwxxm_content.encode('utf-8')),
+                        size_bytes=len(iwxxm_content.encode("utf-8")),
                     )
                     results.append(result)
 
@@ -1302,7 +1324,7 @@ async def convert(
                             validation_layers_passed=validation_layers_passed,
                             translation_duration_ms=duration_ms,
                             icao_airport_code=extract_airport_code(normalized_metar_text),
-                            user_id=user.get("sub")
+                            user_id=user.get("sub"),
                         )
 
                         airport_code = extract_airport_code(normalized_metar_text)
@@ -1310,8 +1332,8 @@ async def convert(
                             translation_id=translation_id,
                             airport_code=airport_code or "UNKNOWN",
                             iwxxm_version=iwxxm_version,
-                            file_size_bytes=len(iwxxm_content.encode('utf-8')),
-                            duration_ms=duration_ms
+                            file_size_bytes=len(iwxxm_content.encode("utf-8")),
+                            duration_ms=duration_ms,
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log successful translation: {log_err}")
@@ -1340,7 +1362,7 @@ async def convert(
                             validation_errors={"error": str(ce)},
                             translation_duration_ms=duration_ms,
                             icao_airport_code=extract_airport_code(normalized_metar_text),
-                            user_id=user.get("sub")
+                            user_id=user.get("sub"),
                         )
 
                         airport_code = extract_airport_code(normalized_metar_text)
@@ -1348,7 +1370,7 @@ async def convert(
                             translation_id=translation_id or "unknown",
                             airport_code=airport_code or "UNKNOWN",
                             error_type="conversion_error",
-                            error_message=str(ce)
+                            error_message=str(ce),
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log conversion error: {log_err}")
@@ -1414,14 +1436,14 @@ async def convert(
                             validation_errors={"validation": validation_summary},
                             translation_duration_ms=0,
                             icao_airport_code=extract_airport_code(manual_entry),
-                            user_id=user.get("sub")
+                            user_id=user.get("sub"),
                         )
                         airport_code = extract_airport_code(manual_entry)
                         await webhook_service.notify_translation_failed(
                             translation_id=translation_id,
                             airport_code=airport_code or "UNKNOWN",
                             error_type="validation_failed",
-                            error_message=validation_summary
+                            error_message=validation_summary,
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log failed translation: {log_err}")
@@ -1447,14 +1469,14 @@ async def convert(
                         validation_errors={"error": str(ve)},
                         translation_duration_ms=0,
                         icao_airport_code=extract_airport_code(manual_entry),
-                        user_id=user.get("sub")
+                        user_id=user.get("sub"),
                     )
                     airport_code = extract_airport_code(manual_entry)
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
                         error_type="validation_error",
-                        error_message=str(ve)
+                        error_message=str(ve),
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log validation error: {log_err}")
@@ -1463,6 +1485,7 @@ async def convert(
                 continue
 
             import time
+
             start_time = time.perf_counter()
 
             emit_recent_wx_issues(manual_source, _norm_warnings)
@@ -1498,9 +1521,7 @@ async def convert(
                         layer="iwxxm_output",
                     )
                     validation_errors_dict = {
-                        "validation_issues": [
-                            str(issue) for issue in validation_result_from_conversion.all_issues[:10]
-                        ]
+                        "validation_issues": [str(issue) for issue in validation_result_from_conversion.all_issues[:10]]
                     }
 
             try:
@@ -1513,7 +1534,7 @@ async def convert(
                     validation_errors=validation_errors_dict if validation_errors_dict else None,
                     translation_duration_ms=duration_ms,
                     icao_airport_code=extract_airport_code(manual_entry),
-                    user_id=user.get("sub")
+                    user_id=user.get("sub"),
                 )
                 airport_code = extract_airport_code(manual_entry)
                 icao_region = get_icao_region(airport_code) if airport_code else "UNKNOWN"
@@ -1522,7 +1543,7 @@ async def convert(
                     airport_code=airport_code or "UNKNOWN",
                     icao_region=icao_region,
                     iwxxm_version=iwxxm_version,
-                    duration_ms=duration_ms
+                    duration_ms=duration_ms,
                 )
             except Exception as log_err:
                 logger.error(f"Failed to log successful translation: {log_err}")
@@ -1618,14 +1639,14 @@ async def convert(
                                 validation_errors={"validation": validation_summary},
                                 translation_duration_ms=0,
                                 icao_airport_code=extract_airport_code(data.strip()),
-                                user_id=user.get("sub")
+                                user_id=user.get("sub"),
                             )
                             airport_code = extract_airport_code(data.strip())
                             await webhook_service.notify_translation_failed(
                                 translation_id=translation_id,
                                 airport_code=airport_code or "UNKNOWN",
                                 error_type="validation_failed",
-                                error_message=validation_summary
+                                error_message=validation_summary,
                             )
                         except Exception as log_err:
                             logger.error(f"Failed to log failed translation: {log_err}")
@@ -1650,14 +1671,14 @@ async def convert(
                             validation_errors={"error": str(ve)},
                             translation_duration_ms=0,
                             icao_airport_code=extract_airport_code(data.strip()),
-                            user_id=user.get("sub")
+                            user_id=user.get("sub"),
                         )
                         airport_code = extract_airport_code(data.strip())
                         await webhook_service.notify_translation_failed(
                             translation_id=translation_id,
                             airport_code=airport_code or "UNKNOWN",
                             error_type="validation_error",
-                            error_message=str(ve)
+                            error_message=str(ve),
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log validation error: {log_err}")
@@ -1667,6 +1688,7 @@ async def convert(
 
                 # Start timing for successful conversion
                 import time
+
                 start_time = time.perf_counter()
 
                 # Only convert if validation passed
@@ -1686,7 +1708,7 @@ async def convert(
                             tac_text=data.strip(),
                             xml_content=xml_text,
                             version=iwxxm_version,
-                            stop_on_error=False  # Collect all issues
+                            stop_on_error=False,  # Collect all issues
                         )
                         if validation_result.is_valid:
                             # Add all passed validation layers
@@ -1730,14 +1752,16 @@ async def convert(
                         validation_errors=validation_errors_dict if validation_errors_dict else None,
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code(data.strip()),
-                        user_id=user.get("sub")
+                        user_id=user.get("sub"),
                     )
                     await webhook_service.notify_translation_success(
                         translation_id=translation_id,
                         airport_code=extract_airport_code(data.strip()) or "UNKNOWN",
-                        icao_region=get_icao_region(extract_airport_code(data.strip())) if extract_airport_code(data.strip()) else "UNKNOWN",
+                        icao_region=get_icao_region(extract_airport_code(data.strip()))
+                        if extract_airport_code(data.strip())
+                        else "UNKNOWN",
                         iwxxm_version=iwxxm_version,
-                        duration_ms=duration_ms
+                        duration_ms=duration_ms,
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log successful translation: {log_err}")
@@ -1763,22 +1787,22 @@ async def convert(
                 # Log conversion error
                 try:
                     translation_id = await statistics_service.log_translation(
-                        tac_message=data.strip() if 'data' in locals() else "",
+                        tac_message=data.strip() if "data" in locals() else "",
                         iwxxm_output=None,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.FAILED,
                         validation_layers_passed=[],
                         validation_errors={"conversion_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
-                        icao_airport_code=extract_airport_code(data.strip()) if 'data' in locals() else None,
-                        user_id=user.get("sub")
+                        icao_airport_code=extract_airport_code(data.strip()) if "data" in locals() else None,
+                        user_id=user.get("sub"),
                     )
-                    airport_code = extract_airport_code(data.strip()) if 'data' in locals() else None
+                    airport_code = extract_airport_code(data.strip()) if "data" in locals() else None
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
                         error_type="conversion_error",
-                        error_message=str(e)
+                        error_message=str(e),
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log conversion error: {log_err}")
@@ -1796,22 +1820,22 @@ async def convert(
                 # Log unexpected error
                 try:
                     translation_id = await statistics_service.log_translation(
-                        tac_message=data.strip() if 'data' in locals() else "",
+                        tac_message=data.strip() if "data" in locals() else "",
                         iwxxm_output=None,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.FAILED,
                         validation_layers_passed=[],
                         validation_errors={"unexpected_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
-                        icao_airport_code=extract_airport_code(data.strip()) if 'data' in locals() else None,
-                        user_id=user.get("sub")
+                        icao_airport_code=extract_airport_code(data.strip()) if "data" in locals() else None,
+                        user_id=user.get("sub"),
                     )
-                    airport_code = extract_airport_code(data.strip()) if 'data' in locals() else None
+                    airport_code = extract_airport_code(data.strip()) if "data" in locals() else None
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
                         error_type="unexpected_error",
-                        error_message=str(e)
+                        error_message=str(e),
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log unexpected error: {log_err}")
@@ -1828,10 +1852,7 @@ async def convert(
         raise HTTPException(
             status_code=400,
             detail=ErrorDetail(
-                message="All conversions failed",
-                errors=errors,
-                issues=issues,
-                total_errors=len(errors)
+                message="All conversions failed", errors=errors, issues=issues, total_errors=len(errors)
             ).model_dump(),
         )
 
@@ -1844,14 +1865,24 @@ async def convert(
         failed=len(errors),
         metadata=request_metadata,
     )
-@app.post("/api/v1/convert-zip", response_class=StreamingResponse, tags=["Conversion"], responses={
-    401: {"description": "Unauthorized - Invalid or missing authentication token"},
-})
+
+
+@app.post(
+    "/api/v1/convert-zip",
+    response_class=StreamingResponse,
+    tags=["Conversion"],
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+    },
+)
 async def convert_zip(
     request: Request,
     files: Any = Depends(parse_files),
     manual_text: str = Form(default="", description="Optional manual text input (METAR TAC format)"),
-    iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)"),
+    iwxxm_version: str = Form(
+        default="2025-2",
+        description="Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
+    ),
     user: dict = Depends(verify_supabase_token),
 ) -> StreamingResponse:
     # Try to parse JSON body if Content-Type is application/json
@@ -1860,19 +1891,13 @@ async def convert_zip(
         try:
             body_data = await request.json()
         except Exception as e:
-            raise HTTPException(
-                status_code=422,
-                detail=f"Invalid JSON in request body: {str(e)}"
-            )
+            raise HTTPException(status_code=422, detail=f"Invalid JSON in request body: {str(e)}")
 
         try:
             request_body = ConversionRequest(**body_data)
         except Exception as e:
             # Pydantic validation error - return 422
-            raise HTTPException(
-                status_code=422,
-                detail=f"Validation error: {str(e)}"
-            )
+            raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
     """Convert METAR/SPECI TAC inputs to a zipped archive of IWXXM XML files.
 
     Similar to `/api/v1/convert` but returns results as a ZIP archive instead of JSON.
@@ -1948,11 +1973,7 @@ async def convert_zip(
     except ValueError as e:
         raise HTTPException(
             status_code=400,
-            detail=ErrorDetail(
-                message=f"Invalid IWXXM version: {e}",
-                errors=[str(e)],
-                total_errors=1
-            ).model_dump(),
+            detail=ErrorDetail(message=f"Invalid IWXXM version: {e}", errors=[str(e)], total_errors=1).model_dump(),
         )
 
     results: List[tuple[str, str]] = []
@@ -1967,6 +1988,7 @@ async def convert_zip(
         manual_name = f"manual_input_{manual_index}.xml" if len(manual_entries) > 1 else "manual_input.xml"
         try:
             import time
+
             start_time = time.perf_counter()
 
             xml_text, _ = convert_metar_tac_with_metadata(manual_entry, iwxxm_version=iwxxm_version)
@@ -1984,7 +2006,7 @@ async def convert_zip(
                     validation_errors=None,
                     translation_duration_ms=duration_ms,
                     icao_airport_code=extract_airport_code(manual_entry),
-                    user_id=user.get("sub")
+                    user_id=user.get("sub"),
                 )
                 translation_ids.append(translation_id)
             except Exception as log_err:
@@ -2001,14 +2023,14 @@ async def convert_zip(
                     validation_errors={"conversion_error": str(e)},
                     translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
                     icao_airport_code=extract_airport_code(manual_entry),
-                    user_id=user.get("sub")
+                    user_id=user.get("sub"),
                 )
                 airport_code = extract_airport_code(manual_entry)
                 await webhook_service.notify_translation_failed(
                     translation_id=translation_id,
                     airport_code=airport_code or "UNKNOWN",
                     error_type="conversion_error",
-                    error_message=str(e)
+                    error_message=str(e),
                 )
             except Exception as log_err:
                 logger.error(f"Failed to log failed translation: {log_err}")
@@ -2038,6 +2060,7 @@ async def convert_zip(
 
                 # Start timing
                 import time
+
                 start_time = time.perf_counter()
 
                 xml_text, _ = convert_metar_tac_with_metadata(data, iwxxm_version=iwxxm_version)
@@ -2059,7 +2082,7 @@ async def convert_zip(
                         validation_errors=None,
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code(data),
-                        user_id=user.get("sub")
+                        user_id=user.get("sub"),
                     )
                     translation_ids.append(translation_id)
                 except Exception as log_err:
@@ -2069,22 +2092,22 @@ async def convert_zip(
                 # Log failed translation
                 try:
                     translation_id = await statistics_service.log_translation(
-                        tac_message=data if 'data' in locals() else "",
+                        tac_message=data if "data" in locals() else "",
                         iwxxm_output=None,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.FAILED,
                         validation_layers_passed=[],
                         validation_errors={"conversion_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
-                        icao_airport_code=extract_airport_code(data) if 'data' in locals() else None,
-                        user_id=user.get("sub")
+                        icao_airport_code=extract_airport_code(data) if "data" in locals() else None,
+                        user_id=user.get("sub"),
                     )
-                    airport_code = extract_airport_code(data) if 'data' in locals() else None
+                    airport_code = extract_airport_code(data) if "data" in locals() else None
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
                         error_type="conversion_error",
-                        error_message=str(e)
+                        error_message=str(e),
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log failed translation: {log_err}")
@@ -2093,22 +2116,22 @@ async def convert_zip(
                 # Log unexpected error
                 try:
                     translation_id = await statistics_service.log_translation(
-                        tac_message=data if 'data' in locals() else "",
+                        tac_message=data if "data" in locals() else "",
                         iwxxm_output=None,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.FAILED,
                         validation_layers_passed=[],
                         validation_errors={"unexpected_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
-                        icao_airport_code=extract_airport_code(data) if 'data' in locals() else None,
-                        user_id=user.get("sub")
+                        icao_airport_code=extract_airport_code(data) if "data" in locals() else None,
+                        user_id=user.get("sub"),
                     )
-                    airport_code = extract_airport_code(data) if 'data' in locals() else None
+                    airport_code = extract_airport_code(data) if "data" in locals() else None
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
                         error_type="unexpected_error",
-                        error_message=str(e)
+                        error_message=str(e),
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log unexpected error: {log_err}")
@@ -2142,14 +2165,14 @@ async def convert_zip(
                             validation_errors={"validation": validation_summary},
                             translation_duration_ms=0,
                             icao_airport_code=extract_airport_code(metar_text.strip()),
-                            user_id=user.get("sub")
+                            user_id=user.get("sub"),
                         )
                         airport_code = extract_airport_code(metar_text.strip())
                         await webhook_service.notify_translation_failed(
                             translation_id=translation_id,
                             airport_code=airport_code or "UNKNOWN",
                             error_type="validation_failed",
-                            error_message=validation_summary
+                            error_message=validation_summary,
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log failed translation: {log_err}")
@@ -2167,14 +2190,14 @@ async def convert_zip(
                         validation_errors={"validation_service_error": str(ve)},
                         translation_duration_ms=0,
                         icao_airport_code=extract_airport_code(metar_text.strip()),
-                        user_id=user.get("sub")
+                        user_id=user.get("sub"),
                     )
                     airport_code = extract_airport_code(metar_text.strip())
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
                         error_type="validation_error",
-                        error_message=str(ve)
+                        error_message=str(ve),
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log validation error: {log_err}")
@@ -2182,6 +2205,7 @@ async def convert_zip(
 
             # Start timing
             import time
+
             start_time = time.perf_counter()
 
             xml_text, _ = convert_metar_tac_with_metadata(metar_text.strip(), iwxxm_version=iwxxm_version)
@@ -2202,7 +2226,7 @@ async def convert_zip(
                     validation_layers_passed=[],
                     translation_duration_ms=duration_ms,
                     icao_airport_code=extract_airport_code(metar_text.strip()),
-                    user_id=user.get("sub")
+                    user_id=user.get("sub"),
                 )
                 translation_ids.append(translation_id)
             except Exception as log_err:
@@ -2220,14 +2244,14 @@ async def convert_zip(
                     validation_errors={"conversion_error": str(e)},
                     translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
                     icao_airport_code=extract_airport_code(metar_text.strip()),
-                    user_id=user.get("sub")
+                    user_id=user.get("sub"),
                 )
                 airport_code = extract_airport_code(metar_text.strip())
                 await webhook_service.notify_translation_failed(
                     translation_id=translation_id,
                     airport_code=airport_code or "UNKNOWN",
                     error_type="conversion_error",
-                    error_message=str(e)
+                    error_message=str(e),
                 )
             except Exception as log_err:
                 logger.error(f"Failed to log failed translation: {log_err}")
@@ -2244,14 +2268,14 @@ async def convert_zip(
                     validation_errors={"unexpected_error": str(e)},
                     translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
                     icao_airport_code=extract_airport_code(metar_text.strip()),
-                    user_id=user.get("sub")
+                    user_id=user.get("sub"),
                 )
                 airport_code = extract_airport_code(metar_text.strip())
                 await webhook_service.notify_translation_failed(
                     translation_id=translation_id,
                     airport_code=airport_code or "UNKNOWN",
                     error_type="unexpected_error",
-                    error_message=str(e)
+                    error_message=str(e),
                 )
             except Exception as log_err:
                 logger.error(f"Failed to log unexpected error: {log_err}")
@@ -2263,7 +2287,7 @@ async def convert_zip(
                 translation_ids=translation_ids,
                 total_count=len(translation_ids),
                 success_count=len(results),
-                failed_count=len(errors)
+                failed_count=len(errors),
             )
         except Exception as webhook_err:
             logger.error(f"Failed to send bulk completion webhook: {webhook_err}")
@@ -2280,9 +2304,7 @@ async def convert_zip(
     return StreamingResponse(
         mem,
         media_type="application/zip",
-        headers={
-            "Content-Disposition": f"attachment; filename=iwxxm_batch_{stamp}.zip"
-        },
+        headers={"Content-Disposition": f"attachment; filename=iwxxm_batch_{stamp}.zip"},
     )
 
 

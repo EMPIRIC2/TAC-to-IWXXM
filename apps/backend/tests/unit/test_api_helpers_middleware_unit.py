@@ -123,7 +123,9 @@ async def test_convert_request_logging_middleware_passthrough_paths() -> None:
     await middleware({"type": "http", "path": "/health", "method": "GET", "headers": []}, fake_receive, fake_send)
 
     # /api/v1/convert path branch.
-    await middleware({"type": "http", "path": "/api/v1/convert", "method": "OPTIONS", "headers": []}, fake_receive, fake_send)
+    await middleware(
+        {"type": "http", "path": "/api/v1/convert", "method": "OPTIONS", "headers": []}, fake_receive, fake_send
+    )
 
     assert calls["count"] == 3
     assert any(msg.get("type") == "http.response.start" for msg in sent)

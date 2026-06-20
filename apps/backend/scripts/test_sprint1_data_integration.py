@@ -6,6 +6,7 @@ Tests:
 3. WMO codelists client (weather phenomenon validation)
 4. Airport reconciliation service (multi-source data merging)
 """
+
 import sys
 from pathlib import Path
 
@@ -21,9 +22,9 @@ from src.services.airport_reconciliation import AirportReconciliationService
 
 def test_aviation_weather_enhancements():
     """Test AviationWeather client enhancements."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("TEST 1: AviationWeather Client Enhancements")
-    print("="*70)
+    print("=" * 70)
 
     client = AviationWeatherClient()
 
@@ -32,7 +33,7 @@ def test_aviation_weather_enhancements():
     dc_bbox = (-77.5, 38.5, -76.5, 39.5)  # (min_lon, min_lat, max_lon, max_lat)
 
     try:
-        metars = client.fetch_metars_by_bbox_sync(dc_bbox, hours=3, format_type='json')
+        metars = client.fetch_metars_by_bbox_sync(dc_bbox, hours=3, format_type="json")
         print(f"   ✓ Fetched {len(metars)} METARs from DC area")
 
         if metars:
@@ -51,7 +52,7 @@ def test_aviation_weather_enhancements():
         # Count by region (simplified - based on longitude)
         regions = {"NA": 0, "Europe": 0, "Asia": 0, "Other": 0}
         for metar in sample_metars:
-            lon = metar.get('longitude', 0)
+            lon = metar.get("longitude", 0)
             if -130 <= lon <= -60:
                 regions["NA"] += 1
             elif -10 <= lon <= 40:
@@ -90,9 +91,9 @@ def test_aviation_weather_enhancements():
 
 def test_openaip_client():
     """Test OpenAIP client."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("TEST 2: OpenAIP Client")
-    print("="*70)
+    print("=" * 70)
 
     # Use correct data path
     data_path = backend_dir.parent / "data" / "open-aip"
@@ -111,14 +112,16 @@ def test_openaip_client():
 
     # Test 2.2: Get specific airports
     print("\n2.2. Testing specific airport lookup...")
-    test_icaos = ['KDCA', 'KJFK', 'KLAX', 'LFPG', 'EGLL']
+    test_icaos = ["KDCA", "KJFK", "KLAX", "LFPG", "EGLL"]
 
     for icao in test_icaos:
         try:
             airport = client.get_airport_by_icao(icao)
             if airport:
-                print(f"   ✓ {icao}: {airport.name} ({airport.country}), "
-                      f"Elev: {airport.elevation:.0f}m, Coords: {airport.lat_lon}")
+                print(
+                    f"   ✓ {icao}: {airport.name} ({airport.country}), "
+                    f"Elev: {airport.elevation:.0f}m, Coords: {airport.lat_lon}"
+                )
             else:
                 print(f"   ! {icao}: Not found in OpenAIP data")
         except Exception as e:
@@ -127,7 +130,7 @@ def test_openaip_client():
     # Test 2.3: Search by country
     print("\n2.3. Testing country search...")
     try:
-        us_airports = client.search_airports(country='US', limit=10)
+        us_airports = client.search_airports(country="US", limit=10)
         print(f"   ✓ Found {len(us_airports)} US airports (limited to 10)")
         if us_airports:
             print(f"   ✓ Sample: {us_airports[0].icao_code} - {us_airports[0].name}")
@@ -137,9 +140,9 @@ def test_openaip_client():
 
 def test_wmo_codelists_client():
     """Test WMO codelists client."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("TEST 3: WMO Codelists Client")
-    print("="*70)
+    print("=" * 70)
 
     # Find IWXXM codelists directory
     schemas_dir = backend_dir.parent / "schemas" / "iwxxm" / "IWXXM"
@@ -173,10 +176,10 @@ def test_wmo_codelists_client():
         # Test 3.3: Validate weather phenomena
         print("\n3.3. Testing weather phenomenon validation...")
         test_weather = [
-            ('TSRA', True),  # Thunderstorm with rain
-            ('NSW', True),   # No significant weather
-            ('RA', True),    # Rain
-            ('INVALID', False)  # Should fail
+            ("TSRA", True),  # Thunderstorm with rain
+            ("NSW", True),  # No significant weather
+            ("RA", True),  # Rain
+            ("INVALID", False),  # Should fail
         ]
 
         for code, expected in test_weather:
@@ -186,13 +189,7 @@ def test_wmo_codelists_client():
 
         # Test 3.4: Validate cloud amounts
         print("\n3.4. Testing cloud amount validation...")
-        test_clouds = [
-            ('FEW', True),
-            ('SCT', True),
-            ('BKN', True),
-            ('OVC', True),
-            ('INVALID', False)
-        ]
+        test_clouds = [("FEW", True), ("SCT", True), ("BKN", True), ("OVC", True), ("INVALID", False)]
 
         for code, expected in test_clouds:
             result = client.validate_cloud_amount(code)
@@ -202,14 +199,15 @@ def test_wmo_codelists_client():
     except Exception as e:
         print(f"   ✗ Failed: {e}")
         import traceback
+
         traceback.print_exc()
 
 
 def test_airport_reconciliation():
     """Test airport reconciliation service."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("TEST 4: Airport Reconciliation Service")
-    print("="*70)
+    print("=" * 70)
 
     try:
         # Use correct data paths
@@ -220,12 +218,12 @@ def test_airport_reconciliation():
         service = AirportReconciliationService(
             openaip_client=openaip_client,
             aviation_weather_client=aviation_weather_client,
-            gifts_data_path=gifts_data_path
+            gifts_data_path=gifts_data_path,
         )
 
         # Test 4.1: Reconcile major airports
         print("\n4.1. Testing airport reconciliation...")
-        test_icaos = ['KDCA', 'KJFK', 'KLAX', 'LFPG', 'EGLL']
+        test_icaos = ["KDCA", "KJFK", "KLAX", "LFPG", "EGLL"]
 
         for icao in test_icaos:
             reconciled = service.get_airport(icao)
@@ -233,10 +231,13 @@ def test_airport_reconciliation():
                 print(f"\n   ✓ {icao}: {reconciled.name}")
                 print(f"      Sources: {', '.join(reconciled.sources)}")
                 print(f"      Primary: {reconciled.primary_source}")
-                print(f"      Coords: ({reconciled.latitude:.4f}, {reconciled.longitude:.4f}) "
-                      f"[confidence: {reconciled.coordinate_confidence:.2f}]")
-                print(f"      Elevation: {reconciled.elevation:.0f}m "
-                      f"[confidence: {reconciled.elevation_confidence:.2f}]")
+                print(
+                    f"      Coords: ({reconciled.latitude:.4f}, {reconciled.longitude:.4f}) "
+                    f"[confidence: {reconciled.coordinate_confidence:.2f}]"
+                )
+                print(
+                    f"      Elevation: {reconciled.elevation:.0f}m [confidence: {reconciled.elevation_confidence:.2f}]"
+                )
 
                 if reconciled.has_conflicts():
                     print(f"      ⚠ {len(reconciled.conflicts)} conflicts detected:")
@@ -257,14 +258,15 @@ def test_airport_reconciliation():
     except Exception as e:
         print(f"   ✗ Failed: {e}")
         import traceback
+
         traceback.print_exc()
 
 
 def main():
     """Run all Sprint 1 tests."""
-    print("\n" + "#"*70)
+    print("\n" + "#" * 70)
     print("# SPRINT 1: Data Integration - Component Testing")
-    print("#"*70)
+    print("#" * 70)
 
     # Test each component
     test_aviation_weather_enhancements()
@@ -272,10 +274,10 @@ def main():
     test_wmo_codelists_client()
     test_airport_reconciliation()
 
-    print("\n" + "#"*70)
+    print("\n" + "#" * 70)
     print("# Sprint 1 Testing Complete")
-    print("#"*70 + "\n")
+    print("#" * 70 + "\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -8,6 +8,7 @@
 # Contact Info: Mark.Oberfield@noaa.gov
 #
 import os
+
 # -----------------------------------------------------------------------------------
 #
 # If this centre or office is performing bulk TAC->XML translations, or TAC->XML
@@ -22,14 +23,14 @@ TRANSLATOR = True
 #
 # The full name and identifier of translation centre running this software
 # These values are set for NOAA MDL Translation Centre
-TranslationCentreName = 'NOAA Meteorological Development Laboratory'
-TranslationCentreDesignator = 'NOAA-MDL'
+TranslationCentreName = "NOAA Meteorological Development Laboratory"
+TranslationCentreDesignator = "NOAA-MDL"
 #
 # -----------------------------------------------------------------------------------
 # IWXXM release name
 # Default version (can be overridden dynamically)
-_iwxxm = '2025-2'
-_release = '2025-2'
+_iwxxm = "2025-2"
+_release = "2025-2"
 
 # Version can be set dynamically via set_iwxxm_version()
 IWXXM_VERSION = _iwxxm
@@ -38,58 +39,58 @@ IWXXM_VERSION = _iwxxm
 def set_iwxxm_version(version):
     """
     Set the IWXXM version dynamically.
-    
+
     Args:
         version (str): IWXXM version string (e.g., '2025-2', '2023-1', '2021-2')
     """
     global IWXXM_VERSION, IWXXM_URI, IWXXM_URL
     version = str(version).strip()
     IWXXM_VERSION = version
-    IWXXM_URI = 'http://icao.int/iwxxm/%s' % version
-    IWXXM_URL = 'https://schemas.wmo.int/iwxxm/%s/iwxxm.xsd' % version
+    IWXXM_URI = "http://icao.int/iwxxm/%s" % version
+    IWXXM_URL = "https://schemas.wmo.int/iwxxm/%s/iwxxm.xsd" % version
 
 
 # Initialize with default version
-IWXXM_URI = 'http://icao.int/iwxxm/%s' % _iwxxm
-IWXXM_URL = 'https://schemas.wmo.int/iwxxm/%s/iwxxm.xsd' % _release
+IWXXM_URI = "http://icao.int/iwxxm/%s" % _iwxxm
+IWXXM_URL = "https://schemas.wmo.int/iwxxm/%s/iwxxm.xsd" % _release
 #
 # Path to file containing codes obtained from WMO Code Registry in RDF/XML format.
 #
-CodesFilePath = os.path.join(os.path.dirname(__file__), '../data')
+CodesFilePath = os.path.join(os.path.dirname(__file__), "../data")
 #
 # To support Annex 3 code forms, the following Containers from the WMO Code Registry
 # site were downloaded into the CodesFilePath directory in RDF format.
 #
 # These are needed for the IWXXM Encoders
 #
-CLDAMTS = 'CloudAmountReportedAtAerodrome'
-CVCTNCLDS = 'SigConvectiveCloudType'
-NIL = 'nil'
-RECENTWX = 'AerodromeRecentWeather'
-RWYDEPST = '0-20-086'
-RWYCNTMS = '0-20-087'
-RWYFRCTN = '0-20-089'
-SEACNDS = '0-22-061'
-SWX_PHENOMENA = 'SpaceWxPhenomena'
-SWX_LOCATION = 'SpaceWxLocation'
-WEATHER = 'AerodromePresentOrForecastWeather'
+CLDAMTS = "CloudAmountReportedAtAerodrome"
+CVCTNCLDS = "SigConvectiveCloudType"
+NIL = "nil"
+RECENTWX = "AerodromeRecentWeather"
+RWYDEPST = "0-20-086"
+RWYCNTMS = "0-20-087"
+RWYFRCTN = "0-20-089"
+SEACNDS = "0-22-061"
+SWX_PHENOMENA = "SpaceWxPhenomena"
+SWX_LOCATION = "SpaceWxLocation"
+WEATHER = "AerodromePresentOrForecastWeather"
 #
 # NIL reason values
-MSSG = 'missing'
-NA = 'inapplicable'
-NOAUTODEC = 'notDetectedByAutoSystem'
-NOOBSV = 'notObservable'
-NOOPRSIG = 'nothingOfOperationalSignificance'
-NOSIGC = 'noSignificantChange'
-UNKNWN = 'unknown'
-WTHLD = 'withheld'
+MSSG = "missing"
+NA = "inapplicable"
+NOAUTODEC = "notDetectedByAutoSystem"
+NOOBSV = "notObservable"
+NOOPRSIG = "nothingOfOperationalSignificance"
+NOSIGC = "noSignificantChange"
+UNKNWN = "unknown"
+WTHLD = "withheld"
 #
 # Coordinate Reference System used for all IWXXM messages. axisLabels and srsDimension
 # must be consistent with CRS specified with srsName.  Do not change.
 #
-srsName = 'http://www.opengis.net/def/crs/EPSG/0/4326'
-axisLabels = 'Lat Long'
-srsDimension = '2'
+srsName = "http://www.opengis.net/def/crs/EPSG/0/4326"
+axisLabels = "Lat Long"
+srsDimension = "2"
 #
 # METAR/SPECI and TAF variables
 # ---------------------------------------------------------------------------------------------
@@ -103,14 +104,14 @@ useElevation = True
 #
 # 'OTHER:(\w|_){1,58}'
 #
-verticalDatum = 'EGM_96'
+verticalDatum = "EGM_96"
 #
 # Elevation value unit of measure (UOM). Either 'FT' or 'M' or string matching the
 # regular expression pattern:
 #
 # 'OTHER:(\w|_){1,58}'
 #
-elevationUOM = 'M'
+elevationUOM = "M"
 #
 # xlink:title attributes are optional in IWXXM XML documents. TITLES variable below
 # determines whether they are displayed in TAF, METAR and SPECI reports
@@ -130,17 +131,22 @@ TITLES = 0
 # If xlink:titles are to appear in the document, set preferred language. English, 'en',
 # is the default if the desired language is not found in the WMO Code Registry.
 #
-PreferredLanguageForTitles = 'en'
+PreferredLanguageForTitles = "en"
 #
 # Variables affecting METAR/SPECI Runway conditions. Depreciated, but keep for now.
 #
-NIL_SNOCLO_URL = 'http://codes.wmo.int/bufr4/codeflag/0-20-085/1'
+NIL_SNOCLO_URL = "http://codes.wmo.int/bufr4/codeflag/0-20-085/1"
 RunwayDeposit = 1 << 4
 AffectedRunwayCoverage = 1 << 5
 RunwayFriction = 1 << 6
-RunwayFrictionValues = {'91': 'Braking action poor', '92': 'Braking action medium to poor',
-                        '93': 'Braking action medium', '94': 'Braking action medium to good',
-                        '95': 'Braking action good', '99': 'Unreliable'}
+RunwayFrictionValues = {
+    "91": "Braking action poor",
+    "92": "Braking action medium to poor",
+    "93": "Braking action medium",
+    "94": "Braking action medium to good",
+    "95": "Braking action good",
+    "99": "Unreliable",
+}
 #
 # If prevailing horizontal visibility falls below this value (metres), RVR information
 # should be supplied
@@ -178,15 +184,15 @@ emitImpliedCAVOKConditionMessage = True  # Only effective when noImpliedCAVOKCon
 #
 # Macros that match the WMO Code Registry "Space Wx Location" container for day and night
 # coverage
-DAYSIDE = 'DAYSIDE'
-NIGHTSIDE = 'NIGHTSIDE'
+DAYSIDE = "DAYSIDE"
+NIGHTSIDE = "NIGHTSIDE"
 #
 # The distance to the Earth's day/night termination line from the solar sub-point. It is
 # approximately one-quarter of the Earth's circumference
-TERMINATOR_RADIUS = '10018'
+TERMINATOR_RADIUS = "10018"
 #
 # TERMINATOR_UOM, only '[mi_i]' or 'km' is used
-TERMINATOR_UOM = 'km'
+TERMINATOR_UOM = "km"
 #
 # Set DAY or NIGHT SIDE polygon points at roughly INCR degree spacing. Do not go below one
 # degree.

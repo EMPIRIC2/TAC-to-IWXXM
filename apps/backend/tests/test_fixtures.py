@@ -35,6 +35,7 @@ os.environ["ENABLE_STATISTICS"] = "false"
 # Authentication Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def client():
     """Create test client with mocked regular user authentication.
@@ -44,6 +45,7 @@ def client():
     - Role: user
     - Audience: test-project
     """
+
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project", "role": "user"}
 
@@ -62,6 +64,7 @@ def admin_client():
     - Role: admin
     - Audience: test-project
     """
+
     async def override_verify_token_admin():
         return {"sub": "admin-user-id", "aud": "test-project", "role": "admin"}
 
@@ -96,6 +99,7 @@ def user_client(client):
 # Live API Testing Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 async def live_api_client():
     """Create httpx AsyncClient for live API testing.
@@ -119,10 +123,7 @@ async def live_api_client():
         headers["Authorization"] = f"Bearer {live_api_token}"
 
     async with httpx.AsyncClient(
-        base_url=live_api_url,
-        headers=headers,
-        timeout=timeout,
-        follow_redirects=True
+        base_url=live_api_url, headers=headers, timeout=timeout, follow_redirects=True
     ) as client:
         yield client
 
@@ -130,6 +131,7 @@ async def live_api_client():
 # ============================================================================
 # Mock Service Fixtures
 # ============================================================================
+
 
 @pytest.fixture
 def mock_supabase_client():
@@ -144,7 +146,7 @@ def mock_supabase_client():
                 raise_for_status=MagicMock()
             )
     """
-    with patch('src.routers.evaluation.get_supabase_client') as mock:
+    with patch("src.routers.evaluation.get_supabase_client") as mock:
         mock_client = AsyncMock()
         mock.return_value.__aenter__.return_value = mock_client
         yield mock_client
@@ -160,7 +162,7 @@ def mock_statistics_service():
         def test_something(mock_statistics_service):
             mock_statistics_service.get_statistics.return_value = {...}
     """
-    with patch('src.routers.icao_opmet.statistics_service') as mock:
+    with patch("src.routers.icao_opmet.statistics_service") as mock:
         yield mock
 
 
@@ -176,7 +178,7 @@ def mock_aviation_weather_client():
                 "KJFK": ("METAR...", "<iwxxm>...</iwxxm>")
             }
     """
-    with patch('src.clients.aviation_weather_client.AviationWeatherClient') as mock_class:
+    with patch("src.clients.aviation_weather_client.AviationWeatherClient") as mock_class:
         mock_client = AsyncMock()
         mock_class.return_value.__aenter__.return_value = mock_client
         yield mock_client
@@ -188,7 +190,7 @@ def mock_validation_orchestrator():
 
     Returns a mock ValidationOrchestrator with configurable responses.
     """
-    with patch('src.services.validation_orchestrator.get_validation_orchestrator') as mock:
+    with patch("src.services.validation_orchestrator.get_validation_orchestrator") as mock:
         mock_orchestrator = MagicMock()
         mock.return_value = mock_orchestrator
         yield mock_orchestrator
@@ -197,6 +199,7 @@ def mock_validation_orchestrator():
 # ============================================================================
 # Database Fixtures (for E2E tests)
 # ============================================================================
+
 
 @pytest.fixture
 async def test_database_engine():
@@ -227,6 +230,7 @@ async def test_database_engine():
 # ============================================================================
 # Sample Data Fixtures
 # ============================================================================
+
 
 @pytest.fixture
 def sample_metars() -> Dict[str, str]:
@@ -298,6 +302,7 @@ def sample_station_ids() -> List[str]:
 # Configuration Fixtures
 # ============================================================================
 
+
 @pytest.fixture(autouse=True)
 def test_environment():
     """Set up test environment variables.
@@ -340,6 +345,7 @@ def disable_auth():
 # Performance Testing Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def performance_timer():
     """Timer fixture for performance testing.
@@ -379,6 +385,7 @@ def performance_timer():
 # Conditional Skip Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def skip_if_no_live_api():
     """Skip test if live API is not configured.
@@ -409,12 +416,9 @@ def skip_if_no_database():
 # Pytest Configuration
 # ============================================================================
 
+
 def pytest_configure(config):
     """Register custom markers."""
-    config.addinivalue_line(
-        "markers", "smoke: Quick smoke tests for CI/CD"
-    )
-    config.addinivalue_line(
-        "markers", "e2e: End-to-end tests requiring real services"
-    )
+    config.addinivalue_line("markers", "smoke: Quick smoke tests for CI/CD")
+    config.addinivalue_line("markers", "e2e: End-to-end tests requiring real services")
     # live_api marker already registered in conftest.py

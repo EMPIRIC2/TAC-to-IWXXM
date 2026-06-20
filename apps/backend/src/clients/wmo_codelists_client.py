@@ -2,6 +2,7 @@
 
 Extends existing CodeListParser with convenience methods and caching.
 """
+
 import json
 import logging
 from dataclasses import dataclass
@@ -11,6 +12,7 @@ from typing import Dict, List, Optional, Set
 
 try:
     import requests
+
     REQUESTS_AVAILABLE = True
 except ImportError:
     REQUESTS_AVAILABLE = False
@@ -42,7 +44,7 @@ class WMOCodelistCache:
     def __init__(
         self,
         cache_dir: Path,
-        ttl_seconds: int = 604800  # 1 week default
+        ttl_seconds: int = 604800,  # 1 week default
     ):
         """Initialize cache.
 
@@ -62,7 +64,7 @@ class WMOCodelistCache:
         """Load cache metadata from file."""
         if self._metadata_file.exists():
             try:
-                with open(self._metadata_file, 'r') as f:
+                with open(self._metadata_file, "r") as f:
                     data = json.load(f)
                     self._metadata = data
             except Exception as e:
@@ -72,7 +74,7 @@ class WMOCodelistCache:
     def _save_metadata(self) -> None:
         """Save cache metadata to file."""
         try:
-            with open(self._metadata_file, 'w') as f:
+            with open(self._metadata_file, "w") as f:
                 json.dump(self._metadata, f, indent=2)
         except Exception as e:
             logger.warning(f"Failed to save cache metadata: {e}")
@@ -100,7 +102,7 @@ class WMOCodelistCache:
             return None
 
         try:
-            with open(cache_file, 'r') as f:
+            with open(cache_file, "r") as f:
                 data = json.load(f)
                 return set(data.get("values", []))
         except Exception as e:
@@ -117,18 +119,15 @@ class WMOCodelistCache:
         # Save values to file
         cache_file = self.cache_dir / f"{codelist_name}.json"
         try:
-            with open(cache_file, 'w') as f:
-                json.dump({
-                    "codelist": codelist_name,
-                    "values": sorted(values),
-                    "cached_at": datetime.now().isoformat()
-                }, f, indent=2)
+            with open(cache_file, "w") as f:
+                json.dump(
+                    {"codelist": codelist_name, "values": sorted(values), "cached_at": datetime.now().isoformat()},
+                    f,
+                    indent=2,
+                )
 
             # Update metadata
-            self._metadata[codelist_name] = {
-                "cached_at": datetime.now().isoformat(),
-                "count": len(values)
-            }
+            self._metadata[codelist_name] = {"cached_at": datetime.now().isoformat(), "count": len(values)}
             self._save_metadata()
 
         except Exception as e:
@@ -176,7 +175,7 @@ class WMOCodelistsClient:
         codelists_dir: Path,
         cache_dir: Optional[Path] = None,
         enable_online: bool = True,
-        registry_url: str = "https://codes.wmo.int"
+        registry_url: str = "https://codes.wmo.int",
     ):
         """Initialize WMO codelists client.
 
@@ -195,11 +194,7 @@ class WMOCodelistsClient:
             cache_dir = codelists_dir / "cache"
         self.cache = WMOCodelistCache(cache_dir)
 
-    def validate_weather_phenomenon(
-        self,
-        code: str,
-        codelist: str = "AerodromePresentOrForecastWeather"
-    ) -> bool:
+    def validate_weather_phenomenon(self, code: str, codelist: str = "AerodromePresentOrForecastWeather") -> bool:
         """Validate a weather phenomenon code.
 
         Args:
@@ -211,11 +206,7 @@ class WMOCodelistsClient:
         """
         return self._validate_code(codelist, code)
 
-    def validate_cloud_type(
-        self,
-        code: str,
-        codelist: str = "CloudType"
-    ) -> bool:
+    def validate_cloud_type(self, code: str, codelist: str = "CloudType") -> bool:
         """Validate a cloud type code.
 
         Args:
@@ -227,11 +218,7 @@ class WMOCodelistsClient:
         """
         return self._validate_code(codelist, code)
 
-    def validate_cloud_amount(
-        self,
-        code: str,
-        codelist: str = "CloudAmount"
-    ) -> bool:
+    def validate_cloud_amount(self, code: str, codelist: str = "CloudAmount") -> bool:
         """Validate a cloud amount code.
 
         Args:
@@ -243,11 +230,7 @@ class WMOCodelistsClient:
         """
         return self._validate_code(codelist, code)
 
-    def validate_visibility_type(
-        self,
-        code: str,
-        codelist: str = "MeasurementOrFactType"
-    ) -> bool:
+    def validate_visibility_type(self, code: str, codelist: str = "MeasurementOrFactType") -> bool:
         """Validate a visibility measurement type code.
 
         Args:
@@ -308,9 +291,7 @@ class WMOCodelistsClient:
         url = f"{self.registry_url}/49-2/{codelist_name}"
 
         try:
-            response = requests.get(url, timeout=10, headers={
-                "Accept": "application/rdf+xml"
-            })
+            response = requests.get(url, timeout=10, headers={"Accept": "application/rdf+xml"})
 
             if response.status_code == 200:
                 # Parse RDF response
@@ -319,15 +300,15 @@ class WMOCodelistsClient:
 
                 root = ET.fromstring(response.content)
                 namespaces = {
-                    'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-                    'skos': 'http://www.w3.org/2004/02/skos/core#',
+                    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
                 }
 
                 codes = set()
-                for concept in root.findall('.//skos:Concept', namespaces):
-                    about = concept.get('{%s}about' % namespaces['rdf'])
+                for concept in root.findall(".//skos:Concept", namespaces):
+                    about = concept.get("{%s}about" % namespaces["rdf"])
                     if about:
-                        code = about.split('/')[-1]
+                        code = about.split("/")[-1]
                         codes.add(code)
 
                 if codes:
@@ -355,20 +336,14 @@ class WMOCodelistsClient:
         local_codes = self.parser.get_codes(codelist_name)
         if local_codes:
             return WMOCodelistInfo(
-                name=codelist_name,
-                url=f"{self.registry_url}/49-2/{codelist_name}",
-                values=local_codes,
-                source="local"
+                name=codelist_name, url=f"{self.registry_url}/49-2/{codelist_name}", values=local_codes, source="local"
             )
 
         # Try cache
         cached_codes = self.cache.get(codelist_name)
         if cached_codes:
             return WMOCodelistInfo(
-                name=codelist_name,
-                url=f"{self.registry_url}/49-2/{codelist_name}",
-                values=cached_codes,
-                source="cache"
+                name=codelist_name, url=f"{self.registry_url}/49-2/{codelist_name}", values=cached_codes, source="cache"
             )
 
         # Try online
@@ -381,15 +356,11 @@ class WMOCodelistsClient:
                     url=f"{self.registry_url}/49-2/{codelist_name}",
                     values=online_codes,
                     last_updated=datetime.now(),
-                    source="online"
+                    source="online",
                 )
 
         # Not found
-        return WMOCodelistInfo(
-            name=codelist_name,
-            url=f"{self.registry_url}/49-2/{codelist_name}",
-            source="unknown"
-        )
+        return WMOCodelistInfo(name=codelist_name, url=f"{self.registry_url}/49-2/{codelist_name}", source="unknown")
 
     def list_available_codelists(self) -> List[str]:
         """List all available codelists (local and cached).
@@ -419,5 +390,5 @@ class WMOCodelistsClient:
             "cached_codelists": len(cached_lists),
             "total_unique": len(set(local_lists + cached_lists)),
             "online_enabled": self.enable_online,
-            "registry_url": self.registry_url
+            "registry_url": self.registry_url,
         }

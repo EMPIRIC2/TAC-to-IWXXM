@@ -122,10 +122,14 @@ async def test_analyze_breaking_changes_updates_metadata(tmp_path: Path, monkeyp
     analyzer = SimpleNamespace(analyze_xmi_versions=lambda *_args: report)
     poller.xmi_analyzer = analyzer
 
-    monkeypatch.setattr(iwxxm_versions, "SUPPORTED_VERSIONS", {
-        "2023-1": {"breaking_changes_from_prior": {}},
-        "2025-2": {"breaking_changes_from_prior": {}},
-    })
+    monkeypatch.setattr(
+        iwxxm_versions,
+        "SUPPORTED_VERSIONS",
+        {
+            "2023-1": {"breaking_changes_from_prior": {}},
+            "2025-2": {"breaking_changes_from_prior": {}},
+        },
+    )
 
     await poller._analyze_breaking_changes("2025-2")
 

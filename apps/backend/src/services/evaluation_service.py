@@ -1,4 +1,5 @@
 """Service for comparing IWXXM outputs."""
+
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from typing import Dict, List, Optional
@@ -7,6 +8,7 @@ from typing import Dict, List, Optional
 @dataclass
 class ComparisonResult:
     """Result of IWXXM comparison."""
+
     passed: bool
     our_elements: int
     their_elements: int
@@ -47,12 +49,7 @@ class EvaluationService:
         for child in list(elem):
             EvaluationService.strip_dynamic_attrs(child)
 
-    def compare_iwxxm(
-        self,
-        our_xml: str,
-        their_xml: str,
-        strict: bool = False
-    ) -> ComparisonResult:
+    def compare_iwxxm(self, our_xml: str, their_xml: str, strict: bool = False) -> ComparisonResult:
         """Compare two IWXXM XML documents.
 
         Args:
@@ -74,7 +71,7 @@ class EvaluationService:
                 missing_elements=[],
                 extra_elements=[],
                 value_mismatches=[],
-                error_message=f"XML parse error: {str(e)}"
+                error_message=f"XML parse error: {str(e)}",
             )
 
         # Strip dynamic attributes before comparison
@@ -97,11 +94,7 @@ class EvaluationService:
         value_mismatches = self._find_value_mismatches(our_tree, their_tree)
 
         # Determine pass/fail
-        passed = (
-            len(missing) == 0 and
-            len(extra) == 0 and
-            len(value_mismatches) == 0
-        )
+        passed = len(missing) == 0 and len(extra) == 0 and len(value_mismatches) == 0
 
         return ComparisonResult(
             passed=passed,
@@ -110,14 +103,10 @@ class EvaluationService:
             missing_elements=missing[:10],  # Limit to first 10
             extra_elements=extra[:10],
             value_mismatches=value_mismatches[:10],
-            error_message=None
+            error_message=None,
         )
 
-    def _collect_element_paths(
-        self,
-        root: ET.Element,
-        prefix: str = ""
-    ) -> List[str]:
+    def _collect_element_paths(self, root: ET.Element, prefix: str = "") -> List[str]:
         """Collect all element paths in the tree."""
         paths = []
         local_tag = self._local(root.tag)
@@ -130,10 +119,7 @@ class EvaluationService:
         return paths
 
     def _find_value_mismatches(
-        self,
-        our_tree: ET.Element,
-        their_tree: ET.Element,
-        path: str = ""
+        self, our_tree: ET.Element, their_tree: ET.Element, path: str = ""
     ) -> List[Dict[str, str]]:
         """Find value mismatches between trees."""
         mismatches = []
@@ -151,12 +137,14 @@ class EvaluationService:
         their_text = self._norm_text(their_tree.text)
 
         if our_text != their_text:
-            mismatches.append({
-                "path": current_path,
-                "our_value": our_text[:100],  # Truncate
-                "their_value": their_text[:100],
-                "type": "text"
-            })
+            mismatches.append(
+                {
+                    "path": current_path,
+                    "our_value": our_text[:100],  # Truncate
+                    "their_value": their_text[:100],
+                    "type": "text",
+                }
+            )
 
         # Compare matching children
         our_children = list(our_tree)
@@ -164,11 +152,7 @@ class EvaluationService:
 
         min_children = min(len(our_children), len(their_children))
         for i in range(min_children):
-            child_mismatches = self._find_value_mismatches(
-                our_children[i],
-                their_children[i],
-                current_path
-            )
+            child_mismatches = self._find_value_mismatches(our_children[i], their_children[i], current_path)
             mismatches.extend(child_mismatches)
 
         return mismatches

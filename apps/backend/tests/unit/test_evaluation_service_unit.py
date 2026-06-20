@@ -23,6 +23,7 @@ def test_strip_dynamic_attrs_removes_ids_and_schema_location():
     """
 
     import xml.etree.ElementTree as ET
+
     elem = ET.fromstring(xml)
     service.strip_dynamic_attrs(elem)
 

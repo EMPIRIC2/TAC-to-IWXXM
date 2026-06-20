@@ -18,4 +18,5 @@ def init_db():
     _ensure_models_imported()
     Base.metadata.create_all(bind=engine)
 
+
 __all__ = getattr(_database, "__all__", [])

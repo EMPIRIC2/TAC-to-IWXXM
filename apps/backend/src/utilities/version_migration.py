@@ -25,12 +25,7 @@ class VersionMigrationWarning:
 
     def to_dict(self) -> Dict:
         """Convert to dictionary for API response."""
-        return {
-            "element": self.element,
-            "xpath": self.xpath,
-            "action": self.action,
-            "reason": self.reason
-        }
+        return {"element": self.element, "xpath": self.xpath, "action": self.action, "reason": self.reason}
 
 
 class VersionMigrator:
@@ -44,17 +39,12 @@ class VersionMigrator:
     def __init__(self):
         self.warnings: List[VersionMigrationWarning] = []
         self.xml_namespaces = {
-            'iwxxm': 'http://icao.int/iwxxm',
-            'gml': 'http://www.opengis.net/gml/3.2',
-            'aixm': 'http://www.aixm.aero/schema/5.1.1'
+            "iwxxm": "http://icao.int/iwxxm",
+            "gml": "http://www.opengis.net/gml/3.2",
+            "aixm": "http://www.aixm.aero/schema/5.1.1",
         }
 
-    def migrate(
-        self,
-        xml_content: str,
-        from_version: str,
-        to_version: str
-    ) -> Tuple[str, List[Dict]]:
+    def migrate(self, xml_content: str, from_version: str, to_version: str) -> Tuple[str, List[Dict]]:
         """
         Migrate IWXXM XML from one version to another.
 
@@ -101,9 +91,7 @@ class VersionMigrator:
         # Return with warnings
         warnings_list = [w.to_dict() for w in self.warnings]
 
-        logger.info(
-            f"Migration complete. {len(warnings_list)} breaking changes handled."
-        )
+        logger.info(f"Migration complete. {len(warnings_list)} breaking changes handled.")
 
         return migrated_xml, warnings_list
 
@@ -129,16 +117,9 @@ class VersionMigrator:
             removed_count = self._remove_elements_by_tag(root, element_name)
 
             if removed_count > 0:
-                warning = VersionMigrationWarning(
-                    element=element_name,
-                    xpath=xpath,
-                    action="remove",
-                    reason=reason
-                )
+                warning = VersionMigrationWarning(element=element_name, xpath=xpath, action="remove", reason=reason)
                 self.warnings.append(warning)
-                logger.warning(
-                    f"Removed {removed_count} instance(s) of {element_name}: {reason}"
-                )
+                logger.warning(f"Removed {removed_count} instance(s) of {element_name}: {reason}")
         except Exception as e:
             logger.error(f"Error removing {element_name}: {e}")
 
@@ -158,8 +139,8 @@ class VersionMigrator:
         removed = 0
 
         # Extract prefix and local name
-        if ':' in tag:
-            prefix, localname = tag.split(':', 1)
+        if ":" in tag:
+            prefix, localname = tag.split(":", 1)
         else:
             localname = tag
 
@@ -189,8 +170,8 @@ class VersionMigrator:
             True if tag matches
         """
         # ElementTree represents namespaced tags as {namespace}localname
-        if '}' in full_tag:
-            return full_tag.split('}', 1)[1] == localname
+        if "}" in full_tag:
+            return full_tag.split("}", 1)[1] == localname
         else:
             return full_tag == localname
 
@@ -207,11 +188,7 @@ def get_migrator() -> VersionMigrator:
     return _migrator_instance
 
 
-def migrate_xml(
-    xml_content: str,
-    from_version: str,
-    to_version: str
-) -> Tuple[str, List[Dict]]:
+def migrate_xml(xml_content: str, from_version: str, to_version: str) -> Tuple[str, List[Dict]]:
     """
     Migrate IWXXM XML from one version to another.
 

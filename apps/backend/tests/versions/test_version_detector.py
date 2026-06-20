@@ -57,9 +57,9 @@ class TestVersionDetector:
 
         if tags:
             # Tags should start with 'v'
-            assert all(tag.startswith('v') for tag in tags)
+            assert all(tag.startswith("v") for tag in tags)
             # Tags should contain version pattern (YYYY-N)
-            assert all('-' in tag for tag in tags)
+            assert all("-" in tag for tag in tags)
 
     @pytest.mark.integration
     def test_detect_versions(self):

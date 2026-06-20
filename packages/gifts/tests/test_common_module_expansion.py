@@ -9,6 +9,7 @@ class TestTPGParserCore:
         """Test TPG parser module can be imported"""
         try:
             from gifts.common import tpg
+
             assert tpg is not None
         except ImportError:
             assert True  # Module may not be directly importable
@@ -57,6 +58,7 @@ class TestXMLUtilities:
     def test_xml_element_creation(self):
         """Test creating XML elements"""
         from lxml import etree
+
         elem = etree.Element("test")
         assert elem is not None
         assert elem.tag == "test"
@@ -64,6 +66,7 @@ class TestXMLUtilities:
     def test_xml_text_content(self):
         """Test setting XML text content"""
         from lxml import etree
+
         elem = etree.Element("value")
         elem.text = "test content"
         assert elem.text == "test content"
@@ -71,6 +74,7 @@ class TestXMLUtilities:
     def test_xml_attributes(self):
         """Test setting XML attributes"""
         from lxml import etree
+
         elem = etree.Element("element")
         elem.set("attr", "value")
         assert elem.get("attr") == "value"
@@ -78,6 +82,7 @@ class TestXMLUtilities:
     def test_xml_namespace_handling(self):
         """Test XML namespace handling"""
         from lxml import etree
+
         nsmap = {"ns": "http://example.com"}
         elem = etree.Element("{http://example.com}elem", nsmap=nsmap)
         assert "ns" in elem.nsmap.values() or "http://example.com" in elem.nsmap.values()
@@ -89,15 +94,17 @@ class TestEncoderUtilities:
     def test_encoder_initialization(self):
         """Test Encoder initialization"""
         from gifts.common.Encoder import Encoder
+
         encoder = Encoder()
         assert encoder is not None
 
     def test_common_encoder_methods(self):
         """Test common encoder methods"""
         from gifts.common.Encoder import Encoder
+
         encoder = Encoder()
         # Test that encoder has expected methods
-        assert hasattr(encoder, 'encode') or hasattr(encoder, '__init__')
+        assert hasattr(encoder, "encode") or hasattr(encoder, "__init__")
 
 
 class TestCommonFunctions:

@@ -5,6 +5,7 @@ Test and initialize OpenAIP integration.
 This script validates that the OpenAIP service and related components
 can be imported and initialized correctly.
 """
+
 import sys
 from pathlib import Path
 
@@ -12,22 +13,26 @@ from pathlib import Path
 backend_dir = Path(__file__).parent / "backend"
 sys.path.insert(0, str(backend_dir / "src"))
 
+
 def test_imports():
     """Test that all new modules can be imported."""
     print("\n=== Testing Imports ===")
 
     # Test OpenAIPService import
     from services.openaip_service import OpenAIPService
+
     print("✓ OpenAIPService imported OK")
     assert OpenAIPService is not None
 
     # Test AirportRecordBuilder import
     from utilities.airport_record_builder import AirportRecordBuilder
+
     print("✓ AirportRecordBuilder imported OK")
     assert AirportRecordBuilder is not None
 
     # Test GiftsLocationDBAdapter import
     from utilities.gifts_locationdb_adapter import GiftsLocationDBAdapter
+
     print("✓ GiftsLocationDBAdapter imported OK")
     assert GiftsLocationDBAdapter is not None
 

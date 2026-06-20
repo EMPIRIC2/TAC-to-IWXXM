@@ -14,14 +14,16 @@ from src.schemas.validation import (
 
 
 def _aggregated_result(*, passed: bool, layer: ValidationLayer, execution_time_ms: float) -> AggregatedValidationResult:
-    return AggregatedValidationResult.from_results([
-        ValidationResult(
-            passed=passed,
-            layer=layer,
-            issues=[],
-            execution_time_ms=execution_time_ms,
-        )
-    ])
+    return AggregatedValidationResult.from_results(
+        [
+            ValidationResult(
+                passed=passed,
+                layer=layer,
+                issues=[],
+                execution_time_ms=execution_time_ms,
+            )
+        ]
+    )
 
 
 class TestGetValidationService:

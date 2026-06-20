@@ -133,7 +133,7 @@ class AggregatedValidationResult(BaseModel):
                     },
                 ],
                 "execution_time_ms": 13.5,
-                "validated_at": "2026-02-10T14:30:45.123456"
+                "validated_at": "2026-02-10T14:30:45.123456",
             }
         }
     )
@@ -202,22 +202,13 @@ class ValidationRequest(BaseModel):
         ...,
         description="Content to validate (METAR TAC or IWXXM XML)",
         min_length=1,
-        examples=["METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2"]
+        examples=["METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2"],
     )
     content_type: str = Field(
-        "tac",
-        description="Content type: 'tac' (METAR TAC) or 'xml' (IWXXM XML)",
-        examples=["tac", "xml"]
+        "tac", description="Content type: 'tac' (METAR TAC) or 'xml' (IWXXM XML)", examples=["tac", "xml"]
     )
-    layers: Optional[List[ValidationLayer]] = Field(
-        None,
-        description="Specific layers to validate (None = all layers)"
-    )
-    iwxxm_version: Optional[str] = Field(
-        None,
-        description="IWXXM version for validation context",
-        examples=["3.0.1"]
-    )
+    layers: Optional[List[ValidationLayer]] = Field(None, description="Specific layers to validate (None = all layers)")
+    iwxxm_version: Optional[str] = Field(None, description="IWXXM version for validation context", examples=["3.0.1"])
 
 
 class ValidateRequest(BaseModel):
@@ -229,7 +220,7 @@ class ValidateRequest(BaseModel):
                 "iwxxm_xml": "<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>",
                 "version": "2025-2",
                 "validation_level": "comprehensive",
-                "stop_on_error": False
+                "stop_on_error": False,
             }
         }
     )
@@ -238,20 +229,14 @@ class ValidateRequest(BaseModel):
         ...,
         description="IWXXM XML content to validate",
         min_length=1,
-        examples=["<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>"]
+        examples=["<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>"],
     )
     version: str = Field(
-        default="2025-2",
-        description="Target IWXXM version",
-        pattern=r"^\d{4}-\d+$",
-        examples=["2025-2", "2023-1"]
+        default="2025-2", description="Target IWXXM version", pattern=r"^\d{4}-\d+$", examples=["2025-2", "2023-1"]
     )
     validation_level: Optional[str] = Field(
         default="comprehensive",
         description="Validation depth: 'basic', 'schema', 'schematron', 'icao_opmet', 'comprehensive'",
-        examples=["basic", "comprehensive"]
+        examples=["basic", "comprehensive"],
     )
-    stop_on_error: bool = Field(
-        default=False,
-        description="Stop processing on first error"
-    )
+    stop_on_error: bool = Field(default=False, description="Stop processing on first error")

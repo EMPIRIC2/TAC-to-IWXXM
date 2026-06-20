@@ -18,7 +18,6 @@ import gifts
 
 
 class Daemon(object):
-
     def daemonize(self):
         """Create a daemon using UNIX double fork mechanism."""
 
@@ -29,10 +28,10 @@ class Daemon(object):
                 raise SystemExit(0)
 
         except OSError as err:
-            raise SystemExit(f'os.fork() call #1 failed: {str(err)}\n')
+            raise SystemExit(f"os.fork() call #1 failed: {str(err)}\n")
 
         # decouple from parent environment
-        os.chdir('/')
+        os.chdir("/")
         os.setsid()
         os.umask(0)
 
@@ -44,14 +43,14 @@ class Daemon(object):
                 raise SystemExit(0)
 
         except OSError as err:
-            raise SystemExit(f'os.fork() call #2 failed: {str(err)}\n')
+            raise SystemExit(f"os.fork() call #2 failed: {str(err)}\n")
 
         # redirect standard file descriptors
         sys.stdout.flush()
         sys.stderr.flush()
-        si = open(os.devnull, 'r')
-        so = open(os.devnull, 'a+')
-        se = open(os.devnull, 'a+')
+        si = open(os.devnull, "r")
+        so = open(os.devnull, "a+")
+        se = open(os.devnull, "a+")
 
         os.dup2(si.fileno(), sys.stdin.fileno())
         os.dup2(so.fileno(), sys.stdout.fileno())
@@ -71,11 +70,11 @@ class DOWFileHandler(logging.FileHandler):
 
         self.basename = os.path.join(directory, basename)
         self.__checkFileTime()
-        super(DOWFileHandler, self).__init__(self.baseFilename, mode='a', delay=True)
+        super(DOWFileHandler, self).__init__(self.baseFilename, mode="a", delay=True)
 
     def __checkFileTime(self):
 
-        self.baseFilename = '%s_%s' % (self.basename, time.strftime('%a'))
+        self.baseFilename = "%s_%s" % (self.basename, time.strftime("%a"))
         try:
             if time.time() - os.path.getmtime(self.baseFilename) > 86400:  # more than 1 day
                 os.unlink(self.baseFilename)
@@ -84,16 +83,16 @@ class DOWFileHandler(logging.FileHandler):
 
     def doRollover(self):
 
-        self.stream.write('Switching to new log file.\n')
+        self.stream.write("Switching to new log file.\n")
         self.stream.close()
         self.__checkFileTime()
-        self.stream = open(self.baseFilename, 'a')
-        self.stream.write(time.strftime('Log rollover at %Y-%m-%d %H:%M:%S\n'))
+        self.stream = open(self.baseFilename, "a")
+        self.stream.write(time.strftime("Log rollover at %Y-%m-%d %H:%M:%S\n"))
 
     def emit(self, record):
         #
         # If the day of the week has changed since last emit...
-        if time.strftime('%a') != self.baseFilename[-3:]:
+        if time.strftime("%a") != self.baseFilename[-3:]:
             self.doRollover()
 
         logging.FileHandler.emit(self, record)
@@ -114,11 +113,12 @@ class Dispatcher(FileSystemEventHandler):
         self.outputDirectory = outputDirectory
 
         if self.header:
-            self.ext = 'txt'
+            self.ext = "txt"
         else:
-            self.ext = 'xml'
+            self.ext = "xml"
 
         self.ticks = 0
+
     #
     # If you find that the daemon misses incoming TAC files, consider changing this function name from 'on_closed' to
     # 'on_modified'.
@@ -131,36 +131,36 @@ class Dispatcher(FileSystemEventHandler):
             try:
                 #
                 # Read the file contents
-                fh = open(event.src_path, 'r')
+                fh = open(event.src_path, "r")
                 tac = fh.read()
                 fh.close()
-                self.logger.debug(f'Read the file: {event.src_path}')
+                self.logger.debug(f"Read the file: {event.src_path}")
 
             except IOError:
-                self.logger.error(f'Unable to read the file: {event.src_path}')
-                tac = ''
+                self.logger.error(f"Unable to read the file: {event.src_path}")
+                tac = ""
             #
             # Delete the file if requested
             if self.delete_flag:
                 try:
                     os.unlink(event.src_path)
-                    self.logger.debug(f'Deleted the file: {event.src_path}')
+                    self.logger.debug(f"Deleted the file: {event.src_path}")
 
                 except IOError:
-                    self.logger.error(f'Unable to delete the file: {event.src_path}')
+                    self.logger.error(f"Unable to delete the file: {event.src_path}")
             #
             # Create the IWXXM form
             try:
                 bulletin = self.encoder.encode(tac)
                 iwxxm_msg_cnt = len(bulletin)
                 if iwxxm_msg_cnt:
-                    self.logger.info(f'{iwxxm_msg_cnt} IWXXM documents generated from file {event.src_path} contents')
+                    self.logger.info(f"{iwxxm_msg_cnt} IWXXM documents generated from file {event.src_path} contents")
                     bulletin.write(self.outputDirectory, header=self.header)
 
                 del bulletin
 
             except Exception:
-                self.logger.exception(f'Unable to convert TAC {event.src_path} to IWXXM. Reason:\n')
+                self.logger.exception(f"Unable to convert TAC {event.src_path} to IWXXM. Reason:\n")
 
 
 class Monitor(Daemon):
@@ -174,16 +174,14 @@ class Monitor(Daemon):
         #
         # Don't write files into the input directory
         if os.path.realpath(inputDirectory) == os.path.realpath(outputDirectory):
-            raise SystemExit('Input and output directories should be different')
+            raise SystemExit("Input and output directories should be different")
         #
         # Check to make sure the monitor can read these directories and modify their contents
-        if not os.path.exists(inputDirectory) or not os.path.isdir(inputDirectory) or \
-           not os.access(inputDirectory, (os.R_OK | os.W_OK | os.X_OK)):
-            raise SystemExit(f'{inputDirectory} does not exist or unable to modify its contents')
+        if not os.path.exists(inputDirectory) or not os.path.isdir(inputDirectory) or not os.access(inputDirectory, (os.R_OK | os.W_OK | os.X_OK)):
+            raise SystemExit(f"{inputDirectory} does not exist or unable to modify its contents")
 
-        if not os.path.exists(outputDirectory) or not os.path.isdir(outputDirectory) or \
-           not os.access(outputDirectory, (os.W_OK | os.X_OK)):
-            raise SystemExit(f'{outputDirectory} does not exist or unable to write to it')
+        if not os.path.exists(outputDirectory) or not os.path.isdir(outputDirectory) or not os.access(outputDirectory, (os.W_OK | os.X_OK)):
+            raise SystemExit(f"{outputDirectory} does not exist or unable to write to it")
         #
         # Set up the dispatcher to generate and write the IWXXM product
         self.dispatcher = Dispatcher(encoder, delete_flag, header, outputDirectory)
@@ -202,28 +200,26 @@ class Monitor(Daemon):
 
     def run(self):
 
-        self.logger.info(f'Begin monitoring {self.inputDirectory}. . .')
+        self.logger.info(f"Begin monitoring {self.inputDirectory}. . .")
         self.observer.start()
         #
         # Begin watch . . .
         while True:
-
             time.sleep(0.1)
             self.dispatcher.ticks += 1
             #
             # After a period of no activity by the observer, check it . . .
             if self.dispatcher.ticks >= 600:
-
                 self.dispatcher.ticks = 0
                 if not self.observer.is_alive():
                     #
                     # If observer is no longer alive, spawn a new one
                     try:
-                        self.logger.debug('Current observer is no longer responding to incoming files.')
+                        self.logger.debug("Current observer is no longer responding to incoming files.")
                         self.observer.stop()
                         self.observer.join()
 
-                        self.logger.debug('Creating new observer . . .')
+                        self.logger.debug("Creating new observer . . .")
                         self.observer = Observer()
                         self.observer.schedule(self.dispatcher, self.inputDirectory, recursive=False)
                         self.observer.start()
@@ -234,107 +230,91 @@ class Monitor(Daemon):
     def toggleLoggingLevel(self, signum, frame):
 
         self.logger.setLevel(logging.DEBUG if self.logger.getEffectiveLevel() == logging.INFO else logging.INFO)
-        self.logger.info(f'Changing logging level to {self.logger.getEffectiveLevel()}')
+        self.logger.info(f"Changing logging level to {self.logger.getEffectiveLevel()}")
 
     def shutdown(self, signum, frame):
 
-        self.logger.info(f'Shutdown in progress. Monitoring {self.inputDirectory} will be stopped')
+        self.logger.info(f"Shutdown in progress. Monitoring {self.inputDirectory} will be stopped")
         self.observer.stop()
         self.observer.join()
-        self.logger.info('Shutdown complete.')
+        self.logger.info("Shutdown complete.")
 
         raise SystemExit(0)
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     import configparser as cp
 
     try:
         settings = cp.ConfigParser()
         if len(settings.read(sys.argv[1])) == 0:
-            SystemExit('Unrecognized format in configuration file')
+            SystemExit("Unrecognized format in configuration file")
 
     except IndexError:
-        raise SystemExit('Error: configuration file is needed as first argument')
+        raise SystemExit("Error: configuration file is needed as first argument")
 
     except FileNotFoundError:
-        raise SystemExit(f'File not found: {sys.argv[1]}')
+        raise SystemExit(f"File not found: {sys.argv[1]}")
 
     except cp.ParsingError as err:
-        raise SystemExit(f'Error parsing {sys.argv[1]}: {str(err)}')
+        raise SystemExit(f"Error parsing {sys.argv[1]}: {str(err)}")
     #
     # Select the requested TAC-to-XML encoder
-    product = settings.get('internals', 'product')
+    product = settings.get("internals", "product")
     try:
-        classPtr = {'metar': gifts.METAR.Encoder,
-                    'taf': gifts.TAF.Encoder,
-                    'tca': gifts.TCA.Encoder,
-                    'vaa': gifts.VAA.Encoder,
-                    'swa': gifts.SWA.Encoder}.get(product)
+        classPtr = {
+            "metar": gifts.METAR.Encoder,
+            "taf": gifts.TAF.Encoder,
+            "tca": gifts.TCA.Encoder,
+            "vaa": gifts.VAA.Encoder,
+            "swa": gifts.SWA.Encoder,
+        }.get(product)
 
     except KeyError:
-        raise SystemExit(f'{product} is not one of: metar, taf, tca, vaa, swa')
+        raise SystemExit(f"{product} is not one of: metar, taf, tca, vaa, swa")
     #
     # For METAR/SPECI and TAF products, read in the external database. This code assumes
     # pickled dictionary here; change it if different.
-    if product in ['metar', 'taf']:
+    if product in ["metar", "taf"]:
         try:
-            database = settings.get('internals', 'geo_locations_file')
-            with open(database, 'rb') as fh:
+            database = settings.get("internals", "geo_locations_file")
+            with open(database, "rb") as fh:
                 WMO_ID_mappings = pickle.load(fh)
 
         except Exception as err:
             raise SystemExit(str(err))
     #
     # Create the TAC-to-XML encoding service
-    if product in ['metar', 'taf']:
+    if product in ["metar", "taf"]:
         encoder = classPtr(WMO_ID_mappings)
     else:
         encoder = classPtr()
     #
     # Configure logging
-    logfileDirectory = settings.get('directories', 'logs')
+    logfileDirectory = settings.get("directories", "logs")
     #
     # Check the directory for use
-    if not os.path.exists(logfileDirectory) or not os.path.isdir(logfileDirectory) or \
-       not os.access(logfileDirectory, (os.W_OK | os.X_OK)):
-        raise SystemExit(f'{logfileDirectory} does not exist or unable to write to it')
+    if not os.path.exists(logfileDirectory) or not os.path.isdir(logfileDirectory) or not os.access(logfileDirectory, (os.W_OK | os.X_OK)):
+        raise SystemExit(f"{logfileDirectory} does not exist or unable to write to it")
 
     logger = {
-        'version': 1,
-
-        'formatters': {
-            'default': {
-                'format': '%(asctime)s %(levelname)-5s %(process)5d %(module)s: %(message)s',
-                'style': '%',
-                'validate': True
-            },
+        "version": 1,
+        "formatters": {
+            "default": {"format": "%(asctime)s %(levelname)-5s %(process)5d %(module)s: %(message)s", "style": "%", "validate": True},
         },
-
-        'handlers': {
-            'file': {
-                'formatter': 'default',
-                '()': DOWFileHandler,
-                'directory': f'{logfileDirectory}',
-                'basename': f'{product}_iwxxmd'
-            },
+        "handlers": {
+            "file": {"formatter": "default", "()": DOWFileHandler, "directory": f"{logfileDirectory}", "basename": f"{product}_iwxxmd"},
         },
-
-        'root': {
-            'level': 'INFO',
-            'handlers': ['file']
-        }
+        "root": {"level": "INFO", "handlers": ["file"]},
     }
     logging.config.dictConfig(logger)
     #
     # Initialize the watchdog
     try:
-        delete_flag = settings.get('internals', 'delete_after_read') == 'true'
-        header = settings.get('internals', 'wmo_ahl_line') == 'true'
+        delete_flag = settings.get("internals", "delete_after_read") == "true"
+        header = settings.get("internals", "wmo_ahl_line") == "true"
 
-        watchdog = Monitor(encoder, delete_flag, header, settings.get('directories', 'input'),
-                           settings.get('directories', 'output'))
+        watchdog = Monitor(encoder, delete_flag, header, settings.get("directories", "input"), settings.get("directories", "output"))
 
     except Exception as err:
         raise SystemExit(str(err))

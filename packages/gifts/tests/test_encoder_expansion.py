@@ -13,7 +13,7 @@ class TestEncoderBasics:
     def test_encoder_has_methods(self):
         """Test that Encoder has expected methods"""
         encoder = Encoder()
-        assert hasattr(encoder, '__init__')
+        assert hasattr(encoder, "__init__")
 
     def test_encoder_attributes(self):
         """Test Encoder attributes"""
@@ -135,10 +135,7 @@ class TestEncoderNamespaces:
 
     def test_encoder_multiple_namespaces(self):
         """Test multiple namespaces"""
-        nsmap = {
-            "gml": "http://www.opengis.net/gml/3.2.1",
-            "iwxxm": "http://www.wmo.int/standards/iwxxm"
-        }
+        nsmap = {"gml": "http://www.opengis.net/gml/3.2.1", "iwxxm": "http://www.wmo.int/standards/iwxxm"}
         root = etree.Element("root", nsmap=nsmap)
         assert "gml" in root.nsmap
         assert "iwxxm" in root.nsmap

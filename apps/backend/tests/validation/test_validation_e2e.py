@@ -1,4 +1,5 @@
 """E2E tests for complete validation workflows."""
+
 import sys
 from pathlib import Path
 
@@ -69,12 +70,12 @@ class TestCompleteValidationWorkflow:
         evaluator = EvaluationService()
 
         # Our generated XML
-        our_xml = '''<?xml version="1.0"?>
+        our_xml = """<?xml version="1.0"?>
         <METAR>
             <temperature unit="C">15</temperature>
             <dewpoint unit="C">10</dewpoint>
             <wind speed="12" direction="270"/>
-        </METAR>'''
+        </METAR>"""
 
         # Reference XML (identical structure)
         their_xml = our_xml
@@ -97,17 +98,21 @@ class TestCompleteValidationWorkflow:
         # Add test cases with available airports
         if validator.count() > 0:
             first = validator.get_all_airports()[0]
-            test_cases.extend([
-                (f"METAR {first.icao} 101200Z ...", True),  # Standard format
-                (f"{first.icao} 101200Z ...", True),  # Without keyword
-                (f"SPECI {first.icao} 101200Z ...", True),  # SPECI format
-            ])
+            test_cases.extend(
+                [
+                    (f"METAR {first.icao} 101200Z ...", True),  # Standard format
+                    (f"{first.icao} 101200Z ...", True),  # Without keyword
+                    (f"SPECI {first.icao} 101200Z ...", True),  # SPECI format
+                ]
+            )
 
         # Add invalid cases
-        test_cases.extend([
-            ("METAR ZZZZ 101200Z ...", False),  # Invalid ICAO
-            ("METAR ABC 101200Z ...", False),   # Too short
-        ])
+        test_cases.extend(
+            [
+                ("METAR ZZZZ 101200Z ...", False),  # Invalid ICAO
+                ("METAR ABC 101200Z ...", False),  # Too short
+            ]
+        )
 
         for tac, should_pass in test_cases:
             if should_pass:
@@ -125,7 +130,6 @@ class TestCompleteValidationWorkflow:
             # Valid
             ("METAR KJFK 101200Z 12012KT 10SM FEW020 22/14 A3005", True),
             ("SPECI KJFK 101200Z 12012KT 10SM FEW020 22/14 A3005", True),
-
             # Invalid
             ("KJFK 101200Z 12012KT 10SM", False),  # No METAR/SPECI
             ("METAR", False),  # Too short

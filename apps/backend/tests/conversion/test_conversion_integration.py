@@ -1,4 +1,5 @@
 """Tests for conversion utility with validation integration."""
+
 import sys
 from pathlib import Path
 

@@ -1,4 +1,5 @@
 """Validation endpoints for METAR and IWXXM content."""
+
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -31,13 +32,9 @@ class ValidationLayerInfo(BaseModel):
 
     layer: ValidationLayer = Field(..., description="Layer identifier")
     description: str = Field(..., description="Human-readable description")
-    blocking: bool = Field(
-        ...,
-        description="Whether this layer blocks further validation if it fails"
-    )
+    blocking: bool = Field(..., description="Whether this layer blocks further validation if it fails")
     supported_content_types: List[str] = Field(
-        default_factory=list,
-        description="Content types this layer supports (tac/xml)"
+        default_factory=list, description="Content types this layer supports (tac/xml)"
     )
 
 
@@ -82,7 +79,7 @@ class BatchValidationRequest(BaseModel):
                     {
                         "content": "METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007",
                         "content_type": "tac",
-                    }
+                    },
                 ],
                 "layers": ["airport_icao", "tac_syntax"],
             }
@@ -96,8 +93,7 @@ class BatchValidationRequest(BaseModel):
         max_length=100,
     )
     layers: Optional[List[ValidationLayer]] = Field(
-        None,
-        description="Layers to apply to all items (None = all layers)"
+        None, description="Layers to apply to all items (None = all layers)"
     )
 
 
@@ -124,10 +120,7 @@ class BatchValidationResponse(BaseModel):
         }
     )
 
-    results: List[AggregatedValidationResult] = Field(
-        ...,
-        description="Validation results for each item"
-    )
+    results: List[AggregatedValidationResult] = Field(..., description="Validation results for each item")
     total_items: int = Field(..., description="Total items requested", ge=0)
     passed_items: int = Field(..., description="Number of items that passed", ge=0)
     failed_items: int = Field(..., description="Number of items that failed", ge=0)
@@ -226,9 +219,7 @@ async def validate_content(
     service = get_validation_service()
 
     try:
-        result = service.validate_all_layers(
-            tac_text=request.content
-        )
+        result = service.validate_all_layers(tac_text=request.content)
         return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -315,9 +306,7 @@ async def validate_multiple(
         total_time = 0.0
 
         for item in request.items:
-            result = service.validate_all_layers(
-                tac_text=item.content
-            )
+            result = service.validate_all_layers(tac_text=item.content)
             results.append(result)
             total_time += result.execution_time_ms
 

@@ -3,6 +3,7 @@
 Auth service is now a Supabase proxy - no local database.
 Tests use FastAPI TestClient to test API endpoints.
 """
+
 import os
 import pytest
 

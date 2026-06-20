@@ -1,4 +1,5 @@
 """Data schemas and models for the API."""
+
 from .airport import Airport, AirportCoordinates, AirportValidator, get_airport_validator
 from .conversion import ConversionResponse, ConversionResult, ErrorDetail, HealthResponse
 

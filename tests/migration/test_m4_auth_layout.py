@@ -19,11 +19,15 @@ class TestM4AuthPackageLayout:
 
     def test_packages_auth_has_security_module(self) -> None:
         security = PACKAGES_AUTH / "src" / "auth" / "security.py"
-        assert security.is_file(), "packages/auth/src/auth/security.py required for JWT middleware"
+        assert security.is_file(), (
+            "packages/auth/src/auth/security.py required for JWT middleware"
+        )
 
     def test_packages_auth_has_supabase_proxy(self) -> None:
         proxy = PACKAGES_AUTH / "src" / "auth" / "supabase_proxy.py"
-        assert proxy.is_file(), "packages/auth/src/auth/supabase_proxy.py required for TC-M005"
+        assert proxy.is_file(), (
+            "packages/auth/src/auth/supabase_proxy.py required for TC-M005"
+        )
 
     def test_packages_auth_has_pyproject(self) -> None:
         assert (PACKAGES_AUTH / "pyproject.toml").is_file()

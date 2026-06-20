@@ -6,14 +6,27 @@ from gifts.common import xmlUtilities as deu
 
 encoder = VAAE.Encoder()
 
-first_siblings = ['issueTime', 'issuingVolcanicAshAdvisoryCentre', 'volcano', 'stateOrRegion', 'sourceElevationAMSL',
-                  'advisoryNumber', 'informationSource', 'eruptionDetails', 'observation', 'forecast',
-                  'forecast', 'forecast', 'remarks', 'nextAdvisoryTime']
+first_siblings = [
+    "issueTime",
+    "issuingVolcanicAshAdvisoryCentre",
+    "volcano",
+    "stateOrRegion",
+    "sourceElevationAMSL",
+    "advisoryNumber",
+    "informationSource",
+    "eruptionDetails",
+    "observation",
+    "forecast",
+    "forecast",
+    "forecast",
+    "remarks",
+    "nextAdvisoryTime",
+]
 
-aixm = '{http://www.aixm.aero/schema/5.1.1}'
-find_aixm = './/*%s' % aixm
-find_gml = './/*{http://www.opengis.net/gml/3.2}'
-iwxxm = '{%s}' % des.IWXXM_URI
+aixm = "{http://www.aixm.aero/schema/5.1.1}"
+find_aixm = ".//*%s" % aixm
+find_gml = ".//*{http://www.opengis.net/gml/3.2}"
+iwxxm = "{%s}" % des.IWXXM_URI
 
 exercise = """FVAU03 ADRM 150252
 VA ADVISORY
@@ -97,12 +110,13 @@ des.TRANSLATOR = True
 def test_vaaFailureModes():
 
     import gifts.vaaDecoder as vD
+
     decoder = vD.Decoder()
 
     text = """FVXX23 KNES 151247
 """
     result = decoder(text)
-    assert 'err_msg' in result
+    assert "err_msg" in result
 
     text = """FVXX01 LFPW 311315 RRA
 VA ADVISORY
@@ -113,7 +127,7 @@ VAAC: TOULOUSE"""
     assert len(result) == 2
     for num, child in enumerate(result):
         assert child.tag == first_siblings[num]
-    assert len(result.get('translationFailedTAC')) > 0
+    assert len(result.get("translationFailedTAC")) > 0
 
     text = """FVXX01 LFPW 311315 RRA
 VA ADVISORY
@@ -126,7 +140,7 @@ VAAC: TOULOUSE
     assert len(result) == 2
     for num, child in enumerate(result):
         assert child.tag == first_siblings[num]
-    assert len(result.get('translationFailedTAC')) > 0
+    assert len(result.get("translationFailedTAC")) > 0
 
 
 def test_nonOperationalMessages():
@@ -141,16 +155,16 @@ STATUS: TEST"""
     for num, child in enumerate(result):
         assert child.tag == first_siblings[num]
 
-    assert result.get('permissibleUsage') == 'NON-OPERATIONAL'
-    assert result.get('permissibleUsageReason') == 'TEST'
+    assert result.get("permissibleUsage") == "NON-OPERATIONAL"
+    assert result.get("permissibleUsageReason") == "TEST"
 
     text = exercise
 
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
-    assert result.get('permissibleUsage') == 'NON-OPERATIONAL'
-    assert result.get('permissibleUsageReason') == 'EXERCISE'
+    assert result.get("permissibleUsage") == "NON-OPERATIONAL"
+    assert result.get("permissibleUsageReason") == "EXERCISE"
 
     tree = ET.XML(ET.tostring(result))
     #
@@ -163,81 +177,81 @@ STATUS: TEST"""
         #
         # issueTime
         if cnt == 0:
-            timePosition = element.find('%stimePosition' % find_gml)
-            assert timePosition.text == '2025-12-15T00:00:00Z'
+            timePosition = element.find("%stimePosition" % find_gml)
+            assert timePosition.text == "2025-12-15T00:00:00Z"
         #
         # issuing centre
         elif cnt == 1:
-            name = element.find('%sname' % find_aixm)
-            assert name.text == 'NONE'
-            mwotype = element.find('%stype' % find_aixm)
-            assert mwotype.text == 'OTHER:VAAC'
+            name = element.find("%sname" % find_aixm)
+            assert name.text == "NONE"
+            mwotype = element.find("%stype" % find_aixm)
+            assert mwotype.text == "OTHER:VAAC"
         #
         # volcano details
         elif cnt == 2:
-            volcano = element.find('{http://def.wmo.int/metce/2013}Volcano')
+            volcano = element.find("{http://def.wmo.int/metce/2013}Volcano")
             assert volcano is not None
 
-            name = element.find('*{http://def.wmo.int/metce/2013}name')
-            assert name.text == 'UNKNOWN'
+            name = element.find("*{http://def.wmo.int/metce/2013}name")
+            assert name.text == "UNKNOWN"
 
-            position = element.find('*{http://def.wmo.int/metce/2013}position')
-            assert position.get('nilReason') == codes[des.NIL][des.UNKNWN][0]
+            position = element.find("*{http://def.wmo.int/metce/2013}position")
+            assert position.get("nilReason") == codes[des.NIL][des.UNKNWN][0]
 
-            edate = element.find('*{http://def.wmo.int/metce/2013}eruptionDate')
+            edate = element.find("*{http://def.wmo.int/metce/2013}eruptionDate")
             assert edate is None
         #
         # stateOrRegion element
         elif cnt == 3:
-            assert element.get('nilReason') == codes[des.NIL][des.UNKNWN][0]
+            assert element.get("nilReason") == codes[des.NIL][des.UNKNWN][0]
         #
         # sourceElevation element
         elif cnt == 4:
-            assert element.get('nilReason') == codes[des.NIL][des.UNKNWN][0]
+            assert element.get("nilReason") == codes[des.NIL][des.UNKNWN][0]
         #
         # advisory no.
         elif cnt == 5:
-            assert element.text == '0000/0'
+            assert element.text == "0000/0"
         #
         # source and eruption details free text
         elif 5 < cnt < 8:
-            assert element.text == 'NONE'
+            assert element.text == "NONE"
         #
         # observation
         elif cnt == 8:
             assert len(element) == 1
             # conditions estimated
-            conditions = element.find('%sVolcanicAshObservedOrEstimatedConditions' % iwxxm)
-            assert conditions.get('status') == 'NOT_PROVIDED'
-            assert conditions.get('isEstimated') == 'true'
+            conditions = element.find("%sVolcanicAshObservedOrEstimatedConditions" % iwxxm)
+            assert conditions.get("status") == "NOT_PROVIDED"
+            assert conditions.get("isEstimated") == "true"
         #
         # forecasts
         elif 8 < cnt < 12:
-            condition = element.find('%sVolcanicAshForecastConditions' % iwxxm)
-            timePosition = element.find('%stimePosition' % find_gml)
+            condition = element.find("%sVolcanicAshForecastConditions" % iwxxm)
+            timePosition = element.find("%stimePosition" % find_gml)
             if cnt == 9:
-                assert condition.get('status') == 'NOT_PROVIDED'
-                assert timePosition.text == '2025-12-15T06:00:00Z'
+                assert condition.get("status") == "NOT_PROVIDED"
+                assert timePosition.text == "2025-12-15T06:00:00Z"
             elif cnt == 10:
-                assert condition.get('status') == 'NOT_AVAILABLE'
-                assert timePosition.text == '2025-12-15T12:00:00Z'
+                assert condition.get("status") == "NOT_AVAILABLE"
+                assert timePosition.text == "2025-12-15T12:00:00Z"
             elif cnt == 11:
-                assert condition.get('status') == 'NO_VOLCANIC_ASH_EXPECTED'
-                assert timePosition.text == '2025-12-15T18:00:00Z'
+                assert condition.get("status") == "NO_VOLCANIC_ASH_EXPECTED"
+                assert timePosition.text == "2025-12-15T18:00:00Z"
 
         elif cnt == 12:
             # remarks
-            assert element.text == 'NONE'
+            assert element.text == "NONE"
         elif cnt == 13:
             # NO FURTHER ADVISORIES
-            assert element.get('nilReason') == codes[des.NIL][des.NA][0]
+            assert element.get("nilReason") == codes[des.NIL][des.NA][0]
 
-    text2 = text.replace('EST VA CLD: NOT PROVIDED', 'OBS VA CLD: NOT AVBL')
+    text2 = text.replace("EST VA CLD: NOT PROVIDED", "OBS VA CLD: NOT AVBL")
     bulletin = encoder.encode(text2)
     result = bulletin.pop()
 
-    assert result[8][0].get('isEstimated') == 'false'
-    assert result[8][0].get('status') == 'NOT_AVAILABLE'
+    assert result[8][0].get("isEstimated") == "false"
+    assert result[8][0].get("status") == "NOT_AVAILABLE"
 
 
 def test_sourceElevation():
@@ -246,8 +260,8 @@ def test_sourceElevation():
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
-    assert result.get('permissibleUsage') == 'OPERATIONAL'
-    assert result.get('reportStatus') == 'NORMAL'
+    assert result.get("permissibleUsage") == "OPERATIONAL"
+    assert result.get("reportStatus") == "NORMAL"
     #
     # Check all mandatory items
     for cnt, child in enumerate(result):
@@ -255,32 +269,32 @@ def test_sourceElevation():
     #
     # Source elevation
     sourceElevation = result[4]
-    assert sourceElevation.text == '12346'
-    assert sourceElevation.get('uom', '[ft_i]')
+    assert sourceElevation.text == "12346"
+    assert sourceElevation.get("uom", "[ft_i]")
 
-    text = fuego.replace('12346 FT', '3763M')
+    text = fuego.replace("12346 FT", "3763M")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
     sourceElevation = result[4]
-    assert sourceElevation.text == '3763'
-    assert sourceElevation.get('uom', 'm')
+    assert sourceElevation.text == "3763"
+    assert sourceElevation.get("uom", "m")
 
-    text = fuego.replace('12346 FT AMSL', '10M BLW MSL')
+    text = fuego.replace("12346 FT AMSL", "10M BLW MSL")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
     sourceElevation = result[4]
-    assert sourceElevation.text == '-10'
-    assert sourceElevation.get('uom', 'm')
+    assert sourceElevation.text == "-10"
+    assert sourceElevation.get("uom", "m")
 
-    text = fuego.replace('12346 FT AMSL', '0M')
+    text = fuego.replace("12346 FT AMSL", "0M")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
     sourceElevation = result[4]
-    assert sourceElevation.text == '0'
-    assert sourceElevation.get('uom', 'm')
+    assert sourceElevation.text == "0"
+    assert sourceElevation.get("uom", "m")
 
 
 def test_volcanoInfo():
@@ -291,18 +305,18 @@ def test_volcanoInfo():
 
     volcano = result[2][0]
     assert len(volcano) == 2
-    assert volcano.tag == 'Volcano'
-    assert volcano[0].text == 'FUEGO 342090'
-    assert volcano[1][0][0].text == '14.467 -90.867'
+    assert volcano.tag == "Volcano"
+    assert volcano[0].text == "FUEGO 342090"
+    assert volcano[1][0][0].text == "14.467 -90.867"
 
-    text = fuego.replace('ONGOING VA EMS', 'ERUPTION AT 0530Z')
+    text = fuego.replace("ONGOING VA EMS", "ERUPTION AT 0530Z")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
     volcano = result[2][0]
     assert len(volcano) == 3
-    assert volcano.tag == 'EruptingVolcano'
-    assert volcano[2].text == '2025-12-17T05:30:00Z'
+    assert volcano.tag == "EruptingVolcano"
+    assert volcano[2].text == "2025-12-17T05:30:00Z"
 
 
 def test_centreName():
@@ -313,7 +327,7 @@ def test_centreName():
     #
     # AIXM padding
     centre = result[1][0][0][0][2]
-    assert centre.text == 'WASHINGTON'
+    assert centre.text == "WASHINGTON"
 
 
 def test_stateOrRegion():
@@ -323,7 +337,7 @@ def test_stateOrRegion():
     result = bulletin.pop()
 
     state = result[3]
-    assert state.text == 'GUATEMALA'
+    assert state.text == "GUATEMALA"
 
 
 def test_advisoryNumber():
@@ -333,7 +347,7 @@ def test_advisoryNumber():
     result = bulletin.pop()
 
     state = result[5]
-    assert state.text == '2025/682'
+    assert state.text == "2025/682"
 
 
 def test_infoSource():
@@ -343,7 +357,7 @@ def test_infoSource():
     result = bulletin.pop()
 
     infoSource = result[6]
-    assert infoSource.text == 'GOES-19. NWP MODELS.'
+    assert infoSource.text == "GOES-19. NWP MODELS."
 
 
 def test_eruptionDetails():
@@ -353,7 +367,7 @@ def test_eruptionDetails():
     result = bulletin.pop()
 
     infoSource = result[7]
-    assert infoSource.text == 'ONGOING VA EMS'
+    assert infoSource.text == "ONGOING VA EMS"
 
 
 def test_remarks():
@@ -363,9 +377,14 @@ def test_remarks():
     result = bulletin.pop()
 
     remarks = result[12]
-    assert remarks.text == ' '.join(['VA NOT DETECTED ON STLT DUE TO WX CLDS IN SUMMIT AREA.',
-                                     'VA EMS LIKELY CONTINUE GIVEN RECENT ACTVTY.',
-                                     'NO CHG FCST TO MDL WINDS AT FL NXT 18 HR.', '...KONON'])
+    assert remarks.text == " ".join(
+        [
+            "VA NOT DETECTED ON STLT DUE TO WX CLDS IN SUMMIT AREA.",
+            "VA EMS LIKELY CONTINUE GIVEN RECENT ACTVTY.",
+            "NO CHG FCST TO MDL WINDS AT FL NXT 18 HR.",
+            "...KONON",
+        ]
+    )
 
 
 def test_nextTime():
@@ -376,22 +395,22 @@ def test_nextTime():
 
     nextTime = result[13][0][0]
 
-    assert nextTime.text == '2025-12-18T01:15:00Z'
-    assert nextTime.get('indeterminatePosition') == 'before'
+    assert nextTime.text == "2025-12-18T01:15:00Z"
+    assert nextTime.get("indeterminatePosition") == "before"
 
-    text = fuego.replace('WILL BE ISSUED BY', 'NO LATER THAN')
+    text = fuego.replace("WILL BE ISSUED BY", "NO LATER THAN")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
     nextTime = result[13][0][0]
-    assert nextTime.get('indeterminatePosition') == 'before'
+    assert nextTime.get("indeterminatePosition") == "before"
 
-    text = fuego.replace('WILL BE ISSUED BY', '')
+    text = fuego.replace("WILL BE ISSUED BY", "")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
     nextTime = result[13][0][0]
-    assert nextTime.get('indeterminatePosition') is None
+    assert nextTime.get("indeterminatePosition") is None
 
 
 def test_observedCloudVerticalExtent():
@@ -402,53 +421,53 @@ def test_observedCloudVerticalExtent():
 
     observation = result[8][0]
 
-    assert observation.get('isEstimated') == 'false'
-    assert observation.get('status') == 'PROVIDED'
-    assert observation[0][0][0].text == '2025-12-17T18:30:00Z'
+    assert observation.get("isEstimated") == "false"
+    assert observation.get("status") == "PROVIDED"
+    assert observation[0][0][0].text == "2025-12-17T18:30:00Z"
 
     obsAshCloud = observation[1][0][0][0]
-    assert obsAshCloud[0].tag == 'aixm:upperLimit'
-    assert obsAshCloud[0].get('uom') == 'FL'
-    assert obsAshCloud[0].text == '140'
-    assert obsAshCloud[1].tag == 'aixm:upperLimitReference'
-    assert obsAshCloud[1].text == 'STD'
+    assert obsAshCloud[0].tag == "aixm:upperLimit"
+    assert obsAshCloud[0].get("uom") == "FL"
+    assert obsAshCloud[0].text == "140"
+    assert obsAshCloud[1].tag == "aixm:upperLimitReference"
+    assert obsAshCloud[1].text == "STD"
 
-    assert obsAshCloud[2].tag == 'aixm:lowerLimit'
-    assert obsAshCloud[2].get('uom') is None
-    assert obsAshCloud[2].text == 'GND'
-    assert obsAshCloud[3].tag == 'aixm:lowerLimitReference'
-    assert obsAshCloud[3].text == 'SFC'
+    assert obsAshCloud[2].tag == "aixm:lowerLimit"
+    assert obsAshCloud[2].get("uom") is None
+    assert obsAshCloud[2].text == "GND"
+    assert obsAshCloud[3].tag == "aixm:lowerLimitReference"
+    assert obsAshCloud[3].text == "SFC"
 
-    text = fuego.replace('OBS VA CLD: SFC/FL140', 'OBS VA CLD: TOP FL500')
+    text = fuego.replace("OBS VA CLD: SFC/FL140", "OBS VA CLD: TOP FL500")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
     obsAshCloud = result[8][0][1][0][0][0]
-    assert obsAshCloud[0].tag == 'aixm:upperLimit'
-    assert obsAshCloud[0].get('uom') == 'FL'
-    assert obsAshCloud[0].text == '500'
-    assert obsAshCloud[1].tag == 'aixm:upperLimitReference'
-    assert obsAshCloud[1].text == 'STD'
+    assert obsAshCloud[0].tag == "aixm:upperLimit"
+    assert obsAshCloud[0].get("uom") == "FL"
+    assert obsAshCloud[0].text == "500"
+    assert obsAshCloud[1].tag == "aixm:upperLimitReference"
+    assert obsAshCloud[1].text == "STD"
 
-    assert obsAshCloud[2].tag == 'aixm:lowerLimit'
-    assert obsAshCloud[2].get('nilReason') == des.MSSG
+    assert obsAshCloud[2].tag == "aixm:lowerLimit"
+    assert obsAshCloud[2].get("nilReason") == des.MSSG
 
-    text = fuego.replace('OBS VA CLD: SFC/FL140', 'OBS VA CLD: FL050/250')
+    text = fuego.replace("OBS VA CLD: SFC/FL140", "OBS VA CLD: FL050/250")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
     obsAshCloud = result[8][0][1][0][0][0]
-    assert obsAshCloud[0].tag == 'aixm:upperLimit'
-    assert obsAshCloud[0].get('uom') == 'FL'
-    assert obsAshCloud[0].text == '250'
-    assert obsAshCloud[1].tag == 'aixm:upperLimitReference'
-    assert obsAshCloud[1].text == 'STD'
+    assert obsAshCloud[0].tag == "aixm:upperLimit"
+    assert obsAshCloud[0].get("uom") == "FL"
+    assert obsAshCloud[0].text == "250"
+    assert obsAshCloud[1].tag == "aixm:upperLimitReference"
+    assert obsAshCloud[1].text == "STD"
 
-    assert obsAshCloud[2].tag == 'aixm:lowerLimit'
-    assert obsAshCloud[2].get('uom') == 'FL'
-    assert obsAshCloud[2].text == '50'
-    assert obsAshCloud[3].tag == 'aixm:lowerLimitReference'
-    assert obsAshCloud[3].text == 'STD'
+    assert obsAshCloud[2].tag == "aixm:lowerLimit"
+    assert obsAshCloud[2].get("uom") == "FL"
+    assert obsAshCloud[2].text == "50"
+    assert obsAshCloud[3].tag == "aixm:lowerLimitReference"
+    assert obsAshCloud[3].text == "STD"
 
 
 def test_observedAshCloudMotions():
@@ -458,21 +477,21 @@ def test_observedAshCloudMotions():
     result = bulletin.pop()
 
     obsMovementDir = result[8][0][1][0][1]
-    assert obsMovementDir.get('uom') == 'deg'
-    assert obsMovementDir.text == '270'
+    assert obsMovementDir.get("uom") == "deg"
+    assert obsMovementDir.text == "270"
     obsMovementSpd = result[8][0][1][0][2]
-    assert obsMovementSpd.get('uom') == '[kn_i]'
-    assert obsMovementSpd.text == '10'
+    assert obsMovementSpd.get("uom") == "[kn_i]"
+    assert obsMovementSpd.text == "10"
 
-    text = fuego.replace('W 10KT', 'SE 40KMH')
+    text = fuego.replace("W 10KT", "SE 40KMH")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
 
     obsMovementDir = result[8][0][1][0][1]
-    assert obsMovementDir.text == '135'
+    assert obsMovementDir.text == "135"
     obsMovementSpd = result[8][0][1][0][2]
-    assert obsMovementSpd.get('uom') == 'km/h'
-    assert obsMovementSpd.text == '40'
+    assert obsMovementSpd.get("uom") == "km/h"
+    assert obsMovementSpd.text == "40"
 
 
 def test_observedCloudHorizontalExtent():
@@ -485,10 +504,10 @@ def test_observedCloudHorizontalExtent():
     obsAshCloud = observation[1][0][0][0]
 
     aixmHProj = obsAshCloud[4]
-    assert aixmHProj.tag == 'aixm:horizontalProjection'
+    assert aixmHProj.tag == "aixm:horizontalProjection"
 
     polygonCoords = aixmHProj[0][0][0][0][0][0]
-    assert polygonCoords.get('count') == '5'
+    assert polygonCoords.get("count") == "5"
 
     latlongpairs = polygonCoords.text
     assert latlongpairs[:14] == latlongpairs[-14:]
@@ -501,42 +520,41 @@ def test_vaCldNotFound():
     result = bulletin.pop()
 
     observation = result[8][0]
-    assert observation.get('status') == 'NOT_IDENTIFIABLE'
+    assert observation.get("status") == "NOT_IDENTIFIABLE"
     assert len(observation) == 1
-    assert observation[0].tag == 'phenomenonTime'
+    assert observation[0].tag == "phenomenonTime"
 
-    text = semeru.replace('DATA', 'DATA WIND FL005/010 000/00MPS')
+    text = semeru.replace("DATA", "DATA WIND FL005/010 000/00MPS")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
     observation = result[8][0]
     assert len(observation) == 2
     wind = observation[1]
 
-    assert wind.tag == 'wind'
-    assert wind[0].tag == 'WindObservedOrEstimated'
-    assert wind[0].get('variableWindDirection') == 'false'
-    assert wind[0][0].tag == 'verticalLayer'
-    assert wind[0][1].tag == 'windDirection'
-    assert wind[0][1].text == '000'
-    assert wind[0][1].get('uom') == 'deg'
-    assert wind[0][2].tag == 'windSpeed'
-    assert wind[0][2].text == '00'
-    assert wind[0][2].get('uom') == 'm/s'
+    assert wind.tag == "wind"
+    assert wind[0].tag == "WindObservedOrEstimated"
+    assert wind[0].get("variableWindDirection") == "false"
+    assert wind[0][0].tag == "verticalLayer"
+    assert wind[0][1].tag == "windDirection"
+    assert wind[0][1].text == "000"
+    assert wind[0][1].get("uom") == "deg"
+    assert wind[0][2].tag == "windSpeed"
+    assert wind[0][2].text == "00"
+    assert wind[0][2].get("uom") == "m/s"
 
-    text = semeru.replace('DATA', 'DATA WIND FL005/010 VRB12KT')
+    text = semeru.replace("DATA", "DATA WIND FL005/010 VRB12KT")
     bulletin = encoder.encode(text)
     result = bulletin.pop()
     observation = result[8][0][1][0]
-    assert observation.get('variableWindDirection') == 'true'
+    assert observation.get("variableWindDirection") == "true"
     assert len(observation) == 2
-    assert observation[0].tag == 'verticalLayer'
-    assert observation[1].tag == 'windSpeed'
-    assert observation[1].text == '12'
-    assert observation[1].get('uom') == '[kn_i]'
+    assert observation[0].tag == "verticalLayer"
+    assert observation[1].tag == "windSpeed"
+    assert observation[1].text == "12"
+    assert observation[1].get("uom") == "[kn_i]"
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     test_vaaFailureModes()
     test_nonOperationalMessages()
     test_sourceElevation()

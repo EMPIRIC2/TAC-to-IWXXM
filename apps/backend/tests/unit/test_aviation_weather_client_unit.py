@@ -229,10 +229,7 @@ def test_parse_response_and_extract_station_paths() -> None:
     )
     assert set(raw.keys()) == {"KJFK", "KBOS", "KLAX"}
 
-    iwxxm_multi = (
-        "<?xml version='1.0'?><doc designator=\"KJFK\"/>"
-        "<?xml version='1.0'?><doc><icaoId>KBOS</icaoId></doc>"
-    )
+    iwxxm_multi = "<?xml version='1.0'?><doc designator=\"KJFK\"/><?xml version='1.0'?><doc><icaoId>KBOS</icaoId></doc>"
     iwxxm_result = client._parse_response(iwxxm_multi, "iwxxm", ["KJFK", "KBOS"])
     assert set(iwxxm_result.keys()) == {"KJFK", "KBOS"}
 
@@ -246,7 +243,7 @@ def test_parse_response_and_extract_station_paths() -> None:
     assert client._parse_response("<doc><icaoId>EGLL</icaoId></doc>", "iwxxm", ["KSEA"]) == {}
     assert client._parse_response("", "iwxxm", ["KSEA"]) == {}
 
-    assert client._extract_station_from_xml("<doc designator=\"KLAX\"/>") == "KLAX"
+    assert client._extract_station_from_xml('<doc designator="KLAX"/>') == "KLAX"
     assert client._extract_station_from_xml("<doc><icaoId>KSEA</icaoId></doc>") == "KSEA"
     assert client._extract_station_from_xml("<doc/>") is None
 
@@ -359,8 +356,12 @@ async def test_cached_fetch_uses_cache_and_writes_cache(tmp_path: Path, monkeypa
     assert first_sample[0]["count"] == 3
 
     # Cache hit path should load persisted JSON and not call parent methods.
-    monkeypatch.setattr(AviationWeatherClient, "fetch_metars_by_bbox", AsyncMock(side_effect=AssertionError("should not call")))
-    monkeypatch.setattr(AviationWeatherClient, "fetch_random_sample", AsyncMock(side_effect=AssertionError("should not call")))
+    monkeypatch.setattr(
+        AviationWeatherClient, "fetch_metars_by_bbox", AsyncMock(side_effect=AssertionError("should not call"))
+    )
+    monkeypatch.setattr(
+        AviationWeatherClient, "fetch_random_sample", AsyncMock(side_effect=AssertionError("should not call"))
+    )
 
     second_bbox = await client.fetch_metars_by_bbox((1, 2, 3, 4), hours=2, format_type="json")
     second_sample = await client.fetch_random_sample(count=3, regions=[(0, 0, 1, 1)], hours=2)

@@ -1,4 +1,5 @@
 """Unit tests for OpenAIPClient – 0% coverage target."""
+
 import json
 from pathlib import Path
 from unittest.mock import patch
@@ -11,8 +12,8 @@ from src.clients.openaip_client import Airport, OpenAIPClient
 # Airport dataclass helpers
 # ---------------------------------------------------------------------------
 
-def make_airport_feature(icao="KJFK", name="Test Airport", country="US",
-                         elevation=9.14, elevation_unit="m"):
+
+def make_airport_feature(icao="KJFK", name="Test Airport", country="US", elevation=9.14, elevation_unit="m"):
     return {
         "type": "Feature",
         "geometry": {"type": "Point", "coordinates": [-73.7789, 40.6398]},
@@ -45,10 +46,7 @@ class TestAirportDataclass:
         assert a.longitude is None
 
     def test_lat_lon_non_point_geometry(self):
-        a = Airport(
-            icao_code="XXXX", name="X", country="XX",
-            geometry={"type": "Polygon", "coordinates": []}
-        )
+        a = Airport(icao_code="XXXX", name="X", country="XX", geometry={"type": "Polygon", "coordinates": []})
         assert a.lat_lon is None
 
     def test_lat_lon_point_with_insufficient_coordinates(self):
@@ -328,9 +326,10 @@ class TestDownloadOpenAIPData:
         async def fake_sleep(_seconds):
             return None
 
-        with patch("src.clients.openaip_client.httpx.AsyncClient", return_value=fake_client), patch(
-            "src.clients.openaip_client.asyncio.sleep", side_effect=fake_sleep
-        ) as sleep_mock:
+        with (
+            patch("src.clients.openaip_client.httpx.AsyncClient", return_value=fake_client),
+            patch("src.clients.openaip_client.asyncio.sleep", side_effect=fake_sleep) as sleep_mock,
+        ):
             await download_openaip_data(tmp_path, api_key="secret")
 
         assert sleep_mock.await_count == 7
@@ -344,17 +343,20 @@ class TestDownloadOpenAIPData:
     async def test_download_openaip_data_continues_after_failure(self, tmp_path):
         from src.clients.openaip_client import download_openaip_data
 
-        fake_client = _FakeAsyncClient([
-            _FakeResponse({"type": "FeatureCollection", "features": [{"id": "US"}]}),
-            RuntimeError("network down"),
-            _FakeResponse({"type": "FeatureCollection", "features": [{"id": "GB"}]}, should_raise=True),
-        ])
+        fake_client = _FakeAsyncClient(
+            [
+                _FakeResponse({"type": "FeatureCollection", "features": [{"id": "US"}]}),
+                RuntimeError("network down"),
+                _FakeResponse({"type": "FeatureCollection", "features": [{"id": "GB"}]}, should_raise=True),
+            ]
+        )
 
         async def fake_sleep(_seconds):
             return None
 
-        with patch("src.clients.openaip_client.httpx.AsyncClient", return_value=fake_client), patch(
-            "src.clients.openaip_client.asyncio.sleep", side_effect=fake_sleep
+        with (
+            patch("src.clients.openaip_client.httpx.AsyncClient", return_value=fake_client),
+            patch("src.clients.openaip_client.asyncio.sleep", side_effect=fake_sleep),
         ):
             await download_openaip_data(tmp_path, countries=["US", "CA", "GB"], api_key="secret")
 

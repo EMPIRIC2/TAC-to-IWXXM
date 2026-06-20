@@ -36,18 +36,14 @@ async def mirror_all():
     # ])
 
     for version, config in versions_to_mirror:
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"Mirroring {version}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         root_xsd_url = config["schema_url"]
 
         result = await service.mirror_version(
-            version=version,
-            root_xsd_url=root_xsd_url,
-            include_examples=True,
-            include_html=True,
-            include_xmi=True
+            version=version, root_xsd_url=root_xsd_url, include_examples=True, include_html=True, include_xmi=True
         )
 
         print(f"\n✓ Mirrored {version}:")

@@ -30,6 +30,7 @@ def test_airport_name_capitalization():
         print(f"XML excerpt: {xml[:500]}")
         assert False, "Airport name not found in XML"
 
+
 def test_input_validation():
     """Test METAR input validation."""
     print("\n=== Test 2: METAR Input Validation ===")
@@ -60,6 +61,7 @@ def test_input_validation():
         print(f"✓ PASS: Invalid METAR correctly rejected: {e}")
 
     assert True
+
 
 def test_conversion_with_validation():
     """Test conversion with all features."""
@@ -102,6 +104,7 @@ def test_conversion_with_validation():
 
     assert all_passed, "One or more conversion tests failed"
 
+
 def main():
     """Run all tests."""
     print("=" * 60)
@@ -122,6 +125,7 @@ def main():
         except Exception as e:
             print(f"\n✗ Test failed with exception: {e}")
             import traceback
+
             traceback.print_exc()
             results.append(False)
 
@@ -130,6 +134,7 @@ def main():
     print("=" * 60)
 
     return all(results)
+
 
 if __name__ == "__main__":
     success = main()

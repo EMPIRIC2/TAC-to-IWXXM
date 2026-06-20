@@ -4,6 +4,7 @@ ICAO OPMET Translation Statistics Router.
 Implements REST API endpoints for querying translation centre statistics
 as per ICAO Doc 10003 Section 7 requirements.
 """
+
 import logging
 from datetime import datetime, timedelta
 from typing import Optional
@@ -106,26 +107,18 @@ async def get_translation_statistics(
     """
     # Check for admin role
     if user.get("role") != "admin":
-        raise HTTPException(
-            status_code=403,
-            detail="This endpoint requires administrator privileges"
-        )
+        raise HTTPException(status_code=403, detail="This endpoint requires administrator privileges")
 
     # Validate date range
     if request.end_date < request.start_date:
-        raise HTTPException(
-            status_code=400,
-            detail="end_date must be after start_date"
-        )
+        raise HTTPException(status_code=400, detail="end_date must be after start_date")
 
     # Validate date range is not too large (prevent expensive queries)
     max_range_days = 90
     date_diff = (request.end_date - request.start_date).days
     if date_diff > max_range_days:
         raise HTTPException(
-            status_code=400,
-            detail=f"Date range cannot exceed {max_range_days} days. "
-                   f"Requested: {date_diff} days"
+            status_code=400, detail=f"Date range cannot exceed {max_range_days} days. Requested: {date_diff} days"
         )
 
     # Query statistics from database
@@ -171,10 +164,7 @@ async def get_recent_statistics(
     """
     # Check for admin role
     if user.get("role") != "admin":
-        raise HTTPException(
-            status_code=403,
-            detail="This endpoint requires administrator privileges"
-        )
+        raise HTTPException(status_code=403, detail="This endpoint requires administrator privileges")
 
     end_date = datetime.utcnow()
     start_date = end_date - timedelta(hours=hours)
@@ -184,9 +174,7 @@ async def get_recent_statistics(
     date_diff = (end_date - start_date).days
     if date_diff > max_range_days:
         raise HTTPException(
-            status_code=400,
-            detail=f"Date range cannot exceed {max_range_days} days. "
-                   f"Requested: {date_diff} days"
+            status_code=400, detail=f"Date range cannot exceed {max_range_days} days. Requested: {date_diff} days"
         )
 
     # Query statistics from database
@@ -235,10 +223,7 @@ async def get_statistics_by_region(
     """
     # Check for admin role
     if user.get("role") != "admin":
-        raise HTTPException(
-            status_code=403,
-            detail="This endpoint requires administrator privileges"
-        )
+        raise HTTPException(status_code=403, detail="This endpoint requires administrator privileges")
 
     # Query region-grouped statistics from database
     logger.info(f"Region statistics query: {start_date} to {end_date}")
@@ -300,6 +285,7 @@ async def get_airport_region(airport_code: str):
 # =============================================================================
 # Health and Status Endpoints
 # =============================================================================
+
 
 @router.get("/health")
 async def statistics_health():

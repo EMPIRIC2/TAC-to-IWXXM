@@ -47,7 +47,7 @@ class WMOExamplesLoader:
         "SPACE_WEATHER": re.compile(r"^spacewx-|^swx-", re.IGNORECASE),
         "WAFS": re.compile(r"^wafs-", re.IGNORECASE),
         "VONA": re.compile(r"^vona-", re.IGNORECASE),
-        "QVACI": re.compile(r"^qvaci-", re.IGNORECASE)
+        "QVACI": re.compile(r"^qvaci-", re.IGNORECASE),
     }
 
     def __init__(self, schemas_base_path: Path):
@@ -59,11 +59,7 @@ class WMOExamplesLoader:
         """
         self.schemas_base_path = Path(schemas_base_path)
 
-    def load_examples(
-        self,
-        version: str,
-        message_types: Optional[List[str]] = None
-    ) -> List[WMOExample]:
+    def load_examples(self, version: str, message_types: Optional[List[str]] = None) -> List[WMOExample]:
         """
         Load all examples for a specific IWXXM version.
 
@@ -109,7 +105,7 @@ class WMOExamplesLoader:
                 test_scenario=self._extract_scenario(example_id),
                 is_nil_report=is_nil,
                 is_collect=is_collect,
-                is_translation_failed=is_translation_failed
+                is_translation_failed=is_translation_failed,
             )
 
             examples.append(example)
@@ -117,10 +113,7 @@ class WMOExamplesLoader:
         logger.info(f"Loaded {len(examples)} examples for IWXXM {version}")
         return examples
 
-    def load_all_versions(
-        self,
-        versions: Optional[List[str]] = None
-    ) -> Dict[str, List[WMOExample]]:
+    def load_all_versions(self, versions: Optional[List[str]] = None) -> Dict[str, List[WMOExample]]:
         """
         Load examples for multiple versions.
 
@@ -141,11 +134,7 @@ class WMOExamplesLoader:
 
         return all_examples
 
-    def get_tac_xml_pairs(
-        self,
-        version: str,
-        message_type: Optional[str] = None
-    ) -> List[Tuple[Path, Path, str]]:
+    def get_tac_xml_pairs(self, version: str, message_type: Optional[str] = None) -> List[Tuple[Path, Path, str]]:
         """
         Get TAC↔XML pairs for testing roundtrip conversions.
 
@@ -162,11 +151,7 @@ class WMOExamplesLoader:
         for example in examples:
             if example.tac_path and example.tac_path.exists():
                 if message_type is None or example.message_type == message_type:
-                    pairs.append((
-                        example.tac_path,
-                        example.xml_path,
-                        example.example_id
-                    ))
+                    pairs.append((example.tac_path, example.xml_path, example.example_id))
 
         return pairs
 
@@ -206,7 +191,7 @@ class WMOExamplesLoader:
             "with_tac_pairs": 0,
             "nil_reports": 0,
             "collect_bulletins": 0,
-            "translation_failed_cases": 0
+            "translation_failed_cases": 0,
         }
 
         for example in examples:
@@ -278,9 +263,7 @@ class WMOExamplesLoader:
 
 
 def load_wmo_examples(
-    version: str,
-    schemas_base_path: Path,
-    message_types: Optional[List[str]] = None
+    version: str, schemas_base_path: Path, message_types: Optional[List[str]] = None
 ) -> List[WMOExample]:
     """
     Convenience function to load WMO examples.

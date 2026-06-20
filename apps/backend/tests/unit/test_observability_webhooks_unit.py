@@ -327,8 +327,16 @@ def test_loki_send_batch_without_auth_groups_streams():
     handler.password = ""
 
     batch = [
-        {"timestamp": "1", "line": "a", "labels": {"service": "backend", "environment": "test", "level": "info", "logger": "x"}},
-        {"timestamp": "2", "line": "b", "labels": {"service": "backend", "environment": "test", "level": "error", "logger": "x"}},
+        {
+            "timestamp": "1",
+            "line": "a",
+            "labels": {"service": "backend", "environment": "test", "level": "info", "logger": "x"},
+        },
+        {
+            "timestamp": "2",
+            "line": "b",
+            "labels": {"service": "backend", "environment": "test", "level": "error", "logger": "x"},
+        },
     ]
     handler._send_batch(batch)
 
@@ -668,7 +676,7 @@ async def test_notify_bulk_completed_calls_send_webhook(monkeypatch):
 
 def test_get_or_create_metric_helpers_reuse_existing_collectors(monkeypatch):
     from prometheus_client import REGISTRY
-    
+
     fake_counter = object()
     fake_hist = object()
     monkeypatch.setitem(REGISTRY._names_to_collectors, "existing_counter", fake_counter)

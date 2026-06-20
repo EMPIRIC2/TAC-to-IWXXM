@@ -1,4 +1,5 @@
 """Integration tests and E2E tests at root level."""
+
 import pathlib
 import sys
 
@@ -20,9 +21,10 @@ SAMPLE_METAR_2 = "METAR KLAX 231753Z 25008KT 10SM FEW020 18/12 A2992"
 @pytest.fixture
 def client():
     """Create test client with mocked authentication."""
+
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project"}
-    
+
     app.dependency_overrides[verify_supabase_token] = override_verify_token
     client = TestClient(app)
     yield client
@@ -38,7 +40,7 @@ class TestIntegrationConversion:
         health_r = client.get("/health")
         assert health_r.status_code == 200
         assert health_r.json()["status"] in {"healthy", "degraded"}
-        
+
         # 2. Convert METAR
         convert_r = client.post("/api/v1/convert", data={"manual_text": SAMPLE_METAR})
         assert convert_r.status_code == 200
@@ -62,7 +64,7 @@ class TestIntegrationConversion:
         # Convert single
         r1 = client.post("/api/v1/convert", data={"manual_text": SAMPLE_METAR})
         assert r1.status_code == 200
-        
+
         # Convert to ZIP
         r2 = client.post("/api/v1/convert-zip", data={"manual_text": SAMPLE_METAR})
         assert r2.status_code == 200
@@ -76,7 +78,7 @@ class TestAPIIntegration:
         r = client.post("/api/v1/convert", data={"manual_text": SAMPLE_METAR})
         assert r.status_code == 200
         data = r.json()
-        
+
         # Verify response structure
         assert "results" in data
         assert "errors" in data
@@ -88,7 +90,7 @@ class TestAPIIntegration:
         """Test that API responses follow schema."""
         r = client.post("/api/v1/convert", data={"manual_text": SAMPLE_METAR})
         data = r.json()
-        
+
         for result in data["results"]:
             assert "name" in result
             assert "content" in result
@@ -100,7 +102,7 @@ class TestAPIIntegration:
         r = client.get("/health")
         assert r.status_code == 200
         health_data = r.json()
-        
+
         # Health check should test GIFTs availability
         assert "status" in health_data
         assert "version" in health_data
@@ -118,7 +120,7 @@ class TestErrorHandling:
         r = client.post("/api/v1/convert", files=files)
         assert r.status_code == 400
         data = r.json()
-        
+
         assert "detail" in data
         assert "message" in data["detail"]
         assert "errors" in data["detail"]

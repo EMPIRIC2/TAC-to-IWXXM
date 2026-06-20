@@ -17,6 +17,7 @@ recognised token without inventing specific meteorology.
 This normalizer is applied **before** the GIFTs decoder in lenient mode so
 that the rest of the conversion pipeline continues unchanged.
 """
+
 from __future__ import annotations
 
 import re
@@ -25,7 +26,7 @@ from typing import Any, Dict, List, Tuple
 # Matches exactly RE + descriptor (SH or FZ) with nothing after — these are
 # the only descriptor-only tokens that are both (a) observed in the wild and
 # (b) fixable via a standards-conformant UP suffix.
-_TRUNCATED_REWX_RE = re.compile(r'^RE(SH|FZ)$', re.IGNORECASE)
+_TRUNCATED_REWX_RE = re.compile(r"^RE(SH|FZ)$", re.IGNORECASE)
 
 
 def normalize_recent_weather_tokens(
@@ -58,7 +59,7 @@ def normalize_recent_weather_tokens(
 
     # Split into alternating tokens and whitespace so we can rewrite only
     # tokens while preserving all original separators exactly.
-    parts = re.split(r'(\s+)', stripped)
+    parts = re.split(r"(\s+)", stripped)
     token_index = 0
 
     for i, part in enumerate(parts):
@@ -69,37 +70,35 @@ def normalize_recent_weather_tokens(
         token = part
         # Some parsers/users append '=' to the last token; strip it before
         # matching so we can still recognise e.g. 'RESH=' as a RESH token.
-        trailing_eq = token.endswith('=')
+        trailing_eq = token.endswith("=")
         bare = token[:-1] if trailing_eq else token
         upper_bare = bare.upper()
 
         match = _TRUNCATED_REWX_RE.match(upper_bare)
         if match:
             descriptor = match.group(1).upper()
-            replacement_bare = f'RE{descriptor}UP'
-            replacement = replacement_bare + ('=' if trailing_eq else '')
+            replacement_bare = f"RE{descriptor}UP"
+            replacement = replacement_bare + ("=" if trailing_eq else "")
 
-            rule = (
-                'recent_weather_truncated_showers'
-                if descriptor == 'SH'
-                else 'recent_weather_truncated_freezing'
+            rule = "recent_weather_truncated_showers" if descriptor == "SH" else "recent_weather_truncated_freezing"
+
+            warnings.append(
+                {
+                    "index": token_index,
+                    "original": token,
+                    "replacement": replacement,
+                    "rule": rule,
+                }
             )
-
-            warnings.append({
-                'index': token_index,
-                'original': token,
-                'replacement': replacement,
-                'rule': rule,
-            })
             parts[i] = replacement
 
         token_index += 1
 
-    normalized = ''.join(parts)
+    normalized = "".join(parts)
     # Re-attach any leading/trailing whitespace from the original input so we
     # don't silently alter strings that the caller may be sensitive about.
-    leading = tac_text[:len(tac_text) - len(tac_text.lstrip())]
-    trailing = tac_text[len(tac_text.rstrip()):]
+    leading = tac_text[: len(tac_text) - len(tac_text.lstrip())]
+    trailing = tac_text[len(tac_text.rstrip()) :]
     return leading + normalized + trailing, warnings
 
 

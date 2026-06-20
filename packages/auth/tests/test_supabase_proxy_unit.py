@@ -1,4 +1,5 @@
 """Unit tests for SupabaseAuthProxy – improves coverage from 58% target."""
+
 import os
 from unittest.mock import MagicMock, patch
 
@@ -14,9 +15,7 @@ class TestIsSessionNotFoundError:
         assert _is_session_not_found_error(Exception("session_not_found")) is True
 
     def test_detects_full_message(self):
-        assert _is_session_not_found_error(
-            Exception("session from session_id claim in jwt does not exist")
-        ) is True
+        assert _is_session_not_found_error(Exception("session from session_id claim in jwt does not exist")) is True
 
     def test_returns_false_for_other_errors(self):
         assert _is_session_not_found_error(Exception("invalid credentials")) is False

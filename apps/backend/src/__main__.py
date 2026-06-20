@@ -1,9 +1,9 @@
 """Entry point for running backend with `python -m src` or from the backend package."""
+
 import os
 
 if __name__ == "__main__":
     import uvicorn
-
 
     # Get configuration from environment or use defaults
     host = os.getenv("HOST", "0.0.0.0")

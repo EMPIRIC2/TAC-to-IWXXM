@@ -1,4 +1,5 @@
 """METAR TAC -> IWXXM conversion utilities."""
+
 from __future__ import annotations
 
 import logging
@@ -27,8 +28,8 @@ except (ImportError, ModuleNotFoundError):
         # Fallback: create a dummy exception class if service unavailable
         class ValError(Exception):  # type: ignore
             """Fallback validation error."""
-            pass
 
+            pass
 
 
 try:
@@ -58,7 +59,7 @@ def _extract_icao_from_tac(tac_text: str) -> Optional[str]:
         return icao
 
     # If no METAR/SPECI keyword, try to find first 4-character code
-    match = re.search(r'\b([A-Z][A-Z0-9]{3})\b', tac_text.upper())
+    match = re.search(r"\b([A-Z][A-Z0-9]{3})\b", tac_text.upper())
     if match:
         return match.group(1)
 
@@ -83,20 +84,20 @@ def convert_metar_tac(tac_text: str, iwxxm_version: Optional[str] = None) -> str
         ConversionError: If conversion fails at any stage
     """
     import warnings
+
     warnings.warn(
         "convert_metar_tac() is deprecated, use convert_metar_tac_with_metadata() instead",
         DeprecationWarning,
-        stacklevel=2
+        stacklevel=2,
     )
 
     # Call new function with validation disabled for backward compatibility
     xml, _ = convert_metar_tac_with_metadata(
         tac_text,
         iwxxm_version=iwxxm_version,
-        validate=False  # Maintain old behavior - no validation
+        validate=False,  # Maintain old behavior - no validation
     )
     return xml
-
 
 
 def _load_aerodrome_db() -> Optional[pathlib.Path]:
@@ -142,7 +143,7 @@ def _lookup_aerodrome(icao: str, use_test_overrides: bool = False):
             elev_service = get_elevation_service()
 
             # Get ISO country code from airport data (e.g., "GB", "US", "GL")
-            country_code = airport.country if hasattr(airport, 'country') else None
+            country_code = airport.country if hasattr(airport, "country") else None
 
             # Convert to format expected by encoder
             position_parts = []
@@ -156,8 +157,8 @@ def _lookup_aerodrome(icao: str, use_test_overrides: bool = False):
                     # Use high-precision coordinates from override (e.g., from reference data)
                     # Format with 8 decimals then strip trailing zeros to match reference style
                     lat, lon = coord_override
-                    lat_str = f"{lat:.8f}".rstrip('0').rstrip('.')
-                    lon_str = f"{lon:.8f}".rstrip('0').rstrip('.')
+                    lat_str = f"{lat:.8f}".rstrip("0").rstrip(".")
+                    lon_str = f"{lon:.8f}".rstrip("0").rstrip(".")
                     position_parts.append(lat_str)
                     position_parts.append(lon_str)
                 else:
@@ -171,7 +172,7 @@ def _lookup_aerodrome(icao: str, use_test_overrides: bool = False):
                     icao=icao,
                     default_elevation_ft=airport.coordinates.elevation_ft,
                     country_code=country_code,
-                    use_test_overrides=use_test_overrides  # Pass test mode flag
+                    use_test_overrides=use_test_overrides,  # Pass test mode flag
                 )
 
                 if elevation_m is not None:
@@ -194,7 +195,9 @@ def _lookup_aerodrome(icao: str, use_test_overrides: bool = False):
                     iataID = override_data["iata"]
                 if "designator" in override_data:
                     alternate = override_data["designator"]
-                logger.debug(f"Applied metadata override for {icao}: name={name}, designator={alternate}, iata={iataID}")
+                logger.debug(
+                    f"Applied metadata override for {icao}: name={name}, designator={alternate}, iata={iataID}"
+                )
 
             return {
                 "name": name,
@@ -269,8 +272,7 @@ def _apply_recent_weather_normalization(
     normalized_tac, norm_warnings = normalize_recent_weather_for_tac(tac_text)
     for warning in norm_warnings:
         logger.info(
-            "METAR recent-weather pre-normalization: '%s' at token index %d "
-            "rewritten to '%s' (rule: %s)",
+            "METAR recent-weather pre-normalization: '%s' at token index %d rewritten to '%s' (rule: %s)",
             warning["original"],
             warning["index"],
             warning["replacement"],
@@ -349,7 +351,7 @@ def convert_metar_tac_with_metadata(
 
             # Parse reference time and create a time.struct_time
             try:
-                dt = datetime.fromisoformat(reference_time_str.replace('Z', '+00:00'))
+                dt = datetime.fromisoformat(reference_time_str.replace("Z", "+00:00"))
                 reference_tuple = dt.timetuple()
                 reference_timestamp = dt.timestamp()
             except ValueError as e:
@@ -412,20 +414,20 @@ def convert_metar_tac_with_metadata(
                 ident.clear()
 
                 # 1. Core ICAO code (must be first)
-                if 'str' in original_ident:
-                    ident['str'] = original_ident['str']
+                if "str" in original_ident:
+                    ident["str"] = original_ident["str"]
 
                 # 2. Airport metadata in canonical order
                 # alternate → <designator>, iataID → <designatorIATA>
                 # Note: Only include fields that are non-empty
-                if 'name' in meta and meta['name']:
-                    ident['name'] = meta['name']
-                if 'alternate' in meta and meta['alternate']:
-                    ident['alternate'] = meta['alternate']
-                if 'iataID' in meta and meta['iataID']:
-                    ident['iataID'] = meta['iataID']
-                if 'position' in meta and meta['position']:
-                    ident['position'] = meta['position']
+                if "name" in meta and meta["name"]:
+                    ident["name"] = meta["name"]
+                if "alternate" in meta and meta["alternate"]:
+                    ident["alternate"] = meta["alternate"]
+                if "iataID" in meta and meta["iataID"]:
+                    ident["iataID"] = meta["iataID"]
+                if "position" in meta and meta["position"]:
+                    ident["position"] = meta["position"]
 
                 # 3. Restore any other fields from original (e.g., index, ts, etc.)
                 for key, value in original_ident.items():
@@ -438,6 +440,7 @@ def convert_metar_tac_with_metadata(
                 if vertical_datum:
                     try:
                         from gifts.common import xmlConfig
+
                         xmlConfig.verticalDatum = vertical_datum
                         logger.debug(f"Set vertical datum for {icao}: {vertical_datum}")
                     except Exception as e:
@@ -473,9 +476,9 @@ def convert_metar_tac_with_metadata(
             if validation_layers is None:
                 validation_layers = [
                     "XML_WELLFORMED",  # Must be well-formed
-                    "XML_SCHEMA",      # Must pass XSD
-                    "SCHEMATRON",      # Should pass business rules
-                    "WMO_CODELISTS"    # Should have valid codes
+                    "XML_SCHEMA",  # Must pass XSD
+                    "SCHEMATRON",  # Should pass business rules
+                    "WMO_CODELISTS",  # Should have valid codes
                 ]
 
             validation_result = orchestrator.validate_complete(
@@ -483,7 +486,7 @@ def convert_metar_tac_with_metadata(
                 xml_content=xml_string,
                 version=iwxxm_version,
                 layers=validation_layers,
-                stop_on_error=raise_on_validation_error
+                stop_on_error=raise_on_validation_error,
             )
 
             # Log validation summary
@@ -506,8 +509,8 @@ def convert_metar_tac_with_metadata(
                     if i.level.value in ["ERROR", "CRITICAL"]
                 ]
                 raise ConversionError(
-                    f"Validation failed with {len(error_msgs)} error(s):\n" +
-                    "\n".join(error_msgs[:5])  # Show first 5 errors
+                    f"Validation failed with {len(error_msgs)} error(s):\n"
+                    + "\n".join(error_msgs[:5])  # Show first 5 errors
                 )
 
         except Exception as e:

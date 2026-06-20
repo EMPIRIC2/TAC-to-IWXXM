@@ -46,8 +46,8 @@ async def fetch_latest_metar(icao_code: str, timeout: int = 10) -> Optional[str]
     params = {
         "ids": icao_code,
         "format": "raw",  # Get raw TAC format
-        "taf": "false",   # Don't include TAF
-        "hours": 1,       # Most recent hour
+        "taf": "false",  # Don't include TAF
+        "hours": 1,  # Most recent hour
     }
 
     try:
@@ -128,10 +128,10 @@ async def test_live_metar_conversion_2025_2(icao_code: str, mock_metar_responses
         if not metar_tac:
             pytest.skip(f"No METAR data available for {icao_code}")
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"Testing {icao_code}")
     print(f"METAR: {metar_tac}")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
 
     # Convert to IWXXM 2025-2 with PRODUCTION datums (no test overrides)
     try:
@@ -140,7 +140,7 @@ async def test_live_metar_conversion_2025_2(icao_code: str, mock_metar_responses
             iwxxm_version="2025-2",
             use_test_overrides=False,  # Use production-accurate vertical datums
             reference_time=None,  # Use current time
-            validate=False  # Disable validation to avoid overhead
+            validate=False,  # Disable validation to avoid overhead
         )
 
         assert iwxxm_xml, "Conversion failed: no XML produced"
@@ -204,7 +204,7 @@ async def test_live_metar_metadata_enrichment():
         iwxxm_version="2025-2",
         use_test_overrides=False,
         reference_time=None,
-        validate=False  # Disable validation to avoid overhead
+        validate=False,  # Disable validation to avoid overhead
     )
 
     assert iwxxm_xml, "Conversion failed: no XML produced"

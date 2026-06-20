@@ -1,4 +1,5 @@
 """Test both username formats for Supabase pooler."""
+
 from sqlalchemy import create_engine, text
 import os
 import pytest
@@ -15,8 +16,7 @@ PROJECT_REF = os.getenv("SUPABASE_PROJECT_REF", "")
 
 if not BASE_PASSWORD or not PROJECT_REF:
     pytest.skip(
-        "SUPABASE_DB_PASSWORD and SUPABASE_PROJECT_REF not set - skipping pooler format test",
-        allow_module_level=True
+        "SUPABASE_DB_PASSWORD and SUPABASE_PROJECT_REF not set - skipping pooler format test", allow_module_level=True
     )
 
 # Test both formats
@@ -26,10 +26,10 @@ formats = [
 ]
 
 for username, description in formats:
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Testing: {description}")
     print(f"Username: {username}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     DATABASE_URL = f"postgresql+psycopg2://{username}:{BASE_PASSWORD}@{BASE_HOST}:{BASE_PORT}/postgres"
 
@@ -55,6 +55,6 @@ for username, description in formats:
         print(f"✗ FAILED: {type(e).__name__}")
         print(f"  Error: {str(e)[:200]}")
 
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("Both formats failed! Please verify credentials in Supabase dashboard.")
-print("="*60)
+print("=" * 60)

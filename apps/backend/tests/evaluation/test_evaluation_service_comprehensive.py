@@ -1,4 +1,5 @@
 """Comprehensive unit tests for evaluation service."""
+
 import xml.etree.ElementTree as ET
 
 import pytest
@@ -63,13 +64,13 @@ class TestEvaluationServiceComprehensive:
         """Test comparing complex nested XML structures."""
         service = EvaluationService()
 
-        xml1 = '''<?xml version="1.0"?>
+        xml1 = """<?xml version="1.0"?>
         <METAR>
             <observation>
                 <temperature>15</temperature>
                 <dewpoint>10</dewpoint>
             </observation>
-        </METAR>'''
+        </METAR>"""
 
         xml2 = xml1
 
@@ -106,7 +107,7 @@ class TestEvaluationServiceComprehensive:
         """Test element path collection."""
         service = EvaluationService()
 
-        xml = '<root><child1><grandchild/></child1><child2/></root>'
+        xml = "<root><child1><grandchild/></child1><child2/></root>"
         tree = ET.fromstring(xml)
 
         paths = service._collect_element_paths(tree)
@@ -138,7 +139,7 @@ class TestEvaluationServiceComprehensive:
         service = EvaluationService()
 
         xml1 = '<?xml version="1.0"?><root><a>1</a></root>'
-        xml2_elements = ''.join([f'<elem{i}>{i}</elem{i}>' for i in range(15)])
+        xml2_elements = "".join([f"<elem{i}>{i}</elem{i}>" for i in range(15)])
         xml2 = f'<?xml version="1.0"?><root><a>1</a>{xml2_elements}</root>'
 
         result = service.compare_iwxxm(xml1, xml2)
@@ -149,8 +150,8 @@ class TestEvaluationServiceComprehensive:
         """Test that value mismatches are limited to first 10."""
         service = EvaluationService()
 
-        elems1 = ''.join([f'<e{i}>a</e{i}>' for i in range(15)])
-        elems2 = ''.join([f'<e{i}>b</e{i}>' for i in range(15)])
+        elems1 = "".join([f"<e{i}>a</e{i}>" for i in range(15)])
+        elems2 = "".join([f"<e{i}>b</e{i}>" for i in range(15)])
 
         xml1 = f'<?xml version="1.0"?><root>{elems1}</root>'
         xml2 = f'<?xml version="1.0"?><root>{elems2}</root>'
@@ -168,7 +169,7 @@ class TestEvaluationServiceComprehensive:
             missing_elements=[],
             extra_elements=[],
             value_mismatches=[],
-            error_message=None
+            error_message=None,
         )
 
         assert result.passed is True

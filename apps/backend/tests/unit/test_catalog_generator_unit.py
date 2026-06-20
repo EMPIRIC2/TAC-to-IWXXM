@@ -1,4 +1,5 @@
 """Unit tests for CatalogGenerator – 0% coverage target."""
+
 import json
 from pathlib import Path
 
@@ -31,10 +32,7 @@ class TestCatalogGeneratorGenerateCatalog:
     def test_generate_catalog_creates_xml(self, tmp_path):
         self._setup_version_dir(tmp_path)
         gen = CatalogGenerator(schemas_base_path=tmp_path)
-        path = gen.generate_catalog(
-            version="2025-2",
-            remote_base_url="https://schemas.wmo.int/iwxxm/2025-2/"
-        )
+        path = gen.generate_catalog(version="2025-2", remote_base_url="https://schemas.wmo.int/iwxxm/2025-2/")
         assert path.exists()
         assert path.name == "catalog.xml"
 
@@ -46,10 +44,7 @@ class TestCatalogGeneratorGenerateCatalog:
     def test_generate_catalog_contains_rewrite_uri(self, tmp_path):
         self._setup_version_dir(tmp_path)
         gen = CatalogGenerator(schemas_base_path=tmp_path)
-        path = gen.generate_catalog(
-            version="2025-2",
-            remote_base_url="https://schemas.wmo.int/iwxxm/2025-2/"
-        )
+        path = gen.generate_catalog(version="2025-2", remote_base_url="https://schemas.wmo.int/iwxxm/2025-2/")
         tree = ET.parse(str(path))
         root = tree.getroot()
         # Root should be a catalog element
@@ -73,10 +68,7 @@ class TestCatalogGeneratorGenerateCatalog:
         gml_dir = schema_dir / "externalSchema" / "gml" / "3.2.1"
         gml_dir.mkdir(parents=True)
         gen = CatalogGenerator(schemas_base_path=tmp_path)
-        path = gen.generate_catalog(
-            version="2025-2",
-            remote_base_url="https://schemas.wmo.int/iwxxm/2025-2/"
-        )
+        path = gen.generate_catalog(version="2025-2", remote_base_url="https://schemas.wmo.int/iwxxm/2025-2/")
         content = path.read_text()
         # GML rewrite should be included
         assert "opengis.net/gml" in content
@@ -84,10 +76,7 @@ class TestCatalogGeneratorGenerateCatalog:
     def test_no_common_dependencies_when_dirs_missing(self, tmp_path):
         self._setup_version_dir(tmp_path)
         gen = CatalogGenerator(schemas_base_path=tmp_path)
-        path = gen.generate_catalog(
-            version="2025-2",
-            remote_base_url="https://schemas.wmo.int/iwxxm/2025-2/"
-        )
+        path = gen.generate_catalog(version="2025-2", remote_base_url="https://schemas.wmo.int/iwxxm/2025-2/")
         content = path.read_text()
         # Should not include GML since externalSchema/gml doesn't exist
         assert "opengis.net/gml" not in content
@@ -119,9 +108,9 @@ class TestCatalogGeneratorGenerateAll:
         (empty_root / ".manifest.json").write_text(json.dumps({"root_url": ""}), encoding="utf-8")
         valid_dir = tmp_path / "2025-3"
         valid_dir.mkdir()
-        (valid_dir / ".manifest.json").write_text(json.dumps({
-            "root_url": "https://schemas.wmo.int/iwxxm/2025-3/iwxxm.xsd"
-        }), encoding="utf-8")
+        (valid_dir / ".manifest.json").write_text(
+            json.dumps({"root_url": "https://schemas.wmo.int/iwxxm/2025-3/iwxxm.xsd"}), encoding="utf-8"
+        )
         calls = []
 
         def fake_generate_catalog(version, remote_base_url, local_schema_dir=None):
@@ -140,9 +129,9 @@ class TestCatalogGeneratorGenerateAll:
     def test_generate_all_uses_manifest_and_skips_special_directories(self, monkeypatch, tmp_path):
         version_dir = tmp_path / "2025-2"
         version_dir.mkdir()
-        (version_dir / ".manifest.json").write_text(json.dumps({
-            "root_url": "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd"
-        }), encoding="utf-8")
+        (version_dir / ".manifest.json").write_text(
+            json.dumps({"root_url": "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd"}), encoding="utf-8"
+        )
         (tmp_path / "backup-old").mkdir()
         (tmp_path / "template-schemas").mkdir()
         (tmp_path / "plain-file.txt").write_text("ignore", encoding="utf-8")
@@ -157,18 +146,20 @@ class TestCatalogGeneratorGenerateAll:
         result = CatalogGenerator(tmp_path).generate_all_catalogs()
 
         assert result == [version_dir / "catalog.xml"]
-        assert calls == [(
-            "2025-2",
-            "https://schemas.wmo.int/iwxxm/2025-2/",
-            version_dir,
-        )]
+        assert calls == [
+            (
+                "2025-2",
+                "https://schemas.wmo.int/iwxxm/2025-2/",
+                version_dir,
+            )
+        ]
 
     def test_generate_all_logs_and_continues_on_generation_error(self, monkeypatch, tmp_path):
         version_dir = tmp_path / "2025-2"
         version_dir.mkdir()
-        (version_dir / ".manifest.json").write_text(json.dumps({
-            "root_url": "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd"
-        }), encoding="utf-8")
+        (version_dir / ".manifest.json").write_text(
+            json.dumps({"root_url": "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd"}), encoding="utf-8"
+        )
 
         def fake_generate_catalog(version, remote_base_url, local_schema_dir=None):
             raise RuntimeError(f"failed for {version}")

@@ -22,6 +22,7 @@ from src.validation.semantic_rules import (
 @dataclass
 class ValidationStatistics:
     """Statistics from comprehensive validation run."""
+
     total_cases: int = 0
     passed: int = 0
     failed: int = 0
@@ -37,12 +38,14 @@ class ValidationStatistics:
     visibility_failed: int = 0
 
     # Failure distribution
-    failures_by_category: Dict[str, int] = field(default_factory=lambda: {
-        'data_quality': 0,
-        'physical_impossibility': 0,
-        'unusual_but_possible': 0,
-        'sensor_error': 0,
-    })
+    failures_by_category: Dict[str, int] = field(
+        default_factory=lambda: {
+            "data_quality": 0,
+            "physical_impossibility": 0,
+            "unusual_but_possible": 0,
+            "sensor_error": 0,
+        }
+    )
 
     # Phenomenon distribution
     phenomena_encountered: Dict[str, int] = field(default_factory=dict)
@@ -105,9 +108,9 @@ class TestExtendedValidationCoverage:
     def rules(self):
         """Provide validation rules."""
         return {
-            'temperature': TemperatureValidationRule(),
-            'cloud': CloudLayerValidationRule(),
-            'visibility': VisibilityWeatherValidationRule(),
+            "temperature": TemperatureValidationRule(),
+            "cloud": CloudLayerValidationRule(),
+            "visibility": VisibilityWeatherValidationRule(),
         }
 
     @pytest.fixture
@@ -118,56 +121,53 @@ class TestExtendedValidationCoverage:
     def parse_metar_data(self, raw_metar: str) -> Dict[str, Any]:
         """Extract temperature, clouds, visibility, and phenomena from METAR."""
         data = {
-            'temperature': None,
-            'dewpoint': None,
-            'cloud_layers': [],
-            'visibility_meters': None,
-            'phenomena': [],
+            "temperature": None,
+            "dewpoint": None,
+            "cloud_layers": [],
+            "visibility_meters": None,
+            "phenomena": [],
         }
 
         # Extract temperature and dewpoint (format: M10/M15 or 15/10)
-        temp_match = re.search(r'(M?\d{1,2})/(M?\d{1,2})', raw_metar)
+        temp_match = re.search(r"(M?\d{1,2})/(M?\d{1,2})", raw_metar)
         if temp_match:
-            temp_str = temp_match.group(1).replace('M', '-')
-            dewpt_str = temp_match.group(2).replace('M', '-')
+            temp_str = temp_match.group(1).replace("M", "-")
+            dewpt_str = temp_match.group(2).replace("M", "-")
             try:
-                data['temperature'] = float(temp_str)
-                data['dewpoint'] = float(dewpt_str)
+                data["temperature"] = float(temp_str)
+                data["dewpoint"] = float(dewpt_str)
             except:
                 pass
 
         # Extract visibility (format: 10SM or 9999 or M0400)
         # Try statute miles first
-        sm_match = re.search(r'(\d+)SM', raw_metar)
+        sm_match = re.search(r"(\d+)SM", raw_metar)
         if sm_match:
             sm = int(sm_match.group(1))
-            data['visibility_meters'] = round(sm * 1609.34)
+            data["visibility_meters"] = round(sm * 1609.34)
         else:
             # Try meters
-            m_match = re.search(r'(?<![0-9M])(\d{4})(?![0-9])', raw_metar)
+            m_match = re.search(r"(?<![0-9M])(\d{4})(?![0-9])", raw_metar)
             if m_match:
-                data['visibility_meters'] = int(m_match.group(1))
+                data["visibility_meters"] = int(m_match.group(1))
 
         # Extract cloud layers (format: FEW250 SCT500 BKN1200)
-        cloud_pattern = r'(CLR|SKC|FEW|SCT|BKN|OVC)(\d{3})'
+        cloud_pattern = r"(CLR|SKC|FEW|SCT|BKN|OVC)(\d{3})"
         cloud_matches = re.finditer(cloud_pattern, raw_metar)
         for match in cloud_matches:
             coverage = match.group(1)
             altitude_hundreds = int(match.group(2))
-            data['cloud_layers'].append({
-                'coverage': coverage,
-                'altitude_m': altitude_hundreds * 100
-            })
+            data["cloud_layers"].append({"coverage": coverage, "altitude_m": altitude_hundreds * 100})
 
         # Extract weather phenomena
-        phenomena_pattern = r'(VC|RE|DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)'
+        phenomena_pattern = r"(VC|RE|DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)"
         phenomena_matches = re.finditer(phenomena_pattern, raw_metar)
         phenomena = []
         for match in phenomena_matches:
             p = match.group(1)
             if p not in phenomena:  # Avoid duplicates
                 phenomena.append(p)
-        data['phenomena'] = phenomena
+        data["phenomena"] = phenomena
 
         return data
 
@@ -187,11 +187,8 @@ class TestExtendedValidationCoverage:
             case_passed = True
 
             # Validate temperature
-            if data['temperature'] is not None and data['dewpoint'] is not None:
-                temp_issues = rules['temperature'].validate(
-                    temperature=data['temperature'],
-                    dewpoint=data['dewpoint']
-                )
+            if data["temperature"] is not None and data["dewpoint"] is not None:
+                temp_issues = rules["temperature"].validate(temperature=data["temperature"], dewpoint=data["dewpoint"])
 
                 if temp_issues:
                     case_passed = False
@@ -205,10 +202,8 @@ class TestExtendedValidationCoverage:
                     stats.temperature_passed += 1
 
             # Validate cloud layers
-            if data['cloud_layers']:
-                cloud_issues = rules['cloud'].validate(
-                    cloud_layers=data['cloud_layers']
-                )
+            if data["cloud_layers"]:
+                cloud_issues = rules["cloud"].validate(cloud_layers=data["cloud_layers"])
 
                 if cloud_issues:
                     case_passed = False
@@ -222,15 +217,14 @@ class TestExtendedValidationCoverage:
                     stats.cloud_passed += 1
 
                 # Collect coverage code statistics
-                for layer in data['cloud_layers']:
-                    code = layer['coverage']
+                for layer in data["cloud_layers"]:
+                    code = layer["coverage"]
                     stats.coverage_codes[code] = stats.coverage_codes.get(code, 0) + 1
 
             # Validate visibility and weather
-            if data['visibility_meters'] is not None and data['phenomena']:
-                vis_issues = rules['visibility'].validate(
-                    visibility_meters=data['visibility_meters'],
-                    weather_phenomena=data['phenomena']
+            if data["visibility_meters"] is not None and data["phenomena"]:
+                vis_issues = rules["visibility"].validate(
+                    visibility_meters=data["visibility_meters"], weather_phenomena=data["phenomena"]
                 )
 
                 if vis_issues:
@@ -245,7 +239,7 @@ class TestExtendedValidationCoverage:
                     stats.visibility_passed += 1
 
                 # Collect phenomena statistics
-                for p in data['phenomena']:
+                for p in data["phenomena"]:
                     stats.phenomena_encountered[p] = stats.phenomena_encountered.get(p, 0) + 1
 
             # Update case result
@@ -260,88 +254,70 @@ class TestExtendedValidationCoverage:
                 stats.warnings += 1
 
             # Collect real data statistics
-            if data['temperature'] is not None:
-                if 'temperatures' not in stats.temperature_stats:
-                    stats.temperature_stats['temperatures'] = []
-                    stats.temperature_stats['spreads'] = []
-                    stats.temperature_stats['min_temp'] = float('inf')
-                    stats.temperature_stats['max_temp'] = float('-inf')
+            if data["temperature"] is not None:
+                if "temperatures" not in stats.temperature_stats:
+                    stats.temperature_stats["temperatures"] = []
+                    stats.temperature_stats["spreads"] = []
+                    stats.temperature_stats["min_temp"] = float("inf")
+                    stats.temperature_stats["max_temp"] = float("-inf")
 
-                stats.temperature_stats['temperatures'].append(data['temperature'])
-                if data['dewpoint'] is not None:
-                    spread = data['temperature'] - data['dewpoint']
-                    stats.temperature_stats['spreads'].append(spread)
-                    stats.temperature_stats['min_temp'] = min(
-                        stats.temperature_stats['min_temp'],
-                        data['temperature']
-                    )
-                    stats.temperature_stats['max_temp'] = max(
-                        stats.temperature_stats['max_temp'],
-                        data['temperature']
-                    )
+                stats.temperature_stats["temperatures"].append(data["temperature"])
+                if data["dewpoint"] is not None:
+                    spread = data["temperature"] - data["dewpoint"]
+                    stats.temperature_stats["spreads"].append(spread)
+                    stats.temperature_stats["min_temp"] = min(stats.temperature_stats["min_temp"], data["temperature"])
+                    stats.temperature_stats["max_temp"] = max(stats.temperature_stats["max_temp"], data["temperature"])
 
-            if data['visibility_meters'] is not None:
-                if 'visibilities' not in stats.visibility_stats:
-                    stats.visibility_stats['visibilities'] = []
-                    stats.visibility_stats['min_vis'] = float('inf')
-                    stats.visibility_stats['max_vis'] = float('-inf')
-                    stats.visibility_stats['clear_sky_count'] = 0
+            if data["visibility_meters"] is not None:
+                if "visibilities" not in stats.visibility_stats:
+                    stats.visibility_stats["visibilities"] = []
+                    stats.visibility_stats["min_vis"] = float("inf")
+                    stats.visibility_stats["max_vis"] = float("-inf")
+                    stats.visibility_stats["clear_sky_count"] = 0
 
-                stats.visibility_stats['visibilities'].append(data['visibility_meters'])
-                stats.visibility_stats['min_vis'] = min(
-                    stats.visibility_stats['min_vis'],
-                    data['visibility_meters']
-                )
-                stats.visibility_stats['max_vis'] = max(
-                    stats.visibility_stats['max_vis'],
-                    data['visibility_meters']
-                )
+                stats.visibility_stats["visibilities"].append(data["visibility_meters"])
+                stats.visibility_stats["min_vis"] = min(stats.visibility_stats["min_vis"], data["visibility_meters"])
+                stats.visibility_stats["max_vis"] = max(stats.visibility_stats["max_vis"], data["visibility_meters"])
 
                 # Count clear sky (>9999m)
-                if data['visibility_meters'] >= 9999:
-                    stats.visibility_stats['clear_sky_count'] += 1
+                if data["visibility_meters"] >= 9999:
+                    stats.visibility_stats["clear_sky_count"] += 1
 
-            if data['cloud_layers']:
-                if 'altitudes' not in stats.altitude_stats:
-                    stats.altitude_stats['altitudes'] = []
-                    stats.altitude_stats['gaps'] = []
-                    stats.altitude_stats['min_alt'] = float('inf')
-                    stats.altitude_stats['max_alt'] = float('-inf')
+            if data["cloud_layers"]:
+                if "altitudes" not in stats.altitude_stats:
+                    stats.altitude_stats["altitudes"] = []
+                    stats.altitude_stats["gaps"] = []
+                    stats.altitude_stats["min_alt"] = float("inf")
+                    stats.altitude_stats["max_alt"] = float("-inf")
 
-                for layer in data['cloud_layers']:
-                    alt = layer['altitude_m']
-                    stats.altitude_stats['altitudes'].append(alt)
-                    stats.altitude_stats['min_alt'] = min(
-                        stats.altitude_stats['min_alt'],
-                        alt
-                    )
-                    stats.altitude_stats['max_alt'] = max(
-                        stats.altitude_stats['max_alt'],
-                        alt
-                    )
+                for layer in data["cloud_layers"]:
+                    alt = layer["altitude_m"]
+                    stats.altitude_stats["altitudes"].append(alt)
+                    stats.altitude_stats["min_alt"] = min(stats.altitude_stats["min_alt"], alt)
+                    stats.altitude_stats["max_alt"] = max(stats.altitude_stats["max_alt"], alt)
 
                 # Calculate gaps
-                if len(data['cloud_layers']) > 1:
-                    for i in range(1, len(data['cloud_layers'])):
-                        gap = (data['cloud_layers'][i]['altitude_m'] -
-                               data['cloud_layers'][i-1]['altitude_m'])
+                if len(data["cloud_layers"]) > 1:
+                    for i in range(1, len(data["cloud_layers"])):
+                        gap = data["cloud_layers"][i]["altitude_m"] - data["cloud_layers"][i - 1]["altitude_m"]
                         if gap > 0:
-                            stats.altitude_stats['gaps'].append(gap)
+                            stats.altitude_stats["gaps"].append(gap)
 
         # Print detailed results
         self._print_validation_results(stats, len(test_cases))
 
         # Expect good pass rate on real data (cloud layer warnings reduce this)
         # Temperature: Should be 100%, Cloud: May flag unusual but valid, Visibility: Should be 90%+
-        assert stats.pass_rate() >= 70.0, \
+        assert stats.pass_rate() >= 70.0, (
             f"Pass rate {stats.pass_rate():.1f}% below 70% threshold (cloud warnings affecting real data)"
+        )
 
     def _print_validation_results(self, stats: ValidationStatistics, total_cases: int):
         """Print comprehensive validation statistics."""
 
-        print(f"\n\n{'='*80}")
+        print(f"\n\n{'=' * 80}")
         print("EXTENDED COVERAGE VALIDATION RESULTS (Task 3.5)")
-        print(f"{'='*80}")
+        print(f"{'=' * 80}")
 
         print("\n📊 OVERALL STATISTICS")
         print(f"  Total test cases: {stats.total_cases}")
@@ -359,14 +335,14 @@ class TestExtendedValidationCoverage:
             print(f"  Failed: {stats.temperature_failed}")
 
         if stats.temperature_stats:
-            temps = stats.temperature_stats.get('temperatures', [])
-            spreads = stats.temperature_stats.get('spreads', [])
+            temps = stats.temperature_stats.get("temperatures", [])
+            spreads = stats.temperature_stats.get("spreads", [])
             if temps:
                 print(f"  Temperature range: {min(temps):.1f}°C to {max(temps):.1f}°C")
-                print(f"  Average: {sum(temps)/len(temps):.1f}°C")
+                print(f"  Average: {sum(temps) / len(temps):.1f}°C")
             if spreads:
                 print(f"  T-Td spread range: {min(spreads):.1f}°C to {max(spreads):.1f}°C")
-                print(f"  Average spread: {sum(spreads)/len(spreads):.1f}°C")
+                print(f"  Average spread: {sum(spreads) / len(spreads):.1f}°C")
 
         print("\n☁️  CLOUD LAYER VALIDATION")
         print(f"  Cases validated: {stats.cloud_passed + stats.cloud_failed}")
@@ -383,16 +359,16 @@ class TestExtendedValidationCoverage:
                 print(f"    {code}: {count} ({pct:.1f}%)")
 
         if stats.altitude_stats:
-            alts = stats.altitude_stats.get('altitudes', [])
-            gaps = stats.altitude_stats.get('gaps', [])
+            alts = stats.altitude_stats.get("altitudes", [])
+            gaps = stats.altitude_stats.get("gaps", [])
             if alts:
                 print("\n  Altitude statistics:")
                 print(f"    Range: {stats.altitude_stats['min_alt']}m to {stats.altitude_stats['max_alt']}m")
-                print(f"    Average: {sum(alts)/len(alts):.0f}m")
+                print(f"    Average: {sum(alts) / len(alts):.0f}m")
             if gaps:
                 print("    Gap statistics (between layers):")
                 print(f"    Range: {min(gaps)}m to {max(gaps)}m")
-                print(f"    Average: {sum(gaps)/len(gaps):.0f}m")
+                print(f"    Average: {sum(gaps) / len(gaps):.0f}m")
 
         print("\n👁️  VISIBILITY-WEATHER VALIDATION")
         print(f"  Cases validated: {stats.visibility_passed + stats.visibility_failed}")
@@ -402,15 +378,13 @@ class TestExtendedValidationCoverage:
             print(f"  Failed: {stats.visibility_failed}")
 
         if stats.visibility_stats:
-            vis_list = stats.visibility_stats.get('visibilities', [])
+            vis_list = stats.visibility_stats.get("visibilities", [])
             if vis_list:
-                clear_count = stats.visibility_stats.get('clear_sky_count', 0)
+                clear_count = stats.visibility_stats.get("clear_sky_count", 0)
                 print("\n  Visibility statistics:")
-                print(f"    Range: {stats.visibility_stats['min_vis']}m to "
-                      f"{stats.visibility_stats['max_vis']}m")
-                print(f"    Average: {sum(vis_list)/len(vis_list):.0f}m")
-                print(f"    Clear sky cases (≥9999m): {clear_count} "
-                      f"({clear_count/len(vis_list)*100:.1f}%)")
+                print(f"    Range: {stats.visibility_stats['min_vis']}m to {stats.visibility_stats['max_vis']}m")
+                print(f"    Average: {sum(vis_list) / len(vis_list):.0f}m")
+                print(f"    Clear sky cases (≥9999m): {clear_count} ({clear_count / len(vis_list) * 100:.1f}%)")
 
         if stats.phenomena_encountered:
             print("\n  Weather phenomena frequencies:")
@@ -420,7 +394,7 @@ class TestExtendedValidationCoverage:
                 pct = count / total_pheno * 100
                 print(f"    {pheno}: {count} ({pct:.1f}%)")
 
-        print(f"\n{'='*80}\n")
+        print(f"\n{'=' * 80}\n")
 
 
 class TestValidationRuleEffectiveness:
@@ -438,9 +412,9 @@ class TestValidationRuleEffectiveness:
         if not test_cases:
             pytest.skip("No test cases generated")
 
-        print(f"\n\n{'='*80}")
+        print(f"\n\n{'=' * 80}")
         print("RULE EFFECTIVENESS ANALYSIS")
-        print(f"{'='*80}")
+        print(f"{'=' * 80}")
 
         # Rules comparison
         temp_rule = TemperatureValidationRule()
@@ -449,31 +423,31 @@ class TestValidationRuleEffectiveness:
 
         # Quick stats collection
         rules_info = {
-            'Temperature (T ≥ Td)': {
-                'cases_tested': 0,
-                'issues_found': 0,
-                'rules': ['T >= Td', 'Spread check', 'RH calculation']
+            "Temperature (T ≥ Td)": {
+                "cases_tested": 0,
+                "issues_found": 0,
+                "rules": ["T >= Td", "Spread check", "RH calculation"],
             },
-            'Cloud Layer Ordering': {
-                'cases_tested': 0,
-                'issues_found': 0,
-                'rules': ['Altitude increasing', 'Coverage non-increasing', 'Gap analysis']
+            "Cloud Layer Ordering": {
+                "cases_tested": 0,
+                "issues_found": 0,
+                "rules": ["Altitude increasing", "Coverage non-increasing", "Gap analysis"],
             },
-            'Visibility-Weather': {
-                'cases_tested': 0,
-                'issues_found': 0,
-                'rules': ['Single phenomenon checks (7)', 'Compound effects (4)', 'Severity escalation']
-            }
+            "Visibility-Weather": {
+                "cases_tested": 0,
+                "issues_found": 0,
+                "rules": ["Single phenomenon checks (7)", "Compound effects (4)", "Severity escalation"],
+            },
         }
 
         print("\nRule Coverage:")
         for rule in rules_info:
             info = rules_info[rule]
             print(f"\n  {rule}:")
-            for sub_rule in info['rules']:
+            for sub_rule in info["rules"]:
                 print(f"    ✓ {sub_rule}")
 
-        print(f"\n{'='*80}\n")
+        print(f"\n{'=' * 80}\n")
 
 
 if __name__ == "__main__":

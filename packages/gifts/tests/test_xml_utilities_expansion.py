@@ -43,6 +43,7 @@ class TestBulletinFileHandling:
     def test_bulletin_import(self):
         """Test Bulletin can be imported"""
         from gifts.common.bulletin import Bulletin
+
         b = Bulletin()
         assert b is not None
 

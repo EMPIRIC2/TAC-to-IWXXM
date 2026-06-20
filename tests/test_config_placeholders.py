@@ -12,7 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # Patterns that indicate an unconfigured / placeholder value
 _PLACEHOLDER_PATTERNS = [
     re.compile(r"YOUR_PROJECT_REF\.supabase\.co"),
-    re.compile(r"sb_publishable_[A-Za-z0-9_]{10,}"),   # placeholder publishable key
+    re.compile(r"sb_publishable_[A-Za-z0-9_]{10,}"),  # placeholder publishable key
 ]
 
 # Config files that are checked into source and affect builds or Render deploys
@@ -41,8 +41,7 @@ def test_no_placeholder_supabase_url_in_ci_config():
     hits = _scan_file(".github/workflows/ci-cd.yml")
     assert not hits, (
         "Placeholder Supabase credentials found in CI config — "
-        "use ${{ secrets.FRONTEND_VITE_SUPABASE_URL }} instead:\n"
-        + "\n".join(hits)
+        "use ${{ secrets.FRONTEND_VITE_SUPABASE_URL }} instead:\n" + "\n".join(hits)
     )
 
 

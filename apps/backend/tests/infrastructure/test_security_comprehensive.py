@@ -1,4 +1,5 @@
 """Comprehensive tests for security and authentication."""
+
 import pathlib
 import sys
 from unittest.mock import patch
@@ -47,10 +48,7 @@ class TestVerifySupabaseToken:
     @pytest.mark.asyncio
     async def test_verify_token_success(self):
         """Test successful token verification via auth package."""
-        mock_credentials = HTTPAuthorizationCredentials(
-            scheme="Bearer",
-            credentials="valid.token.here"
-        )
+        mock_credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="valid.token.here")
 
         proxy = _FakeProxy(
             user={
@@ -60,8 +58,8 @@ class TestVerifySupabaseToken:
             }
         )
 
-        with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('src.utilities.security.get_supabase_proxy', return_value=proxy):
+        with patch.dict("os.environ", {"DISABLE_AUTH": "false"}):
+            with patch("src.utilities.security.get_supabase_proxy", return_value=proxy):
                 result = await verify_supabase_token(mock_credentials)
                 assert result["sub"] == "user123"
                 assert result["email"] == "test@example.com"
@@ -70,15 +68,12 @@ class TestVerifySupabaseToken:
     @pytest.mark.asyncio
     async def test_verify_token_invalid(self):
         """Test token verification with invalid token."""
-        mock_credentials = HTTPAuthorizationCredentials(
-            scheme="Bearer",
-            credentials="invalid.token.here"
-        )
+        mock_credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="invalid.token.here")
 
         proxy = _FakeProxy(verify=False)
 
-        with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('src.utilities.security.get_supabase_proxy', return_value=proxy):
+        with patch.dict("os.environ", {"DISABLE_AUTH": "false"}):
+            with patch("src.utilities.security.get_supabase_proxy", return_value=proxy):
                 with pytest.raises(HTTPException) as exc_info:
                     await verify_supabase_token(mock_credentials)
                 assert exc_info.value.status_code == 401
@@ -87,14 +82,11 @@ class TestVerifySupabaseToken:
     @pytest.mark.asyncio
     async def test_verify_token_auth_not_configured(self):
         """Test token verification when Supabase env is missing."""
-        mock_credentials = HTTPAuthorizationCredentials(
-            scheme="Bearer",
-            credentials="test.token.here"
-        )
+        mock_credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="test.token.here")
 
-        with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
+        with patch.dict("os.environ", {"DISABLE_AUTH": "false"}):
             with patch(
-                'src.utilities.security.get_supabase_proxy',
+                "src.utilities.security.get_supabase_proxy",
                 side_effect=ValueError("SUPABASE_URL and SUPABASE_ANON_KEY must be set"),
             ):
                 with pytest.raises(HTTPException) as exc_info:
@@ -105,17 +97,12 @@ class TestVerifySupabaseToken:
     @pytest.mark.asyncio
     async def test_verify_token_get_user_failure(self):
         """Test token verification when user lookup fails."""
-        mock_credentials = HTTPAuthorizationCredentials(
-            scheme="Bearer",
-            credentials="test.token.here"
-        )
+        mock_credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="test.token.here")
 
-        proxy = _FakeProxy(
-            get_user_error=HTTPException(status_code=401, detail="Failed to get user")
-        )
+        proxy = _FakeProxy(get_user_error=HTTPException(status_code=401, detail="Failed to get user"))
 
-        with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('src.utilities.security.get_supabase_proxy', return_value=proxy):
+        with patch.dict("os.environ", {"DISABLE_AUTH": "false"}):
+            with patch("src.utilities.security.get_supabase_proxy", return_value=proxy):
                 with pytest.raises(HTTPException) as exc_info:
                     await verify_supabase_token(mock_credentials)
                 assert exc_info.value.status_code == 401
@@ -123,15 +110,12 @@ class TestVerifySupabaseToken:
     @pytest.mark.asyncio
     async def test_verify_token_unexpected_error(self):
         """Test token verification handles unexpected errors."""
-        mock_credentials = HTTPAuthorizationCredentials(
-            scheme="Bearer",
-            credentials="test.token.here"
-        )
+        mock_credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="test.token.here")
 
         proxy = _FakeProxy(get_user_error=RuntimeError("Unexpected error"))
 
-        with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('src.utilities.security.get_supabase_proxy', return_value=proxy):
+        with patch.dict("os.environ", {"DISABLE_AUTH": "false"}):
+            with patch("src.utilities.security.get_supabase_proxy", return_value=proxy):
                 with pytest.raises(HTTPException) as exc_info:
                     await verify_supabase_token(mock_credentials)
                 assert exc_info.value.status_code == 500
@@ -139,10 +123,7 @@ class TestVerifySupabaseToken:
     @pytest.mark.asyncio
     async def test_verify_token_return_user_data(self):
         """Test token verification returns complete user data."""
-        mock_credentials = HTTPAuthorizationCredentials(
-            scheme="Bearer",
-            credentials="valid.token.here"
-        )
+        mock_credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="valid.token.here")
 
         proxy = _FakeProxy(
             user={
@@ -152,8 +133,8 @@ class TestVerifySupabaseToken:
             }
         )
 
-        with patch.dict('os.environ', {'DISABLE_AUTH': 'false'}):
-            with patch('src.utilities.security.get_supabase_proxy', return_value=proxy):
+        with patch.dict("os.environ", {"DISABLE_AUTH": "false"}):
+            with patch("src.utilities.security.get_supabase_proxy", return_value=proxy):
                 result = await verify_supabase_token(mock_credentials)
                 assert result["sub"] == "user-id-123"
                 assert result["user_id"] == "user-id-123"

@@ -1,4 +1,5 @@
 """Comprehensive tests for xmlUtilities module"""
+
 import pytest
 import uuid
 import xml.etree.ElementTree as ET
@@ -13,28 +14,27 @@ class TestCardinalConversions:
 
     def test_cardinal_points_strings(self):
         """Test CardinalPtsToDegreesS dictionary"""
-        assert deu.CardinalPtsToDegreesS['N'] == '360'
-        assert deu.CardinalPtsToDegreesS['E'] == '90'
-        assert deu.CardinalPtsToDegreesS['S'] == '180'
-        assert deu.CardinalPtsToDegreesS['W'] == '270'
-        assert deu.CardinalPtsToDegreesS['NE'] == '45'
-        assert deu.CardinalPtsToDegreesS['SE'] == '135'
-        assert deu.CardinalPtsToDegreesS['SW'] == '225'
-        assert deu.CardinalPtsToDegreesS['NW'] == '315'
+        assert deu.CardinalPtsToDegreesS["N"] == "360"
+        assert deu.CardinalPtsToDegreesS["E"] == "90"
+        assert deu.CardinalPtsToDegreesS["S"] == "180"
+        assert deu.CardinalPtsToDegreesS["W"] == "270"
+        assert deu.CardinalPtsToDegreesS["NE"] == "45"
+        assert deu.CardinalPtsToDegreesS["SE"] == "135"
+        assert deu.CardinalPtsToDegreesS["SW"] == "225"
+        assert deu.CardinalPtsToDegreesS["NW"] == "315"
 
     def test_cardinal_points_floats(self):
         """Test CardinalPtsToDegreesF dictionary"""
-        assert deu.CardinalPtsToDegreesF['N'] == 360.
-        assert deu.CardinalPtsToDegreesF['E'] == 90.
-        assert deu.CardinalPtsToDegreesF['S'] == 180.
-        assert deu.CardinalPtsToDegreesF['W'] == 270.
-        assert deu.CardinalPtsToDegreesF['NNE'] == 22.5
-        assert deu.CardinalPtsToDegreesF['ESE'] == 112.5
+        assert deu.CardinalPtsToDegreesF["N"] == 360.0
+        assert deu.CardinalPtsToDegreesF["E"] == 90.0
+        assert deu.CardinalPtsToDegreesF["S"] == 180.0
+        assert deu.CardinalPtsToDegreesF["W"] == 270.0
+        assert deu.CardinalPtsToDegreesF["NNE"] == 22.5
+        assert deu.CardinalPtsToDegreesF["ESE"] == 112.5
 
     def test_all_cardinal_points_present(self):
         """Test that all cardinal and intercardinal points are present"""
-        expected_points = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
-                           'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW']
+        expected_points = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
 
         for point in expected_points:
             assert point in deu.CardinalPtsToDegreesS
@@ -46,35 +46,35 @@ class TestIsANumber:
 
     def test_positive_integer(self):
         """Test positive integers"""
-        assert deu.is_a_number('123') is True
-        assert deu.is_a_number('0') is True
-        assert deu.is_a_number('999999') is True
+        assert deu.is_a_number("123") is True
+        assert deu.is_a_number("0") is True
+        assert deu.is_a_number("999999") is True
 
     def test_negative_integer(self):
         """Test negative integers"""
-        assert deu.is_a_number('-123') is True
-        assert deu.is_a_number('-0') is True
-        assert deu.is_a_number('-1') is True
+        assert deu.is_a_number("-123") is True
+        assert deu.is_a_number("-0") is True
+        assert deu.is_a_number("-1") is True
 
     def test_floating_point(self):
         """Test floating point numbers"""
-        assert deu.is_a_number('123.45') is True
-        assert deu.is_a_number('0.5') is True
-        assert deu.is_a_number('-3.14') is True
-        assert deu.is_a_number('.5') is True
+        assert deu.is_a_number("123.45") is True
+        assert deu.is_a_number("0.5") is True
+        assert deu.is_a_number("-3.14") is True
+        assert deu.is_a_number(".5") is True
 
     def test_non_numeric_strings(self):
         """Test non-numeric strings"""
-        assert deu.is_a_number('abc') is False
-        assert deu.is_a_number('12a34') is False
-        assert deu.is_a_number('') is False
-        assert deu.is_a_number(' ') is False
+        assert deu.is_a_number("abc") is False
+        assert deu.is_a_number("12a34") is False
+        assert deu.is_a_number("") is False
+        assert deu.is_a_number(" ") is False
 
     def test_multiple_signs_and_decimals(self):
         """Test strings with multiple signs or decimals"""
-        assert deu.is_a_number('--5') is False
-        assert deu.is_a_number('1.2.3') is False
-        assert deu.is_a_number('--1.5') is False
+        assert deu.is_a_number("--5") is False
+        assert deu.is_a_number("1.2.3") is False
+        assert deu.is_a_number("--1.5") is False
 
 
 class TestGetUUID:
@@ -83,9 +83,9 @@ class TestGetUUID:
     def test_default_prefix(self):
         """Test UUID generation with default prefix"""
         result = deu.getUUID()
-        assert result.startswith('uuid.')
+        assert result.startswith("uuid.")
         # Remove prefix and check if remaining is valid UUID
-        uuid_part = result.replace('uuid.', '')
+        uuid_part = result.replace("uuid.", "")
         try:
             uuid.UUID(uuid_part)
         except ValueError:
@@ -93,10 +93,10 @@ class TestGetUUID:
 
     def test_custom_prefix(self):
         """Test UUID generation with custom prefix"""
-        result = deu.getUUID('custom_')
-        assert result.startswith('custom_')
+        result = deu.getUUID("custom_")
+        assert result.startswith("custom_")
 
-        uuid_part = result.replace('custom_', '')
+        uuid_part = result.replace("custom_", "")
         try:
             uuid.UUID(uuid_part)
         except ValueError:
@@ -104,7 +104,7 @@ class TestGetUUID:
 
     def test_empty_prefix(self):
         """Test UUID generation with empty prefix"""
-        result = deu.getUUID('')
+        result = deu.getUUID("")
         try:
             uuid.UUID(result)
         except ValueError:
@@ -194,7 +194,7 @@ class TestComputeLatLon:
         assert len(parts) == 2
         # Check decimal places
         for part in parts:
-            decimals = part.split('.')
+            decimals = part.split(".")
             if len(decimals) > 1:
                 assert len(decimals[1]) == 3
 
@@ -230,21 +230,21 @@ class TestCheckVisibility:
 
     def test_visibility_string_input(self):
         """Test visibility with string input returns string"""
-        result = deu.checkVisibility('500')
+        result = deu.checkVisibility("500")
         assert isinstance(result, str)
         assert int(result) == 500
 
     def test_visibility_miles(self):
         """Test visibility conversion from miles"""
         # 1 mile = 1609.34 meters
-        result = deu.checkVisibility(1, uom='[mi_i]')
+        result = deu.checkVisibility(1, uom="[mi_i]")
         # Should be around 1609 meters, rounded
         assert result > 1000
 
     def test_visibility_feet(self):
         """Test visibility conversion from feet"""
         # 1 foot = 0.3048 meters
-        result = deu.checkVisibility(1000, uom='[ft_i]')
+        result = deu.checkVisibility(1000, uom="[ft_i]")
         # 1000 feet = ~304.8 meters
         assert result < 500
 
@@ -285,18 +285,18 @@ class TestCheckRVR:
 
     def test_rvr_string_input(self):
         """Test RVR with string input returns string"""
-        result = deu.checkRVR('500')
+        result = deu.checkRVR("500")
         assert isinstance(result, str)
 
     def test_rvr_miles_conversion(self):
         """Test RVR with miles conversion"""
-        result = deu.checkRVR(0.5, uom='[mi_i]')
+        result = deu.checkRVR(0.5, uom="[mi_i]")
         # 0.5 miles = ~804.67 meters
         assert result > 600
 
     def test_rvr_feet_conversion(self):
         """Test RVR with feet conversion"""
-        result = deu.checkRVR(1000, uom='[ft_i]')
+        result = deu.checkRVR(1000, uom="[ft_i]")
         # 1000 feet = ~304.8 meters
         assert result < 400
 
@@ -317,9 +317,9 @@ class TestFixDate:
     def test_fix_date_returns_none(self):
         """Test that fix_date modifies the list in place and returns None"""
         import time
+
         current_time = time.localtime()
-        tms = [current_time.tm_year, current_time.tm_mon, current_time.tm_mday,
-               current_time.tm_hour, current_time.tm_min, 0, 0, 0, -1]
+        tms = [current_time.tm_year, current_time.tm_mon, current_time.tm_mday, current_time.tm_hour, current_time.tm_min, 0, 0, 0, -1]
 
         result = deu.fix_date(tms)
         assert result is None  # fix_date doesn't return anything
@@ -327,6 +327,7 @@ class TestFixDate:
     def test_fix_date_modifies_month_year(self):
         """Test that fix_date can modify month/year"""
         import time
+
         # Create a date from 3 days in the future
         future = time.time() + (4 * 86400)
         time.localtime(future)
@@ -365,41 +366,25 @@ class TestComputeArea:
         """Test area computation for a square"""
         # Square with 1 degree sides
         polygon = [
-            (0, 0),      # bottom-left
-            (0, 1),      # top-left
-            (1, 1),      # top-right
-            (1, 0),      # bottom-right
-            (0, 0)       # close polygon
+            (0, 0),  # bottom-left
+            (0, 1),  # top-left
+            (1, 1),  # top-right
+            (1, 0),  # bottom-right
+            (0, 0),  # close polygon
         ]
         area = deu.computeArea(polygon)
         assert isinstance(area, (int, float))
 
     def test_triangle_area(self):
         """Test area computation for a triangle"""
-        polygon = [
-            (0, 0),
-            (1, 0),
-            (0.5, 1),
-            (0, 0)
-        ]
+        polygon = [(0, 0), (1, 0), (0.5, 1), (0, 0)]
         area = deu.computeArea(polygon)
         assert isinstance(area, (int, float))
 
     def test_polygon_auto_close(self):
         """Test that unclosed polygon is automatically closed"""
-        polygon1 = [
-            (0, 0),
-            (1, 0),
-            (1, 1),
-            (0, 1)
-        ]
-        polygon2 = [
-            (0, 0),
-            (1, 0),
-            (1, 1),
-            (0, 1),
-            (0, 0)
-        ]
+        polygon1 = [(0, 0), (1, 0), (1, 1), (0, 1)]
+        polygon2 = [(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]
         area1 = deu.computeArea(polygon1)
         area2 = deu.computeArea(polygon2)
         # Should produce same area whether closed or not
@@ -407,11 +392,7 @@ class TestComputeArea:
 
     def test_minimum_polygon_points(self):
         """Test minimum polygon with 3 points"""
-        polygon = [
-            (0, 0),
-            (1, 0),
-            (0.5, 1)
-        ]
+        polygon = [(0, 0), (1, 0), (0.5, 1)]
         area = deu.computeArea(polygon)
         assert isinstance(area, (int, float))
 
@@ -423,25 +404,13 @@ class TestComputeArea:
 
     def test_complex_polygon(self):
         """Test area computation for complex polygon"""
-        polygon = [
-            (0, 0),
-            (2, 0),
-            (2, 1),
-            (1, 2),
-            (0, 1),
-            (0, 0)
-        ]
+        polygon = [(0, 0), (2, 0), (2, 1), (1, 2), (0, 1), (0, 0)]
         area = deu.computeArea(polygon)
         assert isinstance(area, (int, float))
 
     def test_negative_longitude_handling(self):
         """Test that negative longitudes are handled correctly"""
-        polygon = [
-            (0, 0),
-            (-1, 0),
-            (-0.5, 1),
-            (0, 0)
-        ]
+        polygon = [(0, 0), (-1, 0), (-0.5, 1), (0, 0)]
         area = deu.computeArea(polygon)
         assert isinstance(area, (int, float))
 
@@ -452,37 +421,20 @@ class TestIsCCW:
     def test_ccw_polygon(self):
         """Test counter-clockwise polygon"""
         # CCW polygon (increasing area when calculated)
-        polygon = [
-            (0, 0),
-            (0, 1),
-            (1, 1),
-            (1, 0),
-            (0, 0)
-        ]
+        polygon = [(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]
         result = deu.isCCW(polygon)
         assert isinstance(result, bool)
 
     def test_clockwise_polygon(self):
         """Test clockwise polygon"""
         # CW polygon (decreasing area when calculated)
-        polygon = [
-            (0, 0),
-            (1, 0),
-            (1, 1),
-            (0, 1),
-            (0, 0)
-        ]
+        polygon = [(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]
         result = deu.isCCW(polygon)
         assert isinstance(result, bool)
 
     def test_triangle_ccw(self):
         """Test triangle orientation"""
-        polygon = [
-            (0, 0),
-            (1, 0),
-            (0.5, 1),
-            (0, 0)
-        ]
+        polygon = [(0, 0), (1, 0), (0.5, 1), (0, 0)]
         result = deu.isCCW(polygon)
         assert isinstance(result, bool)
 
@@ -502,7 +454,7 @@ class TestParseCodeRegistryTables:
         """Test parsing with nonexistent directory"""
         # This should raise an error or return empty dict
         try:
-            result = deu.parseCodeRegistryTables('/nonexistent/path', [])
+            result = deu.parseCodeRegistryTables("/nonexistent/path", [])
             # If it doesn't raise, should be a dict
             assert isinstance(result, dict)
         except (FileNotFoundError, OSError):
@@ -513,46 +465,46 @@ class TestParseCodeRegistryTables:
         """Test that nil codes are always added to request"""
         with tempfile.TemporaryDirectory() as tmpdir:
             # Create a dummy RDF file
-            dummy_file = os.path.join(tmpdir, 'WEATHER.rdf')
-            ET.ElementTree(ET.Element('root')).write(dummy_file)
+            dummy_file = os.path.join(tmpdir, "WEATHER.rdf")
+            ET.ElementTree(ET.Element("root")).write(dummy_file)
 
-            result = deu.parseCodeRegistryTables(tmpdir, ['WEATHER'])
+            result = deu.parseCodeRegistryTables(tmpdir, ["WEATHER"])
             # WEATHER should be in result (nil won't match any files in temp dir)
-            assert 'WEATHER' in result
+            assert "WEATHER" in result
 
     def test_parse_with_empty_rdf(self):
         """Test parsing with an empty but valid RDF file"""
         with tempfile.TemporaryDirectory() as tmpdir:
             # Create a minimal valid RDF file
-            filename = os.path.join(tmpdir, 'EMPTY.rdf')
-            with open(filename, 'w') as f:
+            filename = os.path.join(tmpdir, "EMPTY.rdf")
+            with open(filename, "w") as f:
                 f.write('<?xml version="1.0"?><root/>')
 
-            result = deu.parseCodeRegistryTables(tmpdir, ['EMPTY'])
-            assert 'EMPTY' in result
+            result = deu.parseCodeRegistryTables(tmpdir, ["EMPTY"])
+            assert "EMPTY" in result
 
     def test_parse_multiple_codes_list(self):
         """Test parsing with multiple codes in list"""
         with tempfile.TemporaryDirectory() as tmpdir:
             # Create dummy RDF files
-            for code in ['CODE1', 'CODE2', 'CODE3']:
-                filename = os.path.join(tmpdir, f'{code}.rdf')
-                with open(filename, 'w') as f:
+            for code in ["CODE1", "CODE2", "CODE3"]:
+                filename = os.path.join(tmpdir, f"{code}.rdf")
+                with open(filename, "w") as f:
                     f.write('<?xml version="1.0"?><root/>')
 
-            result = deu.parseCodeRegistryTables(tmpdir, ['CODE1', 'CODE2', 'CODE3'])
-            assert 'CODE1' in result
-            assert 'CODE2' in result
-            assert 'CODE3' in result
+            result = deu.parseCodeRegistryTables(tmpdir, ["CODE1", "CODE2", "CODE3"])
+            assert "CODE1" in result
+            assert "CODE2" in result
+            assert "CODE3" in result
 
     def test_parse_with_nil_already_in_codes(self):
         """Test parsing when nil is already in neededCodes"""
         with tempfile.TemporaryDirectory() as tmpdir:
             # Create a dummy RDF file
-            dummy_file = os.path.join(tmpdir, 'WEATHER.rdf')
-            with open(dummy_file, 'w') as f:
+            dummy_file = os.path.join(tmpdir, "WEATHER.rdf")
+            with open(dummy_file, "w") as f:
                 f.write('<?xml version="1.0"?><root/>')
 
             # nil is already included
-            result = deu.parseCodeRegistryTables(tmpdir, ['nil', 'WEATHER'])
-            assert 'WEATHER' in result
+            result = deu.parseCodeRegistryTables(tmpdir, ["nil", "WEATHER"])
+            assert "WEATHER" in result

@@ -35,12 +35,7 @@ class CatalogGenerator:
         """
         self.schemas_base_path = Path(schemas_base_path)
 
-    def generate_catalog(
-        self,
-        version: str,
-        remote_base_url: str,
-        local_schema_dir: Optional[Path] = None
-    ) -> Path:
+    def generate_catalog(self, version: str, remote_base_url: str, local_schema_dir: Optional[Path] = None) -> Path:
         """
         Generate OASIS XML Catalog for a specific IWXXM version.
 
@@ -61,16 +56,11 @@ class CatalogGenerator:
         logger.info(f"Generating catalog for IWXXM {version}")
 
         # Create catalog root element
-        catalog = ET.Element(
-            "{%s}catalog" % CATALOG_NS,
-            nsmap=CATALOG_NS_MAP
-        )
+        catalog = ET.Element("{%s}catalog" % CATALOG_NS, nsmap=CATALOG_NS_MAP)
 
         # Add rewriteURI for main IWXXM schema directory
         self._add_rewrite_uri(
-            catalog,
-            uri_start_string=remote_base_url,
-            rewrite_prefix=f"file://{local_schema_dir.absolute()}/"
+            catalog, uri_start_string=remote_base_url, rewrite_prefix=f"file://{local_schema_dir.absolute()}/"
         )
 
         # Add common schema dependencies (GML, AIXM, etc.)
@@ -79,22 +69,12 @@ class CatalogGenerator:
         # Write catalog file
         catalog_path = local_schema_dir / "catalog.xml"
         tree = ET.ElementTree(catalog)
-        tree.write(
-            str(catalog_path),
-            encoding="utf-8",
-            xml_declaration=True,
-            pretty_print=True
-        )
+        tree.write(str(catalog_path), encoding="utf-8", xml_declaration=True, pretty_print=True)
 
         logger.info(f"Generated catalog: {catalog_path}")
         return catalog_path
 
-    def _add_rewrite_uri(
-        self,
-        catalog_elem: ET.Element,
-        uri_start_string: str,
-        rewrite_prefix: str
-    ):
+    def _add_rewrite_uri(self, catalog_elem: ET.Element, uri_start_string: str, rewrite_prefix: str):
         """
         Add rewriteURI element to catalog.
 
@@ -103,18 +83,11 @@ class CatalogGenerator:
             uri_start_string: URL prefix to match
             rewrite_prefix: Local file:// prefix to rewrite to
         """
-        rewrite_uri = ET.SubElement(
-            catalog_elem,
-            "{%s}rewriteURI" % CATALOG_NS
-        )
+        rewrite_uri = ET.SubElement(catalog_elem, "{%s}rewriteURI" % CATALOG_NS)
         rewrite_uri.set("uriStartString", uri_start_string)
         rewrite_uri.set("rewritePrefix", rewrite_prefix)
 
-    def _add_common_dependencies(
-        self,
-        catalog_elem: ET.Element,
-        local_schema_dir: Path
-    ):
+    def _add_common_dependencies(self, catalog_elem: ET.Element, local_schema_dir: Path):
         """
         Add rewrite rules for common schema dependencies.
 
@@ -126,19 +99,19 @@ class CatalogGenerator:
         dependencies = [
             {
                 "uri_start": "http://www.opengis.net/gml/3.2",
-                "local_path": local_schema_dir / "externalSchema" / "gml" / "3.2.1"
+                "local_path": local_schema_dir / "externalSchema" / "gml" / "3.2.1",
             },
             {
                 "uri_start": "http://www.aixm.aero/schema/5.1",
-                "local_path": local_schema_dir / "externalSchema" / "aixm" / "5.1"
+                "local_path": local_schema_dir / "externalSchema" / "aixm" / "5.1",
             },
             {
                 "uri_start": "http://www.isotc211.org/2005/gmd",
-                "local_path": local_schema_dir / "externalSchema" / "iso" / "19139" / "20070417" / "gmd"
+                "local_path": local_schema_dir / "externalSchema" / "iso" / "19139" / "20070417" / "gmd",
             },
             {
                 "uri_start": "http://www.isotc211.org/2005/gco",
-                "local_path": local_schema_dir / "externalSchema" / "iso" / "19139" / "20070417" / "gco"
+                "local_path": local_schema_dir / "externalSchema" / "iso" / "19139" / "20070417" / "gco",
             },
         ]
 
@@ -147,7 +120,7 @@ class CatalogGenerator:
                 self._add_rewrite_uri(
                     catalog_elem,
                     uri_start_string=dep["uri_start"],
-                    rewrite_prefix=f"file://{dep['local_path'].absolute()}/"
+                    rewrite_prefix=f"file://{dep['local_path'].absolute()}/",
                 )
                 logger.debug(f"Added catalog entry for: {dep['uri_start']}")
 
@@ -175,6 +148,7 @@ class CatalogGenerator:
             manifest_path = version_dir / ".manifest.json"
             if manifest_path.exists():
                 import json
+
                 with manifest_path.open("r") as f:
                     manifest = json.load(f)
                     root_url = manifest.get("root_url", "")
@@ -182,11 +156,7 @@ class CatalogGenerator:
                         # Extract base URL from root URL
                         remote_base = root_url.rsplit("/", 1)[0] + "/"
                         try:
-                            catalog_path = self.generate_catalog(
-                                version,
-                                remote_base,
-                                version_dir
-                            )
+                            catalog_path = self.generate_catalog(version, remote_base, version_dir)
                             catalog_paths.append(catalog_path)
                         except Exception as e:
                             logger.error(f"Failed to generate catalog for {version}: {e}")
@@ -226,11 +196,7 @@ class CatalogGenerator:
             return False
 
 
-def generate_catalog_for_version(
-    version: str,
-    remote_base_url: str,
-    schemas_base_path: Path
-) -> Path:
+def generate_catalog_for_version(version: str, remote_base_url: str, schemas_base_path: Path) -> Path:
     """
     Convenience function to generate a catalog for one version.
 

@@ -1,4 +1,5 @@
 """Unit tests for AirportReconciliationService – 0% coverage target."""
+
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
@@ -40,8 +41,7 @@ class TestReconciledAirport:
 
     def test_has_conflicts_true_when_present(self):
         ra = ReconciledAirport(icao_code="KJFK", name="JFK", country="US")
-        ra.conflicts.append(ConflictLog(icao="KJFK", field="name",
-                                        sources={}, resolution="JFK", winner="openaip"))
+        ra.conflicts.append(ConflictLog(icao="KJFK", field="name", sources={}, resolution="JFK", winner="openaip"))
         assert ra.has_conflicts() is True
 
     def test_get_conflict_summary_no_conflicts(self):
@@ -51,8 +51,9 @@ class TestReconciledAirport:
 
     def test_get_conflict_summary_with_conflicts(self):
         ra = ReconciledAirport(icao_code="KJFK", name="JFK", country="US")
-        ra.conflicts.append(ConflictLog(icao="KJFK", field="elevation",
-                                        sources={}, resolution="9.14", winner="openaip"))
+        ra.conflicts.append(
+            ConflictLog(icao="KJFK", field="elevation", sources={}, resolution="9.14", winner="openaip")
+        )
         summary = ra.get_conflict_summary()
         assert "conflict" in summary.lower()
 
@@ -83,8 +84,12 @@ class TestAirportReconciliationServiceInit:
     def test_default_stats_keys(self):
         svc = _make_service()
         expected_keys = {
-            "total_queries", "openaip_hits", "gifts_hits",
-            "aviation_weather_hits", "conflicts_detected", "conflicts_resolved"
+            "total_queries",
+            "openaip_hits",
+            "gifts_hits",
+            "aviation_weather_hits",
+            "conflicts_detected",
+            "conflicts_resolved",
         }
         assert expected_keys.issubset(svc.stats.keys())
 
@@ -97,9 +102,7 @@ class TestLoadGiftsData:
 
     def test_loads_csv_with_icao_code_field(self, tmp_path):
         csv_path = tmp_path / "airports.csv"
-        csv_path.write_text(
-            "icao_code,name,elevation_ft\nKJFK,JFK Airport,13\nEGLL,Heathrow,80\n"
-        )
+        csv_path.write_text("icao_code,name,elevation_ft\nKJFK,JFK Airport,13\nEGLL,Heathrow,80\n")
         svc = _make_service(gifts_csv=csv_path)
         svc._load_gifts_data()
         assert "KJFK" in svc._gifts_cache
@@ -201,8 +204,7 @@ class TestReconcileAirport:
     def test_get_airport_uses_gifts_data_and_updates_hit_stats(self, tmp_path):
         csv_path = tmp_path / "airports.csv"
         csv_path.write_text(
-            "icao_code,name,iso_country,latitude_deg,longitude_deg,elevation_ft\n"
-            "KJFK,JFK Airport,US,40.64,-73.78,30\n",
+            "icao_code,name,iso_country,latitude_deg,longitude_deg,elevation_ft\nKJFK,JFK Airport,US,40.64,-73.78,30\n",
             encoding="utf-8",
         )
         mock_openaip = MagicMock()
@@ -242,9 +244,9 @@ class TestInternalReconciliationHelpers:
         }
 
         assert svc._check_field_conflict("KJFK", "name", sources_single, [DataSource.OPENAIP]) is None
-        assert svc._check_field_conflict(
-            "KJFK", "country", sources_same, [DataSource.OPENAIP, DataSource.GIFTS]
-        ) is None
+        assert (
+            svc._check_field_conflict("KJFK", "country", sources_same, [DataSource.OPENAIP, DataSource.GIFTS]) is None
+        )
 
     def test_check_field_conflict_resolves_by_priority_and_skips_none_values(self):
         svc = _make_service()

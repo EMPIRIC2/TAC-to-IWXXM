@@ -106,51 +106,64 @@ class Decoder(tpg.Parser):
 
     def __init__(self):
 
-        self._tokenInEnglish = {'_tok_1': 'SWX ADVISORY line', 'test': 'STATUS: TEST', 'exercise': 'STATUS: EXER',
-                                'dtg': 'Date/Time Group', 'centre': 'Issuing SWX Centre', 'advnum': 'YYYY/nnnn',
-                                'prevadvsry': 'Previous Advisory YYYY/nnnn', 'phenomenon': 'SWX Hazard(s)',
-                                'init': '(OBS|FCST) SWX', 'timestamp': 'DD/HHmmZ Group', 'noos': 'NO SWX EXP',
-                                'notavail': 'NOT AVBL', 'daylight': 'DAY(LIGHT)? SIDE', 'lat_band': '(H|M)(N|S)H',
-                                'equator': 'EQ(N|S)', 'longitudes': '(E|W)nnn[nn]-(E|W)nnn[nn]',
-                                'box': 'lat/long bounding box', 'fltlvls': 'ABV FLnnn|FLnnn-nnn',
-                                'fcsthr': 'FCST SWX +nn HR', 'rmk': 'RMK:',
-                                'nextdtg': 'Next advisory issuance date/time', 'noadvisory': 'NO FURTHER ADVISORIES'}
+        self._tokenInEnglish = {
+            "_tok_1": "SWX ADVISORY line",
+            "test": "STATUS: TEST",
+            "exercise": "STATUS: EXER",
+            "dtg": "Date/Time Group",
+            "centre": "Issuing SWX Centre",
+            "advnum": "YYYY/nnnn",
+            "prevadvsry": "Previous Advisory YYYY/nnnn",
+            "phenomenon": "SWX Hazard(s)",
+            "init": "(OBS|FCST) SWX",
+            "timestamp": "DD/HHmmZ Group",
+            "noos": "NO SWX EXP",
+            "notavail": "NOT AVBL",
+            "daylight": "DAY(LIGHT)? SIDE",
+            "lat_band": "(H|M)(N|S)H",
+            "equator": "EQ(N|S)",
+            "longitudes": "(E|W)nnn[nn]-(E|W)nnn[nn]",
+            "box": "lat/long bounding box",
+            "fltlvls": "ABV FLnnn|FLnnn-nnn",
+            "fcsthr": "FCST SWX +nn HR",
+            "rmk": "RMK:",
+            "nextdtg": "Next advisory issuance date/time",
+            "noadvisory": "NO FURTHER ADVISORIES",
+        }
 
-        self.header = re.compile(r'.*?(?=SWX ADVISORY)', re.DOTALL)
+        self.header = re.compile(r".*?(?=SWX ADVISORY)", re.DOTALL)
 
-        setattr(self, 'lat_band', self.add_region)
-        setattr(self, 'point', self.add_region)
-        setattr(self, 'equator', self.add_region)
+        setattr(self, "lat_band", self.add_region)
+        setattr(self, "point", self.add_region)
+        setattr(self, "equator", self.add_region)
 
         self._Logger = logging.getLogger(__name__)
         #
         # Preparing Skyfield
         try:
-            load = Loader(os.path.join(skyfield.__path__[0], 'bsp_files'), verbose=False)
+            load = Loader(os.path.join(skyfield.__path__[0], "bsp_files"), verbose=False)
             self._ts = load.timescale()
             #
             # Open NAIF/JPL/NASA SPICE Kernel
-            planets = load('de421.bsp')
-            self._Gaia = planets['earth']
-            self._Helios = planets['sun']
+            planets = load("de421.bsp")
+            self._Gaia = planets["earth"]
+            self._Helios = planets["sun"]
 
         except Exception:
-            self._Logger.exception('Unable to load/initialize Skyfield ephemeris file.')
+            self._Logger.exception("Unable to load/initialize Skyfield ephemeris file.")
             raise
 
         return super(Decoder, self).__init__()
 
     def __call__(self, tac):
 
-        self.swa = {'bbb': '',
-                    'translationTime': time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                    'fcsts': {}}
+        self.swa = {"bbb": "", "translationTime": time.strftime("%Y-%m-%dT%H:%M:%SZ"), "fcsts": {}}
         try:
             result = self.header.search(tac)
-            swa = tac[result.end():].replace('=', '')
+            swa = tac[result.end() :].replace("=", "")
 
         except AttributeError:
-            self.swa['err_msg'] = 'SWX ADVISORY line not found'
+            self.swa["err_msg"] = "SWX ADVISORY line not found"
             return self.swa
 
         try:
@@ -158,22 +171,23 @@ class Decoder(tpg.Parser):
             return super(Decoder, self).__call__(swa)
 
         except tpg.SyntacticError:
-
             if not self._is_a_test():
                 if len(self._expected):
-                    err_msg = 'Expecting %s group(s) ' % ' or '.join([self._tokenInEnglish.get(x, x)
-                                                                      for x in self._expected])
+                    err_msg = "Expecting %s group(s) " % " or ".join([self._tokenInEnglish.get(x, x) for x in self._expected])
                 else:
-                    err_msg = 'Unidentified group '
+                    err_msg = "Unidentified group "
 
-                tacLines = swa.split('\n')
-                debugString = '\n%%s\n%%%dc\n%%s' % self.lexer.cur_token.end_column
-                errorInTAC = debugString % ('\n'.join(tacLines[:self.lexer.cur_token.end_line]), '^',
-                                            '\n'.join(tacLines[self.lexer.cur_token.end_line:]))
-                self._Logger.info('%s\n%s' % (errorInTAC, err_msg))
+                tacLines = swa.split("\n")
+                debugString = "\n%%s\n%%%dc\n%%s" % self.lexer.cur_token.end_column
+                errorInTAC = debugString % (
+                    "\n".join(tacLines[: self.lexer.cur_token.end_line]),
+                    "^",
+                    "\n".join(tacLines[self.lexer.cur_token.end_line :]),
+                )
+                self._Logger.info("%s\n%s" % (errorInTAC, err_msg))
 
-                err_msg += 'at line %d column %d.' % (self.lexer.cur_token.end_line, self.lexer.cur_token.end_column)
-                self.swa['err_msg'] = err_msg
+                err_msg += "at line %d column %d." % (self.lexer.cur_token.end_line, self.lexer.cur_token.end_column)
+                self.swa["err_msg"] = err_msg
 
         except Exception:
             self._Logger.exception(swa)
@@ -181,29 +195,28 @@ class Decoder(tpg.Parser):
         return self.finish()
 
     def _is_a_test(self):
-        return 'status' in self.swa and self.swa['status'] == 'TEST'
+        return "status" in self.swa and self.swa["status"] == "TEST"
 
     def eatCSL(self, name):
-        'Overrides super definition'
+        "Overrides super definition"
         try:
             value = super(Decoder, self).eatCSL(name)
             self._expected = []
             return value
 
         except tpg.WrongToken:
-
             self._expected.append(name)
             raise
 
     def status(self, s):
 
-        self.swa['status'] = s.split(':', 1)[1].strip()
+        self.swa["status"] = s.split(":", 1)[1].strip()
 
     def dtg(self, s):
 
         result = self.lexer.tokens[self.lexer.cur_token.name][0].match(s)
-        ymd = result.group('date')
-        hhmm = result.group('time')
+        ymd = result.group("date")
+        hhmm = result.group("time")
         tms = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         tms[0] = int(ymd[0:4])
         tms[1] = int(ymd[4:6])
@@ -212,43 +225,40 @@ class Decoder(tpg.Parser):
         tms[4] = int(hhmm[2:4])
         deu.fix_date(tms)
 
-        if self.lexer.cur_token.name == 'dtg':
+        if self.lexer.cur_token.name == "dtg":
             self.issueTime = tms
-            self.swa['issueTime'] = {'str': time.strftime('%Y-%m-%dT%H:%M:00Z', tuple(tms)),
-                                     'tms': tms}
+            self.swa["issueTime"] = {"str": time.strftime("%Y-%m-%dT%H:%M:00Z", tuple(tms)), "tms": tms}
         else:
             if result.group(2) is None:
-                return {'str': time.strftime('%Y-%m-%dT%H:%M:00Z', tuple(tms)),
-                        'before': False}
+                return {"str": time.strftime("%Y-%m-%dT%H:%M:00Z", tuple(tms)), "before": False}
             else:
-                return {'str': time.strftime('%Y-%m-%dT%H:%M:00Z', tuple(tms)),
-                        'before': True}
+                return {"str": time.strftime("%Y-%m-%dT%H:%M:00Z", tuple(tms)), "before": True}
 
     def centre(self, s):
 
-        self.swa['centre'] = s.split(':', 1)[1].strip()
+        self.swa["centre"] = s.split(":", 1)[1].strip()
 
-    def advnum(self, s, prefix='advisory'):
+    def advnum(self, s, prefix="advisory"):
 
-        self.swa['%sNumber' % prefix] = s.split(':', 1)[1].strip()
+        self.swa["%sNumber" % prefix] = s.split(":", 1)[1].strip()
 
     def init(self, s):
 
-        if s.startswith('OBS'):
-            self._affected = {'timeIndicator': 'OBSERVATION'}
+        if s.startswith("OBS"):
+            self._affected = {"timeIndicator": "OBSERVATION"}
         else:
-            self._affected = {'timeIndicator': 'FORECAST'}
+            self._affected = {"timeIndicator": "FORECAST"}
 
-        self._fcstkey = '0'
+        self._fcstkey = "0"
         self._boundingBox = BoundingBox()
 
     def fcsthr(self, s):
 
-        self._affected['boundingBoxes'] = self._boundingBox.getLatLongBoxes()
-        self.swa['fcsts'].update([(self._fcstkey, self._affected)])
+        self._affected["boundingBoxes"] = self._boundingBox.getLatLongBoxes()
+        self.swa["fcsts"].update([(self._fcstkey, self._affected)])
         result = self.lexer.tokens[self.lexer.cur_token.name][0].match(s)
-        self._fcstkey = result.group('fhr')
-        self._affected = {'timeIndicator': 'FORECAST'}
+        self._fcstkey = result.group("fhr")
+        self._affected = {"timeIndicator": "FORECAST"}
 
     def timestamp(self, s):
 
@@ -258,15 +268,15 @@ class Decoder(tpg.Parser):
         tms[4] = int(s[5:7])
         deu.fix_date(tms)
         self.issueTime = tms
-        self._affected['phenomenonTime'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', tuple(tms))
+        self._affected["phenomenonTime"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", tuple(tms))
 
     def noos(self):
 
-        self._affected['noswxexp'] = True
+        self._affected["noswxexp"] = True
 
     def notavail(self):
 
-        self._affected['notavail'] = True
+        self._affected["notavail"] = True
 
     def longitudes(self, s):
 
@@ -274,7 +284,7 @@ class Decoder(tpg.Parser):
 
     def add_region(self, s):
 
-        self._affected.setdefault('regions', []).append(s)
+        self._affected.setdefault("regions", []).append(s)
         self._boundingBox.add(s, self.lexer.cur_token.name)
 
     def daylight(self):
@@ -282,33 +292,32 @@ class Decoder(tpg.Parser):
         # Determine solar sub-point on Earth at forecast/observed time.
         fcsttime = self._ts.utc(*self.issueTime[:5])
         subpoint = wgs84.geographic_position_of((self._Helios - self._Gaia).at(fcsttime))
-        self._affected['daylight'] = '%s %s' % (round(subpoint.latitude.degrees, 2),
-                                                round(subpoint.longitude.degrees, 2))
+        self._affected["daylight"] = "%s %s" % (round(subpoint.latitude.degrees, 2), round(subpoint.longitude.degrees, 2))
 
     def fltlvls(self, s):
 
-        self._affected['fltlevels'] = s
+        self._affected["fltlevels"] = s
         self._boundingBox.add(s, self.lexer.cur_token.name)
 
     def phenomena(self, s):
 
-        raw = s.split(':', 1)[1]
-        self.swa['phenomenon'] = [x.strip() for x in raw.split('AND')]
+        raw = s.split(":", 1)[1]
+        self.swa["phenomenon"] = [x.strip() for x in raw.split("AND")]
 
     def rmk(self, s):
 
-        self.swa['remarks'] = ' '.join(s[4:].split())
+        self.swa["remarks"] = " ".join(s[4:].split())
 
     def nextadvisory(self, s):
 
         if s is not None:
-            self.swa['nextAdvisory'] = self.dtg(s)
+            self.swa["nextAdvisory"] = self.dtg(s)
 
     def finish(self):
 
         try:
-            self._affected['boundingBoxes'] = self._boundingBox.getLatLongBoxes()
-            self.swa['fcsts'].update([(self._fcstkey, self._affected)])
+            self._affected["boundingBoxes"] = self._boundingBox.getLatLongBoxes()
+            self.swa["fcsts"].update([(self._fcstkey, self._affected)])
             #
             # Destroy the uuid cache
             del self._boundingBox
@@ -319,31 +328,26 @@ class Decoder(tpg.Parser):
         return self.swa
 
 
-class BoundingBox():
-
+class BoundingBox:
     def __init__(self):
-        self._latitude_bands = {'HNH': {'neighbors': ['MNH'],
-                                        'latitudes': (90.0, 60.0)},
-                                'MNH': {'neighbors': ['HNH', 'EQN'],
-                                        'latitudes': (60.0, 30.0)},
-                                'EQN': {'neighbors': ['MNH', 'EQS'],
-                                        'latitudes': (30.0, 0.0)},
-                                'EQS': {'neighbors': ['MSH', 'EQN'],
-                                        'latitudes': (0.0, -30.0)},
-                                'MSH': {'neighbors': ['HSH', 'EQS'],
-                                        'latitudes': (-30.0, -60.0)},
-                                'HSH': {'neighbors': ['MSH'],
-                                        'latitudes': (-60.0, -90.0)}}
+        self._latitude_bands = {
+            "HNH": {"neighbors": ["MNH"], "latitudes": (90.0, 60.0)},
+            "MNH": {"neighbors": ["HNH", "EQN"], "latitudes": (60.0, 30.0)},
+            "EQN": {"neighbors": ["MNH", "EQS"], "latitudes": (30.0, 0.0)},
+            "EQS": {"neighbors": ["MSH", "EQN"], "latitudes": (0.0, -30.0)},
+            "MSH": {"neighbors": ["HSH", "EQS"], "latitudes": (-30.0, -60.0)},
+            "HSH": {"neighbors": ["MSH"], "latitudes": (-60.0, -90.0)},
+        }
         self.regions = []
         self.longitudes = []
         self.polygon = []
         self._band_cnt = 0
-        self._fltlvls = ''
+        self._fltlvls = ""
         self._uuid_cache = {}
 
     def add(self, new_item, token_name):
 
-        if token_name in ['lat_band', 'equator']:
+        if token_name in ["lat_band", "equator"]:
             #
             # If no combining is allowed,
             if not des.JOIN_BANDS:
@@ -358,7 +362,7 @@ class BoundingBox():
 
                 for region in self.regions:
                     for lat_band in region:
-                        if new_item in self._latitude_bands[lat_band]['neighbors']:
+                        if new_item in self._latitude_bands[lat_band]["neighbors"]:
                             region.append(new_item)
                             combined_region = region
                             break
@@ -372,14 +376,13 @@ class BoundingBox():
                 # need further analysis for combining groups
                 #
                 if combined_region is not None and self._band_cnt > 2 and len(self.regions) > 1:
-
                     remove_region_at = -1
                     for position, region in enumerate(self.regions):
                         if combined_region == region:
                             continue
 
                         for lat_band in region:
-                            if new_item in self._latitude_bands[lat_band]['neighbors']:
+                            if new_item in self._latitude_bands[lat_band]["neighbors"]:
                                 combined_region.extend(region)
                                 remove_region_at = position
                                 break
@@ -388,20 +391,20 @@ class BoundingBox():
                         self.regions.pop(remove_region_at)
         #
         # longitude ranges
-        elif token_name == 'longitudes':
-            self.longitudes = [self._convertToFloat(x) for x in new_item.split('-')]
+        elif token_name == "longitudes":
+            self.longitudes = [self._convertToFloat(x) for x in new_item.split("-")]
 
-        elif token_name == 'point':
-            self.polygon.append(' '.join([str(self._convertToFloat(x)) for x in new_item.split()]))
+        elif token_name == "point":
+            self.polygon.append(" ".join([str(self._convertToFloat(x)) for x in new_item.split()]))
 
-        elif token_name == 'fltlvls':
+        elif token_name == "fltlvls":
             self._fltlvls = new_item
 
     def getLatLongBoxes(self):
 
         boxes = []
         for region in self.regions:
-            alist = [self._latitude_bands[x]['latitudes'] for x in region]
+            alist = [self._latitude_bands[x]["latitudes"] for x in region]
             flattened = list(itertools.chain(*alist))
             n = max(flattened)
             s = min(flattened)
@@ -426,15 +429,15 @@ class BoundingBox():
                 new_uuid = self._uuid_cache[uuidKey]
             except KeyError:
                 new_uuid = deu.getUUID()
-                self._uuid_cache[uuidKey] = '#%s' % new_uuid
+                self._uuid_cache[uuidKey] = "#%s" % new_uuid
             #
             # Start in NW corner and go counter-clockwise, poles are evil places
             if n != 90 and s != -90:
-                boxes.append(('5', ' '.join([ns, ws, ss, ws, ss, es, ns, es, ns, ws]), region, new_uuid))
+                boxes.append(("5", " ".join([ns, ws, ss, ws, ss, es, ns, es, ns, ws]), region, new_uuid))
             elif n == 90:
-                boxes.append(('4', ' '.join([ns, ws, ss, ws, ss, es, ns, ws]), region, new_uuid))
+                boxes.append(("4", " ".join([ns, ws, ss, ws, ss, es, ns, ws]), region, new_uuid))
             elif s == -90:
-                boxes.append(('4', ' '.join([ns, ws, ss, ws, ss, es, ns, ws]), region, new_uuid))
+                boxes.append(("4", " ".join([ns, ws, ss, ws, ss, es, ns, ws]), region, new_uuid))
 
         if self.polygon:
             #
@@ -462,9 +465,9 @@ class BoundingBox():
                 new_uuid = self._uuid_cache[uuidKey]
             except KeyError:
                 new_uuid = deu.getUUID()
-                self._uuid_cache[uuidKey] = '#%s' % new_uuid
+                self._uuid_cache[uuidKey] = "#%s" % new_uuid
 
-            boxes.append((str(len(self.polygon)), ' '.join(self.polygon), ['POLYGON'], new_uuid))
+            boxes.append((str(len(self.polygon)), " ".join(self.polygon), ["POLYGON"], new_uuid))
 
         self._reset()
         return boxes
@@ -474,18 +477,18 @@ class BoundingBox():
         self.regions = []
         self.longitudes = []
         self.polygon = []
-        self._fltlvls = ''
+        self._fltlvls = ""
 
     def _convertToFloat(self, string):
 
         latlong = string.strip()
         dir = latlong[0]
-        if dir in ['E', 'W']:
+        if dir in ["E", "W"]:
             pos = 4
         else:
             pos = 3
 
-        if dir in ['N', 'E']:
+        if dir in ["N", "E"]:
             fac = 1.0
         else:
             fac = -1.0

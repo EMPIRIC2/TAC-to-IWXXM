@@ -1,4 +1,5 @@
 """Unit tests for airport_data service (airport_data.py) – 0% coverage target."""
+
 import os
 import subprocess
 from unittest.mock import MagicMock, patch

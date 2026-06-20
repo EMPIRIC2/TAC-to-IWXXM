@@ -64,11 +64,7 @@ class TestExtractVersionFromUrl:
 
     def test_extract_returns_none_for_invalid(self):
         """Test extraction returns None for URLs without version."""
-        invalid_urls = [
-            "https://schemas.wmo.int/iwxxm/",
-            "https://example.com/test.xsd",
-            "not-a-url"
-        ]
+        invalid_urls = ["https://schemas.wmo.int/iwxxm/", "https://example.com/test.xsd", "not-a-url"]
         for url in invalid_urls:
             result = extract_version_from_url(url)
             assert result is None, f"Should return None for: {url}"
@@ -80,10 +76,7 @@ class TestSchemaDiscoveryPoller:
     @pytest.fixture
     def poller(self):
         """Create poller instance for testing."""
-        return SchemaDiscoveryPoller(
-            poll_urls=["https://test.example.com/iwxxm/"],
-            timeout_seconds=10
-        )
+        return SchemaDiscoveryPoller(poll_urls=["https://test.example.com/iwxxm/"], timeout_seconds=10)
 
     def test_poller_initialization(self, poller):
         """Test poller initializes correctly."""
@@ -128,7 +121,7 @@ class TestSchemaDiscoveryPoller:
         </body></html>
         """
 
-        with patch('httpx.AsyncClient') as mock_client:
+        with patch("httpx.AsyncClient") as mock_client:
             mock_response = AsyncMock()
             mock_response.text = mock_html
             mock_response.raise_for_status = Mock()
@@ -166,7 +159,7 @@ class TestDiscoveryConvenienceFunctions:
     @pytest.mark.asyncio
     async def test_discover_schemas_creates_poller(self):
         """Test discover_schemas() creates and uses poller."""
-        with patch.object(SchemaDiscoveryPoller, 'poll_once', new_callable=AsyncMock) as mock_poll:
+        with patch.object(SchemaDiscoveryPoller, "poll_once", new_callable=AsyncMock) as mock_poll:
             mock_poll.return_value = {"new_stable": [], "new_rc": []}
             result = await discover_schemas()
             assert "new_stable" in result

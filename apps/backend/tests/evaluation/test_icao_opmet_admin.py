@@ -28,6 +28,7 @@ from src.utilities.security import verify_supabase_token
 @pytest.fixture
 def client():
     """Create test client with mocked regular user authentication."""
+
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project", "role": "user"}
 
@@ -40,6 +41,7 @@ def client():
 @pytest.fixture
 def admin_client():
     """Create test client with mocked admin authentication."""
+
     async def override_verify_token_admin():
         return {"sub": "admin-user-id", "aud": "test-project", "role": "admin"}
 
@@ -58,7 +60,7 @@ def unauthenticated_client():
 @pytest.fixture
 def mock_statistics_service():
     """Mock statistics service for testing."""
-    with patch('src.routers.icao_opmet.statistics_service') as mock:
+    with patch("src.routers.icao_opmet.statistics_service") as mock:
         # Configure async methods
         mock.get_statistics = AsyncMock()
         mock.get_statistics_by_region = AsyncMock()
@@ -125,7 +127,7 @@ class TestTranslationStatistics:
             json={
                 "start_date": "2026-02-01T00:00:00Z",
                 "end_date": "2026-02-13T23:59:59Z",
-            }
+            },
         )
 
         assert response.status_code == 200
@@ -157,7 +159,7 @@ class TestTranslationStatistics:
                 "start_date": "2026-02-01T00:00:00Z",
                 "end_date": "2026-02-13T23:59:59Z",
                 "icao_region": "NAM",
-            }
+            },
         )
 
         assert response.status_code == 200
@@ -186,7 +188,7 @@ class TestTranslationStatistics:
                 "start_date": "2026-02-01T00:00:00Z",
                 "end_date": "2026-02-13T23:59:59Z",
                 "iwxxm_version": "2025-2",
-            }
+            },
         )
 
         assert response.status_code == 200
@@ -215,7 +217,7 @@ class TestTranslationStatistics:
                 "start_date": "2026-02-01T00:00:00Z",
                 "end_date": "2026-02-13T23:59:59Z",
                 "airport_code": "KJFK",
-            }
+            },
         )
 
         assert response.status_code == 200
@@ -229,7 +231,7 @@ class TestTranslationStatistics:
             json={
                 "start_date": "2026-02-13T00:00:00Z",
                 "end_date": "2026-02-01T00:00:00Z",  # Before start_date
-            }
+            },
         )
 
         assert response.status_code == 400
@@ -245,7 +247,7 @@ class TestTranslationStatistics:
             json={
                 "start_date": start_date.isoformat() + "Z",
                 "end_date": end_date.isoformat() + "Z",
-            }
+            },
         )
 
         # Should return 422 validation error for invalid date range
@@ -276,7 +278,7 @@ class TestTranslationStatistics:
             json={
                 "start_date": "2026-02-01T00:00:00Z",
                 "end_date": "2026-02-13T23:59:59Z",
-            }
+            },
         )
 
         assert response.status_code == 200
@@ -305,7 +307,7 @@ class TestTranslationStatistics:
             json={
                 "start_date": "2026-02-01T00:00:00Z",
                 "end_date": "2026-02-13T23:59:59Z",
-            }
+            },
         )
 
         assert response.status_code == 200
@@ -321,7 +323,7 @@ class TestTranslationStatistics:
             json={
                 "start_date": "2026-02-01T00:00:00Z",
                 "end_date": "2026-02-13T23:59:59Z",
-            }
+            },
         )
 
         # Currently passes due to commented auth
@@ -335,7 +337,7 @@ class TestTranslationStatistics:
             json={
                 "start_date": "2026-02-01T00:00:00Z",
                 "end_date": "2026-02-13T23:59:59Z",
-            }
+            },
         )
 
         # Should require authentication (when uncommented in router)
@@ -465,8 +467,7 @@ class TestStatisticsByRegion:
         }
 
         response = admin_client.get(
-            "/api/v1/translation/statistics/by-region"
-            "?start_date=2026-02-01T00:00:00Z&end_date=2026-02-13T23:59:59Z"
+            "/api/v1/translation/statistics/by-region?start_date=2026-02-01T00:00:00Z&end_date=2026-02-13T23:59:59Z"
         )
 
         assert response.status_code == 200
@@ -552,9 +553,17 @@ class TestAdminRoleEnforcement:
     def test_non_admin_cannot_query_statistics(self, client):
         """Test non-admin user is denied access to statistics endpoints."""
         endpoints = [
-            ("/api/v1/translation/statistics", "POST", {"start_date": "2026-02-01T00:00:00Z", "end_date": "2026-02-13T23:59:59Z"}),
+            (
+                "/api/v1/translation/statistics",
+                "POST",
+                {"start_date": "2026-02-01T00:00:00Z", "end_date": "2026-02-13T23:59:59Z"},
+            ),
             ("/api/v1/translation/statistics/recent", "GET", None),
-            ("/api/v1/translation/statistics/by-region?start_date=2026-02-01T00:00:00Z&end_date=2026-02-13T23:59:59Z", "GET", None),
+            (
+                "/api/v1/translation/statistics/by-region?start_date=2026-02-01T00:00:00Z&end_date=2026-02-13T23:59:59Z",
+                "GET",
+                None,
+            ),
         ]
 
         for url, method, json_data in endpoints:
@@ -583,7 +592,11 @@ class TestAdminRoleEnforcement:
         }
 
         endpoints = [
-            ("/api/v1/translation/statistics", "POST", {"start_date": "2026-02-01T00:00:00Z", "end_date": "2026-02-13T23:59:59Z"}),
+            (
+                "/api/v1/translation/statistics",
+                "POST",
+                {"start_date": "2026-02-01T00:00:00Z", "end_date": "2026-02-13T23:59:59Z"},
+            ),
             ("/api/v1/translation/statistics/recent", "GET", None),
         ]
 

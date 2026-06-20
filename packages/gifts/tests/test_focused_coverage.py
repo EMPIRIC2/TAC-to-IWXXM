@@ -109,7 +109,7 @@ class TestXMLUtilitiesCorrectAPIs:
         # computeLatLon(lat, lon, bearing, distance, radius=3440.)
         result = xmlUtilities.computeLatLon(40.0, 74.0, 45.0, 100.0)
         assert isinstance(result, str)
-        assert ' ' in result  # Should return "lat lon" format
+        assert " " in result  # Should return "lat lon" format
 
     def test_compute_lat_lon_with_radius(self):
         """Test computeLatLon with custom radius"""
@@ -174,17 +174,17 @@ class TestXMLUtilitiesCorrectAPIs:
 
     def test_check_visibility_different_units(self):
         """Test checkVisibility with different UOM"""
-        result = xmlUtilities.checkVisibility("5000", uom='m')
+        result = xmlUtilities.checkVisibility("5000", uom="m")
         assert result is not None
 
     def test_check_visibility_miles(self):
         """Test checkVisibility with miles"""
-        result = xmlUtilities.checkVisibility("5", uom='[mi_i]')
+        result = xmlUtilities.checkVisibility("5", uom="[mi_i]")
         assert result is not None
 
     def test_check_visibility_feet(self):
         """Test checkVisibility with feet"""
-        result = xmlUtilities.checkVisibility("10000", uom='[ft_i]')
+        result = xmlUtilities.checkVisibility("10000", uom="[ft_i]")
         assert result is not None
 
     def test_check_rvr_basic(self):
@@ -204,7 +204,7 @@ class TestXMLUtilitiesCorrectAPIs:
 
     def test_check_rvr_different_units(self):
         """Test checkRVR with different UOM"""
-        result = xmlUtilities.checkRVR("2500", uom='m')
+        result = xmlUtilities.checkRVR("2500", uom="m")
         assert result is not None
 
     def test_get_uuid(self):
@@ -212,12 +212,12 @@ class TestXMLUtilitiesCorrectAPIs:
         uuid1 = xmlUtilities.getUUID()
         uuid2 = xmlUtilities.getUUID()
         assert uuid1 != uuid2
-        assert 'uuid' in uuid1
+        assert "uuid" in uuid1
 
     def test_get_uuid_with_prefix(self):
         """Test getUUID with custom prefix"""
-        uuid_with_prefix = xmlUtilities.getUUID(prefix='test_')
-        assert uuid_with_prefix.startswith('test_')
+        uuid_with_prefix = xmlUtilities.getUUID(prefix="test_")
+        assert uuid_with_prefix.startswith("test_")
 
     def test_is_a_number_valid(self):
         """Test is_a_number with valid numbers"""
@@ -238,7 +238,7 @@ class TestEncoderRealisticUsage:
         """Test encoder can be instantiated"""
         encoder = Encoder.Encoder()
         assert encoder is not None
-        assert hasattr(encoder, 'encode')
+        assert hasattr(encoder, "encode")
 
     def test_encoder_decode_method(self):
         """Test encoder has decode property"""
@@ -251,7 +251,7 @@ class TestEncoderRealisticUsage:
     def test_encoder_attributes(self):
         """Test encoder has key attributes"""
         encoder = Encoder.Encoder()
-        assert hasattr(encoder, 'encode')
+        assert hasattr(encoder, "encode")
 
     def test_encoder_with_mock_decoder(self):
         """Test encoding with mocked decoder"""
@@ -269,6 +269,7 @@ class TestTPGModuleStructure:
     def test_tpg_error_class(self):
         """Test Error class with proper signature"""
         from gifts.common.tpg import Error
+
         # Error((line, col), msg)
         err = Error((1, 5), "Test error message")
         assert err.line == 1
@@ -277,6 +278,7 @@ class TestTPGModuleStructure:
     def test_tpg_error_str(self):
         """Test Error string representation"""
         from gifts.common.tpg import Error
+
         err = Error((2, 10), "Syntax error")
         err_str = str(err)
         assert "2" in err_str or "Syntax error" in err_str or "10" in err_str
@@ -284,6 +286,7 @@ class TestTPGModuleStructure:
     def test_tpg_lexical_error(self):
         """Test LexicalError inheritance"""
         from gifts.common.tpg import LexicalError, Error
+
         err = LexicalError((1, 0), "Lex error")
         assert isinstance(err, Error)
         assert err.line == 1
@@ -291,6 +294,7 @@ class TestTPGModuleStructure:
     def test_tpg_syntactic_error(self):
         """Test SyntacticError inheritance"""
         from gifts.common.tpg import SyntacticError, Error
+
         err = SyntacticError((3, 15), "Syntax error")
         assert isinstance(err, Error)
         assert err.column == 15
@@ -298,6 +302,7 @@ class TestTPGModuleStructure:
     def test_tpg_semantic_error(self):
         """Test SemanticError inheritance"""
         from gifts.common.tpg import SemanticError, Error
+
         # SemanticError may have different signature
         try:
             err = SemanticError((5, 20), "Semantic error")
@@ -310,22 +315,23 @@ class TestTPGModuleStructure:
     def test_tpg_wrong_token_error(self):
         """Test WrongToken exception"""
         from gifts.common.tpg import WrongToken
+
         err = WrongToken()
         assert isinstance(err, Exception)
 
     def test_tpg_token_class(self):
         """Test Token class creation"""
         from gifts.common.tpg import Token
-        tok = Token('ID', 'myvar', 123, 1, 0, 1, 5, 0, 5, 0)
-        assert tok.name == 'ID'
-        assert tok.text == 'myvar'
+
+        tok = Token("ID", "myvar", 123, 1, 0, 1, 5, 0, 5, 0)
+        assert tok.name == "ID"
+        assert tok.text == "myvar"
         assert tok.line == 1
 
     def test_tpg_imports(self):
         """Test key TPG imports"""
-        from gifts.common.tpg import (
-            Error, Token, Lexer, Parser
-        )
+        from gifts.common.tpg import Error, Token, Lexer, Parser
+
         assert Error is not None
         assert Token is not None
         assert Lexer is not None
@@ -338,11 +344,13 @@ class TestBulletinModuleStructure:
     def test_bulletin_import(self):
         """Test bulletin module can be imported"""
         from gifts.common import bulletin
+
         assert bulletin is not None
 
     def test_bulletin_module_exists(self):
         """Test bulletin module has content"""
         from gifts.common import bulletin
+
         # Check module has attributes
-        assert hasattr(bulletin, '__name__')
-        assert bulletin.__name__ == 'gifts.common.bulletin'
+        assert hasattr(bulletin, "__name__")
+        assert bulletin.__name__ == "gifts.common.bulletin"

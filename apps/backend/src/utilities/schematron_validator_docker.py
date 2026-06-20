@@ -24,7 +24,7 @@ class SchematronValidationResult:
     """Result from Schematron validation."""
 
     valid: bool
-    status: str = 'UNKNOWN'  # 'PASS' or 'FAIL'
+    status: str = "UNKNOWN"  # 'PASS' or 'FAIL'
     assertions_passed: int = 0
     assertions_failed: int = 0
     failed_constraints: List[Dict] = field(default_factory=list)
@@ -75,7 +75,7 @@ class SchematronValidatorDocker:
             self.logger.debug(f"Validating XML ({len(xml_content)} bytes)")
 
             # Write XML to temporary file
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as tmp:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as tmp:
                 tmp.write(xml_content)
                 xml_file = tmp.name
 
@@ -89,11 +89,7 @@ class SchematronValidatorDocker:
 
         except Exception as e:
             self.logger.error(f"Validation error: {e}", exc_info=True)
-            result = SchematronValidationResult(
-                valid=False,
-                status='ERROR',
-                errors=[str(e)]
-            )
+            result = SchematronValidationResult(valid=False, status="ERROR", errors=[str(e)])
             return result
 
     def _run_docker_validation(self, xml_file: str) -> SchematronValidationResult:
@@ -117,24 +113,24 @@ class SchematronValidatorDocker:
 
             # Build Docker run command
             cmd = [
-                'docker', 'run', '--rm',
-                '-v', f'{xml_path.parent}:/work',
-                '-v', f'{schema_path.parent}:/schemas',
+                "docker",
+                "run",
+                "--rm",
+                "-v",
+                f"{xml_path.parent}:/work",
+                "-v",
+                f"{schema_path.parent}:/schemas",
                 self.container_image,
                 str(xml_path),
                 str(schema_path),
-                '--output', 'json'
+                "--output",
+                "json",
             ]
 
             self.logger.debug(f"Command: {' '.join(cmd)}")
 
             # Run Docker container
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=60
-            )
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
 
             if result.returncode != 0:
                 self.logger.warning(f"Docker returned code {result.returncode}")
@@ -147,45 +143,35 @@ class SchematronValidatorDocker:
 
                 # Convert to SchematronValidationResult
                 return SchematronValidationResult(
-                    valid=output.get('status') == 'PASS',
-                    status=output.get('status', 'UNKNOWN'),
-                    assertions_passed=output.get('assertions_passed', 0),
-                    assertions_failed=output.get('assertions_failed', 0),
-                    failed_constraints=output.get('failed_assertions', []),
-                    passed_constraints=output.get('passed_assertions', []),
-                    errors=output.get('error', []) if isinstance(output.get('error'), list) else (
-                        [output.get('error')] if output.get('error') else []
-                    )
+                    valid=output.get("status") == "PASS",
+                    status=output.get("status", "UNKNOWN"),
+                    assertions_passed=output.get("assertions_passed", 0),
+                    assertions_failed=output.get("assertions_failed", 0),
+                    failed_constraints=output.get("failed_assertions", []),
+                    passed_constraints=output.get("passed_assertions", []),
+                    errors=output.get("error", [])
+                    if isinstance(output.get("error"), list)
+                    else ([output.get("error")] if output.get("error") else []),
                 )
 
             except json.JSONDecodeError as e:
                 self.logger.error(f"Failed to parse Docker output: {e}")
                 self.logger.debug(f"Output was: {result.stdout[:200]}")
                 return SchematronValidationResult(
-                    valid=False,
-                    status='ERROR',
-                    errors=[f'Invalid JSON output: {str(e)}']
+                    valid=False, status="ERROR", errors=[f"Invalid JSON output: {str(e)}"]
                 )
 
         except subprocess.TimeoutExpired:
             self.logger.error("Docker validation timeout (>60s)")
-            return SchematronValidationResult(
-                valid=False,
-                status='ERROR',
-                errors=['Validation timeout']
-            )
+            return SchematronValidationResult(valid=False, status="ERROR", errors=["Validation timeout"])
         except Exception as e:
             self.logger.error(f"Docker execution error: {e}", exc_info=True)
-            return SchematronValidationResult(
-                valid=False,
-                status='ERROR',
-                errors=[str(e)]
-            )
+            return SchematronValidationResult(valid=False, status="ERROR", errors=[str(e)])
 
     def check_docker_image(self) -> bool:
         """Check if Docker image exists and is ready."""
         try:
-            cmd = ['docker', 'image', 'inspect', self.container_image]
+            cmd = ["docker", "image", "inspect", self.container_image]
             result = subprocess.run(cmd, capture_output=True, timeout=5)
             exists = result.returncode == 0
 
@@ -203,9 +189,7 @@ class SchematronValidatorDocker:
 
 # Convenience function for direct validation
 def validate_against_schematron(
-    xml_content: str,
-    schema_path: str,
-    version: str = "2023-1"
+    xml_content: str, schema_path: str, version: str = "2023-1"
 ) -> SchematronValidationResult:
     """
     Validate XML against Schematron schema.

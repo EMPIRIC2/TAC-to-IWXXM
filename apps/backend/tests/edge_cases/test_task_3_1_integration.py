@@ -52,16 +52,16 @@ class TestTemperatureValidationWithRealData:
 
         # Pattern: temperature/dewpoint with optional minus sign
         # e.g., "21/15", "M02/M10", "05/03"
-        pattern = r'(M?\d{2})/(M?\d{2})'
+        pattern = r"(M?\d{2})/(M?\d{2})"
         match = re.search(pattern, raw_metar)
 
         if match:
             temp_str, dewpoint_str = match.groups()
 
             # Parse temperature
-            temp = -int(temp_str[1:]) if temp_str.startswith('M') else int(temp_str)
+            temp = -int(temp_str[1:]) if temp_str.startswith("M") else int(temp_str)
             # Parse dewpoint
-            dewpoint = -int(dewpoint_str[1:]) if dewpoint_str.startswith('M') else int(dewpoint_str)
+            dewpoint = -int(dewpoint_str[1:]) if dewpoint_str.startswith("M") else int(dewpoint_str)
 
             return temp, dewpoint
 
@@ -95,19 +95,15 @@ class TestTemperatureValidationWithRealData:
 
             if has_error:
                 invalid_count += 1
-                errors.append({
-                    "station": case.station_id,
-                    "metar": metar_text,
-                    "temperature": T,
-                    "dewpoint": Td,
-                    "issues": [
-                        {
-                            "severity": i.severity.name,
-                            "message": i.message
-                        }
-                        for i in issues
-                    ]
-                })
+                errors.append(
+                    {
+                        "station": case.station_id,
+                        "metar": metar_text,
+                        "temperature": T,
+                        "dewpoint": Td,
+                        "issues": [{"severity": i.severity.name, "message": i.message} for i in issues],
+                    }
+                )
             else:
                 valid_count += 1
                 # Calculate RH for valid data
@@ -116,9 +112,9 @@ class TestTemperatureValidationWithRealData:
                 assert 0 <= rh <= 105, f"RH out of bounds: {rh}% for T={T}, Td={Td}"
 
         # Report results
-        print(f"\n\n{'='*70}")
+        print(f"\n\n{'=' * 70}")
         print("Temperature Validation Results (Task 3.1)")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Total test cases: {len(test_cases)}")
         print(f"Valid (T >= Td): {valid_count}")
         print(f"Invalid (T < Td): {invalid_count}")
@@ -134,12 +130,13 @@ class TestTemperatureValidationWithRealData:
             for error in errors[:5]:  # Show first 5
                 print(f"  [{error['station']}] {error['metar'][:50]}")
                 print(f"    T={error['temperature']}°C, Td={error['dewpoint']}°C")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         # Expect at least 95% of real data to pass validation
         if valid_count + invalid_count > 0:
-            assert (valid_count / (valid_count + invalid_count)) >= 0.95, \
+            assert (valid_count / (valid_count + invalid_count)) >= 0.95, (
                 f"Too many invalid thermodynamics: {invalid_count} errors"
+            )
 
     def test_engine_processes_all_cases(self, engine, test_cases):
         """Test that the validation engine processes all test cases without crashes.
@@ -155,15 +152,15 @@ class TestTemperatureValidationWithRealData:
                 import re
 
                 # Parse temperature and dewpoint
-                temp_pattern = r'(M?\d{2})/(M?\d{2})'
+                temp_pattern = r"(M?\d{2})/(M?\d{2})"
                 temp_match = re.search(temp_pattern, case.raw_metar)
 
                 T = None
                 Td = None
                 if temp_match:
                     temp_str, dewpoint_str = temp_match.groups()
-                    T = -int(temp_str[1:]) if temp_str.startswith('M') else int(temp_str)
-                    Td = -int(dewpoint_str[1:]) if dewpoint_str.startswith('M') else int(dewpoint_str)
+                    T = -int(temp_str[1:]) if temp_str.startswith("M") else int(temp_str)
+                    Td = -int(dewpoint_str[1:]) if dewpoint_str.startswith("M") else int(dewpoint_str)
 
                 # Run full validation
                 issues = engine.validate_metar_data(
@@ -171,15 +168,11 @@ class TestTemperatureValidationWithRealData:
                     dewpoint=Td,
                     cloud_layers=None,
                     visibility_meters=None,
-                    weather_phenomena=case.weather_phenomena
+                    weather_phenomena=case.weather_phenomena,
                 )
 
                 # Generate report
-                report = engine.generate_report(
-                    issues,
-                    station_id=case.station_id,
-                    raw_metar=case.raw_metar
-                )
+                report = engine.generate_report(issues, station_id=case.station_id, raw_metar=case.raw_metar)
 
                 # Report should be valid
                 assert "station_id" in report
@@ -189,16 +182,12 @@ class TestTemperatureValidationWithRealData:
                 processed += 1
 
             except Exception as e:
-                errors.append({
-                    "station": case.station_id,
-                    "metar": case.raw_metar[:50],
-                    "error": str(e)
-                })
+                errors.append({"station": case.station_id, "metar": case.raw_metar[:50], "error": str(e)})
 
         # Report results
-        print(f"\n\n{'='*70}")
+        print(f"\n\n{'=' * 70}")
         print("Engine Processing Results")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Total test cases: {len(test_cases)}")
         print(f"Successfully processed: {processed}")
         print(f"Processing errors: {len(errors)}")
@@ -207,7 +196,7 @@ class TestTemperatureValidationWithRealData:
             print("\nFirst processing error:")
             print(f"  [{errors[0]['station']}] {errors[0]['metar']}")
             print(f"  Error: {errors[0]['error'][:100]}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         # All cases should be processable
         assert len(errors) == 0, f"Engine crashed on {len(errors)} cases"
@@ -225,13 +214,13 @@ class TestTemperatureValidationWithRealData:
 
         for case in test_cases:
             # Parse temperature and dewpoint
-            temp_pattern = r'(M?\d{2})/(M?\d{2})'
+            temp_pattern = r"(M?\d{2})/(M?\d{2})"
             temp_match = re.search(temp_pattern, case.raw_metar)
 
             if temp_match:
                 temp_str, dewpoint_str = temp_match.groups()
-                T = -int(temp_str[1:]) if temp_str.startswith('M') else int(temp_str)
-                Td = -int(dewpoint_str[1:]) if dewpoint_str.startswith('M') else int(dewpoint_str)
+                T = -int(temp_str[1:]) if temp_str.startswith("M") else int(temp_str)
+                Td = -int(dewpoint_str[1:]) if dewpoint_str.startswith("M") else int(dewpoint_str)
 
                 if T >= Td:
                     rh = rule.calculate_relative_humidity(T, Td)
@@ -251,15 +240,15 @@ class TestTemperatureValidationWithRealData:
         avg_spread = sum(spreads) / len(spreads)
 
         # Report statistics
-        print(f"\n\n{'='*70}")
+        print(f"\n\n{'=' * 70}")
         print("Relative Humidity Statistics (Task 3.1)")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Sample size: {len(rh_values)} METARs")
         print(f"RH range: {min_rh:.1f}% - {max_rh:.1f}%")
         print(f"RH average: {avg_rh:.1f}%")
         print(f"T-Td spread: {min_spread:.1f}°C - {max_spread:.1f}°C")
         print(f"Average spread: {avg_spread:.1f}°C")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         # Sanity checks
         assert 0 <= min_rh <= 100, "Min RH out of bounds"

@@ -36,7 +36,7 @@ class TestCloudLayerValidationEnhanced:
         layers = [
             {"coverage": "FEW", "altitude_m": 800},
             {"coverage": "SCT", "altitude_m": 2000},
-            {"coverage": "OVC", "altitude_m": 4500}
+            {"coverage": "OVC", "altitude_m": 4500},
         ]
         issues = rule.validate(layers)
         assert len([i for i in issues if i.severity == IssueSeverity.ERROR]) == 0
@@ -75,10 +75,7 @@ class TestCloudLayerValidationEnhanced:
 
     def test_normal_gap_between_layers(self, rule):
         """Test normal gap between cloud layers (no issues)."""
-        layers = [
-            {"coverage": "FEW", "altitude_m": 1000},
-            {"coverage": "BKN", "altitude_m": 2500}
-        ]
+        layers = [{"coverage": "FEW", "altitude_m": 1000}, {"coverage": "BKN", "altitude_m": 2500}]
         issues = rule.validate(layers)
         # Gap is 1500m (between small and large thresholds)
         gap_issues = [i for i in issues if "gap" in i.message.lower()]
@@ -86,41 +83,35 @@ class TestCloudLayerValidationEnhanced:
 
     def test_small_gap_between_layers(self, rule):
         """Test small gap between layers (< 500m)."""
-        layers = [
-            {"coverage": "SCT", "altitude_m": 1000},
-            {"coverage": "OVC", "altitude_m": 1200}
-        ]
+        layers = [{"coverage": "SCT", "altitude_m": 1000}, {"coverage": "OVC", "altitude_m": 1200}]
         issues = rule.validate(layers)
         # Gap is 200m (very close, but not necessarily invalid)
         # This is physically possible - should not flag
-        gap_errors = [i for i in issues if "gap" in i.message.lower()
-                     and i.severity == IssueSeverity.ERROR]
+        gap_errors = [i for i in issues if "gap" in i.message.lower() and i.severity == IssueSeverity.ERROR]
         assert len(gap_errors) == 0
 
     def test_large_gap_between_layers(self, rule):
         """Test large gap between layers (3-8km)."""
         layers = [
             {"coverage": "OVC", "altitude_m": 2000},
-            {"coverage": "FEW", "altitude_m": 6000}  # Gap = 4km
+            {"coverage": "FEW", "altitude_m": 6000},  # Gap = 4km
         ]
         issues = rule.validate(layers)
 
         # Should have info about large gap
-        gap_infos = [i for i in issues if "gap" in i.message.lower()
-                    and i.severity == IssueSeverity.INFO]
+        gap_infos = [i for i in issues if "gap" in i.message.lower() and i.severity == IssueSeverity.INFO]
         assert len(gap_infos) >= 1
 
     def test_extreme_gap_between_layers(self, rule):
         """Test extreme gap between layers (> 8km)."""
         layers = [
             {"coverage": "OVC", "altitude_m": 1000},
-            {"coverage": "CIR", "altitude_m": 10000}  # Gap = 9km
+            {"coverage": "CIR", "altitude_m": 10000},  # Gap = 9km
         ]
         issues = rule.validate(layers)
 
         # Should have warning about extreme gap
-        gap_warnings = [i for i in issues if "gap" in i.message.lower()
-                       and i.severity == IssueSeverity.WARNING]
+        gap_warnings = [i for i in issues if "gap" in i.message.lower() and i.severity == IssueSeverity.WARNING]
         assert len(gap_warnings) >= 1
 
     # ==================== ALTITUDE ORDERING TESTS ====================
@@ -129,7 +120,7 @@ class TestCloudLayerValidationEnhanced:
         """Test warning for duplicate altitudes."""
         layers = [
             {"coverage": "BKN", "altitude_m": 1500},
-            {"coverage": "OVC", "altitude_m": 1500}  # Same altitude
+            {"coverage": "OVC", "altitude_m": 1500},  # Same altitude
         ]
         issues = rule.validate(layers)
 
@@ -141,7 +132,7 @@ class TestCloudLayerValidationEnhanced:
         """Test warning for reversed altitude order."""
         layers = [
             {"coverage": "BKN", "altitude_m": 3000},
-            {"coverage": "FEW", "altitude_m": 1000}  # Lower than previous
+            {"coverage": "FEW", "altitude_m": 1000},  # Lower than previous
         ]
         issues = rule.validate(layers)
 
@@ -166,10 +157,7 @@ class TestCloudLayerValidationEnhanced:
 
     def test_clear_with_other_layers(self, rule):
         """Test INVALID: CLR coexists with other layers."""
-        layers = [
-            {"coverage": "CLR", "altitude_m": 0},
-            {"coverage": "FEW", "altitude_m": 2000}
-        ]
+        layers = [{"coverage": "CLR", "altitude_m": 0}, {"coverage": "FEW", "altitude_m": 2000}]
         issues = rule.validate(layers)
 
         # Should have error about clear sky exclusivity
@@ -179,10 +167,7 @@ class TestCloudLayerValidationEnhanced:
 
     def test_sky_clear_with_other_layers(self, rule):
         """Test INVALID: SKC coexists with other layers."""
-        layers = [
-            {"coverage": "SKC", "altitude_m": 0},
-            {"coverage": "OVC", "altitude_m": 3000}
-        ]
+        layers = [{"coverage": "SKC", "altitude_m": 0}, {"coverage": "OVC", "altitude_m": 3000}]
         issues = rule.validate(layers)
 
         # Should have error about clear sky exclusivity
@@ -194,9 +179,9 @@ class TestCloudLayerValidationEnhanced:
     def test_valid_coverage_decreasing_with_altitude(self, rule):
         """Test valid: coverage decreases with altitude."""
         layers = [
-            {"coverage": "OVC", "altitude_m": 1000},   # 100% coverage (rank 4)
-            {"coverage": "BKN", "altitude_m": 3000},   # 62-87% coverage (rank 3)
-            {"coverage": "SCT", "altitude_m": 5000}    # 37-50% coverage (rank 2)
+            {"coverage": "OVC", "altitude_m": 1000},  # 100% coverage (rank 4)
+            {"coverage": "BKN", "altitude_m": 3000},  # 62-87% coverage (rank 3)
+            {"coverage": "SCT", "altitude_m": 5000},  # 37-50% coverage (rank 2)
         ]
         issues = rule.validate(layers)
 
@@ -207,9 +192,9 @@ class TestCloudLayerValidationEnhanced:
     def test_valid_coverage_non_increasing_with_altitude(self, rule):
         """Test valid: coverage non-increasing upward."""
         layers = [
-            {"coverage": "OVC", "altitude_m": 1000},    # rank 4
-            {"coverage": "OVC", "altitude_m": 2500},    # rank 4 (same)
-            {"coverage": "BKN", "altitude_m": 4000}     # rank 3 (decreasing)
+            {"coverage": "OVC", "altitude_m": 1000},  # rank 4
+            {"coverage": "OVC", "altitude_m": 2500},  # rank 4 (same)
+            {"coverage": "BKN", "altitude_m": 4000},  # rank 3 (decreasing)
         ]
         issues = rule.validate(layers)
 
@@ -220,22 +205,20 @@ class TestCloudLayerValidationEnhanced:
     def test_invalid_coverage_increasing_with_altitude(self, rule):
         """Test INVALID: coverage increases upward."""
         layers = [
-            {"coverage": "FEW", "altitude_m": 1000},    # rank 1 (1-2 oktas)
-            {"coverage": "OVC", "altitude_m": 2000}     # rank 4 (8 oktas - INCREASES)
+            {"coverage": "FEW", "altitude_m": 1000},  # rank 1 (1-2 oktas)
+            {"coverage": "OVC", "altitude_m": 2000},  # rank 4 (8 oktas - INCREASES)
         ]
         issues = rule.validate(layers)
 
         # Should have warning about coverage increasing (1->4 is upward increase)
-        cov_warnings = [i for i in issues if "coverage increases" in i.message.lower()
-                       and i.severity == IssueSeverity.WARNING]
+        cov_warnings = [
+            i for i in issues if "coverage increases" in i.message.lower() and i.severity == IssueSeverity.WARNING
+        ]
         assert len(cov_warnings) >= 1
 
     def test_severely_invalid_coverage_increasing(self, rule):
         """Test INVALID: extreme coverage increase (clear to overcast)."""
-        layers = [
-            {"coverage": "SKC", "altitude_m": 0},
-            {"coverage": "OVC", "altitude_m": 3000}
-        ]
+        layers = [{"coverage": "SKC", "altitude_m": 0}, {"coverage": "OVC", "altitude_m": 3000}]
         issues = rule.validate(layers)
 
         # Should have error (clear sky + other layers is primary error)
@@ -247,10 +230,7 @@ class TestCloudLayerValidationEnhanced:
     def test_realistic_fair_weather_clouds(self, rule):
         """Test typical fair weather cloud scenario."""
         # Fair weather: Few cumulus at 1500m, scattered at 3000m
-        layers = [
-            {"coverage": "FEW", "altitude_m": 1500},
-            {"coverage": "SCT", "altitude_m": 3000}
-        ]
+        layers = [{"coverage": "FEW", "altitude_m": 1500}, {"coverage": "SCT", "altitude_m": 3000}]
         issues = rule.validate(layers)
 
         # Should be valid - realistic layering
@@ -260,10 +240,7 @@ class TestCloudLayerValidationEnhanced:
     def test_realistic_overcast_scenario(self, rule):
         """Test typical overcast conditions."""
         # Stratified overcast: Low stratus + high cirrus
-        layers = [
-            {"coverage": "OVC", "altitude_m": 600},
-            {"coverage": "CIR", "altitude_m": 8500}
-        ]
+        layers = [{"coverage": "OVC", "altitude_m": 600}, {"coverage": "CIR", "altitude_m": 8500}]
         issues = rule.validate(layers)
 
         # Should be valid - physically realistic
@@ -278,9 +255,9 @@ class TestCloudLayerValidationEnhanced:
         """Test realistic multi-layer cloud from frontal passage."""
         # Frontal system: Low, mid, high clouds
         layers = [
-            {"coverage": "OVC", "altitude_m": 500},    # Stratus
-            {"coverage": "BKN", "altitude_m": 2000},   # Altocumulus
-            {"coverage": "OVC", "altitude_m": 6000}    # Altostratus (can be valid!)
+            {"coverage": "OVC", "altitude_m": 500},  # Stratus
+            {"coverage": "BKN", "altitude_m": 2000},  # Altocumulus
+            {"coverage": "OVC", "altitude_m": 6000},  # Altostratus (can be valid!)
         ]
         issues = rule.validate(layers)
 
@@ -312,10 +289,7 @@ class TestCloudLayerValidationEnhanced:
 
     def test_unknown_coverage_code(self, rule):
         """Test with unknown coverage code."""
-        layers = [
-            {"coverage": "XYZ", "altitude_m": 1000},
-            {"coverage": "BKN", "altitude_m": 2000}
-        ]
+        layers = [{"coverage": "XYZ", "altitude_m": 1000}, {"coverage": "BKN", "altitude_m": 2000}]
         issues = rule.validate(layers)
         # Should handle gracefully, skip unknown codes in coverage checks
         assert isinstance(issues, list)
@@ -336,7 +310,7 @@ class TestCloudLayerIntegration:
             {"coverage": "FEW", "altitude_m": 600},
             {"coverage": "SCT", "altitude_m": 2000},
             {"coverage": "BKN", "altitude_m": 3500},
-            {"coverage": "OVC", "altitude_m": 5500}
+            {"coverage": "OVC", "altitude_m": 5500},
         ]
 
         issues = rule.validate(vcs_layers)
@@ -353,7 +327,7 @@ class TestCloudLayerIntegration:
         # Close layers: Two OVC layers with very small gap
         layers = [
             {"coverage": "OVC", "altitude_m": 1000},
-            {"coverage": "OVC", "altitude_m": 1050}  # Only 50m apart
+            {"coverage": "OVC", "altitude_m": 1050},  # Only 50m apart
         ]
 
         issues = rule.validate(layers)

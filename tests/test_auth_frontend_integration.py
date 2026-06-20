@@ -15,28 +15,25 @@ class TestAuthFrontendIntegration:
             "username": "testuser",
             "email": "test@example.com",
             "password": "SecurePass123!",
-            "name": "Test User"
+            "name": "Test User",
         }
-        
+
         # Auth service responds
         response = {
             "id": "user-123",
             "username": "testuser",
             "email": "test@example.com",
-            "created_at": "2024-02-04T00:00:00Z"
+            "created_at": "2024-02-04T00:00:00Z",
         }
-        
+
         assert response["username"] == "testuser"
         assert response["email"] == "test@example.com"
 
     def test_frontend_can_login_user(self):
         """Test that frontend can call auth login endpoint."""
         # Frontend sends login request
-        request_data = {
-            "username": "testuser",
-            "password": "SecurePass123!"
-        }
-        
+        request_data = {"username": "testuser", "password": "SecurePass123!"}
+
         # Auth service returns token
         response = {
             "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -44,10 +41,10 @@ class TestAuthFrontendIntegration:
             "user": {
                 "id": "user-123",
                 "username": "testuser",
-                "email": "test@example.com"
-            }
+                "email": "test@example.com",
+            },
         }
-        
+
         assert "access_token" in response
         assert response["token_type"] == "bearer"
 
@@ -55,7 +52,7 @@ class TestAuthFrontendIntegration:
         """Test that frontend can securely store auth token."""
         # Frontend receives token from auth service
         token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        
+
         # Frontend stores in localStorage (or sessionStorage)
         stored_token = token
         assert stored_token == token
@@ -64,13 +61,13 @@ class TestAuthFrontendIntegration:
     def test_frontend_uses_token_for_authenticated_requests(self):
         """Test that frontend includes token in API requests."""
         token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        
+
         # Frontend creates Authorization header
         headers = {
             "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
-        
+
         assert "Authorization" in headers
         assert "Bearer" in headers["Authorization"]
 
@@ -78,10 +75,10 @@ class TestAuthFrontendIntegration:
         """Test that frontend can logout user."""
         # Frontend clears stored token
         token = None
-        
+
         # Frontend clears user session
         user_session = None
-        
+
         assert token is None
         assert user_session is None
 
@@ -92,7 +89,7 @@ class TestAuthTokenHandling:
     def test_frontend_validates_token_format(self):
         """Test that frontend validates JWT token format."""
         valid_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U"
-        
+
         # Token should have 3 parts separated by dots
         parts = valid_token.split(".")
         assert len(parts) == 3
@@ -100,18 +97,18 @@ class TestAuthTokenHandling:
     def test_frontend_refreshes_expired_token(self):
         """Test that frontend can refresh expired token."""
         expired_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.old..."
-        
+
         # Frontend detects expiration (e.g., 401 response)
         # Requests new token from auth service
         new_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.new..."
-        
+
         assert new_token != expired_token
         assert len(new_token) > 0
 
     def test_frontend_handles_invalid_token(self):
         """Test that frontend handles invalid tokens properly."""
         invalid_token = "not.a.valid.token"
-        
+
         # Frontend should detect and handle
         try:
             parts = invalid_token.split(".")
@@ -130,19 +127,16 @@ class TestAuthSessionManagement:
             "username": "testuser",
             "email": "test@example.com",
             "logged_in": True,
-            "login_time": "2024-02-04T00:00:00Z"
+            "login_time": "2024-02-04T00:00:00Z",
         }
-        
+
         assert user_session["logged_in"] is True
         assert user_session["user_id"] is not None
 
     def test_frontend_checks_session_validity(self):
         """Test that frontend can check if session is valid."""
-        session = {
-            "token": "valid-token",
-            "expires_at": "2024-02-05T00:00:00Z"
-        }
-        
+        session = {"token": "valid-token", "expires_at": "2024-02-05T00:00:00Z"}
+
         # Frontend should verify token not expired
         assert "token" in session
         assert "expires_at" in session
@@ -151,10 +145,10 @@ class TestAuthSessionManagement:
         """Test that frontend handles session expiration."""
         # Session expired
         expired_session = None
-        
+
         # Frontend redirects to login
         redirect_to = "/login"
-        
+
         assert expired_session is None
         assert redirect_to == "/login"
 
@@ -164,31 +158,22 @@ class TestAuthErrorHandling:
 
     def test_frontend_handles_invalid_credentials(self):
         """Test that frontend handles login failures."""
-        response = {
-            "status": 401,
-            "detail": "Invalid username or password"
-        }
-        
+        response = {"status": 401, "detail": "Invalid username or password"}
+
         assert response["status"] == 401
         assert "Invalid" in response["detail"]
 
     def test_frontend_handles_registration_failure(self):
         """Test frontend handles registration errors."""
-        response = {
-            "status": 400,
-            "errors": ["Username already exists"]
-        }
-        
+        response = {"status": 400, "errors": ["Username already exists"]}
+
         assert response["status"] == 400
         assert len(response["errors"]) > 0
 
     def test_frontend_handles_auth_service_unavailable(self):
         """Test frontend handles auth service outages."""
-        response = {
-            "status": 503,
-            "detail": "Auth service temporarily unavailable"
-        }
-        
+        response = {"status": 503, "detail": "Auth service temporarily unavailable"}
+
         assert response["status"] == 503
 
 
@@ -197,29 +182,18 @@ class TestPasswordReset:
 
     def test_frontend_can_request_password_reset(self):
         """Test that frontend can request password reset."""
-        request_data = {
-            "email": "test@example.com"
-        }
-        
-        response = {
-            "status": "success",
-            "message": "Password reset email sent"
-        }
-        
+        request_data = {"email": "test@example.com"}
+
+        response = {"status": "success", "message": "Password reset email sent"}
+
         assert response["status"] == "success"
 
     def test_frontend_can_confirm_password_reset(self):
         """Test that frontend can confirm password reset."""
-        request_data = {
-            "token": "reset-token-123",
-            "new_password": "NewPass456!"
-        }
-        
-        response = {
-            "status": "success",
-            "message": "Password updated"
-        }
-        
+        request_data = {"token": "reset-token-123", "new_password": "NewPass456!"}
+
+        response = {"status": "success", "message": "Password updated"}
+
         assert response["status"] == "success"
 
 
@@ -228,16 +202,14 @@ class TestAPIKeyManagement:
 
     def test_frontend_can_create_api_key(self):
         """Test that frontend can create API key via auth."""
-        request_data = {
-            "key_name": "My API Key"
-        }
-        
+        request_data = {"key_name": "My API Key"}
+
         response = {
             "key_id": "key-123",
             "key_value": "sk_live_abcd1234...",
-            "created_at": "2024-02-04T00:00:00Z"
+            "created_at": "2024-02-04T00:00:00Z",
         }
-        
+
         assert "key_id" in response
         assert "key_value" in response
 
@@ -246,23 +218,18 @@ class TestAPIKeyManagement:
         response = {
             "keys": [
                 {"id": "key-1", "name": "Development", "created_at": "2024-01-01"},
-                {"id": "key-2", "name": "Production", "created_at": "2024-02-01"}
+                {"id": "key-2", "name": "Production", "created_at": "2024-02-01"},
             ]
         }
-        
+
         assert len(response["keys"]) == 2
 
     def test_frontend_can_revoke_api_key(self):
         """Test that frontend can revoke API key."""
-        request_data = {
-            "key_id": "key-123"
-        }
-        
-        response = {
-            "status": "success",
-            "message": "API key revoked"
-        }
-        
+        request_data = {"key_id": "key-123"}
+
+        response = {"status": "success", "message": "API key revoked"}
+
         assert response["status"] == "success"
 
 
@@ -277,22 +244,19 @@ class TestAuthFrontendWorkflow:
             "username": "newuser",
             "email": "new@example.com",
             "password": "SecurePass123!",
-            "name": "New User"
+            "name": "New User",
         }
-        
+
         # 3. Auth service creates user
         user_created = True
-        
+
         # 4. Frontend redirects to login
         # 5. User logs in
-        login_data = {
-            "username": "newuser",
-            "password": "SecurePass123!"
-        }
-        
+        login_data = {"username": "newuser", "password": "SecurePass123!"}
+
         # 6. Auth service returns token
         token_received = True
-        
+
         # 7. Frontend stores token and redirects to app
         assert user_created is True
         assert token_received is True
@@ -302,7 +266,7 @@ class TestAuthFrontendWorkflow:
         # 1. User tries to access /dashboard
         # 2. Frontend checks for token
         token_present = True
-        
+
         # 3. If no token, redirect to login
         if not token_present:
             redirect_to = "/login"
@@ -312,5 +276,5 @@ class TestAuthFrontendWorkflow:
             # 5. Allow access to dashboard
             if token_valid:
                 access_granted = True
-        
+
         assert token_present is True

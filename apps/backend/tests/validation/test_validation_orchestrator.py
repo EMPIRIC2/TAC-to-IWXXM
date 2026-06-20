@@ -58,7 +58,7 @@ class TestValidationOrchestrator:
             xml_content="",
             version="2025-2",
             layers=[ValidationLayer.TAC_SYNTAX],
-            stop_on_error=False
+            stop_on_error=False,
         )
 
         assert isinstance(result, ComprehensiveValidationResult)
@@ -74,7 +74,7 @@ class TestValidationOrchestrator:
             xml_content=SAMPLE_XML,
             version="2025-2",
             layers=None,  # All layers
-            stop_on_error=True
+            stop_on_error=True,
         )
 
         assert isinstance(result, ComprehensiveValidationResult)
@@ -90,20 +90,13 @@ class TestValidationOrchestrator:
         invalid_tac = "INVALID TAC TEXT"
 
         result = orchestrator.validate_complete(
-            tac_text=invalid_tac,
-            xml_content=SAMPLE_XML,
-            version="2025-2",
-            layers=None,
-            stop_on_error=True
+            tac_text=invalid_tac, xml_content=SAMPLE_XML, version="2025-2", layers=None, stop_on_error=True
         )
 
         assert not result.is_valid
         assert result.stopped_at_layer is not None
         # Should stop at early layer
-        assert result.stopped_at_layer in [
-            ValidationLayer.AIRPORT_ICAO,
-            ValidationLayer.TAC_SYNTAX
-        ]
+        assert result.stopped_at_layer in [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
 
     def test_layer_sequencing(self):
         """Test that layers run in correct sequence."""
@@ -114,7 +107,7 @@ class TestValidationOrchestrator:
             xml_content=SAMPLE_XML,
             version="2025-2",
             layers=None,
-            stop_on_error=False  # Run all even if some fail
+            stop_on_error=False,  # Run all even if some fail
         )
 
         # Check that blocking layers ran before non-blocking
@@ -135,7 +128,7 @@ class TestValidationOrchestrator:
             xml_content=SAMPLE_XML,
             version="2025-2",
             layers=[ValidationLayer.TAC_SYNTAX],
-            stop_on_error=False
+            stop_on_error=False,
         )
 
         assert isinstance(result.issues_by_layer, dict)
@@ -153,12 +146,8 @@ class TestValidationOrchestrator:
             tac_text=SAMPLE_TAC,
             xml_content=SAMPLE_XML,
             version="2025-2",
-            layers=[
-                ValidationLayer.SCHEMATRON,
-                ValidationLayer.GML_REFERENCES,
-                ValidationLayer.WMO_CODELISTS
-            ],
-            stop_on_error=False
+            layers=[ValidationLayer.SCHEMATRON, ValidationLayer.GML_REFERENCES, ValidationLayer.WMO_CODELISTS],
+            stop_on_error=False,
         )
 
         # All three should be attempted
@@ -201,7 +190,7 @@ class TestValidationOrchestrator:
             xml_content=SAMPLE_XML,
             version="2023-1",
             layers=[ValidationLayer.XML_SCHEMA],
-            stop_on_error=False
+            stop_on_error=False,
         )
 
         assert result.version == "2023-1"
@@ -226,7 +215,7 @@ class TestValidationOrchestratorIntegration:
             xml_content=SAMPLE_XML,
             version="2025-2",
             layers=None,
-            stop_on_error=False  # Continue through all layers
+            stop_on_error=False,  # Continue through all layers
         )
 
         assert isinstance(result, ComprehensiveValidationResult)

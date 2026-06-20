@@ -46,9 +46,7 @@ class IntegrationTestHelper:
         """
         self.client = mock_client
 
-    async def test_station_conversion(
-        self, station_id: str, hours: int = 1
-    ) -> IntegrationTestResult:
+    async def test_station_conversion(self, station_id: str, hours: int = 1) -> IntegrationTestResult:
         """Test METAR conversion for a single station against live API.
 
         Args:
@@ -104,9 +102,7 @@ class IntegrationTestHelper:
 
         return result
 
-    async def test_stations_batch(
-        self, station_ids: list, hours: int = 1
-    ) -> Dict[str, IntegrationTestResult]:
+    async def test_stations_batch(self, station_ids: list, hours: int = 1) -> Dict[str, IntegrationTestResult]:
         """Test METAR conversion for multiple stations.
 
         Args:
@@ -125,9 +121,7 @@ class IntegrationTestHelper:
         return results
 
 
-def run_integration_test_sync(
-    station_id: str, hours: int = 1, mock_client=None
-) -> IntegrationTestResult:
+def run_integration_test_sync(station_id: str, hours: int = 1, mock_client=None) -> IntegrationTestResult:
     """Run a single integration test synchronously.
 
     Convenience wrapper for pytest fixtures that can't use async.
@@ -150,9 +144,7 @@ def run_integration_test_sync(
         asyncio.set_event_loop(loop)
 
     try:
-        return loop.run_until_complete(
-            helper.test_station_conversion(station_id, hours)
-        )
+        return loop.run_until_complete(helper.test_station_conversion(station_id, hours))
     finally:
         # Don't close loop here - leave it for pytest to manage
         pass

@@ -1,4 +1,5 @@
 """Unit tests for OpenAIPService – 0% coverage target."""
+
 import builtins
 import json
 from datetime import datetime, timedelta
@@ -66,6 +67,7 @@ class TestOpenAIPServiceGetAirport:
         cache_file = _make_cache_file(tmp_path, {})
         svc = OpenAIPService(cache_file=cache_file)
         from datetime import datetime
+
         svc._live_cache["EGLL"] = {
             "data": {"name": "Heathrow"},
             "_cached_at": datetime.utcnow().isoformat(),

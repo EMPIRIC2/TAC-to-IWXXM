@@ -8,6 +8,7 @@ authentication flows.
 Usage:
     python demo_login.py
 """
+
 import json
 import os
 import sys
@@ -45,13 +46,7 @@ class AuthClient:
     def register(self, name: str, email: str, address: str, username: str, password: str) -> dict:
         """Register a new user."""
         url = f"{self.base_url}/register"
-        data = {
-            "name": name,
-            "email": email,
-            "address": address,
-            "username": username,
-            "password": password
-        }
+        data = {"name": name, "email": email, "address": address, "username": username, "password": password}
 
         response = requests.post(url, json=data)
         response.raise_for_status()
@@ -60,10 +55,7 @@ class AuthClient:
     def login(self, username: str, password: str) -> dict:
         """Login and get access token."""
         url = f"{self.base_url}/login"
-        data = {
-            "username": username,
-            "password": password
-        }
+        data = {"username": username, "password": password}
 
         response = requests.post(url, json=data)
         response.raise_for_status()
@@ -162,7 +154,7 @@ def demo_registration():
             email=DEMO_ADMIN_EMAIL,
             address=DEMO_ADMIN_ADDRESS,
             username=DEMO_ADMIN_USERNAME,
-            password=DEMO_ADMIN_PASSWORD
+            password=DEMO_ADMIN_PASSWORD,
         )
         print("✅ Registration successful!")
         print_json(result)
@@ -179,7 +171,7 @@ def demo_registration():
             email=DEMO_USER_EMAIL,
             address=DEMO_USER_ADDRESS,
             username=DEMO_USER_USERNAME,
-            password=DEMO_USER_PASSWORD
+            password=DEMO_USER_PASSWORD,
         )
         print("✅ Registration successful!")
         print_json(result)
@@ -232,7 +224,7 @@ def demo_api_keys(client: AuthClient):
         print("✅ API key created!")
         print(f"   Key ID: {result['id']}")
         print(f"   Raw Key (save this!): {result['raw_key']}")
-        key_id = result['id']
+        key_id = result["id"]
     except requests.exceptions.HTTPError as e:
         print(f"❌ Failed to create API key: {e}")
         return
@@ -242,7 +234,7 @@ def demo_api_keys(client: AuthClient):
         result = client.list_api_keys()
         print(f"✅ Found {len(result)} API key(s):")
         for key in result:
-            status = "❌ Revoked" if key['revoked'] else "✅ Active"
+            status = "❌ Revoked" if key["revoked"] else "✅ Active"
             print(f"   - ID {key['id']}: {status} (created {key['created_at']})")
     except requests.exceptions.HTTPError as e:
         print(f"❌ Failed to list API keys: {e}")

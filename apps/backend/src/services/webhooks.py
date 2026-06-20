@@ -3,6 +3,7 @@ Webhook Notification Service for ICAO OPMET compliance.
 
 Sends HTTP webhook notifications for translation events (User Decision 2).
 """
+
 import asyncio
 import hashlib
 import hmac
@@ -54,11 +55,7 @@ class WebhookService:
         if not WEBHOOK_SECRET:
             return ""
 
-        signature = hmac.new(
-            WEBHOOK_SECRET.encode('utf-8'),
-            payload.encode('utf-8'),
-            hashlib.sha256
-        ).hexdigest()
+        signature = hmac.new(WEBHOOK_SECRET.encode("utf-8"), payload.encode("utf-8"), hashlib.sha256).hexdigest()
 
         return signature
 
@@ -118,18 +115,12 @@ class WebhookService:
             headers["X-Webhook-Signature"] = f"sha256={signature}"
 
         # Send to all webhook URLs
-        tasks = [
-            self._send_single_webhook(url, payload_str, headers)
-            for url in WEBHOOK_URLS
-        ]
+        tasks = [self._send_single_webhook(url, payload_str, headers) for url in WEBHOOK_URLS]
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
         # Check if all succeeded
-        success = all(
-            isinstance(result, bool) and result
-            for result in results
-        )
+        success = all(isinstance(result, bool) and result for result in results)
 
         return success
 

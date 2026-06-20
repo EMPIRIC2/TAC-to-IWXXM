@@ -13,11 +13,14 @@ from typing import Any, Dict, List
 # Custom exception for deprecated versions
 class VersionDeprecatedError(ValueError):
     """Raised when attempting to use a deprecated IWXXM version."""
+
     pass
+
 
 # Project root path
 def _detect_project_root() -> Path:
     """Detect project root across local/devcontainer and deployment layouts."""
+
     def has_versioned_schemas(root: Path) -> bool:
         return (root / "schemas" / "iwxxm" / "2025-2" / "IWXXM").exists()
 
@@ -87,16 +90,16 @@ SUPPORTED_VERSIONS: Dict[str, Dict[str, Any]] = {
                     "element": "iwxxm:runwayState",
                     "xpath": ".//iwxxm:runwayState",
                     "action": "remove",
-                    "reason": "Runway state removed from METAR product in 2025-2"
+                    "reason": "Runway state removed from METAR product in 2025-2",
                 },
                 {
                     "element": "iwxxm:AerodromeRunwayState",
                     "xpath": ".//iwxxm:AerodromeRunwayState",
                     "action": "remove",
-                    "reason": "Runway state complex type removed"
-                }
+                    "reason": "Runway state complex type removed",
+                },
             ]
-        }
+        },
     },
     "2023-1": {
         "name": "IWXXM 2023-1",
@@ -111,40 +114,19 @@ SUPPORTED_VERSIONS: Dict[str, Dict[str, Any]] = {
         "has_measures_xsd": True,
         "split_nil_codelists": False,
         "status": "previous",
-        "breaking_changes_from_prior": {}
-    }
+        "breaking_changes_from_prior": {},
+    },
 }
 
 # Deprecated versions (no longer supported)
 DEPRECATED_VERSIONS: Dict[str, Dict[str, str]] = {
-    "2021-2": {
-        "deprecated_date": "2026-02-13",
-        "reason": "Pre-2023 versions no longer supported"
-    },
-    "2018": {
-        "deprecated_date": "2026-02-13",
-        "reason": "Pre-2023 versions no longer supported"
-    },
-    "2018-2": {
-        "deprecated_date": "2026-02-13",
-        "reason": "Pre-2023 versions no longer supported"
-    },
-    "2016": {
-        "deprecated_date": "2026-02-13",
-        "reason": "Pre-2023 versions no longer supported"
-    },
-    "2016-1": {
-        "deprecated_date": "2026-02-13",
-        "reason": "Pre-2023 versions no longer supported"
-    },
-    "3.0.0": {
-        "deprecated_date": "2026-02-13",
-        "reason": "Legacy 3.x versions no longer supported"
-    },
-    "3.0-dev": {
-        "deprecated_date": "2026-02-13",
-        "reason": "Legacy 3.x versions no longer supported"
-    }
+    "2021-2": {"deprecated_date": "2026-02-13", "reason": "Pre-2023 versions no longer supported"},
+    "2018": {"deprecated_date": "2026-02-13", "reason": "Pre-2023 versions no longer supported"},
+    "2018-2": {"deprecated_date": "2026-02-13", "reason": "Pre-2023 versions no longer supported"},
+    "2016": {"deprecated_date": "2026-02-13", "reason": "Pre-2023 versions no longer supported"},
+    "2016-1": {"deprecated_date": "2026-02-13", "reason": "Pre-2023 versions no longer supported"},
+    "3.0.0": {"deprecated_date": "2026-02-13", "reason": "Legacy 3.x versions no longer supported"},
+    "3.0-dev": {"deprecated_date": "2026-02-13", "reason": "Legacy 3.x versions no longer supported"},
 }
 
 # Version remapping (for non-existent or deprecated versions)
@@ -169,7 +151,7 @@ RC_VERSIONS: Dict[str, Dict[str, Any]] = {
         "status": "rc",
         "base_version": "2025-2",
         "promoted_to_stable": None,
-        "breaking_changes_from_prior": {}
+        "breaking_changes_from_prior": {},
     },
     "2025-2RC1": {
         "name": "IWXXM 2025-2 RC1",
@@ -186,8 +168,8 @@ RC_VERSIONS: Dict[str, Dict[str, Any]] = {
         "status": "rc",
         "base_version": "2025-2",
         "promoted_to_stable": None,
-        "breaking_changes_from_prior": {}
-    }
+        "breaking_changes_from_prior": {},
+    },
 }
 
 # Version discovery metadata (tracking when versions were discovered)
@@ -197,41 +179,40 @@ VERSION_DISCOVERY_METADATA: Dict[str, Dict[str, Any]] = {
         "source": "wmo-im/iwxxm git repository",
         "source_url": "https://github.com/wmo-im/iwxxm/tree/v2025-2",
         "mirrored": True,
-        "channel": "stable"
+        "channel": "stable",
     },
     "2023-1": {
         "discovered": "2023-06-02T00:00:00Z",
         "source": "wmo-im/iwxxm git repository",
         "source_url": "https://github.com/wmo-im/iwxxm/tree/v2023-1",
         "mirrored": True,
-        "channel": "stable"    },
+        "channel": "stable",
+    },
     "2025-2RC2": {
         "discovered": "2026-02-15T00:00:00Z",
         "source": "WMO IWXXM schema directory",
         "source_url": "https://schemas.wmo.int/iwxxm/2025-2RC2/",
         "mirrored": False,
-        "channel": "rc"
+        "channel": "rc",
     },
     "2025-2RC1": {
         "discovered": "2026-02-10T00:00:00Z",
         "source": "WMO IWXXM schema directory",
         "source_url": "https://schemas.wmo.int/iwxxm/2025-2RC1/",
         "mirrored": False,
-        "channel": "rc"    }
+        "channel": "rc",
+    },
 }
 
 # Versions grouped by channel (stable, rc, all)
 SUPPORTED_VERSIONS_BY_CHANNEL: Dict[str, List[str]] = {
     "stable": list(SUPPORTED_VERSIONS.keys()),
     "rc": list(RC_VERSIONS.keys()),
-    "all": list(SUPPORTED_VERSIONS.keys()) + list(RC_VERSIONS.keys())
+    "all": list(SUPPORTED_VERSIONS.keys()) + list(RC_VERSIONS.keys()),
 }
 
 # Combined version registry (stable + RC)
-ALL_VERSIONS: Dict[str, Dict[str, Any]] = {
-    **SUPPORTED_VERSIONS,
-    **RC_VERSIONS
-}
+ALL_VERSIONS: Dict[str, Dict[str, Any]] = {**SUPPORTED_VERSIONS, **RC_VERSIONS}
 
 # API endpoint constants
 VALID_VERSION_STRINGS = list(ALL_VERSIONS.keys())
@@ -274,10 +255,7 @@ def get_version_config(version: str) -> Dict[str, Any]:
 
     # Check both stable and RC versions
     if normalized not in ALL_VERSIONS:
-        raise ValueError(
-            f"IWXXM version '{version}' is not supported. "
-            f"Supported versions: {VALID_VERSION_STRINGS}"
-        )
+        raise ValueError(f"IWXXM version '{version}' is not supported. Supported versions: {VALID_VERSION_STRINGS}")
 
     return ALL_VERSIONS[normalized]
 
@@ -486,8 +464,5 @@ def get_all_versions_with_metadata() -> Dict[str, Dict[str, Any]]:
     """
     result = {}
     for version, config in ALL_VERSIONS.items():
-        result[version] = {
-            **config,
-            "discovery_metadata": VERSION_DISCOVERY_METADATA.get(version, {})
-        }
+        result[version] = {**config, "discovery_metadata": VERSION_DISCOVERY_METADATA.get(version, {})}
     return result

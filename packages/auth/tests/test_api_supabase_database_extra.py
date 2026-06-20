@@ -76,10 +76,13 @@ def test_database_module_exposes_database_url_and_engine() -> None:
 def test_database_init_db_calls_model_import_and_create_all() -> None:
     import auth.database as database
 
-    with patch.object(database, "_ensure_models_imported") as ensure_models, patch.object(
-        database.Base.metadata,
-        "create_all",
-    ) as create_all:
+    with (
+        patch.object(database, "_ensure_models_imported") as ensure_models,
+        patch.object(
+            database.Base.metadata,
+            "create_all",
+        ) as create_all,
+    ):
         database.init_db()
 
     ensure_models.assert_called_once()

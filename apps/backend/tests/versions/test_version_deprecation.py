@@ -51,15 +51,7 @@ class TestVersionDeprecation:
             assert "reason" in info
             assert info["deprecated_date"] == "2026-02-13"
 
-    @pytest.mark.parametrize("old_version", [
-        "2021-2",
-        "2018",
-        "2018-2",
-        "2016",
-        "2016-1",
-        "3.0.0",
-        "3.0-dev"
-    ])
+    @pytest.mark.parametrize("old_version", ["2021-2", "2018", "2018-2", "2016", "2016-1", "3.0.0", "3.0-dev"])
     def test_old_versions_rejected_with_deprecation_error(self, old_version):
         """Verify deprecated versions raise VersionDeprecatedError"""
         with pytest.raises(VersionDeprecatedError) as exc_info:
@@ -140,13 +132,12 @@ class TestVersionDeprecation:
 
     def test_deprecated_versions_dict_complete(self):
         """DEPRECATED_VERSIONS should include all pre-2023 versions"""
-        expected_deprecated = {
-            "2021-2", "2018", "2018-2", "2016", "2016-1", "3.0.0", "3.0-dev"
-        }
+        expected_deprecated = {"2021-2", "2018", "2018-2", "2016", "2016-1", "3.0.0", "3.0-dev"}
         actual_deprecated = set(DEPRECATED_VERSIONS.keys())
 
-        assert expected_deprecated.issubset(actual_deprecated), \
+        assert expected_deprecated.issubset(actual_deprecated), (
             f"Missing deprecated versions: {expected_deprecated - actual_deprecated}"
+        )
 
 
 class TestVersionDeprecationErrorHandling:

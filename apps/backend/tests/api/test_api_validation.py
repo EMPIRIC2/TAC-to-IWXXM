@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Quick test of the API endpoint with new validation features."""
 
-
 import requests
 
 
@@ -16,14 +15,14 @@ def test_api_with_validation():
     data = {
         "manual_text": valid_metar,
         "iwxxm_version": "2025-2",
-        "validate_output": "false"  # Start without output validation for speed
+        "validate_output": "false",  # Start without output validation for speed
     }
 
     try:
         response = requests.post(
             "http://localhost:8002/api/v1/convert",
             data=data,
-            headers={"Authorization": "Bearer dummy"}  # DISABLE_AUTH should be set
+            headers={"Authorization": "Bearer dummy"},  # DISABLE_AUTH should be set
         )
 
         if response.status_code == 200:
@@ -33,8 +32,8 @@ def test_api_with_validation():
             print(f"  Successful: {result['successful']}")
             print(f"  Failed: {result['failed']}")
 
-            if result['results']:
-                xml = result['results'][0]['content']
+            if result["results"]:
+                xml = result["results"][0]["content"]
                 if "BURI RAM AIRPORT" in xml:
                     print("  ✓ Airport name capitalized correctly")
                 else:
@@ -51,7 +50,9 @@ def test_api_with_validation():
     except requests.exceptions.ConnectionError:
         print("⚠ Server not running on localhost:8002")
         print("  To test manually, start the server with:")
-        print("  cd /root/metar-to-IWXXM/backend && DISABLE_AUTH=true uv run uvicorn src.api:app --host 0.0.0.0 --port 8002 --reload")
+        print(
+            "  cd /root/metar-to-IWXXM/backend && DISABLE_AUTH=true uv run uvicorn src.api:app --host 0.0.0.0 --port 8002 --reload"
+        )
         return
     except Exception as e:
         print(f"✗ Error: {e}")
@@ -69,19 +70,17 @@ def test_api_with_validation():
 
     try:
         response = requests.post(
-            "http://localhost:8002/api/v1/convert",
-            data=data,
-            headers={"Authorization": "Bearer dummy"}
+            "http://localhost:8002/api/v1/convert", data=data, headers={"Authorization": "Bearer dummy"}
         )
 
         if response.status_code == 400:
             print("✓ Invalid METAR correctly rejected")
             result = response.json()
-            if 'detail' in result:
+            if "detail" in result:
                 print(f"  Error details: {result['detail']}")
         elif response.status_code == 200:
             result = response.json()
-            if result.get('failed', 0) > 0:
+            if result.get("failed", 0) > 0:
                 print("✓ Invalid METAR caught during processing")
                 print(f"  Errors: {result.get('errors', [])}")
             else:
@@ -91,6 +90,7 @@ def test_api_with_validation():
 
     except Exception as e:
         print(f"✗ Error: {e}")
+
 
 if __name__ == "__main__":
     test_api_with_validation()

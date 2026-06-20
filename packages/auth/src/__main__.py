@@ -1,4 +1,5 @@
 """Entry point for running the auth service via `python -m auth`."""
+
 import logging
 import os
 import time
@@ -74,7 +75,9 @@ async def lifespan(app: FastAPI):
     logger.info("")
     logger.info("Environment Variables:")
     logger.info(f"  SUPABASE_URL: {os.getenv('SUPABASE_URL', 'NOT SET')}")
-    logger.info(f"  SUPABASE_ANON_KEY: {'SET (' + os.getenv('SUPABASE_ANON_KEY')[:20] + '...)' if os.getenv('SUPABASE_ANON_KEY') else 'NOT SET'}")
+    logger.info(
+        f"  SUPABASE_ANON_KEY: {'SET (' + os.getenv('SUPABASE_ANON_KEY')[:20] + '...)' if os.getenv('SUPABASE_ANON_KEY') else 'NOT SET'}"
+    )
     logger.info(f"  FRONTEND_BASE_URL: {os.getenv('FRONTEND_BASE_URL', 'NOT SET')}")
     logger.info("")
     logger.info("CORS Configuration:")
@@ -109,12 +112,13 @@ app = FastAPI(
     title="METAR Auth Proxy Service",
     version="0.1.0",
     description="Authentication middleware proxy to Supabase",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 install_fastapi_observability(app=app, service_name="auth")
 
 logger.info("Initializing Auth Service with CORS middleware...")
+
 
 # CORS debugging and request logging middleware - FIRST to catch all requests
 @app.middleware("http")
@@ -161,8 +165,12 @@ async def log_requests_and_cors(request: Request, call_next):
         return response
     except Exception as e:
         duration = (time.time() - start_time) * 1000
-        logger.error(f"✗ [{request.method}] {request.url.path} - ERROR: {type(e).__name__}: {str(e)} ({duration:.2f}ms)", exc_info=True)
+        logger.error(
+            f"✗ [{request.method}] {request.url.path} - ERROR: {type(e).__name__}: {str(e)} ({duration:.2f}ms)",
+            exc_info=True,
+        )
         raise
+
 
 # Add CORS middleware AFTER logging (before other middleware)
 # CRITICAL: Cannot use "*" with allow_credentials=True

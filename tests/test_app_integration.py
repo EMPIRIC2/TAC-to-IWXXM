@@ -7,6 +7,7 @@ NOTE: The frontend is now a React/Vite application served via nginx,
       and is not tested here. Frontend-specific tests should use
       browser automation tools like Selenium or Playwright.
 """
+
 from __future__ import annotations
 
 import pathlib
@@ -61,8 +62,7 @@ def composite_client() -> TestClient:
 
 @pytest.fixture(scope="session")
 def user_token(auth_client: TestClient) -> str:
-    suffix = ''.join(random.choices(
-        string.ascii_lowercase + string.digits, k=8))
+    suffix = "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
     reg_payload = {
         "name": "Integration User",
         "email": f"integration-{suffix}@example.com",
@@ -72,10 +72,13 @@ def user_token(auth_client: TestClient) -> str:
     }
     r = auth_client.post("/auth/register", json=reg_payload)
     assert r.status_code == 200, r.text
-    r_login = auth_client.post("/auth/login", json={
-        "username": reg_payload["username"],
-        "password": reg_payload["password"],
-    })
+    r_login = auth_client.post(
+        "/auth/login",
+        json={
+            "username": reg_payload["username"],
+            "password": reg_payload["password"],
+        },
+    )
     assert r_login.status_code == 200, r_login.text
     return r_login.json()["access_token"]
 
@@ -105,7 +108,9 @@ class TestBackendService:
 
 
 class TestCompositeApp:
-    def test_composite_auth_login(self, composite_client: TestClient, user_token: str) -> None:
+    def test_composite_auth_login(
+        self, composite_client: TestClient, user_token: str
+    ) -> None:
         # Token already obtained from auth-only client; verify composite health & reuse token.
         r = composite_client.get("/backend/health")
         assert r.status_code == 200

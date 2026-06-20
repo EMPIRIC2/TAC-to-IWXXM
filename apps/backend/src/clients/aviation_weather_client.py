@@ -1,4 +1,5 @@
 """Client for aviationweather.gov API."""
+
 import asyncio
 import hashlib
 import json
@@ -12,6 +13,7 @@ import httpx
 
 class AviationWeatherAPIError(Exception):
     """Aviation weather API error."""
+
     pass
 
 
@@ -56,13 +58,13 @@ class AviationWeatherClient:
 
         # Process in batches to be respectful of the API
         for i in range(0, len(station_ids), self.BATCH_SIZE):
-            batch = station_ids[i:i + self.BATCH_SIZE]
+            batch = station_ids[i : i + self.BATCH_SIZE]
 
             # Fetch both raw TAC and IWXXM in parallel
             raw_data, iwxxm_data = await asyncio.gather(
                 self._fetch_format(batch, "raw", hours),
                 self._fetch_format(batch, "iwxxm", hours),
-                return_exceptions=True
+                return_exceptions=True,
             )
 
             # Handle exceptions from parallel fetches
@@ -73,10 +75,7 @@ class AviationWeatherClient:
 
             # Combine results
             for station_id in batch:
-                results[station_id] = (
-                    raw_data.get(station_id),
-                    iwxxm_data.get(station_id)
-                )
+                results[station_id] = (raw_data.get(station_id), iwxxm_data.get(station_id))
 
             # Rate limiting between batches
             if i + self.BATCH_SIZE < len(station_ids):
@@ -84,12 +83,7 @@ class AviationWeatherClient:
 
         return results
 
-    async def _fetch_format(
-        self,
-        station_ids: List[str],
-        format_type: str,
-        hours: float
-    ) -> Dict[str, str]:
+    async def _fetch_format(self, station_ids: List[str], format_type: str, hours: float) -> Dict[str, str]:
         """Fetch data in a specific format.
 
         Args:
@@ -112,7 +106,7 @@ class AviationWeatherClient:
                     "ids": ids_param,
                     "format": format_type,
                     "hours": hours,
-                }
+                },
             )
             response.raise_for_status()
 
@@ -127,12 +121,7 @@ class AviationWeatherClient:
         except httpx.RequestError as e:
             raise AviationWeatherAPIError(f"Request failed: {str(e)}")
 
-    def _parse_response(
-        self,
-        content: str,
-        format_type: str,
-        requested_stations: List[str]
-    ) -> Dict[str, str]:
+    def _parse_response(self, content: str, format_type: str, requested_stations: List[str]) -> Dict[str, str]:
         """Parse API response and extract per-station data.
 
         Args:
@@ -147,7 +136,7 @@ class AviationWeatherClient:
 
         if format_type == "raw":
             # Raw format returns one METAR per line
-            for line in content.strip().split('\n'):
+            for line in content.strip().split("\n"):
                 line = line.strip()
                 if not line:
                     continue
@@ -188,23 +177,21 @@ class AviationWeatherClient:
         Look for aerodrome designator in the XML.
         """
         import re
+
         # Look for designator="KJFK" or similar patterns
         match = re.search(r'designator="([A-Z]{4})"', xml_content)
         if match:
             return match.group(1)
 
         # Fallback: look for <icaoId> tags
-        match = re.search(r'<.*?icaoId.*?>([A-Z]{4})</.*?icaoId.*?>', xml_content, re.IGNORECASE)
+        match = re.search(r"<.*?icaoId.*?>([A-Z]{4})</.*?icaoId.*?>", xml_content, re.IGNORECASE)
         if match:
             return match.group(1)
 
         return None
 
     async def fetch_metars_by_bbox(
-        self,
-        bbox: Tuple[float, float, float, float],
-        hours: int = 2,
-        format_type: str = "json"
+        self, bbox: Tuple[float, float, float, float], hours: int = 2, format_type: str = "json"
     ) -> List[Dict[str, Any]]:
         """Fetch all METARs in a bounding box.
 
@@ -228,13 +215,13 @@ class AviationWeatherClient:
                     "bbox": bbox_str,
                     "format": format_type,
                     "hours": hours,
-                }
+                },
             )
             response.raise_for_status()
 
             if format_type == "json":
                 # Handle empty responses
-                if not response.text or response.text.strip() in ['', '[]', '{}']:
+                if not response.text or response.text.strip() in ["", "[]", "{}"]:
                     return []
                 try:
                     return response.json()
@@ -244,7 +231,7 @@ class AviationWeatherClient:
             else:
                 # Parse raw format
                 metars = []
-                for line in response.text.strip().split('\n'):
+                for line in response.text.strip().split("\n"):
                     if line.strip():
                         metars.append({"rawOb": line.strip()})
                 return metars
@@ -257,10 +244,7 @@ class AviationWeatherClient:
             raise AviationWeatherAPIError(f"Request failed: {str(e)}")
 
     async def fetch_random_sample(
-        self,
-        count: int = 100,
-        regions: Optional[List[Tuple[float, float, float, float]]] = None,
-        hours: int = 2
+        self, count: int = 100, regions: Optional[List[Tuple[float, float, float, float]]] = None, hours: int = 2
     ) -> List[Dict[str, Any]]:
         """Fetch random sample of METARs for testing.
 
@@ -275,11 +259,11 @@ class AviationWeatherClient:
         if regions is None:
             # Default regions covering diverse areas
             regions = [
-                (-130, 25, -65, 50),    # North America
-                (-10, 35, 30, 70),      # Europe
-                (100, -45, 180, 10),    # Asia-Pacific
-                (-80, -55, -30, 15),    # South America
-                (15, -35, 52, 38),      # Africa
+                (-130, 25, -65, 50),  # North America
+                (-10, 35, 30, 70),  # Europe
+                (100, -45, 180, 10),  # Asia-Pacific
+                (-80, -55, -30, 15),  # South America
+                (15, -35, 52, 38),  # Africa
             ]
 
         all_metars = []
@@ -301,33 +285,31 @@ class AviationWeatherClient:
 
     # Synchronous wrapper methods for convenience
     def fetch_metars_by_bbox_sync(
-        self,
-        bbox: Tuple[float, float, float, float],
-        hours: int = 2,
-        format_type: str = "json"
+        self, bbox: Tuple[float, float, float, float], hours: int = 2, format_type: str = "json"
     ) -> List[Dict[str, Any]]:
         """Synchronous wrapper for fetch_metars_by_bbox."""
+
         async def _fetch():
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary client instance for this request
                 temp_self = self.__class__(timeout=self.timeout)
                 temp_self._client = client
                 return await temp_self.fetch_metars_by_bbox(bbox, hours, format_type)
+
         return asyncio.run(_fetch())
 
     def fetch_random_sample_sync(
-        self,
-        count: int = 100,
-        regions: Optional[List[Tuple[float, float, float, float]]] = None,
-        hours: int = 2
+        self, count: int = 100, regions: Optional[List[Tuple[float, float, float, float]]] = None, hours: int = 2
     ) -> List[Dict[str, Any]]:
         """Synchronous wrapper for fetch_random_sample."""
+
         async def _fetch():
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary client instance for this request
                 temp_self = self.__class__(timeout=self.timeout)
                 temp_self._client = client
                 return await temp_self.fetch_random_sample(count, regions, hours)
+
         return asyncio.run(_fetch())
 
 
@@ -359,10 +341,7 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         return age.total_seconds() < self.ttl
 
     async def fetch_metars_by_bbox(
-        self,
-        bbox: Tuple[float, float, float, float],
-        hours: int = 2,
-        format_type: str = "json"
+        self, bbox: Tuple[float, float, float, float], hours: int = 2, format_type: str = "json"
     ) -> List[Dict[str, Any]]:
         """Fetch METARs with caching."""
         cache_key = self._cache_key("bbox", bbox, hours, format_type)
@@ -370,23 +349,20 @@ class CachedAviationWeatherClient(AviationWeatherClient):
 
         # Check cache
         if self._is_cache_valid(cache_path):
-            with open(cache_path, 'r') as f:
+            with open(cache_path, "r") as f:
                 return json.load(f)
 
         # Fetch fresh data
         data = await super().fetch_metars_by_bbox(bbox, hours, format_type)
 
         # Save to cache
-        with open(cache_path, 'w') as f:
+        with open(cache_path, "w") as f:
             json.dump(data, f, indent=2)
 
         return data
 
     async def fetch_random_sample(
-        self,
-        count: int = 100,
-        regions: Optional[List[Tuple[float, float, float, float]]] = None,
-        hours: int = 2
+        self, count: int = 100, regions: Optional[List[Tuple[float, float, float, float]]] = None, hours: int = 2
     ) -> List[Dict[str, Any]]:
         """Fetch random sample with caching."""
         # For reproducibility, use a fixed seed for test sampling
@@ -395,53 +371,43 @@ class CachedAviationWeatherClient(AviationWeatherClient):
 
         # Check cache
         if self._is_cache_valid(cache_path):
-            with open(cache_path, 'r') as f:
+            with open(cache_path, "r") as f:
                 return json.load(f)
 
         # Fetch fresh data
         data = await super().fetch_random_sample(count, regions, hours)
 
         # Save to cache
-        with open(cache_path, 'w') as f:
+        with open(cache_path, "w") as f:
             json.dump(data, f, indent=2)
 
         return data
 
     # Override sync wrappers to properly handle caching parameters
     def fetch_metars_by_bbox_sync(
-        self,
-        bbox: Tuple[float, float, float, float],
-        hours: int = 2,
-        format_type: str = "json"
+        self, bbox: Tuple[float, float, float, float], hours: int = 2, format_type: str = "json"
     ) -> List[Dict[str, Any]]:
         """Synchronous wrapper for fetch_metars_by_bbox with caching."""
+
         async def _fetch():
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary cached client instance for this request
-                temp_self = CachedAviationWeatherClient(
-                    cache_dir=self.cache_dir,
-                    ttl=self.ttl,
-                    timeout=self.timeout
-                )
+                temp_self = CachedAviationWeatherClient(cache_dir=self.cache_dir, ttl=self.ttl, timeout=self.timeout)
                 temp_self._client = client
                 return await temp_self.fetch_metars_by_bbox(bbox, hours, format_type)
+
         return asyncio.run(_fetch())
 
     def fetch_random_sample_sync(
-        self,
-        count: int = 100,
-        regions: Optional[List[Tuple[float, float, float, float]]] = None,
-        hours: int = 2
+        self, count: int = 100, regions: Optional[List[Tuple[float, float, float, float]]] = None, hours: int = 2
     ) -> List[Dict[str, Any]]:
         """Synchronous wrapper for fetch_random_sample with caching."""
+
         async def _fetch():
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary cached client instance for this request
-                temp_self = CachedAviationWeatherClient(
-                    cache_dir=self.cache_dir,
-                    ttl=self.ttl,
-                    timeout=self.timeout
-                )
+                temp_self = CachedAviationWeatherClient(cache_dir=self.cache_dir, ttl=self.ttl, timeout=self.timeout)
                 temp_self._client = client
                 return await temp_self.fetch_random_sample(count, regions, hours)
+
         return asyncio.run(_fetch())

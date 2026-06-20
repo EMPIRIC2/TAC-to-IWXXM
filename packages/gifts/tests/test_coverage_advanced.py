@@ -13,17 +13,16 @@ class TestAdvancedTPGCoverage:
     def test_tpg_module_has_core_classes(self):
         """Verify TPG has expected parser generator classes"""
         from gifts.common import tpg
+
         # Verify module structure
-        assert hasattr(tpg, 'Lexer')
-        assert hasattr(tpg, 'Parser')
-        assert hasattr(tpg, 'Token')
+        assert hasattr(tpg, "Lexer")
+        assert hasattr(tpg, "Parser")
+        assert hasattr(tpg, "Token")
 
     def test_tpg_error_types_all_present(self):
         """Test all TPG error types exist and inherit properly"""
-        from gifts.common.tpg import (
-            Error, LexicalError, SyntacticError,
-            SemanticError, WrongToken
-        )
+        from gifts.common.tpg import Error, LexicalError, SyntacticError, SemanticError, WrongToken
+
         # These should be importable
         assert Error is not None
         assert LexicalError is not None
@@ -48,9 +47,9 @@ class TestAdvancedTPGCoverage:
         from gifts.common.tpg import Token
 
         # Token has 10 parameters
-        tok = Token('KEYWORD', 'def', 'definition', 1, 0, 1, 3, 0, 3, 0)
-        assert tok.name == 'KEYWORD'
-        assert tok.text == 'def'
+        tok = Token("KEYWORD", "def", "definition", 1, 0, 1, 3, 0, 3, 0)
+        assert tok.name == "KEYWORD"
+        assert tok.text == "def"
         assert tok.line == 1
         assert tok.column == 0
 
@@ -59,11 +58,11 @@ class TestAdvancedTPGCoverage:
         from gifts.common.tpg import Token
 
         # Test various position scenarios
-        tok1 = Token('ID', 'x', 1, 100, 50, 100, 51, 0, 50, 0)
+        tok1 = Token("ID", "x", 1, 100, 50, 100, 51, 0, 50, 0)
         assert tok1.line == 100
         assert tok1.column == 50
 
-        tok2 = Token('ID', 'y', 2, 200, 75, 200, 78, 0, 75, 0)
+        tok2 = Token("ID", "y", 2, 200, 75, 200, 78, 0, 75, 0)
         assert tok2.line == 200
         assert tok2.column == 75
 
@@ -242,12 +241,12 @@ class TestAdvancedXMLUtilitiesCoverage:
     def test_check_visibility_all_categories(self):
         """Test checkVisibility across all categories"""
         test_cases = [
-            ("100", "m"),    # Very low visibility
-            ("500", "m"),    # Category 1
-            ("750", "m"),    # Boundary
-            ("1200", "m"),   # Category 2
-            ("5000", "m"),   # Category 3
-            ("8000", "m"),   # Category 4
+            ("100", "m"),  # Very low visibility
+            ("500", "m"),  # Category 1
+            ("750", "m"),  # Boundary
+            ("1200", "m"),  # Category 2
+            ("5000", "m"),  # Category 3
+            ("8000", "m"),  # Category 4
             ("10000", "m"),  # Over limit
         ]
 
@@ -258,11 +257,11 @@ class TestAdvancedXMLUtilitiesCoverage:
     def test_check_rvr_all_boundaries(self):
         """Test checkRVR across all boundaries"""
         test_cases = [
-            "150",   # Very low
-            "250",   # Below 400
-            "400",   # At 400
-            "600",   # Between 400-800
-            "800",   # At 800
+            "150",  # Very low
+            "250",  # Below 400
+            "400",  # At 400
+            "600",  # Between 400-800
+            "800",  # At 800
             "1000",  # Above 800
             "2000",  # High
         ]
@@ -287,7 +286,7 @@ class TestAdvancedXMLUtilitiesCoverage:
         assert len(set(uuids)) == 10
 
         # All should have 'uuid' prefix by default
-        assert all('uuid' in uid for uid in uuids)
+        assert all("uuid" in uid for uid in uuids)
 
     def test_fix_date_month_calculations(self):
         """Test fix_date month adjustment logic"""
@@ -311,6 +310,7 @@ class TestAdvancedEncoderCoverage:
     def test_encoder_with_null_attributes(self):
         """Test encoder with various null/missing attributes"""
         from gifts.common.Encoder import Encoder
+
         encoder = Encoder()
 
         try:
@@ -324,6 +324,7 @@ class TestAdvancedEncoderCoverage:
     def test_encoder_attribute_setting(self):
         """Test setting encoder attributes"""
         from gifts.common.Encoder import Encoder
+
         encoder = Encoder()
 
         # Should be able to set arbitrary attributes
@@ -336,8 +337,8 @@ class TestAdvancedEncoderCoverage:
 
         encoder = Encoder()
         # Verify it's an object with standard methods
-        assert hasattr(encoder, '__class__')
-        assert hasattr(encoder, '__dict__')
+        assert hasattr(encoder, "__class__")
+        assert hasattr(encoder, "__dict__")
         assert callable(encoder.encode)
 
 
@@ -347,10 +348,12 @@ class TestBulletinCoverage:
     def test_bulletin_module_import(self):
         """Test bulletin module can be imported in various ways"""
         from gifts.common import bulletin
+
         assert bulletin is not None
 
         # Module should be importable
         import gifts.common.bulletin as bul_module
+
         assert bul_module is not None
 
     def test_bulletin_has_functions(self):
@@ -358,8 +361,7 @@ class TestBulletinCoverage:
         from gifts.common import bulletin
 
         # Inspect module for callable objects
-        callables = [attr for attr in dir(bulletin)
-                     if not attr.startswith('_') and callable(getattr(bulletin, attr))]
+        callables = [attr for attr in dir(bulletin) if not attr.startswith("_") and callable(getattr(bulletin, attr))]
         # Should have at least some functions
         assert len(callables) >= 0
 
@@ -368,5 +370,5 @@ class TestBulletinCoverage:
         from gifts.common import bulletin
 
         # Module should have __name__ at minimum
-        assert hasattr(bulletin, '__name__')
-        assert 'bulletin' in bulletin.__name__
+        assert hasattr(bulletin, "__name__")
+        assert "bulletin" in bulletin.__name__

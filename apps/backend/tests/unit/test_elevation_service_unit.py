@@ -1,4 +1,5 @@
 """Unit tests for ElevationService – 0% coverage target."""
+
 import json
 from pathlib import Path
 from unittest.mock import patch
@@ -36,6 +37,7 @@ def _make_service(tmp_path, datum_map=None):
 def _load_from_path(service, path):
     """Helper that loads from a specific path."""
     import json
+
     with open(path) as f:
         service.datum_map = json.load(f)
 

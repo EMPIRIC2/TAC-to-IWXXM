@@ -28,6 +28,7 @@ def _get_or_create_counter(name: str, documentation: str, labelnames: list[str])
         except ValueError:
             # Metric already registered globally; retrieve from default REGISTRY
             from prometheus_client import REGISTRY
+
             _METRICS[name] = REGISTRY._names_to_collectors.get(name)
     return _METRICS[name]  # type: ignore[return-value]
 
@@ -39,6 +40,7 @@ def _get_or_create_histogram(name: str, documentation: str, labelnames: list[str
         except ValueError:
             # Metric already registered globally; retrieve from default REGISTRY
             from prometheus_client import REGISTRY
+
             _METRICS[name] = REGISTRY._names_to_collectors.get(name)
     return _METRICS[name]  # type: ignore[return-value]
 

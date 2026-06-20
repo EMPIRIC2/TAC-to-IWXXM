@@ -12,6 +12,7 @@ from fastapi.testclient import TestClient
 def client():
     """Create test client for API testing."""
     from src.api import app
+
     return TestClient(app)
 
 

@@ -21,7 +21,6 @@ TEST_STATIONS: Dict[str, List[str]] = {
         "KMIA",  # Miami - Tropical, hurricane corridor, heavy convection
         "KSEA",  # Seattle - Pacific Northwest, persistent stratus, drizzle
     ],
-
     "international_diversity": [
         "EGLL",  # London Heathrow - European major hub, fog, variable vis
         "LFPG",  # Paris Charles de Gaulle - European, CAVOK usage patterns
@@ -34,7 +33,6 @@ TEST_STATIONS: Dict[str, List[str]] = {
         "OMDB",  # Dubai - Desert, extreme heat, dust/sand storms, shamal winds
         "EIDW",  # Dublin - Atlantic, frequent precipitation, Celtic Sea patterns
     ],
-
     "extreme_conditions": [
         "CYQX",  # Gander, Newfoundland - Oceanic, severe icing, fog
         "BIKF",  # Reykjavik - Volcanic ash, extreme wind (>50kt common)
@@ -45,7 +43,6 @@ TEST_STATIONS: Dict[str, List[str]] = {
         "MMMX",  # Mexico City - Very high elevation (7350 ft), thin air
         "EKCH",  # Copenhagen - Baltic, frequent low stratus, fog
     ],
-
     "coastal_and_marine": [
         "KBWI",  # Baltimore - Coastal fog, marine layer
         "KPDX",  # Portland - River valley, marine influence
@@ -53,20 +50,18 @@ TEST_STATIONS: Dict[str, List[str]] = {
         "LPPT",  # Lisbon - Atlantic coast, Nortada winds
         "ZBAA",  # Beijing Capital - Continental, dust, pollution visibility
     ],
-
     "mountain_and_terrain": [
         "KATL",  # Atlanta - Piedmont, thunderstorm alley
         "KSNA",  # Orange County - Santa Ana winds, terrain challenges
         "PANC",  # Anchorage - Already in arctic, but also terrain
         "LIMC",  # Milan Malpensa - Po Valley, fog, Alps proximity
     ],
-
     "minimal_quick_test": [
         "KJFK",  # US major
         "EGLL",  # European major
         "YSSY",  # Australian major
         "RJTT",  # Asian major
-    ]
+    ],
 }
 
 # Station metadata for context (optional use)
@@ -75,31 +70,31 @@ STATION_METADATA: Dict[str, Dict[str, str]] = {
         "name": "New York John F. Kennedy International",
         "country": "US",
         "elevation_ft": "13",
-        "notes": "High-traffic, complex remarks, detailed runway info"
+        "notes": "High-traffic, complex remarks, detailed runway info",
     },
     "PANC": {
         "name": "Anchorage Ted Stevens International",
         "country": "US",
         "elevation_ft": "152",
-        "notes": "Arctic conditions, extreme temps, ice fog"
+        "notes": "Arctic conditions, extreme temps, ice fog",
     },
     "EGLL": {
         "name": "London Heathrow",
         "country": "GB",
         "elevation_ft": "83",
-        "notes": "European reporting, fog, wind shear"
+        "notes": "European reporting, fog, wind shear",
     },
     "MMMX": {
         "name": "Mexico City International",
         "country": "MX",
         "elevation_ft": "7350",
-        "notes": "Very high elevation, pressure altitude concerns"
+        "notes": "Very high elevation, pressure altitude concerns",
     },
     "BIKF": {
         "name": "Reykjavik Keflavik International",
         "country": "IS",
         "elevation_ft": "171",
-        "notes": "Volcanic ash, extreme winds, oceanic"
+        "notes": "Volcanic ash, extreme winds, oceanic",
     },
 }
 
@@ -152,10 +147,7 @@ def get_all_test_stations_with_metadata() -> Dict[str, Dict[str, str]]:
         Dictionary mapping ICAO codes to metadata
     """
     all_icao = get_test_stations("all")
-    return {
-        icao: get_station_metadata(icao)
-        for icao in all_icao
-    }
+    return {icao: get_station_metadata(icao) for icao in all_icao}
 
 
 def count_stations_by_category() -> Dict[str, int]:
@@ -165,7 +157,4 @@ def count_stations_by_category() -> Dict[str, int]:
     Returns:
         Dictionary mapping category names to station counts
     """
-    return {
-        category: len(stations)
-        for category, stations in TEST_STATIONS.items()
-    }
+    return {category: len(stations) for category, stations in TEST_STATIONS.items()}

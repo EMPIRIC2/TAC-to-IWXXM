@@ -6,6 +6,7 @@ Source hierarchy:
 2. vertical_datum_map.json (special overrides for known issues)
 3. airports.json (legacy fallback)
 """
+
 import json
 import logging
 from pathlib import Path
@@ -54,12 +55,7 @@ class AirportRecordBuilder:
             logger.error(f"Failed to load {filename}: {e}")
             return {}
 
-    def build_record(
-        self,
-        icao: str,
-        openaip_data: Optional[Dict] = None,
-        airport_validator=None
-    ) -> Dict:
+    def build_record(self, icao: str, openaip_data: Optional[Dict] = None, airport_validator=None) -> Dict:
         """
         Build a complete airport record.
 
@@ -97,7 +93,7 @@ class AirportRecordBuilder:
             "closure_year": None,
             "source": "unknown",
             "_override": False,
-            "_sources_tried": []
+            "_sources_tried": [],
         }
 
         # 1. Check vertical_datum_map (highest priority)
@@ -188,15 +184,10 @@ class AirportRecordBuilder:
         # Coordinates
         coords = None
         if coord_dict := data.get("coordinates"):
-            if isinstance(coord_dict, dict) and all(
-                k in coord_dict for k in ["latitude", "longitude"]
-            ):
+            if isinstance(coord_dict, dict) and all(k in coord_dict for k in ["latitude", "longitude"]):
                 coords = coord_dict
         elif "latitude" in data and "longitude" in data:
-            coords = {
-                "latitude": data["latitude"],
-                "longitude": data["longitude"]
-            }
+            coords = {"latitude": data["latitude"], "longitude": data["longitude"]}
 
         if coords:
             extracted["coordinates"] = coords
@@ -227,16 +218,8 @@ class AirportRecordBuilder:
         Returns:
             GIFTs format string or empty string if incomplete
         """
-        if not all([
-            record.get("name"),
-            record.get("iata"),
-            record.get("designator"),
-            record.get("coordinates")
-        ]):
-            logger.warning(
-                f"Incomplete airport record for {record['icao']}: "
-                f"cannot generate GIFTs format"
-            )
+        if not all([record.get("name"), record.get("iata"), record.get("designator"), record.get("coordinates")]):
+            logger.warning(f"Incomplete airport record for {record['icao']}: cannot generate GIFTs format")
             return ""
 
         coords = record["coordinates"]
@@ -247,9 +230,4 @@ class AirportRecordBuilder:
             logger.warning(f"Missing coordinates for {record['icao']}")
             return ""
 
-        return (
-            f"{record['name']}|"
-            f"{record['iata']}|"
-            f"{record['designator']}|"
-            f"{lat},{lon}"
-        )
+        return f"{record['name']}|{record['iata']}|{record['designator']}|{lat},{lon}"

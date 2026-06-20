@@ -3,6 +3,7 @@
 Tests the integration between the authentication service and the METAR conversion backend,
 ensuring that JWT tokens from auth can be used to access backend endpoints.
 """
+
 import os
 
 # Import from auth service
@@ -13,7 +14,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'auth', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "auth", "src"))
 
 from auth.__main__ import app as auth_app
 from auth.api_supabase import get_supabase_proxy
@@ -22,14 +23,16 @@ from auth.models import User
 from auth.security import create_access_token, hash_password
 
 # Import from backend service
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "backend", "src"))
 # Backend uses Supabase auth, but we can test the pattern
 
 
 @pytest.fixture
 def auth_db_engine():
     """Create a test database engine for auth service."""
-    engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    engine = create_engine(
+        "sqlite:///:memory:", connect_args={"check_same_thread": False}
+    )
     AuthBase.metadata.create_all(bind=engine)
     yield engine
     engine.dispose()
@@ -38,7 +41,9 @@ def auth_db_engine():
 @pytest.fixture
 def auth_db_session(auth_db_engine):
     """Create a test database session."""
-    TestingSessionLocal = sessionmaker(bind=auth_db_engine, autoflush=False, autocommit=False)
+    TestingSessionLocal = sessionmaker(
+        bind=auth_db_engine, autoflush=False, autocommit=False
+    )
     session = TestingSessionLocal()
     yield session
     session.close()
@@ -47,16 +52,18 @@ def auth_db_session(auth_db_engine):
 @pytest.fixture
 def auth_client(auth_db_engine, monkeypatch):
     """Create a test client for the auth service."""
-    
-    TestingSessionLocal = sessionmaker(bind=auth_db_engine, autoflush=False, autocommit=False)
-    
+
+    TestingSessionLocal = sessionmaker(
+        bind=auth_db_engine, autoflush=False, autocommit=False
+    )
+
     def override_get_db():
         db = TestingSessionLocal()
         try:
             yield db
         finally:
             db.close()
-    
+
     # Patch the SessionLocal
     monkeypatch.setattr("auth.database.SessionLocal", TestingSessionLocal)
 
@@ -109,7 +116,7 @@ def auth_client(auth_db_engine, monkeypatch):
             return {"message": "Password reset email sent"}
 
     auth_app.dependency_overrides[get_supabase_proxy] = lambda: FakeProxy()
-    
+
     client = TestClient(auth_app)
     try:
         yield client
@@ -126,7 +133,7 @@ def test_user(auth_db_session):
         address="123 Test St",
         username="testuser",
         password_hash=hash_password("testpass123"),
-        is_active=True
+        is_active=True,
     )
     auth_db_session.add(user)
     auth_db_session.commit()
@@ -136,7 +143,7 @@ def test_user(auth_db_session):
 
 class TestAuthServiceIntegration:
     """Test the auth service in isolation."""
-    
+
     def test_health_check(self, auth_client):
         """Test that the auth service health endpoint works."""
         response = auth_client.get("/health")
@@ -145,7 +152,7 @@ class TestAuthServiceIntegration:
         assert data["status"] == "healthy"
         assert data["service"] == "auth"
         assert data["version"] == "0.1.0"
-    
+
     def test_register_user(self, auth_client):
         """Test user registration flow."""
         user_data = {
@@ -153,21 +160,18 @@ class TestAuthServiceIntegration:
             "email": "newuser@example.com",
             "address": "456 New St",
             "username": "newuser",
-            "password": "Securepass123!"
+            "password": "Securepass123!",
         }
-        
+
         response = auth_client.post("/auth/register", json=user_data)
         assert response.status_code == 201
         data = response.json()
         assert data["user"]["email"] == "newuser@example.com"
-    
+
     def test_login_returns_token(self, auth_client, test_user):
         """Test that login returns a valid JWT token."""
-        login_data = {
-            "email": test_user.email,
-            "password": "testpass123"
-        }
-        
+        login_data = {"email": test_user.email, "password": "testpass123"}
+
         response = auth_client.post("/auth/login", json=login_data)
         assert response.status_code == 200
         data = response.json()
@@ -175,18 +179,18 @@ class TestAuthServiceIntegration:
         assert "refresh_token" in data["session"]
         assert data["session"]["expires_at"] > 0
         assert data["user"]["metadata"]["username"] == "testuser"
-    
+
     def test_authenticated_endpoint_requires_token(self, auth_client):
         """Test that /auth/me requires authentication."""
         # Without token
         response = auth_client.get("/auth/me")
         assert response.status_code == 401
-        
+
     def test_authenticated_endpoint_with_valid_token(self, auth_client, test_user):
         """Test that /auth/me works with valid token."""
         # Get token
         token = "fake-access-token"
-        
+
         # Use token
         headers = {"Authorization": f"Bearer {token}"}
         response = auth_client.get("/auth/me", headers=headers)
@@ -197,30 +201,30 @@ class TestAuthServiceIntegration:
 
 class TestAuthTokenGeneration:
     """Test JWT token generation and validation."""
-    
+
     def test_create_and_validate_token(self):
         """Test that we can create and validate a JWT token."""
         from auth.security import decode_access_token
-        
+
         username = "testuser"
         token = create_access_token(sub=username)
-        
+
         assert token is not None
         assert isinstance(token, str)
         assert len(token) > 20
-        
+
         # Decode and verify
         decoded = decode_access_token(token)
         assert decoded == username
-    
+
     def test_invalid_token_returns_none(self):
         """Test that invalid tokens are rejected."""
         from auth.security import decode_access_token
-        
+
         invalid_token = "invalid.token.here"
         result = decode_access_token(invalid_token)
         assert result is None
-    
+
     def test_expired_token_returns_none(self):
         """Test that expired tokens are rejected."""
         import datetime as dt
@@ -228,35 +232,35 @@ class TestAuthTokenGeneration:
         from jose import jwt
 
         from auth.security import JWT_ALGO, JWT_SECRET, decode_access_token
-        
+
         # Create expired token
         expire = dt.datetime.now(dt.UTC) - dt.timedelta(minutes=1)
         payload = {"sub": "testuser", "exp": expire}
         expired_token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
-        
+
         result = decode_access_token(expired_token)
         assert result is None
 
 
 class TestAPIKeyManagement:
     """Test API key generation and management."""
-    
+
     def test_create_api_key(self, auth_client, test_user):
         """Supabase-proxy auth service does not expose API key management endpoints."""
         token = "fake-access-token"
         headers = {"Authorization": f"Bearer {token}"}
-        
+
         response = auth_client.post("/auth/apikeys", headers=headers)
         assert response.status_code == 404
-    
+
     def test_list_api_keys(self, auth_client, test_user):
         """Supabase-proxy auth service does not expose API key management endpoints."""
         token = "fake-access-token"
         headers = {"Authorization": f"Bearer {token}"}
-        
+
         response = auth_client.get("/auth/apikeys", headers=headers)
         assert response.status_code == 404
-    
+
     def test_revoke_api_key(self, auth_client, test_user):
         """Supabase-proxy auth service does not expose API key management endpoints."""
         token = "fake-access-token"
@@ -268,22 +272,20 @@ class TestAPIKeyManagement:
 
 class TestPasswordReset:
     """Test password reset functionality."""
-    
+
     def test_request_password_reset(self, auth_client, test_user):
         """Test requesting a password reset."""
         response = auth_client.post(
-            "/auth/password-reset/request",
-            json={"email": test_user.email}
+            "/auth/password-reset/request", json={"email": test_user.email}
         )
         assert response.status_code == 200
         data = response.json()
         assert "message" in data
-    
+
     def test_request_reset_for_nonexistent_email(self, auth_client):
         """Test that requesting reset for non-existent email doesn't reveal that."""
         response = auth_client.post(
-            "/auth/password-reset/request",
-            json={"email": "nonexistent@example.com"}
+            "/auth/password-reset/request", json={"email": "nonexistent@example.com"}
         )
         # Should return success to prevent email enumeration
         assert response.status_code == 200
@@ -291,34 +293,34 @@ class TestPasswordReset:
 
 class TestBackendAuthIntegration:
     """Test integration patterns between backend and auth.
-    
+
     Note: The actual backend uses Supabase auth, but these tests demonstrate
     the integration pattern that could be used if backend consumed auth service tokens.
     """
-    
+
     def test_jwt_token_structure(self):
         """Test that auth tokens have the expected structure for backend consumption."""
         import jwt as pyjwt
-        
+
         username = "testuser"
         token = create_access_token(sub=username)
-        
+
         # Decode without verification to inspect structure
         unverified = pyjwt.decode(token, options={"verify_signature": False})
-        
+
         assert "sub" in unverified
         assert "exp" in unverified
         assert unverified["sub"] == username
-    
+
     def test_token_can_be_shared_across_services(self):
         """Test that a token created by auth can be validated elsewhere."""
         import jwt as pyjwt
 
         from auth.security import JWT_ALGO, JWT_SECRET
-        
+
         # Auth service creates token
         token = create_access_token(sub="testuser")
-        
+
         # Backend service validates it (using same secret)
         try:
             payload = pyjwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGO])
@@ -330,29 +332,32 @@ class TestBackendAuthIntegration:
 
 class TestDatabaseCompatibility:
     """Test database configuration for different environments."""
-    
+
     def test_sqlite_connection(self):
         """Test that SQLite connection works for development."""
         from sqlalchemy import create_engine
 
         from auth.database import Base
-        
-        engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+
+        engine = create_engine(
+            "sqlite:///:memory:", connect_args={"check_same_thread": False}
+        )
         Base.metadata.create_all(bind=engine)
-        
+
         # Verify tables were created
         from sqlalchemy import inspect
+
         inspector = inspect(engine)
         tables = inspector.get_table_names()
-        
+
         assert "users" in tables
         assert "api_keys" in tables
         assert "password_reset_tokens" in tables
-    
+
     def test_model_relationships(self, auth_db_session):
         """Test that model relationships work correctly."""
         from auth.models import APIKey, User
-        
+
         # Create user
         user = User(
             name="Rel Test",
@@ -363,15 +368,12 @@ class TestDatabaseCompatibility:
         )
         auth_db_session.add(user)
         auth_db_session.commit()
-        
+
         # Create API key
-        api_key = APIKey(
-            key_hash="test_hash",
-            user_id=user.id
-        )
+        api_key = APIKey(key_hash="test_hash", user_id=user.id)
         auth_db_session.add(api_key)
         auth_db_session.commit()
-        
+
         # Test relationship
         auth_db_session.refresh(user)
         assert len(user.api_keys) == 1
@@ -381,42 +383,42 @@ class TestDatabaseCompatibility:
 
 class TestSecurityUtilities:
     """Test security utility functions."""
-    
+
     def test_password_hashing(self):
         """Test password hashing and verification."""
         from auth.security import hash_password, verify_password
-        
+
         password = "mysecurepassword123"
         hashed = hash_password(password)
-        
+
         assert hashed != password
         assert len(hashed) > 20
         assert verify_password(password, hashed) is True
         assert verify_password("wrongpassword", hashed) is False
-    
+
     def test_api_key_hashing(self):
         """Test API key hashing."""
         from auth.security import hash_api_key
-        
+
         raw_key = "test_api_key_12345"
         hashed = hash_api_key(raw_key)
-        
+
         assert hashed != raw_key
         assert len(hashed) == 64  # SHA-256 produces 64 hex chars
-        
+
         # Same input produces same hash
         hashed2 = hash_api_key(raw_key)
         assert hashed == hashed2
-    
+
     def test_reset_expiry_creation(self):
         """Test that reset expiry is set correctly."""
         import datetime as dt
 
         from auth.security import create_reset_expiry
-        
+
         expiry = create_reset_expiry()
         now = dt.datetime.now(dt.UTC)
-        
+
         assert expiry > now
         # Should be roughly 30 minutes in the future
         delta = expiry - now

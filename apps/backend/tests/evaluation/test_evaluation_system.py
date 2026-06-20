@@ -1,4 +1,5 @@
 """Tests for the evaluation system."""
+
 # Mock the imports before importing the module
 import sys
 from pathlib import Path
@@ -30,12 +31,9 @@ def mock_aviation_weather_client():
         instance.fetch_metar_batch.return_value = {
             "KJFK": (
                 "METAR KJFK 101851Z 24008KT 10SM FEW250 M04/M17 A3034",
-                '<?xml version="1.0"?><METAR>test</METAR>'
+                '<?xml version="1.0"?><METAR>test</METAR>',
             ),
-            "KLAX": (
-                "METAR KLAX 101853Z 26010KT 10SM FEW015 16/12 A2990",
-                '<?xml version="1.0"?><METAR>test</METAR>'
-            ),
+            "KLAX": ("METAR KLAX 101853Z 26010KT 10SM FEW015 16/12 A2990", '<?xml version="1.0"?><METAR>test</METAR>'),
         }
         instance.__aenter__.return_value = instance
         instance.__aexit__.return_value = None
@@ -57,7 +55,7 @@ def mock_evaluation_service():
             missing_elements=[],
             extra_elements=[],
             value_mismatches=[],
-            error_message=None
+            error_message=None,
         )
         mock.return_value = instance
         yield instance
@@ -209,9 +207,7 @@ class TestAviationWeatherClient:
             response = Mock()
             response.status_code = 404
             response.text = "Not found"
-            mock_client.get.side_effect = httpx.HTTPStatusError(
-                "404", request=Mock(), response=response
-            )
+            mock_client.get.side_effect = httpx.HTTPStatusError("404", request=Mock(), response=response)
 
             async with AviationWeatherClient() as client:
                 result = await client.fetch_metar_batch(["INVALID"], hours=1.5)
@@ -221,18 +217,16 @@ class TestAviationWeatherClient:
 
 
 @pytest.mark.asyncio
-async def test_evaluation_endpoint_integration(mock_station_sampler, mock_aviation_weather_client, mock_evaluation_service):
+async def test_evaluation_endpoint_integration(
+    mock_station_sampler, mock_aviation_weather_client, mock_evaluation_service
+):
     """Integration test for evaluation endpoint."""
     # This would be expanded with actual FastAPI TestClient usage
     # For now, just test the core logic
 
     from src.schemas.evaluation import EvaluationMode, EvaluationRequest
 
-    request = EvaluationRequest(
-        mode=EvaluationMode.RANDOM,
-        sample_size=3,
-        hours=1.5
-    )
+    request = EvaluationRequest(mode=EvaluationMode.RANDOM, sample_size=3, hours=1.5)
 
     # Verify request validates correctly
     assert request.mode == EvaluationMode.RANDOM

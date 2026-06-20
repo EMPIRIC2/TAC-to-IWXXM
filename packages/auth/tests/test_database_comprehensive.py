@@ -3,6 +3,7 @@
 Tests database configuration, connection pooling, and initialization.
 Target: 95%+ coverage.
 """
+
 import pytest
 import os
 from unittest import mock
@@ -19,6 +20,7 @@ class TestDatabaseConfiguration:
     def test_default_database_url(self):
         """Test that DATABASE_URL is accessible."""
         from auth.database import DATABASE_URL
+
         # In test environment, this should be sqlite from conftest.py
         assert DATABASE_URL is not None
         assert len(DATABASE_URL) > 0
@@ -212,6 +214,7 @@ class TestDatabaseURLParsing:
 
         # Cleanup
         import os as os_module
+
         if os_module.path.exists(db_path):
             os_module.remove(db_path)
 
@@ -220,6 +223,7 @@ class TestDatabaseURLParsing:
         url = "postgresql://user:pass@localhost:5432/dbname"
 
         from sqlalchemy.engine.url import make_url
+
         parsed = make_url(url)
 
         assert parsed.drivername == "postgresql"
@@ -240,6 +244,7 @@ class TestConnectionPooling:
         with mock.patch.dict(os.environ, {"DATABASE_URL": pg_url}):
             import importlib
             import auth.database
+
             importlib.reload(auth.database)
 
             from auth.database import engine
@@ -315,9 +320,11 @@ class TestDotenvLoading:
         with mock.patch.dict(os.environ, {"DATABASE_URL": test_url}):
             import importlib
             import auth.database
+
             importlib.reload(auth.database)
 
             from auth.database import DATABASE_URL
+
             assert DATABASE_URL == test_url
 
 

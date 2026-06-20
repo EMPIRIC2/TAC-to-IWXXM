@@ -92,10 +92,7 @@ class TestWMOCanonicalExamplesValidation:
         xml_content = example.xml_path.read_text()
         result = validate_iwxxm_xml(xml_content, version=version)
 
-        assert result.is_valid, (
-            f"XSD validation failed for {example.example_id}:\n"
-            f"{result.error_message}"
-        )
+        assert result.is_valid, f"XSD validation failed for {example.example_id}:\n{result.error_message}"
 
     @pytest.mark.parametrize("version,example", WMO_EXAMPLES)
     @pytest.mark.skip(reason="Schematron validator enhancement pending")
@@ -162,10 +159,7 @@ class TestWMOExamplesManifest:
                 continue
 
             examples = examples_loader.load_examples(version)
-            assert len(examples) >= 20, (
-                f"Too few examples for {version}: {len(examples)} "
-                f"(expected at least 20)"
-            )
+            assert len(examples) >= 20, f"Too few examples for {version}: {len(examples)} (expected at least 20)"
 
     def test_tac_xml_pairs_exist(self, test_versions, examples_loader):
         """Verify TAC↔XML pairs exist for conversion testing."""
@@ -175,10 +169,7 @@ class TestWMOExamplesManifest:
                 continue
 
             pairs = examples_loader.get_tac_xml_pairs(version)
-            assert len(pairs) >= 10, (
-                f"Too few TAC↔XML pairs for {version}: {len(pairs)} "
-                f"(expected at least 10)"
-            )
+            assert len(pairs) >= 10, f"Too few TAC↔XML pairs for {version}: {len(pairs)} (expected at least 10)"
 
     def test_message_type_coverage(self, test_versions, examples_loader):
         """Verify examples cover primary message types."""
@@ -193,9 +184,7 @@ class TestWMOExamplesManifest:
             covered_types = set(manifest["by_message_type"].keys())
 
             missing = required_types - covered_types
-            assert not missing, (
-                f"Missing message types in {version}: {missing}"
-            )
+            assert not missing, f"Missing message types in {version}: {missing}"
 
     def test_guidance_document_exists(self, test_versions, examples_loader):
         """Verify TAC-to-XML-Guidance.txt exists."""
@@ -211,9 +200,7 @@ class TestWMOExamplesManifest:
 
         if guidance_found:
             # At least one version should have guidance
-            assert any(guidance_found.values()), (
-                "TAC-to-XML-Guidance.txt not found in any version"
-            )
+            assert any(guidance_found.values()), "TAC-to-XML-Guidance.txt not found in any version"
 
 
 class TestWMOExamplesLoader:
@@ -239,9 +226,7 @@ class TestWMOExamplesLoader:
 
         for example_id, expected_type in test_cases:
             detected_type = examples_loader._detect_message_type(example_id)
-            assert detected_type == expected_type, (
-                f"Wrong type for {example_id}: {detected_type} != {expected_type}"
-            )
+            assert detected_type == expected_type, f"Wrong type for {example_id}: {detected_type} != {expected_type}"
 
     def test_scenario_extraction(self, examples_loader):
         """Test scenario extraction from example IDs."""

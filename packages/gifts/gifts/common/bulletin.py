@@ -39,7 +39,7 @@ class Bulletin(object):
     def __init__(self):
 
         self._children = []
-        self.xmlFileNamePartA = re.compile(r'A_L[A-Z]{3}\d\d[A-Z]{4}\d{6}([ACR]{2}[A-Z])?_C_[A-Z]{4}')
+        self.xmlFileNamePartA = re.compile(r"A_L[A-Z]{3}\d\d[A-Z]{4}\d{6}([ACR]{2}[A-Z])?_C_[A-Z]{4}")
 
     def __len__(self):
 
@@ -58,9 +58,9 @@ class Bulletin(object):
         # Pad it with spaces and newlines
         self._addwhitespace()
         if sys.version_info[0] == 3:
-            xmlstring = ET.tostring(self.bulletin, encoding='unicode', method='xml')
+            xmlstring = ET.tostring(self.bulletin, encoding="unicode", method="xml")
         else:
-            xmlstring = ET.tostring(self.bulletin, encoding='UTF-8', method='xml')
+            xmlstring = ET.tostring(self.bulletin, encoding="UTF-8", method="xml")
 
         self.bulletin = None
         return xmlstring
@@ -118,28 +118,27 @@ class Bulletin(object):
 
         try:
             if self.xmlFileNamePartA.match(self._bulletinId) is None:
-                raise XMLError('bulletinIdentifier does not conform to WMO. 386')
+                raise XMLError("bulletinIdentifier does not conform to WMO. 386")
 
         except AttributeError:
             raise XMLError("bulletinIdentifier needs to be set")
 
-        self.bulletin = ET.Element('MeteorologicalBulletin')
-        self.bulletin.set('xmlns', 'http://def.wmo.int/collect/2014')
-        self.bulletin.set('xmlns:gml', 'http://www.opengis.net/gml/3.2')
-        self.bulletin.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-        self.bulletin.set('xsi:schemaLocation',
-                          'http://def.wmo.int/collect/2014 https://schemas.wmo.int/collect/1.2/collect.xsd')
-        self.bulletin.set('gml:id', 'uuid.%s' % uuid.uuid4())
+        self.bulletin = ET.Element("MeteorologicalBulletin")
+        self.bulletin.set("xmlns", "http://def.wmo.int/collect/2014")
+        self.bulletin.set("xmlns:gml", "http://www.opengis.net/gml/3.2")
+        self.bulletin.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+        self.bulletin.set("xsi:schemaLocation", "http://def.wmo.int/collect/2014 https://schemas.wmo.int/collect/1.2/collect.xsd")
+        self.bulletin.set("gml:id", "uuid.%s" % uuid.uuid4())
 
         for child in self._children:
-            metInfo = ET.SubElement(self.bulletin, 'meteorologicalInformation')
+            metInfo = ET.SubElement(self.bulletin, "meteorologicalInformation")
             metInfo.append(child)
 
-        fn = '{}_{}.xml'.format(self._bulletinId, datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d%H%M%S'))
+        fn = "{}_{}.xml".format(self._bulletinId, datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H%M%S"))
         if compress:
-            fn = '{}.gz'.format(fn)
+            fn = "{}.gz".format(fn)
 
-        bulletinId = ET.SubElement(self.bulletin, 'bulletinIdentifier')
+        bulletinId = ET.SubElement(self.bulletin, "bulletinIdentifier")
         bulletinId.text = self._internalBulletinId = fn
 
     def what_kind(self):
@@ -173,10 +172,9 @@ class Bulletin(object):
 
     def set_bulletinIdentifier(self, **kwargs):
 
-        keys = ['A_', 'tt', 'aaii', 'cccc', 'yygg', 'bbb', '_C_', 'cccc']
-        self._bulletinId = ''.join([kwargs.get(key, key) for key in keys])
-        self._wmoAHL = '{}{} {} {} {}'.format(kwargs['tt'], kwargs['aaii'], kwargs['cccc'], kwargs['yygg'],
-                                              kwargs['bbb']).rstrip()
+        keys = ["A_", "tt", "aaii", "cccc", "yygg", "bbb", "_C_", "cccc"]
+        self._bulletinId = "".join([kwargs.get(key, key) for key in keys])
+        self._wmoAHL = "{}{} {} {} {}".format(kwargs["tt"], kwargs["aaii"], kwargs["cccc"], kwargs["yygg"], kwargs["bbb"]).rstrip()
 
     def export(self):
         """Construct and return a <MeteorologicalBulletin> ElementTree"""
@@ -188,19 +186,19 @@ class Bulletin(object):
 
         tree = ET.ElementTree(element=self.bulletin)
         if header:
-            ahl_line = '{}\n'.format(self._wmoAHL)
-            obj.write(ahl_line.encode('UTF-8'))
+            ahl_line = "{}\n".format(self._wmoAHL)
+            obj.write(ahl_line.encode("UTF-8"))
         try:
-            tree.write(obj, encoding='UTF-8', xml_declaration=True, method='xml', short_empty_elements=True)
+            tree.write(obj, encoding="UTF-8", xml_declaration=True, method="xml", short_empty_elements=True)
         except TypeError:
-            tree.write(obj, encoding='UTF-8', xml_declaration=True, method='xml')
+            tree.write(obj, encoding="UTF-8", xml_declaration=True, method="xml")
 
     def _iswriteable(self, obj):
         try:
-            return obj.writable() and obj.mode == 'wb'
+            return obj.writable() and obj.mode == "wb"
         except AttributeError:
             try:
-                return isinstance(obj, file) and obj.mode == 'wb'
+                return isinstance(obj, file) and obj.mode == "wb"
             except NameError:
                 return False
 
@@ -218,10 +216,10 @@ class Bulletin(object):
 
         canBeCompressed = False
         if compress:
-            if 'gzip' in globals().keys():
+            if "gzip" in globals().keys():
                 canBeCompressed = True
             else:
-                raise SystemError('No capability to compress files using gzip()')
+                raise SystemError("No capability to compress files using gzip()")
         #
         # Do not include WMO AHL line in compressed files
         if canBeCompressed:
@@ -244,15 +242,15 @@ class Bulletin(object):
                 obj = os.getcwd()
 
             if header:
-                fullpath = os.path.join(obj, self._internalBulletinId.replace('xml', 'txt'))
+                fullpath = os.path.join(obj, self._internalBulletinId.replace("xml", "txt"))
             else:
                 fullpath = os.path.join(obj, self._internalBulletinId)
             #
             # Write it out.
             if canBeCompressed:
-                _fh = gzip.open(fullpath, 'wb')
+                _fh = gzip.open(fullpath, "wb")
             else:
-                _fh = open(fullpath, 'wb')
+                _fh = open(fullpath, "wb")
 
             self._write(_fh, header, canBeCompressed)
             _fh.close()
@@ -260,4 +258,4 @@ class Bulletin(object):
             return fullpath
 
         else:
-            raise IOError('First argument is an unsupported type: %s' % (str(type(obj))))
+            raise IOError("First argument is an unsupported type: %s" % (str(type(obj))))

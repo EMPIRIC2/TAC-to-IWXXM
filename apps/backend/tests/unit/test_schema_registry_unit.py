@@ -1,7 +1,5 @@
 """Unit tests for schema registry helpers."""
 
-
-
 from src.utilities import schema_registry as registry_module
 
 

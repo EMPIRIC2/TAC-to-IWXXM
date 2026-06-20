@@ -76,7 +76,7 @@ def parse_xml_normalized(xml_content: str) -> ET.Element:
     # Normalize first
     normalized = normalize_xml_string(xml_content)
     # Parse normalized XML
-    root = ET.fromstring(normalized.encode('utf-8'))
+    root = ET.fromstring(normalized.encode("utf-8"))
     # Filter whitespace text nodes
     filter_whitespace_text_nodes(root)
     return root
@@ -135,10 +135,7 @@ def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
     delta_phi = math.radians(lat2 - lat1)
     delta_lambda = math.radians(lon2 - lon1)
 
-    a = (
-        math.sin(delta_phi / 2) ** 2
-        + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2) ** 2
-    )
+    a = math.sin(delta_phi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2) ** 2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
 
@@ -180,7 +177,7 @@ def extract_lat_lon(elem: ET.Element, tolerance_m: float = 100.0) -> Dict[str, T
                         parts = text.split()
                         for i in range(0, len(parts) - 1, 2):
                             lat, lon = float(parts[i]), float(parts[i + 1])
-                            coords[f"{elem_id}[{i//2}]"] = (lat, lon)
+                            coords[f"{elem_id}[{i // 2}]"] = (lat, lon)
                     except (ValueError, IndexError):
                         pass
 
@@ -277,40 +274,42 @@ def compare_xml_with_tolerance(
     logger.debug("Normalizing elements for comparison")
 
     # Convert to strings for normalization
-    exp_str = ET.tostring(expected_elem, encoding='unicode')
-    act_str = ET.tostring(actual_elem, encoding='unicode')
+    exp_str = ET.tostring(expected_elem, encoding="unicode")
+    act_str = ET.tostring(actual_elem, encoding="unicode")
 
     # Re-parse with normalization
     expected_elem = parse_xml_normalized(exp_str)
     actual_elem = parse_xml_normalized(act_str)
 
     # Add dynamic attrs that should be ignored
-    ignore_attrs.update({
-        "id", "gml:id", "schemaLocation",
-        "translatedBulletinID",
-        "translationCentreName",
-        "translationCentreDesignator",
-        "translationTime",
-        "translatedBulletinReceptionTime",
-        "translationFailedTAC",
-        "permissibleUsage",
-        "permissibleUsageReason",
-        "permissibleUsageSupplementary",
-    })
+    ignore_attrs.update(
+        {
+            "id",
+            "gml:id",
+            "schemaLocation",
+            "translatedBulletinID",
+            "translationCentreName",
+            "translationCentreDesignator",
+            "translationTime",
+            "translatedBulletinReceptionTime",
+            "translationFailedTAC",
+            "permissibleUsage",
+            "permissibleUsageReason",
+            "permissibleUsageSupplementary",
+        }
+    )
 
     report = DiffReport(
         test_case=test_case,
         amendment_version=amendment_version,
         expected_xml=expected_xml_str,
-        actual_xml=actual_xml_str
+        actual_xml=actual_xml_str,
     )
 
     # Extract and validate lat/lon coordinates
     expected_coords = extract_lat_lon(expected_elem)
     actual_coords = extract_lat_lon(actual_elem)
-    lat_lon_ok, lat_lon_diffs = validate_lat_lon_tolerance(
-        expected_coords, actual_coords, lat_lon_tolerance_m
-    )
+    lat_lon_ok, lat_lon_diffs = validate_lat_lon_tolerance(expected_coords, actual_coords, lat_lon_tolerance_m)
     report.lat_lon_diffs = lat_lon_diffs
 
     # Strip dynamic attributes and do structural comparison

@@ -19,6 +19,7 @@ from lxml import etree
 
 try:
     import requests
+
     REQUESTS_AVAILABLE = True
 except ImportError:
     REQUESTS_AVAILABLE = False
@@ -33,6 +34,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class CodelistValidationResult:
     """Result of codelist validation."""
+
     is_valid: bool
     issues: List[ValidationIssue]
     total_references: int = 0
@@ -69,15 +71,17 @@ class CodeListParser:
         if settings is None:
             try:
                 from ..config.validation import get_validation_settings
+
                 self.settings = get_validation_settings()
             except ImportError:
                 # Fallback if config not available
                 from types import SimpleNamespace
+
                 self.settings = SimpleNamespace(
                     wmo_online_validation=False,
                     wmo_validation_timeout=5,
                     wmo_registry_cache_ttl=3600,
-                    wmo_registry_url="https://codes.wmo.int"
+                    wmo_registry_url="https://codes.wmo.int",
                 )
         else:
             self.settings = settings
@@ -124,28 +128,28 @@ class CodeListParser:
 
             # RDF namespaces
             namespaces = {
-                'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-                'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
-                'skos': 'http://www.w3.org/2004/02/skos/core#',
-                'owl': 'http://www.w3.org/2002/07/owl#'
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "owl": "http://www.w3.org/2002/07/owl#",
             }
 
             # Extract codelist name from filename (e.g., codes.wmo.int-49-2-Weather.rdf → Weather)
-            codelist_name = rdf_file.stem.split('-')[-1] if '-' in rdf_file.stem else rdf_file.stem
+            codelist_name = rdf_file.stem.split("-")[-1] if "-" in rdf_file.stem else rdf_file.stem
 
             codes: Set[str] = set()
 
             # Find all Concept elements (SKOS vocabulary)
-            for concept in root.findall('.//skos:Concept', namespaces):
+            for concept in root.findall(".//skos:Concept", namespaces):
                 # Get rdf:about attribute (the URI)
-                about = concept.get('{%s}about' % namespaces['rdf'])
+                about = concept.get("{%s}about" % namespaces["rdf"])
                 if about:
                     # Extract just the code/value part
-                    code = about.split('/')[-1]
+                    code = about.split("/")[-1]
                     codes.add(code)
 
                 # Also try to get preferred label
-                for label in concept.findall('skos:prefLabel', namespaces):
+                for label in concept.findall("skos:prefLabel", namespaces):
                     if label.text:
                         codes.add(label.text)
 
@@ -205,23 +209,23 @@ class CodeListParser:
 
         # Namespaces
         namespaces = {
-            'xlink': 'http://www.w3.org/1999/xlink',
+            "xlink": "http://www.w3.org/1999/xlink",
         }
 
         # Find all xlink:href attributes
-        elements_with_href = xml_tree.xpath('//*[@xlink:href]', namespaces=namespaces)
+        elements_with_href = xml_tree.xpath("//*[@xlink:href]", namespaces=namespaces)
 
         for elem in elements_with_href:
-            href = elem.get('{http://www.w3.org/1999/xlink}href')
+            href = elem.get("{http://www.w3.org/1999/xlink}href")
 
             # Only process WMO code list URLs (not internal #id references)
-            if href and 'codes.wmo.int' in href:
+            if href and "codes.wmo.int" in href:
                 xpath = xml_tree.getroottree().getpath(elem)
 
                 # Extract codelist name from URL
                 # e.g., http://codes.wmo.int/49-2/AerodromeRecentWeather → AerodromeRecentWeather
                 try:
-                    codelist_name = href.rstrip('/').split('/')[-1]
+                    codelist_name = href.rstrip("/").split("/")[-1]
                     references.append((href, codelist_name, xpath))
                 except Exception as e:
                     logger.warning(f"Failed to parse codelist URL {href}: {e}")
@@ -250,19 +254,16 @@ class CodeListParser:
 
             # Parse XML
             try:
-                xml_tree = etree.fromstring(xml_content.encode('utf-8'))
+                xml_tree = etree.fromstring(xml_content.encode("utf-8"))
             except etree.XMLSyntaxError as e:
                 issue = ValidationIssue(
                     layer=ValidationLayer.WMO_CODELISTS,
                     level=ValidationSeverity.ERROR,
                     message=f"XML parsing failed: {str(e)}",
-                    code="XML_SYNTAX_ERROR"
+                    code="XML_SYNTAX_ERROR",
                 )
                 issues.append(issue)
-                return CodelistValidationResult(
-                    is_valid=False,
-                    issues=issues
-                )
+                return CodelistValidationResult(is_valid=False, issues=issues)
 
             # Extract code list references
             references = self._extract_codelist_references(xml_tree)
@@ -287,7 +288,7 @@ class CodeListParser:
                             level=ValidationSeverity.WARNING,
                             message=f"Code list '{codelist_name}' not found in loaded RDF files (online validation disabled)",
                             location=xpath,
-                            code="CODELIST_NOT_FOUND"
+                            code="CODELIST_NOT_FOUND",
                         )
                         issues.append(issue)
                         continue
@@ -295,7 +296,7 @@ class CodeListParser:
                 # Extract the actual code value from the element's text or attributes
                 # This is tricky - the code value might be in element text, an attribute, or the URL itself
                 # For now, we check if the URL ends with a valid code
-                url_parts = href.rstrip('/').split('/')
+                url_parts = href.rstrip("/").split("/")
                 if len(url_parts) > 1:
                     potential_code = url_parts[-1]
 
@@ -312,7 +313,7 @@ class CodeListParser:
                             level=ValidationSeverity.ERROR,
                             message=f"Invalid code '{potential_code}' for codelist '{codelist_name}'. Valid codes include: {', '.join(valid_codes)}",
                             location=xpath,
-                            code="INVALID_CODELIST_VALUE"
+                            code="INVALID_CODELIST_VALUE",
                         )
                         issues.append(issue)
 
@@ -320,19 +321,13 @@ class CodeListParser:
 
             if not is_valid:
                 logger.warning(
-                    f"Codelist validation failed: {invalid_count} invalid references "
-                    f"out of {len(references)} total"
+                    f"Codelist validation failed: {invalid_count} invalid references out of {len(references)} total"
                 )
             else:
-                logger.debug(
-                    f"Codelist validation passed: {len(references)} references validated"
-                )
+                logger.debug(f"Codelist validation passed: {len(references)} references validated")
 
             return CodelistValidationResult(
-                is_valid=is_valid,
-                issues=issues,
-                total_references=len(references),
-                invalid_references=invalid_count
+                is_valid=is_valid, issues=issues, total_references=len(references), invalid_references=invalid_count
             )
 
         except Exception as e:
@@ -341,13 +336,10 @@ class CodeListParser:
                 layer=ValidationLayer.WMO_CODELISTS,
                 level=ValidationSeverity.ERROR,
                 message=f"Validation error: {str(e)}",
-                code=type(e).__name__
+                code=type(e).__name__,
             )
             issues.append(issue)
-            return CodelistValidationResult(
-                is_valid=False,
-                issues=issues
-            )
+            return CodelistValidationResult(is_valid=False, issues=issues)
 
     def _validate_online(self, code_url: str, xpath: str) -> ValidationIssue:
         """
@@ -366,7 +358,7 @@ class CodeListParser:
                 level=ValidationSeverity.WARNING,
                 message="Online validation unavailable (requests library not installed)",
                 location=xpath,
-                code="ONLINE_VALIDATION_UNAVAILABLE"
+                code="ONLINE_VALIDATION_UNAVAILABLE",
             )
 
         # Check cache with TTL
@@ -383,9 +375,7 @@ class CodeListParser:
         try:
             logger.info(f"Validating code online: {code_url}")
             response = requests.get(
-                code_url,
-                timeout=self.settings.wmo_validation_timeout,
-                headers={"Accept": "application/rdf+xml"}
+                code_url, timeout=self.settings.wmo_validation_timeout, headers={"Accept": "application/rdf+xml"}
             )
 
             if response.status_code == 200:
@@ -398,7 +388,7 @@ class CodeListParser:
                         level=ValidationSeverity.INFO,
                         message=f"Code validated online: {code_url} (status: {status})",
                         location=xpath,
-                        code="CODELIST_VALID_ONLINE"
+                        code="CODELIST_VALID_ONLINE",
                     )
                 elif status in ["superseded", "deprecated"]:
                     result = ValidationIssue(
@@ -406,7 +396,7 @@ class CodeListParser:
                         level=ValidationSeverity.WARNING,
                         message=f"Code status '{status}': {code_url}",
                         location=xpath,
-                        code="CODELIST_DEPRECATED"
+                        code="CODELIST_DEPRECATED",
                     )
                 else:
                     result = ValidationIssue(
@@ -414,7 +404,7 @@ class CodeListParser:
                         level=ValidationSeverity.WARNING,
                         message=f"Code status unknown ('{status}'): {code_url}",
                         location=xpath,
-                        code="CODELIST_STATUS_UNKNOWN"
+                        code="CODELIST_STATUS_UNKNOWN",
                     )
 
                 # Cache result
@@ -427,7 +417,7 @@ class CodeListParser:
                     level=ValidationSeverity.ERROR,
                     message=f"Code not found in WMO registry: {code_url}",
                     location=xpath,
-                    code="CODELIST_NOT_FOUND"
+                    code="CODELIST_NOT_FOUND",
                 )
                 self._online_cache[code_url] = (result, datetime.utcnow())
                 return result
@@ -437,7 +427,7 @@ class CodeListParser:
                     level=ValidationSeverity.WARNING,
                     message=f"Registry returned {response.status_code}: {code_url}",
                     location=xpath,
-                    code="CODELIST_ONLINE_ERROR"
+                    code="CODELIST_ONLINE_ERROR",
                 )
 
         except requests.Timeout:
@@ -447,7 +437,7 @@ class CodeListParser:
                 level=ValidationSeverity.WARNING,
                 message=f"Online validation timeout ({self.settings.wmo_validation_timeout}s): {code_url}",
                 location=xpath,
-                code="CODELIST_TIMEOUT"
+                code="CODELIST_TIMEOUT",
             )
         except Exception as e:
             logger.error(f"Online validation error: {e}")
@@ -456,7 +446,7 @@ class CodeListParser:
                 level=ValidationSeverity.WARNING,
                 message=f"Online validation failed: {str(e)}",
                 location=xpath,
-                code="CODELIST_ONLINE_FAILED"
+                code="CODELIST_ONLINE_FAILED",
             )
 
     def _parse_rdf_status(self, rdf_content: bytes) -> str:
@@ -477,22 +467,22 @@ class CodeListParser:
             #   <reg:status rdf:resource="http://codes.wmo.int/common/reg-status/valid"/>
             # </skos:Concept>
             namespaces = {
-                'reg': 'http://purl.org/linked-data/registry#',
-                'skos': 'http://www.w3.org/2004/02/skos/core#',
-                'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+                "reg": "http://purl.org/linked-data/registry#",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             }
 
             # Find status element
-            status_elems = root.xpath('.//reg:status/@rdf:resource', namespaces=namespaces)
+            status_elems = root.xpath(".//reg:status/@rdf:resource", namespaces=namespaces)
             if status_elems:
                 status_url = status_elems[0]
                 # Extract last part: .../reg-status/valid -> "valid"
-                status = status_url.split('/')[-1] if status_url else "unknown"
+                status = status_url.split("/")[-1] if status_url else "unknown"
                 logger.debug(f"Parsed RDF status: {status}")
                 return status
 
             # Fallback: if no explicit status, assume valid if concept exists
-            concepts = root.xpath('.//skos:Concept', namespaces=namespaces)
+            concepts = root.xpath(".//skos:Concept", namespaces=namespaces)
             if concepts:
                 logger.debug("No explicit status, assuming 'valid' (concept exists)")
                 return "valid"
@@ -528,13 +518,7 @@ class CodeListRegistry:
             self._parsers[version] = CodeListParser(codelists_dir)
         return self._parsers[version]
 
-    def validate_code(
-        self,
-        version: str,
-        codelist_name: str,
-        code_value: str,
-        codelists_dir: Path
-    ) -> bool:
+    def validate_code(self, version: str, codelist_name: str, code_value: str, codelists_dir: Path) -> bool:
         """
         Validate a code value for a specific version and code list.
 
@@ -560,11 +544,7 @@ def get_codelist_parser(version: str, codelists_dir: Path) -> CodeListParser:
     return _registry.get_parser(version, codelists_dir)
 
 
-def validate_xml_codelists(
-    xml_content: str,
-    version: str,
-    codelists_dir: Path
-) -> CodelistValidationResult:
+def validate_xml_codelists(xml_content: str, version: str, codelists_dir: Path) -> CodelistValidationResult:
     """
     Convenience function to validate XML codelists.
 
@@ -578,4 +558,3 @@ def validate_xml_codelists(
     """
     parser = get_codelist_parser(version, codelists_dir)
     return parser.validate_xml_codelists(xml_content)
-

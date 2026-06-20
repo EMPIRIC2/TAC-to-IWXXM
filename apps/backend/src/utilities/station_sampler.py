@@ -1,4 +1,5 @@
 """Utility for sampling airport stations from the CSV database."""
+
 import csv
 import pathlib
 import random
@@ -37,19 +38,21 @@ class StationSampler:
             return self._airports_cache
 
         airports = []
-        with open(self.csv_path, 'r', encoding='utf-8') as f:
+        with open(self.csv_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
                 # Only include airports with valid ICAO codes
-                icao = row.get('icao_code', '').strip()
+                icao = row.get("icao_code", "").strip()
                 if icao and len(icao) == 4 and icao.isalpha():
-                    airports.append({
-                        'icao': icao,
-                        'name': row.get('name', ''),
-                        'country': row.get('country_name', ''),
-                        'type': row.get('type', ''),
-                        'scheduled_service': row.get('scheduled_service', '0'),
-                    })
+                    airports.append(
+                        {
+                            "icao": icao,
+                            "name": row.get("name", ""),
+                            "country": row.get("country_name", ""),
+                            "type": row.get("type", ""),
+                            "scheduled_service": row.get("scheduled_service", "0"),
+                        }
+                    )
 
         self._airports_cache = airports
         return airports
@@ -59,7 +62,7 @@ class StationSampler:
         count: int,
         large_airports_only: bool = False,
         scheduled_service_only: bool = True,
-        seed: Optional[int] = None
+        seed: Optional[int] = None,
     ) -> List[str]:
         """Sample random airport stations.
 
@@ -77,9 +80,9 @@ class StationSampler:
         # Filter
         filtered = airports
         if large_airports_only:
-            filtered = [a for a in filtered if a['type'] == 'large_airport']
+            filtered = [a for a in filtered if a["type"] == "large_airport"]
         if scheduled_service_only:
-            filtered = [a for a in filtered if a['scheduled_service'] == '1']
+            filtered = [a for a in filtered if a["scheduled_service"] == "1"]
 
         # Sample
         if seed is not None:
@@ -88,13 +91,9 @@ class StationSampler:
         sample_size = min(count, len(filtered))
         sampled = random.sample(filtered, sample_size)
 
-        return [a['icao'] for a in sampled]
+        return [a["icao"] for a in sampled]
 
-    def get_all_major_airports(
-        self,
-        large_only: bool = True,
-        scheduled_service_only: bool = True
-    ) -> List[str]:
+    def get_all_major_airports(self, large_only: bool = True, scheduled_service_only: bool = True) -> List[str]:
         """Get all major airport ICAO codes.
 
         Args:
@@ -108,11 +107,11 @@ class StationSampler:
 
         filtered = airports
         if large_only:
-            filtered = [a for a in filtered if a['type'] == 'large_airport']
+            filtered = [a for a in filtered if a["type"] == "large_airport"]
         if scheduled_service_only:
-            filtered = [a for a in filtered if a['scheduled_service'] == '1']
+            filtered = [a for a in filtered if a["scheduled_service"] == "1"]
 
-        return [a['icao'] for a in filtered]
+        return [a["icao"] for a in filtered]
 
     def get_station_info(self, icao: str) -> Optional[dict]:
         """Get information about a specific station.
@@ -125,6 +124,6 @@ class StationSampler:
         """
         airports = self._load_airports()
         for airport in airports:
-            if airport['icao'] == icao:
+            if airport["icao"] == icao:
                 return airport
         return None

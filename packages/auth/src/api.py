@@ -12,6 +12,7 @@ Endpoints:
 
 Registration and password reset are API-only (no GUI forms).
 """
+
 from __future__ import annotations
 
 import datetime as dt
@@ -105,17 +106,14 @@ def get_db():
 
 def get_current_user(db: Session = Depends(get_db), authorization: str | None = Header(default=None)) -> User:
     if not authorization or not authorization.lower().startswith("bearer "):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
     token = authorization.split()[1]
     username = decode_access_token(token)
     if not username:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
     user = db.query(User).filter(User.username == username).first()
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     return user
 
 
@@ -128,8 +126,7 @@ def send_reset_email(email: str, token: str):
 @router.post("/register", response_model=UserOut)
 def register(user_in: UserCreate, db: Session = Depends(get_db)):
     if db.query(User).filter((User.username == user_in.username) | (User.email == user_in.email)).first():
-        raise HTTPException(
-            status_code=400, detail="Username or email already exists")
+        raise HTTPException(status_code=400, detail="Username or email already exists")
     user = User(
         name=user_in.name,
         email=user_in.email,
@@ -177,8 +174,7 @@ def list_apikeys(user: User = Depends(get_current_user), db: Session = Depends(g
 
 @router.delete("/apikeys/{key_id}", response_model=Message)
 def revoke_apikey(key_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    key = db.query(APIKey).filter(APIKey.id == key_id,
-                                  APIKey.user_id == user.id).first()
+    key = db.query(APIKey).filter(APIKey.id == key_id, APIKey.user_id == user.id).first()
     if not key:
         raise HTTPException(status_code=404, detail="API key not found")
     key.revoked = True
@@ -205,8 +201,7 @@ def request_reset(req: PasswordResetRequest, db: Session = Depends(get_db)):
 
 @router.post("/password-reset/confirm", response_model=Message)
 def confirm_reset(req: PasswordResetConfirm, db: Session = Depends(get_db)):
-    token = db.query(PasswordResetToken).filter(
-        PasswordResetToken.token == req.token).first()
+    token = db.query(PasswordResetToken).filter(PasswordResetToken.token == req.token).first()
     now_utc = dt.datetime.now(dt.UTC)
     if not token:
         raise HTTPException(status_code=400, detail="Invalid or expired token")

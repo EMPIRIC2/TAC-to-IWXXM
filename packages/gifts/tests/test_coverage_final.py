@@ -90,6 +90,7 @@ class TestMetarEncoderCoverage:
     def test_metar_module_import(self):
         """Test METAR modules can be imported"""
         from gifts import metarDecoder, metarEncoder
+
         assert metarDecoder is not None
         assert metarEncoder is not None
 
@@ -98,15 +99,15 @@ class TestMetarEncoderCoverage:
         from gifts import metarDecoder
 
         # metarDecoder module should exist
-        assert hasattr(metarDecoder, '__name__')
-        assert 'metar' in metarDecoder.__name__.lower()
+        assert hasattr(metarDecoder, "__name__")
+        assert "metar" in metarDecoder.__name__.lower()
 
     def test_metar_encoder_basic(self):
         """Test METAR encoder module"""
         from gifts import metarEncoder
 
         # metarEncoder module should have functions
-        assert hasattr(metarEncoder, '__name__')
+        assert hasattr(metarEncoder, "__name__")
 
 
 class TestXMLUtilitiesFinalCoverage:
@@ -126,9 +127,9 @@ class TestXMLUtilitiesFinalCoverage:
     def test_compute_lat_lon_cardinal_directions(self):
         """Test computeLatLon for all cardinal and intercardinal directions"""
         directions = [
-            (0.0, "N"),    # North
+            (0.0, "N"),  # North
             (45.0, "NE"),  # Northeast
-            (90.0, "E"),   # East
+            (90.0, "E"),  # East
             (135.0, "SE"),  # Southeast
             (180.0, "S"),  # South
             (225.0, "SW"),  # Southwest
@@ -144,6 +145,7 @@ class TestXMLUtilitiesFinalCoverage:
         """Test computeArea with various polygon types"""
         # Regular hexagon
         import math
+
         hex_points = []
         for i in range(6):
             angle = i * math.pi / 3
@@ -167,8 +169,8 @@ class TestXMLUtilitiesFinalCoverage:
     def test_check_visibility_unit_conversions(self):
         """Test checkVisibility with unit conversions"""
         # Test feet to meters conversion
-        result_feet = xmlUtilities.checkVisibility("10000", uom='[ft_i]')
-        result_miles = xmlUtilities.checkVisibility("2", uom='[mi_i]')
+        result_feet = xmlUtilities.checkVisibility("10000", uom="[ft_i]")
+        result_miles = xmlUtilities.checkVisibility("2", uom="[mi_i]")
 
         assert result_feet is not None
         assert result_miles is not None
@@ -176,11 +178,11 @@ class TestXMLUtilitiesFinalCoverage:
     def test_check_rvr_extreme_values(self):
         """Test checkRVR with extreme values"""
         extremes = [
-            "0",      # Zero visibility
-            "25",     # Very low
-            "800",    # Boundary
-            "5000",   # High
-            "9999",   # Maximum
+            "0",  # Zero visibility
+            "25",  # Very low
+            "800",  # Boundary
+            "5000",  # High
+            "9999",  # Maximum
         ]
 
         for value in extremes:
@@ -203,6 +205,7 @@ class TestTAFEncoderCoverage:
     def test_taf_module_import(self):
         """Test TAF modules can be imported"""
         from gifts import tafDecoder, tafEncoder
+
         assert tafDecoder is not None
         assert tafEncoder is not None
 
@@ -210,8 +213,8 @@ class TestTAFEncoderCoverage:
         """Test TAF modules have content"""
         from gifts import tafDecoder
 
-        assert hasattr(tafDecoder, '__name__')
-        assert 'taf' in tafDecoder.__name__.lower()
+        assert hasattr(tafDecoder, "__name__")
+        assert "taf" in tafDecoder.__name__.lower()
 
 
 class TestSWAEncoderCoverage:
@@ -220,13 +223,15 @@ class TestSWAEncoderCoverage:
     def test_swa_module_import(self):
         """Test SWA modules can be imported"""
         from gifts import swaDecoder, swaEncoder
+
         assert swaDecoder is not None
         assert swaEncoder is not None
 
     def test_swa_modules_have_content(self):
         """Test SWA modules have content"""
         from gifts import swaDecoder
-        assert hasattr(swaDecoder, '__name__')
+
+        assert hasattr(swaDecoder, "__name__")
 
 
 class TestTCAEncoderCoverage:
@@ -235,13 +240,15 @@ class TestTCAEncoderCoverage:
     def test_tca_module_import(self):
         """Test TCA modules can be imported"""
         from gifts import tcaDecoder, tcaEncoder
+
         assert tcaDecoder is not None
         assert tcaEncoder is not None
 
     def test_tca_modules_have_content(self):
         """Test TCA modules have content"""
         from gifts import tcaDecoder
-        assert hasattr(tcaDecoder, '__name__')
+
+        assert hasattr(tcaDecoder, "__name__")
 
 
 class TestModuleImports:

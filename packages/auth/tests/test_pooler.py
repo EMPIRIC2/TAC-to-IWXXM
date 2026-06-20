@@ -1,4 +1,5 @@
 """Quick test script to verify Supabase pooler connection."""
+
 from sqlalchemy import create_engine, text
 import os
 import pytest
@@ -11,13 +12,10 @@ load_dotenv()
 # Use environment variable, with fallback to default URL scheme
 DATABASE_URL = os.getenv(
     "TEST_POOLER_URL",
-    "postgresql+psycopg2://postgres.project-ref:password@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
+    "postgresql+psycopg2://postgres.project-ref:password@aws-0-us-east-1.pooler.supabase.com:5432/postgres",
 )
 if "project-ref" in DATABASE_URL:
-    pytest.skip(
-        "TEST_POOLER_URL not set - skipping pooler connection test",
-        allow_module_level=True
-    )
+    pytest.skip("TEST_POOLER_URL not set - skipping pooler connection test", allow_module_level=True)
 
 print(f"Testing connection to Supabase via IPv4 pooler (Session Mode)...")
 print(f"Host: aws-0-us-east-1.pooler.supabase.com:5432")
@@ -47,28 +45,30 @@ try:
         print(f"✓ Connected as user: {user}")
 
         # Test table creation
-        connection.execute(text("""
+        connection.execute(
+            text("""
             CREATE TABLE IF NOT EXISTS test_pooler_connection (
                 id SERIAL PRIMARY KEY,
                 message TEXT,
                 created_at TIMESTAMP DEFAULT NOW()
             )
-        """))
+        """)
+        )
         connection.commit()
         print("✓ Test table created")
 
         # Insert test data
-        connection.execute(text("""
+        connection.execute(
+            text("""
             INSERT INTO test_pooler_connection (message)
             VALUES ('Test from metar-to-IWXXM via pooler')
-        """))
+        """)
+        )
         connection.commit()
         print("✓ Test data inserted")
 
         # Query data
-        result = connection.execute(text(
-            "SELECT COUNT(*) FROM test_pooler_connection"
-        ))
+        result = connection.execute(text("SELECT COUNT(*) FROM test_pooler_connection"))
         count = result.scalar()
         print(f"✓ Test table has {count} rows")
 
@@ -83,4 +83,5 @@ except Exception as e:
     print(f"\n❌ FAILED: {type(e).__name__}")
     print(f"Error: {e}")
     import traceback
+
     traceback.print_exc()

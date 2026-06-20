@@ -8,6 +8,7 @@ class TestVAADecoderBasics:
         """Test VAA decoder can be imported"""
         try:
             from gifts import vaaDecoder
+
             assert vaaDecoder is not None
         except ImportError:
             pytest.fail("vaaDecoder should be importable")
@@ -176,13 +177,7 @@ class TestVAADecoderValidation:
 
     def test_valid_vaa_structure(self):
         """Test valid VAA structure"""
-        vaa = {
-            "header": "VOLCANIC ASH ADVISORY",
-            "volcano": "Mount Merapi",
-            "timestamp": "2024020400",
-            "latitude": 7.54,
-            "longitude": 110.45
-        }
+        vaa = {"header": "VOLCANIC ASH ADVISORY", "volcano": "Mount Merapi", "timestamp": "2024020400", "latitude": 7.54, "longitude": 110.45}
         assert vaa["header"]
         assert vaa["volcano"]
         assert vaa["timestamp"]

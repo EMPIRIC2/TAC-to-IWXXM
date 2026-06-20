@@ -10,12 +10,14 @@ from typing import Dict, TypedDict
 
 class CoordinatePrecisionRule(TypedDict):
     """Rule for coordinate precision formatting."""
+
     decimals: int
     rationale: str
 
 
 class ElevationFormatRule(TypedDict):
     """Rule for elevation formatting."""
+
     unit: str  # Currently always "M" (meters)
     round_to: int  # Number of decimal places to round to (0 = round to int)
     rationale: str
@@ -24,56 +26,21 @@ class ElevationFormatRule(TypedDict):
 # Coordinate precision rules by version
 # Precision determines gml:pos format: e.g., 2 decimals = "61.17 -45.42"
 COORDINATE_PRECISION: Dict[str, CoordinatePrecisionRule] = {
-    "2016": {
-        "decimals": 2,
-        "rationale": "Legacy precision from original implementations"
-    },
-    "2018": {
-        "decimals": 2,
-        "rationale": "ICAO Annex 3 legacy standard (~1.1 km per degree)"
-    },
-    "2021-2": {
-        "decimals": 6,
-        "rationale": "Increased precision ~0.111 meters per degree"
-    },
-    "2023-1": {
-        "decimals": 6,
-        "rationale": "Same as 2021-2 for compatibility"
-    },
-    "2025-2": {
-        "decimals": 8,
-        "rationale": "ICAO Annex 3 high-precision standard ~1.1 mm per degree"
-    },
+    "2016": {"decimals": 2, "rationale": "Legacy precision from original implementations"},
+    "2018": {"decimals": 2, "rationale": "ICAO Annex 3 legacy standard (~1.1 km per degree)"},
+    "2021-2": {"decimals": 6, "rationale": "Increased precision ~0.111 meters per degree"},
+    "2023-1": {"decimals": 6, "rationale": "Same as 2021-2 for compatibility"},
+    "2025-2": {"decimals": 8, "rationale": "ICAO Annex 3 high-precision standard ~1.1 mm per degree"},
 }
 
 
 # Elevation formatting rules by version
 ELEVATION_FORMAT: Dict[str, ElevationFormatRule] = {
-    "2016": {
-        "unit": "M",
-        "round_to": 1,
-        "rationale": "Round to nearest meter for legacy systems"
-    },
-    "2018": {
-        "unit": "M",
-        "round_to": 1,
-        "rationale": "Round to nearest meter"
-    },
-    "2021-2": {
-        "unit": "M",
-        "round_to": 0,
-        "rationale": "No rounding - maintain source precision"
-    },
-    "2023-1": {
-        "unit": "M",
-        "round_to": 0,
-        "rationale": "No rounding"
-    },
-    "2025-2": {
-        "unit": "M",
-        "round_to": 0,
-        "rationale": "No rounding - maintain full precision"
-    },
+    "2016": {"unit": "M", "round_to": 1, "rationale": "Round to nearest meter for legacy systems"},
+    "2018": {"unit": "M", "round_to": 1, "rationale": "Round to nearest meter"},
+    "2021-2": {"unit": "M", "round_to": 0, "rationale": "No rounding - maintain source precision"},
+    "2023-1": {"unit": "M", "round_to": 0, "rationale": "No rounding"},
+    "2025-2": {"unit": "M", "round_to": 0, "rationale": "No rounding - maintain full precision"},
 }
 
 

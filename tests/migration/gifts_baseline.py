@@ -22,10 +22,10 @@ def resolve_gifts_root() -> Path:
         if (candidate / "gifts" / "metarEncoder.py").is_file():
             return candidate
     msg = (
-        "GIFTs package not found under packages/gifts or GIFTs/ "
-        "(required for TC-M003)"
+        "GIFTs package not found under packages/gifts or GIFTs/ (required for TC-M003)"
     )
     raise FileNotFoundError(msg)
+
 
 # Fixed bulletin metadata keeps golden output stable across runs (REQ-018).
 FIXED_RECEPTION_TIME = "2023-06-23T17:51:00Z"

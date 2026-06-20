@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class GMLValidationResult:
     """Result of GML reference validation."""
+
     is_valid: bool
     issues: List[ValidationIssue]
     total_ids: int = 0
@@ -45,12 +46,12 @@ class GMLReferenceValidator:
 
     # Common namespace prefixes in IWXXM
     NAMESPACES = {
-        'gml': 'http://www.opengis.net/gml/3.2.1',  # GML 3.2.1 namespace
-        'xlink': 'http://www.w3.org/1999/xlink',
-        'iwxxm': 'http://icao.int/iwxxm/2025-2',
-        'aixm': 'http://www.aixm.aero/schema/5.1.1',
-        'metce': 'http://def.wmo.int/metce/2013',
-        'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+        "gml": "http://www.opengis.net/gml/3.2.1",  # GML 3.2.1 namespace
+        "xlink": "http://www.w3.org/1999/xlink",
+        "iwxxm": "http://icao.int/iwxxm/2025-2",
+        "aixm": "http://www.aixm.aero/schema/5.1.1",
+        "metce": "http://def.wmo.int/metce/2013",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     }
 
     def __init__(self, codelists_dir: Optional[Path] = None):
@@ -86,7 +87,7 @@ class GMLReferenceValidator:
         Returns:
             True if external reference, False if internal
         """
-        return '#' in href and not href.startswith('#')
+        return "#" in href and not href.startswith("#")
 
     def _extract_rdf_file_and_element(self, href: str) -> Tuple[str, str]:
         """
@@ -98,7 +99,7 @@ class GMLReferenceValidator:
         Returns:
             Tuple of (rdf_filename, element_id)
         """
-        parts = href.split('#', 1)
+        parts = href.split("#", 1)
         rdf_file = parts[0]  # e.g., "codes.wmo.int-49-2-AerodromeState.rdf"
         element_id = parts[1] if len(parts) > 1 else ""  # e.g., "CodeAerodromeState_CLOSED"
 
@@ -132,8 +133,7 @@ class GMLReferenceValidator:
 
         if not rdf_path.exists():
             logger.warning(
-                f"RDF codelist file not found: {rdf_path}. "
-                f"External reference {rdf_filename} cannot be validated."
+                f"RDF codelist file not found: {rdf_path}. External reference {rdf_filename} cannot be validated."
             )
             return set()
 
@@ -144,17 +144,14 @@ class GMLReferenceValidator:
 
             # Extract all rdf:Description @rdf:about attributes
             elements = set()
-            descriptions = rdf_root.xpath(
-                '//rdf:Description',
-                namespaces=self.NAMESPACES
-            )
+            descriptions = rdf_root.xpath("//rdf:Description", namespaces=self.NAMESPACES)
 
             for desc in descriptions:
-                about = desc.get('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about')
+                about = desc.get("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about")
                 if about:
                     # Extract just the fragment identifier
-                    if '#' in about:
-                        element_id = about.split('#', 1)[1]
+                    if "#" in about:
+                        element_id = about.split("#", 1)[1]
                     else:
                         element_id = about
 
@@ -163,16 +160,12 @@ class GMLReferenceValidator:
             # Cache the elements
             self._rdf_element_cache[rdf_filename] = elements
 
-            logger.debug(
-                f"Loaded {len(elements)} elements from RDF: {rdf_filename}"
-            )
+            logger.debug(f"Loaded {len(elements)} elements from RDF: {rdf_filename}")
 
             return elements
 
         except Exception as e:
-            logger.warning(
-                f"Failed to parse RDF file {rdf_filename}: {e}"
-            )
+            logger.warning(f"Failed to parse RDF file {rdf_filename}: {e}")
             return set()
 
     def _extract_gml_ids(self, xml_tree: etree._Element) -> Dict[str, List[str]]:
@@ -188,13 +181,10 @@ class GMLReferenceValidator:
         id_registry: Dict[str, List[str]] = {}
 
         # Find all elements with gml:id attribute
-        elements_with_id = xml_tree.xpath(
-            '//*[@gml:id]',
-            namespaces=self.NAMESPACES
-        )
+        elements_with_id = xml_tree.xpath("//*[@gml:id]", namespaces=self.NAMESPACES)
 
         for elem in elements_with_id:
-            gml_id = elem.get('{http://www.opengis.net/gml/3.2}id')
+            gml_id = elem.get("{http://www.opengis.net/gml/3.2}id")
 
             if gml_id:
                 # Get XPath to element
@@ -207,10 +197,7 @@ class GMLReferenceValidator:
 
         return id_registry
 
-    def _extract_href_references(
-        self,
-        xml_tree: etree._Element
-    ) -> List[Tuple[str, str, str]]:
+    def _extract_href_references(self, xml_tree: etree._Element) -> List[Tuple[str, str, str]]:
         """
         Extract all xlink:href="#id" internal references.
 
@@ -223,15 +210,12 @@ class GMLReferenceValidator:
         references = []
 
         # Find all elements with xlink:href attribute
-        elements_with_href = xml_tree.xpath(
-            '//*[@xlink:href]',
-            namespaces=self.NAMESPACES
-        )
+        elements_with_href = xml_tree.xpath("//*[@xlink:href]", namespaces=self.NAMESPACES)
 
         for elem in elements_with_href:
-            href = elem.get('{http://www.w3.org/1999/xlink}href')
+            href = elem.get("{http://www.w3.org/1999/xlink}href")
 
-            if href and href.startswith('#'):
+            if href and href.startswith("#"):
                 # Internal reference (starts with #)
                 target_id = href[1:]  # Remove '#' prefix
                 xpath = xml_tree.getroottree().getpath(elem)
@@ -260,30 +244,26 @@ class GMLReferenceValidator:
             if version and not self.codelists_dir:
                 try:
                     from .schema_registry import get_schema_registry
+
                     registry = get_schema_registry()
                     self.codelists_dir = registry.get_codelists_dir(version)
-                    logger.debug(
-                        f"Loaded codelists directory for {version}: {self.codelists_dir}"
-                    )
+                    logger.debug(f"Loaded codelists directory for {version}: {self.codelists_dir}")
                 except Exception as e:
                     logger.debug(f"Could not auto-load codelists: {e}")
 
             # Parse XML document
             try:
-                xml_tree = etree.fromstring(xml_content.encode('utf-8'))
+                xml_tree = etree.fromstring(xml_content.encode("utf-8"))
             except etree.XMLSyntaxError as e:
                 # XML not well-formed - should be caught earlier
                 issue = ValidationIssue(
                     layer=ValidationLayer.GML_REFERENCES,
                     level=ValidationSeverity.ERROR,
                     message=f"XML parsing failed: {str(e)}",
-                    code="XML_SYNTAX_ERROR"
+                    code="XML_SYNTAX_ERROR",
                 )
                 issues.append(issue)
-                return GMLValidationResult(
-                    is_valid=False,
-                    issues=issues
-                )
+                return GMLValidationResult(is_valid=False, issues=issues)
 
             # Extract all gml:id attributes (for internal references)
             id_registry = self._extract_gml_ids(xml_tree)
@@ -295,7 +275,7 @@ class GMLReferenceValidator:
                         layer=ValidationLayer.GML_REFERENCES,
                         level=ValidationSeverity.ERROR,
                         message=f"Duplicate gml:id '{gml_id}' found at {len(locations)} locations: {', '.join(locations)}",
-                        code="DUPLICATE_GML_ID"
+                        code="DUPLICATE_GML_ID",
                     )
                     issues.append(issue)
 
@@ -320,7 +300,7 @@ class GMLReferenceValidator:
                             level=ValidationSeverity.WARNING,
                             message=f"Could not resolve external reference: xlink:href='{href}' (RDF file not found)",
                             location=xpath,
-                            code="UNRESOLVABLE_EXTERNAL_REFERENCE"
+                            code="UNRESOLVABLE_EXTERNAL_REFERENCE",
                         )
                         issues.append(issue)
                     elif element_id not in elements:
@@ -330,7 +310,7 @@ class GMLReferenceValidator:
                             level=ValidationSeverity.ERROR,
                             message=f"Broken external reference: xlink:href='{href}' - element '{element_id}' not found in {rdf_file}",
                             location=xpath,
-                            code="BROKEN_EXTERNAL_REFERENCE"
+                            code="BROKEN_EXTERNAL_REFERENCE",
                         )
                         issues.append(issue)
                 else:
@@ -342,7 +322,7 @@ class GMLReferenceValidator:
                             level=ValidationSeverity.ERROR,
                             message=f"Broken internal reference: xlink:href='{href}' points to non-existent gml:id '{target_id}'",
                             location=xpath,
-                            code="BROKEN_INTERNAL_REFERENCE"
+                            code="BROKEN_INTERNAL_REFERENCE",
                         )
                         issues.append(issue)
 
@@ -355,8 +335,7 @@ class GMLReferenceValidator:
                 )
             else:
                 logger.debug(
-                    f"GML reference validation passed: "
-                    f"{len(id_registry)} internal IDs, {len(references)} references"
+                    f"GML reference validation passed: {len(id_registry)} internal IDs, {len(references)} references"
                 )
 
             return GMLValidationResult(
@@ -364,7 +343,7 @@ class GMLReferenceValidator:
                 issues=issues,
                 total_ids=len(id_registry),
                 total_references=len(references),
-                broken_references=internal_broken + external_broken
+                broken_references=internal_broken + external_broken,
             )
 
         except Exception as e:
@@ -373,13 +352,10 @@ class GMLReferenceValidator:
                 layer=ValidationLayer.GML_REFERENCES,
                 level=ValidationSeverity.ERROR,
                 message=f"Validation error: {str(e)}",
-                code=type(e).__name__
+                code=type(e).__name__,
             )
             issues.append(issue)
-            return GMLValidationResult(
-                is_valid=False,
-                issues=issues
-            )
+            return GMLValidationResult(is_valid=False, issues=issues)
 
     def validate_geometry(self, xml_content: str) -> GMLValidationResult:
         """
@@ -400,58 +376,49 @@ class GMLReferenceValidator:
         issues = []
 
         try:
-            xml_tree = etree.fromstring(xml_content.encode('utf-8'))
+            xml_tree = etree.fromstring(xml_content.encode("utf-8"))
         except etree.XMLSyntaxError as e:
             issue = ValidationIssue(
                 layer=ValidationLayer.GML_REFERENCES,
                 level=ValidationSeverity.ERROR,
                 message=f"XML parsing failed: {str(e)}",
-                code="XML_SYNTAX_ERROR"
+                code="XML_SYNTAX_ERROR",
             )
             issues.append(issue)
             return GMLValidationResult(is_valid=False, issues=issues)
 
         # Find all geometry elements
-        geometry_types = ['Point', 'LineString', 'Polygon', 'Surface', 'MultiPoint', 'MultiCurve']
+        geometry_types = ["Point", "LineString", "Polygon", "Surface", "MultiPoint", "MultiCurve"]
         geometry_elements = []
 
         for geom_type in geometry_types:
-            geom_elements = xml_tree.xpath(
-                f'//gml:{geom_type}',
-                namespaces=self.NAMESPACES
-            )
+            geom_elements = xml_tree.xpath(f"//gml:{geom_type}", namespaces=self.NAMESPACES)
             geometry_elements.extend(geom_elements)
 
         if not geometry_elements:
             logger.debug("No GML geometry elements found")
-            return GMLValidationResult(
-                is_valid=True,
-                issues=[],
-                total_ids=0,
-                total_references=0,
-                broken_references=0
-            )
+            return GMLValidationResult(is_valid=True, issues=[], total_ids=0, total_references=0, broken_references=0)
 
         # Validate each geometry
         for geom in geometry_elements:
-            geom_type = geom.tag.split('}')[-1] if '}' in geom.tag else geom.tag
+            geom_type = geom.tag.split("}")[-1] if "}" in geom.tag else geom.tag
             xpath = xml_tree.getroottree().getpath(geom)
 
             # Check for CRS
-            srs_name = geom.get('srsName')
+            srs_name = geom.get("srsName")
             if not srs_name:
                 issue = ValidationIssue(
                     layer=ValidationLayer.GML_REFERENCES,
                     level=ValidationSeverity.WARNING,
                     message=f"Geometry {geom_type} at {xpath} missing srsName (CRS)",
                     location=xpath,
-                    code="MISSING_CRS"
+                    code="MISSING_CRS",
                 )
                 issues.append(issue)
 
             # Check for coordinates
-            pos_elements = geom.xpath('./gml:pos', namespaces=self.NAMESPACES)
-            pos_list_elements = geom.xpath('./gml:posList', namespaces=self.NAMESPACES)
+            pos_elements = geom.xpath("./gml:pos", namespaces=self.NAMESPACES)
+            pos_list_elements = geom.xpath("./gml:posList", namespaces=self.NAMESPACES)
 
             if not pos_elements and not pos_list_elements:
                 issue = ValidationIssue(
@@ -459,7 +426,7 @@ class GMLReferenceValidator:
                     level=ValidationSeverity.ERROR,
                     message=f"Geometry {geom_type} at {xpath} missing coordinates (pos or posList)",
                     location=xpath,
-                    code="MISSING_COORDINATES"
+                    code="MISSING_COORDINATES",
                 )
                 issues.append(issue)
 
@@ -475,7 +442,7 @@ class GMLReferenceValidator:
             issues=issues,
             total_ids=len(geometry_elements),
             total_references=0,
-            broken_references=len([i for i in issues if i.level == ValidationSeverity.ERROR])
+            broken_references=len([i for i in issues if i.level == ValidationSeverity.ERROR]),
         )
 
 
@@ -501,7 +468,9 @@ def get_gml_validator(codelists_dir: Optional[Path] = None) -> GMLReferenceValid
     return _validator_instance
 
 
-def validate_gml_references(xml_content: str, version: Optional[str] = None, codelists_dir: Optional[Path] = None) -> GMLValidationResult:
+def validate_gml_references(
+    xml_content: str, version: Optional[str] = None, codelists_dir: Optional[Path] = None
+) -> GMLValidationResult:
     """
     Convenience function to validate GML references.
 

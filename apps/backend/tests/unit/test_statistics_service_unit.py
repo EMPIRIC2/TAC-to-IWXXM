@@ -335,7 +335,9 @@ async def test_get_statistics_with_breakdown_flags_returns_fallback_payload(monk
             median_duration=120.0,
         )
     )
-    by_region = _Result(all_rows=[SimpleNamespace(icao_region="NAM", count=4), SimpleNamespace(icao_region="EUR", count=1)])
+    by_region = _Result(
+        all_rows=[SimpleNamespace(icao_region="NAM", count=4), SimpleNamespace(icao_region="EUR", count=1)]
+    )
     by_version = _Result(all_rows=[SimpleNamespace(iwxxm_version="2025-2", count=5)])
     by_airport = _Result(all_rows=[SimpleNamespace(icao_airport_code="KJFK", count=3)])
     by_errors = _Result(all_rows=[SimpleNamespace(translation_status="failed", count=1)])
@@ -398,7 +400,11 @@ async def test_get_statistics_aggregates_with_synthetic_sql_layer(monkeypatch):
 
     fake_session = _FakeSession(
         results=[
-            _Result(first_row=SimpleNamespace(total=4, successful=3, failed=1, partial=0, avg_duration=100.5, median_duration=90.0)),
+            _Result(
+                first_row=SimpleNamespace(
+                    total=4, successful=3, failed=1, partial=0, avg_duration=100.5, median_duration=90.0
+                )
+            ),
             _Result(all_rows=[SimpleNamespace(icao_region="NAM", count=4)]),
             _Result(all_rows=[SimpleNamespace(iwxxm_version="2025-2", count=4)]),
             _Result(all_rows=[SimpleNamespace(icao_airport_code="KJFK", count=2)]),

@@ -8,7 +8,12 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 INTEGRATION_SMOKE = (
-    ROOT / "apps" / "backend" / "tests" / "integration" / "test_product_regression_smoke.py"
+    ROOT
+    / "apps"
+    / "backend"
+    / "tests"
+    / "integration"
+    / "test_product_regression_smoke.py"
 )
 MAKEFILE = ROOT / "Makefile"
 
@@ -31,8 +36,8 @@ class TestM7Tc002ValidationGate:
         assert "test-integration:" in makefile
 
     def test_execution_plan_links_t74_to_tc002(self) -> None:
-        plan = (ROOT / ".cursor" / "artifacts" / "execution-plan-monorepo.md").read_text(
-            encoding="utf-8"
-        )
+        plan = (
+            ROOT / ".cursor" / "artifacts" / "execution-plan-monorepo.md"
+        ).read_text(encoding="utf-8")
         assert "T7.4" in plan
         assert "TC-002" in plan

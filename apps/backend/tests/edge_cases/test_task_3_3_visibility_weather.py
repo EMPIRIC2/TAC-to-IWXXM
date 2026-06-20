@@ -153,44 +153,33 @@ class TestVisibilityWeatherValidationEnhanced:
         # Fog + Mist together should have very low visibility
         issues = rule.validate(
             visibility_meters=5000,  # Too high for compound
-            weather_phenomena=["FG", "BR"]
+            weather_phenomena=["FG", "BR"],
         )
 
         # Should have info about compound effect
-        compound_issues = [i for i in issues if "Multiple phenomena" in i.message
-                          or "combined" in i.message.lower()]
+        compound_issues = [i for i in issues if "Multiple phenomena" in i.message or "combined" in i.message.lower()]
         # May or may not flag, depending on how aggressive we want to be
         assert isinstance(issues, list)
 
     def test_snow_and_mist_compound(self, rule):
         """Test SN + BR compound effect."""
-        issues = rule.validate(
-            visibility_meters=3000,
-            weather_phenomena=["SN", "BR"]
-        )
+        issues = rule.validate(visibility_meters=3000, weather_phenomena=["SN", "BR"])
 
         # Expecting lower visibility for compound
-        compound_issues = [i for i in issues if "combined" in i.message.lower()
-                          or "Multiple phenomena" in i.message]
+        compound_issues = [i for i in issues if "combined" in i.message.lower() or "Multiple phenomena" in i.message]
         # May have info about compound effect
         assert isinstance(issues, list)
 
     def test_rain_and_mist_compound(self, rule):
         """Test RA + BR compound effect."""
-        issues = rule.validate(
-            visibility_meters=1000,
-            weather_phenomena=["RA", "BR"]
-        )
+        issues = rule.validate(visibility_meters=1000, weather_phenomena=["RA", "BR"])
 
         # Multiple precipitation effects
         assert isinstance(issues, list)
 
     def test_thunderstorm_and_rain_compound(self, rule):
         """Test TS + RA compound effect."""
-        issues = rule.validate(
-            visibility_meters=500,
-            weather_phenomena=["TS", "RA"]
-        )
+        issues = rule.validate(visibility_meters=500, weather_phenomena=["TS", "RA"])
 
         # Very variable visibility expected
         assert isinstance(issues, list)
@@ -209,19 +198,13 @@ class TestVisibilityWeatherValidationEnhanced:
 
     def test_unknown_weather_phenomenon(self, rule):
         """Test with unknown weather code."""
-        issues = rule.validate(
-            visibility_meters=5000,
-            weather_phenomena=["XYZ"]
-        )
+        issues = rule.validate(visibility_meters=5000, weather_phenomena=["XYZ"])
         # Unknown codes are skipped
         assert len(issues) == 0
 
     def test_mixed_known_unknown_phenomena(self, rule):
         """Test with mix of known and unknown phenomena."""
-        issues = rule.validate(
-            visibility_meters=500,
-            weather_phenomena=["FG", "XYZ", "BR"]
-        )
+        issues = rule.validate(visibility_meters=500, weather_phenomena=["FG", "XYZ", "BR"])
 
         # Should check FG and BR, ignore XYZ
         issues_messages = [i.message for i in issues]
@@ -232,45 +215,30 @@ class TestVisibilityWeatherValidationEnhanced:
 
     def test_clear_weather_no_phenomena(self, rule):
         """Test clear weather with no weather phenomena."""
-        issues = rule.validate(
-            visibility_meters=10000,
-            weather_phenomena=[]
-        )
+        issues = rule.validate(visibility_meters=10000, weather_phenomena=[])
         assert len(issues) == 0
 
     def test_light_drizzle_scenario(self, rule):
         """Test typical light drizzle conditions."""
-        issues = rule.validate(
-            visibility_meters=2500,
-            weather_phenomena=["DZ"]
-        )
+        issues = rule.validate(visibility_meters=2500, weather_phenomena=["DZ"])
         errors = [i for i in issues if i.severity == IssueSeverity.ERROR]
         assert len(errors) == 0
 
     def test_heavy_rain_scenario(self, rule):
         """Test heavy rain conditions."""
-        issues = rule.validate(
-            visibility_meters=1500,
-            weather_phenomena=["RA"]
-        )
+        issues = rule.validate(visibility_meters=1500, weather_phenomena=["RA"])
         errors = [i for i in issues if i.severity == IssueSeverity.ERROR]
         assert len(errors) == 0
 
     def test_snow_storm_scenario(self, rule):
         """Test snow storm conditions."""
-        issues = rule.validate(
-            visibility_meters=300,
-            weather_phenomena=["SN"]
-        )
+        issues = rule.validate(visibility_meters=300, weather_phenomena=["SN"])
         errors = [i for i in issues if i.severity == IssueSeverity.ERROR]
         assert len(errors) == 0
 
     def test_dense_fog_scenario(self, rule):
         """Test dense fog conditions."""
-        issues = rule.validate(
-            visibility_meters=50,
-            weather_phenomena=["FG"]
-        )
+        issues = rule.validate(visibility_meters=50, weather_phenomena=["FG"])
         errors = [i for i in issues if i.severity == IssueSeverity.ERROR]
         assert len(errors) == 0
 

@@ -3,6 +3,7 @@
 This script generates test data from live AviationWeather.gov API and
 produces coverage reports.
 """
+
 import os
 import sys
 from pathlib import Path
@@ -22,9 +23,9 @@ from src.testing.metar_test_generator import METARTestGenerator
 
 def print_section(title: str):
     """Print section header."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(f"  {title}")
-    print("="*70)
+    print("=" * 70)
 
 
 def generate_diverse_sample(generator: METARTestGenerator, count: int = 200):
@@ -63,9 +64,11 @@ def generate_diverse_sample(generator: METARTestGenerator, count: int = 200):
     print(f"   Cloud types: {sorted(coverage.cloud_types)}")
 
     print("\n📈 Complexity Distribution:")
-    print(f"   Simple (0-2):   {coverage.simple_cases:3d} ({coverage.simple_cases/coverage.total_cases*100:.1f}%)")
-    print(f"   Medium (3-6):   {coverage.medium_cases:3d} ({coverage.medium_cases/coverage.total_cases*100:.1f}%)")
-    print(f"   Complex (7+):   {coverage.complex_cases:3d} ({coverage.complex_cases/coverage.total_cases*100:.1f}%)")
+    print(f"   Simple (0-2):   {coverage.simple_cases:3d} ({coverage.simple_cases / coverage.total_cases * 100:.1f}%)")
+    print(f"   Medium (3-6):   {coverage.medium_cases:3d} ({coverage.medium_cases / coverage.total_cases * 100:.1f}%)")
+    print(
+        f"   Complex (7+):   {coverage.complex_cases:3d} ({coverage.complex_cases / coverage.total_cases * 100:.1f}%)"
+    )
 
     # Show sample test cases
     print("\n📋 Sample Test Cases:")
@@ -91,12 +94,7 @@ def generate_regional_samples(generator: METARTestGenerator):
         print(f"\n🌍 {region_name.replace('_', ' ').title()}:")
 
         try:
-            test_cases = generator.regional_sample(
-                region=region_name,
-                count=30,
-                hours=3,
-                use_cache=False
-            )
+            test_cases = generator.regional_sample(region=region_name, count=30, hours=3, use_cache=False)
 
             print(f"   ✓ {len(test_cases)} test cases")
 
@@ -117,27 +115,23 @@ def generate_phenomenon_coverage(generator: METARTestGenerator):
     print_section("Weather Phenomenon Targeted Coverage")
 
     target_phenomena = [
-        ('RA', 'Rain'),
-        ('SN', 'Snow'),
-        ('TS', 'Thunderstorm'),
-        ('TSRA', 'Thunderstorm with Rain'),
-        ('FG', 'Fog'),
-        ('BR', 'Mist'),
-        ('HZ', 'Haze'),
-        ('NSW', 'No Significant Weather'),
-        ('CB', 'Cumulonimbus'),
-        ('TCU', 'Towering Cumulus')
+        ("RA", "Rain"),
+        ("SN", "Snow"),
+        ("TS", "Thunderstorm"),
+        ("TSRA", "Thunderstorm with Rain"),
+        ("FG", "Fog"),
+        ("BR", "Mist"),
+        ("HZ", "Haze"),
+        ("NSW", "No Significant Weather"),
+        ("CB", "Cumulonimbus"),
+        ("TCU", "Towering Cumulus"),
     ]
 
     print("\n🎯 Searching for specific weather phenomena...")
 
     for code, description in target_phenomena:
         try:
-            test_cases = generator.phenomenon_coverage(
-                required_phenomena=[code],
-                hours=6,
-                use_cache=False
-            )
+            test_cases = generator.phenomenon_coverage(required_phenomena=[code], hours=6, use_cache=False)
 
             if test_cases:
                 stations = [tc.station_id for tc in test_cases[:3]]
@@ -158,22 +152,22 @@ def print_api_configuration():
         "AviationWeather API": {
             "enabled": True,
             "url": "https://aviationweather.gov/api/data",
-            "note": "No API key required"
+            "note": "No API key required",
         },
         "OpenAIP API": {
             "enabled": bool(os.getenv("OPENAIP_API_KEY")),
             "key": os.getenv("OPENAIP_API_KEY", "Not configured")[:20] + "...",
-            "note": "For downloading airport data"
+            "note": "For downloading airport data",
         },
         "WMO Codelists": {
             "enabled": os.getenv("WMO_ONLINE_VALIDATION", "true").lower() == "true",
             "url": "https://codes.wmo.int",
-            "note": "For validation"
+            "note": "For validation",
         },
         "Live API Tests": {
             "enabled": os.getenv("ENABLE_LIVE_API_TESTS", "true").lower() == "true",
-            "note": "Enable/disable internet-dependent tests"
-        }
+            "note": "Enable/disable internet-dependent tests",
+        },
     }
 
     for name, config in configs.items():
@@ -186,10 +180,10 @@ def print_api_configuration():
 
 def main():
     """Main entry point."""
-    print("\n" + "#"*70)
+    print("\n" + "#" * 70)
     print("#  METAR Test Generator - Sprint 2")
     print("#  Dynamic Test Data Generation from Live APIs")
-    print("#"*70)
+    print("#" * 70)
 
     # Print API configuration
     print_api_configuration()
@@ -207,6 +201,7 @@ def main():
     except Exception as e:
         print(f"\n❌ Failed to initialize generator: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 
@@ -216,6 +211,7 @@ def main():
     except Exception as e:
         print(f"\n❌ Failed to generate diverse sample: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 
@@ -256,10 +252,10 @@ def main():
     print(f"   2. View coverage report: cat {generator.cache_dir}/coverage_report.json")
     print("   3. Analyze failures: ls test-reports/dynamic-test-failures/")
 
-    print("\n" + "#"*70 + "\n")
+    print("\n" + "#" * 70 + "\n")
 
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

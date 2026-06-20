@@ -45,7 +45,7 @@ def client(monkeypatch):
 
     def fake_convert(_tac: str, iwxxm_version: str = "2025-2", validate: bool = False, **_kwargs: Any):
         _ = validate
-        xml = f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>"
+        xml = f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>'
         return xml, None
 
     monkeypatch.setattr(api_module, "ValidationService", _ValidationPassService)
@@ -496,8 +496,7 @@ def test_convert_manual_validation_service_error_continues(client, monkeypatch):
         "/api/v1/convert",
         data={
             "manual_text": (
-                "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013\n"
-                "METAR KLAX 010000Z 00000KT CAVOK 10/08 Q1013"
+                "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013\nMETAR KLAX 010000Z 00000KT CAVOK 10/08 Q1013"
             ),
             "stop_on_error": "false",
         },
@@ -517,7 +516,7 @@ def test_convert_manual_conversion_error_continue_to_next_entry(client, monkeypa
         call_count["value"] += 1
         if call_count["value"] == 1:
             raise ConversionError("manual conversion boom")
-        return f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>", None
+        return f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>', None
 
     monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fail_once_convert)
 
@@ -525,8 +524,7 @@ def test_convert_manual_conversion_error_continue_to_next_entry(client, monkeypa
         "/api/v1/convert",
         data={
             "manual_text": (
-                "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013\n"
-                "METAR KLAX 010000Z 00000KT CAVOK 10/08 Q1013"
+                "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013\nMETAR KLAX 010000Z 00000KT CAVOK 10/08 Q1013"
             ),
             "stop_on_error": "false",
         },
@@ -575,7 +573,7 @@ def test_convert_files_unexpected_error_continue(client, monkeypatch):
         call_count["value"] += 1
         if call_count["value"] == 1:
             raise RuntimeError("file conversion exploded")
-        return f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>", None
+        return f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>', None
 
     monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
     monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fail_once_convert)
@@ -609,8 +607,7 @@ def test_convert_manual_validation_failed_branch_continue(client, monkeypatch):
         "/api/v1/convert",
         data={
             "manual_text": (
-                "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013\n"
-                "METAR KLAX 010000Z 00000KT CAVOK 10/08 Q1013"
+                "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013\nMETAR KLAX 010000Z 00000KT CAVOK 10/08 Q1013"
             ),
             "stop_on_error": "false",
         },

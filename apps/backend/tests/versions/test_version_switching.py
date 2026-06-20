@@ -5,7 +5,6 @@ Tests that the system correctly handles multiple IWXXM versions
 and produces output with correct namespaces and schema references.
 """
 
-
 import pytest
 
 from src.config.iwxxm_versions import (

@@ -15,6 +15,7 @@ SAMPLE_METAR_3 = "METAR KORD 231756Z 16008KT 10SM SCT035 14/05 A3012"
 @pytest.fixture
 def client():
     """Create test client with mocked authentication."""
+
     # Mock the verify_supabase_token dependency
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project"}

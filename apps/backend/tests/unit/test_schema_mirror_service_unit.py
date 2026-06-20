@@ -55,18 +55,22 @@ async def test_mirror_version_writes_manifest_and_requests_optional_resources(mo
     assert ("xsd", "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd", "2025-2") in calls
     assert ("dir", "https://schemas.wmo.int/iwxxm/2025-2/examples/", "examples", False) in calls
     assert ("dir", "https://schemas.wmo.int/iwxxm/2025-2/html/", "html", True) in calls
-    assert lockfile_updates == [(
-        "2025-2",
-        {"schemas": True, "examples": True, "html": True, "xmi": False},
-        "https://schemas.wmo.int/iwxxm/2025-2/",
-    )]
+    assert lockfile_updates == [
+        (
+            "2025-2",
+            {"schemas": True, "examples": True, "html": True, "xmi": False},
+            "https://schemas.wmo.int/iwxxm/2025-2/",
+        )
+    ]
 
 
 @pytest.mark.asyncio
 async def test_download_xsd_tree_writes_file_and_processes_imports(monkeypatch, tmp_path):
     service = SchemaMirrorService(base_path=tmp_path)
     imports = []
-    xsd_content = b'<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"><xs:include schemaLocation="child.xsd"/></xs:schema>'
+    xsd_content = (
+        b'<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"><xs:include schemaLocation="child.xsd"/></xs:schema>'
+    )
 
     class _Response:
         status_code = 200
@@ -187,15 +191,19 @@ async def test_download_directory_skip_404_and_parse_error_handling(monkeypatch,
 async def test_mirror_schema_version_convenience_function(monkeypatch, tmp_path):
     captured = {}
 
-    async def fake_mirror_version(self, version, root_xsd_url, include_examples=True, include_html=True, include_xmi=True):
-        captured.update({
-            "base_path": self.base_path,
-            "version": version,
-            "root_xsd_url": root_xsd_url,
-            "include_examples": include_examples,
-            "include_html": include_html,
-            "include_xmi": include_xmi,
-        })
+    async def fake_mirror_version(
+        self, version, root_xsd_url, include_examples=True, include_html=True, include_xmi=True
+    ):
+        captured.update(
+            {
+                "base_path": self.base_path,
+                "version": version,
+                "root_xsd_url": root_xsd_url,
+                "include_examples": include_examples,
+                "include_html": include_html,
+                "include_xmi": include_xmi,
+            }
+        )
         return {"version": version, "files_mirrored": 0}
 
     monkeypatch.setattr(SchemaMirrorService, "mirror_version", fake_mirror_version)
@@ -283,7 +291,9 @@ async def test_download_directory_parses_links_and_recurses(monkeypatch, tmp_pat
     monkeypatch.setattr(service, "_download_file", fake_download_file)
     monkeypatch.setattr(service, "_download_directory", fake_download_dir)
 
-    await SchemaMirrorService._download_directory(service, "https://schemas.wmo.int/iwxxm/", tmp_path, {}, skip_on_404=False)
+    await SchemaMirrorService._download_directory(
+        service, "https://schemas.wmo.int/iwxxm/", tmp_path, {}, skip_on_404=False
+    )
 
     assert "https://schemas.wmo.int/iwxxm/file1.xsd" in calls["files"]
     assert "https://schemas.wmo.int/iwxxm/sub/" in calls["dirs"]

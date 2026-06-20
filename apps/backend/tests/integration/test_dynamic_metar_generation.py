@@ -3,6 +3,7 @@
 Generates 200+ diverse test cases from live AviationWeather.gov data
 and tests conversion to both IWXXM 2023-1 and 2025-2.
 """
+
 import json
 from pathlib import Path
 from typing import List
@@ -43,7 +44,9 @@ def get_test_cases(count: int = 200, use_cache: bool = True) -> List[METARTestCa
         print(f"   Regions: {len(coverage.regions)}")
         print(f"   Weather phenomena: {len(coverage.weather_phenomena)} - {sorted(coverage.weather_phenomena)}")
         print(f"   Cloud amounts: {len(coverage.cloud_amounts)} - {sorted(coverage.cloud_amounts)}")
-        print(f"   Complexity: Simple={coverage.simple_cases}, Medium={coverage.medium_cases}, Complex={coverage.complex_cases}")
+        print(
+            f"   Complexity: Simple={coverage.simple_cases}, Medium={coverage.medium_cases}, Complex={coverage.complex_cases}"
+        )
 
         # Save coverage report
         generator.save_coverage_report()
@@ -66,9 +69,9 @@ def coverage_report():
     generator = get_generator()
     coverage = generator.get_coverage_report()
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("FINAL COVERAGE REPORT")
-    print("="*70)
+    print("=" * 70)
     print(f"Total test cases: {coverage.total_cases}")
     print(f"Unique stations: {len(coverage.unique_stations)}")
     print(f"Countries covered: {len(coverage.countries)}")
@@ -83,7 +86,7 @@ def coverage_report():
     print(f"  Simple (0-2): {coverage.simple_cases}")
     print(f"  Medium (3-6): {coverage.medium_cases}")
     print(f"  Complex (7+): {coverage.complex_cases}")
-    print("="*70)
+    print("=" * 70)
 
 
 class TestDynamicMETARConversion:
@@ -99,10 +102,7 @@ class TestDynamicMETARConversion:
         """
         try:
             # Convert to IWXXM 2023-1
-            iwxxm_xml, validation_result = convert_metar_tac_with_metadata(
-                test_case.raw_metar,
-                iwxxm_version="2023-1"
-            )
+            iwxxm_xml, validation_result = convert_metar_tac_with_metadata(test_case.raw_metar, iwxxm_version="2023-1")
 
             # Basic assertions
             assert iwxxm_xml, f"Conversion failed for {test_case.station_id}: {test_case.raw_metar}"
@@ -137,10 +137,7 @@ class TestDynamicMETARConversion:
         """
         try:
             # Convert to IWXXM 2025-2
-            iwxxm_xml, validation_result = convert_metar_tac_with_metadata(
-                test_case.raw_metar,
-                iwxxm_version="2025-2"
-            )
+            iwxxm_xml, validation_result = convert_metar_tac_with_metadata(test_case.raw_metar, iwxxm_version="2025-2")
 
             # Basic assertions
             assert iwxxm_xml, f"Conversion failed for {test_case.station_id}: {test_case.raw_metar}"
@@ -150,7 +147,7 @@ class TestDynamicMETARConversion:
             assert test_case.station_id in iwxxm_xml, f"Station ID {test_case.station_id} not found in output"
 
             # Check for 2025-2 specific elements
-            assert '2025-2' in iwxxm_xml, "Version 2025-2 not found in output"
+            assert "2025-2" in iwxxm_xml, "Version 2025-2 not found in output"
 
             # If we have validation result, check it
             if validation_result:
@@ -169,11 +166,7 @@ class TestDynamicMETARConversion:
             print(f"\n❌ {test_case.station_id} conversion error: {type(e).__name__}: {str(e)[:100]}")
 
     def _save_failure_report(
-        self,
-        test_case: METARTestCase,
-        iwxxm_xml: str,
-        validation_result: ValidationResult,
-        version: str
+        self, test_case: METARTestCase, iwxxm_xml: str, validation_result: ValidationResult, version: str
     ) -> None:
         """Save failure report for analysis."""
         report_dir = Path("test-reports") / "dynamic-test-failures" / version
@@ -189,46 +182,42 @@ class TestDynamicMETARConversion:
             "coordinates": {
                 "latitude": test_case.latitude,
                 "longitude": test_case.longitude,
-                "elevation": test_case.elevation
+                "elevation": test_case.elevation,
             },
             "features": {
                 "weather_phenomena": test_case.weather_phenomena,
                 "cloud_types": test_case.cloud_types,
                 "cloud_amounts": test_case.cloud_amounts,
-                "complexity_score": test_case.complexity_score()
+                "complexity_score": test_case.complexity_score(),
             },
             "iwxxm_xml": iwxxm_xml,
             "validation": {
                 "is_valid": validation_result.is_valid if validation_result else None,
                 "errors": [
                     {
-                        "layer": e.layer.value if hasattr(e.layer, 'value') else str(e.layer),
+                        "layer": e.layer.value if hasattr(e.layer, "value") else str(e.layer),
                         "message": e.message,
-                        "severity": e.severity.value if hasattr(e.severity, 'value') else str(e.severity)
+                        "severity": e.severity.value if hasattr(e.severity, "value") else str(e.severity),
                     }
                     for e in validation_result.errors
-                ] if validation_result else []
+                ]
+                if validation_result
+                else [],
             },
             "version": version,
-            "timestamp": test_case.timestamp.isoformat() if test_case.timestamp else None
+            "timestamp": test_case.timestamp.isoformat() if test_case.timestamp else None,
         }
 
-        with open(report_file, 'w') as f:
+        with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
 
 
 class TestRegionalCoverage:
     """Test coverage across specific world regions."""
 
-    @pytest.mark.parametrize("region", [
-        "north_america",
-        "europe",
-        "asia_pacific",
-        "south_america",
-        "africa",
-        "middle_east",
-        "australia"
-    ])
+    @pytest.mark.parametrize(
+        "region", ["north_america", "europe", "asia_pacific", "south_america", "africa", "middle_east", "australia"]
+    )
     def test_regional_coverage_2023_1(self, region: str):
         """Test that we can convert METARs from each world region to 2023-1."""
         generator = get_generator()
@@ -243,10 +232,7 @@ class TestRegionalCoverage:
         success_count = 0
         for test_case in regional_cases:
             try:
-                iwxxm_xml, _ = convert_metar_tac_with_metadata(
-                    test_case.raw_metar,
-                    iwxxm_version="2023-1"
-                )
+                iwxxm_xml, _ = convert_metar_tac_with_metadata(test_case.raw_metar, iwxxm_version="2023-1")
 
                 if iwxxm_xml and len(iwxxm_xml) > 0:
                     success_count += 1
@@ -261,15 +247,9 @@ class TestRegionalCoverage:
 
             print(f"\n✅ {region}: {success_count}/{len(regional_cases)} successful ({success_rate:.1%})")
 
-    @pytest.mark.parametrize("region", [
-        "north_america",
-        "europe",
-        "asia_pacific",
-        "south_america",
-        "africa",
-        "middle_east",
-        "australia"
-    ])
+    @pytest.mark.parametrize(
+        "region", ["north_america", "europe", "asia_pacific", "south_america", "africa", "middle_east", "australia"]
+    )
     def test_regional_coverage_2025_2(self, region: str):
         """Test that we can convert METARs from each world region to 2025-2."""
         generator = get_generator()
@@ -284,10 +264,7 @@ class TestRegionalCoverage:
         success_count = 0
         for test_case in regional_cases:
             try:
-                iwxxm_xml, _ = convert_metar_tac_with_metadata(
-                    test_case.raw_metar,
-                    iwxxm_version="2025-2"
-                )
+                iwxxm_xml, _ = convert_metar_tac_with_metadata(test_case.raw_metar, iwxxm_version="2025-2")
 
                 if iwxxm_xml and len(iwxxm_xml) > 0:
                     success_count += 1
@@ -306,25 +283,25 @@ class TestRegionalCoverage:
 class TestPhenomenonCoverage:
     """Test coverage of specific weather phenomena."""
 
-    @pytest.mark.parametrize("phenomenon", [
-        'RA',    # Rain
-        'SN',    # Snow
-        'TS',    # Thunderstorm
-        'FG',    # Fog
-        'BR',    # Mist
-        'NSW',   # No significant weather
-        'CB',    # Cumulonimbus
-        'TCU'    # Towering cumulus
-    ])
+    @pytest.mark.parametrize(
+        "phenomenon",
+        [
+            "RA",  # Rain
+            "SN",  # Snow
+            "TS",  # Thunderstorm
+            "FG",  # Fog
+            "BR",  # Mist
+            "NSW",  # No significant weather
+            "CB",  # Cumulonimbus
+            "TCU",  # Towering cumulus
+        ],
+    )
     def test_phenomenon_conversion(self, phenomenon: str):
         """Test conversion of METARs containing specific phenomena."""
         generator = get_generator()
 
         # Get test cases with this phenomenon
-        phenomenon_cases = generator.phenomenon_coverage(
-            required_phenomena=[phenomenon],
-            hours=6
-        )
+        phenomenon_cases = generator.phenomenon_coverage(required_phenomena=[phenomenon], hours=6)
 
         if not phenomenon_cases:
             pytest.skip(f"No METARs found with phenomenon {phenomenon}")
@@ -335,10 +312,7 @@ class TestPhenomenonCoverage:
 
             for test_case in phenomenon_cases:
                 try:
-                    iwxxm_xml, _ = convert_metar_tac_with_metadata(
-                        test_case.raw_metar,
-                        iwxxm_version=version
-                    )
+                    iwxxm_xml, _ = convert_metar_tac_with_metadata(test_case.raw_metar, iwxxm_version=version)
 
                     if iwxxm_xml and len(iwxxm_xml) > 0:
                         success_count += 1

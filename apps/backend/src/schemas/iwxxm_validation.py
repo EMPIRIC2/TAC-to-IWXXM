@@ -16,6 +16,7 @@ from typing import Set
 
 class MeteorologicalFeature(str, Enum):
     """Valid IWXXM meteorological features."""
+
     AIRFRAME_ICING = "AIRFRAME_ICING"
     ATMOSPHERICS = "ATMOSPHERICS"
     CLOUD = "CLOUD"
@@ -40,6 +41,7 @@ class MeteorologicalFeature(str, Enum):
 
 class VolcanicAviationColourCode(str, Enum):
     """Valid IWXXM volcanic aviation colour codes."""
+
     GREEN = "GREEN"
     YELLOW = "YELLOW"
     ORANGE = "ORANGE"
@@ -49,6 +51,7 @@ class VolcanicAviationColourCode(str, Enum):
 
 class NilReason(str, Enum):
     """Valid IWXXM nil reasons for missing data."""
+
     ABOVE_DETECTION_RANGE = "AboveDetectionRange"
     BELOW_DETECTION_RANGE = "BelowDetectionRange"
     INAPPLICABLE = "inapplicable"
@@ -64,6 +67,7 @@ class NilReason(str, Enum):
 
 class IWXXMVersion(str, Enum):
     """Supported IWXXM versions."""
+
     VERSION_2016 = "2016-1"
     VERSION_2018 = "2018-2"
     VERSION_3_0 = "3.0"  # Used in some Amd78-2018 test data
@@ -73,21 +77,13 @@ class IWXXMVersion(str, Enum):
 
 
 # Set for quick lookups
-VALID_METEOROLOGICAL_FEATURES: Set[str] = {
-    f.value for f in MeteorologicalFeature
-}
+VALID_METEOROLOGICAL_FEATURES: Set[str] = {f.value for f in MeteorologicalFeature}
 
-VALID_VOLCANIC_CODES: Set[str] = {
-    c.value for c in VolcanicAviationColourCode
-}
+VALID_VOLCANIC_CODES: Set[str] = {c.value for c in VolcanicAviationColourCode}
 
-VALID_NIL_REASONS: Set[str] = {
-    r.value for r in NilReason
-}
+VALID_NIL_REASONS: Set[str] = {r.value for r in NilReason}
 
-SUPPORTED_IWXXM_VERSIONS: Set[str] = {
-    v.value for v in IWXXMVersion
-}
+SUPPORTED_IWXXM_VERSIONS: Set[str] = {v.value for v in IWXXMVersion}
 
 
 def is_valid_meteorological_feature(feature: str) -> bool:
@@ -151,6 +147,7 @@ def get_namespace_version(xml_string: str) -> str:
         ValueError: If IWXXM namespace not found or unsupported
     """
     import re
+
     # Extract namespace from first few lines - supports both YYYY-X and X.X formats
     match = re.search(r'xmlns:iwxxm="http://icao\.int/iwxxm/([0-9]+(?:\.[0-9]|-[0-9])?)"', xml_string[:500])
     if not match:

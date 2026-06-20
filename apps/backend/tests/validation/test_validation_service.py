@@ -26,9 +26,7 @@ class TestAirportValidation:
         """Test that corrected reports still pass ICAO validation."""
         validator = get_validation_service()
 
-        result = validator.validate_airport_icao(
-            "METAR COR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"
-        )
+        result = validator.validate_airport_icao("METAR COR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018")
 
         assert result.passed is True
         assert result.metadata is not None

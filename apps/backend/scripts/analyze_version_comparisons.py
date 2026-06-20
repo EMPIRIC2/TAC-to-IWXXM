@@ -33,7 +33,7 @@ def load_reports(report_dir: Path) -> Dict[str, dict]:
 
 def extract_test_case(report_name: str) -> str:
     """Extract base test case name from report filename.
-    
+
     Examples:
         "KJFK-290000Z_Amd79-80-2023" -> "KJFK-290000Z"
         "CYEK-290000Z_Amd79-80-2023-2025-2" -> "CYEK-290000Z"
@@ -126,8 +126,8 @@ def compare_versions():
         print("=" * 80)
         for case, local_report, live_report in pass_local_fail_live[:10]:  # Show first 10
             print(f"\n{case}:")
-            field_diffs = live_report.get('field_diffs', [])
-            lat_lon_diffs = live_report.get('lat_lon_diffs', [])
+            field_diffs = live_report.get("field_diffs", [])
+            lat_lon_diffs = live_report.get("lat_lon_diffs", [])
             print(f"  Field diffs: {len(field_diffs)}")
             if field_diffs:
                 for diff in field_diffs[:3]:
@@ -154,8 +154,8 @@ def compare_versions():
         for case, local_report, live_report in fail_local_pass_live[:10]:
             print(f"\n{case}:")
             print("  Previous issues resolved:")
-            field_diffs = local_report.get('field_diffs', [])
-            lat_lon_diffs = local_report.get('lat_lon_diffs', [])
+            field_diffs = local_report.get("field_diffs", [])
+            lat_lon_diffs = local_report.get("lat_lon_diffs", [])
             if field_diffs:
                 print(f"    - Field diffs: {len(field_diffs)}")
             if lat_lon_diffs:
@@ -172,12 +172,12 @@ def compare_versions():
 
         field_issue_counts = defaultdict(int)
         for case, local_report, live_report in fail_both:
-            for diff in local_report.get('field_diffs', []) + live_report.get('field_diffs', []):
+            for diff in local_report.get("field_diffs", []) + live_report.get("field_diffs", []):
                 if isinstance(diff, dict):
-                    path = diff.get('path', '')
+                    path = diff.get("path", "")
                     if path:
                         # Extract field name from path
-                        field_name = path.split('/')[-1] if '/' in path else path
+                        field_name = path.split("/")[-1] if "/" in path else path
                         field_issue_counts[field_name] += 1
                 elif isinstance(diff, str):
                     # Try to extract field name from string diff
@@ -198,9 +198,9 @@ def compare_versions():
 
     metadata_patterns = defaultdict(int)
     for _, local_report, live_report in fail_both + pass_local_fail_live:
-        for diff in live_report.get('metadata_diffs', []):
+        for diff in live_report.get("metadata_diffs", []):
             if isinstance(diff, dict):
-                attr = diff.get('attr', 'unknown')
+                attr = diff.get("attr", "unknown")
                 metadata_patterns[attr] += 1
 
     if metadata_patterns:

@@ -300,25 +300,25 @@ class TestXMLUtilitiesTargeted:
 
     def test_get_uuid_various_prefixes(self):
         """Test getUUID with various prefixes"""
-        uuid1 = xmlUtilities.getUUID(prefix='')
-        uuid2 = xmlUtilities.getUUID(prefix='test_')
-        uuid3 = xmlUtilities.getUUID(prefix='prefix.')
+        uuid1 = xmlUtilities.getUUID(prefix="")
+        uuid2 = xmlUtilities.getUUID(prefix="test_")
+        uuid3 = xmlUtilities.getUUID(prefix="prefix.")
 
         assert len(uuid1) > 0
-        assert uuid2.startswith('test_')
-        assert uuid3.startswith('prefix.')
+        assert uuid2.startswith("test_")
+        assert uuid3.startswith("prefix.")
 
     def test_find_index_various_cases(self):
         """Test findIndex with various cases"""
-        arr = ['a', 'b', 'c', 'd']
+        arr = ["a", "b", "c", "d"]
 
         # findIndex may not exist, test alternatives
-        if hasattr(xmlUtilities, 'findIndex'):
-            assert xmlUtilities.findIndex(arr, 'a') == 0
-            assert xmlUtilities.findIndex(arr, 'b') == 1
-            assert xmlUtilities.findIndex(arr, 'd') == 3
-            assert xmlUtilities.findIndex(arr, 'z') == -1
-            assert xmlUtilities.findIndex([], 'a') == -1
+        if hasattr(xmlUtilities, "findIndex"):
+            assert xmlUtilities.findIndex(arr, "a") == 0
+            assert xmlUtilities.findIndex(arr, "b") == 1
+            assert xmlUtilities.findIndex(arr, "d") == 3
+            assert xmlUtilities.findIndex(arr, "z") == -1
+            assert xmlUtilities.findIndex([], "a") == -1
         else:
             # Module may not have this function, that's ok
             assert xmlUtilities is not None
@@ -330,6 +330,7 @@ class TestEncoderTargeted:
     def test_encoder_with_various_tac_types(self):
         """Test encoder with different TAC patterns"""
         from gifts.common.Encoder import Encoder
+
         encoder = Encoder()
 
         # Various encoding attempts to trigger different paths
@@ -344,6 +345,7 @@ class TestEncoderTargeted:
     def test_encoder_decode_property(self):
         """Test encoder decode property access"""
         from gifts.common.Encoder import Encoder
+
         encoder = Encoder()
         # Test accessing encoder attributes
         try:
@@ -357,6 +359,7 @@ class TestEncoderTargeted:
         """Test encoder with receipt time"""
         from gifts.common.Encoder import Encoder
         from datetime import datetime
+
         encoder = Encoder()
         try:
             encoder.encode("TAC", receiptTime=datetime.now())
@@ -371,6 +374,7 @@ class TestMetarEncoderTargeted:
         """Test METAR encoding functions"""
         # metarEncoder may not have Encoder class at top level
         from gifts import metarEncoder
+
         # At least verify module imports
         assert metarEncoder is not None
 
@@ -379,8 +383,8 @@ class TestMetarEncoderTargeted:
         from gifts import metarEncoder
 
         # metarEncoder module should have encoding functions
-        assert hasattr(metarEncoder, '__name__')
-        assert metarEncoder.__name__ == 'gifts.metarEncoder'
+        assert hasattr(metarEncoder, "__name__")
+        assert metarEncoder.__name__ == "gifts.metarEncoder"
 
 
 class TestCommonModuleTargeted:
@@ -392,9 +396,9 @@ class TestCommonModuleTargeted:
 
         # Test module is importable and has content
         assert Common is not None
-        assert hasattr(Common, '__name__')
+        assert hasattr(Common, "__name__")
 
         # Check for available functions
-        if hasattr(Common, 'issuedByCountry'):
+        if hasattr(Common, "issuedByCountry"):
             result = Common.issuedByCountry()
             assert result is not None

@@ -10,6 +10,7 @@ Endpoints that proxy authentication requests to Supabase:
 - POST /auth/password-reset/confirm  (update password)
 - GET  /health               (health check)
 """
+
 from __future__ import annotations
 
 import logging
@@ -29,16 +30,16 @@ legacy_router = APIRouter(tags=["Auth"])
 # Custom email type that allows special domains for development
 def validate_email_permissive(email: str) -> str:
     """Validate email with permissive rules for development domains."""
-    if not email or '@' not in email:
+    if not email or "@" not in email:
         raise ValueError("Invalid email format")
 
-    local_part, domain = email.rsplit('@', 1)
+    local_part, domain = email.rsplit("@", 1)
 
     if not local_part or not domain:
         raise ValueError("Invalid email format")
 
     # Allow special domains for development (.local, .test, .localhost, etc.)
-    allowed_dev_domains = ['.local', '.test', '.localhost', '.dev', '.example']
+    allowed_dev_domains = [".local", ".test", ".localhost", ".dev", ".example"]
     is_dev_domain = any(domain.endswith(dev) or domain == dev[1:] for dev in allowed_dev_domains)
 
     if is_dev_domain:
@@ -47,6 +48,7 @@ def validate_email_permissive(email: str) -> str:
 
     # For production domains, use standard validation
     from email_validator import EmailNotValidError, validate_email
+
     try:
         validated = validate_email(email, check_deliverability=False)
         return validated.normalized
@@ -57,12 +59,13 @@ def validate_email_permissive(email: str) -> str:
 # Request/Response Models
 class RegisterRequest(BaseModel):
     """User registration request."""
+
     email: str
     password: str = Field(min_length=8)
     name: Optional[str] = None
     username: Optional[str] = Field(None, min_length=3, max_length=50)
 
-    @field_validator('email')
+    @field_validator("email")
     @classmethod
     def validate_email_field(cls, v: str) -> str:
         return validate_email_permissive(v)
@@ -70,10 +73,11 @@ class RegisterRequest(BaseModel):
 
 class LoginRequest(BaseModel):
     """User login request."""
+
     email: str
     password: str
 
-    @field_validator('email')
+    @field_validator("email")
     @classmethod
     def validate_email_field(cls, v: str) -> str:
         return validate_email_permissive(v)
@@ -81,6 +85,7 @@ class LoginRequest(BaseModel):
 
 class UserResponse(BaseModel):
     """User information response."""
+
     id: str
     email: str
     metadata: Dict[str, Any] = {}
@@ -88,6 +93,7 @@ class UserResponse(BaseModel):
 
 class SessionResponse(BaseModel):
     """Session token response."""
+
     access_token: str
     refresh_token: str
     expires_at: int
@@ -95,20 +101,23 @@ class SessionResponse(BaseModel):
 
 class AuthResponse(BaseModel):
     """Complete authentication response."""
+
     user: UserResponse
     session: Optional[SessionResponse] = None
 
 
 class RefreshRequest(BaseModel):
     """Token refresh request."""
+
     refresh_token: str
 
 
 class PasswordResetRequest(BaseModel):
     """Password reset email request."""
+
     email: str
 
-    @field_validator('email')
+    @field_validator("email")
     @classmethod
     def validate_email_field(cls, v: str) -> str:
         return validate_email_permissive(v)
@@ -116,11 +125,13 @@ class PasswordResetRequest(BaseModel):
 
 class PasswordResetConfirm(BaseModel):
     """Password reset confirmation."""
+
     new_password: str = Field(min_length=8)
 
 
 class Message(BaseModel):
     """Generic message response."""
+
     message: str
 
 
@@ -137,26 +148,20 @@ def get_token_from_header(authorization: Optional[str] = Header(None)) -> str:
         HTTPException: If token is missing or invalid format
     """
     if not authorization:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing authorization header"
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing authorization header")
 
     parts = authorization.split()
     if len(parts) != 2 or parts[0].lower() != "bearer":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authorization header format. Expected: Bearer <token>"
+            detail="Invalid authorization header format. Expected: Bearer <token>",
         )
 
     return parts[1]
 
 
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
-def register(
-    request: RegisterRequest,
-    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
-):
+def register(request: RegisterRequest, proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)):
     """Register a new user via Supabase.
 
     Args:
@@ -179,10 +184,7 @@ def register(
 
 
 @router.post("/login", response_model=AuthResponse)
-def login(
-    request: LoginRequest,
-    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
-):
+def login(request: LoginRequest, proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)):
     """Authenticate user via Supabase.
 
     Args:
@@ -217,8 +219,7 @@ def login(
 
 
 def _logout_with_token(
-    token: str = Depends(get_token_from_header),
-    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
+    token: str = Depends(get_token_from_header), proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
 ):
     """Shared logout implementation for canonical and legacy routes."""
     result = proxy.sign_out(token)
@@ -226,10 +227,7 @@ def _logout_with_token(
 
 
 @router.post("/logout", response_model=Message)
-def logout(
-    token: str = Depends(get_token_from_header),
-    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
-):
+def logout(token: str = Depends(get_token_from_header), proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)):
     """Sign out the current user.
 
     Args:
@@ -246,10 +244,7 @@ def logout(
 
 
 @legacy_router.post("/logout", response_model=Message)
-def legacy_logout(
-    token: str = Depends(get_token_from_header),
-    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
-):
+def legacy_logout(token: str = Depends(get_token_from_header), proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)):
     """Compatibility alias for legacy clients still posting to /logout."""
     logger.info("[API] POST /logout (compat alias)")
     result = _logout_with_token(token=token, proxy=proxy)
@@ -259,8 +254,7 @@ def legacy_logout(
 
 @router.get("/me", response_model=UserResponse)
 def get_current_user(
-    token: str = Depends(get_token_from_header),
-    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
+    token: str = Depends(get_token_from_header), proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
 ):
     """Get current user information from access token.
 
@@ -278,10 +272,7 @@ def get_current_user(
 
 
 @router.post("/refresh", response_model=SessionResponse)
-def refresh_token(
-    request: RefreshRequest,
-    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
-):
+def refresh_token(request: RefreshRequest, proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)):
     """Refresh an expired access token.
 
     Args:
@@ -298,10 +289,7 @@ def refresh_token(
 
 
 @router.post("/password-reset/request", response_model=Message)
-def request_password_reset(
-    request: PasswordResetRequest,
-    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
-):
+def request_password_reset(request: PasswordResetRequest, proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)):
     """Send password reset email via Supabase.
 
     Args:
@@ -321,7 +309,7 @@ def request_password_reset(
 def confirm_password_reset(
     request: PasswordResetConfirm,
     token: str = Depends(get_token_from_header),
-    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
+    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy),
 ):
     """Update password after reset.
 
@@ -340,10 +328,7 @@ def confirm_password_reset(
 
 
 @router.get("/verify")
-def verify_token(
-    token: str = Depends(get_token_from_header),
-    proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)
-):
+def verify_token(token: str = Depends(get_token_from_header), proxy: SupabaseAuthProxy = Depends(get_supabase_proxy)):
     """Verify if a token is valid.
 
     Used by backend services to validate user tokens.
@@ -362,4 +347,3 @@ def verify_token(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
     logger.info("[API] GET /auth/verify - success")
     return {"message": "Token is valid"}
-

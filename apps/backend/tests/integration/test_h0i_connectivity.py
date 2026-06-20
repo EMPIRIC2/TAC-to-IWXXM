@@ -80,6 +80,7 @@ class TestH0iAuthConversionWiring:
                 data={"manual_text": SAMPLE_METAR},
             )
         finally:
+
             async def _auth_user() -> dict[str, str]:
                 return {"sub": "h0i-user", "aud": "test"}
 
@@ -87,9 +88,7 @@ class TestH0iAuthConversionWiring:
 
         assert response.status_code == 401
 
-    def test_convert_returns_iwxxm_when_authenticated(
-        self, h0i_client: TestClient
-    ) -> None:
+    def test_convert_returns_iwxxm_when_authenticated(self, h0i_client: TestClient) -> None:
         response = h0i_client.post(
             "/api/v1/convert",
             data={"manual_text": SAMPLE_METAR},

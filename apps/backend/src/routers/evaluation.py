@@ -1,4 +1,5 @@
 """Evaluation endpoints for METAR conversion validation."""
+
 import os
 from datetime import datetime
 from typing import Optional
@@ -43,11 +44,7 @@ async def get_supabase_client():
     return httpx.AsyncClient(base_url=SUPABASE_URL, headers=headers, timeout=30.0)
 
 
-async def create_job_in_db(
-    user_id: str,
-    mode: str,
-    total_stations: int
-) -> str:
+async def create_job_in_db(user_id: str, mode: str, total_stations: int) -> str:
     """Create evaluation job in database."""
     async with await get_supabase_client() as client:
         job_data = {
@@ -71,7 +68,7 @@ async def update_job_status(
     status: str,
     progress: Optional[int] = None,
     summary_stats: Optional[dict] = None,
-    error_message: Optional[str] = None
+    error_message: Optional[str] = None,
 ):
     """Update job status in database."""
     async with await get_supabase_client() as client:
@@ -86,10 +83,7 @@ async def update_job_status(
         if status == "completed":
             update_data["completed_at"] = datetime.utcnow().isoformat()
 
-        response = await client.patch(
-            f"/rest/v1/evaluation_jobs?id=eq.{job_id}",
-            json=update_data
-        )
+        response = await client.patch(f"/rest/v1/evaluation_jobs?id=eq.{job_id}", json=update_data)
         response.raise_for_status()
 
 
@@ -125,13 +119,12 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
             stations = sampler.sample_random_stations(
                 count=request.sample_size or 100,
                 large_airports_only=request.large_airports_only,
-                scheduled_service_only=request.scheduled_service_only
+                scheduled_service_only=request.scheduled_service_only,
             )
         else:  # ALL
             sampler = StationSampler()
             stations = sampler.get_all_major_airports(
-                large_only=request.large_airports_only,
-                scheduled_service_only=request.scheduled_service_only
+                large_only=request.large_airports_only, scheduled_service_only=request.scheduled_service_only
             )
 
         # Fetch data from aviationweather.gov
@@ -173,7 +166,7 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
                         missing_elements=comp_result.missing_elements,
                         extra_elements=comp_result.extra_elements,
                         value_mismatches=comp_result.value_mismatches,
-                        error_message=comp_result.error_message
+                        error_message=comp_result.error_message,
                     )
                     comparison_status = ComparisonStatus.PASS if comp_result.passed else ComparisonStatus.FAIL
 
@@ -195,7 +188,7 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
                 their_iwxxm=their_iwxxm,
                 comparison_status=comparison_status,
                 comparison=comparison,
-                errors=errors
+                errors=errors,
             )
 
             # Save incrementally
@@ -221,9 +214,14 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
         await update_job_status(job_id, "failed", error_message=str(e))
 
 
-@router.post("/jobs", response_model=EvaluationJobResponse, tags=["Evaluation"], responses={
-    401: {"description": "Unauthorized - Invalid or missing authentication token"},
-})
+@router.post(
+    "/jobs",
+    response_model=EvaluationJobResponse,
+    tags=["Evaluation"],
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+    },
+)
 async def create_evaluation_job(
     request: EvaluationRequest,
     background_tasks: BackgroundTasks,
@@ -249,41 +247,36 @@ async def create_evaluation_job(
     else:  # ALL
         sampler = StationSampler()
         all_stations = sampler.get_all_major_airports(
-            large_only=request.large_airports_only,
-            scheduled_service_only=request.scheduled_service_only
+            large_only=request.large_airports_only, scheduled_service_only=request.scheduled_service_only
         )
         station_count = len(all_stations)
 
     # Create job in database
-    job_id = await create_job_in_db(
-        user_id=user["sub"],
-        mode=request.mode.value,
-        total_stations=station_count
-    )
+    job_id = await create_job_in_db(user_id=user["sub"], mode=request.mode.value, total_stations=station_count)
 
     # Start background task
     background_tasks.add_task(run_evaluation_job, job_id, request)
 
     return EvaluationJobResponse(
-        job_id=job_id,
-        status=JobStatus.PENDING,
-        station_count=station_count,
-        created_at=datetime.utcnow()
+        job_id=job_id, status=JobStatus.PENDING, station_count=station_count, created_at=datetime.utcnow()
     )
 
 
-@router.get("/jobs/{job_id}", response_model=EvaluationJobStatus, tags=["Evaluation"], responses={
-    401: {"description": "Unauthorized - Invalid or missing authentication token"},
-})
+@router.get(
+    "/jobs/{job_id}",
+    response_model=EvaluationJobStatus,
+    tags=["Evaluation"],
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+    },
+)
 async def get_job_status(
     job_id: str,
     user: dict = Depends(verify_supabase_token),
 ):
     """Get the status of an evaluation job."""
     async with await get_supabase_client() as client:
-        response = await client.get(
-            f"/rest/v1/evaluation_jobs?id=eq.{job_id}&user_id=eq.{user['sub']}"
-        )
+        response = await client.get(f"/rest/v1/evaluation_jobs?id=eq.{job_id}&user_id=eq.{user['sub']}")
         response.raise_for_status()
 
         jobs = response.json()
@@ -300,13 +293,18 @@ async def get_job_status(
             summary=JobSummaryStats(**job["summary_stats"]) if job.get("summary_stats") else None,
             created_at=datetime.fromisoformat(job["created_at"]),
             completed_at=datetime.fromisoformat(job["completed_at"]) if job.get("completed_at") else None,
-            error_message=job.get("error_message")
+            error_message=job.get("error_message"),
         )
 
 
-@router.get("/jobs/{job_id}/results", response_model=EvaluationResultsResponse, tags=["Evaluation"], responses={
-    401: {"description": "Unauthorized - Invalid or missing authentication token"},
-})
+@router.get(
+    "/jobs/{job_id}/results",
+    response_model=EvaluationResultsResponse,
+    tags=["Evaluation"],
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+    },
+)
 async def get_job_results(
     job_id: str,
     page: int = Query(1, ge=1),
@@ -317,9 +315,7 @@ async def get_job_results(
     """Get evaluation results for a job (paginated)."""
     # Verify job ownership
     async with await get_supabase_client() as client:
-        job_response = await client.get(
-            f"/rest/v1/evaluation_jobs?id=eq.{job_id}&user_id=eq.{user['sub']}"
-        )
+        job_response = await client.get(f"/rest/v1/evaluation_jobs?id=eq.{job_id}&user_id=eq.{user['sub']}")
         job_response.raise_for_status()
 
         if not job_response.json():
@@ -348,16 +344,18 @@ async def get_job_results(
         # Parse results
         results = []
         for r in results_data:
-            results.append(EvaluationResultDetail(
-                station_id=r["station_id"],
-                timestamp=datetime.fromisoformat(r["created_at"]),
-                tac_input=r.get("tac_input"),
-                our_iwxxm=r.get("our_iwxxm"),
-                their_iwxxm=r.get("their_iwxxm"),
-                comparison_status=ComparisonStatus(r["comparison_status"]),
-                comparison=ComparisonDetail(**r["comparison_detail"]) if r.get("comparison_detail") else None,
-                errors=r.get("errors", [])
-            ))
+            results.append(
+                EvaluationResultDetail(
+                    station_id=r["station_id"],
+                    timestamp=datetime.fromisoformat(r["created_at"]),
+                    tac_input=r.get("tac_input"),
+                    our_iwxxm=r.get("our_iwxxm"),
+                    their_iwxxm=r.get("their_iwxxm"),
+                    comparison_status=ComparisonStatus(r["comparison_status"]),
+                    comparison=ComparisonDetail(**r["comparison_detail"]) if r.get("comparison_detail") else None,
+                    errors=r.get("errors", []),
+                )
+            )
 
         return EvaluationResultsResponse(
             job_id=job_id,
@@ -365,13 +363,18 @@ async def get_job_results(
             page=page,
             per_page=per_page,
             total_results=total_count,
-            total_pages=(total_count + per_page - 1) // per_page
+            total_pages=(total_count + per_page - 1) // per_page,
         )
 
 
-@router.get("/jobs", response_model=JobListResponse, tags=["Evaluation"], responses={
-    401: {"description": "Unauthorized - Invalid or missing authentication token"},
-})
+@router.get(
+    "/jobs",
+    response_model=JobListResponse,
+    tags=["Evaluation"],
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+    },
+)
 async def list_user_jobs(
     page: int = Query(1, ge=1),
     per_page: int = Query(20, ge=1, le=100),
@@ -389,26 +392,22 @@ async def list_user_jobs(
 
         # Get total count
         count_response = await client.get(
-            f"/rest/v1/evaluation_jobs?user_id=eq.{user['sub']}&select=count",
-            headers={"Prefer": "count=exact"}
+            f"/rest/v1/evaluation_jobs?user_id=eq.{user['sub']}&select=count", headers={"Prefer": "count=exact"}
         )
         total_count = int(count_response.headers.get("Content-Range", "0").split("/")[-1])
 
         jobs = []
         for job in jobs_data:
-            jobs.append(JobListItem(
-                job_id=job["id"],
-                status=JobStatus(job["status"]),
-                station_count=job["station_count"],
-                progress=job["progress"],
-                summary=JobSummaryStats(**job["summary_stats"]) if job.get("summary_stats") else None,
-                created_at=datetime.fromisoformat(job["created_at"]),
-                completed_at=datetime.fromisoformat(job["completed_at"]) if job.get("completed_at") else None
-            ))
+            jobs.append(
+                JobListItem(
+                    job_id=job["id"],
+                    status=JobStatus(job["status"]),
+                    station_count=job["station_count"],
+                    progress=job["progress"],
+                    summary=JobSummaryStats(**job["summary_stats"]) if job.get("summary_stats") else None,
+                    created_at=datetime.fromisoformat(job["created_at"]),
+                    completed_at=datetime.fromisoformat(job["completed_at"]) if job.get("completed_at") else None,
+                )
+            )
 
-        return JobListResponse(
-            jobs=jobs,
-            total=total_count,
-            page=page,
-            per_page=per_page
-        )
+        return JobListResponse(jobs=jobs, total=total_count, page=page, per_page=per_page)

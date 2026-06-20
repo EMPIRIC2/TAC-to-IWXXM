@@ -1,4 +1,5 @@
 """Unit tests for WMOCodelistCache – 0% coverage target."""
+
 import builtins
 import importlib
 import json
@@ -315,9 +316,7 @@ class TestWMOCodelistsClientValidateCode:
         # Set up cache with values
         cache_metadata = {"TestList": {"cached_at": datetime.now().isoformat()}}
         (cache_dir / "cache_metadata.json").write_text(json.dumps(cache_metadata))
-        (cache_dir / "TestList.json").write_text(
-            json.dumps({"values": ["CODE2", "CODE3"]})
-        )
+        (cache_dir / "TestList.json").write_text(json.dumps({"values": ["CODE2", "CODE3"]}))
 
         # Mock CodeListParser to avoid validation settings initialization
         mock_parser = MagicMock()
@@ -378,9 +377,7 @@ class TestWMOCodelistsClientValidateCode:
         client.parser.validate_code.return_value = False
 
         # Mock _fetch_codelist_online to return codes
-        with patch.object(
-            client, "_fetch_codelist_online", return_value={"CODE4", "CODE5"}
-        ):
+        with patch.object(client, "_fetch_codelist_online", return_value={"CODE4", "CODE5"}):
             result = client._validate_code("RemoteList", "CODE4")
             assert result is True
             # Should cache the values
@@ -576,9 +573,7 @@ class TestWMOCodelistsClientGetCodelistInfo:
         # Set up cache
         cache_metadata = {"CachedList": {"cached_at": datetime.now().isoformat()}}
         (cache_dir / "cache_metadata.json").write_text(json.dumps(cache_metadata))
-        (cache_dir / "CachedList.json").write_text(
-            json.dumps({"values": ["C1", "C2"]})
-        )
+        (cache_dir / "CachedList.json").write_text(json.dumps({"values": ["C1", "C2"]}))
 
         # Mock CodeListParser to avoid validation settings initialization
         mock_parser = MagicMock()
@@ -616,9 +611,7 @@ class TestWMOCodelistsClientGetCodelistInfo:
         client.parser = MagicMock()
         client.parser.get_codes.return_value = None
 
-        with patch.object(
-            client, "_fetch_codelist_online", return_value={"O1", "O2"}
-        ):
+        with patch.object(client, "_fetch_codelist_online", return_value={"O1", "O2"}):
             info = client.get_codelist_info("OnlineList")
             assert info.name == "OnlineList"
             assert info.values == {"O1", "O2"}

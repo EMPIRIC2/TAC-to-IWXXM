@@ -17,6 +17,7 @@ Run these tests with:
 To skip Supabase tests when DATABASE_URL points to SQLite:
     DATABASE_URL=sqlite:///./auth.db pytest auth/tests/test_supabase_integration.py -v
 """
+
 from __future__ import annotations
 
 import os
@@ -42,10 +43,7 @@ pytestmark = pytest.mark.skipif(
     os.getenv("RUN_SUPABASE_INTEGRATION_TESTS", "").lower() not in {"1", "true", "yes"}
     or not os.getenv("DATABASE_URL")
     or "postgresql" not in os.getenv("DATABASE_URL", ""),
-    reason=(
-        "Requires RUN_SUPABASE_INTEGRATION_TESTS=true and DATABASE_URL with "
-        "PostgreSQL connection"
-    ),
+    reason=("Requires RUN_SUPABASE_INTEGRATION_TESTS=true and DATABASE_URL with PostgreSQL connection"),
 )
 
 
@@ -58,21 +56,19 @@ class TestSupabaseConnection:
 
         assert db_url is not None
         # Per Supabase docs, should use postgresql+psycopg2:// dialect
-        assert db_url.startswith("postgresql+psycopg2://"), \
-            "Supabase requires postgresql+psycopg2:// dialect"
+        assert db_url.startswith("postgresql+psycopg2://"), "Supabase requires postgresql+psycopg2:// dialect"
 
     def test_ssl_requirement(self):
         """Verify that SSL mode is properly configured."""
         db_url = os.getenv("DATABASE_URL", "")
 
         # Supabase requires SSL connections
-        assert "sslmode=require" in db_url, \
-            "Supabase connections must use sslmode=require"
+        assert "sslmode=require" in db_url, "Supabase connections must use sslmode=require"
 
         # Check for URL-encoded special characters (if password contains them)
         # Common special chars: !, @, #, $, %, ^, &, *, (, )
         # URL-encoded: %21, %40, %23, %24, %25, %5E, %26, %2A, %28, %29
-        if any(char in db_url for char in ['%21', '%40', '%23', '%5E', '%26']):
+        if any(char in db_url for char in ["%21", "%40", "%23", "%5E", "%26"]):
             print("✓ Password appears to be URL-encoded")
 
     def test_basic_connection(self):
@@ -127,11 +123,7 @@ class TestSupabaseConnection:
     def test_connection_with_pool_pre_ping(self):
         """Test connection with pool_pre_ping enabled."""
         db_url = os.getenv("DATABASE_URL")
-        engine = create_engine(
-            db_url,
-            pool_pre_ping=True,
-            pool_recycle=3600
-        )
+        engine = create_engine(db_url, pool_pre_ping=True, pool_recycle=3600)
 
         try:
             with engine.connect() as conn:
@@ -171,13 +163,15 @@ class TestSupabaseTableOperations:
         try:
             with engine.connect() as conn:
                 # Create table
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     CREATE TABLE IF NOT EXISTS test_supabase_ops (
                         id SERIAL PRIMARY KEY,
                         name VARCHAR(100),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
-                """))
+                """)
+                )
                 conn.commit()
 
                 # Verify table exists
@@ -199,33 +193,41 @@ class TestSupabaseTableOperations:
         try:
             with engine.connect() as conn:
                 # Create table
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     CREATE TABLE IF NOT EXISTS test_insert_query (
                         id SERIAL PRIMARY KEY,
                         value TEXT
                     )
-                """))
+                """)
+                )
                 conn.commit()
 
                 # Insert data
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     INSERT INTO test_insert_query (value)
                     VALUES ('test_value_1'), ('test_value_2')
-                """))
+                """)
+                )
                 conn.commit()
 
                 # Query data
-                result = conn.execute(text("""
+                result = conn.execute(
+                    text("""
                     SELECT COUNT(*) FROM test_insert_query
-                """))
+                """)
+                )
                 count = result.scalar()
                 assert count >= 2
 
                 # Query specific value
-                result = conn.execute(text("""
+                result = conn.execute(
+                    text("""
                     SELECT value FROM test_insert_query
                     WHERE value = 'test_value_1'
-                """))
+                """)
+                )
                 value = result.scalar()
                 assert value == "test_value_1"
 
@@ -243,30 +245,36 @@ class TestSupabaseTableOperations:
         try:
             with engine.connect() as conn:
                 # Create table
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     CREATE TABLE IF NOT EXISTS test_transaction (
                         id SERIAL PRIMARY KEY,
                         value TEXT
                     )
-                """))
+                """)
+                )
                 conn.commit()
 
                 # Start transaction
                 trans = conn.begin()
                 try:
-                    conn.execute(text("""
+                    conn.execute(
+                        text("""
                         INSERT INTO test_transaction (value) VALUES ('will_rollback')
-                    """))
+                    """)
+                    )
                     trans.rollback()
                 except Exception:
                     trans.rollback()
                     raise
 
                 # Verify data was not inserted
-                result = conn.execute(text("""
+                result = conn.execute(
+                    text("""
                     SELECT COUNT(*) FROM test_transaction
                     WHERE value = 'will_rollback'
-                """))
+                """)
+                )
                 count = result.scalar()
                 assert count == 0
 
@@ -284,43 +292,55 @@ class TestSupabaseTableOperations:
         try:
             with engine.connect() as conn:
                 # Create and populate table
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     CREATE TABLE IF NOT EXISTS test_update_delete (
                         id SERIAL PRIMARY KEY,
                         value TEXT
                     )
-                """))
+                """)
+                )
                 conn.commit()
 
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     INSERT INTO test_update_delete (value)
                     VALUES ('original')
-                """))
+                """)
+                )
                 conn.commit()
 
                 # Update
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     UPDATE test_update_delete
                     SET value = 'updated'
                     WHERE value = 'original'
-                """))
+                """)
+                )
                 conn.commit()
 
-                result = conn.execute(text("""
+                result = conn.execute(
+                    text("""
                     SELECT value FROM test_update_delete
-                """))
+                """)
+                )
                 value = result.scalar()
                 assert value == "updated"
 
                 # Delete
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     DELETE FROM test_update_delete WHERE value = 'updated'
-                """))
+                """)
+                )
                 conn.commit()
 
-                result = conn.execute(text("""
+                result = conn.execute(
+                    text("""
                     SELECT COUNT(*) FROM test_update_delete
-                """))
+                """)
+                )
                 count = result.scalar()
                 assert count == 0
 
@@ -376,9 +396,7 @@ class TestSupabaseAuthModels:
             user_id = user.id
 
             # Read
-            retrieved = db.query(models.User).filter(
-                models.User.id == user_id
-            ).first()
+            retrieved = db.query(models.User).filter(models.User.id == user_id).first()
             assert retrieved is not None
             assert retrieved.username == "supabasetest"
 
@@ -386,18 +404,14 @@ class TestSupabaseAuthModels:
             retrieved.address = "New Supabase Address"
             db.commit()
 
-            updated = db.query(models.User).filter(
-                models.User.id == user_id
-            ).first()
+            updated = db.query(models.User).filter(models.User.id == user_id).first()
             assert updated.address == "New Supabase Address"
 
             # Delete
             db.delete(updated)
             db.commit()
 
-            deleted = db.query(models.User).filter(
-                models.User.id == user_id
-            ).first()
+            deleted = db.query(models.User).filter(models.User.id == user_id).first()
             assert deleted is None
 
         finally:
@@ -498,10 +512,7 @@ class TestSupabaseErrorHandling:
         """Test handling connection timeout."""
         # Create engine with very short timeout
         db_url = os.getenv("DATABASE_URL")
-        engine = create_engine(
-            db_url,
-            connect_args={"connect_timeout": 1}
-        )
+        engine = create_engine(db_url, connect_args={"connect_timeout": 1})
 
         try:
             with engine.connect() as conn:
@@ -561,9 +572,7 @@ class TestSupabaseErrorHandling:
             db.rollback()
 
             # Clean up
-            db.query(models.User).filter(
-                models.User.username == "duplicate"
-            ).delete()
+            db.query(models.User).filter(models.User.username == "duplicate").delete()
             db.commit()
 
         finally:
@@ -583,31 +592,36 @@ class TestSupabasePerformance:
         try:
             with engine.connect() as conn:
                 # Create table
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     CREATE TABLE IF NOT EXISTS test_batch_insert (
                         id SERIAL PRIMARY KEY,
                         value TEXT
                     )
-                """))
+                """)
+                )
                 conn.commit()
 
                 # Insert 100 records
                 start_time = time.time()
 
                 values = ", ".join([f"('value_{i}')" for i in range(100)])
-                conn.execute(text(f"""
+                conn.execute(
+                    text(f"""
                     INSERT INTO test_batch_insert (value) VALUES {values}
-                """))
+                """)
+                )
                 conn.commit()
 
                 elapsed = time.time() - start_time
-                print(
-                    f"Batch insert of 100 records took {elapsed:.3f} seconds")
+                print(f"Batch insert of 100 records took {elapsed:.3f} seconds")
 
                 # Verify count
-                result = conn.execute(text("""
+                result = conn.execute(
+                    text("""
                     SELECT COUNT(*) FROM test_batch_insert
-                """))
+                """)
+                )
                 count = result.scalar()
                 assert count >= 100
 
@@ -625,32 +639,40 @@ class TestSupabasePerformance:
         try:
             with engine.connect() as conn:
                 # Create table
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     CREATE TABLE IF NOT EXISTS test_index (
                         id SERIAL PRIMARY KEY,
                         value TEXT
                     )
-                """))
+                """)
+                )
                 conn.commit()
 
                 # Insert test data
                 values = ", ".join([f"('value_{i}')" for i in range(1000)])
-                conn.execute(text(f"""
+                conn.execute(
+                    text(f"""
                     INSERT INTO test_index (value) VALUES {values}
-                """))
+                """)
+                )
                 conn.commit()
 
                 # Create index
-                conn.execute(text("""
+                conn.execute(
+                    text("""
                     CREATE INDEX IF NOT EXISTS idx_test_value
                     ON test_index(value)
-                """))
+                """)
+                )
                 conn.commit()
 
                 # Query with index
-                result = conn.execute(text("""
+                result = conn.execute(
+                    text("""
                     SELECT value FROM test_index WHERE value = 'value_500'
-                """))
+                """)
+                )
                 value = result.scalar()
                 assert value == "value_500"
 

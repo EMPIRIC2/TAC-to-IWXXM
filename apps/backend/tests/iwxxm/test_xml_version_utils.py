@@ -41,26 +41,20 @@ def normalize_namespace_for_comparison(xml_string: str, target_version: str) -> 
         raise ValueError(f"Unsupported target version: {target_version}")
 
     # Replace iwxxm namespace in schemaLocation
-    normalized = re.sub(
-        r'http://icao\.int/iwxxm/[0-9]{4}-[0-9]',
-        f'http://icao.int/iwxxm/{target_version}',
-        xml_string
-    )
+    normalized = re.sub(r"http://icao\.int/iwxxm/[0-9]{4}-[0-9]", f"http://icao.int/iwxxm/{target_version}", xml_string)
 
     # Replace schema URLs to match version
     normalized = re.sub(
-        r'https://schemas\.wmo\.int/iwxxm/[0-9]{4}-[0-9][^/]*/iwxxm\.xsd',
-        f'https://schemas.wmo.int/iwxxm/{target_version}/iwxxm.xsd',
-        normalized
+        r"https://schemas\.wmo\.int/iwxxm/[0-9]{4}-[0-9][^/]*/iwxxm\.xsd",
+        f"https://schemas.wmo.int/iwxxm/{target_version}/iwxxm.xsd",
+        normalized,
     )
 
     return normalized
 
 
 def compare_xml_ignoring_namespace_version(
-    xml1: str,
-    xml2: str,
-    strip_dynamic_attrs: bool = True
+    xml1: str, xml2: str, strip_dynamic_attrs: bool = True
 ) -> Tuple[bool, Optional[str]]:
     """
     Compare two IWXXM XML documents, ignoring namespace version differences.
@@ -144,10 +138,8 @@ def _compare_elements(elem1: ET.Element, elem2: ET.Element) -> bool:
             return False
 
     # Compare non-dynamic attributes
-    attrs1 = {k: v for k, v in elem1.attrib.items()
-              if not _is_dynamic_attr(k, v)}
-    attrs2 = {k: v for k, v in elem2.attrib.items()
-              if not _is_dynamic_attr(k, v)}
+    attrs1 = {k: v for k, v in elem1.attrib.items() if not _is_dynamic_attr(k, v)}
+    attrs2 = {k: v for k, v in elem2.attrib.items() if not _is_dynamic_attr(k, v)}
 
     # Normalize attribute keys/values to ignore namespace versions
     attrs1 = _normalize_attributes(attrs1)
@@ -164,8 +156,8 @@ def _compare_elements(elem1: ET.Element, elem2: ET.Element) -> bool:
 
 def _extract_tag_name(tag: str) -> str:
     """Extract tag name without namespace."""
-    if '}' in tag:
-        return tag.split('}', 1)[1]
+    if "}" in tag:
+        return tag.split("}", 1)[1]
     return tag
 
 
@@ -184,27 +176,23 @@ def _normalize_attributes(attrs: dict) -> dict:
 def _normalize_attribute_key(key: str) -> str:
     """Normalize attribute key to remove namespace version info."""
     # Remove namespace version from schemaLocation attributes
-    if '}schemaLocation' in key:
-        return 'schemaLocation'
+    if "}schemaLocation" in key:
+        return "schemaLocation"
     # Remove namespace prefix for other attributes
-    if '}' in key:
-        return key.split('}', 1)[1]
+    if "}" in key:
+        return key.split("}", 1)[1]
     return key
 
 
 def _normalize_attribute_value(value: str) -> str:
     """Normalize attribute value to remove namespace version info."""
     # Normalize IWXXM namespace versions in schemaLocation
-    normalized = re.sub(
-        r'http://icao\.int/iwxxm/[0-9]{4}-[0-9]',
-        'http://icao.int/iwxxm/VERSION',
-        value
-    )
+    normalized = re.sub(r"http://icao\.int/iwxxm/[0-9]{4}-[0-9]", "http://icao.int/iwxxm/VERSION", value)
     # Normalize schema URLs
     normalized = re.sub(
-        r'https://schemas\.wmo\.int/iwxxm/[0-9]{4}-[0-9][^/]*/iwxxm\.xsd',
-        'https://schemas.wmo.int/iwxxm/VERSION/iwxxm.xsd',
-        normalized
+        r"https://schemas\.wmo\.int/iwxxm/[0-9]{4}-[0-9][^/]*/iwxxm\.xsd",
+        "https://schemas.wmo.int/iwxxm/VERSION/iwxxm.xsd",
+        normalized,
     )
     return normalized
 
@@ -215,6 +203,6 @@ def _is_dynamic_attr(name: str, value: str) -> bool:
         return True
     if "uuid" in value.lower():
         return True
-    if re.match(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}', value):
+    if re.match(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", value):
         return True
     return False

@@ -73,9 +73,9 @@ class TestTcM003GoldenConversionRegression:
         """Steps 1-2: convert fixture set; zero unexpected diffs after normalization."""
         case = next(c for c in golden_manifest["cases"] if c["id"] == case_id)
         tac = (GOLDEN_DIR / case["tac"]).read_text(encoding="utf-8").strip()
-        expected_canonical = (GOLDEN_DIR / case["golden"]).read_text(
-            encoding="utf-8"
-        ).strip()
+        expected_canonical = (
+            (GOLDEN_DIR / case["golden"]).read_text(encoding="utf-8").strip()
+        )
 
         actual_xml = convert_tac_bulletin_to_observation_xml(tac)
         actual_canonical = canonicalize_xml(actual_xml)

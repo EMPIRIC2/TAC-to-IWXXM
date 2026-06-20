@@ -33,9 +33,7 @@ class TestProjectRootDetection:
 
         assert detected == root.resolve()
 
-    def test_detect_project_root_project_root_env_without_versioned_schemas_falls_through(
-        self, monkeypatch, tmp_path
-    ):
+    def test_detect_project_root_project_root_env_without_versioned_schemas_falls_through(self, monkeypatch, tmp_path):
         """If IWXXM_PROJECT_ROOT exists but lacks versioned schemas, detection continues."""
         bad_root = tmp_path / "bad-root"
         bad_root.mkdir(parents=True)

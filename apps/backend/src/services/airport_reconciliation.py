@@ -3,6 +3,7 @@
 Reconciles airport metadata from multiple sources with priority-based
 conflict resolution.
 """
+
 import logging
 from dataclasses import dataclass, field
 from enum import Enum
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 class DataSource(Enum):
     """Data source priority."""
+
     OPENAIP = 1  # Highest priority
     GIFTS = 2
     AVIATION_WEATHER = 3
@@ -35,13 +37,8 @@ class ConflictLog:
 
     def __str__(self) -> str:
         """Format conflict for logging."""
-        values_str = ", ".join(
-            f"{src}={val}" for src, val in self.sources.items()
-        )
-        return (
-            f"Conflict for {self.icao}.{self.field}: "
-            f"{values_str} → resolved to {self.winner}={self.resolution}"
-        )
+        values_str = ", ".join(f"{src}={val}" for src, val in self.sources.items())
+        return f"Conflict for {self.icao}.{self.field}: {values_str} → resolved to {self.winner}={self.resolution}"
 
 
 @dataclass
@@ -74,9 +71,7 @@ class ReconciledAirport:
         if not self.conflicts:
             return "No conflicts"
 
-        return f"{len(self.conflicts)} conflicts:\n" + "\n".join(
-            f"  - {conflict}" for conflict in self.conflicts
-        )
+        return f"{len(self.conflicts)} conflicts:\n" + "\n".join(f"  - {conflict}" for conflict in self.conflicts)
 
 
 class AirportReconciliationService:
@@ -93,7 +88,7 @@ class AirportReconciliationService:
         self,
         openaip_client: Optional[OpenAIPClient] = None,
         aviation_weather_client: Optional[AviationWeatherClient] = None,
-        gifts_data_path: Optional[Path] = None
+        gifts_data_path: Optional[Path] = None,
     ):
         """Initialize reconciliation service.
 
@@ -117,7 +112,7 @@ class AirportReconciliationService:
             "gifts_hits": 0,
             "aviation_weather_hits": 0,
             "conflicts_detected": 0,
-            "conflicts_resolved": 0
+            "conflicts_resolved": 0,
         }
 
     def _load_gifts_data(self) -> None:
@@ -133,26 +128,26 @@ class AirportReconciliationService:
         try:
             import csv
 
-            with open(self.gifts_data_path, 'r', encoding='utf-8') as f:
+            with open(self.gifts_data_path, "r", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
                     # Handle both field name formats
-                    icao = (row.get('icao_code') or row.get('icao', '')).strip().upper()
+                    icao = (row.get("icao_code") or row.get("icao", "")).strip().upper()
                     if not icao:
                         continue
 
                     # Convert elevation from feet to meters if needed
-                    elevation = self._safe_float(row.get('elevation_ft') or row.get('elevation'))
+                    elevation = self._safe_float(row.get("elevation_ft") or row.get("elevation"))
                     if elevation:
                         elevation = elevation * 0.3048  # feet to meters
 
                     self._gifts_cache[icao] = {
-                        'icao': icao,
-                        'name': row.get('name', '').strip(),
-                        'country': row.get('iso_country', row.get('country', '')).strip(),
-                        'latitude': self._safe_float(row.get('latitude_deg') or row.get('latitude')),
-                        'longitude': self._safe_float(row.get('longitude_deg') or row.get('longitude')),
-                        'elevation': elevation
+                        "icao": icao,
+                        "name": row.get("name", "").strip(),
+                        "country": row.get("iso_country", row.get("country", "")).strip(),
+                        "latitude": self._safe_float(row.get("latitude_deg") or row.get("latitude")),
+                        "longitude": self._safe_float(row.get("longitude_deg") or row.get("longitude")),
+                        "elevation": elevation,
                     }
 
             logger.info(f"Loaded {len(self._gifts_cache)} airports from GIFTs database")
@@ -164,7 +159,7 @@ class AirportReconciliationService:
 
     def _safe_float(self, value: any) -> Optional[float]:
         """Safely convert value to float."""
-        if value is None or value == '':
+        if value is None or value == "":
             return None
         try:
             return float(value)
@@ -213,11 +208,7 @@ class AirportReconciliationService:
         # Reconcile data
         return self._reconcile(icao, sources_data)
 
-    def _reconcile(
-        self,
-        icao: str,
-        sources_data: Dict[DataSource, any]
-    ) -> ReconciledAirport:
+    def _reconcile(self, icao: str, sources_data: Dict[DataSource, any]) -> ReconciledAirport:
         """Reconcile data from multiple sources.
 
         Args:
@@ -228,11 +219,7 @@ class AirportReconciliationService:
             ReconciledAirport with merged data
         """
         # Priority order
-        priority_order = [
-            DataSource.OPENAIP,
-            DataSource.GIFTS,
-            DataSource.AVIATION_WEATHER
-        ]
+        priority_order = [DataSource.OPENAIP, DataSource.GIFTS, DataSource.AVIATION_WEATHER]
 
         # Determine primary source (highest priority with data)
         primary_source = None
@@ -251,24 +238,22 @@ class AirportReconciliationService:
         # Initialize reconciled airport
         reconciled = ReconciledAirport(
             icao_code=icao,
-            name=self._get_field(primary_data, 'name', ''),
-            country=self._get_field(primary_data, 'country', ''),
-            latitude=self._get_field(primary_data, 'latitude', None),
-            longitude=self._get_field(primary_data, 'longitude', None),
-            elevation=self._get_field(primary_data, 'elevation', None),
-            iata_code=self._get_field(primary_data, 'iata_code', None),
+            name=self._get_field(primary_data, "name", ""),
+            country=self._get_field(primary_data, "country", ""),
+            latitude=self._get_field(primary_data, "latitude", None),
+            longitude=self._get_field(primary_data, "longitude", None),
+            elevation=self._get_field(primary_data, "elevation", None),
+            iata_code=self._get_field(primary_data, "iata_code", None),
             sources=set(source.name for source in sources_data.keys()),
-            primary_source=primary_source.name
+            primary_source=primary_source.name,
         )
 
         # Check for conflicts and merge
         conflicts = []
 
         # Compare each field across sources
-        for field_name in ['name', 'country', 'latitude', 'longitude', 'elevation']:
-            conflict = self._check_field_conflict(
-                icao, field_name, sources_data, priority_order
-            )
+        for field_name in ["name", "country", "latitude", "longitude", "elevation"]:
+            conflict = self._check_field_conflict(icao, field_name, sources_data, priority_order)
             if conflict:
                 conflicts.append(conflict)
                 self.stats["conflicts_detected"] += 1
@@ -285,9 +270,7 @@ class AirportReconciliationService:
         reconciled.coordinate_confidence = self._calculate_coordinate_confidence(
             sources_data, reconciled.latitude, reconciled.longitude
         )
-        reconciled.elevation_confidence = self._calculate_elevation_confidence(
-            sources_data, reconciled.elevation
-        )
+        reconciled.elevation_confidence = self._calculate_elevation_confidence(sources_data, reconciled.elevation)
 
         return reconciled
 
@@ -299,11 +282,7 @@ class AirportReconciliationService:
             return getattr(data, field, default)
 
     def _check_field_conflict(
-        self,
-        icao: str,
-        field: str,
-        sources_data: Dict[DataSource, any],
-        priority_order: List[DataSource]
+        self, icao: str, field: str, sources_data: Dict[DataSource, any], priority_order: List[DataSource]
     ) -> Optional[ConflictLog]:
         """Check if field has conflicting values across sources.
 
@@ -342,19 +321,10 @@ class AirportReconciliationService:
                     winner_value = value
                     break
 
-        return ConflictLog(
-            icao=icao,
-            field=field,
-            sources=values,
-            resolution=str(winner_value),
-            winner=winner
-        )
+        return ConflictLog(icao=icao, field=field, sources=values, resolution=str(winner_value), winner=winner)
 
     def _calculate_coordinate_confidence(
-        self,
-        sources_data: Dict[DataSource, any],
-        final_lat: Optional[float],
-        final_lon: Optional[float]
+        self, sources_data: Dict[DataSource, any], final_lat: Optional[float], final_lon: Optional[float]
     ) -> float:
         """Calculate confidence score for coordinates.
 
@@ -375,15 +345,14 @@ class AirportReconciliationService:
         tolerance = 0.01  # ~1km tolerance
 
         for source, data in sources_data.items():
-            lat = self._get_field(data, 'latitude', None)
-            lon = self._get_field(data, 'longitude', None)
+            lat = self._get_field(data, "latitude", None)
+            lon = self._get_field(data, "longitude", None)
 
             if lat is not None and lon is not None:
                 coords_count += 1
 
                 # Check if agrees with final value
-                if (abs(lat - final_lat) < tolerance and
-                    abs(lon - final_lon) < tolerance):
+                if abs(lat - final_lat) < tolerance and abs(lon - final_lon) < tolerance:
                     agreeing_count += 1
 
         if coords_count == 0:
@@ -399,9 +368,7 @@ class AirportReconciliationService:
         return agreement_ratio
 
     def _calculate_elevation_confidence(
-        self,
-        sources_data: Dict[DataSource, any],
-        final_elevation: Optional[float]
+        self, sources_data: Dict[DataSource, any], final_elevation: Optional[float]
     ) -> float:
         """Calculate confidence score for elevation.
 
@@ -418,7 +385,7 @@ class AirportReconciliationService:
         tolerance = 10.0  # 10 meter tolerance
 
         for source, data in sources_data.items():
-            elev = self._get_field(data, 'elevation', None)
+            elev = self._get_field(data, "elevation", None)
 
             if elev is not None:
                 elev_count += 1
@@ -450,6 +417,7 @@ class AirportReconciliationService:
             "openaip_available": self.openaip is not None,
             "conflict_rate": (
                 self.stats["conflicts_detected"] / self.stats["total_queries"]
-                if self.stats["total_queries"] > 0 else 0.0
-            )
+                if self.stats["total_queries"] > 0
+                else 0.0
+            ),
         }

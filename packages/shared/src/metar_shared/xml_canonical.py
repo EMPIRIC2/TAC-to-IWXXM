@@ -114,7 +114,9 @@ def _parse_root_element(xml_content: str) -> ET.Element:
             last_error = exc
 
     if last_error is not None:
-        raise ValueError(f"Cannot parse XML for canonicalization: {last_error}") from last_error
+        raise ValueError(
+            f"Cannot parse XML for canonicalization: {last_error}"
+        ) from last_error
     raise ValueError("Cannot parse XML for canonicalization")
 
 

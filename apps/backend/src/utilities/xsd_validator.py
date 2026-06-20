@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class XSDValidationResult:
     """Result of XSD schema validation."""
+
     is_valid: bool
     issues: List[ValidationIssue]
     schema_version: str
@@ -63,9 +64,7 @@ class XSDValidator:
         xsd_path = self.registry.get_xsd_path(version)
 
         if not xsd_path or not xsd_path.exists():
-            raise FileNotFoundError(
-                f"XSD schema not found for version {version}: {xsd_path}"
-            )
+            raise FileNotFoundError(f"XSD schema not found for version {version}: {xsd_path}")
 
         logger.info(f"Compiling XSD schema for version {version}: {xsd_path}")
 
@@ -103,11 +102,7 @@ class XSDValidator:
             logger.error(f"Unexpected error compiling schema: {e}")
             raise
 
-    def validate(
-        self,
-        xml_content: str,
-        version: str
-    ) -> XSDValidationResult:
+    def validate(self, xml_content: str, version: str) -> XSDValidationResult:
         """
         Validate XML content against XSD schema.
 
@@ -123,7 +118,7 @@ class XSDValidator:
         try:
             # Parse XML document
             try:
-                xml_doc = etree.fromstring(xml_content.encode('utf-8'))
+                xml_doc = etree.fromstring(xml_content.encode("utf-8"))
             except etree.XMLSyntaxError as e:
                 # XML not well-formed - should be caught by Layer 3
                 issue = ValidationIssue(
@@ -131,14 +126,10 @@ class XSDValidator:
                     level=ValidationSeverity.ERROR,
                     message=f"XML parsing failed: {str(e)}",
                     location=f"line {getattr(e, 'lineno', '?')}, column {getattr(e, 'offset', '?')}",
-                    code="XML_SYNTAX_ERROR"
+                    code="XML_SYNTAX_ERROR",
                 )
                 issues.append(issue)
-                return XSDValidationResult(
-                    is_valid=False,
-                    issues=issues,
-                    schema_version=version
-                )
+                return XSDValidationResult(is_valid=False, issues=issues, schema_version=version)
 
             # Get compiled schema
             try:
@@ -157,7 +148,7 @@ class XSDValidator:
                         layer=ValidationLayer.XML_SCHEMA,
                         level=ValidationSeverity.WARNING,
                         message=f"Schema has import resolution issues (non-blocking): {error_msg}",
-                        code="SCHEMA_IMPORT_WARNING"
+                        code="SCHEMA_IMPORT_WARNING",
                     )
                     issues.append(issue)
                     # For known schema import issues, skip strict validation
@@ -165,7 +156,7 @@ class XSDValidator:
                     return XSDValidationResult(
                         is_valid=True,  # Non-blocking warning
                         issues=issues,
-                        schema_version=version
+                        schema_version=version,
                     )
                 else:
                     # For other schema parse errors, treat as blocking
@@ -173,41 +164,29 @@ class XSDValidator:
                         layer=ValidationLayer.XML_SCHEMA,
                         level=ValidationSeverity.ERROR,
                         message=f"Failed to parse XSD schema: {str(e)}",
-                        code="SCHEMA_PARSE_ERROR"
+                        code="SCHEMA_PARSE_ERROR",
                     )
                     issues.append(issue)
-                    return XSDValidationResult(
-                        is_valid=False,
-                        issues=issues,
-                        schema_version=version
-                    )
+                    return XSDValidationResult(is_valid=False, issues=issues, schema_version=version)
             except ValueError as e:
                 # Invalid or unsupported version
                 issue = ValidationIssue(
                     layer=ValidationLayer.XML_SCHEMA,
                     level=ValidationSeverity.ERROR,
                     message=f"Schema version {version} not available: {str(e)}",
-                    code="SCHEMA_NOT_AVAILABLE"
+                    code="SCHEMA_NOT_AVAILABLE",
                 )
                 issues.append(issue)
-                return XSDValidationResult(
-                    is_valid=False,
-                    issues=issues,
-                    schema_version=version
-                )
+                return XSDValidationResult(is_valid=False, issues=issues, schema_version=version)
             except FileNotFoundError:
                 issue = ValidationIssue(
                     layer=ValidationLayer.XML_SCHEMA,
                     level=ValidationSeverity.ERROR,
                     message=f"Schema version {version} not found",
-                    code="SCHEMA_NOT_AVAILABLE"
+                    code="SCHEMA_NOT_AVAILABLE",
                 )
                 issues.append(issue)
-                return XSDValidationResult(
-                    is_valid=False,
-                    issues=issues,
-                    schema_version=version
-                )
+                return XSDValidationResult(is_valid=False, issues=issues, schema_version=version)
 
             # Check if schema is None (cached as non-blocking issue)
             if schema is None:
@@ -216,13 +195,13 @@ class XSDValidator:
                     layer=ValidationLayer.XML_SCHEMA,
                     level=ValidationSeverity.WARNING,
                     message="Schema validation skipped due to known schema issues",
-                    code="SCHEMA_SKIPPED"
+                    code="SCHEMA_SKIPPED",
                 )
                 issues.append(issue)
                 return XSDValidationResult(
                     is_valid=True,  # Non-blocking
                     issues=issues,
-                    schema_version=version
+                    schema_version=version,
                 )
 
             # Perform validation
@@ -236,22 +215,15 @@ class XSDValidator:
                         level=ValidationSeverity.ERROR,
                         message=error.message,
                         location=f"line {error.line}, column {error.column}" if error.line else error.path,
-                        code=error.type_name or "XSD_VALIDATION_ERROR"
+                        code=error.type_name or "XSD_VALIDATION_ERROR",
                     )
                     issues.append(issue)
 
-                logger.warning(
-                    f"XSD validation failed for version {version}: "
-                    f"{len(issues)} errors"
-                )
+                logger.warning(f"XSD validation failed for version {version}: {len(issues)} errors")
             else:
                 logger.debug(f"XSD validation passed for version {version}")
 
-            return XSDValidationResult(
-                is_valid=is_valid,
-                issues=issues,
-                schema_version=version
-            )
+            return XSDValidationResult(is_valid=is_valid, issues=issues, schema_version=version)
 
         except Exception as e:
             logger.error(f"Unexpected error during XSD validation: {e}")
@@ -259,14 +231,10 @@ class XSDValidator:
                 layer=ValidationLayer.XML_SCHEMA,
                 level=ValidationSeverity.ERROR,
                 message=f"Validation error: {str(e)}",
-                code=type(e).__name__
+                code=type(e).__name__,
             )
             issues.append(issue)
-            return XSDValidationResult(
-                is_valid=False,
-                issues=issues,
-                schema_version=version
-            )
+            return XSDValidationResult(is_valid=False, issues=issues, schema_version=version)
 
     def clear_cache(self, version: Optional[str] = None):
         """

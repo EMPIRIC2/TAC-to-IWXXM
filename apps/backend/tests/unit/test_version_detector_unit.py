@@ -1,4 +1,5 @@
 """Unit tests for VersionDetector – 0% coverage target."""
+
 import subprocess
 from unittest.mock import MagicMock, patch
 
@@ -164,11 +165,15 @@ class TestVersionDetectorReportsAndSelection:
     def test_detect_versions_sets_configured_and_latest_flags(self, tmp_path):
         vd = VersionDetector(schemas_root=tmp_path)
 
-        with patch.object(vd, "get_available_tags", return_value=["v2025-2", "v2099-1"]), patch.object(
-            vd,
-            "get_latest_version",
-            return_value="2099-1",
-        ), patch.object(vd_module, "normalize_version", side_effect=lambda x: x):
+        with (
+            patch.object(vd, "get_available_tags", return_value=["v2025-2", "v2099-1"]),
+            patch.object(
+                vd,
+                "get_latest_version",
+                return_value="2099-1",
+            ),
+            patch.object(vd_module, "normalize_version", side_effect=lambda x: x),
+        ):
             versions = vd.detect_versions()
 
         assert len(versions) == 2
@@ -191,17 +196,21 @@ class TestVersionDetectorReportsAndSelection:
 
     def test_generate_version_report_contains_summary(self, tmp_path):
         vd = VersionDetector(schemas_root=tmp_path)
-        with patch.object(
-            vd,
-            "detect_versions",
-            return_value=[
-                VersionInfo("2025-2", "v2025-2", True, True),
-                VersionInfo("2099-1", "v2099-1", False, False),
-            ],
-        ), patch.object(vd, "get_latest_version", return_value="2025-2"), patch.object(
-            vd,
-            "get_unconfigured_versions",
-            return_value=[VersionInfo("2099-1", "v2099-1", False, False)],
+        with (
+            patch.object(
+                vd,
+                "detect_versions",
+                return_value=[
+                    VersionInfo("2025-2", "v2025-2", True, True),
+                    VersionInfo("2099-1", "v2099-1", False, False),
+                ],
+            ),
+            patch.object(vd, "get_latest_version", return_value="2025-2"),
+            patch.object(
+                vd,
+                "get_unconfigured_versions",
+                return_value=[VersionInfo("2099-1", "v2099-1", False, False)],
+            ),
         ):
             report = vd.generate_version_report()
 
@@ -212,12 +221,16 @@ class TestVersionDetectorReportsAndSelection:
 
 class TestVersionDetectorConvenienceFunctions:
     def test_detect_available_versions_wrapper(self):
-        with patch.object(VersionDetector, "detect_versions", return_value=[VersionInfo("2025-2", "v2025-2", True, True)]):
+        with patch.object(
+            VersionDetector, "detect_versions", return_value=[VersionInfo("2025-2", "v2025-2", True, True)]
+        ):
             result = detect_available_versions()
         assert len(result) == 1
 
     def test_check_for_updates_wrapper(self):
-        with patch.object(VersionDetector, "get_unconfigured_versions", return_value=[VersionInfo("2099-1", "v2099-1", False, False)]):
+        with patch.object(
+            VersionDetector, "get_unconfigured_versions", return_value=[VersionInfo("2099-1", "v2099-1", False, False)]
+        ):
             assert check_for_updates() is True
         with patch.object(VersionDetector, "get_unconfigured_versions", return_value=[]):
             assert check_for_updates() is False

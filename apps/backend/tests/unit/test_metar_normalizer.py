@@ -1,4 +1,5 @@
 """Unit tests for metar_normalizer.normalize_recent_weather_tokens."""
+
 from __future__ import annotations
 
 import pytest
@@ -8,6 +9,7 @@ from src.utilities.metar_normalizer import normalize_recent_weather_tokens
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _normalized(tac: str) -> str:
     """Return only the normalized text, ignoring warnings."""
@@ -25,6 +27,7 @@ def _warnings(tac: str) -> list:
 # Core rewrite rules
 # ---------------------------------------------------------------------------
 
+
 def test_resh_rewritten_to_reshup():
     result = _normalized("METAR TTPP 121000Z 00000KT 9999 FEW010 26/25 Q1013 RESH NOSIG")
     assert "RESHUP" in result
@@ -40,6 +43,7 @@ def test_refz_rewritten_to_refzup():
 # ---------------------------------------------------------------------------
 # No accidental rewrites
 # ---------------------------------------------------------------------------
+
 
 def test_reshra_unchanged():
     tac = "METAR KJFK 121000Z 18012KT 9999 FEW020 15/07 A3005 RESHRA NOSIG"
@@ -78,6 +82,7 @@ def test_retssn_unchanged():
 # Trailing '=' handling
 # ---------------------------------------------------------------------------
 
+
 def test_resh_trailing_equals_rewritten():
     tac = "METAR TTPP 121000Z 00000KT 9999 FEW010CB 26/25 Q1013 RESH="
     result = _normalized(tac)
@@ -95,6 +100,7 @@ def test_refz_trailing_equals_rewritten():
 # Multiple rewrites
 # ---------------------------------------------------------------------------
 
+
 def test_multiple_rewrites_in_one_metar():
     """Both RESH and REFZ in the same report should both be rewritten."""
     tac = "METAR KJFK 121000Z 00000KT 9999 FEW010 10/05 A2990 RESH REFZ NOSIG"
@@ -108,6 +114,7 @@ def test_multiple_rewrites_in_one_metar():
 # Clean METAR passes through unchanged
 # ---------------------------------------------------------------------------
 
+
 def test_clean_metar_unchanged_empty_warnings():
     tac = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
     result, warns = normalize_recent_weather_tokens(tac)
@@ -118,6 +125,7 @@ def test_clean_metar_unchanged_empty_warnings():
 # ---------------------------------------------------------------------------
 # Warning dict structure
 # ---------------------------------------------------------------------------
+
 
 def test_warning_dict_keys():
     tac = "METAR TTPP 121000Z 00000KT 9999 FEW010CB 26/25 Q1013 RESH NOSIG"
@@ -140,6 +148,7 @@ def test_refz_warning_rule_name():
 # ---------------------------------------------------------------------------
 # Edge cases
 # ---------------------------------------------------------------------------
+
 
 def test_empty_string():
     result, warns = normalize_recent_weather_tokens("")

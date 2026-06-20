@@ -151,12 +151,12 @@ class TestToken:
 
     def test_eof_token(self):
         """Test EOF token constant"""
-        assert hasattr(tpg, 'EOFToken')
+        assert hasattr(tpg, "EOFToken")
         assert tpg.EOFToken is not None
 
     def test_sof_token(self):
         """Test SOF token constant"""
-        assert hasattr(tpg, 'SOFToken')
+        assert hasattr(tpg, "SOFToken")
         assert tpg.SOFToken is not None
 
 
@@ -172,29 +172,29 @@ class TestLexer:
     def test_lexer_with_token_definitions(self):
         """Test Lexer with token definitions"""
         tokens = [
-            (r'\d+', 'NUMBER'),
-            (r'[a-zA-Z]+', 'IDENTIFIER'),
+            (r"\d+", "NUMBER"),
+            (r"[a-zA-Z]+", "IDENTIFIER"),
         ]
         lexer = tpg.Lexer(tokens, "123 abc")
         assert isinstance(lexer, tpg.Lexer)
 
     def test_cache_lexer(self):
         """Test CacheLexer class"""
-        assert hasattr(tpg, 'CacheLexer')
+        assert hasattr(tpg, "CacheLexer")
         lexer = tpg.CacheLexer([], "test")
         assert isinstance(lexer, tpg.CacheLexer)
 
     def test_named_group_lexer(self):
         """Test NamedGroupLexer class"""
-        assert hasattr(tpg, 'NamedGroupLexer')
+        assert hasattr(tpg, "NamedGroupLexer")
 
     def test_cache_named_group_lexer(self):
         """Test CacheNamedGroupLexer class"""
-        assert hasattr(tpg, 'CacheNamedGroupLexer')
+        assert hasattr(tpg, "CacheNamedGroupLexer")
 
     def test_context_sensitive_lexer(self):
         """Test ContextSensitiveLexer class"""
-        assert hasattr(tpg, 'ContextSensitiveLexer')
+        assert hasattr(tpg, "ContextSensitiveLexer")
 
 
 class TestParser:
@@ -202,7 +202,7 @@ class TestParser:
 
     def test_parser_existence(self):
         """Test Parser class exists"""
-        assert hasattr(tpg, 'Parser')
+        assert hasattr(tpg, "Parser")
         assert tpg.Parser is not None
 
     def test_parser_base_class(self):
@@ -212,11 +212,11 @@ class TestParser:
 
     def test_verbose_parser(self):
         """Test VerboseParser class"""
-        assert hasattr(tpg, 'VerboseParser')
+        assert hasattr(tpg, "VerboseParser")
 
     def test_tpg_parser(self):
         """Test TPGParser (meta parser)"""
-        assert hasattr(tpg, 'TPGParser')
+        assert hasattr(tpg, "TPGParser")
 
 
 class TestParserMetaClass:
@@ -224,7 +224,7 @@ class TestParserMetaClass:
 
     def test_parser_meta_class_exists(self):
         """Test ParserMetaClass is available"""
-        assert hasattr(tpg, 'ParserMetaClass')
+        assert hasattr(tpg, "ParserMetaClass")
 
     def test_meta_class_is_type(self):
         """Test ParserMetaClass is a metaclass"""
@@ -243,15 +243,15 @@ class TestTokenPattern:
 
     def test_token_with_number_pattern(self):
         """Test token matching with number pattern"""
-        pattern = r'\d+'
-        text = '12345'
+        pattern = r"\d+"
+        text = "12345"
         match = re.match(pattern, text)
         assert match is not None
 
     def test_token_with_identifier_pattern(self):
         """Test token matching with identifier pattern"""
-        pattern = r'[a-zA-Z_][a-zA-Z0-9_]*'
-        text = 'myVariable'
+        pattern = r"[a-zA-Z_][a-zA-Z0-9_]*"
+        text = "myVariable"
         match = re.match(pattern, text)
         assert match is not None
 
@@ -268,7 +268,7 @@ class TestUtilityFunctions:
 
     def test_id_function_with_objects(self):
         """Test _id function with complex objects"""
-        obj = {'key': 'value'}
+        obj = {"key": "value"}
         assert tpg._id(obj) is obj
         lst = [1, 2, 3]
         assert tpg._id(lst) is lst
@@ -285,7 +285,7 @@ class TestLexerOptions:
 
     def test_lexer_options_exists(self):
         """Test LexerOptions class exists"""
-        assert hasattr(tpg, 'LexerOptions')
+        assert hasattr(tpg, "LexerOptions")
 
     def test_lexer_options_creation(self):
         """Test creating LexerOptions"""
@@ -317,7 +317,7 @@ class TestPythonCompatibility:
 
     def test_python_version_constant(self):
         """Test __python__ constant"""
-        assert hasattr(tpg, '__python__')
+        assert hasattr(tpg, "__python__")
         assert tpg.__python__ in [2, 3]
 
 
@@ -326,29 +326,29 @@ class TestTPGMetadata:
 
     def test_tpg_version_exists(self):
         """Test that TPG version information exists"""
-        assert hasattr(tpg, '__version__')
+        assert hasattr(tpg, "__version__")
         assert isinstance(tpg.__version__, str)
         # Version should follow semantic versioning
-        assert '.' in tpg.__version__
+        assert "." in tpg.__version__
 
     def test_tpg_name_exists(self):
         """Test that TPG name exists"""
-        assert hasattr(tpg, '__tpgname__')
-        assert tpg.__tpgname__ == 'TPG'
+        assert hasattr(tpg, "__tpgname__")
+        assert tpg.__tpgname__ == "TPG"
 
     def test_tpg_author_exists(self):
         """Test that TPG author exists"""
-        assert hasattr(tpg, '__author__')
+        assert hasattr(tpg, "__author__")
         assert isinstance(tpg.__author__, str)
 
     def test_tpg_date_exists(self):
         """Test that TPG date exists"""
-        assert hasattr(tpg, '__date__')
+        assert hasattr(tpg, "__date__")
         assert isinstance(tpg.__date__, str)
 
     def test_tpg_license_exists(self):
         """Test that TPG license exists"""
-        assert hasattr(tpg, '__license__')
+        assert hasattr(tpg, "__license__")
         assert isinstance(tpg.__license__, str)
 
 
@@ -357,12 +357,12 @@ class TestRegexPatterns:
 
     def test_blank_line_re_exists(self):
         """Test blank_line_re pattern exists"""
-        assert hasattr(tpg, 'blank_line_re')
+        assert hasattr(tpg, "blank_line_re")
         assert tpg.blank_line_re is not None
 
     def test_indent_re_exists(self):
         """Test indent_re pattern exists"""
-        assert hasattr(tpg, 'indent_re')
+        assert hasattr(tpg, "indent_re")
         assert tpg.indent_re is not None
 
     def test_blank_line_matching(self):
@@ -385,6 +385,7 @@ class TestParserSubclassing:
 
     def test_verbose_parser_subclass(self):
         """Test VerboseParser subclass"""
+
         class MyVerboseParser(tpg.VerboseParser):
             pass
 
@@ -397,7 +398,7 @@ class TestSREParse:
 
     def test_sre_parse_available(self):
         """Test sre_parse module is available"""
-        assert hasattr(tpg, 'sre_parse')
+        assert hasattr(tpg, "sre_parse")
         assert tpg.sre_parse is not None
 
 
@@ -435,7 +436,7 @@ class TestTPGParserMetaParser:
 
     def test_tpg_parser_exists(self):
         """Test TPGParser is available"""
-        assert hasattr(tpg, 'TPGParser')
+        assert hasattr(tpg, "TPGParser")
         assert tpg.TPGParser is not None
 
     def test_tpg_parser_is_parser(self):
@@ -448,7 +449,7 @@ class TestParserClass:
 
     def test_underscore_parser_exists(self):
         """Test _Parser class exists"""
-        assert hasattr(tpg, '_Parser')
+        assert hasattr(tpg, "_Parser")
 
     def test_underscore_parser_not_none(self):
         """Test _Parser is not None"""
@@ -460,7 +461,7 @@ class TestPyClass:
 
     def test_py_class_exists(self):
         """Test Py class exists"""
-        assert hasattr(tpg, 'Py')
+        assert hasattr(tpg, "Py")
         assert tpg.Py is not None
 
 
@@ -548,33 +549,33 @@ class TestModuleExports:
 
     def test_error_classes_exported(self):
         """Test error classes are exported"""
-        assert hasattr(tpg, 'Error')
-        assert hasattr(tpg, 'LexicalError')
-        assert hasattr(tpg, 'SyntacticError')
-        assert hasattr(tpg, 'SemanticError')
-        assert hasattr(tpg, 'WrongToken')
+        assert hasattr(tpg, "Error")
+        assert hasattr(tpg, "LexicalError")
+        assert hasattr(tpg, "SyntacticError")
+        assert hasattr(tpg, "SemanticError")
+        assert hasattr(tpg, "WrongToken")
 
     def test_lexer_classes_exported(self):
         """Test lexer classes are exported"""
-        assert hasattr(tpg, 'Lexer')
-        assert hasattr(tpg, 'CacheLexer')
-        assert hasattr(tpg, 'NamedGroupLexer')
-        assert hasattr(tpg, 'CacheNamedGroupLexer')
-        assert hasattr(tpg, 'ContextSensitiveLexer')
+        assert hasattr(tpg, "Lexer")
+        assert hasattr(tpg, "CacheLexer")
+        assert hasattr(tpg, "NamedGroupLexer")
+        assert hasattr(tpg, "CacheNamedGroupLexer")
+        assert hasattr(tpg, "ContextSensitiveLexer")
 
     def test_parser_classes_exported(self):
         """Test parser classes are exported"""
-        assert hasattr(tpg, 'Parser')
-        assert hasattr(tpg, 'VerboseParser')
-        assert hasattr(tpg, 'TPGParser')
+        assert hasattr(tpg, "Parser")
+        assert hasattr(tpg, "VerboseParser")
+        assert hasattr(tpg, "TPGParser")
 
     def test_token_classes_exported(self):
         """Test token classes are exported"""
-        assert hasattr(tpg, 'Token')
-        assert hasattr(tpg, 'EOFToken')
-        assert hasattr(tpg, 'SOFToken')
+        assert hasattr(tpg, "Token")
+        assert hasattr(tpg, "EOFToken")
+        assert hasattr(tpg, "SOFToken")
 
     def test_utility_functions_exported(self):
         """Test utility functions are exported"""
-        assert hasattr(tpg, '_id')
-        assert hasattr(tpg, 'tab')
+        assert hasattr(tpg, "_id")
+        assert hasattr(tpg, "tab")

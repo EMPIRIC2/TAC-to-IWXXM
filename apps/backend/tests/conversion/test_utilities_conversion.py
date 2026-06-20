@@ -1,4 +1,5 @@
 """Unit tests for conversion utilities."""
+
 import pathlib
 import sys
 
@@ -116,7 +117,7 @@ def test_convert_cor_metar_with_metadata():
     assert isinstance(result, str)
     assert len(result) > 0
     assert 'reportStatus="CORRECTION"' in result
-    assert 'translationFailedTAC' not in result
+    assert "translationFailedTAC" not in result
     assert validation_result is not None
     assert validation_result.is_valid is True
 
@@ -125,12 +126,8 @@ def test_convert_cor_metar_with_metadata():
 # Recent weather normalization (issue #668): RESH -> RESHUP
 # ---------------------------------------------------------------------------
 
-METAR_WITH_RESH = (
-    "METAR TTPP 121000Z 00000KT 9999 VCSH FEW010CB 26/25 Q1013 RESH NOSIG"
-)
-METAR_WITH_RESHRA = (
-    "METAR TTPP 121000Z 00000KT 9999 VCSH FEW010CB 26/25 Q1013 RESHRA NOSIG"
-)
+METAR_WITH_RESH = "METAR TTPP 121000Z 00000KT 9999 VCSH FEW010CB 26/25 Q1013 RESH NOSIG"
+METAR_WITH_RESHRA = "METAR TTPP 121000Z 00000KT 9999 VCSH FEW010CB 26/25 Q1013 RESHRA NOSIG"
 
 
 def test_resh_conversion_succeeds_lenient_mode():

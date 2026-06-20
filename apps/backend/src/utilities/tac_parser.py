@@ -1,11 +1,12 @@
 """
 Helper utility for extracting ICAO airport codes from TAC messages.
 """
+
 import re
 from typing import Optional
 
 ICAO_PATTERN = re.compile(
-    r'(?:METAR|SPECI)(?:\s+COR)?\s+([A-Z0-9]{4})(?=\s|$)',
+    r"(?:METAR|SPECI)(?:\s+COR)?\s+([A-Z0-9]{4})(?=\s|$)",
     re.IGNORECASE,
 )
 

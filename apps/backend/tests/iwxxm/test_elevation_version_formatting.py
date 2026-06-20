@@ -22,9 +22,7 @@ class TestElevationVersionFormatting:
         """Verify that get_elevation_data accepts version parameter."""
         # This should not raise an exception
         elevation_m, datum = elevation_service.get_elevation_data(
-            icao="BGBW",
-            default_elevation_ft=124,
-            version="2025-2"
+            icao="BGBW", default_elevation_ft=124, version="2025-2"
         )
         assert datum == "EGM_96"
 
@@ -55,11 +53,7 @@ class TestElevationVersionFormatting:
         versions = ["2023-1", "2025-2"]
 
         for version in versions:
-            elev_m, datum = elevation_service.get_elevation_data(
-                icao="BGBW",
-                default_elevation_ft=124,
-                version=version
-            )
+            elev_m, datum = elevation_service.get_elevation_data(icao="BGBW", default_elevation_ft=124, version=version)
             # Should return consistent datum regardless of version
             assert datum == "EGM_96"
             # Elevation should be approximately the same (conversion accuracy)
@@ -95,18 +89,10 @@ class TestElevationIntegration:
         service = ElevationService()
 
         # Add an override
-        service.add_airport_override(
-            icao="TTEST",
-            elevation_m=2500,
-            vertical_datum="NAVD88",
-            source="test_override"
-        )
+        service.add_airport_override(icao="TTEST", elevation_m=2500, vertical_datum="NAVD88", source="test_override")
 
         # Get with version parameter
-        elev_m, datum = service.get_elevation_data(
-            icao="TTEST",
-            version="2025-2"
-        )
+        elev_m, datum = service.get_elevation_data(icao="TTEST", version="2025-2")
 
         assert elev_m == 2500
         assert datum == "NAVD88"
@@ -116,10 +102,7 @@ class TestElevationIntegration:
         service = ElevationService()
 
         # Should work without version parameter (uses default)
-        elev_m, datum = service.get_elevation_data(
-            icao="BGBW",
-            default_elevation_ft=124
-        )
+        elev_m, datum = service.get_elevation_data(icao="BGBW", default_elevation_ft=124)
 
         assert isinstance(datum, str)
         assert len(datum) > 0

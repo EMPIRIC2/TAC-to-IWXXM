@@ -33,8 +33,8 @@ from .common import tpg
 
 
 class MissingAirSpaceWinds(tpg.Error):
-    """Not providing wind information when volcanic ash cloud is not observed in satellite imagery
-    """
+    """Not providing wind information when volcanic ash cloud is not observed in satellite imagery"""
+
     pass
 
 
@@ -113,48 +113,68 @@ class Decoder(tpg.Parser):
 
     def __init__(self):
 
-        self._tokenInEnglish = {'_tok_1': 'VA ADVISORY line', 'dtg': 'Date/Time', 'centre': 'Issuing Centre',
-                                'vname': 'Name of Volcano', 'vloc': 'Location of Volcano or UNKNOWN',
-                                'region': 'Region', 'source': 'Height of ash source (AMSL|BLW MSL) or UNKNOWN',
-                                'advnum': 'Advisory Number', 'info': 'Ash report source', 'details': 'Eruption Details',  # noqa: E501
-                                'obsdtg': 'Observed date/time ', 'opreamble': 'Observed ash cloud(s)',
-                                'fpreamble': 'forecast ash cloud position(s)', 'dayhour': 'Day/Hour timestamp',
-                                'top': 'TOP/FL###', 'midlyr': 'FL###/###', 'sfc': 'SFC/FL###',
-                                'box': 'box dimensions', 'latlon': 'latitude/longitude pair',
-                                'movement': 'ash cloud movement', 'vanotid': 'VA not identified statement',
-                                'notprvd': 'Not Provided statement', 'noashexp': 'No Ash Expected',
-                                'rmk': 'Remarks', 'nextdtg': 'Next VAA issuance time',
-                                '_tok_2': 'dash character (-)', '_tok_3': 'dash character (-)'}
+        self._tokenInEnglish = {
+            "_tok_1": "VA ADVISORY line",
+            "dtg": "Date/Time",
+            "centre": "Issuing Centre",
+            "vname": "Name of Volcano",
+            "vloc": "Location of Volcano or UNKNOWN",
+            "region": "Region",
+            "source": "Height of ash source (AMSL|BLW MSL) or UNKNOWN",
+            "advnum": "Advisory Number",
+            "info": "Ash report source",
+            "details": "Eruption Details",  # noqa: E501
+            "obsdtg": "Observed date/time ",
+            "opreamble": "Observed ash cloud(s)",
+            "fpreamble": "forecast ash cloud position(s)",
+            "dayhour": "Day/Hour timestamp",
+            "top": "TOP/FL###",
+            "midlyr": "FL###/###",
+            "sfc": "SFC/FL###",
+            "box": "box dimensions",
+            "latlon": "latitude/longitude pair",
+            "movement": "ash cloud movement",
+            "vanotid": "VA not identified statement",
+            "notprvd": "Not Provided statement",
+            "noashexp": "No Ash Expected",
+            "rmk": "Remarks",
+            "nextdtg": "Next VAA issuance time",
+            "_tok_2": "dash character (-)",
+            "_tok_3": "dash character (-)",
+        }
 
-        self.header = re.compile(r'.*?(?=VA ADVISORY)', re.DOTALL)
-        self._reWinds = re.compile(r'(WINDS?)?\s+(SFC|FL(?P<bottom>\d{3}))(/((FL)?(?P<top>\d{3})))?\s+(?P<dir>VRB|\d{3})/?(?P<spd>\d{1,3})(-\d{2,3})?(?P<uom>MPS|KT)')  # noqa: E501
+        self.header = re.compile(r".*?(?=VA ADVISORY)", re.DOTALL)
+        self._reWinds = re.compile(
+            r"(WINDS?)?\s+(SFC|FL(?P<bottom>\d{3}))(/((FL)?(?P<top>\d{3})))?\s+(?P<dir>VRB|\d{3})/?(?P<spd>\d{1,3})(-\d{2,3})?(?P<uom>MPS|KT)"
+        )  # noqa: E501
 
-        self._detail_date = re.compile(r'[\d/]{4,13}Z')
+        self._detail_date = re.compile(r"[\d/]{4,13}Z")
 
         self._Logger = logging.getLogger(__name__)
         return super(Decoder, self).__init__()
 
     def __call__(self, tac):
 
-        self.vaa = {'bbb': '',
-                    'translationTime': time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                    'volcanoName': '',
-                    'volcanoLocation': '',
-                    'source': '',
-                    'advisoryNumber': '',
-                    'sources': '',
-                    'details': '',
-                    'clouds': {},
-                    'remarks': ''}
+        self.vaa = {
+            "bbb": "",
+            "translationTime": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "volcanoName": "",
+            "volcanoLocation": "",
+            "source": "",
+            "advisoryNumber": "",
+            "sources": "",
+            "details": "",
+            "clouds": {},
+            "remarks": "",
+        }
 
         try:
             result = self.header.search(tac)
-            vaa = tac[result.end():].replace('=', '')
+            vaa = tac[result.end() :].replace("=", "")
 
         except AttributeError:
-
-            self.vaa['err_msg'] = 'VA ADVISORY line not found'
-            self._Logger.info('%s\n%s' % (tac, self.vaa['err_msg']))
+            self.vaa["err_msg"] = "VA ADVISORY line not found"
+            self._Logger.info("%s\n%s" % (tac, self.vaa["err_msg"]))
             return self.vaa
 
         try:
@@ -167,31 +187,31 @@ class Decoder(tpg.Parser):
             return super(Decoder, self).__call__(vaa)
 
         except tpg.SyntacticError:
-
             if not self._is_a_test():
                 if len(self._expected):
-                    err_msg = 'Expecting %s ' % ' or '.join([self._tokenInEnglish.get(x, x) for x in self._expected])
+                    err_msg = "Expecting %s " % " or ".join([self._tokenInEnglish.get(x, x) for x in self._expected])
                 else:
-                    err_msg = 'Unidentified group '
+                    err_msg = "Unidentified group "
 
-                tacLines = vaa.split('\n')
-                debugString = '\n%%s\n%%%dc\n%%s' % self.lexer.cur_token.end_column
-                errorInTAC = debugString % ('\n'.join(tacLines[:self.lexer.cur_token.end_line]), '^',
-                                            '\n'.join(tacLines[self.lexer.cur_token.end_line:]))
-                self._Logger.info('%s\n%s' % (errorInTAC, err_msg))
+                tacLines = vaa.split("\n")
+                debugString = "\n%%s\n%%%dc\n%%s" % self.lexer.cur_token.end_column
+                errorInTAC = debugString % (
+                    "\n".join(tacLines[: self.lexer.cur_token.end_line]),
+                    "^",
+                    "\n".join(tacLines[self.lexer.cur_token.end_line :]),
+                )
+                self._Logger.info("%s\n%s" % (errorInTAC, err_msg))
 
-                err_msg += 'at line %d column %d.' % (self.lexer.cur_token.end_line, self.lexer.cur_token.end_column)
-                self.vaa['err_msg'] = err_msg
+                err_msg += "at line %d column %d." % (self.lexer.cur_token.end_line, self.lexer.cur_token.end_column)
+                self.vaa["err_msg"] = err_msg
 
         except MissingAirSpaceWinds as msg:
-
             if not self._is_a_test():
-                tacLines = vaa.split('\n')
-                debugString = '\n%%s\n%%%dc\n%%s' % msg.column
-                errorInTAC = debugString % ('\n'.join(tacLines[:msg.line]), '^',
-                                            '\n'.join(tacLines[msg.line:]))
-                self._Logger.info('%s\n%s' % (errorInTAC, msg.msg))
-                self.vaa['err_msg'] = msg.msg
+                tacLines = vaa.split("\n")
+                debugString = "\n%%s\n%%%dc\n%%s" % msg.column
+                errorInTAC = debugString % ("\n".join(tacLines[: msg.line]), "^", "\n".join(tacLines[msg.line :]))
+                self._Logger.info("%s\n%s" % (errorInTAC, msg.msg))
+                self.vaa["err_msg"] = msg.msg
 
         except Exception:  # pragma: no cover
             self._Logger.exception(vaa)
@@ -200,12 +220,12 @@ class Decoder(tpg.Parser):
 
     def _is_a_test(self):
         try:
-            return self.vaa['status'] == 'TEST'
+            return self.vaa["status"] == "TEST"
         except KeyError:
             return False
 
     def eatCSL(self, name):
-        'Overrides super definition'
+        "Overrides super definition"
         try:
             value = super(Decoder, self).eatCSL(name)
             self._expected = []
@@ -217,28 +237,27 @@ class Decoder(tpg.Parser):
 
     def preamble(self, s):
 
-        if self.lexer.cur_token.name == 'opreamble':
-
-            self.vaa['estimated'] = s[:3] == 'EST'
-            self._fhr = '0'
+        if self.lexer.cur_token.name == "opreamble":
+            self.vaa["estimated"] = s[:3] == "EST"
+            self._fhr = "0"
         else:
             try:
                 self.postPolygon(self._cloud)
-                self.vaa['clouds'][self._fhr]['cldLyrs'].append(self._cloud.copy())
+                self.vaa["clouds"][self._fhr]["cldLyrs"].append(self._cloud.copy())
                 del self._cloud
 
             except AttributeError:
                 pass
 
             result = self.lexer.tokens[self.lexer.cur_token.name][0].match(s)
-            self._fhr = result.group('fhr')
-            self.vaa['clouds'][self._fhr] = dict(dtg='', cldLyrs=[])
+            self._fhr = result.group("fhr")
+            self.vaa["clouds"][self._fhr] = dict(dtg="", cldLyrs=[])
             #
             # In case there's no dtg group following
             try:
-                secs = time.mktime(time.strptime(self.vaa['clouds']['0']['dtg'], '%Y-%m-%dT%H:%M:00Z'))
-                secs += (3600 * int(self._fhr))
-                self.vaa['clouds'][self._fhr]['dtg'] = time.strftime('%Y-%m-%dT%H:%M:00Z', time.gmtime(secs))
+                secs = time.mktime(time.strptime(self.vaa["clouds"]["0"]["dtg"], "%Y-%m-%dT%H:%M:00Z"))
+                secs += 3600 * int(self._fhr)
+                self.vaa["clouds"][self._fhr]["dtg"] = time.strftime("%Y-%m-%dT%H:%M:00Z", time.gmtime(secs))
             except KeyError:
                 pass
 
@@ -247,10 +266,9 @@ class Decoder(tpg.Parser):
         tokenName = self.lexer.cur_token.name
         result = self.lexer.tokens[self.lexer.cur_token.name][0].match(s)
 
-        if tokenName == 'dtg':
-
-            ymd = result.group('date')
-            hhmm = result.group('time')
+        if tokenName == "dtg":
+            ymd = result.group("date")
+            hhmm = result.group("time")
 
             tms = list(time.gmtime())
             tms[0] = int(ymd[0:4])
@@ -259,31 +277,28 @@ class Decoder(tpg.Parser):
             tms[3] = int(hhmm[0:2])
             tms[4] = int(hhmm[2:4])
             tms[5] = 0
-            self.vaa['issueTime'] = {'str': time.strftime('%Y-%m-%dT%H:%M:00Z', tuple(tms)),
-                                     'tms': tms}
+            self.vaa["issueTime"] = {"str": time.strftime("%Y-%m-%dT%H:%M:00Z", tuple(tms)), "tms": tms}
 
-        elif tokenName == 'obsdtg':
-
-            tms = self.vaa['issueTime']['tms'][:]
-            tms[2] = int(result.group('day'))
-            if tms[2] < self.vaa['issueTime']['tms'][2]:
+        elif tokenName == "obsdtg":
+            tms = self.vaa["issueTime"]["tms"][:]
+            tms[2] = int(result.group("day"))
+            if tms[2] < self.vaa["issueTime"]["tms"][2]:
                 tms[1] += 1
                 if tms[1] > 12:
                     tms[1] = 1
                     tms[0] += 1
 
-            hhmm = result.group('time')
+            hhmm = result.group("time")
             tms[3] = int(hhmm[0:2])
             tms[4] = int(hhmm[2:4])
-            self.vaa['clouds']['0'] = dict(dtg='', cldLyrs=[])
-            self.vaa['clouds']['0']['dtg'] = time.strftime('%Y-%m-%dT%H:%M:00Z', tuple(tms))
-            self.vaa['estimated'] = s[:3] == 'EST'
+            self.vaa["clouds"]["0"] = dict(dtg="", cldLyrs=[])
+            self.vaa["clouds"]["0"]["dtg"] = time.strftime("%Y-%m-%dT%H:%M:00Z", tuple(tms))
+            self.vaa["estimated"] = s[:3] == "EST"
 
-        elif tokenName == 'dayhour':
-
-            tms = self.vaa['issueTime']['tms'][:]
+        elif tokenName == "dayhour":
+            tms = self.vaa["issueTime"]["tms"][:]
             tms[2] = int(s[0:2])
-            if tms[2] < self.vaa['issueTime']['tms'][2]:
+            if tms[2] < self.vaa["issueTime"]["tms"][2]:
                 tms[1] += 1
                 if tms[1] > 12:
                     tms[1] = 1
@@ -291,13 +306,13 @@ class Decoder(tpg.Parser):
 
             tms[3] = int(s[3:5])
             tms[4] = int(s[5:7])
-            self.vaa['clouds'][self._fhr]['dtg'] = time.strftime('%Y-%m-%dT%H:%M:00Z', tuple(tms))
+            self.vaa["clouds"][self._fhr]["dtg"] = time.strftime("%Y-%m-%dT%H:%M:00Z", tuple(tms))
 
-        elif tokenName == 'nextdtg':
+        elif tokenName == "nextdtg":
             try:
-                tms = self.vaa['issueTime']['tms'][:]
-                ymd = result.group('date')
-                hhmm = result.group('time')
+                tms = self.vaa["issueTime"]["tms"][:]
+                ymd = result.group("date")
+                hhmm = result.group("time")
 
                 tms[0] = int(ymd[0:4])
                 tms[1] = int(ymd[4:6])
@@ -305,22 +320,22 @@ class Decoder(tpg.Parser):
                 tms[3] = int(hhmm[0:2])
                 tms[4] = int(hhmm[2:4])
 
-                self.vaa['nextdtg'] = {'str': time.strftime('%Y-%m-%dT%H:%M:00Z', tuple(tms)), 'cnd': None}
+                self.vaa["nextdtg"] = {"str": time.strftime("%Y-%m-%dT%H:%M:00Z", tuple(tms)), "cnd": None}
                 if result.group(5):
-                    self.vaa['nextdtg']['cnd'] = 'nlt'
+                    self.vaa["nextdtg"]["cnd"] = "nlt"
                 elif result.group(6):
-                    self.vaa['nextdtg']['cnd'] = 'nst'
+                    self.vaa["nextdtg"]["cnd"] = "nst"
 
             except TypeError:
                 pass
 
     def centre(self, s):
 
-        self.vaa['centre'] = s[5:].strip()
+        self.vaa["centre"] = s[5:].strip()
 
     def vname(self, s):
 
-        self.vaa['volcanoName'] = s[8:].strip()
+        self.vaa["volcanoName"] = s[8:].strip()
 
     def vloc(self, s):
         try:
@@ -332,8 +347,8 @@ class Decoder(tpg.Parser):
                 deg, minu = int(slat[1:3]), 0
 
             lat = deg + minu * 0.01667
-            if slat[0] == 'S':
-                lat *= -1.
+            if slat[0] == "S":
+                lat *= -1.0
 
             try:
                 deg, minu = int(slon[1:4]), int(slon[4:6])
@@ -341,48 +356,48 @@ class Decoder(tpg.Parser):
                 deg, minu = int(slon[1:4]), 0
 
             lon = deg + minu * 0.01667
-            if slon[0] == 'W':
-                lon *= -1.
+            if slon[0] == "W":
+                lon *= -1.0
 
-            self.vaa['volcanoLocation'] = '%.3f %.3f' % (lat, lon)
+            self.vaa["volcanoLocation"] = "%.3f %.3f" % (lat, lon)
 
         except ValueError:
-            self.vaa['volcanoLocation'] = 'UNKNOWN'
+            self.vaa["volcanoLocation"] = "UNKNOWN"
 
     def region(self, s):
 
-        self.vaa['region'] = s[5:].strip()
+        self.vaa["region"] = s[5:].strip()
 
     def status(self, s):
 
-        self.vaa['status'] = s.split(':', 1)[1].strip()
+        self.vaa["status"] = s.split(":", 1)[1].strip()
 
     def source(self, s):
 
-        if 'UNKNOWN' in s:
-            self.vaa['source'] = None
+        if "UNKNOWN" in s:
+            self.vaa["source"] = None
         else:
             result = self.lexer.tokens[self.lexer.cur_token.name][0].match(s)
-            self.vaa['source'] = result.groupdict()
+            self.vaa["source"] = result.groupdict()
             try:
-                if self.vaa['source']['ref'][0] == 'B':
-                    self.vaa['source']['elevation'] = f"-{self.vaa['source']['elevation']}"
+                if self.vaa["source"]["ref"][0] == "B":
+                    self.vaa["source"]["elevation"] = f"-{self.vaa['source']['elevation']}"
             except (TypeError, KeyError):
                 pass
 
     def advnum(self, s):
 
         result = self.lexer.tokens[self.lexer.cur_token.name][0].match(s)
-        self.vaa['advisoryNumber'] = result.group(1)
+        self.vaa["advisoryNumber"] = result.group(1)
 
     def info(self, s):
 
-        self.vaa['sources'] = ' '.join(s[12:].split())
+        self.vaa["sources"] = " ".join(s[12:].split())
 
     def details(self, s):
 
-        details = ' '.join(s[18:].split())
-        self.vaa['details'] = details
+        details = " ".join(s[18:].split())
+        self.vaa["details"] = details
         #
         # Search for date and/or time of eruption.
         result = self._detail_date.search(details)
@@ -390,17 +405,17 @@ class Decoder(tpg.Parser):
             return
         #
         # Eruption time found.
-        tms = self.vaa['issueTime']['tms'][:]
+        tms = self.vaa["issueTime"]["tms"][:]
         eruptDate = result.group(0)
         try:
-            ymd, hhmm = eruptDate.split('/')
+            ymd, hhmm = eruptDate.split("/")
         except ValueError:
-            ymd = ''
+            ymd = ""
             hhmm = eruptDate
 
         if len(ymd) >= 2:
             tms[2] = int(ymd[-2:])
-            if tms[2] > self.vaa['issueTime']['tms'][2]:
+            if tms[2] > self.vaa["issueTime"]["tms"][2]:
                 tms[1] -= 1
                 if tms[1] < 1:
                     tms[1] = 12
@@ -415,13 +430,13 @@ class Decoder(tpg.Parser):
         tms[4] = int(hhmm[2:4])
         #
         # Provide date/time string
-        self.vaa['eruptionDate'] = time.strftime('%Y-%m-%dT%H:%M:00Z', tuple(tms))
+        self.vaa["eruptionDate"] = time.strftime("%Y-%m-%dT%H:%M:00Z", tuple(tms))
 
     def top(self, s):
 
         try:
             self.postPolygon(self._cloud)
-            self.vaa['clouds'][self._fhr]['cldLyrs'].append(self._cloud.copy())
+            self.vaa["clouds"][self._fhr]["cldLyrs"].append(self._cloud.copy())
             del self._cloud
 
         except AttributeError:
@@ -434,7 +449,7 @@ class Decoder(tpg.Parser):
 
         try:
             self.postPolygon(self._cloud)
-            self.vaa['clouds'][self._fhr]['cldLyrs'].append(self._cloud.copy())
+            self.vaa["clouds"][self._fhr]["cldLyrs"].append(self._cloud.copy())
             del self._cloud
 
         except AttributeError:
@@ -452,51 +467,53 @@ class Decoder(tpg.Parser):
 
         try:
             self.postPolygon(self._cloud)
-            self.vaa['clouds'][self._fhr]['cldLyrs'].append(self._cloud.copy())
+            self.vaa["clouds"][self._fhr]["cldLyrs"].append(self._cloud.copy())
             del self._cloud
 
         except AttributeError:
             pass
 
-        self._cloud = dict(top=s[6:9], bottom='SFC', pnts=[])
+        self._cloud = dict(top=s[6:9], bottom="SFC", pnts=[])
 
     def box(self, s):
 
         result = self.lexer.tokens[self.lexer.cur_token.name][0].match(s)
-        self._cloud['box'] = dict(width=result.group(1), uom=result.group(2))
+        self._cloud["box"] = dict(width=result.group(1), uom=result.group(2))
 
     def latlon(self, s):
 
         result = self.lexer.tokens[self.lexer.cur_token.name][0].match(s)
-        rlat = result.group('lat')
+        rlat = result.group("lat")
         try:
             deg, minu = int(rlat[1:3]), int(rlat[3:5])
         except ValueError:
             deg, minu = int(rlat[1:3]), 0
 
         latitude = deg + minu * 0.01667
-        if rlat[0] == 'S':
+        if rlat[0] == "S":
             latitude *= -1.0
 
-        rlon = result.group('lon')
+        rlon = result.group("lon")
         try:
             deg, minu = int(rlon[1:4]), int(rlon[4:6])
         except ValueError:
             deg, minu = int(rlon[1:4]), 0
 
         longitude = deg + minu * 0.01667
-        if rlon[0] == 'W':
+        if rlon[0] == "W":
             longitude *= -1.0
 
-        self._cloud['pnts'].append('%.3f %.3f' % (latitude, longitude))
+        self._cloud["pnts"].append("%.3f %.3f" % (latitude, longitude))
 
     def movement(self, s):
 
         result = self.lexer.tokens[self.lexer.cur_token.name][0].match(s)
         try:
-            self._cloud['movement'] = {'dir': deu.CardinalPtsToDegreesS[result.group(1)],
-                                       'spd': result.group(2),
-                                       'uom': {'KT': '[kn_i]', 'KMH': 'km/h'}.get(result.group('uom'))}
+            self._cloud["movement"] = {
+                "dir": deu.CardinalPtsToDegreesS[result.group(1)],
+                "spd": result.group(2),
+                "uom": {"KT": "[kn_i]", "KMH": "km/h"}.get(result.group("uom")),
+            }
         except KeyError:
             raise tpg.WrongToken
 
@@ -508,30 +525,30 @@ class Decoder(tpg.Parser):
         self._cloud = dict(nil=self.lexer.cur_token.name)
         while result:
             try:
-                self._cloud['movement'] = result.groupdict()
-                if self._cloud['movement']['bottom'] is None:
-                    self._cloud['movement']['bottom'] = result.group(2)
-                self._cloud['movement']['uom'] = {'KT': '[kn_i]', 'MPS': 'm/s'}.get(self._cloud['movement']['uom'])
+                self._cloud["movement"] = result.groupdict()
+                if self._cloud["movement"]["bottom"] is None:
+                    self._cloud["movement"]["bottom"] = result.group(2)
+                self._cloud["movement"]["uom"] = {"KT": "[kn_i]", "MPS": "m/s"}.get(self._cloud["movement"]["uom"])
 
             except AttributeError:
-                self._cloud['movement'] = None
+                self._cloud["movement"] = None
 
-            self.vaa['clouds'][self._fhr]['cldLyrs'].append(self._cloud.copy())
+            self.vaa["clouds"][self._fhr]["cldLyrs"].append(self._cloud.copy())
             spos += result.end()
             result = self._reWinds.search(s[spos:])
 
-        if len(self.vaa['clouds'][self._fhr]['cldLyrs']) == 0:
-            self.vaa['clouds'][self._fhr]['cldLyrs'].append(self._cloud.copy())
+        if len(self.vaa["clouds"][self._fhr]["cldLyrs"]) == 0:
+            self.vaa["clouds"][self._fhr]["cldLyrs"].append(self._cloud.copy())
 
         del self._cloud
 
     def noash(self):
 
         try:
-            if len(self.vaa['clouds'][self._fhr]['cldLyrs']) == 0:
-                self.vaa['clouds'][self._fhr]['cldLyrs'].append(dict(nil=self.lexer.cur_token.name))
+            if len(self.vaa["clouds"][self._fhr]["cldLyrs"]) == 0:
+                self.vaa["clouds"][self._fhr]["cldLyrs"].append(dict(nil=self.lexer.cur_token.name))
         except KeyError:
-            self.vaa['clouds'][self._fhr] = {'cldLyrs': [dict(nil=self.lexer.cur_token.name)]}
+            self.vaa["clouds"][self._fhr] = {"cldLyrs": [dict(nil=self.lexer.cur_token.name)]}
 
         try:
             del self._cloud
@@ -540,34 +557,34 @@ class Decoder(tpg.Parser):
 
     def rmk(self, s):
 
-        self.vaa['remarks'] = ' '.join(s[4:].split())
+        self.vaa["remarks"] = " ".join(s[4:].split())
 
     def postPolygon(self, cloudInfo):
         """Called after new forecast projection, and ash cloud polygon(s)"""
         if cloudInfo is None:
             return
 
-        if 'box' not in cloudInfo:
+        if "box" not in cloudInfo:
             try:
-                if cloudInfo['pnts'][0] != cloudInfo['pnts'][-1]:
-                    cloudInfo['pnts'].append(cloudInfo['pnts'][0])
+                if cloudInfo["pnts"][0] != cloudInfo["pnts"][-1]:
+                    cloudInfo["pnts"].append(cloudInfo["pnts"][0])
             except (KeyError, IndexError):
                 pass
         else:
             #
             # Convert box centerline(s) and width(s) to a polygon
             #
-            distance = float(cloudInfo['box']['width']) * 0.5
-            radius = 6378.
-            if cloudInfo['box']['uom'] == 'NM':
-                radius = 3440.
+            distance = float(cloudInfo["box"]["width"]) * 0.5
+            radius = 6378.0
+            if cloudInfo["box"]["uom"] == "NM":
+                radius = 3440.0
 
             newpolygon = []
             lat2, lon2, v = 0.0, 0.0, 0.0
 
-            for a, b in zip(cloudInfo['pnts'], cloudInfo['pnts'][1:]):
-                lat1, lon1 = [float(x) for x in a.split(' ')]
-                lat2, lon2 = [float(x) for x in b.split(' ')]
+            for a, b in zip(cloudInfo["pnts"], cloudInfo["pnts"][1:]):
+                lat1, lon1 = [float(x) for x in a.split(" ")]
+                lat2, lon2 = [float(x) for x in b.split(" ")]
                 #
                 # Find perpendicular to vector
                 v = complex((lon2 - lon1), (lat2 - lat1)) * complex(0.0, 1.0)
@@ -576,11 +593,10 @@ class Decoder(tpg.Parser):
             newpolygon.append(deu.computeLatLon(lat2, lon2, math.degrees(cmath.phase(v)), distance, radius))
             #
             # Looping back around the central axis
-            cloudInfo['pnts'].reverse()
-            for a, b in zip(cloudInfo['pnts'], cloudInfo['pnts'][1:]):
-
-                lat1, lon1 = [float(x) for x in a.split(' ')]
-                lat2, lon2 = [float(x) for x in b.split(' ')]
+            cloudInfo["pnts"].reverse()
+            for a, b in zip(cloudInfo["pnts"], cloudInfo["pnts"][1:]):
+                lat1, lon1 = [float(x) for x in a.split(" ")]
+                lat2, lon2 = [float(x) for x in b.split(" ")]
                 #
                 # Find perpendicular to vector
                 v = complex((lon2 - lon1), (lat2 - lat1)) * complex(0.0, 1.0)
@@ -590,29 +606,29 @@ class Decoder(tpg.Parser):
             #
             # first == last to close the polygon
             newpolygon.append(newpolygon[0])
-            cloudInfo['pnts'] = newpolygon
+            cloudInfo["pnts"] = newpolygon
         #
         # Check to make sure polygon is traversed in CCW fashion
         #
         try:
             fpolygon = []
-            for pnt in cloudInfo['pnts']:
+            for pnt in cloudInfo["pnts"]:
                 x, y = pnt.split()
                 fpolygon.append((float(x), float(y)))
 
             try:
                 if not deu.isCCW(fpolygon):
-                    cloudInfo['pnts'].reverse()
+                    cloudInfo["pnts"].reverse()
                 #
                 # Convert any longitudes greater than 180 degrees to negative values (signifying west longitudes)
                 new_pnts = []
-                for pnt in cloudInfo['pnts']:
-                    lat, lon = [float(z) for z in pnt.split(' ')]
+                for pnt in cloudInfo["pnts"]:
+                    lat, lon = [float(z) for z in pnt.split(" ")]
                     if lon > 180:
                         lon -= 360
-                    new_pnts.append(('%.3f %.3f' % (lat, lon)))
+                    new_pnts.append(("%.3f %.3f" % (lat, lon)))
 
-                cloudInfo['pnts'] = new_pnts
+                cloudInfo["pnts"] = new_pnts
 
             except ValueError as msg:
                 self._Logger.info(msg)
@@ -624,7 +640,7 @@ class Decoder(tpg.Parser):
 
         try:
             self.postPolygon(self._cloud)
-            self.vaa['clouds'][self._fhr]['cldLyrs'].append(self._cloud)
+            self.vaa["clouds"][self._fhr]["cldLyrs"].append(self._cloud)
             del self._cloud
 
         except AttributeError:

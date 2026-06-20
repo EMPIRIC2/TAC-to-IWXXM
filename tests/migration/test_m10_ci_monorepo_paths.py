@@ -43,18 +43,28 @@ class TestM10CiMonorepoPaths:
 
     def test_ci_uses_monorepo_paths(self, workflow_text: str) -> None:
         for fragment in MONOREPO_PATH_FRAGMENTS:
-            assert fragment in workflow_text, f"expected monorepo path {fragment!r} in ci-cd.yml"
+            assert fragment in workflow_text, (
+                f"expected monorepo path {fragment!r} in ci-cd.yml"
+            )
 
     def test_ci_does_not_reference_legacy_paths(self, workflow_text: str) -> None:
         for fragment in LEGACY_PATH_FRAGMENTS:
-            assert fragment not in workflow_text, f"legacy path {fragment!r} must be removed from ci-cd.yml"
+            assert fragment not in workflow_text, (
+                f"legacy path {fragment!r} must be removed from ci-cd.yml"
+            )
 
     def test_ci_pins_python_312(self, workflow_text: str) -> None:
-        assert "python-version: '3.12'" in workflow_text or 'python-version: "3.12"' in workflow_text
+        assert (
+            "python-version: '3.12'" in workflow_text
+            or 'python-version: "3.12"' in workflow_text
+        )
         assert not re.search(r"python-version:\s*['\"]3\.11['\"]", workflow_text)
 
     def test_ci_pins_node_22(self, workflow_text: str) -> None:
-        assert "node-version: '22'" in workflow_text or 'node-version: "22"' in workflow_text
+        assert (
+            "node-version: '22'" in workflow_text
+            or 'node-version: "22"' in workflow_text
+        )
 
     def test_ci_frontend_uses_pnpm(self, workflow_text: str) -> None:
         assert "pnpm" in workflow_text

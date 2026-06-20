@@ -1,4 +1,5 @@
 """Comprehensive tests for API endpoint error handling."""
+
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
@@ -14,7 +15,7 @@ class TestHealthEndpoint:
 
     def test_health_when_gifts_unavailable(self):
         """Test health endpoint when GIFTs is unavailable."""
-        with patch('src.api.convert_metar_tac_with_metadata', side_effect=Exception("GIFTs unavailable")):
+        with patch("src.api.convert_metar_tac_with_metadata", side_effect=Exception("GIFTs unavailable")):
             response = client.get("/health")
             assert response.status_code == 200
             data = response.json()
@@ -23,7 +24,7 @@ class TestHealthEndpoint:
 
     def test_health_when_conversion_fails(self):
         """Test health endpoint when test conversion fails."""
-        with patch('src.api.convert_metar_tac_with_metadata', side_effect=ConversionError("Test error")):
+        with patch("src.api.convert_metar_tac_with_metadata", side_effect=ConversionError("Test error")):
             response = client.get("/health")
             assert response.status_code == 200
             data = response.json()
@@ -37,8 +38,7 @@ class TestConvertEndpointErrorHandling:
     def test_convert_without_auth_fails(self):
         """Test that convert endpoint requires authentication."""
         response = client.post(
-            "/api/v1/convert",
-            data={"manual_text": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"}
+            "/api/v1/convert", data={"manual_text": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"}
         )
         # Should fail without authentication
         assert response.status_code in [401, 403]
@@ -50,8 +50,7 @@ class TestConvertZipEndpointErrorHandling:
     def test_convert_zip_without_auth_fails(self):
         """Test that convert-zip endpoint requires authentication."""
         response = client.post(
-            "/api/v1/convert-zip",
-            data={"manual_text": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"}
+            "/api/v1/convert-zip", data={"manual_text": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"}
         )
         # Should fail without authentication
         assert response.status_code in [401, 403]

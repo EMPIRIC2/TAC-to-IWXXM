@@ -6,6 +6,7 @@ Tests cover:
 - Supabase proxy login method
 - Email validation for various domain types
 """
+
 import pytest
 from pydantic import ValidationError
 from unittest.mock import Mock, patch, MagicMock
@@ -93,19 +94,13 @@ class TestLoginRequestModel:
 
     def test_valid_login_request_local_domain(self):
         """Test creating a valid login request with .local domain."""
-        request = LoginRequest(
-            email="admin@metar.local",
-            password="SecurePassword123!"
-        )
+        request = LoginRequest(email="admin@metar.local", password="SecurePassword123!")
         assert request.email == "admin@metar.local"
         assert request.password == "SecurePassword123!"
 
     def test_valid_login_request_lowercase_conversion(self):
         """Test that email is normalized to lowercase."""
-        request = LoginRequest(
-            email="admin@test.local",
-            password="SecurePassword123!"
-        )
+        request = LoginRequest(email="admin@test.local", password="SecurePassword123!")
         assert request.email == "admin@test.local"
 
     def test_invalid_login_missing_email(self):
@@ -136,10 +131,7 @@ class TestRegisterRequestModel:
     def test_valid_register_request(self):
         """Test creating a valid register request."""
         request = RegisterRequest(
-            email="newuser@metar.local",
-            password="SecurePassword123!",
-            name="New User",
-            username="newuser"
+            email="newuser@metar.local", password="SecurePassword123!", name="New User", username="newuser"
         )
         assert request.email == "newuser@metar.local"
         assert request.password == "SecurePassword123!"
@@ -148,10 +140,7 @@ class TestRegisterRequestModel:
 
     def test_register_request_optional_metadata(self):
         """Test register request with only required fields."""
-        request = RegisterRequest(
-            email="newuser@metar.local",
-            password="SecurePassword123!"
-        )
+        request = RegisterRequest(email="newuser@metar.local", password="SecurePassword123!")
         assert request.email == "newuser@metar.local"
         assert request.name is None
         assert request.username is None
@@ -161,7 +150,7 @@ class TestRegisterRequestModel:
         with pytest.raises(ValidationError):
             RegisterRequest(
                 email="newuser@metar.local",
-                password="Short1!"  # Less than 8 characters
+                password="Short1!",  # Less than 8 characters
             )
 
     def test_invalid_register_username_too_short(self):
@@ -170,7 +159,7 @@ class TestRegisterRequestModel:
             RegisterRequest(
                 email="newuser@metar.local",
                 password="SecurePassword123!",
-                username="ab"  # Less than 3 characters
+                username="ab",  # Less than 3 characters
             )
 
 
@@ -196,7 +185,7 @@ class TestPasswordResetRequestModel:
 class TestSupabaseProxyLogin:
     """Test the Supabase proxy login method."""
 
-    @patch('auth.supabase_proxy.SupabaseAuthProxy.__init__', return_value=None)
+    @patch("auth.supabase_proxy.SupabaseAuthProxy.__init__", return_value=None)
     def test_login_success(self, mock_init):
         """Test successful login through proxy."""
         from auth.supabase_proxy import SupabaseAuthProxy
@@ -234,7 +223,7 @@ class TestSupabaseProxyLogin:
         assert result["user"]["email"] == "admin@metar.local"
         assert result["session"]["access_token"] == "test-access-token"
 
-    @patch('auth.supabase_proxy.SupabaseAuthProxy.__init__', return_value=None)
+    @patch("auth.supabase_proxy.SupabaseAuthProxy.__init__", return_value=None)
     def test_login_invalid_credentials(self, mock_init):
         """Test login failure with invalid credentials."""
         from auth.supabase_proxy import SupabaseAuthProxy
@@ -245,15 +234,13 @@ class TestSupabaseProxyLogin:
         proxy.client = Mock()
 
         # Mock Supabase error
-        proxy.client.auth.sign_in_with_password = Mock(
-            side_effect=Exception("Invalid login credentials")
-        )
+        proxy.client.auth.sign_in_with_password = Mock(side_effect=Exception("Invalid login credentials"))
 
         # Call login and expect HTTPException
         with pytest.raises(HTTPException):
             proxy.sign_in("admin@metar.local", "WrongPassword")
 
-    @patch('auth.supabase_proxy.SupabaseAuthProxy.__init__', return_value=None)
+    @patch("auth.supabase_proxy.SupabaseAuthProxy.__init__", return_value=None)
     def test_login_no_session_in_response(self, mock_init):
         """Test login when Supabase doesn't return a session."""
         from auth.supabase_proxy import SupabaseAuthProxy
@@ -279,7 +266,7 @@ class TestSupabaseProxyLogin:
         with pytest.raises(HTTPException):
             proxy.sign_in("admin@metar.local", "Admin123456!")
 
-    @patch('auth.supabase_proxy.SupabaseAuthProxy.__init__', return_value=None)
+    @patch("auth.supabase_proxy.SupabaseAuthProxy.__init__", return_value=None)
     def test_login_development_email_domain(self, mock_init):
         """Test that login methods accept development domain emails."""
         from auth.supabase_proxy import SupabaseAuthProxy
@@ -313,7 +300,7 @@ class TestSupabaseProxyLogin:
 class TestSupabaseProxyLogout:
     """Test the Supabase proxy logout method."""
 
-    @patch('auth.supabase_proxy.SupabaseAuthProxy.__init__', return_value=None)
+    @patch("auth.supabase_proxy.SupabaseAuthProxy.__init__", return_value=None)
     def test_logout_success(self, mock_init):
         """Test successful logout through proxy."""
         from auth.supabase_proxy import SupabaseAuthProxy
@@ -329,7 +316,7 @@ class TestSupabaseProxyLogout:
         proxy.client.auth.set_session.assert_called_once_with("valid-token", "")
         proxy.client.auth.sign_out.assert_called_once()
 
-    @patch('auth.supabase_proxy.SupabaseAuthProxy.__init__', return_value=None)
+    @patch("auth.supabase_proxy.SupabaseAuthProxy.__init__", return_value=None)
     def test_logout_session_not_found_is_treated_as_success(self, mock_init):
         """Test logout is idempotent when Supabase session no longer exists."""
         from auth.supabase_proxy import SupabaseAuthProxy

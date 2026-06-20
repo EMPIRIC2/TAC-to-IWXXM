@@ -71,8 +71,7 @@ class TestEvalEndpointIntegration:
         assert result.raw_tac is not None, "Should fetch raw TAC from API"
         assert result.converted_iwxxm is not None, "Should convert TAC successfully"
         # Accept both METAR (regular) and SPECI (special observations) from live API
-        assert ("METAR" in result.raw_tac or "SPECI" in result.raw_tac), \
-            "TAC should contain METAR or SPECI keyword"
+        assert "METAR" in result.raw_tac or "SPECI" in result.raw_tac, "TAC should contain METAR or SPECI keyword"
         assert len(result.converted_iwxxm) > 0, "Converted IWXXM should not be empty"
 
     @pytest.mark.integration
@@ -105,13 +104,9 @@ class TestEvalEndpointIntegration:
 
         assert len(results) == len(stations), "Should have results for all stations"
 
-        successful = sum(
-            1 for r in results.values() if r.converted_iwxxm is not None
-        )
+        successful = sum(1 for r in results.values() if r.converted_iwxxm is not None)
         # Expect at least 50% success rate (some stations may be offline)
-        assert successful >= len(stations) * 0.5, (
-            f"Expected at least 50% success, got {successful}/{len(stations)}"
-        )
+        assert successful >= len(stations) * 0.5, f"Expected at least 50% success, got {successful}/{len(stations)}"
 
     @pytest.mark.integration
     @pytest.mark.asyncio
@@ -130,15 +125,11 @@ class TestEvalEndpointIntegration:
         test_stations = ["KORD", "CYYZ", "EDDM"]
 
         for station_id in test_stations:
-            result = await integration_helper.test_station_conversion(
-                station_id, hours=3
-            )
+            result = await integration_helper.test_station_conversion(station_id, hours=3)
 
             if result.raw_tac:
                 # Just verify conversion doesn't fail on real complex data
-                assert (
-                    result.converted_iwxxm is not None
-                ), f"Should convert {station_id} successfully"
+                assert result.converted_iwxxm is not None, f"Should convert {station_id} successfully"
 
     @pytest.mark.integration
     @pytest.mark.asyncio
@@ -205,9 +196,7 @@ class TestIntegrationWithMocks:
         mock_client = AsyncMock()
         mock_client.__aenter__.return_value = mock_client
         mock_client.__aexit__.return_value = None
-        mock_client.fetch_metar_batch = AsyncMock(
-            return_value={"KJFK": (mock_tac, mock_reference_iwxxm)}
-        )
+        mock_client.fetch_metar_batch = AsyncMock(return_value={"KJFK": (mock_tac, mock_reference_iwxxm)})
 
         # Use helper with mocked client
         helper = IntegrationTestHelper(mock_client=mock_client)
@@ -229,9 +218,7 @@ class TestIntegrationDataQuality:
     def test_integration_test_stations_defined(self):
         """Verify integration test stations are properly configured."""
         assert len(INTEGRATION_TEST_STATIONS) > 0
-        assert all(
-            len(station_id) == 4 for station_id in INTEGRATION_TEST_STATIONS.keys()
-        )
+        assert all(len(station_id) == 4 for station_id in INTEGRATION_TEST_STATIONS.keys())
 
     def test_smoke_test_subset_exists(self):
         """Verify smoke test subset is a proper subset of full stations."""

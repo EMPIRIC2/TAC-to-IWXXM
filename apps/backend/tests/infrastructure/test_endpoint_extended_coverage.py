@@ -13,6 +13,7 @@ Focuses on edge cases and scenarios not covered by basic integration tests:
 
 Run with: pytest tests/test_endpoint_extended_coverage.py -v
 """
+
 import asyncio
 import io
 import time
@@ -27,6 +28,7 @@ pytestmark = pytest.mark.integration
 # Extended Coverage: Large Batch Processing
 # =============================================================================
 
+
 class TestLargeBatchProcessing:
     """Test handling of large METAR batches."""
 
@@ -37,10 +39,7 @@ class TestLargeBatchProcessing:
 
         start_time = time.time()
 
-        response = client.post(
-            "/api/v1/convert",
-            json={"metars": metars, "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert", json={"metars": metars, "version": "2023-1"})
 
         elapsed = time.time() - start_time
 
@@ -59,10 +58,7 @@ class TestLargeBatchProcessing:
         """Test conversion of 200 METARs (stress test)."""
         metars = [sample_metars["EGLL"]] * 200
 
-        response = client.post(
-            "/api/v1/convert",
-            json={"metars": metars, "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert", json={"metars": metars, "version": "2023-1"})
 
         # Should either succeed or return a reasonable error
         assert response.status_code in [200, 413, 422, 503]
@@ -81,7 +77,7 @@ class TestLargeBatchProcessing:
                 "metars": metars,
                 "version": "2023-1",
                 "validation-level": "comprehensive",
-            }
+            },
         )
 
         assert response.status_code == 200
@@ -99,7 +95,7 @@ class TestLargeBatchProcessing:
                 "metars": metars,
                 "version": "2023-1",
                 "stop-on-error": True,
-            }
+            },
         )
 
         assert response.status_code in [200, 400, 422]
@@ -115,10 +111,7 @@ class TestLargeBatchProcessing:
         """Test ZIP endpoint with large batch."""
         metars = [sample_metars["KJFK"], sample_metars["EGLL"]] * 50  # 100 METARs
 
-        response = client.post(
-            "/api/v1/convert-zip",
-            json={"metars": metars, "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert-zip", json={"metars": metars, "version": "2023-1"})
 
         assert response.status_code == 200
         assert response.headers["content-type"] == "application/zip"
@@ -128,7 +121,7 @@ class TestLargeBatchProcessing:
         assert len(content) > 0
 
         # Parse ZIP to verify contents
-        with zipfile.ZipFile(io.BytesIO(content), 'r') as zf:
+        with zipfile.ZipFile(io.BytesIO(content), "r") as zf:
             namelist = zf.namelist()
             # Should have multiple files
             assert len(namelist) > 0
@@ -158,10 +151,12 @@ class TestConvertContractAlignment:
         assert data["metadata"]["stop_on_error"] is True
 
     def test_stop_on_error_halts_after_first_failure(self, client):
-        multiline = "\n".join([
-            "INVALID METAR",
-            "METAR EGLL 161220Z 09010KT 9999 SCT030 10/05 Q1018",
-        ])
+        multiline = "\n".join(
+            [
+                "INVALID METAR",
+                "METAR EGLL 161220Z 09010KT 9999 SCT030 10/05 Q1018",
+            ]
+        )
 
         response = client.post(
             "/api/v1/convert",
@@ -182,6 +177,7 @@ class TestConvertContractAlignment:
 # Extended Coverage: Concurrent Request Handling
 # =============================================================================
 
+
 class TestConcurrentRequestHandling:
     """Test handling of concurrent API requests."""
 
@@ -192,10 +188,7 @@ class TestConcurrentRequestHandling:
 
         async def make_request(index: int):
             """Make a single conversion request."""
-            response = client.post(
-                "/api/v1/convert",
-                json={"metars": [metar], "version": "2023-1"}
-            )
+            response = client.post("/api/v1/convert", json={"metars": [metar], "version": "2023-1"})
             return response.status_code, index
 
         # Launch 20 concurrent requests
@@ -216,6 +209,7 @@ class TestConcurrentRequestHandling:
     @pytest.mark.asyncio
     async def test_concurrent_validation_requests(self, client, sample_iwxxm):
         """Test concurrent validation requests."""
+
         async def validate():
             return client.post(
                 "/api/v1/validate",
@@ -223,7 +217,7 @@ class TestConcurrentRequestHandling:
                     "iwxxm_xml": sample_iwxxm,
                     "version": "2023-1",
                     "validation-level": "comprehensive",
-                }
+                },
             )
 
         # Launch 10 concurrent validation requests
@@ -237,17 +231,12 @@ class TestConcurrentRequestHandling:
     @pytest.mark.asyncio
     async def test_concurrent_mixed_endpoint_requests(self, client, sample_metars, sample_iwxxm):
         """Test concurrent requests to different endpoints."""
+
         async def convert_request():
-            return client.post(
-                "/api/v1/convert",
-                json={"metars": [sample_metars["KJFK"]], "version": "2023-1"}
-            )
+            return client.post("/api/v1/convert", json={"metars": [sample_metars["KJFK"]], "version": "2023-1"})
 
         async def validate_request():
-            return client.post(
-                "/api/v1/validate",
-                json={"iwxxm_xml": sample_iwxxm, "version": "2023-1"}
-            )
+            return client.post("/api/v1/validate", json={"iwxxm_xml": sample_iwxxm, "version": "2023-1"})
 
         async def versions_request():
             return client.get("/api/v1/versions")
@@ -276,6 +265,7 @@ class TestConcurrentRequestHandling:
 # Extended Coverage: ZIP Error File Generation
 # =============================================================================
 
+
 class TestZipErrorFileGeneration:
     """Test error file generation in ZIP endpoint."""
 
@@ -287,17 +277,14 @@ class TestZipErrorFileGeneration:
             "INVALID METAR 3",
         ]
 
-        response = client.post(
-            "/api/v1/convert-zip",
-            json={"metars": invalid_metars, "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert-zip", json={"metars": invalid_metars, "version": "2023-1"})
 
         # Should still return ZIP with error files
         assert response.status_code == 200
         assert response.headers["content-type"] == "application/zip"
 
         content = response.content
-        with zipfile.ZipFile(io.BytesIO(content), 'r') as zf:
+        with zipfile.ZipFile(io.BytesIO(content), "r") as zf:
             namelist = zf.namelist()
 
             # Should contain error files
@@ -313,15 +300,12 @@ class TestZipErrorFileGeneration:
             "ANOTHER INVALID METAR",
         ]
 
-        response = client.post(
-            "/api/v1/convert-zip",
-            json={"metars": metars, "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert-zip", json={"metars": metars, "version": "2023-1"})
 
         assert response.status_code == 200
 
         content = response.content
-        with zipfile.ZipFile(io.BytesIO(content), 'r') as zf:
+        with zipfile.ZipFile(io.BytesIO(content), "r") as zf:
             namelist = zf.namelist()
 
             # Should have both IWXXM files and error files
@@ -335,22 +319,19 @@ class TestZipErrorFileGeneration:
         """Test that error files contain meaningful error information."""
         invalid_metar = "COMPLETELY INVALID METAR DATA"
 
-        response = client.post(
-            "/api/v1/convert-zip",
-            json={"metars": [invalid_metar], "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert-zip", json={"metars": [invalid_metar], "version": "2023-1"})
 
         assert response.status_code == 200
 
         content = response.content
-        with zipfile.ZipFile(io.BytesIO(content), 'r') as zf:
+        with zipfile.ZipFile(io.BytesIO(content), "r") as zf:
             # Find error file
             error_files = [f for f in zf.namelist() if "error" in f.lower()]
 
             if error_files:
                 # Read error file content
                 with zf.open(error_files[0]) as ef:
-                    error_content = ef.read().decode('utf-8')
+                    error_content = ef.read().decode("utf-8")
 
                     # Should contain error details
                     assert len(error_content) > 0
@@ -364,13 +345,13 @@ class TestZipErrorFileGeneration:
                 "metars": [sample_metars["KJFK"]],
                 "version": "2023-1",
                 "validation-level": "comprehensive",
-            }
+            },
         )
 
         assert response.status_code == 200
 
         content = response.content
-        with zipfile.ZipFile(io.BytesIO(content), 'r') as zf:
+        with zipfile.ZipFile(io.BytesIO(content), "r") as zf:
             namelist = zf.namelist()
             # Should have files
             assert len(namelist) > 0
@@ -379,6 +360,7 @@ class TestZipErrorFileGeneration:
 # =============================================================================
 # Extended Coverage: Version Auto-Remapping Edge Cases
 # =============================================================================
+
 
 class TestVersionRemappingEdgeCases:
     """Test version auto-remapping scenarios."""
@@ -390,7 +372,7 @@ class TestVersionRemappingEdgeCases:
             json={
                 "metars": [sample_metars["KJFK"]],
                 "version": "2025-1",  # Should auto-remap
-            }
+            },
         )
 
         # Should succeed (not return "unsupported version" error)
@@ -407,7 +389,7 @@ class TestVersionRemappingEdgeCases:
             json={
                 "metars": [sample_metars["KJFK"]],
                 "version": "9999-99",  # Invalid version
-            }
+            },
         )
 
         # Should return error for invalid version
@@ -423,7 +405,7 @@ class TestVersionRemappingEdgeCases:
                 "iwxxm_xml": sample_iwxxm,
                 "version": "2025-1",  # Should remap
                 "validation-level": "schema",
-            }
+            },
         )
 
         # Should handle remapping in validation
@@ -439,7 +421,7 @@ class TestVersionRemappingEdgeCases:
                 json={
                     "metars": [sample_metars["KJFK"]],
                     "version": version,
-                }
+                },
             )
 
             # Should either accept or reject consistently
@@ -450,16 +432,20 @@ class TestVersionRemappingEdgeCases:
 # Extended Coverage: All Validation Layer Combinations
 # =============================================================================
 
+
 class TestValidationLayerCombinations:
     """Test all validation layer combinations and stop-on-error behavior."""
 
-    @pytest.mark.parametrize("validation_level", [
-        "none",
-        "basic",
-        "schema",
-        "comprehensive",
-        "full",
-    ])
+    @pytest.mark.parametrize(
+        "validation_level",
+        [
+            "none",
+            "basic",
+            "schema",
+            "comprehensive",
+            "full",
+        ],
+    )
     def test_convert_with_all_validation_levels(self, client, sample_metars, validation_level):
         """Test conversion with each validation level."""
         response = client.post(
@@ -468,7 +454,7 @@ class TestValidationLayerCombinations:
                 "metars": [sample_metars["KJFK"]],
                 "version": "2023-1",
                 "validation-level": validation_level,
-            }
+            },
         )
 
         # All validation levels should be handled
@@ -489,7 +475,7 @@ class TestValidationLayerCombinations:
                 "metars": metars,
                 "version": "2023-1",
                 "stop-on-error": stop_on_error,
-            }
+            },
         )
 
         assert response.status_code in [200, 400]
@@ -505,14 +491,17 @@ class TestValidationLayerCombinations:
                 # Without stop-on-error, should process all
                 assert len(results) <= len(metars)
 
-    @pytest.mark.parametrize("validation_level,stop_on_error", [
-        ("none", True),
-        ("none", False),
-        ("schema", True),
-        ("schema", False),
-        ("comprehensive", True),
-        ("comprehensive", False),
-    ])
+    @pytest.mark.parametrize(
+        "validation_level,stop_on_error",
+        [
+            ("none", True),
+            ("none", False),
+            ("schema", True),
+            ("schema", False),
+            ("comprehensive", True),
+            ("comprehensive", False),
+        ],
+    )
     def test_validation_level_and_stop_on_error_combinations(
         self, client, sample_metars, validation_level, stop_on_error
     ):
@@ -526,7 +515,7 @@ class TestValidationLayerCombinations:
                 "version": "2023-1",
                 "validation-level": validation_level,
                 "stop-on-error": stop_on_error,
-            }
+            },
         )
 
         # Should handle all combinations
@@ -543,7 +532,7 @@ class TestValidationLayerCombinations:
                     "iwxxm_xml": sample_iwxxm,
                     "version": "2023-1",
                     "validation-level": layer,
-                }
+                },
             )
 
             assert response.status_code in [200, 400]
@@ -552,6 +541,7 @@ class TestValidationLayerCombinations:
 # =============================================================================
 # Extended Coverage: Performance Boundaries
 # =============================================================================
+
 
 class TestPerformanceBoundaries:
     """Test API behavior at performance boundaries."""
@@ -562,10 +552,7 @@ class TestPerformanceBoundaries:
         # Construct a very large METAR (edge case)
         large_metar = "KJFK 121853Z 24008KT 10SM FEW250 M04/M17 A3034 " + ("RMK AO2 " * 100)
 
-        response = client.post(
-            "/api/v1/convert",
-            json={"metars": [large_metar], "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert", json={"metars": [large_metar], "version": "2023-1"})
 
         # Should handle gracefully (success or reasonable error)
         assert response.status_code in [200, 400, 413, 422]
@@ -578,10 +565,7 @@ class TestPerformanceBoundaries:
         # Simulate high load
         responses = []
         for _ in range(50):
-            response = client.post(
-                "/api/v1/convert",
-                json={"metars": [metar], "version": "2023-1"}
-            )
+            response = client.post("/api/v1/convert", json={"metars": [metar], "version": "2023-1"})
             responses.append(response.status_code)
 
         # Should handle load gracefully
@@ -596,10 +580,7 @@ class TestPerformanceBoundaries:
         metars = [sample_metars["KJFK"]] * 500
 
         start_time = time.time()
-        response = client.post(
-            "/api/v1/convert",
-            json={"metars": metars, "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert", json={"metars": metars, "version": "2023-1"})
         elapsed = time.time() - start_time
 
         # Should respond within reasonable time or return timeout error
@@ -611,25 +592,20 @@ class TestPerformanceBoundaries:
 # Extended Coverage: Resource Exhaustion Handling
 # =============================================================================
 
+
 class TestResourceExhaustionHandling:
     """Test handling of resource exhaustion scenarios."""
 
     def test_empty_metar_list(self, client):
         """Test conversion with empty METAR list."""
-        response = client.post(
-            "/api/v1/convert",
-            json={"metars": [], "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert", json={"metars": [], "version": "2023-1"})
 
         # Should handle empty list gracefully
         assert response.status_code in [200, 400, 422]
 
     def test_null_metar_values(self, client):
         """Test conversion with null METAR values."""
-        response = client.post(
-            "/api/v1/convert",
-            json={"metars": [None, None], "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert", json={"metars": [None, None], "version": "2023-1"})
 
         # Should handle null values gracefully
         assert response.status_code in [400, 422]
@@ -638,21 +614,14 @@ class TestResourceExhaustionHandling:
         """Test with extremely long METAR list (1000+)."""
         metars = [sample_metars["KJFK"]] * 1000
 
-        response = client.post(
-            "/api/v1/convert",
-            json={"metars": metars, "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert", json={"metars": metars, "version": "2023-1"})
 
         # Should either process or return appropriate error
         assert response.status_code in [200, 413, 422, 503]
 
     def test_malformed_json_request(self, client):
         """Test handling of malformed JSON in request."""
-        response = client.post(
-            "/api/v1/convert",
-            data="{invalid json}",
-            headers={"Content-Type": "application/json"}
-        )
+        response = client.post("/api/v1/convert", data="{invalid json}", headers={"Content-Type": "application/json"})
 
         # Should return 400 or 422 for malformed JSON
         assert response.status_code in [400, 422]
@@ -660,10 +629,7 @@ class TestResourceExhaustionHandling:
     def test_missing_required_fields(self, client):
         """Test handling of missing required fields."""
         # Missing 'metars' field
-        response = client.post(
-            "/api/v1/convert",
-            json={"version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert", json={"version": "2023-1"})
 
         assert response.status_code == 422
         data = response.json()
@@ -672,10 +638,7 @@ class TestResourceExhaustionHandling:
     def test_invalid_field_types(self, client):
         """Test handling of invalid field types."""
         # 'metars' should be list, not string
-        response = client.post(
-            "/api/v1/convert",
-            json={"metars": "NOT_A_LIST", "version": "2023-1"}
-        )
+        response = client.post("/api/v1/convert", json={"metars": "NOT_A_LIST", "version": "2023-1"})
 
         assert response.status_code == 422
         data = response.json()
@@ -685,6 +648,7 @@ class TestResourceExhaustionHandling:
 # =============================================================================
 # Extended Coverage: Edge Cases in Query Parameters
 # =============================================================================
+
 
 class TestQueryParameterEdgeCases:
     """Test edge cases in query parameter handling."""

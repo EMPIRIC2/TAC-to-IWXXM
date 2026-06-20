@@ -15,7 +15,7 @@ class TestBackendFrontendIntegration:
         mock_response = {
             "status": "healthy",
             "service": "conversion",
-            "version": "0.1.0"
+            "version": "0.1.0",
         }
         assert mock_response["status"] == "healthy"
         assert "version" in mock_response
@@ -27,23 +27,25 @@ class TestBackendFrontendIntegration:
             "metar_text": "KJFK 121251Z 24016G28KT 3SM -SN BKN014 OVC040 23/19 A3000",
             "bulletin_id": "TEST0001",
             "issuing_center": "KJFK",
-            "iwxxm_version": "2.1"
+            "iwxxm_version": "2.1",
         }
-        
+
         # Backend processes and returns:
         mock_response = {
-            "results": [{
-                "name": "KJFK_TEST0001.xml",
-                "content": "<?xml version=\"1.0\"?>...",
-                "source": "METAR",
-                "size_bytes": 1024
-            }],
+            "results": [
+                {
+                    "name": "KJFK_TEST0001.xml",
+                    "content": '<?xml version="1.0"?>...',
+                    "source": "METAR",
+                    "size_bytes": 1024,
+                }
+            ],
             "errors": [],
             "total_processed": 1,
             "successful": 1,
-            "failed": 0
+            "failed": 0,
         }
-        
+
         assert len(mock_response["results"]) == 1
         assert mock_response["successful"] == 1
         assert mock_response["failed"] == 0
@@ -52,16 +54,16 @@ class TestBackendFrontendIntegration:
         """Test file upload and conversion flow."""
         # Frontend uploads TAC file
         file_data = b"KJFK 121251Z 24016G28KT 3SM -SN BKN014 OVC040 23/19 A3000"
-        
+
         # Backend processes
         mock_response = {
             "results": [{"name": "output.xml", "content": "..."}],
             "errors": [],
             "total_processed": 1,
             "successful": 1,
-            "failed": 0
+            "failed": 0,
         }
-        
+
         assert len(mock_response["results"]) > 0
 
     def test_frontend_receives_error_responses(self):
@@ -69,9 +71,9 @@ class TestBackendFrontendIntegration:
         mock_error_response = {
             "detail": "Invalid METAR format",
             "status_code": 400,
-            "errors": ["METAR parsing failed"]
+            "errors": ["METAR parsing failed"],
         }
-        
+
         assert "detail" in mock_error_response
         assert mock_error_response["status_code"] == 400
 
@@ -80,15 +82,11 @@ class TestBackendFrontendIntegration:
         # Frontend requests ZIP of all results
         # Backend returns ZIP file with:
         zip_contents = {
-            "files": [
-                "KJFK_001.xml",
-                "KLAX_001.xml", 
-                "KORD_001.xml"
-            ],
+            "files": ["KJFK_001.xml", "KLAX_001.xml", "KORD_001.xml"],
             "size_bytes": 5120,
-            "content_type": "application/zip"
+            "content_type": "application/zip",
         }
-        
+
         assert len(zip_contents["files"]) == 3
         assert zip_contents["content_type"] == "application/zip"
 
@@ -123,18 +121,20 @@ class TestBackendResponseParsing:
     def test_frontend_parses_conversion_result(self):
         """Frontend should correctly parse conversion results."""
         backend_response = {
-            "results": [{
-                "name": "test.xml",
-                "content": "<IWXXM>...</IWXXM>",
-                "source": "METAR",
-                "size_bytes": 512
-            }],
+            "results": [
+                {
+                    "name": "test.xml",
+                    "content": "<IWXXM>...</IWXXM>",
+                    "source": "METAR",
+                    "size_bytes": 512,
+                }
+            ],
             "errors": [],
             "total_processed": 1,
             "successful": 1,
-            "failed": 0
+            "failed": 0,
         }
-        
+
         # Frontend extracts result
         result = backend_response["results"][0]
         assert result["name"] == "test.xml"
@@ -144,15 +144,25 @@ class TestBackendResponseParsing:
         """Frontend handles responses with some failed conversions."""
         backend_response = {
             "results": [
-                {"name": "success.xml", "content": "...", "source": "METAR", "size_bytes": 512},
-                {"name": "success2.xml", "content": "...", "source": "METAR", "size_bytes": 512}
+                {
+                    "name": "success.xml",
+                    "content": "...",
+                    "source": "METAR",
+                    "size_bytes": 512,
+                },
+                {
+                    "name": "success2.xml",
+                    "content": "...",
+                    "source": "METAR",
+                    "size_bytes": 512,
+                },
             ],
             "errors": ["KJFK invalid format"],
             "total_processed": 3,
             "successful": 2,
-            "failed": 1
+            "failed": 1,
         }
-        
+
         # Frontend should display both results and errors
         assert backend_response["successful"] == 2
         assert backend_response["failed"] == 1
@@ -172,10 +182,7 @@ class TestFrontendBackendErrorHandling:
 
     def test_frontend_handles_auth_failure(self):
         """Frontend handles auth failures from backend."""
-        backend_response = {
-            "detail": "Unauthorized",
-            "status_code": 401
-        }
+        backend_response = {"detail": "Unauthorized", "status_code": 401}
         assert backend_response["status_code"] == 401
 
     def test_frontend_handles_rate_limiting(self):
@@ -183,7 +190,7 @@ class TestFrontendBackendErrorHandling:
         backend_response = {
             "detail": "Rate limit exceeded",
             "status_code": 429,
-            "retry_after": 60
+            "retry_after": 60,
         }
         assert backend_response["status_code"] == 429
 
@@ -197,17 +204,17 @@ class TestConversionWorkflow:
         request = {
             "metar_text": "KJFK 121251Z 24016G28KT 3SM -SN BKN014 OVC040 23/19 A3000",
             "bulletin_id": "AUTO0001",
-            "issuing_center": "KJFK"
+            "issuing_center": "KJFK",
         }
-        
+
         # 2. Backend processes
         response = {
             "results": [{"name": "output.xml", "content": "..."}],
             "errors": [],
             "successful": 1,
-            "failed": 0
+            "failed": 0,
         }
-        
+
         # 3. Frontend receives and parses
         assert response["successful"] == 1
         assert len(response["results"]) > 0
@@ -216,20 +223,20 @@ class TestConversionWorkflow:
         """Test workflow for batch file conversion."""
         # 1. Frontend uploads multiple files
         files = ["file1.tac", "file2.tac", "file3.tac"]
-        
+
         # 2. Backend processes all files
         response = {
             "results": [
                 {"name": "file1.xml", "content": "...", "size_bytes": 512},
                 {"name": "file2.xml", "content": "...", "size_bytes": 512},
-                {"name": "file3.xml", "content": "...", "size_bytes": 512}
+                {"name": "file3.xml", "content": "...", "size_bytes": 512},
             ],
             "errors": [],
             "total_processed": 3,
             "successful": 3,
-            "failed": 0
+            "failed": 0,
         }
-        
+
         # 3. Frontend creates ZIP
         assert len(response["results"]) == 3
         assert response["total_processed"] == 3

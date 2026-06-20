@@ -53,15 +53,11 @@ class TestF2ValidationSmoke:
         assert isinstance(layers_raw, list)
         layers: list[Any] = layers_raw
         assert len(layers) == 7
-        layer_names = {
-            layer["layer"] for layer in layers if isinstance(layer, dict)
-        }
+        layer_names = {layer["layer"] for layer in layers if isinstance(layer, dict)}
         assert "airport_icao" in layer_names
         assert "xml_schema" in layer_names
 
-    def test_comprehensive_validate_known_good_metar(
-        self, smoke_client: TestClient
-    ) -> None:
+    def test_comprehensive_validate_known_good_metar(self, smoke_client: TestClient) -> None:
         response = smoke_client.post(
             "/api/v1/validate",
             data={
@@ -116,12 +112,8 @@ class TestF3AirportDataSmoke:
         assert record["icao"] == KNOWN_ICAO
         assert record.get("name")
 
-    def test_translation_airport_region_endpoint(
-        self, smoke_client: TestClient
-    ) -> None:
-        response = smoke_client.get(
-            f"/api/v1/translation/airport-region/{KNOWN_ICAO}"
-        )
+    def test_translation_airport_region_endpoint(self, smoke_client: TestClient) -> None:
+        response = smoke_client.get(f"/api/v1/translation/airport-region/{KNOWN_ICAO}")
         assert response.status_code == 200
         payload = response.json()
         assert isinstance(payload, dict)
@@ -139,17 +131,13 @@ class TestF4VersionHandlingSmoke:
         assert isinstance(payload, dict)
         supported = payload.get("supported_versions")
         assert isinstance(supported, list)
-        versions = {
-            entry["version"] for entry in supported if isinstance(entry, dict)
-        }
+        versions = {entry["version"] for entry in supported if isinstance(entry, dict)}
         assert "2025-2" in versions
         assert "2023-1" in versions
         assert payload["default_version"] == "2025-2"
 
     @pytest.mark.parametrize("version", ["2025-2", "2023-1"])
-    def test_convert_emits_version_specific_namespace(
-        self, smoke_client: TestClient, version: str
-    ) -> None:
+    def test_convert_emits_version_specific_namespace(self, smoke_client: TestClient, version: str) -> None:
         response = smoke_client.post(
             "/api/v1/convert",
             data={"manual_text": SAMPLE_METAR, "iwxxm_version": version},

@@ -1,4 +1,5 @@
 """Test Supabase direct connection (from dashboard)."""
+
 from sqlalchemy import create_engine, text
 import os
 import pytest
@@ -8,19 +9,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 print("Testing Supabase Direct Connection")
-print("="*60)
+print("=" * 60)
 
 # Use environment variable for connection string
 DATABASE_URL = os.getenv(
     "TEST_DIRECT_CONNECTION_URL",
-    "postgresql+psycopg2://postgres:password@db.project-ref.supabase.co:5432/postgres?sslmode=require"
+    "postgresql+psycopg2://postgres:password@db.project-ref.supabase.co:5432/postgres?sslmode=require",
 )
 
 if "project-ref" in DATABASE_URL or "password" in DATABASE_URL:
-    pytest.skip(
-        "TEST_DIRECT_CONNECTION_URL not set - skipping direct connection test",
-        allow_module_level=True
-    )
+    pytest.skip("TEST_DIRECT_CONNECTION_URL not set - skipping direct connection test", allow_module_level=True)
 
 try:
     engine = create_engine(DATABASE_URL, pool_pre_ping=True)
@@ -42,9 +40,9 @@ try:
         user = result.scalar()
         print(f"✓ Connected as user: {user}")
 
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("🎉 SUCCESS! Supabase direct connection works!")
-        print("="*60)
+        print("=" * 60)
         sys.exit(0)
 
 except Exception as e:

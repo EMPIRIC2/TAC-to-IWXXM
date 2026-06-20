@@ -17,16 +17,25 @@ TEST_CORPUS_SOURCES: Dict[str, Dict[str, Any]] = {
         "type": "mirrored",
         "path": PROJECT_ROOT / "schemas" / "iwxxm" / "{version}" / "examples",
         "description": "Official WMO canonical examples from schemas.wmo.int",
-        "products": ["METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "TC_ADVISORY", "VA_ADVISORY", "SPACE_WEATHER", "WAFS", "VONA", "QVACI"],
+        "products": [
+            "METAR",
+            "SPECI",
+            "TAF",
+            "SIGMET",
+            "AIRMET",
+            "TC_ADVISORY",
+            "VA_ADVISORY",
+            "SPACE_WEATHER",
+            "WAFS",
+            "VONA",
+            "QVACI",
+        ],
         "priority": "canonical",
         "versions_covered": ["2023-1", "2025-2", "2025-2RC1", "2025-2RC2"],
         "enabled": True,
         "source_url": "https://schemas.wmo.int/iwxxm/{version}/examples/",
-        "examples_count": {
-            "2023-1": 50,
-            "2025-2": 58
-        },
-        "validation_notes": "Highest priority - official WMO reference examples with TAC pairs"
+        "examples_count": {"2023-1": 50, "2025-2": 58},
+        "validation_notes": "Highest priority - official WMO reference examples with TAC pairs",
     },
     "wmo_translation_pairs": {
         "type": "git_submodule",
@@ -36,7 +45,7 @@ TEST_CORPUS_SOURCES: Dict[str, Dict[str, Any]] = {
         "priority": "correctness",
         "versions_covered": ["2023-1", "2025-2"],
         "enabled": True,
-        "url": "https://github.com/wmo-im/iwxxm-translation"
+        "url": "https://github.com/wmo-im/iwxxm-translation",
     },
     "wmo_iwxxm_examples": {
         "type": "git_submodule",
@@ -47,7 +56,7 @@ TEST_CORPUS_SOURCES: Dict[str, Dict[str, Any]] = {
         "versions_covered": ["2023-1", "2025-2"],
         "enabled": False,  # Superseded by wmo_canonical_examples
         "url": "https://github.com/wmo-im/iwxxm",
-        "deprecation_note": "Use wmo_canonical_examples instead for versioned examples"
+        "deprecation_note": "Use wmo_canonical_examples instead for versioned examples",
     },
     "nws_iwxxm_us": {
         "type": "snapshot_fetch",
@@ -59,7 +68,7 @@ TEST_CORPUS_SOURCES: Dict[str, Dict[str, Any]] = {
         "update_frequency": "weekly",
         "enabled": True,
         "max_samples": 100,  # Limit snapshot size
-        "validation_notes": "May contain IWXXM-US extensions not in base schema"
+        "validation_notes": "May contain IWXXM-US extensions not in base schema",
     },
     "aviationweather_api": {
         "type": "live_api_snapshot",
@@ -75,7 +84,7 @@ TEST_CORPUS_SOURCES: Dict[str, Dict[str, Any]] = {
             "format": "iwxxm",
             "hours": 3,  # Last 3 hours of data
         },
-        "validation_notes": "Real-world operational data with full diversity"
+        "validation_notes": "Real-world operational data with full diversity",
     },
     "swim_registry_dwd": {
         "type": "snapshot_fetch",
@@ -87,8 +96,8 @@ TEST_CORPUS_SOURCES: Dict[str, Dict[str, Any]] = {
         "update_frequency": "weekly",
         "enabled": False,  # Disabled by default (may require auth)
         "max_samples": 30,
-        "validation_notes": "European stations, SWIM-wrapped format"
-    }
+        "validation_notes": "European stations, SWIM-wrapped format",
+    },
 }
 
 
@@ -106,10 +115,7 @@ def get_corpus_source(name: str) -> Dict[str, Any]:
         KeyError: If corpus source not found
     """
     if name not in TEST_CORPUS_SOURCES:
-        raise KeyError(
-            f"Unknown corpus source: {name}. "
-            f"Available: {list(TEST_CORPUS_SOURCES.keys())}"
-        )
+        raise KeyError(f"Unknown corpus source: {name}. Available: {list(TEST_CORPUS_SOURCES.keys())}")
     return TEST_CORPUS_SOURCES[name]
 
 
@@ -120,11 +126,7 @@ def get_enabled_corpus_sources() -> Dict[str, Dict[str, Any]]:
     Returns:
         Dictionary of enabled corpus sources
     """
-    return {
-        name: config
-        for name, config in TEST_CORPUS_SOURCES.items()
-        if config.get("enabled", False)
-    }
+    return {name: config for name, config in TEST_CORPUS_SOURCES.items() if config.get("enabled", False)}
 
 
 def get_corpus_sources_by_type(source_type: str) -> Dict[str, Dict[str, Any]]:
@@ -137,11 +139,7 @@ def get_corpus_sources_by_type(source_type: str) -> Dict[str, Dict[str, Any]]:
     Returns:
         Dictionary of corpus sources matching the type
     """
-    return {
-        name: config
-        for name, config in TEST_CORPUS_SOURCES.items()
-        if config.get("type") == source_type
-    }
+    return {name: config for name, config in TEST_CORPUS_SOURCES.items() if config.get("type") == source_type}
 
 
 def get_corpus_sources_by_priority(priority: str) -> Dict[str, Dict[str, Any]]:
@@ -154,11 +152,7 @@ def get_corpus_sources_by_priority(priority: str) -> Dict[str, Dict[str, Any]]:
     Returns:
         Dictionary of corpus sources matching the priority
     """
-    return {
-        name: config
-        for name, config in TEST_CORPUS_SOURCES.items()
-        if config.get("priority") == priority
-    }
+    return {name: config for name, config in TEST_CORPUS_SOURCES.items() if config.get("priority") == priority}
 
 
 def get_corpus_path(name: str, version: str = None) -> Path:

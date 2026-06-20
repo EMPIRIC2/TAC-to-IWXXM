@@ -64,11 +64,15 @@ def test_get_schema_status_includes_rc_metadata(client, monkeypatch):
     from src.config import iwxxm_versions as versions_module
 
     monkeypatch.setattr(versions_module, "DEFAULT_VERSION", "2025-2")
-    monkeypatch.setattr(versions_module, "get_versions_by_channel", lambda channel: {
-        "stable": ["2025-2", "2023-1"],
-        "rc": ["2025-2RC1"],
-        "all": ["2025-2", "2025-2RC1", "2023-1"],
-    }[channel])
+    monkeypatch.setattr(
+        versions_module,
+        "get_versions_by_channel",
+        lambda channel: {
+            "stable": ["2025-2", "2023-1"],
+            "rc": ["2025-2RC1"],
+            "all": ["2025-2", "2025-2RC1", "2023-1"],
+        }[channel],
+    )
     monkeypatch.setattr(
         versions_module,
         "get_all_versions_with_metadata",

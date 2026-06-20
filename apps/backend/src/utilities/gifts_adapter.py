@@ -30,11 +30,11 @@ def _wrap_in_bulletin(tac_text: str) -> str:
 
     # Ensure TAC starts with METAR or SPECI
     tac = tac_text.strip()
-    if not tac.upper().startswith(('METAR', 'SPECI')):
+    if not tac.upper().startswith(("METAR", "SPECI")):
         tac = f"METAR {tac}"
 
     # End with equals sign
-    if not tac.endswith('='):
+    if not tac.endswith("="):
         tac = f"{tac}="
 
     return f"{header}{tac}"
@@ -43,6 +43,7 @@ def _wrap_in_bulletin(tac_text: str) -> str:
 # Import GIFTs modules (workspace package packages/gifts)
 try:
     from gifts import metarDecoder, metarEncoder  # type: ignore
+
     logger.info("GIFTs modules imported successfully")
 except ImportError as e:
     logger.error(f"Failed to import GIFTs modules: {e}")
@@ -104,16 +105,16 @@ class GIFTsEncoder:
         if self.geo_locations_db is not None:
             try:
                 # Get ICAO code from decoded data
-                ident = decoded_data.get('ident')
+                ident = decoded_data.get("ident")
                 icao = None
 
                 # Handle both dict and alternative structures
                 if isinstance(ident, dict):
-                    icao = ident.get('str')
+                    icao = ident.get("str")
                 elif isinstance(ident, list) and len(ident) > 0:
                     # If ident is a list, get first element's 'str' field
                     if isinstance(ident[0], dict):
-                        icao = ident[0].get('str')
+                        icao = ident[0].get("str")
                     else:
                         icao = str(ident[0]) if ident[0] else None
 
@@ -121,7 +122,7 @@ class GIFTsEncoder:
                     metadata = self.geo_locations_db.get(icao)
                     if metadata:
                         # Parse metadata in format: "name|iata|designator|lat,lon"
-                        parts = metadata.split('|')
+                        parts = metadata.split("|")
                         if len(parts) == 4:
                             fullname, iataID, alternateID, position = parts
 
@@ -137,19 +138,19 @@ class GIFTsEncoder:
                                 ident.clear()
 
                                 # 1. Core identification field first (ICAO code - must remain first)
-                                if 'str' in original_ident:
-                                    ident['str'] = original_ident['str']
+                                if "str" in original_ident:
+                                    ident["str"] = original_ident["str"]
 
                                 # 2. Airport metadata in canonical order
                                 # Note: alternate becomes <designator>, iataID becomes <designatorIATA>
                                 if len(fullname) > 0:
-                                    ident['name'] = fullname
+                                    ident["name"] = fullname
                                 if len(alternateID) > 0:
-                                    ident['alternate'] = alternateID
+                                    ident["alternate"] = alternateID
                                 if len(iataID) > 0:
-                                    ident['iataID'] = iataID
+                                    ident["iataID"] = iataID
                                 if len(position) > 0:
-                                    ident['position'] = position
+                                    ident["position"] = position
 
                                 # 3. Restore any other fields that were in original (e.g., index, ts, etc.)
                                 for key, value in original_ident.items():
@@ -163,23 +164,25 @@ class GIFTsEncoder:
                                 original_ident = ident[0].copy()
                                 ident[0].clear()
 
-                                if 'str' in original_ident:
-                                    ident[0]['str'] = original_ident['str']
+                                if "str" in original_ident:
+                                    ident[0]["str"] = original_ident["str"]
 
                                 if len(fullname) > 0:
-                                    ident[0]['name'] = fullname
+                                    ident[0]["name"] = fullname
                                 if len(alternateID) > 0:
-                                    ident[0]['alternate'] = alternateID
+                                    ident[0]["alternate"] = alternateID
                                 if len(iataID) > 0:
-                                    ident[0]['iataID'] = iataID
+                                    ident[0]["iataID"] = iataID
                                 if len(position) > 0:
-                                    ident[0]['position'] = position
+                                    ident[0]["position"] = position
 
                                 for key, value in original_ident.items():
                                     if key not in ident[0]:
                                         ident[0][key] = value
 
-                                logger.debug(f"Injected airport metadata for {icao} (list), field order: {list(ident[0].keys())}")
+                                logger.debug(
+                                    f"Injected airport metadata for {icao} (list), field order: {list(ident[0].keys())}"
+                                )
                     else:
                         logger.debug(f"No metadata found for {icao}")
             except Exception as e:
@@ -288,11 +291,7 @@ def get_decoder(version: Optional[str] = None) -> GIFTsDecoder:
     return _decoder_instance
 
 
-def convert_tac_to_iwxxm(
-    tac_text: str,
-    version: Optional[str] = None,
-    geo_locations_db=None
-) -> Any:
+def convert_tac_to_iwxxm(tac_text: str, version: Optional[str] = None, geo_locations_db=None) -> Any:
     """
     Convert METAR/SPECI TAC text to IWXXM XML for a specific version.
 
@@ -319,14 +318,17 @@ def convert_tac_to_iwxxm(
     # The encoder expects these fields when TRANSLATOR=True in xmlConfig
     try:
         from gifts.common import xmlConfig as des
+
         if des.TRANSLATOR:
             # Add bulletin ID (simplified - just use station + timestamp)
-            if 'ident' in decoded and 'str' in decoded['ident']:
-                decoded['translatedBulletinID'] = f"MT{decoded['ident']['str']}{datetime.utcnow().strftime('%d%H%M')}"
+            if "ident" in decoded and "str" in decoded["ident"]:
+                decoded["translatedBulletinID"] = f"MT{decoded['ident']['str']}{datetime.utcnow().strftime('%d%H%M')}"
 
             # Add bulletin reception time (use translation time if not provided)
-            if 'translatedBulletinReceptionTime' not in decoded:
-                decoded['translatedBulletinReceptionTime'] = decoded.get('translationTime', datetime.utcnow().isoformat() + 'Z')
+            if "translatedBulletinReceptionTime" not in decoded:
+                decoded["translatedBulletinReceptionTime"] = decoded.get(
+                    "translationTime", datetime.utcnow().isoformat() + "Z"
+                )
     except (ImportError, AttributeError):
         pass
 

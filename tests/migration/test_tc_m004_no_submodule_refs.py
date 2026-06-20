@@ -28,7 +28,11 @@ def _scan_text(path: Path, pattern: re.Pattern[str]) -> list[str]:
         text = path.read_text(encoding="utf-8")
     except OSError:
         return []
-    return [f"{path.relative_to(ROOT)}:{idx}" for idx, line in enumerate(text.splitlines(), 1) if pattern.search(line)]
+    return [
+        f"{path.relative_to(ROOT)}:{idx}"
+        for idx, line in enumerate(text.splitlines(), 1)
+        if pattern.search(line)
+    ]
 
 
 @pytest.mark.migration
@@ -45,7 +49,9 @@ class TestTcM004NoSubmoduleReferences:
         hits: list[str] = []
         for workflow in sorted(WORKFLOW_DIR.glob("*.yml")):
             hits.extend(_scan_text(workflow, SUBMODULE_COMMAND_PATTERN))
-        assert not hits, "CI workflows must not reference git submodule:\n" + "\n".join(hits)
+        assert not hits, "CI workflows must not reference git submodule:\n" + "\n".join(
+            hits
+        )
 
     def test_scripts_contain_no_submodule_commands(self) -> None:
         hits: list[str] = []
@@ -57,8 +63,13 @@ class TestTcM004NoSubmoduleReferences:
         assert not hits, "scripts/ must not reference submodules:\n" + "\n".join(hits)
 
     @pytest.mark.parametrize("doc_path", STANDING_DOC_PATHS, ids=lambda p: p.name)
-    def test_standing_docs_contain_no_submodule_instructions(self, doc_path: Path) -> None:
+    def test_standing_docs_contain_no_submodule_instructions(
+        self, doc_path: Path
+    ) -> None:
         if not doc_path.is_file():
             pytest.skip(f"missing doc: {doc_path}")
         hits = _scan_text(doc_path, SUBMODULE_COMMAND_PATTERN)
-        assert not hits, f"{doc_path.relative_to(ROOT)} must not instruct git submodule:\n" + "\n".join(hits)
+        assert not hits, (
+            f"{doc_path.relative_to(ROOT)} must not instruct git submodule:\n"
+            + "\n".join(hits)
+        )

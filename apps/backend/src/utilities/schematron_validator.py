@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class SchematronValidationResult:
     """Result of Schematron validation."""
+
     is_valid: bool
     issues: List[ValidationIssue]
     schema_version: str
@@ -98,7 +99,7 @@ class SchematronValidator:
         required_codelists = [
             "codes.wmo.int-common-nil.rdf",
             "codes.wmo.int-49-2-AerodromeRecentWeather.rdf",
-            "codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf"
+            "codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf",
         ]
 
         # For 2025-2, check for split NIL codelist
@@ -110,16 +111,13 @@ class SchematronValidator:
 
         missing = [f for f in required_codelists if f not in rdf_names]
         if missing:
-            logger.warning(
-                f"Some required RDF codelists missing for {version}: {missing}"
-            )
+            logger.warning(f"Some required RDF codelists missing for {version}: {missing}")
 
         for rdf_file in rdf_files:
             shutil.copy2(rdf_file, work_dir / rdf_file.name)
 
         logger.info(
-            f"✓ Set up offline Schematron validation for {version}: "
-            f"{work_dir} ({len(rdf_files)} bundled RDF codelists)"
+            f"✓ Set up offline Schematron validation for {version}: {work_dir} ({len(rdf_files)} bundled RDF codelists)"
         )
 
         self._working_dirs[version] = work_dir
@@ -147,9 +145,7 @@ class SchematronValidator:
         sch_path = self.registry.get_schematron_path(version)
 
         if not sch_path or not sch_path.exists():
-            raise FileNotFoundError(
-                f"Schematron file not found for version {version}: {sch_path}"
-            )
+            raise FileNotFoundError(f"Schematron file not found for version {version}: {sch_path}")
 
         logger.info(f"Compiling Schematron for version {version}: {sch_path}")
 
@@ -157,7 +153,7 @@ class SchematronValidator:
         if version == "2025-2":
             # Read Schematron to check query binding
             try:
-                with open(sch_path, 'r', encoding='utf-8') as f:
+                with open(sch_path, "r", encoding="utf-8") as f:
                     content = f.read()
                     if 'queryBinding="xslt2"' in content:
                         logger.warning(
@@ -177,16 +173,12 @@ class SchematronValidator:
             # Parse Schematron with working directory as base
             # This allows document() calls to resolve RDF files
             parser = etree.XMLParser()
-            with open(sch_path, 'rb') as f:
+            with open(sch_path, "rb") as f:
                 sch_doc = etree.parse(f, parser, base_url=str(work_dir))
 
             # Compile Schematron
             # store_report=True preserves SVRL output for detailed error messages
-            schematron = isoschematron.Schematron(
-                sch_doc,
-                store_report=True,
-                store_schematron=True
-            )
+            schematron = isoschematron.Schematron(sch_doc, store_report=True, store_schematron=True)
 
             # Cache compiled Schematron
             self._schematron_cache[version] = schematron
@@ -207,11 +199,7 @@ class SchematronValidator:
             logger.error(f"Unexpected error compiling Schematron: {e}")
             raise
 
-    def _parse_svrl_report(
-        self,
-        schematron: isoschematron.Schematron,
-        version: str
-    ) -> List[ValidationIssue]:
+    def _parse_svrl_report(self, schematron: isoschematron.Schematron, version: str) -> List[ValidationIssue]:
         """
         Parse Schematron SVRL (Schematron Validation Report Language) output.
 
@@ -231,67 +219,57 @@ class SchematronValidator:
             return issues
 
         # SVRL namespace
-        svrl_ns = {'svrl': 'http://purl.oclc.org/dsdl/svrl'}
+        svrl_ns = {"svrl": "http://purl.oclc.org/dsdl/svrl"}
 
         # Extract failed assertions
-        failed_asserts = report.xpath(
-            '//svrl:failed-assert',
-            namespaces=svrl_ns
-        )
+        failed_asserts = report.xpath("//svrl:failed-assert", namespaces=svrl_ns)
 
         for assert_elem in failed_asserts:
             # Get location (xpath)
-            location = assert_elem.get('location', '')
+            location = assert_elem.get("location", "")
 
             # Get assertion message
-            text_elem = assert_elem.find('svrl:text', namespaces=svrl_ns)
-            message = text_elem.text if text_elem is not None else 'Assertion failed'
+            text_elem = assert_elem.find("svrl:text", namespaces=svrl_ns)
+            message = text_elem.text if text_elem is not None else "Assertion failed"
 
             # Get pattern ID
             # Look backwards in report for <fired-rule> to get context
-            pattern_id = assert_elem.get('id', 'unknown')
+            pattern_id = assert_elem.get("id", "unknown")
 
             issue = ValidationIssue(
                 layer=ValidationLayer.SCHEMATRON,
                 level=ValidationSeverity.ERROR,
-                message=message.strip() if message else 'Schematron assertion failed',
+                message=message.strip() if message else "Schematron assertion failed",
                 location=location,
-                code=pattern_id
+                code=pattern_id,
             )
 
             issues.append(issue)
 
         # Extract successful reports (warnings/info)
-        successful_reports = report.xpath(
-            '//svrl:successful-report',
-            namespaces=svrl_ns
-        )
+        successful_reports = report.xpath("//svrl:successful-report", namespaces=svrl_ns)
 
         for report_elem in successful_reports:
-            location = report_elem.get('location', '')
-            pattern_id = report_elem.get('id', 'unknown')
+            location = report_elem.get("location", "")
+            pattern_id = report_elem.get("id", "unknown")
 
-            text_elem = report_elem.find('svrl:text', namespaces=svrl_ns)
-            message = text_elem.text if text_elem is not None else 'Report triggered'
+            text_elem = report_elem.find("svrl:text", namespaces=svrl_ns)
+            message = text_elem.text if text_elem is not None else "Report triggered"
 
             # Successful reports are typically warnings/info
             issue = ValidationIssue(
                 layer=ValidationLayer.SCHEMATRON,
                 level=ValidationSeverity.WARNING,
-                message=message.strip() if message else 'Schematron report',
+                message=message.strip() if message else "Schematron report",
                 location=location,
-                code=pattern_id
+                code=pattern_id,
             )
 
             issues.append(issue)
 
         return issues
 
-    def validate(
-        self,
-        xml_content: str,
-        version: str
-    ) -> SchematronValidationResult:
+    def validate(self, xml_content: str, version: str) -> SchematronValidationResult:
         """
         Validate XML content against Schematron business rules.
 
@@ -307,7 +285,7 @@ class SchematronValidator:
         try:
             # Parse XML document
             try:
-                xml_doc = etree.fromstring(xml_content.encode('utf-8'))
+                xml_doc = etree.fromstring(xml_content.encode("utf-8"))
             except etree.XMLSyntaxError as e:
                 # XML not well-formed - should be caught earlier
                 issue = ValidationIssue(
@@ -315,14 +293,10 @@ class SchematronValidator:
                     level=ValidationSeverity.ERROR,
                     message=f"XML parsing failed: {str(e)}",
                     location=f"line {getattr(e, 'lineno', '?')}",
-                    code="XML_SYNTAX_ERROR"
+                    code="XML_SYNTAX_ERROR",
                 )
                 issues.append(issue)
-                return SchematronValidationResult(
-                    is_valid=False,
-                    issues=issues,
-                    schema_version=version
-                )
+                return SchematronValidationResult(is_valid=False, issues=issues, schema_version=version)
 
             # Get compiled Schematron
             try:
@@ -334,26 +308,22 @@ class SchematronValidator:
                         layer=ValidationLayer.SCHEMATRON,
                         level=ValidationSeverity.WARNING,
                         message=f"Schematron validation skipped for version {version} (unsupported query language)",
-                        code="SCHEMATRON_SKIPPED"
+                        code="SCHEMATRON_SKIPPED",
                     )
                     return SchematronValidationResult(
                         is_valid=True,  # Non-blocking
                         issues=[issue],
-                        schema_version=version
+                        schema_version=version,
                     )
             except FileNotFoundError as e:
                 issue = ValidationIssue(
                     layer=ValidationLayer.SCHEMATRON,
                     level=ValidationSeverity.ERROR,
                     message=f"Schematron not available for version {version}: {str(e)}",
-                    code="SCHEMATRON_NOT_FOUND"
+                    code="SCHEMATRON_NOT_FOUND",
                 )
                 issues.append(issue)
-                return SchematronValidationResult(
-                    is_valid=False,
-                    issues=issues,
-                    schema_version=version
-                )
+                return SchematronValidationResult(is_valid=False, issues=issues, schema_version=version)
 
             # Perform validation
             is_valid = schematron.validate(xml_doc)
@@ -363,18 +333,12 @@ class SchematronValidator:
             issues.extend(svrl_issues)
 
             if not is_valid:
-                logger.warning(
-                    f"Schematron validation failed for version {version}: "
-                    f"{len(issues)} issues"
-                )
+                logger.warning(f"Schematron validation failed for version {version}: {len(issues)} issues")
             else:
                 logger.debug(f"Schematron validation passed for version {version}")
 
             return SchematronValidationResult(
-                is_valid=is_valid,
-                issues=issues,
-                schema_version=version,
-                rules_evaluated=len(svrl_issues)
+                is_valid=is_valid, issues=issues, schema_version=version, rules_evaluated=len(svrl_issues)
             )
 
         except Exception as e:
@@ -383,14 +347,10 @@ class SchematronValidator:
                 layer=ValidationLayer.SCHEMATRON,
                 level=ValidationSeverity.ERROR,
                 message=f"Validation error: {str(e)}",
-                code=type(e).__name__
+                code=type(e).__name__,
             )
             issues.append(issue)
-            return SchematronValidationResult(
-                is_valid=False,
-                issues=issues,
-                schema_version=version
-            )
+            return SchematronValidationResult(is_valid=False, issues=issues, schema_version=version)
 
     def clear_cache(self, version: Optional[str] = None):
         """
@@ -446,10 +406,7 @@ def get_schematron_validator() -> SchematronValidator:
     return _validator_instance
 
 
-def validate_schematron(
-    xml_content: str,
-    version: str
-) -> SchematronValidationResult:
+def validate_schematron(xml_content: str, version: str) -> SchematronValidationResult:
     """
     Convenience function to validate XML against Schematron rules.
 

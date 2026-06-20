@@ -1,4 +1,5 @@
 """Edge case tests for conversion utilities to improve coverage."""
+
 import pathlib
 import sys
 from unittest.mock import MagicMock, patch
@@ -29,14 +30,14 @@ class TestGiftsPathHandling:
 
     def test_load_aerodrome_db_returns_none_when_missing(self):
         """Test aerodrome DB returns None when file doesn't exist."""
-        with patch('pathlib.Path.exists', return_value=False):
+        with patch("pathlib.Path.exists", return_value=False):
             result = _load_aerodrome_db()
             assert result is None
 
     @pytest.mark.skip(reason="Legacy function _lookup_aerodrome replaced by GiftsLocationDBAdapter")
     def test_lookup_aerodrome_returns_none_when_db_missing(self):
         """Test aerodrome lookup returns None when database not available."""
-        with patch('utilities.conversion._load_aerodrome_db', return_value=None):
+        with patch("utilities.conversion._load_aerodrome_db", return_value=None):
             result = _lookup_aerodrome("KJFK", use_test_overrides=False)
             # Will return None if both CSV and DB lookups fail
             assert result is None or result is not None  # Function has fallbacks
@@ -46,7 +47,7 @@ class TestGiftsPathHandling:
         mock_db = MagicMock()
         mock_db.read_text.return_value = "# Comment line\n\nKJFK|JFK\nMALFORMED"
 
-        with patch('src.utilities.conversion._load_aerodrome_db', return_value=mock_db):
+        with patch("src.utilities.conversion._load_aerodrome_db", return_value=mock_db):
             result = _lookup_aerodrome("KJFK")
             # Should find KJFK even with malformed entries
             assert result is not None
@@ -93,8 +94,8 @@ class TestConversionErrorHandling:
     @pytest.mark.skip(reason="Patching GIFTs unavailability requires module-level patching before import")
     def test_convert_with_gifts_unavailable(self):
         """Test conversion when GIFTs modules are unavailable."""
-        with patch('utilities.gifts_adapter.metarDecoder', None):
-            with patch('utilities.gifts_adapter.metarEncoder', None):
+        with patch("utilities.gifts_adapter.metarDecoder", None):
+            with patch("utilities.gifts_adapter.metarEncoder", None):
                 with pytest.raises(ConversionError) as exc_info:
                     convert_metar_tac("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005")
                 # Should raise error about GIFTs being unavailable
@@ -108,7 +109,7 @@ class TestConversionErrorHandling:
         mock_decoder_class = MagicMock()
         mock_decoder_class.side_effect = Exception("Decoder init failed")
 
-        with patch('utilities.gifts_adapter.metarDecoder.Annex3', mock_decoder_class):
+        with patch("utilities.gifts_adapter.metarDecoder.Annex3", mock_decoder_class):
             with pytest.raises(ConversionError) as exc_info:
                 convert_metar_tac("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005")
             assert "decoder" in str(exc_info.value).lower() or "failed" in str(exc_info.value).lower()
@@ -139,9 +140,9 @@ class TestConversionErrorHandling:
         mock_root = MagicMock()
         mock_encoder.return_value = mock_root
 
-        with patch('src.utilities.conversion.metarDecoder.Annex3', return_value=mock_decoder):
-            with patch('src.utilities.conversion.metarEncoder.Annex3', return_value=mock_encoder):
-                with patch('xml.etree.ElementTree.tostring', side_effect=Exception("Serialization error")):
+        with patch("src.utilities.conversion.metarDecoder.Annex3", return_value=mock_decoder):
+            with patch("src.utilities.conversion.metarEncoder.Annex3", return_value=mock_encoder):
+                with patch("xml.etree.ElementTree.tostring", side_effect=Exception("Serialization error")):
                     with pytest.raises(ConversionError) as exc_info:
                         convert_metar_tac("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005")
                     assert "serialization" in str(exc_info.value).lower()
@@ -152,7 +153,7 @@ class TestConversionErrorHandling:
         mock_decoder = MagicMock()
         mock_decoder.side_effect = Exception("Decoding failed")
 
-        with patch('utilities.gifts_adapter.metarDecoder.Annex3', return_value=mock_decoder):
+        with patch("utilities.gifts_adapter.metarDecoder.Annex3", return_value=mock_decoder):
             with pytest.raises(ConversionError) as exc_info:
                 convert_metar_tac("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005")
             assert "decoding" in str(exc_info.value).lower() or "failed" in str(exc_info.value).lower()
@@ -166,20 +167,20 @@ class TestConversionWithMetadata:
         mock_db = MagicMock()
         mock_db.read_text.return_value = "KJFK|JFK||Kennedy Intl|40.64|-73.78|13\n"
 
-        with patch('src.utilities.conversion._load_aerodrome_db', return_value=mock_db):
+        with patch("src.utilities.conversion._load_aerodrome_db", return_value=mock_db):
             result, validation_result = convert_metar_tac_with_metadata(
                 "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
-                validate=False  # Disable validation in tests
+                validate=False,  # Disable validation in tests
             )
             assert isinstance(result, str)
             assert len(result) > 0
 
     def test_convert_with_metadata_no_db(self):
         """Test conversion with metadata when database unavailable."""
-        with patch('src.utilities.conversion._load_aerodrome_db', return_value=None):
+        with patch("src.utilities.conversion._load_aerodrome_db", return_value=None):
             result, validation_result = convert_metar_tac_with_metadata(
                 "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
-                validate=False  # Disable validation in tests
+                validate=False,  # Disable validation in tests
             )
             assert isinstance(result, str)
             assert len(result) > 0
@@ -194,10 +195,7 @@ class TestConversionWithMetadata:
 
         for metar_tac in test_metars:
             try:
-                result, validation_result = convert_metar_tac_with_metadata(
-                    metar_tac,
-                    validate=False
-                )
+                result, validation_result = convert_metar_tac_with_metadata(metar_tac, validate=False)
                 # If conversion succeeds, verify result structure
                 if result is not None:
                     assert isinstance(result, str)
@@ -211,11 +209,10 @@ class TestConversionWithMetadata:
         mock_db = MagicMock()
         mock_db.read_text.return_value = ""  # Empty DB
 
-        with patch('src.utilities.conversion._load_aerodrome_db', return_value=mock_db):
+        with patch("src.utilities.conversion._load_aerodrome_db", return_value=mock_db):
             # Should still work - aerodrome lookup fails gracefully
             result, validation_result = convert_metar_tac_with_metadata(
-                "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
-                validate=False
+                "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005", validate=False
             )
             assert isinstance(result, str)
 
@@ -227,9 +224,9 @@ class TestConversionWithMetadata:
         mock_root = MagicMock()
         mock_encoder.return_value = mock_root
 
-        with patch('src.utilities.conversion.metarDecoder.Annex3', return_value=mock_decoder):
-            with patch('src.utilities.conversion.metarEncoder.Annex3', return_value=mock_encoder):
-                with patch('xml.etree.ElementTree.tostring', side_effect=Exception("Serialization error")):
+        with patch("src.utilities.conversion.metarDecoder.Annex3", return_value=mock_decoder):
+            with patch("src.utilities.conversion.metarEncoder.Annex3", return_value=mock_encoder):
+                with patch("xml.etree.ElementTree.tostring", side_effect=Exception("Serialization error")):
                     with pytest.raises(ConversionError) as exc_info:
                         convert_metar_tac_with_metadata("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005")
                     assert "serialization" in str(exc_info.value).lower()

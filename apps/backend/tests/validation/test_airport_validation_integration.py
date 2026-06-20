@@ -1,4 +1,5 @@
 """Integration tests for airport validation and conversion."""
+
 import sys
 from pathlib import Path
 

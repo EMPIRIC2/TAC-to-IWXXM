@@ -32,6 +32,7 @@ from src.schemas.evaluation import (
 # Shared fake HTTP infrastructure
 # ---------------------------------------------------------------------------
 
+
 class _FakeHTTPResponse:
     """Minimal httpx-response stub."""
 
@@ -90,6 +91,7 @@ def _make_supabase_factory(client):
 # Stub for get_job_results tests (reuses pattern from other unit test file)
 # ---------------------------------------------------------------------------
 
+
 class _ResponseStub:
     def __init__(self, payload, headers=None):
         self._payload = payload
@@ -122,6 +124,7 @@ class _SupabaseClientStub:
 # get_supabase_client() — lines 38-43
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.asyncio
 async def test_get_supabase_client_returns_httpx_async_client():
     """Directly calling get_supabase_client() should return an httpx.AsyncClient."""
@@ -135,6 +138,7 @@ async def test_get_supabase_client_returns_httpx_async_client():
 # ---------------------------------------------------------------------------
 # create_job_in_db() — lines 52-66
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_create_job_in_db_extracts_id_from_list_response(monkeypatch):
@@ -165,6 +169,7 @@ async def test_create_job_in_db_extracts_id_from_dict_response(monkeypatch):
 #   status == "completed"  →  completed_at is added
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.asyncio
 async def test_update_job_status_with_all_optional_params(monkeypatch):
     """All four conditional branches in update_job_status must execute."""
@@ -184,7 +189,7 @@ async def test_update_job_status_with_all_optional_params(monkeypatch):
     assert data["progress"] == 20
     assert "summary_stats" in data
     assert data["error_message"] == "test-msg"
-    assert "completed_at" in data   # status == "completed" branch
+    assert "completed_at" in data  # status == "completed" branch
 
 
 @pytest.mark.asyncio
@@ -206,6 +211,7 @@ async def test_update_job_status_with_no_optional_params(monkeypatch):
 # ---------------------------------------------------------------------------
 # save_result_to_db() — lines 98-111
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_save_result_to_db_with_comparison_calls_dict(monkeypatch):
@@ -251,6 +257,7 @@ async def test_save_result_to_db_without_comparison_passes_none(monkeypatch):
 # ---------------------------------------------------------------------------
 # run_evaluation_job() — line 124 (SINGLE assignment) and line 133 (ALL)
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_run_evaluation_job_single_mode_assigns_station_ids(monkeypatch):
@@ -338,6 +345,7 @@ async def test_run_evaluation_job_all_mode_calls_get_all_major_airports(monkeypa
 # run_evaluation_job() — lines 161-162 (unexpected Exception in conversion)
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.asyncio
 async def test_run_evaluation_job_records_unexpected_conversion_exception(monkeypatch):
     """A non-ConversionError during conversion must append 'Unexpected error' (lines 161-162)."""
@@ -389,6 +397,7 @@ async def test_run_evaluation_job_records_unexpected_conversion_exception(monkey
 # run_evaluation_job() — lines 185-187 (Exception inside compare_iwxxm)
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.asyncio
 async def test_run_evaluation_job_records_comparison_exception(monkeypatch):
     """An exception from compare_iwxxm must append 'Comparison error' (lines 185-187)."""
@@ -437,6 +446,7 @@ async def test_run_evaluation_job_records_comparison_exception(monkeypatch):
 # This happens when conversion succeeds but their_iwxxm is None — no errors
 # were recorded, so elif errors: evaluates to False.
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_run_evaluation_job_no_reference_iwxxm_and_no_errors(monkeypatch):
@@ -495,14 +505,15 @@ async def test_run_evaluation_job_no_reference_iwxxm_and_no_errors(monkeypatch):
 # both `if status_filter:` guards evaluate to False.
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.asyncio
 async def test_get_job_results_without_status_filter(monkeypatch):
     """Calling get_job_results with status_filter=None covers the False paths of
     both if-status_filter branches (334->337 and 344->347)."""
     responses = [
-        _ResponseStub([{"id": "job-1"}]),                           # job ownership
-        _ResponseStub([]),                                           # results (empty)
-        _ResponseStub([], headers={"Content-Range": "0-0/0"}),      # count
+        _ResponseStub([{"id": "job-1"}]),  # job ownership
+        _ResponseStub([]),  # results (empty)
+        _ResponseStub([], headers={"Content-Range": "0-0/0"}),  # count
     ]
 
     async def fake_get_supabase_client():
@@ -527,6 +538,7 @@ async def test_get_job_results_without_status_filter(monkeypatch):
 # ---------------------------------------------------------------------------
 # run_evaluation_job() — line 124 (raise ValueError for SINGLE without ids)
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_run_evaluation_job_single_mode_raises_when_no_station_ids(monkeypatch):

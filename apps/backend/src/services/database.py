@@ -3,6 +3,7 @@ Database connection management for PostgreSQL using SQLAlchemy.
 
 Provides async session management for statistics and other database operations.
 """
+
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -210,8 +211,8 @@ async def get_db_stats() -> dict:
     pool = _engine.pool
     return {
         "status": "active",
-        "pool_size": pool.size() if hasattr(pool, 'size') else "unknown",
-        "pool_checked_out": pool.checkedout() if hasattr(pool, 'checkedout') else "unknown",
+        "pool_size": pool.size() if hasattr(pool, "size") else "unknown",
+        "pool_checked_out": pool.checkedout() if hasattr(pool, "checkedout") else "unknown",
     }
 
 
@@ -259,4 +260,3 @@ async def create_tables():
         logger.error(f"Failed to create database tables: {e}", exc_info=True)
         # Don't raise - allow app to continue even if tables can't be created
         # (e.g., in test environments with read-only databases)
-

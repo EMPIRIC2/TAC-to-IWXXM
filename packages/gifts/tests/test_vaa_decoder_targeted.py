@@ -31,14 +31,14 @@ class TestVaaDecoderTargeted:
         decoder1 = Decoder()
         decoder2 = Decoder()
         # Test that comparison works (may not be equal, but comparison should work)
-        result = (decoder1 == decoder2)
+        result = decoder1 == decoder2
         assert isinstance(result, bool)
 
     def test_vaa_decoder_inequality(self):
         """Test inequality comparison"""
         decoder1 = Decoder()
         decoder2 = Decoder()
-        result = (decoder1 != decoder2)
+        result = decoder1 != decoder2
         assert isinstance(result, bool)
 
     def test_vaa_decoder_greater_than(self):
@@ -46,7 +46,7 @@ class TestVaaDecoderTargeted:
         decoder1 = Decoder()
         decoder2 = Decoder()
         try:
-            result = (decoder1 > decoder2)
+            result = decoder1 > decoder2
             assert isinstance(result, bool)
         except TypeError:
             # Not all objects support comparison
@@ -57,7 +57,7 @@ class TestVaaDecoderTargeted:
         decoder1 = Decoder()
         decoder2 = Decoder()
         try:
-            result = (decoder1 < decoder2)
+            result = decoder1 < decoder2
             assert isinstance(result, bool)
         except TypeError:
             # Not all objects support comparison
@@ -85,7 +85,7 @@ class TestVaaDecoderTargeted:
         """Test getting attributes with getattr"""
         decoder = Decoder()
         # Try to get a common attribute
-        attr = getattr(decoder, '__class__', None)
+        attr = getattr(decoder, "__class__", None)
         assert attr is not None
 
     def test_vaa_decoder_bool_conversion(self):
@@ -118,7 +118,7 @@ class TestVaaDecoderTargeted:
         """Test 'in' operator"""
         decoder = Decoder()
         try:
-            result = ("test" in decoder)
+            result = "test" in decoder
             assert isinstance(result, bool)
         except TypeError:
             # Doesn't support containment checks
@@ -221,7 +221,7 @@ class TestVaaDecoderTargeted:
         """Test power operator"""
         decoder = Decoder()
         try:
-            decoder ** 2
+            decoder**2
         except TypeError:
             # Doesn't support power
             pass
@@ -323,6 +323,7 @@ class TestVaaDecoderTargeted:
     def test_vaa_decoder_copy(self):
         """Test copy functionality"""
         import copy
+
         decoder = Decoder()
         try:
             copied = copy.copy(decoder)
@@ -334,6 +335,7 @@ class TestVaaDecoderTargeted:
     def test_vaa_decoder_deepcopy(self):
         """Test deepcopy functionality"""
         import copy
+
         decoder = Decoder()
         try:
             copied = copy.deepcopy(decoder)

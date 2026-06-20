@@ -293,7 +293,10 @@ def test_validate_online_http_status_paths(monkeypatch):
         @staticmethod
         def get(url, timeout, headers):
             if url.endswith("/200"):
-                return _Resp(200, b"<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:reg='http://purl.org/linked-data/registry#'><reg:status rdf:resource='http://codes.wmo.int/common/reg-status/valid'/></rdf:RDF>")
+                return _Resp(
+                    200,
+                    b"<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:reg='http://purl.org/linked-data/registry#'><reg:status rdf:resource='http://codes.wmo.int/common/reg-status/valid'/></rdf:RDF>",
+                )
             if url.endswith("/404"):
                 return _Resp(404)
             return _Resp(500)
@@ -413,9 +416,7 @@ def test_parse_rdf_status_variants():
     concept_only = parser._parse_rdf_status(
         b"<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:skos='http://www.w3.org/2004/02/skos/core#'><skos:Concept/></rdf:RDF>"
     )
-    unknown = parser._parse_rdf_status(
-        b"<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'></rdf:RDF>"
-    )
+    unknown = parser._parse_rdf_status(b"<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'></rdf:RDF>")
 
     assert valid == "valid"
     assert concept_only == "valid"
@@ -515,7 +516,9 @@ def test_global_getter_and_validate_wrapper(monkeypatch, tmp_path):
     parser = CodeListParser(tmp_path, settings=_settings())
     parser._loaded = True
     monkeypatch.setattr(cp, "_registry", SimpleNamespace(get_parser=lambda version, codelists_dir: parser))
-    monkeypatch.setattr(parser, "validate_xml_codelists", lambda xml_content: cp.CodelistValidationResult(is_valid=True, issues=[]))
+    monkeypatch.setattr(
+        parser, "validate_xml_codelists", lambda xml_content: cp.CodelistValidationResult(is_valid=True, issues=[])
+    )
 
     got = get_codelist_parser("2025-2", tmp_path)
     result = validate_xml_codelists("<root/>", "2025-2", tmp_path)

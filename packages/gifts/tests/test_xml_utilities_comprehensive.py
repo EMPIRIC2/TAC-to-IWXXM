@@ -10,10 +10,22 @@ class TestXmlUtilitiesCardinalConversions:
     def test_cardinal_to_degrees_string(self):
         """Test all cardinal points to degrees (string format)"""
         conversions = {
-            'N': '360', 'NNE': '22.5', 'NE': '45', 'ENE': '67.5',
-            'E': '90', 'ESE': '112.5', 'SE': '135', 'SSE': '157.5',
-            'S': '180', 'SSW': '202.5', 'SW': '225', 'WSW': '247.5',
-            'W': '270', 'WNW': '292.5', 'NW': '315', 'NNW': '337.5',
+            "N": "360",
+            "NNE": "22.5",
+            "NE": "45",
+            "ENE": "67.5",
+            "E": "90",
+            "ESE": "112.5",
+            "SE": "135",
+            "SSE": "157.5",
+            "S": "180",
+            "SSW": "202.5",
+            "SW": "225",
+            "WSW": "247.5",
+            "W": "270",
+            "WNW": "292.5",
+            "NW": "315",
+            "NNW": "337.5",
         }
 
         for cardinal, degree_str in conversions.items():
@@ -22,10 +34,22 @@ class TestXmlUtilitiesCardinalConversions:
     def test_cardinal_to_degrees_float(self):
         """Test all cardinal points to degrees (float format)"""
         conversions = {
-            'N': 360., 'NNE': 22.5, 'NE': 45., 'ENE': 67.5,
-            'E': 90., 'ESE': 112.5, 'SE': 135., 'SSE': 157.5,
-            'S': 180., 'SSW': 202.5, 'SW': 225., 'WSW': 247.5,
-            'W': 270., 'WNW': 292.5, 'NW': 315., 'NNW': 337.5,
+            "N": 360.0,
+            "NNE": 22.5,
+            "NE": 45.0,
+            "ENE": 67.5,
+            "E": 90.0,
+            "ESE": 112.5,
+            "SE": 135.0,
+            "SSE": 157.5,
+            "S": 180.0,
+            "SSW": 202.5,
+            "SW": 225.0,
+            "WSW": 247.5,
+            "W": 270.0,
+            "WNW": 292.5,
+            "NW": 315.0,
+            "NNW": 337.5,
         }
 
         for cardinal, degree_float in conversions.items():
@@ -34,8 +58,7 @@ class TestXmlUtilitiesCardinalConversions:
 
     def test_all_cardinal_points_have_entries(self):
         """Test that both cardinal dictionaries have the same keys"""
-        assert set(xmlUtilities.CardinalPtsToDegreesS.keys()) == \
-               set(xmlUtilities.CardinalPtsToDegreesF.keys())
+        assert set(xmlUtilities.CardinalPtsToDegreesS.keys()) == set(xmlUtilities.CardinalPtsToDegreesF.keys())
 
     def test_degree_values_reasonable(self):
         """Test that all degree values are between 0-360"""
@@ -87,39 +110,39 @@ class TestIsNumber:
 
     def test_is_number_integer(self):
         """Test with integer string"""
-        assert xmlUtilities.is_a_number('123') == True
+        assert xmlUtilities.is_a_number("123") == True
 
     def test_is_number_float(self):
         """Test with float string"""
-        assert xmlUtilities.is_a_number('123.45') == True
+        assert xmlUtilities.is_a_number("123.45") == True
 
     def test_is_number_negative(self):
         """Test with negative number"""
-        assert xmlUtilities.is_a_number('-123') == True
+        assert xmlUtilities.is_a_number("-123") == True
 
     def test_is_number_negative_float(self):
         """Test with negative float"""
-        assert xmlUtilities.is_a_number('-123.45') == True
+        assert xmlUtilities.is_a_number("-123.45") == True
 
     def test_is_number_non_numeric(self):
         """Test with non-numeric string"""
-        assert xmlUtilities.is_a_number('abc') == False
+        assert xmlUtilities.is_a_number("abc") == False
 
     def test_is_number_mixed(self):
         """Test with mixed content"""
-        assert xmlUtilities.is_a_number('123abc') == False
+        assert xmlUtilities.is_a_number("123abc") == False
 
     def test_is_number_empty(self):
         """Test with empty string"""
-        assert xmlUtilities.is_a_number('') == False
+        assert xmlUtilities.is_a_number("") == False
 
     def test_is_number_zero(self):
         """Test with zero"""
-        assert xmlUtilities.is_a_number('0') == True
+        assert xmlUtilities.is_a_number("0") == True
 
     def test_is_number_scientific(self):
         """Test with scientific notation"""
-        result = xmlUtilities.is_a_number('1e5')
+        result = xmlUtilities.is_a_number("1e5")
         assert isinstance(result, bool)
 
 
@@ -130,17 +153,17 @@ class TestGetUUID:
         """Test UUID generation with default prefix"""
         result = xmlUtilities.getUUID()
         assert isinstance(result, str)
-        assert result.startswith('uuid.')
+        assert result.startswith("uuid.")
 
     def test_getUUID_custom_prefix(self):
         """Test UUID generation with custom prefix"""
-        result = xmlUtilities.getUUID(prefix='custom.')
+        result = xmlUtilities.getUUID(prefix="custom.")
         assert isinstance(result, str)
-        assert result.startswith('custom.')
+        assert result.startswith("custom.")
 
     def test_getUUID_empty_prefix(self):
         """Test UUID generation with empty prefix"""
-        result = xmlUtilities.getUUID(prefix='')
+        result = xmlUtilities.getUUID(prefix="")
         assert isinstance(result, str)
 
     def test_getUUID_uniqueness(self):
@@ -153,7 +176,7 @@ class TestGetUUID:
         """Test UUID format"""
         result = xmlUtilities.getUUID()
         # Should have format: prefix-uuid
-        assert '.' in result or len(result) > 0
+        assert "." in result or len(result) > 0
 
 
 class TestComputeLatLon:
@@ -224,24 +247,24 @@ class TestCheckVisibility:
 
     def test_check_visibility_meters(self):
         """Test visibility in meters"""
-        result = xmlUtilities.checkVisibility(1000, 'm')
+        result = xmlUtilities.checkVisibility(1000, "m")
         assert isinstance(result, (int, float, str, type(None)))
 
     def test_check_visibility_feet(self):
         """Test visibility in feet"""
-        result = xmlUtilities.checkVisibility(5000, 'ft')
+        result = xmlUtilities.checkVisibility(5000, "ft")
         assert isinstance(result, (int, float, str, type(None)))
 
     def test_check_visibility_statute_miles(self):
         """Test visibility in statute miles"""
-        result = xmlUtilities.checkVisibility(1, 'SM')
+        result = xmlUtilities.checkVisibility(1, "SM")
         assert isinstance(result, (int, float, str, type(None)))
 
     def test_check_visibility_various_values(self):
         """Test visibility with various values"""
         values = [100, 500, 1000, 5000, 10000]
         for value in values:
-            result = xmlUtilities.checkVisibility(value, 'm')
+            result = xmlUtilities.checkVisibility(value, "m")
             assert isinstance(result, (int, float, str, type(None)))
 
 
@@ -250,19 +273,19 @@ class TestCheckRVR:
 
     def test_check_rvr_meters(self):
         """Test RVR in meters"""
-        result = xmlUtilities.checkRVR(400, 'm')
+        result = xmlUtilities.checkRVR(400, "m")
         assert isinstance(result, (int, float, str, type(None)))
 
     def test_check_rvr_feet(self):
         """Test RVR in feet"""
-        result = xmlUtilities.checkRVR(1200, 'ft')
+        result = xmlUtilities.checkRVR(1200, "ft")
         assert isinstance(result, (int, float, str, type(None)))
 
     def test_check_rvr_various_values(self):
         """Test RVR with various values"""
         values = [100, 400, 800, 1500, 2000]
         for value in values:
-            result = xmlUtilities.checkRVR(value, 'm')
+            result = xmlUtilities.checkRVR(value, "m")
             assert isinstance(result, (int, float, str, type(None)))
 
 
@@ -343,13 +366,13 @@ class TestParseCodeRegistry:
     def test_parseCodeRegistryTables_missing_needed(self):
         """Test with missing needed codes"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            result = xmlUtilities.parseCodeRegistryTables(tmpdir, ['nonexistent'])
+            result = xmlUtilities.parseCodeRegistryTables(tmpdir, ["nonexistent"])
             assert isinstance(result, dict)
 
     def test_parseCodeRegistryTables_preferred_language(self):
         """Test with different preferred language"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            result = xmlUtilities.parseCodeRegistryTables(tmpdir, [], preferredLanguage='fr')
+            result = xmlUtilities.parseCodeRegistryTables(tmpdir, [], preferredLanguage="fr")
             assert isinstance(result, dict)
 
 
@@ -375,10 +398,22 @@ class TestComplexNumberOperations:
     def test_cardinal_to_degrees_string(self):
         """Test all cardinal points to degrees (string format)"""
         conversions = {
-            'N': '360', 'NNE': '22.5', 'NE': '45', 'ENE': '67.5',
-            'E': '90', 'ESE': '112.5', 'SE': '135', 'SSE': '157.5',
-            'S': '180', 'SSW': '202.5', 'SW': '225', 'WSW': '247.5',
-            'W': '270', 'WNW': '292.5', 'NW': '315', 'NNW': '337.5',
+            "N": "360",
+            "NNE": "22.5",
+            "NE": "45",
+            "ENE": "67.5",
+            "E": "90",
+            "ESE": "112.5",
+            "SE": "135",
+            "SSE": "157.5",
+            "S": "180",
+            "SSW": "202.5",
+            "SW": "225",
+            "WSW": "247.5",
+            "W": "270",
+            "WNW": "292.5",
+            "NW": "315",
+            "NNW": "337.5",
         }
 
         for cardinal, degree_str in conversions.items():
@@ -387,10 +422,22 @@ class TestComplexNumberOperations:
     def test_cardinal_to_degrees_float(self):
         """Test all cardinal points to degrees (float format)"""
         conversions = {
-            'N': 360., 'NNE': 22.5, 'NE': 45., 'ENE': 67.5,
-            'E': 90., 'ESE': 112.5, 'SE': 135., 'SSE': 157.5,
-            'S': 180., 'SSW': 202.5, 'SW': 225., 'WSW': 247.5,
-            'W': 270., 'WNW': 292.5, 'NW': 315., 'NNW': '337.5',
+            "N": 360.0,
+            "NNE": 22.5,
+            "NE": 45.0,
+            "ENE": 67.5,
+            "E": 90.0,
+            "ESE": 112.5,
+            "SE": 135.0,
+            "SSE": 157.5,
+            "S": 180.0,
+            "SSW": 202.5,
+            "SW": 225.0,
+            "WSW": 247.5,
+            "W": 270.0,
+            "WNW": 292.5,
+            "NW": 315.0,
+            "NNW": "337.5",
         }
 
         for cardinal, degree_float in conversions.items():
@@ -401,8 +448,7 @@ class TestComplexNumberOperations:
 
     def test_all_cardinal_points_have_entries(self):
         """Test that both cardinal dictionaries have the same keys"""
-        assert set(xmlUtilities.CardinalPtsToDegreesS.keys()) == \
-               set(xmlUtilities.CardinalPtsToDegreesF.keys())
+        assert set(xmlUtilities.CardinalPtsToDegreesS.keys()) == set(xmlUtilities.CardinalPtsToDegreesF.keys())
 
     def test_degree_values_reasonable(self):
         """Test that all degree values are between 0-360"""

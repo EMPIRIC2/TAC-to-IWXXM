@@ -1,4 +1,5 @@
 """Playwright E2E tests for auth and conversion flows."""
+
 import os
 import pathlib
 
@@ -20,7 +21,9 @@ def _load_env_file() -> None:
 
 _load_env_file()
 
-FRONTEND_URL = os.getenv("E2E_FRONTEND_URL", "https://metar-to-iwxxm-frontend-v4-web.onrender.com/")
+FRONTEND_URL = os.getenv(
+    "E2E_FRONTEND_URL", "https://metar-to-iwxxm-frontend-v4-web.onrender.com/"
+)
 BACKEND_URL = os.getenv("E2E_BACKEND_URL", "https://metar-to-iwxxm-api.onrender.com")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")

@@ -25,6 +25,7 @@ from src.utilities.security import verify_supabase_token
 # Helper stubs
 # ---------------------------------------------------------------------------
 
+
 class _PassValidationService:
     def validate_all_layers(self, _tac: str) -> AggregatedValidationResult:
         return AggregatedValidationResult.from_results(
@@ -79,6 +80,7 @@ async def _override_verify_token() -> dict:
 # Async fixture – shared client
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 async def async_client(monkeypatch):
     """httpx.AsyncClient backed by the real ASGI app with stubs injected."""
@@ -90,9 +92,7 @@ async def async_client(monkeypatch):
     api_module.app.dependency_overrides[verify_supabase_token] = _override_verify_token
 
     transport = httpx.ASGITransport(app=api_module.app)
-    async with httpx.AsyncClient(
-        transport=transport, base_url="http://testserver"
-    ) as client:
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
         yield client
 
     api_module.app.dependency_overrides.clear()
@@ -109,9 +109,7 @@ async def async_client_fail_validation(monkeypatch):
     api_module.app.dependency_overrides[verify_supabase_token] = _override_verify_token
 
     transport = httpx.ASGITransport(app=api_module.app)
-    async with httpx.AsyncClient(
-        transport=transport, base_url="http://testserver"
-    ) as client:
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
         yield client
 
     api_module.app.dependency_overrides.clear()
@@ -120,6 +118,7 @@ async def async_client_fail_validation(monkeypatch):
 # ---------------------------------------------------------------------------
 # /api/v1/convert  –  JSON body path (covers lines ~977-994 + 1131-1339)
 # ---------------------------------------------------------------------------
+
 
 async def test_convert_json_body_success(async_client):
     """JSON metars list → successful conversion (covers request_body block + loop)."""
@@ -208,6 +207,7 @@ async def test_convert_json_body_stop_on_error(async_client_fail_validation):
 # ---------------------------------------------------------------------------
 # /api/v1/convert/zip  –  JSON body path (covers lines ~2068-2207)
 # ---------------------------------------------------------------------------
+
 
 async def test_convert_zip_json_body_success(async_client):
     """JSON metars list to convert-zip → success (covers metars_list loop in convert_zip)."""

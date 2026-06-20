@@ -2,6 +2,7 @@
 """
 Test login directly to make sure the endpoint works
 """
+
 import requests
 import json
 
@@ -11,29 +12,20 @@ print("=" * 60)
 url = "http://localhost:8002/auth/login"
 
 # Test with admin credentials
-payload = {
-    "email": "admin@metar.local",
-    "password": "Admin123456!"
-}
+payload = {"email": "admin@metar.local", "password": "Admin123456!"}
 
 print(f"\n1. POST {url}")
 print(f"   Payload: {json.dumps(payload, indent=2)}")
 
 try:
     response = requests.post(
-        url,
-        json=payload,
-        headers={
-            "Content-Type": "application/json",
-            "Origin": "http://localhost:8000"
-        },
-        timeout=10
+        url, json=payload, headers={"Content-Type": "application/json", "Origin": "http://localhost:8000"}, timeout=10
     )
 
     print(f"\n   Status: {response.status_code}")
     print(f"   Headers:")
     for key, value in response.headers.items():
-        if 'access-control' in key.lower() or 'content-type' in key.lower():
+        if "access-control" in key.lower() or "content-type" in key.lower():
             print(f"     {key}: {value}")
 
     print(f"\n   Body:")

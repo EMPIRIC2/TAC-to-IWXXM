@@ -1,4 +1,5 @@
 """Unit tests for AirportRecordBuilder – 0% coverage target."""
+
 import json
 from unittest.mock import patch
 
@@ -85,9 +86,16 @@ class TestAirportRecordBuilderLoadJson:
 
 class TestAirportRecordBuilderBuildRecord:
     def test_build_record_uses_airports_json_fallback(self, tmp_path):
-        airports = [{"icao": "KJFK", "name": "JFK Airport",
-                     "iata": "JFK", "designator": "KJFK",
-                     "lat": 40.6398, "lon": -73.7789}]
+        airports = [
+            {
+                "icao": "KJFK",
+                "name": "JFK Airport",
+                "iata": "JFK",
+                "designator": "KJFK",
+                "lat": 40.6398,
+                "lon": -73.7789,
+            }
+        ]
         builder = _make_builder(tmp_path, airports_data=airports)
         record = builder.build_record("KJFK")
         assert record["icao"] == "KJFK"
@@ -150,13 +158,15 @@ class TestAirportRecordBuilderBuildRecord:
         assert record["_sources_tried"] == ["vertical_datum_map"]
 
     def test_build_record_merges_openaip_then_airports(self, tmp_path):
-        airports = [{
-            "icao": "KDEN",
-            "name": "Denver Intl",
-            "iata": "DEN",
-            "designator": "DEN",
-            "coordinates": {"latitude": 39.8561, "longitude": -104.6737},
-        }]
+        airports = [
+            {
+                "icao": "KDEN",
+                "name": "Denver Intl",
+                "iata": "DEN",
+                "designator": "DEN",
+                "coordinates": {"latitude": 39.8561, "longitude": -104.6737},
+            }
+        ]
         builder = _make_builder(tmp_path, airports_data=airports)
         openaip_data = {"name": "DEN from OpenAIP"}
         record = builder.build_record("KDEN", openaip_data=openaip_data)

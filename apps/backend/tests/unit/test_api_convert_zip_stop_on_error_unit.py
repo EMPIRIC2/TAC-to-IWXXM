@@ -52,7 +52,7 @@ def client(monkeypatch):
         return {"sub": "test-user", "aud": "test-aud"}
 
     def fake_convert(tac: str, iwxxm_version: str = "2025-2", **_kwargs: Any):
-        xml = f"<iwxxm:METAR version=\"{iwxxm_version}\">{tac[:16]}</iwxxm:METAR>"
+        xml = f'<iwxxm:METAR version="{iwxxm_version}">{tac[:16]}</iwxxm:METAR>'
         return xml, None
 
     monkeypatch.setattr(api_module, "ValidationService", _ValidationPassService)
@@ -156,7 +156,7 @@ def test_convert_zip_json_conversion_and_unexpected_error_paths(client, monkeypa
             raise ConversionError("conversion failed")
         if call_count["value"] == 2:
             raise RuntimeError("unexpected failure")
-        return f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>", None
+        return f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>', None
 
     monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", flaky_convert)
 
@@ -190,8 +190,7 @@ def test_convert_stop_on_error_true_manual_breaks_on_conversion_error(client, mo
         "/api/v1/convert",
         data={
             "manual_text": (
-                "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013\n"
-                "METAR KLAX 010000Z 00000KT CAVOK 10/08 Q1013"
+                "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013\nMETAR KLAX 010000Z 00000KT CAVOK 10/08 Q1013"
             ),
             "stop_on_error": "true",
         },
@@ -237,7 +236,7 @@ def test_convert_stop_on_error_false_files_continue_after_conversion_error(clien
         call_count["value"] += 1
         if call_count["value"] == 1:
             raise ConversionError("forced conversion failure")
-        return f"<iwxxm:METAR version=\"{iwxxm_version}\">ok</iwxxm:METAR>", None
+        return f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>', None
 
     monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
     monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fail_then_succeed_convert)

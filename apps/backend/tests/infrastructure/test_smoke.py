@@ -24,6 +24,7 @@ from src.utilities.security import verify_supabase_token
 @pytest.fixture
 def client():
     """Create test client with mocked authentication."""
+
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project"}
 
@@ -64,10 +65,7 @@ class TestSmokeAuthentication:
 
     def test_unauthenticated_request_rejected(self, unauthenticated_client):
         """Test authenticated endpoint rejects requests without token."""
-        response = unauthenticated_client.post(
-            "/api/v1/convert",
-            json={"metars": ["METAR TEST"]}
-        )
+        response = unauthenticated_client.post("/api/v1/convert", json={"metars": ["METAR TEST"]})
 
         assert response.status_code == 401
 
@@ -83,7 +81,7 @@ class TestSmokeConversion:
             json={
                 "metars": ["METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015"],
                 "version": "2025-2",
-            }
+            },
         )
 
         assert response.status_code == 200
@@ -99,11 +97,13 @@ class TestSmokeConversion:
 
     def test_multiline_manual_input_is_processed_as_individual_entries(self, client):
         """Each non-empty manual input line is treated as an individual TAC entry."""
-        multiline = "\n".join([
-            "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015",
-            "",
-            "METAR EGLL 161220Z 09010KT 9999 SCT030 10/05 Q1018",
-        ])
+        multiline = "\n".join(
+            [
+                "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015",
+                "",
+                "METAR EGLL 161220Z 09010KT 9999 SCT030 10/05 Q1018",
+            ]
+        )
 
         response = client.post(
             "/api/v1/convert",
@@ -143,7 +143,7 @@ class TestSmokeConversion:
         result = data["results"][0]
         assert "content" in result
         assert 'reportStatus="CORRECTION"' in result["content"]
-        assert 'translationFailedTAC' not in result["content"]
+        assert "translationFailedTAC" not in result["content"]
         assert data.get("errors") in ([], None)
 
 
@@ -164,10 +164,7 @@ class TestSmokeValidation:
     def test_basic_validation_request(self, client):
         """Test can validate a simple METAR."""
         response = client.post(
-            "/api/v1/validation/validate",
-            json={
-                "content": "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015"
-            }
+            "/api/v1/validation/validate", json={"content": "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015"}
         )
 
         assert response.status_code == 200
@@ -183,7 +180,7 @@ class TestSmokeEvaluation:
 
     def test_create_evaluation_job(self, client):
         """Test can create an evaluation job."""
-        with patch('src.routers.evaluation.get_supabase_client') as mock_get_client:
+        with patch("src.routers.evaluation.get_supabase_client") as mock_get_client:
             # Create the mock response
             mock_response = MagicMock()
             mock_response.json.return_value = [{"id": "test-job-123"}]
@@ -208,7 +205,7 @@ class TestSmokeEvaluation:
                     "mode": "single",
                     "station_ids": ["KJFK"],
                     "hours": 1,
-                }
+                },
             )
 
             assert response.status_code == 200
@@ -282,7 +279,7 @@ class TestSmokeCriticalPath:
             json={
                 "metars": ["METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015"],
                 "version": "2025-2",
-            }
+            },
         )
 
         assert convert_response.status_code == 200
@@ -295,10 +292,7 @@ class TestSmokeCriticalPath:
             if "content" in result:
                 # Step 2: Validate the converted IWXXM
                 iwxxm_xml = result["content"]
-                validate_response = client.post(
-                    "/api/v1/validation/validate",
-                    json={"content": iwxxm_xml}
-                )
+                validate_response = client.post("/api/v1/validation/validate", json={"content": iwxxm_xml})
 
                 assert validate_response.status_code == 200
                 validate_data = validate_response.json()
@@ -334,7 +328,7 @@ class TestSmokeErrorHandling:
         """Test malformed conversion request is handled."""
         response = client.post(
             "/api/v1/convert",
-            json={}  # Missing required fields
+            json={},  # Missing required fields
         )
 
         # Should return error (200 with error or 400/422)
@@ -347,7 +341,7 @@ class TestSmokeErrorHandling:
             json={
                 "metars": ["METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015"],
                 "version": "99.99.99",  # Invalid version
-            }
+            },
         )
 
         # Should handle gracefully (200 with error or 400)
@@ -398,11 +392,14 @@ def run_smoke_tests():
     Useful for pre-deployment scripts.
     """
 
-    exit_code = pytest.main([
-        "-m", "smoke",
-        "--tb=short",
-        __file__,
-    ])
+    exit_code = pytest.main(
+        [
+            "-m",
+            "smoke",
+            "--tb=short",
+            __file__,
+        ]
+    )
 
     return exit_code == 0
 

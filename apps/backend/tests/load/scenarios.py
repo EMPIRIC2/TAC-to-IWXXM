@@ -153,11 +153,7 @@ class ValidationApiUser(BaseMetarUser):
         metar = random.choice(SAMPLE_METARS)
         headers = {"Content-Type": "application/json", **self.protected_headers()}
         context = self.request_context("validation", "/api/v1/validation/validate")
-        layers = [
-            layer.strip()
-            for layer in self.profile.validation_layers.split(",")
-            if layer.strip()
-        ]
+        layers = [layer.strip() for layer in self.profile.validation_layers.split(",") if layer.strip()]
 
         with self.client.post(
             "/api/v1/validation/validate",

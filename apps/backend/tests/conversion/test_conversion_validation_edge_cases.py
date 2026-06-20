@@ -438,7 +438,9 @@ EDGE_CASE_STATISTICS = {
 if __name__ == "__main__":
     print("Edge Case Categories:")
     for category, stats in EDGE_CASE_STATISTICS.items():
-        print(f"  {category}: {stats['count']} cases (investigated: {stats['investigated']}, resolved: {stats['resolved']})")
+        print(
+            f"  {category}: {stats['count']} cases (investigated: {stats['investigated']}, resolved: {stats['resolved']})"
+        )
     print(f"\nTotal: {sum(s['count'] for s in EDGE_CASE_STATISTICS.values())} edge cases documented")
     print("\nRunning edge case tests (many expected to xfail):")
 

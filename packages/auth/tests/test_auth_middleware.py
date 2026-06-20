@@ -3,6 +3,7 @@
 Tests the complete authentication flow through the auth service middleware.
 Target: 95%+ coverage for auth service in proxy mode.
 """
+
 import pytest
 import os
 from unittest.mock import AsyncMock, MagicMock, patch, Mock
@@ -20,7 +21,9 @@ def mock_supabase_client():
 
 # Set test environment after setting up mocks
 os.environ["SUPABASE_URL"] = "https://test.supabase.co"
-os.environ["SUPABASE_ANON_KEY"] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlc3QiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMCwicGF0biI6IlRlc3QifQ.x7P_5LqkfNhLXY1Ri4r0JZ0wEw-JZ7gZ7Y7Z7Z7Z7Z8"
+os.environ["SUPABASE_ANON_KEY"] = (
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlc3QiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMCwicGF0biI6IlRlc3QifQ.x7P_5LqkfNhLXY1Ri4r0JZ0wEw-JZ7gZ7Y7Z7Z7Z7Z8"
+)
 os.environ["FRONTEND_BASE_URL"] = "http://localhost:8000"
 
 # Now import app after environment is set
@@ -66,21 +69,20 @@ class TestRegistration:
                 "user": {
                     "id": "user-123",
                     "email": "test@example.com",
-                    "metadata": {"name": "Test User", "username": "testuser"}
+                    "metadata": {"name": "Test User", "username": "testuser"},
                 },
-                "session": {
-                    "access_token": "token-123",
-                    "refresh_token": "refresh-123",
-                    "expires_at": 1234567890
-                }
+                "session": {"access_token": "token-123", "refresh_token": "refresh-123", "expires_at": 1234567890},
             }
 
-            response = client.post("/auth/register", json={
-                "email": "test@example.com",
-                "password": "password123",
-                "name": "Test User",
-                "username": "testuser"
-            })
+            response = client.post(
+                "/auth/register",
+                json={
+                    "email": "test@example.com",
+                    "password": "password123",
+                    "name": "Test User",
+                    "username": "testuser",
+                },
+            )
 
             assert response.status_code == 201
             data = response.json()
@@ -89,11 +91,14 @@ class TestRegistration:
 
     def test_register_missing_password(self, client):
         """Registration fails with short password."""
-        response = client.post("/auth/register", json={
-            "email": "test@example.com",
-            "password": "short",  # Too short
-            "name": "Test"
-        })
+        response = client.post(
+            "/auth/register",
+            json={
+                "email": "test@example.com",
+                "password": "short",  # Too short
+                "name": "Test",
+            },
+        )
         assert response.status_code == 422  # Validation error
 
 
@@ -108,22 +113,11 @@ class TestLogin:
             mock_get.return_value = mock_proxy
 
             mock_proxy.sign_in.return_value = {
-                "user": {
-                    "id": "user-123",
-                    "email": "test@example.com",
-                    "metadata": {}
-                },
-                "session": {
-                    "access_token": "token-123",
-                    "refresh_token": "refresh-123",
-                    "expires_at": 1234567890
-                }
+                "user": {"id": "user-123", "email": "test@example.com", "metadata": {}},
+                "session": {"access_token": "token-123", "refresh_token": "refresh-123", "expires_at": 1234567890},
             }
 
-            response = client.post("/auth/login", json={
-                "email": "test@example.com",
-                "password": "password123"
-            })
+            response = client.post("/auth/login", json={"email": "test@example.com", "password": "password123"})
 
             assert response.status_code == 200
             data = response.json()
@@ -136,15 +130,12 @@ class TestLogin:
             mock_get.return_value = mock_proxy
 
             from fastapi import HTTPException, status
+
             mock_proxy.sign_in.side_effect = HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid credentials"
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
             )
 
-            response = client.post("/auth/login", json={
-                "email": "test@example.com",
-                "password": "wrongpassword"
-            })
+            response = client.post("/auth/login", json={"email": "test@example.com", "password": "wrongpassword"})
 
             assert response.status_code == 401
 
@@ -161,10 +152,7 @@ class TestLogout:
 
             mock_proxy.sign_out.return_value = {"message": "Successfully signed out"}
 
-            response = client.post(
-                "/auth/logout",
-                headers={"Authorization": "Bearer token-123"}
-            )
+            response = client.post("/auth/logout", headers={"Authorization": "Bearer token-123"})
 
             assert response.status_code == 200
             data = response.json()
@@ -196,13 +184,10 @@ class TestGetCurrentUser:
             mock_proxy.get_user.return_value = {
                 "id": "user-123",
                 "email": "test@example.com",
-                "metadata": {"name": "Test User"}
+                "metadata": {"name": "Test User"},
             }
 
-            response = client.get(
-                "/auth/me",
-                headers={"Authorization": "Bearer token-123"}
-            )
+            response = client.get("/auth/me", headers={"Authorization": "Bearer token-123"})
 
             assert response.status_code == 200
             data = response.json()
@@ -216,15 +201,12 @@ class TestGetCurrentUser:
             mock_get.return_value = mock_proxy
 
             from fastapi import HTTPException, status
+
             mock_proxy.get_user.side_effect = HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid or expired token"
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token"
             )
 
-            response = client.get(
-                "/auth/me",
-                headers={"Authorization": "Bearer invalid-token"}
-            )
+            response = client.get("/auth/me", headers={"Authorization": "Bearer invalid-token"})
 
             assert response.status_code == 401
 
@@ -242,12 +224,10 @@ class TestRefreshToken:
             mock_proxy.refresh_session.return_value = {
                 "access_token": "new-token-123",
                 "refresh_token": "new-refresh-123",
-                "expires_at": 1234567890
+                "expires_at": 1234567890,
             }
 
-            response = client.post("/auth/refresh", json={
-                "refresh_token": "old-refresh-token"
-            })
+            response = client.post("/auth/refresh", json={"refresh_token": "old-refresh-token"})
 
             assert response.status_code == 200
             data = response.json()
@@ -263,13 +243,9 @@ class TestPasswordReset:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
 
-            mock_proxy.reset_password_email.return_value = {
-                "message": "Password reset email sent"
-            }
+            mock_proxy.reset_password_email.return_value = {"message": "Password reset email sent"}
 
-            response = client.post("/auth/password-reset/request", json={
-                "email": "test@example.com"
-            })
+            response = client.post("/auth/password-reset/request", json={"email": "test@example.com"})
 
             assert response.status_code == 200
             data = response.json()
@@ -282,14 +258,12 @@ class TestPasswordReset:
             mock_proxy = AsyncMock()
             mock_get.return_value = mock_proxy
 
-            mock_proxy.update_password.return_value = {
-                "message": "Password updated successfully"
-            }
+            mock_proxy.update_password.return_value = {"message": "Password updated successfully"}
 
             response = client.post(
                 "/auth/password-reset/confirm",
                 json={"new_password": "newpassword123"},
-                headers={"Authorization": "Bearer reset-token"}
+                headers={"Authorization": "Bearer reset-token"},
             )
 
             assert response.status_code == 200
@@ -306,16 +280,9 @@ class TestTokenVerification:
             mock_get.return_value = mock_proxy
 
             mock_proxy.verify_token.return_value = True
-            mock_proxy.get_user.return_value = {
-                "id": "user-123",
-                "email": "test@example.com",
-                "metadata": {}
-            }
+            mock_proxy.get_user.return_value = {"id": "user-123", "email": "test@example.com", "metadata": {}}
 
-            response = client.get(
-                "/auth/verify",
-                headers={"Authorization": "Bearer token-123"}
-            )
+            response = client.get("/auth/verify", headers={"Authorization": "Bearer token-123"})
 
             assert response.status_code == 200
             data = response.json()
@@ -329,10 +296,7 @@ class TestTokenVerification:
 
             mock_proxy.verify_token.return_value = False
 
-            response = client.get(
-                "/auth/verify",
-                headers={"Authorization": "Bearer invalid-token"}
-            )
+            response = client.get("/auth/verify", headers={"Authorization": "Bearer invalid-token"})
 
             assert response.status_code == 401
 
@@ -344,7 +308,7 @@ class TestAuthorizationHeaderParsing:
         """Request fails without Bearer prefix."""
         response = client.get(
             "/auth/me",
-            headers={"Authorization": "token-123"}  # Missing "Bearer"
+            headers={"Authorization": "token-123"},  # Missing "Bearer"
         )
         assert response.status_code == 401
         assert "Invalid authorization header format" in response.json()["detail"]

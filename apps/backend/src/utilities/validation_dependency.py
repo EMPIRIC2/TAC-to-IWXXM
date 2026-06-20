@@ -1,4 +1,5 @@
 """Validation dependencies for FastAPI request preprocessing."""
+
 from typing import List, Optional
 
 from fastapi import HTTPException

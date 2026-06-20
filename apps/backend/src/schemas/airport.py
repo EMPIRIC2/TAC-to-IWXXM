@@ -28,8 +28,7 @@ class AirportCoordinates(BaseModel):
     longitude: float = Field(..., description="Longitude in decimal degrees", ge=-180, le=180)
     elevation_ft: Optional[int] = Field(None, description="Elevation in feet", ge=-1500)
     vertical_datum: Optional[str] = Field(
-        "EGM_96",
-        description="Vertical datum for elevation (EGM_96, NAVD88, AHD, etc.)"
+        "EGM_96", description="Vertical datum for elevation (EGM_96, NAVD88, AHD, etc.)"
     )
 
 
@@ -76,18 +75,14 @@ class Airport(BaseModel):
         description="Airport type",
         examples=["large_airport", "medium_airport", "small_airport", "heliport"],
     )
-    coordinates: Optional[AirportCoordinates] = Field(
-        None, description="Geographic coordinates"
-    )
+    coordinates: Optional[AirportCoordinates] = Field(None, description="Geographic coordinates")
 
     @field_validator("icao")
     @classmethod
     def validate_icao_format(cls, v: str) -> str:
         """Validate ICAO code format: 4 uppercase alphanumeric characters."""
         if not re.match(r"^[A-Z0-9]{4}$", v.upper()):
-            raise ValueError(
-                f"ICAO code must be 4 uppercase alphanumeric characters, got: {v}"
-            )
+            raise ValueError(f"ICAO code must be 4 uppercase alphanumeric characters, got: {v}")
         return v.upper()
 
     @field_validator("iata")
@@ -97,9 +92,7 @@ class Airport(BaseModel):
         if v is None:
             return None
         if not re.match(r"^[A-Z0-9]{3}$", v.upper()):
-            raise ValueError(
-                f"IATA code must be 3 uppercase alphanumeric characters, got: {v}"
-            )
+            raise ValueError(f"IATA code must be 3 uppercase alphanumeric characters, got: {v}")
         return v.upper()
 
 
@@ -133,8 +126,7 @@ class AirportValidator:
 
         if not data_path.exists():
             raise FileNotFoundError(
-                f"Airport data not found at {data_path}. "
-                "Please run: python scripts/parse_airports_csv.py"
+                f"Airport data not found at {data_path}. Please run: python scripts/parse_airports_csv.py"
             )
 
         with open(data_path, "r", encoding="utf-8") as f:
@@ -200,11 +192,7 @@ class AirportValidator:
             return []
 
         prefix_upper = prefix.upper()
-        matches = [
-            airport
-            for icao, airport in self._airports.items()
-            if icao.startswith(prefix_upper)
-        ]
+        matches = [airport for icao, airport in self._airports.items() if icao.startswith(prefix_upper)]
         return matches[:limit]
 
     def search_by_name(self, query: str, limit: int = 10) -> list[Airport]:
@@ -225,8 +213,7 @@ class AirportValidator:
         matches = [
             airport
             for airport in self._airports.values()
-            if query_lower in airport.name.lower()
-            or query_lower in airport.city.lower()
+            if query_lower in airport.name.lower() or query_lower in airport.city.lower()
         ]
         return matches[:limit]
 

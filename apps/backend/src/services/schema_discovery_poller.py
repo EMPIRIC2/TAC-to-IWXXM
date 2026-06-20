@@ -48,7 +48,7 @@ class SchemaDiscoveryPoller:
         timeout_seconds: int = 30,
         mirror_service: Optional[Any] = None,
         xmi_analyzer: Optional[Any] = None,
-        base_schema_path: Optional[Path] = None
+        base_schema_path: Optional[Path] = None,
     ):
         """
         Initialize the discovery poller.
@@ -110,7 +110,7 @@ class SchemaDiscoveryPoller:
             "new_stable": new_stable,
             "new_rc": new_rc,
             "poll_time": self.last_poll_time.isoformat(),
-            "total_discovered": len(self.discovered_versions)
+            "total_discovered": len(self.discovered_versions),
         }
 
     async def _emit_new_version_event(self, version: str, source_url: str) -> None:
@@ -161,7 +161,7 @@ class SchemaDiscoveryPoller:
                 logger.warning(f"Version {version} not in configured versions, skipping auto-mirror")
                 return
 
-            root_xsd_url = config.get('schema_url')
+            root_xsd_url = config.get("schema_url")
             if not root_xsd_url:
                 logger.warning(f"No schema_url for {version}, cannot mirror")
                 return
@@ -172,9 +172,9 @@ class SchemaDiscoveryPoller:
             result = await self.mirror_service.mirror_version(
                 version=version,
                 root_xsd_url=root_xsd_url,
-                include_examples=True,      # Include XML/TAC examples
-                include_html=True,           # Include UML documentation
-                include_xmi=True             # Include UML models for diff analysis
+                include_examples=True,  # Include XML/TAC examples
+                include_html=True,  # Include UML documentation
+                include_xmi=True,  # Include UML models for diff analysis
             )
 
             logger.info(
@@ -231,9 +231,7 @@ class SchemaDiscoveryPoller:
                 return
 
             # Run analysis
-            report = self.xmi_analyzer.analyze_xmi_versions(
-                old_xmi, new_xmi, prev_version, new_version
-            )
+            report = self.xmi_analyzer.analyze_xmi_versions(old_xmi, new_xmi, prev_version, new_version)
 
             logger.info(
                 f"Breaking change analysis: {report.get('total_changes', 0)} changes detected "
@@ -246,12 +244,7 @@ class SchemaDiscoveryPoller:
         except Exception as e:
             logger.warning(f"Failed to analyze breaking changes: {e}")
 
-    def _update_version_metadata(
-        self,
-        new_version: str,
-        prior_version: str,
-        breaking_changes_report: Dict
-    ) -> None:
+    def _update_version_metadata(self, new_version: str, prior_version: str, breaking_changes_report: Dict) -> None:
         """
         Update VERSION_DISCOVERY_METADATA with breaking changes.
 
@@ -270,19 +263,21 @@ class SchemaDiscoveryPoller:
 
             # Convert report to VERSION_DISCOVERY_METADATA format
             breaking_changes = []
-            for change in breaking_changes_report.get('details', []):
-                breaking_changes.append({
-                    'element': change.element,
-                    'xpath': change.xpath or f".//iwxxm:{change.element}",
-                    'action': 'remove' if change.change_type == 'removed' else 'change',
-                    'reason': change.reason
-                })
+            for change in breaking_changes_report.get("details", []):
+                breaking_changes.append(
+                    {
+                        "element": change.element,
+                        "xpath": change.xpath or f".//iwxxm:{change.element}",
+                        "action": "remove" if change.change_type == "removed" else "change",
+                        "reason": change.reason,
+                    }
+                )
 
             # Update config
-            if not config.get('breaking_changes_from_prior'):
-                config['breaking_changes_from_prior'] = {}
+            if not config.get("breaking_changes_from_prior"):
+                config["breaking_changes_from_prior"] = {}
 
-            config['breaking_changes_from_prior'][prior_version] = breaking_changes
+            config["breaking_changes_from_prior"][prior_version] = breaking_changes
 
             logger.info(
                 f"Updated VERSION_DISCOVERY_METADATA for {new_version}: "
@@ -390,11 +385,7 @@ class SchemaDiscoveryPoller:
         """
         return bool(RC_PATTERN.match(version))
 
-    async def poll_with_retry(
-        self,
-        max_retries: int = 3,
-        retry_delay_seconds: int = 60
-    ) -> Dict[str, List[str]]:
+    async def poll_with_retry(self, max_retries: int = 3, retry_delay_seconds: int = 60) -> Dict[str, List[str]]:
         """
         Poll with automatic retry on failure.
 
@@ -409,9 +400,7 @@ class SchemaDiscoveryPoller:
             try:
                 return await self.poll_once()
             except Exception as e:
-                logger.warning(
-                    f"Poll attempt {attempt + 1}/{max_retries} failed: {e}"
-                )
+                logger.warning(f"Poll attempt {attempt + 1}/{max_retries} failed: {e}")
                 if attempt < max_retries - 1:
                     logger.info(f"Retrying in {retry_delay_seconds} seconds...")
                     await asyncio.sleep(retry_delay_seconds)
@@ -419,10 +408,7 @@ class SchemaDiscoveryPoller:
                     logger.error("All poll attempts failed")
                     raise
 
-    def get_discovered_versions(
-        self,
-        channel: Optional[str] = None
-    ) -> List[str]:
+    def get_discovered_versions(self, channel: Optional[str] = None) -> List[str]:
         """
         Get all discovered versions, optionally filtered by channel.
 
@@ -451,10 +437,7 @@ async def discover_schemas() -> Dict[str, List[str]]:
     return await poller.poll_once()
 
 
-async def discover_schemas_with_retry(
-    max_retries: int = 3,
-    retry_delay: int = 60
-) -> Dict[str, List[str]]:
+async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 60) -> Dict[str, List[str]]:
     """
     Convenience function to run discovery with retry logic.
 

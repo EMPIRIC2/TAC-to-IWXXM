@@ -20,6 +20,7 @@ The test suite automatically:
 
 Run with: pytest tests/test_e2e_full_stack.py -v -m e2e
 """
+
 import asyncio
 import os
 import socket
@@ -52,19 +53,19 @@ def load_env_file(env_path: Path) -> Dict[str, str]:
         return env_vars
 
     try:
-        with open(env_path, 'r') as f:
+        with open(env_path, "r") as f:
             for line in f:
                 line = line.strip()
 
                 # Skip empty lines and comments
-                if not line or line.startswith('#'):
+                if not line or line.startswith("#"):
                     continue
 
                 # Parse KEY=value
-                if '=' not in line:
+                if "=" not in line:
                     continue
 
-                key, value = line.split('=', 1)
+                key, value = line.split("=", 1)
                 key = key.strip()
                 value = value.strip()
 
@@ -84,7 +85,7 @@ def load_env_file(env_path: Path) -> Dict[str, str]:
 def find_free_port():
     """Find a free port on localhost."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(('', 0))
+        s.bind(("", 0))
         s.listen(1)
         port = s.getsockname()[1]
     return port
@@ -137,7 +138,7 @@ def e2e_environment_check():
 def find_free_port():
     """Find a free port on localhost."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(('', 0))
+        s.bind(("", 0))
         s.listen(1)
         port = s.getsockname()[1]
     return port
@@ -194,20 +195,25 @@ def e2e_server(e2e_server_port):
     server_env["PYTHONPATH"] = backend_dir if not existing_pythonpath else f"{backend_dir}:{existing_pythonpath}"
 
     # Start uvicorn server in subprocess
-    server_stdout = open('/tmp/e2e_server_stdout.log', 'w')
-    server_stderr = open('/tmp/e2e_server_stderr.log', 'w')
+    server_stdout = open("/tmp/e2e_server_stdout.log", "w")
+    server_stderr = open("/tmp/e2e_server_stderr.log", "w")
     server_process = subprocess.Popen(
         [
-            sys.executable, "-m", "uvicorn",
+            sys.executable,
+            "-m",
+            "uvicorn",
             "src.api:app",
-            "--host", "127.0.0.1",
-            "--port", str(e2e_server_port),
-            "--log-level", "warning"
+            "--host",
+            "127.0.0.1",
+            "--port",
+            str(e2e_server_port),
+            "--log-level",
+            "warning",
         ],
         # Don't set cwd - let PYTHONPATH handle module resolution
         stdout=server_stdout,
         stderr=server_stderr,
-        env=server_env
+        env=server_env,
     )
 
     # Wait for server to be ready
@@ -230,9 +236,9 @@ def e2e_server(e2e_server_port):
                 server_stdout.close()
                 # Read the log files
                 try:
-                    with open('/tmp/e2e_server_stdout.log', 'r') as f:
+                    with open("/tmp/e2e_server_stdout.log", "r") as f:
                         stdout_str = f.read()[-2000:]  # Last 2000 chars
-                    with open('/tmp/e2e_server_stderr.log', 'r') as f:
+                    with open("/tmp/e2e_server_stderr.log", "r") as f:
                         stderr_str = f.read()[-1000:]  # Last 1000 chars
                     print(f"\n❌ Server stdout:\n{stdout_str}")
                     print(f"\n❌ Server stderr:\n{stderr_str}")
@@ -273,12 +279,13 @@ def e2e_client(e2e_server, request):
     client = httpx.AsyncClient(
         base_url=e2e_server,
         timeout=httpx.Timeout(10.0, read=120.0),  # connection: 10s, read: 120s
-        follow_redirects=True
+        follow_redirects=True,
     )
 
     # Register cleanup
     def cleanup():
         import asyncio
+
         try:
             # Try to close the client gracefully
             loop = asyncio.new_event_loop()
@@ -313,11 +320,12 @@ def e2e_auth_token(e2e_environment_check):
 
         try:
             import requests
+
             response = requests.post(
                 f"{supabase_url}/auth/v1/token?grant_type=password",
                 json={"email": test_email, "password": test_password},
                 headers={"apikey": supabase_key},
-                timeout=10
+                timeout=10,
             )
 
             if response.status_code == 200:
@@ -368,10 +376,12 @@ def webhook_receiver():
 
         async def receive(self, webhook_data: Dict[str, Any]):
             """Simulate receiving a webhook."""
-            self.webhooks.append({
-                "timestamp": datetime.utcnow().isoformat(),
-                "data": webhook_data,
-            })
+            self.webhooks.append(
+                {
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "data": webhook_data,
+                }
+            )
 
     return WebhookReceiver()
 
@@ -379,6 +389,7 @@ def webhook_receiver():
 # =============================================================================
 # E2E Tests: Basic Health and Connectivity
 # =============================================================================
+
 
 class TestE2EHealthAndConnectivity:
     """Test basic health checks and service connectivity."""
@@ -408,6 +419,7 @@ class TestE2EHealthAndConnectivity:
 # E2E Tests: Authentication Flow
 # =============================================================================
 
+
 class TestE2EAuthenticationFlow:
     """Test complete authentication workflows with real Supabase."""
 
@@ -422,7 +434,7 @@ class TestE2EAuthenticationFlow:
                     "mode": "single",
                     "station_ids": ["KJFK"],
                     "hours": 1,
-                }
+                },
                 # No Authorization header
             )
 
@@ -442,7 +454,7 @@ class TestE2EAuthenticationFlow:
                 "metars": ["KJFK 121853Z 24008KT 10SM FEW250 M04/M17 A3034 RMK AO2 SLP279 T10441172"],
                 "version": "2023-1",
             },
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
+            headers={"Authorization": f"Bearer {e2e_auth_token}"},
         )
 
         assert response.status_code == 200
@@ -454,10 +466,7 @@ class TestE2EAuthenticationFlow:
     async def test_token_validation_and_user_context(self, e2e_client, e2e_auth_token):
         """Test that authentication provides correct user context."""
         # Access endpoint that uses user context (evaluation jobs)
-        response = await e2e_client.get(
-            "/api/v1/eval/jobs",
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
-        )
+        response = await e2e_client.get("/api/v1/eval/jobs", headers={"Authorization": f"Bearer {e2e_auth_token}"})
 
         # Handle infrastructure errors gracefully
         if response.status_code in [404, 500]:
@@ -470,6 +479,7 @@ class TestE2EAuthenticationFlow:
 # E2E Tests: Complete Conversion Pipeline
 # =============================================================================
 
+
 class TestE2EConversionPipeline:
     """Test complete METAR to IWXXM conversion workflows."""
 
@@ -478,10 +488,7 @@ class TestE2EConversionPipeline:
         """Test complete single METAR conversion workflow."""
         metar = "KJFK 121853Z 24008KT 10SM FEW250 M04/M17 A3034 RMK AO2 SLP279 T10441172"
 
-        response = await e2e_client.post(
-            "/api/v1/convert",
-            json={"metars": [metar], "version": "2023-1"}
-        )
+        response = await e2e_client.post("/api/v1/convert", json={"metars": [metar], "version": "2023-1"})
 
         assert response.status_code == 200
         data = response.json()
@@ -507,10 +514,7 @@ class TestE2EConversionPipeline:
             "EGLL 121850Z 09012KT 9999 FEW040 05/M01 Q1023 NOSIG",
         ]
 
-        response = await e2e_client.post(
-            "/api/v1/convert",
-            json={"metars": metars, "version": "2023-1"}
-        )
+        response = await e2e_client.post("/api/v1/convert", json={"metars": metars, "version": "2023-1"})
 
         assert response.status_code == 200
         data = response.json()
@@ -532,7 +536,7 @@ class TestE2EConversionPipeline:
                 "version": "2023-1",
                 "validation-level": "comprehensive",
                 "stop-on-error": True,
-            }
+            },
         )
 
         assert response.status_code == 200
@@ -552,23 +556,23 @@ class TestE2EConversionPipeline:
             "EGLL 121850Z 09012KT 9999 FEW040 05/M01 Q1023",
         ]
 
-        response = await e2e_client.post(
-            "/api/v1/convert-zip",
-            json={"metars": metars, "version": "2023-1"}
-        )
+        response = await e2e_client.post("/api/v1/convert-zip", json={"metars": metars, "version": "2023-1"})
 
         assert response.status_code == 200
         assert response.headers["content-type"] == "application/zip"
         assert "content-disposition" in response.headers
         # Accept both new and old filename formats
-        assert "iwxxm" in response.headers["content-disposition"].lower() and ".zip" in response.headers["content-disposition"]
+        assert (
+            "iwxxm" in response.headers["content-disposition"].lower()
+            and ".zip" in response.headers["content-disposition"]
+        )
 
         # Verify ZIP content is non-empty
         content = response.content
         assert len(content) > 0
 
         # Basic ZIP signature check
-        assert content[:4] == b'PK\x03\x04'
+        assert content[:4] == b"PK\x03\x04"
 
 
 # =============================================================================
@@ -576,6 +580,7 @@ class TestE2EConversionPipeline:
 # NOTE: TEMPORARILY SUSPENDED - Background job processing will be re-enabled later
 # Use convert endpoints for core functionality
 # =============================================================================
+
 
 @pytest.mark.skip(reason="Evaluation job tests temporarily suspended - focus on convert endpoints")
 class TestE2EEvaluationJobWorkflow:
@@ -593,7 +598,7 @@ class TestE2EEvaluationJobWorkflow:
                     "station_ids": ["KJFK"],  # Correct: plural, as list
                     "hours": 1.5,
                 },
-                headers={"Authorization": f"Bearer {e2e_auth_token}"}
+                headers={"Authorization": f"Bearer {e2e_auth_token}"},
             )
 
             # Gracefully handle missing Supabase infrastructure
@@ -609,8 +614,7 @@ class TestE2EEvaluationJobWorkflow:
             max_polls = 10
             for _ in range(max_polls):
                 status_response = await e2e_client.get(
-                    f"/api/v1/eval/jobs/{job_id}",
-                    headers={"Authorization": f"Bearer {e2e_auth_token}"}
+                    f"/api/v1/eval/jobs/{job_id}", headers={"Authorization": f"Bearer {e2e_auth_token}"}
                 )
 
                 assert status_response.status_code == 200
@@ -633,10 +637,7 @@ class TestE2EEvaluationJobWorkflow:
     async def test_list_user_evaluation_jobs(self, e2e_client, e2e_auth_token):
         """Test listing evaluation jobs for authenticated user."""
         try:
-            response = await e2e_client.get(
-                "/api/v1/eval/jobs",
-                headers={"Authorization": f"Bearer {e2e_auth_token}"}
-            )
+            response = await e2e_client.get("/api/v1/eval/jobs", headers={"Authorization": f"Bearer {e2e_auth_token}"})
 
             # Gracefully handle missing Supabase infrastructure
             if response.status_code in [404, 500]:
@@ -662,7 +663,7 @@ class TestE2EEvaluationJobWorkflow:
                 "station_id": "KJFK",
                 "iwxxm_version": "2023-1",
             },
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
+            headers={"Authorization": f"Bearer {e2e_auth_token}"},
         )
 
         if create_response.status_code not in [200, 201, 202]:
@@ -675,8 +676,7 @@ class TestE2EEvaluationJobWorkflow:
 
         # Try to get results
         results_response = await e2e_client.get(
-            f"/api/v1/eval/jobs/{job_id}/results",
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
+            f"/api/v1/eval/jobs/{job_id}/results", headers={"Authorization": f"Bearer {e2e_auth_token}"}
         )
 
         # Results may not be ready yet, but endpoint should respond
@@ -687,6 +687,7 @@ class TestE2EEvaluationJobWorkflow:
 # E2E Tests: Translation Statistics with Database
 # NOTE: TEMPORARILY SUSPENDED - Requires evaluation job infrastructure
 # =============================================================================
+
 
 @pytest.mark.skip(reason="Statistics tests suspended - depends on eval jobs")
 class TestE2ETranslationStatistics:
@@ -705,7 +706,7 @@ class TestE2ETranslationStatistics:
             retrieve_response = await e2e_client.get(
                 "/api/v1/translation/statistics/recent",
                 params={"hours": 24},
-                headers={"Authorization": f"Bearer {e2e_auth_token}"}
+                headers={"Authorization": f"Bearer {e2e_auth_token}"},
             )
 
             # Should return 200 even if no statistics exist yet
@@ -729,10 +730,7 @@ class TestE2ETranslationStatistics:
     @pytest.mark.asyncio
     async def test_regional_statistics_aggregation(self, e2e_client):
         """Test regional statistics aggregation from database."""
-        response = await e2e_client.get(
-            "/api/v1/translation/statistics/by-region",
-            params={"hours": 24}
-        )
+        response = await e2e_client.get("/api/v1/translation/statistics/by-region", params={"hours": 24})
 
         # May return 200 with data or 422 if endpoint validation changed
         assert response.status_code in [200, 422]
@@ -746,6 +744,7 @@ class TestE2ETranslationStatistics:
 # E2E Tests: Webhook Integration
 # NOTE: Requires webhook receiver service - may timeout if not available
 # =============================================================================
+
 
 @pytest.mark.skip(reason="Requires external webhook server")
 class TestE2EWebhookIntegration:
@@ -766,7 +765,7 @@ class TestE2EWebhookIntegration:
                 json={
                     "metars": ["KJFK 121853Z 24008KT 10SM FEW250 M04/M17 A3034"],
                     "version": "2023-1",
-                }
+                },
             )
 
             assert response.status_code == 200
@@ -787,6 +786,7 @@ class TestE2EWebhookIntegration:
 # E2E Tests: Error Handling and Recovery
 # =============================================================================
 
+
 class TestE2EErrorHandlingAndRecovery:
     """Test error handling and recovery with real services."""
 
@@ -797,8 +797,7 @@ class TestE2EErrorHandlingAndRecovery:
         # Try to get a non-existent evaluation job with auth header
         try:
             response = await e2e_client.get(
-                "/api/v1/eval/jobs/non-existent-job-id-12345",
-                headers={"Authorization": "Bearer test-token-12345"}
+                "/api/v1/eval/jobs/non-existent-job-id-12345", headers={"Authorization": "Bearer test-token-12345"}
             )
 
             # Should return error, not 500
@@ -816,7 +815,7 @@ class TestE2EErrorHandlingAndRecovery:
         response = await e2e_client.post(
             "/api/v1/eval/jobs",
             json={"mode": "single", "station_id": "KJFK", "iwxxm_version": "2023-1"},
-            headers={"Authorization": "Bearer invalid-token-12345"}
+            headers={"Authorization": "Bearer invalid-token-12345"},
         )
 
         # Should return error (400=validation, 401=unauth, 403=forbidden), not 500
@@ -833,7 +832,7 @@ class TestE2EErrorHandlingAndRecovery:
             json={
                 "metars": "NOT_A_LIST",  # Should be a list
                 "version": "invalid-version",
-            }
+            },
         )
 
         # Should return 400 or 422, not 500
@@ -845,6 +844,7 @@ class TestE2EErrorHandlingAndRecovery:
 # NOTE: These tests intentionally create heavy workloads and may timeout
 # Skip by default - run with: pytest -m performance
 # =============================================================================
+
 
 @pytest.mark.skip(reason="Heavy performance tests - run separately with: pytest -m performance")
 @pytest.mark.performance
@@ -862,10 +862,7 @@ class TestE2EPerformanceAndScalability:
 
         start_time = time.time()
 
-        response = await e2e_client.post(
-            "/api/v1/convert",
-            json={"metars": metars, "version": "2023-1"}
-        )
+        response = await e2e_client.post("/api/v1/convert", json={"metars": metars, "version": "2023-1"})
 
         elapsed_time = time.time() - start_time
 
@@ -895,10 +892,7 @@ class TestE2EPerformanceAndScalability:
         start_time = time.time()
         responses = []
         for _ in range(10):
-            response = await e2e_client.post(
-                "/api/v1/convert",
-                json={"metars": metars, "version": "2023-1"}
-            )
+            response = await e2e_client.post("/api/v1/convert", json={"metars": metars, "version": "2023-1"})
             responses.append(response)
         elapsed_time = time.time() - start_time
 
@@ -916,6 +910,7 @@ class TestE2EPerformanceAndScalability:
 # Skip if running in CI or with time constraints
 # =============================================================================
 
+
 @pytest.mark.skip(reason="Long-running async job tests - run separately for full coverage")
 class TestE2EDataPersistenceAndState:
     """Test data persistence and state management across requests."""
@@ -932,7 +927,7 @@ class TestE2EDataPersistenceAndState:
             response_24h = await e2e_client.get(
                 "/api/v1/translation/statistics/recent",
                 params={"hours": 24},
-                headers={"Authorization": f"Bearer {e2e_auth_token}"}
+                headers={"Authorization": f"Bearer {e2e_auth_token}"},
             )
 
             # Skip if endpoint requires admin or table doesn't exist
@@ -947,21 +942,19 @@ class TestE2EDataPersistenceAndState:
             response_1h = await e2e_client.get(
                 "/api/v1/translation/statistics/recent",
                 params={"hours": 1},
-                headers={"Authorization": f"Bearer {e2e_auth_token}"}
+                headers={"Authorization": f"Bearer {e2e_auth_token}"},
             )
             assert response_1h.status_code == 200
 
             # Query by region with proper start_date and end_date parameters
             from datetime import datetime, timedelta
+
             end_date = datetime.utcnow()
             start_date = end_date - timedelta(hours=24)
             response_region = await e2e_client.get(
                 "/api/v1/translation/statistics/by-region",
-                params={
-                    "start_date": start_date.isoformat(),
-                    "end_date": end_date.isoformat()
-                },
-                headers={"Authorization": f"Bearer {e2e_auth_token}"}
+                params={"start_date": start_date.isoformat(), "end_date": end_date.isoformat()},
+                headers={"Authorization": f"Bearer {e2e_auth_token}"},
             )
             assert response_region.status_code == 200
 
@@ -987,7 +980,7 @@ class TestE2EDataPersistenceAndState:
                 "station_id": "KJFK",
                 "iwxxm_version": "2023-1",
             },
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
+            headers={"Authorization": f"Bearer {e2e_auth_token}"},
         )
 
         if create_response.status_code not in [200, 201, 202]:
@@ -1000,8 +993,7 @@ class TestE2EDataPersistenceAndState:
 
         # Retrieve job from different "session"
         get_response = await e2e_client.get(
-            f"/api/v1/eval/jobs/{job_id}",
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
+            f"/api/v1/eval/jobs/{job_id}", headers={"Authorization": f"Bearer {e2e_auth_token}"}
         )
 
         # Should retrieve persisted job state
@@ -1014,6 +1006,7 @@ class TestE2EDataPersistenceAndState:
 # E2E Tests: Full Endpoint Coverage
 # =============================================================================
 
+
 class TestE2EFullEndpointCoverage:
     """Comprehensive tests for all API endpoints without infrastructure dependencies."""
 
@@ -1021,8 +1014,7 @@ class TestE2EFullEndpointCoverage:
     async def test_conversion_endpoint_post(self, e2e_client):
         """Test POST /api/v1/convert - Convert METAR to IWXXM."""
         response = await e2e_client.post(
-            "/api/v1/convert",
-            json={"metars": ["KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"], "version": "2023-1"}
+            "/api/v1/convert", json={"metars": ["KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"], "version": "2023-1"}
         )
         assert response.status_code == 200
         data = response.json()
@@ -1032,8 +1024,7 @@ class TestE2EFullEndpointCoverage:
     async def test_validation_endpoint_tac(self, e2e_client):
         """Test POST /api/v1/validation/tac - Validate METAR TAC format."""
         response = await e2e_client.post(
-            "/api/v1/validation/tac",
-            json={"metar_tac": "KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"}
+            "/api/v1/validation/tac", json={"metar_tac": "KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"}
         )
         # Endpoint may not exist or may require different format
         assert response.status_code in [200, 400, 404, 422]
@@ -1043,8 +1034,7 @@ class TestE2EFullEndpointCoverage:
         """Test POST /api/v1/validation/xml - Validate IWXXM XML."""
         # First generate some valid IWXXM
         convert_response = await e2e_client.post(
-            "/api/v1/convert",
-            json={"metars": ["KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"], "version": "2023-1"}
+            "/api/v1/convert", json={"metars": ["KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"], "version": "2023-1"}
         )
 
         if convert_response.status_code == 200:
@@ -1053,10 +1043,7 @@ class TestE2EFullEndpointCoverage:
             if results and len(results) > 0:
                 xml_data = results[0].get("iwxxm_xml") or results[0].get("xml")
                 if xml_data:
-                    response = await e2e_client.post(
-                        "/api/v1/validation/xml",
-                        json={"iwxxm_xml": xml_data}
-                    )
+                    response = await e2e_client.post("/api/v1/validation/xml", json={"iwxxm_xml": xml_data})
                     assert response.status_code in [200, 400, 422]
 
     @pytest.mark.asyncio
@@ -1107,13 +1094,12 @@ class TestE2EFullEndpointCoverage:
 
         # Create a simple ZIP with METAR file
         zip_buffer = io.BytesIO()
-        with zipfile.ZipFile(zip_buffer, 'w') as zf:
-            zf.writestr('metars.txt', 'KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034\n')
+        with zipfile.ZipFile(zip_buffer, "w") as zf:
+            zf.writestr("metars.txt", "KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034\n")
         zip_buffer.seek(0)
 
         response = await e2e_client.post(
-            "/api/v1/convert/upload",
-            files={"file": ("metars.zip", zip_buffer, "application/zip")}
+            "/api/v1/convert/upload", files={"file": ("metars.zip", zip_buffer, "application/zip")}
         )
 
         # Endpoint may not exist, but test the attempt
@@ -1123,6 +1109,7 @@ class TestE2EFullEndpointCoverage:
 # =============================================================================
 # E2E Tests: Version and Schema Endpoints
 # =============================================================================
+
 
 class TestE2EVersionAndSchemaEndpoints:
     """Test version and schema status endpoints."""
@@ -1188,6 +1175,7 @@ class TestE2EVersionAndSchemaEndpoints:
 # E2E Tests: Validation Endpoints
 # =============================================================================
 
+
 class TestE2EValidationEndpoints:
     """Test validation endpoints with real validation engine."""
 
@@ -1197,8 +1185,7 @@ class TestE2EValidationEndpoints:
         valid_metar = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2"
 
         response = await e2e_client.post(
-            "/api/v1/validation/validate",
-            json={"content": valid_metar, "content_type": "tac"}
+            "/api/v1/validation/validate", json={"content": valid_metar, "content_type": "tac"}
         )
 
         assert response.status_code == 200
@@ -1213,8 +1200,7 @@ class TestE2EValidationEndpoints:
         invalid_metar = "INVALID METAR DATA XYZ"
 
         response = await e2e_client.post(
-            "/api/v1/validation/validate",
-            json={"content": invalid_metar, "content_type": "tac"}
+            "/api/v1/validation/validate", json={"content": invalid_metar, "content_type": "tac"}
         )
 
         assert response.status_code == 200
@@ -1229,10 +1215,7 @@ class TestE2EValidationEndpoints:
         """Test validation returns all 7 layers."""
         metar = "KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"
 
-        response = await e2e_client.post(
-            "/api/v1/validation/validate",
-            json={"content": metar, "content_type": "tac"}
-        )
+        response = await e2e_client.post("/api/v1/validation/validate", json={"content": metar, "content_type": "tac"})
 
         assert response.status_code == 200
         data = response.json()
@@ -1249,18 +1232,13 @@ class TestE2EValidationEndpoints:
         """Test validation response includes execution timing."""
         metar = "KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"
 
-        response = await e2e_client.post(
-            "/api/v1/validation/validate",
-            json={"content": metar, "content_type": "tac"}
-        )
+        response = await e2e_client.post("/api/v1/validation/validate", json={"content": metar, "content_type": "tac"})
 
         assert response.status_code == 200
         data = response.json()
 
         # Should have timing information
-        assert "execution_time_ms" in data or any(
-            "time" in k.lower() for k in data.keys()
-        )
+        assert "execution_time_ms" in data or any("time" in k.lower() for k in data.keys())
 
     @pytest.mark.asyncio
     async def test_validate_error_handling(self, e2e_client):
@@ -1268,7 +1246,7 @@ class TestE2EValidationEndpoints:
         # Send invalid JSON
         response = await e2e_client.post(
             "/api/v1/validation/validate",
-            json={}  # Missing required tac_text
+            json={},  # Missing required tac_text
         )
 
         # Should either reject or handle gracefully
@@ -1283,8 +1261,7 @@ class TestE2EValidationEndpoints:
         ]
 
         response = await e2e_client.post(
-            "/api/v1/validation/validate-multi",
-            json={"contents": metars, "content_type": "tac"}
+            "/api/v1/validation/validate-multi", json={"contents": metars, "content_type": "tac"}
         )
 
         assert response.status_code in [200, 404, 422]  # May not exist yet or different schema
@@ -1311,6 +1288,7 @@ class TestE2EValidationEndpoints:
 # =============================================================================
 # E2E Tests: ICAO OPMET Endpoints
 # =============================================================================
+
 
 class TestE2EICAOOPMETEndpoints:
     """Test ICAO OPMET translation centre endpoints."""
@@ -1370,8 +1348,8 @@ class TestE2EICAOOPMETEndpoints:
     async def test_airport_region_multiple_airports(self, e2e_client):
         """Test airport region lookup for different regions."""
         airports = {
-            "KJFK": "NAM",   # North America
-            "EDDF": "EUR",   # Europe
+            "KJFK": "NAM",  # North America
+            "EDDF": "EUR",  # Europe
             "RJTT": "APAC",  # Asia-Pacific
         }
 
@@ -1403,6 +1381,7 @@ class TestE2EICAOOPMETEndpoints:
 # NOTE: TEMPORARILY SUSPENDED - Background job processing will be re-enabled later
 # =============================================================================
 
+
 @pytest.mark.skip(reason="Enhanced eval job tests suspended - focus on convert endpoints")
 class TestE2EEnhancedEvaluationJobWorkflow:
     """Test complete evaluation job lifecycle with proper async handling."""
@@ -1413,7 +1392,7 @@ class TestE2EEnhancedEvaluationJobWorkflow:
         response = await e2e_client.post(
             "/api/v1/eval/jobs",
             json={"metar_sample": "KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"},
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
+            headers={"Authorization": f"Bearer {e2e_auth_token}"},
         )
 
         if response.status_code == 404:
@@ -1428,6 +1407,7 @@ class TestE2EEnhancedEvaluationJobWorkflow:
 
         # Verify it's a valid UUID format
         import uuid
+
         try:
             uuid.UUID(str(job_id))
         except ValueError:
@@ -1440,7 +1420,7 @@ class TestE2EEnhancedEvaluationJobWorkflow:
         create_response = await e2e_client.post(
             "/api/v1/eval/jobs",
             json={"metar_sample": "KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"},
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
+            headers={"Authorization": f"Bearer {e2e_auth_token}"},
         )
 
         if create_response.status_code == 404:
@@ -1450,13 +1430,13 @@ class TestE2EEnhancedEvaluationJobWorkflow:
 
         # Poll for completion (max 30 seconds)
         import asyncio
+
         max_attempts = 30
         attempt = 0
 
         while attempt < max_attempts:
             status_response = await e2e_client.get(
-                f"/api/v1/eval/jobs/{job_id}",
-                headers={"Authorization": f"Bearer {e2e_auth_token}"}
+                f"/api/v1/eval/jobs/{job_id}", headers={"Authorization": f"Bearer {e2e_auth_token}"}
             )
 
             if status_response.status_code == 200:
@@ -1475,10 +1455,7 @@ class TestE2EEnhancedEvaluationJobWorkflow:
     @pytest.mark.asyncio
     async def test_list_user_jobs(self, e2e_client, e2e_auth_token):
         """Test GET /api/v1/eval/jobs lists user's jobs."""
-        response = await e2e_client.get(
-            "/api/v1/eval/jobs",
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
-        )
+        response = await e2e_client.get("/api/v1/eval/jobs", headers={"Authorization": f"Bearer {e2e_auth_token}"})
 
         if response.status_code == 404:
             pytest.skip("Evaluation infrastructure not available")
@@ -1501,7 +1478,7 @@ class TestE2EEnhancedEvaluationJobWorkflow:
         create_response = await e2e_client.post(
             "/api/v1/eval/jobs",
             json={"metar_sample": "KJFK 121856Z 24010KT 10SM FEW250 M04/M17 A3034"},
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
+            headers={"Authorization": f"Bearer {e2e_auth_token}"},
         )
 
         if create_response.status_code in [404, 500]:
@@ -1511,8 +1488,7 @@ class TestE2EEnhancedEvaluationJobWorkflow:
 
         # Check initial status
         status_response = await e2e_client.get(
-            f"/api/v1/eval/jobs/{job_id}",
-            headers={"Authorization": f"Bearer {e2e_auth_token}"}
+            f"/api/v1/eval/jobs/{job_id}", headers={"Authorization": f"Bearer {e2e_auth_token}"}
         )
 
         if status_response.status_code == 200:
@@ -1525,4 +1501,3 @@ class TestE2EEnhancedEvaluationJobWorkflow:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-m", "e2e"])
-

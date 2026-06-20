@@ -37,8 +37,7 @@ class TestMeteorologicalFeatures:
 
     def test_valid_features_exist(self) -> None:
         """Verify all meteorological features are defined."""
-        assert len(MeteorologicalFeature) >= 20, \
-            "Expected at least 20 meteorological features"
+        assert len(MeteorologicalFeature) >= 20, "Expected at least 20 meteorological features"
 
         # Verify specific features
         assert MeteorologicalFeature.AIRFRAME_ICING.value == "AIRFRAME_ICING"
@@ -68,8 +67,7 @@ class TestVolcanicAviationCodes:
 
     def test_valid_codes_exist(self) -> None:
         """Verify all volcanic codes are defined."""
-        assert len(VolcanicAviationColourCode) == 5, \
-            "Expected 5 volcanic aviation colour codes"
+        assert len(VolcanicAviationColourCode) == 5, "Expected 5 volcanic aviation colour codes"
 
     def test_validate_volcanic_code(self) -> None:
         """Test volcanic code validation."""
@@ -97,8 +95,7 @@ class TestNilReasons:
 
     def test_valid_nil_reasons_exist(self) -> None:
         """Verify all nil reasons are defined."""
-        assert len(NilReason) >= 10, \
-            "Expected at least 10 nil reasons"
+        assert len(NilReason) >= 10, "Expected at least 10 nil reasons"
 
     def test_validate_nil_reason(self) -> None:
         """Test nil reason validation."""
@@ -126,8 +123,7 @@ class TestIWXXMVersions:
 
     def test_supported_versions_exist(self) -> None:
         """Verify supported IWXXM versions are defined."""
-        assert len(IWXXMVersion) >= 4, \
-            "Expected at least 4 supported IWXXM versions"
+        assert len(IWXXMVersion) >= 4, "Expected at least 4 supported IWXXM versions"
 
     def test_version_validation(self) -> None:
         """Test IWXXM version validation."""
@@ -154,48 +150,48 @@ class TestNamespaceVersionExtraction:
 
     def test_extract_version_2023_1(self) -> None:
         """Test extracting 2023-1 version from XML."""
-        xml = '''<?xml version="1.0"?>
+        xml = """<?xml version="1.0"?>
 <iwxxm:SPECI xmlns:iwxxm="http://icao.int/iwxxm/2023-1">
-</iwxxm:SPECI>'''
+</iwxxm:SPECI>"""
         version = get_namespace_version(xml)
         assert version == "2023-1"
 
     def test_extract_version_2025_2(self) -> None:
         """Test extracting 2025-2 version from XML."""
-        xml = '''<?xml version="1.0"?>
+        xml = """<?xml version="1.0"?>
 <iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">
-</iwxxm:METAR>'''
+</iwxxm:METAR>"""
         version = get_namespace_version(xml)
         assert version == "2025-2"
 
     def test_extract_version_2021_2(self) -> None:
         """Test extracting 2021-2 version from XML."""
-        xml = '''<iwxxm:SPECI xmlns:iwxxm="http://icao.int/iwxxm/2021-2">
-</iwxxm:SPECI>'''
+        xml = """<iwxxm:SPECI xmlns:iwxxm="http://icao.int/iwxxm/2021-2">
+</iwxxm:SPECI>"""
         version = get_namespace_version(xml)
         assert version == "2021-2"
 
     def test_missing_namespace_raises_error(self) -> None:
         """Test that missing IWXXM namespace raises error."""
-        xml = '''<?xml version="1.0"?>
+        xml = """<?xml version="1.0"?>
 <iwxxm:SPECI>
-</iwxxm:SPECI>'''
+</iwxxm:SPECI>"""
         with pytest.raises(ValueError):
             get_namespace_version(xml)
 
     def test_invalid_namespace_raises_error(self) -> None:
         """Test that invalid namespace raises error."""
-        xml = '''<?xml version="1.0"?>
+        xml = """<?xml version="1.0"?>
 <iwxxm:SPECI xmlns:iwxxm="http://example.com/invalid">
-</iwxxm:SPECI>'''
+</iwxxm:SPECI>"""
         with pytest.raises(ValueError):
             get_namespace_version(xml)
 
     def test_unsupported_version_raises_error(self) -> None:
         """Test that unsupported version raises error."""
-        xml = '''<?xml version="1.0"?>
+        xml = """<?xml version="1.0"?>
 <iwxxm:SPECI xmlns:iwxxm="http://icao.int/iwxxm/9999-9">
-</iwxxm:SPECI>'''
+</iwxxm:SPECI>"""
         with pytest.raises(ValueError):
             get_namespace_version(xml)
 
@@ -214,29 +210,26 @@ class TestMetadataValidation:
             "STORM",
         ]
         for feature in features_to_expect:
-            assert is_valid_meteorological_feature(feature), \
-                f"Expected {feature} to be valid"
+            assert is_valid_meteorological_feature(feature), f"Expected {feature} to be valid"
 
     def test_nil_reasons_cover_common_cases(self) -> None:
         """Verify nil reasons cover common no-data scenarios."""
         common_reasons = [
-            "missing",           # No data provided
-            "unknown",           # Can't determine value
-            "inapplicable",      # Feature not relevant
-            "notObservable",     # Can't measure
+            "missing",  # No data provided
+            "unknown",  # Can't determine value
+            "inapplicable",  # Feature not relevant
+            "notObservable",  # Can't measure
             "noSignificantChange",  # NOSIG
         ]
         for reason in common_reasons:
-            assert is_valid_nil_reason(reason), \
-                f"Expected {reason} to be valid nil reason"
+            assert is_valid_nil_reason(reason), f"Expected {reason} to be valid nil reason"
 
     def test_volcanic_codes_match_icao_doc9766(self) -> None:
         """Verify volcanic codes match ICAO Doc 9766."""
         # As per ICAO Doc 9766
         expected_codes = ["GREEN", "YELLOW", "ORANGE", "RED", "UNASSIGNED"]
         for code in expected_codes:
-            assert is_valid_volcanic_code(code), \
-                f"Expected {code} to match ICAO Doc 9766"
+            assert is_valid_volcanic_code(code), f"Expected {code} to match ICAO Doc 9766"
 
 
 if __name__ == "__main__":

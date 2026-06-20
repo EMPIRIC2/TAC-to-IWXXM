@@ -180,6 +180,7 @@ class TestDependencyInjection:
 
     def test_verify_supabase_token_override(self):
         """Test that verify_supabase_token can be overridden."""
+
         async def mock_token():
             return {"sub": "test-user"}
 
@@ -195,6 +196,7 @@ class TestDependencyInjection:
 
     def test_dependency_override_cleanup(self):
         """Test dependency overrides are cleaned up properly."""
+
         async def mock_token():
             return {"sub": "test"}
 
@@ -215,11 +217,7 @@ class TestRequestValidation:
         client = TestClient(app)
 
         # Manually create invalid JSON request
-        response = client.post(
-            "/api/v1/convert",
-            content="{invalid json",
-            headers={"Content-Type": "application/json"}
-        )
+        response = client.post("/api/v1/convert", content="{invalid json", headers={"Content-Type": "application/json"})
 
         # Should return 422 or 400 (or 401 if auth required)
         assert response.status_code in [400, 401, 422]
@@ -228,10 +226,7 @@ class TestRequestValidation:
         """Test request without Content-Type header."""
         client = TestClient(app)
 
-        response = client.post(
-            "/api/v1/convert",
-            data="some data"
-        )
+        response = client.post("/api/v1/convert", data="some data")
 
         # Should handle gracefully
         assert response.status_code in [200, 400, 401, 415, 422]
@@ -240,11 +235,7 @@ class TestRequestValidation:
         """Test request with unsupported Content-Type."""
         client = TestClient(app)
 
-        response = client.post(
-            "/api/v1/convert",
-            data="some data",
-            headers={"Content-Type": "application/xml"}
-        )
+        response = client.post("/api/v1/convert", data="some data", headers={"Content-Type": "application/xml"})
 
         # Should handle or reject
         assert response.status_code in [200, 400, 401, 415, 422]

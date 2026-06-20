@@ -4,7 +4,6 @@ Tests for schema registry functionality.
 Tests schema file path resolution and version-specific schema access.
 """
 
-
 import pytest
 
 from src.utilities.schema_registry import clear_registry_cache, get_schema_registry

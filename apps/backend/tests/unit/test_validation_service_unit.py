@@ -69,7 +69,9 @@ def test_validate_airport_icao_unknown_code(monkeypatch):
 def test_validate_airport_icao_wraps_unexpected_exception(monkeypatch):
     service = _make_service(monkeypatch)
     monkeypatch.setattr(service, "_extract_icao_from_tac", lambda _tac: "KJFK")
-    monkeypatch.setattr(service.airport_validator, "validate_icao", lambda _icao: (_ for _ in ()).throw(RuntimeError("db down")))
+    monkeypatch.setattr(
+        service.airport_validator, "validate_icao", lambda _icao: (_ for _ in ()).throw(RuntimeError("db down"))
+    )
 
     with pytest.raises(val.ValidationError, match="ICAO validation error"):
         service.validate_airport_icao("METAR KJFK 010000Z")
@@ -99,7 +101,9 @@ def test_validate_tac_syntax_passes_for_valid_metar(monkeypatch):
 
 def test_validate_all_layers_stops_when_icao_fails(monkeypatch):
     service = _make_service(monkeypatch)
-    monkeypatch.setattr(service, "validate_airport_icao", lambda _tac: (_ for _ in ()).throw(val.ValidationError("boom")))
+    monkeypatch.setattr(
+        service, "validate_airport_icao", lambda _tac: (_ for _ in ()).throw(val.ValidationError("boom"))
+    )
 
     aggregated = service.validate_all_layers("METAR KJFK 010000Z")
 

@@ -101,7 +101,7 @@ class TestRCVersionRegistration:
             "name": "IWXXM 2025-2 RC1",
             "namespace_uri": "http://icao.int/iwxxm/2025-2",
             "status": "rc",
-            "base_version": "2025-2"
+            "base_version": "2025-2",
         }
 
         # Register RC version
@@ -153,10 +153,7 @@ class TestVersionConfigIntegration:
     def test_stable_and_rc_coexist(self):
         """Test that stable and RC versions can coexist."""
         # Register a test RC version
-        test_rc = {
-            "name": "IWXXM 2026-1 RC1",
-            "status": "rc"
-        }
+        test_rc = {"name": "IWXXM 2026-1 RC1", "status": "rc"}
         register_rc_version("2026-1RC1", test_rc)
 
         # Verify both stable and RC are accessible

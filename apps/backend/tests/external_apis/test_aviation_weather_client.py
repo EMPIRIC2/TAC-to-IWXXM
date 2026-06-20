@@ -1,4 +1,5 @@
 """Unit tests for aviation weather API client."""
+
 from unittest.mock import AsyncMock, Mock, patch
 
 import httpx
@@ -21,7 +22,7 @@ class TestAviationWeatherClient:
     async def test_fetch_metar_batch_success(self):
         """Test successful METAR batch fetch."""
         async with AviationWeatherClient() as client:
-            with patch.object(client._client, 'get', new_callable=AsyncMock) as mock_get:
+            with patch.object(client._client, "get", new_callable=AsyncMock) as mock_get:
                 raw_response = Mock()
                 raw_response.text = "METAR KJFK 101851Z 24008KT 10SM FEW250 M04/M17 A3034\nMETAR KLAX 101853Z 26010KT 10SM FEW015 16/12 A2990"
                 raw_response.raise_for_status = Mock()
@@ -43,16 +44,12 @@ class TestAviationWeatherClient:
     async def test_fetch_metar_batch_handles_404(self):
         """Test handling of 404 responses."""
         async with AviationWeatherClient() as client:
-            with patch.object(client._client, 'get', new_callable=AsyncMock) as mock_get:
+            with patch.object(client._client, "get", new_callable=AsyncMock) as mock_get:
                 response = Mock()
                 response.status_code = 404
                 response.text = "Not found"
 
-                mock_get.side_effect = httpx.HTTPStatusError(
-                    "404 Not Found",
-                    request=Mock(),
-                    response=response
-                )
+                mock_get.side_effect = httpx.HTTPStatusError("404 Not Found", request=Mock(), response=response)
 
                 result = await client.fetch_metar_batch(["INVALID"], hours=1.5)
 
@@ -62,7 +59,7 @@ class TestAviationWeatherClient:
     async def test_fetch_metar_batch_request_error(self):
         """Test handling of request errors."""
         async with AviationWeatherClient() as client:
-            with patch.object(client._client, 'get', new_callable=AsyncMock) as mock_get:
+            with patch.object(client._client, "get", new_callable=AsyncMock) as mock_get:
                 mock_get.side_effect = httpx.RequestError("Connection failed")
 
                 # Request errors are returned as empty dict (exception caught in parallel gather)
@@ -83,7 +80,7 @@ class TestAviationWeatherClient:
         """Test extraction returns None when station not found."""
         client = AviationWeatherClient()
 
-        xml = '<METAR>no station info</METAR>'
+        xml = "<METAR>no station info</METAR>"
 
         station_id = client._extract_station_from_xml(xml)
 
@@ -93,7 +90,9 @@ class TestAviationWeatherClient:
         """Test parsing raw format response."""
         client = AviationWeatherClient()
 
-        content = "METAR KJFK 101851Z 24008KT 10SM FEW250 M04/M17 A3034\nMETAR KLAX 101853Z 26010KT 10SM FEW015 16/12 A2990"
+        content = (
+            "METAR KJFK 101851Z 24008KT 10SM FEW250 M04/M17 A3034\nMETAR KLAX 101853Z 26010KT 10SM FEW015 16/12 A2990"
+        )
 
         result = client._parse_response(content, "raw", ["KJFK", "KLAX"])
 

@@ -12,6 +12,7 @@ from src.utilities.security import verify_supabase_token
 @pytest.fixture
 def client():
     """Create test client with mocked authentication."""
+
     async def override_verify_token():
         return {"sub": "test-user-id", "aud": "test-project"}
 
@@ -64,7 +65,7 @@ class TestValidationLayersEndpoint:
             "xml_schema",
             "schematron",
             "gml_references",
-            "wmo_codelists"
+            "wmo_codelists",
         ]
 
         assert set(layer_names) == set(expected)
@@ -91,8 +92,7 @@ class TestValidateSingleEndpoint:
     def test_validate_valid_metar(self, client):
         """Test validation of valid METAR."""
         response = client.post(
-            "/api/v1/validation/validate",
-            json={"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
+            "/api/v1/validation/validate", json={"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
         )
         assert response.status_code == 200
         data = response.json()
@@ -105,8 +105,7 @@ class TestValidateSingleEndpoint:
     def test_validate_response_structure(self, client):
         """Test response has correct structure."""
         response = client.post(
-            "/api/v1/validation/validate",
-            json={"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
+            "/api/v1/validation/validate", json={"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
         )
         data = response.json()
 
@@ -120,8 +119,7 @@ class TestValidateSingleEndpoint:
     def test_validate_invalid_icao(self, client):
         """Test validation fails with invalid ICAO."""
         response = client.post(
-            "/api/v1/validation/validate",
-            json={"content": "METAR ZZZZ 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
+            "/api/v1/validation/validate", json={"content": "METAR ZZZZ 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
         )
         assert response.status_code == 200
         data = response.json()
@@ -131,10 +129,7 @@ class TestValidateSingleEndpoint:
 
     def test_validate_invalid_syntax(self, client):
         """Test validation detects syntax errors."""
-        response = client.post(
-            "/api/v1/validation/validate",
-            json={"content": "INVALID METAR"}
-        )
+        response = client.post("/api/v1/validation/validate", json={"content": "INVALID METAR"})
         assert response.status_code == 200
         data = response.json()
 
@@ -142,36 +137,28 @@ class TestValidateSingleEndpoint:
 
     def test_validate_empty_content(self, client):
         """Test validation with empty content."""
-        response = client.post(
-            "/api/v1/validation/validate",
-            json={"content": ""}
-        )
+        response = client.post("/api/v1/validation/validate", json={"content": ""})
         # Empty content returns validation error
         assert response.status_code in [200, 400, 422]
 
     def test_validate_missing_content_field(self, client):
         """Test validation with missing content field."""
-        response = client.post(
-            "/api/v1/validation/validate",
-            json={}
-        )
+        response = client.post("/api/v1/validation/validate", json={})
         assert response.status_code == 422  # Validation error
 
     def test_validate_service_error_handling(self, client):
         """Test error handling when service raises exception."""
-        with patch('src.routers.validation.ValidationService') as mock_service_class:
+        with patch("src.routers.validation.ValidationService") as mock_service_class:
             mock_instance = MagicMock()
             mock_instance.validate_all_layers.side_effect = RuntimeError("Service error")
             mock_service_class.return_value = mock_instance
 
             # Need to get fresh service
             import src.routers.validation as val_router
+
             val_router._validation_service = mock_instance
 
-            response = client.post(
-                "/api/v1/validation/validate",
-                json={"content": "METAR FAOR 101200Z"}
-            )
+            response = client.post("/api/v1/validation/validate", json={"content": "METAR FAOR 101200Z"})
 
             assert response.status_code == 500
             assert "error" in response.json()["detail"].lower()
@@ -179,8 +166,7 @@ class TestValidateSingleEndpoint:
     def test_validate_multiple_results_in_response(self, client):
         """Test that validation results array contains layer results."""
         response = client.post(
-            "/api/v1/validation/validate",
-            json={"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
+            "/api/v1/validation/validate", json={"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
         )
         data = response.json()
 
@@ -201,11 +187,7 @@ class TestValidateMultipleEndpoint:
         """Test batch validation with single item."""
         response = client.post(
             "/api/v1/validation/validate-multi",
-            json={
-                "items": [
-                    {"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
-                ]
-            }
+            json={"items": [{"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}]},
         )
         # Should return success or validation error
         assert response.status_code in [200, 400, 422, 500]
@@ -223,9 +205,9 @@ class TestValidateMultipleEndpoint:
                 "items": [
                     {"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"},
                     {"content": "METAR KJFK 101200Z 12012KT 10SM FEW020 22/14 A3000"},
-                    {"content": "INVALID"}
+                    {"content": "INVALID"},
                 ]
-            }
+            },
         )
         # Should succeed or fail gracefully
         assert response.status_code in [200, 400, 422, 500]
@@ -239,12 +221,7 @@ class TestValidateMultipleEndpoint:
         """Test batch response structure."""
         response = client.post(
             "/api/v1/validation/validate-multi",
-            json={
-                "items": [
-                    {"content": "METAR FAOR 101200Z"},
-                    {"content": "METAR KJFK 101200Z"}
-                ]
-            }
+            json={"items": [{"content": "METAR FAOR 101200Z"}, {"content": "METAR KJFK 101200Z"}]},
         )
 
         if response.status_code == 200:
@@ -259,11 +236,7 @@ class TestValidateMultipleEndpoint:
         """Test batch with all passing items."""
         response = client.post(
             "/api/v1/validation/validate-multi",
-            json={
-                "items": [
-                    {"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}
-                ]
-            }
+            json={"items": [{"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"}]},
         )
 
         if response.status_code == 200:
@@ -275,13 +248,7 @@ class TestValidateMultipleEndpoint:
     def test_validate_multi_all_failed(self, client):
         """Test batch with all failing items."""
         response = client.post(
-            "/api/v1/validation/validate-multi",
-            json={
-                "items": [
-                    {"content": "INVALID"},
-                    {"content": "ALSO INVALID"}
-                ]
-            }
+            "/api/v1/validation/validate-multi", json={"items": [{"content": "INVALID"}, {"content": "ALSO INVALID"}]}
         )
 
         if response.status_code == 200:
@@ -292,29 +259,20 @@ class TestValidateMultipleEndpoint:
 
     def test_validate_multi_empty_items(self, client):
         """Test batch with empty items list."""
-        response = client.post(
-            "/api/v1/validation/validate-multi",
-            json={"items": []}
-        )
+        response = client.post("/api/v1/validation/validate-multi", json={"items": []})
         # Should return 422 or handle gracefully
         assert response.status_code in [200, 422]
 
     def test_validate_multi_exceeds_max_items(self, client):
         """Test batch with more than 100 items."""
         items = [{"content": f"METAR FAOR 101200Z {i:05d}"} for i in range(101)]
-        response = client.post(
-            "/api/v1/validation/validate-multi",
-            json={"items": items}
-        )
+        response = client.post("/api/v1/validation/validate-multi", json={"items": items})
         # Should either reject or limit
         assert response.status_code in [200, 422]
 
     def test_validate_multi_missing_items_field(self, client):
         """Test batch without items field."""
-        response = client.post(
-            "/api/v1/validation/validate-multi",
-            json={}
-        )
+        response = client.post("/api/v1/validation/validate-multi", json={})
         assert response.status_code == 422
 
     def test_validate_multi_statistics(self, client):
@@ -324,9 +282,9 @@ class TestValidateMultipleEndpoint:
             json={
                 "items": [
                     {"content": "METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018"},
-                    {"content": "METAR INVALID"}
+                    {"content": "METAR INVALID"},
                 ]
-            }
+            },
         )
 
         if response.status_code == 200:
@@ -343,20 +301,14 @@ class TestValidationAuthenticationRequired:
     def test_validate_multi_requires_auth(self):
         """Test that validate-multi requires authentication."""
         client = TestClient(app)
-        response = client.post(
-            "/api/v1/validation/validate-multi",
-            json={"items": [{"content": "METAR FAOR"}]}
-        )
+        response = client.post("/api/v1/validation/validate-multi", json={"items": [{"content": "METAR FAOR"}]})
         # Should fail without auth
         assert response.status_code in [401, 403]
 
     def test_validate_single_no_auth_required(self):
         """Test that validate single endpoint doesn't require auth."""
         client = TestClient(app)
-        response = client.post(
-            "/api/v1/validation/validate",
-            json={"content": "METAR FAOR"}
-        )
+        response = client.post("/api/v1/validation/validate", json={"content": "METAR FAOR"})
         # Single validate may or may not require auth - both are acceptable
         assert response.status_code in [200, 401, 422]
 

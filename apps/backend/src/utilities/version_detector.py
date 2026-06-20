@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class VersionInfo:
     """Information about an IWXXM version."""
+
     version: str
     tag: str
     is_configured: bool
@@ -59,21 +60,13 @@ class VersionDetector:
         try:
             # Get all tags from the submodule
             result = subprocess.run(
-                ["git", "tag", "-l", "v*"],
-                cwd=self.iwxxm_path,
-                capture_output=True,
-                text=True,
-                check=True,
-                timeout=10
+                ["git", "tag", "-l", "v*"], cwd=self.iwxxm_path, capture_output=True, text=True, check=True, timeout=10
             )
 
-            tags = [tag.strip() for tag in result.stdout.split('\n') if tag.strip()]
+            tags = [tag.strip() for tag in result.stdout.split("\n") if tag.strip()]
 
             # Filter to version tags (v20XX-X format)
-            version_tags = [
-                tag for tag in tags
-                if tag.startswith('v') and '-' in tag
-            ]
+            version_tags = [tag for tag in tags if tag.startswith("v") and "-" in tag]
 
             if version_tags:
                 return sorted(version_tags, reverse=True)  # Newest first
@@ -90,10 +83,10 @@ class VersionDetector:
             available_dirs = []
             if self.iwxxm_path.exists():
                 for item in self.iwxxm_path.iterdir():
-                    if item.is_dir() and item.name.startswith(('v', '20')):
+                    if item.is_dir() and item.name.startswith(("v", "20")):
                         # Convert directory name to tag format
                         dir_name = item.name
-                        if not dir_name.startswith('v'):
+                        if not dir_name.startswith("v"):
                             dir_name = f"v{dir_name}"
                         available_dirs.append(dir_name)
 
@@ -120,7 +113,7 @@ class VersionDetector:
         try:
             content = latest_file.read_text().strip()
             # File format: "2025-2|IWXXM" or just "2025-2"
-            version = content.split('|')[0].strip()
+            version = content.split("|")[0].strip()
             return version
         except Exception as e:
             logger.error(f"Error reading LATEST_VERSION: {e}")
@@ -137,7 +130,7 @@ class VersionDetector:
             Version string (e.g., '2025-2')
         """
         # Remove 'v' prefix
-        return tag.lstrip('v')
+        return tag.lstrip("v")
 
     def version_to_tag(self, version: str) -> str:
         """
@@ -149,7 +142,7 @@ class VersionDetector:
         Returns:
             Git tag (e.g., 'v2025-2')
         """
-        if not version.startswith('v'):
+        if not version.startswith("v"):
             return f"v{version}"
         return version
 
@@ -169,9 +162,7 @@ class VersionDetector:
             "xsd": (iwxxm_dir / "iwxxm.xsd").exists(),
             "metar_xsd": (iwxxm_dir / "metarSpeci.xsd").exists(),
             "schematron": (iwxxm_dir / "rule" / "iwxxm.sch").exists(),
-            "codelists": (iwxxm_dir / "rule").exists() and any(
-                (iwxxm_dir / "rule").glob("*.rdf")
-            ),
+            "codelists": (iwxxm_dir / "rule").exists() and any((iwxxm_dir / "rule").glob("*.rdf")),
         }
 
     def detect_versions(self) -> List[VersionInfo]:
@@ -193,7 +184,7 @@ class VersionDetector:
 
             # Check if version is configured
             is_configured = normalized in configured_versions
-            is_latest = (version == latest_version)
+            is_latest = version == latest_version
 
             # Check file existence (this would require checking out the tag)
             # For now, assume files exist if it's a known tag
@@ -203,7 +194,7 @@ class VersionDetector:
                 tag=tag,
                 is_configured=is_configured,
                 is_latest=is_latest,
-                has_codelists=True  # Assume true for tagged versions
+                has_codelists=True,  # Assume true for tagged versions
             )
 
             version_infos.append(info)
@@ -233,10 +224,7 @@ class VersionDetector:
         all_versions = self.detect_versions()
 
         # Simple string comparison (works for YYYY-N format)
-        newer_versions = [
-            v for v in all_versions
-            if v.version > current_version
-        ]
+        newer_versions = [v for v in all_versions if v.version > current_version]
 
         return sorted(newer_versions, key=lambda v: v.version, reverse=True)
 

@@ -43,14 +43,14 @@ def parse_visibility_and_phenomena(raw_metar: str):
     vis_meters = None
 
     # Try statute miles first (ends with SM)
-    sm_match = re.search(r'(\d+)SM', raw_metar)
+    sm_match = re.search(r"(\d+)SM", raw_metar)
     if sm_match:
         sm = int(sm_match.group(1))
         vis_meters = round(sm * 1609.34)  # Convert miles to meters
     else:
         # Try meters (4-digit number)
         # More than 9000m reported as CAVOK
-        m_match = re.search(r'(?<![0-9])(\d{3,4})(?![0-9])', raw_metar)
+        m_match = re.search(r"(?<![0-9])(\d{3,4})(?![0-9])", raw_metar)
         if m_match:
             vis_str = m_match.group(1)
             if len(vis_str) == 4:
@@ -60,7 +60,7 @@ def parse_visibility_and_phenomena(raw_metar: str):
                 pass
 
     # Extract weather phenomena
-    phenomena_pattern = r'(VC|RE|DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)'
+    phenomena_pattern = r"(VC|RE|DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)"
     phenomena = re.findall(phenomena_pattern, raw_metar)
 
     return vis_meters, phenomena
@@ -94,10 +94,7 @@ class TestVisibilityWeatherIntegration:
             checked += 1
 
             # Validate
-            validation_issues = rule.validate(
-                visibility_meters=vis,
-                weather_phenomena=phenomena
-            )
+            validation_issues = rule.validate(visibility_meters=vis, weather_phenomena=phenomena)
 
             has_error = any(i.severity == IssueSeverity.ERROR for i in validation_issues)
             has_issue = len(validation_issues) > 0
@@ -109,9 +106,9 @@ class TestVisibilityWeatherIntegration:
                 issues_found += 1
 
         # Report results
-        print(f"\n\n{'='*70}")
+        print(f"\n\n{'=' * 70}")
         print("Visibility-Weather Validation Results (Task 3.3)")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Total test cases: {len(test_cases)}")
         print(f"Cases with visibility & phenomena: {checked}")
         print(f"Valid combinations: {valid}")
@@ -121,12 +118,11 @@ class TestVisibilityWeatherIntegration:
         if checked > 0:
             success_rate = valid / checked * 100
             print(f"Success rate: {success_rate:.1f}%")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         # Expect at least 85% pass rate (real data may have edge cases)
         if checked > 0:
-            assert (valid / checked) >= 0.85, \
-                f"Too many invalid combinations: {issues_found}/{checked}"
+            assert (valid / checked) >= 0.85, f"Too many invalid combinations: {issues_found}/{checked}"
 
     def test_phenomena_distribution(self, rule, test_cases):
         """Analyze weather phenomena distribution in test data."""
@@ -152,9 +148,9 @@ class TestVisibilityWeatherIntegration:
             pytest.skip("No weather phenomena in test data")
 
         # Report statistics
-        print(f"\n\n{'='*70}")
+        print(f"\n\n{'=' * 70}")
         print("Weather Phenomena Distribution (Task 3.3)")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Total phenomena found: {len(phenomenon_counts)}")
         print("\nPhenomena frequencies:")
 
@@ -168,12 +164,11 @@ class TestVisibilityWeatherIntegration:
                 min_vis = min(vis_list)
                 max_vis = max(vis_list)
                 avg_vis = sum(vis_list) / len(vis_list)
-                print(f"  {p}: {count} ({pct:.1f}%) - "
-                      f"vis range: {min_vis}-{max_vis}m (avg {avg_vis:.0f}m)")
+                print(f"  {p}: {count} ({pct:.1f}%) - vis range: {min_vis}-{max_vis}m (avg {avg_vis:.0f}m)")
             else:
                 print(f"  {p}: {count} ({pct:.1f}%)")
 
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
 
 if __name__ == "__main__":

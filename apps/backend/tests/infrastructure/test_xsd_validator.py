@@ -101,9 +101,12 @@ class TestXSDValidator:
         assert not result.is_valid
         assert len(result.issues) > 0
         # Should have schema not found error (with "not found" or "not available")
-        assert any("not found" in issue.message.lower() or "not available" in issue.message.lower()
-                  or "9999-9" in issue.message
-                  for issue in result.issues)
+        assert any(
+            "not found" in issue.message.lower()
+            or "not available" in issue.message.lower()
+            or "9999-9" in issue.message
+            for issue in result.issues
+        )
 
     def test_convenience_function(self):
         """Test convenience validation function."""

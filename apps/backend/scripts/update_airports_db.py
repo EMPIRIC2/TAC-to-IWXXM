@@ -30,7 +30,7 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
 
     try:
         if datum_map_path.exists():
-            with open(datum_map_path, 'r', encoding='utf-8') as f:
+            with open(datum_map_path, "r", encoding="utf-8") as f:
                 datum_data = json.load(f)
                 datum_defaults = datum_data.get("country_defaults", {})
             print(f"Loaded vertical datum mappings for {len(datum_defaults)} countries")
@@ -41,51 +41,51 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
     skipped = 0
 
     print(f"Reading {csv_path}...")
-    with open(csv_path, 'r', encoding='utf-8') as f:
+    with open(csv_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
 
         for row in reader:
             # Skip airports without ICAO codes
-            icao = row.get('icao_code', '').strip()
-            if not icao or icao == '':
+            icao = row.get("icao_code", "").strip()
+            if not icao or icao == "":
                 skipped += 1
                 continue
 
             # Build airport object
             airport: Dict[str, Any] = {
-                'icao': icao,
-                'name': row.get('name', '').strip(),
-                'type': row.get('type', '').strip(),
+                "icao": icao,
+                "name": row.get("name", "").strip(),
+                "type": row.get("type", "").strip(),
             }
 
             # Add optional fields
-            iata = row.get('iata_code', '').strip()
+            iata = row.get("iata_code", "").strip()
             if iata:
-                airport['iata'] = iata
+                airport["iata"] = iata
 
-            city = row.get('municipality', '').strip()
+            city = row.get("municipality", "").strip()
             if city:
-                airport['city'] = city
+                airport["city"] = city
 
             # Country - try iso_country first, then fall back to continent
-            country = row.get('iso_country', '').strip()
+            country = row.get("iso_country", "").strip()
             if country:
-                airport['country'] = country
+                airport["country"] = country
 
             # Add coordinates if available
             try:
-                lat = row.get('latitude_deg', '').strip()
-                lon = row.get('longitude_deg', '').strip()
-                elev = row.get('elevation_ft', '').strip()
+                lat = row.get("latitude_deg", "").strip()
+                lon = row.get("longitude_deg", "").strip()
+                elev = row.get("elevation_ft", "").strip()
 
                 if lat and lon:
                     coords = {
-                        'latitude': float(lat),
-                        'longitude': float(lon),
+                        "latitude": float(lat),
+                        "longitude": float(lon),
                     }
                     if elev:
                         try:
-                            coords['elevation_ft'] = int(float(elev))
+                            coords["elevation_ft"] = int(float(elev))
                         except (ValueError, TypeError):
                             pass
 
@@ -95,17 +95,17 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
                         raw_datum = datum_defaults[country]
                         # Normalize to IWXXM format
                         # Supported natively: EGM_96, NAVD88, AHD
-                        if raw_datum in ['EGM96', 'EGM_96']:
+                        if raw_datum in ["EGM96", "EGM_96"]:
                             vertical_datum = "EGM_96"
-                        elif raw_datum == 'NAVD88':
+                        elif raw_datum == "NAVD88":
                             vertical_datum = "NAVD88"
-                        elif raw_datum == 'AHD':
+                        elif raw_datum == "AHD":
                             vertical_datum = "AHD"
                         else:
                             vertical_datum = f"OTHER:{raw_datum}"
-                    coords['vertical_datum'] = vertical_datum
+                    coords["vertical_datum"] = vertical_datum
 
-                    airport['coordinates'] = coords
+                    airport["coordinates"] = coords
             except (ValueError, TypeError):
                 pass
 
@@ -115,9 +115,8 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
 
     # Write JSON
     print(f"Writing to {json_path}...")
-    with open(json_path, 'w', encoding='utf-8') as f:
+    with open(json_path, "w", encoding="utf-8") as f:
         json.dump(airports, f, indent=2, ensure_ascii=False)
-
 
     print(f"✓ Successfully created {json_path}")
     print(f"  Total airports: {len(airports)}")
@@ -125,12 +124,12 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
 
 def verify_bgbw(json_path: Path) -> None:
     """Verify BGBW is in the database."""
-    with open(json_path, 'r', encoding='utf-8') as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         airports = json.load(f)
 
     bgbw = None
     for airport in airports:
-        if airport.get('icao') == 'BGBW':
+        if airport.get("icao") == "BGBW":
             bgbw = airport
             break
 
@@ -138,8 +137,8 @@ def verify_bgbw(json_path: Path) -> None:
         print("\n✓ BGBW found in database:")
         print(f"  Name: {bgbw.get('name')}")
         print(f"  IATA: {bgbw.get('iata')}")
-        if 'coordinates' in bgbw:
-            coords = bgbw['coordinates']
+        if "coordinates" in bgbw:
+            coords = bgbw["coordinates"]
             print(f"  Coordinates: {coords.get('latitude')}, {coords.get('longitude')}")
             print(f"  Elevation: {coords.get('elevation_ft')} ft")
     else:
@@ -193,5 +192,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

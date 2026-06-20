@@ -32,7 +32,9 @@ class TestM4AuthMiddleware:
         "header_value",
         [None, "", "Token abc", "Bearer"],
     )
-    def test_get_token_from_header_rejects_invalid(self, header_value: str | None) -> None:
+    def test_get_token_from_header_rejects_invalid(
+        self, header_value: str | None
+    ) -> None:
         api_supabase = load_api_supabase_module()
         with pytest.raises(HTTPException) as exc_info:
             api_supabase.get_token_from_header(header_value)
@@ -40,7 +42,10 @@ class TestM4AuthMiddleware:
 
     def test_validate_email_permissive_accepts_dev_domain(self) -> None:
         api_supabase = load_api_supabase_module()
-        assert api_supabase.validate_email_permissive("user@example.test") == "user@example.test"
+        assert (
+            api_supabase.validate_email_permissive("user@example.test")
+            == "user@example.test"
+        )
 
     def test_validate_email_permissive_rejects_malformed(self) -> None:
         api_supabase = load_api_supabase_module()
