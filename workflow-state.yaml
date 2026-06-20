@@ -168,10 +168,10 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T10.4
+        current_task: T11.1
         phase: 4
-        milestone: M10
-        notes: "T10.1 complete — ci-cd.yml monorepo paths + Python 3.12 / Node 22 pins"
+        milestone: M11
+        notes: "M10 complete (T10.1–T10.4); TC-M004 tests red until T11.1 submodule removal"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
       - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
