@@ -168,7 +168,7 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T10.3
+        current_task: T10.4
         phase: 4
         milestone: M10
         notes: "T10.1 complete — ci-cd.yml monorepo paths + Python 3.12 / Node 22 pins"

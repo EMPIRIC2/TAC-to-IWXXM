@@ -11,8 +11,8 @@
 |-------|-------|
 | **Active phase** | Phase 4: CI, Deploy & Validate |
 | **Active milestone** | M10: CI/CD |
-| **Active task** | T10.2 complete — next T10.3 |
-| **Tasks completed** | 52 / 63 |
+| **Active task** | T10.3 complete — next T10.4 |
+| **Tasks completed** | 53 / 63 |
 | **Last updated** | 2026-06-20 |
 
 ## Tech Stack Summary
