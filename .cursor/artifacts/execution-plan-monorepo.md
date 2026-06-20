@@ -240,7 +240,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | T11.1 | Remove `.gitmodules`; deinit submodules | Config | completed | migration-plan.md Step 8, ADR-003 | T10.4 | — |
 | T11.2 | Run full suite + TC-M001–M005 migration gate | Test | completed | migration-plan.md §Validation | T11.1 | — |
 | T11.3 | Update README, DEVELOPMENT.md, archive stale deploy docs | Docs | completed | migration-plan.md Step 9 | T11.2 | — |
-| T11.4 | Run H4/H5 connectivity on staging (UJ-OPS-001) | Test | pending | user-journeys.md UJ-OPS-001 | T9.5, T11.2 | — |
+| T11.4 | Run H4/H5 connectivity on staging (UJ-OPS-001) | Test | in_progress | user-journeys.md UJ-OPS-001 | T9.5, T11.2 | — |
 
 #### Phase 4 Gate Check
 

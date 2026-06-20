@@ -1,0 +1,53 @@
+---
+description: Big-bang monorepo migration constraints — no product rewrites, submodule mapping
+globs:
+  - apps/**/*
+  - packages/**/*
+  - vendor/**/*
+  - backend/**/*
+  - frontend/**/*
+  - GIFTs/**/*
+  - auth/**/*
+  - schemas/**/*
+  - docker-compose.yml
+  - render.yaml
+  - Makefile
+  - pyproject.toml
+  - pnpm-workspace.yaml
+alwaysApply: false
+---
+
+# Monorepo Migration Guardrails
+
+Applies during M1–M6 migration work. Source: `docs/migration-plan.md`, ADR-003, REQ-016.
+
+## Non-Negotiables
+
+1. **No product feature rewrites** (REQ-016) — move code, fix imports, update CI/deploy wiring only.
+2. **Vendor is read-only** — `vendor/schemas/*` content comes from wmo-im sync PRs only.
+3. **GIFTs upstream is manual** (REQ-014, ADR-004) — no scheduled Action for mgoberfield/GIFTs.
+4. **Two deployables post-migration** — API (backend+auth) + static frontend; no separate auth service.
+5. **Big-bang cutover** — single PR removes `.gitmodules`; no long-lived dual layout.
+
+## Submodule → Target Mapping
+
+| Current | Target | Strategy |
+|---------|--------|----------|
+| `schemas/iwxxm` | `vendor/schemas/iwxxm` | wmo-im snapshot |
+| `schemas/iwxxm-codelists` | `vendor/schemas/iwxxm-codelists` | snapshot |
+| `schemas/iwxxm-modelling` | `vendor/schemas/iwxxm-modelling` | snapshot |
+| `data/iwxxm-translation` | `vendor/schemas/iwxxm-translation` | snapshot |
+| `GIFTs/` | `packages/gifts/` | full source |
+| `frontend/` | `apps/frontend/` | full source |
+| `auth/` | `packages/auth/` + routes in `apps/backend/` | library merge |
+| `backend/` | `apps/backend/` | move + wire workspace deps |
+
+## Migration Acceptance
+
+Before marking M1 complete:
+- `.gitmodules` absent (TC-M004)
+- `git clone` works without `--recurse-submodules` (UJ-DEV-001)
+- Golden conversion outputs unchanged (TC-M003)
+- Auth on backend host; docker-compose has two app services (TC-M005)
+
+Raise `[Scope Drift]` for new product features disguised as migration work.

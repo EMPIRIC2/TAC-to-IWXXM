@@ -5,23 +5,26 @@ alwaysApply: false
 
 # Strict typing
 
-Adopt explicit typing policy in `docs/adr/` or `docs/spec.md` during 04-tech-plan.
+Follow `docs/typing-policy.md` (basedpyright strict + Ruff on Python; ESLint/tsc on TS).
 
-## Python (this backend)
+## Python
 
 - Prefer concrete types, `TypedDict`, and `Mapping[str, object]` over loose dicts.
-- Run Ruff with project config in `pyproject.toml`.
-- Add `basedpyright` when the project adopts it (record ADR).
-
-## Before claiming done (backend)
+- Run Ruff and basedpyright from repo root after `uv sync`.
 
 ```bash
-uv run ruff check src tests
-uv run ruff format --check src tests
+uv run ruff check .
+uv run ruff format --check .
+uv run basedpyright
 ```
 
-## TypeScript (monorepo frontend)
+## TypeScript
 
-When PR touches `frontend/`: run `npm run lint` in that package per CI.
+When PR touches `apps/frontend/` or legacy `frontend/`:
+
+```bash
+pnpm exec eslint .
+pnpm exec tsc --noEmit
+```
 
 See also `ci-after-push.mdc` for full CI parity.

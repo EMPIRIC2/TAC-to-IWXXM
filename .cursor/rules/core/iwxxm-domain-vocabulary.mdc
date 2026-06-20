@@ -1,0 +1,43 @@
+---
+description: Aviation and IWXXM domain terminology — use spec vocabulary consistently
+globs:
+  - apps/**/*
+  - packages/**/*
+  - backend/**/*
+  - frontend/**/*
+  - GIFTs/**/*
+  - docs/**/*
+  - tests/**/*
+alwaysApply: false
+---
+
+# IWXXM Domain Vocabulary
+
+Use terms from `docs/feature-list.md` and `docs/spec.md` consistently.
+
+## Correct Terms
+
+| Term | Meaning | Use instead of |
+|------|---------|----------------|
+| METAR | Routine aviation weather report (TAC) | "weather text", "report string" |
+| SPECI | Special METAR (TAC) | "special report" |
+| TAC | Traditional Alphanumeric Code (raw METAR/SPECI text) | "raw text", "plain text" |
+| IWXXM | WMO XML aviation weather exchange format | "XML output", "weather XML" |
+| GIFTs | Library converting TAC → IWXXM | "converter lib", "parser" |
+| vendor/schemas | Authoritative read-only wmo-im schema snapshots | "schemas submodule", "local XSD edits" |
+| IWXXM version | Release line (e.g. 2023-1, 2025-2) | "schema version" (ambiguous) |
+| Conversion | TAC → IWXXM transformation (F1) | "parsing" alone (validation is separate) |
+| Validation | XSD + Schematron check on IWXXM (F2) | "lint", "check XML" |
+
+## Component Names
+
+- `packages/gifts` — not `GIFTs/` submodule path in new docs/code comments
+- `apps/backend` — hosts `/api/v1/convert`, `/api/v1/validate`, and `/auth/*`
+- `vendor/manifest.json` — pins wmo-im repo + tag/SHA per schema bundle
+
+## Version Handling (F4)
+
+- Target version is a user-selected IWXXM release line present in `vendor/schemas/`
+- Version-aware formatting follows `docs/IWXXM_VERSION_SWITCHING.md`
+
+When introducing new domain terms, back-add to `docs/feature-list.md` or raise `[Ambiguity]`.

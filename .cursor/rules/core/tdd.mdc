@@ -1,6 +1,6 @@
 ---
 description: Enforces test-driven development — write tests before implementation
-globs: "**/*.py"
+globs: "**/*.{py,ts,tsx}"
 alwaysApply: false
 ---
 

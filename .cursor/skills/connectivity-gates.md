@@ -25,10 +25,10 @@ Cross-stage requirements for browser ↔ API wiring when the project includes a 
 
 | Service | Build-time env | Points to |
 |---------|----------------|-----------|
-| Frontend | `VITE_*_BACKEND_URL` | API base URL |
-| API | `{{CONFIG_PREFIX}}_CORS_ORIGINS` | Allowed browser origins |
+| Frontend | `VITE_API_BASE_URL` | API base URL (includes `/api/v1/*` and `/auth/*`) |
+| API | `METAR_CORS_ORIGINS` | Allowed browser origins |
 
-Fill exact variable names in `docs/deploy.md` during 04-tech-plan.
+Exact variable names documented in `docs/deploy.md` and `docs/staging-secrets-matrix.md`.
 
 ## Run-time CORS
 
