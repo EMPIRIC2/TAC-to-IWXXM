@@ -55,6 +55,11 @@ describe('VITE_API_BASE_URL client', () => {
         'https://api.example.onrender.com/api/v1/validate',
       );
     });
+
+    it('normalizes API paths without a leading slash', () => {
+      vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
+      expect(apiUrl('convert')).toBe('https://api.example.onrender.com/api/v1/convert');
+    });
   });
 
   describe('authUrl', () => {
@@ -64,6 +69,11 @@ describe('VITE_API_BASE_URL client', () => {
       expect(authUrl('/auth/refresh')).toBe(
         'https://api.example.onrender.com/auth/refresh',
       );
+    });
+
+    it('normalizes auth paths without a leading slash', () => {
+      vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
+      expect(authUrl('refresh')).toBe('https://api.example.onrender.com/auth/refresh');
     });
   });
 

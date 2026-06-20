@@ -155,4 +155,29 @@ describe('DatabaseUploadDialog', () => {
       expect(screen.getByText(/upload failed/i)).toBeInTheDocument();
     });
   });
+
+  it('uploads with both format and both destination options', async () => {
+    const user = userEvent.setup();
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'Uploaded 1 file' }),
+    } as Response);
+
+    render(<DatabaseUploadDialog {...defaultProps} />);
+
+    await user.click(screen.getByLabelText(/store both iwxxm xml and json formats/i));
+    await user.click(
+      screen.getByLabelText(/upload to both primary and archive databases/i),
+    );
+    await user.click(screen.getByRole('button', { name: /upload files to database/i }));
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+
+    const requestBody = JSON.parse((global.fetch as any).mock.calls[0][1].body);
+    expect(requestBody.options).toEqual({
+      format: 'both',
+      destination: 'both',
+      includeOriginal: false,
+    });
+  });
 });

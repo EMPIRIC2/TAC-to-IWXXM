@@ -388,7 +388,7 @@ class SchemaDiscoveryPoller:
         """
         return bool(RC_PATTERN.match(version))
 
-    async def poll_with_retry(self, max_retries: int = 3, retry_delay_seconds: int = 60) -> dict[str, object]:
+    async def poll_with_retry(self, max_retries: int = 3, retry_delay_seconds: int = 60) -> dict[str, object] | None:
         """
         Poll with automatic retry on failure.
 
@@ -397,8 +397,11 @@ class SchemaDiscoveryPoller:
             retry_delay_seconds: Delay between retries
 
         Returns:
-            Discovery results dictionary
+            Discovery results dictionary, or None when max_retries is 0
         """
+        if max_retries <= 0:
+            return None
+
         for attempt in range(max_retries):
             try:
                 return await self.poll_once()
@@ -410,7 +413,6 @@ class SchemaDiscoveryPoller:
                 else:
                     logger.error("All poll attempts failed")
                     raise
-        raise RuntimeError("Schema discovery poll failed")
 
     def get_discovered_versions(self, channel: Optional[str] = None) -> List[str]:
         """
@@ -441,7 +443,7 @@ async def discover_schemas() -> dict[str, object]:
     return await poller.poll_once()
 
 
-async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 60) -> dict[str, object]:
+async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 60) -> dict[str, object] | None:
     """
     Convenience function to run discovery with retry logic.
 

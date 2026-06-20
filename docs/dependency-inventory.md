@@ -13,6 +13,7 @@
 | uvicorn | ASGI server | BSD | PyPI |
 | pydantic | Schemas | MIT | PyPI |
 | httpx | HTTP client | BSD | PyPI |
+| httpx2 | Starlette TestClient (dev) | BSD | PyPI |
 | python-multipart | File uploads | Apache-2.0 | PyPI |
 | supabase | Auth (via packages/auth) | MIT | PyPI |
 | gifts | Conversion | See packages/gifts | workspace path |

@@ -85,6 +85,16 @@ async def test_trigger_auto_mirror_skips_when_schema_url_missing(monkeypatch: py
 
 
 @pytest.mark.asyncio
+async def test_trigger_auto_mirror_skips_when_mirror_service_unavailable(monkeypatch: pytest.MonkeyPatch) -> None:
+    poller = SchemaDiscoveryPoller(mirror_service=None)
+
+    monkeypatch.setattr(iwxxm_versions, "SUPPORTED_VERSIONS", {"2025-2": {"schema_url": "https://schemas/iwxxm.xsd"}})
+    monkeypatch.setattr(iwxxm_versions, "RC_VERSIONS", {})
+
+    await poller._trigger_auto_mirror("2025-2", "https://schemas")
+
+
+@pytest.mark.asyncio
 async def test_trigger_auto_mirror_logs_and_swallows_mirror_exception(monkeypatch: pytest.MonkeyPatch) -> None:
     async def mirror_version(**_kwargs):
         raise RuntimeError("mirror failed")

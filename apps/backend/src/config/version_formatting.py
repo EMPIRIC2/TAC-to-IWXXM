@@ -113,7 +113,7 @@ def format_coordinates(lat: float, lon: float, version: str) -> str:
     return f"{lat:.{decimals}f} {lon:.{decimals}f}"
 
 
-def format_elevation(elevation_m: float, version: str) -> int:
+def format_elevation(elevation_m: float, version: str) -> float:
     """Format elevation for a specific IWXXM version.
 
     Args:
@@ -124,4 +124,4 @@ def format_elevation(elevation_m: float, version: str) -> int:
         Formatted elevation value
     """
     rounding = get_elevation_rounding(version)
-    return int(round(elevation_m, rounding))
+    return round(elevation_m, rounding)

@@ -10,7 +10,7 @@ import pathlib
 import sys
 import time
 import zipfile
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, TypeGuard
 
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -277,6 +277,13 @@ async def add_translation_centre_headers(request: Request, call_next):
 
 
 # Dependency to handle optional file uploads (including empty strings from Swagger UI)
+def _is_named_upload(value: object) -> TypeGuard[UploadFile]:
+    """Return True for Starlette/FastAPI uploads and duck-typed upload objects."""
+    if isinstance(value, str) or not value:
+        return False
+    return bool(getattr(value, "filename", None))
+
+
 async def parse_files(request: Request) -> List[UploadFile]:
     """
     Parse files parameter from request, handling edge cases:
@@ -287,10 +294,8 @@ async def parse_files(request: Request) -> List[UploadFile]:
         form = await request.form()
         files = []
         for key, value in form.multi_items():
-            if key == "files":
-                # Only add if it's actually an UploadFile, not an empty string
-                if isinstance(value, UploadFile) and value.filename:
-                    files.append(value)
+            if key == "files" and _is_named_upload(value):
+                files.append(value)
         return files
     except Exception as e:
         logger.warning(f"Error parsing files from request: {e}")
@@ -496,8 +501,7 @@ async def parse_optional_files(request: Request) -> List[UploadFile]:
     """Parse optional file uploads, filtering out empty strings from form data."""
     form = await request.form()
     files_data = form.getlist("files")
-    # Filter out any empty strings or non-UploadFile objects
-    return [f for f in files_data if isinstance(f, UploadFile)]
+    return [f for f in files_data if _is_named_upload(f)]
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])

@@ -6,7 +6,7 @@ import hashlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 MANIFEST_SCHEMA_VERSION = 1
 MANIFEST_RELATIVE_PATH = Path("vendor/manifest.json")
@@ -42,7 +42,7 @@ def load_manifest(manifest_path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         msg = "manifest root must be a JSON object"
         raise ValueError(msg)
-    return data
+    return cast(dict[str, Any], data)
 
 
 def compute_tree_sha256(root: Path) -> str:
@@ -68,30 +68,31 @@ def _validate_bundle_entry(name: str, entry: Any) -> list[str]:
         errors.append(f"bundle {name!r} must be an object")
         return errors
 
+    entry_dict = cast(dict[str, Any], entry)
     for field_name in BUNDLE_REQUIRED_FIELDS:
-        value = entry.get(field_name)
+        value = entry_dict.get(field_name)
         if not isinstance(value, str) or not value.strip():
             errors.append(f"bundle {name!r} missing or empty {field_name!r}")
 
-    upstream = entry.get("upstream_repo")
+    upstream = entry_dict.get("upstream_repo")
     if isinstance(upstream, str) and not upstream.startswith("wmo-im/"):
         errors.append(
             f"bundle {name!r} upstream_repo must start with 'wmo-im/', got {upstream!r}"
         )
 
-    commit_sha = entry.get("commit_sha")
+    commit_sha = entry_dict.get("commit_sha")
     if isinstance(commit_sha, str) and len(commit_sha) != 40:
         errors.append(
             f"bundle {name!r} commit_sha must be 40 hex chars, got length {len(commit_sha)}"
         )
 
-    tree_sha = entry.get("tree_sha256")
+    tree_sha = entry_dict.get("tree_sha256")
     if isinstance(tree_sha, str) and len(tree_sha) != 64:
         errors.append(
             f"bundle {name!r} tree_sha256 must be 64 hex chars, got length {len(tree_sha)}"
         )
 
-    local_path = entry.get("local_path")
+    local_path = entry_dict.get("local_path")
     if isinstance(local_path, str) and not local_path.startswith("vendor/schemas/"):
         errors.append(
             f"bundle {name!r} local_path must live under vendor/schemas/, got {local_path!r}"
@@ -115,7 +116,7 @@ def validate_manifest_schema(manifest: dict[str, Any]) -> list[str]:
         errors.append("bundles must be an object")
         return errors
 
-    bundle_map: dict[str, Any] = bundles
+    bundle_map = cast(dict[str, Any], bundles)
 
     for name in VENDOR_BUNDLE_NAMES:
         if name not in bundle_map:
@@ -151,14 +152,15 @@ def verify_manifest_integrity(
 
     bundles_raw = manifest.get("bundles")
     if isinstance(bundles_raw, dict):
-        bundles: dict[str, Any] = bundles_raw
+        bundles = cast(dict[str, Any], bundles_raw)
         for name in VENDOR_BUNDLE_NAMES:
             entry = bundles.get(name)
             if not isinstance(entry, dict):
                 continue
 
-            local_path = entry.get("local_path")
-            pinned_sha = entry.get("tree_sha256")
+            entry_dict = cast(dict[str, Any], entry)
+            local_path = entry_dict.get("local_path")
+            pinned_sha = entry_dict.get("tree_sha256")
             if not isinstance(local_path, str) or not isinstance(pinned_sha, str):
                 continue
 

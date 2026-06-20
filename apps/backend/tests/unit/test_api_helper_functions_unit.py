@@ -140,6 +140,20 @@ def test_classify_and_validate_upload_content_valid_xml_but_tac_only():
     assert result["code"] == "XML_INPUT_NOT_CONVERTIBLE"
 
 
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("", False),
+        (None, False),
+        (123, False),
+        (SimpleNamespace(filename=""), False),
+        (SimpleNamespace(filename="valid.txt"), True),
+    ],
+)
+def test_is_named_upload(value, expected):
+    assert api_module._is_named_upload(value) is expected
+
+
 @pytest.mark.asyncio
 async def test_parse_files_wraps_form_parse_error():
     class _BadRequest:

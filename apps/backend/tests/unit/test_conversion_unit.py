@@ -8,6 +8,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from src.schemas.validation import ValidationLayer
 from src.utilities import conversion as conv
 
 
@@ -372,10 +373,10 @@ def test_convert_with_metadata_success_injects_metadata_and_runs_default_validat
     assert list(captured["decoded_ident"].keys()) == ["str", "name", "alternate", "iataID", "position", "index"]
     assert captured["decoded_ident"]["name"] == "JFK AIRPORT"
     assert captured["validation_kwargs"]["layers"] == [
-        "XML_WELLFORMED",
-        "XML_SCHEMA",
-        "SCHEMATRON",
-        "WMO_CODELISTS",
+        ValidationLayer.XML_WELLFORMED,
+        ValidationLayer.XML_SCHEMA,
+        ValidationLayer.SCHEMATRON,
+        ValidationLayer.WMO_CODELISTS,
     ]
     assert fake_xml_config.verticalDatum == "EGM_08"
 
@@ -430,7 +431,7 @@ def test_convert_with_metadata_logs_vertical_datum_warning_and_uses_custom_layer
 
     assert xml.startswith('<?xml version="1.0"?>')
     assert validation_result is not None
-    assert captured["layers"] == ["XML_SCHEMA"]
+    assert captured["layers"] == [ValidationLayer.XML_SCHEMA]
     assert "Failed to set vertical datum" in caplog.text
 
 

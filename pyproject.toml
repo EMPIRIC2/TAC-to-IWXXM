@@ -18,6 +18,7 @@ dev = [
   "pytest-cov>=6.0",
   "pytest-asyncio>=0.24",
   "httpx>=0.28",
+  "httpx2>=2.0",
   "metar-shared",
   "gifts",
   "metar-auth",
@@ -70,6 +71,9 @@ markers = [
   "live: live staging connectivity (H4–H5)",
   "smoke: deploy smoke tests",
   "migration: monorepo migration gate tests (TC-M001–M005)",
+]
+filterwarnings = [
+  "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning:passlib.utils",
 ]
 
 [tool.coverage.run]

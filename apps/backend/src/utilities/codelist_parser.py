@@ -440,7 +440,8 @@ class CodeListParser:
                 )
 
         except Exception as e:
-            if requests is not None and isinstance(e, requests.exceptions.Timeout):
+            timeout_error = getattr(getattr(requests, "exceptions", requests), "Timeout", None)
+            if timeout_error is not None and isinstance(e, timeout_error):
                 logger.warning(f"Online validation timeout for {code_url}")
                 return ValidationIssue(
                     layer=ValidationLayer.WMO_CODELISTS,

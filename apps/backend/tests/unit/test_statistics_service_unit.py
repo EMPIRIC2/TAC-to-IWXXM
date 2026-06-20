@@ -150,6 +150,26 @@ async def test_log_translation_successful_insert_and_metric(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_log_translation_record_creation_failure_returns_none(monkeypatch):
+    def _raise_on_init(**_kwargs):
+        raise RuntimeError("record creation failed")
+
+    monkeypatch.setattr(stats, "should_log_statistics", lambda: True)
+    monkeypatch.setattr(stats, "TranslationStatisticsModel", _raise_on_init)
+    monkeypatch.setattr(stats, "get_icao_region", lambda _icao: "NAM")
+
+    result = await stats.StatisticsService.log_translation(
+        tac_message="METAR KJFK 010000Z",
+        iwxxm_version="2025-2",
+        icao_airport_code="KJFK",
+        translation_status=TranslationStatus.SUCCESS,
+        translation_duration_ms=120,
+    )
+
+    assert result is None
+
+
+@pytest.mark.asyncio
 async def test_log_translation_commit_failure_returns_none(monkeypatch):
     fake_session = _FakeSession(commit_error=RuntimeError("commit failed"))
 
@@ -323,25 +343,14 @@ async def test_get_statistics_by_region_exception_returns_empty(monkeypatch):
     assert payload == {}
 
 
+class _RaisingSession(_FakeSession):
+    async def execute(self, _query):
+        raise TypeError("SQLAlchemy cast(int) typing failure")
+
+
 @pytest.mark.asyncio
 async def test_get_statistics_with_breakdown_flags_returns_fallback_payload(monkeypatch):
-    overall = _Result(
-        first_row=SimpleNamespace(
-            total=5,
-            successful=3,
-            failed=1,
-            partial=1,
-            avg_duration=123.45,
-            median_duration=120.0,
-        )
-    )
-    by_region = _Result(
-        all_rows=[SimpleNamespace(icao_region="NAM", count=4), SimpleNamespace(icao_region="EUR", count=1)]
-    )
-    by_version = _Result(all_rows=[SimpleNamespace(iwxxm_version="2025-2", count=5)])
-    by_airport = _Result(all_rows=[SimpleNamespace(icao_airport_code="KJFK", count=3)])
-    by_errors = _Result(all_rows=[SimpleNamespace(translation_status="failed", count=1)])
-    fake_session = _FakeSession(results=[overall, by_region, by_version, by_airport, by_errors])
+    fake_session = _RaisingSession()
 
     @asynccontextmanager
     async def fake_get_db_session():
@@ -358,8 +367,7 @@ async def test_get_statistics_with_breakdown_flags_returns_fallback_payload(monk
         include_error_details=True,
     )
 
-    # In this test environment, SQLAlchemy aggregate typing can fail on cast(int)
-    # and the service intentionally returns a safe fallback payload.
+    # When query execution fails, the service returns a safe fallback payload.
     assert payload["total_translations"] == 0
     assert payload["translations_by_region"] == {}
     assert payload["translations_by_airport"] is None
@@ -368,11 +376,7 @@ async def test_get_statistics_with_breakdown_flags_returns_fallback_payload(monk
 
 @pytest.mark.asyncio
 async def test_get_statistics_by_region_rows_path_returns_fallback_on_cast_issue(monkeypatch):
-    rows = [
-        SimpleNamespace(icao_region="NAM", total=4, successful=3, avg_duration=100.0),
-        SimpleNamespace(icao_region="EUR", total=1, successful=1, avg_duration=80.0),
-    ]
-    fake_session = _FakeSession(results=[_Result(all_rows=rows)])
+    fake_session = _RaisingSession()
 
     @asynccontextmanager
     async def fake_get_db_session():
@@ -437,6 +441,52 @@ async def test_get_statistics_aggregates_with_synthetic_sql_layer(monkeypatch):
     assert payload["translations_by_region"] == {"NAM": 4}
     assert payload["translations_by_airport"] == {"KJFK": 2}
     assert payload["common_validation_errors"] == [{"status": "failed", "count": 1}]
+
+
+@pytest.mark.asyncio
+async def test_get_statistics_applies_optional_filters(monkeypatch):
+    class _Model:
+        id = _Column()
+        translation_timestamp = _Column()
+        translation_status = _Column()
+        translation_duration_ms = _Column()
+        icao_region = _Column()
+        iwxxm_version = _Column()
+        icao_airport_code = _Column()
+
+    fake_session = _FakeSession(
+        results=[
+            _Result(
+                first_row=SimpleNamespace(
+                    total=1, successful=1, failed=0, partial=0, avg_duration=50.0, median_duration=50.0
+                )
+            ),
+            _Result(all_rows=[SimpleNamespace(icao_region="NAM", count=1)]),
+            _Result(all_rows=[SimpleNamespace(iwxxm_version="2025-2", count=1)]),
+        ]
+    )
+
+    @asynccontextmanager
+    async def fake_get_db_session():
+        yield fake_session
+
+    monkeypatch.setattr(stats, "TranslationStatisticsModel", _Model)
+    monkeypatch.setattr(stats, "select", lambda *_args: _Query())
+    monkeypatch.setattr(stats, "and_", lambda *_args: _Expr())
+    monkeypatch.setattr(stats, "func", _Func())
+    monkeypatch.setattr(stats, "get_db_session", fake_get_db_session)
+
+    start = datetime.utcnow() - timedelta(days=1)
+    end = datetime.utcnow()
+    payload = await stats.StatisticsService.get_statistics(
+        start_date=start,
+        end_date=end,
+        icao_region="NAM",
+        iwxxm_version="2025-2",
+        airport_code="KJFK",
+    )
+
+    assert payload["total_translations"] == 1
 
 
 @pytest.mark.asyncio

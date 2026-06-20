@@ -104,7 +104,7 @@ class ElevationService:
         country_code: Optional[str] = None,
         version: str = "2025-2",  # Add version parameter with default
         use_test_overrides: bool = False,  # Add test override flag
-    ) -> Tuple[Optional[int], str]:
+    ) -> Tuple[int | float | None, str]:
         """
         Get elevation and vertical datum for an airport with version-aware formatting.
 

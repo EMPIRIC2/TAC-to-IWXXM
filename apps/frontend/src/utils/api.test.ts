@@ -520,5 +520,19 @@ describe('API Utils', () => {
       const result = await convertMetarToIwxxm({ manualText: specialMetar });
       expect(result.total_processed).toBe(1);
     });
+
+    it('should reject when conversion request exceeds timeout', async () => {
+      vi.useFakeTimers();
+      try {
+        (global.fetch as any).mockImplementation(() => new Promise(() => undefined));
+
+        const promise = convertMetarToIwxxm({ manualText: 'METAR KJFK 010000Z' });
+        const assertion = expect(promise).rejects.toThrow(/timeout/i);
+        await vi.advanceTimersByTimeAsync(30001);
+        await assertion;
+      } finally {
+        vi.useRealTimers();
+      }
+    });
   });
 });
