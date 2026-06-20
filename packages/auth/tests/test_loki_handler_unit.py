@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.observability import JsonLogFormatter, LokiHandler
+from auth.observability import JsonLogFormatter, LokiHandler
 
 
 class TestJsonLogFormatter:
@@ -136,7 +136,7 @@ class TestLokiHandlerEmitMinLevel:
             mock_requests.Session.return_value = mock_session
             with patch.dict("sys.modules", {"requests": mock_requests}):
                 import importlib
-                import src.observability as obs_mod
+                import observability as obs_mod
                 importlib.reload(obs_mod)
                 handler = obs_mod.LokiHandler(service_name="test")
                 # Patch session and push_url for test

@@ -13,17 +13,18 @@ traces to the approved product plan.
 
 All implementation work must map to an approved feature in `docs/feature-list.md`:
 
-{{FEATURE_TABLE}}
-
 | Feature | Scope |
 |---------|-------|
 | F1 | METAR → IWXXM conversion |
 | F2 | IWXXM validation |
 | F3 | Airport data services |
 | F4 | IWXXM version handling |
-
-Fill the feature table during stage 01-requirements. Until then, treat `[Scope Drift]`
-as advisory when mapping exploratory work to planned features.
+| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) |
+| M2 | Vendor snapshot sync (wmo-im iwxxm-*) |
+| M3 | GIFTs as in-repo package |
+| M4 | Auth merged into backend API |
+| M5 | Workspace tooling (uv + pnpm + Makefile) |
+| M6 | Vendor upstream sync (wmo-im iwxxm-*) |
 
 If work does not map to an approved feature, raise `[Scope Drift]` via AskQuestion:
 - Cite the code or file being created
@@ -36,13 +37,28 @@ If work does not map to an approved feature, raise `[Scope Drift]` via AskQuesti
 Document permanent exclusions in `docs/spec.md` §Non-Goals and `docs/feature-list.md`.
 Do not implement capabilities listed there without an evolve cycle (16-evolve).
 
+**Migration non-goal (REQ-016)**: No product feature rewrites during monorepo migration.
+Structural moves and wiring only — behavior of F1–F4 must remain unchanged.
+
 ## Component Verification
 
-New files must map to an approved component from `docs/spec.md` §Component Overview.
+New files must map to an approved component from `docs/spec.md` §Component Overview:
 
-Fill the component table during 01-requirements / 04-tech-plan. Files outside approved
-locations require justification. Raise `[Scope Drift]` if a new component is introduced
-that is not in the spec.
+| Component | Location |
+|-----------|----------|
+| Backend API | `apps/backend/` |
+| Frontend | `apps/frontend/` |
+| E2E workspace | `apps/e2e/` |
+| Auth library | `packages/auth/` |
+| GIFTs | `packages/gifts/` |
+| Shared | `packages/shared/` |
+| Vendor schemas | `vendor/schemas/*` (read-only) |
+
+Files outside approved locations require justification. Raise `[Scope Drift]` if a new
+component is introduced that is not in the spec.
+
+During migration, legacy paths (`backend/`, `frontend/`, `GIFTs/`, `auth/`, `schemas/`)
+are transitional only — new work targets the monorepo tree above.
 
 ## Dependency Verification
 
@@ -51,3 +67,8 @@ is not listed:
 1. Raise `[Decision]` with a recommendation
 2. On approval, back-add to `docs/dependency-inventory.md`
 3. Record the decision in `workflow-state.yaml` §`decisions_log`
+
+## Browser Connectivity
+
+Frontend-facing API changes must trace to connectivity tasks in the execution plan and
+`docs/test-plan.md` tiers H4–H5. See [connectivity-gates.md](../../skills/connectivity-gates.md).

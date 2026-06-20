@@ -1,0 +1,2488 @@
+{
+  "generated_at": "2026-06-15T15:32:47.332123",
+  "count": 144,
+  "test_cases": [
+    {
+      "station_id": "HRYR",
+      "raw_metar": "METAR HRYR 151230Z 16008KT 120V190 9999 BKN025 26/12 Q1020 NOSIG",
+      "latitude": -1.969,
+      "longitude": 30.14,
+      "country": null,
+      "elevation": 1493,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "DAAG",
+      "raw_metar": "METAR DAAG 151400Z 34009KT 9999 FEW023 FEW026TCU 27/16 Q1014",
+      "latitude": 36.691,
+      "longitude": 3.215,
+      "country": null,
+      "elevation": 18,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "TCU"
+      ],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LGKR",
+      "raw_metar": "METAR LGKR 151450Z 24008KT 9999 FEW025 29/14 Q1013 NOSIG",
+      "latitude": 39.61,
+      "longitude": 19.913,
+      "country": null,
+      "elevation": 2,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LFRB",
+      "raw_metar": "METAR LFRB 151530Z AUTO 33010KT 300V360 CAVOK 19/14 Q1014 NOSIG",
+      "latitude": 48.444,
+      "longitude": -4.412,
+      "country": null,
+      "elevation": 91,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LPFL",
+      "raw_metar": "METAR LPFL 151230Z 20010G20KT 150V270 5000 -RADZ SCT008 BKN014 21/19 Q1017 REDZ",
+      "latitude": 39.455,
+      "longitude": -31.131,
+      "country": null,
+      "elevation": 35,
+      "weather_phenomena": [
+        "RA",
+        "DZ"
+      ],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "other",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "HRYR",
+      "raw_metar": "METAR HRYR 151530Z 17005KT 130V190 9999 BKN025 25/12 Q1021 NOSIG",
+      "latitude": -1.969,
+      "longitude": 30.14,
+      "country": null,
+      "elevation": 1493,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LEMD",
+      "raw_metar": "METAR LEMD 151200Z 11002KT CAVOK 28/12 Q1016 NOSIG",
+      "latitude": 40.466,
+      "longitude": -3.555,
+      "country": null,
+      "elevation": 589,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EIDW",
+      "raw_metar": "METAR EIDW 151430Z 09010KT 9999 FEW017 17/13 Q1010 NOSIG",
+      "latitude": 53.422,
+      "longitude": -6.298,
+      "country": null,
+      "elevation": 75,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "DTTA",
+      "raw_metar": "METAR DTTA 151330Z 03009KT 9999 FEW026 31/19 Q1012",
+      "latitude": 36.851,
+      "longitude": 10.227,
+      "country": null,
+      "elevation": 4,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LFRB",
+      "raw_metar": "METAR LFRB 151330Z AUTO 35004KT 280V060 CAVOK 21/15 Q1014 NOSIG",
+      "latitude": 48.444,
+      "longitude": -4.412,
+      "country": null,
+      "elevation": 91,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LECO",
+      "raw_metar": "METAR LECO 151430Z 02008KT 290V080 9999 OVC019 19/15 Q1018 NOSIG",
+      "latitude": 43.307,
+      "longitude": -8.372,
+      "country": null,
+      "elevation": 80,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "OVC"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "UMMS",
+      "raw_metar": "METAR UMMS 151330Z 22006G09MPS 200V260 9999 BKN023CB 16/09 Q1004 NOSIG",
+      "latitude": 53.883,
+      "longitude": 28.031,
+      "country": null,
+      "elevation": 196,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "GABS",
+      "raw_metar": "METAR GABS 151300Z VRB02KT CAVOK 36/20 Q1014 NOSIG",
+      "latitude": 12.534,
+      "longitude": -7.95,
+      "country": null,
+      "elevation": 375,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LYBE",
+      "raw_metar": "METAR LYBE 151400Z 04009KT CAVOK 19/13 Q1015 NOSIG",
+      "latitude": 44.824,
+      "longitude": 20.291,
+      "country": null,
+      "elevation": 93,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "GMMN",
+      "raw_metar": "METAR GMMN 151330Z 33010KT 290V020 9999 FEW020 SCT200 27/18 Q1016 NOSIG",
+      "latitude": 33.367,
+      "longitude": -7.59,
+      "country": null,
+      "elevation": 196,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LGAV",
+      "raw_metar": "METAR LGAV 151450Z 11008KT 070V150 CAVOK 31/10 Q1013 NOSIG",
+      "latitude": 37.936,
+      "longitude": 23.945,
+      "country": null,
+      "elevation": 83,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LEBL",
+      "raw_metar": "METAR LEBL 151400Z 18006KT 130V230 CAVOK 27/14 Q1014 NOSIG",
+      "latitude": 41.293,
+      "longitude": 2.07,
+      "country": null,
+      "elevation": 2,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "FTTJ",
+      "raw_metar": "METAR FTTJ 151300Z 28010KT 240V330 8000 NSC 36/20 Q1010 NOSIG",
+      "latitude": 12.134,
+      "longitude": 15.034,
+      "country": null,
+      "elevation": 295,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "FNUE",
+      "raw_metar": "METAR FNUE 151200Z 12009KT CAVOK 28/16 Q1023",
+      "latitude": -11.768,
+      "longitude": 19.898,
+      "country": null,
+      "elevation": 1354,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LXGB",
+      "raw_metar": "METAR LXGB 151250Z 27014KT 9999 FEW030 SCT230 26/16 Q1014 NOSIG",
+      "latitude": 36.151,
+      "longitude": -5.35,
+      "country": null,
+      "elevation": 5,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LYBE",
+      "raw_metar": "METAR LYBE 151230Z 01005KT 340V050 CAVOK 19/15 Q1016 NOSIG",
+      "latitude": 44.824,
+      "longitude": 20.291,
+      "country": null,
+      "elevation": 93,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LROP",
+      "raw_metar": "METAR LROP 151200Z 28011KT 250V310 9999 FEW045 27/15 Q1011 NOSIG",
+      "latitude": 44.572,
+      "longitude": 26.102,
+      "country": null,
+      "elevation": 92,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LXGB",
+      "raw_metar": "METAR LXGB 151420Z 26013KT 9999 FEW035 28/16 Q1014 NOSIG",
+      "latitude": 36.151,
+      "longitude": -5.35,
+      "country": null,
+      "elevation": 5,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "DRRN",
+      "raw_metar": "METAR DRRN 151200Z 24012KT CAVOK 35/22 Q1012 NOSIG",
+      "latitude": 13.483,
+      "longitude": 2.17,
+      "country": null,
+      "elevation": 223,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LPAZ",
+      "raw_metar": "METAR LPAZ 151500Z 24010KT 9999 FEW016 SCT022 24/18 Q1022",
+      "latitude": 36.971,
+      "longitude": -25.171,
+      "country": null,
+      "elevation": 96,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "other",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LYBE",
+      "raw_metar": "METAR LYBE 151300Z 04007KT 010V080 CAVOK 20/13 Q1015 NOSIG",
+      "latitude": 44.824,
+      "longitude": 20.291,
+      "country": null,
+      "elevation": 93,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "DAAT",
+      "raw_metar": "METAR DAAT 151330Z 01006KT 340V040 9999 SCT046TCU SCT100 35/00 Q1020",
+      "latitude": 22.824,
+      "longitude": 5.452,
+      "country": null,
+      "elevation": 1372,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "TCU"
+      ],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LDZA",
+      "raw_metar": "METAR LDZA 151400Z 08005KT 020V130 9999 FEW015 19/15 Q1015 NOSIG",
+      "latitude": 45.729,
+      "longitude": 16.054,
+      "country": null,
+      "elevation": 103,
+      "weather_phenomena": [
+        "DZ"
+      ],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LFBD",
+      "raw_metar": "METAR LFBD 151400Z AUTO VRB05KT CAVOK 35/M00 Q1013 TEMPO 27015G25KT",
+      "latitude": 44.831,
+      "longitude": -0.691,
+      "country": null,
+      "elevation": 48,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "FNUB",
+      "raw_metar": "METAR FNUB 151400Z 35006KT 300V070 CAVOK 24/05 Q1024",
+      "latitude": -14.925,
+      "longitude": 13.575,
+      "country": null,
+      "elevation": 1749,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LFPO",
+      "raw_metar": "METAR LFPO 151400Z 10004KT 060V180 CAVOK 27/10 Q1015 NOSIG",
+      "latitude": 48.717,
+      "longitude": 2.384,
+      "country": null,
+      "elevation": 88,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "DAAT",
+      "raw_metar": "METAR DAAT 151430Z 30009KT 9999 SCT046TCU SCT100 36/M00 Q1019",
+      "latitude": 22.824,
+      "longitude": 5.452,
+      "country": null,
+      "elevation": 1372,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "TCU"
+      ],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LTAC",
+      "raw_metar": "METAR LTAC 151450Z 22004KT 180V310 9999 FEW040 25/03 Q1016 NOSIG RMK RWY21C VRB05KT RWY03L VRB04KT RWY21R 27005KT 220V310 RWY03R 26003KT 190V340 RWY21L 28004KT 250V320",
+      "latitude": 40.128,
+      "longitude": 32.995,
+      "country": null,
+      "elevation": 952,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LIPZ",
+      "raw_metar": "METAR LIPZ 151520Z 10009KT CAVOK 27/17 Q1010 NOSIG",
+      "latitude": 45.505,
+      "longitude": 12.352,
+      "country": null,
+      "elevation": 3,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LLBG",
+      "raw_metar": "METAR LLBG 151350Z 32010KT 9999 SCT030 27/18 Q1012 NOSIG",
+      "latitude": 32.011,
+      "longitude": 34.887,
+      "country": null,
+      "elevation": 35,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LPFL",
+      "raw_metar": "METAR LPFL 151330Z VRB10G24KT 9999 SCT007 BKN014 21/19 Q1016",
+      "latitude": 39.455,
+      "longitude": -31.131,
+      "country": null,
+      "elevation": 35,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "other",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "GBYD",
+      "raw_metar": "METAR GBYD 151300Z VRB03KT 9999 SCT012 BKN120 31/23 Q1014 NOSIG",
+      "latitude": 13.341,
+      "longitude": -16.653,
+      "country": null,
+      "elevation": 29,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EIDW",
+      "raw_metar": "METAR EIDW 151200Z 12011KT 090V160 9999 FEW016 SCT030 18/12 Q1011 NOSIG",
+      "latitude": 53.422,
+      "longitude": -6.298,
+      "country": null,
+      "elevation": 75,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EDDB",
+      "raw_metar": "METAR EDDB 151250Z AUTO 27018KT 240V310 9999 FEW034 SCT041 18/09 Q1010 TEMPO 27020G30KT",
+      "latitude": 52.3807,
+      "longitude": 13.5306,
+      "country": null,
+      "elevation": 48,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LPPS",
+      "raw_metar": "METAR LPPS 151200Z 02012KT 350V050 9999 FEW015 BKN030 22/15 Q1022",
+      "latitude": 33.073,
+      "longitude": -16.35,
+      "country": null,
+      "elevation": 89,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LSGG",
+      "raw_metar": "METAR LSGG 151350Z AUTO 08009KT CAVOK 27/06 Q1016 NOSIG",
+      "latitude": 46.248,
+      "longitude": 6.128,
+      "country": null,
+      "elevation": 411,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "GMMN",
+      "raw_metar": "METAR GMMN 151230Z 33008KT 290V020 CAVOK 26/16 Q1016 NOSIG",
+      "latitude": 33.367,
+      "longitude": -7.59,
+      "country": null,
+      "elevation": 196,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "DNMM",
+      "raw_metar": "METAR DNMM 151200Z 16005KT 9999 BKN014 FEW020CB 31/25 Q1016 NOSIG RMK CB NW-E",
+      "latitude": 6.577,
+      "longitude": 3.321,
+      "country": null,
+      "elevation": 27,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "FEW",
+        "BKN"
+      ],
+      "visibility": "present",
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "HESN",
+      "raw_metar": "METAR HESN 151500Z 28005KT CAVOK 40/03 Q1008 NOSIG",
+      "latitude": 23.964,
+      "longitude": 32.82,
+      "country": null,
+      "elevation": 197,
+      "weather_phenomena": [
+        "SN"
+      ],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LSGG",
+      "raw_metar": "METAR LSGG 151450Z AUTO 06011KT 010V080 9999 FEW087 27/08 Q1016 NOSIG",
+      "latitude": 46.248,
+      "longitude": 6.128,
+      "country": null,
+      "elevation": 411,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LTAC",
+      "raw_metar": "METAR LTAC 151220Z 29006KT 170V340 9999 FEW040 25/05 Q1016 NOSIG RMK RWY21C 23008KT 170V260 RWY03L 24005KT 170V340 RWY21R 22009KT 170V260 RWY03R VRB06KT RWY21L 24006KT 190V300",
+      "latitude": 40.128,
+      "longitude": 32.995,
+      "country": null,
+      "elevation": 952,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "GLRB",
+      "raw_metar": "METAR GLRB 151300Z 23005KT 9999 BKN020 FEW022CB 29/24 Q1015 TREND NOSIG RMK CB-NE",
+      "latitude": 6.234,
+      "longitude": -10.362,
+      "country": null,
+      "elevation": 12,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "FEW",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "GMMN",
+      "raw_metar": "METAR GMMN 151430Z 34010KT 290V030 9999 FEW020 SCT200 26/17 Q1016 NOSIG",
+      "latitude": 33.367,
+      "longitude": -7.59,
+      "country": null,
+      "elevation": 196,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LPAZ",
+      "raw_metar": "METAR LPAZ 151330Z 23010KT 9999 SCT016 23/17 Q1023",
+      "latitude": 36.971,
+      "longitude": -25.171,
+      "country": null,
+      "elevation": 96,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "other",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LXGB",
+      "raw_metar": "METAR LXGB 151450Z 21011KT 9999 FEW035 27/16 Q1014 TEMPO 20012KT",
+      "latitude": 36.151,
+      "longitude": -5.35,
+      "country": null,
+      "elevation": 5,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "FNLU",
+      "raw_metar": "METAR FNLU 151400Z 27011KT 9999 FEW019 27/20 Q1012",
+      "latitude": -8.858,
+      "longitude": 13.231,
+      "country": null,
+      "elevation": 75,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EGLL",
+      "raw_metar": "METAR EGLL 151250Z AUTO 14014KT 9999 NCD 20/11 Q1014",
+      "latitude": 51.477,
+      "longitude": -0.461,
+      "country": null,
+      "elevation": 26,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "GGOV",
+      "raw_metar": "METAR GGOV 151200Z 32002KT 8000 BKN012 32/24 Q1015 NOSIG",
+      "latitude": 11.895,
+      "longitude": -15.654,
+      "country": null,
+      "elevation": 31,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "DIAP",
+      "raw_metar": "METAR DIAP 151530Z 18008KT 9999 SCT012 BKN030 28/24 Q1013 NOSIG",
+      "latitude": 5.261,
+      "longitude": -3.926,
+      "country": null,
+      "elevation": 4,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LFPO",
+      "raw_metar": "METAR LFPO 151300Z COR 11005KT 050V180 CAVOK 27/11 Q1016 NOSIG",
+      "latitude": 48.717,
+      "longitude": 2.384,
+      "country": null,
+      "elevation": 88,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EPWA",
+      "raw_metar": "METAR EPWA 151330Z 25016KT 9999 SCT036CB 17/09 Q1007 TEMPO SHRA",
+      "latitude": 52.163,
+      "longitude": 20.961,
+      "country": null,
+      "elevation": 107,
+      "weather_phenomena": [
+        "RA",
+        "SHRA"
+      ],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LOWW",
+      "raw_metar": "METAR LOWW 151450Z 28015KT CAVOK 23/06 Q1013 NOSIG",
+      "latitude": 48.117,
+      "longitude": 16.582,
+      "country": null,
+      "elevation": 179,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "GABS",
+      "raw_metar": "METAR GABS 151230Z 25005KT 150V310 CAVOK 35/21 Q1015 NOSIG",
+      "latitude": 12.534,
+      "longitude": -7.95,
+      "country": null,
+      "elevation": 375,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "GCTS",
+      "raw_metar": "METAR GCTS 151330Z 10019KT 9999 FEW020 24/14 Q1019 WS R07 NOSIG",
+      "latitude": 28.047,
+      "longitude": -16.561,
+      "country": null,
+      "elevation": 59,
+      "weather_phenomena": [
+        "TS"
+      ],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "UMMS",
+      "raw_metar": "METAR UMMS 151300Z 24003G06MPS 190V290 9999 -SHRA BKN031CB 15/10 Q1004 NOSIG",
+      "latitude": 53.883,
+      "longitude": 28.031,
+      "country": null,
+      "elevation": 196,
+      "weather_phenomena": [
+        "RA",
+        "SHRA"
+      ],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LGTS",
+      "raw_metar": "METAR LGTS 151420Z 18013KT 9999 FEW025 29/18 Q1011 NOSIG",
+      "latitude": 40.52,
+      "longitude": 22.971,
+      "country": null,
+      "elevation": 4,
+      "weather_phenomena": [
+        "TS"
+      ],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LPFL",
+      "raw_metar": "METAR LPFL 151430Z 19012G23KT 140V230 9999 FEW006 SCT008 BKN014 22/19 Q1016 WS R18",
+      "latitude": 39.455,
+      "longitude": -31.131,
+      "country": null,
+      "elevation": 35,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "other",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LGAV",
+      "raw_metar": "METAR LGAV 151320Z 19007KT 160V230 9999 FEW018 32/11 Q1013 NOSIG",
+      "latitude": 37.936,
+      "longitude": 23.945,
+      "country": null,
+      "elevation": 83,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LOWW",
+      "raw_metar": "METAR LOWW 151350Z 29018KT CAVOK 24/06 Q1013 NOSIG",
+      "latitude": 48.117,
+      "longitude": 16.582,
+      "country": null,
+      "elevation": 179,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LFPO",
+      "raw_metar": "METAR LFPO 151500Z 14003KT 110V200 CAVOK 28/11 Q1015 NOSIG",
+      "latitude": 48.717,
+      "longitude": 2.384,
+      "country": null,
+      "elevation": 88,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "DTTA",
+      "raw_metar": "METAR DTTA 151200Z 01008KT 340V070 9999 FEW026 32/16 Q1013",
+      "latitude": 36.851,
+      "longitude": 10.227,
+      "country": null,
+      "elevation": 4,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LXGB",
+      "raw_metar": "METAR LXGB 151220Z 27015KT 9999 FEW025 SCT230 26/16 Q1015 NOSIG",
+      "latitude": 36.151,
+      "longitude": -5.35,
+      "country": null,
+      "elevation": 5,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "DAUZ",
+      "raw_metar": "METAR DAUZ 151400Z 28005KT CAVOK 40/// Q1013",
+      "latitude": 28.052,
+      "longitude": 9.643,
+      "country": null,
+      "elevation": 567,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": null,
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "DAUG",
+      "raw_metar": "METAR DAUG 151200Z VRB05KT 6000 FEW040 SCT100 36/08 Q1014",
+      "latitude": 32.384,
+      "longitude": 3.794,
+      "country": null,
+      "elevation": 444,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EDDB",
+      "raw_metar": "METAR EDDB 151350Z AUTO 28018KT 9999 SCT044 19/09 Q1010 TEMPO 28020G30KT",
+      "latitude": 52.3807,
+      "longitude": 13.5306,
+      "country": null,
+      "elevation": 48,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LICA",
+      "raw_metar": "METAR LICA 151220Z AUTO 27012KT 9999 NCD 31/11 Q1012",
+      "latitude": 38.908,
+      "longitude": 16.242,
+      "country": null,
+      "elevation": 7,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "GQNO",
+      "raw_metar": "METAR GQNO 151500Z 26015KT 6000 FEW013 26/20 Q1012 NOSIG",
+      "latitude": 18.31,
+      "longitude": -15.97,
+      "country": null,
+      "elevation": 1,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LYNI",
+      "raw_metar": "METAR LYNI 151430Z 31011KT 280V340 9999 FEW040 27/14 Q1012 NOSIG",
+      "latitude": 43.338,
+      "longitude": 21.863,
+      "country": null,
+      "elevation": 197,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LBBG",
+      "raw_metar": "METAR LBBG 151500Z 12010KT 9999 FEW036TCU 24/16 Q1012 NOSIG",
+      "latitude": 42.569,
+      "longitude": 27.514,
+      "country": null,
+      "elevation": 41,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "TCU"
+      ],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LTAJ",
+      "raw_metar": "METAR LTAJ 151520Z 24004KT 210V270 9999 FEW040 SCT100 30/11 Q1011 NOSIG RMK RWY10 VRB02KT 1CU040 3AC100",
+      "latitude": 36.947,
+      "longitude": 37.479,
+      "country": null,
+      "elevation": 684,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EETN",
+      "raw_metar": "METAR EETN 151450Z 22005KT 9999 -SHRA FEW030CB 12/11 Q0999 NOSIG",
+      "latitude": 59.413,
+      "longitude": 24.801,
+      "country": null,
+      "elevation": 41,
+      "weather_phenomena": [
+        "RA",
+        "SHRA"
+      ],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LKMT",
+      "raw_metar": "METAR LKMT 151500Z 26011KT CAVOK 17/08 Q1013 NOSIG",
+      "latitude": 49.696,
+      "longitude": 18.111,
+      "country": null,
+      "elevation": 251,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": "present",
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LYTV",
+      "raw_metar": "METAR LYTV 151500Z 33006KT 290V010 9999 FEW060 27/19 Q1012 NOSIG",
+      "latitude": 42.405,
+      "longitude": 18.723,
+      "country": null,
+      "elevation": 3,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EPSC",
+      "raw_metar": "METAR EPSC 151430Z 26013KT 9999 FEW028 BKN033 15/09 Q1007",
+      "latitude": 53.585,
+      "longitude": 14.902,
+      "country": null,
+      "elevation": 47,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LWSK",
+      "raw_metar": "METAR LWSK 151450Z 30006KT 240V340 9999 FEW050 33/12 Q1010 NOSIG",
+      "latitude": 41.952,
+      "longitude": 21.627,
+      "country": null,
+      "elevation": 232,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "HEAR",
+      "raw_metar": "METAR HEAR 151500Z 34008KT CAVOK 27/14 Q1013 NOSIG",
+      "latitude": 31.041,
+      "longitude": 33.817,
+      "country": null,
+      "elevation": 36,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LGAL",
+      "raw_metar": "METAR LGAL 151450Z 24009KT 9999 FEW020 27/18 Q1011",
+      "latitude": 40.856,
+      "longitude": 25.945,
+      "country": null,
+      "elevation": 5,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EPPO",
+      "raw_metar": "METAR EPPO 151500Z 26014KT 9999 FEW028 16/10 Q1008",
+      "latitude": 52.417,
+      "longitude": 16.835,
+      "country": null,
+      "elevation": 87,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EKCH",
+      "raw_metar": "METAR EKCH 151520Z AUTO 31019KT 9999 FEW031/// FEW053/// 17/08 Q1006 TEMPO 30015G28KT",
+      "latitude": 55.618,
+      "longitude": 12.656,
+      "country": null,
+      "elevation": 4,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "UMMS",
+      "raw_metar": "METAR UMMS 151430Z 21005MPS 9999 BKN026CB 15/09 Q1004 NOSIG",
+      "latitude": 53.883,
+      "longitude": 28.031,
+      "country": null,
+      "elevation": 196,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "UUBC",
+      "raw_metar": "METAR UUBC 151430Z 26002MPS 230V290 9999 SCT050CB 14/13 Q1003 R31/290151 NOSIG RMK QFE735/0981",
+      "latitude": 54.552,
+      "longitude": 36.37,
+      "country": null,
+      "elevation": 198,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LIRF",
+      "raw_metar": "METAR LIRF 151450Z 19011KT 9999 FEW020 26/19 Q1013 NOSIG",
+      "latitude": 41.8,
+      "longitude": 12.239,
+      "country": null,
+      "elevation": 2,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EPLB",
+      "raw_metar": "METAR EPLB 151530Z 27015KT 9999 FEW032 FEW042TCU 17/09 Q1009",
+      "latitude": 51.239,
+      "longitude": 22.714,
+      "country": null,
+      "elevation": 206,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "TCU"
+      ],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LDZA",
+      "raw_metar": "METAR LDZA 151530Z VRB04KT 9999 FEW018 SCT025 20/14 Q1015 NOSIG",
+      "latitude": 45.729,
+      "longitude": 16.054,
+      "country": null,
+      "elevation": 103,
+      "weather_phenomena": [
+        "DZ"
+      ],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LGSA",
+      "raw_metar": "METAR LGSA 151520Z 27007KT CAVOK 27/17 Q1013",
+      "latitude": 35.54,
+      "longitude": 24.141,
+      "country": null,
+      "elevation": 122,
+      "weather_phenomena": [
+        "GS"
+      ],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EPGD",
+      "raw_metar": "METAR EPGD 151530Z 26014KT 9999 -SHRA FEW010 SCT014CB BKN021 13/11 Q1002 RESHRA",
+      "latitude": 54.379,
+      "longitude": 18.466,
+      "country": null,
+      "elevation": 136,
+      "weather_phenomena": [
+        "RA",
+        "SHRA"
+      ],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "FEW",
+        "SCT",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LTAP",
+      "raw_metar": "METAR LTAP 151450Z 06005KT 010V100 9999 FEW040 27/11 Q1013 NOSIG",
+      "latitude": 40.826,
+      "longitude": 35.52,
+      "country": null,
+      "elevation": 536,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LZTT",
+      "raw_metar": "METAR LZTT 151430Z 26017KT 9999 SCT050 SCT070 16/04 Q1013 NOSIG",
+      "latitude": 49.068,
+      "longitude": 20.25,
+      "country": null,
+      "elevation": 693,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LKMT",
+      "raw_metar": "METAR LKMT 151530Z 26010KT CAVOK 17/08 Q1013 NOSIG",
+      "latitude": 49.696,
+      "longitude": 18.111,
+      "country": null,
+      "elevation": 251,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": "present",
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LTAU",
+      "raw_metar": "METAR LTAU 151520Z 34006KT 300V020 9999 SCT040 23/09 Q1017 NOSIG RMK RWY07 30004KT 210V340",
+      "latitude": 38.77,
+      "longitude": 35.495,
+      "country": null,
+      "elevation": 1053,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LCLK",
+      "raw_metar": "METAR LCLK 151430Z 19011KT 9999 FEW030 28/22 Q1011 NOSIG",
+      "latitude": 34.874,
+      "longitude": 33.617,
+      "country": null,
+      "elevation": 2,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LQSA",
+      "raw_metar": "METAR LQSA 151500Z 31015KT 9999 TS FEW035CB SCT050 21/15 Q1012 TEMPO TSRA",
+      "latitude": 43.825,
+      "longitude": 18.331,
+      "country": null,
+      "elevation": 505,
+      "weather_phenomena": [
+        "RA",
+        "TS",
+        "TSRA"
+      ],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LRSV",
+      "raw_metar": "METAR LRSV 151500Z 35006KT CAVOK 18/11 Q1011",
+      "latitude": 47.686,
+      "longitude": 26.354,
+      "country": null,
+      "elevation": 406,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "HEAX",
+      "raw_metar": "METAR HEAX 151500Z 35014KT 9999 FEW020 26/18 Q1013 NOSIG",
+      "latitude": 30.918,
+      "longitude": 29.696,
+      "country": null,
+      "elevation": 41,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LICG",
+      "raw_metar": "METAR LICG 151420Z AUTO 19011KT 9999 BKN073/// 24/21 Q1014",
+      "latitude": 36.814,
+      "longitude": 11.971,
+      "country": null,
+      "elevation": 192,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "UMBB",
+      "raw_metar": "SPECI UMBB 151433Z 26006G09MPS 6000 -SHRA OVC032CB 16/10 Q1006 NOSIG",
+      "latitude": 52.109,
+      "longitude": 23.897,
+      "country": null,
+      "elevation": 138,
+      "weather_phenomena": [
+        "RA",
+        "SHRA"
+      ],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "OVC"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "OSAP",
+      "raw_metar": "METAR OSAP 151500Z 28010KT CAVOK 32/14 Q1011",
+      "latitude": 36.183,
+      "longitude": 37.218,
+      "country": null,
+      "elevation": 390,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LTFM",
+      "raw_metar": "METAR LTFM 151420Z 22008KT 170V250 CAVOK 30/11 Q1013 NOSIG RMK RWY17L 24008KT 200V260 RWY34L 21008KT 170V230 RWY16R 20007KT 150V230 RWY36 22008KT 160V260 RWY18 22008KT 150V260",
+      "latitude": 41.262,
+      "longitude": 28.74,
+      "country": null,
+      "elevation": 99,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": "present",
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LGBL",
+      "raw_metar": "METAR LGBL 151520Z 10010KT 9999 FEW030 28/20 Q1011",
+      "latitude": 39.22,
+      "longitude": 22.794,
+      "country": null,
+      "elevation": 13,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "UUBC",
+      "raw_metar": "METAR UUBC 151500Z COR 25004MPS 9999 SCT012CB 14/12 Q1003 R31/290151 NOSIG RMK QFE735/0981",
+      "latitude": 54.552,
+      "longitude": 36.37,
+      "country": null,
+      "elevation": 198,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "UGKO",
+      "raw_metar": "METAR UGKO 151500Z 28010KT 9999 SCT033 23/16 Q1015 NOSIG",
+      "latitude": 42.177,
+      "longitude": 42.483,
+      "country": null,
+      "elevation": 44,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "middle_east",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LGIR",
+      "raw_metar": "METAR LGIR 151520Z 01004KT 9999 FEW020 26/20 Q1014 NOSIG",
+      "latitude": 35.337,
+      "longitude": 25.173,
+      "country": null,
+      "elevation": 37,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LTBJ",
+      "raw_metar": "METAR LTBJ 151450Z 36011KT 310V040 CAVOK 31/10 Q1011 NOSIG RMK RWY16 36010KT 330V030",
+      "latitude": 38.285,
+      "longitude": 27.155,
+      "country": null,
+      "elevation": 123,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LKTB",
+      "raw_metar": "METAR LKTB 151430Z 29013KT CAVOK 20/05 Q1013 NOSIG",
+      "latitude": 49.151,
+      "longitude": 16.694,
+      "country": null,
+      "elevation": 233,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "ESGJ",
+      "raw_metar": "METAR ESGJ 151450Z 36010KT 9999 -SHRA FEW012 BKN025CB 12/10 Q1004",
+      "latitude": 57.752,
+      "longitude": 14.069,
+      "country": null,
+      "elevation": 224,
+      "weather_phenomena": [
+        "RA",
+        "SHRA"
+      ],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "FEW",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LRCK",
+      "raw_metar": "METAR LRCK 151500Z 23012KT 9999 FEW048CB 25/17 Q1011 NOSIG",
+      "latitude": 44.362,
+      "longitude": 28.488,
+      "country": null,
+      "elevation": 108,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LOWG",
+      "raw_metar": "METAR LOWG 151420Z AUTO 15008KT 100V200 9999 NCD 20/12 Q1014 NOSIG",
+      "latitude": 46.997,
+      "longitude": 15.447,
+      "country": null,
+      "elevation": 337,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EDDE",
+      "raw_metar": "METAR EDDE 151450Z AUTO 26014KT 230V290 9999 FEW027 BKN033 OVC046 15/09 Q1015 TEMPO 26015G25KT",
+      "latitude": 50.983,
+      "longitude": 10.961,
+      "country": null,
+      "elevation": 314,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "BKN",
+        "OVC"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "ESGG",
+      "raw_metar": "METAR ESGG 151420Z 35011KT 9999 SCT033 17/09 Q1005",
+      "latitude": 57.667,
+      "longitude": 12.285,
+      "country": null,
+      "elevation": 152,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "URMO",
+      "raw_metar": "METAR URMO 151500Z 33003MPS 9999 SCT062 BKN130 22/16 Q1015 R09/010065 TEMPO 0500 +TSRA BKN002 BKN020CB RMK QFE717/0957",
+      "latitude": 43.204,
+      "longitude": 44.608,
+      "country": null,
+      "elevation": 505,
+      "weather_phenomena": [
+        "RA",
+        "TS",
+        "TSRA"
+      ],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "SCT",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "middle_east",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "URWW",
+      "raw_metar": "METAR URWW 151500Z 29006MPS CAVOK 27/08 Q1008 R23/010070 NOSIG",
+      "latitude": 48.788,
+      "longitude": 44.336,
+      "country": null,
+      "elevation": 131,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "other",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LTCC",
+      "raw_metar": "METAR LTCC 151420Z 29004KT 9999 FEW040 31/08 Q1010 NOSIG RMK RWY16 02005KT 340V110 2CU040",
+      "latitude": 37.894,
+      "longitude": 40.201,
+      "country": null,
+      "elevation": 676,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "middle_east",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EDDN",
+      "raw_metar": "METAR EDDN 151450Z AUTO 30012KT 270V330 9999 SCT049 20/08 Q1016 NOSIG",
+      "latitude": 49.503,
+      "longitude": 11.055,
+      "country": null,
+      "elevation": 312,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LBPD",
+      "raw_metar": "METAR LBPD 151500Z AUTO 14012KT 120V180 9999 //////CB 32/13 Q1010 TEMPO TS FEW030CB BKN050",
+      "latitude": 42.064,
+      "longitude": 24.86,
+      "country": null,
+      "elevation": 182,
+      "weather_phenomena": [
+        "TS"
+      ],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "FEW",
+        "BKN"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EPLB",
+      "raw_metar": "METAR EPLB 151430Z 27015KT 9999 FEW043CB SCT048 16/09 Q1009",
+      "latitude": 51.239,
+      "longitude": 22.714,
+      "country": null,
+      "elevation": 206,
+      "weather_phenomena": [],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LHPP",
+      "raw_metar": "METAR LHPP 151515Z AUTO 16004KT 120V250 CAVOK 18/13 Q1016",
+      "latitude": 45.991,
+      "longitude": 18.241,
+      "country": null,
+      "elevation": 193,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EPRZ",
+      "raw_metar": "METAR EPRZ 151500Z 28019KT 8000 -SHRA SCT046CB 15/10 Q1011",
+      "latitude": 50.112,
+      "longitude": 22.025,
+      "country": null,
+      "elevation": 206,
+      "weather_phenomena": [
+        "RA",
+        "SHRA"
+      ],
+      "cloud_types": [
+        "CB"
+      ],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EKRN",
+      "raw_metar": "METAR EKRN 151420Z AUTO 28020KT 9999 SCT065/// 16/12 Q1003",
+      "latitude": 55.068,
+      "longitude": 14.749,
+      "country": null,
+      "elevation": 14,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LTBJ",
+      "raw_metar": "METAR LTBJ 151520Z 36013KT CAVOK 31/10 Q1011 NOSIG RMK RWY16 36012KT",
+      "latitude": 38.285,
+      "longitude": 27.155,
+      "country": null,
+      "elevation": 123,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "ESKN",
+      "raw_metar": "METAR ESKN 151520Z 35006KT 320V020 9999 SCT014 BKN022 OVC064 15/13 Q1001",
+      "latitude": 58.786,
+      "longitude": 16.918,
+      "country": null,
+      "elevation": 41,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT",
+        "BKN",
+        "OVC"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EDDP",
+      "raw_metar": "METAR EDDP 151450Z AUTO 27015KT 9999 FEW030 SCT046 16/10 Q1014 TEMPO 27015G25KT",
+      "latitude": 51.435,
+      "longitude": 12.24,
+      "country": null,
+      "elevation": 129,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LBBG",
+      "raw_metar": "METAR LBBG 151430Z 12011KT CAVOK 26/15 Q1012 NOSIG",
+      "latitude": 42.569,
+      "longitude": 27.514,
+      "country": null,
+      "elevation": 41,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LIRQ",
+      "raw_metar": "METAR LIRQ 151420Z 31006KT 270V040 CAVOK 30/14 Q1011",
+      "latitude": 43.81,
+      "longitude": 11.205,
+      "country": null,
+      "elevation": 33,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LGAL",
+      "raw_metar": "METAR LGAL 151520Z 24009KT 9999 FEW020 26/17 Q1011",
+      "latitude": 40.856,
+      "longitude": 25.945,
+      "country": null,
+      "elevation": 5,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "URMT",
+      "raw_metar": "METAR URMT 151500Z 32005MPS 9999 SCT040 22/12 Q1014 R25/010070 NOSIG RMK QFE722",
+      "latitude": 45.108,
+      "longitude": 42.1,
+      "country": null,
+      "elevation": 448,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "other",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EPLL",
+      "raw_metar": "METAR EPLL 151530Z 25017KT 9999 FEW033 16/08 Q1009",
+      "latitude": 51.724,
+      "longitude": 19.401,
+      "country": null,
+      "elevation": 176,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LRSB",
+      "raw_metar": "METAR LRSB 151430Z 30011KT 9999 FEW050 19/10 Q1014",
+      "latitude": 45.789,
+      "longitude": 24.091,
+      "country": null,
+      "elevation": 442,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LDZA",
+      "raw_metar": "METAR LDZA 151430Z 13006KT 090V170 9999 SCT018 19/15 Q1015 NOSIG",
+      "latitude": 45.729,
+      "longitude": 16.054,
+      "country": null,
+      "elevation": 103,
+      "weather_phenomena": [
+        "DZ"
+      ],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LTCG",
+      "raw_metar": "METAR LTCG 151420Z 08005KT 050V120 CAVOK 22/16 Q1016 NOSIG RMK RWY29 06005KT",
+      "latitude": 40.995,
+      "longitude": 39.782,
+      "country": null,
+      "elevation": 28,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "ESMT",
+      "raw_metar": "METAR ESMT 151450Z 30016KT 9999 -SHRA FEW038 SCT067 17/13 Q1004",
+      "latitude": 56.691,
+      "longitude": 12.82,
+      "country": null,
+      "elevation": 24,
+      "weather_phenomena": [
+        "RA",
+        "SHRA"
+      ],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW",
+        "SCT"
+      ],
+      "visibility": "present",
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "ORNI",
+      "raw_metar": "METAR ORNI 151500Z 36012KT 8000 NSC 39/06 Q1006",
+      "latitude": 31.99,
+      "longitude": 44.405,
+      "country": null,
+      "elevation": 33,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "africa",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LICA",
+      "raw_metar": "METAR LICA 151450Z AUTO 28011KT 9999 NCD 32/08 Q1012",
+      "latitude": 38.908,
+      "longitude": 16.242,
+      "country": null,
+      "elevation": 7,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LOWI",
+      "raw_metar": "METAR LOWI 151420Z AUTO VRB06KT 9999 FEW120 26/04 Q1013 NOSIG",
+      "latitude": 47.26,
+      "longitude": 11.344,
+      "country": null,
+      "elevation": 570,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LICD",
+      "raw_metar": "METAR LICD 151450Z AUTO 14008KT 9999 NCD 26/21 Q1013",
+      "latitude": 35.498,
+      "longitude": 12.618,
+      "country": null,
+      "elevation": 20,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "EDDN",
+      "raw_metar": "METAR EDDN 151420Z AUTO 30010KT 250V320 9999 FEW049 20/08 Q1016 NOSIG",
+      "latitude": 49.503,
+      "longitude": 11.055,
+      "country": null,
+      "elevation": 312,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LOWG",
+      "raw_metar": "METAR LOWG 151520Z AUTO 12007KT 100V170 9999 FEW030 21/13 Q1014 NOSIG",
+      "latitude": 46.997,
+      "longitude": 15.447,
+      "country": null,
+      "elevation": 337,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "FEW"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "UUEE",
+      "raw_metar": "METAR UUEE 151500Z 24004MPS CAVOK 16/14 Q1001 R24L/290145 R24C/290145 NOSIG",
+      "latitude": 55.973,
+      "longitude": 37.415,
+      "country": null,
+      "elevation": 186,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "UUEE",
+      "raw_metar": "METAR UUEE 151430Z 24004MPS CAVOK 16/14 Q1001 R24L/290145 R24C/290145 NOSIG",
+      "latitude": 55.973,
+      "longitude": 37.415,
+      "country": null,
+      "elevation": 186,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    },
+    {
+      "station_id": "LIPX",
+      "raw_metar": "METAR LIPX 151450Z 18003KT 070V240 9999 SCT050 30/15 Q1010",
+      "latitude": 45.387,
+      "longitude": 10.872,
+      "country": null,
+      "elevation": 67,
+      "weather_phenomena": [],
+      "cloud_types": [],
+      "cloud_amounts": [
+        "SCT"
+      ],
+      "visibility": null,
+      "temperature": "present",
+      "region": "europe",
+      "source": "aviation_weather"
+    }
+  ]
+}

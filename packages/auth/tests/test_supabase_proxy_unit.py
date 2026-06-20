@@ -5,7 +5,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from fastapi import HTTPException
 
-from src.supabase_proxy import SupabaseAuthProxy, _is_session_not_found_error
+from auth.supabase_proxy import SupabaseAuthProxy
+from supabase_proxy import _is_session_not_found_error
 
 
 class TestIsSessionNotFoundError:
@@ -27,7 +28,7 @@ class TestIsSessionNotFoundError:
 def _make_proxy():
     """Create a SupabaseAuthProxy with a mocked Supabase client."""
     with patch.dict(os.environ, {"SUPABASE_URL": "https://test.supabase.co", "SUPABASE_ANON_KEY": "test-key"}):
-        with patch("src.supabase_proxy.create_client") as mock_create:
+        with patch("supabase_proxy.create_client") as mock_create:
             mock_client = MagicMock()
             mock_create.return_value = mock_client
             proxy = SupabaseAuthProxy()

@@ -1,0 +1,52 @@
+---
+description: Enforces static+api monorepo layout per template-registry and spec.md target tree
+globs: ""
+alwaysApply: true
+---
+
+# Template Conformance
+
+Read `workflow-state.yaml` §`template` and [template-registry.md](../../skills/template-registry.md).
+
+**Template**: `static+api` — React frontend + FastAPI backend + auth middleware in single API deployable.
+
+## File Structure
+
+Warn if new deployable or library code is created outside the approved monorepo tree:
+
+```
+apps/backend/       # FastAPI — conversion, validation, auth routes
+apps/frontend/      # React/Vite static deployable
+apps/e2e/           # Playwright cross-app tests
+packages/auth/      # Supabase middleware library (not a deployable)
+packages/gifts/     # GIFTs fork — TAC → IWXXM
+packages/shared/    # API types, env helpers, constants
+vendor/schemas/*    # Read-only wmo-im snapshots
+```
+
+Do **not** create:
+- A separate auth deployable or `apps/auth/` service
+- New top-level `backend/`, `frontend/`, `GIFTs/` directories (legacy — migrate, don't extend)
+- Edits inside `vendor/schemas/*` except via sync PRs updating manifest pins
+
+## Service Layout
+
+| Archetype | This project |
+|-----------|--------------|
+| API | `apps/backend` — single HTTP service (conversion + validation + `/auth/*`) |
+| Static | `apps/frontend` — Vite build → Render static site |
+| Worker | Not used — no background worker deployable |
+
+## Separation of Concerns
+
+- **packages/gifts**: IWXXM serialization only — no FastAPI/Supabase imports
+- **packages/auth**: JWT middleware and auth routes — no conversion logic
+- **apps/backend**: HTTP routers wiring gifts + auth + validation
+- **vendor/schemas**: Consumed read-only by gifts and validation — never edited locally
+
+## Env Wiring
+
+- Frontend build-time: `VITE_API_BASE_URL` → single API host (includes `/auth/*` post-M4)
+- Backend runtime: `METAR_CORS_ORIGINS` for browser origins
+
+Surface `[Template Drift]` via AskQuestion if code diverges from these patterns without an ADR.

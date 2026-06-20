@@ -1,0 +1,51 @@
+{
+  "$schema": "https://unpkg.com/cursor-hooks@latest/schema/hooks.schema.json",
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": "python3 .cursor/hooks/scope_check.py",
+        "matcher": "Write",
+        "timeout": 10
+      },
+      {
+        "command": "bash .cursor/hooks/pre-task-check.sh",
+        "matcher": "Write",
+        "timeout": 10
+      },
+      {
+        "command": "bash .cursor/hooks/pr-checklist.sh",
+        "matcher": "Shell",
+        "timeout": 10
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "python3 .cursor/hooks/feature_drift.py",
+        "matcher": "Write|TabWrite",
+        "timeout": 10
+      },
+      {
+        "command": "bash .cursor/hooks/lint.sh",
+        "matcher": "Write|TabWrite",
+        "timeout": 30
+      },
+      {
+        "command": "bash .cursor/hooks/format.sh",
+        "matcher": "Write|TabWrite",
+        "timeout": 30
+      },
+      {
+        "command": "bash .cursor/hooks/typecheck.sh",
+        "matcher": "Write|TabWrite",
+        "timeout": 60
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": "bash .cursor/hooks/post-test-sync.sh",
+        "timeout": 10
+      }
+    ]
+  }
+}
