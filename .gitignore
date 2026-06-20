@@ -62,7 +62,7 @@ venv.bak/
 .pixi
 
 # --- Node / pnpm workspace (apps/*, packages/*) ---
-node_modules/
+**/node_modules/
 .pnp
 .pnp.js
 .pnpm-store/
