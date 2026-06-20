@@ -35,8 +35,10 @@ COPY vendor/schemas vendor/schemas
 # Backend still resolves schemas/iwxxm; vendor tree is authoritative (ADR-001).
 RUN ln -s /app/vendor/schemas /app/schemas
 
-# Install API package and workspace deps into system Python
+# Install API package and workspace deps into workspace .venv
 RUN uv sync --frozen --no-dev --package metar-backend
+
+ENV PATH="/app/.venv/bin:$PATH"
 
 ENV IWXXM_PROJECT_ROOT=/app \
     IWXXM_SCHEMAS_ROOT=/app/vendor/schemas/iwxxm \
