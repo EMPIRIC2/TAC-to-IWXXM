@@ -78,7 +78,7 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
   }, [accessToken]);
 
   useEffect(() => {
-    loadMonitoringData();
+    queueMicrotask(() => void loadMonitoringData());
   }, [loadMonitoringData]);
 
   const toggleAdminStatus = async (userId: string, currentStatus: boolean) => {

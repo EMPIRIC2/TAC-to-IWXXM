@@ -18,18 +18,16 @@ export function EmailVerification({
 }: EmailVerificationProps) {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [canResend, setCanResend] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const [emailStatus, setEmailStatus] = useState<'not_verified' | 'verified'>('not_verified');
+  const canResend = countdown === 0;
 
   useEffect(() => {
-    if (countdown > 0 && !canResend) {
+    if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (countdown === 0) {
-      setCanResend(true);
     }
-  }, [countdown, canResend]);
+  }, [countdown]);
 
   const handleVerify = async () => {
     setIsVerifying(true);
@@ -59,10 +57,8 @@ export function EmailVerification({
       // Re-send verification email through auth service
       // This would be a new endpoint: /auth/resend-verification
       toast.success('Verification email sent! Please check your inbox.');
-      
-      setCanResend(false);
+
       setCountdown(60);
-      
     } catch (error) {
       console.error('Resend verification error:', error);
       toast.error('An error occurred while resending the email.');

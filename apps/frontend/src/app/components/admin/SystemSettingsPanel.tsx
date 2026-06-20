@@ -71,7 +71,7 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
   }, [accessToken]);
 
   useEffect(() => {
-    loadSettings();
+    queueMicrotask(() => void loadSettings());
   }, [loadSettings]);
 
   const handleSave = async () => {

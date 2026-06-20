@@ -119,7 +119,7 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
 
   useEffect(() => {
     if (isOpen) {
-      loadPreferences();
+      queueMicrotask(() => loadPreferences());
     }
   }, [isOpen, loadPreferences]);
 

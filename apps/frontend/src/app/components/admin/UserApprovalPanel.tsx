@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
@@ -24,11 +24,7 @@ export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPan
   const [processingUsers, setProcessingUsers] = useState<Set<string>>(new Set());
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    loadPendingUsers();
-  }, []);
-
-  const loadPendingUsers = async () => {
+  const loadPendingUsers = useCallback(async () => {
     setIsLoading(true);
     try {
       // Query Supabase database directly
@@ -50,7 +46,11 @@ export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPan
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    queueMicrotask(() => void loadPendingUsers());
+  }, [loadPendingUsers]);
 
   const handleApprove = async (userId: string, userEmail: string) => {
     setProcessingUsers(prev => new Set(prev).add(userId));
