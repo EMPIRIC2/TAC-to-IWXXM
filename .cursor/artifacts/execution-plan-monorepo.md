@@ -9,11 +9,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase 3: Apps & Auth Merge |
-| **Active milestone** | M5: Backend App + Auth Merge |
-| **Active task** | T6.2 — Move `frontend/` → `apps/frontend/` |
-| **Tasks completed** | 33 / 63 |
-| **Last updated** | 2026-06-15 |
+| **Active phase** | Phase 4: CI, Deploy & Validate |
+| **Active milestone** | M8: Docker & Compose |
+| **Active task** | T8.2 complete — next T9.1 |
+| **Tasks completed** | 45 / 63 |
+| **Last updated** | 2026-06-20 |
 
 ## Tech Stack Summary
 
@@ -175,20 +175,20 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
 | T6.1 | Write Vitest tests for unified `VITE_API_BASE_URL` client | Test | completed | test-plan.md H5 | — | — |
-| T6.2 | Move `frontend/` → `apps/frontend/` | Code | pending | migration-plan.md Step 3 | T6.1 | — |
-| T6.3 | Replace split VITE URLs with `VITE_API_BASE_URL`; wire `VITE_SUPABASE_*`, `VITE_APP_URL` | Code | pending | deploy.md §Integration, config-spec | T6.2 | — |
-| T6.4 | Migrate to pnpm; add `tsconfig.json` | Config | pending | REQ-005 | T6.3 | — |
-| T6.5 | Achieve 95% coverage on apps/frontend | Test | pending | User decision | T6.4 | — |
-| T6.6 | Update docker-compose to two app services (backend + frontend) | Config | pending | deploy.md §Local | T5.5, T6.5 | — |
+| T6.2 | Move `frontend/` → `apps/frontend/` | Code | completed | migration-plan.md Step 3 | T6.1 | — |
+| T6.3 | Replace split VITE URLs with `VITE_API_BASE_URL`; wire `VITE_SUPABASE_*`, `VITE_APP_URL` | Code | completed | deploy.md §Integration, config-spec | T6.2 | — |
+| T6.4 | Migrate to pnpm; add `tsconfig.json` | Config | completed | REQ-005 | T6.3 | — |
+| T6.5 | Achieve 95% coverage on apps/frontend | Test | completed | User decision | T6.4 | — |
+| T6.6 | Update docker-compose to two app services (backend + frontend) | Config | completed | deploy.md §Local | T5.5, T6.5 | — |
 
 #### M7: E2E Workspace
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T7.1 | Create `apps/e2e/`; relocate root `tests/*.e2e.spec.ts` | Code | pending | test-plan.md §E2E | T5.5, T6.5 | — |
-| T7.2 | Update Playwright config for monorepo paths | Config | pending | user-journeys.md UJ-001–003 | T7.1 | — |
-| T7.3 | Verify TC-001, TC-003 E2E pass locally (T2) | Test | pending | test-plan.md | T7.2 | — |
-| T7.4 | Verify TC-002 validation pass (UJ-002) in E2E or integration | Test | pending | test-plan.md TC-002 | T7.2, T5.8 | — |
+| T7.1 | Create `apps/e2e/`; relocate root `tests/*.e2e.spec.ts` | Code | completed | test-plan.md §E2E | T5.5, T6.5 | — |
+| T7.2 | Update Playwright config for monorepo paths | Config | completed | user-journeys.md UJ-001–003 | T7.1 | — |
+| T7.3 | Verify TC-001, TC-003 E2E pass locally (T2) | Test | completed | test-plan.md | T7.2 | — |
+| T7.4 | Verify TC-002 validation pass (UJ-002) in E2E or integration | Test | completed | test-plan.md TC-002 | T7.2, T5.8 | — |
 
 #### Phase 3 Gate Check
 
@@ -210,8 +210,8 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T8.1 | Update API Dockerfile (repo-root context, vendor+packages) | Config | pending | deploy.md §Docker | T6.6 | vendor |
-| T8.2 | Remove auth Docker image/build from CI | Config | pending | ADR-002 | T8.1 | — |
+| T8.1 | Update API Dockerfile (repo-root context, vendor+packages) | Config | completed | deploy.md §Docker | T6.6 | vendor |
+| T8.2 | Remove auth Docker image/build from CI | Config | completed | ADR-002 | T8.1 | — |
 
 #### M9: Render & Connectivity
 
@@ -321,7 +321,7 @@ Statuses: `pending` | `in_progress` | `completed` | `blocked` | `deferred`
 |-------|----------------|--------|-------|
 | 1 | 2026-06-14 | pass | M1 complete: install, test-unit, ruff, basedpyright, coverage config |
 | 2 | — | — | — |
-| 3 | — | — | — |
+| 3 | 2026-06-20 | pass | M5–M7 complete; docker-compose two services; Playwright T2 gates green |
 | 4 | — | — | — |
 
 ## Hook Configuration

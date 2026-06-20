@@ -477,7 +477,6 @@ jobs:
     outputs:
       image_tag: ${{ steps.tags.outputs.image_tag }}
       backend_built: ${{ steps.filter.outputs.backend_build }}
-      auth_built: ${{ steps.filter.outputs.auth_build }}
       frontend_built: ${{ steps.filter.outputs.frontend_build }}
 
     steps:
@@ -545,7 +544,6 @@ jobs:
         run: |
           {
             echo "backend_build=true"
-            echo "auth_build=true"
             echo "frontend_build=true"
           } >> "$GITHUB_OUTPUT"
 
@@ -554,24 +552,12 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./backend/docker/Dockerfile
+          file: ./apps/backend/docker/Dockerfile
           platforms: linux/amd64
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:main-latest
-
-      - name: Build and push auth Docker image
-        if: steps.filter.outputs.auth_build == 'true'
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./auth/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.AUTH_IMAGE }}:${{ steps.tags.outputs.image_tag }}
-            ${{ env.REGISTRY }}/${{ env.AUTH_IMAGE }}:main-latest
 
       - name: Build and push frontend Docker image
         if: steps.filter.outputs.frontend_build == 'true'

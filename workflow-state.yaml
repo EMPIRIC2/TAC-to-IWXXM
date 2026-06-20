@@ -168,14 +168,15 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T6.2
-        phase: 3
-        milestone: M6
-        notes: "T6.1 complete — VITE_API_BASE_URL client tests red (await T6.3)"
+        current_task: T9.1
+        phase: 4
+        milestone: M8
+        notes: "M8 T8.1–T8.2 complete; Phase 3 gate pass; M7 commits landed on feat/M7-e2e-workspace"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
       - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
       - "M5 complete (T5.1–T5.8); minor PR pending"
+      - "M7 complete (T7.1–T7.4); minor PR pending"
 
 stages_pending: []
 
@@ -421,7 +422,7 @@ artifacts:
     status: complete
 
   git_history:
-  current_branch: feat/M6-frontend-app
+  current_branch: feat/M7-e2e-workspace
   branches:
     - name: phase/1-monorepo-scaffold
       base: main
@@ -455,6 +456,10 @@ artifacts:
       base: feat/M5-backend-auth-merge
       status: active
       created_at: "2026-06-15T16:23:00Z"
+    - name: feat/M7-e2e-workspace
+      base: feat/M6-frontend-app
+      status: active
+      created_at: "2026-06-17T00:00:00Z"
   commits:
     - sha: 73cda40
       branch: feat/M1-workspace-root
