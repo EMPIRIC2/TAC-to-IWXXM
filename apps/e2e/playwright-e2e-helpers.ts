@@ -3,8 +3,11 @@ import { expect, Page } from '@playwright/test';
 // Credentials are read lazily (at login time) rather than at module import so that
 // test files that import this module but never call loginAsAdmin() can run without
 // PLAYWRIGHT_ADMIN_EMAIL / PLAYWRIGHT_ADMIN_PASSWORD being set (e.g. smoke subset).
-export const ADMIN_EMAIL = process.env.PLAYWRIGHT_ADMIN_EMAIL ?? '';
-export const ADMIN_PASSWORD = process.env.PLAYWRIGHT_ADMIN_PASSWORD ?? '';
+// Fall back to root .env ADMIN_* keys (see tests/test_auth_login_e2e.py).
+export const ADMIN_EMAIL =
+  process.env.PLAYWRIGHT_ADMIN_EMAIL ?? process.env.ADMIN_EMAIL ?? '';
+export const ADMIN_PASSWORD =
+  process.env.PLAYWRIGHT_ADMIN_PASSWORD ?? process.env.ADMIN_PASSWORD ?? '';
 
 export async function gotoLogin(page: Page): Promise<void> {
   await page.goto('/');
@@ -74,6 +77,16 @@ export async function openConverterWithMockSession(page: Page): Promise<void> {
   await expect(
     page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i })
   ).toBeVisible({ timeout: 10000 });
+}
+
+/** Local T2 path: mock session when DISABLE_AUTH=true; otherwise real admin login. */
+export async function openConverterForE2e(page: Page): Promise<void> {
+  const disableAuth = (process.env.DISABLE_AUTH ?? 'true').toLowerCase() !== 'false';
+  if (disableAuth) {
+    await openConverterWithMockSession(page);
+    return;
+  }
+  await loginAndOpenConverter(page);
 }
 
 export async function convertManualMetar(page: Page, metar: string): Promise<void> {

@@ -1,18 +1,13 @@
 import { expect, test } from '@playwright/test';
 import {
-  ADMIN_EMAIL,
-  ADMIN_PASSWORD,
   convertManualMetar,
-  loginAndOpenConverter,
+  openConverterForE2e,
   openConverterWithMockSession,
 } from './playwright-e2e-helpers';
 
 test.describe('TAC File Conversion', () => {
-  test('manual METAR input converts to IWXXM', async ({ page }, testInfo) => {
-    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
-      testInfo.skip();
-    }
-    await loginAndOpenConverter(page);
+  test('manual METAR input converts to IWXXM', async ({ page }) => {
+    await openConverterForE2e(page);
 
     await convertManualMetar(
       page,
@@ -23,11 +18,8 @@ test.describe('TAC File Conversion', () => {
     await expect(page.locator('pre').filter({ hasText: /iwxxm|metar:/i }).first()).toBeVisible();
   });
 
-  test('COR METAR input produces correction output', async ({ page }, testInfo) => {
-    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
-      testInfo.skip();
-    }
-    await loginAndOpenConverter(page);
+  test('COR METAR input produces correction output', async ({ page }) => {
+    await openConverterForE2e(page);
 
     await convertManualMetar(
       page,
@@ -39,11 +31,8 @@ test.describe('TAC File Conversion', () => {
     await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
   });
 
-  test('clear removes manual input', async ({ page }, testInfo) => {
-    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
-      testInfo.skip();
-    }
-    await loginAndOpenConverter(page);
+  test('clear removes manual input', async ({ page }) => {
+    await openConverterForE2e(page);
 
     const manualInput = page.getByLabel(/Enter METAR data manually/i);
     await manualInput.fill('METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010');

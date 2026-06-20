@@ -19,7 +19,14 @@ test.describe('Authentication Flow', () => {
     await expect(page.getByText('Password is required')).toBeVisible();
   });
 
-  test('admin login reaches the admin dashboard', async ({ page }) => {
+  test('admin login reaches the admin dashboard', async ({ page }, testInfo) => {
+    if ((process.env.DISABLE_AUTH ?? 'true').toLowerCase() !== 'false') {
+      testInfo.skip(
+        true,
+        'Admin login requires DISABLE_AUTH=false and reachable Supabase (staging T3)'
+      );
+    }
+
     await loginAsAdmin(page);
 
     await expect(page.getByText(/Logged in as: admin@metar\.local/i)).toBeVisible();
