@@ -3,8 +3,6 @@
 Tests the conversion engine integration with the GIFTs library
 for METAR to IWXXM conversion.
 """
-import pytest
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestGiftsBeckendIntegration:

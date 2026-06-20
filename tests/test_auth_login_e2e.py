@@ -6,10 +6,11 @@ Tests the complete login flow including:
 - Session token generation
 - CORS headers in responses
 """
-import pytest
-import requests
 import os
 import pathlib
+
+import pytest
+import requests
 
 # Configuration
 

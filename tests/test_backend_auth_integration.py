@@ -4,20 +4,22 @@ Tests the integration between the authentication service and the METAR conversio
 ensuring that JWT tokens from auth can be used to access backend endpoints.
 """
 import os
+
+# Import from auth service
+import sys
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# Import from auth service
-import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'auth', 'src'))
 
+from auth.__main__ import app as auth_app
+from auth.api_supabase import get_supabase_proxy
 from auth.database import Base as AuthBase
 from auth.models import User
-from auth.security import hash_password, create_access_token
-from auth.api_supabase import get_supabase_proxy
-from auth.__main__ import app as auth_app
+from auth.security import create_access_token, hash_password
 
 # Import from backend service
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend', 'src'))
@@ -45,7 +47,6 @@ def auth_db_session(auth_db_engine):
 @pytest.fixture
 def auth_client(auth_db_engine, monkeypatch):
     """Create a test client for the auth service."""
-    from auth.database import SessionLocal
     
     TestingSessionLocal = sessionmaker(bind=auth_db_engine, autoflush=False, autocommit=False)
     
@@ -199,7 +200,7 @@ class TestAuthTokenGeneration:
     
     def test_create_and_validate_token(self):
         """Test that we can create and validate a JWT token."""
-        from auth.security import create_access_token, decode_access_token
+        from auth.security import decode_access_token
         
         username = "testuser"
         token = create_access_token(sub=username)
@@ -223,11 +224,13 @@ class TestAuthTokenGeneration:
     def test_expired_token_returns_none(self):
         """Test that expired tokens are rejected."""
         import datetime as dt
+
         from jose import jwt
-        from auth.security import JWT_SECRET, JWT_ALGO, decode_access_token
+
+        from auth.security import JWT_ALGO, JWT_SECRET, decode_access_token
         
         # Create expired token
-        expire = dt.datetime.now(dt.timezone.utc) - dt.timedelta(minutes=1)
+        expire = dt.datetime.now(dt.UTC) - dt.timedelta(minutes=1)
         payload = {"sub": "testuser", "exp": expire}
         expired_token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
         
@@ -295,7 +298,6 @@ class TestBackendAuthIntegration:
     
     def test_jwt_token_structure(self):
         """Test that auth tokens have the expected structure for backend consumption."""
-        from auth.security import create_access_token, decode_access_token
         import jwt as pyjwt
         
         username = "testuser"
@@ -310,8 +312,9 @@ class TestBackendAuthIntegration:
     
     def test_token_can_be_shared_across_services(self):
         """Test that a token created by auth can be validated elsewhere."""
-        from auth.security import create_access_token, decode_access_token, JWT_SECRET, JWT_ALGO
         import jwt as pyjwt
+
+        from auth.security import JWT_ALGO, JWT_SECRET
         
         # Auth service creates token
         token = create_access_token(sub="testuser")
@@ -331,6 +334,7 @@ class TestDatabaseCompatibility:
     def test_sqlite_connection(self):
         """Test that SQLite connection works for development."""
         from sqlalchemy import create_engine
+
         from auth.database import Base
         
         engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
@@ -347,7 +351,7 @@ class TestDatabaseCompatibility:
     
     def test_model_relationships(self, auth_db_session):
         """Test that model relationships work correctly."""
-        from auth.models import User, APIKey
+        from auth.models import APIKey, User
         
         # Create user
         user = User(
@@ -406,11 +410,12 @@ class TestSecurityUtilities:
     
     def test_reset_expiry_creation(self):
         """Test that reset expiry is set correctly."""
-        from auth.security import create_reset_expiry
         import datetime as dt
+
+        from auth.security import create_reset_expiry
         
         expiry = create_reset_expiry()
-        now = dt.datetime.now(dt.timezone.utc)
+        now = dt.datetime.now(dt.UTC)
         
         assert expiry > now
         # Should be roughly 30 minutes in the future

@@ -20,8 +20,8 @@ __all__ = [
     "VITE_APP_URL_ENV",
     "VITE_SUPABASE_PUBLISHABLE_KEY_ENV",
     "VITE_SUPABASE_URL_ENV",
-    "parse_comma_separated_origins",
     "canonicalize_xml",
     "compare_canonical_xml",
     "diff_canonical_xml",
+    "parse_comma_separated_origins",
 ]

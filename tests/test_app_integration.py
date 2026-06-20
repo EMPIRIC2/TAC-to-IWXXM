@@ -8,17 +8,18 @@ NOTE: The frontend is now a React/Vite application served via nginx,
       browser automation tools like Selenium or Playwright.
 """
 from __future__ import annotations
-from backend.api import app as backend_app  # type: ignore
-from auth.api import router as auth_router  # type: ignore
 
+import pathlib
 import random
 import string
-import pathlib
 import sys
 
 import pytest
+from backend.api import app as backend_app  # type: ignore
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+
+from auth.api import router as auth_router  # type: ignore
 
 # Ensure repository root importable
 ROOT = pathlib.Path(__file__).resolve().parents[1]

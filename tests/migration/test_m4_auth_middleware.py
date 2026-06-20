@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi import HTTPException
-
 from tests.migration.auth_baseline import load_api_supabase_module, load_security_module
 
 

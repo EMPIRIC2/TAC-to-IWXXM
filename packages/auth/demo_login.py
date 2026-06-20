@@ -8,11 +8,12 @@ authentication flows.
 Usage:
     python demo_login.py
 """
+import json
 import os
 import sys
-import requests
-import json
 from typing import Optional
+
+import requests
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -35,12 +36,12 @@ DEMO_USER_ADDRESS = os.getenv("DEMO_USER_ADDRESS", "456 User Avenue")
 
 class AuthClient:
     """Simple client for auth service."""
-    
+
     def __init__(self, base_url: str = API_BASE_URL):
         self.base_url = base_url
         self.token: Optional[str] = None
         self.user_info: Optional[dict] = None
-    
+
     def register(self, name: str, email: str, address: str, username: str, password: str) -> dict:
         """Register a new user."""
         url = f"{self.base_url}/register"
@@ -51,11 +52,11 @@ class AuthClient:
             "username": username,
             "password": password
         }
-        
+
         response = requests.post(url, json=data)
         response.raise_for_status()
         return response.json()
-    
+
     def login(self, username: str, password: str) -> dict:
         """Login and get access token."""
         url = f"{self.base_url}/login"
@@ -63,76 +64,76 @@ class AuthClient:
             "username": username,
             "password": password
         }
-        
+
         response = requests.post(url, json=data)
         response.raise_for_status()
-        
+
         result = response.json()
         self.token = result["access_token"]
         self.user_info = result["user"]
-        
+
         return result
-    
+
     def get_me(self) -> dict:
         """Get current user info."""
         if not self.token:
             raise ValueError("Not logged in. Call login() first.")
-        
+
         url = f"{self.base_url}/me"
         headers = {"Authorization": f"Bearer {self.token}"}
-        
+
         response = requests.get(url, headers=headers)
         response.raise_for_status()
-        
+
         return response.json()
-    
+
     def create_api_key(self) -> dict:
         """Create a new API key."""
         if not self.token:
             raise ValueError("Not logged in. Call login() first.")
-        
+
         url = f"{self.base_url}/apikeys"
         headers = {"Authorization": f"Bearer {self.token}"}
-        
+
         response = requests.post(url, headers=headers)
         response.raise_for_status()
-        
+
         return response.json()
-    
+
     def list_api_keys(self) -> list:
         """List all API keys."""
         if not self.token:
             raise ValueError("Not logged in. Call login() first.")
-        
+
         url = f"{self.base_url}/apikeys"
         headers = {"Authorization": f"Bearer {self.token}"}
-        
+
         response = requests.get(url, headers=headers)
         response.raise_for_status()
-        
+
         return response.json()
-    
+
     def revoke_api_key(self, key_id: int) -> dict:
         """Revoke an API key."""
         if not self.token:
             raise ValueError("Not logged in. Call login() first.")
-        
+
         url = f"{self.base_url}/apikeys/{key_id}"
         headers = {"Authorization": f"Bearer {self.token}"}
-        
+
         response = requests.delete(url, headers=headers)
         response.raise_for_status()
-        
+
         return response.json()
-    
+
     def request_password_reset(self, email: str) -> dict:
         """Request a password reset."""
         url = f"{self.base_url}/password-reset/request"
         data = {"email": email}
-        
+
         response = requests.post(url, json=data)
         response.raise_for_status()
-        
+
         return response.json()
 
 
@@ -151,9 +152,9 @@ def print_json(data: dict):
 def demo_registration():
     """Demo user registration."""
     print_header("Demo: User Registration")
-    
+
     client = AuthClient()
-    
+
     print("\n📝 Registering demo admin user...")
     try:
         result = client.register(
@@ -170,7 +171,7 @@ def demo_registration():
             print("ℹ️  User already exists (this is expected if run multiple times)")
         else:
             print(f"❌ Registration failed: {e}")
-    
+
     print("\n📝 Registering demo regular user...")
     try:
         result = client.register(
@@ -192,16 +193,16 @@ def demo_registration():
 def demo_login():
     """Demo user login."""
     print_header("Demo: User Login")
-    
+
     client = AuthClient()
-    
+
     print(f"\n🔐 Logging in as {DEMO_USER_USERNAME}...")
     try:
         result = client.login(DEMO_USER_USERNAME, DEMO_USER_PASSWORD)
         print("✅ Login successful!")
         print(f"   Token: {result['access_token'][:20]}...")
         print(f"   User: {result['user']['name']} ({result['user']['email']})")
-        
+
         return client
     except requests.exceptions.HTTPError as e:
         print(f"❌ Login failed: {e}")
@@ -211,7 +212,7 @@ def demo_login():
 def demo_get_profile(client: AuthClient):
     """Demo getting user profile."""
     print_header("Demo: Get User Profile")
-    
+
     print("\n👤 Fetching user profile...")
     try:
         result = client.get_me()
@@ -224,7 +225,7 @@ def demo_get_profile(client: AuthClient):
 def demo_api_keys(client: AuthClient):
     """Demo API key management."""
     print_header("Demo: API Key Management")
-    
+
     print("\n🔑 Creating a new API key...")
     try:
         result = client.create_api_key()
@@ -235,7 +236,7 @@ def demo_api_keys(client: AuthClient):
     except requests.exceptions.HTTPError as e:
         print(f"❌ Failed to create API key: {e}")
         return
-    
+
     print("\n📋 Listing all API keys...")
     try:
         result = client.list_api_keys()
@@ -245,7 +246,7 @@ def demo_api_keys(client: AuthClient):
             print(f"   - ID {key['id']}: {status} (created {key['created_at']})")
     except requests.exceptions.HTTPError as e:
         print(f"❌ Failed to list API keys: {e}")
-    
+
     print(f"\n🗑️  Revoking API key {key_id}...")
     try:
         result = client.revoke_api_key(key_id)
@@ -258,9 +259,9 @@ def demo_api_keys(client: AuthClient):
 def demo_password_reset():
     """Demo password reset request."""
     print_header("Demo: Password Reset Request")
-    
+
     client = AuthClient()
-    
+
     print(f"\n📧 Requesting password reset for {DEMO_USER_EMAIL}...")
     try:
         result = client.request_password_reset(DEMO_USER_EMAIL)
@@ -276,29 +277,29 @@ def run_full_demo():
     print("\n" + "🚀 " * 20)
     print("AUTH SERVICE DEMO")
     print("🚀 " * 20)
-    
+
     print(f"\n📍 API Base URL: {API_BASE_URL}")
-    print(f"📍 Demo Users:")
+    print("📍 Demo Users:")
     print(f"   - Admin: {DEMO_ADMIN_USERNAME}")
     print(f"   - User:  {DEMO_USER_USERNAME}")
-    
+
     # Run demos
     demo_registration()
-    
+
     client = demo_login()
     if client:
         demo_get_profile(client)
         demo_api_keys(client)
-    
+
     demo_password_reset()
-    
+
     print("\n" + "✨ " * 20)
     print("DEMO COMPLETE!")
     print("✨ " * 20)
     print("\nDemo users have been created. You can use these credentials:")
     print(f"  Username: {DEMO_USER_USERNAME}")
     print(f"  Password: {DEMO_USER_PASSWORD}")
-    print(f"\nOr admin:")
+    print("\nOr admin:")
     print(f"  Username: {DEMO_ADMIN_USERNAME}")
     print(f"  Password: {DEMO_ADMIN_PASSWORD}")
     print()
@@ -307,9 +308,9 @@ def run_full_demo():
 def interactive_mode():
     """Interactive mode for manual testing."""
     print_header("Interactive Mode")
-    
+
     client = AuthClient()
-    
+
     while True:
         print("\n📋 Available Actions:")
         print("  1. Register User")
@@ -321,9 +322,9 @@ def interactive_mode():
         print("  7. Request Password Reset")
         print("  8. Run Full Demo")
         print("  0. Exit")
-        
+
         choice = input("\n👉 Select action (0-8): ").strip()
-        
+
         try:
             if choice == "0":
                 print("\n👋 Goodbye!")

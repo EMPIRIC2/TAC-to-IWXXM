@@ -2,8 +2,7 @@
 
 Verifies auth endpoints are served from apps/backend (no AUTH_SERVICE_URL proxy)
 and that protected conversion accepts a bearer token when auth is enabled.
-Docker-compose two-service topology is asserted structurally; full compose
-update is T6.6.
+Docker-compose two-service topology is asserted in T6.6 migration tests.
 """
 
 from __future__ import annotations
@@ -89,12 +88,13 @@ class TestTcM005AuthMergeStructure:
         assert "/auth/login" in paths
         assert "/auth/verify" in paths
 
-    def test_compose_still_lists_auth_service_until_t66(self) -> None:
-        """Document migration state: compose shrinks to two app services in T6.6."""
+    def test_compose_has_two_app_services_without_auth(self) -> None:
+        """Post T6.6: compose is backend + frontend only (ADR-002)."""
         compose = (ROOT / "docker-compose.yml").read_text(encoding="utf-8")
-        assert "auth:" in compose
         assert "backend:" in compose
         assert "frontend:" in compose
+        assert "auth:" not in compose
+        assert "AUTH_SERVICE_URL" not in compose
 
 
 @pytest.mark.migration

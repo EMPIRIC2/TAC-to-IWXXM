@@ -3,9 +3,6 @@
 Tests the conversion workflow, API endpoints, and data flow
 between the frontend client and backend API.
 """
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from typing import Dict, Any
 
 
 class TestBackendFrontendIntegration:

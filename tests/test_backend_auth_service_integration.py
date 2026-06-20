@@ -2,11 +2,12 @@
 
 Tests that backend correctly calls the auth service to verify tokens.
 """
-import pytest
 import os
-from unittest.mock import AsyncMock, patch, MagicMock
-from fastapi.security import HTTPAuthorizationCredentials
 import sys
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+from fastapi.security import HTTPAuthorizationCredentials
 
 # Ensure imports work
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
@@ -54,8 +55,9 @@ class TestBackendAuthServiceIntegration:
     @pytest.mark.asyncio
     async def test_backend_token_verification_invalid(self):
         """Backend properly handles invalid token from auth service."""
-        from backend.src.utilities.security import verify_supabase_token
         from fastapi import HTTPException
+
+        from backend.src.utilities.security import verify_supabase_token
         
         with patch("backend.src.utilities.security.httpx.AsyncClient") as mock_client_cls:
             # Setup mock for 401 response
@@ -95,8 +97,9 @@ class TestAuthServiceFailureHandling:
     @pytest.mark.asyncio
     async def test_auth_service_connection_error(self):
         """Backend handles auth service connection errors gracefully."""
-        from backend.src.utilities.security import verify_supabase_token
         from fastapi import HTTPException
+
+        from backend.src.utilities.security import verify_supabase_token
         
         with patch("backend.src.utilities.security.httpx.AsyncClient") as mock_client_cls:
             mock_client = AsyncMock()

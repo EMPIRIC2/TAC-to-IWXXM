@@ -4,7 +4,9 @@ This file ensures backend src is importable in tests and sets up environment.
 All other pytest configuration is in pyproject.toml.
 """
 import os
+
 import pytest
+
 from src.schemas.airport import get_airport_validator
 
 # Set test environment variables BEFORE any imports of modules that use os.getenv()
@@ -28,6 +30,6 @@ def ensure_airport_data():
     # Get the validator singleton (will initialize and load data if needed)
     validator = get_airport_validator()
     assert validator.count() > 0, "Airport data not loaded"
-    
+
     return validator
 

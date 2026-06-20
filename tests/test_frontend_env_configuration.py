@@ -4,11 +4,9 @@ Validates that the frontend has the correct VITE_AUTH_SERVICE_URL environment
 variable configured, preventing the "Missing VITE_AUTH_SERVICE_URL" error that
 causes the app to fail at startup.
 """
-import os
-import pytest
-import subprocess
-import time
 from pathlib import Path
+
+import pytest
 
 
 class TestFrontendEnvConfiguration:
@@ -20,7 +18,7 @@ class TestFrontendEnvConfiguration:
         
         assert frontend_env_path.exists(), f"Frontend .env file not found at {frontend_env_path}"
         
-        with open(frontend_env_path, 'r') as f:
+        with open(frontend_env_path) as f:
             env_content = f.read()
         
         # Should have VITE_AUTH_SERVICE_URL
@@ -41,7 +39,7 @@ class TestFrontendEnvConfiguration:
         
         assert root_env_path.exists(), f"Root .env file not found at {root_env_path}"
         
-        with open(root_env_path, 'r') as f:
+        with open(root_env_path) as f:
             env_content = f.read()
         
         # Should have VITE_AUTH_SERVICE_URL
@@ -64,7 +62,7 @@ class TestFrontendEnvConfiguration:
         frontend_env_example = Path(__file__).parent.parent / "frontend" / ".env.example"
         
         if frontend_env_example.exists():
-            with open(frontend_env_example, 'r') as f:
+            with open(frontend_env_example) as f:
                 content = f.read()
             
             assert "VITE_AUTH_SERVICE_URL=" in content, (
@@ -77,7 +75,7 @@ class TestFrontendEnvConfiguration:
         
         assert frontend_env_path.exists(), f"Frontend .env file not found at {frontend_env_path}"
         
-        with open(frontend_env_path, 'r') as f:
+        with open(frontend_env_path) as f:
             env_content = f.read()
         
         required_vars = [
@@ -99,7 +97,7 @@ class TestFrontendAuthServiceConnectivity:
         """Auth service should run on port 8002 as configured."""
         frontend_env_path = Path(__file__).parent.parent / "frontend" / ".env"
         
-        with open(frontend_env_path, 'r') as f:
+        with open(frontend_env_path) as f:
             env_content = f.read()
         
         for line in env_content.split('\n'):
