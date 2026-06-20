@@ -1,36 +1,57 @@
-# Backend service Dockerfile (src layout, uv install)
+# Backend API Dockerfile — monorepo root context (deploy.md §Docker Build Context)
 FROM python:3.12-slim
-WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    UV_LINK_MODE=copy
 
-# Install minimal deps and uv
+WORKDIR /app
+
+# System deps for lxml/schematron and uv
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl git ca-certificates \
+    && apt-get install -y --no-install-recommends \
+        curl \
+        git \
+        ca-certificates \
+        libxml2 \
+        libxslt1.1 \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir --upgrade pip
+    && pip install --no-cache-dir uv
 
-# Copy project metadata first for layer caching
-COPY backend/pyproject.toml ./pyproject.toml
+# Workspace metadata (layer cache)
+COPY pyproject.toml uv.lock ./
+COPY packages/shared/pyproject.toml packages/shared/pyproject.toml
+COPY packages/gifts/pyproject.toml packages/gifts/pyproject.toml
+COPY packages/auth/pyproject.toml packages/auth/pyproject.toml
+COPY apps/backend/pyproject.toml apps/backend/pyproject.toml
 
-# Copy only source and required data (GIFTs for conversion)
-COPY backend/src ./src
-COPY GIFTs ./GIFTs
+# Workspace sources required at runtime
+COPY packages/shared packages/shared
+COPY packages/gifts packages/gifts
+COPY packages/auth packages/auth
+COPY apps/backend apps/backend
+COPY vendor/schemas vendor/schemas
 
-# Install both the backend package and GIFTs library into system env
-RUN pip install --no-cache-dir . && \
-    pip install --no-cache-dir ./GIFTs
+# Backend still resolves schemas/iwxxm; vendor tree is authoritative (ADR-001).
+RUN ln -s /app/vendor/schemas /app/schemas
 
-# Non-root user
+# Install API package and workspace deps into system Python
+RUN uv sync --frozen --no-dev --package metar-backend
+
+ENV IWXXM_PROJECT_ROOT=/app \
+    IWXXM_SCHEMAS_ROOT=/app/vendor/schemas/iwxxm \
+    PORT=8000 \
+    RELOAD=false \
+    HOST=0.0.0.0
+
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
+WORKDIR /app/apps/backend
+
 EXPOSE 8000
+
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()" || exit 1
 
-# Run backend as a module (entry point will be: src package)
-ENV PORT=8000 RELOAD=false
 CMD ["python", "-m", "src"]
-
