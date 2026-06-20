@@ -168,10 +168,10 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T9.1
+        current_task: T10.2
         phase: 4
-        milestone: M8
-        notes: "M8 T8.1–T8.2 complete; Phase 3 gate pass; M7 commits landed on feat/M7-e2e-workspace"
+        milestone: M10
+        notes: "T10.1 complete — ci-cd.yml monorepo paths + Python 3.12 / Node 22 pins"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
       - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
@@ -422,7 +422,7 @@ artifacts:
     status: complete
 
   git_history:
-  current_branch: feat/M7-e2e-workspace
+  current_branch: feat/M8-deploy-ci
   branches:
     - name: phase/1-monorepo-scaffold
       base: main

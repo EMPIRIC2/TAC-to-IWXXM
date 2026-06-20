@@ -17,8 +17,7 @@ env:
   FRONTEND_VITE_SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
   FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
   FRONTEND_VITE_APP_URL: https://metar-to-iwxxm-frontend-v4-web.onrender.com
-  FRONTEND_VITE_BACKEND_URL: https://metar-to-iwxxm-api.onrender.com
-  FRONTEND_VITE_AUTH_SERVICE_URL: https://metar-to-iwxxm-auth-v2.onrender.com
+  FRONTEND_VITE_API_BASE_URL: https://metar-to-iwxxm-api.onrender.com
 
 jobs:
   # ============================================================================
@@ -35,7 +34,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install pytest
         run: pip install pytest --quiet
@@ -44,49 +43,37 @@ jobs:
         run: pytest tests/test_config_placeholders.py -v
 
   # ============================================================================
-  # BACKEND - Python Tests & Coverage
+  # BACKEND - Python Tests & Coverage (apps/backend)
   # ============================================================================
   backend-tests:
     runs-on: ubuntu-latest
     name: Backend - Tests & Coverage
 
     steps:
-      - name: Manual checkout
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git init .
-          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch --depth=1 origin "${GITHUB_SHA}"
-          git checkout --detach FETCH_HEAD
-
-      - name: Initialize required submodules only
-        run: |
-          git submodule sync --recursive
-          git submodule update --init --depth 1 frontend
-          git submodule update --init GIFTs || {
-            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
-            git -C GIFTs fetch --tags --force origin
-            git submodule update --init GIFTs
-          }
-          git -C GIFTs rev-parse --short HEAD
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache: pip
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip uv
-          cd backend && uv pip install --system -e "." "pytest>=8.4.2" "pytest-cov>=4.1.0" "pytest-asyncio>=0.23.0" skyfield httpx
+          uv sync
 
       - name: Run linting
-        run: make lint-backend
+        run: uv run ruff check apps/backend/src apps/backend/tests
 
       - name: Run unit tests with coverage
-        run: make test-unit-backend
+        run: |
+          cd apps/backend && uv run pytest tests/unit \
+            --cov=src --cov-config=pyproject.toml --cov-branch \
+            --cov-report=xml:coverage.xml --cov-report=term-missing \
+            --cov-fail-under=95 -v
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
@@ -94,8 +81,8 @@ jobs:
         with:
           name: backend-coverage-report
           path: |
-            backend/htmlcov/
-            backend/coverage.xml
+            apps/backend/htmlcov/
+            apps/backend/coverage.xml
 
       - name: Upload backend coverage to Codecov
         uses: codecov/codecov-action@v5
@@ -103,56 +90,43 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: joseph-c-mcguire/metar-to-IWXXM
-          files: ./backend/coverage.xml
+          files: ./apps/backend/coverage.xml
           flags: backend
           name: backend-coverage
           fail_ci_if_error: true
 
   # ============================================================================
-  # AUTH SERVICE - Python Tests & Coverage
+  # AUTH PACKAGE - Python Tests & Coverage (packages/auth)
   # ============================================================================
   auth-tests:
     runs-on: ubuntu-latest
-    name: Auth Service - Tests & Coverage
+    name: Auth Package - Tests & Coverage
 
     steps:
-      - name: Manual checkout
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git init .
-          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch --depth=1 origin "${GITHUB_SHA}"
-          git checkout --detach FETCH_HEAD
-
-      - name: Initialize required submodules only
-        run: |
-          git submodule sync --recursive
-          git submodule update --init --depth 1 frontend
-          git submodule update --init GIFTs || {
-            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
-            git -C GIFTs fetch --tags --force origin
-            git submodule update --init GIFTs
-          }
-          git -C GIFTs rev-parse --short HEAD
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache: pip
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip uv
-          cd auth && uv pip install --system -e ".[dev]"
-          python -m pip install pytest pytest-cov pytest-asyncio
+          uv sync
 
       - name: Run linting
-        run: make lint-auth
+        run: uv run ruff check packages/auth/src packages/auth/tests
 
       - name: Run unit tests with coverage
-        run: make test-unit-auth
+        run: |
+          cd packages/auth && uv run pytest tests \
+            --cov=src --cov-config=pyproject.toml --cov-branch \
+            --cov-report=xml:coverage.xml --cov-report=term-missing \
+            --cov-fail-under=95 -v
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
@@ -160,8 +134,8 @@ jobs:
         with:
           name: auth-coverage-report
           path: |
-            auth/htmlcov/
-            auth/coverage.xml
+            packages/auth/htmlcov/
+            packages/auth/coverage.xml
 
       - name: Upload auth coverage to Codecov
         uses: codecov/codecov-action@v5
@@ -169,54 +143,43 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: joseph-c-mcguire/metar-to-IWXXM
-          files: ./auth/coverage.xml
+          files: ./packages/auth/coverage.xml
           flags: auth
           name: auth-coverage
           fail_ci_if_error: true
 
   # ============================================================================
-  # GIFTs - Python Tests & Coverage
+  # GIFTs - Python Tests & Coverage (packages/gifts)
   # ============================================================================
   gifts-tests:
     runs-on: ubuntu-latest
     name: GIFTs - Tests & Coverage
 
     steps:
-      - name: Manual checkout
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git init .
-          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch --depth=1 origin "${GITHUB_SHA}"
-          git checkout --detach FETCH_HEAD
-
-      - name: Initialize GIFTs submodule
-        run: |
-          git submodule sync --recursive
-          git submodule update --init GIFTs || {
-            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
-            git -C GIFTs fetch --tags --force origin
-            git submodule update --init GIFTs
-          }
-          git -C GIFTs rev-parse --short HEAD
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          python-version: '3.12'
+          cache: pip
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip uv
-          cd GIFTs && uv pip install --system -e ".[test]"
+          uv sync
 
       - name: Run linting
-        run: make lint-gifts
+        run: uv run ruff check packages/gifts/gifts packages/gifts/tests
 
       - name: Run unit tests with coverage
-        run: make test-unit-gifts
+        run: |
+          cd packages/gifts && uv run pytest tests/ \
+            --cov=gifts --cov=validation --cov-config=pyproject.toml --cov-branch \
+            --cov-report=xml:coverage.xml --cov-report=term-missing \
+            --cov-fail-under=95 -v
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
@@ -224,8 +187,8 @@ jobs:
         with:
           name: gifts-coverage-report
           path: |
-            GIFTs/htmlcov/
-            GIFTs/coverage.xml
+            packages/gifts/htmlcov/
+            packages/gifts/coverage.xml
         continue-on-error: true
 
       - name: Upload GIFTs coverage to Codecov
@@ -234,54 +197,48 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: joseph-c-mcguire/metar-to-IWXXM
-          files: ./GIFTs/coverage.xml
+          files: ./packages/gifts/coverage.xml
           flags: gifts
           name: gifts-coverage
           fail_ci_if_error: true
 
   # ============================================================================
-  # FRONTEND - JavaScript/TypeScript Tests & Coverage
+  # FRONTEND - JavaScript/TypeScript Tests & Coverage (apps/frontend)
   # ============================================================================
   frontend-tests:
     runs-on: ubuntu-latest
     name: Frontend - Tests & Coverage
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
         with:
-          # Avoid recursive checkout failure from schemas/iwxxm-backup missing URL
           submodules: false
-
-      - name: Initialize frontend submodule only
-        run: |
-          git submodule sync -- frontend
-          git submodule update --init --depth 1 frontend
 
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: 'frontend/package-lock.json'
+          cache: pnpm
+
+      - name: Enable pnpm
+        run: corepack enable
 
       - name: Install dependencies
-        working-directory: ./frontend
-        run: npm install --legacy-peer-deps
+        run: pnpm install --frozen-lockfile
 
       - name: Create test environment file
-        working-directory: ./frontend
+        working-directory: ./apps/frontend
         run: |
-          printf 'VITE_AUTH_SERVICE_URL=http://localhost:8003\nVITE_APP_URL=http://localhost:8000\nVITE_BACKEND_URL=http://localhost:8001\n' > .env
+          printf 'VITE_API_BASE_URL=http://localhost:18001\nVITE_APP_URL=http://localhost:18000\n' > .env
 
       - name: Run linting
-        run: make lint-frontend
+        run: pnpm --filter @metar/frontend run lint
 
       - name: Run tests with coverage
-        run: make test-unit-frontend
+        run: pnpm --filter @metar/frontend run test:coverage
 
       - name: Report coverage summary
-        working-directory: ./frontend
+        working-directory: ./apps/frontend
         run: |
           COVERAGE=$(grep -oP 'All files\s*\|\s*\K[\d.]+' coverage/lcov-report/index.html || echo "0")
           echo "Frontend Coverage: ${COVERAGE}%"
@@ -292,7 +249,7 @@ jobs:
         if: always()
         with:
           name: frontend-coverage-report
-          path: frontend/coverage/
+          path: apps/frontend/coverage/
 
       - name: Upload frontend coverage to Codecov
         uses: codecov/codecov-action@v5
@@ -300,7 +257,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: joseph-c-mcguire/metar-to-IWXXM
-          files: ./frontend/coverage/lcov.info
+          files: ./apps/frontend/coverage/lcov.info
           flags: frontend
           name: frontend-coverage
           fail_ci_if_error: true
@@ -315,37 +272,19 @@ jobs:
     continue-on-error: true  # non-blocking: services aren't built yet during test phase
 
     steps:
-      - name: Manual checkout
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git init .
-          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch --depth=1 origin "${GITHUB_SHA}"
-          git checkout --detach FETCH_HEAD
-
-      - name: Initialize required submodules only
-        run: |
-          git submodule sync --recursive
-          git submodule update --init --depth 1 frontend
-          git submodule update --init GIFTs || {
-            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
-            git -C GIFTs fetch --tags --force origin
-            git submodule update --init GIFTs
-          }
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install integration dependencies
         run: |
           python -m pip install --upgrade pip uv
-          cd backend
-          uv pip install --system -e "." "pytest>=8.4.2" "pytest-cov>=4.1.0" "pytest-asyncio>=0.23.0"
-          cd ../auth
-          python -m pip install "passlib[bcrypt]>=1.7" "email-validator>=2.0.0.post2" "supabase>=2.7.0,<3.0" "python-dotenv>=1.0.0" "psycopg2-binary>=2.9.9"
+          uv sync
 
       - name: Set integration stack environment
         run: |
@@ -354,21 +293,23 @@ jobs:
             echo "SUPABASE_ANON_KEY=${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}"
             echo "VITE_SUPABASE_URL=${FRONTEND_VITE_SUPABASE_URL}"
             echo "VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}"
+            echo "VITE_API_BASE_URL=http://localhost:18001"
+            echo "VITE_APP_URL=http://localhost:18000"
           } >> "$GITHUB_ENV"
 
       - name: Start service stack
         run: |
-          docker compose up -d auth backend frontend
+          docker compose up -d backend frontend
           sleep 30
 
       - name: Run cross-service integration tests
         run: |
-          python -m pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_gifts_backend_integration.py tests/test_integration.py -v
+          uv run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_gifts_backend_integration.py tests/test_integration.py -v
 
       - name: Run backend integration smoke checks
-        working-directory: ./backend
+        working-directory: ./apps/backend
         run: |
-          python -m pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q
+          uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q
 
       - name: Stop service stack
         if: always()
@@ -393,7 +334,7 @@ jobs:
             echo "|---------|--------|"
             echo "| Config Guard | ${{ needs.config-guard.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| Backend | ${{ needs.backend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
-            echo "| Auth Service | ${{ needs.auth-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
+            echo "| Auth Package | ${{ needs.auth-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| GIFTs | ${{ needs.gifts-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| Frontend | ${{ needs.frontend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo ""
@@ -413,7 +354,7 @@ jobs:
             echo "❌ Required test jobs failed"
             [ "$CONFIG" != "success" ] && echo "  - Config Guard: $CONFIG"
             [ "$BACKEND" != "success" ] && echo "  - Backend: $BACKEND"
-            [ "$AUTH" != "success" ] && echo "  - Auth Service: $AUTH"
+            [ "$AUTH" != "success" ] && echo "  - Auth Package: $AUTH"
             [ "$FRONTEND" != "success" ] && echo "  - Frontend: $FRONTEND"
             [ "$GIFTS" != "success" ] && echo "  - GIFTs: $GIFTS"
             exit 1
@@ -431,7 +372,6 @@ jobs:
 
     outputs:
       backend_changed: ${{ steps.filter.outputs.backend }}
-      auth_changed: ${{ steps.filter.outputs.auth }}
       frontend_changed: ${{ steps.filter.outputs.frontend }}
 
     steps:
@@ -445,19 +385,16 @@ jobs:
         with:
           filters: |
             backend:
-              - 'backend/**'
-              - 'GIFTs/**'
-              - 'schemas/**'
-              - 'scripts/**'
-              - 'docker-compose.yml'
-              - 'render.yaml'
-            auth:
-              - 'auth/**'
+              - 'apps/backend/**'
+              - 'packages/auth/**'
+              - 'packages/gifts/**'
+              - 'packages/shared/**'
+              - 'vendor/**'
               - 'scripts/**'
               - 'docker-compose.yml'
               - 'render.yaml'
             frontend:
-              - 'frontend/**'
+              - 'apps/frontend/**'
               - 'scripts/**'
               - 'docker-compose.yml'
               - 'render.yaml'
@@ -480,24 +417,9 @@ jobs:
       frontend_built: ${{ steps.filter.outputs.frontend_build }}
 
     steps:
-      - name: Manual checkout
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git init .
-          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch --depth=1 origin "${GITHUB_SHA}"
-          git checkout --detach FETCH_HEAD
-
-      - name: Initialize required submodules
-        run: |
-          git submodule sync --recursive
-          git submodule update --init GIFTs || {
-            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
-            git -C GIFTs fetch --tags --force origin
-            git submodule update --init GIFTs
-          }
-          git -C GIFTs rev-parse --short HEAD
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
 
       - name: Clone frontend source repository
         run: |
@@ -572,8 +494,7 @@ jobs:
             VITE_SUPABASE_URL=${{ env.FRONTEND_VITE_SUPABASE_URL }}
             VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${{ env.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
             VITE_APP_URL=${{ env.FRONTEND_VITE_APP_URL }}
-            VITE_BACKEND_URL=${{ env.FRONTEND_VITE_BACKEND_URL }}
-            VITE_AUTH_SERVICE_URL=${{ env.FRONTEND_VITE_AUTH_SERVICE_URL }}
+            VITE_API_BASE_URL=${{ env.FRONTEND_VITE_API_BASE_URL }}
             VITE_FRONTEND_DEPLOY_MARK=${{ github.sha }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
@@ -613,7 +534,7 @@ jobs:
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
         run: |
           if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
-            ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
+            ENCODED_URL=$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
             curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
           else
             curl -fsSL "${DEPLOY_HOOK}"
@@ -626,7 +547,7 @@ jobs:
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.AUTH_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
         run: |
           if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
-            ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
+            ENCODED_URL=$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
             curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
           else
             curl -fsSL "${DEPLOY_HOOK}"
@@ -639,7 +560,7 @@ jobs:
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
         run: |
           if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
-            ENCODED_URL=$(python -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
+            ENCODED_URL=$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
             curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
           else
             curl -fsSL "${DEPLOY_HOOK}"
@@ -665,7 +586,7 @@ jobs:
             echo "| Project | Status | Coverage |"
             echo "|---------|--------|----------|"
             echo "| 🔧 Backend | ${{ needs.backend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
-            echo "| 🔐 Auth Service | ${{ needs.auth-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
+            echo "| 🔐 Auth Package | ${{ needs.auth-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
             echo "| 🎁 GIFTs | ${{ needs.gifts-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
             echo "| 🎨 Frontend | ${{ needs.frontend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
             echo "| 🔗 Integration Matrix | ${{ needs.integration-matrix.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Service interoperability |"

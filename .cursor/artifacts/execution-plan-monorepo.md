@@ -10,9 +10,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 4: CI, Deploy & Validate |
-| **Active milestone** | M8: Docker & Compose |
-| **Active task** | T8.2 complete — next T9.1 |
-| **Tasks completed** | 45 / 63 |
+| **Active milestone** | M10: CI/CD |
+| **Active task** | T10.1 complete — next T10.2 |
+| **Tasks completed** | 51 / 63 |
 | **Last updated** | 2026-06-20 |
 
 ## Tech Stack Summary
@@ -217,18 +217,18 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T9.1 | Rewrite render.yaml: API + static frontend; wire `SUPABASE_*`, `FRONTEND_URL`, `METAR_CORS_ORIGINS` | Config | pending | deploy.md, config-spec | T8.1 | — |
-| T9.2 | Remove Loki/Prometheus/Grafana from Blueprint | Config | pending | User decision | T9.1 | — |
-| T9.3 | Set `DISABLE_AUTH=false` for production API | Config | pending | User decision | T9.1 | — |
-| T9.4 | Write `tests/smoke/test_staging_connectivity.py` | Test | pending | test-plan.md H4 | T9.1 | — |
-| T9.5 | Add `scripts/deploy/verify_connectivity.sh` | Code | pending | connectivity-gates.md | T9.4 | — |
+| T9.1 | Rewrite render.yaml: API + static frontend; wire `SUPABASE_*`, `FRONTEND_URL`, `METAR_CORS_ORIGINS` | Config | completed | deploy.md, config-spec | T8.1 | — |
+| T9.2 | Remove Loki/Prometheus/Grafana from Blueprint | Config | completed | User decision | T9.1 | — |
+| T9.3 | Set `DISABLE_AUTH=false` for production API | Config | completed | User decision | T9.1 | — |
+| T9.4 | Write `tests/smoke/test_staging_connectivity.py` | Test | completed | test-plan.md H4 | T9.1 | — |
+| T9.5 | Add `scripts/deploy/verify_connectivity.sh` | Code | completed | connectivity-gates.md | T9.4 | — |
 | T9.6 | Verify/update `docs/staging-secrets-matrix.md` against Render env | Docs | completed | 04-tech-plan connectivity | T9.1 | — |
 
 #### M10: CI/CD
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T10.1 | Update ci-cd.yml paths; pin Python 3.12 + Node 22 | Config | pending | migration-plan.md Step 7 | T8.2 | — |
+| T10.1 | Update ci-cd.yml paths; pin Python 3.12 + Node 22 | Config | completed | migration-plan.md Step 7 | T8.2 | — |
 | T10.2 | Build frontend from in-repo `apps/frontend` (not external clone) | Config | pending | migration-plan.md | T10.1 | — |
 | T10.3 | Add weekly vendor sync GitHub Action | Config | pending | M6, User decision | T2.3 | — |
 | T10.4 | Write TC-M004 no-submodule reference tests | Test | pending | test-plan.md TC-M004 | T10.1 | — |
