@@ -11,8 +11,8 @@
 |-------|-------|
 | **Active phase** | Phase 4: CI, Deploy & Validate |
 | **Active milestone** | M10: CI/CD |
-| **Active task** | T10.1 complete — next T10.2 |
-| **Tasks completed** | 51 / 63 |
+| **Active task** | T10.2 complete — next T10.3 |
+| **Tasks completed** | 52 / 63 |
 | **Last updated** | 2026-06-20 |
 
 ## Tech Stack Summary
@@ -229,7 +229,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
 | T10.1 | Update ci-cd.yml paths; pin Python 3.12 + Node 22 | Config | completed | migration-plan.md Step 7 | T8.2 | — |
-| T10.2 | Build frontend from in-repo `apps/frontend` (not external clone) | Config | pending | migration-plan.md | T10.1 | — |
+| T10.2 | Build frontend from in-repo `apps/frontend` (not external clone) | Config | completed | migration-plan.md | T10.1 | — |
 | T10.3 | Add weekly vendor sync GitHub Action | Config | pending | M6, User decision | T2.3 | — |
 | T10.4 | Write TC-M004 no-submodule reference tests | Test | pending | test-plan.md TC-M004 | T10.1 | — |
 

@@ -12,7 +12,6 @@ env:
   BACKEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/backend
   AUTH_IMAGE: joseph-c-mcguire/metar-to-iwxxm/auth
   FRONTEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/frontend
-  FRONTEND_SOURCE_REPO: https://github.com/joseph-c-mcguire/Metartoiwxxmfrontend.git
   RENDER_DEPLOY_MODE: image
   FRONTEND_VITE_SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
   FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
@@ -421,10 +420,6 @@ jobs:
         with:
           submodules: false
 
-      - name: Clone frontend source repository
-        run: |
-          git clone --depth 1 "${{ env.FRONTEND_SOURCE_REPO }}" _frontend_src
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -485,8 +480,8 @@ jobs:
         if: steps.filter.outputs.frontend_build == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./_frontend_src
-          file: ./_frontend_src/Dockerfile
+          context: ./apps/frontend
+          file: ./apps/frontend/Dockerfile
           target: production
           platforms: linux/amd64
           push: true

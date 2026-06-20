@@ -59,3 +59,20 @@ class TestM10CiMonorepoPaths:
     def test_ci_frontend_uses_pnpm(self, workflow_text: str) -> None:
         assert "pnpm" in workflow_text
         assert "npm install --legacy-peer-deps" not in workflow_text
+
+
+@pytest.mark.migration
+class TestM10CiInRepoFrontendBuild:
+    """T10.2 — frontend Docker build must use in-repo apps/frontend."""
+
+    @pytest.fixture
+    def workflow_text(self) -> str:
+        return CI_CCD.read_text(encoding="utf-8")
+
+    def test_ci_does_not_clone_external_frontend_repo(self, workflow_text: str) -> None:
+        assert "FRONTEND_SOURCE_REPO" not in workflow_text
+        assert "_frontend_src" not in workflow_text
+
+    def test_ci_builds_frontend_from_apps_frontend(self, workflow_text: str) -> None:
+        assert "context: ./apps/frontend" in workflow_text
+        assert "file: ./apps/frontend/Dockerfile" in workflow_text
