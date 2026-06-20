@@ -29,14 +29,42 @@ fi
 if [[ -n "${STAGING_FRONTEND_URL:-}" && -n "${VITE_API_BASE_URL:-}" ]]; then
   echo ""
   echo "== H5: Frontend bundle API URL check =="
-  bundle_html="$(curl -sfL "${STAGING_FRONTEND_URL}/")"
-  if [[ "$bundle_html" == *"${VITE_API_BASE_URL}"* ]]; then
+  frontend_base="${STAGING_FRONTEND_URL%/}"
+  bundle_html="$(curl -sfL "${frontend_base}/")"
+
+  # Vite embeds build-time env vars in JS chunks, not index.html.
+  mapfile -t asset_paths < <(
+    printf '%s\n' "$bundle_html" \
+      | grep -oE '(src|href)="(/assets/[^"]+\.(js|css))"' \
+      | sed -E 's/^(src|href)="([^"]+)"$/\2/' \
+      | sort -u
+  )
+
+  bundle_content="$bundle_html"
+  for asset_path in "${asset_paths[@]}"; do
+    bundle_content+="$(curl -sfL "${frontend_base}${asset_path}")"
+  done
+
+  if [[ "$bundle_content" == *"${VITE_API_BASE_URL}"* ]]; then
     echo "OK: deployed bundle references VITE_API_BASE_URL=${VITE_API_BASE_URL}"
   else
     echo "WARN: bundle at ${STAGING_FRONTEND_URL} may not embed ${VITE_API_BASE_URL}"
     echo "      Rebuild frontend after API URL is known (docs/deploy.md §Redeploy order)."
     exit 1
   fi
+
+  deprecated_urls=(
+    "metar-to-iwxxm-auth-v2.onrender.com"
+    "VITE_BACKEND_URL"
+    "VITE_AUTH_SERVICE_URL"
+  )
+  for deprecated in "${deprecated_urls[@]}"; do
+    if [[ "$bundle_content" == *"${deprecated}"* ]]; then
+      echo "WARN: deployed bundle still references deprecated ${deprecated}"
+      echo "      Rebuild frontend from monorepo main (unified VITE_API_BASE_URL per ADR-002)."
+      exit 1
+    fi
+  done
 else
   echo ""
   echo "== H5: skipped (set STAGING_FRONTEND_URL and VITE_API_BASE_URL for bundle check) =="

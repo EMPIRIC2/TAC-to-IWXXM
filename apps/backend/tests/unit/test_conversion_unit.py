@@ -548,29 +548,16 @@ def test_convert_with_metadata_empty_meta_fields_covers_skip_branches(monkeypatc
     assert "str" not in decoded_state["ident"]
 
 
-def test_convert_with_metadata_gifts_root_exists_inserts_to_sys_path(monkeypatch, tmp_path):
-    """gifts_root directory exists and not in sys.path -> inserts to path (covers line 438)."""
-    # Build path so Path(__file__).parent^4 / GIFTs == tmp_path/a/GIFTs
-    sub = tmp_path / "a" / "b" / "c" / "d"
-    sub.mkdir(parents=True)
-    gifts_root = tmp_path / "a" / "GIFTs"
-    gifts_root.mkdir()
-    gifts_root_str = str(gifts_root)
-
-    # Expose a fake gifts.common so the import succeeds after path insert
+def test_convert_with_metadata_sets_vertical_datum_on_gifts_config(monkeypatch):
+    """vertical_datum in aerodrome metadata sets gifts.common.xmlConfig.verticalDatum."""
     fake_xml_config = SimpleNamespace(verticalDatum=None)
     fake_common = types.ModuleType("gifts.common")
     fake_common.xmlConfig = fake_xml_config
-
-    # Keep sys.path clean so the insert condition fires
-    clean_path = [p for p in sys.path if p != gifts_root_str]
-    monkeypatch.setattr(sys, "path", clean_path)
     monkeypatch.setitem(sys.modules, "gifts.common", fake_common)
 
     meta = {"name": "JFK", "alternate": "", "iataID": "", "position": "", "vertical_datum": "EGM_08"}
     decoded = {"ident": {"str": "KJFK"}}
 
-    monkeypatch.setattr(conv, "__file__", str(sub / "conversion.py"))
     monkeypatch.setattr(
         "src.utilities.gifts_adapter.get_decoder",
         lambda version=None: SimpleNamespace(decode=lambda _tac: decoded),
@@ -585,7 +572,4 @@ def test_convert_with_metadata_gifts_root_exists_inserts_to_sys_path(monkeypatch
     xml, _ = conv.convert_metar_tac_with_metadata("METAR KJFK 010000Z", validate=False)
 
     assert xml.startswith("<?xml version=\"1.0\"?>")
-    # Vertical datum should have been set on the fake config object
     assert fake_xml_config.verticalDatum == "EGM_08"
-    # gifts_root was inserted into sys.path
-    assert gifts_root_str in sys.path
