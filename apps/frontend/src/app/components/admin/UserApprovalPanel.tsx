@@ -49,7 +49,8 @@ export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPan
   }, []);
 
   useEffect(() => {
-    queueMicrotask(() => void loadPendingUsers());
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch pending users on mount
+    void loadPendingUsers();
   }, [loadPendingUsers]);
 
   const handleApprove = async (userId: string, userEmail: string) => {

@@ -119,7 +119,8 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
 
   useEffect(() => {
     if (isOpen) {
-      queueMicrotask(() => loadPreferences());
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- load preferences when dialog opens
+      loadPreferences();
     }
   }, [isOpen, loadPreferences]);
 

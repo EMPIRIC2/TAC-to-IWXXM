@@ -71,7 +71,8 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
   }, [accessToken]);
 
   useEffect(() => {
-    queueMicrotask(() => void loadSettings());
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch settings on mount
+    loadSettings();
   }, [loadSettings]);
 
   const handleSave = async () => {

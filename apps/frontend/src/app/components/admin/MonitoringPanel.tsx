@@ -78,7 +78,8 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
   }, [accessToken]);
 
   useEffect(() => {
-    queueMicrotask(() => void loadMonitoringData());
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch monitoring data on mount
+    loadMonitoringData();
   }, [loadMonitoringData]);
 
   const toggleAdminStatus = async (userId: string, currentStatus: boolean) => {

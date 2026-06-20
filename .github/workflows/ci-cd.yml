@@ -170,6 +170,12 @@ jobs:
           python -m pip install --upgrade pip uv
           uv sync
 
+      - name: Prepare GIFTs demo databases
+        run: |
+          cd packages/gifts/gifts/database && python3 create_pickle_db.py
+          cp aerodromes.db ../../demo/aerodromes.db
+          cp aerodromes.db ../../demo/aerodromes.win.db
+
       - name: Run linting
         run: uv run ruff check packages/gifts/gifts packages/gifts/tests
 
