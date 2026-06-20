@@ -58,7 +58,7 @@ lint-auth:
 	cd auth && python3 -m pip install -q ruff && python3 -m ruff check src tests
 
 lint-frontend:
-	cd frontend && npm install --legacy-peer-deps && npm run lint
+	$(PNPM) --filter @metar/frontend run lint
 
 lint-gifts:
 	$(UV) run ruff check packages/gifts/gifts packages/gifts/tests
@@ -70,7 +70,7 @@ lint-fix-auth:
 	cd auth && python3 -m pip install -q ruff && python3 -m ruff check --fix src tests
 
 lint-fix-frontend:
-	cd frontend && npm install --legacy-peer-deps && npm run lint -- --fix
+	cd apps/frontend && $(PNPM) exec eslint src --ext .ts,.tsx --fix
 
 lint-fix-gifts:
 	$(UV) run ruff check --fix packages/gifts/gifts packages/gifts/tests
