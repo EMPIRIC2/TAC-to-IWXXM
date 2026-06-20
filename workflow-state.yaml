@@ -178,6 +178,29 @@ stages:
       - "M5 complete (T5.1–T5.8); minor PR pending"
       - "M7 complete (T7.1–T7.4); minor PR pending"
 
+  08-verify-build:
+    status: completed
+    started_at: "2026-06-20T00:00:00Z"
+    completed_at: "2026-06-20T23:59:00Z"
+    overall: fail
+    report: docs/verification-report.md
+    substeps:
+      lint:
+        status: completed
+      format:
+        status: completed
+      typecheck:
+        status: completed
+      tests:
+        status: completed
+      security:
+        status: completed
+      report:
+        status: completed
+    notes:
+      - "Overall FAIL — blocking: format (291 files), typecheck (313+ errors), pydantic-settings CVE, Makefile lint-frontend points to removed frontend/"
+      - "H0c + H0i tests pass; migration gates pass on main; make test-unit green"
+
 stages_pending: []
 
 decisions_log:
@@ -420,8 +443,11 @@ artifacts:
   - path: .cursor/agents/spec-consultant.md
     stage: 03-plan-tooling
     status: complete
+  - path: docs/verification-report.md
+    stage: 08-verify-build
+    status: complete
 
-  git_history:
+git_history:
   current_branch: feat/M11-big-bang-finalize
   branches:
     - name: phase/1-monorepo-scaffold
