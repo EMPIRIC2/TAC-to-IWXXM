@@ -13,7 +13,7 @@ services:
       - key: RELOAD
         value: "false"
       - key: DISABLE_AUTH
-        value: "true"
+        value: "false"
       - key: FRONTEND_URL
         value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
       - key: METAR_CORS_ORIGINS
