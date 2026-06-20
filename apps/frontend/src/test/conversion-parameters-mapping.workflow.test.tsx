@@ -5,21 +5,23 @@ import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
-const mockConvertMetarToIwxxm = vi.hoisted(() => vi.fn().mockResolvedValue({
-  results: [
-    {
-      name: 'manual_input.txt',
-      content: '<iwxxm:METAR>mapped</iwxxm:METAR>',
-      source: 'manual_input',
-      size_bytes: 29,
-    },
-  ],
-  errors: [],
-  issues: [],
-  total_processed: 1,
-  successful: 1,
-  failed: 0,
-}));
+const mockConvertMetarToIwxxm = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    results: [
+      {
+        name: 'manual_input.txt',
+        content: '<iwxxm:METAR>mapped</iwxxm:METAR>',
+        source: 'manual_input',
+        size_bytes: 29,
+      },
+    ],
+    errors: [],
+    issues: [],
+    total_processed: 1,
+    successful: 1,
+    failed: 0,
+  }),
+);
 const mockToast = vi.hoisted(() => ({
   success: vi.fn(),
   error: vi.fn(),
@@ -72,7 +74,9 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
-    const iwxxmVersion = container.querySelector('#param-iwxxm-version') as HTMLSelectElement;
+    const iwxxmVersion = container.querySelector(
+      '#param-iwxxm-version',
+    ) as HTMLSelectElement;
     await user.selectOptions(iwxxmVersion, '2023-1');
 
     const manualInput = screen.getByLabelText(/enter metar data manually/i);
@@ -82,7 +86,9 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
       },
     });
 
-    await user.click(screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }));
+    await user.click(
+      screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
+    );
 
     await waitFor(() => {
       expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
@@ -90,11 +96,12 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
 
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
-        manualText: 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
+        manualText:
+          'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
         iwxxmVersion: '2023-1',
         validateOutput: false,
         accessToken: 'mapping-token',
-      })
+      }),
     );
   });
 
@@ -109,7 +116,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
         includeNilReasons: false,
         onError: 'skip',
         logLevel: 'DEBUG',
-      })
+      }),
     );
 
     const user = userEvent.setup();
@@ -117,9 +124,15 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
-    const bulletinId = container.querySelector('#param-bulletin-id') as HTMLInputElement;
-    const issuingCenter = container.querySelector('#param-issuing-center') as HTMLInputElement;
-    const iwxxmVersion = container.querySelector('#param-iwxxm-version') as HTMLSelectElement;
+    const bulletinId = container.querySelector(
+      '#param-bulletin-id',
+    ) as HTMLInputElement;
+    const issuingCenter = container.querySelector(
+      '#param-issuing-center',
+    ) as HTMLInputElement;
+    const iwxxmVersion = container.querySelector(
+      '#param-iwxxm-version',
+    ) as HTMLSelectElement;
     const onError = container.querySelector('#param-on-error') as HTMLSelectElement;
     const logLevel = container.querySelector('#param-log-level') as HTMLSelectElement;
 
@@ -141,21 +154,25 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
         includeNilReasons: true,
         onError: 'warn',
         logLevel: 'INFO',
-      })
+      }),
     );
 
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
 
     await user.click(screen.getByLabelText(/expand parameters/i));
-    const iwxxmVersion = container.querySelector('#param-iwxxm-version') as HTMLSelectElement;
+    const iwxxmVersion = container.querySelector(
+      '#param-iwxxm-version',
+    ) as HTMLSelectElement;
     await user.selectOptions(iwxxmVersion, '2025-2');
 
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: 'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010' },
     });
 
-    await user.click(screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }));
+    await user.click(
+      screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
+    );
 
     await waitFor(() => {
       expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
@@ -164,7 +181,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
         iwxxmVersion: '2025-2',
-      })
+      }),
     );
   });
 });

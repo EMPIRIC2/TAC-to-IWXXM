@@ -11,12 +11,6 @@ class TestAuthFrontendIntegration:
     def test_frontend_can_register_user(self):
         """Test that frontend can call auth register endpoint."""
         # Frontend sends registration request
-        request_data = {
-            "username": "testuser",
-            "email": "test@example.com",
-            "password": "SecurePass123!",
-            "name": "Test User",
-        }
 
         # Auth service responds
         response = {
@@ -32,7 +26,6 @@ class TestAuthFrontendIntegration:
     def test_frontend_can_login_user(self):
         """Test that frontend can call auth login endpoint."""
         # Frontend sends login request
-        request_data = {"username": "testuser", "password": "SecurePass123!"}
 
         # Auth service returns token
         response = {
@@ -113,7 +106,7 @@ class TestAuthTokenHandling:
         try:
             parts = invalid_token.split(".")
             assert len(parts) != 3
-        except:
+        except Exception:
             pass
 
 
@@ -182,7 +175,6 @@ class TestPasswordReset:
 
     def test_frontend_can_request_password_reset(self):
         """Test that frontend can request password reset."""
-        request_data = {"email": "test@example.com"}
 
         response = {"status": "success", "message": "Password reset email sent"}
 
@@ -190,7 +182,6 @@ class TestPasswordReset:
 
     def test_frontend_can_confirm_password_reset(self):
         """Test that frontend can confirm password reset."""
-        request_data = {"token": "reset-token-123", "new_password": "NewPass456!"}
 
         response = {"status": "success", "message": "Password updated"}
 
@@ -202,7 +193,6 @@ class TestAPIKeyManagement:
 
     def test_frontend_can_create_api_key(self):
         """Test that frontend can create API key via auth."""
-        request_data = {"key_name": "My API Key"}
 
         response = {
             "key_id": "key-123",
@@ -226,7 +216,6 @@ class TestAPIKeyManagement:
 
     def test_frontend_can_revoke_api_key(self):
         """Test that frontend can revoke API key."""
-        request_data = {"key_id": "key-123"}
 
         response = {"status": "success", "message": "API key revoked"}
 
@@ -240,19 +229,12 @@ class TestAuthFrontendWorkflow:
         """Test complete user registration and login workflow."""
         # 1. Frontend displays registration form
         # 2. User fills form and submits
-        registration_data = {
-            "username": "newuser",
-            "email": "new@example.com",
-            "password": "SecurePass123!",
-            "name": "New User",
-        }
 
         # 3. Auth service creates user
         user_created = True
 
         # 4. Frontend redirects to login
         # 5. User logs in
-        login_data = {"username": "newuser", "password": "SecurePass123!"}
 
         # 6. Auth service returns token
         token_received = True
@@ -269,12 +251,12 @@ class TestAuthFrontendWorkflow:
 
         # 3. If no token, redirect to login
         if not token_present:
-            redirect_to = "/login"
+            pass
         else:
             # 4. If token present, verify with auth
             token_valid = True
             # 5. Allow access to dashboard
             if token_valid:
-                access_granted = True
+                pass
 
         assert token_present is True

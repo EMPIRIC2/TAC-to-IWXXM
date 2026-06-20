@@ -69,7 +69,7 @@ class SchemaDiscoveryPoller:
         self.base_schema_path = base_schema_path or Path(__file__).parent.parent.parent / "schemas" / "iwxxm"
         self.on_new_version_callbacks: List[Callable] = []
 
-    async def poll_once(self) -> Dict[str, List[str]]:
+    async def poll_once(self) -> dict[str, object]:
         """
         Execute a single poll cycle across all configured URLs.
 
@@ -169,6 +169,9 @@ class SchemaDiscoveryPoller:
             logger.info(f"Starting auto-mirror for {version}: {root_xsd_url}")
 
             # Mirror with all resources
+            if self.mirror_service is None:
+                logger.warning("Mirror service unavailable")
+                return
             result = await self.mirror_service.mirror_version(
                 version=version,
                 root_xsd_url=root_xsd_url,
@@ -385,7 +388,7 @@ class SchemaDiscoveryPoller:
         """
         return bool(RC_PATTERN.match(version))
 
-    async def poll_with_retry(self, max_retries: int = 3, retry_delay_seconds: int = 60) -> Dict[str, List[str]]:
+    async def poll_with_retry(self, max_retries: int = 3, retry_delay_seconds: int = 60) -> dict[str, object]:
         """
         Poll with automatic retry on failure.
 
@@ -407,6 +410,7 @@ class SchemaDiscoveryPoller:
                 else:
                     logger.error("All poll attempts failed")
                     raise
+        raise RuntimeError("Schema discovery poll failed")
 
     def get_discovered_versions(self, channel: Optional[str] = None) -> List[str]:
         """
@@ -426,7 +430,7 @@ class SchemaDiscoveryPoller:
             return list(self.discovered_versions)
 
 
-async def discover_schemas() -> Dict[str, List[str]]:
+async def discover_schemas() -> dict[str, object]:
     """
     Convenience function to run a single discovery poll.
 
@@ -437,7 +441,7 @@ async def discover_schemas() -> Dict[str, List[str]]:
     return await poller.poll_once()
 
 
-async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 60) -> Dict[str, List[str]]:
+async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 60) -> dict[str, object]:
     """
     Convenience function to run discovery with retry logic.
 

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
-import '@testing-library/jest-dom'
-import { expect, afterEach } from 'vitest'
-import { cleanup } from '@testing-library/react'
+import '@testing-library/jest-dom';
+import { expect, afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
 
 // Cleanup after each test
 afterEach(() => {
-  cleanup()
-})
+  cleanup();
+});
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -21,7 +21,7 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: () => {},
     dispatchEvent: () => true,
   }),
-})
+});
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
@@ -29,10 +29,10 @@ global.IntersectionObserver = class IntersectionObserver {
   disconnect() {}
   observe() {}
   takeRecords() {
-    return []
+    return [];
   }
   unobserve() {}
-} as any
+} as any;
 
 // Mock ResizeObserver used by Radix and charting components
 global.ResizeObserver = class ResizeObserver {
@@ -40,27 +40,27 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
   observe() {}
   unobserve() {}
-} as any
+} as any;
 
 // jsdom does not implement scroll APIs that some UI wrappers call.
 Object.defineProperty(window, 'scrollTo', {
   writable: true,
   value: () => {},
-})
+});
 
 // Radix Select expects pointer capture APIs that jsdom does not implement.
 if (!HTMLElement.prototype.hasPointerCapture) {
-  HTMLElement.prototype.hasPointerCapture = () => false
+  HTMLElement.prototype.hasPointerCapture = () => false;
 }
 
 if (!HTMLElement.prototype.setPointerCapture) {
-  HTMLElement.prototype.setPointerCapture = () => {}
+  HTMLElement.prototype.setPointerCapture = () => {};
 }
 
 if (!HTMLElement.prototype.releasePointerCapture) {
-  HTMLElement.prototype.releasePointerCapture = () => {}
+  HTMLElement.prototype.releasePointerCapture = () => {};
 }
 
 if (!HTMLElement.prototype.scrollIntoView) {
-  HTMLElement.prototype.scrollIntoView = () => {}
+  HTMLElement.prototype.scrollIntoView = () => {};
 }

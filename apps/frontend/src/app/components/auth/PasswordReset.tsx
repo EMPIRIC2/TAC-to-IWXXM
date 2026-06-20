@@ -14,7 +14,9 @@ interface PasswordResetProps {
 }
 
 export function PasswordReset({ onBackToLogin, resetToken }: PasswordResetProps) {
-  const [step, _setStep] = useState<'request' | 'reset'>(!resetToken ? 'request' : 'reset');
+  const [step, _setStep] = useState<'request' | 'reset'>(
+    !resetToken ? 'request' : 'reset',
+  );
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -37,7 +39,8 @@ export function PasswordReset({ onBackToLogin, resetToken }: PasswordResetProps)
       setEmail('');
     } catch (error) {
       console.error('Password reset error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to send password reset email';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to send password reset email';
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -78,7 +81,8 @@ export function PasswordReset({ onBackToLogin, resetToken }: PasswordResetProps)
       }, 2000);
     } catch (error) {
       console.error('Password update error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update password';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to update password';
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -91,7 +95,9 @@ export function PasswordReset({ onBackToLogin, resetToken }: PasswordResetProps)
         {/* Theme Toggle */}
         <div className="flex justify-end mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">Display Mode</span>
+            <span className="text-xs text-muted-foreground uppercase tracking-wider">
+              Display Mode
+            </span>
             <ThemeToggle />
           </div>
         </div>
@@ -113,11 +119,17 @@ export function PasswordReset({ onBackToLogin, resetToken }: PasswordResetProps)
           {step === 'request' && (
             <form onSubmit={handleResetRequest} className="space-y-4">
               <div>
-                <Label htmlFor="email" className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">
+                <Label
+                  htmlFor="email"
+                  className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block"
+                >
                   Email Address
                 </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" aria-hidden="true" />
+                  <Mail
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"
+                    aria-hidden="true"
+                  />
                   <Input
                     id="email"
                     type="email"
@@ -157,11 +169,17 @@ export function PasswordReset({ onBackToLogin, resetToken }: PasswordResetProps)
           {step === 'reset' && (
             <form onSubmit={handlePasswordUpdate} className="space-y-4">
               <div>
-                <Label htmlFor="newPassword" className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">
+                <Label
+                  htmlFor="newPassword"
+                  className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block"
+                >
                   New Password
                 </Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" aria-hidden="true" />
+                  <Lock
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"
+                    aria-hidden="true"
+                  />
                   <Input
                     id="newPassword"
                     type="password"
@@ -176,11 +194,17 @@ export function PasswordReset({ onBackToLogin, resetToken }: PasswordResetProps)
               </div>
 
               <div>
-                <Label htmlFor="confirmPassword" className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">
+                <Label
+                  htmlFor="confirmPassword"
+                  className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block"
+                >
                   Confirm Password
                 </Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" aria-hidden="true" />
+                  <Lock
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"
+                    aria-hidden="true"
+                  />
                   <Input
                     id="confirmPassword"
                     type="password"

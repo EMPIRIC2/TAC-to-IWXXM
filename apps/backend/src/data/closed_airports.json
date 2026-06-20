@@ -23,15 +23,12 @@
       "reason": "Replaced by Oslo Gardermoen Airport (ENGM/OSL) opened 1998",
       "replacement_icao": "ENGM",
       "coordinates": {
-        "latitude": 59.89580,
+        "latitude": 59.8958,
         "longitude": 10.6172
       },
       "elevation_m": 17,
       "notes": "Closed after 56 years of operation when Oslo's new international airport opened. Site now used for other purposes.",
-      "sources": [
-        "IWXXM reference file Amd79-80-2023",
-        "OurAirports historical data"
-      ]
+      "sources": ["IWXXM reference file Amd79-80-2023", "OurAirports historical data"]
     }
   },
   "suspended_airports": {

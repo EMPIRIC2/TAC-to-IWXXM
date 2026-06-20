@@ -1,6 +1,6 @@
-import React from 'react'
-import { describe, expect, it } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import React from 'react';
+import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './dialog'
+} from './dialog';
 
 describe('Dialog', () => {
   it('opens and closes content from trigger', () => {
@@ -25,20 +25,20 @@ describe('Dialog', () => {
           <DialogFooter>Footer text</DialogFooter>
         </DialogContent>
       </Dialog>,
-    )
+    );
 
-    expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument()
+    expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Open dialog' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Open dialog' }));
 
-    expect(screen.getByText('Dialog Title')).toBeInTheDocument()
-    expect(screen.getByText('Dialog Description')).toBeInTheDocument()
-    expect(screen.getByText('Footer text')).toBeInTheDocument()
+    expect(screen.getByText('Dialog Title')).toBeInTheDocument();
+    expect(screen.getByText('Dialog Description')).toBeInTheDocument();
+    expect(screen.getByText('Footer text')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
 
-    expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument()
-  })
+    expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument();
+  });
 
   it('renders overlay and content slot attributes when open', () => {
     render(
@@ -47,12 +47,12 @@ describe('Dialog', () => {
           <DialogTitle>Open by default</DialogTitle>
         </DialogContent>
       </Dialog>,
-    )
+    );
 
-    const overlay = document.querySelector('[data-slot="dialog-overlay"]')
-    const content = document.querySelector('[data-slot="dialog-content"]')
-    expect(overlay).toBeTruthy()
-    expect(content).toBeTruthy()
-    expect(screen.getByText('Open by default')).toBeInTheDocument()
-  })
-})
+    const overlay = document.querySelector('[data-slot="dialog-overlay"]');
+    const content = document.querySelector('[data-slot="dialog-content"]');
+    expect(overlay).toBeTruthy();
+    expect(content).toBeTruthy();
+    expect(screen.getByText('Open by default')).toBeInTheDocument();
+  });
+});

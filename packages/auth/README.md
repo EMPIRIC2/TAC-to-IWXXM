@@ -26,6 +26,7 @@ Backend (8001) ──┘     Middleware Proxy
 ```
 
 Benefits:
+
 - **Centralized auth logic** - All auth flows go through one service
 - **Security** - Supabase keys never exposed to clients
 - **Monitoring** - Single point to log auth events
@@ -52,25 +53,30 @@ auth/
 ## API Endpoints
 
 ### Authentication
+
 - `POST /auth/register` - Create new user account
 - `POST /auth/login` - Login and receive JWT token
 - `GET /auth/me` - Get current user profile (requires auth)
 
 ### API Keys
+
 - `POST /auth/apikeys` - Create new API key (requires auth)
 - `GET /auth/apikeys` - List all API keys (requires auth)
 - `DELETE /auth/apikeys/{id}` - Revoke API key (requires auth)
 
 ### Password Reset
+
 - `POST /auth/password-reset/request` - Request password reset token
 - `POST /auth/password-reset/confirm` - Confirm and reset password
 
 ### Health
+
 - `GET /health` - Service health check
 
 ## Database Models
 
 ### User
+
 - `id`: Primary key
 - `name`: Full name
 - `email`: Unique email address
@@ -81,6 +87,7 @@ auth/
 - `created_at`: Timestamp
 
 ### APIKey
+
 - `id`: Primary key
 - `key_hash`: SHA-256 hashed API key
 - `user_id`: Foreign key to User
@@ -88,6 +95,7 @@ auth/
 - `revoked`: Revocation status
 
 ### PasswordResetToken
+
 - `id`: Primary key
 - `token`: URL-safe reset token
 - `user_id`: Foreign key to User

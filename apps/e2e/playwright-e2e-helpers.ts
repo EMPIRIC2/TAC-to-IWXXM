@@ -18,7 +18,7 @@ export async function loginAsAdmin(page: Page): Promise<void> {
   if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
     throw new Error(
       'PLAYWRIGHT_ADMIN_EMAIL and PLAYWRIGHT_ADMIN_PASSWORD must be set to run login-dependent tests.\n' +
-        'Example: PLAYWRIGHT_ADMIN_EMAIL=admin@example.com PLAYWRIGHT_ADMIN_PASSWORD=secret npx playwright test'
+        'Example: PLAYWRIGHT_ADMIN_EMAIL=admin@example.com PLAYWRIGHT_ADMIN_PASSWORD=secret npx playwright test',
     );
   }
 
@@ -28,7 +28,9 @@ export async function loginAsAdmin(page: Page): Promise<void> {
   await page.getByRole('button', { name: /sign in to account/i }).click();
 
   const adminHeading = page.getByRole('heading', { name: /Admin Dashboard/i });
-  const converterHeading = page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i });
+  const converterHeading = page.getByRole('heading', {
+    name: /METAR.*IWXXM.*Converter/i,
+  });
 
   await Promise.race([
     adminHeading.waitFor({ state: 'visible', timeout: 10000 }),
@@ -54,7 +56,7 @@ export async function openConverterFromAdmin(page: Page): Promise<void> {
   }
 
   await expect(
-    page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i })
+    page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
   ).toBeVisible({ timeout: 10000 });
 }
 
@@ -75,7 +77,7 @@ export async function openConverterWithMockSession(page: Page): Promise<void> {
 
   await page.goto('/');
   await expect(
-    page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i })
+    page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
   ).toBeVisible({ timeout: 10000 });
 }
 

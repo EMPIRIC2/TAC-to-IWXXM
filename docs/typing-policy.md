@@ -30,24 +30,26 @@ uv run ruff format --check .
 
 Strict enforcement applies to new code under `apps/` and `packages/`. Legacy paths (`backend/`, `GIFTs/`, `auth/`) are included during migration and tightened as packages move (Phase 1–3).
 
+**packages/gifts exception:** upstream GIFTs is linted and formatted with Ruff but excluded from
+basedpyright enforcement (`packages/gifts/pyrightconfig.json`, `typeCheckingMode: off`) until
+upstream typing remediation is merged.
+
 ## TypeScript
 
 | Setting | Value |
 |---------|-------|
 | Runtime | Node **22** (pinned) |
 | Frontend | React 18 + Vite 6 + TypeScript 5 |
-| Linter | ESLint 9 + typescript-eslint |
-
-### Conventions
-
-- Enable strict mode in `tsconfig.json` for `apps/frontend` (Phase 1 scaffold).
-- Avoid `any`; use `unknown` and narrow at boundaries (API responses, form data).
-- Shared API types live in `packages/shared` post-migration.
+| Linter | ESLint 9 + typescript-eslint (frontend, e2e, shared) |
+| Formatter | Prettier 3 (all TypeScript workspaces) |
 
 ### Commands
 
 ```bash
-cd apps/frontend && pnpm exec eslint .
+pnpm run format:check   # from repo root
+pnpm run lint:js
+pnpm run typecheck:js
+cd apps/frontend && pnpm exec eslint src
 cd apps/frontend && pnpm exec tsc --noEmit
 ```
 

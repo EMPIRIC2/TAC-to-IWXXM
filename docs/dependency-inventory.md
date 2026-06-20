@@ -48,6 +48,8 @@
 | pnpm | pin in package.json engines | JS workspace (monorepo) |
 | basedpyright | strict | Python typechecking (ADR-005) |
 | ruff | all Python packages | Lint + format including packages/gifts (ADR-005) |
+| prettier | workspace TS | Format apps/* and packages/* TypeScript |
+| eslint | workspace TS | Lint apps/frontend, apps/e2e, packages/shared |
 | make | system | Orchestration |
 | docker / compose | system | Local multi-service |
 | Coverage | 95% all members | pytest + Vitest gates (ADR-007) |

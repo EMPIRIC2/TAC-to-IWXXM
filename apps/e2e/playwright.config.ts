@@ -25,7 +25,10 @@ function loadEnvFile(filePath: string): void {
       continue;
     }
 
-    let value = trimmed.slice(eqIndex + 1).trim().replace(/\r$/, '');
+    let value = trimmed
+      .slice(eqIndex + 1)
+      .trim()
+      .replace(/\r$/, '');
     if (
       (value.startsWith('"') && value.endsWith('"')) ||
       (value.startsWith("'") && value.endsWith("'"))
@@ -48,7 +51,6 @@ function loadPlaywrightEnv(): void {
 loadPlaywrightEnv();
 
 const DEFAULT_FRONTEND_URL = 'http://localhost:5173';
-const DEFAULT_API_BASE_URL = 'http://localhost:8001';
 
 /**
  * Playwright configuration for cross-app E2E tests (apps/e2e workspace).
@@ -65,11 +67,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
 
-  reporter: [
-    ['html'],
-    ['list'],
-    ['json', { outputFile: 'test-results/results.json' }],
-  ],
+  reporter: [['html'], ['list'], ['json', { outputFile: 'test-results/results.json' }]],
 
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL || DEFAULT_FRONTEND_URL,

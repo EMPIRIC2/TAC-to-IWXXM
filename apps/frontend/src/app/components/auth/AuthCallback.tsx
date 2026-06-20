@@ -20,7 +20,7 @@ export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackPr
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const accessToken = hashParams.get('access_token');
         const type = hashParams.get('type');
-        
+
         // Also check for refresh token and expires_at
         hashParams.get('refresh_token');
         hashParams.get('expires_at');
@@ -85,9 +85,7 @@ export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackPr
               <h2 className="text-lg font-semibold text-foreground mb-2 uppercase tracking-tight">
                 Processing
               </h2>
-              <p className="text-sm text-muted-foreground font-mono">
-                {message}
-              </p>
+              <p className="text-sm text-muted-foreground font-mono">{message}</p>
             </>
           )}
 
@@ -97,9 +95,7 @@ export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackPr
               <h2 className="text-lg font-semibold text-foreground mb-2 uppercase tracking-tight">
                 Success
               </h2>
-              <p className="text-sm text-muted-foreground font-mono">
-                {message}
-              </p>
+              <p className="text-sm text-muted-foreground font-mono">{message}</p>
             </>
           )}
 
@@ -109,9 +105,7 @@ export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackPr
               <h2 className="text-lg font-semibold text-foreground mb-2 uppercase tracking-tight">
                 Error
               </h2>
-              <p className="text-sm text-muted-foreground mb-4 font-mono">
-                {message}
-              </p>
+              <p className="text-sm text-muted-foreground mb-4 font-mono">{message}</p>
               <button
                 onClick={() => {
                   window.location.hash = '';

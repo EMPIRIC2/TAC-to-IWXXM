@@ -19,6 +19,67 @@ env:
 
 jobs:
   # ============================================================================
+  # QUALITY GATES — format, lint, typecheck (all TS + Python source)
+  # ============================================================================
+  quality-gates:
+    runs-on: ubuntu-latest
+    name: Quality Gates
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Check Python formatting
+        run: uv run ruff format --check apps packages tests
+
+      - name: Run Python linting
+        run: |
+          uv run ruff check apps/backend/src apps/backend/tests \
+            packages/auth/src packages/auth/tests \
+            packages/gifts/gifts packages/gifts/tests \
+            packages/shared packages/shared/tests \
+            tests
+
+      - name: Run Python typechecking
+        run: |
+          uv run basedpyright packages/shared/src
+          cd packages/auth && uv run basedpyright
+          cd ../../apps/backend && uv run basedpyright
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check TypeScript formatting
+        run: pnpm run format:check
+
+      - name: Run TypeScript linting
+        run: pnpm run lint:js
+
+      - name: Run TypeScript typechecking
+        run: pnpm run typecheck:js
+
+  # ============================================================================
   # CONFIG GUARD — fail fast if placeholder Supabase credentials are committed
   # ============================================================================
   config-guard:
@@ -41,11 +102,57 @@ jobs:
         run: pytest tests/test_config_placeholders.py -v
 
   # ============================================================================
+  # SHARED PACKAGE - Python + TypeScript Tests & Coverage
+  # ============================================================================
+  shared-tests:
+    runs-on: ubuntu-latest
+    name: Shared Package - Tests & Coverage
+    needs: [quality-gates]
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run Python unit tests with coverage
+        run: |
+          uv run pytest packages/shared/tests --cov=metar_shared \
+            --cov-config=packages/shared/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=95 -v
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run TypeScript unit tests with coverage
+        run: pnpm --filter @metar/shared run test:coverage
+
+  # ============================================================================
   # BACKEND - Python Tests & Coverage (apps/backend)
   # ============================================================================
   backend-tests:
     runs-on: ubuntu-latest
     name: Backend - Tests & Coverage
+    needs: [quality-gates]
 
     steps:
       - uses: actions/checkout@v5
@@ -62,9 +169,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip uv
           uv sync
-
-      - name: Run linting
-        run: uv run ruff check apps/backend/src apps/backend/tests
 
       - name: Run unit tests with coverage
         run: |
@@ -99,6 +203,7 @@ jobs:
   auth-tests:
     runs-on: ubuntu-latest
     name: Auth Package - Tests & Coverage
+    needs: [quality-gates]
 
     steps:
       - uses: actions/checkout@v5
@@ -115,9 +220,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip uv
           uv sync
-
-      - name: Run linting
-        run: uv run ruff check packages/auth/src packages/auth/tests
 
       - name: Run unit tests with coverage
         run: |
@@ -152,6 +254,7 @@ jobs:
   gifts-tests:
     runs-on: ubuntu-latest
     name: GIFTs - Tests & Coverage
+    needs: [quality-gates]
 
     steps:
       - uses: actions/checkout@v5
@@ -174,9 +277,6 @@ jobs:
           cd packages/gifts/gifts/database && python3 create_pickle_db.py
           cp aerodromes.db ../../demo/aerodromes.db
           cp aerodromes.db ../../demo/aerodromes.win.db
-
-      - name: Run linting
-        run: uv run ruff check packages/gifts/gifts packages/gifts/tests
 
       - name: Run unit tests with coverage
         run: |
@@ -212,6 +312,7 @@ jobs:
   frontend-tests:
     runs-on: ubuntu-latest
     name: Frontend - Tests & Coverage
+    needs: [quality-gates]
 
     steps:
       - uses: actions/checkout@v5
@@ -234,9 +335,6 @@ jobs:
         working-directory: ./apps/frontend
         run: |
           printf 'VITE_API_BASE_URL=http://localhost:18001\nVITE_APP_URL=http://localhost:18000\n' > .env
-
-      - name: Run linting
-        run: pnpm --filter @metar/frontend run lint
 
       - name: Run tests with coverage
         run: pnpm --filter @metar/frontend run test:coverage
@@ -272,8 +370,7 @@ jobs:
   integration-matrix:
     runs-on: ubuntu-latest
     name: Integration Matrix
-    needs: [backend-tests, auth-tests, gifts-tests, frontend-tests]
-    continue-on-error: true  # non-blocking: services aren't built yet during test phase
+    needs: [backend-tests, auth-tests, gifts-tests, frontend-tests, shared-tests]
 
     steps:
       - uses: actions/checkout@v5
@@ -325,7 +422,7 @@ jobs:
   coverage-enforcement:
     runs-on: ubuntu-latest
     name: Test Result Aggregation
-    needs: [config-guard, backend-tests, auth-tests, gifts-tests, frontend-tests]
+    needs: [quality-gates, config-guard, backend-tests, auth-tests, gifts-tests, frontend-tests, shared-tests, integration-matrix]
     if: always()
 
     steps:
@@ -336,11 +433,14 @@ jobs:
             echo ""
             echo "| Project | Status |"
             echo "|---------|--------|"
+            echo "| Quality Gates | ${{ needs.quality-gates.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| Config Guard | ${{ needs.config-guard.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| Backend | ${{ needs.backend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| Auth Package | ${{ needs.auth-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| GIFTs | ${{ needs.gifts-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| Frontend | ${{ needs.frontend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
+            echo "| Shared Package | ${{ needs.shared-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
+            echo "| Integration Matrix | ${{ needs.integration-matrix.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo ""
             echo "**Coverage gate**: Codecov enforces **per-service** coverage at **95%** (backend, auth, frontend, GIFTs)."
             echo "Note: Coverage gate enforced via Codecov per-service reports."
@@ -348,19 +448,25 @@ jobs:
 
       - name: Enforce required test jobs
         run: |
+          QUALITY=${{ needs.quality-gates.result }}
           CONFIG=${{ needs.config-guard.result }}
           BACKEND=${{ needs.backend-tests.result }}
           AUTH=${{ needs.auth-tests.result }}
           FRONTEND=${{ needs.frontend-tests.result }}
           GIFTS=${{ needs.gifts-tests.result }}
+          SHARED=${{ needs.shared-tests.result }}
+          INTEGRATION=${{ needs.integration-matrix.result }}
 
-          if [ "$CONFIG" != "success" ] || [ "$BACKEND" != "success" ] || [ "$AUTH" != "success" ] || [ "$FRONTEND" != "success" ] || [ "$GIFTS" != "success" ]; then
+          if [ "$QUALITY" != "success" ] || [ "$CONFIG" != "success" ] || [ "$BACKEND" != "success" ] || [ "$AUTH" != "success" ] || [ "$FRONTEND" != "success" ] || [ "$GIFTS" != "success" ] || [ "$SHARED" != "success" ] || [ "$INTEGRATION" != "success" ]; then
             echo "❌ Required test jobs failed"
+            [ "$QUALITY" != "success" ] && echo "  - Quality Gates: $QUALITY"
             [ "$CONFIG" != "success" ] && echo "  - Config Guard: $CONFIG"
             [ "$BACKEND" != "success" ] && echo "  - Backend: $BACKEND"
             [ "$AUTH" != "success" ] && echo "  - Auth Package: $AUTH"
             [ "$FRONTEND" != "success" ] && echo "  - Frontend: $FRONTEND"
             [ "$GIFTS" != "success" ] && echo "  - GIFTs: $GIFTS"
+            [ "$SHARED" != "success" ] && echo "  - Shared Package: $SHARED"
+            [ "$INTEGRATION" != "success" ] && echo "  - Integration Matrix: $INTEGRATION"
             exit 1
           fi
 
@@ -558,7 +664,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Test & Coverage Summary
     if: always()
-    needs: [backend-tests, auth-tests, gifts-tests, frontend-tests, integration-matrix, coverage-enforcement, build-and-push, deploy-render]
+    needs: [backend-tests, auth-tests, gifts-tests, frontend-tests, shared-tests, integration-matrix, coverage-enforcement, build-and-push, deploy-render]
 
     steps:
       - name: Generate final summary
@@ -574,6 +680,7 @@ jobs:
             echo "| 🔐 Auth Package | ${{ needs.auth-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
             echo "| 🎁 GIFTs | ${{ needs.gifts-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
             echo "| 🎨 Frontend | ${{ needs.frontend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
+            echo "| 📦 Shared Package | ${{ needs.shared-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
             echo "| 🔗 Integration Matrix | ${{ needs.integration-matrix.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Service interoperability |"
             echo ""
             echo "## Overall Status"

@@ -5,7 +5,9 @@ import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
-const mockConvertMetarToIwxxm = vi.hoisted(() => vi.fn().mockResolvedValue({ results: [] }));
+const mockConvertMetarToIwxxm = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ results: [] }),
+);
 const mockToast = vi.hoisted(() => ({
   success: vi.fn(),
   error: vi.fn(),
@@ -63,7 +65,7 @@ describe('UI Workflow: Preferences Persistence', () => {
         includeNilReasons: false,
         onError: 'fail',
         logLevel: 'ERROR',
-      })
+      }),
     );
 
     const user = userEvent.setup();
@@ -71,10 +73,16 @@ describe('UI Workflow: Preferences Persistence', () => {
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
-    const iwxxmVersion = container.querySelector('#param-iwxxm-version') as HTMLSelectElement;
+    const iwxxmVersion = container.querySelector(
+      '#param-iwxxm-version',
+    ) as HTMLSelectElement;
     const onError = container.querySelector('#param-on-error') as HTMLSelectElement;
-    const bulletinId = container.querySelector('#param-bulletin-id') as HTMLInputElement;
-    const issuingCenter = container.querySelector('#param-issuing-center') as HTMLInputElement;
+    const bulletinId = container.querySelector(
+      '#param-bulletin-id',
+    ) as HTMLInputElement;
+    const issuingCenter = container.querySelector(
+      '#param-issuing-center',
+    ) as HTMLInputElement;
 
     expect(iwxxmVersion.value).toBe('2023-1');
     expect(onError.value).toBe('fail');
@@ -88,7 +96,9 @@ describe('UI Workflow: Preferences Persistence', () => {
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
-    const iwxxmVersion = container.querySelector('#param-iwxxm-version') as HTMLSelectElement;
+    const iwxxmVersion = container.querySelector(
+      '#param-iwxxm-version',
+    ) as HTMLSelectElement;
     expect(iwxxmVersion.value).toBe('2025-2');
 
     localStorage.setItem(
@@ -101,7 +111,7 @@ describe('UI Workflow: Preferences Persistence', () => {
         includeNilReasons: true,
         onError: 'skip',
         logLevel: 'DEBUG',
-      })
+      }),
     );
 
     await user.click(screen.getByRole('button', { name: /open user preferences/i }));
@@ -109,7 +119,9 @@ describe('UI Workflow: Preferences Persistence', () => {
 
     await waitFor(() => {
       expect(iwxxmVersion.value).toBe('2023-1');
-      expect(mockToast.info).toHaveBeenCalledWith('Conversion parameters updated from preferences');
+      expect(mockToast.info).toHaveBeenCalledWith(
+        'Conversion parameters updated from preferences',
+      );
     });
   });
 
@@ -129,13 +141,15 @@ describe('UI Workflow: Preferences Persistence', () => {
         includeNilReasons: true,
         onError: 'warn',
         logLevel: 'INFO',
-      })
+      }),
     );
 
     await user.click(screen.getByRole('button', { name: /open user preferences/i }));
     await user.click(screen.getByRole('button', { name: /save preferences/i }));
 
-    const iwxxmVersion = container.querySelector('#param-iwxxm-version') as HTMLSelectElement;
+    const iwxxmVersion = container.querySelector(
+      '#param-iwxxm-version',
+    ) as HTMLSelectElement;
     await waitFor(() => {
       expect(iwxxmVersion.value).toBe('2025-2');
     });

@@ -6,28 +6,42 @@ test.describe('Admin Navigation', () => {
     await loginAsAdmin(page);
 
     await expect(page.getByRole('heading', { name: /Admin Dashboard/i })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'User Approvals', exact: true })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'System Settings', exact: true })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'System Monitoring', exact: true })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'User Approvals', exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'System Settings', exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'System Monitoring', exact: true }),
+    ).toBeVisible();
   });
 
   test('admin panels can be switched', async ({ page }) => {
     await loginAsAdmin(page);
 
     await page.getByText('System Settings').first().click();
-    await expect(page.getByRole('heading', { name: 'System Settings', exact: true }).nth(1)).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'System Settings', exact: true }).nth(1),
+    ).toBeVisible();
 
     await page.getByText('System Monitoring').first().click();
-    await expect(page.getByRole('heading', { name: 'System Monitoring', exact: true }).nth(1)).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'System Monitoring', exact: true }).nth(1),
+    ).toBeVisible();
   });
 
-  test('admin can switch to converter and back from the view selector', async ({ page }) => {
+  test('admin can switch to converter and back from the view selector', async ({
+    page,
+  }) => {
     await loginAsAdmin(page);
     await openConverterFromAdmin(page);
 
     const viewSelect = page.getByLabel(/Switch view/i);
     await expect(viewSelect).toBeVisible();
-    await expect(page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
+    ).toBeVisible();
 
     await viewSelect.selectOption('admin');
     await expect(page.getByRole('heading', { name: /Admin Dashboard/i })).toBeVisible();

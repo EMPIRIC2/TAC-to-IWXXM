@@ -1,24 +1,24 @@
-import { Hono } from "npm:hono";
-import { cors } from "npm:hono/cors";
-import { logger } from "npm:hono/logger";
-import { jwtVerify, createRemoteJWKSet } from "npm:jose@5.2.0";
-import * as kv from "./kv_store.tsx";
-import * as auth from "./auth.tsx";
-import * as database from "./database.tsx";
-import * as admin from "./admin.tsx";
-import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
+import { Hono } from 'npm:hono';
+import { cors } from 'npm:hono/cors';
+import { logger } from 'npm:hono/logger';
+import { jwtVerify, createRemoteJWKSet } from 'npm:jose@5.2.0';
+import * as kv from './kv_store.tsx';
+import * as auth from './auth.tsx';
+import * as database from './database.tsx';
+import * as admin from './admin.tsx';
+import { createClient } from 'jsr:@supabase/supabase-js@2.49.8';
 
 const app = new Hono();
 
 // JWKS verification for ES256 signed JWTs (asymmetric)
 const JWKS = createRemoteJWKSet(
-  new URL("https://ktvxijislbtgqapllmuk.supabase.co/auth/v1/.well-known/jwks.json"),
+  new URL('https://ktvxijislbtgqapllmuk.supabase.co/auth/v1/.well-known/jwks.json'),
 );
 
 // SERVICE_ROLE client for admin operations (bypasses RLS, full database access)
 const supabase = createClient(
-  Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
 );
 
 // Enable logger
@@ -26,23 +26,23 @@ app.use('*', logger(console.log));
 
 // Enable CORS for all routes and methods
 app.use(
-  "/*",
+  '/*',
   cors({
-    origin: "*",
-    allowHeaders: ["Content-Type", "Authorization"],
-    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    exposeHeaders: ["Content-Length"],
+    origin: '*',
+    allowHeaders: ['Content-Type', 'Authorization'],
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    exposeHeaders: ['Content-Length'],
     maxAge: 600,
   }),
 );
 
 // Health check endpoint
-app.get("/make-server-2e3cda33/health", (c) => {
-  return c.json({ status: "ok" });
+app.get('/make-server-2e3cda33/health', (c) => {
+  return c.json({ status: 'ok' });
 });
 
 // Register new user
-app.post("/make-server-2e3cda33/auth/register", async (c) => {
+app.post('/make-server-2e3cda33/auth/register', async (c) => {
   try {
     const { email, password, username } = await c.req.json();
 
@@ -56,11 +56,15 @@ app.post("/make-server-2e3cda33/auth/register", async (c) => {
       return c.json({ error: result.error }, 400);
     }
 
-    return c.json({ 
-      message: 'Registration successful. Please verify your email and wait for admin approval.',
-      user: result.data?.user,
-      profile: result.data?.profile
-    }, 201);
+    return c.json(
+      {
+        message:
+          'Registration successful. Please verify your email and wait for admin approval.',
+        user: result.data?.user,
+        profile: result.data?.profile,
+      },
+      201,
+    );
   } catch (error) {
     console.error('Registration endpoint error:', error);
     return c.json({ error: 'Internal server error during registration' }, 500);
@@ -68,7 +72,7 @@ app.post("/make-server-2e3cda33/auth/register", async (c) => {
 });
 
 // Check user approval status
-app.get("/make-server-2e3cda33/auth/check-approval/:userId", async (c) => {
+app.get('/make-server-2e3cda33/auth/check-approval/:userId', async (c) => {
   try {
     const userId = c.req.param('userId');
     const result = await auth.checkUserApproval(userId);
@@ -81,16 +85,19 @@ app.get("/make-server-2e3cda33/auth/check-approval/:userId", async (c) => {
 });
 
 // Approve user (admin only)
-app.post("/make-server-2e3cda33/auth/approve", async (c) => {
+app.post('/make-server-2e3cda33/auth/approve', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
-    
+
     if (!accessToken) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
-    
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(accessToken);
+
     if (error || !user) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
@@ -115,16 +122,19 @@ app.post("/make-server-2e3cda33/auth/approve", async (c) => {
 });
 
 // Get pending users (admin only)
-app.get("/make-server-2e3cda33/auth/pending-users", async (c) => {
+app.get('/make-server-2e3cda33/auth/pending-users', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
-    
+
     if (!accessToken) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
-    
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(accessToken);
+
     if (error || !user) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
@@ -143,7 +153,7 @@ app.get("/make-server-2e3cda33/auth/pending-users", async (c) => {
 });
 
 // Resend verification email
-app.post("/make-server-2e3cda33/auth/resend-verification", async (c) => {
+app.post('/make-server-2e3cda33/auth/resend-verification', async (c) => {
   try {
     const { email } = await c.req.json();
 
@@ -165,16 +175,19 @@ app.post("/make-server-2e3cda33/auth/resend-verification", async (c) => {
 });
 
 // Get user profile (authenticated users)
-app.get("/make-server-2e3cda33/auth/profile", async (c) => {
+app.get('/make-server-2e3cda33/auth/profile', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
-    
+
     if (!accessToken) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
-    
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(accessToken);
+
     if (error || !user) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
@@ -193,16 +206,19 @@ app.get("/make-server-2e3cda33/auth/profile", async (c) => {
 });
 
 // Update user profile (authenticated users)
-app.put("/make-server-2e3cda33/auth/profile", async (c) => {
+app.put('/make-server-2e3cda33/auth/profile', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
-    
+
     if (!accessToken) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
-    
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(accessToken);
+
     if (error || !user) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
@@ -223,16 +239,19 @@ app.put("/make-server-2e3cda33/auth/profile", async (c) => {
 });
 
 // Upload converted files to database
-app.post("/make-server-2e3cda33/database/upload", async (c) => {
+app.post('/make-server-2e3cda33/database/upload', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
-    
+
     if (!accessToken) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
-    
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(accessToken);
+
     if (error || !user) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
@@ -244,11 +263,14 @@ app.post("/make-server-2e3cda33/database/upload", async (c) => {
     }
 
     if (!options || !options.format || !options.destination) {
-      return c.json({ error: 'Upload options (format, destination) are required' }, 400);
+      return c.json(
+        { error: 'Upload options (format, destination) are required' },
+        400,
+      );
     }
 
     // Add user info to each file
-    const filesWithUser = files.map(file => ({
+    const filesWithUser = files.map((file) => ({
       ...file,
       userId: user.id,
       userEmail: user.email || '',
@@ -268,21 +290,25 @@ app.post("/make-server-2e3cda33/database/upload", async (c) => {
 });
 
 // Get user's uploaded files
-app.get("/make-server-2e3cda33/database/uploads", async (c) => {
+app.get('/make-server-2e3cda33/database/uploads', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
-    
+
     if (!accessToken) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
-    
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(accessToken);
+
     if (error || !user) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const dbType = c.req.query('database') as 'primary' | 'archive' | 'both' || 'both';
+    const dbType =
+      (c.req.query('database') as 'primary' | 'archive' | 'both') || 'both';
 
     const result = await database.getUserUploads(user.id, dbType);
 
@@ -298,16 +324,19 @@ app.get("/make-server-2e3cda33/database/uploads", async (c) => {
 });
 
 // Delete an upload
-app.delete("/make-server-2e3cda33/database/upload/:recordId", async (c) => {
+app.delete('/make-server-2e3cda33/database/upload/:recordId', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
-    
+
     if (!accessToken) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
-    
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(accessToken);
+
     if (error || !user) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
@@ -328,16 +357,19 @@ app.delete("/make-server-2e3cda33/database/upload/:recordId", async (c) => {
 });
 
 // METAR to IWXXM Conversion endpoint
-app.post("/make-server-2e3cda33/convert/metar-to-iwxxm", async (c) => {
+app.post('/make-server-2e3cda33/convert/metar-to-iwxxm', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
-    
+
     if (!accessToken) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
-    
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(accessToken);
+
     if (error || !user) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
@@ -356,11 +388,14 @@ app.post("/make-server-2e3cda33/convert/metar-to-iwxxm", async (c) => {
       strictValidation = true,
       includeNilReasons = true,
       onError = 'warn',
-      logLevel = 'INFO'
+      logLevel = 'INFO',
     } = params || {};
 
     // Perform METAR to IWXXM conversion
-    const lines = metarContent.trim().split('\n').filter(line => line.trim());
+    const lines = metarContent
+      .trim()
+      .split('\n')
+      .filter((line) => line.trim());
     let iwxxmXml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
     iwxxmXml += `<IWXXM xmlns="http://icao.int/iwxxm/${iwxxmVersion}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n`;
     iwxxmXml += `  <BulletinHeader>\n`;
@@ -370,18 +405,18 @@ app.post("/make-server-2e3cda33/convert/metar-to-iwxxm", async (c) => {
     iwxxmXml += `    <strictValidation>${strictValidation}</strictValidation>\n`;
     iwxxmXml += `    <includeNilReasons>${includeNilReasons}</includeNilReasons>\n`;
     iwxxmXml += `  </BulletinHeader>\n`;
-    
+
     const warnings: string[] = [];
-    
+
     lines.forEach((line, index) => {
       try {
         const parts = line.trim().split(/\s+/);
-        
+
         // Basic METAR parsing
         const reportType = parts[0]; // METAR or SPECI
         const station = parts[1] || 'UNKN';
         const timestamp = parts[2] || '';
-        
+
         iwxxmXml += `  <MeteorologicalAerodromeObservation gml:id="obs-${index + 1}">\n`;
         iwxxmXml += `    <reportType>${reportType}</reportType>\n`;
         iwxxmXml += `    <aerodrome>\n`;
@@ -391,7 +426,7 @@ app.post("/make-server-2e3cda33/convert/metar-to-iwxxm", async (c) => {
         iwxxmXml += `    </aerodrome>\n`;
         iwxxmXml += `    <observationTime>${timestamp}</observationTime>\n`;
         iwxxmXml += `    <rawMETAR><![CDATA[${line}]]></rawMETAR>\n`;
-        
+
         // Add parsed elements (simplified - real implementation would parse wind, visibility, etc.)
         if (parts.length > 3) {
           iwxxmXml += `    <surfaceWind>\n`;
@@ -401,12 +436,12 @@ app.post("/make-server-2e3cda33/convert/metar-to-iwxxm", async (c) => {
           iwxxmXml += `      </AerodromeSurfaceWind>\n`;
           iwxxmXml += `    </surfaceWind>\n`;
         }
-        
+
         iwxxmXml += `  </MeteorologicalAerodromeObservation>\n`;
       } catch (err) {
         const warning = `Line ${index + 1}: Error parsing - ${err.message}`;
         warnings.push(warning);
-        
+
         if (onError === 'fail') {
           throw new Error(warning);
         } else if (onError === 'warn') {
@@ -415,12 +450,14 @@ app.post("/make-server-2e3cda33/convert/metar-to-iwxxm", async (c) => {
         // 'skip' - just continue without adding to output
       }
     });
-    
+
     iwxxmXml += `</IWXXM>`;
 
     // Log conversion details based on logLevel
     if (['DEBUG', 'INFO'].includes(logLevel)) {
-      console.log(`[${logLevel}] Converted ${lines.length} METAR line(s) to IWXXM ${iwxxmVersion}`);
+      console.log(
+        `[${logLevel}] Converted ${lines.length} METAR line(s) to IWXXM ${iwxxmVersion}`,
+      );
       console.log(`[${logLevel}] Bulletin: ${bulletinId}, Center: ${issuingCenter}`);
     }
 
@@ -434,19 +471,22 @@ app.post("/make-server-2e3cda33/convert/metar-to-iwxxm", async (c) => {
         strictValidation,
         includeNilReasons,
         onError,
-        logLevel
+        logLevel,
       },
       stats: {
         linesProcessed: lines.length,
-        warnings: warnings.length > 0 ? warnings : undefined
-      }
+        warnings: warnings.length > 0 ? warnings : undefined,
+      },
     });
   } catch (error) {
     console.error('METAR conversion endpoint error:', error);
-    return c.json({ 
-      error: 'Internal server error during METAR conversion',
-      details: error instanceof Error ? error.message : String(error)
-    }, 500);
+    return c.json(
+      {
+        error: 'Internal server error during METAR conversion',
+        details: error instanceof Error ? error.message : String(error),
+      },
+      500,
+    );
   }
 });
 
@@ -461,13 +501,13 @@ async function verifyProjectJWT(jwt: string) {
     const email = verified.payload.email as string;
     const aal = verified.payload.aal as string;
     const exp = verified.payload.exp as number;
-    
+
     console.log(`✅ JWT verified successfully:`);
     console.log(`   User ID: ${userId}`);
     console.log(`   Email: ${email}`);
     console.log(`   AAL: ${aal}`);
     console.log(`   Expires: ${new Date(exp * 1000).toISOString()}`);
-    
+
     return verified;
   } catch (error) {
     console.error(`❌ JWT verification failed:`, error.message);
@@ -482,21 +522,23 @@ async function checkAdminAccess(accessToken: string | undefined) {
     return { error: 'Unauthorized', status: 401 };
   }
 
-  console.log(`🔐 checkAdminAccess: Starting verification with token prefix: ${accessToken?.substring(0, 30)}...`);
+  console.log(
+    `🔐 checkAdminAccess: Starting verification with token prefix: ${accessToken?.substring(0, 30)}...`,
+  );
 
   try {
     // Verify JWT using JWKS (asymmetric ES256 verification)
     const verified = await verifyProjectJWT(accessToken);
     const userId = verified.payload.sub as string;
     const email = verified.payload.email as string;
-    
+
     console.log(`✅ checkAdminAccess: JWT verified for user ${email} (${userId})`);
 
     // Query database for admin status
     const isAdmin = await auth.isUserAdmin(userId);
-    
+
     console.log(`📋 checkAdminAccess: is_admin=${isAdmin} for user ${email}`);
-    
+
     if (!isAdmin) {
       console.error(`❌ checkAdminAccess: User ${email} is not admin`);
       return { error: 'Admin access required', status: 403 };
@@ -511,11 +553,11 @@ async function checkAdminAccess(accessToken: string | undefined) {
 }
 
 // Get pending users for approval (admin only)
-app.get("/make-server-2e3cda33/admin/pending-users", async (c) => {
+app.get('/make-server-2e3cda33/admin/pending-users', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
     const adminCheck = await checkAdminAccess(accessToken);
-    
+
     if (adminCheck.error) {
       return c.json({ error: adminCheck.error }, adminCheck.status);
     }
@@ -534,11 +576,11 @@ app.get("/make-server-2e3cda33/admin/pending-users", async (c) => {
 });
 
 // Approve user (admin only)
-app.post("/make-server-2e3cda33/admin/approve-user", async (c) => {
+app.post('/make-server-2e3cda33/admin/approve-user', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
     const adminCheck = await checkAdminAccess(accessToken);
-    
+
     if (adminCheck.error) {
       return c.json({ error: adminCheck.error }, adminCheck.status);
     }
@@ -560,7 +602,7 @@ app.post("/make-server-2e3cda33/admin/approve-user", async (c) => {
       await admin.sendEmailNotification(
         result.data.email,
         'Your Account Has Been Approved',
-        `Dear ${result.data.username},\n\nYour account has been approved! You can now log in to the METAR Converter application.\n\nBest regards,\nThe Admin Team`
+        `Dear ${result.data.username},\n\nYour account has been approved! You can now log in to the METAR Converter application.\n\nBest regards,\nThe Admin Team`,
       );
     }
 
@@ -572,11 +614,11 @@ app.post("/make-server-2e3cda33/admin/approve-user", async (c) => {
 });
 
 // Reject user (admin only)
-app.post("/make-server-2e3cda33/admin/reject-user", async (c) => {
+app.post('/make-server-2e3cda33/admin/reject-user', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
     const adminCheck = await checkAdminAccess(accessToken);
-    
+
     if (adminCheck.error) {
       return c.json({ error: adminCheck.error }, adminCheck.status);
     }
@@ -598,7 +640,7 @@ app.post("/make-server-2e3cda33/admin/reject-user", async (c) => {
       await admin.sendEmailNotification(
         result.data.email,
         'Account Registration Update',
-        `Dear ${result.data.username},\n\nWe regret to inform you that your account registration has not been approved at this time.\n\nIf you have questions, please contact our support team.\n\nBest regards,\nThe Admin Team`
+        `Dear ${result.data.username},\n\nWe regret to inform you that your account registration has not been approved at this time.\n\nIf you have questions, please contact our support team.\n\nBest regards,\nThe Admin Team`,
       );
     }
 
@@ -610,11 +652,11 @@ app.post("/make-server-2e3cda33/admin/reject-user", async (c) => {
 });
 
 // Get all users (admin only)
-app.get("/make-server-2e3cda33/admin/all-users", async (c) => {
+app.get('/make-server-2e3cda33/admin/all-users', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
     const adminCheck = await checkAdminAccess(accessToken);
-    
+
     if (adminCheck.error) {
       return c.json({ error: adminCheck.error }, adminCheck.status);
     }
@@ -633,22 +675,26 @@ app.get("/make-server-2e3cda33/admin/all-users", async (c) => {
 });
 
 // Get system statistics (admin only)
-app.get("/make-server-2e3cda33/admin/stats", async (c) => {
+app.get('/make-server-2e3cda33/admin/stats', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
-    console.log(`🔐 /admin/stats: Request received with token: ${accessToken ? 'yes' : 'no'}`);
+    console.log(
+      `🔐 /admin/stats: Request received with token: ${accessToken ? 'yes' : 'no'}`,
+    );
     console.log(`   Token prefix: ${accessToken?.substring(0, 30)}...`);
     console.log('📊 /admin/stats: Checking admin access...');
     const adminCheck = await checkAdminAccess(accessToken);
-    
+
     if (adminCheck.error) {
-      console.error(`❌ /admin/stats: Admin check failed: ${adminCheck.error} (status: ${adminCheck.status})`);
+      console.error(
+        `❌ /admin/stats: Admin check failed: ${adminCheck.error} (status: ${adminCheck.status})`,
+      );
       return c.json({ error: adminCheck.error }, adminCheck.status);
     }
 
     console.log('✅ /admin/stats: Admin check passed, fetching stats...');
     const allUsers = await auth.getAllUsers();
-    
+
     if (allUsers.error || !allUsers.data) {
       console.error('❌ /admin/stats: Failed to get all users:', allUsers.error);
       return c.json({ error: 'Failed to retrieve statistics' }, 500);
@@ -657,10 +703,10 @@ app.get("/make-server-2e3cda33/admin/stats", async (c) => {
     const users = allUsers.data;
     const stats = {
       totalUsers: users.length,
-      pendingUsers: users.filter(u => u.approval_status === 'pending').length,
-      approvedUsers: users.filter(u => u.approval_status === 'approved').length,
-      rejectedUsers: users.filter(u => u.approval_status === 'rejected').length,
-      adminUsers: users.filter(u => u.is_admin).length,
+      pendingUsers: users.filter((u) => u.approval_status === 'pending').length,
+      approvedUsers: users.filter((u) => u.approval_status === 'approved').length,
+      rejectedUsers: users.filter((u) => u.approval_status === 'rejected').length,
+      adminUsers: users.filter((u) => u.is_admin).length,
       totalConversions: 0, // Could track this if needed
       totalStorageUsed: '0 MB', // Could calculate if needed
     };
@@ -673,11 +719,11 @@ app.get("/make-server-2e3cda33/admin/stats", async (c) => {
 });
 
 // Toggle admin status (admin only)
-app.post("/make-server-2e3cda33/admin/toggle-admin", async (c) => {
+app.post('/make-server-2e3cda33/admin/toggle-admin', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
     const adminCheck = await checkAdminAccess(accessToken);
-    
+
     if (adminCheck.error) {
       return c.json({ error: adminCheck.error }, adminCheck.status);
     }
@@ -694,7 +740,10 @@ app.post("/make-server-2e3cda33/admin/toggle-admin", async (c) => {
       return c.json({ error: result.error }, 400);
     }
 
-    return c.json({ message: `Admin status ${isAdmin ? 'granted' : 'revoked'}`, profile: result.data });
+    return c.json({
+      message: `Admin status ${isAdmin ? 'granted' : 'revoked'}`,
+      profile: result.data,
+    });
   } catch (error) {
     console.error('Admin toggle admin status endpoint error:', error);
     return c.json({ error: 'Internal server error toggling admin status' }, 500);
@@ -702,11 +751,11 @@ app.post("/make-server-2e3cda33/admin/toggle-admin", async (c) => {
 });
 
 // Get system settings (admin only)
-app.get("/make-server-2e3cda33/admin/settings", async (c) => {
+app.get('/make-server-2e3cda33/admin/settings', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
     const adminCheck = await checkAdminAccess(accessToken);
-    
+
     if (adminCheck.error) {
       return c.json({ error: adminCheck.error }, adminCheck.status);
     }
@@ -721,11 +770,11 @@ app.get("/make-server-2e3cda33/admin/settings", async (c) => {
 });
 
 // Save system settings (admin only)
-app.post("/make-server-2e3cda33/admin/settings", async (c) => {
+app.post('/make-server-2e3cda33/admin/settings', async (c) => {
   try {
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
     const adminCheck = await checkAdminAccess(accessToken);
-    
+
     if (adminCheck.error) {
       return c.json({ error: adminCheck.error }, adminCheck.status);
     }

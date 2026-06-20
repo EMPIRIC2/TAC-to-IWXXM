@@ -15,13 +15,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
-from lxml import etree
+import lxml.etree as etree
 
 try:
     import requests
 
     REQUESTS_AVAILABLE = True
 except ImportError:
+    requests = None  # type: ignore[assignment,misc]
     REQUESTS_AVAILABLE = False
     logger = logging.getLogger(__name__)
     logger.warning("requests library not available, online validation disabled")
@@ -374,6 +375,14 @@ class CodeListParser:
         # Fetch from registry
         try:
             logger.info(f"Validating code online: {code_url}")
+            if requests is None:
+                return ValidationIssue(
+                    layer=ValidationLayer.WMO_CODELISTS,
+                    level=ValidationSeverity.WARNING,
+                    message="Online validation unavailable: requests library not installed",
+                    location=xpath,
+                    code="CODELIST_REQUESTS_UNAVAILABLE",
+                )
             response = requests.get(
                 code_url, timeout=self.settings.wmo_validation_timeout, headers={"Accept": "application/rdf+xml"}
             )
@@ -430,16 +439,16 @@ class CodeListParser:
                     code="CODELIST_ONLINE_ERROR",
                 )
 
-        except requests.Timeout:
-            logger.warning(f"Online validation timeout for {code_url}")
-            return ValidationIssue(
-                layer=ValidationLayer.WMO_CODELISTS,
-                level=ValidationSeverity.WARNING,
-                message=f"Online validation timeout ({self.settings.wmo_validation_timeout}s): {code_url}",
-                location=xpath,
-                code="CODELIST_TIMEOUT",
-            )
         except Exception as e:
+            if requests is not None and isinstance(e, requests.exceptions.Timeout):
+                logger.warning(f"Online validation timeout for {code_url}")
+                return ValidationIssue(
+                    layer=ValidationLayer.WMO_CODELISTS,
+                    level=ValidationSeverity.WARNING,
+                    message=f"Online validation timeout ({self.settings.wmo_validation_timeout}s): {code_url}",
+                    location=xpath,
+                    code="CODELIST_TIMEOUT",
+                )
             logger.error(f"Online validation error: {e}")
             return ValidationIssue(
                 layer=ValidationLayer.WMO_CODELISTS,

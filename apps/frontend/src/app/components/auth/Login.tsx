@@ -15,18 +15,31 @@ interface LoginFormData {
 }
 
 interface LoginProps {
-  onLogin: (email: string, needsVerification: boolean, token?: string, adminStatus?: boolean) => void;
+  onLogin: (
+    email: string,
+    needsVerification: boolean,
+    token?: string,
+    adminStatus?: boolean,
+  ) => void;
   onSwitchToRegister: () => void;
   onForgotPassword: () => void;
 }
 
-export function Login({ onLogin, onSwitchToRegister, onForgotPassword: _onForgotPassword }: LoginProps) {
+export function Login({
+  onLogin,
+  onSwitchToRegister,
+  onForgotPassword: _onForgotPassword,
+}: LoginProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>();
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    
+
     try {
       const response = await login({
         email: data.email,
@@ -44,19 +57,23 @@ export function Login({ onLogin, onSwitchToRegister, onForgotPassword: _onForgot
         response.user.metadata?.username === 'admin' ||
         response.user.email === 'admin@metar.local';
 
-      toast.success(`Welcome back, ${response.user.metadata?.name || response.user.email}!`);
-      
+      toast.success(
+        `Welcome back, ${response.user.metadata?.name || response.user.email}!`,
+      );
+
       // Call parent handler with user info
       onLogin(
         response.user.email,
         false, // needsVerification - auth service handles this
         response.session.access_token,
-        isAdminUser
+        isAdminUser,
       );
-      
     } catch (error) {
       console.error('Login error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred during login. Please try again.';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'An error occurred during login. Please try again.';
       toast.error(errorMessage);
       setIsLoading(false);
     }
@@ -68,7 +85,9 @@ export function Login({ onLogin, onSwitchToRegister, onForgotPassword: _onForgot
         {/* Theme Toggle */}
         <div className="flex justify-end mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">Display Mode</span>
+            <span className="text-xs text-muted-foreground uppercase tracking-wider">
+              Display Mode
+            </span>
             <ThemeToggle />
           </div>
         </div>
@@ -98,11 +117,17 @@ export function Login({ onLogin, onSwitchToRegister, onForgotPassword: _onForgot
           {/* Login Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <Label htmlFor="email" className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">
+              <Label
+                htmlFor="email"
+                className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block"
+              >
                 Email Address
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" aria-hidden="true" />
+                <Mail
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"
+                  aria-hidden="true"
+                />
                 <Input
                   id="email"
                   type="email"
@@ -112,26 +137,36 @@ export function Login({ onLogin, onSwitchToRegister, onForgotPassword: _onForgot
                     required: 'Email is required',
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: 'Please enter a valid email address'
-                    }
+                      message: 'Please enter a valid email address',
+                    },
                   })}
                   aria-invalid={errors.email ? 'true' : 'false'}
                   aria-describedby={errors.email ? 'email-error' : undefined}
                 />
               </div>
               {errors.email && (
-                <p id="email-error" className="text-xs text-destructive mt-1 font-mono" role="alert">
+                <p
+                  id="email-error"
+                  className="text-xs text-destructive mt-1 font-mono"
+                  role="alert"
+                >
                   {errors.email.message}
                 </p>
               )}
             </div>
 
             <div>
-              <Label htmlFor="password" className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">
+              <Label
+                htmlFor="password"
+                className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block"
+              >
                 Password
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" aria-hidden="true" />
+                <Lock
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"
+                  aria-hidden="true"
+                />
                 <Input
                   id="password"
                   type="password"
@@ -141,15 +176,19 @@ export function Login({ onLogin, onSwitchToRegister, onForgotPassword: _onForgot
                     required: 'Password is required',
                     minLength: {
                       value: 6,
-                      message: 'Password must be at least 6 characters'
-                    }
+                      message: 'Password must be at least 6 characters',
+                    },
                   })}
                   aria-invalid={errors.password ? 'true' : 'false'}
                   aria-describedby={errors.password ? 'password-error' : undefined}
                 />
               </div>
               {errors.password && (
-                <p id="password-error" className="text-xs text-destructive mt-1 font-mono" role="alert">
+                <p
+                  id="password-error"
+                  className="text-xs text-destructive mt-1 font-mono"
+                  role="alert"
+                >
                   {errors.password.message}
                 </p>
               )}
@@ -162,7 +201,9 @@ export function Login({ onLogin, onSwitchToRegister, onForgotPassword: _onForgot
                   className="w-4 h-4 text-primary border-border focus:ring-2 focus:ring-primary"
                   aria-label="Remember me"
                 />
-                <span className="ml-2 text-xs text-muted-foreground uppercase tracking-wide">Remember</span>
+                <span className="ml-2 text-xs text-muted-foreground uppercase tracking-wide">
+                  Remember
+                </span>
               </label>
               <button
                 type="button"

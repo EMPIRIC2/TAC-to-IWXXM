@@ -9,7 +9,7 @@ from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 # Import Base to ensure models are registered
-from auth.database import Base
+from database import Base
 
 
 class User(Base):

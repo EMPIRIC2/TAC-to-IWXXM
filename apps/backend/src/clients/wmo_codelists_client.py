@@ -8,13 +8,14 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 try:
     import requests
 
     REQUESTS_AVAILABLE = True
 except ImportError:
+    requests = None  # type: ignore[assignment,misc]
     REQUESTS_AVAILABLE = False
 
 from ..utilities.codelist_parser import CodeListParser
@@ -29,7 +30,7 @@ class WMOCodelistInfo:
     name: str
     url: str
     version: Optional[str] = None
-    values: Set[str] = None
+    values: Optional[Set[str]] = None
     last_updated: Optional[datetime] = None
     source: str = "local"  # "local" or "online"
 
@@ -290,6 +291,8 @@ class WMOCodelistsClient:
         # Construct URL (this is simplified - actual WMO URLs vary)
         url = f"{self.registry_url}/49-2/{codelist_name}"
 
+        if requests is None:
+            return None
         try:
             response = requests.get(url, timeout=10, headers={"Accept": "application/rdf+xml"})
 
@@ -376,7 +379,7 @@ class WMOCodelistsClient:
 
         return sorted(local_lists)
 
-    def get_statistics(self) -> Dict[str, any]:
+    def get_statistics(self) -> Dict[str, Any]:
         """Get statistics about available codelists.
 
         Returns:

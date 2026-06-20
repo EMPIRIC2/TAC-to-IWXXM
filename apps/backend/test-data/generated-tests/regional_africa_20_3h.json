@@ -9,18 +9,9 @@
       "longitude": 0.154,
       "country": null,
       "elevation": 146,
-      "weather_phenomena": [
-        "RA",
-        "SHRA"
-      ],
-      "cloud_types": [
-        "CB"
-      ],
-      "cloud_amounts": [
-        "FEW",
-        "BKN",
-        "OVC"
-      ],
+      "weather_phenomena": ["RA", "SHRA"],
+      "cloud_types": ["CB"],
+      "cloud_amounts": ["FEW", "BKN", "OVC"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -33,13 +24,9 @@
       "longitude": 26.102,
       "country": null,
       "elevation": 92,
-      "weather_phenomena": [
-        "BR"
-      ],
+      "weather_phenomena": ["BR"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "OVC"
-      ],
+      "cloud_amounts": ["OVC"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -52,13 +39,9 @@
       "longitude": -3.789,
       "country": null,
       "elevation": 560,
-      "weather_phenomena": [
-        "GR"
-      ],
+      "weather_phenomena": ["GR"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "BKN"
-      ],
+      "cloud_amounts": ["BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -71,14 +54,9 @@
       "longitude": -8.372,
       "country": null,
       "elevation": 80,
-      "weather_phenomena": [
-        "RA"
-      ],
+      "weather_phenomena": ["RA"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "SCT",
-        "BKN"
-      ],
+      "cloud_amounts": ["SCT", "BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -91,15 +69,9 @@
       "longitude": 18.728,
       "country": null,
       "elevation": 242,
-      "weather_phenomena": [
-        "SN"
-      ],
+      "weather_phenomena": ["SN"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "SCT",
-        "BKN",
-        "OVC"
-      ],
+      "cloud_amounts": ["SCT", "BKN", "OVC"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -112,13 +84,9 @@
       "longitude": 19.401,
       "country": null,
       "elevation": 176,
-      "weather_phenomena": [
-        "SN"
-      ],
+      "weather_phenomena": ["SN"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "BKN"
-      ],
+      "cloud_amounts": ["BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -131,16 +99,9 @@
       "longitude": 31.015,
       "country": null,
       "elevation": 135,
-      "weather_phenomena": [
-        "SN",
-        "SHSN"
-      ],
-      "cloud_types": [
-        "CB"
-      ],
-      "cloud_amounts": [
-        "OVC"
-      ],
+      "weather_phenomena": ["SN", "SHSN"],
+      "cloud_types": ["CB"],
+      "cloud_amounts": ["OVC"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -155,11 +116,7 @@
       "elevation": 197,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "FEW",
-        "BKN",
-        "OVC"
-      ],
+      "cloud_amounts": ["FEW", "BKN", "OVC"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -172,14 +129,9 @@
       "longitude": -3.831,
       "country": null,
       "elevation": 1,
-      "weather_phenomena": [
-        "RA"
-      ],
+      "weather_phenomena": ["RA"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "FEW",
-        "BKN"
-      ],
+      "cloud_amounts": ["FEW", "BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -192,14 +144,9 @@
       "longitude": -3.44,
       "country": null,
       "elevation": 46,
-      "weather_phenomena": [
-        "RA"
-      ],
+      "weather_phenomena": ["RA"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "BKN",
-        "OVC"
-      ],
+      "cloud_amounts": ["BKN", "OVC"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -229,10 +176,7 @@
       "elevation": 4,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "FEW",
-        "SCT"
-      ],
+      "cloud_amounts": ["FEW", "SCT"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -277,11 +221,7 @@
       "elevation": 50,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "FEW",
-        "SCT",
-        "BKN"
-      ],
+      "cloud_amounts": ["FEW", "SCT", "BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -294,9 +234,7 @@
       "longitude": 15.347,
       "country": null,
       "elevation": 82,
-      "weather_phenomena": [
-        "DZ"
-      ],
+      "weather_phenomena": ["DZ"],
       "cloud_types": [],
       "cloud_amounts": [],
       "visibility": null,
@@ -343,9 +281,7 @@
       "elevation": 822.0456,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "FEW"
-      ],
+      "cloud_amounts": ["FEW"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",

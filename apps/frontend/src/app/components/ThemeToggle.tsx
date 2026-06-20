@@ -1,14 +1,14 @@
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
-  const isDark = theme === "dark";
+  const isDark = theme === 'dark';
 
   return (
     <button
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
       className="relative inline-flex items-center h-7 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 bg-gray-300 dark:bg-gray-600"
       role="switch"
       aria-checked={isDark}

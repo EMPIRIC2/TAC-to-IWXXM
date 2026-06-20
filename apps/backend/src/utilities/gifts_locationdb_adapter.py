@@ -13,10 +13,7 @@ try:
 except ImportError:
     from services.openaip_service import OpenAIPService
 
-try:
-    from .airport_record_builder import AirportRecordBuilder
-except ImportError:
-    from airport_record_builder import AirportRecordBuilder
+from .airport_record_builder import AirportRecordBuilder
 
 try:
     from ..schemas.airport import get_airport_validator

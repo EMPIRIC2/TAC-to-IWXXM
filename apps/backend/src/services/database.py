@@ -7,7 +7,7 @@ Provides async session management for statistics and other database operations.
 import logging
 import os
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Optional
+from typing import Any, AsyncGenerator, Optional
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
@@ -208,7 +208,7 @@ async def get_db_stats() -> dict:
             "pool_size": 0,
         }
 
-    pool = _engine.pool
+    pool: Any = _engine.pool
     return {
         "status": "active",
         "pool_size": pool.size() if hasattr(pool, "size") else "unknown",

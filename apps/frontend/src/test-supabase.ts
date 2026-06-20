@@ -1,6 +1,6 @@
 /**
  * Supabase Integration Test
- * 
+ *
  * This script tests the Supabase connection and authentication setup.
  * Run with: npm run test:supabase
  */
@@ -14,7 +14,7 @@ async function testSupabaseConnection() {
   console.log('1️⃣ Checking environment variables...');
   const url = import.meta.env.VITE_SUPABASE_URL;
   const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY;
-  
+
   if (!url) {
     console.error('❌ VITE_SUPABASE_URL is not set');
     return false;
@@ -23,7 +23,7 @@ async function testSupabaseConnection() {
     console.error('❌ VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY is not set');
     return false;
   }
-  
+
   console.log(`✅ VITE_SUPABASE_URL: ${url}`);
   console.log(`✅ VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${key.substring(0, 20)}...`);
 
@@ -39,12 +39,12 @@ async function testSupabaseConnection() {
   console.log('\n3️⃣ Testing database connection...');
   try {
     const { error } = await supabase.from('user_profiles').select('count');
-    
+
     if (error) {
       console.error('❌ Database query failed:', error.message);
       return false;
     }
-    
+
     console.log('✅ Database connection successful');
   } catch (err) {
     console.error('❌ Database connection error:', err);
@@ -55,7 +55,7 @@ async function testSupabaseConnection() {
   console.log('\n4️⃣ Testing auth service...');
   try {
     const { data, error } = await supabase.auth.getSession();
-    
+
     if (error) {
       console.error('⚠️ Auth session check failed:', error.message);
     } else {
@@ -76,9 +76,11 @@ async function testSupabaseConnection() {
 }
 
 // Run the test
-testSupabaseConnection().then(success => {
-  process.exit(success ? 0 : 1);
-}).catch(err => {
-  console.error('Test runner error:', err);
-  process.exit(1);
-});
+testSupabaseConnection()
+  .then((success) => {
+    process.exit(success ? 0 : 1);
+  })
+  .catch((err) => {
+    console.error('Test runner error:', err);
+    process.exit(1);
+  });

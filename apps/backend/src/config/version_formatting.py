@@ -124,4 +124,4 @@ def format_elevation(elevation_m: float, version: str) -> int:
         Formatted elevation value
     """
     rounding = get_elevation_rounding(version)
-    return round(elevation_m, rounding)
+    return int(round(elevation_m, rounding))

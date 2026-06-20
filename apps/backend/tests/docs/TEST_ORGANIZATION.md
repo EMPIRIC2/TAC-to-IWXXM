@@ -119,9 +119,11 @@ tests/
 ## Test Categories
 
 ### unit/ - Unit Tests
+
 Fast, isolated tests of individual components (< 5 minutes total).
 
 **What's tested:**
+
 - Individual utility functions
 - Service components in isolation
 - Parser functions
@@ -129,9 +131,11 @@ Fast, isolated tests of individual components (< 5 minutes total).
 **When to run:** Every commit, pre-push
 
 ### api/ - API Endpoint Tests (5 files)
+
 Tests for FastAPI endpoints with mocked external services.
 
 **Features tested:**
+
 - HTTP endpoints (GET, POST, PUT, DELETE)
 - Request/response validation
 - Authentication & authorization
@@ -139,89 +143,109 @@ Tests for FastAPI endpoints with mocked external services.
 - CORS configuration
 
 **Key files:**
+
 - `test_api_comprehensive.py` - Router inclusion, app initialization
 - `test_api_error_handling.py` - Error response formats
 - `test_api_validation.py` - Input validation
 
 ### conversion/ - Conversion Tests (6 files)
+
 Tests for METAR→IWXXM conversion utilities.
 
 **Features tested:**
+
 - Basic METAR text conversion
 - Multiple file handling
 - Round-trip XML validation
 - Edge cases and error handling
 
 **Key files:**
+
 - `test_convert.py` - Basic conversion workflow
 - `test_roundtrip.py` - XML serialization/deserialization
 - `test_conversion_edge_cases.py` - Known failures and edge cases
 
 ### validation/ - Validation Tests (9 files)
+
 Tests for XML and schema validation including XSD and Schematron.
 
 **Features tested:**
+
 - XSD schema validation
 - Schematron rule validation
 - Semantic validation rules
 - Validation error reporting
 
 **Key files:**
+
 - `test_validation_service.py` - Core validation service
 - `test_schematron_validation_suite.py` - Schematron rules
 - `test_iwxxm_validation.py` - IWXXM-specific validation
 
 ### iwxxm/ - IWXXM & XML Tests (7 files)
+
 Tests for IWXXM version handling and XML generation.
 
 **Features tested:**
+
 - IWXXM version compatibility
 - XML namespace handling
 - WMO canonical examples
 - XML serialization
 
 **Key files:**
+
 - `test_xml_version_utils.py` - Version utilities
 - `test_iwxxm_versions_rc.py` - Version support
 - `test_wmo_canonical_examples.py` - WMO spec examples
 
 ### services/ - Data Service Tests (4 files)
+
 Tests for backend services and data access.
 
 **Features tested:**
+
 - Airport data management
 - Database operations
 - Statistics collection
 - Station sampling
 
 ### evaluation/ - Evaluation System Tests (5 files)
+
 Tests for aviation weather evaluation and ICAO OPMET reporting.
 
 **Features tested:**
+
 - Evaluation job management
 - ICAO OPMET reporting
 - Admin authentication
 - Report generation
 
 **Key files:**
+
 - `test_evaluation_endpoints_comprehensive.py` - All evaluation endpoints
 - `test_icao_opmet_admin.py` - Admin authentication
 
 ### integration/ - Integration & E2E Tests (4 files)
+
 Full-stack tests with real or mocked services.
 
 **What's tested:**
+
 - Complete workflows from input to output
 - Multi-component interactions
 - Error handling across layers
 
 **Key files:**
+
 - `test_e2e_full_stack.py` - Complete end-to-end workflow (1,506 lines)
 
 ### external_apis/ - External API Tests (4 files)
+
 Tests for external API clients and services.
 
 **Features tested:**
+
 - Aviation Weather API calls
 - OpenAIP integration
 - Schema polling
@@ -229,31 +253,38 @@ Tests for external API clients and services.
 **Note:** Use `-m "not live_api"` to skip real API calls
 
 ### edge_cases/ - Edge Cases (7 files)
+
 Tests for specific features and known issues.
 
 **Features tested:**
+
 - Cloud layer handling
 - Visibility/weather parsing
 - Failure categorization
 - Task-specific implementations
 
 ### infrastructure/ - Infrastructure Tests (11 files)
+
 Infrastructure, CI/CD, and operational tests.
 
 **Features tested:**
+
 - Smoke tests for rapid CI/CD
 - Security validations
 - Docker container operations
 - Schematron validation via Docker
 
 **Key files:**
+
 - `test_smoke.py` - Quick smoke tests (~30 seconds)
 - `test_security_comprehensive.py` - Security checks
 
 ### versions/ - Version Tests (4 files)
+
 Tests for IWXXM version switching and compatibility.
 
 **Features tested:**
+
 - Version detection
 - Version migration
 - Backward compatibility
@@ -262,11 +293,13 @@ Tests for IWXXM version switching and compatibility.
 ## Running Tests
 
 ### All tests
+
 ```bash
 pytest
 ```
 
 ### By category
+
 ```bash
 pytest tests/api/                    # API tests only
 pytest tests/conversion/             # Conversion tests only
@@ -275,6 +308,7 @@ pytest tests/integration/            # Integration tests only
 ```
 
 ### By marker
+
 ```bash
 pytest -m unit                       # Unit tests only
 pytest -m integration                # Integration tests
@@ -284,12 +318,14 @@ pytest -m "not slow"                 # Skip slow tests
 ```
 
 ### With coverage
+
 ```bash
 pytest --cov=src --cov-report=html   # Generate HTML coverage report
 pytest --cov=src --cov-report=term-missing
 ```
 
 ### Specific tests
+
 ```bash
 pytest tests/api/test_api.py::TestHealthEndpoint
 pytest tests/conversion/test_convert.py::test_convert_manual_text
@@ -297,6 +333,7 @@ pytest tests/smoke.py -v
 ```
 
 ### Watch mode (requires pytest-watch)
+
 ```bash
 ptw tests/api/                       # Re-run on file changes
 ```
@@ -334,6 +371,7 @@ Global fixtures are defined in `test_fixtures.py` and automatically available to
 5. **Add docstrings** - Describe what's being tested
 
 Example:
+
 ```python
 # tests/api/test_my_endpoint.py
 import pytest
@@ -342,7 +380,7 @@ from fastapi.testclient import TestClient
 @pytest.mark.integration
 class TestMyEndpoint:
     """Test new endpoint functionality."""
-    
+
     def test_basic_request(self, client):
         """Test basic request succeeds."""
         response = client.get('/api/v1/my-endpoint')
@@ -362,20 +400,23 @@ class TestMyEndpoint:
 ## Maintenance
 
 ### Running specific test suite
+
 ```bash
 # API tests only
 pytest tests/api/ -v
 
 # Get coverage for subdirectory
-pytest tests/conversion/ --cov=src --cov-report=term-missing  
+pytest tests/conversion/ --cov=src --cov-report=term-missing
 ```
 
 ### Finding slow tests
+
 ```bash
 pytest --durations=10
 ```
 
 ### Finding tests without docstrings
+
 ```bash
 pytest --collect-only -q | grep -E "test_.*$" | wc -l
 ```
@@ -402,6 +443,7 @@ Test documentation is located in `tests/docs/`:
 ## Recent Changes
 
 This refactoring reorganized 72 test files from a flat structure into 12 logical subdirectories while maintaining:
+
 - ✅ All 1,090+ tests discoverable
 - ✅ Correct import resolution
 - ✅ Pytest configuration compatibility

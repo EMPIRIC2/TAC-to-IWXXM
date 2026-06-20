@@ -3,23 +3,96 @@ COMPOSE := docker compose
 UV := uv
 PNPM := pnpm
 
-.PHONY: install test test-unit vendor-sync \
-	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-workspace-js test-unit-legacy \
-	lint lint-backend lint-auth lint-frontend lint-gifts \
-	lint-fix lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
-	dev dev-kill dev-servers dev-servers-kill \
-	setup-backend setup-auth setup-frontend setup-gifts \
-	test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
-	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
-	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts \
-	coverage-modules coverage-submodules coverage-all ci acci badge-audit audit-frontend
+PY_TREES := apps packages tests
+PY_LINT := apps/backend/src apps/backend/tests \
+	packages/auth/src packages/auth/tests \
+	packages/gifts/gifts packages/gifts/tests \
+	packages/shared packages/shared/tests \
+	tests
 
-# --- Monorepo workspace (Phase 1+, config-spec-monorepo.md) ---
+.PHONY: install test test-unit vendor-sync \
+	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
+	test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
+	format format-check typecheck typecheck-py typecheck-js \
+	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-gifts lint-shared \
+	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
+	dev dev-kill dev-servers dev-servers-kill \
+	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
+	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts coverage-shared \
+	coverage-modules coverage-all ci acci badge-audit audit-frontend
+
+# --- Monorepo workspace ---
 
 install:
 	$(UV) sync
 	corepack enable
 	$(PNPM) install
+
+# --- Formatting ---
+
+format:
+	$(UV) run ruff format $(PY_TREES)
+	$(PNPM) run format
+
+format-check:
+	$(UV) run ruff format --check $(PY_TREES)
+	$(PNPM) run format:check
+
+# --- Typechecking ---
+
+typecheck: typecheck-py typecheck-js
+
+typecheck-py:
+	$(UV) run basedpyright packages/shared/src
+	cd packages/auth && $(UV) run basedpyright
+	cd apps/backend && $(UV) run basedpyright
+
+typecheck-js:
+	$(PNPM) run typecheck:js
+
+# --- Linting ---
+
+lint: lint-py lint-js
+
+lint-py:
+	$(UV) run ruff check $(PY_LINT)
+
+lint-js:
+	$(PNPM) run lint:js
+
+lint-backend:
+	$(UV) run ruff check apps/backend/src apps/backend/tests
+
+lint-auth:
+	$(UV) run ruff check packages/auth/src packages/auth/tests
+
+lint-gifts:
+	$(UV) run ruff check packages/gifts/gifts packages/gifts/tests
+
+lint-shared:
+	$(UV) run ruff check packages/shared packages/shared/tests
+
+lint-frontend:
+	$(PNPM) --filter @metar/frontend run lint
+
+lint-fix: lint-fix-py lint-fix-frontend
+
+lint-fix-py:
+	$(UV) run ruff check --fix $(PY_LINT)
+
+lint-fix-backend:
+	$(UV) run ruff check --fix apps/backend/src apps/backend/tests
+
+lint-fix-auth:
+	$(UV) run ruff check --fix packages/auth/src packages/auth/tests
+
+lint-fix-frontend:
+	$(PNPM) --filter @metar/frontend exec eslint src --fix
+
+lint-fix-gifts:
+	$(UV) run ruff check --fix packages/gifts/gifts packages/gifts/tests
+
+# --- Unit tests ---
 
 test-unit-workspace-py:
 	$(UV) run pytest tests/migration/test_workspace_import_smoke.py tests/unit -v
@@ -28,52 +101,44 @@ test-unit-shared-py:
 	$(UV) run pytest packages/shared/tests --cov=metar_shared \
 		--cov-config=packages/shared/pyproject.toml --cov-branch --cov-fail-under=95 -v
 
-test-unit-workspace: test-unit-workspace-py test-unit-shared-py test-unit-workspace-js
+test-unit-shared-js:
+	$(PNPM) --filter @metar/shared run test:coverage
 
 test-unit-workspace-js:
 	$(PNPM) --filter @metar/shared test
 
-test-unit: test-unit-workspace
+test-unit-workspace: test-unit-workspace-py test-unit-shared-py test-unit-shared-js
+
+test-unit-backend:
+	cd apps/backend && $(UV) run pytest tests/unit \
+		--cov=src --cov-config=pyproject.toml --cov-branch \
+		--cov-report=xml:coverage.xml --cov-report=term-missing \
+		--cov-fail-under=95 -v
+
+test-unit-auth:
+	cd packages/auth && $(UV) run pytest tests \
+		--cov=src --cov-config=pyproject.toml --cov-branch \
+		--cov-report=xml:coverage.xml --cov-report=term-missing \
+		--cov-fail-under=95 -v
+
+test-unit-frontend:
+	$(PNPM) --filter @metar/frontend run test:coverage
+
+test-unit-gifts:
+	cd packages/gifts && $(UV) run pytest tests/ \
+		--cov=gifts --cov=validation --cov-config=pyproject.toml --cov-branch \
+		--cov-report=xml:coverage.xml --cov-report=term-missing \
+		--cov-fail-under=95 -v
+
+test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts
 
 test: test-unit
 
 tests\:e2e:
-	@if [ -f apps/e2e/package.json ]; then \
-		cd apps/e2e && $(PNPM) exec playwright test; \
-	else \
-		$(MAKE) test-e2e-playwright; \
-	fi
+	cd apps/e2e && $(PNPM) exec playwright test
 
 vendor-sync:
 	bash scripts/vendor/sync-iwxxm.sh
-
-lint: lint-backend lint-auth lint-frontend lint-gifts
-
-lint-fix: lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts
-
-lint-backend:
-	cd backend && python3 -m pip install -q ruff && python3 -m ruff check src tests
-
-lint-auth:
-	cd auth && python3 -m pip install -q ruff && python3 -m ruff check src tests
-
-lint-frontend:
-	$(PNPM) --filter @metar/frontend run lint
-
-lint-gifts:
-	$(UV) run ruff check packages/gifts/gifts packages/gifts/tests
-
-lint-fix-backend:
-	cd backend && python3 -m pip install -q ruff && python3 -m ruff check --fix src tests
-
-lint-fix-auth:
-	cd auth && python3 -m pip install -q ruff && python3 -m ruff check --fix src tests
-
-lint-fix-frontend:
-	cd apps/frontend && $(PNPM) exec eslint src --ext .ts,.tsx --fix
-
-lint-fix-gifts:
-	$(UV) run ruff check --fix packages/gifts/gifts packages/gifts/tests
 
 dev:
 	bash ./start-dev-servers.sh
@@ -85,92 +150,51 @@ dev-servers: dev
 
 dev-servers-kill: dev-kill
 
-setup-backend:
-	cd backend && python3 -m pip install -e .
-
-setup-auth:
-	cd auth && python3 -m pip install -e .
-
-setup-frontend:
-	cd frontend && npm install --legacy-peer-deps
-
-setup-gifts:
-	cd GIFTs && python3 -m pip install -e .
-
-test-unit-legacy: test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts
-
-test-unit-backend:
-	cd backend && python3 -m pytest tests/unit --cov=src --cov-config=pyproject.toml --cov-branch --cov-report=xml:coverage.xml --cov-report=term-missing --cov-fail-under=95 -v
-
-test-unit-auth:
-	cd auth && python3 -m pip install -q -e . && PYTHONPATH=src python3 -m pytest tests --cov=src --cov-config=pyproject.toml --cov-branch --cov-report=xml:coverage.xml --cov-report=term-missing --cov-fail-under=95 -v
-
-test-unit-frontend:
-	cd frontend && npm run test:coverage
-
 audit-frontend:
-	cd frontend && npm ci && npm run audit:ci
-
-test-unit-gifts:
-	cd packages/gifts && $(UV) run pytest tests/ --cov=gifts --cov=validation --cov-config=pyproject.toml --cov-branch --cov-report=xml:coverage.xml --cov-report=term-missing --cov-fail-under=95 -v
+	$(PNPM) --filter @metar/frontend run audit:ci
 
 test-e2e-playwright:
 	cd apps/e2e && $(PNPM) exec playwright test
 
-# Smoke subset: runs only the spec files that require no admin credentials.
-# Safe to use in CI or local when PLAYWRIGHT_ADMIN_EMAIL / PLAYWRIGHT_ADMIN_PASSWORD
-# are not available.  Covers startup health, auth service integration, front-end
-# rendering and all mock-session conversion flows.
 test-e2e-playwright-smoke:
 	cd apps/e2e && $(PNPM) exec playwright test \
 		auth-service-integration.e2e.spec.ts \
 		tac-file-conversion.e2e.spec.ts
 
-# T2 product gate: TC-001 (UJ-001) + TC-003 (UJ-003) per test-plan.md
 test-e2e-t2-product:
 	cd apps/e2e && $(PNPM) exec playwright test \
 		tac-file-conversion.e2e.spec.ts \
 		auth.e2e.spec.ts
 
 coverage-backend:
-	cd backend && python3 -m pytest tests/unit --cov=src --cov-config=pyproject.toml --cov-branch --cov-report=xml:coverage.xml --cov-report=term-missing -v
+	cd apps/backend && $(UV) run pytest tests/unit \
+		--cov=src --cov-config=pyproject.toml --cov-branch \
+		--cov-report=xml:coverage.xml --cov-report=term-missing -v
 
 coverage-auth:
-	cd auth && python3 -m pip install -q -e . && PYTHONPATH=src python3 -m pytest tests --cov=src --cov-config=pyproject.toml --cov-branch --cov-report=xml:coverage.xml --cov-report=term-missing -v
+	cd packages/auth && $(UV) run pytest tests \
+		--cov=src --cov-config=pyproject.toml --cov-branch \
+		--cov-report=xml:coverage.xml --cov-report=term-missing -v
 
 coverage-frontend:
-	cd frontend && npm run test:coverage
+	$(PNPM) --filter @metar/frontend run test:coverage
 
 coverage-gifts:
-	cd packages/gifts && $(UV) run pytest tests/ --cov=gifts --cov=validation --cov-config=pyproject.toml --cov-report=xml:coverage.xml --cov-report=term-missing -v
+	cd packages/gifts && $(UV) run pytest tests/ \
+		--cov=gifts --cov=validation --cov-config=pyproject.toml \
+		--cov-report=xml:coverage.xml --cov-report=term-missing -v
 
-coverage-modules: coverage-backend coverage-auth coverage-frontend coverage-gifts
+coverage-shared:
+	$(UV) run pytest packages/shared/tests --cov=metar_shared \
+		--cov-config=packages/shared/pyproject.toml --cov-report=term-missing -v
 
-coverage-submodules:
-	@set -e; \
-	for dir in data/iwxxm-translation schemas/iwxxm schemas/iwxxm-codelists schemas/iwxxm-modelling; do \
-		if [ ! -d "$$dir" ]; then \
-			echo "Skipping $$dir (directory not found)"; \
-			continue; \
-		fi; \
-		echo "Running coverage for $$dir"; \
-		if [ -f "$$dir/Makefile" ] && grep -qE '^coverage:' "$$dir/Makefile"; then \
-			$(MAKE) -C "$$dir" coverage; \
-		elif [ -f "$$dir/pyproject.toml" ]; then \
-			(cd "$$dir" && python3 -m pytest --cov=. --cov-report=term-missing -v); \
-		elif [ -f "$$dir/package.json" ]; then \
-			(cd "$$dir" && npm ci && npm run test:coverage); \
-		else \
-			echo "Skipping $$dir (no supported coverage command found)"; \
-		fi; \
-	done
+coverage-modules: coverage-backend coverage-auth coverage-frontend coverage-gifts coverage-shared
 
-coverage-all: coverage-modules coverage-submodules
+coverage-all: coverage-modules
 
 test-integration:
-	python3 -m pip install -q pytest requests httpx
 	@set -a; \
-	for env_file in .env frontend/.env auth/.env backend/.env; do \
+	for env_file in .env apps/frontend/.env; do \
 		if [ -f "$$env_file" ]; then \
 			while IFS= read -r line || [ -n "$$line" ]; do \
 				line="$${line%$$'\r'}"; \
@@ -190,15 +214,13 @@ test-integration:
 	if [ -n "$$missing" ]; then \
 		echo "Missing required environment variables for integration tests:"; \
 		for var in $$missing; do echo "- $$var"; done; \
-		echo "Set these variables in your shell or .env file before running make test-integration."; \
 		exit 1; \
 	fi
 	-$(COMPOSE) down --remove-orphans
-	$(COMPOSE) up -d auth backend frontend
+	$(COMPOSE) up -d backend frontend
 	@echo "Waiting for services to become ready..."
 	@for i in $$(seq 1 45); do \
-		if wget --quiet --tries=1 --timeout=2 -O /dev/null http://localhost:18003/health \
-			&& wget --quiet --tries=1 --timeout=2 -O /dev/null http://localhost:18001/health \
+		if wget --quiet --tries=1 --timeout=2 -O /dev/null http://localhost:18001/health \
 			&& wget --quiet --tries=1 --timeout=2 -O /dev/null http://localhost:18000/; then \
 			echo "All services are reachable."; \
 			break; \
@@ -206,12 +228,13 @@ test-integration:
 		if [ "$$i" -eq 45 ]; then \
 			echo "Services did not become ready in time."; \
 			$(COMPOSE) ps; \
-			$(COMPOSE) logs --tail=120 auth backend frontend; \
+			$(COMPOSE) logs --tail=120 backend frontend; \
 			exit 1; \
 		fi; \
 		sleep 2; \
 	done
-	PYTHONPATH=auth/src python3 -m pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_gifts_backend_integration.py tests/test_integration.py -v
+	$(UV) run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_gifts_backend_integration.py tests/test_integration.py -v
+	cd apps/backend && $(UV) run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q
 	$(COMPOSE) down
 
 coverage: coverage-modules
@@ -219,8 +242,6 @@ coverage: coverage-modules
 badge-audit:
 	python3 .github/scripts/badge_audit.py
 
-ci: lint test-unit-legacy test-integration badge-audit
+ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-integration badge-audit
 
-# All CI checks in one command: linting, unit tests, integration tests,
-# smoke E2E, frontend dependency audit, and badge verification.
-acci: lint test-unit-legacy test-integration test-e2e-playwright-smoke audit-frontend badge-audit
+acci: ci test-e2e-playwright-smoke audit-frontend

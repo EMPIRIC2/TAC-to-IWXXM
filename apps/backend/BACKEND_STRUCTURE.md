@@ -72,9 +72,11 @@ backend/
 ## Directory Purposes
 
 ### src/
+
 Main Python application source code, including utilities, services, API routes, and business logic.
 
 **Key files:**
+
 - `api.py` - FastAPI application
 - `utilities/conversion.py` - METAR→IWXXM conversion
 - `utilities/schematron_validator.py` - XML validation
@@ -82,7 +84,9 @@ Main Python application source code, including utilities, services, API routes, 
 - `clients/` - External API clients (aviation weather, OpenAIP, etc.)
 
 ### tests/
+
 Comprehensive test suite with 1,090+ tests organized by functionality:
+
 - API endpoint tests
 - Conversion logic tests
 - Validation tests
@@ -92,18 +96,23 @@ Comprehensive test suite with 1,090+ tests organized by functionality:
 See [tests/README.md](tests/README.md) and [tests/docs/TEST_ORGANIZATION.md](tests/docs/TEST_ORGANIZATION.md) for details.
 
 ### docker/
+
 Docker container definitions:
+
 - `Dockerfile` - Main application container
 - `Dockerfile.schematron` - Schematron validator container
 
 Build with:
+
 ```bash
 docker build -f docker/Dockerfile -t metar-backend .
 docker build -f docker/Dockerfile.schematron -t metar-schematron .
 ```
 
 ### scripts/
+
 Utility scripts for development and maintenance:
+
 - `start_dev.sh` - Start development server
 - `mirror_wmo_bundles.py` - Mirror WMO schema bundles
 - `validate_generated_xml_schematron.py` - Validate generated XML
@@ -116,31 +125,40 @@ Utility scripts for development and maintenance:
 See [scripts/README.md](scripts/README.md) for details.
 
 ### schemas/
+
 IWXXM and data schemas for validation and code generation.
 
 ### test-data/
+
 Sample METAR strings, XML documents, and other test data files.
 
 ### .archive/
+
 Deprecated or backup files:
+
 - `conversion.py.bak` - Older conversion wrapper (use src/utilities/conversion.py)
 - `schematron_validator.py.bak` - Older validator (use src/utilities/schematron_validator.py)
 
 ## Configuration Files
 
 ### pyproject.toml
+
 Project metadata, dependencies, and tool configuration:
+
 - Dependencies (fastapi, uvicorn, lxml, httpx, etc.)
 - Dev dependencies (pytest, pytest-cov, pytest-asyncio, etc.)
 - Pytest configuration
 - Entry points
 
 ### conftest.py
+
 Pytest configuration at root level for global fixtures and configuration.
 Also configure test discovery and markers.
 
 ### .env
+
 Environment variables for local development:
+
 ```
 DATABASE_URL=...
 SUPABASE_URL=...
@@ -149,11 +167,13 @@ DISABLE_AUTH=false
 ```
 
 ### uv.lock
+
 Locked dependency versions for reproducible builds (managed by `uv` package manager).
 
 ## Quick Commands
 
 ### Development
+
 ```bash
 # Start development server
 ./scripts/start_dev.sh
@@ -170,6 +190,7 @@ pytest tests/conversion/
 ```
 
 ### Docker
+
 ```bash
 # Build main container
 docker build -f docker/Dockerfile -t metar-backend .
@@ -182,6 +203,7 @@ docker-compose up -d
 ```
 
 ### Data & Utilities
+
 ```bash
 # Mirror WMO bundles
 python scripts/mirror_wmo_bundles.py
@@ -199,6 +221,7 @@ python scripts/generate_test_data.py
 ## Import Paths
 
 ### From tests
+
 ```python
 # Import from src utilities
 from src.utilities.conversion import convert_metar_tac
@@ -210,6 +233,7 @@ from src.services.validation import ValidationService
 ```
 
 ### From application
+
 ```python
 # Within src/
 from utilities.conversion import convert_metar_tac
@@ -228,6 +252,7 @@ from services.validation import ValidationService
 ## CI/CD Integration
 
 Project uses organized test structure for CI/CD:
+
 - **Smoke tests** → `pytest -m smoke` (~30 seconds)
 - **Unit tests** → `pytest tests/unit/`
 - **API tests** → `pytest tests/api/`
@@ -237,6 +262,7 @@ Project uses organized test structure for CI/CD:
 ## Archived Files
 
 The `.archive/` directory contains deprecated files:
+
 - `conversion.py.bak` - Use `src/utilities/conversion.py` instead
 - `schematron_validator.py.bak` - Use `src/utilities/schematron_validator.py` instead
 

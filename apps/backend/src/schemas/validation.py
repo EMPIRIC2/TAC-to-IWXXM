@@ -52,9 +52,9 @@ class ValidationIssue(BaseModel):
     layer: ValidationLayer = Field(..., description="Validation layer that found this issue")
     level: ValidationLevel = Field(..., description="Severity level")
     message: str = Field(..., description="Human-readable error message", min_length=1)
-    location: Optional[str] = Field(None, description="Location in document")
-    code: Optional[str] = Field(None, description="Machine-readable error code")
-    suggestion: Optional[str] = Field(None, description="Suggested fix")
+    location: Optional[str] = Field(default=None, description="Location in document")
+    code: Optional[str] = Field(default=None, description="Machine-readable error code")
+    suggestion: Optional[str] = Field(default=None, description="Suggested fix")
 
 
 class ValidationResult(BaseModel):
@@ -74,9 +74,9 @@ class ValidationResult(BaseModel):
     passed: bool = Field(..., description="Whether validation passed")
     layer: ValidationLayer = Field(..., description="Validation layer")
     issues: List[ValidationIssue] = Field(default_factory=list, description="List of issues")
-    execution_time_ms: Optional[float] = Field(None, description="Execution time in ms", ge=0)
+    execution_time_ms: Optional[float] = Field(default=None, description="Execution time in ms", ge=0)
     validated_at: datetime = Field(default_factory=datetime.utcnow)
-    metadata: Optional[dict] = Field(None, description="Layer-specific metadata")
+    metadata: Optional[dict] = Field(default=None, description="Layer-specific metadata")
 
     def add_issue(
         self,

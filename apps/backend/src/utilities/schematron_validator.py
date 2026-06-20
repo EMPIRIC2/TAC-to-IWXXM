@@ -12,7 +12,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from lxml import etree, isoschematron
+import lxml.etree as etree
+from lxml import isoschematron
 
 from ..schemas.validation import ValidationIssue, ValidationLayer, ValidationSeverity
 from .schema_registry import get_schema_registry
@@ -123,7 +124,7 @@ class SchematronValidator:
         self._working_dirs[version] = work_dir
         return work_dir
 
-    def _get_compiled_schematron(self, version: str) -> isoschematron.Schematron:
+    def _get_compiled_schematron(self, version: str) -> isoschematron.Schematron | None:
         """
         Get compiled Schematron validator for version with caching.
 

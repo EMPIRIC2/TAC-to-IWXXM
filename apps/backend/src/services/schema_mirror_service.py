@@ -10,7 +10,7 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Optional, Set
+from typing import Any, Dict, Optional, Set
 from urllib.parse import urljoin, urlparse
 
 import httpx
@@ -46,7 +46,7 @@ class SchemaMirrorService:
         include_examples: bool = True,
         include_html: bool = True,
         include_xmi: bool = True,
-    ) -> Dict[str, any]:
+    ) -> Dict[str, Any]:
         """
         Mirror a complete schema version tree.
 

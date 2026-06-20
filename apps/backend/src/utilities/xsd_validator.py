@@ -9,7 +9,7 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-from lxml import etree
+import lxml.etree as etree
 
 from ..schemas.validation import ValidationIssue, ValidationLayer, ValidationSeverity
 from .schema_registry import get_schema_registry

@@ -2,9 +2,7 @@
 
 This software package can be used to check IWXXM documents for correctly-formed XML, schema and schematron ('business rules') validation. The Java code, CRUX, performs the validation steps. Information on CRUX can be found at the following URL: https://github.com/NCAR/crux.
 
-
-Prequisites
------------
+## Prequisites
 
 The software consists of Python and Java code.
 
@@ -14,15 +12,13 @@ The version of python must be at least 3.9 or better.
 
 This code has been developed, tested and works on a reasonably up-to-date Linux OS and Windows 10 machine. For old and/or other operating systems, this code may need some adjustments, but there are no guarantees.
 
-
-Installation
-------------
+## Installation
 
 This README file is at the top directory of the installation package.
 
 The package has the following directory tree:
 
-	<TOP_DIR>
+    <TOP_DIR>
     bin  -- Java CRUX utility
     externalSchemas  -- Local copies of schemas. Should be occasionally refreshed from their respective sources.
         schemas.opengis.net
@@ -107,86 +103,80 @@ The package has the following directory tree:
     schemas -- local copies of the IWXXM schemas (created later)
     schematrons -- local copies of the IWXXM schematrons (created later)
 
-
-IWXXM Validation
-----------------
+## IWXXM Validation
 
 The python script, 'iwxxmValidator.py' requires a single argument, the directory path to the IWXXM XML documents.
 
 Invoking the script for help with the '-h' or '--help' flag provides the following options:
 
-	usage: iwxxmValidator.py [-h] [-f] [-u] [--noGMLChecks] [-k] [-v VERSION] directory
+    usage: iwxxmValidator.py [-h] [-f] [-u] [--noGMLChecks] [-k] [-v VERSION] directory
 
-	Rudimentary validation tool for IWXXM documents
+    Rudimentary validation tool for IWXXM documents
 
-	positional arguments:
-  	   directory             directory path containing IWXXM XML documents for
-           			 validation (required)
+    positional arguments:
 
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  -f, --fetch           fetch files from WMO Code Registry and WMO schema site
-	  -u, --useInternet     when checking GML links, query WMO Code Registry for
+directory directory path containing IWXXM XML documents for
+validation (required)
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -f, --fetch           fetch files from WMO Code Registry and WMO schema site
+      -u, --useInternet     when checking GML links, query WMO Code Registry for
               			validation
-	  --noGMLChecks         skip GML link checking
-	  -k, --keep            do not delete catalog file when validation finishes
-	  -v VERSION, --version VERSION
+      --noGMLChecks         skip GML link checking
+      -k, --keep            do not delete catalog file when validation finishes
+      -v VERSION, --version VERSION
                         	IWXXM version major.minor number to validate against,
                         	default '2023-1''
 
---version flag
-------------------
+## --version flag
+
 By default, the validation tool checks IWXXM 2023-1 documents. If your IWXXM XML documents are based on a different version of IWXXM, provide the appropriate combination using the '-v' or '--version'
 flag.
 
 The script will check for this version's local copy of the IWXXM schemas and schematron, and associated RDF files from the WMO Code Registry. If a copy is not found, the script will go to the canonical sources, 'https://schemas.wmo.int/iwxxm' and 'http://codes.wmo.int', to download them. Therefore, your machine will need access to the Internet when running this script the first time, and when switching to new versions.
 
+## --fetch flag
 
---fetch flag
-----------------
 If circumstances require it, you can force the script to download and overwrite the local cache of the IWXXM schemas and schematron files with the '-f' or '--fetch' flag. (Default: do not fetch)
 
+## --keep flag
 
---keep flag
----------------
 The validator creates an OASIS style Catalog file on-the-fly for local validation which speeds up the process up considerably. It is normally deleted when the script finishes. (Default: do not keep) The catalog file can be used in "XML-aware" editors that can perform XML full validation. With this flag set, the OASIS Catalog file is kept in the top-level directory with the name, 'catalog-VERSION.xml' where VERSION is the IWXXM version string.
 
 If the VERSION catalog file is already present in the directory, the script will NOT overwrite it, but use it as is.
 
+## --noGMLChecks flag
 
---noGMLChecks flag
-----------------------
 After performing XML validation, a further examination of the internal and external references within each XML document is done. As a prerequisite, this step requires the XML document to be 'well-formed'. If this flag is given, this check is skipped. (Default: do GML reference checks)
 
+## --useInternet flag
 
---useInternet flag
-----------------------
-If GML checks are enabled, the algorithm has the option to query code registries which requires Internet connectivity (and can be slow). Or the algorithm can refer to the local copy of the RDF files to determine valid references to code lists (fast).  (Default: use local copy of RDF files)
+If GML checks are enabled, the algorithm has the option to query code registries which requires Internet connectivity (and can be slow). Or the algorithm can refer to the local copy of the RDF files to determine valid references to code lists (fast). (Default: use local copy of RDF files)
 
-To run:
--------
+## To run:
 
-If the python and java interpeters are in your execution PATH, then 
+If the python and java interpeters are in your execution PATH, then
 
       iwxxmValidator.py <directorypathtoXMLdocuments>
 
 is sufficient.
 
-Notes:
-------
+## Notes:
+
 This software is not meant to be a subtitute for more sophisticated XML-aware applications. This is a basic, relatively "unfriendly" tool if you are new to XML documents and the technology associated with them. It _can_ help you find errors in your documents but sometimes the error messages from CRUX are cryptic.
 
-When using tool the first time on Windows machines, the user must have the ability to create a symbolic link to a file as it's created as part of downloading files from the WMO Code Registry.  After the initial downloading of files and setup, this particular privilege is no longer needed on subsequent invocations of `iwxxmValidator.py`.
+When using tool the first time on Windows machines, the user must have the ability to create a symbolic link to a file as it's created as part of downloading files from the WMO Code Registry. After the initial downloading of files and setup, this particular privilege is no longer needed on subsequent invocations of `iwxxmValidator.py`.
 
 This script can be used to quickly validate IWXXM messages before dissemination in an operational environment.
 
-There are numerous examples of validated IWXXM documents on the Internet.  The canonical IWXXM source has a few instances in the https://schemas.wmo.int/iwxxm/VERSION/examples folders.
+There are numerous examples of validated IWXXM documents on the Internet. The canonical IWXXM source has a few instances in the https://schemas.wmo.int/iwxxm/VERSION/examples folders.
 
 Another repository of examples is the WMO-IM GitHub site: https://github.com/wmo-im/iwxxm-translation
 
 However, after genuine effort on your part, you cannot figure out the problem with your XML document, please describe your issue in an e-mail to the WMO AvData task team at this address for assistance:
 
-tt-avdata (AT) groups wmo int 
+tt-avdata (AT) groups wmo int
 
 [spaces and periods removed to avoid spam e-mails]
 

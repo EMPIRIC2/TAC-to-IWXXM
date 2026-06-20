@@ -9,17 +9,9 @@
       "longitude": 1.754,
       "country": null,
       "elevation": 122,
-      "weather_phenomena": [
-        "RA",
-        "SHRA"
-      ],
-      "cloud_types": [
-        "TCU"
-      ],
-      "cloud_amounts": [
-        "SCT",
-        "BKN"
-      ],
+      "weather_phenomena": ["RA", "SHRA"],
+      "cloud_types": ["TCU"],
+      "cloud_amounts": ["SCT", "BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",

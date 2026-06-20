@@ -5,6 +5,7 @@ This directory contains 14 professional email templates ready for Supabase.
 ## Quick Upload Instructions
 
 Supabase provides 4 built-in template types that you can customize:
+
 1. **Confirmation** (Email Verification)
 2. **Magic Link** (Passwordless Login)
 3. **Recovery** (Password Reset)
@@ -29,6 +30,7 @@ Supabase provides 4 built-in template types that you can customize:
 **File**: `authentication/01-confirmation.md`
 
 **Subject**:
+
 ```
 Confirm your email address
 ```
@@ -44,6 +46,7 @@ Confirm your email address
 **File**: `authentication/02-magic-link.md`
 
 **Subject**:
+
 ```
 Your magic link to sign in
 ```
@@ -59,6 +62,7 @@ Your magic link to sign in
 **File**: `authentication/03-password-reset.md`
 
 **Subject**:
+
 ```
 Reset your password
 ```
@@ -74,6 +78,7 @@ Reset your password
 **File**: `authentication/05-email-changed.md`
 
 **Subject**:
+
 ```
 Email address changed
 ```
@@ -87,6 +92,7 @@ Email address changed
 ## Custom Templates (Not Supported by Supabase Built-in)
 
 These templates require custom implementation via your application:
+
 - ✉️ Welcome email (04-welcome.md)
 - 🚨 Suspicious activity alert (06-suspicious-activity.md)
 - 🔐 MFA enabled (security/01-mfa-enabled.md)

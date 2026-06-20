@@ -1,10 +1,10 @@
-import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
-import * as kv from "./kv_store.tsx";
+import { createClient } from 'jsr:@supabase/supabase-js@2.49.8';
+import * as kv from './kv_store.tsx';
 
 // SERVICE_ROLE client for database operations (bypasses RLS)
 const supabase = createClient(
-  Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
 );
 
 // User approval status type
@@ -29,9 +29,9 @@ export async function registerUser(email: string, password: string, username: st
     const { data: authData, error: authError } = await supabase.auth.admin.createUser({
       email,
       password,
-      user_metadata: { 
+      user_metadata: {
         username,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       },
       app_metadata: {
         approval_status: 'pending',
@@ -67,39 +67,57 @@ export async function registerUser(email: string, password: string, username: st
     return { data: { user: authData.user, profile: userProfile } };
   } catch (error) {
     console.error('Registration error:', error);
-    return { error: error instanceof Error ? error.message : 'Unknown error during registration' };
+    return {
+      error:
+        error instanceof Error ? error.message : 'Unknown error during registration',
+    };
   }
 }
 
 // Check if user is approved
-export async function checkUserApproval(userId: string): Promise<{ approved: boolean; status: UserApprovalStatus; emailVerified: boolean; isAdmin: boolean; username?: string }> {
+export async function checkUserApproval(userId: string): Promise<{
+  approved: boolean;
+  status: UserApprovalStatus;
+  emailVerified: boolean;
+  isAdmin: boolean;
+  username?: string;
+}> {
   try {
     // Get user from Supabase Auth - this is the source of truth
-    const { data: authData, error: authError } = await supabase.auth.admin.getUserById(userId);
-    
+    const { data: authData, error: authError } =
+      await supabase.auth.admin.getUserById(userId);
+
     if (authError || !authData.user) {
       console.error('Error checking user approval - auth lookup failed:', authError);
-      return { approved: false, status: 'pending', emailVerified: false, isAdmin: false };
+      return {
+        approved: false,
+        status: 'pending',
+        emailVerified: false,
+        isAdmin: false,
+      };
     }
 
     const emailVerified = authData.user.email_confirmed_at !== null;
     const appMetadata = authData.user.app_metadata || {};
     const userMetadata = authData.user.user_metadata || {};
-    
-    const approvalStatus = (appMetadata.approval_status as UserApprovalStatus) || 'pending';
+
+    const approvalStatus =
+      (appMetadata.approval_status as UserApprovalStatus) || 'pending';
     const isAdmin = appMetadata.is_admin === true;
     const username = userMetadata.username || '';
-    
+
     const approved = approvalStatus === 'approved' && emailVerified;
-    
-    console.log(`User ${userId} approval check - Status: ${approvalStatus}, Email Verified: ${emailVerified}, Admin: ${isAdmin}`);
-    
-    return { 
-      approved, 
+
+    console.log(
+      `User ${userId} approval check - Status: ${approvalStatus}, Email Verified: ${emailVerified}, Admin: ${isAdmin}`,
+    );
+
+    return {
+      approved,
       status: approvalStatus,
       emailVerified,
       isAdmin,
-      username
+      username,
     };
   } catch (error) {
     console.error('Error checking user approval:', error);
@@ -111,25 +129,26 @@ export async function checkUserApproval(userId: string): Promise<{ approved: boo
 export async function approveUser(userId: string, adminUserId: string) {
   try {
     // Get current user data from Supabase
-    const { data: userData, error: getUserError } = await supabase.auth.admin.getUserById(userId);
-    
+    const { data: userData, error: getUserError } =
+      await supabase.auth.admin.getUserById(userId);
+
     if (getUserError || !userData.user) {
-      console.error(`Cannot approve user: User not found in Supabase for user_id: ${userId}`);
+      console.error(
+        `Cannot approve user: User not found in Supabase for user_id: ${userId}`,
+      );
       return { error: 'User not found' };
     }
 
     // Update Supabase app_metadata (source of truth)
-    const { data: updatedUser, error: updateError } = await supabase.auth.admin.updateUserById(
-      userId,
-      {
+    const { data: updatedUser, error: updateError } =
+      await supabase.auth.admin.updateUserById(userId, {
         app_metadata: {
           ...userData.user.app_metadata,
           approval_status: 'approved',
           approved_at: new Date().toISOString(),
           approved_by: adminUserId,
-        }
-      }
-    );
+        },
+      });
 
     if (updateError) {
       console.error('Error updating Supabase user metadata:', updateError);
@@ -152,7 +171,9 @@ export async function approveUser(userId: string, adminUserId: string) {
     return { data: profile };
   } catch (error) {
     console.error('Error approving user:', error);
-    return { error: error instanceof Error ? error.message : 'Unknown error during approval' };
+    return {
+      error: error instanceof Error ? error.message : 'Unknown error during approval',
+    };
   }
 }
 
@@ -175,7 +196,12 @@ export async function resendVerificationEmail(email: string) {
     return { data: { message: 'Verification email sent' } };
   } catch (error) {
     console.error('Error resending verification email:', error);
-    return { error: error instanceof Error ? error.message : 'Unknown error resending verification email' };
+    return {
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Unknown error resending verification email',
+    };
   }
 }
 
@@ -183,25 +209,26 @@ export async function resendVerificationEmail(email: string) {
 export async function rejectUser(userId: string, adminUserId: string) {
   try {
     // Get current user data from Supabase
-    const { data: userData, error: getUserError } = await supabase.auth.admin.getUserById(userId);
-    
+    const { data: userData, error: getUserError } =
+      await supabase.auth.admin.getUserById(userId);
+
     if (getUserError || !userData.user) {
-      console.error(`Cannot reject user: User not found in Supabase for user_id: ${userId}`);
+      console.error(
+        `Cannot reject user: User not found in Supabase for user_id: ${userId}`,
+      );
       return { error: 'User not found' };
     }
 
     // Update Supabase app_metadata (source of truth)
-    const { data: updatedUser, error: updateError } = await supabase.auth.admin.updateUserById(
-      userId,
-      {
+    const { data: updatedUser, error: updateError } =
+      await supabase.auth.admin.updateUserById(userId, {
         app_metadata: {
           ...userData.user.app_metadata,
           approval_status: 'rejected',
           rejected_at: new Date().toISOString(),
           rejected_by: adminUserId,
-        }
-      }
-    );
+        },
+      });
 
     if (updateError) {
       console.error('Error updating Supabase user metadata:', updateError);
@@ -224,7 +251,9 @@ export async function rejectUser(userId: string, adminUserId: string) {
     return { data: profile };
   } catch (error) {
     console.error('Error rejecting user:', error);
-    return { error: error instanceof Error ? error.message : 'Unknown error during rejection' };
+    return {
+      error: error instanceof Error ? error.message : 'Unknown error during rejection',
+    };
   }
 }
 
@@ -232,13 +261,18 @@ export async function rejectUser(userId: string, adminUserId: string) {
 export async function getPendingUsers() {
   try {
     const allProfiles = await kv.getByPrefix<UserProfile>('user_profile:');
-    const pendingUsers = allProfiles.filter(profile => profile.approval_status === 'pending');
-    
+    const pendingUsers = allProfiles.filter(
+      (profile) => profile.approval_status === 'pending',
+    );
+
     console.log(`Retrieved ${pendingUsers.length} pending users`);
     return { data: pendingUsers };
   } catch (error) {
     console.error('Error getting pending users:', error);
-    return { error: error instanceof Error ? error.message : 'Unknown error getting pending users' };
+    return {
+      error:
+        error instanceof Error ? error.message : 'Unknown error getting pending users',
+    };
   }
 }
 
@@ -246,12 +280,14 @@ export async function getPendingUsers() {
 export async function getAllUsers() {
   try {
     const allProfiles = await kv.getByPrefix<UserProfile>('user_profile:');
-    
+
     console.log(`Retrieved ${allProfiles.length} total users`);
     return { data: allProfiles };
   } catch (error) {
     console.error('Error getting all users:', error);
-    return { error: error instanceof Error ? error.message : 'Unknown error getting all users' };
+    return {
+      error: error instanceof Error ? error.message : 'Unknown error getting all users',
+    };
   }
 }
 
@@ -259,19 +295,19 @@ export async function getAllUsers() {
 export async function isUserAdmin(userId: string): Promise<boolean> {
   try {
     console.log(`🔍 isUserAdmin: Checking admin status for user ${userId}`);
-    
+
     // Query the database directly since KV store may not be populated
     const { data, error } = await supabase
       .from('user_profiles')
       .select('is_admin')
       .eq('id', userId)
       .single();
-    
+
     if (error) {
       console.error(`❌ isUserAdmin: Database error for user ${userId}:`, error);
       return false;
     }
-    
+
     console.log(`📋 isUserAdmin: User ${userId} is_admin=${data?.is_admin}`);
     return data?.is_admin === true;
   } catch (error) {
@@ -281,32 +317,42 @@ export async function isUserAdmin(userId: string): Promise<boolean> {
 }
 
 // Toggle admin status (super admin function)
-export async function toggleAdminStatus(userId: string, isAdmin: boolean, adminUserId: string) {
+export async function toggleAdminStatus(
+  userId: string,
+  isAdmin: boolean,
+  adminUserId: string,
+) {
   try {
     // Check if the requesting user is an admin using Supabase
-    const { data: adminData, error: adminError } = await supabase.auth.admin.getUserById(adminUserId);
-    if (adminError || !adminData.user || adminData.user.app_metadata?.is_admin !== true) {
+    const { data: adminData, error: adminError } =
+      await supabase.auth.admin.getUserById(adminUserId);
+    if (
+      adminError ||
+      !adminData.user ||
+      adminData.user.app_metadata?.is_admin !== true
+    ) {
       return { error: 'Only administrators can modify admin status' };
     }
 
     // Get current user data from Supabase
-    const { data: userData, error: getUserError } = await supabase.auth.admin.getUserById(userId);
-    
+    const { data: userData, error: getUserError } =
+      await supabase.auth.admin.getUserById(userId);
+
     if (getUserError || !userData.user) {
-      console.error(`Cannot modify admin status: User not found in Supabase for user_id: ${userId}`);
+      console.error(
+        `Cannot modify admin status: User not found in Supabase for user_id: ${userId}`,
+      );
       return { error: 'User not found' };
     }
 
     // Update Supabase app_metadata (source of truth)
-    const { data: updatedUser, error: updateError } = await supabase.auth.admin.updateUserById(
-      userId,
-      {
+    const { data: updatedUser, error: updateError } =
+      await supabase.auth.admin.updateUserById(userId, {
         app_metadata: {
           ...userData.user.app_metadata,
           is_admin: isAdmin,
-        }
-      }
-    );
+        },
+      });
 
     if (updateError) {
       console.error('Error updating Supabase user metadata:', updateError);
@@ -323,11 +369,16 @@ export async function toggleAdminStatus(userId: string, isAdmin: boolean, adminU
       await kv.set(`user_profile:${userId}`, updatedProfile);
     }
 
-    console.log(`Admin status ${isAdmin ? 'granted to' : 'revoked from'}: ${userData.user.email} by admin: ${adminUserId}`);
+    console.log(
+      `Admin status ${isAdmin ? 'granted to' : 'revoked from'}: ${userData.user.email} by admin: ${adminUserId}`,
+    );
     return { data: profile };
   } catch (error) {
     console.error('Error toggling admin status:', error);
-    return { error: error instanceof Error ? error.message : 'Unknown error toggling admin status' };
+    return {
+      error:
+        error instanceof Error ? error.message : 'Unknown error toggling admin status',
+    };
   }
 }
 
@@ -335,8 +386,9 @@ export async function toggleAdminStatus(userId: string, isAdmin: boolean, adminU
 export async function getUserProfile(userId: string) {
   try {
     // Get user from Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.admin.getUserById(userId);
-    
+    const { data: authData, error: authError } =
+      await supabase.auth.admin.getUserById(userId);
+
     if (authError || !authData.user) {
       console.error('Error getting user profile:', authError);
       return { error: 'User not found' };
@@ -344,7 +396,7 @@ export async function getUserProfile(userId: string) {
 
     const appMetadata = authData.user.app_metadata || {};
     const userMetadata = authData.user.user_metadata || {};
-    
+
     const profile = {
       user_id: authData.user.id,
       email: authData.user.email || '',
@@ -361,23 +413,30 @@ export async function getUserProfile(userId: string) {
     return { data: profile };
   } catch (error) {
     console.error('Error getting user profile:', error);
-    return { error: error instanceof Error ? error.message : 'Unknown error getting user profile' };
+    return {
+      error:
+        error instanceof Error ? error.message : 'Unknown error getting user profile',
+    };
   }
 }
 
 // Update user profile (for authenticated users)
-export async function updateUserProfile(userId: string, updates: { username?: string; email?: string }) {
+export async function updateUserProfile(
+  userId: string,
+  updates: { username?: string; email?: string },
+) {
   try {
     // Get current user data
-    const { data: userData, error: getUserError } = await supabase.auth.admin.getUserById(userId);
-    
+    const { data: userData, error: getUserError } =
+      await supabase.auth.admin.getUserById(userId);
+
     if (getUserError || !userData.user) {
       console.error('Cannot update profile: User not found');
       return { error: 'User not found' };
     }
 
     const updatePayload: any = {};
-    
+
     // Update email if provided
     if (updates.email && updates.email !== userData.user.email) {
       updatePayload.email = updates.email;
@@ -398,10 +457,8 @@ export async function updateUserProfile(userId: string, updates: { username?: st
     }
 
     // Update Supabase user
-    const { data: updatedUser, error: updateError } = await supabase.auth.admin.updateUserById(
-      userId,
-      updatePayload
-    );
+    const { data: updatedUser, error: updateError } =
+      await supabase.auth.admin.updateUserById(userId, updatePayload);
 
     if (updateError) {
       console.error('Error updating user profile:', updateError);
@@ -420,20 +477,22 @@ export async function updateUserProfile(userId: string, updates: { username?: st
     }
 
     console.log(`Profile updated for user: ${userId}`);
-    
+
     // If email was changed, return a message about verification
     if (updates.email && updates.email !== userData.user.email) {
-      return { 
-        data: { 
+      return {
+        data: {
           message: 'Profile updated. Please verify your new email address.',
-          emailChanged: true 
-        } 
+          emailChanged: true,
+        },
       };
     }
 
     return { data: { message: 'Profile updated successfully' } };
   } catch (error) {
     console.error('Error updating user profile:', error);
-    return { error: error instanceof Error ? error.message : 'Unknown error updating profile' };
+    return {
+      error: error instanceof Error ? error.message : 'Unknown error updating profile',
+    };
   }
 }

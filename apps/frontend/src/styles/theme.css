@@ -4,84 +4,84 @@
 
 :root {
   --font-size: 14px;
-  
+
   /* Scientific Color Palette - Light Mode */
-  --background: #F8FAFB;
-  --foreground: #1E293B;
-  --card: #FFFFFF;
-  --card-foreground: #1E293B;
-  --popover: #FFFFFF;
-  --popover-foreground: #1E293B;
-  --primary: #0066CC;
-  --primary-foreground: #FFFFFF;
-  --secondary: #00A3E0;
-  --secondary-foreground: #FFFFFF;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
-  --accent: #0EA5E9;
-  --accent-foreground: #FFFFFF;
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
-  --border: #CBD5E1;
+  --background: #f8fafb;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+  --popover: #ffffff;
+  --popover-foreground: #1e293b;
+  --primary: #0066cc;
+  --primary-foreground: #ffffff;
+  --secondary: #00a3e0;
+  --secondary-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #0ea5e9;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #cbd5e1;
   --input: transparent;
-  --input-background: #FFFFFF;
-  --switch-background: #CBD5E1;
+  --input-background: #ffffff;
+  --switch-background: #cbd5e1;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #0066CC;
-  
+  --ring: #0066cc;
+
   /* Chart colors - scientific palette */
-  --chart-1: #0066CC;
-  --chart-2: #00A3E0;
-  --chart-3: #10B981;
-  --chart-4: #F59E0B;
-  --chart-5: #8B5CF6;
-  
+  --chart-1: #0066cc;
+  --chart-2: #00a3e0;
+  --chart-3: #10b981;
+  --chart-4: #f59e0b;
+  --chart-5: #8b5cf6;
+
   /* Minimal border radius for sharp, technical look */
   --radius: 2px;
-  
+
   /* Sidebar colors */
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #1E293B;
-  --sidebar-primary: #0066CC;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F1F5F9;
-  --sidebar-accent-foreground: #1E293B;
-  --sidebar-border: #E2E8F0;
-  --sidebar-ring: #0066CC;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1e293b;
+  --sidebar-primary: #0066cc;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #1e293b;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #0066cc;
 }
 
 .dark {
   /* Scientific Color Palette - Dark Mode (Deep space blue aesthetic) */
-  --background: #0A0E1A;
-  --foreground: #F8FAFC;
+  --background: #0a0e1a;
+  --foreground: #f8fafc;
   --card: #131720;
-  --card-foreground: #F8FAFC;
-  --popover: #1E293B;
-  --popover-foreground: #F8FAFC;
-  --primary: #3B82F6;
-  --primary-foreground: #FFFFFF;
-  --secondary: #06B6D4;
-  --secondary-foreground: #FFFFFF;
-  --muted: #1E293B;
-  --muted-foreground: #94A3B8;
-  --accent: #0EA5E9;
-  --accent-foreground: #FFFFFF;
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #06b6d4;
+  --secondary-foreground: #ffffff;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #0ea5e9;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
   --border: #334155;
-  --input: #1E293B;
-  --ring: #3B82F6;
-  
+  --input: #1e293b;
+  --ring: #3b82f6;
+
   /* Sidebar colors - dark mode */
-  --sidebar: #0F172A;
-  --sidebar-foreground: #F8FAFC;
-  --sidebar-primary: #3B82F6;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #1E293B;
-  --sidebar-accent-foreground: #F8FAFC;
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
   --sidebar-border: #334155;
-  --sidebar-ring: #3B82F6;
+  --sidebar-ring: #3b82f6;
 }
 
 @theme inline {

@@ -1,7 +1,10 @@
-import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
-import * as kv from "./kv_store.tsx";
+import { createClient } from 'jsr:@supabase/supabase-js@2.49.8';
+import * as kv from './kv_store.tsx';
 // SERVICE_ROLE client for database operations (bypasses RLS)
-const supabase = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "");
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+);
 // Convert IWXXM to JSON format for database storage
 function iwxxmToJson(iwxxmContent, originalName) {
   // Parse basic IWXXM structure
@@ -9,7 +12,7 @@ function iwxxmToJson(iwxxmContent, originalName) {
   const observations = [];
   // Extract observations from IWXXM
   let currentObs = null;
-  for (const line of lines){
+  for (const line of lines) {
     if (line.includes('<MeteorologicalAerodromeObservation>')) {
       currentObs = {};
     } else if (line.includes('</MeteorologicalAerodromeObservation>') && currentObs) {
@@ -32,7 +35,7 @@ function iwxxmToJson(iwxxmContent, originalName) {
     format: 'IWXXM',
     observations,
     totalObservations: observations.length,
-    processedAt: new Date().toISOString()
+    processedAt: new Date().toISOString(),
   };
 }
 // Upload to primary database
@@ -46,29 +49,36 @@ async function uploadToPrimary(file, options) {
       originalFileName: file.originalName,
       uploadedAt: new Date().toISOString(),
       format: options.format,
-      ...options.includeOriginal && {
-        originalContent: file.originalContent
-      },
-      ...options.format === 'iwxxm' || options.format === 'both' ? {
-        iwxxmContent: file.convertedContent
-      } : {},
-      ...options.format === 'json' || options.format === 'both' ? {
-        jsonContent: iwxxmToJson(file.convertedContent, file.originalName)
-      } : {},
-      metadata: options.metadata || {}
+      ...(options.includeOriginal && {
+        originalContent: file.originalContent,
+      }),
+      ...(options.format === 'iwxxm' || options.format === 'both'
+        ? {
+            iwxxmContent: file.convertedContent,
+          }
+        : {}),
+      ...(options.format === 'json' || options.format === 'both'
+        ? {
+            jsonContent: iwxxmToJson(file.convertedContent, file.originalName),
+          }
+        : {}),
+      metadata: options.metadata || {},
     };
     await kv.set(`db_primary:${recordId}`, record);
     console.log(`File uploaded to primary database: ${recordId}`);
     return {
       success: true,
       recordId,
-      destination: 'primary'
+      destination: 'primary',
     };
   } catch (error) {
     console.error('Error uploading to primary database:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error uploading to primary database'
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Unknown error uploading to primary database',
     };
   }
 }
@@ -83,39 +93,46 @@ async function uploadToArchive(file, options) {
       originalFileName: file.originalName,
       archivedAt: new Date().toISOString(),
       format: options.format,
-      ...options.includeOriginal && {
-        originalContent: file.originalContent
-      },
-      ...options.format === 'iwxxm' || options.format === 'both' ? {
-        iwxxmContent: file.convertedContent
-      } : {},
-      ...options.format === 'json' || options.format === 'both' ? {
-        jsonContent: iwxxmToJson(file.convertedContent, file.originalName)
-      } : {},
+      ...(options.includeOriginal && {
+        originalContent: file.originalContent,
+      }),
+      ...(options.format === 'iwxxm' || options.format === 'both'
+        ? {
+            iwxxmContent: file.convertedContent,
+          }
+        : {}),
+      ...(options.format === 'json' || options.format === 'both'
+        ? {
+            jsonContent: iwxxmToJson(file.convertedContent, file.originalName),
+          }
+        : {}),
       metadata: {
         ...options.metadata,
-        archiveVersion: '1.0'
-      }
+        archiveVersion: '1.0',
+      },
     };
     await kv.set(`db_archive:${recordId}`, record);
     console.log(`File uploaded to archive database: ${recordId}`);
     return {
       success: true,
       recordId,
-      destination: 'archive'
+      destination: 'archive',
     };
   } catch (error) {
     console.error('Error uploading to archive database:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error uploading to archive database'
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Unknown error uploading to archive database',
     };
   }
 }
 // Main upload function
 export async function uploadToDatabase(files, options) {
   const results = [];
-  for (const file of files){
+  for (const file of files) {
     if (options.destination === 'primary') {
       const result = await uploadToPrimary(file, options);
       results.push(result);
@@ -129,12 +146,12 @@ export async function uploadToDatabase(files, options) {
     }
   }
   const summary = {
-    success: results.filter((r)=>r.success).length,
-    failed: results.filter((r)=>!r.success).length
+    success: results.filter((r) => r.success).length,
+    failed: results.filter((r) => !r.success).length,
   };
   return {
     results,
-    summary
+    summary,
   };
 }
 // Get uploaded files for a user
@@ -143,37 +160,44 @@ export async function getUserUploads(userId, database) {
     const allRecords = [];
     if (database === 'primary' || database === 'both') {
       const primaryRecords = await kv.getByPrefix(`db_primary:`);
-      const userPrimaryRecords = primaryRecords.filter((record)=>record.userId === userId);
+      const userPrimaryRecords = primaryRecords.filter(
+        (record) => record.userId === userId,
+      );
       allRecords.push(...userPrimaryRecords);
     }
     if (database === 'archive' || database === 'both') {
       const archiveRecords = await kv.getByPrefix(`db_archive:`);
-      const userArchiveRecords = archiveRecords.filter((record)=>record.userId === userId);
+      const userArchiveRecords = archiveRecords.filter(
+        (record) => record.userId === userId,
+      );
       allRecords.push(...userArchiveRecords);
     }
     console.log(`Retrieved ${allRecords.length} uploads for user: ${userId}`);
     return {
-      data: allRecords
+      data: allRecords,
     };
   } catch (error) {
     console.error('Error getting user uploads:', error);
     return {
-      error: error instanceof Error ? error.message : 'Unknown error getting user uploads'
+      error:
+        error instanceof Error ? error.message : 'Unknown error getting user uploads',
     };
   }
 }
 // Delete an upload
 export async function deleteUpload(recordId, userId) {
   try {
-    const record = await kv.get(`db_primary:${recordId}`) || await kv.get(`db_archive:${recordId}`);
+    const record =
+      (await kv.get(`db_primary:${recordId}`)) ||
+      (await kv.get(`db_archive:${recordId}`));
     if (!record) {
       return {
-        error: 'Record not found'
+        error: 'Record not found',
       };
     }
     if (record.userId !== userId) {
       return {
-        error: 'Unauthorized: You can only delete your own uploads'
+        error: 'Unauthorized: You can only delete your own uploads',
       };
     }
     if (await kv.get(`db_primary:${recordId}`)) {
@@ -184,13 +208,13 @@ export async function deleteUpload(recordId, userId) {
     console.log(`Upload deleted: ${recordId} by user: ${userId}`);
     return {
       data: {
-        message: 'Upload deleted successfully'
-      }
+        message: 'Upload deleted successfully',
+      },
     };
   } catch (error) {
     console.error('Error deleting upload:', error);
     return {
-      error: error instanceof Error ? error.message : 'Unknown error deleting upload'
+      error: error instanceof Error ? error.message : 'Unknown error deleting upload',
     };
   }
 }

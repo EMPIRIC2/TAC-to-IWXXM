@@ -6,7 +6,7 @@ as per user decisions for the METAR to IWXXM Translation Centre.
 """
 
 import os
-from typing import Dict
+from typing import Any, Dict
 
 # =============================================================================
 # Translation Centre Identification (ICAO Doc 10003, Section 7)
@@ -372,7 +372,7 @@ DEFAULT_IWXXM_VERSION = "2025-2"
 # =============================================================================
 
 
-def get_translation_centre_info() -> Dict[str, any]:
+def get_translation_centre_info() -> Dict[str, Any]:
     """
     Get Translation Centre metadata for IWXXM documents.
 

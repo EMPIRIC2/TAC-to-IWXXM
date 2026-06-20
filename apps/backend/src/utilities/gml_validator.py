@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
-from lxml import etree
+import lxml.etree as etree
 
 from ..schemas.validation import ValidationIssue, ValidationLayer, ValidationSeverity
 

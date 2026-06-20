@@ -23,12 +23,6 @@ class TestBackendFrontendIntegration:
     def test_frontend_can_submit_conversion_request(self):
         """Test that frontend can submit METAR for conversion."""
         # Frontend would POST to /api/v1/convert with:
-        request_data = {
-            "metar_text": "KJFK 121251Z 24016G28KT 3SM -SN BKN014 OVC040 23/19 A3000",
-            "bulletin_id": "TEST0001",
-            "issuing_center": "KJFK",
-            "iwxxm_version": "2.1",
-        }
 
         # Backend processes and returns:
         mock_response = {
@@ -53,7 +47,6 @@ class TestBackendFrontendIntegration:
     def test_frontend_can_upload_file_and_convert(self):
         """Test file upload and conversion flow."""
         # Frontend uploads TAC file
-        file_data = b"KJFK 121251Z 24016G28KT 3SM -SN BKN014 OVC040 23/19 A3000"
 
         # Backend processes
         mock_response = {
@@ -201,11 +194,6 @@ class TestConversionWorkflow:
     def test_single_metar_conversion_workflow(self):
         """Test workflow for single METAR conversion."""
         # 1. Frontend sends request
-        request = {
-            "metar_text": "KJFK 121251Z 24016G28KT 3SM -SN BKN014 OVC040 23/19 A3000",
-            "bulletin_id": "AUTO0001",
-            "issuing_center": "KJFK",
-        }
 
         # 2. Backend processes
         response = {
@@ -222,7 +210,6 @@ class TestConversionWorkflow:
     def test_batch_file_conversion_workflow(self):
         """Test workflow for batch file conversion."""
         # 1. Frontend uploads multiple files
-        files = ["file1.tac", "file2.tac", "file3.tac"]
 
         # 2. Backend processes all files
         response = {

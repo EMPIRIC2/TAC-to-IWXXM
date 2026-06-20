@@ -46,6 +46,7 @@ This application uses a **simplified, frontend-first architecture** where the fr
 ### **Frontend → Supabase Direct**
 
 #### **1. Supabase Auth (Built-in)**
+
 - **What**: User authentication and email verification
 - **Stores**:
   - Email, password (hashed)
@@ -59,6 +60,7 @@ This application uses a **simplified, frontend-first architecture** where the fr
   - `supabase.auth.getSession()` - Check current session
 
 #### **2. Postgres Database (with RLS)**
+
 - **Table**: `user_profiles`
 - **Stores**:
   - `id` (references auth.users.id)
@@ -78,18 +80,20 @@ This application uses a **simplified, frontend-first architecture** where the fr
 ## 🔐 Authentication Flow
 
 ### **Registration** (`Register.tsx`)
+
 ```typescript
 // Frontend calls Supabase directly
 const { data, error } = await supabase.auth.signUp({
   email,
   password,
   options: {
-    data: { username },  // Stored in user_metadata
+    data: { username }, // Stored in user_metadata
   },
 });
 ```
 
 **What happens:**
+
 1. Supabase creates user in `auth.users`
 2. Supabase sends verification email automatically
 3. Database trigger creates `user_profiles` row with `approval_status: 'pending'`
@@ -98,10 +102,13 @@ const { data, error } = await supabase.auth.signUp({
 ---
 
 ### **Email Verification** (`EmailVerification.tsx`)
+
 ```typescript
 // User clicks link in email → Supabase confirms automatically
 // Frontend checks verification status
-const { data: { session } } = await supabase.auth.getSession();
+const {
+  data: { session },
+} = await supabase.auth.getSession();
 
 if (session?.user?.email_confirmed_at) {
   // Verified! Now check approval from database
@@ -110,7 +117,7 @@ if (session?.user?.email_confirmed_at) {
     .select('approval_status, is_admin')
     .eq('id', session.user.id)
     .single();
-    
+
   if (profile.approval_status === 'approved') {
     // ✅ Login!
   }
@@ -118,6 +125,7 @@ if (session?.user?.email_confirmed_at) {
 ```
 
 **What happens:**
+
 1. User clicks verification link in email
 2. Supabase sets `email_confirmed_at` timestamp
 3. User clicks "I've Verified My Email" button
@@ -129,6 +137,7 @@ if (session?.user?.email_confirmed_at) {
 ---
 
 ### **Login** (`Login.tsx`)
+
 ```typescript
 // Frontend authenticates with Supabase
 const { data: authData } = await supabase.auth.signInWithPassword({
@@ -158,6 +167,7 @@ if (profile.approval_status !== 'approved') {
 ```
 
 **What happens:**
+
 1. Supabase validates credentials
 2. Frontend checks `email_confirmed_at` (email verified?)
 3. Frontend queries `user_profiles` (approved?)
@@ -167,6 +177,7 @@ if (profile.approval_status !== 'approved') {
 ---
 
 ### **Admin Approval** (`UserApprovalPanel.tsx`)
+
 ```typescript
 // Admin queries pending users from database
 const { data } = await supabase
@@ -186,6 +197,7 @@ const { error } = await supabase
 ```
 
 **What happens:**
+
 1. Admin sees list of pending users (RLS allows admins to see all)
 2. Admin clicks "Approve" or "Reject"
 3. Frontend directly updates `user_profiles` table
@@ -238,6 +250,7 @@ CREATE POLICY "Admins can update any profile"
 ```
 
 **Benefits:**
+
 - ✅ Security enforced at database level
 - ✅ No backend needed for authorization
 - ✅ Can't be bypassed by manipulating frontend code
@@ -250,11 +263,13 @@ CREATE POLICY "Admins can update any profile"
 The backend (`/supabase/functions/server/`) is **optional** and only used for:
 
 ### **Current Backend Functions:**
+
 1. **METAR Conversion** - Complex business logic
 2. **File Uploads** - Database storage operations
 3. **(Future) Admin Email Notifications** - Send emails on approval/rejection
 
 ### **NOT Used For:**
+
 - ❌ User authentication (handled by Supabase Auth)
 - ❌ Profile queries (handled by RLS)
 - ❌ Approval/rejection (handled by RLS + frontend)
@@ -265,6 +280,7 @@ The backend (`/supabase/functions/server/`) is **optional** and only used for:
 ## 📊 Database Schema
 
 ### **`auth.users` (Supabase Built-in)**
+
 ```sql
 CREATE TABLE auth.users (
   id UUID PRIMARY KEY,
@@ -278,6 +294,7 @@ CREATE TABLE auth.users (
 ```
 
 ### **`public.user_profiles` (Custom Table)**
+
 ```sql
 CREATE TABLE user_profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -294,6 +311,7 @@ CREATE TABLE user_profiles (
 ```
 
 ### **Auto-Create Profile Trigger**
+
 ```sql
 -- Automatically create profile when user signs up
 CREATE OR REPLACE FUNCTION handle_new_user()
@@ -320,26 +338,31 @@ CREATE TRIGGER on_auth_user_created
 ## 🚀 Benefits of This Architecture
 
 ### **1. Simpler**
+
 - No complex backend API for auth
 - Frontend talks directly to Supabase
 - Fewer moving parts
 
 ### **2. Faster**
+
 - No backend hop for queries
 - Direct database access with RLS
 - Reduced latency
 
 ### **3. More Secure**
+
 - Security enforced at database level (RLS)
 - Can't bypass via frontend manipulation
 - Supabase handles password hashing, sessions
 
 ### **4. Easier to Maintain**
+
 - Less backend code to maintain
 - Supabase handles infrastructure
 - Focus on business logic (METAR conversion)
 
 ### **5. Scalable**
+
 - Supabase auto-scales
 - Database pooling built-in
 - CDN for static frontend
@@ -363,18 +386,22 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-key-here  # Backend only
 ## 🛠️ Setup Instructions
 
 ### **1. Run Migration**
+
 ```bash
 # Apply the database migration to create tables and RLS policies
 supabase db push
 ```
 
 ### **2. Configure Email**
+
 - Go to Supabase Dashboard → Authentication → Email Templates
 - Configure SMTP (or use built-in for dev)
 - Customize verification email template
 
 ### **3. Create First Admin**
+
 After a user registers and verifies email:
+
 ```sql
 -- Manually set first admin via SQL Editor
 UPDATE user_profiles
@@ -383,6 +410,7 @@ WHERE email = 'admin@example.com';
 ```
 
 ### **4. Deploy**
+
 - Frontend: Deploy to Vercel/Netlify
 - Backend: Automatically deployed via Supabase Edge Functions
 
@@ -391,9 +419,10 @@ WHERE email = 'admin@example.com';
 ## 🔍 Debugging
 
 ### **Check User Status**
+
 ```sql
 -- See all users and their approval status
-SELECT 
+SELECT
   u.email,
   u.email_confirmed_at,
   p.approval_status,
@@ -403,12 +432,14 @@ LEFT JOIN user_profiles p ON u.id = p.id;
 ```
 
 ### **Check RLS Policies**
+
 ```sql
 -- View all policies on user_profiles
 SELECT * FROM pg_policies WHERE tablename = 'user_profiles';
 ```
 
 ### **Test RLS as User**
+
 ```sql
 -- Set session to specific user
 SET SESSION "request.jwt.claims" = '{"sub":"user-id-here"}';
@@ -421,14 +452,14 @@ SELECT * FROM user_profiles;
 
 ## 📚 Key Files
 
-| File | Purpose |
-|------|---------|
-| `/src/app/components/auth/Register.tsx` | Direct Supabase signup |
-| `/src/app/components/auth/Login.tsx` | Direct Supabase signin + DB query |
-| `/src/app/components/auth/EmailVerification.tsx` | Check verification + approval |
-| `/src/app/components/admin/UserApprovalPanel.tsx` | Direct DB updates via RLS |
-| `/supabase/migrations/001_create_user_profiles.sql` | Database schema + RLS |
-| `/utils/supabase/client.tsx` | Supabase client singleton |
+| File                                                | Purpose                           |
+| --------------------------------------------------- | --------------------------------- |
+| `/src/app/components/auth/Register.tsx`             | Direct Supabase signup            |
+| `/src/app/components/auth/Login.tsx`                | Direct Supabase signin + DB query |
+| `/src/app/components/auth/EmailVerification.tsx`    | Check verification + approval     |
+| `/src/app/components/admin/UserApprovalPanel.tsx`   | Direct DB updates via RLS         |
+| `/supabase/migrations/001_create_user_profiles.sql` | Database schema + RLS             |
+| `/utils/supabase/client.tsx`                        | Supabase client singleton         |
 
 ---
 

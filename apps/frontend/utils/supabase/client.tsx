@@ -10,5 +10,5 @@ export const supabase = createClient(supabaseUrl, publicAnonKey, {
     detectSessionInUrl: true,
     // PKCE Flow for better security and SSR compatibility
     flowType: 'pkce',
-  }
+  },
 });

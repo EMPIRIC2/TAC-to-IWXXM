@@ -1,0 +1,13 @@
+{
+  "include": ["src"],
+  "exclude": ["**/__pycache__"],
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "standard",
+  "reportMissingTypeStubs": false,
+  "reportUnknownMemberType": "none",
+  "reportUnknownVariableType": "none",
+  "reportUnknownArgumentType": "none",
+  "reportUnknownParameterType": "none",
+  "reportMissingTypeArgument": "none",
+  "extraPaths": ["../../packages/gifts", "../../packages/gifts/gifts", "src"]
+}

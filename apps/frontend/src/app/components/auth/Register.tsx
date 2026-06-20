@@ -22,14 +22,19 @@ interface RegisterProps {
 
 export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<RegisterFormData>();
-  
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<RegisterFormData>();
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const password = watch('password');
 
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
-    
+
     try {
       const response = await registerUser({
         email: data.email,
@@ -44,10 +49,12 @@ export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
 
       toast.success('Account created! Please check your email to verify your account.');
       onRegister(data.email);
-      
     } catch (error) {
       console.error('Registration error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred during registration. Please try again.';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'An error occurred during registration. Please try again.';
       toast.error(errorMessage);
       setIsLoading(false);
     }
@@ -59,7 +66,9 @@ export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
         {/* Theme Toggle */}
         <div className="flex justify-end mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">Display Mode</span>
+            <span className="text-xs text-muted-foreground uppercase tracking-wider">
+              Display Mode
+            </span>
             <ThemeToggle />
           </div>
         </div>
@@ -78,11 +87,17 @@ export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
           {/* Register Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <Label htmlFor="email" className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">
+              <Label
+                htmlFor="email"
+                className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block"
+              >
                 Email Address
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" aria-hidden="true" />
+                <Mail
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"
+                  aria-hidden="true"
+                />
                 <Input
                   id="email"
                   type="email"
@@ -92,26 +107,36 @@ export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
                     required: 'Email is required',
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: 'Please enter a valid email address'
-                    }
+                      message: 'Please enter a valid email address',
+                    },
                   })}
                   aria-invalid={errors.email ? 'true' : 'false'}
                   aria-describedby={errors.email ? 'email-error' : undefined}
                 />
               </div>
               {errors.email && (
-                <p id="email-error" className="text-xs text-destructive mt-1 font-mono" role="alert">
+                <p
+                  id="email-error"
+                  className="text-xs text-destructive mt-1 font-mono"
+                  role="alert"
+                >
                   {errors.email.message}
                 </p>
               )}
             </div>
 
             <div>
-              <Label htmlFor="password" className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">
+              <Label
+                htmlFor="password"
+                className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block"
+              >
                 Password
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" aria-hidden="true" />
+                <Lock
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"
+                  aria-hidden="true"
+                />
                 <Input
                   id="password"
                   type="password"
@@ -121,26 +146,36 @@ export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
                     required: 'Password is required',
                     minLength: {
                       value: 6,
-                      message: 'Password must be at least 6 characters'
-                    }
+                      message: 'Password must be at least 6 characters',
+                    },
                   })}
                   aria-invalid={errors.password ? 'true' : 'false'}
                   aria-describedby={errors.password ? 'password-error' : undefined}
                 />
               </div>
               {errors.password && (
-                <p id="password-error" className="text-xs text-destructive mt-1 font-mono" role="alert">
+                <p
+                  id="password-error"
+                  className="text-xs text-destructive mt-1 font-mono"
+                  role="alert"
+                >
                   {errors.password.message}
                 </p>
               )}
             </div>
 
             <div>
-              <Label htmlFor="confirmPassword" className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">
+              <Label
+                htmlFor="confirmPassword"
+                className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block"
+              >
                 Confirm Password
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" aria-hidden="true" />
+                <Lock
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"
+                  aria-hidden="true"
+                />
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -148,14 +183,20 @@ export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
                   className={`pl-10 h-10 text-sm font-mono bg-background border-border focus:border-primary ${errors.confirmPassword ? 'border-destructive' : ''}`}
                   {...register('confirmPassword', {
                     required: 'Please confirm your password',
-                    validate: value => value === password || 'Passwords do not match'
+                    validate: (value) => value === password || 'Passwords do not match',
                   })}
                   aria-invalid={errors.confirmPassword ? 'true' : 'false'}
-                  aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
+                  aria-describedby={
+                    errors.confirmPassword ? 'confirmPassword-error' : undefined
+                  }
                 />
               </div>
               {errors.confirmPassword && (
-                <p id="confirmPassword-error" className="text-xs text-destructive mt-1 font-mono" role="alert">
+                <p
+                  id="confirmPassword-error"
+                  className="text-xs text-destructive mt-1 font-mono"
+                  role="alert"
+                >
                   {errors.confirmPassword.message}
                 </p>
               )}
@@ -169,7 +210,10 @@ export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
                 required
                 aria-label="Accept terms and conditions"
               />
-              <label htmlFor="terms" className="ml-2 text-xs text-muted-foreground uppercase tracking-wide">
+              <label
+                htmlFor="terms"
+                className="ml-2 text-xs text-muted-foreground uppercase tracking-wide"
+              >
                 I agree to the Terms of Service
               </label>
             </div>
@@ -178,7 +222,9 @@ export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
               type="submit"
               disabled={isLoading}
               className="w-full h-10 text-xs"
-              aria-label={isLoading ? 'Creating account, please wait' : 'Create account'}
+              aria-label={
+                isLoading ? 'Creating account, please wait' : 'Create account'
+              }
             >
               {isLoading ? (
                 <>

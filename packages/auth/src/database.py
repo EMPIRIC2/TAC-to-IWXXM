@@ -72,7 +72,7 @@ def init_db():
 def _ensure_models_imported():
     """Ensure models are imported and registered with Base."""
     try:
-        from auth import models  # noqa: F401
+        from auth import models  # noqa: F401  # pyright: ignore[reportUnusedImport]
     except ImportError:
         pass  # Models may not be available in some contexts
 

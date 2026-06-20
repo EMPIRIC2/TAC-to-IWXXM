@@ -2,7 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
-import { Loader2, Users, Search, CheckCircle, XCircle, Clock, Shield } from 'lucide-react';
+import {
+  Loader2,
+  Users,
+  Search,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Shield,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { projectId } from '/utils/supabase/info';
 
@@ -36,7 +44,9 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
   const [stats, setStats] = useState<DatabaseStats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [filterStatus, setFilterStatus] = useState<
+    'all' | 'pending' | 'approved' | 'rejected'
+  >('all');
 
   const loadMonitoringData = useCallback(async () => {
     setIsLoading(true);
@@ -46,17 +56,17 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
           `https://${projectId}.supabase.co/functions/v1/make-server-2e3cda33/admin/all-users`,
           {
             headers: {
-              'Authorization': `Bearer ${accessToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         ),
         fetch(
           `https://${projectId}.supabase.co/functions/v1/make-server-2e3cda33/admin/stats`,
           {
             headers: {
-              'Authorization': `Bearer ${accessToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         ),
       ]);
 
@@ -89,11 +99,11 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ userId, isAdmin: !currentStatus }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -108,14 +118,14 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
     }
   };
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = 
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.username.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesFilter = 
+
+    const matchesFilter =
       filterStatus === 'all' || user.approval_status === filterStatus;
-    
+
     return matchesSearch && matchesFilter;
   });
 
@@ -131,9 +141,7 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
           variant="outline"
           className="dark:bg-gray-700 dark:text-white"
         >
-          {isLoading ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          ) : null}
+          {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
           Refresh
         </Button>
       </div>
@@ -219,9 +227,10 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
               key={status}
               onClick={() => setFilterStatus(status)}
               variant={filterStatus === status ? 'default' : 'outline'}
-              className={filterStatus === status 
-                ? 'bg-blue-500 text-white' 
-                : 'dark:bg-gray-700 dark:text-white'
+              className={
+                filterStatus === status
+                  ? 'bg-blue-500 text-white'
+                  : 'dark:bg-gray-700 dark:text-white'
               }
             >
               {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -239,7 +248,9 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
         <div className="text-center py-12">
           <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400">
-            {searchTerm || filterStatus !== 'all' ? 'No users match your filters' : 'No users found'}
+            {searchTerm || filterStatus !== 'all'
+              ? 'No users match your filters'
+              : 'No users found'}
           </p>
         </div>
       ) : (
@@ -283,8 +294,8 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
                         user.approval_status === 'approved'
                           ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                           : user.approval_status === 'pending'
-                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                            ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                       }`}
                     >
                       {user.approval_status === 'approved' ? (
@@ -304,7 +315,9 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
                         Admin
                       </span>
                     ) : (
-                      <span className="text-sm text-gray-500 dark:text-gray-400">User</span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        User
+                      </span>
                     )}
                   </td>
                   <td className="px-4 py-3">

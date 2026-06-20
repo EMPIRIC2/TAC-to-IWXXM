@@ -1,4 +1,4 @@
-  # Backend Testing Guide
+# Backend Testing Guide
 
 Comprehensive testing infrastructure for the METAR to IWXXM Backend API.
 
@@ -54,6 +54,7 @@ Fast, isolated tests of individual components without external dependencies.
 - **Coverage target**: > 90%
 
 **Examples:**
+
 - `test_conversion.py` - Conversion logic
 - `test_validation_service.py` - Validation service
 - `test_tac_parser.py` - TAC parsing
@@ -68,12 +69,14 @@ Tests of API endpoints with mocked external services (database, auth, etc.).
 - **Coverage target**: > 85%
 
 **Key test files:**
+
 - `test_evaluation_endpoints_comprehensive.py` - All evaluation endpoints
 - `test_icao_opmet_admin.py` - ICAO OPMET statistics with admin auth
 - `test_validation_router.py` - Validation endpoints
 - `test_api_comprehensive.py` - Core API endpoints
 
 **Features tested:**
+
 - ✅ All HTTP endpoints
 - ✅ Request/response validation
 - ✅ Authentication & authorization
@@ -91,6 +94,7 @@ Critical path validation for rapid CI/CD pipelines.
 - **Coverage**: Critical happy path only
 
 **What's tested:**
+
 - ✅ Health check responds
 - ✅ Authentication works
 - ✅ Single METAR conversion
@@ -100,6 +104,7 @@ Critical path validation for rapid CI/CD pipelines.
 - ✅ Error handling basics
 
 **Usage:**
+
 ```bash
 # Run smoke tests only
 pytest -m smoke
@@ -118,6 +123,7 @@ Tests against actual deployed API for production monitoring.
 - **Environment**: Requires `LIVE_API_URL` and `LIVE_API_TOKEN`
 
 **Configuration:**
+
 ```bash
 export LIVE_API_URL=https://api.example.com
 export LIVE_API_TOKEN=your_jwt_token_here
@@ -127,6 +133,7 @@ pytest -m live_api
 ```
 
 **Checks performed:**
+
 - ✅ Health endpoints respond
 - ✅ API is reachable
 - ✅ Response times acceptable
@@ -154,6 +161,7 @@ Long-running tests that can be skipped in fast CI runs.
 - **Examples**: Large batch processing, performance tests
 
 **Usage:**
+
 ```bash
 # Skip slow tests
 pytest -m "not slow"
@@ -164,41 +172,45 @@ pytest -m slow
 
 ## Test Markers Reference
 
-| Marker | Description | Runtime | Environment |
-|--------|-------------|---------|-------------|
-| `unit` | Unit tests | < 5 min | No deps |
-| `integration` | Integration tests | < 10 min | Mocked services |
-| `smoke` | Critical path smoke tests | ~30 sec | Mocked services |
-| `live_api` | Live API health checks | < 2 min | Deployed API required |
-| `e2e` | End-to-end tests | < 15 min | Real services required |
-| `slow` | Slow-running tests | > 30 sec | Varies |
-| `asyncio` | Async tests | - | - |
-| `edge_case` | Known edge cases/failures | - | - |
-| `iwxxm_2023_1` | IWXXM 2023-1 specific | - | - |
-| `iwxxm_2025_2` | IWXXM 2025-2 specific | - | - |
+| Marker         | Description               | Runtime  | Environment            |
+| -------------- | ------------------------- | -------- | ---------------------- |
+| `unit`         | Unit tests                | < 5 min  | No deps                |
+| `integration`  | Integration tests         | < 10 min | Mocked services        |
+| `smoke`        | Critical path smoke tests | ~30 sec  | Mocked services        |
+| `live_api`     | Live API health checks    | < 2 min  | Deployed API required  |
+| `e2e`          | End-to-end tests          | < 15 min | Real services required |
+| `slow`         | Slow-running tests        | > 30 sec | Varies                 |
+| `asyncio`      | Async tests               | -        | -                      |
+| `edge_case`    | Known edge cases/failures | -        | -                      |
+| `iwxxm_2023_1` | IWXXM 2023-1 specific     | -        | -                      |
+| `iwxxm_2025_2` | IWXXM 2025-2 specific     | -        | -                      |
 
 ## Test Fixtures
 
 Common fixtures are provided in `test_fixtures.py`:
 
 ### Authentication Fixtures
+
 - `client` - TestClient with regular user auth
 - `admin_client` - TestClient with admin auth
 - `unauthenticated_client` - TestClient without auth
 - `user_client` - Alias for client (clarity)
 
 ### Service Mock Fixtures
+
 - `mock_supabase_client` - Mock database client
 - `mock_statistics_service` - Mock statistics service
 - `mock_aviation_weather_client` - Mock Aviation Weather API
 - `mock_validation_orchestrator` - Mock validation orchestrator
 
 ### Data Fixtures
+
 - `sample_metars` - Dictionary of sample METAR strings
 - `sample_iwxxm` - Sample IWXXM XML document
 - `sample_station_ids` - List of international airport codes
 
 ### Live API Fixtures
+
 - `live_api_client` - httpx AsyncClient for live API testing
 - `skip_if_no_live_api` - Skip test if no live API configured
 
@@ -229,7 +241,7 @@ def test_endpoint_success(client):
         "/api/v1/endpoint",
         json={"param": "value"}
     )
-    
+
     assert response.status_code == 200
     data = response.json()
     assert "expected_field" in data
@@ -246,7 +258,7 @@ import pytest
 async def test_live_endpoint(live_api_client):
     """Test live API endpoint."""
     response = await live_api_client.get("/health")
-    
+
     assert response.status_code == 200
 ```
 
@@ -262,7 +274,7 @@ def test_with_mock(client, mock_supabase_client):
         json=MagicMock(return_value=[{"id": "123"}]),
         raise_for_status=MagicMock()
     )
-    
+
     response = client.get("/api/v1/resource/123")
     assert response.status_code == 200
 ```
@@ -287,22 +299,24 @@ python scripts/utilities/syntax_check.py tests/
 ### Common Syntax Errors to Watch For
 
 1. **Missing underscores in test names**
+
    ```python
    # ❌ Wrong - space instead of underscore
    def test airport_region(self, client):
        pass
-   
+
    # ✓ Correct
    def test_airport_region(self, client):
        pass
    ```
 
 2. **Unclosed parentheses/brackets**
+
    ```python
    # ❌ Wrong - missing closing parenthesis
    result = function(
        arg1, arg2
-   
+
    # ✓ Correct
    result = function(
        arg1, arg2
@@ -310,11 +324,12 @@ python scripts/utilities/syntax_check.py tests/
    ```
 
 3. **Missing colons**
+
    ```python
    # ❌ Wrong - missing colon
    def test_something(self)
        pass
-   
+
    # ✓ Correct
    def test_something(self):
        pass
@@ -352,6 +367,7 @@ Configure your IDE for real-time syntax validation:
 ### Current Coverage Status
 
 Run coverage report:
+
 ```bash
 uv run pytest --cov=src --cov-report=html
 open htmlcov/index.html
@@ -365,14 +381,14 @@ open htmlcov/index.html
 
 ### Coverage by Component
 
-| Component | Target | Status |
-|-----------|--------|--------|
-| Conversion endpoints | 95% | ✅ |
-| Validation endpoints | 95% | ✅ |
-| Evaluation endpoints | 95% | ✅ (new tests added) |
-| ICAO OPMET endpoints | 90% | ✅ (new tests added) |
-| Services | 85% | ⚠️ In progress |
-| Utilities | 90% | ✅ |
+| Component            | Target | Status               |
+| -------------------- | ------ | -------------------- |
+| Conversion endpoints | 95%    | ✅                   |
+| Validation endpoints | 95%    | ✅                   |
+| Evaluation endpoints | 95%    | ✅ (new tests added) |
+| ICAO OPMET endpoints | 90%    | ✅ (new tests added) |
+| Services             | 85%    | ⚠️ In progress       |
+| Utilities            | 90%    | ✅                   |
 
 ## CI/CD Integration
 
@@ -391,14 +407,14 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run unit tests
         run: pytest -m unit
-  
+
   smoke-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Run smoke tests
         run: pytest -m smoke
-  
+
   integration-tests:
     runs-on: ubuntu-latest
     steps:
@@ -426,21 +442,25 @@ fi
 ### Common Issues
 
 #### Tests fail with authentication error
+
 ```
 Solution: Ensure test fixtures override verify_supabase_token dependency
 ```
 
 #### Live API tests timeout
+
 ```
 Solution: Set LIVE_API_TIMEOUT=60 or skip with -m "not live_api"
 ```
 
 #### Import errors in tests
+
 ```
 Solution: Ensure PYTHONPATH includes src/ directory or use uv run pytest
 ```
 
 #### Database connection errors
+
 ```
 Solution: Check DATABASE_URL points to test database (must contain "test")
 ```
@@ -473,6 +493,7 @@ pytest --profile
 ### Load Testing
 
 Run concurrent requests:
+
 ```python
 @pytest.mark.slow
 async def test_concurrent_requests():
@@ -530,17 +551,20 @@ pytest tests/test_endpoint_extended_coverage.py::TestConcurrentRequestHandling -
 ### GitHub Actions Monitoring Workflows
 
 **1. API Health Monitoring** (`.github/workflows/api-health-check.yml`)
+
 - Runs every 15 minutes
 - Tests live API health
 - Auto-creates issues on failure
 - Slack alerts
 
 **2. Smoke Tests on Deploy** (`.github/workflows/smoke-tests-deploy.yml`)
+
 - Runs after deployment
 - Multi-environment support
 - Rollback decision workflow
 
 **3. E2E Tests** (`.github/workflows/e2e-tests.yml`)
+
 - Daily at 2 AM UTC
 - PostgreSQL + Supabase
 - Performance benchmarks
@@ -554,6 +578,7 @@ Grafana dashboard configuration: `monitoring/grafana-dashboard.json`
 ## Contributing
 
 When adding new endpoints:
+
 1. ✅ Write integration tests first (TDD)
 2. ✅ Add to smoke tests if critical path
 3. ✅ Update this README with new test files
@@ -565,4 +590,3 @@ When adding new endpoints:
 - Check existing tests for patterns
 - Review test fixtures in `test_fixtures.py`
 - See [TESTING_STRATEGY.md](../../docs/TESTING_STRATEGY.md)
-

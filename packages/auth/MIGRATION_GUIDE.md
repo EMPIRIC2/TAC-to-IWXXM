@@ -5,12 +5,14 @@
 The architecture has been refactored so that the **auth service acts as a middleware proxy** between your frontend/backend and Supabase. This provides better security, centralized control, and easier monitoring.
 
 ### Before
+
 ```
 Frontend ──────► Supabase (direct)
 Backend ───────► Supabase (direct)
 ```
 
 ### After
+
 ```
 Frontend ──┐
            ├──► Auth Service ──► Supabase
@@ -44,6 +46,7 @@ docker-compose up --build
 ```
 
 Services will start on:
+
 - Frontend: http://localhost:5173 (Vite dev server) or 8000 (production)
 - Backend: http://localhost:8001
 - Auth Service: http://localhost:8003
@@ -59,7 +62,6 @@ Open http://localhost:8000 in your browser. The frontend now communicates with t
 1. **`/auth/src/supabase_proxy.py`** - Supabase client wrapper
    - Handles all communication with Supabase
    - Provides async methods for auth operations
-   
 2. **`/auth/src/api_supabase.py`** - New API endpoints
    - POST `/auth/register` - Register via Supabase
    - POST `/auth/login` - Login via Supabase
@@ -97,28 +99,29 @@ Open http://localhost:8000 in your browser. The frontend now communicates with t
 
 5. **Environment Files** (`.env.example`)
    - Updated to reflect new architecture
-   - Frontend  no longer needs Supabase keys
+   - Frontend no longer needs Supabase keys
    - Auth service needs Supabase credentials
 
 ## Frontend Changes Needed
 
-The frontend needs to be updated to use the new `authService.ts` instead of direct Supabase calls. 
+The frontend needs to be updated to use the new `authService.ts` instead of direct Supabase calls.
 
 **Example migration:**
 
 ```typescript
 // OLD - Direct Supabase
 import { supabase } from './utils/supabase/client';
-const { data, error } = await supabase.auth.signInWithPassword({email, password});
+const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
 // NEW - Via Auth Service
 import { login } from './utils/authService';
-const result = await login({email, password});
+const result = await login({ email, password });
 ```
 
 You'll need to update these files:
+
 - `/frontend/src/app/components/auth/Login.tsx`
-- `/frontend/src/app/components/auth/Register.tsx` 
+- `/frontend/src/app/components/auth/Register.tsx`
 - `/frontend/src/app/components/auth/PasswordReset.tsx`
 - Any other files that import from `./utils/supabase/client`
 
@@ -133,14 +136,17 @@ You'll need to update these files:
 ## Troubleshooting
 
 ### Auth service fails to start
+
 - Check that SUPABASE_URL and SUPABASE_ANON_KEY are set in `.env`
 - Verify the Supabase URL format: `https://projectref.supabase.co`
 
 ### Backend can't verify tokens
+
 - Ensure AUTH_SERVICE_URL is set correctly in docker-compose
 - Check auth service is healthy: `curl http://localhost:8002/health`
 
 ### Frontend gets CORS errors
+
 - Auth service has CORS middleware enabled for all origins
 - In production, restrict `allow_origins` in `/auth/src/__main__.py`
 

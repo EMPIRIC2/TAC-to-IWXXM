@@ -19,7 +19,9 @@ export function EmailVerification({
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [countdown, setCountdown] = useState(60);
-  const [emailStatus, setEmailStatus] = useState<'not_verified' | 'verified'>('not_verified');
+  const [emailStatus, setEmailStatus] = useState<'not_verified' | 'verified'>(
+    'not_verified',
+  );
   const canResend = countdown === 0;
 
   useEffect(() => {
@@ -31,13 +33,13 @@ export function EmailVerification({
 
   const handleVerify = async () => {
     setIsVerifying(true);
-    
+
     try {
       // Check if user can be verified by polling auth service
       toast.info('Please check your email and click the verification link.');
       // In a real scenario, you would redirect from email verification link
       setEmailStatus('verified');
-      
+
       setTimeout(() => {
         toast.success('Email verified! You can now login.');
         onVerified();
@@ -52,7 +54,7 @@ export function EmailVerification({
 
   const handleResend = async () => {
     setIsResending(true);
-    
+
     try {
       // Re-send verification email through auth service
       // This would be a new endpoint: /auth/resend-verification
@@ -81,7 +83,9 @@ export function EmailVerification({
         {/* Theme Toggle */}
         <div className="flex justify-end mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">Display Mode</span>
+            <span className="text-xs text-muted-foreground uppercase tracking-wider">
+              Display Mode
+            </span>
             <ThemeToggle />
           </div>
         </div>
@@ -107,9 +111,14 @@ export function EmailVerification({
           {/* Instructions */}
           <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-4 mb-6">
             <div className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" aria-hidden="true" />
+              <CheckCircle
+                className="w-5 h-5 text-primary mt-0.5 flex-shrink-0"
+                aria-hidden="true"
+              />
               <div className="text-xs text-muted-foreground space-y-2">
-                <p className="font-medium text-foreground uppercase tracking-wider">To continue:</p>
+                <p className="font-medium text-foreground uppercase tracking-wider">
+                  To continue:
+                </p>
                 <ol className="list-decimal list-inside space-y-1 ml-2">
                   <li>Check your email inbox (and spam folder)</li>
                   <li>Click the verification link</li>
@@ -124,9 +133,14 @@ export function EmailVerification({
           {emailStatus === 'verified' && (
             <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4 mb-4">
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                <CheckCircle
+                  className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0"
+                  aria-hidden="true"
+                />
                 <div className="text-sm">
-                  <p className="font-medium text-emerald-900 dark:text-emerald-100 uppercase tracking-wider">Email Verified ✓</p>
+                  <p className="font-medium text-emerald-900 dark:text-emerald-100 uppercase tracking-wider">
+                    Email Verified ✓
+                  </p>
                 </div>
               </div>
             </div>
@@ -138,7 +152,9 @@ export function EmailVerification({
               onClick={handleVerify}
               disabled={isVerifying}
               className="w-full h-10 text-xs"
-              aria-label={isVerifying ? 'Checking verification status' : "I've verified my email"}
+              aria-label={
+                isVerifying ? 'Checking verification status' : "I've verified my email"
+              }
             >
               {isVerifying ? (
                 <>
@@ -155,7 +171,11 @@ export function EmailVerification({
               disabled={!canResend || isResending}
               variant="outline"
               className="w-full h-10 text-xs"
-              aria-label={canResend ? 'Resend verification email' : `Resend available in ${countdown} seconds`}
+              aria-label={
+                canResend
+                  ? 'Resend verification email'
+                  : `Resend available in ${countdown} seconds`
+              }
             >
               {isResending ? (
                 <>

@@ -5,29 +5,35 @@ This directory contains deprecated and backup files that should not be used in p
 ## Files
 
 ### conversion.py.bak
+
 **Original location:** `/backend/conversion.py`  
 **Deprecated:** Yes  
 **Reason:** Replaced by enhanced version at `src/utilities/conversion.py`
 
 **Why it was kept:**
+
 - Provides historical reference for wrapper logic
 - GIFTs path resolution code may be useful
 
 **What to use instead:**
+
 ```python
 from src.utilities.conversion import convert_metar_tac
 ```
 
 ### schematron_validator.py.bak
+
 **Original location:** `/backend/schematron_validator.py`  
 **Deprecated:** Yes  
 **Reason:** Replaced by improved version at `src/utilities/schematron_validator.py`
 
 **Why it was kept:**
+
 - Provides reference for validation patterns
 - Docker validator improvements available in newer version
 
 **What to use instead:**
+
 ```python
 from src.utilities.schematron_validator import get_schematron_validator, SchematronValidationResult
 from src.utilities.schematron_validator_docker import SchematronValidatorDocker
@@ -36,6 +42,7 @@ from src.utilities.schematron_validator_docker import SchematronValidatorDocker
 ## Archive Policy
 
 Files are moved to `.archive/` when:
+
 1. Functionality is superseded by a better implementation
 2. The original is being refactored
 3. Legacy code is kept for reference only
@@ -44,6 +51,7 @@ Files are moved to `.archive/` when:
 ### Handling Archived Files
 
 **To reference archived code:**
+
 ```python
 # Import from archive (not recommended)
 import sys
@@ -53,6 +61,7 @@ import conversion  # ⚠️ Not recommended
 ```
 
 **To restore archived files:**
+
 ```bash
 # Copy from archive
 cp .archive/conversion.py.bak conversion.py
@@ -65,6 +74,7 @@ cat .archive/conversion.py.bak
 ## Cleanup Schedule
 
 Archived files are typically removed after:
+
 - 1 release cycle (if referencing old API)
 - 3 months (if kept for compatibility)
 - Explicit deprecation notice (if part of breaking changes)

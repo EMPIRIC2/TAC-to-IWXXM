@@ -28,14 +28,17 @@ python scripts/analyze_version_comparisons.py
 ### Development
 
 #### start_dev.sh
+
 Start the development server with auto-reload.
 
 **Usage:**
+
 ```bash
 ./scripts/start_dev.sh
 ```
 
 **What it does:**
+
 - Starts FastAPI development server on port 8000
 - Enables auto-reload on code changes
 - Loads environment from `.env`
@@ -43,40 +46,49 @@ Start the development server with auto-reload.
 ### Data & Airport Management
 
 #### update_airports_db.py
+
 Update the airport database with current data.
 
 **Usage:**
+
 ```bash
 python scripts/update_airports_db.py
 ```
 
 **What it does:**
+
 - Fetches current airport data from configured sources
 - Updates airport metadata (elevation, coordinates, etc.)
 - Refreshes airport validation data
 
 #### fetch_openaip_airports.py
+
 Fetch airport data from OpenAIP service.
 
 **Usage:**
+
 ```bash
 python scripts/fetch_openaip_airports.py [--output airports.json]
 ```
 
 **What it does:**
+
 - Downloads OpenAIP airport database
 - Converts to internal format
 - Caches for local development
 
 #### mirror_wmo_bundles.py
+
 Mirror WMO schema bundles locally for testing.
 
 **Usage:**
+
 ```bash
 python scripts/mirror_wmo_bundles.py [--version 2025-2]
 ```
 
 **What it does:**
+
 - Downloads IWXXM schema bundles from WMO
 - Stores locally in `schemas/` directory
 - Enables offline schema validation
@@ -84,9 +96,11 @@ python scripts/mirror_wmo_bundles.py [--version 2025-2]
 ### Validation
 
 #### validate_generated_xml_schematron.py
+
 Validate generated XML files against Schematron rules.
 
 **Usage:**
+
 ```bash
 python scripts/validate_generated_xml_schematron.py <xml_file> [--verbose]
 python scripts/validate_generated_xml_schematron.py output.xml
@@ -94,11 +108,13 @@ python scripts/validate_generated_xml_schematron.py *.xml  # Validate multiple f
 ```
 
 **Options:**
+
 - `--verbose` - Detailed validation output
 - `--rules <file>` - Custom Schematron rules
 - `--version <version>` - IWXXM version (default: 2025-2)
 
 **What it does:**
+
 - Validates XML against IWXXM Schematron rules
 - Reports detailed errors and warnings
 - Supports batch validation
@@ -106,9 +122,11 @@ python scripts/validate_generated_xml_schematron.py *.xml  # Validate multiple f
 ### Testing & Data Generation
 
 #### generate_test_data.py
+
 Generate synthetic METAR test data.
 
 **Usage:**
+
 ```bash
 python scripts/generate_test_data.py \
   --count 100 \
@@ -117,24 +135,29 @@ python scripts/generate_test_data.py \
 ```
 
 **Options:**
+
 - `--count <n>` - Number of METAR to generate
 - `--stations <list>` - Comma-separated station codes
 - `--output <file>` - Output file
 
 **What it does:**
+
 - Generates realistic METAR strings
 - Includes various weather phenomena
 - Creates test dataset for validation
 
 #### test_sprint1_data_integration.py
+
 Integration test for sprint 1 data requirements.
 
 **Usage:**
+
 ```bash
 python scripts/test_sprint1_data_integration.py [--verbose]
 ```
 
 **What it does:**
+
 - Tests complete METAR to IWXXM workflow
 - Validates data integration points
 - Reports sprint 1 compliance
@@ -142,28 +165,34 @@ python scripts/test_sprint1_data_integration.py [--verbose]
 ### Analysis & Comparison
 
 #### analyze_version_comparisons.py
+
 Analyze differences between IWXXM versions.
 
 **Usage:**
+
 ```bash
 python scripts/analyze_version_comparisons.py [--versions 2023-1,2025-2]
 ```
 
 **What it does:**
+
 - Compares IWXXM schema versions
 - Identifies breaking changes
 - Analyzes element differences
 
 #### compare_iwxxm_versions.sh
+
 Shell script for comparing IWXXM version outputs.
 
 **Usage:**
+
 ```bash
 ./scripts/compare_iwxxm_versions.sh <version1> <version2>
 ./scripts/compare_iwxxm_versions.sh 2023-1 2025-2
 ```
 
 **What it does:**
+
 - Compares conversion output across versions
 - Validates backward compatibility
 - Generates comparison report
@@ -255,12 +284,14 @@ LOG_LEVEL=info
 ## Error Handling
 
 Scripts generally exit with:
+
 - `0` - Success
 - `1` - General error
 - `2` - Invalid arguments
 - `3` - Data/network error
 
 Check error output:
+
 ```bash
 python scripts/script_name.py 2>&1 | head -20
 ```
@@ -276,6 +307,7 @@ python scripts/script_name.py 2>&1 | head -20
 ## Troubleshooting
 
 ### Import errors
+
 ```bash
 # Ensure backend dir in PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:$(pwd)
@@ -283,6 +315,7 @@ python scripts/script_name.py
 ```
 
 ### Network errors (mirror/fetch)
+
 ```bash
 # Check connectivity
 curl https://api.openaip.net
@@ -292,6 +325,7 @@ export HTTP_PROXY=...
 ```
 
 ### Database errors
+
 ```bash
 # Check DATABASE_URL in .env
 echo $DATABASE_URL

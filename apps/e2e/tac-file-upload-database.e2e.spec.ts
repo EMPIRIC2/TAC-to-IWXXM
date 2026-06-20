@@ -12,7 +12,7 @@ function resolveTacFilesDir(): string | null {
   if (configured) {
     if (!fs.existsSync(configured)) {
       throw new Error(
-        `PLAYWRIGHT_TAC_FIXTURES_DIR is set but does not exist: ${configured}`
+        `PLAYWRIGHT_TAC_FIXTURES_DIR is set but does not exist: ${configured}`,
       );
     }
     return configured;
@@ -23,7 +23,11 @@ function resolveTacFilesDir(): string | null {
     return candidateFromRepoRoot;
   }
 
-  const candidateFromFrontendCwd = path.resolve(process.cwd(), '..', DEFAULT_TAC_RELATIVE_PATH);
+  const candidateFromFrontendCwd = path.resolve(
+    process.cwd(),
+    '..',
+    DEFAULT_TAC_RELATIVE_PATH,
+  );
   if (fs.existsSync(candidateFromFrontendCwd)) {
     return candidateFromFrontendCwd;
   }
@@ -35,7 +39,7 @@ function resolveTacFilesDir(): string | null {
         `Checked: ${candidateFromRepoRoot}`,
         `Checked: ${candidateFromFrontendCwd}`,
         'Set PLAYWRIGHT_TAC_FIXTURES_DIR or disable strict fixture requirement with PLAYWRIGHT_REQUIRE_TAC_FIXTURES=0 for local runs.',
-      ].join(' ')
+      ].join(' '),
     );
   }
 
@@ -54,7 +58,8 @@ function getTacFiles(): TacFixture[] {
     return [];
   }
 
-  return fs.readdirSync(tacFilesDir)
+  return fs
+    .readdirSync(tacFilesDir)
     .filter((fileName) => fileName.endsWith('.tac'))
     .slice(0, 3)
     .map((fileName) => ({
@@ -69,13 +74,16 @@ test.describe('TAC File Upload to Database', () => {
     await loginAndOpenConverter(page);
 
     await expect(
-      page.getByRole('button', { name: /Upload 0 converted files to database/i })
+      page.getByRole('button', { name: /Upload 0 converted files to database/i }),
     ).toBeDisabled();
   });
 
   test('single TAC file can be converted and uploaded', async ({ page }) => {
     const tacFiles = getTacFiles();
-    test.skip(tacFiles.length === 0, 'No TAC fixture files available for upload E2E coverage.');
+    test.skip(
+      tacFiles.length === 0,
+      'No TAC fixture files available for upload E2E coverage.',
+    );
 
     const testFile = tacFiles[0];
     await loginAndOpenConverter(page);
@@ -96,38 +104,61 @@ test.describe('TAC File Upload to Database', () => {
     });
 
     await page.locator('input[type="file"]').setInputFiles(testFile.path);
-    await page.getByRole('button', { name: /Convert METAR files to IWXXM XML/i }).click();
+    await page
+      .getByRole('button', { name: /Convert METAR files to IWXXM XML/i })
+      .click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
+      { timeout: 10000 },
+    );
     await expect(page.locator('pre').first()).toContainText(/iwxxm|metar:/i);
 
-    await page.getByRole('button', { name: /Upload 1 converted files to database/i }).click();
+    await page
+      .getByRole('button', { name: /Upload 1 converted files to database/i })
+      .click();
     await page.getByRole('radio', { name: /Store as IWXXM XML only/i }).check();
     await page.getByRole('button', { name: /Upload files to database/i }).click();
 
-    await expect(page.getByText(/Files uploaded successfully!/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/Files uploaded successfully!/i)).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   test('multiple TAC files can be queued and converted', async ({ page }) => {
     const tacFiles = getTacFiles();
-    test.skip(tacFiles.length < 2, 'At least two TAC fixture files are required for multi-file upload coverage.');
+    test.skip(
+      tacFiles.length < 2,
+      'At least two TAC fixture files are required for multi-file upload coverage.',
+    );
 
     await loginAndOpenConverter(page);
 
-    await page.locator('input[type="file"]').setInputFiles(tacFiles.slice(0, 2).map((file) => file.path));
-    await page.getByRole('button', { name: /Convert METAR files to IWXXM XML/i }).click();
+    await page
+      .locator('input[type="file"]')
+      .setInputFiles(tacFiles.slice(0, 2).map((file) => file.path));
+    await page
+      .getByRole('button', { name: /Convert METAR files to IWXXM XML/i })
+      .click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
+      { timeout: 10000 },
+    );
     await expect(page.locator('pre')).toHaveCount(2);
-    await expect(page.getByRole('button', { name: /Upload 2 converted files to database/i })).toBeEnabled();
+    await expect(
+      page.getByRole('button', { name: /Upload 2 converted files to database/i }),
+    ).toBeEnabled();
   });
 
   test('invalid manual TAC shows an error state', async ({ page }) => {
     await loginAndOpenConverter(page);
 
     await page.getByLabel(/Enter METAR data manually/i).fill('INVALID TAC FORMAT');
-    await page.getByRole('button', { name: /Convert METAR files to IWXXM XML/i }).click();
+    await page
+      .getByRole('button', { name: /Convert METAR files to IWXXM XML/i })
+      .click();
 
-    await expect(page.getByText(/Conversion Error/i).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/Conversion Error/i).first()).toBeVisible({
+      timeout: 10000,
+    });
   });
 });

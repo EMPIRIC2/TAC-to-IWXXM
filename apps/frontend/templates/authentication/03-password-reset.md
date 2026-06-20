@@ -3,11 +3,13 @@
 Sent when a user requests to reset their password.
 
 ## Subject
+
 ```
 Reset your password
 ```
 
 ## Plain Text
+
 ```
 Hello {{ .Email }},
 
@@ -24,24 +26,58 @@ METAR to IWXXM Team
 ```
 
 ## HTML
+
 ```html
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
     <style>
-      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-      .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                color: white; padding: 20px; border-radius: 4px 4px 0 0; }
-      .content { background: #f9f9f9; padding: 20px; border: 1px solid #eee; }
-      .button { background-color: #d32f2f; color: white; padding: 12px 24px; 
-               text-decoration: none; border-radius: 4px; display: inline-block; 
-               margin: 20px 0; font-weight: bold; }
-      .footer { font-size: 12px; color: #999; margin-top: 20px; padding-top: 20px; 
-               border-top: 1px solid #eee; }
-      .warning { background: #ffebee; padding: 12px; border-left: 4px solid #d32f2f; 
-                margin: 15px 0; color: #c62828; }
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 4px 4px 0 0;
+      }
+      .content {
+        background: #f9f9f9;
+        padding: 20px;
+        border: 1px solid #eee;
+      }
+      .button {
+        background-color: #d32f2f;
+        color: white;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 4px;
+        display: inline-block;
+        margin: 20px 0;
+        font-weight: bold;
+      }
+      .footer {
+        font-size: 12px;
+        color: #999;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+      }
+      .warning {
+        background: #ffebee;
+        padding: 12px;
+        border-left: 4px solid #d32f2f;
+        margin: 15px 0;
+        color: #c62828;
+      }
     </style>
   </head>
   <body>
@@ -51,26 +87,30 @@ METAR to IWXXM Team
       </div>
       <div class="content">
         <p>Hello {{ .Email }},</p>
-        
-        <p>We received a request to reset the password for your account. 
-           Click the button below to create a new password:</p>
-        
-        <a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=recovery" 
-           class="button">
+
+        <p>
+          We received a request to reset the password for your account. Click the button
+          below to create a new password:
+        </p>
+
+        <a
+          href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=recovery"
+          class="button"
+        >
           Reset Password
         </a>
-        
+
         <p>Or copy this link into your browser:</p>
         <p style="word-break: break-all; font-size: 12px; color: #666;">
           {{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=recovery
         </p>
-        
+
         <div class="warning">
-          <strong>⚠️ Important Security Notice</strong><br>
-          This link expires in 1 hour. If you didn't request this password reset, 
-          please ignore this email.
+          <strong>⚠️ Important Security Notice</strong><br />
+          This link expires in 1 hour. If you didn't request this password reset, please
+          ignore this email.
         </div>
-        
+
         <p><strong>Password Reset Guidelines:</strong></p>
         <ul>
           <li>Use at least 8 characters</li>
@@ -99,6 +139,7 @@ METAR to IWXXM Team
 ## Implementation in Your App
 
 In `frontend/src/app/components/auth/PasswordReset.tsx`:
+
 ```typescript
 // Step 1: Request password reset
 const handleResetRequest = async (email: string) => {
@@ -131,15 +172,20 @@ const handlePasswordUpdate = async (newPassword: string) => {
    - Change in Supabase Auth settings
 
 2. **Add recovery codes section**:
+
    ```html
-   <p><strong>Don't have access to your email?</strong><br>
-      Contact support@yourapp.com with verification information.</p>
+   <p>
+     <strong>Don't have access to your email?</strong><br />
+     Contact support@yourapp.com with verification information.
+   </p>
    ```
 
 3. **Add password requirements details**:
    ```html
-   <p>Your new password must be at least 8 characters and should include 
-      uppercase, lowercase, and numbers for best security.</p>
+   <p>
+     Your new password must be at least 8 characters and should include uppercase,
+     lowercase, and numbers for best security.
+   </p>
    ```
 
 ## Security Best Practices

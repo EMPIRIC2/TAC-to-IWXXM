@@ -178,6 +178,19 @@ class ValidationService:
 
         return result
 
+    def validate(
+        self,
+        content: str,
+        content_type: str = "tac",
+        layers: Optional[list[ValidationLayer]] = None,
+        iwxxm_version: Optional[str] = None,
+    ) -> AggregatedValidationResult:
+        """Validate content for the requested layers (dependency/router entry point)."""
+        del layers, iwxxm_version
+        if content_type == "xml":
+            raise ValueError("XML validation requires ValidationOrchestrator")
+        return self.validate_all_layers(content)
+
     def validate_all_layers(self, tac_text: str) -> AggregatedValidationResult:
         """
         Validate all applicable layers for TAC text.

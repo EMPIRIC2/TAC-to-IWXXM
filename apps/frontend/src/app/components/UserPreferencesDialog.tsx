@@ -14,35 +14,35 @@ interface UserPreferencesDialogProps {
   onPreferencesSaved?: () => void;
 }
 
-type IWXXMVersion = "2025-2" | "2023-1";
-type OnErrorBehavior = "skip" | "fail" | "warn";
-type LogLevel = "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL";
+type IWXXMVersion = '2025-2' | '2023-1';
+type OnErrorBehavior = 'skip' | 'fail' | 'warn';
+type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 
 interface UserPreferences {
   // Account Settings
   displayName: string;
   email: string;
-  
+
   // File Settings
   inputFileExtensions: string[];
   inputFileEncoding: string;
   inputFileMaxSize: string;
   outputFileExtension: string;
   outputFileEncoding: string;
-  
+
   // Bulletin Settings
   bulletinIdExample: string;
   issuingCenter: string;
-  
+
   // IWXXM Settings
   iwxxmVersion: IWXXMVersion;
   strictValidation: boolean;
   includeNilReasons: boolean;
-  
+
   // Error Handling
   onError: OnErrorBehavior;
   logLevel: LogLevel;
-  
+
   // METAR Format Settings
   metarMaxLength: number;
   metarEncoding: string;
@@ -52,27 +52,27 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   // Account Settings
   displayName: '',
   email: '',
-  
+
   // File Settings
   inputFileExtensions: ['.txt', '.tac', '.metar'],
   inputFileEncoding: 'UTF-8',
   inputFileMaxSize: '10MB',
   outputFileExtension: '.xml',
   outputFileEncoding: 'UTF-8',
-  
+
   // Bulletin Settings
   bulletinIdExample: 'SAAA00',
   issuingCenter: 'KWBC',
-  
+
   // IWXXM Settings
   iwxxmVersion: '2025-2',
   strictValidation: true,
   includeNilReasons: true,
-  
+
   // Error Handling
   onError: 'warn',
   logLevel: 'INFO',
-  
+
   // METAR Format Settings
   metarMaxLength: 1000,
   metarEncoding: 'ASCII/UTF-8',
@@ -80,7 +80,12 @@ const DEFAULT_PREFERENCES: UserPreferences = {
 
 const STORAGE_KEY = 'metar_converter_preferences';
 
-export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreferencesSaved }: UserPreferencesDialogProps) {
+export function UserPreferencesDialog({
+  isOpen,
+  onClose,
+  userEmail,
+  onPreferencesSaved,
+}: UserPreferencesDialogProps) {
   const [preferences, setPreferences] = useState<UserPreferences | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -134,7 +139,7 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
       localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
       setSaveStatus('success');
       toast.success('Preferences saved successfully');
-      
+
       setTimeout(() => {
         setSaveStatus('idle');
       }, 2000);
@@ -165,7 +170,7 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
       localStorage.setItem(STORAGE_KEY, JSON.stringify(resetPrefs));
       setPreferences(resetPrefs);
       toast.success('Preferences reset to defaults');
-      
+
       if (onPreferencesSaved) {
         onPreferencesSaved();
       }
@@ -177,7 +182,7 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
 
   const updatePreference = <K extends keyof UserPreferences>(
     key: K,
-    value: UserPreferences[K]
+    value: UserPreferences[K],
   ) => {
     if (!preferences) return;
     setPreferences({
@@ -189,22 +194,28 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="preferences-dialog-title"
     >
-      <Card 
+      <Card
         className="bg-white dark:bg-gray-800 dark:border-gray-700 p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <Settings className="w-6 h-6 text-blue-500 dark:text-blue-400" aria-hidden="true" />
-            <h2 id="preferences-dialog-title" className="text-2xl font-semibold text-gray-900 dark:text-white">
+            <Settings
+              className="w-6 h-6 text-blue-500 dark:text-blue-400"
+              aria-hidden="true"
+            />
+            <h2
+              id="preferences-dialog-title"
+              className="text-2xl font-semibold text-gray-900 dark:text-white"
+            >
               User Preferences
             </h2>
           </div>
@@ -223,17 +234,26 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-500" aria-hidden="true" />
-            <span className="ml-3 text-gray-600 dark:text-gray-300">Loading preferences...</span>
+            <Loader2
+              className="w-8 h-8 animate-spin text-blue-500"
+              aria-hidden="true"
+            />
+            <span className="ml-3 text-gray-600 dark:text-gray-300">
+              Loading preferences...
+            </span>
           </div>
         ) : preferences ? (
           <div className="space-y-6">
             {/* Account Settings */}
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Account Settings</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                Account Settings
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="display-name" className="dark:text-white">Display Name</Label>
+                  <Label htmlFor="display-name" className="dark:text-white">
+                    Display Name
+                  </Label>
                   <Input
                     id="display-name"
                     value={preferences.displayName}
@@ -242,7 +262,9 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email" className="dark:text-white">Email</Label>
+                  <Label htmlFor="email" className="dark:text-white">
+                    Email
+                  </Label>
                   <Input
                     id="email"
                     value={preferences.email}
@@ -256,14 +278,20 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
 
             {/* File Settings */}
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">File Settings</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                File Settings
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="input-encoding" className="dark:text-white">Input File Encoding</Label>
+                  <Label htmlFor="input-encoding" className="dark:text-white">
+                    Input File Encoding
+                  </Label>
                   <select
                     id="input-encoding"
                     value={preferences.inputFileEncoding}
-                    onChange={(e) => updatePreference('inputFileEncoding', e.target.value)}
+                    onChange={(e) =>
+                      updatePreference('inputFileEncoding', e.target.value)
+                    }
                     className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="UTF-8">UTF-8</option>
@@ -274,11 +302,15 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="input-max-size" className="dark:text-white">Max Input File Size</Label>
+                  <Label htmlFor="input-max-size" className="dark:text-white">
+                    Max Input File Size
+                  </Label>
                   <select
                     id="input-max-size"
                     value={preferences.inputFileMaxSize}
-                    onChange={(e) => updatePreference('inputFileMaxSize', e.target.value)}
+                    onChange={(e) =>
+                      updatePreference('inputFileMaxSize', e.target.value)
+                    }
                     className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="1MB">1 MB</option>
@@ -290,11 +322,15 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="output-extension" className="dark:text-white">Output File Extension</Label>
+                  <Label htmlFor="output-extension" className="dark:text-white">
+                    Output File Extension
+                  </Label>
                   <select
                     id="output-extension"
                     value={preferences.outputFileExtension}
-                    onChange={(e) => updatePreference('outputFileExtension', e.target.value)}
+                    onChange={(e) =>
+                      updatePreference('outputFileExtension', e.target.value)
+                    }
                     className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value=".xml">.xml</option>
@@ -303,11 +339,15 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="output-encoding" className="dark:text-white">Output File Encoding</Label>
+                  <Label htmlFor="output-encoding" className="dark:text-white">
+                    Output File Encoding
+                  </Label>
                   <select
                     id="output-encoding"
                     value={preferences.outputFileEncoding}
-                    onChange={(e) => updatePreference('outputFileEncoding', e.target.value)}
+                    onChange={(e) =>
+                      updatePreference('outputFileEncoding', e.target.value)
+                    }
                     className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="UTF-8">UTF-8</option>
@@ -322,14 +362,23 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
 
             {/* Bulletin Settings */}
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Bulletin Settings</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                Bulletin Settings
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="bulletin-id" className="dark:text-white">Bulletin ID (e.g., SAAA00)</Label>
+                  <Label htmlFor="bulletin-id" className="dark:text-white">
+                    Bulletin ID (e.g., SAAA00)
+                  </Label>
                   <Input
                     id="bulletin-id"
                     value={preferences.bulletinIdExample}
-                    onChange={(e) => updatePreference('bulletinIdExample', e.target.value.toUpperCase())}
+                    onChange={(e) =>
+                      updatePreference(
+                        'bulletinIdExample',
+                        e.target.value.toUpperCase(),
+                      )
+                    }
                     placeholder="SAAA00"
                     maxLength={6}
                     className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
@@ -354,14 +403,20 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
 
             {/* IWXXM Settings */}
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">IWXXM Settings</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                IWXXM Settings
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="iwxxm-version" className="dark:text-white">IWXXM Schema Version</Label>
+                  <Label htmlFor="iwxxm-version" className="dark:text-white">
+                    IWXXM Schema Version
+                  </Label>
                   <select
                     id="iwxxm-version"
                     value={preferences.iwxxmVersion}
-                    onChange={(e) => updatePreference('iwxxmVersion', e.target.value as IWXXMVersion)}
+                    onChange={(e) =>
+                      updatePreference('iwxxmVersion', e.target.value as IWXXMVersion)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="2025-2">2025-2 (Latest)</option>
@@ -375,7 +430,9 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
                       <input
                         type="checkbox"
                         checked={preferences.strictValidation}
-                        onChange={(e) => updatePreference('strictValidation', e.target.checked)}
+                        onChange={(e) =>
+                          updatePreference('strictValidation', e.target.checked)
+                        }
                         className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                       />
                       <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
@@ -386,7 +443,9 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
                       <input
                         type="checkbox"
                         checked={preferences.includeNilReasons}
-                        onChange={(e) => updatePreference('includeNilReasons', e.target.checked)}
+                        onChange={(e) =>
+                          updatePreference('includeNilReasons', e.target.checked)
+                        }
                         className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                       />
                       <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
@@ -400,27 +459,39 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
 
             {/* Error Handling */}
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Error Handling</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                Error Handling
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="on-error" className="dark:text-white">On Error Behavior</Label>
+                  <Label htmlFor="on-error" className="dark:text-white">
+                    On Error Behavior
+                  </Label>
                   <select
                     id="on-error"
                     value={preferences.onError}
-                    onChange={(e) => updatePreference('onError', e.target.value as OnErrorBehavior)}
+                    onChange={(e) =>
+                      updatePreference('onError', e.target.value as OnErrorBehavior)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="skip">Skip - Continue processing, skip invalid</option>
+                    <option value="skip">
+                      Skip - Continue processing, skip invalid
+                    </option>
                     <option value="fail">Fail - Stop on first error</option>
                     <option value="warn">Warn - Continue with warnings</option>
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="log-level" className="dark:text-white">Log Level</Label>
+                  <Label htmlFor="log-level" className="dark:text-white">
+                    Log Level
+                  </Label>
                   <select
                     id="log-level"
                     value={preferences.logLevel}
-                    onChange={(e) => updatePreference('logLevel', e.target.value as LogLevel)}
+                    onChange={(e) =>
+                      updatePreference('logLevel', e.target.value as LogLevel)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="DEBUG">DEBUG</option>
@@ -435,22 +506,33 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
 
             {/* METAR Format Settings */}
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">METAR Format Settings</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                METAR Format Settings
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="metar-max-length" className="dark:text-white">Max METAR Length (characters)</Label>
+                  <Label htmlFor="metar-max-length" className="dark:text-white">
+                    Max METAR Length (characters)
+                  </Label>
                   <Input
                     id="metar-max-length"
                     type="number"
                     value={preferences.metarMaxLength}
-                    onChange={(e) => updatePreference('metarMaxLength', parseInt(e.target.value) || 1000)}
+                    onChange={(e) =>
+                      updatePreference(
+                        'metarMaxLength',
+                        parseInt(e.target.value) || 1000,
+                      )
+                    }
                     min={100}
                     max={5000}
                     className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="metar-encoding" className="dark:text-white">METAR Encoding</Label>
+                  <Label htmlFor="metar-encoding" className="dark:text-white">
+                    METAR Encoding
+                  </Label>
                   <Input
                     id="metar-encoding"
                     value={preferences.metarEncoding}
@@ -464,7 +546,10 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
             {/* Status Messages */}
             {saveStatus === 'success' && (
               <div className="p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" aria-hidden="true" />
+                <CheckCircle
+                  className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0"
+                  aria-hidden="true"
+                />
                 <p className="text-sm text-green-700 dark:text-green-300">
                   Preferences saved successfully!
                 </p>
@@ -473,7 +558,10 @@ export function UserPreferencesDialog({ isOpen, onClose, userEmail, onPreference
 
             {saveStatus === 'error' && (
               <div className="p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-3">
-                <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" aria-hidden="true" />
+                <AlertCircle
+                  className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0"
+                  aria-hidden="true"
+                />
                 <p className="text-sm text-red-700 dark:text-red-300">
                   Failed to save preferences. Please try again.
                 </p>

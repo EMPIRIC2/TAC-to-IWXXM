@@ -5,7 +5,9 @@ This directory contains customizable email templates for your METAR to IWXXM app
 ## Template Categories
 
 ### Authentication (6 templates)
+
 User authentication and verification emails:
+
 - `01-confirmation.md` - Email confirmation for new accounts
 - `02-magic-link.md` - Passwordless sign-in link
 - `03-password-reset.md` - Password reset request
@@ -14,7 +16,9 @@ User authentication and verification emails:
 - `06-suspicious-activity.md` - Suspicious login attempt alert
 
 ### Security (8 templates)
+
 Security notifications and alerts:
+
 - `01-mfa-enabled.md` - Multi-factor authentication enabled
 - `02-session-timeout.md` - Session timeout warning
 - `03-permission-revoked.md` - Access permission revoked
@@ -27,7 +31,9 @@ Security notifications and alerts:
 ## Quick Reference
 
 ### Template Variables
+
 All templates support Supabase predefined variables:
+
 - `{{ .TokenHash }}` - Secure token for verification links
 - `{{ .SiteURL }}` - Your application's base URL
 - `{{ .Email }}` - User's email address

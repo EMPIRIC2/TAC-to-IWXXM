@@ -55,13 +55,8 @@
       "country": null,
       "elevation": 311,
       "weather_phenomena": [],
-      "cloud_types": [
-        "CB"
-      ],
-      "cloud_amounts": [
-        "FEW",
-        "CLR"
-      ],
+      "cloud_types": ["CB"],
+      "cloud_amounts": ["FEW", "CLR"],
       "visibility": null,
       "temperature": "present",
       "region": "other",
@@ -76,9 +71,7 @@
       "elevation": 60.96,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "FEW"
-      ],
+      "cloud_amounts": ["FEW"],
       "visibility": "present",
       "temperature": "present",
       "region": "africa",
@@ -91,9 +84,7 @@
       "longitude": 56.378,
       "country": null,
       "elevation": 6,
-      "weather_phenomena": [
-        "HZ"
-      ],
+      "weather_phenomena": ["HZ"],
       "cloud_types": [],
       "cloud_amounts": [],
       "visibility": null,
@@ -140,10 +131,7 @@
       "elevation": 10,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "FEW",
-        "SCT"
-      ],
+      "cloud_amounts": ["FEW", "SCT"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -156,16 +144,9 @@
       "longitude": 2.862,
       "country": null,
       "elevation": 5,
-      "weather_phenomena": [
-        "RA",
-        "SHRA"
-      ],
+      "weather_phenomena": ["RA", "SHRA"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "FEW",
-        "SCT",
-        "BKN"
-      ],
+      "cloud_amounts": ["FEW", "SCT", "BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -180,9 +161,7 @@
       "elevation": 227,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "BKN"
-      ],
+      "cloud_amounts": ["BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -197,9 +176,7 @@
       "elevation": 37,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "FEW"
-      ],
+      "cloud_amounts": ["FEW"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -212,14 +189,9 @@
       "longitude": 19.716,
       "country": null,
       "elevation": 32,
-      "weather_phenomena": [
-        "RA"
-      ],
+      "weather_phenomena": ["RA"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "SCT",
-        "OVC"
-      ],
+      "cloud_amounts": ["SCT", "OVC"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -277,13 +249,9 @@
       "longitude": 28.931,
       "country": null,
       "elevation": 102,
-      "weather_phenomena": [
-        "RA"
-      ],
+      "weather_phenomena": ["RA"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "OVC"
-      ],
+      "cloud_amounts": ["OVC"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -298,9 +266,7 @@
       "elevation": 684,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "SKC"
-      ],
+      "cloud_amounts": ["SKC"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -343,13 +309,9 @@
       "longitude": 24.714,
       "country": null,
       "elevation": 198,
-      "weather_phenomena": [
-        "FG"
-      ],
+      "weather_phenomena": ["FG"],
       "cloud_types": [],
-      "cloud_amounts": [
-        "BKN"
-      ],
+      "cloud_amounts": ["BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -364,10 +326,7 @@
       "elevation": 4,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "SCT",
-        "BKN"
-      ],
+      "cloud_amounts": ["SCT", "BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",
@@ -397,10 +356,7 @@
       "elevation": 209,
       "weather_phenomena": [],
       "cloud_types": [],
-      "cloud_amounts": [
-        "SCT",
-        "BKN"
-      ],
+      "cloud_amounts": ["SCT", "BKN"],
       "visibility": null,
       "temperature": "present",
       "region": "europe",

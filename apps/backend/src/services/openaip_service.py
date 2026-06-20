@@ -51,7 +51,7 @@ class OpenAIPService:
             self._cache_timestamp = datetime.fromisoformat(metadata.get("fetched_at", datetime.utcnow().isoformat()))
 
             logger.info(
-                f"Loaded OpenAIP cache with {len(self._cache)} airports (last updated: {self._cache_timestamp})"
+                f"Loaded OpenAIP cache with {len(self._cache or {})} airports (last updated: {self._cache_timestamp})"
             )
             return True
         except Exception as e:
@@ -176,7 +176,8 @@ class OpenAIPService:
     def suggest_refresh(self) -> str:
         """Get refresh suggestion message."""
         if self.is_cache_stale():
-            age_days = int(self.cache_freshness().days) if self.cache_freshness() else 0
+            freshness = self.cache_freshness()
+            age_days = int(freshness.days) if freshness is not None else 0
             return (
                 f"OpenAIP cache is {age_days} days old. "
                 f"Refresh with: python3 scripts/fetch_openaip_airports.py --refresh"

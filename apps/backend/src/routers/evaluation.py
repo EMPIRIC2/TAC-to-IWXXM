@@ -2,7 +2,7 @@
 
 import os
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional
 
 import httpx
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
@@ -72,7 +72,7 @@ async def update_job_status(
 ):
     """Update job status in database."""
     async with await get_supabase_client() as client:
-        update_data = {"status": status}
+        update_data: dict[str, Any] = {"status": status}
 
         if progress is not None:
             update_data["progress"] = progress
@@ -241,7 +241,7 @@ async def create_evaluation_job(
         raise HTTPException(status_code=400, detail="station_ids required for single mode")
 
     if request.mode == EvaluationMode.SINGLE:
-        station_count = len(request.station_ids)
+        station_count = len(request.station_ids or [])
     elif request.mode == EvaluationMode.RANDOM:
         station_count = request.sample_size or 100
     else:  # ALL

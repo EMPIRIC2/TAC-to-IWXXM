@@ -170,11 +170,11 @@ class WebhookService:
 
     async def notify_translation_completed(
         self,
-        translation_id: str,
+        translation_id: str | None,
         airport_code: str,
         iwxxm_version: str,
         file_size_bytes: int,
-        duration_ms: int,
+        duration_ms: float | int,
     ):
         """
         Send notification for completed translation.
@@ -186,6 +186,8 @@ class WebhookService:
             file_size_bytes: Size of generated IWXXM content
             duration_ms: Processing duration
         """
+        if not translation_id:
+            return
         await self.send_webhook(
             event="translation.completed",
             data={
@@ -193,17 +195,17 @@ class WebhookService:
                 "airport_code": airport_code,
                 "iwxxm_version": iwxxm_version,
                 "file_size_bytes": file_size_bytes,
-                "duration_ms": duration_ms,
+                "duration_ms": int(round(duration_ms)),
             },
         )
 
     async def notify_translation_success(
         self,
-        translation_id: str,
+        translation_id: str | None,
         airport_code: str,
         icao_region: str,
         iwxxm_version: str,
-        duration_ms: int,
+        duration_ms: float | int,
     ):
         """
         Send notification for successful translation.
@@ -215,6 +217,8 @@ class WebhookService:
             iwxxm_version: IWXXM version used
             duration_ms: Processing duration
         """
+        if not translation_id:
+            return
         await self.send_webhook(
             event="translation.success",
             data={
@@ -222,13 +226,13 @@ class WebhookService:
                 "airport_code": airport_code,
                 "icao_region": icao_region,
                 "iwxxm_version": iwxxm_version,
-                "duration_ms": duration_ms,
+                "duration_ms": int(round(duration_ms)),
             },
         )
 
     async def notify_translation_failed(
         self,
-        translation_id: str,
+        translation_id: str | None,
         airport_code: str,
         error_type: str,
         error_message: str,
@@ -242,6 +246,8 @@ class WebhookService:
             error_type: Type of error
             error_message: Error message
         """
+        if not translation_id:
+            return
         await self.send_webhook(
             event="translation.failed",
             data={

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -56,7 +56,7 @@ class SupabaseAuthProxy:
             payload = {"email": email, "password": password, "options": {"data": metadata or {}}}
             logger.debug(f"[REGISTER] Calling Supabase sign_up with payload: {payload}")
 
-            response = self.client.auth.sign_up(payload)
+            response = self.client.auth.sign_up(cast(Any, payload))
 
             logger.info(
                 f"[REGISTER] Supabase response: user={response.user is not None}, session={response.session is not None}"
@@ -108,7 +108,7 @@ class SupabaseAuthProxy:
             payload = {"email": email, "password": password}
             logger.debug("[LOGIN] Calling Supabase sign_in_with_password")
 
-            response = self.client.auth.sign_in_with_password(payload)
+            response = self.client.auth.sign_in_with_password(cast(Any, payload))
 
             logger.info(
                 f"[LOGIN] Supabase response: user={response.user is not None}, session={response.session is not None}"
@@ -174,16 +174,20 @@ class SupabaseAuthProxy:
         logger.info("[GET_USER] Retrieving user info from token")
         try:
             response = self.client.auth.get_user(access_token)
-
-            if not response.user:
+            if response is None:
                 logger.warning("[GET_USER] Invalid or expired token")
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
 
-            logger.info(f"[GET_USER] Retrieved user {response.user.email}")
+            user = response.user
+            if user is None:
+                logger.warning("[GET_USER] Invalid or expired token")
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+
+            logger.info(f"[GET_USER] Retrieved user {user.email}")
             return {
-                "id": response.user.id,
-                "email": response.user.email,
-                "metadata": response.user.user_metadata or {},
+                "id": user.id,
+                "email": user.email,
+                "metadata": user.user_metadata or {},
             }
         except HTTPException:
             raise
@@ -273,8 +277,8 @@ class SupabaseAuthProxy:
         """
         logger.debug("[VERIFY_TOKEN] Verifying token")
         try:
-            response = self.client.auth.get_user(access_token)
-            is_valid = response.user is not None
+            user_response = self.client.auth.get_user(access_token)
+            is_valid = user_response is not None and user_response.user is not None
             logger.debug(f"[VERIFY_TOKEN] Token valid: {is_valid}")
             return is_valid
         except Exception as e:

@@ -5,20 +5,26 @@ This directory contains comprehensive tests for the authentication service, incl
 ## Test Files
 
 ### `test_login_email_validation.py`
+
 Primary active auth/proxy suite covering:
+
 - Email and login validation behavior
 - Supabase proxy integration surfaces (sync path)
 - API/auth flow edge-case handling
 
 ### `test_api_supabase_database_extra.py`
+
 Focused unit tests for active Supabase-proxy routes and database helpers:
+
 - Register/login/logout/refresh/verify route delegation
 - Password reset request/confirm route behavior
 - Header token parsing and permissive email validation
 - Database initialization helper behavior
 
 ### `test_supabase_integration.py`
+
 Supabase-specific integration tests covering:
+
 - Database connection validation
 - Table operations (CRUD)
 - Transaction handling
@@ -32,16 +38,18 @@ Supabase-specific integration tests covering:
 ### Prerequisites
 
 1. **Install test dependencies:**
+
    ```bash
    cd auth
    pip install -e ".[dev]"
    ```
 
 2. **For Supabase integration tests, set the DATABASE_URL:**
+
    ```bash
    # Windows PowerShell
    $env:DATABASE_URL="postgresql://postgres.PROJECT:PASSWORD@aws-0-REGION.pooler.supabase.com:6543/postgres"
-   
+
    # Linux/Mac
    export DATABASE_URL="postgresql://postgres.PROJECT:PASSWORD@aws-0-REGION.pooler.supabase.com:6543/postgres"
    ```
@@ -117,27 +125,32 @@ docker compose run --rm auth pytest tests/ -v
 ## Test Categories
 
 ### Database Connectivity Tests
+
 - `test_database_url_from_environment()` - Validates DATABASE_URL configuration
 - `test_sqlite_connection()` - Tests basic SQLite connectivity
 - `test_supabase_connection()` - Tests Supabase PostgreSQL connection
 - `test_database_pool_configuration()` - Validates connection pooling
 
 ### Model Tests
+
 - `test_user_model_creation()` - User model CRUD operations
 - `test_apikey_model_creation()` - API key model operations
 - `test_password_reset_token_model()` - Password reset token operations
 
 ### Security Tests
+
 - `test_password_hashing()` - Password hashing and verification
 - `test_jwt_token_creation_and_decoding()` - JWT token lifecycle
 - `test_api_key_hashing()` - API key hashing validation
 
 ### API/Proxy Endpoint Tests
+
 - Sync route delegation for register/login/logout/me/refresh
 - Password reset request/confirm
 - Verify token success and invalid-token handling
 
 ### Supabase Integration Tests
+
 - Connection validation and DNS resolution
 - URL encoding verification for special characters
 - Transaction handling
@@ -146,13 +159,13 @@ docker compose run --rm auth pytest tests/ -v
 
 ## Environment Variables
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | For Supabase tests | None |
-| `AUTH_DB_URL` | Override for test database | No | `sqlite:///./test_auth.db` |
-| `AUTH_JWT_SECRET` | JWT secret key | No | `dev-insecure-secret-change` |
-| `AUTH_JWT_EXPIRE_MINUTES` | JWT expiration time | No | `60` |
-| `AUTH_RESET_EXPIRE_MINUTES` | Password reset token expiration | No | `30` |
+| Variable                    | Description                     | Required           | Default                      |
+| --------------------------- | ------------------------------- | ------------------ | ---------------------------- |
+| `DATABASE_URL`              | PostgreSQL connection string    | For Supabase tests | None                         |
+| `AUTH_DB_URL`               | Override for test database      | No                 | `sqlite:///./test_auth.db`   |
+| `AUTH_JWT_SECRET`           | JWT secret key                  | No                 | `dev-insecure-secret-change` |
+| `AUTH_JWT_EXPIRE_MINUTES`   | JWT expiration time             | No                 | `60`                         |
+| `AUTH_RESET_EXPIRE_MINUTES` | Password reset token expiration | No                 | `30`                         |
 
 ## Troubleshooting
 
@@ -161,6 +174,7 @@ docker compose run --rm auth pytest tests/ -v
 If Supabase tests fail with DNS resolution errors:
 
 1. **Verify URL encoding of special characters in password:**
+
    ```
    ^ = %5E
    ! = %21
@@ -172,19 +186,21 @@ If Supabase tests fail with DNS resolution errors:
    ```
 
 2. **Use IPv4 pooler connection instead of direct connection:**
+
    ```
    # Correct (pooler, port 6543)
    postgresql://postgres.PROJECT:PASSWORD@aws-0-REGION.pooler.supabase.com:6543/postgres
-   
+
    # Avoid (direct, may be IPv6 only)
    postgresql://postgres:PASSWORD@db.PROJECT.supabase.co:5432/postgres
    ```
 
 3. **Check network connectivity:**
+
    ```bash
    # Test DNS resolution
    nslookup aws-0-us-east-1.pooler.supabase.com
-   
+
    # Test connection
    psql "postgresql://postgres.PROJECT:PASSWORD@aws-0-REGION.pooler.supabase.com:6543/postgres"
    ```
@@ -213,28 +229,28 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
-    
-    - name: Install dependencies
-      run: |
-        cd auth
-        pip install -e ".[dev]"
-    
-    - name: Run tests without Supabase
-      run: DATABASE_URL=sqlite:///./auth.db pytest auth/tests/ -v
-    
-    - name: Run Supabase tests
-      if: ${{ secrets.DATABASE_URL }}
-      env:
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      run: pytest auth/tests/test_supabase_integration.py -v
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          cd auth
+          pip install -e ".[dev]"
+
+      - name: Run tests without Supabase
+        run: DATABASE_URL=sqlite:///./auth.db pytest auth/tests/ -v
+
+      - name: Run Supabase tests
+        if: ${{ secrets.DATABASE_URL }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pytest auth/tests/test_supabase_integration.py -v
 ```
 
 ## Additional Resources

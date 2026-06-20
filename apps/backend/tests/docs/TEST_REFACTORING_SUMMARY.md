@@ -45,40 +45,44 @@ tests/
 
 **Total: 72 test files moved to categories**
 
-| Category | Files | Examples |
-|----------|-------|----------|
-| api/ | 5 | test_api.py, test_api_comprehensive.py |
-| conversion/ | 6 | test_convert.py, test_roundtrip.py |
-| validation/ | 9 | test_validation_service.py, test_iwxxm_validation.py |
-| iwxxm/ | 7 | test_iwxxm_versions_rc.py, test_wmo_canonical_examples.py |
-| services/ | 4 | test_airport_data_service.py, test_database_service.py |
-| evaluation/ | 5 | test_icao_opmet.py, test_evaluation_endpoints_comprehensive.py |
-| integration/ | 4 | test_e2e_full_stack.py, test_phase2_integration.py |
-| external_apis/ | 4 | test_aviation_weather_client.py, test_openaip_integration.py |
-| edge_cases/ | 7 | test_task_3_*.py files |
-| infrastructure/ | 11 | test_smoke.py, test_security_comprehensive.py |
-| versions/ | 4 | test_version_detector.py, test_version_switching.py |
-| unit/ | 1 | test_tac_parser.py |
-| Root | 2 | test_fixtures.py (kept) |
+| Category        | Files | Examples                                                       |
+| --------------- | ----- | -------------------------------------------------------------- |
+| api/            | 5     | test_api.py, test_api_comprehensive.py                         |
+| conversion/     | 6     | test_convert.py, test_roundtrip.py                             |
+| validation/     | 9     | test_validation_service.py, test_iwxxm_validation.py           |
+| iwxxm/          | 7     | test_iwxxm_versions_rc.py, test_wmo_canonical_examples.py      |
+| services/       | 4     | test_airport_data_service.py, test_database_service.py         |
+| evaluation/     | 5     | test_icao_opmet.py, test_evaluation_endpoints_comprehensive.py |
+| integration/    | 4     | test_e2e_full_stack.py, test_phase2_integration.py             |
+| external_apis/  | 4     | test_aviation_weather_client.py, test_openaip_integration.py   |
+| edge_cases/     | 7     | test*task_3*\*.py files                                        |
+| infrastructure/ | 11    | test_smoke.py, test_security_comprehensive.py                  |
+| versions/       | 4     | test_version_detector.py, test_version_switching.py            |
+| unit/           | 1     | test_tac_parser.py                                             |
+| Root            | 2     | test_fixtures.py (kept)                                        |
 
 ### 3. Import Resolution Fixed
 
 **Updates made:**
+
 - Fixed cross-test imports using sys.path manipulation
 - Updated relative import paths for tests in subdirectories
 - Verified pytest can discover all tests (1,090+)
 
 **Files updated:**
+
 - `conversion/test_roundtrip.py` - Added sys.path for iwxxm imports
 - `iwxxm/test_iwxxm_examples.py` - Added sys.path for internal imports
 
 ### 4. Documentation Created
 
 **New files:**
+
 - `docs/TEST_ORGANIZATION.md` - Comprehensive test structure guide (13.7 KB)
 - Updated `README.md` - Quick start guide for test suite
 
 **Included files (moved to docs/):**
+
 - `COMPLETE_SUMMARY.md` - Coverage analysis
 - `IMPLEMENTATION_SUMMARY.md` - Implementation details
 - `PHASE2_SUMMARY.md` - Phase 2 work
@@ -88,6 +92,7 @@ tests/
 ### 5. Utilities Organized
 
 **Kept in root (shared across tests):**
+
 - `_xml_utils.py` - Basic XML utilities (2 imports)
 - `_comparative_xml_utils.py` - XML comparison (2 imports)
 - `_integration_helpers.py` - Integration helpers (1 import)
@@ -97,12 +102,14 @@ tests/
 ## Statistics
 
 ### Before Refactoring
+
 - 72 test files in flat /tests directory
 - Mixed concerns in root directory
 - No clear organization
 - Difficult to navigate
 
 ### After Refactoring
+
 - ✅ 12 categorized subdirectories
 - ✅ 72 test files organized by domain
 - ✅ 1,090+ tests discoverable
@@ -110,6 +117,7 @@ tests/
 - ✅ Clear navigation structure
 
 ### Test Distribution
+
 ```
 Infrastructure: 11 files  (16%)
 Validation:     9 files   (13%)
@@ -135,12 +143,13 @@ Unit:           1 file    (1%)
 - ✅ Markers still functional
 
 ### Test Run Example
+
 ```
 $ pytest tests/api/ -v
 ========================= 1 passed in 3.25s =========================
 ```
 
-```  
+```
 $ pytest --collect-only -q
 ========================= 1090 tests collected in 3.97s =========================
 ```
@@ -158,6 +167,7 @@ $ pytest --collect-only -q
 ## Migration Guide for Team
 
 ### For Test Writers
+
 1. Choose appropriate subdirectory for test category
 2. Follow test file naming: `test_*.py`
 3. Use appropriate pytest markers
@@ -165,6 +175,7 @@ $ pytest --collect-only -q
 5. Refer to `docs/TEST_ORGANIZATION.md` for detailed structure
 
 ### For Test Runners
+
 ```bash
 # Single category
 pytest tests/api/
@@ -180,6 +191,7 @@ pytest -k "test_health"
 ```
 
 ### For CI/CD Pipelines
+
 ```bash
 # Smoke tests (quick validation)
 pytest -m smoke
@@ -194,27 +206,32 @@ pytest --cov=src --cov-report=xml
 ## Files Modified
 
 ### Created
+
 - 12 new subdirectories
 - docs/TEST_ORGANIZATION.md
 - Updated README.md
 
 ### Modified
+
 - conversion/test_roundtrip.py (import fix)
 - iwxxm/test_iwxxm_examples.py (import fix)
 
 ### Moved (Reorganized)
+
 - 63 test files to subdirectories
 - 6 markdown files to docs/
 
 ### Unchanged
+
 - conftest.py (still in root)
 - test_fixtures.py (still in root)
-- Utility files (_*.py in root)
+- Utility files (\_\*.py in root)
 - pyproject.toml pytest configuration
 
 ## Testing & Validation
 
 ### Verification Commands Executed
+
 ```bash
 ✅ pytest tests/api/test_api.py::TestHealthEndpoint::test_health_status_succeeds
 ✅ pytest --collect-only (1,090 tests collected)
@@ -230,25 +247,28 @@ pytest --cov=src --cov-report=xml
 2. **Test execution location** - Tests should be run from backend/ directory
    - Always use `cd /root/metar-to-IWXXM/backend && pytest`
 
-3. **Import paths** - No __init__.py files in test subdirectories
+3. **Import paths** - No **init**.py files in test subdirectories
    - This prevents pytest-asyncio compatibility issues
    - Tests are discoverable without package initialization
 
 ## Future Improvements
 
 ### Short-term (1-2 weeks)
+
 - [ ] Add conftest.py per subdirectory for category-specific fixtures
 - [ ] Document test patterns and best practices
 - [ ] Add GitHub Actions workflow for category-specific tests
 - [ ] Add test naming standards document
 
 ### Medium-term (1-2 months)
+
 - [ ] Consider moving utility files to tests/utils package
 - [ ] Add test performance profiling
 - [ ] Create test template generator
 - [ ] Set up test result trending
 
 ### Long-term (3+ months)
+
 - [ ] Consolidate duplicate/overlapping tests
 - [ ] Increase coverage to 90%+
 - [ ] Add integration tests for complex workflows

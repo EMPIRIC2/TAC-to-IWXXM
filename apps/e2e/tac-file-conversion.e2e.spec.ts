@@ -11,11 +11,18 @@ test.describe('TAC File Conversion', () => {
 
     await convertManualMetar(
       page,
-      'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990'
+      'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
     );
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('pre').filter({ hasText: /iwxxm|metar:/i }).first()).toBeVisible();
+    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
+      { timeout: 10000 },
+    );
+    await expect(
+      page
+        .locator('pre')
+        .filter({ hasText: /iwxxm|metar:/i })
+        .first(),
+    ).toBeVisible();
   });
 
   test('COR METAR input produces correction output', async ({ page }) => {
@@ -23,10 +30,13 @@ test.describe('TAC File Conversion', () => {
 
     await convertManualMetar(
       page,
-      'METAR COR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018'
+      'METAR COR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018',
     );
 
-    const xmlOutput = page.locator('pre').filter({ hasText: /iwxxm|metar:/i }).first();
+    const xmlOutput = page
+      .locator('pre')
+      .filter({ hasText: /iwxxm|metar:/i })
+      .first();
     await expect(xmlOutput).toBeVisible({ timeout: 10000 });
     await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
   });
@@ -36,12 +46,16 @@ test.describe('TAC File Conversion', () => {
 
     const manualInput = page.getByLabel(/Enter METAR data manually/i);
     await manualInput.fill('METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010');
-    await page.getByRole('button', { name: /Clear all pending files and manual input/i }).click();
+    await page
+      .getByRole('button', { name: /Clear all pending files and manual input/i })
+      .click();
 
     await expect(manualInput).toHaveValue('');
   });
 
-  test('mocked success conversion shows success notification and results', async ({ page }) => {
+  test('mocked success conversion shows success notification and results', async ({
+    page,
+  }) => {
     await page.route('**/api/v1/convert', async (route) => {
       await route.fulfill({
         status: 200,
@@ -65,14 +79,23 @@ test.describe('TAC File Conversion', () => {
     });
 
     await openConverterWithMockSession(page);
-    await convertManualMetar(page, 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990');
+    await convertManualMetar(
+      page,
+      'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
+    );
 
-    await expect(page.getByText(/Successfully converted 1 file\(s\)/i)).toBeVisible({ timeout: 10000 });
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible();
+    await expect(page.getByText(/Successfully converted 1 file\(s\)/i)).toBeVisible({
+      timeout: 10000,
+    });
+    await expect(
+      page.getByRole('region', { name: /conversion results/i }),
+    ).toBeVisible();
     await expect(page.getByText('manual_input.txt')).toBeVisible();
   });
 
-  test('mocked empty conversion result shows no-files-converted notification', async ({ page }) => {
+  test('mocked empty conversion result shows no-files-converted notification', async ({
+    page,
+  }) => {
     await page.route('**/api/v1/convert', async (route) => {
       await route.fulfill({
         status: 200,
@@ -91,11 +114,15 @@ test.describe('TAC File Conversion', () => {
     await openConverterWithMockSession(page);
     await convertManualMetar(page, 'METAR EMPTY RESULTS CASE');
 
-    await expect(page.getByText(/No files were converted/i).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/No files were converted/i).first()).toBeVisible({
+      timeout: 10000,
+    });
     await expect(page.getByText(/Conversion Error/i).first()).toBeVisible();
   });
 
-  test('mocked unauthorized conversion shows authentication notification', async ({ page }) => {
+  test('mocked unauthorized conversion shows authentication notification', async ({
+    page,
+  }) => {
     await page.route('**/api/v1/convert', async (route) => {
       await route.fulfill({
         status: 401,
@@ -108,10 +135,15 @@ test.describe('TAC File Conversion', () => {
     });
 
     await openConverterWithMockSession(page);
-    await convertManualMetar(page, 'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010');
+    await convertManualMetar(
+      page,
+      'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010',
+    );
 
     await expect(
-      page.getByText(/Authentication failed\. Please ensure you are logged in\./i).first()
+      page
+        .getByText(/Authentication failed\. Please ensure you are logged in\./i)
+        .first(),
     ).toBeVisible({ timeout: 10000 });
     await expect(page.getByText(/Conversion Error/i).first()).toBeVisible();
   });

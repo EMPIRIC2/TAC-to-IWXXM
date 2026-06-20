@@ -1,6 +1,6 @@
 /**
  * Auth Service API Client
- * 
+ *
  * Handles all authentication requests through the merged API host.
  * Auth routes are served at /auth/* on VITE_API_BASE_URL.
  */
@@ -82,12 +82,12 @@ function getRefreshToken(): string | null {
 function isTokenExpired(): boolean {
   const expiresAt = localStorage.getItem('expires_at');
   if (!expiresAt) return true;
-  
+
   const expiryTime = parseInt(expiresAt, 10);
   const currentTime = Math.floor(Date.now() / 1000);
-  
+
   // Consider expired if less than 1 minute remaining
-  return currentTime >= (expiryTime - 60);
+  return currentTime >= expiryTime - 60;
 }
 
 /**
@@ -98,29 +98,29 @@ async function refreshTokenIfNeeded(): Promise<void> {
     console.log('[Auth Service] Token not expired, skipping refresh');
     return;
   }
-  
+
   const refreshToken = getRefreshToken();
   if (!refreshToken) {
     console.error('[Auth Service] No refresh token available');
     throw new Error('No refresh token available');
   }
-  
+
   console.log('[Auth Service] Refreshing token');
-  
+
   try {
     const response = await fetch(authUrl('/refresh'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: refreshToken }),
     });
-    
+
     console.log('[Auth Service] Refresh response status:', response.status);
-    
+
     if (!response.ok) {
       clearTokens();
       throw new Error('Failed to refresh token');
     }
-    
+
     const session: AuthSession = await response.json();
     storeTokens(session);
     console.log('[Auth Service] Token refreshed successfully');
@@ -137,29 +137,33 @@ async function refreshTokenIfNeeded(): Promise<void> {
 export async function register(data: RegisterRequest): Promise<AuthResponse> {
   const url = authUrl('/register');
   console.log('[Auth Service] Registering user:', { email: data.email, url });
-  
+
   try {
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    
-    console.log('[Auth Service] Register response status:', response.status, response.statusText);
-    
+
+    console.log(
+      '[Auth Service] Register response status:',
+      response.status,
+      response.statusText,
+    );
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
       console.error('[Auth Service] Register error:', error);
       throw new Error(error.detail || 'Registration failed');
     }
-    
+
     const result: AuthResponse = await response.json();
     console.log('[Auth Service] Register success for:', result.user?.email);
-    
+
     if (result.session) {
       storeTokens(result.session);
     }
-    
+
     return result;
   } catch (error) {
     console.error('[Auth Service] Register exception:', error);
@@ -173,29 +177,33 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
 export async function login(data: LoginRequest): Promise<AuthResponse> {
   const url = authUrl('/login');
   console.log('[Auth Service] Logging in user:', { email: data.email, url });
-  
+
   try {
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    
-    console.log('[Auth Service] Login response status:', response.status, response.statusText);
-    
+
+    console.log(
+      '[Auth Service] Login response status:',
+      response.status,
+      response.statusText,
+    );
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
       console.error('[Auth Service] Login error:', error);
       throw new Error(error.detail || 'Login failed');
     }
-    
+
     const result: AuthResponse = await response.json();
     console.log('[Auth Service] Login success for:', result.user?.email);
-    
+
     if (result.session) {
       storeTokens(result.session);
     }
-    
+
     return result;
   } catch (error) {
     console.error('[Auth Service] Login exception:', error);
@@ -209,11 +217,11 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
 export async function logout(): Promise<void> {
   const token = getAccessToken();
   if (!token) return;
-  
+
   try {
     await fetch(authUrl('/logout'), {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
   } catch (error) {
     console.error('Logout error:', error);
@@ -227,27 +235,27 @@ export async function logout(): Promise<void> {
  */
 export async function getCurrentUser(): Promise<AuthUser> {
   console.log('[Auth Service] Getting current user');
-  
+
   try {
     await refreshTokenIfNeeded();
-    
+
     const token = getAccessToken();
     if (!token) {
       throw new Error('No access token');
     }
-    
+
     const response = await fetch(authUrl('/me'), {
       method: 'GET',
-      headers: { 'Authorization': `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
-    
+
     console.log('[Auth Service] Get user response status:', response.status);
-    
+
     if (!response.ok) {
       clearTokens();
       throw new Error('Failed to get user info');
     }
-    
+
     const user = await response.json();
     console.log('[Auth Service] Got current user:', user.email);
     return user;
@@ -260,18 +268,20 @@ export async function getCurrentUser(): Promise<AuthUser> {
 /**
  * Request a password reset email
  */
-export async function requestPasswordReset(email: string): Promise<{ message: string }> {
+export async function requestPasswordReset(
+  email: string,
+): Promise<{ message: string }> {
   const response = await fetch(authUrl('/password-reset/request'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
   });
-  
+
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.detail || 'Failed to request password reset');
   }
-  
+
   return await response.json();
 }
 
@@ -279,21 +289,24 @@ export async function requestPasswordReset(email: string): Promise<{ message: st
  * Confirm password reset with new password
  * Requires reset token from email link
  */
-export async function confirmPasswordReset(token: string, newPassword: string): Promise<{ message: string }> {
+export async function confirmPasswordReset(
+  token: string,
+  newPassword: string,
+): Promise<{ message: string }> {
   const response = await fetch(authUrl('/password-reset/confirm'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ new_password: newPassword }),
   });
-  
+
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.detail || 'Failed to reset password');
   }
-  
+
   return await response.json();
 }
 

@@ -2,7 +2,16 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
-import { Loader2, CheckCircle, XCircle, Mail, Calendar, User, Users, Search } from 'lucide-react';
+import {
+  Loader2,
+  CheckCircle,
+  XCircle,
+  Mail,
+  Calendar,
+  User,
+  Users,
+  Search,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '/utils/supabase/client';
 
@@ -18,7 +27,9 @@ interface UserApprovalPanelProps {
   accessToken: string;
 }
 
-export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPanelProps) {
+export function UserApprovalPanel({
+  accessToken: _accessToken,
+}: UserApprovalPanelProps) {
   const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [processingUsers, setProcessingUsers] = useState<Set<string>>(new Set());
@@ -54,11 +65,13 @@ export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPan
   }, [loadPendingUsers]);
 
   const handleApprove = async (userId: string, userEmail: string) => {
-    setProcessingUsers(prev => new Set(prev).add(userId));
+    setProcessingUsers((prev) => new Set(prev).add(userId));
     try {
       // Get current user for approved_by
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) {
         throw new Error('Not authenticated');
       }
@@ -84,7 +97,7 @@ export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPan
       console.error('Error approving user:', error);
       toast.error('Failed to approve user');
     } finally {
-      setProcessingUsers(prev => {
+      setProcessingUsers((prev) => {
         const newSet = new Set(prev);
         newSet.delete(userId);
         return newSet;
@@ -93,11 +106,13 @@ export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPan
   };
 
   const handleReject = async (userId: string, userEmail: string) => {
-    setProcessingUsers(prev => new Set(prev).add(userId));
+    setProcessingUsers((prev) => new Set(prev).add(userId));
     try {
       // Get current user for approved_by
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) {
         throw new Error('Not authenticated');
       }
@@ -123,7 +138,7 @@ export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPan
       console.error('Error rejecting user:', error);
       toast.error('Failed to reject user');
     } finally {
-      setProcessingUsers(prev => {
+      setProcessingUsers((prev) => {
         const newSet = new Set(prev);
         newSet.delete(userId);
         return newSet;
@@ -131,9 +146,10 @@ export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPan
     }
   };
 
-  const filteredUsers = pendingUsers.filter(user =>
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = pendingUsers.filter(
+    (user) =>
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -148,9 +164,7 @@ export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPan
           variant="outline"
           className="dark:bg-gray-700 dark:text-white"
         >
-          {isLoading ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          ) : null}
+          {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
           Refresh
         </Button>
       </div>
@@ -184,7 +198,7 @@ export function UserApprovalPanel({ accessToken: _accessToken }: UserApprovalPan
         <div className="space-y-4">
           {filteredUsers.map((user) => {
             const isProcessing = processingUsers.has(user.id);
-            
+
             return (
               <Card key={user.id} className="p-4 dark:bg-gray-750 dark:border-gray-700">
                 <div className="flex items-center justify-between gap-4">

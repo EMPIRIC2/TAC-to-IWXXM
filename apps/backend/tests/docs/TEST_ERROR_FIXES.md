@@ -9,6 +9,7 @@
 **Root Cause**: The statistics service methods are async, but the mock was not configured as AsyncMock.
 
 **Solution**:
+
 ```python
 @pytest.fixture
 def mock_statistics_service():
@@ -26,6 +27,7 @@ def mock_statistics_service():
 **Root Cause**: Tests used `start_date`/`end_date` but model expects `period_start`/`period_end`. Also `avg_processing_duration_ms` instead of `average_duration_ms`.
 
 **Solution**: Updated all mock return values to match the TranslationStatistics schema:
+
 - `start_date` → `period_start` (in mock return value)
 - `end_date` → `period_end` (in mock return value)
 - `avg_processing_duration_ms` → `average_duration_ms`
@@ -42,6 +44,7 @@ def mock_statistics_service():
 **Root Cause**: `raise_for_status()` is a synchronous method on httpx Response objects, not async.
 
 **Solution**:
+
 ```python
 @pytest.fixture
 def mock_supabase_client():
@@ -62,6 +65,7 @@ def mock_supabase_client():
 **Root Cause**: Tests tried to connect to localhost:8000 when no API server was running.
 
 **Solution**: Added availability check that skips tests if API is not available:
+
 ```python
 @pytest.fixture
 async def live_client():
@@ -71,7 +75,7 @@ async def live_client():
             await test_client.get("/health")
     except (httpx.ConnectError, httpx.TimeoutException):
         pytest.skip(f"Live API not available at {LIVE_API_URL}")
-    
+
     # If we get here, API is available
     async with httpx.AsyncClient(...) as client:
         yield client
@@ -84,6 +88,7 @@ async def live_client():
 **Root Cause**: E2E tests were trying to use real database connections but engine wasn't properly mocked.
 
 **Solution**: Added database engine mock to E2E fixture:
+
 ```python
 @pytest.fixture(scope="module")
 def e2e_client(e2e_environment_check):
@@ -116,14 +121,16 @@ def e2e_client(e2e_environment_check):
 ## Test Results
 
 ### Before Fixes
+
 - ❌ 2 failures in test_icao_opmet_admin.py (TypeError: can't await)
 - ❌ 10+ failures in test_live_api_health.py (ConnectError)
-- ⚠️  Multiple RuntimeWarnings about unawaited coroutines
+- ⚠️ Multiple RuntimeWarnings about unawaited coroutines
 
 ### After Fixes
+
 - ✅ All test_icao_opmet_admin.py tests passing (27/27)
 - ✅ test_evaluation_endpoints_comprehensive.py tests passing
-- ⏭️  test_live_api_health.py tests gracefully skipped (API not running)
+- ⏭️ test_live_api_health.py tests gracefully skipped (API not running)
 - ✅ No RuntimeWarnings
 
 ## Commands to Verify Fixes

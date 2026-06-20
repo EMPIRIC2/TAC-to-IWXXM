@@ -17,19 +17,33 @@ except (ImportError, ModuleNotFoundError):
     from utilities.tac_parser import extract_airport_code  # type: ignore
 
 logger = logging.getLogger(__name__)
-
-# Import ValidationError early with fallback for both relative and absolute imports
 try:
-    from ..services.validation import ValidationError as ValError  # type: ignore[import]
-except (ImportError, ModuleNotFoundError):
-    try:
-        from services.validation import ValidationError as ValError
-    except (ImportError, ModuleNotFoundError):
-        # Fallback: create a dummy exception class if service unavailable
-        class ValError(Exception):  # type: ignore
-            """Fallback validation error."""
+    from ..schemas.validation import ValidationLayer
+except ImportError:
+    from schemas.validation import ValidationLayer
 
-            pass
+
+def _load_service_validation_error() -> type[Exception]:
+    try:
+        from ..services.validation import ValidationError
+
+        return ValidationError
+    except (ImportError, ModuleNotFoundError):
+        try:
+            from services.validation import ValidationError
+
+            return ValidationError
+        except (ImportError, ModuleNotFoundError):
+
+            class _FallbackValidationError(Exception):
+                """Fallback validation error."""
+
+                pass
+
+            return _FallbackValidationError
+
+
+ServiceValidationError = _load_service_validation_error()
 
 
 try:
@@ -481,11 +495,21 @@ def convert_metar_tac_with_metadata(
                     "WMO_CODELISTS",  # Should have valid codes
                 ]
 
+            layer_values = validation_layers or []
+            mapped_layers: List[ValidationLayer] | None = None
+            if layer_values:
+                mapped_layers = []
+                for layer_name in layer_values:
+                    if isinstance(layer_name, ValidationLayer):
+                        mapped_layers.append(layer_name)
+                    else:
+                        mapped_layers.append(ValidationLayer(str(layer_name).lower()))
+
             validation_result = orchestrator.validate_complete(
                 tac_text=tac_text,
                 xml_content=xml_string,
-                version=iwxxm_version,
-                layers=validation_layers,
+                version=iwxxm_version or "2025-2",
+                layers=mapped_layers,
                 stop_on_error=raise_on_validation_error,
             )
 

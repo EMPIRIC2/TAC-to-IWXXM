@@ -23,9 +23,9 @@ from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from sqlalchemy.orm import Session
 
-from auth.database import SessionLocal, init_db
-from auth.models import APIKey, PasswordResetToken, User
-from auth.security import (
+from database import SessionLocal, init_db
+from models import APIKey, PasswordResetToken, User
+from security import (
     create_access_token,
     create_reset_expiry,
     decode_access_token,
@@ -147,7 +147,7 @@ def login(req: LoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Invalid credentials")
     token = create_access_token(sub=user.username)
     key_ids = [k.id for k in user.api_keys if not k.revoked]
-    return LoginResponse(access_token=token, user=user, api_keys=[str(i) for i in key_ids])
+    return LoginResponse(access_token=token, user=UserOut.model_validate(user), api_keys=[str(i) for i in key_ids])
 
 
 @router.get("/me", response_model=UserOut)

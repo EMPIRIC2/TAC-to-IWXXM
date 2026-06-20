@@ -11,6 +11,10 @@ import xml.etree.ElementTree as ET
 from collections.abc import Iterable
 from xml.dom import minidom
 
+type CanonicalNode = tuple[
+    str, tuple[tuple[str, str], ...], str, tuple["CanonicalNode", ...]
+]
+
 # Dynamic IWXXM/GML attributes omitted from structural comparison.
 VOLATILE_ATTRS: frozenset[str] = frozenset(
     {
@@ -69,7 +73,7 @@ def _filter_volatile_attrs(attrib: dict[str, str]) -> dict[str, str]:
     return filtered
 
 
-def _canonicalize_element(elem: ET.Element) -> tuple[str, ...]:
+def _canonicalize_element(elem: ET.Element) -> CanonicalNode:
     """Return a nested tuple representation for stable ordering and comparison."""
     tag = local_name(elem.tag)
     attrs = tuple(sorted(_filter_volatile_attrs(elem.attrib).items()))

@@ -19,7 +19,7 @@ from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel, Field, field_validator
 
-from auth.supabase_proxy import SupabaseAuthProxy, get_supabase_proxy
+from supabase_proxy import SupabaseAuthProxy, get_supabase_proxy
 
 logger = logging.getLogger(__name__)
 
@@ -172,7 +172,7 @@ def register(request: RegisterRequest, proxy: SupabaseAuthProxy = Depends(get_su
         User information and session tokens
     """
     logger.info(f"[API] POST /auth/register - email: {request.email}")
-    metadata = {}
+    metadata: dict[str, Any] = {}
     if request.name:
         metadata["name"] = request.name
     if request.username:

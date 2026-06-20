@@ -121,7 +121,7 @@ class ComparisonDetail(BaseModel):
     value_mismatches: List[Dict[str, str]] = Field(
         default_factory=list, description="Element values that differ between our and reference outputs"
     )
-    error_message: Optional[str] = Field(None, description="Error message if comparison failed")
+    error_message: Optional[str] = Field(default=None, description="Error message if comparison failed")
 
 
 class EvaluationResultDetail(BaseModel):
@@ -148,11 +148,11 @@ class EvaluationResultDetail(BaseModel):
 
     station_id: str = Field(..., description="ICAO airport code", examples=["KJFK", "EGLL"])
     timestamp: datetime = Field(..., description="Evaluation timestamp")
-    tac_input: Optional[str] = Field(None, description="Original METAR TAC input")
-    our_iwxxm: Optional[str] = Field(None, description="Our converted IWXXM XML output")
-    their_iwxxm: Optional[str] = Field(None, description="Reference IWXXM XML for comparison")
+    tac_input: Optional[str] = Field(default=None, description="Original METAR TAC input")
+    our_iwxxm: Optional[str] = Field(default=None, description="Our converted IWXXM XML output")
+    their_iwxxm: Optional[str] = Field(default=None, description="Reference IWXXM XML for comparison")
     comparison_status: ComparisonStatus = Field(..., description="Comparison result: pass, fail, or error")
-    comparison: Optional[ComparisonDetail] = Field(None, description="Detailed comparison information")
+    comparison: Optional[ComparisonDetail] = Field(default=None, description="Detailed comparison information")
     errors: List[str] = Field(default_factory=list, description="Any errors during evaluation")
 
 
@@ -178,8 +178,12 @@ class JobSummaryStats(BaseModel):
     failed: int = Field(..., description="Number of stations with failing comparison", ge=0)
     errors: int = Field(..., description="Number of stations with evaluation errors", ge=0)
     pass_rate: float = Field(..., description="Pass rate as decimal (0.0-1.0)", ge=0.0, le=1.0)
-    avg_elements_our: Optional[float] = Field(None, description="Average number of elements in our converted IWXXM")
-    avg_elements_their: Optional[float] = Field(None, description="Average number of elements in reference IWXXM")
+    avg_elements_our: Optional[float] = Field(
+        default=None, description="Average number of elements in our converted IWXXM"
+    )
+    avg_elements_their: Optional[float] = Field(
+        default=None, description="Average number of elements in reference IWXXM"
+    )
 
 
 class EvaluationJobStatus(BaseModel):
@@ -204,10 +208,12 @@ class EvaluationJobStatus(BaseModel):
     status: JobStatus = Field(..., description="Current status: pending, running, completed, failed")
     progress: int = Field(..., description="Number of stations processed", ge=0)
     total: int = Field(..., description="Total stations to process", ge=0)
-    summary: Optional[JobSummaryStats] = Field(None, description="Summary statistics (populated when job completes)")
+    summary: Optional[JobSummaryStats] = Field(
+        default=None, description="Summary statistics (populated when job completes)"
+    )
     created_at: datetime = Field(..., description="Job creation timestamp")
-    completed_at: Optional[datetime] = Field(None, description="Job completion timestamp (if completed)")
-    error_message: Optional[str] = Field(None, description="Error message if job failed")
+    completed_at: Optional[datetime] = Field(default=None, description="Job completion timestamp (if completed)")
+    error_message: Optional[str] = Field(default=None, description="Error message if job failed")
 
 
 class EvaluationResultsResponse(BaseModel):
@@ -267,9 +273,9 @@ class JobListItem(BaseModel):
     status: JobStatus = Field(..., description="Job status")
     station_count: int = Field(..., description="Total stations in job", ge=0)
     progress: int = Field(..., description="Stations processed so far", ge=0)
-    summary: Optional[JobSummaryStats] = Field(None, description="Summary statistics (if completed)")
+    summary: Optional[JobSummaryStats] = Field(default=None, description="Summary statistics (if completed)")
     created_at: datetime = Field(..., description="Creation timestamp")
-    completed_at: Optional[datetime] = Field(None, description="Completion timestamp (if completed)")
+    completed_at: Optional[datetime] = Field(default=None, description="Completion timestamp (if completed)")
 
 
 class JobListResponse(BaseModel):

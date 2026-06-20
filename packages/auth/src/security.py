@@ -5,7 +5,7 @@ from __future__ import annotations
 import datetime as dt
 import hashlib
 import os
-from typing import Optional
+from typing import Optional, cast
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -22,11 +22,11 @@ RESET_TOKEN_EXPIRE_MINUTES = int(os.getenv("AUTH_RESET_EXPIRE_MINUTES", "30"))
 
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    return cast(str, pwd_context.hash(password))
 
 
 def verify_password(password: str, hashed: str) -> bool:
-    return pwd_context.verify(password, hashed)
+    return cast(bool, pwd_context.verify(password, hashed))
 
 
 def create_access_token(sub: str) -> str:

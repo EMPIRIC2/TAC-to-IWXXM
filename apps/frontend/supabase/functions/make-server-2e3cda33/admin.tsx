@@ -1,4 +1,4 @@
-import * as kv from "./kv_store.tsx";
+import * as kv from './kv_store.tsx';
 const DEFAULT_SETTINGS = {
   defaultBulletinId: 'SAAA00',
   defaultIssuingCenter: 'KWBC',
@@ -7,7 +7,7 @@ const DEFAULT_SETTINGS = {
   defaultIncludeNilReasons: true,
   defaultOnError: 'warn',
   defaultLogLevel: 'INFO',
-  allowedIcaoCodes: []
+  allowedIcaoCodes: [],
 };
 // Get system settings
 export async function getSystemSettings() {
@@ -25,12 +25,12 @@ export async function saveSystemSettings(settings) {
     await kv.set('system:settings', settings);
     console.log('System settings saved successfully');
     return {
-      data: settings
+      data: settings,
     };
   } catch (error) {
     console.error('Error saving system settings:', error);
     return {
-      error: error instanceof Error ? error.message : 'Unknown error saving settings'
+      error: error instanceof Error ? error.message : 'Unknown error saving settings',
     };
   }
 }
@@ -51,17 +51,17 @@ export async function sendEmailNotification(to, subject, body) {
       subject,
       body,
       sent_at: new Date().toISOString(),
-      status: 'sent' // In production: 'pending', 'sent', 'failed'
+      status: 'sent', // In production: 'pending', 'sent', 'failed'
     });
     return {
       data: {
-        message: 'Email sent successfully'
-      }
+        message: 'Email sent successfully',
+      },
     };
   } catch (error) {
     console.error('Error sending email:', error);
     return {
-      error: error instanceof Error ? error.message : 'Unknown error sending email'
+      error: error instanceof Error ? error.message : 'Unknown error sending email',
     };
   }
 }

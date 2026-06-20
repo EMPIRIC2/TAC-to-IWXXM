@@ -9,7 +9,8 @@ import queue
 import threading
 import time
 from collections import defaultdict
-from datetime import datetime
+from collections.abc import Awaitable, Callable
+from datetime import datetime, timezone
 from typing import Any
 
 from fastapi import FastAPI, Request
@@ -29,7 +30,7 @@ def _get_or_create_counter(name: str, documentation: str, labelnames: list[str])
             # Metric already registered globally; retrieve from default REGISTRY
             from prometheus_client import REGISTRY
 
-            _METRICS[name] = REGISTRY._names_to_collectors.get(name)
+            _METRICS[name] = REGISTRY._names_to_collectors.get(name)  # pyright: ignore[reportPrivateUsage]
     return _METRICS[name]  # type: ignore[return-value]
 
 
@@ -41,7 +42,7 @@ def _get_or_create_histogram(name: str, documentation: str, labelnames: list[str
             # Metric already registered globally; retrieve from default REGISTRY
             from prometheus_client import REGISTRY
 
-            _METRICS[name] = REGISTRY._names_to_collectors.get(name)
+            _METRICS[name] = REGISTRY._names_to_collectors.get(name)  # pyright: ignore[reportPrivateUsage]
     return _METRICS[name]  # type: ignore[return-value]
 
 
@@ -69,7 +70,7 @@ class JsonLogFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         payload = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),
@@ -265,7 +266,10 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
     """Install metrics middleware and /metrics endpoint into FastAPI app."""
 
     @app.middleware("http")
-    async def prometheus_http_metrics(request: Request, call_next):
+    async def prometheus_http_metrics(
+        request: Request,
+        call_next: Callable[[Request], Awaitable[Response]],
+    ) -> Response:
         start = time.perf_counter()
         response = await call_next(request)
         duration_seconds = time.perf_counter() - start

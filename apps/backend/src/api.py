@@ -8,6 +8,7 @@ import logging
 import os
 import pathlib
 import sys
+import time
 import zipfile
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -288,7 +289,7 @@ async def parse_files(request: Request) -> List[UploadFile]:
         for key, value in form.multi_items():
             if key == "files":
                 # Only add if it's actually an UploadFile, not an empty string
-                if hasattr(value, "filename") and value.filename:
+                if isinstance(value, UploadFile) and value.filename:
                     files.append(value)
         return files
     except Exception as e:
@@ -352,13 +353,13 @@ def is_xml_input(filename: Optional[str], content: str) -> bool:
 def classify_and_validate_upload_content(
     *,
     filename: Optional[str],
-    content: str,
+    content: str | None,
     iwxxm_version: str,
     endpoint_path: str,
     validation_orchestrator: Optional[Any],
 ) -> Optional[Dict[str, str]]:
     """Return a standardized XML rejection payload for TAC-only conversion endpoints."""
-    if not is_xml_input(filename, content):
+    if not content or not is_xml_input(filename, content):
         return None
 
     if not validation_orchestrator:
@@ -1021,8 +1022,8 @@ async def convert(
         "icao_opmet",
         "schema",
     ]
-    bulletin_id = normalize_code(bulletin_id, 6)
-    issuing_center = normalize_code(issuing_center, 4)
+    bulletin_id = normalize_code(bulletin_id, 6) or ""
+    issuing_center = normalize_code(issuing_center, 4) or ""
 
     # Validate and normalize IWXXM version
     try:
@@ -1181,10 +1182,8 @@ async def convert(
         total_inputs += 1
         start_time = None
         translation_id = None
+        metar_name = f"metar_{total_inputs}.txt"
         try:
-            # Use the same validation and conversion logic as manual_text
-            metar_name = f"metar_{total_inputs}.txt"
-
             # Validate METAR input (Layers 1-2: ICAO and TAC syntax)
             try:
                 validation_result = validation_service.validate_all_layers(normalized_metar_text)
@@ -1262,7 +1261,6 @@ async def convert(
                 continue
             else:
                 # Start timing for successful conversion
-                import time
 
                 start_time = time.perf_counter()
 
@@ -1314,7 +1312,7 @@ async def convert(
                     # Log successful translation
                     try:
                         end_time = time.perf_counter()
-                        duration_ms = (end_time - start_time) * 1000
+                        duration_ms = int(round((end_time - start_time) * 1000))
 
                         translation_id = await statistics_service.log_translation(
                             tac_message=metar_text.strip(),
@@ -1351,7 +1349,7 @@ async def convert(
                     logger.error(error_msg)
                     try:
                         end_time = time.perf_counter()
-                        duration_ms = (end_time - start_time) * 1000 if start_time else 0
+                        duration_ms = int(round((end_time - start_time) * 1000)) if start_time else 0
 
                         await statistics_service.log_translation(
                             tac_message=metar_text.strip(),
@@ -1484,8 +1482,6 @@ async def convert(
                     break
                 continue
 
-            import time
-
             start_time = time.perf_counter()
 
             emit_recent_wx_issues(manual_source, _norm_warnings)
@@ -1574,6 +1570,7 @@ async def convert(
             total_inputs += 1
             start_time = None
             translation_id = None
+            data = ""
             try:
                 data, read_error = await read_uploaded_text(uf)
                 source_name = uf.filename or "unknown_file"
@@ -1614,7 +1611,7 @@ async def convert(
 
                 # Validate METAR input (Layers 1-2: ICAO and TAC syntax)
                 try:
-                    validation_result = validation_service.validate_all_layers(data.strip())
+                    validation_result = validation_service.validate_all_layers((data or "").strip())
                     if not validation_result.passed:
                         # Build summary from validation result
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
@@ -1631,17 +1628,17 @@ async def convert(
                         # Log failed validation
                         try:
                             translation_id = await statistics_service.log_translation(
-                                tac_message=data.strip(),
+                                tac_message=(data or "").strip(),
                                 iwxxm_output=None,
                                 iwxxm_version=iwxxm_version,
                                 translation_status=TranslationStatus.FAILED,
                                 validation_layers_passed=[],
                                 validation_errors={"validation": validation_summary},
                                 translation_duration_ms=0,
-                                icao_airport_code=extract_airport_code(data.strip()),
+                                icao_airport_code=extract_airport_code((data or "").strip()),
                                 user_id=user.get("sub"),
                             )
-                            airport_code = extract_airport_code(data.strip())
+                            airport_code = extract_airport_code((data or "").strip())
                             await webhook_service.notify_translation_failed(
                                 translation_id=translation_id,
                                 airport_code=airport_code or "UNKNOWN",
@@ -1663,17 +1660,17 @@ async def convert(
                     # Log validation error
                     try:
                         translation_id = await statistics_service.log_translation(
-                            tac_message=data.strip(),
+                            tac_message=(data or "").strip(),
                             iwxxm_output=None,
                             iwxxm_version=iwxxm_version,
                             translation_status=TranslationStatus.FAILED,
                             validation_layers_passed=[],
                             validation_errors={"error": str(ve)},
                             translation_duration_ms=0,
-                            icao_airport_code=extract_airport_code(data.strip()),
+                            icao_airport_code=extract_airport_code((data or "").strip()),
                             user_id=user.get("sub"),
                         )
-                        airport_code = extract_airport_code(data.strip())
+                        airport_code = extract_airport_code((data or "").strip())
                         await webhook_service.notify_translation_failed(
                             translation_id=translation_id,
                             airport_code=airport_code or "UNKNOWN",
@@ -1687,12 +1684,11 @@ async def convert(
                     continue
 
                 # Start timing for successful conversion
-                import time
 
                 start_time = time.perf_counter()
 
                 # Only convert if validation passed
-                xml_text, _ = convert_metar_tac_with_metadata(data, iwxxm_version=iwxxm_version, validate=False)
+                xml_text, _ = convert_metar_tac_with_metadata(data or "", iwxxm_version=iwxxm_version, validate=False)
 
                 # Calculate duration
                 duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -1705,7 +1701,7 @@ async def convert(
                 if validate_output and validation_orchestrator:
                     try:
                         validation_result = validation_orchestrator.validate_complete(
-                            tac_text=data.strip(),
+                            tac_text=(data or "").strip(),
                             xml_content=xml_text,
                             version=iwxxm_version,
                             stop_on_error=False,  # Collect all issues
@@ -1744,22 +1740,20 @@ async def convert(
                 # Log successful translation
                 try:
                     translation_id = await statistics_service.log_translation(
-                        tac_message=data.strip(),
+                        tac_message=(data or "").strip(),
                         iwxxm_output=xml_text,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.SUCCESS,
                         validation_layers_passed=layers_passed,
                         validation_errors=validation_errors_dict if validation_errors_dict else None,
                         translation_duration_ms=duration_ms,
-                        icao_airport_code=extract_airport_code(data.strip()),
+                        icao_airport_code=extract_airport_code((data or "").strip()),
                         user_id=user.get("sub"),
                     )
                     await webhook_service.notify_translation_success(
                         translation_id=translation_id,
-                        airport_code=extract_airport_code(data.strip()) or "UNKNOWN",
-                        icao_region=get_icao_region(extract_airport_code(data.strip()))
-                        if extract_airport_code(data.strip())
-                        else "UNKNOWN",
+                        airport_code=extract_airport_code((data or "").strip()) or "UNKNOWN",
+                        icao_region=get_icao_region(extract_airport_code((data or "").strip()) or "ZZZZ"),
                         iwxxm_version=iwxxm_version,
                         duration_ms=duration_ms,
                     )
@@ -1787,17 +1781,17 @@ async def convert(
                 # Log conversion error
                 try:
                     translation_id = await statistics_service.log_translation(
-                        tac_message=data.strip() if "data" in locals() else "",
+                        tac_message=(data or "").strip(),
                         iwxxm_output=None,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.FAILED,
                         validation_layers_passed=[],
                         validation_errors={"conversion_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
-                        icao_airport_code=extract_airport_code(data.strip()) if "data" in locals() else None,
+                        icao_airport_code=extract_airport_code((data or "").strip()) or None,
                         user_id=user.get("sub"),
                     )
-                    airport_code = extract_airport_code(data.strip()) if "data" in locals() else None
+                    airport_code = extract_airport_code((data or "").strip()) or None
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
@@ -1820,17 +1814,17 @@ async def convert(
                 # Log unexpected error
                 try:
                     translation_id = await statistics_service.log_translation(
-                        tac_message=data.strip() if "data" in locals() else "",
+                        tac_message=(data or "").strip(),
                         iwxxm_output=None,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.FAILED,
                         validation_layers_passed=[],
                         validation_errors={"unexpected_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
-                        icao_airport_code=extract_airport_code(data.strip()) if "data" in locals() else None,
+                        icao_airport_code=extract_airport_code((data or "").strip()) or None,
                         user_id=user.get("sub"),
                     )
-                    airport_code = extract_airport_code(data.strip()) if "data" in locals() else None
+                    airport_code = extract_airport_code((data or "").strip()) or None
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
@@ -1934,7 +1928,6 @@ async def convert_zip(
     if request_body is not None:
         metars_list = request_body.metars or []
         iwxxm_version = request_body.version
-        validation_level = request_body.validation_level or "basic"
         manual_text = ""  # Override form input
         files = None  # Override file input
     else:
@@ -1987,8 +1980,6 @@ async def convert_zip(
         translation_id = None
         manual_name = f"manual_input_{manual_index}.xml" if len(manual_entries) > 1 else "manual_input.xml"
         try:
-            import time
-
             start_time = time.perf_counter()
 
             xml_text, _ = convert_metar_tac_with_metadata(manual_entry, iwxxm_version=iwxxm_version)
@@ -2008,7 +1999,8 @@ async def convert_zip(
                     icao_airport_code=extract_airport_code(manual_entry),
                     user_id=user.get("sub"),
                 )
-                translation_ids.append(translation_id)
+                if translation_id:
+                    translation_ids.append(translation_id)
             except Exception as log_err:
                 logger.error(f"Failed to log successful translation: {log_err}")
         except ConversionError as e:
@@ -2040,6 +2032,7 @@ async def convert_zip(
         for uf in files:
             start_time = None
             translation_id = None
+            data = ""
             try:
                 source_name = uf.filename or "unknown_file"
                 data, read_error = await read_uploaded_text(uf)
@@ -2059,11 +2052,10 @@ async def convert_zip(
                     continue
 
                 # Start timing
-                import time
 
                 start_time = time.perf_counter()
 
-                xml_text, _ = convert_metar_tac_with_metadata(data, iwxxm_version=iwxxm_version)
+                xml_text, _ = convert_metar_tac_with_metadata(data or "", iwxxm_version=iwxxm_version)
 
                 # Calculate duration
                 duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -2074,17 +2066,18 @@ async def convert_zip(
                 # Log successful translation
                 try:
                     translation_id = await statistics_service.log_translation(
-                        tac_message=data,
+                        tac_message=data or "",
                         iwxxm_output=xml_text,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.SUCCESS,
                         validation_layers_passed=[],  # Zip endpoint doesn't validate
                         validation_errors=None,
                         translation_duration_ms=duration_ms,
-                        icao_airport_code=extract_airport_code(data),
+                        icao_airport_code=extract_airport_code(data or ""),
                         user_id=user.get("sub"),
                     )
-                    translation_ids.append(translation_id)
+                    if translation_id:
+                        translation_ids.append(translation_id)
                 except Exception as log_err:
                     logger.error(f"Failed to log successful translation: {log_err}")
             except ConversionError as e:
@@ -2092,17 +2085,17 @@ async def convert_zip(
                 # Log failed translation
                 try:
                     translation_id = await statistics_service.log_translation(
-                        tac_message=data if "data" in locals() else "",
+                        tac_message=data or "",
                         iwxxm_output=None,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.FAILED,
                         validation_layers_passed=[],
                         validation_errors={"conversion_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
-                        icao_airport_code=extract_airport_code(data) if "data" in locals() else None,
+                        icao_airport_code=extract_airport_code(data or "") or None,
                         user_id=user.get("sub"),
                     )
-                    airport_code = extract_airport_code(data) if "data" in locals() else None
+                    airport_code = extract_airport_code(data or "") or None
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
@@ -2116,17 +2109,17 @@ async def convert_zip(
                 # Log unexpected error
                 try:
                     translation_id = await statistics_service.log_translation(
-                        tac_message=data if "data" in locals() else "",
+                        tac_message=data or "",
                         iwxxm_output=None,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.FAILED,
                         validation_layers_passed=[],
                         validation_errors={"unexpected_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
-                        icao_airport_code=extract_airport_code(data) if "data" in locals() else None,
+                        icao_airport_code=extract_airport_code(data or "") or None,
                         user_id=user.get("sub"),
                     )
-                    airport_code = extract_airport_code(data) if "data" in locals() else None
+                    airport_code = extract_airport_code(data or "") or None
                     await webhook_service.notify_translation_failed(
                         translation_id=translation_id,
                         airport_code=airport_code or "UNKNOWN",
@@ -2204,7 +2197,6 @@ async def convert_zip(
                 continue  # Skip to next METAR
 
             # Start timing
-            import time
 
             start_time = time.perf_counter()
 
@@ -2228,7 +2220,8 @@ async def convert_zip(
                     icao_airport_code=extract_airport_code(metar_text.strip()),
                     user_id=user.get("sub"),
                 )
-                translation_ids.append(translation_id)
+                if translation_id:
+                    translation_ids.append(translation_id)
             except Exception as log_err:
                 logger.error(f"Failed to log successful translation: {log_err}")
         except ConversionError as e:
@@ -2284,10 +2277,10 @@ async def convert_zip(
     if translation_ids:
         try:
             await webhook_service.notify_bulk_completed(
-                translation_ids=translation_ids,
-                total_count=len(translation_ids),
-                success_count=len(results),
-                failed_count=len(errors),
+                total_files=len(translation_ids),
+                successful=len(results),
+                failed=len(errors),
+                duration_ms=0,
             )
         except Exception as webhook_err:
             logger.error(f"Failed to send bulk completion webhook: {webhook_err}")

@@ -11,7 +11,7 @@ const useThemeMock = vi.hoisted(() =>
     themes: ['light', 'dark'],
     systemTheme: undefined,
     resolvedTheme: 'light',
-  }))
+  })),
 );
 
 vi.mock('next-themes', () => ({
@@ -76,7 +76,9 @@ describe('UI Workflow: Theme Persistence', () => {
     unmount();
 
     render(<ThemeToggle />);
-    const darkToggleAfterRemount = screen.getByRole('switch', { name: /switch to light mode/i });
+    const darkToggleAfterRemount = screen.getByRole('switch', {
+      name: /switch to light mode/i,
+    });
     expect(darkToggleAfterRemount).toHaveAttribute('aria-checked', 'true');
   });
 });

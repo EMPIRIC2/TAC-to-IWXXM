@@ -25,12 +25,12 @@ class ConversionIssue(BaseModel):
     )
     message: str = Field(..., description="Human-readable issue message", min_length=1)
     hint: Optional[str] = Field(
-        None,
+        default=None,
         description="Concise suggested fix for the user",
         examples=["Start the report with METAR or SPECI and a valid ICAO code"],
     )
     code: Optional[str] = Field(
-        None,
+        default=None,
         description="Machine-readable issue code",
         examples=["MISSING_KEYWORD", "INVALID_ICAO_FORMAT"],
     )
@@ -39,12 +39,12 @@ class ConversionIssue(BaseModel):
         description="Issue severity",
     )
     layer: Optional[str] = Field(
-        None,
+        default=None,
         description="Validation layer associated with the issue",
         examples=["airport_icao", "tac_syntax"],
     )
     location: Optional[str] = Field(
-        None,
+        default=None,
         description="Optional location context from parser/validator",
         examples=["line 1, column 12"],
     )

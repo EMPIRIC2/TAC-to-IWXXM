@@ -17,7 +17,6 @@ class TestGiftsBeckendIntegration:
     def test_backend_uses_gifts_for_conversion(self):
         """Test that backend uses GIFTs library for conversion."""
         # Backend calls GIFTs converter with METAR
-        metar = "KJFK 121251Z 24016G28KT 3SM -SN BKN014 OVC040 23/19 A3000"
 
         # Mock GIFTs response
         iwxxm_output = '<?xml version="1.0"?><IWXXM>...</IWXXM>'
@@ -35,7 +34,6 @@ class TestGiftsBeckendIntegration:
 
     def test_gifts_handles_invalid_metar(self):
         """Test that backend handles GIFTs errors for invalid METAR."""
-        invalid_metar = "INVALID METAR DATA"
 
         # GIFTs should reject it
         errors = ["METAR parsing failed"]
@@ -44,7 +42,6 @@ class TestGiftsBeckendIntegration:
     def test_gifts_returns_validation_errors(self):
         """Test that backend can retrieve validation errors from GIFTs."""
         # Partial METAR
-        partial_metar = "KJFK 121251Z"
 
         # GIFTs returns validation errors
         validation_errors = ["Missing wind information", "Missing visibility"]

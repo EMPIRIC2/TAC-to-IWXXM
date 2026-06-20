@@ -1,0 +1,12 @@
+{
+  "include": ["src"],
+  "exclude": ["**/__pycache__", "src/auth"],
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "strict",
+  "reportMissingTypeStubs": false,
+  "reportUnusedFunction": "none",
+  "reportPrivateUsage": "none",
+  "reportDeprecated": "none",
+  "reportUnknownMemberType": "none",
+  "reportUnnecessaryComparison": "none"
+}

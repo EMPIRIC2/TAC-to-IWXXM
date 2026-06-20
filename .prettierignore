@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+vendor/
+playwright-report/
+pnpm-lock.yaml
+uv.lock
+*.xml
+*.xsd
+*.xsl

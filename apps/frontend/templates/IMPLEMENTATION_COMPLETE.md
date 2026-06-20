@@ -58,31 +58,32 @@ Total Size: ~112 KB (highly organized, easy to navigate)
 
 ### 📧 Authentication Templates (6 files)
 
-| File | Purpose | When Sent | Key Variables |
-|------|---------|-----------|---------------|
-| 01-confirmation.md | Email verification | After signup | `{{ .TokenHash }}` |
-| 02-magic-link.md | Passwordless login | Magic link request | `{{ .TokenHash }}` |
-| 03-password-reset.md | Password recovery | Reset request | `{{ .TokenHash }}` |
-| 04-welcome.md | Onboarding | After email verified | `{{ .SiteURL }}` |
-| 05-email-changed.md | Email change alert | Email changed | `{{ .Email }}` |
-| 06-suspicious-activity.md | Login alert | Unusual login detected | `{{ .Data }}` (custom) |
+| File                      | Purpose            | When Sent              | Key Variables          |
+| ------------------------- | ------------------ | ---------------------- | ---------------------- |
+| 01-confirmation.md        | Email verification | After signup           | `{{ .TokenHash }}`     |
+| 02-magic-link.md          | Passwordless login | Magic link request     | `{{ .TokenHash }}`     |
+| 03-password-reset.md      | Password recovery  | Reset request          | `{{ .TokenHash }}`     |
+| 04-welcome.md             | Onboarding         | After email verified   | `{{ .SiteURL }}`       |
+| 05-email-changed.md       | Email change alert | Email changed          | `{{ .Email }}`         |
+| 06-suspicious-activity.md | Login alert        | Unusual login detected | `{{ .Data }}` (custom) |
 
 ### 🔒 Security Templates (8 files)
 
-| File | Purpose | When Sent | Admin Action |
-|------|---------|-----------|--------------|
-| 01-mfa-enabled.md | MFA activation | MFA enabled | Manual |
-| 02-session-timeout.md | Inactivity warning | Before timeout | Auto/Manual |
-| 03-permission-revoked.md | Access changes | Permissions changed | Admin |
-| 04-new-device.md | New device login | First device login | Auto |
-| 05-password-changed.md | Password change | After password change | Auto |
-| 06-account-locked.md | Failed login lock | 5+ failed attempts | Auto |
-| 07-ip-mismatch.md | Location anomaly | Location mismatch detected | Auto |
-| 08-data-export.md | Data download | Export ready | Manual |
+| File                     | Purpose            | When Sent                  | Admin Action |
+| ------------------------ | ------------------ | -------------------------- | ------------ |
+| 01-mfa-enabled.md        | MFA activation     | MFA enabled                | Manual       |
+| 02-session-timeout.md    | Inactivity warning | Before timeout             | Auto/Manual  |
+| 03-permission-revoked.md | Access changes     | Permissions changed        | Admin        |
+| 04-new-device.md         | New device login   | First device login         | Auto         |
+| 05-password-changed.md   | Password change    | After password change      | Auto         |
+| 06-account-locked.md     | Failed login lock  | 5+ failed attempts         | Auto         |
+| 07-ip-mismatch.md        | Location anomaly   | Location mismatch detected | Auto         |
+| 08-data-export.md        | Data download      | Export ready               | Manual       |
 
 ## Security Improvements Included
 
 ### 🔴 Critical Fixes (Week 1)
+
 ```
 ✅ Enable RLS on users, api_keys, password_reset_tokens
 ✅ Create restrictive row-level security policies
@@ -91,6 +92,7 @@ Total Size: ~112 KB (highly organized, easy to navigate)
 ```
 
 ### 🟠 High-Priority Fixes (Week 2)
+
 ```
 ✅ Fix function search_path security issues
 ✅ Enable leaked password protection
@@ -100,6 +102,7 @@ Total Size: ~112 KB (highly organized, easy to navigate)
 ```
 
 ### 🔵 Informational (Week 3)
+
 ```
 ✅ Configure kv_store security policies
 ✅ Verify all security settings
@@ -109,7 +112,9 @@ Total Size: ~112 KB (highly organized, easy to navigate)
 ## Quick Start
 
 ### 1. Copy Templates to Supabase
+
 For each template in authentication and security folders:
+
 1. Open file (e.g., `01-confirmation.md`)
 2. Copy the "Subject" line
 3. Copy the "HTML" section
@@ -119,13 +124,17 @@ For each template in authentication and security folders:
 7. Save
 
 ### 2. Apply Security Fixes
+
 Follow the 3-week implementation plan in `SECURITY_FIXES.md`:
+
 1. Week 1: Run 4 critical SQL scripts (25 min)
 2. Week 2: Run 5 high-priority scripts (55 min)
 3. Week 3: Run 1 info script (5 min)
 
 ### 3. Test Everything
+
 For each template:
+
 1. Create test account / trigger event
 2. Check email (spam folder too!)
 3. Click links and verify flows
@@ -135,24 +144,28 @@ For each template:
 ## Key Features
 
 ✅ **Production-Ready HTML**
+
 - Professional design with gradients
 - Responsive for mobile devices
 - Light and dark color schemes
 - Clear call-to-action buttons
 
 ✅ **Security-First Content**
+
 - Detailed security explanations
 - Clear warning sections
 - Instructions for suspicious activity
 - Password security best practices
 
 ✅ **Easy Customization**
+
 - Placeholder text clearly marked
 - Company branding sections noted
 - Variables documented
 - Color hex codes provided
 
 ✅ **Complete Documentation**
+
 - Implementation guide
 - Variables reference
 - Security remediation scripts
@@ -161,16 +174,17 @@ For each template:
 ## Integration Points
 
 ### Frontend Components
+
 ```typescript
 // Login with magic link
 await supabase.auth.signInWithOtp({
   email,
-  options: { emailRedirectTo: '/auth/callback' }
+  options: { emailRedirectTo: '/auth/callback' },
 });
 
 // Password reset request
 await supabase.auth.resetPasswordForEmail(email, {
-  redirectTo: '/auth/callback'
+  redirectTo: '/auth/callback',
 });
 
 // Email change (auto-sends notification)
@@ -178,14 +192,15 @@ await supabase.auth.updateUser({ email: newEmail });
 ```
 
 ### Backend Handlers
+
 ```typescript
 // Send custom emails (manual)
 await supabaseAdmin.functions.invoke('send-email', {
   body: {
     to: email,
     template: 'welcome',
-    data: { username, siteUrl }
-  }
+    data: { username, siteUrl },
+  },
 });
 
 // Track failed logins
@@ -243,20 +258,25 @@ await generateDataExport(userId);
 ## Support & Maintenance
 
 ### Monitoring
+
 Monitor these metrics:
+
 - Email delivery success rate (should be >95%)
 - Failed login attempts by IP (track abuse)
 - RLS policy performance (slow queries?)
 - Database storage usage (indexes, policies)
 
 ### Regular Tasks
+
 - **Weekly**: Check email delivery logs
 - **Monthly**: Review failed login patterns
 - **Quarterly**: Update security templates
 - **Annually**: Security audit and refresh
 
 ### Troubleshooting
+
 See `SECURITY_FIXES.md` → "Testing Your Fixes" section:
+
 - Test RLS policies
 - Verify query performance
 - Check index usage

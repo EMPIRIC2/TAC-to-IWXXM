@@ -209,11 +209,11 @@ class AirportValidator:
         if not query:
             return []
 
-        query_lower = query.lower()
+        query_lower = (query or "").lower()
         matches = [
             airport
             for airport in self._airports.values()
-            if query_lower in airport.name.lower() or query_lower in airport.city.lower()
+            if query_lower in (airport.name or "").lower() or query_lower in (airport.city or "").lower()
         ]
         return matches[:limit]
 

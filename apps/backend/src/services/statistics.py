@@ -9,13 +9,14 @@ import logging
 import re
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional, Sequence, Union
 
-from sqlalchemy import and_, func, select
+from sqlalchemy import Integer, and_, func, select
 
 from ..config.icao_opmet import get_icao_region, should_log_statistics
 from ..models import TranslationStatisticsModel
 from ..schemas.icao_opmet import TranslationStatus, ValidationLayer
+from ..schemas.validation import ValidationLayer as RuntimeValidationLayer
 from ..utilities.observability import record_translation_metric
 from .database import get_db_session
 
@@ -46,9 +47,9 @@ class StatisticsService:
         iwxxm_version: str,
         icao_airport_code: Optional[str],
         translation_status: TranslationStatus,
-        translation_duration_ms: int,
+        translation_duration_ms: float | int,
         iwxxm_output: Optional[str] = None,
-        validation_layers_passed: Optional[List[ValidationLayer]] = None,
+        validation_layers_passed: Optional[Sequence[Union[ValidationLayer, RuntimeValidationLayer, str]]] = None,
         validation_errors: Optional[Dict[str, Any]] = None,
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
@@ -100,7 +101,7 @@ class StatisticsService:
 
             # Convert validation layers to strings
             validation_layer_strings = [
-                layer.value if isinstance(layer, ValidationLayer) else str(layer)
+                layer.value if isinstance(layer, (ValidationLayer, RuntimeValidationLayer)) else str(layer)
                 for layer in (validation_layers_passed or [])
             ]
 
@@ -118,7 +119,7 @@ class StatisticsService:
                 else translation_status,
                 validation_layers_passed=validation_layer_strings if validation_layer_strings else None,
                 validation_errors=validation_errors,
-                translation_duration_ms=translation_duration_ms,
+                translation_duration_ms=int(round(translation_duration_ms)),
                 user_id=uuid.UUID(user_id) if user_id and isinstance(user_id, str) and len(user_id) == 36 else user_id,
                 session_id=session_id,
                 bulletin_reception_time=bulletin_reception_time,
@@ -147,7 +148,7 @@ class StatisticsService:
                 status=translation_status_value,
                 iwxxm_version=iwxxm_version,
                 icao_region=icao_region,
-                duration_ms=translation_duration_ms,
+                duration_ms=int(round(translation_duration_ms)),
             )
             return str(translation_id)
 
@@ -202,11 +203,13 @@ class StatisticsService:
                 # Overall statistics query
                 overall_query = select(
                     func.count(TranslationStatisticsModel.id).label("total"),
-                    func.sum((TranslationStatisticsModel.translation_status == "success").cast(int)).label(
+                    func.sum((TranslationStatisticsModel.translation_status == "success").cast(Integer)).label(
                         "successful"
                     ),
-                    func.sum((TranslationStatisticsModel.translation_status == "failed").cast(int)).label("failed"),
-                    func.sum((TranslationStatisticsModel.translation_status == "partial").cast(int)).label("partial"),
+                    func.sum((TranslationStatisticsModel.translation_status == "failed").cast(Integer)).label("failed"),
+                    func.sum((TranslationStatisticsModel.translation_status == "partial").cast(Integer)).label(
+                        "partial"
+                    ),
                     func.avg(TranslationStatisticsModel.translation_duration_ms).label("avg_duration"),
                     func.percentile_cont(0.5)
                     .within_group(TranslationStatisticsModel.translation_duration_ms)
@@ -215,11 +218,22 @@ class StatisticsService:
 
                 result = await session.execute(overall_query)
                 row = result.first()
+                if row is None:
+                    row_total = row_successful = row_failed = row_partial = 0
+                    row_avg_duration = 0.0
+                    row_median_duration = None
+                else:
+                    row_total = row.total or 0
+                    row_successful = row.successful or 0
+                    row_failed = row.failed or 0
+                    row_partial = row.partial or 0
+                    row_avg_duration = row.avg_duration or 0
+                    row_median_duration = row.median_duration
 
-                total = row.total or 0
-                successful = row.successful or 0
-                failed = row.failed or 0
-                partial = row.partial or 0
+                total = row_total
+                successful = row_successful
+                failed = row_failed
+                partial = row_partial
                 success_rate = (successful / total * 100) if total > 0 else 0.0
 
                 # Region breakdown
@@ -294,8 +308,10 @@ class StatisticsService:
                     "failed_translations": failed,
                     "partial_translations": partial,
                     "success_rate": round(success_rate, 2),
-                    "average_duration_ms": round(float(row.avg_duration or 0), 2),
-                    "median_duration_ms": round(float(row.median_duration or 0), 2) if row.median_duration else None,
+                    "average_duration_ms": round(float(row_avg_duration), 2),
+                    "median_duration_ms": round(float(row_median_duration), 2)
+                    if row_median_duration is not None
+                    else None,
                     "translations_by_region": translations_by_region,
                     "translations_by_version": translations_by_version,
                     "translations_by_airport": translations_by_airport,
@@ -344,7 +360,7 @@ class StatisticsService:
                     select(
                         TranslationStatisticsModel.icao_region,
                         func.count(TranslationStatisticsModel.id).label("total"),
-                        func.sum((TranslationStatisticsModel.translation_status == "success").cast(int)).label(
+                        func.sum((TranslationStatisticsModel.translation_status == "success").cast(Integer)).label(
                             "successful"
                         ),
                         func.avg(TranslationStatisticsModel.translation_duration_ms).label("avg_duration"),

@@ -9,8 +9,9 @@
 /* Apply fonts globally */
 :root {
   /* UI Font - Clean, modern sans-serif */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  
+  --font-sans:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
   /* Code/Data Font - Monospace for technical content */
   --font-mono: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
 }
@@ -26,8 +27,8 @@ pre,
 .font-mono,
 .code-block,
 .data-display,
-textarea[class*="metar"],
-textarea[class*="xml"],
-input[type="text"].monospace {
+textarea[class*='metar'],
+textarea[class*='xml'],
+input[type='text'].monospace {
   font-family: var(--font-mono);
 }

@@ -18,6 +18,8 @@ interface IcaoAutocompleteProps {
 interface AirportSuggestion {
   icao?: string;
   name?: string;
+  city?: string;
+  country?: string;
 }
 
 export function IcaoAutocomplete({
@@ -109,17 +111,23 @@ export function IcaoAutocomplete({
             isValid === true
               ? 'border-green-500 dark:border-green-500'
               : isValid === false
-              ? 'border-red-500 dark:border-red-500'
-              : ''
+                ? 'border-red-500 dark:border-red-500'
+                : ''
           }`}
           autoComplete="off"
         />
         {isValid !== null && (
           <div className="absolute right-2 top-1/2 -translate-y-1/2">
             {isValid ? (
-              <CheckCircle className="w-5 h-5 text-green-500" aria-label="Valid ICAO code" />
+              <CheckCircle
+                className="w-5 h-5 text-green-500"
+                aria-label="Valid ICAO code"
+              />
             ) : (
-              <AlertCircle className="w-5 h-5 text-red-500" aria-label="Invalid ICAO code" />
+              <AlertCircle
+                className="w-5 h-5 text-red-500"
+                aria-label="Invalid ICAO code"
+              />
             )}
           </div>
         )}
@@ -144,7 +152,9 @@ export function IcaoAutocomplete({
                 {airport.name || 'Unknown Airport'}
               </span>
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                {airport.city || ''}{airport.city && airport.country ? ', ' : ''}{airport.country || ''}
+                {airport.city || ''}
+                {airport.city && airport.country ? ', ' : ''}
+                {airport.country || ''}
               </span>
             </button>
           ))}

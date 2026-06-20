@@ -8,9 +8,9 @@ import { toast } from 'sonner';
 import { IcaoAutocomplete } from '../IcaoAutocomplete';
 import { projectId } from '/utils/supabase/info';
 
-type IWXXMVersion = "2025-2" | "2023-1";
-type OnErrorBehavior = "skip" | "fail" | "warn";
-type LogLevel = "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL";
+type IWXXMVersion = '2025-2' | '2023-1';
+type OnErrorBehavior = 'skip' | 'fail' | 'warn';
+type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 
 interface SystemSettings {
   defaultBulletinId: string;
@@ -50,9 +50,9 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
         `https://${projectId}.supabase.co/functions/v1/make-server-2e3cda33/admin/settings`,
         {
           headers: {
-            'Authorization': `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -83,11 +83,11 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ settings }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -114,7 +114,7 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
   const addIcaoCode = () => {
     const code = newIcaoCode.trim().toUpperCase();
     if (code && code.length === 4 && !settings.allowedIcaoCodes.includes(code)) {
-      setSettings(prev => ({
+      setSettings((prev) => ({
         ...prev,
         allowedIcaoCodes: [...prev.allowedIcaoCodes, code].sort(),
       }));
@@ -128,9 +128,9 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
   };
 
   const removeIcaoCode = (code: string) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      allowedIcaoCodes: prev.allowedIcaoCodes.filter(c => c !== code),
+      allowedIcaoCodes: prev.allowedIcaoCodes.filter((c) => c !== code),
     }));
     toast.info(`ICAO code ${code} removed`);
   };
@@ -191,7 +191,12 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
               <Input
                 id="default-bulletin-id"
                 value={settings.defaultBulletinId}
-                onChange={(e) => setSettings(prev => ({ ...prev, defaultBulletinId: e.target.value.toUpperCase() }))}
+                onChange={(e) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    defaultBulletinId: e.target.value.toUpperCase(),
+                  }))
+                }
                 maxLength={6}
                 className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
               />
@@ -201,7 +206,9 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
               label="Default Issuing Center"
               id="default-issuing-center"
               value={settings.defaultIssuingCenter}
-              onChange={(value) => setSettings(prev => ({ ...prev, defaultIssuingCenter: value }))}
+              onChange={(value) =>
+                setSettings((prev) => ({ ...prev, defaultIssuingCenter: value }))
+              }
               maxLength={4}
               helperText="4-letter ICAO code"
             />
@@ -213,7 +220,12 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
               <select
                 id="default-iwxxm-version"
                 value={settings.defaultIwxxmVersion}
-                onChange={(e) => setSettings(prev => ({ ...prev, defaultIwxxmVersion: e.target.value as IWXXMVersion }))}
+                onChange={(e) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    defaultIwxxmVersion: e.target.value as IWXXMVersion,
+                  }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="2025-2">2025-2 (Latest)</option>
@@ -228,7 +240,12 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
               <select
                 id="default-on-error"
                 value={settings.defaultOnError}
-                onChange={(e) => setSettings(prev => ({ ...prev, defaultOnError: e.target.value as OnErrorBehavior }))}
+                onChange={(e) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    defaultOnError: e.target.value as OnErrorBehavior,
+                  }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="skip">Skip</option>
@@ -244,7 +261,12 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
               <select
                 id="default-log-level"
                 value={settings.defaultLogLevel}
-                onChange={(e) => setSettings(prev => ({ ...prev, defaultLogLevel: e.target.value as LogLevel }))}
+                onChange={(e) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    defaultLogLevel: e.target.value as LogLevel,
+                  }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="DEBUG">DEBUG</option>
@@ -261,7 +283,12 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
                 <input
                   type="checkbox"
                   checked={settings.defaultStrictValidation}
-                  onChange={(e) => setSettings(prev => ({ ...prev, defaultStrictValidation: e.target.checked }))}
+                  onChange={(e) =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      defaultStrictValidation: e.target.checked,
+                    }))
+                  }
                   className="w-4 h-4 text-blue-600 rounded"
                 />
                 <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
@@ -272,7 +299,12 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
                 <input
                   type="checkbox"
                   checked={settings.defaultIncludeNilReasons}
-                  onChange={(e) => setSettings(prev => ({ ...prev, defaultIncludeNilReasons: e.target.checked }))}
+                  onChange={(e) =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      defaultIncludeNilReasons: e.target.checked,
+                    }))
+                  }
                   className="w-4 h-4 text-blue-600 rounded"
                 />
                 <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
@@ -289,9 +321,10 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
             Allowed ICAO Codes
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Manage the list of ICAO codes that can be used across the system. Leave empty to allow all codes.
+            Manage the list of ICAO codes that can be used across the system. Leave
+            empty to allow all codes.
           </p>
-          
+
           <div className="flex gap-2 mb-4">
             <Input
               value={newIcaoCode}
@@ -306,7 +339,10 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
                 }
               }}
             />
-            <Button onClick={addIcaoCode} className="bg-blue-500 hover:bg-blue-600 text-white">
+            <Button
+              onClick={addIcaoCode}
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+            >
               Add Code
             </Button>
           </div>

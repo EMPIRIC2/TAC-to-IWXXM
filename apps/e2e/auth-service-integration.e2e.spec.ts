@@ -15,10 +15,14 @@ test.describe('Merged API Auth Integration', () => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(500);
 
-    expect(consoleErrors.some((message) => message.includes('Missing VITE_AUTH_SERVICE_URL'))).toBe(
-      false
-    );
-    expect(consoleErrors.some((message) => message.includes('Missing VITE_BACKEND_URL'))).toBe(false);
+    expect(
+      consoleErrors.some((message) =>
+        message.includes('Missing VITE_AUTH_SERVICE_URL'),
+      ),
+    ).toBe(false);
+    expect(
+      consoleErrors.some((message) => message.includes('Missing VITE_BACKEND_URL')),
+    ).toBe(false);
   });
 
   test('merged API health endpoint is available', async ({ request }) => {

@@ -5,7 +5,9 @@ import { authUrl } from '../apiBase';
  * Delegates to merged API auth routes for session management
  */
 
-export async function signOutWithScope(scope: 'global' | 'local' | 'others'): Promise<boolean> {
+export async function signOutWithScope(
+  scope: 'global' | 'local' | 'others',
+): Promise<boolean> {
   try {
     const response = await fetch(authUrl('/logout'), {
       method: 'POST',

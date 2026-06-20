@@ -13,9 +13,10 @@ on:
   push:
     branches: [main]
     paths:
-      - 'backend/**'
-      - 'auth/**'
+      - 'apps/**'
+      - 'packages/**'
       - 'docker-compose.yml'
+      - 'tests/**'
 
   # Allow manual trigger
   workflow_dispatch:
@@ -76,13 +77,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache: 'pip'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip uv
-          cd backend && uv pip install --system -e ".[dev]" httpx asyncpg
+          uv sync
 
       - name: Initialize Test Database
         run: |

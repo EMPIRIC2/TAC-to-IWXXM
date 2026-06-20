@@ -3,6 +3,7 @@
 import logging
 import os
 import time
+from collections.abc import Awaitable, Callable
 from contextlib import asynccontextmanager
 from typing import List
 
@@ -11,11 +12,12 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from starlette.responses import Response
 
 load_dotenv()
 
-from auth.api_supabase import legacy_router, router
-from auth.observability import install_fastapi_observability, setup_logging
+from api_supabase import legacy_router, router
+from observability import install_fastapi_observability, setup_logging
 
 # Configure logging
 setup_logging("auth")
@@ -76,7 +78,7 @@ async def lifespan(app: FastAPI):
     logger.info("Environment Variables:")
     logger.info(f"  SUPABASE_URL: {os.getenv('SUPABASE_URL', 'NOT SET')}")
     logger.info(
-        f"  SUPABASE_ANON_KEY: {'SET (' + os.getenv('SUPABASE_ANON_KEY')[:20] + '...)' if os.getenv('SUPABASE_ANON_KEY') else 'NOT SET'}"
+        f"  SUPABASE_ANON_KEY: {'SET (' + (os.getenv('SUPABASE_ANON_KEY') or '')[:20] + '...)' if os.getenv('SUPABASE_ANON_KEY') else 'NOT SET'}"
     )
     logger.info(f"  FRONTEND_BASE_URL: {os.getenv('FRONTEND_BASE_URL', 'NOT SET')}")
     logger.info("")
@@ -122,7 +124,10 @@ logger.info("Initializing Auth Service with CORS middleware...")
 
 # CORS debugging and request logging middleware - FIRST to catch all requests
 @app.middleware("http")
-async def log_requests_and_cors(request: Request, call_next):
+async def log_requests_and_cors(
+    request: Request,
+    call_next: Callable[[Request], Awaitable[Response]],
+) -> Response:
     start_time = time.time()
 
     # Detailed logging for CORS preflight requests
@@ -141,7 +146,8 @@ async def log_requests_and_cors(request: Request, call_next):
         logger.warning("=" * 80)
     else:
         # Log normal requests
-        logger.info(f"→ [{request.method}] {request.url.path} from {request.client.host}")
+        client_host = request.client.host if request.client is not None else "unknown"
+        logger.info(f"→ [{request.method}] {request.url.path} from {client_host}")
         logger.debug(f"  Origin: {origin}")
         logger.debug(f"  Headers: {dict(request.headers)}")
 

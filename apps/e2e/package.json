@@ -6,10 +6,14 @@
   "scripts": {
     "test": "playwright test",
     "test:smoke": "playwright test auth-service-integration.e2e.spec.ts tac-file-conversion.e2e.spec.ts",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "format:check": "prettier --check \"**/*.{ts,tsx}\"",
     "postinstall": "playwright install chromium"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",
+    "@types/node": "^22.15.0",
     "typescript": "^5.9.3"
   }
 }

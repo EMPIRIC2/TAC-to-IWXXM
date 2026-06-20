@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
-from lxml import etree
+import lxml.etree as etree
 
 from ..schemas.validation import ValidationIssue, ValidationLayer, ValidationResult, ValidationSeverity
 from ..services.validation import ValidationService
@@ -35,6 +35,11 @@ class ComprehensiveValidationResult:
     issues_by_layer: Dict[ValidationLayer, List[ValidationIssue]] = field(default_factory=dict)
     version: str = ""
     stopped_at_layer: Optional[ValidationLayer] = None
+
+    @property
+    def passed(self) -> bool:
+        """Alias for is_valid (API compatibility)."""
+        return self.is_valid
 
 
 class ValidationOrchestrator:
@@ -107,6 +112,22 @@ class ValidationOrchestrator:
     def validate_xml_schema(self, xml_content: str, version: str) -> XSDValidationResult:
         """Public XML schema validation helper."""
         return self.xsd_validator.validate(xml_content, version)
+
+    def validate(
+        self,
+        xml_content: str,
+        *,
+        iwxxm_version: str,
+        layers: Optional[List[ValidationLayer]] = None,
+    ) -> ComprehensiveValidationResult:
+        """Validate IWXXM XML for selected layers (typically 3-7)."""
+        return self.validate_complete(
+            tac_text="",
+            xml_content=xml_content,
+            version=iwxxm_version,
+            layers=layers,
+            stop_on_error=False,
+        )
 
     def validate_complete(
         self,

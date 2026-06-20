@@ -27,13 +27,19 @@ async function waitForHealthy(url: string, timeoutMs: number): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
   }
 
-  throw new Error(`Timed out waiting for service health at ${url}. Last error: ${lastError}`);
+  throw new Error(
+    `Timed out waiting for service health at ${url}. Last error: ${lastError}`,
+  );
 }
 
 async function globalSetup(config: FullConfig): Promise<void> {
-  const timeoutMs = Number(process.env.PLAYWRIGHT_SERVICE_WAIT_TIMEOUT_MS ?? DEFAULT_WAIT_TIMEOUT_MS);
-  const configuredBaseUrl = process.env.PLAYWRIGHT_BASE_URL || config.projects[0]?.use?.baseURL;
-  const baseUrl = typeof configuredBaseUrl === 'string' ? configuredBaseUrl : DEFAULT_FRONTEND_URL;
+  const timeoutMs = Number(
+    process.env.PLAYWRIGHT_SERVICE_WAIT_TIMEOUT_MS ?? DEFAULT_WAIT_TIMEOUT_MS,
+  );
+  const configuredBaseUrl =
+    process.env.PLAYWRIGHT_BASE_URL || config.projects[0]?.use?.baseURL;
+  const baseUrl =
+    typeof configuredBaseUrl === 'string' ? configuredBaseUrl : DEFAULT_FRONTEND_URL;
   const forceWait = process.env.PLAYWRIGHT_FORCE_SERVICE_HEALTH_WAIT === '1';
   const skipWait = process.env.PLAYWRIGHT_SKIP_LOCAL_HEALTH_WAIT === '1';
 
@@ -48,7 +54,8 @@ async function globalSetup(config: FullConfig): Promise<void> {
   const frontendHealthUrl = process.env.PLAYWRIGHT_FRONTEND_HEALTH_URL || baseUrl;
   const apiBaseUrl = process.env.PLAYWRIGHT_API_BASE_URL || DEFAULT_API_BASE_URL;
   const backendHealthUrl =
-    process.env.PLAYWRIGHT_BACKEND_HEALTH_URL || `${apiBaseUrl.replace(/\/$/, '')}/health`;
+    process.env.PLAYWRIGHT_BACKEND_HEALTH_URL ||
+    `${apiBaseUrl.replace(/\/$/, '')}/health`;
 
   await waitForHealthy(frontendHealthUrl, timeoutMs);
   await waitForHealthy(backendHealthUrl, timeoutMs);

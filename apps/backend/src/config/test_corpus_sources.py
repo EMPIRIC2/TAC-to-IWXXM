@@ -155,7 +155,7 @@ def get_corpus_sources_by_priority(priority: str) -> Dict[str, Dict[str, Any]]:
     return {name: config for name, config in TEST_CORPUS_SOURCES.items() if config.get("priority") == priority}
 
 
-def get_corpus_path(name: str, version: str = None) -> Path:
+def get_corpus_path(name: str, version: str | None = None) -> Path:
     """
     Get the local path for a corpus source's data.
 

@@ -15,9 +15,9 @@ UML 2.x: http://www.omg.org/spec/UML/2.5.1/
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
-from lxml import etree
+import lxml.etree as etree
 
 logger = logging.getLogger(__name__)
 
@@ -252,7 +252,7 @@ class XMIModelAnalyzer:
         matches = sum(1 for c1, c2 in zip(s1, s2) if c1 == c2)
         return matches / max(len1, len2)
 
-    def generate_breaking_change_report(self, changes: List[BreakingChange]) -> Dict[str, any]:
+    def generate_breaking_change_report(self, changes: List[BreakingChange]) -> Dict[str, Any]:
         """
         Generate a structured breaking change report.
 
@@ -279,7 +279,7 @@ class XMIModelAnalyzer:
         return report
 
 
-def analyze_xmi_versions(old_xmi_path: Path, new_xmi_path: Path, old_version: str, new_version: str) -> Dict[str, any]:
+def analyze_xmi_versions(old_xmi_path: Path, new_xmi_path: Path, old_version: str, new_version: str) -> Dict[str, Any]:
     """
     Convenience function to analyze breaking changes between XMI versions.
 

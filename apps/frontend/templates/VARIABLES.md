@@ -5,6 +5,7 @@ Complete documentation of all available variables in email templates.
 ## Supabase Predefined Variables
 
 ### Token and Link Variables
+
 - **`{{ .TokenHash }}`** - Secure token hash for verification links
   - Used in: Confirmation, Password Reset, Magic Link
   - Format: URL-safe base64 encoded hash
@@ -21,6 +22,7 @@ Complete documentation of all available variables in email templates.
   - Example: `user@example.com`
 
 ### Custom Data Variables
+
 - **`{{ .Data }}`** - Custom JSON data passed from your app
   - Used in: Any template that needs custom context
   - Format: JSON object available in template context
@@ -28,7 +30,7 @@ Complete documentation of all available variables in email templates.
     ```typescript
     await supabase.auth.resendPasswordRecoveryEmail(email, {
       redirectTo: 'https://yourapp.com/reset-password',
-      data: { username: 'john_doe', reason: 'forgot_password' }
+      data: { username: 'john_doe', reason: 'forgot_password' },
     });
     ```
   - Access in template: `{{ .Data.username }}`
@@ -36,21 +38,25 @@ Complete documentation of all available variables in email templates.
 ## Complete Link Examples
 
 ### Confirmation Link
+
 ```
 {{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup
 ```
 
 ### Password Reset Link
+
 ```
 {{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=recovery
 ```
 
 ### Magic Link (OTP)
+
 ```
 {{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=magiclink
 ```
 
 ### Change Email Link
+
 ```
 {{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=email_change
 ```
@@ -65,7 +71,7 @@ const hashParams = new URLSearchParams(window.location.hash.substring(1));
 const tokenHash = SearchParams.get('token_hash') || hashParams.get('token_hash');
 const type = SearchParams.get('type') || hashParams.get('type');
 
-switch(type) {
+switch (type) {
   case 'signup':
     // Handle email confirmation
     break;
@@ -84,21 +90,27 @@ switch(type) {
 ## Template Building Blocks
 
 ### Greeting
+
 ```html
 <h1>Hi {{ .Email }}</h1>
 ```
 
 ### Call-to-Action Button
+
 ```html
-<a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup" 
-   style="background-color: #007bff; color: white; padding: 12px 24px; 
-          text-decoration: none; border-radius: 4px; display: inline-block;">
+<a
+  href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup"
+  style="background-color: #007bff; color: white; padding: 12px 24px; 
+          text-decoration: none; border-radius: 4px; display: inline-block;"
+>
   Confirm Email
 </a>
 ```
 
 ### Company Info
+
 Add to Supabase settings → Auth → Email customization:
+
 - Support Email: support@yourapp.com
 - Phone: +1 (555) 123-4567
 - Company Name: Your Company
@@ -113,7 +125,7 @@ const testVars = {
   TokenHash: 'test123abc456def789xyz',
   SiteURL: 'https://localhost:5173',
   Email: 'user@example.com',
-  Data: { username: 'testuser' }
+  Data: { username: 'testuser' },
 };
 
 // Use in template testing
@@ -126,17 +138,20 @@ const templateTest = `
 ## Common Issues
 
 ### Variables Not Rendering
+
 - ✅ Use correct syntax: `{{ .VariableName }}`
 - ✅ Check capitalization: `TokenHash` not `tokenHash`
 - ✅ Ensure variables are available in template type (some may not apply)
 
 ### Links Not Working
+
 - ✅ Verify Site URL in Supabase settings matches your domain
 - ✅ Confirm `{{ .TokenHash }}` is properly encoded
 - ✅ Test redirect URL configuration
 - ✅ Check browser console for query parameter issues
 
 ### Secure Token Hash Not Present
+
 - ✅ Only available in: Signup, Password Reset, Email Change templates
 - ✅ NOT available in: Custom templates without auth events
 - ✅ Verify template type is properly configured
@@ -144,22 +159,27 @@ const templateTest = `
 ## Advanced Usage
 
 ### Conditional Content (if supported)
+
 Some email providers support conditionals:
+
 ```html
 {{if .Data.isAdmin}}
-  <p>You have admin privileges</p>
+<p>You have admin privileges</p>
 {{end}}
 ```
 
 ### Dynamic Expiration Messages
+
 ```html
 <p>This link expires in 24 hours (until {{ .ExpiryTime }})</p>
 ```
-*Note: Exact implementation depends on your Supabase template version*
+
+_Note: Exact implementation depends on your Supabase template version_
 
 ## Migration Checklist
 
 When moving to these templates:
+
 1. ✅ Copy template content to Supabase Auth → Email Templates
 2. ✅ Test with real email address (check spam folder)
 3. ✅ Verify links work with correct token_hash

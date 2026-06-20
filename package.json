@@ -1,8 +1,25 @@
 {
   "name": "metar-iwxxm-workspace",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">=22"
   },
-  "packageManager": "pnpm@9.15.4"
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "format": "prettier --write \"apps/**/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"apps/**/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\"",
+    "lint:js": "eslint apps/frontend/src apps/e2e packages/shared/src packages/shared/tests --max-warnings 0",
+    "lint:js:fix": "eslint apps/frontend/src apps/e2e packages/shared/src packages/shared/tests --fix",
+    "typecheck:js": "pnpm --filter @metar/frontend exec tsc --noEmit && pnpm --filter @metar/shared exec tsc --noEmit && pnpm --filter @metar/e2e exec tsc --noEmit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.0.0"
+  }
 }

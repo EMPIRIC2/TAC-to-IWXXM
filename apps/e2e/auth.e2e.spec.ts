@@ -7,7 +7,9 @@ test.describe('Authentication Flow', () => {
 
     await expect(page.locator('#email')).toBeVisible();
     await expect(page.locator('#password')).toBeVisible();
-    await expect(page.getByRole('button', { name: /sign in to account/i })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /sign in to account/i }),
+    ).toBeVisible();
   });
 
   test('empty login validation shows required messages', async ({ page }) => {
@@ -23,13 +25,15 @@ test.describe('Authentication Flow', () => {
     if ((process.env.DISABLE_AUTH ?? 'true').toLowerCase() !== 'false') {
       testInfo.skip(
         true,
-        'Admin login requires DISABLE_AUTH=false and reachable Supabase (staging T3)'
+        'Admin login requires DISABLE_AUTH=false and reachable Supabase (staging T3)',
       );
     }
 
     await loginAsAdmin(page);
 
     await expect(page.getByText(/Logged in as: admin@metar\.local/i)).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'User Approvals', exact: true })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'User Approvals', exact: true }),
+    ).toBeVisible();
   });
 });

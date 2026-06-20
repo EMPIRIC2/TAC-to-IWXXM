@@ -27,6 +27,7 @@ gunicorn src.api:app --workers 4 --worker-class uvicorn.workers.UvicornWorker
 ```
 
 Server runs on `http://localhost:8001`
+
 - API Docs: http://localhost:8001/docs
 - ReDoc: http://localhost:8001/redoc
 - Health: http://localhost:8001/health
@@ -37,16 +38,17 @@ The API supports **dynamic IWXXM version selection**. By default, conversions us
 
 ### Supported Versions
 
-| Version | Status | Released | WMO Amendment |
-|---------|--------|----------|---------------|
-| 2025-2 | ✅ Latest (Default) | 2025-11-25 | 82 |
-| 2023-1 | ✅ Previous | 2023-06-02 | 78 |
+| Version | Status              | Released   | WMO Amendment |
+| ------- | ------------------- | ---------- | ------------- |
+| 2025-2  | ✅ Latest (Default) | 2025-11-25 | 82            |
+| 2023-1  | ✅ Previous         | 2023-06-02 | 78            |
 
 **Deprecated as of 2026-02-13**: IWXXM 2021-2 and earlier versions are no longer supported. See [docs/VERSION_SUPPORT_POLICY.md](../docs/VERSION_SUPPORT_POLICY.md) for details.
 
 ### Usage Examples
 
 **Convert with specific version**:
+
 ```bash
 curl -X POST \
   -H "Authorization: Bearer $TOKEN" \
@@ -56,11 +58,13 @@ curl -X POST \
 ```
 
 **List all supported versions**:
+
 ```bash
 curl http://localhost:8001/api/v1/versions | jq .
 ```
 
 Response:
+
 ```json
 {
   "default_version": "2025-2",
@@ -79,11 +83,13 @@ Response:
 ### Version-Specific Features
 
 **IWXXM 2025-2** (Latest)
+
 - Removed runway state elements
 - Consolidated schema (no separate measures.xsd)
 - Split nil code list namespaces
 
 **IWXXM 2023-1** (Previous Stable)
+
 - Includes runway state elements
 - Separate measures.xsd
 - Single nil namespace
@@ -158,8 +164,8 @@ Module Coverage:
 
 Located in `data/iwxxm-translation/`:
 
-| Amendment | Version | METAR | Status |
-|-----------|---------|-------|--------|
+| Amendment     | Version       | METAR | Status                  |
+| ------------- | ------------- | ----- | ----------------------- |
 | Amd79-80-2023 | 2023-1/2025-2 | 34 ✅ | Full TAC→XML validation |
 
 **Removed Test Data**: Amd77-2016/, Amd78-2018/, and Amd79-80-2021/ were removed on 2026-02-13 when their corresponding IWXXM versions were deprecated.
@@ -179,17 +185,17 @@ pytest tests/ --cov --cov-report=term-missing
 
 ### Test Breakdown: 475+ Passing
 
-| Category | Tests | Focus |
-|----------|-------|-------|
-| **Version Switching** | **28** | **NEW: Dynamic version, migration, registry** |
-| API Endpoints | 10 | Health, convert, errors, versions endpoint |
-| Schema Validation | 13 | Pydantic models, serialization |
-| IWXXM Examples | 109 | Version-specific conversions |
-| Roundtrip Pipeline | 68 | GIFTs decoder→encoder with versions |
-| Metadata Validation | 21 | Features, volcanic, nil-reason |
-| Utilities | 9 | Conversion functions |
-| Pre-existing Edge Cases | 8 | ⚠️ Need adapter refactor (non-blocking) |
-| **Total** | **475+** | **~99% passing** ✅ |
+| Category                | Tests    | Focus                                         |
+| ----------------------- | -------- | --------------------------------------------- |
+| **Version Switching**   | **28**   | **NEW: Dynamic version, migration, registry** |
+| API Endpoints           | 10       | Health, convert, errors, versions endpoint    |
+| Schema Validation       | 13       | Pydantic models, serialization                |
+| IWXXM Examples          | 109      | Version-specific conversions                  |
+| Roundtrip Pipeline      | 68       | GIFTs decoder→encoder with versions           |
+| Metadata Validation     | 21       | Features, volcanic, nil-reason                |
+| Utilities               | 9        | Conversion functions                          |
+| Pre-existing Edge Cases | 8        | ⚠️ Need adapter refactor (non-blocking)       |
+| **Total**               | **475+** | **~99% passing** ✅                           |
 
 **Note**: Pre-existing edge cases (8 tests) require test refactoring to mock GIFTs adapter instead of direct encoder/decoder imports. These don't affect core functionality.
 
@@ -239,6 +245,7 @@ curl http://localhost:8001/health
 ```
 
 Response:
+
 ```json
 {
   "status": "ok",
@@ -256,6 +263,7 @@ curl -X POST http://localhost:8001/convert \
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -280,6 +288,7 @@ curl -X POST http://localhost:8001/convert-zip \
 ### Core Modules (NEW in Phase 10)
 
 **1. Version Configuration** (`src/config/iwxxm_versions.py`)
+
 - Centralized version metadata
 - Supported versions: 2025-2 (latest), 2023-1 (previous)
 - Deprecated versions: 2021-2, 2018, 2016, 3.x (rejected with VersionDeprecatedError)
@@ -288,24 +297,28 @@ curl -X POST http://localhost:8001/convert-zip \
 - Breaking changes registry
 
 **2. Schema Registry** (`src/utilities/schema_registry.py`)
+
 - Resolves XSD, Schematron, codelist paths
 - LRU caching for performance
 - Singleton pattern for shared state
 - Uses git submodules: schemas/iwxxm/, schemas/iwxxm-codelists/, schemas/iwxxm-modelling/
 
 **3. GIFTs Adapter** (`src/utilities/gifts_adapter.py`)
+
 - Version-aware wrapper around GIFTs encoder/decoder
 - Per-version encoder caching
 - Seamless version switching without GIFTs code changes
 - Supports: `GIFTsEncoder(version)`, `GIFTsDecoder()`
 
 **4. Version Migration** (`src/utilities/version_migration.py`)
+
 - XML migration between IWXXM versions
 - Handles breaking changes (e.g., 2023-1 → 2025-2)
 - Removes/adds elements as needed
 - Generates migration warnings
 
 **5. Codelist Parser** (`src/utilities/codelist_parser.py`)
+
 - Parses RDF/XML code list files
 - Per-version code validation
 - Uses WMO RDF codelists from git submodule
@@ -313,12 +326,14 @@ curl -X POST http://localhost:8001/convert-zip \
 ### Integration Points
 
 1. **Conversion Pipeline** (`src/utilities/conversion.py`)
+
    ```python
    convert_metar_tac(tac_text, iwxxm_version="2025-2")
    convert_metar_tac_with_metadata(..., iwxxm_version="2025-2")
    ```
 
 2. **API Endpoints** (`src/api.py`)
+
    ```python
    POST /api/v1/convert?iwxxm_version=2023-1
    GET  /api/v1/versions  # List supported versions
@@ -332,6 +347,7 @@ curl -X POST http://localhost:8001/convert-zip \
 ### Testing
 
 All new functionality tested:
+
 ```bash
 pytest tests/test_version_switching.py        # 16 tests
 pytest tests/test_version_migration.py        # 12 tests
@@ -345,11 +361,13 @@ For detailed architecture, see [IWXXM Version Switching](../docs/IWXXM_VERSION_S
 ### Strategy
 
 **Primary**: GIFTs library (mgoberfield/GIFTs)
+
 - XML schema validation
 - Structure requirements
 - Element validation
 
 **Secondary**: Our validation layer
+
 - Meteorological feature codes (20+)
 - Volcanic aviation colors (5)
 - Nil reason codes (11)
@@ -374,25 +392,25 @@ missing, unknown, noSignificantChange, notObservable, etc. (11 total)
 
 ### Coverage Breakdown
 
-| Module | Notes |
-|--------|-------|
-| **Version Switching** | 100% ✅ NEW (all 5 modules: versions, registry, adapter, migration, codelists) |
-| **API Endpoints** | 84% 🟡↑ (convert, versions, health) |
-| **IWXXM Validation** | 92% ✅ (feature codes, nil reasons, volcanic) |
-| **Schemas** | 100% ✅ (Pydantic validation) |
-| **Conversion Pipeline** | 72% 🟡 (with version support) |
-| **Security/Auth** | 27% 🔴 (not in scope for version work) |
+| Module                  | Notes                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| **Version Switching**   | 100% ✅ NEW (all 5 modules: versions, registry, adapter, migration, codelists) |
+| **API Endpoints**       | 84% 🟡↑ (convert, versions, health)                                            |
+| **IWXXM Validation**    | 92% ✅ (feature codes, nil reasons, volcanic)                                  |
+| **Schemas**             | 100% ✅ (Pydantic validation)                                                  |
+| **Conversion Pipeline** | 72% 🟡 (with version support)                                                  |
+| **Security/Auth**       | 27% 🔴 (not in scope for version work)                                         |
 
 ### Phase 11+ Expansion (Optional)
 
 If pursuing 90%+ coverage (beyond version switching scope):
 
-| Module | Coverage | Gap | Effort |
-|--------|----------|-----|--------|
-| api.py | 84% | Error paths (400, 403, 500) | +15 tests |
-| conversion.py | 72% | Malformed TAC, boundaries | +20 tests |
-| security.py | 27% | Token validation, roles | +20 tests |
-| __main__.py | 0% | CLI entry point | +5 tests |
+| Module        | Coverage | Gap                         | Effort    |
+| ------------- | -------- | --------------------------- | --------- |
+| api.py        | 84%      | Error paths (400, 403, 500) | +15 tests |
+| conversion.py | 72%      | Malformed TAC, boundaries   | +20 tests |
+| security.py   | 27%      | Token validation, roles     | +20 tests |
+| **main**.py   | 0%       | CLI entry point             | +5 tests  |
 
 **Estimated**: ~60 additional tests for 90% (non-blocking for version switching)
 
@@ -461,6 +479,7 @@ pytest tests/ -x
 ### Performance
 
 Current: ~5 seconds for 475+ tests (improved from ~3s for 230 tests)
+
 - Version switching: <1s
 - API tests: <1s
 - Schema tests: <1s
@@ -472,6 +491,7 @@ Current: ~5 seconds for 475+ tests (improved from ~3s for 230 tests)
 ### Schematron Validation Integration
 
 **Status**: Phase 2 (not yet implemented)
+
 - Requires: CRUX (Java Schematron validator)
 - Implementation: Use `schema_registry.get_schematron_path()` to locate CRUX rules per version
 - Layer: Add as Layer 5 validation (after GIFTs XML schema validation)
@@ -480,6 +500,7 @@ Current: ~5 seconds for 475+ tests (improved from ~3s for 230 tests)
 ### Coverage Expansion
 
 **Status**: Optional phase (non-blocking for version switching)
+
 - Target: 90% overall coverage
 - Effort: ~60 additional tests
 - Focus: API errors (400/403/500), edge cases, security module
@@ -487,6 +508,7 @@ Current: ~5 seconds for 475+ tests (improved from ~3s for 230 tests)
 ### Performance Optimization
 
 **Status**: Future optimization
+
 - Current: 5s for full test suite
 - Opportunity: Schema registry caching, parallel tests
 - Benefit: Faster CI/CD feedback
@@ -499,6 +521,7 @@ Current: ~5 seconds for 475+ tests (improved from ~3s for 230 tests)
 - **FastAPI**: https://fastapi.tiangolo.com/
 - **pytest**: https://docs.pytest.org/
 - **WMO**: https://www.wmo.int/
+
 ## Project Structure
 
 ```

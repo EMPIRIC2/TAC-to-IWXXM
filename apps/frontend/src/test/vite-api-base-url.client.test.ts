@@ -4,12 +4,7 @@
  * RED until T6.3 implements ../utils/apiBase and migrates api.ts / authService.ts.
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import {
-  getApiBaseUrl,
-  apiUrl,
-  authUrl,
-  requireApiBaseUrl,
-} from '../utils/apiBase';
+import { getApiBaseUrl, apiUrl, authUrl, requireApiBaseUrl } from '../utils/apiBase';
 
 const DEFAULT_DEV_API = 'http://localhost:18001';
 

@@ -1,14 +1,14 @@
 import { useState, useEffect, useLayoutEffect } from 'react';
-import { FileConverter } from "./components/FileConverter";
-import { Login } from "./components/auth/Login";
-import { Register } from "./components/auth/Register";
-import { EmailVerification } from "./components/auth/EmailVerification";
-import { AuthCallback } from "./components/auth/AuthCallback";
-import { AdminDashboard } from "./components/admin/AdminDashboard";
-import { PasswordReset } from "./components/auth/PasswordReset";
-import { Toaster } from "./components/ui/sonner";
-import { toast } from "sonner";
-import { ThemeProvider } from "./components/ThemeProvider";
+import { FileConverter } from './components/FileConverter';
+import { Login } from './components/auth/Login';
+import { Register } from './components/auth/Register';
+import { EmailVerification } from './components/auth/EmailVerification';
+import { AuthCallback } from './components/auth/AuthCallback';
+import { AdminDashboard } from './components/admin/AdminDashboard';
+import { PasswordReset } from './components/auth/PasswordReset';
+import { Toaster } from './components/ui/sonner';
+import { toast } from 'sonner';
+import { ThemeProvider } from './components/ThemeProvider';
 import { isLoggedIn, logout } from '@/utils/authService';
 
 import { requireApiBaseUrl } from '@/utils/apiBase';
@@ -27,11 +27,20 @@ function validateAuthEnv() {
   }
 }
 
-type AuthView = 'login' | 'register' | 'verify' | 'converter' | 'admin' | 'callback' | 'reset';
+type AuthView =
+  | 'login'
+  | 'register'
+  | 'verify'
+  | 'converter'
+  | 'admin'
+  | 'callback'
+  | 'reset';
 
 function App() {
   const initialLoggedIn = isLoggedIn();
-  const [currentView, setCurrentView] = useState<AuthView>(initialLoggedIn ? 'converter' : 'login');
+  const [currentView, setCurrentView] = useState<AuthView>(
+    initialLoggedIn ? 'converter' : 'login',
+  );
   const [userEmail, setUserEmail] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(initialLoggedIn);
   const [accessToken, setAccessToken] = useState<string>('');
@@ -50,12 +59,22 @@ function App() {
     }
   }, []);
 
-  const handleLogin = (email: string, needsVerification: boolean, token?: string, adminStatus?: boolean) => {
-    console.log(`🔐 handleLogin called with:`, { email, needsVerification, adminStatus, hasToken: !!token });
+  const handleLogin = (
+    email: string,
+    needsVerification: boolean,
+    token?: string,
+    adminStatus?: boolean,
+  ) => {
+    console.log(`🔐 handleLogin called with:`, {
+      email,
+      needsVerification,
+      adminStatus,
+      hasToken: !!token,
+    });
     setUserEmail(email);
     setAccessToken(token || 'auth-service-token');
     setIsAdmin(adminStatus || false);
-    
+
     if (needsVerification) {
       setCurrentView('verify');
     } else {
@@ -85,7 +104,7 @@ function App() {
     } catch (error) {
       console.error('Logout error:', error);
     }
-    
+
     setIsAuthenticated(false);
     setUserEmail('');
     setAccessToken('');
@@ -104,7 +123,7 @@ function App() {
   return (
     <ThemeProvider>
       {currentView === 'login' && (
-        <Login 
+        <Login
           onLogin={handleLogin}
           onSwitchToRegister={() => setCurrentView('register')}
           onForgotPassword={() => setCurrentView('reset')}
@@ -112,20 +131,18 @@ function App() {
       )}
 
       {currentView === 'register' && (
-        <Register 
+        <Register
           onRegister={handleRegister}
           onSwitchToLogin={() => setCurrentView('login')}
         />
       )}
 
       {currentView === 'reset' && (
-        <PasswordReset 
-          onBackToLogin={() => setCurrentView('login')}
-        />
+        <PasswordReset onBackToLogin={() => setCurrentView('login')} />
       )}
 
       {currentView === 'verify' && (
-        <EmailVerification 
+        <EmailVerification
           email={userEmail}
           onVerified={handleVerified}
           onBackToLogin={() => setCurrentView('login')}
@@ -133,8 +150,8 @@ function App() {
       )}
 
       {currentView === 'converter' && isAuthenticated && (
-        <FileConverter 
-          onLogout={handleLogout} 
+        <FileConverter
+          onLogout={handleLogout}
           userEmail={userEmail}
           accessToken={accessToken}
           onSwitchToAdmin={isAdmin ? handleSwitchToAdmin : undefined}

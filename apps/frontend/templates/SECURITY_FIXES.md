@@ -4,17 +4,18 @@ Complete remediation guide for all 8 Supabase security issues identified in the 
 
 ## Executive Summary
 
-| Priority | Issues | Status | Action |
-|----------|--------|--------|--------|
-| **CRITICAL** 🔴 | 3 ERROR | Enable RLS, create policies | Week 1 |
-| **HIGH** 🟠 | 4 WARN | Fix functions, optimize policies | Week 2 |
-| **INFO** 🔵 | 1 INFO | Add/remove policies | Week 3 |
+| Priority        | Issues  | Status                           | Action |
+| --------------- | ------- | -------------------------------- | ------ |
+| **CRITICAL** 🔴 | 3 ERROR | Enable RLS, create policies      | Week 1 |
+| **HIGH** 🟠     | 4 WARN  | Fix functions, optimize policies | Week 2 |
+| **INFO** 🔵     | 1 INFO  | Add/remove policies              | Week 3 |
 
 ---
 
 ## WEEK 1: Critical Security Fixes (ERRORS)
 
 ### Issue 1: RLS Disabled on `users` Table
+
 **Severity**: 🔴 CRITICAL ERROR  
 **Risk**: Unauthorized access to user records  
 **Fix Time**: 5 minutes
@@ -43,6 +44,7 @@ CREATE POLICY "Service role can manage all" ON public.users
 ```
 
 ### Issue 2: RLS Disabled on `api_keys` Table
+
 **Severity**: 🔴 CRITICAL ERROR  
 **Risk**: Unauthorized access to API credentials  
 **Fix Time**: 5 minutes
@@ -77,6 +79,7 @@ CREATE POLICY "Service role manages all" ON public.api_keys
 ```
 
 ### Issue 3: RLS Disabled on `password_reset_tokens` Table
+
 **Severity**: 🔴 CRITICAL ERROR  
 **Risk**: Token exposure, unauthorized password resets  
 **Fix Time**: 5 minutes
@@ -110,6 +113,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 ```
 
 ### Issue 4: Sensitive Token Column Exposed
+
 **Severity**: 🔴 CRITICAL ERROR  
 **Risk**: Direct token exposure in queries  
 **Fix Time**: 10 minutes
@@ -117,14 +121,14 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 ```sql
 -- Create a view that hashes/masks tokens (don't expose directly)
 CREATE OR REPLACE VIEW api_keys_safe AS
-SELECT 
+SELECT
   id,
   user_id,
   name,
   -- Show only first 8 and last 4 characters
-  CASE WHEN key IS NOT NULL 
+  CASE WHEN key IS NOT NULL
     THEN CONCAT(LEFT(key, 8), '...', RIGHT(key, 4))
-    ELSE NULL 
+    ELSE NULL
   END AS key_preview,
   created_at,
   last_used_at,
@@ -150,6 +154,7 @@ ALTER TABLE public.api_keys ENABLE ROW LEVEL SECURITY;
 ## WEEK 2: High-Priority Fixes (WARNINGS)
 
 ### Issue 5: Function Search Path Mutable
+
 **Severity**: 🟠 HIGH WARNING  
 **Risk**: Security vulnerability in custom functions  
 **Fix Time**: 10 minutes
@@ -157,7 +162,7 @@ ALTER TABLE public.api_keys ENABLE ROW LEVEL SECURITY;
 ```sql
 -- Fix: Set search_path to restricted value in functions
 CREATE OR REPLACE FUNCTION get_user_profile(user_id uuid)
-RETURNS TABLE (id uuid, email text, username text) 
+RETURNS TABLE (id uuid, email text, username text)
 SECURITY DEFINER
 SET search_path = public, extensions
 AS $$
@@ -172,7 +177,7 @@ $$ LANGUAGE plpgsql;
 
 -- Apply to all functions that might be vulnerable
 -- List functions to update:
-SELECT p.proname, n.nspname 
+SELECT p.proname, n.nspname
 FROM pg_proc p
 JOIN pg_namespace n ON p.pronamespace = n.oid
 WHERE n.nspname = 'public'
@@ -182,6 +187,7 @@ WHERE n.nspname = 'public'
 ```
 
 ### Issue 6: Leaked Password Protection Disabled
+
 **Severity**: 🟠 HIGH WARNING  
 **Risk**: Compromised password use not detected  
 **Fix Time**: 5 minutes
@@ -201,6 +207,7 @@ SELECT * FROM auth.config WHERE key = 'leaked_password_check_enabled';
 ```
 
 ### Issue 7: Auth RLS Initplan Issues (Performance)
+
 **Severity**: 🟠 HIGH WARNING  
 **Risk**: Performance degradation, slow queries  
 **Fix Time**: 15 minutes
@@ -236,6 +243,7 @@ CREATE POLICY "policy_name" ON table_name
 ```
 
 ### Issue 8: Multiple Permissive Policies (Performance)
+
 **Severity**: 🟠 HIGH WARNING  
 **Risk**: Multiple policy evaluations, poor performance  
 **Fix Time**: 20 minutes
@@ -269,6 +277,7 @@ CREATE POLICY "users_select_policy" ON table_name
 ```
 
 ### Issue 9: Duplicate Indexes on `kv_store`
+
 **Severity**: 🟠 HIGH WARNING  
 **Risk**: Wasted storage, slower writes  
 **Fix Time**: 5 minutes
@@ -287,7 +296,7 @@ DROP INDEX IF EXISTS idx_kv_store_key_2;  -- Drop duplicate
 DROP INDEX IF EXISTS idx_kv_store_key_old; -- Drop old version
 
 -- Keep only necessary index:
-CREATE UNIQUE INDEX IF NOT EXISTS idx_kv_store_key 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_kv_store_key
 ON public.kv_store(key);
 
 -- Analyze to update statistics
@@ -299,6 +308,7 @@ ANALYZE public.kv_store;
 ## WEEK 3: Informational Fix (INFO)
 
 ### Issue 10: RLS Enabled but No Policy on `kv_store`
+
 **Severity**: 🔵 INFO  
 **Risk**: Table is locked down completely (may be intentional)  
 **Fix Time**: 5 minutes  
@@ -333,6 +343,7 @@ ALTER TABLE public.kv_store DISABLE ROW LEVEL SECURITY;
 ## Implementation Timeline
 
 ### Week 1 (Critical - Do First!)
+
 - [ ] Enable RLS on `users` table + create policies (5 min)
 - [ ] Enable RLS on `api_keys` table + create policies (5 min)
 - [ ] Enable RLS on `password_reset_tokens` table + create policies (5 min)
@@ -340,6 +351,7 @@ ALTER TABLE public.kv_store DISABLE ROW LEVEL SECURITY;
 - **Total: ~25 minutes**
 
 ### Week 2 (High Priority)
+
 - [ ] Fix function search_path (10 min)
 - [ ] Enable leaked password check (5 min)
 - [ ] Update all queries to use (SELECT auth.uid()) pattern (15 min)
@@ -348,6 +360,7 @@ ALTER TABLE public.kv_store DISABLE ROW LEVEL SECURITY;
 - **Total: ~55 minutes**
 
 ### Week 3 (Information)
+
 - [ ] Add/remove kv_store policies (5 min)
 - **Total: ~5 minutes**
 
@@ -356,6 +369,7 @@ ALTER TABLE public.kv_store DISABLE ROW LEVEL SECURITY;
 ## Testing Your Fixes
 
 ### Test RLS Policies
+
 ```sql
 -- Test as authenticated user
 SET ROLE authenticated;
@@ -372,6 +386,7 @@ SET ROLE postgres;
 ```
 
 ### Test Performance
+
 ```sql
 -- Check query performance before/after
 EXPLAIN ANALYZE
@@ -385,6 +400,7 @@ WHERE id = auth.uid();
 ```
 
 ### Verify Indexes
+
 ```sql
 -- List all indexes on kv_store
 SELECT indexname, indexdef
@@ -402,6 +418,7 @@ WHERE tablename = 'kv_store';
 ## Monitoring After Implementation
 
 ### Monitor for Policy Issues
+
 ```sql
 -- Check for policy enforcement
 SELECT tablename, policyname, cmd, qual
@@ -411,6 +428,7 @@ ORDER BY tablename;
 ```
 
 ### Monitor for Performance Issues
+
 ```sql
 -- Find slow queries
 SELECT query, calls, total_time, mean_time
@@ -436,7 +454,7 @@ DROP POLICY IF EXISTS "Service role can manage all" ON public.users;
 
 -- Restore original function
 CREATE OR REPLACE FUNCTION get_user_profile(user_id uuid)
-RETURNS TABLE (id uuid, email text, username text) 
+RETURNS TABLE (id uuid, email text, username text)
 AS $$ /* original implementation */ $$ LANGUAGE plpgsql;
 ```
 

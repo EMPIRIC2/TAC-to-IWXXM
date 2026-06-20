@@ -75,7 +75,9 @@ class AviationWeatherClient:
 
             # Combine results
             for station_id in batch:
-                results[station_id] = (raw_data.get(station_id), iwxxm_data.get(station_id))
+                raw_entry = raw_data.get(station_id) if isinstance(raw_data, dict) else None
+                iwxxm_entry = iwxxm_data.get(station_id) if isinstance(iwxxm_data, dict) else None
+                results[station_id] = (raw_entry, iwxxm_entry)
 
             # Rate limiting between batches
             if i + self.BATCH_SIZE < len(station_ids):

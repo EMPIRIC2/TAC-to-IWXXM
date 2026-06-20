@@ -9,7 +9,9 @@ export type LogoutScope = 'global' | 'local' | 'others';
  *                'local': only current session is terminated
  *                'others': all but current session are terminated
  */
-export async function signOutWithScope(scope: LogoutScope = 'global'): Promise<boolean> {
+export async function signOutWithScope(
+  scope: LogoutScope = 'global',
+): Promise<boolean> {
   try {
     const { error } = await supabase.auth.signOut({ scope });
 

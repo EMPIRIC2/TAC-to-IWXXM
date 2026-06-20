@@ -1,6 +1,6 @@
 /**
  * Backend API Client
- * 
+ *
  * Handles all communication with the METAR to IWXXM backend API.
  * All endpoints use the versioned base path: /api/v1/
  */
@@ -14,7 +14,15 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 30000): Promise
   return Promise.race([
     promise,
     new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error(`Request timeout after ${timeoutMs / 1000}s - Backend may be unreachable`)), timeoutMs)
+      setTimeout(
+        () =>
+          reject(
+            new Error(
+              `Request timeout after ${timeoutMs / 1000}s - Backend may be unreachable`,
+            ),
+          ),
+        timeoutMs,
+      ),
     ),
   ]);
 }
@@ -59,14 +67,14 @@ function getAccessToken(): string | null {
 function _getAuthHeaders(): HeadersInit {
   const token = getAccessToken();
   return {
-    'Authorization': token ? `Bearer ${token}` : '',
+    Authorization: token ? `Bearer ${token}` : '',
     'Content-Type': 'application/json',
   };
 }
 
 /**
  * Check backend health status
- * 
+ *
  * **Endpoint**: GET /health
  */
 export async function checkHealth(): Promise<HealthResponse> {
@@ -88,11 +96,11 @@ export async function checkHealth(): Promise<HealthResponse> {
 
 /**
  * Convert METAR/SPECI text to IWXXM XML
- * 
+ *
  * Supports both manual text input and file uploads.
- * 
+ *
  * **Endpoint**: POST /api/v1/convert
- * 
+ *
  * @param params - Conversion parameters
  * @param params.manualText - Optional: METAR text to convert
  * @param params.files - Optional: File list to convert
@@ -125,18 +133,21 @@ export async function convertMetarToIwxxm(params: {
 
   try {
     const token = params.accessToken || getAccessToken() || '';
-    console.log('[API] convertMetarToIwxxm called with token:', token ? `${token.substring(0, 20)}...` : 'MISSING');
+    console.log(
+      '[API] convertMetarToIwxxm called with token:',
+      token ? `${token.substring(0, 20)}...` : 'MISSING',
+    );
     console.log('[API] Request to:', apiUrl('/convert'));
 
     const response = await withTimeout(
       fetch(apiUrl('/convert'), {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       }),
-      30000
+      30000,
     );
 
     if (!response.ok) {
@@ -144,7 +155,9 @@ export async function convertMetarToIwxxm(params: {
         message: `Conversion failed: ${response.statusText}`,
         errors: [],
       }));
-      throw new Error(error.detail?.message || error.message || `HTTP ${response.status}`);
+      throw new Error(
+        error.detail?.message || error.message || `HTTP ${response.status}`,
+      );
     }
 
     return await response.json();
@@ -160,12 +173,12 @@ export async function convertMetarToIwxxm(params: {
 
 /**
  * Convert METAR/SPECI text to IWXXM XML in a ZIP file
- * 
+ *
  * Supports batch conversion with both text and files.
  * Returns a ZIP archive containing converted XML files.
- * 
+ *
  * **Endpoint**: POST /api/v1/convert-zip
- * 
+ *
  * @param params - Conversion parameters
  * @param params.manualText - Optional: METAR text to convert
  * @param params.files - Optional: File list to convert
@@ -191,7 +204,7 @@ export async function convertMetarToIwxxmZip(params: {
     const response = await fetch(apiUrl('/convert-zip'), {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${getAccessToken() || ''}`,
+        Authorization: `Bearer ${getAccessToken() || ''}`,
       },
       body: formData,
     });
@@ -213,7 +226,7 @@ export async function convertMetarToIwxxmZip(params: {
 
 /**
  * Download file from blob
- * 
+ *
  * @param blob - File blob to download
  * @param filename - Filename for the download
  */

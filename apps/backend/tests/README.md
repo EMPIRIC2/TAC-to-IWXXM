@@ -25,21 +25,21 @@ pytest --cov=src --cov-report=html
 
 Tests are organized into logical subdirectories by domain:
 
-| Category | Files | Description |
-|----------|-------|-------------|
-| **api/** | 5 | FastAPI endpoint tests |
-| **conversion/** | 6 | METAR→IWXXM conversion |
-| **validation/** | 9 | XML/SCHEMATRON validation |
-| **iwxxm/** | 7 | IWXXM version & XML handling |
-| **services/** | 4 | Data service tests |
-| **evaluation/** | 5 | Aviation evaluation system |
-| **integration/** | 4 | Full-stack E2E tests |
-| **external_apis/** | 4 | External API clients |
-| **edge_cases/** | 7 | Feature-specific tests |
-| **infrastructure/** | 11 | Infrastructure & smoke tests |
-| **versions/** | 4 | Version compatibility |
-| **unit/** | 1 | Core unit tests |
-| **Root files** | 2 | Shared fixtures & utilities |
+| Category            | Files | Description                  |
+| ------------------- | ----- | ---------------------------- |
+| **api/**            | 5     | FastAPI endpoint tests       |
+| **conversion/**     | 6     | METAR→IWXXM conversion       |
+| **validation/**     | 9     | XML/SCHEMATRON validation    |
+| **iwxxm/**          | 7     | IWXXM version & XML handling |
+| **services/**       | 4     | Data service tests           |
+| **evaluation/**     | 5     | Aviation evaluation system   |
+| **integration/**    | 4     | Full-stack E2E tests         |
+| **external_apis/**  | 4     | External API clients         |
+| **edge_cases/**     | 7     | Feature-specific tests       |
+| **infrastructure/** | 11    | Infrastructure & smoke tests |
+| **versions/**       | 4     | Version compatibility        |
+| **unit/**           | 1     | Core unit tests              |
+| **Root files**      | 2     | Shared fixtures & utilities  |
 
 **Total: 72 test files, 1,090+ tests** ✅
 
@@ -77,7 +77,7 @@ pytest -m unit              # Unit tests only
 pytest -m integration       # Integration tests
 pytest -m smoke             # Quick smoke tests
 pytest -m e2e               # End-to-end tests
-pytest -m "not live_api"    # Skip live API tests  
+pytest -m "not live_api"    # Skip live API tests
 pytest -m "not slow"        # Skip slow tests
 pytest -m iwxxm_2025_2      # IWXXM 2025-2 specific
 ```
@@ -153,6 +153,7 @@ Detailed documentation is in **docs/**:
 ## Common Workflows
 
 ### Local Development
+
 ```bash
 # Watch mode (re-run on changes)
 ptw tests/api/ -v
@@ -165,6 +166,7 @@ pytest tests/api/test_api.py::TestHealthEndpoint -vvs --pdb
 ```
 
 ### Pre-Commit
+
 ```bash
 # Run smoke tests only
 pytest -m smoke
@@ -174,6 +176,7 @@ pytest --cov=src --cov-report=term-missing tests/api/
 ```
 
 ### CI/CD Pipeline
+
 ```bash
 # Run without slow tests
 pytest -m "not slow" --cov=src --cov-report=xml
@@ -183,6 +186,7 @@ pytest -m integration -v --tb=short
 ```
 
 ### Debugging
+
 ```bash
 # Stop on first failure with debugging
 pytest -x --pdb tests/
@@ -234,6 +238,7 @@ Shared test utilities (root level):
 5. **Add docstrings** - Describe what's being tested
 
 Example:
+
 ```python
 # tests/api/test_new_endpoint.py
 import pytest
@@ -241,7 +246,7 @@ import pytest
 @pytest.mark.integration
 class TestNewEndpoint:
     """Test new endpoint functionality."""
-    
+
     def test_basic_success(self, client):
         """Test endpoint returns 200 on valid input."""
         response = client.get('/api/v1/new')
@@ -251,6 +256,7 @@ class TestNewEndpoint:
 ## Troubleshooting
 
 ### Tests not discovered
+
 ```bash
 # Check discovery
 pytest --collect-only
@@ -260,15 +266,17 @@ pytest --collect-only
 ```
 
 ### Import errors
+
 ```bash
 # Check pythonpath
-pytest --co -q 
+pytest --co -q
 
 # Verify src is importable
 python -c "import src"
 ```
 
 ### Slow tests
+
 ```bash
 # Find slow tests
 pytest --durations=10
@@ -278,6 +286,7 @@ pytest -m "not slow"
 ```
 
 ### Authentication failures
+
 ```bash
 # Check fixtures
 pytest --fixtures | grep -A 5 "auth"
@@ -320,12 +329,14 @@ pytest tests/ --html=report.html
 ## Test Maintenance
 
 ### Monthly Tasks
+
 - Review test coverage reports
 - Update outdated tests
 - Remove redundant tests
 - Document known failures
 
 ### Quarterly Tasks
+
 - Refactor duplicate tests
 - Optimize slow tests
 - Update testing documentation
@@ -341,6 +352,7 @@ pytest tests/ --html=report.html
 ## Support
 
 For issues or questions about the test suite, check:
+
 1. **docs/TEST_ORGANIZATION.md** - Detailed test structure
 2. **docs/README.md** - Original testing guide
 3. **docs/COMPLETE_SUMMARY.md** - Coverage analysis

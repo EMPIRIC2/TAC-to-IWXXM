@@ -22,17 +22,19 @@ interface DatabaseUploadDialogProps {
 type DatabaseFormat = 'iwxxm' | 'json' | 'both';
 type UploadDestination = 'primary' | 'archive' | 'both';
 
-export function DatabaseUploadDialog({ 
-  convertedFiles, 
-  isOpen, 
+export function DatabaseUploadDialog({
+  convertedFiles,
+  isOpen,
   onClose,
-  accessToken 
+  accessToken,
 }: DatabaseUploadDialogProps) {
   const [format, setFormat] = useState<DatabaseFormat>('iwxxm');
   const [destination, setDestination] = useState<UploadDestination>('primary');
   const [includeOriginal, setIncludeOriginal] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>(
+    'idle',
+  );
 
   if (!isOpen) return null;
 
@@ -52,7 +54,7 @@ export function DatabaseUploadDialog({
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
             files: convertedFiles,
@@ -62,7 +64,7 @@ export function DatabaseUploadDialog({
               includeOriginal,
             },
           }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -73,7 +75,7 @@ export function DatabaseUploadDialog({
 
       setUploadStatus('success');
       toast.success(data.message || 'Files uploaded successfully');
-      
+
       // Auto-close after success
       setTimeout(() => {
         onClose();
@@ -82,28 +84,36 @@ export function DatabaseUploadDialog({
     } catch (error) {
       console.error('Database upload error:', error);
       setUploadStatus('error');
-      toast.error(error instanceof Error ? error.message : 'Failed to upload to database');
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to upload to database',
+      );
     } finally {
       setIsUploading(false);
     }
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="upload-dialog-title"
     >
-      <Card 
+      <Card
         className="bg-white dark:bg-gray-800 dark:border-gray-700 p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <Database className="w-6 h-6 text-blue-500 dark:text-blue-400" aria-hidden="true" />
-          <h2 id="upload-dialog-title" className="text-2xl font-semibold text-gray-900 dark:text-white">
+          <Database
+            className="w-6 h-6 text-blue-500 dark:text-blue-400"
+            aria-hidden="true"
+          />
+          <h2
+            id="upload-dialog-title"
+            className="text-2xl font-semibold text-gray-900 dark:text-white"
+          >
             Upload to Database
           </h2>
         </div>
@@ -111,7 +121,8 @@ export function DatabaseUploadDialog({
         {/* Info */}
         <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
           <p className="text-sm text-gray-700 dark:text-gray-300">
-            Uploading <strong>{convertedFiles.length}</strong> converted file(s) to database
+            Uploading <strong>{convertedFiles.length}</strong> converted file(s) to
+            database
           </p>
         </div>
 
@@ -197,7 +208,8 @@ export function DatabaseUploadDialog({
                 aria-label="Upload to archive database"
               />
               <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                <strong>Archive Database</strong> - Long-term storage and historical records
+                <strong>Archive Database</strong> - Long-term storage and historical
+                records
               </span>
             </label>
             <label className="flex items-center cursor-pointer">
@@ -231,7 +243,8 @@ export function DatabaseUploadDialog({
               aria-label="Include original METAR content in upload"
             />
             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-              <strong>Include Original METAR</strong> - Store the original METAR content alongside converted data
+              <strong>Include Original METAR</strong> - Store the original METAR content
+              alongside converted data
             </span>
           </label>
         </div>
@@ -239,7 +252,10 @@ export function DatabaseUploadDialog({
         {/* Status Messages */}
         {uploadStatus === 'success' && (
           <div className="mb-6 p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg flex items-center gap-3">
-            <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" aria-hidden="true" />
+            <CheckCircle
+              className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0"
+              aria-hidden="true"
+            />
             <p className="text-sm text-green-700 dark:text-green-300">
               Files uploaded successfully!
             </p>
@@ -248,7 +264,10 @@ export function DatabaseUploadDialog({
 
         {uploadStatus === 'error' && (
           <div className="mb-6 p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" aria-hidden="true" />
+            <AlertCircle
+              className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0"
+              aria-hidden="true"
+            />
             <p className="text-sm text-red-700 dark:text-red-300">
               Upload failed. Please try again.
             </p>
@@ -270,7 +289,11 @@ export function DatabaseUploadDialog({
             onClick={handleUpload}
             disabled={isUploading}
             className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label={isUploading ? 'Uploading to database, please wait' : 'Upload files to database'}
+            aria-label={
+              isUploading
+                ? 'Uploading to database, please wait'
+                : 'Upload files to database'
+            }
           >
             {isUploading ? (
               <>
