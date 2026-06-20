@@ -4,655 +4,105 @@
 [![E2E](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/workflows/e2e-tests.yml)
 [![codecov](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM/graph/badge.svg)](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM)
 
-Modern React-based web application with microservices backend to decode METAR/SPECI TAC and serialize IWXXM XML using the in-repo GIFTs package (`packages/gifts`).
+Convert aviation METAR/SPECI TAC messages to WMO IWXXM XML. React frontend, FastAPI backend,
+and the in-repo [GIFTs](packages/gifts) library — all in a single git monorepo (no submodules).
 
 ## Features
 
-- ✅ **Authentication**: User registration, login via Supabase through auth middleware
-- ✅ **Drag & drop** multiple `.tac` / `.txt` METAR files
-- ✅ **Manual METAR text input**
-- ✅ **Batch conversion** to IWXXM XML (returned as text for convenience)
-- ✅ **Copy / download** each result
-- ✅ **ZIP batch download** endpoint for multiple conversions
-- ✅ **Microservices architecture** with auth proxy, backend API, and React frontend
-- ✅ **Token-based security** - Backend validates tokens via auth service
-
-## 📖 For Developers
-
-**→ Complete setup and development guide:** [DEVELOPMENT.md](DEVELOPMENT.md)
-
-This includes:
-- Quick start (5 minutes with Docker)
-- Manual setup instructions
-- Architecture details
-- Testing & troubleshooting
-- Deployment guide
+- User registration and login via Supabase (auth routes on the API at `/auth/*`)
+- Drag-and-drop or paste METAR/SPECI TAC input
+- Batch conversion to IWXXM XML with copy, download, and ZIP export
+- IWXXM version selection (vendor snapshots under `vendor/schemas/`)
+- XSD and Schematron validation endpoints
 
 ## Architecture
 
-This project uses a **microservices architecture** with an authentication middleware proxy:
+Two deployables: **static frontend** + **API** (conversion, validation, and auth).
 
 ```
-Frontend (Port 5173 - dev, 8000 - prod)
-    ↓ (HTTP/HTTPS)
-Auth Service (Port 8003)
-    ↓ (Server-to-Server)
-Supabase Backend
-    (Credentials: server-side only)
-    ↓
-Backend Service (Port 8001)
-    ↓
-GIFTs Library (IWXXM Generation)
+Browser
+   │
+   ▼
+apps/frontend          Vite dev :5173  ·  Docker :18000
+   │  VITE_API_BASE_URL
+   ▼
+apps/backend           :8001 (dev)  ·  :18001 (Docker)
+   ├── packages/auth    Supabase JWT + /auth/* routes
+   ├── packages/gifts   TAC → IWXXM
+   └── vendor/schemas   read-only wmo-im snapshots
 ```
 
-### Planned monorepo (approved 2026-06-14)
+**Developer guide:** [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)  
+**Deployment:** [docs/deploy.md](docs/deploy.md)
 
-The repo is migrating to a **single-git monorepo** — no submodules. Target layout:
-
-- `apps/backend`, `apps/frontend`, `apps/e2e`
-- `packages/auth`, `packages/gifts`, `packages/shared`
-- `vendor/schemas/*` — read-only snapshots from [wmo-im](https://github.com/wmo-im)
-
-Auth will merge into the backend API (two Render services instead of three). See
-[docs/spec.md](docs/spec.md) and [docs/migration-plan.md](docs/migration-plan.md).
-
-**Key Benefits:**
-- ✅ Supabase credentials never exposed to frontend
-- ✅ Centralized auth logic and monitoring
-- ✅ Easy to add rate limiting, logging, custom claims
-- ✅ Flexible auth provider switching
-
-See [docs/AUTH_MIDDLEWARE_ARCHITECTURE.md](docs/AUTH_MIDDLEWARE_ARCHITECTURE.md) for detailed documentation.
-
-## Quick Start with Docker Compose (Recommended)
-
-### Prerequisites
-- Docker Desktop or Docker Engine with Docker Compose
-- Git
-- Supabase account (free tier available at https://supabase.com)
-
-### Setup (5 minutes)
+## Quick start
 
 ```bash
-# Clone the repository with submodules
-git clone --recurse-submodules <repository-url>
+git clone https://github.com/joseph-c-mcguire/metar-to-IWXXM.git
 cd metar-to-IWXXM
 
-# Copy environment template and add your Supabase credentials
-cp .env.example .env
-
-# Edit .env with your Supabase credentials:
-# SUPABASE_URL=https://your-project.supabase.co
-# SUPABASE_ANON_KEY=your-anon-key-here
+cp .env.example .env   # add Supabase credentials
+make install           # uv sync + pnpm install
+make dev               # API on :8001, frontend on :5173
 ```
 
-### Run Services
+Open http://localhost:5173. With Docker Compose instead:
 
 ```bash
-# Start all services (will download images on first run)
-docker-compose up --build
-
-# In a separate terminal, check services are healthy
-curl http://localhost:8003/health  # Auth service
-curl http://localhost:8001/health  # Backend service
-curl http://localhost:5173         # Frontend (should return HTML)
+docker compose up --build
+# Frontend http://localhost:18000  ·  API http://localhost:18001
 ```
 
-### Access the Application
-
-1. Open your browser to http://localhost:5173 (or http://localhost:8000 if running production build)
-2. You'll be redirected to the login page
-3. Click "Register" to create a new account
-4. Fill in your details (email, password, name, optional username)
-5. Submit - uses Supabase via auth service
-6. Login with your credentials
-7. **Start converting METAR reports to IWXXM XML!**
-
-### Service Endpoints
-
-- **Frontend (React UI)**: http://localhost:8000
-- **Backend API**: http://localhost:8001
-  - API Docs (Swagger): http://localhost:8001/docs
-  - OpenAPI JSON: http://localhost:8001/openapi.json
-- **Auth Service (Middleware)**: http://localhost:8002
-  - Health: http://localhost:8002/health
-
-### Stop Services
-
-```bash
-# Stop services (keep data volumes)
-docker-compose down
-
-# Stop and remove everything (clears all data)
-docker-compose down -v
-```
-
-## Development Setup (Local)
-
-### Prerequisites
-- Python 3.8+ (3.10+ recommended)
-- Node.js 18+ (for frontend)
-- Git with submodules support
-- uv package manager (optional but recommended)
-
-### Clone and Initialize
-
-```bash
-git clone <repository-url>
-cd metar-to-IWXXM
-make install
-```
-
-### Backend Setup
-
-```bash
-cd backend
-
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# or
-.venv\Scripts\activate.ps1  # Windows
-
-# Install with dev dependencies
-pip install -e ".[dev]"
-
-# Or with uv
-uv venv
-uv pip install -e ".[dev]"
-
-# Run tests
-pytest tests/ -v --cov=src --cov-fail-under=90
-
-# Run server (with auto-reload)
-python -m uvicorn src.api:app --reload --host 0.0.0.0 --port 8001
-```
-
-### Auth Service Setup
-
-```bash
-cd auth
-
-# Create virtual environment (or use shared one)
-python -m venv .venv
-source .venv/bin/activate
-# or with uv
-uv venv
-
-# Install dependencies
-pip install -e ".[dev]"
-
-# Configure environment
-cp .env.example .env
-# Edit .env with Supabase credentials
-
-# Run tests
-pytest tests/ -v --cov=src
-
-# Run server
-python -m uvicorn src.__main__:app --reload --host 0.0.0.0 --port 8002
-```
-
-### Frontend Setup
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Configure environment (optional for local dev)
-cp .env.example .env.local
-
-# Run dev server
-npm run dev  # Opens at http://localhost:5173
-```
-
-## Configuration
-
-### Environment Variables
-
-**Root `.env` file** (for Docker Compose):
-```env
-# Supabase credentials (server-side, never exposed to frontend)
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-anon-key-here
-
-# Frontend configuration
-VITE_AUTH_SERVICE_URL=http://localhost:8002
-VITE_APP_URL=http://localhost:8000
-VITE_BACKEND_URL=http://localhost:8001
-```
-
-**Auth Service** (`auth/.env`):
-```env
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-anon-key-here
-FRONTEND_BASE_URL=http://localhost:8000
-```
-
-**Backend** (`backend/.env`):
-```env
-# For Docker: use auth service name instead of localhost
-AUTH_SERVICE_URL=http://auth:8002
-# For local development:
-# AUTH_SERVICE_URL=http://localhost:8002
-```
-
-**Frontend** (`frontend/.env` for local development):
-```env
-VITE_AUTH_SERVICE_URL=http://localhost:8002
-VITE_BACKEND_URL=http://localhost:8001
-```
-
-### Supabase Configuration
-
-1. Create a Supabase account at https://supabase.com
-2. Create a new project
-3. As soon as the project is created, note down:
-   - **Project URL**: Found in Settings → API under "API URL"
-   - **Anon Key**: Found in Settings → API under "Project API keys"
-4. Add these to your `.env` file
-
-## Testing
-
-### Backend Tests
-
-```bash
-cd backend
-
-# Run all tests with coverage
-pytest tests/ -v --cov=src --cov-report=html
-
-# Run specific test file
-pytest tests/test_api.py -v
-
-# Run based on marker
-pytest tests/ -v -m "not integration"
-```
-
-### Auth Service Tests
-
-```bash
-cd auth
-
-# Run all tests
-python -m pytest tests/ -v --cov=src
-
-# Current status: 14 passed, 7 skipped
-# (Skipped tests require Supabase backend configuration)
-```
-
-### Frontend Tests
-
-```bash
-cd frontend
-
-# Run tests
-npm test
-
-# Run with coverage
-npm test -- --coverage
-
-# Watch mode
-npm test -- --watch
-```
-
-### Integration Tests
-
-```bash
-# From root directory (requires all three services running locally)
-pytest tests/ -v
-
-# Full-stack browser E2E (Playwright) — requires admin credentials
-make test-e2e-playwright
-
-# Credential-free smoke subset (no admin login required — CI / local dev-friendly)
-make test-e2e-playwright-smoke
-
-# Run specific integration tests
-pytest tests/test_backend_auth_service_integration.py -v
-```
-
-Browser E2E coverage lives in the top-level `tests/` directory as `*.e2e.spec.ts` files.
-When Playwright runs, it starts the full stack through `start-dev-servers.sh` (frontend + auth + backend).
-
-### Playwright suites
-
-| Target | Requires admin credentials | What it runs |
-|---|---|---|
-| `make test-e2e-playwright` | Yes | All 21 tests including login flows |
-| `make test-e2e-playwright-smoke` | **No** | `auth-service-integration` + `tac-file-conversion` (9 tests, mock sessions) |
-
-`tests/00-preflight.e2e.spec.ts` runs first in the full suite and fails immediately with a
-single clear message when credentials are missing or invalid, preventing 12+ repeated
-timeout failures from cluttering the output.
-
-Playwright E2E environment variables:
-
-- `PLAYWRIGHT_ADMIN_EMAIL` and `PLAYWRIGHT_ADMIN_PASSWORD`: required for admin-login E2E flows.
-- `PLAYWRIGHT_TAC_FIXTURES_DIR`: optional override for TAC fixture directory used by upload tests.
-- `PLAYWRIGHT_REQUIRE_TAC_FIXTURES`: set to `1` to fail fast when TAC fixtures are missing.
-  - This is enabled automatically on CI.
-- `PLAYWRIGHT_SERVICE_WAIT_TIMEOUT_MS`: timeout for startup health checks (default `120000`).
-- `PLAYWRIGHT_FRONTEND_HEALTH_URL`, `PLAYWRIGHT_BACKEND_HEALTH_URL`, `PLAYWRIGHT_AUTH_HEALTH_URL`: optional health endpoint overrides used during global setup.
-- `PLAYWRIGHT_FORCE_SERVICE_HEALTH_WAIT=1`: force health waiting even when using non-local base URLs.
-- `PLAYWRIGHT_SKIP_LOCAL_HEALTH_WAIT=1`: skip startup health checks.
-
-Example full E2E run with explicit environment:
-
-```bash
-cd frontend
-export PLAYWRIGHT_ADMIN_EMAIL="admin@example.com"
-export PLAYWRIGHT_ADMIN_PASSWORD="<password>"
-export PLAYWRIGHT_REQUIRE_TAC_FIXTURES=1
-export PLAYWRIGHT_SERVICE_WAIT_TIMEOUT_MS=180000
-npx playwright test
-```
-
-## Project Structure
+## Project structure
 
 ```
 metar-to-IWXXM/
-├── .github/
-│   └── copilot-instructions.md    # Development guidelines
-├── auth/                           # Authentication service
-│   ├── src/
-│   │   ├── __main__.py            # FastAPI app, CORS config
-│   │   ├── api_supabase.py        # API endpoints (register, login, etc.)
-│   │   ├── supabase_proxy.py      # Supabase client wrapper
-│   │   └── __init__.py
-│   ├── tests/
-│   │   ├── conftest.py            # Test configuration
-│   │   └── test_auth_middleware.py # API endpoint tests
-│   ├── pyproject.toml
-│   ├── Dockerfile
-│   └── README.md
-├── backend/                        # METAR conversion backend
-│   ├── src/
-│   │   ├── api.py                 # FastAPI app, route definitions
-│   │   ├── conversion.py          # METAR to IWXXM logic
-│   │   ├── utilities/
-│   │   │   ├── security.py        # Token verification via auth service
-│   │   │   └── __init__.py
-│   │   ├── schemas/               # Pydantic models
-│   │   └── __init__.py
-│   ├── tests/                     # Unit and integration tests
-│   ├── pyproject.toml
-│   ├── Dockerfile
-│   └── README.md
-├── frontend/                       # React web application
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── components/auth/   # Login, Register, etc.
-│   │   │   └── App.tsx            # Main component
-│   │   ├── utils/
-│   │   │   └── authService.ts     # Auth client library
-│   │   └── styles/                # CSS/Tailwind styles
-│   ├── tests/                     # Vitest unit tests
-│   ├── package.json
-│   ├── vite.config.ts
-│   ├── Dockerfile
-│   ├── nginx.conf                 # Production server config
-│   └── README.md
+├── apps/
+│   ├── backend/       # FastAPI — /api/v1/* and /auth/*
+│   ├── frontend/      # React + Vite
+│   └── e2e/           # Playwright suites
 ├── packages/
-│   ├── gifts/                     # GIFTs IWXXM conversion library
-│   ├── auth/                      # Auth middleware library
-│   └── shared/                    # Shared types and constants
-├── vendor/
-│   └── schemas/                   # Read-only wmo-im schema snapshots
-├── docs/
-│   ├── AUTH_MIDDLEWARE_ARCHITECTURE.md  # Detailed auth architecture
-│   ├── SUPABASE_INTEGRATION.md          # Supabase setup guide
-│   └── API.md                           # API documentation
-├── tests/                         # Root integration + browser E2E tests
-│   ├── test_backend_auth_service_integration.py
-│   ├── *.e2e.spec.ts             # Playwright browser E2E suites
-│   └── ... (other integration tests)
-├── scripts/                       # Utility scripts
-│   ├── launch_api.sh              # Launch script
-│   └── ... (other scripts)
-├── notebooks/                     # Jupyter notebooks for testing
-│   └── testing.ipynb
-├── docker-compose.yml             # Multi-container orchestration
-├── .env.example                   # Environment template
-├── README.md                      # This file
-├── LICENSE
-└── Makefile (optional)
+│   ├── auth/          # Auth library (mounted in backend)
+│   ├── gifts/         # IWXXM conversion
+│   └── shared/        # Shared types and constants
+├── vendor/schemas/    # Read-only iwxxm snapshots (sync via make vendor-sync)
+├── tests/             # Migration gates, integration, smoke
+├── docs/              # Specs, deploy runbook, development guide
+├── Makefile
+└── docker-compose.yml # backend + frontend (two services)
 ```
 
-## Key Technologies
-
-- **Frontend**: React 18, TypeScript, Tailwind CSS, Vite, Vitest
-- **Backend API**: FastAPI, SQLAlchemy 2.0, Python 3.8+
-- **Auth Service**: FastAPI, Supabase Python SDK, CORS middleware
-- **Database**: Supabase Postgres (managed)
-- **Conversion**: GIFTs package (`packages/gifts`, IWXXM generation)
-- **Containerization**: Docker, Docker Compose
-- **Package Management**: uv (Python), npm (Node.js)
-- **Testing**: pytest, pytest-cov, pytest-asyncio, Vitest
-
-## Troubleshooting
-
-### CI/CD Troubleshooting
-
-#### Workspace install fails in GitHub Actions
-
-Ensure CI uses the monorepo layout (`uv sync` at repo root; no external submodule checkout).
-See `.github/workflows/ci-cd.yml` for the current pipeline.
-
-#### Coverage checks fail in PRs
-
-Coverage is gated per service through Codecov (not combined-only):
-
-- `backend` ≥ 75%
-- `auth` ≥ 75%
-- `frontend` ≥ 75%
-- `gifts` ≥ 75%
-
-Policy source of truth is `.codecov.yml`, and uploads happen in `.github/workflows/ci-cd.yml`.
-
-### Docker Troubleshooting
-
-#### Services won't start
-```bash
-# Check if .env exists with credentials
-ls -la .env
-
-# Check Docker is running
-docker ps
-
-# View detailed logs
-docker-compose logs -f
-
-# Rebuild images
-docker-compose down && docker-compose up --build
-```
-
-#### Port conflicts
-```bash
-# Check what's using ports 8000, 8001, 8002
-lsof -i :8000      # Frontend
-lsof -i :8001      # Backend
-lsof -i :8002      # Auth service
-
-# On Windows:
-netstat -ano | findstr :8000
-```
-
-### Authentication Troubleshooting
-
-#### "Invalid API key" during startup
-- ✅ Check SUPABASE_URL format: `https://...supabase.co`
-- ✅ Check SUPABASE_ANON_KEY is not empty
-- ✅ Keys must be from same Supabase project
-- ✅ Regenerate keys in Supabase dashboard if needed
-
-#### Auth service connection errors
-```bash
-# Check auth service is healthy
-curl http://localhost:8002/health
-
-# Check auth service can reach Supabase
-docker-compose logs auth | grep -i "supabase\|error\|connection"
-
-# Verify SUPABASE_* credentials in auth service
-docker-compose exec auth env | grep SUPABASE
-```
-
-#### Backend can't connect to auth service
-- In Docker: Use `AUTH_SERVICE_URL=http://auth:8002` (service name from docker-compose.yml)
-- Locally: Use `AUTH_SERVICE_URL=http://localhost:8002`
-- Check network: `docker-compose logs backend | grep -i "auth\|error"`
-
-#### Frontend CORS errors
-```
-Access to XMLHttpRequest blocked by CORS policy
-```
-- ✅ Auth service has CORS enabled for all origins (development mode)
-- ✅ For production, restrict origins in `auth/src/__main__.py`:
-```python
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://yourdomain.com"],  # Production domains
-    ...
-)
-```
-
-#### "Redirect loop" in frontend
-- Check VITE_AUTH_SERVICE_URL is set correctly
-- Ensure auth service is running and healthy
-- Clear browser cookies/localStorage if tokens are corrupted
-
-### Development Troubleshooting
-
-#### "Module not found" in backend
-```bash
-cd backend
-# Reinstall in editable mode
-pip install -e .
-```
-
-#### "Cannot find package" in frontend
-```bash
-cd frontend
-# Clear cache and reinstall
-rm -rf node_modules package-lock.json
-npm install
-```
-
-#### Tests failing
-```bash
-# Clear pytest cache
-pytest --cache-clear tests/
-
-# Run with verbose output
-pytest tests/ -vv
-
-# Run single test
-pytest tests/test_file.py::test_function -vv
-```
-
-## Contributing
-
-Please use `uv` for package management for Python. Ensure:
-1. All Python dependencies are listed in `pyproject.toml`
-2. Run tests before submitting PR: `pytest tests/ -v`
-3. For frontend: Run `npm test` and `npm run lint`
-4. Use descriptive commit messages
-
-For detailed guidelines, see `.github/copilot-instructions.md`.
-
-## API Usage
-
-### Convert METAR to IWXXM
-
-**Via Frontend UI**: Upload `.tac`/`.txt` files or paste METAR text
-
-**Via Backend API**:
-```bash
-curl -X POST "http://localhost:8001/api/convert" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <your-token>" \
-  -d '{"metar": "METAR KJFK 231751Z 18012KT 10SM FEW040 SCT120 BKN250 15/07 A3005"}'
-```
-
-**Batch Download**:
-```bash
-curl -X POST "http://localhost:8001/api/convert-zip" \
-  -H "Authorization: Bearer <your-token>" \
-  -F "files=@file1.tac" \
-  -F "files=@file2.tac" \
-  --output results.zip
-```
-
-### API Documentation
-
-Live API docs available at:
-- Swagger UI: http://localhost:8001/docs
-- ReDoc: http://localhost:8001/redoc
-- OpenAPI JSON: http://localhost:8001/openapi.json
-
-## Deployment
-
-### Docker Production Build
+## Testing
 
 ```bash
-# Build production images
-docker-compose -f docker-compose.yml build
-
-# Run in production mode
-docker-compose -f docker-compose.yml up -d
-
-# Monitor
-docker-compose logs -f
-docker-compose stats
+make test-unit              # Workspace unit tests (Python + shared TS)
+make test-e2e-playwright-smoke   # Playwright smoke (no admin credentials)
+make tests:e2e              # Full Playwright suite (apps/e2e)
 ```
 
-### Environment Variables for Production
+Coverage gate: **95%** on all packages and apps. See [docs/test-plan.md](docs/test-plan.md).
 
-```env
-# Use production Supabase project
-SUPABASE_URL=https://prod.supabase.co
-SUPABASE_ANON_KEY=prod-anon-key
+## Key technologies
 
-# Use production URLs
-VITE_AUTH_SERVICE_URL=https://auth.yourdomain.com
-VITE_BACKEND_URL=https://api.yourdomain.com
-VITE_APP_URL=https://yourdomain.com
+| Layer | Stack |
+|-------|--------|
+| Frontend | React 18, TypeScript, Vite 6, Tailwind, Vitest |
+| API | FastAPI, Python 3.12, uv workspace |
+| Auth | Supabase (via `packages/auth`) |
+| Conversion | GIFTs (`packages/gifts`) |
+| E2E | Playwright |
+| Deploy | Render — Docker API + static frontend |
 
-# Restrict CORS origins (in auth/src/__main__.py)
-CORS_ORIGINS=["https://yourdomain.com"]
-```
+## Documentation
 
-## Roadmap
-
-- ✅ JWT authentication with Supabase
-- ✅ Auth middleware proxy pattern
-- ✅ Microservices architecture
-- ✅ ZIP batch download
-- 🔄 Enhanced error messages
-- 📋 API key authentication for programmatic access
-- 📋 Email-based password reset
-- 📋 Rate limiting per user
-- 📋 Admin dashboard for user management
+| Doc | Purpose |
+|-----|---------|
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Setup, env vars, troubleshooting |
+| [docs/deploy.md](docs/deploy.md) | Render topology and connectivity runbook |
+| [docs/api-contract.md](docs/api-contract.md) | HTTP API reference |
+| [docs/spec.md](docs/spec.md) | Technical specification |
+| [docs/feature-list.md](docs/feature-list.md) | Product features |
 
 ## License
 
-MIT - See LICENSE file for details
-
-## Support
-
-For issues and questions:
-1. Check [troubleshooting](#troubleshooting) section
-2. Review [docs/AUTH_MIDDLEWARE_ARCHITECTURE.md](docs/AUTH_MIDDLEWARE_ARCHITECTURE.md)
-3. Check existing [GitHub Issues](https://github.com/your-repo/issues)
-4. Create new issue with detailed description
-
-## Additional Resources
-
-- [Supabase Docs](https://supabase.com/docs)
-- [FastAPI Docs](https://fastapi.tiangolo.com/)
-- [React Docs](https://react.dev/)
-- [GIFTs Documentation](https://github.com/wmo-im/GIFTs)
-- [IWXXM Standard](https://github.com/wmo-im/IWXXM)
+MIT — see [LICENSE](LICENSE).

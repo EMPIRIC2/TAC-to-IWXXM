@@ -68,40 +68,39 @@ Historical database debugging, fixing, and diagnostic scripts from `/scripts/`.
 
 **Note**: Active scripts remain in `/scripts/` organized into `launchers/`, `db-setup/`, and `utilities/` subdirectories.
 
+### `/ARCHIVE/pre-monorepo-deploy/` (Added 2026-06-20)
+
+Three-service Render layout, separate auth deployable, submodule clone instructions, and
+Loki/Prometheus/Grafana observability docs — superseded by monorepo migration (M11, T11.3).
+
+**Successor docs:** [deploy.md](../deploy.md), [DEVELOPMENT.md](../DEVELOPMENT.md),
+[staging-secrets-matrix.md](../staging-secrets-matrix.md), [ADR-002](../adr/ADR-002-auth-merged-into-backend.md).
+
+See [pre-monorepo-deploy/README.md](pre-monorepo-deploy/README.md) for the file index.
+
 ## Superseded Architecture Docs
 
-The following documents describe outdated architecture approaches:
-
 **SUPABASE_AUTH_IMPLEMENTATION.md** (in SUBABASE_AUTH_IMPLEMENTATION.md)
-- **Reason**: Describes direct Supabase integration approach that was replaced with auth middleware proxy
-- **Successor**: See [AUTH_MIDDLEWARE_ARCHITECTURE.md](../AUTH_MIDDLEWARE_ARCHITECTURE.md) in parent directory
-- **Why Changed**: Auth middleware provides better security isolation and centralized auth control
+- **Reason**: Direct Supabase integration (pre-middleware)
+- **Successor**: [DEVELOPMENT.md](../DEVELOPMENT.md), [ADR-002](../adr/ADR-002-auth-merged-into-backend.md)
 
-**SUPABASE_AUTH_QUICKSTART.md**  
-- **Reason**: Quick start for direct Supabase integration (old approach)
-- **Successor**: See [DEVELOPMENT.md](../DEVELOPMENT.md) for current quick start
-- **Why Changed**: Auth now goes through middleware proxy for security
+**SUPABASE_AUTH_QUICKSTART.md**
+- **Reason**: Quick start for direct Supabase integration
+- **Successor**: [DEVELOPMENT.md](../DEVELOPMENT.md)
 
-## Kept Documentation
+**AUTH_MIDDLEWARE_ARCHITECTURE.md** (moved to `pre-monorepo-deploy/`)
+- **Reason**: Separate auth proxy service (three deployables)
+- **Successor**: Auth merged into `apps/backend` per ADR-002
 
-The following documentation remains active and relevant:
+## Active Documentation
 
-- **API.md** - RESTful API endpoint reference
-- **AUTH_MIDDLEWARE_ARCHITECTURE.md** - How the auth middleware proxy works
-- **SUPABASE_INTEGRATION.md** - Database connection configuration and pooling details
-- **SUPABASE_EMAIL_TEMPLATES.md** - Email template configuration for Supabase Auth
+- **api-contract.md** — REST API reference
+- **deploy.md** — Render deployment and connectivity runbook
+- **DEVELOPMENT.md** — Local setup and testing
+- **SUPABASE_INTEGRATION.md** — Database connection and pooling
+- **SUPABASE_EMAIL_TEMPLATES.md** — Email template configuration
 
 ## For New Developers
 
-📖 **Start here**: [DEVELOPMENT.md](../DEVELOPMENT.md) in the project root for complete setup and development guide.
-
-## Historical Context
-
-The project initially used direct Supabase integration in the frontend and backend. This was later refactored to use an auth middleware proxy service for:
-
-1. **Better Security**: Supabase credentials never exposed to frontend
-2. **Centralized Control**: Single point for auth logic, logging, and monitoring
-3. **Flexibility**: Easy to add rate limiting, custom claims, alternative auth providers
-4. **Testability**: Mock auth service instead of Supabase in tests
-
-This refactoring is thoroughly documented in [AUTH_MIDDLEWARE_ARCHITECTURE.md](../docs/AUTH_MIDDLEWARE_ARCHITECTURE.md).
+Start with [DEVELOPMENT.md](../DEVELOPMENT.md) for setup and [deploy.md](../deploy.md) for
+production deployment.

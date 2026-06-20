@@ -168,10 +168,10 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T11.2
+        current_task: T11.4
         phase: 4
         milestone: M11
-        notes: "T11.1 complete — submodules removed; TC-M004 gitmodules test green"
+        notes: "T11.4 partial — services resumed; H0c+H4 green; H5 pending monorepo frontend CI deploy"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
       - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
@@ -525,9 +525,9 @@ artifacts:
       stage: "07-build"
       files_changed: 3
       timestamp: "2026-06-15T16:15:00Z"
-    - sha: 3aeb52c
+    - sha: ebc8177
       branch: feat/M11-big-bang-finalize
-      message: "[T11.1] config: remove git submodules and .gitmodules"
+      message: "[T11.2] test: pass TC-M001–M005 migration gate after submodule removal"
       stage: "07-build"
-      files_changed: 7
-      timestamp: "2026-06-20T15:53:00Z"
+      files_changed: 15
+      timestamp: "2026-06-20T15:59:00Z"
