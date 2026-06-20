@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "description": "TC-M003 golden conversion baseline (REQ-018)",
+  "cases": [
+    {
+      "id": "kjfk_basic",
+      "tac": "cases/kjfk_basic.tac",
+      "golden": "cases/kjfk_basic.golden.xml"
+    },
+    {
+      "id": "klax_basic",
+      "tac": "cases/klax_basic.tac",
+      "golden": "cases/klax_basic.golden.xml"
+    },
+    {
+      "id": "kord_basic",
+      "tac": "cases/kord_basic.tac",
+      "golden": "cases/kord_basic.golden.xml"
+    },
+    {
+      "id": "speci_sn",
+      "tac": "cases/speci_sn.tac",
+      "golden": "cases/speci_sn.golden.xml"
+    },
+    {
+      "id": "metar_nil",
+      "tac": "cases/metar_nil.tac",
+      "golden": "cases/metar_nil.golden.xml"
+    }
+  ]
+}

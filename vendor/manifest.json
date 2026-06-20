@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "bundles": {
+    "iwxxm": {
+      "upstream_repo": "wmo-im/iwxxm",
+      "tag": "v2025-2",
+      "commit_sha": "35180cbe3bec0bc536a78714dd78d2e7ba60931f",
+      "local_path": "vendor/schemas/iwxxm",
+      "tree_sha256": "660380ff2a3077e46803dabde20c2667e1f900297b13a6f15b283dca561c64cd"
+    },
+    "iwxxm-codelists": {
+      "upstream_repo": "wmo-im/iwxxm-codelists",
+      "tag": "49-2",
+      "commit_sha": "b0511b76a59a3dde586f8fcdc79220de56c1e02e",
+      "local_path": "vendor/schemas/iwxxm-codelists",
+      "tree_sha256": "b315ffff905bc56e155bbcfd62a3073218e60ae3a7b5c41d2e1242afc131a212"
+    },
+    "iwxxm-modelling": {
+      "upstream_repo": "wmo-im/iwxxm-modelling",
+      "tag": "v2025-2",
+      "commit_sha": "ec099bfd545389473b4d3a6e7ec8f00089924e32",
+      "local_path": "vendor/schemas/iwxxm-modelling",
+      "tree_sha256": "66363f6416efebfcf3a8891ddc7067e9d84bc0953cd238395e14d6e9fb88088d"
+    },
+    "iwxxm-translation": {
+      "upstream_repo": "wmo-im/iwxxm-translation",
+      "tag": "master",
+      "commit_sha": "a251e8bcff2bee8215a9f193595f380accd9e238",
+      "local_path": "vendor/schemas/iwxxm-translation",
+      "tree_sha256": "cb918b6e595895800c1f5dfa639a3065357eb2ca9a4646596241fef9b2a4bcbf"
+    }
+  }
+}

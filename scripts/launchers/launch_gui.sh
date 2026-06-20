@@ -6,13 +6,12 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
-FRONTEND_DIR="$REPO_ROOT/frontend"
+FRONTEND_DIR="$REPO_ROOT/apps/frontend"
 
 # Check if frontend directory exists
 if [ ! -d "$FRONTEND_DIR" ]; then
     echo "[ERROR] Frontend directory not found at: $FRONTEND_DIR"
-    echo "[INFO] Please ensure the frontend submodule is initialized:"
-    echo "[INFO]   git submodule update --init --recursive"
+    echo "[INFO] Run 'make install' from the repo root to set up the monorepo workspace."
     exit 1
 fi
 

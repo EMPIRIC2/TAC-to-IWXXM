@@ -1,0 +1,38 @@
+@prefix qudt:  <http://qudt.org/schema/qudt#>.
+@prefix ssd:   <http://www.w3.org/ns/sparql-service-description#>.
+@prefix owl:   <http://www.w3.org/2002/07/owl#>.
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#>.
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#>.
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix qudt-unit: <http://qudt.org/vocab/unit#>.
+@prefix qb:    <http://purl.org/linked-data/cube#>.
+@prefix dgu:   <http://reference.data.gov.uk/def/reference/>.
+@prefix ui:    <http://purl.org/linked-data/registry-ui#>.
+@prefix dct:   <http://purl.org/dc/terms/>.
+@prefix reg:   <http://purl.org/linked-data/registry#>.
+@prefix qudt-quantity: <http://qudt.org/vocab/quantity#>.
+@prefix grib2-parameter: <http://codes.wmo.int/grib2/schema/parameter/>.
+@prefix api:   <http://purl.org/linked-data/api/vocab#>.
+@prefix vann:  <http://purl.org/vocab/vann/>.
+@prefix prov:  <http://www.w3.org/ns/prov#>.
+@prefix foaf:  <http://xmlns.com/foaf/0.1/>.
+@prefix common-unit: <http://codes.wmo.int/common/schema/unit/>.
+@prefix cc:    <http://creativecommons.org/ns#>.
+@prefix grib2-core: <http://codes.wmo.int/grib2/schema/core/>.
+@prefix void:  <http://rdfs.org/ns/void#>.
+@prefix version: <http://purl.org/linked-data/version#>.
+@prefix bufr4-core: <http://codes.wmo.int/bufr4/schema/core/>.
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix ldp:   <http://www.w3.org/ns/ldp#>.
+@prefix time:  <http://www.w3.org/2006/time#>.
+@prefix qudt-dimension: <http://qudt.org/vocab/dimension#>.
+@prefix vs:    <http://www.w3.org/2003/06/sw-vocab-status/ns#>.
+@prefix common-core: <http://codes.wmo.int/common/schema/core/>.
+@prefix dc:    <http://purl.org/dc/elements/1.1/>.
+
+<REFZUP>
+	a skos:Concept;
+	skos:notation "REFZUP";
+	reg:status "stable";
+	dct:description "Unidentified freezing precipitation"@en;
+	rdfs:label "Unidentified freezing precipitation"@en.

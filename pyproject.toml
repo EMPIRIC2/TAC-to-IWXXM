@@ -1,0 +1,86 @@
+[project]
+name = "metar-iwxxm-workspace"
+version = "0.0.0"
+description = "METAR to IWXXM monorepo — uv workspace root (ADR-005)"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+package = false
+# Python 3.12 pinned per ADR-005; members added as packages scaffold (T1.4+).
+# Target members: packages/shared, packages/auth, packages/gifts, apps/backend
+
+[dependency-groups]
+dev = [
+  "ruff>=0.9",
+  "basedpyright>=1.29",
+  "pytest>=8.4",
+  "pytest-cov>=6.0",
+  "pytest-asyncio>=0.24",
+  "httpx>=0.28",
+  "metar-shared",
+  "gifts",
+  "metar-auth",
+  "metar-backend",
+]
+
+[tool.uv.sources]
+metar-shared = { workspace = true }
+gifts = { workspace = true }
+metar-auth = { workspace = true }
+metar-backend = { workspace = true }
+
+# Workspace members populated incrementally during Phase 1–2 (T1.4 shared, T3.3 gifts, T4.3 auth).
+[tool.uv.workspace]
+members = ["packages/shared", "packages/gifts", "packages/auth", "apps/backend"]
+
+[tool.basedpyright]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+include = [
+  "apps",
+  "packages",
+  "tests",
+]
+exclude = [
+  "**/node_modules",
+  "**/__pycache__",
+  "vendor",
+  "apps/frontend/dist",
+  "frontend/dist",
+  "GIFTs/.venv",
+  "packages/gifts/.venv",
+]
+reportMissingTypeStubs = false
+reportUnknownMemberType = "warning"
+reportUnknownVariableType = "warning"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+addopts = [
+  "-v",
+  "--strict-markers",
+  "--tb=short",
+]
+markers = [
+  "unit: unit tests",
+  "integration: integration tests",
+  "live: live staging connectivity (H4–H5)",
+  "smoke: deploy smoke tests",
+  "migration: monorepo migration gate tests (TC-M001–M005)",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["apps", "packages"]
+omit = [
+  "**/__init__.py",
+  "**/tests/**",
+]
+
+[tool.coverage.report]
+fail_under = 95
+show_missing = true
+skip_covered = false

@@ -1,0 +1,233 @@
+import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
+import * as kv from "./kv_store.tsx";
+
+// SERVICE_ROLE client for database operations (bypasses RLS)
+const supabase = createClient(
+  Deno.env.get("SUPABASE_URL") ?? "",
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+);
+
+export type DatabaseFormat = 'iwxxm' | 'json' | 'both';
+export type UploadDestination = 'primary' | 'archive' | 'both';
+
+export interface ConvertedFileData {
+  id: string;
+  originalName: string;
+  originalContent: string;
+  convertedContent: string;
+  timestamp: number;
+  userId: string;
+  userEmail: string;
+}
+
+export interface DatabaseUploadOptions {
+  format: DatabaseFormat;
+  destination: UploadDestination;
+  includeOriginal: boolean;
+  metadata?: Record<string, unknown>;
+}
+
+export interface UploadResult {
+  success: boolean;
+  recordId?: string;
+  destination?: string;
+  error?: string;
+}
+
+// Convert IWXXM to JSON format for database storage
+function iwxxmToJson(iwxxmContent: string, originalName: string): Record<string, unknown> {
+  // Parse basic IWXXM structure
+  const lines = iwxxmContent.split('\n');
+  const observations: Array<Record<string, unknown>> = [];
+  
+  // Extract observations from IWXXM
+  let currentObs: Record<string, unknown> | null = null;
+  
+  for (const line of lines) {
+    if (line.includes('<MeteorologicalAerodromeObservation>')) {
+      currentObs = {};
+    } else if (line.includes('</MeteorologicalAerodromeObservation>') && currentObs) {
+      observations.push(currentObs);
+      currentObs = null;
+    } else if (currentObs) {
+      // Extract data from XML tags
+      const stationMatch = line.match(/<station>(.*?)<\/station>/);
+      const timeMatch = line.match(/<observationTime>(.*?)<\/observationTime>/);
+      const timestampMatch = line.match(/<timestamp>(.*?)<\/timestamp>/);
+      const contentMatch = line.match(/<content>(.*?)<\/content>/);
+      
+      if (stationMatch) currentObs.station = stationMatch[1];
+      if (timeMatch) currentObs.observationTime = timeMatch[1];
+      if (timestampMatch) currentObs.timestamp = timestampMatch[1];
+      if (contentMatch) currentObs.rawMetar = contentMatch[1];
+    }
+  }
+  
+  return {
+    fileName: originalName,
+    format: 'IWXXM',
+    observations,
+    totalObservations: observations.length,
+    processedAt: new Date().toISOString(),
+  };
+}
+
+// Upload to primary database
+async function uploadToPrimary(
+  file: ConvertedFileData,
+  options: DatabaseUploadOptions
+): Promise<UploadResult> {
+  try {
+    const recordId = `primary_${file.id}_${Date.now()}`;
+    
+    const record = {
+      id: recordId,
+      userId: file.userId,
+      userEmail: file.userEmail,
+      originalFileName: file.originalName,
+      uploadedAt: new Date().toISOString(),
+      format: options.format,
+      ...(options.includeOriginal && { originalContent: file.originalContent }),
+      ...(options.format === 'iwxxm' || options.format === 'both' ? { 
+        iwxxmContent: file.convertedContent 
+      } : {}),
+      ...(options.format === 'json' || options.format === 'both' ? { 
+        jsonContent: iwxxmToJson(file.convertedContent, file.originalName) 
+      } : {}),
+      metadata: options.metadata || {},
+    };
+    
+    await kv.set(`db_primary:${recordId}`, record);
+    
+    console.log(`File uploaded to primary database: ${recordId}`);
+    return { success: true, recordId, destination: 'primary' };
+  } catch (error) {
+    console.error('Error uploading to primary database:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error uploading to primary database' 
+    };
+  }
+}
+
+// Upload to archive database
+async function uploadToArchive(
+  file: ConvertedFileData,
+  options: DatabaseUploadOptions
+): Promise<UploadResult> {
+  try {
+    const recordId = `archive_${file.id}_${Date.now()}`;
+    
+    const record = {
+      id: recordId,
+      userId: file.userId,
+      userEmail: file.userEmail,
+      originalFileName: file.originalName,
+      archivedAt: new Date().toISOString(),
+      format: options.format,
+      ...(options.includeOriginal && { originalContent: file.originalContent }),
+      ...(options.format === 'iwxxm' || options.format === 'both' ? { 
+        iwxxmContent: file.convertedContent 
+      } : {}),
+      ...(options.format === 'json' || options.format === 'both' ? { 
+        jsonContent: iwxxmToJson(file.convertedContent, file.originalName) 
+      } : {}),
+      metadata: {
+        ...options.metadata,
+        archiveVersion: '1.0',
+      },
+    };
+    
+    await kv.set(`db_archive:${recordId}`, record);
+    
+    console.log(`File uploaded to archive database: ${recordId}`);
+    return { success: true, recordId, destination: 'archive' };
+  } catch (error) {
+    console.error('Error uploading to archive database:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error uploading to archive database' 
+    };
+  }
+}
+
+// Main upload function
+export async function uploadToDatabase(
+  files: ConvertedFileData[],
+  options: DatabaseUploadOptions
+): Promise<{ results: UploadResult[]; summary: { success: number; failed: number } }> {
+  const results: UploadResult[] = [];
+  
+  for (const file of files) {
+    if (options.destination === 'primary') {
+      const result = await uploadToPrimary(file, options);
+      results.push(result);
+    } else if (options.destination === 'archive') {
+      const result = await uploadToArchive(file, options);
+      results.push(result);
+    } else if (options.destination === 'both') {
+      const primaryResult = await uploadToPrimary(file, options);
+      const archiveResult = await uploadToArchive(file, options);
+      results.push(primaryResult, archiveResult);
+    }
+  }
+  
+  const summary = {
+    success: results.filter(r => r.success).length,
+    failed: results.filter(r => !r.success).length,
+  };
+  
+  return { results, summary };
+}
+
+// Get uploaded files for a user
+export async function getUserUploads(userId: string, database: 'primary' | 'archive' | 'both') {
+  try {
+    const allRecords: Array<unknown> = [];
+    
+    if (database === 'primary' || database === 'both') {
+      const primaryRecords = await kv.getByPrefix(`db_primary:`);
+      const userPrimaryRecords = primaryRecords.filter((record: any) => record.userId === userId);
+      allRecords.push(...userPrimaryRecords);
+    }
+    
+    if (database === 'archive' || database === 'both') {
+      const archiveRecords = await kv.getByPrefix(`db_archive:`);
+      const userArchiveRecords = archiveRecords.filter((record: any) => record.userId === userId);
+      allRecords.push(...userArchiveRecords);
+    }
+    
+    console.log(`Retrieved ${allRecords.length} uploads for user: ${userId}`);
+    return { data: allRecords };
+  } catch (error) {
+    console.error('Error getting user uploads:', error);
+    return { error: error instanceof Error ? error.message : 'Unknown error getting user uploads' };
+  }
+}
+
+// Delete an upload
+export async function deleteUpload(recordId: string, userId: string) {
+  try {
+    const record = await kv.get<any>(`db_primary:${recordId}`) || await kv.get<any>(`db_archive:${recordId}`);
+    
+    if (!record) {
+      return { error: 'Record not found' };
+    }
+    
+    if (record.userId !== userId) {
+      return { error: 'Unauthorized: You can only delete your own uploads' };
+    }
+    
+    if (await kv.get(`db_primary:${recordId}`)) {
+      await kv.del(`db_primary:${recordId}`);
+    } else {
+      await kv.del(`db_archive:${recordId}`);
+    }
+    
+    console.log(`Upload deleted: ${recordId} by user: ${userId}`);
+    return { data: { message: 'Upload deleted successfully' } };
+  } catch (error) {
+    console.error('Error deleting upload:', error);
+    return { error: error instanceof Error ? error.message : 'Unknown error deleting upload' };
+  }
+}

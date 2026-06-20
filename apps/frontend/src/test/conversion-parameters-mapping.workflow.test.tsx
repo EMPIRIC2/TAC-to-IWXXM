@@ -1,0 +1,170 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { FileConverter } from '../app/components/FileConverter';
+
+const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
+const mockConvertMetarToIwxxm = vi.hoisted(() => vi.fn().mockResolvedValue({
+  results: [
+    {
+      name: 'manual_input.txt',
+      content: '<iwxxm:METAR>mapped</iwxxm:METAR>',
+      source: 'manual_input',
+      size_bytes: 29,
+    },
+  ],
+  errors: [],
+  issues: [],
+  total_processed: 1,
+  successful: 1,
+  failed: 0,
+}));
+const mockToast = vi.hoisted(() => ({
+  success: vi.fn(),
+  error: vi.fn(),
+  loading: vi.fn(),
+  dismiss: vi.fn(),
+  promise: vi.fn(),
+  info: vi.fn(),
+}));
+
+vi.mock('/utils/supabase/logout', () => ({
+  signOutWithScope: mockSignOutWithScope,
+}));
+
+vi.mock('/utils/api', () => ({
+  convertMetarToIwxxm: mockConvertMetarToIwxxm,
+  convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
+}));
+
+vi.mock('sonner', () => ({
+  toast: mockToast,
+}));
+
+vi.mock('../app/components/IcaoAutocomplete', () => ({
+  IcaoAutocomplete: ({ value, onChange, id }: any) => (
+    <input
+      id={id}
+      data-testid="icao-autocomplete"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
+
+describe('UI Workflow: Conversion Parameter Mapping', () => {
+  const defaultProps = {
+    onLogout: vi.fn(),
+    userEmail: 'mapping@example.com',
+    accessToken: 'mapping-token',
+    onSwitchToAdmin: vi.fn(),
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+  });
+
+  it('sends selected IWXXM version in conversion API payload', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<FileConverter {...defaultProps} />);
+
+    await user.click(screen.getByLabelText(/expand parameters/i));
+
+    const iwxxmVersion = container.querySelector('#param-iwxxm-version') as HTMLSelectElement;
+    await user.selectOptions(iwxxmVersion, '2023-1');
+
+    const manualInput = screen.getByLabelText(/enter metar data manually/i);
+    fireEvent.change(manualInput, {
+      target: {
+        value: 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
+      },
+    });
+
+    await user.click(screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }));
+
+    await waitFor(() => {
+      expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
+    });
+
+    expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        manualText: 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
+        iwxxmVersion: '2023-1',
+        validateOutput: false,
+        accessToken: 'mapping-token',
+      })
+    );
+  });
+
+  it('maps default parameters from saved preferences before conversion', async () => {
+    localStorage.setItem(
+      'metar_converter_preferences',
+      JSON.stringify({
+        bulletinIdExample: 'ABCD12',
+        issuingCenter: 'KLAX',
+        iwxxmVersion: '2023-1',
+        strictValidation: false,
+        includeNilReasons: false,
+        onError: 'skip',
+        logLevel: 'DEBUG',
+      })
+    );
+
+    const user = userEvent.setup();
+    const { container } = render(<FileConverter {...defaultProps} />);
+
+    await user.click(screen.getByLabelText(/expand parameters/i));
+
+    const bulletinId = container.querySelector('#param-bulletin-id') as HTMLInputElement;
+    const issuingCenter = container.querySelector('#param-issuing-center') as HTMLInputElement;
+    const iwxxmVersion = container.querySelector('#param-iwxxm-version') as HTMLSelectElement;
+    const onError = container.querySelector('#param-on-error') as HTMLSelectElement;
+    const logLevel = container.querySelector('#param-log-level') as HTMLSelectElement;
+
+    expect(bulletinId.value).toBe('ABCD12');
+    expect(issuingCenter.value).toBe('KLAX');
+    expect(iwxxmVersion.value).toBe('2023-1');
+    expect(onError.value).toBe('skip');
+    expect(logLevel.value).toBe('DEBUG');
+  });
+
+  it('updates mapped payload when user changes version after preferences load', async () => {
+    localStorage.setItem(
+      'metar_converter_preferences',
+      JSON.stringify({
+        bulletinIdExample: 'WXYZ34',
+        issuingCenter: 'KSEA',
+        iwxxmVersion: '2023-1',
+        strictValidation: true,
+        includeNilReasons: true,
+        onError: 'warn',
+        logLevel: 'INFO',
+      })
+    );
+
+    const user = userEvent.setup();
+    const { container } = render(<FileConverter {...defaultProps} />);
+
+    await user.click(screen.getByLabelText(/expand parameters/i));
+    const iwxxmVersion = container.querySelector('#param-iwxxm-version') as HTMLSelectElement;
+    await user.selectOptions(iwxxmVersion, '2025-2');
+
+    fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
+      target: { value: 'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010' },
+    });
+
+    await user.click(screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }));
+
+    await waitFor(() => {
+      expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
+    });
+
+    expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        iwxxmVersion: '2025-2',
+      })
+    );
+  });
+});

@@ -4,11 +4,10 @@ Tests the integration between the custom auth service and Supabase as an externa
 authorization provider, ensuring tokens can be validated across services.
 """
 import os
-import pytest
-import httpx
 from unittest import mock
+
+import pytest
 from jose import jwt
-import datetime as dt
 
 # Set test environment
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
@@ -19,7 +18,7 @@ class TestSupabaseAuthIntegration:
     
     def test_jwt_token_format_compatible_with_supabase(self):
         """Test that auth service tokens use Supabase-compatible format."""
-        from auth.security import create_access_token, JWT_SECRET, JWT_ALGO
+        from auth.security import JWT_ALGO, JWT_SECRET, create_access_token
         
         token = create_access_token(sub="testuser@example.com")
         
@@ -35,8 +34,9 @@ class TestSupabaseAuthIntegration:
     
     def test_token_expiration_matches_supabase_patterns(self):
         """Test that token expiration follows standard patterns."""
-        from auth.security import create_access_token, JWT_EXPIRE_MINUTES
         import time
+
+        from auth.security import JWT_EXPIRE_MINUTES, create_access_token
         
         before = time.time()
         token = create_access_token(sub="user@example.com")
@@ -55,7 +55,7 @@ class TestSupabaseAuthIntegration:
     
     def test_token_can_be_decoded_by_external_service(self):
         """Test that tokens can be decoded by external services."""
-        from auth.security import create_access_token, JWT_SECRET, JWT_ALGO
+        from auth.security import JWT_ALGO, JWT_SECRET, create_access_token
         
         token = create_access_token(sub="user@example.com")
         
@@ -97,8 +97,9 @@ class TestAuthServiceAsSupabaseReplacement:
         from fastapi.testclient import TestClient
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
-        from auth.database import Base
+
         from auth.__main__ import app
+        from auth.database import Base
         
         # Setup
         engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
@@ -140,10 +141,11 @@ class TestAuthServiceAsSupabaseReplacement:
         from fastapi.testclient import TestClient
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
+
+        from auth.__main__ import app
         from auth.database import Base
         from auth.models import User
         from auth.security import hash_password
-        from auth.__main__ import app
         
         # Setup
         engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
@@ -215,10 +217,11 @@ class TestSupabaseTokenValidation:
         from fastapi.testclient import TestClient
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
+
+        from auth.__main__ import app
         from auth.database import Base
         from auth.models import User
-        from auth.security import hash_password, create_access_token
-        from auth.__main__ import app
+        from auth.security import create_access_token, hash_password
         
         # Setup
         engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
@@ -301,8 +304,9 @@ class TestAuthServiceSupabaseCompatibility:
     
     def test_user_metadata_structure(self):
         """Test that user model has Supabase-like metadata."""
-        from auth.models import User
         from sqlalchemy import inspect
+
+        from auth.models import User
         
         # Get columns
         mapper = inspect(User)
@@ -343,8 +347,9 @@ class TestCrossServiceAuthentication:
     
     def test_token_sharing_pattern(self):
         """Test pattern for sharing tokens between services."""
-        from auth.security import create_access_token, JWT_SECRET, JWT_ALGO
         import jwt as pyjwt
+
+        from auth.security import JWT_ALGO, JWT_SECRET, create_access_token
         
         # Auth service creates token
         token = create_access_token(sub="user@example.com")
@@ -359,6 +364,7 @@ class TestCrossServiceAuthentication:
     def test_health_check_for_service_discovery(self):
         """Test health check endpoint for service discovery."""
         from fastapi.testclient import TestClient
+
         from auth.__main__ import app
         
         client = TestClient(app)
@@ -382,6 +388,7 @@ class TestDatabaseConnectionPatterns:
             "DATABASE_URL": "postgresql://user:pass@localhost:5432/db"
         }):
             import importlib
+
             import auth.database
             importlib.reload(auth.database)
             
@@ -394,6 +401,7 @@ class TestDatabaseConnectionPatterns:
             "DATABASE_URL": "postgresql://user:pass@localhost:5432/db"
         }):
             import importlib
+
             import auth.database
             importlib.reload(auth.database)
             
@@ -434,8 +442,9 @@ class TestSecurityBestPractices:
     
     def test_tokens_expire(self):
         """Test that tokens have expiration."""
-        from auth.security import create_access_token
         from jose import jwt
+
+        from auth.security import create_access_token
         
         token = create_access_token(sub="user@example.com")
         
@@ -464,9 +473,11 @@ class TestErrorHandlingAndEdgeCases:
     
     def test_expired_token_rejected(self):
         """Test that expired tokens are rejected."""
-        from auth.security import decode_access_token, JWT_SECRET, JWT_ALGO
-        import jwt as pyjwt
         import time
+
+        import jwt as pyjwt
+
+        from auth.security import JWT_ALGO, JWT_SECRET, decode_access_token
         
         # Create expired token
         payload = {
@@ -481,6 +492,7 @@ class TestErrorHandlingAndEdgeCases:
     def test_missing_authorization_header(self):
         """Test handling of missing authorization header."""
         from fastapi.testclient import TestClient
+
         from auth.__main__ import app
         
         client = TestClient(app)
@@ -492,6 +504,7 @@ class TestErrorHandlingAndEdgeCases:
     def test_malformed_authorization_header(self):
         """Test handling of malformed authorization header."""
         from fastapi.testclient import TestClient
+
         from auth.__main__ import app
         
         client = TestClient(app)

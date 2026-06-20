@@ -1,0 +1,12 @@
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix reg:   <http://purl.org/linked-data/registry#> .
+@prefix ldp:   <http://www.w3.org/ns/ldp#> .
+
+<MeteorologicalAerodromeTrendForecast>
+        a                skos:Concept ;
+        rdfs:label       "Meteorological aerodrome trend forecast"@en ;
+        dct:description  "MeteorologicalAerodromeTrendForecast (a subclass of ComplexSamplingMeasurement from METCE) is intended for use when reporting an aggregate set of forecast meteorological conditions at an aerodrome. The result of this observation type shall refer to an entity of type MeteorologicalAerodromeTrendForecastRecord. MeteorologicalAerodromeTrendForecast enforces the following additional constraints: “featureOfInterest” shall refer to an entity of type SF_SamplingPoint and the associated “sampledFeature” must be an aerodrome. MeteorologicalAerodromeTrendForecasts are reported in surface observation reports such as SPECI and METAR. MeteorologicalAerodromeTrendForecast has a peer class for observation information at an aerodrome (MeteorologicalAerodromeObservation), which is also reported on a METAR and SPECI for observed phenomena. This class is also related but not identical to MeteorologicalAerodromeForecast which is reported on a TAF – conditions reported in trend forecasts in METAR/ SPECI differ from forecast groups in a TAF."@en ;
+        skos:notation    "MeteorologicalAerodromeTrendForecast" ;
+        skos:prefLabel   "Meteorological Aerodrome Trend Forecast" .

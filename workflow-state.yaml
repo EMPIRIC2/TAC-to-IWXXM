@@ -1,0 +1,533 @@
+overall_status: in_progress
+project:
+  name: metar-to-IWXXM
+  description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
+  output_directory: docs/
+
+template:
+  id: static+api
+  rationale: React frontend + FastAPI backend + auth middleware; migrating from submodule layout to true monorepo
+  confirmed_at: "2026-06-14"
+
+stages:
+  01-requirements:
+    status: completed
+    started_at: "2026-06-14T00:00:00Z"
+    completed_at: "2026-06-14T23:30:00Z"
+    substeps:
+      interviews:
+        completed: 8
+        total: 8
+        current_template: null
+        current_section: complete
+    notes:
+      - "Monorepo migration requirements interview complete; big-bang approach approved"
+
+  02-verify-plan:
+    status: completed
+    started_at: "2026-06-14T23:45:00Z"
+    completed_at: "2026-06-14T23:59:00Z"
+    substeps:
+      inventory:
+        status: completed
+      consistency_check:
+        status: completed
+        notes: "All 6 issues resolved (C1-C6)"
+      statement_review:
+        auto_approved: 38
+        pending: 0
+        reviewed: 24
+    current_document: null
+    current_statement: null
+    artifacts:
+      - docs/product-audit.md
+      - docs/product-decisions.md
+    notes: "Product plan verification complete; 4 source docs updated"
+
+  03-plan-tooling:
+    status: completed
+    started_at: "2026-06-14T23:59:00Z"
+    completed_at: "2026-06-15T00:15:00Z"
+    substeps:
+      analyze_plan:
+        status: completed
+      present_tooling_plan:
+        status: completed
+      create_tooling:
+        status: completed
+      verify_installation:
+        status: completed
+    artifacts:
+      - .cursor/rules/core/plan-adherence.mdc
+      - .cursor/rules/core/template-conformance.mdc
+      - .cursor/rules/core/monorepo-migration.mdc
+      - .cursor/rules/core/iwxxm-domain-vocabulary.mdc
+      - .cursor/hooks.json
+      - .cursor/hooks/scope_check.py
+      - .cursor/hooks/feature_drift.py
+      - .cursor/skills/api-contract-validator/SKILL.md
+      - .cursor/skills/monorepo-migration-checklist/SKILL.md
+      - .cursor/agents/scope-reviewer.md
+      - .cursor/agents/spec-consultant.md
+    notes:
+      - "10 guardrails installed; hooks smoke-tested; connectivity linked via plan-adherence + 07-build"
+
+  04-tech-plan:
+    status: completed
+    started_at: "2026-06-15T00:30:00Z"
+    completed_at: "2026-06-15T01:00:00Z"
+    substeps:
+      phase_1_toolchain:
+        status: completed
+        notes: "Legacy 3-service layout detected; target monorepo not yet scaffolded"
+      phase_2_interview:
+        status: completed
+        notes: "3 batches; decisions recorded in ADR-005–007"
+      phase_3_execution_plan:
+        status: completed
+      phase_4_user_review:
+        status: completed
+        notes: "User approved plan"
+      phase_5_back_add:
+        status: completed
+        notes: "dependency-inventory, deploy.md, test-plan, adr/README updated"
+      phase_6_documents:
+        status: completed
+    artifacts:
+      - .cursor/artifacts/execution-plan-monorepo.md
+      - docs/staging-secrets-matrix.md
+      - docs/adr/ADR-005-runtime-toolchain-pins.md
+      - docs/adr/ADR-006-render-topology-simplification.md
+      - docs/adr/ADR-007-universal-coverage-gate.md
+    notes:
+      - "Technical plan approved; ready for 05-verify-tech"
+
+  05-verify-tech:
+    status: completed
+    started_at: "2026-06-15T01:15:00Z"
+    completed_at: "2026-06-15T01:45:00Z"
+    substeps:
+      inventory:
+        status: completed
+      consistency_check:
+        status: completed
+        notes: "17 checks; 11 pass; 14 contradiction items resolved"
+      statement_review:
+        auto_approved: 24
+        pending: 0
+        reviewed: 14
+    current_document: null
+    current_statement: null
+    artifacts:
+      - docs/tech-audit.md
+      - docs/tech-decisions.md
+    notes:
+      - "Technical plan verification complete; 3 source docs updated"
+
+  06-tech-tooling:
+    status: completed
+    started_at: "2026-06-14T12:00:00Z"
+    completed_at: "2026-06-14T12:30:00Z"
+    substeps:
+      load_config: completed
+      present_plan: completed
+      create_tooling: completed
+      verify: completed
+    verification:
+      rules:
+        status: pass
+        note: "4 core rules verified; 03-plan-tooling rules preserved"
+      hooks:
+        status: pass
+        count: 8
+        note: "6 new dev hooks + scope_check + feature_drift merged in hooks.json"
+      configs:
+        status: pass
+        files:
+          - ruff.toml
+          - pyproject.toml
+          - pyrightconfig.json
+          - docs/typing-policy.md
+      connectivity:
+        status: pass
+        files:
+          - tests/unit/test_cors_policy.py
+          - tests/smoke/test_staging_connectivity.py
+          - scripts/deploy/verify_connectivity.sh
+        h0c: "4 passed, 1 skipped"
+      tools_dry_run:
+        ruff: pass
+        basedpyright: pass
+        pytest_h0c: pass
+        verify_connectivity_sh: pass
+
+  07-build:
+    status: in_progress
+    started_at: "2026-06-14T12:45:00Z"
+    completed_at: null
+    substeps:
+      task_loop:
+        status: in_progress
+        current_task: T11.4
+        phase: 4
+        milestone: M11
+        notes: "T11.4 partial — services resumed; H0c+H4 green; H5 pending monorepo frontend CI deploy"
+    notes:
+      - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
+      - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
+      - "M5 complete (T5.1–T5.8); minor PR pending"
+      - "M7 complete (T7.1–T7.4); minor PR pending"
+
+stages_pending: []
+
+decisions_log:
+  - id: REQ-001
+    stage: 01-requirements
+    date: "2026-06-14"
+    topic: Monorepo direction
+    decision: "Exploratory — user wants single git, reduce submodule complexity, preserve upstream pull from authoritative iwxxm repos"
+    status: confirmed
+  - id: REQ-002
+    stage: 01-requirements
+    date: "2026-06-14"
+    topic: iwxxm-* upstream strategy
+    decision: "Vendored snapshots — CI/script copies tagged releases from wmo-im; no git submodules for schemas"
+    status: confirmed
+  - id: REQ-003
+    stage: 01-requirements
+    date: "2026-06-14"
+    topic: GIFTs placement
+    decision: "packages/gifts — full source in monorepo; periodic merge from mgoberfield upstream"
+    status: confirmed
+  - id: REQ-004
+    stage: 01-requirements
+    date: "2026-06-14"
+    topic: Auth shape
+    decision: "packages/auth library merged into backend app; single deployable API"
+    status: confirmed
+  - id: REQ-005
+    stage: 01-requirements
+    date: "2026-06-14"
+    topic: Workspace tooling
+    decision: "Minimal — root Makefile + uv workspace (Python) + pnpm workspaces (frontend)"
+    status: confirmed
+  - id: REQ-016
+    stage: 01-requirements
+    date: "2026-06-14"
+    topic: Non-goals
+    decision: "No product feature rewrites during migration"
+    status: confirmed
+
+  - id: AUDIT-001
+    stage: 02-verify-plan
+    date: "2026-06-14"
+    topic: iwxxm vendor source
+    decision: "Sync vendor/schemas from wmo-im directly; forks not needed"
+    status: confirmed
+  - id: AUDIT-002
+    stage: 02-verify-plan
+    date: "2026-06-14"
+    topic: GIFTs sync automation
+    decision: "Manual merges only — ADR-004"
+    status: confirmed
+  - id: AUDIT-003
+    stage: 02-verify-plan
+    date: "2026-06-14"
+    topic: Auth routes + tooling
+    decision: "/auth/* prefix; pnpm workspaces; normalized XML golden tests"
+    status: confirmed
+
+  - id: TECH-001
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: Python runtime
+    decision: "Pin Python 3.12 everywhere (uv workspace, CI, Docker)"
+    status: confirmed
+  - id: TECH-002
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: Node runtime
+    decision: "Pin Node 22 for frontend/e2e"
+    status: confirmed
+  - id: TECH-003
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: Frontend deploy
+    decision: "Render Static Site (CDN) — not Docker/nginx"
+    status: confirmed
+  - id: TECH-004
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: Observability
+    decision: "Remove Loki/Prometheus/Grafana from render.yaml; Render built-in logs"
+    status: confirmed
+  - id: TECH-005
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: Connectivity origins
+    decision: "Keep onrender.com URLs; rename env vars to VITE_API_BASE_URL + METAR_CORS_ORIGINS"
+    status: confirmed
+  - id: TECH-006
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: Typechecker
+    decision: "basedpyright strict on apps/backend + packages/*"
+    status: confirmed
+  - id: TECH-007
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: GIFTs lint
+    decision: "Migrate packages/gifts to ruff"
+    status: confirmed
+  - id: TECH-008
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: JS package manager
+    decision: "pnpm workspaces in migration PR"
+    status: confirmed
+  - id: TECH-009
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: CI path filters
+    decision: "Defer path-filtered CI to post-migration (P2)"
+    status: confirmed
+  - id: TECH-010
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: Vendor sync schedule
+    decision: "Weekly scheduled Action for wmo-im iwxxm-* only"
+    status: confirmed
+  - id: TECH-011
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: Coverage gate
+    decision: "95% coverage on all packages and apps"
+    status: confirmed
+  - id: TECH-012
+    stage: 04-tech-plan
+    date: "2026-06-15"
+    topic: Production auth
+    decision: "DISABLE_AUTH=false in production as part of migration"
+    status: confirmed
+
+  - id: TAUDIT-001
+    stage: 05-verify-tech
+    date: "2026-06-15"
+    topic: Phase 3 docker-compose gate
+    decision: "Move compose update to T6.6 (Phase 3)"
+    status: confirmed
+  - id: TAUDIT-014
+    stage: 05-verify-tech
+    date: "2026-06-15"
+    topic: TC-M004 source label
+    decision: "Label as Phase 4 finalize / T11.1"
+    status: confirmed
+
+artifacts:
+  - path: docs/tech-audit.md
+    stage: 05-verify-tech
+    status: complete
+  - path: docs/tech-decisions.md
+    stage: 05-verify-tech
+    status: complete
+  - path: .cursor/artifacts/execution-plan-monorepo.md
+    stage: 05-verify-tech
+    status: complete
+  - path: .cursor/artifacts/execution-plan-monorepo.md
+    stage: 04-tech-plan
+    status: complete
+  - path: docs/staging-secrets-matrix.md
+    stage: 04-tech-plan
+    status: complete
+  - path: docs/adr/ADR-005-runtime-toolchain-pins.md
+    stage: 04-tech-plan
+    status: complete
+  - path: docs/adr/ADR-006-render-topology-simplification.md
+    stage: 04-tech-plan
+    status: complete
+  - path: docs/adr/ADR-007-universal-coverage-gate.md
+    stage: 04-tech-plan
+    status: complete
+  - path: docs/adr/ADR-004-manual-gifts-sync.md
+    stage: 02-verify-plan
+    status: complete
+  - path: docs/product-audit.md
+    stage: 02-verify-plan
+    status: complete
+  - path: docs/product-decisions.md
+    stage: 02-verify-plan
+    status: complete
+  - path: docs/feature-list.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/spec.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/user-journeys.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/test-plan.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/migration-plan.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/api-contract.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/dependency-inventory.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/deploy.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/requirements-decisions.md
+    stage: 01-requirements
+    status: complete
+  - path: .cursor/artifacts/config-spec-monorepo.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/adr/ADR-001-vendor-snapshots-for-iwxxm.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/adr/ADR-002-auth-merged-into-backend.md
+    stage: 01-requirements
+    status: complete
+  - path: docs/adr/ADR-003-big-bang-monorepo-migration.md
+    stage: 01-requirements
+    status: complete
+  - path: .cursor/rules/core/template-conformance.mdc
+    stage: 03-plan-tooling
+    status: complete
+  - path: .cursor/rules/core/monorepo-migration.mdc
+    stage: 03-plan-tooling
+    status: complete
+  - path: .cursor/rules/core/iwxxm-domain-vocabulary.mdc
+    stage: 03-plan-tooling
+    status: complete
+  - path: .cursor/hooks.json
+    stage: 03-plan-tooling
+    status: complete
+  - path: .cursor/skills/api-contract-validator/SKILL.md
+    stage: 03-plan-tooling
+    status: complete
+  - path: .cursor/skills/monorepo-migration-checklist/SKILL.md
+    stage: 03-plan-tooling
+    status: complete
+  - path: .cursor/agents/scope-reviewer.md
+    stage: 03-plan-tooling
+    status: complete
+  - path: .cursor/agents/spec-consultant.md
+    stage: 03-plan-tooling
+    status: complete
+
+  git_history:
+  current_branch: feat/M11-big-bang-finalize
+  branches:
+    - name: phase/1-monorepo-scaffold
+      base: main
+      status: active
+      created_at: "2026-06-14T12:45:00Z"
+    - name: feat/M1-workspace-root
+      base: phase/1-monorepo-scaffold
+      status: active
+      created_at: "2026-06-14T12:45:00Z"
+    - name: feat/M2-vendor-snapshots
+      base: feat/M1-workspace-root
+      status: active
+      created_at: "2026-06-14T14:05:00Z"
+    - name: feat/M3-gifts-package
+      base: feat/M2-vendor-snapshots
+      status: active
+      created_at: "2026-06-15T01:00:00Z"
+    - name: feat/M4-auth-package
+      base: feat/M3-gifts-package
+      status: active
+      created_at: "2026-06-15T01:00:00Z"
+    - name: feat/M5-backend-auth-merge
+      base: feat/M4-auth-package
+      status: active
+      created_at: "2026-06-15T01:00:00Z"
+    - name: phase/3-apps-auth-merge
+      base: feat/M4-auth-package
+      status: active
+      created_at: "2026-06-15T16:20:00Z"
+    - name: feat/M6-frontend-app
+      base: feat/M5-backend-auth-merge
+      status: active
+      created_at: "2026-06-15T16:23:00Z"
+    - name: feat/M7-e2e-workspace
+      base: feat/M6-frontend-app
+      status: active
+      created_at: "2026-06-17T00:00:00Z"
+    - name: feat/M11-big-bang-finalize
+      base: feat/M8-deploy-ci
+      status: active
+      created_at: "2026-06-20T15:53:00Z"
+  commits:
+    - sha: 73cda40
+      branch: feat/M1-workspace-root
+      message: "[T1.1] test: add TC-M001 monorepo clone-smoke test skeleton"
+      stage: "07-build"
+      files_changed: 4
+      timestamp: "2026-06-14T12:50:00Z"
+    - sha: d50745a
+      branch: feat/M1-workspace-root
+      message: "[T1.2] config: add root uv workspace with Python 3.12 pin"
+      stage: "07-build"
+      files_changed: 5
+      timestamp: "2026-06-14T12:55:00Z"
+    - sha: 96c030a
+      branch: feat/M1-workspace-root
+      message: "[T1.3] config: add pnpm workspace with Node 22 pin"
+      stage: "07-build"
+      files_changed: 4
+      timestamp: "2026-06-14T13:00:00Z"
+    - sha: 24ad012
+      branch: feat/M1-workspace-root
+      message: "[T1.6] config: add monorepo Makefile install, test, and vendor-sync targets"
+      stage: "07-build"
+      files_changed: 3
+      timestamp: "2026-06-14T14:00:00Z"
+    - sha: a035f2d
+      branch: feat/M2-vendor-snapshots
+      message: "[T2.1] test: add TC-M002 vendor manifest integrity tests"
+      stage: "07-build"
+      files_changed: 6
+      timestamp: "2026-06-15T00:30:00Z"
+    - sha: 448419c
+      branch: feat/M2-vendor-snapshots
+      message: "[T2.2] config: add vendor manifest pins from submodule SHAs"
+      stage: "07-build"
+      files_changed: 1
+      timestamp: "2026-06-15T00:29:00Z"
+    - sha: 7a35f3e
+      branch: feat/M2-vendor-snapshots
+      message: "[T2.3] feat: implement vendor sync script for iwxxm snapshots"
+      stage: "07-build"
+      files_changed: 2
+      timestamp: "2026-06-15T00:30:00Z"
+    - sha: 8781a34
+      branch: feat/M2-vendor-snapshots
+      message: "[T2.4] config: populate vendor/schemas from legacy submodule trees"
+      stage: "07-build"
+      files_changed: 1000
+      timestamp: "2026-06-15T00:31:00Z"
+    - sha: dd64064
+      branch: feat/M5-backend-auth-merge
+      message: "[T5.6] test: achieve 95% coverage on apps/backend"
+      stage: "07-build"
+      files_changed: 4
+      timestamp: "2026-06-15T16:05:00Z"
+    - sha: dbc40f0
+      branch: feat/M5-backend-auth-merge
+      message: "[T5.8] test: add F2-F4 product regression smoke suite"
+      stage: "07-build"
+      files_changed: 3
+      timestamp: "2026-06-15T16:15:00Z"
+    - sha: ebc8177
+      branch: feat/M11-big-bang-finalize
+      message: "[T11.2] test: pass TC-M001–M005 migration gate after submodule removal"
+      stage: "07-build"
+      files_changed: 15
+      timestamp: "2026-06-20T15:59:00Z"

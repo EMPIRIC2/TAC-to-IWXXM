@@ -73,16 +73,6 @@ jobs:
         with:
           submodules: false
 
-      - name: Initialize required submodules only
-        run: |
-          git submodule sync -- frontend GIFTs
-          git submodule update --init --depth 1 frontend
-          git submodule update --init GIFTs || {
-            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
-            git -C GIFTs fetch --tags --force origin
-            git submodule update --init GIFTs
-          }
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:

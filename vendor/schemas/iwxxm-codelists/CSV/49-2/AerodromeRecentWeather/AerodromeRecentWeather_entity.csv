@@ -1,0 +1,27 @@
+id,notation,status,description,label,related
+http://codes.wmo.int/306/4678/BLSN,REBLSN,stable,Blowing snow,Blowing snow,http://codes.wmo.int/306/4678/BLSN
+http://codes.wmo.int/306/4678/DS,REDS,stable,Duststorm,Duststorm,http://codes.wmo.int/306/4678/DS
+http://codes.wmo.int/306/4678/DZ,REDZ,stable,Precipitation of drizzle,Precipitation of drizzle,http://codes.wmo.int/306/4678/DZ
+http://codes.wmo.int/306/4678/FC,REFC,stable,Funnel cloud(s) (tornado or water-spout),Funnel cloud(s) (tornado or water-spout),http://codes.wmo.int/306/4678/FC
+http://codes.wmo.int/306/4678/FZDZ,REFZDZ,stable,Precipitation of freezing drizzle,Precipitation of freezing drizzle,http://codes.wmo.int/306/4678/FZDZ
+http://codes.wmo.int/306/4678/FZRA,REFZRA,stable,Precipitation of freezing rain,Precipitation of freezing rain,http://codes.wmo.int/306/4678/FZRA
+http://codes.wmo.int/306/4678/FZUP,REFZUP,stable,Unidentified freezing precipitation,Unidentified freezing precipitation,http://codes.wmo.int/306/4678/FZUP
+http://codes.wmo.int/306/4678/PL,REPL,stable,Precipitation of ice pellets,Precipitation of ice pellets,http://codes.wmo.int/306/4678/PL
+http://codes.wmo.int/306/4678/RA,RERA,stable,Precipitation of rain,Precipitation of rain,http://codes.wmo.int/306/4678/RA
+http://codes.wmo.int/306/4678/RASN,RERASN,stable,Precipitation of rain and snow,Precipitation of rain and snow,http://codes.wmo.int/306/4678/RASN
+http://codes.wmo.int/306/4678/SG,RESG,stable,Precipitation of snow grains,Precipitation of snow grains,http://codes.wmo.int/306/4678/SG
+http://codes.wmo.int/306/4678/SHGR,RESHGR,stable,Showery precipitation of hail,Showery precipitation of hail,http://codes.wmo.int/306/4678/SHGR
+http://codes.wmo.int/306/4678/SHGS,RESHGS,stable,Showery precipitation of snow pellets/small hail,Showery precipitation of snow pellets/small hail,http://codes.wmo.int/306/4678/SHGS
+http://codes.wmo.int/306/4678/SHRA,RESHRA,stable,Showery precipitation of rain,Showery precipitation of rain,http://codes.wmo.int/306/4678/SHRA
+http://codes.wmo.int/306/4678/SHSN,RESHSN,stable,Showery precipitation of snow,Showery precipitation of snow,http://codes.wmo.int/306/4678/SHSN
+http://codes.wmo.int/306/4678/SHUP,RESHUP,stable,Showery precipitation of unidentified precipitation,Showery precipitation of unidentified precipitation,http://codes.wmo.int/306/4678/SHUP
+http://codes.wmo.int/306/4678/SN,RESN,stable,Precipitation of snow,Precipitation of snow,http://codes.wmo.int/306/4678/SN
+http://codes.wmo.int/306/4678/SS,RESS,stable,Sandstorm,Sandstorm,http://codes.wmo.int/306/4678/SS
+http://codes.wmo.int/306/4678/TS,RETS,stable,Thunderstorm,Thunderstorm,http://codes.wmo.int/306/4678/TS
+http://codes.wmo.int/306/4678/TSGR,RETSGR,stable,Thunderstorm with precipitation of hail,Thunderstorm with precipitation of hail,http://codes.wmo.int/306/4678/TSGR
+http://codes.wmo.int/306/4678/TSGS,RETSGS,stable,Thunderstorm with precipitation of snow pellets/small hail,Thunderstorm with precipitation of snow pellets/small hail,http://codes.wmo.int/306/4678/TSGS
+http://codes.wmo.int/306/4678/TSRA,RETSRA,stable,Thunderstorm with precipitation of rain,Thunderstorm with precipitation of rain,http://codes.wmo.int/306/4678/TSRA
+http://codes.wmo.int/306/4678/TSSN,RETSSN,stable,Thunderstorm with precipitation of snow,Thunderstorm with precipitation of snow,http://codes.wmo.int/306/4678/TSSN
+http://codes.wmo.int/306/4678/TSUP,RETSUP,stable,Thunderstorm with unidentified precipitation,Thunderstorm with unidentified precipitation,http://codes.wmo.int/306/4678/TSUP
+http://codes.wmo.int/306/4678/UP,REUP,stable,Unidentified precipitation,Unidentified precipitation,http://codes.wmo.int/306/4678/UP
+http://codes.wmo.int/306/4678/VA,REVA,stable,Volcanic ash,Volcanic ash,http://codes.wmo.int/306/4678/VA

@@ -1,0 +1,23 @@
+{
+  "include": [
+    "apps",
+    "packages",
+    "tests",
+    "backend",
+    "auth",
+    "GIFTs"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "vendor",
+    "apps/frontend/dist",
+    "frontend/dist",
+    "schemas"
+  ],
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "strict",
+  "reportMissingTypeStubs": false,
+  "reportUnknownMemberType": "warning",
+  "reportUnknownVariableType": "warning"
+}

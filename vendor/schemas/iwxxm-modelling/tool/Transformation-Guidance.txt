@@ -1,0 +1,43 @@
+
+To generate GML application schema with EA
+==========================================
+
+1. Export IWXXM in XMI format (usually named as "icao-iwxxm.xml")
+
+2. Use ICAO_IWXXM_pre-conditioning.xslt and saxon HE to generate XSLT fragments 
+from icao-iwxxm.xml
+c:>transform -s:icao-iwxxm.xml -o:output -xsl:ICAO_IWXXM_pre-conditioning.xslt
+
+3. Insert output at the end of ICAO_IWXXM_post-processing-base.xslt and rename
+it as ICAO_IWXXM_postprocessing.xslt.  Remember to remove the top few lines and the
+last line of output as it is now a part of ICAO_IWXXM_postprocessing.xslt
+
+4. Insert/replace existing stylesheet under Resources in EA (usually named as
+"ICAO IWXXM Post-processing")
+
+5. Make sure GMLClassMapping.xml and GMLNamespaces.xml are in
+[EA_Installation_Directory]/config/GML
+
+6. Generate GML Application Schema on EA.  Remember to choose the stylesheet in the
+pulldown menu for post-processing.
+
+
+To collect schematron fragments from IWXXM model and create a SCH file
+======================================================================
+
+1. Export IWXXM in XMI format (usually named as "icao-iwxxm.xml")
+
+2. Use SCHFromXMI.xslt and saxon HE to generate the SCH file from
+icao-iwxxm.xml
+c:>transform -s:icao-iwxxm.xml -o:iwxxm.sch -xsl:SCHFromXMI.xslt
+
+
+To collect schematron fragments from multiple IWXXM model and create a SCH file
+==============================================+++++++++========================
+
+1. Edit SCHFromXMI-MultiVersion.xslt to indicate the location of XMI files of
+different versions of IWXXM
+
+2. Use SCHFromXMI-MultiVersion.xslt and saxon HE to generate the SCH file
+c:>transform -o:iwxxm-multiversion.sch -xsl:SCHFromXMI-MultiVersion.xslt
+

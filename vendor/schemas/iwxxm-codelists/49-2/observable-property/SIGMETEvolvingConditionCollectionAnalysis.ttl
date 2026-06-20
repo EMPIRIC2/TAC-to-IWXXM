@@ -1,0 +1,10 @@
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+
+<SIGMETEvolvingConditionCollectionAnalysis>
+        a                skos:Concept ;
+        rdfs:label       "SIGMET Evolving Condition Collection Analysis"@en ;
+        dct:description  "The set of meteorological conditions  to be reported in a SIGMET, as specified in Technical Regulations, Volume II (WMO-No. 49): Meteorological Services for International Air Navigation."@en ;
+        skos:notation    "SIGMETEvolvingConditionCollectionAnalysis" ;
+        skos:prefLabel   "SIGMET Evolving Condition Collection Analysis" .

@@ -1,0 +1,24 @@
+# GIFTs package lint — migrated from setup.cfg [flake8] (T3.4, ADR-005).
+# Scope matches legacy flake8 during migration (REQ-016); stricter rules deferred.
+
+extend = "../../ruff.toml"
+
+line-length = 150
+
+[lint]
+select = ["E", "F", "W"]
+ignore = ["E302", "E305", "W291", "W293", "W391", "E501"]
+
+[lint.per-file-ignores]
+"tests/test_demo_module.py" = ["E741"]
+"tests/test_encoder_expansion.py" = ["F841"]
+"tests/test_gifts_coverage_improvements.py" = ["E402"]
+"tests/test_tpg_intensive.py" = ["F841", "E722"]
+"tests/test_validation.py" = ["E402"]
+"tests/test_validation_comprehensive_coverage.py" = ["E402", "F841", "E722"]
+"tests/test_validation_edge_cases.py" = ["E402"]
+"tests/test_validation_final.py" = ["E402"]
+"tests/test_xml_utilities_comprehensive.py" = ["E712"]
+"tests/test_xml_utilities_expansion.py" = ["F841"]
+"tests/test_xmlutilities_comprehensive.py" = ["F841"]
+"gifts/common/tpg.py" = ["E741"]

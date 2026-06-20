@@ -1,0 +1,25 @@
+[project]
+name = "metar-shared"
+version = "0.1.0"
+description = "Shared constants and env helpers for METAR to IWXXM monorepo"
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/metar_shared"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/metar_shared"]
+
+[tool.coverage.report]
+fail_under = 95
+show_missing = true

@@ -1,0 +1,14 @@
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix reg:   <http://purl.org/linked-data/registry#> .
+
+<MeteorologicalAerodromeForecast>
+        a                     skos:Concept ;
+        rdfs:label            "Meteorological aerodrome forecast"@en ;
+        dct:description       "The set of physical properties evaluated as a result of an aerodrome forecast (TAF), as specified in the Technical Regulations (WMO-No. 49), Volume II – Meteorological Service for International Air Navigation."@en ;
+        reg:delegationTarget  <http://codes.wmo.int/ui/resources/observableProperty_MeteorologicalAerodromeForecast.xml> ;
+        reg:forwardingCode    "200" ;
+        reg:notation          "MeteorologicalAerodromeForecast" ;
+        skos:notation         "MeteorologicalAerodromeForecast" ;
+        skos:prefLabel        "Meteorological Aerodrome Forecast" .

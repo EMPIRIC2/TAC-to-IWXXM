@@ -1,0 +1,84 @@
+# Staging Secrets & Connectivity Matrix
+
+> **Project**: METAR to IWXXM Converter
+> **Generated**: 2026-06-15 (04-tech-plan)
+> **Platform**: Render
+
+## Origin Map
+
+Post-migration topology uses **two deployables** on existing onrender.com URLs (env var names updated only).
+
+| Role | Service name (Render) | URL |
+|------|----------------------|-----|
+| API (backend + auth) | `metar-to-iwxxm-api` | `https://metar-to-iwxxm-api.onrender.com` |
+| Frontend (static site) | `metar-to-iwxxm-frontend-v4-web` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
+
+**Removed post-migration**: `metar-to-iwxxm-auth-v2` (auth merged into API per ADR-002).
+
+## Build-Time (Frontend Static Site)
+
+Set on Render static site build environment:
+
+| Variable | Staging value | Required | Notes |
+|----------|---------------|----------|-------|
+| `VITE_API_BASE_URL` | `https://metar-to-iwxxm-api.onrender.com` | Yes | Single origin for `/api/v1/*` and `/auth/*` |
+| `VITE_SUPABASE_URL` | *(Render dashboard — sync: false)* | Yes | Supabase project URL |
+| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | *(Render dashboard — sync: false)* | Yes | Supabase anon/publishable key |
+| `VITE_APP_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` | Yes | Public frontend URL for redirects |
+
+### Deprecated (remove after migration)
+
+| Variable | Replaced by |
+|----------|-------------|
+| `VITE_BACKEND_URL` | `VITE_API_BASE_URL` |
+| `VITE_AUTH_SERVICE_URL` | `VITE_API_BASE_URL` |
+
+## Runtime (API Web Service)
+
+| Variable | Staging value | Required | Notes |
+|----------|---------------|----------|-------|
+| `METAR_CORS_ORIGINS` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` | Yes | Comma-separated if multiple origins |
+| `FRONTEND_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` | Yes | Redirects / email links |
+| `SUPABASE_URL` | *(dashboard)* | Yes | Server-side auth |
+| `SUPABASE_ANON_KEY` | *(dashboard)* | Yes | JWT validation |
+| `DISABLE_AUTH` | `false` | Yes | Production auth enabled per 04-tech-plan |
+| `PORT` | Render-injected | Yes | Bind `0.0.0.0:$PORT` |
+| `DATABASE_URL` | *(dashboard)* | If used | Postgres connection |
+
+### Deprecated (remove after migration)
+
+| Variable | Replaced by |
+|----------|-------------|
+| `ALLOWED_ORIGINS` | `METAR_CORS_ORIGINS` |
+| `AUTH_SERVICE_URL` | — (auth inlined) |
+| `CORS_ORIGINS` (auth service) | `METAR_CORS_ORIGINS` |
+| `LOKI_*`, `OBSERVABILITY_ENV` | — (observability removed from Blueprint) |
+
+## Local Development
+
+| Variable | Default |
+|----------|---------|
+| `VITE_API_BASE_URL` | `http://localhost:18001` |
+| `VITE_APP_URL` | `http://localhost:18000` |
+| `METAR_CORS_ORIGINS` | `http://localhost:18000,http://localhost:5173` |
+| `DISABLE_AUTH` | `true` (local dev convenience) |
+
+## Connectivity Verification
+
+| Tier | Command |
+|------|---------|
+| H0c | `pytest apps/backend/tests/unit/test_cors_policy.py` |
+| H4 | CORS preflight from frontend origin → API |
+| H5 | `bash scripts/deploy/verify_connectivity.sh` |
+
+### Redeploy order
+
+1. Deploy API with `METAR_CORS_ORIGINS` and `DISABLE_AUTH=false`.
+2. Rebuild static frontend with `VITE_API_BASE_URL` pointing to live API.
+3. Run H4 + H5.
+
+## References
+
+- docs/deploy.md §Integration
+- docs/test-plan.md §Connectivity
+- `.cursor/skills/connectivity-gates.md`

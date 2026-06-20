@@ -1,0 +1,33 @@
+/* Scientific Theme Typography */
+
+/* Import JetBrains Mono for code/data display */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Import Inter for UI elements */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+/* Apply fonts globally */
+:root {
+  /* UI Font - Clean, modern sans-serif */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Code/Data Font - Monospace for technical content */
+  --font-mono: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+/* Apply to body by default */
+body {
+  font-family: var(--font-sans);
+}
+
+/* Monospace for code and data elements */
+code,
+pre,
+.font-mono,
+.code-block,
+.data-display,
+textarea[class*="metar"],
+textarea[class*="xml"],
+input[type="text"].monospace {
+  font-family: var(--font-mono);
+}

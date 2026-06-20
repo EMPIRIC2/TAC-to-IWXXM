@@ -1,0 +1,43 @@
+{
+  "_comment": "Registry of closed and deprecated airports",
+  "_schema": {
+    "icao": "4-letter ICAO code",
+    "iata": "3-letter IATA code (if exists)",
+    "name": "Airport name",
+    "status": "closed | suspended | downgraded | unknown",
+    "closure_date": "YYYY or YYYY-MM-DD format",
+    "closure_year": "Integer year for sorting",
+    "reason": "Why airport closed (e.g., 'replaced by newer facility', 'obsolete')",
+    "replacement_icao": "ICAO of replacement airport, if applicable",
+    "notes": "Additional context"
+  },
+  "closed_airports": {
+    "ENFB": {
+      "icao": "ENFB",
+      "iata": "FBU",
+      "name": "FORNEBU AIRPORT",
+      "country": "NO",
+      "status": "closed",
+      "closure_year": 1998,
+      "closure_date": "1998-10-27",
+      "reason": "Replaced by Oslo Gardermoen Airport (ENGM/OSL) opened 1998",
+      "replacement_icao": "ENGM",
+      "coordinates": {
+        "latitude": 59.89580,
+        "longitude": 10.6172
+      },
+      "elevation_m": 17,
+      "notes": "Closed after 56 years of operation when Oslo's new international airport opened. Site now used for other purposes.",
+      "sources": [
+        "IWXXM reference file Amd79-80-2023",
+        "OurAirports historical data"
+      ]
+    }
+  },
+  "suspended_airports": {
+    "_comment": "Airports temporarily closed or with limited operations"
+  },
+  "downgraded_airports": {
+    "_comment": "Airports that lost ICAO classification or changed status"
+  }
+}

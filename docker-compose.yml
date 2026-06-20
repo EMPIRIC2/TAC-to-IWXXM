@@ -1,44 +1,19 @@
 services:
-  auth:
-    build:
-      context: .
-      dockerfile: auth/Dockerfile
-    container_name: metar-iwxxm-auth
-    ports:
-      - "18003:8000"
-    environment:
-      - PYTHONUNBUFFERED=1
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
-      - FRONTEND_BASE_URL=${FRONTEND_BASE_URL:-http://localhost:18000}
-    volumes:
-      - auth-data:/app/data
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    networks:
-      - metar-network
-    restart: unless-stopped
-
   backend:
     build:
       context: .
-      dockerfile: backend/docker/Dockerfile
+      dockerfile: apps/backend/docker/Dockerfile
     container_name: metar-iwxxm-backend
     ports:
-      - "18001:8000"
+      - "${METAR_BACKEND_HOST_PORT:-18001}:8000"
     environment:
       - PYTHONUNBUFFERED=1
-      - AUTH_SERVICE_URL=http://auth:8000
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:18000}
+      - METAR_CORS_ORIGINS=${METAR_CORS_ORIGINS:-http://localhost:18000}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
       # For development mode (no auth requirement). Set to "false" for production with Supabase.
       - DISABLE_AUTH=${DISABLE_AUTH:-true}
-    depends_on:
-      auth:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
       interval: 30s
@@ -51,34 +26,30 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ./apps/frontend
       dockerfile: Dockerfile
       target: dev
       args:
         - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
         - VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}
         - VITE_APP_URL=${VITE_APP_URL:-http://localhost:18000}
-        - VITE_BACKEND_URL=${VITE_BACKEND_URL:-http://localhost:18001}
-        - VITE_AUTH_SERVICE_URL=${VITE_AUTH_SERVICE_URL:-http://localhost:18003}
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:18001}
     container_name: metar-iwxxm-frontend
     environment:
       - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
       - VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}
       - VITE_APP_URL=${VITE_APP_URL:-http://localhost:18000}
-      - VITE_BACKEND_URL=${VITE_BACKEND_URL:-http://localhost:18001}
-      - VITE_AUTH_SERVICE_URL=${VITE_AUTH_SERVICE_URL:-http://localhost:18003}
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:18001}
     ports:
-      - "18000:8000"
+      - "${METAR_FRONTEND_HOST_PORT:-18000}:8000"
     volumes:
-      - ./frontend:/app
+      - ./apps/frontend:/app
       - /app/node_modules
     depends_on:
       backend:
         condition: service_healthy
-      auth:
-        condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8000/"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8000/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -90,9 +61,3 @@ services:
 networks:
   metar-network:
     driver: bridge
-
-volumes:
-  # Optional: persist any data if needed in future
-  auth-data:
-  backend-data:
-  frontend-data:

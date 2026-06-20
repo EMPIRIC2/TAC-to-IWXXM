@@ -1,0 +1,11 @@
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix reg:   <http://purl.org/linked-data/registry#> .
+@prefix ldp:   <http://www.w3.org/ns/ldp#> .
+
+<2.1>
+        a                      ldp:Container , skos:Collection , reg:Register ;
+        rdfs:label             "Code Table D-4: IWXXM observation types"@en ;
+        dct:description        "The items within this code table are specialized observation or measurement types defined within the ICAO Meteorological Information Exchange Model (IWXXM). Each observation or measurement type listed herein is specified as a class in IWXXM that derives from the OM_Observation class (defined in ISO 19156, Geographic information - Observations and measurements, clause 6.2) or sub-class thereof."@en ;
+        ldp:hasMemberRelation  skos:member .

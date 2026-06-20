@@ -13,7 +13,6 @@ if str(REPO_ROOT) not in sys.path:
 from backend.src.api import app
 from backend.src.utilities.security import verify_supabase_token
 
-
 SAMPLE_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
 SAMPLE_METAR_2 = "METAR KLAX 231753Z 25008KT 10SM FEW020 18/12 A2992"
 

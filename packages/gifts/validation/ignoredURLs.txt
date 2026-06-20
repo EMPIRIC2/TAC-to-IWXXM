@@ -1,0 +1,1 @@
+# Used by checkGMLFiles.py to determine which xlink:href paths are ignored in the validation process

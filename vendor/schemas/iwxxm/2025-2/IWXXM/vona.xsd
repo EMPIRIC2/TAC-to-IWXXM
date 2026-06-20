@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema elementFormDefault="qualified" targetNamespace="http://icao.int/iwxxm/2025-2" version="1.0.0" xmlns:iwxxm="http://icao.int/iwxxm/2025-2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns="http://www.w3.org/2001/XMLSchema">
+	<include schemaLocation="metFeature.xsd"></include>
+	<import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"></import>
+	<annotation>
+		<documentation>This package defines a collection of meteorological objects for provision of Volcano Observatory Notice for Aviation (VONA) as defined in ICAO Annex 3 and PANS-MET (Doc 10157) for dissemination of critical, operationally relevant information about volcanic activity.  Guidance on the criteria is provided in the Handbook on the International Airways Watch (Doc 9766).
+
+Class diagrams in this package are the controlled source of the meteorological objects which will also be used to generate Schematron rules for validation of those weakly-typed properties.
+
+References to WMO and ICAO Technical Regulations within this XML schema shall have no formal status and are for information purposes only. Where there are differences between the Technical Regulations and the schema, the Technical Regulations shall take precedence. Technical Regulations may impose requirements that are not described in this schema.</documentation>
+	</annotation>
+	<element name="VolcanoObservatoryNoticeForAviation" type="iwxxm:VolcanoObservatoryNoticeForAviationType" substitutionGroup="iwxxm:MeteorologicalFeatureCollection">
+		<annotation>
+			<documentation>A product issued by the State Volcano Observatory (SVO) with a
+summary of volcanic activity and observations about ash emission (or lack thereof) which is intended for aviation users.</documentation>
+		</annotation>
+	</element>
+	<complexType name="VolcanoObservatoryNoticeForAviationType">
+		<complexContent>
+			<extension base="iwxxm:MeteorologicalFeatureCollectionType">
+				<sequence>
+					<element name="stateOrRegion" type="iwxxm:StringWithNilReasonType">
+						<annotation>
+							<documentation>State or region involved.</documentation>
+						</annotation>
+					</element>
+					<element name="noticeNumber" type="iwxxm:StringWithNilReasonType">
+						<annotation>
+							<documentation>VONA Notice Number.</documentation>
+						</annotation>
+					</element>
+					<element nillable="true" name="currentColourCode" type="iwxxm:AviationColourCodeType">
+						<annotation>
+							<documentation>Current aviation colour code.</documentation>
+						</annotation>
+					</element>
+					<element nillable="true" name="previousColourCode" type="iwxxm:AviationColourCodeType">
+						<annotation>
+							<documentation>Previous aviation colour code.</documentation>
+						</annotation>
+					</element>
+					<element name="contacts" type="iwxxm:StringWithNilReasonType">
+						<annotation>
+							<documentation>State Volcano Observatory (SVO) contact details.</documentation>
+						</annotation>
+					</element>
+					<element name="remarks" type="iwxxm:StringWithNilReasonType">
+						<annotation>
+							<documentation>Remarks.</documentation>
+						</annotation>
+					</element>
+					<element name="nextNotice" type="iwxxm:StringWithNilReasonType">
+						<annotation>
+							<documentation>Indication of the issuance of next VONA.</documentation>
+						</annotation>
+					</element>
+					<element name="extension" type="iwxxm:ExtensionType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Extension block for optional and/or additional parameters for element VolcanoObservatoryNoticeForAviation</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="VolcanoObservatoryNoticeForAviationPropertyType">
+		<sequence minOccurs="0">
+			<element ref="iwxxm:VolcanoObservatoryNoticeForAviation"></element>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"></attributeGroup>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"></attributeGroup>
+	</complexType>
+	<element name="ResuspendedVolcanicAsh" type="iwxxm:ResuspendedVolcanicAshType" substitutionGroup="gml:AbstractGML">
+		<annotation>
+			<documentation>Re-suspended volcanic ash.
+
+To be used in iwxxm:phenomenonProperty of iwxxm:MeteorologicalFeature and iwxxm:phenomenon set to https://codes.wmo.int/iwxxm/MeteorologicalFeature/RESUSPENDED_VOLCANIC_ASH with iwxxm:phenomenonGeometry defined by iwxxm:ElevatedSurface to indicate the coverage of the re-suspended volcanic ash source.</documentation>
+		</annotation>
+	</element>
+	<complexType name="ResuspendedVolcanicAshType">
+		<complexContent>
+			<extension base="gml:AbstractGMLType">
+				<sequence>
+					<element nillable="true" name="height" type="iwxxm:ElevatedLevelPropertyType">
+						<annotation>
+							<documentation>Average height of re-suspended volcanic ash field.
+
+When the height is unknown, it shall be represented with a nil in name and nilReason 'http://codes.wmo.int/iwxxm/nil/unknown'.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ResuspendedVolcanicAshPropertyType">
+		<sequence minOccurs="0">
+			<element ref="iwxxm:ResuspendedVolcanicAsh"></element>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"></attributeGroup>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"></attributeGroup>
+	</complexType>
+	<element name="VolcanicAshCloudVerticalExtent" type="iwxxm:VolcanicAshCloudVerticalExtentType" substitutionGroup="gml:AbstractGML">
+		<annotation>
+			<documentation>Volcanic ash cloud vertical extent.
+
+To be used in iwxxm:phenomenonProperty of iwxxm:MeteorologicalFeature and iwxxm:phenomenon set to https://codes.wmo.int/iwxxm/MeteorologicalFeature/VOLCANIC_ASH with iwxxm:phenomenonGeometry defined by iwxxm:ElevatedLevel to indicate the height of the volcanic ash cloud.
+
+When the cloud height is unknown, set iwxxm:phenomenon/../iwxxm:ElevatedLevel to nil with nilReason http://codes.wmo.int/iwxxm/nil/unknown.
+
+When no volcanic cloud is produced, set iwxxm:phenomenonGeometry, iwxxm:heightSource and iwxxm:movement to nil with nilReason http://codes.wmo.int/iwxxm/nil/inapplicable.</documentation>
+		</annotation>
+	</element>
+	<complexType name="VolcanicAshCloudVerticalExtentType">
+		<complexContent>
+			<extension base="gml:AbstractGMLType">
+				<sequence>
+					<element nillable="true" name="heightSource" type="iwxxm:StringWithNilReasonType">
+						<annotation>
+							<documentation>Source of height data (e.g. ground observer, air-report, radar, LIDAR, satellite, webcam, etc.).</documentation>
+						</annotation>
+					</element>
+					<element nillable="true" name="movement" type="iwxxm:VolcanicAshCloudMovementType">
+						<annotation>
+							<documentation>Direction of movement of the observed cloud.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="VolcanicAshCloudVerticalExtentPropertyType">
+		<sequence minOccurs="0">
+			<element ref="iwxxm:VolcanicAshCloudVerticalExtent"></element>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"></attributeGroup>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"></attributeGroup>
+	</complexType>
+	<simpleType name="VolcanicAshCloudMovementType">
+		<annotation>
+			<documentation>Volcanic ash cloud movement.</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="UNKNOWN">
+				<annotation>
+					<documentation>Unknown.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="OBSCURED">
+				<annotation>
+					<documentation>Obscured.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="VERTICAL">
+				<annotation>
+					<documentation>Vertical.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="NW">
+				<annotation>
+					<documentation>Northwest.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="W">
+				<annotation>
+					<documentation>West.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="SW">
+				<annotation>
+					<documentation>Southwest.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="S">
+				<annotation>
+					<documentation>South.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="SE">
+				<annotation>
+					<documentation>Southeast.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="E">
+				<annotation>
+					<documentation>East.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="NE">
+				<annotation>
+					<documentation>Northeast.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="N">
+				<annotation>
+					<documentation>North.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+	<element name="AviationColourCode" type="iwxxm:AviationColourCodeType"></element>
+	<complexType name="AviationColourCodeType">
+		<annotation>
+			<documentation>Volcano level of alert colour codes for aviation.  See ICAO Doc 9766 for details.</documentation>
+			<appinfo>
+				<vocabulary>http://codes.wmo.int/iwxxm/AviationColourCode</vocabulary>
+				<extensibility>none</extensibility>
+			</appinfo>
+		</annotation>
+		<complexContent>
+			<extension base="gml:ReferenceType"></extension>
+		</complexContent>
+	</complexType>
+</schema>

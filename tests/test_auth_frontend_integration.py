@@ -3,8 +3,6 @@
 Tests authentication flow, token handling, and session management
 between the frontend UI and auth service.
 """
-import pytest
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestAuthFrontendIntegration:

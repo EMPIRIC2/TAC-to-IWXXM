@@ -23,14 +23,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          # Frontend npm audit does not require submodules; avoid unrelated
-          # checkout failures from optional/missing submodule URL mappings.
           submodules: false
-
-      - name: Initialize frontend submodule only
-        run: |
-          git submodule sync -- frontend
-          git submodule update --init --depth 1 frontend
 
       - name: Set up Node.js
         uses: actions/setup-node@v5

@@ -1,0 +1,9 @@
+id,notation,status,description,label,related
+http://codes.wmo.int/49-2/SpaceWxPhenomena/GNSS_MOD,GNSS_MOD,stable,GNSS-based navigation and surveillance (degradation) - moderate,GNSS-based navigation and surveillance (degradation) - moderate,
+http://codes.wmo.int/49-2/SpaceWxPhenomena/GNSS_SEV,GNSS_SEV,stable,GNSS-based navigation and surveillance (degradation) - severe,GNSS-based navigation and surveillance (degradation) - severe,
+http://codes.wmo.int/49-2/SpaceWxPhenomena/HF_COM_MOD,HF_COM_MOD,stable,"HF communications (propagation, absorption) - moderate","HF communications (propagation, absorption) - moderate",
+http://codes.wmo.int/49-2/SpaceWxPhenomena/HF_COM_SEV,HF_COM_SEV,stable,"HF communications (propagation, absorption) - severe","HF communications (propagation, absorption) - severe",
+http://codes.wmo.int/49-2/SpaceWxPhenomena/RADIATION_MOD,RADIATION_MOD,stable,Radiation at flight levels (increased exposure) - moderate,Radiation at flight levels (increased exposure) - moderate,
+http://codes.wmo.int/49-2/SpaceWxPhenomena/RADIATION_SEV,RADIATION_SEV,stable,Radiation at flight levels (increased exposure) - severe,Radiation at flight levels (increased exposure) - severe,
+http://codes.wmo.int/49-2/SpaceWxPhenomena/SATCOM_MOD,SATCOM_MOD,stable,"Communications via satellite (propagation, absorption) - moderate","Communications via satellite (propagation, absorption) - moderate",
+http://codes.wmo.int/49-2/SpaceWxPhenomena/SATCOM_SEV,SATCOM_SEV,stable,"Communications via satellite (propagation, absorption) - severe","Communications via satellite (propagation, absorption) - severe",

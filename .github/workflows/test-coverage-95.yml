@@ -20,16 +20,6 @@ jobs:
         with:
           submodules: false
 
-      - name: Initialize required submodules only
-        run: |
-          git submodule sync -- frontend GIFTs
-          git submodule update --init --depth 1 frontend
-          git submodule update --init GIFTs || {
-            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
-            git -C GIFTs fetch --tags --force origin
-            git submodule update --init GIFTs
-          }
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -131,11 +121,6 @@ jobs:
         with:
           submodules: false
 
-      - name: Initialize frontend submodule only
-        run: |
-          git submodule sync -- frontend
-          git submodule update --init --depth 1 frontend
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -186,16 +171,6 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: false
-
-      - name: Initialize required submodules only
-        run: |
-          git submodule sync -- frontend GIFTs
-          git submodule update --init --depth 1 frontend
-          git submodule update --init GIFTs || {
-            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
-            git -C GIFTs fetch --tags --force origin
-            git submodule update --init GIFTs
-          }
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -307,16 +282,6 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: false
-
-      - name: Initialize required submodules only
-        run: |
-          git submodule sync -- frontend GIFTs
-          git submodule update --init --depth 1 frontend
-          git submodule update --init GIFTs || {
-            echo "Initial GIFTs fetch failed; retrying with explicit remote fetch"
-            git -C GIFTs fetch --tags --force origin
-            git submodule update --init GIFTs
-          }
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

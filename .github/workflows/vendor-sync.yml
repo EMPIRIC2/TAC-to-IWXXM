@@ -1,0 +1,64 @@
+---
+name: Vendor Schema Sync
+
+# Weekly check for new wmo-im iwxxm-* releases; open PR when pins change (M6, ADR-001).
+# GIFTs upstream is manual only — not included (REQ-014, ADR-004).
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  vendor-sync:
+    runs-on: ubuntu-latest
+    name: Sync wmo-im Vendor Snapshots
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Check upstream wmo-im releases
+        run: uv run python scripts/vendor/check_upstream.py --update
+
+      - name: Sync vendor schema trees
+        run: uv run python scripts/vendor/sync_iwxxm.py --manifest vendor/manifest.json --no-legacy
+
+      - name: Refresh manifest tree hashes
+        run: uv run python scripts/vendor/check_upstream.py --refresh-tree-hashes
+
+      - name: Run vendor integrity tests (TC-M002)
+        run: uv run pytest tests/vendor -v
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(vendor): sync wmo-im iwxxm schema snapshots"
+          title: "chore(vendor): sync wmo-im iwxxm schema snapshots"
+          body: |
+            Automated weekly vendor sync (M6).
+
+            - Updates `vendor/manifest.json` pins from wmo-im latest releases
+            - Refreshes `vendor/schemas/*` read-only snapshots
+            - TC-M002 integrity tests included in workflow
+
+            **GIFTs excluded** — manual merges only (ADR-004).
+          branch: automated/vendor-sync
+          delete-branch: true

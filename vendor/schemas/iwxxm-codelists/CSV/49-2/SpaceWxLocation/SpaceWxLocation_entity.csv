@@ -1,0 +1,8 @@
+id,notation,status,description,label,related
+http://codes.wmo.int/49-2/SpaceWxLocation/DAYLIGHT_SIDE,DAYLIGHT_SIDE,stable,Daylight Side,Daylight Side,
+http://codes.wmo.int/49-2/SpaceWxLocation/EQN,EQN,stable,Equatorial latitudes northern hemisphere (30\u00B0N - 0\u00B0N),Equatorial latitudes northern hemisphere,
+http://codes.wmo.int/49-2/SpaceWxLocation/EQS,EQS,stable,Equatorial latitudes southern hemisphere (0\u00B0S - 30\u00B0S),Equatorial latitudes southern hemisphere,
+http://codes.wmo.int/49-2/SpaceWxLocation/HNH,HNH,stable,High latitudes northern hemisphere (90\u00B0N - 60\u00B0N),High latitudes northern hemisphere,
+http://codes.wmo.int/49-2/SpaceWxLocation/HSH,HSH,stable,High latitudes southern hemisphere (60\u00B0S - 90\u00B0S),High latitudes southern hemisphere,
+http://codes.wmo.int/49-2/SpaceWxLocation/MNH,MNH,stable,Middle latitudes northern hemisphere (60\u00B0N - 30\u00B0N),Middle latitudes northern hemisphere,
+http://codes.wmo.int/49-2/SpaceWxLocation/MSH,MSH,stable,Middle latitudes southern hemisphere (30\u00B0S - 60\u00B0S),Middle latitudes southern hemisphere,
