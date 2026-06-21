@@ -32,6 +32,9 @@ vi.mock('/utils/api', () => ({
   convertTafToIwxxm: vi
     .fn()
     .mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
+  fetchAirportRegion: vi
+    .fn()
+    .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
 }));
 
 vi.mock('sonner', () => ({

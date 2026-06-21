@@ -24,6 +24,9 @@ vi.mock('/utils/supabase/logout', () => ({
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
+  fetchAirportRegion: vi
+    .fn()
+    .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
 }));
 
 vi.mock('sonner', () => ({
