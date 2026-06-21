@@ -22,8 +22,17 @@ from src.api import app  # noqa: E402
 def test_admin_routes_registered_on_merged_api() -> None:
     """Admin router must be mounted at /admin/* on the backend app."""
     client = TestClient(app)
-    for path in ("/admin/settings", "/admin/all-users", "/admin/stats", "/admin/toggle-admin"):
-        response = client.get(path) if path != "/admin/toggle-admin" else client.post(path, json={})
+    for path in (
+        "/admin/settings",
+        "/admin/all-users",
+        "/admin/stats",
+        "/admin/toggle-admin",
+    ):
+        response = (
+            client.get(path)
+            if path != "/admin/toggle-admin"
+            else client.post(path, json={})
+        )
         assert response.status_code in (401, 403, 422), (
             f"Expected admin route {path} on merged API, got {response.status_code}"
         )

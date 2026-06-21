@@ -86,7 +86,7 @@ def require_admin(
     client = _get_service_client()
     result = client.table("user_profiles").select("is_admin").eq("id", user_id).maybe_single().execute()
 
-    if not result.data or not result.data.get("is_admin"):
+    if result is None or not result.data or not result.data.get("is_admin"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin access required",
@@ -108,7 +108,20 @@ def save_settings(
 ) -> dict[str, Any]:
     """Persist system settings for the current process."""
     global _system_settings
-    _system_settings = copy.deepcopy(payload.settings)
+    if not payload.settings:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Settings payload must not be empty",
+        )
+    unknown_keys = set(payload.settings) - set(DEFAULT_SETTINGS)
+    if unknown_keys:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Unknown settings keys: {sorted(unknown_keys)}",
+        )
+    merged = copy.deepcopy(DEFAULT_SETTINGS)
+    merged.update(payload.settings)
+    _system_settings = merged
     logger.info("[ADMIN] System settings updated")
     return {"message": "Settings saved successfully", "settings": copy.deepcopy(_system_settings)}
 
@@ -148,12 +161,7 @@ def toggle_admin(
 ) -> dict[str, Any]:
     """Grant or revoke admin status on a user profile."""
     client = _get_service_client()
-    update = (
-        client.table("user_profiles")
-        .update({"is_admin": payload.isAdmin})
-        .eq("id", payload.userId)
-        .execute()
-    )
+    update = client.table("user_profiles").update({"is_admin": payload.isAdmin}).eq("id", payload.userId).execute()
 
     if not update.data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
