@@ -4,7 +4,13 @@
  * RED until T6.3 implements ../utils/apiBase and migrates api.ts / authService.ts.
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { getApiBaseUrl, apiUrl, authUrl, adminUrl, requireApiBaseUrl } from '../utils/apiBase';
+import {
+  getApiBaseUrl,
+  apiUrl,
+  authUrl,
+  adminUrl,
+  requireApiBaseUrl,
+} from '../utils/apiBase';
 
 const DEFAULT_DEV_API = 'http://localhost:18001';
 
@@ -80,7 +86,9 @@ describe('VITE_API_BASE_URL client', () => {
   describe('adminUrl', () => {
     it('builds admin routes on the same host as auth and API calls', () => {
       vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
-      expect(adminUrl('/settings')).toBe('https://api.example.onrender.com/admin/settings');
+      expect(adminUrl('/settings')).toBe(
+        'https://api.example.onrender.com/admin/settings',
+      );
       expect(adminUrl('/all-users')).toBe(
         'https://api.example.onrender.com/admin/all-users',
       );
