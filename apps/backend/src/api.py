@@ -484,12 +484,14 @@ except Exception as e:
     logger.error(f"DEBUG: Failed to include ICAO OPMET router: {e}", exc_info=True)
 
 try:
+    from auth.admin_api import router as admin_router
     from auth.api_supabase import legacy_router as auth_legacy_router
     from auth.api_supabase import router as auth_router
 
     app.include_router(auth_router)
     app.include_router(auth_legacy_router)
-    logger.info("DEBUG: included auth routers at /auth/* successfully")
+    app.include_router(admin_router)
+    logger.info("DEBUG: included auth routers at /auth/* and /admin/* successfully")
 except Exception as e:
     logger.error(f"DEBUG: Failed to include auth routers: {e}", exc_info=True)
 

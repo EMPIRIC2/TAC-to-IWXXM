@@ -12,7 +12,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { projectId } from '/utils/supabase/info';
+import { adminUrl } from '@/utils/apiBase';
 
 interface UserInfo {
   user_id: string;
@@ -52,22 +52,16 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
     setIsLoading(true);
     try {
       const [usersResponse, statsResponse] = await Promise.all([
-        fetch(
-          `https://${projectId}.supabase.co/functions/v1/make-server-2e3cda33/admin/all-users`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
+        fetch(adminUrl('/all-users'), {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
           },
-        ),
-        fetch(
-          `https://${projectId}.supabase.co/functions/v1/make-server-2e3cda33/admin/stats`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
+        }),
+        fetch(adminUrl('/stats'), {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
           },
-        ),
+        }),
       ]);
 
       if (!usersResponse.ok || !statsResponse.ok) {
@@ -94,17 +88,14 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
 
   const toggleAdminStatus = async (userId: string, currentStatus: boolean) => {
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-2e3cda33/admin/toggle-admin`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId, isAdmin: !currentStatus }),
+      const response = await fetch(adminUrl('/toggle-admin'), {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({ userId, isAdmin: !currentStatus }),
+      });
 
       if (!response.ok) {
         throw new Error('Failed to toggle admin status');
