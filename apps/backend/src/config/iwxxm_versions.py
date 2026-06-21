@@ -352,8 +352,7 @@ def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
                 return fallback_path
 
         raise FileNotFoundError(
-            f"Schema file not found: {filepath}. "
-            f"Run vendor sync or set IWXXM_SCHEMAS_ROOT to vendor/schemas/iwxxm."
+            f"Schema file not found: {filepath}. Run vendor sync or set IWXXM_SCHEMAS_ROOT to vendor/schemas/iwxxm."
         )
 
     return filepath
