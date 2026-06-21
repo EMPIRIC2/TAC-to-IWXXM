@@ -6,7 +6,7 @@ import { Label } from '../ui/label';
 import { Loader2, Save, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { IcaoAutocomplete } from '../IcaoAutocomplete';
-import { projectId } from '/utils/supabase/info';
+import { adminUrl } from '@/utils/apiBase';
 
 type IWXXMVersion = '2025-2' | '2023-1';
 type OnErrorBehavior = 'skip' | 'fail' | 'warn';
@@ -46,14 +46,11 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
   const loadSettings = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-2e3cda33/admin/settings`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+      const response = await fetch(adminUrl('/settings'), {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-      );
+      });
 
       if (!response.ok) {
         throw new Error('Failed to load settings');
@@ -78,17 +75,14 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-2e3cda33/admin/settings`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ settings }),
+      const response = await fetch(adminUrl('/settings'), {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({ settings }),
+      });
 
       if (!response.ok) {
         throw new Error('Failed to save settings');

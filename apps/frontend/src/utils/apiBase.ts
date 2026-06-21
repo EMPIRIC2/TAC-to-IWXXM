@@ -41,3 +41,11 @@ export function authUrl(path: string): string {
     : `/auth${path.startsWith('/') ? path : `/${path}`}`;
   return `${base}${normalized}`;
 }
+
+export function adminUrl(path: string): string {
+  const base = getApiBaseUrl();
+  const normalized = path.startsWith('/admin')
+    ? path
+    : `/admin${path.startsWith('/') ? path : `/${path}`}`;
+  return `${base}${normalized}`;
+}
