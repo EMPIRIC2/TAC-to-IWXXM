@@ -274,9 +274,9 @@ stages:
     last_cycle: PRR-001
 
   19-address-pr-review:
-    status: in_progress
+    status: completed
     started: "2026-06-21"
-    completed: null
+    completed: "2026-06-21"
     last_cycle: PRM-001
 
 stages_pending: []
@@ -698,15 +698,15 @@ pr_remediation_cycles:
     pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/679
     linked_review_cycle_id: PRR-001
     title: "fix(admin): route Settings and Monitoring panels to merged API host"
-    status: in_progress
+    status: completed
     started: "2026-06-21"
-    completed: null
+    completed: "2026-06-21"
     head_ref: fix/admin-panels-merged-api
     base_ref: main
-    ci_status: not_pushed
+    ci_status: success
     counts:
-      fixed: 0
-      deferred: 0
+      fixed: 6
+      deferred: 1
       wont_fix: 0
     findings:
       - id: F-001
@@ -716,7 +716,7 @@ pr_remediation_cycles:
         line: 151
         thread_id: PRRT_kwDOQW-3CM6LGoyV
         status: fixed
-        commit: null
+        commit: 2843ec8
         note: ruff format CI
       - id: F-002
         source: inline
@@ -725,7 +725,7 @@ pr_remediation_cycles:
         line: 87
         thread_id: PRRT_kwDOQW-3CM6LGoyz
         status: fixed
-        commit: null
+        commit: 2843ec8
         note: maybe_single None guard
       - id: F-003
         source: inline
@@ -734,7 +734,7 @@ pr_remediation_cycles:
         line: 49
         thread_id: PRRT_kwDOQW-3CM6LGozC
         status: fixed
-        commit: null
+        commit: 2843ec8
         note: settings validation merge-with-defaults
       - id: F-004
         source: inline
@@ -743,7 +743,7 @@ pr_remediation_cycles:
         line: 93
         thread_id: PRRT_kwDOQW-3CM6LGkra
         status: fixed
-        commit: null
+        commit: cf80c23
         note: adminUrl trailing slash test
       - id: F-005
         source: inline
@@ -752,7 +752,7 @@ pr_remediation_cycles:
         line: 1
         thread_id: PRRT_kwDOQW-3CM6LGkrf
         status: fixed
-        commit: null
+        commit: cf80c23
         note: typo fail to load
       - id: F-006
         source: review_body
@@ -761,7 +761,7 @@ pr_remediation_cycles:
         line: null
         thread_id: null
         status: fixed
-        commit: null
+        commit: cf80c23
         note: document /admin/* routes
       - id: F-007
         source: inline
