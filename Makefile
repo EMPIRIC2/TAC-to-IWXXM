@@ -19,7 +19,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts coverage-shared \
-	coverage-modules coverage-all ci acci badge-audit audit-frontend
+	coverage-modules coverage-all ci acci badge-audit audit-frontend \
+	install-hooks pre-commit-run
 
 # --- Monorepo workspace ---
 
@@ -27,6 +28,12 @@ install:
 	$(UV) sync
 	corepack enable
 	$(PNPM) install
+
+install-hooks:
+	$(UV) run pre-commit install
+
+pre-commit-run:
+	$(UV) run pre-commit run --all-files
 
 # --- Formatting ---
 

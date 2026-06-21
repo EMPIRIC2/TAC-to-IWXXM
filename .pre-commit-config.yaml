@@ -6,3 +6,13 @@ repos:
         args:
           - "--config=.gitleaks.toml"
           - "--redact"
+
+  - repo: local
+    hooks:
+      - id: make-ci
+        name: make ci
+        entry: make ci
+        language: system
+        pass_filenames: false
+        always_run: true
+        require_serial: true

@@ -52,6 +52,7 @@
 | prettier | workspace TS | Format apps/* and packages/* TypeScript |
 | eslint | workspace TS | Lint apps/frontend, apps/e2e, packages/shared |
 | make | system | Orchestration |
+| pre-commit | dev group (pyproject) | Git hooks — gitleaks + `make ci` gate |
 | docker / compose | system | Local multi-service |
 | Coverage | 95% all members | pytest + Vitest gates (ADR-007) |
 

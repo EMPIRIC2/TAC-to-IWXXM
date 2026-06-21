@@ -12,6 +12,7 @@ package = false
 
 [dependency-groups]
 dev = [
+  "pre-commit>=4.0",
   "ruff>=0.9",
   "basedpyright>=1.29",
   "pytest>=8.4",

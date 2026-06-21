@@ -1,0 +1,67 @@
+---
+description: NumPy docstrings for Python; TSDoc for TypeScript public APIs
+globs:
+  - apps/**/*.py
+  - packages/**/*.py
+  - apps/**/*.{ts,tsx}
+  - packages/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# API documentation
+
+When adding or editing **public** symbols in matched files, follow
+[api-documentation](../../skills/api-documentation/SKILL.md).
+
+## Python (`apps/`, `packages/`)
+
+- Module: top-level `"""` with purpose.
+- Class / function: NumPy sections — `Parameters`, `Returns`, `Raises` (not `Args:`).
+- One-line docstrings OK for `_private` helpers and trivial accessors.
+
+```python
+def get_version_config(version: str) -> dict[str, Any]:
+    """
+    Return configuration for a specific IWXXM version.
+
+    Parameters
+    ----------
+    version : str
+        IWXXM version string (e.g. ``"2025-2"``).
+
+    Returns
+    -------
+    dict[str, Any]
+        Version metadata including namespace URIs and schema paths.
+
+    Raises
+    ------
+    VersionDeprecatedError
+        If ``version`` is deprecated.
+    """
+```
+
+## TypeScript (`apps/`, `packages/`)
+
+- Module: top `/** ... */` describing purpose.
+- Exports: TSDoc with `@param`, `@returns`, `@throws` as needed.
+- Props: document on the interface/type; component doc covers behavior only.
+
+```typescript
+/**
+ * Convert METAR/SPECI TAC text to IWXXM XML.
+ *
+ * @param params.manualText - Optional TAC input
+ * @returns Conversion results with XML content
+ */
+export async function convertMetarToIwxxm(params: { manualText?: string }): Promise<ConversionResponse>
+```
+
+## Exclusions
+
+- `vendor/**` — do not document or edit
+- Tests — brief file/suite purpose only
+- Generated or config-only files — skip unless exporting public API
+
+Details: [python-numpydoc.md](../../skills/api-documentation/python-numpydoc.md),
+[typescript-tsdoc.md](../../skills/api-documentation/typescript-tsdoc.md)
