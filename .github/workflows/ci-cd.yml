@@ -410,7 +410,7 @@ jobs:
       - name: Run backend integration smoke checks
         working-directory: ./apps/backend
         run: |
-          uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q
+          uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
 
       - name: Stop service stack
         if: always()
