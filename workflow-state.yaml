@@ -178,6 +178,72 @@ stages:
       - "M5 complete (T5.1–T5.8); minor PR pending"
       - "M7 complete (T7.1–T7.4); minor PR pending"
 
+  09-qa:
+    status: completed
+    started_at: "2026-06-20T22:00:00Z"
+    completed_at: "2026-06-20T22:30:00Z"
+    report: docs/qa-report.md
+    overall: fail
+
+  11-verify-impl:
+    status: in_progress
+    started_at: "2026-06-20T23:59:00Z"
+    completed_at: null
+    substeps:
+      collect_results:
+        status: completed
+      feature_completeness:
+        status: completed
+      journey_signoff:
+        status: completed
+        approved: 2
+        flagged: 5
+        total: 7
+      feature_approval:
+        status: completed
+        approved: 4
+        flagged: 6
+        total: 10
+      fixes_applied:
+        status: completed
+        notes: "E2E-001 schema path, QA-004 msgpack, QA-002 legacy dirs, F3 UI, E2E-003 skip condition"
+      deploy_staging:
+        status: blocked
+        notes: "Render MCP requires workspace selection; push + redeploy pending user"
+      scope_analysis:
+        status: completed
+      summary:
+        status: completed
+    report: docs/implementation-verification.md
+    notes:
+      - "User flagged UJ-001/002/003/DEV-001/OPS-001; approved UJ-DEV-002/003"
+      - "Fixes applied locally; staging auth redeploy blocked on Render workspace"
+
+  10-e2e:
+    status: completed
+    started_at: "2026-06-20T23:45:00Z"
+    completed_at: "2026-06-20T23:52:00Z"
+    report: docs/e2e-report.md
+    overall: fail
+    substeps:
+      extract_journeys:
+        status: completed
+      t0_t1:
+        status: completed
+        notes: "T0 migration+vendor PASS; H0i 7/7; TC-M003–M005 PASS"
+      t2_playwright:
+        status: completed
+        notes: "make test-e2e-t2-product 8 passed, 1 skipped"
+      t2_connectivity:
+        status: completed
+        notes: "H0c 6/6; H4+H5 staging PASS via verify_connectivity.sh"
+      t3_live:
+        status: completed
+        notes: "H1+H4+H5 PASS; browser login shell PASS; auth routes 404 on staging; UJ-001 T3 blocked"
+    notes:
+      - "Overall FAIL — E2E-001 schema path regression (2 integration tests); E2E-002 staging /auth/* not deployed"
+      - "T2 product journeys green locally; mocks passing T0 ≠ production UI connected (H4/H5 now verified on staging)"
+
   08-verify-build:
     status: completed
     started_at: "2026-06-20T00:00:00Z"
@@ -202,6 +268,35 @@ stages:
       - "H0c + H0i tests pass; migration gates pass on main; make test-unit green"
 
 stages_pending: []
+
+deployment:
+  local_build:
+    status: green
+    last_verified: "2026-06-20"
+    commit: main
+    branch: main
+    command: "make test-e2e-t2-product"
+    t0_result: pass
+    t0_journeys_passed: 4
+  staging:
+    status: deployed
+    last_verified: "2026-06-20"
+    commit_deployed: unknown
+    commit_head: main
+    drift: true
+    urls:
+      api: https://metar-to-iwxxm-api.onrender.com
+      frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
+    health_tiers:
+      H1: pass
+      H4: pass
+      H5: pass
+      T3_auth: fail
+    notes:
+      - "Auth routes absent on deployed API (E2E-002)"
+      - "H4+H5 verified via verify_connectivity.sh"
+  url_discovery:
+    method: "bash scripts/deploy/verify_connectivity.sh"
 
 decisions_log:
   - id: REQ-001
@@ -445,6 +540,9 @@ artifacts:
     status: complete
   - path: docs/verification-report.md
     stage: 08-verify-build
+    status: complete
+  - path: docs/qa-report.md
+    stage: 09-qa
     status: complete
 
 git_history:

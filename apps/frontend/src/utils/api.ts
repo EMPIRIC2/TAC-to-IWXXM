@@ -48,6 +48,11 @@ export interface HealthResponse {
   gifts_available: boolean;
 }
 
+export interface AirportRegionResponse {
+  airport_code: string;
+  icao_region: string;
+}
+
 export interface ApiError {
   message: string;
   errors: string[];
@@ -225,6 +230,26 @@ export async function convertMetarToIwxxmZip(params: {
 }
 
 /**
+ * Fetch ICAO region for an airport code (F3 airport data services).
+ *
+ * **Endpoint**: GET /api/v1/translation/airport-region/{icao}
+ */
+export async function fetchAirportRegion(icao: string): Promise<AirportRegionResponse> {
+  const code = icao.trim().toUpperCase();
+  const response = await withTimeout(
+    fetch(apiUrl(`/translation/airport-region/${code}`), {
+      headers: _getAuthHeaders(),
+    }),
+  );
+
+  if (!response.ok) {
+    throw new Error(`Airport region lookup failed (${response.status})`);
+  }
+
+  return response.json();
+}
+
+/**
  * Download file from blob
  *
  * @param blob - File blob to download
@@ -245,5 +270,6 @@ export default {
   checkHealth,
   convertMetarToIwxxm,
   convertMetarToIwxxmZip,
+  fetchAirportRegion,
   downloadBlob,
 };

@@ -10,12 +10,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 README_PATHS = [
     ROOT / "README.md",
-    ROOT / "frontend" / "README.md",
-    ROOT / "GIFTs" / "README.md",
-    ROOT / "data" / "iwxxm-translation" / "README.md",
-    ROOT / "schemas" / "iwxxm" / "README.md",
-    ROOT / "schemas" / "iwxxm-codelists" / "README.md",
-    ROOT / "schemas" / "iwxxm-modelling" / "README.md",
+    ROOT / "apps" / "frontend" / "README.md",
+    ROOT / "packages" / "gifts" / "README.md",
+    ROOT / "vendor" / "schemas" / "iwxxm-translation" / "README.md",
+    ROOT / "vendor" / "schemas" / "iwxxm" / "README.md",
+    ROOT / "vendor" / "schemas" / "iwxxm-codelists" / "README.md",
+    ROOT / "vendor" / "schemas" / "iwxxm-modelling" / "README.md",
 ]
 
 BADGE_PATTERN = re.compile(r"!\[[^\]]*\]\([^\)]*\)")
@@ -38,7 +38,7 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    print("Badge audit passed for parent and all .gitmodules sub-repos.")
+    print("Badge audit passed for monorepo README paths.")
     return 0
 
 

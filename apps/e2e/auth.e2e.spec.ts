@@ -22,10 +22,10 @@ test.describe('Authentication Flow', () => {
   });
 
   test('admin login reaches the admin dashboard', async ({ page }, testInfo) => {
-    if ((process.env.DISABLE_AUTH ?? 'true').toLowerCase() !== 'false') {
+    if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
       testInfo.skip(
         true,
-        'Admin login requires DISABLE_AUTH=false and reachable Supabase (staging T3)',
+        'Admin login requires ADMIN_EMAIL and ADMIN_PASSWORD (set in CI secrets for T2/T3)',
       );
     }
 

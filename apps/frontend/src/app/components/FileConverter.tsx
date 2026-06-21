@@ -26,6 +26,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
+import { AirportDetailsCard } from './AirportDetailsCard';
 import { signOutWithScope } from '/utils/supabase/logout';
 import { convertMetarToIwxxm as callBackendConversion } from '/utils/api';
 
@@ -657,6 +658,7 @@ export function FileConverter({
               maxLength={4}
               helperText="4-letter ICAO code"
             />
+            <AirportDetailsCard icao={conversionParams.issuingCenter} />
 
             {/* IWXXM Version */}
             <div>

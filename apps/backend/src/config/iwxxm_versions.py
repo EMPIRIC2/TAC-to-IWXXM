@@ -17,12 +17,25 @@ class VersionDeprecatedError(ValueError):
     pass
 
 
+def _versioned_schema_dir(root: Path, version: str) -> Path:
+    """Return the IWXXM schema directory for a version under root."""
+    vendor_path = root / "vendor" / "schemas" / "iwxxm" / version / "IWXXM"
+    if vendor_path.exists():
+        return vendor_path
+    return root / "schemas" / "iwxxm" / version / "IWXXM"
+
+
+def _local_schema_base(version: str) -> Path:
+    """Resolve schema base for a version (vendor snapshot preferred over legacy symlink)."""
+    return _versioned_schema_dir(PROJECT_ROOT, version)
+
+
 # Project root path
 def _detect_project_root() -> Path:
     """Detect project root across local/devcontainer and deployment layouts."""
 
     def has_versioned_schemas(root: Path) -> bool:
-        return (root / "schemas" / "iwxxm" / "2025-2" / "IWXXM").exists()
+        return _versioned_schema_dir(root, "2025-2").exists()
 
     env_project_root = os.getenv("IWXXM_PROJECT_ROOT")
     if env_project_root:
@@ -51,13 +64,17 @@ def _detect_project_root() -> Path:
         if has_versioned_schemas(parent):
             return parent
 
-    # Next prefer canonical IWXXM layout used by mirrored schema repositories.
+    # Next prefer canonical IWXXM layout (vendor snapshot or legacy symlink).
     for parent in parents:
+        if (parent / "vendor" / "schemas" / "iwxxm" / "IWXXM").exists():
+            return parent
         if (parent / "schemas" / "iwxxm" / "IWXXM").exists():
             return parent
 
-    # Fallback: any schemas/iwxxm folder.
+    # Fallback: any vendor or legacy schemas/iwxxm folder.
     for parent in parents:
+        if (parent / "vendor" / "schemas" / "iwxxm").exists():
+            return parent
         if (parent / "schemas" / "iwxxm").exists():
             return parent
 
@@ -77,7 +94,7 @@ SUPPORTED_VERSIONS: Dict[str, Dict[str, Any]] = {
         "wmo_amendment": 82,
         "namespace_uri": "http://icao.int/iwxxm/2025-2",
         "schema_url": "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd",
-        "local_schema_base": PROJECT_ROOT / "schemas" / "iwxxm" / "2025-2" / "IWXXM",
+        "local_schema_base": _local_schema_base("2025-2"),
         "schema_file": "iwxxm.xsd",
         "schematron_file": "rule/iwxxm.sch",
         "codelists_dir": "rule",
@@ -107,7 +124,7 @@ SUPPORTED_VERSIONS: Dict[str, Dict[str, Any]] = {
         "wmo_amendment": 78,
         "namespace_uri": "http://icao.int/iwxxm/2023-1",
         "schema_url": "https://schemas.wmo.int/iwxxm/2023-1/iwxxm.xsd",
-        "local_schema_base": PROJECT_ROOT / "schemas" / "iwxxm" / "2023-1" / "IWXXM",
+        "local_schema_base": _local_schema_base("2023-1"),
         "schema_file": "iwxxm.xsd",
         "schematron_file": "rule/iwxxm.sch",
         "codelists_dir": "rule",
@@ -142,7 +159,7 @@ RC_VERSIONS: Dict[str, Dict[str, Any]] = {
         "wmo_amendment": 82,
         "namespace_uri": "http://icao.int/iwxxm/2025-2",
         "schema_url": "https://schemas.wmo.int/iwxxm/2025-2RC2/iwxxm.xsd",
-        "local_schema_base": PROJECT_ROOT / "schemas" / "iwxxm" / "2025-2RC2" / "IWXXM",
+        "local_schema_base": _local_schema_base("2025-2RC2"),
         "schema_file": "iwxxm.xsd",
         "schematron_file": "rule/iwxxm.sch",
         "codelists_dir": "rule",
@@ -159,7 +176,7 @@ RC_VERSIONS: Dict[str, Dict[str, Any]] = {
         "wmo_amendment": 82,
         "namespace_uri": "http://icao.int/iwxxm/2025-2",
         "schema_url": "https://schemas.wmo.int/iwxxm/2025-2RC1/iwxxm.xsd",
-        "local_schema_base": PROJECT_ROOT / "schemas" / "iwxxm" / "2025-2RC1" / "IWXXM",
+        "local_schema_base": _local_schema_base("2025-2RC1"),
         "schema_file": "iwxxm.xsd",
         "schematron_file": "rule/iwxxm.sch",
         "codelists_dir": "rule",
@@ -317,22 +334,26 @@ def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
         raise ValueError(f"Unknown file type: {file_type}")
 
     if not filepath.exists():
-        fallback_base = PROJECT_ROOT / "schemas" / "iwxxm" / "IWXXM"
-        if file_type == "xsd":
-            fallback_path = fallback_base / config["schema_file"]
-        elif file_type == "schematron":
-            fallback_path = fallback_base / config["schematron_file"]
-        elif file_type == "codelists":
-            fallback_path = fallback_base / config["codelists_dir"]
-        else:
-            fallback_path = filepath
+        fallback_bases = [
+            PROJECT_ROOT / "vendor" / "schemas" / "iwxxm" / "IWXXM",
+            PROJECT_ROOT / "schemas" / "iwxxm" / "IWXXM",
+        ]
+        for fallback_base in fallback_bases:
+            if file_type == "xsd":
+                fallback_path = fallback_base / config["schema_file"]
+            elif file_type == "schematron":
+                fallback_path = fallback_base / config["schematron_file"]
+            elif file_type == "codelists":
+                fallback_path = fallback_base / config["codelists_dir"]
+            else:
+                fallback_path = filepath
 
-        if fallback_path.exists():
-            return fallback_path
+            if fallback_path.exists():
+                return fallback_path
 
         raise FileNotFoundError(
             f"Schema file not found: {filepath}. "
-            f"Ensure submodules are initialized: git submodule update --init --recursive"
+            f"Run vendor sync or set IWXXM_SCHEMAS_ROOT to vendor/schemas/iwxxm."
         )
 
     return filepath
