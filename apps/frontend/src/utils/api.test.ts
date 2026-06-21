@@ -5,6 +5,7 @@ import {
   convertMetarToIwxxm,
   convertMetarToIwxxmZip,
   downloadBlob,
+  fetchAirportRegion,
   type ConversionResponse,
   type HealthResponse,
   type ApiError,
@@ -533,6 +534,24 @@ describe('API Utils', () => {
       } finally {
         vi.useRealTimers();
       }
+    });
+  });
+
+  describe('fetchAirportRegion', () => {
+    it('should fetch ICAO region for a valid airport code', async () => {
+      mockFetchResponse({ airport_code: 'KJFK', icao_region: 'NAM' });
+
+      const result = await fetchAirportRegion(' kjfk ');
+      expect(result.icao_region).toBe('NAM');
+      expect(result.airport_code).toBe('KJFK');
+    });
+
+    it('should throw when airport region lookup fails', async () => {
+      mockFetchResponse({}, false, 404);
+
+      await expect(fetchAirportRegion('ZZZZ')).rejects.toThrow(
+        'Airport region lookup failed (404)',
+      );
     });
   });
 });
