@@ -79,7 +79,9 @@ export function AirportDetailsCard({ icao }: AirportDetailsCardProps) {
         {airport?.iata && <span>IATA: {airport.iata}</span>}
         {loading && <span>Loading ICAO region…</span>}
         {regionInfo && <span>ICAO region: {regionInfo.icao_region}</span>}
-        {regionError && <span className="text-amber-700 dark:text-amber-400">{regionError}</span>}
+        {regionError && (
+          <span className="text-amber-700 dark:text-amber-400">{regionError}</span>
+        )}
       </div>
     </div>
   );
