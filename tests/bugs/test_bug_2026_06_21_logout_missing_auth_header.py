@@ -14,7 +14,9 @@ from fastapi.testclient import TestClient
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 BACKEND_ROOT = REPO_ROOT / "apps" / "backend"
-FRONTEND_LOGOUT = REPO_ROOT / "apps" / "frontend" / "src" / "utils" / "supabase" / "logout.ts"
+FRONTEND_LOGOUT = (
+    REPO_ROOT / "apps" / "frontend" / "src" / "utils" / "supabase" / "logout.ts"
+)
 
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
