@@ -47,14 +47,23 @@ Error loading monitoring data: Error: Failed to load monitoring data
 
 ### Root cause
 
-M4 migrated `/auth/*` to the merged API host (`VITE_API_BASE_URL`), but
-`SystemSettingsPanel` and `MonitoringPanel` still fetch Supabase Edge Function
-URLs:
+**Phase 1 (fixed in PR #679):** M4 migrated `/auth/*` to the merged API host
+(`VITE_API_BASE_URL`), but admin panels still called Supabase Edge Function URLs.
+Frontend now uses `adminUrl()` → `VITE_API_BASE_URL/admin/*`; backend mounts
+`/admin/*` routes.
 
-`https://{projectId}.supabase.co/functions/v1/make-server-2e3cda33/admin/*`
+**Phase 2 (open — production still broken):** Live probe after merge shows admin
+routes exist but return **503** with authenticated admin token:
 
-Those functions are not the active auth/admin path post-migration; requests fail
-(non-OK response) while login uses the backend correctly.
+```
+GET https://metar-to-iwxxm-api.onrender.com/admin/settings
+Authorization: Bearer <valid admin JWT>
+→ 503 {"detail":"Admin service unavailable — missing Supabase service configuration"}
+```
+
+`require_admin` calls `_get_service_client()`, which needs `SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY`. Login works via anon key; **service role key was
+never set on Render** during the CORS hotfix (only `SUPABASE_ANON_KEY` was added).
 
 ### Fix
 
