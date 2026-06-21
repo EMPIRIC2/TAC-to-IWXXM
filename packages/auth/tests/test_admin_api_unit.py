@@ -8,7 +8,34 @@ import pytest
 from fastapi import FastAPI, HTTPException, status
 from fastapi.testclient import TestClient
 
-from admin_api import require_admin, router
+from admin_api import _get_service_client, require_admin, router
+
+
+def _admin_override() -> dict[str, str]:
+    return {"id": "admin-id", "email": "admin@metar.local"}
+
+
+def _mock_profile_table(
+    *,
+    maybe_single_data: object = None,
+    select_data: list[dict[str, object]] | None = None,
+    update_data: list[dict[str, object]] | None = None,
+) -> MagicMock:
+    """Build a chained Supabase table mock for admin route tests."""
+    mock_client = MagicMock()
+    table = mock_client.table.return_value
+
+    maybe_single = table.select.return_value.eq.return_value.maybe_single.return_value
+    maybe_single.execute.return_value = MagicMock(data=maybe_single_data)
+
+    select_chain = table.select.return_value
+    select_chain.order.return_value.execute.return_value = MagicMock(data=select_data or [])
+    select_chain.execute.return_value = MagicMock(data=select_data or [])
+
+    update_chain = table.update.return_value.eq.return_value
+    update_chain.execute.return_value = MagicMock(data=update_data)
+
+    return mock_client
 
 
 @pytest.fixture
@@ -110,3 +137,130 @@ def test_save_settings_merges_with_defaults(admin_client: TestClient) -> None:
     settings = response.json()["settings"]
     assert settings["defaultLogLevel"] == "DEBUG"
     assert settings["defaultBulletinId"] == "SAAA00"
+
+
+def test_save_settings_rejects_unknown_keys(admin_client: TestClient) -> None:
+    """Unknown settings keys are rejected."""
+    admin_client.app.dependency_overrides[require_admin] = _admin_override
+    try:
+        response = admin_client.post(
+            "/admin/settings",
+            headers={"Authorization": "Bearer test-token"},
+            json={"settings": {"notARealKey": True}},
+        )
+    finally:
+        admin_client.app.dependency_overrides.clear()
+
+    assert response.status_code == 422
+
+
+def test_get_service_client_requires_supabase_env() -> None:
+    """Missing Supabase service configuration returns 503."""
+    with patch.dict("os.environ", {}, clear=True):
+        with pytest.raises(HTTPException) as exc_info:
+            _get_service_client()
+
+    assert exc_info.value.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
+
+
+def test_require_admin_allows_admin_profile() -> None:
+    """Valid admin profile passes require_admin."""
+    mock_proxy = MagicMock()
+    mock_proxy.get_user.return_value = {"id": "admin-id", "email": "admin@metar.local"}
+    mock_client = _mock_profile_table(maybe_single_data={"is_admin": True})
+
+    with patch("admin_api._get_service_client", return_value=mock_client):
+        user = require_admin(token="test-token", proxy=mock_proxy)
+
+    assert user["id"] == "admin-id"
+
+
+def test_require_admin_rejects_non_admin_profile() -> None:
+    """Profile without admin flag is forbidden."""
+    mock_proxy = MagicMock()
+    mock_proxy.get_user.return_value = {"id": "user-id", "email": "user@example.com"}
+    mock_client = _mock_profile_table(maybe_single_data={"is_admin": False})
+
+    with patch("admin_api._get_service_client", return_value=mock_client):
+        with pytest.raises(HTTPException) as exc_info:
+            require_admin(token="test-token", proxy=mock_proxy)
+
+    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_list_all_users_returns_profiles(admin_client: TestClient) -> None:
+    """Monitoring panel receives mapped user profiles."""
+    rows = [
+        {
+            "id": "user-1",
+            "email": "user@example.com",
+            "username": "user1",
+            "approval_status": "approved",
+            "is_admin": False,
+        }
+    ]
+    admin_client.app.dependency_overrides[require_admin] = _admin_override
+    with patch("admin_api._get_service_client", return_value=_mock_profile_table(select_data=rows)):
+        response = admin_client.get(
+            "/admin/all-users",
+            headers={"Authorization": "Bearer test-token"},
+        )
+    admin_client.app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    users = response.json()["users"]
+    assert users[0]["email"] == "user@example.com"
+    assert users[0]["is_admin"] is False
+
+
+def test_get_stats_aggregates_user_counts(admin_client: TestClient) -> None:
+    """Stats endpoint aggregates approval and admin counts."""
+    rows = [
+        {"approval_status": "pending", "is_admin": False},
+        {"approval_status": "approved", "is_admin": True},
+        {"approval_status": "rejected", "is_admin": False},
+    ]
+    admin_client.app.dependency_overrides[require_admin] = _admin_override
+    with patch("admin_api._get_service_client", return_value=_mock_profile_table(select_data=rows)):
+        response = admin_client.get(
+            "/admin/stats",
+            headers={"Authorization": "Bearer test-token"},
+        )
+    admin_client.app.dependency_overrides.clear()
+
+    stats = response.json()["stats"]
+    assert stats["totalUsers"] == 3
+    assert stats["pendingUsers"] == 1
+    assert stats["approvedUsers"] == 1
+    assert stats["rejectedUsers"] == 1
+    assert stats["adminUsers"] == 1
+
+
+def test_toggle_admin_updates_profile(admin_client: TestClient) -> None:
+    """Admin can grant admin status to another user."""
+    updated = [{"id": "user-2", "email": "user2@example.com", "is_admin": True}]
+    admin_client.app.dependency_overrides[require_admin] = _admin_override
+    with patch("admin_api._get_service_client", return_value=_mock_profile_table(update_data=updated)):
+        response = admin_client.post(
+            "/admin/toggle-admin",
+            headers={"Authorization": "Bearer test-token"},
+            json={"userId": "user-2", "isAdmin": True},
+        )
+    admin_client.app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert response.json()["profile"]["is_admin"] is True
+
+
+def test_toggle_admin_returns_404_when_user_missing(admin_client: TestClient) -> None:
+    """Unknown user id returns 404."""
+    admin_client.app.dependency_overrides[require_admin] = _admin_override
+    with patch("admin_api._get_service_client", return_value=_mock_profile_table(update_data=[])):
+        response = admin_client.post(
+            "/admin/toggle-admin",
+            headers={"Authorization": "Bearer test-token"},
+            json={"userId": "missing-user", "isAdmin": True},
+        )
+    admin_client.app.dependency_overrides.clear()
+
+    assert response.status_code == 404

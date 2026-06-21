@@ -103,6 +103,13 @@ describe('VITE_API_BASE_URL client', () => {
       vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com/');
       expect(adminUrl('/stats')).toBe('https://api.example.onrender.com/admin/stats');
     });
+
+    it('accepts paths that already include /admin', () => {
+      vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
+      expect(adminUrl('/admin/settings')).toBe(
+        'https://api.example.onrender.com/admin/settings',
+      );
+    });
   });
 
   describe('requireApiBaseUrl', () => {
