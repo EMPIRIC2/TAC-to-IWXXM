@@ -1,4 +1,4 @@
-# BUG-2026-06-21 — Admin panels fail loading settings/monitoring
+# BUG-2026-06-21 — Admin panels fail to load settings/monitoring
 
 | Field | Value |
 |-------|-------|

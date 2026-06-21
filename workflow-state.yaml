@@ -267,6 +267,18 @@ stages:
       - "Overall FAIL — blocking: format (291 files), typecheck (313+ errors), pydantic-settings CVE, Makefile lint-frontend points to removed frontend/"
       - "H0c + H0i tests pass; migration gates pass on main; make test-unit green"
 
+  18-pr-review:
+    status: completed
+    started: "2026-06-21"
+    completed: "2026-06-21"
+    last_cycle: PRR-001
+
+  19-address-pr-review:
+    status: in_progress
+    started: "2026-06-21"
+    completed: null
+    last_cycle: PRM-001
+
 stages_pending: []
 
 deployment:
@@ -655,3 +667,110 @@ git_history:
       stage: "07-build"
       files_changed: 15
       timestamp: "2026-06-20T15:59:00Z"
+
+pr_review_cycles:
+  - id: PRR-001
+    pr_number: 679
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/679
+    title: "fix(admin): route Settings and Monitoring panels to merged API host"
+    status: completed
+    started: "2026-06-21"
+    completed: "2026-06-21"
+    head_ref: fix/admin-panels-merged-api
+    base_ref: main
+    verdict: REQUEST_CHANGES
+    blockers: 1
+    advisories: 4
+    praise: 3
+    ci_status: failure
+    subagents:
+      bugbot: completed
+      security_review: failed_diff
+    artifacts:
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/679#pullrequestreview-4539991693
+    linked_issue: 678
+
+pr_remediation_cycles:
+  - id: PRM-001
+    pr_number: 679
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/679
+    linked_review_cycle_id: PRR-001
+    title: "fix(admin): route Settings and Monitoring panels to merged API host"
+    status: in_progress
+    started: "2026-06-21"
+    completed: null
+    head_ref: fix/admin-panels-merged-api
+    base_ref: main
+    ci_status: not_pushed
+    counts:
+      fixed: 0
+      deferred: 0
+      wont_fix: 0
+    findings:
+      - id: F-001
+        source: inline
+        severity: blocker
+        path: packages/auth/src/admin_api.py
+        line: 151
+        thread_id: PRRT_kwDOQW-3CM6LGoyV
+        status: fixed
+        commit: null
+        note: ruff format CI
+      - id: F-002
+        source: inline
+        severity: advisory
+        path: packages/auth/src/admin_api.py
+        line: 87
+        thread_id: PRRT_kwDOQW-3CM6LGoyz
+        status: fixed
+        commit: null
+        note: maybe_single None guard
+      - id: F-003
+        source: inline
+        severity: advisory
+        path: packages/auth/src/admin_api.py
+        line: 49
+        thread_id: PRRT_kwDOQW-3CM6LGozC
+        status: fixed
+        commit: null
+        note: settings validation merge-with-defaults
+      - id: F-004
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/test/vite-api-base-url.client.test.ts
+        line: 93
+        thread_id: PRRT_kwDOQW-3CM6LGkra
+        status: fixed
+        commit: null
+        note: adminUrl trailing slash test
+      - id: F-005
+        source: inline
+        severity: advisory
+        path: docs/bug-reports/BUG-2026-06-21-admin-panels-wrong-api-host.md
+        line: 1
+        thread_id: PRRT_kwDOQW-3CM6LGkrf
+        status: fixed
+        commit: null
+        note: typo fail to load
+      - id: F-006
+        source: review_body
+        severity: advisory
+        path: docs/api-contract.md
+        line: null
+        thread_id: null
+        status: fixed
+        commit: null
+        note: document /admin/* routes
+      - id: F-007
+        source: inline
+        severity: advisory
+        path: packages/auth/src/admin_api.py
+        line: 36
+        thread_id: PRRT_kwDOQW-3CM6LGoyn
+        status: deferred
+        commit: null
+        note: in-memory settings documented; durable storage follow-up
+    follow_up:
+      pr_review_rerun: offered

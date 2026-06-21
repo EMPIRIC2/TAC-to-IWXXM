@@ -12,7 +12,7 @@
 | Render | `https://<frontend-host>` | `https://<api-host>` |
 
 **Post-migration change**: Auth endpoints move from separate `:8003` service to same host as backend.
-Frontend uses single `VITE_API_BASE_URL` for both `/api/v1/*` and `/auth/*`.
+Frontend uses single `VITE_API_BASE_URL` for `/api/v1/*`, `/auth/*`, and `/admin/*`.
 
 ## Services
 
@@ -53,6 +53,21 @@ GET  /auth/health
 
 **Migration note**: Paths preserved for frontend compatibility; proxy config simplified.
 
+### Admin (packages/auth — same host post-migration)
+
+```
+GET  /admin/settings
+POST /admin/settings
+GET  /admin/all-users
+GET  /admin/stats
+POST /admin/toggle-admin
+```
+
+**Auth**: Supabase JWT; Bearer token required. Caller must have `user_profiles.is_admin = true`.
+Server uses `SUPABASE_SERVICE_ROLE_KEY` for profile lookups and admin mutations.
+
+**Note**: Settings are stored in-process (not durable across deploys); see PR #679.
+
 ### Conversion
 
 ```
@@ -83,7 +98,7 @@ POST /api/v1/validate
 | `Access-Control-Allow-Methods` | GET, POST, OPTIONS |
 | `Access-Control-Allow-Headers` | Authorization, Content-Type |
 
-Preflight: `OPTIONS` on `/api/v1/*` and `/auth/*`.
+Preflight: `OPTIONS` on `/api/v1/*`, `/auth/*`, and `/admin/*`.
 
 ## Error Format
 

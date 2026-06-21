@@ -90,6 +90,11 @@ describe('VITE_API_BASE_URL client', () => {
       vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
       expect(adminUrl('stats')).toBe('https://api.example.onrender.com/admin/stats');
     });
+
+    it('avoids double slashes when VITE_API_BASE_URL has a trailing slash', () => {
+      vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com/');
+      expect(adminUrl('/stats')).toBe('https://api.example.onrender.com/admin/stats');
+    });
   });
 
   describe('requireApiBaseUrl', () => {
