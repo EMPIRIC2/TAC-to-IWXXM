@@ -9,7 +9,7 @@ from __future__ import annotations
 import copy
 import logging
 import os
-from typing import Any
+from typing import Any, cast
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
@@ -63,14 +63,21 @@ def _get_service_client() -> Client:
 
 def _profile_row(data: object) -> dict[str, Any] | None:
     """Return a profile row dict when Supabase JSON is a mapping."""
-    return data if isinstance(data, dict) else None
+    if isinstance(data, dict):
+        return cast(dict[str, Any], data)
+    return None
 
 
 def _profile_rows(data: object) -> list[dict[str, Any]]:
     """Return profile row dicts from a Supabase list response."""
     if not isinstance(data, list):
         return []
-    return [row for row in data if isinstance(row, dict)]
+    rows: list[dict[str, Any]] = []
+    for item in cast(list[object], data):
+        row = _profile_row(item)
+        if row is not None:
+            rows.append(row)
+    return rows
 
 
 def _profile_to_user_info(row: dict[str, Any]) -> dict[str, Any]:
