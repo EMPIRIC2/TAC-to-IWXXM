@@ -61,6 +61,18 @@ def _get_service_client() -> Client:
     return create_client(url, key)
 
 
+def _profile_row(data: object) -> dict[str, Any] | None:
+    """Return a profile row dict when Supabase JSON is a mapping."""
+    return data if isinstance(data, dict) else None
+
+
+def _profile_rows(data: object) -> list[dict[str, Any]]:
+    """Return profile row dicts from a Supabase list response."""
+    if not isinstance(data, list):
+        return []
+    return [row for row in data if isinstance(row, dict)]
+
+
 def _profile_to_user_info(row: dict[str, Any]) -> dict[str, Any]:
     """Map a ``user_profiles`` row to the frontend monitoring panel shape."""
     return {
@@ -86,7 +98,8 @@ def require_admin(
     client = _get_service_client()
     result = client.table("user_profiles").select("is_admin").eq("id", user_id).maybe_single().execute()
 
-    if result is None or not result.data or not result.data.get("is_admin"):
+    profile = None if result is None else _profile_row(result.data)
+    if profile is None or not profile.get("is_admin"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin access required",
@@ -131,7 +144,7 @@ def list_all_users(_admin: dict[str, Any] = Depends(require_admin)) -> dict[str,
     """List all user profiles for the monitoring panel."""
     client = _get_service_client()
     result = client.table("user_profiles").select("*").order("created_at", desc=True).execute()
-    users = [_profile_to_user_info(row) for row in (result.data or [])]
+    users = [_profile_to_user_info(row) for row in _profile_rows(result.data)]
     return {"users": users}
 
 
@@ -140,7 +153,7 @@ def get_stats(_admin: dict[str, Any] = Depends(require_admin)) -> dict[str, Any]
     """Return aggregate user statistics for the monitoring dashboard."""
     client = _get_service_client()
     result = client.table("user_profiles").select("*").execute()
-    rows = result.data or []
+    rows = _profile_rows(result.data)
 
     stats = {
         "totalUsers": len(rows),
@@ -166,7 +179,9 @@ def toggle_admin(
     if not update.data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    row = update.data[0]
+    row = _profile_row(update.data[0])
+    if row is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     logger.info(
         "[ADMIN] Admin status %s for user %s",
         "granted" if payload.isAdmin else "revoked",
