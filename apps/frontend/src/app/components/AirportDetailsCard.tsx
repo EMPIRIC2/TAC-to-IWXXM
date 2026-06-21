@@ -15,30 +15,20 @@ interface AirportRegionInfo {
   airport_code: string;
 }
 
-export function AirportDetailsCard({ icao }: AirportDetailsCardProps) {
+function AirportDetailsCardContent({ icao }: { icao: string }) {
+  const airport = airports.findWhere({ icao });
   const [regionInfo, setRegionInfo] = useState<AirportRegionInfo | null>(null);
   const [regionError, setRegionError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const normalized = icao.trim().toUpperCase();
-  const isValidIcao = normalized.length === 4 && airports.isValid(normalized);
-  const airport = isValidIcao ? airports.findWhere({ icao: normalized }) : undefined;
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isValidIcao) {
-      setRegionInfo(null);
-      setRegionError(null);
-      return;
-    }
-
     let cancelled = false;
-    setLoading(true);
-    setRegionError(null);
 
-    fetchAirportRegion(normalized)
+    fetchAirportRegion(icao)
       .then((data) => {
         if (!cancelled) {
           setRegionInfo(data);
+          setRegionError(null);
         }
       })
       .catch((err: Error) => {
@@ -56,11 +46,7 @@ export function AirportDetailsCard({ icao }: AirportDetailsCardProps) {
     return () => {
       cancelled = true;
     };
-  }, [normalized, isValidIcao]);
-
-  if (!isValidIcao) {
-    return null;
-  }
+  }, [icao]);
 
   return (
     <div
@@ -68,7 +54,7 @@ export function AirportDetailsCard({ icao }: AirportDetailsCardProps) {
       aria-label="Airport details"
     >
       <p className="font-semibold text-gray-900 dark:text-white">
-        {airport?.name ?? normalized}
+        {airport?.name ?? icao}
       </p>
       {(airport?.city || airport?.country) && (
         <p className="text-gray-600 dark:text-gray-300">
@@ -85,4 +71,15 @@ export function AirportDetailsCard({ icao }: AirportDetailsCardProps) {
       </div>
     </div>
   );
+}
+
+export function AirportDetailsCard({ icao }: AirportDetailsCardProps) {
+  const normalized = icao.trim().toUpperCase();
+  const isValidIcao = normalized.length === 4 && airports.isValid(normalized);
+
+  if (!isValidIcao) {
+    return null;
+  }
+
+  return <AirportDetailsCardContent key={normalized} icao={normalized} />;
 }
