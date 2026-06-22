@@ -336,15 +336,15 @@ stages:
 
   18-pr-review:
     status: completed
-    started: "2026-06-21"
+    started: "2026-06-22"
     completed: "2026-06-22"
-    last_cycle: PRR-002
+    last_cycle: PRR-003
 
   19-address-pr-review:
     status: completed
     started: "2026-06-22"
     completed: "2026-06-22"
-    last_cycle: PRM-002
+    last_cycle: PRM-003
 
 stages_pending: []
 
@@ -911,6 +911,34 @@ pr_review_cycles:
         note: checklist source
     gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/681#pullrequestreview-4540604664
 
+  - id: PRR-003
+    pr_number: 683
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/683
+    title: "feat(ui): Add Convert and Convert&Send buttons (#656)"
+    status: completed
+    started: "2026-06-22"
+    completed: "2026-06-22"
+    head_ref: feat/S001-convert-send-buttons
+    base_ref: main
+    verdict: APPROVE
+    blockers: 0
+    advisories: 3
+    praise: 4
+    ci_status: success
+    session_id: S001-convert-send-buttons
+    subagents:
+      bugbot: failed_diff
+      security_review: failed_diff
+    artifacts:
+      - path: docs/sessions/S001-convert-send-buttons/reports/pr-review.md
+        note: session report
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/683#pullrequestreview-4548622093
+    linked_issue: 656
+    notes:
+      - "Self-approval blocked by GitHub; posted COMMENT with APPROVE recommendation"
+
 pr_remediation_cycles:
   - id: PRM-001
     pr_number: 679
@@ -1091,5 +1119,78 @@ pr_remediation_cycles:
         status: fixed
         commit: 7b9f5a9
         note: named migrator before patch
+    follow_up:
+      pr_review_rerun: offered
+
+  - id: PRM-003
+    pr_number: 683
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/683
+    linked_review_cycle_id: PRR-003
+    title: "feat(ui): Add Convert and Convert&Send buttons (#656)"
+    status: completed
+    started: "2026-06-22"
+    completed: "2026-06-22"
+    head_ref: feat/S001-convert-send-buttons
+    base_ref: main
+    ci_status: success
+    counts:
+      fixed: 6
+      deferred: 0
+      wont_fix: 0
+    findings:
+      - id: F-001
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/app/components/FileConverter.tsx
+        line: 821
+        thread_id: PRRT_kwDOQW-3CM6LaWYM
+        status: fixed
+        commit: fa6d5c5
+        note: derived isBusy/hasInput/hasConverted flags
+      - id: F-002
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/app/components/FileConverter.tsx
+        line: 352
+        thread_id: PRRT_kwDOQW-3CM6Lap-T
+        status: fixed
+        commit: fa6d5c5
+        note: send_error status heading
+      - id: F-003
+        source: inline
+        severity: advisory
+        path: docs/context/convert-send-buttons.md
+        line: 8
+        thread_id: PRRT_kwDOQW-3CM6Lap_V
+        status: fixed
+        commit: 22741dd
+        note: executive summary delivered state
+      - id: F-004
+        source: review_body
+        severity: advisory
+        path: apps/frontend/src/app/components/FileConverter.tsx
+        line: null
+        thread_id: null
+        status: fixed
+        commit: 22741dd
+        note: data-testid convert button locators
+      - id: F-005
+        source: review_body
+        severity: advisory
+        path: apps/frontend/src/utils/databaseUpload.ts
+        line: null
+        thread_id: null
+        status: fixed
+        commit: a47eaf4
+        note: edgeFunctionUrl + hardened error parsing
+      - id: F-006
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/app/components/DatabaseUploadDialog.test.tsx
+        line: null
+        thread_id: null
+        status: fixed
+        commit: 8f7545d
+        note: CI mock parity after upload client change
     follow_up:
       pr_review_rerun: offered
