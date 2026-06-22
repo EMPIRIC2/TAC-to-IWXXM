@@ -105,7 +105,12 @@ class TestRunwayStateRemoval:
         root = ET.fromstring(xml_out)
         complex_elements = [el for el in root.iter() if "AerodromeRunwayState" in el.tag]
         assert len(complex_elements) == 0, "AerodromeRunwayState elements should be removed"
-        assert any(w.get("element") == "iwxxm:AerodromeRunwayState" for w in warnings)
+        assert {
+            "element": "iwxxm:AerodromeRunwayState",
+            "xpath": ".//iwxxm:AerodromeRunwayState",
+            "action": "remove",
+            "reason": "Runway state complex type removed",
+        } in warnings
         assert any(el.tag.endswith("keep") for el in root.iter())
 
 

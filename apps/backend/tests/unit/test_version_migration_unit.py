@@ -143,7 +143,13 @@ class TestVersionMigratorRemoveElements:
                 root,
                 {"element": "child", "xpath": "//child", "action": "remove", "reason": "gone"},
             )
-        assert m.warnings == []
+        assert len(m.warnings) == 1
+        assert m.warnings[0].to_dict() == {
+            "element": "child",
+            "xpath": "//child",
+            "action": "remove",
+            "reason": "Failed to remove element: remove boom",
+        }
 
     def test_remove_elements_by_tag_with_prefix(self):
         xml = """<root xmlns:iwxxm="http://icao.int/iwxxm">
@@ -168,22 +174,27 @@ class TestVersionMigratorRemoveElements:
         root = ET.fromstring(xml)
         removed = m._remove_elements_by_tag(root, "runwayState")
         assert removed == 1
+        assert not any("runwayState" in el.tag for el in root.iter())
 
 
 class TestVersionMigrationHelpers:
     def test_get_migrator_singleton(self):
         import src.utilities.version_migration as vm
 
-        vm._migrator_instance = None
-        first = vm.get_migrator()
-        second = vm.get_migrator()
-        assert first is second
-        vm._migrator_instance = None
+        original = vm._migrator_instance
+        try:
+            vm._migrator_instance = None
+            first = vm.get_migrator()
+            second = vm.get_migrator()
+            assert first is second
+        finally:
+            vm._migrator_instance = original
 
     def test_migrate_xml_convenience(self):
         import src.utilities.version_migration as vm
 
-        with patch.object(vm.get_migrator(), "migrate", return_value=("<xml/>", [{"element": "x"}])) as migrate_mock:
+        migrator = vm.get_migrator()
+        with patch.object(migrator, "migrate", return_value=("<xml/>", [{"element": "x"}])) as migrate_mock:
             result_xml, warnings = vm.migrate_xml(SIMPLE_XML, "2023-1", "2025-2")
         migrate_mock.assert_called_once_with(SIMPLE_XML, "2023-1", "2025-2")
         assert result_xml == "<xml/>"
