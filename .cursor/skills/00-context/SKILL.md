@@ -1,13 +1,12 @@
 ---
 name: 00-context
 description: >
-  Analyzes any existing codebase, documentation, research paper, or prior work the user
-  provides. Produces a context brief that pre-fills Stage 01 (requirements interview).
-  Runs paper-analyst and repo-researcher agents in parallel when applicable, cross-references
-  findings, and surfaces contradictions/ambiguities/decisions to the user. When the project
-  belongs to a multi-repo organization, scans sibling repos to discover integration patterns,
-  API contracts, deployment conventions, and shared dependencies that constrain this project's
-  design. Optional stage — skipped when the user has no existing artifacts.
+  Gathers context before planning or building. Two modes: **project** (greenfield — writes
+  docs/context-brief.md for Stage 01) and **scoped** (feature/workflow-specific — writes
+  docs/context/<slug>.md without bloating the project brief). Runs analysis agents when
+  applicable, cross-references findings, surfaces decisions via AskQuestion. Optional for
+  greenfield; re-invokable anytime for scoped work (new features, large changes, live E2E,
+  new integration, 16-evolve cycles).
 ---
 
 # 00 — Context Gathering
@@ -15,24 +14,57 @@ description: >
 Analyze existing artifacts (codebase, paper, docs, prior work) and produce a structured
 context brief for downstream skills.
 
-**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–17.
+**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
+## Invocation modes
+
+| Mode | When | Output | Phases run |
+|------|------|--------|------------|
+| **project** | Greenfield; first run before 01-requirements; full regen | `docs/context-brief.md` | 1A–1C, 2, 3, 4 (full) |
+| **scoped** | Feature add, workflow prep, evolve cycle, mid-project discovery | `docs/context/<slug>.md` | 1A (subset), 2, 3, 4 (scoped template) — **skip 1B/1C unless user asks** |
+
+**Default routing** — infer from the user message; confirm with one AskQuestion when ambiguous:
+
+| User signal | Mode |
+|-------------|------|
+| New repo / paper / "before requirements" / no `context-brief.md` yet | **project** |
+| "Adding a feature", "live E2E", "integration tests for staging", "gather context for X" | **scoped** |
+| Invoked from **16-evolve** with a feature id | **scoped** (slug = feature or cycle id) |
+| "Update context brief" when `docs/context-brief.md` exists | Ask: update **project** brief vs new **scoped** brief |
+
+### Anti-bloat rules (scoped mode)
+
+1. **Never append** feature/workflow findings to `docs/context-brief.md`.
+2. **One scoped brief per topic** — file name kebab-case slug (e.g. `live-e2e-integration.md`).
+3. **Register in index** — append a row to `docs/context/README.md` (create on first scoped brief).
+4. **Cross-link, don't duplicate** — scoped briefs link to standing specs (`spec.md`, `test-plan.md`,
+   `deploy.md`); they do not restate template selection or full ecosystem analysis unless the
+   scope requires it.
+5. **Resolution IDs are local** — scoped briefs use `R1`, `R2` per file; reference as
+   `[Context: live-e2e-integration R2]` downstream, not global R-numbers from project brief.
+6. **Retire stale scoped briefs** — mark `status: superseded` in the index when a feature ships;
+   do not delete without user approval.
+
 ## Connectivity (stage 00)
 
-In `docs/context-brief.md`, document **multi-app topology**: which deployables are browser-facing,
-which API origins they call, and whether CORS or a BFF is planned. Flag **browser integration risk**
-when static UI and APIs are on different hosts (deployed service hybrid default).
+Document **multi-app topology** in whichever brief is being written: browser-facing deployables,
+API origins, CORS/BFF plans. Flag **browser integration risk** when static UI and APIs are on
+different hosts. Project mode → § in `context-brief.md`; scoped mode → only if relevant to scope
+(e.g. live E2E, frontend wiring).
 
 ## When to Use
 
-- **Before 01-requirements**: When the user has existing code, papers, docs, or prior work
-  to analyze before the product requirements interview.
-- **Standalone**: When you need a deep understanding of existing artifacts without planning.
+- **Project mode — before 01-requirements**: Existing code, papers, docs, or prior work to analyze
+  before the product requirements interview.
+- **Scoped mode — anytime**: Before building a specific feature, workflow, or integration where
+  targeted discovery reduces rework (live tests, new API surface, deploy topology change, etc.).
+- **Standalone**: Deep understanding of existing artifacts without advancing the pipeline.
 
-**When to skip**: The user has no existing artifacts and will provide all requirements via
-interviews in Stage 01. Set status to `skipped` in `workflow-state.yaml`.
+**When to skip (project only)**: User has no existing artifacts and will provide all requirements
+via interviews in Stage 01. Set status to `skipped` in `workflow-state.yaml`. Scoped mode is never
+"skipped" — it simply produces a scoped file or reports "nothing new to gather."
 
 ## Uncertainty Resolution Protocol
 
@@ -62,12 +94,16 @@ Collect from the user (check conversation context or ask):
 
 | Input | Required | Default | Notes |
 |-------|----------|---------|-------|
-| Input type | Yes | — | paper, repo, docs, or combination |
+| **Mode** | Infer or confirm | `scoped` if mid-pipeline feature/workflow; else `project` | See Invocation modes |
+| **Scope slug** | If scoped | derived from topic | kebab-case → `docs/context/<slug>.md` |
+| **Scope topic** | If scoped | — | One sentence: what we're gathering context for |
+| Input type | Project: Yes; Scoped: subset | — | paper, repo, docs, urls, or combination |
 | Paper path | If paper | — | JATS XML, PDF, or markdown |
 | Repo URL or local path | If repo | — | GitHub URL or local filesystem path |
 | Existing docs | If docs | — | Paths to existing documentation |
-| Org directory | No | — | Parent directory containing sibling repos (e.g., `C:\Users\...\CogniChem`). When provided, enables ecosystem scanning (Phase 1B). If omitted, ask whether the project belongs to a multi-repo organization. |
-| Output directory | No | `docs/` | Where to write context-brief.md |
+| Live URLs / env | If deploy/testing scope | — | Staging/production URLs to probe |
+| Org directory | No | — | Enables Phase 1B ecosystem scan (**project mode only** unless user requests) |
+| Output path | No | mode-dependent | project → `docs/context-brief.md`; scoped → `docs/context/<slug>.md` |
 
 ## State management
 
@@ -80,32 +116,46 @@ substep. **Do not** edit `workflow-state.yaml` directly.
 
 ### On invocation — check state
 
-1. Use **workflow-state-manager** context brief for §stages.00-context (from agent `read_context`).
-2. **If `completed`**: Ask the user:
-   - "Reuse the existing context brief as-is"
-   - "Update — re-run only for new/changed inputs"
-   - "Regenerate — start from scratch"
+1. Use **workflow-state-manager** `read_context` for §stages.00-context and §`artifacts`.
+2. **Determine mode** (see Invocation modes). If ambiguous, AskQuestion once before Phase 1A.
+3. **Project mode** — if `docs/context-brief.md` exists and stage is `completed`:
+   - "Reuse the existing project context brief as-is"
+   - "Update project brief — re-run only for new/changed inputs"
+   - "Regenerate project brief — start from scratch"
+   - "New scoped brief instead (feature/workflow-specific)"
    - "Let me explain / provide more context"
-3. **If `in_progress`**: Report which phases completed. Ask:
-   - "Resume from where we left off"
-   - "Restart from the beginning"
-4. **If `failed`**: Report which phase failed and why. Ask:
-   - "Retry the failed phase"
-   - "Restart from the beginning"
-   - "Abort — I'll fix the issue first"
-5. **If `skipped` or `pending`**: Start fresh.
+4. **Scoped mode** — check `docs/context/README.md` for an existing brief with the same slug:
+   - "Refresh this scoped brief" (re-probe, merge deltas)
+   - "New scoped brief (different slug)"
+   - "Let me explain / provide more context"
+5. **If `in_progress`**: Report mode, slug, and phases completed. Ask resume or restart.
+6. **If `failed`**: Report which phase failed. Ask retry / restart / abort.
+7. **If project `skipped` or `pending`**: Start project mode fresh (unless user explicitly asked scoped).
 
 ### State updates
 
 After each phase completes (or fails), immediately update `workflow-state.yaml`:
+- Set `stages.00-context.mode` to `project` | `scoped`
+- For scoped runs, set `stages.00-context.scoped_slug` and append path to §`artifacts[]`
 - Set the phase status
-- Update agent status after Phase 1A
-- Update ecosystem scan status after Phase 1B (repos discovered, repos selected,
-  constraints found, patterns adopted)
+- Update agent status after Phase 1A (project or scoped subset)
+- Update ecosystem scan status after Phase 1B (**project mode only**)
 - Update issue tracking after Phases 2 and 3
 - Set overall status to `completed` after Phase 4
 
-Phase 1B state schema:
+Scoped run schema (append to §`artifacts[]` and index in `docs/context/README.md`):
+
+```yaml
+# workflow-state.yaml §artifacts[] entry example
+- path: docs/context/live-e2e-integration.md
+  kind: context-scoped
+  slug: live-e2e-integration
+  topic: "Live E2E and integration tests for Render"
+  created_at: "2026-06-22"
+  status: active | superseded
+```
+
+Phase 1B state schema (project mode only):
 
 ```yaml
 phase1b_ecosystem:
@@ -124,15 +174,35 @@ Commit artifacts to an appropriate branch before transitioning to the next stage
 asking the user a blocking question. Branch type per
 [workflow-state-reference.md](../workflow-state-reference.md) §Git history.
 Record every commit in `workflow-state.yaml` §`git_history.commits` with
-`stage: "00-context"`.
+`stage: "00-context"` and `mode: project | scoped`.
 
-## Delta / feature-addition mode
+## Scoped context mode (features & workflows)
 
-When invoked from **16-evolve** or user adds features with new upstream paper/repo context:
+Use when the user adds a feature, prepares a workflow (live E2E, staging smokes, new
+integration), or **16-evolve** invokes 00 for delta discovery.
 
-- Run only for **new external context** not already in `docs/context-brief.md`.
-- Merge findings into context-brief; do not regenerate unrelated sections.
-- Tag agent updates with `evolve_cycle_id` and affected `feature_ids`.
+**Do not merge into `docs/context-brief.md`.** Write a standalone scoped brief instead.
+
+### Scoped workflow (abbreviated)
+
+| Phase | Scoped behavior |
+|-------|-----------------|
+| 1A | Run only agents relevant to scope (repo explore, live URL probe, doc scan). Skip paper-analyst unless paper cited. |
+| 1B | **Skip** unless scope is cross-repo integration |
+| 1C | **Skip** — template already set in project |
+| 2 | Cross-reference only sources touched by scope |
+| 3 | AskQuestion for blocking decisions **about this scope** |
+| 4 | Write scoped template (below) + update `docs/context/README.md` |
+
+When invoked from **16-evolve**, set `evolve_cycle_id` and `feature_ids` in frontmatter and
+state; link scoped brief from evolve artifact.
+
+### When to add a pointer to the project brief
+
+Only if `docs/context-brief.md` exists **and** the scoped work changes project-level facts
+(e.g. new deployable, template drift). Add **at most** a single bullet under a
+`## Scoped context briefs` section linking to `docs/context/README.md` — never inline the
+scoped content.
 
 ## Workflow
 
@@ -161,10 +231,13 @@ Wait for all launched agents to complete. Store their full outputs.
 
 ### Phase 1B — Ecosystem Scan (Sibling Repos)
 
+**Project mode only.** Skip entirely in scoped mode unless the user explicitly requests
+cross-repo integration discovery for the current scope.
+
 Scan sibling repositories in the user's organization directory to identify integration
 patterns, shared conventions, and dependencies this project must respect.
 
-**When to run**: Always run when the project belongs to a multi-repo organization.
+**When to run**: Project mode and the project belongs to a multi-repo organization.
 If the user hasn't provided an org directory, ask:
 
 ```
@@ -340,6 +413,8 @@ Record all resolutions in the Resolution Log (continuing the R-numbering from Ph
 
 ### Phase 1C — Template Classification
 
+**Project mode only.** Skip in scoped mode — read existing `workflow-state.yaml` §`template`.
+
 After Phase 1B (or immediately after Phase 1A if 1B was skipped), classify the project
 against the [template registry](../template-registry.md) to select a scaffold.
 
@@ -491,7 +566,9 @@ that selects between multiple valid approaches, create an ADR in `docs/adr/` per
 
 ### Phase 4 — Produce Context Brief
 
-Write `{output_directory}/context-brief.md` with these sections:
+Write the brief for the active mode. **Never write scoped content to `context-brief.md`.**
+
+#### Project mode — `docs/context-brief.md`
 
 1. **Executive Summary** — 3-5 sentence overview of what was analyzed
 2. **Template Selection** — selected template ID, repo, confidence, service name,
@@ -507,55 +584,99 @@ Write `{output_directory}/context-brief.md` with these sections:
 6. **Cross-Reference Matrix** — alignment table across sources (including ecosystem)
 7. **Data & Asset Requirements** — inventory of external assets needed
 8. **Unresolved Gaps** — flagged for downstream handling
-9. **Full Agent Reports** — collapsible sections with raw agent outputs (including
+9. **Scoped context briefs** — link to `docs/context/README.md` (index only; no inline copies)
+10. **Full Agent Reports** — collapsible sections with raw agent outputs (including
    ecosystem scan reports)
 
+#### Scoped mode — `docs/context/<slug>.md`
+
+Use this **lighter template** (omit sections that don't apply):
+
+```markdown
+# Context — <Topic Title>
+
+> **Mode**: scoped | **Slug**: <slug> | **Generated**: YYYY-MM-DD
+> **Feature / workflow**: <one line> | **Status**: active
+
+## Executive Summary
+3-5 sentences: what was analyzed, current state, main gap.
+
+## Resolution Log
+| ID | Category | Decision |
+|----|----------|----------|
+
+## Scope & Constraints
+What is in/out for this feature or workflow. Link feature id (F1–F4, M*, etc.).
+
+## Environment / Topology (if relevant)
+URLs, services, env vars, CORS — only what this scope needs.
+
+## Existing Infrastructure
+Table: what already exists in repo (tests, scripts, configs) with paths.
+
+## Cross-Reference Matrix
+Scope-specific alignment table.
+
+## Implementation Backlog
+Numbered gaps → suggested next steps (for 07-build / hotfix).
+
+## Data & Credentials (if relevant)
+Assets, secrets source, never commit rules.
+
+## Unresolved Gaps
+Advisory items for downstream.
+
+## Sources
+Citations: [Repo: path], [Docs: path], live probe timestamps.
+```
+
+**Index update** — append or update row in `docs/context/README.md`:
+
+| Slug | Topic | Status | Created | Linked features |
+|------|-------|--------|---------|-----------------|
+
 **State**: Set Phase 4 to `completed`. Set overall status to `completed`.
+For scoped runs, do **not** mark `stages.00-context` as blocking 01-requirements if project
+brief already exists — scoped completion is additive.
 
 ### Phase 5 — Summary
 
-Report to user:
+Report to user (adapt by mode):
 
 ```
 Context Gathering Complete.
 
-Context brief written to: docs/context-brief.md
+Mode:       [project | scoped]
+Written to: [docs/context-brief.md | docs/context/<slug>.md]
+Index:      docs/context/README.md (scoped only)
 
 Sources analyzed:
-  [list of sources with key metrics]
+  [list with key metrics]
 
-Template:
-  Type:       [utility / job / none]
-  Template:   template-modal-[type]
-  Service:    cognichem-[service_name]
-  Confidence: [high / medium / low]
-  deploy targets:  [list, or N/A for utility]
+[Project mode only — Template, Ecosystem scan blocks]
 
-Ecosystem scan:
-  Org directory: [path]
-  Repos discovered: [N]
-  Repos scanned in depth: [N] ([list])
-  Constraints identified: [N]
-  Patterns to adopt: [N]
-  Divergence risks: [N]
+[Scoped mode only]
+Scope:      [topic]
+Backlog:    [N] implementation items
+Ready for:  [07-build | 10-e2e | 16-evolve | user-directed next step]
 
 Issues surfaced: [N] total
   Blocking — [N] raised, [N] resolved
   Advisory — [N] raised, [N] assumed
-
-Unresolved gaps: [N] (marked for downstream handling)
-
-Ready for: 01-requirements
 ```
 
 If Phase 1B was skipped, omit the "Ecosystem scan" block.
 If template is `none`, omit "deploy targets" line.
+If scoped mode and project brief exists, note: "Project brief unchanged."
 
 ## Output Rules
 
-1. **Evidence-based**: Every claim traces to an agent report. Never fabricate.
+1. **Evidence-based**: Every claim traces to an agent report or live probe. Never fabricate.
 2. **Citation format**: `[Paper §X]`, `[Repo: path/to/file:L#]`, `[Docs: path]`
-3. **Full reports preserved**: Complete agent outputs in collapsible sections.
-4. **Resolution traceability**: Numbered resolutions (R1, R2, ...) referenced downstream.
+3. **Full reports preserved**: Complete agent outputs in collapsible sections (**project mode**).
+   Scoped mode: summaries only — link to repo paths instead of pasting large dumps.
+4. **Resolution traceability**: Numbered resolutions (R1, R2, ...) per brief file.
 5. **No silent resolution**: Never resolve blocking issues without user input.
 6. **State-managed**: All progress tracked in `workflow-state.yaml`. Immediate writes.
+7. **No bloat**: Scoped findings go to `docs/context/<slug>.md` only; project brief stays
+   stable unless user explicitly runs project-mode update/regenerate.

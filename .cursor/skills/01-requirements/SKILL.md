@@ -3,9 +3,10 @@ name: 01-requirements
 description: >
   Interviews the user to produce spec-driven development documents (feature-list, spec,
   user-journeys, config-spec, test-plan, etc.) using template-driven questioning. Supports
-  delta mode when adding features to an existing app (multiple Fn per evolve cycle). If
-  00-context ran, pre-populates answers from the context brief. Use for requirements
-  interview, add feature delta specs, or evolve-cycle product planning.
+  delta mode when adding features or large changes to an existing app (multiple Fn per evolve
+  cycle via 16-evolve). If 00-context ran, pre-populates answers from the context brief. Use
+  for requirements interview, add feature delta specs, evolve-cycle product planning, or
+  large-change scope intake.
 ---
 
 # 01 — Product Requirements Interview
@@ -13,7 +14,7 @@ description: >
 Interview the user to fill spec document templates. Template-driven: for each approved
 template section, ask targeted questions to fill it.
 
-**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–17.
+**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
@@ -32,9 +33,10 @@ Ask in interview if UI calls APIs on a **different origin** than the static site
 
 ## Prerequisites
 
-1. **Optional**: `docs/context-brief.md` from 00-context. If it exists, pre-populate
-   interview answers from it and ask user to confirm/modify rather than starting from
-   scratch.
+1. **Optional**: `docs/context-brief.md` (00-context **project** mode). If it exists,
+   pre-populate interview answers from it. Also check `docs/context/README.md` for scoped
+   briefs relevant to the current feature — use those for delta/evolve interviews without
+   merging scoped content into standing specs verbatim.
 2. **Optional**: Template selection from `workflow-state.yaml` §template. If a template
    was selected in 00-context, use [template-registry.md](../template-registry.md) to
    pre-populate architecture, deployment, and API answers from the template patterns.

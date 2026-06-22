@@ -17,7 +17,8 @@ Generate and maintain **only** these committed files in `docs/`:
 | `adr/README.md` | ADR process + index |
 
 **Ephemeral** (workflow-state.yaml §`artifacts`, not standing docs): execution-plan,
-config-spec, research-brief, context-brief, qa-report, deploy-report, bug-reports.
+config-spec, research-brief, context-brief (project mode), scoped briefs under `docs/context/`,
+qa-report, deploy-report, bug-reports.
 
 Merged sources (do not generate as separate files): `roadmap.md`, `glossary.md`,
 `data-management-plan.md`, `deployment-integration.md`, `deploy-checklist.md`,

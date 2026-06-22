@@ -12,7 +12,7 @@ description: >
 Break spec documents into provable statements, risk-classify each, and walk the user through
 medium/low confidence statements for approval/denial/modification.
 
-**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–17.
+**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 

@@ -4,7 +4,8 @@ description: >
   Interviews the user for technical details: architecture, deployment strategy, test plan
   specifics, integration points, package choices, and architectural decision records. Produces
   an execution plan, dependency inventory, ADRs, deployment plan, and data management plan.
-  Template-driven interview with batched questions. Includes deployment strategy planning.
+  Supports delta mode via 16-evolve for new features and large changes. Template-driven
+  interview with batched questions. Includes deployment strategy planning.
 ---
 
 # 04 — Technical Planning Interview
@@ -12,7 +13,7 @@ description: >
 Interview the user to produce technical implementation documents: execution plan, dependency
 inventory, ADRs, deployment plan, and data management plan.
 
-**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–17.
+**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 

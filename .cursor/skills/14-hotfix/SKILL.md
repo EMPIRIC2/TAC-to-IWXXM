@@ -1,9 +1,10 @@
 ---
 name: 14-hotfix
 description: >
-  Surgical post-deployment edits: bug fixes, patches, small behavioral changes, and
+  Post-deployment surgical edits: bug fixes, patches, small behavioral changes, and
   dependency updates applied to a deployed codebase without re-running the pipeline.
-  Test-driven investigation: one bug = docs/bug-reports/BUG-*.md (logs + investigation MD),
+  NOT for new features, large refactors, API redesign, or multi-doc spec changes — use
+  16-evolve instead. Test-driven investigation: one bug = docs/bug-reports/BUG-*.md (logs + investigation MD),
   tests/bugs/test_bug_*.py (red then green), one fix. AskQuestion interviews at each gate,
   including Phase 5 prevention/countermeasures and optional Cursor rule creation. See
   bug-investigation skill. Interview, verification plan, spec checks, main CI parity before
@@ -19,7 +20,8 @@ re-running the pipeline.
 **Bug artifacts (required):** [bug-investigation](../bug-investigation/SKILL.md) —
 `docs/bug-reports/BUG-*.md`, `tests/bugs/test_bug_*.py`, one fix per bug.
 
-**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–17.
+**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Routing:** [docs/skill-routing.md](../../docs/skill-routing.md) — hotfix vs evolve vs pipeline.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).  
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 **Modal data-mgmt auth header:** [modal-proxy-header](../modal-proxy-header/SKILL.md).
@@ -36,6 +38,21 @@ Classify failures before coding:
 
 Repro tests in `tests/bugs/` may import `tests.helpers.connectivity`. After fix, run
 `verify_connectivity.sh` if deployables changed. See connectivity-gates §Stage 14.
+
+## When to use / when NOT to use
+
+| Situation | Skill |
+|-----------|-------|
+| Bug, regression, production incident | **14-hotfix** |
+| Small patch — config, copy, one behavioral tweak | **14-hotfix** |
+| Dependency bump with no spec/API change | **14-hotfix** |
+| **New feature** or new Fn in `feature-list.md` | [16-evolve](../16-evolve/SKILL.md) |
+| **Large change** — API redesign, multi-service, breaking change | [16-evolve](../16-evolve/SKILL.md) |
+| Multi-doc spec update or new acceptance criteria | [16-evolve](../16-evolve/SKILL.md) |
+| Greenfield service | [pipeline](../pipeline/SKILL.md) |
+
+See [docs/skill-routing.md](../../docs/skill-routing.md). If workflow-state-manager blocks
+feature intent, route to **16-evolve** — do not force a hotfix path.
 
 ## Main CI (GitHub Actions)
 

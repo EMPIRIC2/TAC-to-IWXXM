@@ -1,22 +1,23 @@
 ---
 name: 16-evolve
 description: >
-  Evolves an existing deployed service: add one or more product features (multiple Fn in one
-  cycle), scope/API/arch changes, or structured change requests. Interviews the user, routes
-  selectively through product planning, technical planning, build, verification, and deploy
-  with delta spec updates, mandatory phase checkpoints, and ADR logging. Use when adding
-  features X Y Z to the current app, changing scope after deployment, or running a change
-  request — not for surgical bugs (14-hotfix) or greenfield (pipeline). Any stage 00–17 may
-  accept feature requests; this skill orchestrates multi-feature cycles when no cycle is active.
+  Primary entry for adding features and large changes to an existing deployed app: new product
+  capabilities (one or more Fn per cycle), scope/API/architecture changes, breaking refactors,
+  new dependencies, and multi-doc spec updates. Interviews the user, routes selectively through
+  stages 00–15 in delta mode with mandatory phase checkpoints. Use when the user says add
+  feature, new capability, large refactor, change API, update scope, or structured change
+  request — not for surgical bugs (14-hotfix) or greenfield (pipeline). Stages 00–15 accept
+  feature work only when an active evolve cycle exists; otherwise start here.
 ---
 
-# 16 — Evolve
+# 16 — Evolve (Features & Large Changes)
 
 Take an **existing** service from change request (including **multiple new features in one
 cycle**) through updated specs, verified plans, implementation, and redeploy — reusing stages
 **00–15** in **delta mode**.
 
-**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–17.
+**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Routing:** [docs/skill-routing.md](../../docs/skill-routing.md) — when to use evolve vs hotfix vs pipeline.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
@@ -29,20 +30,25 @@ uncertain, or contradictory finding uses **AskQuestion** — never guess.
 
 ## When to use
 
+**Default for existing apps:** if the work adds capability, changes contracts, or touches multiple
+specs — use **16-evolve**, not **14-hotfix** or ad-hoc **07-build**.
+
 | Situation | Use |
 |-----------|-----|
 | **Add feature(s)** — "add X, Y, Z", new Fn, user-visible capability | **16-evolve** |
+| **Large change** — multi-service, breaking API, major refactor | **16-evolve** |
+| **General change** — scope, acceptance criteria, config surface | **16-evolve** (`cycle_type: general`) |
 | Scope/API/arch change (may or may not add Fn) | **16-evolve** |
 | Change scope, API, config, or acceptance criteria | **16-evolve** |
 | Architectural or dependency change affecting multiple docs | **16-evolve** |
 | Bug fix, regression, small patch on production | [14-hotfix](../14-hotfix/SKILL.md) |
 | Greenfield service from scratch | [pipeline](../pipeline/SKILL.md) |
 | Modal ops / health investigation only | [15-service-health](../15-service-health/SKILL.md) |
-| Lessons learned / improve skills 00–17 | [17-retrospective](../17-retrospective/SKILL.md) |
+| Lessons learned / improve skills 00–19 | [17-retrospective](../17-retrospective/SKILL.md) |
 
-**Any stage 00–17** may receive a feature-addition request. If no active evolve cycle exists,
-that stage's workflow-state-manager context will **block** and recommend **16-evolve** — start
-here for net-new feature work on an existing app.
+**Stages 00–15** may receive a feature or large-change request during an **active evolve cycle**.
+If no cycle is active, workflow-state-manager **blocks** and recommends **16-evolve** — start
+here for net-new feature work or large changes on an existing app.
 
 ## Prerequisites
 

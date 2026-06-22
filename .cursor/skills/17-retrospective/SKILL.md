@@ -1,7 +1,7 @@
 ---
 name: 17-retrospective
 description: >
-  Reviews Cursor agent conversation logs and pipeline skills 00-16 against project
+  Reviews Cursor agent conversation logs and pipeline skills 00-19 against project
   artifacts, then interviews the user with batched AskQuestion prompts to capture what
   went well, what to improve, and brainstorm process fixes. Ends with an interactive
   skill-update workshop (proposed patches per SKILL.md, user approves via AskQuestion).
@@ -13,11 +13,11 @@ description: >
 
 # 17 — Retrospective
 
-Meta-improvement stage: mine **conversation evidence**, compare it to **skills 00–16** and
+Meta-improvement stage: mine **conversation evidence**, compare it to **skills 00–19** and
 **workflow artifacts**, then run a structured **user interview** to learn and plan better
 process — without re-running the pipeline.
 
-**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–17.
+**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 

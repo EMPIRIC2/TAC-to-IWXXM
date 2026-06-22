@@ -1,11 +1,13 @@
-# Pipeline skills preamble (00–18)
+# Pipeline skills preamble (00–19)
 
 Shared conventions for numbered pipeline stage skills. Every stage `SKILL.md` under
-`.cursor/skills/00-context` … `18-pr-review` follows this preamble unless a stage
+`.cursor/skills/00-context` … `19-address-pr-review` follows this preamble unless a stage
 explicitly documents an exception.
 
-**Orchestrators** (not numbered stages): [pipeline](pipeline/SKILL.md),
-[16-evolve](16-evolve/SKILL.md).
+**Orchestrators** (not numbered stages): [pipeline](pipeline/SKILL.md) (greenfield),
+[16-evolve](16-evolve/SKILL.md) (existing app — new features and large changes).
+
+**Which skill?** → [docs/skill-routing.md](../../docs/skill-routing.md)
 
 **State agent (mandatory):** [workflow-state-manager](../agents/workflow-state-manager.md) —
 sole writer of `workflow-state.yaml`.
@@ -24,15 +26,18 @@ sole writer of `workflow-state.yaml`.
 | **04–06** | B — Technical planning | Tech plan, verify tech, tech tooling |
 | **07–08** | C — Build | Build, verify build (milestone gate) |
 | **09–13** | D — Verify & deploy | QA + E2E (parallel), verify impl, verify deploy, deploy smoke |
-| **14–15** | E — Maintenance (on-demand) | Hotfix, service health |
-| **16–17** | F — Change & learn (on-demand) | Evolve (features + scope), retrospective |
-| **18** | G — Review (on-demand) | PR review (GitHub post, no merge) |
+| **14–15** | E — Maintenance (on-demand) | Hotfix (surgical), service health |
+| **16** | F — Evolve (on-demand) | **New features**, scope/API/arch changes, large refactors |
+| **17** | F — Learn (on-demand) | Retrospective (process improvement) |
+| **18–19** | G — Review (on-demand) | PR review, address review findings (no merge) |
 
-Stages are **linear in greenfield** ([pipeline](pipeline/SKILL.md)). Stages **14–18** are
-**on-demand** and may re-invoke subsets of 00–15 in **delta mode**.
+Stages are **linear in greenfield** ([pipeline](pipeline/SKILL.md)). Stages **14–19** are
+**on-demand**. **16-evolve** re-invokes subsets of **00–15** in **delta mode** for feature
+and large-change work on an existing app.
 
-**Any stage 00–17** may accept a user request to **add features** onto the current application
-when an active evolve cycle exists or after prerequisite checks pass — see §Feature addition.
+**Any stage 00–15** may accept a user request to **add features** or **scope a large change**
+when an active evolve cycle exists — see §Change magnitude routing and §Feature addition.
+Without an active cycle, route to **16-evolve** first.
 
 ---
 
@@ -122,9 +127,38 @@ Schema detail: [workflow-state-reference.md](workflow-state-reference.md).
 
 ---
 
-## 6. Feature addition (any stage)
+## 6. Change magnitude routing (existing app)
 
-Users may say **"add features X, Y, Z"** at any point — not only via 16-evolve.
+Use this table before picking a skill. When in doubt on an **existing** codebase, prefer
+**16-evolve** over **14-hotfix** or ad-hoc **07-build**.
+
+| User intent | Magnitude | Skill | Notes |
+|-------------|-----------|-------|-------|
+| Bug, regression, production incident | Surgical | [14-hotfix](14-hotfix/SKILL.md) | BUG report + repro test required |
+| Small patch (config, copy, one-liner) | Surgical | [14-hotfix](14-hotfix/SKILL.md) | No new Fn; no spec suite changes |
+| **Add feature(s)** — new Fn, user-visible capability | Medium–large | [16-evolve](16-evolve/SKILL.md) | One cycle, multiple Fn allowed |
+| **General change** — scope, API, acceptance criteria | Medium–large | [16-evolve](16-evolve/SKILL.md) | `cycle_type: general` |
+| **Large change** — architecture, multi-service, breaking API | Large | [16-evolve](16-evolve/SKILL.md) | Full routing plan; often 00–13 |
+| Refactor touching many files but same behavior | Medium | [16-evolve](16-evolve/SKILL.md) | Spec delta if contracts change |
+| New dependency / data asset / deploy target | Medium–large | [16-evolve](16-evolve/SKILL.md) | Updates dependency-inventory + plan |
+| Ops / health investigation only | — | [15-service-health](15-service-health/SKILL.md) | Not feature work |
+| Process / skill improvement | — | [17-retrospective](17-retrospective/SKILL.md) | No product behavior change |
+| New service from scratch | Greenfield | [pipeline](pipeline/SKILL.md) | Full 00–13 linear run |
+
+**Anti-patterns**
+
+- Do **not** use **14-hotfix** for net-new features, new Fn rows, or multi-doc spec changes.
+- Do **not** jump to **07-build** for feature work without an active **16-evolve** cycle (agent blocks).
+- Do **not** use **pipeline** when `docs/feature-list.md` and deployable code already exist — use **16-evolve**.
+
+Full decision tree: [docs/skill-routing.md](../../docs/skill-routing.md).
+
+---
+
+## 7. Feature addition (any stage)
+
+Users may say **"add features X, Y, Z"** or request a **large change** at any point — start
+with **16-evolve** when no active cycle exists.
 
 | Situation | Behavior |
 |-----------|----------|
@@ -142,7 +176,7 @@ or as child of 16-evolve.
 
 ---
 
-## 7. Delta mode
+## 8. Delta mode
 
 When `mode: delta` or an active `evolve_cycles[]` entry applies:
 
@@ -157,7 +191,7 @@ Per-stage delta rules live in each skill §Delta / feature-addition mode and
 
 ---
 
-## 8. User authority and AskQuestion
+## 9. User authority and AskQuestion
 
 **The user is the source of truth.** Specs and plans trace to interview answers or explicit
 approvals — not agent inference.
@@ -179,7 +213,7 @@ AskQuestion to the handoff skill; that exception must be stated in the stage SKI
 
 ---
 
-## 9. Phase gates and prerequisites
+## 10. Phase gates and prerequisites
 
 Downstream stages **must not start** until upstream gates pass (unless user waives via AskQuestion).
 The **workflow-state-manager** enforces this in `read_context`; skills treat blocking deviations as hard stops.
@@ -197,7 +231,7 @@ cross-doc consistency, scope drift, staleness, template drift.
 
 ---
 
-## 10. Git, branches, and commits
+## 11. Git, branches, and commits
 
 Per [considerations.md](considerations.md) §11–12 and [workflow-state-reference.md](workflow-state-reference.md) §Git history:
 
@@ -213,7 +247,7 @@ commits and record intent via agent when commits are deferred.
 
 ---
 
-## 11. Decisions, ADRs, and fix-in-place
+## 12. Decisions, ADRs, and fix-in-place
 
 | Mechanism | When |
 |-----------|------|
@@ -226,7 +260,7 @@ Classify failures per considerations §1: **spec** vs **code** vs **infra** vs *
 
 ---
 
-## 12. Specs and artifacts
+## 13. Specs and artifacts
 
 | Convention | Detail |
 |------------|--------|
@@ -241,7 +275,7 @@ stages **03** and **06** install or update those guardrails.
 
 ---
 
-## 13. Verification and connectivity tiers
+## 14. Verification and connectivity tiers
 
 | Tier | Meaning | Typical stage |
 |------|---------|---------------|
@@ -258,11 +292,11 @@ user to paste tokens when `prod.env` exists.
 
 ---
 
-## 14. Stage roles (summary)
+## 15. Stage roles (summary)
 
 | Skill | Primary output | Blocks |
 |-------|----------------|--------|
-| **00-context** | `docs/context-brief.md` | Optional |
+| **00-context** | `docs/context-brief.md` (project) or `docs/context/<slug>.md` (scoped) | Optional |
 | **01-requirements** | Product spec suite | Yes (start of A) |
 | **02-verify-plan** | Audit report, verified specs | Yes |
 | **03-plan-tooling** | Cursor rules, hooks, skills, agents | Yes |
@@ -278,17 +312,19 @@ user to paste tokens when `prod.env` exists.
 | **13-deploy-smoke** | Deploy, smokes, CHANGELOG | Yes (end of D) |
 | **14-hotfix** | BUG report + fix + optional redeploy | On-demand |
 | **15-service-health** | Health report | On-demand |
-| **16-evolve** | Features, delta specs, selective 00–15, checkpoints | On-demand |
+| **16-evolve** | New features, large changes, delta specs, selective 00–15, checkpoints | On-demand |
 | **17-retrospective** | Retro report + skill patches | On-demand |
+| **18-pr-review** | GitHub PR review (no merge) | On-demand |
+| **19-address-pr-review** | Fix PR review findings (no merge) | On-demand |
 
 ---
 
-## 15. Standard cross-cutting line (for SKILL.md)
+## 16. Standard cross-cutting line (for SKILL.md)
 
 Paste immediately after the stage title paragraph:
 
 ```markdown
-**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–18.
+**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 ```
@@ -297,7 +333,7 @@ Then add the stage-specific **Connectivity (stage NN)** section (when applicable
 
 ---
 
-## 16. Safe stopping and session end
+## 17. Safe stopping and session end
 
 Every **stage boundary** is a safe stop. Natural pause points:
 
@@ -312,7 +348,7 @@ uncommitted work is a process violation unless the user deferred commits.
 
 ---
 
-## 17. Operator environment (`prod.env`)
+## 18. Operator environment (`prod.env`)
 
 Repo-root **`prod.env`** is the canonical **local operator secrets file** (gitignored per
 `.gitignore`). Stages **13–15**, **14-hotfix** deploy phases, and any live `pytest -m live` /

@@ -270,14 +270,14 @@ stages:
   18-pr-review:
     status: completed
     started: "2026-06-21"
-    completed: "2026-06-21"
-    last_cycle: PRR-001
+    completed: "2026-06-22"
+    last_cycle: PRR-002
 
   19-address-pr-review:
     status: completed
-    started: "2026-06-21"
-    completed: "2026-06-21"
-    last_cycle: PRM-001
+    started: "2026-06-22"
+    completed: "2026-06-22"
+    last_cycle: PRM-002
 
 stages_pending: []
 
@@ -692,6 +692,28 @@ pr_review_cycles:
     gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/679#pullrequestreview-4539991693
     linked_issue: 678
 
+  - id: PRR-002
+    pr_number: 681
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/681
+    title: "test: strengthen version migration assertions and coverage docs"
+    status: completed
+    started: "2026-06-22"
+    completed: "2026-06-22"
+    head_ref: test/version-migration-assertions
+    base_ref: main
+    verdict: COMMENT
+    blockers: 0
+    advisories: 4
+    praise: 4
+    ci_status: success
+    subagents:
+      bugbot: failed_diff
+      security_review: failed_diff
+    artifacts:
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/681#pullrequestreview-4540604664
+
 pr_remediation_cycles:
   - id: PRM-001
     pr_number: 679
@@ -772,5 +794,105 @@ pr_remediation_cycles:
         status: deferred
         commit: null
         note: in-memory settings documented; durable storage follow-up
+    follow_up:
+      pr_review_rerun: offered
+
+  - id: PRM-002
+    pr_number: 681
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/681
+    linked_review_cycle_id: PRR-002
+    title: "test: version migration assertions + monorepo 98% coverage ramp and CI guards"
+    status: completed
+    started: "2026-06-22"
+    completed: "2026-06-22"
+    head_ref: test/version-migration-assertions
+    base_ref: main
+    ci_status: success
+    counts:
+      fixed: 6
+      deferred: 0
+      wont_fix: 1
+    findings:
+      - id: F-001
+        source: inline
+        severity: advisory
+        path: apps/backend/tests/unit/test_version_migration_unit.py
+        line: 170
+        thread_id: PRRT_kwDOQW-3CM6LIanB
+        status: fixed
+        commit: 7b9f5a9
+        note: tree-absence assertion
+      - id: F-002
+        source: inline
+        severity: advisory
+        path: apps/backend/tests/versions/test_version_migration.py
+        line: 104
+        thread_id: PRRT_kwDOQW-3CM6LIanE
+        status: fixed
+        commit: 7b9f5a9
+        note: full warning payload
+      - id: F-003
+        source: inline
+        severity: advisory
+        path: apps/frontend/vitest.config.ts
+        line: 31
+        thread_id: PRRT_kwDOQW-3CM6LIiCh
+        status: fixed
+        commit: 618b838
+        note: functions threshold 98
+      - id: F-004
+        source: inline
+        severity: advisory
+        path: apps/backend/tests/unit/test_version_migration_unit.py
+        line: 146
+        thread_id: PRRT_kwDOQW-3CM6LIiC5
+        status: fixed
+        commit: dec3bc3
+        note: surface removal failures as warnings
+      - id: F-005
+        source: review_body
+        severity: advisory
+        path: null
+        line: null
+        thread_id: null
+        status: fixed
+        commit: null
+        note: PR title/body updated via gh pr edit
+      - id: F-006
+        source: review_body
+        severity: advisory
+        path: null
+        line: null
+        thread_id: null
+        status: fixed
+        commit: null
+        note: CI checkbox checked in PR test plan
+      - id: F-007
+        source: review_body
+        severity: advisory
+        path: apps/backend/tests/unit/test_version_migration_unit.py
+        line: null
+        thread_id: null
+        status: wont_fix
+        commit: null
+        note: unit tests intentionally target internal helpers for coverage; integration tests cover public migrate API
+      - id: F-008
+        source: review_body
+        severity: advisory
+        path: apps/backend/tests/unit/test_version_migration_unit.py
+        line: 177
+        thread_id: null
+        status: fixed
+        commit: 7b9f5a9
+        note: singleton test try/finally restore
+      - id: F-009
+        source: review_body
+        severity: advisory
+        path: apps/backend/tests/unit/test_version_migration_unit.py
+        line: 186
+        thread_id: null
+        status: fixed
+        commit: 7b9f5a9
+        note: named migrator before patch
     follow_up:
       pr_review_rerun: offered

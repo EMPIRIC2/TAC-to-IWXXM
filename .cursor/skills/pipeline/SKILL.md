@@ -9,9 +9,9 @@ description: >
   run the full pipeline, go end-to-end, deploy from scratch, or asks "build this".
   Post-deployment surgical edits use 14-hotfix; production health checks use
   15-service-health without re-running the pipeline. Add features to an existing app
-  (including multiple Fn in one cycle) via 16-evolve or any stage 00–18 in delta mode.
-  Process improvement uses 17-retrospective (reviews logs and skills 00–17).
-  Pull request review uses 18-pr-review (posts to GitHub; never merges). Remediation uses
+  Add features to an existing app (including multiple Fn in one cycle) via 16-evolve or any
+  stage 00–15 in delta mode when an evolve cycle is active. Process improvement uses
+  17-retrospective (reviews logs and skills 00–19). Pull request review uses 18-pr-review (posts to GitHub; never merges). Remediation uses
   19-address-pr-review (fixes findings; never merges).
 ---
 
@@ -25,7 +25,7 @@ Take a project from initial concept through deployed, verified service. Every st
 from understanding requirements to deploying code — is structured, audited, and
 user-approved. The user is the source of truth at every stage.
 
-**Stage conventions (00–17):** [pipeline-preamble.md](../pipeline-preamble.md).
+**Stage conventions (00–19):** [pipeline-preamble.md](../pipeline-preamble.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 Shared policy (feedback loops, changelogs, performance testing, spec vs code root cause):
@@ -70,7 +70,7 @@ includes a §Connectivity section; phase gates below enforce the cumulative chec
           │ Structured change / new feature
           ▼
 ╔═══ PHASE F: EVOLVE & RETROSPECTIVE (on-demand, repeatable) ══╗
-║  16-evolve — features (multi-Fn), scope/API/arch, delta 00–15 ║
+║  16-evolve — new features, large changes, delta 00–15        ║
 ║  17-retrospective — process improvement from logs + state     ║
 ╚══════════════════════════════════════════════════════════════╝
           │ PR review (on-demand)
@@ -86,7 +86,8 @@ includes a §Connectivity section; phase gates below enforce the cumulative chec
 - **Which skill should I use?** → [docs/skill-routing.md](../../docs/skill-routing.md)
 - **Post-deploy testing tiers** → [ADR-004](../../docs/adr/ADR-004.md)
 - **Add feature(s) to existing app** → [16-evolve](../16-evolve/SKILL.md)
-- **Broader scope/API/arch change** → [16-evolve](../16-evolve/SKILL.md)
+- **Large change / refactor / API redesign** → [16-evolve](../16-evolve/SKILL.md)
+- **General scope or arch change** → [16-evolve](../16-evolve/SKILL.md)
 - **Process retrospective** → [17-retrospective](../17-retrospective/SKILL.md)
 - **Review a pull request** → [18-pr-review](../18-pr-review/SKILL.md)
 - **Address PR review feedback** → [19-address-pr-review](../19-address-pr-review/SKILL.md)
@@ -323,10 +324,10 @@ or evidence before a hotfix.
 
 ### Stage 16 — Evolve (On-Demand, Repeatable)
 
-Primary entry for **adding features** to an existing app (including **multiple Fn in one
-cycle**), scope/API/arch changes, and structured change requests. Any stage 00–17 may accept
-feature requests; when no evolve cycle is active, **workflow-state-manager** blocks and
-recommends 16-evolve.
+Primary entry for **adding features** and **large changes** to an existing app (including
+**multiple Fn in one cycle**), scope/API/arch changes, and structured change requests.
+Stages **00–15** may accept feature work when an active evolve cycle exists; otherwise
+workflow-state-manager blocks and recommends **16-evolve**.
 
 **Check**: User says "add features X, Y, Z", "new capability", scope/API/arch change, or
 structured change request.
@@ -344,7 +345,7 @@ Not part of the linear greenfield pipeline. Use after any meaningful stretch of 
 **Check**: User asks for retrospective, lessons learned, pipeline tuning, or skill review.
 - Invoke [17-retrospective](../17-retrospective/SKILL.md)
 - Mines agent conversation logs (with consent), `workflow-state.yaml`, and `docs/`
-- Compares evidence to skills **00–17**; interviews user via AskQuestion (went well / improve)
+- Compares evidence to skills **00–19**; interviews user via AskQuestion (went well / improve)
 - Brainstorms solutions; ends with AskQuestion-driven skill patches (Phase 6 workshop)
 - Routes remaining actions to backlog, ADR, or commit/PR if user requests
 - Does **not** replace 14-hotfix, 16-evolve, or re-running build phases by default
@@ -385,8 +386,8 @@ When the user requests new features on an **existing** application:
 
 | Entry point | Behavior |
 |-------------|----------|
-| **16-evolve** | Recommended orchestrator — multi-Fn cycle, checkpoints, routing |
-| **Any stage 00–17** | Agent `read_context` detects feature intent; runs delta mode if cycle active, else blocks → 16-evolve |
+| **16-evolve** | Recommended orchestrator — features, large changes, multi-Fn cycle, checkpoints |
+| **Any stage 00–15** | Delta mode when evolve cycle active; else blocks → 16-evolve |
 | **pipeline** | Greenfield only; if specs exist, suggest 16-evolve instead |
 
 See [pipeline-preamble.md](../pipeline-preamble.md) §Feature addition.
@@ -414,7 +415,7 @@ Every stage boundary is safe to stop. Natural pause points:
 - **After 13-deploy-smoke** — Done (deploy complete)
 - **14-hotfix** — On-demand surgical patches
 - **15-service-health** — On-demand Modal ops investigation
-- **16-evolve** — On-demand features (multi-Fn), scope/API/arch, delta 00–15
+- **16-evolve** — On-demand features, large changes, delta 00–15
 - **17-retrospective** — On-demand process improvement (any time after work has run)
 
 ## Summary

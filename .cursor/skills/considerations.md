@@ -1,6 +1,6 @@
 # Cross-cutting considerations (`.cursor/skills`)
 
-**Numbered stages (00–17):** Shared structure, gates, state (via
+**Numbered stages (00–19):** Shared structure, gates, state (via
 [workflow-state-manager](../agents/workflow-state-manager.md)), and AskQuestion rules are in
 [pipeline-preamble.md](pipeline-preamble.md). This file holds policy detail referenced from
 the preamble and from each stage skill.
@@ -233,7 +233,7 @@ The pipeline uses repo-root [`workflow-state.yaml`](../workflow-state.yaml) as t
 canonical pipeline state file. Full schema, skill→key mapping, and update rules:
 [workflow-state-reference.md](workflow-state-reference.md).
 
-- Tracks pipeline stages 00–17 plus auxiliary keys (`gather-context`, `build-planner`, …)
+- Tracks pipeline stages 00–19 plus auxiliary keys (`gather-context`, `build-planner`, …)
 - Phase gates with criteria checklists
 - `issue_log` for cross-stage issues
 - `decisions_log` for user decisions

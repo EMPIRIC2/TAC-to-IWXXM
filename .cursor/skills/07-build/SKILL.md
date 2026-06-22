@@ -4,8 +4,8 @@ description: >
   Executes the implementation plan task-by-task following TDD ordering, spec-adherence rules,
   and atomic commit conventions. Orchestrates parallel agents for independent tasks, manages
   branches and PRs, invokes 08-verify-build at milestone boundaries, and keeps the execution
-  plan in sync with progress. Supports delta mode for feature addition via evolve cycles.
-  Use when implementing tasks or adding features to an existing app (with active evolve cycle).
+  plan in sync with progress. Supports delta mode for feature addition and large changes via
+  active 16-evolve cycles only — do not use for net-new features without an evolve cycle.
 ---
 
 # 07 — Technical Execution (Build)
@@ -13,7 +13,7 @@ description: >
 Execute the execution plan: implement tasks in TDD order, commit atomically, create PRs
 at milestone and phase boundaries, and orchestrate parallel agents for independent work.
 
-**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–17.
+**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
