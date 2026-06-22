@@ -100,11 +100,7 @@ test.describe('TAC File Upload to Database', () => {
     });
 
     await page.locator('input[type="file"]').setInputFiles(testFile.path);
-    await page
-      .getByRole('button', {
-        name: /Convert METAR files to IWXXM XML and send to database/i,
-      })
-      .click();
+    await page.getByTestId('convert-and-send-button').click();
 
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
       { timeout: 10000 },
@@ -141,9 +137,7 @@ test.describe('TAC File Upload to Database', () => {
     });
 
     await page.locator('input[type="file"]').setInputFiles(testFile.path);
-    await page
-      .getByRole('button', { name: /^Convert METAR files to IWXXM XML$/i })
-      .click();
+    await page.getByTestId('convert-button').click();
 
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
       { timeout: 10000 },
@@ -173,9 +167,7 @@ test.describe('TAC File Upload to Database', () => {
     await page
       .locator('input[type="file"]')
       .setInputFiles(tacFiles.slice(0, 2).map((file) => file.path));
-    await page
-      .getByRole('button', { name: /^Convert METAR files to IWXXM XML$/i })
-      .click();
+    await page.getByTestId('convert-button').click();
 
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
       { timeout: 10000 },
@@ -190,9 +182,7 @@ test.describe('TAC File Upload to Database', () => {
     await loginAndOpenConverter(page);
 
     await page.getByLabel(/Enter METAR data manually/i).fill('INVALID TAC FORMAT');
-    await page
-      .getByRole('button', { name: /^Convert METAR files to IWXXM XML$/i })
-      .click();
+    await page.getByTestId('convert-button').click();
 
     await expect(page.getByText(/Conversion Error/i).first()).toBeVisible({
       timeout: 10000,

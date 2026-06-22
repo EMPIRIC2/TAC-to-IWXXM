@@ -5,7 +5,7 @@
 
 ## Executive Summary
 
-Issue #656 requests two explicit actions in the main converter: **Convert** (format conversion only) and **Convert&Send** (convert then immediately send output). The codebase already implements **Convert** and a separate **Upload to Database** flow that requires a prior conversion and opens a configuration dialog. **Convert&Send is not implemented** — matching issue #555's note that it was "under development." Implementation is primarily frontend work in `FileConverter.tsx`, reusing the existing Supabase upload endpoint. Several behavioral details (upload defaults, button layout, scope of sibling #555 asks) need product decisions before build.
+Issue #656 requests two explicit actions in the main converter: **Convert** (format conversion only) and **Convert&Send** (convert then immediately send output). This evolve cycle (S001 / EV-001) delivers all three actions in the main UI: **Convert**, **Convert&Send** (fixed upload defaults, no dialog), and **Upload to Database** (post-conversion dialog with configurable options). Shared upload logic lives in `databaseUpload.ts`; button state and send feedback are wired in `FileConverter.tsx`.
 
 ## Resolution Log
 
