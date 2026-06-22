@@ -16,6 +16,8 @@ vi.mock('sonner', () => ({
 
 vi.mock('/utils/supabase/info', () => ({
   projectId: 'test-project',
+  edgeFunctionUrl: (subpath: string) =>
+    `https://test-project.supabase.co/functions/v1/make-server-2e3cda33/${subpath}`,
 }));
 
 const sampleFiles = [
@@ -89,6 +91,7 @@ describe('DatabaseUploadDialog', () => {
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: async () => ({ message: 'Uploaded 1 file' }),
+      text: async () => JSON.stringify({ message: 'Uploaded 1 file' }),
     } as Response);
 
     render(<DatabaseUploadDialog {...defaultProps} onClose={onClose} />);
@@ -130,6 +133,7 @@ describe('DatabaseUploadDialog', () => {
     vi.mocked(global.fetch).mockResolvedValue({
       ok: false,
       json: async () => ({ error: 'Database unavailable' }),
+      text: async () => JSON.stringify({ error: 'Database unavailable' }),
     } as Response);
 
     render(<DatabaseUploadDialog {...defaultProps} />);
@@ -161,6 +165,7 @@ describe('DatabaseUploadDialog', () => {
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: async () => ({ message: 'Uploaded 1 file' }),
+      text: async () => JSON.stringify({ message: 'Uploaded 1 file' }),
     } as Response);
 
     render(<DatabaseUploadDialog {...defaultProps} />);
