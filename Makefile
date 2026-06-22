@@ -180,11 +180,7 @@ define load_dotenv
 	set -a; \
 	for env_file in .env apps/frontend/.env; do \
 		if [ -f "$$env_file" ]; then \
-			while IFS= read -r line || [ -n "$$line" ]; do \
-				line="$${line%$$'\r'}"; \
-				[[ -z "$$line" || "$$line" =~ ^[[:space:]]*# ]] && continue; \
-				export "$$line"; \
-			done < "$$env_file"; \
+			. "$$env_file"; \
 		fi; \
 	done; \
 	set +a; \
