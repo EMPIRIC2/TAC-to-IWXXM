@@ -1,0 +1,57 @@
+---
+description: Local checks must match CI Quality Gates before commit/push (ruff format scope)
+globs: "**/*.{py,ts,tsx,js,jsx}"
+alwaysApply: false
+---
+
+# CI Quality Gates parity
+
+GitHub Actions job **Quality Gates** (`.github/workflows/ci-cd.yml`) runs before all test
+jobs. A formatting drift on any Python file under `apps/`, `packages/`, or `tests/` fails
+the pipeline — including bug repro tests in `tests/bugs/`.
+
+## Required scope (Python)
+
+CI command:
+
+```bash
+uv run ruff format --check apps packages tests
+```
+
+Local equivalent:
+
+```bash
+make format-check   # Python + JS
+make format         # auto-fix both
+```
+
+Do **not** limit format checks to `src/` or a single package when preparing commits that
+touch monorepo Python.
+
+## Bug repro tests
+
+When adding `tests/bugs/test_bug_YYYY_MM_DD_*.py` (14-hotfix / bug-investigation):
+
+1. Run `uv run ruff format tests/bugs/<file>.py` (or rely on `.cursor/hooks/format.sh`
+   auto-format after edit).
+2. Run `make format-check` before `git commit` — the `ci-quality-guard` hook blocks
+   commit/push when this would fail CI.
+
+## Hooks
+
+| Hook | Event | Behavior |
+|------|-------|----------|
+| `format.sh` | afterFileEdit | Auto-applies `ruff format` on edited `.py` files |
+| `ci-quality-guard.sh` | beforeShellExecution | Denies `git commit`/`git push` if Quality Gates format checks fail |
+| `pr-checklist.sh` | preToolUse (git push) | Reminds to run full local parity |
+
+## Pre-commit
+
+Repo `.pre-commit-config.yaml` runs `make ci` when hooks are installed (`make install-hooks`).
+Cursor hooks provide the same guard when agents commit without pre-commit installed.
+
+## Related
+
+- `ci-after-push.mdc` — watch `ci-cd.yml` after push
+- `tdd.mdc` — bug repro test location under `tests/bugs/`
+- `Makefile` — `PY_TREES := apps packages tests`

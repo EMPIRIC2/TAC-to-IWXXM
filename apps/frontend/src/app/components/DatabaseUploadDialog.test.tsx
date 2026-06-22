@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
@@ -179,5 +179,19 @@ describe('DatabaseUploadDialog', () => {
       destination: 'both',
       includeOriginal: false,
     });
+  });
+
+  it('fires format and destination onChange handlers for default selections', async () => {
+    render(<DatabaseUploadDialog {...defaultProps} />);
+
+    fireEvent.change(screen.getByLabelText(/store as iwxxm xml only/i), {
+      target: { value: 'iwxxm' },
+    });
+    fireEvent.change(screen.getByLabelText(/upload to primary database/i), {
+      target: { value: 'primary' },
+    });
+
+    expect(screen.getByLabelText(/store as iwxxm xml only/i)).toBeChecked();
+    expect(screen.getByLabelText(/upload to primary database/i)).toBeChecked();
   });
 });

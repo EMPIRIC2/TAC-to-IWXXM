@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
+from unittest.mock import MagicMock, patch
 
+import pytest
+
+from metar_shared import xml_canonical
 from metar_shared.xml_canonical import (
     canonicalize_xml,
     compare_canonical_xml,
@@ -74,14 +78,34 @@ def test_canonicalize_xml_strips_uuid_attribute_values() -> None:
 
 
 def test_canonicalize_invalid_xml_raises() -> None:
-    import pytest
-
     with pytest.raises(ValueError, match="Cannot parse XML"):
         canonicalize_xml("<not>valid</unclosed>")
 
 
 def test_local_name_plain_tag() -> None:
     assert local_name("root") == "root"
+
+
+def test_canonicalize_xml_strips_codes_wmo_int_href() -> None:
+    with_codes = (
+        '<root xmlns:xlink="http://www.w3.org/1999/xlink">'
+        '<child xlink:href="http://codes.wmo.int/common/nil">ok</child></root>'
+    )
+    without_codes = "<root><child>ok</child></root>"
+    assert compare_canonical_xml(with_codes, without_codes)
+
+
+def test_strip_volatile_attributes_removes_codes_wmo_int_href() -> None:
+    xml = (
+        '<root xmlns:xlink="http://www.w3.org/1999/xlink">'
+        '<child xlink:href="https://codes.wmo.int/common/nil" xlink:title="keep">ok</child></root>'
+    )
+    root = ET.fromstring(xml)
+    strip_volatile_attributes(root)
+    child = root.find("child")
+    assert child is not None
+    assert not any("href" in key for key in child.attrib)
+    assert child.attrib.get("{http://www.w3.org/1999/xlink}title") == "keep"
 
 
 def test_strip_volatile_attributes_removes_uuid_href_only() -> None:
@@ -100,3 +124,38 @@ def test_strip_volatile_attributes_removes_uuid_href_only() -> None:
 def test_iter_local_names_yields_tags() -> None:
     root = ET.fromstring("<root><a/><b/></root>")
     assert list(iter_local_names(root)) == ["root", "a", "b"]
+
+
+def test_canonicalize_xml_strips_https_codes_wmo_int_href() -> None:
+    """https://codes.wmo.int/ href values are omitted from canonical attrs (line 69)."""
+    with_codes = (
+        '<root xmlns:xlink="http://www.w3.org/1999/xlink">'
+        '<child xlink:href="https://codes.wmo.int/common/nil">ok</child></root>'
+    )
+    without_codes = "<root><child>ok</child></root>"
+    assert compare_canonical_xml(with_codes, without_codes)
+
+
+def test_parse_root_element_keeps_pretty_without_xml_declaration() -> None:
+    """Branch when toprettyxml output lacks an XML declaration (111->113)."""
+    mock_doc = MagicMock()
+    mock_doc.toprettyxml.return_value = "<root><child/></root>\n"
+
+    with patch.object(xml_canonical.minidom, "parseString", return_value=mock_doc):
+        root = xml_canonical._parse_root_element("<root><child/></root>")
+
+    assert local_name(root.tag) == "root"
+
+
+def test_raise_parse_error_without_last_error() -> None:
+    with pytest.raises(ValueError, match=r"Cannot parse XML for canonicalization$"):
+        xml_canonical._raise_parse_error(None)
+
+
+def test_raise_parse_error_chains_last_error() -> None:
+    cause = ValueError("bad xml")
+    with pytest.raises(
+        ValueError, match="Cannot parse XML for canonicalization: bad xml"
+    ) as exc_info:
+        xml_canonical._raise_parse_error(cause)
+    assert exc_info.value.__cause__ is cause

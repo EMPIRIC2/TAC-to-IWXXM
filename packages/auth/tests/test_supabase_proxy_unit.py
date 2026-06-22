@@ -156,3 +156,79 @@ class TestSupabaseAuthProxySignOut:
         with pytest.raises(HTTPException) as exc_info:
             proxy.sign_out("token")
         assert exc_info.value.status_code == 400
+
+
+class TestSupabaseAuthProxyGetUser:
+    def test_get_user_success(self):
+        proxy = _make_proxy()
+        mock_user = MagicMock()
+        mock_user.id = "uid"
+        mock_user.email = "user@example.com"
+        mock_user.user_metadata = {"role": "user"}
+        mock_response = MagicMock()
+        mock_response.user = mock_user
+        proxy.client.auth.get_user.return_value = mock_response
+
+        result = proxy.get_user("access-token")
+        assert result["id"] == "uid"
+        assert result["email"] == "user@example.com"
+
+    def test_get_user_none_response_raises_401(self):
+        proxy = _make_proxy()
+        proxy.client.auth.get_user.return_value = None
+
+        with pytest.raises(HTTPException) as exc_info:
+            proxy.get_user("bad-token")
+        assert exc_info.value.status_code == 401
+
+    def test_get_user_missing_user_raises_401(self):
+        proxy = _make_proxy()
+        mock_response = MagicMock()
+        mock_response.user = None
+        proxy.client.auth.get_user.return_value = mock_response
+
+        with pytest.raises(HTTPException) as exc_info:
+            proxy.get_user("bad-token")
+        assert exc_info.value.status_code == 401
+
+    def test_get_user_exception_raises_401(self):
+        proxy = _make_proxy()
+        proxy.client.auth.get_user.side_effect = Exception("network error")
+
+        with pytest.raises(HTTPException) as exc_info:
+            proxy.get_user("token")
+        assert exc_info.value.status_code == 401
+
+
+class TestSupabaseAuthProxyRefreshSession:
+    def test_refresh_session_success(self):
+        proxy = _make_proxy()
+        mock_session = MagicMock()
+        mock_session.access_token = "new-access"
+        mock_session.refresh_token = "new-refresh"
+        mock_session.expires_at = 123456
+        mock_response = MagicMock()
+        mock_response.session = mock_session
+        proxy.client.auth.refresh_session.return_value = mock_response
+
+        result = proxy.refresh_session("refresh-token")
+        assert result["access_token"] == "new-access"
+        assert result["refresh_token"] == "new-refresh"
+
+    def test_refresh_session_no_session_raises_401(self):
+        proxy = _make_proxy()
+        mock_response = MagicMock()
+        mock_response.session = None
+        proxy.client.auth.refresh_session.return_value = mock_response
+
+        with pytest.raises(HTTPException) as exc_info:
+            proxy.refresh_session("bad-refresh")
+        assert exc_info.value.status_code == 401
+
+    def test_refresh_session_exception_raises_401(self):
+        proxy = _make_proxy()
+        proxy.client.auth.refresh_session.side_effect = Exception("refresh failed")
+
+        with pytest.raises(HTTPException) as exc_info:
+            proxy.refresh_session("refresh-token")
+        assert exc_info.value.status_code == 401

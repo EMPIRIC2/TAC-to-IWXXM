@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { UserPreferencesDialog } from './UserPreferencesDialog';
@@ -203,5 +203,115 @@ describe('UserPreferencesDialog', () => {
     await user.click(screen.getByRole('button', { name: /^cancel$/i }));
 
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('closes when backdrop is clicked', async () => {
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+    render(<UserPreferencesDialog {...defaultProps} onClose={onClose} />);
+
+    await screen.findByRole('dialog');
+    await user.click(screen.getByRole('dialog'));
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates issuing center, IWXXM version, and error handling fields', async () => {
+    const user = userEvent.setup();
+    render(<UserPreferencesDialog {...defaultProps} />);
+
+    await screen.findByLabelText(/display name/i);
+
+    fireEvent.change(screen.getByTestId('icao-autocomplete'), {
+      target: { value: 'KLAX' },
+    });
+    await user.selectOptions(screen.getByLabelText(/iwxxm schema version/i), '2023-1');
+    await user.selectOptions(screen.getByLabelText(/on error behavior/i), 'fail');
+    await user.selectOptions(screen.getByLabelText(/log level/i), 'WARNING');
+
+    expect(screen.getByTestId('icao-autocomplete')).toHaveValue('KLAX');
+    expect(screen.getByLabelText(/iwxxm schema version/i)).toHaveValue('2023-1');
+    expect(screen.getByLabelText(/on error behavior/i)).toHaveValue('fail');
+    expect(screen.getByLabelText(/log level/i)).toHaveValue('WARNING');
+  });
+
+  it('shows save error state when localStorage write fails', async () => {
+    const user = userEvent.setup();
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota exceeded');
+    });
+
+    render(<UserPreferencesDialog {...defaultProps} />);
+
+    await screen.findByRole('button', { name: /save preferences/i });
+    await user.click(screen.getByRole('button', { name: /save preferences/i }));
+
+    expect(mockToast.error).toHaveBeenCalledWith('Failed to save preferences');
+    expect(
+      screen.getByText('Failed to save preferences. Please try again.'),
+    ).toBeInTheDocument();
+
+    setItemSpy.mockRestore();
+  });
+
+  it('shows reset error toast when localStorage write fails', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota exceeded');
+    });
+    const user = userEvent.setup();
+
+    render(<UserPreferencesDialog {...defaultProps} />);
+
+    await screen.findByRole('button', { name: /reset preferences to defaults/i });
+    await user.click(
+      screen.getByRole('button', { name: /reset preferences to defaults/i }),
+    );
+
+    expect(mockToast.error).toHaveBeenCalledWith('Failed to reset preferences');
+
+    setItemSpy.mockRestore();
+  });
+
+  it('clears success status after save timeout', async () => {
+    render(<UserPreferencesDialog {...defaultProps} />);
+
+    await screen.findByRole('button', { name: /save preferences/i });
+
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByRole('button', { name: /save preferences/i }));
+
+    expect(screen.getByText(/preferences saved successfully/i)).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    expect(
+      screen.queryByText(/preferences saved successfully/i),
+    ).not.toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
+
+  it('saves preferences without optional saved callback', async () => {
+    const user = userEvent.setup();
+    render(
+      <UserPreferencesDialog isOpen onClose={vi.fn()} userEmail="solo@example.com" />,
+    );
+
+    await screen.findByRole('button', { name: /save preferences/i });
+    await user.click(screen.getByRole('button', { name: /save preferences/i }));
+
+    expect(mockToast.success).toHaveBeenCalledWith('Preferences saved successfully');
+  });
+
+  it('falls back to default max METAR length for invalid numeric input', async () => {
+    render(<UserPreferencesDialog {...defaultProps} />);
+
+    const maxLength = await screen.findByLabelText(/max metar length/i);
+    fireEvent.change(maxLength, { target: { value: '' } });
+
+    expect(maxLength).toHaveValue(1000);
   });
 });

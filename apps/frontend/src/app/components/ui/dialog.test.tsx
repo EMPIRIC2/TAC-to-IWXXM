@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -54,5 +55,49 @@ describe('Dialog', () => {
     expect(overlay).toBeTruthy();
     expect(content).toBeTruthy();
     expect(screen.getByText('Open by default')).toBeInTheDocument();
+  });
+
+  it('closes dialog from explicit DialogClose control', () => {
+    render(
+      <Dialog defaultOpen>
+        <DialogContent>
+          <DialogTitle>Closeable dialog</DialogTitle>
+          <DialogClose>Close dialog</DialogClose>
+        </DialogContent>
+      </Dialog>,
+    );
+
+    expect(screen.getByText('Closeable dialog')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close dialog' }));
+
+    expect(screen.queryByText('Closeable dialog')).not.toBeInTheDocument();
+  });
+
+  it('renders dialog subcomponents with custom class names', () => {
+    render(
+      <Dialog defaultOpen>
+        <DialogContent className="custom-content">
+          <DialogHeader className="custom-header">
+            <DialogTitle className="custom-title">Styled dialog</DialogTitle>
+            <DialogDescription className="custom-description">
+              Styled description
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="custom-footer">Footer actions</DialogFooter>
+        </DialogContent>
+      </Dialog>,
+    );
+
+    expect(document.querySelector('[data-slot="dialog-overlay"]')).toBeTruthy();
+    expect(document.querySelector('.custom-content')).toBeTruthy();
+    expect(document.querySelector('.custom-header')).toBeTruthy();
+    expect(document.querySelector('.custom-title')).toHaveTextContent('Styled dialog');
+    expect(document.querySelector('.custom-description')).toHaveTextContent(
+      'Styled description',
+    );
+    expect(document.querySelector('.custom-footer')).toHaveTextContent(
+      'Footer actions',
+    );
   });
 });

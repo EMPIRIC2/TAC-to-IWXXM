@@ -27,10 +27,10 @@ export default defineConfig({
         '**/*.spec.ts',
       ],
       thresholds: {
-        lines: 95,
+        lines: 98,
         functions: 95,
         branches: 89,
-        statements: 95,
+        statements: 98,
       },
     },
   },

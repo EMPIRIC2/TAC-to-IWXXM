@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { AuthCallback } from './AuthCallback';
 
@@ -140,8 +140,45 @@ describe('AuthCallback', () => {
     await waitFor(
       () => {
         expect(window.location.href).toBe('/');
+        expect(window.location.hash).toBe('');
       },
       { timeout: 3000 },
     );
+  });
+
+  it('redirects home after catch block timeout using fake timers', async () => {
+    vi.useFakeTimers();
+    const onVerified = vi.fn(() => {
+      throw new Error('handler failure');
+    });
+    window.location.hash = '#access_token=abc123&type=signup';
+
+    render(<AuthCallback onVerified={onVerified} />);
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(screen.getByRole('heading', { name: 'Error' })).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    expect(window.location.href).toBe('/');
+    expect(window.location.hash).toBe('');
+  });
+
+  it('redirects to login when return button is clicked on error state', async () => {
+    render(<AuthCallback />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Error' })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /return to login/i }));
+
+    expect(window.location.href).toBe('/');
+    expect(window.location.hash).toBe('');
   });
 });

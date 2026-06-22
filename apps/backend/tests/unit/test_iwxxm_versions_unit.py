@@ -108,6 +108,21 @@ class TestProjectRootDetection:
 
         assert detected == fake_file.parent.parent.parent.parent
 
+    def test_detect_project_root_prefers_vendor_iwxxm_subdirectory(self, monkeypatch, tmp_path):
+        fake_file = tmp_path / "apps" / "backend" / "src" / "config" / "iwxxm_versions.py"
+        fake_file.parent.mkdir(parents=True)
+        fake_file.write_text("# fake", encoding="utf-8")
+        vendor_iwxxm = tmp_path / "vendor" / "schemas" / "iwxxm"
+        vendor_iwxxm.mkdir(parents=True)
+
+        monkeypatch.delenv("IWXXM_PROJECT_ROOT", raising=False)
+        monkeypatch.delenv("IWXXM_SCHEMAS_ROOT", raising=False)
+        monkeypatch.setattr(versions, "__file__", str(fake_file))
+
+        detected = versions._detect_project_root()
+
+        assert detected == tmp_path.resolve()
+
 
 class TestVersionHelpers:
     """Test pure helper functions and version classification."""

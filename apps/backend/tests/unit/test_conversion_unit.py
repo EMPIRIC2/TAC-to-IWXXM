@@ -597,3 +597,224 @@ def test_convert_with_metadata_sets_vertical_datum_on_gifts_config(monkeypatch):
 
     assert xml.startswith('<?xml version="1.0"?>')
     assert fake_xml_config.verticalDatum == "EGM_08"
+
+
+def test_convert_with_metadata_maps_validation_layer_enum_instances(monkeypatch):
+    decoder = SimpleNamespace(decode=lambda _tac: {"ident": {"str": "KJFK"}})
+    encoder = SimpleNamespace(encode=lambda _decoded, _tac: SimpleNamespace(tag="root"))
+    captured = {}
+
+    def _validate_complete(**kwargs):
+        captured["layers"] = kwargs["layers"]
+        return SimpleNamespace(is_valid=True, layers_passed=[], layers_failed=[], all_issues=[])
+
+    monkeypatch.setattr("src.utilities.gifts_adapter.get_decoder", lambda version=None: decoder)
+    monkeypatch.setattr("src.utilities.gifts_adapter.get_encoder", lambda version=None: encoder)
+    monkeypatch.setattr(conv, "_lookup_aerodrome", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(conv.ET, "tostring", lambda *_args, **_kwargs: "<iwxxm:METAR/>")
+    monkeypatch.setattr(
+        "src.services.validation_orchestrator.get_validation_orchestrator",
+        lambda: SimpleNamespace(validate_complete=_validate_complete),
+    )
+
+    conv.convert_metar_tac_with_metadata(
+        "METAR KJFK 010000Z",
+        validate=True,
+        validation_layers=[ValidationLayer.XML_SCHEMA],
+    )
+
+    assert captured["layers"] == [ValidationLayer.XML_SCHEMA]
+
+
+def test_apply_recent_weather_normalization_lenient_false():
+    tac = "METAR KJFK 010000Z 00000KT CAVOK"
+    assert conv._apply_recent_weather_normalization(tac, lenient=False) == tac
+
+
+def test_apply_recent_weather_normalization_logs_rewrites(monkeypatch, caplog):
+    monkeypatch.setattr(
+        conv,
+        "normalize_recent_weather_for_tac",
+        lambda _tac: ("METAR KJFK REWSH", [{"original": "REWSH", "index": 2, "replacement": "RESHUP", "rule": "r1"}]),
+    )
+
+    result = conv._apply_recent_weather_normalization("METAR KJFK REWSH", lenient=True)
+
+    assert result == "METAR KJFK REWSH"
+    assert "METAR recent-weather pre-normalization" in caplog.text
+
+
+def test_convert_with_metadata_gifts_adapter_import_error(monkeypatch):
+    import builtins
+
+    original_import = builtins.__import__
+
+    def _import(name, globals=None, locals=None, fromlist=(), level=0):
+        if level > 0 and name == "gifts_adapter":
+            raise ImportError("adapter missing")
+        return original_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _import)
+
+    with pytest.raises(conv.ConversionError, match="GIFTs adapter unavailable"):
+        conv.convert_metar_tac_with_metadata("METAR KJFK 010000Z", validate=False)
+
+
+def test_convert_metar_tac_deprecated_wrapper(monkeypatch):
+    import warnings
+
+    monkeypatch.setattr(
+        conv,
+        "convert_metar_tac_with_metadata",
+        lambda tac_text, iwxxm_version=None, validate=False, **_kwargs: (
+            f"<xml>{tac_text}:{iwxxm_version}</xml>",
+            None,
+        ),
+    )
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        result = conv.convert_metar_tac("METAR KJFK", iwxxm_version="2025-2")
+
+    assert result == "<xml>METAR KJFK:2025-2</xml>"
+    assert any("deprecated" in str(w.message).lower() for w in caught)
+
+
+def test_lookup_aerodrome_includes_elevation_in_position(monkeypatch):
+    fake_airport = SimpleNamespace(
+        name="Elevated Field",
+        iata="ELV",
+        country="US",
+        coordinates=SimpleNamespace(latitude=1.0, longitude=2.0, elevation_ft=328),
+    )
+    fake_validator = SimpleNamespace(get_airport=lambda _icao: fake_airport)
+    fake_elevation = SimpleNamespace(
+        datum_map={"airport_overrides": {}},
+        get_coordinates_override=lambda _icao: None,
+        get_elevation_data=lambda **_kwargs: (100.0, "NAVD88"),
+    )
+
+    monkeypatch.setattr("src.schemas.airport.get_airport_validator", lambda: fake_validator)
+    monkeypatch.setattr("src.utilities.elevation_service.get_elevation_service", lambda: fake_elevation)
+
+    result = conv._lookup_aerodrome("KELV")
+
+    assert result["position"].endswith("100.0")
+    assert result["vertical_datum"] == "NAVD88"
+
+
+def test_load_aerodrome_db_shallow_path_returns_none(monkeypatch):
+    monkeypatch.setattr(conv, "__file__", "/conversion.py")
+    assert conv._load_aerodrome_db() is None
+
+
+def test_load_aerodrome_db_docker_path(monkeypatch):
+    import pathlib
+
+    docker_path = pathlib.Path("/app/GIFTs/gifts/database/aerodromes.tbl")
+    monkeypatch.setattr(conv, "__file__", "/backend/src/utilities/conversion.py")
+    original_exists = pathlib.Path.exists
+
+    def _exists(self):
+        if self == docker_path:
+            return True
+        return original_exists(self)
+
+    monkeypatch.setattr(pathlib.Path, "exists", _exists)
+    assert conv._load_aerodrome_db() == docker_path
+
+
+def test_lookup_aerodrome_skips_blank_pipe_lines(monkeypatch, tmp_path):
+    db = tmp_path / "aerodromes.tbl"
+    db.write_text("||| \nKJFK|JFK|ALT|JFK Airport|40|-73|10\n", encoding="utf-8")
+
+    monkeypatch.setattr(conv, "_load_aerodrome_db", lambda: db)
+    monkeypatch.setattr(
+        "src.schemas.airport.get_airport_validator",
+        lambda: SimpleNamespace(get_airport=lambda _icao: None),
+    )
+
+    result = conv._lookup_aerodrome("KJFK")
+    assert result is not None
+    assert result["iataID"] == "JFK"
+
+
+def test_convert_with_metadata_empty_validation_layers_list(monkeypatch):
+    decoder = SimpleNamespace(decode=lambda _tac: {"ident": {"str": "KJFK"}})
+    encoder = SimpleNamespace(encode=lambda _decoded, _tac: SimpleNamespace(tag="root"))
+    captured = {}
+
+    def _validate_complete(**kwargs):
+        captured["layers"] = kwargs["layers"]
+        return SimpleNamespace(is_valid=True, layers_passed=[], layers_failed=[], all_issues=[])
+
+    monkeypatch.setattr("src.utilities.gifts_adapter.get_decoder", lambda version=None: decoder)
+    monkeypatch.setattr("src.utilities.gifts_adapter.get_encoder", lambda version=None: encoder)
+    monkeypatch.setattr(conv, "_lookup_aerodrome", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(conv.ET, "tostring", lambda *_args, **_kwargs: "<iwxxm:METAR/>")
+    monkeypatch.setattr(
+        "src.services.validation_orchestrator.get_validation_orchestrator",
+        lambda: SimpleNamespace(validate_complete=_validate_complete),
+    )
+
+    conv.convert_metar_tac_with_metadata(
+        "METAR KJFK 010000Z",
+        validate=True,
+        validation_layers=[],
+    )
+
+    assert captured["layers"] is None
+
+
+def test_convert_with_metadata_orchestrator_absolute_import_fallback(monkeypatch):
+    import builtins
+    import types
+
+    decoder = SimpleNamespace(decode=lambda _tac: {"ident": {"str": "KJFK"}})
+    encoder = SimpleNamespace(encode=lambda _decoded, _tac: SimpleNamespace(tag="root"))
+    original_import = builtins.__import__
+
+    fake_orchestrator_mod = types.ModuleType("services.validation_orchestrator")
+    fake_orchestrator_mod.get_validation_orchestrator = lambda: SimpleNamespace(
+        validate_complete=lambda **_kwargs: SimpleNamespace(
+            is_valid=True,
+            layers_passed=["XML_SCHEMA"],
+            layers_failed=[],
+            all_issues=[],
+        )
+    )
+    monkeypatch.setitem(sys.modules, "services.validation_orchestrator", fake_orchestrator_mod)
+
+    def _import(name, globals=None, locals=None, fromlist=(), level=0):
+        if level > 0 and name.endswith("validation_orchestrator"):
+            raise ImportError("relative import blocked")
+        return original_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _import)
+    monkeypatch.setattr("src.utilities.gifts_adapter.get_decoder", lambda version=None: decoder)
+    monkeypatch.setattr("src.utilities.gifts_adapter.get_encoder", lambda version=None: encoder)
+    monkeypatch.setattr(conv, "_lookup_aerodrome", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(conv.ET, "tostring", lambda *_args, **_kwargs: "<iwxxm:METAR/>")
+
+    xml, validation_result = conv.convert_metar_tac_with_metadata(
+        "METAR KJFK 010000Z",
+        validate=True,
+        validation_layers=["XML_SCHEMA"],
+    )
+
+    assert xml.startswith('<?xml version="1.0"?>')
+    assert validation_result is not None
+
+
+def test_lookup_aerodrome_skips_blank_table_rows(monkeypatch, tmp_path):
+    db = tmp_path / "aerodromes.tbl"
+    db.write_text("# comment\n\nKJFK|JFK|KJFK|JFK Intl|40.6|-73.7|3\n", encoding="utf-8")
+    monkeypatch.setattr(conv, "_load_aerodrome_db", lambda: db)
+    monkeypatch.setattr(
+        "src.schemas.airport.get_airport_validator",
+        lambda: SimpleNamespace(get_airport=lambda _icao: None),
+    )
+
+    result = conv._lookup_aerodrome("KJFK")
+    assert result is not None
+    assert result["name"] == "JFK Intl"

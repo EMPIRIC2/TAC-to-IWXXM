@@ -95,8 +95,14 @@ class TestVersionMigratorMigrate:
         m = VersionMigrator()
         with patch("src.utilities.version_migration.get_breaking_changes", return_value=breaking):
             result_xml, warnings = m.migrate(xml, "2023-1", "2025-2")
-        # Warnings should be populated if the element was actually removed
-        assert isinstance(warnings, list)
+        assert "Gone" not in result_xml
+        assert len(warnings) == 1
+        assert warnings[0] == {
+            "element": "Gone",
+            "xpath": ".//{http://icao.int/iwxxm}Gone",
+            "action": "remove",
+            "reason": "Gone in 2025-2",
+        }
 
     def test_warnings_reset_on_each_call(self):
         m = VersionMigrator()
@@ -120,3 +126,65 @@ class TestVersionMigratorMigrate:
             result_xml, warnings = m.migrate(SIMPLE_XML, "2023-1", "2025-2")
         # Should not raise; unsupported action is skipped
         assert isinstance(result_xml, str)
+
+
+class TestVersionMigratorRemoveElements:
+    def test_remove_elements_skips_empty_xpath(self):
+        m = VersionMigrator()
+        root = ET.fromstring(SIMPLE_XML)
+        m._remove_elements(root, {"element": "child", "xpath": "", "reason": "gone"})
+        assert m.warnings == []
+
+    def test_remove_elements_handles_internal_exception(self):
+        m = VersionMigrator()
+        root = ET.fromstring(SIMPLE_XML)
+        with patch.object(m, "_remove_elements_by_tag", side_effect=RuntimeError("remove boom")):
+            m._remove_elements(
+                root,
+                {"element": "child", "xpath": "//child", "action": "remove", "reason": "gone"},
+            )
+        assert m.warnings == []
+
+    def test_remove_elements_by_tag_with_prefix(self):
+        xml = """<root xmlns:iwxxm="http://icao.int/iwxxm">
+  <iwxxm:runwayState>state</iwxxm:runwayState>
+</root>"""
+        m = VersionMigrator()
+        root = ET.fromstring(xml)
+        removed = m._remove_elements_by_tag(root, "iwxxm:runwayState")
+        assert removed == 1
+        assert "runwayState" not in ET.tostring(root, encoding="unicode")
+
+    def test_tag_matches_unprefixed_tag(self):
+        m = VersionMigrator()
+        assert m._tag_matches("runwayState", "runwayState") is True
+        assert m._tag_matches("other", "runwayState") is False
+
+    def test_remove_elements_by_tag_without_prefix(self):
+        xml = """<root xmlns:iwxxm="http://icao.int/iwxxm">
+  <runwayState>state</runwayState>
+</root>"""
+        m = VersionMigrator()
+        root = ET.fromstring(xml)
+        removed = m._remove_elements_by_tag(root, "runwayState")
+        assert removed == 1
+
+
+class TestVersionMigrationHelpers:
+    def test_get_migrator_singleton(self):
+        import src.utilities.version_migration as vm
+
+        vm._migrator_instance = None
+        first = vm.get_migrator()
+        second = vm.get_migrator()
+        assert first is second
+        vm._migrator_instance = None
+
+    def test_migrate_xml_convenience(self):
+        import src.utilities.version_migration as vm
+
+        with patch.object(vm.get_migrator(), "migrate", return_value=("<xml/>", [{"element": "x"}])) as migrate_mock:
+            result_xml, warnings = vm.migrate_xml(SIMPLE_XML, "2023-1", "2025-2")
+        migrate_mock.assert_called_once_with(SIMPLE_XML, "2023-1", "2025-2")
+        assert result_xml == "<xml/>"
+        assert warnings == [{"element": "x"}]

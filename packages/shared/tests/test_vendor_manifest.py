@@ -107,6 +107,17 @@ def test_validate_manifest_schema_reports_structural_errors() -> None:
     assert any("bundles must be an object" in err for err in errors)
 
 
+def test_validate_manifest_schema_reports_missing_required_bundle() -> None:
+    manifest = {
+        "schema_version": MANIFEST_SCHEMA_VERSION,
+        "bundles": {
+            "iwxxm": _sample_bundle("vendor/schemas/iwxxm"),
+        },
+    }
+    errors = validate_manifest_schema(manifest)
+    assert any("missing required bundle 'iwxxm-codelists'" in err for err in errors)
+
+
 def test_validate_manifest_schema_reports_bundle_field_errors() -> None:
     manifest = {
         "schema_version": MANIFEST_SCHEMA_VERSION,
@@ -152,6 +163,38 @@ def test_verify_manifest_integrity_reports_invalid_json(tmp_path: Path) -> None:
     result = verify_manifest_integrity(tmp_path, manifest_path=manifest_path)
     assert not result.ok
     assert result.errors[0].startswith("invalid manifest:")
+
+
+def test_verify_manifest_integrity_skips_non_object_or_incomplete_bundle_entries(
+    tmp_path: Path,
+) -> None:
+    bundles: dict[str, object] = {
+        "iwxxm": "not-an-object",
+        "iwxxm-codelists": {"local_path": 123, "tree_sha256": "a" * 64},
+    }
+    for name in ("iwxxm-modelling", "iwxxm-translation"):
+        root = tmp_path / "vendor" / "schemas" / name
+        root.mkdir(parents=True)
+        (root / "README.md").write_text(name, encoding="utf-8")
+        bundles[name] = _sample_bundle(
+            f"vendor/schemas/{name}",
+            tree_sha256=compute_tree_sha256(root),
+        )
+
+    manifest_path = tmp_path / "vendor" / "manifest.json"
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schema_version": MANIFEST_SCHEMA_VERSION,
+                "bundles": bundles,
+            }
+        ),
+        encoding="utf-8",
+    )
+    result = verify_manifest_integrity(tmp_path, manifest_path=manifest_path)
+    assert not result.ok
+    assert not any("tree missing" in err for err in result.errors)
 
 
 def test_verify_manifest_integrity_reports_missing_bundle_tree(tmp_path: Path) -> None:

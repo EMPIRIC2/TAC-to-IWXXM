@@ -92,6 +92,22 @@ class TestRunwayStateRemoval:
             assert "action" in warning
             assert "reason" in warning
 
+    def test_aerodrome_runway_state_element_removal(self):
+        """Test that AerodromeRunwayState elements are removed (2023-1 → 2025-2)."""
+        xml_with_complex = """<?xml version="1.0"?>
+<root xmlns:iwxxm="http://icao.int/iwxxm/2023-1">
+    <iwxxm:AerodromeRunwayState><data/></iwxxm:AerodromeRunwayState>
+    <keep>preserved</keep>
+</root>"""
+
+        xml_out, warnings = migrate_xml(xml_with_complex, "2023-1", "2025-2")
+
+        root = ET.fromstring(xml_out)
+        complex_elements = [el for el in root.iter() if "AerodromeRunwayState" in el.tag]
+        assert len(complex_elements) == 0, "AerodromeRunwayState elements should be removed"
+        assert any(w.get("element") == "iwxxm:AerodromeRunwayState" for w in warnings)
+        assert any(el.tag.endswith("keep") for el in root.iter())
+
 
 class TestMigrationNoChanges:
     """Test migrations that don't require changes."""
@@ -170,24 +186,21 @@ class TestEdgeCases:
     """Test edge cases in migration."""
 
     def test_empty_namespace(self):
-        """Test migration of elements without namespace."""
+        """Unprefixed and namespaced runwayState tags are both removed (local-name match)."""
         xml_no_ns = """<?xml version="1.0"?>
 <root>
-    <runwayState>should not match - no namespace</runwayState>
+    <runwayState>no namespace</runwayState>
     <iwxxm:runwayState xmlns:iwxxm="http://icao.int/iwxxm/2023-1">
-        should match
+        namespaced
     </iwxxm:runwayState>
 </root>"""
 
         xml_out, warnings = migrate_xml(xml_no_ns, "2023-1", "2025-2")
 
-        # Both namespaced and tag-named elements will be removed by the migrator
-        # since it uses tag name matching
         root = ET.fromstring(xml_out)
         all_runway = [el for el in root.iter() if "runwayState" in el.tag]
-        # The migrator removes all elements with matching tag name
-        # (This is a design choice - being conservative about element removal)
-        assert isinstance(all_runway, list)
+        assert len(all_runway) == 0, "all runwayState elements should be removed"
+        assert any(w.get("element") == "iwxxm:runwayState" for w in warnings)
 
     def test_deeply_nested_elements(self):
         """Test removal of deeply nested elements."""

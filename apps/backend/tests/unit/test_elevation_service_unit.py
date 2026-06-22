@@ -263,3 +263,163 @@ class TestElevationServicePersistenceAndSingleton:
             assert first is second
         finally:
             elevation_module._elevation_service = original
+
+
+class TestElevationServiceLoadErrors:
+    def test_load_datum_mapping_file_not_found(self, monkeypatch):
+        svc = ElevationService.__new__(ElevationService)
+        svc.datum_map = {}
+        real_open = open
+
+        def fake_open(path, *args, **kwargs):
+            if str(path).endswith("vertical_datum_map.json"):
+                raise FileNotFoundError(path)
+            return real_open(path, *args, **kwargs)
+
+        monkeypatch.setattr("builtins.open", fake_open)
+        svc._load_datum_mapping()
+        assert svc.datum_map == {"country_defaults": {}, "airport_overrides": {}, "datum_info": {}}
+
+    def test_load_datum_mapping_json_decode_error(self, monkeypatch):
+        from io import StringIO
+
+        svc = ElevationService.__new__(ElevationService)
+        svc.datum_map = {}
+        real_open = open
+
+        def fake_open(path, *args, **kwargs):
+            if str(path).endswith("vertical_datum_map.json"):
+                return StringIO("{bad json")
+            return real_open(path, *args, **kwargs)
+
+        monkeypatch.setattr("builtins.open", fake_open)
+        svc._load_datum_mapping()
+        assert svc.datum_map == {"country_defaults": {}, "airport_overrides": {}, "datum_info": {}}
+
+
+class TestElevationServiceDatumNormalization:
+    def test_normalize_datum_other_prefix_passthrough(self, tmp_path):
+        svc = _make_service(tmp_path)
+        assert svc._normalize_datum_code("OTHER:CUSTOM") == "OTHER:CUSTOM"
+
+    def test_normalize_datum_uses_datum_info_iwxxm_code(self, tmp_path):
+        svc = _make_service(
+            tmp_path,
+            {
+                "country_defaults": {},
+                "airport_overrides": {},
+                "datum_info": {"CGVD2013": {"iwxxm_code": "OTHER:CGVD2013"}},
+            },
+        )
+        assert svc._normalize_datum_code("CGVD2013") == "OTHER:CGVD2013"
+
+
+class TestElevationServiceAdditionalBranches:
+    def test_get_raw_data_returns_none_elevation_without_default(self, tmp_path):
+        svc = _make_service(tmp_path)
+        elevation_m, datum = svc._get_raw_elevation_data("ZZZZ", country_code="XZ")
+        assert elevation_m is None
+        assert datum == "EGM_96"
+
+    def test_get_raw_data_override_without_elevation_uses_datum_only(self, tmp_path):
+        svc = _make_service(
+            tmp_path,
+            {
+                "country_defaults": {},
+                "airport_overrides": {"EGLL": {"vertical_datum": "EGM_96"}},
+                "datum_info": {},
+            },
+        )
+        elevation_m, datum = svc._get_raw_elevation_data("EGLL")
+        assert elevation_m is None
+        assert datum == "EGM_96"
+
+    def test_get_coordinates_override_partial_coords_returns_none(self, tmp_path):
+        svc = _make_service(
+            tmp_path,
+            {
+                "country_defaults": {},
+                "airport_overrides": {"KSEA": {"latitude": 47.449}},
+                "datum_info": {},
+            },
+        )
+        assert svc.get_coordinates_override("KSEA") is None
+
+    def test_save_datum_mapping_writes_file(self, tmp_path, monkeypatch):
+        svc = _make_service(tmp_path)
+        written = {}
+
+        real_open = open
+
+        def fake_open(path, mode="r", *args, **kwargs):
+            if "w" in mode and str(path).endswith("vertical_datum_map.json"):
+                written["path"] = path
+                return real_open(tmp_path / "saved.json", mode, *args, **kwargs)
+            return real_open(path, mode, *args, **kwargs)
+
+        monkeypatch.setattr("builtins.open", fake_open)
+        svc.save_datum_mapping()
+
+        assert written["path"] is not None
+        saved = json.loads((tmp_path / "saved.json").read_text(encoding="utf-8"))
+        assert "country_defaults" in saved
+
+
+class TestElevationServiceVersionFormatting:
+    def test_get_elevation_data_applies_version_formatting(self, tmp_path, monkeypatch):
+        svc = _make_service(
+            tmp_path,
+            {
+                "country_defaults": {},
+                "airport_overrides": {"KJFK": {"elevation_m": 4.0, "vertical_datum": "NAVD88"}},
+                "datum_info": {},
+            },
+        )
+
+        monkeypatch.setattr(
+            "src.config.version_formatting.format_elevation",
+            lambda value, _version: round(value, 1),
+        )
+
+        elevation_m, datum = svc.get_elevation_data("KJFK", version="2025-2")
+        assert elevation_m == 4.0
+        assert datum == "NAVD88"
+
+    def test_get_raw_elevation_data_test_override_uses_default_feet(self, tmp_path):
+        svc = _make_service(
+            tmp_path,
+            {
+                "country_defaults": {},
+                "airport_overrides": {"KSEA": {"vertical_datum": "NAVD88"}},
+                "datum_info": {},
+                "test_overrides": {
+                    "KSEA": {
+                        "vertical_datum": "EGM_96",
+                        "production_datum": "NAVD88",
+                    }
+                },
+            },
+        )
+
+        elevation_m, datum = svc._get_raw_elevation_data("KSEA", default_elevation_ft=100, use_test_overrides=True)
+        assert datum == "EGM_96"
+        assert elevation_m == 30
+
+    def test_get_elevation_data_keeps_raw_value_when_formatting_fails(self, tmp_path, monkeypatch):
+        svc = _make_service(
+            tmp_path,
+            {
+                "country_defaults": {},
+                "airport_overrides": {"KJFK": {"elevation_m": 4.0, "vertical_datum": "NAVD88"}},
+                "datum_info": {},
+            },
+        )
+
+        monkeypatch.setattr(
+            "src.config.version_formatting.format_elevation",
+            lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("format failed")),
+        )
+
+        elevation_m, datum = svc.get_elevation_data("KJFK", version="2025-2")
+        assert elevation_m == 4.0
+        assert datum == "NAVD88"

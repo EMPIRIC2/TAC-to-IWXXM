@@ -314,3 +314,69 @@ def test_clear_cache_version_without_working_dir(tmp_path):
     # Do not create matching _working_dirs entry to hit non-working-dir branch.
     validator.clear_cache("2025-2")
     assert "2025-2" not in validator._schematron_cache
+
+
+def test_setup_working_directory_uses_iwxxm_nil_for_2025_2(tmp_path):
+    validator = SchematronValidator()
+    codelists = tmp_path / "rule"
+    codelists.mkdir()
+    required = [
+        "codes.wmo.int-iwxxm-nil.rdf",
+        "codes.wmo.int-49-2-AerodromeRecentWeather.rdf",
+        "codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf",
+    ]
+    for name in required:
+        (codelists / name).write_text("<rdf:RDF/>", encoding="utf-8")
+
+    validator.registry = SimpleNamespace(get_codelists_dir=lambda _version: codelists)
+    work_dir = validator._setup_working_directory("2025-2")
+    assert work_dir.exists()
+    assert (work_dir / "codes.wmo.int-iwxxm-nil.rdf").exists()
+
+
+def test_get_compiled_schematron_query_binding_read_failure_continues(monkeypatch, tmp_path):
+    validator = SchematronValidator()
+    sch_path = tmp_path / "iwxxm.sch"
+    sch_path.write_text('<schema queryBinding="xslt1"></schema>', encoding="utf-8")
+    validator.registry = SimpleNamespace(get_schematron_path=lambda _version: sch_path)
+
+    real_open = builtins.open
+
+    def _fake_open(path, mode="r", *args, **kwargs):
+        if str(path).endswith("iwxxm.sch") and "r" in mode and "b" not in mode:
+            raise OSError("cannot read sch")
+        return real_open(path, mode, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "open", _fake_open)
+    monkeypatch.setattr(validator, "_setup_working_directory", lambda _version: tmp_path)
+    monkeypatch.setattr(etree, "parse", lambda *_args, **_kwargs: etree.ElementTree(etree.Element("schema")))
+    monkeypatch.setattr(
+        isoschematron,
+        "Schematron",
+        lambda *_args, **_kwargs: _FakeSchematron(valid=True, report=etree.Element("svrl")),
+    )
+
+    compiled = validator._get_compiled_schematron("2023-1")
+    assert compiled is not None
+
+
+def test_get_compiled_schematron_xml_syntax_error_raises(tmp_path):
+    validator = SchematronValidator()
+    sch_path = tmp_path / "iwxxm.sch"
+    sch_path.write_text("<schema><unclosed>", encoding="utf-8")
+    codelists = tmp_path / "codelists"
+    codelists.mkdir()
+    for name in [
+        "codes.wmo.int-common-nil.rdf",
+        "codes.wmo.int-49-2-AerodromeRecentWeather.rdf",
+        "codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf",
+    ]:
+        (codelists / name).write_text("<rdf:RDF/>", encoding="utf-8")
+
+    validator.registry = SimpleNamespace(
+        get_schematron_path=lambda _version: sch_path,
+        get_codelists_dir=lambda _version: codelists,
+    )
+
+    with pytest.raises(etree.XMLSyntaxError):
+        validator._get_compiled_schematron("2023-1")

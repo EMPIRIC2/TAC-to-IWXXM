@@ -525,3 +525,40 @@ def test_global_getter_and_validate_wrapper(monkeypatch, tmp_path):
 
     assert got is parser
     assert result.is_valid is True
+
+
+def test_load_codelists_logs_warning_when_rdf_parse_fails(tmp_path, monkeypatch, caplog):
+    import logging
+
+    rdf_path = tmp_path / "broken.rdf"
+    rdf_path.write_text("<not-valid", encoding="utf-8")
+    parser = CodeListParser(tmp_path, settings=_settings())
+
+    def _boom(_path):
+        raise ValueError("parse failed")
+
+    monkeypatch.setattr(parser, "_parse_rdf_file", _boom)
+    with caplog.at_level(logging.WARNING, logger="src.utilities.codelist_parser"):
+        parser.load_codelists()
+
+    assert parser._loaded is True
+    assert "Failed to parse broken.rdf" in caplog.text
+
+
+def test_validate_online_returns_warning_when_requests_missing(monkeypatch, tmp_path):
+    parser = CodeListParser(tmp_path, settings=_settings())
+    parser.settings.wmo_online_validation = True
+    monkeypatch.setattr(cp, "REQUESTS_AVAILABLE", False)
+    monkeypatch.setattr(cp, "requests", None)
+
+    issue = parser._validate_online("https://codes.wmo.int/test", "/root")
+    assert issue.code == "ONLINE_VALIDATION_UNAVAILABLE"
+
+
+def test_parse_rdf_status_returns_unknown_on_failure(monkeypatch):
+    parser = CodeListParser(Path("/tmp"), settings=_settings())
+    monkeypatch.setattr(
+        "src.utilities.codelist_parser.etree.fromstring",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("bad rdf")),
+    )
+    assert parser._parse_rdf_status(b"<rdf/>") == "unknown"

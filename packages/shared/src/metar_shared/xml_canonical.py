@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 import xml.etree.ElementTree as ET
 from collections.abc import Iterable
+from typing import NoReturn
 from xml.dom import minidom
 
 type CanonicalNode = tuple[
@@ -117,6 +118,11 @@ def _parse_root_element(xml_content: str) -> ET.Element:
         except (ET.ParseError, Exception) as exc:
             last_error = exc
 
+    _raise_parse_error(last_error)
+
+
+def _raise_parse_error(last_error: Exception | None) -> NoReturn:
+    """Raise a canonicalization parse failure with optional chained cause."""
     if last_error is not None:
         raise ValueError(
             f"Cannot parse XML for canonicalization: {last_error}"

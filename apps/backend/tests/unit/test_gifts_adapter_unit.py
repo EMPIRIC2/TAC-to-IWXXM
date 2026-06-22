@@ -283,3 +283,200 @@ def test_get_encoder_cache_key_differs_by_geo_db(monkeypatch):
     second = ga.get_encoder("2025-2", geo_locations_db=object())
 
     assert first is not second
+
+
+def test_encoder_skips_metadata_when_ident_missing_icao(monkeypatch):
+    fake_encoder_module = type("E", (), {"Annex3": _FakeAnnex3Encoder})
+    monkeypatch.setattr(ga, "metarEncoder", fake_encoder_module)
+
+    class _GeoDB:
+        def get(self, _icao):
+            return "Name|IATA|ALT|10,20"
+
+    encoder = ga.GIFTsEncoder(version="2025-2", geo_locations_db=_GeoDB())
+    decoded = {"ident": {"extra": "x"}}
+    result = encoder.encode(decoded, "METAR KJFK")
+    assert result["xml"] == "ok"
+    assert decoded["ident"] == {"extra": "x"}
+
+
+def test_encoder_skips_empty_metadata_parts(monkeypatch):
+    fake_encoder_module = type("E", (), {"Annex3": _FakeAnnex3Encoder})
+    monkeypatch.setattr(ga, "metarEncoder", fake_encoder_module)
+
+    class _GeoDB:
+        def get(self, _icao):
+            return "||ALT|10,20"
+
+    encoder = ga.GIFTsEncoder(version="2025-2", geo_locations_db=_GeoDB())
+    decoded = {"ident": {"str": "KJFK"}}
+    encoder.encode(decoded, "METAR KJFK")
+    assert "name" not in decoded["ident"]
+    assert "iataID" not in decoded["ident"]
+    assert decoded["ident"]["alternate"] == "ALT"
+
+
+def test_encoder_list_ident_with_string_element(monkeypatch):
+    fake_encoder_module = type("E", (), {"Annex3": _FakeAnnex3Encoder})
+    monkeypatch.setattr(ga, "metarEncoder", fake_encoder_module)
+
+    class _GeoDB:
+        def get(self, _icao):
+            return "Name|IATA|ALT|10,20"
+
+    encoder = ga.GIFTsEncoder(version="2025-2", geo_locations_db=_GeoDB())
+    decoded = {"ident": ["KJFK"]}
+    encoder.encode(decoded, "METAR KJFK")
+    assert decoded["ident"][0] == "KJFK"
+
+
+def test_encoder_metadata_injection_exception_is_non_blocking(monkeypatch):
+    fake_encoder_module = type("E", (), {"Annex3": _FakeAnnex3Encoder})
+    monkeypatch.setattr(ga, "metarEncoder", fake_encoder_module)
+
+    class _BrokenGeoDB:
+        def get(self, _icao):
+            raise RuntimeError("geo db down")
+
+    encoder = ga.GIFTsEncoder(version="2025-2", geo_locations_db=_BrokenGeoDB())
+    decoded = {"ident": {"str": "KJFK"}}
+    result = encoder.encode(decoded, "METAR KJFK")
+    assert result["xml"] == "ok"
+
+
+def test_convert_tac_to_iwxxm_uses_translation_time_when_present(monkeypatch):
+    class _FakeDecoder:
+        def decode(self, _tac):
+            return {"ident": {"str": "KJFK"}, "translationTime": "2024-01-01T00:00:00Z"}
+
+    class _FakeEncoder:
+        def encode(self, decoded, _tac):
+            return {"decoded": decoded}
+
+    monkeypatch.setattr(ga, "get_decoder", lambda _version=None: _FakeDecoder())
+    monkeypatch.setattr(ga, "get_encoder", lambda _version=None, geo_locations_db=None: _FakeEncoder())
+
+    gifts_module = ModuleType("gifts")
+    common_module = ModuleType("gifts.common")
+    xml_config_module = ModuleType("gifts.common.xmlConfig")
+    xml_config_module.TRANSLATOR = True
+    monkeypatch.setitem(sys.modules, "gifts", gifts_module)
+    monkeypatch.setitem(sys.modules, "gifts.common", common_module)
+    monkeypatch.setitem(sys.modules, "gifts.common.xmlConfig", xml_config_module)
+
+    result = ga.convert_tac_to_iwxxm("METAR KJFK 010000Z", version="2025-2")
+    assert result["decoded"]["translatedBulletinReceptionTime"] == "2024-01-01T00:00:00Z"
+
+
+def test_encoder_list_ident_with_empty_position_parts(monkeypatch):
+    fake_encoder_module = type("E", (), {"Annex3": _FakeAnnex3Encoder})
+    monkeypatch.setattr(ga, "metarEncoder", fake_encoder_module)
+
+    class _GeoDB:
+        def get(self, _icao):
+            return "Name|IATA|ALT|"
+
+    encoder = ga.GIFTsEncoder(version="2025-2", geo_locations_db=_GeoDB())
+    decoded = {"ident": [{"str": "KJFK"}]}
+    encoder.encode(decoded, "METAR KJFK")
+    assert "position" not in decoded["ident"][0]
+
+
+def test_encoder_list_ident_without_icao_skips_lookup(monkeypatch):
+    fake_encoder_module = type("E", (), {"Annex3": _FakeAnnex3Encoder})
+    monkeypatch.setattr(ga, "metarEncoder", fake_encoder_module)
+
+    class _GeoDB:
+        def get(self, _icao):
+            return "Name|IATA|ALT|10,20"
+
+    encoder = ga.GIFTsEncoder(version="2025-2", geo_locations_db=_GeoDB())
+    decoded = {"ident": [{}]}
+    result = encoder.encode(decoded, "METAR KJFK")
+    assert result["xml"] == "ok"
+
+
+def test_encoder_logs_when_metadata_lookup_returns_none(monkeypatch, caplog):
+    import logging
+
+    fake_encoder_module = type("E", (), {"Annex3": _FakeAnnex3Encoder})
+    monkeypatch.setattr(ga, "metarEncoder", fake_encoder_module)
+
+    class _GeoDB:
+        def get(self, _icao):
+            return None
+
+    encoder = ga.GIFTsEncoder(version="2025-2", geo_locations_db=_GeoDB())
+    decoded = {"ident": {"str": "KJFK"}}
+    with caplog.at_level(logging.DEBUG, logger="src.utilities.gifts_adapter"):
+        result = encoder.encode(decoded, "METAR KJFK")
+    assert result["xml"] == "ok"
+    assert "No metadata found for KJFK" in caplog.text
+
+
+def test_convert_tac_to_iwxxm_skips_bulletin_id_without_ident_str(monkeypatch):
+    class _FakeDecoder:
+        def decode(self, _tac):
+            return {"ident": {"index": 1}, "translationTime": "2024-01-01T00:00:00Z"}
+
+    class _FakeEncoder:
+        def encode(self, decoded, _tac):
+            return {"decoded": decoded}
+
+    monkeypatch.setattr(ga, "get_decoder", lambda _version=None: _FakeDecoder())
+    monkeypatch.setattr(ga, "get_encoder", lambda _version=None, geo_locations_db=None: _FakeEncoder())
+
+    gifts_module = ModuleType("gifts")
+    common_module = ModuleType("gifts.common")
+    xml_config_module = ModuleType("gifts.common.xmlConfig")
+    xml_config_module.TRANSLATOR = True
+    monkeypatch.setitem(sys.modules, "gifts", gifts_module)
+    monkeypatch.setitem(sys.modules, "gifts.common", common_module)
+    monkeypatch.setitem(sys.modules, "gifts.common.xmlConfig", xml_config_module)
+
+    result = ga.convert_tac_to_iwxxm("METAR KJFK 010000Z", version="2025-2")
+    assert "translatedBulletinID" not in result["decoded"]
+    assert result["decoded"]["translatedBulletinReceptionTime"] == "2024-01-01T00:00:00Z"
+
+
+def test_convert_tac_to_iwxxm_ignores_xmlconfig_attribute_error(monkeypatch):
+    class _FakeDecoder:
+        def decode(self, _tac):
+            return {"ident": {"str": "KJFK"}}
+
+    class _FakeEncoder:
+        def encode(self, decoded, _tac):
+            return {"decoded": decoded}
+
+    monkeypatch.setattr(ga, "get_decoder", lambda _version=None: _FakeDecoder())
+    monkeypatch.setattr(ga, "get_encoder", lambda _version=None, geo_locations_db=None: _FakeEncoder())
+
+    gifts_module = ModuleType("gifts")
+    common_module = ModuleType("gifts.common")
+    common_module.xmlConfig = object()
+    monkeypatch.setitem(sys.modules, "gifts", gifts_module)
+    monkeypatch.setitem(sys.modules, "gifts.common", common_module)
+
+    result = ga.convert_tac_to_iwxxm("METAR KJFK 010000Z", version="2025-2")
+    assert "translatedBulletinID" not in result["decoded"]
+
+
+def test_gifts_adapter_module_import_error_sets_none(monkeypatch):
+    import builtins
+    import importlib
+
+    saved_decoder = ga.metarDecoder
+    saved_encoder = ga.metarEncoder
+    real_import = builtins.__import__
+
+    def _fake_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "gifts" and level == 0:
+            raise ImportError("gifts unavailable")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _fake_import)
+    reloaded = importlib.reload(ga)
+    assert reloaded.metarDecoder is None
+    assert reloaded.metarEncoder is None
+    ga.metarDecoder = saved_decoder
+    ga.metarEncoder = saved_encoder

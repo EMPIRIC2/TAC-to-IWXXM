@@ -357,3 +357,396 @@ async def test_verify_integrity_returns_false_when_manifest_or_file_missing(tmp_
     (version_dir / ".manifest.json").write_text(json.dumps(manifest_data), encoding="utf-8")
 
     assert await service.verify_integrity("2025-2") is False
+
+
+@pytest.mark.asyncio
+async def test_mirror_version_downloads_xmi_directory(monkeypatch, tmp_path):
+    service = SchemaMirrorService(base_path=tmp_path)
+    calls = []
+
+    async def fake_download_xsd_tree(_url, _target_dir, manifest):
+        manifest["iwxxm.xsd"] = {"url": _url, "sha256": "abc", "size_bytes": 1}
+
+    async def fake_download_directory(url, target_dir, manifest, skip_on_404=False):
+        calls.append((url, target_dir.name, skip_on_404))
+
+    async def fake_update_lockfile(_version, _manifest_data):
+        return None
+
+    monkeypatch.setattr(service, "_download_xsd_tree", fake_download_xsd_tree)
+    monkeypatch.setattr(service, "_download_directory", fake_download_directory)
+    monkeypatch.setattr(service, "_update_lockfile", fake_update_lockfile)
+
+    await service.mirror_version(
+        "2025-2",
+        "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd",
+        include_examples=False,
+        include_html=False,
+        include_xmi=True,
+    )
+
+    assert ("https://schemas.wmo.int/iwxxm/2025-2/XMI/", "XMI", True) in calls
+
+
+@pytest.mark.asyncio
+async def test_download_xsd_tree_skips_already_downloaded_url(monkeypatch, tmp_path):
+    service = SchemaMirrorService(base_path=tmp_path)
+    service.downloaded_files.add("https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd")
+
+    calls = {"count": 0}
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            calls["count"] += 1
+            raise AssertionError("should not download duplicate url")
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    await service._download_xsd_tree("https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd", tmp_path, {})
+    assert calls["count"] == 0
+
+
+@pytest.mark.asyncio
+async def test_download_xsd_tree_uses_filename_when_no_subdirectory(monkeypatch, tmp_path):
+    service = SchemaMirrorService(base_path=tmp_path)
+    body = b"<xsd/>"
+
+    class _Response:
+        status_code = 200
+        content = body
+
+        def raise_for_status(self):
+            return None
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            return _Response()
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    async def fake_process(*_args, **_kwargs):
+        return None
+
+    monkeypatch.setattr(service, "_process_xsd_imports", fake_process)
+
+    manifest = {}
+    await service._download_xsd_tree("https://example.test/iwxxm.xsd", tmp_path, manifest)
+
+    assert (tmp_path / "iwxxm.xsd").exists()
+    assert "iwxxm.xsd" in manifest
+
+
+@pytest.mark.asyncio
+async def test_download_xsd_tree_non_xsd_skips_import_processing(monkeypatch, tmp_path):
+    service = SchemaMirrorService(base_path=tmp_path)
+    calls = []
+
+    class _Response:
+        status_code = 200
+        content = b"not-an-xsd"
+
+        def raise_for_status(self):
+            return None
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            return _Response()
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+    monkeypatch.setattr(service, "_process_xsd_imports", lambda *_args, **_kwargs: calls.append(True))
+
+    await service._download_xsd_tree("https://example.test/readme.txt", tmp_path, {})
+
+    assert calls == []
+
+
+@pytest.mark.asyncio
+async def test_download_xsd_tree_raises_on_http_error(monkeypatch, tmp_path):
+    import httpx
+
+    service = SchemaMirrorService(base_path=tmp_path)
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            request = httpx.Request("GET", "https://example.test/missing.xsd")
+            response = httpx.Response(404, request=request)
+            raise httpx.HTTPStatusError("missing", request=request, response=response)
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    with pytest.raises(httpx.HTTPStatusError):
+        await service._download_xsd_tree("https://example.test/missing.xsd", tmp_path, {})
+
+
+@pytest.mark.asyncio
+async def test_download_file_uses_base_path_when_version_dir_unset(monkeypatch, tmp_path):
+    service = SchemaMirrorService(base_path=tmp_path)
+    service.current_version_dir = None
+    payload = b"payload"
+
+    class _Response:
+        status_code = 200
+        content = payload
+
+        def raise_for_status(self):
+            return None
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            return _Response()
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    manifest = {}
+    await service._download_file("https://example.test/sample.txt", tmp_path / "misc", manifest)
+
+    assert any(key.endswith("sample.txt") for key in manifest)
+
+
+@pytest.mark.asyncio
+async def test_download_file_raises_on_http_error(monkeypatch, tmp_path):
+    import httpx
+
+    service = SchemaMirrorService(base_path=tmp_path)
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            request = httpx.Request("GET", "https://example.test/file.txt")
+            response = httpx.Response(500, request=request)
+            raise httpx.HTTPStatusError("server error", request=request, response=response)
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    with pytest.raises(httpx.HTTPStatusError):
+        await service._download_file("https://example.test/file.txt", tmp_path, {})
+
+
+@pytest.mark.asyncio
+async def test_download_directory_raises_on_non_404_http_error(monkeypatch, tmp_path):
+    import httpx
+
+    service = SchemaMirrorService(base_path=tmp_path)
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            request = httpx.Request("GET", "https://example.test/dir/")
+            response = httpx.Response(500, request=request)
+            raise httpx.HTTPStatusError("server error", request=request, response=response)
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    with pytest.raises(httpx.HTTPStatusError):
+        await service._download_directory("https://example.test/dir/", tmp_path, {}, skip_on_404=True)
+
+
+@pytest.mark.asyncio
+async def test_download_directory_raises_on_parse_error_when_not_skipping(monkeypatch, tmp_path):
+    service = SchemaMirrorService(base_path=tmp_path)
+
+    class _BrokenResponse:
+        status_code = 200
+
+        @property
+        def text(self):
+            raise RuntimeError("cannot read body")
+
+        def raise_for_status(self):
+            return None
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            return _BrokenResponse()
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    with pytest.raises(RuntimeError, match="cannot read body"):
+        await service._download_directory("https://example.test/dir/", tmp_path, {}, skip_on_404=False)
+
+
+@pytest.mark.asyncio
+async def test_update_lockfile_updates_existing_version(tmp_path):
+    service = SchemaMirrorService(base_path=tmp_path)
+    lockfile_path = tmp_path / "schemas.lock.json"
+    lockfile_path.write_text(
+        json.dumps({"format_version": "1.0", "updated_at": "old", "versions": {"2025-2": {"file_count": 1}}}),
+        encoding="utf-8",
+    )
+
+    manifest_data = {
+        "mirrored_at": "2026-01-01T00:00:00+00:00",
+        "root_url": "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd",
+        "base_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+        "files": {"a.xsd": {}, "b.xsd": {}},
+        "resources": {"schemas": True},
+    }
+
+    await service._update_lockfile("2025-2", manifest_data)
+    lock = json.loads(lockfile_path.read_text(encoding="utf-8"))
+
+    assert lock["versions"]["2025-2"]["file_count"] == 2
+    assert lock["updated_at"] != "old"
+
+
+@pytest.mark.asyncio
+async def test_download_file_uses_base_path_fallback_on_relative_to_error(monkeypatch, tmp_path):
+    service = SchemaMirrorService(base_path=tmp_path)
+    service.current_version_dir = tmp_path / "2025-2"
+    outside_dir = tmp_path / "outside"
+    outside_dir.mkdir()
+
+    class _Response:
+        status_code = 200
+        content = b"payload"
+
+        def raise_for_status(self):
+            return None
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            return _Response()
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    manifest = {}
+    await service._download_file("https://example.test/outside.txt", outside_dir, manifest)
+
+    assert "outside/outside.txt" in manifest
+
+
+@pytest.mark.asyncio
+async def test_download_xsd_tree_uses_filename_when_path_has_no_slash(monkeypatch, tmp_path):
+    service = SchemaMirrorService(base_path=tmp_path)
+
+    class _Response:
+        status_code = 200
+        content = b"<xsd/>"
+
+        def raise_for_status(self):
+            return None
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            return _Response()
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    manifest = {}
+    await service._download_xsd_tree("iwxxm.xsd", tmp_path, manifest)
+
+    assert (tmp_path / "iwxxm.xsd").exists()
+    assert "iwxxm.xsd" in manifest
+
+
+@pytest.mark.asyncio
+async def test_download_directory_skips_404_without_raising(monkeypatch, tmp_path, caplog):
+    import logging
+
+    import httpx
+
+    caplog.set_level(logging.DEBUG, logger="src.services.schema_mirror_service")
+    service = SchemaMirrorService(base_path=tmp_path)
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            request = httpx.Request("GET", "https://example.test/missing/")
+            return httpx.Response(404, request=request)
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    await service._download_directory("https://example.test/missing/", tmp_path, {}, skip_on_404=True)
+
+    assert "Directory not found (skipping)" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_download_directory_skips_404_http_status_error(monkeypatch, tmp_path, caplog):
+    import logging
+
+    import httpx
+
+    caplog.set_level(logging.DEBUG, logger="src.services.schema_mirror_service")
+    service = SchemaMirrorService(base_path=tmp_path)
+
+    class _Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, _url):
+            request = httpx.Request("GET", "https://example.test/missing/")
+            response = httpx.Response(404, request=request)
+            raise httpx.HTTPStatusError("missing", request=request, response=response)
+
+    monkeypatch.setattr("src.services.schema_mirror_service.httpx.AsyncClient", lambda **_kwargs: _Client())
+
+    await service._download_directory("https://example.test/missing/", tmp_path, {}, skip_on_404=True)
+
+    assert "Directory not found (skipping)" in caplog.text

@@ -728,3 +728,29 @@ def test_get_validation_orchestrator_singleton():
     second = get_validation_orchestrator()
 
     assert first is second
+
+
+def test_validate_xml_helper_delegates_to_validate_complete(monkeypatch):
+    orchestrator = ValidationOrchestrator()
+    captured = {}
+
+    def _validate_complete(**kwargs):
+        captured.update(kwargs)
+        return ComprehensiveValidationResult(
+            is_valid=True,
+            version=kwargs["version"],
+            layers_run=[],
+            layers_passed=[],
+            layers_failed=[],
+            all_issues=[],
+        )
+
+    monkeypatch.setattr(orchestrator, "validate_complete", _validate_complete)
+
+    result = orchestrator.validate("<iwxxm:METAR/>", iwxxm_version="2025-2", layers=[ValidationLayer.XML_SCHEMA])
+
+    assert result.is_valid is True
+    assert captured["xml_content"] == "<iwxxm:METAR/>"
+    assert captured["version"] == "2025-2"
+    assert captured["layers"] == [ValidationLayer.XML_SCHEMA]
+    assert result.passed is True
