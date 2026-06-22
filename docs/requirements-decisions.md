@@ -1,6 +1,6 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-06-14
+> Stage: 01-requirements | Last updated: 2026-06-22
 
 | ID | Topic | Decision | Status |
 |----|-------|----------|--------|
@@ -24,6 +24,24 @@
 | REQ-018 | Golden regression | TC-M003 normalized canonical XML diff | confirmed |
 | REQ-019 | Legacy repo archive | After stable production deploy, not at merge | confirmed |
 | REQ-020 | JS workspace | pnpm workspaces (frontend + packages/shared) | confirmed |
+
+## Live E2E delta (2026-06-22)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| LIVE-001 | Scope | All tiers — H3 + H4–H5 + H6 full Playwright UJ-001–003 | confirmed |
+| LIVE-002 | CI policy | Manual/local only — Makefile targets; no GitHub Actions live job | confirmed |
+| LIVE-003 | Credentials | Local `.env` — `ADMIN_EMAIL` / `ADMIN_PASSWORD`; JWT at runtime via login | confirmed |
+| LIVE-004 | Playwright scope | Full UJ-001–003 against Render (`DISABLE_AUTH=false`) | confirmed |
+| LIVE-005 | Env naming | Canonical `LIVE_*` prefix; migrate away from `STAGING_*` / `E2E_*` | confirmed |
+| LIVE-006 | URLs | API: `https://metar-to-iwxxm-api.onrender.com`; Frontend: `https://metar-to-iwxxm-frontend-v4-web.onrender.com` | confirmed |
+| LIVE-007 | Makefile | Individual targets + `test-live` umbrella | confirmed |
+| LIVE-008 | Cold-start | Retry with backoff — 3 attempts, 30s wait | confirmed |
+| LIVE-009 | Rate limits | Exponential backoff on HTTP 429 | confirmed |
+| LIVE-010 | H3 coverage | Full suite — health, convert, validate, auth `/me` | confirmed |
+| LIVE-011 | Stale tests | Fix/migrate `tests/test_playwright_e2e.py` to merged API | confirmed |
+| LIVE-012 | Acceptance | Manual signoff before release — not a PR merge gate | confirmed |
+| LIVE-013 | Prerequisite | E2E-001 schema path fix must land before live validate passes | confirmed |
 
 ## Open Questions (for 04-tech-plan)
 

@@ -6,6 +6,38 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
 
+# Prefer canonical LIVE_* env vars; map to legacy STAGING_* for backward compatibility.
+LIVE_API_URL="${LIVE_API_URL:-${STAGING_API_URL:-}}"
+LIVE_FRONTEND_URL="${LIVE_FRONTEND_URL:-${STAGING_FRONTEND_ORIGIN:-${STAGING_FRONTEND_URL:-}}}"
+export STAGING_API_URL="${STAGING_API_URL:-${LIVE_API_URL}}"
+export STAGING_FRONTEND_ORIGIN="${STAGING_FRONTEND_ORIGIN:-${LIVE_FRONTEND_URL}}"
+export STAGING_FRONTEND_URL="${STAGING_FRONTEND_URL:-${LIVE_FRONTEND_URL}}"
+export VITE_API_BASE_URL="${VITE_API_BASE_URL:-${LIVE_API_URL}}"
+
+wake_live_api() {
+  local base_url="${1:-}"
+  if [[ -z "$base_url" ]]; then
+    return 0
+  fi
+  base_url="${base_url%/}"
+  local attempt
+  for attempt in 1 2 3; do
+    if curl -sf --max-time 30 "${base_url}/health" >/dev/null; then
+      echo "Live API awake: ${base_url}"
+      return 0
+    fi
+    if [[ "$attempt" -lt 3 ]]; then
+      echo "Waiting for live API (attempt ${attempt}/3)..."
+      sleep 30
+    fi
+  done
+  echo "WARN: could not wake live API at ${base_url} — continuing anyway"
+}
+
+if [[ -n "${LIVE_API_URL}" ]]; then
+  wake_live_api "${LIVE_API_URL}"
+fi
+
 echo "== H0c: CORS policy unit tests =="
 if command -v uv >/dev/null 2>&1 && [[ -f pyproject.toml ]]; then
   uv run pytest tests/unit/test_cors_policy.py -v --tb=short
@@ -23,7 +55,7 @@ if [[ -n "${STAGING_API_URL:-}" && -n "${STAGING_FRONTEND_ORIGIN:-}" ]]; then
   fi
 else
   echo ""
-  echo "== H4: skipped (set STAGING_API_URL and STAGING_FRONTEND_ORIGIN for live CORS) =="
+  echo "== H4: skipped (set LIVE_API_URL and LIVE_FRONTEND_URL for live CORS) =="
 fi
 
 if [[ -n "${STAGING_FRONTEND_URL:-}" && -n "${VITE_API_BASE_URL:-}" ]]; then
@@ -67,7 +99,7 @@ if [[ -n "${STAGING_FRONTEND_URL:-}" && -n "${VITE_API_BASE_URL:-}" ]]; then
   done
 else
   echo ""
-  echo "== H5: skipped (set STAGING_FRONTEND_URL and VITE_API_BASE_URL for bundle check) =="
+  echo "== H5: skipped (set LIVE_FRONTEND_URL and VITE_API_BASE_URL for bundle check) =="
 fi
 
 echo ""

@@ -1,0 +1,21 @@
+---
+description: Admin dashboard E2E locators — duplicate card/panel headings
+globs: apps/e2e/**/*.ts,apps/frontend/src/app/components/admin/**/*
+alwaysApply: false
+---
+
+# Admin dashboard E2E locators
+
+Evidence: BUG-2026-06-22-admin-e2e-user-approvals-heading.
+
+Each admin panel card (`h3`) and its active panel body (`h2`) share the same title
+(`User Approvals`, `System Settings`, `System Monitoring`).
+
+When adding or editing Playwright specs or admin panel headings:
+
+1. **Panel h2 must match card title** — do not use a different string (e.g. `Pending User Approvals`).
+2. **Default approval view** — both card and panel headings exist; use `.first()` for visibility checks.
+3. **After clicking a panel card** — assert panel content with `.nth(1)` (card is nth(0), panel is nth(1)).
+4. **Renaming a panel title** — update card title in `AdminDashboard.tsx`, panel h2, and all E2E locators together.
+
+See `docs/test-plan.md` §User Journeys (admin dashboard E2E locators note).

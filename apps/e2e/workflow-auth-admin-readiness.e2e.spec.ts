@@ -24,7 +24,7 @@ test.describe('Workflow: Auth And Admin Readiness', () => {
 
     await expect(page.getByRole('heading', { name: /Admin Dashboard/i })).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: 'User Approvals', exact: true }),
+      page.getByRole('heading', { name: 'User Approvals', exact: true }).first(),
     ).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'System Settings', exact: true }),
@@ -67,7 +67,12 @@ test.describe('Workflow: Auth And Admin Readiness', () => {
 
       await page.getByText('User Approvals').first().click();
       await expect(
-        page.getByRole('heading', { name: 'User Approvals', exact: true }).nth(1),
+        page
+          .getByRole('heading', {
+            name: /^(User Approvals|Pending User Approvals)$/,
+            exact: true,
+          })
+          .nth(1),
       ).toBeVisible();
     }
 

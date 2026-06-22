@@ -9,8 +9,10 @@ Cross-stage requirements for browser ↔ API wiring when the project includes a 
 |------|----------------|
 | H0c | CORS config unit tests (code) |
 | H0i | Local integration (DB + API) |
+| H3 | Live API smoke (pytest against Render) |
 | H4 | Live CORS from browser origin |
 | H5 | Frontend build-time `VITE_*` URLs resolve |
+| H6 | Live Playwright UJ-001–003 against Render frontend |
 
 ## Stage expectations
 

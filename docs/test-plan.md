@@ -2,21 +2,46 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-06-14
+> **Last updated**: 2026-06-22
 
 ## Scope
 
-**In scope**: Product features F1–F4; monorepo migration validation M1–M6; connectivity tiers H0c–H5.
+**In scope**: Product features F1–F4; monorepo migration validation M1–M6; connectivity tiers H0c–H6 (local + live Render).
 
-**Out of scope**: Performance benchmarking; load testing; wmo-im schema correctness (upstream responsibility).
+**Out of scope**: Performance benchmarking; load testing; wmo-im schema correctness (upstream responsibility); scheduled CI live jobs (manual/Makefile only).
+
+### Live harness (delta 2026-06-22)
+
+Unified manual live test harness against Render staging:
+
+| Tier | Scope | Makefile target |
+|------|-------|-----------------|
+| H3 | Live API pytest (health, convert, validate, auth) | `make test-live-api` |
+| H4–H5 | CORS preflight + frontend bundle URLs | `make test-live-connectivity` |
+| H6 | Playwright UJ-001–003 against live frontend | `make test-live-e2e` |
+| All | Sequential H4–H5 → H3 → H6 | `make test-live` |
+
+**Prerequisite**: E2E-001 schema path regression must be resolved before H3 validate and full H6 UJ-002 pass (see [e2e-report.md](e2e-report.md)).
+
+**CI policy**: Manual/local only — no GitHub Actions live job (Render cold-start + secrets).
+
+**Canonical URLs** (see [staging-secrets-matrix.md](staging-secrets-matrix.md)):
+
+- `LIVE_API_URL` — `https://metar-to-iwxxm-api.onrender.com`
+- `LIVE_FRONTEND_URL` — `https://metar-to-iwxxm-frontend-v4-web.onrender.com`
 
 ## User Journeys (E2E)
 
 | Journey | Feature | Local E2E module | Live E2E | Test plan TC |
 |---------|---------|------------------|----------|--------------|
-| UJ-001 | F1 | `apps/e2e/tac-file-conversion.e2e.spec.ts` | staging Playwright | TC-001 |
-| UJ-002 | F2 | backend validation tests + UI if exposed | optional | TC-002 |
-| UJ-003 | F1 | `apps/e2e/auth.e2e.spec.ts` | staging | TC-003 |
+| UJ-001 | F1 | `apps/e2e/tac-file-conversion.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-001, TC-LIVE-001 |
+| UJ-002 | F2 | backend validation tests + UI if exposed | H3 validate + H6 where exposed | TC-002, TC-LIVE-002 |
+| UJ-003 | F1 | `apps/e2e/auth.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-003, TC-LIVE-003 |
+
+**Admin dashboard E2E locators**: Each admin panel card (`h3`) and active panel body (`h2`) share the
+same title (e.g. `User Approvals`). Use `.first()` for card-only checks on the default approval view;
+use `.nth(1)` after clicking a card to assert the panel content heading.
+
 | UJ-DEV-001 | M1,M5 | CI monorepo-smoke job | — | TC-M001 |
 | UJ-DEV-002 | M2 | vendor manifest integrity tests | — | TC-M002 |
 | UJ-DEV-003 | M3 | gifts + conversion regression | — | TC-M003 |
@@ -28,8 +53,10 @@
 |------|-------|---------|
 | H0c | CORS policy (in-process) | `pytest apps/backend/tests/unit/test_cors_policy.py` |
 | H0i | Cross-service integration | `pytest apps/backend/tests/integration` |
-| H4 | Live CORS preflight | Playwright / curl against staging |
-| H5 | Frontend bundle URLs | `scripts/deploy/verify_connectivity.sh` |
+| H3 | Live API smoke (pytest) | `make test-live-api` |
+| H4 | Live CORS preflight | `make test-live-connectivity` |
+| H5 | Frontend bundle URLs | `make test-live-connectivity` |
+| H6 | Live Playwright UJ-001–003 | `make test-live-e2e` |
 
 **Post-migration**: Single API origin simplifies CORS — auth routes on same host as `/api/v1/*`.
 
@@ -37,6 +64,9 @@
 
 - `VITE_API_BASE_URL` — frontend build-time API URL
 - `METAR_CORS_ORIGINS` — backend allowed browser origins
+- `LIVE_API_URL` — live pytest API base (replaces `STAGING_API_URL`)
+- `LIVE_FRONTEND_URL` — live Playwright base + CORS origin (replaces `STAGING_FRONTEND_*`)
+- `ADMIN_EMAIL` / `ADMIN_PASSWORD` — runtime JWT via `POST /auth/login` (local `.env` only)
 
 ## Test Strategy
 
@@ -44,7 +74,8 @@
 |-------|-----------|-------|-------------|----------|
 | Unit | pytest / Vitest | packages/*, apps/backend, apps/frontend components | `make test-unit` | per workspace |
 | Integration | pytest | API + auth + conversion | `make test-integration` | apps/backend/tests |
-| E2E | Playwright | UJ-001–003 | `make tests:e2e` | apps/e2e/ |
+| E2E (T2) | Playwright | UJ-001–003 local stack | `make test-e2e-playwright` | apps/e2e/ |
+| Live E2E (T3) | Playwright + pytest | UJ-001–003 on Render | `make test-live` | apps/e2e/ + live pytest |
 | Vendor | pytest | manifest + schema presence | `pytest tests/vendor` | tests/vendor |
 | CI | GitHub Actions | full matrix; path filters deferred (P2) | `.github/workflows/ci-cd.yml` | root |
 
@@ -121,6 +152,63 @@
 - **Objective**: UJ-003 — unauthorized blocked, authorized allowed
 - **Pass criteria**: 401 without token; 200 with valid JWT
 
+## Live Test Cases (T3 / H3–H6)
+
+Manual signoff before release — not a PR merge gate. Developer runs `make test-live` from repo root with `.env` populated.
+
+### TC-LIVE-001: Live Health & Convert
+
+- **Objective**: H3 — API health and METAR conversion against Render
+- **Preconditions**: E2E-001 schema path fixed; `LIVE_API_URL` set; JWT obtained via login fixture
+- **Steps**:
+  1. `curl -sf "${LIVE_API_URL}/health"` — expect 200, `gifts_available: true`
+  2. `pytest apps/backend/tests/infrastructure/test_live_api_health.py -m live_api`
+- **Pass criteria**: All live_api tests green; cold-start retries (3×, 30s backoff) succeed
+- **Resilience**: Exponential backoff on HTTP 429
+- **Source**: UJ-001, H3
+
+### TC-LIVE-002: Live Validation
+
+- **Objective**: H3 — validation endpoint against Render
+- **Preconditions**: E2E-001 resolved; valid JWT; sample IWXXM from convert step
+- **Steps**:
+  1. POST `/api/v1/validation/validate` with converted XML
+  2. Assert validation status pass for selected IWXXM version
+- **Pass criteria**: HTTP 200; validation pass for known-good fixture
+- **Source**: UJ-002, H3
+
+### TC-LIVE-003: Live Connectivity (H4–H5)
+
+- **Objective**: CORS preflight and frontend bundle embed correct API URL
+- **Preconditions**: `LIVE_API_URL`, `LIVE_FRONTEND_URL` set
+- **Steps**:
+  1. `make test-live-connectivity` (wraps `verify_connectivity.sh` + CORS pytest)
+  2. Confirm H4 preflight from frontend origin → API returns allowed headers
+  3. Confirm H5 bundle contains `LIVE_API_URL` host
+- **Pass criteria**: H0c-equivalent live checks pass (script exit 0)
+- **Source**: UJ-OPS-001, H4–H5
+
+### TC-LIVE-004: Live Playwright UJ-001–003
+
+- **Objective**: H6 — full product journeys against Render frontend
+- **Preconditions**: E2E-001 resolved; `PLAYWRIGHT_BASE_URL=${LIVE_FRONTEND_URL}`; `DISABLE_AUTH=false`; admin credentials in `.env`
+- **Steps**:
+  1. Run `00-preflight.e2e.spec.ts` first (wake + health)
+  2. `make test-live-e2e` — auth login UI, METAR conversion UI, validation where exposed
+  3. Playwright config disables local `webServer` when base URL is remote
+- **Pass criteria**: All UJ-001–003 specs green against live URLs
+- **Resilience**: Cold-start retry in preflight; serial execution (no parallel live requests)
+- **Source**: UJ-001–003, H6
+
+### TC-LIVE-005: Stale Test Migration
+
+- **Objective**: Remove auth-v2 references from legacy live Playwright
+- **Steps**:
+  1. Update `tests/test_playwright_e2e.py` to target merged API at `LIVE_API_URL`
+  2. Deprecate `metar-to-iwxxm-auth-v2.onrender.com` references
+- **Pass criteria**: No tests target suspended auth-v2 service
+- **Source**: [Context: live-e2e-integration](context/live-e2e-integration.md)
+
 ## CI/CD (Monorepo)
 
 | Trigger | Paths | Jobs |
@@ -146,6 +234,7 @@
 |--------|-----------|---------|
 | Backend unit coverage | **95% all packages/apps** | ADR-007 universal gate |
 | E2E pass rate | 100% on T2 before merge | Big-bang gate |
+| Live E2E (T3) | Manual signoff before release | `make test-live` — not CI-gated |
 | Vendor sync PR | human review required | No auto-merge to main |
 
 ## Big-Bang Merge Gate

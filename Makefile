@@ -18,6 +18,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
+	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts coverage-shared \
 	coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	install-hooks pre-commit-run
@@ -172,6 +173,48 @@ test-e2e-t2-product:
 	cd apps/e2e && $(PNPM) exec playwright test \
 		tac-file-conversion.e2e.spec.ts \
 		auth.e2e.spec.ts
+
+# --- Live E2E harness (H3–H6, manual signoff) ---
+
+define load_dotenv
+	set -a; \
+	for env_file in .env apps/frontend/.env; do \
+		if [ -f "$$env_file" ]; then \
+			. "$$env_file"; \
+		fi; \
+	done; \
+	set +a; \
+	export LIVE_API_URL="$${LIVE_API_URL:-https://metar-to-iwxxm-api.onrender.com}"; \
+	export LIVE_FRONTEND_URL="$${LIVE_FRONTEND_URL:-https://metar-to-iwxxm-frontend-v4-web.onrender.com}"; \
+	export RUN_LIVE_TESTS=1; \
+	export PLAYWRIGHT_BASE_URL="$${PLAYWRIGHT_BASE_URL:-$$LIVE_FRONTEND_URL}"; \
+	export VITE_API_BASE_URL="$$LIVE_API_URL"; \
+	export STAGING_API_URL="$$LIVE_API_URL"; \
+	export STAGING_FRONTEND_ORIGIN="$$LIVE_FRONTEND_URL"; \
+	export STAGING_FRONTEND_URL="$$LIVE_FRONTEND_URL"
+endef
+
+test-live-connectivity:
+	@$(load_dotenv); \
+	bash scripts/deploy/verify_connectivity.sh
+
+test-live-api:
+	@$(load_dotenv); \
+	$(UV) run pytest apps/backend/tests/infrastructure/test_live_api_health.py -m live_api -v --tb=short --no-cov
+
+test-live-integration:
+	@$(load_dotenv); \
+	$(UV) run pytest tests/integration/test_live_stack.py -m live -v --tb=short --no-cov
+
+test-live-e2e:
+	@$(load_dotenv); \
+	export PLAYWRIGHT_BASE_URL="$$LIVE_FRONTEND_URL"; \
+	export PLAYWRIGHT_API_BASE_URL="$$LIVE_API_URL"; \
+	cd apps/e2e && DISABLE_AUTH=false PLAYWRIGHT_BASE_URL="$$PLAYWRIGHT_BASE_URL" \
+		PLAYWRIGHT_API_BASE_URL="$$PLAYWRIGHT_API_BASE_URL" \
+		$(PNPM) exec playwright test
+
+test-live: test-live-connectivity test-live-api test-live-integration test-live-e2e
 
 coverage-backend:
 	cd apps/backend && $(UV) run pytest tests/unit \
