@@ -19,11 +19,11 @@ env:
 
 jobs:
   # ============================================================================
-  # QUALITY GATES — format, lint, typecheck (all TS + Python source)
+  # VALIDATE — format, lint, typecheck, secrets, yaml, config-guard, npm audit
   # ============================================================================
-  quality-gates:
+  validate:
     runs-on: ubuntu-latest
-    name: Quality Gates
+    name: Validate
 
     steps:
       - uses: actions/checkout@v5
@@ -40,23 +40,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip uv
           uv sync
-
-      - name: Check Python formatting
-        run: uv run ruff format --check apps packages tests
-
-      - name: Run Python linting
-        run: |
-          uv run ruff check apps/backend/src apps/backend/tests \
-            packages/auth/src packages/auth/tests \
-            packages/gifts/gifts packages/gifts/tests \
-            packages/shared packages/shared/tests \
-            tests
-
-      - name: Run Python typechecking
-        run: |
-          uv run basedpyright packages/shared/src
-          cd packages/auth && uv run basedpyright
-          cd ../../apps/backend && uv run basedpyright
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -70,44 +53,20 @@ jobs:
       - name: Install JavaScript dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check TypeScript formatting
-        run: pnpm run format:check
-
-      - name: Run TypeScript linting
-        run: pnpm run lint:js
-
-      - name: Run TypeScript typechecking
-        run: pnpm run typecheck:js
+      - name: Run validate gates
+        run: make validate-ci
 
   # ============================================================================
-  # CONFIG GUARD — fail fast if placeholder Supabase credentials are committed
+  # TEST — unit + coverage matrix, integration, Codecov uploads
   # ============================================================================
-  config-guard:
+  test:
     runs-on: ubuntu-latest
-    name: Config Placeholder Guard
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          submodules: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install pytest
-        run: pip install pytest --quiet
-
-      - name: Run placeholder regression tests
-        run: pytest tests/test_config_placeholders.py -v
-
-  # ============================================================================
-  # SHARED PACKAGE - Python + TypeScript Tests & Coverage
-  # ============================================================================
-  shared-tests:
-    runs-on: ubuntu-latest
-    name: Shared Package - Tests & Coverage
-    needs: [quality-gates]
+    name: Test (${{ matrix.package }})
+    needs: [validate]
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [shared, backend, auth, gifts, frontend, integration]
 
     steps:
       - uses: actions/checkout@v5
@@ -125,269 +84,72 @@ jobs:
           python -m pip install --upgrade pip uv
           uv sync
 
-      - name: Run Python unit tests with coverage
+      - name: Install pnpm
+        if: matrix.package == 'shared' || matrix.package == 'frontend'
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        if: matrix.package == 'shared' || matrix.package == 'frontend'
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install JavaScript dependencies
+        if: matrix.package == 'shared' || matrix.package == 'frontend'
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare GIFTs demo databases
+        if: matrix.package == 'gifts'
+        run: |
+          cd packages/gifts/gifts/database && python3 create_pickle_db.py
+          cp aerodromes.db ../../demo/aerodromes.db
+          cp aerodromes.db ../../demo/aerodromes.win.db
+
+      - name: Create frontend test environment file
+        if: matrix.package == 'frontend'
+        working-directory: ./apps/frontend
+        run: |
+          printf 'VITE_API_BASE_URL=http://localhost:18001\nVITE_APP_URL=http://localhost:18000\n' > .env
+
+      - name: Run shared package tests
+        if: matrix.package == 'shared'
         run: |
           uv run pytest packages/shared/tests --cov=metar_shared \
             --cov-config=packages/shared/pyproject.toml --cov-branch \
             --cov-report=term-missing --cov-fail-under=98 -v
+          pnpm --filter @metar/shared run test:coverage
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-          cache: pnpm
-
-      - name: Install JavaScript dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run TypeScript unit tests with coverage
-        run: pnpm --filter @metar/shared run test:coverage
-
-  # ============================================================================
-  # BACKEND - Python Tests & Coverage (apps/backend)
-  # ============================================================================
-  backend-tests:
-    runs-on: ubuntu-latest
-    name: Backend - Tests & Coverage
-    needs: [quality-gates]
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          submodules: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: pip
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip uv
-          uv sync
-
-      - name: Run unit tests with coverage
+      - name: Run backend unit tests with coverage
+        if: matrix.package == 'backend'
         run: |
           cd apps/backend && uv run pytest tests/unit \
             --cov=src --cov-config=pyproject.toml --cov-branch \
             --cov-report=xml:coverage.xml --cov-report=term-missing \
             --cov-fail-under=98 -v
 
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: backend-coverage-report
-          path: |
-            apps/backend/htmlcov/
-            apps/backend/coverage.xml
-
-      - name: Upload backend coverage to Codecov
-        uses: codecov/codecov-action@v5
-        if: always()
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: joseph-c-mcguire/metar-to-IWXXM
-          files: ./apps/backend/coverage.xml
-          flags: backend
-          name: backend-coverage
-          fail_ci_if_error: true
-
-  # ============================================================================
-  # AUTH PACKAGE - Python Tests & Coverage (packages/auth)
-  # ============================================================================
-  auth-tests:
-    runs-on: ubuntu-latest
-    name: Auth Package - Tests & Coverage
-    needs: [quality-gates]
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          submodules: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: pip
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip uv
-          uv sync
-
-      - name: Run unit tests with coverage
+      - name: Run auth unit tests with coverage
+        if: matrix.package == 'auth'
         run: |
           cd packages/auth && uv run pytest tests \
             --cov=src --cov-config=pyproject.toml --cov-branch \
             --cov-report=xml:coverage.xml --cov-report=term-missing \
             --cov-fail-under=98 -v
 
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: auth-coverage-report
-          path: |
-            packages/auth/htmlcov/
-            packages/auth/coverage.xml
-
-      - name: Upload auth coverage to Codecov
-        uses: codecov/codecov-action@v5
-        if: always()
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: joseph-c-mcguire/metar-to-IWXXM
-          files: ./packages/auth/coverage.xml
-          flags: auth
-          name: auth-coverage
-          fail_ci_if_error: true
-
-  # ============================================================================
-  # GIFTs - Python Tests & Coverage (packages/gifts)
-  # ============================================================================
-  gifts-tests:
-    runs-on: ubuntu-latest
-    name: GIFTs - Tests & Coverage
-    needs: [quality-gates]
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          submodules: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: pip
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip uv
-          uv sync
-
-      - name: Prepare GIFTs demo databases
-        run: |
-          cd packages/gifts/gifts/database && python3 create_pickle_db.py
-          cp aerodromes.db ../../demo/aerodromes.db
-          cp aerodromes.db ../../demo/aerodromes.win.db
-
-      - name: Run unit tests with coverage
+      - name: Run GIFTs unit tests with coverage
+        if: matrix.package == 'gifts'
         run: |
           cd packages/gifts && uv run pytest tests/ \
             --cov=gifts --cov=validation --cov-config=pyproject.toml --cov-branch \
             --cov-report=xml:coverage.xml --cov-report=term-missing \
             --cov-fail-under=98 -v
 
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: gifts-coverage-report
-          path: |
-            packages/gifts/htmlcov/
-            packages/gifts/coverage.xml
-        continue-on-error: true
-
-      - name: Upload GIFTs coverage to Codecov
-        uses: codecov/codecov-action@v5
-        if: always()
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: joseph-c-mcguire/metar-to-IWXXM
-          files: ./packages/gifts/coverage.xml
-          flags: gifts
-          name: gifts-coverage
-          fail_ci_if_error: true
-
-  # ============================================================================
-  # FRONTEND - JavaScript/TypeScript Tests & Coverage (apps/frontend)
-  # ============================================================================
-  frontend-tests:
-    runs-on: ubuntu-latest
-    name: Frontend - Tests & Coverage
-    needs: [quality-gates]
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          submodules: false
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Create test environment file
-        working-directory: ./apps/frontend
-        run: |
-          printf 'VITE_API_BASE_URL=http://localhost:18001\nVITE_APP_URL=http://localhost:18000\n' > .env
-
-      - name: Run tests with coverage
+      - name: Run frontend tests with coverage
+        if: matrix.package == 'frontend'
         run: pnpm --filter @metar/frontend run test:coverage
 
-      - name: Report coverage summary
-        working-directory: ./apps/frontend
-        run: |
-          COVERAGE=$(grep -oP 'All files\s*\|\s*\K[\d.]+' coverage/lcov-report/index.html || echo "0")
-          echo "Frontend Coverage: ${COVERAGE}%"
-        continue-on-error: true
-
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: frontend-coverage-report
-          path: apps/frontend/coverage/
-
-      - name: Upload frontend coverage to Codecov
-        uses: codecov/codecov-action@v5
-        if: always()
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: joseph-c-mcguire/metar-to-IWXXM
-          files: ./apps/frontend/coverage/lcov.info
-          flags: frontend
-          name: frontend-coverage
-          fail_ci_if_error: true
-
-  # ============================================================================
-  # INTEGRATION MATRIX - Cross-service integration checks
-  # ============================================================================
-  integration-matrix:
-    runs-on: ubuntu-latest
-    name: Integration Matrix
-    needs: [backend-tests, auth-tests, gifts-tests, frontend-tests, shared-tests]
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          submodules: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install integration dependencies
-        run: |
-          python -m pip install --upgrade pip uv
-          uv sync
-
       - name: Set integration stack environment
+        if: matrix.package == 'integration'
         run: |
           {
             echo "SUPABASE_URL=${FRONTEND_VITE_SUPABASE_URL}"
@@ -398,133 +160,112 @@ jobs:
             echo "VITE_APP_URL=http://localhost:18000"
           } >> "$GITHUB_ENV"
 
-      - name: Start service stack
+      - name: Run integration tests
+        if: matrix.package == 'integration'
         run: |
           docker compose up -d backend frontend
           sleep 30
-
-      - name: Run cross-service integration tests
-        run: |
           uv run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_gifts_backend_integration.py tests/test_integration.py -v
+          cd apps/backend && uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
+          docker compose down
 
-      - name: Run backend integration smoke checks
-        working-directory: ./apps/backend
-        run: |
-          uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
+      - name: Upload backend coverage artifact
+        if: always() && matrix.package == 'backend'
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: |
+            apps/backend/htmlcov/
+            apps/backend/coverage.xml
 
-      - name: Stop service stack
-        if: always()
+      - name: Upload backend coverage to Codecov
+        if: always() && matrix.package == 'backend'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: joseph-c-mcguire/metar-to-IWXXM
+          files: ./apps/backend/coverage.xml
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: true
+
+      - name: Upload auth coverage artifact
+        if: always() && matrix.package == 'auth'
+        uses: actions/upload-artifact@v4
+        with:
+          name: auth-coverage-report
+          path: |
+            packages/auth/htmlcov/
+            packages/auth/coverage.xml
+
+      - name: Upload auth coverage to Codecov
+        if: always() && matrix.package == 'auth'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: joseph-c-mcguire/metar-to-IWXXM
+          files: ./packages/auth/coverage.xml
+          flags: auth
+          name: auth-coverage
+          fail_ci_if_error: true
+
+      - name: Upload GIFTs coverage artifact
+        if: always() && matrix.package == 'gifts'
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: gifts-coverage-report
+          path: |
+            packages/gifts/htmlcov/
+            packages/gifts/coverage.xml
+
+      - name: Upload GIFTs coverage to Codecov
+        if: always() && matrix.package == 'gifts'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: joseph-c-mcguire/metar-to-IWXXM
+          files: ./packages/gifts/coverage.xml
+          flags: gifts
+          name: gifts-coverage
+          fail_ci_if_error: true
+
+      - name: Upload frontend coverage artifact
+        if: always() && matrix.package == 'frontend'
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage-report
+          path: apps/frontend/coverage/
+
+      - name: Upload frontend coverage to Codecov
+        if: always() && matrix.package == 'frontend'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: joseph-c-mcguire/metar-to-IWXXM
+          files: ./apps/frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+          fail_ci_if_error: true
+
+      - name: Stop service stack on integration failure
+        if: always() && matrix.package == 'integration'
         run: docker compose down
 
   # ============================================================================
-  # TEST RESULT AGGREGATION
+  # DEPLOY — build/push images and trigger Render (main push only)
   # ============================================================================
-  coverage-enforcement:
+  deploy:
     runs-on: ubuntu-latest
-    name: Test Result Aggregation
-    needs: [quality-gates, config-guard, backend-tests, auth-tests, gifts-tests, frontend-tests, shared-tests, integration-matrix]
-    if: always()
-
-    steps:
-      - name: Check all test results
-        run: |
-          {
-            echo "## Test Status Summary"
-            echo ""
-            echo "| Project | Status |"
-            echo "|---------|--------|"
-            echo "| Quality Gates | ${{ needs.quality-gates.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
-            echo "| Config Guard | ${{ needs.config-guard.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
-            echo "| Backend | ${{ needs.backend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
-            echo "| Auth Package | ${{ needs.auth-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
-            echo "| GIFTs | ${{ needs.gifts-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
-            echo "| Frontend | ${{ needs.frontend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
-            echo "| Shared Package | ${{ needs.shared-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
-            echo "| Integration Matrix | ${{ needs.integration-matrix.result == 'success' && '✅ PASS' || '❌ FAIL' }} |"
-            echo ""
-            echo "**Coverage gate**: Codecov enforces **per-service** coverage at **95%** (backend, auth, frontend, GIFTs)."
-            echo "Note: Coverage gate enforced via Codecov per-service reports."
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Enforce required test jobs
-        run: |
-          QUALITY=${{ needs.quality-gates.result }}
-          CONFIG=${{ needs.config-guard.result }}
-          BACKEND=${{ needs.backend-tests.result }}
-          AUTH=${{ needs.auth-tests.result }}
-          FRONTEND=${{ needs.frontend-tests.result }}
-          GIFTS=${{ needs.gifts-tests.result }}
-          SHARED=${{ needs.shared-tests.result }}
-          INTEGRATION=${{ needs.integration-matrix.result }}
-
-          if [ "$QUALITY" != "success" ] || [ "$CONFIG" != "success" ] || [ "$BACKEND" != "success" ] || [ "$AUTH" != "success" ] || [ "$FRONTEND" != "success" ] || [ "$GIFTS" != "success" ] || [ "$SHARED" != "success" ] || [ "$INTEGRATION" != "success" ]; then
-            echo "❌ Required test jobs failed"
-            [ "$QUALITY" != "success" ] && echo "  - Quality Gates: $QUALITY"
-            [ "$CONFIG" != "success" ] && echo "  - Config Guard: $CONFIG"
-            [ "$BACKEND" != "success" ] && echo "  - Backend: $BACKEND"
-            [ "$AUTH" != "success" ] && echo "  - Auth Package: $AUTH"
-            [ "$FRONTEND" != "success" ] && echo "  - Frontend: $FRONTEND"
-            [ "$GIFTS" != "success" ] && echo "  - GIFTs: $GIFTS"
-            [ "$SHARED" != "success" ] && echo "  - Shared Package: $SHARED"
-            [ "$INTEGRATION" != "success" ] && echo "  - Integration Matrix: $INTEGRATION"
-            exit 1
-          fi
-
-          echo "✅ Required test jobs passed"
-
-  # ============================================================================
-  # MONOREPO CHANGE DETECTION
-  # ============================================================================
-  detect-changes:
-    runs-on: ubuntu-latest
-    name: Detect Monorepo Changes
+    name: Deploy
+    needs: [test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    outputs:
-      backend_changed: ${{ steps.filter.outputs.backend }}
-      frontend_changed: ${{ steps.filter.outputs.frontend }}
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          submodules: false
-
-      - name: Detect changed paths
-        id: filter
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            backend:
-              - 'apps/backend/**'
-              - 'packages/auth/**'
-              - 'packages/gifts/**'
-              - 'packages/shared/**'
-              - 'vendor/**'
-              - 'scripts/**'
-              - 'docker-compose.yml'
-              - 'render.yaml'
-            frontend:
-              - 'apps/frontend/**'
-              - 'scripts/**'
-              - 'docker-compose.yml'
-              - 'render.yaml'
-
-  # ============================================================================
-  # BUILD & PUSH DOCKER IMAGES
-  # ============================================================================
-  build-and-push:
-    runs-on: ubuntu-latest
-    name: Build & Push Docker Images
-    needs: [coverage-enforcement]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.coverage-enforcement.result == 'success'
     permissions:
       contents: read
       packages: write
-
-    outputs:
-      image_tag: ${{ steps.tags.outputs.image_tag }}
-      backend_built: ${{ steps.filter.outputs.backend_build }}
-      frontend_built: ${{ steps.filter.outputs.frontend_build }}
+    env:
+      RENDER_BACKEND_DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+      RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
 
     steps:
       - uses: actions/checkout@v5
@@ -567,16 +308,7 @@ jobs:
           IMAGE_TAG="${TS}-${SHORT_SHA}"
           echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
 
-      - name: Resolve services to build
-        id: filter
-        run: |
-          {
-            echo "backend_build=true"
-            echo "frontend_build=true"
-          } >> "$GITHUB_OUTPUT"
-
       - name: Build and push backend Docker image
-        if: steps.filter.outputs.backend_build == 'true'
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -588,7 +320,6 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:main-latest
 
       - name: Build and push frontend Docker image
-        if: steps.filter.outputs.frontend_build == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./apps/frontend
@@ -606,19 +337,6 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:main-latest
 
-  # ============================================================================
-  # DEPLOY TO RENDER VIA DEPLOY HOOKS
-  # ============================================================================
-  deploy-render:
-    runs-on: ubuntu-latest
-    name: Deploy Render Services
-    needs: [build-and-push]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    env:
-      RENDER_BACKEND_DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
-      RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
-
-    steps:
       - name: Report deploy hook configuration
         run: |
           [ -n "${RENDER_BACKEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_BACKEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_BACKEND_DEPLOY_HOOK is missing"
@@ -635,7 +353,7 @@ jobs:
         if: env.RENDER_BACKEND_DEPLOY_HOOK != ''
         env:
           DEPLOY_HOOK: ${{ env.RENDER_BACKEND_DEPLOY_HOOK }}
-          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
+          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
         run: |
           if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
             ENCODED_URL=$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
@@ -648,7 +366,7 @@ jobs:
         if: env.RENDER_FRONTEND_DEPLOY_HOOK != ''
         env:
           DEPLOY_HOOK: ${{ env.RENDER_FRONTEND_DEPLOY_HOOK }}
-          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ needs.build-and-push.outputs.image_tag }}
+          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
         run: |
           if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
             ENCODED_URL=$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
@@ -656,38 +374,3 @@ jobs:
           else
             curl -fsSL "${DEPLOY_HOOK}"
           fi
-
-  # ============================================================================
-  # TEST SUMMARY & FINAL STATUS
-  # ============================================================================
-  test-summary:
-    runs-on: ubuntu-latest
-    name: Test & Coverage Summary
-    if: always()
-    needs: [backend-tests, auth-tests, gifts-tests, frontend-tests, shared-tests, integration-matrix, coverage-enforcement, build-and-push, deploy-render]
-
-    steps:
-      - name: Generate final summary
-        run: |
-          {
-            echo "# 🧪 Test & Coverage Summary"
-            echo ""
-            echo "## Coverage Status"
-            echo ""
-            echo "| Project | Status | Coverage |"
-            echo "|---------|--------|----------|"
-            echo "| 🔧 Backend | ${{ needs.backend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
-            echo "| 🔐 Auth Package | ${{ needs.auth-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
-            echo "| 🎁 GIFTs | ${{ needs.gifts-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
-            echo "| 🎨 Frontend | ${{ needs.frontend-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
-            echo "| 📦 Shared Package | ${{ needs.shared-tests.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Coverage Report |"
-            echo "| 🔗 Integration Matrix | ${{ needs.integration-matrix.result == 'success' && '✅ PASS' || '❌ FAIL' }} | Service interoperability |"
-            echo ""
-            echo "## Overall Status"
-            echo ""
-            echo "**Required Test Jobs**: ${{ needs.coverage-enforcement.result == 'success' && '✅ PASSING' || '❌ FAILING' }}"
-            echo "**Docker Build**: ${{ needs.build-and-push.result == 'success' && '✅ SUCCESS' || '⏭️  SKIPPED' }}"
-            echo "**Render Deploy**: ${{ needs.deploy-render.result == 'success' && '✅ SUCCESS' || '⏭️  SKIPPED' }}"
-            echo ""
-            echo "> **Policy**: Per-service coverage is hard-gated by Codecov at **95%**."
-          } >> "$GITHUB_STEP_SUMMARY"

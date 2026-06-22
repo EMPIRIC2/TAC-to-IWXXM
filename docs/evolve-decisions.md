@@ -39,3 +39,59 @@
 - `docs/test-plan.md` — E2E module for convert-and-send
 - `apps/frontend/` — `FileConverter`, shared `databaseUpload` util
 - `apps/e2e/tac-file-upload-database.e2e.spec.ts` — one-click path
+
+## Cycle EV-002 — CI consolidation (M5)
+
+**Session**: S002-ci-consolidation (pending open)  
+**Feature**: M5 (Workspace tooling)  
+**Approved**: 2026-06-22  
+**Cycle type**: general
+
+### Scope
+
+**In scope**
+
+- Consolidate PR/push CI from 13+ jobs across multiple workflows to **≤3 jobs** in a single `ci-cd.yml`:
+  1. **validate** — format, lint, typecheck, gitleaks, actionlint/yamllint, config-guard, frontend npm audit
+  2. **test** — unit tests + coverage (matrix: backend, auth, gifts, frontend, shared), integration matrix, Codecov uploads (thresholds unchanged)
+  3. **deploy** — build/push images + Render deploy hooks (main push only, unchanged behavior)
+- Extend **pre-commit** with fast hooks mirroring validate checks (dual-run: local + CI).
+- **Delete** standalone PR/push workflows after merge: `secret-scan.yml`, `github-yaml-lint.yml`; fold `frontend-audit.yml` into validate job.
+- Fix monorepo paths in any remaining references (legacy `backend/`, `frontend/`).
+
+**Out of scope**
+
+- Scheduled workflows: `e2e-tests.yml`, `load-tests.yml`, `vendor-sync.yml`
+- Legacy manual workflow `test-coverage-95.yml` (delete if still present; no behavior change)
+- Broken `smoke-tests-deploy.yml` (fix trigger reference or delete — not in PR/push path)
+- Path-filtered CI (P2) — deferred to future cycle
+- Coverage threshold changes (98% pytest `--cov-fail-under`, Codecov 95% per-service)
+- Product feature changes (F1–F4)
+
+### Decisions
+
+| ID | Category | Decision |
+|----|----------|----------|
+| R1 | Intent | Reduce CI cost/complexity without lowering quality bar |
+| R2 | Jobs | Target ≤3 jobs on PR: validate → test → (deploy on main only) |
+| R3 | Local hooks | Extend pre-commit only (no Husky); fast hooks = format/lint/typecheck/secrets/yaml |
+| R4 | Dual-run | Pre-commit runs fast checks locally; CI still runs all checks on every PR |
+| R5 | Test structure | Single test job with matrix strategy for per-package unit+coverage |
+| R6 | Workflows | Single `ci-cd.yml` for PR/push; delete secret-scan + yaml-lint; merge frontend-audit |
+| R7 | Coverage | Keep per-service pytest 98% gates and Codecov 95% uploads exactly as today |
+
+### Acceptance criteria
+
+- [ ] PR to main/dev runs ≤3 jobs (validate, test; deploy skipped on PR)
+- [ ] All checks that ran before EV-002 still execute in CI (no dropped gates)
+- [ ] Pre-commit fast hooks match quality-gates + secrets + yaml lint
+- [ ] `make ci` behavior unchanged (still the local full-suite entry point)
+- [ ] CI green on evolve branch before merge
+
+### Artifacts to update
+
+- `docs/feature-list.md` — M5 CI/pre-commit detail
+- `docs/test-plan.md` — CI/CD section
+- `.pre-commit-config.yaml` — fast hook split
+- `.github/workflows/ci-cd.yml` — consolidated jobs
+- Delete: `.github/workflows/secret-scan.yml`, `.github/workflows/github-yaml-lint.yml`, `.github/workflows/frontend-audit.yml`

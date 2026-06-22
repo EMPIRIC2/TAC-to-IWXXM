@@ -21,6 +21,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts coverage-shared \
 	coverage-modules coverage-all ci acci badge-audit audit-frontend \
+	validate-fast validate-yaml secrets-check config-guard validate-ci \
 	install-hooks pre-commit-run
 
 # --- Monorepo workspace ---
@@ -291,6 +292,22 @@ coverage: coverage-modules
 
 badge-audit:
 	python3 .github/scripts/badge_audit.py
+
+# --- Fast validation (pre-commit + CI validate job) ---
+
+secrets-check:
+	$(UV) run pre-commit run gitleaks --all-files
+
+validate-yaml:
+	$(UV) run pre-commit run actionlint --all-files
+	$(UV) run pre-commit run yamllint --all-files
+
+validate-fast: format-check typecheck lint secrets-check validate-yaml
+
+config-guard:
+	$(UV) run pytest tests/test_config_placeholders.py -v
+
+validate-ci: validate-fast config-guard audit-frontend
 
 ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-integration badge-audit
 
