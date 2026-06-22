@@ -122,6 +122,14 @@ class VersionMigrator:
                 logger.warning(f"Removed {removed_count} instance(s) of {element_name}: {reason}")
         except Exception as e:
             logger.error(f"Error removing {element_name}: {e}")
+            self.warnings.append(
+                VersionMigrationWarning(
+                    element=element_name,
+                    xpath=xpath,
+                    action="remove",
+                    reason=f"Failed to remove element: {e}",
+                )
+            )
 
     def _remove_elements_by_tag(self, root: ET.Element, tag: str) -> int:
         """

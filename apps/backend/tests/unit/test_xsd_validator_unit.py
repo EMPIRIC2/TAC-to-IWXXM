@@ -219,3 +219,40 @@ def test_singleton_and_wrapper(monkeypatch):
     result = validate_xml_schema("<root/>", "2025-2")
     assert result.is_valid is True
     assert result.schema_version == "2025-2"
+
+
+def test_validate_success_logs_debug_path(monkeypatch, caplog):
+    import logging
+
+    caplog.set_level(logging.DEBUG, logger="src.utilities.xsd_validator")
+    validator = XSDValidator()
+    fake_schema = _FakeSchema(valid=True)
+    monkeypatch.setattr(validator, "_get_compiled_schema", lambda _version: fake_schema)
+
+    result = validator.validate("<root/>", "2025-2")
+
+    assert result.is_valid is True
+    assert "XSD validation passed" in caplog.text
+
+
+def test_get_compiled_schema_unexpected_error_raises(monkeypatch, tmp_path):
+    validator = XSDValidator()
+    validator.registry = SimpleNamespace(get_xsd_path=lambda _version: tmp_path / "schema.xsd")
+    (tmp_path / "schema.xsd").write_text("<xsd/>", encoding="utf-8")
+
+    monkeypatch.setattr(etree, "parse", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("boom")))
+
+    with pytest.raises(RuntimeError, match="boom"):
+        validator._get_compiled_schema("2023-1")
+
+
+def test_clear_cache_logs_for_specific_version(caplog):
+    import logging
+
+    caplog.set_level(logging.INFO, logger="src.utilities.xsd_validator")
+    validator = XSDValidator()
+    validator._schema_cache = {"2025-2": object()}
+
+    validator.clear_cache("2025-2")
+
+    assert "Cleared XSD schema cache for version 2025-2" in caplog.text

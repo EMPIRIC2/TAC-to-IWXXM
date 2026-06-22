@@ -106,7 +106,7 @@ test-unit-workspace-py:
 
 test-unit-shared-py:
 	$(UV) run pytest packages/shared/tests --cov=metar_shared \
-		--cov-config=packages/shared/pyproject.toml --cov-branch --cov-fail-under=95 -v
+		--cov-config=packages/shared/pyproject.toml --cov-branch --cov-fail-under=98 -v
 
 test-unit-shared-js:
 	$(PNPM) --filter @metar/shared run test:coverage
@@ -120,13 +120,13 @@ test-unit-backend:
 	cd apps/backend && $(UV) run pytest tests/unit \
 		--cov=src --cov-config=pyproject.toml --cov-branch \
 		--cov-report=xml:coverage.xml --cov-report=term-missing \
-		--cov-fail-under=95 -v
+		--cov-fail-under=98 -v
 
 test-unit-auth:
 	cd packages/auth && $(UV) run pytest tests \
 		--cov=src --cov-config=pyproject.toml --cov-branch \
 		--cov-report=xml:coverage.xml --cov-report=term-missing \
-		--cov-fail-under=95 -v
+		--cov-fail-under=98 -v
 
 test-unit-frontend:
 	$(PNPM) --filter @metar/frontend run test:coverage
@@ -135,7 +135,7 @@ test-unit-gifts:
 	cd packages/gifts && $(UV) run pytest tests/ \
 		--cov=gifts --cov=validation --cov-config=pyproject.toml --cov-branch \
 		--cov-report=xml:coverage.xml --cov-report=term-missing \
-		--cov-fail-under=95 -v
+		--cov-fail-under=98 -v
 
 test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts
 

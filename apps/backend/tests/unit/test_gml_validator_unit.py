@@ -225,3 +225,38 @@ def test_validate_geometry_invalid_xml_reports_syntax_error():
     result = validator.validate_geometry("<root>")
     assert result.is_valid is False
     assert result.issues[0].code == "XML_SYNTAX_ERROR"
+
+
+def test_load_rdf_elements_parses_about_without_fragment(tmp_path):
+    rdf_file = tmp_path / "codes.wmo.int-49-2-AerodromeState.rdf"
+    rdf_file.write_text(
+        """
+        <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="http://codes.wmo.int/49-2/AerodromeState/CodeAerodromeState_OPEN"/>
+        </rdf:RDF>
+        """,
+        encoding="utf-8",
+    )
+
+    validator = GMLReferenceValidator(codelists_dir=tmp_path)
+    elements = validator._load_rdf_elements(rdf_file.name)
+    assert "http://codes.wmo.int/49-2/AerodromeState/CodeAerodromeState_OPEN" in elements
+
+
+def test_load_rdf_elements_returns_empty_on_parse_failure(tmp_path, monkeypatch):
+    rdf_file = tmp_path / "broken.rdf"
+    rdf_file.write_text("<broken", encoding="utf-8")
+
+    validator = GMLReferenceValidator(codelists_dir=tmp_path)
+    monkeypatch.setattr(
+        "src.utilities.gml_validator.etree.parse",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("parse fail")),
+    )
+    assert validator._load_rdf_elements("broken.rdf") == set()
+
+
+def test_extract_rdf_file_and_element_without_fragment():
+    validator = GMLReferenceValidator()
+    rdf_file, element_id = validator._extract_rdf_file_and_element("codes.wmo.int-49-2-AerodromeState.rdf")
+    assert rdf_file == "codes.wmo.int-49-2-AerodromeState.rdf"
+    assert element_id == ""

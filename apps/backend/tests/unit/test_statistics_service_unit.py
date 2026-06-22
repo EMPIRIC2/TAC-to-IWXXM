@@ -525,3 +525,49 @@ async def test_get_statistics_by_region_aggregates_with_synthetic_sql_layer(monk
 
     assert payload["NAM"]["success_rate"] == 75.0
     assert payload["EUR"]["total_translations"] == 2
+
+
+@pytest.mark.asyncio
+async def test_get_statistics_handles_empty_aggregate_row(monkeypatch):
+    class _Model:
+        id = _Column()
+        translation_timestamp = _Column()
+        translation_status = _Column()
+        translation_duration_ms = _Column()
+        icao_region = _Column()
+        iwxxm_version = _Column()
+        icao_airport_code = _Column()
+
+    fake_session = _FakeSession(
+        results=[
+            _Result(first_row=None),
+            _Result(all_rows=[]),
+            _Result(all_rows=[]),
+            _Result(all_rows=[]),
+            _Result(all_rows=[]),
+        ]
+    )
+
+    @asynccontextmanager
+    async def fake_get_db_session():
+        yield fake_session
+
+    monkeypatch.setattr(stats, "TranslationStatisticsModel", _Model)
+    monkeypatch.setattr(stats, "select", lambda *_args: _Query())
+    monkeypatch.setattr(stats, "and_", lambda *_args: _Expr())
+    monkeypatch.setattr(stats, "func", _Func())
+    monkeypatch.setattr(stats, "get_db_session", fake_get_db_session)
+
+    start = datetime.utcnow() - timedelta(days=1)
+    end = datetime.utcnow()
+    payload = await stats.StatisticsService.get_statistics(
+        start_date=start,
+        end_date=end,
+        include_airport_breakdown=True,
+        include_error_details=True,
+    )
+
+    assert payload["total_translations"] == 0
+    assert payload["successful_translations"] == 0
+    assert payload["success_rate"] == 0.0
+    assert payload["median_duration_ms"] is None

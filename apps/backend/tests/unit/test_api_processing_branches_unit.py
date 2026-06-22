@@ -1063,3 +1063,342 @@ def test_convert_file_validation_service_error_emits_translation_failed_notifica
     assert call["airport_code"] == "KSEA"
     assert call["error_type"] == "validation_error"
     assert "validation service unavailable" in call["error_message"]
+
+
+def test_convert_json_validate_output_passes_orchestrator_validation(client, monkeypatch):
+    class _PassOrchestrator:
+        def validate(self, _xml_content, iwxxm_version=None, layers=None):
+            return SimpleNamespace(passed=True)
+
+    monkeypatch.setattr(api_module, "get_validation_orchestrator", lambda: _PassOrchestrator())
+
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": ["METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"],
+            "version": "2025-2",
+            "validation_level": "comprehensive",
+            "stop_on_error": False,
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["successful"] == 1
+
+
+def test_convert_file_validate_output_all_layers_pass(client, monkeypatch):
+    async def fake_read_uploaded_text(_upload_file):
+        return "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    class _CompleteOrchestrator:
+        def validate_complete(self, **_kwargs):
+            return SimpleNamespace(is_valid=True, all_issues=[])
+
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "get_validation_orchestrator", lambda: _CompleteOrchestrator())
+
+    response = client.post(
+        "/api/v1/convert",
+        data={"validate_output": "true"},
+        files=[("files", ("sample.txt", "ignored", "text/plain"))],
+    )
+
+    assert response.status_code == 200
+    assert response.json()["successful"] == 1
+
+
+def test_convert_file_validation_failure_emits_info_and_critical_issues(client, monkeypatch):
+    async def fake_read_uploaded_text(_upload_file):
+        return "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    class _ValidationFailWithMixed:
+        def validate_all_layers(self, _tac: str) -> AggregatedValidationResult:
+            failed = ValidationResult(passed=False, layer=ValidationLayer.TAC_SYNTAX)
+            failed.add_issue(level="critical", message="critical issue", code="CRIT1")
+            failed.add_issue(level="info", message="info issue", code="INFO1")
+            return AggregatedValidationResult.from_results([failed])
+
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "ValidationService", _ValidationFailWithMixed)
+
+    response = client.post(
+        "/api/v1/convert",
+        files=[("files", ("sample.txt", "ignored", "text/plain"))],
+    )
+
+    assert response.status_code == 400
+    codes = {issue["code"] for issue in response.json()["detail"]["issues"]}
+    assert "CRIT1" in codes
+    assert "INFO1" in codes
+
+
+def test_convert_json_unhandled_error_honors_stop_on_error(client, monkeypatch):
+    class _BoomValidation:
+        def validate_all_layers(self, _tac: str):
+            raise RuntimeError("validation boom")
+
+    monkeypatch.setattr(api_module, "ValidationService", _BoomValidation)
+
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": [
+                "METAR KDEN 010000Z 00000KT CAVOK 10/08 Q1013",
+                "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013",
+            ],
+            "version": "2025-2",
+            "stop_on_error": True,
+        },
+    )
+
+    assert response.status_code == 400
+    assert response.json()["detail"]["total_errors"] == 1
+    assert any(issue["code"] == "UNHANDLED_BACKEND_ERROR" for issue in response.json()["detail"]["issues"])
+
+
+def test_convert_file_stop_on_error_breaks_on_xml_rejection(client, monkeypatch):
+    calls = {"reads": 0}
+
+    async def fake_read_uploaded_text(_upload_file):
+        calls["reads"] += 1
+        if calls["reads"] == 1:
+            return "<iwxxm:METAR/>", None
+        return "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "get_validation_orchestrator", lambda: None)
+
+    response = client.post(
+        "/api/v1/convert",
+        data={"stop_on_error": "true", "validate_output": "true"},
+        files=[
+            ("files", ("first.xml", "ignored", "application/xml")),
+            ("files", ("second.txt", "ignored", "text/plain")),
+        ],
+    )
+
+    assert response.status_code == 400
+    assert calls["reads"] == 1
+
+
+def test_convert_all_inputs_fail_returns_400(client, monkeypatch):
+    def always_fail(*_args: Any, **_kwargs: Any):
+        raise ConversionError("forced failure")
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", always_fail)
+
+    response = client.post(
+        "/api/v1/convert",
+        data={"manual_text": "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"},
+    )
+
+    assert response.status_code == 400
+    assert response.json()["detail"]["message"] == "All conversions failed"
+
+
+def test_convert_file_log_success_failure_is_non_fatal(client, monkeypatch):
+    async def fake_read_uploaded_text(_upload_file):
+        return "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    class _BrokenStats:
+        async def log_translation(self, **_kwargs):
+            raise RuntimeError("stats unavailable")
+
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "statistics_service", _BrokenStats())
+
+    response = client.post(
+        "/api/v1/convert",
+        files=[("files", ("sample.txt", "ignored", "text/plain"))],
+    )
+
+    assert response.status_code == 200
+    assert response.json()["successful"] == 1
+
+
+def test_convert_json_import_fallback_for_version_config(client, monkeypatch):
+    original_import = builtins.__import__
+
+    def _import(name, globals=None, locals=None, fromlist=(), level=0):
+        if level > 0 and name.endswith("iwxxm_versions"):
+            raise ImportError("force fallback")
+        return original_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _import)
+
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": ["METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"],
+            "version": "2025-2",
+            "stop_on_error": False,
+        },
+    )
+
+    assert response.status_code == 200
+
+
+def test_convert_json_validate_output_orchestrator_failed_still_succeeds(client, monkeypatch):
+    class _FailOrchestrator:
+        def validate(self, _xml_content, iwxxm_version=None, layers=None):
+            return SimpleNamespace(passed=False)
+
+    monkeypatch.setattr(api_module, "get_validation_orchestrator", lambda: _FailOrchestrator())
+
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": ["METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"],
+            "version": "2025-2",
+            "validation_level": "comprehensive",
+            "stop_on_error": False,
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["successful"] == 1
+
+
+def test_convert_file_validation_failure_log_error_is_non_fatal(client, monkeypatch):
+    async def fake_read_uploaded_text(_upload_file):
+        return "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    class _ValidationFailService:
+        def validate_all_layers(self, _tac: str) -> AggregatedValidationResult:
+            failed = ValidationResult(passed=False, layer=ValidationLayer.AIRPORT_ICAO)
+            failed.add_issue(level="error", message="bad tac", code="BAD_TAC")
+            return AggregatedValidationResult.from_results([failed])
+
+    class _BrokenStats:
+        async def log_translation(self, **_kwargs):
+            raise RuntimeError("stats unavailable")
+
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "ValidationService", _ValidationFailService)
+    monkeypatch.setattr(api_module, "statistics_service", _BrokenStats())
+
+    response = client.post(
+        "/api/v1/convert",
+        files=[("files", ("sample.txt", "ignored", "text/plain"))],
+    )
+
+    assert response.status_code == 400
+
+
+def test_convert_file_conversion_error_honors_stop_on_error(client, monkeypatch):
+    calls = {"reads": 0}
+
+    async def fake_read_uploaded_text(_upload_file):
+        calls["reads"] += 1
+        return "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    def fail_convert(*_args: Any, **_kwargs: Any):
+        raise ConversionError("forced conversion failure")
+
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fail_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        data={"stop_on_error": "true"},
+        files=[
+            ("files", ("first.txt", "ignored", "text/plain")),
+            ("files", ("second.txt", "ignored", "text/plain")),
+        ],
+    )
+
+    assert response.status_code == 400
+    assert calls["reads"] == 1
+
+
+def test_convert_file_validation_service_error_log_failure_is_non_fatal(client, monkeypatch):
+    async def fake_read_uploaded_text(_upload_file):
+        return "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    class _ValidationErrorService:
+        def validate_all_layers(self, _tac: str):
+            raise api_module.ValidationServiceError("validation unavailable")
+
+    class _BrokenStats:
+        async def log_translation(self, **_kwargs):
+            raise RuntimeError("stats unavailable")
+
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "ValidationService", _ValidationErrorService)
+    monkeypatch.setattr(api_module, "statistics_service", _BrokenStats())
+
+    response = client.post(
+        "/api/v1/convert",
+        files=[("files", ("sample.txt", "ignored", "text/plain"))],
+    )
+
+    assert response.status_code == 400
+
+
+def test_convert_file_unexpected_error_honors_stop_on_error(client, monkeypatch):
+    calls = {"reads": 0}
+
+    async def fake_read_uploaded_text(_upload_file):
+        calls["reads"] += 1
+        return "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    def fail_convert(*_args: Any, **_kwargs: Any):
+        raise RuntimeError("unexpected conversion failure")
+
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fail_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        data={"stop_on_error": "true"},
+        files=[
+            ("files", ("first.txt", "ignored", "text/plain")),
+            ("files", ("second.txt", "ignored", "text/plain")),
+        ],
+    )
+
+    assert response.status_code == 400
+    assert calls["reads"] == 1
+
+
+def test_convert_manual_validation_failure_maps_info_severity(client, monkeypatch):
+    class _ValidationFailWithInfo:
+        def validate_all_layers(self, _tac: str) -> AggregatedValidationResult:
+            failed = ValidationResult(passed=False, layer=ValidationLayer.TAC_SYNTAX)
+            failed.add_issue(level="info", message="minor issue", code="INFO1")
+            return AggregatedValidationResult.from_results([failed])
+
+    monkeypatch.setattr(api_module, "ValidationService", _ValidationFailWithInfo)
+
+    response = client.post(
+        "/api/v1/convert",
+        data={"manual_text": "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"},
+    )
+
+    assert response.status_code == 400
+    codes = {issue["code"] for issue in response.json()["detail"]["issues"]}
+    assert "INFO1" in codes
+
+
+def test_convert_manual_validation_failure_maps_error_and_critical_severity(client, monkeypatch):
+    from src.schemas.validation import ValidationLevel
+
+    class _ValidationFailWithSeverities:
+        def validate_all_layers(self, _tac: str) -> AggregatedValidationResult:
+            failed = ValidationResult(passed=False, layer=ValidationLayer.TAC_SYNTAX)
+            failed.add_issue(level=ValidationLevel.ERROR, message="syntax error", code="ERR1")
+            failed.add_issue(level=ValidationLevel.CRITICAL, message="critical syntax", code="CRIT1")
+            failed.add_issue(level=ValidationLevel.INFO, message="hint", code="INFO2")
+            return AggregatedValidationResult.from_results([failed])
+
+    monkeypatch.setattr(api_module, "ValidationService", _ValidationFailWithSeverities)
+
+    response = client.post(
+        "/api/v1/convert",
+        data={"manual_text": "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"},
+    )
+
+    assert response.status_code == 400
+    issues = response.json()["detail"]["issues"]
+    codes = {issue["code"] for issue in issues}
+    assert {"ERR1", "CRIT1", "INFO2", "VALIDATION_FAILED"}.issubset(codes)

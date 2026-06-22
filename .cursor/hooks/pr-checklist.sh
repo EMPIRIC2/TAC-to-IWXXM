@@ -17,7 +17,7 @@ if ! [[ "$command_line" =~ git[[:space:]]+push ]]; then
   exit 0
 fi
 
-context="[pr-checklist] Before push: (1) lint + typecheck + full test suite green, (2) atomic commit with [T{id}] prefix, (3) milestone tasks completed in execution plan, (4) after push run bash scripts/ci/watch_github_ci.sh per ci-after-push.mdc."
+context="[pr-checklist] Before push: (1) make format-check green (CI Quality Gates: ruff format apps packages tests + pnpm format:check), (2) lint + typecheck + full test suite green, (3) atomic commit with [T{id}] prefix, (4) after push watch ci-cd.yml per ci-after-push.mdc (gh run watch)."
 
 python3 -c "import json,sys; print(json.dumps({'additional_context': sys.argv[1]}))" "$context"
 exit 0

@@ -324,6 +324,21 @@ pytest --cov=src --cov-report=html   # Generate HTML coverage report
 pytest --cov=src --cov-report=term-missing
 ```
 
+Use `make coverage-backend` (or the repo `coverage-modules` target) for the
+authoritative per-module gate. Default `addopts` in `pyproject.toml` enable
+`--cov=src` with `fail_under = 98` for the **entire** `src/` tree.
+
+When running a **subset** of tests (single file, class, or directory), pass
+`--no-cov` so pytest does not fail on overall coverage:
+
+```bash
+pytest tests/unit/test_version_migration_unit.py tests/versions/test_version_migration.py --no-cov -v
+pytest tests/versions/test_version_migration.py::TestRunwayStateRemoval --no-cov -v
+```
+
+Coverage for `src/utilities/version_migration.py` is enforced by the full
+`tests/unit/` suite via `make coverage-backend`, not by isolated file runs.
+
 ### Specific tests
 
 ```bash

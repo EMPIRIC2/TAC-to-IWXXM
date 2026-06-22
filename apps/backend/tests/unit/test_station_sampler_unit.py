@@ -81,3 +81,38 @@ def test_find_airports_csv_raises_when_no_candidate_exists(monkeypatch: pytest.M
 
     with pytest.raises(FileNotFoundError, match="Could not find af-airports.csv"):
         StationSampler._find_airports_csv()
+
+
+def test_init_auto_detects_csv_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    csv_path = tmp_path / "data" / "af-airports.csv"
+    csv_path.parent.mkdir(parents=True)
+    csv_path.write_text(
+        "icao_code,name,country_name,type,scheduled_service\nKSEA,Seattle,United States,large_airport,1\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.chdir(tmp_path)
+    sampler = StationSampler()
+    assert sampler.csv_path.name == "af-airports.csv"
+    assert sampler.csv_path.exists()
+
+
+def test_sample_without_optional_filters(airports_csv: Path) -> None:
+    sampler = StationSampler(csv_path=airports_csv)
+
+    sample = sampler.sample_random_stations(
+        count=10,
+        large_airports_only=False,
+        scheduled_service_only=False,
+        seed=1,
+    )
+
+    assert sorted(sample) == ["KBOS", "KJFK", "KXYZ"]
+
+
+def test_get_all_major_airports_without_filters(airports_csv: Path) -> None:
+    sampler = StationSampler(csv_path=airports_csv)
+
+    majors = sampler.get_all_major_airports(large_only=False, scheduled_service_only=False)
+
+    assert sorted(majors) == ["KBOS", "KJFK", "KXYZ"]

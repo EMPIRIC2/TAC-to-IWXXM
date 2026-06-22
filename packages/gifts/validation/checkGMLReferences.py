@@ -121,7 +121,7 @@ def check_GML_references(examplesDirectory, iwxxm_version, internet=False):
 
                         if filename not in file_cache:
                             raise KeyError
-                        else:
+                        else:  # pragma: no cover
                             print("\tERROR: xlink:href to '%s' does not resolve to a valid URL in the RDF files" % xlinkTarget)
                             returnCode = 1
 

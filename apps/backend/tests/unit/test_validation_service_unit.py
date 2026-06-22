@@ -129,3 +129,87 @@ def test_get_validation_service_singleton(monkeypatch):
     second = val.get_validation_service()
 
     assert first is second
+
+
+def test_validate_rejects_xml_content_type(monkeypatch):
+    service = _make_service(monkeypatch)
+
+    with pytest.raises(ValueError, match="XML validation requires ValidationOrchestrator"):
+        service.validate("<xml/>", content_type="xml")
+
+
+def test_validate_delegates_to_validate_all_layers(monkeypatch):
+    service = _make_service(monkeypatch)
+    monkeypatch.setattr(service, "validate_all_layers", lambda tac: "aggregated")
+
+    assert service.validate("METAR KJFK 010000Z", content_type="tac") == "aggregated"
+
+
+def test_validate_all_layers_runs_both_layers_on_success(monkeypatch):
+    service = _make_service(monkeypatch, {"KJFK"})
+    monkeypatch.setattr(service, "_extract_icao_from_tac", lambda _tac: "KJFK")
+
+    aggregated = service.validate_all_layers("METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013")
+
+    assert aggregated.passed is True
+    assert len(aggregated.results) == 2
+    assert aggregated.results[0].layer == ValidationLayer.AIRPORT_ICAO
+    assert aggregated.results[1].layer == ValidationLayer.TAC_SYNTAX
+
+
+def test_validate_airport_icao_succeeds_without_airport_metadata(monkeypatch):
+    class _ValidatorNoDetails(_FakeAirportValidator):
+        def get_airport(self, icao):
+            return None
+
+    monkeypatch.setattr(val, "get_airport_validator", lambda: _ValidatorNoDetails({"KJFK"}))
+    service = val.ValidationService()
+    monkeypatch.setattr(service, "_extract_icao_from_tac", lambda _tac: "KJFK")
+
+    result = service.validate_airport_icao("METAR KJFK 010000Z")
+
+    assert result.passed is True
+    assert result.metadata is None
+
+
+def test_validate_tac_syntax_handles_unexpected_exception(monkeypatch):
+    service = _make_service(monkeypatch)
+    monkeypatch.setattr(val.re, "search", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("regex boom")))
+
+    result = service.validate_tac_syntax("METAR KJFK 010000Z")
+
+    assert result.passed is False
+    assert result.issues[0].code == "VALIDATION_ERROR"
+
+
+def test_validate_all_layers_syntax_exception_is_logged(monkeypatch):
+    service = _make_service(monkeypatch, {"KJFK"})
+    monkeypatch.setattr(service, "_extract_icao_from_tac", lambda _tac: "KJFK")
+    monkeypatch.setattr(
+        service,
+        "validate_tac_syntax",
+        lambda _tac: (_ for _ in ()).throw(RuntimeError("syntax boom")),
+    )
+
+    aggregated = service.validate_all_layers("METAR KJFK 010000Z")
+
+    assert len(aggregated.results) == 1
+    assert aggregated.results[0].layer == ValidationLayer.AIRPORT_ICAO
+
+
+def test_extract_icao_from_tac_returns_none_when_no_match(monkeypatch):
+    monkeypatch.setattr(val, "extract_airport_code", lambda _tac: None)
+
+    assert val.ValidationService._extract_icao_from_tac("nothing useful") is None
+
+
+def test_extract_icao_from_tac_no_regex_match(monkeypatch):
+    monkeypatch.setattr(val, "extract_airport_code", lambda _tac: None)
+
+    assert val.ValidationService._extract_icao_from_tac("123456789") is None
+
+
+def test_extract_icao_from_tac_returns_parser_result(monkeypatch):
+    monkeypatch.setattr(val, "extract_airport_code", lambda _tac: "KJFK")
+
+    assert val.ValidationService._extract_icao_from_tac("METAR KJFK 010000Z") == "KJFK"

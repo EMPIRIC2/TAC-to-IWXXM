@@ -176,4 +176,40 @@ describe('EmailVerification', () => {
 
     expect(screen.getByText(/check spam or junk folder/i)).toBeInTheDocument();
   });
+
+  it('handles verify errors when toast.info throws', async () => {
+    mockToast.info.mockImplementationOnce(() => {
+      throw new Error('toast failure');
+    });
+
+    render(<EmailVerification {...defaultProps} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /i've verified my email/i }));
+
+    expect(mockToast.error).toHaveBeenCalledWith(
+      'An error occurred while checking verification status.',
+    );
+  });
+
+  it('handles resend errors when toast.success throws', async () => {
+    vi.useFakeTimers();
+
+    render(<EmailVerification {...defaultProps} />);
+
+    for (let i = 0; i < 61; i += 1) {
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+    }
+
+    mockToast.success.mockImplementationOnce(() => {
+      throw new Error('toast failure');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /resend verification email/i }));
+
+    expect(mockToast.error).toHaveBeenCalledWith(
+      'An error occurred while resending the email.',
+    );
+  });
 });

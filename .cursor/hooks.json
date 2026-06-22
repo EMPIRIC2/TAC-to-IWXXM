@@ -2,6 +2,14 @@
   "$schema": "https://unpkg.com/cursor-hooks@latest/schema/hooks.schema.json",
   "version": 1,
   "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "bash .cursor/hooks/ci-quality-guard.sh",
+        "matcher": "git\\s+(commit|push)",
+        "timeout": 120,
+        "failClosed": true
+      }
+    ],
     "preToolUse": [
       {
         "command": "python3 .cursor/hooks/scope_check.py",

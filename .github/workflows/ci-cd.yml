@@ -129,7 +129,7 @@ jobs:
         run: |
           uv run pytest packages/shared/tests --cov=metar_shared \
             --cov-config=packages/shared/pyproject.toml --cov-branch \
-            --cov-report=term-missing --cov-fail-under=95 -v
+            --cov-report=term-missing --cov-fail-under=98 -v
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -175,7 +175,7 @@ jobs:
           cd apps/backend && uv run pytest tests/unit \
             --cov=src --cov-config=pyproject.toml --cov-branch \
             --cov-report=xml:coverage.xml --cov-report=term-missing \
-            --cov-fail-under=95 -v
+            --cov-fail-under=98 -v
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
@@ -226,7 +226,7 @@ jobs:
           cd packages/auth && uv run pytest tests \
             --cov=src --cov-config=pyproject.toml --cov-branch \
             --cov-report=xml:coverage.xml --cov-report=term-missing \
-            --cov-fail-under=95 -v
+            --cov-fail-under=98 -v
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
@@ -283,7 +283,7 @@ jobs:
           cd packages/gifts && uv run pytest tests/ \
             --cov=gifts --cov=validation --cov-config=pyproject.toml --cov-branch \
             --cov-report=xml:coverage.xml --cov-report=term-missing \
-            --cov-fail-under=95 -v
+            --cov-fail-under=98 -v
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4

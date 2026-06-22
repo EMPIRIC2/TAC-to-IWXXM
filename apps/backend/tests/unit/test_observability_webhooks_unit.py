@@ -753,3 +753,289 @@ def test_loki_worker_loop_drains_queue_in_chunks(monkeypatch):
 
     assert len(sent_batches) >= 2
     handler.close()
+
+
+def test_get_or_create_counter_registers_new_metric(monkeypatch):
+    observability_module._METRICS.clear()
+    counter = observability_module._get_or_create_counter("unit_test_counter", "doc", ["label"])
+    assert counter is observability_module._METRICS["unit_test_counter"]
+
+
+def test_get_or_create_histogram_registers_new_metric(monkeypatch):
+    observability_module._METRICS.clear()
+    histogram = observability_module._get_or_create_histogram("unit_test_hist", "doc", ["label"])
+    assert histogram is observability_module._METRICS["unit_test_hist"]
+
+
+def test_loki_send_batch_noop_for_empty_batch():
+    handler = LokiHandler(service_name="backend")
+    handler._session = MagicMock()
+    handler.push_url = "https://loki.example/push"
+
+    handler._send_batch([])
+
+    handler._session.post.assert_not_called()
+    handler.close()
+
+
+def test_loki_emit_handles_build_entry_failure(monkeypatch):
+    handler = LokiHandler(service_name="backend")
+    handler.push_url = "https://loki.example/push"
+    handler._session = MagicMock()
+    monkeypatch.setattr(handler, "_build_loki_entry", lambda _record: (_ for _ in ()).throw(RuntimeError("build fail")))
+
+    record = logging.LogRecord(
+        name="test",
+        level=logging.ERROR,
+        pathname=__file__,
+        lineno=1,
+        msg="broken entry",
+        args=(),
+        exc_info=None,
+    )
+
+    handler.emit(record)
+    assert handler._queue.qsize() == 0
+    handler.close()
+
+
+def test_loki_close_joins_alive_worker(monkeypatch):
+    handler = LokiHandler(service_name="backend")
+    handler.push_url = "https://loki.example/push"
+    handler._session = MagicMock()
+    handler._worker.is_alive = MagicMock(return_value=True)
+    join_mock = MagicMock()
+    handler._worker.join = join_mock
+
+    handler.close()
+
+    join_mock.assert_called_once()
+    handler._session.close.assert_called_once()
+
+
+def test_loki_worker_loop_flushes_on_batch_size(monkeypatch):
+    handler = LokiHandler(service_name="backend")
+    handler.push_url = "https://loki.example/push"
+    handler._worker.join(timeout=0.1)
+    handler._session = MagicMock()
+    handler.batch_size = 1
+    sent = []
+    monkeypatch.setattr(handler, "_send_batch", lambda batch: sent.append(list(batch)))
+
+    entry = {
+        "timestamp": "1",
+        "line": "a",
+        "labels": {"service": "backend", "environment": "test", "level": "info", "logger": "x"},
+    }
+    handler._queue.put_nowait(entry)
+    handler._queue.put_nowait({**entry, "timestamp": "2", "line": "b"})
+    handler._stop_event.set()
+    handler._worker_loop()
+
+    assert len(sent) >= 1
+    handler.close()
+
+
+def test_loki_worker_loop_ignores_send_batch_errors(monkeypatch):
+    handler = LokiHandler(service_name="backend")
+    handler.push_url = "https://loki.example/push"
+    handler._worker.join(timeout=0.1)
+    handler._session = MagicMock()
+    monkeypatch.setattr(handler, "_send_batch", lambda _batch: (_ for _ in ()).throw(RuntimeError("send fail")))
+
+    handler._queue.put_nowait(
+        {
+            "timestamp": "1",
+            "line": "a",
+            "labels": {"service": "backend", "environment": "test", "level": "info", "logger": "x"},
+        }
+    )
+    handler._stop_event.set()
+    handler._worker_loop()
+    handler.close()
+
+
+def test_get_or_create_counter_handles_duplicate_registration():
+    from prometheus_client import REGISTRY, Counter
+
+    observability_module._METRICS.clear()
+    Counter("dup_counter_test", "doc", ["label"])
+    counter = observability_module._get_or_create_counter("dup_counter_test", "doc", ["label"])
+    assert counter is REGISTRY._names_to_collectors["dup_counter_test"]
+
+
+def test_loki_worker_loop_flushes_batch_on_interval(monkeypatch):
+    handler = LokiHandler(service_name="backend")
+    handler.push_url = "https://loki.example/push"
+    handler._worker.join(timeout=0.1)
+    handler._session = MagicMock()
+    handler.flush_interval = 0.01
+    handler.batch_size = 100
+    sent = []
+    monkeypatch.setattr(handler, "_send_batch", lambda batch: sent.append(list(batch)))
+
+    entry = {
+        "timestamp": "1",
+        "line": "a",
+        "labels": {"service": "backend", "environment": "test", "level": "info", "logger": "x"},
+    }
+    handler._queue.put_nowait(entry)
+    handler._stop_event.set()
+    handler._worker_loop()
+
+    assert sent
+    handler.close()
+
+
+def test_loki_handler_disables_push_on_session_init_exception(monkeypatch):
+    import builtins
+
+    real_import = builtins.__import__
+
+    class _BrokenRequests:
+        class Session:
+            def __init__(self):
+                raise RuntimeError("session init failed")
+
+    def _fake_import(name, *args, **kwargs):
+        if name == "requests":
+            return _BrokenRequests
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setenv("LOKI_PUSH_URL", "https://loki.example/push")
+    monkeypatch.setattr(builtins, "__import__", _fake_import)
+
+    handler = LokiHandler(service_name="backend")
+    assert handler.push_url == ""
+    handler.close()
+
+
+def test_loki_worker_loop_flushes_remaining_batch_on_shutdown(monkeypatch):
+    handler = LokiHandler(service_name="backend")
+    handler.push_url = "https://loki.example/push"
+    handler._worker.join(timeout=0.1)
+    handler._session = MagicMock()
+    sent = []
+    monkeypatch.setattr(handler, "_send_batch", lambda batch: sent.append(list(batch)))
+
+    entry = {
+        "timestamp": "1",
+        "line": "tail",
+        "labels": {"service": "backend", "environment": "test", "level": "info", "logger": "x"},
+    }
+    handler._queue.put_nowait(entry)
+    handler._stop_event.set()
+    handler._worker_loop()
+
+    assert sent
+    handler.close()
+
+
+def test_loki_worker_loop_drains_queue_in_batch_chunks(monkeypatch):
+    handler = LokiHandler(service_name="backend")
+    handler.push_url = "https://loki.example/push"
+    handler._worker.join(timeout=0.1)
+    handler._session = MagicMock()
+    handler.batch_size = 1
+    sent = []
+    monkeypatch.setattr(handler, "_send_batch", lambda batch: sent.append(list(batch)))
+
+    entry = {
+        "timestamp": "1",
+        "line": "a",
+        "labels": {"service": "backend", "environment": "test", "level": "info", "logger": "x"},
+    }
+    handler._queue.put_nowait(entry)
+    handler._queue.put_nowait({**entry, "timestamp": "2", "line": "b"})
+    handler._stop_event.set()
+    handler._worker_loop()
+
+    assert len(sent) >= 2
+    handler.close()
+
+
+def test_get_or_create_histogram_handles_duplicate_registration():
+    from prometheus_client import REGISTRY, Histogram
+
+    observability_module._METRICS.clear()
+    Histogram("dup_hist_test", "doc", ["label"])
+    histogram = observability_module._get_or_create_histogram("dup_hist_test", "doc", ["label"])
+    assert histogram is REGISTRY._names_to_collectors["dup_hist_test"]
+
+
+def test_loki_worker_loop_processes_queue_item_before_stop(monkeypatch):
+    handler = LokiHandler(service_name="backend")
+    handler.push_url = "https://loki.example/push"
+    handler._worker.join(timeout=0.1)
+    handler._session = MagicMock()
+    handler.batch_size = 100
+    handler.flush_interval = 0.01
+    sent = []
+    monkeypatch.setattr(handler, "_send_batch", lambda batch: sent.append(list(batch)))
+
+    entry = {
+        "timestamp": "1",
+        "line": "queued",
+        "labels": {"service": "backend", "environment": "test", "level": "info", "logger": "x"},
+    }
+    handler._queue.put_nowait(entry)
+    handler._stop_event.set()
+    handler._worker_loop()
+
+    assert sent
+    handler.close()
+
+
+def test_loki_worker_shutdown_drains_queue_in_batches_with_send_errors(monkeypatch):
+    handler = LokiHandler(service_name="backend")
+    handler.push_url = "https://loki.example/push"
+    handler._worker.join(timeout=0.1)
+    handler._session = MagicMock()
+    handler.batch_size = 1
+    calls = {"count": 0}
+
+    def _fail_send(_batch):
+        calls["count"] += 1
+        raise RuntimeError("send failed")
+
+    monkeypatch.setattr(handler, "_send_batch", _fail_send)
+
+    entry = {
+        "timestamp": "1",
+        "line": "a",
+        "labels": {"service": "backend", "environment": "test", "level": "info", "logger": "x"},
+    }
+    handler._queue.put_nowait(entry)
+    handler._queue.put_nowait({**entry, "timestamp": "2", "line": "b"})
+    handler._stop_event.set()
+    handler._worker_loop()
+    handler.close()
+
+    assert calls["count"] >= 2
+
+
+def test_loki_worker_loop_flushes_on_interval_with_send_error(monkeypatch):
+    handler = LokiHandler(service_name="backend")
+    handler.push_url = "https://loki.example/push"
+    handler._worker.join(timeout=0.1)
+    handler._session = MagicMock()
+    handler.flush_interval = 0.001
+    handler.batch_size = 100
+    calls = {"count": 0}
+
+    def _fail_send(_batch):
+        calls["count"] += 1
+        handler._stop_event.set()
+
+    monkeypatch.setattr(handler, "_send_batch", _fail_send)
+
+    entry = {
+        "timestamp": "1",
+        "line": "a",
+        "labels": {"service": "backend", "environment": "test", "level": "info", "logger": "x"},
+    }
+    handler._queue.put_nowait(entry)
+    handler._worker_loop()
+    handler.close()
+
+    assert calls["count"] >= 1

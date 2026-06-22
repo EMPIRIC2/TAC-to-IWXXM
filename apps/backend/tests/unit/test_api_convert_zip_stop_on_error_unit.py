@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import builtins
 import io
 import zipfile
 from typing import Any
@@ -624,3 +625,97 @@ def test_convert_zip_json_unexpected_error_logging_exception_branch(client, monk
     zip_data = _read_zip_payload(response.content)
     assert "errors.txt" in zip_data
     assert "unexpected error unexpected failure" in zip_data["errors.txt"]
+
+
+def test_convert_zip_import_fallback_for_version_config(client, monkeypatch):
+    original_import = builtins.__import__
+
+    def _import(name, globals=None, locals=None, fromlist=(), level=0):
+        if level > 0 and name.endswith("iwxxm_versions"):
+            raise ImportError("force fallback")
+        return original_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _import)
+
+    response = client.post(
+        "/api/v1/convert-zip",
+        data={"manual_text": "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"},
+    )
+
+    assert response.status_code == 200
+
+
+def test_convert_zip_manual_success_records_translation_id(client, monkeypatch):
+    class _StatsWithId:
+        async def log_translation(self, **_kwargs: Any) -> str:
+            return "manual-zip-id"
+
+    captured = {}
+
+    class _WebhookBulkCapture(_FakeWebhookService):
+        async def notify_bulk_completed(self, **kwargs: Any) -> None:
+            captured.update(kwargs)
+
+    monkeypatch.setattr(api_module, "statistics_service", _StatsWithId())
+    monkeypatch.setattr(api_module, "webhook_service", _WebhookBulkCapture())
+
+    response = client.post(
+        "/api/v1/convert-zip",
+        data={"manual_text": "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"},
+    )
+
+    assert response.status_code == 200
+    assert captured.get("total_files") == 1
+    assert captured.get("successful") == 1
+
+
+def test_convert_zip_json_success_records_translation_id(client, monkeypatch):
+    class _StatsWithId:
+        async def log_translation(self, **_kwargs: Any) -> str:
+            return "json-zip-id"
+
+    captured = {}
+
+    class _WebhookBulkCapture(_FakeWebhookService):
+        async def notify_bulk_completed(self, **kwargs: Any) -> None:
+            captured.update(kwargs)
+
+    monkeypatch.setattr(api_module, "statistics_service", _StatsWithId())
+    monkeypatch.setattr(api_module, "webhook_service", _WebhookBulkCapture())
+
+    response = client.post(
+        "/api/v1/convert-zip",
+        json={"metars": ["METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013"], "version": "2025-2"},
+    )
+
+    assert response.status_code == 200
+    assert captured.get("total_files") == 1
+    assert captured.get("successful") == 1
+
+
+def test_convert_zip_file_success_records_translation_id(client, monkeypatch):
+    class _StatsWithId:
+        async def log_translation(self, **_kwargs: Any) -> str:
+            return "file-zip-id"
+
+    captured = {}
+
+    class _WebhookBulkCapture(_FakeWebhookService):
+        async def notify_bulk_completed(self, **kwargs: Any) -> None:
+            captured.update(kwargs)
+
+    async def fake_read_uploaded_text(_upload_file):
+        return "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013", None
+
+    monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
+    monkeypatch.setattr(api_module, "statistics_service", _StatsWithId())
+    monkeypatch.setattr(api_module, "webhook_service", _WebhookBulkCapture())
+
+    response = client.post(
+        "/api/v1/convert-zip",
+        files=[("files", ("sample.txt", "ignored", "text/plain"))],
+    )
+
+    assert response.status_code == 200
+    assert captured.get("total_files") == 1
+    assert captured.get("successful") == 1

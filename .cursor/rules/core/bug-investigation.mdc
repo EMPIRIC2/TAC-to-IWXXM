@@ -18,6 +18,10 @@ Modal log error), follow [`.cursor/skills/bug-investigation/SKILL.md`](../skills
 | Repro / regression test | `tests/bugs/test_bug_YYYY_MM_DD_[slug].py` |
 | Fix | Minimal change under `src/` (or approved config); one bug per PR when possible |
 
+Bug repro tests live under `tests/` and are in CI **Quality Gates** ruff format scope
+(`apps packages tests`). Run `make format-check` before commit; `.cursor/hooks/format.sh`
+auto-formats edited `.py` files.
+
 ## Required content in the bug report
 
 1. **Error description** — plain-language what broke

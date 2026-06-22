@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from './accordion';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from './popover';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './hover-card';
 
 describe('Collapse and Disclosure UI Wrappers', () => {
@@ -62,6 +62,35 @@ describe('Collapse and Disclosure UI Wrappers', () => {
 
     const content = await screen.findByText('Popover body');
     expect(content).toHaveAttribute('data-slot', 'popover-content');
+  });
+
+  it('renders popover anchor slot', () => {
+    const { container } = render(
+      <Popover>
+        <PopoverAnchor data-testid="popover-anchor">Anchor</PopoverAnchor>
+        <PopoverTrigger>Open Popover</PopoverTrigger>
+        <PopoverContent>Popover body</PopoverContent>
+      </Popover>,
+    );
+
+    const anchor = container.querySelector('[data-slot="popover-anchor"]');
+    expect(anchor).toBeTruthy();
+    expect(anchor).toHaveTextContent('Anchor');
+  });
+
+  it('applies custom popover content props', async () => {
+    render(
+      <Popover defaultOpen>
+        <PopoverTrigger>Open Popover</PopoverTrigger>
+        <PopoverContent align="start" sideOffset={8} className="custom-popover">
+          Custom popover body
+        </PopoverContent>
+      </Popover>,
+    );
+
+    const content = await screen.findByText('Custom popover body');
+    expect(content).toHaveAttribute('data-slot', 'popover-content');
+    expect(content.className).toContain('custom-popover');
   });
 
   it('shows hover card content on hover', async () => {

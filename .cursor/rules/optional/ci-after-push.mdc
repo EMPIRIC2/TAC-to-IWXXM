@@ -30,17 +30,17 @@ gh run watch <run-id>
 | **failure** | `gh run view <run-id> --log-failed` → fix → push → re-watch |
 | **User waives** | AskQuestion only; note waiver in PR/summary |
 
-## Before the first push (local parity — backend)
+## Before the first push (local parity — monorepo root)
 
 ```bash
-cd backend  # or repo path containing pyproject.toml
-uv sync --group dev
-uv run ruff check src tests
-uv run ruff format --check src tests
-uv run pytest tests
+make format-check    # ruff format --check apps packages tests + pnpm format:check
+make lint
+make typecheck
+make test-unit       # or make ci for full pre-commit parity
 ```
 
-When frontend changes in the same PR, also run frontend lint/test per monorepo CI.
+Quality Gates scope is **`apps packages tests`** — not legacy `src/` paths. Bug repro tests
+under `tests/bugs/` are included. See `ci-quality-gates.mdc`.
 
 ## Related
 

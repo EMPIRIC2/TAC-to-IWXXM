@@ -349,7 +349,7 @@ def test_get_supported_versions_import_fallback(monkeypatch):
     original_import = builtins.__import__
 
     def _import(name, globals=None, locals=None, fromlist=(), level=0):
-        if name == "src.config.iwxxm_versions":
+        if level > 0 and name.endswith("iwxxm_versions"):
             raise ImportError("force fallback")
         return original_import(name, globals, locals, fromlist, level)
 
@@ -366,7 +366,7 @@ def test_get_schema_status_import_fallback(monkeypatch):
     original_import = builtins.__import__
 
     def _import(name, globals=None, locals=None, fromlist=(), level=0):
-        if name == "src.config.iwxxm_versions":
+        if level > 0 and name.endswith("iwxxm_versions"):
             raise ImportError("force fallback")
         return original_import(name, globals, locals, fromlist, level)
 
@@ -385,7 +385,7 @@ async def test_validate_comprehensive_comprehensive_level_and_import_fallback(mo
     original_import = builtins.__import__
 
     def _import(name, globals=None, locals=None, fromlist=(), level=0):
-        if name == "src.config.iwxxm_versions":
+        if level > 0 and name.endswith("iwxxm_versions"):
             raise ImportError("force fallback")
         return original_import(name, globals, locals, fromlist, level)
 

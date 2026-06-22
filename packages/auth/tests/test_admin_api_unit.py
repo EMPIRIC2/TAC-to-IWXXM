@@ -8,7 +8,13 @@ import pytest
 from fastapi import FastAPI, HTTPException, status
 from fastapi.testclient import TestClient
 
-from admin_api import _get_service_client, require_admin, router
+from admin_api import (
+    _get_service_client,
+    _profile_row,
+    _profile_rows,
+    require_admin,
+    router,
+)
 
 
 def _admin_override() -> dict[str, str]:
@@ -264,3 +270,60 @@ def test_toggle_admin_returns_404_when_user_missing(admin_client: TestClient) ->
     admin_client.app.dependency_overrides.clear()
 
     assert response.status_code == 404
+
+
+def test_profile_row_returns_none_for_non_dict() -> None:
+    """Non-mapping Supabase payloads are ignored."""
+    assert _profile_row("not-a-dict") is None
+    assert _profile_row(None) is None
+
+
+def test_profile_row_returns_dict() -> None:
+    """Mapping payloads are returned as profile rows."""
+    row = {"id": "user-1", "email": "user@example.com"}
+    assert _profile_row(row) == row
+
+
+def test_profile_rows_returns_empty_for_non_list() -> None:
+    """Non-list Supabase payloads yield no profile rows."""
+    assert _profile_rows({"id": "user-1"}) == []
+
+
+def test_profile_rows_filters_non_dict_items() -> None:
+    """Profile row helper keeps only mapping entries."""
+    rows = _profile_rows([{"id": "1"}, "skip", {"id": "2"}])
+    assert rows == [{"id": "1"}, {"id": "2"}]
+
+
+def test_get_service_client_success() -> None:
+    """Service client is created when Supabase env vars are set."""
+    with patch.dict(
+        "os.environ",
+        {"SUPABASE_URL": "https://test.supabase.co", "SUPABASE_SERVICE_ROLE_KEY": "service-key"},
+        clear=True,
+    ):
+        with patch("admin_api.create_client", return_value=MagicMock()) as mock_create:
+            client = _get_service_client()
+    mock_create.assert_called_once_with("https://test.supabase.co", "service-key")
+    assert client is not None
+
+
+def test_toggle_admin_returns_404_when_profile_row_invalid(admin_client: TestClient) -> None:
+    """Non-dict update payload is treated as missing user."""
+    admin_client.app.dependency_overrides[require_admin] = _admin_override
+    with patch("admin_api._get_service_client", return_value=_mock_profile_table(update_data=["bad-row"])):
+        response = admin_client.post(
+            "/admin/toggle-admin",
+            headers={"Authorization": "Bearer test-token"},
+            json={"userId": "user-2", "isAdmin": True},
+        )
+    admin_client.app.dependency_overrides.clear()
+
+    assert response.status_code == 404
+
+
+def test_auth_admin_api_compat_import() -> None:
+    """Compatibility wrapper re-exports admin router."""
+    from auth.admin_api import router as compat_router
+
+    assert compat_router is router

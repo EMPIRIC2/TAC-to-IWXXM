@@ -1,6 +1,7 @@
 """Unit tests for AirportRecordBuilder – 0% coverage target."""
 
 import json
+from pathlib import Path
 from unittest.mock import patch
 
 from src.utilities.airport_record_builder import AirportRecordBuilder
@@ -265,3 +266,118 @@ class TestAirportRecordBuilderGiftsFormat:
             }
         )
         assert line == ""
+
+
+class TestAirportRecordBuilderInit:
+    def test_init_handles_missing_data_directory(self, monkeypatch, tmp_path):
+        fake_file = tmp_path / "orphan" / "utilities" / "airport_record_builder.py"
+        fake_file.parent.mkdir(parents=True)
+        monkeypatch.setattr("src.utilities.airport_record_builder.__file__", str(fake_file))
+
+        real_exists = Path.exists
+
+        def patched_exists(self):
+            normalized = str(self).replace("\\", "/")
+            if normalized.endswith("/data") or "/src/data" in normalized:
+                return False
+            return real_exists(self)
+
+        monkeypatch.setattr(Path, "exists", patched_exists)
+
+        builder = AirportRecordBuilder()
+        assert builder._vertical_datum_map == {}
+        assert builder._airports_json == {}
+
+
+class TestAirportRecordBuilderMergePaths:
+    def test_build_record_openaip_completes_early(self, tmp_path):
+        builder = _make_builder(tmp_path, airports_data=[])
+        openaip_data = {
+            "name": "Complete Airport",
+            "iata": "CMP",
+            "designator": "CMP",
+            "coordinates": {"latitude": 1.0, "longitude": 2.0},
+        }
+        record = builder.build_record("EDDF", openaip_data=openaip_data)
+        assert record["source"] == "OpenAIP"
+        assert record["name"] == "Complete Airport"
+        assert "OpenAIP" in record["_sources_tried"]
+
+    def test_build_record_partial_override_preserves_openaip_source(self, tmp_path):
+        datum_map = {
+            "country_defaults": {},
+            "airport_overrides": {"EGLL": {"vertical_datum": "EGM_96", "source": "manual"}},
+            "datum_info": {},
+        }
+        builder = _make_builder(tmp_path, airports_data=[], datum_map=datum_map)
+        openaip_data = {
+            "name": "Heathrow",
+            "iata": "LHR",
+            "designator": "LHR",
+            "coordinates": {"latitude": 51.47, "longitude": -0.45},
+        }
+        record = builder.build_record("EGLL", openaip_data=openaip_data)
+        assert record["source"] == "manual"
+        assert record["_override"] is True
+        assert record["name"] == "Heathrow"
+
+    def test_build_record_validator_returns_empty_dict(self, tmp_path):
+        builder = _make_builder(tmp_path, airports_data=[])
+
+        class _EmptyValidator:
+            def get_airport_info(self, icao):
+                return {}
+
+        record = builder.build_record("EMPTY", airport_validator=_EmptyValidator())
+        assert record["source"] == "unknown"
+        assert "AirportValidator" in record["_sources_tried"]
+
+    def test_extract_fields_top_level_lat_lon(self, tmp_path):
+        builder = _make_builder(tmp_path, airports_data=[])
+        extracted = builder._extract_fields({"latitude": 10.5, "longitude": 20.25})
+        assert extracted["coordinates"] == {"latitude": 10.5, "longitude": 20.25}
+
+
+class TestAirportRecordBuilderInitPaths:
+    def test_init_falls_back_to_workspace_data_dir(self, monkeypatch, tmp_path):
+        utilities_dir = tmp_path / "backend" / "src" / "utilities"
+        utilities_dir.mkdir(parents=True)
+        data_dir = tmp_path / "backend" / "src" / "data"
+        data_dir.mkdir(parents=True)
+        (data_dir / "vertical_datum_map.json").write_text("{}", encoding="utf-8")
+        (data_dir / "airports.json").write_text("[]", encoding="utf-8")
+
+        fake_file = utilities_dir / "airport_record_builder.py"
+        fake_file.write_text("# stub", encoding="utf-8")
+        monkeypatch.setattr(
+            "src.utilities.airport_record_builder.__file__",
+            str(fake_file),
+        )
+
+        relative_data = utilities_dir.parent / "data"
+
+        original_exists = Path.exists
+
+        def _exists(self):
+            if self == relative_data:
+                return False
+            return original_exists(self)
+
+        monkeypatch.setattr(Path, "exists", _exists)
+
+        builder = AirportRecordBuilder()
+        assert builder.data_dir == data_dir
+
+    def test_init_warns_when_no_data_dir_found(self, monkeypatch, tmp_path, caplog):
+        fake_file = tmp_path / "orphan" / "airport_record_builder.py"
+        fake_file.parent.mkdir(parents=True)
+        fake_file.write_text("# stub", encoding="utf-8")
+        monkeypatch.setattr(
+            "src.utilities.airport_record_builder.__file__",
+            str(fake_file),
+        )
+        monkeypatch.setattr(Path, "exists", lambda _self: False)
+
+        builder = AirportRecordBuilder()
+        assert builder._vertical_datum_map == {}
+        assert "Data directory not found" in caplog.text

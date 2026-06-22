@@ -73,6 +73,11 @@ class TestTemperatureValidationRule:
         warnings = [i for i in issues if i.severity == IssueSeverity.WARNING]
         assert len(warnings) >= 1
 
+    def test_very_small_spread_warning(self):
+        self.rule.min_dew_spread = 2.0
+        issues = self.rule.validate(15.0, 14.0)
+        assert any(i.severity == IssueSeverity.WARNING for i in issues)
+
     def test_negative_temperatures_valid(self):
         issues = self.rule.validate(-5.0, -10.0)
         assert all(i.severity != IssueSeverity.ERROR for i in issues)
@@ -142,6 +147,40 @@ class TestCloudLayerValidationRule:
         # physical reversal should generate an issue
         assert isinstance(issues, list)
 
+    def test_max_altitude_warning(self):
+        layers = [{"coverage": "FEW", "altitude_m": 35000}]
+        issues = self.rule.validate(layers)
+        assert any("exceeds maximum" in issue.message for issue in issues)
+
+    def test_high_altitude_info_between_typical_and_max(self):
+        layers = [{"coverage": "FEW", "altitude_m": 7000}]
+        issues = self.rule.validate(layers)
+        assert any(issue.severity == IssueSeverity.INFO for issue in issues)
+
+    def test_extreme_gap_between_layers(self):
+        layers = [
+            {"coverage": "FEW", "altitude_m": 1000},
+            {"coverage": "SCT", "altitude_m": 10000},
+        ]
+        issues = self.rule.validate(layers)
+        assert any("Extreme gap" in issue.message for issue in issues)
+
+    def test_large_gap_info_between_layers(self):
+        layers = [
+            {"coverage": "FEW", "altitude_m": 1000},
+            {"coverage": "SCT", "altitude_m": 5000},
+        ]
+        issues = self.rule.validate(layers)
+        assert any("Large gap" in issue.message for issue in issues)
+
+    def test_non_increasing_altitudes_warning(self):
+        layers = [
+            {"coverage": "FEW", "altitude_m": 2000},
+            {"coverage": "SCT", "altitude_m": 2000},
+        ]
+        issues = self.rule.validate(layers)
+        assert any("not strictly increasing" in issue.message for issue in issues)
+
 
 class TestVisibilityWeatherValidationRule:
     def setup_method(self):
@@ -176,6 +215,10 @@ class TestVisibilityWeatherValidationRule:
 
     def test_validate_with_empty_phenomena_skips_checks(self):
         issues = self.rule.validate(800, [])
+        assert issues == []
+
+    def test_validate_unknown_phenomena_returns_empty(self):
+        issues = self.rule.validate(800, ["ZZ"])
         assert issues == []
 
 
@@ -220,3 +263,44 @@ class TestSemanticValidationEngine:
         report = self.engine.generate_report(issues=issues)
         assert report["is_valid"] is True
         assert report["summary"]["total_issues"] == 0
+
+
+class TestTemperatureRuleEdgeCases:
+    def test_small_t_td_spread_warning(self):
+        rule = TemperatureValidationRule()
+        rule.min_dew_spread = 1.0
+        issues = rule.validate(temperature=10.0, dewpoint=9.8)
+        assert any("Very small T-Td spread" in issue.message for issue in issues)
+
+
+class TestCloudLayerRuleEdgeCases:
+    def test_cloud_altitude_above_maximum(self):
+        rule = CloudLayerValidationRule()
+        issues = rule.validate([{"coverage": "BKN", "altitude_m": 35000}])
+        assert any("exceeds maximum" in issue.message for issue in issues)
+
+    def test_high_but_valid_cloud_altitude_info(self):
+        rule = CloudLayerValidationRule()
+        typical_max = rule.TYPICAL_MAX_M
+        issues = rule.validate([{"coverage": "CI", "altitude_m": typical_max + 500}])
+        assert any("High altitude cloud" in issue.message for issue in issues)
+
+    def test_extreme_gap_between_layers(self):
+        rule = CloudLayerValidationRule()
+        issues = rule._check_altitude_gaps(
+            [
+                {"coverage": "SCT", "altitude_m": 900},
+                {"coverage": "BKN", "altitude_m": 900 + rule.EXTREME_GAP_M + 100},
+            ]
+        )
+        assert any("Extreme gap between layers" in issue.message for issue in issues)
+
+    def test_large_gap_info_between_layers(self):
+        rule = CloudLayerValidationRule()
+        issues = rule._check_altitude_gaps(
+            [
+                {"coverage": "SCT", "altitude_m": 900},
+                {"coverage": "BKN", "altitude_m": 900 + rule.LARGE_GAP_M + 100},
+            ]
+        )
+        assert any("Large gap between layers" in issue.message for issue in issues)

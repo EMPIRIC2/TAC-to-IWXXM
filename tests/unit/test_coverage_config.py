@@ -1,4 +1,4 @@
-"""Unit tests for 95% coverage gate configuration (T1.9, ADR-007)."""
+"""Unit tests for 98% coverage gate configuration (T1.9, ADR-007)."""
 
 from __future__ import annotations
 
@@ -13,22 +13,22 @@ ROOT = Path(__file__).resolve().parents[2]
 class TestCoverageConfig:
     """Coverage gates documented per workspace member."""
 
-    def test_root_pyproject_fail_under_95(self) -> None:
+    def test_root_pyproject_fail_under_98(self) -> None:
         content = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        assert "fail_under = 95" in content
+        assert "fail_under = 98" in content
 
     def test_root_coverage_sources_monorepo_paths(self) -> None:
         content = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
         assert 'source = ["apps", "packages"]' in content
 
-    def test_shared_package_fail_under_95(self) -> None:
+    def test_shared_package_fail_under_98(self) -> None:
         content = (ROOT / "packages/shared/pyproject.toml").read_text(encoding="utf-8")
-        assert "fail_under = 95" in content
+        assert "fail_under = 98" in content
 
-    def test_gifts_package_fail_under_95(self) -> None:
+    def test_gifts_package_fail_under_98(self) -> None:
         content = (ROOT / "packages/gifts/pyproject.toml").read_text(encoding="utf-8")
-        assert "fail_under = 95" in content
+        assert "fail_under = 98" in content
 
-    def test_auth_package_fail_under_95(self) -> None:
+    def test_auth_package_fail_under_98(self) -> None:
         content = (ROOT / "packages/auth/pyproject.toml").read_text(encoding="utf-8")
-        assert "fail_under = 95" in content
+        assert "fail_under = 98" in content
