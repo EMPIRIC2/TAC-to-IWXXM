@@ -189,12 +189,11 @@ class TestLiveAPIAuthentication:
         async with httpx.AsyncClient(base_url=LIVE_API_URL.rstrip("/"), timeout=LIVE_API_TIMEOUT) as client:
             response = await client.post("/api/v1/convert", json=payload)
 
-            # Auth disabled on some stacks returns 200; production uses 401
-            assert response.status_code in (401, 200)
-            if response.status_code == 401:
-                return
-            data = response.json()
-            assert data.get("successful", 0) >= 1
+            if response.status_code == 200:
+                pytest.skip("Auth disabled on target stack (unauthenticated convert succeeded)")
+            assert response.status_code == 401, (
+                f"Expected 401 for unauthenticated convert, got {response.status_code}: {response.text}"
+            )
 
     @pytest.mark.live_api
     @pytest.mark.asyncio
