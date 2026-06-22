@@ -63,6 +63,19 @@ Set on Render static site build environment:
 | `METAR_CORS_ORIGINS` | `http://localhost:18000,http://localhost:5173` |
 | `DISABLE_AUTH` | `true` (local dev convenience) |
 
+## Local Live Test Runs (manual)
+
+Populate `.env` from `.env.example` before `make test-live*`:
+
+| Variable | Live value |
+|----------|------------|
+| `LIVE_API_URL` | `https://metar-to-iwxxm-api.onrender.com` |
+| `LIVE_FRONTEND_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
+| `PLAYWRIGHT_BASE_URL` | Same as `LIVE_FRONTEND_URL` |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Supabase admin user (runtime JWT) |
+
+See [deploy.md](deploy.md) §Live test harness and ADR-009.
+
 ## Connectivity Verification
 
 | Tier | Command |

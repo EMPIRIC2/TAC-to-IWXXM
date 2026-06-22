@@ -1,34 +1,32 @@
 """Live staging connectivity tests (H4).
 
-Run against deployed staging when URLs are configured:
+Run against deployed Render stack when URLs are configured:
 
     pytest tests/smoke/test_staging_connectivity.py -m live
 
-Requires: STAGING_API_URL, STAGING_FRONTEND_ORIGIN (see docs/staging-secrets-matrix.md).
+Requires: LIVE_API_URL, LIVE_FRONTEND_URL (STAGING_* fallbacks supported).
 """
 
 from __future__ import annotations
 
-import os
-
-import httpx
 import pytest
+from tests.live_env import live_api_url, live_frontend_url, warn_deprecated_env
 
 pytestmark = pytest.mark.live
-
-
-def _require_env(name: str) -> str:
-    value = os.environ.get(name, "").strip()
-    if not value:
-        pytest.skip(f"{name} not set — skip live H4 connectivity")
-    return value
 
 
 @pytest.mark.asyncio
 async def test_staging_cors_preflight_allows_frontend_origin() -> None:
     """H4 — OPTIONS preflight from browser origin succeeds."""
-    api_url = _require_env("STAGING_API_URL").rstrip("/")
-    origin = _require_env("STAGING_FRONTEND_ORIGIN")
+    warn_deprecated_env()
+    api_url = live_api_url()
+    origin = live_frontend_url()
+    if not api_url or not origin:
+        pytest.skip(
+            "LIVE_API_URL and LIVE_FRONTEND_URL not set — skip live H4 connectivity"
+        )
+
+    import httpx
 
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.options(

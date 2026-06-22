@@ -15,6 +15,37 @@
 import { expect, test } from '@playwright/test';
 import { ADMIN_EMAIL, ADMIN_PASSWORD } from './playwright-e2e-helpers';
 
+const LIVE_API_URL =
+  process.env.LIVE_API_URL?.replace(/\/$/, '') ??
+  process.env.VITE_API_BASE_URL?.replace(/\/$/, '') ??
+  '';
+
+async function wakeLiveApiHealth(): Promise<void> {
+  if (!LIVE_API_URL || !LIVE_API_URL.startsWith('https://')) {
+    return;
+  }
+
+  let lastError: string | undefined;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(`${LIVE_API_URL}/health`, { method: 'GET' });
+      if (response.ok) {
+        return;
+      }
+      lastError = `HTTP ${response.status}`;
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : String(error);
+    }
+    if (attempt < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 30_000));
+    }
+  }
+
+  throw new Error(
+    `Preflight failed: live API not healthy at ${LIVE_API_URL}/health after 3 attempts (${lastError})`,
+  );
+}
+
 test.describe('Preflight: Admin Credential Guard', () => {
   test('admin credentials are configured and authenticate successfully', async ({
     page,
@@ -26,6 +57,8 @@ test.describe('Preflight: Admin Credential Guard', () => {
           'To skip login tests entirely, run: make test-e2e-playwright-smoke',
       );
     }
+
+    await wakeLiveApiHealth();
 
     await page.goto('/');
     await expect(page.getByRole('heading', { name: /METAR Converter/i })).toBeVisible();

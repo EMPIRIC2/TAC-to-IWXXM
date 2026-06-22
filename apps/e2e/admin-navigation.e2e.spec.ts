@@ -7,7 +7,7 @@ test.describe('Admin Navigation', () => {
 
     await expect(page.getByRole('heading', { name: /Admin Dashboard/i })).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: 'User Approvals', exact: true }),
+      page.getByRole('heading', { name: 'User Approvals', exact: true }).first(),
     ).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'System Settings', exact: true }),

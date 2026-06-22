@@ -33,7 +33,7 @@ test.describe('Authentication Flow', () => {
 
     await expect(page.getByText(/Logged in as: admin@metar\.local/i)).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: 'User Approvals', exact: true }),
+      page.getByRole('heading', { name: 'User Approvals', exact: true }).first(),
     ).toBeVisible();
   });
 });

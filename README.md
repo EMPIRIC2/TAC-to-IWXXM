@@ -82,6 +82,19 @@ make tests:e2e              # Full Playwright suite (apps/e2e)
 
 Coverage gate: **95%** on all packages and apps. See [docs/test-plan.md](docs/test-plan.md).
 
+### Live tests (Render T3 — manual)
+
+Populate `.env` with `LIVE_API_URL`, `LIVE_FRONTEND_URL`, and admin credentials, then:
+
+```bash
+make test-live-connectivity   # H4–H5 CORS + bundle
+make test-live-api            # H3 live API pytest
+make test-live-e2e            # H6 Playwright UJ-001–003
+make test-live                # All tiers (pre-release signoff)
+```
+
+See [docs/deploy.md](docs/deploy.md) §Live test harness. Requires E2E-001 schema path fix for full validation coverage.
+
 ## Key technologies
 
 | Layer | Stack |

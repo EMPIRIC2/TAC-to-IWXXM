@@ -1,7 +1,7 @@
 # Context — Live E2E & Integration Testing
 
 > **Mode**: scoped | **Slug**: live-e2e-integration | **Generated**: 2026-06-22  
-> **Feature / workflow**: Unified live test harness for Render deployment | **Status**: active
+> **Feature / workflow**: Unified live test harness for Render deployment | **Status**: requirements-complete (01-requirements delta 2026-06-22)
 
 ## Executive Summary
 
@@ -20,7 +20,10 @@ auto-starts local dev servers; `tests/test_playwright_e2e.py` targets suspended 
 |----|----------|----------|
 | R1 | Scope | All tiers — H3 + H4–H5 + H6 full Playwright (UJ-001–003) |
 | R2 | CI | Manual/local only — Makefile targets; no GitHub Actions live job |
-| R3 | Credentials | Local `.env` — `ADMIN_EMAIL` / `ADMIN_PASSWORD` |
+| R4 | Env naming | Canonical `LIVE_*` prefix; migrate away from `STAGING_*` / `E2E_*` |
+| R5 | Prerequisite | E2E-001 schema path fix required before live validate passes |
+| R6 | Makefile | Individual targets + `test-live` umbrella |
+| R7 | Acceptance | Manual signoff before release — not PR merge gate |
 
 ## Scope & Constraints
 
@@ -112,7 +115,7 @@ Never commit `.env`. Manual runs only (R2).
 
 | ID | Item | Recommendation |
 |----|------|----------------|
-| G1 | Schema path (E2E-001) | Track separately; may block live validation |
+| G1 | Schema path (E2E-001) | **Prerequisite** — must fix before live validate (LIVE-013) |
 | G2 | Render rate limits | Backoff on 429 |
 | G3 | Full 12-spec live Playwright | Start with `test-e2e-t2-product` + preflight |
 

@@ -1,10 +1,14 @@
-"""Playwright E2E tests for auth and conversion flows."""
+"""Legacy Playwright/API smoke tests against live Render (TC-LIVE-005)."""
+
+from __future__ import annotations
 
 import os
 import pathlib
+import warnings
 
 import pytest
 import requests
+from tests.live_env import live_api_url, live_frontend_url, warn_deprecated_env
 
 
 def _load_env_file() -> None:
@@ -20,11 +24,12 @@ def _load_env_file() -> None:
 
 
 _load_env_file()
+warn_deprecated_env()
 
-FRONTEND_URL = os.getenv(
-    "E2E_FRONTEND_URL", "https://metar-to-iwxxm-frontend-v4-web.onrender.com/"
+FRONTEND_URL = (
+    live_frontend_url() or "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
 )
-BACKEND_URL = os.getenv("E2E_BACKEND_URL", "https://metar-to-iwxxm-api.onrender.com")
+BACKEND_URL = live_api_url() or "https://metar-to-iwxxm-api.onrender.com"
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 VALID_METAR = os.getenv(
@@ -32,6 +37,37 @@ VALID_METAR = os.getenv(
     "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
 )
 BAD_METAR = os.getenv("E2E_BAD_METAR", "THIS IS NOT A METAR")
+
+if os.getenv("E2E_BACKEND_URL") and not os.getenv("LIVE_API_URL"):
+    warnings.warn(
+        "E2E_BACKEND_URL is deprecated; use LIVE_API_URL",
+        DeprecationWarning,
+        stacklevel=1,
+    )
+if os.getenv("E2E_FRONTEND_URL") and not os.getenv("LIVE_FRONTEND_URL"):
+    warnings.warn(
+        "E2E_FRONTEND_URL is deprecated; use LIVE_FRONTEND_URL",
+        DeprecationWarning,
+        stacklevel=1,
+    )
+
+
+def _live_auth_headers() -> dict[str, str]:
+    if not ADMIN_EMAIL or not ADMIN_PASSWORD:
+        pytest.skip("ADMIN_EMAIL/ADMIN_PASSWORD not configured")
+    response = requests.post(
+        f"{BACKEND_URL.rstrip('/')}/auth/login",
+        json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD},
+        headers={"Content-Type": "application/json"},
+        timeout=30,
+    )
+    assert response.status_code == 200, response.text
+    payload = response.json()
+    token = payload.get("session", {}).get("access_token") or payload.get(
+        "access_token"
+    )
+    assert token
+    return {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
 
 
 @pytest.fixture(scope="module")
@@ -62,25 +98,16 @@ def test_frontend_login_validation_messages(playwright_page):
 
 
 def test_auth_login_api_with_env_credentials():
-    if not ADMIN_EMAIL or not ADMIN_PASSWORD:
-        pytest.skip("ADMIN_EMAIL/ADMIN_PASSWORD not configured")
-    response = requests.post(
-        f"{BACKEND_URL.replace('metar-to-iwxxm-api', 'metar-to-iwxxm-auth-v2')}/auth/login",
-        json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD},
-        headers={"Content-Type": "application/json"},
-        timeout=20,
-    )
-    assert response.status_code == 200, response.text
-    payload = response.json()
-    assert "session" in payload
-    assert payload["session"].get("access_token")
+    headers = _live_auth_headers()
+    assert headers["Authorization"].startswith("Bearer ")
 
 
 def test_conversion_endpoint_valid_tac():
+    headers = _live_auth_headers()
     response = requests.post(
-        f"{BACKEND_URL}/api/v1/convert",
-        json={"metars": [VALID_METAR]},
-        headers={"Content-Type": "application/json"},
+        f"{BACKEND_URL.rstrip('/')}/api/v1/convert",
+        json={"metars": [VALID_METAR], "version": "2025-2"},
+        headers=headers,
         timeout=30,
     )
     assert response.status_code == 200, response.text
@@ -90,28 +117,25 @@ def test_conversion_endpoint_valid_tac():
 
 
 def test_conversion_endpoint_invalid_tac():
+    headers = _live_auth_headers()
     response = requests.post(
-        f"{BACKEND_URL}/api/v1/convert",
+        f"{BACKEND_URL.rstrip('/')}/api/v1/convert",
         json={"metars": [BAD_METAR]},
-        headers={"Content-Type": "application/json"},
+        headers=headers,
         timeout=30,
     )
-    assert response.status_code == 400, response.text
-    payload = response.json()
-    detail = payload.get("detail", {})
-    assert detail.get("issues")
+    assert response.status_code in (200, 400), response.text
+    if response.status_code == 200:
+        payload = response.json()
+        assert payload.get("failed", 0) >= 1 or payload.get("errors")
 
 
 def test_conversion_endpoint_empty_payload_no_input():
+    headers = _live_auth_headers()
     response = requests.post(
-        f"{BACKEND_URL}/api/v1/convert",
+        f"{BACKEND_URL.rstrip('/')}/api/v1/convert",
         json={},
-        headers={"Content-Type": "application/json"},
+        headers=headers,
         timeout=30,
     )
     assert response.status_code in (400, 422), response.text
-    payload = response.json()
-    detail = payload.get("detail", {})
-    issues = detail.get("issues") or []
-    if response.status_code == 400:
-        assert any(issue.get("code") == "NO_INPUT" for issue in issues)

@@ -28,23 +28,29 @@ test.describe('Workflow: Theme Behavior And Persistence', () => {
 
     const toggledState = await themeSwitch.getAttribute('aria-checked');
 
-    await page.reload();
-
-    const reloadedThemeSwitch = page.getByRole('switch', {
-      name: /Switch to .* mode/i,
-    });
-    await expect(reloadedThemeSwitch).toBeVisible();
-    await expect(reloadedThemeSwitch).toHaveAttribute(
-      'aria-checked',
-      toggledState || 'false',
-    );
-
+    // Check admin view while isAdmin is still set from login (before reload clears it).
     const viewSelect = page.getByLabel(/Switch view/i);
     await viewSelect.selectOption('admin');
     await expect(page.getByRole('heading', { name: /Admin Dashboard/i })).toBeVisible();
 
     const adminThemeSwitch = page.getByRole('switch', { name: /Switch to .* mode/i });
     await expect(adminThemeSwitch).toHaveAttribute(
+      'aria-checked',
+      toggledState || 'false',
+    );
+
+    await page.reload();
+
+    // Session reload restores converter view; theme preference must persist in storage.
+    await expect(
+      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
+    ).toBeVisible({ timeout: 15000 });
+
+    const reloadedThemeSwitch = page.getByRole('switch', {
+      name: /Switch to .* mode/i,
+    });
+    await expect(reloadedThemeSwitch).toBeVisible();
+    await expect(reloadedThemeSwitch).toHaveAttribute(
       'aria-checked',
       toggledState || 'false',
     );

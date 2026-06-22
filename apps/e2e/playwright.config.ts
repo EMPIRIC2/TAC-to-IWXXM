@@ -51,31 +51,46 @@ function loadPlaywrightEnv(): void {
 loadPlaywrightEnv();
 
 const DEFAULT_FRONTEND_URL = 'http://localhost:5173';
+const configuredBaseUrl = process.env.PLAYWRIGHT_BASE_URL || DEFAULT_FRONTEND_URL;
+
+function isRemoteBaseUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return (
+      parsed.protocol === 'https:' ||
+      !['localhost', '127.0.0.1'].includes(parsed.hostname)
+    );
+  } catch {
+    return false;
+  }
+}
+
+const remotePlaywright = isRemoteBaseUrl(configuredBaseUrl);
 
 /**
  * Playwright configuration for cross-app E2E tests (apps/e2e workspace).
  *
- * Uses the monorepo dev stack (apps/backend + apps/frontend). Docker compose
- * wiring is verified separately once T8.1 updates the API image context.
+ * Local: starts monorepo dev stack via webServer (DISABLE_AUTH=true default).
+ * Live: set PLAYWRIGHT_BASE_URL to Render frontend URL — webServer is skipped.
  */
 export default defineConfig({
   testDir: '.',
-  globalSetup: './playwright.global-setup.ts',
+  globalSetup: remotePlaywright ? undefined : './playwright.global-setup.ts',
 
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : remotePlaywright ? 2 : 0,
   workers: 1,
 
   reporter: [['html'], ['list'], ['json', { outputFile: 'test-results/results.json' }]],
 
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || DEFAULT_FRONTEND_URL,
+    baseURL: configuredBaseUrl,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    actionTimeout: 10000,
-    navigationTimeout: 30000,
+    actionTimeout: remotePlaywright ? 20000 : 10000,
+    navigationTimeout: remotePlaywright ? 60000 : 30000,
   },
 
   projects: [
@@ -90,13 +105,17 @@ export default defineConfig({
     },
   ],
 
-  webServer: {
-    command:
-      'AUTO_KILL_PORTS=true DISABLE_AUTH=${DISABLE_AUTH:-true} VITE_APP_URL=http://localhost:5173 VITE_API_BASE_URL=http://localhost:8001 METAR_CORS_ORIGINS=http://localhost:5173 ../../start-dev-servers.sh --kill',
-    url: process.env.PLAYWRIGHT_BASE_URL || DEFAULT_FRONTEND_URL,
-    timeout: 180000,
-    reuseExistingServer: !process.env.CI,
-    stdout: 'pipe',
-    stderr: 'pipe',
-  },
+  ...(remotePlaywright
+    ? {}
+    : {
+        webServer: {
+          command:
+            'AUTO_KILL_PORTS=true DISABLE_AUTH=${DISABLE_AUTH:-true} VITE_APP_URL=http://localhost:5173 VITE_API_BASE_URL=http://localhost:8001 METAR_CORS_ORIGINS=http://localhost:5173 ../../start-dev-servers.sh --kill',
+          url: configuredBaseUrl,
+          timeout: 180000,
+          reuseExistingServer: !process.env.CI,
+          stdout: 'pipe',
+          stderr: 'pipe',
+        },
+      }),
 });

@@ -35,9 +35,11 @@ test.describe('Workflow: Narrative Full Journey', () => {
     await page.locator('#on-error').selectOption('fail');
     await page.getByRole('button', { name: /Save Preferences/i }).click();
 
-    await expect(page.getByText(/Preferences saved successfully/i)).toBeVisible({
-      timeout: 10000,
-    });
+    await expect(page.getByText(/Preferences saved successfully/i).first()).toBeVisible(
+      {
+        timeout: 10000,
+      },
+    );
     await page.getByRole('button', { name: 'Cancel', exact: true }).click();
 
     await page.getByLabel(/Expand parameters/i).click();
