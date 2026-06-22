@@ -6,6 +6,8 @@ import {
 
 vi.mock('/utils/supabase/info', () => ({
   projectId: 'test-project',
+  edgeFunctionUrl: (subpath: string) =>
+    `https://test-project.supabase.co/functions/v1/make-server-2e3cda33/${subpath}`,
 }));
 
 const mockFetch = vi.fn();
@@ -27,7 +29,7 @@ describe('databaseUpload', () => {
   it('uploads converted files with bearer token', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ message: 'Files uploaded successfully' }),
+      text: async () => JSON.stringify({ message: 'Files uploaded successfully' }),
     });
 
     const files = [
@@ -66,7 +68,8 @@ describe('databaseUpload', () => {
   it('throws when upload response is not ok', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: false,
-      json: async () => ({ error: 'Upload rejected' }),
+      status: 400,
+      text: async () => JSON.stringify({ error: 'Upload rejected' }),
     });
 
     await expect(
@@ -76,5 +79,37 @@ describe('databaseUpload', () => {
         options: CONVERT_AND_SEND_UPLOAD_OPTIONS,
       }),
     ).rejects.toThrow('Upload rejected');
+  });
+
+  it('throws with response text when error body is not JSON', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 502,
+      text: async () => 'Bad Gateway',
+    });
+
+    await expect(
+      uploadConvertedFiles({
+        files: [],
+        accessToken: 'test-token',
+        options: CONVERT_AND_SEND_UPLOAD_OPTIONS,
+      }),
+    ).rejects.toThrow('Bad Gateway');
+  });
+
+  it('falls back to message field when error field is absent', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      text: async () => JSON.stringify({ message: 'Server unavailable' }),
+    });
+
+    await expect(
+      uploadConvertedFiles({
+        files: [],
+        accessToken: 'test-token',
+        options: CONVERT_AND_SEND_UPLOAD_OPTIONS,
+      }),
+    ).rejects.toThrow('Server unavailable');
   });
 });

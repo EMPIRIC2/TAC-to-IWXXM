@@ -1,4 +1,4 @@
-import { projectId } from '/utils/supabase/info';
+import { edgeFunctionUrl } from './supabase/info';
 
 export type DatabaseFormat = 'iwxxm' | 'json' | 'both';
 export type UploadDestination = 'primary' | 'archive' | 'both';
@@ -30,6 +30,39 @@ export interface UploadConvertedFilesParams {
   options: DatabaseUploadOptions;
 }
 
+export const DATABASE_UPLOAD_SUBPATH = 'database/upload';
+
+function parseUploadResponseBody(raw: string): Record<string, unknown> {
+  if (!raw) {
+    return {};
+  }
+  try {
+    const data = JSON.parse(raw) as unknown;
+    return typeof data === 'object' && data !== null
+      ? (data as Record<string, unknown>)
+      : {};
+  } catch {
+    return {};
+  }
+}
+
+function uploadErrorMessage(
+  raw: string,
+  data: Record<string, unknown>,
+  status: number,
+): string {
+  if (typeof data.error === 'string' && data.error) {
+    return data.error;
+  }
+  if (typeof data.message === 'string' && data.message) {
+    return data.message;
+  }
+  if (raw) {
+    return raw;
+  }
+  return `Failed to upload to database (${status})`;
+}
+
 /**
  * Upload converted METAR/IWXXM files to the Supabase database edge function.
  *
@@ -44,26 +77,24 @@ export async function uploadConvertedFiles({
   accessToken,
   options,
 }: UploadConvertedFilesParams): Promise<{ message?: string }> {
-  const response = await fetch(
-    `https://${projectId}.supabase.co/functions/v1/make-server-2e3cda33/database/upload`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
-        files,
-        options,
-      }),
+  const response = await fetch(edgeFunctionUrl(DATABASE_UPLOAD_SUBPATH), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
     },
-  );
+    body: JSON.stringify({
+      files,
+      options,
+    }),
+  });
 
-  const data = await response.json();
+  const raw = await response.text();
+  const data = parseUploadResponseBody(raw);
 
   if (!response.ok) {
-    throw new Error(data.error || 'Failed to upload to database');
+    throw new Error(uploadErrorMessage(raw, data, response.status));
   }
 
-  return data;
+  return data as { message?: string };
 }
