@@ -13,6 +13,7 @@ Break technical plan documents into provable statements, risk-classify, and veri
 consistency with the approved product plan.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
@@ -42,6 +43,17 @@ Auto-approve only when product plan already requires connectivity tiers (02 pass
 
 Follow [considerations.md](../considerations.md) §Uncertainty. Technical verification
 surfaces issues at the intersection of product requirements and technical implementation.
+
+
+## Session management
+
+Per [sessions-reference.md](../sessions-reference.md) §10 and [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
+
+1. Agent `read_context` must return `active_session` (or blocking deviation).
+2. Current stage must appear in `active_session.routing_plan` unless user amends plan.
+3. Write stage reports to `active_session.artifacts_dir/reports/` when this stage produces a report.
+4. On completion: update routing-plan entry status; mirror `project.stages.{key}` via agent `update`.
+5. **00-context** exempt from active_session requirement (session opener).
 
 ## State management
 

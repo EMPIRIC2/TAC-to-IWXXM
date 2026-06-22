@@ -4,6 +4,10 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
+session_counter: 0
+active_session: null
+sessions: []
+
 template:
   id: static+api
   rationale: React frontend + FastAPI backend + auth middleware; migrating from submodule layout to true monorepo

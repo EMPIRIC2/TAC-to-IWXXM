@@ -1,13 +1,11 @@
 ---
 name: 16-evolve
 description: >
-  Primary entry for adding features and large changes to an existing deployed app: new product
-  capabilities (one or more Fn per cycle), scope/API/architecture changes, breaking refactors,
-  new dependencies, and multi-doc spec updates. Interviews the user, routes selectively through
-  stages 00–15 in delta mode with mandatory phase checkpoints. Use when the user says add
-  feature, new capability, large refactor, change API, update scope, or structured change
-  request — not for surgical bugs (14-hotfix) or greenfield (pipeline). Stages 00–15 accept
-  feature work only when an active evolve cycle exists; otherwise start here.
+  Orchestrator for feature and new_service sessions: adds product capabilities, scope/API/arch
+  changes, breaking refactors, new dependencies, and multi-doc spec updates. Requires active_session
+  (opened by 00-context) with type feature or new_service. Interviews the user, routes selectively
+  through stages 00–15 in delta mode per routing-plan.md. Use after 00-context for structured
+  change on an existing app — not for surgical bugs (14-hotfix) or greenfield (pipeline).
 ---
 
 # 16 — Evolve (Features & Large Changes)
@@ -17,6 +15,7 @@ cycle**) through updated specs, verified plans, implementation, and redeploy —
 **00–15** in **delta mode**.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `feature` or `new_service` active_session.
 **Routing:** [docs/skill-routing.md](../../docs/skill-routing.md) — when to use evolve vs hotfix vs pipeline.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
@@ -46,18 +45,21 @@ specs — use **16-evolve**, not **14-hotfix** or ad-hoc **07-build**.
 | Modal ops / health investigation only | [15-service-health](../15-service-health/SKILL.md) |
 | Lessons learned / improve skills 00–19 | [17-retrospective](../17-retrospective/SKILL.md) |
 
-**Stages 00–15** may receive a feature or large-change request during an **active evolve cycle**.
-If no cycle is active, workflow-state-manager **blocks** and recommends **16-evolve** — start
-here for net-new feature work or large changes on an existing app.
+**Stages 00–15** may receive a feature or large-change request during an **active session** with
+type `feature` or `new_service` and an active evolve cycle. If no session exists, workflow-state-manager
+**blocks** and recommends **00-context** — then **16-evolve** for net-new feature work.
 
 ## Prerequisites
 
 Before starting an evolve cycle:
 
-1. **`workflow-state.yaml` exists** with prior pipeline progress (ideally Phase D complete).
-2. **Spec documents exist** under `docs/` (at minimum `feature-list.md`, `spec.md`, `test-plan.md`).
-3. **Codebase exists** with a deployable artifact (or user confirms build-only evolve).
+1. **`active_session`** exists with type `feature` or `new_service` (opened by **00-context**).
+2. `routing-plan.md` lists required stages; user approved plan.
+3. **`workflow-state.yaml` exists** with prior pipeline progress (ideally Phase D complete).
+4. **Spec documents exist** under `docs/` (at minimum `feature-list.md`, `spec.md`, `test-plan.md`).
+5. **Codebase exists** with a deployable artifact (or user confirms build-only evolve).
 
+If `active_session` is null, route to [00-context](../00-context/SKILL.md) first.
 If prerequisites are missing, ask via AskQuestion: run full [pipeline](../pipeline/SKILL.md) first,
 or proceed with a reduced doc set (record waiver via workflow-state-manager).
 
@@ -77,6 +79,13 @@ or proceed with a reduced doc set (record waiver via workflow-state-manager).
 
 Do not post interview prompts as markdown lists expecting inline replies.
 
+## Session management
+
+Orchestrator for `feature` and `new_service` sessions. Requires `active_session` from **00-context**.
+Writes summary to `docs/sessions/{id}/reports/evolve-summary.md`. Links `evolve_cycles[].session_id`.
+
+Per [sessions-reference.md](../sessions-reference.md) §10.
+
 ## State management
 
 **Agent protocol:** [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
@@ -86,8 +95,10 @@ Do not post interview prompts as markdown lists expecting inline replies.
 On invocation:
 
 1. Invoke **workflow-state-manager** `read_context` with `skill_id: 16-evolve` and `user_intent`.
-2. If an evolve cycle is `in_progress`, report position; AskQuestion: resume / abandon / start new.
-3. If none in progress, start **Phase 0 — Change / feature intake**.
+2. Verify `active_session.type` is `feature` or `new_service`; else block → **00-context**.
+3. Set `active_session.orchestrator: 16-evolve`; link `evolve_cycles[].session_id` to `active_session.id`.
+4. If an evolve cycle is `in_progress`, report position; AskQuestion: resume / abandon / start new.
+5. If none in progress, start **Phase 0 — Change / feature intake**.
 
 After every substep: agent `update` on the active cycle (status, `current_stage`, artifacts, ADRs,
 checkpoints, `git_history`).

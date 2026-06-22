@@ -34,8 +34,13 @@ project:
   name: string
   description: string
   output_directory: docs/   # default
+  stages: {}     # historical baseline — last completed per stage (dual-layer)
 
-stages:          # keyed by skill id — see mapping table
+session_counter: 0          # increment when allocating S{NNN}-{slug}
+active_session: null        # see §Sessions — null when no session in flight
+sessions: []                # archived completed sessions — see §Sessions
+
+stages:          # keyed by skill id — see mapping table (legacy mirror; prefer project.stages)
 template:        # set in 00-context or 01-requirements
 applications: [] # deployed service deployables (when applicable)
 agents:          # subagent status (00-context)
@@ -44,8 +49,8 @@ constraints: {}  # cost, sovereignty, privacy
 deployment: {}   # local build + staging URLs + health tiers — see §Deployment
 issue_log: []
 decisions_log: []
-artifacts: []    # paths produced; append on completion
-evolve_cycles: []      # 16-evolve — see 16-evolve/reference.md
+artifacts: []    # paths produced; append on completion; optional session_id
+evolve_cycles: []      # 16-evolve — must include session_id — see 16-evolve/reference.md
 retrospective_cycles: [] # 17-retrospective — see 17-retrospective/reference.md
 pr_review_cycles: []    # 18-pr-review — see 18-pr-review/reference.md
 pr_remediation_cycles: []  # 19-address-pr-review — see 19-address-pr-review/reference.md
@@ -53,8 +58,76 @@ pr_remediation_cycles: []  # 19-address-pr-review — see 19-address-pr-review/r
 git_history:     # commit and branch tracking — see §Git history
   current_branch: string
   branches: []   # active branches with purpose and base
-  commits: []    # recent commit log (append-only)
+  commits: []    # recent commit log (append-only); optional session_id
 ```
+
+## Sessions
+
+Session-first work model: [sessions-reference.md](sessions-reference.md).
+
+### `active_session` schema
+
+Set by **00-context** after user approves `routing-plan.md`. Cleared when session closes.
+
+```yaml
+active_session:
+  id: S042-live-e2e
+  type: integration          # greenfield | feature | new_service | hotfix | integration | ops | process
+  intent: "Run live E2E against staging"
+  status: in_progress        # in_progress | closing | completed
+  branch: feat/S042-live-e2e
+  orchestrator: null         # pipeline | 16-evolve | 14-hotfix | null
+  evolve_cycle_id: null      # when type feature/new_service and 16-evolve active
+  artifacts_dir: docs/sessions/S042-live-e2e/
+  routing_plan:
+    - stage: 00-context
+      mode: scoped
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 10-e2e
+      required: true
+      status: in_progress
+      skip_rationale: null
+  current_stage: 10-e2e
+  started_at: "2026-06-22"
+  context_briefs: []         # paths under docs/context/
+```
+
+### `sessions[]` archive entry
+
+```yaml
+sessions:
+  - id: S041-export-api
+    type: feature
+    intent: "Add batch export API"
+    status: completed
+    branch: evolve/S041-export-api
+    orchestrator: 16-evolve
+    evolve_cycle_id: EV-001
+    routing_plan: [...]
+    artifacts_dir: docs/sessions/S041-export-api/
+    started_at: "2026-06-20"
+    completed_at: "2026-06-21"
+    pr_url: null
+```
+
+### Rules
+
+| Rule | Detail |
+|------|--------|
+| **ID allocation** | Increment `session_counter`; format `S{NNN:03d}-{slug}` |
+| **Sole opener** | **00-context** creates `active_session` (or orchestrator after 00) |
+| **Block without session** | Stages 01–19 block if `active_session` null (unless user waives via agent) |
+| **Reports** | Session stage outputs under `artifacts_dir/reports/` |
+| **Dual layer** | `project.stages.*` = historical; `active_session` = current work unit |
+| **Evolve link** | `evolve_cycles[].session_id` must match `active_session.id` when both exist |
+| **Close** | All routing-plan stages done + checkpoint AskQuestion → archive → `active_session: null` |
+
+### Session counter seed
+
+On first session in an existing repo, set `session_counter` to `max(len(sessions[]), evolve_cycles count) + 1`
+or start at `1` if none exist.
 
 ## Deployment
 
@@ -197,11 +270,11 @@ git_history:
 | 04-tech-plan through 06-tech-tooling | Yes (execution plan, tooling) | `docs/*` or `chore/*` |
 | 07-build / build-executor | Yes (code, tests, specs) | `feat/M{N}-*` per milestone |
 | 08-verify-build | Amend or new commit (auto-fixes) | Same branch as 07-build |
-| 09-qa | Yes (report) | `docs/qa-report` or same phase branch |
-| 10-e2e | Yes (tests, report) | `docs/e2e-report` or same phase branch |
-| 11-verify-impl | Yes (patches, report) | Same phase branch |
-| 12-verify-deploy | Yes (checklist) | `docs/deploy-checklist` or same phase branch |
-| 13-deploy-smoke | Yes (deploy state, report) | `chore/deploy-*` |
+| 09-qa | Yes (report) | `docs/sessions/{id}/reports/qa-report.md` |
+| 10-e2e | Yes (tests, report) | `docs/sessions/{id}/reports/e2e-report.md` |
+| 11-verify-impl | Yes (patches, report) | `docs/sessions/{id}/reports/verify-impl.md` |
+| 12-verify-deploy | Yes (checklist) | `docs/sessions/{id}/reports/deploy-checklist.md` |
+| 13-deploy-smoke | Yes (deploy state, report) | `docs/sessions/{id}/reports/deploy-smoke.md` |
 | 14-hotfix | Yes (fix + test) | `fix/*` |
 | 15-service-health | Yes (reports) | `docs/health-*` or `fix/*` if code changes |
 | 16-evolve | Yes (delta specs + code) | `evolve/*` |
@@ -229,12 +302,12 @@ Use `started_at` / `completed_at` (ISO date `YYYY-MM-DD`) when transitioning.
 | `05-verify-tech` | `stages.05-verify-tech` | — |
 | `06-tech-tooling` | `stages.06-tech-tooling` | — |
 | `07-build` / `build-executor` | `stages.07-build` | `workflow-state.yaml + execution plan artifact` §Current State |
-| `08-verify-build` / `verify-build` | `stages.08-verify-build` | `docs/verification-report.md` |
+| `08-verify-build` / `verify-build` | `stages.08-verify-build` | `docs/sessions/{id}/reports/verification-report.md` |
 | `data-management` | `stages.data-management` | `docs/data-management-state.md` |
-| `09-qa` | `stages.09-qa` | `docs/qa-report.md` |
-| `10-e2e` | `stages.10-e2e` | `docs/e2e-report.md` |
+| `09-qa` | `stages.09-qa` | `docs/sessions/{id}/reports/qa-report.md` |
+| `10-e2e` | `stages.10-e2e` | `docs/sessions/{id}/reports/e2e-report.md` |
 | `11-verify-impl` | `stages.11-verify-impl` | — |
-| `12-verify-deploy` | `stages.12-verify-deploy` | `docs/deploy-checklist.md` |
+| `12-verify-deploy` | `stages.12-verify-deploy` | `docs/sessions/{id}/reports/deploy-checklist.md` |
 | `13-deploy-smoke` / `deploy-verify` | `stages.13-deploy-smoke` | `docs/deploy-state.md` |
 | `14-hotfix` | `stages.14-hotfix` | `docs/bug-reports/BUG-*.md` |
 | `bug-investigation` | (via `14-hotfix` or `issue_log`) | repro test in `tests/bugs/` |
@@ -292,6 +365,10 @@ project:
   name: <ProjectName>
   description: <one line>
   output_directory: docs/
+  stages: {}
+session_counter: 0
+active_session: null
+sessions: []
 stages:
   00-context: { status: pending }
   01-requirements: { status: pending }

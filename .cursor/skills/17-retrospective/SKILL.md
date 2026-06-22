@@ -18,6 +18,7 @@ Meta-improvement stage: mine **conversation evidence**, compare it to **skills 0
 process — without re-running the pipeline.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
@@ -78,6 +79,18 @@ Before mining transcripts:
 4. Cite sessions as `[short title](uuid)` per user rules — never cite subagent transcript IDs.
 
 Transcript paths and parsing: [reference.md](reference.md) §Conversation logs.
+
+
+## Session management
+
+Per [sessions-reference.md](../sessions-reference.md) §10 and [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
+
+1. Agent `read_context` must return `active_session` (or blocking deviation).
+2. Current stage must appear in `active_session.routing_plan` unless user amends plan.
+3. Write stage reports to `active_session.artifacts_dir/reports/` when this stage produces a report.
+4. On completion: update routing-plan entry status; mirror `project.stages.{key}` via agent `update`.
+5. **00-context** exempt from active_session requirement (session opener).
+Report: `reports/retrospective.md`.
 
 ## State management
 

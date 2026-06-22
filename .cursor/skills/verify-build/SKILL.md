@@ -37,14 +37,14 @@ with actionable recommendations.
 **Canonical:** repo-root [`workflow-state.yaml`](../../workflow-state.yaml) §`stages.08-verify-build`.
 Rules: [workflow-state-reference.md](../workflow-state-reference.md).
 
-**Detail:** `docs/verification-report.md` — overwrite on each run; set `report` path on the stage block.
+**Detail:** `{artifacts_dir}/reports/verification-report.md`` — overwrite on each run; set `report` path on the stage block.
 
 ### On invocation
 
 1. Read `workflow-state.yaml` §`stages.08-verify-build`.
 2. If the report exists, ask the user: "Re-run all checks, or review the last report?"
 3. If re-running, overwrite the previous report and set stage `status: in_progress`.
-4. On completion: `status: completed`, `overall: pass|fail`, append `docs/verification-report.md` to `artifacts`.
+4. On completion: `status: completed`, `overall: pass|fail`, append `{artifacts_dir}/reports/verification-report.md`` to `artifacts`.
 
 ## Workflow
 
@@ -233,7 +233,7 @@ Files that need reformatting:
 may need re-staging via the data-management skill.
 ```
 
-Write the report to `docs/verification-report.md`.
+Write the report to `{artifacts_dir}/reports/verification-report.md``.
 
 ### Phase 4 — Handle Failures
 
@@ -392,7 +392,7 @@ Results:
 Fix rounds: [N]
 Suppressions: [N] (recorded in verification-report.md §Suppressions)
 
-Report: docs/verification-report.md
+Report: `{artifacts_dir}/reports/verification-report.md`
 ```
 
 Update the execution plan:

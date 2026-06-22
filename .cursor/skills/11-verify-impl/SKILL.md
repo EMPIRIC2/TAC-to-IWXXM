@@ -13,6 +13,7 @@ Collect all verification results and walk the user through a final check that th
 implementation matches their requirements.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
@@ -60,6 +61,20 @@ update `workflow-state.yaml` before proceeding.
 This is the user's final say before deployment. Every previous stage was about
 correctness against specs; this stage is about correctness against **user intent**.
 
+
+## Session management
+> `{artifacts_dir}` = `active_session.artifacts_dir` from workflow-state-manager.
+
+
+Per [sessions-reference.md](../sessions-reference.md) §10 and [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
+
+1. Agent `read_context` must return `active_session` (or blocking deviation).
+2. Current stage must appear in `active_session.routing_plan` unless user amends plan.
+3. Write stage reports to `active_session.artifacts_dir/reports/` when this stage produces a report.
+4. On completion: update routing-plan entry status; mirror `project.stages.{key}` via agent `update`.
+5. **00-context** exempt from active_session requirement (session opener).
+Report: `reports/verify-impl.md`.
+
 ## State management
 
 **Agent protocol:** [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
@@ -80,9 +95,9 @@ each feature/journey approval substep.
 ### Phase 1 — Collect Verification Results
 
 Read and merge:
-- `docs/qa-report.md` from 09-qa
-- `docs/e2e-report.md` from 10-e2e
-- `docs/verification-report.md` from 08-verify-build (latest)
+- `{artifacts_dir}/reports/qa-report.md`` from 09-qa
+- `{artifacts_dir}/reports/e2e-report.md`` from 10-e2e
+- `{artifacts_dir}/reports/verification-report.md`` from 08-verify-build (latest)
 - `docs/feature-list.md` for scope reference
 - `docs/user-journeys.md` for per-journey interview questions
 - `docs/acceptance-criteria.md` for pass/fail criteria
@@ -112,7 +127,7 @@ Before feature-by-feature approval, walk **each journey** in `docs/user-journeys
 
 | Check | Source |
 |-------|--------|
-| T0 test exists and passed | `docs/e2e-report.md` + pytest module |
+| T0 test exists and passed | `{artifacts_dir}/reports/e2e-report.md`` + pytest module |
 | T3 status (if live tier) | e2e-report or 15-service-health / `LIVE_E2E=1` |
 | User intent | AskQuestion per UJ-NNN |
 
@@ -224,8 +239,8 @@ Scope:
 
 Artifacts:
   docs/implementation-verification.md — full report
-  docs/qa-report.md — QA results
-  docs/e2e-report.md — E2E results
+  `{artifacts_dir}/reports/qa-report.md` — QA results
+  `{artifacts_dir}/reports/e2e-report.md` — E2E results
   docs/adr/                           — [N] ADRs from scope/fix decisions
 
 Deploy gate (partial):

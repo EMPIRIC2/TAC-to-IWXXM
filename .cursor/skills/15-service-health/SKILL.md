@@ -18,6 +18,7 @@ and alignment with `docs/deploy.md` §Integration — without assuming a hotfix 
 + `tests/bugs/test_bug_*.py` before 14-hotfix.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md)
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [deployment-catalog.md](../deployment-catalog.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md)
 
@@ -28,6 +29,18 @@ See connectivity-gates for tier definitions.
 
 **User is source of truth.** AskQuestion sets infra depth, health tier (H0–H6), target URL, and
 whether to run costly full E2E suites.
+
+
+## Session management
+
+Per [sessions-reference.md](../sessions-reference.md) §10 and [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
+
+1. Agent `read_context` must return `active_session` (or blocking deviation).
+2. Current stage must appear in `active_session.routing_plan` unless user amends plan.
+3. Write stage reports to `active_session.artifacts_dir/reports/` when this stage produces a report.
+4. On completion: update routing-plan entry status; mirror `project.stages.{key}` via agent `update`.
+5. **00-context** exempt from active_session requirement (session opener).
+Report: `reports/service-health.md`.
 
 ## State management
 

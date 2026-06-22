@@ -166,6 +166,27 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 - GIFTs upstream merges are manual — no scheduled sync (REQ-014).
 - Scheduled vendor PRs (wmo-im only) require review before production pins update.
 
+## Documentation layout
+
+Standing specs in `docs/` are **project-wide** sources of truth. Bounded work runs in
+**pipeline sessions** with ephemeral artifacts under `docs/sessions/SNNN-slug/`.
+
+| Corpus | Location | Examples |
+|--------|----------|----------|
+| **Project (standing)** | `docs/` root | `spec.md`, `feature-list.md`, `test-plan.md`, `deploy.md`, `api-contract.md` |
+| **Session (ephemeral)** | `docs/sessions/{id}/` | `session-brief.md`, `routing-plan.md`, `reports/qa-report.md`, `reports/e2e-report.md` |
+| **Scoped context** | `docs/context/{slug}.md` | Feature/workflow discovery briefs (linked from session brief) |
+
+**Entry:** [skill-routing.md](skill-routing.md) — start with **00-context** (recommended) to
+open a session, approve a routing plan, then run stages 00–19 per plan.
+
+**State:** repo-root `workflow-state.yaml` §`active_session` and §`sessions[]`.
+
+Full convention: [.cursor/skills/sessions-reference.md](../.cursor/skills/sessions-reference.md).
+
+Standing doc updates during a session use **delta commits** on the session branch with a
+§Session changelog footer (session id + date).
+
 ## References
 
 - docs/ARCHITECTURE.md (pre-migration product architecture)

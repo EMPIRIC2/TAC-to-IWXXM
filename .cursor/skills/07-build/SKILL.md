@@ -14,6 +14,7 @@ Execute the execution plan: implement tasks in TDD order, commit atomically, cre
 at milestone and phase boundaries, and orchestrate parallel agents for independent work.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
@@ -47,6 +48,17 @@ dependencies, data management, branches, and checks allow — across **multiple 
    - `.cursor/hooks.json` — hooks installed
 3. **Data management** (if applicable): Check `docs/spec.md §Data`. Tasks with data
    dependencies are blocked until data is staged. Offer to run data-staging if needed.
+
+
+## Session management
+
+Per [sessions-reference.md](../sessions-reference.md) §10 and [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
+
+1. Agent `read_context` must return `active_session` (or blocking deviation).
+2. Current stage must appear in `active_session.routing_plan` unless user amends plan.
+3. Write stage reports to `active_session.artifacts_dir/reports/` when this stage produces a report.
+4. On completion: update routing-plan entry status; mirror `project.stages.{key}` via agent `update`.
+5. **00-context** exempt from active_session requirement (session opener).
 
 ## State management
 

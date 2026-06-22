@@ -10,6 +10,7 @@ Append to `workflow-state.yaml`:
 ```yaml
 evolve_cycles:
   - id: EV-001                    # Sequential: EV-001, EV-002, ...
+    session_id: S041-export-api     # Required — links to docs/sessions/S041-export-api/
     cycle_type: general           # general | feature (multi-Fn feature addition)
     feature_ids: []               # e.g. [F19, F20, F21] — multi-Fn in one cycle
     feature_id: null              # deprecated; use feature_ids
@@ -61,7 +62,7 @@ evolve_cycles:
     artifacts:
       - path: docs/evolve-decisions.md
         status: in_progress
-      - path: docs/evolve-report-EV-001.md
+      - path: docs/sessions/S041-export-api/reports/evolve-summary.md
         status: pending
     issues: []                    # Cycle-local issues; also mirror to §issue_log
 ```
@@ -304,7 +305,7 @@ After phases A, B, C, D, and deploy — present to user before continuing:
 | Field | Source |
 |-------|--------|
 | pytest summary | Last `08-verify-build` or local run |
-| E2E / smoke | `docs/e2e-report.md`, deploy H1–H5 |
+| E2E / smoke | `docs/sessions/{id}/reports/e2e-report.md`, deploy H1–H5 |
 | Spec paths | `evolve_cycles[].artifacts` |
 | PR URL | `git_history` / gh |
 | Acceptance | `docs/test-plan.md` rows per Fn |

@@ -244,11 +244,31 @@ Docker).
 Production uses **two Render services** (API + static frontend). See [deploy.md](deploy.md)
 for topology, env vars, and post-deploy connectivity checks (H4/H5).
 
+## Agent workflow (pipeline sessions)
+
+Cursor pipeline skills (00–19) use a **session-first** model for all bounded work — from
+greenfield builds to feature adds, hotfixes, and live E2E integration.
+
+1. Invoke **00-context** with your goal (e.g. “add export API”, “run live E2E on staging”).
+2. 00 classifies the session type, allocates `S001-{slug}`, and proposes `routing-plan.md`.
+3. Approve the plan → `active_session` is set in `workflow-state.yaml`.
+4. Run stages listed in the plan; reports land in `docs/sessions/SNNN-slug/reports/`.
+5. Close the session when all plan stages complete (checkpoint AskQuestion).
+
+| Doc | Purpose |
+|-----|---------|
+| [skill-routing.md](skill-routing.md) | Which skill to invoke |
+| [sessions/README.md](sessions/README.md) | Session index and folder layout |
+| [context/README.md](context/README.md) | Scoped context briefs |
+
+Skill reference: [.cursor/skills/sessions-reference.md](../.cursor/skills/sessions-reference.md).
+
 ## Further reading
 
 | Document | Topic |
 |----------|-------|
-| [spec.md](spec.md) | System architecture and components |
+| [skill-routing.md](skill-routing.md) | Pipeline skill routing and session types |
+| [sessions/README.md](sessions/README.md) | Active and archived work sessions |
 | [api-contract.md](api-contract.md) | REST endpoints |
 | [test-plan.md](test-plan.md) | Test tiers and migration gates |
 | [migration-plan.md](migration-plan.md) | Submodule → monorepo migration |

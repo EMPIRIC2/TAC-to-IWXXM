@@ -1,12 +1,10 @@
 ---
 name: 01-requirements
 description: >
-  Interviews the user to produce spec-driven development documents (feature-list, spec,
-  user-journeys, config-spec, test-plan, etc.) using template-driven questioning. Supports
-  delta mode when adding features or large changes to an existing app (multiple Fn per evolve
-  cycle via 16-evolve). If 00-context ran, pre-populates answers from the context brief. Use
-  for requirements interview, add feature delta specs, evolve-cycle product planning, or
-  large-change scope intake.
+  Interviews the user to produce standing spec documents (feature-list, spec, user-journeys,
+  test-plan, etc.) within an active session. Supports delta mode for feature/new_service sessions.
+  If 00-context ran, pre-populates from context brief. Requires active_session (from 00) unless
+  waived. Use for requirements interview or feature delta specs per routing-plan.md.
 ---
 
 # 01 — Product Requirements Interview
@@ -15,6 +13,7 @@ Interview the user to fill spec document templates. Template-driven: for each ap
 template section, ask targeted questions to fill it.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
@@ -49,6 +48,17 @@ Ask in interview if UI calls APIs on a **different origin** than the static site
 Follow [considerations.md](../considerations.md) §Uncertainty. During interviews, surface
 any contradictions in user's answers, ambiguities in scope, and decisions that affect
 multiple templates.
+
+
+## Session management
+
+Per [sessions-reference.md](../sessions-reference.md) §10 and [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
+
+1. Agent `read_context` must return `active_session` (or blocking deviation).
+2. Current stage must appear in `active_session.routing_plan` unless user amends plan.
+3. Write stage reports to `active_session.artifacts_dir/reports/` when this stage produces a report.
+4. On completion: update routing-plan entry status; mirror `project.stages.{key}` via agent `update`.
+5. **00-context** exempt from active_session requirement (session opener).
 
 ## State management
 

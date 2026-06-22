@@ -16,9 +16,13 @@ Generate and maintain **only** these committed files in `docs/`:
 | `deploy.md` | Checklist + integration + runbook (merged) |
 | `adr/README.md` | ADR process + index |
 
-**Ephemeral** (workflow-state.yaml §`artifacts`, not standing docs): execution-plan,
-config-spec, research-brief, context-brief (project mode), scoped briefs under `docs/context/`,
-qa-report, deploy-report, bug-reports.
+**Ephemeral / session** (under `docs/sessions/{session-id}/` or workflow-state §`artifacts`):
+execution-plan, config-spec, research-brief, context-brief (project mode), scoped briefs under
+`docs/context/`, session reports (`reports/qa-report.md`, `reports/e2e-report.md`, etc.),
+checkpoints, evolve summaries.
+
+**Session index:** `docs/sessions/README.md`. Convention:
+[sessions-reference.md](../sessions-reference.md).
 
 Merged sources (do not generate as separate files): `roadmap.md`, `glossary.md`,
 `data-management-plan.md`, `deployment-integration.md`, `deploy-checklist.md`,

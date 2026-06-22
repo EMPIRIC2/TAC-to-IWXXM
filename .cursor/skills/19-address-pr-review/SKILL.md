@@ -16,6 +16,7 @@ findings into scoped fixes on the PR branch.
 
 **GitHub commands:** [reference.md](reference.md)  
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md)  
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [ci-after-push](../../rules/ci-after-push.mdc), [bug-investigation](../bug-investigation/SKILL.md) (🔴 TDD)  
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update
 
@@ -53,6 +54,18 @@ findings into scoped fixes on the PR branch.
 | **4 — Re-review** | Run **18-pr-review** on this PR now? (yes / no / later) |
 
 First option = recommendation; last = `Let me explain / provide more context`.
+
+
+## Session management
+
+Per [sessions-reference.md](../sessions-reference.md) §10 and [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
+
+1. Agent `read_context` must return `active_session` (or blocking deviation).
+2. Current stage must appear in `active_session.routing_plan` unless user amends plan.
+3. Write stage reports to `active_session.artifacts_dir/reports/` when this stage produces a report.
+4. On completion: update routing-plan entry status; mirror `project.stages.{key}` via agent `update`.
+5. **00-context** exempt from active_session requirement (session opener).
+Report: `reports/pr-remediation.md`.
 
 ## State management
 

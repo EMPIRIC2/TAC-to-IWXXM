@@ -17,6 +17,7 @@ create PRs at milestone and phase boundaries, and orchestrate parallel agents fo
 work.
 
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` from 07-build session.
 
 **Connectivity:** Same obligations as [07-build](../07-build/SKILL.md) §Connectivity (stage 07) — H0c, H0i, CORS on browser-facing APIs.
 

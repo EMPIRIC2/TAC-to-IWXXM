@@ -4,8 +4,11 @@ Shared conventions for numbered pipeline stage skills. Every stage `SKILL.md` un
 `.cursor/skills/00-context` … `19-address-pr-review` follows this preamble unless a stage
 explicitly documents an exception.
 
-**Orchestrators** (not numbered stages): [pipeline](pipeline/SKILL.md) (greenfield),
-[16-evolve](16-evolve/SKILL.md) (existing app — new features and large changes).
+**Orchestrators** (not numbered stages): [pipeline](pipeline/SKILL.md) (greenfield **session**),
+[16-evolve](16-evolve/SKILL.md) (feature / new_service **sessions**).
+
+**Sessions:** [sessions-reference.md](sessions-reference.md) — session-first work model; reports
+under `docs/sessions/{session-id}/`.
 
 **Which skill?** → [docs/skill-routing.md](../../docs/skill-routing.md)
 
@@ -31,13 +34,16 @@ sole writer of `workflow-state.yaml`.
 | **17** | F — Learn (on-demand) | Retrospective (process improvement) |
 | **18–19** | G — Review (on-demand) | PR review, address review findings (no merge) |
 
-Stages are **linear in greenfield** ([pipeline](pipeline/SKILL.md)). Stages **14–19** are
-**on-demand**. **16-evolve** re-invokes subsets of **00–15** in **delta mode** for feature
-and large-change work on an existing app.
+Stages are **linear in greenfield** ([pipeline](pipeline/SKILL.md) as `greenfield` session).
+Stages **14–19** are **on-demand**. **16-evolve** orchestrates `feature` and `new_service`
+sessions, re-invoking subsets of **00–15** in **delta mode**.
 
-**Any stage 00–15** may accept a user request to **add features** or **scope a large change**
-when an active evolve cycle exists — see §Change magnitude routing and §Feature addition.
-Without an active cycle, route to **16-evolve** first.
+**Session entry:** [00-context](00-context/SKILL.md) is **recommended** for every new work unit
+(01 acceptable when context already exists). **00** classifies session type, allocates `S{NNN}`,
+writes `routing-plan.md`, and sets `active_session` after user approval.
+
+**Any stage 00–15** in an **active session** may run when listed in `active_session.routing_plan`
+— see §Sessions and §Feature addition. Without `active_session`, route to **00-context** first.
 
 ---
 
@@ -85,7 +91,8 @@ Orchestrators (16) add: routing plans, phase gates, safe stopping points, child-
 |------|------|
 | [considerations.md](considerations.md) | Fix-in-place, ADRs, security, data, AskQuestion categories, commit-as-you-go |
 | [connectivity-gates.md](connectivity-gates.md) | H0c / H0i / H4–H5 browser+API wiring per stage |
-| [workflow-state-reference.md](workflow-state-reference.md) | YAML schema, skill→key map, git_history |
+| [workflow-state-reference.md](workflow-state-reference.md) | YAML schema, skill→key map, git_history, **sessions** |
+| [sessions-reference.md](sessions-reference.md) | Session lifecycle, routing plans, report paths |
 | [template-registry.md](template-registry.md) | Org template layout (when `workflow-state.yaml` §template set) |
 
 Every stage skill includes a **Connectivity (stage NN)** section pointing at the matching row in
@@ -104,9 +111,10 @@ connectivity-gates — hybrid deploys (static UI + separate API) are never “AP
 |------|-------------|
 | **Read first** | Invoke agent `operation: read_context` as first action on every invocation |
 | **Write via agent** | Invoke agent `operation: update` after each substep — never buffer |
-| **Resume** | Agent context brief reports `status`, timestamps, substeps, active cycles |
+| **Resume** | Agent context brief reports `status`, timestamps, substeps, **active_session**, cycles |
 | **Stage key** | Agent maps `skill_id` → `stages.{key}` (e.g. `stages.07-build`) |
-| **Cycles** | `evolve_cycles[]` (16-evolve), `retrospective_cycles[]` (17), `pr_review_cycles[]` (18-pr-review), `pr_remediation_cycles[]` (19-address-pr-review) |
+| **Sessions** | `active_session` (in flight), `sessions[]` (archive), `session_counter` |
+| **Cycles** | `evolve_cycles[]` (16-evolve, links `session_id`), `retrospective_cycles[]` (17), `pr_review_cycles[]` (18-pr-review), `pr_remediation_cycles[]` (19-address-pr-review) |
 | **Cross-stage issues** | Agent appends `issue_log` with category + evidence |
 | **Artifacts** | Agent appends paths to top-level `artifacts[]` on completion |
 | **Deviations** | Agent returns **blocking** issues → skill must AskQuestion; do not proceed |
@@ -120,7 +128,8 @@ connectivity-gates — hybrid deploys (static UI + separate API) are never “AP
 5. If **`pending`** or **`skipped`**: Start or remain skipped per stage rules.
 6. After work begins, invoke agent `update` to set `in_progress` + `started_at`.
 
-Detail state may also live in stage reports (`workflow-state.yaml + execution plan artifact`, `docs/qa-report.md`, etc.);
+Detail state may also live in stage reports (`workflow-state.yaml + execution plan artifact`,
+`docs/sessions/{id}/reports/*.md`, etc.);
 **stage completion** must still be mirrored via agent `update`.
 
 Schema detail: [workflow-state-reference.md](workflow-state-reference.md).
@@ -143,13 +152,14 @@ Use this table before picking a skill. When in doubt on an **existing** codebase
 | New dependency / data asset / deploy target | Medium–large | [16-evolve](16-evolve/SKILL.md) | Updates dependency-inventory + plan |
 | Ops / health investigation only | — | [15-service-health](15-service-health/SKILL.md) | Not feature work |
 | Process / skill improvement | — | [17-retrospective](17-retrospective/SKILL.md) | No product behavior change |
-| New service from scratch | Greenfield | [pipeline](pipeline/SKILL.md) | Full 00–13 linear run |
+| New service from scratch | Greenfield | [pipeline](pipeline/SKILL.md) | `greenfield` session; full 00–13 |
+| New deployable on existing monorepo | Medium–large | [16-evolve](16-evolve/SKILL.md) | `new_service` session |
 
 **Anti-patterns**
 
 - Do **not** use **14-hotfix** for net-new features, new Fn rows, or multi-doc spec changes.
-- Do **not** jump to **07-build** for feature work without an active **16-evolve** cycle (agent blocks).
-- Do **not** use **pipeline** when `docs/feature-list.md` and deployable code already exist — use **16-evolve**.
+- Do **not** jump to **07-build** for feature work without an **active session** (type `feature` or `new_service`) and routing plan (agent blocks).
+- Do **not** use **pipeline** when `docs/feature-list.md` and deployable code already exist — use **16-evolve** (`feature` session).
 
 Full decision tree: [docs/skill-routing.md](../../docs/skill-routing.md).
 
@@ -157,15 +167,15 @@ Full decision tree: [docs/skill-routing.md](../../docs/skill-routing.md).
 
 ## 7. Feature addition (any stage)
 
-Users may say **"add features X, Y, Z"** or request a **large change** at any point — start
-with **16-evolve** when no active cycle exists.
+Users may say **"add features X, Y, Z"** or request a **large change** at any point — open a
+**session** via **00-context** (type `feature` or `new_service`) when none is active.
 
 | Situation | Behavior |
 |-----------|----------|
-| **Existing app, no active evolve cycle** | Agent blocks → recommend [16-evolve](16-evolve/SKILL.md) (one cycle, multiple Fn) |
-| **Active evolve cycle** | Current stage runs in **delta mode** for scoped Fn |
-| **Greenfield (no specs yet)** | Route to [pipeline](pipeline/SKILL.md) or 01-requirements |
-| **User names features at stage N** | Stage invokes agent with `user_intent`; agent sets `mode: delta` when cycle active |
+| **No active session** | Agent blocks → recommend [00-context](00-context/SKILL.md) → [16-evolve](16-evolve/SKILL.md) |
+| **Active session (feature / new_service)** | Current stage runs in **delta mode** for scoped Fn |
+| **Greenfield (no specs yet)** | `greenfield` session → [pipeline](pipeline/SKILL.md) or 01-requirements |
+| **User names features at stage N** | Stage invokes agent with `user_intent`; delta when session type warrants |
 
 **Default for multiple features:** one **evolve cycle** with multiple **Fn** (e.g. F19, F20, F21)
 — shared specs and build where dependencies allow.
@@ -178,7 +188,7 @@ or as child of 16-evolve.
 
 ## 8. Delta mode
 
-When `mode: delta` or an active `evolve_cycles[]` entry applies:
+When `mode: delta` or an active session with type `feature` / `new_service` and `evolve_cycles[]` entry applies:
 
 - Pass evolve context to child stages: `evolve_cycle_id`, `feature_ids[]`, `scope`,
   `affected_artifacts[]`, `delta_only: true`.
@@ -296,26 +306,26 @@ user to paste tokens when `prod.env` exists.
 
 | Skill | Primary output | Blocks |
 |-------|----------------|--------|
-| **00-context** | `docs/context-brief.md` (project) or `docs/context/<slug>.md` (scoped) | Optional |
-| **01-requirements** | Product spec suite | Yes (start of A) |
-| **02-verify-plan** | Audit report, verified specs | Yes |
-| **03-plan-tooling** | Cursor rules, hooks, skills, agents | Yes |
-| **04-tech-plan** | Execution plan, tech docs, ADRs | Yes (start of B) |
-| **05-verify-tech** | Tech audit | Yes |
-| **06-tech-tooling** | Hooks, CI, formatters, smoke layout | Yes |
-| **07-build** | Code, tests, PRs | Yes (start of C) |
-| **08-verify-build** | `docs/verification-report.md` | Milestone gate |
-| **09-qa** | `docs/qa-report.md` | Parallel with 10 |
-| **10-e2e** | `docs/e2e-report.md` | Parallel with 09 |
-| **11-verify-impl** | User feature/journey approval | Yes |
-| **12-verify-deploy** | `docs/deploy-checklist.md` | Yes |
-| **13-deploy-smoke** | Deploy, smokes, CHANGELOG | Yes (end of D) |
-| **14-hotfix** | BUG report + fix + optional redeploy | On-demand |
-| **15-service-health** | Health report | On-demand |
-| **16-evolve** | New features, large changes, delta specs, selective 00–15, checkpoints | On-demand |
-| **17-retrospective** | Retro report + skill patches | On-demand |
-| **18-pr-review** | GitHub PR review (no merge) | On-demand |
-| **19-address-pr-review** | Fix PR review findings (no merge) | On-demand |
+| **00-context** | Session open + `docs/context-brief.md` or `docs/context/<slug>.md` | Optional (session opener) |
+| **01-requirements** | Standing product spec suite (+ session changelog) | Yes (if in routing plan) |
+| **02-verify-plan** | Audit report, verified specs | Yes (if in routing plan) |
+| **03-plan-tooling** | Cursor rules, hooks, skills, agents | Yes (if in routing plan) |
+| **04-tech-plan** | Execution plan, tech docs, ADRs | Yes (if in routing plan) |
+| **05-verify-tech** | Tech audit | Yes (if in routing plan) |
+| **06-tech-tooling** | Hooks, CI, formatters, smoke layout | Yes (if in routing plan) |
+| **07-build** | Code, tests, PRs | Yes (if in routing plan) |
+| **08-verify-build** | `sessions/{id}/reports/verification-report.md` | Milestone gate |
+| **09-qa** | `sessions/{id}/reports/qa-report.md` | Parallel with 10 |
+| **10-e2e** | `sessions/{id}/reports/e2e-report.md` | Parallel with 09 |
+| **11-verify-impl** | `sessions/{id}/reports/verify-impl.md` | Yes |
+| **12-verify-deploy** | `sessions/{id}/reports/deploy-checklist.md` | Yes |
+| **13-deploy-smoke** | `sessions/{id}/reports/deploy-smoke.md` | End of D |
+| **14-hotfix** | `sessions/{id}/reports/hotfix.md` + BUG reports | hotfix session |
+| **15-service-health** | `sessions/{id}/reports/service-health.md` | ops / integration session |
+| **16-evolve** | Feature session orchestrator + `reports/evolve-summary.md` | feature / new_service |
+| **17-retrospective** | `sessions/{id}/reports/retrospective.md` | process session |
+| **18-pr-review** | `sessions/{id}/reports/pr-review.md` | process session |
+| **19-address-pr-review** | `sessions/{id}/reports/pr-remediation.md` | process session |
 
 ---
 
@@ -325,6 +335,7 @@ Paste immediately after the stage title paragraph:
 
 ```markdown
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — active session required; reports under `docs/sessions/{id}/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 ```
@@ -341,14 +352,35 @@ Every **stage boundary** is a safe stop. Natural pause points:
 - After **08** at a milestone — partial build verified
 - After **11** — built and verified; deploy optional
 - After **13** — deployed
-- Mid **evolve cycle** — see 16-evolve §Safe stopping points
+- Mid **session** — routing plan may pause; `active_session` remains until close checkpoint
 
-On session end: invoke workflow-state-manager `update` to reflect last completed substep;
+**Session close:** All `routing_plan` stages `completed` or `skipped` → final AskQuestion → archive
+to `sessions[]` → `active_session: null`. See [sessions-reference.md](sessions-reference.md) §4.
+
+On session end (or pause): invoke workflow-state-manager `update` to reflect last completed substep;
 uncommitted work is a process violation unless the user deferred commits.
 
 ---
 
-## 18. Operator environment (`prod.env`)
+## 18. Sessions (summary)
+
+Full detail: [sessions-reference.md](sessions-reference.md).
+
+| Concept | Location |
+|---------|----------|
+| Session folder | `docs/sessions/SNNN-slug/` |
+| Intent + metadata | `session-brief.md` |
+| Approved stage list | `routing-plan.md` |
+| Stage reports | `reports/*.md` |
+| Active pointer | `workflow-state.yaml` §`active_session` |
+| Archive | `workflow-state.yaml` §`sessions[]` |
+| Project baseline | `project.stages.*` + standing `docs/` |
+
+**Seven session types:** `greenfield`, `feature`, `new_service`, `hotfix`, `integration`, `ops`, `process`.
+
+---
+
+## 19. Operator environment (`prod.env`)
 
 Repo-root **`prod.env`** is the canonical **local operator secrets file** (gitignored per
 `.gitignore`). Stages **13–15**, **14-hotfix** deploy phases, and any live `pytest -m live` /

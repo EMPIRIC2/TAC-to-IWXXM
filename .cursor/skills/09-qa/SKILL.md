@@ -3,7 +3,7 @@ name: 09-qa
 description: >
   Post-build quality assurance. Runs full lint, format, typecheck, security, dependency,
   data-staging, Modal workspace, and cross-file checks on the entire codebase. Writes
-  docs/qa-report.md with blocking vs advisory findings. Runs in parallel with 10-e2e;
+  `{artifacts_dir}/reports/qa-report.md` with blocking vs advisory findings. Runs in parallel with 10-e2e;
   results consumed by 11-verify-impl. Advisory remediation is a separate user-requested
   pass (spawn parallel agents) — not part of the default 09 run.
 ---
@@ -13,12 +13,13 @@ description: >
 Final quality assurance pass on the **complete** codebase after the build is done.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 ## Connectivity (stage 09)
 
-Full-repo QA must report connectivity status in `docs/qa-report.md`:
+Full-repo QA must report connectivity status in `{artifacts_dir}/reports/qa-report.md``:
 
 - **Blocking:** H0c (`test_cors_policy.py`) and H0i (`tests/integration`) in Python test agent
 - **Staging:** H4–H5 when `METAR_STAGING_*_FRONTEND_URL` set; else advisory with QA-ID pointing to connectivity-gates
@@ -41,7 +42,7 @@ Do not mark QA PASS if H0c fails. See connectivity-gates §Stage 09.
 | Auto-correct | Yes (lint/format) | **Report only** — no fixes |
 | Blocking | Non-blocking for auto-fix | Async — summary for 11 |
 | Extra checks | No | Cross-file, data staging, Modal workspace, frontends |
-| Output | `docs/verification-report.md` (optional) | **`docs/qa-report.md`** (required) |
+| Output | `{artifacts_dir}/reports/verification-report.md`` (optional) | **`{artifacts_dir}/reports/qa-report.md``** (required) |
 
 ## Prerequisites
 
@@ -51,6 +52,20 @@ Do not mark QA PASS if H0c fails. See connectivity-gates §Stage 09.
 3. **`workflow-state.yaml`** §`template` — conformance checks (deployed service: `api+worker`).
 4. Baseline expectation: **08-verify-build** recently **PASS** (re-run full checks anyway;
    do not assume).
+
+
+## Session management
+> `{artifacts_dir}` = `active_session.artifacts_dir` from workflow-state-manager.
+
+
+Per [sessions-reference.md](../sessions-reference.md) §10 and [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
+
+1. Agent `read_context` must return `active_session` (or blocking deviation).
+2. Current stage must appear in `active_session.routing_plan` unless user amends plan.
+3. Write stage reports to `active_session.artifacts_dir/reports/` when this stage produces a report.
+4. On completion: update routing-plan entry status; mirror `project.stages.{key}` via agent `update`.
+5. **00-context** exempt from active_session requirement (session opener).
+Report: `reports/qa-report.md`.
 
 ## State management
 
@@ -68,11 +83,11 @@ Update §`stages.09-qa`:
   status: completed
   started_at: "<ISO date>"
   completed_at: "<ISO date>"
-  report: docs/qa-report.md
+  report: `{artifacts_dir}/reports/qa-report.md`
   overall: pass | fail | pass_with_advisories
 ```
 
-Append `docs/qa-report.md` to §`artifacts` when created.
+Append `{artifacts_dir}/reports/qa-report.md`` to §`artifacts` when created.
 
 ---
 
@@ -247,13 +262,13 @@ QA Results:
   Data / Modal:   D6 [status]; D7 [status]; workspace [deployed-service|WRONG]
 ```
 
-Assign **QA-00N** IDs to advisories in §Findings for 11-verify-impl (see `docs/qa-report.md` examples).
+Assign **QA-00N** IDs to advisories in §Findings for 11-verify-impl (see `{artifacts_dir}/reports/qa-report.md`` examples).
 
 ---
 
 ### Phase 4 — Write report
 
-Write **`docs/qa-report.md`** with:
+Write **`{artifacts_dir}/reports/qa-report.md``** with:
 
 1. Executive summary table (blocking vs advisory)
 2. Commands run (copy-paste reproducible)
@@ -271,13 +286,13 @@ Write **`docs/qa-report.md`** with:
 09-qa is **assessment only**. When the user asks to **address advisories** after a QA
 report, use a **follow-up pass** (not a re-run of 09):
 
-1. Read `docs/qa-report.md` §Findings.
+1. Read `{artifacts_dir}/reports/qa-report.md`` §Findings.
 2. Spawn **parallel Task agents** (one concern per agent), e.g.:
    - **D6/D7** — `scripts/stage_modal_weights.sh`, `scripts/modal_ensure_workspace.sh`, update `docs/data-staging-state.md`; enforce **deployed-service** Modal profile; stop mistaken deploys on other workspaces via `scripts/teardown_fontface_deployed-service.sh`
    - **Secrets history** — `.gitleaks.toml`, `scripts/check_secrets.sh`, CI `--no-git`, `docs/security/gitleaks-resolution.md` (no history rewrite unless user requests)
    - **Docstrings** — public symbols in `apps/` + `packages/`; verify ruff/basedpyright (no `Any`)
    - **Phase 4 staging** — H2 in `staging_smoke.sh`, `docs/deploy.md §Runbook`, skip-safe `tests/smoke/test_staging_health.py`
-3. Re-run **blocking** checks only for touched areas; update `docs/qa-report.md` or add a short **QA remediation** note with date.
+3. Re-run **blocking** checks only for touched areas; update `{artifacts_dir}/reports/qa-report.md`` or add a short **QA remediation** note with date.
 4. **Modal workspace rule:** all deployed service deploys → profile **`deployed-service`**; URLs must use `deployed-service--` prefix; document in `infra/modal/env.example`.
 
 Do not bundle unrelated fixes into one agent.
@@ -289,7 +304,7 @@ Do not bundle unrelated fixes into one agent.
 1. **Report only** in the default 09 run — no auto-fix, no commits unless user asks.
 2. **Full codebase scope** — not just diff since last milestone.
 3. **Distinguish blocking vs advisory** — especially security (tree vs history) and data staging.
-4. **No AskQuestion** in 09 — surface choices in `docs/qa-report.md` for **11-verify-impl**.
+4. **No AskQuestion** in 09 — surface choices in `{artifacts_dir}/reports/qa-report.md`` for **11-verify-impl**.
 5. **Async-safe** — report is self-contained; include exact commands and env prerequisites.
 6. **CI parity** — if local PASS but CI differs, note branch/workflow mismatch as advisory.
 
@@ -316,5 +331,5 @@ Use as checklist when writing findings; not all apply every run.
 
 - Walk user through **blocking FAIL** items first
 - Present **advisories** with approve / defer / fix-now (fix-now → advisory remediation pass above)
-- Cross-check `docs/qa-report.md` against `docs/feature-list.md` and acceptance criteria
+- Cross-check `{artifacts_dir}/reports/qa-report.md`` against `docs/feature-list.md` and acceptance criteria
 - Not re-run full 09 unless codebase changed materially since report date

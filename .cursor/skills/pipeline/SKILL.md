@@ -1,23 +1,23 @@
 ---
 name: pipeline
 description: >
-  End-to-end orchestration skill that takes a project from requirements interview through
-  deployment. Combines stages 00-context through 19-address-pr-review into a single resumable
-  pipeline with YAML state tracking, phase gates, transition checks, and cross-stage
-  consistency verification, and connectivity gates (CORS, VITE_*, integration, H4–H5) across
-  stages 00–15. Use when the user wants to build this project end-to-end,
-  run the full pipeline, go end-to-end, deploy from scratch, or asks "build this".
-  Post-deployment surgical edits use 14-hotfix; production health checks use
-  15-service-health without re-running the pipeline. Add features to an existing app
-  Add features to an existing app (including multiple Fn in one cycle) via 16-evolve or any
-  stage 00–15 in delta mode when an evolve cycle is active. Process improvement uses
-  17-retrospective (reviews logs and skills 00–19). Pull request review uses 18-pr-review (posts to GitHub; never merges). Remediation uses
-  19-address-pr-review (fixes findings; never merges).
+  Greenfield session orchestrator: runs stages 00-context through 13-deploy-smoke for a new
+  project inside an active_session with type greenfield. Requires 00-context to open the session
+  and approve routing-plan.md (recommended). Combines phase gates, transition checks, and
+  connectivity gates. Post-deployment work uses other session types (hotfix, feature, integration).
+  Use when building from scratch with an approved greenfield routing plan.
 ---
 
 # Pipeline
 
-Build a deployable service from product requirements through deployment, end-to-end.
+**Greenfield session orchestrator** — build a deployable service from product requirements
+through deployment, end-to-end, within an `active_session` of type `greenfield`.
+
+## Prerequisites
+
+1. **00-context** has opened a `greenfield` session and user approved `routing-plan.md`.
+2. `active_session.orchestrator` is `pipeline` (set by 00 after approval).
+3. If `active_session` is null: route to [00-context](../00-context/SKILL.md) first.
 
 ## Purpose
 
@@ -25,7 +25,9 @@ Take a project from initial concept through deployed, verified service. Every st
 from understanding requirements to deploying code — is structured, audited, and
 user-approved. The user is the source of truth at every stage.
 
-**Stage conventions (00–19):** [pipeline-preamble.md](../pipeline-preamble.md).
+**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `greenfield` active_session.
+**Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 Shared policy (feedback loops, changelogs, performance testing, spec vs code root cause):
@@ -84,8 +86,9 @@ includes a §Connectivity section; phase gates below enforce the cumulative chec
 ## Quick start
 
 - **Which skill should I use?** → [docs/skill-routing.md](../../docs/skill-routing.md)
+- **Open a session** → [00-context](../00-context/SKILL.md)
 - **Post-deploy testing tiers** → [ADR-004](../../docs/adr/ADR-004.md)
-- **Add feature(s) to existing app** → [16-evolve](../16-evolve/SKILL.md)
+- **Add feature(s) to existing app** → [00-context](../00-context/SKILL.md) → [16-evolve](../16-evolve/SKILL.md)
 - **Large change / refactor / API redesign** → [16-evolve](../16-evolve/SKILL.md)
 - **General scope or arch change** → [16-evolve](../16-evolve/SKILL.md)
 - **Process retrospective** → [17-retrospective](../17-retrospective/SKILL.md)
@@ -116,6 +119,12 @@ transition. Child stages also invoke the agent — **only workflow-state-manager
 `workflow-state.yaml`.
 
 Schema reference: [workflow-state-reference.md](../workflow-state-reference.md).
+
+## Session management
+
+Requires `active_session` with type `greenfield` (or user waiver). Sets `active_session.orchestrator: pipeline`.
+Runs only stages listed in `docs/sessions/{id}/routing-plan.md`. On Phase D complete, participate in
+session close checkpoint per [sessions-reference.md](../sessions-reference.md) §4.
 
 ### Centralized state
 

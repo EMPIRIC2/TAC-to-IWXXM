@@ -1,12 +1,11 @@
 ---
 name: 00-context
 description: >
-  Gathers context before planning or building. Two modes: **project** (greenfield — writes
-  docs/context-brief.md for Stage 01) and **scoped** (feature/workflow-specific — writes
-  docs/context/<slug>.md without bloating the project brief). Runs analysis agents when
-  applicable, cross-references findings, surfaces decisions via AskQuestion. Optional for
-  greenfield; re-invokable anytime for scoped work (new features, large changes, live E2E,
-  new integration, 16-evolve cycles).
+  Recommended entry for every work session. Classifies session type (greenfield, feature,
+  hotfix, integration, new_service, ops, process), allocates SNNN-slug, writes session-brief
+  and routing-plan, sets active_session. Also gathers context: project mode writes
+  docs/context-brief.md; scoped mode writes docs/context/<slug>.md. Re-invokable for mid-project
+  discovery. Use before requirements, features, live E2E, integrations, or evolve cycles.
 ---
 
 # 00 — Context Gathering
@@ -15,6 +14,8 @@ Analyze existing artifacts (codebase, paper, docs, prior work) and produce a str
 context brief for downstream skills.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — **session opener**; allocates
+`SNNN-slug`, routing plan, `active_session`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
@@ -22,17 +23,45 @@ context brief for downstream skills.
 
 | Mode | When | Output | Phases run |
 |------|------|--------|------------|
-| **project** | Greenfield; first run before 01-requirements; full regen | `docs/context-brief.md` | 1A–1C, 2, 3, 4 (full) |
-| **scoped** | Feature add, workflow prep, evolve cycle, mid-project discovery | `docs/context/<slug>.md` | 1A (subset), 2, 3, 4 (scoped template) — **skip 1B/1C unless user asks** |
+| **session** | **Default** — user starts any bounded work unit | `docs/sessions/SNNN-slug/` + optional context | Phase 0 (session), then 1A–4 per context needs |
+| **project** | Greenfield; first run before 01-requirements; full regen | `docs/context-brief.md` | 0 (if new session), 1A–1C, 2, 3, 4 (full) |
+| **scoped** | Feature add, workflow prep, evolve cycle, mid-project discovery | `docs/context/<slug>.md` | 0 (if new session), 1A (subset), 2, 3, 4 — **skip 1B/1C unless user asks** |
+| **resume** | `active_session` exists | Continue session / routing plan | Per `routing-plan.md` |
 
 **Default routing** — infer from the user message; confirm with one AskQuestion when ambiguous:
 
-| User signal | Mode |
-|-------------|------|
-| New repo / paper / "before requirements" / no `context-brief.md` yet | **project** |
-| "Adding a feature", "live E2E", "integration tests for staging", "gather context for X" | **scoped** |
-| Invoked from **16-evolve** with a feature id | **scoped** (slug = feature or cycle id) |
-| "Update context brief" when `docs/context-brief.md` exists | Ask: update **project** brief vs new **scoped** brief |
+| User signal | Session type | Context mode |
+|-------------|--------------|--------------|
+| New repo / paper / "before requirements" / no `context-brief.md` yet | `greenfield` | **project** |
+| "Adding a feature", new Fn, API/UI capability | `feature` | **scoped** |
+| New deployable in monorepo | `new_service` | **scoped** or **project** if greenfield service |
+| Bug, regression, hotfix | `hotfix` | **scoped** |
+| "Live E2E", "integration tests for staging" | `integration` | **scoped** |
+| Health / ops only | `ops` | **scoped** |
+| Retrospective, PR review | `process` | minimal context |
+| Invoked from **16-evolve** with a feature id | `feature` | **scoped** (slug = feature or cycle id) |
+| "Update context brief" when `docs/context-brief.md` exists | Ask: update **project** brief vs new **scoped** brief vs **new session** |
+| `active_session` already set | **resume** | per session type |
+
+### Phase 0 — Session open (default)
+
+Run **before** context gathering when user intent implies bounded work (almost always).
+
+1. If `active_session` exists: AskQuestion — resume / close and start new / abandon.
+2. Classify **session type** per [sessions-reference.md](../sessions-reference.md) §11.
+3. Agent `open_session`: increment `session_counter`, allocate `S{NNN}-{slug}`.
+4. Create `docs/sessions/SNNN-slug/` with `session-brief.md` (intent, type, scope).
+5. Propose `routing-plan.md` from default presets (§12); document skip rationale per omitted stage.
+6. **AskQuestion** — user approves or edits routing plan.
+7. Agent sets `active_session`; create branch `feat/SNNN-slug` (or `fix/`, `evolve/` per type).
+8. Route to orchestrator when applicable:
+   - `greenfield` → [pipeline](../pipeline/SKILL.md)
+   - `feature` / `new_service` → [16-evolve](../16-evolve/SKILL.md)
+   - `hotfix` → [14-hotfix](../14-hotfix/SKILL.md)
+   - others → first stage in routing plan
+
+Skip Phase 0 only when resuming an existing `active_session` or user explicitly waived session
+orchestration (record via agent `decisions_log`).
 
 ### Anti-bloat rules (scoped mode)
 
@@ -104,6 +133,16 @@ Collect from the user (check conversation context or ask):
 | Live URLs / env | If deploy/testing scope | — | Staging/production URLs to probe |
 | Org directory | No | — | Enables Phase 1B ecosystem scan (**project mode only** unless user requests) |
 | Output path | No | mode-dependent | project → `docs/context-brief.md`; scoped → `docs/context/<slug>.md` |
+
+## Session management (session opener)
+
+**00-context** opens sessions — it does **not** require a pre-existing `active_session`.
+
+- **Phase 0** allocates `SNNN-slug`, writes `session-brief.md` and `routing-plan.md`, sets `active_session` after user approval.
+- Context phases (1A–4) run per **project** / **scoped** mode; link outputs in `session-brief.md`.
+- **Session close:** when routing plan complete, checkpoint AskQuestion → agent `close_session`.
+
+See [sessions-reference.md](../sessions-reference.md) §4 and §11.
 
 ## State management
 

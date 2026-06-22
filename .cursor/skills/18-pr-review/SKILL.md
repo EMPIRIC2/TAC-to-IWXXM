@@ -15,6 +15,7 @@ On-demand **Phase G** skill: structured pull-request review with findings posted
 **Checklist:** [checklist.md](checklist.md) — Katy Huff + stevemao + deployed service overlay.  
 **GitHub commands:** [reference.md](reference.md).  
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md).  
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [09-qa](../09-qa/SKILL.md), [ci-after-push](../../rules/ci-after-push.mdc).  
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
@@ -51,6 +52,18 @@ On-demand **Phase G** skill: structured pull-request review with findings posted
 | **Before post** | If verdict surprising — confirm post Request changes / Approve? (default: follow verdict matrix) |
 
 First option = recommendation; last = `Let me explain / provide more context`.
+
+
+## Session management
+
+Per [sessions-reference.md](../sessions-reference.md) §10 and [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
+
+1. Agent `read_context` must return `active_session` (or blocking deviation).
+2. Current stage must appear in `active_session.routing_plan` unless user amends plan.
+3. Write stage reports to `active_session.artifacts_dir/reports/` when this stage produces a report.
+4. On completion: update routing-plan entry status; mirror `project.stages.{key}` via agent `update`.
+5. **00-context** exempt from active_session requirement (session opener).
+Report: `reports/pr-review.md`.
 
 ## State management
 

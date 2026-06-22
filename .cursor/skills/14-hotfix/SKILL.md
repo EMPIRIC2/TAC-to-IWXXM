@@ -1,14 +1,10 @@
 ---
 name: 14-hotfix
 description: >
-  Post-deployment surgical edits: bug fixes, patches, small behavioral changes, and
-  dependency updates applied to a deployed codebase without re-running the pipeline.
-  NOT for new features, large refactors, API redesign, or multi-doc spec changes — use
-  16-evolve instead. Test-driven investigation: one bug = docs/bug-reports/BUG-*.md (logs + investigation MD),
-  tests/bugs/test_bug_*.py (red then green), one fix. AskQuestion interviews at each gate,
-  including Phase 5 prevention/countermeasures and optional Cursor rule creation. See
-  bug-investigation skill. Interview, verification plan, spec checks, main CI parity before
-  PR and gh run on main after merge, deploy only with user approval. Never re-runs entire phases.
+  Post-deployment surgical edits for hotfix sessions: bug fixes, patches, small behavioral
+  changes, and dependency updates. Open via 00-context (type hotfix) or resume active_session.
+  NOT for new features or multi-doc spec changes — use 00 → 16-evolve. Test-driven investigation:
+  one bug = docs/bug-reports/BUG-*.md, tests/bugs/test_bug_*.py. Report: docs/sessions/{id}/reports/hotfix.md.
 ---
 
 # 14 — Hotfix
@@ -21,6 +17,7 @@ re-running the pipeline.
 `docs/bug-reports/BUG-*.md`, `tests/bugs/test_bug_*.py`, one fix per bug.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Routing:** [docs/skill-routing.md](../../docs/skill-routing.md) — hotfix vs evolve vs pipeline.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).  
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
@@ -254,6 +251,18 @@ or architectural changes (new ADR + plan update).
 3. **Spec suite** (see Spec conformance §Spec registry) — at minimum `docs/feature-list.md`,
    `docs/spec.md`; plus `config-spec.md`, `api-contract.md`, `deployment-integration.md` when relevant
 4. Git repo is clean (no uncommitted work)
+
+
+## Session management
+
+Per [sessions-reference.md](../sessions-reference.md) §10 and [workflow-state-agent-protocol.md](../workflow-state-agent-protocol.md).
+
+1. Agent `read_context` must return `active_session` (or blocking deviation).
+2. Current stage must appear in `active_session.routing_plan` unless user amends plan.
+3. Write stage reports to `active_session.artifacts_dir/reports/` when this stage produces a report.
+4. On completion: update routing-plan entry status; mirror `project.stages.{key}` via agent `update`.
+5. **00-context** exempt from active_session requirement (session opener).
+Report: `reports/hotfix.md`; BUG reports stay in `docs/bug-reports/`.
 
 ## State management
 
