@@ -52,7 +52,7 @@ test.describe('Workflow: Narrative Full Journey', () => {
       .getByLabel(/Enter METAR data manually/i)
       .fill('METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990');
     await page
-      .getByRole('button', { name: /Convert METAR files to IWXXM XML/i })
+      .getByRole('button', { name: /^Convert METAR files to IWXXM XML$/i })
       .click();
 
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(

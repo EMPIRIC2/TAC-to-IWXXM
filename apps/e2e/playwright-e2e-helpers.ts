@@ -93,5 +93,7 @@ export async function openConverterForE2e(page: Page): Promise<void> {
 
 export async function convertManualMetar(page: Page, metar: string): Promise<void> {
   await page.getByLabel(/Enter METAR data manually/i).fill(metar);
-  await page.getByRole('button', { name: /Convert METAR files to IWXXM XML/i }).click();
+  await page
+    .getByRole('button', { name: /^Convert METAR files to IWXXM XML$/i })
+    .click();
 }

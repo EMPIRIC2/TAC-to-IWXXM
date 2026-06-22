@@ -4,23 +4,19 @@ import { Label } from './ui/label';
 import { Card } from './ui/card';
 import { Database, Upload, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { projectId } from '/utils/supabase/info';
+import {
+  uploadConvertedFiles,
+  type ConvertedFileUpload,
+  type DatabaseFormat,
+  type UploadDestination,
+} from '/utils/databaseUpload';
 
 interface DatabaseUploadDialogProps {
-  convertedFiles: Array<{
-    id: string;
-    originalName: string;
-    originalContent: string;
-    convertedContent: string;
-    timestamp: number;
-  }>;
+  convertedFiles: ConvertedFileUpload[];
   isOpen: boolean;
   onClose: () => void;
   accessToken?: string;
 }
-
-type DatabaseFormat = 'iwxxm' | 'json' | 'both';
-type UploadDestination = 'primary' | 'archive' | 'both';
 
 export function DatabaseUploadDialog({
   convertedFiles,
@@ -48,30 +44,15 @@ export function DatabaseUploadDialog({
     setUploadStatus('idle');
 
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-2e3cda33/database/upload`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            files: convertedFiles,
-            options: {
-              format,
-              destination,
-              includeOriginal,
-            },
-          }),
+      const data = await uploadConvertedFiles({
+        files: convertedFiles,
+        accessToken,
+        options: {
+          format,
+          destination,
+          includeOriginal,
         },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to upload to database');
-      }
+      });
 
       setUploadStatus('success');
       toast.success(data.message || 'Files uploaded successfully');

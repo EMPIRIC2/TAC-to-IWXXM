@@ -34,7 +34,7 @@ Unified manual live test harness against Render staging:
 
 | Journey | Feature | Local E2E module | Live E2E | Test plan TC |
 |---------|---------|------------------|----------|--------------|
-| UJ-001 | F1 | `apps/e2e/tac-file-conversion.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-001, TC-LIVE-001 |
+| UJ-001 | F1 | `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/e2e/tac-file-upload-database.e2e.spec.ts` (Convert&Send one-click) | `make test-live-e2e` (H6) | TC-001, TC-LIVE-001 |
 | UJ-002 | F2 | backend validation tests + UI if exposed | H3 validate + H6 where exposed | TC-002, TC-LIVE-002 |
 | UJ-003 | F1 | `apps/e2e/auth.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-003, TC-LIVE-003 |
 

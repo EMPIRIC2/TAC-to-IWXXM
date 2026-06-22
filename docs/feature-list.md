@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-06-14
+> **Last updated**: 2026-06-22
 
 ## Summary
 
@@ -27,7 +27,11 @@
 
 - **What it does**: Converts METAR/SPECI TAC text (file upload or manual input) to IWXXM XML via GIFTs.
 - **Inputs**: `.tac` / `.txt` files, manual TAC strings, optional conversion parameters.
-- **Outputs**: IWXXM XML per input; batch ZIP download.
+- **Outputs**: IWXXM XML per input; batch ZIP download; optional database upload ("send").
+- **UI actions** (main converter):
+  - **Convert** — TAC → IWXXM only.
+  - **Convert&Send** — TAC → IWXXM then upload to primary database with IWXXM format (fixed defaults; no dialog).
+  - **Upload to Database** — upload previously converted files with configurable format/destination (dialog).
 - **Limitations**: Depends on GIFTs and vendored IWXXM schemas for target version.
 - **Source**: README, `backend/src/utilities/conversion.py`
 

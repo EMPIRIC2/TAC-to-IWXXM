@@ -90,7 +90,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
     });
 
     await user.click(
-      screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
+      screen.getByRole('button', { name: /^convert metar files to iwxxm xml$/i }),
     );
 
     await waitFor(() => {
@@ -174,7 +174,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
     });
 
     await user.click(
-      screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
+      screen.getByRole('button', { name: /^convert metar files to iwxxm xml$/i }),
     );
 
     await waitFor(() => {

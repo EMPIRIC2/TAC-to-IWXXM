@@ -52,8 +52,11 @@ Run live E2E: `make test-live` (requires `.env` with `ADMIN_EMAIL` / `ADMIN_PASS
 1. Open frontend in browser.
 2. Log in (UJ-003).
 3. Drag-drop `.tac` file or paste manual text.
-4. Submit conversion.
-5. View, copy, or download IWXXM result.
+4. Choose an action:
+   - **Convert** — conversion only; view, copy, or download IWXXM result.
+   - **Convert&Send** — conversion then immediate upload to primary database (IWXXM format, fixed defaults).
+   - **Upload to Database** — upload already-converted files with format/destination options (dialog).
+5. View conversion output; for send actions, confirm success/failure via toast.
 
 **Acceptance**: At least one METAR converts without error; output passes schema/Schematron validation for the selected IWXXM version.
 
