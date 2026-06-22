@@ -82,7 +82,7 @@ export function FileConverter({
   const [isConverting, setIsConverting] = useState(false);
   const [isConvertAndSending, setIsConvertAndSending] = useState(false);
   const [conversionStatus, setConversionStatus] = useState<{
-    type: 'idle' | 'loading' | 'timeout' | 'error';
+    type: 'idle' | 'loading' | 'timeout' | 'error' | 'send_error';
     message?: string;
   }>({ type: 'idle' });
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
@@ -350,7 +350,7 @@ export function FileConverter({
         const uploadMessage =
           error instanceof Error ? error.message : 'Failed to upload to database';
         setConversionStatus({
-          type: 'error',
+          type: 'send_error',
           message: `Send failed: ${uploadMessage}`,
         });
         toast.error(`Conversion succeeded but send failed: ${uploadMessage}`);
@@ -451,6 +451,10 @@ export function FileConverter({
     setConversionStatus({ type: 'idle' });
     toast.info('Queue cleared');
   };
+
+  const isBusy = isConverting || isConvertAndSending;
+  const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
+  const hasConverted = convertedFiles.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors">
@@ -819,12 +823,9 @@ export function FileConverter({
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-3 mb-8 bg-[rgba(0,0,0,0)]">
           <Button
+            data-testid="convert-button"
             onClick={handleConvert}
-            disabled={
-              isConverting ||
-              isConvertAndSending ||
-              (pendingFiles.length === 0 && !manualInput.trim())
-            }
+            disabled={isBusy || !hasInput}
             className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             aria-label={
               isConverting
@@ -842,12 +843,9 @@ export function FileConverter({
             )}
           </Button>
           <Button
+            data-testid="convert-and-send-button"
             onClick={handleConvertAndSend}
-            disabled={
-              isConverting ||
-              isConvertAndSending ||
-              (pendingFiles.length === 0 && !manualInput.trim())
-            }
+            disabled={isBusy || !hasInput}
             className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             aria-label={
               isConvertAndSending
@@ -866,9 +864,7 @@ export function FileConverter({
           </Button>
           <Button
             onClick={() => setIsUploadDialogOpen(true)}
-            disabled={
-              convertedFiles.length === 0 || isConverting || isConvertAndSending
-            }
+            disabled={isBusy || !hasConverted}
             variant="outline"
             className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
             aria-label={`Upload ${convertedFiles.length} converted files to database`}
@@ -879,9 +875,7 @@ export function FileConverter({
           </Button>
           <Button
             onClick={handleDownloadAll}
-            disabled={
-              convertedFiles.length === 0 || isConverting || isConvertAndSending
-            }
+            disabled={isBusy || !hasConverted}
             variant="outline"
             className="bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
             aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
@@ -937,7 +931,11 @@ export function FileConverter({
               >
                 {conversionStatus.type === 'loading'
                   ? 'Converting...'
-                  : 'Conversion Error'}
+                  : conversionStatus.type === 'timeout'
+                    ? 'Conversion Timeout'
+                    : conversionStatus.type === 'send_error'
+                      ? 'Send Error'
+                      : 'Conversion Error'}
               </p>
               {conversionStatus.message && (
                 <p
