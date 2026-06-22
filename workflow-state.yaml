@@ -4,8 +4,51 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 0
-active_session: null
+session_counter: 1
+active_session:
+  id: S001-convert-send-buttons
+  type: feature
+  intent: "Add Convert and Convert&Send buttons to the converter UI (GitHub #656)"
+  status: completed
+  branch: feat/S001-convert-send-buttons
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-001
+  artifacts_dir: docs/sessions/S001-convert-send-buttons/
+  routing_plan:
+    - stage: 00-context
+      mode: scoped
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 16-evolve
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 07-build
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 08-verify-build
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 09-qa
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 10-e2e
+      required: true
+      mode: delta
+      status: completed
+      skip_rationale: null
+    - stage: 11-verify-impl
+      required: true
+      status: completed
+      skip_rationale: null
+  current_stage: 11-verify-impl
+  started_at: "2026-06-22"
+  context_briefs:
+    - docs/context/convert-send-buttons.md
 sessions: []
 
 template:
@@ -14,6 +57,26 @@ template:
   confirmed_at: "2026-06-14"
 
 stages:
+  00-context:
+    status: completed
+    mode: scoped
+    scoped_slug: convert-send-buttons
+    started_at: "2026-06-22T00:00:00Z"
+    completed_at: "2026-06-22T00:00:00Z"
+    substeps:
+      phase0_session: completed
+      phase1a: completed
+      phase1b: skipped
+      phase1c: skipped
+      phase2: completed
+      phase3: completed
+      phase4: completed
+    artifacts:
+      - docs/context/convert-send-buttons.md
+      - docs/sessions/S001-convert-send-buttons/session-brief.md
+      - docs/sessions/S001-convert-send-buttons/routing-plan.md
+    notes:
+      - "GitHub #656; parent feedback #555; session S001 opened"
   01-requirements:
     status: completed
     started_at: "2026-06-14T00:00:00Z"
@@ -190,9 +253,10 @@ stages:
     overall: fail
 
   11-verify-impl:
-    status: in_progress
-    started_at: "2026-06-20T23:59:00Z"
-    completed_at: null
+    status: completed
+    started_at: "2026-06-22T22:00:00Z"
+    completed_at: "2026-06-22T22:30:00Z"
+    session_id: S001-convert-send-buttons
     substeps:
       collect_results:
         status: completed
@@ -200,28 +264,25 @@ stages:
         status: completed
       journey_signoff:
         status: completed
-        approved: 2
-        flagged: 5
-        total: 7
+        approved: 3
+        flagged: 0
+        total: 3
       feature_approval:
         status: completed
-        approved: 4
-        flagged: 6
-        total: 10
+        approved: 1
+        flagged: 0
+        total: 1
       fixes_applied:
         status: completed
-        notes: "E2E-001 schema path, QA-004 msgpack, QA-002 legacy dirs, F3 UI, E2E-003 skip condition"
-      deploy_staging:
-        status: blocked
-        notes: "Render MCP requires workspace selection; push + redeploy pending user"
+        notes: "None required — user approved as-is"
       scope_analysis:
         status: completed
       summary:
         status: completed
-    report: docs/implementation-verification.md
+    report: docs/sessions/S001-convert-send-buttons/reports/verify-impl.md
     notes:
-      - "User flagged UJ-001/002/003/DEV-001/OPS-001; approved UJ-DEV-002/003"
-      - "Fixes applied locally; staging auth redeploy blocked on Render workspace"
+      - "S001 / EV-001 / GitHub #656 — user approved UJ-001 paths A/B/C and F1 delta"
+      - "T3 live deferred; QA-010 uncommitted work remains"
 
   10-e2e:
     status: completed
@@ -250,10 +311,10 @@ stages:
 
   08-verify-build:
     status: completed
-    started_at: "2026-06-20T00:00:00Z"
-    completed_at: "2026-06-20T23:59:00Z"
-    overall: fail
-    report: docs/verification-report.md
+    started_at: "2026-06-22T17:27:00Z"
+    completed_at: "2026-06-22T17:52:00Z"
+    overall: pass
+    report: docs/sessions/S001-convert-send-buttons/reports/verification-report.md
     substeps:
       lint:
         status: completed
@@ -268,20 +329,22 @@ stages:
       report:
         status: completed
     notes:
-      - "Overall FAIL — blocking: format (291 files), typecheck (313+ errors), pydantic-settings CVE, Makefile lint-frontend points to removed frontend/"
-      - "H0c + H0i tests pass; migration gates pass on main; make test-unit green"
+      - "S001 / EV-001 / GitHub #656 — overall PASS on feat/S001-convert-send-buttons"
+      - "Auto-fixed Prettier on apps/e2e/playwright-e2e-helpers.ts (uncommitted)"
+      - "make test-integration blocked on default ports 18000/18001 (vecinita stack); 82+6 tests pass on alternate ports"
+      - "H0c CORS 6/6 pass; connectivity artifacts present"
 
   18-pr-review:
     status: completed
-    started: "2026-06-21"
+    started: "2026-06-22"
     completed: "2026-06-22"
-    last_cycle: PRR-002
+    last_cycle: PRR-003
 
   19-address-pr-review:
     status: completed
     started: "2026-06-22"
     completed: "2026-06-22"
-    last_cycle: PRM-002
+    last_cycle: PRM-003
 
 stages_pending: []
 
@@ -560,9 +623,139 @@ artifacts:
   - path: docs/qa-report.md
     stage: 09-qa
     status: complete
+  - path: docs/context/convert-send-buttons.md
+    kind: context-scoped
+    slug: convert-send-buttons
+    topic: "Convert & Convert&Send UI (GitHub #656)"
+    session_id: S001-convert-send-buttons
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/evolve-decisions.md
+    kind: evolve-decisions
+    session_id: S001-convert-send-buttons
+    evolve_cycle_id: EV-001
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S001-convert-send-buttons/reports/evolve-summary.md
+    kind: evolve-summary
+    session_id: S001-convert-send-buttons
+    evolve_cycle_id: EV-001
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S001-convert-send-buttons/reports/verification-report.md
+    kind: verification-report
+    session_id: S001-convert-send-buttons
+    stage: 08-verify-build
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S001-convert-send-buttons/reports/qa-report.md
+    kind: qa-report
+    session_id: S001-convert-send-buttons
+    stage: 09-qa
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S001-convert-send-buttons/reports/e2e-report.md
+    kind: e2e-report
+    session_id: S001-convert-send-buttons
+    stage: 10-e2e
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S001-convert-send-buttons/reports/verify-impl.md
+    kind: verify-impl-report
+    session_id: S001-convert-send-buttons
+    stage: 11-verify-impl
+    created_at: "2026-06-22"
+    status: active
+
+evolve_cycles:
+  - id: EV-001
+    session_id: S001-convert-send-buttons
+    cycle_type: feature
+    feature_ids: [F1]
+    title: "Add Convert and Convert&Send buttons to UI"
+    status: completed
+    started: "2026-06-22"
+    completed: "2026-06-22"
+    scope_summary: |
+      GitHub #656 — explicit Convert (conversion only) and Convert&Send (convert + immediate
+      database upload with fixed defaults). Retain Upload to Database dialog. Exclude #555 siblings.
+    routing_plan:
+      required_stages:
+        - 16-evolve
+        - 07-build
+        - 08-verify-build
+        - 09-qa
+        - 10-e2e
+        - 11-verify-impl
+      skipped_stages:
+        - 01-requirements
+        - 02-verify-plan
+        - 03-plan-tooling
+        - 04-tech-plan
+        - 05-verify-tech
+        - 06-tech-tooling
+        - 12-verify-deploy
+        - 13-deploy-smoke
+    current_stage: 12-verify-deploy
+    stages:
+      16-evolve:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        artifacts_updated:
+          - docs/evolve-decisions.md
+          - docs/feature-list.md
+          - docs/user-journeys.md
+          - docs/test-plan.md
+      07-build:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+      08-verify-build:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        report: docs/sessions/S001-convert-send-buttons/reports/verification-report.md
+      09-qa:
+        status: completed
+        started: "2026-06-22T18:00:00Z"
+        completed: "2026-06-22T18:12:00Z"
+        report: docs/sessions/S001-convert-send-buttons/reports/qa-report.md
+        overall: pass_with_advisories
+      10-e2e:
+        status: completed
+        started: "2026-06-22T21:18:00Z"
+        completed: "2026-06-22T21:21:00Z"
+        report: docs/sessions/S001-convert-send-buttons/reports/e2e-report.md
+        overall: pass
+        notes: "S001 delta UJ-001 — T0 2/2 Vitest; T2 Playwright 11/11 with golden fixtures; T3 deferred pre-deploy"
+      11-verify-impl:
+        status: completed
+        started: "2026-06-22T22:00:00Z"
+        completed: "2026-06-22T22:30:00Z"
+        report: docs/sessions/S001-convert-send-buttons/reports/verify-impl.md
+        overall: approved
+        notes: "User approved UJ-001 paths A/B/C and F1 delta; T3 deferred"
+    gates:
+      a_to_b: passed
+      b_to_c: passed
+      c_to_d: passed
+      deploy: pending
+    checkpoints:
+      phase_a: passed
+      phase_b: passed
+      phase_c: passed
+      phase_d: pending
+      deploy: pending
+    artifacts:
+      - path: docs/evolve-decisions.md
+        status: completed
+      - path: docs/sessions/S001-convert-send-buttons/reports/evolve-summary.md
+        status: completed
+    issues: []
 
 git_history:
-  current_branch: feat/M11-big-bang-finalize
+  current_branch: feat/S001-convert-send-buttons
   branches:
     - name: phase/1-monorepo-scaffold
       base: main
@@ -717,6 +910,34 @@ pr_review_cycles:
       - path: .cursor/skills/18-pr-review/checklist.md
         note: checklist source
     gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/681#pullrequestreview-4540604664
+
+  - id: PRR-003
+    pr_number: 683
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/683
+    title: "feat(ui): Add Convert and Convert&Send buttons (#656)"
+    status: completed
+    started: "2026-06-22"
+    completed: "2026-06-22"
+    head_ref: feat/S001-convert-send-buttons
+    base_ref: main
+    verdict: APPROVE
+    blockers: 0
+    advisories: 3
+    praise: 4
+    ci_status: success
+    session_id: S001-convert-send-buttons
+    subagents:
+      bugbot: failed_diff
+      security_review: failed_diff
+    artifacts:
+      - path: docs/sessions/S001-convert-send-buttons/reports/pr-review.md
+        note: session report
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/683#pullrequestreview-4548622093
+    linked_issue: 656
+    notes:
+      - "Self-approval blocked by GitHub; posted COMMENT with APPROVE recommendation"
 
 pr_remediation_cycles:
   - id: PRM-001
@@ -898,5 +1119,78 @@ pr_remediation_cycles:
         status: fixed
         commit: 7b9f5a9
         note: named migrator before patch
+    follow_up:
+      pr_review_rerun: offered
+
+  - id: PRM-003
+    pr_number: 683
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/683
+    linked_review_cycle_id: PRR-003
+    title: "feat(ui): Add Convert and Convert&Send buttons (#656)"
+    status: completed
+    started: "2026-06-22"
+    completed: "2026-06-22"
+    head_ref: feat/S001-convert-send-buttons
+    base_ref: main
+    ci_status: success
+    counts:
+      fixed: 6
+      deferred: 0
+      wont_fix: 0
+    findings:
+      - id: F-001
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/app/components/FileConverter.tsx
+        line: 821
+        thread_id: PRRT_kwDOQW-3CM6LaWYM
+        status: fixed
+        commit: fa6d5c5
+        note: derived isBusy/hasInput/hasConverted flags
+      - id: F-002
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/app/components/FileConverter.tsx
+        line: 352
+        thread_id: PRRT_kwDOQW-3CM6Lap-T
+        status: fixed
+        commit: fa6d5c5
+        note: send_error status heading
+      - id: F-003
+        source: inline
+        severity: advisory
+        path: docs/context/convert-send-buttons.md
+        line: 8
+        thread_id: PRRT_kwDOQW-3CM6Lap_V
+        status: fixed
+        commit: 22741dd
+        note: executive summary delivered state
+      - id: F-004
+        source: review_body
+        severity: advisory
+        path: apps/frontend/src/app/components/FileConverter.tsx
+        line: null
+        thread_id: null
+        status: fixed
+        commit: 22741dd
+        note: data-testid convert button locators
+      - id: F-005
+        source: review_body
+        severity: advisory
+        path: apps/frontend/src/utils/databaseUpload.ts
+        line: null
+        thread_id: null
+        status: fixed
+        commit: a47eaf4
+        note: edgeFunctionUrl + hardened error parsing
+      - id: F-006
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/app/components/DatabaseUploadDialog.test.tsx
+        line: null
+        thread_id: null
+        status: fixed
+        commit: 8f7545d
+        note: CI mock parity after upload client change
     follow_up:
       pr_review_rerun: offered

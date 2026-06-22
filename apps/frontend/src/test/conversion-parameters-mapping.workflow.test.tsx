@@ -89,9 +89,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
       },
     });
 
-    await user.click(
-      screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-    );
+    await user.click(screen.getByTestId('convert-button'));
 
     await waitFor(() => {
       expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
@@ -173,9 +171,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
       target: { value: 'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010' },
     });
 
-    await user.click(
-      screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-    );
+    await user.click(screen.getByTestId('convert-button'));
 
     await waitFor(() => {
       expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);

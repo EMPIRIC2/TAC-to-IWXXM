@@ -32,3 +32,16 @@ if (!publicAnonKey) {
  * Supabase URL for API calls
  */
 export const supabaseApiUrl = supabaseUrl;
+
+/** Edge function deployment slug for the bundled Hono server. */
+export const edgeServerSlug = 'make-server-2e3cda33';
+
+/**
+ * Build the full HTTPS URL for a Supabase edge function subpath.
+ *
+ * @param subpath - Path after the deployment slug (e.g. ``database/upload``)
+ * @returns Edge function URL for the current project
+ */
+export function edgeFunctionUrl(subpath: string): string {
+  return `https://${projectId}.supabase.co/functions/v1/${edgeServerSlug}/${subpath}`;
+}

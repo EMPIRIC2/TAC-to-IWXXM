@@ -8,6 +8,9 @@ const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
 );
+const mockUploadConvertedFiles = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ message: 'Files uploaded successfully' }),
+);
 const mockToast = vi.hoisted(() => ({
   success: vi.fn(),
   error: vi.fn(),
@@ -35,6 +38,15 @@ vi.mock('/utils/api', () => ({
   fetchAirportRegion: vi
     .fn()
     .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
+}));
+
+vi.mock('/utils/databaseUpload', () => ({
+  uploadConvertedFiles: mockUploadConvertedFiles,
+  CONVERT_AND_SEND_UPLOAD_OPTIONS: {
+    format: 'iwxxm',
+    destination: 'primary',
+    includeOriginal: false,
+  },
 }));
 
 vi.mock('sonner', () => ({
@@ -609,7 +621,7 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
 
-      const convertBtn = await screen.findByText(/convert/i, { selector: 'button' });
+      const convertBtn = screen.getByTestId('convert-button');
       await user.click(convertBtn);
 
       // Should show error or validation message
@@ -628,9 +640,7 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
 
-      const convertBtn = screen.getByRole('button', {
-        name: /convert metar files to iwxxm xml/i,
-      });
+      const convertBtn = screen.getByTestId('convert-button');
       expect(convertBtn).toBeDisabled();
 
       await user.click(convertBtn);
@@ -666,9 +676,7 @@ describe('FileConverter Component', () => {
       });
 
       const { container } = render(<FileConverter {...defaultProps} />);
-      const convertBtn = screen.getByRole('button', {
-        name: /convert metar files to iwxxm xml/i,
-      });
+      const convertBtn = screen.getByTestId('convert-button');
       expect(convertBtn).toBeDisabled();
 
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
@@ -701,9 +709,7 @@ describe('FileConverter Component', () => {
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR EGLL 121650Z 22008KT 9999 BKN025 18/12 Q1016');
 
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText(/backend may be unreachable/i)).toBeInTheDocument();
@@ -721,9 +727,7 @@ describe('FileConverter Component', () => {
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010');
 
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText(/authentication failed/i)).toBeInTheDocument();
@@ -825,9 +829,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR CLIPBOARD SUCCESS');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText('manual_input.txt')).toBeInTheDocument();
@@ -883,9 +885,7 @@ describe('FileConverter Component', () => {
 
       const manualInput = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(manualInput, 'METAR CONVERT FOR REMOVE');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText('manual_input.txt')).toBeInTheDocument();
@@ -908,9 +908,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR UPLOAD BUTTON');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       const uploadButton = await screen.findByRole('button', {
         name: /upload 1 converted files to database/i,
@@ -959,9 +957,7 @@ describe('FileConverter Component', () => {
         ).toBeInTheDocument();
       });
 
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(
@@ -982,9 +978,7 @@ describe('FileConverter Component', () => {
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR EMPTY RESULTS CASE');
 
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText(/no files were converted/i)).toBeInTheDocument();
@@ -1011,9 +1005,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR COPY TEST');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText('manual_input.txt')).toBeInTheDocument();
@@ -1049,9 +1041,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR COPY FAIL TEST');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText('manual_input.txt')).toBeInTheDocument();
@@ -1089,9 +1079,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR DOWNLOAD SINGLE');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText('manual_input.txt')).toBeInTheDocument();
@@ -1119,9 +1107,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR GENERIC ERROR');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText('Conversion Error')).toBeInTheDocument();
@@ -1155,9 +1141,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR XML FALLBACK');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(mockToast.success).toHaveBeenCalledWith(
@@ -1175,9 +1159,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR CONTENT FALLBACK');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(mockToast.success).toHaveBeenCalledWith(
@@ -1195,9 +1177,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR CLEAR TEST');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(mockToast.success).toHaveBeenCalledWith(
@@ -1234,9 +1214,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR DOWNLOAD ALL ZIP');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       const downloadZipBtn = await screen.findByLabelText(
         /download all 1 converted files as zip/i,
@@ -1278,9 +1256,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR CLIPBOARD CATCH PATH');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText('manual_input.txt')).toBeInTheDocument();
@@ -1320,9 +1296,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR EXEC THROW PATH');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
         expect(screen.getByText('manual_input.txt')).toBeInTheDocument();
@@ -1427,9 +1401,7 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR CLOSE DIALOG TEST');
-      await user.click(
-        screen.getByRole('button', { name: /convert metar files to iwxxm xml/i }),
-      );
+      await user.click(screen.getByTestId('convert-button'));
 
       const uploadButton = await screen.findByRole('button', {
         name: /upload 1 converted files to database/i,
@@ -1447,6 +1419,76 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(screen.getByTestId('database-upload-dialog').style.display).toBe('none');
       });
+    });
+
+    it('displays Convert&Send button and chains convert with upload', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<iwxxm>send-test</iwxxm>' }],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const convertAndSendBtn = screen.getByTestId('convert-and-send-button');
+      expect(convertAndSendBtn).toBeDisabled();
+
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await user.type(textarea, 'METAR CONVERT AND SEND');
+      expect(convertAndSendBtn).toBeEnabled();
+
+      await user.click(convertAndSendBtn);
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
+        expect(mockUploadConvertedFiles).toHaveBeenCalledTimes(1);
+      });
+
+      expect(mockUploadConvertedFiles).toHaveBeenCalledWith(
+        expect.objectContaining({
+          accessToken: 'test-token',
+          options: {
+            format: 'iwxxm',
+            destination: 'primary',
+            includeOriginal: false,
+          },
+        }),
+      );
+      expect(mockToast.success).toHaveBeenCalledWith('Files uploaded successfully');
+    });
+
+    it('shows send failure when convert succeeds but upload fails', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<iwxxm>send-fail</iwxxm>' }],
+      });
+      mockUploadConvertedFiles.mockRejectedValueOnce(new Error('Upload rejected'));
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await user.type(textarea, 'METAR SEND FAIL');
+      await user.click(screen.getByTestId('convert-and-send-button'));
+
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith(
+          'Conversion succeeded but send failed: Upload rejected',
+        );
+      });
+      expect(screen.getByText('Send Error')).toBeInTheDocument();
+      expect(screen.getByText(/send failed: upload rejected/i)).toBeInTheDocument();
+    });
+
+    it('requires auth token for Convert&Send', async () => {
+      const user = userEvent.setup();
+      const { container } = render(
+        <FileConverter {...defaultProps} accessToken={undefined} />,
+      );
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await user.type(textarea, 'METAR NO TOKEN');
+      await user.click(screen.getByTestId('convert-and-send-button'));
+
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Authentication required. Please log in again.',
+      );
+      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
     });
   });
 });

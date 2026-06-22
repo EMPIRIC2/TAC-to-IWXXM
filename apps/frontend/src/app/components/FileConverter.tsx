@@ -29,6 +29,10 @@ import { IcaoAutocomplete } from './IcaoAutocomplete';
 import { AirportDetailsCard } from './AirportDetailsCard';
 import { signOutWithScope } from '/utils/supabase/logout';
 import { convertMetarToIwxxm as callBackendConversion } from '/utils/api';
+import {
+  CONVERT_AND_SEND_UPLOAD_OPTIONS,
+  uploadConvertedFiles,
+} from '/utils/databaseUpload';
 
 interface ConvertedFile {
   id: string;
@@ -76,8 +80,9 @@ export function FileConverter({
   const [manualInput, setManualInput] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
+  const [isConvertAndSending, setIsConvertAndSending] = useState(false);
   const [conversionStatus, setConversionStatus] = useState<{
-    type: 'idle' | 'loading' | 'timeout' | 'error';
+    type: 'idle' | 'loading' | 'timeout' | 'error' | 'send_error';
     message?: string;
   }>({ type: 'idle' });
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
@@ -209,19 +214,17 @@ export function FileConverter({
     setIsDragging(false);
   };
 
-  const handleConvert = async () => {
+  const performConversion = async (): Promise<ConvertedFile[] | null> => {
     if (pendingFiles.length === 0 && !manualInput.trim()) {
       toast.error('Please add files or enter manual input');
-      return;
+      return null;
     }
 
-    setIsConverting(true);
     setConversionStatus({ type: 'loading', message: 'Converting...' });
 
     try {
       const newConvertedFiles: ConvertedFile[] = [];
 
-      // Prepare files for conversion
       const filesToConvert: File[] = pendingFiles.map((file) => {
         return new File([file.content], file.name, { type: 'text/plain' });
       });
@@ -232,7 +235,6 @@ export function FileConverter({
         accessToken: accessToken ? `${accessToken.substring(0, 20)}...` : 'MISSING',
       });
 
-      // Call backend API for conversion with timeout and token
       const response = await callBackendConversion({
         manualText: manualInput.trim() || undefined,
         files: filesToConvert.length > 0 ? filesToConvert : undefined,
@@ -243,7 +245,6 @@ export function FileConverter({
 
       console.log('[FileConverter] Conversion response:', response);
 
-      // Process response and create converted file entries
       if (response.results && Array.isArray(response.results)) {
         response.results.forEach(
           (
@@ -269,15 +270,14 @@ export function FileConverter({
       if (newConvertedFiles.length === 0) {
         toast.error('No files were converted');
         setConversionStatus({ type: 'error', message: 'No files were converted' });
-        setIsConverting(false);
-        return;
+        return null;
       }
 
       setConvertedFiles((prev) => [...newConvertedFiles, ...prev]);
       setPendingFiles([]);
       setManualInput('');
       setConversionStatus({ type: 'idle' });
-      toast.success(`Successfully converted ${newConvertedFiles.length} file(s)`);
+      return newConvertedFiles;
     } catch (error) {
       console.error('[FileConverter] Conversion error:', error);
 
@@ -305,8 +305,58 @@ export function FileConverter({
         setConversionStatus({ type: 'error', message: errorMessage });
         toast.error(errorMessage);
       }
+      return null;
+    }
+  };
+
+  const handleConvert = async () => {
+    setIsConverting(true);
+    try {
+      const newConvertedFiles = await performConversion();
+      if (newConvertedFiles) {
+        toast.success(`Successfully converted ${newConvertedFiles.length} file(s)`);
+      }
     } finally {
       setIsConverting(false);
+    }
+  };
+
+  const handleConvertAndSend = async () => {
+    if (!accessToken) {
+      toast.error('Authentication required. Please log in again.');
+      return;
+    }
+
+    setIsConvertAndSending(true);
+    try {
+      const newConvertedFiles = await performConversion();
+      if (!newConvertedFiles) {
+        return;
+      }
+
+      toast.success(`Successfully converted ${newConvertedFiles.length} file(s)`);
+      setConversionStatus({ type: 'loading', message: 'Sending to database...' });
+
+      try {
+        const data = await uploadConvertedFiles({
+          files: newConvertedFiles,
+          accessToken,
+          options: CONVERT_AND_SEND_UPLOAD_OPTIONS,
+        });
+        setConversionStatus({ type: 'idle' });
+        toast.success(data.message || 'Files converted and sent successfully');
+      } catch (error) {
+        console.error('[FileConverter] Convert&Send upload error:', error);
+        const uploadMessage =
+          error instanceof Error ? error.message : 'Failed to upload to database';
+        setConversionStatus({
+          type: 'send_error',
+          message: `Send failed: ${uploadMessage}`,
+        });
+        toast.error(`Conversion succeeded but send failed: ${uploadMessage}`);
+      }
+    } finally {
+      setIsConvertAndSending(false);
     }
   };
 
@@ -401,6 +451,10 @@ export function FileConverter({
     setConversionStatus({ type: 'idle' });
     toast.info('Queue cleared');
   };
+
+  const isBusy = isConverting || isConvertAndSending;
+  const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
+  const hasConverted = convertedFiles.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors">
@@ -769,10 +823,9 @@ export function FileConverter({
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-3 mb-8 bg-[rgba(0,0,0,0)]">
           <Button
+            data-testid="convert-button"
             onClick={handleConvert}
-            disabled={
-              isConverting || (pendingFiles.length === 0 && !manualInput.trim())
-            }
+            disabled={isBusy || !hasInput}
             className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             aria-label={
               isConverting
@@ -790,8 +843,28 @@ export function FileConverter({
             )}
           </Button>
           <Button
+            data-testid="convert-and-send-button"
+            onClick={handleConvertAndSend}
+            disabled={isBusy || !hasInput}
+            className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            aria-label={
+              isConvertAndSending
+                ? 'Converting and sending files, please wait'
+                : 'Convert METAR files to IWXXM XML and send to database'
+            }
+          >
+            {isConvertAndSending ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+                Converting & Sending...
+              </>
+            ) : (
+              'Convert&Send'
+            )}
+          </Button>
+          <Button
             onClick={() => setIsUploadDialogOpen(true)}
-            disabled={convertedFiles.length === 0}
+            disabled={isBusy || !hasConverted}
             variant="outline"
             className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
             aria-label={`Upload ${convertedFiles.length} converted files to database`}
@@ -802,7 +875,7 @@ export function FileConverter({
           </Button>
           <Button
             onClick={handleDownloadAll}
-            disabled={convertedFiles.length === 0}
+            disabled={isBusy || !hasConverted}
             variant="outline"
             className="bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
             aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
@@ -858,7 +931,11 @@ export function FileConverter({
               >
                 {conversionStatus.type === 'loading'
                   ? 'Converting...'
-                  : 'Conversion Error'}
+                  : conversionStatus.type === 'timeout'
+                    ? 'Conversion Timeout'
+                    : conversionStatus.type === 'send_error'
+                      ? 'Send Error'
+                      : 'Conversion Error'}
               </p>
               {conversionStatus.message && (
                 <p
