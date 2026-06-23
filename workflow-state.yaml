@@ -355,14 +355,14 @@ stages:
   18-pr-review:
     status: completed
     started: "2026-06-22"
-    completed: "2026-06-22"
-    last_cycle: PRR-004
+    completed: "2026-06-23"
+    last_cycle: PRR-005
 
   19-address-pr-review:
     status: completed
     started: "2026-06-22"
     completed: "2026-06-23"
-    last_cycle: PRM-004
+    last_cycle: PRM-005
 
   12-verify-deploy:
     status: completed
@@ -1086,6 +1086,27 @@ git_history:
       session_id: S002-issue-594-feedback
       files_changed: 1
       timestamp: "2026-06-22T02:30:00Z"
+    - sha: 5dc31e5
+      branch: fix/S002-issue-594-feedback
+      message: "fix(review): align COR fix docs with grammar-only implementation"
+      stage: "19-address-pr-review"
+      session_id: S002-issue-594-feedback
+      files_changed: 3
+      timestamp: "2026-06-23T13:42:00Z"
+    - sha: 010eb12
+      branch: fix/S002-issue-594-feedback
+      message: "fix(review): align FileConverter results with API manual-first ordering"
+      stage: "19-address-pr-review"
+      session_id: S002-issue-594-feedback
+      files_changed: 2
+      timestamp: "2026-06-23T13:42:00Z"
+    - sha: 9cdec46
+      branch: fix/S002-issue-594-feedback
+      message: "fix(review): expect Source TAC panels in multi-file E2E assertion"
+      stage: "19-address-pr-review"
+      session_id: S002-issue-594-feedback
+      files_changed: 1
+      timestamp: "2026-06-23T13:42:00Z"
 
 pr_review_cycles:
   - id: PRR-001
@@ -1188,6 +1209,35 @@ pr_review_cycles:
     notes:
       - "Self request-changes blocked by GitHub; posted COMMENT with REQUEST_CHANGES recommendation"
       - "Validate fails on audit-frontend vite@6.3.5 lockfile; local make validate-ci reproduces"
+
+  - id: PRR-005
+    pr_number: 685
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/685
+    title: "[EV-003] Fix COR-after-time METAR decode and add Source TAC traceability (#594)"
+    status: completed
+    started: "2026-06-23"
+    completed: "2026-06-23"
+    head_ref: fix/S002-issue-594-feedback
+    base_ref: main
+    verdict: APPROVE
+    blockers: 0
+    advisories: 2
+    praise: 3
+    ci_status: success
+    session_id: S002-issue-594-feedback
+    subagents:
+      bugbot: completed
+      security_review: failed_diff
+    artifacts:
+      - path: docs/sessions/S002-issue-594-feedback/reports/pr-review.md
+        note: session report
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/685#pullrequestreview-4549691176
+    linked_issue: 594
+    notes:
+      - "Self-approval blocked by GitHub; posted COMMENT with APPROVE recommendation"
+      - "Inline comment on FileConverter.tsx L265 (result ordering)"
 
 pr_remediation_cycles:
   - id: PRM-001
@@ -1498,5 +1548,73 @@ pr_remediation_cycles:
         status: fixed
         commit: 3763192
         note: integration teardown step renamed
+    follow_up:
+      pr_review_rerun: offered
+
+  - id: PRM-005
+    pr_number: 685
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/685
+    linked_review_cycle_id: PRR-005
+    title: "[EV-003] Fix COR-after-time METAR decode and add Source TAC traceability (#594)"
+    status: completed
+    started: "2026-06-23"
+    completed: "2026-06-23"
+    head_ref: fix/S002-issue-594-feedback
+    base_ref: main
+    ci_status: pending
+    session_id: S002-issue-594-feedback
+    counts:
+      fixed: 5
+      deferred: 0
+      wont_fix: 0
+    findings:
+      - id: F-002
+        source: inline
+        severity: advisory
+        path: docs/bug-reports/BUG-2026-06-22-issue-594-cor-traceability.md
+        line: 57
+        thread_id: PRRT_kwDOQW-3CM6LcyMm
+        status: fixed
+        commit: 5dc31e5
+        note: TAC acronym typo
+      - id: F-003
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/app/components/FileConverter.tsx
+        line: 265
+        thread_id: PRRT_kwDOQW-3CM6LdC4F
+        status: fixed
+        commit: 010eb12
+        note: manual-before-file result mapping
+      - id: F-004
+        source: review_body
+        severity: advisory
+        path: apps/e2e/tac-file-upload-database.e2e.spec.ts
+        line: 175
+        thread_id: null
+        status: fixed
+        commit: 9cdec46
+        note: Source TAC pre count in results region
+      - id: F-005
+        source: review_body
+        severity: advisory
+        path: docs/context/issue-594-feedback.md
+        line: 15
+        thread_id: null
+        status: fixed
+        commit: 5dc31e5
+        note: R2 grammar-only COR fix
+      - id: F-006
+        source: review_body
+        severity: advisory
+        path: apps/frontend/src/app/components/FileConverter.tsx
+        line: 249
+        thread_id: null
+        status: fixed
+        commit: 010eb12
+        note: splitlines aligned with backend
+    artifacts:
+      - path: docs/sessions/S002-issue-594-feedback/reports/pr-remediation.md
+        note: PRM-005 session report
     follow_up:
       pr_review_rerun: offered
