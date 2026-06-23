@@ -9,11 +9,14 @@ Required environment variables:
 """
 import os
 import sys
+from pathlib import Path
+
 import requests
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Load repo-root .env (works when invoked from any cwd)
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(_REPO_ROOT / ".env")
 
 # Configuration from environment
 SUPABASE_URL = os.getenv("SUPABASE_URL")
