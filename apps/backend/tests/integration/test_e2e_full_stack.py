@@ -168,25 +168,22 @@ def e2e_server(e2e_server_port):
     # Create environment for subprocess
     server_env = os.environ.copy()
 
-    # Explicitly pass Supabase credentials to server
-    if "SUPABASE_URL" in env_vars:
-        server_env["SUPABASE_URL"] = env_vars["SUPABASE_URL"]
-        print(f"\n✅ Using Supabase URL: {env_vars['SUPABASE_URL'][:30]}...")
+    # Explicitly pass Supabase credentials to server (canonical names; config holds URL)
+    publishable = env_vars.get("SUPABASE_PUBLISHABLE_KEY") or env_vars.get("SUPABASE_ANON_KEY")
+    if publishable:
+        server_env["SUPABASE_PUBLISHABLE_KEY"] = publishable
+        print(f"✅ Using Supabase publishable key: {publishable[:20]}...")
 
-    if "SUPABASE_ANON_KEY" in env_vars:
-        server_env["SUPABASE_ANON_KEY"] = env_vars["SUPABASE_ANON_KEY"]
-        print(f"✅ Using Supabase ANON key: {env_vars['SUPABASE_ANON_KEY'][:20]}...")
-
-    if "SUPABASE_SERVICE_ROLE_KEY" in env_vars:
-        server_env["SUPABASE_SERVICE_ROLE_KEY"] = env_vars["SUPABASE_SERVICE_ROLE_KEY"]
-        print(f"✅ Using Supabase SERVICE_ROLE key: {env_vars['SUPABASE_SERVICE_ROLE_KEY'][:20]}...")
+    secret = env_vars.get("SUPABASE_SECRET_KEY") or env_vars.get("SUPABASE_SERVICE_ROLE_KEY")
+    if secret:
+        server_env["SUPABASE_SECRET_KEY"] = secret
+        print(f"✅ Using Supabase secret key: {secret[:20]}...")
 
     if "DATABASE_URL" in env_vars:
         server_env["DATABASE_URL"] = env_vars["DATABASE_URL"]
         print("✅ Using Database URL from .env")
 
-    # Override auth for testing
-    server_env["DISABLE_AUTH"] = "true"
+    server_env["METAR_CONFIG_ENV"] = "local"
     server_env["E2E_TEST_MODE"] = "true"
 
     # Add backend directory to PYTHONPATH (use absolute path)

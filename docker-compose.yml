@@ -12,7 +12,6 @@ services:
       - SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}
       - SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY:-${SUPABASE_SERVICE_ROLE_KEY:-}}
       - DATABASE_URL=${DATABASE_URL:-}
-      - DISABLE_AUTH=${DISABLE_AUTH:-true}
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
       interval: 30s
@@ -28,22 +27,21 @@ services:
       context: ./apps/frontend
       dockerfile: Dockerfile
       target: dev
-      args:
-        - VITE_SUPABASE_URL=${VITE_SUPABASE_URL:-https://ktvxijislbtgqapllmuk.supabase.co}
-        - VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${SUPABASE_PUBLISHABLE_KEY:-${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-}}
-        - VITE_APP_URL=${VITE_APP_URL:-http://localhost:18000}
-        - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:18001}
     container_name: metar-iwxxm-frontend
     environment:
-      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL:-https://ktvxijislbtgqapllmuk.supabase.co}
-      - VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${SUPABASE_PUBLISHABLE_KEY:-${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-}}
-      - VITE_APP_URL=${VITE_APP_URL:-http://localhost:18000}
-      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:18001}
+      - METAR_CONFIG_ENV=${METAR_CONFIG_ENV:-local}
+      - SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}
     ports:
       - "${METAR_FRONTEND_HOST_PORT:-18000}:8000"
     volumes:
       - ./apps/frontend:/app
+      - ./config:/workspace/config:ro
+      - ./scripts:/workspace/scripts:ro
       - /app/node_modules
+    command: >
+      sh -c "METAR_CONFIG_ENV=$${METAR_CONFIG_ENV:-local}
+      DEST_DIR=/app/public bash /workspace/scripts/frontend/prepare-config.sh
+      && npm run dev -- --host 0.0.0.0 --port 8000"
     depends_on:
       backend:
         condition: service_healthy

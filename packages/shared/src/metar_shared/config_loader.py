@@ -58,3 +58,31 @@ def get_supabase_url_from_config(env: str | None = None) -> str:
         return ""
     url = supabase.get("url")
     return str(url).strip() if url else ""
+
+
+def get_cors_origins_from_config(env: str | None = None) -> list[str]:
+    """Return ``api.corsOrigins`` from config, or empty list when unset."""
+    try:
+        cfg = load_config(env)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return []
+    api_cfg = cfg.get("api")
+    if not isinstance(api_cfg, dict):
+        return []
+    cors = api_cfg.get("corsOrigins")
+    if not isinstance(cors, list):
+        return []
+    return [str(origin).strip() for origin in cors if str(origin).strip()]
+
+
+def get_frontend_url_from_config(env: str | None = None) -> str:
+    """Return ``api.frontendUrl`` from config, or empty string when unset."""
+    try:
+        cfg = load_config(env)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return ""
+    api_cfg = cfg.get("api")
+    if not isinstance(api_cfg, dict):
+        return ""
+    url = api_cfg.get("frontendUrl")
+    return str(url).strip() if url else ""

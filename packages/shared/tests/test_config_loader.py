@@ -10,7 +10,7 @@ import pytest
 from metar_shared.config_loader import (
     config_path,
     get_config_env,
-    get_supabase_url_from_config,
+    get_cors_origins_from_config,
     load_config,
 )
 
@@ -53,7 +53,21 @@ def test_load_config_missing_profile(
 
 
 def test_get_supabase_url_from_config_prod() -> None:
+    from metar_shared.config_loader import get_supabase_url_from_config
+
     url = get_supabase_url_from_config("prod")
+    assert url.startswith("https://")
+
+
+def test_get_cors_origins_from_config_local() -> None:
+    origins = get_cors_origins_from_config("local")
+    assert "http://localhost:18000" in origins
+
+
+def test_get_frontend_url_from_config_prod() -> None:
+    from metar_shared.config_loader import get_frontend_url_from_config
+
+    url = get_frontend_url_from_config("prod")
     assert url.startswith("https://")
 
 

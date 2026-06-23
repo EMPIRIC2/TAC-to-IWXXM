@@ -190,26 +190,40 @@ def add_loopback_origin_variants(origins: list) -> list:
 
 
 def get_cors_origins() -> list:
-    """Get allowed CORS origins from environment or use defaults."""
+    """Get allowed CORS origins from config with deprecated env fallbacks."""
+    import warnings
+
     from metar_shared import METAR_CORS_ORIGINS_ENV, parse_comma_separated_origins
+    from metar_shared.config_loader import get_cors_origins_from_config, get_frontend_url_from_config
 
-    allowed_origins_env = os.getenv(METAR_CORS_ORIGINS_ENV, "")
     relaxed_cors = is_dev_cors_relaxation_enabled()
+    origins = get_cors_origins_from_config()
 
+    allowed_origins_env = os.getenv(METAR_CORS_ORIGINS_ENV, "").strip()
     if allowed_origins_env:
-        origins = list(parse_comma_separated_origins(allowed_origins_env))
-        if relaxed_cors:
-            add_origin_if_missing(origins, "http://localhost:5173")
-        return add_loopback_origin_variants(origins)
+        if origins:
+            warnings.warn(
+                f"{METAR_CORS_ORIGINS_ENV} is ignored when config.*.api.corsOrigins is set",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        else:
+            warnings.warn(
+                f"{METAR_CORS_ORIGINS_ENV} is deprecated; use config.*.api.corsOrigins",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            origins = list(parse_comma_separated_origins(allowed_origins_env))
 
-    # Default origins if env var not set
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:8000")
-    origins = [
-        frontend_url,
-        "http://localhost:3000",
-    ]
+    if not origins:
+        frontend_url = os.getenv("FRONTEND_URL", "").strip() or get_frontend_url_from_config()
+        if not frontend_url:
+            frontend_url = "http://localhost:18000"
+        origins = [frontend_url, "http://localhost:3000"]
+
     if relaxed_cors:
         add_origin_if_missing(origins, "http://localhost:5173")
+        add_origin_if_missing(origins, "http://localhost:18000")
     return add_loopback_origin_variants(origins)
 
 

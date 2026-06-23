@@ -53,10 +53,10 @@ class TestMetarCorsOriginsPolicy:
             "https://staging-frontend.onrender.com"
         ]
 
-    def test_backend_cors_middleware_uses_metar_cors_origins(
+    def test_backend_cors_middleware_uses_config_cors_origins(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        """apps/backend get_cors_origins must read METAR_CORS_ORIGINS."""
+        """apps/backend get_cors_origins must read config.*.api.corsOrigins."""
         import sys
         from pathlib import Path
 
@@ -65,11 +65,10 @@ class TestMetarCorsOriginsPolicy:
         if backend_src not in sys.path:
             sys.path.insert(0, backend_src)
 
-        monkeypatch.setenv(
-            METAR_CORS_ORIGINS_ENV, "https://staging-frontend.onrender.com"
-        )
+        monkeypatch.setenv("METAR_CONFIG_ENV", "prod")
+        monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
 
         from src.api import get_cors_origins
 
         origins = get_cors_origins()
-        assert "https://staging-frontend.onrender.com" in origins
+        assert "https://metar-to-iwxxm-frontend-v4-web.onrender.com" in origins

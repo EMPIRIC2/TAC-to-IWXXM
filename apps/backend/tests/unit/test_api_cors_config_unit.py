@@ -39,31 +39,31 @@ def test_add_loopback_origin_variants_does_not_duplicate() -> None:
     assert expanded.count("http://127.0.0.1:8000") == 1
 
 
-def test_get_cors_origins_from_env_and_relaxation(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("METAR_CORS_ORIGINS", "https://prod.example.com, http://localhost:5173")
+def test_get_cors_origins_from_config_and_relaxation(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("METAR_CONFIG_ENV", "local")
     monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "true")
+    monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
 
     origins = api_module.get_cors_origins()
 
-    assert "https://prod.example.com" in origins
+    assert "http://localhost:18000" in origins
+    assert "http://127.0.0.1:18000" in origins
     assert "http://localhost:5173" in origins
-    assert "http://127.0.0.1:5173" in origins
 
 
-def test_get_cors_origins_defaults_use_frontend_url(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_get_cors_origins_defaults_use_config_frontend_url(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("METAR_CONFIG_ENV", "local")
     monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
-    monkeypatch.setenv("FRONTEND_URL", "https://frontend.example.com")
     monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "false")
 
     origins = api_module.get_cors_origins()
 
-    assert "https://frontend.example.com" in origins
-    assert "http://localhost:3000" in origins
+    assert "http://localhost:18000" in origins
 
 
 def test_get_cors_origins_defaults_with_relaxation(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("METAR_CONFIG_ENV", "local")
     monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
-    monkeypatch.setenv("FRONTEND_URL", "http://localhost:8000")
     monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "true")
 
     origins = api_module.get_cors_origins()

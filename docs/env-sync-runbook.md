@@ -127,7 +127,8 @@ or `supabase db push`:
 | Migration | File | Addresses |
 |-----------|------|-----------|
 | 003 | `apps/frontend/supabase/migrations/003_supabase_advisor_remediation.sql` | `auth_rls_initplan`, FK indexes, `translation_statistics` RLS, `search_path` on METAR functions |
-| 004 | `apps/frontend/supabase/migrations/004_consolidate_user_profiles_policies.sql` | `multiple_permissive_policies` on `user_profiles` |
+| 004 | `apps/frontend/supabase/migrations/004_supabase_advisor_policy_cleanup.sql` | `multiple_permissive_policies` on `user_profiles` |
+| 005 | `apps/frontend/supabase/migrations/005_supabase_advisor_remediation.sql` | `function_search_path_mutable`, evaluation_results RLS |
 
 Post-apply verification in Supabase **Database → Advisors**:
 

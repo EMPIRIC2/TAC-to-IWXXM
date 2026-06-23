@@ -18,27 +18,36 @@ def test_is_dev_cors_relaxation_enabled_truthy(monkeypatch, value):
 
 def test_get_cors_origins_from_env_with_relaxation_and_loopback(monkeypatch):
     monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "true")
-    monkeypatch.setenv("METAR_CORS_ORIGINS", "http://localhost:3000, https://example.test")
+    monkeypatch.setenv("METAR_CONFIG_ENV", "local")
+    monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
 
     origins = api_module.get_cors_origins()
 
-    assert "http://localhost:3000" in origins
-    assert "http://127.0.0.1:3000" in origins
+    assert "http://localhost:18000" in origins
+    assert "http://127.0.0.1:18000" in origins
     assert "http://localhost:5173" in origins
     assert "http://127.0.0.1:5173" in origins
+
+
+def test_get_cors_origins_deprecated_env_fallback(monkeypatch):
+    monkeypatch.setenv("METAR_CONFIG_ENV", "missing-profile")
+    monkeypatch.setenv("METAR_CORS_ORIGINS", "https://example.test")
+
+    with pytest.warns(DeprecationWarning, match="METAR_CORS_ORIGINS"):
+        origins = api_module.get_cors_origins()
+
     assert "https://example.test" in origins
 
 
 def test_get_cors_origins_defaults(monkeypatch):
     monkeypatch.delenv("ENABLE_DEV_CORS_RELAXATION", raising=False)
     monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
-    monkeypatch.setenv("FRONTEND_URL", "http://localhost:8000")
+    monkeypatch.setenv("METAR_CONFIG_ENV", "local")
 
     origins = api_module.get_cors_origins()
 
-    assert "http://localhost:8000" in origins
-    assert "http://127.0.0.1:8000" in origins
-    assert "http://localhost:3000" in origins
+    assert "http://localhost:18000" in origins
+    assert "http://127.0.0.1:18000" in origins
 
 
 def test_get_cors_allowed_headers_relaxed_and_default(monkeypatch):

@@ -5,7 +5,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 CONFIG_ENV="${METAR_CONFIG_ENV:-prod}"
 SRC="$ROOT/config/${CONFIG_ENV}.json"
-DEST_DIR="$ROOT/apps/frontend/public"
+DEST_DIR="${DEST_DIR:-$ROOT/apps/frontend/public}"
 DEST="$DEST_DIR/config.json"
 
 [[ -f "$SRC" ]] || { echo "Missing $SRC" >&2; exit 1; }
