@@ -246,10 +246,12 @@ export function FileConverter({
       console.log('[FileConverter] Conversion response:', response);
 
       if (response.results && Array.isArray(response.results)) {
+        // Match backend split_manual_entries: manual results precede file results.
         const manualLines = manualInput
-          .split('\n')
+          .split(/\r?\n/)
           .map((line) => line.trim())
           .filter(Boolean);
+        const manualResultCount = manualLines.length;
 
         response.results.forEach(
           (
@@ -262,15 +264,17 @@ export function FileConverter({
             },
             index: number,
           ) => {
-            const manualIndex = index - pendingFiles.length;
-            const originalFile =
-              index < pendingFiles.length
-                ? pendingFiles[index]
-                : {
-                    name: result.name || 'manual_input.txt',
-                    content:
-                      result.tac_input || manualLines[manualIndex] || manualInput,
-                  };
+            const isManualResult = index < manualResultCount;
+            const fileIndex = index - manualResultCount;
+            const originalFile = isManualResult
+              ? {
+                  name: result.name || 'manual_input.txt',
+                  content: result.tac_input || manualLines[index] || manualInput,
+                }
+              : (pendingFiles[fileIndex] ?? {
+                  name: result.name || 'unknown',
+                  content: result.tac_input || '',
+                });
 
             newConvertedFiles.push({
               id: `converted-${Date.now()}-${index}`,
