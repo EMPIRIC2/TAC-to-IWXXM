@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
 
@@ -56,7 +56,8 @@ def get_supabase_url_from_config(env: str | None = None) -> str:
     supabase = cfg.get("supabase")
     if not isinstance(supabase, dict):
         return ""
-    url = supabase.get("url")
+    supabase_cfg = cast(dict[str, Any], supabase)
+    url = supabase_cfg.get("url")
     return str(url).strip() if url else ""
 
 
@@ -69,10 +70,13 @@ def get_cors_origins_from_config(env: str | None = None) -> list[str]:
     api_cfg = cfg.get("api")
     if not isinstance(api_cfg, dict):
         return []
-    cors = api_cfg.get("corsOrigins")
+    api = cast(dict[str, Any], api_cfg)
+    cors = api.get("corsOrigins")
     if not isinstance(cors, list):
         return []
-    return [str(origin).strip() for origin in cors if str(origin).strip()]
+    return [
+        str(origin).strip() for origin in cast(list[Any], cors) if str(origin).strip()
+    ]
 
 
 def get_frontend_url_from_config(env: str | None = None) -> str:
@@ -84,5 +88,6 @@ def get_frontend_url_from_config(env: str | None = None) -> str:
     api_cfg = cfg.get("api")
     if not isinstance(api_cfg, dict):
         return ""
-    url = api_cfg.get("frontendUrl")
+    api = cast(dict[str, Any], api_cfg)
+    url = api.get("frontendUrl")
     return str(url).strip() if url else ""

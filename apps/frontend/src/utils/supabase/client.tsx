@@ -4,7 +4,7 @@
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-import { getSupabasePublishableKey, getSupabaseUrl } from './runtime-config';
+import { getSupabasePublishableKey, getSupabaseUrl } from '../runtime-config';
 
 let client: SupabaseClient | null = null;
 

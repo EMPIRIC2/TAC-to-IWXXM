@@ -19,8 +19,8 @@ pytestmark = pytest.mark.skip(
     reason="Rewrite pending: evaluation router now uses evaluation_store (DATABASE_URL) not get_supabase_client"
 )
 
-from types import SimpleNamespace
 from datetime import datetime, timedelta
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from fastapi.testclient import TestClient
