@@ -79,6 +79,7 @@
 | R5 | Test structure | Single test job with matrix strategy for per-package unit+coverage |
 | R6 | Workflows | Single `ci-cd.yml` for PR/push; delete secret-scan + yaml-lint; merge frontend-audit |
 | R7 | Coverage | Keep per-service pytest 98% gates and Codecov 95% uploads exactly as today |
+| R8 | Security | **Accepted trade-off:** deleted `secret-scan.yml` scanned full git history (`fetch-depth: 0`); validate/pre-commit gitleaks scans the working tree only. Historical commits are not re-scanned on PR/push. Rationale: pre-commit gitleaks on every commit + CI validate dual-run catches new leaks; full-history scan cost duplicated validate job checkout depth. Revisit if org policy requires history scans. |
 
 ### Acceptance criteria
 

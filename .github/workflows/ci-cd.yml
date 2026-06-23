@@ -248,7 +248,7 @@ jobs:
           name: frontend-coverage
           fail_ci_if_error: true
 
-      - name: Stop service stack on integration failure
+      - name: Stop service stack after integration tests
         if: always() && matrix.package == 'integration'
         run: docker compose down
 
