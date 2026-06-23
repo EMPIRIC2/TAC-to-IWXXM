@@ -1561,7 +1561,7 @@ pr_remediation_cycles:
     completed: "2026-06-23"
     head_ref: fix/S002-issue-594-feedback
     base_ref: main
-    ci_status: pending
+    ci_status: success
     session_id: S002-issue-594-feedback
     counts:
       fixed: 5
