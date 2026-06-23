@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import metar_shared.config_loader as config_loader
 import pytest
 
 from src import api as api_module
@@ -70,3 +71,90 @@ def test_get_cors_origins_defaults_with_relaxation(monkeypatch: pytest.MonkeyPat
 
     assert "http://localhost:5173" in origins
     assert "http://127.0.0.1:5173" in origins
+
+
+def test_get_cors_origins_warns_when_deprecated_env_conflicts_with_config(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("METAR_CORS_ORIGINS", "http://ignored.example")
+    monkeypatch.setattr(
+        config_loader,
+        "get_cors_origins_from_config",
+        lambda env=None: ["http://from-config.example"],
+    )
+
+    with pytest.warns(DeprecationWarning, match="ignored when config"):
+        origins = api_module.get_cors_origins()
+
+    assert "http://from-config.example" in origins
+    assert "http://ignored.example" not in origins
+
+
+def test_get_cors_origins_uses_deprecated_env_when_config_empty(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("METAR_CORS_ORIGINS", "http://legacy.example,http://legacy2.example")
+    monkeypatch.setattr(config_loader, "get_cors_origins_from_config", lambda env=None: [])
+
+    with pytest.warns(DeprecationWarning, match="deprecated"):
+        origins = api_module.get_cors_origins()
+
+    assert "http://legacy.example" in origins
+    assert "http://legacy2.example" in origins
+
+
+def test_get_cors_origins_falls_back_to_localhost_defaults(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
+    monkeypatch.delenv("FRONTEND_URL", raising=False)
+    monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "false")
+    monkeypatch.setattr(config_loader, "get_cors_origins_from_config", lambda env=None: [])
+    monkeypatch.setattr(config_loader, "get_frontend_url_from_config", lambda env=None: "")
+
+    origins = api_module.get_cors_origins()
+
+    assert "http://localhost:18000" in origins
+    assert "http://localhost:3000" in origins
+
+
+def test_get_cors_origins_uses_config_frontend_url_when_cors_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
+    monkeypatch.delenv("FRONTEND_URL", raising=False)
+    monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "false")
+    monkeypatch.setattr(config_loader, "get_cors_origins_from_config", lambda env=None: [])
+    monkeypatch.setattr(
+        config_loader,
+        "get_frontend_url_from_config",
+        lambda env=None: "http://frontend-config.example",
+    )
+
+    origins = api_module.get_cors_origins()
+
+    assert "http://frontend-config.example" in origins
+
+
+def test_get_cors_origins_prefers_frontend_url_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
+    monkeypatch.setenv("FRONTEND_URL", "http://frontend-env.example")
+    monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "false")
+    monkeypatch.setattr(config_loader, "get_cors_origins_from_config", lambda env=None: [])
+    monkeypatch.setattr(config_loader, "get_frontend_url_from_config", lambda env=None: "")
+
+    origins = api_module.get_cors_origins()
+
+    assert "http://frontend-env.example" in origins
+
+
+def test_get_cors_allowed_headers_strict_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "false")
+
+    assert api_module.get_cors_allowed_headers() == ["Authorization", "Content-Type"]
+
+
+def test_get_cors_allowed_headers_relaxed_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "true")
+
+    assert api_module.get_cors_allowed_headers() == ["*"]

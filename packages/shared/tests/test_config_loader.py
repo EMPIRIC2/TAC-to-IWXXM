@@ -81,3 +81,92 @@ def test_load_config_file_not_found(
     )
     with pytest.raises(FileNotFoundError):
         load_config("nope")
+
+
+def _write_config(tmp_path: Path, profile: str, payload: object) -> None:
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True, exist_ok=True)
+    (config_dir / f"{profile}.json").write_text(json.dumps(payload), encoding="utf-8")
+
+
+def test_get_supabase_url_from_config_handles_missing_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from metar_shared.config_loader import get_supabase_url_from_config
+
+    monkeypatch.setattr(
+        "metar_shared.config_loader._REPO_ROOT", tmp_path, raising=False
+    )
+    assert get_supabase_url_from_config("missing") == ""
+
+
+def test_get_supabase_url_from_config_handles_invalid_json(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from metar_shared.config_loader import get_supabase_url_from_config
+
+    monkeypatch.setattr(
+        "metar_shared.config_loader._REPO_ROOT", tmp_path, raising=False
+    )
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True, exist_ok=True)
+    (config_dir / "broken.json").write_text("{not-json", encoding="utf-8")
+    assert get_supabase_url_from_config("broken") == ""
+
+
+def test_get_supabase_url_from_config_rejects_non_object_supabase(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from metar_shared.config_loader import get_supabase_url_from_config
+
+    monkeypatch.setattr(
+        "metar_shared.config_loader._REPO_ROOT", tmp_path, raising=False
+    )
+    _write_config(tmp_path, "bad", {"supabase": "not-a-dict"})
+    assert get_supabase_url_from_config("bad") == ""
+
+
+def test_get_cors_origins_from_config_rejects_non_object_api(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        "metar_shared.config_loader._REPO_ROOT", tmp_path, raising=False
+    )
+    _write_config(tmp_path, "bad", {"api": []})
+    assert get_cors_origins_from_config("bad") == []
+
+
+def test_get_cors_origins_from_config_rejects_non_list_cors(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        "metar_shared.config_loader._REPO_ROOT", tmp_path, raising=False
+    )
+    _write_config(tmp_path, "bad", {"api": {"corsOrigins": "not-a-list"}})
+    assert get_cors_origins_from_config("bad") == []
+
+
+def test_get_cors_origins_from_config_filters_blank_entries(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        "metar_shared.config_loader._REPO_ROOT", tmp_path, raising=False
+    )
+    _write_config(
+        tmp_path,
+        "local",
+        {"api": {"corsOrigins": ["http://localhost:18000", "", "  "]}},
+    )
+    assert get_cors_origins_from_config("local") == ["http://localhost:18000"]
+
+
+def test_get_frontend_url_from_config_rejects_non_object_api(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from metar_shared.config_loader import get_frontend_url_from_config
+
+    monkeypatch.setattr(
+        "metar_shared.config_loader._REPO_ROOT", tmp_path, raising=False
+    )
+    _write_config(tmp_path, "bad", {"api": None})
+    assert get_frontend_url_from_config("bad") == ""

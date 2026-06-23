@@ -33,6 +33,22 @@ class _FakeResult:
 
 
 @pytest.mark.asyncio
+async def test_create_job_in_db_raises_when_insert_returns_no_row(monkeypatch):
+    session = AsyncMock()
+    session.execute = AsyncMock(return_value=_FakeResult(row=None))
+    session.commit = AsyncMock()
+
+    @asynccontextmanager
+    async def fake_get_db_session():
+        yield session
+
+    monkeypatch.setattr(evaluation_store, "get_db_session", fake_get_db_session)
+
+    with pytest.raises(RuntimeError, match="Failed to create evaluation job"):
+        await evaluation_store.create_job_in_db("user-1", "random", 10)
+
+
+@pytest.mark.asyncio
 async def test_create_job_in_db_returns_id(monkeypatch):
     session = AsyncMock()
     session.execute = AsyncMock(return_value=_FakeResult(row=("job-abc",)))
@@ -46,6 +62,26 @@ async def test_create_job_in_db_returns_id(monkeypatch):
 
     job_id = await evaluation_store.create_job_in_db("user-1", "random", 10)
     assert job_id == "job-abc"
+
+
+@pytest.mark.asyncio
+async def test_update_job_status_accepts_summary_dict(monkeypatch):
+    session = AsyncMock()
+    session.execute = AsyncMock()
+    session.commit = AsyncMock()
+
+    @asynccontextmanager
+    async def fake_get_db_session():
+        yield session
+
+    monkeypatch.setattr(evaluation_store, "get_db_session", fake_get_db_session)
+
+    await evaluation_store.update_job_status(
+        "job-1",
+        "completed",
+        summary_stats={"total": 2, "passed": 1, "failed": 1, "errors": 0, "pass_rate": 0.5},
+    )
+    assert session.execute.await_count == 1
 
 
 @pytest.mark.asyncio
@@ -178,6 +214,27 @@ async def test_get_job_for_user_returns_row(monkeypatch):
     row = await evaluation_store.get_job_for_user("job-1", "user-1")
     assert row is not None
     assert row["id"] == "job-1"
+
+
+@pytest.mark.asyncio
+async def test_list_results_for_job_without_filter(monkeypatch):
+    session = AsyncMock()
+    session.execute = AsyncMock(
+        side_effect=[
+            MagicMock(mappings=MagicMock(return_value=iter([{"station_id": "KORD"}]))),
+            MagicMock(scalar_one=MagicMock(return_value=1)),
+        ]
+    )
+
+    @asynccontextmanager
+    async def fake_get_db_session():
+        yield session
+
+    monkeypatch.setattr(evaluation_store, "get_db_session", fake_get_db_session)
+
+    rows, total = await evaluation_store.list_results_for_job("job-1", limit=10, offset=0)
+    assert total == 1
+    assert rows[0]["station_id"] == "KORD"
 
 
 @pytest.mark.asyncio
