@@ -37,26 +37,26 @@ active_session:
       skip_rationale: null
     - stage: 08-verify-build
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 09-qa
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 10-e2e
       required: true
       mode: delta
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 11-verify-impl
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 12-verify-deploy
       required: false
-      status: pending
+      status: completed
       skip_rationale: null
-  current_stage: 08-verify-build
+  current_stage: 13-deploy-smoke
   started_at: "2026-06-22"
   context_briefs:
     - docs/context/issue-594-feedback.md
@@ -272,8 +272,8 @@ stages:
   11-verify-impl:
     status: completed
     started_at: "2026-06-22T22:00:00Z"
-    completed_at: "2026-06-22T22:30:00Z"
-    session_id: S001-convert-send-buttons
+    completed_at: "2026-06-22T23:00:00Z"
+    session_id: S002-issue-594-feedback
     substeps:
       collect_results:
         status: completed
@@ -281,9 +281,9 @@ stages:
         status: completed
       journey_signoff:
         status: completed
-        approved: 3
+        approved: 1
         flagged: 0
-        total: 3
+        total: 1
       feature_approval:
         status: completed
         approved: 1
@@ -296,10 +296,11 @@ stages:
         status: completed
       summary:
         status: completed
-    report: docs/sessions/S001-convert-send-buttons/reports/verify-impl.md
+    report: docs/sessions/S002-issue-594-feedback/reports/verify-impl.md
     notes:
-      - "S001 / EV-001 / GitHub #656 — user approved UJ-001 paths A/B/C and F1 delta"
-      - "T3 live deferred; QA-010 uncommitted work remains"
+      - "S002 / EV-003 / GitHub #594 — user approved UJ-001 and F1 delta (TC-001b)"
+      - "T3 live deferred until post-merge deploy"
+      - "S001 / EV-001 signoff: docs/sessions/S001-convert-send-buttons/reports/verify-impl.md"
 
   10-e2e:
     status: completed
@@ -366,13 +367,16 @@ stages:
   12-verify-deploy:
     status: completed
     started_at: "2026-06-22T23:45:00Z"
-    completed_at: "2026-06-22T23:50:00Z"
-    report: docs/sessions/S001-convert-send-buttons/reports/deploy-checklist.md
+    completed_at: "2026-06-23T02:55:00Z"
+    session_id: S002-issue-594-feedback
+    report: docs/sessions/S002-issue-594-feedback/reports/deploy-checklist.md
     notes:
       - "S001 delta — static+api Render; H0c/H4/H5 PASS on live staging"
       - "E2E-002 resolved — /auth/* routes present on deployed API"
       - "S001 Convert&Send UI confirmed in live frontend bundle"
       - "Risk/rollback prompts skipped — default mitigations applied"
+      - "S002 / EV-003 — user approved mitigations + rollback; H0c/H4/H5 PASS pre-merge baseline"
+      - "S002 requires API + frontend redeploy after PR #685 merge"
 
 stages_pending: []
 
@@ -702,6 +706,42 @@ artifacts:
     stage: 11-verify-impl
     created_at: "2026-06-22"
     status: active
+  - path: docs/sessions/S002-issue-594-feedback/reports/verification-report.md
+    kind: verification-report
+    session_id: S002-issue-594-feedback
+    stage: 08-verify-build
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S002-issue-594-feedback/reports/qa-report.md
+    kind: qa-report
+    session_id: S002-issue-594-feedback
+    stage: 09-qa
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S002-issue-594-feedback/reports/e2e-report.md
+    kind: e2e-report
+    session_id: S002-issue-594-feedback
+    stage: 10-e2e
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S002-issue-594-feedback/reports/verify-impl.md
+    kind: verify-impl-report
+    session_id: S002-issue-594-feedback
+    stage: 11-verify-impl
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/implementation-verification.md
+    kind: verify-impl-report
+    session_id: S002-issue-594-feedback
+    stage: 11-verify-impl
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S002-issue-594-feedback/reports/deploy-checklist.md
+    kind: deploy-checklist
+    session_id: S002-issue-594-feedback
+    stage: 12-verify-deploy
+    created_at: "2026-06-22"
+    status: active
 
 evolve_cycles:
   - id: EV-001
@@ -802,9 +842,9 @@ evolve_cycles:
     cycle_type: feature
     feature_ids: [F1]
     title: "Issue #594 — COR-after-time + input traceability"
-    status: in_progress
+    status: completed
     started: "2026-06-22"
-    completed: null
+    completed: "2026-06-22"
     scope_summary: |
       GitHub #594 — fix ICAO COR-after-time METAR decode (translationFailedTAC);
       add ConversionResult.tac_input and Source TAC display in results UI.
@@ -824,9 +864,8 @@ evolve_cycles:
         - 04-tech-plan
         - 05-verify-tech
         - 06-tech-tooling
-        - 12-verify-deploy
         - 13-deploy-smoke
-    current_stage: 08-verify-build
+    current_stage: 12-verify-deploy
     stages:
       16-evolve:
         status: completed
@@ -863,13 +902,21 @@ evolve_cycles:
         status: completed
         started: "2026-06-22"
         completed: "2026-06-22"
+        report: docs/sessions/S002-issue-594-feedback/reports/verify-impl.md
         overall: approved
-        notes: "User approved TC-001b acceptance criteria"
+        notes: "User approved UJ-001 and F1 delta (TC-001b); T3 deferred post-merge"
+      12-verify-deploy:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        report: docs/sessions/S002-issue-594-feedback/reports/deploy-checklist.md
+        overall: ready
+        notes: "H0c/H4/H5 PASS on live staging (pre-S002); user approved mitigations + rollback; PR #685 merge pending"
     gates:
       a_to_b: waived
       b_to_c: waived
       c_to_d: passed
-      deploy: pending
+      deploy: ready
     checkpoints:
       phase_a: waived
       phase_b: waived
