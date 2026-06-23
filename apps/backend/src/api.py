@@ -1310,6 +1310,7 @@ async def convert(
                     result = ConversionResult(
                         name=metar_name,
                         content=iwxxm_content,
+                        tac_input=metar_text.strip(),
                         source="json",
                         size_bytes=len(iwxxm_content.encode("utf-8")),
                     )
@@ -1554,6 +1555,7 @@ async def convert(
                 ConversionResult(
                     name=manual_name,
                     content=xml_text,
+                    tac_input=manual_entry.strip(),
                     source=manual_source,
                     size_bytes=len(xml_text.encode("utf-8")),
                 )
@@ -1771,6 +1773,7 @@ async def convert(
                     ConversionResult(
                         name=out_name,
                         content=xml_text,
+                        tac_input=(data or "").strip(),
                         source=source_name,
                         size_bytes=len(xml_text.encode("utf-8")),
                     )

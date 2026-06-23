@@ -10,6 +10,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 |------|-------|--------|---------|-----------------|
 | [convert-send-buttons](convert-send-buttons.md) | Convert & Convert&Send UI (GitHub #656) | active | 2026-06-22 | F1, UJ-001 |
 | [live-e2e-integration](live-e2e-integration.md) | Live E2E and integration tests for Render | requirements-complete | 2026-06-22 | test-plan H3–H6, UJ-001–003 |
+| [issue-594-feedback](issue-594-feedback.md) | COR handling + input traceability (GitHub #594) | active | 2026-06-22 | F1 |
 
 **Convention**: One brief per topic at `docs/context/<slug>.md`. Reference downstream as
 `[Context: <slug> R#]`.

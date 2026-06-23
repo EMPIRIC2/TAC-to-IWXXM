@@ -172,7 +172,9 @@ test.describe('TAC File Upload to Database', () => {
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
       { timeout: 10000 },
     );
-    await expect(page.locator('pre')).toHaveCount(2);
+    const resultsRegion = page.getByRole('region', { name: /conversion results/i });
+    // Each converted file renders Source TAC + IWXXM blocks (2 <pre> per result).
+    await expect(resultsRegion.locator('pre')).toHaveCount(4);
     await expect(
       page.getByRole('button', { name: /Upload 2 converted files to database/i }),
     ).toBeEnabled();

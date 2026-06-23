@@ -129,6 +129,7 @@ A single conversion result from METAR TAC to IWXXM XML.
 |-------|------|-------------|
 | `name` | string | Output filename (e.g., "manual_input.txt", "KJFK.txt") |
 | `content` | string | IWXXM XML document as UTF-8 text |
+| `tac_input` | string? | Original TAC input that produced this IWXXM output (echo for traceability) |
 | `source` | string? | Source of input: "manual", "file", or filename |
 | `size_bytes` | integer? | Size of XML output in bytes |
 

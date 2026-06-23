@@ -60,7 +60,7 @@ METAR BAIR 31138Z= stops due to bad issue timestamp"""
     assert result.get("translationFailedTAC") is not None
 
     text = """SAZZ01 XXXX 311300
-METAR USTR 311338Z COR= stops due to wrong order of elements"""
+METAR USTR 311338Z COR= stops due to missing weather groups after COR"""
 
     result = Annex3Decoder(text)
     assert "err_msg" in result
@@ -137,6 +137,18 @@ SPECI COR BIAR 290000Z 33003KT 280V010 CAVOK 04/M00 Q1023=
     result = bulletin.pop()
     assert result.get("translationFailedTAC") is None
     assert result.get("reportStatus") == "NORMAL"
+    result = bulletin.pop()
+    assert result.get("translationFailedTAC") is None
+    assert result.get("reportStatus") == "CORRECTION"
+
+
+def test_cor_after_time():
+    """ICAO-style COR after issuance time (GitHub #594)."""
+    test = """SAXX99 KXXX 151200
+METAR FAOR 101200Z COR 33003KT CAVOK 04/M00 Q1023=
+"""
+
+    bulletin = encoder.encode(test)
     result = bulletin.pop()
     assert result.get("translationFailedTAC") is None
     assert result.get("reportStatus") == "CORRECTION"

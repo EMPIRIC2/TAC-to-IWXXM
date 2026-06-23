@@ -4,19 +4,26 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 1
+session_counter: 2
 active_session:
-  id: S001-convert-send-buttons
+  id: S002-issue-594-feedback
   type: feature
-  intent: "Add Convert and Convert&Send buttons to the converter UI (GitHub #656)"
+  intent: "COR handling + input traceability from tester feedback (GitHub #594)"
   status: completed
-  branch: feat/S001-convert-send-buttons
+  branch: fix/S002-issue-594-feedback
   orchestrator: 16-evolve
-  evolve_cycle_id: EV-001
-  artifacts_dir: docs/sessions/S001-convert-send-buttons/
+  artifacts_dir: docs/sessions/S002-issue-594-feedback/
   routing_plan:
     - stage: 00-context
       mode: scoped
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: bug-investigation
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 14-hotfix
       required: true
       status: completed
       skip_rationale: null
@@ -46,14 +53,20 @@ active_session:
       status: completed
       skip_rationale: null
     - stage: 12-verify-deploy
-      required: true
+      required: false
       status: completed
       skip_rationale: null
-  current_stage: 12-verify-deploy
+  current_stage: 13-deploy-smoke
   started_at: "2026-06-22"
   context_briefs:
-    - docs/context/convert-send-buttons.md
-sessions: []
+    - docs/context/issue-594-feedback.md
+sessions:
+  - id: S001-convert-send-buttons
+    type: feature
+    status: completed
+    completed_at: "2026-06-22"
+    branch: feat/S001-convert-send-buttons
+    artifacts_dir: docs/sessions/S001-convert-send-buttons/
 
 template:
   id: static+api
@@ -64,7 +77,7 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: convert-send-buttons
+    scoped_slug: issue-594-feedback
     started_at: "2026-06-22T00:00:00Z"
     completed_at: "2026-06-22T00:00:00Z"
     substeps:
@@ -76,11 +89,11 @@ stages:
       phase3: completed
       phase4: completed
     artifacts:
-      - docs/context/convert-send-buttons.md
-      - docs/sessions/S001-convert-send-buttons/session-brief.md
-      - docs/sessions/S001-convert-send-buttons/routing-plan.md
+      - docs/context/issue-594-feedback.md
+      - docs/sessions/S002-issue-594-feedback/session-brief.md
+      - docs/sessions/S002-issue-594-feedback/routing-plan.md
     notes:
-      - "GitHub #656; parent feedback #555; session S001 opened"
+      - "GitHub #594; COR after-time decode failure + input traceability; session S002 opened"
   01-requirements:
     status: completed
     started_at: "2026-06-14T00:00:00Z"
@@ -233,9 +246,9 @@ stages:
         verify_connectivity_sh: pass
 
   07-build:
-    status: in_progress
+    status: completed
     started_at: "2026-06-14T12:45:00Z"
-    completed_at: null
+    completed_at: "2026-06-22T02:30:00Z"
     substeps:
       task_loop:
         status: completed
@@ -259,8 +272,8 @@ stages:
   11-verify-impl:
     status: completed
     started_at: "2026-06-22T22:00:00Z"
-    completed_at: "2026-06-22T22:30:00Z"
-    session_id: S001-convert-send-buttons
+    completed_at: "2026-06-22T23:00:00Z"
+    session_id: S002-issue-594-feedback
     substeps:
       collect_results:
         status: completed
@@ -268,9 +281,9 @@ stages:
         status: completed
       journey_signoff:
         status: completed
-        approved: 3
+        approved: 1
         flagged: 0
-        total: 3
+        total: 1
       feature_approval:
         status: completed
         approved: 1
@@ -283,10 +296,11 @@ stages:
         status: completed
       summary:
         status: completed
-    report: docs/sessions/S001-convert-send-buttons/reports/verify-impl.md
+    report: docs/sessions/S002-issue-594-feedback/reports/verify-impl.md
     notes:
-      - "S001 / EV-001 / GitHub #656 — user approved UJ-001 paths A/B/C and F1 delta"
-      - "T3 live deferred; QA-010 uncommitted work remains"
+      - "S002 / EV-003 / GitHub #594 — user approved UJ-001 and F1 delta (TC-001b)"
+      - "T3 live deferred until post-merge deploy"
+      - "S001 / EV-001 signoff: docs/sessions/S001-convert-send-buttons/reports/verify-impl.md"
 
   10-e2e:
     status: completed
@@ -341,25 +355,28 @@ stages:
   18-pr-review:
     status: completed
     started: "2026-06-22"
-    completed: "2026-06-22"
-    last_cycle: PRR-004
+    completed: "2026-06-23"
+    last_cycle: PRR-005
 
   19-address-pr-review:
     status: completed
     started: "2026-06-22"
     completed: "2026-06-23"
-    last_cycle: PRM-004
+    last_cycle: PRM-005
 
   12-verify-deploy:
     status: completed
     started_at: "2026-06-22T23:45:00Z"
-    completed_at: "2026-06-22T23:50:00Z"
-    report: docs/sessions/S001-convert-send-buttons/reports/deploy-checklist.md
+    completed_at: "2026-06-23T02:55:00Z"
+    session_id: S002-issue-594-feedback
+    report: docs/sessions/S002-issue-594-feedback/reports/deploy-checklist.md
     notes:
       - "S001 delta — static+api Render; H0c/H4/H5 PASS on live staging"
       - "E2E-002 resolved — /auth/* routes present on deployed API"
       - "S001 Convert&Send UI confirmed in live frontend bundle"
       - "Risk/rollback prompts skipped — default mitigations applied"
+      - "S002 / EV-003 — user approved mitigations + rollback; H0c/H4/H5 PASS pre-merge baseline"
+      - "S002 requires API + frontend redeploy after PR #685 merge"
 
 stages_pending: []
 
@@ -646,6 +663,13 @@ artifacts:
     session_id: S001-convert-send-buttons
     created_at: "2026-06-22"
     status: active
+  - path: docs/context/issue-594-feedback.md
+    kind: context-scoped
+    slug: issue-594-feedback
+    topic: "COR handling + input traceability (GitHub #594)"
+    session_id: S002-issue-594-feedback
+    created_at: "2026-06-22"
+    status: active
   - path: docs/evolve-decisions.md
     kind: evolve-decisions
     session_id: S001-convert-send-buttons
@@ -680,6 +704,42 @@ artifacts:
     kind: verify-impl-report
     session_id: S001-convert-send-buttons
     stage: 11-verify-impl
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S002-issue-594-feedback/reports/verification-report.md
+    kind: verification-report
+    session_id: S002-issue-594-feedback
+    stage: 08-verify-build
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S002-issue-594-feedback/reports/qa-report.md
+    kind: qa-report
+    session_id: S002-issue-594-feedback
+    stage: 09-qa
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S002-issue-594-feedback/reports/e2e-report.md
+    kind: e2e-report
+    session_id: S002-issue-594-feedback
+    stage: 10-e2e
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S002-issue-594-feedback/reports/verify-impl.md
+    kind: verify-impl-report
+    session_id: S002-issue-594-feedback
+    stage: 11-verify-impl
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/implementation-verification.md
+    kind: verify-impl-report
+    session_id: S002-issue-594-feedback
+    stage: 11-verify-impl
+    created_at: "2026-06-22"
+    status: active
+  - path: docs/sessions/S002-issue-594-feedback/reports/deploy-checklist.md
+    kind: deploy-checklist
+    session_id: S002-issue-594-feedback
+    stage: 12-verify-deploy
     created_at: "2026-06-22"
     status: active
 
@@ -777,9 +837,106 @@ evolve_cycles:
         status: completed
     issues: []
 
+  - id: EV-003
+    session_id: S002-issue-594-feedback
+    cycle_type: feature
+    feature_ids: [F1]
+    title: "Issue #594 — COR-after-time + input traceability"
+    status: completed
+    started: "2026-06-22"
+    completed: "2026-06-22"
+    scope_summary: |
+      GitHub #594 — fix ICAO COR-after-time METAR decode (translationFailedTAC);
+      add ConversionResult.tac_input and Source TAC display in results UI.
+      Exclude = terminator (resolved), #555 siblings.
+    routing_plan:
+      required_stages:
+        - 16-evolve
+        - 07-build
+        - 08-verify-build
+        - 09-qa
+        - 10-e2e
+        - 11-verify-impl
+      skipped_stages:
+        - 01-requirements
+        - 02-verify-plan
+        - 03-plan-tooling
+        - 04-tech-plan
+        - 05-verify-tech
+        - 06-tech-tooling
+        - 13-deploy-smoke
+    current_stage: 12-verify-deploy
+    stages:
+      16-evolve:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        artifacts_updated:
+          - docs/evolve-decisions.md
+          - docs/API.md
+          - docs/api-contract.md
+          - docs/test-plan.md
+          - docs/sessions/S002-issue-594-feedback/reports/evolve-summary.md
+      07-build:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+      08-verify-build:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        report: docs/sessions/S002-issue-594-feedback/reports/verification-report.md
+      09-qa:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        report: docs/sessions/S002-issue-594-feedback/reports/qa-report.md
+        overall: pass
+      10-e2e:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        report: docs/sessions/S002-issue-594-feedback/reports/e2e-report.md
+        overall: pass
+      11-verify-impl:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        report: docs/sessions/S002-issue-594-feedback/reports/verify-impl.md
+        overall: approved
+        notes: "User approved UJ-001 and F1 delta (TC-001b); T3 deferred post-merge"
+      12-verify-deploy:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        report: docs/sessions/S002-issue-594-feedback/reports/deploy-checklist.md
+        overall: ready
+        notes: "H0c/H4/H5 PASS on live staging (pre-S002); user approved mitigations + rollback; PR #685 merge pending"
+    gates:
+      a_to_b: waived
+      b_to_c: waived
+      c_to_d: passed
+      deploy: ready
+    checkpoints:
+      phase_a: waived
+      phase_b: waived
+      phase_c: passed
+      phase_d: passed
+      deploy: pending
+    artifacts:
+      - path: docs/evolve-decisions.md
+        status: completed
+      - path: docs/sessions/S002-issue-594-feedback/reports/evolve-summary.md
+        status: completed
+    issues: []
+
 git_history:
-  current_branch: feat/S001-convert-send-buttons
+  current_branch: fix/S002-issue-594-feedback
   branches:
+    - name: fix/S002-issue-594-feedback
+      base: main
+      status: active
+      created_at: "2026-06-22T00:00:00Z"
     - name: phase/1-monorepo-scaffold
       base: main
       status: active
@@ -887,6 +1044,69 @@ git_history:
       stage: "07-build"
       files_changed: 15
       timestamp: "2026-06-20T15:59:00Z"
+    - sha: 591373e
+      branch: fix/S002-issue-594-feedback
+      message: "[EV-003] test: add COR-after-time bug repro for #594"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 2
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: 5b384aa
+      branch: fix/S002-issue-594-feedback
+      message: "[EV-003] fix: accept ICAO COR-after-time in GIFTs grammar"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 2
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: 156b57d
+      branch: fix/S002-issue-594-feedback
+      message: "[EV-003] feat: echo tac_input on ConversionResult API"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 2
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: 953c402
+      branch: fix/S002-issue-594-feedback
+      message: "[EV-003] feat: show Source TAC in conversion results UI"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 4
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: 1fa495e
+      branch: fix/S002-issue-594-feedback
+      message: "[EV-003] docs: spec deltas and session artifacts for #594"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 13
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: b83762e
+      branch: fix/S002-issue-594-feedback
+      message: "chore: record EV-003 build state for S002-issue-594-feedback"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 1
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: 5dc31e5
+      branch: fix/S002-issue-594-feedback
+      message: "fix(review): align COR fix docs with grammar-only implementation"
+      stage: "19-address-pr-review"
+      session_id: S002-issue-594-feedback
+      files_changed: 3
+      timestamp: "2026-06-23T13:42:00Z"
+    - sha: 010eb12
+      branch: fix/S002-issue-594-feedback
+      message: "fix(review): align FileConverter results with API manual-first ordering"
+      stage: "19-address-pr-review"
+      session_id: S002-issue-594-feedback
+      files_changed: 2
+      timestamp: "2026-06-23T13:42:00Z"
+    - sha: 9cdec46
+      branch: fix/S002-issue-594-feedback
+      message: "fix(review): expect Source TAC panels in multi-file E2E assertion"
+      stage: "19-address-pr-review"
+      session_id: S002-issue-594-feedback
+      files_changed: 1
+      timestamp: "2026-06-23T13:42:00Z"
 
 pr_review_cycles:
   - id: PRR-001
@@ -989,6 +1209,35 @@ pr_review_cycles:
     notes:
       - "Self request-changes blocked by GitHub; posted COMMENT with REQUEST_CHANGES recommendation"
       - "Validate fails on audit-frontend vite@6.3.5 lockfile; local make validate-ci reproduces"
+
+  - id: PRR-005
+    pr_number: 685
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/685
+    title: "[EV-003] Fix COR-after-time METAR decode and add Source TAC traceability (#594)"
+    status: completed
+    started: "2026-06-23"
+    completed: "2026-06-23"
+    head_ref: fix/S002-issue-594-feedback
+    base_ref: main
+    verdict: APPROVE
+    blockers: 0
+    advisories: 2
+    praise: 3
+    ci_status: success
+    session_id: S002-issue-594-feedback
+    subagents:
+      bugbot: completed
+      security_review: failed_diff
+    artifacts:
+      - path: docs/sessions/S002-issue-594-feedback/reports/pr-review.md
+        note: session report
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/685#pullrequestreview-4549691176
+    linked_issue: 594
+    notes:
+      - "Self-approval blocked by GitHub; posted COMMENT with APPROVE recommendation"
+      - "Inline comment on FileConverter.tsx L265 (result ordering)"
 
 pr_remediation_cycles:
   - id: PRM-001
@@ -1299,5 +1548,73 @@ pr_remediation_cycles:
         status: fixed
         commit: 3763192
         note: integration teardown step renamed
+    follow_up:
+      pr_review_rerun: offered
+
+  - id: PRM-005
+    pr_number: 685
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/685
+    linked_review_cycle_id: PRR-005
+    title: "[EV-003] Fix COR-after-time METAR decode and add Source TAC traceability (#594)"
+    status: completed
+    started: "2026-06-23"
+    completed: "2026-06-23"
+    head_ref: fix/S002-issue-594-feedback
+    base_ref: main
+    ci_status: success
+    session_id: S002-issue-594-feedback
+    counts:
+      fixed: 5
+      deferred: 0
+      wont_fix: 0
+    findings:
+      - id: F-002
+        source: inline
+        severity: advisory
+        path: docs/bug-reports/BUG-2026-06-22-issue-594-cor-traceability.md
+        line: 57
+        thread_id: PRRT_kwDOQW-3CM6LcyMm
+        status: fixed
+        commit: 5dc31e5
+        note: TAC acronym typo
+      - id: F-003
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/app/components/FileConverter.tsx
+        line: 265
+        thread_id: PRRT_kwDOQW-3CM6LdC4F
+        status: fixed
+        commit: 010eb12
+        note: manual-before-file result mapping
+      - id: F-004
+        source: review_body
+        severity: advisory
+        path: apps/e2e/tac-file-upload-database.e2e.spec.ts
+        line: 175
+        thread_id: null
+        status: fixed
+        commit: 9cdec46
+        note: Source TAC pre count in results region
+      - id: F-005
+        source: review_body
+        severity: advisory
+        path: docs/context/issue-594-feedback.md
+        line: 15
+        thread_id: null
+        status: fixed
+        commit: 5dc31e5
+        note: R2 grammar-only COR fix
+      - id: F-006
+        source: review_body
+        severity: advisory
+        path: apps/frontend/src/app/components/FileConverter.tsx
+        line: 249
+        thread_id: null
+        status: fixed
+        commit: 010eb12
+        note: splitlines aligned with backend
+    artifacts:
+      - path: docs/sessions/S002-issue-594-feedback/reports/pr-remediation.md
+        note: PRM-005 session report
     follow_up:
       pr_review_rerun: offered

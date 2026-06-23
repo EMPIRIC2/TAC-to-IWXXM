@@ -82,6 +82,8 @@ POST /api/v1/convert
 
 **Response**: `ConversionResponse` — see docs/API.md
 
+Each `ConversionResult` includes optional `tac_input` (original TAC echo) for input traceability ([#594](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/594)).
+
 ### Validation
 
 ```

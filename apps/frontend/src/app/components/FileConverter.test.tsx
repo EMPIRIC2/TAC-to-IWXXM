@@ -699,6 +699,88 @@ describe('FileConverter Component', () => {
       expect(screen.queryByText('Conversion Error')).not.toBeInTheDocument();
     });
 
+    it('displays source TAC alongside converted XML when API returns tac_input', async () => {
+      const user = userEvent.setup();
+      const tac = 'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018';
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            name: 'manual_input.txt',
+            content: '<iwxxm:METAR>converted</iwxxm:METAR>',
+            tac_input: tac,
+            source: 'manual_input',
+            size_bytes: 32,
+          },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await user.type(textarea, tac);
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', {
+            name: /original tac input for manual_input\.txt/i,
+          }),
+        ).toBeInTheDocument();
+      });
+      expect(screen.getByText('Source TAC')).toBeInTheDocument();
+      expect(screen.getByText(tac)).toBeInTheDocument();
+    });
+
+    it('maps manual-before-file API results to correct original names', async () => {
+      const user = userEvent.setup();
+      const manualTac = 'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018';
+      const fileTac = 'METAR EGLL 121650Z 22008KT 9999 BKN025 18/12 Q1016';
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            name: 'manual_input.txt',
+            content: '<iwxxm:METAR>manual</iwxxm:METAR>',
+            tac_input: manualTac,
+            source: 'manual_input',
+          },
+          {
+            name: 'uploaded',
+            content: '<iwxxm:METAR>file</iwxxm:METAR>',
+            tac_input: fileTac,
+            source: 'uploaded.metar',
+          },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: {
+              name: 'uploaded.metar',
+              text: vi.fn().mockResolvedValue(fileTac),
+            },
+            length: 1,
+          },
+        },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('uploaded.metar')).toBeInTheDocument();
+      });
+
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await user.type(textarea, manualTac);
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('manual_input.txt')).toBeInTheDocument();
+        expect(screen.getAllByText('uploaded.metar').length).toBeGreaterThanOrEqual(1);
+      });
+    });
+
     it('shows timeout status when backend conversion times out', async () => {
       const user = userEvent.setup();
       mockConvertMetarToIwxxm.mockRejectedValueOnce(

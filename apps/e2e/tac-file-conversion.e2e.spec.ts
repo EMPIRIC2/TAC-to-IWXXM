@@ -41,6 +41,24 @@ test.describe('TAC File Conversion', () => {
     await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
   });
 
+  test('ICAO COR-after-time METAR input produces correction output', async ({
+    page,
+  }) => {
+    await openConverterForE2e(page);
+
+    await convertManualMetar(
+      page,
+      'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018',
+    );
+
+    const xmlOutput = page
+      .locator('pre')
+      .filter({ hasText: /iwxxm|metar:/i })
+      .first();
+    await expect(xmlOutput).toBeVisible({ timeout: 10000 });
+    await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
+  });
+
   test('clear removes manual input', async ({ page }) => {
     await openConverterForE2e(page);
 

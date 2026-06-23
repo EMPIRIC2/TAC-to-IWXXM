@@ -96,3 +96,43 @@
 - `.pre-commit-config.yaml` — fast hook split
 - `.github/workflows/ci-cd.yml` — consolidated jobs
 - Delete: `.github/workflows/secret-scan.yml`, `.github/workflows/github-yaml-lint.yml`, `.github/workflows/frontend-audit.yml`
+
+## Cycle EV-003 — Issue #594 COR + input traceability (S002)
+
+**GitHub**: [#594](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/594)  
+**Session**: S002-issue-594-feedback  
+**Feature**: F1 (METAR → IWXXM conversion + UI traceability)  
+**Approved**: 2026-06-22  
+**Cycle type**: feature (delta on F1)
+
+### Scope
+
+**In scope**
+
+- **COR-after-time** — GIFTs `metarDecoder` grammar accepts ICAO `METAR STID ddHHmmZ COR ...` pattern; regression tests for both COR placements.
+- **Input traceability** — `ConversionResult.tac_input` on API; **Source TAC** panel in results UI; per-line manual input mapping.
+
+**Out of scope**
+
+- `=` terminator (reporter notes resolved — monitor only).
+- #555 siblings: auto-clear input, in-app error log preview.
+- TAF COR / `METAR AMD COR` unless reporter confirms.
+- REQ-016 migration rewrites.
+
+### Decisions
+
+| ID | Category | Decision |
+|----|----------|----------|
+| R1 | Uncertainty | `=` terminator — no work unless repro reappears |
+| R2 | Decision | COR fix in GIFTs grammar (`ITime Cor?`); no separate backend preprocessor needed |
+| R3 | Decision | `tac_input` on API + Source TAC display in UI |
+| R4 | Scope | #594 bundle only — exclude #555 deferred items |
+
+### Artifacts updated
+
+- `packages/gifts/gifts/metarDecoder.py` — COR-after-time grammar
+- `apps/backend/src/schemas/conversion.py`, `apps/backend/src/api.py` — `tac_input` field
+- `apps/frontend/src/app/components/FileConverter.tsx` — Source TAC panel
+- `docs/API.md`, `docs/api-contract.md`, `docs/test-plan.md` — TC-001b
+- `tests/bugs/test_bug_2026_06_22_issue_594_cor_after_time.py`
+- `apps/e2e/tac-file-conversion.e2e.spec.ts`

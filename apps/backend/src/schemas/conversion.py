@@ -72,6 +72,11 @@ class ConversionResult(BaseModel):
         description="Complete IWXXM XML document as UTF-8 text",
         min_length=1,
     )
+    tac_input: Optional[str] = Field(
+        default=None,
+        description="Original TAC input that produced this IWXXM output",
+        examples=["METAR FAOR 101200Z COR 33003KT CAVOK 04/M00 Q1023="],
+    )
     source: str = Field(
         ...,
         description="Source of input: 'manual' for text input, filename for uploads",
