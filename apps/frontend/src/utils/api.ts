@@ -32,6 +32,7 @@ export interface ConversionResult {
   content: string;
   source: string;
   size_bytes: number;
+  tac_input?: string;
 }
 
 export interface ConversionResponse {

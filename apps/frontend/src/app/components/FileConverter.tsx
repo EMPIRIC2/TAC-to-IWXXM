@@ -246,20 +246,36 @@ export function FileConverter({
       console.log('[FileConverter] Conversion response:', response);
 
       if (response.results && Array.isArray(response.results)) {
+        const manualLines = manualInput
+          .split('\n')
+          .map((line) => line.trim())
+          .filter(Boolean);
+
         response.results.forEach(
           (
-            result: { iwxxm_xml?: string; xml?: string; content?: string },
+            result: {
+              iwxxm_xml?: string;
+              xml?: string;
+              content?: string;
+              tac_input?: string;
+              name?: string;
+            },
             index: number,
           ) => {
+            const manualIndex = index - pendingFiles.length;
             const originalFile =
               index < pendingFiles.length
                 ? pendingFiles[index]
-                : { name: 'manual_input.txt', content: manualInput };
+                : {
+                    name: result.name || 'manual_input.txt',
+                    content:
+                      result.tac_input || manualLines[manualIndex] || manualInput,
+                  };
 
             newConvertedFiles.push({
               id: `converted-${Date.now()}-${index}`,
               originalName: originalFile.name,
-              originalContent: originalFile.content,
+              originalContent: result.tac_input || originalFile.content,
               convertedContent: result.iwxxm_xml || result.xml || result.content || '',
               timestamp: Date.now(),
             });
@@ -1049,6 +1065,20 @@ export function FileConverter({
                       </Button>
                     </div>
                   </div>
+                  {file.originalContent ? (
+                    <div
+                      className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded text-sm overflow-x-auto mb-3"
+                      role="region"
+                      aria-label={`Original TAC input for ${file.originalName}`}
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+                        Source TAC
+                      </p>
+                      <pre className="whitespace-pre-wrap break-all font-mono">
+                        {file.originalContent}
+                      </pre>
+                    </div>
+                  ) : null}
                   <div
                     className="bg-gray-900 dark:bg-gray-950 text-green-400 dark:text-green-300 p-4 rounded text-sm overflow-x-auto"
                     role="region"
