@@ -70,7 +70,7 @@ class Annex3(tpg.Parser):
 
     START/e -> METAR/e $ e=self.finish() $ ;
 
-    METAR -> Type Cor? Ident ITime (NIL|Report) ;
+    METAR -> Type Cor? Ident ITime Cor? (NIL|Report) ;
     Report -> Auto? Main Supplement? TrendFcst? ;
     Main -> Wind VrbDir? (CAVOK|((Vsby1|(Vsby2 MinVsby?)) Rvr{0,4} (Pcp|Obv|Vcnty){0,3} (NoClouds|VVsby|Sky{1,4}))) Temps Altimeter{1,2} ; # noqa: E501
     Supplement -> RecentPcp{0,3} WindShear? SeaState? RunwayState*;
