@@ -1,22 +1,45 @@
 /**
- * Supabase client initialization
- * Uses environment variables to configure the client
+ * Supabase client initialization — uses runtime config when available.
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY || '';
+import { getSupabasePublishableKey, getSupabaseUrl } from './runtime-config';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error(
-    'Missing Supabase configuration. Please set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY in your .env file',
-  );
+let client: SupabaseClient | null = null;
+
+function buildClient(): SupabaseClient {
+  const supabaseUrl = getSupabaseUrl();
+  const supabaseAnonKey = getSupabasePublishableKey();
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error(
+      'Missing Supabase configuration. Set /config.json or VITE_SUPABASE_URL + VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY',
+    );
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  });
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
+/** Lazily construct the singleton Supabase browser client. */
+export function getSupabaseClient(): SupabaseClient {
+  if (!client) {
+    client = buildClient();
+  }
+  return client;
+}
+
+/** @deprecated Prefer ``getSupabaseClient()`` — kept for existing imports. */
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(_target, prop) {
+    const value = (getSupabaseClient() as unknown as Record<string | symbol, unknown>)[
+      prop
+    ];
+    return typeof value === 'function' ? value.bind(getSupabaseClient()) : value;
   },
 });

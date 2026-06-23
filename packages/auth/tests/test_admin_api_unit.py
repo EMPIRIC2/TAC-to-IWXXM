@@ -9,7 +9,7 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.testclient import TestClient
 
 from admin_api import (
-    _get_service_client,
+    _get_authed_client,
     _profile_row,
     _profile_rows,
     require_admin,
@@ -99,7 +99,7 @@ def test_require_admin_returns_403_when_profile_missing() -> None:
     mock_client = MagicMock()
     mock_client.table.return_value.select.return_value.eq.return_value.maybe_single.return_value.execute.return_value = None
 
-    with patch("admin_api._get_service_client", return_value=mock_client):
+    with patch("admin_api._get_authed_client", return_value=mock_client):
         with pytest.raises(HTTPException) as exc_info:
             require_admin(token="test-token", proxy=mock_proxy)
 
@@ -160,11 +160,11 @@ def test_save_settings_rejects_unknown_keys(admin_client: TestClient) -> None:
     assert response.status_code == 422
 
 
-def test_get_service_client_requires_supabase_env() -> None:
-    """Missing Supabase service configuration returns 503."""
+def test_get_authed_client_requires_supabase_env() -> None:
+    """Missing Supabase configuration returns 503."""
     with patch.dict("os.environ", {}, clear=True):
         with pytest.raises(HTTPException) as exc_info:
-            _get_service_client()
+            _get_authed_client("user-jwt")
 
     assert exc_info.value.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
 
@@ -175,7 +175,7 @@ def test_require_admin_allows_admin_profile() -> None:
     mock_proxy.get_user.return_value = {"id": "admin-id", "email": "admin@metar.local"}
     mock_client = _mock_profile_table(maybe_single_data={"is_admin": True})
 
-    with patch("admin_api._get_service_client", return_value=mock_client):
+    with patch("admin_api._get_authed_client", return_value=mock_client):
         user = require_admin(token="test-token", proxy=mock_proxy)
 
     assert user["id"] == "admin-id"
@@ -187,7 +187,7 @@ def test_require_admin_rejects_non_admin_profile() -> None:
     mock_proxy.get_user.return_value = {"id": "user-id", "email": "user@example.com"}
     mock_client = _mock_profile_table(maybe_single_data={"is_admin": False})
 
-    with patch("admin_api._get_service_client", return_value=mock_client):
+    with patch("admin_api._get_authed_client", return_value=mock_client):
         with pytest.raises(HTTPException) as exc_info:
             require_admin(token="test-token", proxy=mock_proxy)
 
@@ -206,7 +206,7 @@ def test_list_all_users_returns_profiles(admin_client: TestClient) -> None:
         }
     ]
     admin_client.app.dependency_overrides[require_admin] = _admin_override
-    with patch("admin_api._get_service_client", return_value=_mock_profile_table(select_data=rows)):
+    with patch("admin_api._get_authed_client", return_value=_mock_profile_table(select_data=rows)):
         response = admin_client.get(
             "/admin/all-users",
             headers={"Authorization": "Bearer test-token"},
@@ -227,7 +227,7 @@ def test_get_stats_aggregates_user_counts(admin_client: TestClient) -> None:
         {"approval_status": "rejected", "is_admin": False},
     ]
     admin_client.app.dependency_overrides[require_admin] = _admin_override
-    with patch("admin_api._get_service_client", return_value=_mock_profile_table(select_data=rows)):
+    with patch("admin_api._get_authed_client", return_value=_mock_profile_table(select_data=rows)):
         response = admin_client.get(
             "/admin/stats",
             headers={"Authorization": "Bearer test-token"},
@@ -246,7 +246,7 @@ def test_toggle_admin_updates_profile(admin_client: TestClient) -> None:
     """Admin can grant admin status to another user."""
     updated = [{"id": "user-2", "email": "user2@example.com", "is_admin": True}]
     admin_client.app.dependency_overrides[require_admin] = _admin_override
-    with patch("admin_api._get_service_client", return_value=_mock_profile_table(update_data=updated)):
+    with patch("admin_api._get_authed_client", return_value=_mock_profile_table(update_data=updated)):
         response = admin_client.post(
             "/admin/toggle-admin",
             headers={"Authorization": "Bearer test-token"},
@@ -261,7 +261,7 @@ def test_toggle_admin_updates_profile(admin_client: TestClient) -> None:
 def test_toggle_admin_returns_404_when_user_missing(admin_client: TestClient) -> None:
     """Unknown user id returns 404."""
     admin_client.app.dependency_overrides[require_admin] = _admin_override
-    with patch("admin_api._get_service_client", return_value=_mock_profile_table(update_data=[])):
+    with patch("admin_api._get_authed_client", return_value=_mock_profile_table(update_data=[])):
         response = admin_client.post(
             "/admin/toggle-admin",
             headers={"Authorization": "Bearer test-token"},
@@ -295,23 +295,24 @@ def test_profile_rows_filters_non_dict_items() -> None:
     assert rows == [{"id": "1"}, {"id": "2"}]
 
 
-def test_get_service_client_success() -> None:
-    """Service client is created when Supabase env vars are set."""
+def test_get_authed_client_success() -> None:
+    """Authed client is created when Supabase env vars are set."""
     with patch.dict(
         "os.environ",
-        {"SUPABASE_URL": "https://test.supabase.co", "SUPABASE_SERVICE_ROLE_KEY": "service-key"},
+        {"SUPABASE_URL": "https://test.supabase.co", "SUPABASE_PUBLISHABLE_KEY": "publishable-key"},
         clear=True,
     ):
         with patch("admin_api.create_client", return_value=MagicMock()) as mock_create:
-            client = _get_service_client()
-    mock_create.assert_called_once_with("https://test.supabase.co", "service-key")
+            client = _get_authed_client("user-jwt")
+    mock_create.assert_called_once_with("https://test.supabase.co", "publishable-key")
+    mock_create.return_value.postgrest.auth.assert_called_once_with("user-jwt")
     assert client is not None
 
 
 def test_toggle_admin_returns_404_when_profile_row_invalid(admin_client: TestClient) -> None:
     """Non-dict update payload is treated as missing user."""
     admin_client.app.dependency_overrides[require_admin] = _admin_override
-    with patch("admin_api._get_service_client", return_value=_mock_profile_table(update_data=["bad-row"])):
+    with patch("admin_api._get_authed_client", return_value=_mock_profile_table(update_data=["bad-row"])):
         response = admin_client.post(
             "/admin/toggle-admin",
             headers={"Authorization": "Bearer test-token"},

@@ -97,12 +97,12 @@ async def test_create_evaluation_job_db_error_propagates(monkeypatch):
             return ["KJFK", "KLAX"]
 
     async def fake_create_job_in_db(**_kwargs):
-        raise httpx.HTTPError("db unavailable")
+        raise RuntimeError("db unavailable")
 
     monkeypatch.setattr(eval_router, "StationSampler", _Sampler)
     monkeypatch.setattr(eval_router, "create_job_in_db", fake_create_job_in_db)
 
-    with pytest.raises(httpx.HTTPError):
+    with pytest.raises(RuntimeError):
         await eval_router.create_evaluation_job(request, BackgroundTasks(), user={"sub": "u1"})
 
 
@@ -136,10 +136,10 @@ class _ResponseStub:
 
 @pytest.mark.asyncio
 async def test_get_job_status_not_found(monkeypatch):
-    async def fake_get_supabase_client():
-        return _SupabaseClientStub([_ResponseStub([])])
+    async def fake_get_job_for_user(job_id, user_id):
+        return None
 
-    monkeypatch.setattr(eval_router, "get_supabase_client", fake_get_supabase_client)
+    monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
 
     with pytest.raises(HTTPException) as exc:
         await eval_router.get_job_status("job-x", user={"sub": "u1"})
@@ -149,23 +149,21 @@ async def test_get_job_status_not_found(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_get_job_status_completed_with_summary(monkeypatch):
-    payload = [
-        {
-            "id": "job-1",
-            "status": "completed",
-            "progress": 10,
-            "total_stations": 10,
-            "summary_stats": {"total": 10, "passed": 8, "failed": 1, "errors": 1, "pass_rate": 0.8},
-            "created_at": "2026-03-16T10:00:00",
-            "completed_at": "2026-03-16T10:10:00",
-            "error_message": None,
-        }
-    ]
+    payload = {
+        "id": "job-1",
+        "status": "completed",
+        "progress": 10,
+        "total_stations": 10,
+        "summary_stats": {"total": 10, "passed": 8, "failed": 1, "errors": 1, "pass_rate": 0.8},
+        "created_at": "2026-03-16T10:00:00",
+        "completed_at": "2026-03-16T10:10:00",
+        "error_message": None,
+    }
 
-    async def fake_get_supabase_client():
-        return _SupabaseClientStub([_ResponseStub(payload)])
+    async def fake_get_job_for_user(job_id, user_id):
+        return payload
 
-    monkeypatch.setattr(eval_router, "get_supabase_client", fake_get_supabase_client)
+    monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
 
     result = await eval_router.get_job_status("job-1", user={"sub": "u1"})
 
@@ -176,9 +174,11 @@ async def test_get_job_status_completed_with_summary(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_get_job_results_with_status_filter(monkeypatch):
-    responses = [
-        _ResponseStub([{"id": "job-1"}]),
-        _ResponseStub(
+    async def fake_get_job_for_user(job_id, user_id):
+        return {"id": job_id}
+
+    async def fake_list_results_for_job(job_id, *, limit, offset, status_filter=None):
+        return (
             [
                 {
                     "station_id": "KJFK",
@@ -198,15 +198,12 @@ async def test_get_job_results_with_status_filter(monkeypatch):
                     },
                     "errors": [],
                 }
-            ]
-        ),
-        _ResponseStub([], headers={"Content-Range": "0-0/1"}),
-    ]
+            ],
+            1,
+        )
 
-    async def fake_get_supabase_client():
-        return _SupabaseClientStub(responses)
-
-    monkeypatch.setattr(eval_router, "get_supabase_client", fake_get_supabase_client)
+    monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
+    monkeypatch.setattr(eval_router, "list_results_for_job", fake_list_results_for_job)
 
     result = await eval_router.get_job_results(
         "job-1",
@@ -223,10 +220,10 @@ async def test_get_job_results_with_status_filter(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_get_job_results_not_found(monkeypatch):
-    async def fake_get_supabase_client():
-        return _SupabaseClientStub([_ResponseStub([])])
+    async def fake_get_job_for_user(job_id, user_id):
+        return None
 
-    monkeypatch.setattr(eval_router, "get_supabase_client", fake_get_supabase_client)
+    monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
 
     with pytest.raises(HTTPException) as exc:
         await eval_router.get_job_results("job-x", user={"sub": "u1"})
@@ -236,8 +233,8 @@ async def test_get_job_results_not_found(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_list_user_jobs_with_summary(monkeypatch):
-    responses = [
-        _ResponseStub(
+    async def fake_list_jobs_for_user(user_id, limit, offset):
+        return (
             [
                 {
                     "id": "job-1",
@@ -248,15 +245,11 @@ async def test_list_user_jobs_with_summary(monkeypatch):
                     "created_at": "2026-03-16T10:00:00",
                     "completed_at": "2026-03-16T10:10:00",
                 }
-            ]
-        ),
-        _ResponseStub([], headers={"Content-Range": "0-0/1"}),
-    ]
+            ],
+            1,
+        )
 
-    async def fake_get_supabase_client():
-        return _SupabaseClientStub(responses)
-
-    monkeypatch.setattr(eval_router, "get_supabase_client", fake_get_supabase_client)
+    monkeypatch.setattr(eval_router, "list_jobs_for_user", fake_list_jobs_for_user)
 
     result = await eval_router.list_user_jobs(page=1, per_page=20, user={"sub": "u1"})
 

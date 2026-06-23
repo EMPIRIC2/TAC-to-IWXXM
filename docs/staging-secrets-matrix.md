@@ -1,5 +1,9 @@
 # Staging Secrets & Connectivity Matrix
 
+> **⚠️ Superseded for env naming** — use [env-contract.md](env-contract.md) and
+> [config-spec.md](config-spec.md) (S003, 2026-06-23). This file retained for historical
+> staging URL reference until fully migrated.
+
 > **Project**: METAR to IWXXM Converter
 > **Generated**: 2026-06-15 (04-tech-plan)
 > **Platform**: Render

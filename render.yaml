@@ -1,5 +1,5 @@
-# Render Blueprint — post-monorepo two-service topology (ADR-002, ADR-006)
-# API (Docker) + static frontend (CDN). Auth merged into API; no observability pservs.
+# Render Blueprint — post-monorepo two-service topology (ADR-002, ADR-006, ADR-010)
+# API (Docker) + static frontend (CDN). Auth merged into API.
 services:
   - type: web
     name: metar-to-iwxxm-api
@@ -12,16 +12,8 @@ services:
     envVars:
       - key: RELOAD
         value: "false"
-      - key: DISABLE_AUTH
-        value: "false"
-      - key: FRONTEND_URL
-        value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
-      - key: METAR_CORS_ORIGINS
-        value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
-      - key: ADMIN_USER_ID
-        value: "dev-user-12345"
-      - key: ADMIN_EMAIL
-        value: "dev@example.com"
+      - key: METAR_CONFIG_ENV
+        value: prod
       - key: SCHEMATRON_USE_DOCKER
         value: "false"
       - key: WMO_ONLINE_VALIDATION
@@ -32,32 +24,29 @@ services:
         value: "true"
       - key: ENABLE_WEBHOOKS
         value: "false"
-      # Set in Render dashboard (sync:false preserves live values):
-      - key: SUPABASE_URL
+      # Secrets — set in Render dashboard (sync:false preserves live values):
+      - key: SUPABASE_PUBLISHABLE_KEY
         sync: false
-      - key: SUPABASE_ANON_KEY
+      - key: SUPABASE_SECRET_KEY
         sync: false
-      - key: SUPABASE_SERVICE_ROLE_KEY
+      - key: DATABASE_URL
         sync: false
-      # REQUIRED in Render dashboard:
-      # DATABASE_URL
 
   - type: web
     name: metar-to-iwxxm-frontend-v4-web
     runtime: static
-    buildCommand: corepack enable pnpm && pnpm install --frozen-lockfile && pnpm --filter @metar/frontend run build
+    buildCommand: >-
+      corepack enable pnpm && pnpm install --frozen-lockfile &&
+      METAR_CONFIG_ENV=prod SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY
+      bash scripts/frontend/prepare-config.sh &&
+      pnpm --filter @metar/frontend run build
     staticPublishPath: apps/frontend/dist
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
     envVars:
-      - key: VITE_API_BASE_URL
-        value: https://metar-to-iwxxm-api.onrender.com
-      - key: VITE_APP_URL
-        value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
-      # Set in Render dashboard (sync:false preserves live values):
-      - key: VITE_SUPABASE_URL
-        sync: false
-      - key: VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+      - key: METAR_CONFIG_ENV
+        value: prod
+      - key: SUPABASE_PUBLISHABLE_KEY
         sync: false

@@ -8,8 +8,8 @@
 .pnpm-store/
 
 # --- Vendor IWXXM schema snapshots (read-only XSD/XML; use manifest + scripts) ---
-vendor/schemas/
-schemas/
+# vendor/schemas/
+# schemas/
 
 # --- Build & bundle outputs ---
 **/dist/
@@ -48,16 +48,11 @@ schemas/
 # --- Secrets (also in .gitignore) ---
 .env
 .env.*
-prod.env
-apps/**/.env
-packages/**/.env
-backend/.env
-auth/.env
-frontend/.env
+!.env.example
 
 # --- Legacy pre-migration trees (duplicate of target apps/ + packages/) ---
 # Keep indexed until cutover if you need migration diffs; exclude to save context.
-GIFTs/
+# GIFTs/
 frontend/node_modules/
 backend/.venv/
 

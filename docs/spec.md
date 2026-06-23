@@ -99,7 +99,16 @@ metar-to-IWXXM/
 ### packages/shared
 
 - **Purpose**: Shared API types (OpenAPI-derived TS), env URL helpers, constants (CORS origins, version enums).
-- **Source**: REQ-010.
+- **Config loader (S003)**: Loads `config/{local,prod}.json` by `METAR_CONFIG_ENV`; exposes merged
+  config to Python and TypeScript; secrets resolved from env only.
+- **Source**: REQ-010, ADR-010.
+
+### Runtime configuration (`config/`)
+
+- **Purpose**: Non-secret per-environment settings (URLs, CORS, validation flags).
+- **Files**: `config/local.json`, `config/prod.json` (committed).
+- **Frontend**: Static host serves `/config.json` (prod copy + publishable key injected at deploy).
+- **Source**: [config-spec.md](config-spec.md), S003 session.
 
 ## Data Flow
 
@@ -148,8 +157,11 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 
 ## Security & Privacy
 
-- Supabase credentials remain server-side only (packages/auth in backend process).
-- CORS configured on backend for frontend origin (`METAR_CORS_ORIGINS`).
+- Supabase **publishable** key available to browser via runtime `/config.json`; **secret** key
+  server-only (`SUPABASE_SECRET_KEY`) — Auth Admin scripts only (ADR-010).
+- Admin API routes use caller JWT + RLS (`is_admin()`), not secret-key bypass.
+- CORS from `config.*.api.corsOrigins` on backend.
+- Minimal `.env` — five secrets; `make env-check` validates sync across local/Render/CI.
 - Vendor trees are public schema data — no secrets.
 
 ## Performance Characteristics

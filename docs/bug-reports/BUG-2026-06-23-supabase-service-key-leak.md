@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| Status | `verifying` |
+| Status | `fixing` |
 | Severity | Critical |
 | Feature | F3 / auth ops (admin user script) |
 | Reported | 2026-06-23 |
@@ -48,10 +48,25 @@ remains on GitHub as unreachable object.
 
 ## Fix
 
-1. `scripts/utilities/create_admin_user.py` — load repo-root `.env` via `Path(__file__).parents[2]`
-2. `.env.example` — add `SUPABASE_SERVICE_ROLE_KEY` placeholder (no secret values)
-3. Operator: **rotate** service role key in Supabase dashboard, update local `.env` + Render secret
-4. Close GitHub alert as **revoked** after rotation
+1. `scripts/utilities/create_admin_user.py` — uses `SUPABASE_SECRET_KEY` (legacy shim); URL from config
+2. `.env.example` — minimal secrets-only template
+3. `config/prod.json` / `config/local.json` — non-secret settings; `METAR_CONFIG_ENV` selector
+4. `packages/shared` — `config_loader.py`, `supabase_env.py` canonical key helpers
+5. `packages/auth/admin_api.py` — user JWT + RLS (no service role for admin routes)
+6. `apps/backend/evaluation_store.py` — `DATABASE_URL` for eval jobs (no service role REST)
+7. `render.yaml`, `docker-compose.yml`, CI — canonical `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY`
+8. `scripts/env/verify-sync.sh` + `make env-check` — local/Render/Supabase drift gate
+9. Migration `005_supabase_advisor_remediation.sql` — evaluation_results insert-own + function search_path
+10. Frontend runtime `/config.json` bootstrap (ADR-010 / S003-R2)
+
+## Operator (post-merge)
+
+1. Create Publishable + Secret keys in Supabase (METAR `ktvxijislbtgqapllmuk`)
+2. Update Render API: `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `DATABASE_URL`, `METAR_CONFIG_ENV=prod`
+3. Update Render static: `SUPABASE_PUBLISHABLE_KEY` (injected into `/config.json` at build)
+4. Apply migrations 003–005 in Supabase SQL editor if not already applied
+5. Auth dashboard: enable leaked-password protection
+6. Revoke legacy `service_role` JWT; close GitHub secret-scanning alert #1
 
 ## Repro test
 

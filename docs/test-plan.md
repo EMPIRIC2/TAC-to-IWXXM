@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-06-22 (EV-002 CI consolidation delta)
+> **Last updated**: 2026-06-23 (S003 env-check tier)
 
 ## Scope
 
@@ -51,6 +51,7 @@ use `.nth(1)` after clicking a card to assert the panel content heading.
 
 | Tier | Scope | Command |
 |------|-------|---------|
+| H0e | Env contract sync (`.env` + config JSON) | `make env-check` |
 | H0c | CORS policy (in-process) | `pytest apps/backend/tests/unit/test_cors_policy.py` |
 | H0i | Cross-service integration | `pytest apps/backend/tests/integration` |
 | H3 | Live API smoke (pytest) | `make test-live-api` |
@@ -60,13 +61,14 @@ use `.nth(1)` after clicking a card to assert the panel content heading.
 
 **Post-migration**: Single API origin simplifies CORS — auth routes on same host as `/api/v1/*`.
 
-**Env wiring** (see config-spec artifact):
+**Env wiring** (see [config-spec.md](config-spec.md)):
 
-- `VITE_API_BASE_URL` — frontend build-time API URL
-- `METAR_CORS_ORIGINS` — backend allowed browser origins
-- `LIVE_API_URL` — live pytest API base (replaces `STAGING_API_URL`)
-- `LIVE_FRONTEND_URL` — live Playwright base + CORS origin (replaces `STAGING_FRONTEND_*`)
+- `config.*.api.baseUrl` — API URL (replaces `VITE_API_BASE_URL`)
+- `config.*.api.corsOrigins` — backend allowed origins (replaces `METAR_CORS_ORIGINS`)
+- `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` — secrets in `.env` / Render only
+- `LIVE_API_URL` / `LIVE_FRONTEND_URL` — from `config.prod.liveE2e` or env override
 - `ADMIN_EMAIL` / `ADMIN_PASSWORD` — runtime JWT via `POST /auth/login` (local `.env` only)
+- `make env-check` — validates canonical names and config JSON before integration/live runs
 
 ## Test Strategy
 

@@ -105,6 +105,7 @@ def test_setup_logging_and_metrics_endpoint(monkeypatch):
 
 def test_supabase_proxy_init_requires_env(monkeypatch):
     monkeypatch.delenv("SUPABASE_URL", raising=False)
+    monkeypatch.delenv("SUPABASE_PUBLISHABLE_KEY", raising=False)
     monkeypatch.delenv("SUPABASE_ANON_KEY", raising=False)
 
     with pytest.raises(ValueError):
@@ -113,7 +114,7 @@ def test_supabase_proxy_init_requires_env(monkeypatch):
 
 def test_supabase_proxy_happy_paths_and_errors(monkeypatch):
     monkeypatch.setenv("SUPABASE_URL", "https://unit.supabase.co")
-    monkeypatch.setenv("SUPABASE_ANON_KEY", "anon")
+    monkeypatch.setenv("SUPABASE_PUBLISHABLE_KEY", "publishable")
 
     fake_user = SimpleNamespace(id="u1", email="u@example.com", user_metadata={"k": "v"})
     fake_session = SimpleNamespace(access_token="a", refresh_token="r", expires_at=123)
@@ -157,7 +158,7 @@ def test_supabase_proxy_happy_paths_and_errors(monkeypatch):
 
 def test_supabase_proxy_error_paths(monkeypatch):
     monkeypatch.setenv("SUPABASE_URL", "https://unit.supabase.co")
-    monkeypatch.setenv("SUPABASE_ANON_KEY", "anon")
+    monkeypatch.setenv("SUPABASE_PUBLISHABLE_KEY", "publishable")
 
     fake_auth = SimpleNamespace(
         sign_up=lambda payload: (_ for _ in ()).throw(Exception("bad signup")),

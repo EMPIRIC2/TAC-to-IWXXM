@@ -1,6 +1,6 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-06-22
+> Stage: 01-requirements | Last updated: 2026-06-23
 
 | ID | Topic | Decision | Status |
 |----|-------|----------|--------|
@@ -43,7 +43,19 @@
 | LIVE-012 | Acceptance | Manual signoff before release — not a PR merge gate | confirmed |
 | LIVE-013 | Prerequisite | E2E-001 schema path fix must land before live validate passes | confirmed |
 
-## Open Questions (for 04-tech-plan)
+## S003 — Supabase keys, config split, env sync (2026-06-23)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| S003-R1 | Key naming | `SUPABASE_PUBLISHABLE_KEY` + `SUPABASE_SECRET_KEY` canonical; deprecate `ANON_KEY` / `SERVICE_ROLE_KEY` with shim | confirmed |
+| S003-R2 | Frontend config | Runtime `/config.json` fetch at bootstrap; `config/prod.json` + publishable key inject at deploy | confirmed |
+| S003-R3 | METAR project | `ktvxijislbtgqapllmuk`; migrations 003–004 **not yet applied** in production | confirmed |
+| S003-R4 | Local ports | Standardize **18000** (frontend) / **18001** (API) everywhere | confirmed |
+| S003-R5 | Secret key scope | `SUPABASE_SECRET_KEY` only for Auth Admin API (`create_admin_user.py`); admin routes use user JWT + RLS | confirmed |
+| S003-R6 | Env sync | `env-contract.md` + `env-sync-runbook.md` + `make env-check`; align Render, Supabase, local, GitHub | confirmed |
+| S003-R7 | Advisor scope | METAR tables only; CogniChem org projects out of scope | confirmed |
+| S003-R8 | Auth dashboard | Enable leaked-password protection (HaveIBeenPwned) on METAR project | confirmed |
+| S003-R9 | Config envs | `prod` + `local` only; `stage`/`dev` deferred | confirmed |
 
 1. ~~Exact auth route prefix after merge~~ — resolved: `/auth/*` (REQ-017)
 2. ~~pnpm vs npm~~ — resolved: pnpm (REQ-020)

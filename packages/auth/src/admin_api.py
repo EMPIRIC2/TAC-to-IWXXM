@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import copy
 import logging
-import os
 from typing import Any, cast
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from metar_shared.supabase_env import get_supabase_publishable_key, get_supabase_url
 from pydantic import BaseModel, Field
 from supabase import Client, create_client
 
@@ -49,16 +49,18 @@ class SystemSettingsPayload(BaseModel):
     settings: dict[str, Any]
 
 
-def _get_service_client() -> Client:
-    """Return a Supabase client authenticated with the service role key."""
-    url = os.getenv("SUPABASE_URL", "").strip()
-    key = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+def _get_authed_client(access_token: str) -> Client:
+    """Return a Supabase client scoped to the caller's JWT (RLS enforced)."""
+    url = get_supabase_url()
+    key = get_supabase_publishable_key()
     if not url or not key:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Admin service unavailable — missing Supabase service configuration",
+            detail="Admin service unavailable — missing Supabase configuration",
         )
-    return create_client(url, key)
+    client = create_client(url, key)
+    client.postgrest.auth(access_token)
+    return client
 
 
 def _profile_row(data: object) -> dict[str, Any] | None:
@@ -102,7 +104,7 @@ def require_admin(
     user = proxy.get_user(token)
     user_id = user["id"]
 
-    client = _get_service_client()
+    client = _get_authed_client(token)
     result = client.table("user_profiles").select("is_admin").eq("id", user_id).maybe_single().execute()
 
     profile = None if result is None else _profile_row(result.data)
@@ -147,18 +149,24 @@ def save_settings(
 
 
 @router.get("/all-users")
-def list_all_users(_admin: dict[str, Any] = Depends(require_admin)) -> dict[str, Any]:
+def list_all_users(
+    _admin: dict[str, Any] = Depends(require_admin),
+    token: str = Depends(get_token_from_header),
+) -> dict[str, Any]:
     """List all user profiles for the monitoring panel."""
-    client = _get_service_client()
+    client = _get_authed_client(token)
     result = client.table("user_profiles").select("*").order("created_at", desc=True).execute()
     users = [_profile_to_user_info(row) for row in _profile_rows(result.data)]
     return {"users": users}
 
 
 @router.get("/stats")
-def get_stats(_admin: dict[str, Any] = Depends(require_admin)) -> dict[str, Any]:
+def get_stats(
+    _admin: dict[str, Any] = Depends(require_admin),
+    token: str = Depends(get_token_from_header),
+) -> dict[str, Any]:
     """Return aggregate user statistics for the monitoring dashboard."""
-    client = _get_service_client()
+    client = _get_authed_client(token)
     result = client.table("user_profiles").select("*").execute()
     rows = _profile_rows(result.data)
 
@@ -178,9 +186,10 @@ def get_stats(_admin: dict[str, Any] = Depends(require_admin)) -> dict[str, Any]
 def toggle_admin(
     payload: ToggleAdminRequest,
     _admin: dict[str, Any] = Depends(require_admin),
+    token: str = Depends(get_token_from_header),
 ) -> dict[str, Any]:
     """Grant or revoke admin status on a user profile."""
-    client = _get_service_client()
+    client = _get_authed_client(token)
     update = client.table("user_profiles").update({"is_admin": payload.isAdmin}).eq("id", payload.userId).execute()
 
     if not update.data:

@@ -1,5 +1,12 @@
 import { createRoot } from 'react-dom/client';
-import App from './app/App.tsx';
+
+import { initRuntimeConfig } from './utils/runtime-config';
 import './styles/index.css';
 
-createRoot(document.getElementById('root')!).render(<App />);
+async function bootstrap() {
+  await initRuntimeConfig();
+  const { default: App } = await import('./app/App.tsx');
+  createRoot(document.getElementById('root')!).render(<App />);
+}
+
+void bootstrap();

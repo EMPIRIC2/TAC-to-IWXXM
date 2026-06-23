@@ -4,16 +4,21 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 2
+session_counter: 3
 active_session:
-  id: S002-issue-594-feedback
-  type: feature
-  intent: "COR handling + input traceability from tester feedback (GitHub #594)"
-  status: completed
-  branch: fix/S002-issue-594-feedback
-  orchestrator: 16-evolve
-  artifacts_dir: docs/sessions/S002-issue-594-feedback/
+  id: S003-supabase-keys-config
+  type: hotfix
+  intent: "Supabase key rotation, config split, advisor remediation, env sync (BUG-2026-06-23)"
+  status: in_progress
+  branch: fix/supabase-service-key-leak
+  orchestrator: 14-hotfix
+  artifacts_dir: docs/sessions/S003-supabase-keys-config/
   routing_plan:
+    - stage: 01-requirements
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
     - stage: 00-context
       mode: scoped
       required: true
@@ -25,41 +30,41 @@ active_session:
       skip_rationale: null
     - stage: 14-hotfix
       required: true
-      status: completed
-      skip_rationale: null
-    - stage: 16-evolve
-      required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 07-build
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 08-verify-build
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 09-qa
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 10-e2e
-      required: true
       mode: delta
-      status: completed
+      required: true
+      status: pending
       skip_rationale: null
     - stage: 11-verify-impl
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 12-verify-deploy
       required: false
-      status: completed
+      status: pending
       skip_rationale: null
-  current_stage: 13-deploy-smoke
-  started_at: "2026-06-22"
+    - stage: 13-deploy-smoke
+      required: false
+      status: pending
+      skip_rationale: null
+  current_stage: 14-hotfix
+  started_at: "2026-06-23"
   context_briefs:
-    - docs/context/issue-594-feedback.md
+    - docs/context/supabase-keys-config.md
 sessions:
   - id: S001-convert-send-buttons
     type: feature
@@ -67,6 +72,15 @@ sessions:
     completed_at: "2026-06-22"
     branch: feat/S001-convert-send-buttons
     artifacts_dir: docs/sessions/S001-convert-send-buttons/
+  - id: S002-issue-594-feedback
+    type: feature
+    status: completed
+    completed_at: "2026-06-23"
+    branch: fix/S002-issue-594-feedback
+    orchestrator: 16-evolve
+    evolve_cycle_id: EV-003
+    artifacts_dir: docs/sessions/S002-issue-594-feedback/
+    started_at: "2026-06-22"
 
 template:
   id: static+api
@@ -104,6 +118,20 @@ stages:
         total: 8
         current_template: null
         current_section: complete
+    delta_substages:
+      - status: completed
+        mode: delta
+        session_id: S003-supabase-keys-config
+        completed_at: "2026-06-23"
+        note: "Delta requirements for Supabase keys, config split, env sync"
+        artifacts:
+          - docs/config-spec.md
+          - docs/env-contract.md
+          - docs/env-sync-runbook.md
+          - docs/adr/ADR-010-supabase-keys-config-split.md
+          - docs/sessions/S003-supabase-keys-config/reports/01-requirements.md
+          - config/prod.json
+          - config/local.json
     notes:
       - "Monorepo migration requirements interview complete; big-bang approach approved"
 
@@ -448,6 +476,42 @@ decisions_log:
     decision: "No product feature rewrites during migration"
     status: confirmed
 
+  - id: S003-R1
+    stage: 01-requirements
+    date: "2026-06-23"
+    topic: Supabase key naming
+    decision: "SUPABASE_SECRET_KEY + SUPABASE_PUBLISHABLE_KEY canonical; deprecate SUPABASE_SERVICE_ROLE_KEY with fallback shim"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+  - id: S003-R2
+    stage: 01-requirements
+    date: "2026-06-23"
+    topic: Frontend config delivery
+    decision: "Runtime config.json fetch at frontend bootstrap — minimal .env; single config source for URLs/flags"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+  - id: S003-R3
+    stage: 01-requirements
+    date: "2026-06-23"
+    topic: METAR Supabase project
+    decision: "METAR prod project ktvxijislbtgqapllmuk; migrations 003-004 not yet applied"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+  - id: S003-R4
+    stage: 01-requirements
+    date: "2026-06-23"
+    topic: Local dev ports
+    decision: "Ports 18000/18001 standardized across compose, config, and dev scripts"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+  - id: S003-R6
+    stage: 01-requirements
+    date: "2026-06-23"
+    topic: Environment sync
+    decision: "Env sync across Render, Supabase, and local with canonical names and verify tooling"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+
   - id: AUDIT-001
     stage: 02-verify-plan
     date: "2026-06-14"
@@ -742,6 +806,42 @@ artifacts:
     stage: 12-verify-deploy
     created_at: "2026-06-22"
     status: active
+  - path: docs/config-spec.md
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/env-contract.md
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/env-sync-runbook.md
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/adr/ADR-010-supabase-keys-config-split.md
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/sessions/S003-supabase-keys-config/reports/01-requirements.md
+    kind: requirements-report
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: config/prod.json
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: config/local.json
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
 
 evolve_cycles:
   - id: EV-001

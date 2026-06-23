@@ -13,6 +13,7 @@ from typing import Any, Dict, Optional, cast
 # Load environment variables
 from dotenv import load_dotenv
 from fastapi import HTTPException, status
+from metar_shared.supabase_env import get_supabase_publishable_key, get_supabase_url
 from supabase import Client, create_client
 
 load_dotenv()
@@ -31,11 +32,11 @@ class SupabaseAuthProxy:
 
     def __init__(self):
         """Initialize Supabase client."""
-        self.supabase_url = os.getenv("SUPABASE_URL")
-        self.supabase_key = os.getenv("SUPABASE_ANON_KEY")
+        self.supabase_url = get_supabase_url()
+        self.supabase_key = get_supabase_publishable_key()
 
         if not self.supabase_url or not self.supabase_key:
-            raise ValueError("SUPABASE_URL and SUPABASE_ANON_KEY must be set")
+            raise ValueError("Supabase URL and publishable key must be set (SUPABASE_PUBLISHABLE_KEY or config)")
 
         logger.info(f"Initializing Supabase client for URL: {self.supabase_url}")
         self.client: Client = create_client(self.supabase_url, self.supabase_key)

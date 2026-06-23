@@ -21,7 +21,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts coverage-shared \
 	coverage-modules coverage-all ci acci badge-audit audit-frontend \
-	validate-fast validate-yaml secrets-check config-guard validate-ci \
+	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
 	install-hooks pre-commit-run
 
 # --- Monorepo workspace ---
@@ -255,7 +255,21 @@ test-integration:
 		fi; \
 	done; \
 	set +a; \
-	required_vars="SUPABASE_URL SUPABASE_ANON_KEY VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY"; \
+	required_vars="SUPABASE_PUBLISHABLE_KEY DATABASE_URL"; \
+	legacy_ok=""; \
+	if [ -n "$${SUPABASE_ANON_KEY:-}" ] && [ -z "$${SUPABASE_PUBLISHABLE_KEY:-}" ]; then \
+		export SUPABASE_PUBLISHABLE_KEY="$$SUPABASE_ANON_KEY"; \
+	fi; \
+	if [ -n "$${VITE_SUPABASE_URL:-}" ]; then \
+		legacy_ok="yes"; \
+	fi; \
+	if [ -n "$${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-}" ] && [ -z "$${SUPABASE_PUBLISHABLE_KEY:-}" ]; then \
+		export SUPABASE_PUBLISHABLE_KEY="$$VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY"; \
+	fi; \
+	export VITE_SUPABASE_URL="$${VITE_SUPABASE_URL:-$$(python3 -c 'import json;print(json.load(open("config/local.json"))["supabase"]["url"])')}"; \
+	export VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY="$${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-$$SUPABASE_PUBLISHABLE_KEY}"; \
+	export VITE_API_BASE_URL="$${VITE_API_BASE_URL:-$$(python3 -c 'import json;print(json.load(open("config/local.json"))["api"]["baseUrl"])')}"; \
+	export VITE_APP_URL="$${VITE_APP_URL:-$$(python3 -c 'import json;print(json.load(open("config/local.json"))["api"]["frontendUrl"])')}"; \
 	missing=""; \
 	for var in $$required_vars; do \
 		if [ -z "$${!var}" ]; then \
@@ -307,7 +321,10 @@ validate-fast: format-check typecheck lint secrets-check validate-yaml
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py -v
 
-validate-ci: validate-fast config-guard audit-frontend
+env-check:
+	bash scripts/env/verify-sync.sh
+
+validate-ci: validate-fast config-guard env-check audit-frontend
 
 ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-integration badge-audit
 

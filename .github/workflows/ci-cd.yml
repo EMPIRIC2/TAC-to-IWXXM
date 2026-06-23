@@ -152,8 +152,10 @@ jobs:
         if: matrix.package == 'integration'
         run: |
           {
-            echo "SUPABASE_URL=${FRONTEND_VITE_SUPABASE_URL}"
-            echo "SUPABASE_ANON_KEY=${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}"
+            echo "METAR_CONFIG_ENV=local"
+            echo "SUPABASE_PUBLISHABLE_KEY=${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}"
+            echo "SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY:-}"
+            echo "DATABASE_URL=${DATABASE_URL:-}"
             echo "VITE_SUPABASE_URL=${FRONTEND_VITE_SUPABASE_URL}"
             echo "VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}"
             echo "VITE_API_BASE_URL=http://localhost:18001"

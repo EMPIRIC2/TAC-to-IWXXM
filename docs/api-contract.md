@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-06-14
+> **Last updated**: 2026-06-23 (S003 Supabase keys + runtime config)
 > **Delta**: Monorepo migration M4 — auth service merged into backend API
 
 ## Base URLs
@@ -64,7 +64,9 @@ POST /admin/toggle-admin
 ```
 
 **Auth**: Supabase JWT; Bearer token required. Caller must have `user_profiles.is_admin = true`.
-Server uses `SUPABASE_SERVICE_ROLE_KEY` for profile lookups and admin mutations.
+Server uses the caller's JWT with **publishable key** + existing RLS policies (`is_admin()`).
+`SUPABASE_SECRET_KEY` is **not** used for routine admin routes — reserved for Auth Admin API
+scripts only (ADR-010).
 
 **Note**: Settings are stored in-process (not durable across deploys); see PR #679.
 
@@ -96,7 +98,7 @@ POST /api/v1/validate
 
 | Header | Value |
 |--------|-------|
-| `Access-Control-Allow-Origin` | Origins from `METAR_CORS_ORIGINS` |
+| `Access-Control-Allow-Origin` | Origins from `config.*.api.corsOrigins` |
 | `Access-Control-Allow-Methods` | GET, POST, OPTIONS |
 | `Access-Control-Allow-Headers` | Authorization, Content-Type |
 
@@ -114,11 +116,17 @@ HTTP status codes unchanged.
 
 ## Frontend Integration
 
-| Variable | Purpose |
-|----------|---------|
-| `VITE_API_BASE_URL` | API + auth base (post-migration unified) |
-| `VITE_SUPABASE_URL` | Supabase project (client-side anon) |
-| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | Supabase anon key |
+Runtime config via `GET /config.json` (copied from `config/prod.json` at deploy; publishable
+key injected from `SUPABASE_PUBLISHABLE_KEY`).
+
+| Config field | Purpose |
+|--------------|---------|
+| `api.baseUrl` | API + auth base (`/api/v1`, `/auth`, `/admin`) |
+| `supabase.url` | Supabase project URL |
+| `supabase.publishableKey` | Client-side Supabase auth (injected at deploy) |
+
+**Deprecated**: `VITE_API_BASE_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`,
+`VITE_APP_URL` — one-release shim during S003 migration.
 
 **Breaking changes**: None intended for public JSON shapes. Internal Docker service names change
 (`auth:8000` → in-process).
