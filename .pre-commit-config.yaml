@@ -9,10 +9,59 @@ repos:
 
   - repo: local
     hooks:
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format --check apps packages tests
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check apps/backend/src apps/backend/tests packages/auth/src packages/auth/tests packages/gifts/gifts packages/gifts/tests packages/shared packages/shared/tests tests
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: prettier-check
+        name: prettier check
+        entry: pnpm run format:check
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: eslint
+        name: eslint
+        entry: pnpm run lint:js
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: typecheck-js
+        name: TypeScript typecheck
+        entry: pnpm run typecheck:js
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: basedpyright
+        name: basedpyright (Python)
+        entry: bash -c 'uv run basedpyright packages/shared/src && cd packages/auth && uv run basedpyright && cd ../../apps/backend && uv run basedpyright'
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: make-ci
-        name: make ci
+        name: make ci (full suite)
         entry: make ci
         language: system
         pass_filenames: false
         always_run: true
         require_serial: true
+        stages: [manual]
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.37.1
+    hooks:
+      - id: yamllint
+        files: ^\.github/
+        args: [-c, .yamllint.yml]

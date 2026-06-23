@@ -188,12 +188,31 @@ Playwright env vars:
 
 ## CI/CD
 
-Primary workflow: `.github/workflows/ci-cd.yml`
+Primary workflow: `.github/workflows/ci-cd.yml` (EV-002: **validate → test → deploy** on push to
+`main`; PRs run validate + test only).
+
+| Job | Checks |
+|-----|--------|
+| **validate** | `make validate-ci` — format, lint, typecheck, gitleaks, actionlint/yamllint, config-guard, frontend npm audit |
+| **test** | Matrix: shared, backend, auth, gifts, frontend, integration — pytest 98% + Codecov 95% |
+| **deploy** | Docker build/push + Render hooks (`main` push only) |
+
+Local fast gates (dual-run with CI validate):
+
+```bash
+make install-hooks    # pre-commit install
+pre-commit run --all-files
+make validate-fast    # same checks without config-guard/audit
+make ci               # full suite (tests + integration) — matches CI test job + badge-audit
+```
 
 - Python 3.12 + Node 22
-- Unit tests and 95% coverage on `apps/backend`, `packages/*`, `apps/frontend`
+- Unit tests and 95% Codecov gate on `apps/backend`, `packages/*`, `apps/frontend`
 - Builds API Docker image from repo root context
 - Builds frontend static assets from `apps/frontend`
+
+Removed standalone PR workflows (merged into `ci-cd.yml` validate): `secret-scan.yml`,
+`github-yaml-lint.yml`, `frontend-audit.yml`.
 
 Vendor schemas: weekly GitHub Action syncs wmo-im repos into `vendor/schemas/` (see
 `scripts/vendor/sync-iwxxm.sh`).

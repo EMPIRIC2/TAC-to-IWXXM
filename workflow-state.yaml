@@ -45,7 +45,11 @@ active_session:
       required: true
       status: completed
       skip_rationale: null
-  current_stage: 11-verify-impl
+    - stage: 12-verify-deploy
+      required: true
+      status: completed
+      skip_rationale: null
+  current_stage: 12-verify-deploy
   started_at: "2026-06-22"
   context_briefs:
     - docs/context/convert-send-buttons.md
@@ -338,13 +342,24 @@ stages:
     status: completed
     started: "2026-06-22"
     completed: "2026-06-22"
-    last_cycle: PRR-003
+    last_cycle: PRR-004
 
   19-address-pr-review:
     status: completed
     started: "2026-06-22"
-    completed: "2026-06-22"
-    last_cycle: PRM-003
+    completed: "2026-06-23"
+    last_cycle: PRM-004
+
+  12-verify-deploy:
+    status: completed
+    started_at: "2026-06-22T23:45:00Z"
+    completed_at: "2026-06-22T23:50:00Z"
+    report: docs/sessions/S001-convert-send-buttons/reports/deploy-checklist.md
+    notes:
+      - "S001 delta — static+api Render; H0c/H4/H5 PASS on live staging"
+      - "E2E-002 resolved — /auth/* routes present on deployed API"
+      - "S001 Convert&Send UI confirmed in live frontend bundle"
+      - "Risk/rollback prompts skipped — default mitigations applied"
 
 stages_pending: []
 
@@ -359,10 +374,10 @@ deployment:
     t0_journeys_passed: 4
   staging:
     status: deployed
-    last_verified: "2026-06-20"
-    commit_deployed: unknown
+    last_verified: "2026-06-22"
+    commit_deployed: "220ad64"
     commit_head: main
-    drift: true
+    drift: false
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
@@ -370,10 +385,11 @@ deployment:
       H1: pass
       H4: pass
       H5: pass
-      T3_auth: fail
+      T3_auth: pass
     notes:
-      - "Auth routes absent on deployed API (E2E-002)"
-      - "H4+H5 verified via verify_connectivity.sh"
+      - "Auth routes live on deployed API (E2E-002 resolved)"
+      - "H0c+H4+H5 verified via verify_connectivity.sh (stage 12)"
+      - "S001 Convert&Send UI in live frontend bundle"
   url_discovery:
     method: "bash scripts/deploy/verify_connectivity.sh"
 
@@ -736,11 +752,18 @@ evolve_cycles:
         report: docs/sessions/S001-convert-send-buttons/reports/verify-impl.md
         overall: approved
         notes: "User approved UJ-001 paths A/B/C and F1 delta; T3 deferred"
+      12-verify-deploy:
+        status: completed
+        started: "2026-06-22T23:45:00Z"
+        completed: "2026-06-22T23:50:00Z"
+        report: docs/sessions/S001-convert-send-buttons/reports/deploy-checklist.md
+        overall: ready
+        notes: "H0c/H4/H5 PASS live; auth routes present; S001 UI on frontend"
     gates:
       a_to_b: passed
       b_to_c: passed
       c_to_d: passed
-      deploy: pending
+      deploy: ready
     checkpoints:
       phase_a: passed
       phase_b: passed
@@ -938,6 +961,34 @@ pr_review_cycles:
     linked_issue: 656
     notes:
       - "Self-approval blocked by GitHub; posted COMMENT with APPROVE recommendation"
+
+  - id: PRR-004
+    pr_number: 684
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/684
+    title: "[EV-002] CI consolidation — validate/test/deploy + pre-commit fast hooks"
+    status: completed
+    started: "2026-06-22"
+    completed: "2026-06-22"
+    head_ref: evolve/EV-002-ci-consolidation
+    base_ref: main
+    verdict: REQUEST_CHANGES
+    blockers: 1
+    advisories: 3
+    praise: 3
+    ci_status: failure
+    session_id: S002-ci-consolidation
+    subagents:
+      bugbot: failed_diff
+      security_review: failed_diff
+    artifacts:
+      - path: docs/sessions/S002-ci-consolidation/reports/pr-review.md
+        note: session report
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/684#pullrequestreview-4548925789
+    notes:
+      - "Self request-changes blocked by GitHub; posted COMMENT with REQUEST_CHANGES recommendation"
+      - "Validate fails on audit-frontend vite@6.3.5 lockfile; local make validate-ci reproduces"
 
 pr_remediation_cycles:
   - id: PRM-001
@@ -1192,5 +1243,61 @@ pr_remediation_cycles:
         status: fixed
         commit: 8f7545d
         note: CI mock parity after upload client change
+    follow_up:
+      pr_review_rerun: offered
+
+  - id: PRM-004
+    pr_number: 684
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/684
+    linked_review_cycle_id: PRR-004
+    title: "[EV-002] CI consolidation — validate/test/deploy + pre-commit fast hooks"
+    status: completed
+    started: "2026-06-22"
+    completed: "2026-06-23"
+    head_ref: evolve/EV-002-ci-consolidation
+    base_ref: main
+    ci_status: pending
+    session_id: S002-ci-consolidation
+    counts:
+      fixed: 4
+      deferred: 0
+      wont_fix: 0
+    findings:
+      - id: F-001
+        source: inline
+        severity: blocker
+        path: Makefile
+        line: 310
+        thread_id: PRRT_kwDOQW-3CM6LbYlF
+        status: fixed
+        commit: bdc0348
+        note: vite lockfile refresh for audit-frontend gate
+      - id: F-002
+        source: inline
+        severity: blocker
+        path: apps/frontend/package.json
+        line: 21
+        thread_id: PRRT_kwDOQW-3CM6LbYlu
+        status: fixed
+        commit: bdc0348
+        note: same vite@6.4.3 lockfile fix
+      - id: F-003
+        source: inline
+        severity: advisory
+        path: Makefile
+        line: 298
+        thread_id: PRRT_kwDOQW-3CM6LbYmH
+        status: fixed
+        commit: 3763192
+        note: EV-002 R8 gitleaks trade-off documented
+      - id: F-004
+        source: inline
+        severity: advisory
+        path: .github/workflows/ci-cd.yml
+        line: 252
+        thread_id: PRRT_kwDOQW-3CM6LbQVM
+        status: fixed
+        commit: 3763192
+        note: integration teardown step renamed
     follow_up:
       pr_review_rerun: offered

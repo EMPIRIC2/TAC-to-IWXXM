@@ -104,10 +104,22 @@
 
 ### M5: Workspace Tooling
 
-- **What it does**: Root Makefile orchestrates uv (Python) and pnpm (JS) workspaces.
-- **Inputs**: `pyproject.toml` workspace root; `pnpm-workspace.yaml`.
-- **Outputs**: `make dev`, `make test`, `make lint` at repo root.
-- **Source**: REQ-005
+- **What it does**: Root Makefile orchestrates uv (Python) and pnpm (JS) workspaces; pre-commit
+  runs fast quality gates locally; GitHub Actions runs the full validate + test + deploy pipeline.
+- **Inputs**: `pyproject.toml` workspace root; `pnpm-workspace.yaml`; `.pre-commit-config.yaml`.
+- **Outputs**:
+  - Local: `make dev`, `make test`, `make lint`, `make ci` (full suite)
+  - Local fast: `pre-commit run` — ruff format/check, prettier, eslint, basedpyright/tsc,
+    gitleaks, actionlint/yamllint (on `.github/` changes)
+  - CI: single `ci-cd.yml` with ≤3 jobs on PR (validate → test; deploy on main push only)
+- **CI job layout** (EV-002):
+  | Job | Checks |
+  |-----|--------|
+  | validate | format, lint, typecheck, gitleaks, yaml lint, config-guard, frontend npm audit |
+  | test | matrix unit+coverage (backend, auth, gifts, frontend, shared), integration, Codecov |
+  | deploy | Docker build/push + Render hooks (main only) |
+- **Dual-run policy**: fast checks run in pre-commit locally **and** in CI validate job (defense in depth).
+- **Source**: REQ-005; EV-002
 
 ### M6: Upstream Vendor Sync
 

@@ -17,8 +17,8 @@
     "lint": "eslint src --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
-    "audit": "npm audit",
-    "audit:ci": "npm audit --audit-level=low"
+    "audit": "pnpm audit",
+    "audit:ci": "pnpm audit --audit-level=low"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -99,7 +99,7 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.0.0",
-    "vite": "^6.4.1",
+    "vite": "6.4.3",
     "vitest": "^4.1.9"
   }
 }

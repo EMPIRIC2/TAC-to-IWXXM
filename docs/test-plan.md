@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-06-22
+> **Last updated**: 2026-06-22 (EV-002 CI consolidation delta)
 
 ## Scope
 
@@ -77,7 +77,8 @@ use `.nth(1)` after clicking a card to assert the panel content heading.
 | E2E (T2) | Playwright | UJ-001–003 local stack | `make test-e2e-playwright` | apps/e2e/ |
 | Live E2E (T3) | Playwright + pytest | UJ-001–003 on Render | `make test-live` | apps/e2e/ + live pytest |
 | Vendor | pytest | manifest + schema presence | `pytest tests/vendor` | tests/vendor |
-| CI | GitHub Actions | full matrix; path filters deferred (P2) | `.github/workflows/ci-cd.yml` | root |
+| CI | GitHub Actions | validate + test (matrix) + deploy; path filters deferred (P2) | `.github/workflows/ci-cd.yml` | root |
+| Pre-commit | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml) | `.pre-commit-config.yaml` | root |
 
 **Coverage**: 95% on all packages and apps (ADR-007) — pytest for Python, Vitest for frontend.
 
@@ -211,14 +212,37 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 
 ## CI/CD (Monorepo)
 
-| Trigger | Paths | Jobs |
-|---------|-------|------|
-| PR / push main | `apps/backend/**` | backend lint, test |
-| PR / push main | `apps/frontend/**` | frontend lint, test, build |
-| PR / push main | `packages/**` | affected package tests |
-| PR / push main | `vendor/**` | TC-M002 + validation suite |
-| Schedule | upstream check | vendor iwxxm sync PR workflow (wmo-im only) |
-| PR / push main | `apps/e2e/**` | Playwright (T2) |
+**Policy (EV-002)**: Single workflow file for PR/push; ≤3 jobs; all checks dual-run locally via
+pre-commit fast hooks where applicable. Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
+
+| Trigger | Workflow | Jobs | Checks |
+|---------|----------|------|--------|
+| PR / push `main`, `dev` | `ci-cd.yml` | **validate** | ruff format/check, prettier, eslint, basedpyright, tsc, gitleaks, actionlint/yamllint, config-guard (`tests/test_config_placeholders.py`), frontend npm audit |
+| PR / push `main`, `dev` | `ci-cd.yml` | **test** | matrix unit+coverage (backend, auth, gifts, frontend, shared @ 98%), integration matrix (docker compose), Codecov upload (95% gate) |
+| push `main` only | `ci-cd.yml` | **deploy** | Docker build/push GHCR, Render deploy hooks |
+| Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
+| Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 scope |
+
+### Pre-commit (local fast gates)
+
+| Hook | Tool | CI equivalent |
+|------|------|---------------|
+| Python format | `ruff format --check` | validate job |
+| Python lint | `ruff check` | validate job |
+| Python types | `basedpyright` | validate job |
+| JS format | `prettier --check` | validate job |
+| JS lint | `eslint` | validate job |
+| JS types | `tsc --noEmit` | validate job |
+| Secrets | `gitleaks` | validate job (replaces `secret-scan.yml`) |
+| Workflow YAML | `actionlint`, `yamllint` | validate job (replaces `github-yaml-lint.yml`) |
+
+Slow checks (`make ci` integration, full unit matrix) remain CI-only; optional via `pre-commit` `make-ci` hook.
+
+### Removed workflows (EV-002)
+
+- `secret-scan.yml` — merged into validate
+- `github-yaml-lint.yml` — merged into validate
+- `frontend-audit.yml` — merged into validate (monorepo `apps/frontend` paths)
 
 ## Test Data
 
