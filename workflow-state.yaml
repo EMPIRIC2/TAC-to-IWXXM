@@ -4,56 +4,69 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 1
+session_counter: 2
 active_session:
-  id: S001-convert-send-buttons
+  id: S002-issue-594-feedback
   type: feature
-  intent: "Add Convert and Convert&Send buttons to the converter UI (GitHub #656)"
+  intent: "COR handling + input traceability from tester feedback (GitHub #594)"
   status: completed
-  branch: feat/S001-convert-send-buttons
+  branch: fix/S002-issue-594-feedback
   orchestrator: 16-evolve
-  evolve_cycle_id: EV-001
-  artifacts_dir: docs/sessions/S001-convert-send-buttons/
+  artifacts_dir: docs/sessions/S002-issue-594-feedback/
   routing_plan:
     - stage: 00-context
       mode: scoped
       required: true
       status: completed
       skip_rationale: null
+    - stage: bug-investigation
+      required: true
+      status: pending
+      skip_rationale: null
+    - stage: 14-hotfix
+      required: true
+      status: pending
+      skip_rationale: null
     - stage: 16-evolve
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 07-build
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 08-verify-build
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 09-qa
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 10-e2e
       required: true
       mode: delta
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 11-verify-impl
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 12-verify-deploy
-      required: true
-      status: completed
+      required: false
+      status: pending
       skip_rationale: null
-  current_stage: 12-verify-deploy
+  current_stage: bug-investigation
   started_at: "2026-06-22"
   context_briefs:
-    - docs/context/convert-send-buttons.md
-sessions: []
+    - docs/context/issue-594-feedback.md
+sessions:
+  - id: S001-convert-send-buttons
+    type: feature
+    status: completed
+    completed_at: "2026-06-22"
+    branch: feat/S001-convert-send-buttons
+    artifacts_dir: docs/sessions/S001-convert-send-buttons/
 
 template:
   id: static+api
@@ -64,7 +77,7 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: convert-send-buttons
+    scoped_slug: issue-594-feedback
     started_at: "2026-06-22T00:00:00Z"
     completed_at: "2026-06-22T00:00:00Z"
     substeps:
@@ -76,11 +89,11 @@ stages:
       phase3: completed
       phase4: completed
     artifacts:
-      - docs/context/convert-send-buttons.md
-      - docs/sessions/S001-convert-send-buttons/session-brief.md
-      - docs/sessions/S001-convert-send-buttons/routing-plan.md
+      - docs/context/issue-594-feedback.md
+      - docs/sessions/S002-issue-594-feedback/session-brief.md
+      - docs/sessions/S002-issue-594-feedback/routing-plan.md
     notes:
-      - "GitHub #656; parent feedback #555; session S001 opened"
+      - "GitHub #594; COR after-time decode failure + input traceability; session S002 opened"
   01-requirements:
     status: completed
     started_at: "2026-06-14T00:00:00Z"
@@ -646,6 +659,13 @@ artifacts:
     session_id: S001-convert-send-buttons
     created_at: "2026-06-22"
     status: active
+  - path: docs/context/issue-594-feedback.md
+    kind: context-scoped
+    slug: issue-594-feedback
+    topic: "COR handling + input traceability (GitHub #594)"
+    session_id: S002-issue-594-feedback
+    created_at: "2026-06-22"
+    status: active
   - path: docs/evolve-decisions.md
     kind: evolve-decisions
     session_id: S001-convert-send-buttons
@@ -774,6 +794,92 @@ evolve_cycles:
       - path: docs/evolve-decisions.md
         status: completed
       - path: docs/sessions/S001-convert-send-buttons/reports/evolve-summary.md
+        status: completed
+    issues: []
+
+  - id: EV-003
+    session_id: S002-issue-594-feedback
+    cycle_type: feature
+    feature_ids: [F1]
+    title: "Issue #594 — COR-after-time + input traceability"
+    status: in_progress
+    started: "2026-06-22"
+    completed: null
+    scope_summary: |
+      GitHub #594 — fix ICAO COR-after-time METAR decode (translationFailedTAC);
+      add ConversionResult.tac_input and Source TAC display in results UI.
+      Exclude = terminator (resolved), #555 siblings.
+    routing_plan:
+      required_stages:
+        - 16-evolve
+        - 07-build
+        - 08-verify-build
+        - 09-qa
+        - 10-e2e
+        - 11-verify-impl
+      skipped_stages:
+        - 01-requirements
+        - 02-verify-plan
+        - 03-plan-tooling
+        - 04-tech-plan
+        - 05-verify-tech
+        - 06-tech-tooling
+        - 12-verify-deploy
+        - 13-deploy-smoke
+    current_stage: 11-verify-impl
+    stages:
+      16-evolve:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        artifacts_updated:
+          - docs/evolve-decisions.md
+          - docs/API.md
+          - docs/api-contract.md
+          - docs/test-plan.md
+          - docs/sessions/S002-issue-594-feedback/reports/evolve-summary.md
+      07-build:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+      08-verify-build:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        report: docs/sessions/S002-issue-594-feedback/reports/verification-report.md
+      09-qa:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        report: docs/sessions/S002-issue-594-feedback/reports/qa-report.md
+        overall: pass
+      10-e2e:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        report: docs/sessions/S002-issue-594-feedback/reports/e2e-report.md
+        overall: pass
+      11-verify-impl:
+        status: completed
+        started: "2026-06-22"
+        completed: "2026-06-22"
+        overall: approved
+        notes: "User approved TC-001b acceptance criteria"
+    gates:
+      a_to_b: waived
+      b_to_c: waived
+      c_to_d: passed
+      deploy: pending
+    checkpoints:
+      phase_a: waived
+      phase_b: waived
+      phase_c: passed
+      phase_d: passed
+      deploy: pending
+    artifacts:
+      - path: docs/evolve-decisions.md
+        status: completed
+      - path: docs/sessions/S002-issue-594-feedback/reports/evolve-summary.md
         status: completed
     issues: []
 
