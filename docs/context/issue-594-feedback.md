@@ -12,7 +12,7 @@ Follow-up tester feedback ([#594](https://github.com/joseph-c-mcguire/metar-to-I
 | ID | Category | Decision |
 |----|----------|----------|
 | R1 | Uncertainty | **`=` terminator** — reporter says resolved; no implementation work unless repro reappears |
-| R2 | Decision | **COR fix** — GIFTs `metarDecoder` grammar/header fix **plus** defensive backend preprocessor to normalize COR before decode |
+| R2 | Decision | **COR fix** — GIFTs `metarDecoder` TPG grammar extension (`Type Cor? Ident ITime Cor?`) so ICAO COR-after-time headers decode without a backend preprocessor |
 | R3 | Decision | **Traceability** — add `tac_input` to `ConversionResult` API and display original TAC in results UI |
 | R4 | Scope | **#594 bundle** — COR (F1/GIFTs) + traceability (F1 UI); exclude unrelated #555 items already deferred in S001 |
 

@@ -27,7 +27,7 @@ Parent feedback: [#555](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issue
 
 | ID | Decision |
 |----|----------|
-| R2 | GIFTs decoder fix + backend COR preprocessor |
+| R2 | GIFTs decoder TPG grammar fix (COR-after-time); no backend preprocessor |
 | R3 | `tac_input` on API + TAC display in UI |
 | R4 | #594 only — exclude #555 deferred items |
 

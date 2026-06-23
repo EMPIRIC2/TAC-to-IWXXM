@@ -54,7 +54,7 @@ Traceability: `ConversionResult` has no `tac_input` field; `FileConverter` store
 |------|---------|--------|
 | docs/feature-list.md | F1 conversion | in scope |
 | ICAO Annex 3 COR placement | after time group | **implementation drift** in GIFTs grammar |
-| docs/api-contract.md | ConversionResult | **gap** — no tac echo field |
+| docs/api-contract.md | ConversionResult | **gap** — no TAC echo field |
 | REQ-016 | migration | no unrelated rewrites |
 
 ## Verification plan
