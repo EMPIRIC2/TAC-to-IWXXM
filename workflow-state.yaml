@@ -47,15 +47,15 @@ active_session:
     - stage: 10-e2e
       mode: delta
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 11-verify-impl
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 12-verify-deploy
       required: false
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 13-deploy-smoke
       required: false
@@ -299,9 +299,9 @@ stages:
 
   11-verify-impl:
     status: completed
-    started_at: "2026-06-22T22:00:00Z"
-    completed_at: "2026-06-22T23:00:00Z"
-    session_id: S002-issue-594-feedback
+    started_at: "2026-06-23T00:00:00Z"
+    completed_at: "2026-06-23T12:00:00Z"
+    session_id: S003-supabase-keys-config
     substeps:
       collect_results:
         status: completed
@@ -309,26 +309,27 @@ stages:
         status: completed
       journey_signoff:
         status: completed
-        approved: 1
+        approved: 2
         flagged: 0
-        total: 1
+        total: 2
+        notes: "UJ-003 + UJ-OPS-001 approved; T3 auth waived to 12-verify-deploy"
       feature_approval:
         status: completed
-        approved: 1
+        approved: 2
         flagged: 0
-        total: 1
+        total: 2
       fixes_applied:
         status: completed
-        notes: "None required — user approved as-is"
+        notes: "None required — user approved with T3 waiver"
       scope_analysis:
         status: completed
       summary:
         status: completed
-    report: docs/sessions/S002-issue-594-feedback/reports/verify-impl.md
+    report: docs/sessions/S003-supabase-keys-config/reports/verify-impl.md
     notes:
-      - "S002 / EV-003 / GitHub #594 — user approved UJ-001 and F1 delta (TC-001b)"
-      - "T3 live deferred until post-merge deploy"
-      - "S001 / EV-001 signoff: docs/sessions/S001-convert-send-buttons/reports/verify-impl.md"
+      - "S003 / BUG-2026-06-23 — user approved M4+F3 delta; T3 auth + UI E2E deferred"
+      - "08-verify-build + 09-qa still pending on routing plan"
+      - "Next: 12-verify-deploy (Render key rotation)"
 
   10-e2e:
     status: completed
@@ -354,6 +355,7 @@ stages:
     notes:
       - "Overall FAIL — E2E-001 schema path regression (2 integration tests); E2E-002 staging /auth/* not deployed"
       - "T2 product journeys green locally; mocks passing T0 ≠ production UI connected (H4/H5 now verified on staging)"
+      - "S003 delta 2026-06-23: auth API integration PASS; login UI FAIL (disableAuth in config); T3 auth BLOCKED (legacy keys disabled on Render) — docs/sessions/S003-supabase-keys-config/reports/e2e-report.md"
 
   08-verify-build:
     status: completed
@@ -394,17 +396,15 @@ stages:
 
   12-verify-deploy:
     status: completed
-    started_at: "2026-06-22T23:45:00Z"
-    completed_at: "2026-06-23T02:55:00Z"
-    session_id: S002-issue-594-feedback
-    report: docs/sessions/S002-issue-594-feedback/reports/deploy-checklist.md
+    started_at: "2026-06-23T12:00:00Z"
+    completed_at: "2026-06-23T12:30:00Z"
+    session_id: S003-supabase-keys-config
+    report: docs/sessions/S003-supabase-keys-config/reports/deploy-checklist.md
     notes:
       - "S001 delta — static+api Render; H0c/H4/H5 PASS on live staging"
       - "E2E-002 resolved — /auth/* routes present on deployed API"
-      - "S001 Convert&Send UI confirmed in live frontend bundle"
-      - "Risk/rollback prompts skipped — default mitigations applied"
       - "S002 / EV-003 — user approved mitigations + rollback; H0c/H4/H5 PASS pre-merge baseline"
-      - "S002 requires API + frontend redeploy after PR #685 merge"
+      - "S003 — strategy verified; user approved mitigations + rollback; deploy blocked on config/ Docker COPY + key rotation"
 
 stages_pending: []
 
@@ -509,6 +509,13 @@ decisions_log:
     date: "2026-06-23"
     topic: Environment sync
     decision: "Env sync across Render, Supabase, and local with canonical names and verify tooling"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+  - id: S003-V1
+    stage: 11-verify-impl
+    date: "2026-06-23"
+    topic: T3 auth + UI E2E waiver
+    decision: "User approved M4+F3 delta with T3 live auth and auth UI T2 deferred until 12-verify-deploy Render key rotation"
     status: confirmed
     session_id: S003-supabase-keys-config
 
@@ -830,6 +837,25 @@ artifacts:
     kind: requirements-report
     stage: 01-requirements
     session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/sessions/S003-supabase-keys-config/reports/e2e-report.md
+    kind: e2e-report
+    stage: 10-e2e
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+    overall: fail
+  - path: docs/sessions/S003-supabase-keys-config/reports/verify-impl.md
+    kind: verify-impl-report
+    session_id: S003-supabase-keys-config
+    stage: 11-verify-impl
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/implementation-verification.md
+    kind: verify-impl-report
+    session_id: S003-supabase-keys-config
+    stage: 11-verify-impl
     created_at: "2026-06-23"
     status: complete
   - path: config/prod.json

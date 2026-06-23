@@ -1,53 +1,32 @@
-# Implementation Verification Report — Stage 11
+# Implementation Verification (standing summary)
 
-> Generated: 2026-06-22  
-> Session: S002-issue-594-feedback | Evolve cycle: EV-003  
-> Branch: `fix/S002-issue-594-feedback`  
-> Status: **APPROVED**
+> **Last updated**: 2026-06-23  
+> **Active session**: S003-supabase-keys-config  
+> **Branch**: `fix/supabase-service-key-leak`
 
----
+## Current cycle — S003 Supabase keys & config
 
-## Implementation Verification Complete
+| Item | Status |
+|------|--------|
+| Stage 11 | **Completed** — user approved 2026-06-23 |
+| Features | M4 delta, F3 auth delta — **2 / 2 approved** |
+| E2E overall | FAIL — T3 + auth UI waived |
+| T3 waiver | Auth UI T2 + live login deferred to 12-verify-deploy |
 
-| Category | Status |
-|----------|--------|
-| Features verified | **1 / 1** |
-| Approved | **1** |
-| Fixed | 0 |
-| Deferred | 0 |
-| QA status | **PASS** |
-| E2E status | **PASS** (T0 + T2) |
-| Acceptance (TC-001b) | **PASS** |
+Full report: [docs/sessions/S003-supabase-keys-config/reports/verify-impl.md](sessions/S003-supabase-keys-config/reports/verify-impl.md)
 
----
+### Remaining before production deploy
 
-## User signoff
-
-| Journey / Feature | Decision |
-|-------------------|----------|
-| UJ-001 — Convert METAR via UI (#594 delta) | **Approved** |
-| F1 — COR-after-time + input traceability | **Approved** |
+1. **12-verify-deploy** — Render `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` rotation + redeploy
+2. **08-verify-build** — shared package coverage gate (96% → 98%)
+3. **09-qa** — auth UI E2E config overlay, H0i CORS fixture
 
 ---
 
-## Scope
+## Prior cycles (completed)
 
-| Metric | Value |
-|--------|-------|
-| Features in EV-003 scope | 1 |
-| Scope creep | 0 |
-| Scope gaps | 0 |
-
----
-
-## Deploy gate
-
-- ✓ QA checks green
-- ✓ E2E behaviors verified locally
-- ✓ Implementation verified by user
-- ✓ Deploy strategy verified (12-verify-deploy)
-- ○ T3 live verification deferred until post-merge deploy
-
-**Next step:** Merge PR #685 → **13-deploy-smoke** (T3 COR-after-time + Source TAC on Render)
-
-Full session report: `docs/sessions/S002-issue-594-feedback/reports/verify-impl.md`
+| Session | Feature | Status | Report |
+|---------|---------|--------|--------|
+| S001 | F1 — Convert & Convert&Send (#656) | Approved | [verify-impl](sessions/S001-convert-send-buttons/reports/verify-impl.md) |
+| S002 | F1 — COR-after-time + Source TAC (#594) | Approved | [verify-impl](sessions/S002-issue-594-feedback/reports/verify-impl.md) |
+| S003 | M4 + F3 — Supabase keys & config | Approved (T3 waived) | [verify-impl](sessions/S003-supabase-keys-config/reports/verify-impl.md) |
