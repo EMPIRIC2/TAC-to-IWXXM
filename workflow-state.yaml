@@ -21,19 +21,19 @@ active_session:
       skip_rationale: null
     - stage: bug-investigation
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 14-hotfix
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 16-evolve
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 07-build
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 08-verify-build
       required: true
@@ -56,7 +56,7 @@ active_session:
       required: false
       status: pending
       skip_rationale: null
-  current_stage: bug-investigation
+  current_stage: 08-verify-build
   started_at: "2026-06-22"
   context_briefs:
     - docs/context/issue-594-feedback.md
@@ -246,9 +246,9 @@ stages:
         verify_connectivity_sh: pass
 
   07-build:
-    status: in_progress
+    status: completed
     started_at: "2026-06-14T12:45:00Z"
-    completed_at: null
+    completed_at: "2026-06-22T02:30:00Z"
     substeps:
       task_loop:
         status: completed
@@ -826,7 +826,7 @@ evolve_cycles:
         - 06-tech-tooling
         - 12-verify-deploy
         - 13-deploy-smoke
-    current_stage: 11-verify-impl
+    current_stage: 08-verify-build
     stages:
       16-evolve:
         status: completed
@@ -884,8 +884,12 @@ evolve_cycles:
     issues: []
 
 git_history:
-  current_branch: feat/S001-convert-send-buttons
+  current_branch: fix/S002-issue-594-feedback
   branches:
+    - name: fix/S002-issue-594-feedback
+      base: main
+      status: active
+      created_at: "2026-06-22T00:00:00Z"
     - name: phase/1-monorepo-scaffold
       base: main
       status: active
@@ -993,6 +997,48 @@ git_history:
       stage: "07-build"
       files_changed: 15
       timestamp: "2026-06-20T15:59:00Z"
+    - sha: 591373e
+      branch: fix/S002-issue-594-feedback
+      message: "[EV-003] test: add COR-after-time bug repro for #594"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 2
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: 5b384aa
+      branch: fix/S002-issue-594-feedback
+      message: "[EV-003] fix: accept ICAO COR-after-time in GIFTs grammar"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 2
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: 156b57d
+      branch: fix/S002-issue-594-feedback
+      message: "[EV-003] feat: echo tac_input on ConversionResult API"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 2
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: 953c402
+      branch: fix/S002-issue-594-feedback
+      message: "[EV-003] feat: show Source TAC in conversion results UI"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 4
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: 1fa495e
+      branch: fix/S002-issue-594-feedback
+      message: "[EV-003] docs: spec deltas and session artifacts for #594"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 13
+      timestamp: "2026-06-22T02:30:00Z"
+    - sha: b83762e
+      branch: fix/S002-issue-594-feedback
+      message: "chore: record EV-003 build state for S002-issue-594-feedback"
+      stage: "07-build"
+      session_id: S002-issue-594-feedback
+      files_changed: 1
+      timestamp: "2026-06-22T02:30:00Z"
 
 pr_review_cycles:
   - id: PRR-001
