@@ -90,12 +90,16 @@ DROP TABLE IF EXISTS evaluation_results CASCADE;
 DROP TABLE IF EXISTS evaluation_jobs CASCADE;
 ```
 
-### Migrations
-For production systems, consider using a migration tool like:
-- Supabase Migrations (`supabase db push`)
-- Flyway
-- Liquibase
-- Custom versioned migration scripts
+For production systems, use repo-root Supabase migrations:
+
+```bash
+make supabase-reset          # local: apply migrations + seed
+supabase link --project-ref ktvxijislbtgqapllmuk
+make supabase-push           # remote: push pending migrations
+```
+
+Canonical SQL: `supabase/migrations/` (timestamp-ordered). See
+[Supabase local development](https://supabase.com/docs/guides/local-development/overview).
 
 ## Related Documentation
 

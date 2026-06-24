@@ -386,7 +386,7 @@ stages:
     status: completed
     started: "2026-06-22"
     completed: "2026-06-23"
-    last_cycle: PRR-005
+    last_cycle: PRR-006
 
   19-address-pr-review:
     status: completed
@@ -1364,6 +1364,34 @@ pr_review_cycles:
     notes:
       - "Self-approval blocked by GitHub; posted COMMENT with APPROVE recommendation"
       - "Inline comment on FileConverter.tsx L265 (result ordering)"
+
+  - id: PRR-006
+    pr_number: 686
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/686
+    title: "[hotfix] Supabase service key leak remediation"
+    status: completed
+    started: "2026-06-23"
+    completed: "2026-06-23"
+    head_ref: fix/supabase-service-key-leak
+    base_ref: main
+    verdict: REQUEST_CHANGES
+    blockers: 1
+    advisories: 5
+    praise: 3
+    ci_status: failure
+    session_id: S003-supabase-keys-config
+    subagents:
+      bugbot: failed_diff
+      security_review: failed_diff
+    artifacts:
+      - path: docs/sessions/S003-supabase-keys-config/reports/pr-review.md
+        note: session report
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/686#pullrequestreview-4557621604
+    notes:
+      - "Self request-changes blocked by GitHub; posted COMMENT with REQUEST_CHANGES recommendation"
+      - "Validate fails Prettier on apps/frontend/public/config.json; local make validate-ci reproduces"
 
 pr_remediation_cycles:
   - id: PRM-001

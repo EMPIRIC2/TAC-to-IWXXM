@@ -288,6 +288,28 @@ parse_args "$@"
 
 load_repo_env
 
+sync_disable_auth_from_config() {
+  if [[ -n "${DISABLE_AUTH+x}" ]]; then
+    return 0
+  fi
+
+  local config_env="${METAR_CONFIG_ENV:-local}"
+  local config_file="${ROOT_DIR}/config/${config_env}.json"
+  if [[ ! -f "${config_file}" ]]; then
+    return 0
+  fi
+
+  DISABLE_AUTH="$(
+    python3 - <<PY
+import json
+with open("${config_file}", encoding="utf-8") as handle:
+    cfg = json.load(handle)
+print("true" if cfg.get("api", {}).get("disableAuth") else "false")
+PY
+  )"
+  export DISABLE_AUTH
+}
+
 trap cleanup INT TERM EXIT
 
 run_backend() {
@@ -342,6 +364,8 @@ run_frontend() {
 }
 
 preflight_ports
+
+sync_disable_auth_from_config
 
 echo "Starting merged API (backend + auth) on :18001 (reload enabled)..."
 run_backend &

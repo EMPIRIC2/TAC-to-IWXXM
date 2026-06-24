@@ -121,14 +121,32 @@ make test-live-connectivity
 
 ## Database advisor remediation (METAR tables)
 
-Migrations **not yet applied** in production (S003-R3). Apply in order via Supabase SQL Editor
-or `supabase db push`:
+Migrations live in **`supabase/migrations/`** (timestamp-ordered, per
+[Supabase local development](https://supabase.com/docs/guides/local-development/overview)).
+
+**Local:** `make supabase-reset` applies all migrations + `supabase/seed.sql`.
+
+**Production:** migrations **004–006 not yet applied** (S003-R3). Migrations **001–003** may
+already exist on the live database from earlier manual deploys — do **not** re-run
+`20250614000001`–`000003` on prod unless you have confirmed they are missing.
+
+Apply advisor migrations via:
+
+```bash
+supabase link --project-ref ktvxijislbtgqapllmuk   # once, from repo root
+bash scripts/supabase/apply-advisor-migrations.sh --apply
+```
+
+The apply script pushes only **004–006** (advisor remediation). For a greenfield
+database, run `make supabase-reset` locally or `supabase db push` for the full chain.
+
+Or paste into Supabase Dashboard → SQL Editor in order:
 
 | Migration | File | Addresses |
 |-----------|------|-----------|
-| 003 | `apps/frontend/supabase/migrations/003_supabase_advisor_remediation.sql` | `auth_rls_initplan`, FK indexes, `translation_statistics` RLS, `search_path` on METAR functions |
-| 004 | `apps/frontend/supabase/migrations/004_supabase_advisor_policy_cleanup.sql` | `multiple_permissive_policies` on `user_profiles` |
-| 005 | `apps/frontend/supabase/migrations/005_supabase_advisor_remediation.sql` | `function_search_path_mutable`, evaluation_results RLS |
+| 004 | `supabase/migrations/20250614000004_supabase_advisor_remediation.sql` | `auth_rls_initplan`, FK indexes, `translation_statistics` RLS, `search_path` on METAR functions |
+| 005 | `supabase/migrations/20250614000005_supabase_advisor_policy_cleanup.sql` | `multiple_permissive_policies` on `user_profiles` |
+| 006 | `supabase/migrations/20250614000006_supabase_advisor_remediation.sql` | `function_search_path_mutable`, evaluation_results RLS |
 
 Post-apply verification in Supabase **Database → Advisors**:
 

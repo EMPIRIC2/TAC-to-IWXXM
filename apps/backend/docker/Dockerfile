@@ -30,6 +30,7 @@ COPY packages/shared packages/shared
 COPY packages/gifts packages/gifts
 COPY packages/auth packages/auth
 COPY apps/backend apps/backend
+COPY config config
 COPY vendor/schemas vendor/schemas
 
 # Backend still resolves schemas/iwxxm; vendor tree is authoritative (ADR-001).

@@ -2,15 +2,12 @@
   "environment": "e2e",
   "api": {
     "baseUrl": "http://localhost:18001",
-    "corsOrigins": [
-      "http://localhost:18000"
-    ],
+    "corsOrigins": ["http://localhost:18000"],
     "frontendUrl": "http://localhost:18000",
     "disableAuth": false
   },
   "supabase": {
-    "url": "https://ktvxijislbtgqapllmuk.supabase.co",
-    "publishableKey": "test"
+    "url": "https://ktvxijislbtgqapllmuk.supabase.co"
   },
   "validation": {
     "wmoOnline": true,

@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-# Apply METAR Supabase advisor remediation migrations (003–005) to the linked project.
+# Apply METAR Supabase advisor remediation migrations to the linked remote project.
+#
+# Canonical migrations live in supabase/migrations/ (timestamp-ordered).
+# Local development: use `bash scripts/supabase/local-dev.sh reset` instead.
 #
 # Prerequisites:
 #   - Supabase CLI installed and logged in (`supabase login`)
-#   - Project linked: `supabase link --project-ref ktvxijislbtgqapllmuk`
+#   - Project linked from repo root: `supabase link --project-ref ktvxijislbtgqapllmuk`
 #
 # Usage:
 #   bash scripts/supabase/apply-advisor-migrations.sh          # dry-run list
@@ -12,7 +15,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-MIGRATIONS_DIR="$ROOT/apps/frontend/supabase/migrations"
+MIGRATIONS_DIR="$ROOT/supabase/migrations"
 PROJECT_REF="${SUPABASE_PROJECT_REF:-ktvxijislbtgqapllmuk}"
 
 APPLY=0
@@ -20,13 +23,14 @@ if [[ "${1:-}" == "--apply" ]]; then
   APPLY=1
 fi
 
-echo "METAR Supabase advisor migrations (project: ${PROJECT_REF})"
+echo "METAR Supabase migrations (project: ${PROJECT_REF})"
+echo "Directory: ${MIGRATIONS_DIR}"
 echo
 
 for file in \
-  "$MIGRATIONS_DIR/003_supabase_advisor_remediation.sql" \
-  "$MIGRATIONS_DIR/004_supabase_advisor_policy_cleanup.sql" \
-  "$MIGRATIONS_DIR/005_supabase_advisor_remediation.sql"
+  "$MIGRATIONS_DIR"/20250614000004_supabase_advisor_remediation.sql \
+  "$MIGRATIONS_DIR"/20250614000005_supabase_advisor_policy_cleanup.sql \
+  "$MIGRATIONS_DIR"/20250614000006_supabase_advisor_remediation.sql
 do
   [[ -f "$file" ]] || { echo "Missing: $file" >&2; exit 1; }
   echo "  - $(basename "$file")"
@@ -50,7 +54,7 @@ if ! command -v supabase >/dev/null 2>&1; then
   exit 1
 fi
 
-cd "$ROOT/apps/frontend"
+cd "$ROOT"
 echo "Running supabase db push..."
 supabase db push --project-ref "$PROJECT_REF"
 

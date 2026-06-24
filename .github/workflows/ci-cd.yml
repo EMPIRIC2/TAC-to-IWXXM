@@ -170,6 +170,7 @@ jobs:
           docker compose up -d backend frontend
           sleep 30
           uv run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_gifts_backend_integration.py tests/test_integration.py -v
+          cd apps/backend && uv run pytest tests/integration/test_h0i_connectivity.py -v --no-cov
           cd apps/backend && uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
           docker compose down
 

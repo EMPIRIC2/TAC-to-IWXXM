@@ -76,3 +76,8 @@ export function getSupabaseUrl(): string {
 export function getSupabasePublishableKey(): string {
   return getRuntimeConfig().supabase.publishableKey || '';
 }
+
+/** Whether auth UI and enforcement are bypassed (local dev only). */
+export function isAuthDisabled(): boolean {
+  return getRuntimeConfig().api.disableAuth === true;
+}

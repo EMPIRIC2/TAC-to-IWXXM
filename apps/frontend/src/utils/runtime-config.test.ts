@@ -62,4 +62,24 @@ describe('runtime-config', () => {
     expect(config.supabase.url).toBe('https://demo.supabase.co');
     expect(runtime.getSupabasePublishableKey()).toBe('publishable-key');
   });
+
+  it('reports disableAuth from loaded config', async () => {
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: vi.fn().mockResolvedValueOnce({
+        environment: 'e2e',
+        api: {
+          baseUrl: 'http://api.test',
+          frontendUrl: 'http://frontend.test',
+          disableAuth: false,
+        },
+        supabase: { url: 'https://project.supabase.co' },
+      }),
+    });
+
+    const runtime = await import('./runtime-config');
+    await runtime.initRuntimeConfig();
+
+    expect(runtime.isAuthDisabled()).toBe(false);
+  });
 });

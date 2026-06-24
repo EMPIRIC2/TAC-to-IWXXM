@@ -22,7 +22,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts coverage-shared \
 	coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
-	install-hooks pre-commit-run
+	install-hooks pre-commit-run \
+	supabase-start supabase-stop supabase-reset supabase-status supabase-push \
 
 # --- Monorepo workspace ---
 
@@ -166,14 +167,14 @@ test-e2e-playwright:
 	cd apps/e2e && $(PNPM) exec playwright test
 
 test-e2e-playwright-smoke:
-	cd apps/e2e && $(PNPM) exec playwright test \
+	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test \
 		auth-service-integration.e2e.spec.ts \
 		tac-file-conversion.e2e.spec.ts
 
 test-e2e-t2-product:
-	cd apps/e2e && $(PNPM) exec playwright test \
-		tac-file-conversion.e2e.spec.ts \
-		auth.e2e.spec.ts
+	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test tac-file-conversion.e2e.spec.ts
+	cd apps/e2e && METAR_CONFIG_ENV=e2e DISABLE_AUTH=false PLAYWRIGHT_API_BASE_URL=http://localhost:18001 \
+		$(PNPM) exec playwright test auth.e2e.spec.ts
 
 # --- Live E2E harness (H3–H6, manual signoff) ---
 
@@ -299,7 +300,8 @@ test-integration:
 		sleep 2; \
 	done
 	$(UV) run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_gifts_backend_integration.py tests/test_integration.py -v
-	cd apps/backend && $(UV) run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q
+	cd apps/backend && $(UV) run pytest tests/integration/test_h0i_connectivity.py -v --no-cov
+	cd apps/backend && $(UV) run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
 	$(COMPOSE) down
 
 coverage: coverage-modules
@@ -319,10 +321,27 @@ validate-yaml:
 validate-fast: format-check typecheck lint secrets-check validate-yaml
 
 config-guard:
-	$(UV) run pytest tests/test_config_placeholders.py -v
+	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v
 
 env-check:
 	bash scripts/env/verify-sync.sh
+
+# --- Supabase local stack (repo root supabase/) ---
+
+supabase-start:
+	bash scripts/supabase/local-dev.sh start
+
+supabase-stop:
+	bash scripts/supabase/local-dev.sh stop
+
+supabase-reset:
+	bash scripts/supabase/local-dev.sh reset
+
+supabase-status:
+	bash scripts/supabase/local-dev.sh status
+
+supabase-push:
+	bash scripts/supabase/apply-advisor-migrations.sh --apply
 
 validate-ci: validate-fast config-guard env-check audit-frontend
 

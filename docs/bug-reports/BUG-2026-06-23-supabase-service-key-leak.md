@@ -56,7 +56,7 @@ remains on GitHub as unreachable object.
 6. `apps/backend/evaluation_store.py` — `DATABASE_URL` for eval jobs (no service role REST)
 7. `render.yaml`, `docker-compose.yml`, CI — canonical `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY`
 8. `scripts/env/verify-sync.sh` + `make env-check` — local/Render/Supabase drift gate
-9. Migration `005_supabase_advisor_remediation.sql` — evaluation_results insert-own + function search_path
+9. Migration `supabase/migrations/20250614000006_supabase_advisor_remediation.sql` — evaluation_results insert-own + function search_path
 10. Frontend runtime `/config.json` bootstrap (ADR-010 / S003-R2)
 
 ## Operator (post-merge)

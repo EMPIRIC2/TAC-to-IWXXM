@@ -2,8 +2,8 @@ import type { FullConfig } from '@playwright/test';
 
 const DEFAULT_WAIT_TIMEOUT_MS = 120000;
 const POLL_INTERVAL_MS = 1000;
-const DEFAULT_FRONTEND_URL = 'http://localhost:5173';
-const DEFAULT_API_BASE_URL = 'http://localhost:8001';
+const DEFAULT_FRONTEND_URL = 'http://localhost:18000';
+const DEFAULT_API_BASE_URL = 'http://localhost:18001';
 
 function isLocalHttpUrl(url: string): boolean {
   return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(url);

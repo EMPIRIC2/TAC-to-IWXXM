@@ -107,6 +107,24 @@ selected by `METAR_CONFIG_ENV` (default `local`).
 Verify alignment: `make env-check`. Operator sync: [env-sync-runbook.md](env-sync-runbook.md),
 [env-contract.md](env-contract.md).
 
+### Supabase local stack (optional)
+
+Schema migrations live at **`supabase/migrations/`** (timestamp-ordered) with
+`supabase/seed.sql`, following [Supabase local development](https://supabase.com/docs/guides/local-development/overview).
+
+```bash
+npm install -g supabase    # or see Supabase CLI docs
+make supabase-start        # Docker required
+make supabase-reset        # apply migrations + seed
+make supabase-status       # local URL + keys for .env
+```
+
+For local auth testing, point `config/local.json` → `supabase.url` to `http://127.0.0.1:54321`
+and copy publishable/secret keys from `make supabase-status`. Production push:
+`supabase link --project-ref ktvxijislbtgqapllmuk` then `make supabase-push`.
+
+RLS advisor migrations (004–006) target METAR tables only — see env-sync-runbook §Database advisor.
+
 ## Workspace commands
 
 ```bash

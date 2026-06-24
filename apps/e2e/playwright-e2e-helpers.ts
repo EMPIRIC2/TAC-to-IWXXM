@@ -81,10 +81,23 @@ export async function openConverterWithMockSession(page: Page): Promise<void> {
   ).toBeVisible({ timeout: 10000 });
 }
 
-/** Local T2 path: mock session when DISABLE_AUTH=true; otherwise real admin login. */
+/** Local T2 path: mock session when runtime config disables auth; otherwise real admin login. */
 export async function openConverterForE2e(page: Page): Promise<void> {
-  const disableAuth = (process.env.DISABLE_AUTH ?? 'true').toLowerCase() !== 'false';
-  if (disableAuth) {
+  const envDisableAuth =
+    (process.env.DISABLE_AUTH ?? 'true').toLowerCase() !== 'false';
+
+  const disableAuth = await page
+    .evaluate(async () => {
+      const response = await fetch('/config.json', { cache: 'no-store' });
+      if (!response.ok) {
+        return null;
+      }
+      const cfg = (await response.json()) as { api?: { disableAuth?: boolean } };
+      return cfg.api?.disableAuth === true;
+    })
+    .catch(() => null);
+
+  if (disableAuth ?? envDisableAuth) {
     await openConverterWithMockSession(page);
     return;
   }
