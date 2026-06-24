@@ -112,6 +112,16 @@ Production config repro: Render API had only `SUPABASE_ANON_KEY` (JWT) — confi
 
 ## Follow-ups
 
-- **Frontend static site** still serves legacy JWT in `/config.json` — update `SUPABASE_PUBLISHABLE_KEY` on `metar-to-iwxxm-frontend-v4-web` and redeploy when convenient (login works via API; direct Supabase client calls may still fail)
-- Remove stale `SUPABASE_ANON_KEY` from Render API env (optional cleanup)
-- Commit code hardening + open PR when ready
+| Item | Status |
+|------|--------|
+| Code hardening committed + PR #689 (CI green) | done |
+| Remove stale `SUPABASE_ANON_KEY` from Render API env | done (HTTP 204) |
+| GitHub secrets updated (`FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `DATABASE_URL`, `FRONTEND_VITE_SUPABASE_URL`) | done |
+| Frontend `/config.json` still bakes legacy JWT (image built in CI) — rebuilds with new key automatically on next `main` push (PR #689 merge) | pending merge |
+| Rotate the Render API key exposed in chat | **pending (user)** |
+
+**Note:** The live frontend is image-based (`ghcr.io/.../frontend:main-latest`); its
+`config.json` publishable key is baked at CI build time from
+`FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`. Render env vars on the static service do
+not affect it. Merging PR #689 to `main` triggers the frontend image rebuild + Render
+redeploy with the corrected key.
