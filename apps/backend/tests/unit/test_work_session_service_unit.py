@@ -287,3 +287,46 @@ def test_client_for_token_missing_config(monkeypatch: pytest.MonkeyPatch) -> Non
     with pytest.raises(HTTPException) as exc:
         WorkSessionService("token")
     assert exc.value.status_code == 503
+
+
+def test_single_row_from_list() -> None:
+    assert _single_row([ROW]) == ROW
+
+
+def test_row_list_skips_non_dict_entries() -> None:
+    assert _row_list([ROW, "skip-me", None, 42]) == [ROW]
+
+
+def test_create_session_preserves_explicit_status(mock_client: MagicMock) -> None:
+    wip_row = {**ROW, "status": "wip"}
+    mock_client.table.return_value = _FakeQuery(SimpleNamespace(data=wip_row))
+    service = WorkSessionService("token")
+    created = service.create_session(
+        str(uuid4()),
+        WorkSessionCreate(manual_tac="METAR", status=WorkSessionStatus.WIP),
+    )
+    assert created.status == WorkSessionStatus.WIP
+
+
+def test_soft_delete_db_error(mock_client: MagicMock) -> None:
+    class _ErrorQuery(_FakeQuery):
+        def execute(self) -> SimpleNamespace:
+            raise RuntimeError("delete failed")
+
+    mock_client.table.return_value = _ErrorQuery(SimpleNamespace(data=ROW))
+    service = WorkSessionService("token")
+    with pytest.raises(HTTPException) as exc:
+        service.soft_delete(SESSION_ID)
+    assert exc.value.status_code == 502
+
+
+def test_restore_session_db_error(mock_client: MagicMock) -> None:
+    class _ErrorQuery(_FakeQuery):
+        def execute(self) -> SimpleNamespace:
+            raise RuntimeError("restore failed")
+
+    mock_client.table.return_value = _ErrorQuery(SimpleNamespace(data=ROW))
+    service = WorkSessionService("token")
+    with pytest.raises(HTTPException) as exc:
+        service.restore_session(SESSION_ID)
+    assert exc.value.status_code == 502

@@ -95,9 +95,11 @@ Post-migration compose: **backend + frontend** (two services).
 | Image | Context | Dockerfile |
 |-------|---------|------------|
 | API | repo root | `apps/backend/docker/Dockerfile` |
-| Frontend | `apps/frontend` | `apps/frontend/Dockerfile` |
+| Frontend | repo root | `apps/frontend/Dockerfile` |
 
 API image must include: apps/backend, packages/auth, packages/gifts, packages/shared, vendor/schemas.
+
+Frontend image must include: apps/frontend, packages/shared (pnpm workspace dep `@metar/shared`).
 
 ## Health Checks
 

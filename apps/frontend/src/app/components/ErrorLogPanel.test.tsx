@@ -37,4 +37,22 @@ describe('ErrorLogPanel', () => {
     await user.click(screen.getByRole('button', { name: /conversion log/i }));
     expect(screen.queryByText('Invalid METAR syntax')).not.toBeInTheDocument();
   });
+
+  it('defaults missing issue severity to error', () => {
+    render(
+      <ErrorLogPanel
+        log={{
+          errors: [],
+          issues: [
+            {
+              source: 'parser',
+              message: 'Missing severity field',
+            },
+          ],
+        }}
+      />,
+    );
+
+    expect(screen.getByText(/\[error\] parser: Missing severity field/)).toBeInTheDocument();
+  });
 });

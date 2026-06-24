@@ -114,4 +114,62 @@ describe('WorkHistorySidebar', () => {
       expect(screen.getByText('Failed to load history')).toBeInTheDocument();
     });
   });
+
+  it('omits My METARs link when onOpenHistory is not provided', async () => {
+    render(
+      <WorkHistorySidebar accessToken="token" onSelectSession={onSelectSession} />,
+    );
+
+    await waitFor(() => expect(screen.getByText('KDEN WIP')).toBeInTheDocument());
+    expect(screen.queryByRole('button', { name: /my metars/i })).not.toBeInTheDocument();
+  });
+
+  it('highlights only the active session', async () => {
+    mockList.mockResolvedValue({
+      items: [
+        sampleSession({ id: 'sess-1', title: 'Active session' }),
+        sampleSession({ id: 'sess-2', title: 'Other session', status: 'draft' }),
+      ],
+      total: 2,
+      page: 1,
+      limit: 5,
+    });
+
+    render(
+      <WorkHistorySidebar
+        accessToken="token"
+        activeSessionId="sess-2"
+        onSelectSession={onSelectSession}
+      />,
+    );
+
+    await waitFor(() => expect(screen.getByText('Other session')).toBeInTheDocument());
+
+    const otherButton = screen.getByText('Other session').closest('button');
+    const activeButton = screen.getByText('Active session').closest('button');
+    expect(otherButton).toHaveClass('border-blue-500');
+    expect(activeButton).not.toHaveClass('border-blue-500');
+  });
+
+  it('falls back to raw status label for unknown statuses', async () => {
+    mockList.mockResolvedValue({
+      items: [
+        sampleSession({
+          status: 'archived' as WorkSession['status'],
+          title: 'Archived session',
+        }),
+      ],
+      total: 1,
+      page: 1,
+      limit: 5,
+    });
+
+    render(
+      <WorkHistorySidebar accessToken="token" onSelectSession={onSelectSession} />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/archived ·/i)).toBeInTheDocument();
+    });
+  });
 });

@@ -24,24 +24,27 @@ services:
 
   frontend:
     build:
-      context: ./apps/frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/frontend/Dockerfile
       target: dev
     container_name: metar-iwxxm-frontend
+    working_dir: /workspace/apps/frontend
     environment:
       - METAR_CONFIG_ENV=${METAR_CONFIG_ENV:-local}
       - SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}
     ports:
       - "${METAR_FRONTEND_HOST_PORT:-18000}:8000"
     volumes:
-      - ./apps/frontend:/app
+      - ./apps/frontend:/workspace/apps/frontend
+      - ./packages/shared:/workspace/packages/shared
       - ./config:/workspace/config:ro
       - ./scripts:/workspace/scripts:ro
-      - /app/node_modules
+      - /workspace/node_modules
+      - /workspace/apps/frontend/node_modules
     command: >
       sh -c "METAR_CONFIG_ENV=$${METAR_CONFIG_ENV:-local}
-      DEST_DIR=/app/public bash /workspace/scripts/frontend/prepare-config.sh
-      && npm run dev -- --host 0.0.0.0 --port 8000"
+      DEST_DIR=/workspace/apps/frontend/public bash /workspace/scripts/frontend/prepare-config.sh
+      && pnpm run dev -- --host 0.0.0.0 --port 8000"
     depends_on:
       backend:
         condition: service_healthy

@@ -198,4 +198,41 @@ describe('useWorkSessionSync', () => {
 
     expect(result.current.saveIndicator).toBe('error');
   });
+
+  it('resets debounce timer when scheduleAutoSave is called again', async () => {
+    const onSessionSaved = vi.fn();
+    const onSessionIdAssigned = vi.fn();
+
+    const { result } = renderHook(() =>
+      useWorkSessionSync({
+        accessToken: 'token',
+        sessionId: null,
+        sessionStatus: null,
+        onSessionSaved,
+        onSessionIdAssigned,
+      }),
+    );
+
+    act(() => {
+      result.current.scheduleAutoSave(snapshot);
+    });
+
+    await act(async () => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    act(() => {
+      result.current.scheduleAutoSave({ ...snapshot, manualInput: 'METAR KDEN' });
+    });
+
+    await act(async () => {
+      vi.advanceTimersByTime(2000);
+    });
+    expect(mockCreate).not.toHaveBeenCalled();
+
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+  });
 });

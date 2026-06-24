@@ -284,4 +284,43 @@ describe('FileConverter F5 workflow', () => {
     await user.click(screen.getByRole('button', { name: /sign in to save work/i }));
     expect(onRequestLogin).toHaveBeenCalled();
   });
+
+  it('hydrates converter from loaded work session including converted results', async () => {
+    render(
+      <FileConverter
+        onLogout={vi.fn()}
+        userEmail="user@example.com"
+        accessToken="token"
+        loadedWorkSession={
+          {
+            id: 'sess-hydrate',
+            status: 'wip',
+            title: 'KJFK',
+            manual_tac: 'METAR KJFK 121251Z 18012KT 10SM',
+            pending_files: [{ name: 'pending.txt', content: 'METAR PENDING' }],
+            converted_results: [
+              {
+                name: 'out.txt',
+                iwxxm_xml: '<iwxxm>hydrated</iwxxm>',
+                tac_input: 'METAR SOURCE',
+              },
+            ],
+            errors: ['partial warning'],
+            issues: [],
+            conversion_params: {},
+            kv_upload_key: null,
+            deleted_at: null,
+            user_id: 'u1',
+            created_at: '2026-06-24T00:00:00Z',
+            updated_at: '2026-06-24T00:00:00Z',
+          } as any
+        }
+      />,
+    );
+
+    expect(
+      screen.getByDisplayValue('METAR KJFK 121251Z 18012KT 10SM'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('<iwxxm>hydrated</iwxxm>')).toBeInTheDocument();
+  });
 });

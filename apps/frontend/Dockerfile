@@ -1,32 +1,33 @@
+# Frontend Dockerfile — monorepo root context (deploy.md §Docker Build Context)
 # Development stage
-FROM node:20-alpine AS dev
+FROM node:22-alpine AS dev
 
-WORKDIR /app
+WORKDIR /workspace
 
-# Accept development-time Vite environment variables
-ARG VITE_SUPABASE_URL
-ARG VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
-ARG VITE_APP_URL
-ARG VITE_API_BASE_URL
+RUN corepack enable
 
-ENV VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
-ENV VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}
-ENV VITE_APP_URL=${VITE_APP_URL}
-ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+# Workspace metadata (layer cache)
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages/shared/package.json packages/shared/package.json
+COPY apps/frontend/package.json apps/frontend/package.json
 
-COPY package.json package-lock.json* ./
-RUN npm install
+RUN pnpm install --frozen-lockfile --filter @metar/frontend...
 
-COPY . .
+COPY packages/shared packages/shared
+COPY apps/frontend apps/frontend
+
+WORKDIR /workspace/apps/frontend
 
 EXPOSE 8000
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["pnpm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "8000"]
 
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
-WORKDIR /app
+WORKDIR /workspace
+
+RUN corepack enable
 
 # Accept build arguments for Vite environment variables
 ARG VITE_SUPABASE_URL
@@ -34,23 +35,24 @@ ARG VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
 ARG VITE_APP_URL
 ARG VITE_API_BASE_URL
 
-# Set them as environment variables for the build
 ENV VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
 ENV VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}
 ENV VITE_APP_URL=${VITE_APP_URL}
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 
-# Copy package files
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages/shared/package.json packages/shared/package.json
+COPY apps/frontend/package.json apps/frontend/package.json
 
-# Install dependencies
-RUN npm install
+RUN pnpm install --frozen-lockfile --filter @metar/frontend...
 
-# Copy source code
-COPY . .
+COPY packages/shared packages/shared
+COPY apps/frontend apps/frontend
 
-# Generate runtime config.json from VITE_* build args (Alpine lacks bash/python for
-# prepare-config.sh; Docker context is apps/frontend only — no repo config/scripts).
+WORKDIR /workspace/apps/frontend
+
+# Generate runtime config.json from VITE_* build args (Alpine lacks bash for
+# prepare-config.sh; Docker build uses repo root context).
 RUN node -e "\
 const fs = require('fs'); \
 const cfg = { \
@@ -70,17 +72,13 @@ fs.mkdirSync('public', { recursive: true }); \
 fs.writeFileSync('public/config.json', JSON.stringify(cfg, null, 2) + '\\n'); \
 "
 
-# Build the application (Vite inlines VITE_* env vars; config.json served at runtime)
-RUN npx vite build
+RUN pnpm exec vite build
 
 # Production stage
 FROM nginx:alpine AS production
 
-# Copy built assets from builder
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /workspace/apps/frontend/dist /usr/share/nginx/html
+COPY apps/frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Runtime substitution: replace placeholder Supabase URL from CI with
 # the real value from the VITE_SUPABASE_URL Render environment variable.
