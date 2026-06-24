@@ -49,8 +49,29 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Build the application (Vite will use the environment variables)
-RUN npm run build
+# Generate runtime config.json from VITE_* build args (Alpine lacks bash/python for
+# prepare-config.sh; Docker context is apps/frontend only — no repo config/scripts).
+RUN node -e "\
+const fs = require('fs'); \
+const cfg = { \
+  environment: 'prod', \
+  api: { \
+    baseUrl: process.env.VITE_API_BASE_URL || '', \
+    frontendUrl: process.env.VITE_APP_URL || '', \
+    corsOrigins: process.env.VITE_APP_URL ? [process.env.VITE_APP_URL] : [], \
+    disableAuth: false, \
+  }, \
+  supabase: { \
+    url: process.env.VITE_SUPABASE_URL || '', \
+    publishableKey: process.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY || '', \
+  }, \
+}; \
+fs.mkdirSync('public', { recursive: true }); \
+fs.writeFileSync('public/config.json', JSON.stringify(cfg, null, 2) + '\\n'); \
+"
+
+# Build the application (Vite inlines VITE_* env vars; config.json served at runtime)
+RUN npx vite build
 
 # Production stage
 FROM nginx:alpine AS production
