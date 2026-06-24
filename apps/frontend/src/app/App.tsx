@@ -40,12 +40,9 @@ type AuthView =
 function App() {
   const disableAuth = isAuthDisabled();
   const initialLoggedIn = disableAuth || isLoggedIn();
-  const [currentView, setCurrentView] = useState<AuthView>(() => {
-    if (disableAuth) {
-      return 'converter';
-    }
-    return isLoggedIn() ? 'converter' : 'login';
-  });
+  const [currentView, setCurrentView] = useState<AuthView>(() =>
+    initialLoggedIn ? 'converter' : 'login',
+  );
   const [userEmail, setUserEmail] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(initialLoggedIn);
   const [accessToken, setAccessToken] = useState(() =>
