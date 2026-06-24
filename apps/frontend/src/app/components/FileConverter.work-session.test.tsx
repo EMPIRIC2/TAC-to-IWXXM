@@ -118,6 +118,54 @@ describe('FileConverter F5 workflow', () => {
     expect(screen.getByText(/read-only/i)).toBeInTheDocument();
   });
 
+  it('no-ops convert handlers when read-only even if buttons are force-enabled', async () => {
+    mockConvert.mockClear();
+
+    render(
+      <FileConverter
+        onLogout={vi.fn()}
+        userEmail="user@example.com"
+        accessToken="token"
+        loadedWorkSession={
+          {
+            id: 'sess-1',
+            status: 'finished',
+            title: 'KJFK',
+            manual_tac: 'METAR KJFK',
+            pending_files: [],
+            converted_results: [],
+            errors: [],
+            issues: [],
+            conversion_params: {},
+            kv_upload_key: null,
+            deleted_at: null,
+            user_id: 'u1',
+            created_at: '2026-06-24T00:00:00Z',
+            updated_at: '2026-06-24T00:00:00Z',
+          } as any
+        }
+      />,
+    );
+
+    const invokeReactClick = (element: HTMLElement) => {
+      const reactPropsKey = Object.keys(element).find((key) =>
+        key.startsWith('__reactProps'),
+      );
+      const onClick = reactPropsKey
+        ? (element as unknown as Record<string, { onClick?: () => void }>)[
+            reactPropsKey
+          ]?.onClick
+        : undefined;
+      onClick?.();
+    };
+
+    invokeReactClick(screen.getByTestId('convert-button'));
+    invokeReactClick(screen.getByTestId('convert-and-send-button'));
+
+    expect(mockConvert).not.toHaveBeenCalled();
+    expect(mockUpload).not.toHaveBeenCalled();
+  });
+
   it('starts a new METAR draft from the toolbar', async () => {
     const user = userEvent.setup();
     const onNewMetar = vi.fn();

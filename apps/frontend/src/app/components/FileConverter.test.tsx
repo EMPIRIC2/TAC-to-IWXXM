@@ -1589,6 +1589,31 @@ describe('FileConverter Component', () => {
       expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
     });
 
+    it('shows auth toast when Convert&Send is force-clicked without token', async () => {
+      const user = userEvent.setup();
+      const { container } = render(
+        <FileConverter {...defaultProps} accessToken={undefined} />,
+      );
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await user.type(textarea, 'METAR NO TOKEN');
+
+      const convertAndSend = screen.getByTestId('convert-and-send-button');
+      const reactPropsKey = Object.keys(convertAndSend).find((key) =>
+        key.startsWith('__reactProps'),
+      );
+      const onClick = reactPropsKey
+        ? (convertAndSend as unknown as Record<string, { onClick?: () => void }>)[
+            reactPropsKey
+          ]?.onClick
+        : undefined;
+      onClick?.();
+
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Authentication required. Please log in again.',
+      );
+      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+    });
+
     it('replaces prior result cards on successful convert (#555 / F1-R555-1)', async () => {
       const user = userEvent.setup();
       mockConvertMetarToIwxxm

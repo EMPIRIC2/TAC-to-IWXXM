@@ -121,7 +121,9 @@ describe('WorkHistorySidebar', () => {
     );
 
     await waitFor(() => expect(screen.getByText('KDEN WIP')).toBeInTheDocument());
-    expect(screen.queryByRole('button', { name: /my metars/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /my metars/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('highlights only the active session', async () => {

@@ -53,6 +53,8 @@ describe('ErrorLogPanel', () => {
       />,
     );
 
-    expect(screen.getByText(/\[error\] parser: Missing severity field/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/\[error\] parser: Missing severity field/),
+    ).toBeInTheDocument();
   });
 });
