@@ -69,6 +69,19 @@ class TestH0iCorsPreflight:
         allow_methods = response.headers.get("access-control-allow-methods", "")
         assert "POST" in allow_methods.upper()
 
+    def test_options_work_sessions_allows_patch_and_delete(self, h0i_client: TestClient) -> None:
+        for method in ("PATCH", "DELETE"):
+            response = h0i_client.options(
+                "/api/v1/work-sessions",
+                headers={
+                    "Origin": BROWSER_ORIGIN,
+                    "Access-Control-Request-Method": method,
+                },
+            )
+            assert response.status_code == 200
+            allow_methods = response.headers.get("access-control-allow-methods", "").upper()
+            assert method in allow_methods
+
 
 class TestH0iAuthConversionWiring:
     """Auth package + GIFTs conversion on single backend deployable."""

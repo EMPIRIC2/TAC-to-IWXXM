@@ -78,6 +78,19 @@ describe('authService', () => {
     expect(localStorage.getItem('refresh_token')).toBeNull();
   });
 
+  it('stores session tokens on register success', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({ user: mockUser, session: mockSession }),
+      status: 200,
+      statusText: 'OK',
+    } as Response);
+
+    await register({ email: mockUser.email, password: 'Password123!', name: 'Pilot' });
+
+    expect(localStorage.getItem('access_token')).toBe(mockSession.access_token);
+  });
+
   it('falls back to unknown error message when register error body is invalid', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue({
       ok: false,

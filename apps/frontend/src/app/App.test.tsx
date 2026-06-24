@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 const authServiceMocks = vi.hoisted(() => ({
@@ -10,6 +10,11 @@ const authServiceMocks = vi.hoisted(() => ({
 
 const toastMocks = vi.hoisted(() => ({
   error: vi.fn(),
+}));
+
+const workSessionMocks = vi.hoisted(() => ({
+  listWorkSessions: vi.fn(),
+  createWorkSession: vi.fn(),
 }));
 
 // Setup all mocks FIRST before any imports
@@ -34,6 +39,16 @@ vi.mock('@/utils/authService', () => ({
   logout: authServiceMocks.logout,
 }));
 
+vi.mock('@/utils/workSessionApi', () => ({
+  listWorkSessions: workSessionMocks.listWorkSessions,
+  createWorkSession: workSessionMocks.createWorkSession,
+}));
+
+vi.mock('@/utils/guestConverterState', () => ({
+  readGuestConverterState: vi.fn(() => null),
+  clearGuestConverterState: vi.fn(),
+}));
+
 vi.mock('sonner', async (importOriginal) => {
   const mod = await importOriginal<typeof import('sonner')>();
   return {
@@ -46,7 +61,14 @@ vi.mock('sonner', async (importOriginal) => {
 });
 
 vi.mock('./components/FileConverter', () => ({
-  FileConverter: ({ onLogout, userEmail, onSwitchToAdmin }: any) => (
+  FileConverter: ({
+    onLogout,
+    userEmail,
+    onSwitchToAdmin,
+    onOpenHistory,
+    onNewMetar,
+    onSessionUpdated,
+  }: any) => (
     <div data-testid="file-converter">
       <div>{userEmail}</div>
       <button onClick={onLogout} data-testid="logout-btn">
@@ -57,12 +79,80 @@ vi.mock('./components/FileConverter', () => ({
           Admin
         </button>
       )}
+      {onOpenHistory && (
+        <button onClick={onOpenHistory} data-testid="open-history">
+          History
+        </button>
+      )}
+      {onNewMetar && (
+        <button onClick={onNewMetar} data-testid="new-metar">
+          New METAR
+        </button>
+      )}
+      {onSessionUpdated && (
+        <button
+          onClick={() =>
+            onSessionUpdated({
+              id: 'sess-updated',
+              user_id: 'user-1',
+              status: 'wip',
+              title: 'Updated',
+              manual_tac: '',
+              pending_files: [],
+              converted_results: [],
+              errors: [],
+              issues: [],
+              conversion_params: {},
+              kv_upload_key: null,
+              deleted_at: null,
+              created_at: '2026-06-24T00:00:00Z',
+              updated_at: '2026-06-24T00:00:01Z',
+            })
+          }
+          data-testid="session-updated"
+        >
+          Session Updated
+        </button>
+      )}
+    </div>
+  ),
+}));
+
+vi.mock('./components/MyMetarsPage', () => ({
+  MyMetarsPage: ({ onBack, onOpenSession }: any) => (
+    <div data-testid="history-view">
+      <button onClick={onBack} data-testid="history-back">
+        Back
+      </button>
+      <button
+        onClick={() =>
+          onOpenSession({
+            id: 'sess-history',
+            user_id: 'user-1',
+            status: 'draft',
+            title: 'From history',
+            manual_tac: 'METAR',
+            pending_files: [],
+            converted_results: [],
+            errors: [],
+            issues: [],
+            conversion_params: {},
+            kv_upload_key: null,
+            deleted_at: null,
+            created_at: '2026-06-24T00:00:00Z',
+            updated_at: '2026-06-24T00:00:00Z',
+          })
+        }
+        data-testid="open-history-session"
+      >
+        Open session
+      </button>
     </div>
   ),
 }));
 
 vi.mock('./components/auth/Login', () => ({
-  Login: ({ onLogin, onSwitchToRegister, onForgotPassword }: any) => (
+  Login: ({ onLogin, onSwitchToRegister, onForgotPassword, onContinueAsGuest }: any) => (
     <div data-testid="login-view">
       <button
         onClick={() => onLogin('test@example.com', false, 'token', false)}
@@ -88,6 +178,11 @@ vi.mock('./components/auth/Login', () => ({
       <button onClick={onForgotPassword} data-testid="forgot-password">
         Reset
       </button>
+      {onContinueAsGuest && (
+        <button onClick={onContinueAsGuest} data-testid="continue-guest">
+          Continue as guest
+        </button>
+      )}
     </div>
   ),
 }));
@@ -177,6 +272,10 @@ vi.mock('./components/ui/sonner', () => ({
 
 // Now import App and mocked dependencies
 import App from './App';
+import { readGuestConverterState, clearGuestConverterState } from '@/utils/guestConverterState';
+
+const mockReadGuest = vi.mocked(readGuestConverterState);
+const mockClearGuest = vi.mocked(clearGuestConverterState);
 
 describe('App Component', () => {
   beforeEach(() => {
@@ -184,6 +283,24 @@ describe('App Component', () => {
     localStorage.clear();
     authServiceMocks.isLoggedIn.mockReturnValue(false);
     authServiceMocks.logout.mockResolvedValue(undefined);
+    mockReadGuest.mockReturnValue(null);
+    workSessionMocks.listWorkSessions.mockResolvedValue({ items: [], total: 0 });
+    workSessionMocks.createWorkSession.mockResolvedValue({
+      id: 'sess-new',
+      user_id: 'user-1',
+      status: 'draft',
+      title: 'Draft',
+      manual_tac: '',
+      pending_files: [],
+      converted_results: [],
+      errors: [],
+      issues: [],
+      conversion_params: {},
+      kv_upload_key: null,
+      deleted_at: null,
+      created_at: '2026-06-24T00:00:00Z',
+      updated_at: '2026-06-24T00:00:00Z',
+    });
     vi.unstubAllEnvs();
     vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
   });
@@ -434,6 +551,110 @@ describe('App Component', () => {
 
       expect(authServiceMocks.logout).toHaveBeenCalledTimes(1);
       expect(screen.getByTestId('login-view')).toBeInTheDocument();
+
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe('F5 work history navigation', () => {
+    it('opens history view and returns to converter with selected session', async () => {
+      const user = userEvent.setup();
+      render(<App />);
+
+      await user.click(screen.getByTestId('do-login'));
+      await user.click(screen.getByTestId('open-history'));
+      expect(screen.getByTestId('history-view')).toBeInTheDocument();
+
+      await user.click(screen.getByTestId('open-history-session'));
+      expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+
+      await user.click(screen.getByTestId('new-metar'));
+      await user.click(screen.getByTestId('session-updated'));
+      await user.click(screen.getByTestId('open-history'));
+      await user.click(screen.getByTestId('history-back'));
+      expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+    });
+
+    it('resumes an active draft on login via work session API', async () => {
+      workSessionMocks.listWorkSessions.mockResolvedValue({
+        items: [
+          {
+            id: 'sess-resume',
+            user_id: 'user-1',
+            status: 'draft',
+            title: 'Resume me',
+            manual_tac: 'METAR',
+            pending_files: [],
+            converted_results: [],
+            errors: [],
+            issues: [],
+            conversion_params: {},
+            kv_upload_key: null,
+            deleted_at: null,
+            created_at: '2026-06-24T00:00:00Z',
+            updated_at: '2026-06-24T00:00:00Z',
+          },
+        ],
+        total: 1,
+      });
+
+      const user = userEvent.setup();
+      render(<App />);
+      await user.click(screen.getByTestId('do-login'));
+
+      await vi.waitFor(() => {
+        expect(workSessionMocks.listWorkSessions).toHaveBeenCalled();
+      });
+    });
+
+    it('creates draft from guest converter state on login (F5-R33)', async () => {
+      mockReadGuest.mockReturnValue({
+        manualInput: 'METAR KJFK 121251Z',
+        pendingFiles: [],
+        convertedFiles: [],
+        conversionLog: null,
+        conversionParams: {},
+      });
+
+      const user = userEvent.setup();
+      render(<App />);
+      await user.click(screen.getByTestId('do-login'));
+
+      await vi.waitFor(() => {
+        expect(workSessionMocks.createWorkSession).toHaveBeenCalled();
+        expect(mockClearGuest).toHaveBeenCalled();
+      });
+    });
+
+    it('allows guest converter without authentication', async () => {
+      const user = userEvent.setup();
+      render(<App />);
+
+      await user.click(screen.getByTestId('continue-guest'));
+      expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+      expect(screen.getByText('Guest')).toBeInTheDocument();
+
+      await user.click(screen.getByTestId('logout-btn'));
+      expect(screen.getByTestId('login-view')).toBeInTheDocument();
+    });
+
+    it('logs work session init failures without crashing', async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      workSessionMocks.listWorkSessions.mockRejectedValue(new Error('init failed'));
+
+      const user = userEvent.setup();
+      render(<App />);
+      await user.click(screen.getByTestId('do-login'));
+
+      await waitFor(() => {
+        expect(workSessionMocks.listWorkSessions).toHaveBeenCalled();
+        expect(consoleErrorSpy).toHaveBeenCalled();
+      });
+      expect(consoleErrorSpy.mock.calls[0]?.[0]).toBe(
+        '[App] work session init failed:',
+      );
 
       consoleErrorSpy.mockRestore();
     });

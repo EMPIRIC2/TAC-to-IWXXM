@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-06-23 (S003 Supabase keys + runtime config)
+> **Last updated**: 2026-06-23 (F5 work history delta) (S003 Supabase keys + runtime config)
 > **Delta**: Monorepo migration M4 — auth service merged into backend API
 
 ## Base URLs
@@ -93,6 +93,85 @@ POST /api/v1/validate
 ```
 
 **Request/Response**: Unchanged from current backend contract.
+
+### Work sessions (F5 — S004 / EV-004)
+
+All routes require Bearer JWT unless noted. User routes enforce RLS via caller JWT.
+
+```
+GET    /api/v1/work-sessions
+POST   /api/v1/work-sessions
+GET    /api/v1/work-sessions/{id}
+PATCH  /api/v1/work-sessions/{id}
+DELETE /api/v1/work-sessions/{id}
+POST   /api/v1/work-sessions/{id}/restore
+```
+
+**Query params** (`GET` list): `status`, `from`, `to`, `include_deleted` (trash view), `page`, `limit`.
+
+**Request body** (`POST` / `PATCH`):
+
+```json
+{
+  "title": "optional — default auto ICAO + timestamp",
+  "manual_tac": "string",
+  "pending_files": [{ "name": "file.tac", "content": "METAR ..." }],
+  "converted_results": [],
+  "errors": [],
+  "issues": [],
+  "conversion_params": { "iwxxm_version": "2025-2" },
+  "status": "draft | wip | finished | failed",
+  "kv_upload_key": "optional — set on successful send"
+}
+```
+
+**Response** (`WorkSession`):
+
+```json
+{
+  "id": "uuid",
+  "user_id": "uuid",
+  "status": "draft",
+  "title": "KJFK 2026-06-23",
+  "manual_tac": "...",
+  "pending_files": [],
+  "converted_results": [],
+  "errors": [],
+  "issues": [],
+  "conversion_params": {},
+  "kv_upload_key": null,
+  "deleted_at": null,
+  "created_at": "ISO8601",
+  "updated_at": "ISO8601"
+}
+```
+
+**Status transitions** (server-enforced):
+
+| From | Event | To |
+|------|-------|-----|
+| — | Auto-save / create | draft |
+| draft / failed | Convert success (no send) | wip (reject if another wip exists) |
+| draft / failed | Convert failure | failed |
+| wip | Send success | finished (+ kv_upload_key) |
+| wip | Send failure | wip (unchanged — user may retry) |
+| any | User soft-delete | deleted_at set |
+| deleted | Restore within 30 days | deleted_at cleared |
+
+**Admin** (read-only, `is_admin()`):
+
+```
+GET /admin/work-sessions
+```
+
+Same list shape with `user_email` or profile fields; no mutate endpoints in v1.
+
+**Admin UI**: Dedicated admin page consumes this endpoint; not a toggle on My METARs.
+
+**Guest users**: Work-session routes require JWT. Unauthenticated users may call `/api/v1/convert`
+but receive no session persistence until login. On first authenticated request after login, if the
+frontend holds unsaved converter state, it **POST**s a new **draft** session from that state before
+resume logic runs.
 
 ## CORS
 

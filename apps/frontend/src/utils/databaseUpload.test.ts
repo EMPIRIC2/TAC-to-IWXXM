@@ -112,4 +112,20 @@ describe('databaseUpload', () => {
       }),
     ).rejects.toThrow('Server unavailable');
   });
+
+  it('uses HTTP status when error body is empty', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 503,
+      text: async () => '',
+    });
+
+    await expect(
+      uploadConvertedFiles({
+        files: [],
+        accessToken: 'test-token',
+        options: CONVERT_AND_SEND_UPLOAD_OPTIONS,
+      }),
+    ).rejects.toThrow('Failed to upload to database (503)');
+  });
 });

@@ -19,6 +19,8 @@ const mockToast = vi.hoisted(() => ({
   promise: vi.fn(),
   info: vi.fn(),
 }));
+const mockPersistSession = vi.hoisted(() => vi.fn().mockResolvedValue(null));
+const mockScheduleAutoSave = vi.hoisted(() => vi.fn());
 
 // Mock dependencies
 vi.mock('/utils/supabase/info', () => ({
@@ -51,6 +53,21 @@ vi.mock('/utils/databaseUpload', () => ({
 
 vi.mock('sonner', () => ({
   toast: mockToast,
+}));
+
+vi.mock('@/hooks/useWorkSessionSync', () => ({
+  AUTOSAVE_DEBOUNCE_MS: 3000,
+  useWorkSessionSync: () => ({
+    isReadOnly: false,
+    saveIndicator: 'idle' as const,
+    scheduleAutoSave: mockScheduleAutoSave,
+    persistSession: mockPersistSession,
+    flushAutoSave: vi.fn().mockResolvedValue(null),
+  }),
+}));
+
+vi.mock('./WorkHistorySidebar', () => ({
+  WorkHistorySidebar: () => null,
 }));
 
 vi.mock('jszip', () => ({
@@ -124,6 +141,7 @@ describe('FileConverter Component', () => {
     vi.clearAllMocks();
     localStorage.clear();
     mockSignOutWithScope.mockResolvedValue(true);
+    mockPersistSession.mockResolvedValue(null);
     mockConvertMetarToIwxxm.mockResolvedValue({
       success: true,
       data: '<iwxxm>test</iwxxm>',
@@ -1565,12 +1583,120 @@ describe('FileConverter Component', () => {
       );
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR NO TOKEN');
-      await user.click(screen.getByTestId('convert-and-send-button'));
 
-      expect(mockToast.error).toHaveBeenCalledWith(
-        'Authentication required. Please log in again.',
-      );
+      const convertAndSend = screen.getByTestId('convert-and-send-button');
+      expect(convertAndSend).toBeDisabled();
       expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+    });
+
+    it('replaces prior result cards on successful convert (#555 / F1-R555-1)', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [{ iwxxm_xml: '<iwxxm>first-batch</iwxxm>', name: 'first.txt' }],
+        })
+        .mockResolvedValueOnce({
+          results: [{ iwxxm_xml: '<iwxxm>second-batch</iwxxm>', name: 'second.txt' }],
+        });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+
+      await user.type(textarea, 'METAR FIRST BATCH');
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByText('<iwxxm>first-batch</iwxxm>')).toBeInTheDocument();
+      });
+
+      await user.type(textarea, 'METAR SECOND BATCH');
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByText('<iwxxm>second-batch</iwxxm>')).toBeInTheDocument();
+      });
+      expect(screen.queryByText('<iwxxm>first-batch</iwxxm>')).not.toBeInTheDocument();
+    });
+
+    it('keeps prior results when convert fails and shows error log panel (#555)', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [{ iwxxm_xml: '<iwxxm>kept</iwxxm>' }],
+        })
+        .mockResolvedValueOnce({
+          results: [],
+          errors: ['Line 1: invalid METAR syntax'],
+          issues: [
+            {
+              source: 'manual_input',
+              message: 'Missing ICAO code',
+              severity: 'error',
+            },
+          ],
+          failed: 1,
+          successful: 0,
+          total_processed: 1,
+        });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+
+      await user.type(textarea, 'METAR KEEP ME');
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByText('<iwxxm>kept</iwxxm>')).toBeInTheDocument();
+      });
+
+      await user.clear(textarea);
+      await user.type(textarea, 'BAD INPUT');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByLabelText(/conversion error log/i)).toBeInTheDocument();
+        expect(screen.getByText(/Missing ICAO code/)).toBeInTheDocument();
+      });
+      expect(
+        screen.getAllByText('Line 1: invalid METAR syntax').length,
+      ).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText('<iwxxm>kept</iwxxm>')).toBeInTheDocument();
+    });
+
+    it('clears error log panel on the next successful convert', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [],
+          errors: ['Conversion failed'],
+          failed: 1,
+          successful: 0,
+          total_processed: 1,
+        })
+        .mockResolvedValueOnce({
+          results: [{ iwxxm_xml: '<iwxxm>recovered</iwxxm>' }],
+          errors: [],
+          failed: 0,
+          successful: 1,
+          total_processed: 1,
+        });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+
+      await user.type(textarea, 'BAD');
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByLabelText(/conversion error log/i)).toBeInTheDocument();
+      });
+
+      await user.clear(textarea);
+      await user.type(textarea, 'METAR KJFK 121651Z 18005KT 10SM FEW030 24/16 A2992');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(
+          screen.queryByLabelText(/conversion error log/i),
+        ).not.toBeInTheDocument();
+        expect(screen.getByText('<iwxxm>recovered</iwxxm>')).toBeInTheDocument();
+      });
     });
   });
 });

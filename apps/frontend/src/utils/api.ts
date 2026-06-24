@@ -33,11 +33,24 @@ export interface ConversionResult {
   source: string;
   size_bytes: number;
   tac_input?: string;
+  iwxxm_xml?: string;
+  xml?: string;
+}
+
+export interface ConversionIssue {
+  source: string;
+  message: string;
+  hint?: string;
+  code?: string;
+  severity?: 'error' | 'warning' | 'info';
+  layer?: string;
+  location?: string;
 }
 
 export interface ConversionResponse {
   results: ConversionResult[];
   errors: string[];
+  issues?: ConversionIssue[];
   total_processed: number;
   successful: number;
   failed: number;

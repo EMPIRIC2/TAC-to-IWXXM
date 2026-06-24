@@ -28,5 +28,11 @@
 | 2026-06-14 | S4.7 | approved | Vendor sync PR human review required |
 | 2026-06-14 | S5.5 | approved | CORS preflight on /api/v1/* and /auth/* |
 | 2026-06-14 | S6.1 | approved | Migration effort 2–5 dev-days |
+| 2026-06-23 | S2.1 | modified | F5 purpose: "work history / session state" not "audit trail" (spec.md) |
+| 2026-06-23 | S2.2 | approved | Guest login auto-creates Draft from in-browser converter state (F5-R33) |
+| 2026-06-23 | S2.3 | approved | WIP stays WIP when input edited before re-convert (F5-R34) |
+| 2026-06-23 | S2.4 | approved | Finished read-only disables Convert/Convert&Send; New METAR required (F5-R35) |
+| 2026-06-23 | C1 | modified | S005 → S004 delivery labels in feature-list, test-plan, api-contract |
+| 2026-06-23 | C2 | modified | H6 tier description includes UJ-004 (test-plan) |
 | 2026-06-14 | S6.2 | approved | Risk level Medium |
 | 2026-06-14 | S6.5 | approved | Branch feat/monorepo-big-bang |

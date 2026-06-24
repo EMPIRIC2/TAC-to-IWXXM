@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { Card } from './ui/card';
@@ -33,6 +33,12 @@ import {
   CONVERT_AND_SEND_UPLOAD_OPTIONS,
   uploadConvertedFiles,
 } from '/utils/databaseUpload';
+import { ErrorLogPanel, type ConversionLog } from './ErrorLogPanel';
+import { WorkHistorySidebar } from './WorkHistorySidebar';
+import type { WorkSession } from '@metar/shared';
+import { useWorkSessionSync } from '@/hooks/useWorkSessionSync';
+import { type ConverterSnapshot } from '/utils/workSessionPayload';
+import { saveGuestConverterState } from '/utils/guestConverterState';
 
 interface ConvertedFile {
   id: string;
@@ -52,7 +58,16 @@ interface FileConverterProps {
   onLogout: () => void;
   userEmail: string;
   accessToken?: string;
+  isGuest?: boolean;
+  onRequestLogin?: () => void;
   onSwitchToAdmin?: () => void;
+  onOpenHistory?: () => void;
+  onLoadWorkSession?: (session: WorkSession) => void;
+  onNewMetar?: () => void;
+  onSessionUpdated?: (session: WorkSession) => void;
+  onActiveSessionIdChange?: (id: string | null) => void;
+  activeWorkSessionId?: string | null;
+  loadedWorkSession?: WorkSession | null;
 }
 
 type IWXXMVersion = '2025-2' | '2023-1';
@@ -73,7 +88,16 @@ export function FileConverter({
   onLogout,
   userEmail,
   accessToken,
+  isGuest = false,
+  onRequestLogin,
   onSwitchToAdmin,
+  onOpenHistory,
+  onLoadWorkSession,
+  onNewMetar,
+  onSessionUpdated,
+  onActiveSessionIdChange,
+  activeWorkSessionId,
+  loadedWorkSession,
 }: FileConverterProps) {
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
@@ -85,6 +109,7 @@ export function FileConverter({
     type: 'idle' | 'loading' | 'timeout' | 'error' | 'send_error';
     message?: string;
   }>({ type: 'idle' });
+  const [conversionLog, setConversionLog] = useState<ConversionLog | null>(null);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isParamsExpanded, setIsParamsExpanded] = useState(false);
@@ -99,6 +124,38 @@ export function FileConverter({
     logLevel: 'INFO',
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const buildSnapshot = (
+    overrides?: Partial<ConverterSnapshot>,
+  ): ConverterSnapshot => ({
+    manualInput,
+    pendingFiles: pendingFiles.map((file) => ({
+      name: file.name,
+      content: file.content,
+    })),
+    convertedFiles: convertedFiles.map((file) => ({
+      originalName: file.originalName,
+      originalContent: file.originalContent,
+      convertedContent: file.convertedContent,
+    })),
+    conversionLog: conversionLog
+      ? {
+          errors: conversionLog.errors,
+          issues: conversionLog.issues as unknown as Record<string, unknown>[],
+        }
+      : null,
+    conversionParams: conversionParams as unknown as Record<string, unknown>,
+    ...overrides,
+  });
+
+  const { isReadOnly, saveIndicator, scheduleAutoSave, persistSession } =
+    useWorkSessionSync({
+      accessToken,
+      sessionId: activeWorkSessionId ?? null,
+      sessionStatus: loadedWorkSession?.status ?? null,
+      onSessionSaved: (session) => onSessionUpdated?.(session),
+      onSessionIdAssigned: (id) => onActiveSessionIdChange?.(id),
+    });
 
   const handleLogoutWithScope = async (scope: 'global' | 'local' | 'others') => {
     const success = await signOutWithScope(scope);
@@ -143,6 +200,65 @@ export function FileConverter({
 
     loadPreferences();
   }, []);
+
+  /* eslint-disable react-hooks/set-state-in-effect -- F5 hydrate converter when user loads a work session */
+  useLayoutEffect(() => {
+    if (!loadedWorkSession) {
+      return;
+    }
+    setManualInput(loadedWorkSession.manual_tac || '');
+    setPendingFiles(
+      (loadedWorkSession.pending_files || []).map((file, index) => ({
+        id: `loaded-${index}`,
+        name: file.name,
+        content: file.content,
+      })),
+    );
+    if (loadedWorkSession.converted_results?.length) {
+      setConvertedFiles(
+        loadedWorkSession.converted_results.map((result, index) => ({
+          id: `loaded-result-${index}`,
+          originalName: String(result.name ?? `result-${index + 1}`),
+          originalContent: String(result.tac_input ?? ''),
+          convertedContent: String(
+            result.iwxxm_xml ?? result.xml ?? result.content ?? '',
+          ),
+          timestamp: Date.now(),
+        })),
+      );
+    } else {
+      setConvertedFiles([]);
+    }
+    const hasLog =
+      (loadedWorkSession.errors?.length ?? 0) > 0 ||
+      (loadedWorkSession.issues?.length ?? 0) > 0;
+    setConversionLog(
+      hasLog
+        ? {
+            errors: loadedWorkSession.errors ?? [],
+            issues: (loadedWorkSession.issues ??
+              []) as unknown as ConversionLog['issues'],
+          }
+        : null,
+    );
+  }, [loadedWorkSession]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  useEffect(() => {
+    if (!accessToken || isReadOnly) {
+      return;
+    }
+    scheduleAutoSave(buildSnapshot());
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- debounced save on converter edits
+  }, [manualInput, pendingFiles, accessToken, isReadOnly]);
+
+  useEffect(() => {
+    if (accessToken || isGuest === false) {
+      return;
+    }
+    saveGuestConverterState(buildSnapshot());
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- guest state mirror
+  }, [manualInput, pendingFiles, convertedFiles, conversionLog, isGuest, accessToken]);
 
   const handlePreferencesSaved = () => {
     // Reload preferences after saving in the dialog
@@ -214,13 +330,17 @@ export function FileConverter({
     setIsDragging(false);
   };
 
-  const performConversion = async (): Promise<ConvertedFile[] | null> => {
+  const performConversion = async (): Promise<{
+    files: ConvertedFile[];
+    hasErrors: boolean;
+  } | null> => {
     if (pendingFiles.length === 0 && !manualInput.trim()) {
       toast.error('Please add files or enter manual input');
       return null;
     }
 
     setConversionStatus({ type: 'loading', message: 'Converting...' });
+    setConversionLog(null);
 
     try {
       const newConvertedFiles: ConvertedFile[] = [];
@@ -287,17 +407,28 @@ export function FileConverter({
         );
       }
 
+      const responseErrors = response.errors ?? [];
+      const responseIssues = response.issues ?? [];
+      const hasLog = responseErrors.length > 0 || responseIssues.length > 0;
+
       if (newConvertedFiles.length === 0) {
-        toast.error('No files were converted');
-        setConversionStatus({ type: 'error', message: 'No files were converted' });
+        if (hasLog) {
+          setConversionLog({ errors: responseErrors, issues: responseIssues });
+        }
+        const failureMessage = responseErrors[0] ?? 'No files were converted';
+        toast.error(failureMessage);
+        setConversionStatus({ type: 'error', message: failureMessage });
         return null;
       }
 
-      setConvertedFiles((prev) => [...newConvertedFiles, ...prev]);
+      setConvertedFiles(newConvertedFiles);
       setPendingFiles([]);
       setManualInput('');
+      setConversionLog(
+        hasLog ? { errors: responseErrors, issues: responseIssues } : null,
+      );
       setConversionStatus({ type: 'idle' });
-      return newConvertedFiles;
+      return { files: newConvertedFiles, hasErrors: hasLog };
     } catch (error) {
       console.error('[FileConverter] Conversion error:', error);
 
@@ -330,11 +461,30 @@ export function FileConverter({
   };
 
   const handleConvert = async () => {
+    if (isReadOnly) {
+      return;
+    }
     setIsConverting(true);
     try {
-      const newConvertedFiles = await performConversion();
-      if (newConvertedFiles) {
-        toast.success(`Successfully converted ${newConvertedFiles.length} file(s)`);
+      const result = await performConversion();
+      if (result) {
+        toast.success(`Successfully converted ${result.files.length} file(s)`);
+        if (accessToken) {
+          const snapshot = buildSnapshot({
+            convertedFiles: result.files.map((file) => ({
+              originalName: file.originalName,
+              originalContent: file.originalContent,
+              convertedContent: file.convertedContent,
+            })),
+            manualInput: '',
+            pendingFiles: [],
+          });
+          await persistSession(snapshot, {
+            status: result.hasErrors ? 'failed' : 'wip',
+          });
+        }
+      } else if (accessToken) {
+        await persistSession(buildSnapshot(), { status: 'failed' });
       }
     } finally {
       setIsConverting(false);
@@ -342,6 +492,9 @@ export function FileConverter({
   };
 
   const handleConvertAndSend = async () => {
+    if (isReadOnly) {
+      return;
+    }
     if (!accessToken) {
       toast.error('Authentication required. Please log in again.');
       return;
@@ -349,22 +502,50 @@ export function FileConverter({
 
     setIsConvertAndSending(true);
     try {
-      const newConvertedFiles = await performConversion();
-      if (!newConvertedFiles) {
+      const result = await performConversion();
+      if (!result) {
+        await persistSession(buildSnapshot(), { status: 'failed' });
         return;
       }
 
-      toast.success(`Successfully converted ${newConvertedFiles.length} file(s)`);
+      if (result.hasErrors) {
+        await persistSession(
+          buildSnapshot({
+            convertedFiles: result.files.map((file) => ({
+              originalName: file.originalName,
+              originalContent: file.originalContent,
+              convertedContent: file.convertedContent,
+            })),
+            manualInput: '',
+            pendingFiles: [],
+          }),
+          { status: 'failed' },
+        );
+        return;
+      }
+
+      toast.success(`Successfully converted ${result.files.length} file(s)`);
       setConversionStatus({ type: 'loading', message: 'Sending to database...' });
+
+      const wipSnapshot = buildSnapshot({
+        convertedFiles: result.files.map((file) => ({
+          originalName: file.originalName,
+          originalContent: file.originalContent,
+          convertedContent: file.convertedContent,
+        })),
+        manualInput: '',
+        pendingFiles: [],
+      });
 
       try {
         const data = await uploadConvertedFiles({
-          files: newConvertedFiles,
+          files: result.files,
           accessToken,
           options: CONVERT_AND_SEND_UPLOAD_OPTIONS,
         });
         setConversionStatus({ type: 'idle' });
         toast.success(data.message || 'Files converted and sent successfully');
+        await persistSession(wipSnapshot, { status: 'finished' });
       } catch (error) {
         console.error('[FileConverter] Convert&Send upload error:', error);
         const uploadMessage =
@@ -374,10 +555,24 @@ export function FileConverter({
           message: `Send failed: ${uploadMessage}`,
         });
         toast.error(`Conversion succeeded but send failed: ${uploadMessage}`);
+        await persistSession(wipSnapshot, { status: 'wip' });
       }
     } finally {
       setIsConvertAndSending(false);
     }
+  };
+
+  const handleNewMetar = () => {
+    setPendingFiles([]);
+    setManualInput('');
+    setConvertedFiles([]);
+    setConversionLog(null);
+    setConversionStatus({ type: 'idle' });
+    onActiveSessionIdChange?.(null);
+    onNewMetar?.();
+    toast.info(
+      isReadOnly ? 'Starting a new METAR session' : 'Starting a new METAR draft',
+    );
   };
 
   const handleDownloadSingle = (file: ConvertedFile) => {
@@ -475,6 +670,18 @@ export function FileConverter({
   const isBusy = isConverting || isConvertAndSending;
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
+  const convertDisabled = isBusy || !hasInput || isReadOnly;
+
+  const saveIndicatorLabel =
+    saveIndicator === 'pending'
+      ? 'Unsaved changes'
+      : saveIndicator === 'saving'
+        ? 'Saving draft…'
+        : saveIndicator === 'saved'
+          ? 'Draft saved'
+          : saveIndicator === 'error'
+            ? 'Save failed'
+            : null;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors">
@@ -538,15 +745,21 @@ export function FileConverter({
                 <Button
                   variant="outline"
                   className="bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border-0"
-                  aria-label="Logout options"
-                  onClick={() => setIsLogoutMenuOpen(!isLogoutMenuOpen)}
+                  aria-label={isGuest ? 'Sign in to save work' : 'Logout options'}
+                  onClick={() => {
+                    if (isGuest) {
+                      onRequestLogin?.();
+                      return;
+                    }
+                    setIsLogoutMenuOpen(!isLogoutMenuOpen);
+                  }}
                 >
                   <LogOut className="w-4 h-4 mr-2" aria-hidden="true" />
-                  Logout
+                  {isGuest ? 'Sign in' : 'Logout'}
                   <ChevronDown className="w-4 h-4 ml-1" aria-hidden="true" />
                 </Button>
 
-                {isLogoutMenuOpen && (
+                {isLogoutMenuOpen && !isGuest && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10">
                     <div className="p-3 space-y-2">
                       <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-1">
@@ -648,462 +861,509 @@ export function FileConverter({
           </div>
         </Card>
 
-        {/* Manual Input */}
-        <div className="mb-6">
-          <label
-            htmlFor="manual-input"
-            className="block mb-2 text-base font-medium text-gray-900 dark:text-white"
-          >
-            Manual METAR Input
-          </label>
-          <Textarea
-            id="manual-input"
-            value={manualInput}
-            onChange={(e) => setManualInput(e.target.value)}
-            placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
-            className="min-h-[120px] text-sm dark:bg-gray-800 dark:text-white dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
-            aria-label="Enter METAR data manually"
-          />
-        </div>
-
-        {/* Conversion Parameters */}
-        <Card className="mb-6 p-6 bg-white dark:bg-gray-800 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-              Conversion Parameters
-            </h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsParamsExpanded(!isParamsExpanded)}
-              className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-500"
-              aria-label={
-                isParamsExpanded ? 'Collapse parameters' : 'Expand parameters'
-              }
-            >
-              {isParamsExpanded ? (
-                <ChevronUp
-                  className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                  aria-hidden="true"
-                />
-              ) : (
-                <ChevronDown
-                  className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                  aria-hidden="true"
-                />
-              )}
-            </Button>
-          </div>
-          <div
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${isParamsExpanded ? '' : 'hidden'}`}
-          >
-            {/* Bulletin ID */}
-            <div>
-              <Label htmlFor="param-bulletin-id" className="dark:text-white mb-2">
-                Bulletin ID
-              </Label>
-              <Input
-                id="param-bulletin-id"
-                value={conversionParams.bulletinId}
-                onChange={(e) =>
-                  setConversionParams((prev) => ({
-                    ...prev,
-                    bulletinId: e.target.value.toUpperCase(),
-                  }))
-                }
-                placeholder="SAAA00"
-                maxLength={6}
-                className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Format: 4 letters + 2 digits
-              </p>
-            </div>
-
-            {/* Issuing Center */}
-            <IcaoAutocomplete
-              label="Issuing Center (ICAO)"
-              id="param-issuing-center"
-              value={conversionParams.issuingCenter}
-              onChange={(value) =>
-                setConversionParams((prev) => ({ ...prev, issuingCenter: value }))
-              }
-              placeholder="KWBC"
-              maxLength={4}
-              helperText="4-letter ICAO code"
-            />
-            <AirportDetailsCard icao={conversionParams.issuingCenter} />
-
-            {/* IWXXM Version */}
-            <div>
-              <Label htmlFor="param-iwxxm-version" className="dark:text-white mb-2">
-                IWXXM Version
-              </Label>
-              <select
-                id="param-iwxxm-version"
-                value={conversionParams.iwxxmVersion}
-                onChange={(e) =>
-                  setConversionParams((prev) => ({
-                    ...prev,
-                    iwxxmVersion: e.target.value as IWXXMVersion,
-                  }))
-                }
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="2025-2">2025-2 (Latest)</option>
-                <option value="2023-1">2023-1 (Previous)</option>
-              </select>
-            </div>
-
-            {/* On Error */}
-            <div>
-              <Label htmlFor="param-on-error" className="dark:text-white mb-2">
-                On Error Behavior
-              </Label>
-              <select
-                id="param-on-error"
-                value={conversionParams.onError}
-                onChange={(e) =>
-                  setConversionParams((prev) => ({
-                    ...prev,
-                    onError: e.target.value as OnErrorBehavior,
-                  }))
-                }
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="skip">Skip - Continue, skip invalid</option>
-                <option value="fail">Fail - Stop on first error</option>
-                <option value="warn">Warn - Continue with warnings</option>
-              </select>
-            </div>
-
-            {/* Log Level */}
-            <div>
-              <Label htmlFor="param-log-level" className="dark:text-white mb-2">
-                Log Level
-              </Label>
-              <select
-                id="param-log-level"
-                value={conversionParams.logLevel}
-                onChange={(e) =>
-                  setConversionParams((prev) => ({
-                    ...prev,
-                    logLevel: e.target.value as LogLevel,
-                  }))
-                }
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="DEBUG">DEBUG</option>
-                <option value="INFO">INFO (Default)</option>
-                <option value="WARNING">WARNING</option>
-                <option value="ERROR">ERROR</option>
-                <option value="CRITICAL">CRITICAL</option>
-              </select>
-            </div>
-
-            {/* Validation Options */}
-            <div className="flex flex-col gap-3">
-              <Label className="dark:text-white">Validation Options</Label>
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={conversionParams.strictValidation}
-                  onChange={(e) =>
-                    setConversionParams((prev) => ({
-                      ...prev,
-                      strictValidation: e.target.checked,
-                    }))
-                  }
-                  className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                />
-                <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                  Strict Validation
-                </span>
-              </label>
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={conversionParams.includeNilReasons}
-                  onChange={(e) =>
-                    setConversionParams((prev) => ({
-                      ...prev,
-                      includeNilReasons: e.target.checked,
-                    }))
-                  }
-                  className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                />
-                <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                  Include Nil Reasons
-                </span>
-              </label>
-            </div>
-          </div>
-        </Card>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-3 mb-8 bg-[rgba(0,0,0,0)]">
-          <Button
-            data-testid="convert-button"
-            onClick={handleConvert}
-            disabled={isBusy || !hasInput}
-            className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            aria-label={
-              isConverting
-                ? 'Converting files, please wait'
-                : 'Convert METAR files to IWXXM XML'
-            }
-          >
-            {isConverting ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
-                Converting...
-              </>
-            ) : (
-              'Convert'
-            )}
-          </Button>
-          <Button
-            data-testid="convert-and-send-button"
-            onClick={handleConvertAndSend}
-            disabled={isBusy || !hasInput}
-            className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            aria-label={
-              isConvertAndSending
-                ? 'Converting and sending files, please wait'
-                : 'Convert METAR files to IWXXM XML and send to database'
-            }
-          >
-            {isConvertAndSending ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
-                Converting & Sending...
-              </>
-            ) : (
-              'Convert&Send'
-            )}
-          </Button>
-          <Button
-            onClick={() => setIsUploadDialogOpen(true)}
-            disabled={isBusy || !hasConverted}
-            variant="outline"
-            className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            aria-label={`Upload ${convertedFiles.length} converted files to database`}
-          >
-            <Database className="w-4 h-4 mr-2" aria-hidden="true" />
-            Upload to Database{' '}
-            {convertedFiles.length > 0 && `(${convertedFiles.length})`}
-          </Button>
-          <Button
-            onClick={handleDownloadAll}
-            disabled={isBusy || !hasConverted}
-            variant="outline"
-            className="bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-            aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
-          >
-            Download ZIP {convertedFiles.length > 0 && `(${convertedFiles.length})`}
-          </Button>
-          <Button
-            onClick={handleClear}
-            variant="outline"
-            className="bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-            aria-label="Clear all pending files and manual input"
-          >
-            Clear
-          </Button>
-        </div>
-
-        {/* Conversion Status Display */}
-        {conversionStatus.type !== 'idle' && (
-          <div
-            className={`mb-8 p-4 rounded-lg border-2 flex items-start gap-3 ${
-              conversionStatus.type === 'loading'
-                ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700'
-                : conversionStatus.type === 'timeout'
-                  ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700'
-                  : 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700'
-            }`}
-          >
-            <div className="pt-1">
-              {conversionStatus.type === 'loading' ? (
-                <Loader2
-                  className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-spin flex-shrink-0"
-                  aria-hidden="true"
-                />
-              ) : conversionStatus.type === 'timeout' ? (
-                <AlertCircle
-                  className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0"
-                  aria-hidden="true"
-                />
-              ) : (
-                <XCircle
-                  className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0"
-                  aria-hidden="true"
-                />
-              )}
-            </div>
-            <div className="flex-1">
-              <p
-                className={`font-semibold ${
-                  conversionStatus.type === 'loading'
-                    ? 'text-blue-900 dark:text-blue-100'
-                    : 'text-red-900 dark:text-red-100'
-                }`}
-              >
-                {conversionStatus.type === 'loading'
-                  ? 'Converting...'
-                  : conversionStatus.type === 'timeout'
-                    ? 'Conversion Timeout'
-                    : conversionStatus.type === 'send_error'
-                      ? 'Send Error'
-                      : 'Conversion Error'}
-              </p>
-              {conversionStatus.message && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <div>
+            {/* Manual Input */}
+            <div className="mb-6">
+              {isReadOnly && (
                 <p
-                  className={`text-sm mt-1 ${
-                    conversionStatus.type === 'loading'
-                      ? 'text-blue-800 dark:text-blue-200'
-                      : 'text-red-800 dark:text-red-200'
-                  }`}
+                  className="mb-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
+                  role="status"
                 >
-                  {conversionStatus.message}
+                  This session is finished and read-only. Use <strong>New METAR</strong>{' '}
+                  to start fresh.
                 </p>
               )}
+              <label
+                htmlFor="manual-input"
+                className="block mb-2 text-base font-medium text-gray-900 dark:text-white"
+              >
+                Manual METAR Input
+              </label>
+              <Textarea
+                id="manual-input"
+                value={manualInput}
+                onChange={(e) => setManualInput(e.target.value)}
+                readOnly={isReadOnly}
+                placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
+                className="min-h-[120px] text-sm dark:bg-gray-800 dark:text-white dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
+                aria-label="Enter METAR data manually"
+              />
             </div>
-          </div>
-        )}
 
-        {/* Pending Files */}
-        {pendingFiles.length > 0 && (
-          <div className="mb-8" role="region" aria-label="Pending files queue">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-              Pending Files
-            </h2>
-            <div className="space-y-2">
-              {pendingFiles.map((file) => (
-                <Card
-                  key={file.id}
-                  className="p-4 bg-white dark:bg-gray-800 dark:border-gray-700"
+            {/* Conversion Parameters */}
+            <Card className="mb-6 p-6 bg-white dark:bg-gray-800 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                  Conversion Parameters
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsParamsExpanded(!isParamsExpanded)}
+                  className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-500"
+                  aria-label={
+                    isParamsExpanded ? 'Collapse parameters' : 'Expand parameters'
+                  }
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <FileText
-                        className="w-5 h-5 text-blue-500 dark:text-blue-400"
-                        aria-hidden="true"
-                      />
-                      <div>
-                        <p className="text-base font-medium text-gray-900 dark:text-white">
-                          {file.name}
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {file.content.split('\n').length} line(s)
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removePendingFile(file.id)}
-                      className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-red-500"
-                      aria-label={`Remove ${file.name} from queue`}
-                    >
-                      <X
-                        className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+                  {isParamsExpanded ? (
+                    <ChevronUp
+                      className="w-4 h-4 text-gray-600 dark:text-gray-400"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <ChevronDown
+                      className="w-4 h-4 text-gray-600 dark:text-gray-400"
+                      aria-hidden="true"
+                    />
+                  )}
+                </Button>
+              </div>
+              <div
+                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${isParamsExpanded ? '' : 'hidden'}`}
+              >
+                {/* Bulletin ID */}
+                <div>
+                  <Label htmlFor="param-bulletin-id" className="dark:text-white mb-2">
+                    Bulletin ID
+                  </Label>
+                  <Input
+                    id="param-bulletin-id"
+                    value={conversionParams.bulletinId}
+                    onChange={(e) =>
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        bulletinId: e.target.value.toUpperCase(),
+                      }))
+                    }
+                    placeholder="SAAA00"
+                    maxLength={6}
+                    className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Format: 4 letters + 2 digits
+                  </p>
+                </div>
 
-        {/* Results */}
-        {convertedFiles.length > 0 && (
-          <div role="region" aria-label="Conversion results">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-              Results
-            </h2>
-            <div className="space-y-4">
-              {convertedFiles.map((file) => (
-                <Card
-                  key={file.id}
-                  className="p-4 bg-white dark:bg-gray-800 dark:border-gray-700"
-                >
-                  <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                    <p className="text-base font-medium text-gray-900 dark:text-white">
-                      {file.originalName}
-                    </p>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDownloadSingle(file)}
-                        className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
-                        aria-label={`Download ${file.originalName} as XML`}
-                      >
-                        <Download className="w-4 h-4 mr-1" aria-hidden="true" />
-                        Download
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleCopy(file.convertedContent)}
-                        className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
-                        aria-label={`Copy ${file.originalName} content to clipboard`}
-                      >
-                        <Copy className="w-4 h-4 mr-1" aria-hidden="true" />
-                        Copy
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeConvertedFile(file.id)}
-                        className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-red-500"
-                        aria-label={`Remove ${file.originalName} from results`}
-                      >
-                        <X
-                          className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                          aria-hidden="true"
-                        />
-                      </Button>
-                    </div>
-                  </div>
-                  {file.originalContent ? (
-                    <div
-                      className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded text-sm overflow-x-auto mb-3"
-                      role="region"
-                      aria-label={`Original TAC input for ${file.originalName}`}
-                    >
-                      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-                        Source TAC
-                      </p>
-                      <pre className="whitespace-pre-wrap break-all font-mono">
-                        {file.originalContent}
-                      </pre>
-                    </div>
-                  ) : null}
-                  <div
-                    className="bg-gray-900 dark:bg-gray-950 text-green-400 dark:text-green-300 p-4 rounded text-sm overflow-x-auto"
-                    role="region"
-                    aria-label={`Converted XML content for ${file.originalName}`}
+                {/* Issuing Center */}
+                <IcaoAutocomplete
+                  label="Issuing Center (ICAO)"
+                  id="param-issuing-center"
+                  value={conversionParams.issuingCenter}
+                  onChange={(value) =>
+                    setConversionParams((prev) => ({ ...prev, issuingCenter: value }))
+                  }
+                  placeholder="KWBC"
+                  maxLength={4}
+                  helperText="4-letter ICAO code"
+                />
+                <AirportDetailsCard icao={conversionParams.issuingCenter} />
+
+                {/* IWXXM Version */}
+                <div>
+                  <Label htmlFor="param-iwxxm-version" className="dark:text-white mb-2">
+                    IWXXM Version
+                  </Label>
+                  <select
+                    id="param-iwxxm-version"
+                    value={conversionParams.iwxxmVersion}
+                    onChange={(e) =>
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        iwxxmVersion: e.target.value as IWXXMVersion,
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
                   >
-                    <pre className="whitespace-pre-wrap break-all font-mono">
-                      {file.convertedContent}
-                    </pre>
-                  </div>
-                </Card>
-              ))}
+                    <option value="2025-2">2025-2 (Latest)</option>
+                    <option value="2023-1">2023-1 (Previous)</option>
+                  </select>
+                </div>
+
+                {/* On Error */}
+                <div>
+                  <Label htmlFor="param-on-error" className="dark:text-white mb-2">
+                    On Error Behavior
+                  </Label>
+                  <select
+                    id="param-on-error"
+                    value={conversionParams.onError}
+                    onChange={(e) =>
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        onError: e.target.value as OnErrorBehavior,
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="skip">Skip - Continue, skip invalid</option>
+                    <option value="fail">Fail - Stop on first error</option>
+                    <option value="warn">Warn - Continue with warnings</option>
+                  </select>
+                </div>
+
+                {/* Log Level */}
+                <div>
+                  <Label htmlFor="param-log-level" className="dark:text-white mb-2">
+                    Log Level
+                  </Label>
+                  <select
+                    id="param-log-level"
+                    value={conversionParams.logLevel}
+                    onChange={(e) =>
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        logLevel: e.target.value as LogLevel,
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="DEBUG">DEBUG</option>
+                    <option value="INFO">INFO (Default)</option>
+                    <option value="WARNING">WARNING</option>
+                    <option value="ERROR">ERROR</option>
+                    <option value="CRITICAL">CRITICAL</option>
+                  </select>
+                </div>
+
+                {/* Validation Options */}
+                <div className="flex flex-col gap-3">
+                  <Label className="dark:text-white">Validation Options</Label>
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={conversionParams.strictValidation}
+                      onChange={(e) =>
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          strictValidation: e.target.checked,
+                        }))
+                      }
+                      className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                      Strict Validation
+                    </span>
+                  </label>
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={conversionParams.includeNilReasons}
+                      onChange={(e) =>
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          includeNilReasons: e.target.checked,
+                        }))
+                      }
+                      className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                      Include Nil Reasons
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </Card>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3 mb-8 bg-[rgba(0,0,0,0)]">
+              {accessToken && saveIndicatorLabel && (
+                <span
+                  className="text-sm text-gray-600 dark:text-gray-400"
+                  aria-live="polite"
+                  data-testid="autosave-indicator"
+                >
+                  {saveIndicatorLabel}
+                </span>
+              )}
+              {accessToken && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleNewMetar}
+                  disabled={isBusy}
+                  data-testid="new-metar-button"
+                  aria-label="Start a new METAR session"
+                >
+                  New METAR
+                </Button>
+              )}
+              <Button
+                data-testid="convert-button"
+                onClick={handleConvert}
+                disabled={convertDisabled}
+                className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                aria-label={
+                  isConverting
+                    ? 'Converting files, please wait'
+                    : 'Convert METAR files to IWXXM XML'
+                }
+              >
+                {isConverting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+                    Converting...
+                  </>
+                ) : (
+                  'Convert'
+                )}
+              </Button>
+              <Button
+                data-testid="convert-and-send-button"
+                onClick={handleConvertAndSend}
+                disabled={convertDisabled || !accessToken}
+                className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                aria-label={
+                  isConvertAndSending
+                    ? 'Converting and sending files, please wait'
+                    : 'Convert METAR files to IWXXM XML and send to database'
+                }
+              >
+                {isConvertAndSending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+                    Converting & Sending...
+                  </>
+                ) : (
+                  'Convert&Send'
+                )}
+              </Button>
+              <Button
+                onClick={() => setIsUploadDialogOpen(true)}
+                disabled={isBusy || !hasConverted || isReadOnly}
+                variant="outline"
+                className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                aria-label={`Upload ${convertedFiles.length} converted files to database`}
+              >
+                <Database className="w-4 h-4 mr-2" aria-hidden="true" />
+                Upload to Database{' '}
+                {convertedFiles.length > 0 && `(${convertedFiles.length})`}
+              </Button>
+              <Button
+                onClick={handleDownloadAll}
+                disabled={isBusy || !hasConverted}
+                variant="outline"
+                className="bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
+              >
+                Download ZIP {convertedFiles.length > 0 && `(${convertedFiles.length})`}
+              </Button>
+              <Button
+                onClick={handleClear}
+                variant="outline"
+                className="bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                aria-label="Clear all pending files and manual input"
+              >
+                Clear
+              </Button>
+            </div>
+
+            {conversionLog && <ErrorLogPanel log={conversionLog} />}
+
+            {/* Conversion Status Display */}
+            {conversionStatus.type !== 'idle' && (
+              <div
+                className={`mb-8 p-4 rounded-lg border-2 flex items-start gap-3 ${
+                  conversionStatus.type === 'loading'
+                    ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700'
+                    : conversionStatus.type === 'timeout'
+                      ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700'
+                      : 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700'
+                }`}
+              >
+                <div className="pt-1">
+                  {conversionStatus.type === 'loading' ? (
+                    <Loader2
+                      className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-spin flex-shrink-0"
+                      aria-hidden="true"
+                    />
+                  ) : conversionStatus.type === 'timeout' ? (
+                    <AlertCircle
+                      className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <XCircle
+                      className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0"
+                      aria-hidden="true"
+                    />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p
+                    className={`font-semibold ${
+                      conversionStatus.type === 'loading'
+                        ? 'text-blue-900 dark:text-blue-100'
+                        : 'text-red-900 dark:text-red-100'
+                    }`}
+                  >
+                    {conversionStatus.type === 'loading'
+                      ? 'Converting...'
+                      : conversionStatus.type === 'timeout'
+                        ? 'Conversion Timeout'
+                        : conversionStatus.type === 'send_error'
+                          ? 'Send Error'
+                          : 'Conversion Error'}
+                  </p>
+                  {conversionStatus.message && (
+                    <p
+                      className={`text-sm mt-1 ${
+                        conversionStatus.type === 'loading'
+                          ? 'text-blue-800 dark:text-blue-200'
+                          : 'text-red-800 dark:text-red-200'
+                      }`}
+                    >
+                      {conversionStatus.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Pending Files */}
+            {pendingFiles.length > 0 && (
+              <div className="mb-8" role="region" aria-label="Pending files queue">
+                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                  Pending Files
+                </h2>
+                <div className="space-y-2">
+                  {pendingFiles.map((file) => (
+                    <Card
+                      key={file.id}
+                      className="p-4 bg-white dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <FileText
+                            className="w-5 h-5 text-blue-500 dark:text-blue-400"
+                            aria-hidden="true"
+                          />
+                          <div>
+                            <p className="text-base font-medium text-gray-900 dark:text-white">
+                              {file.name}
+                            </p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              {file.content.split('\n').length} line(s)
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removePendingFile(file.id)}
+                          className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-red-500"
+                          aria-label={`Remove ${file.name} from queue`}
+                        >
+                          <X
+                            className="w-4 h-4 text-gray-600 dark:text-gray-400"
+                            aria-hidden="true"
+                          />
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Results */}
+            {convertedFiles.length > 0 && (
+              <div role="region" aria-label="Conversion results">
+                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                  Results
+                </h2>
+                <div className="space-y-4">
+                  {convertedFiles.map((file) => (
+                    <Card
+                      key={file.id}
+                      className="p-4 bg-white dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <p className="text-base font-medium text-gray-900 dark:text-white">
+                          {file.originalName}
+                        </p>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDownloadSingle(file)}
+                            className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
+                            aria-label={`Download ${file.originalName} as XML`}
+                          >
+                            <Download className="w-4 h-4 mr-1" aria-hidden="true" />
+                            Download
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleCopy(file.convertedContent)}
+                            className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
+                            aria-label={`Copy ${file.originalName} content to clipboard`}
+                          >
+                            <Copy className="w-4 h-4 mr-1" aria-hidden="true" />
+                            Copy
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeConvertedFile(file.id)}
+                            className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-red-500"
+                            aria-label={`Remove ${file.originalName} from results`}
+                          >
+                            <X
+                              className="w-4 h-4 text-gray-600 dark:text-gray-400"
+                              aria-hidden="true"
+                            />
+                          </Button>
+                        </div>
+                      </div>
+                      {file.originalContent ? (
+                        <div
+                          className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded text-sm overflow-x-auto mb-3"
+                          role="region"
+                          aria-label={`Original TAC input for ${file.originalName}`}
+                        >
+                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+                            Source TAC
+                          </p>
+                          <pre className="whitespace-pre-wrap break-all font-mono">
+                            {file.originalContent}
+                          </pre>
+                        </div>
+                      ) : null}
+                      <div
+                        className="bg-gray-900 dark:bg-gray-950 text-green-400 dark:text-green-300 p-4 rounded text-sm overflow-x-auto"
+                        role="region"
+                        aria-label={`Converted XML content for ${file.originalName}`}
+                      >
+                        <pre className="whitespace-pre-wrap break-all font-mono">
+                          {file.convertedContent}
+                        </pre>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
+              <p>
+                Conversion powered by GIFS library Outputs.java raw IWXXM XML serialized
+                to .txt for convenience.
+              </p>
             </div>
           </div>
-        )}
-
-        {/* Footer */}
-        <div className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>
-            Conversion powered by GIFS library Outputs.java raw IWXXM XML serialized to
-            .txt for convenience.
-          </p>
+          {accessToken && onLoadWorkSession && (
+            <aside className="lg:sticky lg:top-8 lg:self-start">
+              <WorkHistorySidebar
+                accessToken={accessToken}
+                activeSessionId={activeWorkSessionId}
+                onSelectSession={onLoadWorkSession}
+                onOpenHistory={onOpenHistory}
+              />
+            </aside>
+          )}
         </div>
       </div>
 

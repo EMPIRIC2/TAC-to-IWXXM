@@ -34,4 +34,15 @@ describe('supabase info exports', () => {
     expect(info.publicAnonKey).toBe('');
     expect(warnSpy).toHaveBeenCalledTimes(2);
   });
+
+  it('builds edge function URLs from project id', async () => {
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://demo-project.supabase.co');
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY', 'anon-key');
+
+    const info = await import('./info');
+
+    expect(info.edgeFunctionUrl('database/upload')).toBe(
+      'https://demo-project.supabase.co/functions/v1/make-server-2e3cda33/database/upload',
+    );
+  });
 });

@@ -43,3 +43,31 @@ async def test_staging_cors_preflight_allows_frontend_origin() -> None:
     assert allow_origin in (origin, "*"), (
         f"Expected CORS allow-origin {origin!r} or '*', got {allow_origin!r}"
     )
+
+
+@pytest.mark.asyncio
+async def test_staging_cors_preflight_work_sessions_patch() -> None:
+    """H4 — work-sessions PATCH preflight for F5 auto-save."""
+    warn_deprecated_env()
+    api_url = live_api_url()
+    origin = live_frontend_url()
+    if not api_url or not origin:
+        pytest.skip(
+            "LIVE_API_URL and LIVE_FRONTEND_URL not set — skip live H4 connectivity"
+        )
+
+    import httpx
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.options(
+            f"{api_url}/api/v1/work-sessions",
+            headers={
+                "Origin": origin,
+                "Access-Control-Request-Method": "PATCH",
+                "Access-Control-Request-Headers": "Authorization, Content-Type",
+            },
+        )
+
+    assert response.status_code in (200, 204), response.text
+    allow_methods = response.headers.get("access-control-allow-methods", "").upper()
+    assert "PATCH" in allow_methods, allow_methods

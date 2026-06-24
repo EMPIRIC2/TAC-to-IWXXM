@@ -23,12 +23,14 @@ interface LoginProps {
   ) => void;
   onSwitchToRegister: () => void;
   onForgotPassword: () => void;
+  onContinueAsGuest?: () => void;
 }
 
 export function Login({
   onLogin,
   onSwitchToRegister,
   onForgotPassword: _onForgotPassword,
+  onContinueAsGuest,
 }: LoginProps) {
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -232,7 +234,18 @@ export function Login({
           </form>
 
           {/* Register Link */}
-          <div className="mt-6 pt-6 border-t border-border">
+          <div className="mt-6 pt-6 border-t border-border space-y-3">
+            {onContinueAsGuest && (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-10 text-xs"
+                onClick={onContinueAsGuest}
+                aria-label="Continue to converter without signing in"
+              >
+                Continue without signing in
+              </Button>
+            )}
             <p className="text-xs text-center text-muted-foreground">
               No account?{' '}
               <button

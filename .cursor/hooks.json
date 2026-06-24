@@ -34,14 +34,9 @@
         "timeout": 10
       },
       {
-        "command": "bash .cursor/hooks/lint.sh",
+        "command": "bash .cursor/hooks/fast-ci-check.sh",
         "matcher": "Write|TabWrite",
-        "timeout": 30
-      },
-      {
-        "command": "bash .cursor/hooks/format.sh",
-        "matcher": "Write|TabWrite",
-        "timeout": 30
+        "timeout": 60
       },
       {
         "command": "bash .cursor/hooks/typecheck.sh",
