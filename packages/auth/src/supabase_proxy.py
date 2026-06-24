@@ -40,8 +40,12 @@ class SupabaseAuthProxy:
         self.supabase_key = get_supabase_publishable_key()
 
         if not self.supabase_url or not self.supabase_key:
-            legacy_anon = os.getenv("SUPABASE_ANON_KEY", "").strip()
-            if legacy_anon.startswith("eyJ") and os.getenv("METAR_CONFIG_ENV", "local").strip().lower() == "prod":
+            is_prod = os.getenv("METAR_CONFIG_ENV", "local").strip().lower() == "prod"
+            raw_keys = (
+                os.getenv("SUPABASE_PUBLISHABLE_KEY", "").strip(),
+                os.getenv("SUPABASE_ANON_KEY", "").strip(),
+            )
+            if is_prod and any(key.startswith("eyJ") for key in raw_keys):
                 raise ValueError(
                     "Legacy Supabase JWT anon key detected; Supabase has disabled legacy API keys. "
                     "Set SUPABASE_PUBLISHABLE_KEY to your sb_publishable_* key in Render."

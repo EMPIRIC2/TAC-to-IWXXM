@@ -46,6 +46,28 @@ class TestSupabaseAuthProxyInit:
         assert proxy.supabase_url == "https://test.supabase.co"
         assert proxy.supabase_key == "test-key"
 
+    def test_legacy_jwt_anon_in_prod_raises_actionable_error(self):
+        legacy_jwt = "eyJhbGciOiJIUzI1NiJ9.eyJyZWYiOiJ0ZXN0In0.sig"
+        env = {
+            "SUPABASE_URL": "https://test.supabase.co",
+            "SUPABASE_ANON_KEY": legacy_jwt,
+            "METAR_CONFIG_ENV": "prod",
+        }
+        with patch.dict(os.environ, env, clear=True):
+            with pytest.raises(ValueError, match="Legacy Supabase"):
+                SupabaseAuthProxy()
+
+    def test_legacy_jwt_publishable_in_prod_raises_actionable_error(self):
+        legacy_jwt = "eyJhbGciOiJIUzI1NiJ9.eyJyZWYiOiJ0ZXN0In0.sig"
+        env = {
+            "SUPABASE_URL": "https://test.supabase.co",
+            "SUPABASE_PUBLISHABLE_KEY": legacy_jwt,
+            "METAR_CONFIG_ENV": "prod",
+        }
+        with patch.dict(os.environ, env, clear=True):
+            with pytest.raises(ValueError, match="Legacy Supabase"):
+                SupabaseAuthProxy()
+
 
 class TestSupabaseAuthProxySignUp:
     def test_sign_up_success(self):
