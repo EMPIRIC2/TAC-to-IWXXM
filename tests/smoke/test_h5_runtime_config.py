@@ -57,4 +57,6 @@ def test_h5_api_base_url_matches_live_e2e() -> None:
     live = cfg.get("liveE2e")
     assert isinstance(api, dict)
     assert isinstance(live, dict)
-    assert str(api.get("baseUrl", "")).rstrip("/") == str(live.get("apiUrl", "")).rstrip("/")
+    assert str(api.get("baseUrl", "")).rstrip("/") == str(
+        live.get("apiUrl", "")
+    ).rstrip("/")

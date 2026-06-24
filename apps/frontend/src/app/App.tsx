@@ -48,8 +48,8 @@ function App() {
   });
   const [userEmail, setUserEmail] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(initialLoggedIn);
-  const [accessToken, setAccessToken] = useState(
-    () => (disableAuth ? 'dev-bypass-token' : ''),
+  const [accessToken, setAccessToken] = useState(() =>
+    disableAuth ? 'dev-bypass-token' : '',
   );
   const [isAdmin, setIsAdmin] = useState(false);
 

@@ -83,8 +83,7 @@ export async function openConverterWithMockSession(page: Page): Promise<void> {
 
 /** Local T2 path: mock session when runtime config disables auth; otherwise real admin login. */
 export async function openConverterForE2e(page: Page): Promise<void> {
-  const envDisableAuth =
-    (process.env.DISABLE_AUTH ?? 'true').toLowerCase() !== 'false';
+  const envDisableAuth = (process.env.DISABLE_AUTH ?? 'true').toLowerCase() !== 'false';
 
   const disableAuth = await page
     .evaluate(async () => {
