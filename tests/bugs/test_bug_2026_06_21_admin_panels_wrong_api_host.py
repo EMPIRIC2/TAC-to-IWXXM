@@ -33,7 +33,8 @@ def test_admin_routes_registered_on_merged_api() -> None:
     ):
         response = (
             client.get(path)
-            if path not in ("/admin/toggle-admin", "/admin/approve-user", "/admin/reject-user")
+            if path
+            not in ("/admin/toggle-admin", "/admin/approve-user", "/admin/reject-user")
             else client.post(path, json={})
         )
         assert response.status_code in (401, 403, 422), (
