@@ -465,14 +465,14 @@ stages:
   18-pr-review:
     status: completed
     started: "2026-06-22"
-    completed: "2026-06-23"
-    last_cycle: PRR-006
+    completed: "2026-06-24"
+    last_cycle: PRR-007
 
   19-address-pr-review:
     status: completed
     started: "2026-06-22"
-    completed: "2026-06-23"
-    last_cycle: PRM-005
+    completed: "2026-06-24"
+    last_cycle: PRM-006
 
   12-verify-deploy:
     status: completed
@@ -1696,6 +1696,34 @@ pr_review_cycles:
       - "Self request-changes blocked by GitHub; posted COMMENT with REQUEST_CHANGES recommendation"
       - "Validate fails Prettier on apps/frontend/public/config.json; local make validate-ci reproduces"
 
+  - id: PRR-007
+    pr_number: 687
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/687
+    title: "Feat/s004 issue 555 feedback"
+    status: completed
+    started: "2026-06-24"
+    completed: "2026-06-24"
+    head_ref: feat/S004-issue-555-feedback
+    base_ref: main
+    verdict: REQUEST_CHANGES
+    blockers: 1
+    advisories: 4
+    praise: 4
+    ci_status: failure
+    session_id: S004-issue-555-feedback
+    subagents:
+      bugbot: failed_diff
+      security_review: failed_diff
+    artifacts:
+      - path: docs/sessions/S004-issue-555-feedback/reports/pr-review.md
+        note: session report
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/687#pullrequestreview-4565121838
+    notes:
+      - "Self request-changes blocked by GitHub; posted COMMENT with REQUEST_CHANGES recommendation"
+      - "Validate fails Prettier on 6 files; local format-check + Vitest 504/504 + backend unit 1148 pass"
+
 pr_remediation_cycles:
   - id: PRM-001
     pr_number: 679
@@ -2075,3 +2103,69 @@ pr_remediation_cycles:
         note: PRM-005 session report
     follow_up:
       pr_review_rerun: offered
+
+  - id: PRM-006
+    pr_number: 687
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/687
+    linked_review_cycle_id: PRR-007
+    title: "Feat/s004 issue 555 feedback"
+    status: completed
+    started: "2026-06-24"
+    completed: "2026-06-24"
+    head_ref: feat/S004-issue-555-feedback
+    base_ref: main
+    ci_status: failure   # Validate (Prettier blocker) now green; Test (integration) fails on out-of-scope Docker bug (#688)
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+    scope: blocker_only
+    counts:
+      fixed: 1
+      deferred: 3
+      wont_fix: 0
+    findings:
+      - id: F-001
+        source: inline
+        severity: blocker
+        path: apps/frontend/public/config.json
+        line: 9
+        thread_id: PRRT_kwDOQW-3CM6MAhjW
+        status: fixed
+        commit: c2d4ed4
+        note: >
+          Prettier format-check on 6 files; ran prettier --write on 5 test/spec
+          files and restored public/config.json to e2e fixture values
+          (also resolves F-003 advisory, removed committed sb_publishable_ key).
+          Validate job green. Blocker thread + config.json thread resolved.
+      - id: F-002
+        source: review_body
+        severity: advisory
+        path: null
+        line: null
+        thread_id: null
+        status: deferred
+        commit: null
+        note: Empty PR description / no Closes #555 — out of scope (blocker_only)
+      - id: F-004
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/app/components/admin/AdminWorkSessionsPanel.tsx
+        line: 116
+        thread_id: PRRT_kwDOQW-3CM6MAhmM
+        status: deferred
+        commit: null
+        note: admin user_email vs contract — out of scope (blocker_only)
+      - id: F-005
+        source: review_body
+        severity: advisory
+        path: apps/frontend/src/app/hooks/useWorkSessionSync.ts
+        line: null
+        thread_id: null
+        status: deferred
+        commit: null
+        note: 409 WIP conflict toast/guidance — out of scope (blocker_only)
+    artifacts:
+      - path: docs/sessions/S004-issue-555-feedback/reports/pr-remediation.md
+        note: PRM-006 session report
+    follow_up:
+      pr_review_rerun: offered
+      integration_docker_bug: https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/688
