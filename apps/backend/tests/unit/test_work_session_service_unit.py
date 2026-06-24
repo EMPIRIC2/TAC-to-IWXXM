@@ -106,6 +106,13 @@ def test_handle_db_error_maps_wip_conflict() -> None:
     assert exc.value.status_code == 409
 
 
+def test_handle_db_error_maps_missing_table() -> None:
+    with pytest.raises(HTTPException) as exc:
+        _handle_db_error(Exception('relation "public.metar_work_sessions" does not exist'))
+    assert exc.value.status_code == 503
+    assert "20250623000007" in exc.value.detail
+
+
 def test_list_sessions_returns_rows(mock_client: MagicMock) -> None:
     mock_client.table.return_value = _FakeQuery(SimpleNamespace(data=[ROW], count=1))
     service = WorkSessionService("token")

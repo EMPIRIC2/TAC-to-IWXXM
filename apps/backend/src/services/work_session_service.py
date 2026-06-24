@@ -76,6 +76,18 @@ def _handle_db_error(exc: Exception) -> NoReturn:
             status_code=status.HTTP_409_CONFLICT,
             detail="Only one WIP session is allowed per user",
         ) from exc
+    if "metar_work_sessions" in message and (
+        "does not exist" in message.lower()
+        or "42P01" in message
+        or "PGRST205" in message
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=(
+                "Work sessions unavailable — apply Supabase migration "
+                "20250623000007_metar_work_sessions.sql"
+            ),
+        ) from exc
     logger.exception("Work session database error")
     raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Work session database error") from exc
 

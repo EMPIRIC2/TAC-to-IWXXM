@@ -9,112 +9,63 @@ const mockToast = vi.hoisted(() => ({
   success: vi.fn(),
 }));
 
-const queryState = vi.hoisted(() => ({
-  pendingUsers: [
-    {
-      id: '1',
-      username: 'user1',
-      email: 'user1@example.com',
-      approval_status: 'pending',
-      created_at: '2024-01-01T00:00:00.000Z',
-    },
-    {
-      id: '2',
-      username: 'pilot2',
-      email: 'pilot2@example.com',
-      approval_status: 'pending',
-      created_at: '2024-01-02T00:00:00.000Z',
-    },
-  ],
-  listError: null as Error | null,
-  updateError: null as Error | null,
-  user: { id: 'admin-1' } as { id: string } | null,
-}));
-
-const mockSupabase = vi.hoisted(() => {
-  const order = vi.fn(async () => {
-    if (queryState.listError) {
-      return { data: null, error: queryState.listError };
-    }
-    return { data: queryState.pendingUsers, error: null };
-  });
-
-  const eqSelect = vi.fn(() => ({ order }));
-  const select = vi.fn(() => ({ eq: eqSelect }));
-
-  const eqUpdate = vi.fn(async () => {
-    if (queryState.updateError) {
-      return { error: queryState.updateError };
-    }
-    return { error: null };
-  });
-  const update = vi.fn(() => ({ eq: eqUpdate }));
-
-  const from = vi.fn(() => ({
-    select,
-    update,
-  }));
-
-  const getUser = vi.fn(async () => ({
-    data: { user: queryState.user },
-  }));
-
-  return {
-    from,
-    auth: { getUser },
-    __mocks: {
-      order,
-      eqSelect,
-      eqUpdate,
-      select,
-      update,
-      getUser,
-    },
-  };
-});
-
-vi.mock('/utils/supabase/client', () => ({
-  supabase: mockSupabase,
-}));
+const pendingUsers = vi.hoisted(() => [
+  {
+    id: '1',
+    username: 'user1',
+    email: 'user1@example.com',
+    approval_status: 'pending',
+    created_at: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    id: '2',
+    username: 'pilot2',
+    email: 'pilot2@example.com',
+    approval_status: 'pending',
+    created_at: '2024-01-02T00:00:00.000Z',
+  },
+]);
 
 vi.mock('sonner', () => ({
   toast: mockToast,
 }));
 
+function jsonResponse(body: unknown, ok = true): Response {
+  return {
+    ok,
+    json: async () => body,
+  } as Response;
+}
+
 describe('UserApprovalPanel', () => {
+  const accessToken = 'admin-token';
+
   beforeEach(() => {
     vi.clearAllMocks();
-    queryState.pendingUsers = [
-      {
-        id: '1',
-        username: 'user1',
-        email: 'user1@example.com',
-        approval_status: 'pending',
-        created_at: '2024-01-01T00:00:00.000Z',
-      },
-      {
-        id: '2',
-        username: 'pilot2',
-        email: 'pilot2@example.com',
-        approval_status: 'pending',
-        created_at: '2024-01-02T00:00:00.000Z',
-      },
-    ];
-    queryState.listError = null;
-    queryState.updateError = null;
-    queryState.user = { id: 'admin-1' };
+    vi.stubGlobal('fetch', vi.fn());
   });
 
-  it('loads and renders pending users', async () => {
-    render(<UserApprovalPanel accessToken="token" />);
+  it('loads and renders pending users via merged admin API', async () => {
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockResolvedValueOnce(jsonResponse({ users: pendingUsers }));
+
+    render(<UserApprovalPanel accessToken={accessToken} />);
 
     expect(await screen.findByText('user1')).toBeInTheDocument();
     expect(screen.getByText('pilot2')).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/admin/pending-users'),
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: `Bearer ${accessToken}` }),
+      }),
+    );
   });
 
   it('shows empty state when search has no matches', async () => {
     const user = userEvent.setup();
-    render(<UserApprovalPanel accessToken="token" />);
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({ users: pendingUsers }));
+
+    render(<UserApprovalPanel accessToken={accessToken} />);
 
     await screen.findByText('user1');
     await user.type(
@@ -127,25 +78,39 @@ describe('UserApprovalPanel', () => {
 
   it('refreshes data when refresh button is clicked', async () => {
     const user = userEvent.setup();
-    render(<UserApprovalPanel accessToken="token" />);
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockResolvedValue(jsonResponse({ users: pendingUsers }));
+
+    render(<UserApprovalPanel accessToken={accessToken} />);
 
     await screen.findByText('user1');
     await user.click(screen.getByRole('button', { name: /refresh/i }));
 
-    expect(mockSupabase.__mocks.order).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('approves a user and shows success toast', async () => {
     const user = userEvent.setup();
-    render(<UserApprovalPanel accessToken="token" />);
+    const fetchMock = vi.mocked(fetch);
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({ users: pendingUsers }))
+      .mockResolvedValueOnce(jsonResponse({ message: 'ok', profile: pendingUsers[0] }))
+      .mockResolvedValueOnce(jsonResponse({ users: [pendingUsers[1]] }));
+
+    render(<UserApprovalPanel accessToken={accessToken} />);
 
     await screen.findByText('user1');
     const approveButtons = screen.getAllByRole('button', { name: /approve/i });
     await user.click(approveButtons[0]);
 
     await waitFor(() => {
-      expect(mockSupabase.__mocks.getUser).toHaveBeenCalledTimes(1);
-      expect(mockSupabase.__mocks.eqUpdate).toHaveBeenCalled();
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/admin/approve-user'),
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ userId: '1' }),
+        }),
+      );
       expect(mockToast.success).toHaveBeenCalledWith(
         expect.stringContaining('approved successfully'),
       );
@@ -154,15 +119,26 @@ describe('UserApprovalPanel', () => {
 
   it('rejects a user and shows success toast', async () => {
     const user = userEvent.setup();
-    render(<UserApprovalPanel accessToken="token" />);
+    const fetchMock = vi.mocked(fetch);
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({ users: pendingUsers }))
+      .mockResolvedValueOnce(jsonResponse({ message: 'ok', profile: pendingUsers[0] }))
+      .mockResolvedValueOnce(jsonResponse({ users: [pendingUsers[1]] }));
+
+    render(<UserApprovalPanel accessToken={accessToken} />);
 
     await screen.findByText('user1');
     const rejectButtons = screen.getAllByRole('button', { name: /reject/i });
     await user.click(rejectButtons[0]);
 
     await waitFor(() => {
-      expect(mockSupabase.__mocks.getUser).toHaveBeenCalledTimes(1);
-      expect(mockSupabase.__mocks.eqUpdate).toHaveBeenCalled();
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/admin/reject-user'),
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ userId: '1' }),
+        }),
+      );
       expect(mockToast.success).toHaveBeenCalledWith(
         expect.stringContaining('rejected'),
       );
@@ -170,19 +146,23 @@ describe('UserApprovalPanel', () => {
   });
 
   it('shows error toast when list query fails', async () => {
-    queryState.listError = new Error('list failed');
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({}, false));
 
-    render(<UserApprovalPanel accessToken="token" />);
+    render(<UserApprovalPanel accessToken={accessToken} />);
 
     await waitFor(() => {
       expect(mockToast.error).toHaveBeenCalledWith('Failed to load pending users');
     });
   });
 
-  it('shows error toast when update fails', async () => {
+  it('shows error toast when approve fails', async () => {
     const user = userEvent.setup();
-    queryState.updateError = new Error('update failed');
-    render(<UserApprovalPanel accessToken="token" />);
+    const fetchMock = vi.mocked(fetch);
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({ users: pendingUsers }))
+      .mockResolvedValueOnce(jsonResponse({}, false));
+
+    render(<UserApprovalPanel accessToken={accessToken} />);
 
     await screen.findByText('user1');
     const approveButtons = screen.getAllByRole('button', { name: /approve/i });
@@ -193,10 +173,14 @@ describe('UserApprovalPanel', () => {
     });
   });
 
-  it('shows error toast when admin user is not authenticated', async () => {
+  it('shows error toast when reject fails', async () => {
     const user = userEvent.setup();
-    queryState.user = null;
-    render(<UserApprovalPanel accessToken="token" />);
+    const fetchMock = vi.mocked(fetch);
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({ users: pendingUsers }))
+      .mockResolvedValueOnce(jsonResponse({}, false));
+
+    render(<UserApprovalPanel accessToken={accessToken} />);
 
     await screen.findByText('user1');
     const rejectButtons = screen.getAllByRole('button', { name: /reject/i });
@@ -208,8 +192,9 @@ describe('UserApprovalPanel', () => {
   });
 
   it('shows empty pending users message when list is empty', async () => {
-    queryState.pendingUsers = [];
-    render(<UserApprovalPanel accessToken="token" />);
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({ users: [] }));
+
+    render(<UserApprovalPanel accessToken={accessToken} />);
 
     await waitFor(() => {
       expect(screen.getByText(/no pending approvals/i)).toBeInTheDocument();
@@ -218,22 +203,24 @@ describe('UserApprovalPanel', () => {
 
   it('approve button is disabled while processing', async () => {
     const user = userEvent.setup();
-    // Simulate a slow approval that keeps processing state active
-    mockSupabase.__mocks.eqUpdate.mockImplementationOnce(async () => {
-      await new Promise((r) => setTimeout(r, 5000));
-      return { error: null };
-    });
+    const fetchMock = vi.mocked(fetch);
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({ users: pendingUsers }))
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            setTimeout(() => resolve(jsonResponse({ message: 'ok' })), 5000);
+          }),
+      );
 
-    render(<UserApprovalPanel accessToken="token" />);
+    render(<UserApprovalPanel accessToken={accessToken} />);
 
     await screen.findByText('user1');
     const approveButtons = screen.getAllByRole('button', { name: /approve/i });
-    // Clicking starts async process; button for this user should disable quickly
     user.click(approveButtons[0]);
 
     await waitFor(() => {
       const buttons = screen.getAllByRole('button', { name: /approve/i });
-      // At least one approve button should be in DOM (the other user's)
       expect(buttons.length).toBeGreaterThanOrEqual(1);
     });
   });

@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: Render (Docker web service + static site)
-> **Last updated**: 2026-06-23 (S003 env/config delta)
+> **Last updated**: 2026-06-24 (S003 env/config delta; supabase-sync workflow)
 
 ## Topology (post-monorepo)
 
@@ -125,6 +125,32 @@ Before deploying F5 to production:
 
 Operator reference: [env-sync-runbook.md](env-sync-runbook.md), ADR-011, ADR-012.
 
+### Supabase CI sync
+
+`.github/workflows/supabase-sync.yml` applies schema changes and deploys legacy edge
+functions to project `ktvxijislbtgqapllmuk` on every push to `main` (and via manual
+dispatch). Pull requests against `main` run a read-only migration dry-run only.
+
+| Job | What | Source path |
+|-----|------|-------------|
+| `migrations` | `supabase db push --linked` | `supabase/migrations/` |
+| `functions` | `supabase functions deploy` | `apps/frontend/supabase/functions/` |
+
+**GitHub configuration** (Settings → Secrets and variables → Actions):
+
+| Kind | Name | Purpose |
+|------|------|---------|
+| Secret | `SUPABASE_ACCESS_TOKEN` | `sbp_…` CI token for Supabase CLI |
+| Secret | `SUPABASE_DB_PASSWORD` | Database password for `link` + `db push` |
+| Variable | `SUPABASE_PROJECT_REF` | Optional; defaults to `ktvxijislbtgqapllmuk` |
+
+The `functions` job copies root `supabase/config.toml` into `apps/frontend/supabase/` at
+CI time (that tree has functions but no config). Auth routes run on metar-api; edge
+functions remain only for the database-upload path until a follow-up retires them
+(ADR-010).
+
+Manual equivalent: `make supabase-push` (migrations) or `bash scripts/supabase/db-push.sh`.
+
 ## Rollback
 
 Redeploy previous Render deploy from dashboard or revert git tag on main.
@@ -138,6 +164,7 @@ Redeploy previous Render deploy from dashboard or revert git tag on main.
 - [ ] Frontend rebuilt after API URL known
 - [ ] F5: Supabase migrations through `20250623000007` applied (staging/prod)
 - [ ] F5: S003 key rotation complete (`make env-check` no legacy key WARN)
+- [ ] GitHub: `SUPABASE_ACCESS_TOKEN` and `SUPABASE_DB_PASSWORD` set for supabase-sync workflow
 
 ## Runbook
 

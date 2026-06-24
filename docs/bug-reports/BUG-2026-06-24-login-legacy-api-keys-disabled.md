@@ -67,7 +67,11 @@ Deploy triggered and reached `live`.
 
 - `packages/shared/src/metar_shared/supabase_env.py` — refuse legacy JWT anon fallback in production
 - `packages/auth/src/supabase_proxy.py` — actionable `ValueError` when prod is misconfigured
+- `packages/auth/src/admin_api.py` — `/admin/pending-users`, `/admin/approve-user`, `/admin/reject-user` (UserApprovalPanel no longer uses browser Supabase client)
+- `apps/frontend/src/app/components/admin/UserApprovalPanel.tsx` — fetch merged API admin routes
+- `apps/backend/src/services/work_session_service.py` — 503 + migration hint when `metar_work_sessions` table missing
 - `tests/bugs/test_bug_2026_06_24_login_legacy_api_keys_disabled.py` — regression tests (3/3 pass)
+- `tests/bugs/test_bug_2026_06_24_admin_pending_users_legacy_supabase.py` — UserApprovalPanel must not import Supabase client
 
 ## Spec conformance
 
@@ -119,6 +123,8 @@ Production config repro: Render API had only `SUPABASE_ANON_KEY` (JWT) — confi
 | GitHub secrets updated (`FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `DATABASE_URL`, `FRONTEND_VITE_SUPABASE_URL`) | done |
 | Frontend `/config.json` still bakes legacy JWT (image built in CI) — rebuilds with new key automatically on next `main` push (PR #689 merge) | pending merge |
 | Rotate the Render API key exposed in chat | **pending (user)** |
+| **Post-login (2026-06-24):** `UserApprovalPanel` queried `user_profiles` via browser Supabase client → "Legacy API keys are disabled" on pending users | **fixed in branch** — route through `/admin/pending-users`, `/admin/approve-user`, `/admin/reject-user` |
+| **Post-login (2026-06-24):** `[App] work session init failed: Work session database error` | **likely** migration `20250623000007_metar_work_sessions.sql` not applied on production Supabase — operator must `supabase db push`; code now returns 503 with migration hint |
 
 **Note:** The live frontend is image-based (`ghcr.io/.../frontend:main-latest`); its
 `config.json` publishable key is baked at CI build time from

@@ -25,6 +25,7 @@ def _mock_profile_table(
     *,
     maybe_single_data: object = None,
     select_data: list[dict[str, object]] | None = None,
+    pending_select_data: list[dict[str, object]] | None = None,
     update_data: list[dict[str, object]] | None = None,
 ) -> MagicMock:
     """Build a chained Supabase table mock for admin route tests."""
@@ -37,6 +38,11 @@ def _mock_profile_table(
     select_chain = table.select.return_value
     select_chain.order.return_value.execute.return_value = MagicMock(data=select_data or [])
     select_chain.execute.return_value = MagicMock(data=select_data or [])
+
+    pending_chain = table.select.return_value.eq.return_value
+    pending_chain.order.return_value.execute.return_value = MagicMock(
+        data=pending_select_data if pending_select_data is not None else (select_data or [])
+    )
 
     update_chain = table.update.return_value.eq.return_value
     update_chain.execute.return_value = MagicMock(data=update_data)
@@ -192,6 +198,82 @@ def test_require_admin_rejects_non_admin_profile() -> None:
             require_admin(token="test-token", proxy=mock_proxy)
 
     assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_list_pending_users_returns_profiles(admin_client: TestClient) -> None:
+    """Approval panel receives pending user profiles."""
+    rows = [
+        {
+            "id": "user-pending",
+            "email": "pending@example.com",
+            "username": "pending1",
+            "approval_status": "pending",
+            "created_at": "2026-01-01T00:00:00Z",
+        }
+    ]
+    admin_client.app.dependency_overrides[require_admin] = _admin_override
+    with patch(
+        "admin_api._get_authed_client",
+        return_value=_mock_profile_table(pending_select_data=rows),
+    ):
+        response = admin_client.get(
+            "/admin/pending-users",
+            headers={"Authorization": "Bearer test-token"},
+        )
+    admin_client.app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    users = response.json()["users"]
+    assert users[0]["id"] == "user-pending"
+    assert users[0]["approval_status"] == "pending"
+
+
+def test_approve_user_updates_profile(admin_client: TestClient) -> None:
+    """Admin can approve a pending user."""
+    updated = [
+        {
+            "id": "user-pending",
+            "email": "pending@example.com",
+            "username": "pending1",
+            "approval_status": "approved",
+            "created_at": "2026-01-01T00:00:00Z",
+        }
+    ]
+    admin_client.app.dependency_overrides[require_admin] = _admin_override
+    with patch("admin_api._get_authed_client", return_value=_mock_profile_table(update_data=updated)):
+        response = admin_client.post(
+            "/admin/approve-user",
+            headers={"Authorization": "Bearer test-token"},
+            json={"userId": "user-pending"},
+        )
+    admin_client.app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert response.json()["profile"]["approval_status"] == "approved"
+
+
+def test_reject_user_updates_profile(admin_client: TestClient) -> None:
+    """Admin can reject a pending user."""
+    updated = [
+        {
+            "id": "user-pending",
+            "email": "pending@example.com",
+            "username": "pending1",
+            "approval_status": "rejected",
+            "created_at": "2026-01-01T00:00:00Z",
+        }
+    ]
+    admin_client.app.dependency_overrides[require_admin] = _admin_override
+    with patch("admin_api._get_authed_client", return_value=_mock_profile_table(update_data=updated)):
+        response = admin_client.post(
+            "/admin/reject-user",
+            headers={"Authorization": "Bearer test-token"},
+            json={"userId": "user-pending"},
+        )
+    admin_client.app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert response.json()["profile"]["approval_status"] == "rejected"
 
 
 def test_list_all_users_returns_profiles(admin_client: TestClient) -> None:

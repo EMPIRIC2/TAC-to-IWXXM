@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import copy
 import logging
+from datetime import datetime, timezone
 from typing import Any, cast
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -41,6 +42,12 @@ class ToggleAdminRequest(BaseModel):
 
     userId: str = Field(min_length=1)
     isAdmin: bool
+
+
+class UserIdRequest(BaseModel):
+    """Request body for approving or rejecting a pending user."""
+
+    userId: str = Field(min_length=1)
 
 
 class SystemSettingsPayload(BaseModel):
@@ -96,6 +103,17 @@ def _profile_to_user_info(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _profile_to_pending_user(row: dict[str, Any]) -> dict[str, Any]:
+    """Map a ``user_profiles`` row to the UserApprovalPanel shape."""
+    return {
+        "id": row.get("id") or row.get("user_id"),
+        "email": row.get("email", ""),
+        "username": row.get("username", ""),
+        "approval_status": row.get("approval_status", "pending"),
+        "created_at": row.get("created_at"),
+    }
+
+
 def require_admin(
     token: str = Depends(get_token_from_header),
     proxy: SupabaseAuthProxy = Depends(get_supabase_proxy),
@@ -146,6 +164,90 @@ def save_settings(
     _system_settings = merged
     logger.info("[ADMIN] System settings updated")
     return {"message": "Settings saved successfully", "settings": copy.deepcopy(_system_settings)}
+
+
+@router.get("/pending-users")
+def list_pending_users(
+    _admin: dict[str, Any] = Depends(require_admin),
+    token: str = Depends(get_token_from_header),
+) -> dict[str, Any]:
+    """List user profiles awaiting admin approval."""
+    client = _get_authed_client(token)
+    result = (
+        client.table("user_profiles")
+        .select("*")
+        .eq("approval_status", "pending")
+        .order("created_at", desc=True)
+        .execute()
+    )
+    users = [_profile_to_pending_user(row) for row in _profile_rows(result.data)]
+    return {"users": users}
+
+
+@router.post("/approve-user")
+def approve_user(
+    payload: UserIdRequest,
+    admin: dict[str, Any] = Depends(require_admin),
+    token: str = Depends(get_token_from_header),
+) -> dict[str, Any]:
+    """Approve a pending user profile."""
+    client = _get_authed_client(token)
+    now = datetime.now(timezone.utc).isoformat()
+    update = (
+        client.table("user_profiles")
+        .update(
+            {
+                "approval_status": "approved",
+                "approved_at": now,
+                "approved_by": admin["id"],
+            }
+        )
+        .eq("id", payload.userId)
+        .execute()
+    )
+    if not update.data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    row = _profile_row(update.data[0])
+    if row is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    logger.info("[ADMIN] User approved: %s by %s", payload.userId, admin["id"])
+    return {
+        "message": "User approved successfully",
+        "profile": _profile_to_pending_user(row),
+    }
+
+
+@router.post("/reject-user")
+def reject_user(
+    payload: UserIdRequest,
+    admin: dict[str, Any] = Depends(require_admin),
+    token: str = Depends(get_token_from_header),
+) -> dict[str, Any]:
+    """Reject a pending user profile."""
+    client = _get_authed_client(token)
+    now = datetime.now(timezone.utc).isoformat()
+    update = (
+        client.table("user_profiles")
+        .update(
+            {
+                "approval_status": "rejected",
+                "approved_at": now,
+                "approved_by": admin["id"],
+            }
+        )
+        .eq("id", payload.userId)
+        .execute()
+    )
+    if not update.data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    row = _profile_row(update.data[0])
+    if row is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    logger.info("[ADMIN] User rejected: %s by %s", payload.userId, admin["id"])
+    return {
+        "message": "User rejected successfully",
+        "profile": _profile_to_pending_user(row),
+    }
 
 
 @router.get("/all-users")
