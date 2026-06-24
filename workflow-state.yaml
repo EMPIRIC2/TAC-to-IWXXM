@@ -64,15 +64,16 @@ active_session:
       skip_rationale: null
     - stage: 12-verify-deploy
       required: false
-      status: pending
+      status: completed
       skip_rationale: null
-  current_stage: 12-verify-deploy
+  current_stage: 13-deploy-smoke
   started_at: "2026-06-23"
   notes:
     - "16-evolve Phase 0 intake complete 2026-06-23 — F5 interview re-confirmed; scope approved for routing"
     - "09-qa 2026-06-24 — FAIL (ESLint react-hooks + 1 Vitest); see qa-report.md"
     - "10-e2e 2026-06-24 — FAIL (delta Playwright locators + staging H4 CORS); see reports/e2e-report.md"
     - "11-verify-impl 2026-06-24 — APPROVED (re-confirmed UJ-001/UJ-004 + F1/F5 approve-fix); lint green; FileConverter Vitest 84/84; T3 deferred to 12"
+    - "12-verify-deploy 2026-06-24 — strategy verified; H0c PASS; H4 FAIL (live CORS); H5 PASS; deploy blocked on operator T1.3 + S003 key rotation + API redeploy"
     - "07-build 2026-06-24 — EV-004 complete (36/38); delta E2E 4/4; operator T1.3 deferred"
   context_briefs:
     - docs/context/issue-555-feedback.md
@@ -475,15 +476,16 @@ stages:
 
   12-verify-deploy:
     status: completed
-    started_at: "2026-06-23T12:00:00Z"
-    completed_at: "2026-06-23T12:30:00Z"
-    session_id: S003-supabase-keys-config
-    report: docs/sessions/S003-supabase-keys-config/reports/deploy-checklist.md
+    started_at: "2026-06-24T18:20:00Z"
+    completed_at: "2026-06-24T18:30:00Z"
+    session_id: S004-issue-555-feedback
+    report: docs/sessions/S004-issue-555-feedback/reports/deploy-checklist.md
     notes:
       - "S001 delta — static+api Render; H0c/H4/H5 PASS on live staging"
       - "E2E-002 resolved — /auth/* routes present on deployed API"
       - "S002 / EV-003 — user approved mitigations + rollback; H0c/H4/H5 PASS pre-merge baseline"
-      - "S003 — strategy verified; user approved mitigations + rollback; deploy blocked on config/ Docker COPY + key rotation"
+      - "S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)"
+      - "S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13"
 
 stages_pending: []
 
@@ -498,22 +500,24 @@ deployment:
     t0_journeys_passed: 4
   staging:
     status: deployed
-    last_verified: "2026-06-22"
+    last_verified: "2026-06-24"
     commit_deployed: "220ad64"
     commit_head: main
-    drift: false
+    drift: true
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
     health_tiers:
       H1: pass
-      H4: pass
+      H0c: pass
+      H4: fail
       H5: pass
-      T3_auth: pass
+      T3_auth: blocked
     notes:
       - "Auth routes live on deployed API (E2E-002 resolved)"
-      - "H0c+H4+H5 verified via verify_connectivity.sh (stage 12)"
-      - "S001 Convert&Send UI in live frontend bundle"
+      - "S004 stage 12 — H4 FAIL: API rejects v4 frontend CORS origin (400); H5 PASS on /config.json"
+      - "Deploy blocked: operator T1.3 migrations + S003 key rotation + API redeploy with config/prod.json CORS"
+      - "Frontend on S003 /config.json model; API image likely stale vs config-based CORS"
   url_discovery:
     method: "bash scripts/deploy/verify_connectivity.sh"
 
