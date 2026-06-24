@@ -22,16 +22,17 @@ git clone https://github.com/joseph-c-mcguire/metar-to-IWXXM.git
 cd metar-to-IWXXM
 
 cp .env.example .env
-# Edit .env: SUPABASE_URL, SUPABASE_ANON_KEY, VITE_SUPABASE_* keys
+# Edit .env: SUPABASE_PUBLISHABLE_KEY, SUPABASE_SECRET_KEY, DATABASE_URL (see config-spec.md)
 
+export METAR_CONFIG_ENV=local
 make install
 make dev
 ```
 
 | Service | URL (default) |
 |---------|----------------|
-| Frontend (Vite) | http://localhost:5173 |
-| API (backend + auth) | http://localhost:8001 |
+| Frontend (Vite) | http://localhost:18000 |
+| API (backend + auth) | http://localhost:18001 |
 | API docs | http://localhost:8001/docs |
 | Auth routes | http://localhost:8001/auth/* |
 
@@ -88,34 +89,41 @@ as conversion APIs. The frontend uses a single `VITE_API_BASE_URL` for both.
 
 ## Environment variables
 
-Copy `.env.example` to `.env` at the repo root. Key variables:
+Copy `.env.example` to `.env` at the repo root — **secrets only** (five placeholders).
+Non-secret URLs, CORS, and feature flags live in `config/local.json` or `config/prod.json`,
+selected by `METAR_CONFIG_ENV` (default `local`).
 
-### Frontend (build-time / Vite)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SUPABASE_PUBLISHABLE_KEY` | Yes | `sb_publishable_*` — client + server JWT validation |
+| `SUPABASE_SECRET_KEY` | Yes | `sb_secret_*` — Auth Admin API (`create_admin_user.py` only) |
+| `DATABASE_URL` | Yes | Postgres pooler URL (evaluation jobs, statistics) |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Local | Operator bootstrap user |
+| `METAR_CONFIG_ENV` | No | `local` (default) or `prod` |
 
-| Variable | Local default | Description |
-|----------|---------------|-------------|
-| `VITE_API_BASE_URL` | `http://localhost:8001` | API origin for `/api/v1/*` and `/auth/*` |
-| `VITE_APP_URL` | `http://localhost:5173` | Public frontend URL (redirects) |
-| `VITE_SUPABASE_URL` | — | Supabase project URL |
-| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | — | Supabase anon key |
+**Deprecated** (one-release shim): `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+`VITE_*`, `METAR_CORS_ORIGINS`, `DISABLE_AUTH`, `FRONTEND_URL`.
 
-**Deprecated:** `VITE_BACKEND_URL`, `VITE_AUTH_SERVICE_URL` — use `VITE_API_BASE_URL`.
+Verify alignment: `make env-check`. Operator sync: [env-sync-runbook.md](env-sync-runbook.md),
+[env-contract.md](env-contract.md).
 
-### API (runtime)
+### Supabase local stack (optional)
 
-| Variable | Local default | Description |
-|----------|---------------|-------------|
-| `METAR_CORS_ORIGINS` | `http://localhost:5173` | Comma-separated browser origins |
-| `FRONTEND_URL` | matches Vite URL | Redirects / email links |
-| `SUPABASE_URL` | — | Server-side Supabase |
-| `SUPABASE_ANON_KEY` | — | JWT validation |
-| `DISABLE_AUTH` | `true` | Set `false` for production auth |
-| `DATABASE_URL` | optional | Postgres if statistics features enabled |
+Schema migrations live at **`supabase/migrations/`** (timestamp-ordered) with
+`supabase/seed.sql`, following [Supabase local development](https://supabase.com/docs/guides/local-development/overview).
 
-**Deprecated:** `AUTH_SERVICE_URL`, `ALLOWED_ORIGINS` — auth is inlined; use
-`METAR_CORS_ORIGINS`.
+```bash
+npm install -g supabase    # or see Supabase CLI docs
+make supabase-start        # Docker required
+make supabase-reset        # apply migrations + seed
+make supabase-status       # local URL + keys for .env
+```
 
-Staging and production values: [staging-secrets-matrix.md](staging-secrets-matrix.md).
+For local auth testing, point `config/local.json` → `supabase.url` to `http://127.0.0.1:54321`
+and copy publishable/secret keys from `make supabase-status`. Production push:
+`supabase link --project-ref ktvxijislbtgqapllmuk` then `make supabase-push`.
+
+RLS advisor migrations (004–006) target METAR tables only — see env-sync-runbook §Database advisor.
 
 ## Workspace commands
 
@@ -132,11 +140,12 @@ make vendor-sync      # Refresh vendor/schemas from wmo-im manifest
 ```bash
 # API only
 cd apps/backend
-uv run uvicorn src.api:app --reload --host 0.0.0.0 --port 8001
+uv run uvicorn src.api:app --reload --host 0.0.0.0 --port 18001
 
 # Frontend only
 cd apps/frontend
-pnpm dev
+METAR_CONFIG_ENV=local bash ../../scripts/frontend/prepare-config.sh
+pnpm dev --host 0.0.0.0 --port 18000
 
 # GIFTs tests
 cd packages/gifts && uv run pytest tests/ -v

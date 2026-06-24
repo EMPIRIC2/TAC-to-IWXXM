@@ -16,10 +16,8 @@ try:
 except ImportError:
     pass  # dotenv not required in production
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "sqlite:///./auth.db",  # Default to SQLite for local dev
-)
+_raw_database_url = os.getenv("DATABASE_URL", "").strip()
+DATABASE_URL = _raw_database_url or "sqlite:///./auth.db"
 
 
 class Base(DeclarativeBase):

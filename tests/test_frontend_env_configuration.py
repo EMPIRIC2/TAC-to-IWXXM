@@ -1,145 +1,104 @@
-"""Integration test for frontend environment variable configuration.
+"""Runtime configuration contract tests (ADR-010 / S003).
 
-Validates that the frontend has the correct VITE_AUTH_SERVICE_URL environment
-variable configured, preventing the "Missing VITE_AUTH_SERVICE_URL" error that
-causes the app to fail at startup.
+Replaces legacy VITE_AUTH_SERVICE_URL checks — config JSON + canonical Supabase
+env names are the source of truth for local and deploy wiring.
 """
 
+from __future__ import annotations
+
+import json
+import subprocess
 from pathlib import Path
 
 import pytest
 
+ROOT = Path(__file__).resolve().parent.parent
+CONFIG_DIR = ROOT / "config"
+FRONTEND_DIR = ROOT / "apps" / "frontend"
 
-class TestFrontendEnvConfiguration:
-    """Test frontend environment variable setup."""
 
-    def test_frontend_env_has_vite_auth_service_url(self):
-        """Frontend .env should have VITE_AUTH_SERVICE_URL, not VITE_AUTH_URL."""
-        frontend_env_path = Path(__file__).parent.parent / "frontend" / ".env"
+def _load_json(path: Path) -> dict[str, object]:
+    with path.open(encoding="utf-8") as handle:
+        return json.load(handle)
 
-        assert frontend_env_path.exists(), (
-            f"Frontend .env file not found at {frontend_env_path}"
+
+class TestRuntimeConfigProfiles:
+    """Committed config/*.json profiles satisfy env-contract.md."""
+
+    @pytest.mark.parametrize("profile", ["local", "e2e", "prod"])
+    def test_profile_has_required_keys(self, profile: str) -> None:
+        cfg = _load_json(CONFIG_DIR / f"{profile}.json")
+        for key in ("environment", "api", "supabase"):
+            assert key in cfg
+
+        api = cfg["api"]
+        assert isinstance(api, dict)
+        assert api.get("baseUrl")
+        assert api.get("frontendUrl")
+        assert isinstance(api.get("corsOrigins"), list)
+
+        supabase = cfg["supabase"]
+        assert isinstance(supabase, dict)
+        assert supabase.get("url")
+
+    def test_local_profile_uses_merged_api_ports(self) -> None:
+        cfg = _load_json(CONFIG_DIR / "local.json")
+        api = cfg["api"]
+        assert isinstance(api, dict)
+        assert str(api.get("baseUrl")).endswith(":18001")
+        assert str(api.get("frontendUrl")).endswith(":18000")
+
+    def test_e2e_profile_enables_auth_ui(self) -> None:
+        cfg = _load_json(CONFIG_DIR / "e2e.json")
+        api = cfg["api"]
+        assert isinstance(api, dict)
+        assert api.get("disableAuth") is False
+
+
+class TestFrontendEnvExamples:
+    """Minimal frontend secrets — runtime config carries non-secrets."""
+
+    def test_frontend_env_example_is_minimal(self) -> None:
+        example = FRONTEND_DIR / ".env.example"
+        assert example.is_file()
+        content = example.read_text(encoding="utf-8")
+        assert "VITE_AUTH_SERVICE_URL" not in content
+        assert "VITE_BACKEND_URL" not in content
+
+    def test_root_env_example_documents_canonical_supabase_keys(self) -> None:
+        example = ROOT / ".env.example"
+        assert example.is_file()
+        content = example.read_text(encoding="utf-8")
+        assert "SUPABASE_PUBLISHABLE_KEY=" in content
+        assert "SUPABASE_SECRET_KEY=" in content
+
+
+class TestPrepareConfigScript:
+    """prepare-config.sh writes apps/frontend/public/config.json."""
+
+    def test_prepare_config_injects_publishable_key(self, tmp_path: Path) -> None:
+        dest_dir = tmp_path / "public"
+        env = {
+            **dict(__import__("os").environ),
+            "METAR_CONFIG_ENV": "e2e",
+            "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_test_key",
+            "DEST_DIR": str(dest_dir),
+        }
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/frontend/prepare-config.sh")],
+            cwd=ROOT,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
         )
+        assert result.returncode == 0, result.stderr or result.stdout
 
-        with open(frontend_env_path) as f:
-            env_content = f.read()
+        written = _load_json(dest_dir / "config.json")
+        supabase = written.get("supabase")
+        assert isinstance(supabase, dict)
+        assert supabase.get("publishableKey") == "sb_publishable_test_key"
 
-        # Should have VITE_AUTH_SERVICE_URL
-        assert "VITE_AUTH_SERVICE_URL=" in env_content, (
-            "Frontend .env missing VITE_AUTH_SERVICE_URL. "
-            "Please add: VITE_AUTH_SERVICE_URL=http://localhost:8002"
-        )
-
-        # Should NOT have the old VITE_AUTH_URL (to prevent confusion)
-        assert "VITE_AUTH_URL=" not in env_content, (
-            "Frontend .env uses old VITE_AUTH_URL instead of VITE_AUTH_SERVICE_URL. "
-            "Update .env to use VITE_AUTH_SERVICE_URL=http://localhost:8002"
-        )
-
-    def test_root_env_has_vite_auth_service_url(self):
-        """Root .env should also have VITE_AUTH_SERVICE_URL for consistency."""
-        root_env_path = Path(__file__).parent.parent / ".env"
-
-        assert root_env_path.exists(), f"Root .env file not found at {root_env_path}"
-
-        with open(root_env_path) as f:
-            env_content = f.read()
-
-        # Should have VITE_AUTH_SERVICE_URL
-        assert "VITE_AUTH_SERVICE_URL=" in env_content, (
-            "Root .env missing VITE_AUTH_SERVICE_URL. "
-            "Please add: VITE_AUTH_SERVICE_URL=http://localhost:8002"
-        )
-
-        # Extract the value
-        for line in env_content.split("\n"):
-            if line.startswith("VITE_AUTH_SERVICE_URL="):
-                value = line.split("=", 1)[1].strip()
-                assert value == "http://localhost:8002", (
-                    f"VITE_AUTH_SERVICE_URL should be http://localhost:8002, got {value}"
-                )
-                break
-
-    def test_frontend_env_example_has_correct_variable_name(self):
-        """Frontend .env.example should document VITE_AUTH_SERVICE_URL."""
-        frontend_env_example = (
-            Path(__file__).parent.parent / "frontend" / ".env.example"
-        )
-
-        if frontend_env_example.exists():
-            with open(frontend_env_example) as f:
-                content = f.read()
-
-            assert "VITE_AUTH_SERVICE_URL=" in content, (
-                "Frontend .env.example should include VITE_AUTH_SERVICE_URL"
-            )
-
-    def test_all_required_frontend_env_vars_exist(self):
-        """Frontend .env should have all required VITE_* variables."""
-        frontend_env_path = Path(__file__).parent.parent / "frontend" / ".env"
-
-        assert frontend_env_path.exists(), (
-            f"Frontend .env file not found at {frontend_env_path}"
-        )
-
-        with open(frontend_env_path) as f:
-            env_content = f.read()
-
-        required_vars = [
-            "VITE_AUTH_SERVICE_URL",
-            "VITE_APP_URL",
-            "VITE_BACKEND_URL",
-        ]
-
-        for var in required_vars:
-            assert f"{var}=" in env_content, (
-                f"Frontend .env missing required variable {var}"
-            )
-
-
-class TestFrontendAuthServiceConnectivity:
-    """Test that frontend can reach auth service."""
-
-    def test_auth_service_port_configured(self):
-        """Auth service should run on port 8002 as configured."""
-        frontend_env_path = Path(__file__).parent.parent / "frontend" / ".env"
-
-        with open(frontend_env_path) as f:
-            env_content = f.read()
-
-        for line in env_content.split("\n"):
-            if line.startswith("VITE_AUTH_SERVICE_URL="):
-                value = line.split("=", 1)[1].strip()
-                # Port should be 8002 for consistency across services
-                assert "8002" in value, (
-                    f"Auth service should run on port 8002, configured as {value}"
-                )
-                break
-
-    @pytest.mark.integration
-    def test_auth_service_reachable_during_startup(self):
-        """Auth service health endpoint should be reachable."""
-        # This test validates that the auth service can be reached
-        # It will be skipped if the auth service is not running
-        try:
-            import httpx
-
-            # Try to reach the auth service
-            try:
-                response = httpx.get("http://localhost:8002/health", timeout=5)
-                # Any response is acceptable (200, 404, etc.)
-                # We just want to ensure it's reachable and not a connection error
-                assert response.status_code < 500, (
-                    f"Auth service returned error: {response.status_code}"
-                )
-            except (httpx.ConnectError, httpx.ReadTimeout):
-                pytest.skip(
-                    "Auth service not running on http://localhost:8002. "
-                    "Start it with: cd auth && python -m uvicorn src.__main__:app --reload --port 8002"
-                )
-        except ImportError:
-            pytest.skip("httpx not installed, skipping connectivity test")
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+        api = written.get("api")
+        assert isinstance(api, dict)
+        assert api.get("disableAuth") is False

@@ -1,0 +1,26 @@
+{
+  "environment": "e2e",
+  "api": {
+    "baseUrl": "http://localhost:18001",
+    "corsOrigins": ["http://localhost:18000"],
+    "frontendUrl": "http://localhost:18000",
+    "disableAuth": false
+  },
+  "supabase": {
+    "url": "https://ktvxijislbtgqapllmuk.supabase.co",
+    "publishableKey": "test"
+  },
+  "validation": {
+    "wmoOnline": true,
+    "wmoTimeoutSeconds": 5,
+    "schematronUseDocker": true
+  },
+  "observability": {
+    "logLevel": "DEBUG",
+    "enableStatistics": true
+  },
+  "liveE2e": {
+    "apiUrl": "http://localhost:18001",
+    "frontendUrl": "http://localhost:18000"
+  }
+}

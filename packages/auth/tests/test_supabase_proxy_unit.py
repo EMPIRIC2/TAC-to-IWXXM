@@ -26,7 +26,7 @@ class TestIsSessionNotFoundError:
 
 def _make_proxy():
     """Create a SupabaseAuthProxy with a mocked Supabase client."""
-    with patch.dict(os.environ, {"SUPABASE_URL": "https://test.supabase.co", "SUPABASE_ANON_KEY": "test-key"}):
+    with patch.dict(os.environ, {"SUPABASE_URL": "https://test.supabase.co", "SUPABASE_PUBLISHABLE_KEY": "test-key"}):
         with patch("supabase_proxy.create_client") as mock_create:
             mock_client = MagicMock()
             mock_create.return_value = mock_client

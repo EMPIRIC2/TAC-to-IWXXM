@@ -17,8 +17,8 @@ CREATE INDEX IF NOT EXISTS idx_conversion_uploads_batch_id
 CREATE INDEX IF NOT EXISTS idx_metar_results_conversion_id
   ON public.metar_results(conversion_id);
 
-CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_user_id
-  ON public.password_reset_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_auth_uid
+  ON public.password_reset_tokens(auth_uid);
 
 CREATE INDEX IF NOT EXISTS idx_storage_files_conversion_id
   ON public.storage_files(conversion_id);

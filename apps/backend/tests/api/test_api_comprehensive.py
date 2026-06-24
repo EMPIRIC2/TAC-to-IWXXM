@@ -12,9 +12,12 @@ from src.utilities.security import verify_supabase_token
 class TestCorsConfiguration:
     """Test CORS configuration."""
 
+    _MISSING_PROFILE = {"METAR_CONFIG_ENV": "__missing_cors_profile__"}
+
     def test_cors_origins_from_environment(self):
-        """Test CORS origins loaded from environment variable."""
-        with patch.dict(os.environ, {"METAR_CORS_ORIGINS": "https://example.com,http://localhost:3000"}):
+        """Test deprecated METAR_CORS_ORIGINS fallback when config has no corsOrigins."""
+        env = {**self._MISSING_PROFILE, "METAR_CORS_ORIGINS": "https://example.com,http://localhost:3000"}
+        with patch.dict(os.environ, env, clear=False):
             origins = get_cors_origins()
 
             assert "https://example.com" in origins
@@ -22,55 +25,52 @@ class TestCorsConfiguration:
 
     def test_cors_origins_with_spaces(self):
         """Test CORS origins with extra whitespace."""
-        with patch.dict(os.environ, {"METAR_CORS_ORIGINS": " https://example.com , http://localhost:3000 "}):
+        env = {**self._MISSING_PROFILE, "METAR_CORS_ORIGINS": " https://example.com , http://localhost:3000 "}
+        with patch.dict(os.environ, env, clear=False):
             origins = get_cors_origins()
 
             assert "https://example.com" in origins
             assert "http://localhost:3000" in origins
-            # Spaces should be stripped
             assert " https://example.com" not in origins
 
     def test_cors_origins_empty_env_var(self):
-        """Test CORS origins when env var is empty string."""
-        with patch.dict(os.environ, {"METAR_CORS_ORIGINS": ""}, clear=False):
+        """Test CORS origins when env var is empty string uses config defaults."""
+        with patch.dict(os.environ, {"METAR_CONFIG_ENV": "local", "METAR_CORS_ORIGINS": ""}, clear=False):
             origins = get_cors_origins()
 
-            # Should use defaults
-            assert len(origins) > 0
+            assert "http://localhost:18000" in origins
 
     def test_cors_origins_without_env_var(self):
-        """Test CORS origins when env var not set."""
-        with patch.dict(os.environ, {}, clear=True):
-            # Ensure env vars that would cause issues are set
-            os.environ["PATH"] = "/usr/bin"
-
+        """Test CORS origins from config/local.json when env unset."""
+        with patch.dict(os.environ, {"METAR_CONFIG_ENV": "local"}, clear=False):
             origins = get_cors_origins()
 
-            # Should use default origins
-            assert "http://localhost:3000" in origins
+            assert "http://localhost:18000" in origins
 
     def test_cors_origins_custom_frontend_url(self):
-        """Test CORS origins with custom FRONTEND_URL."""
+        """Test FRONTEND_URL fallback when config profile is missing."""
         custom_url = "https://custom.example.com"
-        with patch.dict(os.environ, {"FRONTEND_URL": custom_url, "METAR_CORS_ORIGINS": ""}):
+        env = {**self._MISSING_PROFILE, "FRONTEND_URL": custom_url, "METAR_CORS_ORIGINS": ""}
+        with patch.dict(os.environ, env, clear=False):
             origins = get_cors_origins()
 
             assert custom_url in origins
 
     def test_cors_origins_single_origin(self):
-        """Test CORS origins with single origin."""
-        with patch.dict(os.environ, {"METAR_CORS_ORIGINS": "https://single.example.com"}):
+        """Test CORS origins with single origin via deprecated env."""
+        env = {**self._MISSING_PROFILE, "METAR_CORS_ORIGINS": "https://single.example.com"}
+        with patch.dict(os.environ, env, clear=False):
             origins = get_cors_origins()
 
             assert "https://single.example.com" in origins
 
     def test_cors_origins_with_trailing_comma(self):
         """Test CORS origins with trailing comma."""
-        with patch.dict(os.environ, {"METAR_CORS_ORIGINS": "https://example.com,"}):
+        env = {**self._MISSING_PROFILE, "METAR_CORS_ORIGINS": "https://example.com,"}
+        with patch.dict(os.environ, env, clear=False):
             origins = get_cors_origins()
 
             assert "https://example.com" in origins
-            # Empty string from trailing comma should be filtered
             assert "" not in origins
 
 

@@ -151,8 +151,8 @@ check_and_handle_port() {
 }
 
 preflight_ports() {
-  check_and_handle_port 8001
-  check_and_handle_port 5173
+  check_and_handle_port 18001
+  check_and_handle_port 18000
 }
 
 install_node_npm_user_space() {
@@ -288,6 +288,28 @@ parse_args "$@"
 
 load_repo_env
 
+sync_disable_auth_from_config() {
+  if [[ -n "${DISABLE_AUTH+x}" ]]; then
+    return 0
+  fi
+
+  local config_env="${METAR_CONFIG_ENV:-local}"
+  local config_file="${ROOT_DIR}/config/${config_env}.json"
+  if [[ ! -f "${config_file}" ]]; then
+    return 0
+  fi
+
+  DISABLE_AUTH="$(
+    python3 - <<PY
+import json
+with open("${config_file}", encoding="utf-8") as handle:
+    cfg = json.load(handle)
+print("true" if cfg.get("api", {}).get("disableAuth") else "false")
+PY
+  )"
+  export DISABLE_AUTH
+}
+
 trap cleanup INT TERM EXIT
 
 run_backend() {
@@ -305,12 +327,10 @@ run_backend() {
     exit 1
   fi
 
-  export METAR_CORS_ORIGINS="${METAR_CORS_ORIGINS:-http://localhost:5173}"
-  export DISABLE_AUTH="${DISABLE_AUTH:-true}"
-  export SUPABASE_URL="${SUPABASE_URL:-}"
-  export SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY:-${SUPABASE_PUBLISHABLE_KEY:-}}"
+  export METAR_CONFIG_ENV="${METAR_CONFIG_ENV:-local}"
+  export SUPABASE_PUBLISHABLE_KEY="${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}"
 
-  uv run uvicorn src.api:app --reload --host 0.0.0.0 --port 8001
+  uv run uvicorn src.api:app --reload --host 0.0.0.0 --port 18001
 }
 
 run_frontend() {
@@ -335,21 +355,23 @@ run_frontend() {
     pnpm install
   fi
 
-  export VITE_APP_URL="${VITE_APP_URL:-http://localhost:5173}"
-  export VITE_API_BASE_URL="${VITE_API_BASE_URL:-http://localhost:8001}"
-  export VITE_SUPABASE_URL="${VITE_SUPABASE_URL:-${SUPABASE_URL:-}}"
-  export VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY="${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-${SUPABASE_ANON_KEY:-${SUPABASE_PUBLISHABLE_KEY:-}}}"
+  export METAR_CONFIG_ENV="${METAR_CONFIG_ENV:-local}"
+  export SUPABASE_PUBLISHABLE_KEY="${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}"
 
-  pnpm exec vite --host 0.0.0.0 --port 5173
+  bash "${ROOT_DIR}/scripts/frontend/prepare-config.sh"
+
+  pnpm exec vite --host 0.0.0.0 --port 18000
 }
 
 preflight_ports
 
-echo "Starting merged API (backend + auth) on :8001 (reload enabled)..."
+sync_disable_auth_from_config
+
+echo "Starting merged API (backend + auth) on :18001 (reload enabled)..."
 run_backend &
 PIDS+=("$!")
 
-echo "Starting frontend on :5173 (Vite dev server)..."
+echo "Starting frontend on :18000 (Vite dev server)..."
 run_frontend &
 PIDS+=("$!")
 

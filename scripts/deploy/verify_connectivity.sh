@@ -60,46 +60,44 @@ fi
 
 if [[ -n "${STAGING_FRONTEND_URL:-}" && -n "${VITE_API_BASE_URL:-}" ]]; then
   echo ""
-  echo "== H5: Frontend bundle API URL check =="
+  echo "== H5: Frontend runtime config check =="
   frontend_base="${STAGING_FRONTEND_URL%/}"
-  bundle_html="$(curl -sfL "${frontend_base}/")"
+  expected_api_url="${VITE_API_BASE_URL%/}"
 
-  # Vite embeds build-time env vars in JS chunks, not index.html.
-  mapfile -t asset_paths < <(
-    printf '%s\n' "$bundle_html" \
-      | grep -oE '(src|href)="(/assets/[^"]+\.(js|css))"' \
-      | sed -E 's/^(src|href)="([^"]+)"$/\2/' \
-      | sort -u
-  )
-
-  bundle_content="$bundle_html"
-  for asset_path in "${asset_paths[@]}"; do
-    bundle_content+="$(curl -sfL "${frontend_base}${asset_path}")"
-  done
-
-  if [[ "$bundle_content" == *"${VITE_API_BASE_URL}"* ]]; then
-    echo "OK: deployed bundle references VITE_API_BASE_URL=${VITE_API_BASE_URL}"
-  else
-    echo "WARN: bundle at ${STAGING_FRONTEND_URL} may not embed ${VITE_API_BASE_URL}"
-    echo "      Rebuild frontend after API URL is known (docs/deploy.md §Redeploy order)."
+  if ! config_json="$(curl -sfL "${frontend_base}/config.json")"; then
+    echo "ERROR: could not fetch ${frontend_base}/config.json"
     exit 1
   fi
 
-  deprecated_urls=(
+  python3 - <<'PY' "$config_json" "$expected_api_url" "$frontend_base"
+import json, sys
+
+raw, expected_api, frontend_base = sys.argv[1], sys.argv[2].rstrip("/"), sys.argv[3]
+cfg = json.loads(raw)
+actual_api = str(cfg.get("api", {}).get("baseUrl", "")).rstrip("/")
+if actual_api != expected_api:
+    raise SystemExit(
+        f"config.json api.baseUrl mismatch: expected {expected_api!r}, got {actual_api!r}"
+    )
+if cfg.get("api", {}).get("disableAuth") is True:
+    raise SystemExit("config.json api.disableAuth must be false in production")
+print(f"OK: {frontend_base}/config.json api.baseUrl={actual_api}")
+PY
+
+  deprecated_refs=(
     "metar-to-iwxxm-auth-v2.onrender.com"
     "VITE_BACKEND_URL"
     "VITE_AUTH_SERVICE_URL"
   )
-  for deprecated in "${deprecated_urls[@]}"; do
-    if [[ "$bundle_content" == *"${deprecated}"* ]]; then
-      echo "WARN: deployed bundle still references deprecated ${deprecated}"
-      echo "      Rebuild frontend from monorepo main (unified VITE_API_BASE_URL per ADR-002)."
+  for deprecated in "${deprecated_refs[@]}"; do
+    if [[ "$config_json" == *"${deprecated}"* ]]; then
+      echo "WARN: runtime config still references deprecated ${deprecated}"
       exit 1
     fi
   done
 else
   echo ""
-  echo "== H5: skipped (set LIVE_FRONTEND_URL and VITE_API_BASE_URL for bundle check) =="
+  echo "== H5: skipped (set LIVE_FRONTEND_URL and VITE_API_BASE_URL for runtime config check) =="
 fi
 
 echo ""

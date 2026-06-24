@@ -97,12 +97,12 @@ async def test_create_evaluation_job_db_error_propagates(monkeypatch):
             return ["KJFK", "KLAX"]
 
     async def fake_create_job_in_db(**_kwargs):
-        raise httpx.HTTPError("db unavailable")
+        raise RuntimeError("db unavailable")
 
     monkeypatch.setattr(eval_router, "StationSampler", _Sampler)
     monkeypatch.setattr(eval_router, "create_job_in_db", fake_create_job_in_db)
 
-    with pytest.raises(httpx.HTTPError):
+    with pytest.raises(RuntimeError):
         await eval_router.create_evaluation_job(request, BackgroundTasks(), user={"sub": "u1"})
 
 
@@ -136,10 +136,10 @@ class _ResponseStub:
 
 @pytest.mark.asyncio
 async def test_get_job_status_not_found(monkeypatch):
-    async def fake_get_supabase_client():
-        return _SupabaseClientStub([_ResponseStub([])])
+    async def fake_get_job_for_user(job_id, user_id):
+        return None
 
-    monkeypatch.setattr(eval_router, "get_supabase_client", fake_get_supabase_client)
+    monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
 
     with pytest.raises(HTTPException) as exc:
         await eval_router.get_job_status("job-x", user={"sub": "u1"})
@@ -149,23 +149,21 @@ async def test_get_job_status_not_found(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_get_job_status_completed_with_summary(monkeypatch):
-    payload = [
-        {
-            "id": "job-1",
-            "status": "completed",
-            "progress": 10,
-            "total_stations": 10,
-            "summary_stats": {"total": 10, "passed": 8, "failed": 1, "errors": 1, "pass_rate": 0.8},
-            "created_at": "2026-03-16T10:00:00",
-            "completed_at": "2026-03-16T10:10:00",
-            "error_message": None,
-        }
-    ]
+    payload = {
+        "id": "job-1",
+        "status": "completed",
+        "progress": 10,
+        "total_stations": 10,
+        "summary_stats": {"total": 10, "passed": 8, "failed": 1, "errors": 1, "pass_rate": 0.8},
+        "created_at": "2026-03-16T10:00:00",
+        "completed_at": "2026-03-16T10:10:00",
+        "error_message": None,
+    }
 
-    async def fake_get_supabase_client():
-        return _SupabaseClientStub([_ResponseStub(payload)])
+    async def fake_get_job_for_user(job_id, user_id):
+        return payload
 
-    monkeypatch.setattr(eval_router, "get_supabase_client", fake_get_supabase_client)
+    monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
 
     result = await eval_router.get_job_status("job-1", user={"sub": "u1"})
 
@@ -176,9 +174,11 @@ async def test_get_job_status_completed_with_summary(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_get_job_results_with_status_filter(monkeypatch):
-    responses = [
-        _ResponseStub([{"id": "job-1"}]),
-        _ResponseStub(
+    async def fake_get_job_for_user(job_id, user_id):
+        return {"id": job_id}
+
+    async def fake_list_results_for_job(job_id, *, limit, offset, status_filter=None):
+        return (
             [
                 {
                     "station_id": "KJFK",
@@ -198,15 +198,12 @@ async def test_get_job_results_with_status_filter(monkeypatch):
                     },
                     "errors": [],
                 }
-            ]
-        ),
-        _ResponseStub([], headers={"Content-Range": "0-0/1"}),
-    ]
+            ],
+            1,
+        )
 
-    async def fake_get_supabase_client():
-        return _SupabaseClientStub(responses)
-
-    monkeypatch.setattr(eval_router, "get_supabase_client", fake_get_supabase_client)
+    monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
+    monkeypatch.setattr(eval_router, "list_results_for_job", fake_list_results_for_job)
 
     result = await eval_router.get_job_results(
         "job-1",
@@ -223,10 +220,10 @@ async def test_get_job_results_with_status_filter(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_get_job_results_not_found(monkeypatch):
-    async def fake_get_supabase_client():
-        return _SupabaseClientStub([_ResponseStub([])])
+    async def fake_get_job_for_user(job_id, user_id):
+        return None
 
-    monkeypatch.setattr(eval_router, "get_supabase_client", fake_get_supabase_client)
+    monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
 
     with pytest.raises(HTTPException) as exc:
         await eval_router.get_job_results("job-x", user={"sub": "u1"})
@@ -236,8 +233,8 @@ async def test_get_job_results_not_found(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_list_user_jobs_with_summary(monkeypatch):
-    responses = [
-        _ResponseStub(
+    async def fake_list_jobs_for_user(user_id, limit, offset):
+        return (
             [
                 {
                     "id": "job-1",
@@ -248,15 +245,11 @@ async def test_list_user_jobs_with_summary(monkeypatch):
                     "created_at": "2026-03-16T10:00:00",
                     "completed_at": "2026-03-16T10:10:00",
                 }
-            ]
-        ),
-        _ResponseStub([], headers={"Content-Range": "0-0/1"}),
-    ]
+            ],
+            1,
+        )
 
-    async def fake_get_supabase_client():
-        return _SupabaseClientStub(responses)
-
-    monkeypatch.setattr(eval_router, "get_supabase_client", fake_get_supabase_client)
+    monkeypatch.setattr(eval_router, "list_jobs_for_user", fake_list_jobs_for_user)
 
     result = await eval_router.list_user_jobs(page=1, per_page=20, user={"sub": "u1"})
 
@@ -481,3 +474,154 @@ async def test_run_evaluation_job_top_level_failure_marks_failed(monkeypatch):
     assert statuses[0][0] == "running"
     assert statuses[-1][0] == "failed"
     assert "sampler down" in statuses[-1][1]
+
+
+@pytest.mark.asyncio
+async def test_run_evaluation_job_single_mode_without_station_ids_fails(monkeypatch):
+    statuses = []
+
+    async def fake_update_job_status(job_id, status, progress=None, summary_stats=None, error_message=None):
+        _ = (job_id, progress, summary_stats)
+        statuses.append((status, error_message))
+
+    monkeypatch.setattr(eval_router, "update_job_status", fake_update_job_status)
+
+    request = EvaluationRequest(mode=EvaluationMode.SINGLE, station_ids=[])
+    await eval_router.run_evaluation_job("job-6", request)
+
+    assert statuses[-1][0] == "failed"
+    assert "station_ids required" in statuses[-1][1]
+
+
+@pytest.mark.asyncio
+async def test_run_evaluation_job_all_mode_uses_sampler(monkeypatch):
+    saved_results = []
+
+    async def fake_update_job_status(*_args, **_kwargs):
+        return None
+
+    async def fake_save_result(_job_id, result):
+        saved_results.append(result)
+
+    class _Sampler:
+        def get_all_major_airports(self, **_kwargs):
+            return ["KORD"]
+
+    class _AviationClient:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def fetch_metar_batch(self, stations, hours):
+            _ = (stations, hours)
+            return {"KORD": ("METAR KORD", "<their/>")}
+
+    class _CompareResult:
+        passed = True
+        our_elements = 1
+        their_elements = 1
+        missing_elements = []
+        extra_elements = []
+        value_mismatches = []
+        error_message = None
+
+    class _EvalService:
+        def compare_iwxxm(self, _our, _theirs):
+            return _CompareResult()
+
+    monkeypatch.setattr(eval_router, "update_job_status", fake_update_job_status)
+    monkeypatch.setattr(eval_router, "save_result_to_db", fake_save_result)
+    monkeypatch.setattr(eval_router, "StationSampler", _Sampler)
+    monkeypatch.setattr(eval_router, "AviationWeatherClient", _AviationClient)
+    monkeypatch.setattr(eval_router, "EvaluationService", _EvalService)
+    monkeypatch.setattr(eval_router, "convert_metar_tac", lambda _tac: "<our/>")
+
+    request = EvaluationRequest(mode=EvaluationMode.ALL, hours=1.0)
+    await eval_router.run_evaluation_job("job-7", request)
+
+    assert saved_results[0].station_id == "KORD"
+
+
+@pytest.mark.asyncio
+async def test_run_evaluation_job_unexpected_conversion_error(monkeypatch):
+    saved_results = []
+
+    async def fake_update_job_status(*_args, **_kwargs):
+        return None
+
+    async def fake_save_result(_job_id, result):
+        saved_results.append(result)
+
+    class _Sampler:
+        def sample_random_stations(self, **_kwargs):
+            return ["KJFK"]
+
+    class _AviationClient:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def fetch_metar_batch(self, stations, hours):
+            _ = (stations, hours)
+            return {"KJFK": ("METAR KJFK", "<their/>")}
+
+    def boom_convert(_tac):
+        raise RuntimeError("unexpected")
+
+    monkeypatch.setattr(eval_router, "update_job_status", fake_update_job_status)
+    monkeypatch.setattr(eval_router, "save_result_to_db", fake_save_result)
+    monkeypatch.setattr(eval_router, "StationSampler", _Sampler)
+    monkeypatch.setattr(eval_router, "AviationWeatherClient", _AviationClient)
+    monkeypatch.setattr(eval_router, "convert_metar_tac", boom_convert)
+
+    request = EvaluationRequest(mode=EvaluationMode.RANDOM, sample_size=1, hours=1.0)
+    await eval_router.run_evaluation_job("job-8", request)
+
+    assert any("Unexpected error" in msg for msg in saved_results[0].errors)
+
+
+@pytest.mark.asyncio
+async def test_run_evaluation_job_comparison_exception(monkeypatch):
+    saved_results = []
+
+    async def fake_update_job_status(*_args, **_kwargs):
+        return None
+
+    async def fake_save_result(_job_id, result):
+        saved_results.append(result)
+
+    class _Sampler:
+        def sample_random_stations(self, **_kwargs):
+            return ["KJFK"]
+
+    class _AviationClient:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def fetch_metar_batch(self, stations, hours):
+            _ = (stations, hours)
+            return {"KJFK": ("METAR KJFK", "<their/>")}
+
+    class _EvalService:
+        def compare_iwxxm(self, _our, _theirs):
+            raise RuntimeError("compare failed")
+
+    monkeypatch.setattr(eval_router, "update_job_status", fake_update_job_status)
+    monkeypatch.setattr(eval_router, "save_result_to_db", fake_save_result)
+    monkeypatch.setattr(eval_router, "StationSampler", _Sampler)
+    monkeypatch.setattr(eval_router, "AviationWeatherClient", _AviationClient)
+    monkeypatch.setattr(eval_router, "EvaluationService", _EvalService)
+    monkeypatch.setattr(eval_router, "convert_metar_tac", lambda _tac: "<our/>")
+
+    request = EvaluationRequest(mode=EvaluationMode.RANDOM, sample_size=1, hours=1.0)
+    await eval_router.run_evaluation_job("job-9", request)
+
+    assert any("Comparison error" in msg for msg in saved_results[0].errors)
+    assert saved_results[0].comparison_status.value == "error"

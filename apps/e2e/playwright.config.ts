@@ -50,7 +50,8 @@ function loadPlaywrightEnv(): void {
 
 loadPlaywrightEnv();
 
-const DEFAULT_FRONTEND_URL = 'http://localhost:5173';
+const DEFAULT_FRONTEND_URL = 'http://localhost:18000';
+const DEFAULT_API_BASE_URL = 'http://localhost:18001';
 const configuredBaseUrl = process.env.PLAYWRIGHT_BASE_URL || DEFAULT_FRONTEND_URL;
 
 function isRemoteBaseUrl(url: string): boolean {
@@ -66,11 +67,13 @@ function isRemoteBaseUrl(url: string): boolean {
 }
 
 const remotePlaywright = isRemoteBaseUrl(configuredBaseUrl);
+const localConfigEnv = process.env.METAR_CONFIG_ENV || 'local';
 
 /**
  * Playwright configuration for cross-app E2E tests (apps/e2e workspace).
  *
- * Local: starts monorepo dev stack via webServer (DISABLE_AUTH=true default).
+ * Local: starts monorepo dev stack via webServer (config/local.json by default).
+ * Auth UI specs: set METAR_CONFIG_ENV=e2e (see make test-e2e-t2-product).
  * Live: set PLAYWRIGHT_BASE_URL to Render frontend URL — webServer is skipped.
  */
 export default defineConfig({
@@ -109,8 +112,7 @@ export default defineConfig({
     ? {}
     : {
         webServer: {
-          command:
-            'AUTO_KILL_PORTS=true DISABLE_AUTH=${DISABLE_AUTH:-true} VITE_APP_URL=http://localhost:5173 VITE_API_BASE_URL=http://localhost:8001 METAR_CORS_ORIGINS=http://localhost:5173 ../../start-dev-servers.sh --kill',
+          command: `AUTO_KILL_PORTS=true METAR_CONFIG_ENV=${localConfigEnv} PLAYWRIGHT_API_BASE_URL=${process.env.PLAYWRIGHT_API_BASE_URL || DEFAULT_API_BASE_URL} ../../start-dev-servers.sh --kill`,
           url: configuredBaseUrl,
           timeout: 180000,
           reuseExistingServer: !process.env.CI,

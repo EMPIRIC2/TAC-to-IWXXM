@@ -12,6 +12,7 @@ import { ThemeProvider } from './components/ThemeProvider';
 import { isLoggedIn, logout } from '@/utils/authService';
 
 import { requireApiBaseUrl } from '@/utils/apiBase';
+import { isAuthDisabled } from '@/utils/runtime-config';
 
 // Validate required environment variables on app load
 function validateAuthEnv() {
@@ -37,13 +38,16 @@ type AuthView =
   | 'reset';
 
 function App() {
-  const initialLoggedIn = isLoggedIn();
-  const [currentView, setCurrentView] = useState<AuthView>(
+  const disableAuth = isAuthDisabled();
+  const initialLoggedIn = disableAuth || isLoggedIn();
+  const [currentView, setCurrentView] = useState<AuthView>(() =>
     initialLoggedIn ? 'converter' : 'login',
   );
   const [userEmail, setUserEmail] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(initialLoggedIn);
-  const [accessToken, setAccessToken] = useState<string>('');
+  const [accessToken, setAccessToken] = useState(() =>
+    disableAuth ? 'dev-bypass-token' : '',
+  );
   const [isAdmin, setIsAdmin] = useState(false);
 
   // Validate environment on mount

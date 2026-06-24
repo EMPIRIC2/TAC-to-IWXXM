@@ -4,16 +4,21 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 2
+session_counter: 3
 active_session:
-  id: S002-issue-594-feedback
-  type: feature
-  intent: "COR handling + input traceability from tester feedback (GitHub #594)"
-  status: completed
-  branch: fix/S002-issue-594-feedback
-  orchestrator: 16-evolve
-  artifacts_dir: docs/sessions/S002-issue-594-feedback/
+  id: S003-supabase-keys-config
+  type: hotfix
+  intent: "Supabase key rotation, config split, advisor remediation, env sync (BUG-2026-06-23)"
+  status: in_progress
+  branch: fix/supabase-service-key-leak
+  orchestrator: 14-hotfix
+  artifacts_dir: docs/sessions/S003-supabase-keys-config/
   routing_plan:
+    - stage: 01-requirements
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
     - stage: 00-context
       mode: scoped
       required: true
@@ -25,27 +30,23 @@ active_session:
       skip_rationale: null
     - stage: 14-hotfix
       required: true
-      status: completed
-      skip_rationale: null
-    - stage: 16-evolve
-      required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 07-build
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 08-verify-build
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 09-qa
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 10-e2e
-      required: true
       mode: delta
+      required: true
       status: completed
       skip_rationale: null
     - stage: 11-verify-impl
@@ -56,10 +57,14 @@ active_session:
       required: false
       status: completed
       skip_rationale: null
-  current_stage: 13-deploy-smoke
-  started_at: "2026-06-22"
+    - stage: 13-deploy-smoke
+      required: false
+      status: pending
+      skip_rationale: null
+  current_stage: 14-hotfix
+  started_at: "2026-06-23"
   context_briefs:
-    - docs/context/issue-594-feedback.md
+    - docs/context/supabase-keys-config.md
 sessions:
   - id: S001-convert-send-buttons
     type: feature
@@ -67,6 +72,15 @@ sessions:
     completed_at: "2026-06-22"
     branch: feat/S001-convert-send-buttons
     artifacts_dir: docs/sessions/S001-convert-send-buttons/
+  - id: S002-issue-594-feedback
+    type: feature
+    status: completed
+    completed_at: "2026-06-23"
+    branch: fix/S002-issue-594-feedback
+    orchestrator: 16-evolve
+    evolve_cycle_id: EV-003
+    artifacts_dir: docs/sessions/S002-issue-594-feedback/
+    started_at: "2026-06-22"
 
 template:
   id: static+api
@@ -104,6 +118,20 @@ stages:
         total: 8
         current_template: null
         current_section: complete
+    delta_substages:
+      - status: completed
+        mode: delta
+        session_id: S003-supabase-keys-config
+        completed_at: "2026-06-23"
+        note: "Delta requirements for Supabase keys, config split, env sync"
+        artifacts:
+          - docs/config-spec.md
+          - docs/env-contract.md
+          - docs/env-sync-runbook.md
+          - docs/adr/ADR-010-supabase-keys-config-split.md
+          - docs/sessions/S003-supabase-keys-config/reports/01-requirements.md
+          - config/prod.json
+          - config/local.json
     notes:
       - "Monorepo migration requirements interview complete; big-bang approach approved"
 
@@ -271,9 +299,9 @@ stages:
 
   11-verify-impl:
     status: completed
-    started_at: "2026-06-22T22:00:00Z"
-    completed_at: "2026-06-22T23:00:00Z"
-    session_id: S002-issue-594-feedback
+    started_at: "2026-06-23T00:00:00Z"
+    completed_at: "2026-06-23T12:00:00Z"
+    session_id: S003-supabase-keys-config
     substeps:
       collect_results:
         status: completed
@@ -281,26 +309,27 @@ stages:
         status: completed
       journey_signoff:
         status: completed
-        approved: 1
+        approved: 2
         flagged: 0
-        total: 1
+        total: 2
+        notes: "UJ-003 + UJ-OPS-001 approved; T3 auth waived to 12-verify-deploy"
       feature_approval:
         status: completed
-        approved: 1
+        approved: 2
         flagged: 0
-        total: 1
+        total: 2
       fixes_applied:
         status: completed
-        notes: "None required — user approved as-is"
+        notes: "None required — user approved with T3 waiver"
       scope_analysis:
         status: completed
       summary:
         status: completed
-    report: docs/sessions/S002-issue-594-feedback/reports/verify-impl.md
+    report: docs/sessions/S003-supabase-keys-config/reports/verify-impl.md
     notes:
-      - "S002 / EV-003 / GitHub #594 — user approved UJ-001 and F1 delta (TC-001b)"
-      - "T3 live deferred until post-merge deploy"
-      - "S001 / EV-001 signoff: docs/sessions/S001-convert-send-buttons/reports/verify-impl.md"
+      - "S003 / BUG-2026-06-23 — user approved M4+F3 delta; T3 auth + UI E2E deferred"
+      - "08-verify-build + 09-qa still pending on routing plan"
+      - "Next: 12-verify-deploy (Render key rotation)"
 
   10-e2e:
     status: completed
@@ -326,6 +355,7 @@ stages:
     notes:
       - "Overall FAIL — E2E-001 schema path regression (2 integration tests); E2E-002 staging /auth/* not deployed"
       - "T2 product journeys green locally; mocks passing T0 ≠ production UI connected (H4/H5 now verified on staging)"
+      - "S003 delta 2026-06-23: auth API integration PASS; login UI FAIL (disableAuth in config); T3 auth BLOCKED (legacy keys disabled on Render) — docs/sessions/S003-supabase-keys-config/reports/e2e-report.md"
 
   08-verify-build:
     status: completed
@@ -356,7 +386,7 @@ stages:
     status: completed
     started: "2026-06-22"
     completed: "2026-06-23"
-    last_cycle: PRR-005
+    last_cycle: PRR-006
 
   19-address-pr-review:
     status: completed
@@ -366,17 +396,15 @@ stages:
 
   12-verify-deploy:
     status: completed
-    started_at: "2026-06-22T23:45:00Z"
-    completed_at: "2026-06-23T02:55:00Z"
-    session_id: S002-issue-594-feedback
-    report: docs/sessions/S002-issue-594-feedback/reports/deploy-checklist.md
+    started_at: "2026-06-23T12:00:00Z"
+    completed_at: "2026-06-23T12:30:00Z"
+    session_id: S003-supabase-keys-config
+    report: docs/sessions/S003-supabase-keys-config/reports/deploy-checklist.md
     notes:
       - "S001 delta — static+api Render; H0c/H4/H5 PASS on live staging"
       - "E2E-002 resolved — /auth/* routes present on deployed API"
-      - "S001 Convert&Send UI confirmed in live frontend bundle"
-      - "Risk/rollback prompts skipped — default mitigations applied"
       - "S002 / EV-003 — user approved mitigations + rollback; H0c/H4/H5 PASS pre-merge baseline"
-      - "S002 requires API + frontend redeploy after PR #685 merge"
+      - "S003 — strategy verified; user approved mitigations + rollback; deploy blocked on config/ Docker COPY + key rotation"
 
 stages_pending: []
 
@@ -447,6 +475,49 @@ decisions_log:
     topic: Non-goals
     decision: "No product feature rewrites during migration"
     status: confirmed
+
+  - id: S003-R1
+    stage: 01-requirements
+    date: "2026-06-23"
+    topic: Supabase key naming
+    decision: "SUPABASE_SECRET_KEY + SUPABASE_PUBLISHABLE_KEY canonical; deprecate SUPABASE_SERVICE_ROLE_KEY with fallback shim"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+  - id: S003-R2
+    stage: 01-requirements
+    date: "2026-06-23"
+    topic: Frontend config delivery
+    decision: "Runtime config.json fetch at frontend bootstrap — minimal .env; single config source for URLs/flags"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+  - id: S003-R3
+    stage: 01-requirements
+    date: "2026-06-23"
+    topic: METAR Supabase project
+    decision: "METAR prod project ktvxijislbtgqapllmuk; migrations 003-004 not yet applied"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+  - id: S003-R4
+    stage: 01-requirements
+    date: "2026-06-23"
+    topic: Local dev ports
+    decision: "Ports 18000/18001 standardized across compose, config, and dev scripts"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+  - id: S003-R6
+    stage: 01-requirements
+    date: "2026-06-23"
+    topic: Environment sync
+    decision: "Env sync across Render, Supabase, and local with canonical names and verify tooling"
+    status: confirmed
+    session_id: S003-supabase-keys-config
+  - id: S003-V1
+    stage: 11-verify-impl
+    date: "2026-06-23"
+    topic: T3 auth + UI E2E waiver
+    decision: "User approved M4+F3 delta with T3 live auth and auth UI T2 deferred until 12-verify-deploy Render key rotation"
+    status: confirmed
+    session_id: S003-supabase-keys-config
 
   - id: AUDIT-001
     stage: 02-verify-plan
@@ -742,6 +813,61 @@ artifacts:
     stage: 12-verify-deploy
     created_at: "2026-06-22"
     status: active
+  - path: docs/config-spec.md
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/env-contract.md
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/env-sync-runbook.md
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/adr/ADR-010-supabase-keys-config-split.md
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/sessions/S003-supabase-keys-config/reports/01-requirements.md
+    kind: requirements-report
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/sessions/S003-supabase-keys-config/reports/e2e-report.md
+    kind: e2e-report
+    stage: 10-e2e
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+    overall: fail
+  - path: docs/sessions/S003-supabase-keys-config/reports/verify-impl.md
+    kind: verify-impl-report
+    session_id: S003-supabase-keys-config
+    stage: 11-verify-impl
+    created_at: "2026-06-23"
+    status: complete
+  - path: docs/implementation-verification.md
+    kind: verify-impl-report
+    session_id: S003-supabase-keys-config
+    stage: 11-verify-impl
+    created_at: "2026-06-23"
+    status: complete
+  - path: config/prod.json
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
+  - path: config/local.json
+    stage: 01-requirements
+    session_id: S003-supabase-keys-config
+    created_at: "2026-06-23"
+    status: complete
 
 evolve_cycles:
   - id: EV-001
@@ -1238,6 +1364,34 @@ pr_review_cycles:
     notes:
       - "Self-approval blocked by GitHub; posted COMMENT with APPROVE recommendation"
       - "Inline comment on FileConverter.tsx L265 (result ordering)"
+
+  - id: PRR-006
+    pr_number: 686
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/686
+    title: "[hotfix] Supabase service key leak remediation"
+    status: completed
+    started: "2026-06-23"
+    completed: "2026-06-23"
+    head_ref: fix/supabase-service-key-leak
+    base_ref: main
+    verdict: REQUEST_CHANGES
+    blockers: 1
+    advisories: 5
+    praise: 3
+    ci_status: failure
+    session_id: S003-supabase-keys-config
+    subagents:
+      bugbot: failed_diff
+      security_review: failed_diff
+    artifacts:
+      - path: docs/sessions/S003-supabase-keys-config/reports/pr-review.md
+        note: session report
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/686#pullrequestreview-4557621604
+    notes:
+      - "Self request-changes blocked by GitHub; posted COMMENT with REQUEST_CHANGES recommendation"
+      - "Validate fails Prettier on apps/frontend/public/config.json; local make validate-ci reproduces"
 
 pr_remediation_cycles:
   - id: PRM-001

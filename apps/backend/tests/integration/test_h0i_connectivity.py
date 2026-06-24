@@ -18,14 +18,15 @@ from src.utilities.security import verify_supabase_token
 pytestmark = [pytest.mark.integration, pytest.mark.h0i]
 
 SAMPLE_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
-BROWSER_ORIGIN = "http://localhost:5173"
+BROWSER_ORIGIN = "http://localhost:18000"
 
 
 @pytest.fixture
 def h0i_client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
     """Authenticated in-process client with auth enforcement enabled."""
     monkeypatch.setenv("DISABLE_AUTH", "false")
-    monkeypatch.setenv("METAR_CORS_ORIGINS", BROWSER_ORIGIN)
+    monkeypatch.setenv("METAR_CONFIG_ENV", "local")
+    monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
     monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "true")
 
     from src.utilities import security as sec

@@ -180,24 +180,11 @@ class TestSmokeEvaluation:
 
     def test_create_evaluation_job(self, client):
         """Test can create an evaluation job."""
-        with patch("src.routers.evaluation.get_supabase_client") as mock_get_client:
-            # Create the mock response
-            mock_response = MagicMock()
-            mock_response.json.return_value = [{"id": "test-job-123"}]
-            mock_response.raise_for_status.return_value = None
-
-            # Create the mock client with async post and patch methods
-            mock_client = MagicMock()
-            mock_client.post = AsyncMock(return_value=mock_response)
-            mock_client.patch = AsyncMock(return_value=mock_response)
-
-            # Use AsyncMock to create a mock that handles async __aenter__ and __aexit__
-            mock_context = AsyncMock()
-            mock_context.__aenter__ = AsyncMock(return_value=mock_client)
-            mock_context.__aexit__ = AsyncMock(return_value=None)
-
-            # Make get_supabase_client() return an awaitable that resolves to the context manager
-            mock_get_client.return_value = mock_context
+        with (
+            patch("src.routers.evaluation.create_job_in_db", new_callable=AsyncMock) as mock_create_job,
+            patch("src.routers.evaluation.run_evaluation_job", new_callable=AsyncMock),
+        ):
+            mock_create_job.return_value = "test-job-123"
 
             response = client.post(
                 "/api/v1/eval/jobs",

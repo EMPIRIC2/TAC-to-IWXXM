@@ -12,6 +12,10 @@ env:
   BACKEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/backend
   FRONTEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/frontend
   RENDER_DEPLOY_MODE: image
+  # Canonical Supabase secrets (preferred). Deprecated FRONTEND_VITE_* kept for one-release shim.
+  SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+  SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
   FRONTEND_VITE_SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
   FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
   FRONTEND_VITE_APP_URL: https://metar-to-iwxxm-frontend-v4-web.onrender.com
@@ -151,14 +155,14 @@ jobs:
       - name: Set integration stack environment
         if: matrix.package == 'integration'
         run: |
+          PUBLISHABLE="${SUPABASE_PUBLISHABLE_KEY:-${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-}}"
           {
-            echo "SUPABASE_URL=${FRONTEND_VITE_SUPABASE_URL}"
-            echo "SUPABASE_ANON_KEY=${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}"
-            echo "VITE_SUPABASE_URL=${FRONTEND_VITE_SUPABASE_URL}"
-            echo "VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY}"
-            echo "VITE_API_BASE_URL=http://localhost:18001"
-            echo "VITE_APP_URL=http://localhost:18000"
+            echo "METAR_CONFIG_ENV=local"
+            echo "SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE}"
+            echo "SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY:-}"
+            echo "DATABASE_URL=${DATABASE_URL:-}"
           } >> "$GITHUB_ENV"
+          bash scripts/frontend/prepare-config.sh
 
       - name: Run integration tests
         if: matrix.package == 'integration'
@@ -166,6 +170,7 @@ jobs:
           docker compose up -d backend frontend
           sleep 30
           uv run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_gifts_backend_integration.py tests/test_integration.py -v
+          cd apps/backend && uv run pytest tests/integration/test_h0i_connectivity.py -v --no-cov
           cd apps/backend && uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
           docker compose down
 

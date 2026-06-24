@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: Render (Docker web service + static site)
-> **Last updated**: 2026-06-22
+> **Last updated**: 2026-06-23 (S003 env/config delta)
 
 ## Topology (post-monorepo)
 
@@ -17,52 +17,65 @@ Auth is **not** a separate deployable — included in metar-api via packages/aut
 
 ## Integration
 
-### Build-time (frontend)
+> **S003 delta:** Secrets-only `.env`; non-secrets in `config/{local,prod}.json`. See
+> [config-spec.md](config-spec.md), [env-contract.md](env-contract.md), ADR-010.
+
+### Secrets (API runtime — Render dashboard, `sync: false`)
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `VITE_API_BASE_URL` | Yes | HTTPS URL of metar-api service |
-| `VITE_SUPABASE_URL` | Yes | Supabase project URL |
-| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | Yes | Supabase anon key |
-| `VITE_APP_URL` | Yes | Public frontend URL (redirects) |
+| `SUPABASE_PUBLISHABLE_KEY` | Yes | `sb_publishable_*` — JWT validation |
+| `SUPABASE_SECRET_KEY` | Yes | `sb_secret_*` — Auth Admin API scripts only |
+| `DATABASE_URL` | Yes | Postgres pooler from Supabase Connect |
+| `METAR_CONFIG_ENV` | Yes (prod) | `prod` on Render; selects `config/prod.json` |
 
-### Runtime (API)
+### Non-secrets (`config/prod.json` — committed)
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `SUPABASE_URL` | Yes | Server-side Supabase |
-| `SUPABASE_ANON_KEY` | Yes | Server-side validation |
-| `METAR_CORS_ORIGINS` | Yes | Comma-separated frontend origin(s) — see [staging-secrets-matrix.md](staging-secrets-matrix.md) |
-| `DISABLE_AUTH` | No | `false` in production (ADR-006) |
-| `FRONTEND_URL` | Yes | For redirects / CORS |
+| Field | Description |
+|-------|-------------|
+| `api.baseUrl` | HTTPS URL of metar-api (`/api/v1`, `/auth`, `/admin`) |
+| `api.frontendUrl` | Public static site URL (auth redirects) |
+| `api.corsOrigins` | Allowed browser origins |
+| `api.disableAuth` | `false` in production |
+| `supabase.url` | Supabase project URL |
+| `validation.*`, `observability.*` | WMO validation and logging flags |
+| `liveE2e.*` | Canonical URLs for `make test-live*` |
 
-### Live test env (manual T3 runs)
+### Frontend static deploy
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LIVE_API_URL` | Yes | `https://metar-to-iwxxm-api.onrender.com` |
-| `LIVE_FRONTEND_URL` | Yes | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
-| `PLAYWRIGHT_BASE_URL` | Yes (H6) | Same as `LIVE_FRONTEND_URL` for Playwright |
-| `ADMIN_EMAIL` | Yes (H6) | Supabase admin user — local `.env` only, never commit |
-| `ADMIN_PASSWORD` | Yes (H6) | Supabase admin password — local `.env` only |
+1. Copy `config/prod.json` → `public/config.json` at build.
+2. Inject `supabase.publishableKey` from `SUPABASE_PUBLISHABLE_KEY` (dashboard secret — not in git).
+3. App fetches `/config.json` at bootstrap (replaces `VITE_*` build-time embed per ADR-010).
 
-**Deprecated aliases** (migrate scripts/tests away from):
+### Local development
 
-| Old name | Replaced by |
-|----------|-------------|
-| `STAGING_API_URL` | `LIVE_API_URL` |
-| `STAGING_FRONTEND_ORIGIN` | `LIVE_FRONTEND_URL` |
-| `STAGING_FRONTEND_URL` | `LIVE_FRONTEND_URL` |
-| `E2E_API_URL` | `LIVE_API_URL` |
-| `E2E_FRONTEND_URL` | `LIVE_FRONTEND_URL` |
+| Setting | Source |
+|---------|--------|
+| Secrets | Repo-root `.env` (five vars — see `.env.example`) |
+| URLs / CORS / flags | `config/local.json` via `METAR_CONFIG_ENV=local` |
+| Ports | Frontend **18000**, API **18001** (standardized S003-R4) |
 
-JWT is obtained at runtime via `POST ${LIVE_API_URL}/auth/login` — do not store long-lived tokens in `.env`.
+### Live test (manual T3 — credentials in `.env` only)
+
+| Variable | Source |
+|----------|--------|
+| `LIVE_API_URL` | `config/prod.json` → `liveE2e.apiUrl` (override via env optional) |
+| `LIVE_FRONTEND_URL` | `config/prod.json` → `liveE2e.frontendUrl` |
+| `PLAYWRIGHT_BASE_URL` | Same as `LIVE_FRONTEND_URL` for H6 |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Local `.env` only |
+
+JWT via `POST ${LIVE_API_URL}/auth/login` — no long-lived tokens in `.env`.
+
+**Deprecated** (one-release shim): `VITE_*`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+`METAR_CORS_ORIGINS`, `FRONTEND_URL`, `DISABLE_AUTH`, `STAGING_*`, `E2E_*`.
+
+Operator sync: [env-sync-runbook.md](env-sync-runbook.md). Verify: `make env-check`.
 
 ### Redeploy order
 
-1. Deploy **metar-api** with updated `METAR_CORS_ORIGINS`.
-2. Rebuild **metar-frontend** with `VITE_API_BASE_URL` pointing to live API.
-3. Run H4 CORS preflight + H5 bundle verification.
+1. Deploy **metar-api** with secrets + `METAR_CONFIG_ENV=prod` (CORS from `config/prod.json`).
+2. Rebuild **metar-frontend** with `/config.json` injection.
+3. Run H4 CORS preflight + H5 bundle verification + `make env-check`.
 
 See `.cursor/skills/connectivity-gates.md` for H-tier definitions.
 

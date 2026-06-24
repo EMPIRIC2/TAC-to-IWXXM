@@ -4,7 +4,7 @@ const API_BASE_URL =
   process.env.PLAYWRIGHT_API_BASE_URL ??
   process.env.LIVE_API_URL ??
   process.env.VITE_API_BASE_URL ??
-  'http://localhost:8001';
+  'http://localhost:18001';
 
 test.describe('Merged API Auth Integration', () => {
   test('frontend boots without missing auth env errors', async ({ page }) => {

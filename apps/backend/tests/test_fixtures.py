@@ -146,10 +146,9 @@ def mock_supabase_client():
                 raise_for_status=MagicMock()
             )
     """
-    with patch("src.routers.evaluation.get_supabase_client") as mock:
-        mock_client = AsyncMock()
-        mock.return_value.__aenter__.return_value = mock_client
-        yield mock_client
+    with patch("src.routers.evaluation.create_job_in_db", new_callable=AsyncMock) as mock_create:
+        mock_create.return_value = "job-fixture-123"
+        yield mock_create
 
 
 @pytest.fixture

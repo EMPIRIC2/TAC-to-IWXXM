@@ -9,7 +9,8 @@ import pytest
 
 # Set required environment variables for auth service
 os.environ["SUPABASE_URL"] = "https://test.supabase.co"
-os.environ["SUPABASE_ANON_KEY"] = "test-anon-key"
+os.environ["SUPABASE_PUBLISHABLE_KEY"] = os.environ.get("SUPABASE_PUBLISHABLE_KEY", "test-publishable-key")
+os.environ.setdefault("SUPABASE_URL", "https://test.supabase.co")
 os.environ["FRONTEND_BASE_URL"] = "http://localhost:8000"
 
 

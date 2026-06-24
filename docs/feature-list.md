@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-06-22
+> **Last updated**: 2026-06-23
 
 ## Summary
 
@@ -99,6 +99,8 @@
 - **What it does**: Collapses auth microservice into backend app using `packages/auth` library.
 - **Inputs**: Current `auth/` service code, Supabase env vars.
 - **Outputs**: Two deployables (API + frontend); auth routes on same origin as API.
+- **S003 security delta (2026-06-23)**: Publishable/Secret keys, runtime `config.json`, env sync
+  (Render ↔ Supabase ↔ local). ADR-010.
 - **Limitations**: Internal Docker/Render topology changes; external frontend contract preserved.
 - **Source**: REQ-004, REQ-009
 
