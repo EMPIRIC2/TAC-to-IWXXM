@@ -22,7 +22,7 @@ from fastapi.responses import StreamingResponse
 try:
     # Try relative imports first (when run as module in Docker)
     from .config.icao_opmet import get_icao_region, get_translation_centre_info
-    from .routers import evaluation, icao_opmet, validation
+    from .routers import evaluation, icao_opmet, validation, work_sessions
     from .schemas.conversion import (
         ConversionIssue,
         ConversionIssueSeverity,
@@ -48,7 +48,7 @@ try:
 except ImportError:
     # Fall back to direct imports (when sys.path is set for local development)
     from config.icao_opmet import get_icao_region, get_translation_centre_info
-    from routers import evaluation, icao_opmet, validation
+    from routers import evaluation, icao_opmet, validation, work_sessions
     from schemas.conversion import (
         ConversionIssue,
         ConversionIssueSeverity,
@@ -201,19 +201,22 @@ def get_cors_origins() -> list:
 
     allowed_origins_env = os.getenv(METAR_CORS_ORIGINS_ENV, "").strip()
     if allowed_origins_env:
+        env_origins = list(parse_comma_separated_origins(allowed_origins_env))
         if origins:
             warnings.warn(
-                f"{METAR_CORS_ORIGINS_ENV} is ignored when config.*.api.corsOrigins is set",
+                f"{METAR_CORS_ORIGINS_ENV} supplements config.*.api.corsOrigins (deprecated env)",
                 DeprecationWarning,
                 stacklevel=2,
             )
+            for origin in env_origins:
+                add_origin_if_missing(origins, origin)
         else:
             warnings.warn(
                 f"{METAR_CORS_ORIGINS_ENV} is deprecated; use config.*.api.corsOrigins",
                 DeprecationWarning,
                 stacklevel=2,
             )
-            origins = list(parse_comma_separated_origins(allowed_origins_env))
+            origins = env_origins
 
     if not origins:
         frontend_url = os.getenv("FRONTEND_URL", "").strip() or get_frontend_url_from_config()
@@ -238,11 +241,13 @@ allowed_origins = get_cors_origins()
 allowed_headers = get_cors_allowed_headers()
 dev_cors_relaxed = is_dev_cors_relaxation_enabled()
 
+_CORS_METHODS = ["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=_CORS_METHODS,
     allow_headers=allowed_headers,
 )
 
@@ -252,7 +257,7 @@ logger.info(
     "[CORS] Configured relaxed_mode=%s allow_origins=%s allow_methods=%s allow_headers=%s allow_credentials=%s",
     dev_cors_relaxed,
     allowed_origins,
-    ["GET", "POST", "OPTIONS"],
+    _CORS_METHODS,
     allowed_headers,
     True,
 )
@@ -490,6 +495,13 @@ try:
     logger.info("DEBUG: included evaluation router successfully")
 except Exception as e:
     logger.error(f"DEBUG: Failed to include evaluation router: {e}", exc_info=True)
+
+try:
+    app.include_router(work_sessions.router, prefix="/api/v1/work-sessions", tags=["Work Sessions"])
+    app.include_router(work_sessions.admin_router)
+    logger.info("DEBUG: included work sessions routers successfully")
+except Exception as e:
+    logger.error(f"DEBUG: Failed to include work sessions routers: {e}", exc_info=True)
 
 try:
     app.include_router(icao_opmet.router)

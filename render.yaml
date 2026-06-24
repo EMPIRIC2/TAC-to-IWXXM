@@ -14,6 +14,8 @@ services:
         value: "false"
       - key: METAR_CONFIG_ENV
         value: prod
+      - key: METAR_CORS_ORIGINS
+        value: https://metar-to-iwxxm-frontend-v4-web.onrender.com
       - key: SCHEMATRON_USE_DOCKER
         value: "false"
       - key: WMO_ONLINE_VALIDATION

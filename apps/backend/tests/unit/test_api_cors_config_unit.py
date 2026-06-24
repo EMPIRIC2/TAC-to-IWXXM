@@ -73,21 +73,21 @@ def test_get_cors_origins_defaults_with_relaxation(monkeypatch: pytest.MonkeyPat
     assert "http://127.0.0.1:5173" in origins
 
 
-def test_get_cors_origins_warns_when_deprecated_env_conflicts_with_config(
+def test_get_cors_origins_merges_deprecated_env_with_config(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("METAR_CORS_ORIGINS", "http://ignored.example")
+    monkeypatch.setenv("METAR_CORS_ORIGINS", "http://extra.example")
     monkeypatch.setattr(
         config_loader,
         "get_cors_origins_from_config",
         lambda env=None: ["http://from-config.example"],
     )
 
-    with pytest.warns(DeprecationWarning, match="ignored when config"):
+    with pytest.warns(DeprecationWarning, match="supplements config"):
         origins = api_module.get_cors_origins()
 
     assert "http://from-config.example" in origins
-    assert "http://ignored.example" not in origins
+    assert "http://extra.example" in origins
 
 
 def test_get_cors_origins_uses_deprecated_env_when_config_empty(

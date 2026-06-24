@@ -12,6 +12,7 @@
 | F2 | IWXXM validation | Implemented | Product | backend validation routers |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/IWXXM_VERSION_SWITCHING.md |
+| F5 | User METAR work history | Planned | Product | docs/context/metar-work-history.md, S004 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Planned | Platform | REQ-003 |
@@ -32,6 +33,8 @@
   - **Convert** — TAC → IWXXM only.
   - **Convert&Send** — TAC → IWXXM then upload to primary database with IWXXM format (fixed defaults; no dialog).
   - **Upload to Database** — upload previously converted files with configurable format/destination (dialog).
+- **#555 UX (EV-004)**: On **successful** convert, replace (not append) result cards; show collapsible
+  error log panel from API `errors`/`issues` on failure or partial success (also persisted on F5 session row).
 - **Limitations**: Depends on GIFTs and vendored IWXXM schemas for target version.
 - **Source**: README, `backend/src/utilities/conversion.py`
 
@@ -58,6 +61,34 @@
 - **Outputs**: Version-appropriate IWXXM XML.
 - **Limitations**: Only versions present in `vendor/schemas/` snapshots.
 - **Source**: docs/IWXXM_VERSION_SWITCHING.md
+
+### F5: User METAR Work History
+
+- **What it does**: Persists per-user METAR converter work in Supabase Postgres — status lifecycle
+  **Draft → WIP → Finished** plus **Failed** for convert errors; resumable on login; browseable
+  from converter sidebar and **My METARs** page.
+- **Inputs**: Manual TAC textarea, queued `.tac`/`.txt` files, conversion params; JWT on all API calls.
+- **Outputs**: Session rows with full TAC, IWXXM (when converted), errors/issues JSON, optional
+  `kv_upload_key` when sent to operational database.
+- **Status rules**:
+  | Status | Meaning | Transition |
+  |--------|---------|------------|
+  | Draft | Saved input; not successfully converted | Auto-save (3s debounce); multiple Drafts allowed |
+  | WIP | Convert succeeded; not sent to operational DB | At most **one** WIP per user |
+  | Finished | Successfully sent via Convert&Send or Upload to Database | Stores KV upload reference |
+  | Failed | Convert failed or partial failure | Treated like Draft for multi-session rules; stays Failed until user edits and re-converts |
+- **UI**: Compact recent-history panel on converter (5 recent); **New METAR** button for fresh Draft;
+  full **My METARs** page with status + date filters; Finished sessions open **read-only**; 30-day trash
+  for soft-deleted sessions; separate **admin page** for read-only browse of all users' sessions.
+- **Retention**: Auto-purge **Draft** rows older than 30 days (Supabase pg_cron); WIP/Finished/Failed kept until user soft-deletes.
+- **Admin**: Existing admin role — read-only browse on dedicated admin page (no edit/delete in v1).
+- **Delivery**: Merged into **S004 / EV-004** with remaining #555 UX (replace results + error log panel) and S003 Supabase config.
+- **Limitations**: Persistence requires login (guests may convert without save; login auto-creates Draft
+  from in-browser content); no append-only status audit trail in v1; WIP stays WIP when input edited
+  before re-convert; Finished sessions disable convert/send (use **New METAR**); send failure keeps
+  **WIP**; last-write-wins on multi-tab auto-save; no backfill from existing KV uploads; backend REST
+  only (no direct browser Postgres writes).
+- **Source**: GitHub #555 follow-on, requirements interview 2026-06-23 (F5 delta)
 
 ## Platform Feature Details (Monorepo Migration)
 
@@ -139,6 +170,7 @@
 | F2 | Yes | Yes | Yes | Yes |
 | F3 | Partial | Yes | Yes | Yes |
 | F4 | Yes | Yes | Yes | Yes |
+| F5 | Yes | Yes | Yes | Yes |
 | M1–M6 | — | — | Yes | Yes |
 
 ## Non-Goals (Migration)

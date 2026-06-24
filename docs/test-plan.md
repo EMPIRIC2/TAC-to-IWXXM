@@ -6,7 +6,7 @@
 
 ## Scope
 
-**In scope**: Product features F1–F4; monorepo migration validation M1–M6; connectivity tiers H0c–H6 (local + live Render).
+**In scope**: Product features F1–F5; monorepo migration validation M1–M6; connectivity tiers H0c–H6 (local + live Render).
 
 **Out of scope**: Performance benchmarking; load testing; wmo-im schema correctness (upstream responsibility); scheduled CI live jobs (manual/Makefile only).
 
@@ -18,7 +18,7 @@ Unified manual live test harness against Render staging:
 |------|-------|-----------------|
 | H3 | Live API pytest (health, convert, validate, auth) | `make test-live-api` |
 | H4–H5 | CORS preflight + frontend bundle URLs | `make test-live-connectivity` |
-| H6 | Playwright UJ-001–003 against live frontend | `make test-live-e2e` |
+| H6 | Playwright UJ-001–004 against live frontend | `make test-live-e2e` |
 | All | Sequential H4–H5 → H3 → H6 | `make test-live` |
 
 **Prerequisite**: E2E-001 schema path regression must be resolved before H3 validate and full H6 UJ-002 pass (see [e2e-report.md](e2e-report.md)).
@@ -37,6 +37,7 @@ Unified manual live test harness against Render staging:
 | UJ-001 | F1 | `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/e2e/tac-file-upload-database.e2e.spec.ts` (Convert&Send one-click) | `make test-live-e2e` (H6) | TC-001, TC-LIVE-001 |
 | UJ-002 | F2 | backend validation tests + UI if exposed | H3 validate + H6 where exposed | TC-002, TC-LIVE-002 |
 | UJ-003 | F1 | `apps/e2e/auth.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-003, TC-LIVE-003 |
+| UJ-004 | F5 | `apps/e2e/metar-work-history.e2e.spec.ts` (planned) | `make test-live-e2e` UJ-004 delta (H6) | TC-004, TC-LIVE-006 |
 
 **Admin dashboard E2E locators**: Each admin panel card (`h3`) and active panel body (`h2`) share the
 same title (e.g. `User Approvals`). Use `.first()` for card-only checks on the default approval view;
@@ -165,6 +166,19 @@ use `.nth(1)` after clicking a card to assert the panel content heading.
 - **Objective**: UJ-003 — unauthorized blocked, authorized allowed
 - **Pass criteria**: 401 without token; 200 with valid JWT
 
+### TC-004: Work session lifecycle (F5 / UJ-004)
+
+- **Objective**: Draft auto-save → convert → WIP → send → Finished; resume on login
+- **Steps**:
+  1. Authenticated user creates draft via PATCH upsert
+  2. Convert success moves to WIP (reject second WIP)
+  3. Partial convert failure sets Failed; edit + re-convert transitions appropriately
+  4. Send success sets Finished with `kv_upload_key`
+  5. Soft-delete + restore within 30 days
+  6. Admin GET lists all users read-only
+- **Pass criteria**: Status rules enforced; RLS isolates user data
+- **Source**: UJ-004; backend integration tests + Playwright T2
+
 ## Live Test Cases (T3 / H3–H6)
 
 Manual signoff before release — not a PR merge gate. Developer runs `make test-live` from repo root with `.env` populated.
@@ -221,6 +235,17 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
   2. Deprecate `metar-to-iwxxm-auth-v2.onrender.com` references
 - **Pass criteria**: No tests target suspended auth-v2 service
 - **Source**: [Context: live-e2e-integration](context/live-e2e-integration.md)
+
+### TC-LIVE-006: Live work history UJ-004 (F5)
+
+- **Objective**: Persisted draft survives logout/login on Render
+- **Steps**:
+  1. Log in on live frontend
+  2. Enter METAR text; wait for draft save
+  3. Log out and back in; confirm resume
+  4. Convert&Send; confirm Finished in My METARs
+- **Pass criteria**: UJ-004 T3 steps green
+- **Source**: UJ-004, H6; runs after S004 deploy
 
 ## CI/CD (Monorepo)
 

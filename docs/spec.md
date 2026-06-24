@@ -65,6 +65,7 @@ metar-to-IWXXM/
 | GIFTs | TAC → IWXXM | `packages/gifts/` | vendor schemas |
 | Shared | Cross-cutting utils/types | `packages/shared/` | — |
 | Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im snapshots |
+| Work history (F5) | Per-user METAR session persistence | Supabase Postgres + `apps/backend` router | auth, shared |
 
 ## Component Details
 
@@ -110,6 +111,41 @@ metar-to-IWXXM/
 - **Frontend**: Static host serves `/config.json` (prod copy + publishable key injected at deploy).
 - **Source**: [config-spec.md](config-spec.md), S003 session.
 
+### F5 — User METAR work history (S004 / EV-004)
+
+- **Purpose**: Durable per-user converter **work history** (current session state, not an
+  append-only audit log) in Supabase Postgres, linked to `auth.users` via RLS; exposed through
+  backend REST (not direct browser DB access).
+- **Table** (proposed): `metar_work_sessions`
+  - `user_id`, `status` (`draft` | `wip` | `finished` | `failed`)
+  - `title` (auto ICAO + time; user-renamable)
+  - `manual_tac`, `pending_files` JSONB (name + inline TAC content)
+  - `converted_results`, `errors`, `issues`, `conversion_params` JSONB
+  - `kv_upload_key` (nullable — set when send succeeds)
+  - `deleted_at` (nullable — soft delete / trash)
+  - `created_at`, `updated_at`
+- **RLS**: `auth.uid() = user_id` for user CRUD; admin read via `is_admin()` policy; `service_role` for pg_cron Draft purge.
+- **Business rules**:
+  - **History model**: Current state on one row per session — no append-only status audit table in v1.
+  - Multiple **Draft** (and **Failed**, same slot rules as Draft) sessions per user; at most one **WIP**.
+  - Guests may use converter without login; persistence (auto-save, history) requires auth.
+  - On login, if the converter has unsaved guest input, **auto-create a new Draft** from current
+    state before resume logic; then auto-resume most recent non-Finished, non-deleted session
+    (or leave the new Draft active if none to resume).
+  - **WIP** rows stay **WIP** when the user edits TAC/files before re-convert (content updates;
+    IWXXM may be stale until re-convert).
+  - **New METAR** button creates a fresh Draft without deleting prior sessions.
+  - Sidebar click loads that session into the converter; an existing **WIP** row stays **WIP** in DB.
+  - **Finished** only after successful operational DB send; convert-only stays **WIP**; send failure stays **WIP**.
+  - **Finished** sessions are read-only when opened from history (no re-edit in v1); Convert and
+    Convert&Send are disabled — user must click **New METAR** to start fresh work.
+  - Auto-save: last-write-wins across tabs/devices (no conflict UI in v1).
+  - Draft TTL: pg_cron hard-deletes Draft rows where `updated_at < now() - 30 days`.
+  - Soft-delete: user trash with 30-day restore window, then hard-delete.
+- **Frontend**: Debounced draft sync (~3s); converter sidebar (**5 recent**) + `/history` (My METARs) with status/date filters;
+  `/admin/work-sessions` read-only admin browse; #555 error log panel + persisted `errors`/`issues` on row.
+- **Source**: F5 requirements delta 2026-06-23; [metar-work-history.md](context/metar-work-history.md)
+
 ## Data Flow
 
 | Stage | Input | Transformation | Output |
@@ -119,6 +155,8 @@ metar-to-IWXXM/
 | 3. Convert | TAC | GIFTs + vendor schemas | IWXXM XML |
 | 4. Validate | IWXXM XML | Schematron/XSD | Validation result |
 | 5. Display | JSON response | Frontend render | Copy/download UI |
+| 6. Persist (F5) | TAC + results + errors | Backend upsert → Postgres | Session row (Draft/WIP/Finished/Failed) |
+| 7. Send link (F5) | KV upload success | Store `kv_upload_key` on session | Finished status |
 
 ## Monorepo Migration
 

@@ -57,6 +57,54 @@
 | S003-R8 | Auth dashboard | Enable leaked-password protection (HaveIBeenPwned) on METAR project | confirmed |
 | S003-R9 | Config envs | `prod` + `local` only; `stage`/`dev` deferred | confirmed |
 
+## F5 — User METAR work history (2026-06-23)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| F5-R1 | Status lifecycle | Draft → WIP → Finished; separate **Failed** for convert/partial errors | confirmed |
+| F5-R2 | Failed recovery | Failed stays until user edits input and re-converts | confirmed |
+| F5-R3 | Multi-session | Multiple Draft/Failed OK; max one WIP; new Draft allowed while WIP open | confirmed |
+| F5-R4 | Login resume | Resume most recent non-Finished, non-deleted session on login | confirmed |
+| F5-R5 | Auth | Persistence requires login (RLS per user); guests may convert without save | confirmed |
+| F5-R6 | Auto-save | ~3s debounce after typing stops | confirmed |
+| F5-R7 | File payload | Inline JSONB (name + TAC content) | confirmed |
+| F5-R8 | Retention | Draft auto-purge 30 days via Supabase pg_cron | confirmed |
+| F5-R9 | UI | Converter sidebar + My METARs page; filters: status + date | confirmed |
+| F5-R10 | API | Backend REST only (no direct browser Postgres) | confirmed |
+| F5-R11 | Delete | Soft-delete; user trash 30-day restore then hard-delete | confirmed |
+| F5-R12 | Finished rule | Finished only after successful DB send; convert-only stays WIP | confirmed |
+| F5-R13 | KV link | Store `kv_upload_key` on Finished session | confirmed |
+| F5-R14 | Admin | Existing admin role — read-only browse all users' sessions | confirmed |
+| F5-R15 | Title | Auto ICAO + timestamp; user can rename | confirmed |
+| F5-R16 | Delivery | Merged S004/EV-004 with #555 UX + S003 Supabase (was S005 after S004) | confirmed 2026-06-23 |
+| F5-R18 | Results sync | Re-convert replaces UI results and overwrites active session row | confirmed 2026-06-23 |
+| F5-R19 | Sidebar count | 5 most recent sessions on converter | confirmed 2026-06-23 |
+| F5-R20 | S003 dependency | Supabase key/config fixes included in same cycle as F5 | confirmed 2026-06-23 |
+| F5-R17 | Failed slot | Failed counts like Draft for multi-session limits | confirmed |
+| F5-R21 | History model | **Current state only** — one row per session (no append-only audit trail in v1) | confirmed 2026-06-23 interview |
+| F5-R22 | Guest users | Can convert in-browser without login; **no persistence** until logged in | confirmed 2026-06-23 interview |
+| F5-R23 | Send failure | Stay **WIP** — user can retry send; do not move to Failed | confirmed 2026-06-23 interview |
+| F5-R24 | Finished reopen | **Read-only** view of TAC, IWXXM, errors, KV reference — no edit in v1 | confirmed 2026-06-23 interview |
+| F5-R25 | Multi-device | Last write wins on auto-save (no conflict UI in v1) | confirmed 2026-06-23 interview |
+| F5-R26 | New session | Explicit **New METAR** button creates a new Draft; prior sessions remain saved | confirmed 2026-06-23 interview |
+| F5-R27 | Sidebar switch | Load selected session into converter; existing WIP row unchanged in DB | confirmed 2026-06-23 interview |
+| F5-R28 | Login resume | Auto-resume most recent non-Finished, non-deleted session (reconfirmed) | confirmed 2026-06-23 interview |
+| F5-R29 | Error log | In-app collapsible panel (#555) **and** persist `errors`/`issues` on session row | confirmed 2026-06-23 interview |
+| F5-R30 | Retention | Draft auto-purge 30d; soft-delete trash 30d restore (reconfirmed) | confirmed 2026-06-23 interview |
+| F5-R31 | Admin UI | Separate **admin page** for read-only browse of all users' sessions | confirmed 2026-06-23 interview |
+| F5-R32 | Storage limits | No explicit cap in v1 — reasonable METAR batch sizes assumed | confirmed 2026-06-23 interview |
+| F5-R33 | Guest login | Auto-create new **Draft** from in-browser converter state on login | confirmed 2026-06-23 audit (02-verify-plan) |
+| F5-R34 | WIP edit | **WIP** stays WIP when user edits input before re-convert (IWXXM may be stale) | confirmed 2026-06-23 audit (02-verify-plan) |
+| F5-R35 | Finished UI | Finished read-only — Convert/Convert&Send disabled; **New METAR** required | confirmed 2026-06-23 audit (02-verify-plan) |
+| F5-R36 | Wording | F5 purpose uses "work history / session state" — not "audit trail" | confirmed 2026-06-23 audit (02-verify-plan) |
+
+## F1 — #555 converter UX (2026-06-23 interview)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| F1-R555-1 | Results panel | **Replace** result cards on each **successful** convert only; failed runs keep prior results | confirmed 2026-06-23 interview |
+| F1-R555-2 | Error log | Collapsible in-app panel from API `errors`/`issues`; also persisted on F5 session row | confirmed 2026-06-23 interview |
+
 1. ~~Exact auth route prefix after merge~~ — resolved: `/auth/*` (REQ-017)
 2. ~~pnpm vs npm~~ — resolved: pnpm (REQ-020)
 3. ~~Golden file strategy for TC-M003~~ — resolved: normalized XML (REQ-018)

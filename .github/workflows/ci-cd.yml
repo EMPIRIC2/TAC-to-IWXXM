@@ -327,7 +327,7 @@ jobs:
       - name: Build and push frontend Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./apps/frontend
+          context: .
           file: ./apps/frontend/Dockerfile
           target: production
           platforms: linux/amd64

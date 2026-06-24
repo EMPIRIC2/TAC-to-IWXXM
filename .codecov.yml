@@ -9,17 +9,20 @@ coverage:
     backend:
       carryforward: true
       paths:
-        - backend/src/
+        - apps/backend/src/
     auth:
       carryforward: true
       paths:
-        - auth/src/
+        - packages/auth/src/
     frontend:
       carryforward: true
       paths:
-        - frontend/src/
+        - apps/frontend/src/
     gifts:
       carryforward: true
+      paths:
+        - packages/gifts/gifts/
+        - packages/gifts/validation/
   status:
     project:
       default:

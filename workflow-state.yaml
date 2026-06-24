@@ -4,45 +4,54 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 3
+session_counter: 4
 active_session:
-  id: S003-supabase-keys-config
-  type: hotfix
-  intent: "Supabase key rotation, config split, advisor remediation, env sync (BUG-2026-06-23)"
+  id: S004-issue-555-feedback
+  type: feature
+  intent: "EV-004: #555 UX + F5 Supabase work history + S003 config"
   status: in_progress
-  branch: fix/supabase-service-key-leak
-  orchestrator: 14-hotfix
-  artifacts_dir: docs/sessions/S003-supabase-keys-config/
+  branch: feat/S004-issue-555-feedback
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-004
+  artifacts_dir: docs/sessions/S004-issue-555-feedback/
   routing_plan:
-    - stage: 01-requirements
-      mode: delta
-      required: true
-      status: completed
-      skip_rationale: null
     - stage: 00-context
       mode: scoped
       required: true
       status: completed
       skip_rationale: null
-    - stage: bug-investigation
+    - stage: 16-evolve
       required: true
       status: completed
       skip_rationale: null
-    - stage: 14-hotfix
+    - stage: 01-requirements
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 02-verify-plan
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 04-tech-plan
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 05-verify-tech
       required: true
       status: pending
       skip_rationale: null
     - stage: 07-build
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 08-verify-build
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 09-qa
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 10-e2e
       mode: delta
@@ -57,14 +66,20 @@ active_session:
       required: false
       status: completed
       skip_rationale: null
-    - stage: 13-deploy-smoke
-      required: false
-      status: pending
-      skip_rationale: null
-  current_stage: 14-hotfix
+  current_stage: 13-deploy-smoke
   started_at: "2026-06-23"
+  notes:
+    - "16-evolve Phase 0 intake complete 2026-06-23 — F5 interview re-confirmed; scope approved for routing"
+    - "09-qa 2026-06-24 — FAIL (ESLint react-hooks + 1 Vitest); see qa-report.md"
+    - "10-e2e 2026-06-24 — FAIL (delta Playwright locators + staging H4 CORS); see reports/e2e-report.md"
+    - "11-verify-impl 2026-06-24 — APPROVED (re-confirmed UJ-001/UJ-004 + F1/F5 approve-fix); lint green; FileConverter Vitest 84/84; T3 deferred to 12"
+    - "12-verify-deploy 2026-06-24 — strategy verified; H0c PASS; H4 FAIL (live CORS); H5 PASS; deploy blocked on operator T1.3 + S003 key rotation + API redeploy"
+    - "07-build 2026-06-24 — EV-004 complete (36/38); delta E2E 4/4; operator T1.3 deferred"
   context_briefs:
-    - docs/context/supabase-keys-config.md
+    - docs/context/issue-555-feedback.md
+    - docs/context/metar-work-history.md
+  planned_follow_on: []
+  paused_session: S003-supabase-keys-config
 sessions:
   - id: S001-convert-send-buttons
     type: feature
@@ -81,6 +96,15 @@ sessions:
     evolve_cycle_id: EV-003
     artifacts_dir: docs/sessions/S002-issue-594-feedback/
     started_at: "2026-06-22"
+  - id: S003-supabase-keys-config
+    type: hotfix
+    status: paused
+    paused_at: "2026-06-23"
+    branch: fix/supabase-service-key-leak
+    orchestrator: 14-hotfix
+    artifacts_dir: docs/sessions/S003-supabase-keys-config/
+    started_at: "2026-06-23"
+    pause_reason: "User pivoted to S004 GitHub #555 feature context"
 
 template:
   id: static+api
@@ -91,9 +115,9 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: issue-594-feedback
-    started_at: "2026-06-22T00:00:00Z"
-    completed_at: "2026-06-22T00:00:00Z"
+    scoped_slug: issue-555-feedback
+    started_at: "2026-06-23T00:00:00Z"
+    completed_at: "2026-06-23T00:00:00Z"
     substeps:
       phase0_session: completed
       phase1a: completed
@@ -103,11 +127,11 @@ stages:
       phase3: completed
       phase4: completed
     artifacts:
-      - docs/context/issue-594-feedback.md
-      - docs/sessions/S002-issue-594-feedback/session-brief.md
-      - docs/sessions/S002-issue-594-feedback/routing-plan.md
+      - docs/context/issue-555-feedback.md
+      - docs/sessions/S004-issue-555-feedback/session-brief.md
+      - docs/sessions/S004-issue-555-feedback/routing-plan.md
     notes:
-      - "GitHub #594; COR after-time decode failure + input traceability; session S002 opened"
+      - "GitHub #555 parent feedback; 2/4 items done in S001; auto-clear + error log remain"
   01-requirements:
     status: completed
     started_at: "2026-06-14T00:00:00Z"
@@ -187,22 +211,24 @@ stages:
   04-tech-plan:
     status: completed
     started_at: "2026-06-15T00:30:00Z"
-    completed_at: "2026-06-15T01:00:00Z"
+    completed_at: "2026-06-23T12:00:00Z"
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
     substeps:
       phase_1_toolchain:
         status: completed
-        notes: "Legacy 3-service layout detected; target monorepo not yet scaffolded"
+        notes: "Monorepo toolchain baseline from 2026-06-15 plan; EV-004 delta reuses pins"
       phase_2_interview:
         status: completed
-        notes: "3 batches; decisions recorded in ADR-005–007"
+        notes: "Batch 1 confirmed — JWT client, shared types, pg_cron 03:00 UTC, WIP index"
       phase_3_execution_plan:
         status: completed
       phase_4_user_review:
         status: completed
-        notes: "User approved plan"
+        notes: "User approved 5-phase / 38-task plan as drafted"
       phase_5_back_add:
         status: completed
-        notes: "dependency-inventory, deploy.md, test-plan, adr/README updated"
+        notes: "ADR-011, ADR-012 accepted"
       phase_6_documents:
         status: completed
     artifacts:
@@ -211,8 +237,20 @@ stages:
       - docs/adr/ADR-005-runtime-toolchain-pins.md
       - docs/adr/ADR-006-render-topology-simplification.md
       - docs/adr/ADR-007-universal-coverage-gate.md
+      - docs/adr/ADR-011-work-sessions-data-access.md
+      - docs/adr/ADR-012-metar-work-sessions-retention.md
+    delta_substages:
+      - status: completed
+        mode: delta
+        session_id: S004-issue-555-feedback
+        evolve_cycle_id: EV-004
+        started_at: "2026-06-23"
+        completed_at: "2026-06-23"
+        artifacts:
+          - docs/sessions/S004-issue-555-feedback/reports/execution-plan-ev004.md
+          - docs/sessions/S004-issue-555-feedback/reports/04-tech-plan-summary.md
     notes:
-      - "Technical plan approved; ready for 05-verify-tech"
+      - "Monorepo plan 2026-06-15; EV-004 delta completed 2026-06-23"
 
   05-verify-tech:
     status: completed
@@ -284,18 +322,40 @@ stages:
         phase: 4
         milestone: M11
         notes: "T11.4 complete — H0c+H4+H5 green on staging; TC-M001–M005 pass; Phase 4 gate criteria met on main"
+    delta_substages:
+      - status: completed
+        session_id: S004-issue-555-feedback
+        evolve_cycle_id: EV-004
+        started_at: "2026-06-23"
+        completed_at: "2026-06-24"
+        report: docs/sessions/S004-issue-555-feedback/reports/07-build-progress.md
+        note: "36/38 tasks — T1.3 operator migration apply deferred to 12-verify-deploy"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
       - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
       - "M5 complete (T5.1–T5.8); minor PR pending"
       - "M7 complete (T7.1–T7.4); minor PR pending"
+      - "S004 / EV-004 delta 07-build complete 2026-06-24 — 36/38 tasks; see 07-build-progress.md"
 
   09-qa:
     status: completed
-    started_at: "2026-06-20T22:00:00Z"
-    completed_at: "2026-06-20T22:30:00Z"
-    report: docs/qa-report.md
+    started_at: "2026-06-24T14:55:00Z"
+    completed_at: "2026-06-24T15:10:00Z"
+    report: docs/sessions/S004-issue-555-feedback/reports/qa-report.md
     overall: fail
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+    delta_substages:
+      - status: completed
+        session_id: S004-issue-555-feedback
+        evolve_cycle_id: EV-004
+        completed_at: "2026-06-24"
+        overall: fail
+        report: docs/sessions/S004-issue-555-feedback/reports/qa-report.md
+        note: "ESLint react-hooks + 1 Vitest failure block gate"
+    notes:
+      - "S004 / EV-004 delta — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
+      - "Prior monorepo QA 2026-06-20: docs/qa-report.md"
 
   11-verify-impl:
     status: completed
@@ -326,6 +386,14 @@ stages:
       summary:
         status: completed
     report: docs/sessions/S003-supabase-keys-config/reports/verify-impl.md
+    delta_substages:
+      - status: completed
+        session_id: S004-issue-555-feedback
+        evolve_cycle_id: EV-004
+        completed_at: "2026-06-24"
+        overall: pass
+        report: docs/sessions/S004-issue-555-feedback/reports/verify-impl.md
+        note: "UJ-001/UJ-004 approved; F1+F5 approve-fix; lint+Vitest green; T3 deferred to 12"
     notes:
       - "S003 / BUG-2026-06-23 — user approved M4+F3 delta; T3 auth + UI E2E deferred"
       - "08-verify-build + 09-qa still pending on routing plan"
@@ -333,78 +401,91 @@ stages:
 
   10-e2e:
     status: completed
-    started_at: "2026-06-20T23:45:00Z"
-    completed_at: "2026-06-20T23:52:00Z"
-    report: docs/e2e-report.md
+    started_at: "2026-06-24T15:00:00Z"
+    completed_at: "2026-06-24T15:20:00Z"
+    report: docs/sessions/S004-issue-555-feedback/reports/e2e-report.md
     overall: fail
+    session_id: S004-issue-555-feedback
     substeps:
       extract_journeys:
         status: completed
       t0_t1:
         status: completed
-        notes: "T0 migration+vendor PASS; H0i 7/7; TC-M003–M005 PASS"
+        notes: "H0i 8/8 PASS; env-check PASS"
       t2_playwright:
         status: completed
-        notes: "make test-e2e-t2-product 8 passed, 1 skipped"
+        notes: "Core UJ-001 11/11; S004 delta 1/4 (2 locator strict-mode, 1 session-load gap)"
       t2_connectivity:
         status: completed
-        notes: "H0c 6/6; H4+H5 staging PASS via verify_connectivity.sh"
+        notes: "H0c 6/6 PASS; H4 staging FAIL (CORS origin); H5 skipped"
       t3_live:
         status: completed
-        notes: "H1+H4+H5 PASS; browser login shell PASS; auth routes 404 on staging; UJ-001 T3 blocked"
+        notes: "H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred"
     notes:
-      - "Overall FAIL — E2E-001 schema path regression (2 integration tests); E2E-002 staging /auth/* not deployed"
-      - "T2 product journeys green locally; mocks passing T0 ≠ production UI connected (H4/H5 now verified on staging)"
-      - "S003 delta 2026-06-23: auth API integration PASS; login UI FAIL (disableAuth in config); T3 auth BLOCKED (legacy keys disabled on Render) — docs/sessions/S003-supabase-keys-config/reports/e2e-report.md"
+      - "S004 delta FAIL — fix Playwright locators + finished-session load; redeploy for H4"
+      - "Prior global report: docs/e2e-report.md (2026-06-20)"
 
   08-verify-build:
     status: completed
     started_at: "2026-06-22T17:27:00Z"
-    completed_at: "2026-06-22T17:52:00Z"
-    overall: pass
-    report: docs/sessions/S001-convert-send-buttons/reports/verification-report.md
+    completed_at: "2026-06-24T14:30:00Z"
+    overall: fail
+    report: docs/sessions/S004-issue-555-feedback/reports/verification-report.md
     substeps:
       lint:
         status: completed
+        notes: "Python PASS; JS FAIL — 4 react-hooks errors (S004 work-session delta)"
       format:
         status: completed
+        notes: "Auto-fixed 2 ruff files + Prettier on delta TSX"
       typecheck:
         status: completed
       tests:
         status: completed
+        notes: "FAIL — FileConverter requires auth token for Convert&Send; gifts not run"
       security:
         status: completed
+        notes: "gitleaks PASS; pip-audit 0 CVEs on uv lockfile export"
       report:
         status: completed
+    delta_substages:
+      - status: completed
+        session_id: S004-issue-555-feedback
+        evolve_cycle_id: EV-004
+        completed_at: "2026-06-24"
+        overall: fail
+        report: docs/sessions/S004-issue-555-feedback/reports/verification-report.md
+        note: "ESLint react-hooks + 1 Vitest failure block gate"
     notes:
-      - "S001 / EV-001 / GitHub #656 — overall PASS on feat/S001-convert-send-buttons"
-      - "Auto-fixed Prettier on apps/e2e/playwright-e2e-helpers.ts (uncommitted)"
-      - "make test-integration blocked on default ports 18000/18001 (vecinita stack); 82+6 tests pass on alternate ports"
+      - "S001 / EV-001 — PASS 2026-06-22 (docs/sessions/S001-convert-send-buttons/reports/verification-report.md)"
+      - "S004 / EV-004 — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
       - "H0c CORS 6/6 pass; connectivity artifacts present"
+      - "make test-integration not re-run (port conflict advisory)"
 
   18-pr-review:
     status: completed
     started: "2026-06-22"
-    completed: "2026-06-23"
-    last_cycle: PRR-006
+    completed: "2026-06-24"
+    last_cycle: PRR-007
 
   19-address-pr-review:
     status: completed
     started: "2026-06-22"
-    completed: "2026-06-23"
-    last_cycle: PRM-005
+    completed: "2026-06-24"
+    last_cycle: PRM-006
 
   12-verify-deploy:
     status: completed
-    started_at: "2026-06-23T12:00:00Z"
-    completed_at: "2026-06-23T12:30:00Z"
-    session_id: S003-supabase-keys-config
-    report: docs/sessions/S003-supabase-keys-config/reports/deploy-checklist.md
+    started_at: "2026-06-24T18:20:00Z"
+    completed_at: "2026-06-24T18:30:00Z"
+    session_id: S004-issue-555-feedback
+    report: docs/sessions/S004-issue-555-feedback/reports/deploy-checklist.md
     notes:
       - "S001 delta — static+api Render; H0c/H4/H5 PASS on live staging"
       - "E2E-002 resolved — /auth/* routes present on deployed API"
       - "S002 / EV-003 — user approved mitigations + rollback; H0c/H4/H5 PASS pre-merge baseline"
-      - "S003 — strategy verified; user approved mitigations + rollback; deploy blocked on config/ Docker COPY + key rotation"
+      - "S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)"
+      - "S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13"
 
 stages_pending: []
 
@@ -419,22 +500,24 @@ deployment:
     t0_journeys_passed: 4
   staging:
     status: deployed
-    last_verified: "2026-06-22"
+    last_verified: "2026-06-24"
     commit_deployed: "220ad64"
     commit_head: main
-    drift: false
+    drift: true
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
     health_tiers:
       H1: pass
-      H4: pass
+      H0c: pass
+      H4: fail
       H5: pass
-      T3_auth: pass
+      T3_auth: blocked
     notes:
       - "Auth routes live on deployed API (E2E-002 resolved)"
-      - "H0c+H4+H5 verified via verify_connectivity.sh (stage 12)"
-      - "S001 Convert&Send UI in live frontend bundle"
+      - "S004 stage 12 — H4 FAIL: API rejects v4 frontend CORS origin (400); H5 PASS on /config.json"
+      - "Deploy blocked: operator T1.3 migrations + S003 key rotation + API redeploy with config/prod.json CORS"
+      - "Frontend on S003 /config.json model; API image likely stale vs config-based CORS"
   url_discovery:
     method: "bash scripts/deploy/verify_connectivity.sh"
 
@@ -518,6 +601,56 @@ decisions_log:
     decision: "User approved M4+F3 delta with T3 live auth and auth UI T2 deferred until 12-verify-deploy Render key rotation"
     status: confirmed
     session_id: S003-supabase-keys-config
+
+  - id: EV-004-R1
+    stage: 16-evolve
+    date: "2026-06-23"
+    topic: F5 work history interview re-confirmation
+    decision: "F5 work history interview re-confirmed 2026-06-23 — all answers align with drafted spec; user approved proceed routing"
+    status: confirmed
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+
+  - id: TECH-EV004-001
+    stage: 04-tech-plan
+    date: "2026-06-23"
+    topic: Work sessions data access
+    decision: "Supabase Python client with caller JWT + RLS (ADR-011)"
+    status: confirmed
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+  - id: TECH-EV004-002
+    stage: 04-tech-plan
+    date: "2026-06-23"
+    topic: WorkSession types
+    decision: "packages/shared TypeScript + backend Pydantic manual mirror (ADR-011)"
+    status: confirmed
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+  - id: TECH-EV004-003
+    stage: 04-tech-plan
+    date: "2026-06-23"
+    topic: Retention cron schedule
+    decision: "pg_cron daily 03:00 UTC for Draft purge and trash hard-delete (ADR-012)"
+    status: confirmed
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+  - id: TECH-EV004-004
+    stage: 04-tech-plan
+    date: "2026-06-23"
+    topic: WIP uniqueness
+    decision: "Partial unique index on user_id WHERE status=wip AND deleted_at IS NULL (ADR-012)"
+    status: confirmed
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+  - id: TECH-EV004-005
+    stage: 04-tech-plan
+    date: "2026-06-23"
+    topic: EV-004 execution plan
+    decision: "5 phases, 38 tasks — S003 gate → #555 UX → F5 API → F5 UI → E2E; approved as drafted"
+    status: confirmed
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
 
   - id: AUDIT-001
     stage: 02-verify-plan
@@ -740,6 +873,76 @@ artifacts:
     topic: "COR handling + input traceability (GitHub #594)"
     session_id: S002-issue-594-feedback
     created_at: "2026-06-22"
+    status: active
+  - path: docs/context/issue-555-feedback.md
+    kind: context-scoped
+    slug: issue-555-feedback
+    topic: "Initial test UX — auto-clear inputs/results, error log preview (GitHub #555)"
+    session_id: S004-issue-555-feedback
+    created_at: "2026-06-23"
+    status: active
+  - path: docs/sessions/S004-issue-555-feedback/reports/execution-plan-ev004.md
+    kind: execution-plan
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+    stage: 04-tech-plan
+    created_at: "2026-06-23"
+    status: active
+  - path: docs/sessions/S004-issue-555-feedback/reports/04-tech-plan-summary.md
+    kind: stage-report
+    session_id: S004-issue-555-feedback
+    stage: 04-tech-plan
+    created_at: "2026-06-23"
+    status: active
+  - path: docs/sessions/S004-issue-555-feedback/reports/07-build-progress.md
+    kind: build-report
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+    stage: 07-build
+    created_at: "2026-06-24"
+    status: active
+  - path: docs/sessions/S004-issue-555-feedback/reports/verification-report.md
+    kind: verification-report
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+    stage: 08-verify-build
+    created_at: "2026-06-24"
+    status: active
+  - path: docs/sessions/S004-issue-555-feedback/reports/qa-report.md
+    kind: qa-report
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+    stage: 09-qa
+    created_at: "2026-06-24"
+    status: active
+  - path: docs/sessions/S004-issue-555-feedback/reports/e2e-report.md
+    kind: e2e-report
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+    stage: 10-e2e
+    created_at: "2026-06-24"
+    status: active
+    overall: fail
+  - path: docs/adr/ADR-011-work-sessions-data-access.md
+    kind: adr
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+    stage: 04-tech-plan
+    created_at: "2026-06-23"
+    status: active
+  - path: docs/adr/ADR-012-metar-work-sessions-retention.md
+    kind: adr
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+    stage: 04-tech-plan
+    created_at: "2026-06-23"
+    status: active
+  - path: docs/context/metar-work-history.md
+    kind: context-scoped
+    slug: metar-work-history
+    topic: "User METAR work sessions Draft→WIP→Finished in Supabase (F5)"
+    session_id: S005-metar-work-history
+    created_at: "2026-06-23"
     status: active
   - path: docs/evolve-decisions.md
     kind: evolve-decisions
@@ -1056,8 +1259,108 @@ evolve_cycles:
         status: completed
     issues: []
 
+  - id: EV-004
+    session_id: S004-issue-555-feedback
+    cycle_type: feature
+    feature_ids: [F1, F5]
+    title: "#555 UX + F5 work history + S003 Supabase"
+    status: in_progress
+    started: "2026-06-23"
+    completed: null
+    scope_summary: |
+      Merge GitHub #555 remaining UX (replace results, error log panel) with F5 per-user
+      METAR work history in Supabase (Draft→WIP→Finished+Failed) and S003 Supabase config fixes.
+    routing_plan:
+      required_stages:
+        - 16-evolve
+        - 01-requirements
+        - 02-verify-plan
+        - 04-tech-plan
+        - 05-verify-tech
+        - 07-build
+        - 08-verify-build
+        - 09-qa
+        - 10-e2e
+        - 11-verify-impl
+      skipped_stages:
+        - 03-plan-tooling
+        - 06-tech-tooling
+        - 14-hotfix
+      optional_stages:
+        - 12-verify-deploy
+        - 13-deploy-smoke
+    current_stage: 12-verify-deploy
+    notes:
+      - "Phase 0 intake complete 2026-06-23 — F5 work history interview re-confirmed; scope approved for routing"
+      - "04-tech-plan complete 2026-06-23 — execution plan + ADR-011/012 approved"
+      - "07-build complete 2026-06-24 — EV-004 product code + tests green; T1.3 deferred"
+      - "08-verify-build 2026-06-24 — FAIL (ESLint react-hooks + 1 Vitest); see verification-report.md"
+      - "09-qa 2026-06-24 — FAIL; see qa-report.md"
+    stages:
+      16-evolve:
+        status: completed
+        started: "2026-06-23"
+        completed: "2026-06-23"
+        phase: 0
+        notes:
+          - "F5 work history interview re-confirmed — all answers align with drafted spec"
+          - "User approved proceed to Fn allocation + impact analysis / routing execution"
+        artifacts_updated:
+          - docs/evolve-decisions.md
+          - docs/feature-list.md
+          - docs/requirements-decisions.md
+          - docs/context/issue-555-feedback.md
+          - docs/context/metar-work-history.md
+          - docs/sessions/S004-issue-555-feedback/session-brief.md
+          - docs/sessions/S004-issue-555-feedback/routing-plan.md
+      01-requirements:
+        status: completed
+        started: "2026-06-23"
+        completed: "2026-06-23"
+      02-verify-plan:
+        status: completed
+        started: "2026-06-23"
+        completed: "2026-06-23"
+      04-tech-plan:
+        status: completed
+        started: "2026-06-23"
+        completed: "2026-06-23"
+      07-build:
+        status: completed
+        started: "2026-06-23"
+        completed: "2026-06-24"
+        report: docs/sessions/S004-issue-555-feedback/reports/07-build-progress.md
+        note: "36/38 tasks — operator T1.3 deferred to 12-verify-deploy"
+      08-verify-build:
+        status: completed
+        started: "2026-06-24"
+        completed: "2026-06-24"
+        overall: fail
+        report: docs/sessions/S004-issue-555-feedback/reports/verification-report.md
+      09-qa:
+        status: completed
+        started: "2026-06-24"
+        completed: "2026-06-24"
+        overall: fail
+        report: docs/sessions/S004-issue-555-feedback/reports/qa-report.md
+    gates:
+      a_to_b: pending
+      b_to_c: pending
+      c_to_d: pending
+      deploy: pending
+    checkpoints:
+      phase_a: pending
+      phase_b: pending
+      phase_c: pending
+      phase_d: pending
+      deploy: pending
+    artifacts:
+      - path: docs/evolve-decisions.md
+        status: in_progress
+    issues: []
+
 git_history:
-  current_branch: fix/S002-issue-594-feedback
+  current_branch: feat/S004-issue-555-feedback
   branches:
     - name: fix/S002-issue-594-feedback
       base: main
@@ -1392,6 +1695,34 @@ pr_review_cycles:
     notes:
       - "Self request-changes blocked by GitHub; posted COMMENT with REQUEST_CHANGES recommendation"
       - "Validate fails Prettier on apps/frontend/public/config.json; local make validate-ci reproduces"
+
+  - id: PRR-007
+    pr_number: 687
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/687
+    title: "Feat/s004 issue 555 feedback"
+    status: completed
+    started: "2026-06-24"
+    completed: "2026-06-24"
+    head_ref: feat/S004-issue-555-feedback
+    base_ref: main
+    verdict: REQUEST_CHANGES
+    blockers: 1
+    advisories: 4
+    praise: 4
+    ci_status: failure
+    session_id: S004-issue-555-feedback
+    subagents:
+      bugbot: failed_diff
+      security_review: failed_diff
+    artifacts:
+      - path: docs/sessions/S004-issue-555-feedback/reports/pr-review.md
+        note: session report
+      - path: .cursor/skills/18-pr-review/checklist.md
+        note: checklist source
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/687#pullrequestreview-4565121838
+    notes:
+      - "Self request-changes blocked by GitHub; posted COMMENT with REQUEST_CHANGES recommendation"
+      - "Validate fails Prettier on 6 files; local format-check + Vitest 504/504 + backend unit 1148 pass"
 
 pr_remediation_cycles:
   - id: PRM-001
@@ -1772,3 +2103,69 @@ pr_remediation_cycles:
         note: PRM-005 session report
     follow_up:
       pr_review_rerun: offered
+
+  - id: PRM-006
+    pr_number: 687
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/687
+    linked_review_cycle_id: PRR-007
+    title: "Feat/s004 issue 555 feedback"
+    status: completed
+    started: "2026-06-24"
+    completed: "2026-06-24"
+    head_ref: feat/S004-issue-555-feedback
+    base_ref: main
+    ci_status: failure   # Validate (Prettier blocker) now green; Test (integration) fails on out-of-scope Docker bug (#688)
+    session_id: S004-issue-555-feedback
+    evolve_cycle_id: EV-004
+    scope: blocker_only
+    counts:
+      fixed: 1
+      deferred: 3
+      wont_fix: 0
+    findings:
+      - id: F-001
+        source: inline
+        severity: blocker
+        path: apps/frontend/public/config.json
+        line: 9
+        thread_id: PRRT_kwDOQW-3CM6MAhjW
+        status: fixed
+        commit: c2d4ed4
+        note: >
+          Prettier format-check on 6 files; ran prettier --write on 5 test/spec
+          files and restored public/config.json to e2e fixture values
+          (also resolves F-003 advisory, removed committed sb_publishable_ key).
+          Validate job green. Blocker thread + config.json thread resolved.
+      - id: F-002
+        source: review_body
+        severity: advisory
+        path: null
+        line: null
+        thread_id: null
+        status: deferred
+        commit: null
+        note: Empty PR description / no Closes #555 — out of scope (blocker_only)
+      - id: F-004
+        source: inline
+        severity: advisory
+        path: apps/frontend/src/app/components/admin/AdminWorkSessionsPanel.tsx
+        line: 116
+        thread_id: PRRT_kwDOQW-3CM6MAhmM
+        status: deferred
+        commit: null
+        note: admin user_email vs contract — out of scope (blocker_only)
+      - id: F-005
+        source: review_body
+        severity: advisory
+        path: apps/frontend/src/app/hooks/useWorkSessionSync.ts
+        line: null
+        thread_id: null
+        status: deferred
+        commit: null
+        note: 409 WIP conflict toast/guidance — out of scope (blocker_only)
+    artifacts:
+      - path: docs/sessions/S004-issue-555-feedback/reports/pr-remediation.md
+        note: PRM-006 session report
+    follow_up:
+      pr_review_rerun: offered
+      integration_docker_bug: https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/688

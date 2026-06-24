@@ -19,3 +19,11 @@ export function parseCommaSeparatedOrigins(raw: string | undefined): string[] {
     .map((part) => part.trim())
     .filter((part) => part.length > 0);
 }
+
+export type {
+  PendingFilePayload,
+  WorkSession,
+  WorkSessionListResponse,
+  WorkSessionStatus,
+  WorkSessionUpsertPayload,
+} from './work-session';

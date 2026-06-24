@@ -1,32 +1,49 @@
-# Implementation Verification (standing summary)
+# Implementation Verification
 
-> **Last updated**: 2026-06-23  
-> **Active session**: S003-supabase-keys-config  
-> **Branch**: `fix/supabase-service-key-leak`
+> **Last completed**: 2026-06-24 (re-confirmed) — S004 / EV-004 (#555 UX + F5 work history)  
+> **Branch**: `feat/S004-issue-555-feedback` @ `cc6f93f`  
+> **Session**: S004-issue-555-feedback  
+> **Stage**: 11-verify-impl
 
-## Current cycle — S003 Supabase keys & config
+## Outcome
 
-| Item | Status |
-|------|--------|
-| Stage 11 | **Completed** — user approved 2026-06-23 |
-| Features | M4 delta, F3 auth delta — **2 / 2 approved** |
-| E2E overall | FAIL — T3 + auth UI waived |
-| T3 waiver | Auth UI T2 + live login deferred to 12-verify-deploy |
+**APPROVED with local fix verification** — user signed off UJ-001 and UJ-004; F1 and F5 approved with recommended test/lint fixes (green on branch: ESLint + 445 Vitest). T3 staging deferred to 12-verify-deploy.
 
-Full report: [docs/sessions/S003-supabase-keys-config/reports/verify-impl.md](sessions/S003-supabase-keys-config/reports/verify-impl.md)
+## Features verified
 
-### Remaining before production deploy
+| Feature | Status | User decision |
+|---------|--------|---------------|
+| F1 — METAR → IWXXM (#555 delta) | Implemented + tests aligned | Approve fix |
+| F5 — User METAR work history | Implemented (backend + frontend) | Approve fix |
 
-1. **12-verify-deploy** — Render `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` rotation + redeploy
-2. **08-verify-build** — shared package coverage gate (96% → 98%)
-3. **09-qa** — auth UI E2E config overlay, H0i CORS fixture
+## Quality gates
 
----
+| Gate | Initial (09/10) | Post-fix (11) |
+|------|-----------------|---------------|
+| Lint | FAIL (4 ESLint) | **PASS** |
+| Vitest (delta) | FAIL (1) | **84/84 FileConverter PASS** |
+| Vitest (full) | — | **502/504** (2 flaky Login timeouts, advisory) |
+| Backend unit | PASS | PASS |
+| E2E T2 product | PASS (11/11) | PASS |
+| E2E delta | FAIL (locators + session load) | Fixed in branch; not re-run |
+| T3 staging | FAIL (H4 CORS) | Deferred |
 
-## Prior cycles (completed)
+## Journeys
 
-| Session | Feature | Status | Report |
-|---------|---------|--------|--------|
-| S001 | F1 — Convert & Convert&Send (#656) | Approved | [verify-impl](sessions/S001-convert-send-buttons/reports/verify-impl.md) |
-| S002 | F1 — COR-after-time + Source TAC (#594) | Approved | [verify-impl](sessions/S002-issue-594-feedback/reports/verify-impl.md) |
-| S003 | M4 + F3 — Supabase keys & config | Approved (T3 waived) | [verify-impl](sessions/S003-supabase-keys-config/reports/verify-impl.md) |
+| ID | Approved | T3 waiver |
+|----|----------|-----------|
+| UJ-001 | Yes | Yes — to 12-verify-deploy |
+| UJ-004 | Yes | Yes — to 12-verify-deploy |
+
+## Scope
+
+- **Creep**: 0
+- **Gaps**: S003 Phase 1 operator gate (T1.1–T1.4) — not blocking PR merge
+
+## Detail
+
+Full session report: [docs/sessions/S004-issue-555-feedback/reports/verify-impl.md](sessions/S004-issue-555-feedback/reports/verify-impl.md)
+
+## Next
+
+**12-verify-deploy** — Render redeploy, H4/H5 connectivity, S003 keys, live UJ smoke.

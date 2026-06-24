@@ -85,8 +85,20 @@ See [deploy.md](deploy.md) §Live test harness and ADR-009.
 | Tier | Command |
 |------|---------|
 | H0c | `pytest apps/backend/tests/unit/test_cors_policy.py` |
+| H0i | `pytest apps/backend/tests/integration/test_h0i_connectivity.py` (includes work-sessions CORS) |
 | H4 | CORS preflight from frontend origin → API |
 | H5 | `bash scripts/deploy/verify_connectivity.sh` |
+
+### EV-004 / F5 work history (2026-06-24)
+
+No new Render secrets for F5 — work sessions use the existing Supabase JWT + publishable key
+pattern (ADR-011). Operator steps before enabling F5 in production:
+
+1. Apply Supabase migrations through `20250623000007_metar_work_sessions.sql` (`supabase db push` or dashboard).
+2. Redeploy API so `/api/v1/work-sessions` and `/admin/work-sessions` routes are live.
+3. Confirm H0i work-sessions CORS preflight (PATCH/DELETE) and H4 staging origin pass after redeploy.
+
+See [deploy.md](deploy.md) §Migrations (F5) and ADR-012 for pg_cron retention.
 
 ### Redeploy order
 

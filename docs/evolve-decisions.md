@@ -136,3 +136,66 @@
 - `docs/API.md`, `docs/api-contract.md`, `docs/test-plan.md` — TC-001b
 - `tests/bugs/test_bug_2026_06_22_issue_594_cor_after_time.py`
 - `apps/e2e/tac-file-conversion.e2e.spec.ts`
+
+## Cycle EV-004 — #555 UX + F5 work history + S003 Supabase (S004)
+
+**GitHub**: [#555](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/555)  
+**Session**: S004-issue-555-feedback  
+**Features**: F1 (converter UX), F5 (user METAR work history), S003 (Supabase keys/runtime config)  
+**Approved**: 2026-06-23  
+**Cycle type**: feature (multi-Fn delta)
+
+### Scope
+
+**In scope**
+
+- **#555 remaining UX (F1)** — Replace (not append) result cards on each successful convert; in-app collapsible error log from API `errors` / `issues`; same active session row updated on re-convert.
+- **F5 work history** — Supabase `metar_work_sessions` table + RLS; backend REST CRUD; Draft → WIP → Finished + Failed lifecycle; auto-save (~3s debounce); resume most recent non-Finished session on login; converter sidebar (5 recent) + My METARs page; admin read-only browse; 30-day Draft auto-purge + soft-delete trash.
+- **S003 Supabase config** — Service-key leak fix and runtime config wiring required before F5 DB work (merged into this cycle, not a separate hotfix branch).
+
+**Out of scope**
+
+- Re-opening S001 Convert / Convert&Send / send feedback (already shipped).
+- Admin mutate/delete other users' sessions in v1.
+- Backfill F5 from existing KV uploads.
+- REQ-016 migration rewrites unrelated to this scope.
+
+### Decisions
+
+| ID | Category | Decision |
+|----|----------|----------|
+| R1 | Scope | **Single cycle** — merge #555 UX + F5 + S003 (user confirmed 2026-06-23) |
+| R2 | Status | Four statuses: Draft, WIP, Finished, Failed — as F5 spec |
+| R3 | Auth | Persistence requires login; guests may convert without save (no history) |
+| R4 | Granularity | One row = one converter batch (manual textarea + file queue) |
+| R5 | Results | Replace UI results **and** overwrite active session `converted_results` on re-convert |
+| R6 | Resume | Auto-resume most recent non-Finished, non-deleted session on login |
+| R7 | Finished | Finished only after successful DB send; convert-only stays WIP |
+| R8 | S003 | Include Supabase key/config fixes in EV-004 before F5 migration |
+| R9 | Retention | Draft auto-purge 30d (pg_cron); soft-delete trash 30d restore |
+| R10 | Admin | Read-only browse all users' sessions in v1 |
+| R11 | UI | Sidebar (5 recent) + My METARs page with status/date filters in v1 |
+| R12 | Routing | Full delta path: 01→02→04→07→11 (+ optional 12–13 deploy) |
+| R13 | History model | Current state per session row — no audit trail table in v1 |
+| R14 | Guest users | Convert without login; persistence requires auth |
+| R15 | Send failure | Stay WIP — retry send |
+| R16 | Finished view | Read-only when opened from history |
+| R17 | New session | Explicit New METAR button |
+| R18 | Sidebar switch | Load session into converter; WIP row unchanged |
+| R19 | Multi-device | Last-write-wins on auto-save |
+| R20 | Error log | In-app panel + persist on session row |
+| R21 | Admin UI | Separate admin page (read-only) |
+| R22 | Results (#555) | Replace result cards on successful convert only |
+
+### Artifacts to update
+
+- `docs/feature-list.md` — F1 UX + F5 delivery note
+- `docs/spec.md` — F5 §Data (sidebar count)
+- `docs/user-journeys.md` — UJ-001 (#555), UJ-004 (F5)
+- `docs/test-plan.md` — TC-001 delta, TC-004, TC-LIVE-006
+- `docs/api-contract.md` — work-sessions (verify against build)
+- `supabase/migrations/` — `metar_work_sessions` + RLS + pg_cron
+- `apps/backend/` — work-sessions router + S003 config
+- `apps/frontend/` — FileConverter (#555 + F5), My METARs page
+- `packages/shared/` — WorkSession types (TBD in 04-tech-plan)
+- `apps/e2e/` — UJ-001 + UJ-004 deltas

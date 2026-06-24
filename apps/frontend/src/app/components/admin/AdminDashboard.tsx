@@ -5,6 +5,7 @@ import { ThemeToggle } from '../ThemeToggle';
 import { UserApprovalPanel } from './UserApprovalPanel';
 import { SystemSettingsPanel } from './SystemSettingsPanel';
 import { MonitoringPanel } from './MonitoringPanel';
+import { AdminWorkSessionsPanel } from './AdminWorkSessionsPanel';
 import { Users, Settings, Activity, LogOut, FileText, ChevronDown } from 'lucide-react';
 import { signOutWithScope } from '/utils/supabase/logout';
 
@@ -15,7 +16,7 @@ interface AdminDashboardProps {
   onSwitchToConverter?: () => void;
 }
 
-type AdminPanel = 'approval' | 'settings' | 'monitoring';
+type AdminPanel = 'approval' | 'settings' | 'monitoring' | 'work-sessions';
 
 export function AdminDashboard({
   onLogout,
@@ -65,6 +66,13 @@ export function AdminDashboard({
       description: 'View users, database status, and activity',
       icon: Activity,
       color: 'bg-purple-500 dark:bg-purple-600',
+    },
+    {
+      id: 'work-sessions' as AdminPanel,
+      title: 'Work Sessions',
+      description: 'Browse all users METAR work sessions (read-only)',
+      icon: FileText,
+      color: 'bg-amber-500 dark:bg-amber-600',
     },
   ];
 
@@ -167,7 +175,7 @@ export function AdminDashboard({
         </div>
 
         {/* Panel Selection Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
           {panels.map((panel) => {
             const Icon = panel.icon;
             const isActive = activePanel === panel.id;
@@ -210,6 +218,9 @@ export function AdminDashboard({
           )}
           {activePanel === 'monitoring' && (
             <MonitoringPanel accessToken={accessToken} />
+          )}
+          {activePanel === 'work-sessions' && (
+            <AdminWorkSessionsPanel accessToken={accessToken} />
           )}
         </div>
       </div>

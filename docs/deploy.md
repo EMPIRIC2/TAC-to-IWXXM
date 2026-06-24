@@ -95,9 +95,11 @@ Post-migration compose: **backend + frontend** (two services).
 | Image | Context | Dockerfile |
 |-------|---------|------------|
 | API | repo root | `apps/backend/docker/Dockerfile` |
-| Frontend | `apps/frontend` | `apps/frontend/Dockerfile` |
+| Frontend | repo root | `apps/frontend/Dockerfile` |
 
 API image must include: apps/backend, packages/auth, packages/gifts, packages/shared, vendor/schemas.
+
+Frontend image must include: apps/frontend, packages/shared (pnpm workspace dep `@metar/shared`).
 
 ## Health Checks
 
@@ -109,7 +111,19 @@ Render health check path: `/health` on metar-api.
 
 ## Migrations
 
-No database migrations in monorepo v1 (Supabase external). Document future Postgres if added.
+Supabase migrations live in `supabase/migrations/` and are applied externally (not at API boot).
+
+### F5 work sessions (EV-004)
+
+Before deploying F5 to production:
+
+1. **S003 gate** — rotate to `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY`; run `make env-check`.
+2. **Advisor migrations** — apply `003`–`006` (security advisors) on the METAR Supabase project.
+3. **F5 schema** — apply `20250623000007_metar_work_sessions.sql` (table, RLS, WIP index, pg_cron retention per ADR-012).
+4. **Verify locally** — `make supabase-reset` then `pytest tests/integration/test_metar_work_sessions_migration.py` and `apps/backend/tests/integration/test_work_session_tc004.py`.
+5. **Redeploy API** — work-sessions routes require a new API deploy; no new Render secrets.
+
+Operator reference: [env-sync-runbook.md](env-sync-runbook.md), ADR-011, ADR-012.
 
 ## Rollback
 
@@ -122,6 +136,8 @@ Redeploy previous Render deploy from dashboard or revert git tag on main.
 - [ ] Env vars set on Render
 - [ ] CORS origins include production frontend URL
 - [ ] Frontend rebuilt after API URL known
+- [ ] F5: Supabase migrations through `20250623000007` applied (staging/prod)
+- [ ] F5: S003 key rotation complete (`make env-check` no legacy key WARN)
 
 ## Runbook
 
