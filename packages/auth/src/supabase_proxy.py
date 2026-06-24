@@ -13,7 +13,11 @@ from typing import Any, Dict, Optional, cast
 # Load environment variables
 from dotenv import load_dotenv
 from fastapi import HTTPException, status
-from metar_shared.supabase_env import get_supabase_publishable_key, get_supabase_url
+from metar_shared.supabase_env import (
+    assert_modern_supabase_publishable_key,
+    get_supabase_publishable_key,
+    get_supabase_url,
+)
 from supabase import Client, create_client
 
 load_dotenv()
@@ -36,7 +40,15 @@ class SupabaseAuthProxy:
         self.supabase_key = get_supabase_publishable_key()
 
         if not self.supabase_url or not self.supabase_key:
+            legacy_anon = os.getenv("SUPABASE_ANON_KEY", "").strip()
+            if legacy_anon.startswith("eyJ") and os.getenv("METAR_CONFIG_ENV", "local").strip().lower() == "prod":
+                raise ValueError(
+                    "Legacy Supabase JWT anon key detected; Supabase has disabled legacy API keys. "
+                    "Set SUPABASE_PUBLISHABLE_KEY to your sb_publishable_* key in Render."
+                )
             raise ValueError("Supabase URL and publishable key must be set (SUPABASE_PUBLISHABLE_KEY or config)")
+
+        assert_modern_supabase_publishable_key(self.supabase_key)
 
         logger.info(f"Initializing Supabase client for URL: {self.supabase_url}")
         self.client: Client = create_client(self.supabase_url, self.supabase_key)
