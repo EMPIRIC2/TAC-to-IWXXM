@@ -1,16 +1,14 @@
 {
-  "environment": "local",
+  "environment": "e2e",
   "api": {
     "baseUrl": "http://localhost:18001",
-    "corsOrigins": [
-      "http://localhost:18000"
-    ],
+    "corsOrigins": ["http://localhost:18000"],
     "frontendUrl": "http://localhost:18000",
-    "disableAuth": true
+    "disableAuth": false
   },
   "supabase": {
     "url": "https://ktvxijislbtgqapllmuk.supabase.co",
-    "publishableKey": "sb_publishable_v8Hhz6jwqijPMQXZeRfEhQ_t7JFok9X"
+    "publishableKey": "test"
   },
   "validation": {
     "wmoOnline": true,

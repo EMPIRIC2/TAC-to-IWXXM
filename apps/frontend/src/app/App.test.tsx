@@ -152,7 +152,12 @@ vi.mock('./components/MyMetarsPage', () => ({
 }));
 
 vi.mock('./components/auth/Login', () => ({
-  Login: ({ onLogin, onSwitchToRegister, onForgotPassword, onContinueAsGuest }: any) => (
+  Login: ({
+    onLogin,
+    onSwitchToRegister,
+    onForgotPassword,
+    onContinueAsGuest,
+  }: any) => (
     <div data-testid="login-view">
       <button
         onClick={() => onLogin('test@example.com', false, 'token', false)}
@@ -272,7 +277,10 @@ vi.mock('./components/ui/sonner', () => ({
 
 // Now import App and mocked dependencies
 import App from './App';
-import { readGuestConverterState, clearGuestConverterState } from '@/utils/guestConverterState';
+import {
+  readGuestConverterState,
+  clearGuestConverterState,
+} from '@/utils/guestConverterState';
 
 const mockReadGuest = vi.mocked(readGuestConverterState);
 const mockClearGuest = vi.mocked(clearGuestConverterState);

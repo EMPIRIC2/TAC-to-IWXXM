@@ -34,7 +34,12 @@ describe('WorkHistorySidebar', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockList.mockResolvedValue({ items: [sampleSession()], total: 1, page: 1, limit: 5 });
+    mockList.mockResolvedValue({
+      items: [sampleSession()],
+      total: 1,
+      page: 1,
+      limit: 5,
+    });
   });
 
   it('loads recent sessions', async () => {

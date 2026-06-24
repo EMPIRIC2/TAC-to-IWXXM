@@ -38,7 +38,12 @@ describe('MyMetarsPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockList.mockResolvedValue({ items: [sampleSession()], total: 1, page: 1, limit: 50 });
+    mockList.mockResolvedValue({
+      items: [sampleSession()],
+      total: 1,
+      page: 1,
+      limit: 50,
+    });
     mockDelete.mockResolvedValue(sampleSession({ deleted_at: '2026-06-24T13:00:00Z' }));
     mockRestore.mockResolvedValue(sampleSession());
   });

@@ -5,9 +5,7 @@ import { ErrorLogPanel } from './ErrorLogPanel';
 
 describe('ErrorLogPanel', () => {
   it('renders nothing when log is empty', () => {
-    const { container } = render(
-      <ErrorLogPanel log={{ errors: [], issues: [] }} />,
-    );
+    const { container } = render(<ErrorLogPanel log={{ errors: [], issues: [] }} />);
     expect(container).toBeEmptyDOMElement();
   });
 

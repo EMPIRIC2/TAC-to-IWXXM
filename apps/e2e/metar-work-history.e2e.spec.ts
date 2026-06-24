@@ -131,6 +131,8 @@ test.describe('UJ-004 — METAR work history (mocked API)', () => {
 
     await expect(page.getByTestId('convert-button')).toBeDisabled({ timeout: 10000 });
     await expect(page.getByTestId('convert-and-send-button')).toBeDisabled();
-    await expect(page.getByRole('status').filter({ hasText: /read-only/i })).toBeVisible();
+    await expect(
+      page.getByRole('status').filter({ hasText: /read-only/i }),
+    ).toBeVisible();
   });
 });
