@@ -10,7 +10,7 @@ Small frontend-only UX enhancement to F1 (custom output filename for manual inpu
 | 07-build | yes | pending | Filename input + sanitizer + manual-result naming + downloads (TDD) |
 | 08-verify-build | yes | pending | ESLint + Prettier + tsc + Vitest |
 | 09-qa | yes | pending | Lint/format/typecheck/security gates |
-| 10-e2e | yes | pending | Playwright: custom-name manual download assertion |
+| 10-e2e | yes | completed | Playwright: custom-name manual download assertion — 8/8 tac-file-conversion + 4/4 auth smoke PASS |
 | 11-verify-impl | yes | pending | UJ-001 sign-off on custom filename |
 | 18-pr-review | optional | pending | Per atomic-commit/PR workflow |
 | 12-verify-deploy | optional | pending | Frontend static deploy if user requests |
