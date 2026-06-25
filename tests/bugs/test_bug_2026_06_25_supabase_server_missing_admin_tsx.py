@@ -17,7 +17,9 @@ RELATIVE_IMPORT = re.compile(r"""from\s+['"]\./([^'"]+)['"]""")
 SERVER_ADMIN = FUNCTIONS_ROOT / "server" / "admin.tsx"
 
 
-def _relative_import_targets(source_dir: pathlib.Path) -> list[tuple[str, pathlib.Path]]:
+def _relative_import_targets(
+    source_dir: pathlib.Path,
+) -> list[tuple[str, pathlib.Path]]:
     missing: list[tuple[str, pathlib.Path]] = []
     for source in sorted(source_dir.glob("*.ts*")):
         text = source.read_text(encoding="utf-8")
