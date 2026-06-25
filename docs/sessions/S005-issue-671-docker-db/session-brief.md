@@ -4,7 +4,7 @@ type: hotfix
 status: in_progress
 branch: fix/S005-issue-671-docker-db
 started_at: 2026-06-25
-intent: "Fix #671 — Docker Compose backend cannot create DB tables (localhost:5432 connect refused)"
+intent: "Fix #671 — Docker Compose backend cannot create DB tables (localhost:5432 connection refused)"
 orchestrator: 14-hotfix
 context_briefs:
   - docs/context/issue-671-docker-db.md
