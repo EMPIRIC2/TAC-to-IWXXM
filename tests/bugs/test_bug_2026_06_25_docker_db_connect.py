@@ -36,6 +36,10 @@ from src.services import database as db  # noqa: E402
 
 COMPOSE = ROOT / "docker-compose.yml"
 
+# The hotfix locks the bundled Postgres service to this name; the backend's
+# default DATABASE_URL and depends_on both reference it by name (#671).
+DB_SERVICE = "db"
+
 
 # --- Defect 1: get_database_url env normalization -----------------------------
 
@@ -74,14 +78,23 @@ def _compose() -> dict:
 
 
 def _db_service(services: dict) -> dict:
-    for name, svc in services.items():
-        image = str(svc.get("image", ""))
-        if "postgres" in name.lower() or "postgres" in image.lower():
-            return svc
-    raise AssertionError(
-        "docker-compose.yml defines no Postgres service — the backend has no "
-        "database to connect to (root cause of #671)."
+    """Return the bundled ``db`` service, asserting its name and image contract.
+
+    The fix for #671 commits to a service literally named ``db`` (referenced by
+    the backend's default ``DATABASE_URL`` and ``depends_on``). Asserting the
+    name explicitly — rather than inferring it from a ``"postgres"`` substring —
+    makes the contract clear and failures easy to interpret if it is renamed.
+    """
+    svc = services.get(DB_SERVICE)
+    assert svc is not None, (
+        f"docker-compose.yml defines no '{DB_SERVICE}' service — the backend has "
+        "no database to connect to (root cause of #671)."
     )
+    image = str(svc.get("image", ""))
+    assert "postgres" in image.lower(), (
+        f"the '{DB_SERVICE}' service must run a Postgres image, got {image!r} (#671)."
+    )
+    return svc
 
 
 def _env_value(env, key: str) -> str | None:
@@ -103,11 +116,7 @@ def test_compose_defines_postgres_service() -> None:
 
 def test_backend_database_url_defaults_to_bundled_db() -> None:
     services = _compose()["services"]
-    db_name = next(
-        name
-        for name, svc in services.items()
-        if "postgres" in name.lower() or "postgres" in str(svc.get("image", "")).lower()
-    )
+    _db_service(services)  # asserts the bundled 'db' Postgres service exists
     backend_url = _env_value(services["backend"].get("environment"), "DATABASE_URL")
 
     assert backend_url is not None, "backend must receive a DATABASE_URL env var"
@@ -117,22 +126,18 @@ def test_backend_database_url_defaults_to_bundled_db() -> None:
         "localhost:5432 where no Postgres listens (#671)."
     )
     assert "localhost" not in backend_url and "127.0.0.1" not in backend_url
-    assert db_name in backend_url, (
-        f"backend DATABASE_URL default must point at the bundled '{db_name}' service"
+    assert DB_SERVICE in backend_url, (
+        f"backend DATABASE_URL default must point at the bundled '{DB_SERVICE}' service"
     )
 
 
 def test_backend_depends_on_db_health() -> None:
     services = _compose()["services"]
-    db_name = next(
-        name
-        for name, svc in services.items()
-        if "postgres" in name.lower() or "postgres" in str(svc.get("image", "")).lower()
-    )
+    _db_service(services)  # asserts the bundled 'db' Postgres service exists
     depends = services["backend"].get("depends_on", {})
 
-    assert db_name in depends, "backend must depend_on the bundled Postgres service"
+    assert DB_SERVICE in depends, "backend must depend_on the bundled Postgres service"
     if isinstance(depends, dict):
-        assert depends[db_name].get("condition") == "service_healthy", (
+        assert depends[DB_SERVICE].get("condition") == "service_healthy", (
             "backend must wait for the DB to be service_healthy before starting"
         )
