@@ -8,7 +8,7 @@ session_counter: 5
 active_session:
   id: S005-issue-671-docker-db
   type: hotfix
-  intent: "Fix #671 — Docker Compose backend cannot create DB tables (localhost:5432 connect refused)"
+  intent: "Fix #671 — Docker Compose backend cannot create DB tables (localhost:5432 connection refused)"
   status: in_progress
   branch: fix/S005-issue-671-docker-db
   orchestrator: 14-hotfix
@@ -37,6 +37,10 @@ active_session:
       skip_rationale: "docker compose db smoke: healthy + DDL round-trip on db:5432"
     - stage: 18-pr-review
       required: true
+      status: completed
+      skip_rationale: null
+    - stage: 19-address-pr-review
+      required: false
       status: in_progress
       skip_rationale: null
     - stage: 13-deploy-smoke
@@ -454,10 +458,10 @@ stages:
     last_cycle: PRR-007
 
   19-address-pr-review:
-    status: completed
+    status: in_progress
     started: "2026-06-22"
-    completed: "2026-06-24"
-    last_cycle: PRM-006
+    completed: null
+    last_cycle: PRM-007
 
   12-verify-deploy:
     status: completed
@@ -2203,3 +2207,57 @@ pr_remediation_cycles:
     follow_up:
       pr_review_rerun: offered
       integration_docker_bug: https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/688
+
+  - id: PRM-007
+    pr_number: 692
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/692
+    linked_review_cycle_id: null   # Sourcery COMMENT review; no 18-pr-review cycle for #692
+    title: "[hotfix] Bundle Postgres in docker-compose so backend can create DB tables (#671)"
+    status: in_progress
+    started: "2026-06-25"
+    completed: null
+    head_ref: fix/S005-issue-671-docker-db
+    base_ref: main
+    ci_status: pending
+    session_id: S005-issue-671-docker-db
+    scope: advisories_selected
+    counts:
+      fixed: 2
+      deferred: 0
+      wont_fix: 1
+    findings:
+      - id: F-001
+        source: inline
+        severity: advisory
+        path: docs/sessions/S005-issue-671-docker-db/session-brief.md
+        line: 7
+        thread_id: PRRT_kwDOQW-3CM6MVByh
+        status: fixed
+        commit: 2877800
+        note: 'nitpick typo "connect refused" -> "connection refused"'
+      - id: F-002
+        source: review_body
+        severity: advisory
+        path: tests/bugs/test_bug_2026_06_25_docker_db_connect.py
+        line: null
+        thread_id: null
+        status: wont_fix
+        commit: null
+        note: >
+          Centralize _compose/_db_service/_env_value into a shared test util — declined
+          (YAGNI: only one infra bug test exists; speculative abstraction). User-approved
+          won't-fix 2026-06-25.
+      - id: F-003
+        source: review_body
+        severity: advisory
+        path: tests/bugs/test_bug_2026_06_25_docker_db_connect.py
+        line: null
+        thread_id: null
+        status: fixed
+        commit: c08d50a
+        note: assert bundled service name 'db' explicitly instead of inferring 'postgres' substring
+    artifacts:
+      - path: docs/sessions/S005-issue-671-docker-db/reports/pr-remediation.md
+        note: PRM-007 session report
+    follow_up:
+      pr_review_rerun: offered
