@@ -55,6 +55,13 @@ docker compose up --build
 # Frontend http://localhost:18000  ·  API http://localhost:18001
 ```
 
+Docker Compose ships a bundled PostgreSQL service (`db`), so the stack is
+self-contained out of the box — no external database is required for the API to
+start. The backend defaults `DATABASE_URL` to that service; override it in `.env`
+(e.g. a Supabase pooler URL) to point at another database. Auth and work-history
+(F5) still require Supabase credentials in `.env` — the bundled Postgres only
+backs the ORM tables (statistics/evaluation), not Supabase auth/RLS.
+
 ## Project structure
 
 ```
@@ -71,7 +78,7 @@ metar-to-IWXXM/
 ├── tests/             # Migration gates, integration, smoke
 ├── docs/              # Specs, deploy runbook, development guide
 ├── Makefile
-└── docker-compose.yml # backend + frontend (two services)
+└── docker-compose.yml # db (Postgres) + backend + frontend
 ```
 
 ## Testing

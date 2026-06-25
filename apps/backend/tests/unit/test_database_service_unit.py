@@ -87,6 +87,34 @@ def test_get_database_url_warns_when_password_missing(monkeypatch, caplog) -> No
     assert "No PostgreSQL password configured" in caplog.text
 
 
+@pytest.mark.parametrize("blank", ["", "   ", "\t", "\n"])
+def test_get_database_url_treats_blank_database_url_as_unset(monkeypatch, caplog, blank) -> None:
+    """A blank/whitespace DATABASE_URL must be ignored, not returned as a URL (#671)."""
+    monkeypatch.setenv("DATABASE_URL", blank)
+    monkeypatch.delenv("SUPABASE_DB_URL", raising=False)
+    monkeypatch.delenv("POSTGRES_HOST", raising=False)
+
+    with caplog.at_level("WARNING"):
+        url = db.get_database_url()
+
+    assert url.strip() not in ("", blank.strip())
+    assert url.startswith("postgresql+asyncpg://")
+    assert "DATABASE_URL" in caplog.text
+
+
+def test_get_database_url_treats_blank_supabase_url_as_unset(monkeypatch, caplog) -> None:
+    """A blank SUPABASE_DB_URL must be ignored with an actionable warning (#671)."""
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    monkeypatch.setenv("SUPABASE_DB_URL", "   ")
+    monkeypatch.delenv("POSTGRES_HOST", raising=False)
+
+    with caplog.at_level("WARNING"):
+        url = db.get_database_url()
+
+    assert url.startswith("postgresql+asyncpg://")
+    assert "SUPABASE_DB_URL" in caplog.text
+
+
 @pytest.mark.asyncio
 async def test_init_db_engine_returns_existing_instance() -> None:
     existing = _FakeEngine()

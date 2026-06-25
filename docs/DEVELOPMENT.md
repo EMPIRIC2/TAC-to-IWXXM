@@ -10,7 +10,7 @@ Complete setup, local development, and testing for the METAR to IWXXM monorepo.
 | Node.js | 22 | Pinned in `.nvmrc` / CI |
 | [uv](https://docs.astral.sh/uv/) | latest | Python workspace install |
 | [pnpm](https://pnpm.io/) | via corepack | JavaScript workspace |
-| Docker (optional) | Compose v2 | Two-service local stack |
+| Docker (optional) | Compose v2 | Local stack: db + backend + frontend |
 | Supabase project | — | Auth and optional Postgres |
 
 Vendor schemas ship in-repo — a plain `git clone` is all you need.
@@ -51,8 +51,13 @@ docker compose up --build
 | Frontend | http://localhost:18000 |
 | API | http://localhost:18001 |
 
-Compose builds **backend + frontend only** — auth is inlined in the API image via
-`packages/auth`.
+Compose runs **db (Postgres) + backend + frontend** — auth is inlined in the API
+image via `packages/auth`. The bundled `db` service makes the stack self-contained:
+the backend defaults `DATABASE_URL` to it, so `docker compose up` starts without an
+external database. Override `DATABASE_URL` in `.env` to point at another Postgres
+(e.g. a Supabase pooler). The bundled Postgres only backs the ORM tables
+(statistics/evaluation) — auth and work-history (F5) still need Supabase
+credentials in `.env`.
 
 ## Repository layout
 
@@ -97,7 +102,7 @@ selected by `METAR_CONFIG_ENV` (default `local`).
 |----------|----------|-------------|
 | `SUPABASE_PUBLISHABLE_KEY` | Yes | `sb_publishable_*` — client + server JWT validation |
 | `SUPABASE_SECRET_KEY` | Yes | `sb_secret_*` — Auth Admin API (`create_admin_user.py` only) |
-| `DATABASE_URL` | Yes | Postgres pooler URL (evaluation jobs, statistics) |
+| `DATABASE_URL` | Local: no¹ / Prod: yes | Postgres URL (evaluation jobs, statistics). ¹Under Docker Compose, leave blank to use the bundled `db` service; a blank value is treated as unset. |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Local | Operator bootstrap user |
 | `METAR_CONFIG_ENV` | No | `local` (default) or `prod` |
 
