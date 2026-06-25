@@ -20,6 +20,7 @@ re-running the pipeline.
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Routing:** [docs/skill-routing.md](../../docs/skill-routing.md) — hotfix vs evolve vs pipeline.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).  
+**Infra access:** [infra-access.mdc](../../rules/infra-access.mdc) — Render/Supabase via `.env` creds (CLI/REST), no MCP-auth stalls.  
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 **Modal data-mgmt auth header:** [modal-proxy-header](../modal-proxy-header/SKILL.md).
 
@@ -35,6 +36,29 @@ Classify failures before coding:
 
 Repro tests in `tests/bugs/` may import `tests.helpers.connectivity`. After fix, run
 `verify_connectivity.sh` if deployables changed. See connectivity-gates §Stage 14.
+
+## Infrastructure access (Render + Supabase)
+
+For any deployed-symptom hotfix, **access infra directly — do not stall on MCP auth**.
+Credentials live in `.env`; full patterns in
+[infra-access.mdc](../../rules/infra-access.mdc).
+
+**Triage a deployed 5xx in this order (logs/env first, hypotheses last):**
+
+1. **Real error** — pull service logs and read the actual exception/traceback. Handlers
+   (e.g. `_handle_db_error`) log the root cause (PostgREST `APIError` code+message) before
+   returning an opaque 5xx. `GET /v1/logs?ownerId=&resource={serviceId}&type=app` with
+   `Bearer $RENDER_API_KEY`.
+2. **Deployed artifact** — confirm what is actually live before assuming a code fix is.
+   `GET /services/{id}/deploys`. The API is **image-based** (`backend:main-latest` via GHCR
+   from `ci-cd.yml`'s deploy job, which `needs: test`) — a green `main` merge only deploys if
+   CI's deploy job ran; env-var edits need an explicit `POST /services/{id}/deploys`.
+3. **Service config** — `GET /services/{id}/env-vars` (e.g. a stray `DISABLE_AUTH=true`).
+4. **Reproduce live** — `POST $API/auth/login` with `ADMIN_EMAIL`/`ADMIN_PASSWORD`, then hit
+   the failing endpoint; parse `.env` in Python (never `source` it).
+
+Only after 1–4 form a root-cause hypothesis (see BUG-2026-06-25-prod-disable-auth example:
+symptom looked like a known code bug but was a prod env-var config defect found via logs).
 
 ## When to use / when NOT to use
 
@@ -57,6 +81,21 @@ Hotfixes that merge to `main` must not leave **main CI red**. Source of truth:
 `.github/workflows/ci.yml` (jobs: `python`, `frontend`). Command parity:
 [09-qa](../09-qa/SKILL.md) Phase 1 — do not invent alternate lint/test paths.
 
+### Bug-repro CI job (regression suite)
+
+Every repro test under `tests/bugs/` **runs in CI** as the `bugs` matrix entry of the
+`ci-cd.yml` `test` job (`uv run pytest tests/bugs -m "not live and not live_api"`), and
+locally via `make test-bugs` (wired into `make test-unit` / `make ci`). This is how a
+hotfix's regression test keeps protecting `main` after the session closes.
+
+| Requirement | Detail |
+|-------------|--------|
+| **Placement = wiring** | Naming the test `tests/bugs/test_bug_YYYY_MM_DD_[slug].py` is what enrolls it in the CI `bugs` job — no extra config needed |
+| **Must be collected + green** | Run `make test-bugs` before PR; confirm the new module is collected and passing (not silently skipped) |
+| **Live probes excluded** | `-m live` / `live_api` tests are deselected in the `bugs` job; gate those through the live-E2E harness, not the blocking CI job |
+| **Playwright-only repros** | When the regression is a `.e2e.spec.ts` (no pytest), record in the bug report that the spec is the regression test and which workflow runs it |
+| **Don't let it rot** | If a fix changes the surface the test asserts (file path, image tag, route), update the repro test in the same PR so it stays green and meaningful |
+
 | When | Check | Blocking |
 |------|-------|----------|
 | **Before PR** (Phase 2 Step 4, Layer 1) | **CI parity (local)** — run the same steps as `ci.yml` on the fix branch | **Yes** — do not open/merge PR with known CI failures |
@@ -74,6 +113,7 @@ uv run ruff check src tests
 uv run ruff format --check src tests
 uv run basedpyright src tests
 uv run pytest tests/unit tests/integration tests/privacy tests/e2e tests/smoke tests/eval
+make test-bugs   # runs tests/bugs/ (the CI `bugs` matrix job) — every repro test must be green
 # pip-audit: see ci.yml + audit/pip-audit-ignore.txt
 # migrations: apps/database — alembic upgrade head (needs Postgres; match CI service or skip with waiver)
 cd apps/frontend && npm ci && npm run lint && npm test
@@ -693,6 +733,9 @@ Phase 1.25 should have already created the failing repro test. Before patching:
 1. Re-run `pytest` on the bug repro test(s) — must still be **red**.
 2. If green unexpectedly, return to Phase 1 Step 1.25 (do not patch blindly).
 3. Copy repro test path(s) into **Regression prevention** (they are the regression suite).
+4. Confirm the test lives under `tests/bugs/test_bug_YYYY_MM_DD_[slug].py` so it is enrolled
+   in the CI `bugs` job (§Main CI → Bug-repro CI job). A repro test that only ran ad-hoc in
+   the session — and never in CI — is **not** a regression guard.
 
 If Phase 1 was skipped (e.g. deploy-ready fix from a prior session), write the repro test now
 using the bug report — same rules as Step 1.25 — before any fix.
@@ -722,7 +765,8 @@ Write the minimal code change to make the repro test(s) pass:
 
 1. Run linter on changed files
 2. Run typechecker
-3. Run full test suite — all must pass (not just the new test)
+3. Run full test suite — all must pass (not just the new test). Include `make test-bugs`
+   so the new repro test runs in the **same suite CI runs** (the `bugs` job).
 4. If any previously passing test fails, fix the regression before committing
 5. **Main CI parity (local):** Run **CI parity** commands from §Main CI on the fix branch.
    Both `python`-equivalent and `frontend` matrix must pass before Phase 3 PR. If Postgres
@@ -1028,7 +1072,10 @@ e.g. "CORS `allow_methods` must include every HTTP verb exposed by FastAPI route
    Phase 5.0 (and 5.1 ask) are complete
 2. Complete **Timeline**, **Fix**, **Verification plan**, all **Verification** layers,
    **Post-deploy monitoring**, **Prevention & countermeasures**, **Cursor rule** (if any), and **Follow-ups**
-3. Ensure **Regression prevention** lists every new test and any smoke/monitoring updates
+3. Ensure **Regression prevention** lists every new test and any smoke/monitoring updates,
+   and confirm each pytest repro test is under `tests/bugs/` (enrolled in the CI `bugs` job)
+   or, for Playwright-only repros, names the workflow that runs the spec. Do not mark
+   `resolved` if the regression test exists only locally / outside CI.
 
 #### Step 5.3 — Update hotfix log
 
@@ -1125,7 +1172,10 @@ When multiple issues are reported at once:
    **Error description**, **Error logs**, **Investigation**, **Repro test**, and **TDD iteration
    log**; update through each cycle (see bug-investigation skill).
 9. **Minimal diff**: Change only what's necessary. No drive-by improvements.
-10. **Regression tests required**: Repro test from Phase 1.25 is the regression test; link in PR.
+10. **Regression tests required + in CI**: Repro test from Phase 1.25 is the regression test;
+    place it under `tests/bugs/` so it runs in the CI `bugs` job, verify with `make test-bugs`,
+    and link in PR. A repro test that never runs in CI does not count as closure (Playwright-only
+    repros: name the workflow that runs the spec in the bug report).
 11. **Verification plan required**: Step 0.5 defines success criteria and checks before fix
     work; cite acceptance-criteria / test-plan TC-IDs in the bug report.
 12. **Layered verification**: Layers 1–2 always; Layer 3 before deploy; Layer 4 after deploy.
