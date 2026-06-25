@@ -103,6 +103,7 @@ empty-string env is also not normalized in `get_database_url`.
 - [x] `make test-bugs` — 37 passed, 1 deselected
 - [x] Backend unit suite — 1154 passed @ 98.04% coverage (`database.py` 100%)
 - [x] CI parity (local): ruff format-check, ruff lint-py, prettier, yamllint, actionlint, gitleaks, basedpyright (0 errors)
+- [x] PR branch CI green — [run 28194159287](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/28194159287) `success` on `2ff9a42` (PR #692)
 
 ### Layer 2 — Reproduction
 
@@ -120,4 +121,11 @@ empty-string env is also not normalized in `get_database_url`.
 
 ## Cursor rule
 
-(pending Phase 5.1)
+**Draft (for review — not written to `.cursor/rules/` yet):**
+
+> **docker-compose-db-url-defaults** — When wiring `DATABASE_URL` (or any required connection URL) in `docker-compose.yml`, never use `${VAR:-}` with an empty default; always provide a working in-network default (e.g. `@db:5432`) or omit the variable so application code can fail fast with a clear message. In Python env readers, treat blank/whitespace values as unset and log which variable was blank.
+
+## Follow-ups
+
+- Post-merge: confirm `main` CI green after merge (#692).
+- Reporter validation on Rocky Linux 9 / Docker 29 after re-pull.
