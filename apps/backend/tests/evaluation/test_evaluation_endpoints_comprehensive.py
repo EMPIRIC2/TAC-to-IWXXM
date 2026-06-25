@@ -19,7 +19,7 @@ pytestmark = pytest.mark.skip(
     reason="Rewrite pending: evaluation router now uses evaluation_store (DATABASE_URL) not get_supabase_client"
 )
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -218,7 +218,7 @@ class TestGetJobStatus:
                         "status": "pending",
                         "progress": 0,
                         "total_stations": 10,
-                        "created_at": datetime.utcnow().isoformat(),
+                        "created_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                         "summary_stats": None,
                         "completed_at": None,
                         "error_message": None,
@@ -249,7 +249,7 @@ class TestGetJobStatus:
                         "status": "running",
                         "progress": 5,
                         "total_stations": 10,
-                        "created_at": datetime.utcnow().isoformat(),
+                        "created_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                         "summary_stats": None,
                         "completed_at": None,
                         "error_message": None,
@@ -270,7 +270,7 @@ class TestGetJobStatus:
 
     def test_get_completed_job_status(self, client, mock_supabase_client):
         """Test getting status of completed job."""
-        completed_at = datetime.utcnow().isoformat()
+        completed_at = datetime.now(UTC).replace(tzinfo=None).isoformat()
         mock_supabase_client.get.return_value = AsyncMock(
             json=MagicMock(
                 return_value=[
@@ -279,7 +279,7 @@ class TestGetJobStatus:
                         "status": "completed",
                         "progress": 10,
                         "total_stations": 10,
-                        "created_at": (datetime.utcnow() - timedelta(hours=1)).isoformat(),
+                        "created_at": (datetime.now(UTC).replace(tzinfo=None) - timedelta(hours=1)).isoformat(),
                         "completed_at": completed_at,
                         "summary_stats": {
                             "total": 10,
@@ -318,7 +318,7 @@ class TestGetJobStatus:
                         "status": "failed",
                         "progress": 3,
                         "total_stations": 10,
-                        "created_at": datetime.utcnow().isoformat(),
+                        "created_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                         "summary_stats": None,
                         "completed_at": None,
                         "error_message": "Network timeout fetching data",
@@ -384,8 +384,8 @@ class TestListUserJobs:
                 "status": "completed",
                 "station_count": 10,
                 "progress": 10,
-                "created_at": datetime.utcnow().isoformat(),
-                "completed_at": datetime.utcnow().isoformat(),
+                "created_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
+                "completed_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                 "summary_stats": {
                     "total": 10,
                     "passed": 9,
@@ -399,7 +399,7 @@ class TestListUserJobs:
                 "status": "running",
                 "station_count": 50,
                 "progress": 25,
-                "created_at": datetime.utcnow().isoformat(),
+                "created_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                 "completed_at": None,
                 "summary_stats": None,
             },
@@ -430,8 +430,8 @@ class TestListUserJobs:
                 "status": "completed",
                 "station_count": 10,
                 "progress": 10,
-                "created_at": datetime.utcnow().isoformat(),
-                "completed_at": datetime.utcnow().isoformat(),
+                "created_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
+                "completed_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                 "summary_stats": None,
             }
             for i in range(20, 40)
@@ -473,7 +473,7 @@ class TestGetJobResults:
         results_data = [
             {
                 "station_id": "KJFK",
-                "created_at": datetime.utcnow().isoformat(),
+                "created_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                 "tac_input": "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015",
                 "our_iwxxm": "<iwxxm>...</iwxxm>",
                 "their_iwxxm": "<iwxxm>...</iwxxm>",
@@ -520,7 +520,7 @@ class TestGetJobResults:
         results_data = [
             {
                 "station_id": f"STAT{i}",
-                "created_at": datetime.utcnow().isoformat(),
+                "created_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                 "tac_input": "METAR...",
                 "our_iwxxm": "<iwxxm>...</iwxxm>",
                 "their_iwxxm": "<iwxxm>...</iwxxm>",
@@ -554,7 +554,7 @@ class TestGetJobResults:
         failed_results = [
             {
                 "station_id": "FAIL1",
-                "created_at": datetime.utcnow().isoformat(),
+                "created_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                 "tac_input": "METAR...",
                 "our_iwxxm": "<iwxxm>...</iwxxm>",
                 "their_iwxxm": "<iwxxm>...</iwxxm>",
@@ -639,8 +639,8 @@ class TestEvaluationEndToEnd:
                         "status": "completed",
                         "progress": 2,
                         "total_stations": 2,
-                        "created_at": datetime.utcnow().isoformat(),
-                        "completed_at": datetime.utcnow().isoformat(),
+                        "created_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
+                        "completed_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                         "summary_stats": {
                             "total": 2,
                             "passed": 2,

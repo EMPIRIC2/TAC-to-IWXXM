@@ -2,7 +2,7 @@
 
 import builtins
 import json
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -12,7 +12,7 @@ from src.services.openaip_service import OpenAIPService
 def _make_cache_file(tmp_path, airports: dict, fetched_at=None):
     """Write a fake openaip_cache.json to tmp_path."""
     if fetched_at is None:
-        fetched_at = datetime.utcnow().isoformat()
+        fetched_at = datetime.now(UTC).replace(tzinfo=None).isoformat()
     data = {
         "_metadata": {"fetched_at": fetched_at},
         "airports": airports,
@@ -66,11 +66,11 @@ class TestOpenAIPServiceGetAirport:
     def test_get_airport_uses_live_cache_if_set(self, tmp_path):
         cache_file = _make_cache_file(tmp_path, {})
         svc = OpenAIPService(cache_file=cache_file)
-        from datetime import datetime
+        from datetime import UTC, datetime
 
         svc._live_cache["EGLL"] = {
             "data": {"name": "Heathrow"},
-            "_cached_at": datetime.utcnow().isoformat(),
+            "_cached_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
         }
         result = svc.get_airport("EGLL")
         assert result is not None
@@ -105,7 +105,7 @@ class TestOpenAIPServiceCacheStale:
         assert svc._cache_timestamp is not None
 
     def test_old_cache_does_not_crash(self, tmp_path):
-        old_time = (datetime.utcnow() - timedelta(days=365)).isoformat()
+        old_time = (datetime.now(UTC).replace(tzinfo=None) - timedelta(days=365)).isoformat()
         cache_file = _make_cache_file(tmp_path, {"KJFK": {"name": "JFK"}}, fetched_at=old_time)
         svc = OpenAIPService(cache_file=cache_file)
         # Should still return data from old cache
@@ -235,7 +235,7 @@ class TestOpenAIPServiceHelpers:
         assert svc.is_cache_stale() is True
 
     def test_suggest_refresh_message_when_stale(self, tmp_path):
-        old_time = (datetime.utcnow() - timedelta(days=30)).isoformat()
+        old_time = (datetime.now(UTC).replace(tzinfo=None) - timedelta(days=30)).isoformat()
         cache_file = _make_cache_file(tmp_path, {"KJFK": {"name": "JFK"}}, fetched_at=old_time)
         svc = OpenAIPService(cache_file=cache_file)
         message = svc.suggest_refresh()
@@ -252,7 +252,7 @@ class TestOpenAIPServiceHelpers:
 
         svc._live_cache["EGLL"] = {
             "data": {"name": "old"},
-            "_cached_at": (datetime.utcnow() - timedelta(minutes=10)).isoformat(),
+            "_cached_at": (datetime.now(UTC).replace(tzinfo=None) - timedelta(minutes=10)).isoformat(),
         }
 
         monkeypatch.setattr(svc, "_fetch_from_api", lambda _icao: {"name": "new"})

@@ -159,13 +159,18 @@ When the user selects **Let me explain / provide more context**, accept free tex
 ## Writing the repro test
 
 - Path: `tests/bugs/test_bug_YYYY_MM_DD_[slug].py` only (no shared multi-bug modules).
+  This path **is** the CI enrollment: `tests/bugs/` runs as the `bugs` matrix job in
+  `ci-cd.yml` and via `make test-bugs`, so the repro test guards `main` after the session.
 - Name: `test_bug_YYYY_MM_DD_[slug]_[behavior]`.
 - Encode interview evidence: payload, log line, exception type, ZIP status.
 - Prefer fast local tests (mocks); Modal GPU only when user approves (`bug_repro_matches` → production-only).
 - Assertions must align with `docs/config-spec.md`, `docs/api-contract.md`, `docs/test-plan.md`.
+- Keep it CI-runnable: avoid network/live deps in the default suite (mark live probes
+  `-m live` / `live_api` — those are deselected in the `bugs` job and gated via live-E2E).
 
 ```bash
 pytest tests/bugs/test_bug_YYYY_MM_DD_[slug].py -v
+make test-bugs   # confirm it is collected + green in the CI bug-repro job
 ```
 
 ## Investigation log discipline

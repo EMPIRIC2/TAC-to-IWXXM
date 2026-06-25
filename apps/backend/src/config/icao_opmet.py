@@ -6,7 +6,22 @@ as per user decisions for the METAR to IWXXM Translation Centre.
 """
 
 import os
-from typing import Any, Dict
+from typing import Any, Dict, Optional
+
+
+def _clean_env(name: str) -> Optional[str]:
+    """Read an env var, trimming surrounding whitespace (incl. stray CR from CRLF .env files).
+
+    Returns ``None`` when the variable is unset or blank, so a malformed value such as
+    ``"VALUE\\r"`` (from a CRLF-encoded ``.env``) does not break downstream parsing
+    (e.g. ``datetime.fromisoformat`` or fixed-length code checks).
+    """
+    value = os.getenv(name)
+    if value is None:
+        return None
+    value = value.strip()
+    return value or None
+
 
 # =============================================================================
 # Translation Centre Identification (ICAO Doc 10003, Section 7)
@@ -14,18 +29,18 @@ from typing import Any, Dict
 # Note: Translation Centre details are configured via environment variables.
 # Not currently operating as an official ICAO Translation Centre.
 
-TRANSLATION_CENTRE_NAME = os.getenv("TRANSLATION_CENTRE_NAME", None)
+TRANSLATION_CENTRE_NAME = _clean_env("TRANSLATION_CENTRE_NAME")
 
-TRANSLATION_CENTRE_DESIGNATOR = os.getenv("TRANSLATION_CENTRE_DESIGNATOR", None)
+TRANSLATION_CENTRE_DESIGNATOR = _clean_env("TRANSLATION_CENTRE_DESIGNATOR")
 
 # ICAO Location Indicator (4-letter code)
-ICAO_LOCATION_INDICATOR = os.getenv("ICAO_LOCATION_INDICATOR", None)
+ICAO_LOCATION_INDICATOR = _clean_env("ICAO_LOCATION_INDICATOR")
 
 # Service online date
-SERVICE_ONLINE_SINCE = os.getenv("SERVICE_ONLINE_SINCE", None)
+SERVICE_ONLINE_SINCE = _clean_env("SERVICE_ONLINE_SINCE")
 
 # Technical contact (configure via environment variable if needed)
-TECHNICAL_CONTACT_EMAIL = os.getenv("TECHNICAL_CONTACT_EMAIL", None)
+TECHNICAL_CONTACT_EMAIL = _clean_env("TECHNICAL_CONTACT_EMAIL")
 
 
 # =============================================================================

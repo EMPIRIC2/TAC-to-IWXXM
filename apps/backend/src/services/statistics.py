@@ -8,7 +8,7 @@ Implements indefinite retention policy (User Decision 1).
 import logging
 import re
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, Dict, Optional, Sequence, Union
 
 from sqlalchemy import Integer, and_, func, select
@@ -83,7 +83,7 @@ class StatisticsService:
         try:
             # Generate unique translation ID
             translation_id = uuid.uuid4()
-            timestamp = datetime.utcnow()
+            timestamp = datetime.now(UTC).replace(tzinfo=None)
             normalized_icao_code = _normalize_icao_code(icao_airport_code)
             if normalized_icao_code != (icao_airport_code or ""):
                 logger.warning(

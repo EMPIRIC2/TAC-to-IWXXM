@@ -121,7 +121,7 @@ class Annex3(Common.Base):
                 import datetime
 
                 ident_str = self.decodedTAC.get("ident", {}).get("str", "UNKN")
-                translated_bulletin_id = f"MT{ident_str}{datetime.datetime.utcnow().strftime('%d%H%M')}"
+                translated_bulletin_id = f"MT{ident_str}{datetime.datetime.now(datetime.UTC).strftime('%d%H%M')}"
             self.XMLDocument.set("translatedBulletinID", translated_bulletin_id)
             #
             # If TAC translation failed in some way

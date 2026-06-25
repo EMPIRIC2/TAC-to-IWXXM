@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import builtins
 import importlib
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -262,7 +262,7 @@ def test_validate_online_cache_hit(monkeypatch):
     )
     parser._online_cache["http://codes.wmo.int/49-2/Weather/RA"] = (
         cached,
-        datetime.utcnow() - timedelta(seconds=10),
+        datetime.now(UTC).replace(tzinfo=None) - timedelta(seconds=10),
     )
 
     issue = parser._validate_online("http://codes.wmo.int/49-2/Weather/RA", "/root/new")
@@ -330,7 +330,7 @@ def test_validate_online_cache_expiry_and_status_variants(monkeypatch):
     )
     parser._online_cache["http://codes.wmo.int/deprecated"] = (
         stale_issue,
-        datetime.utcnow() - timedelta(seconds=10),
+        datetime.now(UTC).replace(tzinfo=None) - timedelta(seconds=10),
     )
 
     class _Resp:

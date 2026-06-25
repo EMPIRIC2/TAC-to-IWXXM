@@ -10,7 +10,7 @@ This script analyzes the JSON reports in test-reports/ to identify:
 
 import json
 from collections import defaultdict
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict
 
@@ -52,7 +52,7 @@ def compare_versions():
     print("=" * 80)
     print("IWXXM Version Comparison: Local (2023-1) vs Live (2025-2)")
     print("=" * 80)
-    print(f"Generated: {datetime.utcnow().isoformat()}\n")
+    print(f"Generated: {datetime.now(UTC).replace(tzinfo=None).isoformat()}\n")
 
     # Load reports
     local_reports = load_reports(local_dir)

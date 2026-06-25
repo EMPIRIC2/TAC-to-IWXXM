@@ -30,12 +30,20 @@ touch monorepo Python.
 
 ## Bug repro tests
 
+Bug repro tests under `tests/bugs/` are **executed in CI**, not just format-checked: the
+`ci-cd.yml` `test` job runs them via the `bugs` matrix entry (`uv run pytest tests/bugs
+-m "not live and not live_api"`), and `make test-bugs` runs them locally (wired into
+`make test-unit` and `make ci`). A red bug repro test fails the pipeline like any other test.
+
 When adding `tests/bugs/test_bug_YYYY_MM_DD_*.py` (14-hotfix / bug-investigation):
 
 1. Run `uv run ruff format tests/bugs/<file>.py` (or rely on `.cursor/hooks/format.sh`
    auto-format after edit).
 2. Run `make format-check` before `git commit` — the `ci-quality-guard` hook blocks
    commit/push when this would fail CI.
+3. Run `make test-bugs` and confirm the new test is **collected and green** — this is the
+   CI bug-repro job. Live-marked probes (`-m live` / `live_api`) are deselected there; gate
+   those via the live-E2E harness instead.
 
 ## Hooks
 

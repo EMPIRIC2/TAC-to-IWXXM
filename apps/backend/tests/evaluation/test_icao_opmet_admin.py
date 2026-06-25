@@ -15,7 +15,7 @@ This test suite covers:
 Run with: pytest backend/tests/test_icao_opmet_admin.py -v
 """
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -351,8 +351,8 @@ class TestRecentStatistics:
     def test_recent_statistics_default_24h(self, admin_client, mock_statistics_service):
         """Test getting recent statistics with default 24 hour window."""
         mock_statistics_service.get_statistics.return_value = {
-            "period_start": datetime.utcnow() - timedelta(hours=24),
-            "period_end": datetime.utcnow(),
+            "period_start": datetime.now(UTC).replace(tzinfo=None) - timedelta(hours=24),
+            "period_end": datetime.now(UTC).replace(tzinfo=None),
             "total_translations": 100,
             "successful_translations": 95,
             "failed_translations": 5,
@@ -373,8 +373,8 @@ class TestRecentStatistics:
     def test_recent_statistics_custom_hours(self, admin_client, mock_statistics_service):
         """Test getting recent statistics with custom time window."""
         mock_statistics_service.get_statistics.return_value = {
-            "period_start": datetime.utcnow() - timedelta(hours=48),
-            "period_end": datetime.utcnow(),
+            "period_start": datetime.now(UTC).replace(tzinfo=None) - timedelta(hours=48),
+            "period_end": datetime.now(UTC).replace(tzinfo=None),
             "total_translations": 200,
             "successful_translations": 190,
             "failed_translations": 10,
@@ -395,8 +395,8 @@ class TestRecentStatistics:
     def test_recent_statistics_with_filters(self, admin_client, mock_statistics_service):
         """Test getting recent statistics with region and version filters."""
         mock_statistics_service.get_statistics.return_value = {
-            "period_start": datetime.utcnow() - timedelta(hours=12),
-            "period_end": datetime.utcnow(),
+            "period_start": datetime.now(UTC).replace(tzinfo=None) - timedelta(hours=12),
+            "period_end": datetime.now(UTC).replace(tzinfo=None),
             "total_translations": 50,
             "successful_translations": 49,
             "failed_translations": 1,
@@ -536,7 +536,7 @@ class TestTranslationHealth:
         mock_statistics_service.health_check.return_value = {
             "status": "healthy",
             "database_connected": True,
-            "last_translation": datetime.utcnow().isoformat(),
+            "last_translation": datetime.now(UTC).replace(tzinfo=None).isoformat(),
         }
 
         response = unauthenticated_client.get("/api/v1/translation/health")

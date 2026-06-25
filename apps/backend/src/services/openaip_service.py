@@ -7,7 +7,7 @@ with optional live API fallback for missing airports or cache refresh.
 
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -48,7 +48,9 @@ class OpenAIPService:
             # Extract metadata and airports
             metadata = data.get("_metadata", {})
             self._cache = data.get("airports", data)  # Handle both formats
-            self._cache_timestamp = datetime.fromisoformat(metadata.get("fetched_at", datetime.utcnow().isoformat()))
+            self._cache_timestamp = datetime.fromisoformat(
+                metadata.get("fetched_at", datetime.now(UTC).replace(tzinfo=None).isoformat())
+            )
 
             logger.info(
                 f"Loaded OpenAIP cache with {len(self._cache or {})} airports (last updated: {self._cache_timestamp})"
@@ -85,13 +87,16 @@ class OpenAIPService:
             cached_entry = self._live_cache[icao]
             if cached_entry.get("_cached_at"):
                 cached_at = datetime.fromisoformat(cached_entry["_cached_at"])
-                if datetime.utcnow() - cached_at < timedelta(minutes=5):
+                if datetime.now(UTC).replace(tzinfo=None) - cached_at < timedelta(minutes=5):
                     return cached_entry.get("data")
 
         # Try live API if available
         if self.api_key:
             if airport := self._fetch_from_api(icao):
-                self._live_cache[icao] = {"data": airport, "_cached_at": datetime.utcnow().isoformat()}
+                self._live_cache[icao] = {
+                    "data": airport,
+                    "_cached_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
+                }
                 return airport
 
         return None
@@ -156,7 +161,7 @@ class OpenAIPService:
             Timedelta of cache age, or None if not loaded
         """
         if self._cache_timestamp:
-            return datetime.utcnow() - self._cache_timestamp
+            return datetime.now(UTC).replace(tzinfo=None) - self._cache_timestamp
         return None
 
     def is_cache_stale(self, max_age_days: int = 7) -> bool:

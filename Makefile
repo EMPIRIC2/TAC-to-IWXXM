@@ -12,7 +12,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 
 .PHONY: install test test-unit vendor-sync \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
-	test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
+	test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-bugs \
 	format format-check typecheck typecheck-py typecheck-js \
 	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-gifts lint-shared \
 	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
@@ -140,7 +140,10 @@ test-unit-gifts:
 		--cov-report=xml:coverage.xml --cov-report=term-missing \
 		--cov-fail-under=98 -v
 
-test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts
+test-bugs:
+	$(UV) run pytest tests/bugs -m "not live and not live_api" --no-cov -v
+
+test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-bugs
 
 test: test-unit
 
@@ -348,6 +351,6 @@ supabase-pull:
 
 validate-ci: validate-fast config-guard env-check audit-frontend
 
-ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-integration badge-audit
+ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-bugs test-integration badge-audit
 
 acci: ci test-e2e-playwright-smoke audit-frontend

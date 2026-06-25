@@ -26,7 +26,7 @@ import os
 import socket
 import subprocess
 import time
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Dict, List
 from unittest.mock import patch
@@ -375,7 +375,7 @@ def webhook_receiver():
             """Simulate receiving a webhook."""
             self.webhooks.append(
                 {
-                    "timestamp": datetime.utcnow().isoformat(),
+                    "timestamp": datetime.now(UTC).replace(tzinfo=None).isoformat(),
                     "data": webhook_data,
                 }
             )
@@ -944,9 +944,9 @@ class TestE2EDataPersistenceAndState:
             assert response_1h.status_code == 200
 
             # Query by region with proper start_date and end_date parameters
-            from datetime import datetime, timedelta
+            from datetime import UTC, datetime, timedelta
 
-            end_date = datetime.utcnow()
+            end_date = datetime.now(UTC).replace(tzinfo=None)
             start_date = end_date - timedelta(hours=24)
             response_region = await e2e_client.get(
                 "/api/v1/translation/statistics/by-region",
