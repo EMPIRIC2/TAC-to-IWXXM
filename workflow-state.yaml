@@ -1508,7 +1508,7 @@ evolve_cycles:
           - "Frontend-only delta — sanitizer util + FileConverter wiring + tests"
           - "outputFilename util (6e8809a); FileConverter input/naming/ZIP/persistence (4b3624c); e2e (49c4dc8)"
           - "Local checks green: eslint, tsc, vitest 530/530, prettier (changed files)"
-          - "Minor PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/695 (base main) — awaiting CI"
+          - "Minor PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/695 (base main) — CI green (Validate + all Test(*) + E2E Smoke + Sourcery pass; Deploy skipped on PR)"
     gates:
       a_to_b: passed
       b_to_c: waived
