@@ -21,23 +21,23 @@ active_session:
       skip_rationale: null
     - stage: 14-hotfix
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: bug-investigation
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 08-verify-build
       required: true
-      status: pending
+      status: completed
       skip_rationale: null
     - stage: 10-e2e
       required: false
-      status: pending
-      skip_rationale: "Optional integration docker-compose smoke"
+      status: completed
+      skip_rationale: "docker compose db smoke: healthy + DDL round-trip on db:5432"
     - stage: 18-pr-review
       required: true
-      status: pending
+      status: in_progress
       skip_rationale: null
     - stage: 13-deploy-smoke
       required: false
@@ -49,6 +49,7 @@ active_session:
     - "00-context scoped complete 2026-06-25 — root cause: empty DATABASE_URL → localhost:5432 default; no pg container; create_tables swallows error"
     - "Approved scope: bundle Postgres in docker-compose (R2); bundled bare PG serves ORM tables only, auth/F5 still need Supabase (R3)"
     - "Not a duplicate of #688 (frontend Docker build) (R4)"
+    - "14-hotfix complete 2026-06-25 — commit b16530e; bundled postgres:16 db service + DATABASE_URL default to db:5432 + get_database_url blank-env hardening; repro red→green; PR #692 open, CI running"
   context_briefs:
     - docs/context/issue-671-docker-db.md
   planned_follow_on: []

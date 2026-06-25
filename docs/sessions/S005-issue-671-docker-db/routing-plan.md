@@ -3,11 +3,11 @@
 | Stage | Required | Status | Notes |
 |-------|----------|--------|-------|
 | 00-context (scoped) | yes | completed | `issue-671-docker-db.md` |
-| 14-hotfix | yes | pending | Orchestrator for the fix |
-| bug-investigation | yes | pending | BUG report + failing repro test, then green |
-| 08-verify-build | yes | pending | Lint + typecheck + full suite after fix |
-| 10-e2e | optional | pending | Integration `docker compose` smoke (backend↔db, /health 200) |
-| 18-pr-review | yes | pending | PR for the compose/db change |
+| 14-hotfix | yes | completed | Bundled Postgres + env hardening; commit b16530e |
+| bug-investigation | yes | completed | BUG-2026-06-25-docker-db-connect; repro red→green |
+| 08-verify-build | yes | completed | ruff/prettier/yamllint/gitleaks/basedpyright + 1154 unit @ 98.04% |
+| 10-e2e | optional | completed | `docker compose up -d db` healthy; DDL round-trip on `db:5432` |
+| 18-pr-review | yes | in_progress | PR [#692](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/692) open; CI running |
 | 13-deploy-smoke | no | n/a | Local-dev change only; prod uses Supabase |
 
 **Skipped**
