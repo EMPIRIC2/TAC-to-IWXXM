@@ -4,58 +4,60 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 5
+session_counter: 6
 active_session:
-  id: S005-issue-671-docker-db
-  type: hotfix
-  intent: "Fix #671 — Docker Compose backend cannot create DB tables (localhost:5432 connection refused)"
+  id: S006-issue-664-output-filename
+  type: feature
+  intent: "#664 — allow a custom output filename for manual METAR input (frontend-only; blank ⇒ manual_input)"
   status: in_progress
-  branch: fix/S005-issue-671-docker-db
-  orchestrator: 14-hotfix
-  artifacts_dir: docs/sessions/S005-issue-671-docker-db/
+  branch: feat/S006-issue-664-output-filename
+  orchestrator: 16-evolve
+  artifacts_dir: docs/sessions/S006-issue-664-output-filename/
   routing_plan:
     - stage: 00-context
       mode: scoped
       required: true
       status: completed
       skip_rationale: null
-    - stage: 14-hotfix
+    - stage: 16-evolve
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
-    - stage: bug-investigation
+    - stage: 07-build
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 08-verify-build
       required: true
-      status: completed
+      status: pending
+      skip_rationale: null
+    - stage: 09-qa
+      required: true
+      status: pending
       skip_rationale: null
     - stage: 10-e2e
-      required: false
-      status: completed
-      skip_rationale: "docker compose db smoke: healthy + DDL round-trip on db:5432"
-    - stage: 18-pr-review
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
-    - stage: 19-address-pr-review
+    - stage: 11-verify-impl
+      required: true
+      status: pending
+      skip_rationale: null
+    - stage: 12-verify-deploy
       required: false
-      status: completed
-      skip_rationale: null
+      status: pending
+      skip_rationale: "Frontend static deploy only if user requests"
     - stage: 13-deploy-smoke
       required: false
       status: pending
-      skip_rationale: "Local-dev compose change only; prod uses Supabase"
-  current_stage: 14-hotfix
+      skip_rationale: "Only if deploying"
+  current_stage: 00-context
   started_at: "2026-06-25"
   notes:
-    - "00-context scoped complete 2026-06-25 — root cause: empty DATABASE_URL → localhost:5432 default; no pg container; create_tables swallows error"
-    - "Approved scope: bundle Postgres in docker-compose (R2); bundled bare PG serves ORM tables only, auth/F5 still need Supabase (R3)"
-    - "Not a duplicate of #688 (frontend Docker build) (R4)"
-    - "14-hotfix complete 2026-06-25 — commit b16530e; bundled postgres:16 db service + DATABASE_URL default to db:5432 + get_database_url blank-env hardening; repro red→green; PR #692 open, CI running"
+    - "00-context scoped complete 2026-06-25 — default name manual_input[_N] set in apps/backend/src/api.py, surfaced as ConversionResult.name, used by FileConverter download handlers"
+    - "Approved scope: frontend-only (R1); blank ⇒ manual_input default (R2); applies to manual results only, uploads unchanged (R3); multi-line _1/_2 suffix assumed (R4)"
   context_briefs:
-    - docs/context/issue-671-docker-db.md
+    - docs/context/issue-664-output-filename.md
   planned_follow_on: []
   paused_session: null
 sessions:
@@ -93,6 +95,15 @@ sessions:
     artifacts_dir: docs/sessions/S004-issue-555-feedback/
     started_at: "2026-06-23"
     close_note: "PR #687 merged to main; closed at S005 open (2026-06-25)"
+  - id: S005-issue-671-docker-db
+    type: hotfix
+    status: completed
+    completed_at: "2026-06-25"
+    branch: fix/S005-issue-671-docker-db
+    orchestrator: 14-hotfix
+    artifacts_dir: docs/sessions/S005-issue-671-docker-db/
+    started_at: "2026-06-25"
+    close_note: "PR #692 merged to main; closed at S006 open (2026-06-25)"
 
 template:
   id: static+api
@@ -121,6 +132,7 @@ stages:
     notes:
       - "GitHub #555 parent feedback; 2/4 items done in S001; auto-clear + error log remain"
       - "2026-06-25 scoped run S005 — docs/context/issue-671-docker-db.md (#671 Docker DB connect failure)"
+      - "2026-06-25 scoped run S006 — docs/context/issue-664-output-filename.md (#664 custom output filename, manual input; frontend-only)"
   01-requirements:
     status: completed
     started_at: "2026-06-14T00:00:00Z"
@@ -663,6 +675,28 @@ decisions_log:
     status: confirmed
     session_id: S005-issue-671-docker-db
 
+  - id: S006-R1
+    stage: 00-context
+    date: "2026-06-25"
+    topic: Session handling for #664
+    decision: "Close merged S005 (PR #692 on main); open feature session S006 for #664 via 16-evolve"
+    status: confirmed
+    session_id: S006-issue-664-output-filename
+  - id: S006-R2
+    stage: 00-context
+    date: "2026-06-25"
+    topic: Issue #664 implementation layer
+    decision: "Frontend-only — name manual-derived downloads client-side in FileConverter; no change to backend ConversionResult.name or manual_input naming (API contract preserved)"
+    status: confirmed
+    session_id: S006-issue-664-output-filename
+  - id: S006-R3
+    stage: 00-context
+    date: "2026-06-25"
+    topic: Issue #664 scope and default
+    decision: "Custom name applies to manual-input results only (uploads unchanged); blank ⇒ default manual_input; multi-line manual input suffixes _1/_2 on the custom base (assumed — confirm in 16-evolve)"
+    status: confirmed
+    session_id: S006-issue-664-output-filename
+
   - id: AUDIT-001
     stage: 02-verify-plan
     date: "2026-06-14"
@@ -1104,6 +1138,25 @@ artifacts:
   - path: docs/sessions/S005-issue-671-docker-db/routing-plan.md
     kind: routing-plan
     session_id: S005-issue-671-docker-db
+    stage: 00-context
+    created_at: "2026-06-25"
+    status: active
+  - path: docs/context/issue-664-output-filename.md
+    kind: context-scoped
+    slug: issue-664-output-filename
+    topic: "Custom output filename for manual METAR input (GitHub #664)"
+    session_id: S006-issue-664-output-filename
+    created_at: "2026-06-25"
+    status: active
+  - path: docs/sessions/S006-issue-664-output-filename/session-brief.md
+    kind: session-brief
+    session_id: S006-issue-664-output-filename
+    stage: 00-context
+    created_at: "2026-06-25"
+    status: active
+  - path: docs/sessions/S006-issue-664-output-filename/routing-plan.md
+    kind: routing-plan
+    session_id: S006-issue-664-output-filename
     stage: 00-context
     created_at: "2026-06-25"
     status: active
