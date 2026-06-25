@@ -4,82 +4,55 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 4
+session_counter: 5
 active_session:
-  id: S004-issue-555-feedback
-  type: feature
-  intent: "EV-004: #555 UX + F5 Supabase work history + S003 config"
+  id: S005-issue-671-docker-db
+  type: hotfix
+  intent: "Fix #671 — Docker Compose backend cannot create DB tables (localhost:5432 connect refused)"
   status: in_progress
-  branch: feat/S004-issue-555-feedback
-  orchestrator: 16-evolve
-  evolve_cycle_id: EV-004
-  artifacts_dir: docs/sessions/S004-issue-555-feedback/
+  branch: fix/S005-issue-671-docker-db
+  orchestrator: 14-hotfix
+  artifacts_dir: docs/sessions/S005-issue-671-docker-db/
   routing_plan:
     - stage: 00-context
       mode: scoped
       required: true
       status: completed
       skip_rationale: null
-    - stage: 16-evolve
-      required: true
-      status: completed
-      skip_rationale: null
-    - stage: 01-requirements
-      mode: delta
-      required: true
-      status: completed
-      skip_rationale: null
-    - stage: 02-verify-plan
-      required: true
-      status: completed
-      skip_rationale: null
-    - stage: 04-tech-plan
-      required: true
-      status: completed
-      skip_rationale: null
-    - stage: 05-verify-tech
+    - stage: 14-hotfix
       required: true
       status: pending
       skip_rationale: null
-    - stage: 07-build
+    - stage: bug-investigation
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 08-verify-build
       required: true
-      status: completed
-      skip_rationale: null
-    - stage: 09-qa
-      required: true
-      status: completed
+      status: pending
       skip_rationale: null
     - stage: 10-e2e
-      mode: delta
-      required: true
-      status: completed
-      skip_rationale: null
-    - stage: 11-verify-impl
-      required: true
-      status: completed
-      skip_rationale: null
-    - stage: 12-verify-deploy
       required: false
-      status: completed
+      status: pending
+      skip_rationale: "Optional integration docker-compose smoke"
+    - stage: 18-pr-review
+      required: true
+      status: pending
       skip_rationale: null
-  current_stage: 13-deploy-smoke
-  started_at: "2026-06-23"
+    - stage: 13-deploy-smoke
+      required: false
+      status: pending
+      skip_rationale: "Local-dev compose change only; prod uses Supabase"
+  current_stage: 14-hotfix
+  started_at: "2026-06-25"
   notes:
-    - "16-evolve Phase 0 intake complete 2026-06-23 — F5 interview re-confirmed; scope approved for routing"
-    - "09-qa 2026-06-24 — FAIL (ESLint react-hooks + 1 Vitest); see qa-report.md"
-    - "10-e2e 2026-06-24 — FAIL (delta Playwright locators + staging H4 CORS); see reports/e2e-report.md"
-    - "11-verify-impl 2026-06-24 — APPROVED (re-confirmed UJ-001/UJ-004 + F1/F5 approve-fix); lint green; FileConverter Vitest 84/84; T3 deferred to 12"
-    - "12-verify-deploy 2026-06-24 — strategy verified; H0c PASS; H4 FAIL (live CORS); H5 PASS; deploy blocked on operator T1.3 + S003 key rotation + API redeploy"
-    - "07-build 2026-06-24 — EV-004 complete (36/38); delta E2E 4/4; operator T1.3 deferred"
+    - "00-context scoped complete 2026-06-25 — root cause: empty DATABASE_URL → localhost:5432 default; no pg container; create_tables swallows error"
+    - "Approved scope: bundle Postgres in docker-compose (R2); bundled bare PG serves ORM tables only, auth/F5 still need Supabase (R3)"
+    - "Not a duplicate of #688 (frontend Docker build) (R4)"
   context_briefs:
-    - docs/context/issue-555-feedback.md
-    - docs/context/metar-work-history.md
+    - docs/context/issue-671-docker-db.md
   planned_follow_on: []
-  paused_session: S003-supabase-keys-config
+  paused_session: null
 sessions:
   - id: S001-convert-send-buttons
     type: feature
@@ -105,6 +78,16 @@ sessions:
     artifacts_dir: docs/sessions/S003-supabase-keys-config/
     started_at: "2026-06-23"
     pause_reason: "User pivoted to S004 GitHub #555 feature context"
+  - id: S004-issue-555-feedback
+    type: feature
+    status: completed
+    completed_at: "2026-06-25"
+    branch: feat/S004-issue-555-feedback
+    orchestrator: 16-evolve
+    evolve_cycle_id: EV-004
+    artifacts_dir: docs/sessions/S004-issue-555-feedback/
+    started_at: "2026-06-23"
+    close_note: "PR #687 merged to main; closed at S005 open (2026-06-25)"
 
 template:
   id: static+api
@@ -132,6 +115,7 @@ stages:
       - docs/sessions/S004-issue-555-feedback/routing-plan.md
     notes:
       - "GitHub #555 parent feedback; 2/4 items done in S001; auto-clear + error log remain"
+      - "2026-06-25 scoped run S005 — docs/context/issue-671-docker-db.md (#671 Docker DB connect failure)"
   01-requirements:
     status: completed
     started_at: "2026-06-14T00:00:00Z"
@@ -652,6 +636,28 @@ decisions_log:
     session_id: S004-issue-555-feedback
     evolve_cycle_id: EV-004
 
+  - id: S005-R1
+    stage: 00-context
+    date: "2026-06-25"
+    topic: Session handling for #671
+    decision: "Close merged S004 (PR #687 on main); open hotfix session S005 for #671"
+    status: confirmed
+    session_id: S005-issue-671-docker-db
+  - id: S005-R2
+    stage: 00-context
+    date: "2026-06-25"
+    topic: Issue #671 fix approach
+    decision: "Bundle a Postgres service in docker-compose and default backend DATABASE_URL to it so `docker compose up --build` is self-contained (vs fail-fast+docs or reply-only)"
+    status: confirmed
+    session_id: S005-issue-671-docker-db
+  - id: S005-R3
+    stage: 00-context
+    date: "2026-06-25"
+    topic: Bundled Postgres scope limit
+    decision: "Bundled bare Postgres serves SQLAlchemy ORM tables (statistics/evaluation) only; auth + F5 metar_work_sessions remain on Supabase (RLS + migrations) and still require Supabase config locally"
+    status: confirmed
+    session_id: S005-issue-671-docker-db
+
   - id: AUDIT-001
     stage: 02-verify-plan
     date: "2026-06-14"
@@ -1077,6 +1083,25 @@ artifacts:
     session_id: S003-supabase-keys-config
     created_at: "2026-06-23"
     status: complete
+  - path: docs/context/issue-671-docker-db.md
+    kind: context-scoped
+    slug: issue-671-docker-db
+    topic: "Docker Compose backend cannot create DB tables — localhost:5432 (GitHub #671)"
+    session_id: S005-issue-671-docker-db
+    created_at: "2026-06-25"
+    status: active
+  - path: docs/sessions/S005-issue-671-docker-db/session-brief.md
+    kind: session-brief
+    session_id: S005-issue-671-docker-db
+    stage: 00-context
+    created_at: "2026-06-25"
+    status: active
+  - path: docs/sessions/S005-issue-671-docker-db/routing-plan.md
+    kind: routing-plan
+    session_id: S005-issue-671-docker-db
+    stage: 00-context
+    created_at: "2026-06-25"
+    status: active
 
 evolve_cycles:
   - id: EV-001
@@ -2148,9 +2173,11 @@ pr_remediation_cycles:
         path: null
         line: null
         thread_id: null
-        status: deferred
+        status: fixed
         commit: null
-        note: Empty PR description / no Closes #555 — out of scope (blocker_only)
+        note: >
+          Empty PR description / no Closes #555 — resolved post-merge by editing PR #687
+          body with a full summary referencing #555 (already closed). 2026-06-25.
       - id: F-004
         source: inline
         severity: advisory
