@@ -121,9 +121,11 @@ empty-string env is also not normalized in `get_database_url`.
 
 ## Cursor rule
 
-**Draft (for review — not written to `.cursor/rules/` yet):**
+Created: `.cursor/rules/optional/docker-compose-db-url-defaults.mdc`
 
-> **docker-compose-db-url-defaults** — When wiring `DATABASE_URL` (or any required connection URL) in `docker-compose.yml`, never use `${VAR:-}` with an empty default; always provide a working in-network default (e.g. `@db:5432`) or omit the variable so application code can fail fast with a clear message. In Python env readers, treat blank/whitespace values as unset and log which variable was blank.
+- Compose: no empty `${DATABASE_URL:-}` defaults; use in-network `@db:5432` default + `depends_on` health gate.
+- Python: blank/whitespace connection env vars treated as unset with named warning (`_clean_env` pattern).
+- Regression: `tests/bugs/test_bug_2026_06_25_docker_db_connect.py`
 
 ## Follow-ups
 
