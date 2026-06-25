@@ -247,7 +247,7 @@ export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-100 dark:bg-gray-750">
+            <thead className="bg-gray-100 dark:bg-gray-700">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">
                   User
