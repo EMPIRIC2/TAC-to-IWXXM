@@ -157,6 +157,21 @@ use `.nth(1)` after clicking a card to assert the panel content heading.
   - API `ConversionResult.tac_input` populated for manual and file conversions
 - **Source**: `tests/bugs/test_bug_2026_06_22_issue_594_cor_after_time.py`, `packages/gifts/tests/test_metar_encoding.py::test_cor_after_time`, `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/frontend/src/app/components/FileConverter.test.tsx`
 
+### TC-001c: Custom output filename for manual input (EV-005 / #664)
+
+- **Objective**: UJ-001 step 4/9 — manual-input downloads honor an optional custom filename and persist it
+- **Input**: Manual TAC (single and multi-line) with and without an "Output filename" value; sanitizer
+  inputs with path separators / illegal chars / a trailing extension
+- **Pass criteria**:
+  - Blank name ⇒ download is `manual_input.xml` (multi-line: `manual_input_N.xml`) — unchanged default
+  - Non-blank `base` ⇒ single download `base.xml`; multi-line ⇒ `base_1.xml`, `base_2.xml`, …
+  - Download All ZIP archive is named `base.zip` when a custom name is set; else `converted_files_<ts>.zip`
+  - File-upload results keep their original filename (custom name not applied)
+  - Sanitizer strips path/illegal chars + extension, trims; empty-after-sanitize ⇒ `manual_input`
+  - The custom name round-trips through the converter snapshot / `conversion_params` and survives reload
+    (guest sessionStorage + logged-in work session) — no API/schema change
+- **Source**: `apps/frontend/src/utils/*filename*.test.ts`, `apps/frontend/src/app/components/FileConverter.test.tsx`, `apps/e2e/tac-file-conversion.e2e.spec.ts`
+
 ### TC-002: Validation Pass
 
 - **Objective**: UJ-002 for known-good output

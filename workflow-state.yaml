@@ -4,58 +4,62 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 5
+session_counter: 6
 active_session:
-  id: S005-issue-671-docker-db
-  type: hotfix
-  intent: "Fix #671 — Docker Compose backend cannot create DB tables (localhost:5432 connection refused)"
+  id: S006-issue-664-output-filename
+  type: feature
+  intent: "#664 — allow a custom output filename for manual METAR input (frontend-only; blank ⇒ manual_input)"
   status: in_progress
-  branch: fix/S005-issue-671-docker-db
-  orchestrator: 14-hotfix
-  artifacts_dir: docs/sessions/S005-issue-671-docker-db/
+  branch: feat/S006-issue-664-output-filename
+  orchestrator: 16-evolve
+  artifacts_dir: docs/sessions/S006-issue-664-output-filename/
   routing_plan:
     - stage: 00-context
       mode: scoped
       required: true
       status: completed
       skip_rationale: null
-    - stage: 14-hotfix
+    - stage: 16-evolve
       required: true
       status: completed
       skip_rationale: null
-    - stage: bug-investigation
+    - stage: 07-build
       required: true
-      status: completed
+      status: in_progress
       skip_rationale: null
     - stage: 08-verify-build
       required: true
-      status: completed
+      status: pending
+      skip_rationale: null
+    - stage: 09-qa
+      required: true
+      status: pending
       skip_rationale: null
     - stage: 10-e2e
-      required: false
-      status: completed
-      skip_rationale: "docker compose db smoke: healthy + DDL round-trip on db:5432"
-    - stage: 18-pr-review
       required: true
-      status: completed
+      status: pending
       skip_rationale: null
-    - stage: 19-address-pr-review
+    - stage: 11-verify-impl
+      required: true
+      status: pending
+      skip_rationale: null
+    - stage: 12-verify-deploy
       required: false
-      status: completed
-      skip_rationale: null
+      status: pending
+      skip_rationale: "Frontend static deploy only if user requests"
     - stage: 13-deploy-smoke
       required: false
       status: pending
-      skip_rationale: "Local-dev compose change only; prod uses Supabase"
-  current_stage: 14-hotfix
+      skip_rationale: "Only if deploying"
+  current_stage: 07-build
+  evolve_cycle_id: EV-005
   started_at: "2026-06-25"
   notes:
-    - "00-context scoped complete 2026-06-25 — root cause: empty DATABASE_URL → localhost:5432 default; no pg container; create_tables swallows error"
-    - "Approved scope: bundle Postgres in docker-compose (R2); bundled bare PG serves ORM tables only, auth/F5 still need Supabase (R3)"
-    - "Not a duplicate of #688 (frontend Docker build) (R4)"
-    - "14-hotfix complete 2026-06-25 — commit b16530e; bundled postgres:16 db service + DATABASE_URL default to db:5432 + get_database_url blank-env hardening; repro red→green; PR #692 open, CI running"
+    - "00-context scoped complete 2026-06-25 — default name manual_input[_N] set in apps/backend/src/api.py, surfaced as ConversionResult.name, used by FileConverter download handlers"
+    - "Approved scope: frontend-only (R1); blank ⇒ manual_input default (R2); applies to manual results only, uploads unchanged (R3); multi-line _1/_2 suffix assumed (R4)"
+    - "16-evolve EV-005 Phase 0–1 2026-06-25 — R4 multi-line suffix confirmed; R5 persist across reload confirmed; R6 carry via conversion_params JSONB (no migration/API change); R7 ZIP archive renamed to custom base; R8 extend F1 + touch F5 (no new Fn); routing stays lean (frontend-only build)"
   context_briefs:
-    - docs/context/issue-671-docker-db.md
+    - docs/context/issue-664-output-filename.md
   planned_follow_on: []
   paused_session: null
 sessions:
@@ -93,6 +97,15 @@ sessions:
     artifacts_dir: docs/sessions/S004-issue-555-feedback/
     started_at: "2026-06-23"
     close_note: "PR #687 merged to main; closed at S005 open (2026-06-25)"
+  - id: S005-issue-671-docker-db
+    type: hotfix
+    status: completed
+    completed_at: "2026-06-25"
+    branch: fix/S005-issue-671-docker-db
+    orchestrator: 14-hotfix
+    artifacts_dir: docs/sessions/S005-issue-671-docker-db/
+    started_at: "2026-06-25"
+    close_note: "PR #692 merged to main; closed at S006 open (2026-06-25)"
 
 template:
   id: static+api
@@ -121,6 +134,7 @@ stages:
     notes:
       - "GitHub #555 parent feedback; 2/4 items done in S001; auto-clear + error log remain"
       - "2026-06-25 scoped run S005 — docs/context/issue-671-docker-db.md (#671 Docker DB connect failure)"
+      - "2026-06-25 scoped run S006 — docs/context/issue-664-output-filename.md (#664 custom output filename, manual input; frontend-only)"
   01-requirements:
     status: completed
     started_at: "2026-06-14T00:00:00Z"
@@ -663,6 +677,28 @@ decisions_log:
     status: confirmed
     session_id: S005-issue-671-docker-db
 
+  - id: S006-R1
+    stage: 00-context
+    date: "2026-06-25"
+    topic: Session handling for #664
+    decision: "Close merged S005 (PR #692 on main); open feature session S006 for #664 via 16-evolve"
+    status: confirmed
+    session_id: S006-issue-664-output-filename
+  - id: S006-R2
+    stage: 00-context
+    date: "2026-06-25"
+    topic: Issue #664 implementation layer
+    decision: "Frontend-only — name manual-derived downloads client-side in FileConverter; no change to backend ConversionResult.name or manual_input naming (API contract preserved)"
+    status: confirmed
+    session_id: S006-issue-664-output-filename
+  - id: S006-R3
+    stage: 00-context
+    date: "2026-06-25"
+    topic: Issue #664 scope and default
+    decision: "Custom name applies to manual-input results only (uploads unchanged); blank ⇒ default manual_input; multi-line manual input suffixes _1/_2 on the custom base (assumed — confirm in 16-evolve)"
+    status: confirmed
+    session_id: S006-issue-664-output-filename
+
   - id: AUDIT-001
     stage: 02-verify-plan
     date: "2026-06-14"
@@ -1107,6 +1143,25 @@ artifacts:
     stage: 00-context
     created_at: "2026-06-25"
     status: active
+  - path: docs/context/issue-664-output-filename.md
+    kind: context-scoped
+    slug: issue-664-output-filename
+    topic: "Custom output filename for manual METAR input (GitHub #664)"
+    session_id: S006-issue-664-output-filename
+    created_at: "2026-06-25"
+    status: active
+  - path: docs/sessions/S006-issue-664-output-filename/session-brief.md
+    kind: session-brief
+    session_id: S006-issue-664-output-filename
+    stage: 00-context
+    created_at: "2026-06-25"
+    status: active
+  - path: docs/sessions/S006-issue-664-output-filename/routing-plan.md
+    kind: routing-plan
+    session_id: S006-issue-664-output-filename
+    stage: 00-context
+    created_at: "2026-06-25"
+    status: active
 
 evolve_cycles:
   - id: EV-001
@@ -1395,9 +1450,88 @@ evolve_cycles:
         status: in_progress
     issues: []
 
+  - id: EV-005
+    session_id: S006-issue-664-output-filename
+    cycle_type: feature
+    feature_ids: [F1, F5]
+    title: "#664 — custom output filename for manual METAR input"
+    status: in_progress
+    started: "2026-06-25"
+    completed: null
+    scope_summary: |
+      GitHub #664 — optional "Output filename" input near the manual TAC textarea. Sanitized base
+      name applies to manual-input results only (single download, ZIP entry, result-card label);
+      multi-line suffixes _1/_2 (R4). Blank ⇒ manual_input default (R2). ZIP archive renamed to
+      ${base}.zip when set (R7). Custom name persists across reload for guest + logged-in users via
+      the existing conversion_params JSONB blob (R5/R6) — no migration, no API/schema change
+      (frontend-only build, R1). Extends F1 + touches F5 persistence; no new Fn (R8).
+    routing_plan:
+      required_stages:
+        - 16-evolve
+        - 07-build
+        - 08-verify-build
+        - 09-qa
+        - 10-e2e
+        - 11-verify-impl
+      optional_stages:
+        - 18-pr-review
+        - 12-verify-deploy
+        - 13-deploy-smoke
+      skipped_stages:
+        - 01-requirements
+        - 02-verify-plan
+        - 03-plan-tooling
+        - 04-tech-plan
+        - 05-verify-tech
+        - 06-tech-tooling
+        - 14-hotfix
+    current_stage: 07-build
+    stages:
+      16-evolve:
+        status: completed
+        started: "2026-06-25"
+        completed: "2026-06-25"
+        phase: 2
+        notes:
+          - "Phase 0–1 complete — scope confirmed (R1–R8); persistence via conversion_params (no backend change)"
+          - "Phase A complete 2026-06-25 — spec/journey/test deltas committed (b8ca6b1)"
+        artifacts_updated:
+          - docs/evolve-decisions.md
+          - docs/feature-list.md
+          - docs/user-journeys.md
+          - docs/test-plan.md
+      07-build:
+        status: completed
+        started: "2026-06-25"
+        completed: "2026-06-25"
+        notes:
+          - "Frontend-only delta — sanitizer util + FileConverter wiring + tests"
+          - "outputFilename util (6e8809a); FileConverter input/naming/ZIP/persistence (4b3624c); e2e (49c4dc8)"
+          - "Local checks green: eslint, tsc, vitest 530/530, prettier (changed files)"
+          - "Minor PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/695 (base main) — CI green (Validate + all Test(*) + E2E Smoke + Sourcery pass; Deploy skipped on PR)"
+    gates:
+      a_to_b: passed
+      b_to_c: waived
+      c_to_d: pending
+      deploy: pending
+    checkpoints:
+      phase_a: passed
+      phase_b: waived
+      phase_c: pending
+      phase_d: pending
+      deploy: pending
+    artifacts:
+      - path: docs/evolve-decisions.md
+        status: completed
+    issues: []
+
 git_history:
-  current_branch: feat/S004-issue-555-feedback
+  current_branch: feat/S006-issue-664-output-filename
   branches:
+    - name: feat/S006-issue-664-output-filename
+      base: main
+      status: active
+      created_at: "2026-06-25T00:00:00Z"
     - name: fix/S002-issue-594-feedback
       base: main
       status: active
@@ -1572,6 +1706,34 @@ git_history:
       session_id: S002-issue-594-feedback
       files_changed: 1
       timestamp: "2026-06-23T13:42:00Z"
+    - sha: b8ca6b1
+      branch: feat/S006-issue-664-output-filename
+      message: "[EV-005] docs: spec/journey/test deltas for #664 custom output filename"
+      stage: "16-evolve"
+      session_id: S006-issue-664-output-filename
+      files_changed: 5
+      timestamp: "2026-06-25T00:00:00Z"
+    - sha: 6e8809a
+      branch: feat/S006-issue-664-output-filename
+      message: "[EV-005] feat: add manual-input output filename sanitizer util (#664)"
+      stage: "07-build"
+      session_id: S006-issue-664-output-filename
+      files_changed: 2
+      timestamp: "2026-06-25T21:00:00Z"
+    - sha: 4b3624c
+      branch: feat/S006-issue-664-output-filename
+      message: "[EV-005] feat: apply custom output filename to manual results (#664)"
+      stage: "07-build"
+      session_id: S006-issue-664-output-filename
+      files_changed: 2
+      timestamp: "2026-06-25T21:01:00Z"
+    - sha: 49c4dc8
+      branch: feat/S006-issue-664-output-filename
+      message: "[EV-005] test: e2e custom output filename naming for manual input (#664)"
+      stage: "07-build"
+      session_id: S006-issue-664-output-filename
+      files_changed: 2
+      timestamp: "2026-06-25T21:02:00Z"
 
 pr_review_cycles:
   - id: PRR-001

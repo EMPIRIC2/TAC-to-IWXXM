@@ -1724,4 +1724,157 @@ describe('FileConverter Component', () => {
       });
     });
   });
+
+  describe('Custom output filename (#664 / EV-005)', () => {
+    it('previews the sanitized base name in the helper text', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      expect(screen.getByTestId('output-filename-preview')).toHaveTextContent(
+        'manual_input.xml',
+      );
+
+      await user.type(screen.getByTestId('output-filename-input'), 'my/report.xml');
+      expect(screen.getByTestId('output-filename-preview')).toHaveTextContent(
+        'report.xml',
+      );
+    });
+
+    it('applies a custom base name to a single manual result', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<iwxxm>named</iwxxm>' }],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await user.type(textarea, 'METAR KJFK CUSTOM NAME');
+      await user.type(screen.getByTestId('output-filename-input'), 'report');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('report.txt')).toBeInTheDocument();
+      });
+      expect(
+        screen.getByRole('button', { name: /download report\.txt as xml/i }),
+      ).toBeInTheDocument();
+    });
+
+    it('suffixes _N for multi-line manual input with a custom base', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          { iwxxm_xml: '<iwxxm>one</iwxxm>' },
+          { iwxxm_xml: '<iwxxm>two</iwxxm>' },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await user.type(textarea, 'METAR LINE ONE{enter}METAR LINE TWO');
+      await user.type(screen.getByTestId('output-filename-input'), 'report');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('report_1.txt')).toBeInTheDocument();
+        expect(screen.getByText('report_2.txt')).toBeInTheDocument();
+      });
+    });
+
+    it('does not apply the custom name to file-upload results', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            iwxxm_xml: '<iwxxm>file</iwxxm>',
+            name: 'uploaded.metar',
+            tac_input: 'METAR FILE',
+          },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: {
+              name: 'uploaded.metar',
+              text: vi.fn().mockResolvedValue('METAR FILE'),
+            },
+            length: 1,
+          },
+        },
+      });
+      await waitFor(() => {
+        expect(screen.getByText('uploaded.metar')).toBeInTheDocument();
+      });
+
+      await user.type(screen.getByTestId('output-filename-input'), 'report');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getAllByText('uploaded.metar').length).toBeGreaterThanOrEqual(1);
+      });
+      expect(screen.queryByText('report.txt')).not.toBeInTheDocument();
+    });
+
+    it('names the Download All ZIP archive after the custom base', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<iwxxm>zip-named</iwxxm>' }],
+      });
+
+      let archiveName = '';
+      const createUrlSpy = vi
+        .spyOn(URL, 'createObjectURL')
+        .mockReturnValue('blob:zip-named');
+      const revokeUrlSpy = vi
+        .spyOn(URL, 'revokeObjectURL')
+        .mockImplementation(() => undefined);
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(function (this: HTMLAnchorElement) {
+          archiveName = this.download;
+        });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await user.type(textarea, 'METAR ZIP CUSTOM');
+      await user.type(screen.getByTestId('output-filename-input'), 'weather');
+      await user.click(screen.getByTestId('convert-button'));
+
+      const downloadZipBtn = await screen.findByLabelText(
+        /download all 1 converted files as zip/i,
+      );
+      await user.click(downloadZipBtn);
+
+      await waitFor(() => {
+        expect(archiveName).toBe('weather.zip');
+      });
+
+      createUrlSpy.mockRestore();
+      revokeUrlSpy.mockRestore();
+      clickSpy.mockRestore();
+    });
+
+    it('carries the custom name in the autosave snapshot conversion params', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('output-filename-input'), 'persisted');
+
+      await waitFor(() => {
+        expect(mockScheduleAutoSave).toHaveBeenCalledWith(
+          expect.objectContaining({
+            conversionParams: expect.objectContaining({
+              output_filename: 'persisted',
+            }),
+          }),
+        );
+      });
+    });
+  });
 });

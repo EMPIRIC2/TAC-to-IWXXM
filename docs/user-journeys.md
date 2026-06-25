@@ -53,16 +53,20 @@ Run live E2E: `make test-live` (requires `.env` with `ADMIN_EMAIL` / `ADMIN_PASS
 1. Open frontend in browser.
 2. Optionally log in (UJ-003) — required for work history persistence (UJ-004).
 3. Drag-drop `.tac` file or paste manual text.
-4. Choose an action:
+4. **#664 (EV-005)**: Optionally type an **Output filename** for manually entered TAC (blank ⇒ `manual_input`).
+5. Choose an action:
    - **Convert** — conversion only; view, copy, or download IWXXM result.
    - **Convert&Send** — conversion then immediate upload to primary database (IWXXM format, fixed defaults).
    - **Upload to Database** — upload already-converted files with format/destination options (dialog).
-5. View conversion output; for send actions, confirm success/failure via toast.
-6. **#555 (EV-004)**: On **successful** convert, result cards **replace** the prior batch (not append).
-7. On convert failure or partial success, open collapsible **error log panel** from API `errors`/`issues`
+6. View conversion output; for send actions, confirm success/failure via toast.
+7. **#555 (EV-004)**: On **successful** convert, result cards **replace** the prior batch (not append).
+8. On convert failure or partial success, open collapsible **error log panel** from API `errors`/`issues`
    (also persisted on the active F5 session row when logged in).
+9. **#664 (EV-005)**: Download a manual result — single file is `<base>.xml` (or `manual_input.xml`);
+   multi-line manual input yields `<base>_N.xml`; Download All ZIP is named `<base>.zip`. The chosen name
+   survives a page reload.
 
-**Acceptance**: At least one METAR converts without error; output passes schema/Schematron validation for the selected IWXXM version; successful convert clears prior result cards; error log is previewable on failure.
+**Acceptance**: At least one METAR converts without error; output passes schema/Schematron validation for the selected IWXXM version; successful convert clears prior result cards; error log is previewable on failure; a custom output filename (when set) is applied to manual-input downloads and persists across reload.
 
 **Automated tests**: `apps/e2e/tac-file-conversion.e2e.spec.ts` (T2); `make test-live-e2e` (T3)
 

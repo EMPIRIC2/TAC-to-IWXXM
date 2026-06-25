@@ -15,6 +15,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 | [issue-555-feedback](issue-555-feedback.md) | Initial test UX — auto-clear inputs/results, error log preview (GitHub #555) | active | 2026-06-23 | F1, UJ-001 |
 | [metar-work-history](metar-work-history.md) | User METAR work sessions Draft→WIP→Finished in Supabase (F5) | active | 2026-06-23 | F5, F1, M4 |
 | [issue-671-docker-db](issue-671-docker-db.md) | Docker Compose backend cannot create DB tables — localhost:5432 connect refused (GitHub #671) | active | 2026-06-25 | M1, docker-compose |
+| [issue-664-output-filename](issue-664-output-filename.md) | Custom output filename for manual METAR input (GitHub #664) | active | 2026-06-25 | F1, UJ-001 |
 
 **Convention**: One brief per topic at `docs/context/<slug>.md`. Reference downstream as
 `[Context: <slug> R#]`.
