@@ -11,6 +11,7 @@ Root cause: supabase-py 2.28 insert/update builders have no ``.select()``;
 from __future__ import annotations
 
 import pathlib
+import re
 import sys
 from datetime import UTC, datetime
 from types import SimpleNamespace
@@ -102,24 +103,17 @@ class _LegacyTable:
 @pytest.fixture
 def legacy_client(monkeypatch: pytest.MonkeyPatch) -> _LegacyTable:
     table = _LegacyTable()
-    client = SimpleNamespace(table=lambda _name: table)
     monkeypatch.setattr(
         svc_mod, "get_supabase_url", lambda: "https://example.supabase.co"
     )
     monkeypatch.setattr(
         svc_mod, "get_supabase_publishable_key", lambda: "publishable-key"
     )
-    monkeypatch.setattr(
-        svc_mod,
-        "create_client",
-        lambda *_args, **_kwargs: SimpleNamespace(
-            postgrest=SimpleNamespace(auth=lambda _t: None), table=client.table
-        ),
-    )
-    # Wire table on client like supabase.create_client().table()
+    # Single create_client override wiring table and postgrest.auth in one place,
+    # mirroring supabase.create_client().table().
     full_client = SimpleNamespace(
         postgrest=SimpleNamespace(auth=lambda _t: None),
-        table=client.table,
+        table=lambda _name: table,
     )
     monkeypatch.setattr(svc_mod, "create_client", lambda *_a, **_k: full_client)
     return table
@@ -145,12 +139,31 @@ def test_work_session_mutations_must_not_chain_select_on_insert(
     assert updated.id == SESSION_ID
     assert legacy_client.last_update is not None
 
+    # soft_delete must also work with legacy builders that lack ``select()``.
+    prev_update = legacy_client.last_update
+    deleted = service.soft_delete(SESSION_ID)
+    assert deleted.id == SESSION_ID
+    assert legacy_client.last_update is not None
+    assert legacy_client.last_update is not prev_update
 
-def test_work_session_service_source_avoids_select_after_insert() -> None:
-    """Guard against reintroducing ``.insert(...).select('*')`` incompatible with prod supabase-py."""
+    # restore_session must likewise work with legacy builders that lack ``select()``.
+    prev_soft_delete_update = legacy_client.last_update
+    restored = service.restore_session(SESSION_ID)
+    assert restored.id == SESSION_ID
+    assert legacy_client.last_update is not None
+    assert legacy_client.last_update is not prev_soft_delete_update
+
+
+def test_work_session_service_source_avoids_select_after_mutation() -> None:
+    """Guard against reintroducing ``.<mutation>(...).select(...)`` incompatible with prod supabase-py.
+
+    Covers insert/update/delete/upsert so ``.select()`` cannot be reintroduced on
+    ``create_session``, ``update_session``, ``soft_delete``, or ``restore_session``.
+    Read-only ``select`` (list/get paths) remains allowed.
+    """
     source = SERVICE_FILE.read_text(encoding="utf-8")
-    assert ".insert(data).select(" not in source
-    assert '.insert(data).select("' not in source
+    mutation_select = re.compile(r"\.(insert|update|delete|upsert)\([^)]*\)\.select\(")
+    assert mutation_select.search(source) is None
 
 
 def test_create_session_maps_attribute_error_to_502_without_fix() -> None:
