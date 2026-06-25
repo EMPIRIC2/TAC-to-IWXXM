@@ -38,7 +38,15 @@ import { WorkHistorySidebar } from './WorkHistorySidebar';
 import type { WorkSession } from '@metar/shared';
 import { useWorkSessionSync } from '@/hooks/useWorkSessionSync';
 import { type ConverterSnapshot } from '/utils/workSessionPayload';
-import { saveGuestConverterState } from '/utils/guestConverterState';
+import {
+  readGuestConverterState,
+  saveGuestConverterState,
+} from '/utils/guestConverterState';
+import {
+  manualOutputName,
+  outputArchiveName,
+  sanitizeOutputFilename,
+} from '/utils/outputFilename';
 
 interface ConvertedFile {
   id: string;
@@ -102,6 +110,11 @@ export function FileConverter({
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
   const [manualInput, setManualInput] = useState('');
+  // Restore the guest's custom output filename from the session snapshot (R5).
+  const [outputFilename, setOutputFilename] = useState(() => {
+    const saved = readGuestConverterState()?.conversionParams?.output_filename;
+    return typeof saved === 'string' ? saved : '';
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
   const [isConvertAndSending, setIsConvertAndSending] = useState(false);
@@ -144,7 +157,10 @@ export function FileConverter({
           issues: conversionLog.issues as unknown as Record<string, unknown>[],
         }
       : null,
-    conversionParams: conversionParams as unknown as Record<string, unknown>,
+    conversionParams: {
+      ...(conversionParams as unknown as Record<string, unknown>),
+      output_filename: outputFilename,
+    },
     ...overrides,
   });
 
@@ -241,6 +257,10 @@ export function FileConverter({
           }
         : null,
     );
+    const savedName = (
+      loadedWorkSession.conversion_params as Record<string, unknown> | undefined
+    )?.output_filename;
+    setOutputFilename(typeof savedName === 'string' ? savedName : '');
   }, [loadedWorkSession]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
@@ -250,7 +270,7 @@ export function FileConverter({
     }
     scheduleAutoSave(buildSnapshot());
     // eslint-disable-next-line react-hooks/exhaustive-deps -- debounced save on converter edits
-  }, [manualInput, pendingFiles, accessToken, isReadOnly]);
+  }, [manualInput, pendingFiles, outputFilename, accessToken, isReadOnly]);
 
   useEffect(() => {
     if (accessToken || isGuest === false) {
@@ -258,7 +278,15 @@ export function FileConverter({
     }
     saveGuestConverterState(buildSnapshot());
     // eslint-disable-next-line react-hooks/exhaustive-deps -- guest state mirror
-  }, [manualInput, pendingFiles, convertedFiles, conversionLog, isGuest, accessToken]);
+  }, [
+    manualInput,
+    pendingFiles,
+    convertedFiles,
+    conversionLog,
+    outputFilename,
+    isGuest,
+    accessToken,
+  ]);
 
   const handlePreferencesSaved = () => {
     // Reload preferences after saving in the dialog
@@ -388,7 +416,9 @@ export function FileConverter({
             const fileIndex = index - manualResultCount;
             const originalFile = isManualResult
               ? {
-                  name: result.name || 'manual_input.txt',
+                  // Apply the optional custom output filename to manual results
+                  // only; blank ⇒ manual_input default (R2/R3/R4 / #664).
+                  name: manualOutputName(outputFilename, index, manualResultCount),
                   content: result.tac_input || manualLines[index] || manualInput,
                 }
               : (pendingFiles[fileIndex] ?? {
@@ -565,6 +595,7 @@ export function FileConverter({
   const handleNewMetar = () => {
     setPendingFiles([]);
     setManualInput('');
+    setOutputFilename('');
     setConvertedFiles([]);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
@@ -602,7 +633,7 @@ export function FileConverter({
     const url = URL.createObjectURL(content);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `converted_files_${Date.now()}.zip`;
+    a.download = outputArchiveName(outputFilename);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -663,6 +694,7 @@ export function FileConverter({
   const handleClear = () => {
     setPendingFiles([]);
     setManualInput('');
+    setOutputFilename('');
     setConversionStatus({ type: 'idle' });
     toast.info('Queue cleared');
   };
@@ -889,6 +921,35 @@ export function FileConverter({
                 className="min-h-[120px] text-sm dark:bg-gray-800 dark:text-white dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
                 aria-label="Enter METAR data manually"
               />
+            </div>
+
+            {/* Output filename for manual input (#664 / EV-005) */}
+            <div className="mb-6">
+              <Label
+                htmlFor="output-filename"
+                className="block mb-2 text-base font-medium text-gray-900 dark:text-white"
+              >
+                Output filename (optional)
+              </Label>
+              <Input
+                id="output-filename"
+                data-testid="output-filename-input"
+                value={outputFilename}
+                onChange={(e) => setOutputFilename(e.target.value)}
+                readOnly={isReadOnly}
+                placeholder="manual_input"
+                className="text-sm dark:bg-gray-800 dark:text-white dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
+                aria-label="Output filename for manually entered METAR downloads"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Applies to manually entered METAR downloads only. The <code>.xml</code>{' '}
+                extension is added automatically; leave blank to use{' '}
+                <code>manual_input</code>. Saves as{' '}
+                <code data-testid="output-filename-preview">
+                  {sanitizeOutputFilename(outputFilename)}.xml
+                </code>
+                .
+              </p>
             </div>
 
             {/* Conversion Parameters */}
