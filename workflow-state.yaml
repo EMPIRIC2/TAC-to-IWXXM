@@ -41,7 +41,7 @@ active_session:
       skip_rationale: null
     - stage: 19-address-pr-review
       required: false
-      status: in_progress
+      status: completed
       skip_rationale: null
     - stage: 13-deploy-smoke
       required: false
@@ -458,9 +458,9 @@ stages:
     last_cycle: PRR-007
 
   19-address-pr-review:
-    status: in_progress
+    status: completed
     started: "2026-06-22"
-    completed: null
+    completed: "2026-06-25"
     last_cycle: PRM-007
 
   12-verify-deploy:
@@ -2213,12 +2213,12 @@ pr_remediation_cycles:
     pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/692
     linked_review_cycle_id: null   # Sourcery COMMENT review; no 18-pr-review cycle for #692
     title: "[hotfix] Bundle Postgres in docker-compose so backend can create DB tables (#671)"
-    status: in_progress
+    status: completed
     started: "2026-06-25"
-    completed: null
+    completed: "2026-06-25"
     head_ref: fix/S005-issue-671-docker-db
     base_ref: main
-    ci_status: pending
+    ci_status: success   # Validate + all Test(*) + E2E Smoke green; "Deploy edge functions" fail is unrelated (Supabase CLI release rate-limit)
     session_id: S005-issue-671-docker-db
     scope: advisories_selected
     counts:

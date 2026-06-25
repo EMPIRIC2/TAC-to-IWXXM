@@ -31,7 +31,15 @@ infra bug test exists, the abstraction is speculative).
 ## GitHub
 
 - Replied on inline thread `PRRT_kwDOQW-3CM6MVByh` (F-001) and resolved it.
-- Posted a summary reply addressing the two overall comments (F-003 fixed, F-002 won't-fix).
+- Posted a [summary comment](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/692#issuecomment-4803745366) addressing the two overall comments (F-003 fixed, F-002 won't-fix).
+
+## CI (post-push)
+
+Branch `984feff` pushed to origin. All in-scope checks pass: `Validate`, every
+`Test (*)` (auth/backend/bugs/frontend/gifts/integration/shared), and `E2E Smoke`.
+`Deploy edge functions` failed in ~7s on *"Failed to resolve latest Supabase CLI
+release: rate limit exceeded"* — a transient GitHub/Supabase CLI rate limit
+unrelated to the doc + test changes; **out of scope** (not greenwashed).
 
 ## Follow-up
 
