@@ -199,3 +199,59 @@
 - `apps/frontend/` — FileConverter (#555 + F5), My METARs page
 - `packages/shared/` — WorkSession types (TBD in 04-tech-plan)
 - `apps/e2e/` — UJ-001 + UJ-004 deltas
+
+## Cycle EV-005 — Custom output filename for manual METAR input (S006)
+
+**GitHub**: [#664](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/664)  
+**Session**: S006-issue-664-output-filename  
+**Features**: F1 (manual-input custom output filename UX) + F5 touch (persist the name on the work session)  
+**Approved**: 2026-06-25  
+**Cycle type**: feature (delta on F1; light F5 persistence touch)
+
+### Scope
+
+**In scope**
+
+- Optional **Output filename** text input near the manual TAC textarea; placeholder `manual_input`;
+  helper text that `.xml` is appended automatically. Disabled/read-only consistent with Clear button
+  and Finished (read-only) sessions.
+- **Sanitize** the base name (strip directory separators + illegal filename chars, drop any
+  user-supplied extension, trim whitespace); empty after sanitize ⇒ fall back to `manual_input`.
+- Apply the custom base name to **manual-input results only** (file uploads keep their uploaded
+  filename): single download, ZIP entry, and result-card label/aria-label.
+- **Multi-line** manual input suffixes `_1`, `_2`, … on the custom base (mirrors `manual_input_N`).
+- Rename the **batch ZIP archive** itself to `${base}.zip` when a custom name is set; otherwise keep
+  `converted_files_<ts>.zip`.
+- **Persist** the custom name across reload for both guest (sessionStorage snapshot) and logged-in
+  users — carried inside the existing `conversion_params` JSONB blob (no schema/migration/API change).
+
+**Out of scope**
+
+- Dedicated `output_filename` DB column / typed API field (rejected in favor of `conversion_params`
+  carriage — keeps the build frontend-only; no Supabase migration, no API contract change).
+- Renaming **file-upload** outputs (only manual input).
+- New top-level feature ID — extends F1, lightly touches F5.
+- REQ-016 unrelated rewrites.
+
+### Decisions
+
+| ID | Category | Decision |
+|----|----------|----------|
+| R1 | Decision | **Frontend-only build** — name manual-derived downloads client-side; no backend/API contract change. |
+| R2 | Decision | Blank input ⇒ `manual_input` default (and `manual_input_N` per line); non-blank ⇒ sanitized user base name. |
+| R3 | Scope | Custom name applies to **manual input only**; file uploads keep their uploaded filename. |
+| R4 | Ambiguity (confirmed) | Multi-line manual input with a custom base suffixes `_1`, `_2`, … (user-confirmed 2026-06-25). |
+| R5 | Decision | Custom name **persists across reload** (guest + logged-in) — user-confirmed full persistence. |
+| R6 | Decision | Persistence carried via existing `conversion_params` JSONB blob — **no migration, no API/schema change** (chosen over a dedicated typed column to keep routing lean / frontend-only). |
+| R7 | Decision | Rename the batch **ZIP archive** to `${base}.zip` when a custom name is set; else `converted_files_<ts>.zip`. |
+| R8 | Allocation | Extend **F1** + touch **F5** persistence; no new Fn. |
+
+### Artifacts to update
+
+- `docs/feature-list.md` — F1 UI actions (output filename input)
+- `docs/user-journeys.md` — UJ-001 optional custom-name step
+- `docs/test-plan.md` — sanitizer + naming + ZIP + persistence cases
+- `apps/frontend/src/app/components/FileConverter.tsx` — input, manual-result naming, downloads, snapshot wiring
+- `apps/frontend/src/utils/` — filename sanitizer helper + `ConverterSnapshot` field carriage in `conversion_params`
+- `apps/frontend/src/**/*.test.tsx` — unit coverage
+- `apps/e2e/tac-file-conversion.e2e.spec.ts` — custom-name download assertion

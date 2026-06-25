@@ -35,6 +35,11 @@
   - **Upload to Database** — upload previously converted files with configurable format/destination (dialog).
 - **#555 UX (EV-004)**: On **successful** convert, replace (not append) result cards; show collapsible
   error log panel from API `errors`/`issues` on failure or partial success (also persisted on F5 session row).
+- **Custom output filename (EV-005 / #664)**: Optional "Output filename" input near the manual TAC
+  textarea. When set, manual-input results download as `<base>.xml` (multi-line: `<base>_1.xml`,
+  `<base>_2.xml`, …) and the batch ZIP archive is named `<base>.zip`; blank ⇒ `manual_input` default.
+  Applies to **manual input only** (file-upload outputs keep their filename). The name persists across
+  reload (guest + logged-in) via the existing `conversion_params` payload — no API/schema change.
 - **Limitations**: Depends on GIFTs and vendored IWXXM schemas for target version.
 - **Source**: README, `backend/src/utilities/conversion.py`
 

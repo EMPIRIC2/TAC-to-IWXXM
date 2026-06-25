@@ -21,7 +21,7 @@ active_session:
       skip_rationale: null
     - stage: 16-evolve
       required: true
-      status: pending
+      status: in_progress
       skip_rationale: null
     - stage: 07-build
       required: true
@@ -51,11 +51,13 @@ active_session:
       required: false
       status: pending
       skip_rationale: "Only if deploying"
-  current_stage: 00-context
+  current_stage: 16-evolve
+  evolve_cycle_id: EV-005
   started_at: "2026-06-25"
   notes:
     - "00-context scoped complete 2026-06-25 — default name manual_input[_N] set in apps/backend/src/api.py, surfaced as ConversionResult.name, used by FileConverter download handlers"
     - "Approved scope: frontend-only (R1); blank ⇒ manual_input default (R2); applies to manual results only, uploads unchanged (R3); multi-line _1/_2 suffix assumed (R4)"
+    - "16-evolve EV-005 Phase 0–1 2026-06-25 — R4 multi-line suffix confirmed; R5 persist across reload confirmed; R6 carry via conversion_params JSONB (no migration/API change); R7 ZIP archive renamed to custom base; R8 extend F1 + touch F5 (no new Fn); routing stays lean (frontend-only build)"
   context_briefs:
     - docs/context/issue-664-output-filename.md
   planned_follow_on: []
@@ -1440,6 +1442,68 @@ evolve_cycles:
     checkpoints:
       phase_a: pending
       phase_b: pending
+      phase_c: pending
+      phase_d: pending
+      deploy: pending
+    artifacts:
+      - path: docs/evolve-decisions.md
+        status: in_progress
+    issues: []
+
+  - id: EV-005
+    session_id: S006-issue-664-output-filename
+    cycle_type: feature
+    feature_ids: [F1, F5]
+    title: "#664 — custom output filename for manual METAR input"
+    status: in_progress
+    started: "2026-06-25"
+    completed: null
+    scope_summary: |
+      GitHub #664 — optional "Output filename" input near the manual TAC textarea. Sanitized base
+      name applies to manual-input results only (single download, ZIP entry, result-card label);
+      multi-line suffixes _1/_2 (R4). Blank ⇒ manual_input default (R2). ZIP archive renamed to
+      ${base}.zip when set (R7). Custom name persists across reload for guest + logged-in users via
+      the existing conversion_params JSONB blob (R5/R6) — no migration, no API/schema change
+      (frontend-only build, R1). Extends F1 + touches F5 persistence; no new Fn (R8).
+    routing_plan:
+      required_stages:
+        - 16-evolve
+        - 07-build
+        - 08-verify-build
+        - 09-qa
+        - 10-e2e
+        - 11-verify-impl
+      optional_stages:
+        - 18-pr-review
+        - 12-verify-deploy
+        - 13-deploy-smoke
+      skipped_stages:
+        - 01-requirements
+        - 02-verify-plan
+        - 03-plan-tooling
+        - 04-tech-plan
+        - 05-verify-tech
+        - 06-tech-tooling
+        - 14-hotfix
+    current_stage: 16-evolve
+    stages:
+      16-evolve:
+        status: in_progress
+        started: "2026-06-25"
+        completed: null
+        phase: 1
+        notes:
+          - "Phase 0–1 complete — scope confirmed (R1–R8); persistence via conversion_params (no backend change)"
+        artifacts_updated:
+          - docs/evolve-decisions.md
+    gates:
+      a_to_b: pending
+      b_to_c: pending
+      c_to_d: pending
+      deploy: pending
+    checkpoints:
+      phase_a: pending
+      phase_b: waived
       phase_c: pending
       phase_d: pending
       deploy: pending
