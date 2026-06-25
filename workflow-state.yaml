@@ -1491,30 +1491,38 @@ evolve_cycles:
         status: in_progress
         started: "2026-06-25"
         completed: null
-        phase: 1
+        phase: 2
         notes:
           - "Phase 0–1 complete — scope confirmed (R1–R8); persistence via conversion_params (no backend change)"
+          - "Phase A complete 2026-06-25 — spec/journey/test deltas committed (b8ca6b1)"
         artifacts_updated:
           - docs/evolve-decisions.md
+          - docs/feature-list.md
+          - docs/user-journeys.md
+          - docs/test-plan.md
     gates:
-      a_to_b: pending
-      b_to_c: pending
+      a_to_b: passed
+      b_to_c: waived
       c_to_d: pending
       deploy: pending
     checkpoints:
-      phase_a: pending
+      phase_a: passed
       phase_b: waived
       phase_c: pending
       phase_d: pending
       deploy: pending
     artifacts:
       - path: docs/evolve-decisions.md
-        status: in_progress
+        status: completed
     issues: []
 
 git_history:
-  current_branch: feat/S004-issue-555-feedback
+  current_branch: feat/S006-issue-664-output-filename
   branches:
+    - name: feat/S006-issue-664-output-filename
+      base: main
+      status: active
+      created_at: "2026-06-25T00:00:00Z"
     - name: fix/S002-issue-594-feedback
       base: main
       status: active
@@ -1689,6 +1697,13 @@ git_history:
       session_id: S002-issue-594-feedback
       files_changed: 1
       timestamp: "2026-06-23T13:42:00Z"
+    - sha: b8ca6b1
+      branch: feat/S006-issue-664-output-filename
+      message: "[EV-005] docs: spec/journey/test deltas for #664 custom output filename"
+      stage: "16-evolve"
+      session_id: S006-issue-664-output-filename
+      files_changed: 5
+      timestamp: "2026-06-25T00:00:00Z"
 
 pr_review_cycles:
   - id: PRR-001
