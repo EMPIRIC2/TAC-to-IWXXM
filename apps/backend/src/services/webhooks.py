@@ -9,7 +9,7 @@ import hashlib
 import hmac
 import json
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, Dict, List, Optional
 
 import httpx
@@ -91,7 +91,7 @@ class WebhookService:
         # Prepare payload
         payload = {
             "event": event,
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(UTC).replace(tzinfo=None).isoformat() + "Z",
             "data": data,
             "metadata": metadata or {},
             "source": {

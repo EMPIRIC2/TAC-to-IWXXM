@@ -5,7 +5,7 @@ Tests Translation Centre configuration, ICAO region mapping,
 and statistics endpoints.
 """
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
 import pytest
@@ -334,7 +334,7 @@ class TestICAOOPMETEndpoints:
         with patch.object(
             StatisticsService, "get_statistics_by_region", new_callable=AsyncMock, return_value=expected_data
         ):
-            end_date = datetime.utcnow()
+            end_date = datetime.now(UTC).replace(tzinfo=None)
             start_date = end_date - timedelta(days=1)
 
             response = client.get(

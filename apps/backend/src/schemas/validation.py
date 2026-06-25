@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import List, Optional
 
@@ -75,7 +75,7 @@ class ValidationResult(BaseModel):
     layer: ValidationLayer = Field(..., description="Validation layer")
     issues: List[ValidationIssue] = Field(default_factory=list, description="List of issues")
     execution_time_ms: Optional[float] = Field(default=None, description="Execution time in ms", ge=0)
-    validated_at: datetime = Field(default_factory=datetime.utcnow)
+    validated_at: datetime = Field(default_factory=lambda: datetime.now(UTC).replace(tzinfo=None))
     metadata: Optional[dict] = Field(default=None, description="Layer-specific metadata")
 
     def add_issue(
@@ -143,7 +143,7 @@ class AggregatedValidationResult(BaseModel):
     total_issues: int = Field(0, description="Total issues", ge=0)
     results: List[ValidationResult] = Field(default_factory=list)
     execution_time_ms: float = Field(0, ge=0)
-    validated_at: datetime = Field(default_factory=datetime.utcnow)
+    validated_at: datetime = Field(default_factory=lambda: datetime.now(UTC).replace(tzinfo=None))
 
     @classmethod
     def from_results(cls, results: List[ValidationResult]) -> AggregatedValidationResult:
@@ -179,7 +179,7 @@ class ValidationTask(BaseModel):
     status: TaskStatus = Field(..., description="Current status")
     result: Optional[AggregatedValidationResult] = Field(None)
     error: Optional[str] = Field(None)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC).replace(tzinfo=None))
     completed_at: Optional[datetime] = Field(None)
     expires_at: Optional[datetime] = Field(None)
 

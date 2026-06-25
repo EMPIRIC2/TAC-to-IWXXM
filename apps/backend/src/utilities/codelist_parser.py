@@ -11,7 +11,7 @@ Supports both offline (RDF files) and online (codes.wmo.int) validation.
 import logging
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
@@ -365,7 +365,7 @@ class CodeListParser:
         # Check cache with TTL
         if code_url in self._online_cache:
             cached_issue, cached_time = self._online_cache[code_url]
-            age = (datetime.utcnow() - cached_time).total_seconds()
+            age = (datetime.now(UTC).replace(tzinfo=None) - cached_time).total_seconds()
             if age < self.settings.wmo_registry_cache_ttl:
                 logger.debug(f"Online validation cache hit: {code_url} (age: {age:.0f}s)")
                 # Update location for cached issue
@@ -417,7 +417,7 @@ class CodeListParser:
                     )
 
                 # Cache result
-                self._online_cache[code_url] = (result, datetime.utcnow())
+                self._online_cache[code_url] = (result, datetime.now(UTC).replace(tzinfo=None))
                 return result
 
             elif response.status_code == 404:
@@ -428,7 +428,7 @@ class CodeListParser:
                     location=xpath,
                     code="CODELIST_NOT_FOUND",
                 )
-                self._online_cache[code_url] = (result, datetime.utcnow())
+                self._online_cache[code_url] = (result, datetime.now(UTC).replace(tzinfo=None))
                 return result
             else:
                 return ValidationIssue(

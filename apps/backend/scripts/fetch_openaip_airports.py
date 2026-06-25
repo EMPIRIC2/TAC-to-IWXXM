@@ -16,7 +16,7 @@ import json
 import logging
 import os
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -133,7 +133,7 @@ def save_cached_openaip(airports: Dict[str, dict], cache_file: Path) -> None:
     cache_data = {
         "_metadata": {
             "source": "OpenAIP",
-            "fetched_at": datetime.utcnow().isoformat(),
+            "fetched_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
             "total_airports": len(airports),
             "api_version": "1.0",
         },

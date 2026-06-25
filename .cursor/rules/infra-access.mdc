@@ -1,0 +1,48 @@
+---
+description: How to access Render and Supabase (deploys, env vars, logs, DB, live API) — use .env credentials directly via CLI/REST instead of getting blocked on MCP auth
+alwaysApply: true
+---
+
+# Render & Supabase Access
+
+When you need to inspect or change deployed infra (Render deploys/env/logs,
+Supabase DB/auth/edge), **do not stall on MCP auth**. Credentials live in `.env`
+at the repo root — use them directly via the installed CLIs or REST.
+
+## Read `.env` safely
+
+Do **not** `source .env` (comments and special chars break the shell). Parse in Python:
+
+```python
+env = {}
+for line in open(".env", encoding="utf-8"):
+    line = line.strip()
+    if line and not line.startswith("#") and "=" in line:
+        k, _, v = line.partition("=")
+        env[k.strip()] = v.strip().strip('"').strip("'")
+```
+
+## Render — `RENDER_API_KEY`
+
+- CLI: `render` (v1+) reads `RENDER_API_KEY`; use `-o json --confirm` for non-interactive.
+- REST: `https://api.render.com/v1` with `Authorization: Bearer $RENDER_API_KEY`.
+- Find a service by name (results paginate — don't assume the first page):
+  `GET /v1/services?name=metar-to-iwxxm-api`. API service is `metar-to-iwxxm-api`.
+- Useful: `GET /services/{id}/deploys`, `GET/PUT/DELETE /services/{id}/env-vars[/{key}]`,
+  `POST /services/{id}/deploys` (redeploy), `GET /v1/logs?ownerId=&resource={id}&type=app`.
+- The API service is **image-based** (`ghcr.io/.../backend:main-latest`); env-var changes
+  do **not** auto-redeploy — trigger `POST /services/{id}/deploys` to apply.
+
+## Supabase — `SUPABASE_ACCESS_TOKEN` + `SUPABASE_PROJECT_REF`
+
+- CLI: `supabase` reads `SUPABASE_ACCESS_TOKEN`; pass `--project-ref "$SUPABASE_PROJECT_REF"`.
+- PostgREST: `SUPABASE_URL` + `apikey: $SUPABASE_PUBLISHABLE_KEY` + a caller JWT
+  (`Authorization: Bearer <jwt>`) for RLS-scoped queries; `SUPABASE_SERVICE_ROLE_KEY` bypasses RLS.
+- Live API JWT for repro: `POST $API/auth/login` with `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
+
+## Debugging a deployed 5xx
+
+Pull the service **logs first** — `_handle_db_error` / handlers log the real
+traceback (e.g. PostgREST `APIError` code + message) before returning an opaque
+5xx. Read env vars and the actual exception before forming hypotheses; never
+hand-edit secrets into the repo.

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 
 import pytest
@@ -280,8 +280,8 @@ async def test_get_statistics_returns_fallback_on_query_build_failure(monkeypatc
 
     monkeypatch.setattr(stats, "get_db_session", fake_get_db_session)
 
-    start = datetime.utcnow() - timedelta(days=1)
-    end = datetime.utcnow()
+    start = datetime.now(UTC).replace(tzinfo=None) - timedelta(days=1)
+    end = datetime.now(UTC).replace(tzinfo=None)
     payload = await stats.StatisticsService.get_statistics(
         start_date=start,
         end_date=end,
@@ -304,8 +304,8 @@ async def test_get_statistics_exception_returns_empty_payload(monkeypatch):
 
     monkeypatch.setattr(stats, "get_db_session", bad_session)
 
-    start = datetime.utcnow() - timedelta(days=1)
-    end = datetime.utcnow()
+    start = datetime.now(UTC).replace(tzinfo=None) - timedelta(days=1)
+    end = datetime.now(UTC).replace(tzinfo=None)
     payload = await stats.StatisticsService.get_statistics(start_date=start, end_date=end)
 
     assert payload["total_translations"] == 0
@@ -320,8 +320,8 @@ async def test_get_statistics_by_region_returns_fallback_on_query_build_failure(
 
     monkeypatch.setattr(stats, "get_db_session", fake_get_db_session)
 
-    start = datetime.utcnow() - timedelta(days=1)
-    end = datetime.utcnow()
+    start = datetime.now(UTC).replace(tzinfo=None) - timedelta(days=1)
+    end = datetime.now(UTC).replace(tzinfo=None)
     payload = await stats.StatisticsService.get_statistics_by_region(start, end)
 
     assert payload == {}
@@ -336,8 +336,8 @@ async def test_get_statistics_by_region_exception_returns_empty(monkeypatch):
 
     monkeypatch.setattr(stats, "get_db_session", bad_session)
 
-    start = datetime.utcnow() - timedelta(days=1)
-    end = datetime.utcnow()
+    start = datetime.now(UTC).replace(tzinfo=None) - timedelta(days=1)
+    end = datetime.now(UTC).replace(tzinfo=None)
     payload = await stats.StatisticsService.get_statistics_by_region(start, end)
 
     assert payload == {}
@@ -358,8 +358,8 @@ async def test_get_statistics_with_breakdown_flags_returns_fallback_payload(monk
 
     monkeypatch.setattr(stats, "get_db_session", fake_get_db_session)
 
-    start = datetime.utcnow() - timedelta(days=1)
-    end = datetime.utcnow()
+    start = datetime.now(UTC).replace(tzinfo=None) - timedelta(days=1)
+    end = datetime.now(UTC).replace(tzinfo=None)
     payload = await stats.StatisticsService.get_statistics(
         start_date=start,
         end_date=end,
@@ -384,8 +384,8 @@ async def test_get_statistics_by_region_rows_path_returns_fallback_on_cast_issue
 
     monkeypatch.setattr(stats, "get_db_session", fake_get_db_session)
 
-    start = datetime.utcnow() - timedelta(days=1)
-    end = datetime.utcnow()
+    start = datetime.now(UTC).replace(tzinfo=None) - timedelta(days=1)
+    end = datetime.now(UTC).replace(tzinfo=None)
     payload = await stats.StatisticsService.get_statistics_by_region(start, end)
 
     assert payload == {}
@@ -426,8 +426,8 @@ async def test_get_statistics_aggregates_with_synthetic_sql_layer(monkeypatch):
     monkeypatch.setattr(stats, "func", _Func())
     monkeypatch.setattr(stats, "get_db_session", fake_get_db_session)
 
-    start = datetime.utcnow() - timedelta(days=1)
-    end = datetime.utcnow()
+    start = datetime.now(UTC).replace(tzinfo=None) - timedelta(days=1)
+    end = datetime.now(UTC).replace(tzinfo=None)
     payload = await stats.StatisticsService.get_statistics(
         start_date=start,
         end_date=end,
@@ -476,8 +476,8 @@ async def test_get_statistics_applies_optional_filters(monkeypatch):
     monkeypatch.setattr(stats, "func", _Func())
     monkeypatch.setattr(stats, "get_db_session", fake_get_db_session)
 
-    start = datetime.utcnow() - timedelta(days=1)
-    end = datetime.utcnow()
+    start = datetime.now(UTC).replace(tzinfo=None) - timedelta(days=1)
+    end = datetime.now(UTC).replace(tzinfo=None)
     payload = await stats.StatisticsService.get_statistics(
         start_date=start,
         end_date=end,
@@ -519,8 +519,8 @@ async def test_get_statistics_by_region_aggregates_with_synthetic_sql_layer(monk
     monkeypatch.setattr(stats, "func", _Func())
     monkeypatch.setattr(stats, "get_db_session", fake_get_db_session)
 
-    start = datetime.utcnow() - timedelta(days=1)
-    end = datetime.utcnow()
+    start = datetime.now(UTC).replace(tzinfo=None) - timedelta(days=1)
+    end = datetime.now(UTC).replace(tzinfo=None)
     payload = await stats.StatisticsService.get_statistics_by_region(start, end)
 
     assert payload["NAM"]["success_rate"] == 75.0
@@ -558,8 +558,8 @@ async def test_get_statistics_handles_empty_aggregate_row(monkeypatch):
     monkeypatch.setattr(stats, "func", _Func())
     monkeypatch.setattr(stats, "get_db_session", fake_get_db_session)
 
-    start = datetime.utcnow() - timedelta(days=1)
-    end = datetime.utcnow()
+    start = datetime.now(UTC).replace(tzinfo=None) - timedelta(days=1)
+    end = datetime.now(UTC).replace(tzinfo=None)
     payload = await stats.StatisticsService.get_statistics(
         start_date=start,
         end_date=end,

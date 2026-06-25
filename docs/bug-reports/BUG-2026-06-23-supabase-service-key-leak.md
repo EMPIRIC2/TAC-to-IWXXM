@@ -70,7 +70,15 @@ remains on GitHub as unreachable object.
 
 ## Repro test
 
-Config-only / secret-removal hotfix — repro test waived per 14-hotfix (no behavioral assertion).
+| Path | Status |
+|------|--------|
+| `tests/bugs/test_bug_2026_06_23_supabase_service_key_leak.py` | GREEN (regression guard) |
+
+Originally waived as a config/secret-removal hotfix. A static regression guard was later
+added (2026-06-25) so the leak class is caught in CI: it asserts
+`scripts/utilities/create_admin_user.py` contains no hardcoded Supabase JWT and reads the
+secret/URL from env (`get_supabase_secret_key()` / `get_supabase_url()`). Runs in the CI
+`bugs` job (`make test-bugs`) alongside the existing `gitleaks` push gate.
 
 ## Verification plan
 

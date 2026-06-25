@@ -32,7 +32,8 @@ def test_local_still_allows_legacy_jwt_anon_fallback(
     monkeypatch.delenv("SUPABASE_PUBLISHABLE_KEY", raising=False)
     monkeypatch.setenv("SUPABASE_ANON_KEY", "legacy-anon-dev")
 
-    assert get_supabase_publishable_key() == "legacy-anon-dev"
+    with pytest.warns(DeprecationWarning, match="SUPABASE_ANON_KEY"):
+        assert get_supabase_publishable_key() == "legacy-anon-dev"
 
 
 def test_supabase_proxy_rejects_legacy_jwt_in_prod(

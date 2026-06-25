@@ -95,3 +95,27 @@ Remove `.select("*")` from insert/update/soft-delete/restore mutations; rely on 
 | Layer 1 | pytest bugs + work_session unit/integration |
 | Layer 2 | Admin login + autosave indicator not `error` |
 | CI | local parity before PR |
+
+## Re-investigation 2026-06-25 (hotfix #7 — symptom still in production)
+
+User re-reported `[useWorkSessionSync] persist failed: Work session database error`
+in production after admin login. New findings:
+
+| Check | Result |
+|-------|--------|
+| Fix `a79c86e` on `main` | **Present** — `.select()` removed from insert/update/soft_delete/restore |
+| Working tree | clean on `main`, fix in `work_session_service.py` |
+| Backend ship version | Dockerfile `uv sync --frozen` on **root** `uv.lock` → supabase-py **2.31.0** |
+| Live API `POST /api/v1/work-sessions` (admin JWT) | **502** `Work session database error` |
+| Real `create_session` locally vs **production Supabase** (supabase-py 2.31, admin JWT) | **201 / row returned** — fix works |
+| Raw `.insert(data).execute()` on 2.31 | returns representation (list len 1) — no `.select()` needed |
+
+**Conclusion:** The merged fix is correct and verified end-to-end against the live
+Supabase. Production still 502s because the **fixed image is not deployed** — the
+`metar-to-iwxxm-api` Render service is serving a stale build from before `a79c86e`.
+This is a **deployment gap**, not an unresolved code defect.
+
+**Blocker for agent-driven deploy:** `RENDER_API_KEY` in `.env` is scoped to a
+different Render account (only `vecinita-*`/`fontface-*` services visible; no
+`metar-to-iwxxm-api`). Render MCP is unauthenticated. Redeploy must be triggered by
+the user (or with metar-account Render credentials).

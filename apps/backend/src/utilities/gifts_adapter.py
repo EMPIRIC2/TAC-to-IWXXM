@@ -22,10 +22,10 @@ def _wrap_in_bulletin(tac_text: str) -> str:
     Returns:
         TAC wrapped in minimal WMO bulletin format
     """
-    from datetime import datetime
+    from datetime import UTC, datetime
 
     # Generate bulletin header (generic)
-    now = datetime.utcnow()
+    now = datetime.now(UTC)
     header = f"SAXX99 KWBC {now.strftime('%d%H%M')}\n"
 
     # Ensure TAC starts with METAR or SPECI
@@ -307,7 +307,7 @@ def convert_tac_to_iwxxm(tac_text: str, version: Optional[str] = None, geo_locat
     Raises:
         Exception: If conversion fails
     """
-    from datetime import datetime
+    from datetime import UTC, datetime
 
     decoder = get_decoder(version)
     encoder = get_encoder(version, geo_locations_db=geo_locations_db)
@@ -322,12 +322,12 @@ def convert_tac_to_iwxxm(tac_text: str, version: Optional[str] = None, geo_locat
         if des.TRANSLATOR:
             # Add bulletin ID (simplified - just use station + timestamp)
             if "ident" in decoded and "str" in decoded["ident"]:
-                decoded["translatedBulletinID"] = f"MT{decoded['ident']['str']}{datetime.utcnow().strftime('%d%H%M')}"
+                decoded["translatedBulletinID"] = f"MT{decoded['ident']['str']}{datetime.now(UTC).strftime('%d%H%M')}"
 
             # Add bulletin reception time (use translation time if not provided)
             if "translatedBulletinReceptionTime" not in decoded:
                 decoded["translatedBulletinReceptionTime"] = decoded.get(
-                    "translationTime", datetime.utcnow().isoformat() + "Z"
+                    "translationTime", datetime.now(UTC).isoformat().replace("+00:00", "Z")
                 )
     except (ImportError, AttributeError):
         pass

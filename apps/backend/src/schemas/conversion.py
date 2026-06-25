@@ -1,6 +1,6 @@
 """Pydantic schemas for METAR conversion API responses."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import List, Optional
 
@@ -148,7 +148,7 @@ class HealthResponse(BaseModel):
     status: str
     version: str
     gifts_available: bool
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC).replace(tzinfo=None))
     service: str = Field(default="metar-to-iwxxm")
 
 

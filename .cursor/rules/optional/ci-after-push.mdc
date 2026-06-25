@@ -40,7 +40,9 @@ make test-unit       # or make ci for full pre-commit parity
 ```
 
 Quality Gates scope is **`apps packages tests`** — not legacy `src/` paths. Bug repro tests
-under `tests/bugs/` are included. See `ci-quality-gates.mdc`.
+under `tests/bugs/` are both format/lint-checked **and executed**: they run as the `bugs`
+matrix entry of the `ci-cd.yml` `test` job and via `make test-bugs` (included in
+`make test-unit` / `make ci`). See `ci-quality-gates.mdc`.
 
 ## Related
 

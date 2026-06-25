@@ -1,6 +1,6 @@
 """Tests for evaluation schemas."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 import pytest
 
@@ -69,7 +69,7 @@ class TestEvaluationSchemas:
 
     def test_evaluation_job_response_creation(self):
         """Test creating EvaluationJobResponse."""
-        now = datetime.utcnow()
+        now = datetime.now(UTC).replace(tzinfo=None)
         response = EvaluationJobResponse(
             job_id="test-job-123", status=JobStatus.PENDING, station_count=10, created_at=now
         )
@@ -97,7 +97,7 @@ class TestEvaluationSchemas:
 
     def test_evaluation_result_detail_creation(self):
         """Test creating EvaluationResultDetail."""
-        now = datetime.utcnow()
+        now = datetime.now(UTC).replace(tzinfo=None)
         result = EvaluationResultDetail(
             station_id="KJFK",
             timestamp=now,
@@ -124,7 +124,7 @@ class TestEvaluationSchemas:
 
     def test_evaluation_job_status_creation(self):
         """Test creating EvaluationJobStatus."""
-        now = datetime.utcnow()
+        now = datetime.now(UTC).replace(tzinfo=None)
         stats = JobSummaryStats(total=10, passed=10, failed=0, errors=0, pass_rate=1.0)
 
         status = EvaluationJobStatus(
@@ -156,7 +156,7 @@ class TestEvaluationSchemas:
 
     def test_job_list_item_creation(self):
         """Test creating JobListItem."""
-        now = datetime.utcnow()
+        now = datetime.now(UTC).replace(tzinfo=None)
         item = JobListItem(job_id="job-123", status=JobStatus.RUNNING, station_count=50, progress=25, created_at=now)
 
         assert item.job_id == "job-123"

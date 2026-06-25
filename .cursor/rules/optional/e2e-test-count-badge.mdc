@@ -1,0 +1,29 @@
+---
+description: Keep the README E2E-tests badge count in sync when E2E specs change
+globs: apps/e2e/**/*.e2e.spec.ts
+alwaysApply: false
+---
+
+# E2E test-count badge
+
+The root `README.md` shows an E2E test-count badge:
+
+```
+[![E2E tests](https://img.shields.io/badge/E2E_tests-35-blue)](apps/e2e)
+```
+
+Whenever you add, remove, or rename `test(...)` cases in `apps/e2e/**/*.e2e.spec.ts`,
+recount and update that number in the **same change**.
+
+## Recount
+
+Count `test(...)` cases (include `test.skip`/`test.only`/`test.fixme`; exclude
+`test.describe`, `test.beforeEach`, `test.afterEach`):
+
+```bash
+rg -c -e "\\b(test|it)(\\.(skip|only|fixme))?\\s*\\(\\s*['\"\`]" apps/e2e/*.e2e.spec.ts \
+  | awk -F: '{s+=$2} END {print s}'
+```
+
+Put the result into the badge URL (`E2E_tests-<N>-blue`). If the count is unchanged,
+no edit is needed.

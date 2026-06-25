@@ -108,7 +108,8 @@ def test_publishable_legacy_jwt_allowed_in_local(
     monkeypatch.setenv("METAR_CONFIG_ENV", "local")
     monkeypatch.delenv("SUPABASE_PUBLISHABLE_KEY", raising=False)
     monkeypatch.setenv("SUPABASE_ANON_KEY", _LEGACY_JWT)
-    assert get_supabase_publishable_key() == _LEGACY_JWT
+    with pytest.warns(DeprecationWarning, match="SUPABASE_ANON_KEY"):
+        assert get_supabase_publishable_key() == _LEGACY_JWT
 
 
 def test_assert_modern_publishable_key_accepts_modern() -> None:

@@ -1,6 +1,6 @@
 """Evaluation endpoints for METAR conversion validation."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
@@ -109,7 +109,7 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
 
             result = EvaluationResultDetail(
                 station_id=station_id,
-                timestamp=datetime.utcnow(),
+                timestamp=datetime.now(UTC).replace(tzinfo=None),
                 tac_input=raw_tac,
                 our_iwxxm=our_iwxxm,
                 their_iwxxm=their_iwxxm,
@@ -174,7 +174,10 @@ async def create_evaluation_job(
     background_tasks.add_task(run_evaluation_job, job_id, request)
 
     return EvaluationJobResponse(
-        job_id=job_id, status=JobStatus.PENDING, station_count=station_count, created_at=datetime.utcnow()
+        job_id=job_id,
+        status=JobStatus.PENDING,
+        station_count=station_count,
+        created_at=datetime.now(UTC).replace(tzinfo=None),
     )
 
 

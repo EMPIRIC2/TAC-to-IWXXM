@@ -77,10 +77,11 @@ use `.nth(1)` after clicking a card to assert the panel content heading.
 |-------|-----------|-------|-------------|----------|
 | Unit | pytest / Vitest | packages/*, apps/backend, apps/frontend components | `make test-unit` | per workspace |
 | Integration | pytest | API + auth + conversion | `make test-integration` | apps/backend/tests |
+| E2E smoke (CI) | Playwright | Auth bootstrap + TAC conversion (mock session, no secrets) | `make test-e2e-playwright-smoke` | apps/e2e/ |
 | E2E (T2) | Playwright | UJ-001–003 local stack | `make test-e2e-playwright` | apps/e2e/ |
 | Live E2E (T3) | Playwright + pytest | UJ-001–003 on Render | `make test-live` | apps/e2e/ + live pytest |
 | Vendor | pytest | manifest + schema presence | `pytest tests/vendor` | tests/vendor |
-| CI | GitHub Actions | validate + test (matrix) + deploy; path filters deferred (P2) | `.github/workflows/ci-cd.yml` | root |
+| CI | GitHub Actions | validate + test (matrix, incl. `bugs`) + e2e-smoke (Playwright) + deploy; path filters deferred (P2) | `.github/workflows/ci-cd.yml` | root |
 | Pre-commit | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml) | `.pre-commit-config.yaml` | root |
 
 **Coverage**: 95% on all packages and apps (ADR-007) — pytest for Python, Vitest for frontend.

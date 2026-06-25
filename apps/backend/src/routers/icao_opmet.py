@@ -6,7 +6,7 @@ as per ICAO Doc 10003 Section 7 requirements.
 """
 
 import logging
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -166,7 +166,7 @@ async def get_recent_statistics(
     if user.get("role") != "admin":
         raise HTTPException(status_code=403, detail="This endpoint requires administrator privileges")
 
-    end_date = datetime.utcnow()
+    end_date = datetime.now(UTC).replace(tzinfo=None)
     start_date = end_date - timedelta(hours=hours)
 
     # Validate date range is not too large (prevent expensive queries)
