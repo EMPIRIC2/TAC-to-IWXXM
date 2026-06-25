@@ -21,11 +21,11 @@ active_session:
       skip_rationale: null
     - stage: 16-evolve
       required: true
-      status: in_progress
+      status: completed
       skip_rationale: null
     - stage: 07-build
       required: true
-      status: pending
+      status: in_progress
       skip_rationale: null
     - stage: 08-verify-build
       required: true
@@ -51,7 +51,7 @@ active_session:
       required: false
       status: pending
       skip_rationale: "Only if deploying"
-  current_stage: 16-evolve
+  current_stage: 07-build
   evolve_cycle_id: EV-005
   started_at: "2026-06-25"
   notes:
@@ -1485,12 +1485,12 @@ evolve_cycles:
         - 05-verify-tech
         - 06-tech-tooling
         - 14-hotfix
-    current_stage: 16-evolve
+    current_stage: 07-build
     stages:
       16-evolve:
-        status: in_progress
+        status: completed
         started: "2026-06-25"
-        completed: null
+        completed: "2026-06-25"
         phase: 2
         notes:
           - "Phase 0–1 complete — scope confirmed (R1–R8); persistence via conversion_params (no backend change)"
@@ -1500,6 +1500,14 @@ evolve_cycles:
           - docs/feature-list.md
           - docs/user-journeys.md
           - docs/test-plan.md
+      07-build:
+        status: completed
+        started: "2026-06-25"
+        completed: "2026-06-25"
+        notes:
+          - "Frontend-only delta — sanitizer util + FileConverter wiring + tests"
+          - "outputFilename util (6e8809a); FileConverter input/naming/ZIP/persistence (4b3624c); e2e (49c4dc8)"
+          - "Local checks green: eslint, tsc, vitest 530/530, prettier (changed files)"
     gates:
       a_to_b: passed
       b_to_c: waived
@@ -1704,6 +1712,27 @@ git_history:
       session_id: S006-issue-664-output-filename
       files_changed: 5
       timestamp: "2026-06-25T00:00:00Z"
+    - sha: 6e8809a
+      branch: feat/S006-issue-664-output-filename
+      message: "[EV-005] feat: add manual-input output filename sanitizer util (#664)"
+      stage: "07-build"
+      session_id: S006-issue-664-output-filename
+      files_changed: 2
+      timestamp: "2026-06-25T21:00:00Z"
+    - sha: 4b3624c
+      branch: feat/S006-issue-664-output-filename
+      message: "[EV-005] feat: apply custom output filename to manual results (#664)"
+      stage: "07-build"
+      session_id: S006-issue-664-output-filename
+      files_changed: 2
+      timestamp: "2026-06-25T21:01:00Z"
+    - sha: 49c4dc8
+      branch: feat/S006-issue-664-output-filename
+      message: "[EV-005] test: e2e custom output filename naming for manual input (#664)"
+      stage: "07-build"
+      session_id: S006-issue-664-output-filename
+      files_changed: 2
+      timestamp: "2026-06-25T21:02:00Z"
 
 pr_review_cycles:
   - id: PRR-001
