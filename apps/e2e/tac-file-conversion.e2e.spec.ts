@@ -111,6 +111,52 @@ test.describe('TAC File Conversion', () => {
     await expect(page.getByText('manual_input.txt')).toBeVisible();
   });
 
+  test('custom output filename names manual results (#664)', async ({ page }) => {
+    await page.route('**/api/v1/convert', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          results: [
+            {
+              name: 'manual_input_1.txt',
+              content: '<iwxxm:METAR>line-one</iwxxm:METAR>',
+              source: 'manual_input_1',
+            },
+            {
+              name: 'manual_input_2.txt',
+              content: '<iwxxm:METAR>line-two</iwxxm:METAR>',
+              source: 'manual_input_2',
+            },
+          ],
+          errors: [],
+          issues: [],
+          total_processed: 2,
+          successful: 2,
+          failed: 0,
+        }),
+      });
+    });
+
+    await openConverterWithMockSession(page);
+    await page
+      .getByLabel(/Output filename for manually entered METAR downloads/i)
+      .fill('report');
+    await page
+      .getByLabel(/Enter METAR data manually/i)
+      .fill('METAR KJFK LINE ONE\nMETAR KDEN LINE TWO');
+    await page.getByTestId('convert-button').click();
+
+    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
+      { timeout: 10000 },
+    );
+    await expect(page.getByText('report_1.txt')).toBeVisible();
+    await expect(page.getByText('report_2.txt')).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /download report_1\.txt as xml/i }),
+    ).toBeVisible();
+  });
+
   test('mocked empty conversion result shows no-files-converted notification', async ({
     page,
   }) => {
