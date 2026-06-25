@@ -28,6 +28,12 @@ DISABLE_AUTH = os.getenv("DISABLE_AUTH", "").lower() in ("true", "1", "yes")
 
 logger.info(f"Security module loaded: DISABLE_AUTH={DISABLE_AUTH}, env value='{os.getenv('DISABLE_AUTH', '')}'")
 
+
+def _is_production() -> bool:
+    """True when running in a production deployment (``METAR_CONFIG_ENV=prod``)."""
+    return os.getenv("METAR_CONFIG_ENV", "local").strip().lower() in ("prod", "production")
+
+
 security = HTTPBearer(auto_error=False)
 
 
@@ -58,8 +64,18 @@ async def verify_supabase_token(
         credentials is not None,
     )
 
-    # Development mode bypass
-    if DISABLE_AUTH or disable_auth_runtime:
+    # Development mode bypass — never honoured in production. A stray
+    # DISABLE_AUTH=true in a prod deployment must not silently disable auth or
+    # substitute the non-UUID dev user id (BUG-2026-06-25).
+    bypass_requested = DISABLE_AUTH or disable_auth_runtime
+    if bypass_requested and _is_production():
+        logger.warning(
+            "[AUTH] DISABLE_AUTH is set in a production environment "
+            "(METAR_CONFIG_ENV=prod) — ignoring bypass and enforcing real auth"
+        )
+        bypass_requested = False
+
+    if bypass_requested:
         logger.info("Auth bypassed (development mode)")
         # Use actual admin user from environment, or fallback to dev user
         admin_user_id = os.getenv("ADMIN_USER_ID", "dev-user-12345")
