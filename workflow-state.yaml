@@ -756,6 +756,12 @@ decisions_log:
     topic: TC-M004 source label
     decision: "Label as Phase 4 finalize / T11.1"
     status: confirmed
+  - id: INFRA-001
+    stage: 12-verify-deploy
+    date: "2026-06-24"
+    topic: Supabase CI sync
+    decision: "Add supabase-sync.yml — db push on main; PR dry-run; deploy legacy upload edge functions until ADR-010 follow-up; secrets SUPABASE_ACCESS_TOKEN + SUPABASE_DB_PASSWORD"
+    status: confirmed
 
 artifacts:
   - path: docs/tech-audit.md

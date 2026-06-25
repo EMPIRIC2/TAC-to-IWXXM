@@ -2,7 +2,7 @@
 
 > **Session**: S003-supabase-keys-config  
 > **Supabase project**: `ktvxijislbtgqapllmuk` (`https://ktvxijislbtgqapllmuk.supabase.co`)  
-> **Last updated**: 2026-06-23
+> **Last updated**: 2026-06-24
 
 Operator checklist for keeping secrets and config aligned across environments.
 
@@ -91,13 +91,28 @@ Redeploy static site.
 
 ## Step 5 — GitHub Actions secrets
 
-Rename / set:
+Set secrets and variables for CI (including `.github/workflows/supabase-sync.yml`):
 
-| Secret | Purpose |
-|--------|---------|
-| `SUPABASE_PUBLISHABLE_KEY` | Integration tests |
-| `SUPABASE_SECRET_KEY` | Admin/integration fixtures (if needed) |
-| `DATABASE_URL` | Integration DB tests |
+| Name | Kind | Purpose |
+|------|------|---------|
+| `SUPABASE_PUBLISHABLE_KEY` | Secret | Integration tests |
+| `SUPABASE_SECRET_KEY` | Secret | Admin/integration fixtures (if needed) |
+| `DATABASE_URL` | Secret | Integration DB tests |
+| `SUPABASE_ACCESS_TOKEN` | Secret | Supabase CLI auth (`sbp_…` access token) |
+| `SUPABASE_DB_PASSWORD` | Secret | `supabase link` + `db push` in supabase-sync workflow |
+| `SUPABASE_PROJECT_REF` | Variable | Optional; defaults to `ktvxijislbtgqapllmuk` |
+
+**Supabase access token:** Dashboard → Account → Access Tokens → create token with deploy
+scope. Store as `SUPABASE_ACCESS_TOKEN` — do not commit.
+
+**Database password:** Project Settings → Database → reset or copy password. Required for
+`supabase link` in CI (migrations job).
+
+**Workflow behavior:**
+
+- **Pull requests to `main`:** migration dry-run only (`db push --dry-run`); no remote writes
+- **Push to `main` / manual dispatch:** applies `supabase/migrations/` and deploys edge
+  functions under `apps/frontend/supabase/functions/`
 
 Deprecate: `FRONTEND_VITE_SUPABASE_URL`, `FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`.
 
@@ -170,6 +185,8 @@ Post-apply verification in Supabase **Database → Advisors**:
 | CORS errors after deploy | `config.prod.api.corsOrigins` stale | Update `config/prod.json`, redeploy API |
 | Frontend auth fails | `/config.json` missing publishable key | Rebuild static with inject step |
 | `make env-check` fails | Deprecated-only env names | Add canonical names per [env-contract.md](env-contract.md) |
+| `db push` warns `failed to cache migrations catalog` / `pgdelta-target-ca.crt ENOENT` after **Finished supabase db push** | pg-delta catalog cache ran before SSL cert material existed (CLI 2.107) | **Benign** if migration applied. Preflight: `bash scripts/supabase/db-push.sh` (runs `migration list` first). Or re-run `supabase db push` once — cert now exists at `supabase/.temp/pgdelta/pgdelta-target-ca.crt` |
+| `policy ... does not exist, skipping` NOTICE during migration | `DROP POLICY IF EXISTS` on first install | **Benign** — Postgres notices, not errors |
 
 ## References
 

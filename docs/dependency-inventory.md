@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-06-14
+> **Last updated**: 2026-06-24
 
 ## Runtime Dependencies
 
@@ -55,6 +55,7 @@
 | pre-commit | dev group (pyproject) | Git hooks — fast gates (format/lint/typecheck/gitleaks/yaml); `make ci` on manual stage |
 | actionlint | pre-commit hook | GitHub Actions workflow lint (EV-002) |
 | yamllint | pre-commit hook | `.github/` YAML lint (EV-002) |
+| supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` (migrations + edge functions) |
 | docker / compose | system | Local multi-service |
 | Coverage | 95% all members | pytest + Vitest gates (ADR-007) |
 

@@ -30,7 +30,8 @@ echo
 for file in \
   "$MIGRATIONS_DIR"/20250614000004_supabase_advisor_remediation.sql \
   "$MIGRATIONS_DIR"/20250614000005_supabase_advisor_policy_cleanup.sql \
-  "$MIGRATIONS_DIR"/20250614000006_supabase_advisor_remediation.sql
+  "$MIGRATIONS_DIR"/20250614000006_supabase_advisor_remediation.sql \
+  "$MIGRATIONS_DIR"/20250623000007_metar_work_sessions.sql
 do
   [[ -f "$file" ]] || { echo "Missing: $file" >&2; exit 1; }
   echo "  - $(basename "$file")"
@@ -44,19 +45,12 @@ echo "  3. API Keys → create Publishable + Secret; disable legacy JWT keys aft
 echo
 
 if [[ "$APPLY" -eq 0 ]]; then
-  echo "Dry run only. Re-run with --apply to execute: supabase db push"
+  echo "Dry run only. Re-run with --apply to execute: bash scripts/supabase/db-push.sh"
   echo "Or paste each migration into Supabase Dashboard → SQL Editor."
   exit 0
 fi
 
-if ! command -v supabase >/dev/null 2>&1; then
-  echo "ERROR: supabase CLI not found. Install: https://supabase.com/docs/guides/cli" >&2
-  exit 1
-fi
-
-cd "$ROOT"
-echo "Running supabase db push..."
-supabase db push --project-ref "$PROJECT_REF"
+bash "$(dirname "${BASH_SOURCE[0]}")/db-push.sh"
 
 echo
 echo "Post-apply: open Supabase Dashboard → Database → Advisors (security + performance)."

@@ -1,0 +1,149 @@
+---
+name: Supabase Sync
+
+# Sync the linked Supabase project (ktvxijislbtgqapllmuk):
+#   - Database migrations in supabase/ (primary — docs/deploy.md §Migrations)
+#   - Edge functions in apps/frontend/supabase/functions/ (legacy upload path;
+#     auth lives in packages/auth on metar-api — retire when upload migrates)
+#
+# Applies on push to main and manual dispatch. On pull requests it runs a
+# read-only dry-run / diff only — it never writes to the project.
+#
+# Operator docs: docs/deploy.md §Supabase CI sync, docs/env-sync-runbook.md §Step 5
+# Pattern: https://supabase.com/docs/guides/functions/examples/github-actions
+#
+# Required configuration (Settings → Secrets and variables → Actions):
+#   secret  SUPABASE_ACCESS_TOKEN  sbp_... personal/CI access token
+#   secret  SUPABASE_DB_PASSWORD   database password for the linked project
+#   var     SUPABASE_PROJECT_REF   optional; defaults to ktvxijislbtgqapllmuk
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-sync-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+  SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+  SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'ktvxijislbtgqapllmuk' }}
+
+jobs:
+  # ==========================================================================
+  # MIGRATIONS — supabase db push against the linked project (supabase/)
+  # ==========================================================================
+  migrations:
+    runs-on: ubuntu-latest
+    name: Sync database migrations
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Guard required secrets
+        id: guard
+        run: |
+          missing=0
+          if [ -z "${SUPABASE_ACCESS_TOKEN}" ]; then
+            missing=1
+          fi
+          if [ -z "${SUPABASE_DB_PASSWORD}" ]; then
+            missing=1
+          fi
+          if [ "${missing}" -ne 0 ]; then
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "::notice::Supabase secrets not configured; skipping migration dry-run on pull request"
+              echo "skip=true" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+            if [ -z "${SUPABASE_ACCESS_TOKEN}" ]; then
+              echo "::error::Missing required secret SUPABASE_ACCESS_TOKEN (sbp_...)"
+            fi
+            if [ -z "${SUPABASE_DB_PASSWORD}" ]; then
+              echo "::error::Missing required secret SUPABASE_DB_PASSWORD"
+            fi
+            exit 1
+          fi
+          echo "skip=false" >> "${GITHUB_OUTPUT}"
+
+      - name: Install Supabase CLI
+        if: steps.guard.outputs.skip != 'true'
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link project
+        if: steps.guard.outputs.skip != 'true'
+        run: supabase link --project-ref "${SUPABASE_PROJECT_REF}"
+
+      - name: Dry-run migration diff (pull request)
+        if: steps.guard.outputs.skip != 'true' && github.event_name == 'pull_request'
+        run: |
+          supabase migration list --linked
+          supabase db push --linked --dry-run
+
+      - name: Apply migrations (main / manual)
+        if: steps.guard.outputs.skip != 'true' && github.event_name != 'pull_request'
+        run: supabase db push --linked
+
+  # ==========================================================================
+  # FUNCTIONS — legacy upload edge functions (apps/frontend/supabase/functions/)
+  # Auth is on metar-api (packages/auth). Keep until database upload migrates.
+  # ==========================================================================
+  functions:
+    runs-on: ubuntu-latest
+    name: Deploy edge functions
+    defaults:
+      run:
+        working-directory: apps/frontend
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Guard required secrets
+        id: guard
+        run: |
+          if [ -z "${SUPABASE_ACCESS_TOKEN}" ]; then
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "::notice::Supabase secrets not configured; skipping edge-function dry-run on pull request"
+              echo "skip=true" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+            echo "::error::Missing required secret SUPABASE_ACCESS_TOKEN (sbp_...)"
+            exit 1
+          fi
+          echo "skip=false" >> "${GITHUB_OUTPUT}"
+
+      - name: Install Supabase CLI
+        if: steps.guard.outputs.skip != 'true'
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Provision project root for functions
+        if: steps.guard.outputs.skip != 'true'
+        # apps/frontend/supabase has functions/ but no config.toml; the CLI
+        # needs a project root. Copy the canonical root config (CI-only).
+        run: |
+          if [ ! -f supabase/config.toml ]; then
+            cp ../../supabase/config.toml supabase/config.toml
+          fi
+
+      - name: List functions (pull request dry-run)
+        if: steps.guard.outputs.skip != 'true' && github.event_name == 'pull_request'
+        run: |
+          echo "Edge functions that would be deployed:"
+          ls -1 supabase/functions
+
+      - name: Deploy edge functions (main / manual)
+        if: steps.guard.outputs.skip != 'true' && github.event_name != 'pull_request'
+        run: supabase functions deploy --project-ref "${SUPABASE_PROJECT_REF}"

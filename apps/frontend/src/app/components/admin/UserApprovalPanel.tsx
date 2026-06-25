@@ -13,7 +13,7 @@ import {
   Search,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '/utils/supabase/client';
+import { adminUrl } from '@/utils/apiBase';
 
 interface PendingUser {
   id: string;
@@ -27,9 +27,7 @@ interface UserApprovalPanelProps {
   accessToken: string;
 }
 
-export function UserApprovalPanel({
-  accessToken: _accessToken,
-}: UserApprovalPanelProps) {
+export function UserApprovalPanel({ accessToken }: UserApprovalPanelProps) {
   const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [processingUsers, setProcessingUsers] = useState<Set<string>>(new Set());
@@ -38,26 +36,25 @@ export function UserApprovalPanel({
   const loadPendingUsers = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Query Supabase database directly
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('approval_status', 'pending')
-        .order('created_at', { ascending: false });
+      const response = await fetch(adminUrl('/pending-users'), {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-      if (error) {
-        console.error('Error loading pending users:', error);
-        throw error;
+      if (!response.ok) {
+        throw new Error('Failed to load pending users');
       }
 
-      setPendingUsers(data || []);
+      const data = await response.json();
+      setPendingUsers(data.users || []);
     } catch (error) {
       console.error('Error loading pending users:', error);
       toast.error('Failed to load pending users');
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [accessToken]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch pending users on mount
@@ -67,28 +64,17 @@ export function UserApprovalPanel({
   const handleApprove = async (userId: string, userEmail: string) => {
     setProcessingUsers((prev) => new Set(prev).add(userId));
     try {
-      // Get current user for approved_by
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const response = await fetch(adminUrl('/approve-user'), {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      });
 
-      if (!user) {
-        throw new Error('Not authenticated');
-      }
-
-      // Update approval status in database
-      const { error } = await supabase
-        .from('user_profiles')
-        .update({
-          approval_status: 'approved',
-          approved_at: new Date().toISOString(),
-          approved_by: user.id,
-        })
-        .eq('id', userId);
-
-      if (error) {
-        console.error('Error approving user:', error);
-        throw error;
+      if (!response.ok) {
+        throw new Error('Failed to approve user');
       }
 
       toast.success(`User ${userEmail} approved successfully!`);
@@ -108,28 +94,17 @@ export function UserApprovalPanel({
   const handleReject = async (userId: string, userEmail: string) => {
     setProcessingUsers((prev) => new Set(prev).add(userId));
     try {
-      // Get current user for approved_by
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const response = await fetch(adminUrl('/reject-user'), {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      });
 
-      if (!user) {
-        throw new Error('Not authenticated');
-      }
-
-      // Update approval status in database
-      const { error } = await supabase
-        .from('user_profiles')
-        .update({
-          approval_status: 'rejected',
-          approved_at: new Date().toISOString(),
-          approved_by: user.id,
-        })
-        .eq('id', userId);
-
-      if (error) {
-        console.error('Error rejecting user:', error);
-        throw error;
+      if (!response.ok) {
+        throw new Error('Failed to reject user');
       }
 
       toast.success(`User ${userEmail} rejected`);

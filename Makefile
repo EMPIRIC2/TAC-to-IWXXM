@@ -23,7 +23,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
 	install-hooks pre-commit-run \
-	supabase-start supabase-stop supabase-reset supabase-status supabase-push \
+	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
 # --- Monorepo workspace ---
 
@@ -341,7 +341,10 @@ supabase-status:
 	bash scripts/supabase/local-dev.sh status
 
 supabase-push:
-	bash scripts/supabase/apply-advisor-migrations.sh --apply
+	bash scripts/supabase/db-push.sh
+
+supabase-pull:
+	bash scripts/supabase/db-pull.sh $(NAME)
 
 validate-ci: validate-fast config-guard env-check audit-frontend
 
