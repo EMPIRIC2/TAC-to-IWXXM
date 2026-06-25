@@ -159,7 +159,7 @@ class WorkSessionService:
         if not data.get("title"):
             data["title"] = f"METAR {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC"
         try:
-            response = self._client.table(TABLE).insert(data).select("*").execute()
+            response = self._client.table(TABLE).insert(data).execute()
         except Exception as exc:
             _handle_db_error(exc)
         return _parse_row(_single_row(response.data))
@@ -170,12 +170,7 @@ class WorkSessionService:
             return self.get_session(session_id)
         try:
             response = (
-                self._client.table(TABLE)
-                .update(data)
-                .eq("id", str(session_id))
-                .is_("deleted_at", "null")
-                .select("*")
-                .execute()
+                self._client.table(TABLE).update(data).eq("id", str(session_id)).is_("deleted_at", "null").execute()
             )
         except Exception as exc:
             _handle_db_error(exc)
@@ -192,7 +187,6 @@ class WorkSessionService:
                 .update({"deleted_at": now})
                 .eq("id", str(session_id))
                 .is_("deleted_at", "null")
-                .select("*")
                 .execute()
             )
         except Exception as exc:
@@ -209,7 +203,6 @@ class WorkSessionService:
                 .update({"deleted_at": None})
                 .eq("id", str(session_id))
                 .not_.is_("deleted_at", "null")
-                .select("*")
                 .execute()
             )
         except Exception as exc:
