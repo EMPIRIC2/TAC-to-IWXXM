@@ -19,6 +19,38 @@ _engine: Optional[AsyncEngine] = None
 _async_session_maker: Optional[async_sessionmaker] = None
 
 
+def _clean_env(name: str) -> str:
+    """
+    Read an environment variable, treating a blank value as unset.
+
+    A blank or whitespace-only value (e.g. the empty string compose passes via
+    ``DATABASE_URL=${DATABASE_URL:-}``) is treated as if the variable were never
+    set, and an actionable warning is logged naming the variable.
+
+    Parameters
+    ----
+    name : str
+        Environment variable name to read.
+
+    Returns
+    ----
+    str
+        The stripped value, or an empty string when unset/blank.
+    """
+    raw = os.getenv(name)
+    if raw is None:
+        return ""
+    value = raw.strip()
+    if not value:
+        logger.warning(
+            "%s is set but blank; ignoring it. Set %s to a valid PostgreSQL URL "
+            "(e.g. postgresql+asyncpg://user:password@host:5432/dbname) or unset it.",
+            name,
+            name,
+        )
+    return value
+
+
 def get_database_url() -> str:
     """
     Get PostgreSQL connection URL from environment.
@@ -34,15 +66,19 @@ def get_database_url() -> str:
     Raises:
         ValueError: If no valid database configuration found
     """
-    # Try direct DATABASE_URL first
-    if database_url := os.getenv("DATABASE_URL"):
+    # Try direct DATABASE_URL first. Treat a blank / whitespace-only value as
+    # unset: docker-compose passes ``DATABASE_URL=${DATABASE_URL:-}`` (an empty
+    # string), and an empty string is falsy while a whitespace string is truthy —
+    # either would otherwise silently fall back to localhost or be returned as a
+    # broken URL (see BUG-2026-06-25 / GitHub #671).
+    if database_url := _clean_env("DATABASE_URL"):
         # Convert SQLAlchemy psycopg2 dialect to asyncpg dialect for async operations
         # Both are valid SQL Alchemy URLs - psycopg2 dialect becomes asyncpg for async support
         database_url = database_url.replace("postgresql+psycopg2://", "postgresql+asyncpg://")
         return database_url
 
     # Try Supabase-specific URL
-    if supabase_url := os.getenv("SUPABASE_DB_URL"):
+    if supabase_url := _clean_env("SUPABASE_DB_URL"):
         supabase_url = supabase_url.replace("postgresql+psycopg2://", "postgresql+asyncpg://")
         return supabase_url
 

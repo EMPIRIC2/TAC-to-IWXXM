@@ -1,4 +1,23 @@
 services:
+  db:
+    image: postgres:16
+    container_name: metar-iwxxm-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+    volumes:
+      - metar-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - metar-network
+    restart: unless-stopped
+
   backend:
     build:
       context: .
@@ -11,7 +30,12 @@ services:
       - METAR_CONFIG_ENV=${METAR_CONFIG_ENV:-local}
       - SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}
       - SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY:-${SUPABASE_SERVICE_ROLE_KEY:-}}
-      - DATABASE_URL=${DATABASE_URL:-}
+      # Default to the bundled `db` service so `docker compose up` is self-contained.
+      # Override by setting DATABASE_URL in `.env` (e.g. a Supabase pooler URL).
+      - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-postgres}}
+    depends_on:
+      db:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
       interval: 30s
@@ -57,6 +81,9 @@ services:
     networks:
       - metar-network
     restart: unless-stopped
+
+volumes:
+  metar-db-data:
 
 networks:
   metar-network:
