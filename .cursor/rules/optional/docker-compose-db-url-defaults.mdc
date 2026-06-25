@@ -1,0 +1,55 @@
+---
+description: >
+  Docker Compose must not pass empty connection URLs; Python env readers must
+  treat blank values as unset. Prevents localhost:5432 fallbacks in containers.
+globs:
+  - docker-compose.yml
+  - apps/backend/src/services/database.py
+  - apps/backend/src/**/config*.py
+  - .env.example
+  - docs/DEVELOPMENT.md
+alwaysApply: false
+---
+
+# Docker Compose connection URL defaults
+
+Evidence: BUG-2026-06-25-docker-db-connect-localhost-5432 (#671); repro
+`tests/bugs/test_bug_2026_06_25_docker_db_connect.py`.
+
+## docker-compose.yml
+
+When wiring `DATABASE_URL` or any required connection URL:
+
+1. **Never use an empty default** — `${DATABASE_URL:-}` passes `""` into the
+   container. In Python that is falsy and can silently fall back to
+   `localhost`, which is wrong inside a container.
+2. **Prefer a working in-network default** — e.g.
+   `DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@db:5432/postgres}`
+   with a `db` service on the same network.
+3. **Gate startup on dependency health** — `depends_on: db: condition: service_healthy`
+   when the service needs Postgres at boot.
+4. **Document overrides** — note in `.env.example` / `docs/DEVELOPMENT.md` that
+   blank means bundled default; set a full URL to override (e.g. Supabase pooler).
+
+```yaml
+# ❌ BAD — empty string → localhost fallback inside container
+- DATABASE_URL=${DATABASE_URL:-}
+
+# ✅ GOOD — self-contained default, still overridable
+- DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@db:5432/postgres}
+```
+
+## Python env readers
+
+For `DATABASE_URL`, `SUPABASE_DB_URL`, and similar connection env vars:
+
+1. **Treat blank/whitespace as unset** — `""`, `"   "`, `"\n"` must not be
+   returned as a URL.
+2. **Log which variable was blank** — actionable warning naming the var.
+3. **Fall through** to the next source (alternate env, components, or explicit error).
+
+Pattern: `apps/backend/src/services/database.py` → `_clean_env()`.
+
+When adding a new env reader, add a unit test for blank values; for compose
+changes, extend `tests/bugs/test_bug_2026_06_25_docker_db_connect.py` or add a
+sibling repro under `tests/bugs/`.
