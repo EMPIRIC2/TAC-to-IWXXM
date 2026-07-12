@@ -1011,6 +1011,16 @@ wheels = [
 name = "iwxxm-validate"
 version = "0.1.0"
 source = { editable = "packages/iwxxm-validate" }
+dependencies = [
+    { name = "lxml" },
+    { name = "msgspec" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "lxml", specifier = ">=4.9.0" },
+    { name = "msgspec", specifier = ">=0.19" },
+]
 
 [[package]]
 name = "jinja2"
