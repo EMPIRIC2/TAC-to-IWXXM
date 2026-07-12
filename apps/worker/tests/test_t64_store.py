@@ -62,3 +62,25 @@ def test_t64_fail_writes_quarantine_table() -> None:
     assert len(store.rows[QUARANTINE_TABLE]) == 1
     assert store.rows[QUARANTINE_TABLE][0]["stage_failed"] == "lint"
     assert store.rows[RESULTS_TABLE] == []
+
+
+def test_t64_source_url_strips_query_tokens() -> None:
+    store = MemoryStore()
+    job = IngestJob(
+        job_id="s2",
+        product="METAR",
+        tac="METAR KJFK 231751Z NIL=",
+        source_url="https://user:tok@ingest.example.test/feed.json?token=secret",
+    )
+    result = PipelineResult(
+        job_id="s2",
+        ok=True,
+        product="METAR",
+        profile="annex3",
+        xml="<iwxxm:METAR/>",
+        issues=[],
+    )
+    write_result(store, job, result)
+    assert store.rows[RESULTS_TABLE][0]["source_url"] == (
+        "https://ingest.example.test/feed.json"
+    )
