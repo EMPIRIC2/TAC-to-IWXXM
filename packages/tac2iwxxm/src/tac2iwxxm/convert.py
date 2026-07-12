@@ -1,14 +1,20 @@
-"""Public ``convert()`` entrypoint (F6.a/F6.b METAR/SPECI annex3 + iwxxm_us)."""
+"""Public ``convert()`` entrypoint (F6 products annex3 + iwxxm_us METAR/SPECI)."""
 
 from __future__ import annotations
 
+from typing import Any, Callable
+
 from tac2iwxxm.models import ConvertIssue, ConvertResult
 from tac2iwxxm.products.metar_speci import parse_metar_speci
+from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
+from tac2iwxxm.products.taf import parse_taf
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
+from tac2iwxxm.profiles.annex3_products import emit_airmet_annex3, emit_sigmet_annex3, emit_taf_annex3
 from tac2iwxxm.profiles.iwxxm_us import emit_metar_speci_iwxxm_us
 
-_SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI"})
+_SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
 _SUPPORTED_PROFILES = frozenset({"annex3", "iwxxm_us"})
+_US_PRODUCTS = frozenset({"METAR", "SPECI"})
 
 
 class ConvertError(ValueError):
@@ -23,6 +29,34 @@ class ConvertError(ValueError):
 
     def __init__(self, message: str) -> None:
         super().__init__(message)
+
+
+def _parse(product: str, tac: str) -> dict[str, Any]:
+    parsers: dict[str, Callable[..., dict[str, Any]]] = {
+        "METAR": parse_metar_speci,
+        "SPECI": parse_metar_speci,
+        "TAF": parse_taf,
+        "SIGMET": parse_sigmet,
+        "AIRMET": parse_airmet,
+    }
+    return parsers[product](tac, product=product)
+
+
+def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) -> str:
+    if product in {"METAR", "SPECI"}:
+        if profile == "iwxxm_us":
+            return emit_metar_speci_iwxxm_us(ir, product=product, iwxxm_version=iwxxm_version)
+        return emit_metar_speci_annex3(ir, product=product, iwxxm_version=iwxxm_version)
+    if profile == "iwxxm_us":
+        # Non-METAR US extensions land in T5.4–T5.5; annex3 body for now.
+        pass
+    if product == "TAF":
+        return emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
+    if product == "SIGMET":
+        return emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
+    if product == "AIRMET":
+        return emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
+    raise ValueError(f"no emitter for product {product!r}")
 
 
 def convert(
@@ -40,9 +74,9 @@ def convert(
     tac :
         TAC text (single report or bulletin containing one report).
     product :
-        Product id (``METAR`` or ``SPECI`` in this milestone).
+        Product id (``METAR``, ``SPECI``, ``TAF``, ``SIGMET``, ``AIRMET``; VAA/TCA in T5.3).
     profile :
-        ``annex3`` (default) or ``iwxxm_us`` (US REMARKS → extension blocks).
+        ``annex3`` (default) or ``iwxxm_us`` (US REMARKS → extension blocks for METAR/SPECI).
     iwxxm_version :
         Target IWXXM release line.
 
@@ -50,12 +84,6 @@ def convert(
     -------
     ConvertResult
         Structured result with XML, IR, and issues.
-
-    Raises
-    ------
-    ConvertError
-        Not raised for decode failures — those return ``ok=False``. Raised only for
-        programmer misuse that cannot be represented as a result (reserved).
     """
     product_u = product.upper()
     profile_l = profile.lower()
@@ -88,13 +116,24 @@ def convert(
                 )
             ],
         )
+    if profile_l == "iwxxm_us" and product_u not in _US_PRODUCTS:
+        return ConvertResult(
+            ok=False,
+            product=product_u,
+            profile=profile_l,
+            iwxxm_version=iwxxm_version,
+            issues=[
+                ConvertIssue(
+                    severity="error",
+                    code="UNSUPPORTED_PROFILE",
+                    message=f"profile iwxxm_us not supported yet for product {product_u!r}",
+                )
+            ],
+        )
 
     try:
-        ir = parse_metar_speci(tac, product=product_u)
-        if profile_l == "iwxxm_us":
-            xml = emit_metar_speci_iwxxm_us(ir, product=product_u, iwxxm_version=iwxxm_version)
-        else:
-            xml = emit_metar_speci_annex3(ir, product=product_u, iwxxm_version=iwxxm_version)
+        ir = _parse(product_u, tac)
+        xml = _emit(product_u, profile_l, ir, iwxxm_version)
     except ValueError as exc:
         return ConvertResult(
             ok=False,

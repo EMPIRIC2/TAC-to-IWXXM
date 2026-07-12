@@ -22,17 +22,17 @@ IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 EXPECTED_PRODUCTS = frozenset(PRODUCTS)
 
-# Convert already ships for METAR/SPECI; remaining products land in T5.2–T5.3.
-_SHIPPED = frozenset({"metar_basic", "speci_basic"})
-_PENDING_PLUGINS = frozenset(
+# METAR/SPECI (M4) + TAF/SIGMET/AIRMET (T5.2); VAA/TCA land in T5.3.
+_SHIPPED = frozenset(
     {
         "airmet_basic",
+        "metar_basic",
         "sigmet_basic",
+        "speci_basic",
         "taf_basic",
-        "vaa_basic",
-        "tca_basic",
     }
 )
+_PENDING_PLUGINS = frozenset({"vaa_basic", "tca_basic"})
 
 
 def _load_manifest() -> dict:
