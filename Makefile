@@ -22,7 +22,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
-	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live \
+	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live-bulletin test-live \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-shared \
 	coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
@@ -248,7 +248,12 @@ test-live-e2e:
 		PLAYWRIGHT_API_BASE_URL="$$PLAYWRIGHT_API_BASE_URL" \
 		$(PNPM) exec playwright test
 
-test-live: test-live-connectivity test-live-api test-live-integration test-live-e2e
+# H7 — live bulletin gate (TC-LIVE-F6-030 / Q10=A)
+test-live-bulletin:
+	@$(load_dotenv); \
+	$(UV) run pytest tests/live/test_tc_live_f6_030_bulletin.py -m live_api -v --tb=short --no-cov
+
+test-live: test-live-connectivity test-live-api test-live-integration test-live-bulletin test-live-e2e
 
 coverage-backend:
 	cd apps/backend && $(UV) run pytest tests/unit \
