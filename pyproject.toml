@@ -19,9 +19,11 @@ dev = [
   "pytest-asyncio>=0.24",
   "httpx>=0.28",
   "httpx2>=2.0",
+  "respx>=0.21",
   "metar-shared",
   "metar-auth",
   "metar-backend",
+  "metar-worker",
   "tac2iwxxm",
   "iwxxm-validate",
   "tac-validate",
@@ -31,6 +33,7 @@ dev = [
 metar-shared = { workspace = true }
 metar-auth = { workspace = true }
 metar-backend = { workspace = true }
+metar-worker = { workspace = true }
 tac2iwxxm = { workspace = true }
 iwxxm-validate = { workspace = true }
 tac-validate = { workspace = true }
@@ -43,6 +46,7 @@ members = [
   "packages/iwxxm-validate",
   "packages/tac-validate",
   "apps/backend",
+  "apps/worker",
 ]
 
 [tool.basedpyright]

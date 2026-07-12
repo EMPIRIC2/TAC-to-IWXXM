@@ -30,6 +30,10 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Auth bypass (dev) | `config.*.api.disableAuth` | `config/local.json` only |
 | Operator bootstrap | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | local `.env` only |
 | Converter engine (F6) | *(code — `packages/tac2iwxxm`)* | Not an env var; hard cutover, no engine flag |
+| F8 worker Supabase URL | `SUPABASE_URL` | Render worker / local `.env` |
+| F8 worker service role | `SUPABASE_SERVICE_ROLE_KEY` | Render worker / local `.env` (writers only) |
+| F8 poller feed URL | `INGEST_POLLER_URL` | Render worker / local `.env` |
+| F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Render worker env (default `30`) |
 
 ## Per-environment matrix
 
