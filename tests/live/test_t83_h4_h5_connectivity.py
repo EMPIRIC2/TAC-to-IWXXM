@@ -1,6 +1,6 @@
-"""T8.3 — H4 CORS + H5 frontend config resolve on staging.
+"""T8.3 - H4 CORS + H5 frontend config resolve on staging.
 
-Spec: connectivity-gates H4–H5; docs/deploy.md live runbook;
+Spec: connectivity-gates H4-H5; docs/deploy.md live runbook;
 docs/sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md T8.3.
 """
 
@@ -11,7 +11,6 @@ import os
 
 import httpx
 import pytest
-
 from tests.live_env import live_api_url, live_frontend_url, warn_deprecated_env
 
 pytestmark = [pytest.mark.live, pytest.mark.live_api]
