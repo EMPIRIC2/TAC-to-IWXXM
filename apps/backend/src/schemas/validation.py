@@ -240,3 +240,34 @@ class ValidateRequest(BaseModel):
         examples=["basic", "comprehensive"],
     )
     stop_on_error: bool = Field(default=False, description="Stop processing on first error")
+    profile: str = Field(
+        default="annex3",
+        description="Schema profile: annex3 (WMO) or iwxxm_us",
+        examples=["annex3", "iwxxm_us"],
+    )
+
+
+class LintIssueModel(BaseModel):
+    """HTTP DTO for a tac-validate issue (msgspec → pydantic)."""
+
+    severity: str
+    code: str
+    message: str
+    location: Optional[str] = None
+
+
+class LintFixModel(BaseModel):
+    """HTTP DTO for an optional tac-validate fix suggestion."""
+
+    code: str
+    message: str
+    replacement: str
+
+
+class LintTacResponse(BaseModel):
+    """Response for POST /api/v1/lint-tac."""
+
+    ok: bool
+    issues: List[LintIssueModel] = Field(default_factory=list)
+    fixes: List[LintFixModel] = Field(default_factory=list)
+    product: Optional[str] = None
