@@ -392,6 +392,32 @@ async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Op
     return content, None
 
 
+# Cap per-request bulletin fan-out (lint + convert per report).
+MAX_BULLETIN_REPORTS = 100
+
+
+async def read_upload_files_text(files: Optional[List[UploadFile]]) -> Tuple[str, Optional[str]]:
+    """Join multipart uploads via ``read_uploaded_text`` (10 MiB each).
+
+    Returns
+    -------
+    tuple[str, str | None]
+        Joined text and an error message when a non-empty upload fails limits/encoding.
+    """
+    if not files:
+        return "", None
+    chunks: list[str] = []
+    for upload in files:
+        content, err = await read_uploaded_text(upload)
+        if err == "empty file":
+            continue
+        if err:
+            return "", err
+        if content:
+            chunks.append(content)
+    return "\n".join(chunks), None
+
+
 def is_xml_input(filename: Optional[str], content: str) -> bool:
     """Determine if uploaded content looks like XML input."""
     lowered_name = (filename or "").lower()
@@ -759,14 +785,11 @@ async def lint_tac(
 
     tac_text = manual_text or ""
     if files:
-        chunks: list[str] = []
-        for upload in files:
-            raw = await upload.read()
-            if not raw:
-                continue
-            chunks.append(raw.decode("utf-8", errors="replace"))
-        if chunks:
-            tac_text = "\n".join(chunks)
+        joined, err = await read_upload_files_text(files)
+        if err:
+            raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
+        if joined:
+            tac_text = joined
 
     report = tac_lint_fn(tac_text, product=product or "METAR")
     return LintTacResponse(
@@ -820,14 +843,11 @@ async def convert_bulletin(
 
     bulletin_text = manual_text or ""
     if files:
-        chunks: list[str] = []
-        for upload in files:
-            raw = await upload.read()
-            if not raw:
-                continue
-            chunks.append(raw.decode("utf-8", errors="replace"))
-        if chunks:
-            bulletin_text = "\n".join(chunks)
+        joined, err = await read_upload_files_text(files)
+        if err:
+            raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
+        if joined:
+            bulletin_text = joined
 
     if not bulletin_text.strip():
         raise HTTPException(
@@ -840,6 +860,15 @@ async def convert_bulletin(
     except BulletinSplitError as exc:
         status = 400 if exc.code == "empty_bulletin" else 422
         raise HTTPException(status_code=status, detail={"code": exc.code, "message": exc.message}) from exc
+
+    if split.meta.report_count > MAX_BULLETIN_REPORTS:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "code": "too_many_reports",
+                "message": (f"Bulletin contains {split.meta.report_count} reports; limit is {MAX_BULLETIN_REPORTS}"),
+            },
+        )
 
     results: list[BulletinReportResultModel] = []
     for index, tac in enumerate(split.reports):
