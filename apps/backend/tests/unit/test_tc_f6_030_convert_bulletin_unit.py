@@ -123,3 +123,26 @@ def test_convert_bulletin_requires_product(client: TestClient) -> None:
         files={"manual_text": (None, FIXTURE_TEXT)},
     )
     assert response.status_code == 422
+
+
+def test_convert_bulletin_ignores_empty_upload_files(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """UploadFile path: empty files skipped; non-empty joined (PR #704)."""
+
+    def fake_convert(tac: str, **kwargs):
+        return f"<iwxxm:METAR>{tac[:20]}</iwxxm:METAR>", None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = client.post(
+        "/api/v1/convert-bulletin",
+        data={"product": "METAR", "profile": "annex3", "lint": "false"},
+        files=[
+            ("files", ("empty.txt", b"", "text/plain")),
+            ("files", ("metar_bulletin.txt", FIXTURE_TEXT.encode("utf-8"), "text/plain")),
+        ],
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["bulletin_meta"]["report_count"] == 2
+    assert payload["results"][0]["tac_input"].startswith("METAR KJFK")
+    assert payload["results"][1]["tac_input"].startswith("METAR KLGA")
