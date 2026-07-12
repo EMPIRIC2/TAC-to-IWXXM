@@ -785,7 +785,7 @@ stages:
     status: completed
     started: "2026-06-22"
     completed: "2026-07-12"
-    last_cycle: PRM-011
+    last_cycle: PRM-012
     session_id: S008-general-tac-iwxxm-converter
 
   12-verify-deploy:
@@ -1739,6 +1739,20 @@ decisions_log:
     decision: "Verified/fixed stale corpus path references post-reorg (workflow-state + relative links)."
     status: confirmed
 artifacts:
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-review.md
+    kind: stage-report
+    session_id: S008-general-tac-iwxxm-converter
+    stage: 18-pr-review
+    created_at: "2026-07-12"
+    status: completed
+    note: "PRR-009…PRR-012 stack #706–#709"
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
+    kind: stage-report
+    session_id: S008-general-tac-iwxxm-converter
+    stage: 19-address-pr-review
+    created_at: "2026-07-12"
+    status: completed
+    note: "PRM-012 remediation for #706–#709"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/05-verify-tech.md
     kind: stage-report
     session_id: S008-general-tac-iwxxm-converter
@@ -3415,6 +3429,42 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       timestamp: "2026-07-12"
+    - sha: cb7a42f
+      branch: feat/S008-M4-us-metar
+      message: "[PRM-012] fix: forward product/profile on convert-bulletin"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T19:01:43Z"
+      note: "PR #706"
+    - sha: c5f91dc
+      branch: feat/S008-M5-products
+      message: "[PRM-012] fix: forward product/profile on convert-bulletin"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T19:01:44Z"
+      note: "PR #707"
+    - sha: ccc156e
+      branch: feat/S008-M6-worker
+      message: "[PRM-012] fix: sanitize poller URL logs and skip seen job_ids"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T19:03:13Z"
+      note: "PR #708"
+    - sha: 95d3e3c
+      branch: feat/S008-M7-live
+      message: "[PRM-012] fix: sanitize poller URL logs and skip seen job_ids"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T19:03:15Z"
+      note: "PR #709"
 pr_review_cycles:
   - id: PRR-001
     pr_number: 679
@@ -4373,3 +4423,89 @@ pr_remediation_cycles:
       PRR-008 remediation for PR #705. Counts: fixed 3, wont_fix 1.
       Squash-merged to evolve at 243f1454c0a9cff6f929e26fae1d09d8f8539777;
       follow-up 9b74afa on evolve.
+
+  - id: PRM-012
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    linked_review_cycle_id: null
+    pr_number: 706
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706
+    title: "[M4–M7] PR stack #706–#709 remediation"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    head_ref: feat/S008-M4-us-metar
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    scope: blockers_then_advisories
+    head_shas:
+      "706": cb7a42f
+      "707": c5f91dc
+      "708": ccc156e
+      "709": 95d3e3c
+    ci_status: pending
+    counts:
+      fixed: 3
+      deferred: 2
+      wont_fix: 0
+    findings:
+      - id: F-001
+        source: review_body
+        severity: blocker
+        path: apps/backend/src/api.py
+        line: null
+        thread_id: null
+        status: fixed
+        commit: cb7a42f
+        note: >
+          convert-bulletin product/profile forwarding; also #707 c5f91dc
+      - id: F-002
+        source: review_body
+        severity: advisory
+        path: apps/worker
+        line: null
+        thread_id: null
+        status: fixed
+        commit: ccc156e
+        note: >
+          poller URL sanitize (no full URL in INFO logs); also #709 95d3e3c
+      - id: F-003
+        source: review_body
+        severity: advisory
+        path: apps/worker
+        line: null
+        thread_id: null
+        status: fixed
+        commit: ccc156e
+        note: >
+          in-process job_id dedup skip; also #709 95d3e3c
+      - id: F-004
+        source: review_body
+        severity: advisory
+        path: apps/backend/src/api.py
+        line: null
+        thread_id: null
+        status: deferred
+        commit: null
+        note: "M8 /convert full product HTTP wiring (documented on #707)"
+      - id: F-005
+        source: review_body
+        severity: advisory
+        path: apps/worker
+        line: null
+        thread_id: null
+        status: deferred
+        commit: null
+        note: "Persistent DB unique/upsert on job_id — deferred; in-process dedup for staging"
+    artifacts:
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
+        note: PRM-012 session report
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-review.md
+        note: linked 18-pr-review report (PRR-009…PRR-012)
+    follow_up:
+      pr_review_rerun: offered
+    notes: >
+      Stack remediation for #706–#709 (D-S008-PR706-709-19 waived AskQuestion).
+      Fixed 3 (1 blocker + 2 advisories): convert-bulletin product/profile;
+      poller URL sanitize + job_id dedup. Deferred 2: M8 convert product HTTP,
+      DB upsert. Head SHAs: #706 cb7a42f; #707 c5f91dc; #708 ccc156e; #709 95d3e3c.
