@@ -98,6 +98,7 @@ work-session persistence still requires JWT.
   **copies** them into multipart fields.
 - No `engine` field; converter is always `tac2iwxxm` after cutover.
 - No metrics object on the response (library/CI only).
+- **Single-report only**: WMO AHL **bulletins** use `POST /api/v1/convert-bulletin` (below).
 
 **Response**: `ConversionResponse` — see docs/guides/API.md (shape unchanged).
 
@@ -111,14 +112,71 @@ Each `ConversionResult` includes optional `tac_input` (original TAC echo) for in
 | `invalid_profile` | 400 | Profile not in enum |
 | `missing_iwxxm_us` | 400 | `profile=iwxxm_us` but vendor pin/catalog missing |
 | `parse_failed` | 422 | TAC fails product parse |
+| `tac_lint_failed` | 422 | Optional when convert path invokes lint (prefer `/lint-tac`) |
 
 Unexpected converter crashes remain **5xx**.
+
+### Bulletin conversion (S008 amend)
+
+```
+POST /api/v1/convert-bulletin
+```
+
+**Purpose**: Accept a **WMO abbreviated-header (AHL) bulletin** that may contain **multiple**
+TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/api/v1/convert`.
+
+**Auth**: Same as `/api/v1/convert`.
+
+**Request** (multipart/form-data):
+
+| Field | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `files` | no* | — | Bulletin file(s) |
+| `manual_text` | no* | — | Bulletin string |
+| `product` | **yes** | — | Same enum as convert |
+| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
+| `iwxxm_version` | no | app default | Vendored pin |
+
+* At least one of `files` or `manual_text` required.
+
+**Response**: Multi-result shape — **exact schema TBD in 04-tech-plan** (likely array of
+`ConversionResult` + per-report errors). Must support H7 (TC-LIVE-F6-030).
+
+**Errors**: Same codes as convert, plus:
+
+| code | HTTP | When |
+|------|------|------|
+| `bulletin_split_failed` | 422 | Cannot parse AHL / split reports |
+| `empty_bulletin` | 400 | No reports after split |
+
+### TAC lint (S008 amend)
+
+```
+POST /api/v1/lint-tac
+```
+
+**Purpose**: Thin wrapper over `packages/tac-validate` (parse gate + shared rule pack).
+**Not** Schematron.
+
+**Auth**: Same as convert (unless `DISABLE_AUTH=true`).
+
+**Request** (multipart preferred; JSON optional — TBD in 04):
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `manual_text` or `files` | yes | TAC text |
+| `product` | no | Hint when known; improves rule selection |
+
+**Response**: Structured issues list (severity, code, message, location). Shape TBD in 04;
+must support TC-F6-031.
 
 ### Validation
 
 ```
 POST /api/v1/validate
 ```
+
+**Implementation**: Thin wrapper over **`packages/iwxxm-validate`** (XSD + Schematron).
 
 **Request**: Existing body/content-type **plus** optional `profile` (`annex3` default |
 `iwxxm_us`). When US, validation uses combined WMO + iwxxm-us catalogs.
@@ -252,8 +310,10 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 
 - docs/guides/API.md (detailed examples — update paths during implementation)
 - docs/deploy.md §Integration
-- ADR-014
+- ADR-014; [ADR-015](adr/ADR-015-validate-packages-bulletin-api-f7-f8.md)
 
 ### Session changelog
 
 - S008 (2026-07-12): product required; profile; tac2iwxxm_available; validate profile; error codes
+- S008 amend (2026-07-12): validate → iwxxm-validate; `POST /api/v1/lint-tac`;
+  `POST /api/v1/convert-bulletin` (multi-result TBD 04); `/convert` single-report only

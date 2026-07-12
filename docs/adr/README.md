@@ -18,6 +18,7 @@
 | [ADR-012](ADR-012-metar-work-sessions-retention.md) | METAR work session retention and pg_cron jobs | Accepted |
 | [ADR-013](ADR-013-tac2iwxxm-package-architecture.md) | New `tac2iwxxm` package, IWXXM-US vendor pin, FAA five v1 | Partially superseded (ADR-014) |
 | [ADR-014](ADR-014-tac2iwxxm-rust-gifts-removal.md) | Rust/PyO3, F6 +VAA/TCA, delete gifts on cutover | Accepted |
+| [ADR-015](ADR-015-validate-packages-bulletin-api-f7-f8.md) | Validate packages, bulletin API, deferred F7/F8, H7 | Accepted |
 
 ## Process
 

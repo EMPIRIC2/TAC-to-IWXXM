@@ -1,7 +1,7 @@
 # User Journeys
 
 > **Project**: METAR to IWXXM Converter
-> **Source**: feature-list.md, requirements interview 2026-06-14; S008 F6 delta 2026-07-12
+> **Source**: feature-list.md, requirements interview 2026-06-14; S008 F6 + realtime/package amend 2026-07-12
 > **Last updated**: 2026-07-12
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
@@ -12,7 +12,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | ID | Journey | Entry point | Feature | E2E tier |
 |----|---------|-------------|---------|----------|
 | UJ-001 | Convert METAR via UI (shorthand) | apps/frontend | F6 (was F1) | T2 / **T3** |
-| UJ-002 | Validate IWXXM output | apps/frontend / API | F2+F6 | T2 / **T3** |
+| UJ-002 | Validate IWXXM output (`iwxxm-validate`) | apps/frontend / API | F2+F6 | T2 / **T3** |
 | UJ-003 | Register and login | apps/frontend | Auth | T2 / **T3** |
 | UJ-004 | Resume & browse METAR work history | apps/frontend | F5 | T2 / **T3** |
 | UJ-005 | Convert with product + profile via UI | apps/frontend | F6 | T2 / **T3** (all 7 products) |
@@ -21,10 +21,15 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-008 | Unsupported / unknown product TAC | UI / API | F6 | T2 / T3 |
 | UJ-009 | US profile without iwxxm-us pin | UI / API | F6 | T2 |
 | UJ-010 | Malformed US REMARKS | UI / API | F6 | T0 / T2 |
+| UJ-011 | Bulletin split → convert → Schematron (API) | HTTP API | F6 | **T2** |
+| UJ-012 | TAC lint failure (`tac-validate`) via API | HTTP API | F6 | **T2** |
+| UJ-013 | Multi-product operator entry (F7) | apps/frontend | F7 | Planned — no T3 yet |
+| UJ-014 | Near-RT ingest + quarantine (F8) | Worker / API | F8 | Planned — no T3 yet |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
 | UJ-DEV-003b | Maintain tac2iwxxm + iwxxm-us pins | Maintainer workflow | F6, M2 | CI |
+| UJ-DEV-004 | Package CI for tac-validate + iwxxm-validate | `make test` / CI | F2, F6, M5 | T0 / CI |
 | UJ-OPS-001 | Deploy two-service Render stack | render.yaml | M4 | T3 (staging) |
 
 **E2E tiers**:
@@ -83,18 +88,20 @@ version; UX behaviors from #555/#664 preserved.
 
 **Actor**: Authenticated user or API client
 
-**Goal**: Confirm generated XML passes schema/Schematron validation.
+**Goal**: Confirm generated XML passes schema/Schematron validation via
+`packages/iwxxm-validate` (backend thin wrapper).
 
 **Steps**:
 
-1. Obtain IWXXM XML from conversion (UJ-001 / UJ-005 / UJ-006).
+1. Obtain IWXXM XML from conversion (UJ-001 / UJ-005 / UJ-006 / UJ-011).
 2. Trigger validation endpoint or UI action with the same **profile** used for convert.
-3. Review pass/fail and error messages.
-4. If `profile=iwxxm_us`, validation uses **combined** WMO + iwxxm-us catalogs; `annex3` uses WMO only.
+3. Backend invokes **`iwxxm-validate`** (not inline schema loading long-term).
+4. Review pass/fail and error messages.
+5. If `profile=iwxxm_us`, validation uses **combined** WMO + iwxxm-us catalogs; `annex3` uses WMO only.
 
 **Acceptance**: Valid sample produces validation pass for selected IWXXM version and profile.
 
-**Automated tests**: backend validation tests + E2E where exposed (T2); H3 + H6 (T3)
+**Automated tests**: `packages/iwxxm-validate` unit + backend wrapper tests + E2E where exposed (T2); H3 + H6 (T3)
 
 ---
 
@@ -135,7 +142,9 @@ Unchanged scope: **METAR/SPECI sessions only** in F6 v1. Product/profile may be 
 4. Set IWXXM **version** (vendored pin).
 5. Paste or upload TAC appropriate to the product.
 6. If explicit product ≠ auto-detect, UI **warns** but proceeds with explicit selection.
-7. **Convert**; view XML / download; errors via #555 panel.
+7. **Convert** — pipeline may run **`tac-validate`** then **`tac2iwxxm`**; view XML / download;
+   TAC lint and convert errors via #555 panel.
+8. Optionally validate via UJ-002 (`iwxxm-validate`).
 
 **Acceptance (F6 v1 / T3)**: Parametrized Playwright (or 7 cases) — each product with
 `profile=annex3` and golden TAC fixture converts successfully and shows XML. Additional
@@ -156,8 +165,9 @@ Unchanged scope: **METAR/SPECI sessions only** in F6 v1. Product/profile may be 
 **Steps**:
 
 1. `POST /api/v1/convert` with TAC + `product` + `profile` (+ version).
-2. Receive IWXXM (or structured errors).
-3. Optionally chain validate (UJ-002 / UJ-007).
+2. Server path: optional **`tac-validate`** → **`tac2iwxxm`** (single report or after split).
+3. Receive IWXXM (or structured TAC lint / convert errors).
+4. Optionally chain validate (UJ-002 / UJ-007 via `iwxxm-validate`).
 
 **Acceptance**: T2 and T3 API smoke for all seven products (annex3). Required alongside UJ-005
 for F6 v1.
@@ -170,12 +180,12 @@ for F6 v1.
 
 **Actor**: User or API client
 
-**Goal**: Validate XML produced with `profile=iwxxm_us`.
+**Goal**: Validate XML produced with `profile=iwxxm_us` through **`iwxxm-validate`**.
 
 **Steps**:
 
 1. Convert METAR/SPECI/TAF (as applicable) with `profile=iwxxm_us`.
-2. Validate with combined catalogs.
+2. Validate with combined catalogs via package / API wrapper.
 3. Confirm pass (or expected Schematron messages documented in fixtures).
 
 **Acceptance**: At least one US-profile METAR (and SPECI/TAF when fixtures exist) validates on T2/T3.
@@ -211,6 +221,67 @@ and **no** gifts fallback.
 failing international validation (profile isolation).
 
 **Tier**: T0 / T2 primarily.
+
+---
+
+### UJ-011: Bulletin Split → Convert → Schematron (API)
+
+**Actor**: API client / package harness
+
+**Goal**: Submit a WMO AHL bulletin containing multiple reports; split; convert each; Schematron
+via `iwxxm-validate`.
+
+**Feature**: F6 (F6.bulletin)
+
+**Steps**:
+
+1. `POST /api/v1/convert-bulletin` with a multi-report bulletin + product/profile/version.
+2. Server/`tac2iwxxm` **splits** into individual TAC reports.
+3. Each report: optional `tac-validate` / prior `/lint-tac` → convert → collect IWXXM.
+4. Validate one or more results with `iwxxm-validate` (UJ-002).
+
+**Acceptance**: Fixture bulletin yields N IWXXM documents (or structured per-report errors);
+Schematron pass on golden reports. **Tier: T2** locally; live gate **H7** (TC-LIVE-F6-030).
+
+**Automated tests**: `packages/tac2iwxxm` bulletin fixtures + `/convert-bulletin` API (T2);
+`make test-live-bulletin` (H7, planned).
+
+---
+
+### UJ-012: TAC Lint Failure via API
+
+**Actor**: API client
+
+**Goal**: Malformed / rule-violating TAC fails at **`tac-validate`** with structured issues
+(before or instead of successful IWXXM).
+
+**Steps**:
+
+1. Submit TAC that fails the shared rule pack (product-appropriate fixture).
+2. Observe structured lint issues in API response / errors list.
+3. Confirm no silent success / empty IWXXM presented as valid.
+
+**Acceptance**: Non-empty structured issues; convert may be skipped or marked failed per API
+contract (04). **Tier: T2**.
+
+**Automated tests**: `packages/tac-validate` + backend wrapper (T2).
+
+---
+
+### UJ-013: Multi-Product Operator Entry (F7) — Planned
+
+**Status**: **Planned — not this build.** Stub for multi-product sessions / operator UI beyond F5.
+
+**Acceptance**: ⚠️ Deferred. No T3 until F7 session.
+
+---
+
+### UJ-014: Near-Realtime Ingest + Quarantine (F8) — Planned
+
+**Status**: **Planned — not this build.** Stub for worker ingest → pipeline → store/push or
+quarantine on Schematron/convert fail.
+
+**Acceptance**: ⚠️ Deferred. No T3 until F8 session.
 
 ---
 
@@ -251,16 +322,37 @@ Extended: sync may include **iwxxm-us** pin updates via manifest (in addition to
 
 ---
 
+### UJ-DEV-004: Package CI for tac-validate + iwxxm-validate
+
+**Actor**: Developer / CI
+
+**Goal**: Run unit and package tests for both validate packages in the uv workspace.
+
+**Steps**:
+
+1. `make test` (or package-scoped pytest) includes `packages/tac-validate` and
+   `packages/iwxxm-validate`.
+2. Schematron fixtures use vendored schemas; TAC rule fixtures cover at least METAR + one
+   non-METAR product.
+3. Backend thin-wrapper smoke tests call the packages (T2 optional).
+
+**Acceptance**: CI gate fails if either package suite fails. **Tier: T0 / CI**.
+
+---
+
 ## Operations Journeys
 
 ### UJ-OPS-001: Deploy Two-Service Render stack
 
-Unchanged topology (API + static). After F6: image includes tac2iwxxm (not gifts); frontend
-build includes product/profile controls. Redeploy API before frontend when CORS/API contract
-changes. Signoff includes UJ-005/006/007 live coverage.
+Unchanged topology (API + static) for this cycle. After F6: image includes tac2iwxxm + validate
+packages (not gifts); frontend build includes product/profile controls. Redeploy API before
+frontend when CORS/API contract changes. Signoff includes UJ-005/006/007 live coverage.
+**F8 worker** not part of OPS-001 until F8 build.
 
 ---
 
 ### Session changelog
 
 - S008 (2026-07-12): F6 UJ-001/002/005–010; UJ-DEV-003 deprecated → 003b; T3 seven products
+- S008 amend (2026-07-12): UJ-002/005–007 package wiring; UJ-011/012 T2; UJ-013/014 Planned stubs;
+  UJ-DEV-004

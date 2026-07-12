@@ -2,18 +2,20 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-12 (S008 F6 delta)
+> **Last updated**: 2026-07-12 (S008 realtime/package amend — F7/F8 Planned; validate packages)
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend validation routers |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate` |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
 | F5 | User METAR work history | Planned | Product | docs/context/metar-work-history.md, S004 |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Planned | Product | S008, ADR-013/014 |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Planned | Product | S008, ADR-013/014; bulletin split |
+| F7 | Multi-product TAC operator entry / sessions | Planned | Product | S008 amend; no build this cycle |
+| F8 | Near-realtime TAC ingest → IWXXM gate | Planned | Product | S008 amend; no build this cycle |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -47,8 +49,13 @@
 - **Outputs**: Validation report (pass/fail + messages).
 - **F6 delta**: Validation consumes WMO vendor pins and, when `profile=iwxxm_us`, combined
   IWXXM-US XSD (and US Schematron if published).
+- **S008 package amend**: Core logic moves to **`packages/iwxxm-validate`** (XSD + Schematron
+  against `vendor/schemas/*`). `apps/backend` validation routes become a **thin HTTP wrapper**.
+  Schematron remains on **IWXXM only** — TAC quality is **F6/`packages/tac-validate`**, not F2.
+- **Acceptance (this amend)**: Library API + CI tests; backend thin wrappers for validate
+  endpoints call `iwxxm-validate` (no behavior regression vs current F2).
 - **Limitations**: Schema bundles must match vendored snapshot version.
-- **Source**: `backend/src/routers/validation.py`
+- **Source**: `apps/backend` validation routers; [Context: realtime-tac-ingest](context/realtime-tac-ingest.md)
 
 ### F3: Airport Data Services
 
@@ -99,12 +106,19 @@
   XML via `packages/tac2iwxxm`, with Annex-3 (or product-equivalent) body encoding and optional
   IWXXM-US national extensions; exposes the same products/profiles on HTTP convert and UI pickers;
   measures accuracy in library/CI metrics (not convert-response fields).
-- **Package**: `packages/tac2iwxxm` (MIT). Architecture: Python API → IR → product plugins →
-  profile plugins (`annex3` / `iwxxm_us`) → XML writer → Schematron/XSD metrics.
+- **Package**: `packages/tac2iwxxm` (MIT). Architecture: Python API → (optional bulletin split) →
+  IR → product plugins → profile plugins (`annex3` / `iwxxm_us`) → XML writer; metrics via
+  `tac-validate` + `iwxxm-validate` in library/CI.
+- **Companion packages (this amend)**:
+  | Package | Role |
+  |---------|------|
+  | `packages/tac-validate` | TAC lint + shared business-rule pack (all seven product TAC forms) |
+  | `packages/iwxxm-validate` | XSD + Schematron (F2 engine) |
 - **Runtime**: Pure Python **v0** first; optional **Rust/PyO3** hotspots after batch benchmarks
   (ADR-014). Not Cython.
-- **Inputs**: TAC text/files; `product`; `profile`; `iwxxm_version`.
-- **Outputs**: IWXXM XML; validation via F2; metrics reports in tests/CI only.
+- **Inputs**: TAC text/files **or WMO AHL bulletins**; `product`; `profile`; `iwxxm_version`.
+- **Outputs**: IWXXM XML (per report after split); validation via F2/`iwxxm-validate`; TAC issues
+  via `tac-validate`; metrics reports in tests/CI only.
 - **Key parameters**:
 | Parameter | Default | Range | Description |
 |-----------|---------|-------|-------------|
@@ -119,6 +133,7 @@
 - **Delivery phases** (v1 goal = all seven products; acceptance order):
   | Phase | Scope |
   |-------|--------|
+  | **F6.bulletin** | WMO AHL bulletin split → one report each; golden fixtures (**with/before F6.a**) |
   | F6.a | Package scaffold + METAR/SPECI Annex-3 + metrics harness |
   | F6.b | IWXXM-US METAR/SPECI + vendor `iwxxm-us` |
   | F6.c | TAF Annex-3 + IWXXM-US forecast extensions |
@@ -133,9 +148,35 @@
   5. `POST /api/v1/convert` accepts `product` + `profile`; gifts not used
   6. `packages/gifts` removed in first wire-up PR
   7. MIT license; pure Python v0; Rust/PyO3 optional after benchmarks
+  8. **Bulletin split** required for package acceptance (single-report input still supported)
+  9. **`tac-validate` + `iwxxm-validate`** library APIs + CI; backend **thin wrappers** for
+     validate (and convert) call these packages
 - **Limitations**: US AIRMET/SIGMET docs thinner than METAR/TAF — may gate fixture depth inside
-  F6.d; F5 not extended to other products in v1; native Rust extras not a v1 acceptance gate.
-- **Source**: S008 01-requirements; ADR-013; ADR-014; `docs/context/general-tac-iwxxm-converter.md`
+  F6.d; F5 not extended to other products in v1; native Rust extras not a v1 acceptance gate;
+  exact AHL dialect coverage TBD in 04-tech-plan.
+- **Source**: S008 01-requirements; ADR-013; ADR-014; `docs/context/general-tac-iwxxm-converter.md`;
+  `docs/context/realtime-tac-ingest.md`
+
+### F7: Multi-Product TAC Operator Entry / Sessions
+
+- **What it does**: Operator-facing entry for all **seven** F6 products (editor/upload + shared
+  convert→lint→Schematron path), including multi-product work sessions analogous to F5.
+- **Status**: **Planned** — named in corpus; **not built in this cycle** (package + API wrappers
+  first per S008 amend).
+- **Relationship to F5**: F5 remains **METAR/SPECI-only**. F7 does not amend that non-goal.
+- **Inputs / outputs**: ⚠️ Deferred to a later 01/UI session (auth already postponed).
+- **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R9, R16
+
+### F8: Near-Realtime TAC Ingest → IWXXM Gate
+
+- **What it does**: Continuous/near-realtime ingest of TAC (and bulletins) → `tac-validate` →
+  `tac2iwxxm` → `iwxxm-validate` (Schematron/XSD) → **store + push**; **quarantine** on convert
+  or Schematron failure (no publish). Latency target **&lt;5–15s** E2E; scale via **worker
+  replicas** (drop nothing). Product scope = F6 seven.
+- **Status**: **Planned** — **not built in this cycle**. Future Render Background Worker (template
+  drift ADR when implemented). Ingest adapters, auth, and push sinks **postponed**.
+- **Non-goals (until F8 build session)**: AMHS/SWIM adapters; auth; sink configuration.
+- **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R2–R15
 
 ## Platform Feature Details (Monorepo Migration)
 
@@ -143,6 +184,7 @@
 
 - **What it does**: Replaces six git submodules with a single-repo tree: `apps/`, `packages/`, `vendor/`.
 - **F6 delta**: Approved tree gains `packages/tac2iwxxm`; loses `packages/gifts` at F6 cutover.
+- **S008 package amend**: Also gains `packages/tac-validate` and `packages/iwxxm-validate`.
 - **Key parameters**:
   | Parameter | Default | Description |
   |-----------|---------|-------------|
@@ -151,10 +193,12 @@
   | `apps/e2e` | Playwright cross-app tests | Dedicated workspace |
   | `packages/auth` | Supabase middleware library | Imported by backend, not separate service |
   | `packages/tac2iwxxm` | General TAC→IWXXM (F6) | uv workspace member; MIT |
+  | `packages/tac-validate` | TAC lint / business rules | All seven product TAC forms |
+  | `packages/iwxxm-validate` | XSD + Schematron (F2) | Consumes vendor schemas |
   | `packages/gifts` | — | **Removed** at F6 cutover (ADR-014) |
   | `packages/shared` | Types + cross-app utils | TS + Python shared constants |
   | `vendor/schemas/*` | Read-only schema snapshots | WMO + iwxxm-us; no local edits |
-- **Source**: REQ-006, REQ-007; ADR-014
+- **Source**: REQ-006, REQ-007; ADR-014; S008 realtime amend
 
 ### M2: Vendor Snapshot Sync
 
@@ -182,7 +226,8 @@
   and GitHub Actions quality gates.
 - **F6 delta**: Workspace member `tac2iwxxm`; drop gifts from test matrix at cutover; optional
   Rust/PyO3 tooling when native extras land (04-tech-plan).
-- **Source**: REQ-005; EV-002; ADR-014
+- **S008 package amend**: Workspace members `tac-validate`, `iwxxm-validate` in test matrix.
+- **Source**: REQ-005; EV-002; ADR-014; S008 realtime amend
 
 ### M6: Upstream Vendor Sync
 
@@ -196,17 +241,22 @@
 | Feature | Web UI | CLI/API | CI metrics | Render Deploy |
 |---------|--------|---------|------------|---------------|
 | F1 | Legacy until F6 UI | Superseded | — | — |
-| F2 | Yes | Yes | Yes | Yes |
+| F2 | Yes | Yes (wrapper) | Yes | Yes |
 | F3 | Partial | Yes | Yes | Yes |
 | F4 | Yes | Yes | Yes | Yes |
 | F5 | Yes (METAR/SPECI) | Yes | Yes | Yes |
-| F6 | Yes (product/profile) | Yes | Yes (lib/CI only) | Yes (via API image) |
+| F6 | Yes (product/profile) | Yes | Yes (lib/CI) | Yes (via API image) |
+| F7 | Planned later | Planned later | — | — |
+| F8 | — | Planned later | Planned later | Worker later |
 | M1–M6 | — | — | Yes | Yes |
 
 | F6 capability | Library | HTTP API | Web UI | CI metrics |
 |---------------|---------|----------|--------|------------|
 | product + profile convert | Yes | Yes | Yes | Yes |
+| AHL bulletin split | Yes | Yes (via convert) | Later | Gate |
 | annex3 / iwxxm_us | Yes | Yes | Yes | Yes |
+| TAC lint (`tac-validate`) | Yes | Thin wrapper | — | Gate |
+| Schematron (`iwxxm-validate`) | Yes | Thin wrapper | Yes | Gate |
 | Accuracy metrics report | Yes | No (v1) | No (v1) | Gate |
 | Rust/PyO3 hotspots | Optional after v0 | — | — | Bench later |
 
@@ -225,6 +275,16 @@
 - Metrics fields on convert API responses in v1.
 - Extend F5 work history to non-METAR products in F6 v1.
 - Products beyond the seven listed (e.g. SWA) in F6 v1.
+
+## Non-Goals (S008 realtime / package amend — this cycle)
+
+- Building **F7** UI or multi-product sessions.
+- Building **F8** worker, ingest adapters, store/push sinks, or quarantine UX.
+- Machine-ingest **auth** and **push sink** configuration (postponed).
+- AMHS / SWIM / AFS adapters.
+- Schematron applied to TAC (Schematron stays on IWXXM; TAC uses `tac-validate`).
+- Changing F6 non-goal “no new Render deployable / separate converter service” — F8 worker,
+  if/when built, is documented under **F8** and requires its own ADR (Q29=C).
 
 ## Planned Features (Post-Migration)
 

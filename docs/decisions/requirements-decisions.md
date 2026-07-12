@@ -141,3 +141,24 @@
 | F6-R26 | F5 params | Store product/profile in conversion_params; UI copies to multipart on submit | confirmed |
 | F6-R27 | API errors | codes unknown_product / invalid_profile / missing_iwxxm_us / parse_failed; 400/422/5xx | confirmed |
 | F6-R28 | Config | No new config/env keys; no cutover flag; US via request profile | confirmed |
+
+## S008 realtime / package amend (2026-07-12)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| RT-R1 | Session | Amend S008 (reopen 00+01); realtime = ingest pipeline | confirmed |
+| RT-R2 | Schematron | IWXXM only; TAC via separate lint package | confirmed |
+| RT-R3 | Packages | `packages/iwxxm-validate` + `packages/tac-validate` | confirmed |
+| RT-R4 | F2 | Evolves to thin wrapper over `iwxxm-validate` | confirmed |
+| RT-R5 | F6 | Bulletin split acceptance; phase **F6.bulletin** with/before F6.a | confirmed |
+| RT-R6 | F7 | Planned multi-product operator entry; F5 unchanged; no build this cycle | confirmed |
+| RT-R7 | F8 | Planned near-RT ingest; store+push; quarantine; worker later; no build this cycle | confirmed |
+| RT-R8 | This cycle | Package APIs + **API thin wrappers** for validate packages | confirmed |
+| RT-R9 | Non-goals | Auth/sinks/AMHS postponed; F6 “no Render deployable” left unchanged (worker under F8) | confirmed |
+| RT-R10 | Manifest | Feature List, Spec, Journeys, Test Plan, Deps, API light, ADRs; skip Config+Deploy | confirmed |
+| RT-R11 | Spec | Unified pipeline; dashed F8 worker; SoC on both validate packages | confirmed |
+| RT-R12 | Journeys | UJ-011/012 T2; UJ-013/014 Planned stubs; UJ-DEV-004; update UJ-002/005–007 | confirmed |
+| RT-R13 | Test plan | TC-F6-030–033; M-sch via iwxxm-validate; **H7** live bulletin gate | confirmed |
+| RT-R14 | Deps | Both packages MIT; tac-validate may use pydantic/msgspec in 04; iwxxm-validate uses lxml | confirmed |
+| RT-R15 | API | validate wraps iwxxm-validate; `POST /lint-tac`; `POST /convert-bulletin`; convert single-report | confirmed |
+| RT-R16 | ADR-015 | Validate packages + bulletin API + deferred F7/F8 + H7 | accepted |

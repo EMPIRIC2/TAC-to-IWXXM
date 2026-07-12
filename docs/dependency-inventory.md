@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-12 (S008 F6 delta)
+> **Last updated**: 2026-07-12 (S008 realtime/package amend)
 
 ## Runtime Dependencies
 
@@ -17,6 +17,8 @@
 | python-multipart | File uploads | Apache-2.0 | PyPI |
 | supabase | Auth (via packages/auth) | MIT | PyPI |
 | tac2iwxxm | Conversion (F6) | MIT | workspace path |
+| tac-validate | TAC lint / rules | MIT | workspace path |
+| iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
 | gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
 
 ### packages/tac2iwxxm
@@ -28,6 +30,22 @@
 | PyO3 / maturin / rustc | Optional native hotspots | Apache-2.0 / MIT (typical) | **Optional extra** — not required for v0 |
 
 Package license: **MIT**. No FastAPI/Supabase imports.
+
+### packages/tac-validate
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| pydantic or msgspec | Structured issue models (optional) | MIT / Apache-2.0 | **Allowed — choose in 04-tech-plan** (Q49=B) |
+
+Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron.
+
+### packages/iwxxm-validate
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| lxml | XSD + Schematron execution | BSD | PyPI |
+
+Package license: **MIT**. Vendor schemas read-only. No FastAPI/Supabase.
 
 ### packages/gifts — Removed at F6 cutover
 
@@ -58,8 +76,8 @@ Package license: **MIT**. No FastAPI/Supabase imports.
 | Node | **22** (pinned) | Frontend/e2e workspace (ADR-005) |
 | uv | pin in pyproject | Python workspace, lockfile |
 | pnpm | pin in package.json engines | JS workspace (monorepo) |
-| basedpyright | strict | Python typechecking including `packages/tac2iwxxm` (ADR-005) |
-| ruff | all Python packages | Lint + format including `packages/tac2iwxxm` (ADR-005) |
+| basedpyright | strict | Python typechecking including tac2iwxxm, tac-validate, iwxxm-validate (ADR-005) |
+| ruff | all Python packages | Lint + format including new validate packages (ADR-005) |
 | prettier | workspace TS | Format apps/* and packages/* TypeScript |
 | eslint | workspace TS | Lint apps/frontend, apps/e2e, packages/shared |
 | make | system | Orchestration |
@@ -68,10 +86,11 @@ Package license: **MIT**. No FastAPI/Supabase imports.
 | yamllint | pre-commit hook | `.github/` YAML lint (EV-002) |
 | supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` |
 | docker / compose | system | Local multi-service |
-| Coverage | 95% all members | pytest + Vitest gates (ADR-007); includes tac2iwxxm |
+| Coverage | 95% all members | pytest + Vitest gates (ADR-007); includes tac2iwxxm, tac-validate, iwxxm-validate |
 | cargo / maturin | optional | Only when Rust/PyO3 extra enabled (04-tech-plan) |
 
-**Deployables**: No new Render service. API image depends on tac2iwxxm; Rust toolchain in image only if native extra is enabled (04).
+**Deployables**: No new Render service **this cycle**. API image depends on tac2iwxxm + validate
+packages; F8 worker (if later) is under F8 + ADR. Rust toolchain in image only if native extra enabled (04).
 
 ## Vendored / External Data (not PyPI)
 
@@ -91,14 +110,17 @@ Package license: **MIT**. No FastAPI/Supabase imports.
 | git submodules (×6) | vendor/ + in-repo packages |
 | Separate auth Docker image | packages/auth in backend image |
 | packages/gifts (F6 cutover) | packages/tac2iwxxm |
+| (inline backend Schematron) | packages/iwxxm-validate |
+| (ad-hoc TAC checks) | packages/tac-validate |
 
 ## License Notes
 
 - wmo-im schema repos: WMO terms — read-only vendor copies.
 - iwxxm-us: cite NOAA/MDL upstream notices in vendor README at pin time.
-- `packages/tac2iwxxm`: **MIT**.
+- `packages/tac2iwxxm`, `packages/tac-validate`, `packages/iwxxm-validate`: **MIT**.
 - GIFTs: package removed — no longer ship its LICENSE in-tree.
-- Run audit-licenses skill before adding new PyPI/npm deps (including PyO3 extras).
+- Run audit-licenses skill before adding new PyPI/npm deps (including PyO3 extras; tac-validate
+  pydantic/msgspec choice in 04).
 
 ## Decision Log
 
@@ -107,3 +129,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 ### Session changelog
 
 - S008 (2026-07-12): tac2iwxxm MIT; gifts removed; iwxxm-us; optional PyO3; IR lib TBD in 04
+- S008 amend (2026-07-12): tac-validate + iwxxm-validate MIT; lxml for Schematron; tac-validate
+  may use pydantic/msgspec (04)

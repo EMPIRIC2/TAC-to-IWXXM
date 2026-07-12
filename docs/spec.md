@@ -2,19 +2,22 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Version**: monorepo + F6 tac2iwxxm (S008)
+> **Version**: monorepo + F6 tac2iwxxm + validate packages (S008 amend)
 > **Last updated**: 2026-07-12
 
 ## Overview
 
 METAR to IWXXM converts aviation TAC messages (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA)
-to WMO IWXXM XML via `packages/tac2iwxxm`, using authoritative WMO and optional NOAA IWXXM-US
-schema bundles under `vendor/schemas/`. The system is a **single-git monorepo** with `apps/`
-(deployables), `packages/` (libraries), and `vendor/` (read-only upstream snapshots).
+to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via `packages/tac-validate`, and
+validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron) against authoritative WMO
+and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`. The system is a
+**single-git monorepo** with `apps/` (deployables), `packages/` (libraries), and `vendor/`
+(read-only upstream snapshots). **F7** (multi-product operator entry) and **F8** (near-realtime
+ingest worker) are **Planned** — not built in this cycle.
 
 ## System Architecture
 
-### Runtime (post–F6 cutover)
+### Runtime (post–F6 cutover; this amend)
 
 ```
 Browser
@@ -25,8 +28,13 @@ apps/frontend (static — Render static site or Vite dev)
    ▼
 apps/backend (FastAPI — Render web service)
    ├── packages/auth (Supabase JWT middleware, inlined)
-   ├── packages/tac2iwxxm (TAC → IWXXM; product + profile plugins)
-   └── vendor/schemas/{iwxxm*, iwxxm-us} (read-only XSD/Schematron)
+   ├── packages/tac-validate (TAC lint / rules)
+   ├── packages/tac2iwxxm (TAC → IWXXM; bulletin split; product + profile)
+   ├── packages/iwxxm-validate (XSD + Schematron; F2 engine)
+   └── vendor/schemas/{iwxxm*, iwxxm-us} (read-only)
+
+        . . . future (F8 — not this build) . . .
+        apps/worker (Render Background Worker) ──► same packages
 ```
 
 `packages/gifts` is **absent** after the first PR that wires tac2iwxxm to `/api/v1/convert`
@@ -43,6 +51,8 @@ metar-to-IWXXM/
 ├── packages/
 │   ├── auth/             # Supabase auth library (not a deployable)
 │   ├── tac2iwxxm/        # General TAC→IWXXM (F6); MIT; optional Rust/PyO3
+│   ├── tac-validate/     # TAC lint + business rules (all 7 product TAC forms)
+│   ├── iwxxm-validate/   # XSD + Schematron (F2); vendor consumers
 │   └── shared/           # API types, env helpers, constants
 ├── vendor/
 │   ├── manifest.json     # Pins upstream repo + tag/SHA per schema bundle
@@ -62,14 +72,17 @@ metar-to-IWXXM/
 
 | Component | Purpose | Location | Dependencies |
 |-----------|---------|----------|--------------|
-| Backend API | Conversion, validation, auth | `apps/backend/` | tac2iwxxm, auth, shared, vendor |
+| Backend API | Conversion, validation, auth (thin wrappers) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, auth, shared, vendor |
 | Frontend | User UI (product/profile/version) | `apps/frontend/` | shared (types) |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase middleware | `packages/auth/` | supabase-py |
-| tac2iwxxm | TAC → IWXXM (7 products, profiles, metrics) | `packages/tac2iwxxm/` | vendor schemas; optional Rust/PyO3 |
+| tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles) | `packages/tac2iwxxm/` | tac-validate (optional), vendor; optional Rust/PyO3 |
+| tac-validate | TAC lint / shared rule pack | `packages/tac-validate/` | — (no FastAPI/Supabase) |
+| iwxxm-validate | XSD + Schematron (F2 engine) | `packages/iwxxm-validate/` | vendor schemas (read-only) |
 | Shared | Cross-cutting utils/types | `packages/shared/` | — |
 | Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im + iwxxm-us snapshots |
 | Work history (F5) | Per-user METAR session persistence | Supabase Postgres + `apps/backend` router | auth, shared |
+| Worker (F8) | Near-RT ingest — **Planned / dashed** | TBD `apps/worker/` | same packages as backend |
 
 ## Component Details
 
@@ -80,27 +93,46 @@ metar-to-IWXXM/
 - **Outputs**: JSON responses, IWXXM XML, auth session endpoints.
 - **Algorithm**:
   1. Auth middleware validates JWT via Supabase (`packages/auth`).
-  2. Conversion router normalizes TAC and invokes **`tac2iwxxm_adapter`** (replaces
-     `gifts_adapter` in the same PR that deletes gifts — ADR-014).
-  3. Validation router loads schemas from `vendor/schemas/` — WMO only for `annex3`;
-     **combined** WMO + iwxxm-us catalogs when `profile=iwxxm_us`.
+  2. Conversion router may run **`tac-validate`**, then **`tac2iwxxm`** (bulletin split when
+     needed) via adapters (replaces `gifts_adapter` in the gifts-delete PR — ADR-014).
+  3. Validation router is a **thin wrapper** over **`packages/iwxxm-validate`** (WMO; combined
+     WMO + iwxxm-us when `profile=iwxxm_us`).
 - **Error handling**: HTTP 4xx for auth/validation; 5xx for conversion failures with structured errors.
-- **Source**: REQ-004; F6 / ADR-014.
+- **Source**: REQ-004; F6 / ADR-014; S008 realtime amend.
 
 ### packages/tac2iwxxm
 
-- **Purpose**: General TAC→IWXXM library (F6). Python public API → versioned IR → product
-  plugins → profile plugins (`annex3` / `iwxxm_us`) → XML writer → library/CI metrics.
+- **Purpose**: General TAC→IWXXM library (F6). Python public API → **bulletin split** (WMO AHL)
+  → versioned IR → product plugins → profile plugins (`annex3` / `iwxxm_us`) → XML writer;
+  library/CI metrics via companion validate packages.
 - **Products (v1)**: AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA.
-- **Inputs**: TAC string/files; `product`; `profile`; `iwxxm_version`; schema paths under vendor.
-- **Outputs**: IWXXM XML bytes/strings; metrics reports in tests/CI only (not convert API fields).
+- **Inputs**: TAC string/files **or bulletins**; `product`; `profile`; `iwxxm_version`; schema paths under vendor.
+- **Outputs**: IWXXM XML bytes/strings (per report); metrics reports in tests/CI only (not convert API fields).
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
 - **IR**: Spec requires a **versioned IR**; concrete library (msgspec / pydantic / dataclasses)
   chosen in 04-tech-plan.
 - **Source**: [feature-list.md](feature-list.md) F6; ADR-013; ADR-014;
-  [context/general-tac-iwxxm-converter.md](context/general-tac-iwxxm-converter.md).
+  [context/general-tac-iwxxm-converter.md](context/general-tac-iwxxm-converter.md);
+  [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md).
+
+### packages/tac-validate
+
+- **Purpose**: TAC linting and shared **business-rule pack** for all seven product TAC forms
+  (parse gate + rules). **Not** Schematron.
+- **Inputs**: TAC text or bulletin fragments; product hint when known.
+- **Outputs**: Structured issue list (severity, code, message, location).
+- **SoC**: **No** FastAPI or Supabase imports.
+- **Source**: feature-list F6/F2 amend; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md).
+
+### packages/iwxxm-validate
+
+- **Purpose**: F2 engine — XSD + Schematron validation of IWXXM XML against vendored schemas.
+- **Inputs**: IWXXM XML; `iwxxm_version`; optional `profile` (US catalogs when `iwxxm_us`).
+- **Outputs**: Validation report (pass/fail + messages).
+- **SoC**: **No** FastAPI or Supabase imports; **read-only** consumption of `vendor/schemas/*`.
+- **Source**: feature-list F2; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md).
 
 ### packages/gifts — removed
 
@@ -112,7 +144,7 @@ metar-to-IWXXM/
 - **Purpose**: Read-only copies of upstream schema repositories at pinned tags.
 - **Inputs**: `vendor/manifest.json` pins; sync script/Action fetches release artifacts
   (wmo-im iwxxm-* and IWXXM-US — URL/tag TBD in 04).
-- **Outputs**: XSD, Schematron, codelist files consumed by tac2iwxxm and validation.
+- **Outputs**: XSD, Schematron, codelist files consumed by `iwxxm-validate` and tac2iwxxm.
 - **Constraints**: **No direct edits** in monorepo except manifest version bumps via sync PRs.
 - **Source**: REQ-002, REQ-012; ADR-013/014.
 
@@ -160,17 +192,44 @@ metar-to-IWXXM/
   `/admin/work-sessions` read-only admin browse; #555 error log panel.
 - **Source**: F5 requirements delta 2026-06-23; [metar-work-history.md](context/metar-work-history.md)
 
+### F7 — Multi-product operator entry (Planned)
+
+- **Purpose**: Operator UI / sessions for all seven F6 products sharing the unified pipeline below.
+- **Status**: **Planned — not this build**. F5 remains METAR/SPECI-only.
+- **Source**: [feature-list.md](feature-list.md) F7; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md).
+
+### F8 — Near-realtime ingest (Planned)
+
+- **Purpose**: Continuous ingest → unified pipeline → store + push; quarantine on fail;
+  &lt;5–15s target; scale workers. Future dashed component: Render Background Worker.
+- **Status**: **Planned — not this build**. Auth, sinks, AMHS/SWIM adapters postponed.
+- **Source**: [feature-list.md](feature-list.md) F8; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md).
+
 ## Data Flow
+
+### Unified convert/validate pipeline (API now; F7/F8 later)
 
 | Stage | Input | Transformation | Output |
 |-------|-------|----------------|--------|
-| 1. Upload | TAC files/text + product/profile/version | Frontend form | POST /api/v1/convert |
-| 2. Auth | JWT | packages/auth middleware | Authorized request context |
-| 3. Convert | TAC + product + profile + version | tac2iwxxm (IR → XML; US extensions if profile) | IWXXM XML |
-| 4. Validate | IWXXM XML (+ profile) | Schematron/XSD (WMO; + iwxxm-us if US) | Validation result |
-| 5. Display | JSON response | Frontend render | Copy/download UI |
-| 6. Persist (F5) | TAC + results + errors | Backend upsert → Postgres | Session row (Draft/WIP/Finished/Failed) |
-| 7. Send link (F5) | KV upload success | Store `kv_upload_key` on session | Finished status |
+| 0. Unit | TAC or WMO AHL bulletin | Detect / accept | Ingest unit |
+| 1. Split | Bulletin | `tac2iwxxm` bulletin splitter | One TAC report each |
+| 2. TAC lint | TAC report | `tac-validate` | Issues or pass |
+| 3. Convert | TAC + product + profile + version | `tac2iwxxm` | IWXXM XML |
+| 4. IWXXM validate | IWXXM XML (+ profile) | `iwxxm-validate` (XSD + Schematron) | Pass or fail report |
+| 5a. API path | Results | Backend JSON | UI / client |
+| 5b. F8 later | Pass | Store + push | Published artifact |
+| 5c. F8 fail | Fail | Quarantine (no publish) | Error record |
+
+### UI / session overlay (current)
+
+| Stage | Input | Transformation | Output |
+|-------|-------|----------------|--------|
+| U1. Upload | TAC files/text + product/profile/version | Frontend form | POST /api/v1/convert |
+| U2. Auth | JWT | packages/auth middleware | Authorized request context |
+| U3–U4 | — | Unified pipeline stages 0–4 | IWXXM + validation |
+| U5. Display | JSON response | Frontend render | Copy/download UI |
+| U6. Persist (F5) | TAC + results + errors | Backend upsert → Postgres | Session row (Draft/WIP/Finished/Failed) |
+| U7. Send link (F5) | KV upload success | Store `kv_upload_key` on session | Finished status |
 
 ## Monorepo Migration
 
@@ -187,6 +246,8 @@ See [migration-plan.md](ops/migration-plan.md) for step-by-step big-bang procedu
 | — | `vendor/schemas/iwxxm-us` | Snapshot pin via manifest (F6; URL/tag in 04) |
 | `GIFTs` / `packages/gifts` | **removed** | Delete on first tac2iwxxm wire-up PR (ADR-014) |
 | — | `packages/tac2iwxxm` | New MIT package (F6) |
+| — | `packages/tac-validate` | New package (S008 amend) |
+| — | `packages/iwxxm-validate` | New package — F2 engine extract (S008 amend) |
 | `frontend` | `apps/frontend` | Full source in monorepo |
 | `auth/` (root, not submodule) | `packages/auth` | Library; routes in backend |
 | `backend/` | `apps/backend` | Move + wire workspace deps |
@@ -202,8 +263,11 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 - iwxxm / iwxxm-* (and iwxxm-us) content is authoritative from upstream — read-only in vendor/.
 - Single git clone must be sufficient for local dev (`git clone` — no `--recurse-submodules`).
 - Render deploys two services: API (backend+auth) + static frontend (REQ-009).
-- No FastAPI/Supabase imports inside `packages/tac2iwxxm`.
+- No FastAPI/Supabase imports inside `packages/tac2iwxxm`, `packages/tac-validate`, or
+  `packages/iwxxm-validate`.
 - After F6 cutover PR: no `packages/gifts` in the tree; API must not import gifts.
+- Schematron applies to **IWXXM only**; TAC quality uses `tac-validate`.
+- F7/F8 not required for this cycle’s package + thin-wrapper acceptance.
 
 ### Assumptions
 
@@ -226,6 +290,7 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 | Operation | Expected Time | Notes |
 |-----------|---------------|-------|
 | Single METAR/SPECI Annex-3 conversion | < 2s | Typical (unchanged) |
+| Unified pipeline (lint + convert + Schematron) | TBD | Target &lt;5–15s informs F8; measure in 04 |
 | Batch file upload (10 files) | < 10s | Depends on size |
 | SIGMET / AIRMET / VAA / TCA / US-profile | TBD | May exceed METAR until measured (04) |
 | Vendor sync PR | Minutes | CI job; not user-facing |
@@ -240,6 +305,7 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 - Accuracy metrics are library/CI only — not exposed on convert API responses in v1.
 - Scheduled vendor PRs require review before production pins update.
 - F5 not extended to non-METAR products in F6 v1.
+- F7/F8, ingest auth, push sinks, AMHS/SWIM — out of this build.
 
 ## Documentation layout
 
@@ -272,3 +338,5 @@ Standing doc updates during a session use **delta commits** on the session branc
 ### Session changelog
 
 - S008 (2026-07-12): F6 tac2iwxxm architecture; gifts removal; IWXXM-US; UI product/profile; ADR-014
+- S008 amend (2026-07-12): `tac-validate` + `iwxxm-validate`; unified pipeline; F7/F8 Planned;
+  dashed F8 worker; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md)
