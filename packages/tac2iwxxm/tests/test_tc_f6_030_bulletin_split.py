@@ -118,3 +118,18 @@ def test_split_metar_product_ignores_speci_body() -> None:
     with pytest.raises(BulletinSplitError) as exc_info:
         split_bulletin(text, product="METAR")
     assert exc_info.value.code == "empty_bulletin"
+
+
+def test_split_ignores_tac_before_ahl_header() -> None:
+    """TAC before the AHL must not be treated as part of this bulletin (PR #704)."""
+    from tac2iwxxm import split_bulletin
+
+    text = (
+        "METAR KORD 121151Z 27010KT 10SM FEW050 20/12 A3015=\n"
+        "SAUS31 KZNY 121200\n"
+        "METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=\n"
+    )
+    result = split_bulletin(text, product="METAR")
+    assert result.meta.report_count == 1
+    assert result.reports[0].startswith("METAR KJFK")
+    assert "KORD" not in result.reports[0]

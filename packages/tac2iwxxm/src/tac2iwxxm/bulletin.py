@@ -95,7 +95,9 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     bbb = groups.get("bbb") or None
     ahl_line = ahl_match.group(0).strip()
 
-    reports = [m.group(0).strip() for m in _TAC_METAR_SPECI.finditer(text)]
+    # Only scan TAC reports after the AHL so pre-header noise cannot inflate the bulletin
+    body_text = text[ahl_match.end() :]
+    reports = [m.group(0).strip() for m in _TAC_METAR_SPECI.finditer(body_text)]
     if not reports:
         raise BulletinSplitError(
             "empty_bulletin",
