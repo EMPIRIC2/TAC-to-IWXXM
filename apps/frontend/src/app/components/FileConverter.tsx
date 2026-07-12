@@ -269,10 +269,30 @@ export function FileConverter({
           }
         : null,
     );
-    const savedName = (
-      loadedWorkSession.conversion_params as Record<string, unknown> | undefined
-    )?.output_filename;
+    const params = loadedWorkSession.conversion_params as
+      | Record<string, unknown>
+      | undefined;
+    const savedName = params?.output_filename;
     setOutputFilename(typeof savedName === 'string' ? savedName : '');
+    if (params) {
+      setConversionParams((prev) => {
+        const next = { ...prev };
+        const rawProduct = params.product;
+        if (
+          typeof rawProduct === 'string' &&
+          (rawProduct === 'auto' ||
+            ['AIRMET', 'METAR', 'SIGMET', 'SPECI', 'TAF', 'VAA', 'TCA'].includes(
+              rawProduct,
+            ))
+        ) {
+          next.product = rawProduct as TacProductSelection;
+        }
+        if (params.profile === 'iwxxm_us' || params.profile === 'annex3') {
+          next.profile = params.profile;
+        }
+        return next;
+      });
+    }
   }, [loadedWorkSession]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
@@ -397,8 +417,9 @@ export function FileConverter({
         accessToken: accessToken ? `${accessToken.substring(0, 20)}...` : 'MISSING',
       });
 
-      const tacForDetect =
-        manualInput.trim() || pendingFiles.map((f) => f.content).join('\n') || '';
+      const tacForDetect = [manualInput.trim(), ...pendingFiles.map((f) => f.content)]
+        .filter(Boolean)
+        .join('\n');
       const resolvedProduct = resolveConvertProduct(
         conversionParams.product,
         tacForDetect,
