@@ -4,8 +4,48 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 8
-active_session: null
+session_counter: 9
+active_session:
+  id: S009-result-card-dismiss
+  type: hotfix
+  intent: "Conversion results Card (manual_input.txt) remains visible after Cancel or Remove/Delete in FileConverter"
+  status: in_progress
+  branch: fix/S009-result-card-dismiss
+  orchestrator: 14-hotfix
+  evolve_cycle_id: null
+  artifacts_dir: docs/sessions/S009-result-card-dismiss/
+  routing_plan:
+    - stage: 00-context
+      mode: scoped
+      required: true
+      status: completed
+      skip_rationale: null
+      note: "Scoped open for UI dismiss bug; brief docs/context/result-card-dismiss.md optional"
+    - stage: 14-hotfix
+      mode: full
+      required: true
+      status: in_progress
+      skip_rationale: null
+      note: "Phase 0 interview started; new BUG for FileConverter result card not dismissing"
+    - stage: 15-service-health
+      mode: full
+      required: false
+      status: pending
+      skip_rationale: "Optional — only if production verify needed after deploy"
+  current_stage: 14-hotfix
+  started_at: "2026-07-12"
+  context_briefs: []
+  notes:
+    - "Opened 2026-07-12 from /14-hotfix; user chose session open (1A) + report new issue (2A)"
+    - "2026-07-12 Phase 0 Batch A — symptom_type=stuck UI (B); where_seen=Production (A); when_started=After last deploy (A); routing assumed A (14 required, 15 optional) pending explicit confirm"
+    - "2026-07-12 Phase 0 Batch B — repro_frequency=Every time (A); repro_environment=Production only (A)"
+    - "2026-07-12 Phase 0 Batch C — severity=Critical/blocked (A); evidence=None yet (C); already_tried=Nothing (D)"
+    - "2026-07-12 Phase 0 Step 0.3 — remediation_path=local-first (A); deploy only after explicit approval"
+    - 2026-07-12 Phase 0 Step 0.4 — confirm_hotfix_plan=Proceed (A); advancing to verification plan Step 0.5
+    - 2026-07-12 Phase 0 Step 0.5 — success=stuck-card gone (A); checks=CI parity+main gh (B); monitoring=user watches prod (A); advancing Phase 1
+    - "2026-07-12 Phase 1.25 — Vitest repro RED (2/2): Clear leaves results; Remove undone by stale loadedWorkSession rehydrate. Awaiting repro_test_matches_symptom"
+    - "2026-07-12 Phase 1.25b — user confirmed repro matches (A). Proposed RC: Clear skips convertedFiles; Remove undone by loadedWorkSession hydrate. Awaiting investigation_root_cause"
+    - "2026-07-12 Phase 2 — fix applied on fix/S009-result-card-dismiss: Clear clears results; hydrate only on session id change; autosave includes convertedFiles. Repro GREEN 2/2; FileConverter 93/93. Local-first — PR/deploy pending user"
 
 sessions:
 
@@ -906,12 +946,14 @@ stages:
       - "S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13"
 
   14-hotfix:
-    status: skipped
-    session_id: S006-issue-664-output-filename
-    skipped_at: "2026-07-12"
+    status: in_progress
+    session_id: S009-result-card-dismiss
+    bug_report: docs/bug-reports/BUG-2026-07-12-result-card-dismiss.md
     notes:
       - "2026-07-12 — Docs reorg via /14-hotfix rejected (not a bug/hotfix); deferred until S006 complete (S006-R4)."
       - "2026-07-12 — S006 closed (S006-R5); docs reorg unblocked — open via 00-context (process session), not 14-hotfix."
+      - "2026-07-12 — S009-result-card-dismiss open (FileConverter result card dismiss after Cancel/Remove)."
+      - "S009 Batch A recorded — production stuck results Card after Cancel/Remove; after last deploy"
 
 stages_pending: []
 
@@ -2126,6 +2168,17 @@ decisions_log:
     topic: Stale corpus path references post-reorg
     decision: "Verified/fixed stale corpus path references post-reorg (workflow-state + relative links)."
     status: confirmed
+
+  - id: D-S009-open
+    skill: 00-context/14-hotfix
+    date: "2026-07-12"
+    timestamp: "2026-07-12"
+    session_id: S009-result-card-dismiss
+    stage: 00-context
+    topic: Open hotfix session S009
+    decision: "Open hotfix session S009-result-card-dismiss; orchestrator 14-hotfix"
+    status: confirmed
+
 artifacts:
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/evolve-summary.md
     kind: evolve-summary
@@ -3343,6 +3396,12 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: fix/S009-result-card-dismiss
+      purpose: "Dismiss conversion result card after Cancel/Remove"
+      base: main
+      status: open
+      created_at: "2026-07-12"
+      session_id: S009-result-card-dismiss
     - name: evolve/S008-general-tac-iwxxm-converter
       purpose: general TAC→IWXXM converter architecture + package design
       base: main

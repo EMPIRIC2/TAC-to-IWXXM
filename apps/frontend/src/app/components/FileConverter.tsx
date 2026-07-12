@@ -147,6 +147,7 @@ export function FileConverter({
     logLevel: 'INFO',
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const hydratedWorkSessionIdRef = useRef<string | null>(null);
 
   const buildSnapshot = (
     overrides?: Partial<ConverterSnapshot>,
@@ -232,8 +233,15 @@ export function FileConverter({
   /* eslint-disable react-hooks/set-state-in-effect -- F5 hydrate converter when user loads a work session */
   useLayoutEffect(() => {
     if (!loadedWorkSession) {
+      hydratedWorkSessionIdRef.current = null;
       return;
     }
+    // Re-hydrate only when the user selects a different session — not on every
+    // autosave/onSessionUpdated refresh (which would undo Remove / Clear).
+    if (hydratedWorkSessionIdRef.current === loadedWorkSession.id) {
+      return;
+    }
+    hydratedWorkSessionIdRef.current = loadedWorkSession.id;
     setManualInput(loadedWorkSession.manual_tac || '');
     setPendingFiles(
       (loadedWorkSession.pending_files || []).map((file, index) => ({
@@ -302,7 +310,15 @@ export function FileConverter({
     }
     scheduleAutoSave(buildSnapshot());
     // eslint-disable-next-line react-hooks/exhaustive-deps -- debounced save on converter edits
-  }, [manualInput, pendingFiles, outputFilename, accessToken, isReadOnly]);
+  }, [
+    manualInput,
+    pendingFiles,
+    convertedFiles,
+    conversionLog,
+    outputFilename,
+    accessToken,
+    isReadOnly,
+  ]);
 
   useEffect(() => {
     if (accessToken || isGuest === false) {
@@ -747,6 +763,8 @@ export function FileConverter({
     setPendingFiles([]);
     setManualInput('');
     setOutputFilename('');
+    setConvertedFiles([]);
+    setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     toast.info('Queue cleared');
   };

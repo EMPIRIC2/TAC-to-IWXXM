@@ -32,11 +32,12 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S005-issue-671-docker-db](S005-issue-671-docker-db/session-brief.md) | hotfix | completed | Docker Compose bundled Postgres (#671) | fix/S005-issue-671-docker-db | 2026-06-25 | 2026-06-25 |
 | [S006-issue-664-output-filename](S006-issue-664-output-filename/session-brief.md) | feature | completed | Custom output filename for manual METAR (#664) | feat/S006-issue-664-output-filename | 2026-06-25 | 2026-07-12 |
 | [S007-docs-minimize](S007-docs-minimize/session-brief.md) | process | completed | Minimize docs/ root; nest non-standing docs | docs/S007-docs-minimize | 2026-07-12 | 2026-07-12 |
-| [S008-general-tac-iwxxm-converter](S008-general-tac-iwxxm-converter/session-brief.md) | feature | in_progress | General TAC→IWXXM + IWXXM-US converter architecture | evolve/S008-general-tac-iwxxm-converter | 2026-07-12 | — |
+| [S008-general-tac-iwxxm-converter](S008-general-tac-iwxxm-converter/session-brief.md) | feature | completed | General TAC→IWXXM + near-RT ingest (EV-006) | evolve/S008-general-tac-iwxxm-converter | 2026-07-12 | 2026-07-12 |
+| [S009-result-card-dismiss](S009-result-card-dismiss/session-brief.md) | hotfix | in_progress | Results Card stays after Cancel/Remove | fix/S009-result-card-dismiss | 2026-07-12 | — |
 
 ## Active session
 
-**S008-general-tac-iwxxm-converter** (`feature`) — converter architecture on `evolve/S008-general-tac-iwxxm-converter`.
+**S009-result-card-dismiss** (`hotfix`) — FileConverter result card dismiss on `fix/S009-result-card-dismiss`.
 
 ## Folder layout
 
