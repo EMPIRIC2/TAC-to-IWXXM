@@ -1118,7 +1118,8 @@ async def convert(
     bulletin_id: str = Form(default="", description="Optional bulletin identifier"),
     issuing_center: str = Form(default="", description="Optional issuing centre ICAO code"),
     lint: bool = Form(default=True, description="Run tac-validate before convert (Q14=C; default on)"),
-    product: str = Form(default="METAR", description="TAC product hint for lint"),
+    product: str = Form(default="METAR", description="TAC product (required for F6; default METAR for legacy)"),
+    profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
     user: dict = Depends(verify_supabase_token),
 ) -> ConversionResponse:
     logger.info(
@@ -1551,6 +1552,8 @@ async def convert(
                         normalized_metar_text,
                         iwxxm_version=iwxxm_version,
                         lenient=False,
+                        product=product,
+                        profile=profile,
                     )
 
                     # Optional output validation (Layers 3-7)
@@ -1771,6 +1774,8 @@ async def convert(
                 iwxxm_version=iwxxm_version,
                 validate=validate_output,
                 lenient=False,  # normalization already applied above
+                product=product,
+                profile=profile,
             )
 
             duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -1969,7 +1974,13 @@ async def convert(
                 start_time = time.perf_counter()
 
                 # Only convert if validation passed
-                xml_text, _ = convert_metar_tac_with_metadata(data or "", iwxxm_version=iwxxm_version, validate=False)
+                xml_text, _ = convert_metar_tac_with_metadata(
+                    data or "",
+                    iwxxm_version=iwxxm_version,
+                    validate=False,
+                    product=product,
+                    profile=profile,
+                )
 
                 # Calculate duration
                 duration_ms = int((time.perf_counter() - start_time) * 1000)

@@ -224,6 +224,29 @@ describe('API Utils', () => {
       expect(global.fetch).toHaveBeenCalled();
     });
 
+    it('appends product and profile to multipart FormData (F6.e)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'TAF KJFK 121730Z 1218/1324 24012KT P6SM SCT040',
+        product: 'TAF',
+        profile: 'iwxxm_us',
+        iwxxmVersion: '2025-2',
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('product')).toBe('TAF');
+      expect(body.get('profile')).toBe('iwxxm_us');
+      expect(body.get('iwxxm_version')).toBe('2025-2');
+    });
+
     it('should throw error on conversion failure', async () => {
       mockFetchResponse({ detail: { message: 'Conversion failed' } }, false, 400);
 

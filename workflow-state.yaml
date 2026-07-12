@@ -52,7 +52,7 @@ active_session:
       status: in_progress
       started_at: "2026-07-12"
       skip_rationale: null
-      note: "M4–M7 PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7); next M8 or continue 07-build"
+      note: "Resumed at M8 (D-S008-EV006-resume-m8=A) — F6.e UI pickers + H4–H5/H6; T8.1; create feat/S008-M8-ui-connectivity from evolve"
     - stage: 08-verify-build
       required: true
       status: pending
@@ -902,6 +902,14 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-EV006-resume-m8
+    date: "2026-07-12"
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "User chose Resume — continue EV-006 Phase C at 07-build M8 (F6.e UI pickers + H4–H5/H6); create feat/S008-M8-ui-connectivity from evolve"
+    timestamp: "2026-07-12"
   - id: D-S008-EV006-merge-m4-m7
     date: "2026-07-12"
     stage: 07-build
@@ -2718,6 +2726,7 @@ evolve_cycles:
       - "2026-07-12 D-S008-EV006-t47-cutover — starting T4.7 gifts delete cutover"
       - "2026-07-12 M4 T4.10–T4.11 + T4.6–T4.9 complete on feat/S008-M4-us-metar; next 08-verify-build then PR"
       - "2026-07-12 D-S008-EV006-merge-m4-m7 — PRs #706–#709 (PR-M4b…PR-M7) merged into evolve; M4–M7 complete; next M8 or continue 07-build"
+      - "2026-07-12 D-S008-EV006-resume-m8 — user resumed at M8 (option A); continue Phase C 07-build at T8.1; create feat/S008-M8-ui-connectivity from evolve"
     stages:
       00-context:
         status: completed
@@ -2743,7 +2752,7 @@ evolve_cycles:
         status: in_progress
         started: "2026-07-12"
         completed: null
-        active_task: M8-pending
+        active_task: T8.1
         active_milestone: M8
         notes:
           - "M1 T1.1–T1.6 completed; next 08-verify-build for M1 then PR-M1"
@@ -2761,6 +2770,7 @@ evolve_cycles:
           - "2026-07-12 T4.1–T4.5 complete; next T4.10 US METAR/SPECI goldens"
           - "2026-07-12 D-S008-EV006-resume-t410 — active handoff from 16-evolve; resume at T4.10; new feat branch needed (feat/S008-M4-cutover merged)"
           - "2026-07-12 D-S008-EV006-merge-m4-m7 — PR-M4b #706 / PR-M5 #707 / PR-M6 #708 / PR-M7 #709 merged into evolve; next M8"
+          - "2026-07-12 D-S008-EV006-resume-m8 — user resumed at M8; active_task T8.1; branch feat/S008-M8-ui-connectivity (to create)"
       08-verify-build:
         status: pending
         started: null

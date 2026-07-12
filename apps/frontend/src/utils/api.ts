@@ -128,6 +128,8 @@ export async function checkHealth(): Promise<HealthResponse> {
 export async function convertMetarToIwxxm(params: {
   manualText?: string;
   files?: File[];
+  product?: string;
+  profile?: string;
   iwxxmVersion?: string;
   validateOutput?: boolean;
   accessToken?: string;
@@ -143,6 +145,10 @@ export async function convertMetarToIwxxm(params: {
       formData.append('files', file);
     });
   }
+
+  // F6.e — product required by API; default METAR when caller omits (legacy callers)
+  formData.append('product', (params.product || 'METAR').toUpperCase());
+  formData.append('profile', params.profile || 'annex3');
 
   // Add IWXXM version (default to 2025-2)
   formData.append('iwxxm_version', params.iwxxmVersion || '2025-2');
