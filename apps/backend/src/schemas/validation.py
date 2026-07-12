@@ -271,3 +271,49 @@ class LintTacResponse(BaseModel):
     issues: List[LintIssueModel] = Field(default_factory=list)
     fixes: List[LintFixModel] = Field(default_factory=list)
     product: Optional[str] = None
+
+
+class PackageIssueModel(BaseModel):
+    """HTTP DTO for an iwxxm-validate package finding (additive on /validate)."""
+
+    layer: str
+    severity: str
+    message: str
+    location: Optional[str] = None
+    code: Optional[str] = None
+
+
+class ValidateIssueModel(BaseModel):
+    """HTTP DTO for a legacy F2 orchestrator finding on /validate."""
+
+    layer: str
+    level: str
+    message: str
+    location: Optional[str] = None
+    code: Optional[str] = None
+
+
+class ValidateLayerIssueModel(BaseModel):
+    """Per-layer issue entry nested under ``issues_by_layer``."""
+
+    level: str
+    message: str
+    location: Optional[str] = None
+    code: Optional[str] = None
+
+
+class ValidateResponse(BaseModel):
+    """Response for POST /api/v1/validate (F2 layers + package_* extras)."""
+
+    is_valid: bool
+    version: str
+    profile: str = "annex3"
+    layers_run: List[str] = Field(default_factory=list)
+    layers_passed: List[str] = Field(default_factory=list)
+    layers_failed: List[str] = Field(default_factory=list)
+    total_issues: int = 0
+    issues: List[ValidateIssueModel] = Field(default_factory=list)
+    issues_by_layer: dict[str, List[ValidateLayerIssueModel]] = Field(default_factory=dict)
+    stopped_at_layer: Optional[str] = None
+    package_ok: bool = True
+    package_issues: List[PackageIssueModel] = Field(default_factory=list)

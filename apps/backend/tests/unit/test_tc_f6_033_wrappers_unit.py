@@ -22,12 +22,25 @@ def client():
     api_module.app.dependency_overrides.clear()
 
 
+def _multipart_lint(
+    client: TestClient,
+    *,
+    manual_text: str,
+    product: str = "METAR",
+):
+    """POST /lint-tac as multipart/form-data (Q8=A; TestClient data= alone is urlencoded)."""
+    return client.post(
+        "/api/v1/lint-tac",
+        files={
+            "manual_text": (None, manual_text),
+            "product": (None, product),
+        },
+    )
+
+
 def test_lint_tac_route_exists_multipart(client: TestClient) -> None:
     """POST /api/v1/lint-tac accepts multipart and returns ok/issues/fixes."""
-    response = client.post(
-        "/api/v1/lint-tac",
-        data={"manual_text": "", "product": "METAR"},
-    )
+    response = _multipart_lint(client, manual_text="")
     assert response.status_code == 200
     payload = response.json()
     assert payload["ok"] is False
@@ -40,12 +53,9 @@ def test_lint_tac_route_exists_multipart(client: TestClient) -> None:
 
 
 def test_lint_tac_metar_pass(client: TestClient) -> None:
-    response = client.post(
-        "/api/v1/lint-tac",
-        data={
-            "manual_text": "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034=",
-            "product": "METAR",
-        },
+    response = _multipart_lint(
+        client,
+        manual_text="METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034=",
     )
     assert response.status_code == 200
     assert response.json()["ok"] is True
@@ -61,8 +71,17 @@ def test_lint_tac_rejects_json_content_type(client: TestClient) -> None:
     assert response.status_code in {415, 422}
 
 
+def test_lint_tac_rejects_urlencoded(client: TestClient) -> None:
+    """Q8=A: application/x-www-form-urlencoded is not accepted."""
+    response = client.post(
+        "/api/v1/lint-tac",
+        data={"manual_text": "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034=", "product": "METAR"},
+    )
+    assert response.status_code == 415
+
+
 def test_validate_accepts_profile_and_calls_iwxxm_validate(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Thin wrapper must invoke iwxxm_validate.validate (TC-F6-033)."""
+    """Thin wrapper must invoke iwxxm_validate.validate (TC-F6-033) and map package fields."""
     calls: list[dict[str, object]] = []
 
     def fake_validate(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None):
@@ -76,10 +95,22 @@ def test_validate_accepts_profile_and_calls_iwxxm_validate(client: TestClient, m
         )
         from iwxxm_validate import Issue, ValidationReport
 
-        return ValidationReport(ok=True, iwxxm_version=iwxxm_version, profile=profile, issues=[])
+        return ValidationReport(
+            ok=False,
+            iwxxm_version=iwxxm_version,
+            profile=profile,
+            issues=[
+                Issue(
+                    severity="error",
+                    code="E001",
+                    message="Example package issue",
+                    layer="xsd",
+                    location="line 1, col 1",
+                )
+            ],
+        )
 
     monkeypatch.setattr("iwxxm_validate.validate", fake_validate)
-    # Also patch where the wrapper imports it if bound differently
     monkeypatch.setattr("src.api.iwxxm_validate_fn", fake_validate, raising=False)
 
     xml = """<?xml version="1.0"?><root xmlns="http://icao.int/iwxxm/2023-1"/>"""
@@ -87,9 +118,21 @@ def test_validate_accepts_profile_and_calls_iwxxm_validate(client: TestClient, m
         "/api/v1/validate",
         json={"iwxxm_xml": xml, "version": "2023-1", "validation_level": "schema", "profile": "annex3"},
     )
-    # Wrapper may still return aggregated F2 shape; must be success path
     assert response.status_code == 200
     assert calls, "expected iwxxm_validate.validate to be called"
+    assert calls[0]["profile"] == "annex3"
+    assert calls[0]["iwxxm_version"]
+
+    data = response.json()
+    assert data["profile"] == "annex3"
+    assert data["package_ok"] is False
+    assert isinstance(data["package_issues"], list)
+    assert len(data["package_issues"]) == 1
+    issue_dto = data["package_issues"][0]
+    assert issue_dto["code"] == "E001"
+    assert issue_dto["message"] == "Example package issue"
+    assert issue_dto["severity"] == "error"
+    assert issue_dto["layer"] == "xsd"
 
 
 def test_convert_lint_form_defaults_true() -> None:
