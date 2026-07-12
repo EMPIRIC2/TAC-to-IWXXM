@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase 3: Bulletin + METAR/SPECI + PyO3 (pre-cutover) |
 | **Active milestone** | M3: Bulletin split + convert-bulletin API |
-| **Active task** | T3.3 — `/convert-bulletin` multi-result schema test |
-| **Tasks completed** | 15 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T3.1–T3.2 done) |
+| **Active task** | — (M3 tasks complete; 08-verify-build next) |
+| **Tasks completed** | 18 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T3.1–T3.5 done) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -64,7 +64,7 @@
 |-------|------|----------------|-----------|
 | `vendor/schemas/iwxxm*` | schemas | present | M2–M5 |
 | `vendor/schemas/iwxxm-us` | schemas | **pin policy set** (HTTP 3.0; snapshot at T1.5) | M1, M3+ |
-| AHL bulletin fixtures | test-data | pending | M3, M4, H7 |
+| AHL bulletin fixtures | test-data | present (`packages/tac2iwxxm/tests/fixtures` + `tests/fixtures/live`) | M3, M4, H7 |
 | Gifts annex3 goldens (archive) | goldens | present (pre-delete) | M4 cutover |
 | Supabase project | Postgres | present | M6 F8 tables |
 | Poller HTTPS fixture URL | staging secret | pending | M6–M7 |
@@ -126,9 +126,9 @@
 |---|------|------|--------|-------------|------------|
 | T3.1 | Test: AHL split fixtures → N reports (TC-F6-030 T0) | Test | completed | F6.bulletin, Q4=A | T1.2 |
 | T3.2 | Code: bulletin splitter in `tac2iwxxm` | Code | completed | spec.md pipeline | T3.1 |
-| T3.3 | Test: `/convert-bulletin` multi-result schema (partial OK + issues/fixes) | Test | in_progress | Q6=A, Q7=C | T3.2, T2.6 |
-| T3.4 | Code: `POST /convert-bulletin` + pydantic response map from msgspec | Code | pending | api-contract | T3.3 |
-| T3.5 | Config: commit multi-report AHL fixture for H7 | Config | pending | TC-LIVE-F6-030 | T3.1 |
+| T3.3 | Test: `/convert-bulletin` multi-result schema (partial OK + issues/fixes) | Test | completed | Q6=A, Q7=C | T3.2, T2.6 |
+| T3.4 | Code: `POST /convert-bulletin` + pydantic response map from msgspec | Code | completed | api-contract | T3.3 |
+| T3.5 | Config: commit multi-report AHL fixture for H7 | Config | completed | TC-LIVE-F6-030 | T3.1 |
 
 #### M4: METAR/SPECI (+ US) + PyO3 + cutover PR
 
