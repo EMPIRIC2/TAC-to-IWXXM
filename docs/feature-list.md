@@ -129,6 +129,8 @@
 | `iwxxm_version` | app default (e.g. `2025-2`) | Vendored pins only | Schema line |
 - **API**: Extend `POST /api/v1/convert` with `product` + `profile` (no per-product path prefix).
 - **UI**: Product + profile (+ version) pickers in v1; H4–H5 connectivity required.
+- **Input traceability (#655 / EV-007)**: Result cards always show Source TAC; TAC-derived
+  headline; multi-line index chip; client fallback when API omits `tac_input`.
 - **GIFTs**: On first PR that wires tac2iwxxm to `/api/v1/convert`, **remove `packages/gifts`**
   and stop all API use of gifts (hard cutover). REQ-014 / ADR-004 / M3 deprecated.
 - **Vendor**: Pin `vendor/schemas/iwxxm-us` via `vendor/manifest.json` — HTTP snapshot of

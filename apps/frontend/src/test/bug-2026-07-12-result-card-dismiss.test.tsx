@@ -108,7 +108,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
     await user.click(screen.getByTestId('convert-button'));
 
     await waitFor(() => {
-      expect(screen.getByText('manual_input.txt')).toBeInTheDocument();
+      expect(screen.getByText('METAR FAOR 101200Z')).toBeInTheDocument();
     });
 
     await user.click(
@@ -118,7 +118,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText('manual_input.txt')).not.toBeInTheDocument();
+      expect(screen.queryByText('METAR FAOR 101200Z')).not.toBeInTheDocument();
     });
   });
 
@@ -156,7 +156,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
       />,
     );
 
-    expect(screen.getByText('manual_input.txt')).toBeInTheDocument();
+    expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
 
     await user.click(
       screen.getByRole('button', {
@@ -165,7 +165,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText('manual_input.txt')).not.toBeInTheDocument();
+      expect(screen.queryByText(/manual_input\.txt/)).not.toBeInTheDocument();
     });
 
     // Stale autosave / persist completion pushes the pre-remove session back
@@ -185,7 +185,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText('manual_input.txt')).not.toBeInTheDocument();
+      expect(screen.queryByText(/manual_input\.txt/)).not.toBeInTheDocument();
     });
   });
 });

@@ -161,15 +161,19 @@ use `.nth(1)` after clicking a card to assert the panel content heading.
 - **Pass criteria**: IWXXM XML returned; HTTP 200
 - **Source**: apps/e2e/tac-file-conversion.e2e.spec.ts
 
-### TC-001b: COR-after-time + TAC traceability (EV-003 / #594)
+### TC-001b: COR-after-time + TAC traceability (EV-003 / #594; UX hardening EV-007 / #655)
 
 - **Objective**: ICAO COR placement and per-result TAC display
 - **Input**: `METAR STID ddHHmmZ COR ...` manual TAC; multi-line manual input
 - **Pass criteria**:
   - IWXXM contains `reportStatus="CORRECTION"` (no `translationFailedTAC`)
-  - Results UI shows **Source TAC** panel with original input per result
+  - Results UI shows **Source TAC** panel with original input per result (always visible;
+    client fallback when API omits `tac_input`)
+  - Card title uses TAC-derived headline (e.g. `METAR KJFK 121251Z`); download name shown as
+    subtitle when it differs (#664 preserved)
+  - Multi-line manual input shows `Line N of M` chip per result
   - API `ConversionResult.tac_input` populated for manual and file conversions
-- **Source**: `tests/bugs/test_bug_2026_06_22_issue_594_cor_after_time.py`, `packages/gifts/tests/test_metar_encoding.py::test_cor_after_time`, `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/frontend/src/app/components/FileConverter.test.tsx`
+- **Source**: `tests/bugs/test_bug_2026_06_22_issue_594_cor_after_time.py`, `packages/gifts/tests/test_metar_encoding.py::test_cor_after_time`, `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/frontend/src/app/components/FileConverter.test.tsx`, `apps/frontend/src/utils/resultTraceability.test.ts`
 
 ### TC-001c: Custom output filename for manual input (EV-005 / #664)
 

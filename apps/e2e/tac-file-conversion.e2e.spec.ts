@@ -83,6 +83,8 @@ test.describe('TAC File Conversion', () => {
             {
               name: 'manual_input.txt',
               content: '<iwxxm:METAR>mock-success</iwxxm:METAR>',
+              tac_input:
+                'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
               source: 'manual_input',
               size_bytes: 39,
             },
@@ -109,6 +111,8 @@ test.describe('TAC File Conversion', () => {
       page.getByRole('region', { name: /conversion results/i }),
     ).toBeVisible();
     await expect(page.getByText('manual_input.txt')).toBeVisible();
+    await expect(page.getByText('Source TAC')).toBeVisible();
+    await expect(page.getByText('METAR KJFK 121251Z')).toBeVisible();
   });
 
   test('custom output filename names manual results (#664)', async ({ page }) => {
