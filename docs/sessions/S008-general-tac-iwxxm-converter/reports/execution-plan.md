@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase 2: Validate Packages + HTTP Wrappers |
 | **Active milestone** | M2: iwxxm-validate + tac-validate + routes |
-| **Active task** | T2.5 |
+| **Active task** | T2.5 (in_progress) |
 | **Tasks completed** | 10 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T2.3–T2.4 tac-validate done) |
+| **Last updated** | 2026-07-12 (07-build EV-006; T2.5 wrapper contract tests started) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -106,8 +106,8 @@
 | T2.2 | Code: implement `packages/iwxxm-validate` (lxml; vendor read-only) | Code | completed | ADR-015, Q3=B, D-S008-T21-sch | T2.1 |
 | T2.3 | Test: tac-validate msgspec issues + optional fixes (TC-F6-031) | Test | completed | Q9=C | T1.4 |
 | T2.4 | Code: implement `packages/tac-validate` rule pack skeleton (7 products) | Code | completed | ADR-015 | T2.3 |
-| T2.5 | Test: API `/lint-tac` multipart + `/validate` wrapper contract | Test | pending | api-contract, Q8=A | T2.2, T2.4 |
-| T2.6 | Code: thin wrappers; OpenAPI/shared types; `lint` form flag default **true** on convert | Code | pending | Q14=C, Q51–53 | T2.5 |
+| T2.5 | Test: API `/lint-tac` multipart + `/validate` wrapper contract | Test | completed | api-contract, Q8=A | T2.2, T2.4 |
+| T2.6 | Code: thin wrappers; OpenAPI/shared types; `lint` form flag default **true** on convert | Code | in_progress | Q14=C, Q51–53 | T2.5 |
 | T2.7 | Test: sub-second benches soft-fail for lint + validate alone (Q11 A) | Test | pending | ADR-016 Q11=C | T2.2, T2.4 |
 
 **Phase 2 gate**: Wrappers green; old inline F2 still present until M4 delete tasks.
