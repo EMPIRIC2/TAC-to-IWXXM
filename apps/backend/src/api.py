@@ -472,6 +472,16 @@ def normalize_validation_level(value: Optional[str]) -> str:
     return level if level in allowed_levels else "basic"
 
 
+def _product_uses_metar_tac_layers(product: Optional[str]) -> bool:
+    """Return True when legacy METAR/SPECI TAC keyword layers apply.
+
+    F6.e non-METAR products (TAF, SIGMET, ...) must not be rejected by
+    ``ValidationService.validate_all_layers`` which requires METAR/SPECI keywords.
+    """
+    product_u = (product or "METAR").strip().upper()
+    return product_u in {"METAR", "SPECI"}
+
+
 # Customize OpenAPI schema to add Bearer token authentication
 def custom_openapi():
     if app.openapi_schema:
@@ -1466,45 +1476,46 @@ async def convert(
         try:
             # Validate METAR input (Layers 1-2: ICAO and TAC syntax)
             try:
-                validation_result = validation_service.validate_all_layers(normalized_metar_text)
-                if not validation_result.passed:
-                    # Build summary from validation result
-                    validation_summary = f"{validation_result.total_issues} validation issue(s) found"
-                    error_msg = f"{metar_name}: Validation failed - {validation_summary}"
-                    errors.append(error_msg)
-                    add_issue(
-                        source=metar_name,
-                        message=f"Validation failed: {validation_summary}",
-                        severity=ConversionIssueSeverity.ERROR,
-                        hint="Fix TAC format and ICAO code issues, then retry conversion.",
-                        code="VALIDATION_FAILED",
-                    )
-                    add_aggregated_validation_issues(metar_name, validation_result)
-                    # Log failed validation
-                    try:
-                        translation_id = await statistics_service.log_translation(
-                            tac_message=metar_text.strip(),
-                            iwxxm_output=None,
-                            iwxxm_version=iwxxm_version,
-                            translation_status=TranslationStatus.FAILED,
-                            validation_layers_passed=[],
-                            validation_errors={"validation": validation_summary},
-                            translation_duration_ms=0,
-                            icao_airport_code=extract_airport_code(metar_text.strip()),
-                            user_id=user.get("sub"),
+                if _product_uses_metar_tac_layers(product):
+                    validation_result = validation_service.validate_all_layers(normalized_metar_text)
+                    if not validation_result.passed:
+                        # Build summary from validation result
+                        validation_summary = f"{validation_result.total_issues} validation issue(s) found"
+                        error_msg = f"{metar_name}: Validation failed - {validation_summary}"
+                        errors.append(error_msg)
+                        add_issue(
+                            source=metar_name,
+                            message=f"Validation failed: {validation_summary}",
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Fix TAC format and ICAO code issues, then retry conversion.",
+                            code="VALIDATION_FAILED",
                         )
-                        airport_code = extract_airport_code(metar_text.strip())
-                        await webhook_service.notify_translation_failed(
-                            translation_id=translation_id,
-                            airport_code=airport_code or "UNKNOWN",
-                            error_type="validation_failed",
-                            error_message=validation_summary,
-                        )
-                    except Exception as log_err:
-                        logger.error(f"Failed to log failed translation: {log_err}")
-                    if stop_on_error:
-                        break
-                    continue
+                        add_aggregated_validation_issues(metar_name, validation_result)
+                        # Log failed validation
+                        try:
+                            translation_id = await statistics_service.log_translation(
+                                tac_message=metar_text.strip(),
+                                iwxxm_output=None,
+                                iwxxm_version=iwxxm_version,
+                                translation_status=TranslationStatus.FAILED,
+                                validation_layers_passed=[],
+                                validation_errors={"validation": validation_summary},
+                                translation_duration_ms=0,
+                                icao_airport_code=extract_airport_code(metar_text.strip()),
+                                user_id=user.get("sub"),
+                            )
+                            airport_code = extract_airport_code(metar_text.strip())
+                            await webhook_service.notify_translation_failed(
+                                translation_id=translation_id,
+                                airport_code=airport_code or "UNKNOWN",
+                                error_type="validation_failed",
+                                error_message=validation_summary,
+                            )
+                        except Exception as log_err:
+                            logger.error(f"Failed to log failed translation: {log_err}")
+                        if stop_on_error:
+                            break
+                        continue
             except ValidationServiceError as ve:
                 errors.append(f"{metar_name}: {str(ve)}")
                 add_issue(
@@ -1695,42 +1706,43 @@ async def convert(
 
         try:
             try:
-                validation_result = validation_service.validate_all_layers(_normalized_entry)
-                if not validation_result.passed:
-                    validation_summary = f"{validation_result.total_issues} validation issue(s) found"
-                    errors.append(f"{manual_source}: Validation failed - {validation_summary}")
-                    add_issue(
-                        source=manual_source,
-                        message=f"Validation failed: {validation_summary}",
-                        severity=ConversionIssueSeverity.ERROR,
-                        hint="Fix TAC format and ICAO code issues, then retry conversion.",
-                        code="VALIDATION_FAILED",
-                    )
-                    add_aggregated_validation_issues(manual_source, validation_result)
-                    try:
-                        translation_id = await statistics_service.log_translation(
-                            tac_message=manual_entry,
-                            iwxxm_output=None,
-                            iwxxm_version=iwxxm_version,
-                            translation_status=TranslationStatus.FAILED,
-                            validation_layers_passed=[],
-                            validation_errors={"validation": validation_summary},
-                            translation_duration_ms=0,
-                            icao_airport_code=extract_airport_code(manual_entry),
-                            user_id=user.get("sub"),
+                if _product_uses_metar_tac_layers(product):
+                    validation_result = validation_service.validate_all_layers(_normalized_entry)
+                    if not validation_result.passed:
+                        validation_summary = f"{validation_result.total_issues} validation issue(s) found"
+                        errors.append(f"{manual_source}: Validation failed - {validation_summary}")
+                        add_issue(
+                            source=manual_source,
+                            message=f"Validation failed: {validation_summary}",
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Fix TAC format and ICAO code issues, then retry conversion.",
+                            code="VALIDATION_FAILED",
                         )
-                        airport_code = extract_airport_code(manual_entry)
-                        await webhook_service.notify_translation_failed(
-                            translation_id=translation_id,
-                            airport_code=airport_code or "UNKNOWN",
-                            error_type="validation_failed",
-                            error_message=validation_summary,
-                        )
-                    except Exception as log_err:
-                        logger.error(f"Failed to log failed translation: {log_err}")
-                    if stop_on_error:
-                        break
-                    continue
+                        add_aggregated_validation_issues(manual_source, validation_result)
+                        try:
+                            translation_id = await statistics_service.log_translation(
+                                tac_message=manual_entry,
+                                iwxxm_output=None,
+                                iwxxm_version=iwxxm_version,
+                                translation_status=TranslationStatus.FAILED,
+                                validation_layers_passed=[],
+                                validation_errors={"validation": validation_summary},
+                                translation_duration_ms=0,
+                                icao_airport_code=extract_airport_code(manual_entry),
+                                user_id=user.get("sub"),
+                            )
+                            airport_code = extract_airport_code(manual_entry)
+                            await webhook_service.notify_translation_failed(
+                                translation_id=translation_id,
+                                airport_code=airport_code or "UNKNOWN",
+                                error_type="validation_failed",
+                                error_message=validation_summary,
+                            )
+                        except Exception as log_err:
+                            logger.error(f"Failed to log failed translation: {log_err}")
+                        if stop_on_error:
+                            break
+                        continue
             except ValidationServiceError as ve:
                 errors.append(f"{manual_source}: {str(ve)}")
                 add_issue(
@@ -1897,43 +1909,44 @@ async def convert(
 
                 # Validate METAR input (Layers 1-2: ICAO and TAC syntax)
                 try:
-                    validation_result = validation_service.validate_all_layers((data or "").strip())
-                    if not validation_result.passed:
-                        # Build summary from validation result
-                        validation_summary = f"{validation_result.total_issues} validation issue(s) found"
-                        error_msg = f"{source_name}: Validation failed - {validation_summary}"
-                        errors.append(error_msg)
-                        add_issue(
-                            source=source_name,
-                            message=f"Validation failed: {validation_summary}",
-                            severity=ConversionIssueSeverity.ERROR,
-                            hint="Fix TAC format and ICAO code issues, then retry conversion.",
-                            code="VALIDATION_FAILED",
-                        )
-                        add_aggregated_validation_issues(source_name, validation_result)
-                        # Log failed validation
-                        try:
-                            translation_id = await statistics_service.log_translation(
-                                tac_message=(data or "").strip(),
-                                iwxxm_output=None,
-                                iwxxm_version=iwxxm_version,
-                                translation_status=TranslationStatus.FAILED,
-                                validation_layers_passed=[],
-                                validation_errors={"validation": validation_summary},
-                                translation_duration_ms=0,
-                                icao_airport_code=extract_airport_code((data or "").strip()),
-                                user_id=user.get("sub"),
+                    if _product_uses_metar_tac_layers(product):
+                        validation_result = validation_service.validate_all_layers((data or "").strip())
+                        if not validation_result.passed:
+                            # Build summary from validation result
+                            validation_summary = f"{validation_result.total_issues} validation issue(s) found"
+                            error_msg = f"{source_name}: Validation failed - {validation_summary}"
+                            errors.append(error_msg)
+                            add_issue(
+                                source=source_name,
+                                message=f"Validation failed: {validation_summary}",
+                                severity=ConversionIssueSeverity.ERROR,
+                                hint="Fix TAC format and ICAO code issues, then retry conversion.",
+                                code="VALIDATION_FAILED",
                             )
-                            airport_code = extract_airport_code((data or "").strip())
-                            await webhook_service.notify_translation_failed(
-                                translation_id=translation_id,
-                                airport_code=airport_code or "UNKNOWN",
-                                error_type="validation_failed",
-                                error_message=validation_summary,
-                            )
-                        except Exception as log_err:
-                            logger.error(f"Failed to log failed translation: {log_err}")
-                        continue
+                            add_aggregated_validation_issues(source_name, validation_result)
+                            # Log failed validation
+                            try:
+                                translation_id = await statistics_service.log_translation(
+                                    tac_message=(data or "").strip(),
+                                    iwxxm_output=None,
+                                    iwxxm_version=iwxxm_version,
+                                    translation_status=TranslationStatus.FAILED,
+                                    validation_layers_passed=[],
+                                    validation_errors={"validation": validation_summary},
+                                    translation_duration_ms=0,
+                                    icao_airport_code=extract_airport_code((data or "").strip()),
+                                    user_id=user.get("sub"),
+                                )
+                                airport_code = extract_airport_code((data or "").strip())
+                                await webhook_service.notify_translation_failed(
+                                    translation_id=translation_id,
+                                    airport_code=airport_code or "UNKNOWN",
+                                    error_type="validation_failed",
+                                    error_message=validation_summary,
+                                )
+                            except Exception as log_err:
+                                logger.error(f"Failed to log failed translation: {log_err}")
+                            continue
                 except ValidationServiceError as ve:
                     errors.append(f"{uf.filename}: {str(ve)}")
                     add_issue(
