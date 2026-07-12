@@ -26,3 +26,27 @@
 ## Merge
 
 **Not merged** — user merges manually in order #706 → #707 → #708 → #709.
+
+---
+
+# PR remediation report — PRM-015 (PR #711)
+
+| Field | Value |
+|-------|-------|
+| **Linked review** | PRR-018 |
+| **Date** | 2026-07-12 |
+| **Decision** | D-S008-evolve-main-18-19 |
+| **Head SHA** | `79af006` |
+| **Counts** | fixed=2, deferred=0, wont_fix=0 |
+
+## Fixed
+
+| Finding | Commit | Note |
+|---------|--------|------|
+| 🔴 B1 | `ecdeac5` | validate TAC auto-convert forwards profile |
+| 🟡 A1 | `79af006` | bound uploads + `MAX_BULLETIN_REPORTS=100` |
+
+## Merge
+
+Squash-merge to `main` authorized when CI is green (user explicit; D-S008-evolve-main-18-19).
+

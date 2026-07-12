@@ -871,10 +871,11 @@ stages:
     status: completed
     started: "2026-07-12"
     completed: "2026-07-12"
-    last_cycle: PRR-017
+    last_cycle: PRR-018
     session_id: S008-general-tac-iwxxm-converter
     evolve_cycle_id: EV-006
     notes:
+      - "PRR-018 completed on #711 — COMMENT (self-PR cannot REQUEST_CHANGES); blockers=1 advisories=1 praise=1; ci_status=success on prior HEAD 1e7b57a; review https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/711#pullrequestreview-4680875095; handed to PRM-015 (D-S008-evolve-main-18-19)"
       - "PRR-017 completed on #710 — REQUEST_CHANGES (posted as comment; own-PR); blockers=2 advisories=2 praise=1; ci_status=n/a-evolve-base; handed to PRM-014; PR #710 MERGED after PRM-014 remediation"
       - "Re-review pass after PRM-012/013 (D-S008-PR706-709-18b); cycles PRR-013…PRR-016 on #706–#709 completed; intended approve posted as COMMENT; do not merge"
       - "Prior stack review PRR-009…PRR-012 lived in reports/pr-review.md only (not in pr_review_cycles[])"
@@ -884,9 +885,10 @@ stages:
     status: completed
     started: "2026-06-22"
     completed: "2026-07-12"
-    last_cycle: PRM-014
+    last_cycle: PRM-015
     session_id: S008-general-tac-iwxxm-converter
     notes:
+      - "PRM-015 completed on #711 — B1 ecdeac5 (validate TAC auto-convert forwards profile), A1 79af006 (bound uploads + MAX_BULLETIN_REPORTS=100); fixed=2 deferred=0 wont_fix=0; linked PRR-018; head_sha 79af006; squash-merge authorized when CI green (D-S008-evolve-main-18-19)"
       - "PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)"
       - "2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)"
 
@@ -997,6 +999,27 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-evolve-main-18-19
+    date: "2026-07-12"
+    timestamp: "2026-07-12"
+    stage: 18-pr-review
+    skill: 18-pr-review
+    skill_id: 18-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      Waive active_session/routing for on-demand 18-pr-review + 19-address-pr-review
+      on PR #711 (evolve/S008-general-tac-iwxxm-converter → main). Authorize
+      squash-merge to main when CI is green (user explicit).
+    summary: >
+      On-demand Phase G for PR #711 without reopening active_session. PRR-018
+      COMMENT (self-PR); PRM-015 remediates B1+A1. Squash-merge to main authorized
+      when CI green — anti-merge override for this PR only.
+    status: confirmed
+    related_pr: 711
+    related_cycles:
+      - PRR-018
+      - PRM-015
   - id: D-S008-EV006-close
     date: "2026-07-12"
     timestamp: "2026-07-12"
@@ -3313,6 +3336,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/S008-general-tac-iwxxm-converter
   notes:
+    - "2026-07-12 D-S008-evolve-main-18-19 — on-demand 18+19 for PR #711; PRM-015 commits ecdeac5 + 79af006; head_sha 79af006; squash-merge when CI green"
     - "2026-07-12 D-S008-EV006-close — close commit 2ac4093 recorded; pushed (or will be pushed with this follow-up)"
     - "2026-07-12 D-S008-EV006-merge-m4-m7 — feat/S008-M4-us-metar (#706), M5-products (#707), M6-worker (#708), M7-live (#709) merged into evolve"
     - "2026-07-12 PR-M8 #710 MERGED into evolve (PRM-014; merge_sha e4fe492); M8 complete"
@@ -4197,6 +4221,38 @@ git_history:
         - workflow-state.yaml
         - docs/adr/README.md
       timestamp: "2026-07-12"
+    - sha: "ecdeac5"
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "[PRM-015] fix: forward profile on validate TAC auto-convert"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      skill_id: 19-address-pr-review
+      pr_number: 711
+      linked_review_cycle_id: PRR-018
+      remediation_cycle_id: PRM-015
+      finding_id: B1
+      files_changed:
+        - apps/backend/src/api.py
+        - tests/bugs/test_bug_2026_07_12_validate_tac_convert_ignores_profile.py
+        - docs/bug-reports/BUG-2026-07-12-validate-tac-convert-ignores-profile.md
+      timestamp: "2026-07-12"
+    - sha: "79af006"
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "[PRM-015] fix: bound lint/bulletin uploads and cap report fan-out"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      skill_id: 19-address-pr-review
+      pr_number: 711
+      linked_review_cycle_id: PRR-018
+      remediation_cycle_id: PRM-015
+      finding_id: A1
+      files_changed:
+        - apps/backend/src/api.py
+        - tests/bugs/test_bug_2026_07_12_convert_bulletin_report_cap.py
+      timestamp: "2026-07-12"
+      note: "HEAD after PRM-015 push; authorize squash-merge of #711 when CI green"
 pr_review_cycles:
   - id: PRR-001
     pr_number: 679
@@ -4532,6 +4588,36 @@ pr_review_cycles:
     notes:
       - "REQUEST_CHANGES posted as issue comment (own-PR; GitHub blocks self request-changes review)"
       - "2026-07-12 PR #710 MERGED into evolve after PRM-014 remediation (merge_commit e4fe492; B1/B2/A1/A2 fixed)"
+
+  - id: PRR-018
+    pr_number: 711
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/711
+    title: "Phase F: S008 General TAC→IWXXM converter (F6/F8)"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    skill_id: 18-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision_id: D-S008-evolve-main-18-19
+    scope: full
+    head_ref: evolve/S008-general-tac-iwxxm-converter
+    base_ref: main
+    head_sha_reviewed: 1e7b57a
+    linked_remediation_cycle_id: PRM-015
+    verdict: COMMENT
+    blockers: 1
+    advisories: 1
+    praise: 1
+    ci_status: success
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/711#pullrequestreview-4680875095
+    artifacts:
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-review.md
+        note: PRR-018 session report section
+    notes:
+      - "COMMENT verdict — self-PR cannot REQUEST_CHANGES; blockers=1 advisories=1 praise=1"
+      - "ci_status success on prior HEAD 1e7b57a"
+      - "On-demand 18 without active_session (D-S008-evolve-main-18-19); handed to PRM-015"
 
 pr_remediation_cycles:
   - id: PRM-001
@@ -5480,3 +5566,55 @@ pr_remediation_cycles:
     notes: >
       PR #710 MERGED into evolve after remediation (merge_commit e4fe492).
       Fixed 4 findings: B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b.
+
+  - id: PRM-015
+    pr_number: 711
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/711
+    linked_review_cycle_id: PRR-018
+    title: "Phase F: S008 General TAC→IWXXM converter (F6/F8)"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision_id: D-S008-evolve-main-18-19
+    head_ref: evolve/S008-general-tac-iwxxm-converter
+    base_ref: main
+    head_sha: 79af006
+    scope: blockers_then_advisories
+    pr_state: OPEN
+    ci_status: pending
+    counts:
+      fixed: 2
+      deferred: 0
+      wont_fix: 0
+    findings:
+      - id: B1
+        source: pr-review
+        severity: blocker
+        path: null
+        line: null
+        thread_id: null
+        status: fixed
+        commit: ecdeac5
+        note: "validate TAC auto-convert forwards profile"
+      - id: A1
+        source: pr-review
+        severity: advisory
+        path: null
+        line: null
+        thread_id: null
+        status: fixed
+        commit: 79af006
+        note: "bound uploads + MAX_BULLETIN_REPORTS=100"
+    artifacts:
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
+        note: PRM-015 session report section
+    follow_up:
+      pr_review_rerun: skipped
+      merge: authorized_squash_when_ci_green
+    notes: >
+      PRM-015 completed — fixed B1 (ecdeac5) + A1 (79af006); head_sha 79af006.
+      Squash-merge to main authorized when CI green (D-S008-evolve-main-18-19).
+      On-demand 19 without active_session.
