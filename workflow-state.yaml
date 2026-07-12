@@ -2666,6 +2666,13 @@ git_history:
       session_id: S008-general-tac-iwxxm-converter
       files_changed: 1
       timestamp: "2026-07-12"
+    - sha: 6fe6dd34129760b2c3c2379718771c89d0e552bb
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "[S008] docs: 04-tech-plan delta for F6 packages, PyO3 gate, and F8 worker"
+      stage: "04-tech-plan"
+      session_id: S008-general-tac-iwxxm-converter
+      files_changed: 12
+      timestamp: "2026-07-12"
 
 pr_review_cycles:
   - id: PRR-001
