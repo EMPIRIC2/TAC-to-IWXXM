@@ -8,7 +8,7 @@ from pathlib import Path
 import httpx
 import pytest
 import respx
-from metar_worker.poller import fetch_jobs
+from metar_worker.poller import fetch_jobs, safe_url_for_log
 
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "ingest_feed.json"
 FEED_URL = "https://ingest.example.test/feed.json"
@@ -48,3 +48,18 @@ def test_t61_poller_http_error_raises() -> None:
     respx.get(FEED_URL).mock(return_value=httpx.Response(503, text="down"))
     with pytest.raises(httpx.HTTPStatusError):
         fetch_jobs(FEED_URL)
+
+
+def test_t61_poller_rejects_non_https() -> None:
+    with pytest.raises(ValueError, match="https://"):
+        fetch_jobs("http://ingest.example.test/feed.json")
+
+
+def test_t61_safe_url_for_log_strips_query_and_userinfo() -> None:
+    assert (
+        safe_url_for_log("https://user:tok@ingest.example.test/feed.json?token=secret")
+        == "https://ingest.example.test/feed.json"
+    )
+    assert "token=secret" not in safe_url_for_log(
+        "https://ingest.example.test/feed.json?token=secret"
+    )

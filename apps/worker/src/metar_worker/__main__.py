@@ -7,13 +7,14 @@ import signal
 import time
 
 from metar_worker.pipeline import process_job
-from metar_worker.poller import fetch_jobs
+from metar_worker.poller import fetch_jobs, safe_url_for_log
 from metar_worker.settings import WorkerSettings
 from metar_worker.store import SupabaseRestStore, write_result
 
 logger = logging.getLogger("metar_worker")
 
 _shutdown = False
+_seen_job_ids: set[str] = set()
 
 
 def _handle_sigterm(_signum: int, _frame: object) -> None:
@@ -29,7 +30,7 @@ def run_once(settings: WorkerSettings, store: SupabaseRestStore | None = None) -
     Returns
     -------
     int
-        Number of jobs processed.
+        Number of jobs processed (skips already-seen ``job_id`` values in-process).
     """
     if not settings.ingest_poller_url:
         raise RuntimeError("INGEST_POLLER_URL is required")
@@ -46,14 +47,24 @@ def run_once(settings: WorkerSettings, store: SupabaseRestStore | None = None) -
         )
 
     jobs = fetch_jobs(settings.ingest_poller_url)
-    logger.info("fetched %s job(s) from %s", len(jobs), settings.ingest_poller_url)
+    logger.info(
+        "fetched %s job(s) from %s",
+        len(jobs),
+        safe_url_for_log(settings.ingest_poller_url),
+    )
+    processed = 0
     for job in jobs:
+        if job.job_id in _seen_job_ids:
+            logger.debug("skip already-seen job_id=%s", job.job_id)
+            continue
         result = process_job(
             job,
             profile=settings.ingest_profile,
             iwxxm_version=settings.iwxxm_version,
         )
         table = write_result(writer, job, result)
+        _seen_job_ids.add(job.job_id)
+        processed += 1
         logger.info(
             "job %s → %s ok=%s stage_failed=%s",
             job.job_id,
@@ -61,7 +72,7 @@ def run_once(settings: WorkerSettings, store: SupabaseRestStore | None = None) -
             result.ok,
             result.stage_failed,
         )
-    return len(jobs)
+    return processed
 
 
 def main() -> None:
