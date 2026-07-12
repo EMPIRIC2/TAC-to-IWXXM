@@ -8,7 +8,7 @@ from typing import Any, Protocol
 import httpx
 
 from metar_worker.pipeline import PipelineResult
-from metar_worker.poller import IngestJob
+from metar_worker.poller import IngestJob, safe_url_for_log
 
 RESULTS_TABLE = "iwxxm_ingest_results"
 QUARANTINE_TABLE = "iwxxm_ingest_quarantine"
@@ -65,7 +65,7 @@ def _base_row(job: IngestJob, result: PipelineResult) -> dict[str, Any]:
         "job_id": job.job_id,
         "product": result.product,
         "profile": result.profile,
-        "source_url": job.source_url,
+        "source_url": safe_url_for_log(job.source_url),
         "tac_input": job.tac,
         "issues": result.issues,
         "stage_failed": result.stage_failed,
