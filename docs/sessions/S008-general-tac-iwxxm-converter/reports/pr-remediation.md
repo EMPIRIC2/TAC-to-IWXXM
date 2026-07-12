@@ -44,3 +44,20 @@ User waived AskQuestion gates and requested remediate → commit → push → me
 
 - Sourcery review: pass  
 - Merge: `8a0db0c` (user override of skill anti-merge; D-S008-PR701-19)
+
+
+---
+
+# PR remediation — PRM-010 (PR #704)
+
+**Status:** completed 2026-07-12
+**PR:** https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704
+**Head:** `dcd4791` → merge `2d9fb24`
+**Scope:** blockers_then_advisories (D-S008-PR704-19)
+
+| Finding | Severity | Status | Commit |
+|---------|----------|--------|--------|
+| TAC search after AHL only | bug_risk | fixed | `3175787` |
+| UploadFile empty-file test | advisory | fixed | `4055b07` |
+| Pydantic response models | advisory | fixed | `dcd4791` |
+| AHL dialect abstraction | advisory | wont_fix (M5) | — |

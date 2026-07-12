@@ -52,7 +52,7 @@ active_session:
       status: in_progress
       started_at: "2026-07-12"
       skip_rationale: null
-      note: "M3 complete; PR-M3 open; next M4 after merge or continue per build-execution"
+      note: "M3 merged via PR #704 (PRM-010); next M4"
     - stage: 08-verify-build
       required: true
       status: pending
@@ -112,6 +112,7 @@ active_session:
     - "2026-07-12 Phase 2 / M2 T2.1–T2.7 complete (82b5bad, 7c49e34, 174fa1c); 08-verify-build scoped pass (format, package types, unit packages + wrappers + soft benches); active_task M2 complete — opening PR-M2"
     - "2026-07-12 D-S008-PR700-19 — waive routing for 19-address-pr-review; PRM-008 completed on PR #700; merged at user request (anti-merge override)"
     - "2026-07-12 D-S008-PR701-19 — waive AskQuestion; PRM-009 completed on PR #701; explicit push+merge (anti-merge override)"
+    - "2026-07-12 D-S008-PR704-19 — waive AskQuestion; PRM-010 in_progress on PR #704; explicit remediate+push+merge (anti-merge override)"
 sessions:
   - id: S007-docs-minimize
     type: process
@@ -777,7 +778,7 @@ stages:
     status: completed
     started: "2026-06-22"
     completed: "2026-07-12"
-    last_cycle: PRM-009
+    last_cycle: PRM-010
     session_id: S008-general-tac-iwxxm-converter
 
   12-verify-deploy:
@@ -887,6 +888,16 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-PR704-19
+    stage: 19-address-pr-review
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "Waive AskQuestion; explicit remediate+push+merge for PR #704"
+    summary: >
+      User waived AskQuestion gates; explicit remediate+push+merge for PR #704
+      (PRM-010). Same anti-merge override pattern as D-S008-PR701-19.
+    timestamp: "2026-07-12"
   - id: D-S008-M3-complete
     stage: 07-build
     skill_id: 07-build
@@ -2722,11 +2733,13 @@ git_history:
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/701
     - name: feat/S008-M3-bulletin
       purpose: S008 M3 bulletin split + convert-bulletin
-      status: open
+      status: merged
       base: evolve/S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
       session_id: S008-general-tac-iwxxm-converter
       created_at: "2026-07-12"
+      closed_at: "2026-07-12"
+      merged_via: "PR #704"
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704
       pr_number: 704
     - name: docs/S007-docs-minimize
@@ -3204,6 +3217,38 @@ git_history:
       evolve_cycle_id: EV-006
       files_changed: 2
       timestamp: "2026-07-12T17:08:32Z"
+    - sha: 317578772df788963a5518a28d04fe8e4ec6b9f6
+      branch: feat/S008-M3-bulletin
+      message: "[PRM-010] fix: scan TAC reports only after AHL header"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T17:28:33Z"
+    - sha: 4055b07b65713ffc7e798fbf0083af1155322029
+      branch: feat/S008-M3-bulletin
+      message: "[PRM-010] test: cover convert-bulletin UploadFile empty-file skip"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 1
+      timestamp: "2026-07-12T17:28:33Z"
+    - sha: dcd4791dd178f69d4f875fa339fc8ea6d915cf85
+      branch: feat/S008-M3-bulletin
+      message: "[PRM-010] refactor: build convert-bulletin response via Pydantic models"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 1
+      timestamp: "2026-07-12T17:28:33Z"
+    - sha: 2d9fb24434be30fabc3ca5e17d43940b1bba8a85
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "Merge pull request #704 from joseph-c-mcguire/feat/S008-M3-bulletin"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T17:28:58Z"
 
 pr_review_cycles:
   - id: PRR-001
@@ -4009,3 +4054,73 @@ pr_remediation_cycles:
       User waived AskQuestion; explicit push+merge (anti-merge override like
       D-S008-PR700-19). Head 6ddec3a; merge commit 8a0db0c. Counts: fixed 4,
       wont_fix 1, deferred 0.
+
+  - id: PRM-010
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    pr_number: 704
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704
+    linked_review_cycle_id: null
+    title: "[M3] Bulletin"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    head_ref: feat/S008-M3-bulletin
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    head_sha: dcd4791dd178f69d4f875fa339fc8ea6d915cf85
+    ci_status: green   # Sourcery in progress at merge; local tests green; anti-merge D-S008-PR704-19
+    scope: blockers_then_advisories
+    counts:
+      fixed: 3
+      deferred: 0
+      wont_fix: 1
+    findings:
+      - id: F-001
+        source: sourcery-ai
+        severity: bug_risk
+        path: packages/tac2iwxxm/src/tac2iwxxm/bulletin.py
+        line: null
+        thread_id: null
+        status: fixed
+        commit: "3175787"
+        note: "TAC after AHL — scan reports only after AHL header"
+      - id: F-002
+        source: sourcery-ai
+        severity: advisory
+        path: apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py
+        line: null
+        thread_id: null
+        status: fixed
+        commit: 4055b07
+        note: "UploadFile test — cover convert-bulletin empty-file skip"
+      - id: F-003
+        source: sourcery-ai
+        severity: advisory
+        path: apps/backend/src/api.py
+        line: null
+        thread_id: null
+        status: fixed
+        commit: dcd4791
+        note: "Pydantic models — build convert-bulletin response via models"
+      - id: F-004
+        source: sourcery-ai
+        severity: advisory
+        path: packages/tac2iwxxm/src/tac2iwxxm/bulletin.py
+        line: null
+        thread_id: null
+        status: wont_fix
+        commit: null
+        note: "dialect abstraction — defer to M5 product matrix"
+    artifacts:
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
+        note: PRM-010 session report
+    follow_up:
+      pr_review_rerun: declined   # PR merged at user request (D-S008-PR704-19)
+    notes: >
+      User waived AskQuestion; remediate → push → merge PR #704
+      (anti-merge override D-S008-PR704-19). Head
+      dcd4791dd178f69d4f875fa339fc8ea6d915cf85; merge commit
+      2d9fb24434be30fabc3ca5e17d43940b1bba8a85. Counts: fixed 3,
+      wont_fix 1, deferred 0. Sourcery was in progress at merge;
+      local tests green.
