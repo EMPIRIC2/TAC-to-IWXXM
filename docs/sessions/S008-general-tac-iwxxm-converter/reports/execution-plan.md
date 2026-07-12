@@ -14,11 +14,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase 5: F8 Worker |
-| **Active milestone** | M6: Worker + Supabase |
-| **Active task** | M6 complete — next 08-verify-build / PR-M6 |
-| **Tasks completed** | 42 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T6.1–T6.7 complete) |
+| **Active phase** | Phase 6: Deploy & Live Gates |
+| **Active milestone** | M7: Staging deploy + H7 |
+| **Active task** | M7 complete — next PR-M7 / M8 |
+| **Tasks completed** | 47 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T7.1–T7.5) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -204,11 +204,11 @@ F6.b METAR/SPECI US already shipped in M4.
 
 | # | Task | Type | Status | Spec Source | Depends On |
 |---|------|------|--------|-------------|------------|
-| T7.1 | Config: create Render Background Worker service; wire env | Config | pending | ADR-018, deploy.md | T6.6 |
-| T7.2 | Test: H3 convert/lint/bulletin smoke on live API | Test | pending | H3 | T4.7 |
-| T7.3 | Test: TC-LIVE-F6-030 H7 | Test | pending | H7 | T4.9, T7.1 |
-| T7.4 | Test: worker live poll → store/quarantine row | Test | pending | F8 | T7.1 |
-| T7.5 | Docs: CHANGELOG notes for F6/F8 | Docs | pending | — | T7.3, T7.4 |
+| T7.1 | Config: create Render Background Worker service; wire env | Config | completed | ADR-018, deploy.md | T6.6 |
+| T7.2 | Test: H3 convert/lint/bulletin smoke on live API | Test | completed | H3 | T4.7 |
+| T7.3 | Test: TC-LIVE-F6-030 H7 | Test | completed | H7 | T4.9, T7.1 |
+| T7.4 | Test: worker live poll → store/quarantine row | Test | completed | F8 | T7.1 |
+| T7.5 | Docs: CHANGELOG notes for F6/F8 | Docs | completed | — | T7.3, T7.4 |
 
 #### M8: F6.e UI pickers + H4–H5/H6
 
