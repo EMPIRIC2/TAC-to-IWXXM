@@ -123,7 +123,12 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         ir["wind_speed_mps"] = int(wind.group("spd"))
         ir["wind_speed_kt"] = int(round(int(wind.group("spd")) * 1.94384))
     if wind.group("gust"):
-        ir["wind_gust_kt"] = int(wind.group("gust"))
+        gust_raw = int(wind.group("gust"))
+        if wind.group("uom") == "MPS":
+            ir["wind_gust_mps"] = gust_raw
+            ir["wind_gust_kt"] = int(round(gust_raw * 1.94384))
+        else:
+            ir["wind_gust_kt"] = gust_raw
 
     vis = _VIS_SM.search(rest)
     if vis is None:

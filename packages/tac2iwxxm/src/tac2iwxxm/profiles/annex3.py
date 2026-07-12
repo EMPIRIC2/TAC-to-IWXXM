@@ -64,6 +64,12 @@ def emit_metar_speci_annex3(
         wind_gust = ""
         if ir.get("wind_gust_kt") is not None:
             wind_gust = f'\n          <iwxxm:windGustSpeed uom="[kn_i]">{ir["wind_gust_kt"]}</iwxxm:windGustSpeed>'
+        variable = bool(ir.get("wind_variable"))
+        var_attr = "true" if variable else "false"
+        if variable:
+            wind_dir = ""
+        else:
+            wind_dir = f'\n          <iwxxm:meanWindDirection uom="deg">{ir["wind_dir_deg"]}</iwxxm:meanWindDirection>'
         vis_op = ""
         if ir.get("visibility_above"):
             vis_op = "\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
@@ -87,8 +93,7 @@ def emit_metar_speci_annex3(
       <iwxxm:dewpointTemperature uom="Cel">{ir["dewpoint_c"]}</iwxxm:dewpointTemperature>
       <iwxxm:qnh uom="hPa">{ir["qnh_hpa"]}</iwxxm:qnh>
       <iwxxm:surfaceWind>
-        <iwxxm:AerodromeSurfaceWind variableWindDirection="false">
-          <iwxxm:meanWindDirection uom="deg">{ir["wind_dir_deg"]}</iwxxm:meanWindDirection>
+        <iwxxm:AerodromeSurfaceWind variableWindDirection="{var_attr}">{wind_dir}
           <iwxxm:meanWindSpeed uom="[kn_i]">{ir["wind_speed_kt"]}</iwxxm:meanWindSpeed>{wind_gust}
         </iwxxm:AerodromeSurfaceWind>
       </iwxxm:surfaceWind>
