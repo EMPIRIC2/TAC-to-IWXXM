@@ -247,4 +247,4 @@ if validation_result and not validation_result.is_valid:
 - User (Requirements and validation)
 
 ## License
-See [LICENSE](LICENSE) file for details.
+See [LICENSE](../../../LICENSE) file for details.

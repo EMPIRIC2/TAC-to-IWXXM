@@ -258,4 +258,4 @@ $7/month            →   $14/month          →   $25+/month
 For more details, see:
 - [docs/ENVIRONMENT_VARIABLES.md → SCHEMATRON_USE_DOCKER](docs/ENVIRONMENT_VARIABLES.md#schematron_use_docker)
 - [docs/RENDER_DEPLOYMENT.md](docs/RENDER_DEPLOYMENT.md)
-- [render.yaml](render.yaml)
+- [render.yaml](../../../render.yaml)

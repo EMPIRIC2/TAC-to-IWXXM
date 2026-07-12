@@ -42,7 +42,7 @@
 
 ## Detail
 
-Full session report: [docs/sessions/S004-issue-555-feedback/reports/verify-impl.md](sessions/S004-issue-555-feedback/reports/verify-impl.md)
+Full session report: [docs/sessions/S004-issue-555-feedback/reports/verify-impl.md](../sessions/S004-issue-555-feedback/reports/verify-impl.md)
 
 ## Next
 

@@ -190,6 +190,6 @@ Post-apply verification in Supabase **Database → Advisors**:
 
 ## References
 
-- [BUG-2026-06-23-supabase-service-key-leak.md](bug-reports/BUG-2026-06-23-supabase-service-key-leak.md)
+- [BUG-2026-06-23-supabase-service-key-leak.md](../bug-reports/BUG-2026-06-23-supabase-service-key-leak.md)
 - [env-contract.md](../env-contract.md)
 - [config-spec.md](../config-spec.md)

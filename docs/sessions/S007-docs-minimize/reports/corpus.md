@@ -8,9 +8,9 @@ Defined a **common minimal corpus** for design and parity checks, referenced con
 
 | Artifact | Purpose |
 |----------|---------|
-| [`docs/CORPUS.md`](../../CORPUS.md) | Manifest + parity protocol + skill obligations |
-| [`docs/tech-spec.md`](../../tech-spec.md) | Tech hub (config / env / deploy / deps) |
-| [`.cursor/rules/core/docs-corpus.mdc`](../../../.cursor/rules/core/docs-corpus.mdc) | Always-on rule: cite `[Corpus: <id>]` |
+| [`docs/CORPUS.md`](../../../CORPUS.md) | Manifest + parity protocol + skill obligations |
+| [`docs/tech-spec.md`](../../../tech-spec.md) | Tech hub (config / env / deploy / deps) |
+| [`.cursor/rules/core/docs-corpus.mdc`](../../../../.cursor/rules/core/docs-corpus.mdc) | Always-on rule: cite `[Corpus: <id>]` |
 
 ## Corpus IDs
 

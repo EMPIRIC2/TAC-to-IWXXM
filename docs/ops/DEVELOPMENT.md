@@ -291,21 +291,21 @@ greenfield builds to feature adds, hotfixes, and live E2E integration.
 | Doc | Purpose |
 |-----|---------|
 | [skill-routing.md](../skill-routing.md) | Which skill to invoke |
-| [sessions/README.md](sessions/README.md) | Session index and folder layout |
-| [context/README.md](context/README.md) | Scoped context briefs |
+| [sessions/README.md](../sessions/README.md) | Session index and folder layout |
+| [context/README.md](../context/README.md) | Scoped context briefs |
 
-Skill reference: [.cursor/skills/sessions-reference.md](../.cursor/skills/sessions-reference.md).
+Skill reference: [.cursor/skills/sessions-reference.md](../../.cursor/skills/sessions-reference.md).
 
 ## Further reading
 
 | Document | Topic |
 |----------|-------|
 | [skill-routing.md](../skill-routing.md) | Pipeline skill routing and session types |
-| [sessions/README.md](sessions/README.md) | Active and archived work sessions |
+| [sessions/README.md](../sessions/README.md) | Active and archived work sessions |
 | [api-contract.md](../api-contract.md) | REST endpoints |
 | [test-plan.md](../test-plan.md) | Test tiers and migration gates |
 | [migration-plan.md](migration-plan.md) | Submodule → monorepo migration |
-| [adr/ADR-002-auth-merged-into-backend.md](adr/ADR-002-auth-merged-into-backend.md) | Auth merge decision |
+| [adr/ADR-002-auth-merged-into-backend.md](../adr/ADR-002-auth-merged-into-backend.md) | Auth merge decision |
 
 Legacy three-service and submodule docs are in
-[ARCHIVE/pre-monorepo-deploy/](ARCHIVE/pre-monorepo-deploy/).
+[ARCHIVE/pre-monorepo-deploy/](../ARCHIVE/pre-monorepo-deploy/).

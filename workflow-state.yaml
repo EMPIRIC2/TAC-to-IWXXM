@@ -187,7 +187,7 @@ stages:
         artifacts:
           - docs/config-spec.md
           - docs/env-contract.md
-          - docs/env-sync-runbook.md
+          - docs/ops/env-sync-runbook.md
           - docs/adr/ADR-010-supabase-keys-config-split.md
           - docs/sessions/S003-supabase-keys-config/reports/01-requirements.md
           - config/prod.json
@@ -212,8 +212,8 @@ stages:
     current_document: null
     current_statement: null
     artifacts:
-      - docs/product-audit.md
-      - docs/product-decisions.md
+      - docs/decisions/product-audit.md
+      - docs/decisions/product-decisions.md
     notes: "Product plan verification complete; 4 source docs updated"
 
   03-plan-tooling:
@@ -269,7 +269,7 @@ stages:
         status: completed
     artifacts:
       - .cursor/artifacts/execution-plan-monorepo.md
-      - docs/staging-secrets-matrix.md
+      - docs/ops/staging-secrets-matrix.md
       - docs/adr/ADR-005-runtime-toolchain-pins.md
       - docs/adr/ADR-006-render-topology-simplification.md
       - docs/adr/ADR-007-universal-coverage-gate.md
@@ -305,8 +305,8 @@ stages:
     current_document: null
     current_statement: null
     artifacts:
-      - docs/tech-audit.md
-      - docs/tech-decisions.md
+      - docs/decisions/tech-audit.md
+      - docs/decisions/tech-decisions.md
     notes:
       - "Technical plan verification complete; 3 source docs updated"
 
@@ -391,7 +391,7 @@ stages:
         note: "ESLint react-hooks + 1 Vitest failure block gate"
     notes:
       - "S004 / EV-004 delta — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
-      - "Prior monorepo QA 2026-06-20: docs/qa-report.md"
+      - "Prior monorepo QA 2026-06-20: docs/reports/qa-report.md"
 
   11-verify-impl:
     status: completed
@@ -459,7 +459,7 @@ stages:
         notes: "H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred"
     notes:
       - "S004 delta FAIL — fix Playwright locators + finished-session load; redeploy for H4"
-      - "Prior global report: docs/e2e-report.md (2026-06-20)"
+      - "Prior global report: docs/reports/e2e-report.md (2026-06-20)"
 
   08-verify-build:
     status: completed
@@ -898,11 +898,18 @@ decisions_log:
     decision: "Add supabase-sync.yml — db push on main; PR dry-run; deploy legacy upload edge functions until ADR-010 follow-up; secrets SUPABASE_ACCESS_TOKEN + SUPABASE_DB_PASSWORD"
     status: confirmed
 
+  - id: S007-R4
+    stage: 00-context
+    date: "2026-07-11"
+    session_id: S007-docs-minimize
+    topic: Stale corpus path references post-reorg
+    decision: "Verified/fixed stale corpus path references post-reorg (workflow-state + relative links)."
+    status: confirmed
 artifacts:
-  - path: docs/tech-audit.md
+  - path: docs/decisions/tech-audit.md
     stage: 05-verify-tech
     status: complete
-  - path: docs/tech-decisions.md
+  - path: docs/decisions/tech-decisions.md
     stage: 05-verify-tech
     status: complete
   - path: .cursor/artifacts/execution-plan-monorepo.md
@@ -911,7 +918,7 @@ artifacts:
   - path: .cursor/artifacts/execution-plan-monorepo.md
     stage: 04-tech-plan
     status: complete
-  - path: docs/staging-secrets-matrix.md
+  - path: docs/ops/staging-secrets-matrix.md
     stage: 04-tech-plan
     status: complete
   - path: docs/adr/ADR-005-runtime-toolchain-pins.md
@@ -926,10 +933,10 @@ artifacts:
   - path: docs/adr/ADR-004-manual-gifts-sync.md
     stage: 02-verify-plan
     status: complete
-  - path: docs/product-audit.md
+  - path: docs/decisions/product-audit.md
     stage: 02-verify-plan
     status: complete
-  - path: docs/product-decisions.md
+  - path: docs/decisions/product-decisions.md
     stage: 02-verify-plan
     status: complete
   - path: docs/feature-list.md
@@ -944,7 +951,7 @@ artifacts:
   - path: docs/test-plan.md
     stage: 01-requirements
     status: complete
-  - path: docs/migration-plan.md
+  - path: docs/ops/migration-plan.md
     stage: 01-requirements
     status: complete
   - path: docs/api-contract.md
@@ -956,7 +963,7 @@ artifacts:
   - path: docs/deploy.md
     stage: 01-requirements
     status: complete
-  - path: docs/requirements-decisions.md
+  - path: docs/decisions/requirements-decisions.md
     stage: 01-requirements
     status: complete
   - path: .cursor/artifacts/config-spec-monorepo.md
@@ -995,10 +1002,10 @@ artifacts:
   - path: .cursor/agents/spec-consultant.md
     stage: 03-plan-tooling
     status: complete
-  - path: docs/verification-report.md
+  - path: docs/reports/verification-report.md
     stage: 08-verify-build
     status: complete
-  - path: docs/qa-report.md
+  - path: docs/reports/qa-report.md
     stage: 09-qa
     status: complete
   - path: docs/context/convert-send-buttons.md
@@ -1085,7 +1092,7 @@ artifacts:
     session_id: S005-metar-work-history
     created_at: "2026-06-23"
     status: active
-  - path: docs/evolve-decisions.md
+  - path: docs/decisions/evolve-decisions.md
     kind: evolve-decisions
     session_id: S001-convert-send-buttons
     evolve_cycle_id: EV-001
@@ -1145,7 +1152,7 @@ artifacts:
     stage: 11-verify-impl
     created_at: "2026-06-22"
     status: active
-  - path: docs/implementation-verification.md
+  - path: docs/reports/implementation-verification.md
     kind: verify-impl-report
     session_id: S002-issue-594-feedback
     stage: 11-verify-impl
@@ -1167,7 +1174,7 @@ artifacts:
     session_id: S003-supabase-keys-config
     created_at: "2026-06-23"
     status: complete
-  - path: docs/env-sync-runbook.md
+  - path: docs/ops/env-sync-runbook.md
     stage: 01-requirements
     session_id: S003-supabase-keys-config
     created_at: "2026-06-23"
@@ -1196,7 +1203,7 @@ artifacts:
     stage: 11-verify-impl
     created_at: "2026-06-23"
     status: complete
-  - path: docs/implementation-verification.md
+  - path: docs/reports/implementation-verification.md
     kind: verify-impl-report
     session_id: S003-supabase-keys-config
     stage: 11-verify-impl
@@ -1317,7 +1324,7 @@ evolve_cycles:
         started: "2026-06-22"
         completed: "2026-06-22"
         artifacts_updated:
-          - docs/evolve-decisions.md
+          - docs/decisions/evolve-decisions.md
           - docs/feature-list.md
           - docs/user-journeys.md
           - docs/test-plan.md
@@ -1369,7 +1376,7 @@ evolve_cycles:
       phase_d: pending
       deploy: pending
     artifacts:
-      - path: docs/evolve-decisions.md
+      - path: docs/decisions/evolve-decisions.md
         status: completed
       - path: docs/sessions/S001-convert-send-buttons/reports/evolve-summary.md
         status: completed
@@ -1410,8 +1417,8 @@ evolve_cycles:
         started: "2026-06-22"
         completed: "2026-06-22"
         artifacts_updated:
-          - docs/evolve-decisions.md
-          - docs/API.md
+          - docs/decisions/evolve-decisions.md
+          - docs/guides/API.md
           - docs/api-contract.md
           - docs/test-plan.md
           - docs/sessions/S002-issue-594-feedback/reports/evolve-summary.md
@@ -1462,7 +1469,7 @@ evolve_cycles:
       phase_d: passed
       deploy: pending
     artifacts:
-      - path: docs/evolve-decisions.md
+      - path: docs/decisions/evolve-decisions.md
         status: completed
       - path: docs/sessions/S002-issue-594-feedback/reports/evolve-summary.md
         status: completed
@@ -1515,9 +1522,9 @@ evolve_cycles:
           - "F5 work history interview re-confirmed — all answers align with drafted spec"
           - "User approved proceed to Fn allocation + impact analysis / routing execution"
         artifacts_updated:
-          - docs/evolve-decisions.md
+          - docs/decisions/evolve-decisions.md
           - docs/feature-list.md
-          - docs/requirements-decisions.md
+          - docs/decisions/requirements-decisions.md
           - docs/context/issue-555-feedback.md
           - docs/context/metar-work-history.md
           - docs/sessions/S004-issue-555-feedback/session-brief.md
@@ -1564,7 +1571,7 @@ evolve_cycles:
       phase_d: pending
       deploy: pending
     artifacts:
-      - path: docs/evolve-decisions.md
+      - path: docs/decisions/evolve-decisions.md
         status: in_progress
     issues: []
 
@@ -1616,7 +1623,7 @@ evolve_cycles:
           - "Phase 0–1 complete — scope confirmed (R1–R8); persistence via conversion_params (no backend change)"
           - "Phase A complete 2026-06-25 — spec/journey/test deltas committed (b8ca6b1)"
         artifacts_updated:
-          - docs/evolve-decisions.md
+          - docs/decisions/evolve-decisions.md
           - docs/feature-list.md
           - docs/user-journeys.md
           - docs/test-plan.md
@@ -1671,7 +1678,7 @@ evolve_cycles:
       phase_d: waived
       deploy: skipped
     artifacts:
-      - path: docs/evolve-decisions.md
+      - path: docs/decisions/evolve-decisions.md
         status: completed
       - path: docs/sessions/S006-issue-664-output-filename/reports/verification-report.md
         status: completed
