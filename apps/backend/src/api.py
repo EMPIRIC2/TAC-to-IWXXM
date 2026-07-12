@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional, Tuple, TypeGuard
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 
-from fastapi import Depends, FastAPI, Form, HTTPException, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
@@ -36,6 +36,7 @@ try:
     from .schemas.validation import (
         LintTacResponse,
         ValidateRequest,
+        ValidateResponse,
         ValidationLayer,
     )
     from .services.database import database_lifespan
@@ -63,7 +64,7 @@ except ImportError:
         HealthResponse,
     )
     from schemas.icao_opmet import TranslationStatus
-    from schemas.validation import LintTacResponse, ValidateRequest, ValidationLayer
+    from schemas.validation import LintTacResponse, ValidateRequest, ValidateResponse, ValidationLayer
     from services.database import database_lifespan
     from services.statistics import statistics_service
     from services.validation import ValidationError as ValidationServiceError
@@ -718,15 +719,15 @@ async def lint_tac(
     request: Request,
     manual_text: str = Form(default="", description="TAC text to lint"),
     product: str = Form(default="METAR", description="Product hint when known"),
-    files: Optional[List[UploadFile]] = None,
+    files: Optional[List[UploadFile]] = File(None),
     user: dict = Depends(verify_supabase_token),
 ) -> LintTacResponse:
-    """Thin wrapper over ``packages/tac-validate`` (multipart only — Q8=A)."""
+    """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A)."""
     content_type = (request.headers.get("content-type") or "").lower()
-    if "multipart/form-data" not in content_type and "application/x-www-form-urlencoded" not in content_type:
+    if "multipart/form-data" not in content_type:
         raise HTTPException(
             status_code=415,
-            detail="POST /api/v1/lint-tac requires multipart/form-data (or form-urlencoded)",
+            detail="POST /api/v1/lint-tac requires multipart/form-data",
         )
 
     tac_text = manual_text or ""
@@ -734,6 +735,8 @@ async def lint_tac(
         chunks: list[str] = []
         for upload in files:
             raw = await upload.read()
+            if not raw:
+                continue
             chunks.append(raw.decode("utf-8", errors="replace"))
         if chunks:
             tac_text = "\n".join(chunks)
@@ -753,6 +756,7 @@ async def lint_tac(
 @app.post(
     "/api/v1/validate",
     tags=["Validation"],
+    response_model=ValidateResponse,
     responses={
         401: {"description": "Unauthorized - Invalid or missing authentication token"},
     },

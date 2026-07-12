@@ -65,7 +65,7 @@ class LintReport(msgspec.Struct, frozen=True):
     ok: bool
     product: str
     issues: list[Issue]
-    fixes: list[Fix] = []
+    fixes: list[Fix] = msgspec.field(default_factory=list)
 
 
 __all__ = ["Fix", "Issue", "LintReport"]
