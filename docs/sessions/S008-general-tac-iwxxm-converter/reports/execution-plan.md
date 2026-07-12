@@ -235,7 +235,7 @@ F6.b METAR/SPECI US already shipped in M4.
 
 | PR | Type | Milestone | Branch | Target | Status |
 |----|------|-----------|--------|--------|--------|
-| PR-M1 | Minor | M1 | feat/S008-M1-scaffold | evolve/S008-… | open |
+| PR-M1 | Minor | M1 | feat/S008-M1-scaffold | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/700 |
 | PR-M2 | Minor | M2 | feat/S008-M2-validate | evolve/S008-… | pending |
 | PR-M3 | Minor | M3 | feat/S008-M3-bulletin | evolve/S008-… | pending |
 | PR-M4 | Minor | M4 cutover | feat/S008-M4-cutover | evolve/S008-… | pending |
