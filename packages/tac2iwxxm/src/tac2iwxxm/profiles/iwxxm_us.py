@@ -97,6 +97,7 @@ def emit_metar_speci_iwxxm_us(
     stamp = obs_timestamp(ir)
     root = product.upper()
     gml_id = _us_gml_id(ir, root)
+    report_status = "CORRECTION" if ir.get("correction") else "NORMAL"
 
     if ir.get("nil"):
         observation = '  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
@@ -156,7 +157,7 @@ def emit_metar_speci_iwxxm_us(
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     gml:id="{gml_id}"
-    reportStatus="NORMAL"
+    reportStatus="{report_status}"
     permissibleUsage="OPERATIONAL"
     automatedStation="false">
   <iwxxm:issueTime>

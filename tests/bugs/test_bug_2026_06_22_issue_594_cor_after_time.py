@@ -1,8 +1,7 @@
 """BUG-2026-06-22 — GitHub #594: ICAO COR-after-time METAR conversion.
 
 Post cutover: exercised via ``convert_metar_tac_with_metadata`` (tac2iwxxm).
-COR grammar support in tac2iwxxm is tracked under F6 product work; this suite
-guards the API conversion path and skips when COR is not yet encoded.
+COR before station and COR after time both emit ``reportStatus="CORRECTION"``.
 """
 
 from __future__ import annotations
@@ -22,32 +21,21 @@ def _try_convert(tac: str) -> str:
     return xml
 
 
-@pytest.mark.xfail(
-    reason="tac2iwxxm COR grammar not yet implemented (post-gifts; F6 follow-on)",
-    strict=False,
-)
 def test_bug_594_cor_after_time_converts_without_translation_failure() -> None:
     xml = _try_convert(COR_AFTER_TIME_TAC)
     assert "translationFailedTAC" not in xml
-    assert "CORRECTION" in xml or "METAR" in xml
-
-
-@pytest.mark.xfail(
-    reason="tac2iwxxm COR grammar not yet implemented (post-gifts; F6 follow-on)",
-    strict=False,
-)
-def test_bug_594_cor_after_time_marks_report_as_correction() -> None:
-    xml = _try_convert(COR_AFTER_TIME_TAC)
     assert "CORRECTION" in xml
 
 
-@pytest.mark.xfail(
-    reason="tac2iwxxm COR grammar not yet implemented (post-gifts; F6 follow-on)",
-    strict=False,
-)
+def test_bug_594_cor_after_time_marks_report_as_correction() -> None:
+    xml = _try_convert(COR_AFTER_TIME_TAC)
+    assert 'reportStatus="CORRECTION"' in xml
+
+
 def test_bug_594_cor_before_station_still_works() -> None:
     xml = _try_convert(COR_BEFORE_STATION_TAC)
     assert "translationFailedTAC" not in xml
+    assert 'reportStatus="CORRECTION"' in xml
 
 
 def test_bug_594_convert_path_raises_structured_error_not_gifts_import() -> None:

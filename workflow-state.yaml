@@ -75,7 +75,7 @@ active_session:
       started_at: "2026-07-12"
       completed_at: "2026-07-12"
       skip_rationale: null
-      note: "FAIL — 10 pass / 2 fail COR correction e2e; see e2e-report.md"
+      note: "PASS — COR hotfix re-verify 12/12 Playwright smoke; see e2e-report.md"
     - stage: 11-verify-impl
       required: true
       status: pending
@@ -139,6 +139,8 @@ active_session:
     - "2026-07-12 09-qa completed — pass_with_advisories; see reports/qa-report.md"
     - "2026-07-12 10-e2e completed — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
     - "2026-07-12 Phase D 09+10 done; checkpoint before 11-verify-impl (phase_d remains pending until AskQuestion)"
+    - "2026-07-12 D-S008-EV006-3-then-2 — User chose 3 then 2: commit Phase C/D artifacts then hotfix COR e2e"
+    - "2026-07-12 commit 48037c1 Phase C/D reports; COR hotfix landed; 10-e2e T0 PASS (12/12 Playwright smoke); phase_d remains pending until AskQuestion before 11"
 sessions:
   - id: S007-docs-minimize
     type: process
@@ -775,13 +777,14 @@ stages:
         evolve_cycle_id: EV-006
         started_at: "2026-07-12"
         completed_at: "2026-07-12"
-        overall: fail
+        overall: pass
         report: docs/sessions/S008-general-tac-iwxxm-converter/reports/e2e-report.md
-        note: "FAIL — 10 pass / 2 fail COR correction e2e; see e2e-report.md"
+        note: "PASS — COR hotfix re-verify 12/12 Playwright smoke; see e2e-report.md"
     notes:
       - "S004 delta FAIL — fix Playwright locators + finished-session load; redeploy for H4"
       - "Prior global report: docs/reports/e2e-report.md (2026-06-20)"
       - "2026-07-12 S008 / EV-006 — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
+      - "2026-07-12 S008 / EV-006 — PASS after COR hotfix re-verify (12/12 Playwright smoke); T0 PASS"
 
   08-verify-build:
     status: completed
@@ -962,6 +965,20 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-EV006-3-then-2
+    date: "2026-07-12"
+    stage: 16-evolve
+    skill: 16-evolve
+    skill_id: 16-evolve
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "User chose 3 then 2 — commit Phase C/D artifacts then hotfix COR e2e"
+    summary: >
+      User chose option 3 then option 2: commit Phase C/D artifacts first,
+      then hotfix COR correction e2e failures. 10-e2e re-verify PASS (12/12
+      Playwright smoke / T0). phase_d checkpoint remains pending until
+      AskQuestion before 11-verify-impl.
+    timestamp: "2026-07-12"
   - id: D-S008-EV006-c-to-d
     date: "2026-07-12"
     stage: 16-evolve
@@ -2859,6 +2876,8 @@ evolve_cycles:
       - "2026-07-12 09-qa completed — pass_with_advisories; see reports/qa-report.md"
       - "2026-07-12 10-e2e completed — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
       - "2026-07-12 Phase D 09+10 done; checkpoint before 11-verify-impl (phase_d remains pending until AskQuestion)"
+      - "2026-07-12 D-S008-EV006-3-then-2 — User chose 3 then 2: commit Phase C/D artifacts then hotfix COR e2e"
+      - "2026-07-12 commit 48037c1 Phase C/D reports; COR hotfix landed; 10-e2e T0 PASS (12/12 Playwright smoke); phase_d remains pending until AskQuestion before 11"
     stages:
       00-context:
         status: completed
@@ -2934,8 +2953,10 @@ evolve_cycles:
         started_at: "2026-07-12"
         completed: "2026-07-12"
         completed_at: "2026-07-12"
-        overall: fail
+        overall: pass
         report: docs/sessions/S008-general-tac-iwxxm-converter/reports/e2e-report.md
+        notes:
+          - "COR hotfix re-verify 12/12 Playwright smoke; T0 PASS"
       11-verify-impl:
         status: pending
         started: null
@@ -2973,7 +2994,7 @@ evolve_cycles:
         note: "pass_with_advisories"
       - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/e2e-report.md
         status: completed
-        note: "FAIL — 10 pass / 2 fail COR correction e2e"
+        note: "PASS — COR hotfix re-verify 12/12 Playwright smoke; T0 PASS"
     issues: []
 
 git_history:
@@ -2981,6 +3002,7 @@ git_history:
   notes:
     - "2026-07-12 D-S008-EV006-merge-m4-m7 — feat/S008-M4-us-metar (#706), M5-products (#707), M6-worker (#708), M7-live (#709) merged into evolve"
     - "2026-07-12 PR-M8 #710 MERGED into evolve (PRM-014; merge_sha e4fe492); M8 complete"
+    - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   branches:
     - name: evolve/S008-general-tac-iwxxm-converter
       purpose: general TAC→IWXXM converter architecture + package design
@@ -3826,6 +3848,14 @@ git_history:
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
       files_changed: null
+      timestamp: "2026-07-12"
+    - sha: "48037c1"
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "[S008] fix: clear Phase C 08 gates and record Phase D QA/E2E"
+      stage: "16-evolve"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 17
       timestamp: "2026-07-12"
 pr_review_cycles:
   - id: PRR-001
