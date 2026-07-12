@@ -1006,10 +1006,15 @@ async def validate_comprehensive(
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
 
-        # Convert TAC to XML if not provided
+        # Convert TAC to XML if not provided (forward profile; validate afterward)
         if not xml_content:
             try:
-                xml_content, _ = convert_metar_tac_with_metadata(manual_text, iwxxm_version=iwxxm_version)
+                xml_content, _ = convert_metar_tac_with_metadata(
+                    manual_text,
+                    iwxxm_version=iwxxm_version,
+                    validate=False,
+                    profile=profile or "annex3",
+                )
             except ConversionError as e:
                 raise HTTPException(status_code=400, detail=f"Failed to convert TAC to XML: {str(e)}")
 
