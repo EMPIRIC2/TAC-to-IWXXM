@@ -15,10 +15,10 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 6: Deploy & Live Gates |
-| **Active milestone** | M7: Staging deploy + H7 |
-| **Active task** | M4–M7 merged to evolve — next M8 |
-| **Tasks completed** | 47 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T7.1–T7.5) |
+| **Active milestone** | M8: F6.e UI pickers + H4–H5/H6 |
+| **Active task** | M8 complete — PR-M8 pending |
+| **Tasks completed** | 51 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T8.1–T8.4) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -214,10 +214,10 @@ F6.b METAR/SPECI US already shipped in M4.
 
 | # | Task | Type | Status | Spec Source | Depends On |
 |---|------|------|--------|-------------|------------|
-| T8.1 | Test: UI product/profile/version pickers (TC-F6-001 browser) | Test | pending | F6.e, TC-F6-001 | T2.6 |
-| T8.2 | Code: frontend pickers wired to convert API | Code | pending | feature-list F6.e | T8.1, T4.7 |
-| T8.3 | Test: H4 CORS + H5 frontend config resolve on staging | Test | pending | connectivity-gates H4–H5 | T8.2, T7.2 |
-| T8.4 | Test: H6 Playwright UJ-001–007 + UJ-008 smoke (+ F6 product UJs) | Test | pending | H6, TC-F6-010 live smoke, C09a | T8.2, T8.3 |
+| T8.1 | Test: UI product/profile/version pickers (TC-F6-001 browser) | Test | completed | F6.e, TC-F6-001 | T2.6 |
+| T8.2 | Code: frontend pickers wired to convert API | Code | completed | feature-list F6.e | T8.1, T4.7 |
+| T8.3 | Test: H4 CORS + H5 frontend config resolve on staging | Test | completed | connectivity-gates H4–H5 | T8.2, T7.2 |
+| T8.4 | Test: H6 Playwright UJ-001–007 + UJ-008 smoke (+ F6 product UJs) | Test | completed | H6, TC-F6-010 live smoke, C09a | T8.2, T8.3 |
 
 **Phase 6 gate**: H4–H5 (T8.3), H3 (T7.2), H6 (T8.4), H7 (T7.3), F8 live smoke (T7.4) green or waivers recorded.
 
@@ -243,7 +243,7 @@ F6.b METAR/SPECI US already shipped in M4.
 | PR-M5 | Minor | M5 products | feat/S008-M5-products | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/707 |
 | PR-M6 | Minor | M6 worker | feat/S008-M6-worker | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/708 |
 | PR-M7 | Minor | M7 live | feat/S008-M7-live | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/709 |
-| PR-M8 | Minor | M8 UI+H4–H6 | feat/S008-M8-ui-connectivity | evolve/S008-… | pending |
+| PR-M8 | Minor | M8 UI+H4–H6 | feat/S008-M8-ui-connectivity | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/710 |
 
 ## Task Tracking Summary
 
