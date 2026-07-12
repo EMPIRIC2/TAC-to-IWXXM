@@ -16,14 +16,14 @@
 | 03-plan-tooling | no | — | skipped | Hooks/rules exist; build tooling deferred to 04/06 if chosen |
 | 04-tech-plan | yes | delta | **completed** | Execution plan + ADR-016/017/018 approved (Q21–Q24=A) |
 | 05-verify-tech | yes | delta | **completed** | Audit + Batch 1–2 surgical fixes; 51-task plan |
-| 16-evolve | yes | full | pending | Evolve cycle EV-00N — feature ids, ADR, execution plan |
-| 07-build | yes | full | pending | After evolve plan approved |
-| 08-verify-build | yes | full | pending | Milestone gates |
-| 09-qa | yes | full | pending | Quality suite |
-| 10-e2e | yes | delta | pending | Only if API/UI surface changes |
-| 11-verify-impl | yes | full | pending | Corpus parity |
-| 12-verify-deploy | no | — | skipped | Until package/ingest is wired into deployables |
-| 13-deploy-smoke | no | — | skipped | Until deploy wiring exists |
+| 16-evolve | yes | full | **completed** | EV-006 closed 2026-07-12 (deploy waived) |
+| 07-build | yes | full | **completed** | M1–M8; 51/51 tasks |
+| 08-verify-build | yes | full | **completed** | Phase C PASS |
+| 09-qa | yes | full | **completed** | pass_with_advisories |
+| 10-e2e | yes | delta | **completed** | Playwright 12/12 after COR hotfix |
+| 11-verify-impl | yes | full | **completed** | verify-impl.md; F6/F2/F8 approved; ADR-019 |
+| 12-verify-deploy | no | — | skipped | Waived at session close (live deferred) |
+| 13-deploy-smoke | no | — | skipped | Waived at session close (live deferred) |
 
 ## Amend resolutions (Q1–Q3)
 

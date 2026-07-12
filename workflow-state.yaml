@@ -1,148 +1,170 @@
-overall_status: in_progress
+overall_status: completed
 project:
   name: metar-to-IWXXM
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
 session_counter: 8
-active_session:
-  id: S008-general-tac-iwxxm-converter
-  type: feature
-  intent: "General TAC→IWXXM converter (F6/tac2iwxxm) plus data-entry and near-realtime ingest conversion with Schematron gate on IWXXM output"
-  status: in_progress
-  branch: evolve/S008-general-tac-iwxxm-converter
-  orchestrator: 16-evolve
-  evolve_cycle_id: EV-006
-  artifacts_dir: docs/sessions/S008-general-tac-iwxxm-converter/
-  routing_plan:
-    - stage: 00-context
-      mode: scoped
-      required: true
-      status: completed
-      skip_rationale: null
-      note: "Scoped refresh complete — docs/context/realtime-tac-ingest.md active; prior general-tac brief retained"
-    - stage: 01-requirements
-      mode: delta
-      required: true
-      status: completed
-      skip_rationale: null
-      note: "Delta S008-realtime-ingest COMPLETED — interviews 7/7; ADR-015; F7/F8 Planned; next 04-tech-plan"
-    - stage: 04-tech-plan
-      mode: delta
-      required: true
-      status: completed
-      completed_at: "2026-07-12"
-      skip_rationale: null
-      note: "S008 delta 04-tech-plan COMPLETED — execution plan + ADR-016/017/018 approved (Q21–Q24=A); next 05-verify-tech"
-    - stage: 05-verify-tech
-      mode: delta
-      required: true
-      status: completed
-      started_at: "2026-07-12"
-      completed_at: "2026-07-12"
-      skip_rationale: null
-      note: "S008 delta 05-verify-tech COMPLETED — audit done; next 16-evolve then 07-build; Phase B delta cleared (06 N/A)"
-    - stage: 16-evolve
-      required: true
-      status: completed
-      skip_rationale: null
-      note: "EV-006 B→C passed (D-S008-EV006-b-to-c=A); handed off to 07-build"
-    - stage: 07-build
-      required: true
-      status: completed
-      started_at: "2026-07-12"
-      completed_at: "2026-07-12"
-      skip_rationale: null
-      note: "All M1–M8 tasks (51/51) done; PR-M8 #710 merged; Phase C implementation complete; handing to 08-verify-build for C→D gate"
-    - stage: 08-verify-build
-      required: true
-      status: completed
-      started_at: "2026-07-12"
-      completed_at: "2026-07-12"
-      skip_rationale: null
-      note: "Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c). Awaiting C→D AskQuestion before 09-qa."
-    - stage: 09-qa
-      required: true
-      status: completed
-      started_at: "2026-07-12"
-      completed_at: "2026-07-12"
-      skip_rationale: null
-      note: "pass_with_advisories — see reports/qa-report.md"
-    - stage: 10-e2e
-      mode: delta
-      required: true
-      status: completed
-      started_at: "2026-07-12"
-      completed_at: "2026-07-12"
-      skip_rationale: null
-      note: "PASS — COR hotfix re-verify 12/12 Playwright smoke; see e2e-report.md"
-    - stage: 11-verify-impl
-      required: true
-      status: pending
-      skip_rationale: null
-  current_stage: 16-evolve
-  started_at: "2026-07-12"
-  context_briefs:
-    - docs/context/general-tac-iwxxm-converter.md
-    - docs/context/realtime-tac-ingest.md
-  notes:
-    - "Opened after closing S007; user approved routing 2026-07-12"
-    - "00-context complete 2026-07-12 — R1=new tac2iwxxm pkg; R2=pure Py then Cython; R3=FAA five v1; R4=vendor iwxxm-us; R5=CPython+C/Cython; ADR-013"
-    - "2026-07-12 amend: reopen scoped 00 + delta 01 for realtime ingest + data entry; intent expansion — general TAC data entry + near-realtime ingest conversion + Schematron gate on IWXXM (D-S008-realtime-amend-q1q2q3)"
-    - "2026-07-12 D-S008-realtime-amend-q4q8 — Q4=C both UI+ingest; Q5=D research sources in 00; Q6=A seconds E2E; Q7=B add worker (template drift ADR); Q8=A all F6 products. Pending interview: template drift static+api→+worker; F5 METAR-only non-goal vs multi-product operator UI"
-    - "2026-07-12 D-S008-realtime-amend-q9q13 — Q9=A new F7 multi-product TAC sessions (F5 stays METAR-only); Q10=A confirm Render worker + ADR/template update; Q11=B store+push sinks; Q12=A new F8 near-RT ingest pipeline; Q13=A quarantine on Schematron/convert fail. Issues I-S008-template-drift-worker + I-S008-f5-f6-metar-only-vs-multiproduct-ui resolved. Proposed for 01-requirements delta: F7, F8"
-    - "2026-07-12 D-S008-realtime-amend-q14q18 — Q14=postpone auth (focus on package); Q15=postpone push sinks; Q16=C parse gate + shared TAC rule pack; Q17=D research bulletin-aware default; Q18=A scale worker replicas (no drop). Package-first; auth/sinks deferred. Pending: I-S008-package-first-scope (F7/F8 design-only vs deferred vs package APIs only)"
-    - "2026-07-12 D-S008-realtime-amend-q19q22 — Q19=A package APIs only this cycle (F7/F8 Planned in docs; no worker/UI/auth/sinks build); Q20=B packages/iwxxm-validate + separate TAC validate package (name TBD e.g. packages/tac-validate); Q21=A bulletin split required for v1; Q22=A write scoped brief then 01 manifest. I-S008-package-first-scope resolved."
-    - "2026-07-12 scoped 00-context complete — docs/context/realtime-tac-ingest.md written and active; advancing to 01-requirements delta S008-realtime-ingest"
-    - "2026-07-12 D-S008-01-manifest-q23 — interview plan 7 docs (4 mandatory + Deps + API light + ADRs); skip Config Spec + Deploy; Feature List interview starting"
-    - "2026-07-12 D-S008-01-feature-list-q24q28 — Q24=A F6 bulletin acceptance; Q25=A iwxxm-validate + tac-validate; Q26=A F7 stub; Q27=A F8 stub; Q28=A F2 evolves to wrapper over iwxxm-validate. Feature List interview → non-goals"
-    - "2026-07-12 D-S008-01-feature-list-q29q33 — Q29=C leave F6 non-goals unchanged (worker only under F8); Q30=B package APIs + API thin wrappers this cycle (tac-validate + iwxxm-validate); Q31=A F6.bulletin with/before METAR; Q32=A F7/F8/auth/sinks/AMHS out of build; Q33=A write feature-list then Spec. Feature List → writing feature-list"
-    - "2026-07-12 Feature List written (docs/feature-list.md delta) — interviews 1/7 complete; Spec interview starting at components"
-    - "2026-07-12 D-S008-01-spec-q34q38 — Q34=A add both packages; Q35=A unified pipeline; Q36=A SoC no FastAPI/Supabase; Q37=B dashed future worker in diagram; Q38=A write Spec then Journeys. Spec interview → writing Spec"
-    - "2026-07-12 Spec written (docs/spec.md delta) — interviews 2/7 complete; planned_docs.status.spec=completed; current_template=user-journeys; current_section=happy-paths"
-    - "2026-07-12 D-S008-01-journeys-q39q43 — Q39=A update UJ-002/007/005/006; Q40=A UJ-011/012 + UJ-DEV-004; Q41=A stub UJ-013/014; Q42=A T2 for 011/012; Q43=A write journeys then test plan. User Journeys → writing-journeys"
-    - "2026-07-12 User Journeys written — interviews 3/7 complete; planned_docs.status.user-journeys=completed; current_template=test-plan; current_section=types"
-    - "2026-07-12 D-S008-01-test-plan-q44q47 — Q44=B; Q44b=B H7; Q45=A; Q46=A; Q47=A. Test Plan → writing then Dependency Inventory"
-    - "2026-07-12 Test Plan written (docs/test-plan.md delta) — interviews 4/7 complete; planned_docs.status.test-plan=completed; current_template=dependency-inventory; current_section=packages"
-    - "2026-07-12 D-S008-01-deps-q48q50 — Q48=A MIT; Q49=B pydantic/msgspec in 04; Q50=A. Dependency Inventory → writing then API Contract"
-    - "2026-07-12 Dependency Inventory written (docs/dependency-inventory.md delta) — interviews 5/7 complete; planned_docs.status.dependency-inventory=completed; current_template=api-contract; current_section=endpoints"
-    - "2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. Delta S008-realtime-ingest COMPLETED (7/7); advancing to 04-tech-plan"
-    - "2026-07-12 D-S008-04-approved — Q21–Q24=A; 04-tech-plan delta complete; execution plan + ADR-016/017/018 approved; advancing to 05-verify-tech"
-    - "2026-07-12 D-S008-05-statement-walk — 05-verify-tech statement walk started; auto-approved high-confidence tech stack from Q1–Q20 / ADR-016/017/018 (msgspec, PyO3 cutover gate, worker template, package layout, bulletin schema, H7, lint default on); consistency agent found VT-S008-C01–C10 pending user review; stage not marked completed; delta_substage S008-f6-tac2iwxxm remains in_progress"
-    - "2026-07-12 D-S008-05-batch2 — Batch 2 verdicts C09a=1, C09c=1, M01=2, M02=1; delta_substage S008-f6-tac2iwxxm remains in_progress"
-    - "2026-07-12 D-S008-05-complete — 05-verify-tech audit done; next=16-evolve then 07-build; Phase B delta cleared (06 N/A); delta_substage S008-f6-tac2iwxxm completed"
-    - "2026-07-12 EV-006 created — Phase B complete; B→C checkpoint pending before 07-build"
-    - "2026-07-12 D-S008-EV006-b-to-c=A — Phase B→C passed; starting 07-build Phase 1 M1 T1.1"
-    - "2026-07-12 M1 tasks T1.1–T1.6 completed on feat/S008-M1-scaffold; next 08-verify-build then PR-M1"
-    - "2026-07-12 M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
-    - "2026-07-12 resume: user chose resume 07-build at T2.1 (D-S008-EV006-resume=A); active_task T2.1 in_progress on feat/S008-M2-validate"
-    - "2026-07-12 D-S008-T21-sch — Schematron strategy locked (option 1); T2.1 remains in_progress until commit"
-    - "2026-07-12 T2.1+T2.2 done; D-S008-T21-sch applied; active_task T2.3 pending (T2.2 git SHA not yet on HEAD when recorded — only T2.1 db27737 in git_history)"
-    - "2026-07-12 T2.3+T2.4 complete (b167e71, d27090d); active_task T2.5 in_progress on feat/S008-M2-validate"
-    - "2026-07-12 Phase 2 / M2 T2.1–T2.7 complete (82b5bad, 7c49e34, 174fa1c); 08-verify-build scoped pass (format, package types, unit packages + wrappers + soft benches); active_task M2 complete — opening PR-M2"
-    - "2026-07-12 D-S008-PR700-19 — waive routing for 19-address-pr-review; PRM-008 completed on PR #700; merged at user request (anti-merge override)"
-    - "2026-07-12 D-S008-PR701-19 — waive AskQuestion; PRM-009 completed on PR #701; explicit push+merge (anti-merge override)"
-    - "2026-07-12 D-S008-PR704-19 — waive AskQuestion; PRM-010 in_progress on PR #704; explicit remediate+push+merge (anti-merge override)"
-    - "2026-07-12 D-S008-EV006-resume-m4 — resume M4 T4.1"
-    - "2026-07-12 D-S008-EV006-resume-t410 — resume 07-build at T4.10"
-    - "2026-07-12 T4.10+T4.11 done; next T4.6"
-    - "2026-07-12 D-S008-EV006-t47-cutover — T4.7 in progress"
-    - "2026-07-12 M4 remaining tasks T4.10–T4.9 done; ready 08-verify-build + PR"
-    - "2026-07-12 D-S008-EV006-merge-m4-m7 — user said Merge; #706–#709 merged into evolve (anti-merge override for 18/19); M4–M7 complete; next M8 or continue 07-build"
-    - "2026-07-12 M8 T8.1–T8.4 complete; PR-M8 #710 MERGED into evolve (PRM-014 / e4fe492); M8 complete; next Phase C→D (08-verify-build / 09-qa) or redeploy for live F6.e"
-    - "2026-07-12 User chose resume option 1 — close Phase C / mark 07-build complete → C→D via 08-verify-build (D-S008-EV006-c-close)"
-    - "2026-07-12 08-verify-build Phase C FAIL — awaiting fix decision on typecheck + coverage"
-    - "2026-07-12 D-S008-EV006-08-fix — User chose option 1 fix-in-place for typecheck+coverage; 08 re-verify PASS"
-    - "2026-07-12 08-verify-build Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c). Awaiting C→D AskQuestion before 09-qa; gates.c_to_d/phase_c remain pending"
-    - "2026-07-12 D-S008-EV006-c-to-d — User chose option 1; C→D passed; Phase D started; advancing to 09-qa"
-    - "2026-07-12 10-e2e started in parallel with 09-qa after C→D"
-    - "2026-07-12 09-qa completed — pass_with_advisories; see reports/qa-report.md"
-    - "2026-07-12 10-e2e completed — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
-    - "2026-07-12 Phase D 09+10 done; checkpoint before 11-verify-impl (phase_d remains pending until AskQuestion)"
-    - "2026-07-12 D-S008-EV006-3-then-2 — User chose 3 then 2: commit Phase C/D artifacts then hotfix COR e2e"
-    - "2026-07-12 commit 48037c1 Phase C/D reports; COR hotfix landed; 10-e2e T0 PASS (12/12 Playwright smoke); phase_d remains pending until AskQuestion before 11"
-    - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
+active_session: null
+
 sessions:
+
+  - id: S008-general-tac-iwxxm-converter
+    type: feature
+    intent: "General TAC→IWXXM converter (F6/tac2iwxxm) plus data-entry and near-realtime ingest conversion with Schematron gate on IWXXM output"
+    status: completed
+    branch: evolve/S008-general-tac-iwxxm-converter
+    orchestrator: 16-evolve
+    evolve_cycle_id: EV-006
+    artifacts_dir: docs/sessions/S008-general-tac-iwxxm-converter/
+    routing_plan:
+      - stage: 00-context
+        mode: scoped
+        required: true
+        status: completed
+        skip_rationale: null
+        note: "Scoped refresh complete — docs/context/realtime-tac-ingest.md active; prior general-tac brief retained"
+      - stage: 01-requirements
+        mode: delta
+        required: true
+        status: completed
+        skip_rationale: null
+        note: "Delta S008-realtime-ingest COMPLETED — interviews 7/7; ADR-015; F7/F8 Planned; next 04-tech-plan"
+      - stage: 04-tech-plan
+        mode: delta
+        required: true
+        status: completed
+        completed_at: "2026-07-12"
+        skip_rationale: null
+        note: "S008 delta 04-tech-plan COMPLETED — execution plan + ADR-016/017/018 approved (Q21–Q24=A); next 05-verify-tech"
+      - stage: 05-verify-tech
+        mode: delta
+        required: true
+        status: completed
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        skip_rationale: null
+        note: "S008 delta 05-verify-tech COMPLETED — audit done; next 16-evolve then 07-build; Phase B delta cleared (06 N/A)"
+      - stage: 16-evolve
+        required: true
+        status: completed
+        skip_rationale: null
+        note: "EV-006 B→C passed (D-S008-EV006-b-to-c=A); handed off to 07-build"
+      - stage: 07-build
+        required: true
+        status: completed
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        skip_rationale: null
+        note: "All M1–M8 tasks (51/51) done; PR-M8 #710 merged; Phase C implementation complete; handing to 08-verify-build for C→D gate"
+      - stage: 08-verify-build
+        required: true
+        status: completed
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        skip_rationale: null
+        note: "Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c). Awaiting C→D AskQuestion before 09-qa."
+      - stage: 09-qa
+        required: true
+        status: completed
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        skip_rationale: null
+        note: "pass_with_advisories — see reports/qa-report.md"
+      - stage: 10-e2e
+        mode: delta
+        required: true
+        status: completed
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        skip_rationale: null
+        note: "PASS — COR hotfix re-verify 12/12 Playwright smoke; see e2e-report.md"
+      - stage: 11-verify-impl
+        required: true
+        status: completed
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        skip_rationale: null
+        note: "Completed — see reports/verify-impl.md; F6/F2/F8 approved; F6/F8 corpus Implemented (ADR-019); live gates deferred"
+    current_stage: null
+    started_at: "2026-07-12"
+    completed_at: "2026-07-12"
+    close_note: "EV-006 completed; deploy waived; F6/F2/F8 verified; ADR-019; evolve-summary written"
+    context_briefs:
+      - docs/context/general-tac-iwxxm-converter.md
+      - docs/context/realtime-tac-ingest.md
+    notes:
+      - "Opened after closing S007; user approved routing 2026-07-12"
+      - "00-context complete 2026-07-12 — R1=new tac2iwxxm pkg; R2=pure Py then Cython; R3=FAA five v1; R4=vendor iwxxm-us; R5=CPython+C/Cython; ADR-013"
+      - "2026-07-12 amend: reopen scoped 00 + delta 01 for realtime ingest + data entry; intent expansion — general TAC data entry + near-realtime ingest conversion + Schematron gate on IWXXM (D-S008-realtime-amend-q1q2q3)"
+      - "2026-07-12 D-S008-realtime-amend-q4q8 — Q4=C both UI+ingest; Q5=D research sources in 00; Q6=A seconds E2E; Q7=B add worker (template drift ADR); Q8=A all F6 products. Pending interview: template drift static+api→+worker; F5 METAR-only non-goal vs multi-product operator UI"
+      - "2026-07-12 D-S008-realtime-amend-q9q13 — Q9=A new F7 multi-product TAC sessions (F5 stays METAR-only); Q10=A confirm Render worker + ADR/template update; Q11=B store+push sinks; Q12=A new F8 near-RT ingest pipeline; Q13=A quarantine on Schematron/convert fail. Issues I-S008-template-drift-worker + I-S008-f5-f6-metar-only-vs-multiproduct-ui resolved. Proposed for 01-requirements delta: F7, F8"
+      - "2026-07-12 D-S008-realtime-amend-q14q18 — Q14=postpone auth (focus on package); Q15=postpone push sinks; Q16=C parse gate + shared TAC rule pack; Q17=D research bulletin-aware default; Q18=A scale worker replicas (no drop). Package-first; auth/sinks deferred. Pending: I-S008-package-first-scope (F7/F8 design-only vs deferred vs package APIs only)"
+      - "2026-07-12 D-S008-realtime-amend-q19q22 — Q19=A package APIs only this cycle (F7/F8 Planned in docs; no worker/UI/auth/sinks build); Q20=B packages/iwxxm-validate + separate TAC validate package (name TBD e.g. packages/tac-validate); Q21=A bulletin split required for v1; Q22=A write scoped brief then 01 manifest. I-S008-package-first-scope resolved."
+      - "2026-07-12 scoped 00-context complete — docs/context/realtime-tac-ingest.md written and active; advancing to 01-requirements delta S008-realtime-ingest"
+      - "2026-07-12 D-S008-01-manifest-q23 — interview plan 7 docs (4 mandatory + Deps + API light + ADRs); skip Config Spec + Deploy; Feature List interview starting"
+      - "2026-07-12 D-S008-01-feature-list-q24q28 — Q24=A F6 bulletin acceptance; Q25=A iwxxm-validate + tac-validate; Q26=A F7 stub; Q27=A F8 stub; Q28=A F2 evolves to wrapper over iwxxm-validate. Feature List interview → non-goals"
+      - "2026-07-12 D-S008-01-feature-list-q29q33 — Q29=C leave F6 non-goals unchanged (worker only under F8); Q30=B package APIs + API thin wrappers this cycle (tac-validate + iwxxm-validate); Q31=A F6.bulletin with/before METAR; Q32=A F7/F8/auth/sinks/AMHS out of build; Q33=A write feature-list then Spec. Feature List → writing feature-list"
+      - "2026-07-12 Feature List written (docs/feature-list.md delta) — interviews 1/7 complete; Spec interview starting at components"
+      - "2026-07-12 D-S008-01-spec-q34q38 — Q34=A add both packages; Q35=A unified pipeline; Q36=A SoC no FastAPI/Supabase; Q37=B dashed future worker in diagram; Q38=A write Spec then Journeys. Spec interview → writing Spec"
+      - "2026-07-12 Spec written (docs/spec.md delta) — interviews 2/7 complete; planned_docs.status.spec=completed; current_template=user-journeys; current_section=happy-paths"
+      - "2026-07-12 D-S008-01-journeys-q39q43 — Q39=A update UJ-002/007/005/006; Q40=A UJ-011/012 + UJ-DEV-004; Q41=A stub UJ-013/014; Q42=A T2 for 011/012; Q43=A write journeys then test plan. User Journeys → writing-journeys"
+      - "2026-07-12 User Journeys written — interviews 3/7 complete; planned_docs.status.user-journeys=completed; current_template=test-plan; current_section=types"
+      - "2026-07-12 D-S008-01-test-plan-q44q47 — Q44=B; Q44b=B H7; Q45=A; Q46=A; Q47=A. Test Plan → writing then Dependency Inventory"
+      - "2026-07-12 Test Plan written (docs/test-plan.md delta) — interviews 4/7 complete; planned_docs.status.test-plan=completed; current_template=dependency-inventory; current_section=packages"
+      - "2026-07-12 D-S008-01-deps-q48q50 — Q48=A MIT; Q49=B pydantic/msgspec in 04; Q50=A. Dependency Inventory → writing then API Contract"
+      - "2026-07-12 Dependency Inventory written (docs/dependency-inventory.md delta) — interviews 5/7 complete; planned_docs.status.dependency-inventory=completed; current_template=api-contract; current_section=endpoints"
+      - "2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. Delta S008-realtime-ingest COMPLETED (7/7); advancing to 04-tech-plan"
+      - "2026-07-12 D-S008-04-approved — Q21–Q24=A; 04-tech-plan delta complete; execution plan + ADR-016/017/018 approved; advancing to 05-verify-tech"
+      - "2026-07-12 D-S008-05-statement-walk — 05-verify-tech statement walk started; auto-approved high-confidence tech stack from Q1–Q20 / ADR-016/017/018 (msgspec, PyO3 cutover gate, worker template, package layout, bulletin schema, H7, lint default on); consistency agent found VT-S008-C01–C10 pending user review; stage not marked completed; delta_substage S008-f6-tac2iwxxm remains in_progress"
+      - "2026-07-12 D-S008-05-batch2 — Batch 2 verdicts C09a=1, C09c=1, M01=2, M02=1; delta_substage S008-f6-tac2iwxxm remains in_progress"
+      - "2026-07-12 D-S008-05-complete — 05-verify-tech audit done; next=16-evolve then 07-build; Phase B delta cleared (06 N/A); delta_substage S008-f6-tac2iwxxm completed"
+      - "2026-07-12 EV-006 created — Phase B complete; B→C checkpoint pending before 07-build"
+      - "2026-07-12 D-S008-EV006-b-to-c=A — Phase B→C passed; starting 07-build Phase 1 M1 T1.1"
+      - "2026-07-12 M1 tasks T1.1–T1.6 completed on feat/S008-M1-scaffold; next 08-verify-build then PR-M1"
+      - "2026-07-12 M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
+      - "2026-07-12 resume: user chose resume 07-build at T2.1 (D-S008-EV006-resume=A); active_task T2.1 in_progress on feat/S008-M2-validate"
+      - "2026-07-12 D-S008-T21-sch — Schematron strategy locked (option 1); T2.1 remains in_progress until commit"
+      - "2026-07-12 T2.1+T2.2 done; D-S008-T21-sch applied; active_task T2.3 pending (T2.2 git SHA not yet on HEAD when recorded — only T2.1 db27737 in git_history)"
+      - "2026-07-12 T2.3+T2.4 complete (b167e71, d27090d); active_task T2.5 in_progress on feat/S008-M2-validate"
+      - "2026-07-12 Phase 2 / M2 T2.1–T2.7 complete (82b5bad, 7c49e34, 174fa1c); 08-verify-build scoped pass (format, package types, unit packages + wrappers + soft benches); active_task M2 complete — opening PR-M2"
+      - "2026-07-12 D-S008-PR700-19 — waive routing for 19-address-pr-review; PRM-008 completed on PR #700; merged at user request (anti-merge override)"
+      - "2026-07-12 D-S008-PR701-19 — waive AskQuestion; PRM-009 completed on PR #701; explicit push+merge (anti-merge override)"
+      - "2026-07-12 D-S008-PR704-19 — waive AskQuestion; PRM-010 in_progress on PR #704; explicit remediate+push+merge (anti-merge override)"
+      - "2026-07-12 D-S008-EV006-resume-m4 — resume M4 T4.1"
+      - "2026-07-12 D-S008-EV006-resume-t410 — resume 07-build at T4.10"
+      - "2026-07-12 T4.10+T4.11 done; next T4.6"
+      - "2026-07-12 D-S008-EV006-t47-cutover — T4.7 in progress"
+      - "2026-07-12 M4 remaining tasks T4.10–T4.9 done; ready 08-verify-build + PR"
+      - "2026-07-12 D-S008-EV006-merge-m4-m7 — user said Merge; #706–#709 merged into evolve (anti-merge override for 18/19); M4–M7 complete; next M8 or continue 07-build"
+      - "2026-07-12 M8 T8.1–T8.4 complete; PR-M8 #710 MERGED into evolve (PRM-014 / e4fe492); M8 complete; next Phase C→D (08-verify-build / 09-qa) or redeploy for live F6.e"
+      - "2026-07-12 User chose resume option 1 — close Phase C / mark 07-build complete → C→D via 08-verify-build (D-S008-EV006-c-close)"
+      - "2026-07-12 08-verify-build Phase C FAIL — awaiting fix decision on typecheck + coverage"
+      - "2026-07-12 D-S008-EV006-08-fix — User chose option 1 fix-in-place for typecheck+coverage; 08 re-verify PASS"
+      - "2026-07-12 08-verify-build Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c). Awaiting C→D AskQuestion before 09-qa; gates.c_to_d/phase_c remain pending"
+      - "2026-07-12 D-S008-EV006-c-to-d — User chose option 1; C→D passed; Phase D started; advancing to 09-qa"
+      - "2026-07-12 10-e2e started in parallel with 09-qa after C→D"
+      - "2026-07-12 09-qa completed — pass_with_advisories; see reports/qa-report.md"
+      - "2026-07-12 10-e2e completed — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
+      - "2026-07-12 Phase D 09+10 done; checkpoint before 11-verify-impl (phase_d remains pending until AskQuestion) [RESOLVED by D-S008-EV006-phase-d]"
+      - "2026-07-12 D-S008-EV006-3-then-2 — User chose 3 then 2: commit Phase C/D artifacts then hotfix COR e2e"
+      - "2026-07-12 commit 48037c1 Phase C/D reports; COR hotfix landed; 10-e2e T0 PASS (12/12 Playwright smoke); phase_d remains pending until AskQuestion before 11 [RESOLVED by D-S008-EV006-phase-d]"
+      - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl [RESOLVED by D-S008-EV006-phase-d]"
+      - "2026-07-12 D-S008-EV006-phase-d — phase_d checkpoint passed (AskQuestion option 1); 11-verify-impl started"
+      - "2026-07-12 phase_d passed; active_session.current_stage=11-verify-impl (in_progress); 11 not completed"
+      - "2026-07-12 Journey signoff: UJ-001 approved (T3 pending waiver); UJ-003 approved (T3 pending waiver)."
+      - "2026-07-12 Journey signoff: UJ-002 approved_t3_waiver; UJ-005 approved_t3_waiver_partial_matrix (D-S008-11-uj-002-005). Full UJ-005 7-product annex3 matrix and live H6 deferred; 11-verify-impl remains in_progress."
+      - "2026-07-12 Journey signoff: UJ-006 approved_t3_waiver; UJ-007 approved_t3_waiver (D-S008-11-uj-006-007). T3/H3 live pending waiver; 11-verify-impl remains in_progress."
+      - "2026-07-12 Journey signoff: UJ-011 approved_h7_waiver; UJ-012 approved_t3_waiver (D-S008-11-uj-011-012). H7/live pending waiver; 11-verify-impl remains in_progress."
+      - "2026-07-12 Journey signoff: UJ-008 approved_t3_waiver; UJ-009 approved_t3_waiver (D-S008-11-uj-008-009). Live pending waiver; 11-verify-impl remains in_progress."
+      - "2026-07-12 Journey signoff: UJ-010 approved_t3_waiver; UJ-014 approved_live_t74_waiver (D-S008-11-uj-010-014). Cycle product journeys (UJ-001–012, UJ-014) signed off; UJ-013/UJ-004 still pending user deferral AskQuestion; 11-verify-impl remains in_progress."
+      - "2026-07-12 D-S008-11-f6-uj-remaining — UJ-013 deferred_planned_f7; UJ-004 skipped_out_of_cycle; F6 approved_live_deferred (live H4–H7 / full UI 7-product matrix deferred); 11-verify-impl remains in_progress."
+      - "2026-07-12 D-S008-11-f2 — User approved Feature F2 (AskQuestion option 1) with live H3 deferred; feature_signoffs.F2=approved_live_deferred; 11-verify-impl remains in_progress."
+      - "2026-07-12 All cycle features F6/F2/F8 approved; writing verify-impl.md next."
+      - "2026-07-12 11-verify-impl completed; F6/F2/F8 approved; F6/F8 corpus Implemented (ADR-019); live gates deferred; S008 routing has no 12/13 — next is session close checkpoint or amend routing for deploy."
+      - "2026-07-12 Routing complete — all required routing_plan stages completed; current_stage=null pending session close AskQuestion (active_session remains open)."
+      - "2026-07-12 D-S008-EV006-close — session closed; deploy waived"
+
   - id: S007-docs-minimize
     type: process
     intent: "Minimize docs/ root files; nest non-standing docs into decisions/ops/guides/domain/reports"
@@ -745,10 +767,19 @@ stages:
         overall: pass
         report: docs/sessions/S004-issue-555-feedback/reports/verify-impl.md
         note: "UJ-001/UJ-004 approved; F1+F5 approve-fix; lint+Vitest green; T3 deferred to 12"
+      - status: completed
+        session_id: S008-general-tac-iwxxm-converter
+        evolve_cycle_id: EV-006
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        overall: approved
+        report: docs/sessions/S008-general-tac-iwxxm-converter/reports/verify-impl.md
+        note: "F6/F2/F8 approved; F6/F8 corpus Implemented (ADR-019); live gates deferred; 12/13 not in S008 routing"
     notes:
       - "S003 / BUG-2026-06-23 — user approved M4+F3 delta; T3 auth + UI E2E deferred"
       - "08-verify-build + 09-qa still pending on routing plan"
       - "Next: 12-verify-deploy (Render key rotation)"
+      - "2026-07-12 S008 / EV-006 — overall approved; see verify-impl.md"
 
   10-e2e:
     status: completed
@@ -966,6 +997,185 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-EV006-close
+    date: "2026-07-12"
+    timestamp: "2026-07-12"
+    stage: close_session
+    skill: 16-evolve
+    skill_id: 16-evolve
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "Close EV-006/S008; waive deploy; commit+push"
+    summary: >
+      User chose option 1 close + commit+push; gates.deploy and
+      checkpoints.deploy waived; EV-006 and S008 completed; 12/13 remain skipped.
+  - id: D-S008-11-scope-f6-f8-status
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      User chose AskQuestion option 1 — update feature-list F6+F8 to Implemented;
+      leave F7 Planned; ADR-019. Complete 11-verify-impl. stage 11-verify-impl,
+      S008, EV-006, 2026-07-12.
+    summary: >
+      Corpus status AskQuestion option 1: F6+F8 Implemented in feature-list;
+      F7 remains Planned; ADR-019 recorded; 11-verify-impl completed overall
+      approved. Live gates remain deferred; S008 routing has no 12/13.
+    timestamp: "2026-07-12"
+  - id: D-S008-11-f8
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      User approved Feature F8 (AskQuestion option 1) with live T7.4 deferred.
+      stage 11-verify-impl, S008, EV-006, 2026-07-12.
+    summary: >
+      Feature signoff AskQuestion option 1: F8 approved_live_deferred (live T7.4
+      deferred). EV-006.stages.11-verify-impl remains in_progress.
+    timestamp: "2026-07-12"
+  - id: D-S008-11-f2
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      User approved Feature F2 (AskQuestion option 1) with live H3 deferred.
+      stage 11-verify-impl, S008, EV-006, 2026-07-12.
+    summary: >
+      Feature signoff AskQuestion option 1: F2 approved_live_deferred (live H3
+      deferred). EV-006.stages.11-verify-impl remains in_progress.
+    timestamp: "2026-07-12"
+  - id: D-S008-11-f6-uj-remaining
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      User chose AskQuestion option 1: Defer UJ-013 (F7 Planned), skip UJ-004
+      (F5) this cycle; Approve Feature F6 with live H4–H7 / full UI 7-product
+      matrix deferred notes. stage 11-verify-impl, S008, EV-006, 2026-07-12.
+    summary: >
+      Journey/feature signoff AskQuestion option 1: UJ-013 deferred_planned_f7;
+      UJ-004 skipped_out_of_cycle; F6 approved_live_deferred (live H4–H7 /
+      full UI 7-product matrix deferred). EV-006.stages.11-verify-impl remains
+      in_progress.
+    timestamp: "2026-07-12"
+  - id: D-S008-11-uj-010-014
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      User approved UJ-010 and UJ-014 (AskQuestion option 1) with live T7.4
+      pending waiver. stage 11-verify-impl, S008, EV-006, 2026-07-12.
+    summary: >
+      Journey signoff AskQuestion option 1: UJ-010 approved_t3_waiver;
+      UJ-014 approved_live_t74_waiver with live T7.4 pending waiver.
+      Cycle product journeys (UJ-001–012, UJ-014) signed off; UJ-013/UJ-004
+      still pending user deferral AskQuestion.
+      EV-006.stages.11-verify-impl remains in_progress.
+    timestamp: "2026-07-12"
+  - id: D-S008-11-uj-008-009
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      User approved UJ-008 and UJ-009 (AskQuestion option 1) with live
+      pending waiver.
+    summary: >
+      Journey signoff AskQuestion option 1: UJ-008 and UJ-009 approved_t3_waiver
+      with live pending waiver. stage 11-verify-impl, session S008,
+      cycle EV-006. EV-006.stages.11-verify-impl remains in_progress.
+    timestamp: "2026-07-12"
+  - id: D-S008-11-uj-011-012
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      User approved UJ-011 and UJ-012 (AskQuestion option 1) with H7/live
+      pending waiver.
+    summary: >
+      Journey signoff AskQuestion option 1: UJ-011 approved_h7_waiver;
+      UJ-012 approved_t3_waiver with H7/live pending waiver. stage 11-verify-impl,
+      session S008, cycle EV-006. EV-006.stages.11-verify-impl remains in_progress.
+    timestamp: "2026-07-12"
+  - id: D-S008-11-uj-006-007
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      User approved UJ-006 and UJ-007 (AskQuestion option 1) with T3/H3 live
+      pending waiver.
+    summary: >
+      Journey signoff AskQuestion option 1: UJ-006 and UJ-007 approved_t3_waiver
+      with T3/H3 live pending waiver. stage 11-verify-impl, session S008,
+      cycle EV-006. EV-006.stages.11-verify-impl remains in_progress.
+    timestamp: "2026-07-12"
+  - id: D-S008-11-uj-002-005
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      User approved UJ-002 and UJ-005 for S008 11-verify-impl (AskQuestion option 1).
+      T3/connectivity pending waiver; full UJ-005 7-product annex3 matrix and live H6
+      remain deferred.
+    summary: >
+      Journey signoff AskQuestion option 1: UJ-002 approved_t3_waiver;
+      UJ-005 approved_t3_waiver_partial_matrix. Full UJ-005 7-product annex3 matrix
+      and live H6 deferred. EV-006.stages.11-verify-impl remains in_progress.
+    timestamp: "2026-07-12"
+  - id: D-S008-11-uj-001-003
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: >
+      User approved UJ-001 and UJ-003 for S008 11-verify-impl with documented
+      T3/connectivity pending waiver (12/13 skipped this cycle). Option 1 AskQuestion.
+    summary: >
+      Journey signoff AskQuestion option 1: UJ-001 and UJ-003 approved with
+      T3/connectivity pending waiver (12/13 skipped this cycle).
+      EV-006.stages.11-verify-impl remains in_progress.
+    timestamp: "2026-07-12"
+  - id: D-S008-EV006-phase-d
+    date: "2026-07-12"
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "phase_d checkpoint passed by user AskQuestion option 1"
+    summary: >
+      User chose option 1 — Pass checkpoint and start 11-verify-impl.
+      EV-006 checkpoints.phase_d passed; stage 11-verify-impl / 16-evolve;
+      session S008; cycle EV-006. 11-verify-impl set in_progress (not completed).
+    timestamp: "2026-07-12"
   - id: D-S008-EV006-3-then-2
     date: "2026-07-12"
     stage: 16-evolve
@@ -1894,6 +2104,49 @@ decisions_log:
     decision: "Verified/fixed stale corpus path references post-reorg (workflow-state + relative links)."
     status: confirmed
 artifacts:
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/evolve-summary.md
+    kind: evolve-summary
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    created_at: "2026-07-12"
+    updated_at: "2026-07-12"
+    status: completed
+    note: "EV-006 evolve summary; cycle closed (D-S008-EV006-close)"
+  - path: docs/evolve-report-EV-006.md
+    kind: evolve-report
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    created_at: "2026-07-12"
+    updated_at: "2026-07-12"
+    status: completed
+    note: "EV-006 cycle report; closed D-S008-EV006-close"
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/verify-impl.md
+    kind: stage-report
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    stage: 11-verify-impl
+    created_at: "2026-07-12"
+    updated_at: "2026-07-12"
+    status: completed
+    overall: approved
+    note: "11-verify-impl completed — F6/F2/F8 approved; F6/F8 corpus Implemented (ADR-019); live gates deferred"
+  - path: docs/adr/ADR-019-s008-f6-f8-implemented-status.md
+    kind: adr
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    stage: 11-verify-impl
+    created_at: "2026-07-12"
+    status: accepted
+    note: "F6+F8 Implemented in feature-list; F7 remains Planned (D-S008-11-scope-f6-f8-status)"
+  - path: docs/reports/implementation-verification.md
+    kind: standing-doc
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    stage: 11-verify-impl
+    created_at: "2026-07-12"
+    updated_at: "2026-07-12"
+    status: completed
+    note: "Standing implementation verification summary for S008 / EV-006"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/qa-report.md
     kind: stage-report
     session_id: S008-general-tac-iwxxm-converter
@@ -1921,9 +2174,9 @@ artifacts:
     stage: 08-verify-build
     created_at: "2026-07-12"
     updated_at: "2026-07-12"
-    status: written
-    overall: fail
-    note: "Phase C full verify FAIL — typecheck-py 4 errors; backend cov 97.07%<98%; tac2iwxxm cov 89.61%<95%; awaiting user fix decision"
+    status: completed
+    overall: pass
+    note: "Phase C PASS — format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c (D-S008-EV006-08-fix)"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-review.md
     kind: stage-report
     session_id: S008-general-tac-iwxxm-converter
@@ -2820,9 +3073,9 @@ evolve_cycles:
     cycle_type: feature
     feature_ids: [F6, F2, F8]
     title: "S008 general TAC→IWXXM (F6) + validate packages + F8 worker"
-    status: in_progress
+    status: completed
     started: "2026-07-12"
-    completed: null
+    completed: "2026-07-12"
     scope_summary: |
       Approved S008 scope from Phase A/B: F6 tac2iwxxm (bulletin, METAR/SPECI annex3+US, remaining products),
       packages iwxxm-validate + tac-validate with thin API wrappers, PyO3 hard cutover gate (ADR-017),
@@ -2846,7 +3099,7 @@ evolve_cycles:
         - 06-tech-tooling
         - 12-verify-deploy
         - 13-deploy-smoke
-    current_stage: 16-evolve
+    current_stage: null
     notes:
       - "2026-07-12 M1 T1.1–T1.6 completed on feat/S008-M1-scaffold; current work toward 08-verify-build for M1"
       - "2026-07-12 M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
@@ -2876,10 +3129,24 @@ evolve_cycles:
       - "2026-07-12 10-e2e started in parallel with 09-qa after C→D"
       - "2026-07-12 09-qa completed — pass_with_advisories; see reports/qa-report.md"
       - "2026-07-12 10-e2e completed — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
-      - "2026-07-12 Phase D 09+10 done; checkpoint before 11-verify-impl (phase_d remains pending until AskQuestion)"
+      - "2026-07-12 Phase D 09+10 done; checkpoint before 11-verify-impl (phase_d remains pending until AskQuestion) [RESOLVED by D-S008-EV006-phase-d]"
       - "2026-07-12 D-S008-EV006-3-then-2 — User chose 3 then 2: commit Phase C/D artifacts then hotfix COR e2e"
-      - "2026-07-12 commit 48037c1 Phase C/D reports; COR hotfix landed; 10-e2e T0 PASS (12/12 Playwright smoke); phase_d remains pending until AskQuestion before 11"
-      - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
+      - "2026-07-12 commit 48037c1 Phase C/D reports; COR hotfix landed; 10-e2e T0 PASS (12/12 Playwright smoke); phase_d remains pending until AskQuestion before 11 [RESOLVED by D-S008-EV006-phase-d]"
+      - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl [RESOLVED by D-S008-EV006-phase-d]"
+      - "2026-07-12 D-S008-EV006-phase-d — phase_d checkpoint passed (AskQuestion option 1); 11-verify-impl started"
+      - "2026-07-12 phase_d passed; EV-006.current_stage=11-verify-impl; stages.11-verify-impl in_progress"
+      - "2026-07-12 Journey signoff: UJ-001 approved (T3 pending waiver); UJ-003 approved (T3 pending waiver)."
+      - "2026-07-12 Journey signoff: UJ-002 approved_t3_waiver; UJ-005 approved_t3_waiver_partial_matrix (D-S008-11-uj-002-005). Full UJ-005 7-product annex3 matrix and live H6 deferred; 11-verify-impl remains in_progress."
+      - "2026-07-12 Journey signoff: UJ-006 approved_t3_waiver; UJ-007 approved_t3_waiver (D-S008-11-uj-006-007). T3/H3 live pending waiver; 11-verify-impl remains in_progress."
+      - "2026-07-12 Journey signoff: UJ-011 approved_h7_waiver; UJ-012 approved_t3_waiver (D-S008-11-uj-011-012). H7/live pending waiver; 11-verify-impl remains in_progress."
+      - "2026-07-12 Journey signoff: UJ-008 approved_t3_waiver; UJ-009 approved_t3_waiver (D-S008-11-uj-008-009). Live pending waiver; 11-verify-impl remains in_progress."
+      - "2026-07-12 Journey signoff: UJ-010 approved_t3_waiver; UJ-014 approved_live_t74_waiver (D-S008-11-uj-010-014). Cycle product journeys (UJ-001–012, UJ-014) signed off; UJ-013/UJ-004 still pending user deferral AskQuestion; 11-verify-impl remains in_progress."
+      - "2026-07-12 D-S008-11-f6-uj-remaining — UJ-013 deferred_planned_f7; UJ-004 skipped_out_of_cycle; F6 approved_live_deferred (live H4–H7 / full UI 7-product matrix deferred); 11-verify-impl remains in_progress."
+      - "2026-07-12 D-S008-11-f2 — User approved Feature F2 (AskQuestion option 1) with live H3 deferred; feature_signoffs.F2=approved_live_deferred; 11-verify-impl remains in_progress."
+      - "2026-07-12 All cycle features F6/F2/F8 approved; writing verify-impl.md next."
+      - "2026-07-12 11-verify-impl completed; F6/F2/F8 approved; F6/F8 corpus Implemented (ADR-019); live gates deferred; S008 routing has no 12/13 — next is session close checkpoint or amend routing for deploy."
+      - "2026-07-12 D-S008-11-scope-f6-f8-status — F6+F8 Implemented / F7 Planned (ADR-019); stages.11-verify-impl completed overall approved; current_stage=null (11 done); gates.deploy still pending."
+      - "2026-07-12 D-S008-EV006-close — cycle completed; deploy waived; session closed; commit+push pending"
     stages:
       00-context:
         status: completed
@@ -2960,20 +3227,54 @@ evolve_cycles:
         notes:
           - "COR hotfix re-verify 12/12 Playwright smoke; T0 PASS"
       11-verify-impl:
-        status: pending
-        started: null
-        completed: null
+        status: completed
+        started: "2026-07-12"
+        started_at: "2026-07-12"
+        completed: "2026-07-12"
+        completed_at: "2026-07-12"
+        overall: approved
+        report: docs/sessions/S008-general-tac-iwxxm-converter/reports/verify-impl.md
+        journey_signoffs:
+          UJ-001: approved_t3_waiver
+          UJ-002: approved_t3_waiver
+          UJ-003: approved_t3_waiver
+          UJ-004: skipped_out_of_cycle
+          UJ-005: approved_t3_waiver_partial_matrix
+          UJ-006: approved_t3_waiver
+          UJ-007: approved_t3_waiver
+          UJ-008: approved_t3_waiver
+          UJ-009: approved_t3_waiver
+          UJ-010: approved_t3_waiver
+          UJ-011: approved_h7_waiver
+          UJ-012: approved_t3_waiver
+          UJ-013: deferred_planned_f7
+          UJ-014: approved_live_t74_waiver
+        feature_signoffs:
+          F2: approved_live_deferred
+          F6: approved_live_deferred
+          F8: approved_live_deferred
+        notes:
+          - "2026-07-12 Journey signoff: UJ-001 approved (T3 pending waiver); UJ-003 approved (T3 pending waiver)."
+          - "2026-07-12 Journey signoff: UJ-002 approved_t3_waiver; UJ-005 approved_t3_waiver_partial_matrix (D-S008-11-uj-002-005). Full UJ-005 7-product annex3 matrix and live H6 deferred; 11-verify-impl remains in_progress."
+          - "2026-07-12 Journey signoff: UJ-006 approved_t3_waiver; UJ-007 approved_t3_waiver (D-S008-11-uj-006-007). T3/H3 live pending waiver; 11-verify-impl remains in_progress."
+          - "2026-07-12 Journey signoff: UJ-011 approved_h7_waiver; UJ-012 approved_t3_waiver (D-S008-11-uj-011-012). H7/live pending waiver; 11-verify-impl remains in_progress."
+          - "2026-07-12 Journey signoff: UJ-008 approved_t3_waiver; UJ-009 approved_t3_waiver (D-S008-11-uj-008-009). Live pending waiver; 11-verify-impl remains in_progress."
+          - "2026-07-12 Journey signoff: UJ-010 approved_t3_waiver; UJ-014 approved_live_t74_waiver (D-S008-11-uj-010-014). Cycle product journeys (UJ-001–012, UJ-014) signed off; UJ-013/UJ-004 still pending user deferral AskQuestion; 11-verify-impl remains in_progress."
+          - "2026-07-12 D-S008-11-f6-uj-remaining — UJ-013 deferred_planned_f7; UJ-004 skipped_out_of_cycle; F6 approved_live_deferred (live H4–H7 / full UI 7-product matrix deferred); 11-verify-impl remains in_progress."
+          - "2026-07-12 D-S008-11-f2 — User approved Feature F2 (AskQuestion option 1) with live H3 deferred; feature_signoffs.F2=approved_live_deferred; 11-verify-impl remains in_progress."
+          - "2026-07-12 All cycle features F6/F2/F8 approved; writing verify-impl.md next."
+          - "2026-07-12 D-S008-11-scope-f6-f8-status — F6+F8 Implemented / F7 Planned (ADR-019); 11-verify-impl completed overall approved; live gates deferred."
     gates:
       a_to_b: passed
       b_to_c: passed
       c_to_d: passed
-      deploy: pending
+      deploy: waived
     checkpoints:
       phase_a: passed
       phase_b: passed
       phase_c: passed
-      phase_d: pending
-      deploy: pending
+      phase_d: passed
+      deploy: waived
     adrs:
       - docs/adr/ADR-013-tac2iwxxm-package-architecture.md
       - docs/adr/ADR-014-tac2iwxxm-rust-gifts-removal.md
@@ -2981,27 +3282,38 @@ evolve_cycles:
       - docs/adr/ADR-016-msgspec-subsecond-perf.md
       - docs/adr/ADR-017-pyo3-cutover-gate.md
       - docs/adr/ADR-018-f8-worker-template.md
+      - docs/adr/ADR-019-s008-f6-f8-implemented-status.md
     artifacts:
       - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md
         status: approved
       - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/05-verify-tech.md
         status: completed
       - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/evolve-summary.md
-        status: pending
+        status: completed
       - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/verification-report.md
-        status: written
-        note: "Phase C FAIL — typecheck + coverage; awaiting user decision"
+        status: completed
+        note: "Phase C PASS — format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c (D-S008-EV006-08-fix)"
       - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/qa-report.md
         status: completed
         note: "pass_with_advisories"
       - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/e2e-report.md
         status: completed
         note: "PASS — COR hotfix re-verify 12/12 Playwright smoke; T0 PASS"
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/verify-impl.md
+        status: completed
+        note: "11-verify-impl overall approved; F6/F2/F8 approved; ADR-019"
+      - path: docs/adr/ADR-019-s008-f6-f8-implemented-status.md
+        status: accepted
+      - path: docs/reports/implementation-verification.md
+        status: completed
+      - path: docs/evolve-report-EV-006.md
+        status: completed
     issues: []
 
 git_history:
   current_branch: evolve/S008-general-tac-iwxxm-converter
   notes:
+    - "2026-07-12 D-S008-EV006-close — workflow-state close applied; commit+push pending (no SHA yet)"
     - "2026-07-12 D-S008-EV006-merge-m4-m7 — feat/S008-M4-us-metar (#706), M5-products (#707), M6-worker (#708), M7-live (#709) merged into evolve"
     - "2026-07-12 PR-M8 #710 MERGED into evolve (PRM-014; merge_sha e4fe492); M8 complete"
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"

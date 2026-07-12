@@ -22,6 +22,7 @@
 | [ADR-016](ADR-016-msgspec-subsecond-perf.md) | msgspec in packages, pydantic at HTTP, sub-second benches | Accepted |
 | [ADR-017](ADR-017-pyo3-cutover-gate.md) | PyO3 required before F6 cutover (amends ADR-014) | Accepted |
 | [ADR-018](ADR-018-f8-worker-template.md) | F8 Render worker + template static+api+worker (amends ADR-015) | Accepted |
+| [ADR-019](ADR-019-s008-f6-f8-implemented-status.md) | Mark F6 and F8 Implemented after S008 11-verify-impl | Accepted |
 
 ## Process
 

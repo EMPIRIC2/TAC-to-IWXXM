@@ -1,49 +1,49 @@
 # Implementation Verification
 
-> **Last completed**: 2026-06-24 (re-confirmed) — S004 / EV-004 (#555 UX + F5 work history)  
-> **Branch**: `feat/S004-issue-555-feedback` @ `cc6f93f`  
-> **Session**: S004-issue-555-feedback  
+> **Last completed**: 2026-07-12 — S008 / EV-006 (F6 + F2 package + F8 worker)  
+> **Branch**: `evolve/S008-general-tac-iwxxm-converter`  
+> **Session**: S008-general-tac-iwxxm-converter  
 > **Stage**: 11-verify-impl
 
 ## Outcome
 
-**APPROVED with local fix verification** — user signed off UJ-001 and UJ-004; F1 and F5 approved with recommended test/lint fixes (green on branch: ESLint + 445 Vitest). T3 staging deferred to 12-verify-deploy.
+**APPROVED** — User signed off F6, F2, and F8 with live-connectivity waivers (12/13 skipped).
+Corpus: F6/F8 → **Implemented** ([ADR-019](../adr/ADR-019-s008-f6-f8-implemented-status.md)).
 
 ## Features verified
 
 | Feature | Status | User decision |
 |---------|--------|---------------|
-| F1 — METAR → IWXXM (#555 delta) | Implemented + tests aligned | Approve fix |
-| F5 — User METAR work history | Implemented (backend + frontend) | Approve fix |
+| F6 — General TAC→IWXXM | Implemented (live deferred) | Approve |
+| F2 — IWXXM validation package | Implemented (live deferred) | Approve |
+| F8 — Near-RT ingest worker | Implemented (live T7.4 deferred) | Approve |
 
 ## Quality gates
 
-| Gate | Initial (09/10) | Post-fix (11) |
-|------|-----------------|---------------|
-| Lint | FAIL (4 ESLint) | **PASS** |
-| Vitest (delta) | FAIL (1) | **84/84 FileConverter PASS** |
-| Vitest (full) | — | **502/504** (2 flaky Login timeouts, advisory) |
-| Backend unit | PASS | PASS |
-| E2E T2 product | PASS (11/11) | PASS |
-| E2E delta | FAIL (locators + session load) | Fixed in branch; not re-run |
-| T3 staging | FAIL (H4 CORS) | Deferred |
+| Gate | Status |
+|------|--------|
+| 08-verify-build | PASS |
+| 09-qa | pass_with_advisories |
+| 10-e2e T0 | PASS 12/12 |
+| T3 / H4–H7 | Deferred |
 
 ## Journeys
 
-| ID | Approved | T3 waiver |
-|----|----------|-----------|
-| UJ-001 | Yes | Yes — to 12-verify-deploy |
-| UJ-004 | Yes | Yes — to 12-verify-deploy |
+See session report for full table. Product journeys UJ-001–012 and UJ-014 approved with
+waivers; UJ-013 deferred (F7); UJ-004 skipped this cycle.
 
 ## Scope
 
 - **Creep**: 0
-- **Gaps**: S003 Phase 1 operator gate (T1.1–T1.4) — not blocking PR merge
+- **Gaps**: F7 Planned (intentional)
+- **Corpus**: F6/F8 status updated (ADR-019)
 
 ## Detail
 
-Full session report: [docs/sessions/S004-issue-555-feedback/reports/verify-impl.md](../sessions/S004-issue-555-feedback/reports/verify-impl.md)
+Full session report:
+[docs/sessions/S008-general-tac-iwxxm-converter/reports/verify-impl.md](../sessions/S008-general-tac-iwxxm-converter/reports/verify-impl.md)
 
 ## Next
 
-**12-verify-deploy** — Render redeploy, H4/H5 connectivity, S003 keys, live UJ smoke.
+S008 skips 12/13. Live deploy gates remain open if/when routing is amended; otherwise close
+session after routing-plan completion.

@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-12 (S008 05-verify-tech Batch 1 — F8 + PyO3 + iwxxm-us pin)
+> **Last updated**: 2026-07-12 (S008 11-verify-impl — F6/F8 → Implemented)
 
 ## Summary
 
@@ -13,9 +13,9 @@
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
 | F5 | User METAR work history | Planned | Product | docs/context/metar-work-history.md, S004 |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Planned | Product | S008, ADR-013/014; bulletin split |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split |
 | F7 | Multi-product TAC operator entry / sessions | Planned | Product | S008 amend; no build this cycle |
-| F8 | Near-realtime TAC ingest → IWXXM gate | Planned | Product | S008 04: build this cycle (ADR-018 worker) |
+| F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018/019; `apps/worker` |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -102,6 +102,8 @@
 
 ### F6: General TAC→IWXXM Converter (`tac2iwxxm`)
 
+- **Status**: **Implemented** (S008 / EV-006 — ADR-019). Local/CI + T0 Playwright approved;
+  live H4–H7 / full UI 7-product matrix deferred (12/13 skipped this cycle).
 - **What it does**: Converts TAC for **AIRMET, METAR, SIGMET, SPECI, TAF, VAA, and TCA** to IWXXM
   XML via `packages/tac2iwxxm`, with Annex-3 (or product-equivalent) body encoding and optional
   IWXXM-US national extensions; exposes the same products/profiles on HTTP convert and UI pickers;
@@ -170,13 +172,14 @@
 
 ### F8: Near-Realtime TAC Ingest → IWXXM Gate
 
+- **Status**: **Implemented** (S008 / EV-006 — ADR-018/019). Worker unit/pipeline approved;
+  live T7.4 staging smoke deferred (12/13 skipped this cycle).
 - **What it does**: Continuous/near-realtime ingest of TAC (and bulletins) → `tac-validate` →
   `tac2iwxxm` → `iwxxm-validate` (Schematron/XSD) → **store**; **quarantine** on convert
   or Schematron failure (no publish). Latency target **&lt;5–15s** E2E; scale via **worker
   replicas** (drop nothing). Product scope = F6 seven.
-- **Status**: **Planned → build this cycle (S008 04 / ADR-018)**. Render Background Worker at
-  `apps/worker/`; HTTPS/object poller; Supabase store + separate quarantine; service-role JWT
-  for writers. Template → `static+api+worker`.
+- **Deployable**: Render Background Worker at `apps/worker/`; HTTPS/object poller; Supabase
+  store + separate quarantine; service-role JWT for writers. Template → `static+api+worker`.
 - **Non-goals (still)**: AMHS/SWIM/AFS adapters; public machine-ingest auth UX; **push sinks**.
 - **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R2–R15; ADR-018;
   [execution-plan](sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md)
