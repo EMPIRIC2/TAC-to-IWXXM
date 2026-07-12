@@ -52,7 +52,7 @@ active_session:
       status: in_progress
       started_at: "2026-07-12"
       skip_rationale: null
-      note: "Active handoff from 16-evolve; D-S008-EV006-resume-t410 — resume at T4.10 (US METAR/SPECI goldens); new feat branch needed (feat/S008-M4-cutover merged)"
+      note: "M4–M7 PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7); next M8 or continue 07-build"
     - stage: 08-verify-build
       required: true
       status: pending
@@ -118,6 +118,7 @@ active_session:
     - "2026-07-12 T4.10+T4.11 done; next T4.6"
     - "2026-07-12 D-S008-EV006-t47-cutover — T4.7 in progress"
     - "2026-07-12 M4 remaining tasks T4.10–T4.9 done; ready 08-verify-build + PR"
+    - "2026-07-12 D-S008-EV006-merge-m4-m7 — user said Merge; #706–#709 merged into evolve (anti-merge override for 18/19); M4–M7 complete; next M8 or continue 07-build"
 sessions:
   - id: S007-docs-minimize
     type: process
@@ -783,6 +784,7 @@ stages:
     notes:
       - "Re-review pass after PRM-012/013 (D-S008-PR706-709-18b); cycles PRR-013…PRR-016 on #706–#709 completed; intended approve posted as COMMENT; do not merge"
       - "Prior stack review PRR-009…PRR-012 lived in reports/pr-review.md only (not in pr_review_cycles[])"
+      - "2026-07-12 PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7; user said Merge; anti-merge override)"
 
   19-address-pr-review:
     status: completed
@@ -790,6 +792,8 @@ stages:
     completed: "2026-07-12"
     last_cycle: PRM-013
     session_id: S008-general-tac-iwxxm-converter
+    notes:
+      - "2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)"
 
   12-verify-deploy:
     status: completed
@@ -898,6 +902,21 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-EV006-merge-m4-m7
+    date: "2026-07-12"
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "User said Merge; merged PRs #706–#709 into evolve/S008-general-tac-iwxxm-converter (anti-merge override for 18/19)"
+    summary: >
+      Explicit user Merge approval for S008 M4–M7 stack. Merged into
+      evolve/S008-general-tac-iwxxm-converter: PR-M4b #706 (feat/S008-M4-us-metar,
+      merge 7e86ad4), PR-M5 #707 (feat/S008-M5-products, d22b712), PR-M6 #708
+      (feat/S008-M6-worker, c8ff292), PR-M7 #709 (feat/S008-M7-live, 7576109).
+      Overrides prior do-not-merge guidance from D-S008-PR706-709-18b / 18+19.
+      Next: M8 or continue 07-build on evolve.
+    timestamp: "2026-07-12"
   - id: D-S008-PR706-709-18b
     date: "2026-07-12"
     stage: 18-pr-review
@@ -912,6 +931,7 @@ decisions_log:
       Do not merge. Prior pass PRR-009…PRR-012 completed via session report
       (cycles not mirrored in pr_review_cycles[]); PRM-012 completed with
       head SHAs #706 cb7a42f / #707 c5f91dc / #708 ccc156e / #709 95d3e3c.
+      SUPERSEDED for merge policy by D-S008-EV006-merge-m4-m7 (user said Merge).
     timestamp: "2026-07-12"
   - id: D-S008-EV006-t47-cutover
     decision: "User chose A — continue T4.7 cutover now (wire convert→tac2iwxxm, delete packages/gifts, fix fallout; then T4.8–T4.9)"
@@ -1764,7 +1784,7 @@ artifacts:
     created_at: "2026-07-12"
     updated_at: "2026-07-12"
     status: completed
-    note: "Updated — PRR-013…PRR-016 re-review #706–#709 (after PRM-012/013); prior PRR-009…012 report-only"
+    note: "Updated — PRR-013…PRR-016 re-review #706–#709 (after PRM-012/013); prior PRR-009…012 report-only; PRs merged D-S008-EV006-merge-m4-m7"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
     kind: stage-report
     session_id: S008-general-tac-iwxxm-converter
@@ -1772,7 +1792,7 @@ artifacts:
     created_at: "2026-07-12"
     updated_at: "2026-07-12"
     status: completed
-    note: "Updated — PRM-012 + PRM-013 remediation for #706–#709 (source_url sanitize)"
+    note: "Updated — PRM-012 + PRM-013 remediation for #706–#709 (source_url sanitize); PRs merged D-S008-EV006-merge-m4-m7"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/05-verify-tech.md
     kind: stage-report
     session_id: S008-general-tac-iwxxm-converter
@@ -1786,7 +1806,7 @@ artifacts:
     created_at: "2026-07-12"
     updated_at: "2026-07-12"
     status: approved
-    note: "Updated during 05-verify-tech — 51 tasks"
+    note: "51 tasks; PR Plan — PR-M4b #706 / PR-M5 #707 / PR-M6 #708 / PR-M7 #709 merged into evolve (D-S008-EV006-merge-m4-m7); next M8"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/04-tech-plan.md
     kind: stage-report
     session_id: S008-general-tac-iwxxm-converter
@@ -2697,6 +2717,7 @@ evolve_cycles:
       - "2026-07-12 T4.10+T4.11 complete on feat/S008-M4-us-metar; next T4.6 cutover gate"
       - "2026-07-12 D-S008-EV006-t47-cutover — starting T4.7 gifts delete cutover"
       - "2026-07-12 M4 T4.10–T4.11 + T4.6–T4.9 complete on feat/S008-M4-us-metar; next 08-verify-build then PR"
+      - "2026-07-12 D-S008-EV006-merge-m4-m7 — PRs #706–#709 (PR-M4b…PR-M7) merged into evolve; M4–M7 complete; next M8 or continue 07-build"
     stages:
       00-context:
         status: completed
@@ -2722,8 +2743,8 @@ evolve_cycles:
         status: in_progress
         started: "2026-07-12"
         completed: null
-        active_task: M4-complete
-        active_milestone: M4
+        active_task: M8-pending
+        active_milestone: M8
         notes:
           - "M1 T1.1–T1.6 completed; next 08-verify-build for M1 then PR-M1"
           - "M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
@@ -2739,6 +2760,7 @@ evolve_cycles:
           - "2026-07-12 T4.1–T4.3 complete on feat/S008-M4-cutover"
           - "2026-07-12 T4.1–T4.5 complete; next T4.10 US METAR/SPECI goldens"
           - "2026-07-12 D-S008-EV006-resume-t410 — active handoff from 16-evolve; resume at T4.10; new feat branch needed (feat/S008-M4-cutover merged)"
+          - "2026-07-12 D-S008-EV006-merge-m4-m7 — PR-M4b #706 / PR-M5 #707 / PR-M6 #708 / PR-M7 #709 merged into evolve; next M8"
       08-verify-build:
         status: pending
         started: null
@@ -2783,7 +2805,9 @@ evolve_cycles:
     issues: []
 
 git_history:
-  current_branch: feat/S008-M4-us-metar
+  current_branch: evolve/S008-general-tac-iwxxm-converter
+  notes:
+    - "2026-07-12 D-S008-EV006-merge-m4-m7 — feat/S008-M4-us-metar (#706), M5-products (#707), M6-worker (#708), M7-live (#709) merged into evolve"
   branches:
     - name: evolve/S008-general-tac-iwxxm-converter
       purpose: general TAC→IWXXM converter architecture + package design
@@ -2835,9 +2859,56 @@ git_history:
       pr_number: 705
     - name: feat/S008-M4-us-metar
       base: evolve/S008-general-tac-iwxxm-converter
-      status: active
+      status: merged
       created_at: "2026-07-12"
+      closed_at: "2026-07-12"
+      merged_at: "2026-07-12"
+      merged_via: "PR #706"
       purpose: "S008 M4 remaining — US METAR/SPECI (T4.10+) and cutover"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706
+      pr_number: 706
+      merge_sha: 7e86ad459417dd596f00b444301236bb787b9e08
+    - name: feat/S008-M5-products
+      base: evolve/S008-general-tac-iwxxm-converter
+      status: merged
+      created_at: "2026-07-12"
+      closed_at: "2026-07-12"
+      merged_at: "2026-07-12"
+      merged_via: "PR #707"
+      purpose: "S008 M5 F6 remaining products + US + edge TCs"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/707
+      pr_number: 707
+      merge_sha: d22b712534dd66bc27e09619c7b70db15f935602
+    - name: feat/S008-M6-worker
+      base: evolve/S008-general-tac-iwxxm-converter
+      status: merged
+      created_at: "2026-07-12"
+      closed_at: "2026-07-12"
+      merged_at: "2026-07-12"
+      merged_via: "PR #708"
+      purpose: "S008 M6 F8 worker poller + store/quarantine"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/708
+      pr_number: 708
+      merge_sha: c8ff292e3f3dae715136e57bab1d36c4de5a7928
+    - name: feat/S008-M7-live
+      base: evolve/S008-general-tac-iwxxm-converter
+      status: merged
+      created_at: "2026-07-12"
+      closed_at: "2026-07-12"
+      merged_at: "2026-07-12"
+      merged_via: "PR #709"
+      purpose: "S008 M7 staging worker + live H3/H7 gates"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/709
+      pr_number: 709
+      merge_sha: 75761092c5621be16311d63d9f743b2ea17d1738
     - name: docs/S007-docs-minimize
       purpose: docs minimize
       base: main
@@ -3485,6 +3556,42 @@ git_history:
       files_changed: null
       timestamp: "2026-07-12T19:03:15Z"
       note: "PR #709"
+    - sha: "7e86ad4"
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "[M4] US METAR/SPECI + gifts cutover (#706)"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T19:19:44Z"
+      note: "PR-M4b #706 merged (D-S008-EV006-merge-m4-m7)"
+    - sha: "d22b712"
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "[M5] F6 remaining products + US + edge TCs (#707)"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T19:19:49Z"
+      note: "PR-M5 #707 merged (D-S008-EV006-merge-m4-m7)"
+    - sha: "c8ff292"
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "[M6] F8 worker poller + store/quarantine (#708)"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T19:19:54Z"
+      note: "PR-M6 #708 merged (D-S008-EV006-merge-m4-m7)"
+    - sha: "7576109"
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "[M7] Staging worker + live H3/H7 gates (#709)"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T19:19:59Z"
+      note: "PR-M7 #709 merged (D-S008-EV006-merge-m4-m7)"
 pr_review_cycles:
   - id: PRR-001
     pr_number: 679
@@ -3720,6 +3827,7 @@ pr_review_cycles:
     ci_status: null
     notes:
       - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
+      - "2026-07-12 merged into evolve (D-S008-EV006-merge-m4-m7); merge_sha 7e86ad4"
 
   - id: PRR-014
     pr_number: 707
@@ -3744,6 +3852,7 @@ pr_review_cycles:
     ci_status: null
     notes:
       - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
+      - "2026-07-12 merged into evolve (D-S008-EV006-merge-m4-m7); merge_sha d22b712"
 
   - id: PRR-015
     pr_number: 708
@@ -3769,6 +3878,7 @@ pr_review_cycles:
     notes:
       - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
       - "source_url sanitize fixed via PRM-013 (#708 5837b41 / #709 a91f4cd)"
+      - "2026-07-12 merged into evolve (D-S008-EV006-merge-m4-m7); merge_sha c8ff292"
 
   - id: PRR-016
     pr_number: 709
@@ -3793,6 +3903,7 @@ pr_review_cycles:
     ci_status: null
     notes:
       - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
+      - "2026-07-12 merged into evolve (D-S008-EV006-merge-m4-m7); merge_sha 7576109"
 
 pr_remediation_cycles:
   - id: PRM-001
@@ -4629,6 +4740,7 @@ pr_remediation_cycles:
       Fixed 3 (1 blocker + 2 advisories): convert-bulletin product/profile;
       poller URL sanitize + job_id dedup. Deferred 2: M8 convert product HTTP,
       DB upsert. Head SHAs: #706 cb7a42f; #707 c5f91dc; #708 ccc156e; #709 95d3e3c.
+      PRs #706–#709 merged into evolve 2026-07-12 (D-S008-EV006-merge-m4-m7).
 
   - id: PRM-013
     skill_id: 19-address-pr-review
@@ -4673,3 +4785,4 @@ pr_remediation_cycles:
     notes: >
       Follow-on remediation after PRM-012 / during PRR-013…016 re-review.
       Fixed source_url sanitize on #708 5837b41 / #709 a91f4cd; linked to PRR-015.
+      PRs #706–#709 merged into evolve 2026-07-12 (D-S008-EV006-merge-m4-m7).

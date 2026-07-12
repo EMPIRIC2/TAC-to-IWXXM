@@ -16,7 +16,7 @@
 |-------|-------|
 | **Active phase** | Phase 6: Deploy & Live Gates |
 | **Active milestone** | M7: Staging deploy + H7 |
-| **Active task** | M7 complete — next PR-M7 / M8 |
+| **Active task** | M4–M7 merged to evolve — next M8 |
 | **Tasks completed** | 47 / 51 |
 | **Last updated** | 2026-07-12 (07-build EV-006; T7.1–T7.5) |
 
@@ -239,10 +239,10 @@ F6.b METAR/SPECI US already shipped in M4.
 | PR-M2 | Minor | M2 | feat/S008-M2-validate | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/701 |
 | PR-M3 | Minor | M3 | feat/S008-M3-bulletin | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704 |
 | PR-M4 | Minor | M4 cutover (partial) | feat/S008-M4-cutover | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/705 |
-| PR-M4b | Minor | M4 US + gifts cutover | feat/S008-M4-us-metar | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706 |
-| PR-M5 | Minor | M5 products | feat/S008-M5-products | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/707 |
-| PR-M6 | Minor | M6 worker | feat/S008-M6-worker | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/708 |
-| PR-M7 | Minor | M7 live | feat/S008-M7-live | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/709 |
+| PR-M4b | Minor | M4 US + gifts cutover | feat/S008-M4-us-metar | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706 |
+| PR-M5 | Minor | M5 products | feat/S008-M5-products | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/707 |
+| PR-M6 | Minor | M6 worker | feat/S008-M6-worker | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/708 |
+| PR-M7 | Minor | M7 live | feat/S008-M7-live | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/709 |
 | PR-M8 | Minor | M8 UI+H4–H6 | feat/S008-M8-ui-connectivity | evolve/S008-… | pending |
 
 ## Task Tracking Summary
