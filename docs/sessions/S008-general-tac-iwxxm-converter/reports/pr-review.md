@@ -1,31 +1,22 @@
-# PR review report — S008 stack #706–#709 (18-pr-review)
+# PR review report — S008 re-review PRR-013…016
 
 | Field | Value |
 |-------|-------|
 | **Session** | S008-general-tac-iwxxm-converter |
-| **Mode** | Fast (user chose B) then remediate |
-| **Cycles** | PRR-009…PRR-012 |
+| **Pass** | Re-review after PRM-012 (+ PRM-013) |
 | **Date** | 2026-07-12 |
+| **Decision** | D-S008-PR706-709-18b — user approved; waive AskQuestion; do not merge |
 
-## Targets
+## Verdicts (intended Approve; posted as Comment — self-PR)
 
-| PR | Branch | Intended verdict | Posted |
-|----|--------|------------------|--------|
-| [#706](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706) | feat/S008-M4-us-metar | Request changes (1 🔴) | Comment (self-PR limitation) |
-| [#707](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/707) | feat/S008-M5-products | Comment | Comment |
-| [#708](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/708) | feat/S008-M6-worker | Comment | Comment |
-| [#709](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/709) | feat/S008-M7-live | Comment | Comment |
+| PR | Cycle | Result |
+|----|-------|--------|
+| [#706](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706) | PRR-013 | Prior 🔴 resolved; approve |
+| [#707](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/707) | PRR-014 | Approve (M8 product HTTP deferred) |
+| [#708](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/708) | PRR-015 | Approve after URL/dedup/source_url fixes |
+| [#709](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/709) | PRR-016 | Approve |
 
-## Findings summary
+## Subagents (tip `feat/S008-M7-live`)
 
-| Sev | PR | Finding | Remediation |
-|-----|----|---------|-------------|
-| 🔴 | #706 | convert-bulletin drops product/profile | Fixed `cb7a42f` + cherry-picks |
-| 🟡 | #708 | Full poller URL in INFO logs | Fixed `ccc156e` |
-| 🟡 | #708 | No job_id dedup → duplicate rows | Fixed in-process skip |
-| 🟡 | all | No GitHub Actions on evolve bases | Known; not blocking merge to evolve |
-
-## Subagents
-
-- Bugbot: convert-bulletin + worker reprocess
-- Security: medium URL logging only; RLS/service-role OK
+- Bugbot: new medium — raw `source_url` in DB → fixed PRM-013
+- Security: prior URL log fixed; no new medium+

@@ -777,15 +777,18 @@ stages:
     status: completed
     started: "2026-07-12"
     completed: "2026-07-12"
-    last_cycle: PRR-008
+    last_cycle: PRR-016
     session_id: S008-general-tac-iwxxm-converter
     evolve_cycle_id: EV-006
+    notes:
+      - "Re-review pass after PRM-012/013 (D-S008-PR706-709-18b); cycles PRR-013…PRR-016 on #706–#709 completed; intended approve posted as COMMENT; do not merge"
+      - "Prior stack review PRR-009…PRR-012 lived in reports/pr-review.md only (not in pr_review_cycles[])"
 
   19-address-pr-review:
     status: completed
     started: "2026-06-22"
     completed: "2026-07-12"
-    last_cycle: PRM-012
+    last_cycle: PRM-013
     session_id: S008-general-tac-iwxxm-converter
 
   12-verify-deploy:
@@ -895,6 +898,21 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-PR706-709-18b
+    date: "2026-07-12"
+    stage: 18-pr-review
+    skill_id: 18-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "User approved; waive AskQuestion; re-review after remediation then address any new findings; do not merge"
+    summary: >
+      User approved proceeding with fixes push/commit complete (PRM-012).
+      Waive AskQuestion gates. Re-run 18-pr-review on open S008 PRs #706–#709
+      (PRR-013…PRR-016), then 19-address-pr-review on any new findings.
+      Do not merge. Prior pass PRR-009…PRR-012 completed via session report
+      (cycles not mirrored in pr_review_cycles[]); PRM-012 completed with
+      head SHAs #706 cb7a42f / #707 c5f91dc / #708 ccc156e / #709 95d3e3c.
+    timestamp: "2026-07-12"
   - id: D-S008-EV006-t47-cutover
     decision: "User chose A — continue T4.7 cutover now (wire convert→tac2iwxxm, delete packages/gifts, fix fallout; then T4.8–T4.9)"
     rationale: "AskQuestion after T4.6 → A"
@@ -1744,15 +1762,17 @@ artifacts:
     session_id: S008-general-tac-iwxxm-converter
     stage: 18-pr-review
     created_at: "2026-07-12"
+    updated_at: "2026-07-12"
     status: completed
-    note: "PRR-009…PRR-012 stack #706–#709"
+    note: "Updated — PRR-013…PRR-016 re-review #706–#709 (after PRM-012/013); prior PRR-009…012 report-only"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
     kind: stage-report
     session_id: S008-general-tac-iwxxm-converter
     stage: 19-address-pr-review
     created_at: "2026-07-12"
+    updated_at: "2026-07-12"
     status: completed
-    note: "PRM-012 remediation for #706–#709"
+    note: "Updated — PRM-012 + PRM-013 remediation for #706–#709 (source_url sanitize)"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/05-verify-tech.md
     kind: stage-report
     session_id: S008-general-tac-iwxxm-converter
@@ -3674,6 +3694,106 @@ pr_review_cycles:
       - "Squash-merged to evolve; Bugbot VRB+MPS fixed; Security clean; Sourcery PyO3 GHSA N/A for 0.23.5"
       - "Verdict approve after remediation (PRM-011)"
 
+  # Prior stack pass PRR-009…PRR-012: completed 2026-07-12 via docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-review.md
+  # (not mirrored here). Re-review after PRM-012 remediation:
+
+  - id: PRR-013
+    pr_number: 706
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706
+    title: "[M4] US METAR/SPECI + gifts cutover"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    head_ref: feat/S008-M4-us-metar
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    skill_id: 18-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    linked_remediation_cycle_id: PRM-012
+    prior_review_cycle_note: "PRR-009 (report-only; not in pr_review_cycles[])"
+    pass: re-review
+    decision_id: D-S008-PR706-709-18b
+    verdict: COMMENT
+    blockers: 0
+    advisories: null
+    praise: null
+    ci_status: null
+    notes:
+      - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
+
+  - id: PRR-014
+    pr_number: 707
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/707
+    title: "[M5] F6 remaining products + US + edge TCs"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    head_ref: feat/S008-M5-products
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    skill_id: 18-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    linked_remediation_cycle_id: PRM-012
+    prior_review_cycle_note: "PRR-010 (report-only; not in pr_review_cycles[])"
+    pass: re-review
+    decision_id: D-S008-PR706-709-18b
+    verdict: COMMENT
+    blockers: 0
+    advisories: null
+    praise: null
+    ci_status: null
+    notes:
+      - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
+
+  - id: PRR-015
+    pr_number: 708
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/708
+    title: "[M6] F8 worker poller + store/quarantine"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    head_ref: feat/S008-M6-worker
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    skill_id: 18-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    linked_remediation_cycle_id: PRM-013
+    prior_review_cycle_note: "PRR-011 (report-only; not in pr_review_cycles[])"
+    pass: re-review
+    decision_id: D-S008-PR706-709-18b
+    verdict: COMMENT
+    blockers: 0
+    advisories: null
+    praise: null
+    ci_status: null
+    notes:
+      - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
+      - "source_url sanitize fixed via PRM-013 (#708 5837b41 / #709 a91f4cd)"
+
+  - id: PRR-016
+    pr_number: 709
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/709
+    title: "[M7] Staging worker + live H3/H7 gates"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    head_ref: feat/S008-M7-live
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    skill_id: 18-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    linked_remediation_cycle_id: PRM-012
+    prior_review_cycle_note: "PRR-012 (report-only; not in pr_review_cycles[])"
+    pass: re-review
+    decision_id: D-S008-PR706-709-18b
+    verdict: COMMENT
+    blockers: 0
+    advisories: null
+    praise: null
+    ci_status: null
+    notes:
+      - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
+
 pr_remediation_cycles:
   - id: PRM-001
     pr_number: 679
@@ -4509,3 +4629,47 @@ pr_remediation_cycles:
       Fixed 3 (1 blocker + 2 advisories): convert-bulletin product/profile;
       poller URL sanitize + job_id dedup. Deferred 2: M8 convert product HTTP,
       DB upsert. Head SHAs: #706 cb7a42f; #707 c5f91dc; #708 ccc156e; #709 95d3e3c.
+
+  - id: PRM-013
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    linked_review_cycle_id: PRR-015
+    pr_number: 708
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/708
+    title: "[M6/M7] source_url sanitize (#708/#709)"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    head_ref: feat/S008-M6-worker
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    scope: blockers_then_advisories
+    head_shas:
+      "708": 5837b41
+      "709": a91f4cd
+    ci_status: null
+    counts:
+      fixed: 1
+      deferred: 0
+      wont_fix: 0
+    findings:
+      - id: F-001
+        source: bugbot
+        severity: advisory
+        path: apps/worker
+        line: null
+        thread_id: null
+        status: fixed
+        commit: 5837b41
+        note: >
+          source_url sanitize (tokens not persisted to DB); also #709 a91f4cd
+    artifacts:
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
+        note: PRM-013 session report (with PRM-012)
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-review.md
+        note: linked 18-pr-review report (PRR-013…PRR-016)
+    follow_up:
+      pr_review_rerun: completed
+    notes: >
+      Follow-on remediation after PRM-012 / during PRR-013…016 re-review.
+      Fixed source_url sanitize on #708 5837b41 / #709 a91f4cd; linked to PRR-015.

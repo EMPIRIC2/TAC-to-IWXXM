@@ -1,28 +1,28 @@
-# PR remediation report — PRM-012 (19-address-pr-review)
+# PR remediation report — PRM-012 / PRM-013
 
 | Field | Value |
 |-------|-------|
-| **Linked review** | PRR-009…PRR-012 |
-| **Scope** | Blockers then advisories (waived AskQuestion: D-S008-PR706-709-19) |
+| **Linked reviews** | PRR-009…012 then PRR-013…016 |
 | **Date** | 2026-07-12 |
 
 ## Fixed
 
-| ID | Finding | Commits |
-|----|---------|---------|
-| 🔴 #706 | convert-bulletin product/profile | `cb7a42f` → M5 `c5f91dc` → M6 `00062e4` → M7 `61eef2c` |
-| 🟡 #708 | URL log + https + job_id dedup | M6 `ccc156e` → M7 `95d3e3c` |
+| Finding | Commits |
+|---------|---------|
+| 🔴 convert-bulletin product/profile | #706 `cb7a42f` (+ cherry-picks) |
+| 🟡 poller URL INFO log + https + job_id dedup | #708 `ccc156e` → #709 `95d3e3c` |
+| 🟡 `source_url` tokens persisted to DB | #708 `5837b41` → #709 `a91f4cd` |
 
 ## Tests
 
-- `apps/backend/tests/unit/test_bug_2026_07_12_convert_bulletin_product_profile.py` — green
-- `apps/worker/tests` — 10 passed
+- Bulletin bug repro + TC-F6-030 unit: green
+- Worker tests: **11 passed**
 
-## Deferred / won't-fix
+## Deferred
 
-- `/api/v1/convert` full product HTTP wiring — M8 / F6.e (documented on #707)
-- Persistent DB unique/upsert on `job_id` — in-process dedup sufficient for staging fixture
+- `/api/v1/convert` product HTTP — M8 / F6.e
+- Durable DB unique/upsert on `job_id` — in-process dedup for staging
 
-## Next
+## Merge
 
-Re-run 18-pr-review optional; merge still requires explicit user approval (never auto-merge).
+**Not merged** — user merges manually in order #706 → #707 → #708 → #709.
