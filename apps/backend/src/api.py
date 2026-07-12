@@ -34,6 +34,7 @@ try:
     )
     from .schemas.icao_opmet import TranslationStatus
     from .schemas.validation import (
+        ConvertBulletinResponse,
         LintTacResponse,
         ValidateRequest,
         ValidateResponse,
@@ -64,7 +65,13 @@ except ImportError:
         HealthResponse,
     )
     from schemas.icao_opmet import TranslationStatus
-    from schemas.validation import LintTacResponse, ValidateRequest, ValidateResponse, ValidationLayer
+    from schemas.validation import (
+        ConvertBulletinResponse,
+        LintTacResponse,
+        ValidateRequest,
+        ValidateResponse,
+        ValidationLayer,
+    )
     from services.database import database_lifespan
     from services.statistics import statistics_service
     from services.validation import ValidationError as ValidationServiceError
@@ -79,6 +86,8 @@ except ImportError:
 
 # Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033)
 from iwxxm_validate import validate as iwxxm_validate_fn
+from tac2iwxxm import BulletinSplitError
+from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
 from tac_validate import lint as tac_lint_fn
 
 setup_logging("backend")
@@ -750,6 +759,131 @@ async def lint_tac(
             for i in report.issues
         ],
         fixes=[{"code": f.code, "message": f.message, "replacement": f.replacement} for f in report.fixes],
+    )
+
+
+@app.post(
+    "/api/v1/convert-bulletin",
+    tags=["Conversion"],
+    response_model=ConvertBulletinResponse,
+    responses={
+        400: {"description": "Empty bulletin (no reports after split)"},
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+        415: {"description": "Unsupported Media Type — multipart/form-data required"},
+        422: {"description": "AHL split failed or missing required fields"},
+    },
+)
+async def convert_bulletin(
+    request: Request,
+    product: str = Form(..., description="TAC product (required)"),
+    files: Optional[List[UploadFile]] = File(None),
+    manual_text: str = Form(default="", description="Bulletin string"),
+    profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
+    iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
+    lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
+    user: dict = Depends(verify_supabase_token),
+) -> ConvertBulletinResponse:
+    """Split a WMO AHL bulletin and convert each TAC report (F6.bulletin / TC-F6-030).
+
+    Partial success is allowed: HTTP 200 when split succeeds even if some reports fail
+    (Q6=A). Per-report ``issues`` / ``fixes`` follow lint-style identity (Q7=C).
+    """
+    _ = profile  # reserved for iwxxm_us convert path at cutover
+    content_type = (request.headers.get("content-type") or "").lower()
+    if "multipart/form-data" not in content_type:
+        raise HTTPException(
+            status_code=415,
+            detail="POST /api/v1/convert-bulletin requires multipart/form-data",
+        )
+
+    bulletin_text = manual_text or ""
+    if files:
+        chunks: list[str] = []
+        for upload in files:
+            raw = await upload.read()
+            if not raw:
+                continue
+            chunks.append(raw.decode("utf-8", errors="replace"))
+        if chunks:
+            bulletin_text = "\n".join(chunks)
+
+    if not bulletin_text.strip():
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "empty_bulletin", "message": "At least one of files or manual_text is required"},
+        )
+
+    try:
+        split = tac2iwxxm_split_bulletin(bulletin_text, product=product)
+    except BulletinSplitError as exc:
+        status = 400 if exc.code == "empty_bulletin" else 422
+        raise HTTPException(status_code=status, detail={"code": exc.code, "message": exc.message}) from exc
+
+    results: list[dict[str, Any]] = []
+    for index, tac in enumerate(split.reports):
+        issues: list[dict[str, Any]] = []
+        fixes: list[dict[str, Any]] = []
+        xml_out: str | None = None
+        ok = True
+
+        if lint:
+            lint_report = tac_lint_fn(tac, product=product)
+            issues.extend(
+                {
+                    "severity": i.severity,
+                    "code": i.code,
+                    "message": i.message,
+                    "location": i.location,
+                }
+                for i in lint_report.issues
+            )
+            fixes.extend(
+                {"code": f.code, "message": f.message, "replacement": f.replacement} for f in lint_report.fixes
+            )
+            if not lint_report.ok:
+                ok = False
+
+        if ok:
+            try:
+                xml_out, _ = convert_metar_tac_with_metadata(
+                    tac,
+                    iwxxm_version=iwxxm_version,
+                    validate=False,
+                )
+            except ConversionError as exc:
+                ok = False
+                xml_out = None
+                issues.append(
+                    {
+                        "severity": "error",
+                        "code": "parse_failed",
+                        "message": str(exc),
+                        "location": None,
+                    }
+                )
+
+        results.append(
+            {
+                "report_index": index,
+                "ok": ok and xml_out is not None,
+                "tac_input": tac,
+                "xml": xml_out if ok else None,
+                "issues": issues,
+                "fixes": fixes,
+            }
+        )
+
+    return ConvertBulletinResponse(
+        bulletin_meta={
+            "ahl": split.meta.ahl,
+            "report_count": split.meta.report_count,
+            "tt": split.meta.tt,
+            "aa": split.meta.aa,
+            "cccc": split.meta.cccc,
+            "yygggg": split.meta.yygggg,
+            "bbb": split.meta.bbb,
+        },
+        results=results,
     )
 
 

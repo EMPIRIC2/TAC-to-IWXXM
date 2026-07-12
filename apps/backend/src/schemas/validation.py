@@ -317,3 +317,33 @@ class ValidateResponse(BaseModel):
     stopped_at_layer: Optional[str] = None
     package_ok: bool = True
     package_issues: List[PackageIssueModel] = Field(default_factory=list)
+
+
+class BulletinMetaModel(BaseModel):
+    """HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7)."""
+
+    ahl: str
+    report_count: int
+    tt: str
+    aa: str
+    cccc: str
+    yygggg: str
+    bbb: Optional[str] = None
+
+
+class BulletinReportResultModel(BaseModel):
+    """Per-report convert-bulletin result (partial success allowed)."""
+
+    report_index: int
+    ok: bool
+    tac_input: str
+    xml: Optional[str] = None
+    issues: List[LintIssueModel] = Field(default_factory=list)
+    fixes: List[LintFixModel] = Field(default_factory=list)
+
+
+class ConvertBulletinResponse(BaseModel):
+    """Response for POST /api/v1/convert-bulletin."""
+
+    bulletin_meta: BulletinMetaModel
+    results: List[BulletinReportResultModel] = Field(default_factory=list)
