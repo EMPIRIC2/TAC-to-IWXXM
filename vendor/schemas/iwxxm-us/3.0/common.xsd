@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.weather.gov/iwxxm-us/3.0" version="3.0.2" attributeFormDefault="unqualified" xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0" xmlns:gml="http://www.opengis.net/gml/3.2">
+    <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+    <annotation>
+        <documentation>Complex types and enumerations shared among schemas.</documentation>
+    </annotation>
+    <element name="LayerAboveAerodrome" type="iwxxm-us:LayerAboveAerodromeType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>Describes the upper and lower limits of a layer above the aerodrome.
+            This is needed for a number of weather elements, including non-convective low level wind
+            shear, icing, turbulence, and volcanic ash.</documentation>
+        </annotation>
+    </element>
+    <complexType name="LayerAboveAerodromeType">
+        <sequence>
+            <element name="lowerLimit" type="gml:LengthType">
+                <annotation>
+                    <documentation>Measured or estimated lower limit (height)  of phenomenon.</documentation>
+                </annotation>
+            </element>
+            <element name="upperLimit" type="gml:LengthType">
+                <annotation>
+                    <documentation>Measured or estimated upper limit (height)  of phenomenon.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="LayerAboveAerodromePropertyType">
+        <sequence>
+            <element ref="iwxxm-us:LayerAboveAerodrome"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="Remarks" type="iwxxm-us:RemarksType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>Free format text provided by the forecaster to provide additional
+            information on the entire product or region(s) not encoded elsewhere.</documentation>
+        </annotation>
+    </element>
+    <complexType name="RemarksType">
+        <sequence>
+            <element name="freeText" type="string">
+                <annotation>
+                    <documentation>Text entered by forecaster regarding any aspect of the SIGMET not
+                    already incorporated/included into the document.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="RemarksPropertyType">
+        <sequence>
+            <element ref="iwxxm-us:Remarks"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="USMetadata" type="iwxxm-us:USMetadataType">
+        <annotation>
+            <documentation>Additional information regarding the composition and generation of the
+            observation and/or forecast product.</documentation>
+        </annotation>
+    </element>
+    <complexType name="USMetadataType">
+        <sequence>
+            <element name="procedure" minOccurs="0" maxOccurs="1" type="gml:ReferenceType">
+                <annotation>
+                    <documentation>Reference to authoritative sources that governs and elucidates
+                    the process by which the meteorological observation or forecast is
+                    made.</documentation>
+                </annotation>
+            </element>
+            <element name="reference" minOccurs="0" maxOccurs="1" type="gml:ReferenceType">
+                <annotation>
+                    <documentation>Reference to documentation on the user-supplied aspects of the
+                    observation platform.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="USMetadataPropertyType">
+        <sequence minOccurs="0">
+            <element ref="iwxxm-us:USMetadata"/>
+        </sequence>
+        <attributeGroup ref="gml:AssociationAttributeGroup"/>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="LengthWithNilReason" type="iwxxm-us:LengthWithNilReasonType">
+        <annotation>
+            <documentation>A nillable Length quantity. Unlike the base Length measure, references
+            to this type may be nil and include a nilReason.</documentation>
+        </annotation>
+    </element>
+    <complexType name="LengthWithNilReasonType">
+        <simpleContent>
+            <extension base="gml:LengthType">
+                <attribute name="nilReason" type="gml:NilReasonType"/>
+            </extension>
+        </simpleContent>
+    </complexType>
+    <element name="MeasureWithNilReason" type="iwxxm-us:MeasureWithNilReasonType">
+        <annotation>
+            <documentation>A nillable Measure quantity. Unlike the base Measure, references to this
+            type may be nil and may include a nilReason.</documentation>
+        </annotation>
+    </element>
+    <complexType name="MeasureWithNilReasonType">
+        <simpleContent>
+            <extension base="gml:MeasureType">
+                <attribute name="nilReason" type="gml:NilReasonType"/>
+            </extension>
+        </simpleContent>
+    </complexType>
+    <element name="AerodromePresentWeather" type="iwxxm-us:AerodromePresentWeatherType"/>
+    <complexType name="AerodromePresentWeatherType">
+        <annotation>
+            <documentation>The present weather observed at, or in near vicinity of, an aerodrome.
+
+            Only a specific set of weather phenomenon are reported within aviation meteorology as
+            defined in Regulation ICAO Annex 3 / WMO No. 49-2.
+
+            This CodeList is specifically defined for aviation purposes as defined in WMO
+            No. 49-2. A superset of definitions are defined in WMO No. 306 Vol I.1 code-table 4678
+            "Significant weather phenomena".</documentation>
+            <appinfo>
+                <vocabulary>http://codes.wmo.int/49-2/AerodromePresentOrForecastWeather</vocabulary>
+                <extensibility>none</extensibility>
+            </appinfo>
+        </annotation>
+        <complexContent>
+            <extension base="gml:ReferenceType"/>
+        </complexContent>
+    </complexType>
+    <element name="CloudAmountReportedAtAerodrome" type="iwxxm-us:CloudAmountReportedAtAerodromeType"/>
+    <complexType name="CloudAmountReportedAtAerodromeType">
+        <annotation>
+            <documentation>Amount of cloud - assessed by category:
+
+            - Sky clear (0 oktas)
+            - Few (1 - 2 oktas)
+            - Scattered (3 - 4 oktas)
+            - Broken (5 - 7 oktas)
+            - Overcast (8 oktas)
+
+            This CodeList is specifically defined for aviation purposes, as defined in WMO
+            No. 49-2. A superset of cloud-amount categories are defined in WMO No. 306 Vol I.2 FM 94
+            BUFR code-table 0 20 008 "Cloud distribution for aviation".</documentation>
+            <appinfo>
+                <vocabulary>http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome</vocabulary>
+                <extensibility>none</extensibility>
+            </appinfo>
+        </annotation>
+        <complexContent>
+            <extension base="gml:ReferenceType"/>
+        </complexContent>
+    </complexType>
+    <simpleType name="RelationalOperatorType">
+        <annotation>
+            <documentation>RelationalOperator defines the restricted set of operators that may be
+            specified alongside numerical quantities.
+
+            These operators are used in cases where a precise value is not measurable, not precisely
+            known due to measurement limitations, or not reported due to reporting restrictions.
+
+            For example, the "BELOW" operator in conjunction with the reported quantity 1/4
+            indicates that the actual physical quantity is below 1/4 (at most 1/4).</documentation>
+        </annotation>
+        <restriction base="string">
+            <enumeration value="ABOVE">
+                <annotation>
+                    <documentation>The actual value is above the maximum value that can be
+                    determined by the system.</documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="BELOW">
+                <annotation>
+                    <documentation>The actual value is below the minimum value that can be
+                    determined by the system.</documentation>
+                </annotation>
+            </enumeration>
+        </restriction>
+    </simpleType>
+</schema>

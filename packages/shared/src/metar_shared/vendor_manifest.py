@@ -1,4 +1,4 @@
-"""Vendor manifest schema and integrity checks for wmo-im schema snapshots (TC-M002)."""
+"""Vendor manifest schema and integrity checks for schema snapshots (TC-M002 / TC-F6-M001)."""
 
 from __future__ import annotations
 
@@ -11,17 +11,30 @@ from typing import Any, cast
 MANIFEST_SCHEMA_VERSION = 1
 MANIFEST_RELATIVE_PATH = Path("vendor/manifest.json")
 
-VENDOR_BUNDLE_NAMES: tuple[str, ...] = (
+# GitHub (wmo-im) snapshots — require upstream_repo + commit_sha.
+GITHUB_BUNDLE_NAMES: tuple[str, ...] = (
     "iwxxm",
     "iwxxm-codelists",
     "iwxxm-modelling",
     "iwxxm-translation",
 )
 
-BUNDLE_REQUIRED_FIELDS: tuple[str, ...] = (
+# HTTP archive snapshots — require source_url (+ optional archive_sha256).
+HTTP_BUNDLE_NAMES: tuple[str, ...] = ("iwxxm-us",)
+
+VENDOR_BUNDLE_NAMES: tuple[str, ...] = GITHUB_BUNDLE_NAMES + HTTP_BUNDLE_NAMES
+
+GITHUB_BUNDLE_REQUIRED_FIELDS: tuple[str, ...] = (
     "upstream_repo",
     "tag",
     "commit_sha",
+    "local_path",
+    "tree_sha256",
+)
+
+HTTP_BUNDLE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "source_url",
+    "tag",
     "local_path",
     "tree_sha256",
 )
@@ -62,14 +75,15 @@ def compute_tree_sha256(root: Path) -> str:
     return digest.hexdigest()
 
 
-def _validate_bundle_entry(name: str, entry: Any) -> list[str]:
-    errors: list[str] = []
-    if not isinstance(entry, dict):
-        errors.append(f"bundle {name!r} must be an object")
-        return errors
+def _is_http_bundle(entry: dict[str, Any]) -> bool:
+    return isinstance(entry.get("source_url"), str) and bool(
+        cast(str, entry["source_url"]).strip()
+    )
 
-    entry_dict = cast(dict[str, Any], entry)
-    for field_name in BUNDLE_REQUIRED_FIELDS:
+
+def _validate_github_bundle_entry(name: str, entry_dict: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    for field_name in GITHUB_BUNDLE_REQUIRED_FIELDS:
         value = entry_dict.get(field_name)
         if not isinstance(value, str) or not value.strip():
             errors.append(f"bundle {name!r} missing or empty {field_name!r}")
@@ -85,6 +99,49 @@ def _validate_bundle_entry(name: str, entry: Any) -> list[str]:
         errors.append(
             f"bundle {name!r} commit_sha must be 40 hex chars, got length {len(commit_sha)}"
         )
+
+    return errors
+
+
+def _validate_http_bundle_entry(name: str, entry_dict: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    for field_name in HTTP_BUNDLE_REQUIRED_FIELDS:
+        value = entry_dict.get(field_name)
+        if not isinstance(value, str) or not value.strip():
+            errors.append(f"bundle {name!r} missing or empty {field_name!r}")
+
+    source_url = entry_dict.get("source_url")
+    if (
+        isinstance(source_url, str)
+        and source_url.strip()
+        and not source_url.startswith("https://")
+    ):
+        errors.append(
+            f"bundle {name!r} source_url must be https://, got {source_url!r}"
+        )
+
+    archive_sha = entry_dict.get("archive_sha256")
+    if archive_sha is not None and (
+        not isinstance(archive_sha, str) or len(archive_sha) != 64
+    ):
+        errors.append(
+            f"bundle {name!r} archive_sha256 must be 64 hex chars when present"
+        )
+
+    return errors
+
+
+def _validate_bundle_entry(name: str, entry: Any) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(entry, dict):
+        errors.append(f"bundle {name!r} must be an object")
+        return errors
+
+    entry_dict = cast(dict[str, Any], entry)
+    if _is_http_bundle(entry_dict):
+        errors.extend(_validate_http_bundle_entry(name, entry_dict))
+    else:
+        errors.extend(_validate_github_bundle_entry(name, entry_dict))
 
     tree_sha = entry_dict.get("tree_sha256")
     if isinstance(tree_sha, str) and len(tree_sha) != 64:

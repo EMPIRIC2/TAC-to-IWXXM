@@ -9,8 +9,8 @@ from pathlib import Path
 from typing import Any
 
 from metar_shared.vendor_manifest import (
+    GITHUB_BUNDLE_NAMES,
     MANIFEST_RELATIVE_PATH,
-    VENDOR_BUNDLE_NAMES,
     compute_tree_sha256,
     load_manifest,
     verify_manifest_integrity,
@@ -89,7 +89,7 @@ def sync_from_manifest(
         msg = "manifest bundles must be an object"
         raise ValueError(msg)
 
-    for name in VENDOR_BUNDLE_NAMES:
+    for name in GITHUB_BUNDLE_NAMES:
         entry = bundles.get(name)
         if not isinstance(entry, dict):
             msg = f"missing bundle entry: {name}"
@@ -105,6 +105,9 @@ def sync_from_manifest(
                     f"manifest={pinned}, actual={actual}"
                 )
                 raise ValueError(msg)
+
+    # HTTP archive bundles (e.g. iwxxm-us) are pinned offline; refresh via dedicated
+    # sync helper / PR — not the wmo-im GitHub fetch path above.
 
     if verify:
         result = verify_manifest_integrity(repo_root, manifest_path=manifest_path)
@@ -134,7 +137,9 @@ def main() -> None:
     args = parser.parse_args()
 
     repo_root = Path.cwd()
-    manifest_path = args.manifest if args.manifest.is_absolute() else repo_root / args.manifest
+    manifest_path = (
+        args.manifest if args.manifest.is_absolute() else repo_root / args.manifest
+    )
     sync_from_manifest(
         repo_root,
         manifest_path,

@@ -28,6 +28,13 @@
       "commit_sha": "a251e8bcff2bee8215a9f193595f380accd9e238",
       "local_path": "vendor/schemas/iwxxm-translation",
       "tree_sha256": "cb918b6e595895800c1f5dfa639a3065357eb2ca9a4646596241fef9b2a4bcbf"
+    },
+    "iwxxm-us": {
+      "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/iwxxm-us-3.0-schemas.tgz",
+      "tag": "3.0",
+      "local_path": "vendor/schemas/iwxxm-us",
+      "tree_sha256": "05c72268bc8b7a06712b830194c1661390468e8120ec85dbbd6809f681ae93fc",
+      "archive_sha256": "2266770b01b8bb1685ad97419a7114439900d00590e876d210660b42c4b78260"
     }
   }
 }
