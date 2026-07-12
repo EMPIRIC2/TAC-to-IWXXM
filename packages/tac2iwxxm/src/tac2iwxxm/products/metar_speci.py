@@ -61,24 +61,30 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     """
     Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND).
 
-    Parameters
-    ----------
-    rest :
-        TAC body after the observation time group.
-    ir :
-        Mutable IR dict to update in place.
+    Malformed US REMARKS tokens append to ``ir['remark_issues']`` for UJ-010 /
+    TC-F6-012 diagnostics (profile isolation: annex3 emit ignores them).
     """
     rmk = _RMK.search(rest)
     if rmk is None:
         return
     remarks = rmk.group("rmk")
+    issues: list[str] = list(ir.get("remark_issues") or [])
+
+    if re.search(r"\bAO(?![12]\b)\w*\b", remarks):
+        issues.append("malformed AO observing-system token in REMARKS")
     ao = _AO.search(remarks)
     if ao is not None:
         ir["observing_system_type"] = f"AO{ao.group('ao')}"
         ir["observing_system_href"] = _OBS_SYSTEM_HREF.format(ao=ao.group("ao"))
+
+    if re.search(r"\bSLP(?!\d{3}\b)\w*\b", remarks):
+        issues.append("malformed SLP sea-level-pressure token in REMARKS")
     slp = _SLP.search(remarks)
     if slp is not None:
         ir["sea_level_pressure_hpa"] = _slp_code_to_hpa(int(slp.group("code")))
+
+    if re.search(r"\bPK\s+WND\b", remarks) and _PK_WND.search(remarks) is None:
+        issues.append("malformed PK WND group in REMARKS")
     pk = _PK_WND.search(remarks)
     if pk is not None:
         ir["peak_wind_dir_deg"] = int(pk.group("dir"))
@@ -86,6 +92,9 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
         hhmm = pk.group("hhmm")
         ir["peak_wind_hour"] = int(hhmm[0:2])
         ir["peak_wind_minute"] = int(hhmm[2:4])
+
+    if issues:
+        ir["remark_issues"] = issues
 
 
 def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
