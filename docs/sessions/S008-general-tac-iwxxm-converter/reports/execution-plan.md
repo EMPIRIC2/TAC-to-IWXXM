@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase 3: Bulletin + METAR/SPECI + PyO3 (pre-cutover) |
 | **Active milestone** | M4: METAR/SPECI (+ US) + PyO3 + cutover PR |
-| **Active task** | T4.7 (next — wire convert + delete gifts) |
-| **Tasks completed** | 26 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T4.6 cutover gate tests red→T4.7) |
+| **Active task** | T4.8 (next — CI/health after gifts delete) |
+| **Tasks completed** | 27 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T4.7 gifts cutover done) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -142,7 +142,7 @@
 | T4.10 | Test: METAR/SPECI `iwxxm_us` goldens (TC-F6-003 subset) | Test | completed | F6.b, D-S008-05-batch2 | T4.2, T1.5 |
 | T4.11 | Code: US profile METAR/SPECI extensions | Code | completed | F6.b, ADR-013 | T4.10 |
 | T4.6 | Test: cutover gate — annex3+US goldens, **Playwright/local UJ-001 (TC-001)**, no gifts imports | Test | completed | F6 cutover PR gate, C09c | T4.5, T4.11, T3.4, T2.6 |
-| T4.7 | Code: wire `/convert` → tac2iwxxm; **delete `packages/gifts`**; delete inline F2 engine | Code | in_progress | Q5=(ii), Q3=B, ADR-014 | T4.6 |
+| T4.7 | Code: wire `/convert` → tac2iwxxm; **delete `packages/gifts`**; delete inline F2 engine | Code | completed | Q5=(ii), Q3=B, ADR-014 | T4.6 |
 | T4.8 | Config: CI drop gifts cell; health `tac2iwxxm_available`; archive gifts goldens | Config | pending | TC-F6-022 | T4.7 |
 | T4.9 | Config: `make test-live-bulletin` + fold into `make test-live` | Config | pending | Q10=A, H7 | T3.5, T4.7 |
 

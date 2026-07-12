@@ -204,12 +204,6 @@ jobs:
             -v \
             --tb=short
 
-      - name: Run GIFTs-backend integration tests
-        run: |
-          python -m pytest tests/test_gifts_backend_integration.py \
-            -v \
-            --tb=short
-
       - name: Run Supabase-auth integration tests
         run: |
           python -m pytest tests/test_auth_supabase_integration.py \

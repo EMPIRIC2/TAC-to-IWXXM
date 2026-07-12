@@ -26,13 +26,10 @@ class TestRuffConfig:
         assert '"packages"' in content
         assert '"tests"' in content
 
-    def test_gifts_package_uses_ruff_not_flake8(self) -> None:
-        gifts_pyproject = (ROOT / "packages/gifts/pyproject.toml").read_text(
+    def test_tac2iwxxm_package_uses_ruff(self) -> None:
+        tac_pyproject = (ROOT / "packages/tac2iwxxm/pyproject.toml").read_text(
             encoding="utf-8"
         )
-        assert (ROOT / "packages/gifts/ruff.toml").is_file()
-        assert "flake8" not in gifts_pyproject
-        assert "black" not in gifts_pyproject
-        assert "isort" not in gifts_pyproject
-        assert "[tool.isort]" not in gifts_pyproject
-        assert "[tool.black]" not in gifts_pyproject
+        assert "[tool.ruff]" in tac_pyproject
+        assert "flake8" not in tac_pyproject
+        assert "black" not in tac_pyproject

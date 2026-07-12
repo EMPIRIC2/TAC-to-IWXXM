@@ -560,19 +560,20 @@ async def parse_optional_files(request: Request) -> List[UploadFile]:
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 def health() -> HealthResponse:
-    """Check API health and component availability.
+    """Check API health and conversion availability.
 
-    Verifies that the API is running and GIFTs library is available for conversions.
+    Verifies that the API is running and tac2iwxxm can convert a sample METAR.
     Returns overall status and version information.
 
     ## Response
     - **status** (string): "healthy" or "degraded"
     - **version** (string): API version
-    - **gifts_available** (boolean): Whether GIFTs conversion library is available
+    - **gifts_available** (boolean): Deprecated alias — True when tac2iwxxm convert works
+      (renamed to tac2iwxxm_available in T4.8)
     """
     try:
-        test_metar = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
-        _ = convert_metar_tac_with_metadata(test_metar)
+        test_metar = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
+        _ = convert_metar_tac_with_metadata(test_metar, validate=False)
         gifts_available = True
         status = "healthy"
     except Exception:

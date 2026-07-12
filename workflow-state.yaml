@@ -52,7 +52,7 @@ active_session:
       status: in_progress
       started_at: "2026-07-12"
       skip_rationale: null
-      note: "PR-M4 #705 squash-merged to evolve; next T4.10"
+      note: "Active handoff from 16-evolve; D-S008-EV006-resume-t410 — resume at T4.10 (US METAR/SPECI goldens); new feat branch needed (feat/S008-M4-cutover merged)"
     - stage: 08-verify-build
       required: true
       status: pending
@@ -114,6 +114,9 @@ active_session:
     - "2026-07-12 D-S008-PR701-19 — waive AskQuestion; PRM-009 completed on PR #701; explicit push+merge (anti-merge override)"
     - "2026-07-12 D-S008-PR704-19 — waive AskQuestion; PRM-010 in_progress on PR #704; explicit remediate+push+merge (anti-merge override)"
     - "2026-07-12 D-S008-EV006-resume-m4 — resume M4 T4.1"
+    - "2026-07-12 D-S008-EV006-resume-t410 — resume 07-build at T4.10"
+    - "2026-07-12 T4.10+T4.11 done; next T4.6"
+    - "2026-07-12 D-S008-EV006-t47-cutover — T4.7 in progress"
 sessions:
   - id: S007-docs-minimize
     type: process
@@ -891,6 +894,14 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-EV006-t47-cutover
+    decision: "User chose A — continue T4.7 cutover now (wire convert→tac2iwxxm, delete packages/gifts, fix fallout; then T4.8–T4.9)"
+    rationale: "AskQuestion after T4.6 → A"
+    timestamp: "2026-07-12"
+  - id: D-S008-EV006-resume-t410
+    decision: "User chose A — resume EV-006 Phase C at 07-build T4.10 (US METAR/SPECI goldens); new feat branch from evolve for remaining M4"
+    rationale: "AskQuestion resume/abandon/new → A"
+    timestamp: "2026-07-12"
   - id: D-S008-PRM4-18-19
     date: "2026-07-12"
     stage: 18-pr-review
@@ -2647,6 +2658,9 @@ evolve_cycles:
       - "2026-07-12 Resume option 1 — M3 bulletin on feat/S008-M3-bulletin; start T3.1"
       - "2026-07-12 M3 T3.1–T3.5 complete; PR-M3 #704 merged"
       - "2026-07-12 Resume option 1 — M4 cutover on feat/S008-M4-cutover; start T4.1 (D-S008-EV006-resume-m4)"
+      - "2026-07-12 D-S008-EV006-resume-t410 — resume 07-build at T4.10 (US METAR/SPECI goldens); new feat branch needed (feat/S008-M4-cutover merged)"
+      - "2026-07-12 T4.10+T4.11 complete on feat/S008-M4-us-metar; next T4.6 cutover gate"
+      - "2026-07-12 D-S008-EV006-t47-cutover — starting T4.7 gifts delete cutover"
     stages:
       00-context:
         status: completed
@@ -2672,7 +2686,7 @@ evolve_cycles:
         status: in_progress
         started: "2026-07-12"
         completed: null
-        active_task: T4.10
+        active_task: T4.7
         active_milestone: M4
         notes:
           - "M1 T1.1–T1.6 completed; next 08-verify-build for M1 then PR-M1"
@@ -2688,6 +2702,7 @@ evolve_cycles:
           - "2026-07-12 Resume option 1 — M4 cutover on feat/S008-M4-cutover; start T4.1 (D-S008-EV006-resume-m4)"
           - "2026-07-12 T4.1–T4.3 complete on feat/S008-M4-cutover"
           - "2026-07-12 T4.1–T4.5 complete; next T4.10 US METAR/SPECI goldens"
+          - "2026-07-12 D-S008-EV006-resume-t410 — active handoff from 16-evolve; resume at T4.10; new feat branch needed (feat/S008-M4-cutover merged)"
       08-verify-build:
         status: pending
         started: null
@@ -2732,7 +2747,7 @@ evolve_cycles:
     issues: []
 
 git_history:
-  current_branch: evolve/S008-general-tac-iwxxm-converter
+  current_branch: feat/S008-M4-us-metar
   branches:
     - name: evolve/S008-general-tac-iwxxm-converter
       purpose: general TAC→IWXXM converter architecture + package design
@@ -2782,6 +2797,11 @@ git_history:
       evolve_cycle_id: EV-006
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/705
       pr_number: 705
+    - name: feat/S008-M4-us-metar
+      base: evolve/S008-general-tac-iwxxm-converter
+      status: active
+      created_at: "2026-07-12"
+      purpose: "S008 M4 remaining — US METAR/SPECI (T4.10+) and cutover"
     - name: docs/S007-docs-minimize
       purpose: docs minimize
       base: main
@@ -3345,7 +3365,36 @@ git_history:
       evolve_cycle_id: EV-006
       files_changed: null
       timestamp: "2026-07-12"
+    - sha: 6ce133c
+      branch: feat/S008-M4-us-metar
+      message: "[T4.10] test: add iwxxm_us METAR/SPECI golden pack (TC-F6-003 subset)"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      files_changed:
+        - packages/tac2iwxxm/tests/test_tc_f6_003_metar_speci_iwxxm_us.py
+        - packages/tac2iwxxm/tests/fixtures/iwxxm_us_golden/
+        - docs/sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md
+      timestamp: "2026-07-12"
+    - sha: c3bf0ea
+      branch: feat/S008-M4-us-metar
+      message: "[T4.11] feat: iwxxm_us METAR/SPECI REMARKS → extension emit"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      files_changed:
+        - docs/sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md
+        - packages/tac2iwxxm/src/tac2iwxxm/convert.py
+        - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
+        - packages/tac2iwxxm/src/tac2iwxxm/profiles/__init__.py
+        - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
+        - packages/tac2iwxxm/tests/test_convert_unit.py
+      timestamp: "2026-07-12"
 
+    - sha: c53d10f
+      branch: feat/S008-M4-us-metar
+      message: "[T4.6] test: cutover gate for gifts delete + UJ-001 local"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      timestamp: "2026-07-12"
 pr_review_cycles:
   - id: PRR-001
     pr_number: 679
