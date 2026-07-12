@@ -52,7 +52,7 @@ active_session:
       status: in_progress
       started_at: "2026-07-12"
       skip_rationale: null
-      note: "M4 T4.1–T4.5 done on feat/S008-M4-cutover; next T4.10"
+      note: "PR-M4 #705 squash-merged to evolve; next T4.10"
     - stage: 08-verify-build
       required: true
       status: pending
@@ -770,9 +770,9 @@ stages:
       - "make test-integration not re-run (port conflict advisory)"
 
   18-pr-review:
-    status: in_progress
+    status: completed
     started: "2026-07-12"
-    completed: null
+    completed: "2026-07-12"
     last_cycle: PRR-008
     session_id: S008-general-tac-iwxxm-converter
     evolve_cycle_id: EV-006
@@ -781,7 +781,7 @@ stages:
     status: completed
     started: "2026-06-22"
     completed: "2026-07-12"
-    last_cycle: PRM-010
+    last_cycle: PRM-011
     session_id: S008-general-tac-iwxxm-converter
 
   12-verify-deploy:
@@ -2732,7 +2732,7 @@ evolve_cycles:
     issues: []
 
 git_history:
-  current_branch: feat/S008-M4-cutover
+  current_branch: evolve/S008-general-tac-iwxxm-converter
   branches:
     - name: evolve/S008-general-tac-iwxxm-converter
       purpose: general TAC→IWXXM converter architecture + package design
@@ -2772,12 +2772,16 @@ git_history:
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704
       pr_number: 704
     - name: feat/S008-M4-cutover
-      purpose: S008 M4 gifts cutover (T4.1+); intent — branch to be created
+      purpose: S008 M4 gifts cutover (T4.1+)
       base: evolve/S008-general-tac-iwxxm-converter
-      status: active
+      status: merged
       created_at: "2026-07-12"
+      closed_at: "2026-07-12"
+      merged_via: "PR #705"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/705
+      pr_number: 705
     - name: docs/S007-docs-minimize
       purpose: docs minimize
       base: main
@@ -3325,6 +3329,22 @@ git_history:
       evolve_cycle_id: EV-006
       files_changed: 3
       timestamp: "2026-07-12"
+    - sha: 243f1454c0a9cff6f929e26fae1d09d8f8539777
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "Merge pull request #705 from joseph-c-mcguire/feat/S008-M4-cutover"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12"
+    - sha: 9b74afa
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "follow-up: hotspot token assert remediation (PRM-011 F-003)"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12"
 
 pr_review_cycles:
   - id: PRR-001
@@ -3514,24 +3534,26 @@ pr_review_cycles:
       - "Validate fails Prettier on 6 files; local format-check + Vitest 504/504 + backend unit 1148 pass"
 
   - id: PRR-008
-    pr_number: null
-    pr_url: null
-    title: null
-    status: in_progress
+    pr_number: 705
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/705
+    title: "[M4] Gifts cutover"
+    status: completed
     started: "2026-07-12"
-    completed: null
+    completed: "2026-07-12"
     head_ref: feat/S008-M4-cutover
     base_ref: evolve/S008-general-tac-iwxxm-converter
     skill_id: 18-pr-review
     session_id: S008-general-tac-iwxxm-converter
     evolve_cycle_id: EV-006
-    verdict: null
+    verdict: approve
+    merge_sha: 243f1454c0a9cff6f929e26fae1d09d8f8539777
     blockers: null
     advisories: null
     praise: null
     ci_status: null
     notes:
-      - "PR-M4 not yet open; create then review"
+      - "Squash-merged to evolve; Bugbot VRB+MPS fixed; Security clean; Sourcery PyO3 GHSA N/A for 0.23.5"
+      - "Verdict approve after remediation (PRM-011)"
 
 pr_remediation_cycles:
   - id: PRM-001
@@ -4220,3 +4242,65 @@ pr_remediation_cycles:
       2d9fb24434be30fabc3ca5e17d43940b1bba8a85. Counts: fixed 3,
       wont_fix 1, deferred 0. Sourcery was in progress at merge;
       local tests green.
+
+  - id: PRM-011
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    linked_review_cycle_id: PRR-008
+    pr_number: 705
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/705
+    title: "[M4] Gifts cutover"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    head_ref: feat/S008-M4-cutover
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    scope: blockers_then_advisories
+    counts:
+      fixed: 3
+      deferred: 0
+      wont_fix: 1
+    findings:
+      - id: F-001
+        source: sourcery/bugbot
+        severity: bug_risk
+        path: null
+        line: null
+        thread_id: null
+        status: fixed
+        commit: squash
+        note: "VRB wind None — fixed in squash"
+      - id: F-002
+        source: bugbot
+        severity: bug_risk
+        path: null
+        line: null
+        thread_id: null
+        status: fixed
+        commit: squash
+        note: "MPS gust — fixed in squash"
+      - id: F-003
+        source: sourcery-ai
+        severity: advisory
+        path: null
+        line: null
+        thread_id: null
+        status: fixed
+        commit: 9b74afa
+        note: "hotspot token assert — fixed on evolve"
+      - id: F-004
+        source: sourcery-ai
+        severity: advisory
+        path: null
+        line: null
+        thread_id: null
+        status: wont_fix
+        commit: null
+        note: "PyO3 GHSA — N/A (0.23.5 not 0.24+)"
+    follow_up:
+      pr_review_rerun: declined
+    notes: >
+      PRR-008 remediation for PR #705. Counts: fixed 3, wont_fix 1.
+      Squash-merged to evolve at 243f1454c0a9cff6f929e26fae1d09d8f8539777;
+      follow-up 9b74afa on evolve.
