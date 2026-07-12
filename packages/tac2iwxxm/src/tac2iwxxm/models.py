@@ -1,6 +1,8 @@
-"""msgspec models for WMO AHL bulletin split (F6.bulletin / ADR-016)."""
+"""msgspec models for bulletin split and convert results (F6 / ADR-016)."""
 
 from __future__ import annotations
+
+from typing import Any
 
 import msgspec
 
@@ -52,4 +54,62 @@ class BulletinSplit(msgspec.Struct, frozen=True):
     reports: list[str]
 
 
-__all__ = ["BulletinMeta", "BulletinSplit"]
+class ConvertIssue(msgspec.Struct, frozen=True):
+    """
+    Structured convert finding (library/CI metrics path).
+
+    Parameters
+    ----------
+    severity :
+        ``error``, ``warning``, or ``info``.
+    code :
+        Machine-readable issue id.
+    message :
+        Human-readable description.
+    location :
+        Optional field / token hint.
+    """
+
+    severity: str
+    code: str
+    message: str
+    location: str | None = None
+
+
+class ConvertResult(msgspec.Struct, frozen=True):
+    """
+    Result of :func:`tac2iwxxm.convert`.
+
+    Parameters
+    ----------
+    ok :
+        ``True`` when conversion produced IWXXM without fatal parse errors.
+    product :
+        Product id (e.g. ``METAR``, ``SPECI``).
+    profile :
+        ``annex3`` or ``iwxxm_us``.
+    iwxxm_version :
+        Target IWXXM release line.
+    xml :
+        Serialized IWXXM document, or ``None`` on fatal failure.
+    ir :
+        Versioned intermediate representation (dict) for M-field checks.
+    issues :
+        Structured findings.
+    """
+
+    ok: bool
+    product: str
+    profile: str
+    iwxxm_version: str
+    xml: str | None = None
+    ir: dict[str, Any] | None = None
+    issues: list[ConvertIssue] = msgspec.field(default_factory=list)
+
+
+__all__ = [
+    "BulletinMeta",
+    "BulletinSplit",
+    "ConvertIssue",
+    "ConvertResult",
+]
