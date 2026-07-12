@@ -26,7 +26,7 @@
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
 | lxml | XML encode/validate support | BSD | PyPI |
-| IR library | Versioned IR models | Apache-2.0 | **msgspec** (ADR-016) |
+| IR library | Versioned IR models | Apache-2.0 | **msgspec** (ADR-016); reuse module-level `msgspec.json.Encoder` / `Decoder` on hot paths (`tac2iwxxm.codec`) |
 | PyO3 / maturin / rustc | Native hotspots | Apache-2.0 / MIT (typical) | **Required before cutover** (ADR-017) |
 
 Package license: **MIT**. No FastAPI/Supabase imports.
@@ -35,7 +35,7 @@ Package license: **MIT**. No FastAPI/Supabase imports.
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| msgspec | Structured issue / fix models | Apache-2.0 | **Required** (ADR-016); pydantic only at HTTP |
+| msgspec | Structured issue / fix models | Apache-2.0 | **Required** (ADR-016); reuse `tac_validate.codec` Encoder/Decoder; pydantic only at HTTP |
 
 Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron.
 
@@ -134,4 +134,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
   may use pydantic/msgspec (04)
 - S008 04 (2026-07-12): msgspec required; PyO3 cutover gate; F8 worker deps (ADR-016–018)
 - S008 05 (2026-07-12): iwxxm-us = NWS HTTP 3.0 + URL/hash; cargo/maturin required; F8 deployable
+- S008 M1 (2026-07-12): msgspec added to tac2iwxxm + tac-validate with shared Encoder/Decoder modules; iwxxm-us vendored from NWS `3.0` tarball pin
   (D-S008-05-batch1)
