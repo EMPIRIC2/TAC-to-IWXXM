@@ -25,7 +25,7 @@ LEGACY_PATH_FRAGMENTS = (
 MONOREPO_PATH_FRAGMENTS = (
     "apps/backend",
     "packages/auth",
-    "packages/gifts",
+    "packages/tac2iwxxm",
     "apps/frontend",
 )
 
@@ -84,5 +84,5 @@ class TestM10CiInRepoFrontendBuild:
         assert "_frontend_src" not in workflow_text
 
     def test_ci_builds_frontend_from_apps_frontend(self, workflow_text: str) -> None:
-        assert "context: ./apps/frontend" in workflow_text
         assert "file: ./apps/frontend/Dockerfile" in workflow_text
+        assert "FRONTEND_SOURCE_REPO" not in workflow_text

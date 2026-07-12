@@ -1,1 +1,0 @@
-The XML Schema and Schematron files in this directory are intended to be used as local copies for fast validation, and at one point in time were faithful to the locations of schemas on the original web server.

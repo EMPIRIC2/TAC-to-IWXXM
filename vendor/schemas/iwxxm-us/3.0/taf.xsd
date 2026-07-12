@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.weather.gov/iwxxm-us/3.0" version="3.0" attributeFormDefault="unqualified" xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0" xmlns:gml="http://www.opengis.net/gml/3.2">
+    <include schemaLocation="common.xsd"/>
+    <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+    <annotation>
+        <documentation>This package includes the information needed to model the Federal Aviation
+        Administration's filed differences to the International Civil Aviation Organization for the
+        TAF products. Two publications were consulted while constructing this package. They are the
+        National Weather Service Instruction 10-813, and Air Force Manual 15-124, Meteorological
+        Codes.</documentation>
+    </annotation>
+    <element name="MeteorologicalAerodromeForecastExtension" type="iwxxm-us:MeteorologicalAerodromeForecastExtensionType">
+        <annotation>
+            <documentation>Supplemental meteorological forecasting conditions at an aerodrome as
+            needed by NWS and Air Force.</documentation>
+        </annotation>
+    </element>
+    <complexType name="MeteorologicalAerodromeForecastExtensionType">
+        <sequence>
+            <element name="altimeter" type="gml:MeasureType" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Forecasted lowest altimeter setting expected during the forecast
+                    period.</documentation>
+                </annotation>
+            </element>
+            <element name="volcanicAshLayer" minOccurs="0" maxOccurs="1" type="iwxxm-us:LayerAboveAerodromeType">
+                <annotation>
+                    <documentation>Forecast base and top of volcanic ash cloud (layer) above an
+                    aerodrome.</documentation>
+                </annotation>
+            </element>
+            <element name="peakGustDirection" type="gml:AngleType" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Forecast of expected direction of wind gusts.</documentation>
+                </annotation>
+            </element>
+            <element name="icingAboveAerodrome" minOccurs="0" maxOccurs="1" type="iwxxm-us:IcingAboveAerodromeType">
+                <annotation>
+                    <documentation>Forecasted icing layer(s) aloft.</documentation>
+                </annotation>
+            </element>
+            <element name="turbulenceAboveAerodrome" minOccurs="0" maxOccurs="1" type="iwxxm-us:TurbulenceAboveAerodromeType">
+                <annotation>
+                    <documentation>Forecasted layers of turbulence above the aerodrome.</documentation>
+                </annotation>
+            </element>
+            <element name="remarks" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Additive information entered by forecaster.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="MeteorologicalAerodromeForecastExtensionPropertyType">
+        <sequence minOccurs="0">
+            <element ref="iwxxm-us:MeteorologicalAerodromeForecastExtension"/>
+        </sequence>
+        <attributeGroup ref="gml:AssociationAttributeGroup"/>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="IcingAboveAerodrome" type="iwxxm-us:IcingAboveAerodromeType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>Icing forecast for layer(s) above aerodrome.</documentation>
+        </annotation>
+    </element>
+    <complexType name="IcingAboveAerodromeType">
+        <sequence>
+            <element name="icingIntensity" type="iwxxm-us:AirFrameIcingIntensityType">
+                <annotation>
+                    <documentation>Character and intensity of icing in layer.</documentation>
+                </annotation>
+            </element>
+            <element name="layerAboveAerodrome" type="iwxxm-us:LayerAboveAerodromeType">
+                <annotation>
+                    <documentation>Vertical extent of icing above aerodrome.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="IcingAboveAerodromePropertyType">
+        <sequence>
+            <element ref="iwxxm-us:IcingAboveAerodrome"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="NonConvectiveLowLevelWindShear" type="iwxxm-us:NonConvectiveLowLevelWindShearType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>Low-level wind shear in the TAF will only refer to non-convective events
+            and situations such as frontal passage, inversions, low-level wind jets, lee-side
+            mountain flows, sea-breezes, Santa Ana winds, etc.</documentation>
+        </annotation>
+    </element>
+    <complexType name="NonConvectiveLowLevelWindShearType">
+        <sequence>
+            <element name="windDirection" type="gml:AngleType">
+                <annotation>
+                    <documentation>Wind direction at the top of the wind-shear layer.</documentation>
+                </annotation>
+            </element>
+            <element name="windSpeed" type="gml:SpeedType">
+                <annotation>
+                    <documentation>Wind speed at the top of the wind shear layer.</documentation>
+                </annotation>
+            </element>
+            <element name="layerAboveAerodrome" type="iwxxm-us:LayerAboveAerodromeType">
+                <annotation>
+                    <documentation>Vertical extent of wind shear layer above/near the aerodrome.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="NonConvectiveLowLevelWindShearPropertyType">
+        <sequence>
+            <element ref="iwxxm-us:NonConvectiveLowLevelWindShear"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="TAFAmendmentLimitations" type="iwxxm-us:TAFAmendmentLimitationsType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>If observations, or human augmentation of the observations, are not
+            available for a aerodrome, then TAFs issued for such stations will be governed by a
+            special set of rules on when and how amendments will be issued.</documentation>
+        </annotation>
+    </element>
+    <complexType name="TAFAmendmentLimitationsType">
+        <sequence>
+            <element name="amendableTAFParameter" type="iwxxm-us:AmendableTAFParameterType" minOccurs="1" maxOccurs="4">
+                <annotation>
+                    <documentation>List of weather parameters that can be amended.</documentation>
+                </annotation>
+            </element>
+            <element name="periodOfLimitation" type="gml:TimePeriodType">
+                <annotation>
+                    <documentation>Time period when amendments are restricted or unavailable.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="TAFAmendmentLimitationsPropertyType">
+        <sequence>
+            <element ref="iwxxm-us:TAFAmendmentLimitations"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="TurbulenceAboveAerodrome" type="iwxxm-us:TurbulenceAboveAerodromeType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>Forecasted type and severity of turbulence above the aerodrome.</documentation>
+        </annotation>
+    </element>
+    <complexType name="TurbulenceAboveAerodromeType">
+        <sequence>
+            <element name="turbulenceIntensity" type="iwxxm-us:TurbulenceIntensityType">
+                <annotation>
+                    <documentation>Character and intensity of forecasted turbulence.</documentation>
+                </annotation>
+            </element>
+            <element name="layerAboveAerodrome" type="iwxxm-us:LayerAboveAerodromeType">
+                <annotation>
+                    <documentation>Vertical extent of turbulence above aerodrome.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="TurbulenceAboveAerodromePropertyType">
+        <sequence>
+            <element ref="iwxxm-us:TurbulenceAboveAerodrome"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="AirFrameIcingIntensity" type="iwxxm-us:AirFrameIcingIntensityType"/>
+    <complexType name="AirFrameIcingIntensityType">
+        <annotation>
+            <documentation>Air Force Manual 15-124 on airframe icing intensity refer to WMO BUFR4 table.</documentation>
+            <appinfo>
+                <vocabulary>https://codes.nws.noaa.gov/AFMAN/15-124/IcingType</vocabulary>
+                <extensibility>none</extensibility>
+            </appinfo>
+        </annotation>
+        <complexContent>
+            <extension base="gml:ReferenceType"/>
+        </complexContent>
+    </complexType>
+    <element name="AmendableTAFParameter" type="iwxxm-us:AmendableTAFParameterType"/>
+    <complexType name="AmendableTAFParameterType">
+        <annotation>
+            <documentation>List of meteorological parameters that will be monitored and updated with
+            amendments.</documentation>
+            <appinfo>
+                <vocabulary>https://codes.nws.noaa.gov/NWSI-10-813/AmendableTAFParameter</vocabulary>
+                <extensibility>none</extensibility>
+            </appinfo>
+        </annotation>
+        <complexContent>
+            <extension base="gml:ReferenceType"/>
+        </complexContent>
+    </complexType>
+    <element name="TurbulenceIntensity" type="iwxxm-us:TurbulenceIntensityType"/>
+    <complexType name="TurbulenceIntensityType">
+        <annotation>
+            <documentation>AFMAN 15-124 Table 1.7 lists the allowable turbulence intensity and type.</documentation>
+            <appinfo>
+                <vocabulary>https://codes.nws.noaa.gov/AFMAN/15-124/TurbulenceIntensity</vocabulary>
+                <extensibility>none</extensibility>
+            </appinfo>
+        </annotation>
+        <complexContent>
+            <extension base="gml:ReferenceType"/>
+        </complexContent>
+    </complexType>
+</schema>

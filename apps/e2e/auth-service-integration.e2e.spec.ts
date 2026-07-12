@@ -37,7 +37,7 @@ test.describe('Merged API Auth Integration', () => {
     expect(body).toMatchObject({
       status: 'healthy',
     });
-    expect(body.gifts_available).toBe(true);
+    expect(body.tac2iwxxm_available).toBe(true);
   });
 
   test('auth routes are served on the merged API host', async ({ request }) => {

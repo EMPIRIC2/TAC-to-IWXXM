@@ -240,3 +240,110 @@ class ValidateRequest(BaseModel):
         examples=["basic", "comprehensive"],
     )
     stop_on_error: bool = Field(default=False, description="Stop processing on first error")
+    profile: str = Field(
+        default="annex3",
+        description="Schema profile: annex3 (WMO) or iwxxm_us",
+        examples=["annex3", "iwxxm_us"],
+    )
+
+
+class LintIssueModel(BaseModel):
+    """HTTP DTO for a tac-validate issue (msgspec → pydantic)."""
+
+    severity: str
+    code: str
+    message: str
+    location: Optional[str] = None
+
+
+class LintFixModel(BaseModel):
+    """HTTP DTO for an optional tac-validate fix suggestion."""
+
+    code: str
+    message: str
+    replacement: str
+
+
+class LintTacResponse(BaseModel):
+    """Response for POST /api/v1/lint-tac."""
+
+    ok: bool
+    issues: List[LintIssueModel] = Field(default_factory=list)
+    fixes: List[LintFixModel] = Field(default_factory=list)
+    product: Optional[str] = None
+
+
+class PackageIssueModel(BaseModel):
+    """HTTP DTO for an iwxxm-validate package finding (additive on /validate)."""
+
+    layer: str
+    severity: str
+    message: str
+    location: Optional[str] = None
+    code: Optional[str] = None
+
+
+class ValidateIssueModel(BaseModel):
+    """HTTP DTO for a legacy F2 orchestrator finding on /validate."""
+
+    layer: str
+    level: str
+    message: str
+    location: Optional[str] = None
+    code: Optional[str] = None
+
+
+class ValidateLayerIssueModel(BaseModel):
+    """Per-layer issue entry nested under ``issues_by_layer``."""
+
+    level: str
+    message: str
+    location: Optional[str] = None
+    code: Optional[str] = None
+
+
+class ValidateResponse(BaseModel):
+    """Response for POST /api/v1/validate (F2 layers + package_* extras)."""
+
+    is_valid: bool
+    version: str
+    profile: str = "annex3"
+    layers_run: List[str] = Field(default_factory=list)
+    layers_passed: List[str] = Field(default_factory=list)
+    layers_failed: List[str] = Field(default_factory=list)
+    total_issues: int = 0
+    issues: List[ValidateIssueModel] = Field(default_factory=list)
+    issues_by_layer: dict[str, List[ValidateLayerIssueModel]] = Field(default_factory=dict)
+    stopped_at_layer: Optional[str] = None
+    package_ok: bool = True
+    package_issues: List[PackageIssueModel] = Field(default_factory=list)
+
+
+class BulletinMetaModel(BaseModel):
+    """HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7)."""
+
+    ahl: str
+    report_count: int
+    tt: str
+    aa: str
+    cccc: str
+    yygggg: str
+    bbb: Optional[str] = None
+
+
+class BulletinReportResultModel(BaseModel):
+    """Per-report convert-bulletin result (partial success allowed)."""
+
+    report_index: int
+    ok: bool
+    tac_input: str
+    xml: Optional[str] = None
+    issues: List[LintIssueModel] = Field(default_factory=list)
+    fixes: List[LintFixModel] = Field(default_factory=list)
+
+
+class ConvertBulletinResponse(BaseModel):
+    """Response for POST /api/v1/convert-bulletin."""
+
+    bulletin_meta: BulletinMetaModel
+    results: List[BulletinReportResultModel] = Field(default_factory=list)

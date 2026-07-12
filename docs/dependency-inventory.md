@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-06-24
+> **Last updated**: 2026-07-12 (S008 realtime/package amend)
 
 ## Runtime Dependencies
 
@@ -16,13 +16,44 @@
 | httpx2 | Starlette TestClient (dev) | BSD | PyPI |
 | python-multipart | File uploads | Apache-2.0 | PyPI |
 | supabase | Auth (via packages/auth) | MIT | PyPI |
-| gifts | Conversion | See packages/gifts | workspace path |
+| tac2iwxxm | Conversion (F6) | MIT | workspace path |
+| tac-validate | TAC lint / rules | MIT | workspace path |
+| iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
+| gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
 
-### packages/gifts
+### packages/tac2iwxxm
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| (GIFTs deps) | METAR parsing, XML | Per GIFTs pyproject | In-repo; upstream mgoberfield/GIFTs |
+| lxml | XML encode/validate support | BSD | PyPI |
+| IR library | Versioned IR models | Apache-2.0 | **msgspec** (ADR-016); reuse module-level `msgspec.json.Encoder` / `Decoder` on hot paths (`tac2iwxxm.codec`) |
+| PyO3 / maturin / rustc | Native hotspots | Apache-2.0 / MIT (typical) | **Required before cutover** (ADR-017) |
+
+Package license: **MIT**. No FastAPI/Supabase imports.
+
+### packages/tac-validate
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| msgspec | Structured issue / fix models | Apache-2.0 | **Required** (ADR-016); reuse `tac_validate.codec` Encoder/Decoder; pydantic only at HTTP |
+
+Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron.
+
+### packages/iwxxm-validate
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| lxml | XSD + Schematron execution | BSD | PyPI |
+| msgspec | Issue / report Struct models (ADR-016) | Apache-2.0 | PyPI |
+
+Package license: **MIT**. Vendor schemas read-only. No FastAPI/Supabase.
+Schematron: lxml when possible; xslt2 → `SCHEMATRON_SKIPPED` (D-S008-T21-sch).
+
+### packages/gifts — Removed at F6 cutover
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| (historical GIFTs deps) | METAR parsing, XML | Per former pyproject | Removed per ADR-014; REQ-014 deprecated |
 
 ### packages/auth
 
@@ -47,17 +78,22 @@
 | Node | **22** (pinned) | Frontend/e2e workspace (ADR-005) |
 | uv | pin in pyproject | Python workspace, lockfile |
 | pnpm | pin in package.json engines | JS workspace (monorepo) |
-| basedpyright | strict | Python typechecking (ADR-005) |
-| ruff | all Python packages | Lint + format including packages/gifts (ADR-005) |
+| basedpyright | strict | Python typechecking including tac2iwxxm, tac-validate, iwxxm-validate (ADR-005) |
+| ruff | all Python packages | Lint + format including new validate packages (ADR-005) |
 | prettier | workspace TS | Format apps/* and packages/* TypeScript |
 | eslint | workspace TS | Lint apps/frontend, apps/e2e, packages/shared |
 | make | system | Orchestration |
-| pre-commit | dev group (pyproject) | Git hooks — fast gates (format/lint/typecheck/gitleaks/yaml); `make ci` on manual stage |
+| pre-commit | dev group (pyproject) | Git hooks — fast gates |
 | actionlint | pre-commit hook | GitHub Actions workflow lint (EV-002) |
 | yamllint | pre-commit hook | `.github/` YAML lint (EV-002) |
-| supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` (migrations + edge functions) |
+| supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` |
 | docker / compose | system | Local multi-service |
-| Coverage | 95% all members | pytest + Vitest gates (ADR-007) |
+| Coverage | 95% all members | pytest + Vitest gates (ADR-007); includes tac2iwxxm, tac-validate, iwxxm-validate |
+| cargo / maturin | **required before cutover** | PyO3 wheel build in CI/API image (ADR-017) |
+
+**Deployables**: API + static frontend + **F8 Background Worker** (`apps/worker`, ADR-018).
+API image depends on tac2iwxxm + validate packages; worker image uses the same packages plus
+poller/store writers. Rust toolchain in API (and worker if linked) image for PyO3.
 
 ## Vendored / External Data (not PyPI)
 
@@ -67,21 +103,38 @@
 | iwxxm-codelists | wmo-im/iwxxm-codelists | vendor/schemas/iwxxm-codelists | Scheduled Action |
 | iwxxm-modelling | wmo-im/iwxxm-modelling | vendor/schemas/iwxxm-modelling | Scheduled Action |
 | iwxxm-translation | wmo-im/iwxxm-translation | vendor/schemas/iwxxm-translation | Scheduled Action |
-| GIFTs source | mgoberfield/GIFTs | packages/gifts | Manual merge when chosen (REQ-014) |
+| iwxxm-us | NOAA/MDL HTTP `3.0` (`https://nws.weather.gov/schemas/iwxxm-us/3.0/`) | vendor/schemas/iwxxm-us | Manifest `source_url` + content hash (D-S008-05-batch1); sync PR |
+| GIFTs source | mgoberfield/GIFTs | ~~packages/gifts~~ | **Removed** at F6 cutover (ADR-014) |
 
-## Removed Dependencies (post-migration)
+## Removed Dependencies (post-migration / F6)
 
 | Removed | Replaced by |
 |---------|-------------|
 | git submodules (×6) | vendor/ + in-repo packages |
 | Separate auth Docker image | packages/auth in backend image |
+| packages/gifts (F6 cutover) | packages/tac2iwxxm |
+| (inline backend Schematron) | packages/iwxxm-validate |
+| (ad-hoc TAC checks) | packages/tac-validate |
 
 ## License Notes
 
 - wmo-im schema repos: WMO terms — read-only vendor copies.
-- GIFTs: verify LICENSE in packages/gifts before release.
-- Run audit-licenses skill before adding new PyPI/npm deps.
+- iwxxm-us: cite NOAA/MDL upstream notices in vendor README at pin time.
+- `packages/tac2iwxxm`, `packages/tac-validate`, `packages/iwxxm-validate`: **MIT**.
+- GIFTs: package removed — no longer ship its LICENSE in-tree.
+- Run audit-licenses skill before adding new PyPI/npm deps (including PyO3 extras; tac-validate
+  pydantic/msgspec choice in 04).
 
 ## Decision Log
 
 New dependencies require `[Decision]` + back-add to this file per plan-adherence rules.
+
+### Session changelog
+
+- S008 (2026-07-12): tac2iwxxm MIT; gifts removed; iwxxm-us; optional PyO3; IR lib TBD in 04
+- S008 amend (2026-07-12): tac-validate + iwxxm-validate MIT; lxml for Schematron; tac-validate
+  may use pydantic/msgspec (04)
+- S008 04 (2026-07-12): msgspec required; PyO3 cutover gate; F8 worker deps (ADR-016–018)
+- S008 05 (2026-07-12): iwxxm-us = NWS HTTP 3.0 + URL/hash; cargo/maturin required; F8 deployable
+- S008 M1 (2026-07-12): msgspec added to tac2iwxxm + tac-validate with shared Encoder/Decoder modules; iwxxm-us vendored from NWS `3.0` tarball pin
+  (D-S008-05-batch1)

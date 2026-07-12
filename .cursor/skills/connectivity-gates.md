@@ -12,7 +12,8 @@ Cross-stage requirements for browser ↔ API wiring when the project includes a 
 | H3 | Live API smoke (pytest against Render) |
 | H4 | Live CORS from browser origin |
 | H5 | Frontend build-time `VITE_*` URLs resolve |
-| H6 | Live Playwright UJ-001–003 against Render frontend |
+| H6 | Live Playwright UJ-001–007 (+ UJ-008) against Render frontend |
+| **H7** | Live bulletin → split → convert → Schematron (UJ-011 / TC-LIVE-F6-030) |
 
 ## Stage expectations
 

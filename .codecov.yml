@@ -18,11 +18,10 @@ coverage:
       carryforward: true
       paths:
         - apps/frontend/src/
-    gifts:
+    tac2iwxxm:
       carryforward: true
       paths:
-        - packages/gifts/gifts/
-        - packages/gifts/validation/
+        - packages/tac2iwxxm/src/
   status:
     project:
       default:
@@ -47,9 +46,9 @@ coverage:
         flags: [frontend]
         target: 95%
         threshold: 0%
-    gifts:
+    tac2iwxxm:
       default:
-        flags: [gifts]
+        flags: [tac2iwxxm]
         target: 95%
         threshold: 0%
 

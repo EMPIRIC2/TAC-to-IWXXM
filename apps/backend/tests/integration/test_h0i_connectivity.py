@@ -1,6 +1,6 @@
 """H0i connectivity gate — in-process cross-package integration (test-plan.md §H0i).
 
-Verifies apps/backend wires packages/auth, packages/gifts, and CORS on one host
+Verifies apps/backend wires packages/auth, packages/tac2iwxxm, and CORS on one host
 without a separate auth microservice. No docker-compose or live Supabase required.
 """
 
@@ -17,7 +17,7 @@ from src.utilities.security import verify_supabase_token
 
 pytestmark = [pytest.mark.integration, pytest.mark.h0i]
 
-SAMPLE_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
+SAMPLE_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
 BROWSER_ORIGIN = "http://localhost:18000"
 
 
@@ -84,7 +84,7 @@ class TestH0iCorsPreflight:
 
 
 class TestH0iAuthConversionWiring:
-    """Auth package + GIFTs conversion on single backend deployable."""
+    """Auth package + tac2iwxxm conversion on single backend deployable."""
 
     def test_convert_requires_auth_when_enforced(self, h0i_client: TestClient) -> None:
         app.dependency_overrides.clear()

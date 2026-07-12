@@ -6,20 +6,24 @@ PNPM := pnpm
 PY_TREES := apps packages tests
 PY_LINT := apps/backend/src apps/backend/tests \
 	packages/auth/src packages/auth/tests \
-	packages/gifts/gifts packages/gifts/tests \
 	packages/shared packages/shared/tests \
+	packages/tac2iwxxm/src packages/tac2iwxxm/tests \
+	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
+	packages/tac-validate/src packages/tac-validate/tests \
 	tests
 
 .PHONY: install test test-unit vendor-sync \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
-	test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-bugs \
+	test-unit-backend test-unit-auth test-unit-frontend \
+	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-unit-worker test-bugs \
 	format format-check typecheck typecheck-py typecheck-js \
-	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-gifts lint-shared \
-	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
+	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-shared \
+	lint-tac2iwxxm lint-iwxxm-validate lint-tac-validate \
+	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
-	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live \
-	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-gifts coverage-shared \
+	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live-bulletin test-live \
+	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-shared \
 	coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
 	install-hooks pre-commit-run \
@@ -54,6 +58,9 @@ typecheck: typecheck-py typecheck-js
 
 typecheck-py:
 	$(UV) run basedpyright packages/shared/src
+	$(UV) run basedpyright packages/tac2iwxxm/src
+	$(UV) run basedpyright packages/iwxxm-validate/src
+	$(UV) run basedpyright packages/tac-validate/src
 	cd packages/auth && $(UV) run basedpyright
 	cd apps/backend && $(UV) run basedpyright
 
@@ -76,11 +83,17 @@ lint-backend:
 lint-auth:
 	$(UV) run ruff check packages/auth/src packages/auth/tests
 
-lint-gifts:
-	$(UV) run ruff check packages/gifts/gifts packages/gifts/tests
-
 lint-shared:
 	$(UV) run ruff check packages/shared packages/shared/tests
+
+lint-tac2iwxxm:
+	$(UV) run ruff check packages/tac2iwxxm/src packages/tac2iwxxm/tests
+
+lint-iwxxm-validate:
+	$(UV) run ruff check packages/iwxxm-validate/src packages/iwxxm-validate/tests
+
+lint-tac-validate:
+	$(UV) run ruff check packages/tac-validate/src packages/tac-validate/tests
 
 lint-frontend:
 	$(PNPM) --filter @metar/frontend run lint
@@ -98,9 +111,6 @@ lint-fix-auth:
 
 lint-fix-frontend:
 	$(PNPM) --filter @metar/frontend exec eslint src --fix
-
-lint-fix-gifts:
-	$(UV) run ruff check --fix packages/gifts/gifts packages/gifts/tests
 
 # --- Unit tests ---
 
@@ -134,16 +144,38 @@ test-unit-auth:
 test-unit-frontend:
 	$(PNPM) --filter @metar/frontend run test:coverage
 
-test-unit-gifts:
-	cd packages/gifts && $(UV) run pytest tests/ \
-		--cov=gifts --cov=validation --cov-config=pyproject.toml --cov-branch \
-		--cov-report=xml:coverage.xml --cov-report=term-missing \
-		--cov-fail-under=98 -v
+test-unit-tac2iwxxm:
+	$(UV) run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
+		--cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
+		--cov-report=term-missing --cov-fail-under=95 -v
+
+# Build optional PyO3 extension (requires rustc + maturin). ADR-017 / T4.3.
+build-tac2iwxxm-native:
+	cd packages/tac2iwxxm && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
+
+test-tac2iwxxm-native: build-tac2iwxxm-native
+	TAC2IWXXM_REQUIRE_RUST=1 $(UV) run pytest \
+		packages/tac2iwxxm/tests/test_native_scaffold.py \
+		packages/tac2iwxxm/tests/test_pyo3_hotspots.py -v --no-cov
+
+test-unit-iwxxm-validate:
+	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
+		--cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
+		--cov-report=term-missing --cov-fail-under=95 -v
+
+test-unit-tac-validate:
+	$(UV) run pytest packages/tac-validate/tests --cov=tac_validate \
+		--cov-config=packages/tac-validate/pyproject.toml --cov-branch \
+		--cov-report=term-missing --cov-fail-under=95 -v
+
+test-unit-worker:
+	$(UV) run pytest apps/worker/tests -v --no-cov
 
 test-bugs:
 	$(UV) run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
-test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-bugs
+test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
+	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-unit-worker test-bugs
 
 test: test-unit
 
@@ -219,7 +251,12 @@ test-live-e2e:
 		PLAYWRIGHT_API_BASE_URL="$$PLAYWRIGHT_API_BASE_URL" \
 		$(PNPM) exec playwright test
 
-test-live: test-live-connectivity test-live-api test-live-integration test-live-e2e
+# H7 — live bulletin gate (TC-LIVE-F6-030 / Q10=A)
+test-live-bulletin:
+	@$(load_dotenv); \
+	$(UV) run pytest tests/live/test_tc_live_f6_030_bulletin.py -m live_api -v --tb=short --no-cov
+
+test-live: test-live-connectivity test-live-api test-live-integration test-live-bulletin test-live-e2e
 
 coverage-backend:
 	cd apps/backend && $(UV) run pytest tests/unit \
@@ -234,16 +271,11 @@ coverage-auth:
 coverage-frontend:
 	$(PNPM) --filter @metar/frontend run test:coverage
 
-coverage-gifts:
-	cd packages/gifts && $(UV) run pytest tests/ \
-		--cov=gifts --cov=validation --cov-config=pyproject.toml \
-		--cov-report=xml:coverage.xml --cov-report=term-missing -v
-
 coverage-shared:
 	$(UV) run pytest packages/shared/tests --cov=metar_shared \
 		--cov-config=packages/shared/pyproject.toml --cov-report=term-missing -v
 
-coverage-modules: coverage-backend coverage-auth coverage-frontend coverage-gifts coverage-shared
+coverage-modules: coverage-backend coverage-auth coverage-frontend coverage-shared
 
 coverage-all: coverage-modules
 
@@ -302,7 +334,7 @@ test-integration:
 		fi; \
 		sleep 2; \
 	done
-	$(UV) run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_gifts_backend_integration.py tests/test_integration.py -v
+	$(UV) run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_integration.py -v
 	cd apps/backend && $(UV) run pytest tests/integration/test_h0i_connectivity.py -v --no-cov
 	cd apps/backend && $(UV) run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
 	$(COMPOSE) down
@@ -351,6 +383,7 @@ supabase-pull:
 
 validate-ci: validate-fast config-guard env-check audit-frontend
 
-ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-bugs test-integration badge-audit
+ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
+	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-unit-worker test-bugs test-integration badge-audit
 
 acci: ci test-e2e-playwright-smoke audit-frontend

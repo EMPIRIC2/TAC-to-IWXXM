@@ -1,4 +1,4 @@
-"""M3 layout checks — migration-plan.md Step 2, spec.md §packages/gifts."""
+"""M3 / cutover — packages/gifts removed (ADR-014 / T4.7)."""
 
 from __future__ import annotations
 
@@ -8,21 +8,18 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGES_GIFTS = ROOT / "packages" / "gifts"
+TAC2IWXXM = ROOT / "packages" / "tac2iwxxm"
 
 
 @pytest.mark.migration
-class TestM3GiftsPackageLayout:
-    """packages/gifts contains the in-repo GIFTs source tree."""
+class TestM3GiftsPackageRemoved:
+    """After F6 cutover, gifts must be gone and tac2iwxxm present."""
 
-    def test_packages_gifts_directory_exists(self) -> None:
-        assert PACKAGES_GIFTS.is_dir(), "packages/gifts must exist after T3.2"
+    def test_packages_gifts_removed(self) -> None:
+        assert not PACKAGES_GIFTS.exists(), (
+            "packages/gifts must be deleted at cutover (T4.7)"
+        )
 
-    def test_packages_gifts_has_encoder_module(self) -> None:
-        encoder = PACKAGES_GIFTS / "gifts" / "metarEncoder.py"
-        assert encoder.is_file(), "packages/gifts/gifts/metarEncoder.py required"
-
-    def test_packages_gifts_has_pyproject(self) -> None:
-        assert (PACKAGES_GIFTS / "pyproject.toml").is_file()
-
-    def test_packages_gifts_has_tests_tree(self) -> None:
-        assert (PACKAGES_GIFTS / "tests").is_dir()
+    def test_tac2iwxxm_package_present(self) -> None:
+        assert (TAC2IWXXM / "pyproject.toml").is_file()
+        assert (TAC2IWXXM / "src" / "tac2iwxxm").is_dir()

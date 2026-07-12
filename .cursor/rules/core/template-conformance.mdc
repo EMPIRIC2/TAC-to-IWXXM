@@ -1,5 +1,5 @@
 ---
-description: Enforces static+api monorepo layout per template-registry and spec.md target tree
+description: Enforces static+api+worker monorepo layout per template-registry and spec.md target tree
 globs: ""
 alwaysApply: true
 ---
@@ -8,24 +8,30 @@ alwaysApply: true
 
 Read `workflow-state.yaml` §`template` and [template-registry.md](../../skills/template-registry.md).
 
-**Template**: `static+api` — React frontend + FastAPI backend + auth middleware in single API deployable.
+**Template**: `static+api+worker` — React frontend + FastAPI backend + auth middleware in
+single API deployable + F8 Render Background Worker (`apps/worker/`). Amended by ADR-018.
 
 ## File Structure
 
 Warn if new deployable or library code is created outside the approved monorepo tree:
 
 ```
-apps/backend/       # FastAPI — conversion, validation, auth routes
-apps/frontend/      # React/Vite static deployable
-apps/e2e/           # Playwright cross-app tests
-packages/auth/      # Supabase middleware library (not a deployable)
-packages/gifts/     # GIFTs fork — TAC → IWXXM
-packages/shared/    # API types, env helpers, constants
-vendor/schemas/*    # Read-only wmo-im snapshots
+apps/backend/            # FastAPI — conversion, validation, auth routes
+apps/frontend/           # React/Vite static deployable
+apps/worker/             # F8 near-RT ingest poller (Background Worker)
+apps/e2e/                # Playwright cross-app tests
+packages/auth/           # Supabase middleware library (not a deployable)
+packages/tac2iwxxm/      # General TAC → IWXXM (F6); MIT; PyO3 at cutover
+packages/tac-validate/   # TAC lint / business rules
+packages/iwxxm-validate/ # XSD + Schematron (F2 engine)
+packages/shared/         # API types, env helpers, constants
+packages/gifts/          # Transitional until F6 cutover PR deletes it
+vendor/schemas/*         # Read-only wmo-im + iwxxm-us snapshots
 ```
 
 Do **not** create:
 - A separate auth deployable or `apps/auth/` service
+- A dedicated converter microservice (HTTP convert stays on `apps/backend`)
 - New top-level `backend/`, `frontend/`, `GIFTs/` directories (legacy — migrate, don't extend)
 - Edits inside `vendor/schemas/*` except via sync PRs updating manifest pins
 
@@ -35,18 +41,23 @@ Do **not** create:
 |-----------|--------------|
 | API | `apps/backend` — single HTTP service (conversion + validation + `/auth/*`) |
 | Static | `apps/frontend` — Vite build → Render static site |
-| Worker | Not used — no background worker deployable |
+| Worker | `apps/worker` — Render Background Worker (F8 poller → store/quarantine) |
 
 ## Separation of Concerns
 
-- **packages/gifts**: IWXXM serialization only — no FastAPI/Supabase imports
+- **packages/tac2iwxxm**: IWXXM serialization only — no FastAPI/Supabase imports
+- **packages/tac-validate** / **iwxxm-validate**: lint/validate engines — no FastAPI/Supabase
 - **packages/auth**: JWT middleware and auth routes — no conversion logic
-- **apps/backend**: HTTP routers wiring gifts + auth + validation
-- **vendor/schemas**: Consumed read-only by gifts and validation — never edited locally
+- **apps/backend**: HTTP routers wiring tac2iwxxm + validate + auth
+- **apps/worker**: ingest orchestration only — calls packages; writes via service-role JWT
+- **vendor/schemas**: Consumed read-only — never edited locally
+- **packages/gifts**: transitional only until cutover deletes it
 
 ## Env Wiring
 
-- Frontend build-time: `VITE_API_BASE_URL` → single API host (includes `/auth/*` post-M4)
-- Backend runtime: `METAR_CORS_ORIGINS` for browser origins
+- Frontend: runtime `/config.json` (or build-time `VITE_API_BASE_URL`) → single API host
+  (includes `/auth/*`)
+- Backend runtime: `METAR_CORS_ORIGINS` / `config.*.api.corsOrigins` for browser origins
+- Worker runtime: poller URL + Supabase service-role credentials (no browser CORS)
 
 Surface `[Template Drift]` via AskQuestion if code diverges from these patterns without an ADR.

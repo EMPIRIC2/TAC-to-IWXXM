@@ -40,7 +40,7 @@ class TestHealthEndpoint:
         data = r.json()
         assert "status" in data
         assert "version" in data
-        assert "gifts_available" in data
+        assert "tac2iwxxm_available" in data
 
     def test_health_status_values(self, client):
         """Test health status is valid value."""

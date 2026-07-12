@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:SIGMET xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0"
+    xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="sigmet.us.yudd"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:issuingAirTrafficServicesUnit>
+    <aixm:Unit gml:id="unit.atsu.yudd">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.atsu.ts.yudd">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>YUDD FIC</aixm:name>
+          <aixm:type>FIC</aixm:type>
+          <aixm:designator>YUDD</aixm:designator>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:issuingAirTrafficServicesUnit>
+  <iwxxm:originatingMeteorologicalWatchOffice>
+    <aixm:Unit gml:id="unit.mwo.yuso">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.mwo.ts.yuso">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>YUSO MWO</aixm:name>
+          <aixm:type>MWO</aixm:type>
+          <aixm:designator>YUSO</aixm:designator>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:originatingMeteorologicalWatchOffice>
+  <iwxxm:issuingAirTrafficServicesRegion>
+    <aixm:Airspace gml:id="as.yudd">
+      <aixm:timeSlice>
+        <aixm:AirspaceTimeSlice gml:id="as.ts.yudd">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:type>OTHER:FIR_UIR</aixm:type>
+          <aixm:designator>YUDD</aixm:designator>
+          <aixm:name>SHANLON FIR/UIR</aixm:name>
+        </aixm:AirspaceTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Airspace>
+  </iwxxm:issuingAirTrafficServicesRegion>
+  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>
+  <iwxxm:validPeriod>
+    <gml:TimePeriod gml:id="t.valid">
+      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>
+      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:validPeriod>
+  <iwxxm:phenomenon xlink:href="http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS"/>
+  <iwxxm:analysisCollection>
+    <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.yudd">
+      <iwxxm:analysis>
+        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.yudd" timeIndicator="FORECAST">
+          <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
+          <iwxxm:member>
+            <iwxxm:SIGMETEvolvingCondition gml:id="cond.yudd" intensityChange="WEAKEN">
+              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/missing"/>
+            </iwxxm:SIGMETEvolvingCondition>
+          </iwxxm:member>
+        </iwxxm:SIGMETEvolvingConditionCollection>
+      </iwxxm:analysis>
+    </iwxxm:analysisAndForecastPositionAnalysis>
+  </iwxxm:analysisCollection>
+</iwxxm:SIGMET>

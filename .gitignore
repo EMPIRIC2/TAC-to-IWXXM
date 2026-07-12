@@ -173,3 +173,7 @@ GIFTs/.mypy_cache/
 GIFTs/sfstns.db
 GIFTs/driver.py
 GIFTs/wiki/
+
+# --- Rust / maturin (tac2iwxxm PyO3, ADR-017) ---
+packages/tac2iwxxm/rust/target/
+

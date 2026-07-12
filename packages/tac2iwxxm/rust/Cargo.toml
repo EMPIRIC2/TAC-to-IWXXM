@@ -1,0 +1,18 @@
+[package]
+name = "tac2iwxxm_rust"
+version = "0.1.0"
+edition = "2021"
+description = "PyO3 native hotspots for tac2iwxxm (ADR-017)"
+license = "MIT"
+rust-version = "1.74"
+
+[lib]
+name = "_rust"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module"] }
+
+[package.metadata.maturin]
+python-source = "../src"
+module-name = "tac2iwxxm._rust"

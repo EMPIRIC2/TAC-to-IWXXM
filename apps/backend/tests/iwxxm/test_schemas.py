@@ -125,11 +125,11 @@ def test_health_response_valid():
     health = HealthResponse(
         status="healthy",
         version="0.1.0",
-        gifts_available=True,
+        tac2iwxxm_available=True,
     )
     assert health.status == "healthy"
     assert health.version == "0.1.0"
-    assert health.gifts_available is True
+    assert health.tac2iwxxm_available is True
 
 
 def test_health_response_degraded():
@@ -137,10 +137,10 @@ def test_health_response_degraded():
     health = HealthResponse(
         status="degraded",
         version="0.1.0",
-        gifts_available=False,
+        tac2iwxxm_available=False,
     )
     assert health.status == "degraded"
-    assert health.gifts_available is False
+    assert health.tac2iwxxm_available is False
 
 
 def test_schema_json_serialization():

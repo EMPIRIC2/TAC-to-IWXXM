@@ -1,17 +1,24 @@
 # Deployment
 
 > **Project**: METAR to IWXXM Converter
-> **Platform**: Render (Docker web service + static site)
-> **Last updated**: 2026-06-24 (S003 env/config delta; supabase-sync workflow)
+> **Platform**: Render (Docker web service + static site + Background Worker)
+> **Last updated**: 2026-07-12 (S008 ADR-018 F8 worker; D-S008-05-batch1)
 
-## Topology (post-monorepo)
+## Topology (post-monorepo + F8)
 
 | Service | Type | Source | Port |
 |---------|------|--------|------|
 | metar-api | Web (Docker) | `apps/backend` Dockerfile | `$PORT` (0.0.0.0) |
 | metar-frontend | **Static site** (CDN) | `apps/frontend` Vite build | CDN |
+| metar-worker | **Background Worker** | `apps/worker` (ADR-018) | N/A (no HTTP) |
+
+**Staging worker (T7.1)**: `metar-to-iwxxm-worker` —
+`srv-d99u0i8k1i2s73eq5oqg` (docker-from-git, branch `feat/S008-M6-worker` until cutover
+merges to `main`). Dashboard:
+https://dashboard.render.com/worker/srv-d99u0i8k1i2s73eq5oqg
 
 Auth is **not** a separate deployable — included in metar-api via packages/auth.
+F8 worker shares packages with the API image family but is a **separate** Render service.
 
 **Observability**: Render built-in logs only — Loki/Prometheus/Grafana removed from Blueprint (ADR-006).
 
@@ -28,6 +35,15 @@ Auth is **not** a separate deployable — included in metar-api via packages/aut
 | `SUPABASE_SECRET_KEY` | Yes | `sb_secret_*` — Auth Admin API scripts only |
 | `DATABASE_URL` | Yes | Postgres pooler from Supabase Connect |
 | `METAR_CONFIG_ENV` | Yes (prod) | `prod` on Render; selects `config/prod.json` |
+
+### Secrets (Worker runtime — F8, ADR-018)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SUPABASE_URL` | Yes | Supabase project URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Service-role JWT for store/quarantine writers |
+| `INGEST_POLLER_URL` | Yes | HTTPS / object-prefix fixture or feed URL |
+| `INGEST_POLL_INTERVAL_SEC` | Yes | Poll interval (seconds) |
 
 ### Non-secrets (`config/prod.json` — committed)
 
@@ -75,7 +91,8 @@ Operator sync: [env-sync-runbook.md](ops/env-sync-runbook.md). Verify: `make env
 
 1. Deploy **metar-api** with secrets + `METAR_CONFIG_ENV=prod` (CORS from `config/prod.json`).
 2. Rebuild **metar-frontend** with `/config.json` injection.
-3. Run H4 CORS preflight + H5 bundle verification + `make env-check`.
+3. Deploy **metar-worker** with poller + service-role secrets (after F8 migrations applied).
+4. Run H4 CORS preflight + H5 bundle verification + H6/H7 as applicable + `make env-check`.
 
 See `.cursor/skills/connectivity-gates.md` for H-tier definitions.
 
@@ -88,7 +105,8 @@ make dev
 # Or: docker compose up --build
 ```
 
-Post-migration compose: **backend + frontend** (two services).
+Post-migration compose: **backend + frontend** (two services). Worker may run via
+`make worker` / separate process locally (T6.2).
 
 ## Docker Build Context
 
@@ -96,8 +114,12 @@ Post-migration compose: **backend + frontend** (two services).
 |-------|---------|------------|
 | API | repo root | `apps/backend/docker/Dockerfile` |
 | Frontend | repo root | `apps/frontend/Dockerfile` |
+| Worker | repo root | `apps/worker/Dockerfile` (T6.2) |
 
-API image must include: apps/backend, packages/auth, packages/gifts, packages/shared, vendor/schemas.
+API image must include: apps/backend, packages/auth, packages/tac2iwxxm (post-cutover; gifts
+until then), packages/tac-validate, packages/iwxxm-validate, packages/shared, vendor/schemas.
+
+Worker image must include: apps/worker, same packages as API (no frontend).
 
 Frontend image must include: apps/frontend, packages/shared (pnpm workspace dep `@metar/shared`).
 

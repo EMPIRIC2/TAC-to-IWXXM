@@ -16,6 +16,8 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 | [metar-work-history](metar-work-history.md) | User METAR work sessions Draft→WIP→Finished in Supabase (F5) | active | 2026-06-23 | F5, F1, M4 |
 | [issue-671-docker-db](issue-671-docker-db.md) | Docker Compose backend cannot create DB tables — localhost:5432 connect refused (GitHub #671) | active | 2026-06-25 | M1, docker-compose |
 | [issue-664-output-filename](issue-664-output-filename.md) | Custom output filename for manual METAR input (GitHub #664) | active | 2026-06-25 | F1, UJ-001 |
+| [general-tac-iwxxm-converter](general-tac-iwxxm-converter.md) | Generalizable C/Cython TAC→IWXXM + IWXXM-US architecture | active | 2026-07-12 | F1, F2, F4, proposed Fn |
+| [realtime-tac-ingest](realtime-tac-ingest.md) | Near-RT ingest design + `iwxxm-validate` / `tac-validate` packages; F7/F8 Planned | active | 2026-07-12 | F2, F6, F7, F8 |
 
 **Convention**: One brief per topic at `docs/context/<slug>.md`. Reference downstream as
 `[Context: <slug> R#]`.

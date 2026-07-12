@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "id": "fixture-metar-1",
+      "product": "METAR",
+      "tac": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
+    },
+    {
+      "id": "fixture-metar-2",
+      "product": "METAR",
+      "tac": "METAR KLAX 231751Z 25008KT 10SM SCT030 18/10 A2995="
+    },
+    {
+      "id": "fixture-speci-1",
+      "product": "SPECI",
+      "tac": "SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001="
+    }
+  ]
+}

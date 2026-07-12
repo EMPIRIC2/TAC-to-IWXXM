@@ -1,6 +1,6 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-06-23
+> Stage: 01-requirements | Last updated: 2026-07-12
 
 | ID | Topic | Decision | Status |
 |----|-------|----------|--------|
@@ -19,7 +19,7 @@
 | REQ-013 | E2E location | `apps/e2e/` dedicated workspace | confirmed |
 | REQ-015 | Vendor pinning | `vendor/manifest.json` — repo + tag/SHA per bundle | confirmed |
 | REQ-016 | Non-goals | No product feature rewrites during migration | confirmed |
-| REQ-014 | GIFTs sync | Manual merge from mgoberfield when chosen — no scheduled Action (audit 02-verify-plan) | confirmed |
+| REQ-014 | GIFTs sync | **Deprecated (S008 / ADR-014)** — `packages/gifts` removed at F6 cutover; was manual merge from mgoberfield | deprecated |
 | REQ-017 | Auth route prefix | `/auth/*` at API root after merge | confirmed |
 | REQ-018 | Golden regression | TC-M003 normalized canonical XML diff | confirmed |
 | REQ-019 | Legacy repo archive | After stable production deploy, not at merge | confirmed |
@@ -108,3 +108,57 @@
 1. ~~Exact auth route prefix after merge~~ — resolved: `/auth/*` (REQ-017)
 2. ~~pnpm vs npm~~ — resolved: pnpm (REQ-020)
 3. ~~Golden file strategy for TC-M003~~ — resolved: normalized XML (REQ-018)
+
+## S008 / F6 — General TAC→IWXXM (2026-07-12)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| F6-R1 | Feature id | **F6** — General TAC→IWXXM (`tac2iwxxm`); one Fn with product subsections | confirmed |
+| F6-R2 | Products v1 | AIRMET, METAR, SIGMET, SPECI, TAF, **VAA**, **TCA** (7) | confirmed |
+| F6-R3 | Profiles | Default `annex3`; opt-in `iwxxm_us` | confirmed |
+| F6-R4 | API | Extend `POST /api/v1/convert` with `product` + `profile` | confirmed |
+| F6-R5 | UI | Product + profile (+ version) pickers in v1; H4–H5 required | confirmed |
+| F6-R6 | License | **MIT** for `packages/tac2iwxxm` | confirmed |
+| F6-R7 | Native | Pure Python v0; optional **Rust/PyO3** (not Cython) — ADR-014 | confirmed |
+| F6-R8 | Cutover | Hard cutover: first tac2iwxxm wire-up PR **deletes `packages/gifts`** | confirmed |
+| F6-R9 | F1 | Status **Superseded by F6** | confirmed |
+| F6-R10 | REQ-014 | **Deprecated** (ADR-004 deprecated; M3 deprecated) | confirmed |
+| F6-R11 | Metrics | Library/CI only — no convert-response metrics fields in v1 | confirmed |
+| F6-R12 | F5 | Do not extend to non-METAR products in F6 v1 | confirmed |
+| F6-R13 | Phases | F6.a–F6.f (METAR/SPECI → US → TAF → SIGMET/AIRMET → API/UI → VAA/TCA) | confirmed |
+| F6-R14 | Params | UI may auto-detect; **API requires `product`** (F6-R25); profile default annex3 | confirmed |
+| F6-R15 | UJ structure | Extend UJ-001; add UJ-005/006/007 + error UJ-008–010; UJ-DEV-003→003b | confirmed |
+| F6-R16 | T3 coverage | All 7 products annex3 via UI+API; US profile METAR/SPECI/TAF where applicable | confirmed |
+| F6-R17 | Product conflict | Explicit UI product wins; warn if ≠ auto-detect | confirmed |
+| F6-R18 | Batch files | Per-file product auto-detect; aggregate errors | confirmed |
+| F6-R19 | Test scope | F6 in scope; metrics lib/CI only; H6=UJ-001–007 | confirmed |
+| F6-R20 | Metrics CI | M-parse/xsd/sch required; archive gifts goldens post-delete | confirmed |
+| F6-R21 | Cutover gate | TC-F6-020/021 METAR/SPECI + UJ-001 before gifts-delete merge | confirmed |
+| F6-R22 | CI matrix | gifts → tac2iwxxm same cutover PR; Rust bench deferred to 04 | confirmed |
+| F6-R23 | Deps | tac2iwxxm MIT + lxml; IR TBD 04; optional PyO3; iwxxm-us vendor; gifts section marked removed | confirmed |
+| F6-R24 | API health | `tac2iwxxm_available`; remove `gifts_available` | confirmed |
+| F6-R25 | API convert | `product` **required**; `profile` optional default annex3; multipart only | confirmed |
+| F6-R26 | F5 params | Store product/profile in conversion_params; UI copies to multipart on submit | confirmed |
+| F6-R27 | API errors | codes unknown_product / invalid_profile / missing_iwxxm_us / parse_failed; 400/422/5xx | confirmed |
+| F6-R28 | Config | No new config/env keys; no cutover flag; US via request profile | confirmed |
+
+## S008 realtime / package amend (2026-07-12)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| RT-R1 | Session | Amend S008 (reopen 00+01); realtime = ingest pipeline | confirmed |
+| RT-R2 | Schematron | IWXXM only; TAC via separate lint package | confirmed |
+| RT-R3 | Packages | `packages/iwxxm-validate` + `packages/tac-validate` | confirmed |
+| RT-R4 | F2 | Evolves to thin wrapper over `iwxxm-validate` | confirmed |
+| RT-R5 | F6 | Bulletin split acceptance; phase **F6.bulletin** with/before F6.a | confirmed |
+| RT-R6 | F7 | Planned multi-product operator entry; F5 unchanged; no build this cycle | confirmed |
+| RT-R7 | F8 | Planned near-RT ingest; store+push; quarantine; worker later; no build this cycle | confirmed |
+| RT-R8 | This cycle | Package APIs + **API thin wrappers** for validate packages | confirmed |
+| RT-R9 | Non-goals | Auth/sinks/AMHS postponed; F6 “no Render deployable” left unchanged (worker under F8) | confirmed |
+| RT-R10 | Manifest | Feature List, Spec, Journeys, Test Plan, Deps, API light, ADRs; skip Config+Deploy | confirmed |
+| RT-R11 | Spec | Unified pipeline; dashed F8 worker; SoC on both validate packages | confirmed |
+| RT-R12 | Journeys | UJ-011/012 T2; UJ-013/014 Planned stubs; UJ-DEV-004; update UJ-002/005–007 | confirmed |
+| RT-R13 | Test plan | TC-F6-030–033; M-sch via iwxxm-validate; **H7** live bulletin gate | confirmed |
+| RT-R14 | Deps | Both packages MIT; tac-validate may use pydantic/msgspec in 04; iwxxm-validate uses lxml | confirmed |
+| RT-R15 | API | validate wraps iwxxm-validate; `POST /lint-tac`; `POST /convert-bulletin`; convert single-report | confirmed |
+| RT-R16 | ADR-015 | Validate packages + bulletin API + deferred F7/F8 + H7 | accepted |

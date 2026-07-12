@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "description": "M-field annotations for TC-F6-021 annex3 golden pack",
+  "cases": {
+    "metar_basic": {
+      "station": "KJFK",
+      "report_type": "METAR",
+      "wind_dir_deg": 180,
+      "wind_speed_kt": 12,
+      "visibility_sm": 10,
+      "temp_c": 15,
+      "dewpoint_c": 7,
+      "altimeter_inhg": 30.05,
+      "nil": false
+    },
+    "speci_basic": {
+      "station": "KJFK",
+      "report_type": "SPECI",
+      "wind_dir_deg": 200,
+      "wind_speed_kt": 15,
+      "wind_gust_kt": 25,
+      "visibility_sm": 8,
+      "temp_c": 12,
+      "dewpoint_c": 6,
+      "altimeter_inhg": 30.01,
+      "nil": false
+    },
+    "metar_nil": {
+      "station": "YUDO",
+      "report_type": "METAR",
+      "nil": true
+    }
+  }
+}

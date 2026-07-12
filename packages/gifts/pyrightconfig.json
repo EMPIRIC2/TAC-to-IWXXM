@@ -1,7 +1,0 @@
-{
-  "include": ["gifts", "validation"],
-  "exclude": ["**/__pycache__", "**/.venv"],
-  "pythonVersion": "3.12",
-  "typeCheckingMode": "off",
-  "reportMissingTypeStubs": false
-}

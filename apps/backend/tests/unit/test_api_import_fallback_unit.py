@@ -69,6 +69,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "fastapi",
         Depends=_fake_dep,
         FastAPI=_FakeFastAPI,
+        File=lambda *args, **kwargs: None,
         Form=lambda default=None, **_kwargs: default,
         HTTPException=_FakeHTTPException,
         Request=object,
@@ -129,7 +130,14 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
     fake_schemas_validation = _stub_module(
         "schemas.validation",
         ValidateRequest=_StubModel,
+        ValidateResponse=_StubModel,
         ValidationLayer=fake_validation_layer,
+        BulletinMetaModel=_StubModel,
+        BulletinReportResultModel=_StubModel,
+        ConvertBulletinResponse=_StubModel,
+        LintTacResponse=_StubModel,
+        LintIssueModel=_StubModel,
+        LintFixModel=_StubModel,
     )
 
     fake_statistics_service = types.SimpleNamespace()
@@ -197,6 +205,13 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "utilities.observability": fake_util_observability,
         "utilities.security": fake_util_security,
         "utilities.tac_parser": fake_util_tac,
+        "iwxxm_validate": _stub_module("iwxxm_validate", validate=lambda *a, **k: None),
+        "tac2iwxxm": _stub_module(
+            "tac2iwxxm",
+            BulletinSplitError=Exception,
+            split_bulletin=lambda *a, **k: None,
+        ),
+        "tac_validate": _stub_module("tac_validate", lint=lambda *a, **k: None),
     }
 
     for name, module in stubs.items():

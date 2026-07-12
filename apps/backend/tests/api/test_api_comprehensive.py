@@ -77,7 +77,7 @@ class TestCorsConfiguration:
 class TestHealthEndpointEdgeCases:
     """Test health endpoint edge cases."""
 
-    def test_health_with_gifts_available(self):
+    def test_health_with_tac2iwxxm_available(self):
         """Test health when GIFTs is available."""
         client = TestClient(app)
         response = client.get("/health")
@@ -85,7 +85,7 @@ class TestHealthEndpointEdgeCases:
         assert response.status_code == 200
         data = response.json()
         assert "status" in data
-        assert "gifts_available" in data
+        assert "tac2iwxxm_available" in data
         assert data["status"] in ["healthy", "degraded"]
 
     def test_health_response_has_version(self):
@@ -113,13 +113,13 @@ class TestHealthEndpointEdgeCases:
         data = response.json()
         assert data["status"] in ["healthy", "degraded", "unhealthy"]
 
-    def test_health_gifts_available_boolean(self):
-        """Test gifts_available is boolean."""
+    def test_health_tac2iwxxm_available_boolean(self):
+        """Test tac2iwxxm_available is boolean."""
         client = TestClient(app)
         response = client.get("/health")
 
         data = response.json()
-        assert isinstance(data["gifts_available"], bool)
+        assert isinstance(data["tac2iwxxm_available"], bool)
 
 
 class TestRouterInclusion:

@@ -24,7 +24,7 @@ MANIFEST_PATH = ROOT / "vendor" / "manifest.json"
 
 @pytest.mark.migration
 class TestTcM002ManifestIntegrity:
-    """Manifest pins must match vendored wmo-im schema trees."""
+    """Manifest pins must match vendored schema trees (WMO + iwxxm-us)."""
 
     def test_manifest_integrity_passes(self) -> None:
         """Step 1-2: manifest validation reports no drift."""
@@ -32,12 +32,25 @@ class TestTcM002ManifestIntegrity:
         assert result.ok, "manifest integrity failed:\n" + "\n".join(result.errors)
 
     def test_manifest_declares_all_required_bundles(self) -> None:
-        """Each wmo-im bundle from dependency-inventory.md is pinned."""
+        """Each vendor bundle from dependency-inventory.md is pinned."""
         assert MANIFEST_PATH.is_file(), "vendor/manifest.json must exist (T2.2)"
         manifest = load_manifest(MANIFEST_PATH)
         bundles = manifest["bundles"]
         for name in VENDOR_BUNDLE_NAMES:
             assert name in bundles, f"missing bundle pin: {name}"
+
+    def test_iwxxm_us_http_pin_fields(self) -> None:
+        """TC-F6-M001 / T1.5: iwxxm-us uses NWS HTTPS archive + hashes."""
+        manifest = load_manifest(MANIFEST_PATH)
+        entry = manifest["bundles"]["iwxxm-us"]
+        assert entry["source_url"].startswith(
+            "https://nws.weather.gov/schemas/iwxxm-us/3.0/"
+        )
+        assert entry["tag"] == "3.0"
+        assert entry["local_path"] == "vendor/schemas/iwxxm-us"
+        assert len(entry["tree_sha256"]) == 64
+        assert len(entry["archive_sha256"]) == 64
+        assert (ROOT / "vendor/schemas/iwxxm-us/3.0/metarSpeci.xsd").is_file()
 
     def test_manifest_schema_version(self) -> None:
         """Manifest uses the supported schema version."""

@@ -6,7 +6,9 @@ requires-python = ">=3.12"
 dependencies = [
     "metar-auth",
     "metar-shared",
-    "gifts",
+    "tac2iwxxm",
+    "tac-validate",
+    "iwxxm-validate",
     "fastapi>=0.110",
     "uvicorn>=0.23",
     "python-multipart>=0.0.20",
@@ -87,6 +89,8 @@ omit = [
     "*/test_*.py",
     "tests/*",
     "*/tests/*",
+    # Transitional gifts bridge retained for tests; not on F6 convert path (ADR-014 cutover).
+    "src/utilities/gifts_locationdb_adapter.py",
 ]
 
 [tool.coverage.report]
@@ -113,6 +117,8 @@ ignore = ["E501", "E741"]
 "src/config/icao_opmet.py" = ["F601"]
 
 [tool.uv.sources]
-gifts = { workspace = true }
+tac2iwxxm = { workspace = true }
 metar-auth = { workspace = true }
 metar-shared = { workspace = true }
+tac-validate = { workspace = true }
+iwxxm-validate = { workspace = true }

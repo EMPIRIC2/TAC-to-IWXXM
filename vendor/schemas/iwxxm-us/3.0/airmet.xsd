@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.weather.gov/iwxxm-us/3.0" version="3.0" attributeFormDefault="unqualified" xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:aixm="http://www.aixm.aero/schema/5.1.1">
+    <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+    <import namespace="http://www.aixm.aero/schema/5.1.1" schemaLocation="http://www.aixm.aero/schema/5.1.1/AIXM_Features.xsd"/>
+    <annotation>
+        <documentation>This package includes the information needed to model the Federal Aviation
+        Administration's filed differences to the International Civil Aviation Organization for the
+        AIRMET product.
+
+        The National Weather Service Instruction 10-811 describes the content and preparation of its
+        AIRMETs.</documentation>
+    </annotation>
+    <element name="AIRMETEvolvingConditionExtension" type="iwxxm-us:AIRMETEvolvingConditionExtensionType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>Additional parameters in use by the NWS in issuing AIRMETs.</documentation>
+        </annotation>
+    </element>
+    <complexType name="AIRMETEvolvingConditionExtensionType">
+        <sequence>
+            <element name="validTimeSubPeriod" minOccurs="0" maxOccurs="1" type="gml:TimePrimitivePropertyType">
+                <annotation>
+                    <documentation>Time instant or period which the evolving condition is
+                    valid. This element shall have a value (or time period) that lies entirely
+                    within iwxxm:validPeriod.</documentation>
+                </annotation>
+            </element>
+            <element name="freezingLevel" minOccurs="0" maxOccurs="unbounded" type="iwxxm-us:FreezingLevelType">
+                <annotation>
+                    <documentation>Set of 0° Celsius isotherms denoting the 'shape' of the freezing
+                    levels in 3-D space.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="AIRMETEvolvingConditionExtensionPropertyType">
+        <sequence>
+            <element ref="iwxxm-us:AIRMETEvolvingConditionExtension"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="AIRMETWeatherHazards" type="iwxxm-us:AIRMETWeatherHazardsType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>Weather phenomena not found in WMO Code Registry that is causing the
+            hazard.
+
+            Boolean attribute/flag if weather phenomena is causing Low-Level Wind Shear conditions
+            to occur.
+
+            Boolean attribute/flag if weather phenomena is causing:
+
+	      1. Prevailing horizontal visibility reduced to less than 3 statute miles AND/OR
+	      2. Broken or overcast cloud bases below 1000 feet (300 meters) AGL.</documentation>
+        </annotation>
+    </element>
+    <complexType name="AIRMETWeatherHazardsType">
+        <sequence>
+            <element name="weatherPhenomenon" type="iwxxm-us:AIRMETWeatherPhenomenaType" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>En route weather phenomena which may affect safety of flight
+                    and/or airport operations.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="causingLLWSConditions" type="boolean">
+            <annotation>
+                <documentation>Boolean attribute/flag set to 'true' if weather phenomena is causing Low-Level Wind Shear conditions to occur.</documentation>
+            </annotation>
+        </attribute>
+        <attribute name="causingIFRConditions" type="boolean">
+            <annotation>
+                <documentation>Boolean attribute/flag set to 'true' if weather phenomena is causing:
+1. Prevailing horizontal visibility reduced to less than 3 statute miles AND/OR
+2. Broken or overcast cloud bases below 1000 feet (300 meters) AGL.</documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+    <complexType name="AIRMETWeatherHazardsPropertyType">
+        <sequence>
+            <element ref="iwxxm-us:AIRMETWeatherHazards"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="FreezingLevel" type="iwxxm-us:FreezingLevelType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>Depiction of 0° C isotherm at constant height, or flight level, above
+            the ground.</documentation>
+        </annotation>
+    </element>
+    <complexType name="FreezingLevelType">
+        <sequence>
+            <element name="flightLevel" type="aixm:AirspaceLayerType">
+                <annotation>
+                    <documentation>Height of planar quasi-horizontal surface above mean sea level.</documentation>
+                </annotation>
+            </element>
+            <element name="multipleLevels" type="boolean"/>
+            <element name="closedBoundary" minOccurs="0" maxOccurs="1" type="gml:LineStringSegmentType">
+                <annotation>
+                    <documentation>Sequence of geo-coordinates corresponding to the location of the 0° C 
+                    isotherm on the quasi-horizontal plane that forms a closed loop.</documentation>
+                </annotation>
+            </element>
+            <element name="openBoundary" minOccurs="0" maxOccurs="1" type="gml:LineStringSegmentType">
+                <annotation>
+                    <documentation>Sequence of geo-coordinates corresponding to the location of the 0 degree isopleth on the quasi-horizontal plane that do not form a closed loop.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="FreezingLevelPropertyType">
+        <sequence>
+            <element ref="iwxxm-us:FreezingLevel"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="FreezingLevelForecast" type="iwxxm-us:FreezingLevelForecastType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>Set of 0° C isotherms at given forecast time period or instant.</documentation>
+        </annotation>
+    </element>
+    <complexType name="FreezingLevelForecastType">
+        <sequence>
+            <element name="validTimeSubPeriod" type="gml:TimePrimitivePropertyType">
+                <annotation>
+                    <documentation>Valid time period or instant of this freezing level forecast. The
+                    time references an instant in time or period that lies entirely within
+                    iwxxm:validPeriod.</documentation>
+                </annotation>
+            </element>
+            <element name="isopleth" minOccurs="1" maxOccurs="unbounded" type="iwxxm-us:FreezingLevelType">
+                <annotation>
+                    <documentation>Set of open and/or closed boundaries denoting areas of
+                    temperatures aloft that are at or below freezing.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <complexType name="FreezingLevelForecastPropertyType">
+        <sequence>
+            <element ref="iwxxm-us:FreezingLevelForecast"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="AIRMETWeatherPhenomena" type="iwxxm-us:AIRMETWeatherPhenomenaType"/>
+    <complexType name="AIRMETWeatherPhenomenaType">
+        <annotation>
+            <documentation>NWS Code List register of AIRMET weather hazards not listed in the WMO
+            Registry.</documentation>
+            <appinfo>
+                <vocabulary>https://codes.nws.noaa.gov/NWSI-10-811/HazardTypes</vocabulary>
+                <extensibility>none</extensibility>
+            </appinfo>
+        </annotation>
+        <complexContent>
+            <extension base="gml:ReferenceType"/>
+        </complexContent>
+    </complexType>
+    <element name="FlightInformationRegions" type="iwxxm-us:FlightInformationRegionsType"/>
+    <complexType name="FlightInformationRegionsType">
+        <annotation>
+            <documentation>Pre-defined regions of Hawai'i and Alaska which forecast conditions are
+            provided by NWS Aviation Services Units.</documentation>
+            <appinfo>
+                <vocabulary>https://nws.weather.gov/schemas/iwxxm-us/geodata/AOR-FA</vocabulary>
+                <extensibility>none</extensibility>
+            </appinfo>
+        </annotation>
+        <complexContent>
+            <extension base="gml:ReferenceType"/>
+        </complexContent>
+    </complexType>
+</schema>

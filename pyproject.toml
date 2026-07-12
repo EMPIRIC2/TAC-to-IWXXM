@@ -7,8 +7,7 @@ dependencies = []
 
 [tool.uv]
 package = false
-# Python 3.12 pinned per ADR-005; members added as packages scaffold (T1.4+).
-# Target members: packages/shared, packages/auth, packages/gifts, apps/backend
+# Python 3.12 pinned per ADR-005; S008 F6 members: tac2iwxxm, iwxxm-validate, tac-validate.
 
 [dependency-groups]
 dev = [
@@ -20,21 +19,35 @@ dev = [
   "pytest-asyncio>=0.24",
   "httpx>=0.28",
   "httpx2>=2.0",
+  "respx>=0.21",
   "metar-shared",
-  "gifts",
   "metar-auth",
   "metar-backend",
+  "metar-worker",
+  "tac2iwxxm",
+  "iwxxm-validate",
+  "tac-validate",
 ]
 
 [tool.uv.sources]
 metar-shared = { workspace = true }
-gifts = { workspace = true }
 metar-auth = { workspace = true }
 metar-backend = { workspace = true }
+metar-worker = { workspace = true }
+tac2iwxxm = { workspace = true }
+iwxxm-validate = { workspace = true }
+tac-validate = { workspace = true }
 
-# Workspace members populated incrementally during Phase 1–2 (T1.4 shared, T3.3 gifts, T4.3 auth).
 [tool.uv.workspace]
-members = ["packages/shared", "packages/gifts", "packages/auth", "apps/backend"]
+members = [
+  "packages/shared",
+  "packages/auth",
+  "packages/tac2iwxxm",
+  "packages/iwxxm-validate",
+  "packages/tac-validate",
+  "apps/backend",
+  "apps/worker",
+]
 
 [tool.basedpyright]
 pythonVersion = "3.12"
@@ -50,8 +63,6 @@ exclude = [
   "vendor",
   "apps/frontend/dist",
   "frontend/dist",
-  "GIFTs/.venv",
-  "packages/gifts/.venv",
 ]
 reportMissingTypeStubs = false
 reportUnknownMemberType = "warning"

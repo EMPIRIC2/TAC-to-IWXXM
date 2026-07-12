@@ -1,8 +1,8 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-06-23 (F5 work history delta) (S003 Supabase keys + runtime config)
-> **Delta**: Monorepo migration M4 — auth service merged into backend API
+> **Last updated**: 2026-07-12 (S008 F6 delta)
+> **Delta**: Monorepo migration M4 — auth merged; F6 tac2iwxxm convert product/profile
 
 ## Base URLs
 
@@ -35,10 +35,11 @@ GET /health
 {
   "status": "healthy",
   "version": "0.1.0",
-  "gifts_available": true
+  "tac2iwxxm_available": true
 }
 ```
 
+**Breaking (F6 cutover)**: `gifts_available` removed; clients must use `tac2iwxxm_available`.
 ### Authentication (packages/auth — same host post-migration)
 
 ```
@@ -76,15 +77,151 @@ scripts only (ADR-010).
 POST /api/v1/convert
 ```
 
-**Auth**: Required unless `DISABLE_AUTH=true` (dev only).
+**Auth**: Required unless `DISABLE_AUTH=true` (dev only). Guests may convert when that policy applies;
+work-session persistence still requires JWT.
 
-**Request** (multipart/form-data):
-- `files` (optional): METAR TAC files
-- `manual_text` (optional): TAC string
+**Request** (multipart/form-data **only** for product/profile — not read from JSON body):
 
-**Response**: `ConversionResponse` — see docs/guides/API.md
+| Field | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `files` | no* | — | TAC files |
+| `manual_text` | no* | — | TAC string |
+| `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` |
+| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
+| `iwxxm_version` | no | app default | Vendored pin (e.g. `2025-2`) |
+| `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
+
+\* At least one of `files` or `manual_text` required (unchanged).
+
+**Notes**:
+- Auto-detect is **UI-side only**; API rejects missing `product` with **400**.
+- F5 may **store** `product`/`profile` in `conversion_params` for UI restore; on submit the UI
+  **copies** them into multipart fields.
+- No `engine` field; converter is always `tac2iwxxm` after cutover.
+- No metrics object on the response (library/CI only).
+- **Single-report only**: WMO AHL **bulletins** use `POST /api/v1/convert-bulletin` (below).
+
+**Response**: `ConversionResponse` — see docs/guides/API.md (shape unchanged).
 
 Each `ConversionResult` includes optional `tac_input` (original TAC echo) for input traceability ([#594](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/594)).
+
+**Errors** (F6): Prefer existing `errors` / `issues` arrays; include machine-readable `code` when applicable:
+
+| code | HTTP | When |
+|------|------|------|
+| `unknown_product` | 400 | Invalid product enum / unsupported |
+| `invalid_profile` | 400 | Profile not in enum |
+| `missing_iwxxm_us` | 400 | `profile=iwxxm_us` but vendor pin/catalog missing |
+| `parse_failed` | 422 | TAC fails product parse |
+| `tac_lint_failed` | 422 | Optional when convert path invokes lint (prefer `/lint-tac`) |
+
+Unexpected converter crashes remain **5xx**.
+
+### Bulletin conversion (S008 amend)
+
+```
+POST /api/v1/convert-bulletin
+```
+
+**Purpose**: Accept a **WMO abbreviated-header (AHL) bulletin** that may contain **multiple**
+TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/api/v1/convert`.
+
+**Auth**: Same as `/api/v1/convert`.
+
+**Request** (multipart/form-data):
+
+| Field | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `files` | no* | — | Bulletin file(s) |
+| `manual_text` | no* | — | Bulletin string |
+| `product` | **yes** | — | Same enum as convert |
+| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
+| `iwxxm_version` | no | app default | Vendored pin |
+| `lint` | no | `true` | When true, run `tac-validate` before each report convert |
+
+* At least one of `files` or `manual_text` required.
+
+**Response** (S008 04 — Q6=A, Q7=C):
+
+```json
+{
+  "bulletin_meta": {
+    "ahl": "SAUS31 KZNY 121200",
+    "report_count": 2,
+    "tt": "SA",
+    "aa": "US",
+    "cccc": "KZNY",
+    "yygggg": "121200"
+  },
+  "results": [
+    {
+      "report_index": 0,
+      "ok": true,
+      "tac_input": "METAR ...",
+      "xml": "<iwxxm:...>",
+      "issues": [],
+      "fixes": []
+    },
+    {
+      "report_index": 1,
+      "ok": false,
+      "tac_input": "METAR ...",
+      "xml": null,
+      "issues": [
+        {"severity": "error", "code": "parse_failed", "message": "...", "location": null}
+      ],
+      "fixes": [
+        {"code": "suggest_icao", "message": "Replace XXXX with valid ICAO", "replacement": null}
+      ]
+    }
+  ]
+}
+```
+
+- **Partial success allowed**: HTTP **200** when split succeeds even if some reports fail;
+  callers inspect per-report `ok` / `issues` / `fixes`.
+- Must support H7 (TC-LIVE-F6-030).
+
+**Errors** (whole-request): Same codes as convert, plus:
+
+| code | HTTP | When |
+|------|------|------|
+| `bulletin_split_failed` | 422 | Cannot parse AHL / split reports |
+| `empty_bulletin` | 400 | No reports after split |
+
+### TAC lint (S008 amend)
+
+```
+POST /api/v1/lint-tac
+```
+
+**Purpose**: Thin wrapper over `packages/tac-validate` (parse gate + shared rule pack).
+**Not** Schematron.
+
+**Auth**: Same as convert (unless `DISABLE_AUTH=true`).
+
+**Request** (**multipart/form-data only** — Q8=A):
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `manual_text` or `files` | yes | TAC text |
+| `product` | no | Hint when known; improves rule selection |
+
+**Response** (HTTP pydantic map of msgspec package issues — Q9=C):
+
+```json
+{
+  "ok": false,
+  "issues": [
+    {"severity": "error", "code": "rule_x", "message": "...", "location": "wind"}
+  ],
+  "fixes": [
+    {"code": "normalize_wind", "message": "...", "replacement": "12010KT"}
+  ]
+}
+```
+
+Must support TC-F6-031.
 
 ### Validation
 
@@ -92,8 +229,12 @@ Each `ConversionResult` includes optional `tac_input` (original TAC echo) for in
 POST /api/v1/validate
 ```
 
-**Request/Response**: Unchanged from current backend contract.
+**Implementation**: Thin wrapper over **`packages/iwxxm-validate`** (XSD + Schematron).
 
+**Request**: Existing body/content-type **plus** optional `profile` (`annex3` default |
+`iwxxm_us`). When US, validation uses combined WMO + iwxxm-us catalogs.
+
+**Response**: Unchanged pass/fail + messages shape.
 ### Work sessions (F5 — S004 / EV-004)
 
 All routes require Bearer JWT unless noted. User routes enforce RLS via caller JWT.
@@ -119,7 +260,7 @@ POST   /api/v1/work-sessions/{id}/restore
   "converted_results": [],
   "errors": [],
   "issues": [],
-  "conversion_params": { "iwxxm_version": "2025-2" },
+  "conversion_params": { "iwxxm_version": "2025-2", "product": "metar", "profile": "annex3" },
   "status": "draft | wip | finished | failed",
   "kv_upload_key": "optional — set on successful send"
 }
@@ -183,6 +324,9 @@ resume logic runs.
 
 Preflight: `OPTIONS` on `/api/v1/*`, `/auth/*`, and `/admin/*`.
 
+F6 product/profile fields do **not** change CORS headers. Frontend and API remain different
+origins on Render; configure `config.*.api.corsOrigins` accordingly.
+
 ## Error Format
 
 ```json
@@ -191,7 +335,8 @@ Preflight: `OPTIONS` on `/api/v1/*`, `/auth/*`, and `/admin/*`.
 }
 ```
 
-HTTP status codes unchanged.
+Convert responses may also carry `errors` / `issues` with optional `code` (see Conversion).
+HTTP status codes: 400 / 422 / 5xx as documented for F6; other routes unchanged.
 
 ## Frontend Integration
 
@@ -207,10 +352,23 @@ key injected from `SUPABASE_PUBLISHABLE_KEY`).
 **Deprecated**: `VITE_API_BASE_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`,
 `VITE_APP_URL` — one-release shim during S003 migration.
 
-**Breaking changes**: None intended for public JSON shapes. Internal Docker service names change
-(`auth:8000` → in-process).
+**Breaking changes (F6 cutover)**:
+- Health: `gifts_available` → `tac2iwxxm_available`
+- Convert: `product` required; `profile` optional (default `annex3`); multipart-only for those fields
+- No gifts dual-run / no `engine` parameter
+
+OpenAPI / shared TS codegen remains planned (P1); this contract is the requirements SoT until then.
 
 ## References
 
 - docs/guides/API.md (detailed examples — update paths during implementation)
 - docs/deploy.md §Integration
+- ADR-014; [ADR-015](adr/ADR-015-validate-packages-bulletin-api-f7-f8.md)
+
+### Session changelog
+
+- S008 (2026-07-12): product required; profile; tac2iwxxm_available; validate profile; error codes
+- S008 amend (2026-07-12): validate → iwxxm-validate; `POST /api/v1/lint-tac`;
+  `POST /api/v1/convert-bulletin` (multi-result TBD 04); `/convert` single-report only
+- S008 04 (2026-07-12): bulletin multi-result schema; lint-tac multipart-only; lint default on;
+  ADR-016–018

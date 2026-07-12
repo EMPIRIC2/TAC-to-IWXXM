@@ -139,47 +139,11 @@ class TestIWXXMValidationFunctions:
 class TestConversionUtilityEdgeCases:
     """Test remaining conversion utility edge cases."""
 
-    def test_conversion_gifts_import_failure_path(self):
-        """Test GIFTs import failure handling (line 38)."""
-        # This line is in a try/except for imports at module level
-        # Testing by importing the module verifies this path
+    def test_conversion_module_exports_convert(self):
+        """Cutover: conversion module exposes tac2iwxxm-backed entrypoints."""
         from src.utilities import conversion
 
         assert hasattr(conversion, "convert_metar_tac")
-
-    def test_load_aerodrome_db_docker_path(self):
-        """Test aerodrome DB loading from Docker path (line 110)."""
-        from src.utilities.conversion import _load_aerodrome_db
-
-        # Mock both source and Docker paths to not exist
-        with patch("pathlib.Path.exists", return_value=False):
-            result = _load_aerodrome_db()
-            assert result is None
-
-    def test_lookup_aerodrome_empty_parts(self):
-        """Test aerodrome lookup with empty parts (line 128)."""
-        from src.utilities.conversion import _lookup_aerodrome
-
-        mock_db = MagicMock()
-        # Line with only separators
-        mock_db.read_text.return_value = "||||\nKJFK|JFK||Test"
-
-        with patch("src.utilities.conversion._load_aerodrome_db", return_value=mock_db):
-            result = _lookup_aerodrome("KJFK")
-            assert result is not None
-
-    @pytest.mark.skip(reason="Mock not working due to multiple data source fallbacks in _lookup_aerodrome")
-    def test_lookup_aerodrome_position_assembly(self):
-        """Test aerodrome position string assembly (line 173)."""
-        from src.utilities.conversion import _lookup_aerodrome
-
-        mock_db = MagicMock()
-        # Test with some empty position fields
-        mock_db.read_text.return_value = "KJFK|JFK||Test|40.64||13"
-
-        with patch("src.utilities.conversion._load_aerodrome_db", return_value=mock_db):
-            result = _lookup_aerodrome("KJFK")
-            assert result is not None
-            # Should only include non-empty position components
-            assert "40.64" in result["position"]
-            assert "13" in result["position"]
+        assert hasattr(conversion, "convert_metar_tac_with_metadata")
+        assert not hasattr(conversion, "_load_aerodrome_db")
+        assert not hasattr(conversion, "_lookup_aerodrome")

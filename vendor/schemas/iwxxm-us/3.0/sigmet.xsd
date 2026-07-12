@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.weather.gov/iwxxm-us/3.0" version="3.0" attributeFormDefault="unqualified" xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:aixm="http://www.aixm.aero/schema/5.1.1">
+    <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+    <import namespace="http://www.aixm.aero/schema/5.1.1" schemaLocation="http://www.aixm.aero/schema/5.1.1/AIXM_Features.xsd"/>
+    <annotation>
+        <documentation>This package includes the information needed to model the Federal Aviation
+        Administration's filed differences to the International Civil Aviation Organization for the
+        SIGMET product.
+
+        The National Weather Service Instruction 10-811 describes the content and preparation of its
+        SIGMETs.</documentation>
+    </annotation>
+    <element name="AffectedStates" type="iwxxm-us:AffectedStatesType" substitutionGroup="aixm:AbstractAirspaceVolumeExtension">
+        <annotation>
+            <documentation>List of states (by 2-letter Abbreviation) affected by the iwxxm:geometry.</documentation>
+        </annotation>
+    </element>
+    <complexType name="AffectedStatesType">
+        <complexContent>
+            <extension base="aixm:AbstractExtensionType">
+                <sequence>
+                    <element name="stateIDs" type="string">
+                        <annotation>
+                            <documentation>CONUS States affected by AirspaceVolume.</documentation>
+                        </annotation>
+                    </element>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="AffectedStatesPropertyType">
+        <sequence minOccurs="0">
+            <element ref="iwxxm-us:AffectedStates"/>
+        </sequence>
+        <attributeGroup ref="gml:AssociationAttributeGroup"/>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="SIGMETWeatherHazards" type="iwxxm-us:SIGMETWeatherHazardsType" substitutionGroup="gml:AbstractObject">
+        <annotation>
+            <documentation>En route weather phenomena not in the WMO Registry which will affect
+            safety of flight and/or airport operations.</documentation>
+        </annotation>
+    </element>
+    <complexType name="SIGMETWeatherHazardsType">
+        <sequence>
+            <element name="weatherPhenomenon" type="iwxxm-us:SIGMETWeatherPhenomenaType" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>En route weather phenomena which will affect safety of flight
+                    operations.</documentation>
+                </annotation>
+            </element>
+            <element name="watchInformation" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Forecaster free text regarding severe weather watch(es) affecting
+                    the SIGMET.</documentation>
+                </annotation>
+            </element>
+            <element name="maxWindGusts" type="gml:MeasureType" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Expected or reported maximum wind speed gusts associated with
+                    convective activity.</documentation>
+                </annotation>
+            </element>
+            <element name="maxHailSize" type="gml:MeasureType" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Expected or reported maximum hail size diameter with convective
+                    activity.</documentation>
+                </annotation>
+            </element>
+            <element name="tornadicPhenomena" type="iwxxm-us:HazardStateType" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Status regarding the presence of tornadic phenomena with
+                    convective activity.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="tag" type="string">
+            <annotation>
+                <documentation>Unique identifier of the hazardous region for tracking purposes.</documentation>
+            </annotation>
+        </attribute>
+        <attribute name="isSevere" type="boolean">
+            <annotation>
+                <documentation>This attribute is set to 'true' if any of the following conditions are present:
+1. Tornadic phenomenon, includes waterspouts
+2. Hail size greater than or equal to 3/4 inches in diameter
+3. Wind gusts exceeding 49 knots</documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+    <complexType name="SIGMETWeatherHazardsPropertyType">
+        <sequence>
+            <element ref="iwxxm-us:SIGMETWeatherHazards"/>
+        </sequence>
+        <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+    </complexType>
+    <element name="SIGMETWeatherPhenomena" type="iwxxm-us:SIGMETWeatherPhenomenaType"/>
+    <complexType name="SIGMETWeatherPhenomenaType">
+        <annotation>
+            <documentation>US specific hazards not found in WMO Code Registry which may affect the
+            safety of aircraft operations.</documentation>
+            <appinfo>
+                <vocabulary>https://codes.nws.noaa.gov/NWSI-10-811/SIGMETWeatherPhenomena</vocabulary>
+                <extensibility>none</extensibility>
+            </appinfo>
+        </annotation>
+        <complexContent>
+            <extension base="gml:ReferenceType"/>
+        </complexContent>
+    </complexType>
+    <simpleType name="HazardStateType">
+        <annotation>
+            <documentation>Forecaster's assessment of occurrence.</documentation>
+        </annotation>
+        <restriction base="string">
+            <enumeration value="POSSIBLE"/>
+            <enumeration value="EXPECTED"/>
+        </restriction>
+    </simpleType>
+</schema>

@@ -1,7 +1,7 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-06-15
+> Last updated: 2026-07-12 (S008 delta append)
 
 ## 04-tech-plan (pre-audit)
 
@@ -38,3 +38,19 @@
 | TAUDIT-012 | 2026-06-15 | Milestone naming | Feature↔milestone mapping table in execution plan | confirmed |
 | TAUDIT-013 | 2026-06-15 | TDD exceptions | Document migration-move exceptions (T2.3, T2.4, T5.3, T7.1) | confirmed |
 | TAUDIT-014 | 2026-06-15 | TC-M004 source | Label as Phase 4 finalize / T11.1 | confirmed |
+
+## S008 05-verify-tech (2026-07-12)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| TAUDIT-S008-01 | 2026-07-12 | F8 corpus | Align standing docs to ADR-018 (C01=1) | confirmed |
+| TAUDIT-S008-02 | 2026-07-12 | F6.e + H4–H6 | Add M8 T8.1–T8.4 (C02/C03=2) | confirmed |
+| TAUDIT-S008-03 | 2026-07-12 | Template rules | Update to `static+api+worker` + new packages (C04=1) | confirmed |
+| TAUDIT-S008-04 | 2026-07-12 | PyO3 | Required at cutover in standing docs (C05=1) | confirmed |
+| TAUDIT-S008-05 | 2026-07-12 | iwxxm-us pin | NWS HTTP 3.0 + URL/hash (C07=1) | confirmed |
+| TAUDIT-S008-06 | 2026-07-12 | TC-F6-010–012 | T5.6 + T8.4 UJ-008 (C09a=1) | confirmed |
+| TAUDIT-S008-07 | 2026-07-12 | Cutover E2E | T4.6 requires UJ-001/Playwright (C09c=1) | confirmed |
+| TAUDIT-S008-08 | 2026-07-12 | F6.b order | US METAR/SPECI in M4 T4.10–11 (M01=2) | confirmed |
+| TAUDIT-S008-09 | 2026-07-12 | Phase 1 gate | Include T1.6 (M02=1) | confirmed |
+
+See session report: `docs/sessions/S008-general-tac-iwxxm-converter/reports/05-verify-tech.md`.

@@ -2,15 +2,20 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-06-23 (S003 env-check tier)
+> **Last updated**: 2026-07-12 (S008 realtime/package amend)
 
 ## Scope
 
-**In scope**: Product features F1–F5; monorepo migration validation M1–M6; connectivity tiers H0c–H6 (local + live Render).
+**In scope**: Product features F1–F6 (F1 superseded by F6 engine); **F7/F8 Planned stubs** (no
+build TCs this cycle except package path); monorepo migration validation M1–M6 (M3 deprecated at
+F6 cutover); connectivity tiers **H0c–H7** (local + live Render); tac2iwxxm + `tac-validate` +
+`iwxxm-validate` metrics (library/CI); backend thin wrappers.
 
-**Out of scope**: Performance benchmarking; load testing; wmo-im schema correctness (upstream responsibility); scheduled CI live jobs (manual/Makefile only).
+**Out of scope**: Performance/load testing; wmo-im / IWXXM-US schema correctness beyond our fixtures;
+scheduled CI live jobs (manual/Makefile only); **convert-response metrics fields** (F6-R11);
+F7 UI / F8 worker / auth / sinks / AMHS (Planned only).
 
-### Live harness (delta 2026-06-22)
+### Live harness (delta 2026-06-22; H7 2026-07-12)
 
 Unified manual live test harness against Render staging:
 
@@ -18,8 +23,9 @@ Unified manual live test harness against Render staging:
 |------|-------|-----------------|
 | H3 | Live API pytest (health, convert, validate, auth) | `make test-live-api` |
 | H4–H5 | CORS preflight + frontend bundle URLs | `make test-live-connectivity` |
-| H6 | Playwright UJ-001–004 against live frontend | `make test-live-e2e` |
-| All | Sequential H4–H5 → H3 → H6 | `make test-live` |
+| H6 | Playwright UJ-001–007 (+ UJ-008 smoke) against live frontend | `make test-live-e2e` |
+| **H7** | Live bulletin gate: multi-report AHL → split → convert → Schematron | `make test-live-bulletin` (planned) |
+| All | Sequential H4–H5 → H3 → H6 → H7 | `make test-live` (extend when H7 lands) |
 
 **Prerequisite**: E2E-001 schema path regression must be resolved before H3 validate and full H6 UJ-002 pass (see [e2e-report.md](reports/e2e-report.md)).
 
@@ -34,18 +40,27 @@ Unified manual live test harness against Render staging:
 
 | Journey | Feature | Local E2E module | Live E2E | Test plan TC |
 |---------|---------|------------------|----------|--------------|
-| UJ-001 | F1 | `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/e2e/tac-file-upload-database.e2e.spec.ts` (Convert&Send one-click) | `make test-live-e2e` (H6) | TC-001, TC-LIVE-001 |
-| UJ-002 | F2 | backend validation tests + UI if exposed | H3 validate + H6 where exposed | TC-002, TC-LIVE-002 |
-| UJ-003 | F1 | `apps/e2e/auth.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-003, TC-LIVE-003 |
+| UJ-001 | F6 | `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/e2e/tac-file-upload-database.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-001, TC-LIVE-001 |
+| UJ-002 | F2+F6 | backend validation tests + UI if exposed | H3 validate + H6 where exposed | TC-002, TC-LIVE-002 |
+| UJ-003 | Auth | `apps/e2e/auth.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-003, TC-LIVE-003 |
 | UJ-004 | F5 | `apps/e2e/metar-work-history.e2e.spec.ts` (planned) | `make test-live-e2e` UJ-004 delta (H6) | TC-004, TC-LIVE-006 |
+| UJ-005 | F6 | F6 product-matrix Playwright (planned) | H6 | TC-F6-001, TC-LIVE-F6-001 |
+| UJ-006 | F6 | API product-matrix pytest | H3 live | TC-F6-002, TC-LIVE-F6-002 |
+| UJ-007 | F2+F6 | US-profile validate | H3 / H6 | TC-F6-003, TC-LIVE-F6-003 |
+| UJ-008–010 | F6 | error/edge specs | T2 (+ T3 smoke UJ-008) | TC-F6-010–012 |
+| UJ-011 | F6 | bulletin split API (T2) | **H7** live | TC-F6-030, TC-LIVE-F6-030 |
+| UJ-012 | F6 | tac-validate fail API (T2) | H3 optional smoke | TC-F6-031 |
+| UJ-013–014 | F7/F8 | Planned stubs — no automated TC this cycle | — | — |
+| UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
 
 **Admin dashboard E2E locators**: Each admin panel card (`h3`) and active panel body (`h2`) share the
 same title (e.g. `User Approvals`). Use `.first()` for card-only checks on the default approval view;
 use `.nth(1)` after clicking a card to assert the panel content heading.
 
 | UJ-DEV-001 | M1,M5 | CI monorepo-smoke job | — | TC-M001 |
-| UJ-DEV-002 | M2 | vendor manifest integrity tests | — | TC-M002 |
-| UJ-DEV-003 | M3 | gifts + conversion regression | — | TC-M003 |
+| UJ-DEV-002 | M2,F6 | vendor manifest integrity tests | — | TC-M002 |
+| UJ-DEV-003 | M3 | ~~gifts + conversion regression~~ | — | **TC-M003 deprecated** → TC-F6-020–022 |
+| UJ-DEV-003b | F6 | tac2iwxxm + iwxxm-us pin | — | TC-F6-M001 |
 | UJ-OPS-001 | M4 | deploy smoke H1–H5 | Render staging | TC-OPS-001 |
 
 ## Connectivity & Wiring
@@ -58,9 +73,12 @@ use `.nth(1)` after clicking a card to assert the panel content heading.
 | H3 | Live API smoke (pytest) | `make test-live-api` |
 | H4 | Live CORS preflight | `make test-live-connectivity` |
 | H5 | Frontend bundle URLs | `make test-live-connectivity` |
-| H6 | Live Playwright UJ-001–003 | `make test-live-e2e` |
+| H6 | Live Playwright UJ-001–007 (+ UJ-008 smoke) | `make test-live-e2e` |
+| **H7** | Live bulletin → split → convert → Schematron (UJ-011) | `make test-live-bulletin` (planned) |
 
 **Post-migration**: Single API origin simplifies CORS — auth routes on same host as `/api/v1/*`.
+**H7** is a dedicated connectivity gate for bulletin ingest path (not F8 worker); see
+[connectivity-gates.md](../.cursor/skills/connectivity-gates.md).
 
 **Env wiring** (see [config-spec.md](config-spec.md)):
 
@@ -78,8 +96,8 @@ use `.nth(1)` after clicking a card to assert the panel content heading.
 | Unit | pytest / Vitest | packages/*, apps/backend, apps/frontend components | `make test-unit` | per workspace |
 | Integration | pytest | API + auth + conversion | `make test-integration` | apps/backend/tests |
 | E2E smoke (CI) | Playwright | Auth bootstrap + TAC conversion (mock session, no secrets) | `make test-e2e-playwright-smoke` | apps/e2e/ |
-| E2E (T2) | Playwright | UJ-001–003 local stack | `make test-e2e-playwright` | apps/e2e/ |
-| Live E2E (T3) | Playwright + pytest | UJ-001–003 on Render | `make test-live` | apps/e2e/ + live pytest |
+| E2E (T2) | Playwright | UJ-001–007 local stack | `make test-e2e-playwright` | apps/e2e/ |
+| Live E2E (T3) | Playwright + pytest | UJ-001–007 on Render | `make test-live` | apps/e2e/ + live pytest |
 | Vendor | pytest | manifest + schema presence | `pytest tests/vendor` | tests/vendor |
 | CI | GitHub Actions | validate + test (matrix, incl. `bugs`) + e2e-smoke (Playwright) + deploy; path filters deferred (P2) | `.github/workflows/ci-cd.yml` | root |
 | Pre-commit | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml) | `.pre-commit-config.yaml` | root |
@@ -108,15 +126,11 @@ use `.nth(1)` after clicking a card to assert the panel content heading.
 - **Pass criteria**: No drift between manifest and tree.
 - **Source**: UJ-DEV-002
 
-### TC-M003: GIFTs Conversion Regression
+### TC-M003: GIFTs Conversion Regression — Deprecated
 
-- **Objective**: Representative METAR set converts identically pre/post migration.
-- **Preconditions**: Golden fixtures in `test-data/`.
-- **Steps**:
-  1. Run conversion on fixture set.
-  2. Compare normalized canonical XML (whitespace/order insensitive).
-- **Pass criteria**: Zero unexpected diffs (normalized canonical XML comparison).
-- **Source**: UJ-DEV-003
+- **Status**: **Deprecated** (S008 / ADR-014). Ownership moved to **TC-F6-020–022**.
+- **Historical objective**: Representative METAR set converts identically pre/post migration.
+- **Source**: UJ-DEV-003 (deprecated)
 
 ### TC-M004: No Submodule References
 
@@ -208,6 +222,7 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
   2. `pytest apps/backend/tests/infrastructure/test_live_api_health.py -m live_api`
 - **Pass criteria**: All live_api tests green; cold-start retries (3×, 30s backoff) succeed
 - **Resilience**: Exponential backoff on HTTP 429
+- **F6 note**: Health should report tac2iwxxm availability (not `gifts_available`) after cutover.
 - **Source**: UJ-001, H3
 
 ### TC-LIVE-002: Live Validation
@@ -231,17 +246,142 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: H0c-equivalent live checks pass (script exit 0)
 - **Source**: UJ-OPS-001, H4–H5
 
-### TC-LIVE-004: Live Playwright UJ-001–003
+### TC-LIVE-004: Live Playwright UJ-001–007
 
-- **Objective**: H6 — full product journeys against Render frontend
-- **Preconditions**: E2E-001 resolved; `PLAYWRIGHT_BASE_URL=${LIVE_FRONTEND_URL}`; `DISABLE_AUTH=false`; admin credentials in `.env`
+- **Objective**: H6 — product journeys against Render frontend (includes F6 matrix)
+- **Preconditions**: `PLAYWRIGHT_BASE_URL=${LIVE_FRONTEND_URL}`; `DISABLE_AUTH=false`; admin credentials in `.env`
 - **Steps**:
   1. Run `00-preflight.e2e.spec.ts` first (wake + health)
-  2. `make test-live-e2e` — auth login UI, METAR conversion UI, validation where exposed
+  2. `make test-live-e2e` — auth, METAR convert, F6 product/profile matrix (UJ-005), validation (UJ-002/007), UJ-008 smoke
   3. Playwright config disables local `webServer` when base URL is remote
-- **Pass criteria**: All UJ-001–003 specs green against live URLs
+- **Pass criteria**: UJ-001–007 specs green against live URLs
 - **Resilience**: Cold-start retry in preflight; serial execution (no parallel live requests)
-- **Source**: UJ-001–003, H6
+- **Source**: UJ-001–007, H6
+
+### TC-LIVE-F6-001 / TC-LIVE-F6-002 / TC-LIVE-F6-003
+
+- **Objective**: Live signoff for UJ-005 (UI 7 products annex3), UJ-006 (API matrix), UJ-007 (US validate)
+- **Pass criteria**: All seven products annex3 convert; US-profile METAR/SPECI/TAF where schemas apply
+- **Source**: F6 acceptance; H3/H6
+
+## F6 Test Cases (`tac2iwxxm`)
+
+### TC-F6-001: UI convert all 7 products annex3
+
+- **Objective**: UJ-005 T2/T3 parametrize
+- **Pass criteria**: Each product golden TAC → XML displayed; HTTP success
+- **Source**: UJ-005
+
+### TC-F6-002: API convert product matrix
+
+- **Objective**: UJ-006
+- **Pass criteria**: `POST /api/v1/convert` with `product`+`profile` succeeds for all seven annex3
+- **Source**: UJ-006
+
+### TC-F6-003: Validate iwxxm_us METAR/SPECI/TAF
+
+- **Objective**: UJ-007
+- **Pass criteria**: Combined catalog validation pass on fixtures
+- **Source**: UJ-007
+
+### TC-F6-010 / TC-F6-011 / TC-F6-012
+
+- **Objectives**: UJ-008 unknown product; UJ-009 missing US pin fail-closed; UJ-010 malformed REMARKS diagnostics
+- **Pass criteria**: Structured errors; no gifts fallback; no silent annex3 downgrade on US profile
+- **Plan ownership**: T5.6 (API/package); UJ-008 live smoke in T8.4 (D-S008-05-batch2)
+
+### TC-F6-020: M-parse / M-xsd / M-sch on golden pack
+
+- **Level**: Package CI (`packages/tac2iwxxm` + **`packages/iwxxm-validate`** for M-xsd / M-sch)
+- **Pass criteria**: Required metrics green on committed golden pack; **M-sch** executed via
+  `iwxxm-validate`
+- **Cutover gate**: Must pass for METAR/SPECI annex3 **and** iwxxm_us METAR/SPECI (T4.10–T4.11)
+  on first gifts-delete PR (with UJ-001 E2E — T4.6)
+
+### TC-F6-021: M-golden / M-field fixtures
+
+- **Pass criteria**: Per-fixture golden/field equality where annotated
+
+### TC-F6-022: Archive gifts goldens (post-delete)
+
+- **Objective**: After gifts removal, freeze last gifts Annex-3 XML as archive goldens for M-parity-style diffs
+- **Pass criteria**: Archive corpus present; diffs explained or zero vs tac2iwxxm annex3 METAR/SPECI
+
+### TC-F6-030: Bulletin split (UJ-011)
+
+- **Level**: T0 package + T2 API
+- **Objective**: WMO AHL multi-report bulletin → N reports → convert each
+- **Pass criteria**: Fixture yields expected report count; per-report IWXXM or structured errors
+- **Source**: UJ-011; F6.bulletin
+
+### TC-F6-031: TAC lint failure (UJ-012)
+
+- **Level**: T0 `tac-validate` + T2 API wrapper
+- **Objective**: Rule-pack / parse-gate failure returns structured issues
+- **Pass criteria**: Non-empty issues; no silent success
+- **Source**: UJ-012
+
+### TC-F6-032: iwxxm-validate package suite (UJ-DEV-004)
+
+- **Level**: T0 / CI
+- **Objective**: XSD + Schematron package tests against vendor pins
+- **Pass criteria**: CI green; M-sch ownership here
+- **Source**: UJ-DEV-004; F2
+
+### TC-F6-033: Backend thin wrappers
+
+- **Level**: T2 integration
+- **Objective**: Validation (and convert) routes call `iwxxm-validate` / `tac-validate` /
+  `tac2iwxxm` — no inline duplicate Schematron engine
+- **Pass criteria**: Wrapper smoke + import/SoC checks
+- **Source**: Q30=B acceptance
+
+### TC-LIVE-F6-030: H7 live bulletin gate
+
+- **Tier**: **H7**
+- **Objective**: Against live API — one committed multi-report bulletin fixture → split → convert
+  → Schematron pass (or documented quarantine-style fail)
+- **Command**: `make test-live-bulletin` (planned; wire in 04/07)
+- **Pass criteria**: Exit 0; N IWXXM results or structured per-report errors; Schematron via
+  `iwxxm-validate`
+- **Source**: UJ-011; Q44b=B
+
+### TC-F6-M001: tac2iwxxm workspace + iwxxm-us manifest
+
+- **Objective**: UJ-DEV-003b
+- **Pass criteria**: Package in uv workspace; `vendor/manifest.json` includes iwxxm-us pin; integrity tests pass;
+  **also** `tac-validate` and `iwxxm-validate` workspace members
+
+### F6 cutover PR gate
+
+Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
+
+- [ ] TC-F6-020 / TC-F6-021 METAR/SPECI annex3 green
+- [ ] TC-F6-003 METAR/SPECI `iwxxm_us` green (T4.10–T4.11)
+- [ ] UJ-001 / TC-001 E2E green (T4.6 — Playwright or local equivalent)
+- [ ] CI matrix uses `tac2iwxxm` (no `gifts` cell)
+- [ ] No `packages/gifts` in tree; API does not import gifts
+
+### F6 v1 done QA gate
+
+- [ ] TC-F6-001 / TC-F6-002 (7 products)
+- [ ] TC-F6-003 (US where applicable)
+- [ ] TC-F6-010 / TC-F6-011 / TC-F6-012 (T5.6 + T8.4 UJ-008)
+- [ ] TC-F6-020 / TC-F6-021
+- [ ] TC-F6-030 / TC-F6-031 / TC-F6-032 / TC-F6-033
+- [ ] Cutover complete (no gifts)
+- [ ] H4–H5 green (T8.3)
+- [ ] H6 UJ-001–007 (+ UJ-008 smoke) green (T8.4)
+- [ ] **H7** TC-LIVE-F6-030 green (when bulletin API is live)
+
+⚠️ **Resolved in 04/05**: PyO3 bench CI (T4.3–T4.5); `make test-live-bulletin` (T4.9).
+
+### Session changelog
+
+- S008 (2026-07-12): F6 test matrix, metrics gates, H6 expansion, TC-M003 deprecated
+- S008 amend (2026-07-12): TC-F6-030–033; H7 bulletin gate; M-sch via iwxxm-validate; UJ-013/014 no TC
+- S008 05 (2026-07-12): Cutover E2E ownership T4.6; TC-F6-010–012 → T5.6/T8.4; F6.b US in M4
+  (D-S008-05-batch2)
 
 ### TC-LIVE-005: Stale Test Migration
 
@@ -271,7 +411,7 @@ pre-commit fast hooks where applicable. Scheduled workflows (`vendor-sync`, load
 | Trigger | Workflow | Jobs | Checks |
 |---------|----------|------|--------|
 | PR / push `main`, `dev` | `ci-cd.yml` | **validate** | ruff format/check, prettier, eslint, basedpyright, tsc, gitleaks, actionlint/yamllint, config-guard (`tests/test_config_placeholders.py`), frontend npm audit |
-| PR / push `main`, `dev` | `ci-cd.yml` | **test** | matrix unit+coverage (backend, auth, gifts, frontend, shared @ 98%), integration matrix (docker compose), Codecov upload (95% gate) |
+| PR / push `main`, `dev` | `ci-cd.yml` | **test** | matrix unit+coverage (backend, auth, **tac2iwxxm**, **tac-validate**, **iwxxm-validate**, frontend, shared @ 98% — **gifts removed at F6 cutover**), integration matrix (docker compose), Codecov upload (95% gate) |
 | push `main` only | `ci-cd.yml` | **deploy** | Docker build/push GHCR, Render deploy hooks |
 | Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
 | Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 scope |
@@ -301,9 +441,9 @@ Slow checks (`make ci` integration, full unit matrix) remain CI-only; optional v
 
 | Dataset | Source | Location |
 |---------|--------|----------|
-| Sample METAR TAC | repo fixtures | `test-data/` |
-| IWXXM schemas | wmo-im vendored | `vendor/schemas/` |
-| Golden XML | generated baseline | `test-data/golden/` (optional) |
+| Sample METAR / multi-product TAC | repo fixtures | `test-data/` + `packages/tac2iwxxm/tests/` |
+| IWXXM schemas | wmo-im + iwxxm-us vendored | `vendor/schemas/` |
+| Golden XML | baseline + archive gifts goldens | `test-data/golden/` / package golden/ |
 
 ## Metrics & Thresholds
 

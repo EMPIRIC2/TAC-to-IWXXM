@@ -122,3 +122,18 @@ Derived from 04-tech-plan user decisions (TECH-001–TECH-012) and approved ADRs
 ## Next Step
 
 **06-tech-tooling** — development hooks for lint, format, typecheck, and test enforcement.
+
+---
+
+## S008 delta (2026-07-12)
+
+Full report: [`docs/sessions/S008-general-tac-iwxxm-converter/reports/05-verify-tech.md`](../sessions/S008-general-tac-iwxxm-converter/reports/05-verify-tech.md).
+
+| Metric | Value |
+|--------|-------|
+| Mode | delta (F6/F8 tech plan) |
+| Statements / contradictions resolved | 9 user + auto-closed C06/C08/C10 |
+| Plan after audit | 8 milestones / 51 tasks |
+| Phase B (S008) | 04+05 done; 06 N/A on routing |
+
+Next for S008 routing: **16-evolve**, then **07-build**.

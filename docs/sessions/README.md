@@ -31,11 +31,12 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S004-issue-555-feedback](S004-issue-555-feedback/session-brief.md) | feature | completed | #555 UX + F5 work history | feat/S004-issue-555-feedback | 2026-06-23 | 2026-06-25 |
 | [S005-issue-671-docker-db](S005-issue-671-docker-db/session-brief.md) | hotfix | completed | Docker Compose bundled Postgres (#671) | fix/S005-issue-671-docker-db | 2026-06-25 | 2026-06-25 |
 | [S006-issue-664-output-filename](S006-issue-664-output-filename/session-brief.md) | feature | completed | Custom output filename for manual METAR (#664) | feat/S006-issue-664-output-filename | 2026-06-25 | 2026-07-12 |
-| [S007-docs-minimize](S007-docs-minimize/session-brief.md) | process | in_progress | Minimize docs/ root; nest non-standing docs | docs/S007-docs-minimize | 2026-07-12 | — |
+| [S007-docs-minimize](S007-docs-minimize/session-brief.md) | process | completed | Minimize docs/ root; nest non-standing docs | docs/S007-docs-minimize | 2026-07-12 | 2026-07-12 |
+| [S008-general-tac-iwxxm-converter](S008-general-tac-iwxxm-converter/session-brief.md) | feature | in_progress | General TAC→IWXXM + IWXXM-US converter architecture | evolve/S008-general-tac-iwxxm-converter | 2026-07-12 | — |
 
 ## Active session
 
-**S007-docs-minimize** (`process`) — docs tree reorg on `docs/S007-docs-minimize`.
+**S008-general-tac-iwxxm-converter** (`feature`) — converter architecture on `evolve/S008-general-tac-iwxxm-converter`.
 
 ## Folder layout
 

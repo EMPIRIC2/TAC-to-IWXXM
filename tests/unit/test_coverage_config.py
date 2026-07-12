@@ -25,9 +25,11 @@ class TestCoverageConfig:
         content = (ROOT / "packages/shared/pyproject.toml").read_text(encoding="utf-8")
         assert "fail_under = 98" in content
 
-    def test_gifts_package_fail_under_98(self) -> None:
-        content = (ROOT / "packages/gifts/pyproject.toml").read_text(encoding="utf-8")
-        assert "fail_under = 98" in content
+    def test_tac2iwxxm_package_fail_under_95(self) -> None:
+        content = (ROOT / "packages/tac2iwxxm/pyproject.toml").read_text(
+            encoding="utf-8"
+        )
+        assert "fail_under = 95" in content
 
     def test_auth_package_fail_under_98(self) -> None:
         content = (ROOT / "packages/auth/pyproject.toml").read_text(encoding="utf-8")

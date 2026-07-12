@@ -11,6 +11,7 @@ env:
   REGISTRY: ghcr.io
   BACKEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/backend
   FRONTEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/frontend
+  WORKER_IMAGE: joseph-c-mcguire/metar-to-iwxxm/worker
   RENDER_DEPLOY_MODE: image
   # Canonical Supabase secrets (preferred). Deprecated FRONTEND_VITE_* kept for one-release shim.
   SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
@@ -70,7 +71,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [shared, backend, auth, gifts, frontend, integration, bugs]
+        package:
+          [
+            shared,
+            backend,
+            auth,
+            frontend,
+            tac2iwxxm,
+            iwxxm-validate,
+            tac-validate,
+            integration,
+            bugs,
+          ]
 
     steps:
       - uses: actions/checkout@v5
@@ -103,13 +115,6 @@ jobs:
         if: matrix.package == 'shared' || matrix.package == 'frontend'
         run: pnpm install --frozen-lockfile
 
-      - name: Prepare GIFTs demo databases
-        if: matrix.package == 'gifts'
-        run: |
-          cd packages/gifts/gifts/database && python3 create_pickle_db.py
-          cp aerodromes.db ../../demo/aerodromes.db
-          cp aerodromes.db ../../demo/aerodromes.win.db
-
       - name: Create frontend test environment file
         if: matrix.package == 'frontend'
         working-directory: ./apps/frontend
@@ -140,24 +145,30 @@ jobs:
             --cov-report=xml:coverage.xml --cov-report=term-missing \
             --cov-fail-under=98 -v
 
-      - name: Run GIFTs unit tests with coverage
-        if: matrix.package == 'gifts'
+      - name: Run tac2iwxxm unit tests with coverage
+        if: matrix.package == 'tac2iwxxm'
         run: |
-          cd packages/gifts && uv run pytest tests/ \
-            --cov=gifts --cov=validation --cov-config=pyproject.toml --cov-branch \
-            --cov-report=xml:coverage.xml --cov-report=term-missing \
-            --cov-fail-under=98 -v
+          uv run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
+            --cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=95 -v
+
+      - name: Run iwxxm-validate unit tests with coverage
+        if: matrix.package == 'iwxxm-validate'
+        run: |
+          uv run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
+            --cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=95 -v
+
+      - name: Run tac-validate unit tests with coverage
+        if: matrix.package == 'tac-validate'
+        run: |
+          uv run pytest packages/tac-validate/tests --cov=tac_validate \
+            --cov-config=packages/tac-validate/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=95 -v
 
       - name: Run frontend tests with coverage
         if: matrix.package == 'frontend'
         run: pnpm --filter @metar/frontend run test:coverage
-
-      - name: Prepare GIFTs demo databases for bug repro tests
-        if: matrix.package == 'bugs'
-        run: |
-          cd packages/gifts/gifts/database && python3 create_pickle_db.py
-          cp aerodromes.db ../../demo/aerodromes.db
-          cp aerodromes.db ../../demo/aerodromes.win.db
 
       - name: Run bug regression tests (tests/bugs)
         if: matrix.package == 'bugs'
@@ -180,7 +191,7 @@ jobs:
         run: |
           docker compose up -d backend frontend
           sleep 30
-          uv run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_gifts_backend_integration.py tests/test_integration.py -v
+          uv run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_integration.py -v
           cd apps/backend && uv run pytest tests/integration/test_h0i_connectivity.py -v --no-cov
           cd apps/backend && uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
           docker compose down
@@ -225,27 +236,6 @@ jobs:
           name: auth-coverage
           fail_ci_if_error: true
 
-      - name: Upload GIFTs coverage artifact
-        if: always() && matrix.package == 'gifts'
-        uses: actions/upload-artifact@v4
-        continue-on-error: true
-        with:
-          name: gifts-coverage-report
-          path: |
-            packages/gifts/htmlcov/
-            packages/gifts/coverage.xml
-
-      - name: Upload GIFTs coverage to Codecov
-        if: always() && matrix.package == 'gifts'
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: joseph-c-mcguire/metar-to-IWXXM
-          files: ./packages/gifts/coverage.xml
-          flags: gifts
-          name: gifts-coverage
-          fail_ci_if_error: true
-
       - name: Upload frontend coverage artifact
         if: always() && matrix.package == 'frontend'
         uses: actions/upload-artifact@v4
@@ -267,6 +257,48 @@ jobs:
       - name: Stop service stack after integration tests
         if: always() && matrix.package == 'integration'
         run: docker compose down
+
+  # ============================================================================
+  # NATIVE — tac2iwxxm PyO3 / maturin scaffold (ADR-017 / T4.3)
+  # ============================================================================
+  tac2iwxxm-native:
+    runs-on: ubuntu-latest
+    name: tac2iwxxm PyO3 (maturin)
+    needs: [validate]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install uv + workspace
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install maturin
+        run: uv pip install maturin
+
+      - name: Build tac2iwxxm._rust extension
+        working-directory: packages/tac2iwxxm
+        run: |
+          source "$HOME/.cargo/env" 2>/dev/null || true
+          uv run maturin develop --manifest-path rust/Cargo.toml --uv
+
+      - name: Smoke-test required native extension
+        env:
+          TAC2IWXXM_REQUIRE_RUST: '1'
+        run: |
+          uv run pytest packages/tac2iwxxm/tests/test_native_scaffold.py \
+            packages/tac2iwxxm/tests/test_pyo3_hotspots.py -v --no-cov
 
   # ============================================================================
   # E2E SMOKE — Playwright browser smoke (auth bootstrap + TAC conversion)
@@ -311,12 +343,6 @@ jobs:
       - name: Install Playwright browser (chromium)
         run: pnpm --filter @metar/e2e exec playwright install --with-deps chromium
 
-      - name: Prepare GIFTs demo databases
-        run: |
-          cd packages/gifts/gifts/database && python3 create_pickle_db.py
-          cp aerodromes.db ../../demo/aerodromes.db
-          cp aerodromes.db ../../demo/aerodromes.win.db
-
       - name: Run Playwright smoke specs
         run: make test-e2e-playwright-smoke
 
@@ -336,7 +362,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy
-    needs: [test]
+    needs: [test, tac2iwxxm-native]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
@@ -415,10 +441,22 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:main-latest
 
+      - name: Build and push worker Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./apps/worker/docker/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.tags.outputs.image_tag }}
+            ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:main-latest
+
       - name: Report deploy hook configuration
         run: |
           [ -n "${RENDER_BACKEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_BACKEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_BACKEND_DEPLOY_HOOK is missing"
           [ -n "${RENDER_FRONTEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_FRONTEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_FRONTEND_DEPLOY_HOOK is missing"
+          [ -n "${RENDER_WORKER_DEPLOY_HOOK}" ] && echo "✅ RENDER_WORKER_DEPLOY_HOOK is set" || echo "⚠️  RENDER_WORKER_DEPLOY_HOOK is missing (docker-from-git worker OK)"
 
       - name: Enforce backend deploy hook presence
         run: |

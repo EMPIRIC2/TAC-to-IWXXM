@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "description": "TC-F6-020/021 annex3 METAR/SPECI golden pack (WMO-shaped; not gifts)",
+  "cases": [
+    {
+      "id": "metar_basic",
+      "product": "METAR",
+      "tac": "metar_basic.tac",
+      "golden": "metar_basic.golden.xml"
+    },
+    {
+      "id": "speci_basic",
+      "product": "SPECI",
+      "tac": "speci_basic.tac",
+      "golden": "speci_basic.golden.xml"
+    },
+    {
+      "id": "metar_nil",
+      "product": "METAR",
+      "tac": "metar_nil.tac",
+      "golden": "metar_nil.golden.xml"
+    }
+  ]
+}
