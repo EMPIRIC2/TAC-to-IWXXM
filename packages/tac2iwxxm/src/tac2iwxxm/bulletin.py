@@ -102,15 +102,11 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
             "No TAC reports found after AHL header",
         )
 
-    # SPECI product should prefer SPECI reports; METAR prefers METAR (still allow mixed fixtures)
+    # Prefer product-matching reports; fail closed when none match the requested product
     if product_key == "SPECI":
-        speci_only = [r for r in reports if r.startswith("SPECI")]
-        if speci_only:
-            reports = speci_only
+        reports = [r for r in reports if r.startswith("SPECI")]
     elif product_key == "METAR":
-        metar_only = [r for r in reports if r.startswith("METAR")]
-        if metar_only:
-            reports = metar_only
+        reports = [r for r in reports if r.startswith("METAR")]
 
     if not reports:
         raise BulletinSplitError(

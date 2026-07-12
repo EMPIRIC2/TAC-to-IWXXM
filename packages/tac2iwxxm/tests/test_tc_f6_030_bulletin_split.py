@@ -100,3 +100,21 @@ def test_split_speci_product_uses_sp_ahl() -> None:
     assert result.meta.aa == "US"
     assert result.meta.report_count == 1
     assert result.reports[0].startswith("SPECI KJFK")
+
+
+def test_split_unsupported_product_raises() -> None:
+    from tac2iwxxm import BulletinSplitError, split_bulletin
+
+    text = _read("metar_multi_ahl.txt")
+    with pytest.raises(BulletinSplitError) as exc_info:
+        split_bulletin(text, product="TAF")
+    assert exc_info.value.code == "bulletin_split_failed"
+
+
+def test_split_metar_product_ignores_speci_body() -> None:
+    from tac2iwxxm import BulletinSplitError, split_bulletin
+
+    text = "SAUS31 KZNY 121200\nSPECI KJFK 121225Z 18015G25KT 3SM -RA BKN015 18/16 A2995=\n"
+    with pytest.raises(BulletinSplitError) as exc_info:
+        split_bulletin(text, product="METAR")
+    assert exc_info.value.code == "empty_bulletin"
