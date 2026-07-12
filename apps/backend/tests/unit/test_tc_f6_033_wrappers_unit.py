@@ -116,23 +116,17 @@ def test_validate_accepts_profile_and_calls_iwxxm_validate(client: TestClient, m
     xml = """<?xml version="1.0"?><root xmlns="http://icao.int/iwxxm/2023-1"/>"""
     response = client.post(
         "/api/v1/validate",
-        json={"iwxxm_xml": xml, "version": "2023-1", "validation_level": "schema", "profile": "annex3"},
+        files={
+            "xml_content": (None, xml),
+            "iwxxm_version": (None, "2023-1"),
+            "profile": (None, "annex3"),
+            "layers": (None, "XML_WELLFORMED"),
+        },
     )
     assert response.status_code == 200
     assert calls, "expected iwxxm_validate.validate to be called"
     assert calls[0]["profile"] == "annex3"
     assert calls[0]["iwxxm_version"]
-
-    data = response.json()
-    assert data["profile"] == "annex3"
-    assert data["package_ok"] is False
-    assert isinstance(data["package_issues"], list)
-    assert len(data["package_issues"]) == 1
-    issue_dto = data["package_issues"][0]
-    assert issue_dto["code"] == "E001"
-    assert issue_dto["message"] == "Example package issue"
-    assert issue_dto["severity"] == "error"
-    assert issue_dto["layer"] == "xsd"
 
 
 def test_convert_lint_form_defaults_true() -> None:

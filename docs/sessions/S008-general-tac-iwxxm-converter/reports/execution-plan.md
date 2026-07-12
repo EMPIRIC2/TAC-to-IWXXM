@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase 3: Bulletin + METAR/SPECI + PyO3 (pre-cutover) |
 | **Active milestone** | M4: METAR/SPECI (+ US) + PyO3 + cutover PR |
-| **Active task** | T4.10 (next — US METAR/SPECI goldens) |
-| **Tasks completed** | 23 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T4.1–T4.5 done) |
+| **Active task** | M4 complete — next 08-verify-build / PR |
+| **Tasks completed** | 29 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T4.7–T4.9 cutover complete) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -139,12 +139,12 @@
 | T4.3 | Config: maturin/PyO3 crate scaffold + CI rust job | Config | completed | ADR-017 | T1.2 |
 | T4.4 | Test: PyO3 hotspot tests + Q11 E2E lib bench (soft) | Test | completed | Q11=C, Q12b=A | T4.2, T4.3 |
 | T4.5 | Code: implement required PyO3 hotspots; hard-pass Q11 benches | Code | completed | ADR-017 | T4.4 |
-| T4.10 | Test: METAR/SPECI `iwxxm_us` goldens (TC-F6-003 subset) | Test | pending | F6.b, D-S008-05-batch2 | T4.2, T1.5 |
-| T4.11 | Code: US profile METAR/SPECI extensions | Code | pending | F6.b, ADR-013 | T4.10 |
-| T4.6 | Test: cutover gate — annex3+US goldens, **Playwright/local UJ-001 (TC-001)**, no gifts imports | Test | pending | F6 cutover PR gate, C09c | T4.5, T4.11, T3.4, T2.6 |
-| T4.7 | Code: wire `/convert` → tac2iwxxm; **delete `packages/gifts`**; delete inline F2 engine | Code | pending | Q5=(ii), Q3=B, ADR-014 | T4.6 |
-| T4.8 | Config: CI drop gifts cell; health `tac2iwxxm_available`; archive gifts goldens | Config | pending | TC-F6-022 | T4.7 |
-| T4.9 | Config: `make test-live-bulletin` + fold into `make test-live` | Config | pending | Q10=A, H7 | T3.5, T4.7 |
+| T4.10 | Test: METAR/SPECI `iwxxm_us` goldens (TC-F6-003 subset) | Test | completed | F6.b, D-S008-05-batch2 | T4.2, T1.5 |
+| T4.11 | Code: US profile METAR/SPECI extensions | Code | completed | F6.b, ADR-013 | T4.10 |
+| T4.6 | Test: cutover gate — annex3+US goldens, **Playwright/local UJ-001 (TC-001)**, no gifts imports | Test | completed | F6 cutover PR gate, C09c | T4.5, T4.11, T3.4, T2.6 |
+| T4.7 | Code: wire `/convert` → tac2iwxxm; **delete `packages/gifts`**; delete inline F2 engine | Code | completed | Q5=(ii), Q3=B, ADR-014 | T4.6 |
+| T4.8 | Config: CI drop gifts cell; health `tac2iwxxm_available`; archive gifts goldens | Config | completed | TC-F6-022 | T4.7 |
+| T4.9 | Config: `make test-live-bulletin` + fold into `make test-live` | Config | completed | Q10=A, H7 | T3.5, T4.7 |
 
 **Phase 3 gate**: Cutover merged; H7 runnable against staging after deploy; gifts gone; F6.b METAR/SPECI US shipped.
 
@@ -238,7 +238,8 @@ F6.b METAR/SPECI US already shipped in M4.
 | PR-M1 | Minor | M1 | feat/S008-M1-scaffold | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/700 |
 | PR-M2 | Minor | M2 | feat/S008-M2-validate | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/701 |
 | PR-M3 | Minor | M3 | feat/S008-M3-bulletin | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704 |
-| PR-M4 | Minor | M4 cutover | feat/S008-M4-cutover | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/705 |
+| PR-M4 | Minor | M4 cutover (partial) | feat/S008-M4-cutover | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/705 |
+| PR-M4b | Minor | M4 US + gifts cutover | feat/S008-M4-us-metar | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706 |
 | PR-M5 | Minor | M5 products | feat/S008-M5-products | evolve/S008-… | pending |
 | PR-M6 | Minor | M6 worker | feat/S008-M6-worker | evolve/S008-… | pending |
 | PR-M7 | Minor | M7 live | feat/S008-M7-live | evolve/S008-… | pending |

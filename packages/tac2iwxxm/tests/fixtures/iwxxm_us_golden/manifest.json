@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "description": "TC-F6-003 subset: iwxxm_us METAR/SPECI golden pack (F6.b / T4.10)",
+  "profile": "iwxxm_us",
+  "cases": [
+    {
+      "id": "metar_us_ao2_slp",
+      "product": "METAR",
+      "tac": "metar_us_ao2_slp.tac",
+      "golden": "metar_us_ao2_slp.golden.xml"
+    },
+    {
+      "id": "speci_us_ao2",
+      "product": "SPECI",
+      "tac": "speci_us_ao2.tac",
+      "golden": "speci_us_ao2.golden.xml"
+    },
+    {
+      "id": "metar_us_pk_wnd",
+      "product": "METAR",
+      "tac": "metar_us_pk_wnd.tac",
+      "golden": "metar_us_pk_wnd.golden.xml"
+    }
+  ]
+}

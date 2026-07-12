@@ -16,6 +16,11 @@ _TEMP = re.compile(r"\b(?P<temp>M?\d{2})/(?P<dew>M?\d{2})\b")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})\b")
 _NIL = re.compile(r"\bNIL\b")
+_RMK = re.compile(r"\bRMK\b(?P<rmk>.*)$")
+_AO = re.compile(r"\bAO(?P<ao>[12])\b")
+_SLP = re.compile(r"\bSLP(?P<code>\d{3})\b")
+_PK_WND = re.compile(r"\bPK\s+WND\s+(?P<dir>\d{3})(?P<spd>\d{2,3})/(?P<hhmm>\d{4})\b")
+_OBS_SYSTEM_HREF = "https://codes.nws.noaa.gov/FMH-1/ObservingSystemType/AO{ao}"
 
 
 def _celsius(token: str) -> int:
@@ -45,6 +50,44 @@ def _sm_to_m(sm: int) -> tuple[int, bool]:
     return metres, False
 
 
+def _slp_code_to_hpa(code: int) -> float:
+    """Decode FMH-1 SLP### (tenths hPa, leading 9/10 omitted) to hPa."""
+    if code < 500:
+        return 1000.0 + code / 10.0
+    return 900.0 + code / 10.0
+
+
+def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
+    """
+    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND).
+
+    Parameters
+    ----------
+    rest :
+        TAC body after the observation time group.
+    ir :
+        Mutable IR dict to update in place.
+    """
+    rmk = _RMK.search(rest)
+    if rmk is None:
+        return
+    remarks = rmk.group("rmk")
+    ao = _AO.search(remarks)
+    if ao is not None:
+        ir["observing_system_type"] = f"AO{ao.group('ao')}"
+        ir["observing_system_href"] = _OBS_SYSTEM_HREF.format(ao=ao.group("ao"))
+    slp = _SLP.search(remarks)
+    if slp is not None:
+        ir["sea_level_pressure_hpa"] = _slp_code_to_hpa(int(slp.group("code")))
+    pk = _PK_WND.search(remarks)
+    if pk is not None:
+        ir["peak_wind_dir_deg"] = int(pk.group("dir"))
+        ir["peak_wind_speed_kt"] = int(pk.group("spd"))
+        hhmm = pk.group("hhmm")
+        ir["peak_wind_hour"] = int(hhmm[0:2])
+        ir["peak_wind_minute"] = int(hhmm[2:4])
+
+
 def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     """
     Parse a single METAR/SPECI TAC report into a versioned IR dict.
@@ -59,7 +102,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     Returns
     -------
     dict[str, Any]
-        Intermediate representation for annex3 XML emission and M-field.
+        Intermediate representation for annex3 / iwxxm_us XML emission and M-field.
 
     Raises
     ------
@@ -157,4 +200,5 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         ir["cloud_amount"] = clouds[0][0]
         ir["cloud_base_ft"] = clouds[0][1]
 
+    _parse_remarks(rest, ir)
     return ir

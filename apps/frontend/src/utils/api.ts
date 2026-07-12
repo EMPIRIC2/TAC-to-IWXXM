@@ -59,7 +59,7 @@ export interface ConversionResponse {
 export interface HealthResponse {
   status: 'healthy' | 'degraded';
   version: string;
-  gifts_available: boolean;
+  tac2iwxxm_available: boolean;
 }
 
 export interface AirportRegionResponse {

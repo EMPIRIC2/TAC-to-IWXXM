@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "description": "M-field annotations for TC-F6-003 iwxxm_us METAR/SPECI golden pack",
+  "cases": {
+    "metar_us_ao2_slp": {
+      "station": "KJFK",
+      "report_type": "METAR",
+      "observing_system_type": "AO2",
+      "sea_level_pressure_hpa": 1014.9,
+      "nil": false
+    },
+    "speci_us_ao2": {
+      "station": "KJFK",
+      "report_type": "SPECI",
+      "observing_system_type": "AO2",
+      "nil": false
+    },
+    "metar_us_pk_wnd": {
+      "station": "KJFK",
+      "report_type": "METAR",
+      "observing_system_type": "AO2",
+      "peak_wind_dir_deg": 310,
+      "peak_wind_speed_kt": 30,
+      "peak_wind_hour": 14,
+      "peak_wind_minute": 31,
+      "nil": false
+    }
+  }
+}

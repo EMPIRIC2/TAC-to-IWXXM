@@ -560,25 +560,25 @@ async def parse_optional_files(request: Request) -> List[UploadFile]:
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 def health() -> HealthResponse:
-    """Check API health and component availability.
+    """Check API health and conversion availability.
 
-    Verifies that the API is running and GIFTs library is available for conversions.
+    Verifies that the API is running and tac2iwxxm can convert a sample METAR.
     Returns overall status and version information.
 
     ## Response
     - **status** (string): "healthy" or "degraded"
     - **version** (string): API version
-    - **gifts_available** (boolean): Whether GIFTs conversion library is available
+    - **tac2iwxxm_available** (boolean): Whether tac2iwxxm convert works
     """
     try:
-        test_metar = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"
-        _ = convert_metar_tac_with_metadata(test_metar)
-        gifts_available = True
+        test_metar = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
+        _ = convert_metar_tac_with_metadata(test_metar, validate=False)
+        tac2iwxxm_available = True
         status = "healthy"
     except Exception:
-        gifts_available = False
+        tac2iwxxm_available = False
         status = "degraded"
-    return HealthResponse(status=status, version="0.1.0", gifts_available=gifts_available)
+    return HealthResponse(status=status, version="0.1.0", tac2iwxxm_available=tac2iwxxm_available)
 
 
 @app.get("/api/v1/versions", tags=["Conversion"])
@@ -796,7 +796,6 @@ async def convert_bulletin(
     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail
     (Q6=A). Per-report ``issues`` / ``fixes`` follow lint-style identity (Q7=C).
     """
-    _ = profile  # reserved for iwxxm_us convert path at cutover
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -857,6 +856,8 @@ async def convert_bulletin(
                     tac,
                     iwxxm_version=iwxxm_version,
                     validate=False,
+                    product=product,
+                    profile=profile,
                 )
             except ConversionError as exc:
                 ok = False

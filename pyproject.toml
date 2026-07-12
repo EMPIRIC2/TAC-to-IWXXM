@@ -20,7 +20,6 @@ dev = [
   "httpx>=0.28",
   "httpx2>=2.0",
   "metar-shared",
-  "gifts",
   "metar-auth",
   "metar-backend",
   "tac2iwxxm",
@@ -30,7 +29,6 @@ dev = [
 
 [tool.uv.sources]
 metar-shared = { workspace = true }
-gifts = { workspace = true }
 metar-auth = { workspace = true }
 metar-backend = { workspace = true }
 tac2iwxxm = { workspace = true }
@@ -40,7 +38,6 @@ tac-validate = { workspace = true }
 [tool.uv.workspace]
 members = [
   "packages/shared",
-  "packages/gifts",
   "packages/auth",
   "packages/tac2iwxxm",
   "packages/iwxxm-validate",
@@ -62,8 +59,6 @@ exclude = [
   "vendor",
   "apps/frontend/dist",
   "frontend/dist",
-  "GIFTs/.venv",
-  "packages/gifts/.venv",
 ]
 reportMissingTypeStubs = false
 reportUnknownMemberType = "warning"

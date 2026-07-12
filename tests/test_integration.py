@@ -107,7 +107,7 @@ class TestAPIIntegration:
         # Health check should test GIFTs availability
         assert "status" in health_data
         assert "version" in health_data
-        assert isinstance(health_data["gifts_available"], bool)
+        assert isinstance(health_data["tac2iwxxm_available"], bool)
 
 
 class TestErrorHandling:

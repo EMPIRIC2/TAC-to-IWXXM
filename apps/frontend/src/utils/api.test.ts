@@ -42,27 +42,27 @@ describe('API Utils', () => {
       const mockHealth: HealthResponse = {
         status: 'healthy',
         version: '1.0.0',
-        gifts_available: true,
+        tac2iwxxm_available: true,
       };
       mockFetchResponse(mockHealth);
 
       const result = await checkHealth();
       expect(result.status).toBe('healthy');
       expect(result.version).toBe('1.0.0');
-      expect(result.gifts_available).toBe(true);
+      expect(result.tac2iwxxm_available).toBe(true);
     });
 
     it('should handle degraded health status', async () => {
       const mockHealth: HealthResponse = {
         status: 'degraded',
         version: '1.0.0',
-        gifts_available: false,
+        tac2iwxxm_available: false,
       };
       mockFetchResponse(mockHealth);
 
       const result = await checkHealth();
       expect(result.status).toBe('degraded');
-      expect(result.gifts_available).toBe(false);
+      expect(result.tac2iwxxm_available).toBe(false);
     });
 
     it('should throw error on health check failure', async () => {
@@ -456,12 +456,12 @@ describe('API Utils', () => {
       const health: HealthResponse = {
         status: 'healthy',
         version: '1.0.0',
-        gifts_available: true,
+        tac2iwxxm_available: true,
       };
 
       expect(health.status).toBeDefined();
       expect(health.version).toBeDefined();
-      expect(health.gifts_available).toBeDefined();
+      expect(health.tac2iwxxm_available).toBeDefined();
     });
 
     it('should handle API error structure', () => {

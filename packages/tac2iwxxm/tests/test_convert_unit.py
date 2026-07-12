@@ -25,10 +25,25 @@ def test_convert_unsupported_profile() -> None:
     result = convert(
         "METAR KJFK 231751Z NIL=",
         product="METAR",
-        profile="iwxxm_us",
+        profile="not_a_profile",
     )
     assert result.ok is False
     assert result.issues[0].code == "UNSUPPORTED_PROFILE"
+
+
+def test_convert_iwxxm_us_profile_ok() -> None:
+    result = convert(
+        "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2 SLP149=",
+        product="METAR",
+        profile="iwxxm_us",
+    )
+    assert result.ok is True
+    assert result.profile == "iwxxm_us"
+    assert result.xml is not None
+    assert "iwxxm-us:Addendum" in result.xml
+    assert result.ir is not None
+    assert result.ir["observing_system_type"] == "AO2"
+    assert result.ir["sea_level_pressure_hpa"] == 1014.9
 
 
 def test_convert_parse_error_returns_ok_false() -> None:

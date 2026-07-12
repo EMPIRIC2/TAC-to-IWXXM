@@ -177,4 +177,4 @@ def test_health_degraded_when_converter_raises(monkeypatch: pytest.MonkeyPatch) 
     response = api_module.health()
 
     assert response.status == "degraded"
-    assert response.gifts_available is False
+    assert response.tac2iwxxm_available is False

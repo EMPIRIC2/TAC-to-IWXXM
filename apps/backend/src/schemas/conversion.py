@@ -147,7 +147,7 @@ class HealthResponse(BaseModel):
 
     status: str
     version: str
-    gifts_available: bool
+    tac2iwxxm_available: bool
     timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC).replace(tzinfo=None))
     service: str = Field(default="metar-to-iwxxm")
 

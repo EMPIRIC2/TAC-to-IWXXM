@@ -30,12 +30,13 @@ class TestM8ApiDockerfileMonorepoContext:
         for fragment in (
             "apps/backend",
             "packages/auth",
-            "packages/gifts",
+            "packages/tac2iwxxm",
             "packages/shared",
             "config",
             "vendor/schemas",
         ):
             assert fragment in dockerfile_text, f"Missing COPY path: {fragment}"
+        assert "packages/gifts" not in dockerfile_text
 
     def test_dockerfile_copies_config_tree(self, dockerfile_text: str) -> None:
         """S003 — API image must bake config/prod.json for METAR_CONFIG_ENV=prod."""

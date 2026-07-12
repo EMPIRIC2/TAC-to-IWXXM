@@ -6,7 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     "metar-auth",
     "metar-shared",
-    "gifts",
+    "tac2iwxxm",
     "tac-validate",
     "iwxxm-validate",
     "fastapi>=0.110",
@@ -115,7 +115,7 @@ ignore = ["E501", "E741"]
 "src/config/icao_opmet.py" = ["F601"]
 
 [tool.uv.sources]
-gifts = { workspace = true }
+tac2iwxxm = { workspace = true }
 metar-auth = { workspace = true }
 metar-shared = { workspace = true }
 tac-validate = { workspace = true }

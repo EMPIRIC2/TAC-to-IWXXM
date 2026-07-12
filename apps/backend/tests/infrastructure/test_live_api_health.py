@@ -78,7 +78,7 @@ class TestLiveAPIHealth:
 
         # Should contain status and GIFTs availability
         assert "status" in data
-        assert "gifts_available" in data or "message" in data
+        assert "tac2iwxxm_available" in data or "message" in data
 
     @pytest.mark.live_api
     @pytest.mark.asyncio
