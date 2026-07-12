@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "TC-F6-003 subset: iwxxm_us METAR/SPECI golden pack (F6.b / T4.10)",
+  "description": "TC-F6-003: iwxxm_us METAR/SPECI + TAF/SIGMET/AIRMET (F6.b / T4.10 / T5.4)",
   "profile": "iwxxm_us",
   "cases": [
     {
@@ -20,6 +20,24 @@
       "product": "METAR",
       "tac": "metar_us_pk_wnd.tac",
       "golden": "metar_us_pk_wnd.golden.xml"
+    },
+    {
+      "id": "taf_us_altimeter",
+      "product": "TAF",
+      "tac": "taf_us_altimeter.tac",
+      "golden": "taf_us_altimeter.golden.xml"
+    },
+    {
+      "id": "sigmet_us_basic",
+      "product": "SIGMET",
+      "tac": "sigmet_us_basic.tac",
+      "golden": "sigmet_us_basic.golden.xml"
+    },
+    {
+      "id": "airmet_us_basic",
+      "product": "AIRMET",
+      "tac": "airmet_us_basic.tac",
+      "golden": "airmet_us_basic.golden.xml"
     }
   ]
 }
