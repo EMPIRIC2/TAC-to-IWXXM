@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase 3: Bulletin + METAR/SPECI + PyO3 (pre-cutover) |
 | **Active milestone** | M3: Bulletin split + convert-bulletin API |
-| **Active task** | T3.1 — AHL split fixtures (TC-F6-030 T0) |
-| **Tasks completed** | 13 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; M2 merged; starting M3) |
+| **Active task** | T3.3 — `/convert-bulletin` multi-result schema test |
+| **Tasks completed** | 15 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T3.1–T3.2 done) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -124,9 +124,9 @@
 
 | # | Task | Type | Status | Spec Source | Depends On |
 |---|------|------|--------|-------------|------------|
-| T3.1 | Test: AHL split fixtures → N reports (TC-F6-030 T0) | Test | in_progress | F6.bulletin, Q4=A | T1.2 |
-| T3.2 | Code: bulletin splitter in `tac2iwxxm` | Code | pending | spec.md pipeline | T3.1 |
-| T3.3 | Test: `/convert-bulletin` multi-result schema (partial OK + issues/fixes) | Test | pending | Q6=A, Q7=C | T3.2, T2.6 |
+| T3.1 | Test: AHL split fixtures → N reports (TC-F6-030 T0) | Test | completed | F6.bulletin, Q4=A | T1.2 |
+| T3.2 | Code: bulletin splitter in `tac2iwxxm` | Code | completed | spec.md pipeline | T3.1 |
+| T3.3 | Test: `/convert-bulletin` multi-result schema (partial OK + issues/fixes) | Test | in_progress | Q6=A, Q7=C | T3.2, T2.6 |
 | T3.4 | Code: `POST /convert-bulletin` + pydantic response map from msgspec | Code | pending | api-contract | T3.3 |
 | T3.5 | Config: commit multi-report AHL fixture for H7 | Config | pending | TC-LIVE-F6-030 | T3.1 |
 
