@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
+from urllib.parse import urlsplit, urlunsplit
 
 import httpx
 
@@ -29,6 +30,18 @@ class IngestJob:
     product: str
     tac: str
     source_url: str
+
+
+def safe_url_for_log(url: str) -> str:
+    """
+    Return a log-safe URL without userinfo or query (may contain feed tokens).
+    """
+    parts = urlsplit(url)
+    host = parts.hostname or ""
+    if parts.port:
+        host = f"{host}:{parts.port}"
+    netloc = host
+    return urlunsplit((parts.scheme, netloc, parts.path, "", ""))
 
 
 def _normalize_items(payload: Any, *, source_url: str) -> list[IngestJob]:
@@ -85,6 +98,9 @@ def fetch_jobs(
     list[IngestJob]
         Zero or more jobs from the feed.
     """
+    if not url.lower().startswith("https://"):
+        raise ValueError("INGEST_POLLER_URL must be an https:// URL (ADR-018 Q16=A)")
+
     own_client = client is None
     http = client or httpx.Client(timeout=timeout)
     try:
@@ -97,4 +113,4 @@ def fetch_jobs(
             http.close()
 
 
-__all__ = ["IngestJob", "fetch_jobs"]
+__all__ = ["IngestJob", "fetch_jobs", "safe_url_for_log"]
