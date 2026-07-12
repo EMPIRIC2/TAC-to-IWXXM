@@ -31,6 +31,8 @@ active_session:
   current_stage: 18-pr-review
   started_at: "2026-07-12"
   context_briefs: []
+  notes:
+    - "Commit dd10fa7 done on docs/S007-docs-minimize (docs minimize + CORPUS); PR not opened yet; 18-pr-review still pending"
 sessions:
   - id: S001-convert-send-buttons
     type: feature
@@ -1896,6 +1898,13 @@ git_history:
       session_id: S006-issue-664-output-filename
       files_changed: 2
       timestamp: "2026-06-25T21:02:00Z"
+    - sha: dd10fa7
+      branch: docs/S007-docs-minimize
+      message: "docs(S007): minimize docs/ root and define canonical CORPUS"
+      stage: "00-context"
+      session_id: S007-docs-minimize
+      files_changed: 131
+      timestamp: "2026-07-12T02:07:00Z"
 
 pr_review_cycles:
   - id: PRR-001
