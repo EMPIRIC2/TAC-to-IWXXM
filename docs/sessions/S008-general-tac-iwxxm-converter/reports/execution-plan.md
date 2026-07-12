@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase 3: Bulletin + METAR/SPECI + PyO3 (pre-cutover) |
 | **Active milestone** | M4: METAR/SPECI (+ US) + PyO3 + cutover PR |
-| **Active task** | T4.4 (next) |
-| **Tasks completed** | 21 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T4.1–T4.3 done) |
+| **Active task** | T4.10 (next — US METAR/SPECI goldens) |
+| **Tasks completed** | 23 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T4.1–T4.5 done) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -137,8 +137,8 @@
 | T4.1 | Test: METAR/SPECI annex3 goldens (TC-F6-020/021) | Test | completed | test-plan | T3.2 |
 | T4.2 | Code: METAR/SPECI plugins + XML emit (Python) | Code | completed | F6.a | T4.1 |
 | T4.3 | Config: maturin/PyO3 crate scaffold + CI rust job | Config | completed | ADR-017 | T1.2 |
-| T4.4 | Test: PyO3 hotspot tests + Q11 E2E lib bench (soft) | Test | pending | Q11=C, Q12b=A | T4.2, T4.3 |
-| T4.5 | Code: implement required PyO3 hotspots; hard-pass Q11 benches | Code | pending | ADR-017 | T4.4 |
+| T4.4 | Test: PyO3 hotspot tests + Q11 E2E lib bench (soft) | Test | completed | Q11=C, Q12b=A | T4.2, T4.3 |
+| T4.5 | Code: implement required PyO3 hotspots; hard-pass Q11 benches | Code | completed | ADR-017 | T4.4 |
 | T4.10 | Test: METAR/SPECI `iwxxm_us` goldens (TC-F6-003 subset) | Test | pending | F6.b, D-S008-05-batch2 | T4.2, T1.5 |
 | T4.11 | Code: US profile METAR/SPECI extensions | Code | pending | F6.b, ADR-013 | T4.10 |
 | T4.6 | Test: cutover gate — annex3+US goldens, **Playwright/local UJ-001 (TC-001)**, no gifts imports | Test | pending | F6 cutover PR gate, C09c | T4.5, T4.11, T3.4, T2.6 |

@@ -110,3 +110,22 @@ def test_emit_without_cloud_layer() -> None:
     xml = emit_metar_speci_annex3(ir, product="METAR", iwxxm_version="2025-2")
     assert "iwxxm:cloud" not in xml
     assert "prevailingVisibilityOperator>ABOVE" in xml
+
+
+def test_scan_metar_tokens_raises_without_extension(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac2iwxxm.native import scan_metar_tokens
+
+    monkeypatch.setattr("tac2iwxxm.native.rust_module", lambda: None)
+    with pytest.raises(NotImplementedError, match="scan_metar_tokens"):
+        scan_metar_tokens("METAR KJFK 231751Z NIL=")
+
+
+def test_scan_metar_tokens_when_rust_available() -> None:
+    from tac2iwxxm import rust_available
+    from tac2iwxxm.native import scan_metar_tokens
+
+    if not rust_available():
+        pytest.skip("PyO3 extension not built in this environment")
+    tokens = scan_metar_tokens("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=")
+    assert tokens[0] == "METAR"
+    assert "KJFK" in tokens
