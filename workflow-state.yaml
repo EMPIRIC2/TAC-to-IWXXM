@@ -52,7 +52,7 @@ active_session:
       status: in_progress
       started_at: "2026-07-12"
       skip_rationale: null
-      note: "Phase 2 / M2 T2.1–T2.7 complete; active_task M2 complete — opening PR-M2; 08-verify-build scoped pass"
+      note: "M3 complete; PR-M3 open; next M4 after merge or continue per build-execution"
     - stage: 08-verify-build
       required: true
       status: pending
@@ -110,6 +110,8 @@ active_session:
     - "2026-07-12 T2.1+T2.2 done; D-S008-T21-sch applied; active_task T2.3 pending (T2.2 git SHA not yet on HEAD when recorded — only T2.1 db27737 in git_history)"
     - "2026-07-12 T2.3+T2.4 complete (b167e71, d27090d); active_task T2.5 in_progress on feat/S008-M2-validate"
     - "2026-07-12 Phase 2 / M2 T2.1–T2.7 complete (82b5bad, 7c49e34, 174fa1c); 08-verify-build scoped pass (format, package types, unit packages + wrappers + soft benches); active_task M2 complete — opening PR-M2"
+    - "2026-07-12 D-S008-PR700-19 — waive routing for 19-address-pr-review; PRM-008 completed on PR #700; merged at user request (anti-merge override)"
+    - "2026-07-12 D-S008-PR701-19 — waive AskQuestion; PRM-009 completed on PR #701; explicit push+merge (anti-merge override)"
 sessions:
   - id: S007-docs-minimize
     type: process
@@ -774,8 +776,9 @@ stages:
   19-address-pr-review:
     status: completed
     started: "2026-06-22"
-    completed: "2026-06-25"
-    last_cycle: PRM-007
+    completed: "2026-07-12"
+    last_cycle: PRM-009
+    session_id: S008-general-tac-iwxxm-converter
 
   12-verify-deploy:
     status: completed
@@ -884,6 +887,50 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-M3-complete
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "M3 bulletin milestone complete; PR-M3 #704 open"
+    summary: >
+      T3.1–T3.5 complete on feat/S008-M3-bulletin (AHL bulletin split +
+      POST /convert-bulletin + H7 fixture). PR #704 opened to
+      evolve/S008-general-tac-iwxxm-converter. Next: M4 after merge or
+      continue per build-execution (PR created; merge approval not required
+      to start next milestone implementation).
+    timestamp: "2026-07-12"
+  - id: D-S008-EV006-resume-m3
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "User chose resume option 1 — continue 07-build at M3"
+    timestamp: "2026-07-12"
+  - id: D-S008-PR701-19
+    stage: 19-address-pr-review
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "Waive AskQuestion; explicit push+merge for PR #701"
+    summary: >
+      User waived AskQuestion gates; explicit push+merge for PR #701
+      (PRM-009). Same anti-merge override pattern as D-S008-PR700-19.
+      PR #701 merged 2026-07-12 (head 6ddec3a; merge commit 8a0db0c).
+      Counts: fixed 4, wont_fix 1, deferred 0.
+    timestamp: "2026-07-12"
+  - id: D-S008-PR700-19
+    stage: 19-address-pr-review
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "Waive routing for 19-address-pr-review; user requested merge"
+    summary: >
+      User waived AskQuestion gates; explicit push+merge for PR #700
+      (PRM-008). Routing waive for 19 not in session routing_plan.
+      PR #700 merged 2026-07-12 at user request — override of skill
+      anti-merge policy (gh pr merge 700). PRM-008 completed (1 advisory
+      fixed, 0 blockers; head 789ea0b; merge commit 369f028).
+    timestamp: "2026-07-12"
   - id: D-S008-T21-sch
     stage: 07-build
     session_id: S008-general-tac-iwxxm-converter
@@ -2560,6 +2607,10 @@ evolve_cycles:
       - "2026-07-12 T2.1+T2.2 done; D-S008-T21-sch applied; next T2.3 pending (T2.2 commit SHA not yet on HEAD — git_history has T2.1 only)"
       - "2026-07-12 T2.3+T2.4 complete (b167e71, d27090d); active_task T2.5 in_progress"
       - "2026-07-12 Phase 2 / M2 T2.1–T2.7 complete; 08-verify-build scoped pass (format, package types, unit packages + wrappers + soft benches); opening PR-M2"
+      - "2026-07-12 PR-M1 (#700) merged to evolve (D-S008-PR700-19; PRM-008)"
+      - "2026-07-12 PR-M2 (#701) merged to evolve (D-S008-PR701-19; PRM-009); feat/S008-M2-validate merged"
+      - "2026-07-12 Resume option 1 — M3 bulletin on feat/S008-M3-bulletin; start T3.1"
+      - "2026-07-12 M3 T3.1–T3.5 complete; PR-M3 opened"
     stages:
       00-context:
         status: completed
@@ -2585,7 +2636,7 @@ evolve_cycles:
         status: in_progress
         started: "2026-07-12"
         completed: null
-        active_task: "M2 complete — opening PR-M2"
+        active_task: "M3 complete — PR-M3 open; next M4"
         notes:
           - "M1 T1.1–T1.6 completed; next 08-verify-build for M1 then PR-M1"
           - "M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
@@ -2594,6 +2645,9 @@ evolve_cycles:
           - "2026-07-12 T2.1 completed (db27737); T2.2 completed (implement iwxxm-validate); D-S008-T21-sch applied; active_task T2.3 pending; T2.2 SHA not yet committed when recorded"
           - "2026-07-12 T2.3+T2.4 complete (b167e71, d27090d); active_task T2.5 in_progress"
           - "2026-07-12 Phase 2 / M2 T2.1–T2.7 complete; 08-verify-build scoped pass (format, package types, unit packages + wrappers + soft benches); active_task M2 complete — opening PR-M2"
+          - "2026-07-12 PR-M2 (#701) merged (PRM-009 / D-S008-PR701-19); next milestone M3"
+          - "2026-07-12 Resume option 1 — M3 bulletin on feat/S008-M3-bulletin; start T3.1"
+          - "2026-07-12 M3 T3.1–T3.5 complete; PR-M3 #704 open; next M4"
       08-verify-build:
         status: pending
         started: null
@@ -2638,7 +2692,7 @@ evolve_cycles:
     issues: []
 
 git_history:
-  current_branch: feat/S008-M2-validate
+  current_branch: feat/S008-M3-bulletin
   branches:
     - name: evolve/S008-general-tac-iwxxm-converter
       purpose: general TAC→IWXXM converter architecture + package design
@@ -2649,18 +2703,32 @@ git_history:
     - name: feat/S008-M1-scaffold
       purpose: S008 M1 F6 package scaffold (T1.1–T1.6)
       base: evolve/S008-general-tac-iwxxm-converter
-      status: pr_open
+      status: merged
       created_at: "2026-07-12"
+      closed_at: "2026-07-12"
+      merged_via: "PR #700"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/700
     - name: feat/S008-M2-validate
       purpose: S008 M2 validate packages (iwxxm-validate + tac-validate)
       base: feat/S008-M1-scaffold
-      status: active
+      status: merged
       created_at: "2026-07-12"
+      closed_at: "2026-07-12"
+      merged_via: "PR #701"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/701
+    - name: feat/S008-M3-bulletin
+      purpose: S008 M3 bulletin split + convert-bulletin
+      status: open
+      base: evolve/S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      session_id: S008-general-tac-iwxxm-converter
+      created_at: "2026-07-12"
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704
+      pr_number: 704
     - name: docs/S007-docs-minimize
       purpose: docs minimize
       base: main
@@ -3032,6 +3100,110 @@ git_history:
       evolve_cycle_id: EV-006
       files_changed: 2
       timestamp: "2026-07-12T16:17:18Z"
+    - sha: 789ea0bd76bf694b82665b1c264c2c91270a6e53
+      branch: feat/S008-M1-scaffold
+      message: "[PRM-008] refactor: address Sourcery advisories on vendor_manifest"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T16:27:14Z"
+    - sha: 369f0283f1baf6c73079387f7a5bbf413e6b5445
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "Merge pull request #700 from joseph-c-mcguire/feat/S008-M1-scaffold"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T16:28:27Z"
+    - sha: f39560d92ab11e16241c7065abeaa91a9d44ef20
+      branch: feat/S008-M2-validate
+      message: "[PRM-009] fix: lint-tac File() uploads and LintReport fixes factory"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T16:31:56Z"
+    - sha: 6ddec3a19969aa922e6d139abda932425d38fd4c
+      branch: feat/S008-M2-validate
+      message: "[PRM-009] test: map validate package_* fields in OpenAPI and TC-F6-033"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T16:31:56Z"
+    - sha: 8a0db0cde6e5516c980b47f019387fdd2b6ea4b5
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "Merge pull request #701 from joseph-c-mcguire/feat/S008-M2-validate"
+      stage: "19-address-pr-review"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: null
+      timestamp: "2026-07-12T16:33:20Z"
+    - sha: deaa5a7
+      branch: feat/S008-M3-bulletin
+      message: "[M3] chore: resume EV-006 at M3 bulletin after PR-M2 merge"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 3
+      timestamp: "2026-07-12T17:03:08Z"
+    - sha: 204542b
+      branch: feat/S008-M3-bulletin
+      message: "[T3.1] test: add AHL bulletin split fixtures for TC-F6-030"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 4
+      timestamp: "2026-07-12T17:03:08Z"
+    - sha: 4a5f8a1
+      branch: feat/S008-M3-bulletin
+      message: "[T3.2] feat: implement tac2iwxxm WMO AHL bulletin splitter"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 4
+      timestamp: "2026-07-12T17:04:00Z"
+    - sha: e4e454e
+      branch: feat/S008-M3-bulletin
+      message: "[T3.3] test: add convert-bulletin multi-result API contract"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 1
+      timestamp: "2026-07-12T17:06:53Z"
+    - sha: e082b3c
+      branch: feat/S008-M3-bulletin
+      message: "[T3.4] feat: wire POST /convert-bulletin with partial-success schema"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T17:06:53Z"
+    - sha: 0922c80
+      branch: feat/S008-M3-bulletin
+      message: "[T3.5] config: commit multi-report AHL fixture for H7 live gate"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 3
+      timestamp: "2026-07-12T17:07:18Z"
+    - sha: 8545b3b
+      branch: feat/S008-M3-bulletin
+      message: "[T3.2] fix: raise coverage for product filter and unsupported product"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T17:08:32Z"
+    - sha: a35ca1c
+      branch: feat/S008-M3-bulletin
+      message: "[M3] chore: record 08-verify-build pass for bulletin milestone"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T17:08:32Z"
 
 pr_review_cycles:
   - id: PRR-001
@@ -3721,3 +3893,119 @@ pr_remediation_cycles:
         note: PRM-007 session report
     follow_up:
       pr_review_rerun: offered
+
+  - id: PRM-008
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    pr_number: 700
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/700
+    linked_review_cycle_id: null
+    title: "[M1] F6 package scaffold (tac2iwxxm / validate / iwxxm-us)"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    head_ref: feat/S008-M1-scaffold
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    head_sha: 789ea0bd76bf694b82665b1c264c2c91270a6e53
+    ci_status: green   # Sourcery pass; mergeable CLEAN
+    scope: blockers_then_advisories
+    counts:
+      fixed: 1
+      deferred: 0
+      wont_fix: 0
+    findings:
+      - id: F-001
+        source: sourcery-ai
+        severity: advisory
+        path: packages/shared/src/metar_shared/vendor_manifest.py
+        line: null
+        thread_id: null
+        status: fixed
+        commit: 789ea0b
+        note: >
+          complexity — shared helper + name-based HTTP/GitHub dispatch + hex sha256
+    artifacts:
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
+        note: PRM-008 session report
+    follow_up:
+      pr_review_rerun: declined   # PR merged at user request (D-S008-PR700-19)
+    notes: >
+      User waived AskQuestion gates; explicit push+merge for #700 (D-S008-PR700-19
+      override of skill anti-merge). PRM-008: 1 advisory fixed, 0 blockers;
+      head_sha 789ea0bd76bf694b82665b1c264c2c91270a6e53; merge commit 369f028.
+
+  - id: PRM-009
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    pr_number: 701
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/701
+    linked_review_cycle_id: null
+    title: "[M2] Validate packages (iwxxm-validate + tac-validate)"
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    head_ref: feat/S008-M2-validate
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    head_sha: 6ddec3a19969aa922e6d139abda932425d38fd4c
+    ci_status: green
+    scope: blockers_then_advisories
+    counts:
+      fixed: 4
+      deferred: 0
+      wont_fix: 1
+    findings:
+      - id: F-001
+        source: sourcery-ai
+        severity: bug_risk
+        path: apps/backend/src/api.py
+        line: null
+        thread_id: null
+        status: fixed
+        commit: f39560d
+        note: "File() declaration for /lint-tac uploads"
+      - id: F-002
+        source: sourcery-ai
+        severity: advisory
+        path: apps/backend/src/api.py
+        line: null
+        thread_id: null
+        status: fixed
+        commit: f39560d
+        note: "multipart vs urlencoded docs inconsistency → multipart-only (Q8=A)"
+      - id: F-003
+        source: sourcery-ai
+        severity: bug_risk
+        path: packages/tac-validate/src/tac_validate/models.py
+        line: null
+        thread_id: null
+        status: fixed
+        commit: f39560d
+        note: "LintReport.fixes mutable default → factory"
+      - id: F-004
+        source: sourcery-ai
+        severity: advisory
+        path: apps/backend/tests/unit/test_tc_f6_033_wrappers_unit.py
+        line: null
+        thread_id: null
+        status: fixed
+        commit: 6ddec3a
+        note: "validate package_* / profile fields in OpenAPI + TC-F6-033"
+      - id: F-005
+        source: sourcery-ai
+        severity: advisory
+        path: packages/shared/src/metar_shared/vendor_manifest.py
+        line: null
+        thread_id: null
+        status: wont_fix
+        commit: null
+        note: >
+          vendor_manifest inline helpers — intentional name-based dispatch from PRM-008
+    artifacts:
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
+        note: PRM-009 session report
+    follow_up:
+      pr_review_rerun: declined   # PR merged at user request (D-S008-PR701-19)
+    notes: >
+      User waived AskQuestion; explicit push+merge (anti-merge override like
+      D-S008-PR700-19). Head 6ddec3a; merge commit 8a0db0c. Counts: fixed 4,
+      wont_fix 1, deferred 0.

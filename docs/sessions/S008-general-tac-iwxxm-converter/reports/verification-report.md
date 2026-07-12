@@ -27,3 +27,15 @@
 ## Phase 1 gate
 
 T1.1–T1.6 completed; gifts not deleted (as planned). Ready for PR-M1 → `evolve/S008-general-tac-iwxxm-converter`.
+
+## M3 verify (2026-07-12) — feat/S008-M3-bulletin
+
+| Check | Result |
+|-------|--------|
+| format-check | pass |
+| ruff (changed) | pass |
+| basedpyright tac2iwxxm | pass |
+| pytest tac2iwxxm (+ cov ≥95%) | pass (12 tests, 98.59%) |
+| pytest convert-bulletin + wrappers | pass (11 tests) |
+
+**Milestone**: M3 T3.1–T3.5 complete — ready for PR-M3.
