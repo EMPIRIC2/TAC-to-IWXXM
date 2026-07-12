@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional, Tuple, TypeGuard
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 
-from fastapi import Depends, FastAPI, Form, HTTPException, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
@@ -33,7 +33,12 @@ try:
         HealthResponse,
     )
     from .schemas.icao_opmet import TranslationStatus
-    from .schemas.validation import ValidateRequest, ValidationLayer
+    from .schemas.validation import (
+        LintTacResponse,
+        ValidateRequest,
+        ValidateResponse,
+        ValidationLayer,
+    )
     from .services.database import database_lifespan
     from .services.statistics import statistics_service
     from .services.validation import ValidationError as ValidationServiceError
@@ -59,7 +64,7 @@ except ImportError:
         HealthResponse,
     )
     from schemas.icao_opmet import TranslationStatus
-    from schemas.validation import ValidateRequest, ValidationLayer
+    from schemas.validation import LintTacResponse, ValidateRequest, ValidateResponse, ValidationLayer
     from services.database import database_lifespan
     from services.statistics import statistics_service
     from services.validation import ValidationError as ValidationServiceError
@@ -71,6 +76,10 @@ except ImportError:
     from utilities.observability import install_fastapi_observability, setup_logging
     from utilities.security import verify_supabase_token
     from utilities.tac_parser import extract_airport_code
+
+# Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033)
+from iwxxm_validate import validate as iwxxm_validate_fn
+from tac_validate import lint as tac_lint_fn
 
 setup_logging("backend")
 logger = logging.getLogger(__name__)
@@ -698,8 +707,56 @@ def get_schema_status():
 
 
 @app.post(
+    "/api/v1/lint-tac",
+    tags=["Validation"],
+    response_model=LintTacResponse,
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+        415: {"description": "Unsupported Media Type — multipart/form-data required"},
+    },
+)
+async def lint_tac(
+    request: Request,
+    manual_text: str = Form(default="", description="TAC text to lint"),
+    product: str = Form(default="METAR", description="Product hint when known"),
+    files: Optional[List[UploadFile]] = File(None),
+    user: dict = Depends(verify_supabase_token),
+) -> LintTacResponse:
+    """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A)."""
+    content_type = (request.headers.get("content-type") or "").lower()
+    if "multipart/form-data" not in content_type:
+        raise HTTPException(
+            status_code=415,
+            detail="POST /api/v1/lint-tac requires multipart/form-data",
+        )
+
+    tac_text = manual_text or ""
+    if files:
+        chunks: list[str] = []
+        for upload in files:
+            raw = await upload.read()
+            if not raw:
+                continue
+            chunks.append(raw.decode("utf-8", errors="replace"))
+        if chunks:
+            tac_text = "\n".join(chunks)
+
+    report = tac_lint_fn(tac_text, product=product or "METAR")
+    return LintTacResponse(
+        ok=report.ok,
+        product=report.product,
+        issues=[
+            {"severity": i.severity, "code": i.code, "message": i.message, "location": i.location}
+            for i in report.issues
+        ],
+        fixes=[{"code": f.code, "message": f.message, "replacement": f.replacement} for f in report.fixes],
+    )
+
+
+@app.post(
     "/api/v1/validate",
     tags=["Validation"],
+    response_model=ValidateResponse,
     responses={
         401: {"description": "Unauthorized - Invalid or missing authentication token"},
     },
@@ -716,6 +773,7 @@ async def validate_comprehensive(
         description="Validation layers to run (ALL, or specific: AIRPORT_ICAO, TAC_SYNTAX, XML_WELLFORMED, XML_SCHEMA, SCHEMATRON, GML_REFERENCES, WMO_CODELISTS)",
     ),
     stop_on_error: bool = Form(default=True, description="Stop at first blocking layer failure"),
+    profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
     user: dict = Depends(verify_supabase_token),
 ):
     """Perform comprehensive 7-layer IWXXM validation.
@@ -761,6 +819,7 @@ async def validate_comprehensive(
             xml_content = request_body.iwxxm_xml
             iwxxm_version = request_body.version
             validation_level = request_body.validation_level or "comprehensive"
+            profile = request_body.profile or profile
             manual_text = ""  # Don't use form input
 
             # Map validation_level to layers
@@ -796,6 +855,24 @@ async def validate_comprehensive(
             except ConversionError as e:
                 raise HTTPException(status_code=400, detail=f"Failed to convert TAC to XML: {str(e)}")
 
+        # Thin wrapper: always invoke packages/iwxxm-validate (TC-F6-033 / ADR-015)
+        validation_level_name = ""
+        if request_body is not None:
+            validation_level_name = request_body.validation_level or "comprehensive"
+        if validation_level_name == "schematron" or layers == ["SCHEMATRON"]:
+            pkg_levels: tuple[str, ...] = ("schematron",)
+        elif validation_level_name == "schema" or layers == ["XML_WELLFORMED", "XML_SCHEMA"]:
+            pkg_levels = ("xsd",)
+        else:
+            pkg_levels = ("xsd", "schematron")
+
+        pkg_report = iwxxm_validate_fn(
+            xml_content,
+            iwxxm_version=iwxxm_version,
+            profile=profile or "annex3",
+            levels=pkg_levels,
+        )
+
         # Parse layer selection
         selected_layers = []
         if "ALL" in layers:
@@ -822,10 +899,11 @@ async def validate_comprehensive(
             stop_on_error=stop_on_error,
         )
 
-        # Format response
+        # Format response (HTTP shape unchanged; package metadata additive)
         return {
             "is_valid": result.is_valid,
             "version": result.version,
+            "profile": profile or "annex3",
             "layers_run": [layer.name for layer in result.layers_run],
             "layers_passed": [layer.name for layer in result.layers_passed],
             "layers_failed": [layer.name for layer in result.layers_failed],
@@ -853,6 +931,17 @@ async def validate_comprehensive(
                 for layer, issues in result.issues_by_layer.items()
             },
             "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
+            "package_ok": pkg_report.ok,
+            "package_issues": [
+                {
+                    "layer": issue.layer,
+                    "severity": issue.severity,
+                    "message": issue.message,
+                    "location": issue.location,
+                    "code": issue.code,
+                }
+                for issue in pkg_report.issues
+            ],
         }
 
     except HTTPException:
@@ -885,6 +974,8 @@ async def convert(
     stop_on_error: bool = Form(default=False, description="Stop processing remaining inputs after first error"),
     bulletin_id: str = Form(default="", description="Optional bulletin identifier"),
     issuing_center: str = Form(default="", description="Optional issuing centre ICAO code"),
+    lint: bool = Form(default=True, description="Run tac-validate before convert (Q14=C; default on)"),
+    product: str = Form(default="METAR", description="TAC product hint for lint"),
     user: dict = Depends(verify_supabase_token),
 ) -> ConversionResponse:
     logger.info(
@@ -1046,6 +1137,19 @@ async def convert(
 
         # Map validation_level to validate_output
         validate_output = validation_level in ["comprehensive", "schematron", "icao_opmet", "schema"]
+
+    # Q14=C: lint default on — soft-wire tac-validate (hard fails use POST /lint-tac)
+    if lint:
+        sample = manual_text.strip() if manual_text else ""
+        if request_body is not None and getattr(request_body, "metars", None):
+            sample = (request_body.metars[0] or "").strip() if request_body.metars else sample
+        if sample:
+            lint_report = tac_lint_fn(sample, product=product or "METAR")
+            if not lint_report.ok:
+                logger.info(
+                    "[CONVERT] tac-validate issues (non-blocking soft path): %s",
+                    [i.code for i in lint_report.issues],
+                )
 
     validation_level = normalize_validation_level(validation_level)
     validate_output = bool(validate_output) or validation_level in [

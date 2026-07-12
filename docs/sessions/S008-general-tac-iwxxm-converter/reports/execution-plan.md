@@ -14,11 +14,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase 1: Package Scaffold & Vendor Pin |
-| **Active milestone** | M1: Workspace + iwxxm-us |
-| **Active task** | T1.6 (completing) |
-| **Tasks completed** | 6 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; M1 T1.1–T1.6) |
+| **Active phase** | Phase 2: Validate Packages + HTTP Wrappers |
+| **Active milestone** | M2: iwxxm-validate + tac-validate + routes |
+| **Active task** | — (M2 tasks complete; 08-verify-build next) |
+| **Tasks completed** | 13 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; M2 T2.1–T2.7 done) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -102,13 +102,13 @@
 
 | # | Task | Type | Status | Spec Source | Depends On |
 |---|------|------|--------|-------------|------------|
-| T2.1 | Test: iwxxm-validate XSD+Schematron fixtures (TC-F6-032) | Test | pending | test-plan TC-F6-032 | T1.2 |
-| T2.2 | Code: implement `packages/iwxxm-validate` (lxml; vendor read-only) | Code | pending | ADR-015, Q3=B | T2.1 |
-| T2.3 | Test: tac-validate msgspec issues + optional fixes (TC-F6-031) | Test | pending | Q9=C | T1.4 |
-| T2.4 | Code: implement `packages/tac-validate` rule pack skeleton (7 products) | Code | pending | ADR-015 | T2.3 |
-| T2.5 | Test: API `/lint-tac` multipart + `/validate` wrapper contract | Test | pending | api-contract, Q8=A | T2.2, T2.4 |
-| T2.6 | Code: thin wrappers; OpenAPI/shared types; `lint` form flag default **true** on convert | Code | pending | Q14=C, Q51–53 | T2.5 |
-| T2.7 | Test: sub-second benches soft-fail for lint + validate alone (Q11 A) | Test | pending | ADR-016 Q11=C | T2.2, T2.4 |
+| T2.1 | Test: iwxxm-validate XSD+Schematron fixtures (TC-F6-032) | Test | completed | test-plan TC-F6-032; D-S008-T21-sch | T1.2 |
+| T2.2 | Code: implement `packages/iwxxm-validate` (lxml; vendor read-only) | Code | completed | ADR-015, Q3=B, D-S008-T21-sch | T2.1 |
+| T2.3 | Test: tac-validate msgspec issues + optional fixes (TC-F6-031) | Test | completed | Q9=C | T1.4 |
+| T2.4 | Code: implement `packages/tac-validate` rule pack skeleton (7 products) | Code | completed | ADR-015 | T2.3 |
+| T2.5 | Test: API `/lint-tac` multipart + `/validate` wrapper contract | Test | completed | api-contract, Q8=A | T2.2, T2.4 |
+| T2.6 | Code: thin wrappers; OpenAPI/shared types; `lint` form flag default **true** on convert | Code | completed | Q14=C, Q51–53 | T2.5 |
+| T2.7 | Test: sub-second benches soft-fail for lint + validate alone (Q11 A) | Test | completed | ADR-016 Q11=C | T2.2, T2.4 |
 
 **Phase 2 gate**: Wrappers green; old inline F2 still present until M4 delete tasks.
 
@@ -236,7 +236,7 @@ F6.b METAR/SPECI US already shipped in M4.
 | PR | Type | Milestone | Branch | Target | Status |
 |----|------|-----------|--------|--------|--------|
 | PR-M1 | Minor | M1 | feat/S008-M1-scaffold | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/700 |
-| PR-M2 | Minor | M2 | feat/S008-M2-validate | evolve/S008-… | pending |
+| PR-M2 | Minor | M2 | feat/S008-M2-validate | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/701 |
 | PR-M3 | Minor | M3 | feat/S008-M3-bulletin | evolve/S008-… | pending |
 | PR-M4 | Minor | M4 cutover | feat/S008-M4-cutover | evolve/S008-… | pending |
 | PR-M5 | Minor | M5 products | feat/S008-M5-products | evolve/S008-… | pending |
@@ -263,6 +263,7 @@ F6.b METAR/SPECI US already shipped in M4.
 | Phase | Result | Date | Notes |
 |-------|--------|------|-------|
 | 1 | pass | 2026-07-12 | T1.1–T1.6 green; 08-verify-build M1 pass; gifts intact |
+| 2 | pass | 2026-07-12 | T2.1–T2.7 green; iwxxm-validate + tac-validate + wrappers; soft benches |
 
 ## Connectivity Checklist (04 handoff)
 

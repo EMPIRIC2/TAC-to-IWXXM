@@ -7,6 +7,8 @@ dependencies = [
     "metar-auth",
     "metar-shared",
     "gifts",
+    "tac-validate",
+    "iwxxm-validate",
     "fastapi>=0.110",
     "uvicorn>=0.23",
     "python-multipart>=0.0.20",
@@ -116,3 +118,5 @@ ignore = ["E501", "E741"]
 gifts = { workspace = true }
 metar-auth = { workspace = true }
 metar-shared = { workspace = true }
+tac-validate = { workspace = true }
+iwxxm-validate = { workspace = true }

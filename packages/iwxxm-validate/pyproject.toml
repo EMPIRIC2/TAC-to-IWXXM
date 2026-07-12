@@ -5,7 +5,10 @@ description = "IWXXM XSD + Schematron validation engine (F2)"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+  "lxml>=4.9.0",
+  "msgspec>=0.19",
+]
 
 [build-system]
 requires = ["hatchling>=1.25"]

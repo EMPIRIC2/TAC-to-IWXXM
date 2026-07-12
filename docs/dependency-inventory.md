@@ -44,8 +44,10 @@ Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schema
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
 | lxml | XSD + Schematron execution | BSD | PyPI |
+| msgspec | Issue / report Struct models (ADR-016) | Apache-2.0 | PyPI |
 
 Package license: **MIT**. Vendor schemas read-only. No FastAPI/Supabase.
+Schematron: lxml when possible; xslt2 → `SCHEMATRON_SKIPPED` (D-S008-T21-sch).
 
 ### packages/gifts — Removed at F6 cutover
 
