@@ -70,7 +70,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [shared, backend, auth, gifts, frontend, integration, bugs]
+        package:
+          [
+            shared,
+            backend,
+            auth,
+            gifts,
+            frontend,
+            tac2iwxxm,
+            iwxxm-validate,
+            tac-validate,
+            integration,
+            bugs,
+          ]
 
     steps:
       - uses: actions/checkout@v5
@@ -147,6 +159,27 @@ jobs:
             --cov=gifts --cov=validation --cov-config=pyproject.toml --cov-branch \
             --cov-report=xml:coverage.xml --cov-report=term-missing \
             --cov-fail-under=98 -v
+
+      - name: Run tac2iwxxm unit tests with coverage
+        if: matrix.package == 'tac2iwxxm'
+        run: |
+          uv run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
+            --cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=95 -v
+
+      - name: Run iwxxm-validate unit tests with coverage
+        if: matrix.package == 'iwxxm-validate'
+        run: |
+          uv run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
+            --cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=95 -v
+
+      - name: Run tac-validate unit tests with coverage
+        if: matrix.package == 'tac-validate'
+        run: |
+          uv run pytest packages/tac-validate/tests --cov=tac_validate \
+            --cov-config=packages/tac-validate/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=95 -v
 
       - name: Run frontend tests with coverage
         if: matrix.package == 'frontend'

@@ -8,13 +8,18 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/auth/src packages/auth/tests \
 	packages/gifts/gifts packages/gifts/tests \
 	packages/shared packages/shared/tests \
+	packages/tac2iwxxm/src packages/tac2iwxxm/tests \
+	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
+	packages/tac-validate/src packages/tac-validate/tests \
 	tests
 
 .PHONY: install test test-unit vendor-sync \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
-	test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-bugs \
+	test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
+	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-bugs \
 	format format-check typecheck typecheck-py typecheck-js \
 	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-gifts lint-shared \
+	lint-tac2iwxxm lint-iwxxm-validate lint-tac-validate \
 	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend lint-fix-gifts \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
@@ -54,6 +59,9 @@ typecheck: typecheck-py typecheck-js
 
 typecheck-py:
 	$(UV) run basedpyright packages/shared/src
+	$(UV) run basedpyright packages/tac2iwxxm/src
+	$(UV) run basedpyright packages/iwxxm-validate/src
+	$(UV) run basedpyright packages/tac-validate/src
 	cd packages/auth && $(UV) run basedpyright
 	cd apps/backend && $(UV) run basedpyright
 
@@ -81,6 +89,15 @@ lint-gifts:
 
 lint-shared:
 	$(UV) run ruff check packages/shared packages/shared/tests
+
+lint-tac2iwxxm:
+	$(UV) run ruff check packages/tac2iwxxm/src packages/tac2iwxxm/tests
+
+lint-iwxxm-validate:
+	$(UV) run ruff check packages/iwxxm-validate/src packages/iwxxm-validate/tests
+
+lint-tac-validate:
+	$(UV) run ruff check packages/tac-validate/src packages/tac-validate/tests
 
 lint-frontend:
 	$(PNPM) --filter @metar/frontend run lint
@@ -140,10 +157,26 @@ test-unit-gifts:
 		--cov-report=xml:coverage.xml --cov-report=term-missing \
 		--cov-fail-under=98 -v
 
+test-unit-tac2iwxxm:
+	$(UV) run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
+		--cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
+		--cov-report=term-missing --cov-fail-under=95 -v
+
+test-unit-iwxxm-validate:
+	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
+		--cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
+		--cov-report=term-missing --cov-fail-under=95 -v
+
+test-unit-tac-validate:
+	$(UV) run pytest packages/tac-validate/tests --cov=tac_validate \
+		--cov-config=packages/tac-validate/pyproject.toml --cov-branch \
+		--cov-report=term-missing --cov-fail-under=95 -v
+
 test-bugs:
 	$(UV) run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
-test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-bugs
+test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
+	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-bugs
 
 test: test-unit
 
@@ -351,6 +384,7 @@ supabase-pull:
 
 validate-ci: validate-fast config-guard env-check audit-frontend
 
-ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts test-bugs test-integration badge-audit
+ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend test-unit-gifts \
+	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-bugs test-integration badge-audit
 
 acci: ci test-e2e-playwright-smoke audit-frontend
