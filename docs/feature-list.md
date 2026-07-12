@@ -15,7 +15,7 @@
 | F5 | User METAR work history | Planned | Product | docs/context/metar-work-history.md, S004 |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Planned | Product | S008, ADR-013/014; bulletin split |
 | F7 | Multi-product TAC operator entry / sessions | Planned | Product | S008 amend; no build this cycle |
-| F8 | Near-realtime TAC ingest → IWXXM gate | Planned | Product | S008 amend; no build this cycle |
+| F8 | Near-realtime TAC ingest → IWXXM gate | Planned | Product | S008 04: build this cycle (ADR-018 worker) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -173,10 +173,12 @@
   `tac2iwxxm` → `iwxxm-validate` (Schematron/XSD) → **store + push**; **quarantine** on convert
   or Schematron failure (no publish). Latency target **&lt;5–15s** E2E; scale via **worker
   replicas** (drop nothing). Product scope = F6 seven.
-- **Status**: **Planned** — **not built in this cycle**. Future Render Background Worker (template
-  drift ADR when implemented). Ingest adapters, auth, and push sinks **postponed**.
-- **Non-goals (until F8 build session)**: AMHS/SWIM adapters; auth; sink configuration.
-- **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R2–R15
+- **Status**: **Planned → build this cycle (S008 04 / ADR-018)**. Render Background Worker at
+  `apps/worker/`; HTTPS/object poller; Supabase store + separate quarantine; service-role JWT
+  for writers. Template → `static+api+worker`.
+- **Non-goals (still)**: AMHS/SWIM/AFS adapters; public machine-ingest auth UX; **push sinks**.
+- **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R2–R15; ADR-018;
+  [execution-plan](sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md)
 
 ## Platform Feature Details (Monorepo Migration)
 
@@ -188,8 +190,9 @@
 - **Key parameters**:
   | Parameter | Default | Description |
   |-----------|---------|-------------|
-  | `apps/backend` | FastAPI API + merged auth | Single deployable Python service |
+  | `apps/backend` | FastAPI API + merged auth | Single HTTP deployable |
   | `apps/frontend` | React/Vite UI | Static deployable |
+  | `apps/worker` | F8 near-RT ingest poller | Render Background Worker (ADR-018) |
   | `apps/e2e` | Playwright cross-app tests | Dedicated workspace |
   | `packages/auth` | Supabase middleware library | Imported by backend, not separate service |
   | `packages/tac2iwxxm` | General TAC→IWXXM (F6) | uv workspace member; MIT |
@@ -270,21 +273,22 @@
 
 - Rewrite gifts in place (package is deleted instead).
 - Cython native path (use Rust/PyO3 instead).
-- Rust/PyO3 as a v1 *acceptance* gate (optional after benchmarks).
-- New Render deployable / separate converter service.
+- Separate **converter** microservice (HTTP convert stays on existing API).
 - Metrics fields on convert API responses in v1.
 - Extend F5 work history to non-METAR products in F6 v1.
 - Products beyond the seven listed (e.g. SWA) in F6 v1.
 
-## Non-Goals (S008 realtime / package amend — this cycle)
+**Amended by 04-tech-plan**: PyO3 is a **cutover acceptance gate** (ADR-017). F8 worker is
+**in scope** this cycle (ADR-018) — see Non-Goals amend below.
+
+## Non-Goals (S008 realtime / package amend — updated 2026-07-12 04)
 
 - Building **F7** UI or multi-product sessions.
-- Building **F8** worker, ingest adapters, store/push sinks, or quarantine UX.
-- Machine-ingest **auth** and **push sink** configuration (postponed).
-- AMHS / SWIM / AFS adapters.
+- AMHS / SWIM / AFS ingest adapters.
+- **Push sinks** (webhook/S3/AMHS) — store + quarantine only for F8 v1.
+- Public machine-ingest auth UX (worker uses service-role JWT internally — ADR-018).
 - Schematron applied to TAC (Schematron stays on IWXXM; TAC uses `tac-validate`).
-- Changing F6 non-goal “no new Render deployable / separate converter service” — F8 worker,
-  if/when built, is documented under **F8** and requires its own ADR (Q29=C).
+- Dedicated converter API service (rejected; F8 worker is the new deployable).
 
 ## Planned Features (Post-Migration)
 

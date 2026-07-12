@@ -18,7 +18,10 @@
 | [ADR-012](ADR-012-metar-work-sessions-retention.md) | METAR work session retention and pg_cron jobs | Accepted |
 | [ADR-013](ADR-013-tac2iwxxm-package-architecture.md) | New `tac2iwxxm` package, IWXXM-US vendor pin, FAA five v1 | Partially superseded (ADR-014) |
 | [ADR-014](ADR-014-tac2iwxxm-rust-gifts-removal.md) | Rust/PyO3, F6 +VAA/TCA, delete gifts on cutover | Accepted |
-| [ADR-015](ADR-015-validate-packages-bulletin-api-f7-f8.md) | Validate packages, bulletin API, deferred F7/F8, H7 | Accepted |
+| [ADR-015](ADR-015-validate-packages-bulletin-api-f7-f8.md) | Validate packages, bulletin API, deferred F7/F8, H7 | Accepted (F8 deferral amended by ADR-018) |
+| [ADR-016](ADR-016-msgspec-subsecond-perf.md) | msgspec in packages, pydantic at HTTP, sub-second benches | Accepted |
+| [ADR-017](ADR-017-pyo3-cutover-gate.md) | PyO3 required before F6 cutover (amends ADR-014) | Accepted |
+| [ADR-018](ADR-018-f8-worker-template.md) | F8 Render worker + template static+api+worker (amends ADR-015) | Accepted |
 
 ## Process
 

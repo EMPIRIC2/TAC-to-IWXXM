@@ -32,12 +32,15 @@ postponed; F5 remains METAR-only.
 5. **F6.bulletin**: Bulletin split is a package acceptance criterion; phase with/before F6.a.
 6. **F7** (multi-product operator entry/sessions): **Planned**; F5 unchanged; **not built**
    this cycle.
-7. **F8** (near-RT ingest, store+push, quarantine, worker scale): **Planned**; **not built**
-   this cycle. F6 non-goal “no new Render deployable” **unchanged**; F8 worker requires its
-   own ADR when built.
+7. **F8** (near-RT ingest, store+push, quarantine, worker scale): **Promoted to build this
+   cycle** — see **ADR-018** (supersedes “not built this cycle” for F8 worker scope). Push
+   sinks and AMHS adapters remain postponed. F6 non-goal “no converter microservice” unchanged.
 8. **H7**: Dedicated live connectivity gate for bulletin path (UJ-011 / TC-LIVE-F6-030);
    extends live harness beyond H6 (see test-plan + connectivity-gates).
-9. **Postponed**: Machine-ingest auth; push sinks; AMHS/SWIM adapters.
+9. **Postponed**: Public machine-ingest auth UX; push sinks; AMHS/SWIM adapters.
+
+> **Amendment (2026-07-12, 04-tech-plan)**: Items 7–9 above as revised by ADR-018. Original
+> deferral of F8 build is superseded for the worker + Supabase store/quarantine slice only.
 
 ## Alternatives Considered
 

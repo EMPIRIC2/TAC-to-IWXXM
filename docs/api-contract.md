@@ -89,6 +89,7 @@ work-session persistence still requires JWT.
 | `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` |
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
 | `iwxxm_version` | no | app default | Vendored pin (e.g. `2025-2`) |
+| `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
 
 \* At least one of `files` or `manual_text` required (unchanged).
 
@@ -136,13 +137,52 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 | `product` | **yes** | — | Same enum as convert |
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
 | `iwxxm_version` | no | app default | Vendored pin |
+| `lint` | no | `true` | When true, run `tac-validate` before each report convert |
 
 * At least one of `files` or `manual_text` required.
 
-**Response**: Multi-result shape — **exact schema TBD in 04-tech-plan** (likely array of
-`ConversionResult` + per-report errors). Must support H7 (TC-LIVE-F6-030).
+**Response** (S008 04 — Q6=A, Q7=C):
 
-**Errors**: Same codes as convert, plus:
+```json
+{
+  "bulletin_meta": {
+    "ahl": "SAUS31 KZNY 121200",
+    "report_count": 2,
+    "tt": "SA",
+    "aa": "US",
+    "cccc": "KZNY",
+    "yygggg": "121200"
+  },
+  "results": [
+    {
+      "report_index": 0,
+      "ok": true,
+      "tac_input": "METAR ...",
+      "xml": "<iwxxm:...>",
+      "issues": [],
+      "fixes": []
+    },
+    {
+      "report_index": 1,
+      "ok": false,
+      "tac_input": "METAR ...",
+      "xml": null,
+      "issues": [
+        {"severity": "error", "code": "parse_failed", "message": "...", "location": null}
+      ],
+      "fixes": [
+        {"code": "suggest_icao", "message": "Replace XXXX with valid ICAO", "replacement": null}
+      ]
+    }
+  ]
+}
+```
+
+- **Partial success allowed**: HTTP **200** when split succeeds even if some reports fail;
+  callers inspect per-report `ok` / `issues` / `fixes`.
+- Must support H7 (TC-LIVE-F6-030).
+
+**Errors** (whole-request): Same codes as convert, plus:
 
 | code | HTTP | When |
 |------|------|------|
@@ -160,15 +200,28 @@ POST /api/v1/lint-tac
 
 **Auth**: Same as convert (unless `DISABLE_AUTH=true`).
 
-**Request** (multipart preferred; JSON optional — TBD in 04):
+**Request** (**multipart/form-data only** — Q8=A):
 
 | Field | Required | Description |
 |-------|----------|-------------|
 | `manual_text` or `files` | yes | TAC text |
 | `product` | no | Hint when known; improves rule selection |
 
-**Response**: Structured issues list (severity, code, message, location). Shape TBD in 04;
-must support TC-F6-031.
+**Response** (HTTP pydantic map of msgspec package issues — Q9=C):
+
+```json
+{
+  "ok": false,
+  "issues": [
+    {"severity": "error", "code": "rule_x", "message": "...", "location": "wind"}
+  ],
+  "fixes": [
+    {"code": "normalize_wind", "message": "...", "replacement": "12010KT"}
+  ]
+}
+```
+
+Must support TC-F6-031.
 
 ### Validation
 
@@ -317,3 +370,5 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 - S008 (2026-07-12): product required; profile; tac2iwxxm_available; validate profile; error codes
 - S008 amend (2026-07-12): validate → iwxxm-validate; `POST /api/v1/lint-tac`;
   `POST /api/v1/convert-bulletin` (multi-result TBD 04); `/convert` single-report only
+- S008 04 (2026-07-12): bulletin multi-result schema; lint-tac multipart-only; lint default on;
+  ADR-016–018

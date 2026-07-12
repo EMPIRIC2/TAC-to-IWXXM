@@ -26,8 +26,8 @@
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
 | lxml | XML encode/validate support | BSD | PyPI |
-| IR library | Versioned IR models | TBD | **TBD in 04-tech-plan** (msgspec / pydantic / dataclasses) |
-| PyO3 / maturin / rustc | Optional native hotspots | Apache-2.0 / MIT (typical) | **Optional extra** — not required for v0 |
+| IR library | Versioned IR models | Apache-2.0 | **msgspec** (ADR-016) |
+| PyO3 / maturin / rustc | Native hotspots | Apache-2.0 / MIT (typical) | **Required before cutover** (ADR-017) |
 
 Package license: **MIT**. No FastAPI/Supabase imports.
 
@@ -35,7 +35,7 @@ Package license: **MIT**. No FastAPI/Supabase imports.
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| pydantic or msgspec | Structured issue models (optional) | MIT / Apache-2.0 | **Allowed — choose in 04-tech-plan** (Q49=B) |
+| msgspec | Structured issue / fix models | Apache-2.0 | **Required** (ADR-016); pydantic only at HTTP |
 
 Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron.
 
@@ -131,3 +131,4 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S008 (2026-07-12): tac2iwxxm MIT; gifts removed; iwxxm-us; optional PyO3; IR lib TBD in 04
 - S008 amend (2026-07-12): tac-validate + iwxxm-validate MIT; lxml for Schematron; tac-validate
   may use pydantic/msgspec (04)
+- S008 04 (2026-07-12): msgspec required; PyO3 cutover gate; F8 worker deps (ADR-016–018)

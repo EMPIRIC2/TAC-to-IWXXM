@@ -30,14 +30,16 @@ active_session:
     - stage: 04-tech-plan
       mode: delta
       required: true
-      status: pending
+      status: completed
+      completed_at: "2026-07-12"
       skip_rationale: null
-      note: "Next after S008-realtime-ingest 01 amend — package layout, bulletin multi-result schema, lint-tac, H7"
+      note: "S008 delta 04-tech-plan COMPLETED — execution plan + ADR-016/017/018 approved (Q21–Q24=A); next 05-verify-tech"
     - stage: 05-verify-tech
       mode: delta
       required: true
       status: pending
       skip_rationale: null
+      note: "Next — audit tech plan against vendor + gifts/tac2iwxxm constraints"
     - stage: 16-evolve
       required: true
       status: pending
@@ -63,7 +65,7 @@ active_session:
       required: true
       status: pending
       skip_rationale: null
-  current_stage: 04-tech-plan
+  current_stage: 05-verify-tech
   started_at: "2026-07-12"
   context_briefs:
     - docs/context/general-tac-iwxxm-converter.md
@@ -90,6 +92,7 @@ active_session:
     - "2026-07-12 D-S008-01-deps-q48q50 — Q48=A MIT; Q49=B pydantic/msgspec in 04; Q50=A. Dependency Inventory → writing then API Contract"
     - "2026-07-12 Dependency Inventory written (docs/dependency-inventory.md delta) — interviews 5/7 complete; planned_docs.status.dependency-inventory=completed; current_template=api-contract; current_section=endpoints"
     - "2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. Delta S008-realtime-ingest COMPLETED (7/7); advancing to 04-tech-plan"
+    - "2026-07-12 D-S008-04-approved — Q21–Q24=A; 04-tech-plan delta complete; execution plan + ADR-016/017/018 approved; advancing to 05-verify-tech"
 sessions:
   - id: S007-docs-minimize
     type: process
@@ -208,8 +211,11 @@ sessions:
       - docs/context/issue-664-output-filename.md
 
 template:
-  id: static+api
-  rationale: React frontend + FastAPI backend + auth middleware; migrating from submodule layout to true monorepo
+  id: static+api+worker
+  rationale: "S008 04 Q15b/Q19 — F8 Render Background Worker at apps/worker; HTTP remains on existing API (ADR-018)"
+  previous_id: static+api
+  amended_at: "2026-07-12"
+  amended_by: ADR-018
   confirmed_at: "2026-06-14"
 
 stages:
@@ -444,8 +450,76 @@ stages:
         artifacts:
           - docs/sessions/S004-issue-555-feedback/reports/execution-plan-ev004.md
           - docs/sessions/S004-issue-555-feedback/reports/04-tech-plan-summary.md
+      - id: S008-f6-tac2iwxxm
+        session_id: S008-general-tac-iwxxm-converter
+        status: completed
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        mode: delta
+        focus:
+          - package layout (tac2iwxxm, iwxxm-validate, tac-validate)
+          - bulletin multi-result schema
+          - POST /lint-tac content-type
+          - H7 harness
+          - pydantic vs msgspec
+        phase: completed
+        artifacts:
+          - docs/sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md
+          - docs/sessions/S008-general-tac-iwxxm-converter/reports/04-tech-plan.md
+          - docs/adr/ADR-016-msgspec-subsecond-perf.md
+          - docs/adr/ADR-017-pyo3-cutover-gate.md
+          - docs/adr/ADR-018-f8-worker-template.md
+        interview:
+          batch_1_architecture:
+            status: completed
+            answers:
+              Q1: A  # src/ layout
+              Q2: B  # msgspec in packages; pydantic at HTTP; sub-second perf constraint
+              Q3: B  # new iwxxm-validate from scratch; delete old F2 code in same plan cutover
+              Q4: A  # F6.bulletin with/before F6.a
+              Q5: B  # aggressive cutover — switch when green; cutover on everything
+          batch_2_api_h7:
+            status: completed
+            answers:
+              Q6: A  # results[] + bulletin_meta; partial OK; plus lint-style issues+fixes when possible
+              Q7: C  # index + tac_input + tokenizer_meta
+              Q8: A  # multipart only for lint-tac
+              Q9: C  # msgspec package issues → HTTP {ok, issues}; prioritize msgspec for sub-second
+              Q10: A # make test-live-bulletin + pytest infra/smoke; fold into make test-live
+          batch_3_perf_deploy:
+            status: completed
+            answers:
+              Q11: C  # dual benchmarks soft then hard at cutover
+              Q12: full_pyo3_required  # amends ADR-014 pure-Python-v0-first
+              Q13: A  # iwxxm-us pin early
+              Q14: C  # lint flag default on
+              Q15: new_render_service  # clarified by Q15b=B — F8 worker only; convert stays on API
+          batch_3_clarifications:
+            Q12b: A  # cutover blocked until PyO3 + Q11 hard-pass; amend ADR-014
+            Q15c: B  # promote F8 to build-this-cycle
+            Q15b: B  # F8 worker only; convert on current API — user accepted recommendation
+          batch_4_f8_worker:
+            status: completed
+            answers:
+              Q16: A  # HTTPS/object poller
+              Q17: A  # Supabase store on pass
+              Q18: B  # separate quarantine table/bucket
+              Q19: A  # apps/worker/
+              Q20: C  # Supabase service JWT for writers
+          q5_cutover_clarification: "(ii) aggressive — delete gifts when METAR/SPECI annex3 + wrappers + bulletin green; other products post-delete on tac2iwxxm only"
+        interview_review:
+          Q21: A
+          Q22: A
+          Q23: A
+          Q24: A
+        blocking_clarifications: []
+        notes: |
+          Perf constraint on Q2: msgspec path must support sub-second convert/validate for typical report sizes.
+          Phase 4 user review approved 2026-07-12 (Q21–Q24=A).
     notes:
       - "Monorepo plan 2026-06-15; EV-004 delta completed 2026-06-23"
+      - "Historical baseline status remains completed — S008 tracked via delta_substages only"
+      - "S008 delta 04-tech-plan completed 2026-07-12 — execution plan + ADR-016/017/018 approved"
 
   05-verify-tech:
     status: completed
@@ -725,6 +799,24 @@ deployment:
     method: "bash scripts/deploy/verify_connectivity.sh"
 
 issue_log:
+  - id: I-S008-04-pyo3-required
+    category: Contradiction
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    summary: "Q12 requires full PyO3; ADR-014 says pure Python v0 first, optional PyO3"
+    status: resolved
+    resolution: "Q12b=A — cutover blocked on PyO3 + benches; ADR-014 amend in 04 docs"
+    resolved_at: "2026-07-12"
+    related_decision: D-S008-04-q12b-q15c
+  - id: I-S008-04-new-service
+    category: Scope Drift
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    summary: "Q15 asks new Render service; ADR-015/F6 non-goal deferred F8 worker and no new deployable this cycle"
+    status: resolved
+    resolution: "Q15b=B F8 Render Background Worker; Q15c=B promote F8; template→static+api+worker via ADR; convert stays on metar-to-iwxxm-api"
+    resolved_at: "2026-07-12"
+    related_decision: D-S008-04-q15b
   - id: I-S008-package-first-scope
     category: Ambiguity
     summary: "Clarify whether F7/F8 remain in this amend as design-only, deferred entirely, or package APIs only (ingest/worker/UI later)"
@@ -758,6 +850,63 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-04-approved
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    summary: "User approved plan Q21–Q24=A; 04-tech-plan delta complete; next 05-verify-tech"
+    timestamp: "2026-07-12"
+  - id: D-S008-04-plan-drafted
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    summary: "Drafted 6-phase/44-task execution plan + ADR-016/017/018; awaiting Phase 4 user review"
+    timestamp: "2026-07-12"
+  - id: D-S008-04-q16q20
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    summary: >
+      F8 v1: Q16=A poller; Q17=A Supabase store; Q18=B separate quarantine;
+      Q19=A apps/worker; Q20=C service JWT for writers; template static+api+worker
+    timestamp: "2026-07-12"
+  - id: D-S008-04-q15b
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    summary: "Q15b=B accept recommendation — F8 near-RT Render worker; HTTP convert/lint/validate on existing API; promote F8 this cycle; amend ADR-015 + template"
+    timestamp: "2026-07-12"
+  - id: D-S008-04-q12b-q15c
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    summary: "Q12b=A PyO3 hard gate for cutover; Q15c=B promote F8 into this build; Q15b TBD"
+    timestamp: "2026-07-12"
+  - id: D-S008-04-q11q15-provisional
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    summary: >
+      Q11=C dual benches; Q12=full PyO3 required (ADR-014 amend pending);
+      Q13=A iwxxm-us early; Q14=C lint default on; Q15=new service (shape TBD — blocking)
+    timestamp: "2026-07-12"
+  - id: D-S008-04-q6q10
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    summary: >
+      Q6=A partial multi-result + lint-style issues/fixes; Q7=C identity;
+      Q8=A multipart lint-tac; Q9=C msgspec→HTTP map; Q10=A H7 makefile+pytest;
+      Q5 clar=(ii) gifts delete after METAR/SPECI+wrappers+bulletin green
+    timestamp: "2026-07-12"
+  - id: D-S008-04-q1q5
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    summary: >
+      Q1=A src/ layout; Q2=B msgspec packages + pydantic HTTP (sub-second);
+      Q3=B new iwxxm-validate + delete old F2 in-plan; Q4=A bulletin with/before F6.a;
+      Q5=B aggressive full cutover when green
+    timestamp: "2026-07-12"
+  - id: D-S008-04-start
+    date: "2026-07-12"
+    stage: 04-tech-plan
+    session_id: S008-general-tac-iwxxm-converter
+    skill_id: 04-tech-plan
+    summary: "Opened S008 delta 04-tech-plan; historical project 04 remains baseline completed"
+    timestamp: "2026-07-12"
   - id: D-S008-01-api-q51q54
     date: "2026-07-12"
     stage: 01-requirements
@@ -1405,6 +1554,18 @@ decisions_log:
     decision: "Verified/fixed stale corpus path references post-reorg (workflow-state + relative links)."
     status: confirmed
 artifacts:
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md
+    kind: execution-plan
+    session_id: S008-general-tac-iwxxm-converter
+    stage: 04-tech-plan
+    created_at: "2026-07-12"
+    status: approved
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/04-tech-plan.md
+    kind: stage-report
+    session_id: S008-general-tac-iwxxm-converter
+    stage: 04-tech-plan
+    created_at: "2026-07-12"
+    status: completed
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/01-requirements-realtime-amend.md
     kind: session-report
     session_id: S008-general-tac-iwxxm-converter
