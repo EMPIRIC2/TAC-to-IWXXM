@@ -62,6 +62,22 @@ def test_lint_tac_metar_pass(client: TestClient) -> None:
     assert response.json()["issues"] == []
 
 
+def test_lint_tac_reads_uploaded_files(client: TestClient) -> None:
+    """File parts are concatenated into TAC text (api lint-tac upload path)."""
+    tac = "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034="
+    response = client.post(
+        "/api/v1/lint-tac",
+        files=[
+            ("product", (None, "METAR")),
+            ("manual_text", (None, "")),
+            ("files", ("a.tac", tac.encode("utf-8"), "text/plain")),
+            ("files", ("empty.tac", b"", "text/plain")),
+        ],
+    )
+    assert response.status_code == 200
+    assert response.json()["ok"] is True
+
+
 def test_lint_tac_rejects_json_content_type(client: TestClient) -> None:
     """Q8=A: multipart only."""
     response = client.post(

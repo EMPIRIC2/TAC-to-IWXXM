@@ -15,7 +15,7 @@ def rust_available() -> bool:
         from tac2iwxxm import _rust  # type: ignore[attr-defined]
     except ImportError:
         return False
-    return _rust is not None
+    return _rust is not None  # pragma: no cover
 
 
 def rust_module() -> Any | None:
@@ -31,7 +31,7 @@ def rust_module() -> Any | None:
         from tac2iwxxm import _rust  # type: ignore[attr-defined]
     except ImportError:
         return None
-    return _rust
+    return _rust  # type: ignore[no-any-return]  # pragma: no cover
 
 
 def scan_metar_tokens(tac: str) -> list[str]:

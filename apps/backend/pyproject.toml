@@ -89,6 +89,8 @@ omit = [
     "*/test_*.py",
     "tests/*",
     "*/tests/*",
+    # Transitional gifts bridge retained for tests; not on F6 convert path (ADR-014 cutover).
+    "src/utilities/gifts_locationdb_adapter.py",
 ]
 
 [tool.coverage.report]

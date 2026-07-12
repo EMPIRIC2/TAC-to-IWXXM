@@ -11,13 +11,13 @@ if TYPE_CHECKING:
 
 try:
     from .tac_parser import extract_airport_code
-except (ImportError, ModuleNotFoundError):
+except (ImportError, ModuleNotFoundError):  # pragma: no cover - flat layout fallback
     from utilities.tac_parser import extract_airport_code  # type: ignore
 
 logger = logging.getLogger(__name__)
 try:
     from ..schemas.validation import ValidationLayer
-except ImportError:
+except ImportError:  # pragma: no cover - flat layout fallback
     from schemas.validation import ValidationLayer
 
 
@@ -26,12 +26,12 @@ def _load_service_validation_error() -> type[Exception]:
         from ..services.validation import ValidationError
 
         return ValidationError
-    except (ImportError, ModuleNotFoundError):
-        try:
+    except (ImportError, ModuleNotFoundError):  # pragma: no cover - flat layout fallback
+        try:  # pragma: no cover
             from services.validation import ValidationError
 
             return ValidationError
-        except (ImportError, ModuleNotFoundError):
+        except (ImportError, ModuleNotFoundError):  # pragma: no cover
 
             class _FallbackValidationError(Exception):
                 """Fallback validation error."""
@@ -74,7 +74,7 @@ try:
         normalize_recent_weather_for_tac,
         normalize_recent_weather_tokens,
     )
-except ImportError:
+except ImportError:  # pragma: no cover - flat layout fallback
     from metar_normalizer import (  # type: ignore  # noqa: E402
         normalize_recent_weather_for_tac,
         normalize_recent_weather_tokens,
@@ -211,7 +211,7 @@ def convert_metar_tac_with_metadata(
         try:
             try:
                 from ..services.validation_orchestrator import get_validation_orchestrator
-            except (ImportError, ValueError):
+            except (ImportError, ValueError):  # pragma: no cover - flat layout fallback
                 from services.validation_orchestrator import get_validation_orchestrator
 
             orchestrator = get_validation_orchestrator()

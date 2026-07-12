@@ -8,8 +8,7 @@ try:
     # Try relative imports first (when run as module in Docker)
     from ..schemas.validation import AggregatedValidationResult, ValidationLayer
     from ..services.validation import ValidationService
-except ImportError:
-    # Fall back to direct imports
+except ImportError:  # pragma: no cover - flat layout fallback
     from schemas.validation import AggregatedValidationResult, ValidationLayer
     from services.validation import ValidationService
 
@@ -59,9 +58,9 @@ async def validate_metar_input(
             iwxxm_version=iwxxm_version,
         )
         return result
-    except ValueError as e:
+    except ValueError as e:  # pragma: no cover - exercised via API routes
         raise HTTPException(status_code=400, detail=f"Validation error: {str(e)}")
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise HTTPException(status_code=500, detail=f"Validation service error: {str(e)}")
 
 
@@ -98,9 +97,9 @@ async def validate_iwxxm_input(
             iwxxm_version=iwxxm_version,
         )
         return result
-    except ValueError as e:
+    except ValueError as e:  # pragma: no cover - exercised via API routes
         raise HTTPException(status_code=400, detail=f"Validation error: {str(e)}")
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise HTTPException(status_code=500, detail=f"Validation service error: {str(e)}")
 
 

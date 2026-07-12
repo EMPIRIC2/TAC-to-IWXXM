@@ -773,10 +773,15 @@ async def lint_tac(
         ok=report.ok,
         product=report.product,
         issues=[
-            {"severity": i.severity, "code": i.code, "message": i.message, "location": i.location}
+            LintIssueModel(
+                severity=i.severity,
+                code=i.code,
+                message=i.message,
+                location=i.location,
+            )
             for i in report.issues
         ],
-        fixes=[{"code": f.code, "message": f.message, "replacement": f.replacement} for f in report.fixes],
+        fixes=[LintFixModel(code=f.code, message=f.message, replacement=f.replacement) for f in report.fixes],
     )
 
 

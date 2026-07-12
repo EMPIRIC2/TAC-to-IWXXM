@@ -8,7 +8,6 @@ guards the API conversion path and skips when COR is not yet encoded.
 from __future__ import annotations
 
 import pytest
-
 from apps.backend.src.utilities.conversion import (
     ConversionError,
     convert_metar_tac_with_metadata,

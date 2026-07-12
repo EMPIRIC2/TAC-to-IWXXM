@@ -14,11 +14,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase 6: Deploy & Live Gates |
-| **Active milestone** | M8: F6.e UI pickers + H4–H5/H6 |
-| **Active task** | M8 complete — PR-M8 pending |
+| **Active phase** | Phase C complete — awaiting C→D / Phase D verify |
+| **Active milestone** | M8 complete (all milestones) |
+| **Active task** | 08-verify-build PASS — C→D gate pending user approval |
 | **Tasks completed** | 51 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T8.1–T8.4) |
+| **Last updated** | 2026-07-12 (08-verify-build Phase C PASS) |
 
 ## Tech Stack Summary (S008 delta)
 

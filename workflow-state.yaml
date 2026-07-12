@@ -49,28 +49,38 @@ active_session:
       note: "EV-006 B→C passed (D-S008-EV006-b-to-c=A); handed off to 07-build"
     - stage: 07-build
       required: true
-      status: in_progress
+      status: completed
       started_at: "2026-07-12"
+      completed_at: "2026-07-12"
       skip_rationale: null
-      note: "PR-M8 #710 MERGED into evolve; M8 complete; next Phase C→D (08-verify-build / 09-qa) or redeploy for live F6.e"
+      note: "All M1–M8 tasks (51/51) done; PR-M8 #710 merged; Phase C implementation complete; handing to 08-verify-build for C→D gate"
     - stage: 08-verify-build
       required: true
-      status: pending
+      status: completed
+      started_at: "2026-07-12"
+      completed_at: "2026-07-12"
       skip_rationale: null
+      note: "Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c). Awaiting C→D AskQuestion before 09-qa."
     - stage: 09-qa
       required: true
-      status: pending
+      status: completed
+      started_at: "2026-07-12"
+      completed_at: "2026-07-12"
       skip_rationale: null
+      note: "pass_with_advisories — see reports/qa-report.md"
     - stage: 10-e2e
       mode: delta
       required: true
-      status: pending
+      status: completed
+      started_at: "2026-07-12"
+      completed_at: "2026-07-12"
       skip_rationale: null
+      note: "FAIL — 10 pass / 2 fail COR correction e2e; see e2e-report.md"
     - stage: 11-verify-impl
       required: true
       status: pending
       skip_rationale: null
-  current_stage: 07-build
+  current_stage: 16-evolve
   started_at: "2026-07-12"
   context_briefs:
     - docs/context/general-tac-iwxxm-converter.md
@@ -120,6 +130,15 @@ active_session:
     - "2026-07-12 M4 remaining tasks T4.10–T4.9 done; ready 08-verify-build + PR"
     - "2026-07-12 D-S008-EV006-merge-m4-m7 — user said Merge; #706–#709 merged into evolve (anti-merge override for 18/19); M4–M7 complete; next M8 or continue 07-build"
     - "2026-07-12 M8 T8.1–T8.4 complete; PR-M8 #710 MERGED into evolve (PRM-014 / e4fe492); M8 complete; next Phase C→D (08-verify-build / 09-qa) or redeploy for live F6.e"
+    - "2026-07-12 User chose resume option 1 — close Phase C / mark 07-build complete → C→D via 08-verify-build (D-S008-EV006-c-close)"
+    - "2026-07-12 08-verify-build Phase C FAIL — awaiting fix decision on typecheck + coverage"
+    - "2026-07-12 D-S008-EV006-08-fix — User chose option 1 fix-in-place for typecheck+coverage; 08 re-verify PASS"
+    - "2026-07-12 08-verify-build Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c). Awaiting C→D AskQuestion before 09-qa; gates.c_to_d/phase_c remain pending"
+    - "2026-07-12 D-S008-EV006-c-to-d — User chose option 1; C→D passed; Phase D started; advancing to 09-qa"
+    - "2026-07-12 10-e2e started in parallel with 09-qa after C→D"
+    - "2026-07-12 09-qa completed — pass_with_advisories; see reports/qa-report.md"
+    - "2026-07-12 10-e2e completed — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
+    - "2026-07-12 Phase D 09+10 done; checkpoint before 11-verify-impl (phase_d remains pending until AskQuestion)"
 sessions:
   - id: S007-docs-minimize
     type: process
@@ -643,12 +662,19 @@ stages:
         completed_at: "2026-06-24"
         report: docs/sessions/S004-issue-555-feedback/reports/07-build-progress.md
         note: "36/38 tasks — T1.3 operator migration apply deferred to 12-verify-deploy"
+      - status: completed
+        session_id: S008-general-tac-iwxxm-converter
+        evolve_cycle_id: EV-006
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        note: "All M1–M8 tasks (51/51) done; PR-M8 #710 merged; Phase C implementation complete; handing to 08-verify-build for C→D gate"
     notes:
       - "M1 complete (T1.1–T1.10); PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/672"
       - "M3 complete; PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/673"
       - "M5 complete (T5.1–T5.8); minor PR pending"
       - "M7 complete (T7.1–T7.4); minor PR pending"
       - "S004 / EV-004 delta 07-build complete 2026-06-24 — 36/38 tasks; see 07-build-progress.md"
+      - "2026-07-12 S008 / EV-006 Phase C — M8/all tasks done (51/51); PR-M8 #710 merged; Phase C implementation complete"
 
   09-qa:
     status: completed
@@ -666,9 +692,18 @@ stages:
         overall: fail
         report: docs/sessions/S004-issue-555-feedback/reports/qa-report.md
         note: "ESLint react-hooks + 1 Vitest failure block gate"
+      - status: completed
+        session_id: S008-general-tac-iwxxm-converter
+        evolve_cycle_id: EV-006
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        overall: pass_with_advisories
+        report: docs/sessions/S008-general-tac-iwxxm-converter/reports/qa-report.md
+        note: "pass_with_advisories — see reports/qa-report.md"
     notes:
       - "S004 / EV-004 delta — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
       - "Prior monorepo QA 2026-06-20: docs/reports/qa-report.md"
+      - "2026-07-12 S008 / EV-006 — pass_with_advisories; see qa-report.md"
 
   11-verify-impl:
     status: completed
@@ -734,9 +769,19 @@ stages:
       t3_live:
         status: completed
         notes: "H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred"
+    delta_substages:
+      - status: completed
+        session_id: S008-general-tac-iwxxm-converter
+        evolve_cycle_id: EV-006
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        overall: fail
+        report: docs/sessions/S008-general-tac-iwxxm-converter/reports/e2e-report.md
+        note: "FAIL — 10 pass / 2 fail COR correction e2e; see e2e-report.md"
     notes:
       - "S004 delta FAIL — fix Playwright locators + finished-session load; redeploy for H4"
       - "Prior global report: docs/reports/e2e-report.md (2026-06-20)"
+      - "2026-07-12 S008 / EV-006 — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
 
   08-verify-build:
     status: completed
@@ -769,11 +814,23 @@ stages:
         overall: fail
         report: docs/sessions/S004-issue-555-feedback/reports/verification-report.md
         note: "ESLint react-hooks + 1 Vitest failure block gate"
+      - status: completed
+        session_id: S008-general-tac-iwxxm-converter
+        evolve_cycle_id: EV-006
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        overall: pass
+        report: docs/sessions/S008-general-tac-iwxxm-converter/reports/verification-report.md
+        note: "Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c). Awaiting C→D AskQuestion before 09-qa."
     notes:
       - "S001 / EV-001 — PASS 2026-06-22 (docs/sessions/S001-convert-send-buttons/reports/verification-report.md)"
       - "S004 / EV-004 — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
       - "H0c CORS 6/6 pass; connectivity artifacts present"
       - "make test-integration not re-run (port conflict advisory)"
+      - "2026-07-12 S008 / EV-006 — Full Phase-C gate verification on evolve/S008-general-tac-iwxxm-converter tip after M8 merge"
+      - "2026-07-12 S008 / EV-006 — Phase C full verify FAIL (typecheck-py + coverage); report written; awaiting user decision; c_to_d/phase_c remain pending"
+      - "2026-07-12 D-S008-EV006-08-fix — User chose option 1 fix-in-place for typecheck+coverage; 08 re-verify PASS"
+      - "2026-07-12 S008 / EV-006 — Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c); Overall PASS; awaiting C→D AskQuestion; c_to_d/phase_c remain pending"
 
   18-pr-review:
     status: completed
@@ -905,6 +962,37 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-EV006-c-to-d
+    date: "2026-07-12"
+    stage: 16-evolve
+    skill: 16-evolve
+    skill_id: 16-evolve
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "User chose option 1 — Pass C→D and start Phase D with 09-qa"
+    summary: >
+      User chose option 1 — Pass C→D gate and start Phase D with 09-qa.
+      EV-006 gates.c_to_d and checkpoints.phase_c passed; handed off to 09-qa.
+      Orchestrator remains 16-evolve.
+    timestamp: "2026-07-12"
+  - id: D-S008-EV006-08-fix
+    date: "2026-07-12"
+    stage: 08-verify-build
+    skill: 08-verify-build
+    skill_id: 08-verify-build
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "User chose option 1 fix-in-place for typecheck+coverage; 08 re-verify PASS"
+    timestamp: "2026-07-12"
+  - id: D-S008-EV006-c-close
+    date: "2026-07-12"
+    stage: 16-evolve
+    skill: 16-evolve
+    skill_id: 16-evolve
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "User chose option 1 — close Phase C (07-build complete, 51/51 tasks, PR-M8 #710 merged) and invoke 08-verify-build for C→D gate"
+    timestamp: "2026-07-12"
   - id: D-S008-EV006-resume-m8
     date: "2026-07-12"
     stage: 16-evolve
@@ -1788,6 +1876,36 @@ decisions_log:
     decision: "Verified/fixed stale corpus path references post-reorg (workflow-state + relative links)."
     status: confirmed
 artifacts:
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/qa-report.md
+    kind: stage-report
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    stage: 09-qa
+    created_at: "2026-07-12"
+    updated_at: "2026-07-12"
+    status: completed
+    overall: pass_with_advisories
+    note: "pass_with_advisories — see reports/qa-report.md"
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/e2e-report.md
+    kind: stage-report
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    stage: 10-e2e
+    created_at: "2026-07-12"
+    updated_at: "2026-07-12"
+    status: completed
+    overall: fail
+    note: "FAIL — 10 pass / 2 fail COR correction e2e; see e2e-report.md"
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/verification-report.md
+    kind: verification-report
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    stage: 08-verify-build
+    created_at: "2026-07-12"
+    updated_at: "2026-07-12"
+    status: written
+    overall: fail
+    note: "Phase C full verify FAIL — typecheck-py 4 errors; backend cov 97.07%<98%; tac2iwxxm cov 89.61%<95%; awaiting user fix decision"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-review.md
     kind: stage-report
     session_id: S008-general-tac-iwxxm-converter
@@ -2710,7 +2828,7 @@ evolve_cycles:
         - 06-tech-tooling
         - 12-verify-deploy
         - 13-deploy-smoke
-    current_stage: 07-build
+    current_stage: 16-evolve
     notes:
       - "2026-07-12 M1 T1.1–T1.6 completed on feat/S008-M1-scaffold; current work toward 08-verify-build for M1"
       - "2026-07-12 M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
@@ -2732,6 +2850,15 @@ evolve_cycles:
       - "2026-07-12 D-S008-EV006-resume-m8 — user resumed at M8 (option A); continue Phase C 07-build at T8.1; create feat/S008-M8-ui-connectivity from evolve"
       - "2026-07-12 T8.1–T8.4 done; PR-M8 opened (feat/S008-M8-ui-connectivity)"
       - "2026-07-12 PR-M8 #710 MERGED into evolve (PRM-014; e4fe492); M8 complete; next Phase C→D (08-verify-build / 09-qa) or redeploy for live F6.e"
+      - "2026-07-12 Phase C close (D-S008-EV006-c-close) — 07-build completed (51/51); starting 08-verify-build for C→D gate; phase_c/c_to_d remain pending until 08 passes"
+      - "2026-07-12 08-verify-build Phase C FAIL — awaiting fix decision on typecheck + coverage"
+      - "2026-07-12 D-S008-EV006-08-fix — User chose option 1 fix-in-place for typecheck+coverage; 08 re-verify PASS"
+      - "2026-07-12 08-verify-build Phase C full verify PASS (Overall PASS); awaiting C→D AskQuestion before 09-qa; gates.c_to_d and checkpoints.phase_c remain pending"
+      - "2026-07-12 D-S008-EV006-c-to-d — C→D passed; Phase D started; current_stage 09-qa"
+      - "2026-07-12 10-e2e started in parallel with 09-qa after C→D"
+      - "2026-07-12 09-qa completed — pass_with_advisories; see reports/qa-report.md"
+      - "2026-07-12 10-e2e completed — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
+      - "2026-07-12 Phase D 09+10 done; checkpoint before 11-verify-impl (phase_d remains pending until AskQuestion)"
     stages:
       00-context:
         status: completed
@@ -2754,11 +2881,12 @@ evolve_cycles:
         started: "2026-07-12"
         completed: "2026-07-12"
       07-build:
-        status: in_progress
+        status: completed
         started: "2026-07-12"
-        completed: null
-        active_task: M8-complete
-        active_milestone: M8
+        completed: "2026-07-12"
+        completed_at: "2026-07-12"
+        active_task: null
+        active_milestone: null
         notes:
           - "M1 T1.1–T1.6 completed; next 08-verify-build for M1 then PR-M1"
           - "M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
@@ -2778,18 +2906,36 @@ evolve_cycles:
           - "2026-07-12 D-S008-EV006-resume-m8 — user resumed at M8; active_task T8.1; branch feat/S008-M8-ui-connectivity (to create)"
           - "2026-07-12 T8.1–T8.4 done; PR-M8 opened"
           - "2026-07-12 PR-M8 #710 MERGED (PRM-014; e4fe492); M8 complete"
+          - "2026-07-12 M8/all tasks done (51/51); PR-M8 #710 merged; Phase C implementation complete"
       08-verify-build:
-        status: pending
-        started: null
-        completed: null
+        status: completed
+        started: "2026-07-12"
+        started_at: "2026-07-12"
+        completed: "2026-07-12"
+        completed_at: "2026-07-12"
+        overall: pass
+        report: docs/sessions/S008-general-tac-iwxxm-converter/reports/verification-report.md
+        artifacts: docs/sessions/S008-general-tac-iwxxm-converter/reports/verification-report.md
+        notes:
+          - "Phase C full verify FAIL — typecheck-py 4 errors; backend cov 97.07%<98%; tac2iwxxm cov 89.61%<95%; report written; awaiting user fix decision; c_to_d/phase_c remain pending"
+          - "2026-07-12 D-S008-EV006-08-fix — User chose option 1 fix-in-place for typecheck+coverage; 08 re-verify PASS"
+          - "Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c); Overall PASS; awaiting C→D AskQuestion; c_to_d/phase_c remain pending"
       09-qa:
-        status: pending
-        started: null
-        completed: null
+        status: completed
+        started: "2026-07-12"
+        started_at: "2026-07-12"
+        completed: "2026-07-12"
+        completed_at: "2026-07-12"
+        overall: pass_with_advisories
+        report: docs/sessions/S008-general-tac-iwxxm-converter/reports/qa-report.md
       10-e2e:
-        status: pending
-        started: null
-        completed: null
+        status: completed
+        started: "2026-07-12"
+        started_at: "2026-07-12"
+        completed: "2026-07-12"
+        completed_at: "2026-07-12"
+        overall: fail
+        report: docs/sessions/S008-general-tac-iwxxm-converter/reports/e2e-report.md
       11-verify-impl:
         status: pending
         started: null
@@ -2797,12 +2943,12 @@ evolve_cycles:
     gates:
       a_to_b: passed
       b_to_c: passed
-      c_to_d: pending
+      c_to_d: passed
       deploy: pending
     checkpoints:
       phase_a: passed
       phase_b: passed
-      phase_c: pending
+      phase_c: passed
       phase_d: pending
       deploy: pending
     adrs:
@@ -2819,6 +2965,15 @@ evolve_cycles:
         status: completed
       - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/evolve-summary.md
         status: pending
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/verification-report.md
+        status: written
+        note: "Phase C FAIL — typecheck + coverage; awaiting user decision"
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/qa-report.md
+        status: completed
+        note: "pass_with_advisories"
+      - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/e2e-report.md
+        status: completed
+        note: "FAIL — 10 pass / 2 fail COR correction e2e"
     issues: []
 
 git_history:

@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import Any
 from xml.sax.saxutils import escape
 
-from tac2iwxxm.profiles.annex3 import _CLOUD_HREF, _NS, _obs_timestamp
+from tac2iwxxm.profiles.annex3 import CLOUD_HREF, NS, obs_timestamp
 
 
 def _us_gml_id(ir: dict[str, Any], product: str) -> str:
@@ -89,12 +89,12 @@ def emit_metar_speci_iwxxm_us(
     str
         IWXXM XML document with US extension blocks.
     """
-    ns = _NS.get(iwxxm_version)
+    ns = NS.get(iwxxm_version)
     if ns is None:
         raise ValueError(f"unsupported iwxxm_version for iwxxm_us emit: {iwxxm_version}")
 
     station = str(ir["station"])
-    stamp = _obs_timestamp(ir)
+    stamp = obs_timestamp(ir)
     root = product.upper()
     gml_id = _us_gml_id(ir, root)
 
@@ -115,7 +115,7 @@ def emit_metar_speci_iwxxm_us(
             vis_op = "\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
         cloud = ""
         if ir.get("cloud_amount") and ir.get("cloud_base_ft") is not None:
-            href = _CLOUD_HREF.format(amt=ir["cloud_amount"])
+            href = CLOUD_HREF.format(amt=ir["cloud_amount"])
             cloud = f"""      <iwxxm:cloud>
         <iwxxm:AerodromeCloud>
           <iwxxm:layer>

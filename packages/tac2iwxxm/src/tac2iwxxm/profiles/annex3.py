@@ -5,15 +5,15 @@ from __future__ import annotations
 from typing import Any
 from xml.sax.saxutils import escape
 
-_NS = {
+NS = {
     "2025-2": "http://icao.int/iwxxm/2025-2",
     "2023-1": "http://icao.int/iwxxm/2023-1",
 }
 
-_CLOUD_HREF = "http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/{amt}"
+CLOUD_HREF = "http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/{amt}"
 
 
-def _obs_timestamp(ir: dict[str, Any]) -> str:
+def obs_timestamp(ir: dict[str, Any]) -> str:
     """Build observation/issue time matching annex3 golden fixtures."""
     day = int(ir["day"])
     hour = int(ir["hour"])
@@ -47,12 +47,12 @@ def emit_metar_speci_annex3(
     str
         IWXXM XML document.
     """
-    ns = _NS.get(iwxxm_version)
+    ns = NS.get(iwxxm_version)
     if ns is None:
         raise ValueError(f"unsupported iwxxm_version for annex3 emit: {iwxxm_version}")
 
     station = str(ir["station"])
-    stamp = _obs_timestamp(ir)
+    stamp = obs_timestamp(ir)
     root = product.upper()
     gml_id = f"{root.lower()}.basic.{station.lower()}"
     if ir.get("nil"):
@@ -75,7 +75,7 @@ def emit_metar_speci_annex3(
             vis_op = "\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
         cloud = ""
         if ir.get("cloud_amount") and ir.get("cloud_base_ft") is not None:
-            href = _CLOUD_HREF.format(amt=ir["cloud_amount"])
+            href = CLOUD_HREF.format(amt=ir["cloud_amount"])
             cloud = f"""      <iwxxm:cloud>
         <iwxxm:AerodromeCloud>
           <iwxxm:layer>

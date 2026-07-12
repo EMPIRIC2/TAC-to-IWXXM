@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from typing import Any, Callable, cast
 
 from tac2iwxxm.models import ConvertIssue, ConvertResult
 from tac2iwxxm.products.metar_speci import parse_metar_speci
@@ -172,14 +172,16 @@ def convert(
 
     issues: list[ConvertIssue] = []
     if profile_l == "iwxxm_us":
-        for msg in ir.get("remark_issues") or []:
-            issues.append(
-                ConvertIssue(
-                    severity="warning",
-                    code="MALFORMED_REMARKS",
-                    message=str(msg),
+        raw_remarks: object = ir.get("remark_issues")
+        if isinstance(raw_remarks, list):
+            for item in cast(list[object], raw_remarks):
+                issues.append(
+                    ConvertIssue(
+                        severity="warning",
+                        code="MALFORMED_REMARKS",
+                        message=str(item),
+                    )
                 )
-            )
 
     return ConvertResult(
         ok=True,
