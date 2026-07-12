@@ -568,18 +568,17 @@ def health() -> HealthResponse:
     ## Response
     - **status** (string): "healthy" or "degraded"
     - **version** (string): API version
-    - **gifts_available** (boolean): Deprecated alias — True when tac2iwxxm convert works
-      (renamed to tac2iwxxm_available in T4.8)
+    - **tac2iwxxm_available** (boolean): Whether tac2iwxxm convert works
     """
     try:
         test_metar = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
         _ = convert_metar_tac_with_metadata(test_metar, validate=False)
-        gifts_available = True
+        tac2iwxxm_available = True
         status = "healthy"
     except Exception:
-        gifts_available = False
+        tac2iwxxm_available = False
         status = "degraded"
-    return HealthResponse(status=status, version="0.1.0", gifts_available=gifts_available)
+    return HealthResponse(status=status, version="0.1.0", tac2iwxxm_available=tac2iwxxm_available)
 
 
 @app.get("/api/v1/versions", tags=["Conversion"])

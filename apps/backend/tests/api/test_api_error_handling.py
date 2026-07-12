@@ -20,7 +20,7 @@ class TestHealthEndpoint:
             assert response.status_code == 200
             data = response.json()
             assert data["status"] == "degraded"
-            assert data["gifts_available"] is False
+            assert data["tac2iwxxm_available"] is False
 
     def test_health_when_conversion_fails(self):
         """Test health endpoint when test conversion fails."""
@@ -29,7 +29,7 @@ class TestHealthEndpoint:
             assert response.status_code == 200
             data = response.json()
             assert data["status"] == "degraded"
-            assert data["gifts_available"] is False
+            assert data["tac2iwxxm_available"] is False
 
 
 class TestConvertEndpointErrorHandling:
