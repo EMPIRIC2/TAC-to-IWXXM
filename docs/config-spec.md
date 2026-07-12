@@ -124,7 +124,7 @@ No new CLI flags.
 ## References
 
 - [env-contract.md](env-contract.md) — per-environment matrix
-- [env-sync-runbook.md](env-sync-runbook.md) — operator rotation steps
+- [env-sync-runbook.md](ops/env-sync-runbook.md) — operator rotation steps
 - [ADR-010](adr/ADR-010-supabase-keys-config-split.md)
 - [deploy.md](deploy.md) §Integration
 - Supabase: [API keys](https://supabase.com/docs/guides/api/api-keys)

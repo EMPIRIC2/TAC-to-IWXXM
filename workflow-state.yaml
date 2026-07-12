@@ -4,64 +4,35 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 6
+session_counter: 7
 active_session:
-  id: S006-issue-664-output-filename
-  type: feature
-  intent: "#664 — allow a custom output filename for manual METAR input (frontend-only; blank ⇒ manual_input)"
+  id: S007-docs-minimize
+  type: process
+  intent: "Minimize docs/ root files; nest non-standing docs into decisions/ops/guides/domain/reports (conservative — keep pipeline standing specs at docs/ root)"
   status: in_progress
-  branch: feat/S006-issue-664-output-filename
-  orchestrator: 16-evolve
-  artifacts_dir: docs/sessions/S006-issue-664-output-filename/
+  branch: docs/S007-docs-minimize
+  orchestrator: null
+  evolve_cycle_id: null
+  artifacts_dir: docs/sessions/S007-docs-minimize/
   routing_plan:
     - stage: 00-context
       mode: scoped
       required: true
       status: completed
       skip_rationale: null
-    - stage: 16-evolve
+    - stage: docs-execute
       required: true
       status: completed
       skip_rationale: null
-    - stage: 07-build
-      required: true
-      status: in_progress
-      skip_rationale: null
-    - stage: 08-verify-build
-      required: true
-      status: pending
-      skip_rationale: null
-    - stage: 09-qa
-      required: true
-      status: pending
-      skip_rationale: null
-    - stage: 10-e2e
-      required: true
-      status: pending
-      skip_rationale: null
-    - stage: 11-verify-impl
-      required: true
-      status: pending
-      skip_rationale: null
-    - stage: 12-verify-deploy
+    - stage: 18-pr-review
       required: false
       status: pending
-      skip_rationale: "Frontend static deploy only if user requests"
-    - stage: 13-deploy-smoke
-      required: false
-      status: pending
-      skip_rationale: "Only if deploying"
-  current_stage: 07-build
-  evolve_cycle_id: EV-005
-  started_at: "2026-06-25"
+      skip_rationale: null
+  current_stage: 18-pr-review
+  started_at: "2026-07-12"
+  context_briefs: []
   notes:
-    - "00-context scoped complete 2026-06-25 — default name manual_input[_N] set in apps/backend/src/api.py, surfaced as ConversionResult.name, used by FileConverter download handlers"
-    - "Approved scope: frontend-only (R1); blank ⇒ manual_input default (R2); applies to manual results only, uploads unchanged (R3); multi-line _1/_2 suffix assumed (R4)"
-    - "16-evolve EV-005 Phase 0–1 2026-06-25 — R4 multi-line suffix confirmed; R5 persist across reload confirmed; R6 carry via conversion_params JSONB (no migration/API change); R7 ZIP archive renamed to custom base; R8 extend F1 + touch F5 (no new Fn); routing stays lean (frontend-only build)"
-  context_briefs:
-    - docs/context/issue-664-output-filename.md
-  planned_follow_on: []
-  paused_session: null
+    - "Commit dd10fa7 done on docs/S007-docs-minimize (docs minimize + CORPUS); PR not opened yet; 18-pr-review still pending"
 sessions:
   - id: S001-convert-send-buttons
     type: feature
@@ -106,6 +77,68 @@ sessions:
     artifacts_dir: docs/sessions/S005-issue-671-docker-db/
     started_at: "2026-06-25"
     close_note: "PR #692 merged to main; closed at S006 open (2026-06-25)"
+  - id: S006-issue-664-output-filename
+    type: feature
+    intent: "#664 — allow a custom output filename for manual METAR input (frontend-only; blank ⇒ manual_input)"
+    status: completed
+    branch: feat/S006-issue-664-output-filename
+    orchestrator: 16-evolve
+    evolve_cycle_id: EV-005
+    artifacts_dir: docs/sessions/S006-issue-664-output-filename/
+    started_at: "2026-06-25"
+    completed_at: "2026-07-12"
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/695
+    close_note: "PR #695 merged 2026-06-25; user waived 11-verify-impl; stages 07–10 PASS reports; 12/13 skipped; docs reorg unblocked via 00-context"
+    routing_plan:
+      - stage: 00-context
+        mode: scoped
+        required: true
+        status: completed
+        skip_rationale: null
+      - stage: 16-evolve
+        required: true
+        status: completed
+        skip_rationale: null
+      - stage: 07-build
+        required: true
+        status: completed
+        skip_rationale: null
+      - stage: 08-verify-build
+        required: true
+        status: completed
+        skip_rationale: null
+      - stage: 09-qa
+        required: true
+        status: completed
+        skip_rationale: null
+      - stage: 10-e2e
+        required: true
+        status: completed
+        skip_rationale: null
+      - stage: 11-verify-impl
+        required: true
+        status: skipped
+        skip_rationale: "User waived 11-verify-impl; PR #695 merged 2026-06-25; stages 07-10 had PASS reports"
+      - stage: 18-pr-review
+        required: false
+        status: skipped
+        skip_rationale: "No formal 18-pr-review cycle for PR #695 (merged without PRR entry)"
+      - stage: 12-verify-deploy
+        required: false
+        status: skipped
+        skip_rationale: "Frontend static deploy not requested; waived at session close"
+      - stage: 13-deploy-smoke
+        required: false
+        status: skipped
+        skip_rationale: "Deploy not requested; waived at session close"
+    notes:
+      - "00-context scoped complete 2026-06-25 — default name manual_input[_N] set in apps/backend/src/api.py, surfaced as ConversionResult.name, used by FileConverter download handlers"
+      - "Approved scope: frontend-only (R1); blank ⇒ manual_input default (R2); applies to manual results only, uploads unchanged (R3); multi-line _1/_2 suffix assumed (R4)"
+      - "16-evolve EV-005 Phase 0–1 2026-06-25 — R4 multi-line suffix confirmed; R5 persist across reload confirmed; R6 carry via conversion_params JSONB (no migration/API change); R7 ZIP archive renamed to custom base; R8 extend F1 + touch F5 (no new Fn); routing stays lean (frontend-only build)"
+      - "07–10 complete with PASS reports under docs/sessions/S006-issue-664-output-filename/reports/"
+      - "Closed 2026-07-12 — user waived 11-verify-impl; PR #695 merged; docs reorg path unblocked"
+    context_briefs:
+      - docs/context/issue-664-output-filename.md
 
 template:
   id: static+api
@@ -154,7 +187,7 @@ stages:
         artifacts:
           - docs/config-spec.md
           - docs/env-contract.md
-          - docs/env-sync-runbook.md
+          - docs/ops/env-sync-runbook.md
           - docs/adr/ADR-010-supabase-keys-config-split.md
           - docs/sessions/S003-supabase-keys-config/reports/01-requirements.md
           - config/prod.json
@@ -179,8 +212,8 @@ stages:
     current_document: null
     current_statement: null
     artifacts:
-      - docs/product-audit.md
-      - docs/product-decisions.md
+      - docs/decisions/product-audit.md
+      - docs/decisions/product-decisions.md
     notes: "Product plan verification complete; 4 source docs updated"
 
   03-plan-tooling:
@@ -236,7 +269,7 @@ stages:
         status: completed
     artifacts:
       - .cursor/artifacts/execution-plan-monorepo.md
-      - docs/staging-secrets-matrix.md
+      - docs/ops/staging-secrets-matrix.md
       - docs/adr/ADR-005-runtime-toolchain-pins.md
       - docs/adr/ADR-006-render-topology-simplification.md
       - docs/adr/ADR-007-universal-coverage-gate.md
@@ -272,8 +305,8 @@ stages:
     current_document: null
     current_statement: null
     artifacts:
-      - docs/tech-audit.md
-      - docs/tech-decisions.md
+      - docs/decisions/tech-audit.md
+      - docs/decisions/tech-decisions.md
     notes:
       - "Technical plan verification complete; 3 source docs updated"
 
@@ -358,7 +391,7 @@ stages:
         note: "ESLint react-hooks + 1 Vitest failure block gate"
     notes:
       - "S004 / EV-004 delta — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
-      - "Prior monorepo QA 2026-06-20: docs/qa-report.md"
+      - "Prior monorepo QA 2026-06-20: docs/reports/qa-report.md"
 
   11-verify-impl:
     status: completed
@@ -426,7 +459,7 @@ stages:
         notes: "H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred"
     notes:
       - "S004 delta FAIL — fix Playwright locators + finished-session load; redeploy for H4"
-      - "Prior global report: docs/e2e-report.md (2026-06-20)"
+      - "Prior global report: docs/reports/e2e-report.md (2026-06-20)"
 
   08-verify-build:
     status: completed
@@ -489,6 +522,14 @@ stages:
       - "S002 / EV-003 — user approved mitigations + rollback; H0c/H4/H5 PASS pre-merge baseline"
       - "S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)"
       - "S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13"
+
+  14-hotfix:
+    status: skipped
+    session_id: S006-issue-664-output-filename
+    skipped_at: "2026-07-12"
+    notes:
+      - "2026-07-12 — Docs reorg via /14-hotfix rejected (not a bug/hotfix); deferred until S006 complete (S006-R4)."
+      - "2026-07-12 — S006 closed (S006-R5); docs reorg unblocked — open via 00-context (process session), not 14-hotfix."
 
 stages_pending: []
 
@@ -699,6 +740,53 @@ decisions_log:
     status: confirmed
     session_id: S006-issue-664-output-filename
 
+  - id: S006-R4
+    stage: 14-hotfix
+    date: "2026-07-12"
+    topic: Docs reorg deferred
+    decision: "Docs reorg deferred until S006 complete; rejected 14-hotfix for non-bug docs cleanup"
+    context: "User invoked /14-hotfix for docs/ folder minimize; chose Finish S006 first then process session"
+    skill: 14-hotfix
+    status: confirmed
+    session_id: S006-issue-664-output-filename
+
+  - id: S006-R5
+    stage: 00-context
+    date: "2026-07-12"
+    topic: S006 close — waived 11-verify-impl; docs reorg unblocked
+    decision: "Close S006 completed (PR #695 merged 2026-06-25); waive 11-verify-impl; skip 12-verify-deploy and 13-deploy-smoke; archive EV-005; docs reorg unblocked via 00-context"
+    context: "User chose Close S006 now (PR #695 merged; skip 11-verify-impl) — then docs reorg via 00-context. Stages 07-10 synced completed from PASS reports."
+    skill: 00-context
+    status: confirmed
+    session_id: S006-issue-664-output-filename
+
+  - id: S007-R1
+    stage: 00-context
+    date: "2026-07-12"
+    topic: S007 opened — conservative docs layout
+    decision: "S007 opened; user approved conservative layout (option 1) — minimize docs/ root; nest non-standing docs into decisions/ops/guides/domain/reports; keep pipeline standing specs at docs/ root"
+    skill: 00-context
+    status: confirmed
+    session_id: S007-docs-minimize
+
+  - id: S007-R2
+    stage: docs-execute
+    date: "2026-07-12"
+    topic: Docs-execute completed — conservative layout
+    decision: "docs-execute completed; root reduced to 12 standing specs + README; conservative layout"
+    skill: 00-context
+    status: confirmed
+    session_id: S007-docs-minimize
+
+  - id: S007-R3
+    stage: 00-context
+    date: "2026-07-12"
+    topic: Minimal design/parity corpus
+    decision: "Created docs/CORPUS.md + docs/tech-spec.md + docs-corpus.mdc rule so skills cite a common minimal design/parity corpus (product, system-spec, tech-spec, api, tests, adr, decisions)"
+    skill: 00-context
+    status: confirmed
+    session_id: S007-docs-minimize
+
   - id: AUDIT-001
     stage: 02-verify-plan
     date: "2026-06-14"
@@ -810,11 +898,18 @@ decisions_log:
     decision: "Add supabase-sync.yml — db push on main; PR dry-run; deploy legacy upload edge functions until ADR-010 follow-up; secrets SUPABASE_ACCESS_TOKEN + SUPABASE_DB_PASSWORD"
     status: confirmed
 
+  - id: S007-R4
+    stage: 00-context
+    date: "2026-07-11"
+    session_id: S007-docs-minimize
+    topic: Stale corpus path references post-reorg
+    decision: "Verified/fixed stale corpus path references post-reorg (workflow-state + relative links)."
+    status: confirmed
 artifacts:
-  - path: docs/tech-audit.md
+  - path: docs/decisions/tech-audit.md
     stage: 05-verify-tech
     status: complete
-  - path: docs/tech-decisions.md
+  - path: docs/decisions/tech-decisions.md
     stage: 05-verify-tech
     status: complete
   - path: .cursor/artifacts/execution-plan-monorepo.md
@@ -823,7 +918,7 @@ artifacts:
   - path: .cursor/artifacts/execution-plan-monorepo.md
     stage: 04-tech-plan
     status: complete
-  - path: docs/staging-secrets-matrix.md
+  - path: docs/ops/staging-secrets-matrix.md
     stage: 04-tech-plan
     status: complete
   - path: docs/adr/ADR-005-runtime-toolchain-pins.md
@@ -838,10 +933,10 @@ artifacts:
   - path: docs/adr/ADR-004-manual-gifts-sync.md
     stage: 02-verify-plan
     status: complete
-  - path: docs/product-audit.md
+  - path: docs/decisions/product-audit.md
     stage: 02-verify-plan
     status: complete
-  - path: docs/product-decisions.md
+  - path: docs/decisions/product-decisions.md
     stage: 02-verify-plan
     status: complete
   - path: docs/feature-list.md
@@ -856,7 +951,7 @@ artifacts:
   - path: docs/test-plan.md
     stage: 01-requirements
     status: complete
-  - path: docs/migration-plan.md
+  - path: docs/ops/migration-plan.md
     stage: 01-requirements
     status: complete
   - path: docs/api-contract.md
@@ -868,7 +963,7 @@ artifacts:
   - path: docs/deploy.md
     stage: 01-requirements
     status: complete
-  - path: docs/requirements-decisions.md
+  - path: docs/decisions/requirements-decisions.md
     stage: 01-requirements
     status: complete
   - path: .cursor/artifacts/config-spec-monorepo.md
@@ -907,10 +1002,10 @@ artifacts:
   - path: .cursor/agents/spec-consultant.md
     stage: 03-plan-tooling
     status: complete
-  - path: docs/verification-report.md
+  - path: docs/reports/verification-report.md
     stage: 08-verify-build
     status: complete
-  - path: docs/qa-report.md
+  - path: docs/reports/qa-report.md
     stage: 09-qa
     status: complete
   - path: docs/context/convert-send-buttons.md
@@ -997,7 +1092,7 @@ artifacts:
     session_id: S005-metar-work-history
     created_at: "2026-06-23"
     status: active
-  - path: docs/evolve-decisions.md
+  - path: docs/decisions/evolve-decisions.md
     kind: evolve-decisions
     session_id: S001-convert-send-buttons
     evolve_cycle_id: EV-001
@@ -1057,7 +1152,7 @@ artifacts:
     stage: 11-verify-impl
     created_at: "2026-06-22"
     status: active
-  - path: docs/implementation-verification.md
+  - path: docs/reports/implementation-verification.md
     kind: verify-impl-report
     session_id: S002-issue-594-feedback
     stage: 11-verify-impl
@@ -1079,7 +1174,7 @@ artifacts:
     session_id: S003-supabase-keys-config
     created_at: "2026-06-23"
     status: complete
-  - path: docs/env-sync-runbook.md
+  - path: docs/ops/env-sync-runbook.md
     stage: 01-requirements
     session_id: S003-supabase-keys-config
     created_at: "2026-06-23"
@@ -1108,7 +1203,7 @@ artifacts:
     stage: 11-verify-impl
     created_at: "2026-06-23"
     status: complete
-  - path: docs/implementation-verification.md
+  - path: docs/reports/implementation-verification.md
     kind: verify-impl-report
     session_id: S003-supabase-keys-config
     stage: 11-verify-impl
@@ -1162,6 +1257,36 @@ artifacts:
     stage: 00-context
     created_at: "2026-06-25"
     status: active
+  - path: docs/sessions/S007-docs-minimize/reports/docs-execute.md
+    kind: session-report
+    session_id: S007-docs-minimize
+    stage: docs-execute
+    created_at: "2026-07-12"
+    status: complete
+  - path: docs/README.md
+    kind: standing-doc
+    session_id: S007-docs-minimize
+    stage: docs-execute
+    created_at: "2026-07-12"
+    status: complete
+  - path: docs/sessions/S007-docs-minimize/reports/corpus.md
+    kind: session-report
+    session_id: S007-docs-minimize
+    stage: 00-context
+    created_at: "2026-07-12"
+    status: complete
+  - path: docs/CORPUS.md
+    kind: standing-doc
+    session_id: S007-docs-minimize
+    stage: 00-context
+    created_at: "2026-07-12"
+    status: complete
+  - path: docs/tech-spec.md
+    kind: standing-doc
+    session_id: S007-docs-minimize
+    stage: 00-context
+    created_at: "2026-07-12"
+    status: complete
 
 evolve_cycles:
   - id: EV-001
@@ -1199,7 +1324,7 @@ evolve_cycles:
         started: "2026-06-22"
         completed: "2026-06-22"
         artifacts_updated:
-          - docs/evolve-decisions.md
+          - docs/decisions/evolve-decisions.md
           - docs/feature-list.md
           - docs/user-journeys.md
           - docs/test-plan.md
@@ -1251,7 +1376,7 @@ evolve_cycles:
       phase_d: pending
       deploy: pending
     artifacts:
-      - path: docs/evolve-decisions.md
+      - path: docs/decisions/evolve-decisions.md
         status: completed
       - path: docs/sessions/S001-convert-send-buttons/reports/evolve-summary.md
         status: completed
@@ -1292,8 +1417,8 @@ evolve_cycles:
         started: "2026-06-22"
         completed: "2026-06-22"
         artifacts_updated:
-          - docs/evolve-decisions.md
-          - docs/API.md
+          - docs/decisions/evolve-decisions.md
+          - docs/guides/API.md
           - docs/api-contract.md
           - docs/test-plan.md
           - docs/sessions/S002-issue-594-feedback/reports/evolve-summary.md
@@ -1344,7 +1469,7 @@ evolve_cycles:
       phase_d: passed
       deploy: pending
     artifacts:
-      - path: docs/evolve-decisions.md
+      - path: docs/decisions/evolve-decisions.md
         status: completed
       - path: docs/sessions/S002-issue-594-feedback/reports/evolve-summary.md
         status: completed
@@ -1397,9 +1522,9 @@ evolve_cycles:
           - "F5 work history interview re-confirmed — all answers align with drafted spec"
           - "User approved proceed to Fn allocation + impact analysis / routing execution"
         artifacts_updated:
-          - docs/evolve-decisions.md
+          - docs/decisions/evolve-decisions.md
           - docs/feature-list.md
-          - docs/requirements-decisions.md
+          - docs/decisions/requirements-decisions.md
           - docs/context/issue-555-feedback.md
           - docs/context/metar-work-history.md
           - docs/sessions/S004-issue-555-feedback/session-brief.md
@@ -1446,7 +1571,7 @@ evolve_cycles:
       phase_d: pending
       deploy: pending
     artifacts:
-      - path: docs/evolve-decisions.md
+      - path: docs/decisions/evolve-decisions.md
         status: in_progress
     issues: []
 
@@ -1455,9 +1580,9 @@ evolve_cycles:
     cycle_type: feature
     feature_ids: [F1, F5]
     title: "#664 — custom output filename for manual METAR input"
-    status: in_progress
+    status: completed
     started: "2026-06-25"
-    completed: null
+    completed: "2026-07-12"
     scope_summary: |
       GitHub #664 — optional "Output filename" input near the manual TAC textarea. Sanitized base
       name applies to manual-input results only (single download, ZIP entry, result-card label);
@@ -1485,7 +1610,9 @@ evolve_cycles:
         - 05-verify-tech
         - 06-tech-tooling
         - 14-hotfix
-    current_stage: 07-build
+    current_stage: null
+    notes:
+      - "Closed with S006 2026-07-12 — PR #695 merged; 11-verify-impl waived; 12/13 skipped"
     stages:
       16-evolve:
         status: completed
@@ -1496,7 +1623,7 @@ evolve_cycles:
           - "Phase 0–1 complete — scope confirmed (R1–R8); persistence via conversion_params (no backend change)"
           - "Phase A complete 2026-06-25 — spec/journey/test deltas committed (b8ca6b1)"
         artifacts_updated:
-          - docs/evolve-decisions.md
+          - docs/decisions/evolve-decisions.md
           - docs/feature-list.md
           - docs/user-journeys.md
           - docs/test-plan.md
@@ -1509,29 +1636,73 @@ evolve_cycles:
           - "outputFilename util (6e8809a); FileConverter input/naming/ZIP/persistence (4b3624c); e2e (49c4dc8)"
           - "Local checks green: eslint, tsc, vitest 530/530, prettier (changed files)"
           - "Minor PR https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/695 (base main) — CI green (Validate + all Test(*) + E2E Smoke + Sourcery pass; Deploy skipped on PR)"
+      08-verify-build:
+        status: completed
+        started: "2026-06-25"
+        completed: "2026-06-25"
+        overall: pass
+        report: docs/sessions/S006-issue-664-output-filename/reports/verification-report.md
+      09-qa:
+        status: completed
+        started: "2026-06-25"
+        completed: "2026-06-25"
+        overall: pass
+        report: docs/sessions/S006-issue-664-output-filename/reports/qa-report.md
+      10-e2e:
+        status: completed
+        started: "2026-06-25"
+        completed: "2026-06-25"
+        overall: pass
+        report: docs/sessions/S006-issue-664-output-filename/reports/e2e-report.md
+      11-verify-impl:
+        status: skipped
+        skip_rationale: "User waived 11-verify-impl; PR #695 merged 2026-06-25; stages 07-10 had PASS reports"
+      18-pr-review:
+        status: skipped
+        skip_rationale: "No formal 18-pr-review cycle for PR #695"
+      12-verify-deploy:
+        status: skipped
+        skip_rationale: "Deploy not requested at session close"
+      13-deploy-smoke:
+        status: skipped
+        skip_rationale: "Deploy not requested at session close"
     gates:
       a_to_b: passed
       b_to_c: waived
-      c_to_d: pending
-      deploy: pending
+      c_to_d: waived
+      deploy: skipped
     checkpoints:
       phase_a: passed
       phase_b: waived
-      phase_c: pending
-      phase_d: pending
-      deploy: pending
+      phase_c: waived
+      phase_d: waived
+      deploy: skipped
     artifacts:
-      - path: docs/evolve-decisions.md
+      - path: docs/decisions/evolve-decisions.md
+        status: completed
+      - path: docs/sessions/S006-issue-664-output-filename/reports/verification-report.md
+        status: completed
+      - path: docs/sessions/S006-issue-664-output-filename/reports/qa-report.md
+        status: completed
+      - path: docs/sessions/S006-issue-664-output-filename/reports/e2e-report.md
         status: completed
     issues: []
 
 git_history:
-  current_branch: feat/S006-issue-664-output-filename
+  current_branch: docs/S007-docs-minimize
   branches:
+    - name: docs/S007-docs-minimize
+      purpose: docs minimize
+      base: main
+      status: open
+      created_at: "2026-07-12"
+      session_id: S007-docs-minimize
     - name: feat/S006-issue-664-output-filename
       base: main
-      status: active
+      status: merged
       created_at: "2026-06-25T00:00:00Z"
+      merged_at: "2026-06-25"
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/695
     - name: fix/S002-issue-594-feedback
       base: main
       status: active
@@ -1734,6 +1905,13 @@ git_history:
       session_id: S006-issue-664-output-filename
       files_changed: 2
       timestamp: "2026-06-25T21:02:00Z"
+    - sha: dd10fa7
+      branch: docs/S007-docs-minimize
+      message: "docs(S007): minimize docs/ root and define canonical CORPUS"
+      stage: "00-context"
+      session_id: S007-docs-minimize
+      files_changed: 131
+      timestamp: "2026-07-12T02:07:00Z"
 
 pr_review_cycles:
   - id: PRR-001

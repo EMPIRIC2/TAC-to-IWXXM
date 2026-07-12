@@ -105,4 +105,4 @@ Canonical SQL: `supabase/migrations/` (timestamp-ordered). See
 
 - [Supabase SQL Editor](https://supabase.com/docs/guides/database/overview)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-- API Evaluation System: `/docs/ARCHITECTURE.md`
+- API Evaluation System: `/docs/guides/ARCHITECTURE.md`

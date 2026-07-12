@@ -25,7 +25,7 @@ Technical plan **must** include executable connectivity work:
 | Deliverable | Content |
 |-------------|---------|
 | `workflow-state.yaml + execution plan artifact` | Tasks: `configure_cors` on each browser-facing FastAPI app; `tests/unit/test_cors_policy.py`; `tests/smoke/test_staging_connectivity.py`; `scripts/deploy/verify_connectivity.sh` |
-| `docs/staging-secrets-matrix.md` | `METAR_CORS_ORIGINS`, all `VITE_*`, staging `METAR_STAGING_*_FRONTEND_URL` |
+| `docs/ops/staging-secrets-matrix.md` | `METAR_CORS_ORIGINS`, all `VITE_*`, staging `METAR_STAGING_*_FRONTEND_URL` |
 | ADR (if needed) | Defer BFF/gateway (TP-001) → explicit CORS strategy |
 
 Interview: confirm frontend↔API origin map for staging and production.
@@ -41,7 +41,7 @@ Interview: confirm frontend↔API origin map for staging and production.
    - `docs/spec.md` — approved component architecture
    - `docs/user-journeys.md` — approved caller-facing flows (UJ-NNN)
    - `docs/test-plan.md` — approved test strategy (UJ ↔ TC mapping)
-   - `docs/product-audit.md` — audit results
+   - `docs/decisions/product-audit.md` — audit results
 3. Plan tooling must be installed (`.cursor/rules/plan-adherence.mdc` etc.)
 
 ## Uncertainty Resolution Protocol

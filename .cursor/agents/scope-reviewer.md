@@ -46,6 +46,6 @@ Never merge — report findings to the parent agent or user.
 
 - `docs/feature-list.md`
 - `docs/spec.md`
-- `docs/migration-plan.md`
+- `docs/ops/migration-plan.md`
 - `.cursor/rules/core/plan-adherence.mdc`
 - `.cursor/rules/core/monorepo-migration.mdc`

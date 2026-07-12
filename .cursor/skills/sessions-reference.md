@@ -14,7 +14,7 @@ under `docs/sessions/{session-id}/`.
 
 | Corpus | Location | Examples |
 |--------|----------|----------|
-| **Project (standing)** | `docs/` root | `spec.md`, `feature-list.md`, `test-plan.md`, `deploy.md`, `api-contract.md`, `product-decisions.md`, `evolve-decisions.md` |
+| **Project (standing)** | `docs/` corpus | See [`docs/CORPUS.md`](../../docs/CORPUS.md) — `feature-list`, `spec`, `tech-spec`, `api-contract`, `test-plan`, `deploy`, …; decisions under `docs/decisions/`; ADRs under `docs/adr/` |
 | **Session (ephemeral)** | `docs/sessions/{session-id}/` | `session-brief.md`, `routing-plan.md`, `reports/*`, `checkpoints/*` |
 
 Scoped context briefs (`docs/context/<slug>.md`) remain valid; link them from

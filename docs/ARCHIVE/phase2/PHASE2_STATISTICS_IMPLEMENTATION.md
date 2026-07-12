@@ -432,9 +432,9 @@ WEBHOOK_EVENTS=
 
 ### Files Updated
 - ✅ `PHASE2_STATISTICS_IMPLEMENTATION.md` (this file)
-- ⏳ `docs/ICAO_OPMET_COMPLIANCE.md` (pending)
+- ⏳ `docs/domain/iwxxm/ICAO_OPMET_COMPLIANCE.md` (pending)
 - ⏳ `README.md` (pending)
-- ⏳ `docs/API.md` (pending)
+- ⏳ `docs/guides/API.md` (pending)
 
 ## Conclusion
 

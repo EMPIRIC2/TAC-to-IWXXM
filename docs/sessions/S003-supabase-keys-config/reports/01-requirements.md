@@ -33,15 +33,15 @@ Delta requirements interview for:
 |----------|--------|
 | `docs/config-spec.md` | **Created** — standing config spec |
 | `docs/env-contract.md` | **Created** — Render ↔ Supabase ↔ local matrix |
-| `docs/env-sync-runbook.md` | **Created** — operator rotation checklist |
+| `docs/ops/env-sync-runbook.md` | **Created** — operator rotation checklist |
 | `docs/adr/ADR-010-supabase-keys-config-split.md` | **Created** |
-| `docs/requirements-decisions.md` | **Updated** — S003-R1–R9 |
+| `docs/decisions/requirements-decisions.md` | **Updated** — S003-R1–R9 |
 | `docs/deploy.md` | **Updated** — Integration section |
 | `docs/api-contract.md` | **Updated** — admin auth + frontend config |
 | `docs/test-plan.md` | **Updated** — H0e `make env-check` |
 | `docs/spec.md` | **Updated** — config component + security |
 | `docs/feature-list.md` | **Updated** — M4 S003 delta note |
-| `docs/staging-secrets-matrix.md` | **Updated** — superseded banner |
+| `docs/ops/staging-secrets-matrix.md` | **Updated** — superseded banner |
 | `config/prod.json`, `config/local.json` | **Created** |
 | `config/README.md` | **Created** |
 | `.env.example` | **Updated** — five secrets only |

@@ -216,6 +216,6 @@ uv pip install -e ".[test]"
 
 ## Related Documentation
 
-- [Testing Strategy](../docs/TESTING_STRATEGY.md)
-- [IWXXM Version Switching](../docs/IWXXM_VERSION_SWITCHING.md)
+- [Testing Strategy](../docs/testing/TESTING_STRATEGY.md)
+- [IWXXM Version Switching](../docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md)
 - [Validation Implementation](../VALIDATION_IMPLEMENTATION_SUMMARY.md)

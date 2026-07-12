@@ -120,5 +120,5 @@ Expected: four schema trees under `vendor/schemas/` matching wmo-im tags.
 ## References
 
 - docs/spec.md §Monorepo Migration
-- docs/requirements-decisions.md
+- docs/decisions/requirements-decisions.md
 - ADR-001, ADR-002, ADR-003

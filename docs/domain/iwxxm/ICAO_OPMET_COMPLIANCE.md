@@ -458,10 +458,10 @@ python3 -m pytest tests/test_icao_opmet.py --cov=src/config/icao_opmet --cov=src
 
 ### Related Documentation
 
-- [VERSION_SUPPORT_POLICY.md](../VERSION_SUPPORT_POLICY.md) - IWXXM version deprecation policy
+- [VERSION_SUPPORT_POLICY.md](VERSION_SUPPORT_POLICY.md) - IWXXM version deprecation policy
 - [IWXXM_VERSION_SWITCHING.md](IWXXM_VERSION_SWITCHING.md) - Version switching architecture
-- [TESTING_STRATEGY.md](TESTING_STRATEGY.md) - Overall testing approach
-- [API.md](API.md) - Complete API reference
+- [TESTING_STRATEGY.md](../../testing/TESTING_STRATEGY.md) - Overall testing approach
+- [API.md](../../guides/API.md) - Complete API reference
 
 ### Contact
 

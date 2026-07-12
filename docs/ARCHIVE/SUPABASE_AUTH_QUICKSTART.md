@@ -107,7 +107,7 @@ Visit `http://localhost:5173` and test:
 
 ## 📚 Full Documentation
 
-- `docs/SUPABASE_EMAIL_TEMPLATES.md` - Email template customization
+- `docs/guides/SUPABASE_EMAIL_TEMPLATES.md` - Email template customization
 - `docs/SUPABASE_AUTH_IMPLEMENTATION.md` - Complete implementation details
 - `frontend/.env.example` - All available environment variables
 
@@ -166,7 +166,7 @@ Production Ready:
 ## 📞 Support
 
 For issues or questions:
-1. Check the full documentation at `docs/SUPABASE_EMAIL_TEMPLATES.md`
+1. Check the full documentation at `docs/guides/SUPABASE_EMAIL_TEMPLATES.md`
 2. Review `docs/SUPABASE_AUTH_IMPLEMENTATION.md` for detailed info
 3. Check Supabase official docs: https://supabase.com/docs/guides/auth
 4. Check console errors in browser DevTools

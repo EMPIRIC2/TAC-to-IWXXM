@@ -33,7 +33,7 @@
 ### F-003 (advisory)
 
 - **Issue:** Full-history gitleaks removed with `secret-scan.yml`.
-- **Fix:** Documented accepted trade-off as EV-002 **R8** in `docs/evolve-decisions.md`.
+- **Fix:** Documented accepted trade-off as EV-002 **R8** in `docs/decisions/evolve-decisions.md`.
 - **Thread:** resolved with reply citing `3763192`.
 
 ### F-004 (advisory)

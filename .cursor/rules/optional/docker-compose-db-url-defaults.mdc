@@ -7,7 +7,7 @@ globs:
   - apps/backend/src/services/database.py
   - apps/backend/src/**/config*.py
   - .env.example
-  - docs/DEVELOPMENT.md
+  - docs/ops/DEVELOPMENT.md
 alwaysApply: false
 ---
 
@@ -28,7 +28,7 @@ When wiring `DATABASE_URL` or any required connection URL:
    with a `db` service on the same network.
 3. **Gate startup on dependency health** — `depends_on: db: condition: service_healthy`
    when the service needs Postgres at boot.
-4. **Document overrides** — note in `.env.example` / `docs/DEVELOPMENT.md` that
+4. **Document overrides** — note in `.env.example` / `docs/ops/DEVELOPMENT.md` that
    blank means bundled default; set a full URL to override (e.g. Supabase pooler).
 
 ```yaml

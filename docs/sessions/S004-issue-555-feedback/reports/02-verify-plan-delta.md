@@ -37,8 +37,8 @@
 - `docs/api-contract.md` — guest login POST draft, S004 label
 - `docs/user-journeys.md` — UJ-004 guest login + Finished UI
 - `docs/test-plan.md` — H6 UJ-004, S004 deploy reference
-- `docs/requirements-decisions.md` — F5-R33…R36
-- `docs/product-decisions.md` — audit verdict log
+- `docs/decisions/requirements-decisions.md` — F5-R33…R36
+- `docs/decisions/product-decisions.md` — audit verdict log
 
 ## Consistency matrix (post-fix)
 

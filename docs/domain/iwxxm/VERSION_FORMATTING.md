@@ -127,8 +127,8 @@ elev_m, datum = service.get_elevation_data(
 ### New Files
 
 1. **Documentation**
-   - [docs/VERSION_AWARE_FORMATTING.md](docs/VERSION_AWARE_FORMATTING.md) - Comprehensive architecture guide
-   - [docs/VERSION_AWARE_FORMATTING_INTEGRATION.md](docs/VERSION_AWARE_FORMATTING_INTEGRATION.md) - Integration guide with examples
+   - [docs/domain/iwxxm/VERSION_AWARE_FORMATTING.md](VERSION_AWARE_FORMATTING.md) - Comprehensive architecture guide
+   - [docs/domain/iwxxm/VERSION_AWARE_FORMATTING_INTEGRATION.md](VERSION_AWARE_FORMATTING_INTEGRATION.md) - Integration guide with examples
 
 2. **Tests**
    - [tests/test_elevation_version_formatting.py](tests/test_elevation_version_formatting.py) - Version formatting test suite
@@ -256,8 +256,8 @@ All formatted output validated against IWXXM schemas:
 
 ### for Users
 
-- [VERSION_AWARE_FORMATTING.md](docs/VERSION_AWARE_FORMATTING.md) - Architecture overview
-- [VERSION_AWARE_FORMATTING_INTEGRATION.md](docs/VERSION_AWARE_FORMATTING_INTEGRATION.md) - Integration guide
+- [VERSION_AWARE_FORMATTING.md](VERSION_AWARE_FORMATTING.md) - Architecture overview
+- [VERSION_AWARE_FORMATTING_INTEGRATION.md](VERSION_AWARE_FORMATTING_INTEGRATION.md) - Integration guide
 - Inline code documentation in module docstrings
 
 ### for Developers

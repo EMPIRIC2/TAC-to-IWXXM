@@ -56,4 +56,4 @@ left the exact schedule expression open for 04-tech-plan.
 ## References
 
 - [metar-work-history.md](../context/metar-work-history.md) — R12, R17
-- [requirements-decisions.md §F5-R8, F5-R11](../requirements-decisions.md)
+- [requirements-decisions.md §F5-R8, F5-R11](../decisions/requirements-decisions.md)

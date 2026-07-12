@@ -47,7 +47,7 @@ so `docker compose up` is self-contained out of the box, wiring `DATABASE_URL` t
 | Default backend `DATABASE_URL` to bundled DB | `docker-compose.yml` | e.g. `postgresql+asyncpg://postgres:postgres@db:5432/postgres`; keep `${DATABASE_URL:-<default>}` override |
 | `depends_on` DB health before backend | `docker-compose.yml` | mirror existing frontend→backend `service_healthy` gate |
 | Confirm/handle empty-string env footgun | `apps/backend/src/services/database.py` | `${DATABASE_URL:-}` → empty string is falsy; ensure default or clearer log when unset |
-| README / DEVELOPMENT Docker note | `README.md`, `docs/DEVELOPMENT.md` | document that compose now ships a DB; Supabase still needed for auth/work-history |
+| README / DEVELOPMENT Docker note | `README.md`, `docs/ops/DEVELOPMENT.md` | document that compose now ships a DB; Supabase still needed for auth/work-history |
 | Repro + regression test | `tests/bugs/` + integration compose smoke | per bug-investigation skill |
 | Issue reply | GitHub #671 | explain new layout + fix |
 
@@ -79,7 +79,7 @@ not `localhost`. No change to deployed Render topology (Supabase-managed Postgre
 | App lifespan wiring | `apps/backend/src/api.py` L82 | `lifespan=database_lifespan` runs DB init on startup |
 | Compose services | `docker-compose.yml` L1–63 | `backend` + `frontend` only; `DATABASE_URL=${DATABASE_URL:-}` (empty default) |
 | Env template | `.env.example` L6 | `DATABASE_URL=` (blank) |
-| Required-env doc | `docs/DEVELOPMENT.md` L100 | `DATABASE_URL` marked **Yes** (Postgres pooler for evaluation/statistics) |
+| Required-env doc | `docs/ops/DEVELOPMENT.md` L100 | `DATABASE_URL` marked **Yes** (Postgres pooler for evaluation/statistics) |
 | DB service tests | `apps/backend/tests/unit/test_database_service_unit.py`, `tests/services/test_database_service.py` | Cover URL precedence + lifespan; extend for new default |
 | Bug report template | `docs/bug-reports/_template.md` | New BUG report per bug-investigation skill |
 
@@ -90,7 +90,7 @@ not `localhost`. No change to deployed Render topology (Supabase-managed Postgre
 | Reporter (pre-monorepo) | auth+backend+frontend, no pg | unset → `localhost:5432` | local PG (old design) | No (caught) — perceived fail |
 | Current `main` | none | `${DATABASE_URL:-}` → empty → `localhost:5432` | Supabase | No (caught) |
 | Approved fix (R2) | `db` service | `db:5432` default, overridable | Supabase (unchanged) | No |
-| `docs/DEVELOPMENT.md` | n/a | required (pooler) | Supabase | n/a |
+| `docs/ops/DEVELOPMENT.md` | n/a | required (pooler) | Supabase | n/a |
 
 ## Implementation Backlog
 
@@ -104,7 +104,7 @@ not `localhost`. No change to deployed Render topology (Supabase-managed Postgre
    `get_database_url` and/or emit an actionable warning naming the missing env var.
 5. **Tests** — extend `test_database_service_unit.py` for the new precedence/default; add an
    integration compose smoke (backend reaches DB, `/health` 200, no table-create error).
-6. **Docs** — README Quick Start + `docs/DEVELOPMENT.md`: compose ships a DB; Supabase still
+6. **Docs** — README Quick Start + `docs/ops/DEVELOPMENT.md`: compose ships a DB; Supabase still
    required for login + F5 work-history (R3).
 7. **Issue reply** — post on #671: new monorepo layout (no auth/pg containers in old sense),
    the bundled-DB fix, and the Supabase requirement for auth features.
@@ -131,4 +131,4 @@ in `.env` (never commit). Reporter attached full logs; no sample data needed.
 - [Repo: apps/backend/src/services/database.py](apps/backend/src/services/database.py) — `get_database_url`, `database_lifespan`, `create_tables`
 - [Repo: docker-compose.yml](docker-compose.yml) — backend/frontend services, `DATABASE_URL=${DATABASE_URL:-}`
 - [Repo: apps/backend/src/api.py](apps/backend/src/api.py) L82 — `lifespan=database_lifespan`
-- [Repo: .env.example](.env.example), [Repo: docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) L100 — required env
+- [Repo: .env.example](.env.example), [Repo: docs/ops/DEVELOPMENT.md](../ops/DEVELOPMENT.md) L100 — required env

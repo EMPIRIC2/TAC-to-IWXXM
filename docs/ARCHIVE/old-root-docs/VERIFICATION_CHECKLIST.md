@@ -63,7 +63,7 @@
 - [x] `backend/TEST_COVERAGE_README.md` - Test standards updated
 - [x] `backend/KNOWN_ISSUES.md` - Test failure documentation
 - [x] `API_STATUS.md` - Executive status report (new)
-- [x] `docs/API.md` - Updated with /api/v1/ endpoints
+- [x] `docs/guides/API.md` - Updated with /api/v1/ endpoints
 
 ### Documentation Accuracy
 - [x] All endpoint documentation uses `/api/v1/`

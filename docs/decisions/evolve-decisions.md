@@ -133,7 +133,7 @@
 - `packages/gifts/gifts/metarDecoder.py` — COR-after-time grammar
 - `apps/backend/src/schemas/conversion.py`, `apps/backend/src/api.py` — `tac_input` field
 - `apps/frontend/src/app/components/FileConverter.tsx` — Source TAC panel
-- `docs/API.md`, `docs/api-contract.md`, `docs/test-plan.md` — TC-001b
+- `docs/guides/API.md`, `docs/api-contract.md`, `docs/test-plan.md` — TC-001b
 - `tests/bugs/test_bug_2026_06_22_issue_594_cor_after_time.py`
 - `apps/e2e/tac-file-conversion.e2e.spec.ts`
 

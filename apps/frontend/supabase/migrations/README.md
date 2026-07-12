@@ -18,6 +18,6 @@ make supabase-status   # URLs and keys for .env
 ```
 
 See [Supabase local development](https://supabase.com/docs/guides/local-development/overview)
-and `docs/env-sync-runbook.md` §Database advisor remediation.
+and `docs/ops/env-sync-runbook.md` §Database advisor remediation.
 
 Edge functions remain under `apps/frontend/supabase/functions/`.

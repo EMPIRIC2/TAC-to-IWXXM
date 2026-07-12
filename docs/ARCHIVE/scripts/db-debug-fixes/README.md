@@ -112,7 +112,7 @@ February 16, 2026
 - Current database setup: `/scripts/db-setup/`
 - Active utilities: `/scripts/utilities/`
 - Supabase documentation: https://supabase.com/docs
-- Project architecture: `/docs/ARCHITECTURE.md`
+- Project architecture: `/docs/guides/ARCHITECTURE.md`
 
 ## Notes for Future Developers
 

@@ -153,7 +153,7 @@
 | QA file QA (09) | `docs/sessions/S004-issue-555-feedback/reports/qa-report.md` |
 | E2E (10) | `docs/sessions/S004-issue-555-feedback/reports/e2e-report.md` |
 | Verify-impl (11) | `docs/sessions/S004-issue-555-feedback/reports/verify-impl.md` |
-| Full summary | `docs/implementation-verification.md` |
+| Full summary | `docs/reports/implementation-verification.md` |
 
 ---
 

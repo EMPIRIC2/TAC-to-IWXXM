@@ -30,8 +30,8 @@
 
 ## Spec deltas
 
-- `docs/evolve-decisions.md` §EV-003
-- `docs/API.md`, `docs/api-contract.md` — `tac_input`
+- `docs/decisions/evolve-decisions.md` §EV-003
+- `docs/guides/API.md`, `docs/api-contract.md` — `tac_input`
 - `docs/test-plan.md` — TC-001b
 
 ## Next stages (routing plan)

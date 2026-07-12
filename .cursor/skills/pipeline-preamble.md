@@ -12,6 +12,9 @@ under `docs/sessions/{session-id}/`.
 
 **Which skill?** → [docs/skill-routing.md](../../docs/skill-routing.md)
 
+**Design / parity corpus (mandatory):** [docs/CORPUS.md](../../docs/CORPUS.md) — product,
+system-spec, tech-spec, api, tests, adr, decisions. Cite `[Corpus: <id>]`.
+
 **State agent (mandatory):** [workflow-state-manager](../agents/workflow-state-manager.md) —
 sole writer of `workflow-state.yaml`.
 
@@ -261,9 +264,10 @@ commits and record intent via agent when commits are deferred.
 
 | Mechanism | When |
 |-----------|------|
-| **ADR** | Resolved `[Decision]`, non-obvious `[Ambiguity]`, structural tech choices — `docs/adr/ADR-NNN.md` |
-| **Decision logs** | `requirements-decisions.md`, `tech-decisions.md`, `evolve-decisions.md` |
-| **Fix in place** | Verification failure → patch code, spec, hook, or infra — **do not re-run whole phases** |
+| **ADR** | Resolved `[Decision]`, non-obvious `[Ambiguity]`, structural tech choices — `docs/adr/ADR-NNN.md` ([Corpus: adr](../../docs/CORPUS.md)) |
+| **Decision logs** | `docs/decisions/requirements-decisions.md`, `docs/decisions/tech-decisions.md`, `docs/decisions/evolve-decisions.md` |
+| **Corpus parity** | Implementation vs design — follow [`docs/CORPUS.md`](../../docs/CORPUS.md) parity protocol |
+| **Fix in place** | Verification failure → patch code, corpus doc, hook, or infra — **do not re-run whole phases** |
 | **Bugs** | [bug-investigation](bug-investigation/SKILL.md) + [14-hotfix](14-hotfix/SKILL.md) |
 
 Classify failures per considerations §1: **spec** vs **code** vs **infra** vs **tooling** before choosing remediation.
@@ -421,7 +425,7 @@ set -a && source prod.env && set +a && <command>
 | `DATABASE_URL` | H2 (`staging_h2.py`, Alembic), live DB checks; falls back as `METAR_STAGING_DATABASE_URL` when unset |
 
 Add other operator-only keys to `prod.env` locally as needed (e.g. `METAR_INTERNAL_API_KEY`
-for authenticated curl smokes). Keep names aligned with `docs/staging-secrets-matrix.md`.
+for authenticated curl smokes). Keep names aligned with `docs/ops/staging-secrets-matrix.md`.
 
 ### Staging service URLs (`METAR_STAGING_*`)
 

@@ -179,7 +179,7 @@ Implemented a comprehensive API testing infrastructure covering the entire testi
     - Dashboard setup
     - Impact analysis
 
-15. **docs/TESTING_STRATEGY.md** (updated)
+15. **docs/testing/TESTING_STRATEGY.md** (updated)
     - Added API Testing Infrastructure section
     - Testing pyramid diagram
     - CI/CD integration examples

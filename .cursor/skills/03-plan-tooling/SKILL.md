@@ -35,7 +35,7 @@ Do not mark 03 complete if specs lack connectivity tiers and no ADR waives brows
 1. **02-verify-plan** must be `completed`. Spec documents must be audited.
 2. At minimum: `docs/feature-list.md`, `docs/spec.md`, `docs/user-journeys.md` with audit
    verdicts applied.
-3. `docs/product-audit.md` and `docs/product-decisions.md` must exist.
+3. `docs/decisions/product-audit.md` and `docs/decisions/product-decisions.md` must exist.
 
 ## Why This Stage Blocks
 

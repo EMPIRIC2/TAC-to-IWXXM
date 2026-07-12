@@ -29,7 +29,7 @@ where no Postgres listens inside the container.
 - Default the backend `DATABASE_URL` to the bundled DB (`db:5432`), kept overridable.
 - `depends_on` DB health before backend; healthcheck + named volume.
 - Address the empty-string `${DATABASE_URL:-}` footgun in `get_database_url`.
-- README / `docs/DEVELOPMENT.md` Docker note; reply on #671.
+- README / `docs/ops/DEVELOPMENT.md` Docker note; reply on #671.
 - Repro + regression test per bug-investigation skill.
 
 **Out of scope**

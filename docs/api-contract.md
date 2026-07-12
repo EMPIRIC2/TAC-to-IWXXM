@@ -82,7 +82,7 @@ POST /api/v1/convert
 - `files` (optional): METAR TAC files
 - `manual_text` (optional): TAC string
 
-**Response**: `ConversionResponse` — see docs/API.md
+**Response**: `ConversionResponse` — see docs/guides/API.md
 
 Each `ConversionResult` includes optional `tac_input` (original TAC echo) for input traceability ([#594](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/594)).
 
@@ -212,5 +212,5 @@ key injected from `SUPABASE_PUBLISHABLE_KEY`).
 
 ## References
 
-- docs/API.md (detailed examples — update paths during implementation)
+- docs/guides/API.md (detailed examples — update paths during implementation)
 - docs/deploy.md §Integration

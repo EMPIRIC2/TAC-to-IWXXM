@@ -18,7 +18,7 @@ This checklist covers the **S001 Convert & Convert&Send** frontend delta merged 
 ## Pre-Deploy
 
 - [x] Configuration complete — `render.yaml` matches static+api template (API Docker + static frontend)
-- [x] Secrets documented — `docs/staging-secrets-matrix.md`; dashboard-only: `SUPABASE_*`, `DATABASE_URL`
+- [x] Secrets documented — `docs/ops/staging-secrets-matrix.md`; dashboard-only: `SUPABASE_*`, `DATABASE_URL`
 - [x] Data assets staged — N/A (Supabase external; vendor/schemas in Docker image)
 - [x] Resource allocation verified — API: starter plan, 1 instance; frontend: static CDN
 - [x] Rollback plan reviewed — Render dashboard rollback (see below)

@@ -34,7 +34,7 @@ apps/backend           :8001 (dev)  ·  :18001 (Docker)
    └── vendor/schemas   read-only wmo-im snapshots
 ```
 
-**Developer guide:** [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)  
+**Developer guide:** [docs/ops/DEVELOPMENT.md](docs/ops/DEVELOPMENT.md)  
 **Deployment:** [docs/deploy.md](docs/deploy.md)
 
 ## Quick start
@@ -119,7 +119,7 @@ See [docs/deploy.md](docs/deploy.md) §Live test harness. Requires E2E-001 schem
 
 | Doc | Purpose |
 |-----|---------|
-| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Setup, env vars, troubleshooting |
+| [docs/ops/DEVELOPMENT.md](docs/ops/DEVELOPMENT.md) | Setup, env vars, troubleshooting |
 | [docs/deploy.md](docs/deploy.md) | Render topology and connectivity runbook |
 | [docs/api-contract.md](docs/api-contract.md) | HTTP API reference |
 | [docs/spec.md](docs/spec.md) | Technical specification |

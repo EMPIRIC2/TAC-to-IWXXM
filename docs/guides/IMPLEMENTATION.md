@@ -131,8 +131,8 @@
 ## ✅ Documentation Assets
 
 ### Files Created
-1. ✅ `docs/VERSION_AWARE_FORMATTING.md` - 350+ lines
-2. ✅ `docs/VERSION_AWARE_FORMATTING_INTEGRATION.md` - 400+ lines
+1. ✅ `docs/domain/iwxxm/VERSION_AWARE_FORMATTING.md` - 350+ lines
+2. ✅ `docs/domain/iwxxm/VERSION_AWARE_FORMATTING_INTEGRATION.md` - 400+ lines
 3. ✅ `VERSION_FORMATTING_IMPLEMENTATION_SUMMARY.md` - 300+ lines
 4. ✅ `tests/test_elevation_version_formatting.py` - 150+ lines
 

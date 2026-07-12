@@ -238,7 +238,7 @@ Scope:
   Gaps:   [N] items (resolved)
 
 Artifacts:
-  docs/implementation-verification.md — full report
+  docs/reports/implementation-verification.md — full report
   `{artifacts_dir}/reports/qa-report.md` — QA results
   `{artifacts_dir}/reports/e2e-report.md` — E2E results
   docs/adr/                           — [N] ADRs from scope/fix decisions
@@ -252,7 +252,7 @@ Deploy gate (partial):
 Next step: 12-verify-deploy
 ```
 
-Write `docs/implementation-verification.md`.
+Write `docs/reports/implementation-verification.md`.
 **State**: Set status to `completed`.
 
 ## Output Rules

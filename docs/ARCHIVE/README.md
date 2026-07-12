@@ -73,8 +73,8 @@ Historical database debugging, fixing, and diagnostic scripts from `/scripts/`.
 Three-service Render layout, separate auth deployable, submodule clone instructions, and
 Loki/Prometheus/Grafana observability docs — superseded by monorepo migration (M11, T11.3).
 
-**Successor docs:** [deploy.md](../deploy.md), [DEVELOPMENT.md](../DEVELOPMENT.md),
-[staging-secrets-matrix.md](../staging-secrets-matrix.md), [ADR-002](../adr/ADR-002-auth-merged-into-backend.md).
+**Successor docs:** [deploy.md](../deploy.md), [DEVELOPMENT.md](../ops/DEVELOPMENT.md),
+[staging-secrets-matrix.md](../ops/staging-secrets-matrix.md), [ADR-002](../adr/ADR-002-auth-merged-into-backend.md).
 
 See [pre-monorepo-deploy/README.md](pre-monorepo-deploy/README.md) for the file index.
 
@@ -82,11 +82,11 @@ See [pre-monorepo-deploy/README.md](pre-monorepo-deploy/README.md) for the file 
 
 **SUPABASE_AUTH_IMPLEMENTATION.md** (in SUBABASE_AUTH_IMPLEMENTATION.md)
 - **Reason**: Direct Supabase integration (pre-middleware)
-- **Successor**: [DEVELOPMENT.md](../DEVELOPMENT.md), [ADR-002](../adr/ADR-002-auth-merged-into-backend.md)
+- **Successor**: [DEVELOPMENT.md](../ops/DEVELOPMENT.md), [ADR-002](../adr/ADR-002-auth-merged-into-backend.md)
 
 **SUPABASE_AUTH_QUICKSTART.md**
 - **Reason**: Quick start for direct Supabase integration
-- **Successor**: [DEVELOPMENT.md](../DEVELOPMENT.md)
+- **Successor**: [DEVELOPMENT.md](../ops/DEVELOPMENT.md)
 
 **AUTH_MIDDLEWARE_ARCHITECTURE.md** (moved to `pre-monorepo-deploy/`)
 - **Reason**: Separate auth proxy service (three deployables)
@@ -102,5 +102,5 @@ See [pre-monorepo-deploy/README.md](pre-monorepo-deploy/README.md) for the file 
 
 ## For New Developers
 
-Start with [DEVELOPMENT.md](../DEVELOPMENT.md) for setup and [deploy.md](../deploy.md) for
+Start with [DEVELOPMENT.md](../ops/DEVELOPMENT.md) for setup and [deploy.md](../deploy.md) for
 production deployment.

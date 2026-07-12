@@ -414,7 +414,7 @@ curl -H "Authorization: Bearer <token>" \
 
 For issues with API versions:
 
-1. Check [API Documentation](../docs/API.md)
+1. Check [API Documentation](../docs/guides/API.md)
 2. Review error messages in response
 3. Check coverage in [TEST_COVERAGE_README.md](./TEST_COVERAGE_README.md)
 4. File GitHub issue with error details and endpoint

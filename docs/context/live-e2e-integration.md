@@ -31,10 +31,10 @@ auto-starts local dev servers; `tests/test_playwright_e2e.py` targets suspended 
 targets, env var documentation. Maps to `docs/test-plan.md` H3–H6 and UJ-001–003.
 
 **Out of scope (R2)**: Scheduled CI live runs. **Out of scope (separate)**: Schema path
-regression (E2E-001) — see `docs/e2e-report.md`.
+regression (E2E-001) — see `docs/reports/e2e-report.md`.
 
 Template/deploy topology: `workflow-state.yaml` §template (`static+api`); see
-`docs/staging-secrets-matrix.md`, `docs/deploy.md` §Integration.
+`docs/ops/staging-secrets-matrix.md`, `docs/deploy.md` §Integration.
 
 ## Environment / Topology
 
@@ -122,7 +122,7 @@ Never commit `.env`. Manual runs only (R2).
 ## Sources
 
 - [Repo: apps/e2e/playwright.config.ts] — local-first; needs live mode
-- [Docs: docs/e2e-report.md] — T3 auth gap superseded by 2026-06-22 probe
-- [Docs: docs/staging-secrets-matrix.md] — canonical URLs
+- [Docs: docs/reports/e2e-report.md] — T3 auth gap superseded by 2026-06-22 probe
+- [Docs: docs/ops/staging-secrets-matrix.md] — canonical URLs
 - [Docs: docs/test-plan.md] — H tiers, UJ mapping
 - Live probe 2026-06-22 — health, CORS, OpenAPI 31 paths, verify_connectivity pass

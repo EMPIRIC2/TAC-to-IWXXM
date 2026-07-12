@@ -505,9 +505,9 @@ async def test_concurrent_requests():
 
 ## Documentation
 
-- [TESTING_STRATEGY.md](../../docs/TESTING_STRATEGY.md) - Overall testing strategy
-- [DEVELOPMENT.md](../../docs/DEVELOPMENT.md) - Development workflow
-- [API.md](../../docs/API.md) - API documentation
+- [TESTING_STRATEGY.md](../../docs/testing/TESTING_STRATEGY.md) - Overall testing strategy
+- [DEVELOPMENT.md](../../docs/ops/DEVELOPMENT.md) - Development workflow
+- [API.md](../../docs/guides/API.md) - API documentation
 
 ## Phase 2: Advanced Testing Infrastructure (✅ Complete)
 
@@ -589,4 +589,4 @@ When adding new endpoints:
 
 - Check existing tests for patterns
 - Review test fixtures in `test_fixtures.py`
-- See [TESTING_STRATEGY.md](../../docs/TESTING_STRATEGY.md)
+- See [TESTING_STRATEGY.md](../../docs/testing/TESTING_STRATEGY.md)

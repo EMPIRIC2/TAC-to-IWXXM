@@ -43,7 +43,7 @@ The API supports **dynamic IWXXM version selection**. By default, conversions us
 | 2025-2  | ✅ Latest (Default) | 2025-11-25 | 82            |
 | 2023-1  | ✅ Previous         | 2023-06-02 | 78            |
 
-**Deprecated as of 2026-02-13**: IWXXM 2021-2 and earlier versions are no longer supported. See [docs/VERSION_SUPPORT_POLICY.md](../docs/VERSION_SUPPORT_POLICY.md) for details.
+**Deprecated as of 2026-02-13**: IWXXM 2021-2 and earlier versions are no longer supported. See [docs/domain/iwxxm/VERSION_SUPPORT_POLICY.md](../docs/domain/iwxxm/VERSION_SUPPORT_POLICY.md) for details.
 
 ### Usage Examples
 
@@ -94,7 +94,7 @@ Response:
 - Separate measures.xsd
 - Single nil namespace
 
-For detailed technical documentation, see [IWXXM Version Switching Architecture](../docs/IWXXM_VERSION_SWITCHING.md).
+For detailed technical documentation, see [IWXXM Version Switching Architecture](../docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md).
 
 ## Architecture
 
@@ -354,7 +354,7 @@ pytest tests/test_version_migration.py        # 12 tests
 pytest tests/test_schema_registry.py          # Coverage
 ```
 
-For detailed architecture, see [IWXXM Version Switching](../docs/IWXXM_VERSION_SWITCHING.md).
+For detailed architecture, see [IWXXM Version Switching](../docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md).
 
 ## IWXXM Validation
 
@@ -517,7 +517,7 @@ Current: ~5 seconds for 475+ tests (improved from ~3s for 230 tests)
 
 - **GIFTs**: https://github.com/mgoberfield/GIFTs
 - **IWXXM**: https://codes.wmo.int/iwxxm/
-- **IWXXM Version Switching Guide**: [IWXXM_VERSION_SWITCHING.md](../docs/IWXXM_VERSION_SWITCHING.md)
+- **IWXXM Version Switching Guide**: [IWXXM_VERSION_SWITCHING.md](../docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md)
 - **FastAPI**: https://fastapi.tiangolo.com/
 - **pytest**: https://docs.pytest.org/
 - **WMO**: https://www.wmo.int/

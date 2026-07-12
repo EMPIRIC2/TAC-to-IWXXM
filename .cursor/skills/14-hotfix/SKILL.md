@@ -226,30 +226,33 @@ classifying or patching**; cite sections in the bug report; surface drift via
 
 ### Spec registry
 
-Read the rows relevant to the affected component / symptom. Skip only when clearly N/A
-(e.g. no API involved — still check `feature-list.md` + `spec.md`).
+**Canonical list:** [`docs/CORPUS.md`](../../../docs/CORPUS.md). Read the corpus rows
+relevant to the affected component / symptom. Skip only when clearly N/A
+(e.g. no API involved — still check `[Corpus: product]` + `[Corpus: system-spec]`).
 
-| Document | Check for |
-|----------|-----------|
-| `docs/feature-list.md` | Map symptom to **F1–F9**; reject out-of-scope hotfix work |
-| `docs/spec.md` | Component behavior, constraints, hard limits (§Constraints) |
-| `docs/config-spec.md` | Parameter names, defaults, validation rules |
-| `docs/api-contract.md` | Payload shape, errors, return types |
-| `docs/deploy.md §Integration` | App name, classes, GPUs, volumes, secrets, deploy command |
-| `docs/dependency-inventory.md` | Version pins; new deps need `[Decision]` |
-| `docs/test-plan.md` / `docs/acceptance-criteria.md` | Expected smoke thresholds and pass criteria |
-| `docs/spec.md §Data` | Weights / volume paths when failure is data-related |
-| `.cursor/skills/template-registry.md` | Job template patterns when `workflow-state.yaml` §template is set |
+| Corpus ID | Document | Check for |
+|-----------|----------|-----------|
+| product | `docs/feature-list.md` | Map symptom to **F1–F4**; reject out-of-scope hotfix work |
+| system-spec | `docs/spec.md` | Component behavior, constraints, hard limits (§Constraints) |
+| tech-spec | `docs/tech-spec.md` (+ satellites) | Config/env/deploy/deps parity |
+| — | `docs/config-spec.md` | Parameter names, defaults, validation rules |
+| api | `docs/api-contract.md` | Payload shape, errors, return types |
+| — | `docs/deploy.md` §Integration | Service topology, secrets, deploy command |
+| — | `docs/dependency-inventory.md` | Version pins; new deps need `[Decision]` |
+| tests | `docs/test-plan.md` | Expected smoke thresholds and pass criteria |
+| journeys | `docs/user-journeys.md` | UJ sign-off when UI journeys affected |
+| adr | `docs/adr/` | Existing architecture constraints |
+| — | `.cursor/skills/template-registry.md` | Job template patterns when `workflow-state.yaml` §template is set |
 
 ### When to run spec checks
 
 | Phase | Action |
 |-------|--------|
-| **On invocation** | Pre-read `feature-list.md` + `spec.md` §Component Overview for context |
-| **Phase 1 Step 1.25** | Repro test assertions vs `config-spec.md`, `api-contract.md`, `test-plan.md` |
-| **Phase 1 Step 1.5** | Full cross-check (implementation vs specs) before triage AskQuestion |
-| **Phase 2 Step 3** | Re-verify fix does not violate specs; patch spec surgically if behavior changes |
-| **Phase 3 PR** | List spec sections touched in PR body |
+| **On invocation** | Pre-read `[Corpus: product]` + `[Corpus: system-spec]` (§Component Overview) |
+| **Phase 1 Step 1.25** | Repro assertions vs `[Corpus: tech-spec]` / `api` / `tests` |
+| **Phase 1 Step 1.5** | Full cross-check vs `docs/CORPUS.md` before triage AskQuestion |
+| **Phase 2 Step 3** | Re-verify fix does not violate corpus; patch surgically if behavior changes |
+| **Phase 3 PR** | List corpus IDs / sections touched in PR body |
 
 ### Drift and spec issues
 
@@ -288,8 +291,8 @@ or architectural changes (new ADR + plan update).
 1. **Deployed codebase**: Pipeline stages 07-build through 13-deploy-smoke have run
    (at minimum, 07-build is `completed` so code exists to patch)
 2. `workflow-state.yaml + execution plan artifact` — for tech stack, branch strategy, test commands
-3. **Spec suite** (see Spec conformance §Spec registry) — at minimum `docs/feature-list.md`,
-   `docs/spec.md`; plus `config-spec.md`, `api-contract.md`, `deployment-integration.md` when relevant
+3. **Spec suite** — [`docs/CORPUS.md`](../../../docs/CORPUS.md) at minimum `product` +
+   `system-spec`; plus `tech-spec` / `api` / `tests` when relevant
 4. Git repo is clean (no uncommitted work)
 
 
@@ -346,7 +349,7 @@ Step 0.5 onward; prevention filled in Phase 5).
 1. Read `workflow-state.yaml` — confirm pipeline has reached at least Phase C
 2. Read `docs/hotfix-log.md` (create if absent)
 3. Read `docs/deploy-state.md` and `docs/deploy-report.md` if present (last deploy URL)
-4. Skim `docs/feature-list.md` and `docs/spec.md` §Component Overview (spec baseline)
+4. Skim `[Corpus: product]` + `[Corpus: system-spec]` §Component Overview (spec baseline)
 5. Report current state in chat (status summary only — not a question), then **immediately
    call AskQuestion Step 0.1** — do not jump to code.
 

@@ -332,7 +332,7 @@ Total: [N] documents, [N] gaps needing review, [N] contradictions surfaced
 Interview decisions: [N] questions answered across [N] templates
 ADRs created: [N] in docs/adr/
 
-Decisions log: docs/requirements-decisions.md
+Decisions log: docs/decisions/requirements-decisions.md
 
 Next step: 02-verify-plan
 ```

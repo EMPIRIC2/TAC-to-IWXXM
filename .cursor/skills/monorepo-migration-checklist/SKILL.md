@@ -1,6 +1,6 @@
 # Monorepo Migration Checklist
 
-Validates monorepo migration progress against `docs/migration-plan.md` and test-plan TC-M*
+Validates monorepo migration progress against `docs/ops/migration-plan.md` and test-plan TC-M*
 cases. Use during M1–M6 implementation, PR review, and phase gate checks.
 
 ## When to Use
@@ -12,7 +12,7 @@ cases. Use during M1–M6 implementation, PR review, and phase gate checks.
 
 ## Spec Sources
 
-- `docs/migration-plan.md` — steps, scope, rollback
+- `docs/ops/migration-plan.md` — steps, scope, rollback
 - `docs/test-plan.md` — TC-M001 through TC-M005
 - `docs/feature-list.md` — M1–M6 acceptance
 - `docs/spec.md` §Monorepo Migration — submodule mapping

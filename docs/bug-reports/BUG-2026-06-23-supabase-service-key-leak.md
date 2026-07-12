@@ -42,7 +42,7 @@ remains on GitHub as unreachable object.
 
 | Check | Result |
 |-------|--------|
-| `docs/DEVELOPMENT.md` §Environment variables | `.env.example` was missing `SUPABASE_SERVICE_ROLE_KEY` — **fixed** |
+| `docs/ops/DEVELOPMENT.md` §Environment variables | `.env.example` was missing `SUPABASE_SERVICE_ROLE_KEY` — **fixed** |
 | `scripts/utilities/README.md` | Documents env vars — pass |
 | `.gitignore` | `.env` ignored — pass |
 
