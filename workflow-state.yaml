@@ -117,6 +117,7 @@ active_session:
     - "2026-07-12 D-S008-EV006-resume-t410 — resume 07-build at T4.10"
     - "2026-07-12 T4.10+T4.11 done; next T4.6"
     - "2026-07-12 D-S008-EV006-t47-cutover — T4.7 in progress"
+    - "2026-07-12 M4 remaining tasks T4.10–T4.9 done; ready 08-verify-build + PR"
 sessions:
   - id: S007-docs-minimize
     type: process
@@ -2661,6 +2662,7 @@ evolve_cycles:
       - "2026-07-12 D-S008-EV006-resume-t410 — resume 07-build at T4.10 (US METAR/SPECI goldens); new feat branch needed (feat/S008-M4-cutover merged)"
       - "2026-07-12 T4.10+T4.11 complete on feat/S008-M4-us-metar; next T4.6 cutover gate"
       - "2026-07-12 D-S008-EV006-t47-cutover — starting T4.7 gifts delete cutover"
+      - "2026-07-12 M4 T4.10–T4.11 + T4.6–T4.9 complete on feat/S008-M4-us-metar; next 08-verify-build then PR"
     stages:
       00-context:
         status: completed
@@ -2686,7 +2688,7 @@ evolve_cycles:
         status: in_progress
         started: "2026-07-12"
         completed: null
-        active_task: T4.7
+        active_task: M4-complete
         active_milestone: M4
         notes:
           - "M1 T1.1–T1.6 completed; next 08-verify-build for M1 then PR-M1"
@@ -3392,6 +3394,24 @@ git_history:
     - sha: c53d10f
       branch: feat/S008-M4-us-metar
       message: "[T4.6] test: cutover gate for gifts delete + UJ-001 local"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      timestamp: "2026-07-12"
+    - sha: ba70828
+      branch: feat/S008-M4-us-metar
+      message: "[T4.7] feat: wire convert to tac2iwxxm and delete packages/gifts"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      timestamp: "2026-07-12"
+    - sha: fbe3faa
+      branch: feat/S008-M4-us-metar
+      message: "[T4.8] config: health tac2iwxxm_available; archive gifts goldens note"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      timestamp: "2026-07-12"
+    - sha: 19a13a0
+      branch: feat/S008-M4-us-metar
+      message: "[T4.9] config: add make test-live-bulletin (H7) to make test-live"
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       timestamp: "2026-07-12"
