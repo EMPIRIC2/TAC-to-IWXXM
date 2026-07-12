@@ -263,6 +263,7 @@ F6.b METAR/SPECI US already shipped in M4.
 | Phase | Result | Date | Notes |
 |-------|--------|------|-------|
 | 1 | pass | 2026-07-12 | T1.1–T1.6 green; 08-verify-build M1 pass; gifts intact |
+| 2 | pass | 2026-07-12 | T2.1–T2.7 green; iwxxm-validate + tac-validate + wrappers; soft benches |
 
 ## Connectivity Checklist (04 handoff)
 

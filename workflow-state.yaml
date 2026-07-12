@@ -52,7 +52,7 @@ active_session:
       status: in_progress
       started_at: "2026-07-12"
       skip_rationale: null
-      note: "Resumed at T2.1 on feat/S008-M2-validate (D-S008-EV006-resume=A)"
+      note: "T2.3+T2.4 complete on feat/S008-M2-validate; active_task T2.5 in_progress (D-S008-T21-sch applied)"
     - stage: 08-verify-build
       required: true
       status: pending
@@ -107,6 +107,8 @@ active_session:
     - "2026-07-12 M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
     - "2026-07-12 resume: user chose resume 07-build at T2.1 (D-S008-EV006-resume=A); active_task T2.1 in_progress on feat/S008-M2-validate"
     - "2026-07-12 D-S008-T21-sch — Schematron strategy locked (option 1); T2.1 remains in_progress until commit"
+    - "2026-07-12 T2.1+T2.2 done; D-S008-T21-sch applied; active_task T2.3 pending (T2.2 git SHA not yet on HEAD when recorded — only T2.1 db27737 in git_history)"
+    - "2026-07-12 T2.3+T2.4 complete (b167e71, d27090d); active_task T2.5 in_progress on feat/S008-M2-validate"
 sessions:
   - id: S007-docs-minimize
     type: process
@@ -2554,6 +2556,8 @@ evolve_cycles:
       - "2026-07-12 M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
       - "Resumed Phase C at T2.1 on feat/S008-M2-validate"
       - "2026-07-12 D-S008-T21-sch — iwxxm-validate mirrors F2 (lxml XSD + Schematron skip/Docker); TC-F6-032 unit; M-sch Docker soft gate; active_task T2.1 remains in_progress until commit"
+      - "2026-07-12 T2.1+T2.2 done; D-S008-T21-sch applied; next T2.3 pending (T2.2 commit SHA not yet on HEAD — git_history has T2.1 only)"
+      - "2026-07-12 T2.3+T2.4 complete (b167e71, d27090d); active_task T2.5 in_progress"
     stages:
       00-context:
         status: completed
@@ -2579,12 +2583,14 @@ evolve_cycles:
         status: in_progress
         started: "2026-07-12"
         completed: null
-        active_task: "T2.1 in_progress"
+        active_task: "T2.5 in_progress"
         notes:
           - "M1 T1.1–T1.6 completed; next 08-verify-build for M1 then PR-M1"
           - "M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
           - "2026-07-12 resume: active_task T2.1 in_progress (D-S008-EV006-resume=A) on feat/S008-M2-validate"
           - "2026-07-12 D-S008-T21-sch recorded; active_task T2.1 remains in_progress until commit"
+          - "2026-07-12 T2.1 completed (db27737); T2.2 completed (implement iwxxm-validate); D-S008-T21-sch applied; active_task T2.3 pending; T2.2 SHA not yet committed when recorded"
+          - "2026-07-12 T2.3+T2.4 complete (b167e71, d27090d); active_task T2.5 in_progress"
       08-verify-build:
         status: pending
         started: null
@@ -2966,6 +2972,39 @@ git_history:
       evolve_cycle_id: EV-006
       files_changed: 1
       timestamp: "2026-07-12T15:52:53Z"
+    - sha: db27737
+      branch: feat/S008-M2-validate
+      message: "[T2.1] test: add iwxxm-validate XSD/Schematron fixtures (TC-F6-032)"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 4
+      timestamp: "2026-07-12T16:09:13Z"
+      note: "T2.1 completed; T2.2 completed (implement iwxxm-validate) but T2.2 commit SHA not yet on HEAD when this entry was recorded"
+    - sha: 27e1296
+      branch: feat/S008-M2-validate
+      message: "[T2.2] feat: implement iwxxm-validate XSD/Schematron engine"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 13
+      timestamp: "2026-07-12T16:09:08Z"
+    - sha: b167e71
+      branch: feat/S008-M2-validate
+      message: "[T2.3] test: add tac-validate msgspec lint fixtures (TC-F6-031)"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T16:10:51Z"
+    - sha: d27090d
+      branch: feat/S008-M2-validate
+      message: "[T2.4] feat: implement tac-validate rule-pack skeleton"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 9
+      timestamp: "2026-07-12T16:11:37Z"
 
 pr_review_cycles:
   - id: PRR-001
