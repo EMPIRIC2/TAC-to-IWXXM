@@ -1,13 +1,14 @@
-"""Public ``convert()`` entrypoint (F6.a METAR/SPECI annex3)."""
+"""Public ``convert()`` entrypoint (F6.a/F6.b METAR/SPECI annex3 + iwxxm_us)."""
 
 from __future__ import annotations
 
 from tac2iwxxm.models import ConvertIssue, ConvertResult
 from tac2iwxxm.products.metar_speci import parse_metar_speci
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
+from tac2iwxxm.profiles.iwxxm_us import emit_metar_speci_iwxxm_us
 
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI"})
-_SUPPORTED_PROFILES = frozenset({"annex3"})
+_SUPPORTED_PROFILES = frozenset({"annex3", "iwxxm_us"})
 
 
 class ConvertError(ValueError):
@@ -41,7 +42,7 @@ def convert(
     product :
         Product id (``METAR`` or ``SPECI`` in this milestone).
     profile :
-        ``annex3`` (default) or ``iwxxm_us`` (US path lands in T4.10+).
+        ``annex3`` (default) or ``iwxxm_us`` (US REMARKS → extension blocks).
     iwxxm_version :
         Target IWXXM release line.
 
@@ -90,7 +91,10 @@ def convert(
 
     try:
         ir = parse_metar_speci(tac, product=product_u)
-        xml = emit_metar_speci_annex3(ir, product=product_u, iwxxm_version=iwxxm_version)
+        if profile_l == "iwxxm_us":
+            xml = emit_metar_speci_iwxxm_us(ir, product=product_u, iwxxm_version=iwxxm_version)
+        else:
+            xml = emit_metar_speci_annex3(ir, product=product_u, iwxxm_version=iwxxm_version)
     except ValueError as exc:
         return ConvertResult(
             ok=False,
