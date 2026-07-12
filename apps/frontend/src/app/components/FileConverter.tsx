@@ -30,6 +30,12 @@ import { AirportDetailsCard } from './AirportDetailsCard';
 import { signOutWithScope } from '/utils/supabase/logout';
 import { convertMetarToIwxxm as callBackendConversion } from '/utils/api';
 import {
+  detectTacProduct,
+  resolveConvertProduct,
+  type IwxxmProfile,
+  type TacProductSelection,
+} from '/utils/tacProduct';
+import {
   CONVERT_AND_SEND_UPLOAD_OPTIONS,
   uploadConvertedFiles,
 } from '/utils/databaseUpload';
@@ -85,6 +91,8 @@ type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 interface ConversionParams {
   bulletinId: string;
   issuingCenter: string;
+  product: TacProductSelection;
+  profile: IwxxmProfile;
   iwxxmVersion: IWXXMVersion;
   strictValidation: boolean;
   includeNilReasons: boolean;
@@ -130,6 +138,8 @@ export function FileConverter({
   const [conversionParams, setConversionParams] = useState<ConversionParams>({
     bulletinId: '',
     issuingCenter: '',
+    product: 'auto',
+    profile: 'annex3',
     iwxxmVersion: '2025-2',
     strictValidation: true,
     includeNilReasons: true,
@@ -202,6 +212,8 @@ export function FileConverter({
           setConversionParams({
             bulletinId: prefs.bulletinIdExample || 'SAAA00',
             issuingCenter: prefs.issuingCenter || 'KWBC',
+            product: (prefs.product as TacProductSelection) || 'auto',
+            profile: prefs.profile === 'iwxxm_us' ? 'iwxxm_us' : 'annex3',
             iwxxmVersion,
             strictValidation: prefs.strictValidation ?? true,
             includeNilReasons: prefs.includeNilReasons ?? true,
@@ -306,6 +318,8 @@ export function FileConverter({
         setConversionParams({
           bulletinId: prefs.bulletinIdExample || 'SAAA00',
           issuingCenter: prefs.issuingCenter || 'KWBC',
+          product: (prefs.product as TacProductSelection) || 'auto',
+          profile: prefs.profile === 'iwxxm_us' ? 'iwxxm_us' : 'annex3',
           iwxxmVersion,
           strictValidation: prefs.strictValidation ?? true,
           includeNilReasons: prefs.includeNilReasons ?? true,
@@ -383,9 +397,26 @@ export function FileConverter({
         accessToken: accessToken ? `${accessToken.substring(0, 20)}...` : 'MISSING',
       });
 
+      const tacForDetect =
+        manualInput.trim() || pendingFiles.map((f) => f.content).join('\n') || '';
+      const resolvedProduct = resolveConvertProduct(
+        conversionParams.product,
+        tacForDetect,
+      );
+      if (conversionParams.product !== 'auto' && tacForDetect.trim()) {
+        const detected = detectTacProduct(tacForDetect);
+        if (detected !== resolvedProduct) {
+          toast.warning(
+            `Selected product ${resolvedProduct} differs from detected ${detected}; converting as ${resolvedProduct}.`,
+          );
+        }
+      }
+
       const response = await callBackendConversion({
         manualText: manualInput.trim() || undefined,
         files: filesToConvert.length > 0 ? filesToConvert : undefined,
+        product: resolvedProduct,
+        profile: conversionParams.profile,
         iwxxmVersion: conversionParams.iwxxmVersion,
         validateOutput: false,
         accessToken: accessToken,
@@ -1019,6 +1050,56 @@ export function FileConverter({
                   helperText="4-letter ICAO code"
                 />
                 <AirportDetailsCard icao={conversionParams.issuingCenter} />
+
+                {/* F6.e Product */}
+                <div>
+                  <Label htmlFor="param-product" className="dark:text-white mb-2">
+                    Product
+                  </Label>
+                  <select
+                    id="param-product"
+                    aria-label="Product"
+                    value={conversionParams.product}
+                    onChange={(e) =>
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        product: e.target.value as TacProductSelection,
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="auto">Auto-detect</option>
+                    <option value="AIRMET">AIRMET</option>
+                    <option value="METAR">METAR</option>
+                    <option value="SIGMET">SIGMET</option>
+                    <option value="SPECI">SPECI</option>
+                    <option value="TAF">TAF</option>
+                    <option value="VAA">VAA</option>
+                    <option value="TCA">TCA</option>
+                  </select>
+                </div>
+
+                {/* F6.e Profile */}
+                <div>
+                  <Label htmlFor="param-profile" className="dark:text-white mb-2">
+                    Profile
+                  </Label>
+                  <select
+                    id="param-profile"
+                    aria-label="Profile"
+                    value={conversionParams.profile}
+                    onChange={(e) =>
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        profile: e.target.value as IwxxmProfile,
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="annex3">annex3 (International)</option>
+                    <option value="iwxxm_us">iwxxm_us (US extensions)</option>
+                  </select>
+                </div>
 
                 {/* IWXXM Version */}
                 <div>
