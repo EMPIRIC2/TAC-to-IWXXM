@@ -1,7 +1,7 @@
-"""H7 / TC-LIVE-F6-030 live bulletin gate (T4.9).
+"""H7 / TC-LIVE-F6-030 live bulletin gate (T4.9 / T7.3).
 
 Requires LIVE_API_URL (or STAGING_API_URL) and a JWT from live login when auth
-is enforced. Skips when live URL is unset.
+is enforced. Skips when live URL is unset or convert-bulletin is not deployed yet.
 """
 
 from __future__ import annotations
@@ -26,6 +26,14 @@ def _live_api_base() -> str | None:
     return os.environ.get("LIVE_API_URL") or os.environ.get("STAGING_API_URL")
 
 
+def _extract_token(payload: dict) -> str | None:
+    return (
+        payload.get("access_token")
+        or payload.get("token")
+        or (payload.get("session") or {}).get("access_token")
+    )
+
+
 @pytest.fixture(scope="module")
 def live_api() -> str:
     base = _live_api_base()
@@ -46,8 +54,10 @@ def live_token(live_api: str) -> str | None:
         )
         if resp.status_code != 200:
             pytest.skip(f"live login failed: {resp.status_code}")
-        data = resp.json()
-        return data.get("access_token") or data.get("token")
+        token = _extract_token(resp.json())
+        if not token:
+            pytest.skip("live login response missing access_token")
+        return token
 
 
 def test_tc_live_f6_030_convert_bulletin(live_api: str, live_token: str | None) -> None:
@@ -72,6 +82,10 @@ def test_tc_live_f6_030_convert_bulletin(live_api: str, live_token: str | None) 
     if resp.status_code in {401, 403} and not live_token:
         pytest.skip(
             "live convert-bulletin requires auth; set ADMIN_EMAIL/ADMIN_PASSWORD"
+        )
+    if resp.status_code == 404:
+        pytest.skip(
+            "convert-bulletin not on live yet (merge/deploy F6 cutover PRs #706-#708)"
         )
     assert resp.status_code == 200, resp.text[:500]
     body = resp.json()

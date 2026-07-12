@@ -1,63 +1,28 @@
-# PR remediation — S008
+# PR remediation report — PRM-012 / PRM-013
 
-## PRM-008 (PR #700) — brief
+| Field | Value |
+|-------|-------|
+| **Linked reviews** | PRR-009…012 then PRR-013…016 |
+| **Date** | 2026-07-12 |
 
-**Status:** completed 2026-07-12  
-**PR:** https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/700 (`feat/S008-M1-scaffold` → evolve)  
-**Summary:** 1 advisory fixed (`vendor_manifest` name-based HTTP/GitHub dispatch); head `789ea0b`; merged `369f028` under D-S008-PR700-19 anti-merge override.
+## Fixed
 
----
+| Finding | Commits |
+|---------|---------|
+| 🔴 convert-bulletin product/profile | #706 `cb7a42f` (+ cherry-picks) |
+| 🟡 poller URL INFO log + https + job_id dedup | #708 `ccc156e` → #709 `95d3e3c` |
+| 🟡 `source_url` tokens persisted to DB | #708 `5837b41` → #709 `a91f4cd` |
 
-# PR remediation — PRM-009 (PR #701)
+## Tests
 
-**Skill:** 19-address-pr-review  
-**PR:** https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/701  
-**Branch:** `feat/S008-M2-validate` → `evolve/S008-general-tac-iwxxm-converter`  
-**Date:** 2026-07-12  
-**Status:** completed  
-**Scope:** `blockers_then_advisories`  
-**Head SHA:** `6ddec3a19969aa922e6d139abda932425d38fd4c`  
-**CI:** green
+- Bulletin bug repro + TC-F6-030 unit: green
+- Worker tests: **11 passed**
 
-## Scope
+## Deferred
 
-User waived AskQuestion gates and requested remediate → commit → push → merge (anti-merge override like D-S008-PR700-19 → **D-S008-PR701-19**).
+- `/api/v1/convert` product HTTP — M8 / F6.e
+- Durable DB unique/upsert on `job_id` — in-process dedup for staging
 
-| Severity | Count |
-|----------|-------|
-| Blockers (bug_risk) | 2 fixed |
-| Advisories | 2 fixed, 1 wont_fix |
+## Merge
 
-**Counts:** fixed 4, wont_fix 1, deferred 0
-
-## Findings
-
-| ID | Finding | Severity | Status | Commit |
-|----|---------|----------|--------|--------|
-| F-001 | `files` not declared with `File()` on `/lint-tac` | bug_risk | fixed | `f39560d` |
-| F-002 | multipart vs urlencoded doc/guard mismatch → multipart-only (Q8=A) | advisory | fixed | `f39560d` |
-| F-003 | `LintReport.fixes = []` shared mutable default | bug_risk | fixed | `f39560d` |
-| F-004 | Extend `/validate` test for `profile` / `package_*` + OpenAPI `ValidateResponse` | advisory | fixed | `6ddec3a` |
-| F-005 | Inline `vendor_manifest` helpers / `source_url` dispatch | advisory | **wont_fix** | — (keeps PRM-008 name-based HTTP dispatch) |
-
-## CI / merge
-
-- Sourcery review: pass  
-- Merge: `8a0db0c` (user override of skill anti-merge; D-S008-PR701-19)
-
-
----
-
-# PR remediation — PRM-010 (PR #704)
-
-**Status:** completed 2026-07-12
-**PR:** https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704
-**Head:** `dcd4791` → merge `2d9fb24`
-**Scope:** blockers_then_advisories (D-S008-PR704-19)
-
-| Finding | Severity | Status | Commit |
-|---------|----------|--------|--------|
-| TAC search after AHL only | bug_risk | fixed | `3175787` |
-| UploadFile empty-file test | advisory | fixed | `4055b07` |
-| Pydantic response models | advisory | fixed | `dcd4791` |
-| AHL dialect abstraction | advisory | wont_fix (M5) | — |
+**Not merged** — user merges manually in order #706 → #707 → #708 → #709.

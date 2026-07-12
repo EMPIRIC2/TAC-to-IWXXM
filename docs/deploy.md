@@ -12,6 +12,11 @@
 | metar-frontend | **Static site** (CDN) | `apps/frontend` Vite build | CDN |
 | metar-worker | **Background Worker** | `apps/worker` (ADR-018) | N/A (no HTTP) |
 
+**Staging worker (T7.1)**: `metar-to-iwxxm-worker` —
+`srv-d99u0i8k1i2s73eq5oqg` (docker-from-git, branch `feat/S008-M6-worker` until cutover
+merges to `main`). Dashboard:
+https://dashboard.render.com/worker/srv-d99u0i8k1i2s73eq5oqg
+
 Auth is **not** a separate deployable — included in metar-api via packages/auth.
 F8 worker shares packages with the API image family but is a **separate** Render service.
 
