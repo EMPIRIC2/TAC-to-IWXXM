@@ -4,36 +4,80 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 7
+session_counter: 8
 active_session:
-  id: S007-docs-minimize
-  type: process
-  intent: "Minimize docs/ root files; nest non-standing docs into decisions/ops/guides/domain/reports (conservative — keep pipeline standing specs at docs/ root)"
+  id: S008-general-tac-iwxxm-converter
+  type: feature
+  intent: "Design a generalizable, high-performance TAC→IWXXM converter library (C/Cython-capable) covering WMO IWXXM + NOAA IWXXM-US extensions, with accuracy metrics and format extensibility"
   status: in_progress
-  branch: docs/S007-docs-minimize
-  orchestrator: null
+  branch: evolve/S008-general-tac-iwxxm-converter
+  orchestrator: 16-evolve
   evolve_cycle_id: null
-  artifacts_dir: docs/sessions/S007-docs-minimize/
+  artifacts_dir: docs/sessions/S008-general-tac-iwxxm-converter/
   routing_plan:
     - stage: 00-context
       mode: scoped
       required: true
       status: completed
       skip_rationale: null
-    - stage: docs-execute
+    - stage: 01-requirements
+      mode: delta
       required: true
       status: completed
       skip_rationale: null
-    - stage: 18-pr-review
-      required: false
+    - stage: 04-tech-plan
+      mode: delta
+      required: true
       status: pending
       skip_rationale: null
-  current_stage: 18-pr-review
+    - stage: 05-verify-tech
+      mode: delta
+      required: true
+      status: pending
+      skip_rationale: null
+    - stage: 16-evolve
+      required: true
+      status: pending
+      skip_rationale: null
+    - stage: 07-build
+      required: true
+      status: pending
+      skip_rationale: null
+    - stage: 08-verify-build
+      required: true
+      status: pending
+      skip_rationale: null
+    - stage: 09-qa
+      required: true
+      status: pending
+      skip_rationale: null
+    - stage: 10-e2e
+      mode: delta
+      required: true
+      status: pending
+      skip_rationale: null
+    - stage: 11-verify-impl
+      required: true
+      status: pending
+      skip_rationale: null
+  current_stage: 04-tech-plan
   started_at: "2026-07-12"
-  context_briefs: []
+  context_briefs:
+    - docs/context/general-tac-iwxxm-converter.md
   notes:
-    - "Commit dd10fa7 done on docs/S007-docs-minimize (docs minimize + CORPUS); PR not opened yet; 18-pr-review still pending"
+    - "Opened after closing S007; user approved routing 2026-07-12"
+    - "00-context complete 2026-07-12 — R1=new tac2iwxxm pkg; R2=pure Py then Cython; R3=FAA five v1; R4=vendor iwxxm-us; R5=CPython+C/Cython; ADR-013"
 sessions:
+  - id: S007-docs-minimize
+    type: process
+    intent: "Minimize docs/ root files; nest non-standing docs into decisions/ops/guides/domain/reports"
+    status: completed
+    branch: docs/S007-docs-minimize
+    artifacts_dir: docs/sessions/S007-docs-minimize/
+    started_at: "2026-07-12"
+    completed_at: "2026-07-12"
+    close_note: "Closed at S008 open; 18-pr-review skipped (PR not opened); docs minimize commit dd10fa7 retained on branch"
+
   - id: S001-convert-send-buttons
     type: feature
     status: completed
@@ -192,6 +236,18 @@ stages:
           - docs/sessions/S003-supabase-keys-config/reports/01-requirements.md
           - config/prod.json
           - config/local.json
+      - status: completed
+        mode: delta
+        session_id: S008-general-tac-iwxxm-converter
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        note: "User approved: option 3 — include API Contract; full FAA-five feature coverage; F6 proposed. S008 01-requirements delta complete — F6 specs + ADR-014"
+        substeps:
+          interviews:
+            completed: 7
+            total: 7  # Feature List, Spec, User Journeys, Test Plan, Dependency Inventory, API Contract, Config Spec (+ decisions log as side artifact)
+            current_template: null
+            current_section: complete
     notes:
       - "Monorepo migration requirements interview complete; big-bang approach approved"
 
@@ -566,6 +622,142 @@ deployment:
     method: "bash scripts/deploy/verify_connectivity.sh"
 
 decisions_log:
+  - id: D-S008-01-requirements-complete
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "S008 01-requirements delta complete — all 7 interviews done; F6 standing specs + ADR-014 written; advancing to 04-tech-plan."
+  - id: D-S008-cfg-batch1
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "no new version/product config keys; profile default in code; no feature flag; no new secrets; US via request profile."
+  - id: D-S008-api-complete
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "API contract interview complete; api-contract.md written."
+  - id: D-S008-api-batch3
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "breaking changes accepted; profile default annex3; product required; F5/admin unchanged; CORS note."
+  - id: D-S008-api-batch2
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "validate profile field; F5 stores params UI copies to multipart; error codes; auth unchanged; OpenAPI doc now codegen later."
+  - id: D-S008-api-batch1
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "health tac2iwxxm_available; product ALWAYS required; multipart only for product/profile; response unchanged no metrics; 400/422/5xx. Note: supersedes API auto-detect default — auto-detect is UI-side only."
+  - id: D-S008-deps-complete
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "Dependency inventory interview complete; file written."
+  - id: D-S008-deps-batch1
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "gifts→tac2iwxxm; lxml+IR TBD; optional PyO3/maturin; iwxxm-us vendor; tooling updates."
+  - id: D-S008-tp-complete
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "Test plan interview complete; test-plan.md F6 delta written."
+  - id: D-S008-tp-batch2
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "TC table accepted; cutover PR gate METAR/SPECI+UJ-001; CI matrix gifts→tac2iwxxm; Rust tests deferred; TC-M003 deprecated."
+  - id: D-S008-tp-batch1
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "scope+F6; UJ→TC mapping accepted; metrics M-parse/xsd/sch + parity archive; H6 UJ-001–007; connectivity unchanged."
+  - id: D-S008-uj-complete
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "User journeys interview complete; user-journeys.md written."
+  - id: D-S008-uj-batch2
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "UJ-008/009/010; explicit product wins with warn; per-file auto-detect batch; guests get product/profile; no gifts rollback."
+  - id: D-S008-uj-batch1
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "Extend UJ-001; T3 all 7 products; add UJ-005/006/007; deprecate UJ-DEV-003→003b tac2iwxxm/vendor; extend UJ-002 for iwxxm_us."
+  - id: D-S008-spec-complete
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "Spec interview complete; all batches A; spec.md written with F6 architecture"
+  - id: D-S008-spec-batch2
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "Spec batch2: dataflow tac2iwxxm; hard constraints no gifts/SoC/vendor RO; assumptions replace REQ-014; keep METAR perf + note other products; known limitations as drafted"
+  - id: D-S008-spec-batch1
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "Spec batch1: runtime tac2iwxxm only; component SoC; replace gifts_adapter same PR; IR TBD in 04; F2 combined catalogs for iwxxm_us"
+  - id: D-S008-F6-feature-list-complete
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "Feature List interview complete; F6 written; ADR-014 accepted; Batch3 1A/2C/3A/4A/5A"
+  - id: D-S008-R1-R5
+    date: "2026-07-12"
+    stage: 00-context
+    category: Decision
+    summary: "R1 new packages/tac2iwxxm; R2 pure Python then Cython; R3 FAA five v1; R4 vendor iwxxm-us; R5 CPython+C/Cython"
+    resolution: "User R1=1,R2=1,R5=1,R3=3,R4=1; ADR-013"
+    session_id: S008-general-tac-iwxxm-converter
+  - id: D-S008-open
+    date: "2026-07-12"
+    stage: 00-context
+    category: Decision
+    summary: "Close S007 (skip 18-pr-review); open S008 feature session for general TAC→IWXXM converter architecture"
+    resolution: "User chose option 1"
+    session_id: S008-general-tac-iwxxm-converter
+  - id: D-S008-manifest
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: "Manifest: mandatory 4 + Dependency Inventory + API Contract + Config Spec; full FAA five product features; skip deploy rewrite"
+  - id: D-S008-F6-identity
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    decision: |
+      F6 = General TAC→IWXXM (tac2iwxxm), one Fn with FAA-five product subsections.
+      UI product/profile pickers in v1 (browser connectivity). Default profile=annex3.
+      Extend POST /api/v1/convert with product+profile. Gifts remains reference/fallback.
+  - id: D-S008-F6-batch2-pending
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    status: superseded
+    decision: |
+      Tentative: 1A phase order; 2A params; 3B MIT; 4C include VAA/TCA in F6 v1 + user asked Rust-based engine;
+      5C hard cutover no dual-run. Blocked on contradictions vs ADR-013 (Cython not Rust; FAA five; gifts fallback).
+  - id: D-S008-F6-contradictions-resolved
+    date: "2026-07-12"
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    status: confirmed
+    decision: |
+      C1=B: Amend ADR-013 — Rust/PyO3 hotspots instead of Cython; pure Python v0 first.
+      C2=A: F6 v1 products = FAA five + VAA + TCA (7); phase F6.f after SIGMET/AIRMET.
+      C3=C + Delete GIFTS: Hard cutover when any tac2iwxxm convert path ships; API never calls gifts;
+      remove packages/gifts (timing TBD in batch3). Supersedes ADR-013 gifts-as-fallback and Cython path.
+      License MIT (3B). Phase order 1A. Params 2A.
   - id: REQ-001
     stage: 01-requirements
     date: "2026-06-14"
@@ -1287,6 +1479,55 @@ artifacts:
     stage: 00-context
     created_at: "2026-07-12"
     status: complete
+  - path: docs/adr/ADR-013-tac2iwxxm-package-architecture.md
+    kind: adr
+    created_at: "2026-07-12"
+    session_id: S008-general-tac-iwxxm-converter
+    stage: 00-context
+    status: complete
+  - path: docs/feature-list.md
+    type: standing
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+  - path: docs/adr/ADR-014-tac2iwxxm-rust-gifts-removal.md
+    type: adr
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+  - path: docs/spec.md
+    type: standing
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    status: complete
+  - path: docs/user-journeys.md
+    type: standing
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    status: complete
+  - path: docs/test-plan.md
+    type: standing
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    status: complete
+  - path: docs/dependency-inventory.md
+    type: standing
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    status: complete
+  - path: docs/api-contract.md
+    type: standing
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    status: complete
+  - path: docs/config-spec.md
+    type: standing
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    status: complete
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/01-requirements.md
+    type: report
+    stage: 01-requirements
+    session_id: S008-general-tac-iwxxm-converter
+    status: complete
 
 evolve_cycles:
   - id: EV-001
@@ -1689,13 +1930,20 @@ evolve_cycles:
     issues: []
 
 git_history:
-  current_branch: docs/S007-docs-minimize
+  current_branch: evolve/S008-general-tac-iwxxm-converter
   branches:
-    - name: docs/S007-docs-minimize
-      purpose: docs minimize
+    - name: evolve/S008-general-tac-iwxxm-converter
+      purpose: general TAC→IWXXM converter architecture + package design
       base: main
       status: open
       created_at: "2026-07-12"
+      session_id: S008-general-tac-iwxxm-converter
+    - name: docs/S007-docs-minimize
+      purpose: docs minimize
+      base: main
+      status: closed
+      created_at: "2026-07-12"
+      closed_at: "2026-07-12"
       session_id: S007-docs-minimize
     - name: feat/S006-issue-664-output-filename
       base: main

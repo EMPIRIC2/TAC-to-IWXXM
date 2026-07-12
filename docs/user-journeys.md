@@ -1,23 +1,30 @@
 # User Journeys
 
 > **Project**: METAR to IWXXM Converter
-> **Source**: feature-list.md, requirements interview 2026-06-14
-> **Last updated**: 2026-06-23
+> **Source**: feature-list.md, requirements interview 2026-06-14; S008 F6 delta 2026-07-12
+> **Last updated**: 2026-07-12
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
-describe monorepo workflows introduced by migration features M1–M6.
+describe monorepo workflows introduced by migration features M1–M6 and F6.
 
 ## Journey Index
 
 | ID | Journey | Entry point | Feature | E2E tier |
 |----|---------|-------------|---------|----------|
-| UJ-001 | Convert METAR via UI | apps/frontend | F1 | T2 (local) / **T3 (Render)** |
-| UJ-002 | Validate IWXXM output | apps/frontend / API | F2 | T2 / **T3** |
-| UJ-003 | Register and login | apps/frontend | F1 (auth) | T2 / **T3** |
+| UJ-001 | Convert METAR via UI (shorthand) | apps/frontend | F6 (was F1) | T2 / **T3** |
+| UJ-002 | Validate IWXXM output | apps/frontend / API | F2+F6 | T2 / **T3** |
+| UJ-003 | Register and login | apps/frontend | Auth | T2 / **T3** |
 | UJ-004 | Resume & browse METAR work history | apps/frontend | F5 | T2 / **T3** |
+| UJ-005 | Convert with product + profile via UI | apps/frontend | F6 | T2 / **T3** (all 7 products) |
+| UJ-006 | Convert non-METAR product via API | HTTP API | F6 | T2 / **T3** |
+| UJ-007 | Validate IWXXM-US profile document | apps/frontend / API | F2+F6 | T2 / **T3** |
+| UJ-008 | Unsupported / unknown product TAC | UI / API | F6 | T2 / T3 |
+| UJ-009 | US profile without iwxxm-us pin | UI / API | F6 | T2 |
+| UJ-010 | Malformed US REMARKS | UI / API | F6 | T0 / T2 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
-| UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual script | M2, M6 | CI |
-| UJ-DEV-003 | Merge GIFTs upstream (manual) | Maintainer workflow | M3 | CI |
+| UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
+| UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
+| UJ-DEV-003b | Maintain tac2iwxxm + iwxxm-us pins | Maintainer workflow | F6, M2 | CI |
 | UJ-OPS-001 | Deploy two-service Render stack | render.yaml | M4 | T3 (staging) |
 
 **E2E tiers**:
@@ -36,49 +43,39 @@ Run live E2E: `make test-live` (requires `.env` with `ADMIN_EMAIL` / `ADMIN_PASS
 | API | `LIVE_API_URL` | `https://metar-to-iwxxm-api.onrender.com` |
 | Frontend | `LIVE_FRONTEND_URL` / `PLAYWRIGHT_BASE_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
 
-**Prerequisite for T3**: E2E-001 schema path fix must land before full UJ-002 validation passes live.
+**F6 T3 requirement**: All **seven** products (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA)
+must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US profile
+(`iwxxm_us`) T3 cases for METAR/SPECI/TAF where schemas apply (UJ-007).
 
 ---
 
 ## Product Journeys
 
-### UJ-001: Convert METAR via UI
+### UJ-001: Convert METAR via UI (shorthand)
 
 **Actor**: User (authenticated for persistence; guests may convert without save — F5-R22)
 
-**Goal**: Upload or paste METAR TAC and receive IWXXM XML.
+**Goal**: Upload or paste METAR TAC and receive IWXXM XML (default product/profile).
+
+**Feature**: F6 (supersedes F1 engine). Full product/profile matrix is **UJ-005**.
 
 **Steps**:
 
 1. Open frontend in browser.
 2. Optionally log in (UJ-003) — required for work history persistence (UJ-004).
-3. Drag-drop `.tac` file or paste manual text.
-4. **#664 (EV-005)**: Optionally type an **Output filename** for manually entered TAC (blank ⇒ `manual_input`).
-5. Choose an action:
-   - **Convert** — conversion only; view, copy, or download IWXXM result.
-   - **Convert&Send** — conversion then immediate upload to primary database (IWXXM format, fixed defaults).
-   - **Upload to Database** — upload already-converted files with format/destination options (dialog).
-6. View conversion output; for send actions, confirm success/failure via toast.
-7. **#555 (EV-004)**: On **successful** convert, result cards **replace** the prior batch (not append).
-8. On convert failure or partial success, open collapsible **error log panel** from API `errors`/`issues`
-   (also persisted on the active F5 session row when logged in).
-9. **#664 (EV-005)**: Download a manual result — single file is `<base>.xml` (or `manual_input.xml`);
-   multi-line manual input yields `<base>_N.xml`; Download All ZIP is named `<base>.zip`. The chosen name
-   survives a page reload.
+3. Drag-drop `.tac` file or paste manual text (METAR/SPECI).
+4. Optionally leave product on **auto** / METAR and profile **annex3** (defaults).
+5. **#664 (EV-005)**: Optionally type an **Output filename** for manually entered TAC.
+6. Choose **Convert**, **Convert&Send**, or **Upload to Database**.
+7. View output; #555 replace-on-success and error log panel behavior unchanged.
+8. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
 
-**Acceptance**: At least one METAR converts without error; output passes schema/Schematron validation for the selected IWXXM version; successful convert clears prior result cards; error log is previewable on failure; a custom output filename (when set) is applied to manual-input downloads and persists across reload.
+**Acceptance**: METAR converts without error via tac2iwxxm; schema/Schematron pass for selected
+version; UX behaviors from #555/#664 preserved.
 
 **Automated tests**: `apps/e2e/tac-file-conversion.e2e.spec.ts` (T2); `make test-live-e2e` (T3)
 
-**T3 browser steps** (Render):
-
-1. Open `https://metar-to-iwxxm-frontend-v4-web.onrender.com`.
-2. Log in with real Supabase credentials (UJ-003).
-3. Drag-drop `.tac` file or paste METAR text.
-4. Submit conversion; verify IWXXM output displays.
-5. Copy or download result.
-
-**Browser wiring**: Frontend calls API on configured `VITE_API_BASE_URL`; CORS must allow frontend origin (H4).
+**Browser wiring**: Frontend → API base URL; CORS must allow frontend origin (H4).
 
 ---
 
@@ -90,89 +87,130 @@ Run live E2E: `make test-live` (requires `.env` with `ADMIN_EMAIL` / `ADMIN_PASS
 
 **Steps**:
 
-1. Obtain IWXXM XML from conversion (UJ-001).
-2. Trigger validation endpoint or UI action.
+1. Obtain IWXXM XML from conversion (UJ-001 / UJ-005 / UJ-006).
+2. Trigger validation endpoint or UI action with the same **profile** used for convert.
 3. Review pass/fail and error messages.
+4. If `profile=iwxxm_us`, validation uses **combined** WMO + iwxxm-us catalogs; `annex3` uses WMO only.
 
-**Acceptance**: Valid sample METAR produces validation pass for selected IWXXM version.
+**Acceptance**: Valid sample produces validation pass for selected IWXXM version and profile.
 
-**Automated tests**: backend validation tests + E2E where exposed in UI (T2); H3 pytest + H6 where exposed (T3)
-
-**T3 note**: Live validation requires E2E-001 schema path fix; run after `make test-live-api` convert step produces XML.
+**Automated tests**: backend validation tests + E2E where exposed (T2); H3 + H6 (T3)
 
 ---
 
 ### UJ-003: Register and Login
 
-**Actor**: New or returning user
-
-**Goal**: Obtain session/JWT to access protected conversion endpoints.
-
-**Steps**:
-
-1. Navigate to login page.
-2. Register or enter credentials.
-3. Backend (via packages/auth) validates with Supabase.
-4. Frontend stores session; subsequent API calls include JWT.
+Unchanged from prior interview (Supabase JWT via merged `/auth/*`).
 
 **Acceptance**: Protected `/api/v1/*` returns 401 without token, 200 with valid token.
 
-**Automated tests**: `apps/e2e/auth.e2e.spec.ts`, `apps/e2e/workflow-auth-admin-readiness.e2e.spec.ts` (T2); `make test-live-e2e` (T3)
-
-**T3 browser steps** (Render, `DISABLE_AUTH=false`):
-
-1. Navigate to live frontend login page.
-2. Enter `ADMIN_EMAIL` / `ADMIN_PASSWORD` from local `.env`.
-3. Backend validates via Supabase at merged API (`POST /auth/login` on `LIVE_API_URL`).
-4. Frontend stores session; subsequent `/api/v1/*` calls include JWT.
-
-**Post-migration note**: Auth routes served from same backend origin; frontend uses single `VITE_API_BASE_URL`.
+**Automated tests**: `apps/e2e/auth.e2e.spec.ts` (T2); `make test-live-e2e` (T3)
 
 ---
 
 ### UJ-004: Resume & Browse METAR Work History
 
-**Actor**: Authenticated user (admin has read-only browse of all users' sessions)
+Unchanged scope: **METAR/SPECI sessions only** in F6 v1. Product/profile may be stored in
+`conversion_params` when present; no multi-product history UI.
 
-**Goal**: Persist converter work across sessions; resume Draft/WIP/Failed work on login; review past Finished sends.
+**Steps**: See prior F5 journey (auto-save, Draft/WIP/Finished/Failed, sidebar, My METARs, admin).
+
+**Acceptance**: Same F5 acceptance as S004.
+
+**Automated tests**: `apps/e2e/metar-work-history.e2e.spec.ts` (T2); live H6 delta (T3)
+
+---
+
+### UJ-005: Convert with Product + Profile via UI
+
+**Actor**: User (guest or authenticated)
+
+**Goal**: Select product and profile, convert TAC, view IWXXM for any of the seven F6 products.
 
 **Steps**:
 
-1. Log in (UJ-003) — or continue as guest (convert only, no persistence).
-2. On login, if the converter holds unsaved guest input, **auto-create a new Draft** from current
-   state; then **auto-resume** the most recent non-Finished, non-deleted session (manual text + file
-   queue restored from Postgres) unless the new Draft is the active session.
-3. While typing or adjusting the file queue, **Draft auto-saves** to Supabase (via backend API, ~3s debounce after typing stops) when authenticated. Editing a **WIP** session before re-convert keeps status **WIP** (content updates; IWXXM may be stale).
-4. Use **New METAR** to start a fresh Draft without losing prior sessions.
-5. **Convert** or **Convert&Send**:
-   - Full success without send → status **WIP** (at most one WIP per user; multiple Drafts still allowed).
-   - Convert failure or partial failure → status **Failed** (stays Failed until user edits input and re-converts).
-   - Successful send (Convert&Send or Upload to Database) → status **Finished**; row stores reference to KV upload key.
-   - Send failure → status stays **WIP** (user may retry send).
-6. Browse history via **compact sidebar** (5 recent) on the converter and **My METARs** page (filter by status + date range).
-7. Click a sidebar/history row to **load** that session into the converter (existing WIP row unchanged in DB).
-8. Optionally rename session (default title: first METAR ICAO + timestamp).
-9. Open **Finished** sessions read-only (TAC, IWXXM, errors, KV reference — no edit in v1); Convert
-   and Convert&Send disabled — use **New METAR** to start fresh.
-10. Soft-delete unwanted sessions; restore from trash within 30 days.
-11. **Admin**: separate admin page lists all users' sessions read-only.
+1. Open frontend converter.
+2. Set **product** (airmet | metar | sigmet | speci | taf | vaa | tca | auto).
+3. Set **profile** (`annex3` | `iwxxm_us`); default annex3.
+4. Set IWXXM **version** (vendored pin).
+5. Paste or upload TAC appropriate to the product.
+6. If explicit product ≠ auto-detect, UI **warns** but proceeds with explicit selection.
+7. **Convert**; view XML / download; errors via #555 panel.
 
-**Acceptance**: Login → type → Draft persisted → convert → WIP → send → Finished; send failure leaves WIP; resume-on-login restores open work; Finished is read-only; admin can list all users' sessions read-only.
+**Acceptance (F6 v1 / T3)**: Parametrized Playwright (or 7 cases) — each product with
+`profile=annex3` and golden TAC fixture converts successfully and shows XML. Additional
+`iwxxm_us` cases for METAR/SPECI/TAF where US schemas apply.
 
-**Automated tests**: `apps/e2e/metar-work-history.e2e.spec.ts` (T2, planned); `make test-live-e2e` UJ-004 delta (T3)
+**Automated tests**: `apps/e2e/` F6 product-matrix spec (planned); `make test-live-e2e` (T3)
 
-**T3 browser steps** (Render):
+**Browser wiring**: Same API origin; `product` + `profile` in form/`conversion_params` (H4–H5).
 
-1. Log in on live frontend.
-2. Paste METAR text; wait for draft auto-save indicator.
-3. Log out and back in; confirm input restored.
-4. Convert; confirm WIP status in sidebar.
-5. Convert&Send; confirm Finished status and history entry.
+---
 
-**Browser wiring**: Frontend calls `GET/POST/PATCH/DELETE /api/v1/work-sessions*` on configured API base URL; CORS must allow frontend origin (H4). Admin browse uses `/admin/work-sessions` with admin JWT.
+### UJ-006: Convert Non-METAR Product via API
 
-**Relationship to UJ-001**: UJ-001 conversion/send actions drive F5 status transitions; S004 (#555)
-delivers in-app error log UX; F5 persists that log on the session row.
+**Actor**: API client / live harness
+
+**Goal**: HTTP convert for AIRMET, SIGMET, TAF, VAA, TCA (and METAR/SPECI) without UI.
+
+**Steps**:
+
+1. `POST /api/v1/convert` with TAC + `product` + `profile` (+ version).
+2. Receive IWXXM (or structured errors).
+3. Optionally chain validate (UJ-002 / UJ-007).
+
+**Acceptance**: T2 and T3 API smoke for all seven products (annex3). Required alongside UJ-005
+for F6 v1.
+
+**Automated tests**: pytest live/API convert matrix (H3 extended); T2 integration.
+
+---
+
+### UJ-007: Validate IWXXM-US Profile Document
+
+**Actor**: User or API client
+
+**Goal**: Validate XML produced with `profile=iwxxm_us`.
+
+**Steps**:
+
+1. Convert METAR/SPECI/TAF (as applicable) with `profile=iwxxm_us`.
+2. Validate with combined catalogs.
+3. Confirm pass (or expected Schematron messages documented in fixtures).
+
+**Acceptance**: At least one US-profile METAR (and SPECI/TAF when fixtures exist) validates on T2/T3.
+
+---
+
+### UJ-008: Unsupported / Unknown Product TAC
+
+**Goal**: Fail clearly when product cannot be determined or is unsupported.
+
+**Steps**: Submit ambiguous/unsupported TAC; observe API/UI error; confirm **no** silent success
+and **no** gifts fallback.
+
+**Acceptance**: Structured error; H6/T2 assert error panel or API `errors`.
+
+---
+
+### UJ-009: US Profile Without iwxxm-us Pin
+
+**Goal**: Fail closed if `profile=iwxxm_us` but vendor pin/catalog missing.
+
+**Acceptance**: Actionable error (not empty XML / not annex3 silent downgrade).
+
+**Tier**: T2 (and T0 unit); T3 once pin is deployed.
+
+---
+
+### UJ-010: Malformed US REMARKS
+
+**Goal**: Under `iwxxm_us`, malformed REMARKS yield structured diagnostics (not silent drop).
+
+**Acceptance**: Error/issues list non-empty; annex3 mode still ignores US-only remarks without
+failing international validation (profile isolation).
+
+**Tier**: T0 / T2 primarily.
 
 ---
 
@@ -180,81 +218,49 @@ delivers in-app error log UX; F5 persists that log on the session row.
 
 ### UJ-DEV-001: Clone and Run Monorepo
 
-**Actor**: Developer
-
-**Goal**: Start full stack from single clone without submodules.
-
-**Steps**:
-
-1. `git clone https://github.com/joseph-c-mcguire/metar-to-IWXXM.git`
-2. `cp .env.example .env` — fill Supabase vars.
-3. `make install` — uv sync + pnpm install across workspaces.
-4. `make dev` — backend, frontend, optional docker-compose.
-5. Verify `curl localhost:<api-port>/health` and frontend loads.
-
-**Acceptance**: No `git submodule update` required; health checks pass.
-
-**Automated tests**: CI job `monorepo-smoke` (TC-M001)
+Unchanged: single clone, `make install`, `make dev`, no submodules.
 
 ---
 
 ### UJ-DEV-002: Sync Vendor Schemas
 
-**Actor**: Maintainer (or scheduled bot)
-
-**Goal**: Update read-only iwxxm snapshots when wmo-im releases new tags.
-
-**Steps**:
-
-1. Scheduled Action detects new wmo-im release tag.
-2. Action runs vendor sync script; updates `vendor/schemas/*` and `vendor/manifest.json`.
-3. Opens PR with diff + manifest bump.
-4. Maintainer reviews; CI runs validation tests against new schemas.
-5. Merge updates pinned versions.
-
-**Acceptance**: manifest.json SHA/tags match vendored tree; validation tests pass.
-
-**Automated tests**: `tests/vendor/test_manifest_integrity.py` (TC-M002)
+Extended: sync may include **iwxxm-us** pin updates via manifest (in addition to wmo-im).
 
 ---
 
-### UJ-DEV-003: Merge GIFTs Upstream (Manual)
+### UJ-DEV-003: Merge GIFTs Upstream — Deprecated
+
+**Status**: Deprecated (ADR-014). `packages/gifts` removed at F6 cutover; REQ-014 deprecated.
+
+---
+
+### UJ-DEV-003b: Maintain tac2iwxxm + iwxxm-us Pins
 
 **Actor**: Maintainer
 
-**Goal**: Pull mgoberfield/GIFTs changes into `packages/gifts/` when desired.
+**Goal**: Develop/test `packages/tac2iwxxm`; update IWXXM-US (and WMO) vendor pins safely.
 
 **Steps**:
 
-1. Maintainer checks mgoberfield/GIFTs for changes worth merging.
-2. Merges upstream into `packages/gifts/` (merge or cherry-pick).
-3. CI runs GIFTs + conversion test suite.
-4. Maintainer resolves conflicts if fork diverged.
+1. Implement/fix product or profile plugins under `packages/tac2iwxxm`.
+2. Run package metrics/golden suite (M-parse / M-xsd / M-sch / M-golden / M-field).
+3. When upstream US/WMO tags publish, run vendor sync → PR → review → merge.
+4. Ensure backend adapter and frontend enums stay in sync with product/profile sets.
 
-**Acceptance**: Conversion regression tests pass after merge (TC-M003).
-
-**Automated tests**: packages/gifts test suite + backend conversion tests (TC-M003)
+**Acceptance**: CI green for tac2iwxxm + conversion regression; manifest integrity passes.
 
 ---
 
 ## Operations Journeys
 
-### UJ-OPS-001: Deploy Two-Service Render Stack
+### UJ-OPS-001: Deploy Two-Service Render stack
 
-**Actor**: Release engineer
+Unchanged topology (API + static). After F6: image includes tac2iwxxm (not gifts); frontend
+build includes product/profile controls. Redeploy API before frontend when CORS/API contract
+changes. Signoff includes UJ-005/006/007 live coverage.
 
-**Goal**: Deploy merged backend (API+auth) and static frontend to Render.
+---
 
-**Steps**:
+### Session changelog
 
-1. Merge to `main`; CI builds Docker image for API and static bundle for frontend.
-2. Render deploys API service (port binding `0.0.0.0:$PORT`).
-3. Render deploys static site with `VITE_*` pointing to API URL.
-4. Verify H1 health, H4 CORS preflight, H5 bundle URLs.
-5. Run `make test-live` for full T3 signoff (manual, pre-release).
-
-**Acceptance**: UJ-001 succeeds against staging URL; `make test-live` all tiers green.
-
-**Automated tests**: deploy smoke H1–H5 per connectivity-gates.md (T3); `make test-live` umbrella
-
-**Redeploy order**: API first (CORS origins), then frontend (VITE_* rebuild).
+- S008 (2026-07-12): F6 UJ-001/002/005–010; UJ-DEV-003 deprecated → 003b; T3 seven products

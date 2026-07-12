@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-06-24
+> **Last updated**: 2026-07-12 (S008 F6 delta)
 
 ## Runtime Dependencies
 
@@ -16,13 +16,24 @@
 | httpx2 | Starlette TestClient (dev) | BSD | PyPI |
 | python-multipart | File uploads | Apache-2.0 | PyPI |
 | supabase | Auth (via packages/auth) | MIT | PyPI |
-| gifts | Conversion | See packages/gifts | workspace path |
+| tac2iwxxm | Conversion (F6) | MIT | workspace path |
+| gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
 
-### packages/gifts
+### packages/tac2iwxxm
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| (GIFTs deps) | METAR parsing, XML | Per GIFTs pyproject | In-repo; upstream mgoberfield/GIFTs |
+| lxml | XML encode/validate support | BSD | PyPI |
+| IR library | Versioned IR models | TBD | **TBD in 04-tech-plan** (msgspec / pydantic / dataclasses) |
+| PyO3 / maturin / rustc | Optional native hotspots | Apache-2.0 / MIT (typical) | **Optional extra** — not required for v0 |
+
+Package license: **MIT**. No FastAPI/Supabase imports.
+
+### packages/gifts — Removed at F6 cutover
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| (historical GIFTs deps) | METAR parsing, XML | Per former pyproject | Removed per ADR-014; REQ-014 deprecated |
 
 ### packages/auth
 
@@ -47,17 +58,20 @@
 | Node | **22** (pinned) | Frontend/e2e workspace (ADR-005) |
 | uv | pin in pyproject | Python workspace, lockfile |
 | pnpm | pin in package.json engines | JS workspace (monorepo) |
-| basedpyright | strict | Python typechecking (ADR-005) |
-| ruff | all Python packages | Lint + format including packages/gifts (ADR-005) |
+| basedpyright | strict | Python typechecking including `packages/tac2iwxxm` (ADR-005) |
+| ruff | all Python packages | Lint + format including `packages/tac2iwxxm` (ADR-005) |
 | prettier | workspace TS | Format apps/* and packages/* TypeScript |
 | eslint | workspace TS | Lint apps/frontend, apps/e2e, packages/shared |
 | make | system | Orchestration |
-| pre-commit | dev group (pyproject) | Git hooks — fast gates (format/lint/typecheck/gitleaks/yaml); `make ci` on manual stage |
+| pre-commit | dev group (pyproject) | Git hooks — fast gates |
 | actionlint | pre-commit hook | GitHub Actions workflow lint (EV-002) |
 | yamllint | pre-commit hook | `.github/` YAML lint (EV-002) |
-| supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` (migrations + edge functions) |
+| supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` |
 | docker / compose | system | Local multi-service |
-| Coverage | 95% all members | pytest + Vitest gates (ADR-007) |
+| Coverage | 95% all members | pytest + Vitest gates (ADR-007); includes tac2iwxxm |
+| cargo / maturin | optional | Only when Rust/PyO3 extra enabled (04-tech-plan) |
+
+**Deployables**: No new Render service. API image depends on tac2iwxxm; Rust toolchain in image only if native extra is enabled (04).
 
 ## Vendored / External Data (not PyPI)
 
@@ -67,21 +81,29 @@
 | iwxxm-codelists | wmo-im/iwxxm-codelists | vendor/schemas/iwxxm-codelists | Scheduled Action |
 | iwxxm-modelling | wmo-im/iwxxm-modelling | vendor/schemas/iwxxm-modelling | Scheduled Action |
 | iwxxm-translation | wmo-im/iwxxm-translation | vendor/schemas/iwxxm-translation | Scheduled Action |
-| GIFTs source | mgoberfield/GIFTs | packages/gifts | Manual merge when chosen (REQ-014) |
+| iwxxm-us | NOAA/MDL (URL/tag in 04) | vendor/schemas/iwxxm-us | Manifest pin + sync PR (F6) |
+| GIFTs source | mgoberfield/GIFTs | ~~packages/gifts~~ | **Removed** at F6 cutover (ADR-014) |
 
-## Removed Dependencies (post-migration)
+## Removed Dependencies (post-migration / F6)
 
 | Removed | Replaced by |
 |---------|-------------|
 | git submodules (×6) | vendor/ + in-repo packages |
 | Separate auth Docker image | packages/auth in backend image |
+| packages/gifts (F6 cutover) | packages/tac2iwxxm |
 
 ## License Notes
 
 - wmo-im schema repos: WMO terms — read-only vendor copies.
-- GIFTs: verify LICENSE in packages/gifts before release.
-- Run audit-licenses skill before adding new PyPI/npm deps.
+- iwxxm-us: cite NOAA/MDL upstream notices in vendor README at pin time.
+- `packages/tac2iwxxm`: **MIT**.
+- GIFTs: package removed — no longer ship its LICENSE in-tree.
+- Run audit-licenses skill before adding new PyPI/npm deps (including PyO3 extras).
 
 ## Decision Log
 
 New dependencies require `[Decision]` + back-add to this file per plan-adherence rules.
+
+### Session changelog
+
+- S008 (2026-07-12): tac2iwxxm MIT; gifts removed; iwxxm-us; optional PyO3; IR lib TBD in 04

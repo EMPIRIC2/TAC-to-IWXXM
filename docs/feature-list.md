@@ -2,52 +2,51 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-06-23
+> **Last updated**: 2026-07-12 (S008 F6 delta)
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
-| F1 | METAR → IWXXM conversion | Implemented | Product | README, backend conversion pipeline |
+| F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
 | F2 | IWXXM validation | Implemented | Product | backend validation routers |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
 | F5 | User METAR work history | Planned | Product | docs/context/metar-work-history.md, S004 |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Planned | Product | S008, ADR-013/014 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
-| M3 | GIFTs as in-repo package | Planned | Platform | REQ-003 |
+| M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
 | M4 | Auth merged into backend API | Planned | Platform | REQ-004 |
 | M5 | Workspace tooling (uv + pnpm + Makefile) | Planned | Platform | REQ-005 |
 | M6 | Vendor upstream sync (wmo-im iwxxm-*) | Planned | Platform | REQ-009 |
 
-**Status key**: Implemented = production-ready, Planned = approved in requirements interview, Experimental = works but not validated
+**Status key**: Implemented = production-ready, Planned = approved in requirements interview, Experimental = works but not validated, Superseded / Deprecated = replaced by a later decision
 
 ## Product Feature Details
 
-### F1: METAR → IWXXM Conversion
+### F1: METAR → IWXXM Conversion — Superseded by F6
 
-- **What it does**: Converts METAR/SPECI TAC text (file upload or manual input) to IWXXM XML via GIFTs.
-- **Inputs**: `.tac` / `.txt` files, manual TAC strings, optional conversion parameters.
-- **Outputs**: IWXXM XML per input; batch ZIP download; optional database upload ("send").
-- **UI actions** (main converter):
+- **Status**: **Superseded by F6** (S008). User-facing Convert / Convert&Send / Upload flows and
+  #555 / #664 UX remain until F6 UI pickers land; conversion **engine** becomes `tac2iwxxm`.
+- **Historical what it did**: Converted METAR/SPECI TAC via GIFTs.
+- **UI actions** (still applicable until F6 UI replaces controls):
   - **Convert** — TAC → IWXXM only.
-  - **Convert&Send** — TAC → IWXXM then upload to primary database with IWXXM format (fixed defaults; no dialog).
-  - **Upload to Database** — upload previously converted files with configurable format/destination (dialog).
-- **#555 UX (EV-004)**: On **successful** convert, replace (not append) result cards; show collapsible
-  error log panel from API `errors`/`issues` on failure or partial success (also persisted on F5 session row).
-- **Custom output filename (EV-005 / #664)**: Optional "Output filename" input near the manual TAC
-  textarea. When set, manual-input results download as `<base>.xml` (multi-line: `<base>_1.xml`,
-  `<base>_2.xml`, …) and the batch ZIP archive is named `<base>.zip`; blank ⇒ `manual_input` default.
-  Applies to **manual input only** (file-upload outputs keep their filename). The name persists across
-  reload (guest + logged-in) via the existing `conversion_params` payload — no API/schema change.
-- **Limitations**: Depends on GIFTs and vendored IWXXM schemas for target version.
-- **Source**: README, `backend/src/utilities/conversion.py`
+  - **Convert&Send** — TAC → IWXXM then upload to primary database (fixed defaults).
+  - **Upload to Database** — upload previously converted files (dialog).
+- **#555 UX (EV-004)**: On successful convert, replace result cards; collapsible error log from
+  API `errors`/`issues`.
+- **Custom output filename (EV-005 / #664)**: Optional manual-input output basename.
+- **Limitations (historical)**: GIFTs; REMARKS stripped; no IWXXM-US.
+- **Source**: S008 interview; ADR-014
 
 ### F2: IWXXM Validation
 
 - **What it does**: Validates generated IWXXM against schemas and Schematron rules.
 - **Inputs**: IWXXM XML, target IWXXM version.
 - **Outputs**: Validation report (pass/fail + messages).
+- **F6 delta**: Validation consumes WMO vendor pins and, when `profile=iwxxm_us`, combined
+  IWXXM-US XSD (and US Schematron if published).
 - **Limitations**: Schema bundles must match vendored snapshot version.
 - **Source**: `backend/src/routers/validation.py`
 
@@ -62,9 +61,9 @@
 ### F4: IWXXM Version Handling
 
 - **What it does**: Supports multiple IWXXM release lines (e.g. 2023-1, 2025-2) with version-aware formatting.
-- **Inputs**: Target version parameter, METAR TAC.
+- **Inputs**: Target version parameter, TAC product input.
 - **Outputs**: Version-appropriate IWXXM XML.
-- **Limitations**: Only versions present in `vendor/schemas/` snapshots.
+- **Limitations**: Only versions present in `vendor/schemas/` snapshots (WMO + iwxxm-us when pinned).
 - **Source**: docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md
 
 ### F5: User METAR Work History
@@ -86,8 +85,7 @@
   full **My METARs** page with status + date filters; Finished sessions open **read-only**; 30-day trash
   for soft-deleted sessions; separate **admin page** for read-only browse of all users' sessions.
 - **Retention**: Auto-purge **Draft** rows older than 30 days (Supabase pg_cron); WIP/Finished/Failed kept until user soft-deletes.
-- **Admin**: Existing admin role — read-only browse on dedicated admin page (no edit/delete in v1).
-- **Delivery**: Merged into **S004 / EV-004** with remaining #555 UX (replace results + error log panel) and S003 Supabase config.
+- **F6 non-goal**: Do **not** extend F5 to non-METAR products in F6 v1 (METAR/SPECI sessions only).
 - **Limitations**: Persistence requires login (guests may convert without save; login auto-creates Draft
   from in-browser content); no append-only status audit trail in v1; WIP stays WIP when input edited
   before re-convert; Finished sessions disable convert/send (use **New METAR**); send failure keeps
@@ -95,13 +93,56 @@
   only (no direct browser Postgres writes).
 - **Source**: GitHub #555 follow-on, requirements interview 2026-06-23 (F5 delta)
 
+### F6: General TAC→IWXXM Converter (`tac2iwxxm`)
+
+- **What it does**: Converts TAC for **AIRMET, METAR, SIGMET, SPECI, TAF, VAA, and TCA** to IWXXM
+  XML via `packages/tac2iwxxm`, with Annex-3 (or product-equivalent) body encoding and optional
+  IWXXM-US national extensions; exposes the same products/profiles on HTTP convert and UI pickers;
+  measures accuracy in library/CI metrics (not convert-response fields).
+- **Package**: `packages/tac2iwxxm` (MIT). Architecture: Python API → IR → product plugins →
+  profile plugins (`annex3` / `iwxxm_us`) → XML writer → Schematron/XSD metrics.
+- **Runtime**: Pure Python **v0** first; optional **Rust/PyO3** hotspots after batch benchmarks
+  (ADR-014). Not Cython.
+- **Inputs**: TAC text/files; `product`; `profile`; `iwxxm_version`.
+- **Outputs**: IWXXM XML; validation via F2; metrics reports in tests/CI only.
+- **Key parameters**:
+| Parameter | Default | Range | Description |
+|-----------|---------|-------|-------------|
+| `product` | *(required on API)* | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` | UI may auto-detect then send; API rejects omit |
+| `profile` | `annex3` | `annex3` \| `iwxxm_us` | International vs US extensions |
+| `iwxxm_version` | app default (e.g. `2025-2`) | Vendored pins only | Schema line |
+- **API**: Extend `POST /api/v1/convert` with `product` + `profile` (no per-product path prefix).
+- **UI**: Product + profile (+ version) pickers in v1; H4–H5 connectivity required.
+- **GIFTs**: On first PR that wires tac2iwxxm to `/api/v1/convert`, **remove `packages/gifts`**
+  and stop all API use of gifts (hard cutover). REQ-014 / ADR-004 / M3 deprecated.
+- **Vendor**: Pin `vendor/schemas/iwxxm-us` via `vendor/manifest.json` (tag TBD in 04-tech-plan).
+- **Delivery phases** (v1 goal = all seven products; acceptance order):
+  | Phase | Scope |
+  |-------|--------|
+  | F6.a | Package scaffold + METAR/SPECI Annex-3 + metrics harness |
+  | F6.b | IWXXM-US METAR/SPECI + vendor `iwxxm-us` |
+  | F6.c | TAF Annex-3 + IWXXM-US forecast extensions |
+  | F6.d | SIGMET + AIRMET (intl + US where published) |
+  | F6.e | API `product`/`profile` + UI pickers + H4–H5 (may parallel after F6.a) |
+  | F6.f | VAA + TCA plugins |
+- **Acceptance (F6 v1 done)**:
+  1. All 7 products convert for pinned WMO versions
+  2. `profile=iwxxm_us` encodes published US extensions where schemas exist
+  3. M-parse, M-xsd, M-sch required; M-golden / M-field per fixture pack (library/CI)
+  4. UI product + profile (+ version); H4–H5 live connectivity
+  5. `POST /api/v1/convert` accepts `product` + `profile`; gifts not used
+  6. `packages/gifts` removed in first wire-up PR
+  7. MIT license; pure Python v0; Rust/PyO3 optional after benchmarks
+- **Limitations**: US AIRMET/SIGMET docs thinner than METAR/TAF — may gate fixture depth inside
+  F6.d; F5 not extended to other products in v1; native Rust extras not a v1 acceptance gate.
+- **Source**: S008 01-requirements; ADR-013; ADR-014; `docs/context/general-tac-iwxxm-converter.md`
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout
 
 - **What it does**: Replaces six git submodules with a single-repo tree: `apps/`, `packages/`, `vendor/`.
-- **Inputs**: Current submodule sources (frontend, GIFTs, iwxxm-*).
-- **Outputs**: Big-bang PR removing `.gitmodules`; archived legacy GitHub repos.
+- **F6 delta**: Approved tree gains `packages/tac2iwxxm`; loses `packages/gifts` at F6 cutover.
 - **Key parameters**:
   | Parameter | Default | Description |
   |-----------|---------|-------------|
@@ -109,80 +150,81 @@
   | `apps/frontend` | React/Vite UI | Static deployable |
   | `apps/e2e` | Playwright cross-app tests | Dedicated workspace |
   | `packages/auth` | Supabase middleware library | Imported by backend, not separate service |
-  | `packages/gifts` | GIFTs fork source | uv workspace member |
+  | `packages/tac2iwxxm` | General TAC→IWXXM (F6) | uv workspace member; MIT |
+  | `packages/gifts` | — | **Removed** at F6 cutover (ADR-014) |
   | `packages/shared` | Types + cross-app utils | TS + Python shared constants |
-  | `vendor/schemas/*` | Read-only wmo-im snapshots | No local edits |
-- **Limitations**: Big-bang cutover; no product feature rewrites in same effort (non-goal REQ-016).
-- **Source**: REQ-006, REQ-007
+  | `vendor/schemas/*` | Read-only schema snapshots | WMO + iwxxm-us; no local edits |
+- **Source**: REQ-006, REQ-007; ADR-014
 
 ### M2: Vendor Snapshot Sync
 
-- **What it does**: Copies tagged releases from authoritative wmo-im repos into `vendor/schemas/` per `vendor/manifest.json`.
-- **Inputs**: wmo-im GitHub releases/tags for iwxxm, iwxxm-codelists, iwxxm-modelling, iwxxm-translation.
-- **Outputs**: Immutable vendored trees; manifest pins repo + tag/SHA.
+- **What it does**: Copies tagged releases from authoritative upstreams into `vendor/schemas/` per `vendor/manifest.json`.
+- **F6 delta**: Also pins IWXXM-US (NOAA/MDL) alongside wmo-im iwxxm-*.
 - **Limitations**: Read-only — no monorepo commits to vendor content except sync PRs.
-- **Source**: REQ-002, REQ-012
+- **Source**: REQ-002, REQ-012; ADR-013/014
 
-### M3: GIFTs In-Repo Package
+### M3: GIFTs In-Repo Package — Deprecated
 
-- **What it does**: Moves GIFTs from submodule to `packages/gifts/` as uv workspace member.
-- **Inputs**: Current GIFTs fork; upstream mgoberfield/GIFTs.
-- **Limitations**: No automated upstream PRs; maintainers merge mgoberfield/GIFTs manually (REQ-014).
-- **Source**: REQ-003, REQ-014
+- **Status**: **Deprecated** by ADR-014. Package removed when F6 first wires `/api/v1/convert`.
+- **Historical**: Moved GIFTs to `packages/gifts/`; REQ-014 manual upstream merges.
+- **Source**: REQ-003; ADR-014
 
 ### M4: Auth Merged Into Backend
 
 - **What it does**: Collapses auth microservice into backend app using `packages/auth` library.
-- **Inputs**: Current `auth/` service code, Supabase env vars.
-- **Outputs**: Two deployables (API + frontend); auth routes on same origin as API.
 - **S003 security delta (2026-06-23)**: Publishable/Secret keys, runtime `config.json`, env sync
   (Render ↔ Supabase ↔ local). ADR-010.
-- **Limitations**: Internal Docker/Render topology changes; external frontend contract preserved.
 - **Source**: REQ-004, REQ-009
 
 ### M5: Workspace Tooling
 
 - **What it does**: Root Makefile orchestrates uv (Python) and pnpm (JS) workspaces; pre-commit
-  runs fast quality gates locally; GitHub Actions runs the full validate + test + deploy pipeline.
-- **Inputs**: `pyproject.toml` workspace root; `pnpm-workspace.yaml`; `.pre-commit-config.yaml`.
-- **Outputs**:
-  - Local: `make dev`, `make test`, `make lint`, `make ci` (full suite)
-  - Local fast: `pre-commit run` — ruff format/check, prettier, eslint, basedpyright/tsc,
-    gitleaks, actionlint/yamllint (on `.github/` changes)
-  - CI: single `ci-cd.yml` with ≤3 jobs on PR (validate → test; deploy on main push only)
-- **CI job layout** (EV-002):
-  | Job | Checks |
-  |-----|--------|
-  | validate | format, lint, typecheck, gitleaks, yaml lint, config-guard, frontend npm audit |
-  | test | matrix unit+coverage (backend, auth, gifts, frontend, shared), integration, Codecov |
-  | deploy | Docker build/push + Render hooks (main only) |
-- **Dual-run policy**: fast checks run in pre-commit locally **and** in CI validate job (defense in depth).
-- **Source**: REQ-005; EV-002
+  and GitHub Actions quality gates.
+- **F6 delta**: Workspace member `tac2iwxxm`; drop gifts from test matrix at cutover; optional
+  Rust/PyO3 tooling when native extras land (04-tech-plan).
+- **Source**: REQ-005; EV-002; ADR-014
 
 ### M6: Upstream Vendor Sync
 
-- **What it does**: Scheduled GitHub Actions open PRs when wmo-im publishes new schema tags (vendor only).
-- **Inputs**: wmo-im release tags for iwxxm-* repos.
-- **Outputs**: PR updating `vendor/manifest.json` and `vendor/schemas/*`.
-- **GIFTs**: Manual merges from mgoberfield/GIFTs only — not automated (REQ-014).
-- **Source**: REQ-008, REQ-009
+- **What it does**: Scheduled GitHub Actions open PRs when upstream schema tags publish.
+- **F6 delta**: Extend to iwxxm-us when pin source is known; **GIFTs sync Action remains out of
+  scope** (package deleted; REQ-014 deprecated).
+- **Source**: REQ-008, REQ-009; ADR-014
 
 ## Feature Matrix
 
-| Feature | Web UI | CLI/API | CI | Render Deploy |
-|---------|--------|---------|-----|---------------|
-| F1 | Yes | Yes | Yes | Yes |
+| Feature | Web UI | CLI/API | CI metrics | Render Deploy |
+|---------|--------|---------|------------|---------------|
+| F1 | Legacy until F6 UI | Superseded | — | — |
 | F2 | Yes | Yes | Yes | Yes |
 | F3 | Partial | Yes | Yes | Yes |
 | F4 | Yes | Yes | Yes | Yes |
-| F5 | Yes | Yes | Yes | Yes |
+| F5 | Yes (METAR/SPECI) | Yes | Yes | Yes |
+| F6 | Yes (product/profile) | Yes | Yes (lib/CI only) | Yes (via API image) |
 | M1–M6 | — | — | Yes | Yes |
+
+| F6 capability | Library | HTTP API | Web UI | CI metrics |
+|---------------|---------|----------|--------|------------|
+| product + profile convert | Yes | Yes | Yes | Yes |
+| annex3 / iwxxm_us | Yes | Yes | Yes | Yes |
+| Accuracy metrics report | Yes | No (v1) | No (v1) | Gate |
+| Rust/PyO3 hotspots | Optional after v0 | — | — | Bench later |
 
 ## Non-Goals (Migration)
 
 - No product feature rewrites during monorepo migration (REQ-016).
 - No ongoing edits to authoritative iwxxm schema content in monorepo (vendor is read-only).
 - No separate auth deployable after migration completes.
+
+## Non-Goals (F6 / S008)
+
+- Rewrite gifts in place (package is deleted instead).
+- Cython native path (use Rust/PyO3 instead).
+- Rust/PyO3 as a v1 *acceptance* gate (optional after benchmarks).
+- New Render deployable / separate converter service.
+- Metrics fields on convert API responses in v1.
+- Extend F5 work history to non-METAR products in F6 v1.
+- Products beyond the seven listed (e.g. SWA) in F6 v1.
 
 ## Planned Features (Post-Migration)
 

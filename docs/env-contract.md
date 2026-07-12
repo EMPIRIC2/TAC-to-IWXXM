@@ -3,7 +3,7 @@
 > **Project**: METAR to IWXXM Converter  
 > **Session**: S003-supabase-keys-config  
 > **Supabase project**: `ktvxijislbtgqapllmuk`  
-> **Last updated**: 2026-06-23
+> **Last updated**: 2026-07-12 (S008 note)
 
 Single source of truth for **what** each layer owns and **which name** to use everywhere.
 
@@ -29,6 +29,7 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | CORS | `config.*.api.corsOrigins` | `config/*.json` |
 | Auth bypass (dev) | `config.*.api.disableAuth` | `config/local.json` only |
 | Operator bootstrap | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | local `.env` only |
+| Converter engine (F6) | *(code — `packages/tac2iwxxm`)* | Not an env var; hard cutover, no engine flag |
 
 ## Per-environment matrix
 

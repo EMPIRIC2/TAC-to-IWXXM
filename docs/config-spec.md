@@ -1,8 +1,8 @@
 # Configuration Specification
 
 > **Project**: METAR to IWXXM Converter  
-> **Session**: S003-supabase-keys-config (delta)  
-> **Last updated**: 2026-06-23
+> **Last updated**: 2026-07-12 (S008 F6 section)  
+> **Session**: S003-supabase-keys-config (base); S008-general-tac-iwxxm-converter (F6 delta)
 
 ## Precedence Order
 
@@ -121,10 +121,35 @@ No new CLI flags.
 - `make env-check` fails if deprecated-only names are set without canonical names (warning mode during transition)
 - Secret key must never appear in frontend build env or committed files
 
+## F6 — tac2iwxxm conversion (S008)
+
+No new `config/*.json` keys and **no new environment variables** for F6.
+
+| Concern | Where it lives | Notes |
+|---------|----------------|-------|
+| Default IWXXM version | Existing shared/app constants | Not a new config field |
+| Default profile | Code constant `annex3` | API omits → annex3; not in JSON config |
+| Product | **Required** on convert multipart | No server default; UI may auto-detect then send |
+| Feature / cutover flag | **None** | Hard cutover in one PR (ADR-014) |
+| IWXXM-US enable | Request `profile=iwxxm_us` | Not an env kill switch |
+| Converter engine | Code path (`tac2iwxxm`) | Not env-selected |
+
+**Connectivity**: Frontend and API remain different origins on Render. Keep `api.corsOrigins`
+correct; redeploy **API before** frontend sign-off when CORS/API contract changes. F6 UI pickers
+use runtime `/config.json` — no new `VITE_*` required.
+
+**`.env.example`**: Unchanged for F6.
+
+### Session changelog
+
+- S008 (2026-07-12): F6 — no new config/env; profile default in code; hard cutover
+
 ## References
 
 - [env-contract.md](env-contract.md) — per-environment matrix
 - [env-sync-runbook.md](ops/env-sync-runbook.md) — operator rotation steps
 - [ADR-010](adr/ADR-010-supabase-keys-config-split.md)
+- [ADR-014](adr/ADR-014-tac2iwxxm-rust-gifts-removal.md)
 - [deploy.md](deploy.md) §Integration
+- [api-contract.md](api-contract.md)
 - Supabase: [API keys](https://supabase.com/docs/guides/api/api-keys)

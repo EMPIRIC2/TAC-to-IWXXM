@@ -1,7 +1,8 @@
 ---
 session_id: S007-docs-minimize
 type: process
-status: in_progress
+status: completed
+close_note: "Closed at S008 open; 18-pr-review skipped"
 branch: docs/S007-docs-minimize
 started_at: 2026-07-12
 intent: "Minimize docs/ root files; nest non-standing docs (conservative layout)"

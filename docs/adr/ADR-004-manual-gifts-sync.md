@@ -1,8 +1,9 @@
 # ADR-004: Manual GIFTs Upstream Merges
 
-**Status**: Accepted  
+**Status**: Deprecated by [ADR-014](ADR-014-tac2iwxxm-rust-gifts-removal.md) (`packages/gifts` removal)  
 **Stage**: 02-verify-plan  
-**Date**: 2026-06-14
+**Date**: 2026-06-14  
+**Deprecated**: 2026-07-12 (S008)
 
 ## Context
 
