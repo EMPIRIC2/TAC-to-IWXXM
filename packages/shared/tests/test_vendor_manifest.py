@@ -38,24 +38,30 @@ def _sample_http_bundle(
     }
 
 
+def _sample_for_bundle(
+    name: str, local_path: str, *, tree_sha256: str = "a" * 64
+) -> dict[str, str]:
+    """Pick GitHub vs HTTP sample factory from bundle name."""
+    if name == "iwxxm-us":
+        return _sample_http_bundle(local_path, tree_sha256=tree_sha256)
+    return _sample_bundle(local_path, tree_sha256=tree_sha256)
+
+
 def _required_bundles(
     *,
     tree_sha256: str = "a" * 64,
 ) -> dict[str, dict[str, str]]:
     return {
-        "iwxxm": _sample_bundle("vendor/schemas/iwxxm", tree_sha256=tree_sha256),
-        "iwxxm-codelists": _sample_bundle(
-            "vendor/schemas/iwxxm-codelists", tree_sha256=tree_sha256
-        ),
-        "iwxxm-modelling": _sample_bundle(
-            "vendor/schemas/iwxxm-modelling", tree_sha256=tree_sha256
-        ),
-        "iwxxm-translation": _sample_bundle(
-            "vendor/schemas/iwxxm-translation", tree_sha256=tree_sha256
-        ),
-        "iwxxm-us": _sample_http_bundle(
-            "vendor/schemas/iwxxm-us", tree_sha256=tree_sha256
-        ),
+        name: _sample_for_bundle(
+            name, f"vendor/schemas/{name}", tree_sha256=tree_sha256
+        )
+        for name in (
+            "iwxxm",
+            "iwxxm-codelists",
+            "iwxxm-modelling",
+            "iwxxm-translation",
+            "iwxxm-us",
+        )
     }
 
 
@@ -103,14 +109,9 @@ def test_verify_manifest_integrity_detects_checksum_drift(tmp_path: Path) -> Non
     ):
         path = tmp_path / "vendor" / "schemas" / name
         path.mkdir(parents=True)
-        if name == "iwxxm-us":
-            bundle = _sample_http_bundle(
-                f"vendor/schemas/{name}", tree_sha256=compute_tree_sha256(path)
-            )
-        else:
-            bundle = _sample_bundle(
-                f"vendor/schemas/{name}", tree_sha256=compute_tree_sha256(path)
-            )
+        bundle = _sample_for_bundle(
+            name, f"vendor/schemas/{name}", tree_sha256=compute_tree_sha256(path)
+        )
         data = json.loads(manifest_path.read_text(encoding="utf-8"))
         data["bundles"][name] = bundle
         manifest_path.write_text(json.dumps(data), encoding="utf-8")
@@ -159,7 +160,7 @@ def test_validate_manifest_schema_reports_bundle_field_errors() -> None:
     assert any("upstream_repo must start with 'wmo-im/'" in err for err in errors)
     assert any("commit_sha must be 40" in err for err in errors)
     assert any("tree_sha256 must be 64" in err for err in errors)
-    assert any("local_path must live under vendor/schemas/" in err for err in errors)
+    assert any("local_path must start with 'vendor/schemas/'" in err for err in errors)
     assert any("missing or empty 'tag'" in err for err in errors)
 
 
@@ -202,6 +203,30 @@ def test_validate_http_bundle_reports_empty_fields_and_bad_archive_hash() -> Non
     assert any("archive_sha256 must be 64 hex chars" in err for err in errors)
 
 
+def test_github_bundle_with_source_url_still_uses_github_rules() -> None:
+    """Dispatch is by bundle name, not presence of source_url (Sourcery #700)."""
+    bundles = _required_bundles()
+    bundles["iwxxm"] = {
+        **_sample_bundle("vendor/schemas/iwxxm"),
+        "source_url": "https://example.com/extra",
+    }
+    assert (
+        validate_manifest_schema(
+            {"schema_version": MANIFEST_SCHEMA_VERSION, "bundles": bundles}
+        )
+        == []
+    )
+
+
+def test_archive_sha256_rejects_non_hex() -> None:
+    bundles = _required_bundles()
+    bundles["iwxxm-us"]["archive_sha256"] = "g" * 64
+    errors = validate_manifest_schema(
+        {"schema_version": MANIFEST_SCHEMA_VERSION, "bundles": bundles}
+    )
+    assert any("archive_sha256 must be 64 hex chars" in err for err in errors)
+
+
 def test_verify_manifest_integrity_reports_invalid_json(tmp_path: Path) -> None:
     manifest_path = tmp_path / "vendor" / "manifest.json"
     manifest_path.parent.mkdir(parents=True)
@@ -222,16 +247,11 @@ def test_verify_manifest_integrity_skips_non_object_or_incomplete_bundle_entries
         root = tmp_path / "vendor" / "schemas" / name
         root.mkdir(parents=True)
         (root / "README.md").write_text(name, encoding="utf-8")
-        if name == "iwxxm-us":
-            bundles[name] = _sample_http_bundle(
-                f"vendor/schemas/{name}",
-                tree_sha256=compute_tree_sha256(root),
-            )
-        else:
-            bundles[name] = _sample_bundle(
-                f"vendor/schemas/{name}",
-                tree_sha256=compute_tree_sha256(root),
-            )
+        bundles[name] = _sample_for_bundle(
+            name,
+            f"vendor/schemas/{name}",
+            tree_sha256=compute_tree_sha256(root),
+        )
 
     manifest_path = tmp_path / "vendor" / "manifest.json"
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
@@ -274,16 +294,11 @@ def test_verify_manifest_integrity_passes_for_matching_tree(tmp_path: Path) -> N
         root = tmp_path / "vendor" / "schemas" / name
         root.mkdir(parents=True)
         (root / "README.md").write_text(name, encoding="utf-8")
-        if name == "iwxxm-us":
-            bundles[name] = _sample_http_bundle(
-                f"vendor/schemas/{name}",
-                tree_sha256=compute_tree_sha256(root),
-            )
-        else:
-            bundles[name] = _sample_bundle(
-                f"vendor/schemas/{name}",
-                tree_sha256=compute_tree_sha256(root),
-            )
+        bundles[name] = _sample_for_bundle(
+            name,
+            f"vendor/schemas/{name}",
+            tree_sha256=compute_tree_sha256(root),
+        )
 
     manifest_path = tmp_path / "vendor" / "manifest.json"
     manifest_path.write_text(
