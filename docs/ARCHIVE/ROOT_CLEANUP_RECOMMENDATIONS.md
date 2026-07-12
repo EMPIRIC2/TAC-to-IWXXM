@@ -227,11 +227,11 @@ docs/
 - [ ] Delete redundant files
 
 ### Step 4: Move to docs/ (5 minutes)
-- [ ] Move `ARCHITECTURE_OVERVIEW.md` → `docs/ARCHITECTURE.md`
+- [ ] Move `ARCHITECTURE_OVERVIEW.md` → `docs/guides/ARCHITECTURE.md`
 - [ ] Move `DOCKER_SETUP.md` → `docs/SETUP.md` (merge with DEVELOPMENT.md if needed)
 - [ ] Move feature documentation to `docs/integration/`
-- [ ] Move validation docs to `docs/validation/`
-- [ ] Move IWXXM docs to `docs/iwxxm/`
+- [ ] Move validation docs to `docs/domain/validation/`
+- [ ] Move IWXXM docs to `docs/domain/iwxxm/`
 
 ### Step 5: Move Test Files (3 minutes)
 - [ ] Move backend test files: `test_api_validation.py`, `test_validation_changes.py`, `test_openaip_integration.py` → `backend/tests/`
@@ -328,7 +328,7 @@ test_validation_changes.py
    - **Recommendation:** Move to `docs/testing/SKIPPED_TESTS_ANALYSIS.md`
 
 2. **IMPLEMENTATION_CHECKLIST.md** - Is this still actively used or historical?
-   - **Recommendation:** If active → `docs/IMPLEMENTATION.md` | If historical → `docs/ARCHIVE/`
+   - **Recommendation:** If active → `docs/guides/IMPLEMENTATION.md` | If historical → `docs/ARCHIVE/`
 
 3. **SPRINT3_SEMANTIC_VALIDATION_PLAN.md** - Active planning doc or historical?
    - **Recommendation:** If active → keep in docs/ | If completed → move to ARCHIVE

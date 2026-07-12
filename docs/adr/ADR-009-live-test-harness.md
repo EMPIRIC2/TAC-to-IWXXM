@@ -48,4 +48,4 @@ local dev servers even when a remote base URL was configured.
 
 - `docs/test-plan.md` — TC-LIVE-001 through TC-LIVE-005
 - `.cursor/artifacts/execution-plan-live-e2e.md`
-- `docs/requirements-decisions.md` — LIVE-001 through LIVE-013
+- `docs/decisions/requirements-decisions.md` — LIVE-001 through LIVE-013

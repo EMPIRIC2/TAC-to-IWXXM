@@ -1,0 +1,23 @@
+---
+description: Skills must use docs/CORPUS.md as the design/parity doc set
+alwaysApply: true
+---
+
+# Documentation corpus
+
+The **canonical design and parity corpus** is defined in [`docs/CORPUS.md`](../../docs/CORPUS.md).
+
+## Rules
+
+1. **Cite the corpus** — Prefer `[Corpus: product]`, `[Corpus: system-spec]`,
+   `[Corpus: tech-spec]`, `[Corpus: api]`, `[Corpus: tests]`, `[Corpus: adr]`,
+   `[Corpus: decisions]` over ad-hoc doc lists.
+2. **Parity / conformance** — Before claiming implementation matches design, check the
+   CORPUS parity protocol (scope → design → runtime → verification → decisions).
+3. **Tech runtime truth** — Config, env, deploy, and dependency questions start at
+   [`docs/tech-spec.md`](../../docs/tech-spec.md), then its satellites — not narrative
+   guides under `docs/guides/` or `docs/ops/`.
+4. **Do not invent standing docs** — New root corpus members require updating
+   `docs/CORPUS.md` and an AskQuestion `[Decision]` (plus ADR or `decisions/` log).
+5. **Ephemeral ≠ corpus** — Session reports, bug reports, ARCHIVE, and domain deep-dives
+   are not substitutes for CORPUS rows in scope or design gates.

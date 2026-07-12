@@ -34,5 +34,5 @@ Vendor iwxxm schemas remain on scheduled wmo-im sync (ADR-001).
 ## References
 
 - REQ-014 (modified), REQ-003
-- docs/product-decisions.md — S-gifts verdict
+- docs/decisions/product-decisions.md — S-gifts verdict
 - Statement S-gifts in 02-verify-plan audit

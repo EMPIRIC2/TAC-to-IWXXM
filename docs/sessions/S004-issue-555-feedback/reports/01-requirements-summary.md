@@ -33,12 +33,12 @@ Single evolve cycle delivering:
 
 ## Documents updated
 
-- `docs/requirements-decisions.md` — F5-R21…R32, F1-R555-1/2
+- `docs/decisions/requirements-decisions.md` — F5-R21…R32, F1-R555-1/2
 - `docs/feature-list.md` — F1 #555 UX, F5 limitations/UI
 - `docs/spec.md` — F5 business rules
 - `docs/api-contract.md` — send failure transition, guest note, admin UI
 - `docs/user-journeys.md` — UJ-001, UJ-004
-- `docs/evolve-decisions.md` — EV-004 R13–R22
+- `docs/decisions/evolve-decisions.md` — EV-004 R13–R22
 - `docs/context/metar-work-history.md` — R22–R30
 
 ## Next step

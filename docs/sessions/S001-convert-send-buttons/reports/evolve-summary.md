@@ -14,7 +14,7 @@
 
 ## Spec deltas
 
-- `docs/evolve-decisions.md` — scope and R1–R3
+- `docs/decisions/evolve-decisions.md` — scope and R1–R3
 - `docs/feature-list.md` — F1 UI actions
 - `docs/user-journeys.md` — UJ-001 steps
 - `docs/test-plan.md` — E2E module reference

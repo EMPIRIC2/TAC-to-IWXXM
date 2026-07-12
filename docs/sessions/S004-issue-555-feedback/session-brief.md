@@ -11,9 +11,9 @@ context_briefs:
   - docs/context/issue-555-feedback.md
   - docs/context/metar-work-history.md
 standing_docs_touched:
-  - docs/evolve-decisions.md
+  - docs/decisions/evolve-decisions.md
   - docs/feature-list.md
-  - docs/requirements-decisions.md
+  - docs/decisions/requirements-decisions.md
 github_issue: https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/555
 supersedes_session: S003-supabase-keys-config
 ---
@@ -58,6 +58,6 @@ See [routing-plan.md](./routing-plan.md).
 
 ## Links
 
-- [evolve-decisions.md §EV-004](../../evolve-decisions.md)
+- [evolve-decisions.md §EV-004](../../decisions/evolve-decisions.md)
 - [metar-work-history.md](../../context/metar-work-history.md)
 - [issue-555-feedback.md](../../context/issue-555-feedback.md)

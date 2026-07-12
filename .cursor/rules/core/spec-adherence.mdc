@@ -7,10 +7,10 @@ alwaysApply: true
 
 Before making any code change, verify:
 
-1. **Spec exists**: Check that a relevant standing spec in `docs/` covers the work
-   (`feature-list.md`, `spec.md`, `api-contract.md`, `test-plan.md`, `deploy.md`).
-   Session/ephemeral plans (`execution-plan`, `config-spec`, `research-brief`) live in
-   `workflow-state.yaml` §`artifacts` — not as standing docs. If no spec covers this
+1. **Spec exists**: Check the canonical corpus in [`docs/CORPUS.md`](../../../docs/CORPUS.md)
+   (`product`, `system-spec`, `tech-spec`, `api`, `tests`, `adr`, `decisions`).
+   Session/ephemeral plans (`execution-plan`, research-brief) live in
+   `workflow-state.yaml` §`artifacts` — not as standing docs. If no corpus row covers this
    change, raise a `[Decision]` via AskQuestion: proceed without a spec, or create one first.
 
 2. **Phased workflow**: Check `workflow-state.yaml` for the active stage and build session
@@ -25,9 +25,9 @@ Before making any code change, verify:
    artifact. If any criterion is not met, raise `[Decision]` — do not silently proceed.
    Record gate results in `workflow-state.yaml` §`artifacts`.
 
-4. **Tech choices**: Use only tools, libraries, and patterns documented in the specs.
-   Primary references: `docs/spec.md`, `docs/dependency-inventory.md`, ADRs in `docs/adr/`.
-   New dependencies require `[Decision]` and back-add to `dependency-inventory.md`.
+4. **Tech choices**: Use only tools, libraries, and patterns in the corpus.
+   Primary references: `[Corpus: system-spec]`, `[Corpus: tech-spec]`, `[Corpus: adr]`.
+   New dependencies require `[Decision]` and back-add to `docs/dependency-inventory.md`.
 
 5. **Uncertainty = question**: Raise via AskQuestion with category `[Decision]`,
    `[Ambiguity]`, or `[Uncertainty]`. Never silently guess.

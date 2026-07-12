@@ -63,7 +63,7 @@ Browser wiring unchanged: frontend → API on `VITE_API_BASE_URL`; CORS per exis
 | Backend issues schema | `apps/backend/src/schemas/conversion.py` | Structured `ConversionIssue` list |
 | Conversion params UI | `FileConverter.tsx` L758-801 | `logLevel` / `onError` **not sent** to `convertMetarToIwxxm` |
 | Parent context | `docs/context/convert-send-buttons.md` | S001 scope split (R3 excluded auto-clear + log) |
-| Evolve log | `docs/evolve-decisions.md` EV-001 | Explicit deferral of #555 siblings |
+| Evolve log | `docs/decisions/evolve-decisions.md` EV-001 | Explicit deferral of #555 siblings |
 | Prior session | `docs/sessions/S001-convert-send-buttons/` | Completed 2026-06-22 |
 
 ## Cross-Reference Matrix
@@ -102,7 +102,7 @@ No new secrets. Error log content comes from authenticated convert API responses
 - [GitHub #555](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/555) — `gh issue view 555` (2026-06-23)
 - [GitHub #656](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/656) — child implementation issue (S001)
 - [Context: convert-send-buttons R3](convert-send-buttons.md)
-- [Docs: evolve-decisions.md EV-001](../evolve-decisions.md)
+- [Docs: evolve-decisions.md EV-001](../decisions/evolve-decisions.md)
 - [Repo: apps/frontend/src/app/components/FileConverter.tsx]
 - [Repo: apps/frontend/src/utils/api.ts]
 - [Repo: apps/backend/src/schemas/conversion.py]

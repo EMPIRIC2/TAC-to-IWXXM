@@ -19,7 +19,7 @@ alwaysApply: false
 
 # Monorepo Migration Guardrails
 
-Applies during M1–M6 migration work. Source: `docs/migration-plan.md`, ADR-003, REQ-016.
+Applies during M1–M6 migration work. Source: `docs/ops/migration-plan.md`, ADR-003, REQ-016.
 
 ## Non-Negotiables
 

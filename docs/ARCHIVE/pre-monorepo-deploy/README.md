@@ -10,8 +10,8 @@ T11.3 (2026-06-20).
 | Topic | Current doc |
 |-------|-------------|
 | Deployment topology & env vars | [docs/deploy.md](../../deploy.md) |
-| Staging Render values | [docs/staging-secrets-matrix.md](../../staging-secrets-matrix.md) |
-| Local development | [docs/DEVELOPMENT.md](../../DEVELOPMENT.md) |
+| Staging Render values | [docs/ops/staging-secrets-matrix.md](../../ops/staging-secrets-matrix.md) |
+| Local development | [docs/ops/DEVELOPMENT.md](../../ops/DEVELOPMENT.md) |
 | Auth merged into API | [docs/adr/ADR-002-auth-merged-into-backend.md](../../adr/ADR-002-auth-merged-into-backend.md) |
 | API endpoints | [docs/api-contract.md](../../api-contract.md) |
 

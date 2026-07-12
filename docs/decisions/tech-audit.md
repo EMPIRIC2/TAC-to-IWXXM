@@ -26,7 +26,7 @@
 | 1 | Execution Plan | .cursor/artifacts/execution-plan-monorepo.md | 18 | complete |
 | 2 | Dependency Inventory | docs/dependency-inventory.md | 4 | complete |
 | 3 | Deploy | docs/deploy.md | 3 | complete |
-| 4 | Staging Secrets Matrix | docs/staging-secrets-matrix.md | 2 | complete |
+| 4 | Staging Secrets Matrix | docs/ops/staging-secrets-matrix.md | 2 | complete |
 | 5 | ADR-005 | docs/adr/ADR-005-runtime-toolchain-pins.md | 2 | complete |
 | 6 | ADR-006 | docs/adr/ADR-006-render-topology-simplification.md | 2 | complete |
 | 7 | ADR-007 | docs/adr/ADR-007-universal-coverage-gate.md | 1 | complete |

@@ -110,7 +110,7 @@ selected by `METAR_CONFIG_ENV` (default `local`).
 `VITE_*`, `METAR_CORS_ORIGINS`, `DISABLE_AUTH`, `FRONTEND_URL`.
 
 Verify alignment: `make env-check`. Operator sync: [env-sync-runbook.md](env-sync-runbook.md),
-[env-contract.md](env-contract.md).
+[env-contract.md](../env-contract.md).
 
 ### Supabase local stack (optional)
 
@@ -274,7 +274,7 @@ Docker).
 
 ## Deployment
 
-Production uses **two Render services** (API + static frontend). See [deploy.md](deploy.md)
+Production uses **two Render services** (API + static frontend). See [deploy.md](../deploy.md)
 for topology, env vars, and post-deploy connectivity checks (H4/H5).
 
 ## Agent workflow (pipeline sessions)
@@ -290,7 +290,7 @@ greenfield builds to feature adds, hotfixes, and live E2E integration.
 
 | Doc | Purpose |
 |-----|---------|
-| [skill-routing.md](skill-routing.md) | Which skill to invoke |
+| [skill-routing.md](../skill-routing.md) | Which skill to invoke |
 | [sessions/README.md](sessions/README.md) | Session index and folder layout |
 | [context/README.md](context/README.md) | Scoped context briefs |
 
@@ -300,10 +300,10 @@ Skill reference: [.cursor/skills/sessions-reference.md](../.cursor/skills/sessio
 
 | Document | Topic |
 |----------|-------|
-| [skill-routing.md](skill-routing.md) | Pipeline skill routing and session types |
+| [skill-routing.md](../skill-routing.md) | Pipeline skill routing and session types |
 | [sessions/README.md](sessions/README.md) | Active and archived work sessions |
-| [api-contract.md](api-contract.md) | REST endpoints |
-| [test-plan.md](test-plan.md) | Test tiers and migration gates |
+| [api-contract.md](../api-contract.md) | REST endpoints |
+| [test-plan.md](../test-plan.md) | Test tiers and migration gates |
 | [migration-plan.md](migration-plan.md) | Submodule → monorepo migration |
 | [adr/ADR-002-auth-merged-into-backend.md](adr/ADR-002-auth-merged-into-backend.md) | Auth merge decision |
 

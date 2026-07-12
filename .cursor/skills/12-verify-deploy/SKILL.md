@@ -29,7 +29,7 @@ See connectivity-gates §Stage 12.
 2. Required:
    - Deployment plan document (e.g., `docs/deploy.md §Integration`, `docs/deployment-plan.md`)
    - `workflow-state.yaml + execution plan artifact` — §Tech Stack for deployment tools
-   - `docs/implementation-verification.md` — confirmation implementation is approved
+   - `docs/reports/implementation-verification.md` — confirmation implementation is approved
 3. If data assets exist: `docs/spec.md §Data` and `docs/data-management-state.md`
 
 ## Why This Stage Exists Separately from Stage 04
@@ -112,7 +112,7 @@ Launch parallel agents:
 - Read [connectivity-gates.md](../connectivity-gates.md)
 - Verify `tests/unit/test_cors_policy.py` exists and passes (`H0c`)
 - Verify each FastAPI `create_app` uses `deployed-service_shared_schemas.cors.configure_cors`
-- Cross-check `docs/staging-secrets-matrix.md`: every `VITE_*` row has a matching API URL + `METAR_CORS_ORIGINS` entry
+- Cross-check `docs/ops/staging-secrets-matrix.md`: every `VITE_*` row has a matching API URL + `METAR_CORS_ORIGINS` entry
 - Confirm `scripts/deploy/verify_connectivity.sh` and `tests/smoke/test_staging_connectivity.py` are present
 - Return: pass/fail + missing wiring items (do **not** assume H1–H3 alone is enough)
 

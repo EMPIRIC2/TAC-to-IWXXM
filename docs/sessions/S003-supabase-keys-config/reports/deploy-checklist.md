@@ -15,7 +15,7 @@ This checklist covers **Supabase key rotation**, **S003 config split** (`config/
 | `packages/shared` | `config_loader.py`, canonical Supabase env helpers | **Redeploy API** (Docker image) |
 | `config/prod.json` | CORS, URLs, Supabase URL (non-secrets) | **Must be baked into API image** + frontend build |
 | `apps/frontend` | Runtime `/config.json` bootstrap (ADR-010) | **Rebuild static site** with publishable key inject |
-| Render secrets | Rotate `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` | **Operator** — [env-sync-runbook.md](../../../env-sync-runbook.md) |
+| Render secrets | Rotate `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` | **Operator** — [env-sync-runbook.md](../../../ops/env-sync-runbook.md) |
 | Deprecated env | Remove `VITE_*`, `METAR_CORS_ORIGINS`, legacy Supabase keys | **Operator** — after redeploy verified |
 
 ## Pre-Deploy
@@ -44,7 +44,7 @@ This checklist covers **Supabase key rotation**, **S003 config split** (`config/
 ### Blocking items before deploy
 
 1. **Code fix**: Add `COPY config/ config/` to `apps/backend/docker/Dockerfile` so `METAR_CONFIG_ENV=prod` resolves `/app/config/prod.json`.
-2. **Operator**: Complete [env-sync-runbook.md](../../../env-sync-runbook.md) Steps 1–4 — rotate Supabase keys on both Render services.
+2. **Operator**: Complete [env-sync-runbook.md](../../../ops/env-sync-runbook.md) Steps 1–4 — rotate Supabase keys on both Render services.
 3. **Operator**: Remove deprecated Render env vars only **after** redeploy + H4/H5 pass (otherwise CORS/auth may break mid-migration).
 4. **Advisory**: Align CI deploy with `render.yaml` static build (or document intentional dual path); update H5 to check `/config.json` not VITE bundle embed.
 
@@ -104,7 +104,7 @@ This checklist covers **Supabase key rotation**, **S003 config split** (`config/
 ## References
 
 - [verify-impl.md](verify-impl.md) — stage 11 approval
-- [env-sync-runbook.md](../../../env-sync-runbook.md) — operator sync steps
+- [env-sync-runbook.md](../../../ops/env-sync-runbook.md) — operator sync steps
 - [env-contract.md](../../../env-contract.md) — canonical secret names
 - [config-spec.md](../../../config-spec.md) — S003 config schema
 - Prior checklist: [S002 deploy-checklist](../../S002-issue-594-feedback/reports/deploy-checklist.md)

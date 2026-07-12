@@ -27,7 +27,7 @@
 | 3 | User Journeys | docs/user-journeys.md | 4 | 7 | complete |
 | 4 | Test Plan | docs/test-plan.md | 9 | 8 | complete |
 | 5 | API Contract | docs/api-contract.md | 6 | 5 | complete |
-| 6 | Migration Plan | docs/migration-plan.md | 7 | 6 | complete |
+| 6 | Migration Plan | docs/ops/migration-plan.md | 7 | 6 | complete |
 | 7 | Dependency Inventory | docs/dependency-inventory.md | 5 | 4 | complete |
 | 8 | Deploy | docs/deploy.md | 7 | 3 | complete |
 | 9 | Config Spec | .cursor/artifacts/config-spec-monorepo.md | 4 | 3 | complete |
@@ -59,7 +59,7 @@
 
 ## Auto-Approved Statements (High Confidence)
 
-38 statements derived directly from `docs/requirements-decisions.md`. See git history / prior audit revision for full table (S1.1–S9.3).
+38 statements derived directly from `docs/decisions/requirements-decisions.md`. See git history / prior audit revision for full table (S1.1–S9.3).
 
 ## Statement Log (User Review)
 

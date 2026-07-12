@@ -58,7 +58,7 @@ empty-string env is also not normalized in `get_database_url`.
 | Spec | Result |
 |------|--------|
 | `docs/feature-list.md` (F3 / infra) | In scope — local-dev Docker quick start must work out of the box |
-| `docs/DEVELOPMENT.md` L100 (`DATABASE_URL` required) | Implementation drift — compose did not provide a DB; now bundles one |
+| `docs/ops/DEVELOPMENT.md` L100 (`DATABASE_URL` required) | Implementation drift — compose did not provide a DB; now bundles one |
 | Constraint R3 | Bundled bare Postgres serves ORM tables only; auth + F5 work-history still need Supabase |
 | REQ-016 | No conversion/validation behavior change |
 
@@ -79,7 +79,7 @@ empty-string env is also not normalized in `get_database_url`.
 ## Fix
 
 **Files:** `docker-compose.yml`, `apps/backend/src/services/database.py`, `.env.example`,
-`README.md`, `docs/DEVELOPMENT.md`
+`README.md`, `docs/ops/DEVELOPMENT.md`
 
 1. Add a `db` (`postgres:16`) service with `pg_isready` healthcheck + named volume on `metar-network`.
 2. Default backend `DATABASE_URL` to `postgresql+asyncpg://postgres:postgres@db:5432/postgres`

@@ -21,11 +21,11 @@ Unified manual live test harness against Render staging:
 | H6 | Playwright UJ-001–004 against live frontend | `make test-live-e2e` |
 | All | Sequential H4–H5 → H3 → H6 | `make test-live` |
 
-**Prerequisite**: E2E-001 schema path regression must be resolved before H3 validate and full H6 UJ-002 pass (see [e2e-report.md](e2e-report.md)).
+**Prerequisite**: E2E-001 schema path regression must be resolved before H3 validate and full H6 UJ-002 pass (see [e2e-report.md](reports/e2e-report.md)).
 
 **CI policy**: Manual/local only — no GitHub Actions live job (Render cold-start + secrets).
 
-**Canonical URLs** (see [staging-secrets-matrix.md](staging-secrets-matrix.md)):
+**Canonical URLs** (see [staging-secrets-matrix.md](ops/staging-secrets-matrix.md)):
 
 - `LIVE_API_URL` — `https://metar-to-iwxxm-api.onrender.com`
 - `LIVE_FRONTEND_URL` — `https://metar-to-iwxxm-frontend-v4-web.onrender.com`

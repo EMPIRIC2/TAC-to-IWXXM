@@ -8,7 +8,7 @@
 > **Skill**: 04-tech-plan (delta)  
 > **Evolve cycle**: LIVE-E2E-001  
 > **Feature IDs**: F1, F2, F3 (UJ-001–003 T3), UJ-OPS-001  
-> **Specs consumed**: `docs/test-plan.md`, `docs/context/live-e2e-integration.md`, `docs/deploy.md`, `docs/staging-secrets-matrix.md`, `docs/requirements-decisions.md`, `.cursor/artifacts/config-spec-live-e2e.md`
+> **Specs consumed**: `docs/test-plan.md`, `docs/context/live-e2e-integration.md`, `docs/deploy.md`, `docs/ops/staging-secrets-matrix.md`, `docs/decisions/requirements-decisions.md`, `.cursor/artifacts/config-spec-live-e2e.md`
 
 ## Current State
 
@@ -37,7 +37,7 @@
 | H6 Playwright | 12 specs, local `webServer` | — | `webServer` always starts; no remote mode |
 | Legacy | — | `tests/test_playwright_e2e.py` | Still targets suspended `auth-v2` |
 
-**Prerequisite note**: E2E-001 schema path fix applied locally (per `docs/implementation-verification.md`); live validate must be re-verified after harness lands.
+**Prerequisite note**: E2E-001 schema path fix applied locally (per `docs/reports/implementation-verification.md`); live validate must be re-verified after harness lands.
 
 ## Tech Stack Summary
 
@@ -174,7 +174,7 @@ No new external datasets required.
 | # | Task | Type | Status | Spec Source | Depends On |
 |---|------|------|--------|-------------|------------|
 | T7.1 | Write ADR-009: Live test harness strategy (manual, LIVE_* env, Makefile tiers) | Docs | completed | LIVE-002, LIVE-012 | — |
-| T7.2 | Update `docs/staging-secrets-matrix.md` with `LIVE_*` local test section | Docs | completed | config-spec-live-e2e.md | T1.2 |
+| T7.2 | Update `docs/ops/staging-secrets-matrix.md` with `LIVE_*` local test section | Docs | completed | config-spec-live-e2e.md | T1.2 |
 | T7.3 | Manual signoff: run `make test-live` end-to-end; record in qa-report | Docs | completed | LIVE-012, TC-LIVE-001–004 | T1.3, T3.5, T5.4 |
 
 #### Phase LIVE-4 Gate Check
@@ -226,4 +226,4 @@ Atomic commits per task: `[T1.1] config: register live_api pytest marker`, etc.
 - [docs/test-plan.md](../../docs/test-plan.md) — TC-LIVE-001 through TC-LIVE-005
 - [docs/context/live-e2e-integration.md](../../docs/context/live-e2e-integration.md)
 - [.cursor/artifacts/config-spec-live-e2e.md](config-spec-live-e2e.md)
-- [docs/requirements-decisions.md](../../docs/requirements-decisions.md) — LIVE-001 through LIVE-013
+- [docs/decisions/requirements-decisions.md](../../docs/decisions/requirements-decisions.md) — LIVE-001 through LIVE-013

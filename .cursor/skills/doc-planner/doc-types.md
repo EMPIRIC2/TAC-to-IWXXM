@@ -1,23 +1,29 @@
 # Supported Document Types
 
-## Standing docs (minimal export set)
+## Standing docs (minimal corpus)
 
-Generate and maintain **only** these committed files in `docs/`:
+**Canonical registry:** [`docs/CORPUS.md`](../../../docs/CORPUS.md).
 
-| File | Purpose |
-|------|---------|
-| `spec.md` | Architecture, roadmap, data, glossary |
-| `feature-list.md` | Features + acceptance bullets |
-| `user-journeys.md` | Caller journeys (UJ-NNN) |
-| `test-plan.md` | Test matrix + QA gates |
-| `api-contract.md` | HTTP/API surface |
-| `dependency-inventory.md` | Dependencies and licenses |
-| `risk-register.md` | Risks and mitigations |
-| `deploy.md` | Checklist + integration + runbook (merged) |
-| `adr/README.md` | ADR process + index |
+Generate and maintain **only** these committed corpus files:
+
+| File | Corpus ID | Purpose |
+|------|-----------|---------|
+| `CORPUS.md` | — | Manifest + parity protocol |
+| `feature-list.md` | product | Features + acceptance bullets |
+| `user-journeys.md` | journeys | Caller journeys (UJ-NNN) |
+| `spec.md` | system-spec | Architecture, components, constraints |
+| `tech-spec.md` | tech-spec | Hub → config / env / deploy / deps |
+| `config-spec.md` | (tech satellite) | Config parameters |
+| `env-contract.md` | (tech satellite) | Env var contract |
+| `deploy.md` | (tech satellite) | Deploy checklist + integration + runbook |
+| `dependency-inventory.md` | (tech satellite) | Dependencies and licenses |
+| `api-contract.md` | api | HTTP/API surface |
+| `test-plan.md` | tests | Test matrix + QA gates |
+| `adr/README.md` + `adr/ADR-*.md` | adr | Architecture decisions |
+| `decisions/*.md` | decisions | Interview / evolve decision logs |
 
 **Ephemeral / session** (under `docs/sessions/{session-id}/` or workflow-state §`artifacts`):
-execution-plan, config-spec, research-brief, context-brief (project mode), scoped briefs under
+execution-plan, research-brief, context-brief (project mode), scoped briefs under
 `docs/context/`, session reports (`reports/qa-report.md`, `reports/e2e-report.md`, etc.),
 checkpoints, evolve summaries.
 
@@ -26,7 +32,7 @@ checkpoints, evolve summaries.
 
 Merged sources (do not generate as separate files): `roadmap.md`, `glossary.md`,
 `data-management-plan.md`, `deployment-integration.md`, `deploy-checklist.md`,
-`staging-runbook.md`, `acceptance-criteria.md`.
+`staging-runbook.md`, `acceptance-criteria.md`, `risk-register.md`.
 
 ---
 
@@ -434,7 +440,7 @@ mentioned in the paper or visible in the codebase.
 ## 13. Migration Plan
 
 **When relevant**: Software requires data migration, version upgrades, or environment transitions.
-**Path**: `docs/migration-plan.md`
+**Path**: `docs/ops/migration-plan.md`
 
 ```markdown
 # Migration Plan

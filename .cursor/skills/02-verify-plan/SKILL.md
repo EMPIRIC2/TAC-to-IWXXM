@@ -33,7 +33,7 @@ connectivity tiers. Record fixes in audit report before 03-plan-tooling.
 1. **01-requirements** must be `completed`. Spec documents must exist in `docs/`.
 2. At minimum: `docs/feature-list.md`, `docs/spec.md`, `docs/user-journeys.md`,
    `docs/test-plan.md`.
-3. `docs/requirements-decisions.md` — the interview decision log from 01-requirements.
+3. `docs/decisions/requirements-decisions.md` — the interview decision log from 01-requirements.
 
 If any prerequisite is missing, inform the user and invoke 01-requirements first.
 
@@ -242,8 +242,8 @@ options:
 #### After each verdict
 
 1. Update `workflow-state.yaml` — increment counters, advance position
-2. Append to `docs/product-decisions.md`
-3. Update `docs/product-audit.md` with verdict
+2. Append to `docs/decisions/product-decisions.md`
+3. Update `docs/decisions/product-audit.md` with verdict
 4. If Deny or Modify: update the source spec document surgically
 5. If the verdict resolves a `[Decision]`, `[Contradiction]`, or `[Ambiguity]` between
    multiple valid approaches (including Deny or Modify that changes an architectural
@@ -273,10 +273,10 @@ as pending?" Process if the user chooses to review.
 
 Write to output directory:
 
-1. **`docs/product-audit.md`** — Full audit report: per-statement records with section,
+1. **`docs/decisions/product-audit.md`** — Full audit report: per-statement records with section,
    claim, source, confidence, verdict, user feedback, action taken.
 
-2. **`docs/product-decisions.md`** — Chronological decision log: timestamped table of
+2. **`docs/decisions/product-decisions.md`** — Chronological decision log: timestamped table of
    every verdict (auto-approved, user-approved, denied, modified, skipped).
 
 ### Phase 8 — Summary
@@ -300,8 +300,8 @@ Results:
 Source documents updated: [N] changes across [M] documents
 
 Artifacts:
-  docs/product-audit.md      — full audit report
-  docs/product-decisions.md  — decision log
+  docs/decisions/product-audit.md      — full audit report
+  docs/decisions/product-decisions.md  — decision log
   docs/adr/                  — [N] ADRs created from audit verdicts
 
 Next step: 03-plan-tooling

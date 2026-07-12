@@ -160,7 +160,7 @@ metar-to-IWXXM/
 
 ## Monorepo Migration
 
-See [migration-plan.md](migration-plan.md) for step-by-step big-bang procedure.
+See [migration-plan.md](ops/migration-plan.md) for step-by-step big-bang procedure.
 
 ### Submodule → monorepo mapping
 
@@ -239,6 +239,6 @@ Standing doc updates during a session use **delta commits** on the session branc
 
 ## References
 
-- docs/ARCHITECTURE.md (pre-migration product architecture)
+- docs/guides/ARCHITECTURE.md (pre-migration product architecture)
 - [ARCHIVE/pre-monorepo-deploy/AUTH_MIDDLEWARE_ARCHITECTURE.md](ARCHIVE/pre-monorepo-deploy/AUTH_MIDDLEWARE_ARCHITECTURE.md) (superseded by M4 — see ADR-002)
-- docs/requirements-decisions.md
+- docs/decisions/requirements-decisions.md

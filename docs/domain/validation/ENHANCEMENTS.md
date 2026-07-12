@@ -233,8 +233,8 @@ if validation_result and not validation_result.is_valid:
 ## References
 
 ### Related Documentation
-- [docs/COMPREHENSIVE_VALIDATION.md](docs/COMPREHENSIVE_VALIDATION.md) - Validation architecture
-- [docs/TESTING_STRATEGY.md](docs/TESTING_STRATEGY.md) - Testing approach
+- [docs/domain/validation/COMPREHENSIVE_VALIDATION.md](COMPREHENSIVE_VALIDATION.md) - Validation architecture
+- [docs/testing/TESTING_STRATEGY.md](../../testing/TESTING_STRATEGY.md) - Testing approach
 - [backend/src/services/validation_orchestrator.py](backend/src/services/validation_orchestrator.py) - Validation implementation
 
 ### Related Issues

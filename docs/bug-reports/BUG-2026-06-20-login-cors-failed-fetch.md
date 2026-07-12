@@ -94,7 +94,7 @@ Deployed API service `metar-to-iwxxm-api` does not have `METAR_CORS_ORIGINS` (an
 |------|---------|--------|
 | docs/spec.md | CORS via METAR_CORS_ORIGINS | implementation drift (deploy config) |
 | docs/deploy.md | Redeploy order §1 | METAR_CORS_ORIGINS required on API |
-| docs/staging-secrets-matrix.md | Runtime API vars | drift — values not on live service |
+| docs/ops/staging-secrets-matrix.md | Runtime API vars | drift — values not on live service |
 | docs/api-contract.md | Access-Control-Allow-Origin | fail live H4 |
 
 No blocking spec contradiction.

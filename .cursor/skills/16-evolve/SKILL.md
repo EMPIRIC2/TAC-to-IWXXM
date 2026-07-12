@@ -158,7 +158,7 @@ Surface **immediately** via AskQuestion anything ambiguous, uncertain, or contra
 
 **Approval gate:** AskQuestion — "Proceed to allocate Fn(s) and impact analysis on this scope?"
 
-Record approved scope in `docs/evolve-decisions.md` §Cycle {id} — Scope (via committed doc;
+Record approved scope in `docs/decisions/evolve-decisions.md` §Cycle {id} — Scope (via committed doc;
 agent records cycle metadata).
 
 ## Phase 1 — Fn allocation, impact analysis, routing

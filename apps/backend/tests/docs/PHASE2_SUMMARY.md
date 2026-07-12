@@ -579,7 +579,7 @@ secrets:
    - GitHub Actions workflow details
    - Monitoring dashboard setup
 
-2. **docs/TESTING_STRATEGY.md** (from Phase 1, now complete)
+2. **docs/testing/TESTING_STRATEGY.md** (from Phase 1, now complete)
    - API Testing Infrastructure section
    - Complete testing pyramid
    - CI/CD integration examples

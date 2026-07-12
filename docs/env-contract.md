@@ -70,7 +70,7 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Non-secrets in `.env` | Move to `config/*.json` |
 | Port 5173/8001 vs 18000/18001 | Standardize on compose ports (S003-R4) |
 | `FRONTEND_VITE_*` CI secrets | Rename to canonical |
-| Render `sync: false` drift | `make env-check` + [env-sync-runbook.md](env-sync-runbook.md) |
+| Render `sync: false` drift | `make env-check` + [env-sync-runbook.md](ops/env-sync-runbook.md) |
 
 ## Verification
 
@@ -82,6 +82,6 @@ make env-check LIVE=1       # optional: probe Render /health + Supabase auth hea
 ## References
 
 - [config-spec.md](config-spec.md)
-- [env-sync-runbook.md](env-sync-runbook.md)
+- [env-sync-runbook.md](ops/env-sync-runbook.md)
 - [deploy.md](deploy.md)
-- [staging-secrets-matrix.md](staging-secrets-matrix.md) — **deprecated**; use this document instead
+- [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) — **deprecated**; use this document instead

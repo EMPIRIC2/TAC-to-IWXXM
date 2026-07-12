@@ -56,7 +56,7 @@ Successfully implemented Supabase authentication best practices with focus on mo
 ### 3. ✅ Email Template Customization Guide
 
 **Files Created:**
-- `docs/SUPABASE_EMAIL_TEMPLATES.md`
+- `docs/guides/SUPABASE_EMAIL_TEMPLATES.md`
 
 **Documentation Includes:**
 - Step-by-step guide to customize Supabase email templates
@@ -329,7 +329,7 @@ Future enhancements to consider:
 ## Documentation
 
 Additional docs created:
-- `docs/SUPABASE_EMAIL_TEMPLATES.md` - Email template setup guide
+- `docs/guides/SUPABASE_EMAIL_TEMPLATES.md` - Email template setup guide
 - This summary document
 
 Update main documentation:

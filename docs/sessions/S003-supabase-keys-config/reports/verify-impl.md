@@ -109,4 +109,4 @@ Source: `docs/sessions/S003-supabase-keys-config/reports/e2e-report.md`
 | Implementation verified by user | ✓ **Approved** |
 | Deploy strategy | ○ Next: **12-verify-deploy** |
 
-**Next step:** **12-verify-deploy** — rotate keys on Render per `docs/env-sync-runbook.md`, redeploy API + frontend, verify T3 UJ-003.
+**Next step:** **12-verify-deploy** — rotate keys on Render per `docs/ops/env-sync-runbook.md`, redeploy API + frontend, verify T3 UJ-003.

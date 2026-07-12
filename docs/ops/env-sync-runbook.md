@@ -184,12 +184,12 @@ Post-apply verification in Supabase **Database → Advisors**:
 | Admin routes 503 | `SUPABASE_SECRET_KEY` missing on API | Set on Render + local `.env` |
 | CORS errors after deploy | `config.prod.api.corsOrigins` stale | Update `config/prod.json`, redeploy API |
 | Frontend auth fails | `/config.json` missing publishable key | Rebuild static with inject step |
-| `make env-check` fails | Deprecated-only env names | Add canonical names per [env-contract.md](env-contract.md) |
+| `make env-check` fails | Deprecated-only env names | Add canonical names per [env-contract.md](../env-contract.md) |
 | `db push` warns `failed to cache migrations catalog` / `pgdelta-target-ca.crt ENOENT` after **Finished supabase db push** | pg-delta catalog cache ran before SSL cert material existed (CLI 2.107) | **Benign** if migration applied. Preflight: `bash scripts/supabase/db-push.sh` (runs `migration list` first). Or re-run `supabase db push` once — cert now exists at `supabase/.temp/pgdelta/pgdelta-target-ca.crt` |
 | `policy ... does not exist, skipping` NOTICE during migration | `DROP POLICY IF EXISTS` on first install | **Benign** — Postgres notices, not errors |
 
 ## References
 
 - [BUG-2026-06-23-supabase-service-key-leak.md](bug-reports/BUG-2026-06-23-supabase-service-key-leak.md)
-- [env-contract.md](env-contract.md)
-- [config-spec.md](config-spec.md)
+- [env-contract.md](../env-contract.md)
+- [config-spec.md](../config-spec.md)

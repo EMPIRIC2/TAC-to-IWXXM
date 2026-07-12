@@ -30,7 +30,7 @@ Cross-stage requirements for browser ↔ API wiring when the project includes a 
 | Frontend | `VITE_API_BASE_URL` | API base URL (includes `/api/v1/*` and `/auth/*`) |
 | API | `METAR_CORS_ORIGINS` | Allowed browser origins |
 
-Exact variable names documented in `docs/deploy.md` and `docs/staging-secrets-matrix.md`.
+Exact variable names documented in `docs/deploy.md` and `docs/ops/staging-secrets-matrix.md`.
 
 ## Run-time CORS
 

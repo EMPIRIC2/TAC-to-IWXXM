@@ -222,7 +222,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | T9.3 | Set `DISABLE_AUTH=false` for production API | Config | completed | User decision | T9.1 | — |
 | T9.4 | Write `tests/smoke/test_staging_connectivity.py` | Test | completed | test-plan.md H4 | T9.1 | — |
 | T9.5 | Add `scripts/deploy/verify_connectivity.sh` | Code | completed | connectivity-gates.md | T9.4 | — |
-| T9.6 | Verify/update `docs/staging-secrets-matrix.md` against Render env | Docs | completed | 04-tech-plan connectivity | T9.1 | — |
+| T9.6 | Verify/update `docs/ops/staging-secrets-matrix.md` against Render env | Docs | completed | 04-tech-plan connectivity | T9.1 | — |
 
 #### M10: CI/CD
 
@@ -262,7 +262,7 @@ Platform features in `feature-list.md` use different milestone IDs than executio
 | unify_vite_api | `VITE_API_BASE_URL` in frontend + Render static build | M6 (T6.3) |
 | staging_smoke | `tests/smoke/test_staging_connectivity.py` | M9 (T9.4) |
 | verify_script | `scripts/deploy/verify_connectivity.sh` | M9 (T9.5) |
-| secrets_matrix | `docs/staging-secrets-matrix.md` | M9 (T9.6) |
+| secrets_matrix | `docs/ops/staging-secrets-matrix.md` | M9 (T9.6) |
 
 ## Git Strategy
 

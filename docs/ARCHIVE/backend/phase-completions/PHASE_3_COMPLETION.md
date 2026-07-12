@@ -370,10 +370,10 @@ python -m pytest tests/test_gml_geometry_validation.py -v
 
 ## 🎓 Documentation
 
-- **Architecture:** See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for system overview
-- **Version Support:** See [VERSION_SUPPORT_POLICY.md](docs/VERSION_SUPPORT_POLICY.md)
-- **IWXXM Compliance:** See [ICAO_OPMET_COMPLIANCE.md](docs/ICAO_OPMET_COMPLIANCE.md)
-- **Testing Strategy:** See [TESTING_STRATEGY.md](docs/TESTING_STRATEGY.md)
+- **Architecture:** See [ARCHITECTURE.md](docs/guides/ARCHITECTURE.md) for system overview
+- **Version Support:** See [VERSION_SUPPORT_POLICY.md](docs/domain/iwxxm/VERSION_SUPPORT_POLICY.md)
+- **IWXXM Compliance:** See [ICAO_OPMET_COMPLIANCE.md](docs/domain/iwxxm/ICAO_OPMET_COMPLIANCE.md)
+- **Testing Strategy:** See [TESTING_STRATEGY.md](docs/testing/TESTING_STRATEGY.md)
 
 ---
 

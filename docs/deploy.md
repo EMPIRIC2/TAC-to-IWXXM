@@ -69,7 +69,7 @@ JWT via `POST ${LIVE_API_URL}/auth/login` — no long-lived tokens in `.env`.
 **Deprecated** (one-release shim): `VITE_*`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
 `METAR_CORS_ORIGINS`, `FRONTEND_URL`, `DISABLE_AUTH`, `STAGING_*`, `E2E_*`.
 
-Operator sync: [env-sync-runbook.md](env-sync-runbook.md). Verify: `make env-check`.
+Operator sync: [env-sync-runbook.md](ops/env-sync-runbook.md). Verify: `make env-check`.
 
 ### Redeploy order
 
@@ -123,7 +123,7 @@ Before deploying F5 to production:
 4. **Verify locally** — `make supabase-reset` then `pytest tests/integration/test_metar_work_sessions_migration.py` and `apps/backend/tests/integration/test_work_session_tc004.py`.
 5. **Redeploy API** — work-sessions routes require a new API deploy; no new Render secrets.
 
-Operator reference: [env-sync-runbook.md](env-sync-runbook.md), ADR-011, ADR-012.
+Operator reference: [env-sync-runbook.md](ops/env-sync-runbook.md), ADR-011, ADR-012.
 
 ### Supabase CI sync
 
@@ -224,11 +224,11 @@ make test-live                # H4–H5 → H3 → H6
 | `LIVE_FRONTEND_URL` | live test scripts | Browser origin for H4 + Playwright base for H6 |
 | `PLAYWRIGHT_BASE_URL` | Playwright (H6) | Same as `LIVE_FRONTEND_URL` for remote runs |
 
-See [staging-secrets-matrix.md](staging-secrets-matrix.md) for staging values.
+See [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) for staging values.
 
 ## References
 
 - `render.yaml` — Render Blueprint (API + static frontend)
-- [staging-secrets-matrix.md](staging-secrets-matrix.md) — staging env values
+- [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) — staging env values
 - [user-journeys.md](user-journeys.md) UJ-OPS-001
 - Legacy three-service docs: [ARCHIVE/pre-monorepo-deploy/](ARCHIVE/pre-monorepo-deploy/)

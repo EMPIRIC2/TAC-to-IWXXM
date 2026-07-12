@@ -15,7 +15,7 @@ This checklist covers **F5 work sessions** + **#555 UX delta** on top of the **S
 | `apps/backend` | `/api/v1/work-sessions`, `/admin/work-sessions` routes | **Redeploy API** (Docker image) |
 | `apps/frontend` | Work history UI, #555 error log / replace-results UX | **Rebuild static site** |
 | Supabase | `20250623000007_metar_work_sessions.sql` + advisor `003`–`006` | **Operator** — `supabase db push` or dashboard |
-| Render secrets | S003 canonical keys (`SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY`) | **Operator** — [env-sync-runbook.md](../../../env-sync-runbook.md) |
+| Render secrets | S003 canonical keys (`SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY`) | **Operator** — [env-sync-runbook.md](../../../ops/env-sync-runbook.md) |
 | Connectivity | H4 CORS + H5 `/config.json` + T3 live auth | **Verify after redeploy** |
 
 ## Pre-Deploy
@@ -56,7 +56,7 @@ This checklist covers **F5 work sessions** + **#555 UX delta** on top of the **S
 ### Blocking items before deploy
 
 1. **Operator T1.3** — Apply Supabase migrations `003`–`006` + `20250623000007_metar_work_sessions.sql` on METAR project.
-2. **Operator S003** — Complete [env-sync-runbook.md](../../../env-sync-runbook.md): rotate to `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` on both Render services.
+2. **Operator S003** — Complete [env-sync-runbook.md](../../../ops/env-sync-runbook.md): rotate to `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` on both Render services.
 3. **Redeploy API** — Merge S004 to `main` (or deploy branch) so F5 routes + `config/prod.json` CORS are live.
 4. **Rebuild frontend** — `prepare-config.sh` injects rotated publishable key into `/config.json`.
 5. **Verify H4–H5** — `make test-live-connectivity` with `LIVE_*` from `config/prod.json` → `liveE2e.*`.

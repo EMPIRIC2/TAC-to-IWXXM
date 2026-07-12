@@ -119,7 +119,8 @@ RAG services need schema, seed corpus, and eval fixtures before integration test
 ## 8. ADR logging
 
 Every decision surfaced via AskQuestion that selects between multiple valid approaches
-must be recorded as an **Architecture Decision Record** in `docs/adr/`.
+must be recorded as an **Architecture Decision Record** in `docs/adr/`
+([Corpus: adr](../../docs/CORPUS.md)).
 
 ### When to create an ADR
 
@@ -178,8 +179,8 @@ available number. Never reuse a number.
 ### Cross-referencing
 
 When an ADR is created:
-1. Add a reference in the stage's decision log (e.g., `product-decisions.md`,
-   `tech-decisions.md`, `requirements-decisions.md`)
+1. Add a reference in the stage's decision log (e.g., `docs/decisions/product-decisions.md`,
+   `docs/decisions/tech-decisions.md`, `docs/decisions/requirements-decisions.md`)
 2. If the decision affects a spec document, add an inline citation:
    `<!-- ADR-{NNN} -->` next to the affected claim
 3. Add the ADR path to `workflow-state.yaml` §artifacts

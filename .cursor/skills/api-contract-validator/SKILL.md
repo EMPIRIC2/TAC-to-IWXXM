@@ -13,7 +13,7 @@ modifying, or reviewing HTTP routes, auth paths, CORS config, or frontend API cl
 ## Spec Source
 
 Primary: `docs/api-contract.md`
-Secondary: `docs/API.md`, `docs/deploy.md` §Integration
+Secondary: `docs/guides/API.md`, `docs/deploy.md` §Integration
 
 ## Validation Checks
 

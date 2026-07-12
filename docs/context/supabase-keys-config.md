@@ -163,7 +163,7 @@ Supabase Dashboard (keys + DATABASE_URL)
               same canonical names
 ```
 
-**Operator steps (document in `docs/env-sync-runbook.md`):**
+**Operator steps (document in `docs/ops/env-sync-runbook.md`):**
 
 1. **Rotate in Supabase** — create new publishable + secret; note `DATABASE_URL` from Connect.
 2. **Update local** — edit repo-root `.env` (5 keys max).
@@ -341,7 +341,7 @@ in practice for abuse prevention even though it is "client-safe."
 | E5 | Align `docker-compose.yml`: pass `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, mount config |
 | E6 | Align CI: rename GitHub secrets; integration job uses canonical names only |
 | E7 | Align `start-dev-servers.sh` + Makefile `test-integration` gate to canonical names |
-| E8 | Add `docs/env-sync-runbook.md` — operator rotation checklist (Supabase → local → Render → GitHub) |
+| E8 | Add `docs/ops/env-sync-runbook.md` — operator rotation checklist (Supabase → local → Render → GitHub) |
 | E9 | Standardize local ports on **18000/18001** across compose, config, and dev scripts |
 
 ## Data & Credentials

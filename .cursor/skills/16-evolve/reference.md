@@ -60,7 +60,7 @@ evolve_cycles:
     adrs:
       - docs/adr/ADR-004.md
     artifacts:
-      - path: docs/evolve-decisions.md
+      - path: docs/decisions/evolve-decisions.md
         status: in_progress
       - path: docs/sessions/S041-export-api/reports/evolve-summary.md
         status: pending
@@ -325,5 +325,5 @@ After phases A, B, C, D, and deploy — present to user before continuing:
 | `docs/dependency-inventory.md` | New packages |
 | `docs/spec.md §Data` | Corpus/schema if ingest changes |
 
-Prefix decisions in `docs/requirements-decisions.md` / `docs/tech-decisions.md` with
+Prefix decisions in `docs/decisions/requirements-decisions.md` / `docs/decisions/tech-decisions.md` with
 `EV-NNN / Fnn`.

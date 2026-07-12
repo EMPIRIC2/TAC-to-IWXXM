@@ -48,4 +48,4 @@ Execute a **big-bang** migration in one PR on branch `feat/monorepo-big-bang`:
 ## References
 
 - REQ-006, REQ-011, REQ-016
-- docs/migration-plan.md
+- docs/ops/migration-plan.md

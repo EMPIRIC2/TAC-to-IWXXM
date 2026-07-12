@@ -140,7 +140,7 @@ All documentation has been updated to reflect API versioning:
 - ✅ [IMPLEMENTATION_SUMMARY.md](docs/IMPLEMENTATION_SUMMARY.md) - Overview of refactoring
 - ✅ [TEST_COVERAGE_README.md](backend/TEST_COVERAGE_README.md) - Test standards and status
 - ✅ [KNOWN_ISSUES.md](backend/KNOWN_ISSUES.md) - Detailed issue tracking
-- ✅ [API.md](docs/API.md) - Updated with /api/v1/ endpoints
+- ✅ [API.md](docs/guides/API.md) - Updated with /api/v1/ endpoints
 
 ## Frontend URL Verification
 

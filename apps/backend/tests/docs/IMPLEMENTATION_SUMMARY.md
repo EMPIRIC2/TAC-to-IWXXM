@@ -131,7 +131,7 @@ Implemented comprehensive API testing infrastructure covering all endpoints in [
    - CI/CD integration examples
    - Troubleshooting guide
 
-2. **[docs/TESTING_STRATEGY.md](docs/TESTING_STRATEGY.md)** (UPDATED)
+2. **[docs/testing/TESTING_STRATEGY.md](docs/testing/TESTING_STRATEGY.md)** (UPDATED)
    - Added API testing section
    - Updated with new test layers
    - Coverage targets
@@ -333,7 +333,7 @@ For teams wanting to extend this:
 
 **New Utility Files** (1): 5. `backend/tests/test_fixtures.py` (368 lines)
 
-**Documentation** (1 new, 1 updated): 6. `backend/tests/README.md` (453 lines) 7. `docs/TESTING_STRATEGY.md` (updated with 180+ new lines)
+**Documentation** (1 new, 1 updated): 6. `backend/tests/README.md` (453 lines) 7. `docs/testing/TESTING_STRATEGY.md` (updated with 180+ new lines)
 
 **Configuration Updates** (2): 8. `backend/tests/conftest.py` (updated) 9. `backend/pyproject.toml` (updated)
 

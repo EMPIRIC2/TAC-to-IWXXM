@@ -150,7 +150,7 @@ All green. Matches `.github/workflows/ci-cd.yml` quality-gates job paths.
 | H4–H5 live | SKIPPED | `LIVE_*` / `STAGING_*` unset in this environment |
 | Artifacts present | OK | `scripts/deploy/verify_connectivity.sh`, `tests/smoke/test_staging_connectivity.py` |
 
-Prior full-repo live QA (2026-06-22, `docs/qa-report.md`) verified H3–H6 green against Render URLs. S001 is frontend-only; no CORS or API contract changes expected.
+Prior full-repo live QA (2026-06-22, `docs/reports/qa-report.md`) verified H3–H6 green against Render URLs. S001 is frontend-only; no CORS or API contract changes expected.
 
 ---
 
@@ -160,7 +160,7 @@ Prior full-repo live QA (2026-06-22, `docs/qa-report.md`) verified H3–H6 green
 |----|----------|---------|------------------|
 | QA-010 | Advisory | S001 implementation **uncommitted** on `feat/S001-convert-send-buttons` (~447 LOC delta) | User commit + PR before merge |
 | QA-011 | Advisory | `make test-integration` exits 1 locally: backend smoke subset hits **28% coverage** vs 98% gate after main integration tests pass | Use alt ports (`METAR_BACKEND_HOST_PORT=18010`) if 18000/18001 busy; or run integration pytest directly (82 passed). CI job uses separate coverage targets — unaffected |
-| QA-012 | Advisory | H4–H5 live connectivity not re-run this session | Run `make test-live-connectivity` before deploy signoff; see `docs/qa-report.md` for prior green run |
+| QA-012 | Advisory | H4–H5 live connectivity not re-run this session | Run `make test-live-connectivity` before deploy signoff; see `docs/reports/qa-report.md` for prior green run |
 | QA-013 | Advisory | F841 in `apps/backend/scripts/generate_test_data.py` | Fix or exclude scripts from F841 sweep (pre-existing) |
 | QA-014 | Advisory | `eval`/`exec` in `packages/gifts/gifts/common/tpg.py` | Document as upstream; no S001 action |
 | QA-015 | Advisory | `docs/context/convert-send-buttons.md` §Executive Summary still says "Convert&Send is not implemented" | Update context doc status post-build (doc drift only) |

@@ -11,7 +11,7 @@
 | F1 | METAR → IWXXM conversion | Implemented | Product | README, backend conversion pipeline |
 | F2 | IWXXM validation | Implemented | Product | backend validation routers |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
-| F4 | IWXXM version handling | Implemented | Product | docs/IWXXM_VERSION_SWITCHING.md |
+| F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
 | F5 | User METAR work history | Planned | Product | docs/context/metar-work-history.md, S004 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
@@ -57,7 +57,7 @@
 - **Inputs**: ICAO station identifiers, optional bbox queries.
 - **Outputs**: Airport coordinates, elevation, reconciled metadata.
 - **Limitations**: External API availability and cache TTL.
-- **Source**: docs/OPENAIP_INTEGRATION_PLAN.md, backend services
+- **Source**: docs/guides/OPENAIP_INTEGRATION_PLAN.md, backend services
 
 ### F4: IWXXM Version Handling
 
@@ -65,7 +65,7 @@
 - **Inputs**: Target version parameter, METAR TAC.
 - **Outputs**: Version-appropriate IWXXM XML.
 - **Limitations**: Only versions present in `vendor/schemas/` snapshots.
-- **Source**: docs/IWXXM_VERSION_SWITCHING.md
+- **Source**: docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md
 
 ### F5: User METAR Work History
 

@@ -27,10 +27,15 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 |------------|------|--------|--------|--------|---------|-----------|
 | [S001-convert-send-buttons](S001-convert-send-buttons/session-brief.md) | feature | completed | Convert & Convert&Send UI (#656) | feat/S001-convert-send-buttons | 2026-06-22 | 2026-06-22 |
 | [S002-issue-594-feedback](S002-issue-594-feedback/session-brief.md) | hotfix | in_progress | COR handling + TAC traceability (#594) | fix/S002-issue-594-feedback | 2026-06-22 | — |
+| [S003-supabase-keys-config](S003-supabase-keys-config/session-brief.md) | hotfix | paused | Supabase keys / config split | fix/supabase-service-key-leak | 2026-06-23 | — |
+| [S004-issue-555-feedback](S004-issue-555-feedback/session-brief.md) | feature | completed | #555 UX + F5 work history | feat/S004-issue-555-feedback | 2026-06-23 | 2026-06-25 |
+| [S005-issue-671-docker-db](S005-issue-671-docker-db/session-brief.md) | hotfix | completed | Docker Compose bundled Postgres (#671) | fix/S005-issue-671-docker-db | 2026-06-25 | 2026-06-25 |
+| [S006-issue-664-output-filename](S006-issue-664-output-filename/session-brief.md) | feature | completed | Custom output filename for manual METAR (#664) | feat/S006-issue-664-output-filename | 2026-06-25 | 2026-07-12 |
+| [S007-docs-minimize](S007-docs-minimize/session-brief.md) | process | in_progress | Minimize docs/ root; nest non-standing docs | docs/S007-docs-minimize | 2026-07-12 | — |
 
 ## Active session
 
-**S002-issue-594-feedback** — see `workflow-state.yaml` §`active_session`.
+**S007-docs-minimize** (`process`) — docs tree reorg on `docs/S007-docs-minimize`.
 
 ## Folder layout
 
@@ -50,5 +55,5 @@ docs/sessions/SNNN-slug/
 | Session outputs | `docs/sessions/{id}/reports/*.md` |
 | Scoped discovery | `docs/context/{slug}.md` |
 
-Pre-session reports at `docs/` root (e.g. `docs/qa-report.md`) are historical; new work uses
+Pre-session reports at `docs/` root (e.g. `docs/reports/qa-report.md`) are historical; new work uses
 session report paths.

@@ -1,7 +1,7 @@
 # Staging Secrets & Connectivity Matrix
 
-> **⚠️ Superseded for env naming** — use [env-contract.md](env-contract.md) and
-> [config-spec.md](config-spec.md) (S003, 2026-06-23). This file retained for historical
+> **⚠️ Superseded for env naming** — use [env-contract.md](../env-contract.md) and
+> [config-spec.md](../config-spec.md) (S003, 2026-06-23). This file retained for historical
 > staging URL reference until fully migrated.
 
 > **Project**: METAR to IWXXM Converter
@@ -78,7 +78,7 @@ Populate `.env` from `.env.example` before `make test-live*`:
 | `PLAYWRIGHT_BASE_URL` | Same as `LIVE_FRONTEND_URL` |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Supabase admin user (runtime JWT) |
 
-See [deploy.md](deploy.md) §Live test harness and ADR-009.
+See [deploy.md](../deploy.md) §Live test harness and ADR-009.
 
 ## Connectivity Verification
 
@@ -98,7 +98,7 @@ pattern (ADR-011). Operator steps before enabling F5 in production:
 2. Redeploy API so `/api/v1/work-sessions` and `/admin/work-sessions` routes are live.
 3. Confirm H0i work-sessions CORS preflight (PATCH/DELETE) and H4 staging origin pass after redeploy.
 
-See [deploy.md](deploy.md) §Migrations (F5) and ADR-012 for pg_cron retention.
+See [deploy.md](../deploy.md) §Migrations (F5) and ADR-012 for pg_cron retention.
 
 ### Redeploy order
 

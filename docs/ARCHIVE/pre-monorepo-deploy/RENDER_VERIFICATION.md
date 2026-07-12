@@ -185,7 +185,7 @@ curl -s https://<service-name>.onrender.com/health | jq .
 # Check API docs at https://<service-name>.onrender.com/docs
 ```
 
-See [docs/API.md](../docs/API.md) for complete endpoint list.
+See [docs/guides/API.md](../docs/guides/API.md) for complete endpoint list.
 
 ---
 
@@ -472,8 +472,8 @@ Or optimize queries (check docs/sql-optimization/)
 | [Render Docs](https://render.com/docs) | Platform-specific issues |
 | [FastAPI Docs](https://fastapi.tiangolo.com) | API framework questions |
 | [Supabase Docs](https://supabase.com/docs) | Database issues |
-| [docs/DEVELOPMENT.md](../docs/DEVELOPMENT.md) | Local dev setup |
-| [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) | System design |
+| [docs/ops/DEVELOPMENT.md](../docs/ops/DEVELOPMENT.md) | Local dev setup |
+| [docs/guides/ARCHITECTURE.md](../docs/guides/ARCHITECTURE.md) | System design |
 
 ---
 

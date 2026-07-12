@@ -11,7 +11,8 @@ traces to the approved product plan.
 
 ## Feature Scope
 
-All implementation work must map to an approved feature in `docs/feature-list.md`:
+All implementation work must map to an approved feature in `[Corpus: product]`
+(`docs/feature-list.md` — see `docs/CORPUS.md`):
 
 | Feature | Scope |
 |---------|-------|
@@ -42,7 +43,8 @@ Structural moves and wiring only — behavior of F1–F4 must remain unchanged.
 
 ## Component Verification
 
-New files must map to an approved component from `docs/spec.md` §Component Overview:
+New files must map to an approved component from `[Corpus: system-spec]`
+(`docs/spec.md` §Component Overview):
 
 | Component | Location |
 |-----------|----------|
@@ -62,8 +64,8 @@ are transitional only — new work targets the monorepo tree above.
 
 ## Dependency Verification
 
-Before adding any new dependency, check `docs/dependency-inventory.md`. If the dependency
-is not listed:
+Before adding any new dependency, check `[Corpus: tech-spec]` → `docs/dependency-inventory.md`.
+If the dependency is not listed:
 1. Raise `[Decision]` with a recommendation
 2. On approval, back-add to `docs/dependency-inventory.md`
 3. Record the decision in `workflow-state.yaml` §`decisions_log`

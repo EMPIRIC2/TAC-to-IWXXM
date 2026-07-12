@@ -13,7 +13,7 @@ quality gates. Offload fast static analysis to pre-commit; keep full test suite 
 
 ## Approved scope
 
-See [evolve-decisions.md §Cycle EV-002](../../evolve-decisions.md).
+See [evolve-decisions.md §Cycle EV-002](../../decisions/evolve-decisions.md).
 
 ## Routing plan
 

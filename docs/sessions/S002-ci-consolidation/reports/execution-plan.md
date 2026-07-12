@@ -20,7 +20,7 @@ Reduce PR CI from 13 jobs / 4 workflow files to **3 jobs / 1 workflow file** wit
 | T3c | deploy job: merge detect-changes + build-and-push + deploy-render; drop redundant summary jobs | T3b | ci-cd.yml current | pending |
 | T4 | Delete `secret-scan.yml`, `github-yaml-lint.yml`, `frontend-audit.yml` | T3a | evolve-decisions | pending |
 | T5 | Update `docs/dependency-inventory.md` pre-commit entry | T2 | product-audit C1 | pending |
-| T6 | Update `docs/DEVELOPMENT.md` — pre-commit install + CI job layout | T3 | test-plan | pending |
+| T6 | Update `docs/ops/DEVELOPMENT.md` — pre-commit install + CI job layout | T3 | test-plan | pending |
 | T7 | Run `make ci` + local pre-commit smoke on evolve branch | T2,T3 | EV-002 acceptance | pending |
 
 ## CI job design (T3 detail)

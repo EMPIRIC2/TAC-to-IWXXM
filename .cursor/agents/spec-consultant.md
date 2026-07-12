@@ -23,7 +23,7 @@ ambiguity resolution without editing specs unless the user approves back-adds.
 1. `docs/feature-list.md` — F1–F4, M1–M6, non-goals
 2. `docs/spec.md` — architecture, components, constraints
 3. `docs/api-contract.md` — endpoints, CORS, M4 auth merge
-4. `docs/migration-plan.md` — big-bang steps, submodule mapping
+4. `docs/ops/migration-plan.md` — big-bang steps, submodule mapping
 5. `docs/test-plan.md` — TC-* cases, H4/H5 connectivity
 6. `docs/user-journeys.md` — UJ-* flows
 7. `docs/adr/` — ADR-001 through ADR-004

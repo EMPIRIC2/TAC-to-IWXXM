@@ -13,7 +13,8 @@ alwaysApply: false
 
 # IWXXM Domain Vocabulary
 
-Use terms from `docs/feature-list.md` and `docs/spec.md` consistently.
+Use terms from `[Corpus: product]` / `[Corpus: system-spec]`
+(`docs/feature-list.md`, `docs/spec.md` — see `docs/CORPUS.md`) consistently.
 
 ## Correct Terms
 
@@ -38,6 +39,7 @@ Use terms from `docs/feature-list.md` and `docs/spec.md` consistently.
 ## Version Handling (F4)
 
 - Target version is a user-selected IWXXM release line present in `vendor/schemas/`
-- Version-aware formatting follows `docs/IWXXM_VERSION_SWITCHING.md`
+- Version-aware formatting follows `[Corpus: system-spec]` and
+  `docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md`
 
 When introducing new domain terms, back-add to `docs/feature-list.md` or raise `[Ambiguity]`.
