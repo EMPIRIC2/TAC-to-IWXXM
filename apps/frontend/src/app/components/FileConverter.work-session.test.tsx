@@ -371,4 +371,50 @@ describe('FileConverter F5 workflow', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('<iwxxm>hydrated</iwxxm>')).toBeInTheDocument();
   });
+
+  it('hydrates multi-line manual line chips from converted_results (#655)', async () => {
+    render(
+      <FileConverter
+        onLogout={vi.fn()}
+        userEmail="user@example.com"
+        accessToken="token"
+        loadedWorkSession={
+          {
+            id: 'sess-multi-line',
+            status: 'wip',
+            title: 'KJFK',
+            manual_tac: '',
+            pending_files: [],
+            converted_results: [
+              {
+                name: 'manual_input_1.txt',
+                iwxxm_xml: '<iwxxm>one</iwxxm>',
+                tac_input: 'METAR ONE',
+                manual_line_index: 1,
+                manual_line_total: 2,
+              },
+              {
+                name: 'manual_input_2.txt',
+                iwxxm_xml: '<iwxxm>two</iwxxm>',
+                tac_input: 'METAR TWO',
+                manual_line_index: 2,
+                manual_line_total: 2,
+              },
+            ],
+            errors: [],
+            issues: [],
+            conversion_params: {},
+            kv_upload_key: null,
+            deleted_at: null,
+            user_id: 'u1',
+            created_at: '2026-06-24T00:00:00Z',
+            updated_at: '2026-06-24T00:00:00Z',
+          } as any
+        }
+      />,
+    );
+
+    expect(screen.getByText('Line 1 of 2')).toBeInTheDocument();
+    expect(screen.getByText('Line 2 of 2')).toBeInTheDocument();
+  });
 });

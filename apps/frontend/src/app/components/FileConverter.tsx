@@ -43,7 +43,10 @@ import { ErrorLogPanel, type ConversionLog } from './ErrorLogPanel';
 import { WorkHistorySidebar } from './WorkHistorySidebar';
 import type { WorkSession } from '@metar/shared';
 import { useWorkSessionSync } from '@/hooks/useWorkSessionSync';
-import { type ConverterSnapshot } from '/utils/workSessionPayload';
+import {
+  type ConverterSnapshot,
+  resolveManualLineMetaFromResult,
+} from '/utils/workSessionPayload';
 import {
   readGuestConverterState,
   saveGuestConverterState,
@@ -171,6 +174,8 @@ export function FileConverter({
       originalName: file.originalName,
       originalContent: file.originalContent,
       convertedContent: file.convertedContent,
+      manualLineIndex: file.manualLineIndex,
+      manualLineTotal: file.manualLineTotal,
     })),
     conversionLog: conversionLog
       ? {
@@ -261,15 +266,25 @@ export function FileConverter({
       })),
     );
     if (loadedWorkSession.converted_results?.length) {
+      const resultNames = loadedWorkSession.converted_results.map((result, index) =>
+        String(result.name ?? `result-${index + 1}`),
+      );
       setConvertedFiles(
         loadedWorkSession.converted_results.map((result, index) => {
-          const originalName = String(result.name ?? `result-${index + 1}`);
+          const originalName = resultNames[index];
           const originalContent = String(result.tac_input ?? '');
+          const lineMeta = resolveManualLineMetaFromResult(
+            originalName,
+            result,
+            resultNames,
+          );
           return {
             id: `loaded-result-${index}`,
             originalName,
             originalContent,
             displayTitle: deriveTacDisplayTitle(originalContent, originalName),
+            manualLineIndex: lineMeta.manualLineIndex,
+            manualLineTotal: lineMeta.manualLineTotal,
             convertedContent: String(
               result.iwxxm_xml ?? result.xml ?? result.content ?? '',
             ),
@@ -1495,7 +1510,9 @@ export function FileConverter({
                               Download: {file.originalName}
                             </p>
                           ) : null}
-                          {file.originalContent.length > 60 ? (
+                          {file.originalContent.length > 60 &&
+                          file.displayTitle !==
+                            file.originalContent.trim().replace(/\s+/g, ' ') ? (
                             <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 break-all">
                               {truncateTacSnippet(file.originalContent)}
                             </p>

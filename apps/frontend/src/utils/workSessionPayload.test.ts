@@ -3,6 +3,7 @@ import {
   buildWorkSessionPayload,
   extractSessionTitle,
   hasConverterContent,
+  resolveManualLineMetaFromResult,
 } from './workSessionPayload';
 
 describe('workSessionPayload', () => {
@@ -90,5 +91,46 @@ describe('workSessionPayload', () => {
         conversionParams: {},
       }),
     ).toBe(true);
+  });
+
+  it('persists manual line metadata in converted_results', () => {
+    const payload = buildWorkSessionPayload({
+      manualInput: '',
+      pendingFiles: [],
+      convertedFiles: [
+        {
+          originalName: 'manual_input_1.txt',
+          originalContent: 'METAR ONE',
+          convertedContent: '<iwxxm/>',
+          manualLineIndex: 1,
+          manualLineTotal: 2,
+        },
+      ],
+      conversionLog: null,
+      conversionParams: {},
+    });
+    expect(payload.converted_results?.[0]).toMatchObject({
+      manual_line_index: 1,
+      manual_line_total: 2,
+    });
+  });
+
+  it('restores manual line metadata from stored converted_results', () => {
+    expect(
+      resolveManualLineMetaFromResult(
+        'manual_input_1.txt',
+        { manual_line_index: 1, manual_line_total: 2 },
+        ['manual_input_1.txt', 'manual_input_2.txt'],
+      ),
+    ).toEqual({ manualLineIndex: 1, manualLineTotal: 2 });
+  });
+
+  it('infers manual line metadata from download names when not stored', () => {
+    expect(
+      resolveManualLineMetaFromResult('manual_input_2.txt', {}, [
+        'manual_input_1.txt',
+        'manual_input_2.txt',
+      ]),
+    ).toEqual({ manualLineIndex: 2, manualLineTotal: 2 });
   });
 });
