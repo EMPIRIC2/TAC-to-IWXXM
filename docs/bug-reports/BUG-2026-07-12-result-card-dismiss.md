@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | verifying |
+| **Status** | verified / closed |
 | **Feature** | F1 (METAR → IWXXM conversion UI) |
 | **Severity** | critical / blocked (user) |
 | **Classification** | code bug (UI state + F5 hydrate) |
@@ -120,7 +120,38 @@ Spec conformance: **no blocking Contradiction**; fix is code bug / UX drift vs F
 
 ### Layer checklist (to fill during verify)
 
-- [x] Layer 1 — Automated (bug repro green; FileConverter 93/93; full CI parity pending)
-- [ ] Layer 2 — Reproduction (scripted remove/cancel clears card)
-- [ ] Layer 3 — Pre-deploy smoke (frontend unit / Playwright if available)
-- [ ] Layer 4 — Production (after deploy approval; user confirms)
+- [x] Layer 1 — Automated (bug repro green 2/2; FileConverter 93/93; main CI green post-merge)
+- [x] Layer 2 — Reproduction (Vitest `bug-2026-07-12-result-card-dismiss.test.tsx` — Clear + stale rehydrate)
+- [x] Layer 3 — Pre-deploy smoke (frontend unit suite green on PR branch + main)
+- [x] Layer 4 — Production (Playwright prod smoke 2026-07-12: Clear + Remove dismiss results region after draft saved; deploy `dep-d9a1tql7vvec738evhmg` live `b20158b`)
+
+**PR:** [#713](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/713) merged → `b20158b7b29d5e5b68d3cd80c9618454743713e1`
+
+## Prevention & countermeasures
+
+| Field | Answer |
+|-------|--------|
+| `prevention_recurrence_risk` | Possible on similar F5 / hydrate changes |
+| `prevention_detect_earlier` | Main CI (frontend `npm test` on PR) |
+| `prevention_automated` | Bug repro test (done) — runs in CI frontend job |
+| `prevention_code_hardening` | No — hotfix only |
+| `prevention_process` | Cursor rule for FileConverter F5 hydrate pattern |
+| `prevention_when` | Now (closure commit) |
+| `prevention_who` | Agent |
+
+### Planned actions
+
+| Action | Status |
+|--------|--------|
+| Vitest repro `bug-2026-07-12-result-card-dismiss.test.tsx` | Done (shipped in #713) |
+| Cursor rule `.cursor/rules/optional/fileconverter-f5-hydrate.mdc` | Done |
+| Hotfix report `docs/sessions/S009-result-card-dismiss/reports/hotfix.md` | Done |
+
+### Regression prevention
+
+- `apps/frontend/src/test/bug-2026-07-12-result-card-dismiss.test.tsx` (Clear + stale rehydrate)
+- Existing `FileConverter.test.tsx` Remove assertion
+
+## Cursor rule
+
+`.cursor/rules/optional/fileconverter-f5-hydrate.mdc` — hydrate-on-id-change, Clear scope, autosave deps.

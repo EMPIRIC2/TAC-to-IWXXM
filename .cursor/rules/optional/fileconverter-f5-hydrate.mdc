@@ -1,0 +1,24 @@
+---
+description: FileConverter F5 work-session hydrate must not undo local Clear/Remove
+globs: apps/frontend/src/app/components/FileConverter.tsx,apps/frontend/src/app/components/FileConverter*.test.tsx,apps/frontend/src/test/bug-*-result-card*.test.tsx
+alwaysApply: false
+---
+
+# FileConverter F5 hydrate + dismiss UX
+
+Evidence: BUG-2026-07-12-result-card-dismiss (S009).
+
+When editing `FileConverter` work-session sync or dismiss controls:
+
+1. **`handleClear` must reset all converter output state** — include `convertedFiles` and
+   `conversionLog`, not only queue/manual input.
+2. **Hydrate from `loadedWorkSession` only on session id change** — use a ref
+   (`hydratedWorkSessionIdRef`); do not re-run full hydrate on every autosave /
+   `onSessionUpdated` refresh or Remove/Clear will be undone.
+3. **Autosave deps must mirror dismiss state** — include `convertedFiles` and
+   `conversionLog` in debounced save triggers so Clear/Remove persist to F5 draft.
+4. **Regression tests** — add or extend Vitest repro when changing hydrate or Clear:
+   - Clear dismisses results card
+   - Stale `loadedWorkSession` prop update after Remove must not restore card
+
+See `apps/frontend/src/test/bug-2026-07-12-result-card-dismiss.test.tsx`.

@@ -9,7 +9,7 @@ active_session:
   id: S009-result-card-dismiss
   type: hotfix
   intent: "Conversion results Card (manual_input.txt) remains visible after Cancel or Remove/Delete in FileConverter"
-  status: in_progress
+  status: completed
   branch: fix/S009-result-card-dismiss
   orchestrator: 14-hotfix
   evolve_cycle_id: null
@@ -24,7 +24,7 @@ active_session:
     - stage: 14-hotfix
       mode: full
       required: true
-      status: in_progress
+      status: completed
       skip_rationale: null
       note: "Phase 0 interview started; new BUG for FileConverter result card not dismissing"
     - stage: 15-service-health
@@ -46,6 +46,8 @@ active_session:
     - "2026-07-12 Phase 1.25 — Vitest repro RED (2/2): Clear leaves results; Remove undone by stale loadedWorkSession rehydrate. Awaiting repro_test_matches_symptom"
     - "2026-07-12 Phase 1.25b — user confirmed repro matches (A). Proposed RC: Clear skips convertedFiles; Remove undone by loadedWorkSession hydrate. Awaiting investigation_root_cause"
     - "2026-07-12 Phase 2 — fix applied on fix/S009-result-card-dismiss: Clear clears results; hydrate only on session id change; autosave includes convertedFiles. Repro GREEN 2/2; FileConverter 93/93. Local-first — PR/deploy pending user"
+    - "2026-07-12 Phase 3 — commit 07d4857; PR #713 merged b20158b; deploy dep-d9a1tql7vvec738evhmg live"
+    - "2026-07-12 Phase 4–5 — L1–4 verified; user confirmed prod; prevention rule fileconverter-f5-hydrate.mdc; session closed"
 
 sessions:
 
