@@ -17,7 +17,7 @@ repos:
         always_run: true
       - id: ruff-check
         name: ruff check
-        entry: uv run ruff check apps/backend/src apps/backend/tests packages/auth/src packages/auth/tests packages/gifts/gifts packages/gifts/tests packages/shared packages/shared/tests tests
+        entry: uv run ruff check apps/backend/src apps/backend/tests packages/auth/src packages/auth/tests packages/tac2iwxxm/src packages/tac2iwxxm/tests packages/shared packages/shared/tests tests
         language: system
         pass_filenames: false
         always_run: true
