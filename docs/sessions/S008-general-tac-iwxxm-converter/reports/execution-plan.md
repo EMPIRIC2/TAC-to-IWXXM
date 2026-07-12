@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase 4: Remaining F6 Products |
 | **Active milestone** | M5: F6.c–f products + edge TCs |
-| **Active task** | T5.4 — iwxxm_us for TAF/SIGMET/AIRMET |
-| **Tasks completed** | 32 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T5.3 VAA/TCA) |
+| **Active task** | M5 complete — next 08-verify-build / PR-M5 |
+| **Tasks completed** | 35 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T5.1–T5.6 complete) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -164,9 +164,9 @@ F6.b METAR/SPECI US already shipped in M4.
 | T5.1 | Test: product matrix fixtures (7 products) | Test | completed | TC-F6-001/002 | T4.7 |
 | T5.2 | Code: TAF / SIGMET / AIRMET plugins | Code | completed | F6.c–d | T5.1 |
 | T5.3 | Code: VAA / TCA plugins | Code | completed | F6.f | T5.1 |
-| T5.4 | Test: iwxxm_us for TAF/SIGMET/AIRMET where published | Test | pending | TC-F6-003 | T1.5, T5.2 |
-| T5.5 | Code: US profile extensions (non-METAR products) | Code | pending | ADR-013 | T5.4 |
-| T5.6 | Test: TC-F6-010/011/012 (unknown product, US pin fail-closed, REMARKS) | Test | pending | UJ-008–010, C09a | T4.7, T2.6, T1.5 |
+| T5.4 | Test: iwxxm_us for TAF/SIGMET/AIRMET where published | Test | completed | TC-F6-003 | T1.5, T5.2 |
+| T5.5 | Code: US profile extensions (non-METAR products) | Code | completed | ADR-013 | T5.4 |
+| T5.6 | Test: TC-F6-010/011/012 (unknown product, US pin fail-closed, REMARKS) | Test | completed | UJ-008–010, C09a | T4.7, T2.6, T1.5 |
 
 **Phase 4 gate**: F6 v1 product QA checklist items for products + edge TCs green.
 
