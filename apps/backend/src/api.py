@@ -34,7 +34,11 @@ try:
     )
     from .schemas.icao_opmet import TranslationStatus
     from .schemas.validation import (
+        BulletinMetaModel,
+        BulletinReportResultModel,
         ConvertBulletinResponse,
+        LintFixModel,
+        LintIssueModel,
         LintTacResponse,
         ValidateRequest,
         ValidateResponse,
@@ -66,7 +70,11 @@ except ImportError:
     )
     from schemas.icao_opmet import TranslationStatus
     from schemas.validation import (
+        BulletinMetaModel,
+        BulletinReportResultModel,
         ConvertBulletinResponse,
+        LintFixModel,
+        LintIssueModel,
         LintTacResponse,
         ValidateRequest,
         ValidateResponse,
@@ -819,26 +827,26 @@ async def convert_bulletin(
         status = 400 if exc.code == "empty_bulletin" else 422
         raise HTTPException(status_code=status, detail={"code": exc.code, "message": exc.message}) from exc
 
-    results: list[dict[str, Any]] = []
+    results: list[BulletinReportResultModel] = []
     for index, tac in enumerate(split.reports):
-        issues: list[dict[str, Any]] = []
-        fixes: list[dict[str, Any]] = []
+        issues: list[LintIssueModel] = []
+        fixes: list[LintFixModel] = []
         xml_out: str | None = None
         ok = True
 
         if lint:
             lint_report = tac_lint_fn(tac, product=product)
             issues.extend(
-                {
-                    "severity": i.severity,
-                    "code": i.code,
-                    "message": i.message,
-                    "location": i.location,
-                }
+                LintIssueModel(
+                    severity=i.severity,
+                    code=i.code,
+                    message=i.message,
+                    location=i.location,
+                )
                 for i in lint_report.issues
             )
             fixes.extend(
-                {"code": f.code, "message": f.message, "replacement": f.replacement} for f in lint_report.fixes
+                LintFixModel(code=f.code, message=f.message, replacement=f.replacement) for f in lint_report.fixes
             )
             if not lint_report.ok:
                 ok = False
@@ -854,35 +862,35 @@ async def convert_bulletin(
                 ok = False
                 xml_out = None
                 issues.append(
-                    {
-                        "severity": "error",
-                        "code": "parse_failed",
-                        "message": str(exc),
-                        "location": None,
-                    }
+                    LintIssueModel(
+                        severity="error",
+                        code="parse_failed",
+                        message=str(exc),
+                        location=None,
+                    )
                 )
 
         results.append(
-            {
-                "report_index": index,
-                "ok": ok and xml_out is not None,
-                "tac_input": tac,
-                "xml": xml_out if ok else None,
-                "issues": issues,
-                "fixes": fixes,
-            }
+            BulletinReportResultModel(
+                report_index=index,
+                ok=ok and xml_out is not None,
+                tac_input=tac,
+                xml=xml_out if ok else None,
+                issues=issues,
+                fixes=fixes,
+            )
         )
 
     return ConvertBulletinResponse(
-        bulletin_meta={
-            "ahl": split.meta.ahl,
-            "report_count": split.meta.report_count,
-            "tt": split.meta.tt,
-            "aa": split.meta.aa,
-            "cccc": split.meta.cccc,
-            "yygggg": split.meta.yygggg,
-            "bbb": split.meta.bbb,
-        },
+        bulletin_meta=BulletinMetaModel(
+            ahl=split.meta.ahl,
+            report_count=split.meta.report_count,
+            tt=split.meta.tt,
+            aa=split.meta.aa,
+            cccc=split.meta.cccc,
+            yygggg=split.meta.yygggg,
+            bbb=split.meta.bbb,
+        ),
         results=results,
     )
 
