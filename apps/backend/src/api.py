@@ -796,7 +796,6 @@ async def convert_bulletin(
     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail
     (Q6=A). Per-report ``issues`` / ``fixes`` follow lint-style identity (Q7=C).
     """
-    _ = profile  # reserved for iwxxm_us convert path at cutover
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -857,6 +856,8 @@ async def convert_bulletin(
                     tac,
                     iwxxm_version=iwxxm_version,
                     validate=False,
+                    product=product,
+                    profile=profile,
                 )
             except ConversionError as exc:
                 ok = False
