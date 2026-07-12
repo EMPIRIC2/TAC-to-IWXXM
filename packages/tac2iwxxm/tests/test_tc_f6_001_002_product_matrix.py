@@ -1,0 +1,119 @@
+"""TC-F6-001 / TC-F6-002: annex3 product-matrix fixtures (F6.c–f / T5.1).
+
+Spec: docs/test-plan.md TC-F6-001, TC-F6-002; docs/feature-list.md F6 (7 products);
+docs/user-journeys.md UJ-005 / UJ-006.
+
+Package-level gate for the seven-product convert matrix. METAR/SPECI already convert;
+AIRMET / SIGMET / TAF / VAA / TCA turn green with T5.2–T5.3 plugins (xfail until then).
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pytest
+from tac_validate.products import PRODUCTS
+
+FIXTURES = Path(__file__).resolve().parent / "fixtures" / "product_matrix"
+MANIFEST_PATH = FIXTURES / "manifest.json"
+
+IWXXM_VERSION = "2025-2"
+PROFILE = "annex3"
+EXPECTED_PRODUCTS = frozenset(PRODUCTS)
+
+# Convert already ships for METAR/SPECI; remaining products land in T5.2–T5.3.
+_SHIPPED = frozenset({"metar_basic", "speci_basic"})
+_PENDING_PLUGINS = frozenset(
+    {
+        "airmet_basic",
+        "sigmet_basic",
+        "taf_basic",
+        "vaa_basic",
+        "tca_basic",
+    }
+)
+
+
+def _load_manifest() -> dict:
+    if not MANIFEST_PATH.is_file():
+        pytest.fail(f"missing product-matrix manifest: {MANIFEST_PATH}")
+    return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+
+
+@pytest.fixture(scope="module")
+def matrix_manifest() -> dict:
+    return _load_manifest()
+
+
+def test_product_matrix_manifest_covers_seven_products(matrix_manifest: dict) -> None:
+    assert matrix_manifest.get("schema_version") == 1
+    assert matrix_manifest.get("profile") == PROFILE
+    cases = matrix_manifest.get("cases", [])
+    products = {c["product"] for c in cases}
+    assert products == EXPECTED_PRODUCTS, f"missing products: {EXPECTED_PRODUCTS - products}"
+    assert len(cases) == 7
+    for case in cases:
+        tac_path = FIXTURES / case["tac"]
+        assert tac_path.is_file(), f"missing TAC fixture for {case['id']}: {tac_path}"
+        text = tac_path.read_text(encoding="utf-8").strip()
+        assert text, f"empty TAC fixture for {case['id']}"
+
+
+@pytest.mark.parametrize("case_id", sorted(_SHIPPED))
+def test_tc_f6_002_convert_product_matrix_annex3_shipped(case_id: str, matrix_manifest: dict) -> None:
+    """METAR/SPECI matrix cases convert today (TC-F6-002 subset)."""
+    from tac2iwxxm import convert
+
+    case = next(c for c in matrix_manifest["cases"] if c["id"] == case_id)
+    tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
+    product = case["product"]
+
+    result = convert(
+        tac,
+        product=product,
+        profile=PROFILE,
+        iwxxm_version=IWXXM_VERSION,
+    )
+
+    assert result.ok is True, f"convert failed for {case_id}/{product}: {result.issues!r}"
+    assert result.xml, f"empty XML for {case_id}"
+    assert result.product == product
+    assert result.profile == PROFILE
+    assert result.iwxxm_version == IWXXM_VERSION
+
+
+@pytest.mark.parametrize(
+    "case_id",
+    [
+        pytest.param(
+            cid,
+            marks=pytest.mark.xfail(
+                reason="T5.2/T5.3 product plugin not implemented yet",
+                strict=True,
+            ),
+        )
+        for cid in sorted(_PENDING_PLUGINS)
+    ],
+)
+def test_tc_f6_002_convert_product_matrix_annex3_pending(case_id: str, matrix_manifest: dict) -> None:
+    """Remaining F6 products: fixtures present; convert green after T5.2–T5.3."""
+    from tac2iwxxm import convert
+
+    case = next(c for c in matrix_manifest["cases"] if c["id"] == case_id)
+    tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
+    product = case["product"]
+
+    result = convert(
+        tac,
+        product=product,
+        profile=PROFILE,
+        iwxxm_version=IWXXM_VERSION,
+    )
+
+    assert result.ok is True, f"convert failed for {case_id}/{product}: {result.issues!r}"
+    assert result.xml, f"empty XML for {case_id}"
+    assert result.product == product
+    assert result.profile == PROFILE
+    assert result.iwxxm_version == IWXXM_VERSION
+    assert "UNSUPPORTED_PRODUCT" not in {i.code for i in result.issues}

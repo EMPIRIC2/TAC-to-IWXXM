@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "description": "TC-F6-001/002 annex3 product-matrix TAC pack (7 F6 products). Goldens land with T5.2–T5.3 plugins.",
+  "profile": "annex3",
+  "iwxxm_version": "2025-2",
+  "cases": [
+    {
+      "id": "airmet_basic",
+      "product": "AIRMET",
+      "tac": "airmet_basic.tac",
+      "source": "vendor/schemas/iwxxm/2025-2/IWXXM/examples/airmet-A6-1a-TS.tac (trimmed)"
+    },
+    {
+      "id": "metar_basic",
+      "product": "METAR",
+      "tac": "metar_basic.tac",
+      "source": "packages/tac2iwxxm/tests/fixtures/annex3_golden/metar_basic.tac"
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "tac": "sigmet_basic.tac",
+      "source": "vendor/schemas/iwxxm/2025-2/IWXXM/examples/sigmet-A6-1a-TS.tac (trimmed)"
+    },
+    {
+      "id": "speci_basic",
+      "product": "SPECI",
+      "tac": "speci_basic.tac",
+      "source": "packages/tac2iwxxm/tests/fixtures/annex3_golden/speci_basic.tac"
+    },
+    {
+      "id": "taf_basic",
+      "product": "TAF",
+      "tac": "taf_basic.tac",
+      "source": "vendor/schemas/iwxxm/2025-2/IWXXM/examples/taf-A5-1.tac (trimmed)"
+    },
+    {
+      "id": "vaa_basic",
+      "product": "VAA",
+      "tac": "vaa_basic.tac",
+      "source": "vendor/schemas/iwxxm/2025-2/IWXXM/examples/va-advisory-A7-2.tac (trimmed)"
+    },
+    {
+      "id": "tca_basic",
+      "product": "TCA",
+      "tac": "tca_basic.tac",
+      "source": "vendor/schemas/iwxxm/2025-2/IWXXM/examples/tc-advisory-A2-2.tac (trimmed)"
+    }
+  ]
+}
