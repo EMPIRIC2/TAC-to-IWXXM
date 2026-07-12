@@ -1935,7 +1935,7 @@ git_history:
     - name: evolve/S008-general-tac-iwxxm-converter
       purpose: general TAC→IWXXM converter architecture + package design
       base: main
-      status: open
+      status: active
       created_at: "2026-07-12"
       session_id: S008-general-tac-iwxxm-converter
     - name: docs/S007-docs-minimize
@@ -2160,6 +2160,13 @@ git_history:
       session_id: S007-docs-minimize
       files_changed: 131
       timestamp: "2026-07-12T02:07:00Z"
+    - sha: 9fee6dbc27fb9c10ffa086858eb9a6579cc4a65f
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "[S008] docs: F6 tac2iwxxm requirements delta (01-requirements)"
+      stage: "01-requirements"
+      session_id: S008-general-tac-iwxxm-converter
+      files_changed: 21
+      timestamp: "2026-07-12"
 
 pr_review_cycles:
   - id: PRR-001
