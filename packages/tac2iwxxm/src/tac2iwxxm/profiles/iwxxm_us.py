@@ -185,4 +185,70 @@ def emit_metar_speci_iwxxm_us(
 """
 
 
-__all__ = ["emit_metar_speci_iwxxm_us"]
+_US_NS = 'xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0"'
+
+
+def _with_us_namespace(xml: str) -> str:
+    """Inject the IWXXM-US namespace declaration on the root element."""
+    if "xmlns:iwxxm-us=" in xml:
+        return xml
+    return xml.replace("xmlns:iwxxm=", f"{_US_NS}\n    xmlns:iwxxm=", 1)
+
+
+def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit TAF annex3 body plus optional ``MeteorologicalAerodromeForecastExtension``.
+
+    Parameters
+    ----------
+    ir :
+        Parsed TAF IR (optional ``forecast_altimeter_inhg``).
+    iwxxm_version :
+        Release line.
+    """
+    from tac2iwxxm.profiles.annex3_products import emit_taf_annex3
+
+    xml = emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
+    xml = _with_us_namespace(xml)
+    xml = xml.replace('gml:id="taf.basic.', 'gml:id="taf.us.', 1)
+
+    alt = ir.get("forecast_altimeter_inhg")
+    if alt is None:
+        return xml
+
+    extension = f"""      <iwxxm:extension>
+        <iwxxm-us:MeteorologicalAerodromeForecastExtension>
+          <iwxxm-us:altimeter uom="[in_i'Hg]">{alt:.2f}</iwxxm-us:altimeter>
+        </iwxxm-us:MeteorologicalAerodromeForecastExtension>
+      </iwxxm:extension>
+"""
+    needle = "    </iwxxm:MeteorologicalAerodromeForecast>"
+    if needle not in xml:
+        return xml
+    return xml.replace(needle, extension + needle, 1)
+
+
+def emit_sigmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """Emit SIGMET annex3 body with IWXXM-US namespace (thin F6.d US surface)."""
+    from tac2iwxxm.profiles.annex3_products import emit_sigmet_annex3
+
+    xml = emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
+    xml = _with_us_namespace(xml)
+    return xml.replace('gml:id="sigmet.basic.', 'gml:id="sigmet.us.', 1)
+
+
+def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """Emit AIRMET annex3 body with IWXXM-US namespace (thin F6.d US surface)."""
+    from tac2iwxxm.profiles.annex3_products import emit_airmet_annex3
+
+    xml = emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
+    xml = _with_us_namespace(xml)
+    return xml.replace('gml:id="airmet.basic.', 'gml:id="airmet.us.', 1)
+
+
+__all__ = [
+    "emit_airmet_iwxxm_us",
+    "emit_metar_speci_iwxxm_us",
+    "emit_sigmet_iwxxm_us",
+    "emit_taf_iwxxm_us",
+]

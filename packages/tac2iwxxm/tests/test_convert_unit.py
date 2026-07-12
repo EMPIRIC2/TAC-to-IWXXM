@@ -16,7 +16,7 @@ def test_convert_error_is_value_error() -> None:
 
 
 def test_convert_unsupported_product() -> None:
-    result = convert("METAR KJFK 231751Z NIL=", product="TAF")
+    result = convert("METAR KJFK 231751Z NIL=", product="FOO")
     assert result.ok is False
     assert result.issues[0].code == "UNSUPPORTED_PRODUCT"
 

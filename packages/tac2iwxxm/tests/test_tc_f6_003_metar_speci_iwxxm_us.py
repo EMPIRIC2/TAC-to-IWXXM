@@ -50,7 +50,7 @@ def test_iwxxm_us_golden_manifest_present(golden_manifest: dict) -> None:
     for case in cases:
         assert (FIXTURES / case["tac"]).is_file()
         assert (FIXTURES / case["golden"]).is_file()
-        assert case["product"] in {"METAR", "SPECI"}
+        assert case["product"] in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"}
 
 
 @pytest.mark.parametrize("case_id", CASE_IDS)

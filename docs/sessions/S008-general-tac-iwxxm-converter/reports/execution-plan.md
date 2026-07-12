@@ -14,11 +14,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase 3: Bulletin + METAR/SPECI + PyO3 (pre-cutover) |
-| **Active milestone** | M4: METAR/SPECI (+ US) + PyO3 + cutover PR |
-| **Active task** | M4 complete — next 08-verify-build / PR |
-| **Tasks completed** | 29 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T4.7–T4.9 cutover complete) |
+| **Active phase** | Phase 4: Remaining F6 Products |
+| **Active milestone** | M5: F6.c–f products + edge TCs |
+| **Active task** | M5 complete — next 08-verify-build / PR-M5 |
+| **Tasks completed** | 35 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T5.1–T5.6 complete) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -161,12 +161,12 @@ F6.b METAR/SPECI US already shipped in M4.
 
 | # | Task | Type | Status | Spec Source | Depends On |
 |---|------|------|--------|-------------|------------|
-| T5.1 | Test: product matrix fixtures (7 products) | Test | pending | TC-F6-001/002 | T4.7 |
-| T5.2 | Code: TAF / SIGMET / AIRMET plugins | Code | pending | F6.c–d | T5.1 |
-| T5.3 | Code: VAA / TCA plugins | Code | pending | F6.f | T5.1 |
-| T5.4 | Test: iwxxm_us for TAF/SIGMET/AIRMET where published | Test | pending | TC-F6-003 | T1.5, T5.2 |
-| T5.5 | Code: US profile extensions (non-METAR products) | Code | pending | ADR-013 | T5.4 |
-| T5.6 | Test: TC-F6-010/011/012 (unknown product, US pin fail-closed, REMARKS) | Test | pending | UJ-008–010, C09a | T4.7, T2.6, T1.5 |
+| T5.1 | Test: product matrix fixtures (7 products) | Test | completed | TC-F6-001/002 | T4.7 |
+| T5.2 | Code: TAF / SIGMET / AIRMET plugins | Code | completed | F6.c–d | T5.1 |
+| T5.3 | Code: VAA / TCA plugins | Code | completed | F6.f | T5.1 |
+| T5.4 | Test: iwxxm_us for TAF/SIGMET/AIRMET where published | Test | completed | TC-F6-003 | T1.5, T5.2 |
+| T5.5 | Code: US profile extensions (non-METAR products) | Code | completed | ADR-013 | T5.4 |
+| T5.6 | Test: TC-F6-010/011/012 (unknown product, US pin fail-closed, REMARKS) | Test | completed | UJ-008–010, C09a | T4.7, T2.6, T1.5 |
 
 **Phase 4 gate**: F6 v1 product QA checklist items for products + edge TCs green.
 
@@ -240,7 +240,7 @@ F6.b METAR/SPECI US already shipped in M4.
 | PR-M3 | Minor | M3 | feat/S008-M3-bulletin | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704 |
 | PR-M4 | Minor | M4 cutover (partial) | feat/S008-M4-cutover | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/705 |
 | PR-M4b | Minor | M4 US + gifts cutover | feat/S008-M4-us-metar | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706 |
-| PR-M5 | Minor | M5 products | feat/S008-M5-products | evolve/S008-… | pending |
+| PR-M5 | Minor | M5 products | feat/S008-M5-products | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/707 |
 | PR-M6 | Minor | M6 worker | feat/S008-M6-worker | evolve/S008-… | pending |
 | PR-M7 | Minor | M7 live | feat/S008-M7-live | evolve/S008-… | pending |
 | PR-M8 | Minor | M8 UI+H4–H6 | feat/S008-M8-ui-connectivity | evolve/S008-… | pending |
