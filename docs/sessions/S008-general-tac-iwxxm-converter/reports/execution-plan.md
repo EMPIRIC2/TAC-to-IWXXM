@@ -14,11 +14,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase 1: Package Scaffold (pending approval) |
-| **Active milestone** | M1: Workspace members |
-| **Active task** | T1.1 |
-| **Tasks completed** | 0 / 51 |
-| **Last updated** | 2026-07-12 (05-verify-tech Batch 2) |
+| **Active phase** | Phase 1: Package Scaffold & Vendor Pin |
+| **Active milestone** | M1: Workspace + iwxxm-us |
+| **Active task** | T1.6 (completing) |
+| **Tasks completed** | 6 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; M1 T1.1–T1.6) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -81,12 +81,12 @@
 
 | # | Task | Type | Status | Spec Source | Depends On |
 |---|------|------|--------|-------------|------------|
-| T1.1 | Test: empty package import smoke for three names | Test | pending | TC-F6-M001 | — |
-| T1.2 | Config: scaffold `packages/{tac2iwxxm,iwxxm-validate,tac-validate}` (`src/` + pyproject MIT) | Config | pending | ADR-016, Q1 | T1.1 |
-| T1.3 | Config: add uv members, Makefile `lint`/`test-unit-*`, `ci-cd.yml` matrix | Config | pending | M5, ADR-007 | T1.2 |
-| T1.4 | Config: add `msgspec` to tac2iwxxm + tac-validate; document Encoder reuse | Config | pending | ADR-016, Q2 | T1.2 |
-| T1.5 | Config: pin `vendor/schemas/iwxxm-us` from NWS HTTP `3.0` + manifest URL/hash + integrity test | Config | pending | Q13=A, C07, UJ-DEV-003b | — |
-| T1.6 | Docs: dependency-inventory IR = msgspec; PyO3 required note | Docs | pending | ADR-016/017 | T1.4 |
+| T1.1 | Test: empty package import smoke for three names | Test | completed | TC-F6-M001 | — |
+| T1.2 | Config: scaffold `packages/{tac2iwxxm,iwxxm-validate,tac-validate}` (`src/` + pyproject MIT) | Config | completed | ADR-016, Q1 | T1.1 |
+| T1.3 | Config: add uv members, Makefile `lint`/`test-unit-*`, `ci-cd.yml` matrix | Config | completed | M5, ADR-007 | T1.2 |
+| T1.4 | Config: add `msgspec` to tac2iwxxm + tac-validate; document Encoder reuse | Config | completed | ADR-016, Q2 | T1.2 |
+| T1.5 | Config: pin `vendor/schemas/iwxxm-us` from NWS HTTP `3.0` + manifest URL/hash + integrity test | Config | completed | Q13=A, C07, UJ-DEV-003b | — |
+| T1.6 | Docs: dependency-inventory IR = msgspec; PyO3 required note | Docs | completed | ADR-016/017 | T1.4 |
 
 **Phase 1 gate**: T1.1–T1.6 green; no gifts deletion yet.
 
