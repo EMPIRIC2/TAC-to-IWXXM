@@ -14,11 +14,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase 1: Package Scaffold & Vendor Pin |
-| **Active milestone** | M1: Workspace + iwxxm-us |
-| **Active task** | T1.6 (completing) |
+| **Active phase** | Phase 2: Validate Packages + HTTP Wrappers |
+| **Active milestone** | M2: iwxxm-validate + tac-validate + routes |
+| **Active task** | T2.1 (in_progress) |
 | **Tasks completed** | 6 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; M1 T1.1–T1.6) |
+| **Last updated** | 2026-07-12 (07-build EV-006; resumed T2.1 on feat/S008-M2-validate) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -102,7 +102,7 @@
 
 | # | Task | Type | Status | Spec Source | Depends On |
 |---|------|------|--------|-------------|------------|
-| T2.1 | Test: iwxxm-validate XSD+Schematron fixtures (TC-F6-032) | Test | pending | test-plan TC-F6-032 | T1.2 |
+| T2.1 | Test: iwxxm-validate XSD+Schematron fixtures (TC-F6-032) | Test | completed | test-plan TC-F6-032; D-S008-T21-sch | T1.2 |
 | T2.2 | Code: implement `packages/iwxxm-validate` (lxml; vendor read-only) | Code | pending | ADR-015, Q3=B | T2.1 |
 | T2.3 | Test: tac-validate msgspec issues + optional fixes (TC-F6-031) | Test | pending | Q9=C | T1.4 |
 | T2.4 | Code: implement `packages/tac-validate` rule pack skeleton (7 products) | Code | pending | ADR-015 | T2.3 |

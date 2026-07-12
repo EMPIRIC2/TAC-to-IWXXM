@@ -255,3 +255,15 @@
 - `apps/frontend/src/utils/` — filename sanitizer helper + `ConverterSnapshot` field carriage in `conversion_params`
 - `apps/frontend/src/**/*.test.tsx` — unit coverage
 - `apps/e2e/tac-file-conversion.e2e.spec.ts` — custom-name download assertion
+
+## Cycle EV-006 — S008 F6 / validate packages / F8
+
+**Session**: S008-general-tac-iwxxm-converter  
+**Features**: F6, F2→`iwxxm-validate`, F8  
+**Approved build**: 2026-07-12 (B→C)
+
+### Decisions (build)
+
+| ID | Category | Decision |
+|----|----------|----------|
+| D-S008-T21-sch | Ambiguity | `iwxxm-validate` mirrors current F2: lxml XSD best-effort + catalogs; Schematron via lxml when possible, else `SCHEMATRON_SKIPPED` (non-blocking) for xslt2; optional Docker/Saxon via env. TC-F6-032 unit suite asserts API + malformed fail + skip path + vendor pins; full M-sch Docker is a soft/separate gate. |
