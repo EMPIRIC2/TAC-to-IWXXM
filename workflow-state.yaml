@@ -52,7 +52,7 @@ active_session:
       status: in_progress
       started_at: "2026-07-12"
       skip_rationale: null
-      note: "Phase 3 / M3 started on feat/S008-M3-bulletin; T3.1 in_progress; PR-M2 #701 merged"
+      note: "M3 complete; PR-M3 open; next M4 after merge or continue per build-execution"
     - stage: 08-verify-build
       required: true
       status: pending
@@ -887,6 +887,19 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-M3-complete
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    decision: "M3 bulletin milestone complete; PR-M3 #704 open"
+    summary: >
+      T3.1–T3.5 complete on feat/S008-M3-bulletin (AHL bulletin split +
+      POST /convert-bulletin + H7 fixture). PR #704 opened to
+      evolve/S008-general-tac-iwxxm-converter. Next: M4 after merge or
+      continue per build-execution (PR created; merge approval not required
+      to start next milestone implementation).
+    timestamp: "2026-07-12"
   - id: D-S008-EV006-resume-m3
     stage: 07-build
     skill_id: 07-build
@@ -2597,6 +2610,7 @@ evolve_cycles:
       - "2026-07-12 PR-M1 (#700) merged to evolve (D-S008-PR700-19; PRM-008)"
       - "2026-07-12 PR-M2 (#701) merged to evolve (D-S008-PR701-19; PRM-009); feat/S008-M2-validate merged"
       - "2026-07-12 Resume option 1 — M3 bulletin on feat/S008-M3-bulletin; start T3.1"
+      - "2026-07-12 M3 T3.1–T3.5 complete; PR-M3 opened"
     stages:
       00-context:
         status: completed
@@ -2622,7 +2636,7 @@ evolve_cycles:
         status: in_progress
         started: "2026-07-12"
         completed: null
-        active_task: "T3.1"
+        active_task: "M3 complete — PR-M3 open; next M4"
         notes:
           - "M1 T1.1–T1.6 completed; next 08-verify-build for M1 then PR-M1"
           - "M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
@@ -2633,6 +2647,7 @@ evolve_cycles:
           - "2026-07-12 Phase 2 / M2 T2.1–T2.7 complete; 08-verify-build scoped pass (format, package types, unit packages + wrappers + soft benches); active_task M2 complete — opening PR-M2"
           - "2026-07-12 PR-M2 (#701) merged (PRM-009 / D-S008-PR701-19); next milestone M3"
           - "2026-07-12 Resume option 1 — M3 bulletin on feat/S008-M3-bulletin; start T3.1"
+          - "2026-07-12 M3 T3.1–T3.5 complete; PR-M3 #704 open; next M4"
       08-verify-build:
         status: pending
         started: null
@@ -2707,11 +2722,13 @@ git_history:
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/701
     - name: feat/S008-M3-bulletin
       purpose: S008 M3 bulletin split + convert-bulletin
-      status: active
+      status: open
       base: evolve/S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
       session_id: S008-general-tac-iwxxm-converter
       created_at: "2026-07-12"
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704
+      pr_number: 704
     - name: docs/S007-docs-minimize
       purpose: docs minimize
       base: main
@@ -3123,6 +3140,70 @@ git_history:
       evolve_cycle_id: EV-006
       files_changed: null
       timestamp: "2026-07-12T16:33:20Z"
+    - sha: deaa5a7
+      branch: feat/S008-M3-bulletin
+      message: "[M3] chore: resume EV-006 at M3 bulletin after PR-M2 merge"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 3
+      timestamp: "2026-07-12T17:03:08Z"
+    - sha: 204542b
+      branch: feat/S008-M3-bulletin
+      message: "[T3.1] test: add AHL bulletin split fixtures for TC-F6-030"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 4
+      timestamp: "2026-07-12T17:03:08Z"
+    - sha: 4a5f8a1
+      branch: feat/S008-M3-bulletin
+      message: "[T3.2] feat: implement tac2iwxxm WMO AHL bulletin splitter"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 4
+      timestamp: "2026-07-12T17:04:00Z"
+    - sha: e4e454e
+      branch: feat/S008-M3-bulletin
+      message: "[T3.3] test: add convert-bulletin multi-result API contract"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 1
+      timestamp: "2026-07-12T17:06:53Z"
+    - sha: e082b3c
+      branch: feat/S008-M3-bulletin
+      message: "[T3.4] feat: wire POST /convert-bulletin with partial-success schema"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T17:06:53Z"
+    - sha: 0922c80
+      branch: feat/S008-M3-bulletin
+      message: "[T3.5] config: commit multi-report AHL fixture for H7 live gate"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 3
+      timestamp: "2026-07-12T17:07:18Z"
+    - sha: 8545b3b
+      branch: feat/S008-M3-bulletin
+      message: "[T3.2] fix: raise coverage for product filter and unsupported product"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T17:08:32Z"
+    - sha: a35ca1c
+      branch: feat/S008-M3-bulletin
+      message: "[M3] chore: record 08-verify-build pass for bulletin milestone"
+      stage: "07-build"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed: 2
+      timestamp: "2026-07-12T17:08:32Z"
 
 pr_review_cycles:
   - id: PRR-001
