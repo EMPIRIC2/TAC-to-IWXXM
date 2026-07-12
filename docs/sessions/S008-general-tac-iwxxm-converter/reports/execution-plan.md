@@ -243,7 +243,7 @@ F6.b METAR/SPECI US already shipped in M4.
 | PR-M5 | Minor | M5 products | feat/S008-M5-products | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/707 |
 | PR-M6 | Minor | M6 worker | feat/S008-M6-worker | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/708 |
 | PR-M7 | Minor | M7 live | feat/S008-M7-live | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/709 |
-| PR-M8 | Minor | M8 UI+H4–H6 | feat/S008-M8-ui-connectivity | evolve/S008-… | pending |
+| PR-M8 | Minor | M8 UI+H4–H6 | feat/S008-M8-ui-connectivity | evolve/S008-… | open |
 
 ## Task Tracking Summary
 
