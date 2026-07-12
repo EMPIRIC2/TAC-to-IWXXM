@@ -162,6 +162,15 @@ test-unit-tac2iwxxm:
 		--cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
 		--cov-report=term-missing --cov-fail-under=95 -v
 
+# Build optional PyO3 extension (requires rustc + maturin). ADR-017 / T4.3.
+build-tac2iwxxm-native:
+	cd packages/tac2iwxxm && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
+
+test-tac2iwxxm-native: build-tac2iwxxm-native
+	TAC2IWXXM_REQUIRE_RUST=1 $(UV) run pytest \
+		packages/tac2iwxxm/tests/test_native_scaffold.py \
+		packages/tac2iwxxm/tests/test_pyo3_hotspots.py -v --no-cov
+
 test-unit-iwxxm-validate:
 	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
 		--cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
