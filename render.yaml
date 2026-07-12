@@ -34,6 +34,28 @@ services:
       - key: DATABASE_URL
         sync: false
 
+  - type: worker
+    name: metar-to-iwxxm-worker
+    runtime: docker
+    dockerfilePath: apps/worker/docker/Dockerfile
+    dockerContext: .
+    plan: starter
+    envVars:
+      - key: LOG_LEVEL
+        value: "INFO"
+      - key: INGEST_POLL_INTERVAL_SEC
+        value: "30"
+      - key: INGEST_PROFILE
+        value: annex3
+      - key: IWXXM_VERSION
+        value: "2025-2"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: INGEST_POLLER_URL
+        sync: false
+
   - type: web
     name: metar-to-iwxxm-frontend-v4-web
     runtime: static

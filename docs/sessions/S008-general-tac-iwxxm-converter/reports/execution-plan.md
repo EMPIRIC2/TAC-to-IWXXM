@@ -14,11 +14,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase 4: Remaining F6 Products |
-| **Active milestone** | M5: F6.c–f products + edge TCs |
-| **Active task** | M5 complete — next 08-verify-build / PR-M5 |
-| **Tasks completed** | 35 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T5.1–T5.6 complete) |
+| **Active phase** | Phase 5: F8 Worker |
+| **Active milestone** | M6: Worker + Supabase |
+| **Active task** | M6 complete — next 08-verify-build / PR-M6 |
+| **Tasks completed** | 42 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T6.1–T6.7 complete) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -182,13 +182,13 @@ F6.b METAR/SPECI US already shipped in M4.
 
 | # | Task | Type | Status | Spec Source | Depends On |
 |---|------|------|--------|-------------|------------|
-| T6.1 | Test: poller fetches HTTPS fixture → N jobs | Test | pending | Q16=A, UJ-014 stub→TC | T4.7 |
-| T6.2 | Config: scaffold `apps/worker/` + Render worker blueprint/Dockerfile start | Config | pending | Q19=A, ADR-018 | — |
-| T6.3 | Code: pipeline orchestration (lint→convert→iwxxm-validate) | Code | pending | spec unified pipeline | T6.1, T2.2, T2.4, T4.7 |
-| T6.4 | Test: Supabase store + quarantine tables (service JWT) | Test | pending | Q17=A, Q18=B, Q20=C | — |
-| T6.5 | Code: migrations `iwxxm_ingest_results` + `iwxxm_ingest_quarantine`; worker writers | Code | pending | ADR-018 | T6.4 |
-| T6.6 | Config: worker env (`SUPABASE_*` service role, poller URL, interval) | Config | pending | config/deploy | T6.2, T6.5 |
-| T6.7 | Docs: template-conformance + deploy.md worker topology | Docs | pending | ADR-018 | T6.2 |
+| T6.1 | Test: poller fetches HTTPS fixture → N jobs | Test | completed | Q16=A, UJ-014 stub→TC | T4.7 |
+| T6.2 | Config: scaffold `apps/worker/` + Render worker blueprint/Dockerfile start | Config | completed | Q19=A, ADR-018 | — |
+| T6.3 | Code: pipeline orchestration (lint→convert→iwxxm-validate) | Code | completed | spec unified pipeline | T6.1, T2.2, T2.4, T4.7 |
+| T6.4 | Test: Supabase store + quarantine tables (service JWT) | Test | completed | Q17=A, Q18=B, Q20=C | — |
+| T6.5 | Code: migrations `iwxxm_ingest_results` + `iwxxm_ingest_quarantine`; worker writers | Code | completed | ADR-018 | T6.4 |
+| T6.6 | Config: worker env (`SUPABASE_*` service role, poller URL, interval) | Config | completed | config/deploy | T6.2, T6.5 |
+| T6.7 | Docs: template-conformance + deploy.md worker topology | Docs | completed | ADR-018 | T6.2 |
 
 **Phase 5 gate**: Local worker E2E green; secrets matrix updated.
 
@@ -241,7 +241,7 @@ F6.b METAR/SPECI US already shipped in M4.
 | PR-M4 | Minor | M4 cutover (partial) | feat/S008-M4-cutover | evolve/S008-… | merged — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/705 |
 | PR-M4b | Minor | M4 US + gifts cutover | feat/S008-M4-us-metar | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706 |
 | PR-M5 | Minor | M5 products | feat/S008-M5-products | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/707 |
-| PR-M6 | Minor | M6 worker | feat/S008-M6-worker | evolve/S008-… | pending |
+| PR-M6 | Minor | M6 worker | feat/S008-M6-worker | evolve/S008-… | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/708 |
 | PR-M7 | Minor | M7 live | feat/S008-M7-live | evolve/S008-… | pending |
 | PR-M8 | Minor | M8 UI+H4–H6 | feat/S008-M8-ui-connectivity | evolve/S008-… | pending |
 

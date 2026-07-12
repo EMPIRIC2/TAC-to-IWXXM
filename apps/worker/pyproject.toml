@@ -1,0 +1,36 @@
+[project]
+name = "metar-worker"
+version = "0.1.0"
+description = "F8 near-RT TAC ingest worker (ADR-018)"
+requires-python = ">=3.12"
+dependencies = [
+    "metar-shared",
+    "tac2iwxxm",
+    "tac-validate",
+    "iwxxm-validate",
+    "httpx>=0.28.1",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.14.2",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["*"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4",
+    "pytest-cov>=6.0",
+    "respx>=0.21",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
