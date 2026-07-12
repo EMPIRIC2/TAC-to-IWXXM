@@ -30,6 +30,14 @@ def test_rust_module_exposes_scan_metar_tokens() -> None:
 def test_scan_metar_tokens_returns_non_empty_for_metar() -> None:
     tokens = scan_metar_tokens(METAR)
     assert isinstance(tokens, list)
-    assert len(tokens) >= 5
-    assert "METAR" in tokens
-    assert "KJFK" in tokens
+    assert tokens == [
+        "METAR",
+        "KJFK",
+        "231751Z",
+        "18012KT",
+        "10SM",
+        "FEW040",
+        "15/07",
+        "A3005",
+    ]
+    assert "=" not in "".join(tokens)
