@@ -1,10 +1,7 @@
-"""TC-F6-001 / TC-F6-002: annex3 product-matrix fixtures (F6.c–f / T5.1).
+"""TC-F6-001 / TC-F6-002: annex3 product-matrix fixtures (F6.c–f / T5.1–T5.3).
 
 Spec: docs/test-plan.md TC-F6-001, TC-F6-002; docs/feature-list.md F6 (7 products);
 docs/user-journeys.md UJ-005 / UJ-006.
-
-Package-level gate for the seven-product convert matrix. METAR/SPECI already convert;
-AIRMET / SIGMET / TAF / VAA / TCA turn green with T5.2–T5.3 plugins (xfail until then).
 """
 
 from __future__ import annotations
@@ -22,17 +19,15 @@ IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 EXPECTED_PRODUCTS = frozenset(PRODUCTS)
 
-# METAR/SPECI (M4) + TAF/SIGMET/AIRMET (T5.2); VAA/TCA land in T5.3.
-_SHIPPED = frozenset(
-    {
-        "airmet_basic",
-        "metar_basic",
-        "sigmet_basic",
-        "speci_basic",
-        "taf_basic",
-    }
+_CASE_IDS = (
+    "airmet_basic",
+    "metar_basic",
+    "sigmet_basic",
+    "speci_basic",
+    "taf_basic",
+    "tca_basic",
+    "vaa_basic",
 )
-_PENDING_PLUGINS = frozenset({"vaa_basic", "tca_basic"})
 
 
 def _load_manifest() -> dict:
@@ -60,44 +55,9 @@ def test_product_matrix_manifest_covers_seven_products(matrix_manifest: dict) ->
         assert text, f"empty TAC fixture for {case['id']}"
 
 
-@pytest.mark.parametrize("case_id", sorted(_SHIPPED))
-def test_tc_f6_002_convert_product_matrix_annex3_shipped(case_id: str, matrix_manifest: dict) -> None:
-    """METAR/SPECI matrix cases convert today (TC-F6-002 subset)."""
-    from tac2iwxxm import convert
-
-    case = next(c for c in matrix_manifest["cases"] if c["id"] == case_id)
-    tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
-    product = case["product"]
-
-    result = convert(
-        tac,
-        product=product,
-        profile=PROFILE,
-        iwxxm_version=IWXXM_VERSION,
-    )
-
-    assert result.ok is True, f"convert failed for {case_id}/{product}: {result.issues!r}"
-    assert result.xml, f"empty XML for {case_id}"
-    assert result.product == product
-    assert result.profile == PROFILE
-    assert result.iwxxm_version == IWXXM_VERSION
-
-
-@pytest.mark.parametrize(
-    "case_id",
-    [
-        pytest.param(
-            cid,
-            marks=pytest.mark.xfail(
-                reason="T5.2/T5.3 product plugin not implemented yet",
-                strict=True,
-            ),
-        )
-        for cid in sorted(_PENDING_PLUGINS)
-    ],
-)
-def test_tc_f6_002_convert_product_matrix_annex3_pending(case_id: str, matrix_manifest: dict) -> None:
-    """Remaining F6 products: fixtures present; convert green after T5.2–T5.3."""
+@pytest.mark.parametrize("case_id", list(_CASE_IDS))
+def test_tc_f6_002_convert_product_matrix_annex3(case_id: str, matrix_manifest: dict) -> None:
+    """All seven annex3 product-matrix cases convert (TC-F6-002)."""
     from tac2iwxxm import convert
 
     case = next(c for c in matrix_manifest["cases"] if c["id"] == case_id)

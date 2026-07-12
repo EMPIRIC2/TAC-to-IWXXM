@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 from xml.sax.saxutils import escape
 
@@ -313,4 +314,132 @@ def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 """
 
 
-__all__ = ["emit_airmet_annex3", "emit_sigmet_annex3", "emit_taf_annex3"]
+def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """Emit a minimal IWXXM VolcanicAshAdvisory document."""
+    ns = _ns(iwxxm_version)
+    vaac = str(ir["vaac"])
+    volcano = str(ir["volcano"])
+    issue = str(ir["issue_time"])
+    slug = re.sub(r"[^a-z0-9]+", ".", volcano.lower()).strip(".")
+    lat = ir.get("lat")
+    lon = ir.get("lon")
+    pos = ""
+    if lat is not None and lon is not None:
+        pos = f"""      <metce:position>
+        <gml:Point gml:id="volcano.pos.{slug}" srsDimension="2" axisLabels="Lat Long"
+            srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+          <gml:pos>{lat} {lon}</gml:pos>
+        </gml:Point>
+      </metce:position>
+"""
+    elev = ""
+    if ir.get("source_elevation_m") is not None:
+        elev = f'  <iwxxm:sourceElevationAMSL uom="m">{ir["source_elevation_m"]}</iwxxm:sourceElevationAMSL>\n'
+    area = ""
+    if ir.get("area"):
+        area = f"  <iwxxm:stateOrRegion>{escape(str(ir['area']))}</iwxxm:stateOrRegion>\n"
+
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:VolcanicAshAdvisory xmlns:iwxxm="{ns}"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:metce="http://def.wmo.int/metce/2013"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="vaa.basic.{slug}"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>{issue}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:issuingVolcanicAshAdvisoryCentre>
+    <aixm:Unit gml:id="unit.vaac.{vaac.lower()}">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.vaac.ts.{vaac.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>{escape(vaac)}</aixm:name>
+          <aixm:type>OTHER:VAAC</aixm:type>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:issuingVolcanicAshAdvisoryCentre>
+  <iwxxm:volcano>
+    <metce:EruptingVolcano gml:id="volcano.{slug}">
+      <metce:name>{escape(volcano)}</metce:name>
+{pos}    </metce:EruptingVolcano>
+  </iwxxm:volcano>
+{area}{elev}  <iwxxm:advisoryNumber>{escape(str(ir.get("advisory_number", "")))}</iwxxm:advisoryNumber>
+  <iwxxm:informationSource>{escape(str(ir.get("information_source", "")))}</iwxxm:informationSource>
+  <iwxxm:eruptionDetails>{escape(str(ir.get("eruption_details", "")))}</iwxxm:eruptionDetails>
+  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>
+</iwxxm:VolcanicAshAdvisory>
+"""
+
+
+def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """Emit a minimal IWXXM TropicalCycloneAdvisory document."""
+    ns = _ns(iwxxm_version)
+    tcac = str(ir["tcac"])
+    name = str(ir["tc_name"])
+    issue = str(ir["issue_time"])
+    slug = re.sub(r"[^a-z0-9]+", ".", name.lower()).strip(".")
+    lat = ir.get("lat")
+    lon = ir.get("lon")
+    pos = ""
+    if lat is not None and lon is not None:
+        pos = f"""  <iwxxm:tropicalCyclonePosition>
+    <gml:Point gml:id="tc.pos.{slug}" srsDimension="2" axisLabels="Lat Long"
+        srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+      <gml:pos>{lat} {lon}</gml:pos>
+    </gml:Point>
+  </iwxxm:tropicalCyclonePosition>
+"""
+    wind = ""
+    if ir.get("max_wind_mps") is not None:
+        wind = f'  <iwxxm:maximumSurfaceWindSpeed uom="m/s">{ir["max_wind_mps"]}.0</iwxxm:maximumSurfaceWindSpeed>\n'
+    pressure = ""
+    if ir.get("central_pressure_hpa") is not None:
+        pressure = f'  <iwxxm:centralPressure uom="hPa">{ir["central_pressure_hpa"]}</iwxxm:centralPressure>\n'
+
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:TropicalCycloneAdvisory xmlns:iwxxm="{ns}"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="tca.basic.{slug}"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>{issue}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:issuingTropicalCycloneAdvisoryCentre>
+    <aixm:Unit gml:id="unit.tcac.{tcac.lower()}">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.tcac.ts.{tcac.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>{escape(tcac)}</aixm:name>
+          <aixm:type>OTHER:TCAC</aixm:type>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:issuingTropicalCycloneAdvisoryCentre>
+  <iwxxm:tropicalCycloneName>{escape(name)}</iwxxm:tropicalCycloneName>
+  <iwxxm:advisoryNumber>{escape(str(ir.get("advisory_number", "")))}</iwxxm:advisoryNumber>
+{pos}{pressure}{wind}</iwxxm:TropicalCycloneAdvisory>
+"""
+
+
+__all__ = [
+    "emit_airmet_annex3",
+    "emit_sigmet_annex3",
+    "emit_taf_annex3",
+    "emit_tca_annex3",
+    "emit_vaa_annex3",
+]

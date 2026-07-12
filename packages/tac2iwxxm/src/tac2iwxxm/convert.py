@@ -1,4 +1,4 @@
-"""Public ``convert()`` entrypoint (F6 products annex3 + iwxxm_us METAR/SPECI)."""
+"""Public ``convert()`` entrypoint (F6 seven products annex3 + iwxxm_us METAR/SPECI)."""
 
 from __future__ import annotations
 
@@ -8,11 +8,18 @@ from tac2iwxxm.models import ConvertIssue, ConvertResult
 from tac2iwxxm.products.metar_speci import parse_metar_speci
 from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
 from tac2iwxxm.products.taf import parse_taf
+from tac2iwxxm.products.vaa_tca import parse_tca, parse_vaa
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
-from tac2iwxxm.profiles.annex3_products import emit_airmet_annex3, emit_sigmet_annex3, emit_taf_annex3
+from tac2iwxxm.profiles.annex3_products import (
+    emit_airmet_annex3,
+    emit_sigmet_annex3,
+    emit_taf_annex3,
+    emit_tca_annex3,
+    emit_vaa_annex3,
+)
 from tac2iwxxm.profiles.iwxxm_us import emit_metar_speci_iwxxm_us
 
-_SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
+_SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"})
 _SUPPORTED_PROFILES = frozenset({"annex3", "iwxxm_us"})
 _US_PRODUCTS = frozenset({"METAR", "SPECI"})
 
@@ -38,6 +45,8 @@ def _parse(product: str, tac: str) -> dict[str, Any]:
         "TAF": parse_taf,
         "SIGMET": parse_sigmet,
         "AIRMET": parse_airmet,
+        "VAA": parse_vaa,
+        "TCA": parse_tca,
     }
     return parsers[product](tac, product=product)
 
@@ -47,15 +56,16 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
         if profile == "iwxxm_us":
             return emit_metar_speci_iwxxm_us(ir, product=product, iwxxm_version=iwxxm_version)
         return emit_metar_speci_annex3(ir, product=product, iwxxm_version=iwxxm_version)
-    if profile == "iwxxm_us":
-        # Non-METAR US extensions land in T5.4–T5.5; annex3 body for now.
-        pass
     if product == "TAF":
         return emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "SIGMET":
         return emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "AIRMET":
         return emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
+    if product == "VAA":
+        return emit_vaa_annex3(ir, iwxxm_version=iwxxm_version)
+    if product == "TCA":
+        return emit_tca_annex3(ir, iwxxm_version=iwxxm_version)
     raise ValueError(f"no emitter for product {product!r}")
 
 
@@ -74,9 +84,9 @@ def convert(
     tac :
         TAC text (single report or bulletin containing one report).
     product :
-        Product id (``METAR``, ``SPECI``, ``TAF``, ``SIGMET``, ``AIRMET``; VAA/TCA in T5.3).
+        One of the seven F6 products.
     profile :
-        ``annex3`` (default) or ``iwxxm_us`` (US REMARKS → extension blocks for METAR/SPECI).
+        ``annex3`` (default) or ``iwxxm_us`` (METAR/SPECI US extensions; others T5.4–T5.5).
     iwxxm_version :
         Target IWXXM release line.
 
