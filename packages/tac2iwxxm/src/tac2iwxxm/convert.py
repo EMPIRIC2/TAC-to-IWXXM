@@ -17,11 +17,16 @@ from tac2iwxxm.profiles.annex3_products import (
     emit_tca_annex3,
     emit_vaa_annex3,
 )
-from tac2iwxxm.profiles.iwxxm_us import emit_metar_speci_iwxxm_us
+from tac2iwxxm.profiles.iwxxm_us import (
+    emit_airmet_iwxxm_us,
+    emit_metar_speci_iwxxm_us,
+    emit_sigmet_iwxxm_us,
+    emit_taf_iwxxm_us,
+)
 
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"})
 _SUPPORTED_PROFILES = frozenset({"annex3", "iwxxm_us"})
-_US_PRODUCTS = frozenset({"METAR", "SPECI"})
+_US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
 
 
 class ConvertError(ValueError):
@@ -57,10 +62,16 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
             return emit_metar_speci_iwxxm_us(ir, product=product, iwxxm_version=iwxxm_version)
         return emit_metar_speci_annex3(ir, product=product, iwxxm_version=iwxxm_version)
     if product == "TAF":
+        if profile == "iwxxm_us":
+            return emit_taf_iwxxm_us(ir, iwxxm_version=iwxxm_version)
         return emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "SIGMET":
+        if profile == "iwxxm_us":
+            return emit_sigmet_iwxxm_us(ir, iwxxm_version=iwxxm_version)
         return emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "AIRMET":
+        if profile == "iwxxm_us":
+            return emit_airmet_iwxxm_us(ir, iwxxm_version=iwxxm_version)
         return emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "VAA":
         return emit_vaa_annex3(ir, iwxxm_version=iwxxm_version)
@@ -159,6 +170,17 @@ def convert(
             ],
         )
 
+    issues: list[ConvertIssue] = []
+    if profile_l == "iwxxm_us":
+        for msg in ir.get("remark_issues") or []:
+            issues.append(
+                ConvertIssue(
+                    severity="warning",
+                    code="MALFORMED_REMARKS",
+                    message=str(msg),
+                )
+            )
+
     return ConvertResult(
         ok=True,
         product=product_u,
@@ -166,7 +188,7 @@ def convert(
         iwxxm_version=iwxxm_version,
         xml=xml,
         ir=ir,
-        issues=[],
+        issues=issues,
     )
 
 

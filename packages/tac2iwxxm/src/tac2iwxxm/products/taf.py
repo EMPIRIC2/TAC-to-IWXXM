@@ -13,6 +13,7 @@ _TAF = re.compile(
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
 _CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})\b")
+_ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _NIL = re.compile(r"\bNIL\b")
 
 
@@ -90,6 +91,11 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
     if cloud is not None:
         ir["cloud_amount"] = cloud.group("amt")
         ir["cloud_base_ft"] = int(cloud.group("base")) * 100
+
+    alt = _ALT_INHG.search(body)
+    if alt is not None:
+        # US TAF forecast lowest altimeter (hundredths inHg).
+        ir["forecast_altimeter_inhg"] = int(alt.group("alt")) / 100.0
 
     return ir
 
