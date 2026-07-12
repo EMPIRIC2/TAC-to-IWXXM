@@ -49,7 +49,7 @@ postponed; F5 remains METAR-only.
 | 1 | Schematron on TAC | User chose IWXXM-only Schematron; TAC uses rule pack |
 | 2 | Validate packages inside tac2iwxxm only | User required separate IWXXM + TAC packages |
 | 3 | Auto-detect bulletin on `/convert` | User chose explicit `/convert-bulletin` |
-| 4 | Build F7/F8 this cycle | User chose package APIs + thin wrappers only |
+| 4 | Build F7 this cycle; keep F8 Planned | Superseded for F8 by ADR-018 (F8 built; F7 still deferred) |
 | 5 | Amend F5 to multi-product | User chose new F7; leave F5 METAR-only |
 | 6 | Fold live bulletin into H3 only | User chose dedicated **H7** |
 
@@ -57,9 +57,9 @@ postponed; F5 remains METAR-only.
 
 - M1/M5/CI gain two workspace members; coverage gate applies.
 - API surface grows by two routes; OpenAPI/shared types update in build.
-- Template remains `static+api` until an F8 worker ADR.
-- 04-tech-plan must define: bulletin multi-result schema; lint-tac content-type; AHL dialect
-  fixtures; `make test-live-bulletin`.
+- Template remains `static+api` until F8 — **amended by ADR-018** → `static+api+worker`.
+- 04-tech-plan defined: bulletin multi-result schema; lint-tac content-type; AHL dialect
+  fixtures; `make test-live-bulletin`; F8 worker.
 
 ## References
 

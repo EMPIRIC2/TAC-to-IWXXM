@@ -87,10 +87,11 @@ Package license: **MIT**. Vendor schemas read-only. No FastAPI/Supabase.
 | supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` |
 | docker / compose | system | Local multi-service |
 | Coverage | 95% all members | pytest + Vitest gates (ADR-007); includes tac2iwxxm, tac-validate, iwxxm-validate |
-| cargo / maturin | optional | Only when Rust/PyO3 extra enabled (04-tech-plan) |
+| cargo / maturin | **required before cutover** | PyO3 wheel build in CI/API image (ADR-017) |
 
-**Deployables**: No new Render service **this cycle**. API image depends on tac2iwxxm + validate
-packages; F8 worker (if later) is under F8 + ADR. Rust toolchain in image only if native extra enabled (04).
+**Deployables**: API + static frontend + **F8 Background Worker** (`apps/worker`, ADR-018).
+API image depends on tac2iwxxm + validate packages; worker image uses the same packages plus
+poller/store writers. Rust toolchain in API (and worker if linked) image for PyO3.
 
 ## Vendored / External Data (not PyPI)
 
@@ -100,7 +101,7 @@ packages; F8 worker (if later) is under F8 + ADR. Rust toolchain in image only i
 | iwxxm-codelists | wmo-im/iwxxm-codelists | vendor/schemas/iwxxm-codelists | Scheduled Action |
 | iwxxm-modelling | wmo-im/iwxxm-modelling | vendor/schemas/iwxxm-modelling | Scheduled Action |
 | iwxxm-translation | wmo-im/iwxxm-translation | vendor/schemas/iwxxm-translation | Scheduled Action |
-| iwxxm-us | NOAA/MDL (URL/tag in 04) | vendor/schemas/iwxxm-us | Manifest pin + sync PR (F6) |
+| iwxxm-us | NOAA/MDL HTTP `3.0` (`https://nws.weather.gov/schemas/iwxxm-us/3.0/`) | vendor/schemas/iwxxm-us | Manifest `source_url` + content hash (D-S008-05-batch1); sync PR |
 | GIFTs source | mgoberfield/GIFTs | ~~packages/gifts~~ | **Removed** at F6 cutover (ADR-014) |
 
 ## Removed Dependencies (post-migration / F6)
@@ -132,3 +133,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S008 amend (2026-07-12): tac-validate + iwxxm-validate MIT; lxml for Schematron; tac-validate
   may use pydantic/msgspec (04)
 - S008 04 (2026-07-12): msgspec required; PyO3 cutover gate; F8 worker deps (ADR-016–018)
+- S008 05 (2026-07-12): iwxxm-us = NWS HTTP 3.0 + URL/hash; cargo/maturin required; F8 deployable
+  (D-S008-05-batch1)

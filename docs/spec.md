@@ -12,8 +12,8 @@ to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via `packages/tac-validate`
 validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron) against authoritative WMO
 and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`. The system is a
 **single-git monorepo** with `apps/` (deployables), `packages/` (libraries), and `vendor/`
-(read-only upstream snapshots). **F7** (multi-product operator entry) and **F8** (near-realtime
-ingest worker) are **Planned** — not built in this cycle.
+(read-only upstream snapshots). **F7** (multi-product operator entry) remains **Planned**.
+**F8** (near-realtime ingest worker) is **built this cycle** (ADR-018).
 
 ## System Architecture
 
@@ -33,8 +33,8 @@ apps/backend (FastAPI — Render web service)
    ├── packages/iwxxm-validate (XSD + Schematron; F2 engine)
    └── vendor/schemas/{iwxxm*, iwxxm-us} (read-only)
 
-        . . . future (F8 — not this build) . . .
-        apps/worker (Render Background Worker) ──► same packages
+apps/worker (Render Background Worker — F8)
+   └── same packages (poller → lint → convert → Schematron → store/quarantine)
 ```
 
 `packages/gifts` is **absent** after the first PR that wires tac2iwxxm to `/api/v1/convert`
@@ -47,25 +47,26 @@ metar-to-IWXXM/
 ├── apps/
 │   ├── backend/          # FastAPI — conversion, validation, auth routes
 │   ├── frontend/         # React/Vite UI
+│   ├── worker/           # F8 near-RT ingest poller (Render Background Worker)
 │   └── e2e/              # Playwright + cross-service integration
 ├── packages/
 │   ├── auth/             # Supabase auth library (not a deployable)
-│   ├── tac2iwxxm/        # General TAC→IWXXM (F6); MIT; optional Rust/PyO3
+│   ├── tac2iwxxm/        # General TAC→IWXXM (F6); MIT; PyO3 required at cutover
 │   ├── tac-validate/     # TAC lint + business rules (all 7 product TAC forms)
 │   ├── iwxxm-validate/   # XSD + Schematron (F2); vendor consumers
 │   └── shared/           # API types, env helpers, constants
 ├── vendor/
-│   ├── manifest.json     # Pins upstream repo + tag/SHA per schema bundle
+│   ├── manifest.json     # Pins upstream repo/tag/SHA or HTTP URL+hash per bundle
 │   └── schemas/
 │       ├── iwxxm/
 │       ├── iwxxm-codelists/
 │       ├── iwxxm-modelling/
 │       ├── iwxxm-translation/
-│       └── iwxxm-us/     # NOAA/MDL national extensions (F6)
+│       └── iwxxm-us/     # NOAA/MDL national extensions (F6; HTTP 3.0 snapshot)
 ├── pyproject.toml        # uv workspace root
 ├── pnpm-workspace.yaml
 ├── Makefile
-└── docker-compose.yml    # backend + frontend (no separate auth service)
+└── docker-compose.yml    # backend + frontend (+ worker optional locally)
 ```
 
 ### Component Overview
@@ -76,13 +77,13 @@ metar-to-IWXXM/
 | Frontend | User UI (product/profile/version) | `apps/frontend/` | shared (types) |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase middleware | `packages/auth/` | supabase-py |
-| tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles) | `packages/tac2iwxxm/` | tac-validate (optional), vendor; optional Rust/PyO3 |
+| tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles) | `packages/tac2iwxxm/` | tac-validate (optional), vendor; PyO3 required at cutover (ADR-017) |
 | tac-validate | TAC lint / shared rule pack | `packages/tac-validate/` | — (no FastAPI/Supabase) |
 | iwxxm-validate | XSD + Schematron (F2 engine) | `packages/iwxxm-validate/` | vendor schemas (read-only) |
 | Shared | Cross-cutting utils/types | `packages/shared/` | — |
 | Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im + iwxxm-us snapshots |
 | Work history (F5) | Per-user METAR session persistence | Supabase Postgres + `apps/backend` router | auth, shared |
-| Worker (F8) | Near-RT ingest — **Planned / dashed** | TBD `apps/worker/` | same packages as backend |
+| Worker (F8) | Near-RT ingest poller → store/quarantine | `apps/worker/` | same packages as backend; Supabase service role |
 
 ## Component Details
 
@@ -243,7 +244,7 @@ See [migration-plan.md](ops/migration-plan.md) for step-by-step big-bang procedu
 | `schemas/iwxxm-codelists` | `vendor/schemas/iwxxm-codelists` | Snapshot |
 | `schemas/iwxxm-modelling` | `vendor/schemas/iwxxm-modelling` | Snapshot |
 | `data/iwxxm-translation` | `vendor/schemas/iwxxm-translation` | Snapshot |
-| — | `vendor/schemas/iwxxm-us` | Snapshot pin via manifest (F6; URL/tag in 04) |
+| — | `vendor/schemas/iwxxm-us` | HTTP snapshot of `nws.weather.gov/schemas/iwxxm-us/3.0` + manifest URL/hash (D-S008-05-batch1) |
 | `GIFTs` / `packages/gifts` | **removed** | Delete on first tac2iwxxm wire-up PR (ADR-014) |
 | — | `packages/tac2iwxxm` | New MIT package (F6) |
 | — | `packages/tac-validate` | New package (S008 amend) |
@@ -262,12 +263,14 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 
 - iwxxm / iwxxm-* (and iwxxm-us) content is authoritative from upstream — read-only in vendor/.
 - Single git clone must be sufficient for local dev (`git clone` — no `--recurse-submodules`).
-- Render deploys two services: API (backend+auth) + static frontend (REQ-009).
+- Render deploys **three** services: API (backend+auth) + static frontend + F8 Background
+  Worker (ADR-018; amends REQ-009 two-service baseline).
 - No FastAPI/Supabase imports inside `packages/tac2iwxxm`, `packages/tac-validate`, or
   `packages/iwxxm-validate`.
 - After F6 cutover PR: no `packages/gifts` in the tree; API must not import gifts.
 - Schematron applies to **IWXXM only**; TAC quality uses `tac-validate`.
-- F7/F8 not required for this cycle’s package + thin-wrapper acceptance.
+- F7 not required for this cycle; F8 worker **is** in scope (ADR-018).
+- PyO3 native extension + ADR-016 benches hard-pass before F6 cutover (ADR-017).
 
 ### Assumptions
 
@@ -282,7 +285,8 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 - Admin API routes use caller JWT + RLS (`is_admin()`), not secret-key bypass.
 - CORS from `config.*.api.corsOrigins` on backend.
 - Minimal `.env` — five secrets; `make env-check` validates sync across local/Render/CI.
-- Vendor trees (WMO + IWXXM-US) are public schema data — **no new secrets** for F6.
+- Vendor trees (WMO + IWXXM-US) are public schema data — **no new secrets** for F6 packages.
+- F8 worker adds secrets: poller HTTPS URL + Supabase **service role** JWT (ADR-018).
 - TAC/IWXXM still flow through existing API auth model (guest convert policy unchanged).
 
 ## Performance Characteristics
@@ -301,11 +305,11 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 - **Hard cutover**: first tac2iwxxm wire-up PR deletes gifts — production METAR path depends on
   tac2iwxxm immediately (gate with M-parity / goldens).
 - US AIRMET/SIGMET fixture depth may lag METAR/TAF.
-- Rust/PyO3 not required for F6 v1 acceptance.
+- PyO3 is **required before cutover** (ADR-017); pure Python may exist during M3–M4 only.
 - Accuracy metrics are library/CI only — not exposed on convert API responses in v1.
 - Scheduled vendor PRs require review before production pins update.
 - F5 not extended to non-METAR products in F6 v1.
-- F7/F8, ingest auth, push sinks, AMHS/SWIM — out of this build.
+- F7, public machine-ingest auth, push sinks, AMHS/SWIM — out of this build (F8 worker in).
 
 ## Documentation layout
 
@@ -340,3 +344,5 @@ Standing doc updates during a session use **delta commits** on the session branc
 - S008 (2026-07-12): F6 tac2iwxxm architecture; gifts removal; IWXXM-US; UI product/profile; ADR-014
 - S008 amend (2026-07-12): `tac-validate` + `iwxxm-validate`; unified pipeline; F7/F8 Planned;
   dashed F8 worker; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md)
+- S008 05 (2026-07-12): F8 worker in-tree; PyO3 cutover gate; iwxxm-us HTTP 3.0 pin; three Render
+  services (D-S008-05-batch1)

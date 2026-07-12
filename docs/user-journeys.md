@@ -30,7 +30,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
 | UJ-DEV-003b | Maintain tac2iwxxm + iwxxm-us pins | Maintainer workflow | F6, M2 | CI |
 | UJ-DEV-004 | Package CI for tac-validate + iwxxm-validate | `make test` / CI | F2, F6, M5 | T0 / CI |
-| UJ-OPS-001 | Deploy two-service Render stack | render.yaml | M4 | T3 (staging) |
+| UJ-OPS-001 | Deploy Render stack (API + static + worker) | render.yaml | M4, F8 | T3 (staging) |
 
 **E2E tiers**:
 
@@ -276,12 +276,14 @@ contract (04). **Tier: T2**.
 
 ---
 
-### UJ-014: Near-Realtime Ingest + Quarantine (F8) — Planned
+### UJ-014: Near-Realtime Ingest + Quarantine (F8)
 
-**Status**: **Planned — not this build.** Stub for worker ingest → pipeline → store/push or
-quarantine on Schematron/convert fail.
+**Status**: **Build this cycle (S008 / ADR-018).** Worker ingest → pipeline → Supabase store or
+separate quarantine on Schematron/convert fail. No push sinks in v1.
 
-**Acceptance**: ⚠️ Deferred. No T3 until F8 session.
+**Acceptance**: Worker processes HTTPS/object-prefix fixture feed; pass rows in
+`iwxxm_ingest_results`; fail rows in `iwxxm_ingest_quarantine`; service-role JWT for writers.
+Live: T7.4 / Phase 6 gate.
 
 ---
 
@@ -342,12 +344,12 @@ Extended: sync may include **iwxxm-us** pin updates via manifest (in addition to
 
 ## Operations Journeys
 
-### UJ-OPS-001: Deploy Two-Service Render stack
+### UJ-OPS-001: Deploy Render stack (API + static + F8 worker)
 
-Unchanged topology (API + static) for this cycle. After F6: image includes tac2iwxxm + validate
-packages (not gifts); frontend build includes product/profile controls. Redeploy API before
-frontend when CORS/API contract changes. Signoff includes UJ-005/006/007 live coverage.
-**F8 worker** not part of OPS-001 until F8 build.
+Topology: API + static frontend + **Background Worker** (ADR-018). After F6: API image includes
+tac2iwxxm + validate packages (not gifts); frontend build includes product/profile controls
+(M8). Redeploy API before frontend when CORS/API contract changes. Deploy worker after F8
+migrations. Signoff includes UJ-005/006/007 live coverage plus F8 live smoke (T7.4).
 
 ---
 
@@ -356,3 +358,4 @@ frontend when CORS/API contract changes. Signoff includes UJ-005/006/007 live co
 - S008 (2026-07-12): F6 UJ-001/002/005–010; UJ-DEV-003 deprecated → 003b; T3 seven products
 - S008 amend (2026-07-12): UJ-002/005–007 package wiring; UJ-011/012 T2; UJ-013/014 Planned stubs;
   UJ-DEV-004
+- S008 05 (2026-07-12): UJ-014 + UJ-OPS-001 aligned to ADR-018 F8 worker (D-S008-05-batch1)

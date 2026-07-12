@@ -6,6 +6,8 @@
 
 **Updated 2026-07-12** (`D-S008-04-approved`): **04-tech-plan** delta **completed** (Q21–Q24=A; execution plan + ADR-016/017/018 approved); next **05-verify-tech**.
 
+**Updated 2026-07-12** (`D-S008-05-complete`): **05-verify-tech** delta **completed**; next **16-evolve** (then **07-build**).
+
 | Stage | Required | Mode | Status | Skip / reopen rationale |
 |-------|----------|------|--------|-------------------------|
 | 00-context | yes | scoped (`realtime-tac-ingest`) | **completed** | Scoped refresh done; prior `general-tac` brief retained |
@@ -13,7 +15,7 @@
 | 02-verify-plan | no | — | skipped | Tooling/corpus already mature; delta docs verified in 05 |
 | 03-plan-tooling | no | — | skipped | Hooks/rules exist; build tooling deferred to 04/06 if chosen |
 | 04-tech-plan | yes | delta | **completed** | Execution plan + ADR-016/017/018 approved (Q21–Q24=A) |
-| 05-verify-tech | yes | delta | **pending** | Next — audit tech plan against vendor + gifts/tac2iwxxm constraints |
+| 05-verify-tech | yes | delta | **completed** | Audit + Batch 1–2 surgical fixes; 51-task plan |
 | 16-evolve | yes | full | pending | Evolve cycle EV-00N — feature ids, ADR, execution plan |
 | 07-build | yes | full | pending | After evolve plan approved |
 | 08-verify-build | yes | full | pending | Milestone gates |
@@ -35,5 +37,6 @@
 
 - Initial routing: 2026-07-12 (close S007 + open S008).
 - Amend reopen 00/01: 2026-07-12 (`D-S008-realtime-amend-q1q2q3`).
-- 01 realtime amend complete: 2026-07-12 (`D-S008-01-api-q51q54` / `D-S008-01-realtime-amend-complete`).
+- 01 realtime amend complete: 2026-07-12 (`D-S008-01-realtime-amend-complete`).
 - 04-tech-plan delta complete: 2026-07-12 (`D-S008-04-approved` — Q21–Q24=A).
+- 05-verify-tech delta complete: 2026-07-12 (`D-S008-05-batch1`, `D-S008-05-batch2`, `D-S008-05-complete`).

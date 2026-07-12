@@ -17,15 +17,19 @@ All implementation work must map to an approved feature in `[Corpus: product]`
 | Feature | Scope |
 |---------|-------|
 | F1 | METAR → IWXXM conversion |
-| F2 | IWXXM validation |
+| F2 | IWXXM validation (engine → `packages/iwxxm-validate`) |
 | F3 | Airport data services |
 | F4 | IWXXM version handling |
+| F5 | Work history (METAR/SPECI sessions) |
+| F6 | General TAC→IWXXM (`tac2iwxxm` + bulletin + products) |
+| F7 | Multi-product operator UI — **Planned** (not this cycle) |
+| F8 | Near-RT ingest worker (`apps/worker`) — **this cycle** (ADR-018) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) |
-| M2 | Vendor snapshot sync (wmo-im iwxxm-*) |
-| M3 | GIFTs as in-repo package |
+| M2 | Vendor snapshot sync (wmo-im iwxxm-* + iwxxm-us) |
+| M3 | GIFTs as in-repo package — **deprecated** at F6 cutover |
 | M4 | Auth merged into backend API |
 | M5 | Workspace tooling (uv + pnpm + Makefile) |
-| M6 | Vendor upstream sync (wmo-im iwxxm-*) |
+| M6 | Vendor upstream sync |
 
 If work does not map to an approved feature, raise `[Scope Drift]` via AskQuestion:
 - Cite the code or file being created
@@ -39,7 +43,7 @@ Document permanent exclusions in `docs/spec.md` §Non-Goals and `docs/feature-li
 Do not implement capabilities listed there without an evolve cycle (16-evolve).
 
 **Migration non-goal (REQ-016)**: No product feature rewrites during monorepo migration.
-Structural moves and wiring only — behavior of F1–F4 must remain unchanged.
+Structural moves and wiring only — behavior of F1–F4 must remain unchanged until F6 cutover.
 
 ## Component Verification
 
@@ -50,11 +54,15 @@ New files must map to an approved component from `[Corpus: system-spec]`
 |-----------|----------|
 | Backend API | `apps/backend/` |
 | Frontend | `apps/frontend/` |
+| Worker (F8) | `apps/worker/` |
 | E2E workspace | `apps/e2e/` |
 | Auth library | `packages/auth/` |
-| GIFTs | `packages/gifts/` |
+| tac2iwxxm | `packages/tac2iwxxm/` |
+| tac-validate | `packages/tac-validate/` |
+| iwxxm-validate | `packages/iwxxm-validate/` |
 | Shared | `packages/shared/` |
 | Vendor schemas | `vendor/schemas/*` (read-only) |
+| gifts (transitional) | `packages/gifts/` until F6 cutover delete |
 
 Files outside approved locations require justification. Raise `[Scope Drift]` if a new
 component is introduced that is not in the spec.

@@ -37,9 +37,11 @@ active_session:
     - stage: 05-verify-tech
       mode: delta
       required: true
-      status: pending
+      status: completed
+      started_at: "2026-07-12"
+      completed_at: "2026-07-12"
       skip_rationale: null
-      note: "Next — audit tech plan against vendor + gifts/tac2iwxxm constraints"
+      note: "S008 delta 05-verify-tech COMPLETED — audit done; next 16-evolve then 07-build; Phase B delta cleared (06 N/A)"
     - stage: 16-evolve
       required: true
       status: pending
@@ -65,7 +67,7 @@ active_session:
       required: true
       status: pending
       skip_rationale: null
-  current_stage: 05-verify-tech
+  current_stage: 16-evolve
   started_at: "2026-07-12"
   context_briefs:
     - docs/context/general-tac-iwxxm-converter.md
@@ -93,6 +95,9 @@ active_session:
     - "2026-07-12 Dependency Inventory written (docs/dependency-inventory.md delta) — interviews 5/7 complete; planned_docs.status.dependency-inventory=completed; current_template=api-contract; current_section=endpoints"
     - "2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. Delta S008-realtime-ingest COMPLETED (7/7); advancing to 04-tech-plan"
     - "2026-07-12 D-S008-04-approved — Q21–Q24=A; 04-tech-plan delta complete; execution plan + ADR-016/017/018 approved; advancing to 05-verify-tech"
+    - "2026-07-12 D-S008-05-statement-walk — 05-verify-tech statement walk started; auto-approved high-confidence tech stack from Q1–Q20 / ADR-016/017/018 (msgspec, PyO3 cutover gate, worker template, package layout, bulletin schema, H7, lint default on); consistency agent found VT-S008-C01–C10 pending user review; stage not marked completed; delta_substage S008-f6-tac2iwxxm remains in_progress"
+    - "2026-07-12 D-S008-05-batch2 — Batch 2 verdicts C09a=1, C09c=1, M01=2, M02=1; delta_substage S008-f6-tac2iwxxm remains in_progress"
+    - "2026-07-12 D-S008-05-complete — 05-verify-tech audit done; next=16-evolve then 07-build; Phase B delta cleared (06 N/A); delta_substage S008-f6-tac2iwxxm completed"
 sessions:
   - id: S007-docs-minimize
     type: process
@@ -540,8 +545,25 @@ stages:
     artifacts:
       - docs/decisions/tech-audit.md
       - docs/decisions/tech-decisions.md
+    delta_substages:
+      - id: S008-f6-tac2iwxxm
+        session_id: S008-general-tac-iwxxm-converter
+        status: completed
+        started_at: "2026-07-12"
+        completed_at: "2026-07-12"
+        mode: delta
+        notes:
+          - "2026-07-12 statement walk started — auto-approved high-confidence tech stack from Q1–Q20 / ADR-016/017/018 (msgspec, PyO3 cutover gate, worker template, package layout, bulletin schema, H7, lint default on); consistency agent found contradictions VT-S008-C01 through C10 pending user review; do not mark stage completed"
+          - "2026-07-12 D-S008-05-batch1 — Batch 1 verdicts C01/C04/C05/C07=1, C02/C03=2; delta remains in_progress"
+          - "2026-07-12 D-S008-05-batch2 — Batch 2 verdicts C09a=1, C09c=1, M01=2, M02=1; delta remains in_progress"
+          - "2026-07-12 D-S008-05-complete — delta audit completed; Phase B delta cleared (06 N/A); next 16-evolve then 07-build"
     notes:
       - "Technical plan verification complete; 3 source docs updated"
+      - "Historical baseline status remains completed — S008 tracked via delta_substages only"
+      - "S008 delta 05-verify-tech statement walk in progress 2026-07-12 — auto-approved high-confidence stack; VT-S008-C01–C10 pending user review"
+      - "2026-07-12 D-S008-05-batch1 recorded — Batch 1 contradiction verdicts; delta_substage still in_progress"
+      - "2026-07-12 D-S008-05-batch2 recorded — Batch 2 contradiction/missing verdicts; delta_substage still in_progress"
+      - "S008 delta 05-verify-tech completed 2026-07-12 — audit done; Phase B delta cleared (06 N/A); historical baseline status unchanged (completed)"
 
   06-tech-tooling:
     status: completed
@@ -850,6 +872,43 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S008-05-complete
+    stage: 05-verify-tech
+    session_id: S008-general-tac-iwxxm-converter
+    summary: >
+      05-verify-tech audit done; next=16-evolve then 07-build; Phase B delta
+      cleared (06 N/A); delta_substage S008-f6-tac2iwxxm completed; historical
+      baseline 05 status remains completed
+    timestamp: "2026-07-12"
+  - id: D-S008-05-batch2
+    stage: 05-verify-tech
+    session_id: S008-general-tac-iwxxm-converter
+    summary: >
+      Batch 2 verdicts: C09a=1 add M5/M8 test tasks for TC-F6-010/011/012; C09c=1
+      expand T4.6 to require UJ-001/Playwright E2E before gifts delete; M01=2 move
+      IWXXM-US METAR/SPECI into M4 (before/with cutover); M02=1 include T1.6 in
+      Phase 1 gate
+    timestamp: "2026-07-12"
+  - id: D-S008-05-batch1
+    stage: 05-verify-tech
+    session_id: S008-general-tac-iwxxm-converter
+    summary: >
+      Batch 1 verdicts: C01=1 align F8 corpus to ADR-018; C02/C03=2 add M7/M8 tasks
+      for UI pickers + H4-H5 + H6; C04=1 update template-conformance + plan-adherence
+      now; C05=1 PyO3 required at cutover in standing docs; C07=1 iwxxm-us pin = HTTP
+      snapshot of nws.weather.gov/schemas/iwxxm-us/3.0 with URL + content hash in
+      manifest
+    timestamp: "2026-07-12"
+  - id: D-S008-05-statement-walk
+    stage: 05-verify-tech
+    session_id: S008-general-tac-iwxxm-converter
+    summary: >
+      05-verify-tech statement walk started — auto-approved high-confidence tech stack
+      from Q1–Q20 / ADR-016/017/018 (msgspec, PyO3 cutover gate, worker template,
+      package layout, bulletin schema, H7, lint default on); consistency agent found
+      contradictions VT-S008-C01 through C10 pending user review; stage not completed;
+      delta_substage S008-f6-tac2iwxxm remains in_progress
+    timestamp: "2026-07-12"
   - id: D-S008-04-approved
     stage: 04-tech-plan
     session_id: S008-general-tac-iwxxm-converter
@@ -1554,12 +1613,20 @@ decisions_log:
     decision: "Verified/fixed stale corpus path references post-reorg (workflow-state + relative links)."
     status: confirmed
 artifacts:
+  - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/05-verify-tech.md
+    kind: stage-report
+    session_id: S008-general-tac-iwxxm-converter
+    stage: 05-verify-tech
+    created_at: "2026-07-12"
+    status: completed
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md
     kind: execution-plan
     session_id: S008-general-tac-iwxxm-converter
     stage: 04-tech-plan
     created_at: "2026-07-12"
+    updated_at: "2026-07-12"
     status: approved
+    note: "Updated during 05-verify-tech — 51 tasks"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/04-tech-plan.md
     kind: stage-report
     session_id: S008-general-tac-iwxxm-converter

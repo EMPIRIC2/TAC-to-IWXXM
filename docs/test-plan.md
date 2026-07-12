@@ -288,13 +288,15 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 
 - **Objectives**: UJ-008 unknown product; UJ-009 missing US pin fail-closed; UJ-010 malformed REMARKS diagnostics
 - **Pass criteria**: Structured errors; no gifts fallback; no silent annex3 downgrade on US profile
+- **Plan ownership**: T5.6 (API/package); UJ-008 live smoke in T8.4 (D-S008-05-batch2)
 
 ### TC-F6-020: M-parse / M-xsd / M-sch on golden pack
 
 - **Level**: Package CI (`packages/tac2iwxxm` + **`packages/iwxxm-validate`** for M-xsd / M-sch)
 - **Pass criteria**: Required metrics green on committed golden pack; **M-sch** executed via
   `iwxxm-validate`
-- **Cutover gate**: Must pass for METAR/SPECI annex3 on first gifts-delete PR (with UJ-001 E2E)
+- **Cutover gate**: Must pass for METAR/SPECI annex3 **and** iwxxm_us METAR/SPECI (T4.10–T4.11)
+  on first gifts-delete PR (with UJ-001 E2E — T4.6)
 
 ### TC-F6-021: M-golden / M-field fixtures
 
@@ -355,7 +357,8 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
 
 - [ ] TC-F6-020 / TC-F6-021 METAR/SPECI annex3 green
-- [ ] UJ-001 / TC-001 E2E green
+- [ ] TC-F6-003 METAR/SPECI `iwxxm_us` green (T4.10–T4.11)
+- [ ] UJ-001 / TC-001 E2E green (T4.6 — Playwright or local equivalent)
 - [ ] CI matrix uses `tac2iwxxm` (no `gifts` cell)
 - [ ] No `packages/gifts` in tree; API does not import gifts
 
@@ -363,20 +366,22 @@ Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
 
 - [ ] TC-F6-001 / TC-F6-002 (7 products)
 - [ ] TC-F6-003 (US where applicable)
+- [ ] TC-F6-010 / TC-F6-011 / TC-F6-012 (T5.6 + T8.4 UJ-008)
 - [ ] TC-F6-020 / TC-F6-021
 - [ ] TC-F6-030 / TC-F6-031 / TC-F6-032 / TC-F6-033
 - [ ] Cutover complete (no gifts)
-- [ ] H4–H5 green
-- [ ] H6 UJ-001–007 green
+- [ ] H4–H5 green (T8.3)
+- [ ] H6 UJ-001–007 (+ UJ-008 smoke) green (T8.4)
 - [ ] **H7** TC-LIVE-F6-030 green (when bulletin API is live)
 
-⚠️ **Deferred to 04-tech-plan**: Rust/PyO3 bench CI job (no placeholder job in v0);
-`make test-live-bulletin` wiring.
+⚠️ **Resolved in 04/05**: PyO3 bench CI (T4.3–T4.5); `make test-live-bulletin` (T4.9).
 
 ### Session changelog
 
 - S008 (2026-07-12): F6 test matrix, metrics gates, H6 expansion, TC-M003 deprecated
 - S008 amend (2026-07-12): TC-F6-030–033; H7 bulletin gate; M-sch via iwxxm-validate; UJ-013/014 no TC
+- S008 05 (2026-07-12): Cutover E2E ownership T4.6; TC-F6-010–012 → T5.6/T8.4; F6.b US in M4
+  (D-S008-05-batch2)
 
 ### TC-LIVE-005: Stale Test Migration
 
