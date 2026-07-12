@@ -779,21 +779,23 @@ stages:
     status: completed
     started: "2026-07-12"
     completed: "2026-07-12"
-    last_cycle: PRR-016
+    last_cycle: PRR-017
     session_id: S008-general-tac-iwxxm-converter
     evolve_cycle_id: EV-006
     notes:
+      - "PRR-017 completed on #710 — REQUEST_CHANGES (posted as comment; own-PR); blockers=2 advisories=2 praise=1; ci_status=n/a-evolve-base; handed to PRM-014"
       - "Re-review pass after PRM-012/013 (D-S008-PR706-709-18b); cycles PRR-013…PRR-016 on #706–#709 completed; intended approve posted as COMMENT; do not merge"
       - "Prior stack review PRR-009…PRR-012 lived in reports/pr-review.md only (not in pr_review_cycles[])"
       - "2026-07-12 PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7; user said Merge; anti-merge override)"
 
   19-address-pr-review:
-    status: completed
+    status: in_progress
     started: "2026-06-22"
-    completed: "2026-07-12"
-    last_cycle: PRM-013
+    completed: null
+    last_cycle: PRM-014
     session_id: S008-general-tac-iwxxm-converter
     notes:
+      - "PRM-014 in_progress — remediate PRR-017 findings on #710 (blockers_then_advisories)"
       - "2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)"
 
   12-verify-deploy:
@@ -2729,7 +2731,7 @@ evolve_cycles:
       - "2026-07-12 D-S008-EV006-merge-m4-m7 — PRs #706–#709 (PR-M4b…PR-M7) merged into evolve; M4–M7 complete; next M8 or continue 07-build"
       - "2026-07-12 D-S008-EV006-resume-m8 — user resumed at M8 (option A); continue Phase C 07-build at T8.1; create feat/S008-M8-ui-connectivity from evolve"
       - "2026-07-12 T8.1–T8.4 done; PR-M8 opened (feat/S008-M8-ui-connectivity)"
-
+    stages:
       00-context:
         status: completed
         started: "2026-07-12"
@@ -2774,7 +2776,7 @@ evolve_cycles:
           - "2026-07-12 D-S008-EV006-merge-m4-m7 — PR-M4b #706 / PR-M5 #707 / PR-M6 #708 / PR-M7 #709 merged into evolve; next M8"
           - "2026-07-12 D-S008-EV006-resume-m8 — user resumed at M8; active_task T8.1; branch feat/S008-M8-ui-connectivity (to create)"
           - "2026-07-12 T8.1–T8.4 done; PR-M8 opened"
-
+      08-verify-build:
         status: pending
         started: null
         completed: null
@@ -3976,6 +3978,28 @@ pr_review_cycles:
       - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
       - "2026-07-12 merged into evolve (D-S008-EV006-merge-m4-m7); merge_sha 7576109"
 
+  - id: PRR-017
+    pr_number: 710
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/710
+    status: completed
+    started: "2026-07-12"
+    completed: "2026-07-12"
+    skill_id: 18-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    scope: full
+    head_ref: feat/S008-M8-ui-connectivity
+    base_ref: evolve/S008-general-tac-iwxxm-converter
+    linked_remediation_cycle_id: PRM-014
+    verdict: REQUEST_CHANGES
+    blockers: 2
+    advisories: 2
+    praise: 1
+    ci_status: n/a-evolve-base
+    gh_review_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/710#issuecomment-4952550647
+    notes:
+      - "REQUEST_CHANGES posted as issue comment (own-PR; GitHub blocks self request-changes review)"
+
 pr_remediation_cycles:
   - id: PRM-001
     pr_number: 679
@@ -4857,3 +4881,14 @@ pr_remediation_cycles:
       Follow-on remediation after PRM-012 / during PRR-013…016 re-review.
       Fixed source_url sanitize on #708 5837b41 / #709 a91f4cd; linked to PRR-015.
       PRs #706–#709 merged into evolve 2026-07-12 (D-S008-EV006-merge-m4-m7).
+
+  - id: PRM-014
+    pr_number: 710
+    linked_review_cycle_id: PRR-017
+    status: in_progress
+    started: "2026-07-12"
+    skill_id: 19-address-pr-review
+    session_id: S008-general-tac-iwxxm-converter
+    evolve_cycle_id: EV-006
+    scope: blockers_then_advisories
+    findings: []
