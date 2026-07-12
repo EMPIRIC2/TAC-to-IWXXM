@@ -3313,7 +3313,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/S008-general-tac-iwxxm-converter
   notes:
-    - "2026-07-12 D-S008-EV006-close — workflow-state close applied; commit+push pending (no SHA yet)"
+    - "2026-07-12 D-S008-EV006-close — close commit 2ac4093 recorded; pushed (or will be pushed with this follow-up)"
     - "2026-07-12 D-S008-EV006-merge-m4-m7 — feat/S008-M4-us-metar (#706), M5-products (#707), M6-worker (#708), M7-live (#709) merged into evolve"
     - "2026-07-12 PR-M8 #710 MERGED into evolve (PRM-014; merge_sha e4fe492); M8 complete"
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
@@ -4179,6 +4179,23 @@ git_history:
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
       files_changed: 6
+      timestamp: "2026-07-12"
+    - sha: "2ac4093"
+      branch: evolve/S008-general-tac-iwxxm-converter
+      message: "[S008] docs: close EV-006 — F6/F8 Implemented, deploy waived"
+      stage: "16-evolve"
+      session_id: S008-general-tac-iwxxm-converter
+      evolve_cycle_id: EV-006
+      files_changed:
+        - docs/adr/ADR-019-s008-f6-f8-implemented-status.md
+        - docs/evolve-report-EV-006.md
+        - evolve-summary.md
+        - verify-impl.md
+        - feature-list.md
+        - routing-plan.md
+        - implementation-verification.md
+        - workflow-state.yaml
+        - docs/adr/README.md
       timestamp: "2026-07-12"
 pr_review_cycles:
   - id: PRR-001
