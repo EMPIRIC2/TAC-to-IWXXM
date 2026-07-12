@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase 6: Deploy & Live Gates |
 | **Active milestone** | M8: F6.e UI pickers + H4–H5/H6 |
-| **Active task** | T8.3 |
-| **Tasks completed** | 49 / 51 |
-| **Last updated** | 2026-07-12 (07-build EV-006; T8.1–T8.2) |
+| **Active task** | M8 complete — PR-M8 pending |
+| **Tasks completed** | 51 / 51 |
+| **Last updated** | 2026-07-12 (07-build EV-006; T8.1–T8.4) |
 
 ## Tech Stack Summary (S008 delta)
 
@@ -216,8 +216,8 @@ F6.b METAR/SPECI US already shipped in M4.
 |---|------|------|--------|-------------|------------|
 | T8.1 | Test: UI product/profile/version pickers (TC-F6-001 browser) | Test | completed | F6.e, TC-F6-001 | T2.6 |
 | T8.2 | Code: frontend pickers wired to convert API | Code | completed | feature-list F6.e | T8.1, T4.7 |
-| T8.3 | Test: H4 CORS + H5 frontend config resolve on staging | Test | pending | connectivity-gates H4–H5 | T8.2, T7.2 |
-| T8.4 | Test: H6 Playwright UJ-001–007 + UJ-008 smoke (+ F6 product UJs) | Test | pending | H6, TC-F6-010 live smoke, C09a | T8.2, T8.3 |
+| T8.3 | Test: H4 CORS + H5 frontend config resolve on staging | Test | completed | connectivity-gates H4–H5 | T8.2, T7.2 |
+| T8.4 | Test: H6 Playwright UJ-001–007 + UJ-008 smoke (+ F6 product UJs) | Test | completed | H6, TC-F6-010 live smoke, C09a | T8.2, T8.3 |
 
 **Phase 6 gate**: H4–H5 (T8.3), H3 (T7.2), H6 (T8.4), H7 (T7.3), F8 live smoke (T7.4) green or waivers recorded.
 

@@ -50,3 +50,28 @@ def test_convert_forwards_product_and_profile(client: TestClient, monkeypatch: p
     assert len(seen) >= 1
     assert seen[0].get("product") == "METAR"
     assert seen[0].get("profile") == "iwxxm_us"
+
+
+def test_convert_rejects_unknown_product(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """UJ-008: unknown product must not silently succeed as METAR."""
+    from src.utilities.conversion import ConversionError
+
+    def fake_convert(tac: str, **kwargs):
+        raise ConversionError("Conversion failed: UNSUPPORTED_PRODUCT: product 'NOTAPRODUCT' not supported yet")
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (
+                None,
+                "METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=",
+            ),
+            "product": (None, "NOTAPRODUCT"),
+            "profile": (None, "annex3"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code in {400, 422}, response.text[:400]
+    assert "UNSUPPORTED_PRODUCT" in response.text or "Conversion failed" in response.text
