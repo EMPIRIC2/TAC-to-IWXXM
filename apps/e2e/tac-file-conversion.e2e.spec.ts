@@ -110,9 +110,11 @@ test.describe('TAC File Conversion', () => {
     await expect(
       page.getByRole('region', { name: /conversion results/i }),
     ).toBeVisible();
-    await expect(page.getByText('manual_input.txt')).toBeVisible();
+    await expect(page.getByText(/Download: manual_input\.txt/)).toBeVisible();
     await expect(page.getByText('Source TAC')).toBeVisible();
-    await expect(page.getByText('METAR KJFK 121251Z')).toBeVisible();
+    await expect(
+      page.getByRole('region', { name: /original tac input for metar kjfk 121251z/i }),
+    ).toBeVisible();
   });
 
   test('custom output filename names manual results (#664)', async ({ page }) => {
