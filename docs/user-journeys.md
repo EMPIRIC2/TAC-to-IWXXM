@@ -72,7 +72,9 @@ must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US 
 4. Optionally leave product on **auto** / METAR and profile **annex3** (defaults).
 5. **#664 (EV-005)**: Optionally type an **Output filename** for manually entered TAC.
 6. Choose **Convert**, **Convert&Send**, or **Upload to Database**.
-7. View output; #555 replace-on-success and error log panel behavior unchanged.
+7. View output; each result card shows **TAC-derived title**, optional **Line N of M** for
+   multi-line manual input, prominent **Source TAC** panel, and download filename when it
+   differs (#655 / EV-007). #555 replace-on-success and error log panel behavior unchanged.
 8. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
 
 **Acceptance**: METAR converts without error via tac2iwxxm; schema/Schematron pass for selected

@@ -267,3 +267,35 @@
 | ID | Category | Decision |
 |----|----------|----------|
 | D-S008-T21-sch | Ambiguity | `iwxxm-validate` mirrors current F2: lxml XSD best-effort + catalogs; Schematron via lxml when possible, else `SCHEMATRON_SKIPPED` (non-blocking) for xslt2; optional Docker/Saxon via env. TC-F6-032 unit suite asserts API + malformed fail + skip path + vendor pins; full M-sch Docker is a soft/separate gate. |
+
+## Cycle EV-007 — Issue #655 TAC traceability UX (S010)
+
+**GitHub**: [#655](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/655)  
+**Session**: S010-issue-655-tac-traceability  
+**Feature**: F6 (general converter UI — input traceability delta)  
+**Approved**: 2026-07-12  
+**Cycle type**: feature (UI-only delta on F6)
+
+### Scope
+
+**In scope**
+
+- **Results traceability UX** — always show original TAC per conversion result in `FileConverter`:
+  header snippet, TAC-derived card label where helpful, prominent Source TAC panel, multi-line
+  index mapping; client-side fallback when API omits `tac_input`.
+- **Tests** — extend TC-001b (Vitest + Playwright).
+- **Deploy** — production frontend redeploy (12/13).
+
+**Out of scope**
+
+- API/schema changes (`tac_input` already on prod `/api/v1/convert`).
+- ZIP sidecar, bulletin UI, convert-bulletin operator surface.
+
+### Decisions
+
+| ID | Category | Decision |
+|----|----------|----------|
+| R1 | Decision | F6 delta; UI-only |
+| R2 | Decision | Full UX bundle: header snippet + derived label + prominent Source TAC + multi-line mapping |
+| R3 | Decision | Frontend redeploy required |
+| R4 | Scope | Lean routing — skip 02/03/05/06 |

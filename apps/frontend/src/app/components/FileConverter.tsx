@@ -43,7 +43,10 @@ import { ErrorLogPanel, type ConversionLog } from './ErrorLogPanel';
 import { WorkHistorySidebar } from './WorkHistorySidebar';
 import type { WorkSession } from '@metar/shared';
 import { useWorkSessionSync } from '@/hooks/useWorkSessionSync';
-import { type ConverterSnapshot } from '/utils/workSessionPayload';
+import {
+  type ConverterSnapshot,
+  resolveManualLineMetaFromResult,
+} from '/utils/workSessionPayload';
 import {
   readGuestConverterState,
   saveGuestConverterState,
@@ -53,6 +56,11 @@ import {
   outputArchiveName,
   sanitizeOutputFilename,
 } from '/utils/outputFilename';
+import {
+  deriveTacDisplayTitle,
+  resolveOriginalTac,
+  truncateTacSnippet,
+} from '/utils/resultTraceability';
 
 interface ConvertedFile {
   id: string;
@@ -60,6 +68,11 @@ interface ConvertedFile {
   originalContent: string;
   convertedContent: string;
   timestamp: number;
+  /** TAC-derived card title (e.g. METAR KJFK 121251Z). */
+  displayTitle: string;
+  /** 1-based index when manual input had multiple lines. */
+  manualLineIndex?: number;
+  manualLineTotal?: number;
 }
 
 interface PendingFile {
@@ -161,6 +174,8 @@ export function FileConverter({
       originalName: file.originalName,
       originalContent: file.originalContent,
       convertedContent: file.convertedContent,
+      manualLineIndex: file.manualLineIndex,
+      manualLineTotal: file.manualLineTotal,
     })),
     conversionLog: conversionLog
       ? {
@@ -251,16 +266,31 @@ export function FileConverter({
       })),
     );
     if (loadedWorkSession.converted_results?.length) {
+      const resultNames = loadedWorkSession.converted_results.map((result, index) =>
+        String(result.name ?? `result-${index + 1}`),
+      );
       setConvertedFiles(
-        loadedWorkSession.converted_results.map((result, index) => ({
-          id: `loaded-result-${index}`,
-          originalName: String(result.name ?? `result-${index + 1}`),
-          originalContent: String(result.tac_input ?? ''),
-          convertedContent: String(
-            result.iwxxm_xml ?? result.xml ?? result.content ?? '',
-          ),
-          timestamp: Date.now(),
-        })),
+        loadedWorkSession.converted_results.map((result, index) => {
+          const originalName = resultNames[index];
+          const originalContent = String(result.tac_input ?? '');
+          const lineMeta = resolveManualLineMetaFromResult(
+            originalName,
+            result,
+            resultNames,
+          );
+          return {
+            id: `loaded-result-${index}`,
+            originalName,
+            originalContent,
+            displayTitle: deriveTacDisplayTitle(originalContent, originalName),
+            manualLineIndex: lineMeta.manualLineIndex,
+            manualLineTotal: lineMeta.manualLineTotal,
+            convertedContent: String(
+              result.iwxxm_xml ?? result.xml ?? result.content ?? '',
+            ),
+            timestamp: Date.now(),
+          };
+        }),
       );
     } else {
       setConvertedFiles([]);
@@ -482,22 +512,25 @@ export function FileConverter({
           ) => {
             const isManualResult = index < manualResultCount;
             const fileIndex = index - manualResultCount;
-            const originalFile = isManualResult
-              ? {
-                  // Apply the optional custom output filename to manual results
-                  // only; blank ⇒ manual_input default (R2/R3/R4 / #664).
-                  name: manualOutputName(outputFilename, index, manualResultCount),
-                  content: result.tac_input || manualLines[index] || manualInput,
-                }
-              : (pendingFiles[fileIndex] ?? {
-                  name: result.name || 'unknown',
-                  content: result.tac_input || '',
-                });
+            const pendingFile = pendingFiles[fileIndex];
+            const originalName = isManualResult
+              ? manualOutputName(outputFilename, index, manualResultCount)
+              : (pendingFile?.name ?? result.name ?? 'unknown');
+            const originalContent = resolveOriginalTac(
+              result.tac_input,
+              manualLines[index],
+              pendingFile?.content,
+            );
 
             newConvertedFiles.push({
               id: `converted-${Date.now()}-${index}`,
-              originalName: originalFile.name,
-              originalContent: result.tac_input || originalFile.content,
+              originalName,
+              originalContent,
+              displayTitle: deriveTacDisplayTitle(originalContent, originalName),
+              manualLineIndex:
+                isManualResult && manualResultCount > 1 ? index + 1 : undefined,
+              manualLineTotal:
+                isManualResult && manualResultCount > 1 ? manualResultCount : undefined,
               convertedContent: result.iwxxm_xml || result.xml || result.content || '',
               timestamp: Date.now(),
             });
@@ -1460,9 +1493,31 @@ export function FileConverter({
                       className="p-4 bg-white dark:bg-gray-800 dark:border-gray-700"
                     >
                       <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                        <p className="text-base font-medium text-gray-900 dark:text-white">
-                          {file.originalName}
-                        </p>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="text-base font-medium text-gray-900 dark:text-white">
+                              {file.displayTitle}
+                            </p>
+                            {file.manualLineIndex != null &&
+                            file.manualLineTotal != null ? (
+                              <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
+                                Line {file.manualLineIndex} of {file.manualLineTotal}
+                              </span>
+                            ) : null}
+                          </div>
+                          {file.displayTitle !== file.originalName ? (
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                              Download: {file.originalName}
+                            </p>
+                          ) : null}
+                          {file.originalContent.length > 60 &&
+                          file.displayTitle !==
+                            file.originalContent.trim().replace(/\s+/g, ' ') ? (
+                            <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 break-all">
+                              {truncateTacSnippet(file.originalContent)}
+                            </p>
+                          ) : null}
+                        </div>
                         <div className="flex gap-2">
                           <Button
                             variant="outline"
@@ -1498,20 +1553,24 @@ export function FileConverter({
                           </Button>
                         </div>
                       </div>
-                      {file.originalContent ? (
-                        <div
-                          className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded text-sm overflow-x-auto mb-3"
-                          role="region"
-                          aria-label={`Original TAC input for ${file.originalName}`}
-                        >
-                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-                            Source TAC
-                          </p>
+                      <div
+                        className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded text-sm overflow-x-auto mb-3 border border-gray-200 dark:border-gray-700"
+                        role="region"
+                        aria-label={`Original TAC input for ${file.displayTitle}`}
+                      >
+                        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+                          Source TAC
+                        </p>
+                        {file.originalContent ? (
                           <pre className="whitespace-pre-wrap break-all font-mono">
                             {file.originalContent}
                           </pre>
-                        </div>
-                      ) : null}
+                        ) : (
+                          <p className="text-sm italic text-gray-500 dark:text-gray-400">
+                            Original TAC unavailable for this result.
+                          </p>
+                        )}
+                      </div>
                       <div
                         className="bg-gray-900 dark:bg-gray-950 text-green-400 dark:text-green-300 p-4 rounded text-sm overflow-x-auto"
                         role="region"
