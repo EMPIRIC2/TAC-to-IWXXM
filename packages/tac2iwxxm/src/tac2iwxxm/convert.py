@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any, Callable, cast
 
 from tac2iwxxm.models import ConvertIssue, ConvertResult
@@ -27,6 +28,32 @@ from tac2iwxxm.profiles.iwxxm_us import (
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"})
 _SUPPORTED_PROFILES = frozenset({"annex3", "iwxxm_us"})
 _US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
+
+# Map MALFORMED_REMARKS message needles → token regexes for editor spans (S011 T2.2).
+_REMARK_SPAN_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
+    ("malformed AO", re.compile(r"\bAO(?![12]\b)\w*\b")),
+    ("malformed SLP", re.compile(r"\bSLP(?!\d{3}\b)\w*\b")),
+    ("malformed PK WND", re.compile(r"\bPK\s+WND\b")),
+)
+
+
+def _content_bounds(tac: str) -> tuple[int, int]:
+    """Return inclusive start / exclusive end of stripped TAC content in ``tac``."""
+    stripped = tac.strip()
+    if not stripped:
+        return 0, len(tac)
+    leading = len(tac) - len(tac.lstrip())
+    return leading, leading + len(stripped)
+
+
+def _remark_span(tac: str, message: str) -> tuple[int | None, int | None]:
+    """Best-effort character span for a US REMARKS diagnostic message."""
+    for needle, pattern in _REMARK_SPAN_PATTERNS:
+        if needle in message:
+            match = pattern.search(tac)
+            if match is not None:
+                return match.start(), match.end()
+    return None, None
 
 
 class ConvertError(ValueError):
@@ -156,6 +183,7 @@ def convert(
         ir = _parse(product_u, tac)
         xml = _emit(product_u, profile_l, ir, iwxxm_version)
     except ValueError as exc:
+        span_start, span_end = _content_bounds(tac)
         return ConvertResult(
             ok=False,
             product=product_u,
@@ -166,6 +194,8 @@ def convert(
                     severity="error",
                     code="PARSE_ERROR",
                     message=str(exc),
+                    start=span_start,
+                    end=span_end,
                 )
             ],
         )
@@ -175,11 +205,16 @@ def convert(
         raw_remarks: object = ir.get("remark_issues")
         if isinstance(raw_remarks, list):
             for item in cast(list[object], raw_remarks):
+                message = str(item)
+                remark_start, remark_end = _remark_span(tac, message)
                 issues.append(
                     ConvertIssue(
                         severity="warning",
                         code="MALFORMED_REMARKS",
-                        message=str(item),
+                        message=message,
+                        location="remarks",
+                        start=remark_start,
+                        end=remark_end,
                     )
                 )
 

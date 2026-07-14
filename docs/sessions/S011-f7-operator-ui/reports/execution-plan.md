@@ -1,0 +1,226 @@
+# Execution Plan — S011 F7 Operator UI (EV-008)
+
+> **Project**: METAR to IWXXM Converter  
+> **Generated**: 2026-07-13  
+> **Skill**: 04-tech-plan (delta)  
+> **Session**: S011-f7-operator-ui  
+> **Evolve cycle**: EV-008  
+> **Branch**: `evolve/S011-f7-operator-ui`  
+> **Mode**: delta (does not reset S008 plans)  
+> **Specs consumed**: feature-list.md §F7, spec.md §F5/F7, user-journeys.md UJ-004/013/015–019,
+> test-plan.md TC-F7-*, api-contract.md, config-spec.md, env-contract.md, dependency-inventory.md,
+> ADR-020/021/022, context/f7-operator-ui.md, 02-verify-plan-audit.md
+
+## Current State
+
+| Field | Value |
+|-------|-------|
+| **Active phase** | Phase C — 07-build |
+| **Active milestone** | M2 — Decode + spans |
+| **Active task** | T2.2 in progress (emit offsets) |
+| **Tasks completed** | M1 + T2.1 |
+| **Last updated** | 2026-07-13 |
+
+## Tech Stack Summary (S011 delta)
+
+| Category | Choice | Source |
+|----------|--------|--------|
+| Template | `static+api+worker` (unchanged) | ADR-018 |
+| Language | Python 3.12 + uv; Node 22 + pnpm | ADR-005 |
+| Editor | **CodeMirror 6** — `@codemirror/view`, `state`, `commands`, `language` + basic setup | R3; 04 Batch 1 A |
+| Decode API | `POST /api/v1/decode-tac`; `product` **required** | api-contract; M2=A |
+| Soft-preview | `preview=true` on `POST /api/v1/convert` | ADR-022 |
+| Spans | Optional `start`/`end` on lint/validate issues | api-contract |
+| Sessions | Unified `tac_work_sessions`; **expand-cutover** migrate (no long dual-write) | ADR-020; 04 A |
+| Session API | Keep `/api/v1/work-sessions*` + top-level `product` | api-contract |
+| WIP rule | **One WIP per user total** | 02 M1=A |
+| Admin / BYO | Remove `/admin/*`; BYO env; `E2E_USER_*` harness | ADR-021 |
+| Debounce | **300ms** lint/decode; AbortController | 04 A |
+| Live IWXXM | **Off by default** (toggle) | 04 A |
+| CORS / H0c | **Reuse** existing unit + `verify_connectivity.sh` | 04 A |
+| Deploy | Existing Render API + static (+ worker untouched) | deploy.md |
+
+## Feature ↔ Milestone Mapping
+
+| Feature / issue | Milestone | Deliverable |
+|-----------------|-----------|-------------|
+| #697 BYO + admin | M1 | Admin gone; E2E_USER_*; docs already mostly done |
+| #702 decode + spans | M2 | decode-tac + CodeMirror + decode panel |
+| #665/#666 Failed + preview | M3 | Cue + preview path |
+| #694 workbench | M4 | Live debounce/spans/console |
+| F7 / R2′ sessions | M5 | Unified table + migrate + My METARs filter |
+| Verify & deploy | M6 | 08–13; TC-F7-001–006; issue closeout |
+
+## Data Dependencies
+
+| Asset | Type | Staging Status | Needed By |
+|-------|------|----------------|-----------|
+| Supabase Postgres | DB | present (BYO) | M5 migration |
+| Existing `metar_work_sessions` rows | data | present | M5 cutover copy |
+| Golden TAC fixtures (7 products) | test-data | present / extend | M2–M4 |
+| Vendor schemas | schemas | present | unchanged |
+| CodeMirror 6 npm packages | dep | **to install** | M2 |
+
+## Implementation Phases
+
+### Phase 1: Admin removal + BYO harness (M1)
+
+**Objective**: Product admin surface gone; live harness uses `E2E_USER_*`.  
+**Entry gate**: This plan approved.  
+**Exit gate**: TC-F7-006 green at T2; no AdminDashboard routes.
+
+#### M1: F7.a — Admin / BYO harness (#697)
+
+| ID | Task | Type | Status | Spec | Depends |
+|----|------|------|--------|------|---------|
+| T1.1 | Test: `/admin` and legacy admin deep links → not-found (TC-F7-006) | Test | completed | UJ-019 | — |
+| T1.2 | Remove frontend AdminDashboard / `/admin` routes and nav links | Impl | completed | ADR-021 | T1.1 |
+| T1.3 | Remove or hard-disable `packages/auth` admin API routers (`/admin/*`) | Impl | completed | api-contract | T1.1 |
+| T1.4 | Retarget tests: drop admin suite; rename `ADMIN_*` → `E2E_USER_*` in harness/Makefile/docs still listing admin | Impl | completed | config-spec | T1.2, T1.3 |
+| T1.5 | Update `.env.example` + env-check for `E2E_USER_*`; warn on `ADMIN_*` | Impl | completed | env-contract | T1.4 |
+| T1.6 | PR-M1: admin removal | PR | pending | — | T1.2–T1.5 |
+
+**PR**: PR-M1 → `evolve/S011-f7-operator-ui` (or main per git strategy)
+
+---
+
+### Phase 2: Spans + decode + editor shell (M2)
+
+**Objective**: Offset-aware lint/decode; CodeMirror shell; decode panel UI.  
+**Exit gate**: TC-F7-002 green (API + panel smoke).
+
+#### M2: F7.b — Decode + spans (#702)
+
+| ID | Task | Type | Status | Spec | Depends |
+|----|------|------|--------|------|---------|
+| T2.1 | Test: lint/validate issue models accept optional `start`/`end` | Test | completed | api-contract | M1 |
+| T2.2 | Impl: tac-validate / tac2iwxxm emit offsets where available (METAR/SPECI/TAF first; VAA/TCA best-effort+residuals G4) | Impl | in_progress | feature-list G4 | T2.1 |
+| T2.3 | Test: `POST /api/v1/decode-tac` contract (product required; segments + residuals) | Test | pending | TC-F7-002 | M1 |
+| T2.4 | Impl: decode library API + backend thin wrapper `/decode-tac` | Impl | pending | api-contract | T2.3, T2.2 |
+| T2.5 | Add CodeMirror 6 packages to frontend; inventory pins | Impl | pending | dependency-inventory | M1 |
+| T2.6 | Test: decode panel Code\|Explanation + residual display | Test | pending | UJ-015 | T2.4, T2.5 |
+| T2.7 | Impl: replace textarea shell with CodeMirror; decode panel collapsible | Impl | pending | UJ-013/015 | T2.6 |
+| T2.8 | PR-M2: decode + CodeMirror | PR | pending | — | T2.2–T2.7 |
+
+---
+
+### Phase 3: Failed-TAC + soft-preview (M3)
+
+**Objective**: Distinct failure cue; `preview=true` convert path.  
+**Exit gate**: TC-F7-003 green.
+
+#### M3: F7.c — Failed-TAC + preview (#665/#666)
+
+| ID | Task | Type | Status | Spec | Depends |
+|----|------|------|--------|------|---------|
+| T3.1 | Test: convert with `preview=true` → 200 + `failed_spans` + best-effort XML | Test | pending | ADR-022 | M2 |
+| T3.2 | Impl: tac2iwxxm soft-preview hooks + backend `preview` form flag | Impl | pending | api-contract | T3.1 |
+| T3.3 | Test: Failed-TAC visual cue in editor/results | Test | pending | UJ-016 | T3.2 |
+| T3.4 | Impl: Failed-TAC cue + wire preview control in UI | Impl | pending | #665/#666 | T3.3 |
+| T3.5 | PR-M3: preview + Failed-TAC | PR | pending | — | T3.2–T3.4 |
+
+---
+
+### Phase 4: Live workbench (M4)
+
+**Objective**: Debounced live assist without melting the API.  
+**Exit gate**: TC-F7-004 green.
+
+#### M4: F7.d — Live workbench (#694)
+
+| ID | Task | Type | Status | Spec | Depends |
+|----|------|------|--------|------|---------|
+| T4.1 | Test: debounce 300ms + AbortController cancels in-flight | Test | pending | UJ-017 | M3 |
+| T4.2 | Impl: live lint/decode clients; span highlight + hover | Impl | pending | #694 | T4.1, T2.7 |
+| T4.3 | Impl: pull-up console; live IWXXM toggle (**default off**) | Impl | pending | 04 A | T4.2 |
+| T4.4 | Test: Playwright workbench smoke (TC-F7-001/004) | Test | pending | test-plan | T4.3 |
+| T4.5 | Confirm H0c/H4–H5 still green (reuse existing CORS/connectivity) | Test | pending | connectivity-gates | T4.4 |
+| T4.6 | PR-M4: live workbench | PR | pending | — | T4.2–T4.5 |
+
+---
+
+### Phase 5: Unified sessions (M5)
+
+**Objective**: Expand-cutover to `tac_work_sessions`; My METARs filter.  
+**Exit gate**: TC-F7-005 + TC-004′ green.
+
+#### M5: F7.e — Unified sessions (R2′ / ADR-020)
+
+| ID | Task | Type | Status | Spec | Depends |
+|----|------|------|--------|------|---------|
+| T5.1 | Test: session schema + `product` + one-WIP-total rule | Test | pending | 02 M1 | M4 |
+| T5.2 | Migration: create `tac_work_sessions`; copy from `metar_work_sessions`; cutover backend; DROP old | Impl | pending | ADR-020; expand-cutover | T5.1 |
+| T5.3 | Impl: work-sessions API `product` field + list filter | Impl | pending | api-contract | T5.2 |
+| T5.4 | Impl: My METARs = `product IN (metar,speci)`; workbench history all products | Impl | pending | UJ-004/018 | T5.3 |
+| T5.5 | Test: migrate smoke + non-METAR Draft resume (TC-F7-005) | Test | pending | UJ-018 | T5.4 |
+| T5.6 | PR-M5: unified sessions | PR | pending | — | T5.2–T5.5 |
+
+---
+
+### Phase 6: Verify & deploy (M6)
+
+**Objective**: Quality gates and production smoke.  
+**Exit gate**: Routing 08–13 complete or waived per user; child issues closed; #5 stays open.
+
+#### M6: F7.f — Verify & deploy
+
+| ID | Task | Type | Status | Spec | Depends |
+|----|------|------|--------|------|---------|
+| T6.1 | 08-verify-build full suite on evolve tip | Verify | pending | 08 skill | M5 |
+| T6.2 | 09-qa + 10-e2e (TC-F7-001–006 focus) | Verify | pending | test-plan | T6.1 |
+| T6.3 | 11-verify-impl per F7 acceptance 1–8 | Verify | pending | feature-list | T6.2 |
+| T6.4 | 12-verify-deploy + 13-deploy-smoke (API then frontend) | Deploy | pending | deploy.md | T6.3 |
+| T6.5 | Close/link #697/#702/#665/#666/#694; comment on #5 | Ops | pending | Phase 0 | T6.4 |
+| T6.6 | Evolve summary + CHANGELOG | Docs | pending | 16-evolve | T6.5 |
+
+## Git Strategy
+
+| Change | Branch | Base |
+|--------|--------|------|
+| Session | `evolve/S011-f7-operator-ui` | `main` |
+| Minor PRs | Optional `feat/S011-M{N}-*` → evolve branch | per milestone |
+| Major | Evolve PR → `main` after M6 / phase D | — |
+
+**Commit format**: `[T{n}.{m}] type: description` or `[S011] docs: …` for plan docs.
+
+### PR Plan
+
+| PR | Type | Scope | Status |
+|----|------|-------|--------|
+| PR-M1 | Minor | Admin removal | pending |
+| PR-M2 | Minor | Decode + CodeMirror | pending |
+| PR-M3 | Minor | Preview + Failed-TAC | pending |
+| PR-M4 | Minor | Live workbench | pending |
+| PR-M5 | Minor | Unified sessions | pending |
+| PR-EV-008 | Major | Evolve → main | pending |
+
+## Phase Gate Check (B→C)
+
+Before 07-build:
+
+- [ ] This execution plan user-approved
+- [ ] 05-verify-tech PASS (or in-progress)
+- [ ] 06 skipped per routing
+- [ ] CodeMirror license/pin recorded in dependency-inventory at install
+- [ ] ADR-020/021/022 accepted (done)
+
+## Connectivity tasks (reuse)
+
+| Task | Status |
+|------|--------|
+| `test_cors_policy.py` (H0c) | exists — re-run in M4/M6 |
+| `scripts/deploy/verify_connectivity.sh` (H4–H5) | exists — re-run M6 |
+| New CORS config | **not required** (04 A) |
+
+## Risks
+
+| Risk | Mitigation |
+|------|------------|
+| Live workbench request storms | 300ms debounce + Abort; live IWXXM off by default |
+| VAA/TCA weak offsets | Residuals explicit (G4); don't block M2 |
+| Session migration data loss | Expand-cutover with copy verification tests before DROP |
+| Admin removal breaks ops habit | BYO docs + TC-F7-006; no paste-keys |
+
+## Session changelog
+
+- 2026-07-13: Initial plan — 04 Batch 1 A (expand-cutover; CM6 packages; 300ms; live IWXXM off; keep work-sessions paths; reuse CORS)
