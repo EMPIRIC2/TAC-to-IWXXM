@@ -115,7 +115,7 @@
 |----|------|------|--------|------|---------|
 | T3.1 | Test: convert with `preview=true` → 200 + `failed_spans` + best-effort XML | Test | completed | ADR-022 | M2 |
 | T3.2 | Impl: tac2iwxxm soft-preview hooks + backend `preview` form flag | Impl | completed | api-contract | T3.1 |
-| T3.3 | Test: Failed-TAC visual cue in editor/results | Test | pending | UJ-016 | T3.2 |
+| T3.3 | Test: Failed-TAC visual cue in editor/results | Test | in_progress | UJ-016 | T3.2 |
 | T3.4 | Impl: Failed-TAC cue + wire preview control in UI | Impl | pending | #665/#666 | T3.3 |
 | T3.5 | PR-M3: preview + Failed-TAC | PR | pending | — | T3.2–T3.4 |
 
