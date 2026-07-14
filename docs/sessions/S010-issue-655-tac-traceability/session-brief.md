@@ -1,7 +1,8 @@
 ---
 session_id: S010-issue-655-tac-traceability
 type: feature
-status: in_progress
+status: completed
+completed_at: 2026-07-13
 branch: evolve/EV-007-issue-655-tac-traceability
 started_at: 2026-07-12
 intent: "F6 UI input traceability — show original TAC with each conversion result (GitHub #655)"
@@ -50,3 +51,8 @@ results per user report. This cycle is a **F6 delta** — UI-only UX hardening +
 ## Routing (lean)
 
 00 scoped → 01 delta → 04 delta → 07–13 (skip 02/03/05/06)
+
+## Close
+
+Closed **2026-07-13** after prod Source TAC smoke ([deploy-smoke.md](./reports/deploy-smoke.md)).
+PR [#715](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/715) merged; issue #655 closed.

@@ -150,7 +150,8 @@ For questions about version support policy:
 ## References
 
 - [ICAO Doc 10003](https://store.icao.int/en/manual-on-the-icao-meteorological-information-exchange-model-doc-10003) - Manual on the Digital Exchange of Aeronautical Meteorological Information
-- [WMO No.306 Volume I.3](https://library.wmo.int/index.php?lvl=notice_display&id=19508) - Manual on Codes, Part D
+- [WMO No.306 Volume I.3](https://library.wmo.int/idurl/4/35769) - Manual on Codes, Part D (2023)
+- [Focused mining notes (METAR/SPECI + nilReason)](./WMO-306-vI-3-2023-mining-notes.md)
 - [IWXXM Community Platform](https://community.wmo.int/activity-areas/wis/iwxxm) - WMO IWXXM resources
 - [VERSION_MANIFEST.json](../schemas/VERSION_MANIFEST.json) - Technical version registry
 
