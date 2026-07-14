@@ -135,7 +135,7 @@
 | T4.3 | Impl: pull-up console; live IWXXM toggle (**default off**) | Impl | completed | 04 A | T4.2 |
 | T4.4 | Test: Playwright workbench smoke (TC-F7-001/004) | Test | completed | test-plan | T4.3 |
 | T4.5 | Confirm H0c/H4–H5 still green (reuse existing CORS/connectivity) | Test | completed | connectivity-gates | T4.4 |
-| T4.6 | PR-M4: live workbench | PR | in_progress | — | T4.2–T4.5 |
+| T4.6 | PR-M4: live workbench | PR | completed | — | T4.2–T4.5 |
 
 ---
 
@@ -190,7 +190,7 @@
 | PR-M1 | Minor | Admin removal | pending |
 | PR-M2 | Minor | Decode + CodeMirror | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716 |
 | PR-M3 | Minor | Preview + Failed-TAC | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/717 |
-| PR-M4 | Minor | Live workbench | pending |
+| PR-M4 | Minor | Live workbench | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/718 |
 | PR-M5 | Minor | Unified sessions | pending |
 | PR-EV-008 | Major | Evolve → main | pending |
 
@@ -224,3 +224,4 @@ Before 07-build:
 ## Session changelog
 
 - 2026-07-13: Initial plan — 04 Batch 1 A (expand-cutover; CM6 packages; 300ms; live IWXXM off; keep work-sessions paths; reuse CORS)
+- 2026-07-14: M4 complete (T4.1–T4.6); PR-M4 #718 open; next M5 T5.1
