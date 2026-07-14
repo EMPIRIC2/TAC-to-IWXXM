@@ -165,7 +165,11 @@ def test_migrate_sql_copies_legacy_product_defaults() -> None:
     """Smoke: cutover SQL maps missing conversion_params.product → metar."""
     from pathlib import Path
 
-    sql = Path("supabase/migrations/20260714000010_tac_work_sessions.sql").read_text(encoding="utf-8")
+    migration = (
+        Path(__file__).resolve().parents[4]
+        / "supabase/migrations/20260714000010_tac_work_sessions.sql"
+    )
+    sql = migration.read_text(encoding="utf-8")
     assert "THEN 'metar'" in sql
     assert "FROM public.metar_work_sessions" in sql
     assert "DROP TABLE IF EXISTS public.metar_work_sessions" in sql
