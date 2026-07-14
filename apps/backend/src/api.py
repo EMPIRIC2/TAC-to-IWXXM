@@ -1676,7 +1676,7 @@ async def convert(
 
                 # Convert METAR to IWXXM
                 try:
-                    soft_preview: dict = {}
+                    soft_preview_buf = {}
                     iwxxm_content, _ = convert_metar_tac_with_metadata(
                         normalized_metar_text,
                         iwxxm_version=iwxxm_version,
@@ -1684,10 +1684,10 @@ async def convert(
                         product=product,
                         profile=profile,
                         preview=preview,
-                        soft_preview_out=soft_preview if preview else None,
+                        soft_preview_out=soft_preview_buf if preview else None,
                     )
-                    absorb_soft_preview(soft_preview)
-                    if preview and soft_preview.get("ok") is False:
+                    absorb_soft_preview(soft_preview_buf)
+                    if preview and soft_preview_buf.get("ok") is False:
                         add_issue(
                             source=metar_name,
                             message="Soft-preview: conversion incomplete",
@@ -1910,7 +1910,7 @@ async def convert(
 
             emit_recent_wx_issues(manual_source, _norm_warnings)
 
-            soft_preview: dict = {}
+            soft_preview_buf = {}
             xml_text, validation_result_from_conversion = convert_metar_tac_with_metadata(
                 _normalized_entry,
                 iwxxm_version=iwxxm_version,
@@ -1919,10 +1919,10 @@ async def convert(
                 product=product,
                 profile=profile,
                 preview=preview,
-                soft_preview_out=soft_preview if preview else None,
+                soft_preview_out=soft_preview_buf if preview else None,
             )
-            absorb_soft_preview(soft_preview)
-            if preview and soft_preview.get("ok") is False:
+            absorb_soft_preview(soft_preview_buf)
+            if preview and soft_preview_buf.get("ok") is False:
                 add_issue(
                     source=manual_source,
                     message="Soft-preview: conversion incomplete",
@@ -2128,7 +2128,7 @@ async def convert(
                 start_time = time.perf_counter()
 
                 # Only convert if validation passed
-                soft_preview: dict = {}
+                soft_preview_buf = {}
                 xml_text, _ = convert_metar_tac_with_metadata(
                     data or "",
                     iwxxm_version=iwxxm_version,
@@ -2136,10 +2136,10 @@ async def convert(
                     product=product,
                     profile=profile,
                     preview=preview,
-                    soft_preview_out=soft_preview if preview else None,
+                    soft_preview_out=soft_preview_buf if preview else None,
                 )
-                absorb_soft_preview(soft_preview)
-                if preview and soft_preview.get("ok") is False:
+                absorb_soft_preview(soft_preview_buf)
+                if preview and soft_preview_buf.get("ok") is False:
                     add_issue(
                         source=source_name,
                         message="Soft-preview: conversion incomplete",
