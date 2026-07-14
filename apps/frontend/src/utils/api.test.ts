@@ -4,8 +4,10 @@ import {
   checkHealth,
   convertMetarToIwxxm,
   convertMetarToIwxxmZip,
+  decodeTac,
   downloadBlob,
   fetchAirportRegion,
+  lintTac,
   type ConversionResponse,
   type HealthResponse,
   type ApiError,
@@ -575,6 +577,65 @@ describe('API Utils', () => {
       await expect(fetchAirportRegion('ZZZZ')).rejects.toThrow(
         'Airport region lookup failed (404)',
       );
+    });
+  });
+
+  describe('lintTac / decodeTac (live workbench)', () => {
+    it('posts lint-tac with product and optional signal', async () => {
+      mockFetchResponse({
+        ok: true,
+        issues: [],
+        fixes: [],
+        product: 'METAR',
+      });
+      const controller = new AbortController();
+      const result = await lintTac({
+        manualText: 'METAR KJFK',
+        product: 'metar',
+        accessToken: 'tok',
+        signal: controller.signal,
+      });
+      expect(result.ok).toBe(true);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/lint-tac'),
+        expect.objectContaining({
+          method: 'POST',
+          signal: controller.signal,
+        }),
+      );
+    });
+
+    it('throws on lint-tac failure', async () => {
+      mockFetchResponse({ message: 'bad' }, false, 422);
+      await expect(
+        lintTac({ manualText: 'METAR', product: 'METAR' }),
+      ).rejects.toThrow();
+    });
+
+    it('posts decode-tac with abort signal', async () => {
+      mockFetchResponse({
+        product: 'METAR',
+        segments: [],
+        residuals: [],
+      });
+      const controller = new AbortController();
+      const result = await decodeTac({
+        manualText: 'METAR KJFK',
+        product: 'METAR',
+        signal: controller.signal,
+      });
+      expect(result.product).toBe('METAR');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/decode-tac'),
+        expect.objectContaining({ signal: controller.signal }),
+      );
+    });
+
+    it('throws on decode-tac failure', async () => {
+      mockFetchResponse({ message: 'nope' }, false, 400);
+      await expect(
+        decodeTac({ manualText: 'METAR', product: 'METAR' }),
+      ).rejects.toThrow();
     });
   });
 });
