@@ -275,6 +275,31 @@ class LintTacResponse(BaseModel):
     product: Optional[str] = None
 
 
+class DecodeSegmentModel(BaseModel):
+    """HTTP DTO for one TAC decode/annotate segment (S011 / #702)."""
+
+    start: int
+    end: int
+    code: str
+    explanation: str
+
+
+class DecodeResidualModel(BaseModel):
+    """HTTP DTO for an undecoded TAC span (explicit residuals — G4)."""
+
+    start: int
+    end: int
+    text: str
+
+
+class DecodeTacResponse(BaseModel):
+    """Response for POST /api/v1/decode-tac."""
+
+    product: str
+    segments: List[DecodeSegmentModel] = Field(default_factory=list)
+    residuals: List[DecodeResidualModel] = Field(default_factory=list)
+
+
 class PackageIssueModel(BaseModel):
     """HTTP DTO for an iwxxm-validate package finding (additive on /validate)."""
 

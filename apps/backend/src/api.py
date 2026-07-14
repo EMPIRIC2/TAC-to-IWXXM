@@ -37,6 +37,9 @@ try:
         BulletinMetaModel,
         BulletinReportResultModel,
         ConvertBulletinResponse,
+        DecodeResidualModel,
+        DecodeSegmentModel,
+        DecodeTacResponse,
         LintFixModel,
         LintIssueModel,
         LintTacResponse,
@@ -73,6 +76,9 @@ except ImportError:
         BulletinMetaModel,
         BulletinReportResultModel,
         ConvertBulletinResponse,
+        DecodeResidualModel,
+        DecodeSegmentModel,
+        DecodeTacResponse,
         LintFixModel,
         LintIssueModel,
         LintTacResponse,
@@ -95,6 +101,7 @@ except ImportError:
 # Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033)
 from iwxxm_validate import validate as iwxxm_validate_fn
 from tac2iwxxm import BulletinSplitError
+from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
 from tac_validate import lint as tac_lint_fn
 
@@ -806,6 +813,56 @@ async def lint_tac(
             for i in report.issues
         ],
         fixes=[LintFixModel(code=f.code, message=f.message, replacement=f.replacement) for f in report.fixes],
+    )
+
+
+@app.post(
+    "/api/v1/decode-tac",
+    tags=["Conversion"],
+    response_model=DecodeTacResponse,
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+        415: {"description": "Unsupported Media Type — multipart/form-data required"},
+        422: {"description": "Missing required product field"},
+    },
+)
+async def decode_tac_endpoint(
+    request: Request,
+    product: str = Form(..., description="TAC product (required)"),
+    manual_text: str = Form(default="", description="TAC text to decode"),
+    files: Optional[List[UploadFile]] = File(None),
+    user: dict = Depends(verify_supabase_token),
+) -> DecodeTacResponse:
+    """Thin wrapper over ``tac2iwxxm.decode_tac`` (S011 / #702 / TC-F7-002)."""
+    _ = user
+    content_type = (request.headers.get("content-type") or "").lower()
+    if "multipart/form-data" not in content_type:
+        raise HTTPException(
+            status_code=415,
+            detail="POST /api/v1/decode-tac requires multipart/form-data",
+        )
+
+    tac_text = manual_text or ""
+    if files:
+        joined, err = await read_upload_files_text(files)
+        if err:
+            raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
+        if joined:
+            tac_text = joined
+
+    result = tac2iwxxm_decode_tac(tac_text, product=product)
+    return DecodeTacResponse(
+        product=result.product,
+        segments=[
+            DecodeSegmentModel(
+                start=s.start,
+                end=s.end,
+                code=s.code,
+                explanation=s.explanation,
+            )
+            for s in result.segments
+        ],
+        residuals=[DecodeResidualModel(start=r.start, end=r.end, text=r.text) for r in result.residuals],
     )
 
 
