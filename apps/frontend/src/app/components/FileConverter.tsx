@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { TacEditor } from './TacEditor';
+import { DecodePanel } from './DecodePanel';
 import {
   Upload,
   X,
@@ -28,7 +29,8 @@ import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
 import { AirportDetailsCard } from './AirportDetailsCard';
 import { signOutWithScope } from '/utils/supabase/logout';
-import { convertMetarToIwxxm as callBackendConversion } from '/utils/api';
+import { convertMetarToIwxxm as callBackendConversion, decodeTac } from '/utils/api';
+import type { DecodeResidual, DecodeSegment } from '/utils/api';
 import {
   detectTacProduct,
   resolveConvertProduct,
@@ -131,6 +133,11 @@ export function FileConverter({
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
   const [manualInput, setManualInput] = useState('');
+  const [decodeSegments, setDecodeSegments] = useState<DecodeSegment[]>([]);
+  const [decodeResiduals, setDecodeResiduals] = useState<DecodeResidual[]>([]);
+  const [decodeProduct, setDecodeProduct] = useState<string | undefined>();
+  const [decodeLoading, setDecodeLoading] = useState(false);
+  const [decodeError, setDecodeError] = useState<string | null>(null);
   // Restore the guest's custom output filename from the session snapshot (R5).
   const [outputFilename, setOutputFilename] = useState(() => {
     const saved = readGuestConverterState()?.conversionParams?.output_filename;
@@ -807,6 +814,42 @@ export function FileConverter({
   const hasConverted = convertedFiles.length > 0;
   const convertDisabled = isBusy || !hasInput || isReadOnly;
 
+  const runDecode = useCallback(
+    async (open: boolean) => {
+      if (!open) {
+        return;
+      }
+      const text = manualInput.trim();
+      if (!text) {
+        setDecodeSegments([]);
+        setDecodeResiduals([]);
+        setDecodeProduct(undefined);
+        setDecodeError(null);
+        return;
+      }
+      const product = resolveConvertProduct(conversionParams.product, text);
+      setDecodeLoading(true);
+      setDecodeError(null);
+      try {
+        const result = await decodeTac({
+          manualText: text,
+          product,
+          accessToken,
+        });
+        setDecodeSegments(result.segments);
+        setDecodeResiduals(result.residuals);
+        setDecodeProduct(result.product);
+      } catch (err) {
+        setDecodeError(err instanceof Error ? err.message : 'Decode failed');
+        setDecodeSegments([]);
+        setDecodeResiduals([]);
+      } finally {
+        setDecodeLoading(false);
+      }
+    },
+    [manualInput, conversionParams.product, accessToken],
+  );
+
   const saveIndicatorLabel =
     saveIndicator === 'pending'
       ? 'Unsaved changes'
@@ -1013,16 +1056,24 @@ export function FileConverter({
                 htmlFor="manual-input"
                 className="block mb-2 text-base font-medium text-gray-900 dark:text-white"
               >
-                Manual METAR Input
+                Manual TAC Input
               </label>
-              <Textarea
+              <TacEditor
                 id="manual-input"
                 value={manualInput}
-                onChange={(e) => setManualInput(e.target.value)}
+                onChange={setManualInput}
                 readOnly={isReadOnly}
                 placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
-                className="min-h-[120px] text-sm dark:bg-gray-800 dark:text-white dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
                 aria-label="Enter METAR data manually"
+                className="min-h-[120px] focus-within:ring-2 focus-within:ring-blue-500"
+              />
+              <DecodePanel
+                segments={decodeSegments}
+                residuals={decodeResiduals}
+                product={decodeProduct}
+                loading={decodeLoading}
+                error={decodeError}
+                onOpenChange={runDecode}
               />
             </div>
 

@@ -37,9 +37,43 @@ vi.mock('/utils/api', () => ({
   convertTafToIwxxm: vi
     .fn()
     .mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
+  decodeTac: vi.fn().mockResolvedValue({
+    product: 'METAR',
+    segments: [],
+    residuals: [],
+  }),
   fetchAirportRegion: vi
     .fn()
     .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
+}));
+
+vi.mock('./TacEditor', () => ({
+  TacEditor: ({
+    id,
+    value,
+    onChange,
+    readOnly,
+    'aria-label': ariaLabel,
+  }: {
+    id?: string;
+    value: string;
+    onChange: (v: string) => void;
+    readOnly?: boolean;
+    'aria-label'?: string;
+  }) => (
+    <textarea
+      id={id}
+      value={value}
+      readOnly={readOnly}
+      aria-label={ariaLabel}
+      data-testid="tac-editor"
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
+
+vi.mock('./DecodePanel', () => ({
+  DecodePanel: () => <div data-testid="decode-panel-mock" />,
 }));
 
 vi.mock('/utils/databaseUpload', () => ({

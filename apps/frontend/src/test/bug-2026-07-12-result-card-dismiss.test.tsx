@@ -23,7 +23,27 @@ vi.mock('/utils/supabase/logout', () => ({
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
   convertTafToIwxxm: vi.fn(),
+  decodeTac: vi
+    .fn()
+    .mockResolvedValue({ product: 'METAR', segments: [], residuals: [] }),
   fetchAirportRegion: vi.fn(),
+}));
+
+vi.mock('@/app/components/TacEditor', () => ({
+  TacEditor: ({ id, value, onChange, readOnly, 'aria-label': ariaLabel }: any) => (
+    <textarea
+      id={id}
+      value={value}
+      readOnly={readOnly}
+      aria-label={ariaLabel}
+      data-testid="tac-editor"
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
+
+vi.mock('@/app/components/DecodePanel', () => ({
+  DecodePanel: () => null,
 }));
 
 vi.mock('/utils/databaseUpload', () => ({

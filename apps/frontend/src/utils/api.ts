@@ -196,6 +196,67 @@ export async function convertMetarToIwxxm(params: {
   }
 }
 
+export interface DecodeSegment {
+  start: number;
+  end: number;
+  code: string;
+  explanation: string;
+}
+
+export interface DecodeResidual {
+  start: number;
+  end: number;
+  text: string;
+}
+
+export interface DecodeTacResponse {
+  product: string;
+  segments: DecodeSegment[];
+  residuals: DecodeResidual[];
+}
+
+/**
+ * Decode TAC into ordered Code | Explanation segments.
+ *
+ * **Endpoint**: POST /api/v1/decode-tac
+ *
+ * @param params.manualText - TAC text
+ * @param params.product - Required F6 product id
+ * @returns Ordered segments and residuals
+ */
+export async function decodeTac(params: {
+  manualText: string;
+  product: string;
+  accessToken?: string;
+}): Promise<DecodeTacResponse> {
+  const formData = new FormData();
+  formData.append('manual_text', params.manualText);
+  formData.append('product', params.product.toUpperCase());
+
+  const token = params.accessToken || getAccessToken() || '';
+  const response = await withTimeout(
+    fetch(apiUrl('/decode-tac'), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    }),
+    15000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Decode failed: ${response.statusText}`,
+    }));
+    throw new Error(
+      error.detail?.message || error.message || `HTTP ${response.status}`,
+    );
+  }
+
+  return (await response.json()) as DecodeTacResponse;
+}
+
 /**
  * Convert METAR/SPECI text to IWXXM XML in a ZIP file
  *
@@ -290,6 +351,7 @@ export default {
   checkHealth,
   convertMetarToIwxxm,
   convertMetarToIwxxmZip,
+  decodeTac,
   fetchAirportRegion,
   downloadBlob,
 };

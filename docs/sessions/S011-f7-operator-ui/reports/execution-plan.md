@@ -17,8 +17,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M2 — Decode + spans |
-| **Active task** | T2.6 next (decode panel tests) |
-| **Tasks completed** | M1 + T2.1–T2.5 |
+| **Active task** | T2.8 next (PR-M2) |
+| **Tasks completed** | M1 + T2.1–T2.7 |
 | **Last updated** | 2026-07-13 |
 
 ## Tech Stack Summary (S011 delta)
@@ -98,8 +98,8 @@
 | T2.3 | Test: `POST /api/v1/decode-tac` contract (product required; segments + residuals) | Test | completed | TC-F7-002 | M1 |
 | T2.4 | Impl: decode library API + backend thin wrapper `/decode-tac` | Impl | completed | api-contract | T2.3, T2.2 |
 | T2.5 | Add CodeMirror 6 packages to frontend; inventory pins | Impl | completed | dependency-inventory | M1 |
-| T2.6 | Test: decode panel Code\|Explanation + residual display | Test | pending | UJ-015 | T2.4, T2.5 |
-| T2.7 | Impl: replace textarea shell with CodeMirror; decode panel collapsible | Impl | pending | UJ-013/015 | T2.6 |
+| T2.6 | Test: decode panel Code\|Explanation + residual display | Test | completed | UJ-015 | T2.4, T2.5 |
+| T2.7 | Impl: replace textarea shell with CodeMirror; decode panel collapsible | Impl | completed | UJ-013/015 | T2.6 |
 | T2.8 | PR-M2: decode + CodeMirror | PR | pending | — | T2.2–T2.7 |
 
 ---
