@@ -16,9 +16,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M4 — Live workbench |
-| **Active task** | T4.1 in_progress |
-| **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) + M3 (T3.1–T3.5) |
+| **Active milestone** | M5 — Unified sessions (next) |
+| **Active task** | T5.1 next |
+| **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) + M3 (T3.1–T3.5) + M4 (T4.1–T4.6) |
 | **Last updated** | 2026-07-14 |
 
 ## Tech Stack Summary (S011 delta)
@@ -130,12 +130,12 @@
 
 | ID | Task | Type | Status | Spec | Depends |
 |----|------|------|--------|------|---------|
-| T4.1 | Test: debounce 300ms + AbortController cancels in-flight | Test | in_progress | UJ-017 | M3 |
-| T4.2 | Impl: live lint/decode clients; span highlight + hover | Impl | pending | #694 | T4.1, T2.7 |
-| T4.3 | Impl: pull-up console; live IWXXM toggle (**default off**) | Impl | pending | 04 A | T4.2 |
-| T4.4 | Test: Playwright workbench smoke (TC-F7-001/004) | Test | pending | test-plan | T4.3 |
-| T4.5 | Confirm H0c/H4–H5 still green (reuse existing CORS/connectivity) | Test | pending | connectivity-gates | T4.4 |
-| T4.6 | PR-M4: live workbench | PR | pending | — | T4.2–T4.5 |
+| T4.1 | Test: debounce 300ms + AbortController cancels in-flight | Test | completed | UJ-017 | M3 |
+| T4.2 | Impl: live lint/decode clients; span highlight + hover | Impl | completed | #694 | T4.1, T2.7 |
+| T4.3 | Impl: pull-up console; live IWXXM toggle (**default off**) | Impl | completed | 04 A | T4.2 |
+| T4.4 | Test: Playwright workbench smoke (TC-F7-001/004) | Test | completed | test-plan | T4.3 |
+| T4.5 | Confirm H0c/H4–H5 still green (reuse existing CORS/connectivity) | Test | completed | connectivity-gates | T4.4 |
+| T4.6 | PR-M4: live workbench | PR | in_progress | — | T4.2–T4.5 |
 
 ---
 
@@ -208,8 +208,8 @@ Before 07-build:
 
 | Task | Status |
 |------|--------|
-| `test_cors_policy.py` (H0c) | exists — re-run in M4/M6 |
-| `scripts/deploy/verify_connectivity.sh` (H4–H5) | exists — re-run M6 |
+| `test_cors_policy.py` (H0c) | **PASS** 2026-07-14 (T4.5) — 6 passed |
+| `scripts/deploy/verify_connectivity.sh` (H4–H5) | exists — re-run M6 (T6.4) |
 | New CORS config | **not required** (04 A) |
 
 ## Risks
