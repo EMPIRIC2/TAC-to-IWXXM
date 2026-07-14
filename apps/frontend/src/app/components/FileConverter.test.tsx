@@ -388,7 +388,9 @@ describe('FileConverter Component', () => {
         await user.type(textarea, 'Test content');
         expect(textarea).toHaveValue('Test content');
 
-        const clearBtn = await screen.findByText(/clear/i, { selector: 'button' });
+        const clearBtn = await screen.findByRole('button', {
+          name: /clear all pending files and manual input/i,
+        });
         await user.click(clearBtn);
 
         expect(textarea).toHaveValue('');
@@ -1551,10 +1553,17 @@ describe('FileConverter Component', () => {
         (container.querySelector('#param-log-level') as HTMLSelectElement).value,
       ).toBe('DEBUG');
 
-      // Validation checkboxes
-      const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-      const strictCheck = checkboxes[0] as HTMLInputElement;
-      const nilCheck = checkboxes[1] as HTMLInputElement;
+      // Validation checkboxes (not soft-preview / live IWXXM toggles)
+      const strictCheck = screen
+        .getByText('Strict Validation')
+        .closest('label')
+        ?.querySelector('input[type="checkbox"]') as HTMLInputElement;
+      const nilCheck = screen
+        .getByText('Include Nil Reasons')
+        .closest('label')
+        ?.querySelector('input[type="checkbox"]') as HTMLInputElement;
+      expect(strictCheck).toBeTruthy();
+      expect(nilCheck).toBeTruthy();
       await user.click(strictCheck);
       expect(strictCheck.checked).toBe(false);
       await user.click(nilCheck);

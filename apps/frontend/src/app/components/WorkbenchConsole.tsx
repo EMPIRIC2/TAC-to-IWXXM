@@ -56,7 +56,7 @@ export function WorkbenchConsole({
             onClick={onClear}
             data-testid="workbench-console-clear"
           >
-            Clear
+            Clear log
           </button>
         ) : null}
       </div>

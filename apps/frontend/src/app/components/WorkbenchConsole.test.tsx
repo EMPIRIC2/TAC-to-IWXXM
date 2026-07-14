@@ -34,6 +34,9 @@ describe('WorkbenchConsole', () => {
     const onClear = vi.fn();
     render(<WorkbenchConsole lines={[]} onClear={onClear} defaultOpen />);
     await user.click(screen.getByTestId('workbench-console-clear'));
+    expect(screen.getByTestId('workbench-console-clear')).toHaveTextContent(
+      /clear log/i,
+    );
     expect(onClear).toHaveBeenCalled();
   });
 });
