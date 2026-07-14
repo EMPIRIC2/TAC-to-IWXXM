@@ -2,7 +2,9 @@
 
 from pathlib import Path
 
-MIGRATION = Path("supabase/migrations/20260714000010_tac_work_sessions.sql")
+# apps/backend/tests/unit → repo root (CI runs pytest with cwd=apps/backend)
+_REPO_ROOT = Path(__file__).resolve().parents[4]
+MIGRATION = _REPO_ROOT / "supabase/migrations/20260714000010_tac_work_sessions.sql"
 
 
 def test_tac_work_sessions_migration_exists() -> None:
