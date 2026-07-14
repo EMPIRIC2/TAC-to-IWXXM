@@ -16,9 +16,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M5 — Unified sessions (next) |
-| **Active task** | T5.1 next |
-| **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) + M3 (T3.1–T3.5) + M4 (T4.1–T4.6) |
+| **Active milestone** | M5 — Unified sessions |
+| **Active task** | T5.6 in_progress (PR) |
+| **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) + M3 (T3.1–T3.5) + M4 (T4.1–T4.6) + M5 (T5.1–T5.5) |
 | **Last updated** | 2026-07-14 |
 
 ## Tech Stack Summary (S011 delta)
@@ -148,12 +148,12 @@
 
 | ID | Task | Type | Status | Spec | Depends |
 |----|------|------|--------|------|---------|
-| T5.1 | Test: session schema + `product` + one-WIP-total rule | Test | pending | 02 M1 | M4 |
-| T5.2 | Migration: create `tac_work_sessions`; copy from `metar_work_sessions`; cutover backend; DROP old | Impl | pending | ADR-020; expand-cutover | T5.1 |
-| T5.3 | Impl: work-sessions API `product` field + list filter | Impl | pending | api-contract | T5.2 |
-| T5.4 | Impl: My METARs = `product IN (metar,speci)`; workbench history all products | Impl | pending | UJ-004/018 | T5.3 |
-| T5.5 | Test: migrate smoke + non-METAR Draft resume (TC-F7-005) | Test | pending | UJ-018 | T5.4 |
-| T5.6 | PR-M5: unified sessions | PR | pending | — | T5.2–T5.5 |
+| T5.1 | Test: session schema + `product` + one-WIP-total rule | Test | completed | 02 M1 | M4 |
+| T5.2 | Migration: create `tac_work_sessions`; copy from `metar_work_sessions`; cutover backend; DROP old | Impl | completed | ADR-020; expand-cutover | T5.1 |
+| T5.3 | Impl: work-sessions API `product` field + list filter | Impl | completed | api-contract | T5.2 |
+| T5.4 | Impl: My METARs = `product IN (metar,speci)`; workbench history all products | Impl | completed | UJ-004/018 | T5.3 |
+| T5.5 | Test: migrate smoke + non-METAR Draft resume (TC-F7-005) | Test | completed | UJ-018 | T5.4 |
+| T5.6 | PR-M5: unified sessions | PR | in_progress | — | T5.2–T5.5 |
 
 ---
 
@@ -225,3 +225,5 @@ Before 07-build:
 
 - 2026-07-13: Initial plan — 04 Batch 1 A (expand-cutover; CM6 packages; 300ms; live IWXXM off; keep work-sessions paths; reuse CORS)
 - 2026-07-14: M4 complete (T4.1–T4.6); PR-M4 #718 open; next M5 T5.1
+- 2026-07-14: M5 started — T5.1 in_progress (unified tac_work_sessions)
+- 2026-07-14: M5 impl done (T5.1–T5.5); remote migration `20260714000010` applied (13 rows cutover); next T5.6 PR-M5
