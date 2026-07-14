@@ -6,6 +6,13 @@ import { useEffect, useRef } from 'react';
 import { EditorView, basicSetup } from 'codemirror';
 import { EditorState } from '@codemirror/state';
 
+export interface FailedSpanMark {
+  start: number;
+  end: number;
+  code?: string;
+  message?: string;
+}
+
 export interface TacEditorProps {
   id?: string;
   value: string;
@@ -14,6 +21,8 @@ export interface TacEditorProps {
   placeholder?: string;
   'aria-label'?: string;
   className?: string;
+  /** Soft-preview / Failed-TAC spans — marks editor chrome when non-empty (UJ-016). */
+  failedSpans?: FailedSpanMark[];
 }
 
 /**
@@ -22,6 +31,7 @@ export interface TacEditorProps {
  * @param props.value - Current TAC text
  * @param props.onChange - Called when the document changes
  * @param props.readOnly - When true, editing is disabled
+ * @param props.failedSpans - Optional soft-preview failure spans
  */
 export function TacEditor({
   id = 'manual-input',
@@ -31,11 +41,13 @@ export function TacEditor({
   placeholder = '',
   'aria-label': ariaLabel = 'Enter TAC data manually',
   className = '',
+  failedSpans = [],
 }: TacEditorProps) {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+  const hasFailedTac = failedSpans.length > 0;
 
   useEffect(() => {
     if (!parentRef.current) {
@@ -107,9 +119,14 @@ export function TacEditor({
 
   return (
     <div
-      className={`overflow-hidden rounded-md border border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800 ${className}`}
+      className={`overflow-hidden rounded-md border bg-white dark:bg-gray-800 ${
+        hasFailedTac
+          ? 'border-rose-400 dark:border-rose-600'
+          : 'border-gray-300 dark:border-gray-700'
+      } ${className}`}
       data-testid="tac-editor"
       data-placeholder={placeholder}
+      {...(hasFailedTac ? { 'data-failed-tac': 'true' } : {})}
     >
       <div ref={parentRef} />
     </div>

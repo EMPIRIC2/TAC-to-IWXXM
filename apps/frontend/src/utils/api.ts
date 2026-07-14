@@ -45,6 +45,15 @@ export interface ConversionIssue {
   severity?: 'error' | 'warning' | 'info';
   layer?: string;
   location?: string;
+  start?: number;
+  end?: number;
+}
+
+export interface FailedSpan {
+  start: number;
+  end: number;
+  code?: string;
+  message?: string;
 }
 
 export interface ConversionResponse {
@@ -54,6 +63,9 @@ export interface ConversionResponse {
   total_processed: number;
   successful: number;
   failed: number;
+  /** Soft-preview envelope (ADR-022); set when preview=true */
+  ok?: boolean | null;
+  failed_spans?: FailedSpan[];
 }
 
 export interface HealthResponse {
@@ -132,6 +144,7 @@ export async function convertMetarToIwxxm(params: {
   profile?: string;
   iwxxmVersion?: string;
   validateOutput?: boolean;
+  preview?: boolean;
   accessToken?: string;
 }): Promise<ConversionResponse> {
   const formData = new FormData();
@@ -155,6 +168,10 @@ export async function convertMetarToIwxxm(params: {
 
   // Add validation flag (default to false)
   formData.append('validate_output', params.validateOutput ? 'true' : 'false');
+
+  if (params.preview) {
+    formData.append('preview', 'true');
+  }
 
   try {
     const token = params.accessToken || getAccessToken() || '';

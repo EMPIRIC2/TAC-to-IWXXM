@@ -5,6 +5,8 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { TacEditor } from './TacEditor';
 import { DecodePanel } from './DecodePanel';
+import { FailedTacCue } from './FailedTacCue';
+import { SoftPreviewControl } from './SoftPreviewControl';
 import {
   Upload,
   X,
@@ -30,7 +32,7 @@ import { IcaoAutocomplete } from './IcaoAutocomplete';
 import { AirportDetailsCard } from './AirportDetailsCard';
 import { signOutWithScope } from '/utils/supabase/logout';
 import { convertMetarToIwxxm as callBackendConversion, decodeTac } from '/utils/api';
-import type { DecodeResidual, DecodeSegment } from '/utils/api';
+import type { DecodeResidual, DecodeSegment, FailedSpan } from '/utils/api';
 import {
   detectTacProduct,
   resolveConvertProduct,
@@ -138,6 +140,8 @@ export function FileConverter({
   const [decodeProduct, setDecodeProduct] = useState<string | undefined>();
   const [decodeLoading, setDecodeLoading] = useState(false);
   const [decodeError, setDecodeError] = useState<string | null>(null);
+  const [softPreview, setSoftPreview] = useState(false);
+  const [failedSpans, setFailedSpans] = useState<FailedSpan[]>([]);
   // Restore the guest's custom output filename from the session snapshot (R5).
   const [outputFilename, setOutputFilename] = useState(() => {
     const saved = readGuestConverterState()?.conversionParams?.output_filename;
@@ -448,6 +452,7 @@ export function FileConverter({
   const performConversion = async (): Promise<{
     files: ConvertedFile[];
     hasErrors: boolean;
+    softFail: boolean;
   } | null> => {
     if (pendingFiles.length === 0 && !manualInput.trim()) {
       toast.error('Please add files or enter manual input');
@@ -456,6 +461,7 @@ export function FileConverter({
 
     setConversionStatus({ type: 'loading', message: 'Converting...' });
     setConversionLog(null);
+    setFailedSpans([]);
 
     try {
       const newConvertedFiles: ConvertedFile[] = [];
@@ -467,6 +473,7 @@ export function FileConverter({
       console.log('[FileConverter] Starting conversion with:', {
         manualInput: manualInput.trim() ? 'provided' : 'none',
         fileCount: filesToConvert.length,
+        softPreview,
         accessToken: accessToken ? `${accessToken.substring(0, 20)}...` : 'MISSING',
       });
 
@@ -493,6 +500,7 @@ export function FileConverter({
         profile: conversionParams.profile,
         iwxxmVersion: conversionParams.iwxxmVersion,
         validateOutput: false,
+        preview: softPreview,
         accessToken: accessToken,
       });
 
@@ -548,6 +556,12 @@ export function FileConverter({
       const responseErrors = response.errors ?? [];
       const responseIssues = response.issues ?? [];
       const hasLog = responseErrors.length > 0 || responseIssues.length > 0;
+      const softFail = Boolean(softPreview && response.ok === false);
+      const spans = response.failed_spans ?? [];
+
+      if (softFail) {
+        setFailedSpans(spans);
+      }
 
       if (newConvertedFiles.length === 0) {
         if (hasLog) {
@@ -561,12 +575,16 @@ export function FileConverter({
 
       setConvertedFiles(newConvertedFiles);
       setPendingFiles([]);
-      setManualInput('');
+      // Keep TAC in editor on soft-fail so Failed-TAC cue stays contextual (UJ-016).
+      if (!softFail) {
+        setManualInput('');
+        setFailedSpans([]);
+      }
       setConversionLog(
         hasLog ? { errors: responseErrors, issues: responseIssues } : null,
       );
       setConversionStatus({ type: 'idle' });
-      return { files: newConvertedFiles, hasErrors: hasLog };
+      return { files: newConvertedFiles, hasErrors: hasLog || softFail, softFail };
     } catch (error) {
       console.error('[FileConverter] Conversion error:', error);
 
@@ -606,7 +624,13 @@ export function FileConverter({
     try {
       const result = await performConversion();
       if (result) {
-        toast.success(`Successfully converted ${result.files.length} file(s)`);
+        if (result.softFail) {
+          toast.warning(
+            'Soft-preview returned Failed-TAC markers — not ready to publish',
+          );
+        } else {
+          toast.success(`Successfully converted ${result.files.length} file(s)`);
+        }
         if (accessToken) {
           const snapshot = buildSnapshot({
             convertedFiles: result.files.map((file) => ({
@@ -647,6 +671,9 @@ export function FileConverter({
       }
 
       if (result.hasErrors) {
+        if (result.softFail) {
+          toast.warning('Soft-preview Failed-TAC — fix markers before Convert & Send');
+        }
         await persistSession(
           buildSnapshot({
             convertedFiles: result.files.map((file) => ({
@@ -654,7 +681,7 @@ export function FileConverter({
               originalContent: file.originalContent,
               convertedContent: file.convertedContent,
             })),
-            manualInput: '',
+            manualInput: result.softFail ? manualInput : '',
             pendingFiles: [],
           }),
           { status: 'failed' },
@@ -806,6 +833,7 @@ export function FileConverter({
     setConvertedFiles([]);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
+    setFailedSpans([]);
     toast.info('Queue cleared');
   };
 
@@ -1058,6 +1086,7 @@ export function FileConverter({
               >
                 Manual TAC Input
               </label>
+              <FailedTacCue failedSpans={failedSpans} />
               <TacEditor
                 id="manual-input"
                 value={manualInput}
@@ -1066,6 +1095,7 @@ export function FileConverter({
                 placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
                 aria-label="Enter METAR data manually"
                 className="min-h-[120px] focus-within:ring-2 focus-within:ring-blue-500"
+                failedSpans={failedSpans}
               />
               <DecodePanel
                 segments={decodeSegments}
@@ -1075,6 +1105,13 @@ export function FileConverter({
                 error={decodeError}
                 onOpenChange={runDecode}
               />
+              <div className="mt-3">
+                <SoftPreviewControl
+                  checked={softPreview}
+                  onChange={setSoftPreview}
+                  disabled={isReadOnly || isBusy}
+                />
+              </div>
             </div>
 
             {/* Output filename for manual input (#664 / EV-005) */}

@@ -17,9 +17,9 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — Failed-TAC + preview |
-| **Active task** | T3.3 next |
-| **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) + T3.1–T3.2 |
-| **Last updated** | 2026-07-13 |
+| **Active task** | T3.5 next (PR-M3) |
+| **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) + T3.1–T3.4 |
+| **Last updated** | 2026-07-14 |
 
 ## Tech Stack Summary (S011 delta)
 
@@ -115,9 +115,9 @@
 |----|------|------|--------|------|---------|
 | T3.1 | Test: convert with `preview=true` → 200 + `failed_spans` + best-effort XML | Test | completed | ADR-022 | M2 |
 | T3.2 | Impl: tac2iwxxm soft-preview hooks + backend `preview` form flag | Impl | completed | api-contract | T3.1 |
-| T3.3 | Test: Failed-TAC visual cue in editor/results | Test | in_progress | UJ-016 | T3.2 |
-| T3.4 | Impl: Failed-TAC cue + wire preview control in UI | Impl | pending | #665/#666 | T3.3 |
-| T3.5 | PR-M3: preview + Failed-TAC | PR | pending | — | T3.2–T3.4 |
+| T3.3 | Test: Failed-TAC visual cue in editor/results | Test | completed | UJ-016 | T3.2 |
+| T3.4 | Impl: Failed-TAC cue + wire preview control in UI | Impl | completed | #665/#666 | T3.3 |
+| T3.5 | PR-M3: preview + Failed-TAC | PR | in_progress | — | T3.2–T3.4 |
 
 ---
 
