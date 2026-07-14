@@ -4652,7 +4652,7 @@ git_history:
         - docs/sessions/README.md
         - workflow-state.yaml
       timestamp: '2026-07-13'
-    - sha: 883a21f
+    - sha: 08ee12f
       branch: evolve/S011-f7-operator-ui
       message: "[S011] docs: scoped context for F7 operator UI (00-context)"
       stage: "00-context"
