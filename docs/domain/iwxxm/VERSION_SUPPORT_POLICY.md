@@ -60,7 +60,7 @@ Future (2027+): When next version releases:
 
 ### Standards Alignment
 1. **WMO Amendment Cycle**: ICAO/WMO update standards every 12-18 months
-2. **ICAO Doc 10003**: Recommends supporting latest + 1 prior version
+2. **ICAO Doc 10003**: Project policy aligns to **latest + 1 prior** version — treat as ops/OPMET guideline alignment; **not verified** in the Advance 2014 unedited draft (no version-window text there; see [ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md)). Confirm wording against the purchased published edition before citing Doc 10003 as the sole SoT for this rule.
 3. **Regional Compliance**: EUR/NAM regions have moved to 2023-1+ only
 
 ### Operational Benefits

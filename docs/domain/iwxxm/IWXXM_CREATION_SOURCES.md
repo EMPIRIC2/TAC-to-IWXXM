@@ -4,7 +4,7 @@
 **Ticket:** [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719) · feeds [#693](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/693).  
 **Vendor pin:** `iwxxm` **v2025-2** · namespace `http://icao.int/iwxxm/2025-2`.
 
-Companions: [ANNEX3_TAC_VALIDATION_SOURCES.md](../validation/ANNEX3_TAC_VALIDATION_SOURCES.md) (input rules) · [IWXXM_VALIDATION_SOURCES.md](./IWXXM_VALIDATION_SOURCES.md) (output checks) · [WMO-306-vI-3-2023-mining-notes.md](./WMO-306-vI-3-2023-mining-notes.md) · [PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) (informative workshop overview).
+Companions: [ANNEX3_TAC_VALIDATION_SOURCES.md](../validation/ANNEX3_TAC_VALIDATION_SOURCES.md) (input rules) · [IWXXM_VALIDATION_SOURCES.md](./IWXXM_VALIDATION_SOURCES.md) (output checks) · [WMO-306-vI-3-2023-mining-notes.md](./WMO-306-vI-3-2023-mining-notes.md) · [PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) (informative workshop overview) · [ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md) (historical Doc 10003 Advance 2014 — not encode SoT).
 
 ---
 
@@ -143,10 +143,12 @@ Encode national content in IWXXM **`extension`** blocks per MDL / iwxxm-us — d
 
 ## Translation metadata (OPMET centres)
 
-When emitting translation-centre attributes, align with Doc 10003 / project guide:
+When emitting translation-centre attributes, align with **published** Doc 10003 / project guide + pin schema:
 
-- In-repo: [ICAO_OPMET_COMPLIANCE.md](./ICAO_OPMET_COMPLIANCE.md)
+- **Machine SoT:** vendored `common.xsd` attrs (`translationCentreName`, `translationCentreDesignator`, `translationTime`, `translatedBulletinID`, `translatedBulletinReceptionTime`, `permissibleUsage`, …) on IWXXM **v2025-2**
+- In-repo ops guide: [ICAO_OPMET_COMPLIANCE.md](./ICAO_OPMET_COMPLIANCE.md) (cites Doc 10003 §7 — **not** present in Advance 2014 draft; verify against purchased edition)
 - Doc 10003 store: https://store.icao.int/en/manual-on-the-icao-meteorological-information-exchange-model-doc-10003 (**paywall**)
+- Lineage / FAQ only: [ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md) — early ROC convert-at-centre FAQ; Ch.5 metadata empty
 - Workshop reminder (informative): [PPT-02…](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) — set `translatedBulletinID` / `translationCentreName` (etc.) when a **third party / ROC** translates TAC→IWXXM; **omit** those attributes when the producing organization translates itself.
 
 ### Schema capacity vs TAC template (informative)

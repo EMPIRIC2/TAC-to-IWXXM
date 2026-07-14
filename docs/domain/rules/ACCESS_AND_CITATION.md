@@ -51,7 +51,8 @@ Schema: https://schemas.wmo.int/iwxxm/2025-2/metarSpeci.xsd
 | Path | Contents |
 |------|----------|
 | `.local/reference/wmo-306-vI-3-2023/` | PDF + `fulltext.txt` + extracts |
-| Tracked notes | `docs/domain/iwxxm/WMO-306-vI-3-2023-mining-notes.md` |
+| `.local/reference/icao-doc-10003-draft-en/` | Advance 2014 unedited Doc 10003 PDF + extract |
+| Tracked notes | `docs/domain/iwxxm/WMO-306-vI-3-2023-mining-notes.md` · `docs/domain/iwxxm/ICAO-Doc-10003-draft-2014-mining-notes.md` |
 
 Ensure `.gitignore` covers `.local/reference/` before storing PDFs.
 

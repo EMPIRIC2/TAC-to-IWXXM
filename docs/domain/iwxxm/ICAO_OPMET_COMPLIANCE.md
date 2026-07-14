@@ -4,7 +4,9 @@ Implementation guide for ICAO OPMET Data Exchange Guidelines compliance in the M
 
 ## Overview
 
-This Translation Centre implements ICAO Doc 10003 "_Manual on the Digital Exchange of Aeronautical Meteorological Information_" Section 7 requirements for translation centre operations, statistics collection, and data exchange.
+This Translation Centre implements ICAO Doc 10003 "_Manual on the Digital Exchange of Aeronautical Meteorological Information_" **Section 7** requirements for translation centre operations, statistics collection, and data exchange.
+
+> **Edition caveat (2026-07-14):** §7 is cited from the **published / store** Doc 10003. An Advance 2014 unedited draft (Amd 76 / IWXXM v1) has **no Section 7** and an empty metadata chapter — see [ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md). Runtime attribute names follow vendored IWXXM **v2025-2** `common.xsd`, not that draft.
 
 ## Table of Contents
 
@@ -452,7 +454,7 @@ python3 -m pytest tests/test_icao_opmet.py --cov=src/config/icao_opmet --cov=src
 
 ### Standards
 
-- **ICAO Doc 10003**: _Manual on the Digital Exchange of Aeronautical Meteorological Information_
+- **ICAO Doc 10003**: _Manual on the Digital Exchange of Aeronautical Meteorological Information_ (store / published edition for §7; [draft mining notes](./ICAO-Doc-10003-draft-2014-mining-notes.md) for lineage only)
 - **ICAO Doc 7910**: _Location Indicators_ (for ICAO region mapping)
 - **WMO No. 306 Volume I.3**: _Manual on Codes Part D - Representations derived from data models_
 

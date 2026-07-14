@@ -61,10 +61,24 @@ Thematic companions:
 - **Publisher:** ICAO
 - **URL:** https://store.icao.int/en/manual-on-the-icao-meteorological-information-exchange-model-doc-10003
 - **Access:** **paywall**
-- **Applies to:** products=[all]; profiles=[annex3]; role=[conversion, iwxxm-validation]
+- **Applies to:** products=[all F6 + ops]; profiles=[annex3]; role=[conversion, iwxxm-validation, bulletin]
 - **Gap vs GIFTs:** translation-centre / IWXXM exchange prose (see also in-repo [ICAO_OPMET_COMPLIANCE.md](../iwxxm/ICAO_OPMET_COMPLIANCE.md))
 - **Consumer:** ops / `tac2iwxxm` metadata attrs; `#699` pointer only for prose
 - **Label:** normative
+- **Caveats:** Cite the **published** edition for § translation-centre / ops prose. An Advance 2014 unedited draft (Amd 76 / IWXXM v1 era) was mined 2026-07-14 — local only under `.local/reference/icao-doc-10003-draft-en/`; tracked notes: [ICAO-Doc-10003-draft-2014-mining-notes.md](../iwxxm/ICAO-Doc-10003-draft-2014-mining-notes.md). That draft lacks §7, AIRMET/VAA/TCA, and COLLECT bulletins; do not use it as runtime SoT.
+- **Mined:** 2026-07-14
+
+### ICAO Doc 10003 — Advance 2014 Edition (unedited draft)
+
+- **Publisher:** ICAO (unedited advance)
+- **URL:** store landing above (final); local extracts `.local/reference/icao-doc-10003-draft-en/` (gitignored)
+- **Access:** draft PDF local-only; **not authoritative** (PDF p.1 notice)
+- **Applies to:** products=[METAR,SPECI,TAF,SIGMET]; profiles=[annex3]; role=[conversion, iwxxm-validation] (historical)
+- **Gap vs GIFTs:** SWIM/IWXXM+SAF architecture; early present/recent-weather encode lists; ROC convert FAQ — no F6 advisories
+- **Consumer:** design / lineage only (not CI validate pin)
+- **Label:** informative / historical
+- **Caveats:** Namespaces `icao.int/iwxxm/1.0RC2`; FAQ “no bulletin schema” superseded by COLLECT / `iwxxm-collect.xsd`
+- **Mined:** 2026-07-14 · [ICAO-Doc-10003-draft-2014-mining-notes.md](../iwxxm/ICAO-Doc-10003-draft-2014-mining-notes.md)
 
 ### ICAO Doc 9766 — Handbook on the International Airways Volcano Watch (IAVW)
 

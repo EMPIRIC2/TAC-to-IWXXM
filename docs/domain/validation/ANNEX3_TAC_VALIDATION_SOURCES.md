@@ -55,6 +55,17 @@ https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/aviation
 | Label | normative (practice) |
 | Use | Harmonized SIGMET/TCA practice, OPMET handling tips feeding operator lint messages |
 
+### ICAO Doc 10003 (encode / exchange — not primary TAC SARPs)
+
+| Field | Value |
+|-------|-------|
+| Title | Manual on the Digital Exchange of Aeronautical Meteorological Information |
+| URL | https://store.icao.int/en/manual-on-the-icao-meteorological-information-exchange-model-doc-10003 |
+| Access | **Paywall** (published); Advance 2014 draft mined locally — notes only |
+| Label | normative (published); informative/historical (Advance 2014 draft) |
+| Use for `tac-validate` | Indirect — early draft lists IWXXM-permissible METAR present/recent weather **combinations** (encode-side); **do not** re-home Annex 3 TAC rules from Doc 10003. Prefer Annex 3 + `codes.wmo.int/306/4678` |
+| Notes | [ICAO-Doc-10003-draft-2014-mining-notes.md](../iwxxm/ICAO-Doc-10003-draft-2014-mining-notes.md) |
+
 ---
 
 ## Alphanumeric templates (WMO Manual on Codes)

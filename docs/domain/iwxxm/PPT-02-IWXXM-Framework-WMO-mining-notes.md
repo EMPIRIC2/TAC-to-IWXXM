@@ -108,7 +108,7 @@ Paraphrase of the slide pointer list (normalize `http://` → usual https where 
 | Landing | Access | Notes |
 |---------|--------|-------|
 | IWXXM Guidelines for OPMET Exchange | public (not fully URL’d on slide) | Prep + exchange; deck (p.15) says update when 2025-2 is official and **deprecate IWXXM 2021-2 and earlier** |
-| ICAO Doc **10003** — Manual on the ICAO Meteorological Information Exchange Model | **paywall** ($) | Structure of IWXXM; already in RULE_SOURCE_URLS |
+| ICAO Doc **10003** — Manual on the ICAO Meteorological Information Exchange Model | **paywall** ($) | Structure of IWXXM; [RULE_SOURCE_URLS](../rules/RULE_SOURCE_URLS.md); Advance 2014 draft notes [ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md) (no §7 / translation attrs in that draft) |
 
 ### Preparation & translation metadata (p.8–9)
 

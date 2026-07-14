@@ -14,6 +14,7 @@
 | IWXXM creation | [IWXXM_CREATION_SOURCES.md](./IWXXM_CREATION_SOURCES.md) |
 | IWXXM validation | [IWXXM_VALIDATION_SOURCES.md](./IWXXM_VALIDATION_SOURCES.md) |
 | Workshop overview (informative) | [PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) |
+| Doc 10003 Advance 2014 (historical) | [ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md) |
 
 | Item | Value |
 |---|---|

@@ -17,6 +17,7 @@ copyrighted full-text PDFs — URLs and citations only.
 | [../iwxxm/IWXXM_VALIDATION_SOURCES.md](../iwxxm/IWXXM_VALIDATION_SOURCES.md) | XSD / Schematron / codelist validation landings |
 | [../iwxxm/WMO-306-vI-3-2023-mining-notes.md](../iwxxm/WMO-306-vI-3-2023-mining-notes.md) | Focused FM 205 / Manual on Codes working notes |
 | [../iwxxm/PPT-02-IWXXM-Framework-WMO-mining-notes.md](../iwxxm/PPT-02-IWXXM-Framework-WMO-mining-notes.md) | Informative TT-AvData / ESAF workshop overview (landings, translation attrs, 2025-2) |
+| [../iwxxm/ICAO-Doc-10003-draft-2014-mining-notes.md](../iwxxm/ICAO-Doc-10003-draft-2014-mining-notes.md) | Advance 2014 Doc 10003 draft — full pass + domain cross-check (historical; not SoT) |
 
 ## Labeling convention
 

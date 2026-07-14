@@ -78,7 +78,8 @@ Prefer offline RDF in CI; optional live:
 | Weather / phenomena | https://codes.wmo.int/49-2/… |
 
 Community index: https://community.wmo.int/en/activity-areas/wis/iwxxm (compatibility table / amendment↔package map).  
-Informative workshop overview (2025-10 TT-AvData): [PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) — deck messaging that **IWXXM 2021-2 and earlier** are to be deprecated in OPMET Guidelines once **2025-2** is official; still validate runtime XML only against the **vendored** pin.
+Informative workshop overview (2025-10 TT-AvData): [PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) — deck messaging that **IWXXM 2021-2 and earlier** are to be deprecated in OPMET Guidelines once **2025-2** is official; still validate runtime XML only against the **vendored** pin.  
+Historical Doc 10003 Advance 2014 (IWXXM **1.0RC2** sample / no COLLECT): [ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md) — lineage only; do not mix with 2025-2 validation.
 
 ---
 

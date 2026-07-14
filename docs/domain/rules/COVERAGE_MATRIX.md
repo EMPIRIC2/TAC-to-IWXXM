@@ -83,6 +83,8 @@ Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quaran
 | Official examples | golden accept | golden IWXXM | SCH fixtures | samples |
 | FMH-1 / iwxxm-us | US profile | extensions | combined catalog | US samples |
 | PPT-02 Framework (informative) | — | translation attrs / capacity gaps | version deprecation messaging | cite |
+| Doc 10003 published (paywall) | — | translation-centre metadata / exchange | version/transition prose if present | cite |
+| Doc 10003 Advance 2014 draft (historical) | — | IWXXM v1 lineage; weather lists obsolete | 1.0RC2 sample only | lineage notes |
 | GIFTs heritage | gap list only | gap list only | — | — |
 
 ---
