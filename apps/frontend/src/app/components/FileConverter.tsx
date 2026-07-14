@@ -857,6 +857,7 @@ export function FileConverter({
       if (!text) {
         return;
       }
+      setDecodeError(null);
       try {
         const response = await callBackendConversion({
           manualText: text,
@@ -909,12 +910,6 @@ export function FileConverter({
     liveIwxxm,
     liveIwxxmRunner,
   });
-
-  useEffect(() => {
-    if (decodeLoading) {
-      setDecodeError(null);
-    }
-  }, [decodeLoading]);
 
   const saveIndicatorLabel =
     saveIndicator === 'pending'
