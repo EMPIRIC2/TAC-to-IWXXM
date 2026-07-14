@@ -36,11 +36,16 @@ class PendingFilePayload(BaseModel):
     content: str = ""
 
 
+def _normalize_product_value(value: object) -> object:
+    if isinstance(value, str):
+        return value.strip().lower()
+    return value
+
+
 class WorkSessionPayload(BaseModel):
-    """Shared optional fields for create/update payloads."""
+    """Shared optional fields for create/update payloads (product declared on subclasses)."""
 
     title: Optional[str] = None
-    product: Optional[WorkSessionProduct] = None
     manual_tac: str = ""
     pending_files: list[PendingFilePayload] = Field(default_factory=list)
     converted_results: list[dict[str, Any]] = Field(default_factory=list)
@@ -50,22 +55,27 @@ class WorkSessionPayload(BaseModel):
     status: Optional[WorkSessionStatus] = None
     kv_upload_key: Optional[str] = None
 
-    @field_validator("product", mode="before")
-    @classmethod
-    def _normalize_product(cls, value: object) -> object:
-        if isinstance(value, str):
-            return value.strip().lower()
-        return value
-
 
 class WorkSessionCreate(WorkSessionPayload):
     """Body for POST /api/v1/work-sessions."""
 
     product: WorkSessionProduct
 
+    @field_validator("product", mode="before")
+    @classmethod
+    def _normalize_product(cls, value: object) -> object:
+        return _normalize_product_value(value)
+
 
 class WorkSessionUpdate(WorkSessionPayload):
     """Body for PATCH /api/v1/work-sessions/{id}."""
+
+    product: Optional[WorkSessionProduct] = None
+
+    @field_validator("product", mode="before")
+    @classmethod
+    def _normalize_product(cls, value: object) -> object:
+        return _normalize_product_value(value)
 
 
 class WorkSession(BaseModel):
@@ -90,9 +100,7 @@ class WorkSession(BaseModel):
     @field_validator("product", mode="before")
     @classmethod
     def _normalize_product(cls, value: object) -> object:
-        if isinstance(value, str):
-            return value.strip().lower()
-        return value
+        return _normalize_product_value(value)
 
 
 class WorkSessionListResponse(BaseModel):
