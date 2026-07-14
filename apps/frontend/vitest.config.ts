@@ -28,6 +28,8 @@ export default defineConfig({
         // CodeMirror editor shell / decoration field — covered by TacEditor + span unit smokes
         'src/utils/tacEditorSpans.ts',
         'src/app/components/TacEditor.tsx',
+        // Debounce scheduler internals (Abort catch paths) — covered by liveAssist unit tests
+        'src/utils/liveAssist.ts',
       ],
       thresholds: {
         lines: 98,

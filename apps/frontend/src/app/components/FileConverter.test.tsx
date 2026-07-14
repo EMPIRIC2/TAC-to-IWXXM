@@ -426,6 +426,22 @@ describe('FileConverter Component', () => {
       fireEvent.click(screen.getByTestId('workbench-console-toggle'));
       expect(screen.getByTestId('workbench-console-lines')).toBeInTheDocument();
 
+      // live IWXXM is on — next assist cycle should soft-preview convert
+      mockConvertMetarToIwxxm.mockClear();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [],
+        errors: [],
+        ok: true,
+        failed_spans: [],
+      });
+      fireEvent.change(textarea, { target: { value: 'METAR KJFK 121251Z' } });
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(350);
+      });
+      expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+        expect.objectContaining({ preview: true }),
+      );
+
       vi.useRealTimers();
     });
   });
