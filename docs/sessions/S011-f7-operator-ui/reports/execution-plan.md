@@ -16,8 +16,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M3 — Failed-TAC + preview (next) |
-| **Active task** | T3.1 next |
+| **Active milestone** | M3 — Failed-TAC + preview |
+| **Active task** | T3.1 in_progress |
 | **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) |
 | **Last updated** | 2026-07-13 |
 
@@ -113,7 +113,7 @@
 
 | ID | Task | Type | Status | Spec | Depends |
 |----|------|------|--------|------|---------|
-| T3.1 | Test: convert with `preview=true` → 200 + `failed_spans` + best-effort XML | Test | pending | ADR-022 | M2 |
+| T3.1 | Test: convert with `preview=true` → 200 + `failed_spans` + best-effort XML | Test | in_progress | ADR-022 | M2 |
 | T3.2 | Impl: tac2iwxxm soft-preview hooks + backend `preview` form flag | Impl | pending | api-contract | T3.1 |
 | T3.3 | Test: Failed-TAC visual cue in editor/results | Test | pending | UJ-016 | T3.2 |
 | T3.4 | Impl: Failed-TAC cue + wire preview control in UI | Impl | pending | #665/#666 | T3.3 |
