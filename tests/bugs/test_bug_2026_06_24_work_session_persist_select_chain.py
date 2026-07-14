@@ -38,6 +38,7 @@ NOW = datetime(2026, 6, 25, 2, 0, tzinfo=UTC)
 ROW = {
     "id": str(SESSION_ID),
     "user_id": USER_ID,
+    "product": "METAR",
     "status": "draft",
     "title": "METAR 2026-06-25 02:00 UTC",
     "manual_tac": "METAR TEST",
@@ -127,7 +128,7 @@ def test_work_session_mutations_must_not_chain_select_on_insert(
     service._client = SimpleNamespace(table=lambda _name: legacy_client)  # type: ignore[attr-defined]
 
     created = service.create_session(
-        USER_ID, WorkSessionCreate(manual_tac="METAR TEST")
+        USER_ID, WorkSessionCreate(manual_tac="METAR TEST", product="METAR")
     )
     assert created.id == SESSION_ID
     assert legacy_client.last_insert is not None

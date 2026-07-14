@@ -196,3 +196,30 @@ def test_lenient_false_resh_strict_behaviour():
     assert "translationFailedTAC" in result_strict
     # Lenient result should not contain a TAC failure marker
     assert "translationFailedTAC" not in result_lenient
+
+
+def test_soft_preview_prepends_xml_declaration(monkeypatch) -> None:
+    """Soft-preview path prepends <?xml when tac2iwxxm returns a bare root element."""
+    from types import SimpleNamespace
+
+    import tac2iwxxm
+
+    fake_result = SimpleNamespace(
+        ok=False,
+        xml="<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2023-1'/>",
+        issues=[
+            SimpleNamespace(code="PARSE_ERROR", message="bad", start=0, end=5),
+        ],
+    )
+    monkeypatch.setattr(tac2iwxxm, "convert", lambda *a, **k: fake_result)
+
+    soft: dict = {}
+    xml, _ = convert_metar_tac_with_metadata(
+        INVALID_METAR,
+        validate=False,
+        preview=True,
+        soft_preview_out=soft,
+    )
+    assert soft.get("ok") is False
+    assert soft.get("failed_spans")
+    assert xml.lstrip().startswith("<?xml")

@@ -13,6 +13,7 @@ def test_issue_accepts_optional_start_end() -> None:
         code="sch",
         message="fail",
         location="line 1",
+        layer="schematron",
         start=0,
         end=4,
     )

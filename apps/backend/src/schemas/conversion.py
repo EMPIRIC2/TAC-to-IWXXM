@@ -221,3 +221,15 @@ class ConversionRequest(BaseModel):
         description="Optional issuing centre ICAO location indicator",
         examples=["KWBC"],
     )
+    preview: bool = Field(
+        default=False,
+        description="Soft-preview mode (ADR-022): best-effort IWXXM + failed_spans on partial failure",
+    )
+    product: Optional[str] = Field(
+        default=None,
+        description="TAC product id (METAR, SPECI, TAF, …); defaults to form/auto-detect when omitted",
+    )
+    profile: Optional[str] = Field(
+        default=None,
+        description="IWXXM profile: annex3 or iwxxm_us",
+    )

@@ -16,9 +16,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M5 — Unified sessions |
-| **Active task** | T5.6 completed (PR-M5 #720); next M6 |
-| **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) + M3 (T3.1–T3.5) + M4 (T4.1–T4.6) + M5 (T5.1–T5.5) |
+| **Active milestone** | M6 — Verify & deploy |
+| **Active task** | T6.1 completed; next T6.2 (09-qa + 10-e2e) |
+| **Tasks completed** | M1 (T1.*) + M2 (T2.1–T2.8) + M3 (T3.1–T3.5) + M4 (T4.1–T4.6) + M5 (T5.1–T5.6) + T6.1 |
 | **Last updated** | 2026-07-14 |
 
 ## Tech Stack Summary (S011 delta)
@@ -166,7 +166,7 @@
 
 | ID | Task | Type | Status | Spec | Depends |
 |----|------|------|--------|------|---------|
-| T6.1 | 08-verify-build full suite on evolve tip | Verify | pending | 08 skill | M5 |
+| T6.1 | 08-verify-build full suite on evolve tip | Verify | completed | 08 skill | M5 |
 | T6.2 | 09-qa + 10-e2e (TC-F7-001–006 focus) | Verify | pending | test-plan | T6.1 |
 | T6.3 | 11-verify-impl per F7 acceptance 1–8 | Verify | pending | feature-list | T6.2 |
 | T6.4 | 12-verify-deploy + 13-deploy-smoke (API then frontend) | Deploy | pending | deploy.md | T6.3 |
@@ -228,3 +228,5 @@ Before 07-build:
 - 2026-07-14: M5 started — T5.1 in_progress (unified tac_work_sessions)
 - 2026-07-14: M5 impl done (T5.1–T5.5); remote migration `20260714000010` applied (13 rows cutover); next T5.6 PR-M5
 - 2026-07-14: PR-M5 #720 open; next M6
+- 2026-07-14: Committed M1 leftover (bdcb9b8) + S010 mining docs (b5b79d7); M6 T6.1 in_progress
+- 2026-07-14: T6.1 PASS (verification-report.md); compose integration SKIPPED (host ports/disk); next T6.2

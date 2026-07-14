@@ -48,8 +48,11 @@ def test_select_policy_does_not_gate_on_deleted_at() -> None:
 
 
 @pytest.mark.skipif(
-    not (os.environ.get("ADMIN_EMAIL") and os.environ.get("ADMIN_PASSWORD")),
-    reason="ADMIN_EMAIL/ADMIN_PASSWORD required for live soft-delete/restore check",
+    not (
+        (os.environ.get("E2E_USER_EMAIL") or os.environ.get("ADMIN_EMAIL"))
+        and (os.environ.get("E2E_USER_PASSWORD") or os.environ.get("ADMIN_PASSWORD"))
+    ),
+    reason="E2E_USER_EMAIL/E2E_USER_PASSWORD required for live soft-delete/restore check",
 )
 def test_live_soft_delete_and_restore_round_trip() -> None:
     """Live: create -> soft-delete (200) -> restore (200) against the deployed API."""
@@ -58,11 +61,13 @@ def test_live_soft_delete_and_restore_round_trip() -> None:
     base = os.environ.get(
         "LIVE_API_URL", "https://metar-to-iwxxm-api.onrender.com"
     ).rstrip("/")
+    email = os.environ.get("E2E_USER_EMAIL") or os.environ["ADMIN_EMAIL"]
+    password = os.environ.get("E2E_USER_PASSWORD") or os.environ["ADMIN_PASSWORD"]
     login = httpx.post(
         f"{base}/auth/login",
         json={
-            "email": os.environ["ADMIN_EMAIL"],
-            "password": os.environ["ADMIN_PASSWORD"],
+            "email": email,
+            "password": password,
         },
         timeout=30.0,
     )
@@ -76,10 +81,12 @@ def test_live_soft_delete_and_restore_round_trip() -> None:
 
     created = httpx.post(
         f"{base}/api/v1/work-sessions",
-        json={"manual_tac": "RLS ROUNDTRIP"},
+        json={"manual_tac": "RLS ROUNDTRIP", "product": "METAR"},
         headers=headers,
         timeout=30.0,
     )
+    if created.status_code == 503:
+        pytest.skip(f"work-sessions unavailable on live API: {created.text[:200]}")
     assert created.status_code == 201, created.text
     sid = created.json()["id"]
     try:

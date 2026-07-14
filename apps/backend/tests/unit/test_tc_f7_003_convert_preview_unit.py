@@ -110,3 +110,152 @@ def test_convert_preview_success_ok_true(client: TestClient) -> None:
     assert spans == []
     assert payload["results"]
     assert "<" in payload["results"][0]["content"]
+
+
+def test_convert_preview_layer12_spans_copied(client: TestClient, monkeypatch) -> None:
+    """When Layer 1–2 issues carry offsets, soft-preview copies them into failed_spans."""
+    from types import SimpleNamespace
+
+    from src.services import validation as validation_mod
+
+    issues = [
+        SimpleNamespace(
+            level="critical",
+            message="Unknown ICAO code: XXXX",
+            suggestion=None,
+            code="ICAO_VALIDATION_FAILED",
+            layer="airport_icao",
+            location=None,
+            start=6,
+            end=10,
+        ),
+        SimpleNamespace(
+            level="info",
+            message="Informational TAC note",
+            suggestion=None,
+            code="INFO_NOTE",
+            layer="tac_syntax",
+            location=None,
+            start=None,
+            end=None,
+        ),
+    ]
+    layer_result = SimpleNamespace(issues=issues)
+    aggregated = SimpleNamespace(passed=False, total_issues=2, results=[layer_result])
+
+    monkeypatch.setattr(
+        validation_mod.ValidationService,
+        "validate_all_layers",
+        lambda self, tac_text: aggregated,
+    )
+
+    response = _multipart_convert(client, manual_text=BAD_METAR_TAC, preview="true")
+    assert response.status_code == 200, response.text[:500]
+    payload = response.json()
+    assert payload.get("ok") is False
+    spans = payload.get("failed_spans") or []
+    assert any(s.get("start") == 6 and s.get("end") == 10 for s in spans)
+
+
+def test_convert_preview_json_body_partial_failure(client: TestClient) -> None:
+    """JSON metars[] + preview=true soft-fails without hard 400."""
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": [BAD_METAR_TAC],
+            "product": "METAR",
+            "profile": "annex3",
+            "preview": True,
+            "validation_level": "basic",
+        },
+    )
+    assert response.status_code == 200, response.text[:500]
+    payload = response.json()
+    assert payload.get("ok") is False
+    assert payload.get("failed_spans")
+    assert payload.get("results")
+
+
+def test_convert_preview_validation_service_error(client: TestClient, monkeypatch) -> None:
+    """ValidationServiceError in soft-preview still yields best-effort convert."""
+    from src.services import validation as validation_mod
+    from src.services.validation import ValidationError as ValidationServiceError
+
+    def _boom(self, tac_text):
+        raise ValidationServiceError("simulated validation service failure")
+
+    monkeypatch.setattr(validation_mod.ValidationService, "validate_all_layers", _boom)
+
+    response = _multipart_convert(client, manual_text=BAD_METAR_TAC, preview="true")
+    assert response.status_code == 200, response.text[:500]
+    payload = response.json()
+    assert payload.get("ok") is False
+    assert payload.get("results")
+    assert payload.get("failed_spans")
+
+
+def test_convert_preview_json_validation_service_error(client: TestClient, monkeypatch) -> None:
+    """JSON path ValidationServiceError + preview still soft-fails."""
+    from src.services import validation as validation_mod
+    from src.services.validation import ValidationError as ValidationServiceError
+
+    def _boom(self, tac_text):
+        raise ValidationServiceError("simulated validation service failure")
+
+    monkeypatch.setattr(validation_mod.ValidationService, "validate_all_layers", _boom)
+
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": [BAD_METAR_TAC],
+            "product": "METAR",
+            "profile": "annex3",
+            "preview": True,
+            "validation_level": "basic",
+        },
+    )
+    assert response.status_code == 200, response.text[:500]
+    payload = response.json()
+    assert payload.get("ok") is False
+    assert payload.get("results")
+
+
+def test_convert_preview_file_validation_service_error(client: TestClient, monkeypatch) -> None:
+    """File-upload ValidationServiceError + preview still soft-fails."""
+    from src.services import validation as validation_mod
+    from src.services.validation import ValidationError as ValidationServiceError
+
+    def _boom(self, tac_text):
+        raise ValidationServiceError("simulated validation service failure")
+
+    monkeypatch.setattr(validation_mod.ValidationService, "validate_all_layers", _boom)
+
+    files = {
+        "files": ("bad.metar", BAD_METAR_TAC.encode("utf-8"), "text/plain"),
+        "product": (None, "METAR"),
+        "profile": (None, "annex3"),
+        "preview": (None, "true"),
+        "lint": (None, "false"),
+    }
+    response = client.post("/api/v1/convert", files=files)
+    assert response.status_code == 200, response.text[:500]
+    payload = response.json()
+    assert payload.get("ok") is False
+    assert payload.get("results")
+
+
+def test_convert_preview_file_upload_soft_fail(client: TestClient) -> None:
+    """File upload + preview=true returns soft-fail envelope."""
+    files = {
+        "files": ("bad.metar", BAD_METAR_TAC.encode("utf-8"), "text/plain"),
+        "product": (None, "METAR"),
+        "profile": (None, "annex3"),
+        "preview": (None, "true"),
+        "lint": (None, "false"),
+    }
+    response = client.post("/api/v1/convert", files=files)
+    assert response.status_code == 200, response.text[:500]
+    payload = response.json()
+    assert payload.get("ok") is False
+    assert payload.get("results")
+    assert payload.get("failed_spans")
