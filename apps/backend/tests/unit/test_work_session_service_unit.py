@@ -31,6 +31,7 @@ NOW = datetime(2026, 6, 24, 12, 0, 0, tzinfo=timezone.utc)
 ROW = {
     "id": str(SESSION_ID),
     "user_id": "22222222-2222-2222-2222-222222222222",
+    "product": "metar",
     "status": "draft",
     "title": "KJFK",
     "manual_tac": "METAR KJFK",
@@ -57,6 +58,9 @@ class _FakeQuery:
         return self
 
     def eq(self, *_args, **_kwargs) -> _FakeQuery:
+        return self
+
+    def in_(self, *_args, **_kwargs) -> _FakeQuery:
         return self
 
     def gte(self, *_args, **_kwargs) -> _FakeQuery:
@@ -102,15 +106,15 @@ def mock_client(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
 def test_handle_db_error_maps_wip_conflict() -> None:
     with pytest.raises(HTTPException) as exc:
-        _handle_db_error(Exception("23505 duplicate metar_work_sessions_one_wip_per_user"))
+        _handle_db_error(Exception("23505 duplicate tac_work_sessions_one_wip_per_user"))
     assert exc.value.status_code == 409
 
 
 def test_handle_db_error_maps_missing_table() -> None:
     with pytest.raises(HTTPException) as exc:
-        _handle_db_error(Exception('relation "public.metar_work_sessions" does not exist'))
+        _handle_db_error(Exception('relation "public.tac_work_sessions" does not exist'))
     assert exc.value.status_code == 503
-    assert "20250623000007" in exc.value.detail
+    assert "20260714000010" in exc.value.detail
 
 
 def test_list_sessions_returns_rows(mock_client: MagicMock) -> None:
@@ -132,7 +136,10 @@ def test_get_session_not_found(mock_client: MagicMock) -> None:
 def test_create_session_defaults(mock_client: MagicMock) -> None:
     mock_client.table.return_value = _FakeQuery(SimpleNamespace(data=ROW))
     service = WorkSessionService("token")
-    created = service.create_session(str(uuid4()), WorkSessionCreate(manual_tac="METAR"))
+    created = service.create_session(
+        str(uuid4()),
+        WorkSessionCreate(product="metar", manual_tac="METAR"),
+    )
     assert created.status == WorkSessionStatus.DRAFT
 
 
@@ -187,7 +194,10 @@ def test_get_session_none_response(mock_client: MagicMock) -> None:
 def test_create_session_generates_title_when_missing(mock_client: MagicMock) -> None:
     mock_client.table.return_value = _FakeQuery(SimpleNamespace(data={**ROW, "title": "METAR 2026-06-24 12:00 UTC"}))
     service = WorkSessionService("token")
-    created = service.create_session(str(uuid4()), WorkSessionCreate(manual_tac="METAR"))
+    created = service.create_session(
+        str(uuid4()),
+        WorkSessionCreate(product="metar", manual_tac="METAR"),
+    )
     assert created.title
 
 
@@ -243,7 +253,7 @@ def test_create_session_with_provided_title(mock_client: MagicMock) -> None:
     service = WorkSessionService("token")
     created = service.create_session(
         str(uuid4()),
-        WorkSessionCreate(title="Custom title", manual_tac="METAR"),
+        WorkSessionCreate(product="metar", title="Custom title", manual_tac="METAR"),
     )
     assert created.title == "Custom title"
 
@@ -256,7 +266,10 @@ def test_create_session_db_error(mock_client: MagicMock) -> None:
     mock_client.table.return_value = _ErrorQuery(SimpleNamespace(data=ROW))
     service = WorkSessionService("token")
     with pytest.raises(HTTPException) as exc:
-        service.create_session(str(uuid4()), WorkSessionCreate(manual_tac="METAR"))
+        service.create_session(
+            str(uuid4()),
+            WorkSessionCreate(product="metar", manual_tac="METAR"),
+        )
     assert exc.value.status_code == 502
 
 
@@ -273,6 +286,7 @@ def test_row_list_and_payload_helpers() -> None:
     assert _row_list([ROW]) == [ROW]
     data = _payload_dict(
         WorkSessionCreate(
+            product="taf",
             pending_files=[PendingFilePayload(name="a.txt", content="METAR")],
             status=WorkSessionStatus.WIP,
         ),
@@ -280,6 +294,7 @@ def test_row_list_and_payload_helpers() -> None:
     )
     assert data["user_id"] == "user-1"
     assert data["status"] == "wip"
+    assert data["product"] == "taf"
     assert data["pending_files"][0]["name"] == "a.txt"
 
 
@@ -310,7 +325,7 @@ def test_create_session_preserves_explicit_status(mock_client: MagicMock) -> Non
     service = WorkSessionService("token")
     created = service.create_session(
         str(uuid4()),
-        WorkSessionCreate(manual_tac="METAR", status=WorkSessionStatus.WIP),
+        WorkSessionCreate(product="metar", manual_tac="METAR", status=WorkSessionStatus.WIP),
     )
     assert created.status == WorkSessionStatus.WIP
 

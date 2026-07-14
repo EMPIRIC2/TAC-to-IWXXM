@@ -11,7 +11,12 @@ from fastapi.testclient import TestClient
 
 from src.api import app
 from src.routers import work_sessions as ws_router
-from src.schemas.work_session import WorkSession, WorkSessionStatus, WorkSessionUpdate
+from src.schemas.work_session import (
+    WorkSession,
+    WorkSessionProduct,
+    WorkSessionStatus,
+    WorkSessionUpdate,
+)
 from src.utilities.security import verify_supabase_token
 
 pytestmark = [pytest.mark.integration]
@@ -26,11 +31,13 @@ def _row(
     session_id: UUID,
     *,
     status: WorkSessionStatus = WorkSessionStatus.DRAFT,
+    product: WorkSessionProduct = WorkSessionProduct.METAR,
     deleted_at: datetime | None = None,
 ) -> WorkSession:
     return WorkSession(
         id=session_id,
         user_id=USER_ID,
+        product=product,
         status=status,
         title="KJFK session",
         manual_tac="METAR KJFK",
@@ -63,7 +70,8 @@ class _LifecycleFake:
     def create_session(self, user_id, payload):
         new_id = uuid4()
         status = payload.status or WorkSessionStatus.DRAFT
-        row = _row(new_id, status=status)
+        product = getattr(payload, "product", None) or WorkSessionProduct.METAR
+        row = _row(new_id, status=status, product=product)
         self.store[new_id] = row
         return row
 
@@ -120,7 +128,7 @@ def test_tc004_work_session_lifecycle(tc004_client: TestClient) -> None:
     draft = tc004_client.post(
         "/api/v1/work-sessions",
         headers=headers,
-        json={"manual_tac": "METAR EGLL", "status": "draft"},
+        json={"product": "metar", "manual_tac": "METAR EGLL", "status": "draft"},
     )
     assert draft.status_code == 201
     draft_id = draft.json()["id"]
@@ -136,7 +144,7 @@ def test_tc004_work_session_lifecycle(tc004_client: TestClient) -> None:
     second = tc004_client.post(
         "/api/v1/work-sessions",
         headers=headers,
-        json={"manual_tac": "METAR KJFK", "status": "draft"},
+        json={"product": "metar", "manual_tac": "METAR KJFK", "status": "draft"},
     )
     assert second.status_code == 201
     second_id = second.json()["id"]

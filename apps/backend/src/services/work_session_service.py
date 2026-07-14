@@ -1,10 +1,10 @@
-"""Supabase-backed CRUD for METAR work sessions (F5)."""
+"""Supabase-backed CRUD for unified TAC work sessions (F5+F7 / ADR-020)."""
 
 from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
-from typing import Any, NoReturn, Optional, cast
+from typing import Any, NoReturn, Optional, Sequence, cast
 from uuid import UUID
 
 from fastapi import HTTPException, status
@@ -14,13 +14,14 @@ from supabase import Client, create_client
 from ..schemas.work_session import (
     WorkSession,
     WorkSessionCreate,
+    WorkSessionProduct,
     WorkSessionStatus,
     WorkSessionUpdate,
 )
 
 logger = logging.getLogger(__name__)
 
-TABLE = "metar_work_sessions"
+TABLE = "tac_work_sessions"
 WIP_CONFLICT = "23505"
 
 
@@ -64,6 +65,8 @@ def _payload_dict(payload: WorkSessionCreate | WorkSessionUpdate, *, user_id: st
         data["user_id"] = user_id
     if "status" in data and data["status"] is not None:
         data["status"] = data["status"].value if hasattr(data["status"], "value") else data["status"]
+    if "product" in data and data["product"] is not None:
+        data["product"] = data["product"].value if hasattr(data["product"], "value") else data["product"]
     if "pending_files" in data:
         data["pending_files"] = [f.model_dump() if hasattr(f, "model_dump") else f for f in data["pending_files"]]
     return data
@@ -71,17 +74,21 @@ def _payload_dict(payload: WorkSessionCreate | WorkSessionUpdate, *, user_id: st
 
 def _handle_db_error(exc: Exception) -> NoReturn:
     message = str(exc)
-    if WIP_CONFLICT in message or "metar_work_sessions_one_wip_per_user" in message:
+    if (
+        WIP_CONFLICT in message
+        or "tac_work_sessions_one_wip_per_user" in message
+        or "metar_work_sessions_one_wip_per_user" in message
+    ):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Only one WIP session is allowed per user",
         ) from exc
-    if "metar_work_sessions" in message and (
+    if ("tac_work_sessions" in message or "metar_work_sessions" in message) and (
         "does not exist" in message.lower() or "42P01" in message or "PGRST205" in message
     ):
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=("Work sessions unavailable — apply Supabase migration 20250623000007_metar_work_sessions.sql"),
+            detail=("Work sessions unavailable — apply Supabase migration 20260714000010_tac_work_sessions.sql"),
         ) from exc
     logger.exception("Work session database error")
     raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Work session database error") from exc
@@ -108,6 +115,7 @@ class WorkSessionService:
         self,
         *,
         status_filter: Optional[WorkSessionStatus] = None,
+        products: Optional[Sequence[WorkSessionProduct]] = None,
         from_dt: Optional[datetime] = None,
         to_dt: Optional[datetime] = None,
         include_deleted: bool = False,
@@ -119,6 +127,8 @@ class WorkSessionService:
             query = query.is_("deleted_at", "null")
         if status_filter is not None:
             query = query.eq("status", status_filter.value)
+        if products:
+            query = query.in_("product", [p.value for p in products])
         if from_dt is not None:
             query = query.gte("updated_at", from_dt.isoformat())
         if to_dt is not None:
@@ -157,7 +167,8 @@ class WorkSessionService:
         if "status" not in data:
             data["status"] = WorkSessionStatus.DRAFT.value
         if not data.get("title"):
-            data["title"] = f"METAR {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC"
+            product_label = str(data.get("product", "tac")).upper()
+            data["title"] = f"{product_label} {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC"
         try:
             response = self._client.table(TABLE).insert(data).execute()
         except Exception as exc:

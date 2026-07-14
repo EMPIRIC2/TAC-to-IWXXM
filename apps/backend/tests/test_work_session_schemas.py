@@ -11,9 +11,10 @@ from src.schemas.work_session import (
 
 
 def test_work_session_create_defaults_to_draft_status_when_omitted() -> None:
-    payload = WorkSessionCreate(manual_tac="METAR TEST")
+    payload = WorkSessionCreate(product="metar", manual_tac="METAR TEST")
     assert payload.status is None
     assert payload.manual_tac == "METAR TEST"
+    assert payload.product.value == "metar"
 
 
 def test_work_session_status_enum_values() -> None:
@@ -29,6 +30,7 @@ def test_work_session_model_round_trip() -> None:
     row = WorkSession(
         id=session_id,
         user_id=user_id,
+        product="metar",
         status=WorkSessionStatus.WIP,
         title="KJFK 2026-06-23",
         manual_tac="METAR KJFK",
@@ -45,6 +47,7 @@ def test_work_session_model_round_trip() -> None:
     assert row.status == WorkSessionStatus.WIP
     dumped = row.model_dump()
     assert dumped["status"] == "wip"
+    assert dumped["product"] == "metar"
 
 
 def test_work_session_update_partial_fields() -> None:

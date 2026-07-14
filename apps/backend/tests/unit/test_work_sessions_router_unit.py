@@ -13,7 +13,13 @@ from fastapi.testclient import TestClient
 
 from src.api import app
 from src.routers import work_sessions as ws_router
-from src.schemas.work_session import WorkSession, WorkSessionCreate, WorkSessionStatus, WorkSessionUpdate
+from src.schemas.work_session import (
+    WorkSession,
+    WorkSessionCreate,
+    WorkSessionProduct,
+    WorkSessionStatus,
+    WorkSessionUpdate,
+)
 from src.services.work_session_service import WorkSessionService
 from src.utilities.security import verify_supabase_token
 
@@ -26,6 +32,7 @@ def _sample_session(*, status: WorkSessionStatus = WorkSessionStatus.DRAFT) -> W
     return WorkSession(
         id=SESSION_ID,
         user_id=USER_ID,
+        product=WorkSessionProduct.METAR,
         status=status,
         title="KJFK 2026-06-23",
         manual_tac="METAR KJFK",
@@ -108,7 +115,7 @@ def test_create_work_session_returns_201(work_session_client: TestClient) -> Non
     response = work_session_client.post(
         "/api/v1/work-sessions",
         headers={"Authorization": "Bearer test-token"},
-        json={"manual_tac": "METAR TEST"},
+        json={"product": "metar", "manual_tac": "METAR TEST"},
     )
     assert response.status_code == 201, response.json()
     assert response.json()["manual_tac"] == "METAR KJFK"
@@ -160,22 +167,13 @@ def test_get_work_session_by_id(work_session_client: TestClient) -> None:
     assert response.json()["id"] == str(SESSION_ID)
 
 
-def test_admin_list_work_sessions(work_session_client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    from auth.admin_api import require_admin
-
-    fake = _FakeService()
-
-    async def override_admin() -> dict[str, str]:
-        return {"sub": str(USER_ID), "role": "admin"}
-
-    monkeypatch.setattr(ws_router, "WorkSessionService", lambda _token: fake)
-    app.dependency_overrides[require_admin] = override_admin
+def test_admin_list_work_sessions_removed(work_session_client: TestClient) -> None:
+    """S011 / ADR-021: admin work-sessions list is not mounted."""
     response = work_session_client.get(
         "/admin/work-sessions",
         headers={"Authorization": "Bearer test-token"},
     )
-    assert response.status_code == 200
-    assert response.json()["total"] >= 1
+    assert response.status_code == 404
 
 
 def test_user_id_helper_uses_sub() -> None:
@@ -197,5 +195,5 @@ def test_work_session_service_wip_conflict_maps_db_error() -> None:
     from src.services import work_session_service as svc_mod
 
     with pytest.raises(HTTPException) as exc:
-        svc_mod._handle_db_error(Exception("23505 duplicate metar_work_sessions_one_wip_per_user"))
+        svc_mod._handle_db_error(Exception("23505 duplicate tac_work_sessions_one_wip_per_user"))
     assert exc.value.status_code == 409
