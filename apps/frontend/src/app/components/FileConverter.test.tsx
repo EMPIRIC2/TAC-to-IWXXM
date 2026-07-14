@@ -1,12 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from './FileConverter';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
+);
+const mockLintTac = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    ok: true,
+    issues: [{ severity: 'error', code: 'x', message: 'm', start: 0, end: 5 }],
+    fixes: [],
+  }),
+);
+const mockDecodeTac = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    product: 'METAR',
+    segments: [{ start: 0, end: 5, code: 'METAR', explanation: 'type' }],
+    residuals: [],
+  }),
 );
 const mockUploadConvertedFiles = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ message: 'Files uploaded successfully' }),
@@ -37,16 +51,8 @@ vi.mock('/utils/api', () => ({
   convertTafToIwxxm: vi
     .fn()
     .mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
-  lintTac: vi.fn().mockResolvedValue({
-    ok: true,
-    issues: [],
-    fixes: [],
-  }),
-  decodeTac: vi.fn().mockResolvedValue({
-    product: 'METAR',
-    segments: [],
-    residuals: [],
-  }),
+  lintTac: mockLintTac,
+  decodeTac: mockDecodeTac,
   fetchAirportRegion: vi
     .fn()
     .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
@@ -395,6 +401,32 @@ describe('FileConverter Component', () => {
 
         expect(textarea).toHaveValue('');
       }
+    });
+
+    it('live workbench debounces lint/decode; live IWXXM defaults off', async () => {
+      vi.useFakeTimers();
+      mockLintTac.mockClear();
+      mockDecodeTac.mockClear();
+      const { container } = render(<FileConverter {...defaultProps} />);
+
+      expect(screen.getByTestId('live-iwxxm-toggle')).not.toBeChecked();
+      expect(screen.getByTestId('workbench-console')).toBeInTheDocument();
+
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR KJFK' } });
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(350);
+      });
+      expect(mockLintTac).toHaveBeenCalled();
+      expect(mockDecodeTac).toHaveBeenCalled();
+
+      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+      expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
+
+      fireEvent.click(screen.getByTestId('workbench-console-toggle'));
+      expect(screen.getByTestId('workbench-console-lines')).toBeInTheDocument();
+
+      vi.useRealTimers();
     });
   });
 
