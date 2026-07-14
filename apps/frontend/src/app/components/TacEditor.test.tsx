@@ -32,6 +32,15 @@ vi.mock('@codemirror/state', () => ({
     create: () => ({}),
     readOnly: { of: () => ({}) },
   },
+  StateEffect: { define: () => ({ of: (v: unknown) => v }) },
+  StateField: {
+    define: () => ({}),
+  },
+}));
+
+vi.mock('/utils/tacEditorSpans', () => ({
+  setTacSpansEffect: { of: (v: unknown) => v },
+  tacSpanExtensions: () => [],
 }));
 
 import { TacEditor } from './TacEditor';
@@ -46,5 +55,19 @@ describe('TacEditor', () => {
       />,
     );
     expect(screen.getByTestId('tac-editor')).toBeInTheDocument();
+  });
+
+  it('exposes issue span count for live workbench highlights', () => {
+    render(
+      <TacEditor
+        value="METAR KJFK="
+        onChange={() => undefined}
+        issueSpans={[{ start: 0, end: 5, message: 'type' }]}
+      />,
+    );
+    expect(screen.getByTestId('tac-editor')).toHaveAttribute(
+      'data-issue-span-count',
+      '1',
+    );
   });
 });

@@ -146,6 +146,7 @@ export async function convertMetarToIwxxm(params: {
   validateOutput?: boolean;
   preview?: boolean;
   accessToken?: string;
+  signal?: AbortSignal;
 }): Promise<ConversionResponse> {
   const formData = new FormData();
 
@@ -188,6 +189,7 @@ export async function convertMetarToIwxxm(params: {
           Authorization: `Bearer ${token}`,
         },
         body: formData,
+        signal: params.signal,
       }),
       30000,
     );
@@ -241,10 +243,80 @@ export interface DecodeTacResponse {
  * @param params.product - Required F6 product id
  * @returns Ordered segments and residuals
  */
+export interface LintIssue {
+  severity: string;
+  code: string;
+  message: string;
+  location?: string | null;
+  start?: number | null;
+  end?: number | null;
+}
+
+export interface LintFix {
+  code: string;
+  message: string;
+  replacement: string;
+}
+
+export interface LintTacResponse {
+  ok: boolean;
+  issues: LintIssue[];
+  fixes: LintFix[];
+  product?: string | null;
+}
+
+/**
+ * Lint TAC via tac-validate (parse gate + shared rules — not Schematron).
+ *
+ * **Endpoint**: POST /api/v1/lint-tac
+ *
+ * @param params.manualText - TAC text
+ * @param params.product - Optional product hint
+ * @param params.signal - AbortSignal for live workbench cancellation
+ * @returns Lint report with optional start/end spans
+ */
+export async function lintTac(params: {
+  manualText: string;
+  product?: string;
+  accessToken?: string;
+  signal?: AbortSignal;
+}): Promise<LintTacResponse> {
+  const formData = new FormData();
+  formData.append('manual_text', params.manualText);
+  if (params.product) {
+    formData.append('product', params.product.toUpperCase());
+  }
+
+  const token = params.accessToken || getAccessToken() || '';
+  const response = await withTimeout(
+    fetch(apiUrl('/lint-tac'), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+      signal: params.signal,
+    }),
+    15000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Lint failed: ${response.statusText}`,
+    }));
+    throw new Error(
+      error.detail?.message || error.message || `HTTP ${response.status}`,
+    );
+  }
+
+  return (await response.json()) as LintTacResponse;
+}
+
 export async function decodeTac(params: {
   manualText: string;
   product: string;
   accessToken?: string;
+  signal?: AbortSignal;
 }): Promise<DecodeTacResponse> {
   const formData = new FormData();
   formData.append('manual_text', params.manualText);
@@ -258,6 +330,7 @@ export async function decodeTac(params: {
         Authorization: `Bearer ${token}`,
       },
       body: formData,
+      signal: params.signal,
     }),
     15000,
   );
@@ -368,6 +441,7 @@ export default {
   checkHealth,
   convertMetarToIwxxm,
   convertMetarToIwxxmZip,
+  lintTac,
   decodeTac,
   fetchAirportRegion,
   downloadBlob,

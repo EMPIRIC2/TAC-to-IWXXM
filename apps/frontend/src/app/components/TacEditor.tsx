@@ -1,10 +1,15 @@
 /**
- * CodeMirror 6 TAC editor shell for the F7 operator workbench (S011 / #702).
+ * CodeMirror 6 TAC editor shell for the F7 operator workbench (S011 / #702/#694).
  */
 
 import { useEffect, useRef } from 'react';
 import { EditorView, basicSetup } from 'codemirror';
 import { EditorState } from '@codemirror/state';
+import {
+  setTacSpansEffect,
+  tacSpanExtensions,
+  type TacSpanMark,
+} from '/utils/tacEditorSpans';
 
 export interface FailedSpanMark {
   start: number;
@@ -23,6 +28,8 @@ export interface TacEditorProps {
   className?: string;
   /** Soft-preview / Failed-TAC spans — marks editor chrome when non-empty (UJ-016). */
   failedSpans?: FailedSpanMark[];
+  /** Live lint/decode issue spans for highlight + hover (UJ-017). */
+  issueSpans?: TacSpanMark[];
 }
 
 /**
@@ -32,6 +39,7 @@ export interface TacEditorProps {
  * @param props.onChange - Called when the document changes
  * @param props.readOnly - When true, editing is disabled
  * @param props.failedSpans - Optional soft-preview failure spans
+ * @param props.issueSpans - Optional live lint spans
  */
 export function TacEditor({
   id = 'manual-input',
@@ -42,6 +50,7 @@ export function TacEditor({
   'aria-label': ariaLabel = 'Enter TAC data manually',
   className = '',
   failedSpans = [],
+  issueSpans = [],
 }: TacEditorProps) {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -71,8 +80,11 @@ export function TacEditor({
       EditorView.theme({
         '&': { minHeight: '120px', fontSize: '0.875rem' },
         '.cm-scroller': { overflow: 'auto' },
-        '.cm-content': { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' },
+        '.cm-content': {
+          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+        },
       }),
+      ...tacSpanExtensions(),
     ];
 
     const state = EditorState.create({
@@ -82,11 +94,15 @@ export function TacEditor({
     const view = new EditorView({ state, parent: parentRef.current });
     viewRef.current = view;
 
+    if (issueSpans.length > 0) {
+      view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
+    }
+
     return () => {
       view.destroy();
       viewRef.current = null;
     };
-    // Mount once; value/readOnly synced below.
+    // Mount once; value/readOnly/spans synced below.
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount-only
   }, []);
 
@@ -108,14 +124,16 @@ export function TacEditor({
     if (!view) {
       return;
     }
-    view.dispatch({
-      effects: [
-        // reconfigure readOnly via compartment would be cleaner; recreate attrs via facet update
-      ],
-    });
-    // Toggle editable DOM attribute for accessibility
     view.contentDOM.contentEditable = readOnly ? 'false' : 'true';
   }, [readOnly]);
+
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) {
+      return;
+    }
+    view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
+  }, [issueSpans]);
 
   return (
     <div
@@ -126,6 +144,7 @@ export function TacEditor({
       } ${className}`}
       data-testid="tac-editor"
       data-placeholder={placeholder}
+      data-issue-span-count={issueSpans.length}
       {...(hasFailedTac ? { 'data-failed-tac': 'true' } : {})}
     >
       <div ref={parentRef} />
