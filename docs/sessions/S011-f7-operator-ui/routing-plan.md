@@ -2,7 +2,7 @@
 
 | Stage | Required | Mode | Status | Skip rationale |
 |-------|----------|------|--------|----------------|
-| 00-context | yes | scoped | in_progress | — |
+| 00-context | yes | scoped | completed | — |
 | 01-requirements | yes | delta | pending | — |
 | 02-verify-plan | yes | delta | pending | — |
 | 03-plan-tooling | no | — | skipped | Hooks/rules already exist from prior cycles |

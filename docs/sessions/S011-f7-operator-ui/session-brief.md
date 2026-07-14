@@ -10,6 +10,13 @@ evolve_cycle_id: null
 context_briefs:
   - docs/context/f7-operator-ui.md
 standing_docs_touched: []
+phase3_resolutions:
+  R1: "milestone #697 → #702/spans → #665/#666 → #694"
+  R2: "multi-product F7 sessions in v1 (F5 stays METAR/SPECI)"
+  R3: "CodeMirror 6"
+  R4: "decode-tac + lint/validate start/end spans"
+  R5: "soft-fail preview with best-effort XML + failed markers"
+  R6: "BYO-only (Supabase + Postgres/DATABASE_URL); no shared multi-tenant admin"
 ---
 
 # Session S011 — F7 operator UI + workbench / decode / admin
@@ -33,18 +40,29 @@ evolve cycle:
 ### In scope
 
 - Multi-product operator entry UX on top of existing F6.e product/profile pickers
+- **Multi-product F7 work sessions** (new model; F5 table stays METAR/SPECI-only) — R2
 - Decode/annotate API + UI panel (#702)
 - Span-aware validation/lint expansion + workbench UX (#694)
 - Failed-TAC visual + partial/best-effort convert path (#665/#666)
-- Admin dashboard / `/admin/*` retirement + BYO Supabase/DB credentials model (#697)
+- Admin dashboard / `/admin/*` retirement + **BYO-only** credentials (Supabase **and**
+  Postgres/`DATABASE_URL` / SQL URIs via deploy env) — R6
 - Corpus deltas (feature-list F7, api-contract, env-contract, test-plan, ADRs as needed)
 
 ### Out of scope
 
-- Extending **F5** My METARs to non-METAR products without an explicit F7 sessions design decision
+- Quietly extending **F5** `metar_work_sessions` to all products (use F7 sessions instead)
 - AMHS/SWIM/AFS, push sinks (F8 non-goals)
 - Teaching/CMS content beyond short decode explanations (#702 v1)
-- Rewriting conversion engines beyond span/decode/partial hooks
+- Per-user paste-keys UI; rewriting conversion engines beyond span/decode/partial hooks
+
+### Milestone order (R1)
+
+1. #697 BYO + admin removal  
+2. #702 decode + spans (+ CodeMirror 6)  
+3. #665/#666 failed-TAC + partial preview  
+4. #694 live workbench  
+5. F7 multi-product sessions (R2)  
+6. Verify & deploy (08–13)
 
 ## Feature mapping
 
@@ -65,7 +83,7 @@ See [routing-plan.md](./routing-plan.md).
 
 ## Links
 
-- Scoped context: [docs/context/f7-operator-ui.md](../../context/f7-operator-ui.md) (in progress)
+- Scoped context: [docs/context/f7-operator-ui.md](../../context/f7-operator-ui.md) (**active**)
 - Prior F7 stub: [docs/context/realtime-tac-ingest.md](../../context/realtime-tac-ingest.md)
 - F6 engine context: [docs/context/general-tac-iwxxm-converter.md](../../context/general-tac-iwxxm-converter.md)
 - Product: [docs/feature-list.md](../../feature-list.md) §F7

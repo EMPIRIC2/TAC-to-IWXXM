@@ -13,7 +13,7 @@ active_session:
   started_at: "2026-07-13"
   intent: "F7 multi-product TAC operator UI (7 products) + interactive workbench (#694), TAC decode panel (#702), failed-TAC/partial convert UX (#665/#666), remove admin dashboard / BYO DB (#697); #5 kept as parent tracker"
   orchestrator: 16-evolve
-  evolve_cycle_id: null
+  evolve_cycle_id:
   context_briefs:
     - docs/context/f7-operator-ui.md
   standing_docs_touched: []
@@ -21,7 +21,7 @@ active_session:
     - stage: 00-context
       required: true
       mode: scoped
-      status: in_progress
+      status: completed
     - stage: 01-requirements
       required: true
       mode: delta
@@ -71,7 +71,7 @@ active_session:
       rationale: "Hooks/rules already exist from prior cycles"
     - stage: 06-tech-tooling
       rationale: "Lint/typecheck/CI already wired"
-  current_stage: 00-context
+  current_stage: 01-requirements
   artifacts_dir: docs/sessions/S011-f7-operator-ui
 
 
@@ -90,13 +90,13 @@ sessions:
         mode: scoped
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
         note: "Scoped brief docs/context/issue-655-tac-traceability.md; Phase 0 intake complete"
       - stage: 01-requirements
         mode: delta
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
         note: "Corpus deltas in PR #715 (test-plan, journeys)"
       - stage: 02-verify-plan
         mode: delta
@@ -111,7 +111,7 @@ sessions:
         mode: delta
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
         note: "Covered by execution-plan M1 (UI-only)"
       - stage: 05-verify-tech
         required: false
@@ -124,7 +124,7 @@ sessions:
       - stage: 16-evolve
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
         note: "EV-007 completed; PR #715 merged; prod Source TAC smoke PASS"
       - stage: 07-build
         required: true
@@ -155,7 +155,7 @@ sessions:
         required: true
         status: completed
         note: "See reports/deploy-smoke.md — PASS"
-    current_stage: null
+    current_stage:
     started_at: "2026-07-12"
     completed_at: "2026-07-13"
     pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/715
@@ -173,7 +173,7 @@ sessions:
     status: completed
     branch: fix/S009-result-card-dismiss
     orchestrator: 14-hotfix
-    evolve_cycle_id: null
+    evolve_cycle_id:
     artifacts_dir: docs/sessions/S009-result-card-dismiss/
     routing_plan:
       - stage: 00-context
@@ -189,7 +189,7 @@ sessions:
         required: false
         status: pending
         skip_rationale: "Optional — only if production verify needed after deploy"
-    current_stage: null
+    current_stage:
     started_at: "2026-07-12"
     completed_at: "2026-07-12"
     context_briefs: []
@@ -210,20 +210,20 @@ sessions:
         mode: scoped
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
         note: "Scoped refresh complete — docs/context/realtime-tac-ingest.md active; prior general-tac brief retained"
       - stage: 01-requirements
         mode: delta
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
         note: "Delta S008-realtime-ingest COMPLETED — interviews 7/7; ADR-015; F7/F8 Planned; next 04-tech-plan"
       - stage: 04-tech-plan
         mode: delta
         required: true
         status: completed
         completed_at: "2026-07-12"
-        skip_rationale: null
+        skip_rationale:
         note: "S008 delta 04-tech-plan COMPLETED — execution plan + ADR-016/017/018 approved (Q21–Q24=A); next 05-verify-tech"
       - stage: 05-verify-tech
         mode: delta
@@ -231,33 +231,33 @@ sessions:
         status: completed
         started_at: "2026-07-12"
         completed_at: "2026-07-12"
-        skip_rationale: null
+        skip_rationale:
         note: "S008 delta 05-verify-tech COMPLETED — audit done; next 16-evolve then 07-build; Phase B delta cleared (06 N/A)"
       - stage: 16-evolve
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
         note: "EV-006 B→C passed (D-S008-EV006-b-to-c=A); handed off to 07-build"
       - stage: 07-build
         required: true
         status: completed
         started_at: "2026-07-12"
         completed_at: "2026-07-12"
-        skip_rationale: null
+        skip_rationale:
         note: "All M1–M8 tasks (51/51) done; PR-M8 #710 merged; Phase C implementation complete; handing to 08-verify-build for C→D gate"
       - stage: 08-verify-build
         required: true
         status: completed
         started_at: "2026-07-12"
         completed_at: "2026-07-12"
-        skip_rationale: null
+        skip_rationale:
         note: "Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c). Awaiting C→D AskQuestion before 09-qa."
       - stage: 09-qa
         required: true
         status: completed
         started_at: "2026-07-12"
         completed_at: "2026-07-12"
-        skip_rationale: null
+        skip_rationale:
         note: "pass_with_advisories — see reports/qa-report.md"
       - stage: 10-e2e
         mode: delta
@@ -265,16 +265,16 @@ sessions:
         status: completed
         started_at: "2026-07-12"
         completed_at: "2026-07-12"
-        skip_rationale: null
+        skip_rationale:
         note: "PASS — COR hotfix re-verify 12/12 Playwright smoke; see e2e-report.md"
       - stage: 11-verify-impl
         required: true
         status: completed
         started_at: "2026-07-12"
         completed_at: "2026-07-12"
-        skip_rationale: null
+        skip_rationale:
         note: "Completed — see reports/verify-impl.md; F6/F2/F8 approved; F6/F8 corpus Implemented (ADR-019); live gates deferred"
-    current_stage: null
+    current_stage:
     started_at: "2026-07-12"
     completed_at: "2026-07-12"
     close_note: "EV-006 completed; deploy waived; F6/F2/F8 verified; ADR-019; evolve-summary written"
@@ -423,27 +423,27 @@ sessions:
         mode: scoped
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
       - stage: 16-evolve
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
       - stage: 07-build
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
       - stage: 08-verify-build
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
       - stage: 09-qa
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
       - stage: 10-e2e
         required: true
         status: completed
-        skip_rationale: null
+        skip_rationale:
       - stage: 11-verify-impl
         required: true
         status: skipped
@@ -479,20 +479,20 @@ template:
 
 stages:
   00-context:
-    status: in_progress
+    status: completed
     mode: scoped
     scoped_slug: f7-operator-ui
     session_id: S011-f7-operator-ui
     started_at: "2026-07-13"
-    completed_at: null
+    completed_at: "2026-07-13"
     substeps:
       phase0: completed
       phase1a: completed
       phase1b: skipped
       phase1c: skipped
       phase2: completed
-      phase3: in_progress
-      phase4: pending
+      phase3: completed
+      phase4: completed
     artifacts:
       - docs/context/issue-555-feedback.md
       - docs/sessions/S004-issue-555-feedback/session-brief.md
@@ -514,6 +514,8 @@ stages:
       - "2026-07-13 S011 open — scoped_slug f7-operator-ui; Phase 0 completed, phase1a in_progress; F7 operator UI packaging (user-approved defaults)"
       - "Phase 1A: frontend F6.e pickers exist; no spans; no decode API; no CodeMirror/Monaco; admin still live; convert hard-fails incomplete TAC"
       - "Phase 2: contradictions — #697 vs F5 admin corpus; #694/#702 need new span schema vs api-contract unchanged validate shape"
+      - "Phase 3 R1–R6 resolved by user 2026-07-13; R6 BYO-only includes Postgres/DATABASE_URL/SQL URIs"
+      - "Phase 4 wrote docs/context/f7-operator-ui.md; indexed in docs/context/README.md"
   01-requirements:
     status: completed
     started_at: "2026-06-14T00:00:00Z"
@@ -522,7 +524,7 @@ stages:
       interviews:
         completed: 8
         total: 8
-        current_template: null
+        current_template:
         current_section: complete
     delta_substages:
       - status: completed
@@ -548,7 +550,7 @@ stages:
           interviews:
             completed: 7
             total: 7  # Feature List, Spec, User Journeys, Test Plan, Dependency Inventory, API Contract, Config Spec (+ decisions log as side artifact)
-            current_template: null
+            current_template:
             current_section: complete
       - status: completed
         mode: delta
@@ -578,7 +580,7 @@ stages:
           interviews:
             completed: 7
             total: 7
-            current_template: null
+            current_template:
             current_section: complete
             planned_docs:
               mandatory:
@@ -636,8 +638,8 @@ stages:
         auto_approved: 38
         pending: 0
         reviewed: 24
-    current_document: null
-    current_statement: null
+    current_document:
+    current_statement:
     artifacts:
       - docs/decisions/product-audit.md
       - docs/decisions/product-decisions.md
@@ -797,8 +799,8 @@ stages:
         auto_approved: 24
         pending: 0
         reviewed: 14
-    current_document: null
-    current_statement: null
+    current_document:
+    current_statement:
     artifacts:
       - docs/decisions/tech-audit.md
       - docs/decisions/tech-decisions.md
@@ -866,7 +868,7 @@ stages:
     substeps:
       task_loop:
         status: completed
-        current_task: null
+        current_task:
         phase: 4
         milestone: M11
         notes: "T11.4 complete — H0c+H4+H5 green on staging; TC-M001–M005 pass; Phase 4 gate criteria met on main"
@@ -1164,7 +1166,7 @@ issue_log:
     summary: "Clarify whether F7/F8 remain in this amend as design-only, deferred entirely, or package APIs only (ingest/worker/UI later)"
     status: resolved
     resolution: "Resolved via Q19=A (D-S008-realtime-amend-q19q22) — package APIs only this cycle; F7/F8 Planned in docs; no worker/UI/auth/sinks build"
-    blocking_for: null
+    blocking_for:
     session_id: S008-general-tac-iwxxm-converter
     stage: 00-context
     date: "2026-07-12"
@@ -1175,7 +1177,7 @@ issue_log:
     summary: "Q7=B add worker deployable — template drift static+api → static+api+worker; ADR required before layout/deploy changes"
     status: resolved
     resolution: "Resolved via Q10=A (D-S008-realtime-amend-q9q13) — confirm Render worker; ADR/template update required in 01/04"
-    blocking_for: null
+    blocking_for:
     session_id: S008-general-tac-iwxxm-converter
     stage: 00-context
     date: "2026-07-12"
@@ -1185,13 +1187,22 @@ issue_log:
     summary: "Possible contradiction — F5/F6 non-goal (F5 METAR-only) vs multi-product operator UI (Q4=C both operator UI + machine ingest; Q8=A all F6 products)"
     status: resolved
     resolution: "Resolved via Q9=A (D-S008-realtime-amend-q9q13) — new F7 multi-product TAC sessions; F5 stays METAR-only unchanged"
-    blocking_for: null
+    blocking_for:
     session_id: S008-general-tac-iwxxm-converter
     stage: 00-context
     date: "2026-07-12"
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S011-R1-R6
+    date: "2026-07-13"
+    timestamp: "2026-07-13"
+    stage: 00-context
+    skill: 00-context
+    skill_id: 00-context
+    session_id: S011-f7-operator-ui
+    decision: "S011 Phase3: R1=#697→#702→#665/#666→#694; R2=F7 multi-product sessions in v1; R3=CodeMirror6; R4=decode-tac+span fields; R5=soft preview partial XML; R6=BYO-only (Supabase+Postgres/DATABASE_URL), drop shared multi-tenant admin"
+    status: confirmed
   - id: D-S011-open-packaging
     date: "2026-07-13"
     timestamp: "2026-07-13"
@@ -2356,6 +2367,13 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/context/f7-operator-ui.md
+    kind: context-scoped
+    slug: f7-operator-ui
+    topic: "F7 multi-product operator UI + workbench/decode/admin"
+    created_at: "2026-07-13"
+    status: active
+    session_id: S011-f7-operator-ui
   - path: docs/sessions/S011-f7-operator-ui/session-brief.md
     kind: session-brief
     session_id: S011-f7-operator-ui
@@ -3136,7 +3154,7 @@ evolve_cycles:
     title: "#555 UX + F5 work history + S003 Supabase"
     status: in_progress
     started: "2026-06-23"
-    completed: null
+    completed:
     scope_summary: |
       Merge GitHub #555 remaining UX (replace results, error log panel) with F5 per-user
       METAR work history in Supabase (Draft→WIP→Finished+Failed) and S003 Supabase config fixes.
@@ -3264,7 +3282,7 @@ evolve_cycles:
         - 05-verify-tech
         - 06-tech-tooling
         - 14-hotfix
-    current_stage: null
+    current_stage:
     notes:
       - "Closed with S006 2026-07-12 — PR #695 merged; 11-verify-impl waived; 12/13 skipped"
     stages:
@@ -3373,7 +3391,7 @@ evolve_cycles:
         - 06-tech-tooling
         - 12-verify-deploy
         - 13-deploy-smoke
-    current_stage: null
+    current_stage:
     notes:
       - "2026-07-12 M1 T1.1–T1.6 completed on feat/S008-M1-scaffold; current work toward 08-verify-build for M1"
       - "2026-07-12 M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
@@ -3447,8 +3465,8 @@ evolve_cycles:
         started: "2026-07-12"
         completed: "2026-07-12"
         completed_at: "2026-07-12"
-        active_task: null
-        active_milestone: null
+        active_task:
+        active_milestone:
         notes:
           - "M1 T1.1–T1.6 completed; next 08-verify-build for M1 then PR-M1"
           - "M1 complete PR-M1 #700; M2 started on feat/S008-M2-validate; CI advisory — ci-cd.yml only triggers for main/dev so PR to evolve has no Actions yet"
@@ -3615,7 +3633,7 @@ evolve_cycles:
         - 03-plan-tooling
         - 05-verify-tech
         - 06-tech-tooling
-    current_stage: null
+    current_stage:
     stages:
       00-context:
         status: completed
@@ -3879,6 +3897,10 @@ git_history:
       base: feat/M8-deploy-ci
       status: active
       created_at: "2026-06-20T15:53:00Z"
+    - name: evolve/S011-f7-operator-ui
+      status: active
+      created_at: '2026-07-13'
+      session_id: S011-f7-operator-ui
   commits:
     - sha: 73cda40
       branch: feat/M1-workspace-root
@@ -4145,7 +4167,7 @@ git_history:
       files_changed: 4
       timestamp: "2026-07-12T16:09:13Z"
       note: "T2.1 completed; T2.2 completed (implement iwxxm-validate) but T2.2 commit SHA not yet on HEAD when this entry was recorded"
-    - sha: 27e1296
+    - sha: .inf
       branch: feat/S008-M2-validate
       message: "[T2.2] feat: implement iwxxm-validate XSD/Schematron engine"
       stage: "07-build"
@@ -4207,7 +4229,7 @@ git_history:
       stage: "19-address-pr-review"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T16:28:27Z"
     - sha: f39560d92ab11e16241c7065abeaa91a9d44ef20
       branch: feat/S008-M2-validate
@@ -4231,7 +4253,7 @@ git_history:
       stage: "19-address-pr-review"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T16:33:20Z"
     - sha: deaa5a7
       branch: feat/S008-M3-bulletin
@@ -4327,7 +4349,7 @@ git_history:
       stage: "19-address-pr-review"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T17:28:58Z"
     - sha: 13822e469884936603dc76cc2c6a1ba65deb299f
       branch: feat/S008-M4-cutover
@@ -4375,7 +4397,7 @@ git_history:
       stage: "19-address-pr-review"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12"
     - sha: 9b74afa
       branch: evolve/S008-general-tac-iwxxm-converter
@@ -4383,7 +4405,7 @@ git_history:
       stage: "19-address-pr-review"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12"
     - sha: 6ce133c
       branch: feat/S008-M4-us-metar
@@ -4439,7 +4461,7 @@ git_history:
       stage: "19-address-pr-review"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T19:01:43Z"
       note: "PR #706"
     - sha: c5f91dc
@@ -4448,7 +4470,7 @@ git_history:
       stage: "19-address-pr-review"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T19:01:44Z"
       note: "PR #707"
     - sha: ccc156e
@@ -4457,7 +4479,7 @@ git_history:
       stage: "19-address-pr-review"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T19:03:13Z"
       note: "PR #708"
     - sha: 95d3e3c
@@ -4466,7 +4488,7 @@ git_history:
       stage: "19-address-pr-review"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T19:03:15Z"
       note: "PR #709"
     - sha: "7e86ad4"
@@ -4475,7 +4497,7 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T19:19:44Z"
       note: "PR-M4b #706 merged (D-S008-EV006-merge-m4-m7)"
     - sha: "d22b712"
@@ -4484,7 +4506,7 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T19:19:49Z"
       note: "PR-M5 #707 merged (D-S008-EV006-merge-m4-m7)"
     - sha: "c8ff292"
@@ -4493,7 +4515,7 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T19:19:54Z"
       note: "PR-M6 #708 merged (D-S008-EV006-merge-m4-m7)"
     - sha: "7576109"
@@ -4502,7 +4524,7 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12T19:19:59Z"
       note: "PR-M7 #709 merged (D-S008-EV006-merge-m4-m7)"
     - sha: "2729867"
@@ -4511,7 +4533,7 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12"
     - sha: "dfc3c5e"
       branch: feat/S008-M8-ui-connectivity
@@ -4519,7 +4541,7 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12"
     - sha: "bfee331"
       branch: feat/S008-M8-ui-connectivity
@@ -4527,7 +4549,7 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12"
     - sha: "c2db245"
       branch: feat/S008-M8-ui-connectivity
@@ -4535,7 +4557,7 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12"
     - sha: "b838884"
       branch: feat/S008-M8-ui-connectivity
@@ -4543,7 +4565,7 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12"
     - sha: "f0d8ddb"
       branch: feat/S008-M8-ui-connectivity
@@ -4551,7 +4573,7 @@ git_history:
       stage: "07-build"
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
-      files_changed: null
+      files_changed:
       timestamp: "2026-07-12"
     - sha: "48037c1"
       branch: evolve/S008-general-tac-iwxxm-converter
@@ -4618,6 +4640,31 @@ git_history:
         - tests/bugs/test_bug_2026_07_12_convert_bulletin_report_cap.py
       timestamp: "2026-07-12"
       note: "HEAD after PRM-015 push; authorize squash-merge of #711 when CI green"
+    - sha: e4db3a7
+      branch: evolve/S011-f7-operator-ui
+      message: '[S011] docs: open F7 operator UI session (00-context Phase 0)'
+      stage: 00-context
+      mode: scoped
+      session_id: S011-f7-operator-ui
+      files_changed:
+        - docs/sessions/S011-f7-operator-ui/session-brief.md
+        - docs/sessions/S011-f7-operator-ui/routing-plan.md
+        - docs/sessions/README.md
+        - workflow-state.yaml
+      timestamp: '2026-07-13'
+    - sha: 883a21f
+      branch: evolve/S011-f7-operator-ui
+      message: "[S011] docs: scoped context for F7 operator UI (00-context)"
+      stage: "00-context"
+      mode: scoped
+      session_id: S011-f7-operator-ui
+      files_changed:
+        - docs/context/f7-operator-ui.md
+        - docs/context/README.md
+        - docs/sessions/S011-f7-operator-ui/session-brief.md
+        - docs/sessions/S011-f7-operator-ui/routing-plan.md
+        - workflow-state.yaml
+      timestamp: "2026-07-13"
 pr_review_cycles:
   - id: PRR-001
     pr_number: 679
@@ -4819,10 +4866,10 @@ pr_review_cycles:
     evolve_cycle_id: EV-006
     verdict: approve
     merge_sha: 243f1454c0a9cff6f929e26fae1d09d8f8539777
-    blockers: null
-    advisories: null
-    praise: null
-    ci_status: null
+    blockers:
+    advisories:
+    praise:
+    ci_status:
     notes:
       - "Squash-merged to evolve; Bugbot VRB+MPS fixed; Security clean; Sourcery PyO3 GHSA N/A for 0.23.5"
       - "Verdict approve after remediation (PRM-011)"
@@ -4848,9 +4895,9 @@ pr_review_cycles:
     decision_id: D-S008-PR706-709-18b
     verdict: COMMENT
     blockers: 0
-    advisories: null
-    praise: null
-    ci_status: null
+    advisories:
+    praise:
+    ci_status:
     notes:
       - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
       - "2026-07-12 merged into evolve (D-S008-EV006-merge-m4-m7); merge_sha 7e86ad4"
@@ -4873,9 +4920,9 @@ pr_review_cycles:
     decision_id: D-S008-PR706-709-18b
     verdict: COMMENT
     blockers: 0
-    advisories: null
-    praise: null
-    ci_status: null
+    advisories:
+    praise:
+    ci_status:
     notes:
       - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
       - "2026-07-12 merged into evolve (D-S008-EV006-merge-m4-m7); merge_sha d22b712"
@@ -4898,9 +4945,9 @@ pr_review_cycles:
     decision_id: D-S008-PR706-709-18b
     verdict: COMMENT
     blockers: 0
-    advisories: null
-    praise: null
-    ci_status: null
+    advisories:
+    praise:
+    ci_status:
     notes:
       - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
       - "source_url sanitize fixed via PRM-013 (#708 5837b41 / #709 a91f4cd)"
@@ -4924,9 +4971,9 @@ pr_review_cycles:
     decision_id: D-S008-PR706-709-18b
     verdict: COMMENT
     blockers: 0
-    advisories: null
-    praise: null
-    ci_status: null
+    advisories:
+    praise:
+    ci_status:
     notes:
       - "Re-review after PRM-012/013; intended approve posted as COMMENT (self-PR); waive AskQuestion; do not merge"
       - "2026-07-12 merged into evolve (D-S008-EV006-merge-m4-m7); merge_sha 7576109"
@@ -5050,8 +5097,8 @@ pr_remediation_cycles:
         source: review_body
         severity: advisory
         path: docs/api-contract.md
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: cf80c23
         note: document /admin/* routes
@@ -5062,7 +5109,7 @@ pr_remediation_cycles:
         line: 36
         thread_id: PRRT_kwDOQW-3CM6LGoyn
         status: deferred
-        commit: null
+        commit:
         note: in-memory settings documented; durable storage follow-up
     follow_up:
       pr_review_rerun: offered
@@ -5122,36 +5169,36 @@ pr_remediation_cycles:
       - id: F-005
         source: review_body
         severity: advisory
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
-        commit: null
+        commit:
         note: PR title/body updated via gh pr edit
       - id: F-006
         source: review_body
         severity: advisory
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
-        commit: null
+        commit:
         note: CI checkbox checked in PR test plan
       - id: F-007
         source: review_body
         severity: advisory
         path: apps/backend/tests/unit/test_version_migration_unit.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: wont_fix
-        commit: null
+        commit:
         note: unit tests intentionally target internal helpers for coverage; integration tests cover public migrate API
       - id: F-008
         source: review_body
         severity: advisory
         path: apps/backend/tests/unit/test_version_migration_unit.py
         line: 177
-        thread_id: null
+        thread_id:
         status: fixed
         commit: 7b9f5a9
         note: singleton test try/finally restore
@@ -5160,7 +5207,7 @@ pr_remediation_cycles:
         severity: advisory
         path: apps/backend/tests/unit/test_version_migration_unit.py
         line: 186
-        thread_id: null
+        thread_id:
         status: fixed
         commit: 7b9f5a9
         note: named migrator before patch
@@ -5214,8 +5261,8 @@ pr_remediation_cycles:
         source: review_body
         severity: advisory
         path: apps/frontend/src/app/components/FileConverter.tsx
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: 22741dd
         note: data-testid convert button locators
@@ -5223,8 +5270,8 @@ pr_remediation_cycles:
         source: review_body
         severity: advisory
         path: apps/frontend/src/utils/databaseUpload.ts
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: a47eaf4
         note: edgeFunctionUrl + hardened error parsing
@@ -5232,8 +5279,8 @@ pr_remediation_cycles:
         source: inline
         severity: advisory
         path: apps/frontend/src/app/components/DatabaseUploadDialog.test.tsx
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: 8f7545d
         note: CI mock parity after upload client change
@@ -5336,7 +5383,7 @@ pr_remediation_cycles:
         severity: advisory
         path: apps/e2e/tac-file-upload-database.e2e.spec.ts
         line: 175
-        thread_id: null
+        thread_id:
         status: fixed
         commit: 9cdec46
         note: Source TAC pre count in results region
@@ -5345,7 +5392,7 @@ pr_remediation_cycles:
         severity: advisory
         path: docs/context/issue-594-feedback.md
         line: 15
-        thread_id: null
+        thread_id:
         status: fixed
         commit: 5dc31e5
         note: R2 grammar-only COR fix
@@ -5354,7 +5401,7 @@ pr_remediation_cycles:
         severity: advisory
         path: apps/frontend/src/app/components/FileConverter.tsx
         line: 249
-        thread_id: null
+        thread_id:
         status: fixed
         commit: 010eb12
         note: splitlines aligned with backend
@@ -5399,11 +5446,11 @@ pr_remediation_cycles:
       - id: F-002
         source: review_body
         severity: advisory
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
-        commit: null
+        commit:
         note: >
           Empty PR description / no Closes #555 — resolved post-merge by editing PR #687
           body with a full summary referencing #555 (already closed). 2026-06-25.
@@ -5414,16 +5461,16 @@ pr_remediation_cycles:
         line: 116
         thread_id: PRRT_kwDOQW-3CM6MAhmM
         status: deferred
-        commit: null
+        commit:
         note: admin user_email vs contract — out of scope (blocker_only)
       - id: F-005
         source: review_body
         severity: advisory
         path: apps/frontend/src/app/hooks/useWorkSessionSync.ts
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: deferred
-        commit: null
+        commit:
         note: 409 WIP conflict toast/guidance — out of scope (blocker_only)
     artifacts:
       - path: docs/sessions/S004-issue-555-feedback/reports/pr-remediation.md
@@ -5435,7 +5482,7 @@ pr_remediation_cycles:
   - id: PRM-007
     pr_number: 692
     pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/692
-    linked_review_cycle_id: null   # Sourcery COMMENT review; no 18-pr-review cycle for #692
+    linked_review_cycle_id:        # Sourcery COMMENT review; no 18-pr-review cycle for #692
     title: "[hotfix] Bundle Postgres in docker-compose so backend can create DB tables (#671)"
     status: completed
     started: "2026-06-25"
@@ -5463,10 +5510,10 @@ pr_remediation_cycles:
         source: review_body
         severity: advisory
         path: tests/bugs/test_bug_2026_06_25_docker_db_connect.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: wont_fix
-        commit: null
+        commit:
         note: >
           Centralize _compose/_db_service/_env_value into a shared test util — declined
           (YAGNI: only one infra bug test exists; speculative abstraction). User-approved
@@ -5475,8 +5522,8 @@ pr_remediation_cycles:
         source: review_body
         severity: advisory
         path: tests/bugs/test_bug_2026_06_25_docker_db_connect.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: c08d50a
         note: assert bundled service name 'db' explicitly instead of inferring 'postgres' substring
@@ -5491,7 +5538,7 @@ pr_remediation_cycles:
     session_id: S008-general-tac-iwxxm-converter
     pr_number: 700
     pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/700
-    linked_review_cycle_id: null
+    linked_review_cycle_id:
     title: "[M1] F6 package scaffold (tac2iwxxm / validate / iwxxm-us)"
     status: completed
     started: "2026-07-12"
@@ -5510,8 +5557,8 @@ pr_remediation_cycles:
         source: sourcery-ai
         severity: advisory
         path: packages/shared/src/metar_shared/vendor_manifest.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: 789ea0b
         note: >
@@ -5531,7 +5578,7 @@ pr_remediation_cycles:
     session_id: S008-general-tac-iwxxm-converter
     pr_number: 701
     pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/701
-    linked_review_cycle_id: null
+    linked_review_cycle_id:
     title: "[M2] Validate packages (iwxxm-validate + tac-validate)"
     status: completed
     started: "2026-07-12"
@@ -5550,8 +5597,8 @@ pr_remediation_cycles:
         source: sourcery-ai
         severity: bug_risk
         path: apps/backend/src/api.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: f39560d
         note: "File() declaration for /lint-tac uploads"
@@ -5559,8 +5606,8 @@ pr_remediation_cycles:
         source: sourcery-ai
         severity: advisory
         path: apps/backend/src/api.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: f39560d
         note: "multipart vs urlencoded docs inconsistency → multipart-only (Q8=A)"
@@ -5568,8 +5615,8 @@ pr_remediation_cycles:
         source: sourcery-ai
         severity: bug_risk
         path: packages/tac-validate/src/tac_validate/models.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: f39560d
         note: "LintReport.fixes mutable default → factory"
@@ -5577,8 +5624,8 @@ pr_remediation_cycles:
         source: sourcery-ai
         severity: advisory
         path: apps/backend/tests/unit/test_tc_f6_033_wrappers_unit.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: 6ddec3a
         note: "validate package_* / profile fields in OpenAPI + TC-F6-033"
@@ -5586,10 +5633,10 @@ pr_remediation_cycles:
         source: sourcery-ai
         severity: advisory
         path: packages/shared/src/metar_shared/vendor_manifest.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: wont_fix
-        commit: null
+        commit:
         note: >
           vendor_manifest inline helpers — intentional name-based dispatch from PRM-008
     artifacts:
@@ -5608,7 +5655,7 @@ pr_remediation_cycles:
     evolve_cycle_id: EV-006
     pr_number: 704
     pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/704
-    linked_review_cycle_id: null
+    linked_review_cycle_id:
     title: "[M3] Bulletin"
     status: completed
     started: "2026-07-12"
@@ -5627,8 +5674,8 @@ pr_remediation_cycles:
         source: sourcery-ai
         severity: bug_risk
         path: packages/tac2iwxxm/src/tac2iwxxm/bulletin.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: "3175787"
         note: "TAC after AHL — scan reports only after AHL header"
@@ -5636,8 +5683,8 @@ pr_remediation_cycles:
         source: sourcery-ai
         severity: advisory
         path: apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: 4055b07
         note: "UploadFile test — cover convert-bulletin empty-file skip"
@@ -5645,8 +5692,8 @@ pr_remediation_cycles:
         source: sourcery-ai
         severity: advisory
         path: apps/backend/src/api.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: dcd4791
         note: "Pydantic models — build convert-bulletin response via models"
@@ -5654,10 +5701,10 @@ pr_remediation_cycles:
         source: sourcery-ai
         severity: advisory
         path: packages/tac2iwxxm/src/tac2iwxxm/bulletin.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: wont_fix
-        commit: null
+        commit:
         note: "dialect abstraction — defer to M5 product matrix"
     artifacts:
       - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
@@ -5694,38 +5741,38 @@ pr_remediation_cycles:
       - id: F-001
         source: sourcery/bugbot
         severity: bug_risk
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
         commit: squash
         note: "VRB wind None — fixed in squash"
       - id: F-002
         source: bugbot
         severity: bug_risk
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
         commit: squash
         note: "MPS gust — fixed in squash"
       - id: F-003
         source: sourcery-ai
         severity: advisory
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
         commit: 9b74afa
         note: "hotspot token assert — fixed on evolve"
       - id: F-004
         source: sourcery-ai
         severity: advisory
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: wont_fix
-        commit: null
+        commit:
         note: "PyO3 GHSA — N/A (0.23.5 not 0.24+)"
     follow_up:
       pr_review_rerun: declined
@@ -5738,7 +5785,7 @@ pr_remediation_cycles:
     skill_id: 19-address-pr-review
     session_id: S008-general-tac-iwxxm-converter
     evolve_cycle_id: EV-006
-    linked_review_cycle_id: null
+    linked_review_cycle_id:
     pr_number: 706
     pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/706
     title: "[M4–M7] PR stack #706–#709 remediation"
@@ -5763,8 +5810,8 @@ pr_remediation_cycles:
         source: review_body
         severity: blocker
         path: apps/backend/src/api.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: cb7a42f
         note: >
@@ -5773,8 +5820,8 @@ pr_remediation_cycles:
         source: review_body
         severity: advisory
         path: apps/worker
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: ccc156e
         note: >
@@ -5783,8 +5830,8 @@ pr_remediation_cycles:
         source: review_body
         severity: advisory
         path: apps/worker
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: ccc156e
         note: >
@@ -5793,19 +5840,19 @@ pr_remediation_cycles:
         source: review_body
         severity: advisory
         path: apps/backend/src/api.py
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: deferred
-        commit: null
+        commit:
         note: "M8 /convert full product HTTP wiring (documented on #707)"
       - id: F-005
         source: review_body
         severity: advisory
         path: apps/worker
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: deferred
-        commit: null
+        commit:
         note: "Persistent DB unique/upsert on job_id — deferred; in-process dedup for staging"
     artifacts:
       - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/pr-remediation.md
@@ -5838,7 +5885,7 @@ pr_remediation_cycles:
     head_shas:
       "708": 5837b41
       "709": a91f4cd
-    ci_status: null
+    ci_status:
     counts:
       fixed: 1
       deferred: 0
@@ -5848,8 +5895,8 @@ pr_remediation_cycles:
         source: bugbot
         severity: advisory
         path: apps/worker
-        line: null
-        thread_id: null
+        line:
+        thread_id:
         status: fixed
         commit: 5837b41
         note: >
@@ -5890,36 +5937,36 @@ pr_remediation_cycles:
       - id: B1
         source: pr-review
         severity: blocker
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
         commit: 1358b6e
         note: "skip METAR TAC layers for non-METAR convert products"
       - id: B2
         source: pr-review
         severity: blocker
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
         commit: 4e5d84b
         note: "repair corrupted EV-006 stages in workflow-state.yaml"
       - id: A1
         source: pr-review
         severity: advisory
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
         commit: 1e3358b
         note: "restore product/profile on session load (with A2)"
       - id: A2
         source: pr-review
         severity: advisory
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
         commit: 1e3358b
         note: "detect product/profile from all TAC (with A1)"
@@ -5958,18 +6005,18 @@ pr_remediation_cycles:
       - id: B1
         source: pr-review
         severity: blocker
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
         commit: ecdeac5
         note: "validate TAC auto-convert forwards profile"
       - id: A1
         source: pr-review
         severity: advisory
-        path: null
-        line: null
-        thread_id: null
+        path:
+        line:
+        thread_id:
         status: fixed
         commit: 79af006
         note: "bound uploads + MAX_BULLETIN_REPORTS=100"
