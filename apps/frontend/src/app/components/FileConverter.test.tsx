@@ -451,6 +451,32 @@ describe('FileConverter Component', () => {
         await Promise.resolve();
       });
 
+      // Clearing text short-circuits live IWXXM runner (no convert call)
+      mockConvertMetarToIwxxm.mockClear();
+      fireEvent.change(textarea, { target: { value: '   ' } });
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(350);
+      });
+      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+
+      // Successful preview clears failed spans
+      fireEvent.click(screen.getByTestId('live-iwxxm-toggle')); // ensure on
+      if (!(screen.getByTestId('live-iwxxm-toggle') as HTMLInputElement).checked) {
+        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+      }
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<ok/>' }],
+        errors: [],
+        ok: true,
+        failed_spans: [],
+      });
+      fireEvent.change(textarea, { target: { value: 'METAR KJFK 121251Z 18004KT' } });
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(350);
+        await Promise.resolve();
+      });
+      expect(screen.queryByTestId('failed-tac-cue')).toBeNull();
+
       vi.useRealTimers();
     });
   });
