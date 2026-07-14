@@ -38,6 +38,11 @@ vi.mock('/utils/supabase/logout', () => ({
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
+  lintTac: vi.fn().mockResolvedValue({
+    ok: true,
+    issues: [],
+    fixes: [],
+  }),
   decodeTac: vi
     .fn()
     .mockResolvedValue({ product: 'METAR', segments: [], residuals: [] }),

@@ -37,6 +37,11 @@ vi.mock('/utils/api', () => ({
   convertTafToIwxxm: vi
     .fn()
     .mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
+  lintTac: vi.fn().mockResolvedValue({
+    ok: true,
+    issues: [],
+    fixes: [],
+  }),
   decodeTac: vi.fn().mockResolvedValue({
     product: 'METAR',
     segments: [],

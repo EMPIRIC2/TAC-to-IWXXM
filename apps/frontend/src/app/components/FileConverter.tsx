@@ -7,6 +7,8 @@ import { TacEditor } from './TacEditor';
 import { DecodePanel } from './DecodePanel';
 import { FailedTacCue } from './FailedTacCue';
 import { SoftPreviewControl } from './SoftPreviewControl';
+import { LiveIwxxmToggle } from './LiveIwxxmToggle';
+import { WorkbenchConsole } from './WorkbenchConsole';
 import {
   Upload,
   X,
@@ -31,8 +33,12 @@ import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
 import { AirportDetailsCard } from './AirportDetailsCard';
 import { signOutWithScope } from '/utils/supabase/logout';
-import { convertMetarToIwxxm as callBackendConversion, decodeTac } from '/utils/api';
-import type { DecodeResidual, DecodeSegment, FailedSpan } from '/utils/api';
+import {
+  convertMetarToIwxxm as callBackendConversion,
+  type FailedSpan,
+} from '/utils/api';
+import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
+import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
   resolveConvertProduct,
@@ -47,6 +53,7 @@ import { ErrorLogPanel, type ConversionLog } from './ErrorLogPanel';
 import { WorkHistorySidebar } from './WorkHistorySidebar';
 import type { WorkSession } from '@metar/shared';
 import { useWorkSessionSync } from '@/hooks/useWorkSessionSync';
+
 import {
   type ConverterSnapshot,
   resolveManualLineMetaFromResult,
@@ -135,12 +142,9 @@ export function FileConverter({
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
   const [manualInput, setManualInput] = useState('');
-  const [decodeSegments, setDecodeSegments] = useState<DecodeSegment[]>([]);
-  const [decodeResiduals, setDecodeResiduals] = useState<DecodeResidual[]>([]);
-  const [decodeProduct, setDecodeProduct] = useState<string | undefined>();
-  const [decodeLoading, setDecodeLoading] = useState(false);
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [softPreview, setSoftPreview] = useState(false);
+  const [liveIwxxm, setLiveIwxxm] = useState(false);
   const [failedSpans, setFailedSpans] = useState<FailedSpan[]>([]);
   // Restore the guest's custom output filename from the session snapshot (R5).
   const [outputFilename, setOutputFilename] = useState(() => {
@@ -842,41 +846,75 @@ export function FileConverter({
   const hasConverted = convertedFiles.length > 0;
   const convertDisabled = isBusy || !hasInput || isReadOnly;
 
-  const runDecode = useCallback(
-    async (open: boolean) => {
-      if (!open) {
-        return;
-      }
+  const liveAssistProduct = resolveConvertProduct(
+    conversionParams.product,
+    manualInput,
+  );
+
+  const liveIwxxmRunner = useCallback(
+    async (signal: AbortSignal) => {
       const text = manualInput.trim();
       if (!text) {
-        setDecodeSegments([]);
-        setDecodeResiduals([]);
-        setDecodeProduct(undefined);
-        setDecodeError(null);
         return;
       }
-      const product = resolveConvertProduct(conversionParams.product, text);
-      setDecodeLoading(true);
-      setDecodeError(null);
       try {
-        const result = await decodeTac({
+        const response = await callBackendConversion({
           manualText: text,
-          product,
+          product: liveAssistProduct,
+          profile: conversionParams.profile,
+          iwxxmVersion: conversionParams.iwxxmVersion,
+          validateOutput: false,
+          preview: true,
           accessToken,
+          signal,
         });
-        setDecodeSegments(result.segments);
-        setDecodeResiduals(result.residuals);
-        setDecodeProduct(result.product);
+        if (signal.aborted) {
+          return;
+        }
+        if (response.failed_spans?.length) {
+          setFailedSpans(response.failed_spans);
+        } else if (response.ok !== false) {
+          setFailedSpans([]);
+        }
       } catch (err) {
-        setDecodeError(err instanceof Error ? err.message : 'Decode failed');
-        setDecodeSegments([]);
-        setDecodeResiduals([]);
-      } finally {
-        setDecodeLoading(false);
+        if (isAbortError(err) || signal.aborted) {
+          return;
+        }
+        setDecodeError(err instanceof Error ? err.message : 'Live IWXXM failed');
       }
     },
-    [manualInput, conversionParams.product, accessToken],
+    [
+      manualInput,
+      liveAssistProduct,
+      conversionParams.profile,
+      conversionParams.iwxxmVersion,
+      accessToken,
+    ],
   );
+
+  const {
+    issueSpans,
+    decodeSegments,
+    decodeResiduals,
+    decodeProduct,
+    loading: decodeLoading,
+    consoleLines,
+    clearConsole,
+    appendConsole,
+  } = useLiveWorkbenchAssist({
+    text: manualInput,
+    product: liveAssistProduct,
+    accessToken,
+    enabled: !isReadOnly,
+    liveIwxxm,
+    liveIwxxmRunner,
+  });
+
+  useEffect(() => {
+    if (decodeLoading) {
+      setDecodeError(null);
+    }
+  }, [decodeLoading]);
 
   const saveIndicatorLabel =
     saveIndicator === 'pending'
@@ -1096,6 +1134,7 @@ export function FileConverter({
                 aria-label="Enter METAR data manually"
                 className="min-h-[120px] focus-within:ring-2 focus-within:ring-blue-500"
                 failedSpans={failedSpans}
+                issueSpans={issueSpans}
               />
               <DecodePanel
                 segments={decodeSegments}
@@ -1103,15 +1142,31 @@ export function FileConverter({
                 product={decodeProduct}
                 loading={decodeLoading}
                 error={decodeError}
-                onOpenChange={runDecode}
+                defaultOpen
               />
-              <div className="mt-3">
+              <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
                 <SoftPreviewControl
                   checked={softPreview}
                   onChange={setSoftPreview}
                   disabled={isReadOnly || isBusy}
                 />
+                <LiveIwxxmToggle
+                  checked={liveIwxxm}
+                  onChange={setLiveIwxxm}
+                  disabled={isReadOnly || isBusy}
+                />
               </div>
+              <WorkbenchConsole
+                lines={consoleLines}
+                onClear={() => {
+                  clearConsole();
+                  appendConsole({
+                    level: 'info',
+                    source: 'console',
+                    message: 'cleared',
+                  });
+                }}
+              />
             </div>
 
             {/* Output filename for manual input (#664 / EV-005) */}
