@@ -48,6 +48,25 @@ class ConversionIssue(BaseModel):
         description="Optional location context from parser/validator",
         examples=["line 1, column 12"],
     )
+    start: Optional[int] = Field(
+        default=None,
+        description="Optional inclusive character offset into the source TAC",
+        ge=0,
+    )
+    end: Optional[int] = Field(
+        default=None,
+        description="Optional exclusive character offset into the source TAC",
+        ge=0,
+    )
+
+
+class FailedSpan(BaseModel):
+    """Character span marking a soft-preview failure (ADR-022 / F7)."""
+
+    start: int = Field(..., ge=0, description="Inclusive character offset into source TAC")
+    end: int = Field(..., ge=0, description="Exclusive character offset into source TAC")
+    code: Optional[str] = Field(default=None, description="Machine-readable failure code")
+    message: Optional[str] = Field(default=None, description="Human-readable failure message")
 
 
 class ConversionResult(BaseModel):
@@ -130,6 +149,14 @@ class ConversionResponse(BaseModel):
     metadata: dict = Field(
         default_factory=dict,
         description="Echoed request metadata such as bulletin_id, issuing_center, and validation options",
+    )
+    ok: Optional[bool] = Field(
+        default=None,
+        description="Soft-preview envelope flag (ADR-022); set when preview=true",
+    )
+    failed_spans: List[FailedSpan] = Field(
+        default_factory=list,
+        description="Soft-preview failed character spans (ADR-022); empty when preview omitted/false",
     )
 
 

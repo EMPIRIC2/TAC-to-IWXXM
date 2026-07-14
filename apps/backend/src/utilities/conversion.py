@@ -142,6 +142,8 @@ def convert_metar_tac_with_metadata(
     lenient: bool = True,
     product: Optional[str] = None,
     profile: str = "annex3",
+    preview: bool = False,
+    soft_preview_out: Optional[dict] = None,
 ) -> Tuple[str, Optional[ComprehensiveValidationResult]]:
     """
     Convert TAC to IWXXM via ``tac2iwxxm`` and optionally validate.
@@ -168,6 +170,12 @@ def convert_metar_tac_with_metadata(
         ``METAR`` or ``SPECI``; auto-detected when omitted.
     profile :
         ``annex3`` or ``iwxxm_us``.
+    preview :
+        Soft-preview mode (ADR-022): return best-effort XML instead of raising on
+        parse/convert failure.
+    soft_preview_out :
+        Optional mutable dict filled when ``preview=True`` with ``ok`` and
+        ``failed_spans`` for the API response envelope.
 
     Returns
     -------
@@ -177,7 +185,7 @@ def convert_metar_tac_with_metadata(
     Raises
     ------
     ConversionError
-        When conversion (or requested validation) fails.
+        When conversion (or requested validation) fails and ``preview`` is False.
     """
     _ = (reference_time, use_test_overrides)  # gifts-era knobs; no-op after cutover
 
@@ -197,10 +205,35 @@ def convert_metar_tac_with_metadata(
         product=product_u,
         profile=profile_l,
         iwxxm_version=version,
+        preview=preview,
     )
     if not result.ok or not result.xml:
         msgs = "; ".join(f"{i.code}: {i.message}" for i in result.issues) or "unknown convert failure"
+        if preview and result.xml:
+            failed_spans = [
+                {
+                    "start": int(i.start),
+                    "end": int(i.end),
+                    "code": i.code,
+                    "message": i.message,
+                }
+                for i in result.issues
+                if i.start is not None and i.end is not None
+            ]
+            if soft_preview_out is not None:
+                soft_preview_out.clear()
+                soft_preview_out["ok"] = False
+                soft_preview_out["failed_spans"] = failed_spans
+            xml_string = result.xml
+            if not xml_string.lstrip().startswith("<?xml"):
+                xml_string = '<?xml version="1.0"?>\n' + xml_string
+            return xml_string, None
         raise ConversionError(f"Conversion failed: {msgs}")
+
+    if soft_preview_out is not None and preview:
+        soft_preview_out.clear()
+        soft_preview_out["ok"] = True
+        soft_preview_out["failed_spans"] = []
 
     xml_string = result.xml
     if not xml_string.lstrip().startswith("<?xml"):

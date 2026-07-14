@@ -30,6 +30,7 @@ try:
         ConversionResponse,
         ConversionResult,
         ErrorDetail,
+        FailedSpan,
         HealthResponse,
     )
     from .schemas.icao_opmet import TranslationStatus
@@ -69,6 +70,7 @@ except ImportError:
         ConversionResponse,
         ConversionResult,
         ErrorDetail,
+        FailedSpan,
         HealthResponse,
     )
     from schemas.icao_opmet import TranslationStatus
@@ -1229,6 +1231,10 @@ async def convert(
     lint: bool = Form(default=True, description="Run tac-validate before convert (Q14=C; default on)"),
     product: str = Form(default="METAR", description="TAC product (required for F6; default METAR for legacy)"),
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
+    preview: bool = Form(
+        default=False,
+        description="Soft-preview mode (ADR-022): best-effort IWXXM + failed_spans on partial failure",
+    ),
     user: dict = Depends(verify_supabase_token),
 ) -> ConversionResponse:
     logger.info(
@@ -1447,6 +1453,18 @@ async def convert(
     errors: List[str] = []
     issues: List[ConversionIssue] = []
     total_inputs = 0
+    preview_failed_spans: List[FailedSpan] = []
+    preview_saw_soft_fail = False
+
+    def absorb_soft_preview(soft: dict) -> None:
+        """Merge soft-preview envelope fields from convert_metar_tac_with_metadata."""
+        nonlocal preview_saw_soft_fail
+        if not preview or not soft:
+            return
+        if soft.get("ok") is False:
+            preview_saw_soft_fail = True
+            for span in soft.get("failed_spans") or []:
+                preview_failed_spans.append(FailedSpan(**span))
 
     def add_issue(
         source: str,
@@ -1658,13 +1676,25 @@ async def convert(
 
                 # Convert METAR to IWXXM
                 try:
+                    soft_preview: dict = {}
                     iwxxm_content, _ = convert_metar_tac_with_metadata(
                         normalized_metar_text,
                         iwxxm_version=iwxxm_version,
                         lenient=False,
                         product=product,
                         profile=profile,
+                        preview=preview,
+                        soft_preview_out=soft_preview if preview else None,
                     )
+                    absorb_soft_preview(soft_preview)
+                    if preview and soft_preview.get("ok") is False:
+                        add_issue(
+                            source=metar_name,
+                            message="Soft-preview: conversion incomplete",
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Fix failed TAC spans and retry hard convert before publish.",
+                            code="SOFT_PREVIEW_PARTIAL",
+                        )
 
                     # Optional output validation (Layers 3-7)
                     validation_layers_passed = [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
@@ -1880,6 +1910,7 @@ async def convert(
 
             emit_recent_wx_issues(manual_source, _norm_warnings)
 
+            soft_preview: dict = {}
             xml_text, validation_result_from_conversion = convert_metar_tac_with_metadata(
                 _normalized_entry,
                 iwxxm_version=iwxxm_version,
@@ -1887,7 +1918,18 @@ async def convert(
                 lenient=False,  # normalization already applied above
                 product=product,
                 profile=profile,
+                preview=preview,
+                soft_preview_out=soft_preview if preview else None,
             )
+            absorb_soft_preview(soft_preview)
+            if preview and soft_preview.get("ok") is False:
+                add_issue(
+                    source=manual_source,
+                    message="Soft-preview: conversion incomplete",
+                    severity=ConversionIssueSeverity.ERROR,
+                    hint="Fix failed TAC spans and retry hard convert before publish.",
+                    code="SOFT_PREVIEW_PARTIAL",
+                )
 
             duration_ms = int((time.perf_counter() - start_time) * 1000)
             layers_passed = [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
@@ -2086,13 +2128,25 @@ async def convert(
                 start_time = time.perf_counter()
 
                 # Only convert if validation passed
+                soft_preview: dict = {}
                 xml_text, _ = convert_metar_tac_with_metadata(
                     data or "",
                     iwxxm_version=iwxxm_version,
                     validate=False,
                     product=product,
                     profile=profile,
+                    preview=preview,
+                    soft_preview_out=soft_preview if preview else None,
                 )
+                absorb_soft_preview(soft_preview)
+                if preview and soft_preview.get("ok") is False:
+                    add_issue(
+                        source=source_name,
+                        message="Soft-preview: conversion incomplete",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Fix failed TAC spans and retry hard convert before publish.",
+                        code="SOFT_PREVIEW_PARTIAL",
+                    )
 
                 # Calculate duration
                 duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -2255,6 +2309,10 @@ async def convert(
             ).model_dump(),
         )
 
+    envelope_ok: Optional[bool] = None
+    if preview:
+        envelope_ok = not preview_saw_soft_fail and len(errors) == 0
+
     return ConversionResponse(
         results=results,
         errors=errors,
@@ -2263,6 +2321,8 @@ async def convert(
         successful=len(results),
         failed=len(errors),
         metadata=request_metadata,
+        ok=envelope_ok,
+        failed_spans=preview_failed_spans if preview else [],
     )
 
 

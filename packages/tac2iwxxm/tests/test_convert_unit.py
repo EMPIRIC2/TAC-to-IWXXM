@@ -50,6 +50,19 @@ def test_convert_parse_error_returns_ok_false() -> None:
     result = convert("NOT A REPORT", product="METAR")
     assert result.ok is False
     assert result.issues[0].code == "PARSE_ERROR"
+    assert result.xml is None
+
+
+def test_convert_preview_parse_error_returns_stub_xml() -> None:
+    """S011 / ADR-022: soft-preview keeps best-effort XML + spans on parse failure."""
+    tac = "METAR XXXX NOT_A_REAL_REPORT GARBAGE="
+    result = convert(tac, product="METAR", preview=True)
+    assert result.ok is False
+    assert result.xml is not None
+    assert "iwxxm:METAR" in result.xml
+    assert result.issues[0].code == "PARSE_ERROR"
+    assert result.issues[0].start == 0
+    assert result.issues[0].end == len(tac.strip())
 
 
 def test_parse_product_mismatch() -> None:
