@@ -15,7 +15,7 @@ active_session:
     convert UX (#665/#666), remove admin dashboard / BYO DB (#697); #5 kept as parent tracker"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-008
-  note: "S011 M5 T5.1–T5.5 complete; migration 20260714000010 applied remotely (13 rows); next PR-M5 (T5.6)"
+  note: "S011 M5 complete (T5.1–T5.6); PR-M5 https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI (admin bug regressions, etc.); next milestone M6"
   context_briefs:
   - docs/context/f7-operator-ui.md
   standing_docs_touched: []
@@ -54,7 +54,7 @@ active_session:
     mode: full
     status: in_progress
     started: "2026-07-13"
-    note: "S011 M5 T5.1–T5.5 complete; migration applied remotely; next PR-M5 (T5.6)"
+    note: "S011 M5 complete (T5.1–T5.6); PR-M5 #720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI; next milestone M6"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1082,7 +1082,7 @@ stages:
       status: in_progress
       started_at: "2026-07-13"
       mode: full
-      note: "S011 M5 T5.1–T5.5 complete; migration 20260714000010 applied remotely (13 rows); active_milestone M5; active_task T5.6 in_progress (PR-M5)"
+      note: "S011 M5 complete (T5.1–T5.6); PR-M5 #720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI; active_milestone M6; active_task T6.1 pending"
     notes:
     - "2026-07-13 S011/EV-008 M3 T3.1 in_progress — test preview=true convert; active_milestone M3; active_task T3.1 in_progress"
     - "2026-07-13 S011/EV-008 M2 complete (T2.1–T2.8); PR-M2 #716 open; active_milestone M3 active_task T3.1"
@@ -1099,6 +1099,7 @@ stages:
     - "2026-07-14 S011/EV-008 M5 started — T5.1 in_progress (unified tac_work_sessions); active_milestone M5; active_task T5.1
       in_progress"
     - "2026-07-14 S011/EV-008 M5 T5.1–T5.5 complete; migration 20260714000010 applied remotely (13 rows cutover); active_milestone M5; active_task T5.6 in_progress (next PR-M5)"
+    - "2026-07-14 S011/EV-008 M5 complete (T5.1–T5.6); PR-M5 https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI (admin bug regressions, etc.); active_milestone M6; active_task T6.1 pending"
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -4244,6 +4245,7 @@ evolve_cycles:
   - "2026-07-14 S011/EV-008 M5 started — T5.1 in_progress (unified tac_work_sessions); active_milestone M5; active_task T5.1
     in_progress"
   - "2026-07-14 S011/EV-008 M5 T5.1–T5.5 complete; migration 20260714000010 applied remotely (13 rows cutover); active_milestone M5; active_task T5.6 in_progress (next PR-M5)"
+  - "2026-07-14 S011/EV-008 M5 complete (T5.1–T5.6); PR-M5 https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI (admin bug regressions, etc.); active_milestone M6; active_task T6.1 pending"
   stages:
     01-requirements:
       status: completed
@@ -4313,10 +4315,10 @@ evolve_cycles:
       completed:
       artifacts_updated:
       - docs/sessions/S011-f7-operator-ui/reports/execution-plan.md
-      note: "S011 M5 T5.1–T5.5 complete; migration 20260714000010 applied remotely (13 rows); next PR-M5"
-      active_task: T5.6
-      active_milestone: M5
-      active_task_status: in_progress
+      note: "S011 M5 complete (T5.1–T5.6); PR-M5 #720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI; next milestone M6"
+      active_task: T6.1
+      active_milestone: M6
+      active_task_status: pending
     08-verify-build:
       status: pending
       started:
@@ -4382,6 +4384,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/S011-f7-operator-ui
   notes:
+  - "2026-07-14 S011/EV-008 M5 complete (T5.1–T5.6); PR-M5 #720 open; active_milestone M6 active_task T6.1 pending"
   - "2026-07-14 S011/EV-008 M3 complete (T3.1–T3.4); PR-M3 #717 open; active_milestone M4 active_task T4.1"
   - "2026-07-13 S011/EV-008 M2 complete (T2.1–T2.8); PR-M2 #716; current_stage=07-build; active_milestone M3 active_task T3.1"
   - "2026-07-13 D-S011-EV008-b-to-c-pass — Phase B / B→C passed; current_stage=07-build; M1 T1.1 in_progress"
