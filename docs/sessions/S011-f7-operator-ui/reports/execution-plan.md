@@ -16,8 +16,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M4 — Live workbench (next) |
-| **Active task** | T4.1 next |
+| **Active milestone** | M4 — Live workbench |
+| **Active task** | T4.1 in_progress |
 | **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) + M3 (T3.1–T3.5) |
 | **Last updated** | 2026-07-14 |
 
@@ -130,7 +130,7 @@
 
 | ID | Task | Type | Status | Spec | Depends |
 |----|------|------|--------|------|---------|
-| T4.1 | Test: debounce 300ms + AbortController cancels in-flight | Test | pending | UJ-017 | M3 |
+| T4.1 | Test: debounce 300ms + AbortController cancels in-flight | Test | in_progress | UJ-017 | M3 |
 | T4.2 | Impl: live lint/decode clients; span highlight + hover | Impl | pending | #694 | T4.1, T2.7 |
 | T4.3 | Impl: pull-up console; live IWXXM toggle (**default off**) | Impl | pending | 04 A | T4.2 |
 | T4.4 | Test: Playwright workbench smoke (TC-F7-001/004) | Test | pending | test-plan | T4.3 |
