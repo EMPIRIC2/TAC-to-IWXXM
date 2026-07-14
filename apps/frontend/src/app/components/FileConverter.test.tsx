@@ -426,13 +426,13 @@ describe('FileConverter Component', () => {
       fireEvent.click(screen.getByTestId('workbench-console-toggle'));
       expect(screen.getByTestId('workbench-console-lines')).toBeInTheDocument();
 
-      // live IWXXM is on — next assist cycle should soft-preview convert
+      // live IWXXM is on — soft-preview convert with failed spans
       mockConvertMetarToIwxxm.mockClear();
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
-        results: [],
+        results: [{ iwxxm_xml: '<x/>' }],
         errors: [],
-        ok: true,
-        failed_spans: [],
+        ok: false,
+        failed_spans: [{ start: 0, end: 5, message: 'bad' }],
       });
       fireEvent.change(textarea, { target: { value: 'METAR KJFK 121251Z' } });
       await act(async () => {
@@ -441,6 +441,15 @@ describe('FileConverter Component', () => {
       expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
         expect.objectContaining({ preview: true }),
       );
+      expect(screen.getByTestId('failed-tac-cue')).toBeInTheDocument();
+
+      // Error path (non-abort) is exercised without hanging fake timers
+      mockConvertMetarToIwxxm.mockRejectedValueOnce(new Error('Live IWXXM failed'));
+      fireEvent.change(textarea, { target: { value: 'METAR KJFK 121251Z =' } });
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(350);
+        await Promise.resolve();
+      });
 
       vi.useRealTimers();
     });
