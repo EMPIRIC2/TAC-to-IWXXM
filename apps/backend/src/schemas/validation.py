@@ -254,6 +254,8 @@ class LintIssueModel(BaseModel):
     code: str
     message: str
     location: Optional[str] = None
+    start: Optional[int] = Field(default=None, description="Inclusive character offset")
+    end: Optional[int] = Field(default=None, description="Exclusive character offset")
 
 
 class LintFixModel(BaseModel):
@@ -281,6 +283,8 @@ class PackageIssueModel(BaseModel):
     message: str
     location: Optional[str] = None
     code: Optional[str] = None
+    start: Optional[int] = Field(default=None, description="Inclusive offset when known")
+    end: Optional[int] = Field(default=None, description="Exclusive offset when known")
 
 
 class ValidateIssueModel(BaseModel):
@@ -291,6 +295,8 @@ class ValidateIssueModel(BaseModel):
     message: str
     location: Optional[str] = None
     code: Optional[str] = None
+    start: Optional[int] = Field(default=None, description="Inclusive offset when known")
+    end: Optional[int] = Field(default=None, description="Exclusive offset when known")
 
 
 class ValidateLayerIssueModel(BaseModel):

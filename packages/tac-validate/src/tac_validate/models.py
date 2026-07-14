@@ -19,12 +19,18 @@ class Issue(msgspec.Struct, frozen=True):
         Human-readable description.
     location :
         Optional token / field hint (e.g. ``wind``).
+    start :
+        Optional inclusive character offset into the TAC string.
+    end :
+        Optional exclusive character offset into the TAC string.
     """
 
     severity: str
     code: str
     message: str
     location: str | None = None
+    start: int | None = None
+    end: int | None = None
 
 
 class Fix(msgspec.Struct, frozen=True):

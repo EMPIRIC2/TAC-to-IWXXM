@@ -560,7 +560,7 @@ except Exception as e:
 
 try:
     app.include_router(work_sessions.router, prefix="/api/v1/work-sessions", tags=["Work Sessions"])
-    app.include_router(work_sessions.admin_router)
+    # Admin work-sessions list removed (S011 / ADR-021 / #697).
     logger.info("DEBUG: included work sessions routers successfully")
 except Exception as e:
     logger.error(f"DEBUG: Failed to include work sessions routers: {e}", exc_info=True)
@@ -572,14 +572,13 @@ except Exception as e:
     logger.error(f"DEBUG: Failed to include ICAO OPMET router: {e}", exc_info=True)
 
 try:
-    from auth.admin_api import router as admin_router
     from auth.api_supabase import legacy_router as auth_legacy_router
     from auth.api_supabase import router as auth_router
 
     app.include_router(auth_router)
     app.include_router(auth_legacy_router)
-    app.include_router(admin_router)
-    logger.info("DEBUG: included auth routers at /auth/* and /admin/* successfully")
+    # Product /admin/* routers not mounted (S011 / ADR-021 / #697).
+    logger.info("DEBUG: included auth routers at /auth/* successfully (admin product routes removed)")
 except Exception as e:
     logger.error(f"DEBUG: Failed to include auth routers: {e}", exc_info=True)
 
@@ -801,6 +800,8 @@ async def lint_tac(
                 code=i.code,
                 message=i.message,
                 location=i.location,
+                start=getattr(i, "start", None),
+                end=getattr(i, "end", None),
             )
             for i in report.issues
         ],
@@ -885,6 +886,8 @@ async def convert_bulletin(
                     code=i.code,
                     message=i.message,
                     location=i.location,
+                    start=getattr(i, "start", None),
+                    end=getattr(i, "end", None),
                 )
                 for i in lint_report.issues
             )

@@ -21,6 +21,10 @@ class Issue(msgspec.Struct, frozen=True):
         Validation layer (``xsd``, ``schematron``, ``wellformed``).
     location :
         Optional document location hint.
+    start :
+        Optional inclusive character / document offset when known.
+    end :
+        Optional exclusive character / document offset when known.
     """
 
     severity: str
@@ -28,6 +32,8 @@ class Issue(msgspec.Struct, frozen=True):
     message: str
     layer: str
     location: str | None = None
+    start: int | None = None
+    end: int | None = None
 
 
 class ValidationReport(msgspec.Struct, frozen=True):
