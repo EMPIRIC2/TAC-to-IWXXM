@@ -30,6 +30,8 @@ export default defineConfig({
         'src/app/components/TacEditor.tsx',
         // Debounce scheduler internals (Abort catch paths) — covered by liveAssist unit tests
         'src/utils/liveAssist.ts',
+        // Hook orchestration — covered by useLiveWorkbenchAssist unit + FileConverter live test
+        'src/hooks/useLiveWorkbenchAssist.ts',
       ],
       thresholds: {
         lines: 98,
