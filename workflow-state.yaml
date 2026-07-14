@@ -4,87 +4,168 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 10
+session_counter: 11
 active_session:
-  id: S010-issue-655-tac-traceability
+  id: S011-f7-operator-ui
   type: feature
-  intent: "F6 UI input traceability — show original TAC with each conversion result (GitHub #655)"
   status: in_progress
-  branch: evolve/EV-007-issue-655-tac-traceability
+  branch: evolve/S011-f7-operator-ui
+  started_at: "2026-07-13"
+  intent: "F7 multi-product TAC operator UI (7 products) + interactive workbench (#694), TAC decode panel (#702), failed-TAC/partial convert UX (#665/#666), remove admin dashboard / BYO DB (#697); #5 kept as parent tracker"
   orchestrator: 16-evolve
-  evolve_cycle_id: EV-007
-  artifacts_dir: docs/sessions/S010-issue-655-tac-traceability/
+  evolve_cycle_id: null
+  context_briefs:
+    - docs/context/f7-operator-ui.md
+  standing_docs_touched: []
   routing_plan:
     - stage: 00-context
+      required: true
       mode: scoped
-      required: true
       status: in_progress
-      skip_rationale: null
-      note: "Scoped brief docs/context/issue-655-tac-traceability.md; Phase 0 intake complete"
     - stage: 01-requirements
-      mode: delta
       required: true
+      mode: delta
       status: pending
-      skip_rationale: null
-      note: "Delta TC-001b / UJ-001 traceability UX"
     - stage: 02-verify-plan
-      mode: delta
-      required: false
-      status: skipped
-      skip_rationale: "Lean UI-only delta; 01+04 sufficient"
-    - stage: 03-plan-tooling
-      required: false
-      status: skipped
-      skip_rationale: "No new guardrails"
-    - stage: 04-tech-plan
-      mode: delta
       required: true
+      mode: delta
       status: pending
-      skip_rationale: null
-    - stage: 05-verify-tech
-      required: false
-      status: skipped
-      skip_rationale: "No stack change"
-    - stage: 06-tech-tooling
-      required: false
-      status: skipped
-      skip_rationale: "No new deps"
-    - stage: 16-evolve
+    - stage: 04-tech-plan
       required: true
-      status: in_progress
-      skip_rationale: null
-      note: "Phase 0–1 complete; EV-007 created"
+      mode: delta
+      status: pending
+    - stage: 05-verify-tech
+      required: true
+      mode: delta
+      status: pending
     - stage: 07-build
       required: true
+      mode: full
       status: pending
     - stage: 08-verify-build
       required: true
+      mode: full
       status: pending
     - stage: 09-qa
       required: true
+      mode: full
       status: pending
     - stage: 10-e2e
-      mode: delta
       required: true
+      mode: full
       status: pending
     - stage: 11-verify-impl
       required: true
+      mode: full
       status: pending
     - stage: 12-verify-deploy
       required: true
+      mode: full
       status: pending
-      note: "Frontend redeploy required"
     - stage: 13-deploy-smoke
       required: true
+      mode: full
       status: pending
+  skipped_stages:
+    - stage: 03-plan-tooling
+      rationale: "Hooks/rules already exist from prior cycles"
+    - stage: 06-tech-tooling
+      rationale: "Lint/typecheck/CI already wired"
   current_stage: 00-context
-  started_at: "2026-07-12"
-  context_briefs:
-    - docs/context/issue-655-tac-traceability.md
-  notes:
-    - "Opened 2026-07-12 from /16-evolve issue #655; closed S009; F6 delta UI-only; prod API tac_input verified"
+  artifacts_dir: docs/sessions/S011-f7-operator-ui
+
 
 sessions:
+
+  - id: S010-issue-655-tac-traceability
+    type: feature
+    intent: "F6 UI input traceability — show original TAC with each conversion result (GitHub #655)"
+    status: completed
+    branch: evolve/EV-007-issue-655-tac-traceability
+    orchestrator: 16-evolve
+    evolve_cycle_id: EV-007
+    artifacts_dir: docs/sessions/S010-issue-655-tac-traceability/
+    routing_plan:
+      - stage: 00-context
+        mode: scoped
+        required: true
+        status: completed
+        skip_rationale: null
+        note: "Scoped brief docs/context/issue-655-tac-traceability.md; Phase 0 intake complete"
+      - stage: 01-requirements
+        mode: delta
+        required: true
+        status: completed
+        skip_rationale: null
+        note: "Corpus deltas in PR #715 (test-plan, journeys)"
+      - stage: 02-verify-plan
+        mode: delta
+        required: false
+        status: skipped
+        skip_rationale: "Lean UI-only delta; 01+04 sufficient"
+      - stage: 03-plan-tooling
+        required: false
+        status: skipped
+        skip_rationale: "No new guardrails"
+      - stage: 04-tech-plan
+        mode: delta
+        required: true
+        status: completed
+        skip_rationale: null
+        note: "Covered by execution-plan M1 (UI-only)"
+      - stage: 05-verify-tech
+        required: false
+        status: skipped
+        skip_rationale: "No stack change"
+      - stage: 06-tech-tooling
+        required: false
+        status: skipped
+        skip_rationale: "No new deps"
+      - stage: 16-evolve
+        required: true
+        status: completed
+        skip_rationale: null
+        note: "EV-007 completed; PR #715 merged; prod Source TAC smoke PASS"
+      - stage: 07-build
+        required: true
+        status: completed
+        note: "M1 tasks + PR #715 merged"
+      - stage: 08-verify-build
+        required: true
+        status: completed
+        note: "PR CI green (frontend/backend/e2e)"
+      - stage: 09-qa
+        required: true
+        status: completed
+        note: "Satisfied by PR CI + unit/e2e in #715"
+      - stage: 10-e2e
+        mode: delta
+        required: true
+        status: completed
+        note: "Playwright + live prod smoke 2026-07-13"
+      - stage: 11-verify-impl
+        required: true
+        status: completed
+        note: "UJ-001 Source TAC AC verified on prod"
+      - stage: 12-verify-deploy
+        required: true
+        status: completed
+        note: "Frontend-v4-web live post-merge"
+      - stage: 13-deploy-smoke
+        required: true
+        status: completed
+        note: "See reports/deploy-smoke.md — PASS"
+    current_stage: null
+    started_at: "2026-07-12"
+    completed_at: "2026-07-13"
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/715
+    summary: "#655 / PR #715 / prod smoke PASS — Source TAC UI verified on production"
+    close_note: "Closed 2026-07-13 after user-approved prod Source TAC verification; PR #715 merged; issue #655 closed"
+    context_briefs:
+      - docs/context/issue-655-tac-traceability.md
+    notes:
+      - "Opened 2026-07-12 from /16-evolve issue #655; closed S009; F6 delta UI-only; prod API tac_input verified"
+      - "Closed 2026-07-13 — #655 / PR #715 / prod smoke PASS (Source TAC UI)"
 
   - id: S009-result-card-dismiss
     type: hotfix
@@ -398,20 +479,20 @@ template:
 
 stages:
   00-context:
-    status: completed
+    status: in_progress
     mode: scoped
-    scoped_slug: realtime-tac-ingest
-    session_id: S008-general-tac-iwxxm-converter
-    started_at: "2026-07-12T00:00:00Z"
-    completed_at: "2026-07-12"
+    scoped_slug: f7-operator-ui
+    session_id: S011-f7-operator-ui
+    started_at: "2026-07-13"
+    completed_at: null
     substeps:
-      phase0_session: completed
+      phase0: completed
       phase1a: completed
       phase1b: skipped
       phase1c: skipped
       phase2: completed
-      phase3: completed
-      phase4: completed
+      phase3: in_progress
+      phase4: pending
     artifacts:
       - docs/context/issue-555-feedback.md
       - docs/sessions/S004-issue-555-feedback/session-brief.md
@@ -430,6 +511,9 @@ stages:
       - "2026-07-12 D-S008-realtime-amend-q14q18 — package-first; postpone auth + push sinks; parse gate + shared TAC rule pack; research bulletin-aware default; scale worker replicas. Pending Ambiguity I-S008-package-first-scope (F7/F8 scope)"
       - "2026-07-12 D-S008-realtime-amend-q19q22 locked — Q19=A package APIs only (F7/F8 Planned docs; no worker/UI/auth/sinks build); Q20=B packages/iwxxm-validate + TAC validate pkg TBD; Q21=A bulletin split v1; Q22=A scoped brief then 01. I-S008-package-first-scope resolved."
       - "2026-07-12 scoped refresh completed — phase4 done; brief docs/context/realtime-tac-ingest.md active and indexed in docs/context/README.md; overall 00-context completed for this scoped refresh"
+      - "2026-07-13 S011 open — scoped_slug f7-operator-ui; Phase 0 completed, phase1a in_progress; F7 operator UI packaging (user-approved defaults)"
+      - "Phase 1A: frontend F6.e pickers exist; no spans; no decode API; no CodeMirror/Monaco; admin still live; convert hard-fails incomplete TAC"
+      - "Phase 2: contradictions — #697 vs F5 admin corpus; #694/#702 need new span schema vs api-contract unchanged validate shape"
   01-requirements:
     status: completed
     started_at: "2026-06-14T00:00:00Z"
@@ -1108,6 +1192,31 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S011-open-packaging
+    date: "2026-07-13"
+    timestamp: "2026-07-13"
+    stage: 00-context
+    skill: 00-context
+    skill_id: 00-context
+    session_id: S011-f7-operator-ui
+    decision: "S011 packaging: single session for F7+#694+#702+#665+#666+#697; routing full 00→01→02→04→05→07–13; #5 kept as parent tracker (user approved all defaults 2026-07-13)"
+    status: confirmed
+  - id: D-S010-close
+    date: "2026-07-13"
+    timestamp: "2026-07-13"
+    stage: close_session
+    skill: 00-context
+    skill_id: 00-context
+    session_id: S010-issue-655-tac-traceability
+    evolve_cycle_id: EV-007
+    decision: "closed S010 after prod Source TAC UI verification 2026-07-13 (user-approved)"
+    summary: >
+      Closed S010-issue-655-tac-traceability / EV-007 after prod Source TAC UI
+      verification 2026-07-13 (user-approved). #655 / PR #715 / prod smoke PASS.
+      active_session cleared; session_counter remains 10.
+    status: confirmed
+    related_pr: 715
+    related_issue: 655
   - id: D-S008-evolve-main-18-19
     date: "2026-07-12"
     timestamp: "2026-07-12"
@@ -2247,6 +2356,28 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/sessions/S011-f7-operator-ui/session-brief.md
+    kind: session-brief
+    session_id: S011-f7-operator-ui
+    stage: 00-context
+    created_at: "2026-07-13"
+    status: active
+  - path: docs/sessions/S011-f7-operator-ui/routing-plan.md
+    kind: routing-plan
+    session_id: S011-f7-operator-ui
+    stage: 00-context
+    created_at: "2026-07-13"
+    status: active
+  - path: docs/sessions/S010-issue-655-tac-traceability/reports/deploy-smoke.md
+    kind: deploy-smoke
+    session_id: S010-issue-655-tac-traceability
+    evolve_cycle_id: EV-007
+    stage: 13-deploy-smoke
+    created_at: "2026-07-13"
+    updated_at: "2026-07-13"
+    status: completed
+    overall: pass
+    note: "#655 / PR #715 / prod Source TAC smoke PASS"
   - path: docs/sessions/S008-general-tac-iwxxm-converter/reports/evolve-summary.md
     kind: evolve-summary
     session_id: S008-general-tac-iwxxm-converter
@@ -3458,9 +3589,10 @@ evolve_cycles:
     cycle_type: feature
     feature_ids: [F6]
     title: "Issue #655 — TAC traceability UX in conversion results"
-    status: in_progress
+    status: completed
     started: "2026-07-12"
-    completed: null
+    completed: "2026-07-13"
+    completed_at: "2026-07-13"
     scope_summary: |
       GitHub #655 — F6 UI delta: always show original TAC per conversion result in FileConverter
       (header snippet, derived label, prominent Source TAC, multi-line mapping). UI-only; prod API
@@ -3483,43 +3615,77 @@ evolve_cycles:
         - 03-plan-tooling
         - 05-verify-tech
         - 06-tech-tooling
-    current_stage: 00-context
+    current_stage: null
     stages:
       00-context:
-        status: in_progress
+        status: completed
         started: "2026-07-12"
-        completed: null
+        completed: "2026-07-13"
         artifacts_updated:
           - docs/context/issue-655-tac-traceability.md
           - docs/sessions/S010-issue-655-tac-traceability/session-brief.md
+      01-requirements:
+        status: completed
+        completed: "2026-07-13"
+      04-tech-plan:
+        status: completed
+        completed: "2026-07-13"
       16-evolve:
-        status: in_progress
+        status: completed
         started: "2026-07-12"
-        phase: 1
+        completed: "2026-07-13"
         notes:
           - "Phase 0–1 intake complete — F6 delta; lean routing; frontend deploy required"
+          - "Closed 2026-07-13 — PR #715 merged; prod Source TAC smoke PASS"
+      07-build:
+        status: completed
+        completed: "2026-07-13"
+      08-verify-build:
+        status: completed
+        completed: "2026-07-13"
+      09-qa:
+        status: completed
+        completed: "2026-07-13"
+      10-e2e:
+        status: completed
+        completed: "2026-07-13"
+      11-verify-impl:
+        status: completed
+        completed: "2026-07-13"
+      12-verify-deploy:
+        status: completed
+        completed: "2026-07-13"
+      13-deploy-smoke:
+        status: completed
+        completed: "2026-07-13"
+        note: "docs/sessions/S010-issue-655-tac-traceability/reports/deploy-smoke.md PASS"
     gates:
-      a_to_b: pending
-      b_to_c: pending
-      c_to_d: pending
-      deploy: pending
+      a_to_b: passed
+      b_to_c: passed
+      c_to_d: passed
+      deploy: passed
     checkpoints:
-      phase_a: pending
-      phase_b: pending
-      phase_c: pending
-      phase_d: pending
-      deploy: pending
+      phase_a: passed
+      phase_b: passed
+      phase_c: passed
+      phase_d: passed
+      deploy: passed
     artifacts:
       - path: docs/context/issue-655-tac-traceability.md
-        status: active
+        status: completed
       - path: docs/decisions/evolve-decisions.md
         status: updated
+      - path: docs/sessions/S010-issue-655-tac-traceability/reports/deploy-smoke.md
+        status: completed
+      - path: docs/sessions/S010-issue-655-tac-traceability/reports/execution-plan.md
+        status: completed
     issues:
       - https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/655
 
 git_history:
-  current_branch: evolve/EV-007-issue-655-tac-traceability
+  current_branch: main
   notes:
+    - "2026-07-13 D-S010-close — S010/EV-007 closed; #655 / PR #715 / prod smoke PASS; current_branch=main"
     - "2026-07-12 D-S008-evolve-main-18-19 — on-demand 18+19 for PR #711; PRM-015 commits ecdeac5 + 79af006; head_sha 79af006; squash-merge when CI green"
     - "2026-07-12 D-S008-EV006-close — close commit 2ac4093 recorded; pushed (or will be pushed with this follow-up)"
     - "2026-07-12 D-S008-EV006-merge-m4-m7 — feat/S008-M4-us-metar (#706), M5-products (#707), M6-worker (#708), M7-live (#709) merged into evolve"
@@ -3530,10 +3696,12 @@ git_history:
     - name: evolve/EV-007-issue-655-tac-traceability
       purpose: "EV-007 / #655 F6 TAC traceability UX"
       base: main
-      status: open
+      status: merged
       session_id: S010-issue-655-tac-traceability
       evolve_cycle_id: EV-007
       created_at: "2026-07-12"
+      merged_at: "2026-07-13"
+      note: "PR #715 merged; session closed"
     - name: fix/S009-result-card-dismiss
       purpose: "Dismiss conversion result card after Cancel/Remove"
       base: main
