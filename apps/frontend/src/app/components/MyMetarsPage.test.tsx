@@ -9,6 +9,7 @@ const mockDelete = vi.fn();
 const mockRestore = vi.fn();
 
 vi.mock('/utils/workSessionApi', () => ({
+  MY_METARS_PRODUCTS: ['metar', 'speci'],
   listWorkSessions: (...args: unknown[]) => mockList(...args),
   deleteWorkSession: (...args: unknown[]) => mockDelete(...args),
   restoreWorkSession: (...args: unknown[]) => mockRestore(...args),
@@ -17,6 +18,7 @@ vi.mock('/utils/workSessionApi', () => ({
 const sampleSession = (overrides: Partial<WorkSession> = {}): WorkSession => ({
   id: 'sess-1',
   user_id: 'user-1',
+  product: 'metar',
   status: 'draft',
   title: 'KJFK draft',
   manual_tac: 'METAR',
@@ -66,6 +68,7 @@ describe('MyMetarsPage', () => {
     });
     expect(mockList).toHaveBeenCalledWith('token', {
       status: undefined,
+      product: ['metar', 'speci'],
       include_deleted: false,
       limit: 50,
     });
@@ -109,6 +112,7 @@ describe('MyMetarsPage', () => {
     await waitFor(() => {
       expect(mockList).toHaveBeenLastCalledWith('token', {
         status: 'wip',
+        product: ['metar', 'speci'],
         include_deleted: false,
         limit: 50,
       });
@@ -132,6 +136,7 @@ describe('MyMetarsPage', () => {
     await waitFor(() => {
       expect(mockList).toHaveBeenLastCalledWith('token', {
         status: undefined,
+        product: ['metar', 'speci'],
         include_deleted: true,
         limit: 50,
       });

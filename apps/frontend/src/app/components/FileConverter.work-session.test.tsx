@@ -133,6 +133,7 @@ describe('FileConverter F5 workflow', () => {
           {
             id: 'sess-1',
             status: 'finished',
+            product: 'metar',
             title: 'KJFK',
             manual_tac: 'METAR KJFK',
             pending_files: [],
@@ -167,6 +168,7 @@ describe('FileConverter F5 workflow', () => {
           {
             id: 'sess-1',
             status: 'finished',
+            product: 'metar',
             title: 'KJFK',
             manual_tac: 'METAR KJFK',
             pending_files: [],
@@ -380,6 +382,7 @@ describe('FileConverter F5 workflow', () => {
           {
             id: 'sess-hydrate',
             status: 'wip',
+            product: 'metar',
             title: 'KJFK',
             manual_tac: 'METAR KJFK 121251Z 18012KT 10SM',
             pending_files: [{ name: 'pending.txt', content: 'METAR PENDING' }],
@@ -419,6 +422,7 @@ describe('FileConverter F5 workflow', () => {
           {
             id: 'sess-multi-line',
             status: 'wip',
+            product: 'metar',
             title: 'KJFK',
             manual_tac: '',
             pending_files: [],

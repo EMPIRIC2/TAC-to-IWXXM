@@ -13,6 +13,7 @@ vi.mock('/utils/workSessionApi', () => ({
 const sampleSession = (overrides: Partial<WorkSession> = {}): WorkSession => ({
   id: 'sess-1',
   user_id: 'user-abc',
+  product: 'metar',
   status: 'finished',
   title: 'KJFK finished',
   manual_tac: 'METAR',

@@ -1,8 +1,13 @@
 /**
- * Build F5 work-session API payloads from converter UI state.
+ * Build F5/F7 work-session API payloads from converter UI state.
  */
 
-import type { WorkSessionStatus, WorkSessionUpsertPayload } from '@metar/shared';
+import type {
+  WorkSessionProduct,
+  WorkSessionStatus,
+  WorkSessionUpsertPayload,
+} from '@metar/shared';
+import { resolveConvertProduct, type TacProductSelection } from './tacProduct';
 
 export interface ConvertedFileSnapshot {
   originalName: string;
@@ -22,11 +27,35 @@ export interface ConverterSnapshot {
   conversionParams: Record<string, unknown>;
 }
 
-const ICAO_RE = /\b(?:METAR|SPECI)\s+(?:COR\s+)?([A-Z]{4})\b/;
+const ICAO_RE = /\b(?:METAR|SPECI|TAF)\s+(?:COR\s+)?([A-Z]{4})\b/;
+
+const SESSION_PRODUCTS = new Set<WorkSessionProduct>([
+  'airmet',
+  'metar',
+  'sigmet',
+  'speci',
+  'taf',
+  'vaa',
+  'tca',
+]);
+
+/**
+ * Resolve top-level session ``product`` from converter params + TAC (lowercase).
+ */
+export function resolveSessionProduct(snapshot: ConverterSnapshot): WorkSessionProduct {
+  const raw = snapshot.conversionParams.product;
+  const selection =
+    typeof raw === 'string' && raw.trim()
+      ? (raw.trim() as TacProductSelection)
+      : 'auto';
+  const resolved = resolveConvertProduct(selection, snapshot.manualInput);
+  const lower = resolved.toLowerCase() as WorkSessionProduct;
+  return SESSION_PRODUCTS.has(lower) ? lower : 'metar';
+}
 
 export function extractSessionTitle(manualInput: string): string {
   const match = manualInput.match(ICAO_RE);
-  const icao = match?.[1] ?? 'METAR';
+  const icao = match?.[1] ?? 'TAC';
   const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ');
   return `${icao} · ${stamp}`;
 }
@@ -45,6 +74,7 @@ export function buildWorkSessionPayload(
 ): WorkSessionUpsertPayload {
   const payload: WorkSessionUpsertPayload = {
     title: extractSessionTitle(snapshot.manualInput),
+    product: resolveSessionProduct(snapshot),
     manual_tac: snapshot.manualInput,
     pending_files: snapshot.pendingFiles.map((file) => ({
       name: file.name,

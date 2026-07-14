@@ -43,6 +43,7 @@ describe('workSessionApi', () => {
     } as Response);
 
     await listWorkSessions('token-abc', {
+      product: ['metar', 'speci'],
       from: '2026-01-01',
       to: '2026-06-01',
       include_deleted: true,
@@ -50,7 +51,7 @@ describe('workSessionApi', () => {
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://api.test/api/v1/work-sessions?from=2026-01-01&to=2026-06-01&include_deleted=true&page=2',
+      'http://api.test/api/v1/work-sessions?product=metar%2Cspeci&from=2026-01-01&to=2026-06-01&include_deleted=true&page=2',
       expect.any(Object),
     );
   });

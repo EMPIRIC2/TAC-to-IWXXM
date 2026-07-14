@@ -13,6 +13,7 @@ vi.mock('/utils/workSessionApi', () => ({
 const sampleSession = (overrides: Partial<WorkSession> = {}): WorkSession => ({
   id: 'sess-1',
   user_id: 'user-1',
+  product: 'metar',
   status: 'wip',
   title: 'KDEN WIP',
   manual_tac: 'METAR',
@@ -51,7 +52,7 @@ describe('WorkHistorySidebar', () => {
       />,
     );
 
-    expect(screen.getByLabelText(/recent metar work sessions/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/recent work sessions/i)).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.getByText('KDEN WIP')).toBeInTheDocument();
     });

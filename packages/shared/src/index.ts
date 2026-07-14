@@ -24,6 +24,7 @@ export type {
   PendingFilePayload,
   WorkSession,
   WorkSessionListResponse,
+  WorkSessionProduct,
   WorkSessionStatus,
   WorkSessionUpsertPayload,
 } from './work-session';

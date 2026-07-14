@@ -152,6 +152,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
     const baseSession = {
       id: 'sess-stuck-card',
       status: 'wip' as const,
+      product: 'metar' as const,
       title: 'FAOR',
       manual_tac: '',
       pending_files: [],

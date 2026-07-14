@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { WorkSession, WorkSessionStatus } from '@metar/shared';
 import { ArrowLeft, Loader2, Trash2, RotateCcw } from 'lucide-react';
 import {
+  MY_METARS_PRODUCTS,
   deleteWorkSession,
   listWorkSessions,
   restoreWorkSession,
@@ -42,6 +43,7 @@ export function MyMetarsPage({
     try {
       const response = await listWorkSessions(accessToken, {
         status: statusFilter === 'all' ? undefined : statusFilter,
+        product: MY_METARS_PRODUCTS,
         include_deleted: includeDeleted,
         limit: 50,
       });

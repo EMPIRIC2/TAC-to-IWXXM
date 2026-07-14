@@ -27,6 +27,7 @@ describe('useWorkSessionSync', () => {
     mockCreate.mockResolvedValue({
       id: 'new-session',
       status: 'draft',
+      product: 'metar',
       title: 'KJFK',
       manual_tac: snapshot.manualInput,
       pending_files: [],
@@ -43,6 +44,7 @@ describe('useWorkSessionSync', () => {
     mockUpdate.mockResolvedValue({
       id: 'existing-session',
       status: 'draft',
+      product: 'metar',
       title: 'KJFK',
       manual_tac: snapshot.manualInput,
       pending_files: [],

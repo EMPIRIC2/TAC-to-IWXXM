@@ -55,7 +55,7 @@ export function WorkHistorySidebar({
   }, [accessToken]);
 
   return (
-    <Card className="p-4" aria-label="Recent METAR work sessions">
+    <Card className="p-4" aria-label="Recent work sessions">
       <div className="mb-3 flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
           <History className="h-4 w-4" aria-hidden="true" />
@@ -102,8 +102,9 @@ export function WorkHistorySidebar({
                   {session.title}
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {STATUS_LABEL[session.status] ?? session.status} ·{' '}
-                  {new Date(session.updated_at).toLocaleString()}
+                  {(STATUS_LABEL[session.status] ?? session.status) +
+                    ` · ${session.product.toUpperCase()} · ` +
+                    new Date(session.updated_at).toLocaleString()}
                 </div>
               </button>
             </li>

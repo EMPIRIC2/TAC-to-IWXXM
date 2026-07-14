@@ -95,6 +95,7 @@ vi.mock('./components/FileConverter', () => ({
             onSessionUpdated({
               id: 'sess-updated',
               user_id: 'user-1',
+              product: 'metar',
               status: 'wip',
               title: 'Updated',
               manual_tac: '',
@@ -129,6 +130,7 @@ vi.mock('./components/MyMetarsPage', () => ({
           onOpenSession({
             id: 'sess-history',
             user_id: 'user-1',
+            product: 'metar',
             status: 'draft',
             title: 'From history',
             manual_tac: 'METAR',
@@ -296,6 +298,7 @@ describe('App Component', () => {
     workSessionMocks.createWorkSession.mockResolvedValue({
       id: 'sess-new',
       user_id: 'user-1',
+      product: 'metar',
       status: 'draft',
       title: 'Draft',
       manual_tac: '',
@@ -393,7 +396,7 @@ describe('App Component', () => {
       window.history.pushState({}, '', '/');
     });
 
-    it('routes callback admin login to admin dashboard', async () => {
+    it('routes callback admin login to converter (admin dashboard removed)', async () => {
       const user = userEvent.setup();
       window.history.pushState({}, '', '/auth/callback');
 
@@ -401,7 +404,8 @@ describe('App Component', () => {
       expect(await screen.findByTestId('callback-view')).toBeInTheDocument();
 
       await user.click(screen.getByTestId('callback-login-admin'));
-      expect(await screen.findByTestId('admin-dashboard')).toBeInTheDocument();
+      expect(await screen.findByTestId('file-converter')).toBeInTheDocument();
+      expect(screen.queryByTestId('admin-dashboard')).not.toBeInTheDocument();
 
       window.history.pushState({}, '', '/');
     });
@@ -453,7 +457,7 @@ describe('App Component', () => {
       expect(screen.queryByTestId('admin-dashboard')).not.toBeInTheDocument();
     });
 
-    it('routes verify flow to admin for admin user', async () => {
+    it('routes verify flow to converter even for former admin flag', async () => {
       const user = userEvent.setup();
       render(<App />);
 
@@ -461,8 +465,8 @@ describe('App Component', () => {
       await user.click(screen.getByTestId('do-register'));
       await user.click(screen.getByTestId('verify-email-admin'));
 
-      expect(screen.getByTestId('admin-dashboard')).toBeInTheDocument();
-      expect(screen.queryByTestId('file-converter')).not.toBeInTheDocument();
+      expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+      expect(screen.queryByTestId('admin-dashboard')).not.toBeInTheDocument();
     });
 
     it('returns from verify view to login', async () => {
@@ -487,28 +491,23 @@ describe('App Component', () => {
       expect(screen.queryByTestId('admin-btn')).not.toBeInTheDocument();
     });
 
-    it('routes admin login users to admin view and supports switch to converter', async () => {
+    it('routes former admin-flag login to converter (no admin dashboard)', async () => {
       const user = userEvent.setup();
       render(<App />);
 
       await user.click(screen.getByTestId('do-admin-login'));
-      expect(screen.getByTestId('admin-dashboard')).toBeInTheDocument();
-
-      await user.click(screen.getByTestId('switch-converter'));
       expect(screen.getByTestId('file-converter')).toBeInTheDocument();
-      expect(screen.getByTestId('admin-btn')).toBeInTheDocument();
+      expect(screen.queryByTestId('admin-dashboard')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('admin-btn')).not.toBeInTheDocument();
     });
 
-    it('switches from converter back to admin dashboard', async () => {
+    it('does not expose switch-back-to-admin after login', async () => {
       const user = userEvent.setup();
       render(<App />);
 
       await user.click(screen.getByTestId('do-admin-login'));
-      await user.click(screen.getByTestId('switch-converter'));
-      await user.click(screen.getByTestId('admin-btn'));
-
-      expect(screen.getByTestId('admin-dashboard')).toBeInTheDocument();
-      expect(screen.queryByTestId('file-converter')).not.toBeInTheDocument();
+      expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+      expect(screen.queryByTestId('admin-btn')).not.toBeInTheDocument();
     });
 
     it('routes login to verify when login response requires verification', async () => {
@@ -534,12 +533,12 @@ describe('App Component', () => {
       expect(screen.getByTestId('login-view')).toBeInTheDocument();
     });
 
-    it('logs out from admin and returns to login', async () => {
+    it('logs out after former admin-flag login and returns to login', async () => {
       const user = userEvent.setup();
       render(<App />);
 
       await user.click(screen.getByTestId('do-admin-login'));
-      await user.click(screen.getByTestId('admin-logout'));
+      await user.click(screen.getByTestId('logout-btn'));
 
       expect(authServiceMocks.logout).toHaveBeenCalledTimes(1);
       expect(screen.getByTestId('login-view')).toBeInTheDocument();
@@ -589,6 +588,7 @@ describe('App Component', () => {
           {
             id: 'sess-resume',
             user_id: 'user-1',
+            product: 'metar',
             status: 'draft',
             title: 'Resume me',
             manual_tac: 'METAR',
