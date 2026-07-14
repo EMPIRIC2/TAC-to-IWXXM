@@ -16,9 +16,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M3 — Failed-TAC + preview |
-| **Active task** | T3.5 next (PR-M3) |
-| **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) + T3.1–T3.4 |
+| **Active milestone** | M4 — Live workbench (next) |
+| **Active task** | T4.1 next |
+| **Tasks completed** | M1 (code uncommitted) + M2 (T2.1–T2.8) + M3 (T3.1–T3.5) |
 | **Last updated** | 2026-07-14 |
 
 ## Tech Stack Summary (S011 delta)
@@ -117,7 +117,7 @@
 | T3.2 | Impl: tac2iwxxm soft-preview hooks + backend `preview` form flag | Impl | completed | api-contract | T3.1 |
 | T3.3 | Test: Failed-TAC visual cue in editor/results | Test | completed | UJ-016 | T3.2 |
 | T3.4 | Impl: Failed-TAC cue + wire preview control in UI | Impl | completed | #665/#666 | T3.3 |
-| T3.5 | PR-M3: preview + Failed-TAC | PR | in_progress | — | T3.2–T3.4 |
+| T3.5 | PR-M3: preview + Failed-TAC | PR | completed | — | T3.2–T3.4 |
 
 ---
 
@@ -189,7 +189,7 @@
 |----|------|-------|--------|
 | PR-M1 | Minor | Admin removal | pending |
 | PR-M2 | Minor | Decode + CodeMirror | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716 |
-| PR-M3 | Minor | Preview + Failed-TAC | pending |
+| PR-M3 | Minor | Preview + Failed-TAC | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/717 |
 | PR-M4 | Minor | Live workbench | pending |
 | PR-M5 | Minor | Unified sessions | pending |
 | PR-EV-008 | Major | Evolve → main | pending |
