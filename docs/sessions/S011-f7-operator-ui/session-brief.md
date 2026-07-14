@@ -6,13 +6,14 @@ branch: evolve/S011-f7-operator-ui
 started_at: 2026-07-13
 intent: "F7 multi-product TAC operator UI (7 products) + workbench (#694), decode panel (#702), failed-TAC/partial UX (#665/#666), remove admin / BYO DB (#697); #5 kept as parent tracker"
 orchestrator: 16-evolve
-evolve_cycle_id: null
+evolve_cycle_id: EV-008
 context_briefs:
   - docs/context/f7-operator-ui.md
 standing_docs_touched: []
 phase3_resolutions:
   R1: "milestone #697 → #702/spans → #665/#666 → #694"
-  R2: "multi-product F7 sessions in v1 (F5 stays METAR/SPECI)"
+  R2: "OVERRIDDEN by R2′ — unified tac_work_sessions + migrate F5 (was: separate F7 table; F5 METAR-only)"
+  R2_prime: "unified tac_work_sessions; migrate metar_work_sessions; My METARs = filter"
   R3: "CodeMirror 6"
   R4: "decode-tac + lint/validate start/end spans"
   R5: "soft-fail preview with best-effort XML + failed markers"
@@ -40,7 +41,7 @@ evolve cycle:
 ### In scope
 
 - Multi-product operator entry UX on top of existing F6.e product/profile pickers
-- **Multi-product F7 work sessions** (new model; F5 table stays METAR/SPECI-only) — R2
+- Multi-product F7 work sessions via **unified** `tac_work_sessions` (R2′; migrate F5) — F5 My METARs stays a METAR/SPECI filter
 - Decode/annotate API + UI panel (#702)
 - Span-aware validation/lint expansion + workbench UX (#694)
 - Failed-TAC visual + partial/best-effort convert path (#665/#666)
@@ -50,7 +51,7 @@ evolve cycle:
 
 ### Out of scope
 
-- Quietly extending **F5** `metar_work_sessions` to all products (use F7 sessions instead)
+- Quietly extending **F5** as a permanent parallel store (rejected — R2′ unify + migrate)
 - AMHS/SWIM/AFS, push sinks (F8 non-goals)
 - Teaching/CMS content beyond short decode explanations (#702 v1)
 - Per-user paste-keys UI; rewriting conversion engines beyond span/decode/partial hooks
@@ -61,7 +62,7 @@ evolve cycle:
 2. #702 decode + spans (+ CodeMirror 6)  
 3. #665/#666 failed-TAC + partial preview  
 4. #694 live workbench  
-5. F7 multi-product sessions (R2)  
+5. F7 unified sessions + F5 migrate (R2′)  
 6. Verify & deploy (08–13)
 
 ## Feature mapping

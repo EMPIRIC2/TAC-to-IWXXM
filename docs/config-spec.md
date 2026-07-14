@@ -1,8 +1,8 @@
 # Configuration Specification
 
 > **Project**: METAR to IWXXM Converter  
-> **Last updated**: 2026-07-12 (S008 F6 section)  
-> **Session**: S003-supabase-keys-config (base); S008-general-tac-iwxxm-converter (F6 delta)
+> **Last updated**: 2026-07-13 (S011 / EV-008 — BYO + deprecate ADMIN_*)  
+> **Session**: S003-supabase-keys-config (base); S008; S011-f7-operator-ui
 
 ## Precedence Order
 
@@ -14,6 +14,13 @@ Configuration values resolve in this order (highest priority first):
 
 **Secrets never belong in `config/*.json`.** Publishable keys load from env at runtime and are
 injected into the frontend bootstrap config by the deploy pipeline.
+
+## BYO credentials (S011 / R6 / #697)
+
+Operators configure **their** Supabase project URL (in `config/*.json`) and inject **their**
+`SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, and `DATABASE_URL` via deploy/env. There is
+**no** in-app paste-keys UI and **no** shared multi-tenant admin product surface. Example URLs in
+committed `config/prod.json` / docs reflect the current deploy — not a fixed product tenancy.
 
 ## Configuration Files
 
@@ -27,7 +34,7 @@ injected into the frontend bootstrap config by the deploy pipeline.
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `environment` | string | Yes | `"prod"` |
-| `api.baseUrl` | string (URL) | Yes | Public API origin (`/api/v1`, `/auth`, `/admin`) |
+| `api.baseUrl` | string (URL) | Yes | Public API origin (`/api/v1`, `/auth`) — **no** `/admin` |
 | `api.frontendUrl` | string (URL) | Yes | Public static site URL (auth redirects) |
 | `api.corsOrigins` | string[] | Yes | Allowed browser origins for API CORS |
 | `api.disableAuth` | boolean | Yes | `false` in production |
@@ -83,26 +90,40 @@ Minimal `.env.example` — copy to repo-root `.env`:
 
 | Variable | Required | Description | Source |
 |----------|----------|-------------|--------|
-| `SUPABASE_PUBLISHABLE_KEY` | Yes | `sb_publishable_*` — client + server JWT validation | Supabase → API Keys |
-| `SUPABASE_SECRET_KEY` | Yes | `sb_secret_*` — Auth Admin API only (`create_admin_user.py`) | Supabase → API Keys |
-| `DATABASE_URL` | Yes | Postgres pooler URL | Supabase → Database → Connect |
-| `ADMIN_EMAIL` | Local only | Operator bootstrap user | Operator |
-| `ADMIN_PASSWORD` | Local only | Operator bootstrap password | Operator |
+| `SUPABASE_PUBLISHABLE_KEY` | Yes* | `sb_publishable_*` — client + server JWT validation | Operator Supabase → API Keys |
+| `SUPABASE_SECRET_KEY` | Yes* | `sb_secret_*` — Auth Admin API scripts only | Operator Supabase → API Keys |
+| `DATABASE_URL` | Yes* | Postgres pooler / SQL URI | Operator Supabase → Database → Connect |
 | `METAR_CONFIG_ENV` | No | `local` \| `prod` — selects `config/*.json` | Default `local` |
+| `E2E_USER_EMAIL` | Live tests | Ordinary user for `POST /auth/login` in live harness | Operator test user |
+| `E2E_USER_PASSWORD` | Live tests | Password for that user | Operator |
+
+\* Required when `api.disableAuth` / auth is enabled for that environment.
+
+### Deprecated / removed (S011)
+
+| Name | Status | Replacement |
+|------|--------|-------------|
+| `ADMIN_EMAIL` | **Deprecated — remove** | `E2E_USER_EMAIL` (live/E2E login only; not an admin role) |
+| `ADMIN_PASSWORD` | **Deprecated — remove** | `E2E_USER_PASSWORD` |
+| Product `/admin/*` APIs | **Removed** | — |
+
+`create_admin_user.py` / bootstrap scripts (if retained) must not imply a shared multi-tenant
+admin dashboard; prefer documenting operator Supabase dashboard invite policy (G2).
 
 ### Deprecated aliases (read with warning; remove after one release)
 
 | Deprecated | Canonical |
 |------------|-----------|
 | `SUPABASE_ANON_KEY` | `SUPABASE_PUBLISHABLE_KEY` |
-| `SUPABASE_SERVICE_ROLE_KEY` | `SUPABASE_SECRET_KEY` |
+| `SUPABASE_SERVICE_ROLE_KEY` | `SUPABASE_SECRET_KEY` (API Auth Admin scripts) — **F8 worker** still uses service role under its own worker env name per env-contract |
 | `VITE_SUPABASE_URL` | `config.*.supabase.url` + runtime `/config.json` |
 | `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | `SUPABASE_PUBLISHABLE_KEY` via runtime config |
 | `VITE_API_BASE_URL` | `config.*.api.baseUrl` |
 | `VITE_APP_URL` | `config.*.api.frontendUrl` |
 | `METAR_CORS_ORIGINS` | `config.*.api.corsOrigins` |
-| `DISABLE_AUTH` | `config.*.api.disableAuth` |
+| `DISABLE_AUTH` | `config.*.api.disableAuth` (env alias may remain for local shell) |
 | `FRONTEND_VITE_*` (GitHub secrets) | `SUPABASE_PUBLISHABLE_KEY` / URL in config |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` |
 
 ## CLI / Makefile
 
@@ -140,9 +161,25 @@ use runtime `/config.json` — no new `VITE_*` required.
 
 **`.env.example`**: Unchanged for F6.
 
+## F7 — operator UI / BYO (S011 / EV-008)
+
+No new `config/*.json` keys for decode/preview/spans. **No new secrets** for F7 APIs.
+
+| Concern | Where it lives | Notes |
+|---------|----------------|-------|
+| BYO Supabase / Postgres | `config.*.supabase.url` + env secrets | Operator-owned; clean cut (G3) |
+| Admin UI / `/admin` | Removed | UJ-019 / TC-F7-006 |
+| Live harness login | `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Replaces `ADMIN_*` |
+| Workbench debounce | Frontend code | Not config |
+| CodeMirror 6 | Frontend dependency | See dependency-inventory |
+
+**Connectivity**: Live workbench increases browser→API call volume; keep CORS correct; H4–H5 gates
+apply. Redeploy API before frontend when contract changes.
+
 ### Session changelog
 
 - S008 (2026-07-12): F6 — no new config/env; profile default in code; hard cutover
+- S011 / EV-008 (2026-07-13): BYO; deprecate `ADMIN_*` → `E2E_USER_*`; drop `/admin` from baseUrl docs
 
 ## References
 
@@ -150,6 +187,8 @@ use runtime `/config.json` — no new `VITE_*` required.
 - [env-sync-runbook.md](ops/env-sync-runbook.md) — operator rotation steps
 - [ADR-010](adr/ADR-010-supabase-keys-config-split.md)
 - [ADR-014](adr/ADR-014-tac2iwxxm-rust-gifts-removal.md)
+- [ADR-020](adr/ADR-020-unified-tac-work-sessions.md)
+- [ADR-021](adr/ADR-021-byo-credentials-admin-removal.md)
 - [deploy.md](deploy.md) §Integration
 - [api-contract.md](api-contract.md)
 - Supabase: [API keys](https://supabase.com/docs/guides/api/api-keys)

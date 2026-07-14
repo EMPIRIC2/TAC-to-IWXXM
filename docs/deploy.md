@@ -49,7 +49,7 @@ F8 worker shares packages with the API image family but is a **separate** Render
 
 | Field | Description |
 |-------|-------------|
-| `api.baseUrl` | HTTPS URL of metar-api (`/api/v1`, `/auth`, `/admin`) |
+| `api.baseUrl` | HTTPS URL of metar-api (`/api/v1`, `/auth`) — **no** `/admin` |
 | `api.frontendUrl` | Public static site URL (auth redirects) |
 | `api.corsOrigins` | Allowed browser origins |
 | `api.disableAuth` | `false` in production |
@@ -78,12 +78,13 @@ F8 worker shares packages with the API image family but is a **separate** Render
 | `LIVE_API_URL` | `config/prod.json` → `liveE2e.apiUrl` (override via env optional) |
 | `LIVE_FRONTEND_URL` | `config/prod.json` → `liveE2e.frontendUrl` |
 | `PLAYWRIGHT_BASE_URL` | Same as `LIVE_FRONTEND_URL` for H6 |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Local `.env` only |
+| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Local `.env` / CI — ordinary user for live login (replaces `ADMIN_*`) |
 
 JWT via `POST ${LIVE_API_URL}/auth/login` — no long-lived tokens in `.env`.
 
-**Deprecated** (one-release shim): `VITE_*`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
-`METAR_CORS_ORIGINS`, `FRONTEND_URL`, `DISABLE_AUTH`, `STAGING_*`, `E2E_*`.
+**Deprecated** (one-release shim): `VITE_*`, `SUPABASE_ANON_KEY` (frontend),
+`METAR_CORS_ORIGINS`, `FRONTEND_URL`, `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
+(`SUPABASE_SERVICE_ROLE_KEY` remains canonical for **F8 worker** writers per env-contract.)
 
 Operator sync: [env-sync-runbook.md](ops/env-sync-runbook.md). Verify: `make env-check`.
 
@@ -213,12 +214,12 @@ make test-live                # H4–H5 → H3 → H6
 
 | Tier | What | Command | Required env |
 |------|------|---------|--------------|
-| H3 | Live API smoke | `make test-live-api` | `LIVE_API_URL`, `ADMIN_*` |
+| H3 | Live API smoke | `make test-live-api` | `LIVE_API_URL`, `E2E_USER_*` (when auth on) |
 | H0c | CORS policy (in-process) | `pytest apps/backend/tests/unit/test_cors_policy.py` | — |
 | H0i | API integration | `pytest apps/backend/tests/integration` | local stack |
 | H4 | Live CORS preflight | `make test-live-connectivity` | `LIVE_API_URL`, `LIVE_FRONTEND_URL` |
 | H5 | Frontend bundle URLs | `make test-live-connectivity` | `LIVE_FRONTEND_URL`, `VITE_API_BASE_URL` |
-| H6 | Live Playwright | `make test-live-e2e` | `PLAYWRIGHT_BASE_URL`, `ADMIN_*` |
+| H6 | Live Playwright | `make test-live-e2e` | `PLAYWRIGHT_BASE_URL`, `E2E_USER_*` |
 
 ### Post-deploy sequence
 
@@ -230,7 +231,7 @@ make test-live                # H4–H5 → H3 → H6
    export LIVE_FRONTEND_URL="https://metar-to-iwxxm-frontend-v4-web.onrender.com"
    export PLAYWRIGHT_BASE_URL="${LIVE_FRONTEND_URL}"
    export VITE_API_BASE_URL="${LIVE_API_URL}"
-   # ADMIN_EMAIL / ADMIN_PASSWORD from .env
+   # E2E_USER_EMAIL / E2E_USER_PASSWORD from .env (when auth enabled)
    make test-live
    ```
 

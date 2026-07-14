@@ -2,8 +2,8 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Version**: monorepo + F6 tac2iwxxm + validate packages (S008 amend)
-> **Last updated**: 2026-07-12
+> **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
+> **Last updated**: 2026-07-13
 
 ## Overview
 
@@ -12,24 +12,26 @@ to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via `packages/tac-validate`
 validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron) against authoritative WMO
 and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`. The system is a
 **single-git monorepo** with `apps/` (deployables), `packages/` (libraries), and `vendor/`
-(read-only upstream snapshots). **F7** (multi-product operator entry) remains **Planned**.
-**F8** (near-realtime ingest worker) is **built this cycle** (ADR-018).
+(read-only upstream snapshots). **F7** (multi-product operator UI / sessions) is **built this
+cycle** (S011 / EV-008). **F8** (near-realtime ingest worker) is **Implemented** (ADR-018/019).
+Credentials are **BYO** (operator-owned Supabase + Postgres/`DATABASE_URL` via deploy env).
 
 ## System Architecture
 
-### Runtime (post–F6 cutover; this amend)
+### Runtime (post–F6 cutover; F7 operator UI this cycle)
 
 ```
-Browser
-   │
+Browser (CodeMirror 6 workbench)
+   │  debounce + AbortController (JWT)
    ▼
 apps/frontend (static — Render static site or Vite dev)
+   │  convert UI + decode panel + F7 sessions — no /admin
    │  VITE_* / runtime config → API base URL
    ▼
 apps/backend (FastAPI — Render web service)
-   ├── packages/auth (Supabase JWT middleware, inlined)
-   ├── packages/tac-validate (TAC lint / rules)
-   ├── packages/tac2iwxxm (TAC → IWXXM; bulletin split; product + profile)
+   ├── packages/auth (Supabase JWT; /admin/* removed — #697)
+   ├── packages/tac-validate (TAC lint; optional start/end spans)
+   ├── packages/tac2iwxxm (convert; decode segments; soft-preview)
    ├── packages/iwxxm-validate (XSD + Schematron; F2 engine)
    └── vendor/schemas/{iwxxm*, iwxxm-us} (read-only)
 
@@ -38,7 +40,8 @@ apps/worker (Render Background Worker — F8)
 ```
 
 `packages/gifts` is **absent** after the first PR that wires tac2iwxxm to `/api/v1/convert`
-(ADR-014).
+(ADR-014). Operator deploy env supplies **BYO** Supabase URL/keys and optional
+`DATABASE_URL` / Postgres URI (R6 / #697).
 
 ### Repository (target tree)
 
@@ -74,7 +77,7 @@ metar-to-IWXXM/
 | Component | Purpose | Location | Dependencies |
 |-----------|---------|----------|--------------|
 | Backend API | Conversion, validation, auth (thin wrappers) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, auth, shared, vendor |
-| Frontend | User UI (product/profile/version) | `apps/frontend/` | shared (types) |
+| Frontend | Operator UI (workbench, decode, F7 sessions) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase middleware | `packages/auth/` | supabase-py |
 | tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles) | `packages/tac2iwxxm/` | tac-validate (optional), vendor; PyO3 required at cutover (ADR-017) |
@@ -89,17 +92,24 @@ metar-to-IWXXM/
 
 ### apps/backend
 
-- **Purpose**: Single HTTP API for health, conversion, validation, and authentication.
-- **Inputs**: HTTP multipart/form (TAC + `product` + `profile` + version), JWT bearer tokens, env config.
-- **Outputs**: JSON responses, IWXXM XML, auth session endpoints.
+- **Purpose**: Single HTTP API for health, conversion, validation, lint, decode, soft-preview,
+  auth, and F5/F7 work sessions. **No** `/admin/*` product surface after F7.a (#697).
+- **Inputs**: HTTP multipart/JSON (TAC + `product` + `profile` + version; decode/lint bodies),
+  JWT bearer tokens, env config (BYO Supabase + optional `DATABASE_URL`).
+- **Outputs**: JSON responses, IWXXM XML, auth session endpoints, span-aware issue lists,
+  decode segments, soft-preview payloads.
 - **Algorithm**:
-  1. Auth middleware validates JWT via Supabase (`packages/auth`).
+  1. Auth middleware validates JWT via Supabase (`packages/auth`); local/CI may use
+     `DISABLE_AUTH` (G1).
   2. Conversion router may run **`tac-validate`**, then **`tac2iwxxm`** (bulletin split when
-     needed) via adapters (replaces `gifts_adapter` in the gifts-delete PR — ADR-014).
-  3. Validation router is a **thin wrapper** over **`packages/iwxxm-validate`** (WMO; combined
-     WMO + iwxxm-us when `profile=iwxxm_us`).
-- **Error handling**: HTTP 4xx for auth/validation; 5xx for conversion failures with structured errors.
-- **Source**: REQ-004; F6 / ADR-014; S008 realtime amend.
+     needed); soft-preview path returns best-effort IWXXM + failed-span markers (exact route
+     shape in api-contract / 04).
+  3. Validation / lint routers are **thin wrappers** over **`iwxxm-validate`** /
+     **`tac-validate`**; issue objects may include optional integer `start`/`end`.
+  4. Decode router (`POST /api/v1/decode-tac`) wraps tac2iwxxm decode/annotate segments.
+- **Error handling**: HTTP 4xx for auth/validation; 5xx for conversion failures with structured
+  errors; soft-preview is not a hard 5xx for parse failures when preview mode is selected.
+- **Source**: REQ-004; F6 / ADR-014; S011 / EV-008.
 
 ### packages/tac2iwxxm
 
@@ -109,6 +119,9 @@ metar-to-IWXXM/
 - **Products (v1)**: AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA.
 - **Inputs**: TAC string/files **or bulletins**; `product`; `profile`; `iwxxm_version`; schema paths under vendor.
 - **Outputs**: IWXXM XML bytes/strings (per report); metrics reports in tests/CI only (not convert API fields).
+- **S011 deltas**: Decode/annotate ordered segments (`start`/`end` + short explanation);
+  soft-preview / partial convert hooks returning best-effort XML + failed spans. VAA/TCA spans
+  may be best-effort with explicit residuals (G4).
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
@@ -116,16 +129,17 @@ metar-to-IWXXM/
   chosen in 04-tech-plan.
 - **Source**: [feature-list.md](feature-list.md) F6; ADR-013; ADR-014;
   [context/general-tac-iwxxm-converter.md](context/general-tac-iwxxm-converter.md);
-  [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md).
+  [context/f7-operator-ui.md](context/f7-operator-ui.md).
 
 ### packages/tac-validate
 
 - **Purpose**: TAC linting and shared **business-rule pack** for all seven product TAC forms
   (parse gate + rules). **Not** Schematron.
 - **Inputs**: TAC text or bulletin fragments; product hint when known.
-- **Outputs**: Structured issue list (severity, code, message, location).
+- **Outputs**: Structured issue list (severity, code, message, location; optional integer
+  `start`/`end` character offsets for editor highlight — S011).
 - **SoC**: **No** FastAPI or Supabase imports.
-- **Source**: feature-list F6/F2 amend; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md).
+- **Source**: feature-list F6/F2 amend; S011 / EV-008.
 
 ### packages/iwxxm-validate
 
@@ -159,78 +173,110 @@ metar-to-IWXXM/
 
 ### apps/frontend
 
-- **Purpose**: Converter UI and auth screens.
-- **F6 delta**: **Product** select (7 values + auto-detect), **profile** select
-  (`annex3` | `iwxxm_us`), existing **version** control; values passed via
-  `conversion_params` / multipart to `/api/v1/convert`.
-- **F5**: Unchanged — METAR/SPECI work sessions only (not extended to other products in F6 v1).
-- **Source**: F6-R5; feature-list F6.
+- **Purpose**: Operator converter UI (product/profile/version), CodeMirror 6 workbench, decode
+  panel, Failed-TAC / soft-preview UX, F5 My METARs, and F7 multi-product sessions. **No**
+  AdminDashboard or `/admin/*` routes after F7.a.
+- **F6 delta**: Product select (7 values + auto-detect), profile select (`annex3` | `iwxxm_us`),
+  version control; values passed via `conversion_params` / multipart to `/api/v1/convert`.
+- **F7 delta (S011)**: Debounced JWT calls to lint/decode/validate/preview with AbortController;
+  span highlight + hover; collapsible Code|Explanation decode panel; toggleable live IWXXM;
+  pull-up console; F7 session persist/resume (separate from F5).
+- **F5**: Unchanged product scope — METAR/SPECI work sessions only (not extended to other
+  products); admin browse path removed.
+- **Source**: F6-R5; feature-list F6/F7; [context/f7-operator-ui.md](context/f7-operator-ui.md).
 
 ### Runtime configuration (`config/`)
 
 - **Purpose**: Non-secret per-environment settings (URLs, CORS, validation flags).
 - **Files**: `config/local.json`, `config/prod.json` (committed).
 - **Frontend**: Static host serves `/config.json` (prod copy + publishable key injected at deploy).
-- **Source**: [config-spec.md](config-spec.md), S003 session.
+- **BYO (R6)**: Operator deploy env supplies Supabase URL/keys and optional Postgres/`DATABASE_URL`;
+  no in-app paste-keys UI.
+- **Source**: [config-spec.md](config-spec.md), S003 session; S011 / EV-008.
 
-### F5 — User METAR work history (S004 / EV-004)
+### F5 — User METAR work history (S004 / EV-004; unified under F7 in S011)
 
 - **Purpose**: Durable per-user converter **work history** (current session state, not an
   append-only audit log) in Supabase Postgres, linked to `auth.users` via RLS; exposed through
   backend REST (not direct browser DB access).
-- **Table** (proposed): `metar_work_sessions`
-  - `user_id`, `status` (`draft` | `wip` | `finished` | `failed`)
-  - `title` (auto ICAO + time; user-renamable)
+- **Canonical table (S011 / R2′)**: `tac_work_sessions` with `product` covering all seven F6
+  products. Existing `metar_work_sessions` rows **migrate** to `tac_work_sessions`
+  (`product` = `metar` | `speci`); `metar_work_sessions` deprecated then dropped after cutover.
+- **Columns** (product-generalized from F5):
+  - `user_id`, `product`, `status` (`draft` | `wip` | `finished` | `failed`)
+  - `title` (auto ICAO + time / product hint; user-renamable)
   - `manual_tac`, `pending_files` JSONB (name + inline TAC content)
   - `converted_results`, `errors`, `issues`, `conversion_params` JSONB
-  - `kv_upload_key` (nullable — set when send succeeds)
+  - `kv_upload_key` (nullable — set when send succeeds; METAR/SPECI and any product that already supports Upload)
   - `deleted_at` (nullable — soft delete / trash)
   - `created_at`, `updated_at`
-- **RLS**: `auth.uid() = user_id` for user CRUD; admin read via `is_admin()` policy; `service_role` for pg_cron Draft purge.
-- **Business rules**: Unchanged from S004 (see prior F5 section history in decisions log).
-- **F6**: Do not extend F5 to non-METAR products in v1.
-- **Frontend**: Debounced draft sync (~3s); converter sidebar (**5 recent**) + `/history` (My METARs);
-  `/admin/work-sessions` read-only admin browse; #555 error log panel.
-- **Source**: F5 requirements delta 2026-06-23; [metar-work-history.md](context/metar-work-history.md)
+- **RLS**: `auth.uid() = user_id` for user CRUD; `service_role` for pg_cron Draft purge.
+  **Admin read via `is_admin()` is removed** with F7.a / #697.
+- **Business rules**: Same Draft/WIP/Finished/Failed lifecycle as S004 F5 (WIP uniqueness per user
+  applies across products unless 04 says otherwise — default: **one WIP per user total**).
+- **Frontend**: Debounced draft sync (~3s); converter sidebar (**5 recent**, all products or
+  filtered); **My METARs** = filter `product IN (metar, speci)` on unified table; workbench
+  history lists all products; #555 error log panel; **no** `/admin/work-sessions`.
+- **Migration**: One-time copy + dual-read/dual-write window as needed; finalize in 04-tech-plan;
+  no silent dual-table forever.
+- **Source**: F5 requirements delta 2026-06-23; [metar-work-history.md](context/metar-work-history.md);
+  S011 Spec Batch 2 A (R2′ override).
 
-### F7 — Multi-product operator entry (Planned)
+### F7 — Multi-product operator UI / sessions (S011 / EV-008)
 
-- **Purpose**: Operator UI / sessions for all seven F6 products sharing the unified pipeline below.
-- **Status**: **Planned — not this build**. F5 remains METAR/SPECI-only.
-- **Source**: [feature-list.md](feature-list.md) F7; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md).
+- **Purpose**: Operator UI for all seven F6 products — workbench, decode, soft-preview,
+  Failed-TAC cue — plus **unified work sessions** on `tac_work_sessions` (R2′). Built this cycle.
+- **Status**: **Planned (build-ready)** — flips Implemented after verify/deploy gate.
+- **Slices**: F7.a #697 → F7.b #702 → F7.c #665/#666 → F7.d #694 → F7.e unified sessions migrate →
+  F7.f verify.
+- **Sessions (R2′)**: Single canonical `tac_work_sessions` table (see F5 section). F5 My METARs
+  becomes a product filter; do **not** keep a parallel F7-only sessions table.
+- **API companions**: `POST /api/v1/decode-tac`; lint/validate `start`/`end`; soft-preview convert;
+  session CRUD retargeted to unified table (route names may keep F5 paths for METAR UX or
+  generalize — finalize in api-contract / 04).
+- **Editor**: CodeMirror 6.
+- **BYO / admin**: Deploy-env credentials only; AdminDashboard deleted; clean cut for former
+  shared-project users (G3).
+- **ADR**: Document R2′ unified sessions + F5 migration (new ADR in 01 ADR pass).
+- **Source**: [feature-list.md](feature-list.md) F7; [context/f7-operator-ui.md](context/f7-operator-ui.md);
+  D-S011-01-spec-r2-prime.
 
-### F8 — Near-realtime ingest (Planned)
+### F8 — Near-realtime ingest (Implemented)
 
-- **Purpose**: Continuous ingest → unified pipeline → store + push; quarantine on fail;
-  &lt;5–15s target; scale workers. Future dashed component: Render Background Worker.
-- **Status**: **Planned — not this build**. Auth, sinks, AMHS/SWIM adapters postponed.
-- **Source**: [feature-list.md](feature-list.md) F8; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md).
+- **Purpose**: Continuous ingest → unified pipeline → store; quarantine on fail;
+  &lt;5–15s target; scale workers via Render Background Worker (`apps/worker/`).
+- **Status**: **Implemented** (S008 / EV-006 — ADR-018/019). Live staging smoke may be deferred.
+- **Non-goals (still)**: AMHS/SWIM/AFS adapters; public machine-ingest auth UX; push sinks.
+- **Source**: [feature-list.md](feature-list.md) F8; ADR-018.
 
 ## Data Flow
 
-### Unified convert/validate pipeline (API now; F7/F8 later)
+### Unified convert/validate pipeline (API + F7 UI + F8 worker)
 
 | Stage | Input | Transformation | Output |
 |-------|-------|----------------|--------|
 | 0. Unit | TAC or WMO AHL bulletin | Detect / accept | Ingest unit |
 | 1. Split | Bulletin | `tac2iwxxm` bulletin splitter | One TAC report each |
-| 2. TAC lint | TAC report | `tac-validate` | Issues or pass |
-| 3. Convert | TAC + product + profile + version | `tac2iwxxm` | IWXXM XML |
-| 4. IWXXM validate | IWXXM XML (+ profile) | `iwxxm-validate` (XSD + Schematron) | Pass or fail report |
+| 2. TAC lint | TAC report | `tac-validate` (+ optional spans) | Issues or pass |
+| 2b. Decode | TAC report | `tac2iwxxm` decode segments | Ordered Code\|Explanation |
+| 3. Convert | TAC + product + profile + version | `tac2iwxxm` (hard or soft-preview) | IWXXM XML (+ failed markers) |
+| 4. IWXXM validate | IWXXM XML (+ profile) | `iwxxm-validate` (XSD + Schematron) | Pass or fail report (+ optional spans) |
 | 5a. API path | Results | Backend JSON | UI / client |
-| 5b. F8 later | Pass | Store + push | Published artifact |
+| 5b. F8 | Pass | Store (no push sinks in v1) | Published artifact |
 | 5c. F8 fail | Fail | Quarantine (no publish) | Error record |
 
-### UI / session overlay (current)
+### UI / session overlay (F7 workbench + F5)
 
 | Stage | Input | Transformation | Output |
 |-------|-------|----------------|--------|
-| U1. Upload | TAC files/text + product/profile/version | Frontend form | POST /api/v1/convert |
+| U1. Edit | TAC text/files + product/profile/version | CodeMirror workbench | Live editor state |
+| U1b. Live assist | Editor text (debounced) | POST lint / decode (/ preview) | Spans + decode rows + Failed-TAC cue |
 | U2. Auth | JWT | packages/auth middleware | Authorized request context |
-| U3–U4 | — | Unified pipeline stages 0–4 | IWXXM + validation |
-| U5. Display | JSON response | Frontend render | Copy/download UI |
-| U6. Persist (F5) | TAC + results + errors | Backend upsert → Postgres | Session row (Draft/WIP/Finished/Failed) |
-| U7. Send link (F5) | KV upload success | Store `kv_upload_key` on session | Finished status |
+| U3–U4 | Convert / validate | Unified pipeline stages 0–4 | IWXXM + validation |
+| U5. Display | JSON response | Frontend render | Copy/download + Source TAC + console |
+| U6. Persist | Any of 7 products + results | Backend upsert → `tac_work_sessions` | Draft/WIP/Finished/Failed |
+| U6b. My METARs | Filter view | `product IN (metar, speci)` | F5 UX preserved |
+| U7. Send link | KV upload success | Store `kv_upload_key` on session | Finished status |
 
 ## Monorepo Migration
 
@@ -269,25 +315,33 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
   `packages/iwxxm-validate`.
 - After F6 cutover PR: no `packages/gifts` in the tree; API must not import gifts.
 - Schematron applies to **IWXXM only**; TAC quality uses `tac-validate`.
-- F7 not required for this cycle; F8 worker **is** in scope (ADR-018).
+- F7 is **in scope** this cycle (S011 / EV-008); F8 worker remains in tree (ADR-018).
 - PyO3 native extension + ADR-016 benches hard-pass before F6 cutover (ADR-017).
 
 ### Assumptions
 
 - wmo-im continues publishing tagged releases on GitHub.
 - NOAA/MDL continues to publish IWXXM-US schemas suitable for vendor pinning.
-- Supabase auth model unchanged; only service topology / converter package changes.
+- Auth remains Supabase JWT; topology is BYO (operator project + keys) after #697 — not a
+  shared multi-tenant admin product.
+- Local/CI may continue `DISABLE_AUTH` patterns (G1).
 
 ## Security & Privacy
 
 - Supabase **publishable** key available to browser via runtime `/config.json`; **secret** key
   server-only (`SUPABASE_SECRET_KEY`) — Auth Admin scripts only (ADR-010).
-- Admin API routes use caller JWT + RLS (`is_admin()`), not secret-key bypass.
+- **Admin API / `is_admin()` product surface removed** (F7.a / #697). Session RLS is
+  `auth.uid() = user_id` only for F5/F7 user data.
 - CORS from `config.*.api.corsOrigins` on backend.
-- Minimal `.env` — five secrets; `make env-check` validates sync across local/Render/CI.
+- Minimal `.env` — operator-owned secrets (BYO); `make env-check` validates sync across
+  local/Render/CI.
 - Vendor trees (WMO + IWXXM-US) are public schema data — **no new secrets** for F6 packages.
 - F8 worker adds secrets: poller HTTPS URL + Supabase **service role** JWT (ADR-018).
-- TAC/IWXXM still flow through existing API auth model (guest convert policy unchanged).
+- TAC/IWXXM still flow through existing API auth model (guest convert policy unchanged unless
+  tightened in 04); workbench live calls use JWT when persistence or gated endpoints require it.
+- Signup / invite policy is the **operator’s Supabase project setting** (G2) — app does not add
+  invite gates.
+- Former shared-project data is **not** migrated by the product (G3).
 
 ## Performance Characteristics
 
@@ -298,6 +352,8 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 | Batch file upload (10 files) | < 10s | Depends on size |
 | SIGMET / AIRMET / VAA / TCA / US-profile | TBD | May exceed METAR until measured (04) |
 | Vendor sync PR | Minutes | CI job; not user-facing |
+| Live lint/decode (debounced) | &lt; 500ms typical target | Abort in-flight; measure in 04 |
+| Soft-preview convert | TBD | May exceed hard convert; UI must cancel |
 
 ## Known Limitations
 
@@ -308,8 +364,10 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 - PyO3 is **required before cutover** (ADR-017); pure Python may exist during M3–M4 only.
 - Accuracy metrics are library/CI only — not exposed on convert API responses in v1.
 - Scheduled vendor PRs require review before production pins update.
-- F5 not extended to non-METAR products in F6 v1.
-- F7, public machine-ingest auth, push sinks, AMHS/SWIM — out of this build (F8 worker in).
+- F5 not extended as a permanent parallel store — unified `tac_work_sessions` (R2′); My METARs
+  is a product filter after migration.
+- VAA/TCA decode may be residual-heavy in v1 (G4).
+- Public machine-ingest auth, push sinks, AMHS/SWIM — out of scope (see feature-list Non-Goals).
 
 ## Documentation layout
 
@@ -346,3 +404,6 @@ Standing doc updates during a session use **delta commits** on the session branc
   dashed F8 worker; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md)
 - S008 05 (2026-07-12): F8 worker in-tree; PyO3 cutover gate; iwxxm-us HTTP 3.0 pin; three Render
   services (D-S008-05-batch1)
+- S011 / EV-008 (2026-07-13): F7 operator UI architecture; BYO + admin removal; decode/spans/
+  soft-preview; CodeMirror workbench; **R2′** unified `tac_work_sessions` + F5 migrate;
+  F8 status sync

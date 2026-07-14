@@ -1,8 +1,8 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-12 (S008 F6 delta)
-> **Delta**: Monorepo migration M4 — auth merged; F6 tac2iwxxm convert product/profile
+> **Last updated**: 2026-07-13 (S011 / EV-008 — F7 decode/spans/preview/unified sessions)
+> **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API (decode, spans, soft-preview, BYO)
 
 ## Base URLs
 
@@ -12,7 +12,7 @@
 | Render | `https://<frontend-host>` | `https://<api-host>` |
 
 **Post-migration change**: Auth endpoints move from separate `:8003` service to same host as backend.
-Frontend uses single `VITE_API_BASE_URL` for `/api/v1/*`, `/auth/*`, and `/admin/*`.
+Frontend uses single API base for `/api/v1/*` and `/auth/*`. **`/admin/*` removed** (S011 / #697).
 
 ## Services
 
@@ -54,7 +54,7 @@ GET  /auth/health
 
 **Migration note**: Paths preserved for frontend compatibility; proxy config simplified.
 
-### Admin (packages/auth — same host post-migration)
+### Admin — Removed (S011 / #697)
 
 ```
 GET  /admin/settings
@@ -62,14 +62,14 @@ POST /admin/settings
 GET  /admin/all-users
 GET  /admin/stats
 POST /admin/toggle-admin
+GET  /admin/work-sessions
 ```
 
-**Auth**: Supabase JWT; Bearer token required. Caller must have `user_profiles.is_admin = true`.
-Server uses the caller's JWT with **publishable key** + existing RLS policies (`is_admin()`).
-`SUPABASE_SECRET_KEY` is **not** used for routine admin routes — reserved for Auth Admin API
-scripts only (ADR-010).
+**Status**: **Removed** from product surface. Prefer **HTTP 404** (or equivalent not-found) for these
+paths. No `is_admin()` caller requirement for routine product APIs. `SUPABASE_SECRET_KEY` remains
+Auth Admin / bootstrap scripts only (ADR-010). Operator credentials are **BYO** via deploy env.
 
-**Note**: Settings are stored in-process (not durable across deploys); see PR #679.
+---
 
 ### Conversion
 
@@ -77,8 +77,8 @@ scripts only (ADR-010).
 POST /api/v1/convert
 ```
 
-**Auth**: Required unless `DISABLE_AUTH=true` (dev only). Guests may convert when that policy applies;
-work-session persistence still requires JWT.
+**Auth**: Required unless `DISABLE_AUTH=true` (dev/CI — G1). Guests may convert when that policy
+applies; work-session persistence still requires JWT.
 
 **Request** (multipart/form-data **only** for product/profile — not read from JSON body):
 
@@ -90,14 +90,26 @@ work-session persistence still requires JWT.
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
 | `iwxxm_version` | no | app default | Vendored pin (e.g. `2025-2`) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
+| `preview` | no | `false` | Soft-preview mode (S011) — see below |
 
 \* At least one of `files` or `manual_text` required (unchanged).
 
 **Notes**:
 - Auto-detect is **UI-side only**; API rejects missing `product` with **400**.
-- F5 may **store** `product`/`profile` in `conversion_params` for UI restore; on submit the UI
+- Sessions may **store** `product`/`profile` in `conversion_params` for UI restore; on submit the UI
   **copies** them into multipart fields.
 - No `engine` field; converter is always `tac2iwxxm` after cutover.
+
+**Soft-preview (`preview=true`)** — S011 / #666:
+
+- HTTP **200** allowed when parse/convert is partial; response may include best-effort IWXXM,
+  `ok: false`, and `failed_spans: [{ start, end, code?, message? }]`.
+- Does **not** imply Schematron-passed publish; hard convert (default) keeps existing failure
+  HTTP semantics.
+- Prefer this flag over a separate `/preview-convert` route (D-S011-01-api-A).
+
+**S011 spans on convert issues/errors** (when present): optional integer `start` / `end` alongside
+existing string fields.
 - No metrics object on the response (library/CI only).
 - **Single-report only**: WMO AHL **bulletins** use `POST /api/v1/convert-bulletin` (below).
 
@@ -213,7 +225,14 @@ POST /api/v1/lint-tac
 {
   "ok": false,
   "issues": [
-    {"severity": "error", "code": "rule_x", "message": "...", "location": "wind"}
+    {
+      "severity": "error",
+      "code": "rule_x",
+      "message": "...",
+      "location": "wind",
+      "start": 12,
+      "end": 18
+    }
   ],
   "fixes": [
     {"code": "normalize_wind", "message": "...", "replacement": "12010KT"}
@@ -221,7 +240,43 @@ POST /api/v1/lint-tac
 }
 ```
 
-Must support TC-F6-031.
+`start` / `end` are optional integer character offsets (S011 / #694/#702). `location` string retained
+for back-compat.
+
+Must support TC-F6-031 and TC-F7-004 span highlight.
+
+### Decode TAC (S011 / #702)
+
+```
+POST /api/v1/decode-tac
+```
+
+**Purpose**: Ordered TAC decode/annotate segments for the Code \| Explanation panel.
+
+**Auth**: Same as convert (unless `DISABLE_AUTH=true`).
+
+**Request** (multipart/form-data; JSON body alternative deferred to 04 if needed):
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `manual_text` or `files` | yes | TAC text |
+| `product` | yes* | Same enum as convert (*API may accept omit only if 04 specifies auto — default: required) |
+
+**Response**:
+
+```json
+{
+  "product": "metar",
+  "segments": [
+    {"start": 0, "end": 5, "code": "METAR", "explanation": "Report type"}
+  ],
+  "residuals": [
+    {"start": 80, "end": 95, "text": "..."}
+  ]
+}
+```
+
+VAA/TCA may be residual-heavy (G4). Must support TC-F7-002.
 
 ### Validation
 
@@ -234,10 +289,13 @@ POST /api/v1/validate
 **Request**: Existing body/content-type **plus** optional `profile` (`annex3` default |
 `iwxxm_us`). When US, validation uses combined WMO + iwxxm-us catalogs.
 
-**Response**: Unchanged pass/fail + messages shape.
-### Work sessions (F5 — S004 / EV-004)
+**Response**: Pass/fail + messages; each issue may include optional integer `start` / `end`
+(S011) when the validator can map to TAC or XML offsets — otherwise omit.
 
-All routes require Bearer JWT unless noted. User routes enforce RLS via caller JWT.
+### Work sessions (F5+F7 — unified `tac_work_sessions`, ADR-020)
+
+All routes require Bearer JWT unless noted. User routes enforce RLS via caller JWT
+(`auth.uid() = user_id`). Storage: **`tac_work_sessions`** after F7.e migration.
 
 ```
 GET    /api/v1/work-sessions
@@ -248,13 +306,15 @@ DELETE /api/v1/work-sessions/{id}
 POST   /api/v1/work-sessions/{id}/restore
 ```
 
-**Query params** (`GET` list): `status`, `from`, `to`, `include_deleted` (trash view), `page`, `limit`.
+**Query params** (`GET` list): `status`, `product`, `from`, `to`, `include_deleted` (trash view),
+`page`, `limit`. My METARs UI passes `product=metar,speci` (or equivalent filter).
 
 **Request body** (`POST` / `PATCH`):
 
 ```json
 {
   "title": "optional — default auto ICAO + timestamp",
+  "product": "metar",
   "manual_tac": "string",
   "pending_files": [{ "name": "file.tac", "content": "METAR ..." }],
   "converted_results": [],
@@ -266,12 +326,16 @@ POST   /api/v1/work-sessions/{id}/restore
 }
 ```
 
+`product` is **required** on create (and when changing product). Prefer top-level `product`
+matching `conversion_params.product`.
+
 **Response** (`WorkSession`):
 
 ```json
 {
   "id": "uuid",
   "user_id": "uuid",
+  "product": "metar",
   "status": "draft",
   "title": "KJFK 2026-06-23",
   "manual_tac": "...",
@@ -292,22 +356,14 @@ POST   /api/v1/work-sessions/{id}/restore
 | From | Event | To |
 |------|-------|-----|
 | — | Auto-save / create | draft |
-| draft / failed | Convert success (no send) | wip (reject if another wip exists) |
+| draft / failed | Convert success (no send) | wip (**reject if another wip exists — one WIP per user total**) |
 | draft / failed | Convert failure | failed |
 | wip | Send success | finished (+ kv_upload_key) |
 | wip | Send failure | wip (unchanged — user may retry) |
 | any | User soft-delete | deleted_at set |
 | deleted | Restore within 30 days | deleted_at cleared |
 
-**Admin** (read-only, `is_admin()`):
-
-```
-GET /admin/work-sessions
-```
-
-Same list shape with `user_email` or profile fields; no mutate endpoints in v1.
-
-**Admin UI**: Dedicated admin page consumes this endpoint; not a toggle on My METARs.
+**Admin work-sessions list**: **Removed** (`GET /admin/work-sessions` — see Admin section).
 
 **Guest users**: Work-session routes require JWT. Unauthenticated users may call `/api/v1/convert`
 but receive no session persistence until login. On first authenticated request after login, if the
@@ -322,10 +378,11 @@ resume logic runs.
 | `Access-Control-Allow-Methods` | GET, POST, OPTIONS |
 | `Access-Control-Allow-Headers` | Authorization, Content-Type |
 
-Preflight: `OPTIONS` on `/api/v1/*`, `/auth/*`, and `/admin/*`.
+Preflight: `OPTIONS` on `/api/v1/*` and `/auth/*` (admin paths no longer product surface).
 
-F6 product/profile fields do **not** change CORS headers. Frontend and API remain different
-origins on Render; configure `config.*.api.corsOrigins` accordingly.
+F6/F7 fields do **not** change CORS headers. Frontend and API remain different origins on Render;
+configure `config.*.api.corsOrigins` accordingly. Live workbench increases request volume
+(debounce/Abort on client — H4–H5 still required).
 
 ## Error Format
 
@@ -335,8 +392,9 @@ origins on Render; configure `config.*.api.corsOrigins` accordingly.
 }
 ```
 
-Convert responses may also carry `errors` / `issues` with optional `code` (see Conversion).
-HTTP status codes: 400 / 422 / 5xx as documented for F6; other routes unchanged.
+Convert responses may also carry `errors` / `issues` / `failed_spans` with optional `code` /
+`start` / `end` (see Conversion). HTTP status codes: 400 / 422 / 5xx as documented for F6; soft-preview
+uses **200** with structured partial failure when `preview=true`.
 
 ## Frontend Integration
 
@@ -345,8 +403,8 @@ key injected from `SUPABASE_PUBLISHABLE_KEY`).
 
 | Config field | Purpose |
 |--------------|---------|
-| `api.baseUrl` | API + auth base (`/api/v1`, `/auth`, `/admin`) |
-| `supabase.url` | Supabase project URL |
+| `api.baseUrl` | API + auth base (`/api/v1`, `/auth`) — **no** `/admin` |
+| `supabase.url` | Supabase project URL (operator BYO) |
 | `supabase.publishableKey` | Client-side Supabase auth (injected at deploy) |
 
 **Deprecated**: `VITE_API_BASE_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`,
@@ -357,13 +415,19 @@ key injected from `SUPABASE_PUBLISHABLE_KEY`).
 - Convert: `product` required; `profile` optional (default `annex3`); multipart-only for those fields
 - No gifts dual-run / no `engine` parameter
 
+**Breaking / additive (F7 / S011)**:
+- `/admin/*` removed
+- `POST /api/v1/decode-tac` added
+- `preview` on `/convert`; optional `start`/`end` on lint/validate issues
+- Work sessions: top-level `product`; storage `tac_work_sessions`; no admin list
+
 OpenAPI / shared TS codegen remains planned (P1); this contract is the requirements SoT until then.
 
 ## References
 
 - docs/guides/API.md (detailed examples — update paths during implementation)
 - docs/deploy.md §Integration
-- ADR-014; [ADR-015](adr/ADR-015-validate-packages-bulletin-api-f7-f8.md)
+- ADR-014; [ADR-015](adr/ADR-015-validate-packages-bulletin-api-f7-f8.md); [ADR-020](adr/ADR-020-unified-tac-work-sessions.md)
 
 ### Session changelog
 
@@ -372,3 +436,5 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
   `POST /api/v1/convert-bulletin` (multi-result TBD 04); `/convert` single-report only
 - S008 04 (2026-07-12): bulletin multi-result schema; lint-tac multipart-only; lint default on;
   ADR-016–018
+- S011 / EV-008 (2026-07-13): admin removed; decode-tac; spans; convert `preview`; unified
+  work-sessions `product` (ADR-020)
