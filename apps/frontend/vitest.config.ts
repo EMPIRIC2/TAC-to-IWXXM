@@ -25,8 +25,9 @@ export default defineConfig({
         'tests/',
         '**/*.d.ts',
         '**/*.spec.ts',
-        // CodeMirror decoration field/tooltip wiring — covered via normalize + EditorView smoke
+        // CodeMirror editor shell / decoration field — covered by TacEditor + span unit smokes
         'src/utils/tacEditorSpans.ts',
+        'src/app/components/TacEditor.tsx',
       ],
       thresholds: {
         lines: 98,
