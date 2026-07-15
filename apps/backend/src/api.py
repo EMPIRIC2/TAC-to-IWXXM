@@ -379,6 +379,28 @@ def split_manual_entries(manual_text: str) -> List[str]:
     return [line.strip() for line in manual_text.splitlines() if line.strip()]
 
 
+def manual_entries_with_offsets(manual_text: str) -> List[Tuple[str, int]]:
+    """Split like ``split_manual_entries`` with start offsets into the original buffer.
+
+    Offsets point at the first non-whitespace character of each kept line so
+    soft-preview ``failed_spans`` can be remapped onto the full editor document.
+    """
+    if not manual_text:
+        return []
+    out: List[Tuple[str, int]] = []
+    offset = 0
+    for line in manual_text.splitlines(keepends=True):
+        raw = line[:-1] if line.endswith("\n") else line
+        if raw.endswith("\r"):
+            raw = raw[:-1]
+        stripped = raw.strip()
+        if stripped:
+            lead = len(raw) - len(raw.lstrip())
+            out.append((stripped, offset + lead))
+        offset += len(line)
+    return out
+
+
 async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Optional[str]]:
     """Read uploaded text file using strict UTF-8 decoding with a size limit.
 
@@ -397,7 +419,19 @@ async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Op
     name = (upload_file.filename or "").lower()
     if name.endswith(".gz") or name.endswith(".gzip") or raw_bytes[:2] == b"\x1f\x8b":
         try:
-            raw_bytes = gzip.decompress(raw_bytes)
+            import io
+
+            # Cap inflate size during decompression (avoid gzip bombs).
+            inflated = bytearray()
+            with gzip.GzipFile(fileobj=io.BytesIO(raw_bytes), mode="rb") as gz:
+                while True:
+                    chunk = gz.read(64 * 1024)
+                    if not chunk:
+                        break
+                    inflated.extend(chunk)
+                    if len(inflated) > max_upload_bytes:
+                        return None, f"decompressed file too large (limit {max_upload_bytes} bytes)"
+            raw_bytes = bytes(inflated)
         except OSError as exc:
             return None, f"gzip decompress failed ({exc})"
         if len(raw_bytes) > max_upload_bytes:
@@ -1565,17 +1599,27 @@ async def convert(
     preview_failed_spans: List[FailedSpan] = []
     preview_saw_soft_fail = False
 
-    def absorb_soft_preview(soft: dict) -> None:
-        """Merge soft-preview envelope fields from convert_metar_tac_with_metadata."""
+    def absorb_soft_preview(soft: dict, *, base_offset: int = 0) -> None:
+        """Merge soft-preview envelope fields from convert_metar_tac_with_metadata.
+
+        ``base_offset`` shifts entry-local span offsets into the original
+        ``manual_text`` buffer (multi-line editor documents).
+        """
         nonlocal preview_saw_soft_fail
         if not preview or not soft:
             return
         if soft.get("ok") is False:
             preview_saw_soft_fail = True
             for span in soft.get("failed_spans") or []:
-                preview_failed_spans.append(FailedSpan(**span))
+                data = span.model_dump() if hasattr(span, "model_dump") else dict(span)
+                if base_offset:
+                    if data.get("start") is not None:
+                        data["start"] = int(data["start"]) + base_offset
+                    if data.get("end") is not None:
+                        data["end"] = int(data["end"]) + base_offset
+                preview_failed_spans.append(FailedSpan(**data))
 
-    def record_preview_layer12_soft_fail(aggregated_result, tac_text: str = "") -> None:
+    def record_preview_layer12_soft_fail(aggregated_result, tac_text: str = "", *, base_offset: int = 0) -> None:
         """Mark soft-preview Layer 1–2 failure and copy spans when present (ADR-022)."""
         nonlocal preview_saw_soft_fail
         preview_saw_soft_fail = True
@@ -1589,8 +1633,8 @@ async def convert(
                         continue
                     preview_failed_spans.append(
                         FailedSpan(
-                            start=int(start),
-                            end=int(end),
+                            start=int(start) + base_offset,
+                            end=int(end) + base_offset,
                             code=getattr(validation_issue, "code", None),
                             message=str(getattr(validation_issue, "message", "") or "") or None,
                         )
@@ -1598,8 +1642,8 @@ async def convert(
         if len(preview_failed_spans) == before and tac_text:
             preview_failed_spans.append(
                 FailedSpan(
-                    start=0,
-                    end=len(tac_text),
+                    start=base_offset,
+                    end=base_offset + len(tac_text),
                     code="LAYER12_SOFT_FAIL",
                     message="Input failed ICAO/TAC Layer 1–2 checks; soft-preview continuing",
                 )
@@ -1677,7 +1721,8 @@ async def convert(
     if request_body is not None and request_body.metars:
         metars_list = request_body.metars
 
-    manual_entries = split_manual_entries(manual_text)
+    manual_with_offsets = manual_entries_with_offsets(manual_text or "")
+    manual_entries = [entry for entry, _ in manual_with_offsets]
 
     request_metadata = {
         "bulletin_id": bulletin_id,
@@ -1879,16 +1924,17 @@ async def convert(
                 )
                 results.append(result)
 
-                # Log successful translation
+                # Log successful (or soft-preview partial) translation
                 try:
                     end_time = time.perf_counter()
                     duration_ms = int(round((end_time - start_time) * 1000))
+                    soft_incomplete = bool(preview and soft_preview_buf.get("ok") is False)
 
                     translation_id = await statistics_service.log_translation(
                         tac_message=metar_text.strip(),
                         iwxxm_output=iwxxm_content,
                         iwxxm_version=iwxxm_version,
-                        translation_status=TranslationStatus.SUCCESS,
+                        translation_status=(TranslationStatus.FAILED if soft_incomplete else TranslationStatus.SUCCESS),
                         validation_layers_passed=validation_layers_passed,
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code(normalized_metar_text),
@@ -1896,13 +1942,21 @@ async def convert(
                     )
 
                     airport_code = extract_airport_code(normalized_metar_text)
-                    await webhook_service.notify_translation_completed(
-                        translation_id=translation_id,
-                        airport_code=airport_code or "UNKNOWN",
-                        iwxxm_version=iwxxm_version,
-                        file_size_bytes=len(iwxxm_content.encode("utf-8")),
-                        duration_ms=duration_ms,
-                    )
+                    if soft_incomplete:
+                        await webhook_service.notify_translation_failed(
+                            translation_id=translation_id,
+                            airport_code=airport_code or "UNKNOWN",
+                            error_type="soft_preview_partial",
+                            error_message="Soft-preview conversion incomplete",
+                        )
+                    else:
+                        await webhook_service.notify_translation_completed(
+                            translation_id=translation_id,
+                            airport_code=airport_code or "UNKNOWN",
+                            iwxxm_version=iwxxm_version,
+                            file_size_bytes=len(iwxxm_content.encode("utf-8")),
+                            duration_ms=duration_ms,
+                        )
                 except Exception as log_err:
                     logger.error(f"Failed to log successful translation: {log_err}")
 
@@ -1971,9 +2025,9 @@ async def convert(
             if stop_on_error:
                 break
 
-    for manual_index, manual_entry in enumerate(manual_entries, 1):
+    for manual_index, (manual_entry, entry_offset) in enumerate(manual_with_offsets, 1):
         total_inputs += 1
-        manual_source = f"manual_input_{manual_index}" if len(manual_entries) > 1 else "manual_input"
+        manual_source = f"manual_input_{manual_index}" if len(manual_with_offsets) > 1 else "manual_input"
         manual_name = f"{manual_source}.txt"
         start_time = None
         translation_id = None
@@ -1996,7 +2050,9 @@ async def convert(
                         add_aggregated_validation_issues(manual_source, validation_result)
                         if preview:
                             # ADR-022: soft-preview continues to best-effort convert.
-                            record_preview_layer12_soft_fail(validation_result, _normalized_entry)
+                            record_preview_layer12_soft_fail(
+                                validation_result, _normalized_entry, base_offset=entry_offset
+                            )
                         else:
                             errors.append(f"{manual_source}: Validation failed - {validation_summary}")
                             try:
@@ -2032,7 +2088,7 @@ async def convert(
                     code="VALIDATION_SERVICE_ERROR",
                 )
                 if preview:
-                    record_preview_layer12_soft_fail(None, _normalized_entry)
+                    record_preview_layer12_soft_fail(None, _normalized_entry, base_offset=entry_offset)
                 else:
                     errors.append(f"{manual_source}: {str(ve)}")
                     try:
@@ -2075,7 +2131,7 @@ async def convert(
                 preview=preview,
                 soft_preview_out=soft_preview_buf if preview else None,
             )
-            absorb_soft_preview(soft_preview_buf)
+            absorb_soft_preview(soft_preview_buf, base_offset=entry_offset)
             if preview and soft_preview_buf.get("ok") is False:
                 add_issue(
                     source=manual_source,
@@ -2113,11 +2169,12 @@ async def convert(
                     }
 
             try:
+                soft_incomplete = bool(preview and soft_preview_buf.get("ok") is False)
                 translation_id = await statistics_service.log_translation(
                     tac_message=manual_entry,
                     iwxxm_output=xml_text,
                     iwxxm_version=iwxxm_version,
-                    translation_status=TranslationStatus.SUCCESS,
+                    translation_status=(TranslationStatus.FAILED if soft_incomplete else TranslationStatus.SUCCESS),
                     validation_layers_passed=layers_passed,
                     validation_errors=validation_errors_dict if validation_errors_dict else None,
                     translation_duration_ms=duration_ms,
@@ -2126,13 +2183,21 @@ async def convert(
                 )
                 airport_code = extract_airport_code(manual_entry)
                 icao_region = get_icao_region(airport_code) if airport_code else "UNKNOWN"
-                await webhook_service.notify_translation_success(
-                    translation_id=translation_id,
-                    airport_code=airport_code or "UNKNOWN",
-                    icao_region=icao_region,
-                    iwxxm_version=iwxxm_version,
-                    duration_ms=duration_ms,
-                )
+                if soft_incomplete:
+                    await webhook_service.notify_translation_failed(
+                        translation_id=translation_id,
+                        airport_code=airport_code or "UNKNOWN",
+                        error_type="soft_preview_partial",
+                        error_message="Soft-preview conversion incomplete",
+                    )
+                else:
+                    await webhook_service.notify_translation_success(
+                        translation_id=translation_id,
+                        airport_code=airport_code or "UNKNOWN",
+                        icao_region=icao_region,
+                        iwxxm_version=iwxxm_version,
+                        duration_ms=duration_ms,
+                    )
             except Exception as log_err:
                 logger.error(f"Failed to log successful translation: {log_err}")
 
@@ -2352,26 +2417,35 @@ async def convert(
                         )
                         validation_errors_dict = {"validation_error": str(ve)}
 
-                # Log successful translation
+                # Log successful (or soft-preview partial) translation
                 try:
+                    soft_incomplete = bool(preview and soft_preview_buf.get("ok") is False)
                     translation_id = await statistics_service.log_translation(
                         tac_message=(data or "").strip(),
                         iwxxm_output=xml_text,
                         iwxxm_version=iwxxm_version,
-                        translation_status=TranslationStatus.SUCCESS,
+                        translation_status=(TranslationStatus.FAILED if soft_incomplete else TranslationStatus.SUCCESS),
                         validation_layers_passed=layers_passed,
                         validation_errors=validation_errors_dict if validation_errors_dict else None,
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code((data or "").strip()),
                         user_id=user.get("sub"),
                     )
-                    await webhook_service.notify_translation_success(
-                        translation_id=translation_id,
-                        airport_code=extract_airport_code((data or "").strip()) or "UNKNOWN",
-                        icao_region=get_icao_region(extract_airport_code((data or "").strip()) or "ZZZZ"),
-                        iwxxm_version=iwxxm_version,
-                        duration_ms=duration_ms,
-                    )
+                    if soft_incomplete:
+                        await webhook_service.notify_translation_failed(
+                            translation_id=translation_id,
+                            airport_code=extract_airport_code((data or "").strip()) or "UNKNOWN",
+                            error_type="soft_preview_partial",
+                            error_message="Soft-preview conversion incomplete",
+                        )
+                    else:
+                        await webhook_service.notify_translation_success(
+                            translation_id=translation_id,
+                            airport_code=extract_airport_code((data or "").strip()) or "UNKNOWN",
+                            icao_region=get_icao_region(extract_airport_code((data or "").strip()) or "ZZZZ"),
+                            iwxxm_version=iwxxm_version,
+                            duration_ms=duration_ms,
+                        )
                 except Exception as log_err:
                     logger.error(f"Failed to log successful translation: {log_err}")
 
