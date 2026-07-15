@@ -1,9 +1,12 @@
 ---
 session_id: S012-empty-bearer-lint-tac
 type: hotfix
-status: in_progress
+status: completed
 branch: fix/S012-empty-bearer-lint-tac
 started_at: 2026-07-15
+completed_at: 2026-07-15
+pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/721
+merge_sha: 6412b21
 intent: "Production frontend sends Authorization: Bearer with empty token to POST /api/v1/lint-tac and /decode-tac → Missing authorization credentials; also lint-tac UI shows only '[lint-tac] N issue(s)' without descriptive issue details"
 orchestrator: 14-hotfix
 evolve_cycle_id: null
@@ -12,6 +15,10 @@ standing_docs_touched: []
 ---
 
 # Session S012 — Empty Bearer lint-tac / decode-tac + lint UX
+
+> **Completed 2026-07-15** — BUG-2026-07-15 resolved; PR [#721](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/721)
+> merged (`6412b21`); production verified; Cursor rule
+> `frontend-auth-token-hydrate.mdc` approved.
 
 ## Intent
 

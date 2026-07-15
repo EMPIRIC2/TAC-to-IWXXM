@@ -5,10 +5,18 @@ project:
   output_directory: docs/
 
 session_counter: 12
-active_session:
-  id: S012-empty-bearer-lint-tac
+active_session: null
+
+sessions:
+
+- id: S012-empty-bearer-lint-tac
   type: hotfix
-  status: in_progress
+  status: completed
+  completed_at: "2026-07-15"
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/721
+  pr_number: 721
+  merge_sha: 6412b21
+  close_note: "BUG-2026-07-15 resolved; PR #721 merged 6412b21; production verified; Cursor rule frontend-auth-token-hydrate.mdc"
   branch: fix/S012-empty-bearer-lint-tac
   started_at: "2026-07-15"
   intent: "Production frontend sends Authorization: Bearer with empty token to POST /api/v1/lint-tac and /decode-tac → Missing authorization credentials; also lint-tac UI shows only '[lint-tac] N issue(s)' without descriptive issue details"
@@ -27,15 +35,15 @@ active_session:
   - stage: 14-hotfix
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: "2026-07-15"
-    note: "Empty Bearer on lint-tac/decode-tac + lint UX issue details"
+    completed: "2026-07-15"
+    note: "BUG-2026-07-15 resolved; PR #721 merged 6412b21; production verified; Cursor rule frontend-auth-token-hydrate.mdc"
   skipped_stages:
   - stage: 15-service-health
     rationale: "User approved 14-only routing; 15 not in plan"
-  current_stage: 14-hotfix
+  current_stage: null
 
-sessions:
 
 - id: S011-f7-operator-ui
   type: feature
@@ -1459,12 +1467,15 @@ stages:
       S003 keys + redeploy required before 13"
 
   14-hotfix:
-    status: in_progress
+    status: completed
     session_id: S012-empty-bearer-lint-tac
     current_bug: docs/bug-reports/BUG-2026-07-15-empty-bearer-lint-tac.md
-    bug_status: verifying
+    bug_status: resolved
     remediation_path: local-first
-    note: "Fix committed 77d5f40; opening PR"
+    note: "BUG-2026-07-15 resolved; PR #721 merged 6412b21; production verified; Cursor rule frontend-auth-token-hydrate.mdc"
+    completed_at: "2026-07-15"
+    pr_number: 721
+    merge_sha: 6412b21
     notes:
     - "2026-07-15 — S012-empty-bearer-lint-tac open (empty Bearer on lint-tac/decode-tac + lint UX issue details); cleared stale S009 pointer."
     - "2026-07-12 — Docs reorg via /14-hotfix rejected (not a bug/hotfix); deferred until S006 complete (S006-R4)."
@@ -1563,6 +1574,14 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S012-frontend-auth-token-hydrate
+  date: "2026-07-15"
+  stage: 14-hotfix
+  skill_id: 14-hotfix
+  session_id: S012-empty-bearer-lint-tac
+  decision: "Approve Cursor rule frontend-auth-token-hydrate.mdc — hydrate JWT from persist before lint-tac/decode-tac Authorization headers"
+  summary: "S012 empty-Bearer hotfix; rule prevents regression after reload."
+  timestamp: "2026-07-15"
 - id: D-S011-PR716-19-assumed
   date: "2026-07-15"
   stage: 19-address-pr-review
@@ -4670,8 +4689,9 @@ evolve_cycles:
   issues: []
 
 git_history:
-  current_branch: fix/S012-empty-bearer-lint-tac
+  current_branch: main
   notes:
+  - "2026-07-15 S012 closed — BUG resolved; PR #721 merged 6412b21; production verified; active_session cleared"
   - "2026-07-15 S012-empty-bearer-lint-tac open — branch fix/S012-empty-bearer-lint-tac; S011 paused (PR #716 remains open)"
   - "2026-07-14 S011/EV-008 PR-EV-008=#716 open (evolve→main; NO merge, NO deploy); tip dc32d47; T6.4 in_progress (12 done / 13 pending)"
   - "2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first)"
@@ -4697,9 +4717,13 @@ git_history:
   - name: fix/S012-empty-bearer-lint-tac
     purpose: "Empty Bearer auth on lint-tac/decode-tac + lint UX issue details"
     base: main
-    status: open
+    status: merged
     created_at: "2026-07-15"
+    merged_at: "2026-07-15"
     session_id: S012-empty-bearer-lint-tac
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/721
+    pr_number: 721
+    merge_sha: 6412b21
   - name: evolve/EV-007-issue-655-tac-traceability
     purpose: "EV-007 / #655 F6 TAC traceability UX"
     base: main
@@ -5904,6 +5928,21 @@ git_history:
     files_changed: 14
     timestamp: "2026-07-15T23:30:00Z"
     session_id: S012-empty-bearer-lint-tac
+  - sha: 5745950
+    branch: fix/S012-empty-bearer-lint-tac
+    message: "chore: record S012 hotfix commit in workflow-state"
+    stage: "14-hotfix"
+    files_changed: 1
+    timestamp: "2026-07-15T23:32:10Z"
+    session_id: S012-empty-bearer-lint-tac
+  - sha: 6412b21
+    branch: main
+    message: "Merge pull request #721 from joseph-c-mcguire/fix/S012-empty-bearer-lint-tac"
+    stage: "14-hotfix"
+    files_changed: 14
+    timestamp: "2026-07-15T23:45:00Z"
+    session_id: S012-empty-bearer-lint-tac
+    note: "PR #721 merged; production verified"
 pr_review_cycles:
 - id: PRR-001
   pr_number: 679

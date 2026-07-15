@@ -1,0 +1,21 @@
+---
+description: Keep frontend JWT storage key and App hydrate in sync (BUG-2026-07-15)
+globs: apps/frontend/src/utils/api.ts,apps/frontend/src/utils/authService.ts,apps/frontend/src/app/App.tsx
+alwaysApply: false
+---
+
+# Frontend auth token hydrate
+
+Evidence: BUG-2026-07-15 / S012 (empty Bearer on lint-tac/decode-tac).
+
+1. **One storage key** — `authService` stores `access_token`. API clients must
+   read that key (legacy `supabase_access_token` fallback OK). Do not invent a
+   third key.
+2. **Hydrate on reload** — If `isLoggedIn()` is true, React `accessToken` state
+   must initialize from `getAccessToken()`, not `''`.
+3. **Never send empty Bearer** — Prefer omit `Authorization` or pass a real JWT;
+   `Authorization: Bearer` with no token becomes API 401
+   `Missing authorization credentials`.
+4. **Regression** — Keep
+   `apps/frontend/src/test/bug-2026-07-15-empty-bearer-lint-tac.test.tsx` green
+   when changing token wiring.

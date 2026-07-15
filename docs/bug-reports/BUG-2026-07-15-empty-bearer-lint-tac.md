@@ -2,13 +2,15 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | verifying |
+| **Status** | resolved |
 | **Feature** | F6/F7 (lint-tac / decode-tac live assist) + M4 auth |
 | **Severity** | critical / blocked (user) |
 | **Classification** | code bug (auth hydrate + storage key + UX) |
 | **Remediation path** | local-first — deploy only after explicit approval |
 | **Session** | S012-empty-bearer-lint-tac |
 | **Branch** | fix/S012-empty-bearer-lint-tac |
+| **PR** | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/721 |
+| **Merge commit** | `6412b21` |
 
 ## Error description
 
@@ -55,22 +57,29 @@ UI: `[lint-tac] 1 issue(s)` — not descriptive of the actual issue(s).
 | Scope | One hotfix covering auth + descriptive lint UX |
 | confirm_hotfix_plan | Proceed |
 | verification_plan | success=JWT Bearer + descriptive lint UI; checks=full CI parity; monitoring=user watches prod |
+| repro_test_matches_symptom | Yes |
+| investigation_root_cause | Agree — proceed to fix |
+| hotfix_commit_pr | Commit + push + open PR |
+| hotfix_pr_merge | Approve merge |
+| deploy_hotfix | User verifies production |
+| production_verified | Production fixed |
+| monitoring_followup | User will monitor |
+| prevention | CI repros enough; Cursor rule created |
 
 ## Verification plan
 
 | Item | Choice |
 |------|--------|
-| Success criterion | Logged-in calls carry a real Bearer JWT **and** lint UI shows issue messages/codes (not only “[lint-tac] N issue(s)”) |
+| Success criterion | Logged-in calls carry a real Bearer JWT **and** lint UI shows issue messages/codes |
 | Checks | Full main CI parity (local) + gh on main after merge |
-| Monitoring | User will watch production after deploy |
+| Monitoring | User watches production after deploy |
 
 ## Symptoms & reproduction
 
 - **Environment:** Production frontend → API (every time)
-- **Trigger:** Enter TAC text (e.g. `fjgfjf`) so live lint/decode fire
+- **Trigger:** Enter TAC text so live lint/decode fire (often after hard-refresh while still “logged in”)
 - **Expected:** Authenticated request with JWT; console lists issue text/codes
 - **Actual:** `Authorization: Bearer` empty → 401; thin console summary when issues exist
-- **Local:** Not reproduced yet (production-only per intake)
 
 ## Investigation
 
@@ -78,81 +87,91 @@ UI: `[lint-tac] 1 issue(s)` — not descriptive of the actual issue(s).
 
 | # | Hypothesis | Evidence | Status |
 |---|------------|----------|--------|
-| H1 | `App` initializes `accessToken` to `''` on reload even when `isLoggedIn()` is true | `App.tsx` L52–60: `isAuthenticated` from `isLoggedIn()`, but `accessToken` only set via login handlers | Likely |
-| H2 | `api.ts` `getAccessToken()` reads `supabase_access_token` while `authService` stores `access_token` | Key mismatch — fallback never sees JWT | Likely |
-| H3 | Empty token → `Authorization: Bearer ` → FastAPI `HTTPBearer` returns `None` → “Missing authorization credentials” | Matches `security.py` L91–93 + Starlette empty-credentials behavior | Likely |
-| H4 | Console summary omits issue messages by design of `useLiveWorkbenchAssist` | L150–152: `` `${n} issue(s)` `` only | Likely (UX) |
-| H5 | 401 `detail` string not surfaced in thrown Error | `error.detail?.message` misses string `detail` | Contributing |
+| H1 | `App` initializes `accessToken` to `''` on reload even when `isLoggedIn()` is true | `App.tsx` | **Confirmed** |
+| H2 | `api.ts` `getAccessToken()` reads `supabase_access_token` while `authService` stores `access_token` | Key mismatch | **Confirmed** |
+| H3 | Empty token → `Authorization: Bearer ` → FastAPI `HTTPBearer` returns `None` | Matches API detail | **Confirmed** |
+| H4 | Console summary omits issue messages | `useLiveWorkbenchAssist` count-only | **Confirmed** |
+| H5 | 401 `detail` string not surfaced in thrown Error | `error.detail?.message` | **Confirmed** |
 
 ### Spec conformance
 
 | Corpus | Section | Finding |
 |--------|---------|---------|
-| product F7 | Live assist JWT lint/decode | Implementation drift — requests must be authorized |
-| system-spec | Frontend debounced JWT calls; auth middleware | Implementation drift vs U1b/U2 |
-| api | lint-tac / decode-tac auth | No blocking contradiction — 401 is correct for missing creds; client should send token |
-| M4 | Auth merged; tokens in localStorage | Drift: dual localStorage keys |
+| product F7 | Live assist JWT lint/decode | Implementation drift — fixed |
+| system-spec | Frontend debounced JWT calls; auth middleware | Implementation drift — fixed |
+| api | lint-tac / decode-tac auth | 401 correct for missing creds; client now sends token |
+| M4 | Auth merged; tokens in localStorage | Drift fixed (aligned key + hydrate) |
 
 Spec conformance: **no blocking Contradiction** — code bug / UX drift.
 
-## Root cause (proposed)
+## Root cause (confirmed)
 
-_(pending user confirmation after red repro)_
-
-1. **Reload auth gap:** Session cookie/token exists in `localStorage.access_token`, but React `accessToken` state is not hydrated → empty Bearer.
+1. **Reload auth gap:** Session token in `localStorage.access_token`, but React `accessToken` not hydrated on reload → empty Bearer.
 2. **Wrong storage key fallback** in `api.ts` (`supabase_access_token` vs `access_token`).
-3. **Thin lint console:** summary message is count-only.
+3. **Thin lint console:** summary message was count-only; opaque 401 client message.
 
 ## Repro test
 
 | Field | Value |
 |-------|-------|
 | Path | `apps/frontend/src/test/bug-2026-07-15-empty-bearer-lint-tac.test.tsx` + `…-lint-tac-console-detail.test.tsx` |
-| CI | Frontend job (`npm test`) — not pytest `tests/bugs/` |
-| Status | **GREEN** (5/5) after fix 2026-07-15 |
-| Asserts | (1) lint/decode send Bearer from `access_token`; (2) App reload hydrates token into FileConverter; (3) console includes issue message; (4) 401 string detail surfaced |
+| CI | Frontend job (`npm test`) |
+| Status | **GREEN** (was RED before fix) |
 
 ### TDD iteration log
 
 | Time | Action | Result |
 |------|--------|--------|
-| 2026-07-15 | Phase 0 intake + branch + report | — |
-| 2026-07-15 | Wrote Vitest repros (auth Bearer + App hydrate + console detail + 401 detail) | **RED** — `Bearer ` / empty token / `1 issue(s)` / `HTTP 401` as expected |
-| 2026-07-15 | User `repro_test_matches_symptom`=Yes; `investigation_root_cause`=Agree | Confirmed |
-| 2026-07-15 | Fix: App hydrate + api.ts `access_token` + apiErrorMessage + lint console detail | **GREEN** 5/5 + related suites |
-
-## Root cause (confirmed)
-
-1. **Reload auth gap:** `App` set `isAuthenticated` from `isLoggedIn()` but left `accessToken` as `''` until a login handler ran.
-2. **Wrong storage key:** `api.ts` read `supabase_access_token`; `authService` stores `access_token`.
-3. **Thin lint console / opaque 401:** count-only summary; string FastAPI `detail` not used in thrown Error.
+| 2026-07-15 | Wrote Vitest repros | **RED** |
+| 2026-07-15 | User confirmed match + root cause | Proceed |
+| 2026-07-15 | Fix applied | **GREEN** |
 
 ## Fix
 
 - `App.tsx`: initialize `accessToken` from `getAccessToken()`.
-- `api.ts`: read `access_token` (legacy fallback); `apiErrorMessage` for lint/decode.
+- `api.ts`: read `access_token` (+ legacy fallback); `apiErrorMessage` for lint/decode.
 - `useLiveWorkbenchAssist.ts`: console `N issue(s): [code] message; …`.
+- Cursor rule: `.cursor/rules/optional/frontend-auth-token-hydrate.mdc`
 
 ## Verification
 
 ### Layer 1 — Automated
-- [ ] Repro red→green
-- [ ] CI parity local
-- [ ] Frontend tests
+- [x] Repro red→green
+- [x] Full frontend `npm test`
+- [x] PR CI + main CI success ([run](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29459061581))
 
 ### Layer 2 — Reproduction
-- [ ] Pending
+- [x] Encoded in Vitest (localStorage key + App hydrate + console)
 
 ### Layer 3 — Pre-deploy smoke
-- [ ] N/A until deploy approved
+- [x] Covered by main CI Deploy job after merge
 
 ### Layer 4 — Production
-- [ ] Deferred (local-first)
+- [x] User confirmed production fixed (2026-07-15)
+
+### CI
+
+| Check | Result |
+|-------|--------|
+| PR branch CI | success — https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29458826429 |
+| Main CI + Deploy | success — https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29459061581 |
+
+## Post-deploy monitoring
+
+User monitors production lint-tac auth header + descriptive console lines.
 
 ## Prevention & countermeasures
 
-_(Phase 5)_
+| Topic | Decision |
+|-------|----------|
+| Recurrence risk | Possible on similar auth wiring |
+| Detect earlier | Main CI frontend Vitest |
+| Automated | Bug repro only (done) |
+| Code hardening | Hotfix only |
+| Process | None |
+| Follow-ups | Accept residual risk |
+| Cursor rule | `.cursor/rules/optional/frontend-auth-token-hydrate.mdc` |
 
 ## Follow-ups
 
-- Resume S011 / EV-008 / PR #716 after hotfix closes
+- Resume S011 / EV-008 later if needed (PR #716 already merged to main as of hotfix base)
