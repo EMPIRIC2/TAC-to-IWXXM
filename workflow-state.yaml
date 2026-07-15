@@ -103,6 +103,19 @@ active_session:
     mode: full
     status: pending
     note: "Blocked on PR-EV-008 (#716) merge approval; do not start until explicit approval"
+  - stage: 18-pr-review
+    required: false
+    mode: on-demand
+    status: completed
+    started: "2026-07-15"
+    completed: "2026-07-15"
+    note: "PRR-019 REQUEST_CHANGES on #716"
+  - stage: 19-address-pr-review
+    required: false
+    mode: on-demand
+    status: in_progress
+    started: "2026-07-15"
+    note: "PRM-016 remediating PRR-019 on #716 (blockers + advisories)"
   skipped_stages:
   - stage: 03-plan-tooling
     rationale: "Hooks/rules already exist from prior cycles"
@@ -1353,9 +1366,9 @@ stages:
   18-pr-review:
     status: completed
     started: "2026-07-12"
-    completed: "2026-07-12"
-    last_cycle: PRR-018
-    session_id: S008-general-tac-iwxxm-converter
+    completed: "2026-07-15"
+    last_cycle: PRR-019
+    session_id: S011-f7-operator-ui
     evolve_cycle_id: EV-006
     notes:
     - "PRR-018 completed on #711 — COMMENT (self-PR cannot REQUEST_CHANGES); blockers=1 advisories=1 praise=1; ci_status=success
@@ -1369,11 +1382,11 @@ stages:
     - "2026-07-12 PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7; user said Merge; anti-merge override)"
 
   19-address-pr-review:
-    status: completed
+    status: in_progress
     started: "2026-06-22"
     completed: "2026-07-12"
-    last_cycle: PRM-015
-    session_id: S008-general-tac-iwxxm-converter
+    last_cycle: PRM-016
+    session_id: S011-f7-operator-ui
     notes:
     - "PRM-015 completed on #711 — B1 ecdeac5 (validate TAC auto-convert forwards profile), A1 79af006 (bound uploads + MAX_BULLETIN_REPORTS=100);
       fixed=2 deferred=0 wont_fix=0; linked PRR-018; head_sha 79af006; squash-merge authorized when CI green (D-S008-evolve-main-18-19)"
@@ -1509,6 +1522,23 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S011-PR716-19-assumed
+  date: "2026-07-15"
+  stage: 19-address-pr-review
+  skill_id: 19-address-pr-review
+  session_id: S011-f7-operator-ui
+  decision: "Remediate all PRR-019 🔴+🟡 on #716; defer Playwright/H4-H5 (host/deploy); Sourcery nits out of scope unless trivial"
+  summary: "User invoked 19 with explicit blockers+advisories scope."
+  timestamp: "2026-07-15"
+- id: D-S011-PR716-18-assumed
+  date: "2026-07-15"
+  stage: 18-pr-review
+  skill_id: 18-pr-review
+  session_id: S011-f7-operator-ui
+  evolve_cycle_id: EV-008
+  decision: "Proceed 18-pr-review on #716 with full checklist + connectivity; local QA parity despite CI red (npm audit endpoint 410)"
+  summary: "AskQuestion tool unavailable; user intent current branch + integration/solid → assumed recommendations."
+  timestamp: "2026-07-15"
 - id: D-S011-EV008-deploy-check-A
   date: "2026-07-14"
   skill: 12-verify-deploy
@@ -2887,6 +2917,15 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S011-f7-operator-ui/reports/pr-review.md
+  kind: stage-report
+  session_id: S011-f7-operator-ui
+  evolve_cycle_id: EV-008
+  stage: 18-pr-review
+  created_at: "2026-07-15"
+  updated_at: "2026-07-15"
+  status: completed
+  note: "PRR-019 REQUEST_CHANGES on #716 — blockers=2 advisories=3; head_sha 012c490"
 - path: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
   kind: deploy-checklist
   session_id: S011-f7-operator-ui
@@ -4537,6 +4576,10 @@ evolve_cycles:
   - docs/adr/ADR-021-byo-credentials-admin-removal.md
   - docs/adr/ADR-022-convert-preview-flag.md
   artifacts:
+  - path: docs/sessions/S011-f7-operator-ui/reports/pr-review.md
+    status: completed
+    stage: 18-pr-review
+    note: "PRR-019 REQUEST_CHANGES on #716"
   - path: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
     status: completed
     stage: 12-verify-deploy
@@ -6120,6 +6163,38 @@ pr_review_cycles:
   - "ci_status success on prior HEAD 1e7b57a"
   - "On-demand 18 without active_session (D-S008-evolve-main-18-19); handed to PRM-015"
 
+- id: PRR-019
+  skill_id: 18-pr-review
+  session_id: S011-f7-operator-ui
+  evolve_cycle_id: EV-008
+  pr_number: 716
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716
+  title: "[EV-008 / S011] F7 multi-product operator UI"
+  status: completed
+  started: "2026-07-15"
+  completed: "2026-07-15"
+  scope: full+connectivity
+  head_ref: evolve/S011-f7-operator-ui
+  base_ref: main
+  head_sha: 012c49025faa5a14f6a17f41f95133a5a4f6c481
+  verdict: REQUEST_CHANGES
+  blockers: 2
+  advisories: 3
+  gh_review_note: "Self request-changes blocked; posted COMMENT with REQUEST_CHANGES recommendation + 2 inline comments"
+  report: docs/sessions/S011-f7-operator-ui/reports/pr-review.md
+  findings_summary:
+  - "🔴 multi-line failed_spans offsets (absorb_soft_preview) — confirmed local repro"
+  - "🔴 CI Validate red (npm audit 410) → Test/E2E skipped"
+  - "🟡 gzip decompress bomb"
+  - "🟡 soft-preview SUCCESS logging/webhook"
+  - "🟡 Playwright/H4-H5 not proven on tip"
+  artifacts:
+  - path: docs/sessions/S011-f7-operator-ui/reports/pr-review.md
+    note: PRR-019 session report
+  notes:
+  - "AskQuestion UI unavailable; assumed full checklist + F connectivity + local 09-qa (CI Validate red on npm audit 410)"
+  - "User emphasis: integration testing / solid before merge"
+
 pr_remediation_cycles:
 - id: PRM-001
   pr_number: 679
@@ -7119,3 +7194,21 @@ pr_remediation_cycles:
     PRM-015 completed — fixed B1 (ecdeac5) + A1 (79af006); head_sha 79af006.
     Squash-merge to main authorized when CI green (D-S008-evolve-main-18-19).
     On-demand 19 without active_session.
+
+- id: PRM-016
+  skill_id: 19-address-pr-review
+  session_id: S011-f7-operator-ui
+  evolve_cycle_id: EV-008
+  linked_review_cycle_id: PRR-019
+  pr_number: 716
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716
+  title: "[EV-008 / S011] F7 multi-product operator UI"
+  status: in_progress
+  started: "2026-07-15"
+  head_ref: evolve/S011-f7-operator-ui
+  base_ref: main
+  scope: blockers_then_advisories
+  notes:
+  - "AskQuestion unavailable; user asked for bugs+blockers+advisories → assumed full PRR-019 backlog"
+  findings: []
+
