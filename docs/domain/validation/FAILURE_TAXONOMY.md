@@ -4,6 +4,25 @@
 
 **Test Results**: 13 tests passing (0 failures)
 
+> **Domain SoT:** This taxonomy is **engine / QA framing** for observed failures. Binding
+> rule sources remain [../TAC_VALIDATION.md](../TAC_VALIDATION.md),
+> [../IWXXM_CONVERSION.md](../IWXXM_CONVERSION.md), and
+> [../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md). Map XSD/SCH failures to
+> [COMPREHENSIVE_VALIDATION.md](./COMPREHENSIVE_VALIDATION.md) layers; do not invent new
+> nilReason URIs here.
+>
+> **Pipeline gates (domain):** [../rules/COVERAGE_MATRIX.md](../rules/COVERAGE_MATRIX.md) **G1–G7**.
+
+| Domain gate | Typical failure classes below | Product help |
+|-------------|-------------------------------|--------------|
+| **G1** TAC lint | Data quality / unknown weather token / wrong product shape | A3-2 / A5-1 / A6 / A2 checklists |
+| **G2** Convert | Mapping / missing nilReason / wrong root | [IWXXM_CONVERSION](../IWXXM_CONVERSION.md) |
+| **G3** Well-formed | Parse / missing `xmlns:xlink` | AWC smoke caveat |
+| **G4** XSD | Schema / type / required attr | Product XSD table |
+| **G5** Schematron | Business-rule assert / RDF membership | `rule/iwxxm.sch` (`xslt2`) |
+| **G6** Golden | Pair regression | Official examples |
+| **G7** Bulletin | COLLECT / AHL / FTBP | OPMET ops |
+
 ---
 
 ## Failure Categories

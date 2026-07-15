@@ -36,6 +36,10 @@ Schema: https://schemas.wmo.int/iwxxm/2025-2/metarSpeci.xsd
 - Record **edition / tag / date mined** when citing paywalled or versioned docs
 - Point operators to purchase official ICAO docs when they need full prose
 - Use vendored mirrors for offline CI (`vendor/schemas/*`)
+- On **contradictory** claims across mined sources, **defer to the latest**
+  published/effective edition (or vendor pin for runtime schemas) and caveat the
+  older cite — mining skill: `.cursor/skills/mine-domain-sources/SKILL.md`
+  §Conflict resolution
 
 ### Do not
 
@@ -43,6 +47,7 @@ Schema: https://schemas.wmo.int/iwxxm/2025-2/metarSpeci.xsd
 - Scrape ICAO Store PDFs into `docs/` or fixtures
 - Treat unofficial mirror PDFs (third-party sites) as normative SoT
 - Treat GIFTs sources as ongoing SoT (ADR-014)
+- Leave two conflicting statements as equal SoT in standing catalogs after a refresh pass
 
 ---
 
@@ -52,7 +57,7 @@ Schema: https://schemas.wmo.int/iwxxm/2025-2/metarSpeci.xsd
 |------|----------|
 | `.local/reference/wmo-306-vI-3-2023/` | PDF + `fulltext.txt` + extracts |
 | `.local/reference/icao-doc-10003-draft-en/` | Advance 2014 unedited Doc 10003 PDF + extract |
-| Tracked notes | `docs/domain/iwxxm/WMO-306-vI-3-2023-mining-notes.md` · `docs/domain/iwxxm/ICAO-Doc-10003-draft-2014-mining-notes.md` |
+| Tracked notes | `docs/domain/mining/WMO-306-vI-3-2023-mining-notes.md` · `docs/domain/mining/ICAO-Doc-10003-draft-2014-mining-notes.md` |
 
 Ensure `.gitignore` covers `.local/reference/` before storing PDFs.
 

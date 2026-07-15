@@ -1,14 +1,17 @@
 {
-  "environment": "e2e",
+  "environment": "local",
   "api": {
-    "baseUrl": "http://localhost:18001",
-    "corsOrigins": ["http://localhost:18000"],
-    "frontendUrl": "http://localhost:18000",
-    "disableAuth": false
+    "baseUrl": "https://analysts-arcade-pregnant-duo.trycloudflare.com",
+    "corsOrigins": [
+      "https://attacked-fee-modes-ultra.trycloudflare.com",
+      "http://localhost:18100"
+    ],
+    "frontendUrl": "https://attacked-fee-modes-ultra.trycloudflare.com",
+    "disableAuth": true
   },
   "supabase": {
     "url": "https://ktvxijislbtgqapllmuk.supabase.co",
-    "publishableKey": "test"
+    "publishableKey": "sb_publishable_v8Hhz6jwqijPMQXZeRfEhQ_t7JFok9X"
   },
   "validation": {
     "wmoOnline": true,

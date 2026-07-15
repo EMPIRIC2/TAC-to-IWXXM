@@ -1,6 +1,13 @@
 # PDF mining notes template
 
-Use this for tracked notes under `docs/`. Replace bracketed fields.
+Use for **transitory** digs under `docs/domain/mining/<slug>-mining-notes.md`.
+Replace bracketed fields. **Not normative** — promote durable citations into
+`TAC_VALIDATION.md` / `IWXXM_CONVERSION.md` / `IWXXM_VALIDATION.md` (+ `rules/`) via
+[mine-domain-sources](../mine-domain-sources/SKILL.md).
+
+Prefer the fuller [mine-domain-sources/notes-template.md](../mine-domain-sources/notes-template.md)
+when the PDF maps to F6 validation / conversion / IWXXM-validation (product matrix +
+catalog paste rows + defer-to-latest cross-check).
 
 ```markdown
 # [Document short title] — focused mining notes
@@ -9,6 +16,16 @@ Use this for tracked notes under `docs/`. Replace bracketed fields.
 **Focus of this pass:** [sections / topics]  
 **Local PDF + extracts (gitignored):** `.local/reference/<slug>/`
 
+**Standing catalog (promote into):**
+
+| Doc | Path |
+|-----|------|
+| Domain hub | [../README.md](../README.md) |
+| TAC validation | [../TAC_VALIDATION.md](../TAC_VALIDATION.md) |
+| IWXXM conversion | [../IWXXM_CONVERSION.md](../IWXXM_CONVERSION.md) |
+| IWXXM validation | [../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) |
+| URL catalog | [../rules/RULE_SOURCE_URLS.md](../rules/RULE_SOURCE_URLS.md) |
+
 | Item | Value |
 |---|---|
 | Title | [full title] |
@@ -16,6 +33,8 @@ Use this for tracked notes under `docs/`. Replace bracketed fields.
 | Official record | <[permalink]> |
 | Pages | [N] |
 | Local text | `.local/reference/<slug>/fulltext.txt` |
+| Access | public / captcha / paywall |
+| Label | normative / informative / … |
 
 ---
 
@@ -37,9 +56,22 @@ Use this for tracked notes under `docs/`. Replace bracketed fields.
 
 ---
 
+## Domain-knowledge cross-check
+
+When this PDF **contradicts** an earlier claim, defer to latest per mine-domain-sources.
+
+| Older claim (doc + date/edition) | This PDF finding | Action |
+|----------------------------------|------------------|--------|
+| … | … | supersede / caveat / historical |
+
+---
+
 ## Implications for this repo
 
-- **F? / component:** [how this affects conversion, validation, etc.]
+- **tac-validate / TAC_VALIDATION.md:** …
+- **tac2iwxxm / IWXXM_CONVERSION.md:** …
+- **iwxxm-validate / IWXXM_VALIDATION.md:** …
+- **Promotion pending:** [yes/no — what rows]
 
 ---
 

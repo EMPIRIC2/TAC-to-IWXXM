@@ -11,12 +11,12 @@
 | Master URL catalog | [../rules/RULE_SOURCE_URLS.md](../rules/RULE_SOURCE_URLS.md) |
 | Coverage matrix | [../rules/COVERAGE_MATRIX.md](../rules/COVERAGE_MATRIX.md) |
 | Access / citation | [../rules/ACCESS_AND_CITATION.md](../rules/ACCESS_AND_CITATION.md) |
-| IWXXM creation | [IWXXM_CREATION_SOURCES.md](./IWXXM_CREATION_SOURCES.md) |
-| IWXXM validation | [IWXXM_VALIDATION_SOURCES.md](./IWXXM_VALIDATION_SOURCES.md) |
-| OPMET / translation ops | [ICAO_OPMET_COMPLIANCE.md](./ICAO_OPMET_COMPLIANCE.md) |
-| Version support policy | [VERSION_SUPPORT_POLICY.md](./VERSION_SUPPORT_POLICY.md) |
-| FM 205 companion | [WMO-306-vI-3-2023-mining-notes.md](./WMO-306-vI-3-2023-mining-notes.md) |
-| Workshop (informative) | [PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) |
+| IWXXM creation | [IWXXM_CONVERSION.md](../IWXXM_CONVERSION.md) |
+| IWXXM validation | [IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) |
+| OPMET / translation ops | [ICAO_OPMET_COMPLIANCE.md](../iwxxm/ICAO_OPMET_COMPLIANCE.md) |
+| Version support policy | [VERSION_SUPPORT_POLICY.md](../iwxxm/VERSION_SUPPORT_POLICY.md) |
+| FM 205 companion | [mining/WMO-306-vI-3-2023-mining-notes.md](./WMO-306-vI-3-2023-mining-notes.md) |
+| Workshop (informative) | [mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) |
 
 | Item | Value |
 |------|-------|
@@ -41,7 +41,7 @@
 | Early MARIE-PT guidance aligned with Annex 3 **Amendment 76** (digital METAR/SPECI/TAF/SIGMET, Nov 2013) | Binding / final ICAO Doc 10003 text |
 | Architecture story: SWIM layers, IWXXM + SAF logical/physical models, ISO 191xx foundation | Encode cookbook for IWXXM **2025-2** (use examples + TAC-to-XML-Guidance + FM 205) |
 | IWXXM **v1** product baseline + early XSD package list + present/recent weather combination checks | Coverage of AIRMET · VAA · TCA · VONA · SWX · COLLECT bulletins |
-| FAQ on report-vs-bulletin, compression, convert-at-source vs ROC | Section **7** translation-centre ops / statistics (see domain check below) |
+| FAQ on report-vs-bulletin, compression, convert-at-source vs ROC | Section **7** translation-centre ops / statistics (see domain check below); for public AMHS/partial-translation/ROC stats use [OPMET Guidelines 5th](./OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) |
 
 Front-matter notice (PDF p.1): content may change; **not authoritative** until officially approved.
 
@@ -133,9 +133,9 @@ Explicit placeholder: IWXXM v1 has **no** specific metadata requirements. Later 
 
 | In-repo claim | Evidence in Advance 2014 draft | Verdict |
 |---------------|--------------------------------|---------|
-| [ICAO_OPMET_COMPLIANCE.md](./ICAO_OPMET_COMPLIANCE.md) implements Doc 10003 **§7** translation-centre / statistics | TOC stops at Ch.5; **no Section 7** | **Cite paywalled published edition** for §7 — not this draft. Keep ops guide; add edition caveat. |
+| [ICAO_OPMET_COMPLIANCE.md](../iwxxm/ICAO_OPMET_COMPLIANCE.md) implements Doc 10003 **§7** translation-centre / statistics | TOC stops at Ch.5; **no Section 7** | **Cite paywalled published edition** for §7 — not this draft. Keep ops guide; add edition caveat. |
 | Translation attrs (`translationCentreName`, `translatedBulletinID`, …) required by Doc 10003 | Ch.5 empty; attrs **are** in vendor `common.xsd` (2025-2) | Schema SoT = **pin**; Doc 10003 prose SoT = **store edition** |
-| [VERSION_SUPPORT_POLICY.md](./VERSION_SUPPORT_POLICY.md): Doc 10003 recommends **latest + 1 prior** IWXXM version | No version-support window text in this draft | **Unverified here** — keep policy if aligned with later editions / OPMET guidelines; do not cite Advance 2014 for it |
+| [VERSION_SUPPORT_POLICY.md](../iwxxm/VERSION_SUPPORT_POLICY.md): Doc 10003 recommends **latest + 1 prior** IWXXM version | No version-support window text in this draft | **Unverified here** — keep policy if aligned with later editions / OPMET guidelines; do not cite Advance 2014 for it |
 | CREATION_SOURCES “align with Doc 10003” for translation metadata | Partially — FAQ ROC conversion only | Point to mining notes + published Doc; PPT-02 for operator reminder |
 | Runway state in METAR encode path | Listed in Ch.3 logical inventory | Matches historical model; **IWXXM 2025-2** creation notes: runway-state types **removed** — do not encode for current pin |
 | Bulletin encoding | FAQ: **not** supported | Superseded by COLLECT / `iwxxm-collect.xsd` + AHL guidance |
@@ -167,7 +167,7 @@ Explicit placeholder: IWXXM v1 has **no** specific metadata requirements. Later 
 - Consumer: design / lineage docs; not runtime SoT
 - Label: informative / historical
 - Caveats: Amd 76 / IWXXM 1.0 era; namespaces 1.0RC2; bulletin FAQ obsolete vs COLLECT
-- Mined: 2026-07-14 · notes ICAO-Doc-10003-draft-2014-mining-notes.md
+- Mined: 2026-07-14 · notes mining/ICAO-Doc-10003-draft-2014-mining-notes.md
 ```
 
 ---
@@ -202,5 +202,5 @@ Explicit placeholder: IWXXM v1 has **no** specific metadata requirements. Later 
 ## Suggested next mining passes
 
 1. Licensed **published** Doc 10003 (current edition) — extract § translation centres / version guidance only (no full-text commit).  
-2. Reconcile OPMET Guidelines ↔ translation attribute omit/set rules with PPT-02 + schema.  
+2. ~~Reconcile OPMET Guidelines ↔ translation attrs~~ — Guidelines 5th mined 2026-07-14 ([notes](./OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md)); attrs still schema/PPT-02 SoT for names/omit-when-self-produced. Remaining: purchased Doc 10003 vs Guidelines §5.3.  
 3. Diff Ch.4 weather combination list vs current Schematron / `306/4678` for drift tickets (do not paste lists into git).

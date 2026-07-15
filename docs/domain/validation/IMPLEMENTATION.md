@@ -2,6 +2,20 @@
 
 ## Date: February 11, 2026
 
+> **Domain rule SoT (prefer these over this historical implementation note):**
+>
+> | Concern | Doc |
+> |---------|-----|
+> | E2E pipeline + gates | [../README.md](../README.md) · [../rules/COVERAGE_MATRIX.md](../rules/COVERAGE_MATRIX.md) G1–G7 |
+> | TAC / Annex 3 / US SPECI | [../TAC_VALIDATION.md](../TAC_VALIDATION.md) |
+> | Encode / nilReason / quarantine | [../IWXXM_CONVERSION.md](../IWXXM_CONVERSION.md) |
+> | XSD + Schematron | [../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) |
+> | Engine layer map | [COMPREHENSIVE_VALIDATION.md](./COMPREHENSIVE_VALIDATION.md) |
+>
+> Paths below that say `backend/` / pre-monorepo layouts are **historical**. Runtime packages:
+> `packages/tac-validate`, `packages/tac2iwxxm`, `packages/iwxxm-validate`, schemas under
+> `vendor/schemas/iwxxm`. Product TAC checklists (A3-2 … A2, US RMK): [../TAC_VALIDATION.md](../TAC_VALIDATION.md).
+
 ## Overview
 Implemented three key features to enhance the METAR to IWXXM conversion pipeline:
 1. **Airport Name Capitalization** - All airport names now appear in uppercase

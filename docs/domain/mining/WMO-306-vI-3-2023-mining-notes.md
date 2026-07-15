@@ -10,11 +10,11 @@
 |-----|------|
 | Master URL catalog | [../rules/RULE_SOURCE_URLS.md](../rules/RULE_SOURCE_URLS.md) |
 | Coverage matrix | [../rules/COVERAGE_MATRIX.md](../rules/COVERAGE_MATRIX.md) |
-| Annex 3 / TAC validation | [../validation/ANNEX3_TAC_VALIDATION_SOURCES.md](../validation/ANNEX3_TAC_VALIDATION_SOURCES.md) |
-| IWXXM creation | [IWXXM_CREATION_SOURCES.md](./IWXXM_CREATION_SOURCES.md) |
-| IWXXM validation | [IWXXM_VALIDATION_SOURCES.md](./IWXXM_VALIDATION_SOURCES.md) |
-| Workshop overview (informative) | [PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) |
-| Doc 10003 Advance 2014 (historical) | [ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md) |
+| Annex 3 / TAC validation | [../TAC_VALIDATION.md](../TAC_VALIDATION.md) |
+| IWXXM creation | [IWXXM_CONVERSION.md](../IWXXM_CONVERSION.md) |
+| IWXXM validation | [IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) |
+| Workshop overview (informative) | [mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) |
+| Doc 10003 Advance 2014 (historical) | [mining/ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md) |
 
 | Item | Value |
 |---|---|
@@ -24,6 +24,8 @@
 | Pages | 272 |
 | Local text | `.local/reference/wmo-306-vI-3-2023/fulltext.txt` |
 | Vendor pin (runtime) | `vendor/manifest.json` → `iwxxm` tag **v2025-2** (PDF index stops at FM 205-2023-1 online package) |
+
+**Supersession note (2026-07-14):** Printed FM **205-2023-1** package tables in this edition are **historical** for runtime encode/validate. Prefer vendor pin + working **FM 205-2025-2** AsciiDoc in `vendor/schemas/iwxxm/documentation/manual/FM205.adoc` (or local clone `.local/reference/wmo-im-tier-a/iwxxm/`) and [mining/wmo-im-tier-a-mining-notes.md](./wmo-im-tier-a-mining-notes.md). Keep this PDF mine for I.3 prose / NIL–CNL requirements classes that still apply as policy text.
 
 ---
 
@@ -192,5 +194,5 @@ Richest printed encoding tables are under **FM 205-2018**. FM **205-2023-1** (PD
 
 1. Diff **vendor `iwxxm` v2025-2 Schematron** against the 3.0-era nilReason/CNL tables above.
 2. Mine **Code table D-10** (`SigWxPhenomena`) for SIGMET/AIRMET TAC phenomenon ↔ URI mapping in `tac2iwxxm`.
-3. ~~Catalog paywalled ICAO Annex 3 / Doc 8896 URLs~~ — done in [ANNEX3_TAC_VALIDATION_SOURCES.md](../validation/ANNEX3_TAC_VALIDATION_SOURCES.md) / [RULE_SOURCE_URLS.md](../rules/RULE_SOURCE_URLS.md) (WMO-No. 49 Vol II SARPs discontinued → Annex 3).
+3. ~~Catalog paywalled ICAO Annex 3 / Doc 8896 URLs~~ — done in [TAC_VALIDATION.md](../TAC_VALIDATION.md) / [RULE_SOURCE_URLS.md](../rules/RULE_SOURCE_URLS.md) (WMO-No. 49 Vol II SARPs discontinued → Annex 3).
 4. Prefer live TAC→XML guidance under `https://schemas.wmo.int/iwxxm/2025-2/examples/` over OCR of this PDF for day-to-day convert recipes.

@@ -24,6 +24,11 @@ The following IWXXM versions are **no longer supported** as of February 13, 2026
 - Users can explicitly request **IWXXM 2023-1** for legacy system compatibility
 - Requests for deprecated versions will receive **HTTP 400 Bad Request** with error message
 
+**Validate against the requested year line only:** XSD + Schematron from that vendored tree
+(`2025-2/…` or `2023-1/…`) — never mix SCH across lines
+([../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) §Validation strategy). Package × line numbers:
+[Appendix A](#appendix-a--package--iwxxm-line-matrix-informative).
+
 ## Support Window Policy
 
 ### Standard Support Window
@@ -60,8 +65,9 @@ Future (2027+): When next version releases:
 
 ### Standards Alignment
 1. **WMO Amendment Cycle**: ICAO/WMO update standards every 12-18 months
-2. **ICAO Doc 10003**: Project policy aligns to **latest + 1 prior** version — treat as ops/OPMET guideline alignment; **not verified** in the Advance 2014 unedited draft (no version-window text there; see [ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md)). Confirm wording against the purchased published edition before citing Doc 10003 as the sole SoT for this rule.
-3. **Regional Compliance**: EUR/NAM regions have moved to 2023-1+ only
+2. **ICAO / OPMET version framing**: Project policy aligns to **latest + 1 prior** version. The public [OPMET IWXXM Exchange Guidelines 5th Ed. (Oct 2023)](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) §3.1.7 points operators to the WMO **community compatibility table** for which package is operational after each Annex 3 applicability date — it does **not** itself define an “N and N−1” support window, nor (in that edition) PPT-02’s “deprecate ≤2021-2 after 2025-2” wording. Doc 10003 Advance 2014 also lacks a version window ([notes](../mining/ICAO-Doc-10003-draft-2014-mining-notes.md)). Prefer community table + this project policy for runtime; confirm any Doc 10003 wording against the purchased published edition before citing it as sole SoT.
+3. **PPT-02 deck corroboration (informative, 2025-10-22)**: Workshop slide “Operational IWXXM versions for use after Nov 2025” shows exactly the **2023-1** and **2025-2** package columns as the post–Nov 2025 operational pair — consistent with this policy’s supported set. Full amendment history and package numbers: see [Appendix A](#appendix-a--package--iwxxm-line-matrix-informative) and [PPT-02 mining notes](../mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md).
+4. **Regional Compliance**: EUR/NAM regions have moved to 2023-1+ only
 
 ### Operational Benefits
 1. **Faster Validation**: Simplified version detection and schema loading
@@ -151,12 +157,37 @@ For questions about version support policy:
 
 - [ICAO Doc 10003](https://store.icao.int/en/manual-on-the-icao-meteorological-information-exchange-model-doc-10003) - Manual on the Digital Exchange of Aeronautical Meteorological Information
 - [WMO No.306 Volume I.3](https://library.wmo.int/idurl/4/35769) - Manual on Codes, Part D (2023)
-- [Focused mining notes (METAR/SPECI + nilReason)](./WMO-306-vI-3-2023-mining-notes.md)
-- [IWXXM Community Platform](https://community.wmo.int/activity-areas/wis/iwxxm) - WMO IWXXM resources
+- [Focused mining notes (METAR/SPECI + nilReason)](../mining/WMO-306-vI-3-2023-mining-notes.md)
+- [IWXXM Community Platform](https://community.wmo.int/iwxxm) — intended WMO IWXXM hub + compatibility table (**HTTP 404** as of 2026-07-14; use [Wayback 2026-03-14](https://web.archive.org/web/20260314162354/https://community.wmo.int/iwxxm) or Appendix A) — [mining notes](../mining/community-wmo-iwxxm-wayback-mining-notes.md)
+- [PPT-02 IWXXM Framework mining notes](../mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md) - informative workshop capture (2025-10-22)
 - [VERSION_MANIFEST.json](../schemas/VERSION_MANIFEST.json) - Technical version registry
+- Runtime pin: `vendor/manifest.json` → `iwxxm` **v2025-2**
 
 ---
 
-**Last Updated**: 2026-02-13  
-**Policy Version**: 2.0  
+## Appendix A — Package × IWXXM-line matrix (informative)
+
+Recovered from the WMO community IWXXM “Package compatibility” table (Wayback [2026-03-14 capture](https://web.archive.org/web/20260314162354/https://community.wmo.int/iwxxm) of https://community.wmo.int/iwxxm; page dated **26 November 2025**). Independently matches PPT-02 slide 5 (TT-AvData, 2025-10-22) package numbers. **Live community page was HTTP 404 as of 2026-07-14** — see [mining/community-wmo-iwxxm-wayback-mining-notes.md](../mining/community-wmo-iwxxm-wayback-mining-notes.md). **Not** machine SoT — if this conflicts with vendored XSD `version=` attrs or a restored community table, **defer to vendor pin / restored community table**.
+
+| Package | 1.1 | 2.1 | 3.0 | 2021-2 | 2023-1 | 2025-2 |
+|---------|-----|-----|-----|--------|--------|--------|
+| METAR and SPECI | 1.1.0 | 2.1.1 | 3.0.0 | 3.1.0 | 3.1.0 | 3.2.0 |
+| TAF | 1.1.0 | 2.1.1 | 3.0.0 | 3.0.1 | 3.0.1 | 3.0.2 |
+| SIGMET | 1.1.0 | 2.1.1 | 3.0.0 | 4.0.0 | 4.0.1 | 4.0.2 |
+| AIRMET | — | 2.1.1 | 3.0.0 | 3.1.0 | 3.1.1 | 3.1.2 |
+| Tropical Cyclone Advisory | — | 2.1.1 | 3.0.0 | 3.1.0 | 3.1.0 | 3.1.1 |
+| Volcanic Ash Advisory | — | 2.1.1 | 3.0.0 | 3.1.0 | 3.1.0 | 3.2.0 |
+| Space Weather Advisory | — | — | 3.0.0 | 3.0.1 | 3.0.1 | 3.1.0 |
+| WAFS SIGWX Forecast | — | — | — | 1.0.0 | 1.1.0 | 1.2.0 |
+| Quantitative Volcanic Ash Concentration Information | — | — | — | — | — | 1.0.0 |
+| Volcano Observatory Notice for Aviation | — | — | — | — | — | 1.0.0 |
+| **ICAO Annex 3 Amendment** | **76** | **77** | **78** | **79–80** | **79–81** | **82** |
+| **PANS-MET Edition** | — | — | — | — | — | **first** |
+
+**2026-07-14 vendor check:** `2023-1` and `2025-2` columns match `vendor/schemas/iwxxm/{2023-1,2025-2}/IWXXM/*.xsd` package versions (`qvaci`/`vona` absent under 2023-1).
+
+---
+
+**Last Updated**: 2026-07-14  
+**Policy Version**: 2.1  
 **Next Review**: After next WMO amendment release

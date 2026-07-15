@@ -15,7 +15,7 @@ active_session:
     convert UX (#665/#666), remove admin dashboard / BYO DB (#697); #5 kept as parent tracker"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-008
-  note: "D-S011-EV008-deploy-check-A — 12-verify-deploy approved; preparing PR-EV-008; 13-deploy-smoke blocked on merge; T6.4 remains in_progress (12 done / 13 pending); no merge/deploy until explicit approval"
+  note: "12 approved (D-S011-EV008-deploy-check-A); PR #716 open as PR-EV-008 (evolve→main; retitled/updated; NO merge, NO deploy); 13-deploy-smoke blocked on merge approval; T6.4 in_progress (12 done / 13 pending)"
   context_briefs:
   - docs/context/f7-operator-ui.md
   standing_docs_touched: []
@@ -54,7 +54,7 @@ active_session:
     mode: full
     status: in_progress
     started: "2026-07-13"
-    note: "M6 T6.4 in_progress (12 done / 13 pending); T6.3 approved_with_waivers (D-S011-EV008-f7-approve); preparing PR-EV-008"
+    note: "M6 T6.4 in_progress (12 done / 13 pending); T6.3 approved_with_waivers (D-S011-EV008-f7-approve); PR-EV-008=#716 open (no merge)"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -95,14 +95,14 @@ active_session:
     status: completed
     started: "2026-07-14"
     completed: "2026-07-14"
-    note: "D-S011-EV008-deploy-check-A — checklist approved; commit QA-001+reports; prepare PR-EV-008; awaiting PR + merge approval before 13; no merge/deploy yet"
+    note: "D-S011-EV008-deploy-check-A — checklist approved; PR-EV-008=#716 open (evolve→main; no merge/deploy yet); 13 blocked on merge approval"
     artifacts:
     - docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
   - stage: 13-deploy-smoke
     required: true
     mode: full
     status: pending
-    note: "Blocked on PR-EV-008 merge approval; do not start until explicit approval"
+    note: "Blocked on PR-EV-008 (#716) merge approval; do not start until explicit approval"
   skipped_stages:
   - stage: 03-plan-tooling
     rationale: "Hooks/rules already exist from prior cycles"
@@ -1106,11 +1106,12 @@ stages:
       status: in_progress
       started_at: "2026-07-13"
       mode: full
-      note: "M6 T6.4 in_progress (12 done / 13 pending); D-S011-EV008-deploy-check-A; preparing PR-EV-008; 13 blocked on merge"
+      note: "M6 T6.4 in_progress (12 done / 13 pending); D-S011-EV008-deploy-check-A; PR-EV-008=#716 open; 13 blocked on merge"
       active_milestone: M6
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-14 S011/EV-008 PR-EV-008 prepared as #716 open (retitle/update evolve→main; NO merge, NO deploy); T6.4 in_progress (12 done / 13 pending); 13 blocked on merge approval"
     - "2026-07-14 S011/EV-008 D-S011-EV008-deploy-check-A — 12 approved; T6.4 still in_progress (12 done / 13 pending); preparing PR-EV-008; 13 blocked on merge"
     - "2026-07-14 S011/EV-008 T6.3 completed approved_with_waivers (D-S011-EV008-f7-approve); active_task T6.4 in_progress (12-verify-deploy)"
     - "2026-07-13 S011/EV-008 M3 T3.1 in_progress — test preview=true convert; active_milestone M3; active_task T3.1 in_progress"
@@ -1393,9 +1394,10 @@ stages:
       started_at: "2026-07-14"
       completed_at: "2026-07-14"
       mode: full
-      note: "D-S011-EV008-deploy-check-A — checklist approved; commit QA-001+reports; prepare PR-EV-008; awaiting PR + merge approval before 13; no merge/deploy yet"
+      note: "D-S011-EV008-deploy-check-A — checklist approved; PR-EV-008=#716 open (no merge/deploy); 13 pending on merge approval"
       report: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
     notes:
+    - "2026-07-14 S011/EV-008 PR-EV-008=#716 open (retitled/updated evolve→main; NO merge, NO deploy); 12 done; 13 pending on merge approval; T6.4 in_progress"
     - "2026-07-14 S011/EV-008 D-S011-EV008-deploy-check-A — 12-verify-deploy completed (checklist approved); commit QA-001+reports; prepare PR-EV-008; 13 pending until merge approval; no merge/deploy yet"
     - "2026-07-14 S011/EV-008 12-verify-deploy — checklist written (deploy-checklist.md); awaiting user deploy-strategy approval (blocker: tip 44 commits ahead of main; QA-001 uncommitted); 12 remains in_progress; 13 not started"
     - "2026-07-14 S011/EV-008 T6.4 12-verify-deploy in_progress (D-S011-EV008-f7-approve)"
@@ -2893,7 +2895,19 @@ artifacts:
   created_at: "2026-07-14"
   updated_at: "2026-07-14"
   status: completed
-  note: "D-S011-EV008-deploy-check-A — checklist approved; preparing PR-EV-008; awaiting PR + merge before 13"
+  note: "D-S011-EV008-deploy-check-A — checklist approved; PR-EV-008=#716 open (no merge/deploy); 13 pending"
+- path: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716
+  kind: pull-request
+  session_id: S011-f7-operator-ui
+  evolve_cycle_id: EV-008
+  stage: 12-verify-deploy
+  created_at: "2026-07-14"
+  updated_at: "2026-07-15"
+  status: open
+  pr_id: PR-EV-008
+  pr_number: 716
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716
+  note: "PR-EV-008 prepared by retitling/updating #716 (evolve→main); NO merge, NO deploy"
 - path: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
   kind: stage-report
   session_id: S011-f7-operator-ui
@@ -2920,9 +2934,9 @@ artifacts:
   evolve_cycle_id: EV-008
   stage: 04-tech-plan
   created_at: "2026-07-13"
-  updated_at: "2026-07-13"
+  updated_at: "2026-07-15"
   status: approved
-  note: "M2 completed; PR-M2 open #716; next T3.1"
+  note: "PR-EV-008=#716 open (evolve→main; no merge); T6.4 in_progress (12 done / 13 pending)"
 - path: docs/sessions/S011-f7-operator-ui/reports/02-verify-plan-audit.md
   kind: stage-report
   session_id: S011-f7-operator-ui
@@ -4349,6 +4363,7 @@ evolve_cycles:
     - 06-tech-tooling
   current_stage: 12-verify-deploy
   notes:
+  - "2026-07-14 PR-EV-008=#716 open (retitled/updated evolve→main; NO merge, NO deploy); 12 approved; 13 blocked on merge; T6.4 in_progress (12 done / 13 pending)"
   - "2026-07-14 D-S011-EV008-deploy-check-A — 12-verify-deploy completed (checklist approved); commit QA-001+reports; preparing PR-EV-008; 13 pending/blocked on merge; T6.4 remains in_progress (12 done / 13 pending); no merge/deploy yet"
   - "2026-07-14 S011/EV-008 12-verify-deploy — checklist written (deploy-checklist.md); awaiting user deploy-strategy approval (blocker: tip 44 commits ahead of main; QA-001 uncommitted); 12 remains in_progress; 13 not started"
   - "2026-07-14 D-S011-EV008-f7-approve — F7 approved_with_waivers; T6.3 completed; T6.4 12-verify-deploy in_progress; H4–H5 waived to T6.4/CI; AdminDashboard advisory"
@@ -4499,13 +4514,13 @@ evolve_cycles:
       completed: "2026-07-14"
       artifacts_updated:
       - docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
-      note: "D-S011-EV008-deploy-check-A — checklist approved; commit QA-001+reports; prepare PR-EV-008; awaiting PR + merge approval before 13; no merge/deploy yet"
+      note: "D-S011-EV008-deploy-check-A — checklist approved; PR-EV-008=#716 open (no merge/deploy); 13 pending on merge approval"
     13-deploy-smoke:
       status: pending
       started:
       completed:
       artifacts_updated: []
-      note: "Blocked on PR-EV-008 merge approval; do not start until explicit approval"
+      note: "Blocked on PR-EV-008 (#716) merge approval; do not start until explicit approval"
   gates:
     a_to_b: passed    # D-S011-EV008-a-to-b-pass 2026-07-13
     b_to_c: passed    # D-S011-EV008-b-to-c-pass 2026-07-13
@@ -4525,7 +4540,7 @@ evolve_cycles:
   - path: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
     status: completed
     stage: 12-verify-deploy
-    note: "D-S011-EV008-deploy-check-A — checklist approved; preparing PR-EV-008"
+    note: "D-S011-EV008-deploy-check-A — checklist approved; PR-EV-008=#716 open (no merge/deploy)"
   - path: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
     status: completed
     overall: approved_with_waivers
@@ -4547,7 +4562,13 @@ evolve_cycles:
     note: "D-S011-05-pass — A1–A3 approved as-is"
   - path: docs/sessions/S011-f7-operator-ui/reports/execution-plan.md
     status: approved
-    note: "D-S011-EV008-deploy-check-A — deploy checklist approved; preparing PR-EV-008; T6.4 in_progress (12 done / 13 pending)"
+    note: "PR-EV-008=#716 open (evolve→main; no merge); T6.4 in_progress (12 done / 13 pending)"
+  - path: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716
+    status: open
+    kind: pull-request
+    pr_id: PR-EV-008
+    pr_number: 716
+    note: "PR-EV-008 prepared by retitling/updating #716; NO merge, NO deploy"
   - path: docs/sessions/S011-f7-operator-ui/reports/02-verify-plan-audit.md
     status: completed
     note: "02 PASS; deploy.md consistency fixes"
@@ -4564,6 +4585,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/S011-f7-operator-ui
   notes:
+  - "2026-07-14 S011/EV-008 PR-EV-008=#716 open (evolve→main; NO merge, NO deploy); tip dc32d47; T6.4 in_progress (12 done / 13 pending)"
   - "2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first)"
   - "2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories; T6.3 pending; current_stage=11-verify-impl"
   - "2026-07-14 S011/EV-008 T6.1 PASS (verification-report.md); integration SKIPPED host ports/disk; active_task T6.2 pending"
@@ -4777,6 +4799,10 @@ git_history:
     created_at: "2026-07-13"
     session_id: S011-f7-operator-ui
     evolve_cycle_id: EV-008
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716
+    pr_id: PR-EV-008
+    pr_number: 716
+    note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
   - sha: 73cda40
     branch: feat/M1-workspace-root
@@ -5702,6 +5728,32 @@ git_history:
     evolve_cycle_id: EV-008
     files_changed: 14
     timestamp: '2026-07-14T20:26:33Z'
+  - sha: e86be266d2d98b84d130a415c3e37baac9e371b0
+    branch: evolve/S011-f7-operator-ui
+    message: "[T6.2] fix: narrow convert JSON product/profile for pyright"
+    stage: "09-qa / 16-evolve"
+    session_id: S011-f7-operator-ui
+    evolve_cycle_id: EV-008
+    files_changed: 7
+    timestamp: '2026-07-15T02:02:33Z'
+    note: "QA-001 type narrow for pyright"
+  - sha: 1363a891d345ae5bea605e7e00084b11feda2f13
+    branch: evolve/S011-f7-operator-ui
+    message: "[S011] docs: mark M6 artifacts committed; PR-EV-008 preparing"
+    stage: 16-evolve
+    session_id: S011-f7-operator-ui
+    evolve_cycle_id: EV-008
+    files_changed: 2
+    timestamp: '2026-07-15T02:04:46Z'
+  - sha: dc32d479cb2c9f9f7ba40ce269e1983e0d1b033f
+    branch: evolve/S011-f7-operator-ui
+    message: "[S011] docs: link PR-EV-008 to #716 (no merge)"
+    stage: 16-evolve
+    session_id: S011-f7-operator-ui
+    evolve_cycle_id: EV-008
+    files_changed: 2
+    timestamp: '2026-07-15T02:05:51Z'
+    note: "PR-EV-008=#716 open; no merge/deploy"
 pr_review_cycles:
 - id: PRR-001
   pr_number: 679

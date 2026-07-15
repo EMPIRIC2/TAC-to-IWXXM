@@ -1,6 +1,16 @@
 # Catalog row template
 
 Paste into `docs/domain/rules/RULE_SOURCE_URLS.md` (and/or issue comments). Fill every field.
+Also update the matching **canonical** when the row is durable:
+
+| Role | Canonical |
+|------|-----------|
+| `validation` | `docs/domain/TAC_VALIDATION.md` |
+| `conversion` / fixtures | `docs/domain/IWXXM_CONVERSION.md` |
+| `iwxxm-validation` | `docs/domain/IWXXM_VALIDATION.md` |
+| `bulletin` | conversion + rules catalog (AHL / COLLECT) |
+
+Dense source digs stay under `docs/domain/mining/` (transitory).
 
 ```markdown
 ### {title}

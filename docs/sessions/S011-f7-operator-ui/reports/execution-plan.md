@@ -15,7 +15,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase D — T6.4 in_progress (12 done / 13 pending); preparing PR-EV-008 |
+| **Active phase** | Phase D — T6.4 in_progress (12 done / 13 pending); PR-EV-008=#716 open (no merge) |
 | **Active milestone** | M6 — Verify & deploy |
 | **Active task** | T6.4 in_progress (12 approved; 13 blocked on merge) |
 | **Tasks completed** | M1–M5 + T6.1 + T6.2 + T6.3 |
@@ -235,3 +235,4 @@ Before 07-build:
 - 2026-07-14: T6.3 11-verify-impl in_progress (user option 1 — start without committing first)
 - 2026-07-14: D-S011-EV008-f7-approve — F7 approved_with_waivers (criteria 1–6 T0; H4–H5 → T6.4/CI; AdminDashboard advisory); T6.3 completed; T6.4 12-verify-deploy in_progress
 - 2026-07-14: D-S011-EV008-deploy-check-A — deploy checklist approved; committing QA-001+reports; preparing PR-EV-008; T6.4 remains in_progress (12 done / 13 pending); no merge/deploy until explicit approval
+- 2026-07-14: PR-EV-008 prepared as #716 open (retitle/update evolve→main); NO merge, NO deploy; 13 blocked on merge approval

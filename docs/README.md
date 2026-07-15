@@ -34,8 +34,10 @@
 | [decisions/](decisions/) | Product/tech/requirements/evolve decision logs & audits |
 | [ops/](ops/) | Development, env sync, secrets matrix, migration plan |
 | [guides/](guides/) | Architecture, API overview, implementation, Supabase, OpenAIP |
+| [domain/](domain/) | Rule provenance hub — TAC / IWXXM validation + conversion strategies |
+| [domain/rules/](domain/rules/) | URL catalog, coverage matrix, citation policy |
 | [domain/iwxxm/](domain/iwxxm/) | IWXXM versions, formatting, ICAO/OPMET, elevation |
-| [domain/validation/](domain/validation/) | XSD/Schematron validation notes |
+| [domain/validation/](domain/validation/) | Engine architecture / Schematron render notes |
 | [reports/](reports/) | Historical project-level QA / E2E / verification reports |
 | [testing/](testing/) | Testing strategy & coverage plans |
 | [integration/](integration/) | Auth, airport data, OpenAIP integration notes |
@@ -50,4 +52,8 @@
 
 - Local setup: [ops/DEVELOPMENT.md](ops/DEVELOPMENT.md)
 - Env sync: [ops/env-sync-runbook.md](ops/env-sync-runbook.md)
+- Domain E2E strategy (TAC → convert → XSD/SCH): [domain/README.md](domain/README.md)
+- TAC / Annex 3 validation: [domain/TAC_VALIDATION.md](domain/TAC_VALIDATION.md)
+- TAC→IWXXM conversion rules: [domain/IWXXM_CONVERSION.md](domain/IWXXM_CONVERSION.md)
+- IWXXM XSD/Schematron validation: [domain/IWXXM_VALIDATION.md](domain/IWXXM_VALIDATION.md)
 - IWXXM version switching: [domain/iwxxm/IWXXM_VERSION_SWITCHING.md](domain/iwxxm/IWXXM_VERSION_SWITCHING.md)
