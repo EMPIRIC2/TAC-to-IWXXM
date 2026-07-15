@@ -23,5 +23,18 @@ describe('inputKind', () => {
 
   it('detects gzip by extension', () => {
     expect(detectInputKind('bulletin.tac.gz')).toBe('gzip');
+    expect(kindToMode('gzip')).toBe('tac');
+  });
+
+  it('handles empty AHL text and xml unknowns', () => {
+    expect(looksLikeAhlBulletin('')).toBe(false);
+    expect(looksLikeAhlBulletin('   \n')).toBe(false);
+    expect(detectInputKind('plain.txt', 'METAR KJFK')).toBe('tac');
+    expect(detectInputKind('other.xml', '<root/>')).toBe('unknown');
+    expect(detectInputKind('other.xml', '<iwxxm:METAR xmlns:iwxxm="x"/>')).toBe(
+      'collect_iwxxm',
+    );
+    expect(kindToMode('unknown')).toBe('tac');
+    expect(kindToMode('tac')).toBe('tac');
   });
 });
