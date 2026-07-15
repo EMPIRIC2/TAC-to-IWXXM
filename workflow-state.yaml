@@ -4,18 +4,54 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 11
+session_counter: 12
 active_session:
-  id: S011-f7-operator-ui
-  type: feature
+  id: S012-empty-bearer-lint-tac
+  type: hotfix
   status: in_progress
+  branch: fix/S012-empty-bearer-lint-tac
+  started_at: "2026-07-15"
+  intent: "Production frontend sends Authorization: Bearer with empty token to POST /api/v1/lint-tac and /decode-tac → Missing authorization credentials; also lint-tac UI shows only '[lint-tac] N issue(s)' without descriptive issue details"
+  orchestrator: 14-hotfix
+  evolve_cycle_id: null
+  artifacts_dir: docs/sessions/S012-empty-bearer-lint-tac
+  context_briefs: []
+  standing_docs_touched: []
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    completed: "2026-07-15"
+    note: "Session open; routing approved (14-only, no 15)"
+  - stage: 14-hotfix
+    required: true
+    mode: full
+    status: in_progress
+    started: "2026-07-15"
+    note: "Empty Bearer on lint-tac/decode-tac + lint UX issue details"
+  skipped_stages:
+  - stage: 15-service-health
+    rationale: "User approved 14-only routing; 15 not in plan"
+  current_stage: 14-hotfix
+
+sessions:
+
+- id: S011-f7-operator-ui
+  type: feature
+  status: paused
+  paused_at: "2026-07-15"
+  pause_reason: "Closed to open hotfix session for empty Bearer lint-tac/decode-tac + lint UX; PR #716 remains open"
+  close_reason: "Closed to open hotfix session for empty Bearer lint-tac/decode-tac + lint UX; PR #716 remains open"
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716
+  pr_number: 716
   branch: evolve/S011-f7-operator-ui
   started_at: "2026-07-13"
   intent: "F7 multi-product TAC operator UI (7 products) + interactive workbench (#694), TAC decode panel (#702), failed-TAC/partial
     convert UX (#665/#666), remove admin dashboard / BYO DB (#697); #5 kept as parent tracker"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-008
-  note: "12 approved (D-S011-EV008-deploy-check-A); PR #716 open as PR-EV-008 (evolve→main; retitled/updated; NO merge, NO deploy); 13-deploy-smoke blocked on merge approval; T6.4 in_progress (12 done / 13 pending)"
+  note: "Parked for later resume — PR #716 (PR-EV-008) remains open; EV-008 NOT deleted; resume after S012-empty-bearer-lint-tac; T6.4/13-deploy-smoke still pending merge approval"
   context_briefs:
   - docs/context/f7-operator-ui.md
   standing_docs_touched: []
@@ -125,8 +161,6 @@ active_session:
   current_stage: 12-verify-deploy
   artifacts_dir: docs/sessions/S011-f7-operator-ui
 
-
-sessions:
 
 - id: S010-issue-655-tac-traceability
   type: feature
@@ -591,10 +625,10 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: f7-operator-ui
-    session_id: S011-f7-operator-ui
-    started_at: "2026-07-13"
-    completed_at: "2026-07-13"
+    scoped_slug: empty-bearer-lint-tac
+    session_id: S012-empty-bearer-lint-tac
+    started_at: "2026-07-15"
+    completed_at: "2026-07-15"
     substeps:
       phase0: completed
       phase1a: completed
@@ -611,6 +645,7 @@ stages:
     - docs/sessions/S008-general-tac-iwxxm-converter/session-brief.md
     - docs/sessions/S008-general-tac-iwxxm-converter/routing-plan.md
     notes:
+    - "2026-07-15 S012-empty-bearer-lint-tac open — scoped hotfix empty Bearer lint-tac/decode-tac + lint UX; S011/EV-008 paused (PR #716 remains open)"
     - "GitHub #555 parent feedback; 2/4 items done in S001; auto-clear + error log remain"
     - "2026-06-25 scoped run S005 — docs/context/issue-671-docker-db.md (#671 Docker DB connect failure)"
     - "2026-06-25 scoped run S006 — docs/context/issue-664-output-filename.md (#664 custom output filename, manual input;
@@ -1425,9 +1460,13 @@ stages:
 
   14-hotfix:
     status: in_progress
-    session_id: S009-result-card-dismiss
-    bug_report: docs/bug-reports/BUG-2026-07-12-result-card-dismiss.md
+    session_id: S012-empty-bearer-lint-tac
+    current_bug: docs/bug-reports/BUG-2026-07-15-empty-bearer-lint-tac.md
+    bug_status: verifying
+    remediation_path: local-first
+    note: "Fix committed 77d5f40; opening PR"
     notes:
+    - "2026-07-15 — S012-empty-bearer-lint-tac open (empty Bearer on lint-tac/decode-tac + lint UX issue details); cleared stale S009 pointer."
     - "2026-07-12 — Docs reorg via /14-hotfix rejected (not a bug/hotfix); deferred until S006 complete (S006-R4)."
     - "2026-07-12 — S006 closed (S006-R5); docs reorg unblocked — open via 00-context (process session), not 14-hotfix."
     - "2026-07-12 — S009-result-card-dismiss open (FileConverter result card dismiss after Cancel/Remove)."
@@ -4372,6 +4411,8 @@ evolve_cycles:
   feature_ids: [F7]
   title: "F7 multi-product operator UI + workbench/decode/admin (#694/#702/#665/#666/#697)"
   status: in_progress
+  suspended_at: "2026-07-15"
+  suspend_reason: "Session S011 archived/paused for hotfix S012-empty-bearer-lint-tac; PR #716 work continues later — cycle NOT deleted"
   started: "2026-07-13"
   completed:
   scope_summary: |
@@ -4404,6 +4445,7 @@ evolve_cycles:
     - 06-tech-tooling
   current_stage: 12-verify-deploy
   notes:
+  - "2026-07-15 S011 paused/archived for hotfix S012-empty-bearer-lint-tac; EV-008 suspended (not deleted); PR #716 remains open for later resume"
   - "2026-07-14 PR-EV-008=#716 open (retitled/updated evolve→main; NO merge, NO deploy); 12 approved; 13 blocked on merge; T6.4 in_progress (12 done / 13 pending)"
   - "2026-07-14 D-S011-EV008-deploy-check-A — 12-verify-deploy completed (checklist approved); commit QA-001+reports; preparing PR-EV-008; 13 pending/blocked on merge; T6.4 remains in_progress (12 done / 13 pending); no merge/deploy yet"
   - "2026-07-14 S011/EV-008 12-verify-deploy — checklist written (deploy-checklist.md); awaiting user deploy-strategy approval (blocker: tip 44 commits ahead of main; QA-001 uncommitted); 12 remains in_progress; 13 not started"
@@ -4628,8 +4670,9 @@ evolve_cycles:
   issues: []
 
 git_history:
-  current_branch: evolve/S011-f7-operator-ui
+  current_branch: fix/S012-empty-bearer-lint-tac
   notes:
+  - "2026-07-15 S012-empty-bearer-lint-tac open — branch fix/S012-empty-bearer-lint-tac; S011 paused (PR #716 remains open)"
   - "2026-07-14 S011/EV-008 PR-EV-008=#716 open (evolve→main; NO merge, NO deploy); tip dc32d47; T6.4 in_progress (12 done / 13 pending)"
   - "2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first)"
   - "2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories; T6.3 pending; current_stage=11-verify-impl"
@@ -4651,6 +4694,12 @@ git_history:
   - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+  - name: fix/S012-empty-bearer-lint-tac
+    purpose: "Empty Bearer auth on lint-tac/decode-tac + lint UX issue details"
+    base: main
+    status: open
+    created_at: "2026-07-15"
+    session_id: S012-empty-bearer-lint-tac
   - name: evolve/EV-007-issue-655-tac-traceability
     purpose: "EV-007 / #655 F6 TAC traceability UX"
     base: main
@@ -5848,6 +5897,13 @@ git_history:
     - workflow-state.yaml
     timestamp: "2026-07-15"
     note: "HEAD after PRM-016; CI success on run 29444844110"
+  - sha: 77d5f40
+    branch: fix/S012-empty-bearer-lint-tac
+    message: "hotfix: restore JWT on lint/decode after reload + richer lint console"
+    stage: "14-hotfix"
+    files_changed: 14
+    timestamp: "2026-07-15T23:30:00Z"
+    session_id: S012-empty-bearer-lint-tac
 pr_review_cycles:
 - id: PRR-001
   pr_number: 679

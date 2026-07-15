@@ -86,10 +86,38 @@ export interface ApiError {
 }
 
 /**
- * Get the access token from local storage
+ * Get the access token from local storage.
+ *
+ * Must match ``authService`` (`access_token`). Legacy ``supabase_access_token``
+ * is read as a fallback for older sessions (BUG-2026-07-15).
  */
 function getAccessToken(): string | null {
-  return localStorage.getItem('supabase_access_token');
+  return (
+    localStorage.getItem('access_token') ||
+    localStorage.getItem('supabase_access_token')
+  );
+}
+
+/** Prefer FastAPI string ``detail``, then nested message, then ``message``. */
+function apiErrorMessage(
+  error: { detail?: unknown; message?: unknown },
+  fallback: string,
+): string {
+  if (typeof error.detail === 'string' && error.detail) {
+    return error.detail;
+  }
+  if (
+    error.detail &&
+    typeof error.detail === 'object' &&
+    'message' in error.detail &&
+    typeof (error.detail as { message: unknown }).message === 'string'
+  ) {
+    return (error.detail as { message: string }).message;
+  }
+  if (typeof error.message === 'string' && error.message) {
+    return error.message;
+  }
+  return fallback;
 }
 
 /**
@@ -474,9 +502,7 @@ export async function lintTac(params: {
     const error = await response.json().catch(() => ({
       message: `Lint failed: ${response.statusText}`,
     }));
-    throw new Error(
-      error.detail?.message || error.message || `HTTP ${response.status}`,
-    );
+    throw new Error(apiErrorMessage(error, `HTTP ${response.status}`));
   }
 
   return (await response.json()) as LintTacResponse;
@@ -509,9 +535,7 @@ export async function decodeTac(params: {
     const error = await response.json().catch(() => ({
       message: `Decode failed: ${response.statusText}`,
     }));
-    throw new Error(
-      error.detail?.message || error.message || `HTTP ${response.status}`,
-    );
+    throw new Error(apiErrorMessage(error, `HTTP ${response.status}`));
   }
 
   return (await response.json()) as DecodeTacResponse;

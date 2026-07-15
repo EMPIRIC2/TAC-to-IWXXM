@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 const authServiceMocks = vi.hoisted(() => ({
   isLoggedIn: vi.fn(),
   logout: vi.fn(),
+  getAccessToken: vi.fn(),
 }));
 
 const toastMocks = vi.hoisted(() => ({
@@ -37,6 +38,7 @@ vi.mock('/utils/supabase/client', () => {
 vi.mock('@/utils/authService', () => ({
   isLoggedIn: authServiceMocks.isLoggedIn,
   logout: authServiceMocks.logout,
+  getAccessToken: authServiceMocks.getAccessToken,
 }));
 
 vi.mock('@/utils/workSessionApi', () => ({
@@ -292,6 +294,7 @@ describe('App Component', () => {
     vi.clearAllMocks();
     localStorage.clear();
     authServiceMocks.isLoggedIn.mockReturnValue(false);
+    authServiceMocks.getAccessToken.mockReturnValue(null);
     authServiceMocks.logout.mockResolvedValue(undefined);
     mockReadGuest.mockReturnValue(null);
     workSessionMocks.listWorkSessions.mockResolvedValue({ items: [], total: 0 });

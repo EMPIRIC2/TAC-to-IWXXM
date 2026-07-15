@@ -295,7 +295,7 @@ describe('API Utils', () => {
     });
 
     it('should include authorization token if available', async () => {
-      localStorage.setItem('supabase_access_token', 'test-token-123');
+      localStorage.setItem('access_token', 'test-token-123');
       mockFetchResponse({
         results: [],
         errors: [],
@@ -535,6 +535,7 @@ describe('API Utils', () => {
   // ============= Edge Cases =============
   describe('Edge Cases', () => {
     it('should handle requests without authentication token', async () => {
+      localStorage.removeItem('access_token');
       localStorage.removeItem('supabase_access_token');
       mockFetchResponse({
         results: [],

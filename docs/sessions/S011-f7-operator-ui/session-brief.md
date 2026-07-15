@@ -1,12 +1,15 @@
 ---
 session_id: S011-f7-operator-ui
 type: feature
-status: in_progress
+status: paused
 branch: evolve/S011-f7-operator-ui
 started_at: 2026-07-13
+paused_at: 2026-07-15
+pause_reason: "Closed to open hotfix session for empty Bearer lint-tac/decode-tac + lint UX; PR #716 remains open"
 intent: "F7 multi-product TAC operator UI (7 products) + workbench (#694), decode panel (#702), failed-TAC/partial UX (#665/#666), remove admin / BYO DB (#697); #5 kept as parent tracker"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-008
+pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716
 context_briefs:
   - docs/context/f7-operator-ui.md
 standing_docs_touched: []
@@ -21,6 +24,12 @@ phase3_resolutions:
 ---
 
 # Session S011 — F7 operator UI + workbench / decode / admin
+
+> **Paused 2026-07-15** — closed/archived to open hotfix
+> [S012-empty-bearer-lint-tac](../S012-empty-bearer-lint-tac/session-brief.md).
+> Close reason: *Closed to open hotfix session for empty Bearer lint-tac/decode-tac +
+> lint UX; PR #716 remains open.* EV-008 is suspended (not deleted); resume PR-EV-008
+> (#716) after S012.
 
 ## Intent
 

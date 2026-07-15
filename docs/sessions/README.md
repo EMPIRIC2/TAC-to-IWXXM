@@ -35,11 +35,14 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S008-general-tac-iwxxm-converter](S008-general-tac-iwxxm-converter/session-brief.md) | feature | completed | General TAC→IWXXM + near-RT ingest (EV-006) | evolve/S008-general-tac-iwxxm-converter | 2026-07-12 | 2026-07-12 |
 | [S009-result-card-dismiss](S009-result-card-dismiss/session-brief.md) | hotfix | completed | Results Card stays after Cancel/Remove | fix/S009-result-card-dismiss | 2026-07-12 | 2026-07-12 |
 | [S010-issue-655-tac-traceability](S010-issue-655-tac-traceability/session-brief.md) | feature | completed | Source TAC on conversion results (#655) | evolve/EV-007-issue-655-tac-traceability | 2026-07-12 | 2026-07-13 |
-| [S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md) | feature | in_progress | F7 multi-product UI + workbench/decode/admin (#694/#702/#665/#666/#697) | evolve/S011-f7-operator-ui | 2026-07-13 | — |
+| [S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md) | feature | paused | F7 multi-product UI + workbench/decode/admin (#694/#702/#665/#666/#697); PR #716 open for later resume | evolve/S011-f7-operator-ui | 2026-07-13 | — (paused 2026-07-15) |
+| [S012-empty-bearer-lint-tac](S012-empty-bearer-lint-tac/session-brief.md) | hotfix | in_progress | Empty Bearer on lint-tac/decode-tac + lint UX issue details | fix/S012-empty-bearer-lint-tac | 2026-07-15 | — |
 
 ## Active session
 
-**[S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md)** — F7 operator UI + workbench/decode/admin (00-context in progress).
+**[S012-empty-bearer-lint-tac](S012-empty-bearer-lint-tac/session-brief.md)** — Empty Bearer lint-tac/decode-tac + lint UX (14-hotfix in progress).
+
+Parked: **[S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md)** — EV-008 / PR [#716](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716) remains open for later resume.
 
 ## Folder layout
 
