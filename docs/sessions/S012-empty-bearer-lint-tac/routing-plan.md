@@ -3,7 +3,7 @@
 | Stage | Required | Status | Notes |
 |-------|----------|--------|-------|
 | 00-context (scoped) | yes | completed | Session open 2026-07-15; intent recorded in session-brief |
-| 14-hotfix | yes | in_progress | Empty Bearer on lint-tac/decode-tac + lint UX issue details |
+| 14-hotfix | yes | completed | BUG resolved; PR #721 merged 6412b21; production verified |
 
 **Skipped**
 
