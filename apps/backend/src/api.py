@@ -434,8 +434,6 @@ async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Op
             raw_bytes = bytes(inflated)
         except OSError as exc:
             return None, f"gzip decompress failed ({exc})"
-        if len(raw_bytes) > max_upload_bytes:
-            return None, f"decompressed file too large (limit {max_upload_bytes} bytes)"
 
     try:
         decoded = raw_bytes.decode("utf-8")

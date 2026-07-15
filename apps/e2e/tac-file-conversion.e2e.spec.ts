@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
+  fillManualTac,
   openConverterForE2e,
   openConverterWithMockSession,
 } from './playwright-e2e-helpers';
@@ -62,13 +63,12 @@ test.describe('TAC File Conversion', () => {
   test('clear removes manual input', async ({ page }) => {
     await openConverterForE2e(page);
 
-    const manualInput = page.getByLabel(/Enter METAR data manually/i);
-    await manualInput.fill('METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010');
+    await fillManualTac(page, 'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010');
     await page
       .getByRole('button', { name: /Clear all pending files and manual input/i })
       .click();
 
-    await expect(manualInput).toHaveValue('');
+    await expect(page.getByLabel(/Enter METAR data manually/i)).toHaveText('');
   });
 
   test('mocked success conversion shows success notification and results', async ({
@@ -148,9 +148,7 @@ test.describe('TAC File Conversion', () => {
     await page
       .getByLabel(/Output filename for manually entered METAR downloads/i)
       .fill('report');
-    await page
-      .getByLabel(/Enter METAR data manually/i)
-      .fill('METAR KJFK LINE ONE\nMETAR KDEN LINE TWO');
+    await fillManualTac(page, 'METAR KJFK LINE ONE\nMETAR KDEN LINE TWO');
     await page.getByTestId('convert-button').click();
 
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(

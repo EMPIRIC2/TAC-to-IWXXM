@@ -114,6 +114,20 @@ async def test_read_uploaded_text_cases() -> None:
 
 
 @pytest.mark.asyncio
+async def test_read_uploaded_text_corrupt_gzip() -> None:
+    content, error = await api_module.read_uploaded_text(_FakeUploadFile(b"\x1f\x8bCorruptNotGzip", filename="bad.gz"))
+    assert content is None
+    assert error is not None and "gzip decompress failed" in error
+
+
+def test_manual_entries_with_offsets_crlf() -> None:
+    pairs = api_module.manual_entries_with_offsets("METAR AA\r\nMETAR BB\r\n")
+    assert [e for e, _ in pairs] == ["METAR AA", "METAR BB"]
+    assert pairs[0][1] == 0
+    assert pairs[1][1] == len("METAR AA\r\n")
+
+
+@pytest.mark.asyncio
 async def test_convert_request_logging_middleware_passthrough_paths() -> None:
     calls = {"count": 0}
 

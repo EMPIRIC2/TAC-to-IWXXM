@@ -259,3 +259,69 @@ def test_convert_preview_file_upload_soft_fail(client: TestClient) -> None:
     assert payload.get("ok") is False
     assert payload.get("results")
     assert payload.get("failed_spans")
+
+
+def test_convert_preview_multiline_failed_spans_use_buffer_offsets(client: TestClient) -> None:
+    """Multi-line manual_text spans must align to the full editor buffer (BUG-2026-07-15)."""
+    good = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
+    bad = "METAR XXXX NOT_A_REAL_REPORT GARBAGE="
+    buf = f"{good}\n{bad}"
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, buf),
+            "preview": (None, "true"),
+            "iwxxm_version": (None, "2023-1"),
+            "product": (None, "METAR"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 200
+    spans = response.json().get("failed_spans") or []
+    assert spans
+    bad_start = buf.index(bad)
+    assert any(int(s["start"]) >= bad_start for s in spans)
+
+
+@pytest.mark.asyncio
+async def test_convert_preview_soft_fail_logs_failed_not_success(client: TestClient, monkeypatch) -> None:
+    """Soft-preview partial converts must not emit SUCCESS translation webhooks."""
+    from src import api as api_module
+    from src.schemas.icao_opmet import TranslationStatus
+
+    statuses: list[TranslationStatus] = []
+    failed_hooks: list[str] = []
+    success_hooks: list[str] = []
+
+    async def fake_log_translation(**kwargs):
+        statuses.append(kwargs["translation_status"])
+        return "tid-1"
+
+    async def fake_notify_failed(**kwargs):
+        failed_hooks.append(kwargs.get("error_type") or "failed")
+
+    async def fake_notify_success(**kwargs):
+        success_hooks.append("success")
+
+    async def fake_notify_completed(**kwargs):
+        success_hooks.append("completed")
+
+    monkeypatch.setattr(api_module.statistics_service, "log_translation", fake_log_translation)
+    monkeypatch.setattr(api_module.webhook_service, "notify_translation_failed", fake_notify_failed)
+    monkeypatch.setattr(api_module.webhook_service, "notify_translation_success", fake_notify_success)
+    if hasattr(api_module.webhook_service, "notify_translation_completed"):
+        monkeypatch.setattr(api_module.webhook_service, "notify_translation_completed", fake_notify_completed)
+
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, BAD_METAR_TAC),
+            "preview": (None, "true"),
+            "product": (None, "METAR"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 200
+    assert TranslationStatus.FAILED in statuses
+    assert "soft_preview_partial" in failed_hooks or failed_hooks
+    assert not success_hooks

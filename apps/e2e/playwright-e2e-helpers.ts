@@ -97,7 +97,14 @@ export async function openConverterForE2e(page: Page): Promise<void> {
   await loginAndOpenConverter(page);
 }
 
+export async function fillManualTac(page: Page, metar: string): Promise<void> {
+  const editor = page.getByLabel(/Enter METAR data manually/i);
+  await editor.click();
+  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+  await page.keyboard.insertText(metar);
+}
+
 export async function convertManualMetar(page: Page, metar: string): Promise<void> {
-  await page.getByLabel(/Enter METAR data manually/i).fill(metar);
+  await fillManualTac(page, metar);
   await page.getByTestId('convert-button').click();
 }

@@ -113,9 +113,10 @@ active_session:
   - stage: 19-address-pr-review
     required: false
     mode: on-demand
-    status: in_progress
+    status: completed
     started: "2026-07-15"
-    note: "PRM-016 remediating PRR-019 on #716 (blockers + advisories)"
+    completed: "2026-07-15"
+    note: "PRM-016 completed — fixed 4 / deferred 1 (F5 Playwright T2/H4-H5); head_sha 95c7647; CI success"
   skipped_stages:
   - stage: 03-plan-tooling
     rationale: "Hooks/rules already exist from prior cycles"
@@ -1382,12 +1383,13 @@ stages:
     - "2026-07-12 PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7; user said Merge; anti-merge override)"
 
   19-address-pr-review:
-    status: in_progress
+    status: completed
     started: "2026-06-22"
-    completed: "2026-07-12"
+    completed: "2026-07-15"
     last_cycle: PRM-016
     session_id: S011-f7-operator-ui
     notes:
+    - "PRM-016 completed on #716 — F1/F3/F4 583605e, F2 8a13d8c; F5 deferred (Playwright T2/H4-H5 host ports/disk; CI E2E + T6.4); fixed=4 deferred=1 wont_fix=0; linked PRR-019; head_sha 95c7647; CI success; follow_up pr_review_rerun offered"
     - "PRM-015 completed on #711 — B1 ecdeac5 (validate TAC auto-convert forwards profile), A1 79af006 (bound uploads + MAX_BULLETIN_REPORTS=100);
       fixed=2 deferred=0 wont_fix=0; linked PRR-018; head_sha 79af006; squash-merge authorized when CI green (D-S008-evolve-main-18-19)"
     - "PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)"
@@ -5797,6 +5799,55 @@ git_history:
     files_changed: 2
     timestamp: '2026-07-15T02:05:51Z'
     note: "PR-EV-008=#716 open; no merge/deploy"
+  - sha: 583605e
+    branch: evolve/S011-f7-operator-ui
+    message: "[PRM-016] fix: soft-preview span offsets, gzip inflate cap, preview logging"
+    stage: "19-address-pr-review"
+    session_id: S011-f7-operator-ui
+    evolve_cycle_id: EV-008
+    skill_id: 19-address-pr-review
+    pr_number: 716
+    linked_review_cycle_id: PRR-019
+    remediation_cycle_id: PRM-016
+    finding_ids: [F1, F3, F4]
+    files_changed:
+    - apps/backend/src/api.py
+    - apps/backend/tests/unit/test_api_helper_functions_unit.py
+    - apps/backend/tests/unit/test_api_helpers_middleware_unit.py
+    - docs/bug-reports/BUG-2026-07-15-multiline-preview-span-offsets.md
+    - tests/bugs/test_bug_2026_07_15_multiline_preview_span_offsets.py
+    timestamp: "2026-07-15"
+  - sha: 8a13d8c
+    branch: evolve/S011-f7-operator-ui
+    message: "[PRM-016] fix: treat npm audit API 410 as CI skip"
+    stage: "19-address-pr-review"
+    session_id: S011-f7-operator-ui
+    evolve_cycle_id: EV-008
+    skill_id: 19-address-pr-review
+    pr_number: 716
+    linked_review_cycle_id: PRR-019
+    remediation_cycle_id: PRM-016
+    finding_id: F2
+    files_changed:
+    - apps/frontend/package.json
+    - scripts/frontend/audit-ci.sh
+    timestamp: "2026-07-15"
+  - sha: 95c7647
+    branch: evolve/S011-f7-operator-ui
+    message: "[PRM-016] docs: record PRR-019 review and PRM-016 remediation state"
+    stage: "19-address-pr-review"
+    session_id: S011-f7-operator-ui
+    evolve_cycle_id: EV-008
+    skill_id: 19-address-pr-review
+    pr_number: 716
+    linked_review_cycle_id: PRR-019
+    remediation_cycle_id: PRM-016
+    files_changed:
+    - docs/sessions/S011-f7-operator-ui/reports/pr-remediation.md
+    - docs/sessions/S011-f7-operator-ui/reports/pr-review.md
+    - workflow-state.yaml
+    timestamp: "2026-07-15"
+    note: "HEAD after PRM-016; CI success on run 29444844110"
 pr_review_cycles:
 - id: PRR-001
   pr_number: 679
@@ -7203,12 +7254,48 @@ pr_remediation_cycles:
   pr_number: 716
   pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716
   title: "[EV-008 / S011] F7 multi-product operator UI"
-  status: in_progress
+  status: completed
   started: "2026-07-15"
+  completed: "2026-07-15"
   head_ref: evolve/S011-f7-operator-ui
   base_ref: main
+  head_sha: 95c7647cf5603acc8bca93b997ad03dbf1f2ec8b
   scope: blockers_then_advisories
+  ci_status: success
+  ci_run_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29444844110
+  fixed: 4
+  deferred: 1
+  wont_fix: 0
+  findings:
+  - id: F1
+    severity: blocker
+    summary: multiline soft-preview failed_spans offsets
+    status: fixed
+    commit: 583605e
+  - id: F2
+    severity: blocker
+    summary: CI Validate npm audit 410
+    status: fixed
+    commit: 8a13d8c
+  - id: F3
+    severity: advisory
+    summary: gzip decompress bomb
+    status: fixed
+    commit: 583605e
+  - id: F4
+    severity: advisory
+    summary: soft-preview SUCCESS logging/webhook
+    status: fixed
+    commit: 583605e
+  - id: F5
+    severity: advisory
+    summary: Playwright T2 / H4-H5 not on tip
+    status: deferred
+    note: host ports/disk; CI E2E + T6.4
+  report: docs/sessions/S011-f7-operator-ui/reports/pr-remediation.md
+  follow_up:
+    pr_review_rerun: offered
   notes:
   - "AskQuestion unavailable; user asked for bugs+blockers+advisories → assumed full PRR-019 backlog"
-  findings: []
+  - "PRM-016 completed — fixed F1–F4; deferred F5 (Playwright T2/H4-H5); CI green on 95c7647"
 
