@@ -66,8 +66,8 @@ Deploy mode: **image** (`RENDER_DEPLOY_MODE=image` in `ci-cd.yml`) → GHCR `mai
 ## Checklist signoff
 
 - [x] User approves deploy strategy (merge → image → smokes) — D-S011-EV008-deploy-check-A
-- [x] QA-001 + reports committed — `e86be26`
-- [ ] PR-EV-008 ready / CI green
+- [x] QA-001 + reports committed — `e86be26` (+ `1363a89`)
+- [x] PR-EV-008 open — #716 (await CI green)
 - [ ] Explicit merge + deploy approval for 13
 
 **Recommendation:** Commit + prepare evolve→main PR; do not merge or Redeploy until user approves.
