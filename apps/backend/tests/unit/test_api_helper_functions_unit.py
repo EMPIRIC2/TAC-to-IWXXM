@@ -62,6 +62,11 @@ def test_split_manual_entries_and_normalizers():
     entries = api_module.split_manual_entries("\nMETAR KJFK\n\nSPECI KLAX\n")
     assert entries == ["METAR KJFK", "SPECI KLAX"]
 
+    with_offsets = api_module.manual_entries_with_offsets("\nMETAR KJFK\n\nSPECI KLAX\n")
+    assert [e for e, _ in with_offsets] == entries
+    assert with_offsets[0][1] == 1  # leading newline
+    assert with_offsets[1][1] == len("\nMETAR KJFK\n\n")
+
     assert api_module.normalize_code(" kjfk ", 4) == "KJFK"
     assert api_module.normalize_code("", 4) is None
     assert api_module.normalize_validation_level("icao-opmet") == "icao_opmet"

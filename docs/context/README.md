@@ -18,7 +18,8 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 | [issue-664-output-filename](issue-664-output-filename.md) | Custom output filename for manual METAR input (GitHub #664) | active | 2026-06-25 | F1, UJ-001 |
 | [general-tac-iwxxm-converter](general-tac-iwxxm-converter.md) | Generalizable C/Cython TAC→IWXXM + IWXXM-US architecture | active | 2026-07-12 | F1, F2, F4, proposed Fn |
 | [realtime-tac-ingest](realtime-tac-ingest.md) | Near-RT ingest design + `iwxxm-validate` / `tac-validate` packages; F7/F8 Planned | active | 2026-07-12 | F2, F6, F7, F8 |
-| [issue-655-tac-traceability](issue-655-tac-traceability.md) | Source TAC display UX for conversion results (GitHub #655) | active | 2026-07-12 | F6, UJ-001 |
+| [issue-655-tac-traceability](issue-655-tac-traceability.md) | Source TAC display UX for conversion results (GitHub #655) | superseded | 2026-07-12 | F6, UJ-001 |
+| [f7-operator-ui](f7-operator-ui.md) | F7 multi-product operator UI + workbench/decode/admin (#694/#702/#665/#666/#697) | active | 2026-07-13 | F7, F6, F5, M4 |
 
 **Convention**: One brief per topic at `docs/context/<slug>.md`. Reference downstream as
 `[Context: <slug> R#]`.

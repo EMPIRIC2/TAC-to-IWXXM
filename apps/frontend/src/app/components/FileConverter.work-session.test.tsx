@@ -29,6 +29,43 @@ vi.mock('/utils/supabase/logout', () => ({
 
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: vi.fn(),
+  lintTac: vi.fn().mockResolvedValue({
+    ok: true,
+    issues: [],
+    fixes: [],
+  }),
+  decodeTac: vi
+    .fn()
+    .mockResolvedValue({ product: 'METAR', segments: [], residuals: [] }),
+}));
+
+vi.mock('./TacEditor', () => ({
+  TacEditor: ({
+    id,
+    value,
+    onChange,
+    readOnly,
+    'aria-label': ariaLabel,
+  }: {
+    id?: string;
+    value: string;
+    onChange: (v: string) => void;
+    readOnly?: boolean;
+    'aria-label'?: string;
+  }) => (
+    <textarea
+      id={id}
+      value={value}
+      readOnly={readOnly}
+      aria-label={ariaLabel}
+      data-testid="tac-editor"
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
+
+vi.mock('./DecodePanel', () => ({
+  DecodePanel: () => null,
 }));
 
 vi.mock('/utils/databaseUpload', () => ({
@@ -96,6 +133,7 @@ describe('FileConverter F5 workflow', () => {
           {
             id: 'sess-1',
             status: 'finished',
+            product: 'metar',
             title: 'KJFK',
             manual_tac: 'METAR KJFK',
             pending_files: [],
@@ -130,6 +168,7 @@ describe('FileConverter F5 workflow', () => {
           {
             id: 'sess-1',
             status: 'finished',
+            product: 'metar',
             title: 'KJFK',
             manual_tac: 'METAR KJFK',
             pending_files: [],
@@ -343,6 +382,7 @@ describe('FileConverter F5 workflow', () => {
           {
             id: 'sess-hydrate',
             status: 'wip',
+            product: 'metar',
             title: 'KJFK',
             manual_tac: 'METAR KJFK 121251Z 18012KT 10SM',
             pending_files: [{ name: 'pending.txt', content: 'METAR PENDING' }],
@@ -382,6 +422,7 @@ describe('FileConverter F5 workflow', () => {
           {
             id: 'sess-multi-line',
             status: 'wip',
+            product: 'metar',
             title: 'KJFK',
             manual_tac: '',
             pending_files: [],

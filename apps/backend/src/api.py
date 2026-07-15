@@ -30,6 +30,7 @@ try:
         ConversionResponse,
         ConversionResult,
         ErrorDetail,
+        FailedSpan,
         HealthResponse,
     )
     from .schemas.icao_opmet import TranslationStatus
@@ -37,6 +38,9 @@ try:
         BulletinMetaModel,
         BulletinReportResultModel,
         ConvertBulletinResponse,
+        DecodeResidualModel,
+        DecodeSegmentModel,
+        DecodeTacResponse,
         LintFixModel,
         LintIssueModel,
         LintTacResponse,
@@ -66,6 +70,7 @@ except ImportError:
         ConversionResponse,
         ConversionResult,
         ErrorDetail,
+        FailedSpan,
         HealthResponse,
     )
     from schemas.icao_opmet import TranslationStatus
@@ -73,6 +78,9 @@ except ImportError:
         BulletinMetaModel,
         BulletinReportResultModel,
         ConvertBulletinResponse,
+        DecodeResidualModel,
+        DecodeSegmentModel,
+        DecodeTacResponse,
         LintFixModel,
         LintIssueModel,
         LintTacResponse,
@@ -95,6 +103,7 @@ except ImportError:
 # Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033)
 from iwxxm_validate import validate as iwxxm_validate_fn
 from tac2iwxxm import BulletinSplitError
+from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
 from tac_validate import lint as tac_lint_fn
 
@@ -370,8 +379,35 @@ def split_manual_entries(manual_text: str) -> List[str]:
     return [line.strip() for line in manual_text.splitlines() if line.strip()]
 
 
+def manual_entries_with_offsets(manual_text: str) -> List[Tuple[str, int]]:
+    """Split like ``split_manual_entries`` with start offsets into the original buffer.
+
+    Offsets point at the first non-whitespace character of each kept line so
+    soft-preview ``failed_spans`` can be remapped onto the full editor document.
+    """
+    if not manual_text:
+        return []
+    out: List[Tuple[str, int]] = []
+    offset = 0
+    for line in manual_text.splitlines(keepends=True):
+        raw = line[:-1] if line.endswith("\n") else line
+        if raw.endswith("\r"):
+            raw = raw[:-1]
+        stripped = raw.strip()
+        if stripped:
+            lead = len(raw) - len(raw.lstrip())
+            out.append((stripped, offset + lead))
+        offset += len(line)
+    return out
+
+
 async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Optional[str]]:
-    """Read uploaded text file using strict UTF-8 decoding with a size limit."""
+    """Read uploaded text file using strict UTF-8 decoding with a size limit.
+
+    Gzip payloads (``.gz`` / magic ``1f 8b``) are inflated before decode.
+    """
+    import gzip
+
     max_upload_bytes = 10 * 1024 * 1024  # 10 MiB
     raw_bytes = await upload_file.read(max_upload_bytes + 1)
     if not raw_bytes or not raw_bytes.strip():
@@ -379,6 +415,25 @@ async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Op
 
     if len(raw_bytes) > max_upload_bytes:
         return None, f"file too large (limit {max_upload_bytes} bytes)"
+
+    name = (upload_file.filename or "").lower()
+    if name.endswith(".gz") or name.endswith(".gzip") or raw_bytes[:2] == b"\x1f\x8b":
+        try:
+            import io
+
+            # Cap inflate size during decompression (avoid gzip bombs).
+            inflated = bytearray()
+            with gzip.GzipFile(fileobj=io.BytesIO(raw_bytes), mode="rb") as gz:
+                while True:
+                    chunk = gz.read(64 * 1024)
+                    if not chunk:
+                        break
+                    inflated.extend(chunk)
+                    if len(inflated) > max_upload_bytes:
+                        return None, f"decompressed file too large (limit {max_upload_bytes} bytes)"
+            raw_bytes = bytes(inflated)
+        except OSError as exc:
+            return None, f"gzip decompress failed ({exc})"
 
     try:
         decoded = raw_bytes.decode("utf-8")
@@ -549,37 +604,36 @@ logger.info(f"DEBUG: evaluation.router = {evaluation.router}")
 try:
     app.include_router(validation.router, prefix="/api/v1/validation", tags=["Validation"])
     logger.info("DEBUG: included validation router successfully")
-except Exception as e:
+except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include validation router: {e}", exc_info=True)
 
 try:
     app.include_router(evaluation.router, prefix="/api/v1/eval", tags=["Evaluation"])
     logger.info("DEBUG: included evaluation router successfully")
-except Exception as e:
+except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include evaluation router: {e}", exc_info=True)
 
 try:
     app.include_router(work_sessions.router, prefix="/api/v1/work-sessions", tags=["Work Sessions"])
-    app.include_router(work_sessions.admin_router)
+    # Admin work-sessions list removed (S011 / ADR-021 / #697).
     logger.info("DEBUG: included work sessions routers successfully")
-except Exception as e:
+except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include work sessions routers: {e}", exc_info=True)
 
 try:
     app.include_router(icao_opmet.router)
     logger.info("DEBUG: included ICAO OPMET router successfully")
-except Exception as e:
+except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include ICAO OPMET router: {e}", exc_info=True)
 
 try:
-    from auth.admin_api import router as admin_router
     from auth.api_supabase import legacy_router as auth_legacy_router
     from auth.api_supabase import router as auth_router
 
     app.include_router(auth_router)
     app.include_router(auth_legacy_router)
-    app.include_router(admin_router)
-    logger.info("DEBUG: included auth routers at /auth/* and /admin/* successfully")
+    # Product /admin/* routers not mounted (S011 / ADR-021 / #697).
+    logger.info("DEBUG: included auth routers at /auth/* successfully (admin product routes removed)")
 except Exception as e:
     logger.error(f"DEBUG: Failed to include auth routers: {e}", exc_info=True)
 
@@ -801,10 +855,62 @@ async def lint_tac(
                 code=i.code,
                 message=i.message,
                 location=i.location,
+                start=getattr(i, "start", None),
+                end=getattr(i, "end", None),
             )
             for i in report.issues
         ],
         fixes=[LintFixModel(code=f.code, message=f.message, replacement=f.replacement) for f in report.fixes],
+    )
+
+
+@app.post(
+    "/api/v1/decode-tac",
+    tags=["Conversion"],
+    response_model=DecodeTacResponse,
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+        415: {"description": "Unsupported Media Type — multipart/form-data required"},
+        422: {"description": "Missing required product field"},
+    },
+)
+async def decode_tac_endpoint(
+    request: Request,
+    product: str = Form(..., description="TAC product (required)"),
+    manual_text: str = Form(default="", description="TAC text to decode"),
+    files: Optional[List[UploadFile]] = File(None),
+    user: dict = Depends(verify_supabase_token),
+) -> DecodeTacResponse:
+    """Thin wrapper over ``tac2iwxxm.decode_tac`` (S011 / #702 / TC-F7-002)."""
+    _ = user
+    content_type = (request.headers.get("content-type") or "").lower()
+    if "multipart/form-data" not in content_type:
+        raise HTTPException(
+            status_code=415,
+            detail="POST /api/v1/decode-tac requires multipart/form-data",
+        )
+
+    tac_text = manual_text or ""
+    if files:
+        joined, err = await read_upload_files_text(files)
+        if err:
+            raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
+        if joined:
+            tac_text = joined
+
+    result = tac2iwxxm_decode_tac(tac_text, product=product)
+    return DecodeTacResponse(
+        product=result.product,
+        segments=[
+            DecodeSegmentModel(
+                start=s.start,
+                end=s.end,
+                code=s.code,
+                explanation=s.explanation,
+            )
+            for s in result.segments
+        ],
+        residuals=[DecodeResidualModel(start=r.start, end=r.end, text=r.text) for r in result.residuals],
     )
 
 
@@ -885,6 +991,8 @@ async def convert_bulletin(
                     code=i.code,
                     message=i.message,
                     location=i.location,
+                    start=getattr(i, "start", None),
+                    end=getattr(i, "end", None),
                 )
                 for i in lint_report.issues
             )
@@ -937,6 +1045,74 @@ async def convert_bulletin(
             bbb=split.meta.bbb,
         ),
         results=results,
+    )
+
+
+@app.post(
+    "/api/v1/ingest-collect",
+    tags=["Conversion"],
+    responses={
+        401: {"description": "Unauthorized"},
+        501: {"description": "COLLECT / FTBP ingest not implemented yet (placeholder)"},
+    },
+)
+async def ingest_collect(
+    request: Request,
+    files: Optional[List[UploadFile]] = File(None),
+    manual_text: str = Form(default="", description="COLLECT IWXXM XML or inflated gzip text"),
+    profile: str = Form(default="annex3"),
+    iwxxm_version: str = Form(default="2025-2"),
+    user: dict = Depends(verify_supabase_token),
+) -> dict[str, Any]:
+    """Placeholder for IWXXM COLLECT / FTBP ingest (ADR-024).
+
+    Accepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI
+    can exercise the path; returns HTTP 501 until member extraction + validate is shipped.
+    """
+    _ = user
+    content_type = (request.headers.get("content-type") or "").lower()
+    if "multipart/form-data" not in content_type:
+        raise HTTPException(
+            status_code=415,
+            detail="POST /api/v1/ingest-collect requires multipart/form-data",
+        )
+
+    payload = manual_text or ""
+    if files:
+        joined, err = await read_upload_files_text(files)
+        if err:
+            raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
+        if joined:
+            payload = joined
+
+    if not payload.strip():
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "code": "empty_collect",
+                "message": "At least one of files or manual_text is required",
+            },
+        )
+
+    logger.info(
+        "[INGEST-COLLECT] placeholder hit profile=%s version=%s bytes=%s",
+        profile,
+        iwxxm_version,
+        len(payload),
+    )
+    raise HTTPException(
+        status_code=501,
+        detail={
+            "code": "not_implemented",
+            "message": (
+                "IWXXM COLLECT / FTBP ingest is not implemented yet. "
+                "Convert AHL TAC bulletins via POST /api/v1/convert-bulletin, "
+                "or paste individual TAC reports into /api/v1/convert."
+            ),
+            "profile": profile,
+            "iwxxm_version": iwxxm_version,
+            "accepted_bytes": len(payload),
+        },
     )
 
 
@@ -1169,6 +1345,18 @@ async def convert(
     lint: bool = Form(default=True, description="Run tac-validate before convert (Q14=C; default on)"),
     product: str = Form(default="METAR", description="TAC product (required for F6; default METAR for legacy)"),
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
+    preview: bool = Form(
+        default=False,
+        description="Soft-preview mode (ADR-022): best-effort IWXXM + failed_spans on partial failure",
+    ),
+    include_nil_reasons: bool = Form(
+        default=True,
+        description="When false, prefer omitting nilReason attributes (engine may still emit NIL report shells; ADR-024)",
+    ),
+    log_level: str = Form(
+        default="INFO",
+        description="Minimum severity for conversion/validation/lint process issues echoed to the client",
+    ),
     user: dict = Depends(verify_supabase_token),
 ) -> ConversionResponse:
     logger.info(
@@ -1318,14 +1506,22 @@ async def convert(
         stop_on_error = request_body.stop_on_error
         bulletin_id = request_body.bulletin_id or ""
         issuing_center = request_body.issuing_center or ""
+        preview = bool(getattr(request_body, "preview", False))
+        body_product = getattr(request_body, "product", None)
+        if body_product is not None:
+            product = body_product
+        body_profile = getattr(request_body, "profile", None)
+        if body_profile is not None:
+            profile = body_profile
         manual_text = ""  # Override form input
         files = None  # Override file input
 
         logger.info(
-            "[CONVERT] JSON mode metars=%s version=%s validation_level=%s",
+            "[CONVERT] JSON mode metars=%s version=%s validation_level=%s preview=%s",
             len(metars or []),
             iwxxm_version,
             validation_level,
+            preview,
         )
 
         # Map validation_level to validate_output
@@ -1353,6 +1549,17 @@ async def convert(
     ]
     bulletin_id = normalize_code(bulletin_id, 6) or ""
     issuing_center = normalize_code(issuing_center, 4) or ""
+    log_level_norm = (log_level or "INFO").strip().upper()
+    logger.info(
+        "[CONVERT] include_nil_reasons=%s log_level=%s",
+        include_nil_reasons,
+        log_level_norm,
+    )
+    if not include_nil_reasons:
+        logger.info(
+            "[CONVERT] include_nil_reasons=false accepted; tac2iwxxm may still emit "
+            "nilReason on NIL reports until engine honors the flag (ADR-024 placeholder)",
+        )
 
     # Validate and normalize IWXXM version
     try:
@@ -1387,6 +1594,58 @@ async def convert(
     errors: List[str] = []
     issues: List[ConversionIssue] = []
     total_inputs = 0
+    preview_failed_spans: List[FailedSpan] = []
+    preview_saw_soft_fail = False
+
+    def absorb_soft_preview(soft: dict, *, base_offset: int = 0) -> None:
+        """Merge soft-preview envelope fields from convert_metar_tac_with_metadata.
+
+        ``base_offset`` shifts entry-local span offsets into the original
+        ``manual_text`` buffer (multi-line editor documents).
+        """
+        nonlocal preview_saw_soft_fail
+        if not preview or not soft:
+            return
+        if soft.get("ok") is False:
+            preview_saw_soft_fail = True
+            for span in soft.get("failed_spans") or []:
+                data = span.model_dump() if hasattr(span, "model_dump") else dict(span)
+                if base_offset:
+                    if data.get("start") is not None:
+                        data["start"] = int(data["start"]) + base_offset
+                    if data.get("end") is not None:
+                        data["end"] = int(data["end"]) + base_offset
+                preview_failed_spans.append(FailedSpan(**data))
+
+    def record_preview_layer12_soft_fail(aggregated_result, tac_text: str = "", *, base_offset: int = 0) -> None:
+        """Mark soft-preview Layer 1–2 failure and copy spans when present (ADR-022)."""
+        nonlocal preview_saw_soft_fail
+        preview_saw_soft_fail = True
+        before = len(preview_failed_spans)
+        if aggregated_result:
+            for layer_result in getattr(aggregated_result, "results", []):
+                for validation_issue in getattr(layer_result, "issues", []):
+                    start = getattr(validation_issue, "start", None)
+                    end = getattr(validation_issue, "end", None)
+                    if start is None or end is None:
+                        continue
+                    preview_failed_spans.append(
+                        FailedSpan(
+                            start=int(start) + base_offset,
+                            end=int(end) + base_offset,
+                            code=getattr(validation_issue, "code", None),
+                            message=str(getattr(validation_issue, "message", "") or "") or None,
+                        )
+                    )
+        if len(preview_failed_spans) == before and tac_text:
+            preview_failed_spans.append(
+                FailedSpan(
+                    start=base_offset,
+                    end=base_offset + len(tac_text),
+                    code="LAYER12_SOFT_FAIL",
+                    message="Input failed ICAO/TAC Layer 1–2 checks; soft-preview continuing",
+                )
+            )
 
     def add_issue(
         source: str,
@@ -1410,7 +1669,7 @@ async def convert(
         )
 
     def add_aggregated_validation_issues(source: str, aggregated_result) -> None:
-        if not aggregated_result:
+        if not aggregated_result:  # pragma: no cover - defensive guard
             return
         for layer_result in getattr(aggregated_result, "results", []):
             for validation_issue in getattr(layer_result, "issues", []):
@@ -1460,7 +1719,8 @@ async def convert(
     if request_body is not None and request_body.metars:
         metars_list = request_body.metars
 
-    manual_entries = split_manual_entries(manual_text)
+    manual_with_offsets = manual_entries_with_offsets(manual_text or "")
+    manual_entries = [entry for entry, _ in manual_with_offsets]
 
     request_metadata = {
         "bulletin_id": bulletin_id,
@@ -1514,14 +1774,13 @@ async def convert(
         metar_name = f"metar_{total_inputs}.txt"
         try:
             # Validate METAR input (Layers 1-2: ICAO and TAC syntax)
+            layer12_abort = False
             try:
                 if _product_uses_metar_tac_layers(product):
                     validation_result = validation_service.validate_all_layers(normalized_metar_text)
                     if not validation_result.passed:
                         # Build summary from validation result
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
-                        error_msg = f"{metar_name}: Validation failed - {validation_summary}"
-                        errors.append(error_msg)
                         add_issue(
                             source=metar_name,
                             message=f"Validation failed: {validation_summary}",
@@ -1530,33 +1789,36 @@ async def convert(
                             code="VALIDATION_FAILED",
                         )
                         add_aggregated_validation_issues(metar_name, validation_result)
-                        # Log failed validation
-                        try:
-                            translation_id = await statistics_service.log_translation(
-                                tac_message=metar_text.strip(),
-                                iwxxm_output=None,
-                                iwxxm_version=iwxxm_version,
-                                translation_status=TranslationStatus.FAILED,
-                                validation_layers_passed=[],
-                                validation_errors={"validation": validation_summary},
-                                translation_duration_ms=0,
-                                icao_airport_code=extract_airport_code(metar_text.strip()),
-                                user_id=user.get("sub"),
-                            )
-                            airport_code = extract_airport_code(metar_text.strip())
-                            await webhook_service.notify_translation_failed(
-                                translation_id=translation_id,
-                                airport_code=airport_code or "UNKNOWN",
-                                error_type="validation_failed",
-                                error_message=validation_summary,
-                            )
-                        except Exception as log_err:
-                            logger.error(f"Failed to log failed translation: {log_err}")
-                        if stop_on_error:
-                            break
-                        continue
+                        if preview:
+                            # ADR-022: do not hard-abort; continue to best-effort convert.
+                            record_preview_layer12_soft_fail(validation_result, normalized_metar_text)
+                        else:
+                            error_msg = f"{metar_name}: Validation failed - {validation_summary}"
+                            errors.append(error_msg)
+                            # Log failed validation
+                            try:
+                                translation_id = await statistics_service.log_translation(
+                                    tac_message=metar_text.strip(),
+                                    iwxxm_output=None,
+                                    iwxxm_version=iwxxm_version,
+                                    translation_status=TranslationStatus.FAILED,
+                                    validation_layers_passed=[],
+                                    validation_errors={"validation": validation_summary},
+                                    translation_duration_ms=0,
+                                    icao_airport_code=extract_airport_code(metar_text.strip()),
+                                    user_id=user.get("sub"),
+                                )
+                                airport_code = extract_airport_code(metar_text.strip())
+                                await webhook_service.notify_translation_failed(
+                                    translation_id=translation_id,
+                                    airport_code=airport_code or "UNKNOWN",
+                                    error_type="validation_failed",
+                                    error_message=validation_summary,
+                                )
+                            except Exception as log_err:
+                                logger.error(f"Failed to log failed translation: {log_err}")
+                            layer12_abort = True
             except ValidationServiceError as ve:
-                errors.append(f"{metar_name}: {str(ve)}")
                 add_issue(
                     source=metar_name,
                     message=str(ve),
@@ -1564,101 +1826,128 @@ async def convert(
                     hint="Ensure the METAR starts with METAR/SPECI and includes a valid ICAO station and timestamp.",
                     code="VALIDATION_SERVICE_ERROR",
                 )
-                # Log validation error
-                try:
-                    translation_id = await statistics_service.log_translation(
-                        tac_message=metar_text.strip(),
-                        iwxxm_output=None,
-                        iwxxm_version=iwxxm_version,
-                        translation_status=TranslationStatus.FAILED,
-                        validation_layers_passed=[],
-                        validation_errors={"error": str(ve)},
-                        translation_duration_ms=0,
-                        icao_airport_code=extract_airport_code(metar_text.strip()),
-                        user_id=user.get("sub"),
-                    )
-                    airport_code = extract_airport_code(metar_text.strip())
-                    await webhook_service.notify_translation_failed(
-                        translation_id=translation_id,
-                        airport_code=airport_code or "UNKNOWN",
-                        error_type="validation_error",
-                        error_message=str(ve),
-                    )
-                except Exception as log_err:
-                    logger.error(f"Failed to log validation error: {log_err}")
+                if preview:
+                    record_preview_layer12_soft_fail(None, normalized_metar_text)
+                else:
+                    errors.append(f"{metar_name}: {str(ve)}")
+                    # Log validation error
+                    try:
+                        translation_id = await statistics_service.log_translation(
+                            tac_message=metar_text.strip(),
+                            iwxxm_output=None,
+                            iwxxm_version=iwxxm_version,
+                            translation_status=TranslationStatus.FAILED,
+                            validation_layers_passed=[],
+                            validation_errors={"error": str(ve)},
+                            translation_duration_ms=0,
+                            icao_airport_code=extract_airport_code(metar_text.strip()),
+                            user_id=user.get("sub"),
+                        )
+                        airport_code = extract_airport_code(metar_text.strip())
+                        await webhook_service.notify_translation_failed(
+                            translation_id=translation_id,
+                            airport_code=airport_code or "UNKNOWN",
+                            error_type="validation_error",
+                            error_message=str(ve),
+                        )
+                    except Exception as log_err:
+                        logger.error(f"Failed to log validation error: {log_err}")
+                    layer12_abort = True
+
+            if layer12_abort:
                 if stop_on_error:
                     break
                 continue
-            else:
-                # Start timing for successful conversion
 
-                start_time = time.perf_counter()
+            # Start timing for successful conversion
+            start_time = time.perf_counter()
 
-                emit_recent_wx_issues(metar_name, norm_warnings)
+            emit_recent_wx_issues(metar_name, norm_warnings)
 
-                # Convert METAR to IWXXM
-                try:
-                    iwxxm_content, _ = convert_metar_tac_with_metadata(
-                        normalized_metar_text,
-                        iwxxm_version=iwxxm_version,
-                        lenient=False,
-                        product=product,
-                        profile=profile,
+            # Convert METAR to IWXXM
+            try:
+                soft_preview_buf = {}
+                iwxxm_content, _ = convert_metar_tac_with_metadata(
+                    normalized_metar_text,
+                    iwxxm_version=iwxxm_version,
+                    lenient=False,
+                    product=product,
+                    profile=profile,
+                    preview=preview,
+                    soft_preview_out=soft_preview_buf if preview else None,
+                )
+                absorb_soft_preview(soft_preview_buf)
+                if preview and soft_preview_buf.get("ok") is False:
+                    add_issue(
+                        source=metar_name,
+                        message="Soft-preview: conversion incomplete",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Fix failed TAC spans and retry hard convert before publish.",
+                        code="SOFT_PREVIEW_PARTIAL",
                     )
 
-                    # Optional output validation (Layers 3-7)
-                    validation_layers_passed = [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
+                # Optional output validation (Layers 3-7)
+                validation_layers_passed = [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
 
-                    if validation_orchestrator:
-                        validation_result = validation_orchestrator.validate(
-                            iwxxm_content,
-                            iwxxm_version=iwxxm_version,
-                            layers=[
+                if validation_orchestrator:
+                    validation_result = validation_orchestrator.validate(
+                        iwxxm_content,
+                        iwxxm_version=iwxxm_version,
+                        layers=[
+                            ValidationLayer.XML_WELLFORMED,
+                            ValidationLayer.XML_SCHEMA,
+                            ValidationLayer.SCHEMATRON,
+                            ValidationLayer.GML_REFERENCES,
+                            ValidationLayer.WMO_CODELISTS,
+                        ],
+                    )
+                    if validation_result.passed:
+                        validation_layers_passed.extend(
+                            [
                                 ValidationLayer.XML_WELLFORMED,
                                 ValidationLayer.XML_SCHEMA,
                                 ValidationLayer.SCHEMATRON,
                                 ValidationLayer.GML_REFERENCES,
                                 ValidationLayer.WMO_CODELISTS,
-                            ],
+                            ]
                         )
-                        if validation_result.passed:
-                            validation_layers_passed.extend(
-                                [
-                                    ValidationLayer.XML_WELLFORMED,
-                                    ValidationLayer.XML_SCHEMA,
-                                    ValidationLayer.SCHEMATRON,
-                                    ValidationLayer.GML_REFERENCES,
-                                    ValidationLayer.WMO_CODELISTS,
-                                ]
-                            )
 
-                    # Add to results
-                    result = ConversionResult(
-                        name=metar_name,
-                        content=iwxxm_content,
-                        tac_input=metar_text.strip(),
-                        source="json",
-                        size_bytes=len(iwxxm_content.encode("utf-8")),
+                # Add to results
+                result = ConversionResult(
+                    name=metar_name,
+                    content=iwxxm_content,
+                    tac_input=metar_text.strip(),
+                    source="json",
+                    size_bytes=len(iwxxm_content.encode("utf-8")),
+                )
+                results.append(result)
+
+                # Log successful (or soft-preview partial) translation
+                try:
+                    end_time = time.perf_counter()
+                    duration_ms = int(round((end_time - start_time) * 1000))
+                    soft_incomplete = bool(preview and soft_preview_buf.get("ok") is False)
+
+                    translation_id = await statistics_service.log_translation(
+                        tac_message=metar_text.strip(),
+                        iwxxm_output=iwxxm_content,
+                        iwxxm_version=iwxxm_version,
+                        translation_status=(TranslationStatus.FAILED if soft_incomplete else TranslationStatus.SUCCESS),
+                        validation_layers_passed=validation_layers_passed,
+                        translation_duration_ms=duration_ms,
+                        icao_airport_code=extract_airport_code(normalized_metar_text),
+                        user_id=user.get("sub"),
                     )
-                    results.append(result)
 
-                    # Log successful translation
-                    try:
-                        end_time = time.perf_counter()
-                        duration_ms = int(round((end_time - start_time) * 1000))
-
-                        translation_id = await statistics_service.log_translation(
-                            tac_message=metar_text.strip(),
-                            iwxxm_output=iwxxm_content,
-                            iwxxm_version=iwxxm_version,
-                            translation_status=TranslationStatus.SUCCESS,
-                            validation_layers_passed=validation_layers_passed,
-                            translation_duration_ms=duration_ms,
-                            icao_airport_code=extract_airport_code(normalized_metar_text),
-                            user_id=user.get("sub"),
+                    airport_code = extract_airport_code(normalized_metar_text)
+                    if soft_incomplete:
+                        await webhook_service.notify_translation_failed(
+                            translation_id=translation_id,
+                            airport_code=airport_code or "UNKNOWN",
+                            error_type="soft_preview_partial",
+                            error_message="Soft-preview conversion incomplete",
                         )
-
-                        airport_code = extract_airport_code(normalized_metar_text)
+                    else:
                         await webhook_service.notify_translation_completed(
                             translation_id=translation_id,
                             airport_code=airport_code or "UNKNOWN",
@@ -1666,60 +1955,60 @@ async def convert(
                             file_size_bytes=len(iwxxm_content.encode("utf-8")),
                             duration_ms=duration_ms,
                         )
-                    except Exception as log_err:
-                        logger.error(f"Failed to log successful translation: {log_err}")
+                except Exception as log_err:
+                    logger.error(f"Failed to log successful translation: {log_err}")
 
-                except ConversionError as ce:
-                    error_msg = f"{metar_name}: Conversion error - {str(ce)}"
-                    errors.append(error_msg)
-                    add_issue(
-                        source=metar_name,
-                        message=f"Conversion error: {ce}",
-                        severity=ConversionIssueSeverity.ERROR,
-                        hint="Check METAR TAC structure and required tokens (station/time/wind).",
-                        code="CONVERSION_ERROR",
+            except ConversionError as ce:
+                error_msg = f"{metar_name}: Conversion error - {str(ce)}"
+                errors.append(error_msg)
+                add_issue(
+                    source=metar_name,
+                    message=f"Conversion error: {ce}",
+                    severity=ConversionIssueSeverity.ERROR,
+                    hint="Check METAR TAC structure and required tokens (station/time/wind).",
+                    code="CONVERSION_ERROR",
+                )
+                logger.error(error_msg)
+                try:
+                    end_time = time.perf_counter()
+                    duration_ms = int(round((end_time - start_time) * 1000)) if start_time else 0
+
+                    await statistics_service.log_translation(
+                        tac_message=metar_text.strip(),
+                        iwxxm_output=None,
+                        iwxxm_version=iwxxm_version,
+                        translation_status=TranslationStatus.FAILED,
+                        validation_layers_passed=[ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX],
+                        validation_errors={"error": str(ce)},
+                        translation_duration_ms=duration_ms,
+                        icao_airport_code=extract_airport_code(normalized_metar_text),
+                        user_id=user.get("sub"),
                     )
-                    logger.error(error_msg)
-                    try:
-                        end_time = time.perf_counter()
-                        duration_ms = int(round((end_time - start_time) * 1000)) if start_time else 0
 
-                        await statistics_service.log_translation(
-                            tac_message=metar_text.strip(),
-                            iwxxm_output=None,
-                            iwxxm_version=iwxxm_version,
-                            translation_status=TranslationStatus.FAILED,
-                            validation_layers_passed=[ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX],
-                            validation_errors={"error": str(ce)},
-                            translation_duration_ms=duration_ms,
-                            icao_airport_code=extract_airport_code(normalized_metar_text),
-                            user_id=user.get("sub"),
-                        )
-
-                        airport_code = extract_airport_code(normalized_metar_text)
-                        await webhook_service.notify_translation_failed(
-                            translation_id=translation_id or "unknown",
-                            airport_code=airport_code or "UNKNOWN",
-                            error_type="conversion_error",
-                            error_message=str(ce),
-                        )
-                    except Exception as log_err:
-                        logger.error(f"Failed to log conversion error: {log_err}")
-                    if stop_on_error:
-                        break
-                except Exception as e:
-                    error_msg = f"{metar_name}: Unexpected error - {str(e)}"
-                    errors.append(error_msg)
-                    add_issue(
-                        source=metar_name,
-                        message=f"Unexpected backend error: {e}",
-                        severity=ConversionIssueSeverity.ERROR,
-                        hint="Retry once. If it persists, contact support with this message.",
-                        code="UNEXPECTED_BACKEND_ERROR",
+                    airport_code = extract_airport_code(normalized_metar_text)
+                    await webhook_service.notify_translation_failed(
+                        translation_id=translation_id or "unknown",
+                        airport_code=airport_code or "UNKNOWN",
+                        error_type="conversion_error",
+                        error_message=str(ce),
                     )
-                    logger.exception(error_msg)
-                    if stop_on_error:
-                        break
+                except Exception as log_err:
+                    logger.error(f"Failed to log conversion error: {log_err}")
+                if stop_on_error:
+                    break
+            except Exception as e:
+                error_msg = f"{metar_name}: Unexpected error - {str(e)}"
+                errors.append(error_msg)
+                add_issue(
+                    source=metar_name,
+                    message=f"Unexpected backend error: {e}",
+                    severity=ConversionIssueSeverity.ERROR,
+                    hint="Retry once. If it persists, contact support with this message.",
+                    code="UNEXPECTED_BACKEND_ERROR",
+                )
+                logger.exception(error_msg)
+                if stop_on_error:
+                    break
         except Exception as e:
             error_msg = f"{metar_name}: Unhandled error - {str(e)}"
             errors.append(error_msg)
@@ -1734,9 +2023,9 @@ async def convert(
             if stop_on_error:
                 break
 
-    for manual_index, manual_entry in enumerate(manual_entries, 1):
+    for manual_index, (manual_entry, entry_offset) in enumerate(manual_with_offsets, 1):
         total_inputs += 1
-        manual_source = f"manual_input_{manual_index}" if len(manual_entries) > 1 else "manual_input"
+        manual_source = f"manual_input_{manual_index}" if len(manual_with_offsets) > 1 else "manual_input"
         manual_name = f"{manual_source}.txt"
         start_time = None
         translation_id = None
@@ -1749,7 +2038,6 @@ async def convert(
                     validation_result = validation_service.validate_all_layers(_normalized_entry)
                     if not validation_result.passed:
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
-                        errors.append(f"{manual_source}: Validation failed - {validation_summary}")
                         add_issue(
                             source=manual_source,
                             message=f"Validation failed: {validation_summary}",
@@ -1758,32 +2046,38 @@ async def convert(
                             code="VALIDATION_FAILED",
                         )
                         add_aggregated_validation_issues(manual_source, validation_result)
-                        try:
-                            translation_id = await statistics_service.log_translation(
-                                tac_message=manual_entry,
-                                iwxxm_output=None,
-                                iwxxm_version=iwxxm_version,
-                                translation_status=TranslationStatus.FAILED,
-                                validation_layers_passed=[],
-                                validation_errors={"validation": validation_summary},
-                                translation_duration_ms=0,
-                                icao_airport_code=extract_airport_code(manual_entry),
-                                user_id=user.get("sub"),
+                        if preview:
+                            # ADR-022: soft-preview continues to best-effort convert.
+                            record_preview_layer12_soft_fail(
+                                validation_result, _normalized_entry, base_offset=entry_offset
                             )
-                            airport_code = extract_airport_code(manual_entry)
-                            await webhook_service.notify_translation_failed(
-                                translation_id=translation_id,
-                                airport_code=airport_code or "UNKNOWN",
-                                error_type="validation_failed",
-                                error_message=validation_summary,
-                            )
-                        except Exception as log_err:
-                            logger.error(f"Failed to log failed translation: {log_err}")
-                        if stop_on_error:
-                            break
-                        continue
+                        else:
+                            errors.append(f"{manual_source}: Validation failed - {validation_summary}")
+                            try:
+                                translation_id = await statistics_service.log_translation(
+                                    tac_message=manual_entry,
+                                    iwxxm_output=None,
+                                    iwxxm_version=iwxxm_version,
+                                    translation_status=TranslationStatus.FAILED,
+                                    validation_layers_passed=[],
+                                    validation_errors={"validation": validation_summary},
+                                    translation_duration_ms=0,
+                                    icao_airport_code=extract_airport_code(manual_entry),
+                                    user_id=user.get("sub"),
+                                )
+                                airport_code = extract_airport_code(manual_entry)
+                                await webhook_service.notify_translation_failed(
+                                    translation_id=translation_id,
+                                    airport_code=airport_code or "UNKNOWN",
+                                    error_type="validation_failed",
+                                    error_message=validation_summary,
+                                )
+                            except Exception as log_err:
+                                logger.error(f"Failed to log failed translation: {log_err}")
+                            if stop_on_error:
+                                break
+                            continue
             except ValidationServiceError as ve:
-                errors.append(f"{manual_source}: {str(ve)}")
                 add_issue(
                     source=manual_source,
                     message=str(ve),
@@ -1791,35 +2085,40 @@ async def convert(
                     hint="Ensure the METAR starts with METAR/SPECI and includes a valid ICAO station and timestamp.",
                     code="VALIDATION_SERVICE_ERROR",
                 )
-                try:
-                    translation_id = await statistics_service.log_translation(
-                        tac_message=manual_entry,
-                        iwxxm_output=None,
-                        iwxxm_version=iwxxm_version,
-                        translation_status=TranslationStatus.FAILED,
-                        validation_layers_passed=[],
-                        validation_errors={"error": str(ve)},
-                        translation_duration_ms=0,
-                        icao_airport_code=extract_airport_code(manual_entry),
-                        user_id=user.get("sub"),
-                    )
-                    airport_code = extract_airport_code(manual_entry)
-                    await webhook_service.notify_translation_failed(
-                        translation_id=translation_id,
-                        airport_code=airport_code or "UNKNOWN",
-                        error_type="validation_error",
-                        error_message=str(ve),
-                    )
-                except Exception as log_err:
-                    logger.error(f"Failed to log validation error: {log_err}")
-                if stop_on_error:
-                    break
-                continue
+                if preview:
+                    record_preview_layer12_soft_fail(None, _normalized_entry, base_offset=entry_offset)
+                else:
+                    errors.append(f"{manual_source}: {str(ve)}")
+                    try:
+                        translation_id = await statistics_service.log_translation(
+                            tac_message=manual_entry,
+                            iwxxm_output=None,
+                            iwxxm_version=iwxxm_version,
+                            translation_status=TranslationStatus.FAILED,
+                            validation_layers_passed=[],
+                            validation_errors={"error": str(ve)},
+                            translation_duration_ms=0,
+                            icao_airport_code=extract_airport_code(manual_entry),
+                            user_id=user.get("sub"),
+                        )
+                        airport_code = extract_airport_code(manual_entry)
+                        await webhook_service.notify_translation_failed(
+                            translation_id=translation_id,
+                            airport_code=airport_code or "UNKNOWN",
+                            error_type="validation_error",
+                            error_message=str(ve),
+                        )
+                    except Exception as log_err:
+                        logger.error(f"Failed to log validation error: {log_err}")
+                    if stop_on_error:
+                        break
+                    continue
 
             start_time = time.perf_counter()
 
             emit_recent_wx_issues(manual_source, _norm_warnings)
 
+            soft_preview_buf = {}
             xml_text, validation_result_from_conversion = convert_metar_tac_with_metadata(
                 _normalized_entry,
                 iwxxm_version=iwxxm_version,
@@ -1827,7 +2126,18 @@ async def convert(
                 lenient=False,  # normalization already applied above
                 product=product,
                 profile=profile,
+                preview=preview,
+                soft_preview_out=soft_preview_buf if preview else None,
             )
+            absorb_soft_preview(soft_preview_buf, base_offset=entry_offset)
+            if preview and soft_preview_buf.get("ok") is False:
+                add_issue(
+                    source=manual_source,
+                    message="Soft-preview: conversion incomplete",
+                    severity=ConversionIssueSeverity.ERROR,
+                    hint="Fix failed TAC spans and retry hard convert before publish.",
+                    code="SOFT_PREVIEW_PARTIAL",
+                )
 
             duration_ms = int((time.perf_counter() - start_time) * 1000)
             layers_passed = [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
@@ -1857,11 +2167,12 @@ async def convert(
                     }
 
             try:
+                soft_incomplete = bool(preview and soft_preview_buf.get("ok") is False)
                 translation_id = await statistics_service.log_translation(
                     tac_message=manual_entry,
                     iwxxm_output=xml_text,
                     iwxxm_version=iwxxm_version,
-                    translation_status=TranslationStatus.SUCCESS,
+                    translation_status=(TranslationStatus.FAILED if soft_incomplete else TranslationStatus.SUCCESS),
                     validation_layers_passed=layers_passed,
                     validation_errors=validation_errors_dict if validation_errors_dict else None,
                     translation_duration_ms=duration_ms,
@@ -1870,13 +2181,21 @@ async def convert(
                 )
                 airport_code = extract_airport_code(manual_entry)
                 icao_region = get_icao_region(airport_code) if airport_code else "UNKNOWN"
-                await webhook_service.notify_translation_success(
-                    translation_id=translation_id,
-                    airport_code=airport_code or "UNKNOWN",
-                    icao_region=icao_region,
-                    iwxxm_version=iwxxm_version,
-                    duration_ms=duration_ms,
-                )
+                if soft_incomplete:
+                    await webhook_service.notify_translation_failed(
+                        translation_id=translation_id,
+                        airport_code=airport_code or "UNKNOWN",
+                        error_type="soft_preview_partial",
+                        error_message="Soft-preview conversion incomplete",
+                    )
+                else:
+                    await webhook_service.notify_translation_success(
+                        translation_id=translation_id,
+                        airport_code=airport_code or "UNKNOWN",
+                        icao_region=icao_region,
+                        iwxxm_version=iwxxm_version,
+                        duration_ms=duration_ms,
+                    )
             except Exception as log_err:
                 logger.error(f"Failed to log successful translation: {log_err}")
 
@@ -1951,10 +2270,7 @@ async def convert(
                     if _product_uses_metar_tac_layers(product):
                         validation_result = validation_service.validate_all_layers((data or "").strip())
                         if not validation_result.passed:
-                            # Build summary from validation result
                             validation_summary = f"{validation_result.total_issues} validation issue(s) found"
-                            error_msg = f"{source_name}: Validation failed - {validation_summary}"
-                            errors.append(error_msg)
                             add_issue(
                                 source=source_name,
                                 message=f"Validation failed: {validation_summary}",
@@ -1963,31 +2279,34 @@ async def convert(
                                 code="VALIDATION_FAILED",
                             )
                             add_aggregated_validation_issues(source_name, validation_result)
-                            # Log failed validation
-                            try:
-                                translation_id = await statistics_service.log_translation(
-                                    tac_message=(data or "").strip(),
-                                    iwxxm_output=None,
-                                    iwxxm_version=iwxxm_version,
-                                    translation_status=TranslationStatus.FAILED,
-                                    validation_layers_passed=[],
-                                    validation_errors={"validation": validation_summary},
-                                    translation_duration_ms=0,
-                                    icao_airport_code=extract_airport_code((data or "").strip()),
-                                    user_id=user.get("sub"),
-                                )
-                                airport_code = extract_airport_code((data or "").strip())
-                                await webhook_service.notify_translation_failed(
-                                    translation_id=translation_id,
-                                    airport_code=airport_code or "UNKNOWN",
-                                    error_type="validation_failed",
-                                    error_message=validation_summary,
-                                )
-                            except Exception as log_err:
-                                logger.error(f"Failed to log failed translation: {log_err}")
-                            continue
+                            if preview:
+                                record_preview_layer12_soft_fail(validation_result, (data or "").strip())
+                            else:
+                                error_msg = f"{source_name}: Validation failed - {validation_summary}"
+                                errors.append(error_msg)
+                                try:
+                                    translation_id = await statistics_service.log_translation(
+                                        tac_message=(data or "").strip(),
+                                        iwxxm_output=None,
+                                        iwxxm_version=iwxxm_version,
+                                        translation_status=TranslationStatus.FAILED,
+                                        validation_layers_passed=[],
+                                        validation_errors={"validation": validation_summary},
+                                        translation_duration_ms=0,
+                                        icao_airport_code=extract_airport_code((data or "").strip()),
+                                        user_id=user.get("sub"),
+                                    )
+                                    airport_code = extract_airport_code((data or "").strip())
+                                    await webhook_service.notify_translation_failed(
+                                        translation_id=translation_id,
+                                        airport_code=airport_code or "UNKNOWN",
+                                        error_type="validation_failed",
+                                        error_message=validation_summary,
+                                    )
+                                except Exception as log_err:
+                                    logger.error(f"Failed to log failed translation: {log_err}")
+                                continue
                 except ValidationServiceError as ve:
-                    errors.append(f"{uf.filename}: {str(ve)}")
                     add_issue(
                         source=source_name,
                         message=str(ve),
@@ -1995,44 +2314,59 @@ async def convert(
                         hint="Ensure the METAR starts with METAR/SPECI and includes a valid ICAO station and timestamp.",
                         code="VALIDATION_SERVICE_ERROR",
                     )
-                    # Log validation error
-                    try:
-                        translation_id = await statistics_service.log_translation(
-                            tac_message=(data or "").strip(),
-                            iwxxm_output=None,
-                            iwxxm_version=iwxxm_version,
-                            translation_status=TranslationStatus.FAILED,
-                            validation_layers_passed=[],
-                            validation_errors={"error": str(ve)},
-                            translation_duration_ms=0,
-                            icao_airport_code=extract_airport_code((data or "").strip()),
-                            user_id=user.get("sub"),
-                        )
-                        airport_code = extract_airport_code((data or "").strip())
-                        await webhook_service.notify_translation_failed(
-                            translation_id=translation_id,
-                            airport_code=airport_code or "UNKNOWN",
-                            error_type="validation_error",
-                            error_message=str(ve),
-                        )
-                    except Exception as log_err:
-                        logger.error(f"Failed to log validation error: {log_err}")
-                    if stop_on_error:
-                        break
-                    continue
+                    if preview:
+                        record_preview_layer12_soft_fail(None, (data or "").strip())
+                    else:
+                        errors.append(f"{uf.filename}: {str(ve)}")
+                        try:
+                            translation_id = await statistics_service.log_translation(
+                                tac_message=(data or "").strip(),
+                                iwxxm_output=None,
+                                iwxxm_version=iwxxm_version,
+                                translation_status=TranslationStatus.FAILED,
+                                validation_layers_passed=[],
+                                validation_errors={"error": str(ve)},
+                                translation_duration_ms=0,
+                                icao_airport_code=extract_airport_code((data or "").strip()),
+                                user_id=user.get("sub"),
+                            )
+                            airport_code = extract_airport_code((data or "").strip())
+                            await webhook_service.notify_translation_failed(
+                                translation_id=translation_id,
+                                airport_code=airport_code or "UNKNOWN",
+                                error_type="validation_error",
+                                error_message=str(ve),
+                            )
+                        except Exception as log_err:
+                            logger.error(f"Failed to log validation error: {log_err}")
+                        if stop_on_error:
+                            break
+                        continue
 
                 # Start timing for successful conversion
 
                 start_time = time.perf_counter()
 
                 # Only convert if validation passed
+                soft_preview_buf = {}
                 xml_text, _ = convert_metar_tac_with_metadata(
                     data or "",
                     iwxxm_version=iwxxm_version,
                     validate=False,
                     product=product,
                     profile=profile,
+                    preview=preview,
+                    soft_preview_out=soft_preview_buf if preview else None,
                 )
+                absorb_soft_preview(soft_preview_buf)
+                if preview and soft_preview_buf.get("ok") is False:
+                    add_issue(
+                        source=source_name,
+                        message="Soft-preview: conversion incomplete",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Fix failed TAC spans and retry hard convert before publish.",
+                        code="SOFT_PREVIEW_PARTIAL",
+                    )
 
                 # Calculate duration
                 duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -2081,26 +2415,35 @@ async def convert(
                         )
                         validation_errors_dict = {"validation_error": str(ve)}
 
-                # Log successful translation
+                # Log successful (or soft-preview partial) translation
                 try:
+                    soft_incomplete = bool(preview and soft_preview_buf.get("ok") is False)
                     translation_id = await statistics_service.log_translation(
                         tac_message=(data or "").strip(),
                         iwxxm_output=xml_text,
                         iwxxm_version=iwxxm_version,
-                        translation_status=TranslationStatus.SUCCESS,
+                        translation_status=(TranslationStatus.FAILED if soft_incomplete else TranslationStatus.SUCCESS),
                         validation_layers_passed=layers_passed,
                         validation_errors=validation_errors_dict if validation_errors_dict else None,
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code((data or "").strip()),
                         user_id=user.get("sub"),
                     )
-                    await webhook_service.notify_translation_success(
-                        translation_id=translation_id,
-                        airport_code=extract_airport_code((data or "").strip()) or "UNKNOWN",
-                        icao_region=get_icao_region(extract_airport_code((data or "").strip()) or "ZZZZ"),
-                        iwxxm_version=iwxxm_version,
-                        duration_ms=duration_ms,
-                    )
+                    if soft_incomplete:
+                        await webhook_service.notify_translation_failed(
+                            translation_id=translation_id,
+                            airport_code=extract_airport_code((data or "").strip()) or "UNKNOWN",
+                            error_type="soft_preview_partial",
+                            error_message="Soft-preview conversion incomplete",
+                        )
+                    else:
+                        await webhook_service.notify_translation_success(
+                            translation_id=translation_id,
+                            airport_code=extract_airport_code((data or "").strip()) or "UNKNOWN",
+                            icao_region=get_icao_region(extract_airport_code((data or "").strip()) or "ZZZZ"),
+                            iwxxm_version=iwxxm_version,
+                            duration_ms=duration_ms,
+                        )
                 except Exception as log_err:
                     logger.error(f"Failed to log successful translation: {log_err}")
 
@@ -2195,6 +2538,10 @@ async def convert(
             ).model_dump(),
         )
 
+    envelope_ok: Optional[bool] = None
+    if preview:
+        envelope_ok = not preview_saw_soft_fail and len(errors) == 0
+
     return ConversionResponse(
         results=results,
         errors=errors,
@@ -2203,6 +2550,8 @@ async def convert(
         successful=len(results),
         failed=len(errors),
         metadata=request_metadata,
+        ok=envelope_ok,
+        failed_spans=preview_failed_spans if preview else [],
     )
 
 

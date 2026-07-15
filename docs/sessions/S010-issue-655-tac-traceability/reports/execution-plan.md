@@ -18,13 +18,13 @@
 
 | Task | Description | Status |
 |------|-------------|--------|
-| T2.1 | 08-verify-build (lint, tsc, vitest) | pending |
-| T2.2 | 09-qa + 10-e2e | pending |
-| T2.3 | 11-verify-impl (UJ-001 traceability AC) | pending |
-| T2.4 | 12-verify-deploy + 13-deploy-smoke (frontend) | pending |
+| T2.1 | 08-verify-build (lint, tsc, vitest) | completed (PR #715 CI) |
+| T2.2 | 09-qa + 10-e2e | completed (PR CI + mocked e2e) |
+| T2.3 | 11-verify-impl (UJ-001 traceability AC) | completed (prod UI 2026-07-13) |
+| T2.4 | 12-verify-deploy + 13-deploy-smoke (frontend) | completed — [deploy-smoke.md](./deploy-smoke.md) |
 
 ## PR plan
 
-| PR | Title | Base |
-|----|-------|------|
-| PR-EV007 | `[EV-007] F6: TAC traceability UX (#655)` | `main` |
+| PR | Title | Base | Status |
+|----|-------|------|--------|
+| PR-EV007 | `[EV-007] F6: TAC traceability UX (#655)` | `main` | merged [#715](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/715) |

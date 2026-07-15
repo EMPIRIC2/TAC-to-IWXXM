@@ -1,6 +1,6 @@
 # Scoped context — Issue #655 TAC traceability UX
 
-**Status**: active  
+**Status**: superseded (shipped PR #715; session closed 2026-07-13)  
 **Created**: 2026-07-12  
 **Session**: S010-issue-655-tac-traceability / EV-007  
 **GitHub**: [#655](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/655) (parent [#594](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/594))  

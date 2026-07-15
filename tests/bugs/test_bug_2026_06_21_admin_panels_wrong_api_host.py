@@ -1,7 +1,7 @@
-"""BUG-2026-06-21 — admin panels call Supabase Edge Functions instead of merged API.
+"""BUG-2026-06-21 — admin panels called wrong API host (historical).
 
-Repro: SystemSettingsPanel / MonitoringPanel must use VITE_API_BASE_URL/admin/*
-not supabase.co/functions/v1/make-server-2e3cda33/admin/*.
+S011 / ADR-021 (#697): product ``/admin/*`` surface is removed. Regression now
+asserts routes are absent (404), not auth-gated on a mounted admin router.
 """
 
 from __future__ import annotations
@@ -18,43 +18,41 @@ if str(BACKEND_ROOT) not in sys.path:
 
 from src.api import app  # noqa: E402
 
+ADMIN_PATHS = (
+    "/admin/settings",
+    "/admin/all-users",
+    "/admin/stats",
+    "/admin/toggle-admin",
+    "/admin/pending-users",
+    "/admin/approve-user",
+    "/admin/reject-user",
+)
+
 
 def test_admin_routes_registered_on_merged_api() -> None:
-    """Admin router must be mounted at /admin/* on the backend app."""
+    """Admin product routes must be absent (404) after ADR-021 removal."""
     client = TestClient(app)
-    for path in (
-        "/admin/settings",
-        "/admin/all-users",
-        "/admin/stats",
-        "/admin/toggle-admin",
-        "/admin/pending-users",
-        "/admin/approve-user",
-        "/admin/reject-user",
-    ):
+    for path in ADMIN_PATHS:
         response = (
             client.get(path)
             if path
             not in ("/admin/toggle-admin", "/admin/approve-user", "/admin/reject-user")
             else client.post(path, json={})
         )
-        assert response.status_code in (401, 403, 422), (
-            f"Expected admin route {path} on merged API, got {response.status_code}"
+        assert response.status_code == 404, (
+            f"Expected admin route {path} removed (404), got {response.status_code}"
         )
 
 
 def test_admin_settings_requires_authorization() -> None:
-    """Unauthenticated GET /admin/settings returns 401."""
-    from src.api import app
-
+    """GET /admin/settings is gone — 404, not an auth challenge."""
     client = TestClient(app)
     response = client.get("/admin/settings")
-    assert response.status_code == 401
+    assert response.status_code == 404
 
 
 def test_admin_settings_rejects_missing_bearer_prefix() -> None:
-    """Malformed Authorization header returns 401."""
-    from src.api import app
-
+    """Malformed Authorization still yields 404 (route absent)."""
     client = TestClient(app)
     response = client.get("/admin/settings", headers={"Authorization": "Token abc"})
-    assert response.status_code == 401
+    assert response.status_code == 404

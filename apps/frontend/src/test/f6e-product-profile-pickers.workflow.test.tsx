@@ -44,10 +44,38 @@ vi.mock('/utils/supabase/logout', () => ({
 
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
+  convertBulletin: vi.fn(),
+  ingestCollect: vi.fn(),
+  EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
+  lintTac: vi.fn().mockResolvedValue({
+    ok: true,
+    issues: [],
+    fixes: [],
+  }),
+  decodeTac: vi
+    .fn()
+    .mockResolvedValue({ product: 'METAR', segments: [], residuals: [] }),
   fetchAirportRegion: vi
     .fn()
     .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
+}));
+
+vi.mock('../app/components/TacEditor', () => ({
+  TacEditor: ({ id, value, onChange, readOnly, 'aria-label': ariaLabel }: any) => (
+    <textarea
+      id={id}
+      value={value}
+      readOnly={readOnly}
+      aria-label={ariaLabel}
+      data-testid="tac-editor"
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
+
+vi.mock('../app/components/DecodePanel', () => ({
+  DecodePanel: () => null,
 }));
 
 vi.mock('sonner', () => ({
@@ -91,24 +119,25 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     localStorage.clear();
   });
 
-  it('renders product, profile, and version selects when parameters are expanded', async () => {
+  it('renders product type next to TAC; profile and version when parameters are expanded', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
-
-    const product = screen.getByLabelText(/product/i) as HTMLSelectElement;
-    const profile = screen.getByLabelText(/^profile$/i) as HTMLSelectElement;
-    const version = screen.getByLabelText(/iwxxm version/i) as HTMLSelectElement;
-
+    const product = screen.getByTestId('product-type-select') as HTMLSelectElement;
     expect(product).toBeInTheDocument();
-    expect(profile).toBeInTheDocument();
-    expect(version).toBeInTheDocument();
 
     const productValues = Array.from(product.options).map((o) => o.value);
     for (const p of PRODUCTS) {
       expect(productValues).toContain(p);
     }
+
+    await user.click(screen.getByLabelText(/expand parameters/i));
+
+    const profile = screen.getByLabelText(/^profile$/i) as HTMLSelectElement;
+    const version = screen.getByLabelText(/iwxxm version/i) as HTMLSelectElement;
+
+    expect(profile).toBeInTheDocument();
+    expect(version).toBeInTheDocument();
 
     const profileValues = Array.from(profile.options).map((o) => o.value);
     for (const p of PROFILES) {

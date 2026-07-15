@@ -121,6 +121,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         ConversionResponse=_StubModel,
         ConversionResult=_StubModel,
         ErrorDetail=_StubModel,
+        FailedSpan=_StubModel,
         HealthResponse=_StubModel,
     )
     fake_schemas_icao = _stub_module(
@@ -135,6 +136,9 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         BulletinMetaModel=_StubModel,
         BulletinReportResultModel=_StubModel,
         ConvertBulletinResponse=_StubModel,
+        DecodeResidualModel=_StubModel,
+        DecodeSegmentModel=_StubModel,
+        DecodeTacResponse=_StubModel,
         LintTacResponse=_StubModel,
         LintIssueModel=_StubModel,
         LintFixModel=_StubModel,
@@ -209,6 +213,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "tac2iwxxm": _stub_module(
             "tac2iwxxm",
             BulletinSplitError=Exception,
+            decode_tac=lambda *a, **k: None,
             split_bulletin=lambda *a, **k: None,
         ),
         "tac_validate": _stub_module("tac_validate", lint=lambda *a, **k: None),

@@ -5,10 +5,14 @@
 import type {
   WorkSession,
   WorkSessionListResponse,
+  WorkSessionProduct,
   WorkSessionStatus,
   WorkSessionUpsertPayload,
 } from '@metar/shared';
 import { adminUrl, apiUrl } from './apiBase';
+
+/** My METARs filter — METAR/SPECI only on unified tac_work_sessions (UJ-004). */
+export const MY_METARS_PRODUCTS: WorkSessionProduct[] = ['metar', 'speci'];
 
 function authHeaders(accessToken: string): HeadersInit {
   return {
@@ -29,6 +33,8 @@ async function parseJson<T>(response: Response): Promise<T> {
 
 export interface ListWorkSessionsParams {
   status?: WorkSessionStatus;
+  /** Comma-joined by the client when multiple (e.g. My METARs). */
+  product?: WorkSessionProduct | WorkSessionProduct[];
   from?: string;
   to?: string;
   include_deleted?: boolean;
@@ -42,6 +48,10 @@ export async function listWorkSessions(
 ): Promise<WorkSessionListResponse> {
   const query = new URLSearchParams();
   if (params.status) query.set('status', params.status);
+  if (params.product) {
+    const products = Array.isArray(params.product) ? params.product : [params.product];
+    query.set('product', products.join(','));
+  }
   if (params.from) query.set('from', params.from);
   if (params.to) query.set('to', params.to);
   if (params.include_deleted) query.set('include_deleted', 'true');

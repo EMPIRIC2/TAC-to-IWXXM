@@ -1,9 +1,14 @@
-import { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { TacEditor } from './TacEditor';
+import { DecodePanel } from './DecodePanel';
+import { FailedTacCue } from './FailedTacCue';
+import { SoftPreviewControl } from './SoftPreviewControl';
+import { LiveIwxxmToggle } from './LiveIwxxmToggle';
+import { WorkbenchConsole } from './WorkbenchConsole';
 import {
   Upload,
   X,
@@ -28,7 +33,15 @@ import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
 import { AirportDetailsCard } from './AirportDetailsCard';
 import { signOutWithScope } from '/utils/supabase/logout';
-import { convertMetarToIwxxm as callBackendConversion } from '/utils/api';
+import {
+  convertMetarToIwxxm as callBackendConversion,
+  convertBulletin,
+  ingestCollect,
+  EndpointNotImplementedError,
+  type FailedSpan,
+} from '/utils/api';
+import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
+import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
   resolveConvertProduct,
@@ -43,6 +56,7 @@ import { ErrorLogPanel, type ConversionLog } from './ErrorLogPanel';
 import { WorkHistorySidebar } from './WorkHistorySidebar';
 import type { WorkSession } from '@metar/shared';
 import { useWorkSessionSync } from '@/hooks/useWorkSessionSync';
+
 import {
   type ConverterSnapshot,
   resolveManualLineMetaFromResult,
@@ -61,6 +75,20 @@ import {
   resolveOriginalTac,
   truncateTacSnippet,
 } from '/utils/resultTraceability';
+import {
+  mapOnErrorToStopOnError,
+  mapStrictToValidation,
+  type ConvertLogLevel,
+  type ConvertOnError,
+} from '/utils/convertParams';
+import {
+  detectInputKind,
+  kindToMode,
+  looksLikeAhlBulletin,
+  looksLikeCollectIwxxm,
+  type OperatorInputMode,
+} from '/utils/inputKind';
+import { inflateGzipToText, isGzipFileName } from '/utils/gunzip';
 
 interface ConvertedFile {
   id: string;
@@ -131,6 +159,13 @@ export function FileConverter({
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
   const [manualInput, setManualInput] = useState('');
+  const [decodeError, setDecodeError] = useState<string | null>(null);
+  const [softPreview, setSoftPreview] = useState(false);
+  const [liveIwxxm, setLiveIwxxm] = useState(false);
+  const [failedSpans, setFailedSpans] = useState<FailedSpan[]>([]);
+  const [inputMode, setInputMode] = useState<OperatorInputMode>('tac');
+  const [bulletinSummary, setBulletinSummary] = useState<string | null>(null);
+  const [placeholderNotice, setPlaceholderNotice] = useState<string | null>(null);
   // Restore the guest's custom output filename from the session snapshot (R5).
   const [outputFilename, setOutputFilename] = useState(() => {
     const saved = readGuestConverterState()?.conversionParams?.output_filename;
@@ -403,24 +438,50 @@ export function FileConverter({
     if (!files || files.length === 0) return;
 
     const newPendingFiles: PendingFile[] = [];
+    let detectedMode: OperatorInputMode | null = null;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       try {
-        const content = await file.text();
+        let content: string;
+        let displayName = file.name;
+        if (isGzipFileName(file.name)) {
+          content = await inflateGzipToText(file);
+          displayName = file.name.replace(/\.gz$/i, '').replace(/\.gzip$/i, '');
+          toast.info(`Decompressed ${file.name}`);
+        } else {
+          content = await file.text();
+        }
+        const kind = detectInputKind(file.name, content);
+        detectedMode = kindToMode(kind);
         newPendingFiles.push({
-          id: `${file.name}-${Date.now()}-${i}`,
-          name: file.name,
-          content: content,
+          id: `${displayName}-${Date.now()}-${i}`,
+          name: displayName,
+          content,
         });
       } catch (error) {
         console.error(`Error reading file ${file.name}:`, error);
-        toast.error(`Failed to read ${file.name}`);
+        toast.error(
+          error instanceof Error ? error.message : `Failed to read ${file.name}`,
+        );
       }
     }
 
+    if (detectedMode && detectedMode !== inputMode) {
+      setInputMode(detectedMode);
+      toast.info(
+        detectedMode === 'ahl_bulletin'
+          ? 'Detected AHL bulletin — switched input mode'
+          : detectedMode === 'collect_iwxxm'
+            ? 'Detected IWXXM COLLECT — switched input mode'
+            : 'Switched to TAC report mode',
+      );
+    }
+
     setPendingFiles((prev) => [...prev, ...newPendingFiles]);
-    toast.success(`${newPendingFiles.length} file(s) added to queue`);
+    if (newPendingFiles.length > 0) {
+      toast.success(`${newPendingFiles.length} file(s) added to queue`);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -441,6 +502,7 @@ export function FileConverter({
   const performConversion = async (): Promise<{
     files: ConvertedFile[];
     hasErrors: boolean;
+    softFail: boolean;
   } | null> => {
     if (pendingFiles.length === 0 && !manualInput.trim()) {
       toast.error('Please add files or enter manual input');
@@ -449,23 +511,25 @@ export function FileConverter({
 
     setConversionStatus({ type: 'loading', message: 'Converting...' });
     setConversionLog(null);
+    setFailedSpans([]);
+    setBulletinSummary(null);
+    setPlaceholderNotice(null);
 
     try {
-      const newConvertedFiles: ConvertedFile[] = [];
-
-      const filesToConvert: File[] = pendingFiles.map((file) => {
-        return new File([file.content], file.name, { type: 'text/plain' });
-      });
-
-      console.log('[FileConverter] Starting conversion with:', {
-        manualInput: manualInput.trim() ? 'provided' : 'none',
-        fileCount: filesToConvert.length,
-        accessToken: accessToken ? `${accessToken.substring(0, 20)}...` : 'MISSING',
-      });
-
       const tacForDetect = [manualInput.trim(), ...pendingFiles.map((f) => f.content)]
         .filter(Boolean)
         .join('\n');
+
+      // Auto-switch when paste looks like bulletin / COLLECT
+      let mode = inputMode;
+      if (mode === 'tac' && looksLikeAhlBulletin(tacForDetect)) {
+        mode = 'ahl_bulletin';
+        setInputMode('ahl_bulletin');
+      } else if (mode === 'tac' && looksLikeCollectIwxxm(tacForDetect)) {
+        mode = 'collect_iwxxm';
+        setInputMode('collect_iwxxm');
+      }
+
       const resolvedProduct = resolveConvertProduct(
         conversionParams.product,
         tacForDetect,
@@ -479,13 +543,138 @@ export function FileConverter({
         }
       }
 
+      const filesToConvert: File[] = pendingFiles.map((file) => {
+        return new File([file.content], file.name, { type: 'text/plain' });
+      });
+
+      if (mode === 'collect_iwxxm') {
+        try {
+          await ingestCollect({
+            manualText: manualInput.trim() || undefined,
+            files: filesToConvert.length > 0 ? filesToConvert : undefined,
+            profile: conversionParams.profile,
+            iwxxmVersion: conversionParams.iwxxmVersion,
+            accessToken,
+          });
+          toast.success('COLLECT ingest succeeded');
+          setConversionStatus({ type: 'idle' });
+          return { files: [], hasErrors: false, softFail: false };
+        } catch (err) {
+          if (err instanceof EndpointNotImplementedError) {
+            setPlaceholderNotice(err.message);
+            setConversionLog({
+              errors: [],
+              issues: [
+                {
+                  source: 'ingest-collect',
+                  message: err.message,
+                  severity: 'info',
+                  code: err.code,
+                  hint: 'Use AHL bulletin mode for TAC bulletins, or paste single reports in TAC mode.',
+                },
+              ],
+            });
+            toast.warning('COLLECT ingest placeholder (not implemented yet)');
+            setConversionStatus({ type: 'idle' });
+            return { files: [], hasErrors: true, softFail: false };
+          }
+          throw err;
+        }
+      }
+
+      if (mode === 'ahl_bulletin') {
+        const bulletinResponse = await convertBulletin({
+          manualText: manualInput.trim() || undefined,
+          files: filesToConvert.length > 0 ? filesToConvert : undefined,
+          product: resolvedProduct,
+          profile: conversionParams.profile,
+          iwxxmVersion: conversionParams.iwxxmVersion,
+          lint: true,
+          accessToken,
+        });
+        const meta = bulletinResponse.bulletin_meta;
+        setBulletinSummary(
+          `${meta.ahl} · ${meta.report_count} report(s) · ${meta.cccc} ${meta.yygggg}`,
+        );
+        const newConvertedFiles: ConvertedFile[] = [];
+        const issueBag: ConversionLog['issues'] = [];
+        bulletinResponse.results.forEach((result) => {
+          result.issues.forEach((issue) => {
+            issueBag.push({
+              source: `bulletin[${result.report_index}]`,
+              message: issue.message,
+              code: issue.code,
+              severity:
+                (issue.severity as ConversionLog['issues'][0]['severity']) || 'warning',
+              start: issue.start ?? undefined,
+              end: issue.end ?? undefined,
+            });
+          });
+          if (result.ok && result.xml) {
+            const originalContent = result.tac_input;
+            newConvertedFiles.push({
+              id: `bulletin-${Date.now()}-${result.report_index}`,
+              originalName: `bulletin_report_${result.report_index + 1}.tac`,
+              originalContent,
+              displayTitle: deriveTacDisplayTitle(
+                originalContent,
+                `report ${result.report_index + 1}`,
+              ),
+              convertedContent: result.xml,
+              timestamp: Date.now(),
+            });
+          }
+        });
+        const failed = bulletinResponse.results.filter((r) => !r.ok).length;
+        setConvertedFiles(newConvertedFiles);
+        setPendingFiles([]);
+        if (!softPreview) {
+          setManualInput('');
+        }
+        setConversionLog(issueBag.length > 0 ? { errors: [], issues: issueBag } : null);
+        setConversionStatus({ type: 'idle' });
+        if (failed > 0) {
+          toast.warning(`Bulletin: ${newConvertedFiles.length} ok, ${failed} failed`);
+        } else {
+          toast.success(`Bulletin: ${newConvertedFiles.length} report(s) converted`);
+        }
+        return {
+          files: newConvertedFiles,
+          hasErrors: failed > 0,
+          softFail: false,
+        };
+      }
+
+      const newConvertedFiles: ConvertedFile[] = [];
+
+      console.log('[FileConverter] Starting conversion with:', {
+        manualInput: manualInput.trim() ? 'provided' : 'none',
+        fileCount: filesToConvert.length,
+        softPreview,
+        accessToken: accessToken ? `${accessToken.substring(0, 20)}...` : 'MISSING',
+      });
+
+      const { validateOutput, validationLevel } = mapStrictToValidation(
+        conversionParams.strictValidation,
+        softPreview,
+      );
+
       const response = await callBackendConversion({
         manualText: manualInput.trim() || undefined,
         files: filesToConvert.length > 0 ? filesToConvert : undefined,
         product: resolvedProduct,
         profile: conversionParams.profile,
         iwxxmVersion: conversionParams.iwxxmVersion,
-        validateOutput: false,
+        validateOutput,
+        validationLevel,
+        stopOnError: mapOnErrorToStopOnError(
+          conversionParams.onError as ConvertOnError,
+        ),
+        bulletinId: conversionParams.bulletinId || undefined,
+        issuingCenter: conversionParams.issuingCenter || undefined,
+        includeNilReasons: conversionParams.includeNilReasons,
+        logLevel: conversionParams.logLevel,
+        preview: softPreview,
         accessToken: accessToken,
       });
 
@@ -541,6 +730,12 @@ export function FileConverter({
       const responseErrors = response.errors ?? [];
       const responseIssues = response.issues ?? [];
       const hasLog = responseErrors.length > 0 || responseIssues.length > 0;
+      const softFail = Boolean(softPreview && response.ok === false);
+      const spans = response.failed_spans ?? [];
+
+      if (softFail) {
+        setFailedSpans(spans);
+      }
 
       if (newConvertedFiles.length === 0) {
         if (hasLog) {
@@ -554,12 +749,16 @@ export function FileConverter({
 
       setConvertedFiles(newConvertedFiles);
       setPendingFiles([]);
-      setManualInput('');
+      // Keep TAC in editor on soft-fail so Failed-TAC cue stays contextual (UJ-016).
+      if (!softFail) {
+        setManualInput('');
+        setFailedSpans([]);
+      }
       setConversionLog(
         hasLog ? { errors: responseErrors, issues: responseIssues } : null,
       );
       setConversionStatus({ type: 'idle' });
-      return { files: newConvertedFiles, hasErrors: hasLog };
+      return { files: newConvertedFiles, hasErrors: hasLog || softFail, softFail };
     } catch (error) {
       console.error('[FileConverter] Conversion error:', error);
 
@@ -599,7 +798,13 @@ export function FileConverter({
     try {
       const result = await performConversion();
       if (result) {
-        toast.success(`Successfully converted ${result.files.length} file(s)`);
+        if (result.softFail) {
+          toast.warning(
+            'Soft-preview returned Failed-TAC markers — not ready to publish',
+          );
+        } else {
+          toast.success(`Successfully converted ${result.files.length} file(s)`);
+        }
         if (accessToken) {
           const snapshot = buildSnapshot({
             convertedFiles: result.files.map((file) => ({
@@ -640,6 +845,9 @@ export function FileConverter({
       }
 
       if (result.hasErrors) {
+        if (result.softFail) {
+          toast.warning('Soft-preview Failed-TAC — fix markers before Convert & Send');
+        }
         await persistSession(
           buildSnapshot({
             convertedFiles: result.files.map((file) => ({
@@ -647,7 +855,7 @@ export function FileConverter({
               originalContent: file.originalContent,
               convertedContent: file.convertedContent,
             })),
-            manualInput: '',
+            manualInput: result.softFail ? manualInput : '',
             pendingFiles: [],
           }),
           { status: 'failed' },
@@ -799,6 +1007,7 @@ export function FileConverter({
     setConvertedFiles([]);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
+    setFailedSpans([]);
     toast.info('Queue cleared');
   };
 
@@ -806,6 +1015,71 @@ export function FileConverter({
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
   const convertDisabled = isBusy || !hasInput || isReadOnly;
+
+  const liveAssistProduct = resolveConvertProduct(
+    conversionParams.product,
+    manualInput,
+  );
+
+  const liveIwxxmRunner = useCallback(
+    async (signal: AbortSignal) => {
+      const text = manualInput.trim();
+      if (!text) {
+        return;
+      }
+      setDecodeError(null);
+      try {
+        const response = await callBackendConversion({
+          manualText: text,
+          product: liveAssistProduct,
+          profile: conversionParams.profile,
+          iwxxmVersion: conversionParams.iwxxmVersion,
+          validateOutput: false,
+          preview: true,
+          accessToken,
+          signal,
+        });
+        if (signal.aborted) {
+          return;
+        }
+        if (response.failed_spans?.length) {
+          setFailedSpans(response.failed_spans);
+        } else if (response.ok !== false) {
+          setFailedSpans([]);
+        }
+      } catch (err) {
+        if (isAbortError(err) || signal.aborted) {
+          return;
+        }
+        setDecodeError(err instanceof Error ? err.message : 'Live IWXXM failed');
+      }
+    },
+    [
+      manualInput,
+      liveAssistProduct,
+      conversionParams.profile,
+      conversionParams.iwxxmVersion,
+      accessToken,
+    ],
+  );
+
+  const {
+    issueSpans,
+    decodeSegments,
+    decodeResiduals,
+    decodeProduct,
+    loading: decodeLoading,
+    consoleLines,
+    clearConsole,
+    appendConsole,
+  } = useLiveWorkbenchAssist({
+    text: manualInput,
+    product: liveAssistProduct,
+    accessToken,
+    enabled: !isReadOnly,
+    liveIwxxm,
+    liveIwxxmRunner,
+  });
 
   const saveIndicatorLabel =
     saveIndicator === 'pending'
@@ -940,65 +1214,15 @@ export function FileConverter({
             </div>
           </div>
           <p className="text-base text-gray-600 dark:text-gray-300">
-            Drag & drop one or more METAR TAC files, or type a METAR manually below.
-            Click Convert to produce IWXXM XML (downloadable as XML).
+            Enter TAC in the console below (choose product type as needed), then
+            Convert. Upload files from the compact drop zone under the console when
+            preferred.
           </p>
         </div>
 
-        {/* Drop Zone */}
-        <Card
-          className={`mb-6 p-12 border-2 border-dashed transition-colors ${
-            isDragging
-              ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950'
-              : 'border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800'
-          }`}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          role="button"
-          aria-label="File drop zone - Drop files here or click to select files"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              fileInputRef.current?.click();
-            }
-          }}
-        >
-          <div className="flex flex-col items-center justify-center text-center">
-            <Upload
-              className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-4"
-              aria-hidden="true"
-            />
-            <p className="text-lg mb-2 text-gray-900 dark:text-white">
-              Drop files here or click to select
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Supports multiple files
-            </p>
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept=".txt,.metar"
-              className="hidden"
-              onChange={(e) => handleFileSelect(e.target.files)}
-              aria-label="Select METAR files to upload"
-            />
-            <Button
-              variant="outline"
-              onClick={() => fileInputRef.current?.click()}
-              className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              aria-label="Browse and select files"
-            >
-              Select Files
-            </Button>
-          </div>
-        </Card>
-
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div>
-            {/* Manual Input */}
+            {/* Manual Input — primary workbench */}
             <div className="mb-6">
               {isReadOnly && (
                 <p
@@ -1009,21 +1233,208 @@ export function FileConverter({
                   to start fresh.
                 </p>
               )}
-              <label
-                htmlFor="manual-input"
-                className="block mb-2 text-base font-medium text-gray-900 dark:text-white"
-              >
-                Manual METAR Input
-              </label>
-              <Textarea
+              <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <label
+                  htmlFor="manual-input"
+                  className="block text-base font-medium text-gray-900 dark:text-white"
+                >
+                  Manual TAC Input
+                </label>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div
+                    className="flex rounded-md border border-gray-300 dark:border-gray-600"
+                    role="group"
+                    aria-label="Input mode"
+                    data-testid="input-mode-group"
+                  >
+                    {(
+                      [
+                        ['tac', 'TAC report'],
+                        ['ahl_bulletin', 'AHL bulletin'],
+                        ['collect_iwxxm', 'IWXXM COLLECT'],
+                      ] as const
+                    ).map(([value, label]) => (
+                      <button
+                        key={value}
+                        type="button"
+                        data-testid={`input-mode-${value}`}
+                        disabled={isReadOnly}
+                        onClick={() => setInputMode(value)}
+                        className={`px-2 py-1 text-xs ${
+                          inputMode === value
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-200'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <Label
+                    htmlFor="param-product"
+                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    Product type
+                  </Label>
+                  <select
+                    id="param-product"
+                    aria-label="Product"
+                    data-testid="product-type-select"
+                    value={conversionParams.product}
+                    disabled={isReadOnly}
+                    onChange={(e) =>
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        product: e.target.value as TacProductSelection,
+                      }))
+                    }
+                    className="min-w-[9.5rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="auto">Auto-detect</option>
+                    <option value="AIRMET">AIRMET</option>
+                    <option value="METAR">METAR</option>
+                    <option value="SIGMET">SIGMET</option>
+                    <option value="SPECI">SPECI</option>
+                    <option value="TAF">TAF</option>
+                    <option value="VAA">VAA</option>
+                    <option value="TCA">TCA</option>
+                  </select>
+                </div>
+              </div>
+              {inputMode === 'ahl_bulletin' && (
+                <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
+                  AHL bulletins are split and converted via{' '}
+                  <code>POST /api/v1/convert-bulletin</code>.
+                </p>
+              )}
+              {inputMode === 'collect_iwxxm' && (
+                <p className="mb-2 text-xs text-amber-800 dark:text-amber-200">
+                  IWXXM COLLECT / FTBP path uses{' '}
+                  <code>POST /api/v1/ingest-collect</code> (placeholder — returns 501
+                  until member extract ships).
+                </p>
+              )}
+              {bulletinSummary && (
+                <p
+                  className="mb-2 rounded border border-blue-200 bg-blue-50 px-2 py-1 text-xs text-blue-900 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-100"
+                  data-testid="bulletin-summary"
+                >
+                  {bulletinSummary}
+                </p>
+              )}
+              {placeholderNotice && (
+                <p
+                  className="mb-2 rounded border border-amber-300 bg-amber-50 px-2 py-1 text-xs text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
+                  data-testid="placeholder-notice"
+                  role="status"
+                >
+                  {placeholderNotice}
+                </p>
+              )}
+              <FailedTacCue failedSpans={failedSpans} />
+              <TacEditor
                 id="manual-input"
                 value={manualInput}
-                onChange={(e) => setManualInput(e.target.value)}
+                onChange={setManualInput}
                 readOnly={isReadOnly}
                 placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
-                className="min-h-[120px] text-sm dark:bg-gray-800 dark:text-white dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
                 aria-label="Enter METAR data manually"
+                className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
+                failedSpans={failedSpans}
+                issueSpans={issueSpans}
               />
+              <DecodePanel
+                segments={decodeSegments}
+                residuals={decodeResiduals}
+                product={decodeProduct}
+                loading={decodeLoading}
+                error={decodeError}
+                defaultOpen
+              />
+              <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+                <SoftPreviewControl
+                  checked={softPreview}
+                  onChange={setSoftPreview}
+                  disabled={isReadOnly || isBusy}
+                />
+                <LiveIwxxmToggle
+                  checked={liveIwxxm}
+                  onChange={setLiveIwxxm}
+                  disabled={isReadOnly || isBusy}
+                />
+              </div>
+              <WorkbenchConsole
+                lines={consoleLines}
+                minLogLevel={conversionParams.logLevel as ConvertLogLevel}
+                onClear={() => {
+                  clearConsole();
+                  appendConsole({
+                    level: 'info',
+                    source: 'console',
+                    message: 'cleared',
+                  });
+                }}
+              />
+
+              {/* Compact file upload — secondary to the TAC console */}
+              <Card
+                className={`mt-4 border-2 border-dashed p-3 shadow-none transition-colors ${
+                  isDragging
+                    ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950'
+                    : 'border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800'
+                }`}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                role="button"
+                aria-label="File drop zone - Drop files here or click to select files"
+                tabIndex={0}
+                data-testid="compact-file-drop-zone"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    fileInputRef.current?.click();
+                  }
+                }}
+              >
+                <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <Upload
+                      className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500"
+                      aria-hidden="true"
+                    />
+                    <div className="min-w-0 text-left">
+                      <p className="text-sm text-gray-900 dark:text-white">
+                        Drop TAC files or select
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Multiple files · .txt, .metar, .tac, .xml, .gz
+                      </p>
+                    </div>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept=".txt,.metar,.tac,.xml,.gz,text/plain,application/gzip,application/xml,text/xml"
+                    className="hidden"
+                    onChange={(e) => handleFileSelect(e.target.files)}
+                    aria-label="Select TAC files to upload"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fileInputRef.current?.click();
+                    }}
+                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    aria-label="Browse and select files"
+                  >
+                    Select Files
+                  </Button>
+                </div>
+              </Card>
             </div>
 
             {/* Output filename for manual input (#664 / EV-005) */}
@@ -1105,7 +1516,8 @@ export function FileConverter({
                     className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                   />
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Format: 4 letters + 2 digits
+                    Format: 4 letters + 2 digits. Sent as <code>bulletin_id</code> on
+                    Convert.
                   </p>
                 </div>
 
@@ -1119,37 +1531,11 @@ export function FileConverter({
                   }
                   placeholder="KWBC"
                   maxLength={4}
-                  helperText="4-letter ICAO code"
+                  helperText="4-letter ICAO code — sent as issuing_center on Convert"
                 />
                 <AirportDetailsCard icao={conversionParams.issuingCenter} />
 
-                {/* F6.e Product */}
-                <div>
-                  <Label htmlFor="param-product" className="dark:text-white mb-2">
-                    Product
-                  </Label>
-                  <select
-                    id="param-product"
-                    aria-label="Product"
-                    value={conversionParams.product}
-                    onChange={(e) =>
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        product: e.target.value as TacProductSelection,
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="auto">Auto-detect</option>
-                    <option value="AIRMET">AIRMET</option>
-                    <option value="METAR">METAR</option>
-                    <option value="SIGMET">SIGMET</option>
-                    <option value="SPECI">SPECI</option>
-                    <option value="TAF">TAF</option>
-                    <option value="VAA">VAA</option>
-                    <option value="TCA">TCA</option>
-                  </select>
-                </div>
+                {/* F6.e Product — primary control next to Manual TAC Input (#param-product) */}
 
                 {/* F6.e Profile */}
                 <div>
@@ -1214,6 +1600,10 @@ export function FileConverter({
                     <option value="fail">Fail - Stop on first error</option>
                     <option value="warn">Warn - Continue with warnings</option>
                   </select>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Fail sets API <code>stop_on_error=true</code>; Skip/Warn leave it
+                    false.
+                  </p>
                 </div>
 
                 {/* Log Level */}
@@ -1238,6 +1628,12 @@ export function FileConverter({
                     <option value="ERROR">ERROR</option>
                     <option value="CRITICAL">CRITICAL</option>
                   </select>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Filters conversion / validation / lint process messages for input
+                    and output (Conversion log + workbench console). Sent as{' '}
+                    <code>log_level</code> on Convert. Not the server process env{' '}
+                    <code>LOG_LEVEL</code>.
+                  </p>
                 </div>
 
                 {/* Validation Options */}
@@ -1254,11 +1650,17 @@ export function FileConverter({
                         }))
                       }
                       className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                      data-testid="strict-validation-checkbox"
                     />
                     <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                       Strict Validation
                     </span>
                   </label>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1 ml-6">
+                    When on (and soft-preview off), Convert sets{' '}
+                    <code>validate_output=true</code> with{' '}
+                    <code>validation_level=comprehensive</code> (XSD + Schematron).
+                  </p>
                   <label className="flex items-center cursor-pointer">
                     <input
                       type="checkbox"
@@ -1270,109 +1672,129 @@ export function FileConverter({
                         }))
                       }
                       className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                      data-testid="include-nil-reasons-checkbox"
                     />
                     <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                       Include Nil Reasons
                     </span>
                   </label>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1 ml-6">
+                    Sent as <code>include_nil_reasons</code>. Engine may still emit
+                    nilReason on NIL TAC until full honor lands (accepted + logged).
+                  </p>
                 </div>
               </div>
             </Card>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3 mb-8 bg-[rgba(0,0,0,0)]">
-              {accessToken && saveIndicatorLabel && (
-                <span
-                  className="text-sm text-gray-600 dark:text-gray-400"
+            {/* Action Buttons — fixed strip; status lives outside so busy/save text cannot reflow */}
+            <div className="mb-8" data-testid="action-button-strip">
+              {accessToken && (
+                <div
+                  className="mb-2 flex h-5 items-center"
                   aria-live="polite"
                   data-testid="autosave-indicator"
                 >
-                  {saveIndicatorLabel}
-                </span>
+                  {saveIndicatorLabel ? (
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      {saveIndicatorLabel}
+                    </span>
+                  ) : (
+                    <span className="sr-only">Autosave idle</span>
+                  )}
+                </div>
               )}
-              {accessToken && (
+              <div className="flex min-h-10 flex-wrap items-center gap-3">
+                {accessToken && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleNewMetar}
+                    disabled={isBusy}
+                    data-testid="new-metar-button"
+                    aria-label="Start a new METAR session"
+                    className="min-w-[7.5rem]"
+                  >
+                    New METAR
+                  </Button>
+                )}
                 <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleNewMetar}
-                  disabled={isBusy}
-                  data-testid="new-metar-button"
-                  aria-label="Start a new METAR session"
+                  data-testid="convert-button"
+                  onClick={handleConvert}
+                  disabled={convertDisabled}
+                  className="min-w-[7.5rem] bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  aria-busy={isConverting}
+                  aria-label={
+                    isConverting
+                      ? 'Converting files, please wait'
+                      : 'Convert METAR files to IWXXM XML'
+                  }
                 >
-                  New METAR
+                  <Loader2
+                    className={`w-4 h-4 animate-spin ${isConverting ? '' : 'invisible'}`}
+                    aria-hidden="true"
+                  />
+                  Convert
                 </Button>
-              )}
-              <Button
-                data-testid="convert-button"
-                onClick={handleConvert}
-                disabled={convertDisabled}
-                className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                aria-label={
-                  isConverting
-                    ? 'Converting files, please wait'
-                    : 'Convert METAR files to IWXXM XML'
-                }
-              >
-                {isConverting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
-                    Converting...
-                  </>
-                ) : (
-                  'Convert'
-                )}
-              </Button>
-              <Button
-                data-testid="convert-and-send-button"
-                onClick={handleConvertAndSend}
-                disabled={convertDisabled || !accessToken}
-                className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                aria-label={
-                  isConvertAndSending
-                    ? 'Converting and sending files, please wait'
-                    : 'Convert METAR files to IWXXM XML and send to database'
-                }
-              >
-                {isConvertAndSending ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
-                    Converting & Sending...
-                  </>
-                ) : (
-                  'Convert&Send'
-                )}
-              </Button>
-              <Button
-                onClick={() => setIsUploadDialogOpen(true)}
-                disabled={isBusy || !hasConverted || isReadOnly}
-                variant="outline"
-                className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                aria-label={`Upload ${convertedFiles.length} converted files to database`}
-              >
-                <Database className="w-4 h-4 mr-2" aria-hidden="true" />
-                Upload to Database{' '}
-                {convertedFiles.length > 0 && `(${convertedFiles.length})`}
-              </Button>
-              <Button
-                onClick={handleDownloadAll}
-                disabled={isBusy || !hasConverted}
-                variant="outline"
-                className="bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
-              >
-                Download ZIP {convertedFiles.length > 0 && `(${convertedFiles.length})`}
-              </Button>
-              <Button
-                onClick={handleClear}
-                variant="outline"
-                className="bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                aria-label="Clear all pending files and manual input"
-              >
-                Clear
-              </Button>
+                <Button
+                  data-testid="convert-and-send-button"
+                  onClick={handleConvertAndSend}
+                  disabled={convertDisabled || !accessToken}
+                  className="min-w-[9.5rem] bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  aria-busy={isConvertAndSending}
+                  aria-label={
+                    isConvertAndSending
+                      ? 'Converting and sending files, please wait'
+                      : 'Convert METAR files to IWXXM XML and send to database'
+                  }
+                >
+                  <Loader2
+                    className={`w-4 h-4 animate-spin ${isConvertAndSending ? '' : 'invisible'}`}
+                    aria-hidden="true"
+                  />
+                  Convert&Send
+                </Button>
+                <Button
+                  onClick={() => setIsUploadDialogOpen(true)}
+                  disabled={isBusy || !hasConverted || isReadOnly}
+                  variant="outline"
+                  className="min-w-[13.5rem] bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  aria-label={`Upload ${convertedFiles.length} converted files to database`}
+                >
+                  <Database className="w-4 h-4" aria-hidden="true" />
+                  Upload to Database
+                  <span className="inline-block min-w-[1.75rem] tabular-nums">
+                    ({convertedFiles.length})
+                  </span>
+                </Button>
+                <Button
+                  onClick={handleDownloadAll}
+                  disabled={isBusy || !hasConverted}
+                  variant="outline"
+                  className="min-w-[10rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
+                >
+                  Download ZIP
+                  <span className="inline-block min-w-[1.75rem] tabular-nums">
+                    ({convertedFiles.length})
+                  </span>
+                </Button>
+                <Button
+                  onClick={handleClear}
+                  variant="outline"
+                  className="min-w-[5.5rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  aria-label="Clear all pending files and manual input"
+                >
+                  Clear
+                </Button>
+              </div>
             </div>
 
-            {conversionLog && <ErrorLogPanel log={conversionLog} />}
+            {conversionLog && (
+              <ErrorLogPanel
+                log={conversionLog}
+                minLogLevel={conversionParams.logLevel as ConvertLogLevel}
+              />
+            )}
 
             {/* Conversion Status Display */}
             {conversionStatus.type !== 'idle' && (
@@ -1589,13 +2011,16 @@ export function FileConverter({
             {/* Footer */}
             <div className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
               <p>
-                Conversion powered by GIFS library Outputs.java raw IWXXM XML serialized
-                to .txt for convenience.
+                TAC → IWXXM conversion powered by{' '}
+                <code className="text-xs">tac2iwxxm</code>, with{' '}
+                <code className="text-xs">tac-validate</code> and{' '}
+                <code className="text-xs">iwxxm-validate</code>. Downloads are IWXXM{' '}
+                <code className="text-xs">.xml</code> files.
               </p>
             </div>
           </div>
           {accessToken && onLoadWorkSession && (
-            <aside className="lg:sticky lg:top-8 lg:self-start">
+            <aside className="lg:sticky lg:top-8 lg:mt-8 lg:self-start">
               <WorkHistorySidebar
                 accessToken={accessToken}
                 activeSessionId={activeWorkSessionId}

@@ -4,7 +4,33 @@ Implementation guide for ICAO OPMET Data Exchange Guidelines compliance in the M
 
 ## Overview
 
-This Translation Centre implements ICAO Doc 10003 "_Manual on the Digital Exchange of Aeronautical Meteorological Information_" Section 7 requirements for translation centre operations, statistics collection, and data exchange.
+This Translation Centre implements ICAO Doc 10003 "_Manual on the Digital Exchange of Aeronautical Meteorological Information_" **Section 7** requirements for translation centre operations, statistics collection, and data exchange.
+
+> **Edition caveat (2026-07-14):** §7 is cited from the **published / store** Doc 10003. An Advance 2014 unedited draft (Amd 76 / IWXXM v1) has **no Section 7** and an empty metadata chapter — see [mining/ICAO-Doc-10003-draft-2014-mining-notes.md](../mining/ICAO-Doc-10003-draft-2014-mining-notes.md). Runtime attribute names follow vendored IWXXM **v2025-2** `common.xsd`, not that draft.
+>
+> **Public companion:** [Guidelines for the Implementation of OPMET Data Exchange using IWXXM (5th Edition, Oct 2023)](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) — Translation Centre bulletin flow (§4.1.3 / §5.3), `permissibleUsage`, partial-translation minimum fields, AMHS/FTBP filename, and ROC/RODB validation statistics (**Guidelines §7** is exchange/implementation metrics, not identical to Doc 10003 §7). Archive minima there (28 days data / 2 months translation logs) are below this project's indefinite retention decision.
+
+### Validation / conversion strategy (domain)
+
+Translation-centre ops sit **after** domain encode/validate. Do not skip the pipeline:
+
+| Order | Stage | SoT |
+|-------|-------|-----|
+| 1 | TAC lint (Annex 3 / WMO-306 / vocab) | [../TAC_VALIDATION.md](../TAC_VALIDATION.md) |
+| 2 | TAC→IWXXM (+ translation metadata / quarantine shell) | [../IWXXM_CONVERSION.md](../IWXXM_CONVERSION.md) |
+| 3–5 | Well-formed → **XSD** → **Schematron** (same year line) | [../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) |
+| 6 | COLLECT / AHL / FTBP when packing bulletins | OPMET Guidelines dig + this doc |
+| 7 | ROC-style stats (Schematron-by-version, partial %) | Guidelines §7 · this doc’s statistics APIs |
+
+**Release:** XSD + Schematron both required (Guidelines §5.3.2). Product × gate matrix:
+[../rules/COVERAGE_MATRIX.md](../rules/COVERAGE_MATRIX.md). Hub:
+[../README.md](../README.md) §End-to-end strategy. Apply playbooks:
+[../rules/README.md](../rules/README.md).
+
+**TAC/XML product checklists before ops packing:**
+[../TAC_VALIDATION.md](../TAC_VALIDATION.md) (A3-2 … A2) →
+[../IWXXM_CONVERSION.md](../IWXXM_CONVERSION.md) →
+[../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) per-product playbook.
 
 ## Table of Contents
 
@@ -452,7 +478,7 @@ python3 -m pytest tests/test_icao_opmet.py --cov=src/config/icao_opmet --cov=src
 
 ### Standards
 
-- **ICAO Doc 10003**: _Manual on the Digital Exchange of Aeronautical Meteorological Information_
+- **ICAO Doc 10003**: _Manual on the Digital Exchange of Aeronautical Meteorological Information_ (store / published edition for §7; [draft mining notes](../mining/ICAO-Doc-10003-draft-2014-mining-notes.md) for lineage only)
 - **ICAO Doc 7910**: _Location Indicators_ (for ICAO region mapping)
 - **WMO No. 306 Volume I.3**: _Manual on Codes Part D - Representations derived from data models_
 

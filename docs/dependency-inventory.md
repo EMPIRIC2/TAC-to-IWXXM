@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-12 (S008 realtime/package amend)
+> **Last updated**: 2026-07-13 (S011 — CodeMirror 6 approved for F7 workbench)
 
 ## Runtime Dependencies
 
@@ -69,6 +69,7 @@ Schematron: lxml when possible; xslt2 → `SCHEMATRON_SKIPPED` (D-S008-T21-sch).
 | react | UI | MIT | npm |
 | vite | Bundler | MIT | npm |
 | @supabase/supabase-js | Client auth | MIT | npm |
+| CodeMirror 6 | F7 workbench editor | MIT | npm — pinned S011 M2 T2.5: `codemirror@6.0.2`, `@codemirror/view@6.43.6`, `@codemirror/state@6.7.1`, `@codemirror/commands@6.10.4`, `@codemirror/language@6.12.4` (autocomplete deferred until needed) |
 
 ## Workspace Tooling
 

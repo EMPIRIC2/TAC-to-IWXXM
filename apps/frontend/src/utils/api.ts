@@ -45,6 +45,15 @@ export interface ConversionIssue {
   severity?: 'error' | 'warning' | 'info';
   layer?: string;
   location?: string;
+  start?: number;
+  end?: number;
+}
+
+export interface FailedSpan {
+  start: number;
+  end: number;
+  code?: string;
+  message?: string;
 }
 
 export interface ConversionResponse {
@@ -54,6 +63,9 @@ export interface ConversionResponse {
   total_processed: number;
   successful: number;
   failed: number;
+  /** Soft-preview envelope (ADR-022); set when preview=true */
+  ok?: boolean | null;
+  failed_spans?: FailedSpan[];
 }
 
 export interface HealthResponse {
@@ -132,7 +144,16 @@ export async function convertMetarToIwxxm(params: {
   profile?: string;
   iwxxmVersion?: string;
   validateOutput?: boolean;
+  validationLevel?: string;
+  stopOnError?: boolean;
+  bulletinId?: string;
+  issuingCenter?: string;
+  includeNilReasons?: boolean;
+  /** Filters conversion/validation/lint issue verbosity (sent when API accepts it). */
+  logLevel?: string;
+  preview?: boolean;
   accessToken?: string;
+  signal?: AbortSignal;
 }): Promise<ConversionResponse> {
   const formData = new FormData();
 
@@ -155,6 +176,26 @@ export async function convertMetarToIwxxm(params: {
 
   // Add validation flag (default to false)
   formData.append('validate_output', params.validateOutput ? 'true' : 'false');
+  formData.append('validation_level', params.validationLevel || 'basic');
+  formData.append('stop_on_error', params.stopOnError ? 'true' : 'false');
+  formData.append(
+    'include_nil_reasons',
+    params.includeNilReasons === false ? 'false' : 'true',
+  );
+  if (params.logLevel) {
+    formData.append('log_level', params.logLevel.toUpperCase());
+  }
+
+  if (params.bulletinId?.trim()) {
+    formData.append('bulletin_id', params.bulletinId.trim().toUpperCase());
+  }
+  if (params.issuingCenter?.trim()) {
+    formData.append('issuing_center', params.issuingCenter.trim().toUpperCase());
+  }
+
+  if (params.preview) {
+    formData.append('preview', 'true');
+  }
 
   try {
     const token = params.accessToken || getAccessToken() || '';
@@ -171,6 +212,7 @@ export async function convertMetarToIwxxm(params: {
           Authorization: `Bearer ${token}`,
         },
         body: formData,
+        signal: params.signal,
       }),
       30000,
     );
@@ -194,6 +236,285 @@ export async function convertMetarToIwxxm(params: {
     console.error('[API ERROR]', error);
     throw error;
   }
+}
+
+export interface BulletinMeta {
+  ahl: string;
+  report_count: number;
+  tt: string;
+  aa: string;
+  cccc: string;
+  yygggg: string;
+  bbb?: string | null;
+}
+
+export interface BulletinReportResult {
+  report_index: number;
+  ok: boolean;
+  tac_input: string;
+  xml?: string | null;
+  issues: LintIssue[];
+  fixes: LintFix[];
+}
+
+export interface ConvertBulletinResponse {
+  bulletin_meta: BulletinMeta;
+  results: BulletinReportResult[];
+}
+
+/**
+ * Split a WMO AHL bulletin and convert each TAC report.
+ *
+ * **Endpoint**: POST /api/v1/convert-bulletin
+ */
+export async function convertBulletin(params: {
+  manualText?: string;
+  files?: File[];
+  product: string;
+  profile?: string;
+  iwxxmVersion?: string;
+  lint?: boolean;
+  accessToken?: string;
+  signal?: AbortSignal;
+}): Promise<ConvertBulletinResponse> {
+  const formData = new FormData();
+  if (params.manualText?.trim()) {
+    formData.append('manual_text', params.manualText.trim());
+  }
+  if (params.files?.length) {
+    params.files.forEach((file) => formData.append('files', file));
+  }
+  formData.append('product', params.product.toUpperCase());
+  formData.append('profile', params.profile || 'annex3');
+  formData.append('iwxxm_version', params.iwxxmVersion || '2025-2');
+  formData.append('lint', params.lint === false ? 'false' : 'true');
+
+  const token = params.accessToken || getAccessToken() || '';
+  const response = await withTimeout(
+    fetch(apiUrl('/convert-bulletin'), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+      signal: params.signal,
+    }),
+    60000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Bulletin conversion failed: ${response.statusText}`,
+    }));
+    const detail = error.detail;
+    const message =
+      (typeof detail === 'object' && detail?.message) ||
+      detail ||
+      error.message ||
+      `HTTP ${response.status}`;
+    throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
+  }
+
+  return (await response.json()) as ConvertBulletinResponse;
+}
+
+export class EndpointNotImplementedError extends Error {
+  status: number;
+  code: string;
+
+  constructor(message: string, status = 501, code = 'not_implemented') {
+    super(message);
+    this.name = 'EndpointNotImplementedError';
+    this.status = status;
+    this.code = code;
+  }
+}
+
+/**
+ * Ingest / validate IWXXM COLLECT (or gzipped COLLECT).
+ *
+ * **Endpoint**: POST /api/v1/ingest-collect (placeholder until implemented).
+ */
+export async function ingestCollect(params: {
+  manualText?: string;
+  files?: File[];
+  profile?: string;
+  iwxxmVersion?: string;
+  accessToken?: string;
+  signal?: AbortSignal;
+}): Promise<{ message: string; status: string }> {
+  const formData = new FormData();
+  if (params.manualText?.trim()) {
+    formData.append('manual_text', params.manualText.trim());
+  }
+  if (params.files?.length) {
+    params.files.forEach((file) => formData.append('files', file));
+  }
+  formData.append('profile', params.profile || 'annex3');
+  formData.append('iwxxm_version', params.iwxxmVersion || '2025-2');
+
+  const token = params.accessToken || getAccessToken() || '';
+  const response = await withTimeout(
+    fetch(apiUrl('/ingest-collect'), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+      signal: params.signal,
+    }),
+    30000,
+  );
+
+  if (response.status === 501) {
+    const body = await response.json().catch(() => ({}));
+    throw new EndpointNotImplementedError(
+      body?.detail?.message ||
+        body?.message ||
+        'COLLECT / FTBP ingest is not implemented yet (placeholder).',
+      501,
+      body?.detail?.code || 'not_implemented',
+    );
+  }
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `COLLECT ingest failed: ${response.statusText}`,
+    }));
+    throw new Error(
+      error.detail?.message || error.message || `HTTP ${response.status}`,
+    );
+  }
+
+  return (await response.json()) as { message: string; status: string };
+}
+
+export interface DecodeSegment {
+  start: number;
+  end: number;
+  code: string;
+  explanation: string;
+}
+
+export interface DecodeResidual {
+  start: number;
+  end: number;
+  text: string;
+}
+
+export interface DecodeTacResponse {
+  product: string;
+  segments: DecodeSegment[];
+  residuals: DecodeResidual[];
+}
+
+/**
+ * Decode TAC into ordered Code | Explanation segments.
+ *
+ * **Endpoint**: POST /api/v1/decode-tac
+ *
+ * @param params.manualText - TAC text
+ * @param params.product - Required F6 product id
+ * @returns Ordered segments and residuals
+ */
+export interface LintIssue {
+  severity: string;
+  code: string;
+  message: string;
+  location?: string | null;
+  start?: number | null;
+  end?: number | null;
+}
+
+export interface LintFix {
+  code: string;
+  message: string;
+  replacement: string;
+}
+
+export interface LintTacResponse {
+  ok: boolean;
+  issues: LintIssue[];
+  fixes: LintFix[];
+  product?: string | null;
+}
+
+/**
+ * Lint TAC via tac-validate (parse gate + shared rules — not Schematron).
+ *
+ * **Endpoint**: POST /api/v1/lint-tac
+ *
+ * @param params.manualText - TAC text
+ * @param params.product - Optional product hint
+ * @param params.signal - AbortSignal for live workbench cancellation
+ * @returns Lint report with optional start/end spans
+ */
+export async function lintTac(params: {
+  manualText: string;
+  product?: string;
+  accessToken?: string;
+  signal?: AbortSignal;
+}): Promise<LintTacResponse> {
+  const formData = new FormData();
+  formData.append('manual_text', params.manualText);
+  if (params.product) {
+    formData.append('product', params.product.toUpperCase());
+  }
+
+  const token = params.accessToken || getAccessToken() || '';
+  const response = await withTimeout(
+    fetch(apiUrl('/lint-tac'), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+      signal: params.signal,
+    }),
+    15000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Lint failed: ${response.statusText}`,
+    }));
+    throw new Error(
+      error.detail?.message || error.message || `HTTP ${response.status}`,
+    );
+  }
+
+  return (await response.json()) as LintTacResponse;
+}
+
+export async function decodeTac(params: {
+  manualText: string;
+  product: string;
+  accessToken?: string;
+  signal?: AbortSignal;
+}): Promise<DecodeTacResponse> {
+  const formData = new FormData();
+  formData.append('manual_text', params.manualText);
+  formData.append('product', params.product.toUpperCase());
+
+  const token = params.accessToken || getAccessToken() || '';
+  const response = await withTimeout(
+    fetch(apiUrl('/decode-tac'), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+      signal: params.signal,
+    }),
+    15000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Decode failed: ${response.statusText}`,
+    }));
+    throw new Error(
+      error.detail?.message || error.message || `HTTP ${response.status}`,
+    );
+  }
+
+  return (await response.json()) as DecodeTacResponse;
 }
 
 /**
@@ -290,6 +611,8 @@ export default {
   checkHealth,
   convertMetarToIwxxm,
   convertMetarToIwxxmZip,
+  lintTac,
+  decodeTac,
   fetchAirportRegion,
   downloadBlob,
 };

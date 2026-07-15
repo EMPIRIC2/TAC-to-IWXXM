@@ -2,10 +2,15 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import {
   checkHealth,
+  convertBulletin,
   convertMetarToIwxxm,
   convertMetarToIwxxmZip,
+  decodeTac,
   downloadBlob,
+  EndpointNotImplementedError,
   fetchAirportRegion,
+  ingestCollect,
+  lintTac,
   type ConversionResponse,
   type HealthResponse,
   type ApiError,
@@ -245,6 +250,34 @@ describe('API Utils', () => {
       expect(body.get('product')).toBe('TAF');
       expect(body.get('profile')).toBe('iwxxm_us');
       expect(body.get('iwxxm_version')).toBe('2025-2');
+    });
+
+    it('appends validation, stop_on_error, bulletin, and issuing centre (ADR-023)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121251Z',
+        product: 'METAR',
+        validateOutput: true,
+        validationLevel: 'comprehensive',
+        stopOnError: true,
+        bulletinId: 'saaa00',
+        issuingCenter: 'kwbc',
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('validate_output')).toBe('true');
+      expect(body.get('validation_level')).toBe('comprehensive');
+      expect(body.get('stop_on_error')).toBe('true');
+      expect(body.get('bulletin_id')).toBe('SAAA00');
+      expect(body.get('issuing_center')).toBe('KWBC');
     });
 
     it('should throw error on conversion failure', async () => {
@@ -575,6 +608,171 @@ describe('API Utils', () => {
       await expect(fetchAirportRegion('ZZZZ')).rejects.toThrow(
         'Airport region lookup failed (404)',
       );
+    });
+  });
+
+  describe('lintTac / decodeTac (live workbench)', () => {
+    it('posts lint-tac with product and optional signal', async () => {
+      mockFetchResponse({
+        ok: true,
+        issues: [],
+        fixes: [],
+        product: 'METAR',
+      });
+      const controller = new AbortController();
+      const result = await lintTac({
+        manualText: 'METAR KJFK',
+        product: 'metar',
+        accessToken: 'tok',
+        signal: controller.signal,
+      });
+      expect(result.ok).toBe(true);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/lint-tac'),
+        expect.objectContaining({
+          method: 'POST',
+          signal: controller.signal,
+        }),
+      );
+    });
+
+    it('throws on lint-tac failure', async () => {
+      mockFetchResponse({ message: 'bad' }, false, 422);
+      await expect(
+        lintTac({ manualText: 'METAR', product: 'METAR' }),
+      ).rejects.toThrow();
+    });
+
+    it('posts decode-tac with abort signal', async () => {
+      mockFetchResponse({
+        product: 'METAR',
+        segments: [],
+        residuals: [],
+      });
+      const controller = new AbortController();
+      const result = await decodeTac({
+        manualText: 'METAR KJFK',
+        product: 'METAR',
+        signal: controller.signal,
+      });
+      expect(result.product).toBe('METAR');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/decode-tac'),
+        expect.objectContaining({ signal: controller.signal }),
+      );
+    });
+
+    it('throws on decode-tac failure', async () => {
+      mockFetchResponse({ message: 'nope' }, false, 400);
+      await expect(
+        decodeTac({ manualText: 'METAR', product: 'METAR' }),
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('convertBulletin / ingestCollect (ADR-023/024)', () => {
+    it('posts convert-bulletin with manual text and files', async () => {
+      const body = {
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 1,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [
+          {
+            report_index: 0,
+            ok: true,
+            tac_input: 'METAR KJFK',
+            xml: '<iwxxm/>',
+            issues: [],
+            fixes: [],
+          },
+        ],
+      };
+      mockFetchResponse(body);
+      const file = new File(['METAR'], 'b.tac', { type: 'text/plain' });
+      const result = await convertBulletin({
+        manualText: 'SAUS31 KZNY 121200\nMETAR KJFK=',
+        files: [file],
+        product: 'metar',
+        profile: 'annex3',
+        lint: false,
+        accessToken: 'tok',
+      });
+      expect(result.bulletin_meta.cccc).toBe('KZNY');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/convert-bulletin'),
+        expect.objectContaining({ method: 'POST' }),
+      );
+    });
+
+    it('throws on convert-bulletin HTTP error with detail.message', async () => {
+      mockFetchResponse({ detail: { message: 'bulletin too large' } }, false, 400);
+      await expect(
+        convertBulletin({ product: 'METAR', manualText: 'SAUS31' }),
+      ).rejects.toThrow('bulletin too large');
+    });
+
+    it('throws EndpointNotImplementedError on ingest-collect 501', async () => {
+      mockFetchResponse(
+        {
+          detail: {
+            code: 'not_implemented',
+            message: 'COLLECT not ready',
+          },
+        },
+        false,
+        501,
+      );
+      await expect(
+        ingestCollect({
+          manualText: '<collect/>',
+          profile: 'annex3',
+          accessToken: 'tok',
+        }),
+      ).rejects.toBeInstanceOf(EndpointNotImplementedError);
+    });
+
+    it('posts ingest-collect success path', async () => {
+      mockFetchResponse({ message: 'ok', status: 'accepted' });
+      const file = new File(['<c/>'], 'c.xml', { type: 'application/xml' });
+      const result = await ingestCollect({
+        files: [file],
+        iwxxmVersion: '2023-1',
+      });
+      expect(result.status).toBe('accepted');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/ingest-collect'),
+        expect.objectContaining({ method: 'POST' }),
+      );
+    });
+
+    it('throws on ingest-collect non-501 failure', async () => {
+      mockFetchResponse({ detail: { message: 'bad upload' } }, false, 400);
+      await expect(ingestCollect({ manualText: 'x' })).rejects.toThrow('bad upload');
+    });
+
+    it('sends convert optional bulletin/log fields', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK',
+        bulletinId: 'szzz99',
+        issuingCenter: 'kjfk',
+        includeNilReasons: false,
+        logLevel: 'warn',
+        preview: true,
+        accessToken: 'tok',
+      });
+      expect(global.fetch).toHaveBeenCalled();
     });
   });
 });

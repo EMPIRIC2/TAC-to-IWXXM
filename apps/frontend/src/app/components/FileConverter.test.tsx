@@ -1,12 +1,58 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from './FileConverter';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
+);
+const mockConvertBulletin = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    bulletin_meta: {
+      ahl: 'SAUS31 KZNY 121200',
+      report_count: 0,
+      tt: 'SA',
+      aa: 'US',
+      cccc: 'KZNY',
+      yygggg: '121200',
+    },
+    results: [],
+  }),
+);
+const MockEndpointNotImplementedError = vi.hoisted(() => {
+  return class EndpointNotImplementedError extends Error {
+    status: number;
+    code: string;
+    constructor(message: string, status = 501, code = 'not_implemented') {
+      super(message);
+      this.name = 'EndpointNotImplementedError';
+      this.status = status;
+      this.code = code;
+    }
+  };
+});
+const mockIngestCollect = vi.hoisted(() =>
+  vi.fn().mockImplementation(() => {
+    throw new MockEndpointNotImplementedError(
+      'COLLECT / FTBP ingest is not implemented yet (placeholder).',
+    );
+  }),
+);
+const mockLintTac = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    ok: true,
+    issues: [{ severity: 'error', code: 'x', message: 'm', start: 0, end: 5 }],
+    fixes: [],
+  }),
+);
+const mockDecodeTac = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    product: 'METAR',
+    segments: [{ start: 0, end: 5, code: 'METAR', explanation: 'type' }],
+    residuals: [],
+  }),
 );
 const mockUploadConvertedFiles = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ message: 'Files uploaded successfully' }),
@@ -34,12 +80,46 @@ vi.mock('/utils/supabase/logout', () => ({
 
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
+  convertBulletin: mockConvertBulletin,
+  ingestCollect: mockIngestCollect,
+  EndpointNotImplementedError: MockEndpointNotImplementedError,
   convertTafToIwxxm: vi
     .fn()
     .mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
+  lintTac: mockLintTac,
+  decodeTac: mockDecodeTac,
   fetchAirportRegion: vi
     .fn()
     .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
+}));
+
+vi.mock('./TacEditor', () => ({
+  TacEditor: ({
+    id,
+    value,
+    onChange,
+    readOnly,
+    'aria-label': ariaLabel,
+  }: {
+    id?: string;
+    value: string;
+    onChange: (v: string) => void;
+    readOnly?: boolean;
+    'aria-label'?: string;
+  }) => (
+    <textarea
+      id={id}
+      value={value}
+      readOnly={readOnly}
+      aria-label={ariaLabel}
+      data-testid="tac-editor"
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
+
+vi.mock('./DecodePanel', () => ({
+  DecodePanel: () => <div data-testid="decode-panel-mock" />,
 }));
 
 vi.mock('/utils/databaseUpload', () => ({
@@ -267,6 +347,28 @@ describe('FileConverter Component', () => {
         'input[type="file"]',
       ) as HTMLInputElement;
       expect(fileInput.accept).toContain('.txt');
+      expect(fileInput.accept).toContain('.tac');
+      expect(fileInput.accept).toContain('.metar');
+      expect(fileInput.accept).toContain('.gz');
+      expect(fileInput.accept).toContain('.xml');
+    });
+  });
+
+  describe('Workbench layout', () => {
+    it('shows compact drop zone under the console and product type beside TAC', () => {
+      render(<FileConverter {...defaultProps} />);
+
+      expect(screen.getByTestId('compact-file-drop-zone')).toBeInTheDocument();
+      expect(screen.getByTestId('product-type-select')).toBeInTheDocument();
+      expect(screen.getByTestId('input-mode-group')).toBeInTheDocument();
+      expect(screen.getByTestId('workbench-console')).toBeInTheDocument();
+      expect(
+        screen.queryByText(/drop files here or click to select/i),
+      ).not.toBeInTheDocument();
+      expect(screen.getByText(/drop tac files or select/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/\.txt, \.metar, \.tac, \.xml, \.gz/i),
+      ).toBeInTheDocument();
     });
   });
 
@@ -349,10 +451,93 @@ describe('FileConverter Component', () => {
         await user.type(textarea, 'Test content');
         expect(textarea).toHaveValue('Test content');
 
-        const clearBtn = await screen.findByText(/clear/i, { selector: 'button' });
+        const clearBtn = await screen.findByRole('button', {
+          name: /clear all pending files and manual input/i,
+        });
         await user.click(clearBtn);
 
         expect(textarea).toHaveValue('');
+      }
+    });
+
+    it('live workbench debounces lint/decode; live IWXXM defaults off', async () => {
+      vi.useFakeTimers();
+      try {
+        mockLintTac.mockClear();
+        mockDecodeTac.mockClear();
+        const { container } = render(<FileConverter {...defaultProps} />);
+
+        expect(screen.getByTestId('live-iwxxm-toggle')).not.toBeChecked();
+        expect(screen.getByTestId('workbench-console')).toBeInTheDocument();
+
+        const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+        fireEvent.change(textarea, { target: { value: 'METAR KJFK' } });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+        });
+        expect(mockLintTac).toHaveBeenCalled();
+        expect(mockDecodeTac).toHaveBeenCalled();
+
+        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
+
+        fireEvent.click(screen.getByTestId('workbench-console-toggle'));
+        expect(screen.getByTestId('workbench-console-lines')).toBeInTheDocument();
+
+        // live IWXXM is on — soft-preview convert with failed spans
+        mockConvertMetarToIwxxm.mockClear();
+        mockConvertMetarToIwxxm.mockResolvedValueOnce({
+          results: [{ iwxxm_xml: '<x/>' }],
+          errors: [],
+          ok: false,
+          failed_spans: [{ start: 0, end: 5, message: 'bad' }],
+        });
+        fireEvent.change(textarea, { target: { value: 'METAR KJFK 121251Z' } });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+        });
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ preview: true }),
+        );
+        expect(screen.getByTestId('failed-tac-cue')).toBeInTheDocument();
+
+        // Error path (non-abort) is exercised without hanging fake timers
+        mockConvertMetarToIwxxm.mockRejectedValueOnce(new Error('Live IWXXM failed'));
+        fireEvent.change(textarea, { target: { value: 'METAR KJFK 121251Z =' } });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
+
+        // Clearing text short-circuits live IWXXM runner (no convert call)
+        mockConvertMetarToIwxxm.mockClear();
+        fireEvent.change(textarea, { target: { value: '   ' } });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+        });
+        expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+
+        // Successful preview clears failed spans
+        fireEvent.click(screen.getByTestId('live-iwxxm-toggle')); // ensure on
+        if (!(screen.getByTestId('live-iwxxm-toggle') as HTMLInputElement).checked) {
+          fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+        }
+        mockConvertMetarToIwxxm.mockResolvedValueOnce({
+          results: [{ iwxxm_xml: '<ok/>' }],
+          errors: [],
+          ok: true,
+          failed_spans: [],
+        });
+        fireEvent.change(textarea, {
+          target: { value: 'METAR KJFK 121251Z 18004KT' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
+        expect(screen.queryByTestId('failed-tac-cue')).toBeNull();
+      } finally {
+        vi.useRealTimers();
       }
     });
   });
@@ -916,7 +1101,7 @@ describe('FileConverter Component', () => {
       });
 
       await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith('Failed to read broken.metar');
+        expect(mockToast.error).toHaveBeenCalledWith('read failed');
       });
 
       await user.click(
@@ -932,7 +1117,7 @@ describe('FileConverter Component', () => {
 
       const dropZone = screen.getByRole('button', { name: /file drop zone/i });
       const hiddenInput = screen.getByLabelText(
-        /select metar files to upload/i,
+        /select tac files to upload/i,
       ) as HTMLInputElement;
       const clickSpy = vi
         .spyOn(hiddenInput, 'click')
@@ -1512,10 +1697,17 @@ describe('FileConverter Component', () => {
         (container.querySelector('#param-log-level') as HTMLSelectElement).value,
       ).toBe('DEBUG');
 
-      // Validation checkboxes
-      const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-      const strictCheck = checkboxes[0] as HTMLInputElement;
-      const nilCheck = checkboxes[1] as HTMLInputElement;
+      // Validation checkboxes (not soft-preview / live IWXXM toggles)
+      const strictCheck = screen
+        .getByText('Strict Validation')
+        .closest('label')
+        ?.querySelector('input[type="checkbox"]') as HTMLInputElement;
+      const nilCheck = screen
+        .getByText('Include Nil Reasons')
+        .closest('label')
+        ?.querySelector('input[type="checkbox"]') as HTMLInputElement;
+      expect(strictCheck).toBeTruthy();
+      expect(nilCheck).toBeTruthy();
       await user.click(strictCheck);
       expect(strictCheck.checked).toBe(false);
       await user.click(nilCheck);

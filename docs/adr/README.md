@@ -23,6 +23,11 @@
 | [ADR-017](ADR-017-pyo3-cutover-gate.md) | PyO3 required before F6 cutover (amends ADR-014) | Accepted |
 | [ADR-018](ADR-018-f8-worker-template.md) | F8 Render worker + template static+api+worker (amends ADR-015) | Accepted |
 | [ADR-019](ADR-019-s008-f6-f8-implemented-status.md) | Mark F6 and F8 Implemented after S008 11-verify-impl | Accepted |
+| [ADR-020](ADR-020-unified-tac-work-sessions.md) | Unified `tac_work_sessions` + F5 migrate | Accepted |
+| [ADR-021](ADR-021-byo-credentials-admin-removal.md) | BYO credentials; remove admin dashboard | Accepted |
+| [ADR-022](ADR-022-convert-preview-flag.md) | Soft-preview via `preview=true` on `/api/v1/convert` | Accepted |
+| [ADR-023](ADR-023-wire-convert-params.md) | Wire dormant FileConverter convert parameters | Accepted |
+| [ADR-024](ADR-024-operator-input-modes.md) | AHL / COLLECT input modes, log_level, nil reasons | Accepted |
 
 ## Process
 

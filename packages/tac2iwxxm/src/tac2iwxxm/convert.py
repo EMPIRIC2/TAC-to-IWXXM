@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any, Callable, cast
 
 from tac2iwxxm.models import ConvertIssue, ConvertResult
@@ -27,6 +28,73 @@ from tac2iwxxm.profiles.iwxxm_us import (
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"})
 _SUPPORTED_PROFILES = frozenset({"annex3", "iwxxm_us"})
 _US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
+
+# Map MALFORMED_REMARKS message needles → token regexes for editor spans (S011 T2.2).
+_REMARK_SPAN_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
+    ("malformed AO", re.compile(r"\bAO(?![12]\b)\w*\b")),
+    ("malformed SLP", re.compile(r"\bSLP(?!\d{3}\b)\w*\b")),
+    ("malformed PK WND", re.compile(r"\bPK\s+WND\b")),
+)
+
+
+_PREVIEW_ROOTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"})
+_PREVIEW_NS = {
+    "2025-2": "http://icao.int/iwxxm/2025-2",
+    "2023-1": "http://icao.int/iwxxm/2023-1",
+}
+
+
+def _content_bounds(tac: str) -> tuple[int, int]:
+    """Return inclusive start / exclusive end of stripped TAC content in ``tac``."""
+    stripped = tac.strip()
+    if not stripped:
+        return 0, len(tac)
+    leading = len(tac) - len(tac.lstrip())
+    return leading, leading + len(stripped)
+
+
+def _preview_stub_xml(product: str, iwxxm_version: str, reason: str) -> str:
+    """
+    Emit a minimal best-effort IWXXM shell for soft-preview (not for publication).
+
+    Parameters
+    ----------
+    product :
+        Product root element name (e.g. ``METAR``).
+    iwxxm_version :
+        Release line used to pick the IWXXM namespace.
+    reason :
+        Short human-readable failure note embedded as an XML comment.
+
+    Returns
+    -------
+    str
+        IWXXM-looking XML document with a nil observation.
+    """
+    from xml.sax.saxutils import escape
+
+    root = product.upper() if product.upper() in _PREVIEW_ROOTS else "METAR"
+    ns = _PREVIEW_NS.get(iwxxm_version, _PREVIEW_NS["2025-2"])
+    gml_id = f"{root.lower()}.preview.failed"
+    note = escape(reason[:240])
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        f'<iwxxm:{root} xmlns:iwxxm="{ns}" xmlns:gml="http://www.opengis.net/gml/3.2" '
+        f'gml:id="{gml_id}" reportStatus="NORMAL">\n'
+        f"  <!-- soft-preview: {note} -->\n"
+        '  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
+        f"</iwxxm:{root}>\n"
+    )
+
+
+def _remark_span(tac: str, message: str) -> tuple[int | None, int | None]:
+    """Best-effort character span for a US REMARKS diagnostic message."""
+    for needle, pattern in _REMARK_SPAN_PATTERNS:
+        if needle in message:
+            match = pattern.search(tac)
+            if match is not None:
+                return match.start(), match.end()
+    return None, None
 
 
 class ConvertError(ValueError):
@@ -86,6 +154,7 @@ def convert(
     product: str,
     profile: str = "annex3",
     iwxxm_version: str = "2025-2",
+    preview: bool = False,
 ) -> ConvertResult:
     """
     Convert a TAC report to IWXXM XML.
@@ -100,6 +169,9 @@ def convert(
         ``annex3`` (default) or ``iwxxm_us`` (METAR/SPECI US extensions; others T5.4–T5.5).
     iwxxm_version :
         Target IWXXM release line.
+    preview :
+        When ``True``, fatal parse/profile failures still return best-effort stub XML
+        (soft-preview / ADR-022). Does not imply Schematron-passed publish.
 
     Returns
     -------
@@ -109,77 +181,58 @@ def convert(
     product_u = product.upper()
     profile_l = profile.lower()
 
+    def _fail(code: str, message: str, *, span: bool = False) -> ConvertResult:
+        span_start = span_end = None
+        if span:
+            span_start, span_end = _content_bounds(tac)
+        issue = ConvertIssue(
+            severity="error",
+            code=code,
+            message=message,
+            start=span_start,
+            end=span_end,
+        )
+        xml = _preview_stub_xml(product_u, iwxxm_version, f"{code}: {message}") if preview else None
+        return ConvertResult(
+            ok=False,
+            product=product_u,
+            profile=profile_l,
+            iwxxm_version=iwxxm_version,
+            xml=xml,
+            issues=[issue],
+        )
+
     if product_u not in _SUPPORTED_PRODUCTS:
-        return ConvertResult(
-            ok=False,
-            product=product_u,
-            profile=profile_l,
-            iwxxm_version=iwxxm_version,
-            issues=[
-                ConvertIssue(
-                    severity="error",
-                    code="UNSUPPORTED_PRODUCT",
-                    message=f"product {product_u!r} not supported yet",
-                )
-            ],
-        )
+        return _fail("UNSUPPORTED_PRODUCT", f"product {product_u!r} not supported yet")
     if profile_l not in _SUPPORTED_PROFILES:
-        return ConvertResult(
-            ok=False,
-            product=product_u,
-            profile=profile_l,
-            iwxxm_version=iwxxm_version,
-            issues=[
-                ConvertIssue(
-                    severity="error",
-                    code="UNSUPPORTED_PROFILE",
-                    message=f"profile {profile_l!r} not supported yet",
-                )
-            ],
-        )
+        return _fail("UNSUPPORTED_PROFILE", f"profile {profile_l!r} not supported yet")
     if profile_l == "iwxxm_us" and product_u not in _US_PRODUCTS:
-        return ConvertResult(
-            ok=False,
-            product=product_u,
-            profile=profile_l,
-            iwxxm_version=iwxxm_version,
-            issues=[
-                ConvertIssue(
-                    severity="error",
-                    code="UNSUPPORTED_PROFILE",
-                    message=f"profile iwxxm_us not supported yet for product {product_u!r}",
-                )
-            ],
+        return _fail(
+            "UNSUPPORTED_PROFILE",
+            f"profile iwxxm_us not supported yet for product {product_u!r}",
         )
 
     try:
         ir = _parse(product_u, tac)
         xml = _emit(product_u, profile_l, ir, iwxxm_version)
     except ValueError as exc:
-        return ConvertResult(
-            ok=False,
-            product=product_u,
-            profile=profile_l,
-            iwxxm_version=iwxxm_version,
-            issues=[
-                ConvertIssue(
-                    severity="error",
-                    code="PARSE_ERROR",
-                    message=str(exc),
-                )
-            ],
-        )
+        return _fail("PARSE_ERROR", str(exc), span=True)
 
     issues: list[ConvertIssue] = []
     if profile_l == "iwxxm_us":
         raw_remarks: object = ir.get("remark_issues")
         if isinstance(raw_remarks, list):
             for item in cast(list[object], raw_remarks):
+                message = str(item)
+                remark_start, remark_end = _remark_span(tac, message)
                 issues.append(
                     ConvertIssue(
                         severity="warning",
                         code="MALFORMED_REMARKS",
-                        message=str(item),
+                        message=message,
+                        location="remarks",
+                        start=remark_start,
+                        end=remark_end,
                     )
                 )
 

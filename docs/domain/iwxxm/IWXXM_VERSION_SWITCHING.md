@@ -4,6 +4,14 @@
 
 This document describes the implementation of dynamic IWXXM version switching in the metar-to-IWXXM system. The system supports two IWXXM versions (2025-2 and 2023-1) with automatic conversion and migration between versions.
 
+> **Domain SoT:** Support window and package×line numbers —
+> [VERSION_SUPPORT_POLICY.md](./VERSION_SUPPORT_POLICY.md) (+ Appendix A). Validate each
+> requested year line with **that** line’s XSD+SCH only —
+> [../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) §Validation strategy. Encode/nilReason
+> recipes — [../IWXXM_CONVERSION.md](../IWXXM_CONVERSION.md). Do not treat this file as
+> URL/rule provenance. Per-product validate playbook:
+> [../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md).
+
 ## Supported Versions
 
 | Version | Status | Release Date | WMO Amendment | Breaking Changes from Prior |
@@ -211,7 +219,7 @@ project_root/
 │   │       │   ├── iwxxm.sch           # Schematron rules
 │   │       │   └── *.rdf               # Code lists
 │   ├── iwxxm-codelists/                # Code lists (Git submodule)
-│   └── iwxxm-modelling/                # Schematron sources (Git submodule)
+│   └── iwxxm-modelling/                # UML/EA generators (NOT runtime SCH; see mining notes)
 ├── GIFTs/                              # METAR encoder/decoder
 │   └── gifts/
 │       ├── common/
@@ -346,4 +354,4 @@ git submodule update --init --recursive
 - [WMO IWXXM GitHub](https://github.com/wmo-im/iwxxm)
 - [IWXXM Schemas](https://schemas.wmo.int/iwxxm)
 - [GIFTs Library](https://github.com/mgoberfield/GIFTs)
-- [Schematron Validation](https://github.com/wmo-im/iwxxm-modelling)
+- [IWXXM modelling (UML/EA generators — informative)](https://github.com/wmo-im/iwxxm-modelling) — runtime Schematron is under `wmo-im/iwxxm` (`IWXXM/rule/iwxxm.sch`); see [mining/iwxxm-modelling-v2025-2-mining-notes.md](../mining/iwxxm-modelling-v2025-2-mining-notes.md)

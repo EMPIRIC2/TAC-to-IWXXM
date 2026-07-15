@@ -1,5 +1,10 @@
 # Validation Enhancements Implementation Summary
 
+> **Domain SoT:** Prefer [../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) +
+> [../TAC_VALIDATION.md](../TAC_VALIDATION.md) + hub E2E pipeline over this historical
+> “3-layer” note. Offline RDF + vendored XSD/SCH beat live `codes.wmo.int` for CI release
+> gates. Engine map: [COMPREHENSIVE_VALIDATION.md](./COMPREHENSIVE_VALIDATION.md).
+
 ## Overview
 Enhanced the validation and conversion code to implement a comprehensive 3-layer validation strategy with online WMO validation, configurable settings, and validation-by-default in the conversion pipeline.
 
@@ -82,7 +87,7 @@ SCHEMATRON_USE_DOCKER=true
 ### 6. ✅ Initialized Git Submodules
 Ran `git submodule update --init --recursive` to download:
 - `schemas/iwxxm/` - IWXXM XML schemas
-- `schemas/iwxxm-modelling/` - IWXXM modeling documentation
+- `schemas/iwxxm-modelling/` - IWXXM UML/EA modelling + XSLT generators (informative; not runtime Schematron — see `docs/domain/mining/iwxxm-modelling-v2025-2-mining-notes.md`)
 
 This fixed ~16 previously skipped tests that required schema files.
 

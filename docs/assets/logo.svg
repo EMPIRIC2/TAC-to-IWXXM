@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">METAR to IWXXM</title>
+  <desc id="desc">Aviation-blue mark: TAC text lines converting into an XML code glyph</desc>
+  <rect width="128" height="128" rx="20" fill="#0066CC"/>
+  <!--
+    Uniform spacing (margin = gap = 11):
+    TAC [11–45] · gap · arrow [56–76] · gap · </> [87–117] · margin
+  -->
+  <g fill="#FFFFFF">
+    <rect x="11" y="30" width="34" height="9" rx="2"/>
+    <rect x="11" y="48" width="26" height="9" rx="2" opacity="0.88"/>
+    <rect x="11" y="66" width="30" height="9" rx="2" opacity="0.72"/>
+    <rect x="11" y="84" width="20" height="9" rx="2" opacity="0.56"/>
+  </g>
+  <path
+    d="M56 64h12M64 50l12 14-12 14"
+    fill="none"
+    stroke="#00A3E0"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <g
+    fill="none"
+    stroke="#FFFFFF"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M96 50l-9 14 9 14"/>
+    <path d="M100 74l8-20"/>
+    <path d="M108 50l9 14-9 14"/>
+  </g>
+</svg>

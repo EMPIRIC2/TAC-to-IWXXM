@@ -1,17 +1,17 @@
-"""REST routes for F5 METAR work sessions."""
+"""REST routes for F5/F7 unified TAC work sessions (ADR-020)."""
 
 from datetime import datetime
 from typing import Any, Optional
 from uuid import UUID
 
-from auth.admin_api import require_admin
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from ..schemas.work_session import (
     WorkSession,
     WorkSessionCreate,
     WorkSessionListResponse,
+    WorkSessionProduct,
     WorkSessionStatus,
     WorkSessionUpdate,
 )
@@ -32,9 +32,49 @@ def _user_id(user: dict[str, Any]) -> str:
     return str(user.get("sub") or user.get("user_id"))
 
 
+def _parse_product_filter(raw: Optional[str]) -> Optional[list[WorkSessionProduct]]:
+    """
+    Parse ``product`` query param (comma-separated product ids).
+
+    Parameters
+    ----------
+    raw : str or None
+        e.g. ``\"metar,speci\"`` for My METARs.
+
+    Returns
+    -------
+    list[WorkSessionProduct] or None
+        Parsed products, or None when the filter is omitted.
+
+    Raises
+    ------
+    HTTPException
+        422 when any token is not a known product.
+    """
+    if raw is None or not raw.strip():
+        return None
+    products: list[WorkSessionProduct] = []
+    for token in raw.split(","):
+        token = token.strip().lower()
+        if not token:
+            continue
+        try:
+            products.append(WorkSessionProduct(token))
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Invalid product filter value: {token!r}",
+            ) from exc
+    return products or None
+
+
 @router.get("", response_model=WorkSessionListResponse)
 def list_work_sessions(
     status_filter: Optional[WorkSessionStatus] = Query(None, alias="status"),
+    product: Optional[str] = Query(
+        None,
+        description="Comma-separated product filter (e.g. metar,speci for My METARs)",
+    ),
     from_dt: Optional[datetime] = Query(None, alias="from"),
     to_dt: Optional[datetime] = Query(None, alias="to"),
     include_deleted: bool = Query(False),
@@ -44,6 +84,7 @@ def list_work_sessions(
 ) -> WorkSessionListResponse:
     items, total = service.list_sessions(
         status_filter=status_filter,
+        products=_parse_product_filter(product),
         from_dt=from_dt,
         to_dt=to_dt,
         include_deleted=include_deleted,
@@ -93,19 +134,3 @@ def restore_work_session(
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
     return service.restore_session(session_id)
-
-
-admin_router = APIRouter(prefix="/admin/work-sessions", tags=["Admin"])
-
-
-@admin_router.get("", response_model=WorkSessionListResponse)
-def admin_list_work_sessions(
-    status_filter: Optional[WorkSessionStatus] = Query(None, alias="status"),
-    page: int = Query(1, ge=1),
-    limit: int = Query(50, ge=1, le=200),
-    _admin: dict[str, Any] = Depends(require_admin),
-    credentials: HTTPAuthorizationCredentials = Depends(_bearer),
-) -> WorkSessionListResponse:
-    service = WorkSessionService(credentials.credentials)
-    items, total = service.list_sessions(status_filter=status_filter, page=page, limit=limit)
-    return WorkSessionListResponse(items=items, total=total, page=page, limit=limit)

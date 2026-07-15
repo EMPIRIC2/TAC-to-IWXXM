@@ -11,8 +11,9 @@ from src import api as api_module
 
 
 class _FakeUploadFile:
-    def __init__(self, payload: bytes):
+    def __init__(self, payload: bytes, filename: str | None = None):
         self._payload = payload
+        self.filename = filename
 
     async def read(self, _size: int) -> bytes:
         return self._payload
@@ -75,6 +76,8 @@ def test_is_xml_input_cases(filename: str | None, content: str, expected: bool) 
 
 @pytest.mark.asyncio
 async def test_read_uploaded_text_cases() -> None:
+    import gzip
+
     content, error = await api_module.read_uploaded_text(_FakeUploadFile(b"METAR KJFK"))
     assert content == "METAR KJFK"
     assert error is None
@@ -95,6 +98,33 @@ async def test_read_uploaded_text_cases() -> None:
     content, error = await api_module.read_uploaded_text(_FakeUploadFile(b"   \n\t  "))
     assert content is None
     assert error == "empty file"
+
+    # Valid small gzip of TAC text
+    gz_ok = gzip.compress(b"METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=")
+    content, error = await api_module.read_uploaded_text(_FakeUploadFile(gz_ok, filename="metar.txt.gz"))
+    assert error is None
+    assert content is not None and content.startswith("METAR KJFK")
+
+    # High-ratio bomb: tiny gzip that expands past 10 MiB → reject via max_length
+    bomb = gzip.compress(b"A" * (11 * 1024 * 1024), compresslevel=9)
+    assert len(bomb) < 10 * 1024 * 1024
+    content, error = await api_module.read_uploaded_text(_FakeUploadFile(bomb, filename="bomb.gz"))
+    assert content is None
+    assert error is not None and "decompressed file too large" in error
+
+
+@pytest.mark.asyncio
+async def test_read_uploaded_text_corrupt_gzip() -> None:
+    content, error = await api_module.read_uploaded_text(_FakeUploadFile(b"\x1f\x8bCorruptNotGzip", filename="bad.gz"))
+    assert content is None
+    assert error is not None and "gzip decompress failed" in error
+
+
+def test_manual_entries_with_offsets_crlf() -> None:
+    pairs = api_module.manual_entries_with_offsets("METAR AA\r\nMETAR BB\r\n")
+    assert [e for e, _ in pairs] == ["METAR AA", "METAR BB"]
+    assert pairs[0][1] == 0
+    assert pairs[1][1] == len("METAR AA\r\n")
 
 
 @pytest.mark.asyncio

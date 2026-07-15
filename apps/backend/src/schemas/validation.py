@@ -254,6 +254,8 @@ class LintIssueModel(BaseModel):
     code: str
     message: str
     location: Optional[str] = None
+    start: Optional[int] = Field(default=None, description="Inclusive character offset")
+    end: Optional[int] = Field(default=None, description="Exclusive character offset")
 
 
 class LintFixModel(BaseModel):
@@ -273,6 +275,31 @@ class LintTacResponse(BaseModel):
     product: Optional[str] = None
 
 
+class DecodeSegmentModel(BaseModel):
+    """HTTP DTO for one TAC decode/annotate segment (S011 / #702)."""
+
+    start: int
+    end: int
+    code: str
+    explanation: str
+
+
+class DecodeResidualModel(BaseModel):
+    """HTTP DTO for an undecoded TAC span (explicit residuals — G4)."""
+
+    start: int
+    end: int
+    text: str
+
+
+class DecodeTacResponse(BaseModel):
+    """Response for POST /api/v1/decode-tac."""
+
+    product: str
+    segments: List[DecodeSegmentModel] = Field(default_factory=list)
+    residuals: List[DecodeResidualModel] = Field(default_factory=list)
+
+
 class PackageIssueModel(BaseModel):
     """HTTP DTO for an iwxxm-validate package finding (additive on /validate)."""
 
@@ -281,6 +308,8 @@ class PackageIssueModel(BaseModel):
     message: str
     location: Optional[str] = None
     code: Optional[str] = None
+    start: Optional[int] = Field(default=None, description="Inclusive offset when known")
+    end: Optional[int] = Field(default=None, description="Exclusive offset when known")
 
 
 class ValidateIssueModel(BaseModel):
@@ -291,6 +320,8 @@ class ValidateIssueModel(BaseModel):
     message: str
     location: Optional[str] = None
     code: Optional[str] = None
+    start: Optional[int] = Field(default=None, description="Inclusive offset when known")
+    end: Optional[int] = Field(default=None, description="Exclusive offset when known")
 
 
 class ValidateLayerIssueModel(BaseModel):

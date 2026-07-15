@@ -1,8 +1,8 @@
 # User Journeys
 
 > **Project**: METAR to IWXXM Converter
-> **Source**: feature-list.md, requirements interview 2026-06-14; S008 F6 + realtime/package amend 2026-07-12
-> **Last updated**: 2026-07-12
+> **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI
+> **Last updated**: 2026-07-13
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -14,7 +14,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-001 | Convert METAR via UI (shorthand) | apps/frontend | F6 (was F1) | T2 / **T3** |
 | UJ-002 | Validate IWXXM output (`iwxxm-validate`) | apps/frontend / API | F2+F6 | T2 / **T3** |
 | UJ-003 | Register and login | apps/frontend | Auth | T2 / **T3** |
-| UJ-004 | Resume & browse METAR work history | apps/frontend | F5 | T2 / **T3** |
+| UJ-004 | Resume & browse METAR work history (unified sessions filter) | apps/frontend | F5+F7 | T2 / **T3** |
 | UJ-005 | Convert with product + profile via UI | apps/frontend | F6 | T2 / **T3** (all 7 products) |
 | UJ-006 | Convert non-METAR product via API | HTTP API | F6 | T2 / **T3** |
 | UJ-007 | Validate IWXXM-US profile document | apps/frontend / API | F2+F6 | T2 / **T3** |
@@ -23,8 +23,13 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-010 | Malformed US REMARKS | UI / API | F6 | T0 / T2 |
 | UJ-011 | Bulletin split → convert → Schematron (API) | HTTP API | F6 | **T2** |
 | UJ-012 | TAC lint failure (`tac-validate`) via API | HTTP API | F6 | **T2** |
-| UJ-013 | Multi-product operator entry (F7) | apps/frontend | F7 | Planned — no T3 yet |
-| UJ-014 | Near-RT ingest + quarantine (F8) | Worker / API | F8 | Planned — no T3 yet |
+| UJ-013 | Multi-product operator entry / workbench shell (F7) | apps/frontend | F7 | T2 / **T3** |
+| UJ-014 | Near-RT ingest + quarantine (F8) | Worker / API | F8 | T2 / T3 (staging) |
+| UJ-015 | TAC decode panel (Code \| Explanation) | apps/frontend | F7 | T2 / **T3** |
+| UJ-016 | Failed-TAC cue + soft-preview / partial | apps/frontend | F7 | T2 / **T3** |
+| UJ-017 | Live workbench (debounce, spans, console, live IWXXM) | apps/frontend | F7 | T2 / **T3** |
+| UJ-018 | Unified sessions persist/resume + F5 migrate smoke | apps/frontend | F5+F7 | T2 / **T3** |
+| UJ-019 | Admin routes removed / BYO operator surface | apps/frontend | F7 / M4 | T2 / **T3** |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -39,7 +44,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 - **T3** — Deployed Render stack; Playwright + pytest against live URLs (manual `make test-live`).
 
 Run local E2E: `make test-e2e-playwright`  
-Run live E2E: `make test-live` (requires `.env` with `ADMIN_EMAIL` / `ADMIN_PASSWORD`)
+Run live E2E: `make test-live` (requires `.env` with `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` when auth is enabled)
 
 **T3 URLs** (canonical):
 
@@ -96,14 +101,18 @@ version; UX behaviors from #555/#664 preserved.
 **Steps**:
 
 1. Obtain IWXXM XML from conversion (UJ-001 / UJ-005 / UJ-006 / UJ-011).
-2. Trigger validation endpoint or UI action with the same **profile** used for convert.
+2. Trigger validation via **Convert with Strict Validation** (UI maps to
+   `validate_output=true` + `validation_level=comprehensive` on `/api/v1/convert`) **or** a
+   dedicated validate endpoint/UI action with the same **profile** used for convert.
 3. Backend invokes **`iwxxm-validate`** (not inline schema loading long-term).
-4. Review pass/fail and error messages.
+4. Review pass/fail and error messages (conversion log / issues arrays).
 5. If `profile=iwxxm_us`, validation uses **combined** WMO + iwxxm-us catalogs; `annex3` uses WMO only.
 
 **Acceptance**: Valid sample produces validation pass for selected IWXXM version and profile.
+Soft-preview Convert does **not** satisfy UJ-002 (ADR-022 / ADR-023).
 
-**Automated tests**: `packages/iwxxm-validate` unit + backend wrapper tests + E2E where exposed (T2); H3 + H6 (T3)
+**Automated tests**: `packages/iwxxm-validate` unit + backend wrapper tests + FE convert-params
+mapping (ADR-023) + E2E where exposed (T2); H3 + H6 (T3)
 
 ---
 
@@ -119,14 +128,26 @@ Unchanged from prior interview (Supabase JWT via merged `/auth/*`).
 
 ### UJ-004: Resume & Browse METAR Work History
 
-Unchanged scope: **METAR/SPECI sessions only** in F6 v1. Product/profile may be stored in
-`conversion_params` when present; no multi-product history UI.
+**Actor**: Authenticated user
 
-**Steps**: See prior F5 journey (auto-save, Draft/WIP/Finished/Failed, sidebar, My METARs, admin).
+**Goal**: Resume Draft/WIP and browse Finished/Failed METAR/SPECI work after F7 unified sessions
+(R2′ / ADR-020).
 
-**Acceptance**: Same F5 acceptance as S004.
+**Steps**:
+
+1. Log in (UJ-003).
+2. Open converter sidebar (**5 recent**) and/or **My METARs** (`/history`).
+3. My METARs lists only rows with `product IN (metar, speci)` on `tac_work_sessions`.
+4. Open a Draft — editor restores TAC + `conversion_params`; auto-save (~3s) continues.
+5. Finished sessions open read-only; soft-deleted sessions appear in trash (30-day) as before.
+6. **No** admin cross-user browse (UJ-019).
+
+**Acceptance**: F5 UX preserved for METAR/SPECI on unified storage; migrated legacy
+`metar_work_sessions` rows remain visible after cutover (UJ-018).
 
 **Automated tests**: `apps/e2e/metar-work-history.e2e.spec.ts` (T2); live H6 delta (T3)
+
+**Browser wiring**: Frontend → session APIs with JWT; CORS H4.
 
 ---
 
@@ -270,22 +291,150 @@ contract (04). **Tier: T2**.
 
 ---
 
-### UJ-013: Multi-Product Operator Entry (F7) — Planned
+### UJ-013: Multi-Product Operator Entry / Workbench Shell (F7)
 
-**Status**: **Planned — not this build.** Stub for multi-product sessions / operator UI beyond F5.
+**Actor**: Operator (guest may convert; login required for session persist)
 
-**Acceptance**: ⚠️ Deferred. No T3 until F7 session.
+**Goal**: Use the F7 workbench shell for any of the seven F6 products (editor + product/profile/
+version + convert path), as the umbrella entry for F7 UI.
+
+**Feature**: F7 (S011 / EV-008)
+
+**Steps**:
+
+1. Open frontend converter / workbench (CodeMirror 6 editor replaces plain textarea).
+2. Select or auto-detect **product**; set **profile** and **version**.
+3. Paste or upload TAC; observe product-aware chrome (not METAR-only copy).
+4. Run **Convert** (hard path) and view IWXXM / Source TAC / downloads (UJ-001/005 behaviors).
+5. Optionally open decode (UJ-015), exercise Failed-TAC/preview (UJ-016), live assist (UJ-017),
+   or save/resume session (UJ-018).
+
+**Acceptance**: All seven products reachable from the same operator entry; H4–H5 connectivity;
+no `/admin` dependency.
+
+**Automated tests**: Playwright workbench shell + product matrix extension (T2); live T3 smoke.
+
+**Browser wiring**: API base from `/config.json`; CORS allows frontend origin (H4–H5).
 
 ---
 
 ### UJ-014: Near-Realtime Ingest + Quarantine (F8)
 
-**Status**: **Build this cycle (S008 / ADR-018).** Worker ingest → pipeline → Supabase store or
+**Status**: **Implemented** (S008 / ADR-018/019). Worker ingest → pipeline → Supabase store or
 separate quarantine on Schematron/convert fail. No push sinks in v1.
 
 **Acceptance**: Worker processes HTTPS/object-prefix fixture feed; pass rows in
 `iwxxm_ingest_results`; fail rows in `iwxxm_ingest_quarantine`; service-role JWT for writers.
-Live: T7.4 / Phase 6 gate.
+Live: T7.4 / Phase 6 gate (may remain deferred).
+
+---
+
+### UJ-015: TAC Decode Panel (Code | Explanation)
+
+**Actor**: Operator
+
+**Goal**: See ordered decode segments for the current TAC with short explanations and explicit
+residuals (#702).
+
+**Steps**:
+
+1. Enter TAC for any of the seven products in the workbench.
+2. Open **Decode** panel (collapsible Code | Explanation).
+3. UI calls `POST /api/v1/decode-tac` (JWT when required).
+4. Segments show `start`/`end`; clicking/hovering highlights spans in the editor when offsets exist.
+5. Undecoded material appears as explicit **residuals** (esp. VAA/TCA — G4).
+
+**Acceptance**: At least METAR/SPECI/TAF show non-empty segment lists for golden fixtures; all
+seven products return a well-formed decode response (may be residual-heavy).
+
+**Automated tests**: API contract + Vitest panel; Playwright smoke (T2); live T3 sample.
+
+---
+
+### UJ-016: Failed-TAC Cue + Soft-Preview / Partial
+
+**Actor**: Operator
+
+**Goal**: Distinguish Failed-TAC and obtain best-effort IWXXM + failed-span markers (#665/#666).
+
+**Steps**:
+
+1. Enter malformed or partially valid TAC.
+2. Observe distinct **Failed-TAC** visual cue in editor/results (not only generic error toast).
+3. Trigger **soft-preview** path (exact control: flag vs button — 04-tech-plan).
+4. Response includes best-effort XML (when any) and failed-span markers aligned to editor spans.
+5. Hard convert may still 4xx/structured-fail per api-contract; preview must not be confused with
+   a successful Schematron-passed publish.
+
+**Acceptance**: Failed cue visible; preview returns markers for injected bad span; cancel/Abort
+safe if in-flight.
+
+**Automated tests**: Backend preview + Playwright highlight (T2); live T3 optional.
+
+---
+
+### UJ-017: Live Workbench (Debounce, Spans, Console, Live IWXXM)
+
+**Actor**: Operator
+
+**Goal**: Edit TAC with live assist — debounced lint/decode, span highlight, hover, optional live
+IWXXM, pull-up console (#694).
+
+**Steps**:
+
+1. Type in CodeMirror workbench; requests debounce; prior in-flight calls abort.
+2. Lint/decode issues highlight `start`/`end` spans; hover shows issue/segment detail.
+3. Toggle **live IWXXM** (validate/convert/preview per 04) without leaving the editor.
+4. Open pull-up **console** for structured messages.
+5. Full Schematron/convert may remain behind toggle if latency requires (lint/decode first).
+
+**Acceptance**: Debounce + AbortController evidenced in network; spans align to known issue
+fixture; console captures errors without crashing the editor.
+
+**Automated tests**: Vitest debounce helpers; Playwright live-edit smoke (T2); live T3 light.
+
+**Browser wiring**: Multiple JWT API calls to lint/decode/validate/preview — H4–H5 required.
+
+---
+
+### UJ-018: Unified Sessions Persist/Resume + F5 Migrate Smoke
+
+**Actor**: Authenticated operator
+
+**Goal**: Persist/resume work for any of seven products on `tac_work_sessions`; verify migrated
+F5 rows still load (ADR-020).
+
+**Steps**:
+
+1. Log in; create Draft for a non-METAR product (e.g. TAF); wait for autosave.
+2. Reload — session restores TAC + product/profile.
+3. Convert to WIP/Finished per status rules (one WIP per user total across products).
+4. Open My METARs — non-METAR draft **not** listed; workbench history **does** list it.
+5. After migration: open a pre-migrate METAR session — still resumes (UJ-004).
+
+**Acceptance**: CRUD on unified table; product filter correct; migration smoke passes once.
+
+**Automated tests**: API session tests + Playwright (T2); staging migrate smoke (T3).
+
+---
+
+### UJ-019: Admin Routes Removed / BYO Operator Surface
+
+**Actor**: Operator / former admin user
+
+**Goal**: Confirm admin product surface is gone and BYO topology is the credential model (#697).
+
+**Steps**:
+
+1. Navigate to `/admin` and legacy admin deep links — expect **404** / not found (no dashboard).
+2. Confirm no UI for approval queue, toggle-admin, or cross-user session browse.
+3. Authenticated user can still convert and use own sessions (UJ-013/018).
+4. Operator deploy docs/env describe Supabase + optional `DATABASE_URL` (no paste-keys UI).
+
+**Acceptance**: Admin UI/routes absent; user JWT session paths still work; E2E admin suite retired
+or rewritten as negative tests.
+
+**Automated tests**: Playwright negative `/admin` (T2/T3); retire prior admin panel locators.
 
 ---
 
@@ -350,8 +499,10 @@ Extended: sync may include **iwxxm-us** pin updates via manifest (in addition to
 
 Topology: API + static frontend + **Background Worker** (ADR-018). After F6: API image includes
 tac2iwxxm + validate packages (not gifts); frontend build includes product/profile controls
-(M8). Redeploy API before frontend when CORS/API contract changes. Deploy worker after F8
-migrations. Signoff includes UJ-005/006/007 live coverage plus F8 live smoke (T7.4).
+(M8). After F7: frontend includes CodeMirror workbench; API includes decode/spans/preview;
+**no** admin static routes; BYO env. Redeploy API before frontend when CORS/API contract changes.
+Deploy worker after F8 migrations. Signoff includes UJ-005/013/015–019 live coverage plus F8
+live smoke (T7.4) when scheduled.
 
 ---
 
@@ -361,3 +512,5 @@ migrations. Signoff includes UJ-005/006/007 live coverage plus F8 live smoke (T7
 - S008 amend (2026-07-12): UJ-002/005–007 package wiring; UJ-011/012 T2; UJ-013/014 Planned stubs;
   UJ-DEV-004
 - S008 05 (2026-07-12): UJ-014 + UJ-OPS-001 aligned to ADR-018 F8 worker (D-S008-05-batch1)
+- S011 / EV-008 (2026-07-13): UJ-004 unified filter; UJ-013 expanded; UJ-015–019 added; UJ-014
+  Implemented note; admin journeys retired via UJ-019

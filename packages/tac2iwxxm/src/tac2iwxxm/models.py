@@ -68,12 +68,18 @@ class ConvertIssue(msgspec.Struct, frozen=True):
         Human-readable description.
     location :
         Optional field / token hint.
+    start :
+        Optional inclusive character offset into the source TAC.
+    end :
+        Optional exclusive character offset into the source TAC.
     """
 
     severity: str
     code: str
     message: str
     location: str | None = None
+    start: int | None = None
+    end: int | None = None
 
 
 class ConvertResult(msgspec.Struct, frozen=True):

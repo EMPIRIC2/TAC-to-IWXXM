@@ -82,6 +82,23 @@ class TestH0iCorsPreflight:
             allow_methods = response.headers.get("access-control-allow-methods", "").upper()
             assert method in allow_methods
 
+    @pytest.mark.parametrize(
+        "path",
+        ["/api/v1/lint-tac", "/api/v1/decode-tac"],
+    )
+    def test_options_f7_live_assist_allows_post(self, h0i_client: TestClient, path: str) -> None:
+        """F7 UI connection points — browser preflight for live lint/decode."""
+        response = h0i_client.options(
+            path,
+            headers={
+                "Origin": BROWSER_ORIGIN,
+                "Access-Control-Request-Method": "POST",
+            },
+        )
+        assert response.status_code == 200
+        allow_methods = response.headers.get("access-control-allow-methods", "")
+        assert "POST" in allow_methods.upper()
+
 
 class TestH0iAuthConversionWiring:
     """Auth package + tac2iwxxm conversion on single backend deployable."""

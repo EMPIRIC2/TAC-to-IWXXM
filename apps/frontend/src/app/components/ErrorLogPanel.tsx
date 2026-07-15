@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
 import type { ConversionIssue } from '/utils/api';
+import { issueLevelPasses, type ConvertLogLevel } from '/utils/convertParams';
 
 export interface ConversionLog {
   errors: string[];
@@ -9,13 +10,21 @@ export interface ConversionLog {
 
 interface ErrorLogPanelProps {
   log: ConversionLog;
+  /** Operator log level — filters conversion/validation/lint issues. */
+  minLogLevel?: ConvertLogLevel;
 }
 
-export function ErrorLogPanel({ log }: ErrorLogPanelProps) {
+export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps) {
   const [expanded, setExpanded] = useState(true);
-  const totalCount = log.errors.length + log.issues.length;
+  const showErrors = issueLevelPasses('error', minLogLevel);
+  const filteredIssues = log.issues.filter((issue) =>
+    issueLevelPasses(issue.severity, minLogLevel),
+  );
+  const visibleErrors = showErrors ? log.errors : [];
+  const totalCount = visibleErrors.length + filteredIssues.length;
+  const hiddenCount = log.errors.length + log.issues.length - totalCount;
 
-  if (totalCount === 0) {
+  if (log.errors.length + log.issues.length === 0) {
     return null;
   }
 
@@ -23,6 +32,7 @@ export function ErrorLogPanel({ log }: ErrorLogPanelProps) {
     <section
       className="mb-8 rounded-lg border-2 border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20"
       aria-label="Conversion error log"
+      data-testid="conversion-error-log"
     >
       <button
         type="button"
@@ -33,7 +43,8 @@ export function ErrorLogPanel({ log }: ErrorLogPanelProps) {
       >
         <span className="flex items-center gap-2 font-semibold text-amber-900 dark:text-amber-100">
           <AlertCircle className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
-          Conversion log ({totalCount})
+          Conversion / validation log ({totalCount}
+          {hiddenCount > 0 ? ` · ${hiddenCount} hidden by log level` : ''})
         </span>
         {expanded ? (
           <ChevronUp className="h-5 w-5" aria-hidden="true" />
@@ -46,25 +57,31 @@ export function ErrorLogPanel({ log }: ErrorLogPanelProps) {
           id="conversion-error-log-content"
           className="space-y-4 border-t border-amber-200 px-4 pb-4 pt-3 dark:border-amber-800"
         >
-          {log.errors.length > 0 && (
+          {totalCount === 0 ? (
+            <p className="text-sm text-amber-900 dark:text-amber-100">
+              No messages at {minLogLevel} or above. Lower Log Level to see
+              info/warnings.
+            </p>
+          ) : null}
+          {visibleErrors.length > 0 && (
             <div>
               <h3 className="mb-2 text-sm font-semibold text-amber-900 dark:text-amber-100">
                 Errors
               </h3>
               <ul className="list-disc space-y-1 pl-5 text-sm text-amber-950 dark:text-amber-50">
-                {log.errors.map((error, index) => (
+                {visibleErrors.map((error, index) => (
                   <li key={`error-${index}`}>{error}</li>
                 ))}
               </ul>
             </div>
           )}
-          {log.issues.length > 0 && (
+          {filteredIssues.length > 0 && (
             <div>
               <h3 className="mb-2 text-sm font-semibold text-amber-900 dark:text-amber-100">
                 Issues
               </h3>
               <ul className="space-y-2 text-sm text-amber-950 dark:text-amber-50">
-                {log.issues.map((issue, index) => (
+                {filteredIssues.map((issue, index) => (
                   <li
                     key={`issue-${index}`}
                     className="rounded border border-amber-200 bg-white/60 p-2 dark:border-amber-800 dark:bg-black/20"

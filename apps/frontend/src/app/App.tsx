@@ -5,7 +5,6 @@ import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
 import { EmailVerification } from './components/auth/EmailVerification';
 import { AuthCallback } from './components/auth/AuthCallback';
-import { AdminDashboard } from './components/admin/AdminDashboard';
 import { PasswordReset } from './components/auth/PasswordReset';
 import { Toaster } from './components/ui/sonner';
 import { toast } from 'sonner';
@@ -45,7 +44,6 @@ type AuthView =
   | 'verify'
   | 'converter'
   | 'history'
-  | 'admin'
   | 'callback'
   | 'reset';
 
@@ -60,7 +58,6 @@ function App() {
   const [accessToken, setAccessToken] = useState(() =>
     disableAuth ? 'dev-bypass-token' : '',
   );
-  const [isAdmin, setIsAdmin] = useState(false);
   const [activeWorkSessionId, setActiveWorkSessionId] = useState<string | null>(null);
   const [loadedWorkSession, setLoadedWorkSession] = useState<WorkSession | null>(null);
   const sessionInitRef = useRef<string | null>(null);
@@ -124,25 +121,22 @@ function App() {
     email: string,
     needsVerification: boolean,
     token?: string,
-    adminStatus?: boolean,
+    _adminStatus?: boolean,
   ) => {
     console.log(`🔐 handleLogin called with:`, {
       email,
       needsVerification,
-      adminStatus,
       hasToken: !!token,
     });
     setUserEmail(email);
     setAccessToken(token || 'auth-service-token');
-    setIsAdmin(adminStatus || false);
 
     if (needsVerification) {
       setCurrentView('verify');
     } else {
       setIsAuthenticated(true);
       sessionInitRef.current = null;
-      console.log(`DEBUG: Routing to ${adminStatus ? 'admin' : 'converter'} view`);
-      setCurrentView(adminStatus ? 'admin' : 'converter');
+      setCurrentView('converter');
       if (token) {
         void initializeWorkSessions(token);
       }
@@ -154,12 +148,11 @@ function App() {
     setCurrentView('verify');
   };
 
-  const handleVerified = (token?: string, adminStatus?: boolean) => {
+  const handleVerified = (token?: string, _adminStatus?: boolean) => {
     setIsAuthenticated(true);
     setAccessToken(token || '');
-    setIsAdmin(adminStatus || false);
     sessionInitRef.current = null;
-    setCurrentView(adminStatus ? 'admin' : 'converter');
+    setCurrentView('converter');
     if (token) {
       void initializeWorkSessions(token);
     }
@@ -175,15 +168,10 @@ function App() {
     setIsAuthenticated(false);
     setUserEmail('');
     setAccessToken('');
-    setIsAdmin(false);
     setActiveWorkSessionId(null);
     setLoadedWorkSession(null);
     sessionInitRef.current = null;
     setCurrentView('login');
-  };
-
-  const handleSwitchToAdmin = () => {
-    setCurrentView('admin');
   };
 
   const handleSwitchToConverter = () => {
@@ -259,7 +247,6 @@ function App() {
             accessToken={isAuthenticated ? accessToken : undefined}
             isGuest={isGuestConverter}
             onRequestLogin={handleRequestLogin}
-            onSwitchToAdmin={isAdmin ? handleSwitchToAdmin : undefined}
             onOpenHistory={isAuthenticated ? handleOpenHistory : undefined}
             onLoadWorkSession={isAuthenticated ? handleLoadWorkSession : undefined}
             onNewMetar={handleNewMetar}
@@ -276,15 +263,6 @@ function App() {
           userEmail={userEmail}
           onBack={handleSwitchToConverter}
           onOpenSession={handleLoadWorkSession}
-        />
-      )}
-
-      {currentView === 'admin' && isAuthenticated && isAdmin && (
-        <AdminDashboard
-          onLogout={handleLogout}
-          userEmail={userEmail}
-          accessToken={accessToken}
-          onSwitchToConverter={handleSwitchToConverter}
         />
       )}
 

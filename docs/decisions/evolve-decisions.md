@@ -3,6 +3,35 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-008 — F7 multi-product operator UI (S011)
+
+**Session**: S011-f7-operator-ui  
+**Features**: F7 (primary); F5/F6/M4 touchpoints  
+**Issues**: #694, #702, #665, #666, #697 (#5 parent)  
+**Started**: 2026-07-13
+
+### Scope (approved Phase 0)
+
+Workbench, decode, Failed-TAC/partial preview, unified `tac_work_sessions` (R2′), BYO + admin
+removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
+
+### Key decisions
+
+| ID | Decision | ADR |
+|----|----------|-----|
+| R2′ | Unified `tac_work_sessions` + migrate F5 | ADR-020 |
+| R6 / #697 | BYO; remove `/admin`; `E2E_USER_*` | ADR-021 |
+| Preview | `preview=true` on `/convert` | ADR-022 |
+| Convert params | Wire bulletin/issuing/stop_on_error/validate; console log filter; `.tac` accept | ADR-023 |
+| Input modes | AHL bulletin UI; COLLECT 501 placeholder; `log_level` + `include_nil_reasons` | ADR-024 |
+| 04 A | Expand-cutover; CM6 pkgs; 300ms debounce; live IWXXM off; keep work-sessions paths; reuse CORS | — |
+
+### Execution plan
+
+`docs/sessions/S011-f7-operator-ui/reports/execution-plan.md` — M1–M6 / T1–T6 (pending approval).
+
+---
+
 ## Cycle EV-001 — Convert & Convert&Send UI (S001)
 
 **GitHub**: [#656](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/656)  

@@ -23,7 +23,32 @@ vi.mock('/utils/supabase/logout', () => ({
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
   convertTafToIwxxm: vi.fn(),
+  lintTac: vi.fn().mockResolvedValue({
+    ok: true,
+    issues: [],
+    fixes: [],
+  }),
+  decodeTac: vi
+    .fn()
+    .mockResolvedValue({ product: 'METAR', segments: [], residuals: [] }),
   fetchAirportRegion: vi.fn(),
+}));
+
+vi.mock('@/app/components/TacEditor', () => ({
+  TacEditor: ({ id, value, onChange, readOnly, 'aria-label': ariaLabel }: any) => (
+    <textarea
+      id={id}
+      value={value}
+      readOnly={readOnly}
+      aria-label={ariaLabel}
+      data-testid="tac-editor"
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
+
+vi.mock('@/app/components/DecodePanel', () => ({
+  DecodePanel: () => null,
 }));
 
 vi.mock('/utils/databaseUpload', () => ({
@@ -127,6 +152,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
     const baseSession = {
       id: 'sess-stuck-card',
       status: 'wip' as const,
+      product: 'metar' as const,
       title: 'FAOR',
       manual_tac: '',
       pending_files: [],

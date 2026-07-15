@@ -33,11 +33,13 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S006-issue-664-output-filename](S006-issue-664-output-filename/session-brief.md) | feature | completed | Custom output filename for manual METAR (#664) | feat/S006-issue-664-output-filename | 2026-06-25 | 2026-07-12 |
 | [S007-docs-minimize](S007-docs-minimize/session-brief.md) | process | completed | Minimize docs/ root; nest non-standing docs | docs/S007-docs-minimize | 2026-07-12 | 2026-07-12 |
 | [S008-general-tac-iwxxm-converter](S008-general-tac-iwxxm-converter/session-brief.md) | feature | completed | General TAC→IWXXM + near-RT ingest (EV-006) | evolve/S008-general-tac-iwxxm-converter | 2026-07-12 | 2026-07-12 |
-| [S009-result-card-dismiss](S009-result-card-dismiss/session-brief.md) | hotfix | in_progress | Results Card stays after Cancel/Remove | fix/S009-result-card-dismiss | 2026-07-12 | — |
+| [S009-result-card-dismiss](S009-result-card-dismiss/session-brief.md) | hotfix | completed | Results Card stays after Cancel/Remove | fix/S009-result-card-dismiss | 2026-07-12 | 2026-07-12 |
+| [S010-issue-655-tac-traceability](S010-issue-655-tac-traceability/session-brief.md) | feature | completed | Source TAC on conversion results (#655) | evolve/EV-007-issue-655-tac-traceability | 2026-07-12 | 2026-07-13 |
+| [S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md) | feature | in_progress | F7 multi-product UI + workbench/decode/admin (#694/#702/#665/#666/#697) | evolve/S011-f7-operator-ui | 2026-07-13 | — |
 
 ## Active session
 
-**S009-result-card-dismiss** (`hotfix`) — FileConverter result card dismiss on `fix/S009-result-card-dismiss`.
+**[S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md)** — F7 operator UI + workbench/decode/admin (00-context in progress).
 
 ## Folder layout
 

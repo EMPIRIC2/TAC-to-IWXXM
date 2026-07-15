@@ -1,6 +1,15 @@
-/** F5 METAR work session types — parity with apps/backend work_session schemas */
+/** F5/F7 TAC work session types — parity with apps/backend work_session schemas (ADR-020). */
 
 export type WorkSessionStatus = 'draft' | 'wip' | 'finished' | 'failed';
+
+export type WorkSessionProduct =
+  | 'airmet'
+  | 'metar'
+  | 'sigmet'
+  | 'speci'
+  | 'taf'
+  | 'vaa'
+  | 'tca';
 
 export interface PendingFilePayload {
   name: string;
@@ -10,6 +19,7 @@ export interface PendingFilePayload {
 export interface WorkSession {
   id: string;
   user_id: string;
+  product: WorkSessionProduct;
   status: WorkSessionStatus;
   title: string;
   manual_tac: string;
@@ -33,6 +43,7 @@ export interface WorkSessionListResponse {
 
 export interface WorkSessionUpsertPayload {
   title?: string;
+  product?: WorkSessionProduct;
   manual_tac?: string;
   pending_files?: PendingFilePayload[];
   converted_results?: Record<string, unknown>[];

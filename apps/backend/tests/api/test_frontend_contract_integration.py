@@ -1,4 +1,8 @@
-"""Integration-style API contract tests aligned with frontend api.ts types."""
+"""Integration-style API contract tests aligned with frontend api.ts types.
+
+F7 workbench connection points (lint-tac, decode-tac, soft-preview, work-sessions,
+CORS) live in ``test_f7_ui_connection_integration.py``.
+"""
 
 import pytest
 from fastapi.testclient import TestClient
@@ -64,3 +68,22 @@ def test_convert_partial_failure_includes_structured_issues(client: TestClient):
     assert isinstance(issue["source"], str)
     assert isinstance(issue["message"], str)
     assert issue["severity"] in {"error", "warning", "info"}
+
+
+def test_convert_preview_contract_includes_failed_spans_keys(client: TestClient):
+    """Soft-preview success still exposes ok/failed_spans keys the UI reads."""
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, VALID_METAR),
+            "product": (None, "METAR"),
+            "profile": (None, "annex3"),
+            "lint": (None, "false"),
+            "preview": (None, "true"),
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert "ok" in payload
+    assert isinstance(payload.get("failed_spans"), list)
+    assert payload["successful"] >= 1

@@ -6,6 +6,39 @@ The METAR-to-IWXXM backend implements a **7-layer comprehensive validation syste
 
 **Status**: ✅ Fully Implemented (Phase 2 Complete)
 
+> **Domain rule provenance (SoT):** This file is **engine / API wiring**, not the authority for
+> *what* must pass. Prefer:
+>
+> | Concern | Standing doc |
+> |---------|--------------|
+> | E2E TAC → IWXXM pipeline | [../README.md](../README.md) §End-to-end strategy |
+> | TAC / Annex 3 lint | [../TAC_VALIDATION.md](../TAC_VALIDATION.md) |
+> | Encode / nilReason | [../IWXXM_CONVERSION.md](../IWXXM_CONVERSION.md) |
+> | XSD + Schematron + RDF | [../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) §Validation strategy |
+> | Product × gate matrix | [../rules/COVERAGE_MATRIX.md](../rules/COVERAGE_MATRIX.md) G1–G7 |
+>
+> **Release gate (domain):** produced IWXXM must pass **both XSD and Schematron** for the
+> vendored pin (`vendor/schemas/iwxxm/…`, currently **2025-2**). OPMET Exchange Guidelines
+> require Schematron on translator outputs — treat SCH as **blocking for release** even if
+> older engine notes label layer 5 “non-blocking”. Paths below that still say `schemas/iwxxm/`
+> are historical; runtime CI uses **`vendor/schemas/iwxxm`**.
+
+### Engine layers ↔ domain stages
+
+| Engine layer | Domain stage | Blocking for release? |
+|--------------|--------------|----------------------|
+| 1 AIRPORT_ICAO | Pre-condition (station metadata) | Project policy |
+| 2 TAC_SYNTAX | Stage 1 TAC lint (`tac-validate`) | Yes for convert path |
+| 3 XML_WELLFORMED | Stage 3 | Yes |
+| 4 XML_SCHEMA | Stage 4 XSD | **Yes** |
+| 5 SCHEMATRON | Stage 5 | **Yes for release** (domain) |
+| 6 GML_REFERENCES | Advisory beyond SCH | Optional |
+| 7 WMO_CODELISTS | Mostly inside SCH RDF; live optional | Prefer offline RDF |
+
+**Product TAC checklists (before layers 3–5):** [../TAC_VALIDATION.md](../TAC_VALIDATION.md)
+(A3-2 · A5-1 · A6 · A2-1/A2-2 · US RMK). Encode recipes:
+[../IWXXM_CONVERSION.md](../IWXXM_CONVERSION.md).
+
 ---
 
 ## Validation Layers
@@ -15,17 +48,21 @@ The system implements all 7 validation layers defined in the IWXXM specification
 | Layer | Name | Type | Description | Source |
 |-------|------|------|-------------|--------|
 | 1 | AIRPORT_ICAO | Blocking | Validates ICAO airport code against database | Internal database |
-| 2 | TAC_SYNTAX | Blocking | Validates TAC/METAR syntax basics | Internal rules |
+| 2 | TAC_SYNTAX | Blocking | Validates TAC/METAR syntax basics | Internal rules → prefer [TAC_VALIDATION.md](../TAC_VALIDATION.md) |
 | 3 | XML_WELLFORMED | Blocking | Checks XML is well-formed | lxml parser |
-| 4 | XML_SCHEMA | Blocking | Validates against official IWXXM XSD schemas | schemas/iwxxm/IWXXM/*.xsd |
-| 5 | SCHEMATRON | Non-blocking | Validates business rules from official Schematron | schemas/iwxxm/IWXXM/rule/iwxxm.sch |
+| 4 | XML_SCHEMA | Blocking | Validates against official IWXXM XSD schemas | `vendor/schemas/iwxxm/<pin>/IWXXM/*.xsd` |
+| 5 | SCHEMATRON | Blocking for release\* | Official Schematron (+ RDF `document()`) | `vendor/schemas/iwxxm/<pin>/IWXXM/rule/iwxxm.sch` |
 | 6 | GML_REFERENCES | Non-blocking | Validates GML internal references | Internal logic |
-| 7 | WMO_CODELISTS | Non-blocking | Validates against official WMO RDF codelists | schemas/iwxxm/IWXXM/rule/*.rdf |
+| 7 | WMO_CODELISTS | Non-blocking / SCH-overlap | Offline RDF / optional live codes.wmo.int | `…/rule/*.rdf` |
+
+\*Domain SoT / OPMET Guidelines: fail release if SCH does not run successfully. Engine may still
+return soft failures during transitional `xslt2` skip — do not treat skip warnings as a pass.
 
 ### Execution Model
 
-- **Blocking Layers (1-4)**: Run sequentially. If any fails, validation stops immediately (configurable)
-- **Non-Blocking Layers (5-7)**: Run in parallel using `ThreadPoolExecutor`. All results collected even if some fail
+- **Blocking Layers (1-4):** Run sequentially. If any fails, validation stops immediately (configurable)
+- **Layer 5 (Schematron):** Required for domain release gate; run after XSD against the **same** year line
+- **Advisory Layers (6-7):** May run in parallel; collect all results even if some fail
 
 ---
 
@@ -399,7 +436,7 @@ git submodule update --init --recursive
 # Submodules:
 # - schemas/iwxxm/ (WMO IWXXM schemas)
 # - schemas/iwxxm-codelists/ (WMO RDF code lists) 
-# - schemas/iwxxm-modelling/ (Schematron rules)
+# - schemas/iwxxm-modelling/ (UML/EA generators only — runtime SCH is vendor/schemas/iwxxm/.../iwxxm.sch)
 ```
 
 ---

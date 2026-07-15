@@ -11,8 +11,8 @@ describe('workSessionPayload', () => {
     expect(extractSessionTitle('METAR KJFK 121251Z 18012KT')).toMatch(/^KJFK · /);
   });
 
-  it('falls back to METAR label when ICAO cannot be parsed', () => {
-    expect(extractSessionTitle('free text without icao')).toMatch(/^METAR · /);
+  it('falls back to TAC label when ICAO cannot be parsed', () => {
+    expect(extractSessionTitle('free text without icao')).toMatch(/^TAC · /);
   });
 
   it('detects converter content', () => {
@@ -36,18 +36,19 @@ describe('workSessionPayload', () => {
     ).toBe(true);
   });
 
-  it('builds API payload with status override', () => {
+  it('builds API payload with status override and resolved product', () => {
     const payload = buildWorkSessionPayload(
       {
         manualInput: 'METAR EGLL 121200Z',
         pendingFiles: [{ name: 'a.txt', content: 'METAR' }],
         convertedFiles: [],
         conversionLog: { errors: ['x'], issues: [] },
-        conversionParams: { iwxxmVersion: '2025-2' },
+        conversionParams: { iwxxmVersion: '2025-2', product: 'TAF' },
       },
       { status: 'wip' },
     );
     expect(payload.status).toBe('wip');
+    expect(payload.product).toBe('taf');
     expect(payload.errors).toEqual(['x']);
     expect(payload.pending_files).toHaveLength(1);
   });

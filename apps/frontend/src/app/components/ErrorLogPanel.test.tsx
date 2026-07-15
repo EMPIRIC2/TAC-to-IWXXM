@@ -34,7 +34,9 @@ describe('ErrorLogPanel', () => {
     expect(screen.getByText(/Check TAC format/)).toBeInTheDocument();
     expect(screen.getByText(/Code: E001/)).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: /conversion log/i }));
+    await user.click(
+      screen.getByRole('button', { name: /conversion \/ validation log/i }),
+    );
     expect(screen.queryByText('Invalid METAR syntax')).not.toBeInTheDocument();
   });
 
