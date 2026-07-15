@@ -1462,8 +1462,9 @@ stages:
     status: in_progress
     session_id: S012-empty-bearer-lint-tac
     current_bug: docs/bug-reports/BUG-2026-07-15-empty-bearer-lint-tac.md
+    bug_status: verifying
     remediation_path: local-first
-    note: "Phase 0 complete; starting Phase 1 investigation + repro test"
+    note: "Fix committed 77d5f40; opening PR"
     notes:
     - "2026-07-15 — S012-empty-bearer-lint-tac open (empty Bearer on lint-tac/decode-tac + lint UX issue details); cleared stale S009 pointer."
     - "2026-07-12 — Docs reorg via /14-hotfix rejected (not a bug/hotfix); deferred until S006 complete (S006-R4)."
@@ -5896,6 +5897,13 @@ git_history:
     - workflow-state.yaml
     timestamp: "2026-07-15"
     note: "HEAD after PRM-016; CI success on run 29444844110"
+  - sha: 77d5f40
+    branch: fix/S012-empty-bearer-lint-tac
+    message: "hotfix: restore JWT on lint/decode after reload + richer lint console"
+    stage: "14-hotfix"
+    files_changed: 14
+    timestamp: "2026-07-15T23:30:00Z"
+    session_id: S012-empty-bearer-lint-tac
 pr_review_cycles:
 - id: PRR-001
   pr_number: 679
