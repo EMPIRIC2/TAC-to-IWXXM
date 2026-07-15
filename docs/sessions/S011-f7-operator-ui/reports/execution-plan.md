@@ -192,7 +192,7 @@
 | PR-M3 | Minor | Preview + Failed-TAC | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/717 |
 | PR-M4 | Minor | Live workbench | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/718 |
 | PR-M5 | Minor | Unified sessions | open — https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/720 |
-| PR-EV-008 | Major | Evolve → main | pending |
+| PR-EV-008 | Major | Evolve → main | preparing — refresh #716 title/body; no merge yet |
 
 ## Phase Gate Check (B→C)
 
