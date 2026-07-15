@@ -85,11 +85,11 @@ TC-F7-006 negative spec is correct; full-suite Playwright still needs retirement
 
 | UJ | Feature | Spec | T0 module | Playwright |
 |----|---------|------|-----------|------------|
-| UJ-013 | F7 | TC-F7-001 | FE FileConverter / f7 vitest paths | `f7-live-workbench.e2e.spec.ts` |
-| UJ-015 | F7 | TC-F7-002 | `test_tc_f7_002_*`, `test_decode_tac.py` | (decode panel via f7/FE) |
-| UJ-016 | F7 | TC-F7-003 | `test_tc_f7_003_*`, FailedTacCue tests | — |
-| UJ-017 | F7 | TC-F7-004 | FE live debounce tests | `f7-live-workbench.e2e.spec.ts` |
-| UJ-018 | F7 | TC-F7-005 | `test_tc_f7_005_*` | — |
+| UJ-013 | F7 | TC-F7-001 | FE FileConverter / f7 vitest paths | `f7-live-workbench.e2e.spec.ts`, `f7-ui-api-connections.e2e.spec.ts` |
+| UJ-015 | F7 | TC-F7-002 | `test_tc_f7_002_*`, `test_decode_tac.py`, `test_f7_ui_connection_integration.py` | `f7-ui-api-connections.e2e.spec.ts` |
+| UJ-016 | F7 | TC-F7-003 | `test_tc_f7_003_*`, FailedTacCue tests, `test_f7_ui_connection_integration.py` | `f7-ui-api-connections.e2e.spec.ts` |
+| UJ-017 | F7 | TC-F7-004 | FE live debounce tests | `f7-live-workbench.e2e.spec.ts`, `f7-ui-api-connections.e2e.spec.ts` |
+| UJ-018 | F7 | TC-F7-005 | `test_tc_f7_005_*`, `test_f7_ui_connection_integration.py` | `f7-ui-api-connections.e2e.spec.ts` |
 | UJ-019 | F7 | TC-F7-006 | `test_admin_routes_removed.py` | `admin-navigation.e2e.spec.ts` |
 
 ## Handoff to 11-verify-impl

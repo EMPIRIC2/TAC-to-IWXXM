@@ -270,11 +270,24 @@ admin suite modules.
 - **Pass criteria**: Negative Playwright/API asserts; no AdminDashboard route registration
 - **Source**: UJ-019; #697
 
+### F7 UI↔API connection integration
+
+Cross-layer coverage for workbench connection points (not only isolated unit/TC modules):
+
+| Connection | API path | Backend integration | Playwright |
+|------------|----------|---------------------|------------|
+| Live lint + spans | `POST /api/v1/lint-tac` | `apps/backend/tests/api/test_f7_ui_connection_integration.py` | `apps/e2e/f7-ui-api-connections.e2e.spec.ts` |
+| Decode panel | `POST /api/v1/decode-tac` | same | same |
+| Soft-preview / Failed-TAC | `POST /api/v1/convert` (`preview=true`) | same + `test_frontend_contract_integration.py` | same |
+| My METARs / sessions | `/api/v1/work-sessions*` + `product` | same | same |
+| Browser CORS (H0i) | OPTIONS on lint/decode/convert | same + `test_h0i_connectivity.py` | — |
+
 ### F7 verify/deploy gate
 
 Before closing S011 / EV-008:
 
 - [ ] TC-F7-001–006 green at T2
+- [ ] F7 UI↔API connection integration green (table above)
 - [ ] TC-004′ (unified) green
 - [ ] H6′ live smokes for UJ-013/015–019 (or documented waiver)
 - [ ] Admin E2E modules removed or converted to TC-F7-006
