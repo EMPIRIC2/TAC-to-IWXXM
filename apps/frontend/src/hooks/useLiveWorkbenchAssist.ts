@@ -142,6 +142,17 @@ export function useLiveWorkbenchAssist({
         setDecodeProduct(decodeResult.product);
 
         const summaryLevel = lintResult.ok ? 'info' : 'warn';
+        const issuePreview = lintResult.issues
+          .slice(0, 3)
+          .map((i) => {
+            const code = i.code ? `[${i.code}] ` : '';
+            return `${code}${i.message}`;
+          })
+          .join('; ');
+        const more =
+          lintResult.issues.length > 3
+            ? ` (+${lintResult.issues.length - 3} more)`
+            : '';
         setConsoleLines((prev) => [
           ...prev.slice(-198),
           {
@@ -149,7 +160,9 @@ export function useLiveWorkbenchAssist({
             source: 'lint-tac',
             message: lintResult.ok
               ? `ok (${lintResult.issues.length} messages)`
-              : `${lintResult.issues.length} issue(s)`,
+              : lintResult.issues.length === 0
+                ? '0 issue(s)'
+                : `${lintResult.issues.length} issue(s): ${issuePreview}${more}`,
             at: Date.now(),
           },
         ]);

@@ -9,7 +9,7 @@ import { PasswordReset } from './components/auth/PasswordReset';
 import { Toaster } from './components/ui/sonner';
 import { toast } from 'sonner';
 import { ThemeProvider } from './components/ThemeProvider';
-import { isLoggedIn, logout } from '@/utils/authService';
+import { getAccessToken, isLoggedIn, logout } from '@/utils/authService';
 
 import { requireApiBaseUrl } from '@/utils/apiBase';
 import { isAuthDisabled } from '@/utils/runtime-config';
@@ -56,7 +56,7 @@ function App() {
   const [userEmail, setUserEmail] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(initialLoggedIn);
   const [accessToken, setAccessToken] = useState(() =>
-    disableAuth ? 'dev-bypass-token' : '',
+    disableAuth ? 'dev-bypass-token' : getAccessToken() || '',
   );
   const [activeWorkSessionId, setActiveWorkSessionId] = useState<string | null>(null);
   const [loadedWorkSession, setLoadedWorkSession] = useState<WorkSession | null>(null);
