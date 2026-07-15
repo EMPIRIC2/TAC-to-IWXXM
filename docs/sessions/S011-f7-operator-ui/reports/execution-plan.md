@@ -15,10 +15,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — 07-build |
+| **Active phase** | Phase D — T6.4 in_progress (12 done / 13 pending); preparing PR-EV-008 |
 | **Active milestone** | M6 — Verify & deploy |
-| **Active task** | T6.1 completed; next T6.2 (09-qa + 10-e2e) |
-| **Tasks completed** | M1 (T1.*) + M2 (T2.1–T2.8) + M3 (T3.1–T3.5) + M4 (T4.1–T4.6) + M5 (T5.1–T5.6) + T6.1 |
+| **Active task** | T6.4 in_progress (12 approved; 13 blocked on merge) |
+| **Tasks completed** | M1–M5 + T6.1 + T6.2 + T6.3 |
 | **Last updated** | 2026-07-14 |
 
 ## Tech Stack Summary (S011 delta)
@@ -167,9 +167,9 @@
 | ID | Task | Type | Status | Spec | Depends |
 |----|------|------|--------|------|---------|
 | T6.1 | 08-verify-build full suite on evolve tip | Verify | completed | 08 skill | M5 |
-| T6.2 | 09-qa + 10-e2e (TC-F7-001–006 focus) | Verify | pending | test-plan | T6.1 |
-| T6.3 | 11-verify-impl per F7 acceptance 1–8 | Verify | pending | feature-list | T6.2 |
-| T6.4 | 12-verify-deploy + 13-deploy-smoke (API then frontend) | Deploy | pending | deploy.md | T6.3 |
+| T6.2 | 09-qa + 10-e2e (TC-F7-001–006 focus) | Verify | completed | test-plan | T6.1 |
+| T6.3 | 11-verify-impl per F7 acceptance 1–8 | Verify | completed | feature-list | T6.2 |
+| T6.4 | 12-verify-deploy + 13-deploy-smoke (API then frontend) | Deploy | in_progress (12 done / 13 pending) | deploy.md | T6.3 |
 | T6.5 | Close/link #697/#702/#665/#666/#694; comment on #5 | Ops | pending | Phase 0 | T6.4 |
 | T6.6 | Evolve summary + CHANGELOG | Docs | pending | 16-evolve | T6.5 |
 
@@ -230,3 +230,8 @@ Before 07-build:
 - 2026-07-14: PR-M5 #720 open; next M6
 - 2026-07-14: Committed M1 leftover (bdcb9b8) + S010 mining docs (b5b79d7); M6 T6.1 in_progress
 - 2026-07-14: T6.1 PASS (verification-report.md); compose integration SKIPPED (host ports/disk); next T6.2
+- 2026-07-14: C→D passed (D-S011-EV008-c-to-d-pass); T6.2 09-qa+10-e2e in_progress
+- 2026-07-14: T6.2 pass_with_advisories (qa-report + e2e-report); T0 TC-F7 green; Playwright/compose SKIPPED (ports/disk); QA-001 type narrow fix uncommitted; next T6.3
+- 2026-07-14: T6.3 11-verify-impl in_progress (user option 1 — start without committing first)
+- 2026-07-14: D-S011-EV008-f7-approve — F7 approved_with_waivers (criteria 1–6 T0; H4–H5 → T6.4/CI; AdminDashboard advisory); T6.3 completed; T6.4 12-verify-deploy in_progress
+- 2026-07-14: D-S011-EV008-deploy-check-A — deploy checklist approved; committing QA-001+reports; preparing PR-EV-008; T6.4 remains in_progress (12 done / 13 pending); no merge/deploy until explicit approval

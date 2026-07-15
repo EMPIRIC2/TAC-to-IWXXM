@@ -1385,10 +1385,12 @@ async def convert(
         bulletin_id = request_body.bulletin_id or ""
         issuing_center = request_body.issuing_center or ""
         preview = bool(getattr(request_body, "preview", False))
-        if getattr(request_body, "product", None):
-            product = request_body.product
-        if getattr(request_body, "profile", None):
-            profile = request_body.profile
+        body_product = getattr(request_body, "product", None)
+        if body_product is not None:
+            product = body_product
+        body_profile = getattr(request_body, "profile", None)
+        if body_profile is not None:
+            profile = body_profile
         manual_text = ""  # Override form input
         files = None  # Override file input
 

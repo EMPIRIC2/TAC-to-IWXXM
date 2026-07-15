@@ -15,7 +15,7 @@ active_session:
     convert UX (#665/#666), remove admin dashboard / BYO DB (#697); #5 kept as parent tracker"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-008
-  note: "S011 M5 complete (T5.1–T5.6); PR-M5 https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI (admin bug regressions, etc.); next milestone M6"
+  note: "D-S011-EV008-deploy-check-A — 12-verify-deploy approved; preparing PR-EV-008; 13-deploy-smoke blocked on merge; T6.4 remains in_progress (12 done / 13 pending); no merge/deploy until explicit approval"
   context_briefs:
   - docs/context/f7-operator-ui.md
   standing_docs_touched: []
@@ -54,37 +54,61 @@ active_session:
     mode: full
     status: in_progress
     started: "2026-07-13"
-    note: "S011 M5 complete (T5.1–T5.6); PR-M5 #720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI; next milestone M6"
+    note: "M6 T6.4 in_progress (12 done / 13 pending); T6.3 approved_with_waivers (D-S011-EV008-f7-approve); preparing PR-EV-008"
   - stage: 08-verify-build
     required: true
     mode: full
-    status: pending
+    status: completed
+    completed: "2026-07-14"
+    note: "T6.1 PASS; verification-report.md; C→D passed D-S011-EV008-c-to-d-pass"
   - stage: 09-qa
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: "2026-07-14"
+    completed: "2026-07-14"
+    note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk; QA-001 uncommitted"
+    artifacts:
+    - docs/sessions/S011-f7-operator-ui/reports/qa-report.md
   - stage: 10-e2e
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: "2026-07-14"
+    completed: "2026-07-14"
+    note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk"
+    artifacts:
+    - docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
   - stage: 11-verify-impl
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: "2026-07-14"
+    completed: "2026-07-14"
+    overall: approved_with_waivers
+    note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory"
+    artifacts:
+    - docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
   - stage: 12-verify-deploy
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: "2026-07-14"
+    completed: "2026-07-14"
+    note: "D-S011-EV008-deploy-check-A — checklist approved; commit QA-001+reports; prepare PR-EV-008; awaiting PR + merge approval before 13; no merge/deploy yet"
+    artifacts:
+    - docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
   - stage: 13-deploy-smoke
     required: true
     mode: full
     status: pending
+    note: "Blocked on PR-EV-008 merge approval; do not start until explicit approval"
   skipped_stages:
   - stage: 03-plan-tooling
     rationale: "Hooks/rules already exist from prior cycles"
   - stage: 06-tech-tooling
     rationale: "Lint/typecheck/CI already wired"
-  current_stage: 07-build
+  current_stage: 12-verify-deploy
   artifacts_dir: docs/sessions/S011-f7-operator-ui
 
 
@@ -1082,8 +1106,13 @@ stages:
       status: in_progress
       started_at: "2026-07-13"
       mode: full
-      note: "S011 M5 complete (T5.1–T5.6); PR-M5 #720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI; active_milestone M6; active_task T6.1 pending"
+      note: "M6 T6.4 in_progress (12 done / 13 pending); D-S011-EV008-deploy-check-A; preparing PR-EV-008; 13 blocked on merge"
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: in_progress
     notes:
+    - "2026-07-14 S011/EV-008 D-S011-EV008-deploy-check-A — 12 approved; T6.4 still in_progress (12 done / 13 pending); preparing PR-EV-008; 13 blocked on merge"
+    - "2026-07-14 S011/EV-008 T6.3 completed approved_with_waivers (D-S011-EV008-f7-approve); active_task T6.4 in_progress (12-verify-deploy)"
     - "2026-07-13 S011/EV-008 M3 T3.1 in_progress — test preview=true convert; active_milestone M3; active_task T3.1 in_progress"
     - "2026-07-13 S011/EV-008 M2 complete (T2.1–T2.8); PR-M2 #716 open; active_milestone M3 active_task T3.1"
     - "2026-07-13 S011/EV-008 delta 07-build in_progress — B→C passed; M1 T1.1 in_progress (D-S011-EV008-b-to-c-pass)"
@@ -1100,6 +1129,11 @@ stages:
       in_progress"
     - "2026-07-14 S011/EV-008 M5 T5.1–T5.5 complete; migration 20260714000010 applied remotely (13 rows cutover); active_milestone M5; active_task T5.6 in_progress (next PR-M5)"
     - "2026-07-14 S011/EV-008 M5 complete (T5.1–T5.6); PR-M5 https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI (admin bug regressions, etc.); active_milestone M6; active_task T6.1 pending"
+    - "2026-07-14 S011/EV-008 M6 started — T6.1 08-verify-build in_progress; M1 leftover + domain docs committed (bdcb9b8, b5b79d7); PR-M5 #720 still open"
+    - "2026-07-14 S011/EV-008 T6.1 PASS (verification-report.md); integration SKIPPED host ports/disk; active_task T6.2 pending"
+    - "2026-07-14 S011/EV-008 C→D passed (D-S011-EV008-c-to-d-pass); T6.2 09-qa+10-e2e in_progress"
+    - "2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories (qa-report.md + e2e-report.md); Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted; active_task T6.3 pending"
+    - "2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress"
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -1124,10 +1158,22 @@ stages:
       overall: pass_with_advisories
       report: docs/sessions/S008-general-tac-iwxxm-converter/reports/qa-report.md
       note: "pass_with_advisories — see reports/qa-report.md"
+    - id: S011-f7-operator-ui
+      session_id: S011-f7-operator-ui
+      evolve_cycle_id: EV-008
+      status: completed
+      started_at: "2026-07-14"
+      completed_at: "2026-07-14"
+      overall: pass_with_advisories
+      mode: full
+      report: docs/sessions/S011-f7-operator-ui/reports/qa-report.md
+      note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted"
     notes:
     - "S004 / EV-004 delta — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
     - "Prior monorepo QA 2026-06-20: docs/reports/qa-report.md"
     - "2026-07-12 S008 / EV-006 — pass_with_advisories; see qa-report.md"
+    - "2026-07-14 S011/EV-008 09-qa in_progress (T6.2; D-S011-EV008-c-to-d-pass)"
+    - "2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md"
 
   11-verify-impl:
     status: completed
@@ -1174,11 +1220,23 @@ stages:
       overall: approved
       report: docs/sessions/S008-general-tac-iwxxm-converter/reports/verify-impl.md
       note: "F6/F2/F8 approved; F6/F8 corpus Implemented (ADR-019); live gates deferred; 12/13 not in S008 routing"
+    - id: S011-f7-operator-ui
+      session_id: S011-f7-operator-ui
+      evolve_cycle_id: EV-008
+      status: completed
+      started_at: "2026-07-14"
+      completed_at: "2026-07-14"
+      mode: full
+      overall: approved_with_waivers
+      report: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
+      note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5"
     notes:
+    - "2026-07-14 S011/EV-008 T6.3 completed approved_with_waivers (D-S011-EV008-f7-approve); see reports/verify-impl.md; next T6.4"
     - "S003 / BUG-2026-06-23 — user approved M4+F3 delta; T3 auth + UI E2E deferred"
     - "08-verify-build + 09-qa still pending on routing plan"
     - "Next: 12-verify-deploy (Render key rotation)"
     - "2026-07-12 S008 / EV-006 — overall approved; see verify-impl.md"
+    - "2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first)"
 
   10-e2e:
     status: completed
@@ -1211,11 +1269,23 @@ stages:
       overall: pass
       report: docs/sessions/S008-general-tac-iwxxm-converter/reports/e2e-report.md
       note: "PASS — COR hotfix re-verify 12/12 Playwright smoke; see e2e-report.md"
+    - id: S011-f7-operator-ui
+      session_id: S011-f7-operator-ui
+      evolve_cycle_id: EV-008
+      status: completed
+      started_at: "2026-07-14"
+      completed_at: "2026-07-14"
+      overall: pass_with_advisories
+      mode: full
+      report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
+      note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk"
     notes:
     - "S004 delta FAIL — fix Playwright locators + finished-session load; redeploy for H4"
     - "Prior global report: docs/reports/e2e-report.md (2026-06-20)"
     - "2026-07-12 S008 / EV-006 — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
     - "2026-07-12 S008 / EV-006 — PASS after COR hotfix re-verify (12/12 Playwright smoke); T0 PASS"
+    - "2026-07-14 S011/EV-008 10-e2e in_progress (T6.2; D-S011-EV008-c-to-d-pass)"
+    - "2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md"
 
   08-verify-build:
     status: completed
@@ -1257,6 +1327,15 @@ stages:
       report: docs/sessions/S008-general-tac-iwxxm-converter/reports/verification-report.md
       note: "Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c). Awaiting C→D AskQuestion
         before 09-qa."
+    - id: S011-f7-operator-ui
+      session_id: S011-f7-operator-ui
+      evolve_cycle_id: EV-008
+      status: completed
+      started_at: "2026-07-14"
+      completed_at: "2026-07-14"
+      overall: pass
+      report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
+      note: "T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass"
     notes:
     - "S001 / EV-001 — PASS 2026-06-22 (docs/sessions/S001-convert-send-buttons/reports/verification-report.md)"
     - "S004 / EV-004 — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
@@ -1268,6 +1347,7 @@ stages:
     - "2026-07-12 D-S008-EV006-08-fix — User chose option 1 fix-in-place for typecheck+coverage; 08 re-verify PASS"
     - "2026-07-12 S008 / EV-006 — Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c);
       Overall PASS; awaiting C→D AskQuestion; c_to_d/phase_c remain pending"
+    - "2026-07-14 S011/EV-008 08-verify-build completed (T6.1 PASS; verification-report.md); C→D passed D-S011-EV008-c-to-d-pass"
 
   18-pr-review:
     status: completed
@@ -1305,7 +1385,20 @@ stages:
     completed_at: "2026-06-24T18:30:00Z"
     session_id: S004-issue-555-feedback
     report: docs/sessions/S004-issue-555-feedback/reports/deploy-checklist.md
+    delta_substages:
+    - id: S011-f7-operator-ui
+      session_id: S011-f7-operator-ui
+      evolve_cycle_id: EV-008
+      status: completed
+      started_at: "2026-07-14"
+      completed_at: "2026-07-14"
+      mode: full
+      note: "D-S011-EV008-deploy-check-A — checklist approved; commit QA-001+reports; prepare PR-EV-008; awaiting PR + merge approval before 13; no merge/deploy yet"
+      report: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
     notes:
+    - "2026-07-14 S011/EV-008 D-S011-EV008-deploy-check-A — 12-verify-deploy completed (checklist approved); commit QA-001+reports; prepare PR-EV-008; 13 pending until merge approval; no merge/deploy yet"
+    - "2026-07-14 S011/EV-008 12-verify-deploy — checklist written (deploy-checklist.md); awaiting user deploy-strategy approval (blocker: tip 44 commits ahead of main; QA-001 uncommitted); 12 remains in_progress; 13 not started"
+    - "2026-07-14 S011/EV-008 T6.4 12-verify-deploy in_progress (D-S011-EV008-f7-approve)"
     - "S001 delta — static+api Render; H0c/H4/H5 PASS on live staging"
     - "E2E-002 resolved — /auth/* routes present on deployed API"
     - "S002 / EV-003 — user approved mitigations + rollback; H0c/H4/H5 PASS pre-merge baseline"
@@ -1414,6 +1507,25 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S011-EV008-deploy-check-A
+  date: "2026-07-14"
+  skill: 12-verify-deploy
+  session_id: S011-f7-operator-ui
+  evolve_cycle_id: EV-008
+  decision: "Approve deploy checklist; commit QA-001+reports; prepare PR-EV-008 evolve→main; no merge/deploy until explicit approval"
+- id: D-S011-EV008-f7-approve
+  date: "2026-07-14"
+  skill: 11-verify-impl
+  session_id: S011-f7-operator-ui
+  evolve_cycle_id: EV-008
+  decision: "Approve F7 (criteria 1–6 met T0; 7 H4–H5 waived to T6.4/CI; AdminDashboard dead files advisory; issue closeout T6.5); proceed T6.4"
+- id: D-S011-EV008-c-to-d-pass
+  date: "2026-07-14"
+  category: decision
+  skill: 16-evolve
+  session_id: S011-f7-operator-ui
+  evolve_cycle_id: EV-008
+  decision: "Pass C→D; start T6.2 09-qa + 10-e2e in parallel (option 1)"
 - id: D-S011-EV008-b-to-c-pass
   date: "2026-07-13"
   timestamp: "2026-07-13"
@@ -2773,6 +2885,25 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
+  kind: deploy-checklist
+  session_id: S011-f7-operator-ui
+  evolve_cycle_id: EV-008
+  stage: 12-verify-deploy
+  created_at: "2026-07-14"
+  updated_at: "2026-07-14"
+  status: completed
+  note: "D-S011-EV008-deploy-check-A — checklist approved; preparing PR-EV-008; awaiting PR + merge before 13"
+- path: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
+  kind: stage-report
+  session_id: S011-f7-operator-ui
+  evolve_cycle_id: EV-008
+  stage: 11-verify-impl
+  created_at: "2026-07-14"
+  updated_at: "2026-07-14"
+  status: completed
+  overall: approved_with_waivers
+  note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory"
 - path: docs/sessions/S011-f7-operator-ui/reports/05-verify-tech-audit.md
   kind: stage-report
   session_id: S011-f7-operator-ui
@@ -4216,8 +4347,13 @@ evolve_cycles:
     - 00-context      # already completed
     - 03-plan-tooling
     - 06-tech-tooling
-  current_stage: 07-build
+  current_stage: 12-verify-deploy
   notes:
+  - "2026-07-14 D-S011-EV008-deploy-check-A — 12-verify-deploy completed (checklist approved); commit QA-001+reports; preparing PR-EV-008; 13 pending/blocked on merge; T6.4 remains in_progress (12 done / 13 pending); no merge/deploy yet"
+  - "2026-07-14 S011/EV-008 12-verify-deploy — checklist written (deploy-checklist.md); awaiting user deploy-strategy approval (blocker: tip 44 commits ahead of main; QA-001 uncommitted); 12 remains in_progress; 13 not started"
+  - "2026-07-14 D-S011-EV008-f7-approve — F7 approved_with_waivers; T6.3 completed; T6.4 12-verify-deploy in_progress; H4–H5 waived to T6.4/CI; AdminDashboard advisory"
+  - "2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress"
+  - "2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories (qa-report.md + e2e-report.md); Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted; next T6.3 (11-verify-impl pending)"
   - "2026-07-14 S011/EV-008 M3 complete (T3.1–T3.4); PR-M3 #717 open; active_milestone M4; active_task T4.1"
   - "2026-07-13 M3 T3.1 in_progress — test preview=true convert; active_milestone M3; active_task T3.1 in_progress"
   - "2026-07-13 opened — EV-004 cancelled as orphan; EV-008 allocated for S011 (D-S011-EV008-open, option A)"
@@ -4246,6 +4382,9 @@ evolve_cycles:
     in_progress"
   - "2026-07-14 S011/EV-008 M5 T5.1–T5.5 complete; migration 20260714000010 applied remotely (13 rows cutover); active_milestone M5; active_task T5.6 in_progress (next PR-M5)"
   - "2026-07-14 S011/EV-008 M5 complete (T5.1–T5.6); PR-M5 https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI (admin bug regressions, etc.); active_milestone M6; active_task T6.1 pending"
+  - "2026-07-14 S011/EV-008 M6 started — T6.1 08-verify-build in_progress; M1 leftover + domain docs committed (bdcb9b8, b5b79d7); PR-M5 #720 still open"
+  - "2026-07-14 S011/EV-008 T6.1 PASS (verification-report.md); integration SKIPPED host ports/disk; active_task T6.2 pending"
+  - "2026-07-14 D-S011-EV008-c-to-d-pass — C→D passed; T6.2 09-qa+10-e2e in_progress (option 1)"
   stages:
     01-requirements:
       status: completed
@@ -4315,49 +4454,67 @@ evolve_cycles:
       completed:
       artifacts_updated:
       - docs/sessions/S011-f7-operator-ui/reports/execution-plan.md
-      note: "S011 M5 complete (T5.1–T5.6); PR-M5 #720 open; remote migration applied (13 rows); Validate green after pyright fix; tip may still have unrelated red CI; next milestone M6"
-      active_task: T6.1
+      - docs/sessions/S011-f7-operator-ui/reports/verification-report.md
+      - docs/sessions/S011-f7-operator-ui/reports/qa-report.md
+      - docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
+      - docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
+      note: "M6 T6.4 12-verify-deploy in_progress; T6.3 approved_with_waivers (D-S011-EV008-f7-approve)"
+      active_task: T6.4
       active_milestone: M6
-      active_task_status: pending
+      active_task_status: in_progress
     08-verify-build:
-      status: pending
-      started:
-      completed:
-      artifacts_updated: []
+      status: completed
+      started: "2026-07-14"
+      completed: "2026-07-14"
+      artifacts_updated:
+      - docs/sessions/S011-f7-operator-ui/reports/verification-report.md
+      note: "T6.1 PASS; C→D passed D-S011-EV008-c-to-d-pass"
     09-qa:
-      status: pending
-      started:
-      completed:
-      artifacts_updated: []
+      status: completed
+      started: "2026-07-14"
+      completed: "2026-07-14"
+      overall: pass_with_advisories
+      artifacts_updated:
+      - docs/sessions/S011-f7-operator-ui/reports/qa-report.md
+      note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted"
     10-e2e:
-      status: pending
-      started:
-      completed:
-      artifacts_updated: []
+      status: completed
+      started: "2026-07-14"
+      completed: "2026-07-14"
+      overall: pass_with_advisories
+      artifacts_updated:
+      - docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
+      note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk"
     11-verify-impl:
-      status: pending
-      started:
-      completed:
-      artifacts_updated: []
+      status: completed
+      started: "2026-07-14"
+      completed: "2026-07-14"
+      overall: approved_with_waivers
+      artifacts_updated:
+      - docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
+      note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5"
     12-verify-deploy:
-      status: pending
-      started:
-      completed:
-      artifacts_updated: []
+      status: completed
+      started: "2026-07-14"
+      completed: "2026-07-14"
+      artifacts_updated:
+      - docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
+      note: "D-S011-EV008-deploy-check-A — checklist approved; commit QA-001+reports; prepare PR-EV-008; awaiting PR + merge approval before 13; no merge/deploy yet"
     13-deploy-smoke:
       status: pending
       started:
       completed:
       artifacts_updated: []
+      note: "Blocked on PR-EV-008 merge approval; do not start until explicit approval"
   gates:
     a_to_b: passed    # D-S011-EV008-a-to-b-pass 2026-07-13
     b_to_c: passed    # D-S011-EV008-b-to-c-pass 2026-07-13
-    c_to_d: pending
+    c_to_d: passed    # D-S011-EV008-c-to-d-pass 2026-07-14
     deploy: pending
   checkpoints:
     phase_a: passed    # user approved Phase A option A 2026-07-13 (D-S011-EV008-phase-a-pass)
     phase_b: passed    # D-S011-EV008-b-to-c-pass 2026-07-13
-    phase_c: pending
+    phase_c: passed    # D-S011-EV008-c-to-d-pass 2026-07-14
     phase_d: pending
     deploy: pending
   adrs:
@@ -4365,16 +4522,39 @@ evolve_cycles:
   - docs/adr/ADR-021-byo-credentials-admin-removal.md
   - docs/adr/ADR-022-convert-preview-flag.md
   artifacts:
+  - path: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
+    status: completed
+    stage: 12-verify-deploy
+    note: "D-S011-EV008-deploy-check-A — checklist approved; preparing PR-EV-008"
+  - path: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
+    status: completed
+    overall: approved_with_waivers
+    stage: 11-verify-impl
+    note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory"
+  - path: docs/sessions/S011-f7-operator-ui/reports/qa-report.md
+    status: completed
+    overall: pass_with_advisories
+    stage: 09-qa
+    note: "T6.2; Playwright/compose SKIPPED host ports/disk; QA-001 uncommitted"
+  - path: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
+    status: completed
+    overall: pass_with_advisories
+    stage: 10-e2e
+    note: "T6.2; Playwright/compose SKIPPED host ports/disk"
   - path: docs/sessions/S011-f7-operator-ui/reports/05-verify-tech-audit.md
     status: completed
     overall: pass
     note: "D-S011-05-pass — A1–A3 approved as-is"
   - path: docs/sessions/S011-f7-operator-ui/reports/execution-plan.md
     status: approved
-    note: "M3 completed; PR-M3 open #717; next T4.1"
+    note: "D-S011-EV008-deploy-check-A — deploy checklist approved; preparing PR-EV-008; T6.4 in_progress (12 done / 13 pending)"
   - path: docs/sessions/S011-f7-operator-ui/reports/02-verify-plan-audit.md
     status: completed
     note: "02 PASS; deploy.md consistency fixes"
+  - path: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
+    status: completed
+    overall: pass
+    note: "T6.1 PASS; integration SKIPPED host ports/disk"
   - path: docs/decisions/evolve-decisions.md
     status: pending
   - path: docs/sessions/S011-f7-operator-ui/reports/evolve-summary.md
@@ -4384,6 +4564,9 @@ evolve_cycles:
 git_history:
   current_branch: evolve/S011-f7-operator-ui
   notes:
+  - "2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first)"
+  - "2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories; T6.3 pending; current_stage=11-verify-impl"
+  - "2026-07-14 S011/EV-008 T6.1 PASS (verification-report.md); integration SKIPPED host ports/disk; active_task T6.2 pending"
   - "2026-07-14 S011/EV-008 M5 complete (T5.1–T5.6); PR-M5 #720 open; active_milestone M6 active_task T6.1 pending"
   - "2026-07-14 S011/EV-008 M3 complete (T3.1–T3.4); PR-M3 #717 open; active_milestone M4 active_task T4.1"
   - "2026-07-13 S011/EV-008 M2 complete (T2.1–T2.8); PR-M2 #716; current_stage=07-build; active_milestone M3 active_task T3.1"
@@ -5484,6 +5667,41 @@ git_history:
     timestamp: '2026-07-14T17:41:20Z'
     session_id: S011-f7-operator-ui
     evolve_cycle_id: EV-008
+  - sha: bdcb9b8aef585ad8aa20815bc6ddd675f7cbf946
+    branch: evolve/S011-f7-operator-ui
+    message: '[S011][M1] feat: remove admin product surface and sync F7 corpus'
+    stage: 16-evolve
+    session_id: S011-f7-operator-ui
+    evolve_cycle_id: EV-008
+    files_changed: 23
+    files_changed_note: 'admin App/e2e, ADRs, corpus docs, tests (approx)'
+    timestamp: '2026-07-14T19:32:22Z'
+  - sha: b5b79d771466802262b6c3df7663c948183af626
+    branch: evolve/S011-f7-operator-ui
+    message: '[S010] docs: add domain mining skills and TAC/IWXXM source catalogs'
+    stage: 16-evolve
+    session_id: S011-f7-operator-ui
+    evolve_cycle_id: EV-008
+    files_changed: 22
+    files_changed_note: 'domain mining skills + TAC/IWXXM source catalogs (approx)'
+    timestamp: '2026-07-14T19:32:22Z'
+    note: 'parked S010 mining toolkit on S011 branch'
+  - sha: 660f4e15af09807e627df48dd90664a9ff13e711
+    branch: evolve/S011-f7-operator-ui
+    message: "docs: mine ICAO Doc 10003 Advance 2014 draft into domain catalog"
+    stage: 16-evolve
+    session_id: S011-f7-operator-ui
+    evolve_cycle_id: EV-008
+    files_changed: 12
+    timestamp: '2026-07-14T19:42:39Z'
+  - sha: a8539f028247afd9cd35a7d4012578bad78dc116
+    branch: evolve/S011-f7-operator-ui
+    message: "[T6.1] fix: soft-preview Layer-1/2 bypass and restore coverage gates"
+    stage: 16-evolve
+    session_id: S011-f7-operator-ui
+    evolve_cycle_id: EV-008
+    files_changed: 14
+    timestamp: '2026-07-14T20:26:33Z'
 pr_review_cycles:
 - id: PRR-001
   pr_number: 679
