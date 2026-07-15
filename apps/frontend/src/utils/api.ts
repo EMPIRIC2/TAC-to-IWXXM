@@ -144,6 +144,13 @@ export async function convertMetarToIwxxm(params: {
   profile?: string;
   iwxxmVersion?: string;
   validateOutput?: boolean;
+  validationLevel?: string;
+  stopOnError?: boolean;
+  bulletinId?: string;
+  issuingCenter?: string;
+  includeNilReasons?: boolean;
+  /** Filters conversion/validation/lint issue verbosity (sent when API accepts it). */
+  logLevel?: string;
   preview?: boolean;
   accessToken?: string;
   signal?: AbortSignal;
@@ -169,6 +176,22 @@ export async function convertMetarToIwxxm(params: {
 
   // Add validation flag (default to false)
   formData.append('validate_output', params.validateOutput ? 'true' : 'false');
+  formData.append('validation_level', params.validationLevel || 'basic');
+  formData.append('stop_on_error', params.stopOnError ? 'true' : 'false');
+  formData.append(
+    'include_nil_reasons',
+    params.includeNilReasons === false ? 'false' : 'true',
+  );
+  if (params.logLevel) {
+    formData.append('log_level', params.logLevel.toUpperCase());
+  }
+
+  if (params.bulletinId?.trim()) {
+    formData.append('bulletin_id', params.bulletinId.trim().toUpperCase());
+  }
+  if (params.issuingCenter?.trim()) {
+    formData.append('issuing_center', params.issuingCenter.trim().toUpperCase());
+  }
 
   if (params.preview) {
     formData.append('preview', 'true');
@@ -213,6 +236,153 @@ export async function convertMetarToIwxxm(params: {
     console.error('[API ERROR]', error);
     throw error;
   }
+}
+
+export interface BulletinMeta {
+  ahl: string;
+  report_count: number;
+  tt: string;
+  aa: string;
+  cccc: string;
+  yygggg: string;
+  bbb?: string | null;
+}
+
+export interface BulletinReportResult {
+  report_index: number;
+  ok: boolean;
+  tac_input: string;
+  xml?: string | null;
+  issues: LintIssue[];
+  fixes: LintFix[];
+}
+
+export interface ConvertBulletinResponse {
+  bulletin_meta: BulletinMeta;
+  results: BulletinReportResult[];
+}
+
+/**
+ * Split a WMO AHL bulletin and convert each TAC report.
+ *
+ * **Endpoint**: POST /api/v1/convert-bulletin
+ */
+export async function convertBulletin(params: {
+  manualText?: string;
+  files?: File[];
+  product: string;
+  profile?: string;
+  iwxxmVersion?: string;
+  lint?: boolean;
+  accessToken?: string;
+  signal?: AbortSignal;
+}): Promise<ConvertBulletinResponse> {
+  const formData = new FormData();
+  if (params.manualText?.trim()) {
+    formData.append('manual_text', params.manualText.trim());
+  }
+  if (params.files?.length) {
+    params.files.forEach((file) => formData.append('files', file));
+  }
+  formData.append('product', params.product.toUpperCase());
+  formData.append('profile', params.profile || 'annex3');
+  formData.append('iwxxm_version', params.iwxxmVersion || '2025-2');
+  formData.append('lint', params.lint === false ? 'false' : 'true');
+
+  const token = params.accessToken || getAccessToken() || '';
+  const response = await withTimeout(
+    fetch(apiUrl('/convert-bulletin'), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+      signal: params.signal,
+    }),
+    60000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Bulletin conversion failed: ${response.statusText}`,
+    }));
+    const detail = error.detail;
+    const message =
+      (typeof detail === 'object' && detail?.message) ||
+      detail ||
+      error.message ||
+      `HTTP ${response.status}`;
+    throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
+  }
+
+  return (await response.json()) as ConvertBulletinResponse;
+}
+
+export class EndpointNotImplementedError extends Error {
+  status: number;
+  code: string;
+
+  constructor(message: string, status = 501, code = 'not_implemented') {
+    super(message);
+    this.name = 'EndpointNotImplementedError';
+    this.status = status;
+    this.code = code;
+  }
+}
+
+/**
+ * Ingest / validate IWXXM COLLECT (or gzipped COLLECT).
+ *
+ * **Endpoint**: POST /api/v1/ingest-collect (placeholder until implemented).
+ */
+export async function ingestCollect(params: {
+  manualText?: string;
+  files?: File[];
+  profile?: string;
+  iwxxmVersion?: string;
+  accessToken?: string;
+  signal?: AbortSignal;
+}): Promise<{ message: string; status: string }> {
+  const formData = new FormData();
+  if (params.manualText?.trim()) {
+    formData.append('manual_text', params.manualText.trim());
+  }
+  if (params.files?.length) {
+    params.files.forEach((file) => formData.append('files', file));
+  }
+  formData.append('profile', params.profile || 'annex3');
+  formData.append('iwxxm_version', params.iwxxmVersion || '2025-2');
+
+  const token = params.accessToken || getAccessToken() || '';
+  const response = await withTimeout(
+    fetch(apiUrl('/ingest-collect'), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+      signal: params.signal,
+    }),
+    30000,
+  );
+
+  if (response.status === 501) {
+    const body = await response.json().catch(() => ({}));
+    throw new EndpointNotImplementedError(
+      body?.detail?.message ||
+        body?.message ||
+        'COLLECT / FTBP ingest is not implemented yet (placeholder).',
+      501,
+      body?.detail?.code || 'not_implemented',
+    );
+  }
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `COLLECT ingest failed: ${response.statusText}`,
+    }));
+    throw new Error(
+      error.detail?.message || error.message || `HTTP ${response.status}`,
+    );
+  }
+
+  return (await response.json()) as { message: string; status: string };
 }
 
 export interface DecodeSegment {

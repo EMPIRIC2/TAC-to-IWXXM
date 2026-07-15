@@ -54,3 +54,4 @@
 | TAUDIT-S008-09 | 2026-07-12 | Phase 1 gate | Include T1.6 (M02=1) | confirmed |
 
 See session report: `docs/sessions/S008-general-tac-iwxxm-converter/reports/05-verify-tech.md`.
+| TECH-ADR-023 | 2026-07-15 | Convert multipart wiring | UI sends bulletin_id/issuing_center/stop_on_error/validate_*; Log Level is client console filter only | confirmed |

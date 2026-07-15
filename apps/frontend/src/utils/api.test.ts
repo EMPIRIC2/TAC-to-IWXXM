@@ -249,6 +249,34 @@ describe('API Utils', () => {
       expect(body.get('iwxxm_version')).toBe('2025-2');
     });
 
+    it('appends validation, stop_on_error, bulletin, and issuing centre (ADR-023)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121251Z',
+        product: 'METAR',
+        validateOutput: true,
+        validationLevel: 'comprehensive',
+        stopOnError: true,
+        bulletinId: 'saaa00',
+        issuingCenter: 'kwbc',
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('validate_output')).toBe('true');
+      expect(body.get('validation_level')).toBe('comprehensive');
+      expect(body.get('stop_on_error')).toBe('true');
+      expect(body.get('bulletin_id')).toBe('SAAA00');
+      expect(body.get('issuing_center')).toBe('KWBC');
+    });
+
     it('should throw error on conversion failure', async () => {
       mockFetchResponse({ detail: { message: 'Conversion failed' } }, false, 400);
 

@@ -22,6 +22,8 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 | R2′ | Unified `tac_work_sessions` + migrate F5 | ADR-020 |
 | R6 / #697 | BYO; remove `/admin`; `E2E_USER_*` | ADR-021 |
 | Preview | `preview=true` on `/convert` | ADR-022 |
+| Convert params | Wire bulletin/issuing/stop_on_error/validate; console log filter; `.tac` accept | ADR-023 |
+| Input modes | AHL bulletin UI; COLLECT 501 placeholder; `log_level` + `include_nil_reasons` | ADR-024 |
 | 04 A | Expand-cutover; CM6 pkgs; 300ms debounce; live IWXXM off; keep work-sessions paths; reuse CORS | — |
 
 ### Execution plan

@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-13 (S011 / EV-008 — F7 operator UI delta; Feature List Batch 1)
+> **Last updated**: 2026-07-15 (S011 / ADR-023 — wire dormant convert params)
 
 ## Summary
 
@@ -194,11 +194,15 @@
   | F7.d | #694 | Live workbench (debounced lint/decode/validate/convert, spans, console) |
   | F7.e | F7 / R2′ | Unified `tac_work_sessions` + migrate F5; My METARs filter |
   | F7.f | — | Verify & deploy (08–13) |
-- **Inputs**: TAC text/files; `product` / `profile` / `iwxxm_version`; JWT; editor cursor and
-  character spans for highlight/hover.
+- **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
+  `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
+  `validate_output` / `validation_level` (ADR-023); JWT; editor cursor and character spans
+  for highlight/hover.
 - **Outputs**: Ordered decode segments (`start`/`end` + explanation); span-aware lint/validate
   issues; best-effort IWXXM + failed-span markers on soft-preview; F7 session rows for seven
-  products.
+  products; optional in-band XSD/Schematron when Strict Validation is on (hard Convert).
+- **Deferred (still Later)**: Full COLLECT member extract inside `ingest-collect` (UI + 501
+  placeholder shipped ADR-024); deep honor of `include_nil_reasons` in tac2iwxxm emit.
 - **F6 engine companions (still F6 packages; UX under F7)**: decode segments; optional integer
   `start`/`end` on lint/validate issues; soft-preview / partial convert (flag or dedicated
   endpoint — finalize in 04-tech-plan).
@@ -319,10 +323,13 @@
 | F6 capability | Library | HTTP API | Web UI | CI metrics |
 |---------------|---------|----------|--------|------------|
 | product + profile convert | Yes | Yes | Yes | Yes |
-| AHL bulletin split | Yes | Yes (via convert) | Later | Gate |
+| AHL bulletin split | Yes | Yes (`/convert-bulletin`) | Yes (ADR-024) | Gate |
 | annex3 / iwxxm_us | Yes | Yes | Yes | Yes |
-| TAC lint (`tac-validate`) | Yes | Thin wrapper | — | Gate |
-| Schematron (`iwxxm-validate`) | Yes | Thin wrapper | Yes | Gate |
+| TAC lint (`tac-validate`) | Yes | Thin wrapper | Live workbench | Gate |
+| Schematron (`iwxxm-validate`) | Yes | Thin wrapper | Hard Convert + Strict Validation (ADR-023) | Gate |
+| Convert bulletin_id / issuing_center / stop_on_error | Yes | Yes | Yes (ADR-023) | — |
+| Console / Conversion log-level filter | — | `log_level` accepted | Yes (ADR-023/024) | — |
+| IWXXM COLLECT ingest | — | Placeholder 501 `/ingest-collect` | Yes (placeholder UI) | — |
 | Accuracy metrics report | Yes | No (v1) | No (v1) | Gate |
 | Rust/PyO3 hotspots | **Required at cutover** | Via API image | — | Bench hard-pass |
 

@@ -380,7 +380,12 @@ def split_manual_entries(manual_text: str) -> List[str]:
 
 
 async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Optional[str]]:
-    """Read uploaded text file using strict UTF-8 decoding with a size limit."""
+    """Read uploaded text file using strict UTF-8 decoding with a size limit.
+
+    Gzip payloads (``.gz`` / magic ``1f 8b``) are inflated before decode.
+    """
+    import gzip
+
     max_upload_bytes = 10 * 1024 * 1024  # 10 MiB
     raw_bytes = await upload_file.read(max_upload_bytes + 1)
     if not raw_bytes or not raw_bytes.strip():
@@ -388,6 +393,15 @@ async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Op
 
     if len(raw_bytes) > max_upload_bytes:
         return None, f"file too large (limit {max_upload_bytes} bytes)"
+
+    name = (upload_file.filename or "").lower()
+    if name.endswith(".gz") or name.endswith(".gzip") or raw_bytes[:2] == b"\x1f\x8b":
+        try:
+            raw_bytes = gzip.decompress(raw_bytes)
+        except OSError as exc:
+            return None, f"gzip decompress failed ({exc})"
+        if len(raw_bytes) > max_upload_bytes:
+            return None, f"decompressed file too large (limit {max_upload_bytes} bytes)"
 
     try:
         decoded = raw_bytes.decode("utf-8")
@@ -1003,6 +1017,74 @@ async def convert_bulletin(
 
 
 @app.post(
+    "/api/v1/ingest-collect",
+    tags=["Conversion"],
+    responses={
+        401: {"description": "Unauthorized"},
+        501: {"description": "COLLECT / FTBP ingest not implemented yet (placeholder)"},
+    },
+)
+async def ingest_collect(
+    request: Request,
+    files: Optional[List[UploadFile]] = File(None),
+    manual_text: str = Form(default="", description="COLLECT IWXXM XML or inflated gzip text"),
+    profile: str = Form(default="annex3"),
+    iwxxm_version: str = Form(default="2025-2"),
+    user: dict = Depends(verify_supabase_token),
+) -> dict[str, Any]:
+    """Placeholder for IWXXM COLLECT / FTBP ingest (ADR-024).
+
+    Accepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI
+    can exercise the path; returns HTTP 501 until member extraction + validate is shipped.
+    """
+    _ = user
+    content_type = (request.headers.get("content-type") or "").lower()
+    if "multipart/form-data" not in content_type:
+        raise HTTPException(
+            status_code=415,
+            detail="POST /api/v1/ingest-collect requires multipart/form-data",
+        )
+
+    payload = manual_text or ""
+    if files:
+        joined, err = await read_upload_files_text(files)
+        if err:
+            raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
+        if joined:
+            payload = joined
+
+    if not payload.strip():
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "code": "empty_collect",
+                "message": "At least one of files or manual_text is required",
+            },
+        )
+
+    logger.info(
+        "[INGEST-COLLECT] placeholder hit profile=%s version=%s bytes=%s",
+        profile,
+        iwxxm_version,
+        len(payload),
+    )
+    raise HTTPException(
+        status_code=501,
+        detail={
+            "code": "not_implemented",
+            "message": (
+                "IWXXM COLLECT / FTBP ingest is not implemented yet. "
+                "Convert AHL TAC bulletins via POST /api/v1/convert-bulletin, "
+                "or paste individual TAC reports into /api/v1/convert."
+            ),
+            "profile": profile,
+            "iwxxm_version": iwxxm_version,
+            "accepted_bytes": len(payload),
+        },
+    )
+
+
+@app.post(
     "/api/v1/validate",
     tags=["Validation"],
     response_model=ValidateResponse,
@@ -1235,6 +1317,14 @@ async def convert(
         default=False,
         description="Soft-preview mode (ADR-022): best-effort IWXXM + failed_spans on partial failure",
     ),
+    include_nil_reasons: bool = Form(
+        default=True,
+        description="When false, prefer omitting nilReason attributes (engine may still emit NIL report shells; ADR-024)",
+    ),
+    log_level: str = Form(
+        default="INFO",
+        description="Minimum severity for conversion/validation/lint process issues echoed to the client",
+    ),
     user: dict = Depends(verify_supabase_token),
 ) -> ConversionResponse:
     logger.info(
@@ -1427,6 +1517,17 @@ async def convert(
     ]
     bulletin_id = normalize_code(bulletin_id, 6) or ""
     issuing_center = normalize_code(issuing_center, 4) or ""
+    log_level_norm = (log_level or "INFO").strip().upper()
+    logger.info(
+        "[CONVERT] include_nil_reasons=%s log_level=%s",
+        include_nil_reasons,
+        log_level_norm,
+    )
+    if not include_nil_reasons:
+        logger.info(
+            "[CONVERT] include_nil_reasons=false accepted; tac2iwxxm may still emit "
+            "nilReason on NIL reports until engine honors the flag (ADR-024 placeholder)",
+        )
 
     # Validate and normalize IWXXM version
     try:

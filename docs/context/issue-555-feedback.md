@@ -94,7 +94,10 @@ No new secrets. Error log content comes from authenticated convert API responses
 
 - **R1**: Resolved — replace Results on successful convert only.
 - **R2**: Resolved — in-app panel only; no separate log file download required for MVP.
-- **Conversion params drift**: UI exposes `logLevel` / `onError` but `callBackendConversion` omits them — out of #555 scope unless evolve expands.
+- **Conversion params drift**: Resolved for S011 by ADR-023 — `bulletin_id` /
+  `issuing_center` / `stop_on_error` / `validate_output` / `validation_level` now map from
+  Conversion Parameters; Log Level filters the console only; Include Nil Reasons still
+  preference-only.
 - **Issue #555 still open** on GitHub (1/4 subtasks in issue UI); close criteria should reference S001 + S004 deliverables.
 
 ## Sources

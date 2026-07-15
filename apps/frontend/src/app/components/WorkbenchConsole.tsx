@@ -5,24 +5,32 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Terminal } from 'lucide-react';
 import type { LiveWorkbenchConsoleLine } from '@/hooks/useLiveWorkbenchAssist';
+import { consoleLevelPasses, type ConvertLogLevel } from '/utils/convertParams';
 
 export interface WorkbenchConsoleProps {
   lines: LiveWorkbenchConsoleLine[];
   onClear?: () => void;
   defaultOpen?: boolean;
+  /** Minimum severity to show (operator Log Level). Default INFO. */
+  minLogLevel?: ConvertLogLevel;
 }
 
 /**
  * Collapsible pull-up console for live-assist messages.
  *
  * @param props.lines - Structured console entries
+ * @param props.minLogLevel - Filter lines below this severity (client-side)
  */
 export function WorkbenchConsole({
   lines,
   onClear,
   defaultOpen = false,
+  minLogLevel = 'INFO',
 }: WorkbenchConsoleProps) {
   const [open, setOpen] = useState(defaultOpen);
+  const visibleLines = lines.filter((line) =>
+    consoleLevelPasses(line.level, minLogLevel),
+  );
 
   return (
     <section
@@ -46,7 +54,8 @@ export function WorkbenchConsole({
           <Terminal className="h-4 w-4 shrink-0" aria-hidden />
           Console
           <span className="font-normal text-gray-500 dark:text-gray-400">
-            ({lines.length})
+            ({visibleLines.length}
+            {visibleLines.length !== lines.length ? `/${lines.length}` : ''})
           </span>
         </button>
         {onClear ? (
@@ -65,10 +74,14 @@ export function WorkbenchConsole({
           className="max-h-40 space-y-1 overflow-y-auto border-t border-gray-200 px-3 py-2 font-mono text-xs dark:border-gray-700"
           data-testid="workbench-console-lines"
         >
-          {lines.length === 0 ? (
-            <li className="text-gray-500 dark:text-gray-400">No messages yet.</li>
+          {visibleLines.length === 0 ? (
+            <li className="text-gray-500 dark:text-gray-400">
+              {lines.length === 0
+                ? 'No messages yet.'
+                : `No messages at ${minLogLevel} or above.`}
+            </li>
           ) : (
-            lines.map((line, index) => (
+            visibleLines.map((line, index) => (
               <li
                 key={`${line.at}-${index}`}
                 className={

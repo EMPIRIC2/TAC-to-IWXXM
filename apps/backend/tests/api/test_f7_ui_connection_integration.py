@@ -31,14 +31,7 @@ from src.schemas.work_session import (
 )
 from src.utilities.security import verify_supabase_token
 
-FIXTURES = (
-    Path(__file__).resolve().parents[4]
-    / "packages"
-    / "tac2iwxxm"
-    / "tests"
-    / "fixtures"
-    / "product_matrix"
-)
+FIXTURES = Path(__file__).resolve().parents[4] / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "product_matrix"
 VALID_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
 BAD_METAR_TAC = "METAR XXXX NOT_A_REAL_REPORT GARBAGE="
 BROWSER_ORIGIN = "http://localhost:18000"
@@ -74,9 +67,7 @@ def _assert_optional_offsets(item: dict[str, Any]) -> None:
 class TestUiLintTacConnection:
     """UI connection: live workbench → POST /api/v1/lint-tac."""
 
-    def test_lint_tac_response_matches_frontend_lint_tac_response(
-        self, client: TestClient
-    ) -> None:
+    def test_lint_tac_response_matches_frontend_lint_tac_response(self, client: TestClient) -> None:
         response = client.post(
             "/api/v1/lint-tac",
             files={
@@ -103,9 +94,7 @@ class TestUiLintTacConnection:
 class TestUiDecodeTacConnection:
     """UI connection: decode panel → POST /api/v1/decode-tac."""
 
-    def test_decode_tac_response_matches_frontend_decode_tac_response(
-        self, client: TestClient
-    ) -> None:
+    def test_decode_tac_response_matches_frontend_decode_tac_response(self, client: TestClient) -> None:
         tac = (FIXTURES / "metar_basic.tac").read_text(encoding="utf-8").strip()
         response = client.post(
             "/api/v1/decode-tac",
@@ -134,9 +123,7 @@ class TestUiDecodeTacConnection:
 class TestUiSoftPreviewConnection:
     """UI connection: soft-preview toggle → convert preview=true + Failed-TAC cue."""
 
-    def test_convert_preview_envelope_matches_frontend_conversion_response(
-        self, client: TestClient
-    ) -> None:
+    def test_convert_preview_envelope_matches_frontend_conversion_response(self, client: TestClient) -> None:
         response = client.post(
             "/api/v1/convert",
             files={
@@ -237,12 +224,8 @@ class TestUiWorkSessionsConnection:
     @pytest.fixture
     def sessions_client(self, client: TestClient):
         store = _SessionStore()
-        store.rows[uuid4()] = _session_row(
-            product=WorkSessionProduct.METAR, manual_tac=VALID_METAR
-        )
-        store.rows[uuid4()] = _session_row(
-            product=WorkSessionProduct.TAF, manual_tac="TAF KJFK 121730Z ..."
-        )
+        store.rows[uuid4()] = _session_row(product=WorkSessionProduct.METAR, manual_tac=VALID_METAR)
+        store.rows[uuid4()] = _session_row(product=WorkSessionProduct.TAF, manual_tac="TAF KJFK 121730Z ...")
         app.dependency_overrides[ws_router.work_session_service] = lambda: store
         yield client, store
         app.dependency_overrides.pop(ws_router.work_session_service, None)
@@ -321,9 +304,7 @@ class TestUiBrowserCorsConnection:
         "path",
         ["/api/v1/lint-tac", "/api/v1/decode-tac", "/api/v1/convert"],
     )
-    def test_options_f7_endpoints_allow_post(
-        self, cors_client: TestClient, path: str
-    ) -> None:
+    def test_options_f7_endpoints_allow_post(self, cors_client: TestClient, path: str) -> None:
         response = cors_client.options(
             path,
             headers={

@@ -91,6 +91,13 @@ applies; work-session persistence still requires JWT.
 | `iwxxm_version` | no | app default | Vendored pin (e.g. `2025-2`) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
 | `preview` | no | `false` | Soft-preview mode (S011) — see below |
+| `validate_output` | no | `false` | Run post-convert IWXXM validation when true |
+| `validation_level` | no | `basic` | `basic` \| `schema` \| `schematron` \| `icao_opmet` \| `comprehensive` |
+| `stop_on_error` | no | `false` | Stop processing remaining inputs after first error |
+| `bulletin_id` | no | `""` | Optional bulletin identifier (translation metadata) |
+| `issuing_center` | no | `""` | Optional issuing centre ICAO (4-letter) |
+| `include_nil_reasons` | no | `true` | Prefer emitting nilReason attributes (engine may still emit NIL shells) |
+| `log_level` | no | `INFO` | Minimum severity for process issues echoed to clients |
 
 \* At least one of `files` or `manual_text` required (unchanged).
 
@@ -99,6 +106,13 @@ applies; work-session persistence still requires JWT.
 - Sessions may **store** `product`/`profile` in `conversion_params` for UI restore; on submit the UI
   **copies** them into multipart fields.
 - No `engine` field; converter is always `tac2iwxxm` after cutover.
+- **F7 / ADR-023**: Hard Convert from FileConverter sends `bulletin_id`, `issuing_center`,
+  `stop_on_error`, `validate_output`, and `validation_level` from Conversion Parameters.
+  Soft-preview forces `validate_output=false`. Operator **Log Level** filters conversion /
+  validation / lint process messages (Conversion log + console) and is sent as `log_level`.
+  **Include Nil Reasons** maps to `include_nil_reasons` (engine honor TBD).
+- **F7 / ADR-024**: AHL bulletin UI uses `/convert-bulletin`. COLLECT / `.gz` uses
+  `/ingest-collect` (**501** placeholder). Uploads may be gzip-compressed.
 
 **Soft-preview (`preview=true`)** — S011 / #666:
 
@@ -200,6 +214,21 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 |------|------|------|
 | `bulletin_split_failed` | 422 | Cannot parse AHL / split reports |
 | `empty_bulletin` | 400 | No reports after split |
+
+### COLLECT ingest (placeholder — ADR-024)
+
+```
+POST /api/v1/ingest-collect
+```
+
+**Purpose**: Accept IWXXM COLLECT XML (or gzipped COLLECT). **Currently returns HTTP 501** with
+`code=not_implemented` until member extraction + validate ships. Exists so the operator UI can
+exercise the path.
+
+**Auth**: Same as `/api/v1/convert`.
+
+**Request** (multipart/form-data): `files` and/or `manual_text`; optional `profile`,
+`iwxxm_version`.
 
 ### TAC lint (S008 amend)
 

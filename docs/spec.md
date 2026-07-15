@@ -181,6 +181,14 @@ metar-to-IWXXM/
 - **F7 delta (S011)**: Debounced JWT calls to lint/decode/validate/preview with AbortController;
   span highlight + hover; collapsible Code|Explanation decode panel; toggleable live IWXXM;
   pull-up console; F7 session persist/resume (separate from F5).
+- **F7 convert-params (ADR-023)**: Hard Convert maps Bulletin ID, Issuing Center, On Error →
+  `stop_on_error`, and Strict Validation → `validate_output`/`validation_level`. Soft-preview
+  skips post-convert validation. Console Log Level filters workbench lines client-side.
+  Upload accept: `.txt`, `.metar`, `.tac`.
+- **F7 input modes (ADR-024)**: TAC | AHL bulletin (`/convert-bulletin`) | IWXXM COLLECT
+  (`/ingest-collect` 501 placeholder). Accept `.xml`/`.gz` (inflate). `log_level` +
+  `include_nil_reasons` on Convert. Log Level filters Conversion log + console for lint/validate
+  process messages.
 - **F5**: Unchanged product scope — METAR/SPECI work sessions only (not extended to other
   products); admin browse path removed.
 - **Source**: F6-R5; feature-list F6/F7; [context/f7-operator-ui.md](context/f7-operator-ui.md).

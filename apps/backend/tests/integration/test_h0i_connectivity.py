@@ -86,9 +86,7 @@ class TestH0iCorsPreflight:
         "path",
         ["/api/v1/lint-tac", "/api/v1/decode-tac"],
     )
-    def test_options_f7_live_assist_allows_post(
-        self, h0i_client: TestClient, path: str
-    ) -> None:
+    def test_options_f7_live_assist_allows_post(self, h0i_client: TestClient, path: str) -> None:
         """F7 UI connection points — browser preflight for live lint/decode."""
         response = h0i_client.options(
             path,

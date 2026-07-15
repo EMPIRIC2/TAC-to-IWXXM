@@ -29,6 +29,26 @@ describe('WorkbenchConsole', () => {
     expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(/1 issue/);
   });
 
+  it('filters lines below the operator log level', async () => {
+    render(
+      <WorkbenchConsole
+        defaultOpen
+        minLogLevel="WARNING"
+        lines={[
+          { level: 'info', source: 'lint', message: 'ok', at: 1 },
+          { level: 'warn', source: 'lint', message: 'watch', at: 2 },
+          { level: 'error', source: 'lint', message: 'bad', at: 3 },
+        ]}
+      />,
+    );
+    expect(screen.getByTestId('workbench-console')).toHaveTextContent(/2\/3/);
+    expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(/watch/);
+    expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(/bad/);
+    expect(screen.getByTestId('workbench-console-lines')).not.toHaveTextContent(
+      /\[lint\] ok/,
+    );
+  });
+
   it('clear does not crash when onClear provided', async () => {
     const user = userEvent.setup();
     const onClear = vi.fn();

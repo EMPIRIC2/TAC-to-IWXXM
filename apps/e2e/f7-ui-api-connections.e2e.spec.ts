@@ -74,8 +74,7 @@ async function wireF7ApiStubs(page: Page): Promise<Captured> {
   await page.route('**/api/v1/convert', async (route) => {
     captured.convert.push(route.request());
     const postData = route.request().postData() ?? '';
-    const preview =
-      postData.includes('name="preview"') && postData.includes('true');
+    const preview = postData.includes('name="preview"') && postData.includes('true');
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -316,9 +315,8 @@ test.describe('F7 UI↔API connection points', () => {
     await expect
       .poll(
         () =>
-          captured.sessions.filter((r) =>
-            ['POST', 'PATCH'].includes(r.method()),
-          ).length,
+          captured.sessions.filter((r) => ['POST', 'PATCH'].includes(r.method()))
+            .length,
         { timeout: 10000 },
       )
       .toBeGreaterThan(0);

@@ -42,7 +42,7 @@ Unified manual live test harness against Render staging:
 | Journey | Feature | Local E2E module | Live E2E | Test plan TC |
 |---------|---------|------------------|----------|--------------|
 | UJ-001 | F6 | `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/e2e/tac-file-upload-database.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-001, TC-LIVE-001 |
-| UJ-002 | F2+F6 | backend validation tests + UI if exposed | H3 validate + H6 where exposed | TC-002, TC-LIVE-002 |
+| UJ-002 | F2+F6 | backend validation tests + UI Strict Validation → `validate_output` (ADR-023) | H3 validate + H6 where exposed | TC-002, TC-LIVE-002 |
 | UJ-003 | Auth | `apps/e2e/auth.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-003, TC-LIVE-003 |
 | UJ-004 | F5+F7 | `apps/e2e/metar-work-history.e2e.spec.ts` (unified filter) | H6 UJ-004 | TC-004, TC-LIVE-006 |
 | UJ-005 | F6 | F6 product-matrix Playwright (planned) | H6 | TC-F6-001, TC-LIVE-F6-001 |

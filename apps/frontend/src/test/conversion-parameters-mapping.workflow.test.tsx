@@ -37,6 +37,9 @@ vi.mock('/utils/supabase/logout', () => ({
 
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
+  convertBulletin: vi.fn(),
+  ingestCollect: vi.fn(),
+  EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
   lintTac: vi.fn().mockResolvedValue({
     ok: true,
@@ -125,8 +128,50 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
         manualText:
           'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
         iwxxmVersion: '2023-1',
-        validateOutput: false,
+        validateOutput: true,
+        validationLevel: 'comprehensive',
+        stopOnError: false,
         accessToken: 'mapping-token',
+      }),
+    );
+  });
+
+  it('maps bulletin, issuing centre, onError fail, and soft-preview validation off', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<FileConverter {...defaultProps} />);
+
+    await user.click(screen.getByLabelText(/expand parameters/i));
+
+    const bulletinId = container.querySelector(
+      '#param-bulletin-id',
+    ) as HTMLInputElement;
+    await user.clear(bulletinId);
+    await user.type(bulletinId, 'saaa00');
+
+    const onError = container.querySelector('#param-on-error') as HTMLSelectElement;
+    await user.selectOptions(onError, 'fail');
+
+    fireEvent.click(screen.getByTestId('soft-preview-toggle'));
+
+    fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
+      target: {
+        value: 'METAR KJFK 121251Z 24016G28KT 10SM FEW250 14/11 A2990',
+      },
+    });
+
+    await user.click(screen.getByTestId('convert-button'));
+
+    await waitFor(() => {
+      expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
+    });
+
+    expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        bulletinId: 'SAAA00',
+        stopOnError: true,
+        preview: true,
+        validateOutput: false,
+        validationLevel: 'basic',
       }),
     );
   });

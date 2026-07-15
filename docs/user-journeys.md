@@ -101,14 +101,18 @@ version; UX behaviors from #555/#664 preserved.
 **Steps**:
 
 1. Obtain IWXXM XML from conversion (UJ-001 / UJ-005 / UJ-006 / UJ-011).
-2. Trigger validation endpoint or UI action with the same **profile** used for convert.
+2. Trigger validation via **Convert with Strict Validation** (UI maps to
+   `validate_output=true` + `validation_level=comprehensive` on `/api/v1/convert`) **or** a
+   dedicated validate endpoint/UI action with the same **profile** used for convert.
 3. Backend invokes **`iwxxm-validate`** (not inline schema loading long-term).
-4. Review pass/fail and error messages.
+4. Review pass/fail and error messages (conversion log / issues arrays).
 5. If `profile=iwxxm_us`, validation uses **combined** WMO + iwxxm-us catalogs; `annex3` uses WMO only.
 
 **Acceptance**: Valid sample produces validation pass for selected IWXXM version and profile.
+Soft-preview Convert does **not** satisfy UJ-002 (ADR-022 / ADR-023).
 
-**Automated tests**: `packages/iwxxm-validate` unit + backend wrapper tests + E2E where exposed (T2); H3 + H6 (T3)
+**Automated tests**: `packages/iwxxm-validate` unit + backend wrapper tests + FE convert-params
+mapping (ADR-023) + E2E where exposed (T2); H3 + H6 (T3)
 
 ---
 

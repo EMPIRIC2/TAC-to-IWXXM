@@ -36,3 +36,5 @@
 | 2026-06-23 | C2 | modified | H6 tier description includes UJ-004 (test-plan) |
 | 2026-06-14 | S6.2 | approved | Risk level Medium |
 | 2026-06-14 | S6.5 | approved | Branch feat/monorepo-big-bang |
+| 2026-07-15 | D-S011-ADR023 | approved | Wire dormant Convert params (bulletin/issuing/stop_on_error/validate); console log filter; .tac accept; nil reasons deferred (ADR-023) |
+| 2026-07-15 | D-S011-ADR024 | approved | AHL bulletin UI + COLLECT 501 placeholder + log_level/include_nil_reasons (ADR-024) |
