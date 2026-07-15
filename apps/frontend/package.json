@@ -18,7 +18,7 @@
     "typecheck": "tsc --noEmit",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "audit": "pnpm audit",
-    "audit:ci": "pnpm audit --audit-level=low"
+    "audit:ci": "bash ../../scripts/frontend/audit-ci.sh"
   },
   "dependencies": {
     "@codemirror/commands": "6.10.4",
