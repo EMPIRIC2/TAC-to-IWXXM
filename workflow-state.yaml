@@ -1668,6 +1668,15 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S013-EV009-qa-advisories-resolved
+  date: "2026-07-17"
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "User chose 'Address both' for QA-001/QA-002. QA-001: project-scoped pip-audit found ecdsa PYSEC-2026-1325 (transitive via python-jose; no upstream fix); risk accepted — JWT paths are HS256-only and jose[cryptography] delegates EC to pyca/cryptography; ignore documented in audit/pip-audit-ignore.txt. QA-002: verify_connectivity.sh run live vs production (H0c 6/6, H4 2/2, H5 PASS) pre-deploy; re-runs at 13."
+  summary: "User chose 'Address both' for QA-001/QA-002. QA-001: project-scoped pip-audit found ecdsa PYSEC-2026-1325 (transitive via python-jose; no upstream fix); risk accepted — JWT paths are HS256-only and jose[cryptography] delegates EC to pyca/cryptography; ignore documented in audit/pip-audit-ignore.txt. QA-002: verify_connectivity.sh run live vs production (H0c 6/6, H4 2/2, H5 PASS) pre-deploy; re-runs at 13."
+  timestamp: "2026-07-17"
 - id: D-S013-EV009-c-to-d-pass
   date: "2026-07-17"
   stage: 16-evolve
@@ -4893,8 +4902,8 @@ evolve_cycles:
       started: "2026-07-17"
       completed: "2026-07-17"
       report: docs/sessions/S013-live-decode-preview-ux/reports/qa-report.md
-      overall: pass_with_advisories
-      notes: "All blocking checks green; QA-001 (system-env pip-audit CVEs, not project deps) + QA-002 (H4-H5 deferred to 13) advisory"
+      overall: pass
+      notes: "All blocking checks green; QA-001 (ecdsa PYSEC-2026-1325 risk-accepted, audit/pip-audit-ignore.txt) + QA-002 (live H0c/H4/H5 PASS pre-deploy 2026-07-17) both RESOLVED"
     10-e2e:
       status: completed
       mode: full
@@ -4931,6 +4940,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/S013-live-decode-preview-ux
   notes:
+  - "2026-07-17 S013/EV-009 QA-001/QA-002 resolved (0cf2a28); 11-verify-impl awaiting F9/F10 sign-off"
   - "2026-07-17 S013/EV-009 T4.2 done — 09-qa pass_with_advisories + 10-e2e PASS (UJ-020/021); current_stage=11-verify-impl (T4.3)"
   - "2026-07-17 S013/EV-009 C→D passed (D-S013-EV009-c-to-d-pass); 09-qa + 10-e2e in_progress (T4.2)"
   - "2026-07-16 S013/EV-009 T4.1 08-verify-build PASS (verification-report.md); active_task T4.2 pending; Phase C checkpoint pending"
@@ -5166,6 +5176,13 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 0cf2a28
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T4.3] chore: resolve QA-001/QA-002 advisories (S013/EV-009)"
+    stage: "11-verify-impl"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 2
+    timestamp: "2026-07-17T21:05:21Z"
   - sha: 0e8503d
     branch: evolve/S013-live-decode-preview-ux
     message: "[T4.2] test: 09-qa + 10-e2e PASS for EV-009 (F9/F10)"
