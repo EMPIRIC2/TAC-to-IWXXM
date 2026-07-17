@@ -6,6 +6,11 @@ import { Label } from './ui/label';
 import { TacEditor } from './TacEditor';
 import { DecodePanel } from './DecodePanel';
 import { FailedTacCue } from './FailedTacCue';
+import {
+  IwxxmPreviewPane,
+  type IwxxmPreviewMode,
+  type IwxxmPreviewStatus,
+} from './IwxxmPreviewPane';
 import { SoftPreviewControl } from './SoftPreviewControl';
 import { LiveIwxxmToggle } from './LiveIwxxmToggle';
 import { WorkbenchConsole } from './WorkbenchConsole';
@@ -163,6 +168,12 @@ export function FileConverter({
   const [softPreview, setSoftPreview] = useState(false);
   const [liveIwxxm, setLiveIwxxm] = useState(false);
   const [failedSpans, setFailedSpans] = useState<FailedSpan[]>([]);
+  const [previewXml, setPreviewXml] = useState('');
+  const [previewStatus, setPreviewStatus] = useState<IwxxmPreviewStatus>('empty');
+  const [previewMode, setPreviewMode] = useState<IwxxmPreviewMode>('idle');
+  const [previewSoftFailDetail, setPreviewSoftFailDetail] = useState<
+    string | undefined
+  >();
   const [inputMode, setInputMode] = useState<OperatorInputMode>('tac');
   const [bulletinSummary, setBulletinSummary] = useState<string | null>(null);
   const [placeholderNotice, setPlaceholderNotice] = useState<string | null>(null);
@@ -747,6 +758,22 @@ export function FileConverter({
         return null;
       }
 
+      const latestPreviewXml =
+        newConvertedFiles[newConvertedFiles.length - 1]?.convertedContent ?? '';
+      if (latestPreviewXml && (softPreview || softFail)) {
+        setPreviewXml(latestPreviewXml);
+        setPreviewMode('soft-preview');
+        if (softFail) {
+          setPreviewStatus('soft-fail');
+          setPreviewSoftFailDetail(
+            'Some groups could not be converted. Fix the highlighted spans in the editor, then retry Soft-preview. This output is not for publish.',
+          );
+        } else {
+          setPreviewStatus('passed');
+          setPreviewSoftFailDetail(undefined);
+        }
+      }
+
       setConvertedFiles(newConvertedFiles);
       setPendingFiles([]);
       // Keep TAC in editor on soft-fail so Failed-TAC cue stays contextual (UJ-016).
@@ -1008,6 +1035,10 @@ export function FileConverter({
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     setFailedSpans([]);
+    setPreviewXml('');
+    setPreviewStatus('empty');
+    setPreviewMode('idle');
+    setPreviewSoftFailDetail(undefined);
     toast.info('Queue cleared');
   };
 
@@ -1042,10 +1073,25 @@ export function FileConverter({
         if (signal.aborted) {
           return;
         }
+        const latestXml =
+          response.results?.[0]?.iwxxm_xml ||
+          response.results?.[0]?.xml ||
+          response.results?.[0]?.content ||
+          '';
+        if (latestXml) {
+          setPreviewXml(latestXml);
+          setPreviewMode('live');
+        }
         if (response.failed_spans?.length) {
           setFailedSpans(response.failed_spans);
+          setPreviewStatus('soft-fail');
+          setPreviewSoftFailDetail(
+            'Some groups could not be converted. Fix the highlighted spans in the editor, then retry. This Soft preview is not for publish.',
+          );
         } else if (response.ok !== false) {
           setFailedSpans([]);
+          setPreviewStatus(latestXml ? 'passed' : 'empty');
+          setPreviewSoftFailDetail(undefined);
         }
       } catch (err) {
         if (isAbortError(err) || signal.aborted) {
@@ -1333,26 +1379,42 @@ export function FileConverter({
                 </p>
               )}
               <FailedTacCue failedSpans={failedSpans} />
-              <TacEditor
-                id="manual-input"
-                value={manualInput}
-                onChange={setManualInput}
-                readOnly={isReadOnly}
-                placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
-                aria-label="Enter METAR data manually"
-                className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
-                failedSpans={failedSpans}
-                issueSpans={issueSpans}
-              />
-              <DecodePanel
-                segments={decodeSegments}
-                residuals={decodeResiduals}
-                summary={decodeSummary}
-                product={decodeProduct}
-                loading={decodeLoading}
-                error={decodeError}
-                defaultOpen
-              />
+              <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:items-stretch">
+                <div className="min-w-0">
+                  <TacEditor
+                    id="manual-input"
+                    value={manualInput}
+                    onChange={setManualInput}
+                    readOnly={isReadOnly}
+                    placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
+                    aria-label="Enter METAR data manually"
+                    className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
+                    failedSpans={failedSpans}
+                    issueSpans={issueSpans}
+                  />
+                  <DecodePanel
+                    segments={decodeSegments}
+                    residuals={decodeResiduals}
+                    summary={decodeSummary}
+                    product={decodeProduct}
+                    loading={decodeLoading}
+                    error={decodeError}
+                    defaultOpen
+                  />
+                </div>
+                <IwxxmPreviewPane
+                  xml={previewXml}
+                  status={previewStatus}
+                  mode={previewMode}
+                  softFailDetail={previewSoftFailDetail}
+                  failedSpanCount={failedSpans.length}
+                  onFailedSpanFocus={() => {
+                    document
+                      .querySelector('[data-testid="failed-tac-cue"]')
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                  }}
+                />
+              </div>
               <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
                 <SoftPreviewControl
                   checked={softPreview}
