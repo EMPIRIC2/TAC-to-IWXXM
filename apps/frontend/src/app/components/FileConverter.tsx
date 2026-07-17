@@ -1111,6 +1111,7 @@ export function FileConverter({
 
   const {
     issueSpans,
+    lintFixes,
     decodeSegments,
     decodeResiduals,
     decodeProduct,
@@ -1127,6 +1128,17 @@ export function FileConverter({
     liveIwxxm,
     liveIwxxmRunner,
   });
+
+  const applyLintFix = useCallback(
+    (fixCode: string) => {
+      const fix = lintFixes.find((f) => f.code === fixCode);
+      if (!fix?.replacement) {
+        return;
+      }
+      setManualInput(fix.replacement);
+    },
+    [lintFixes],
+  );
 
   const saveIndicatorLabel =
     saveIndicator === 'pending'
@@ -1391,6 +1403,7 @@ export function FileConverter({
                     className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
                     failedSpans={failedSpans}
                     issueSpans={issueSpans}
+                    onSpanFix={applyLintFix}
                   />
                   <DecodePanel
                     segments={decodeSegments}
@@ -1430,6 +1443,7 @@ export function FileConverter({
               <WorkbenchConsole
                 lines={consoleLines}
                 minLogLevel={conversionParams.logLevel as ConvertLogLevel}
+                onLineAction={applyLintFix}
                 onClear={() => {
                   clearConsole();
                   appendConsole({

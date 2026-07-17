@@ -23,6 +23,8 @@ export interface LiveWorkbenchConsoleLine {
   source: string;
   message: string;
   at: number;
+  /** Optional one-click fix action (e.g. Add `=` for MISSING_TERMINATOR). */
+  action?: { id: string; label: string };
 }
 
 export interface UseLiveWorkbenchAssistOptions {
@@ -142,9 +144,21 @@ export function useLiveWorkbenchAssist({
             code: i.code,
           }));
 
+        const fixes = lintResult.fixes ?? [];
         setLintIssues(lintResult.issues);
-        setLintFixes(lintResult.fixes ?? []);
-        setIssueSpans(spans);
+        setLintFixes(fixes);
+        const fixByCode = new Map(fixes.map((f) => [f.code, f]));
+        const spansWithFixes: TacSpanMark[] = spans.map((span) => {
+          if (span.code === 'MISSING_TERMINATOR' && fixByCode.has('add_terminator')) {
+            return {
+              ...span,
+              fixCode: 'add_terminator',
+              fixLabel: 'Add `=`',
+            };
+          }
+          return span;
+        });
+        setIssueSpans(spansWithFixes);
         setDecodeSegments(decodeResult.segments);
         setDecodeResiduals(decodeResult.residuals);
         setDecodeProduct(decodeResult.product);
@@ -162,8 +176,7 @@ export function useLiveWorkbenchAssist({
           lintResult.issues.length > 3
             ? ` (+${lintResult.issues.length - 3} more)`
             : '';
-        setConsoleLines((prev) => [
-          ...prev.slice(-198),
+        const nextLines: LiveWorkbenchConsoleLine[] = [
           {
             level: summaryLevel,
             source: 'lint-tac',
@@ -174,6 +187,21 @@ export function useLiveWorkbenchAssist({
                 : `${lintResult.issues.length} issue(s): ${issuePreview}${more}`,
             at: Date.now(),
           },
+        ];
+        for (const issue of lintResult.issues) {
+          if (issue.code === 'MISSING_TERMINATOR' && fixByCode.has('add_terminator')) {
+            nextLines.push({
+              level: 'info',
+              source: 'lint-tac',
+              message: issue.message,
+              at: Date.now(),
+              action: { id: 'add_terminator', label: 'Add `=`' },
+            });
+          }
+        }
+        setConsoleLines((prev) => [
+          ...prev.slice(-200 + nextLines.length),
+          ...nextLines,
         ]);
 
         if (liveIwxxm && liveIwxxmRunnerRef.current) {

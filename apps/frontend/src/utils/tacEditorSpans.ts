@@ -17,12 +17,19 @@ export interface TacSpanMark {
   message?: string;
   severity?: string;
   code?: string;
+  /** Optional quick-fix id surfaced in the hover tooltip (F10). */
+  fixCode?: string;
+  fixLabel?: string;
 }
 
 export const setTacSpansEffect = StateEffect.define<TacSpanMark[]>();
 
 const issueMark = Decoration.mark({
   class: 'cm-tac-issue',
+});
+
+const infoIssueMark = Decoration.mark({
+  class: 'cm-tac-issue cm-tac-issue-info',
 });
 
 /**
@@ -55,7 +62,8 @@ export function normalizeTacSpans(
 export function buildSpanDecorations(spans: TacSpanMark[]): DecorationSet {
   const ranges: Range<Decoration>[] = [];
   for (const span of spans) {
-    ranges.push(issueMark.range(span.start, span.end));
+    const mark = span.severity === 'info' ? infoIssueMark : issueMark;
+    ranges.push(mark.range(span.start, span.end));
   }
   return Decoration.set(ranges, true);
 }
@@ -100,8 +108,28 @@ function spanTooltip(view: EditorView, pos: number): Tooltip | null {
     create() {
       const dom = document.createElement('div');
       dom.className = 'cm-tac-issue-tooltip';
-      dom.textContent = text;
       dom.setAttribute('data-testid', 'tac-span-tooltip');
+      const label = document.createElement('div');
+      label.textContent = text;
+      dom.appendChild(label);
+      if (hit.fixCode && hit.fixLabel) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = hit.fixLabel;
+        btn.className = 'cm-tac-issue-fix';
+        btn.setAttribute('data-testid', `tac-span-fix-${hit.fixCode}`);
+        btn.addEventListener('mousedown', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          view.dom.dispatchEvent(
+            new CustomEvent('tac-span-fix', {
+              bubbles: true,
+              detail: { fixCode: hit.fixCode },
+            }),
+          );
+        });
+        dom.appendChild(btn);
+      }
       return { dom };
     },
   };
@@ -122,6 +150,10 @@ export function tacSpanExtensions(): Extension[] {
         backgroundColor: 'rgba(251, 191, 36, 0.35)',
         borderBottom: '2px wavy #d97706',
       },
+      '.cm-tac-issue-info': {
+        backgroundColor: 'rgba(56, 189, 248, 0.28)',
+        borderBottom: '2px wavy #0284c7',
+      },
       '.cm-tac-issue-tooltip': {
         padding: '4px 8px',
         borderRadius: '4px',
@@ -129,6 +161,16 @@ export function tacSpanExtensions(): Extension[] {
         color: '#f9fafb',
         fontSize: '12px',
         maxWidth: '280px',
+      },
+      '.cm-tac-issue-fix': {
+        marginTop: '4px',
+        padding: '2px 6px',
+        borderRadius: '4px',
+        border: '1px solid #38bdf8',
+        backgroundColor: '#0c4a6e',
+        color: '#e0f2fe',
+        cursor: 'pointer',
+        fontSize: '11px',
       },
     }),
   ];
