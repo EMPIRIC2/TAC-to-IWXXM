@@ -56,7 +56,9 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: "2026-07-16"
+    note: "B→C gate passed (D-S013-EV009-b-to-c-pass); starting M1 T1.1"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -86,7 +88,7 @@ active_session:
     rationale: "Existing hooks/rules cover this scope; no new guardrails"
   - stage: 06-tech-tooling
     rationale: "Lint/typecheck/CI already wired; no new dependencies anticipated"
-  current_stage: 16-evolve
+  current_stage: 07-build
 
 sessions:
 
@@ -1655,6 +1657,15 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S013-EV009-b-to-c-pass
+  date: "2026-07-16"
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "Phase B checkpoint approved; B→C gate passed (04 approved + 05 PASS + 06 skipped per routing); start 07-build at M1 T1.1"
+  summary: "User selected 'Pass B→C gate — start 07-build at M1 T1.1'."
+  timestamp: "2026-07-16"
 - id: D-S012-frontend-auth-token-hydrate
   date: "2026-07-15"
   stage: 14-hotfix
@@ -4806,7 +4817,7 @@ evolve_cycles:
     - 00-context      # session open only; scoped brief f7-operator-ui.md reused
     - 03-plan-tooling
     - 06-tech-tooling
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   stages:
     01-requirements:
       status: completed
@@ -4842,14 +4853,19 @@ evolve_cycles:
       report: docs/sessions/S013-live-decode-preview-ux/reports/05-verify-tech-audit.md
       overall: pass
       notes: "A1–A10 repo-verified; T3.6 note — thread lint fixes[] through useLiveWorkbenchAssist"
+    07-build:
+      status: in_progress
+      mode: full
+      started: "2026-07-16"
+      notes: "M1 active; T1.1 first (TDD)"
   gates:
     a_to_b: passed
-    b_to_c: pending
+    b_to_c: passed
     c_to_d: pending
     deploy: pending
   checkpoints:
     phase_a: passed
-    phase_b: pending
+    phase_b: passed
     phase_c: pending
     phase_d: pending
     deploy: pending

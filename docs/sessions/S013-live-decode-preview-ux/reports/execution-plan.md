@@ -10,7 +10,7 @@
 
 - Phase: 1 (EV-009 build)
 - Active milestone: M1
-- Active task: T1.1 (pending approval)
+- Active task: T1.1 (in_progress)
 
 ## Tech Stack Summary (all existing — no new dependencies)
 
@@ -29,7 +29,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Unit tests: value-aware explanations — METAR/SPECI/TAF fixtures (TC-F9-001 tokens: `18004KT`, gusts, VRB, `10SM`, `4000`, `M05/M12`, `A3011`, `Q1013`, `121251Z`, clouds, wx, FM/TEMPO/BECMG/PROB); offsets unchanged | test-plan TC-F9-001 | — | pending |
+| T1.1 | Test | Unit tests: value-aware explanations — METAR/SPECI/TAF fixtures (TC-F9-001 tokens: `18004KT`, gusts, VRB, `10SM`, `4000`, `M05/M12`, `A3011`, `Q1013`, `121251Z`, clouds, wx, FM/TEMPO/BECMG/PROB); offsets unchanged | test-plan TC-F9-001 | — | in_progress |
 | T1.2 | Code | Implement value-aware explainers in `decode.py` (all 7 products; sparse best-effort) | spec §tac2iwxxm S013; F9 acc 1 | T1.1 | pending |
 | T1.3 | Test | Unit tests: `summary` paragraph — flowing prose, "Not decoded: …" residual clause, "partial decode" wording, all 7 products | test-plan TC-F9-002 §1–3 | — | pending |
 | T1.4 | Code | Summary builder; `DecodeResult.summary` (msgspec, additive) | spec §tac2iwxxm S013; ADR-025 §1 | T1.2, T1.3 | pending |
@@ -88,3 +88,4 @@ None — golden TAC fixtures already in repo test suites.
 | Gate | Date | Result | Notes |
 |------|------|--------|-------|
 | A→B | 2026-07-16 | passed | Phase A checkpoint approved ("Proceed") |
+| B→C | 2026-07-16 | passed | Phase B checkpoint approved (D-S013-EV009-b-to-c-pass); 04 approved + 05 PASS |
