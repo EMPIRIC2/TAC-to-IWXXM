@@ -98,14 +98,16 @@ active_session:
   - stage: 13-deploy-smoke
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: "2026-07-17"
+    completed: "2026-07-17"
+    note: "Deployed #723; H1/H0c/H3/H4/H5 + H6' UJ-020/021 PASS; deploy-smoke.md"
   skipped_stages:
   - stage: 03-plan-tooling
     rationale: "Existing hooks/rules cover this scope; no new guardrails"
   - stage: 06-tech-tooling
     rationale: "Lint/typecheck/CI already wired; no new dependencies anticipated"
-  current_stage: 12-verify-deploy
+  current_stage: null
 
 sessions:
 
@@ -1674,6 +1676,15 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S013-EV009-deploy-smoke-pass
+  date: "2026-07-17"
+  stage: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "T4.5 complete: PR #723 merged (4660602); Render API+FE live; H1/H0c/H3 21/21 / H4 2/2 / H5 / H6' UJ-020 (decode-tac summary) + UJ-021 (lint-tac info+fix) all PASS. Awaiting user deploy-results approval to close session."
+  summary: "13-deploy-smoke PASS; F9/F10 live in production."
+  timestamp: "2026-07-17"
 - id: D-S013-EV009-deploy-check-A
   date: "2026-07-17"
   stage: 12-verify-deploy
@@ -4870,7 +4881,7 @@ evolve_cycles:
     - 00-context      # session open only; scoped brief f7-operator-ui.md reused
     - 03-plan-tooling
     - 06-tech-tooling
-  current_stage: 13-deploy-smoke
+  current_stage: null
   stages:
     01-requirements:
       status: completed
@@ -4952,6 +4963,14 @@ evolve_cycles:
       report: docs/sessions/S013-live-decode-preview-ux/reports/deploy-checklist.md
       overall: approved
       notes: "Checklist + rollback approved (D-S013-EV009-deploy-check-A); no infra/env/migration delta; H0c 6/6 fresh; PR-EV-009=#723 CI green; merge + deploy approved"
+    13-deploy-smoke:
+      status: completed
+      mode: delta
+      started: "2026-07-17"
+      completed: "2026-07-17"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/deploy-smoke.md
+      overall: pass
+      notes: "PR #723 merged 4660602; API dep-d9da4kbtqb8s73cvrkog + FE dep-d9da4l58nd3s73drqo00 live; H1/H0c/H3 21/21 / H4 2/2 / H5 / H6' UJ-020/021 PASS"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -4962,13 +4981,13 @@ evolve_cycles:
     phase_b: passed
     phase_c: passed
     phase_d: passed
-    deploy: pending
+    deploy: passed
   adrs: []
   artifacts:
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
   - path: docs/sessions/S013-live-decode-preview-ux/reports/evolve-summary.md
-    status: pending
+    status: completed
   - path: docs/sessions/S013-live-decode-preview-ux/reports/verification-report.md
     status: completed
   - path: docs/sessions/S013-live-decode-preview-ux/reports/qa-report.md
@@ -4979,11 +4998,19 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S013-live-decode-preview-ux/reports/deploy-checklist.md
     status: completed
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/deploy-smoke.md
+    status: completed
   issues: []
+  status: completed
+  completed: "2026-07-17"
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/723
+  pr_number: 723
+  merge_sha: "4660602"
 
 git_history:
   current_branch: evolve/S013-live-decode-preview-ux
   notes:
+  - "2026-07-17 S013/EV-009 T4.5 done — #723 merged 4660602; Render live; H1/H0c/H3/H4/H5 + H6' UJ-020/021 PASS; EV-009 completed; awaiting session close"
   - "2026-07-17 S013/EV-009 T4.4 done — checklist + merge/deploy approved (D-S013-EV009-deploy-check-A); deploy gate passed; #723 CI green; current_stage=13-deploy-smoke (T4.5)"
   - "2026-07-17 S013/EV-009 T4.4 in_progress — deploy-checklist.md ready; PR-EV-009=#723 open (evolve→main; NO merge/deploy); awaiting sign-off + CI"
   - "2026-07-17 S013/EV-009 T4.3 done — F9/F10 approved ('1 / 1'); verify-impl.md; phase_d passed; current_stage=12-verify-deploy (T4.4)"

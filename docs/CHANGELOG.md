@@ -2,6 +2,25 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-17 — S013 EV-009 (F9 live decode + F10 preview UX)
+
+### Added
+- **F9**: Value-aware TAC decode explanations for all seven products + deterministic
+  plain-language `summary` on `POST /api/v1/decode-tac`; live "Plain language" block in the
+  workbench decode panel (UJ-020).
+- **F10**: Side-by-side IWXXM preview pane (`IwxxmPreviewPane`) with Soft-preview / Passed
+  badge; `MISSING_TERMINATOR` downgraded to `info` with one-click "Add `=`" quick fix
+  (UJ-021; ADR-025).
+
+### Changed
+- Decode/lint contracts additive-only (`summary`, `info` severity + `fixes[]` already present).
+- No new endpoints, env vars, CORS origins, or DB migrations.
+
+### Deploy
+- PR [#723](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/723) merged; Render API +
+  frontend-v4-web redeployed 2026-07-17. Smoke: H1/H0c/H3/H4/H5 + H6′ UJ-020/021 **PASS**
+  (`docs/sessions/S013-live-decode-preview-ux/reports/deploy-smoke.md`).
+
 ## Unreleased — S008 EV-006 (F6 cutover + F8 worker)
 
 ### Added

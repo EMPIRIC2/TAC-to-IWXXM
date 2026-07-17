@@ -16,8 +16,8 @@
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split |
 | F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011 / EV-008; build this cycle |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018/019; `apps/worker` |
-| F9 | Value-aware live decode + plain-language summary | Planned | Product | S013 / EV-009; build this cycle |
-| F10 | Workbench preview clarity (IWXXM pane + lint UX) | Planned | Product | S013 / EV-009; build this cycle |
+| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
+| F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -248,7 +248,7 @@
 
 ### F9: Value-Aware Live Decode + Plain-Language Summary
 
-- **Status**: **Planned** — build this cycle (S013 / EV-009).
+- **Status**: **Done** — shipped S013 / EV-009 (2026-07-17, PR #723).
 - **What it does**: Upgrades the F7 decode panel from generic group labels to **value-aware
   translations**, and adds a live **plain-language summary** of the whole report.
   - `packages/tac2iwxxm` `decode_tac` parses actual token values for all **seven** products:
@@ -278,7 +278,7 @@
 
 ### F10: Workbench Preview Clarity (IWXXM Pane + Lint UX)
 
-- **Status**: **Planned** — build this cycle (S013 / EV-009).
+- **Status**: **Done** — shipped S013 / EV-009 (2026-07-17, PR #723).
 - **What it does**: Makes it obvious **where** Soft-preview / Live IWXXM output appears and
   removes confusing failure copy (user feedback on #665/#666/#694 surfaces).
   - **Side-by-side IWXXM preview pane** inside the workbench: pretty-printed IWXXM XML of
