@@ -24,7 +24,7 @@ QA Results:
                   H4–H5 deferred to 13-deploy-smoke (no staging env vars set) — QA-002
 ```
 
-**Overall: PASS** (advisories QA-001, QA-002 — non-blocking)
+**Overall: PASS** (advisories QA-001, QA-002 — both **resolved 2026-07-17**, see §QA remediation)
 
 ## Commands run
 
@@ -42,8 +42,42 @@ rg "pickle\.loads|[^a-zA-Z_]eval\(|[^a-zA-Z_]exec\(" apps packages --type py  # 
 
 | ID | Severity | Finding | Suggested action |
 |----|----------|---------|------------------|
-| QA-001 | Advisory | `pip-audit` reports CVEs only for **system-environment** packages not in `uv.lock` (aiohttp, crawl4ai, click, urllib3, vecinita-*, cloud-init — unrelated projects sharing this host venv). No project dependency has an open advisory; no dependency changes this cycle. | No action; re-check in CI environment if desired |
-| QA-002 | Advisory | H4–H5 live browser connectivity not run at this stage (no staging URLs configured for 09) | Runs in 13-deploy-smoke per connectivity-gates §Pipeline |
+| QA-001 | Advisory — **RESOLVED 2026-07-17** | Ambient pip-audit noise was system-env packages; project-scoped audit found one real transitive finding (`ecdsa` PYSEC-2026-1325, no fix upstream) — risk accepted with HS256 justification in `audit/pip-audit-ignore.txt` | Done — see §QA remediation |
+| QA-002 | Advisory — **RESOLVED 2026-07-17** | H4–H5 live connectivity run pre-deploy against production URLs: H0c 6/6, H4 2/2, H5 PASS | Done — re-runs post-deploy at 13-deploy-smoke |
+
+## QA remediation — 2026-07-17 (user opted "Address both" at 11-verify-impl)
+
+### QA-001 — resolved (project-scoped audit + documented ignore)
+
+Re-ran pip-audit against the **project lockfile only** (removes system-env noise):
+
+```bash
+uv export --format requirements-txt --no-emit-workspace --all-groups > /tmp/project-reqs.txt
+uv run pip-audit -r /tmp/project-reqs.txt --disable-pip
+```
+
+Result: **1 finding** — `ecdsa 0.19.2` / PYSEC-2026-1325 (CVE-2024-23342, Minerva timing
+attack on P-256; CVSS 7.4). Transitive via `python-jose` (packages/auth, apps/backend).
+Upstream declares side-channel attacks out of scope — **no fix version exists**.
+Risk accepted with justification: all project JWT signing/verification uses **HS256 (HMAC)**
+(`packages/auth/src/security.py`), and `python-jose[cryptography]` delegates EC crypto to
+pyca/cryptography, so the vulnerable `ecdsa.SigningKey.sign_digest()` path is never called.
+Ignore recorded in `audit/pip-audit-ignore.txt`; scoped audit is **clean** with it applied.
+
+### QA-002 — resolved (live H0c/H4/H5 run now, pre-deploy)
+
+`bash scripts/deploy/verify_connectivity.sh` with `LIVE_API_URL=https://metar-to-iwxxm-api.onrender.com`
+and `LIVE_FRONTEND_URL=https://metar-to-iwxxm-frontend-v4-web.onrender.com` (2026-07-17):
+
+| Gate | Result |
+|------|--------|
+| H0c CORS policy units | 6/6 PASS |
+| H4 live CORS preflight (frontend origin + work-sessions PATCH) | 2/2 PASS |
+| H5 frontend runtime config (`config.json` api.baseUrl; no deprecated refs) | PASS |
+
+S013 adds **no new origins or endpoints** (UJ-020/021 reuse decode-tac/lint-tac/convert), so
+current-production connectivity is representative. H4–H5 still re-run post-deploy at
+13-deploy-smoke per connectivity-gates.
 
 ## Consistency (delta scope)
 
