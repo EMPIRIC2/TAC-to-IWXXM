@@ -84,12 +84,15 @@ active_session:
   - stage: 11-verify-impl
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: "2026-07-17"
+    completed: "2026-07-17"
+    note: "F9 + F10 approved by user ('1 / 1'); 8/8 acceptance criteria PASS; QA-001/QA-002 resolved; verify-impl.md"
   - stage: 12-verify-deploy
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: "2026-07-17"
   - stage: 13-deploy-smoke
     required: true
     mode: full
@@ -99,7 +102,7 @@ active_session:
     rationale: "Existing hooks/rules cover this scope; no new guardrails"
   - stage: 06-tech-tooling
     rationale: "Lint/typecheck/CI already wired; no new dependencies anticipated"
-  current_stage: 11-verify-impl
+  current_stage: 12-verify-deploy
 
 sessions:
 
@@ -1668,6 +1671,15 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S013-EV009-f9-f10-approved
+  date: "2026-07-17"
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "T4.3 per-Fn sign-off: user approved F9 (value-aware decode + plain-language summary) and F10 (IWXXM preview pane + terminator quick fix) — '1 / 1'. 8/8 acceptance criteria PASS; UJ-020/021 signed off with T3 deferral waiver (QA-002 live pre-deploy H0c/H4/H5 PASS, re-run at 13). Phase D checkpoint passed; proceed to 12-verify-deploy (T4.4)."
+  summary: "F9 + F10 approved at 11-verify-impl; verify-impl.md written; continue to 12-verify-deploy."
+  timestamp: "2026-07-17"
 - id: D-S013-EV009-qa-advisories-resolved
   date: "2026-07-17"
   stage: 11-verify-impl
@@ -4846,7 +4858,7 @@ evolve_cycles:
     - 00-context      # session open only; scoped brief f7-operator-ui.md reused
     - 03-plan-tooling
     - 06-tech-tooling
-  current_stage: 11-verify-impl
+  current_stage: 12-verify-deploy
   stages:
     01-requirements:
       status: completed
@@ -4912,6 +4924,14 @@ evolve_cycles:
       report: docs/sessions/S013-live-decode-preview-ux/reports/e2e-report.md
       overall: pass
       notes: "UJ-020/021 Playwright 2/2 PASS vs local dev stack; live unstubbed decode-tac summary + lint-tac info/fix verified; T2 H1-H5 + T3 deferred to 13"
+    11-verify-impl:
+      status: completed
+      mode: full
+      started: "2026-07-17"
+      completed: "2026-07-17"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/verify-impl.md
+      overall: pass
+      notes: "F9 + F10 user-approved ('1 / 1'); 8/8 acceptance criteria PASS; UJ-020/021 signed off (T3 waiver — QA-002 live pre-deploy H0c/H4/H5 PASS, re-run at 13); 0 scope creep/gaps"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -4921,7 +4941,7 @@ evolve_cycles:
     phase_a: passed
     phase_b: passed
     phase_c: passed
-    phase_d: pending
+    phase_d: passed
     deploy: pending
   adrs: []
   artifacts:
@@ -4935,11 +4955,14 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S013-live-decode-preview-ux/reports/e2e-report.md
     status: completed
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/verify-impl.md
+    status: completed
   issues: []
 
 git_history:
   current_branch: evolve/S013-live-decode-preview-ux
   notes:
+  - "2026-07-17 S013/EV-009 T4.3 done — F9/F10 approved ('1 / 1'); verify-impl.md; phase_d passed; current_stage=12-verify-deploy (T4.4)"
   - "2026-07-17 S013/EV-009 QA-001/QA-002 resolved (0cf2a28); 11-verify-impl awaiting F9/F10 sign-off"
   - "2026-07-17 S013/EV-009 T4.2 done — 09-qa pass_with_advisories + 10-e2e PASS (UJ-020/021); current_stage=11-verify-impl (T4.3)"
   - "2026-07-17 S013/EV-009 C→D passed (D-S013-EV009-c-to-d-pass); 09-qa + 10-e2e in_progress (T4.2)"
