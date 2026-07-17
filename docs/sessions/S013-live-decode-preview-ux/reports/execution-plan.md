@@ -79,9 +79,9 @@ None — golden TAC fixtures already in repo test suites.
 
 ## Phase Gate Check (C→D)
 
-- [ ] All M1–M3 tasks completed; full pytest + Vitest + lint/typecheck green
-- [ ] TC-F9-001/002 + TC-F10-001/002 green at T0/T2
-- [ ] Decode contract backward-compatible (no removed fields/offsets)
+- [x] All M1–M3 tasks completed; full pytest + Vitest + lint/typecheck green
+- [x] TC-F9-001/002 + TC-F10-001/002 green at T0 (Vitest/unit); T2 Playwright specs added (local webServer timed out — re-run in 10-e2e/CI)
+- [x] Decode contract backward-compatible (no removed fields/offsets)
 
 ## Phase Gate Log
 

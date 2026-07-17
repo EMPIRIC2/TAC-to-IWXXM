@@ -4857,7 +4857,7 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: "2026-07-16"
-      notes: "M1 active; T1.1 first (TDD)"
+      notes: "M1–M3 complete (T1.1–T3.7); M4 T4.1 (08-verify-build) next; Phase C checkpoint pending"
   gates:
     a_to_b: passed
     b_to_c: passed
