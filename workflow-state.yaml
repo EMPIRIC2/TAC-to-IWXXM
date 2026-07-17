@@ -56,9 +56,10 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: "2026-07-16"
-    note: "M1–M3 complete; M4 T4.1 (08-verify-build) PASS 2026-07-16; T4.2 (09-qa + 10-e2e) next; Phase C checkpoint pending"
+    completed: "2026-07-17"
+    note: "M1–M3 + T4.1 done; C→D passed 2026-07-17; M4 continues via stages 09–13"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -69,15 +70,22 @@ active_session:
   - stage: 09-qa
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: "2026-07-17"
+    completed: "2026-07-17"
+    note: "PASS w/ advisories QA-001/QA-002; qa-report.md"
   - stage: 10-e2e
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: "2026-07-17"
+    completed: "2026-07-17"
+    note: "UJ-020/021 2/2 PASS local browser + live API; e2e-report.md"
   - stage: 11-verify-impl
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: "2026-07-17"
   - stage: 12-verify-deploy
     required: true
     mode: full
@@ -91,7 +99,7 @@ active_session:
     rationale: "Existing hooks/rules cover this scope; no new guardrails"
   - stage: 06-tech-tooling
     rationale: "Lint/typecheck/CI already wired; no new dependencies anticipated"
-  current_stage: 07-build
+  current_stage: 11-verify-impl
 
 sessions:
 
@@ -1660,6 +1668,15 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S013-EV009-c-to-d-pass
+  date: "2026-07-17"
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "Phase C checkpoint approved (option 1 recommended); C→D gate passed (M1–M3 complete, T4.1 08-verify-build PASS, decode contract additive-only); proceed to 09-qa + 10-e2e in parallel (T4.2)"
+  summary: "User selected 'Proceed to Phase D' (recommended); 09-qa + 10-e2e started in parallel."
+  timestamp: "2026-07-17"
 - id: D-S013-EV009-b-to-c-pass
   date: "2026-07-16"
   stage: 16-evolve
@@ -4820,7 +4837,7 @@ evolve_cycles:
     - 00-context      # session open only; scoped brief f7-operator-ui.md reused
     - 03-plan-tooling
     - 06-tech-tooling
-  current_stage: 07-build
+  current_stage: 11-verify-impl
   stages:
     01-requirements:
       status: completed
@@ -4857,10 +4874,11 @@ evolve_cycles:
       overall: pass
       notes: "A1–A10 repo-verified; T3.6 note — thread lint fixes[] through useLiveWorkbenchAssist"
     07-build:
-      status: in_progress
+      status: completed
       mode: full
       started: "2026-07-16"
-      notes: "M1–M3 complete (T1.1–T3.7); T4.1 08-verify-build PASS 2026-07-16; T4.2 (09-qa/10-e2e) next; Phase C checkpoint pending"
+      completed: "2026-07-17"
+      notes: "M1–M4 T4.1 done; C→D gate passed 2026-07-17 (Phase C checkpoint approved); M4 verify stages continue as 09–13"
     08-verify-build:
       status: completed
       mode: full
@@ -4869,15 +4887,31 @@ evolve_cycles:
       report: docs/sessions/S013-live-decode-preview-ux/reports/verification-report.md
       overall: pass
       notes: "All checks green; out-of-scope backend integration/env-dependent failures noted as pre-existing (untouched by S013)"
+    09-qa:
+      status: completed
+      mode: full
+      started: "2026-07-17"
+      completed: "2026-07-17"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/qa-report.md
+      overall: pass_with_advisories
+      notes: "All blocking checks green; QA-001 (system-env pip-audit CVEs, not project deps) + QA-002 (H4-H5 deferred to 13) advisory"
+    10-e2e:
+      status: completed
+      mode: full
+      started: "2026-07-17"
+      completed: "2026-07-17"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/e2e-report.md
+      overall: pass
+      notes: "UJ-020/021 Playwright 2/2 PASS vs local dev stack; live unstubbed decode-tac summary + lint-tac info/fix verified; T2 H1-H5 + T3 deferred to 13"
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
+    c_to_d: passed
     deploy: pending
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
+    phase_c: passed
     phase_d: pending
     deploy: pending
   adrs: []
@@ -4888,11 +4922,17 @@ evolve_cycles:
     status: pending
   - path: docs/sessions/S013-live-decode-preview-ux/reports/verification-report.md
     status: completed
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/qa-report.md
+    status: completed
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/e2e-report.md
+    status: completed
   issues: []
 
 git_history:
   current_branch: evolve/S013-live-decode-preview-ux
   notes:
+  - "2026-07-17 S013/EV-009 T4.2 done — 09-qa pass_with_advisories + 10-e2e PASS (UJ-020/021); current_stage=11-verify-impl (T4.3)"
+  - "2026-07-17 S013/EV-009 C→D passed (D-S013-EV009-c-to-d-pass); 09-qa + 10-e2e in_progress (T4.2)"
   - "2026-07-16 S013/EV-009 T4.1 08-verify-build PASS (verification-report.md); active_task T4.2 pending; Phase C checkpoint pending"
   - "2026-07-16 S013 open — branch evolve/S013-live-decode-preview-ux; EV-009 allocated (F9/F10); routing approved"
   - "2026-07-15 S012 closed — BUG resolved; PR #721 merged 6412b21; production verified; active_session cleared"

@@ -1,12 +1,9 @@
 {
   "environment": "local",
   "api": {
-    "baseUrl": "https://analysts-arcade-pregnant-duo.trycloudflare.com",
-    "corsOrigins": [
-      "https://attacked-fee-modes-ultra.trycloudflare.com",
-      "http://localhost:18100"
-    ],
-    "frontendUrl": "https://attacked-fee-modes-ultra.trycloudflare.com",
+    "baseUrl": "http://localhost:18001",
+    "corsOrigins": ["http://localhost:18000"],
+    "frontendUrl": "http://localhost:18000",
     "disableAuth": true
   },
   "supabase": {

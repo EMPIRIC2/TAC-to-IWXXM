@@ -10,7 +10,7 @@
 
 - Phase: 1 (EV-009 build)
 - Active milestone: M4
-- Active task: T4.2 (pending) — T4.1 completed 2026-07-16 (verification-report.md: overall PASS)
+- Active task: T4.3 (pending) — T4.2 completed 2026-07-17 (qa-report.md PASS w/ 2 advisories; e2e-report.md UJ-020/021 PASS)
 
 ## Tech Stack Summary (all existing — no new dependencies)
 
@@ -61,7 +61,7 @@
 | Task | Type | Description | Stage | Depends On | Status |
 |------|------|-------------|-------|------------|--------|
 | T4.1 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M3 | completed |
-| T4.2 | Test | 09-qa + 10-e2e (parallel) — full QA + UJ-020/021 E2E | 09/10 | T4.1 | pending |
+| T4.2 | Test | 09-qa + 10-e2e (parallel) — full QA + UJ-020/021 E2E | 09/10 | T4.1 | completed |
 | T4.3 | Docs | 11-verify-impl — per-Fn acceptance sign-off (F9 acc 1–4; F10 acc 1–4) | 11 | T4.2 | pending |
 | T4.4 | Config | 12-verify-deploy — checklist; PR EV-009 → main | 12 | T4.3 | pending |
 | T4.5 | Test | 13-deploy-smoke — deploy; H4–H5 + H6′ UJ-020/021 live smokes | 13 | T4.4 | pending |
@@ -89,3 +89,4 @@ None — golden TAC fixtures already in repo test suites.
 |------|------|--------|-------|
 | A→B | 2026-07-16 | passed | Phase A checkpoint approved ("Proceed") |
 | B→C | 2026-07-16 | passed | Phase B checkpoint approved (D-S013-EV009-b-to-c-pass); 04 approved + 05 PASS |
+| C→D | 2026-07-17 | passed | Phase C checkpoint approved (user: "1 Recommended"); T4.1 08-verify-build PASS; proceeding to 09-qa + 10-e2e (T4.2) |
