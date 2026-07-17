@@ -1,7 +1,7 @@
 # Deploy Checklist — S013 / EV-009 (stage 12-verify-deploy, T4.4)
 
 > Generated: 2026-07-17
-> Status: **ready** (pending user sign-off + PR CI green)
+> Status: **approved** — checklist + rollback signed off; merge + deploy approved (D-S013-EV009-deploy-check-A, 2026-07-17)
 > Deployment plan: `docs/deploy.md` + `docs/tech-spec.md` (unchanged this cycle — execution-plan §Tech Stack "Deploy: Unchanged")
 > Branch tip: `c31e2d7` on `evolve/S013-live-decode-preview-ux` (31 commits ahead of `main` @ `4b6cff8`)
 > PR: **#723** `[EV-009] F9/F10 — live decode translations + preview UX` → `main`
@@ -37,7 +37,7 @@ Deploy mode: **image** (`RENDER_DEPLOY_MODE=image` in `ci-cd.yml`) → GHCR `mai
 | Live H4–H5 (pre-deploy) | PASS | QA-002 resolution: `verify_connectivity.sh` H0c 6/6, H4 2/2, H5 PASS (2026-07-17) |
 | Connectivity scripts present | PASS | `scripts/deploy/verify_connectivity.sh` + `tests/smoke/test_staging_connectivity.py` |
 | 11-verify-impl | PASS | F9 + F10 user-approved ("1 / 1"); `verify-impl.md` |
-| PR to main | OPEN | #723 — CI (`ci-cd.yml` pull_request) must be green before merge |
+| PR to main | OPEN, CI GREEN | #723 — all `ci-cd.yml` pull_request checks passed 2026-07-17 (validate, all test shards, PyO3, E2E smoke Playwright) |
 | CI watch script | WARN | `scripts/ci/watch_github_ci.sh` referenced by rules does not exist in repo — watched via `gh pr checks` instead |
 
 ## Failure modes & mitigations
@@ -45,7 +45,7 @@ Deploy mode: **image** (`RENDER_DEPLOY_MODE=image` in `ci-cd.yml`) → GHCR `mai
 | # | Risk | Mitigation | Status |
 |---|------|-----------|--------|
 | 1 | Deploy image without EV-009 commits | Merge PR #723 → main before CI image build; image tags follow main push | mitigated by sequence |
-| 2 | CI red on PR (image build / test failure) | `gh pr checks 723 --watch`; fix before merge (ci-after-push rule) | in progress |
+| 2 | CI red on PR (image build / test failure) | `gh pr checks 723 --watch`; fix before merge (ci-after-push rule) | resolved — all checks green 2026-07-17 |
 | 3 | Frontend/backend version skew during rollout (frontend expects `summary`) | `summary` is additive with default `""`; DecodePanel renders block only when summary present — old API + new FE degrades gracefully | accepted (by design) |
 | 4 | CORS regression | No origin changes; H4–H5 re-run post-deploy at 13 (`verify_connectivity.sh`) | mitigated |
 | 5 | Lint severity change breaks existing clients | `ok` semantics unchanged (keyed off `error`); severity enum already included `info`; contract test T2.3 | mitigated |
@@ -70,6 +70,6 @@ Deploy mode: **image** (`RENDER_DEPLOY_MODE=image` in `ci-cd.yml`) → GHCR `mai
 ## Sign-Off
 
 - [x] User approved implementation (11-verify-impl — F9/F10 "1 / 1")
-- [ ] Deploy strategy verified (user AskQuestion at this checkpoint)
-- [ ] PR #723 CI green
-- [ ] Ready to deploy (merge approval → 13-deploy-smoke)
+- [x] Deploy strategy + rollback verified (user approved 2026-07-17 — D-S013-EV009-deploy-check-A)
+- [x] PR #723 CI green (all checks passed 2026-07-17)
+- [x] Merge + deploy approved (user: "merge #723 and proceed to 13-deploy-smoke")

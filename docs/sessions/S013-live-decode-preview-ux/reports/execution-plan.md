@@ -10,7 +10,7 @@
 
 - Phase: 1 (EV-009 build)
 - Active milestone: M4
-- Active task: T4.4 (pending) — T4.3 completed 2026-07-17 (verify-impl.md; F9 + F10 both user-approved "1 / 1"; QA-001/QA-002 resolved)
+- Active task: T4.5 (in_progress) — T4.4 completed 2026-07-17 (deploy-checklist.md approved; PR #723 CI green; merge + deploy approved D-S013-EV009-deploy-check-A)
 
 ## Tech Stack Summary (all existing — no new dependencies)
 
@@ -63,8 +63,8 @@
 | T4.1 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M3 | completed |
 | T4.2 | Test | 09-qa + 10-e2e (parallel) — full QA + UJ-020/021 E2E | 09/10 | T4.1 | completed |
 | T4.3 | Docs | 11-verify-impl — per-Fn acceptance sign-off (F9 acc 1–4; F10 acc 1–4) | 11 | T4.2 | completed |
-| T4.4 | Config | 12-verify-deploy — checklist; PR EV-009 → main | 12 | T4.3 | in_progress |
-| T4.5 | Test | 13-deploy-smoke — deploy; H4–H5 + H6′ UJ-020/021 live smokes | 13 | T4.4 | pending |
+| T4.4 | Config | 12-verify-deploy — checklist; PR EV-009 → main | 12 | T4.3 | completed |
+| T4.5 | Test | 13-deploy-smoke — deploy; H4–H5 + H6′ UJ-020/021 live smokes | 13 | T4.4 | in_progress |
 
 ## Data Dependencies
 

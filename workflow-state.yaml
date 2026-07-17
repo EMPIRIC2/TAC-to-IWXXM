@@ -91,12 +91,15 @@ active_session:
   - stage: 12-verify-deploy
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: "2026-07-17"
+    completed: "2026-07-17"
+    note: "deploy-checklist.md approved (D-S013-EV009-deploy-check-A); PR-EV-009=#723 CI green; merge + deploy approved"
   - stage: 13-deploy-smoke
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: "2026-07-17"
   skipped_stages:
   - stage: 03-plan-tooling
     rationale: "Existing hooks/rules cover this scope; no new guardrails"
@@ -1671,6 +1674,15 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S013-EV009-deploy-check-A
+  date: "2026-07-17"
+  stage: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "T4.4 sign-off: user approved deploy checklist + rollback plan (image-only rollback; last known good main@4b6cff8) AND merge + deploy — merge PR #723 (evolve→main) and proceed to 13-deploy-smoke (T4.5: H1–H3, H4–H5 verify_connectivity.sh, H6' UJ-020/021). PR CI fully green pre-merge. Deploy gate passed."
+  summary: "Deploy checklist approved; merge #723 + deploy approved; deploy gate passed; continue to 13-deploy-smoke."
+  timestamp: "2026-07-17"
 - id: D-S013-EV009-f9-f10-approved
   date: "2026-07-17"
   stage: 11-verify-impl
@@ -4858,7 +4870,7 @@ evolve_cycles:
     - 00-context      # session open only; scoped brief f7-operator-ui.md reused
     - 03-plan-tooling
     - 06-tech-tooling
-  current_stage: 12-verify-deploy
+  current_stage: 13-deploy-smoke
   stages:
     01-requirements:
       status: completed
@@ -4933,16 +4945,18 @@ evolve_cycles:
       overall: pass
       notes: "F9 + F10 user-approved ('1 / 1'); 8/8 acceptance criteria PASS; UJ-020/021 signed off (T3 waiver — QA-002 live pre-deploy H0c/H4/H5 PASS, re-run at 13); 0 scope creep/gaps"
     12-verify-deploy:
-      status: in_progress
+      status: completed
       mode: delta
       started: "2026-07-17"
+      completed: "2026-07-17"
       report: docs/sessions/S013-live-decode-preview-ux/reports/deploy-checklist.md
-      notes: "Checklist ready (no infra/env/migration delta; H0c 6/6 fresh; live prod health + H4/H5 PASS pre-deploy); PR-EV-009=#723 open (evolve→main; NO merge/deploy); awaiting checklist sign-off + CI green"
+      overall: approved
+      notes: "Checklist + rollback approved (D-S013-EV009-deploy-check-A); no infra/env/migration delta; H0c 6/6 fresh; PR-EV-009=#723 CI green; merge + deploy approved"
   gates:
     a_to_b: passed
     b_to_c: passed
     c_to_d: passed
-    deploy: pending
+    deploy: passed
   checkpoints:
     phase_a: passed
     phase_b: passed
@@ -4964,12 +4978,13 @@ evolve_cycles:
   - path: docs/sessions/S013-live-decode-preview-ux/reports/verify-impl.md
     status: completed
   - path: docs/sessions/S013-live-decode-preview-ux/reports/deploy-checklist.md
-    status: in_progress
+    status: completed
   issues: []
 
 git_history:
   current_branch: evolve/S013-live-decode-preview-ux
   notes:
+  - "2026-07-17 S013/EV-009 T4.4 done — checklist + merge/deploy approved (D-S013-EV009-deploy-check-A); deploy gate passed; #723 CI green; current_stage=13-deploy-smoke (T4.5)"
   - "2026-07-17 S013/EV-009 T4.4 in_progress — deploy-checklist.md ready; PR-EV-009=#723 open (evolve→main; NO merge/deploy); awaiting sign-off + CI"
   - "2026-07-17 S013/EV-009 T4.3 done — F9/F10 approved ('1 / 1'); verify-impl.md; phase_d passed; current_stage=12-verify-deploy (T4.4)"
   - "2026-07-17 S013/EV-009 QA-001/QA-002 resolved (0cf2a28); 11-verify-impl awaiting F9/F10 sign-off"
