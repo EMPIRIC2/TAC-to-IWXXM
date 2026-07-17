@@ -69,4 +69,77 @@ describe('DecodePanel', () => {
     await user.click(screen.getByRole('button', { name: /Decode/i }));
     expect(screen.queryByTestId('decode-residuals')).not.toBeInTheDocument();
   });
+
+  // T3.1 / TC-F9-002 §4 — Plain language block (S013 / EV-009)
+  it('renders Plain language block at the top when summary is provided', async () => {
+    const user = userEvent.setup();
+    const summary =
+      'Report type (routine meteorological aerodrome report); station KJFK; from 180° at 4 kt.';
+    render(
+      <DecodePanel
+        product="METAR"
+        summary={summary}
+        segments={[
+          {
+            start: 0,
+            end: 5,
+            code: 'METAR',
+            explanation: 'Report type',
+          },
+        ]}
+        residuals={[]}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /Decode/i }));
+    const block = screen.getByTestId('decode-plain-language');
+    expect(block).toBeInTheDocument();
+    expect(block).toHaveTextContent(/Plain language/i);
+    expect(block).toHaveTextContent(summary);
+    // Block appears before the Code | Explanation header.
+    const codeHeader = screen.getByText('Code');
+    expect(
+      block.compareDocumentPosition(codeHeader) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it('updates Plain language text when summary prop changes', () => {
+    const { rerender } = render(
+      <DecodePanel
+        product="METAR"
+        defaultOpen
+        summary="First summary about KJFK."
+        segments={[]}
+        residuals={[]}
+      />,
+    );
+    expect(screen.getByTestId('decode-plain-language')).toHaveTextContent(
+      'First summary about KJFK.',
+    );
+    rerender(
+      <DecodePanel
+        product="METAR"
+        defaultOpen
+        summary="Updated summary about KORD."
+        segments={[]}
+        residuals={[]}
+      />,
+    );
+    expect(screen.getByTestId('decode-plain-language')).toHaveTextContent(
+      'Updated summary about KORD.',
+    );
+  });
+
+  it('hides Plain language block when summary is empty', () => {
+    render(
+      <DecodePanel
+        product="METAR"
+        defaultOpen
+        summary=""
+        segments={[]}
+        residuals={[]}
+      />,
+    );
+    expect(screen.queryByTestId('decode-plain-language')).not.toBeInTheDocument();
+  });
 });

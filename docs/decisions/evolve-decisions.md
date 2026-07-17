@@ -3,6 +3,53 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-009 — Live decode translations + preview UX (S013)
+
+**Session**: S013-live-decode-preview-ux  
+**Features**: F9 (value-aware live decode + plain-language summary), F10 (workbench preview
+clarity)  
+**Started**: 2026-07-16
+
+### Scope (approved Phase 0)
+
+- **F9** — `decode_tac` parses actual token values for all 7 TAC products (METAR/SPECI/TAF
+  rich; SIGMET/AIRMET/VAA/TCA best-effort): `24/18` → "Temperature 24 °C, dewpoint 18 °C",
+  `18004KT` → "Wind from 180° at 4 kt", etc. Backend builds a deterministic natural-language
+  `summary` string in the decode-tac response; frontend renders it live as a "Plain language"
+  block at the top of the decode panel (existing 300 ms debounce path).
+- **F10** — Dedicated side-by-side IWXXM preview pane in the workbench anchoring
+  Soft-preview / Live IWXXM output; clearer `LAYER12_SOFT_FAIL` status copy;
+  `MISSING_TERMINATOR` downgraded to info-level hint with reworded copy + one-click
+  "Add `=`" quick fix in the editor.
+
+**Out**: LLM/AI-generated summaries (deterministic template text only); changes to Layer 1–2
+validation semantics or Schematron rules; F5 history surfaces.
+
+### Intake decisions
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E9-1 | Decision | Resume paused S011 vs new session | New session S013 + EV-009 |
+| E9-2 | Decision | Scope parts | All four: value decode, NL summary, preview UX, friendlier lint copy |
+| E9-3 | Ambiguity | Products for value-aware decode | All 7 (SIGMET/AIRMET/VAA/TCA best-effort) |
+| E9-4 | Decision | Summary placement | "Plain language" block atop decode panel |
+| E9-5 | Decision | Preview destination UX | Side-by-side IWXXM preview pane in workbench |
+| E9-6 | Decision | Summary engine | Backend deterministic `summary` in decode-tac response |
+| E9-7 | Decision | MISSING_TERMINATOR UX | Info-level reword + one-click "Add `=`" quick fix |
+| E9-8 | Decision | Deploy this cycle | Yes — full 12–13 with smokes |
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 16-evolve Phase 0–1 | 2026-07-16 | Fn allocation F9/F10 + routing approved |
+| 01-requirements | 2026-07-16 | Delta specs: feature-list F9/F10; spec; UJ-020/021; TC-F9/F10; api-contract; ADR-025 |
+| 02-verify-plan | 2026-07-16 | PASS — 12 auto + 4 user-approved (S3.1–S3.4); severity enum fixed to `warning` |
+| 04-tech-plan | 2026-07-16 | execution-plan.md approved — M1–M4, 21 tasks, no new deps |
+| 05-verify-tech | 2026-07-16 | PASS — A1–A10 repo-verified; T3.6 note (fixes[] through hook) |
+
+---
+
 ## Cycle EV-008 — F7 multi-product operator UI (S011)
 
 **Session**: S011-f7-operator-ui  

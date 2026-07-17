@@ -40,7 +40,7 @@ class Fix(msgspec.Struct, frozen=True):
     Parameters
     ----------
     code :
-        Fix identifier (e.g. ``normalize_terminator``).
+        Fix identifier (e.g. ``add_terminator``).
     message :
         Human-readable description.
     replacement :

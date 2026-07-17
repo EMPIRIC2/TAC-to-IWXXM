@@ -272,6 +272,12 @@ POST /api/v1/lint-tac
 `start` / `end` are optional integer character offsets (S011 / #694/#702). `location` string retained
 for back-compat.
 
+**Severity values** (S013 / EV-009): `error` | `warning` | `info`. `ok` is computed from
+`error`-severity issues only. `MISSING_TERMINATOR` is **`info`** (advisory hint for single
+pasted reports; copy: "Reports in bulletins end with '=' — add it before publishing").
+The paired fix entry (`code: add_terminator`, `replacement` = text with `=` appended)
+powers the UI one-click "Add `=`" quick fix (TC-F10-002).
+
 Must support TC-F6-031 and TC-F7-004 span highlight.
 
 ### Decode TAC (S011 / #702)
@@ -296,14 +302,22 @@ POST /api/v1/decode-tac
 ```json
 {
   "product": "metar",
+  "summary": "Routine METAR for KJFK observed on day 12 at 12:51 UTC. Wind from 180° at 4 kt. Visibility 10 statute miles. Temperature 24 °C, dewpoint 18 °C. Altimeter 30.11 inHg.",
   "segments": [
-    {"start": 0, "end": 5, "code": "METAR", "explanation": "Report type"}
+    {"start": 0, "end": 5, "code": "METAR", "explanation": "Report type (routine meteorological aerodrome report)"},
+    {"start": 30, "end": 35, "code": "24/18", "explanation": "Temperature 24 °C, dewpoint 18 °C"}
   ],
   "residuals": [
     {"start": 80, "end": 95, "text": "..."}
   ]
 }
 ```
+
+**S013 / EV-009 (F9)**: `segments[].explanation` is **value-aware** (parsed values, not only
+group labels) and `summary` is an additive **deterministic plain-language paragraph** built
+from decoded values — present for all seven products (best-effort / "partial decode" wording
+for sparse products); when residuals exist the summary ends with a "Not decoded: …" clause.
+No offset or field removals — response stays backward-compatible (TC-F9-001/002).
 
 VAA/TCA may be residual-heavy (G4). Must support TC-F7-002.
 
@@ -467,3 +481,6 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
   ADR-016–018
 - S011 / EV-008 (2026-07-13): admin removed; decode-tac; spans; convert `preview`; unified
   work-sessions `product` (ADR-020)
+- S013 / EV-009 (2026-07-16): decode-tac additive `summary` + value-aware explanations (F9);
+  lint severity enum `error|warning|info`; `MISSING_TERMINATOR` → `info` + `add_terminator` fix
+  (F10; ADR-025)

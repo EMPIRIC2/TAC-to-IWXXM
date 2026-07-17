@@ -8,6 +8,7 @@ import {
   lintTac,
   type DecodeResidual,
   type DecodeSegment,
+  type LintFix,
   type LintIssue,
 } from '/utils/api';
 import {
@@ -22,6 +23,8 @@ export interface LiveWorkbenchConsoleLine {
   source: string;
   message: string;
   at: number;
+  /** Optional one-click fix action (e.g. Add `=` for MISSING_TERMINATOR). */
+  action?: { id: string; label: string };
 }
 
 export interface UseLiveWorkbenchAssistOptions {
@@ -37,9 +40,11 @@ export interface UseLiveWorkbenchAssistOptions {
 export interface UseLiveWorkbenchAssistResult {
   issueSpans: TacSpanMark[];
   lintIssues: LintIssue[];
+  lintFixes: LintFix[];
   decodeSegments: DecodeSegment[];
   decodeResiduals: DecodeResidual[];
   decodeProduct: string | undefined;
+  decodeSummary: string;
   loading: boolean;
   consoleLines: LiveWorkbenchConsoleLine[];
   appendConsole: (line: Omit<LiveWorkbenchConsoleLine, 'at'>) => void;
@@ -63,9 +68,11 @@ export function useLiveWorkbenchAssist({
 }: UseLiveWorkbenchAssistOptions): UseLiveWorkbenchAssistResult {
   const [issueSpans, setIssueSpans] = useState<TacSpanMark[]>([]);
   const [lintIssues, setLintIssues] = useState<LintIssue[]>([]);
+  const [lintFixes, setLintFixes] = useState<LintFix[]>([]);
   const [decodeSegments, setDecodeSegments] = useState<DecodeSegment[]>([]);
   const [decodeResiduals, setDecodeResiduals] = useState<DecodeResidual[]>([]);
   const [decodeProduct, setDecodeProduct] = useState<string | undefined>();
+  const [decodeSummary, setDecodeSummary] = useState('');
   const [loading, setLoading] = useState(false);
   const [consoleLines, setConsoleLines] = useState<LiveWorkbenchConsoleLine[]>([]);
 
@@ -93,9 +100,11 @@ export function useLiveWorkbenchAssist({
       scheduler.cancel();
       setIssueSpans([]);
       setLintIssues([]);
+      setLintFixes([]);
       setDecodeSegments([]);
       setDecodeResiduals([]);
       setDecodeProduct(undefined);
+      setDecodeSummary('');
       setLoading(false);
       return;
     }
@@ -135,11 +144,25 @@ export function useLiveWorkbenchAssist({
             code: i.code,
           }));
 
+        const fixes = lintResult.fixes ?? [];
         setLintIssues(lintResult.issues);
-        setIssueSpans(spans);
+        setLintFixes(fixes);
+        const fixByCode = new Map(fixes.map((f) => [f.code, f]));
+        const spansWithFixes: TacSpanMark[] = spans.map((span) => {
+          if (span.code === 'MISSING_TERMINATOR' && fixByCode.has('add_terminator')) {
+            return {
+              ...span,
+              fixCode: 'add_terminator',
+              fixLabel: 'Add `=`',
+            };
+          }
+          return span;
+        });
+        setIssueSpans(spansWithFixes);
         setDecodeSegments(decodeResult.segments);
         setDecodeResiduals(decodeResult.residuals);
         setDecodeProduct(decodeResult.product);
+        setDecodeSummary(decodeResult.summary ?? '');
 
         const summaryLevel = lintResult.ok ? 'info' : 'warn';
         const issuePreview = lintResult.issues
@@ -153,8 +176,7 @@ export function useLiveWorkbenchAssist({
           lintResult.issues.length > 3
             ? ` (+${lintResult.issues.length - 3} more)`
             : '';
-        setConsoleLines((prev) => [
-          ...prev.slice(-198),
+        const nextLines: LiveWorkbenchConsoleLine[] = [
           {
             level: summaryLevel,
             source: 'lint-tac',
@@ -165,6 +187,21 @@ export function useLiveWorkbenchAssist({
                 : `${lintResult.issues.length} issue(s): ${issuePreview}${more}`,
             at: Date.now(),
           },
+        ];
+        for (const issue of lintResult.issues) {
+          if (issue.code === 'MISSING_TERMINATOR' && fixByCode.has('add_terminator')) {
+            nextLines.push({
+              level: 'info',
+              source: 'lint-tac',
+              message: issue.message,
+              at: Date.now(),
+              action: { id: 'add_terminator', label: 'Add `=`' },
+            });
+          }
+        }
+        setConsoleLines((prev) => [
+          ...prev.slice(-200 + nextLines.length),
+          ...nextLines,
         ]);
 
         if (liveIwxxm && liveIwxxmRunnerRef.current) {
@@ -198,9 +235,11 @@ export function useLiveWorkbenchAssist({
   return {
     issueSpans,
     lintIssues,
+    lintFixes,
     decodeSegments,
     decodeResiduals,
     decodeProduct,
+    decodeSummary,
     loading,
     consoleLines,
     appendConsole,

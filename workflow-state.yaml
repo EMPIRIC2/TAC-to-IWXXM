@@ -4,8 +4,108 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 12
-active_session: null
+session_counter: 13
+active_session:
+  id: S013-live-decode-preview-ux
+  type: feature
+  status: in_progress
+  started_at: "2026-07-16"
+  intent: "Value-aware live TAC decode translations + plain-language report summary (F9); workbench IWXXM preview pane + soft-fail/terminator lint UX clarity (F10)"
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-009
+  branch: evolve/S013-live-decode-preview-ux
+  artifacts_dir: docs/sessions/S013-live-decode-preview-ux
+  context_briefs:
+  - docs/context/f7-operator-ui.md
+  standing_docs_touched: []
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    completed: "2026-07-16"
+    note: "Session open only; context from docs/context/f7-operator-ui.md + live code reading"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-16"
+    completed: "2026-07-16"
+    note: "Manifest mandatory+api+adr; Batches 1–2 all-recommended; F9/F10 deltas written; ADR-025"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-16"
+    completed: "2026-07-16"
+    note: "PASS — 12 auto + 4 user-approved; severity enum fixed to 'warning'; audit in session reports"
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-16"
+    completed: "2026-07-16"
+    note: "execution-plan.md approved (M1–M4, 21 tasks; no new deps; local XML pretty-print util)"
+  - stage: 05-verify-tech
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-16"
+    completed: "2026-07-16"
+    note: "PASS — A1–A10 repo-verified; consistency checklist clean; T3.6 note (thread fixes through hook)"
+  - stage: 07-build
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-16"
+    completed: "2026-07-17"
+    note: "M1–M3 + T4.1 done; C→D passed 2026-07-17; M4 continues via stages 09–13"
+  - stage: 08-verify-build
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-16"
+    completed: "2026-07-16"
+    note: "PASS — lint/format/typecheck clean; make test green (backend 1182 @98.01% cov, Vitest 631, tac2iwxxm 136, tac-validate 33, worker 11, bugs 39); H0c CORS 29 passed; gitleaks clean; pip-audit no project-dep CVEs"
+  - stage: 09-qa
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-17"
+    completed: "2026-07-17"
+    note: "PASS w/ advisories QA-001/QA-002; qa-report.md"
+  - stage: 10-e2e
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-17"
+    completed: "2026-07-17"
+    note: "UJ-020/021 2/2 PASS local browser + live API; e2e-report.md"
+  - stage: 11-verify-impl
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-17"
+    completed: "2026-07-17"
+    note: "F9 + F10 approved by user ('1 / 1'); 8/8 acceptance criteria PASS; QA-001/QA-002 resolved; verify-impl.md"
+  - stage: 12-verify-deploy
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-17"
+    completed: "2026-07-17"
+    note: "deploy-checklist.md approved (D-S013-EV009-deploy-check-A); PR-EV-009=#723 CI green; merge + deploy approved"
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: in_progress
+    started: "2026-07-17"
+  skipped_stages:
+  - stage: 03-plan-tooling
+    rationale: "Existing hooks/rules cover this scope; no new guardrails"
+  - stage: 06-tech-tooling
+    rationale: "Lint/typecheck/CI already wired; no new dependencies anticipated"
+  current_stage: 12-verify-deploy
 
 sessions:
 
@@ -1574,6 +1674,51 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S013-EV009-deploy-check-A
+  date: "2026-07-17"
+  stage: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "T4.4 sign-off: user approved deploy checklist + rollback plan (image-only rollback; last known good main@4b6cff8) AND merge + deploy — merge PR #723 (evolve→main) and proceed to 13-deploy-smoke (T4.5: H1–H3, H4–H5 verify_connectivity.sh, H6' UJ-020/021). PR CI fully green pre-merge. Deploy gate passed."
+  summary: "Deploy checklist approved; merge #723 + deploy approved; deploy gate passed; continue to 13-deploy-smoke."
+  timestamp: "2026-07-17"
+- id: D-S013-EV009-f9-f10-approved
+  date: "2026-07-17"
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "T4.3 per-Fn sign-off: user approved F9 (value-aware decode + plain-language summary) and F10 (IWXXM preview pane + terminator quick fix) — '1 / 1'. 8/8 acceptance criteria PASS; UJ-020/021 signed off with T3 deferral waiver (QA-002 live pre-deploy H0c/H4/H5 PASS, re-run at 13). Phase D checkpoint passed; proceed to 12-verify-deploy (T4.4)."
+  summary: "F9 + F10 approved at 11-verify-impl; verify-impl.md written; continue to 12-verify-deploy."
+  timestamp: "2026-07-17"
+- id: D-S013-EV009-qa-advisories-resolved
+  date: "2026-07-17"
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "User chose 'Address both' for QA-001/QA-002. QA-001: project-scoped pip-audit found ecdsa PYSEC-2026-1325 (transitive via python-jose; no upstream fix); risk accepted — JWT paths are HS256-only and jose[cryptography] delegates EC to pyca/cryptography; ignore documented in audit/pip-audit-ignore.txt. QA-002: verify_connectivity.sh run live vs production (H0c 6/6, H4 2/2, H5 PASS) pre-deploy; re-runs at 13."
+  summary: "User chose 'Address both' for QA-001/QA-002. QA-001: project-scoped pip-audit found ecdsa PYSEC-2026-1325 (transitive via python-jose; no upstream fix); risk accepted — JWT paths are HS256-only and jose[cryptography] delegates EC to pyca/cryptography; ignore documented in audit/pip-audit-ignore.txt. QA-002: verify_connectivity.sh run live vs production (H0c 6/6, H4 2/2, H5 PASS) pre-deploy; re-runs at 13."
+  timestamp: "2026-07-17"
+- id: D-S013-EV009-c-to-d-pass
+  date: "2026-07-17"
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "Phase C checkpoint approved (option 1 recommended); C→D gate passed (M1–M3 complete, T4.1 08-verify-build PASS, decode contract additive-only); proceed to 09-qa + 10-e2e in parallel (T4.2)"
+  summary: "User selected 'Proceed to Phase D' (recommended); 09-qa + 10-e2e started in parallel."
+  timestamp: "2026-07-17"
+- id: D-S013-EV009-b-to-c-pass
+  date: "2026-07-16"
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "Phase B checkpoint approved; B→C gate passed (04 approved + 05 PASS + 06 skipped per routing); start 07-build at M1 T1.1"
+  summary: "User selected 'Pass B→C gate — start 07-build at M1 T1.1'."
+  timestamp: "2026-07-16"
 - id: D-S012-frontend-auth-token-hydrate
   date: "2026-07-15"
   stage: 14-hotfix
@@ -4688,9 +4833,165 @@ evolve_cycles:
     status: pending
   issues: []
 
+- id: EV-009
+  session_id: S013-live-decode-preview-ux
+  cycle_type: feature
+  feature_ids: [F9, F10]
+  title: "Value-aware live decode + plain-language summary (F9); workbench IWXXM preview pane + lint UX clarity (F10)"
+  status: in_progress
+  started: "2026-07-16"
+  completed:
+  scope_summary: |
+    User feedback on F7 workbench (post-#716 merge). In one cycle:
+    - F9 — Value-aware decode segments for all 7 TAC products (METAR/SPECI/TAF rich;
+      SIGMET/AIRMET/VAA/TCA best-effort): e.g. 24/18 → "Temperature 24 °C, dewpoint 18 °C".
+      Backend decode_tac gains a deterministic natural-language `summary` string; frontend
+      renders it live as a "Plain language" block at the top of the decode panel.
+    - F10 — Dedicated side-by-side IWXXM preview pane in the workbench anchoring
+      Soft-preview / Live IWXXM output; clearer LAYER12_SOFT_FAIL status copy;
+      MISSING_TERMINATOR downgraded to info-level hint + one-click "Add '='" quick fix.
+    Out: LLM-generated summaries; Layer 1–2 / Schematron semantic changes.
+    Intake approved 2026-07-16 (session/scope/products/placement + preview-pane/backend-summary/
+    quickfix/deploy batches); Fn allocation + routing approved same day.
+  routing_plan:
+    required_stages:
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 05-verify-tech
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 00-context      # session open only; scoped brief f7-operator-ui.md reused
+    - 03-plan-tooling
+    - 06-tech-tooling
+  current_stage: 13-deploy-smoke
+  stages:
+    01-requirements:
+      status: completed
+      mode: delta
+      started: "2026-07-16"
+      completed: "2026-07-16"
+      artifacts_updated:
+      - docs/feature-list.md
+      - docs/spec.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/api-contract.md
+      - docs/adr/ADR-025-plain-language-decode-terminator-ux.md
+      - docs/decisions/requirements-decisions.md
+    02-verify-plan:
+      status: completed
+      started: "2026-07-16"
+      completed: "2026-07-16"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/02-verify-plan-audit.md
+      overall: pass
+      notes: "12 auto + 4 user-approved (S3.1–S3.4); severity enum consistency fix"
+    04-tech-plan:
+      status: completed
+      started: "2026-07-16"
+      completed: "2026-07-16"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/execution-plan.md
+      overall: approved
+      notes: "M1–M4, 21 tasks; no new deps; user approved 2026-07-16"
+    05-verify-tech:
+      status: completed
+      started: "2026-07-16"
+      completed: "2026-07-16"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/05-verify-tech-audit.md
+      overall: pass
+      notes: "A1–A10 repo-verified; T3.6 note — thread lint fixes[] through useLiveWorkbenchAssist"
+    07-build:
+      status: completed
+      mode: full
+      started: "2026-07-16"
+      completed: "2026-07-17"
+      notes: "M1–M4 T4.1 done; C→D gate passed 2026-07-17 (Phase C checkpoint approved); M4 verify stages continue as 09–13"
+    08-verify-build:
+      status: completed
+      mode: full
+      started: "2026-07-16"
+      completed: "2026-07-16"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/verification-report.md
+      overall: pass
+      notes: "All checks green; out-of-scope backend integration/env-dependent failures noted as pre-existing (untouched by S013)"
+    09-qa:
+      status: completed
+      mode: full
+      started: "2026-07-17"
+      completed: "2026-07-17"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/qa-report.md
+      overall: pass
+      notes: "All blocking checks green; QA-001 (ecdsa PYSEC-2026-1325 risk-accepted, audit/pip-audit-ignore.txt) + QA-002 (live H0c/H4/H5 PASS pre-deploy 2026-07-17) both RESOLVED"
+    10-e2e:
+      status: completed
+      mode: full
+      started: "2026-07-17"
+      completed: "2026-07-17"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/e2e-report.md
+      overall: pass
+      notes: "UJ-020/021 Playwright 2/2 PASS vs local dev stack; live unstubbed decode-tac summary + lint-tac info/fix verified; T2 H1-H5 + T3 deferred to 13"
+    11-verify-impl:
+      status: completed
+      mode: full
+      started: "2026-07-17"
+      completed: "2026-07-17"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/verify-impl.md
+      overall: pass
+      notes: "F9 + F10 user-approved ('1 / 1'); 8/8 acceptance criteria PASS; UJ-020/021 signed off (T3 waiver — QA-002 live pre-deploy H0c/H4/H5 PASS, re-run at 13); 0 scope creep/gaps"
+    12-verify-deploy:
+      status: completed
+      mode: delta
+      started: "2026-07-17"
+      completed: "2026-07-17"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/deploy-checklist.md
+      overall: approved
+      notes: "Checklist + rollback approved (D-S013-EV009-deploy-check-A); no infra/env/migration delta; H0c 6/6 fresh; PR-EV-009=#723 CI green; merge + deploy approved"
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    deploy: passed
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_d: passed
+    deploy: pending
+  adrs: []
+  artifacts:
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/evolve-summary.md
+    status: pending
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/verification-report.md
+    status: completed
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/qa-report.md
+    status: completed
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/e2e-report.md
+    status: completed
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/verify-impl.md
+    status: completed
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/deploy-checklist.md
+    status: completed
+  issues: []
+
 git_history:
-  current_branch: main
+  current_branch: evolve/S013-live-decode-preview-ux
   notes:
+  - "2026-07-17 S013/EV-009 T4.4 done — checklist + merge/deploy approved (D-S013-EV009-deploy-check-A); deploy gate passed; #723 CI green; current_stage=13-deploy-smoke (T4.5)"
+  - "2026-07-17 S013/EV-009 T4.4 in_progress — deploy-checklist.md ready; PR-EV-009=#723 open (evolve→main; NO merge/deploy); awaiting sign-off + CI"
+  - "2026-07-17 S013/EV-009 T4.3 done — F9/F10 approved ('1 / 1'); verify-impl.md; phase_d passed; current_stage=12-verify-deploy (T4.4)"
+  - "2026-07-17 S013/EV-009 QA-001/QA-002 resolved (0cf2a28); 11-verify-impl awaiting F9/F10 sign-off"
+  - "2026-07-17 S013/EV-009 T4.2 done — 09-qa pass_with_advisories + 10-e2e PASS (UJ-020/021); current_stage=11-verify-impl (T4.3)"
+  - "2026-07-17 S013/EV-009 C→D passed (D-S013-EV009-c-to-d-pass); 09-qa + 10-e2e in_progress (T4.2)"
+  - "2026-07-16 S013/EV-009 T4.1 08-verify-build PASS (verification-report.md); active_task T4.2 pending; Phase C checkpoint pending"
+  - "2026-07-16 S013 open — branch evolve/S013-live-decode-preview-ux; EV-009 allocated (F9/F10); routing approved"
   - "2026-07-15 S012 closed — BUG resolved; PR #721 merged 6412b21; production verified; active_session cleared"
   - "2026-07-15 S012-empty-bearer-lint-tac open — branch fix/S012-empty-bearer-lint-tac; S011 paused (PR #716 remains open)"
   - "2026-07-14 S011/EV-008 PR-EV-008=#716 open (evolve→main; NO merge, NO deploy); tip dc32d47; T6.4 in_progress (12 done / 13 pending)"
@@ -4922,6 +5223,104 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 4384aaa
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T4.4] docs: deploy checklist + merge approved — deploy gate passed (S013/EV-009)"
+    stage: "12-verify-deploy"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 3
+    timestamp: "2026-07-17T21:35:00Z"
+  - sha: 01741fe
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T4.4] docs: 12-verify-deploy checklist; PR-EV-009 #723 open (S013/EV-009)"
+    stage: "12-verify-deploy"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 3
+    timestamp: "2026-07-17T21:24:00Z"
+  - sha: 357e974
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T4.3] docs: 11-verify-impl — F9/F10 approved (S013/EV-009)"
+    stage: "11-verify-impl"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 3
+    timestamp: "2026-07-17T21:16:00Z"
+  - sha: 0cf2a28
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T4.3] chore: resolve QA-001/QA-002 advisories (S013/EV-009)"
+    stage: "11-verify-impl"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 2
+    timestamp: "2026-07-17T21:05:21Z"
+  - sha: 0e8503d
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T4.2] test: 09-qa + 10-e2e PASS for EV-009 (F9/F10)"
+    stage: "16-evolve"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 5
+    timestamp: "2026-07-17T15:45:56Z"
+  - sha: 597aea2
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T4.1] chore: 08-verify-build PASS for EV-009 (F9/F10)"
+    stage: "08-verify-build"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 3
+    timestamp: "2026-07-17T02:42:00Z"
+  - sha: 35f4187
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T1.1] test: value-aware decode explanations (TC-F9-001) — red"
+    stage: "07-build"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 1
+    timestamp: "2026-07-17T01:50:00Z"
+  - sha: 1096b26
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T1.2] feat: value-aware decode explanations for all 7 TAC products (F9)"
+    stage: "07-build"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 2
+    timestamp: "2026-07-17T01:47:06Z"
+  - sha: d09c3b9
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[EV-009] docs: 04 approved + 05-verify-tech PASS (A1-A10); Phase B artifacts"
+    stage: "05-verify-tech"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 3
+    timestamp: "2026-07-17T01:45:00Z"
+  - sha: 37709aa
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[EV-009] docs: 04-tech-plan — execution plan M1–M4 drafted (pending approval); A->B gate recorded"
+    stage: "04-tech-plan"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 2
+    timestamp: "2026-07-17T01:35:00Z"
+  - sha: 3019bff
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[EV-009] docs: 02-verify-plan verdicts approved (S3.1–S3.4); Phase A artifacts complete"
+    stage: "02-verify-plan"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 4
+    timestamp: "2026-07-17T01:25:00Z"
+  - sha: c268ac9
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[EV-009] docs: 02-verify-plan delta audit — severity enum consistency fix; audit report"
+    stage: "02-verify-plan"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 6
+    timestamp: "2026-07-17T01:20:00Z"
+  - sha: b8f9f5b
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[EV-009] docs: 01-requirements delta — F9/F10 specs, UJ-020/021, TC-F9/F10, api-contract, ADR-025"
+    stage: "01-requirements"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 10
+    timestamp: "2026-07-17T01:10:00Z"
+  - sha: be53fe8
+    branch: evolve/S013-live-decode-preview-ux
+    message: "chore: open S013-live-decode-preview-ux — EV-009 (F9/F10) intake, routing, session brief"
+    stage: "16-evolve"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 5
+    timestamp: "2026-07-17T00:45:00Z"
   - sha: 73cda40
     branch: feat/M1-workspace-root
     message: "[T1.1] test: add TC-M001 monorepo clone-smoke test skeleton"

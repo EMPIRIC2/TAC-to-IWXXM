@@ -37,12 +37,13 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S010-issue-655-tac-traceability](S010-issue-655-tac-traceability/session-brief.md) | feature | completed | Source TAC on conversion results (#655) | evolve/EV-007-issue-655-tac-traceability | 2026-07-12 | 2026-07-13 |
 | [S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md) | feature | paused | F7 multi-product UI + workbench/decode/admin (#694/#702/#665/#666/#697); PR #716 open for later resume | evolve/S011-f7-operator-ui | 2026-07-13 | — (paused 2026-07-15) |
 | [S012-empty-bearer-lint-tac](S012-empty-bearer-lint-tac/session-brief.md) | hotfix | completed | Empty Bearer on lint-tac/decode-tac + lint UX issue details | fix/S012-empty-bearer-lint-tac | 2026-07-15 | 2026-07-15 |
+| [S013-live-decode-preview-ux](S013-live-decode-preview-ux/session-brief.md) | feature | in_progress | Value-aware live decode + plain-language summary (F9); IWXXM preview pane + lint UX clarity (F10) — EV-009 | evolve/S013-live-decode-preview-ux | 2026-07-16 | — |
 
 ## Active session
 
-None (`active_session: null`).
+**[S013-live-decode-preview-ux](S013-live-decode-preview-ux/session-brief.md)** — EV-009 (F9/F10), orchestrated by 16-evolve.
 
-Parked: **[S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md)** — EV-008 / PR [#716](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716) remains open for later resume.
+Parked: **[S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md)** — EV-008; PR [#716](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716) merged 2026-07-15; 13-deploy-smoke closeout pending resume.
 
 Last closed: **[S012-empty-bearer-lint-tac](S012-empty-bearer-lint-tac/session-brief.md)** — BUG resolved; PR [#721](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/721) merged (`6412b21`).
 

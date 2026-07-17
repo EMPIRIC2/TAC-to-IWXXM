@@ -87,9 +87,9 @@ def check_parse_gate(tac_text: str, product: str) -> tuple[list[Issue], list[Fix
             term_start = term_end - 1 if core else start
             issues.append(
                 Issue(
-                    severity="error",
+                    severity="info",
                     code="MISSING_TERMINATOR",
-                    message=f"{product} TAC should end with '='",
+                    message="Reports in bulletins end with '=' — add it before publishing",
                     location="terminator",
                     start=term_start,
                     end=term_end,
@@ -97,8 +97,8 @@ def check_parse_gate(tac_text: str, product: str) -> tuple[list[Issue], list[Fix
             )
             fixes.append(
                 Fix(
-                    code="normalize_terminator",
-                    message="Append report terminator '='",
+                    code="add_terminator",
+                    message="Add '='",
                     replacement=stripped.rstrip() + "=",
                 )
             )

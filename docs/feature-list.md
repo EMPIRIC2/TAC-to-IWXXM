@@ -16,6 +16,8 @@
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split |
 | F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011 / EV-008; build this cycle |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018/019; `apps/worker` |
+| F9 | Value-aware live decode + plain-language summary | Planned | Product | S013 / EV-009; build this cycle |
+| F10 | Workbench preview clarity (IWXXM pane + lint UX) | Planned | Product | S013 / EV-009; build this cycle |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -244,6 +246,63 @@
 - **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R2–R15; ADR-018;
   [execution-plan](sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md)
 
+### F9: Value-Aware Live Decode + Plain-Language Summary
+
+- **Status**: **Planned** — build this cycle (S013 / EV-009).
+- **What it does**: Upgrades the F7 decode panel from generic group labels to **value-aware
+  translations**, and adds a live **plain-language summary** of the whole report.
+  - `packages/tac2iwxxm` `decode_tac` parses actual token values for all **seven** products:
+    `24/18` → "Temperature 24 °C, dewpoint 18 °C"; `18004KT` → "Wind from 180° at 4 kt";
+    `10SM` → "Visibility 10 statute miles"; `A3011` → "Altimeter 30.11 inHg"; etc.
+    METAR/SPECI/TAF rich; SIGMET/AIRMET/VAA/TCA best-effort (residuals stay explicit — G4).
+  - `decode_tac` builds a **deterministic** natural-language `summary` string (one flowing
+    paragraph from decoded values; no LLM). Unrecognized content appends a
+    "Not decoded: …" clause naming residual spans. Sparse products emit a short best-effort
+    summary with "partial decode" wording.
+  - `POST /api/v1/decode-tac` response gains `summary` (additive).
+  - Frontend renders the summary live as a **"Plain language"** block at the top of the
+    decode panel via the existing 300 ms debounce path (UJ-017 infrastructure).
+- **Inputs**: TAC text; `product` (same enum as convert); JWT.
+- **Outputs**: Value-aware `segments[].explanation`; `summary` string; residuals unchanged.
+- **Out of scope**: LLM/AI-generated text; changing segment offsets contract; Layer 1–2 or
+  Schematron semantics.
+- **Acceptance (F9 v1 done)**:
+  1. METAR/SPECI/TAF golden fixtures produce value-aware explanations for wind, visibility,
+     temperature/dewpoint, altimeter/QNH, time, station, clouds, weather groups
+  2. `summary` present for all seven products (best-effort where sparse) and updates live
+     while typing
+  3. Residuals named in summary via "Not decoded: …" when present
+  4. Decode response stays backward-compatible (additive `summary` only)
+- **Source**: S013 intake E9-2/E9-3/E9-4/E9-6; Batch 1 (all recommended, 2026-07-16);
+  [evolve-decisions §EV-009](decisions/evolve-decisions.md)
+
+### F10: Workbench Preview Clarity (IWXXM Pane + Lint UX)
+
+- **Status**: **Planned** — build this cycle (S013 / EV-009).
+- **What it does**: Makes it obvious **where** Soft-preview / Live IWXXM output appears and
+  removes confusing failure copy (user feedback on #665/#666/#694 surfaces).
+  - **Side-by-side IWXXM preview pane** inside the workbench: pretty-printed IWXXM XML of
+    the most recent preview + status badge (**Soft preview — not for publish** vs
+    **Passed**) + failed-span count linked to editor highlights. Stacks below the editor
+    under the `lg` breakpoint.
+  - **`LAYER12_SOFT_FAIL` copy**: reword to plain language (status, cause, next step) in the
+    pane badge and console line.
+  - **`MISSING_TERMINATOR`**: downgrade to `info` severity in `packages/tac-validate`
+    with actionable copy ("Reports in bulletins end with '=' — add it before publishing");
+    `ok` remains keyed off `error` issues so single pasted reports lint clean. One-click
+    **"Add `=`"** quick fix on the lint console line and as an editor affordance on the
+    info-hint span hover.
+- **Out of scope**: Changing preview/convert API semantics; new endpoints; altering
+  Layer 1–2 checks themselves.
+- **Acceptance (F10 v1 done)**:
+  1. Preview pane visible side-by-side (≥ `lg`) and stacked (< `lg`); Soft-preview and
+     Live IWXXM outputs land in the pane with status badge + span count
+  2. Soft-fail copy explains "best-effort preview, not publishable" without error-code jargon
+  3. `MISSING_TERMINATOR` is `info`; lint `ok: true` for otherwise-clean single reports
+  4. "Add `=`" quick fix appends terminator from console line and editor affordance
+- **Source**: S013 intake E9-5/E9-7; Batch 2 (all recommended, 2026-07-16);
+  [evolve-decisions §EV-009](decisions/evolve-decisions.md)
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout
@@ -318,6 +377,8 @@
 | F6 | Yes (product/profile) | Yes | Yes (lib/CI) | Yes (via API image) |
 | F7 | Yes (workbench/decode/sessions) | Yes (decode/spans/preview) | Yes | Yes (static + API) |
 | F8 | — | Worker poller | Store/quarantine | Background Worker |
+| F9 | Yes (decode panel + plain language) | Yes (`decode-tac` `summary`) | Yes | Yes (static + API) |
+| F10 | Yes (preview pane + quick fix) | Yes (lint `info` severity) | Yes | Yes (static) |
 | M1–M6 | — | — | Yes | Yes |
 
 | F6 capability | Library | HTTP API | Web UI | CI metrics |

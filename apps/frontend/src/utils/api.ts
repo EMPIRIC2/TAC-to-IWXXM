@@ -430,6 +430,8 @@ export interface DecodeTacResponse {
   product: string;
   segments: DecodeSegment[];
   residuals: DecodeResidual[];
+  /** Deterministic plain-language paragraph (F9 / ADR-025). */
+  summary?: string;
 }
 
 /**

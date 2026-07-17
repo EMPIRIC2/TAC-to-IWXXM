@@ -10,6 +10,8 @@ import { consoleLevelPasses, type ConvertLogLevel } from '/utils/convertParams';
 export interface WorkbenchConsoleProps {
   lines: LiveWorkbenchConsoleLine[];
   onClear?: () => void;
+  /** Invoked when a console line action button is clicked (e.g. add_terminator). */
+  onLineAction?: (actionId: string) => void;
   defaultOpen?: boolean;
   /** Minimum severity to show (operator Log Level). Default INFO. */
   minLogLevel?: ConvertLogLevel;
@@ -24,6 +26,7 @@ export interface WorkbenchConsoleProps {
 export function WorkbenchConsole({
   lines,
   onClear,
+  onLineAction,
   defaultOpen = false,
   minLogLevel = 'INFO',
 }: WorkbenchConsoleProps) {
@@ -89,7 +92,9 @@ export function WorkbenchConsole({
                     ? 'text-rose-700 dark:text-rose-300'
                     : line.level === 'warn'
                       ? 'text-amber-800 dark:text-amber-200'
-                      : 'text-gray-800 dark:text-gray-200'
+                      : line.level === 'info'
+                        ? 'text-sky-700 dark:text-sky-300'
+                        : 'text-gray-800 dark:text-gray-200'
                 }
                 data-level={line.level}
               >
@@ -97,6 +102,16 @@ export function WorkbenchConsole({
                   [{line.source}]
                 </span>{' '}
                 {line.message}
+                {line.action && onLineAction ? (
+                  <button
+                    type="button"
+                    className="ml-2 rounded border border-sky-400 px-1.5 py-0.5 text-[11px] font-sans text-sky-800 hover:bg-sky-100 dark:border-sky-600 dark:text-sky-200 dark:hover:bg-sky-950"
+                    data-testid={`console-action-${line.action.id}`}
+                    onClick={() => onLineAction(line.action!.id)}
+                  >
+                    {line.action.label}
+                  </button>
+                ) : null}
               </li>
             ))
           )}

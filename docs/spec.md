@@ -122,6 +122,12 @@ metar-to-IWXXM/
 - **S011 deltas**: Decode/annotate ordered segments (`start`/`end` + short explanation);
   soft-preview / partial convert hooks returning best-effort XML + failed spans. VAA/TCA spans
   may be best-effort with explicit residuals (G4).
+- **S013 delta (F9)**: `decode_tac` explanations become **value-aware** (parsed values —
+  temps, wind direction/speed/gusts, visibility, pressure, times, change groups) for all
+  seven products (sparse ones best-effort), and the result gains a deterministic
+  plain-language `summary` paragraph ("Not decoded: …" clause when residuals exist;
+  "partial decode" wording for sparse products). Offsets and existing fields unchanged
+  (additive). ADR-025.
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
@@ -138,8 +144,11 @@ metar-to-IWXXM/
 - **Inputs**: TAC text or bulletin fragments; product hint when known.
 - **Outputs**: Structured issue list (severity, code, message, location; optional integer
   `start`/`end` character offsets for editor highlight — S011).
+- **S013 delta (F10)**: Severity enum `error | warning | info`; `ok` computed from `error` only.
+  `MISSING_TERMINATOR` → `info` with actionable copy + paired `add_terminator` fix entry
+  (`replacement` = text with `=` appended) powering the UI quick fix. ADR-025.
 - **SoC**: **No** FastAPI or Supabase imports.
-- **Source**: feature-list F6/F2 amend; S011 / EV-008.
+- **Source**: feature-list F6/F2 amend; S011 / EV-008; S013 / EV-009.
 
 ### packages/iwxxm-validate
 
@@ -191,7 +200,13 @@ metar-to-IWXXM/
   process messages.
 - **F5**: Unchanged product scope — METAR/SPECI work sessions only (not extended to other
   products); admin browse path removed.
-- **Source**: F6-R5; feature-list F6/F7; [context/f7-operator-ui.md](context/f7-operator-ui.md).
+- **F9/F10 delta (S013)**: Decode panel gains a top **"Plain language"** block rendering the
+  backend `summary` live (existing debounce path). New **side-by-side IWXXM preview pane**
+  (stacked < `lg`) anchors Soft-preview / Live IWXXM output — pretty-printed XML + status
+  badge ("Soft preview — not for publish" plain-language copy vs "Passed") + failed-span
+  count linked to editor highlights. Lint console renders `info` severity distinctly with a
+  one-click **"Add `=`"** quick fix (also as editor affordance on the hint span). ADR-025.
+- **Source**: F6-R5; feature-list F6/F7/F9/F10; [context/f7-operator-ui.md](context/f7-operator-ui.md).
 
 ### Runtime configuration (`config/`)
 
@@ -256,6 +271,19 @@ metar-to-IWXXM/
 - **Status**: **Implemented** (S008 / EV-006 — ADR-018/019). Live staging smoke may be deferred.
 - **Non-goals (still)**: AMHS/SWIM/AFS adapters; public machine-ingest auth UX; push sinks.
 - **Source**: [feature-list.md](feature-list.md) F8; ADR-018.
+
+### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
+
+- **Purpose**: F9 — value-aware decode explanations + deterministic plain-language `summary`
+  (packages/tac2iwxxm + decode panel). F10 — side-by-side IWXXM preview pane, plain-language
+  soft-fail copy, `MISSING_TERMINATOR` info-level + "Add `=`" quick fix
+  (apps/frontend + packages/tac-validate).
+- **Status**: **Planned (build this cycle)** — flips Implemented after verify/deploy gate.
+- **Component deltas**: see §packages/tac2iwxxm S013 delta, §packages/tac-validate S013 delta,
+  §apps/frontend F9/F10 delta.
+- **Non-goals**: LLM-generated text; new endpoints; Layer 1–2 / Schematron semantic changes.
+- **Source**: [feature-list.md](feature-list.md) F9/F10; ADR-025;
+  [evolve-decisions §EV-009](decisions/evolve-decisions.md).
 
 ## Data Flow
 

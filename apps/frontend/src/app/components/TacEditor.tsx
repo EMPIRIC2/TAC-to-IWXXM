@@ -30,6 +30,8 @@ export interface TacEditorProps {
   failedSpans?: FailedSpanMark[];
   /** Live lint/decode issue spans for highlight + hover (UJ-017). */
   issueSpans?: TacSpanMark[];
+  /** Quick-fix from span tooltip (F10 — e.g. add_terminator). */
+  onSpanFix?: (fixCode: string) => void;
 }
 
 /**
@@ -51,15 +53,21 @@ export function TacEditor({
   className = '',
   failedSpans = [],
   issueSpans = [],
+  onSpanFix,
 }: TacEditorProps) {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(onChange);
+  const onSpanFixRef = useRef(onSpanFix);
   const hasFailedTac = failedSpans.length > 0;
 
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+
+  useEffect(() => {
+    onSpanFixRef.current = onSpanFix;
+  }, [onSpanFix]);
 
   useEffect(() => {
     if (!parentRef.current) {
@@ -137,6 +145,21 @@ export function TacEditor({
     }
     view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
   }, [issueSpans]);
+
+  useEffect(() => {
+    const root = parentRef.current?.parentElement;
+    if (!root) {
+      return;
+    }
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ fixCode?: string }>).detail;
+      if (detail?.fixCode) {
+        onSpanFixRef.current?.(detail.fixCode);
+      }
+    };
+    root.addEventListener('tac-span-fix', handler);
+    return () => root.removeEventListener('tac-span-fix', handler);
+  }, []);
 
   return (
     <div
