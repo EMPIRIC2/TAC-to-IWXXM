@@ -5208,6 +5208,13 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 01741fe
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T4.4] docs: 12-verify-deploy checklist; PR-EV-009 #723 open (S013/EV-009)"
+    stage: "12-verify-deploy"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 3
+    timestamp: "2026-07-17T21:24:00Z"
   - sha: 357e974
     branch: evolve/S013-live-decode-preview-ux
     message: "[T4.3] docs: 11-verify-impl — F9/F10 approved (S013/EV-009)"
