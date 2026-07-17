@@ -58,11 +58,14 @@ active_session:
     mode: full
     status: in_progress
     started: "2026-07-16"
-    note: "B→C gate passed (D-S013-EV009-b-to-c-pass); starting M1 T1.1"
+    note: "M1–M3 complete; M4 T4.1 (08-verify-build) PASS 2026-07-16; T4.2 (09-qa + 10-e2e) next; Phase C checkpoint pending"
   - stage: 08-verify-build
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: "2026-07-16"
+    completed: "2026-07-16"
+    note: "PASS — lint/format/typecheck clean; make test green (backend 1182 @98.01% cov, Vitest 631, tac2iwxxm 136, tac-validate 33, worker 11, bugs 39); H0c CORS 29 passed; gitleaks clean; pip-audit no project-dep CVEs"
   - stage: 09-qa
     required: true
     mode: full
@@ -4857,7 +4860,15 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: "2026-07-16"
-      notes: "M1–M3 complete (T1.1–T3.7); M4 T4.1 (08-verify-build) next; Phase C checkpoint pending"
+      notes: "M1–M3 complete (T1.1–T3.7); T4.1 08-verify-build PASS 2026-07-16; T4.2 (09-qa/10-e2e) next; Phase C checkpoint pending"
+    08-verify-build:
+      status: completed
+      mode: full
+      started: "2026-07-16"
+      completed: "2026-07-16"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/verification-report.md
+      overall: pass
+      notes: "All checks green; out-of-scope backend integration/env-dependent failures noted as pre-existing (untouched by S013)"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -4875,11 +4886,14 @@ evolve_cycles:
     status: in_progress
   - path: docs/sessions/S013-live-decode-preview-ux/reports/evolve-summary.md
     status: pending
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/verification-report.md
+    status: completed
   issues: []
 
 git_history:
   current_branch: evolve/S013-live-decode-preview-ux
   notes:
+  - "2026-07-16 S013/EV-009 T4.1 08-verify-build PASS (verification-report.md); active_task T4.2 pending; Phase C checkpoint pending"
   - "2026-07-16 S013 open — branch evolve/S013-live-decode-preview-ux; EV-009 allocated (F9/F10); routing approved"
   - "2026-07-15 S012 closed — BUG resolved; PR #721 merged 6412b21; production verified; active_session cleared"
   - "2026-07-15 S012-empty-bearer-lint-tac open — branch fix/S012-empty-bearer-lint-tac; S011 paused (PR #716 remains open)"

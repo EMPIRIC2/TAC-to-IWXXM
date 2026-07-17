@@ -10,7 +10,7 @@
 
 - Phase: 1 (EV-009 build)
 - Active milestone: M4
-- Active task: T4.1 (pending)
+- Active task: T4.2 (pending) — T4.1 completed 2026-07-16 (verification-report.md: overall PASS)
 
 ## Tech Stack Summary (all existing — no new dependencies)
 
@@ -60,7 +60,7 @@
 
 | Task | Type | Description | Stage | Depends On | Status |
 |------|------|-------------|-------|------------|--------|
-| T4.1 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M3 | pending |
+| T4.1 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M3 | completed |
 | T4.2 | Test | 09-qa + 10-e2e (parallel) — full QA + UJ-020/021 E2E | 09/10 | T4.1 | pending |
 | T4.3 | Docs | 11-verify-impl — per-Fn acceptance sign-off (F9 acc 1–4; F10 acc 1–4) | 11 | T4.2 | pending |
 | T4.4 | Config | 12-verify-deploy — checklist; PR EV-009 → main | 12 | T4.3 | pending |
