@@ -21,6 +21,8 @@ export interface DecodeResidualView {
 export interface DecodePanelProps {
   segments: DecodeSegmentView[];
   residuals: DecodeResidualView[];
+  /** Deterministic plain-language paragraph from decode-tac (F9 / ADR-025). */
+  summary?: string;
   product?: string;
   loading?: boolean;
   error?: string | null;
@@ -33,10 +35,12 @@ export interface DecodePanelProps {
  *
  * @param props.segments - Annotated TAC spans
  * @param props.residuals - Undecoded spans (G4)
+ * @param props.summary - Optional plain-language report summary (F9)
  */
 export function DecodePanel({
   segments,
   residuals,
+  summary = '',
   product,
   loading = false,
   error = null,
@@ -92,6 +96,17 @@ export function DecodePanel({
           ) : null}
           {!loading && !error ? (
             <>
+              {summary.trim() ? (
+                <div
+                  className="mb-3 rounded-md bg-sky-50 px-3 py-2 text-sm text-sky-950 dark:bg-sky-950/40 dark:text-sky-100"
+                  data-testid="decode-plain-language"
+                >
+                  <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-sky-800 dark:text-sky-200">
+                    Plain language
+                  </h3>
+                  <p>{summary}</p>
+                </div>
+              ) : null}
               <div className="mb-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 <div>Code</div>
                 <div>Explanation</div>

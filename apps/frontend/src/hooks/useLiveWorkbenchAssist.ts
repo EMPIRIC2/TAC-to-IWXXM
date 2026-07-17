@@ -8,6 +8,7 @@ import {
   lintTac,
   type DecodeResidual,
   type DecodeSegment,
+  type LintFix,
   type LintIssue,
 } from '/utils/api';
 import {
@@ -37,9 +38,11 @@ export interface UseLiveWorkbenchAssistOptions {
 export interface UseLiveWorkbenchAssistResult {
   issueSpans: TacSpanMark[];
   lintIssues: LintIssue[];
+  lintFixes: LintFix[];
   decodeSegments: DecodeSegment[];
   decodeResiduals: DecodeResidual[];
   decodeProduct: string | undefined;
+  decodeSummary: string;
   loading: boolean;
   consoleLines: LiveWorkbenchConsoleLine[];
   appendConsole: (line: Omit<LiveWorkbenchConsoleLine, 'at'>) => void;
@@ -63,9 +66,11 @@ export function useLiveWorkbenchAssist({
 }: UseLiveWorkbenchAssistOptions): UseLiveWorkbenchAssistResult {
   const [issueSpans, setIssueSpans] = useState<TacSpanMark[]>([]);
   const [lintIssues, setLintIssues] = useState<LintIssue[]>([]);
+  const [lintFixes, setLintFixes] = useState<LintFix[]>([]);
   const [decodeSegments, setDecodeSegments] = useState<DecodeSegment[]>([]);
   const [decodeResiduals, setDecodeResiduals] = useState<DecodeResidual[]>([]);
   const [decodeProduct, setDecodeProduct] = useState<string | undefined>();
+  const [decodeSummary, setDecodeSummary] = useState('');
   const [loading, setLoading] = useState(false);
   const [consoleLines, setConsoleLines] = useState<LiveWorkbenchConsoleLine[]>([]);
 
@@ -93,9 +98,11 @@ export function useLiveWorkbenchAssist({
       scheduler.cancel();
       setIssueSpans([]);
       setLintIssues([]);
+      setLintFixes([]);
       setDecodeSegments([]);
       setDecodeResiduals([]);
       setDecodeProduct(undefined);
+      setDecodeSummary('');
       setLoading(false);
       return;
     }
@@ -136,10 +143,12 @@ export function useLiveWorkbenchAssist({
           }));
 
         setLintIssues(lintResult.issues);
+        setLintFixes(lintResult.fixes ?? []);
         setIssueSpans(spans);
         setDecodeSegments(decodeResult.segments);
         setDecodeResiduals(decodeResult.residuals);
         setDecodeProduct(decodeResult.product);
+        setDecodeSummary(decodeResult.summary ?? '');
 
         const summaryLevel = lintResult.ok ? 'info' : 'warn';
         const issuePreview = lintResult.issues
@@ -198,9 +207,11 @@ export function useLiveWorkbenchAssist({
   return {
     issueSpans,
     lintIssues,
+    lintFixes,
     decodeSegments,
     decodeResiduals,
     decodeProduct,
+    decodeSummary,
     loading,
     consoleLines,
     appendConsole,

@@ -1068,6 +1068,7 @@ export function FileConverter({
     decodeSegments,
     decodeResiduals,
     decodeProduct,
+    decodeSummary,
     loading: decodeLoading,
     consoleLines,
     clearConsole,
@@ -1346,6 +1347,7 @@ export function FileConverter({
               <DecodePanel
                 segments={decodeSegments}
                 residuals={decodeResiduals}
+                summary={decodeSummary}
                 product={decodeProduct}
                 loading={decodeLoading}
                 error={decodeError}
