@@ -5112,6 +5112,20 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 35f4187
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T1.1] test: value-aware decode explanations (TC-F9-001) — red"
+    stage: "07-build"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 1
+    timestamp: "2026-07-17T01:50:00Z"
+  - sha: 1096b26
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T1.2] feat: value-aware decode explanations for all 7 TAC products (F9)"
+    stage: "07-build"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 2
+    timestamp: "2026-07-17T01:47:06Z"
   - sha: d09c3b9
     branch: evolve/S013-live-decode-preview-ux
     message: "[EV-009] docs: 04 approved + 05-verify-tech PASS (A1-A10); Phase B artifacts"
