@@ -272,7 +272,7 @@ POST /api/v1/lint-tac
 `start` / `end` are optional integer character offsets (S011 / #694/#702). `location` string retained
 for back-compat.
 
-**Severity values** (S013 / EV-009): `error` | `warn` | `info`. `ok` is computed from
+**Severity values** (S013 / EV-009): `error` | `warning` | `info`. `ok` is computed from
 `error`-severity issues only. `MISSING_TERMINATOR` is **`info`** (advisory hint for single
 pasted reports; copy: "Reports in bulletins end with '=' — add it before publishing").
 The paired fix entry (`code: add_terminator`, `replacement` = text with `=` appended)
@@ -482,5 +482,5 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 - S011 / EV-008 (2026-07-13): admin removed; decode-tac; spans; convert `preview`; unified
   work-sessions `product` (ADR-020)
 - S013 / EV-009 (2026-07-16): decode-tac additive `summary` + value-aware explanations (F9);
-  lint severity enum `error|warn|info`; `MISSING_TERMINATOR` → `info` + `add_terminator` fix
+  lint severity enum `error|warning|info`; `MISSING_TERMINATOR` → `info` + `add_terminator` fix
   (F10; ADR-025)

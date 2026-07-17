@@ -287,7 +287,7 @@
     under the `lg` breakpoint.
   - **`LAYER12_SOFT_FAIL` copy**: reword to plain language (status, cause, next step) in the
     pane badge and console line.
-  - **`MISSING_TERMINATOR`**: downgrade to new `info` severity in `packages/tac-validate`
+  - **`MISSING_TERMINATOR`**: downgrade to `info` severity in `packages/tac-validate`
     with actionable copy ("Reports in bulletins end with '=' — add it before publishing");
     `ok` remains keyed off `error` issues so single pasted reports lint clean. One-click
     **"Add `=`"** quick fix on the lint console line and as an editor affordance on the

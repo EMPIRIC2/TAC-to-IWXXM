@@ -5066,6 +5066,13 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: b8f9f5b
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[EV-009] docs: 01-requirements delta — F9/F10 specs, UJ-020/021, TC-F9/F10, api-contract, ADR-025"
+    stage: "01-requirements"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 10
+    timestamp: "2026-07-17T01:10:00Z"
   - sha: be53fe8
     branch: evolve/S013-live-decode-preview-ux
     message: "chore: open S013-live-decode-preview-ux — EV-009 (F9/F10) intake, routing, session brief"

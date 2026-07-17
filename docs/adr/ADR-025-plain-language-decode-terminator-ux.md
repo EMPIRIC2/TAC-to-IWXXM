@@ -24,7 +24,8 @@ summaries, LLM-generated text, and keeping terminator severity as-is.
    `POST /api/v1/decode-tac` returns it additively. Explanations become value-aware for all
    seven products (sparse products best-effort with "partial decode" wording); residuals are
    named in a trailing "Not decoded: …" clause.
-2. **Terminator lint is advisory (F10)**: `packages/tac-validate` gains an `info` severity;
+2. **Terminator lint is advisory (F10)**: `packages/tac-validate` severity vocabulary is
+   `error | warning | info` (already documented in `models.py`; rules emit only `error` today);
    `MISSING_TERMINATOR` moves `error` → `info` with copy "Reports in bulletins end with '='
    — add it before publishing". `ok` stays keyed off `error` issues, so an otherwise-clean
    single report lints `ok: true`. A paired `add_terminator` fix entry powers a one-click
@@ -45,7 +46,7 @@ summaries, LLM-generated text, and keeping terminator severity as-is.
 ## Consequences
 
 - Decode response contract grows `summary` (additive; TC-F9-002 guards back-compat).
-- `tac-validate` severity enum documented as `error | warn | info`; downstream consumers
+- `tac-validate` severity enum documented as `error | warning | info`; downstream consumers
   (worker, CI gates) unaffected because `ok` semantics keyed to `error` are unchanged.
 - Frontend needs info-level console styling, quick-fix action, and the preview pane (F10).
 - Summary wording becomes part of golden-fixture tests; copy changes are test changes.

@@ -144,7 +144,7 @@ metar-to-IWXXM/
 - **Inputs**: TAC text or bulletin fragments; product hint when known.
 - **Outputs**: Structured issue list (severity, code, message, location; optional integer
   `start`/`end` character offsets for editor highlight — S011).
-- **S013 delta (F10)**: Severity enum `error | warn | info`; `ok` computed from `error` only.
+- **S013 delta (F10)**: Severity enum `error | warning | info`; `ok` computed from `error` only.
   `MISSING_TERMINATOR` → `info` with actionable copy + paired `add_terminator` fix entry
   (`replacement` = text with `=` appended) powering the UI quick fix. ADR-025.
 - **SoC**: **No** FastAPI or Supabase imports.
