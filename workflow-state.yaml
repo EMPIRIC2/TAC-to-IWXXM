@@ -5096,6 +5096,13 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: d09c3b9
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[EV-009] docs: 04 approved + 05-verify-tech PASS (A1-A10); Phase B artifacts"
+    stage: "05-verify-tech"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 3
+    timestamp: "2026-07-17T01:45:00Z"
   - sha: 37709aa
     branch: evolve/S013-live-decode-preview-ux
     message: "[EV-009] docs: 04-tech-plan — execution plan M1–M4 drafted (pending approval); A->B gate recorded"

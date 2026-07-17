@@ -1,6 +1,6 @@
 # Execution plan — S013 / EV-009 (F9 + F10)
 
-> **Status**: pending_user_approval
+> **Status**: approved (2026-07-16)
 > **Branch**: `evolve/S013-live-decode-preview-ux`
 > **Spec sources**: feature-list §F9/§F10; spec §packages/tac2iwxxm S013 delta,
 > §packages/tac-validate S013 delta, §apps/frontend F9/F10 delta; api-contract §lint-tac/§decode-tac;
