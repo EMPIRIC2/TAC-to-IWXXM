@@ -9,8 +9,8 @@
 ## Current State
 
 - Phase: 1 (EV-009 build)
-- Active milestone: M2
-- Active task: T2.3 (pending)
+- Active milestone: M3
+- Active task: T3.1 (pending)
 
 ## Tech Stack Summary (all existing — no new dependencies)
 
@@ -42,7 +42,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T2.1 | Test | Unit tests: `MISSING_TERMINATOR` severity `info`, reworded copy, `ok: true` when otherwise clean, paired `add_terminator` fix with `replacement` = text + `=` | test-plan TC-F10-002 §1–2; ADR-025 §2 | — | completed |
 | T2.2 | Code | `rules.py`: severity + copy + fix entry; verify `api.py` `ok` semantics untouched | spec §tac-validate S013 | T2.1 | completed |
-| T2.3 | Test | Backend lint-tac contract test: severity + fixes passthrough to HTTP response | api-contract §lint-tac | T2.2 | pending |
+| T2.3 | Test | Backend lint-tac contract test: severity + fixes passthrough to HTTP response | api-contract §lint-tac | T2.2 | completed |
 
 ### M3 — F9/F10 frontend (apps/frontend + apps/e2e)
 
