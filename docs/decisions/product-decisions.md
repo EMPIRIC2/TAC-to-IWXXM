@@ -38,3 +38,7 @@
 | 2026-06-14 | S6.5 | approved | Branch feat/monorepo-big-bang |
 | 2026-07-15 | D-S011-ADR023 | approved | Wire dormant Convert params (bulletin/issuing/stop_on_error/validate); console log filter; .tac accept; nil reasons deferred (ADR-023) |
 | 2026-07-15 | D-S011-ADR024 | approved | AHL bulletin UI + COLLECT 501 placeholder + log_level/include_nil_reasons (ADR-024) |
+| 2026-07-16 | EV009-S3.1 | approved | Unit renderings: inHg altimeter, "day DD at HH:MM UTC", statute miles, wind "from DDD° at N kt" |
+| 2026-07-16 | EV009-S3.2 | approved | Quick fix via existing lint fixes[] — code add_terminator, replacement = text + '=' |
+| 2026-07-16 | EV009-S3.3 | approved | Preview pane shows most recent preview only (no history v1) |
+| 2026-07-16 | EV009-S3.4 | approved | Passing preview badge copy: "Passed" |

@@ -43,12 +43,13 @@ Medium/low-confidence statements (agent-invented details) — presented to user:
 
 | ID | Conf | Statement | Verdict |
 |----|------|-----------|---------|
-| S3.1 | Medium | Exact unit renderings: `A3011` → "Altimeter 30.11 inHg"; `121251Z` → "day 12 at 12:51 UTC"; `10SM` → "Visibility 10 statute miles"; wind "from 180° at 4 kt" | pending |
-| S3.2 | Medium | Quick fix rides the existing lint `fixes[]` array as `code: add_terminator` with `replacement` = full text + `=` | pending |
-| S3.3 | Medium | Preview pane shows only the **most recent** preview (no preview history) | pending |
-| S3.4 | Low | Passing preview badge copy is "Passed" (vs e.g. "Valid IWXXM") | pending |
+| S3.1 | Medium | Exact unit renderings: `A3011` → "Altimeter 30.11 inHg"; `121251Z` → "day 12 at 12:51 UTC"; `10SM` → "Visibility 10 statute miles"; wind "from 180° at 4 kt" | approved (2026-07-16) |
+| S3.2 | Medium | Quick fix rides the existing lint `fixes[]` array as `code: add_terminator` with `replacement` = full text + `=` | approved (2026-07-16) |
+| S3.3 | Medium | Preview pane shows only the **most recent** preview (no preview history) | approved (2026-07-16) |
+| S3.4 | Low | Passing preview badge copy is "Passed" (vs e.g. "Valid IWXXM") | approved (2026-07-16) |
 
 ## Verdict
 
-PASS pending S3.1–S3.4 review. One naming inconsistency found and fixed in place (severity
-enum). No contradictions with existing Fn scope; REQ-016 not applicable (post-migration).
+**PASS** — 12 auto-approved, 4 user-approved ("approve all", 2026-07-16), 0 denied/modified.
+One naming inconsistency found and fixed in place (severity enum `warning`). No contradictions
+with existing Fn scope; REQ-016 not applicable (post-migration).
