@@ -45,6 +45,8 @@ validation semantics or Schematron rules; F5 history surfaces.
 | 16-evolve Phase 0–1 | 2026-07-16 | Fn allocation F9/F10 + routing approved |
 | 01-requirements | 2026-07-16 | Delta specs: feature-list F9/F10; spec; UJ-020/021; TC-F9/F10; api-contract; ADR-025 |
 | 02-verify-plan | 2026-07-16 | PASS — 12 auto + 4 user-approved (S3.1–S3.4); severity enum fixed to `warning` |
+| 04-tech-plan | 2026-07-16 | execution-plan.md approved — M1–M4, 21 tasks, no new deps |
+| 05-verify-tech | 2026-07-16 | PASS — A1–A10 repo-verified; T3.6 note (fixes[] through hook) |
 
 ---
 
