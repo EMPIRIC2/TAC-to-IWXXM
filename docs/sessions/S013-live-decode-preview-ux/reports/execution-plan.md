@@ -10,7 +10,7 @@
 
 - Phase: 1 (EV-009 build)
 - Active milestone: M3
-- Active task: T3.1 (pending)
+- Active task: T3.1 (in_progress)
 
 ## Tech Stack Summary (all existing — no new dependencies)
 
@@ -48,7 +48,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Test | Vitest: "Plain language" block at top of DecodePanel renders `summary` and updates on prop change | test-plan TC-F9-002 §4 | — | pending |
+| T3.1 | Test | Vitest: "Plain language" block at top of DecodePanel renders `summary` and updates on prop change | test-plan TC-F9-002 §4 | — | in_progress |
 | T3.2 | Code | DecodePanel plain-language block; `api.ts` decode types gain `summary` | spec §frontend F9/F10 delta | T1.6, T3.1 | pending |
 | T3.3 | Test | Vitest: `IwxxmPreviewPane` — pretty XML, badge ("Soft preview — not for publish" / "Passed"), failed-span count links, most-recent-only, responsive stacking | test-plan TC-F10-001 | — | pending |
 | T3.4 | Code | `IwxxmPreviewPane` component; wire Soft-preview + Live IWXXM output into pane; plain-language soft-fail copy (code secondary) | spec §frontend F9/F10 delta; ADR-025 §3 | T3.3 | pending |
