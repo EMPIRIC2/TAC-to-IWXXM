@@ -28,7 +28,10 @@ active_session:
   - stage: 01-requirements
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: "2026-07-16"
+    completed: "2026-07-16"
+    note: "Manifest mandatory+api+adr; Batches 1–2 all-recommended; F9/F10 deltas written; ADR-025"
   - stage: 02-verify-plan
     required: true
     mode: delta
@@ -4794,11 +4797,21 @@ evolve_cycles:
     - 00-context      # session open only; scoped brief f7-operator-ui.md reused
     - 03-plan-tooling
     - 06-tech-tooling
-  current_stage: 01-requirements
+  current_stage: 02-verify-plan
   stages:
     01-requirements:
-      status: pending
+      status: completed
       mode: delta
+      started: "2026-07-16"
+      completed: "2026-07-16"
+      artifacts_updated:
+      - docs/feature-list.md
+      - docs/spec.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/api-contract.md
+      - docs/adr/ADR-025-plain-language-decode-terminator-ux.md
+      - docs/decisions/requirements-decisions.md
   gates:
     a_to_b: pending
     b_to_c: pending
@@ -5053,6 +5066,13 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: be53fe8
+    branch: evolve/S013-live-decode-preview-ux
+    message: "chore: open S013-live-decode-preview-ux — EV-009 (F9/F10) intake, routing, session brief"
+    stage: "16-evolve"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 5
+    timestamp: "2026-07-17T00:45:00Z"
   - sha: 73cda40
     branch: feat/M1-workspace-root
     message: "[T1.1] test: add TC-M001 monorepo clone-smoke test skeleton"

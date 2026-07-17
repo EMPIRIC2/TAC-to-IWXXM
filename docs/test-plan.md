@@ -58,6 +58,8 @@ Unified manual live test harness against Render staging:
 | UJ-017 | F7 | live workbench debounce/spans | H6′ | TC-F7-004 |
 | UJ-018 | F7 | unified sessions + migrate smoke | H6′ | TC-F7-005 |
 | UJ-019 | F7 | `/admin` negative | H6′ | TC-F7-006 |
+| UJ-020 | F9 | decode values + summary (unit/API/Vitest/Playwright) | H6′ | TC-F9-001, TC-F9-002 |
+| UJ-021 | F10 | preview pane + terminator quick fix | H6′ | TC-F10-001, TC-F10-002 |
 | UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
@@ -292,6 +294,71 @@ Before closing S011 / EV-008:
 - [ ] H6′ live smokes for UJ-013/015–019 (or documented waiver)
 - [ ] Admin E2E modules removed or converted to TC-F7-006
 - [ ] Child issues #697/#702/#665/#666/#694 closed or linked; #5 remains open
+
+## F9/F10 Test Cases (S013 / EV-009)
+
+### TC-F9-001: Value-aware decode explanations (UJ-020)
+
+- **Level**: T0 / T2
+- **Objective**: `decode_tac` explanations include parsed values, not only group labels
+- **Pass criteria**:
+  1. METAR fixture `METAR KJFK 121251Z 18004KT 10SM FEW250 24/18 A3011=`:
+     `18004KT` explanation contains "180°" and "4 kt"; `24/18` contains "24 °C" and
+     "dewpoint 18 °C"; `A3011` contains "30.11 inHg"; `121251Z` contains "day 12" and
+     "12:51 UTC"
+  2. Negative temps (`M05/M12`), gusts (`24012G22KT`), VRB wind, `Q1013`, metre visibility
+     (`4000`) all produce value-aware text
+  3. TAF change groups (`FM`, `TEMPO`, `BECMG`, `PROB`) include the parsed period/values
+  4. SIGMET/AIRMET/VAA/TCA return best-effort value-aware segments; residuals unchanged
+  5. Segment `start`/`end` offsets unchanged from pre-F9 behavior (contract additive)
+- **Source**: UJ-020; F9 acceptance 1
+
+### TC-F9-002: Plain-language summary live render (UJ-020)
+
+- **Level**: T0 / T2 / T3
+- **Objective**: Backend `summary` present and rendered live in the decode panel
+- **Pass criteria**:
+  1. decode-tac response includes `summary` for all seven products (best-effort where sparse,
+     "partial decode" wording for sparse products)
+  2. Summary is one flowing paragraph built deterministically from decoded values
+  3. Residuals present → summary ends with "Not decoded: …" naming residual text
+  4. Vitest: "Plain language" block renders at top of decode panel and updates on text change
+     (debounce path); Playwright: typing updates the paragraph without manual refresh
+- **Source**: UJ-020; F9 acceptance 2–3
+
+### TC-F10-001: IWXXM preview pane (UJ-021)
+
+- **Level**: T0 / T2 / T3
+- **Objective**: Soft-preview / Live IWXXM output is anchored in a dedicated pane with status
+- **Pass criteria**:
+  1. Pane side-by-side ≥ `lg`, stacked < `lg`
+  2. Soft-preview run lands pretty-printed XML in the pane with badge
+     "Soft preview — not for publish" and plain-language soft-fail copy (no raw
+     `LAYER12_SOFT_FAIL` code as primary text); passing preview shows "Passed"
+  3. Failed-span count in pane links/scrolls to editor highlights
+  4. Live IWXXM toggle output lands in the same pane
+- **Source**: UJ-021; F10 acceptance 1–2
+
+### TC-F10-002: Terminator info-level + quick fix (UJ-021)
+
+- **Level**: T0 / T2
+- **Objective**: `MISSING_TERMINATOR` is info severity with working one-click fix
+- **Pass criteria**:
+  1. `tac-validate`: `MISSING_TERMINATOR` severity `info`; `ok: true` for otherwise-clean
+     single report without `=` (unit)
+  2. Reworded copy: "Reports in bulletins end with '=' — add it before publishing"
+  3. Console line renders info level (not warn/error styling) with "Add `=`" action;
+     clicking appends `=` and the hint clears on next live pass
+  4. Editor affordance on the hint span offers the same fix
+- **Source**: UJ-021; F10 acceptance 3–4
+
+### F9/F10 verify/deploy gate
+
+Before closing S013 / EV-009:
+
+- [ ] TC-F9-001/002 + TC-F10-001/002 green at T2
+- [ ] Decode-tac contract remains backward-compatible (additive `summary` only)
+- [ ] H6′ live smokes for UJ-020/021 (or documented waiver)
 
 ## Live Test Cases (T3 / H3–H6)
 

@@ -162,3 +162,18 @@
 | RT-R14 | Deps | Both packages MIT; tac-validate may use pydantic/msgspec in 04; iwxxm-validate uses lxml | confirmed |
 | RT-R15 | API | validate wraps iwxxm-validate; `POST /lint-tac`; `POST /convert-bulletin`; convert single-report | confirmed |
 | RT-R16 | ADR-015 | Validate packages + bulletin API + deferred F7/F8 + H7 | accepted |
+
+## EV-009 / F9+F10 — Live decode translations + preview UX (2026-07-16)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-009/F9-R1 | Summary style | One flowing paragraph from decoded values (deterministic; no LLM) | confirmed |
+| EV-009/F9-R2 | Residuals | Summary appends "Not decoded: …" naming residual spans | confirmed |
+| EV-009/F9-R3 | Sparse products | Best-effort summary + "partial decode" wording (no threshold cutoff) | confirmed |
+| EV-009/F9-R4 | Products | Value-aware decode for all 7 (METAR/SPECI/TAF rich; others best-effort) | confirmed |
+| EV-009/F9-R5 | Engine | Backend `decode_tac` builds `summary`; additive decode-tac field | ADR-025 |
+| EV-009/F10-R1 | Pane content | Pretty-printed IWXXM + status badge + failed-span count linked to editor | confirmed |
+| EV-009/F10-R2 | Responsive | Side-by-side ≥ lg; stacked below editor < lg | confirmed |
+| EV-009/F10-R3 | Quick fix | "Add '='" on console line + editor affordance on hint span | ADR-025 |
+| EV-009/F10-R4 | Severity | `info` severity added; MISSING_TERMINATOR error→info; `ok` keyed to error only | ADR-025 |
+| EV-009/F10-R5 | Soft-fail copy | LAYER12_SOFT_FAIL presented as plain-language status, code secondary | ADR-025 |

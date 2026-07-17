@@ -43,6 +43,7 @@ validation semantics or Schematron rules; F5 history surfaces.
 | Stage | Completed | Notes |
 |-------|-----------|-------|
 | 16-evolve Phase 0–1 | 2026-07-16 | Fn allocation F9/F10 + routing approved |
+| 01-requirements | 2026-07-16 | Delta specs: feature-list F9/F10; spec; UJ-020/021; TC-F9/F10; api-contract; ADR-025 |
 
 ---
 

@@ -1,8 +1,9 @@
 # User Journeys
 
 > **Project**: METAR to IWXXM Converter
-> **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI
-> **Last updated**: 2026-07-13
+> **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI;
+> S013 / EV-009 F9/F10 decode + preview UX
+> **Last updated**: 2026-07-16
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -30,6 +31,8 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-017 | Live workbench (debounce, spans, console, live IWXXM) | apps/frontend | F7 | T2 / **T3** |
 | UJ-018 | Unified sessions persist/resume + F5 migrate smoke | apps/frontend | F5+F7 | T2 / **T3** |
 | UJ-019 | Admin routes removed / BYO operator surface | apps/frontend | F7 / M4 | T2 / **T3** |
+| UJ-020 | Value-aware decode + plain-language summary | apps/frontend | F9 | T0 / T2 / **T3** |
+| UJ-021 | IWXXM preview pane + terminator quick fix | apps/frontend | F10 | T2 / **T3** |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -435,6 +438,67 @@ F5 rows still load (ADR-020).
 or rewritten as negative tests.
 
 **Automated tests**: Playwright negative `/admin` (T2/T3); retire prior admin panel locators.
+
+---
+
+### UJ-020: Value-Aware Decode + Plain-Language Summary (F9)
+
+**Actor**: Operator (including non-specialist readers of a report)
+
+**Goal**: Read what the TAC actually says — decoded values per token and a natural-language
+description of the whole report — updating live while typing.
+
+**Steps**:
+
+1. Type or paste TAC in the workbench (any of the seven products).
+2. Decode panel updates live (existing 300 ms debounce; UJ-017 path).
+3. Each recognized token shows a **value-aware** explanation: `24/18` →
+   "Temperature 24 °C, dewpoint 18 °C"; `18004KT` → "Wind from 180° at 4 kt"; `10SM` →
+   "Visibility 10 statute miles"; `A3011` → "Altimeter 30.11 inHg".
+4. A **"Plain language"** block at the top of the decode panel shows one flowing paragraph
+   summarizing the report, e.g. "Routine METAR for KJFK observed on day 12 at 12:51 UTC.
+   Wind from 180° at 4 kt. …".
+5. Unrecognized content appends "Not decoded: …" naming the residual spans; sparse products
+   (SIGMET/AIRMET/VAA/TCA) show a short best-effort summary with "partial decode" wording.
+
+**Acceptance**: METAR/SPECI/TAF golden fixtures show value-aware explanations for wind,
+visibility, temperature/dewpoint, pressure, time, station, clouds, weather; `summary`
+renders live for all seven products; residuals named when present.
+
+**Automated tests**: `decode_tac` unit tests (T0); decode-tac API contract + Vitest panel
+(T0/T2); Playwright live-typing smoke (T2); live T3 sample.
+
+**Browser wiring**: Same decode-tac JWT call as UJ-015 — no new origins (H4–H5 unchanged).
+
+---
+
+### UJ-021: IWXXM Preview Pane + Terminator Quick Fix (F10)
+
+**Actor**: Operator
+
+**Goal**: Always know where Soft-preview / Live IWXXM output appears and what its status
+means; fix a missing `=` terminator in one click.
+
+**Steps**:
+
+1. Enable **Soft-preview** and/or **Live IWXXM** in the workbench.
+2. A **side-by-side IWXXM preview pane** (stacked below the editor under `lg`) shows the
+   most recent pretty-printed IWXXM, a status badge — **Soft preview — not for publish**
+   (plain-language soft-fail copy replacing raw `LAYER12_SOFT_FAIL`) or **Passed** — and a
+   failed-span count linked to editor highlights.
+3. Paste a single report without `=`: lint shows an **info-level** hint ("Reports in
+   bulletins end with '=' — add it before publishing"); lint `ok` stays true when no error
+   issues remain.
+4. Click **"Add `=`"** on the console line (or the editor affordance on the hint span) —
+   terminator appended; hint clears on next live pass.
+
+**Acceptance**: Preview output never appears "somewhere unclear" — pane is the single
+anchored destination with status; terminator hint is info-level with working one-click fix.
+
+**Automated tests**: Vitest pane/status/quick-fix units (T0); Playwright preview + quick-fix
+flow (T2); live T3 smoke.
+
+**Browser wiring**: Reuses existing convert-preview and lint-tac calls (H4–H5 unchanged).
 
 ---
 

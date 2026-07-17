@@ -28,6 +28,7 @@
 | [ADR-022](ADR-022-convert-preview-flag.md) | Soft-preview via `preview=true` on `/api/v1/convert` | Accepted |
 | [ADR-023](ADR-023-wire-convert-params.md) | Wire dormant FileConverter convert parameters | Accepted |
 | [ADR-024](ADR-024-operator-input-modes.md) | AHL / COLLECT input modes, log_level, nil reasons | Accepted |
+| [ADR-025](ADR-025-plain-language-decode-terminator-ux.md) | Deterministic plain-language decode summary + terminator lint UX | Accepted |
 
 ## Process
 
