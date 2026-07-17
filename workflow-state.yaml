@@ -4932,6 +4932,12 @@ evolve_cycles:
       report: docs/sessions/S013-live-decode-preview-ux/reports/verify-impl.md
       overall: pass
       notes: "F9 + F10 user-approved ('1 / 1'); 8/8 acceptance criteria PASS; UJ-020/021 signed off (T3 waiver — QA-002 live pre-deploy H0c/H4/H5 PASS, re-run at 13); 0 scope creep/gaps"
+    12-verify-deploy:
+      status: in_progress
+      mode: delta
+      started: "2026-07-17"
+      report: docs/sessions/S013-live-decode-preview-ux/reports/deploy-checklist.md
+      notes: "Checklist ready (no infra/env/migration delta; H0c 6/6 fresh; live prod health + H4/H5 PASS pre-deploy); PR-EV-009=#723 open (evolve→main; NO merge/deploy); awaiting checklist sign-off + CI green"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -4957,11 +4963,14 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S013-live-decode-preview-ux/reports/verify-impl.md
     status: completed
+  - path: docs/sessions/S013-live-decode-preview-ux/reports/deploy-checklist.md
+    status: in_progress
   issues: []
 
 git_history:
   current_branch: evolve/S013-live-decode-preview-ux
   notes:
+  - "2026-07-17 S013/EV-009 T4.4 in_progress — deploy-checklist.md ready; PR-EV-009=#723 open (evolve→main; NO merge/deploy); awaiting sign-off + CI"
   - "2026-07-17 S013/EV-009 T4.3 done — F9/F10 approved ('1 / 1'); verify-impl.md; phase_d passed; current_stage=12-verify-deploy (T4.4)"
   - "2026-07-17 S013/EV-009 QA-001/QA-002 resolved (0cf2a28); 11-verify-impl awaiting F9/F10 sign-off"
   - "2026-07-17 S013/EV-009 T4.2 done — 09-qa pass_with_advisories + 10-e2e PASS (UJ-020/021); current_stage=11-verify-impl (T4.3)"
