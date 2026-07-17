@@ -42,7 +42,9 @@ active_session:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: "2026-07-16"
+    note: "execution-plan.md drafted (M1–M4, 21 tasks); pending_user_approval"
   - stage: 05-verify-tech
     required: true
     mode: delta
@@ -4823,12 +4825,12 @@ evolve_cycles:
       overall: pass
       notes: "12 auto + 4 user-approved (S3.1–S3.4); severity enum consistency fix"
   gates:
-    a_to_b: pending
+    a_to_b: passed
     b_to_c: pending
     c_to_d: pending
     deploy: pending
   checkpoints:
-    phase_a: pending
+    phase_a: passed
     phase_b: pending
     phase_c: pending
     phase_d: pending
@@ -5076,6 +5078,13 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 3019bff
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[EV-009] docs: 02-verify-plan verdicts approved (S3.1–S3.4); Phase A artifacts complete"
+    stage: "02-verify-plan"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 4
+    timestamp: "2026-07-17T01:25:00Z"
   - sha: c268ac9
     branch: evolve/S013-live-decode-preview-ux
     message: "[EV-009] docs: 02-verify-plan delta audit — severity enum consistency fix; audit report"
