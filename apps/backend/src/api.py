@@ -911,6 +911,7 @@ async def decode_tac_endpoint(
             for s in result.segments
         ],
         residuals=[DecodeResidualModel(start=r.start, end=r.end, text=r.text) for r in result.residuals],
+        summary=result.summary,
     )
 
 

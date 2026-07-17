@@ -298,6 +298,10 @@ class DecodeTacResponse(BaseModel):
     product: str
     segments: List[DecodeSegmentModel] = Field(default_factory=list)
     residuals: List[DecodeResidualModel] = Field(default_factory=list)
+    summary: str = Field(
+        default="",
+        description="Deterministic plain-language paragraph of the report (F9 / ADR-025)",
+    )
 
 
 class PackageIssueModel(BaseModel):
