@@ -9,8 +9,8 @@
 ## Current State
 
 - Phase: 1 (EV-009 build)
-- Active milestone: M3
-- Active task: T3.7 (pending)
+- Active milestone: M4
+- Active task: T4.1 (pending)
 
 ## Tech Stack Summary (all existing — no new dependencies)
 
@@ -54,7 +54,7 @@
 | T3.4 | Code | `IwxxmPreviewPane` component; wire Soft-preview + Live IWXXM output into pane; plain-language soft-fail copy (code secondary) | spec §frontend F9/F10 delta; ADR-025 §3 | T3.3 | completed |
 | T3.5 | Test | Vitest: console `info` styling distinct; "Add `=`" action appends terminator; editor affordance on hint span | test-plan TC-F10-002 §3–4 | — | completed |
 | T3.6 | Code | Quick-fix action (console line + editor affordance) using lint `fixes[]`; info-level console rendering | spec §frontend F9/F10 delta | T2.3, T3.5 | completed |
-| T3.7 | Test | Playwright T2: UJ-020 live-typing summary; UJ-021 preview pane + quick fix | test-plan TC-F9-002 §4, TC-F10-001/002 | T3.2, T3.4, T3.6 | pending |
+| T3.7 | Test | Playwright T2: UJ-020 live-typing summary; UJ-021 preview pane + quick fix | test-plan TC-F9-002 §4, TC-F10-001/002 | T3.2, T3.4, T3.6 | completed |
 
 ### M4 — Verify & deploy (stages 08–13)
 
