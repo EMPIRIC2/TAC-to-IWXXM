@@ -5126,6 +5126,13 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 597aea2
+    branch: evolve/S013-live-decode-preview-ux
+    message: "[T4.1] chore: 08-verify-build PASS for EV-009 (F9/F10)"
+    stage: "08-verify-build"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 3
+    timestamp: "2026-07-17T02:42:00Z"
   - sha: 35f4187
     branch: evolve/S013-live-decode-preview-ux
     message: "[T1.1] test: value-aware decode explanations (TC-F9-001) — red"
