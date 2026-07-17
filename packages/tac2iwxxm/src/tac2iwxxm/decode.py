@@ -155,6 +155,7 @@ class DecodeResult(msgspec.Struct, frozen=True):
     product: str
     segments: list[DecodeSegment] = msgspec.field(default_factory=list)
     residuals: list[DecodeResidual] = msgspec.field(default_factory=list)
+    summary: str = ""
 
 
 def _iter_tokens(tac: str) -> list[tuple[int, int, str]]:
@@ -372,6 +373,76 @@ def _coalesce_residuals(
     return residuals
 
 
+_SPARSE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA"})
+
+
+def _sentence_from_segment(seg: DecodeSegment) -> str | None:
+    """Turn a value-aware explanation into a summary clause (skip terminators)."""
+    if seg.code == "=" or seg.explanation.lower().startswith("report terminator"):
+        return None
+    text = seg.explanation.strip()
+    if not text:
+        return None
+    lower = text.lower()
+    if "station location" in lower or "location indicator" in lower:
+        return f"station {seg.code.upper()}"
+    # Prefer the value-bearing half after an em dash when present.
+    if " — " in text:
+        left, right = text.split(" — ", 1)
+        if left.lower().startswith("report type"):
+            return text.rstrip(".")
+        return right.rstrip(".")
+    return text.rstrip(".")
+
+
+def _build_summary(
+    product: str,
+    segments: list[DecodeSegment],
+    residuals: list[DecodeResidual],
+) -> str:
+    """
+    Build a deterministic plain-language paragraph for the decode panel (F9).
+
+    Parameters
+    ----------
+    product :
+        Uppercase product id.
+    segments :
+        Value-aware decode segments.
+    residuals :
+        Undecoded spans; named in a trailing "Not decoded: …" clause.
+
+    Returns
+    -------
+    str
+        One flowing paragraph. Sparse products include "partial decode" wording.
+    """
+    clauses: list[str] = []
+    for seg in segments:
+        clause = _sentence_from_segment(seg)
+        if clause:
+            clauses.append(clause)
+
+    if product in _SPARSE_PRODUCTS:
+        lead = f"{product} (partial decode)"
+        body = "; ".join(clauses) if clauses else "few recognizable groups"
+        paragraph = f"{lead}: {body}."
+    elif clauses:
+        # Lead with product when the first clause is the report type.
+        paragraph = "; ".join(clauses) + "."
+        paragraph = paragraph[0].upper() + paragraph[1:]
+    else:
+        paragraph = f"{product} report with no decoded groups."
+
+    if residuals:
+        residual_bits = " ".join(r.text for r in residuals)
+        # Collapse whitespace for readable "Not decoded" naming.
+        residual_bits = " ".join(residual_bits.split())
+        paragraph = f"{paragraph} Not decoded: {residual_bits}."
+
+    return paragraph
+
+
 def decode_tac(tac: str, *, product: str) -> DecodeResult:
     """
     Decode TAC text into ordered explanation segments and residuals.
@@ -386,7 +457,8 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     Returns
     -------
     DecodeResult
-        ``segments`` for recognized groups; ``residuals`` for undecoded spans.
+        ``segments`` for recognized groups; ``residuals`` for undecoded spans;
+        ``summary`` plain-language paragraph (F9 / ADR-025).
         METAR/SPECI/TAF aim for rich segments; VAA/TCA are best-effort (G4).
     """
     product_u = product.upper()
@@ -394,7 +466,8 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
         # Entire body residual — unknown product still returns a well-formed shape.
         text = tac
         residuals = [DecodeResidual(start=0, end=len(text), text=text)] if text else []
-        return DecodeResult(product=product_u, segments=[], residuals=residuals)
+        summary = _build_summary(product_u, [], residuals)
+        return DecodeResult(product=product_u, segments=[], residuals=residuals, summary=summary)
 
     tokens = _iter_tokens(tac)
     classify = _classify(product_u)
@@ -417,7 +490,8 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
         explained.add(idx)
 
     residuals = _coalesce_residuals(tokens, explained, tac)
-    return DecodeResult(product=product_u, segments=segments, residuals=residuals)
+    summary = _build_summary(product_u, segments, residuals)
+    return DecodeResult(product=product_u, segments=segments, residuals=residuals, summary=summary)
 
 
 __all__ = [

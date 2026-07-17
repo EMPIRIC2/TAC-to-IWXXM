@@ -10,7 +10,7 @@
 
 - Phase: 1 (EV-009 build)
 - Active milestone: M1
-- Active task: T1.3 (in_progress)
+- Active task: T1.5 (pending)
 
 ## Tech Stack Summary (all existing — no new dependencies)
 
@@ -31,8 +31,8 @@
 |------|------|-------------|-------------|------------|--------|
 | T1.1 | Test | Unit tests: value-aware explanations — METAR/SPECI/TAF fixtures (TC-F9-001 tokens: `18004KT`, gusts, VRB, `10SM`, `4000`, `M05/M12`, `A3011`, `Q1013`, `121251Z`, clouds, wx, FM/TEMPO/BECMG/PROB); offsets unchanged | test-plan TC-F9-001 | — | completed |
 | T1.2 | Code | Implement value-aware explainers in `decode.py` (all 7 products; sparse best-effort) | spec §tac2iwxxm S013; F9 acc 1 | T1.1 | completed |
-| T1.3 | Test | Unit tests: `summary` paragraph — flowing prose, "Not decoded: …" residual clause, "partial decode" wording, all 7 products | test-plan TC-F9-002 §1–3 | — | in_progress |
-| T1.4 | Code | Summary builder; `DecodeResult.summary` (msgspec, additive) | spec §tac2iwxxm S013; ADR-025 §1 | T1.2, T1.3 | pending |
+| T1.3 | Test | Unit tests: `summary` paragraph — flowing prose, "Not decoded: …" residual clause, "partial decode" wording, all 7 products | test-plan TC-F9-002 §1–3 | — | completed |
+| T1.4 | Code | Summary builder; `DecodeResult.summary` (msgspec, additive) | spec §tac2iwxxm S013; ADR-025 §1 | T1.2, T1.3 | completed |
 | T1.5 | Test | Backend API test: `POST /api/v1/decode-tac` returns `summary`; existing fields unchanged | api-contract §decode-tac | — | pending |
 | T1.6 | Code | `DecodeTacResponse.summary` in `apps/backend/src/schemas/validation.py` + endpoint passthrough | api-contract §decode-tac | T1.4, T1.5 | pending |
 
