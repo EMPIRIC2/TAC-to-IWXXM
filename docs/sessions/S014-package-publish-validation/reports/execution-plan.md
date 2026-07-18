@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C (build) |
 | **Active milestone** | M3 — iwxxm-validate Rust + schema subset + xsdata |
-| **Active task** | T3.7a pending (T3.6 done — xsdata pipeline + CI hook) |
-| **Tasks** | 14 / ~39 (M1–M2 complete; T3.1–T3.6 done) |
+| **Active task** | T3.7 pending (commit/regenerate pydantic models) |
+| **Tasks** | 15 / ~39 (M1–M2 complete; T3.1–T3.7a done) |
 | **Last updated** | 2026-07-18 |
 
 ## Tech Stack Summary
@@ -64,7 +64,7 @@
 | T3.4 | Config | Bundle **runtime schema subset** into wheel (exclude modelling/translation bulk); document subset in session report | E10-34; E10-6 | T3.1 | completed |
 | T3.5 | Test | Soft benches vs lxml; assert path for hard 0.85× at publish | E10-35; TC-F11-002 | T3.3, T1.3 | completed |
 | T3.6 | Config | xsdata + xsdata-pydantic codegen pipeline from pinned XSD; CI hook on vendor pin bumps | ADR-027; E10-40 | — | completed |
-| T3.7a | Test | Codegen regen smoke — pinned XSD → pydantic models importable / non-empty | ADR-027; F11 acc4 | T3.6 | pending |
+| T3.7a | Test | Codegen regen smoke — pinned XSD → pydantic models importable / non-empty | ADR-027; F11 acc4 | T3.6 | completed |
 | T3.7 | Code | Commit/regenerate pydantic models; optional msgspec/Rust adapt helpers (follow-on) | F11 acc4; ADR-027 | T3.7a | pending |
 | T3.8a | Test | Backend `/validate` (and convert+validate path) uses Rust SDK; no double heavy-layer run | F11.4; F13; api-contract | T3.3 | pending |
 | T3.8 | Code | Backend F2 wrapper calls Rust SDK (dedupe double-run with convert+validate) | F11.4; F13 | T3.8a | pending |

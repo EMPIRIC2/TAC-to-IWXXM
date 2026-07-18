@@ -32,10 +32,30 @@ MANIFEST = REPO_ROOT / "vendor" / "manifest.json"
 OUT_ROOT = REPO_ROOT / "packages" / "shared" / "src" / "metar_shared" / "iwxxm_xsd"
 DEFAULT_ENTRY = "iwxxm.xsd"
 
-# Known xsdata-pydantic + GML quirk: Field(default=…, default=…) breaks ruff parse.
+# Known xsdata-pydantic + GML quirk: field(..., default=X, default=X) breaks parse.
+# Match both field( and Field(; allow newlines between duplicate defaults.
 _DUP_DEFAULT = re.compile(
-    r"(Field\([^)]*?)\bdefault\s*=\s*([^,)]+)(\s*,\s*default\s*=\s*[^,)]+)+"
+    r"(default\s*=\s*[^\n,]+)(\s*,\s*\n?\s*default\s*=\s*[^\n,]+)+"
 )
+
+
+def fix_duplicate_field_defaults(tree_root: Path) -> int:
+    """
+    Remove duplicate ``default=`` kwargs in generated modules.
+
+    Returns
+    -------
+    int
+        Number of files modified.
+    """
+    changed = 0
+    for path in tree_root.rglob("*.py"):
+        text = path.read_text(encoding="utf-8")
+        fixed = _DUP_DEFAULT.sub(r"\1", text)
+        if fixed != text:
+            path.write_text(fixed, encoding="utf-8")
+            changed += 1
+    return changed
 
 
 def _version_package(version: str) -> str:
@@ -80,15 +100,13 @@ def _patch_xsdata_generators() -> None:
 
     def ruff_code(self: Any, file_paths: list[str]) -> None:
         for root in file_paths:
-            for path in Path(root).rglob("*.py"):
-                text = path.read_text(encoding="utf-8")
-                fixed = _DUP_DEFAULT.sub(r"\1default=\2", text)
-                if fixed != text:
-                    path.write_text(fixed, encoding="utf-8")
+            fix_duplicate_field_defaults(Path(root))
         try:
             orig_ruff(self, file_paths)
         except Exception as exc:
             print(f"codegen: ruff soft-fail (models kept): {exc}", file=sys.stderr)
+            for root in file_paths:
+                fix_duplicate_field_defaults(Path(root))
 
     def validate_imports(self: Any) -> None:
         try:
@@ -157,6 +175,13 @@ def generate_version(version: str, *, entry: str = DEFAULT_ENTRY) -> dict[str, A
         transformer.process([xsd.resolve().as_uri()])
     finally:
         os.chdir(prev)
+
+    if out_dir.is_dir():
+        n_fixed = fix_duplicate_field_defaults(out_dir)
+        if n_fixed:
+            print(
+                f"codegen: fixed duplicate default= in {n_fixed} files", file=sys.stderr
+            )
 
     py_files = list(out_dir.rglob("*.py")) if out_dir.is_dir() else []
     return {
