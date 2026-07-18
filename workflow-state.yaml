@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M2 done (T2.1–T2.5 through 866ca20); M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
+    note: "M3 T3.1 complete (1770086); T3.2 in_progress (parity suite stubs)"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,9 +1420,9 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M2 done (T2.1–T2.5 through 866ca20); M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
+      note: "M3 T3.1 complete (1770086); T3.2 in_progress (parity suite stubs)"
       active_milestone: M3
-      active_task: T3.1
+      active_task: T3.2
       active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
@@ -1449,6 +1449,7 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-18 S014/EV-010 T3.1 complete — iwxxm-validate rust/maturin scaffold; hatch pure path retained"
     - "2026-07-18 S014/EV-010 user 52:A — continue 07-build at M3 T3.1 after M2 complete"
     - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
     - "2026-07-18 S014/EV-010 M1 complete (T1.1–T1.3; 9f9f67b/3ad66cd/70d157b); next M2 T2.1; ci-cd.yml triggers only on main/dev — push alone did not run GHA; local format-check + perf tests green"
@@ -4235,9 +4236,9 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M2 done (T2.1–T2.5 through 866ca20); M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
+      note: "M3 T3.1 complete (1770086); T3.2 in_progress (parity suite stubs)"
       active_milestone: M3
-      active_task: T3.1
+      active_task: T3.2
       active_task_status: in_progress
   gates:
     a_to_b: pending
@@ -4254,6 +4255,7 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "2026-07-18 S014/EV-010 T3.1 complete — iwxxm-validate rust/maturin scaffold; hatch pure path retained"
   - "2026-07-18 S014/EV-010 user 52:A — continue 07-build at M3 T3.1 after M2 complete"
   - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
   - "2026-07-18 M1 complete (T1.1–T1.3); SHAs 9f9f67b/3ad66cd/70d157b + chore 59a65bd; next M2 T2.1; ci-cd.yml only main/dev — no GHA on push; local format-check + perf green"
@@ -5518,6 +5520,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "2026-07-18 S014/EV-010 T3.1 complete — iwxxm-validate rust/maturin scaffold; hatch pure path retained"
   - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
   - "2026-07-18 S014/EV-010 M1 complete — commits 59a65bd/9f9f67b/3ad66cd/70d157b; next M2 T2.1; ci-cd.yml only triggers on main/dev — push alone did not run GHA; local format-check + perf tests green"
   - "2026-07-18 D-S014-EV010-b-to-c-push — B→C passed (50B); push to origin about to happen; Phase C 07-build M1 T1.1 starting"
@@ -5772,6 +5775,14 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 1770086
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.1] config: scaffold iwxxm-validate rust + maturin"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: packages/iwxxm-validate/rust/*, native.py, test_native_scaffold.py, pyproject.toml, README, Makefile, .gitignore, execution-plan, workflow-state
+    timestamp: "2026-07-18T21:28:00Z"
   - sha: 866ca20
     branch: evolve/EV-010-package-publish-validation
     message: "[T2.5] test: clean-venv wheel install smoke for tac-validate"
