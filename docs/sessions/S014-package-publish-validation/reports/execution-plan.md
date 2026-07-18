@@ -11,9 +11,9 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B → C (tech plan) |
-| **Active milestone** | — (not started) |
-| **Active task** | — |
+| **Active phase** | Phase C (build) |
+| **Active milestone** | M1 — Layer cost matrix + benches |
+| **Active task** | T1.1 in_progress |
 | **Tasks** | 0 / ~39 pending |
 | **Last updated** | 2026-07-18 |
 
@@ -40,7 +40,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Bench harness stubs: lint, convert IR, XSD, Schematron, HTTP DTO encode (pydantic map vs msgspec) on single METAR, bulletin, golden IWXXM | TC-F11-002 | — | pending |
+| T1.1 | Test | Bench harness stubs: lint, convert IR, XSD, Schematron, HTTP DTO encode (pydantic map vs msgspec) on single METAR, bulletin, golden IWXXM | TC-F11-002 | — | in_progress |
 | T1.2 | Code | Implement harness; write p50/p95 to `docs/sessions/S014-…/reports/layer-cost-matrix.md` | F11 acc1; context R5 | T1.1 | pending |
 | T1.3 | Config | Record absolute baselines used for 0.85× / 1.0× hard gates | E10-35 | T1.2 | pending |
 
@@ -131,4 +131,4 @@
 | A→B | 2026-07-18 | passed | 02 PASS + 03 tooling; 34B commits |
 | B plan | 2026-07-18 | approved | User 43A — M1–M6 execution plan |
 | B tech audit | 2026-07-18 | passed | 05 PASS — 44A–47A applied |
-| B→C | 2026-07-18 | pending | 06 done — await user checkpoint |
+| B→C | 2026-07-18 | passed | User 50B — push then 07-build M1 T1.1 (D-S014-EV010-b-to-c-push) |

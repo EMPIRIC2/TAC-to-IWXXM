@@ -78,8 +78,9 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: pending
-    note: Phase B→C checkpoint — start M1 T1.1 after user approve
+    status: in_progress
+    started: '2026-07-18'
+    note: B→C passed (50B push-then-07); M1 T1.1
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1413,6 +1414,16 @@ stages:
         milestone: M11
         notes: "T11.4 complete — H0c+H4+H5 green on staging; TC-M001–M005 pass; Phase 4 gate criteria met on main"
     delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: in_progress
+      started_at: "2026-07-18"
+      mode: full
+      note: "B→C passed (D-S014-EV010-b-to-c-push / 50B); push then M1 T1.1 in_progress"
+      active_milestone: M1
+      active_task: T1.1
+      active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1438,6 +1449,7 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-18 S014/EV-010 delta 07-build in_progress — B→C passed (50B push-then-07); push about to happen; Phase C M1 T1.1 (D-S014-EV010-b-to-c-push)"
     - "2026-07-14 S011/EV-008 PR-EV-008 prepared as #716 open (retitle/update evolve→main; NO merge, NO deploy); T6.4 in_progress (12 done / 13 pending); 13 blocked on merge approval"
     - "2026-07-14 S011/EV-008 D-S011-EV008-deploy-check-A — 12 approved; T6.4 still in_progress (12 done / 13 pending); preparing PR-EV-008; 13 blocked on merge"
     - "2026-07-14 S011/EV-008 T6.3 completed approved_with_waivers (D-S011-EV008-f7-approve); active_task T6.4 in_progress (12-verify-deploy)"
@@ -1844,6 +1856,21 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S014-EV010-b-to-c-push
+  date: "2026-07-18"
+  timestamp: "2026-07-18"
+  stage: 16-evolve
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: "Pass B→C — push branch then start 07-build (option B)"
+  summary: >
+    User chose option B at Phase B→C checkpoint (50B): push
+    evolve/EV-010-package-publish-validation to origin first, then start
+    07-build at M1 T1.1. EV-010 checkpoints.phase_b and gates.b_to_c passed;
+    handed off to 07-build Phase C. Orchestrator remains 16-evolve.
+  status: confirmed
 - id: D-S014-EV010-e10-42
   date: "2026-07-18"
   session_id: S014-package-publish-validation
@@ -4162,9 +4189,18 @@ evolve_cycles:
       note: 49A — rust/maturin/xsdata rule, Makefile stubs, uv deps, hook
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/06-tech-tooling.md
+    07-build:
+      status: in_progress
+      mode: full
+      started: '2026-07-18'
+      completed: null
+      note: "B→C passed (50B); push then M1 T1.1 in_progress"
+      active_milestone: M1
+      active_task: T1.1
+      active_task_status: in_progress
   gates:
     a_to_b: pending
-    b_to_c: pending
+    b_to_c: passed
     c_to_d: pending
     deploy: pending
   checkpoints:
@@ -4172,10 +4208,12 @@ evolve_cycles:
     phase_b:
       status: passed
       completed: '2026-07-18'
-      note: "04–06 done; await B→C for 07"
+      note: "04–06 done; B→C passed (D-S014-EV010-b-to-c-push / 50B)"
     phase_c: pending
     phase_d: pending
     deploy: pending
+  notes:
+  - "2026-07-18 D-S014-EV010-b-to-c-push — B→C passed (option B); push evolve/EV-010 to origin about to happen; Phase C starting at M1 T1.1"
   adrs:
   - docs/adr/ADR-026-msgspec-http-openapi.md
   - docs/adr/ADR-027-xsdata-codegen.md
@@ -5418,6 +5456,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "2026-07-18 D-S014-EV010-b-to-c-push — B→C passed (50B); push to origin about to happen; Phase C 07-build M1 T1.1 starting"
   - "2026-07-18 S014/EV-010 — 6c3fd7a 06-tech-tooling done (49A); phase_b passed; current_stage=07-build pending B→C"
   - "2026-07-18 S014/EV-010 — 5dbfeb9 Phase B commit; 06-tech-tooling in_progress"
   - "2026-07-18 S014/EV-010 — Phase A commits 1711e75 + 0717f13; 04-tech-plan in_progress on evolve/EV-010-package-publish-validation"
