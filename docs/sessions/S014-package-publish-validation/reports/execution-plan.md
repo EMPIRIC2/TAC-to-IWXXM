@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C (build) |
 | **Active milestone** | M1 — Layer cost matrix + benches |
-| **Active task** | T1.1 in_progress |
-| **Tasks** | 0 / ~39 pending |
+| **Active task** | T1.2 pending |
+| **Tasks** | 1 / ~39 (T1.1 done) |
 | **Last updated** | 2026-07-18 |
 
 ## Tech Stack Summary
@@ -40,7 +40,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Bench harness stubs: lint, convert IR, XSD, Schematron, HTTP DTO encode (pydantic map vs msgspec) on single METAR, bulletin, golden IWXXM | TC-F11-002 | — | in_progress |
+| T1.1 | Test | Bench harness stubs: lint, convert IR, XSD, Schematron, HTTP DTO encode (pydantic map vs msgspec) on single METAR, bulletin, golden IWXXM | TC-F11-002 | — | completed |
 | T1.2 | Code | Implement harness; write p50/p95 to `docs/sessions/S014-…/reports/layer-cost-matrix.md` | F11 acc1; context R5 | T1.1 | pending |
 | T1.3 | Config | Record absolute baselines used for 0.85× / 1.0× hard gates | E10-35 | T1.2 | pending |
 
