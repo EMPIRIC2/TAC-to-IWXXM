@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M3 T3.4 pending — T3.3 complete (1c3e8fe xmloxide + validate_iwxxm)"
+    note: "M3 T3.5 pending — T3.4 complete (b679f69 runtime schema subset E10-34)"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,9 +1420,9 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M3 T3.4 pending — T3.3 complete (1c3e8fe xmloxide + validate_iwxxm)"
+      note: "M3 T3.5 pending — T3.4 complete (b679f69 runtime schema subset E10-34)"
       active_milestone: M3
-      active_task: T3.4
+      active_task: T3.5
       active_task_status: pending
     - status: completed
       session_id: S004-issue-555-feedback
@@ -1449,6 +1449,7 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
     - "M3 T3.3 complete (1c3e8fe) — xmloxide + validate_iwxxm; next T3.4"
     - "2026-07-18 S014/EV-010 T3.3 in progress — implementing xmloxide path after stack decision A"
     - "2026-07-18 S014/EV-010 T3.2 complete — F13 parity suite stubs vs lxml golden corpus (947020b); active_task T3.3 pending"
@@ -4257,9 +4258,9 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M3 T3.4 pending — T3.3 complete (1c3e8fe xmloxide + validate_iwxxm)"
+      note: "M3 T3.5 pending — T3.4 complete (b679f69 runtime schema subset E10-34)"
       active_milestone: M3
-      active_task: T3.4
+      active_task: T3.5
       active_task_status: pending
   gates:
     a_to_b: pending
@@ -4276,6 +4277,7 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
   - "M3 T3.3 complete (1c3e8fe) — xmloxide + validate_iwxxm; next T3.4"
   - "2026-07-18 S014/EV-010 T3.3 in progress — implementing xmloxide path after stack decision A"
   - "2026-07-18 S014/EV-010 T3.2 complete — F13 parity suite stubs vs lxml golden corpus (947020b); active_task T3.3 pending"
@@ -5545,6 +5547,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
   - "M3 T3.3 complete (1c3e8fe) — xmloxide + validate_iwxxm; next T3.4"
   - "2026-07-18 S014/EV-010 T3.2 complete — F13 parity suite stubs vs lxml golden corpus (947020b); active_task T3.3 pending"
   - "2026-07-18 S014/EV-010 M3 T3.1–T3.2 complete (1770086 / 947020b); next T3.3 Rust validate_iwxxm"
@@ -5803,6 +5806,14 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: b679f698203a9d908a0517ab9cf5473faaa26403
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.4] config: bundle runtime schema subset into iwxxm-validate wheel"
+    stage: "07-build / 16-evolve"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 12
+    timestamp: "2026-07-18T22:42:44Z"
   - sha: 1c3e8fe2bf92f7985a9f62bdb419fab3a409192c
     branch: evolve/EV-010-package-publish-validation
     message: "[T3.3] feat: xmloxide native validate_iwxxm (D-S014-T33-crates)"
