@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M3 T3.5 pending — T3.4 complete (b679f69 runtime schema subset E10-34)"
+    note: "M3 T3.6 pending — T3.5 complete (a57001b soft benches / 0.85x hard path)"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,9 +1420,9 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M3 T3.5 pending — T3.4 complete (b679f69 runtime schema subset E10-34)"
+      note: "M3 T3.6 pending — T3.5 complete (a57001b soft benches / 0.85x hard path)"
       active_milestone: M3
-      active_task: T3.5
+      active_task: T3.6
       active_task_status: pending
     - status: completed
       session_id: S004-issue-555-feedback
@@ -1449,6 +1449,7 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "M3 T3.5 complete (a57001b) — soft native vs lxml benches / 0.85x hard-gate path; next T3.6"
     - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
     - "M3 T3.3 complete (1c3e8fe) — xmloxide + validate_iwxxm; next T3.4"
     - "2026-07-18 S014/EV-010 T3.3 in progress — implementing xmloxide path after stack decision A"
@@ -4258,9 +4259,9 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M3 T3.5 pending — T3.4 complete (b679f69 runtime schema subset E10-34)"
+      note: "M3 T3.6 pending — T3.5 complete (a57001b soft benches / 0.85x hard path)"
       active_milestone: M3
-      active_task: T3.5
+      active_task: T3.6
       active_task_status: pending
   gates:
     a_to_b: pending
@@ -4277,6 +4278,7 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "M3 T3.5 complete (a57001b) — soft native vs lxml benches / 0.85x hard-gate path; next T3.6"
   - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
   - "M3 T3.3 complete (1c3e8fe) — xmloxide + validate_iwxxm; next T3.4"
   - "2026-07-18 S014/EV-010 T3.3 in progress — implementing xmloxide path after stack decision A"
@@ -5547,6 +5549,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "M3 T3.5 complete (a57001b) — soft native vs lxml benches / 0.85x hard-gate path; next T3.6"
   - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
   - "M3 T3.3 complete (1c3e8fe) — xmloxide + validate_iwxxm; next T3.4"
   - "2026-07-18 S014/EV-010 T3.2 complete — F13 parity suite stubs vs lxml golden corpus (947020b); active_task T3.3 pending"
@@ -5806,6 +5809,14 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: a57001b3cf6effeb544ab7349c5e59c43a3fb3bf
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.5] test: soft native vs lxml benches and 0.85x hard-gate path"
+    stage: "07-build / 16-evolve"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 6
+    timestamp: "2026-07-18T22:50:32Z"
   - sha: b679f698203a9d908a0517ab9cf5473faaa26403
     branch: evolve/EV-010-package-publish-validation
     message: "[T3.4] config: bundle runtime schema subset into iwxxm-validate wheel"
