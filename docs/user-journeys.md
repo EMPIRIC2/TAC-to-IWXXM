@@ -2,8 +2,8 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI;
-> S013 / EV-009 F9/F10 decode + preview UX
-> **Last updated**: 2026-07-16
+> S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP
+> **Last updated**: 2026-07-18
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -33,11 +33,14 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-019 | Admin routes removed / BYO operator surface | apps/frontend | F7 / M4 | T2 / **T3** |
 | UJ-020 | Value-aware decode + plain-language summary | apps/frontend | F9 | T0 / T2 / **T3** |
 | UJ-021 | IWXXM preview pane + terminator quick fix | apps/frontend | F10 | T2 / **T3** |
+| UJ-022 | Operator convert/validate after msgspec HTTP | apps/frontend | F11 | T2 / **T3** / H6′ |
+| UJ-023 | PyPI release tag → install smoke | CI / maintainer | F12–F14 | CI |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
 | UJ-DEV-003b | Maintain tac2iwxxm + iwxxm-us pins | Maintainer workflow | F6, M2 | CI |
 | UJ-DEV-004 | Package CI for tac-validate + iwxxm-validate | `make test` / CI | F2, F6, M5 | T0 / CI |
+| UJ-DEV-005 | pip install published packages + convert/validate | clean venv | F12–F14 | T0 / CI |
 | UJ-OPS-001 | Deploy Render stack (API + static + worker) | render.yaml | M4, F8 | T3 (staging) |
 
 **E2E tiers**:
@@ -502,6 +505,44 @@ flow (T2); live T3 smoke.
 
 ---
 
+### UJ-022: Operator Convert/Validate After msgspec HTTP (F11)
+
+**Actor**: Operator
+
+**Goal**: Convert and validate continue to work from the workbench after high-churn routes
+move to msgspec (ADR-026); any breaking JSON shapes are reflected in the FE.
+
+**Steps**:
+
+1. Log in (BYO) and open the workbench.
+2. Convert a golden METAR (product/profile as today) — result card / preview pane populate.
+3. Run validate on produced IWXXM — pass/fail + issues render.
+4. Lint and decode update live (debounce) without auth regressions.
+
+**Acceptance**: Functional parity with pre-msgspec operator paths; TypeScript types match
+OpenAPI/alias schemas; H4–H5 still green after Render redeploy.
+
+**Automated tests**: Contract + Vitest (T2); Playwright H6′ (T3); live connectivity H4–H5.
+
+---
+
+### UJ-023: PyPI Release Tag → Install Smoke (F12–F14)
+
+**Actor**: Maintainer / CI
+
+**Goal**: Pushing a version tag publishes the package and a clean venv can install it.
+
+**Steps**:
+
+1. Tag `tac-validate-v0.1.0` (or `iwxxm-validate-v*` / `tac2iwxxm-v*`).
+2. GitHub Actions OIDC trusted-publishing workflow builds sdist+wheel and publishes to PyPI.
+3. CI (or follow-up job) `pip install <pkg>==0.1.0` in a clean venv and runs a one-liner smoke
+   (lint / validate_iwxxm / convert).
+
+**Acceptance**: Tag → publish → install smoke green for all three packages. **Tier: CI**.
+
+---
+
 ## Developer Journeys
 
 ### UJ-DEV-001: Clone and Run Monorepo
@@ -557,6 +598,25 @@ Extended: sync may include **iwxxm-us** pin updates via manifest (in addition to
 
 ---
 
+### UJ-DEV-005: pip install Published Packages + Convert/Validate (F12–F14)
+
+**Actor**: Developer / third party
+
+**Goal**: Install from PyPI (or built wheel) and convert/validate without the monorepo.
+
+**Steps**:
+
+1. `python -m venv .venv && source .venv/bin/activate`
+2. `pip install tac2iwxxm==0.1.0` — convert a sample METAR string to IWXXM.
+3. `pip install tac-validate==0.1.0` — lint the same TAC; structured issues.
+4. `pip install iwxxm-validate==0.1.0` — validate produced XML (schemas bundled).
+5. Optionally `pip install 'tac2iwxxm[validate]'` — extras pull both validators.
+
+**Acceptance**: All install+smoke steps succeed offline for schema-bundled validate.
+**Tier: T0 / CI**.
+
+---
+
 ## Operations Journeys
 
 ### UJ-OPS-001: Deploy Render stack (API + static + F8 worker)
@@ -578,3 +638,4 @@ live smoke (T7.4) when scheduled.
 - S008 05 (2026-07-12): UJ-014 + UJ-OPS-001 aligned to ADR-018 F8 worker (D-S008-05-batch1)
 - S011 / EV-008 (2026-07-13): UJ-004 unified filter; UJ-013 expanded; UJ-015–019 added; UJ-014
   Implemented note; admin journeys retired via UJ-019
+- S014 / EV-010 (2026-07-18): UJ-022/023 + UJ-DEV-005 (F11–F14 msgspec HTTP + PyPI)

@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-13 (S011 — CodeMirror 6 approved for F7 workbench)
+> **Last updated**: 2026-07-18 (S014 — msgspec HTTP + Rust iwxxm-validate + PyPI)
 
 ## Runtime Dependencies
 
@@ -11,7 +11,8 @@
 |---------|---------|---------|--------|
 | fastapi | HTTP API | MIT | PyPI |
 | uvicorn | ASGI server | BSD | PyPI |
-| pydantic | Schemas | MIT | PyPI |
+| pydantic | OpenAPI + low-churn schemas (ADR-026) | MIT | PyPI |
+| msgspec | High-churn HTTP DTO decode/encode (ADR-026) | Apache-2.0 | PyPI |
 | httpx | HTTP client | BSD | PyPI |
 | httpx2 | Starlette TestClient (dev) | BSD | PyPI |
 | python-multipart | File uploads | Apache-2.0 | PyPI |
@@ -35,7 +36,7 @@ Package license: **MIT**. No FastAPI/Supabase imports.
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| msgspec | Structured issue / fix models | Apache-2.0 | **Required** (ADR-016); reuse `tac_validate.codec` Encoder/Decoder; pydantic only at HTTP |
+| msgspec | Structured issue / fix models | Apache-2.0 | **Required** (ADR-016); reuse `tac_validate.codec` Encoder/Decoder |
 
 Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron.
 
@@ -43,11 +44,13 @@ Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schema
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| lxml | XSD + Schematron execution | BSD | PyPI |
+| lxml | Transitional / parity reference (Python path) | BSD | PyPI |
 | msgspec | Issue / report Struct models (ADR-016) | Apache-2.0 | PyPI |
+| PyO3 / maturin / rustc | Rust XSD + Schematron core (F13 / #699) | Apache-2.0 / MIT | Required for published wheel |
+| Schema assets | Bundled pinned IWXXM XSD/SCH | WMO terms | Copied from `vendor/schemas/*` at build |
 
-Package license: **MIT**. Vendor schemas read-only. No FastAPI/Supabase.
-Schematron: lxml when possible; xslt2 → `SCHEMATRON_SKIPPED` (D-S008-T21-sch).
+Package license: **MIT**. Vendor schemas read-only in monorepo; wheel may bundle pins.
+Schematron: **native Rust** target (F13); lxml isoschematron retained for parity until cutover.
 
 ### packages/gifts — Removed at F6 cutover
 
@@ -139,3 +142,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S008 05 (2026-07-12): iwxxm-us = NWS HTTP 3.0 + URL/hash; cargo/maturin required; F8 deployable
 - S008 M1 (2026-07-12): msgspec added to tac2iwxxm + tac-validate with shared Encoder/Decoder modules; iwxxm-us vendored from NWS `3.0` tarball pin
   (D-S008-05-batch1)
+- S014 / EV-010 (2026-07-18): backend msgspec high-churn (ADR-026); iwxxm-validate Rust+bundle;
+  PyPI publish deps (maturin/OIDC)

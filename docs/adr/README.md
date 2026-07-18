@@ -29,6 +29,7 @@
 | [ADR-023](ADR-023-wire-convert-params.md) | Wire dormant FileConverter convert parameters | Accepted |
 | [ADR-024](ADR-024-operator-input-modes.md) | AHL / COLLECT input modes, log_level, nil reasons | Accepted |
 | [ADR-025](ADR-025-plain-language-decode-terminator-ux.md) | Deterministic plain-language decode summary + terminator lint UX | Accepted |
+| [ADR-026](ADR-026-msgspec-http-openapi.md) | msgspec on high-churn HTTP; pydantic for OpenAPI (amends ADR-016) | Accepted |
 
 ## Process
 

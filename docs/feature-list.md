@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-15 (S011 / ADR-023 — wire dormant convert params)
+> **Last updated**: 2026-07-18 (S014 / EV-010 — package publish + validation stack)
 
 ## Summary
 
@@ -18,6 +18,10 @@
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018/019; `apps/worker` |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
+| F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Planned | Product | S014 / EV-010; #703 |
+| F12 | Publishable TAC product validation (`tac-validate`) | Planned | Product | S014 / EV-010; #698 |
+| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Planned | Product | S014 / EV-010; #699 |
+| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Planned | Product | S014 / EV-010; #693 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -54,10 +58,14 @@
 - **S008 package amend**: Core logic moves to **`packages/iwxxm-validate`** (XSD + Schematron
   against `vendor/schemas/*`). `apps/backend` validation routes become a **thin HTTP wrapper**.
   Schematron remains on **IWXXM only** — TAC quality is **F6/`packages/tac-validate`**, not F2.
+- **S014 / EV-010 delta (F13)**: Engine gains a **Rust core** (well-formed + XSD + native
+  Schematron/SVRL) with Python SDK; pinned schemas **bundled** in the wheel; published to
+  PyPI as `iwxxm-validate` `0.1.0`. Backend `/validate` remains a thin wrapper. See F13.
 - **Acceptance (this amend)**: Library API + CI tests; backend thin wrappers for validate
   endpoints call `iwxxm-validate` (no behavior regression vs current F2).
 - **Limitations**: Schema bundles must match vendored snapshot version.
-- **Source**: `apps/backend` validation routers; [Context: realtime-tac-ingest](context/realtime-tac-ingest.md)
+- **Source**: `apps/backend` validation routers; [Context: realtime-tac-ingest](context/realtime-tac-ingest.md);
+  [Context: package-publish-validation](context/package-publish-validation.md)
 
 ### F3: Airport Data Services
 
@@ -303,6 +311,79 @@
 - **Source**: S013 intake E9-5/E9-7; Batch 2 (all recommended, 2026-07-16);
   [evolve-decisions §EV-009](decisions/evolve-decisions.md)
 
+### F11: Validation Stack Perf Review + msgspec HTTP + XSD Codegen
+
+- **Status**: **Planned** — S014 / EV-010 (#703 + ADR-026).
+- **What it does**:
+  1. **Layer cost matrix** — measure TAC lint, convert IR, XSD, Schematron, and HTTP DTO
+     encode/decode (pydantic map vs msgspec) on single METAR, bulletin, and golden IWXXM;
+     commit under session reports / `docs/context/`.
+  2. **msgspec on high-churn HTTP** — `POST /api/v1/convert`, `/convert-zip`,
+     `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac` use msgspec for **response**
+     encode (+ optional Struct after multipart assemble); request intake stays multipart
+     FastAPI Form/File. Auth/admin/work-sessions stay pydantic. **Pydantic retained for OpenAPI**
+     schema integrations via thin aliases/export (ADR-026). Breaking **response** JSON shapes
+     allowed; FE types updated same cycle; full Render 12–13.
+  3. **Production XSD codegen** — generate msgspec Structs / Rust types from published
+     IWXXM **XSD** (modelling UML = provenance only); regenerate in CI on vendor pin bumps.
+     TAC has **no** official model to import.
+  4. Dedup orchestrator vs `iwxxm-validate` call paths so convert+validate does not double-run
+     heavy layers.
+- **Acceptance**:
+  1. Layer cost matrix with p50/p95 (or blocked-with-reason) committed
+  2. High-churn routes on msgspec; OpenAPI still published; FE types updated
+  3. Soft benches during build; hard-fail at publish/cutover: library lint→convert→XSD+SCH
+     vs lxml baseline; msgspec HTTP ≤ prior pydantic map path; wheel smokes
+  4. Codegen from XSD in CI; TAC explicitly out of codegen scope
+- **Source**: Issues #703; E10-1..27; ADR-016 amended by ADR-026;
+  [Context: package-publish-validation](context/package-publish-validation.md)
+
+### F12: Publishable TAC Product Validation (`tac-validate`)
+
+- **Status**: **Planned** — S014 / EV-010 (#698).
+- **What it does**: Design + publish **`tac-validate`** `0.1.0` to PyPI — standalone TAC
+  product validation for all seven F6 products with structured issues (code, severity, span).
+  Aggressively encode mined rules from `docs/domain/` (cite-only for paywalled Annex text):
+  **full depth** METAR/SPECI/TAF; SIGMET/AIRMET/VAA/TCA structured templates + coverage-matrix
+  gates. CLI `tac-validate` for CI. No IWXXM/XSD in this package.
+- **Acceptance**:
+  1. `pip install tac-validate==0.1.0` in clean venv; library + CLI smoke
+  2. METAR/SPECI/TAF full checklist rules; other products template+gate coverage documented
+  3. Negative fixtures with useful diagnostics; CI wheel + fixture suite
+  4. Tag `tac-validate-v0.1.0` → trusted-publishing workflow
+- **Source**: #698; E10-4/9/19/21; docs/domain/rules/COVERAGE_MATRIX.md
+
+### F13: Fast IWXXM Validate (Rust Core + Schematron + PyPI)
+
+- **Status**: **Planned** — S014 / EV-010 (#699).
+- **What it does**: Publish **`iwxxm-validate`** `0.1.0` with Rust core (PyO3/maturin):
+  well-formed + XSD + **native Rust Schematron/SVRL**; Python SDK
+  `validate_iwxxm(...)`; pinned `vendor/schemas/*` **bundled** in the wheel; version/profile
+  selection aligned with manifest pins. Parity suite vs current lxml isoschematron.
+  Backend F2 wrapper calls the SDK.
+- **Acceptance**:
+  1. `pip install iwxxm-validate==0.1.0`; `validate_iwxxm` returns structured issues for
+     well-formed + XSD + Schematron
+  2. Benchmarks show meaningful speedup vs current Python path; hard gate at publish
+  3. Parity tests vs golden IWXXM corpus; IWXXM-US profile supported when pin present
+  4. Tag `iwxxm-validate-v0.1.0` → trusted publishing; no TAC parsing in package
+- **Source**: #699; E10-6/7/19/22; ADR-017
+
+### F14: Publish `tac2iwxxm` + Validate Extras + PyPI/Release CI
+
+- **Status**: **Planned** — S014 / EV-010 (#693).
+- **What it does**: Publish **`tac2iwxxm`** `0.1.0` to PyPI (conversion library + optional
+  PyO3). Extra **`tac2iwxxm[validate]`** depends on `tac-validate` + `iwxxm-validate`.
+  Shared GitHub Actions **OIDC trusted publishing** — one workflow per package on version
+  tags (`tac2iwxxm-v*`, `tac-validate-v*`, `iwxxm-validate-v*`). Documented public API +
+  wheel smoke tests.
+- **Acceptance**:
+  1. `pip install tac2iwxxm==0.1.0` converts sample METAR → IWXXM
+  2. `pip install tac2iwxxm[validate]` pulls both validators
+  3. Tag-driven publish CI green; README install/usage
+  4. UJ-DEV-005 / UJ-023 smokes pass
+- **Source**: #693; E10-5/19/20/25
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout
@@ -379,6 +460,10 @@
 | F8 | — | Worker poller | Store/quarantine | Background Worker |
 | F9 | Yes (decode panel + plain language) | Yes (`decode-tac` `summary`) | Yes | Yes (static + API) |
 | F10 | Yes (preview pane + quick fix) | Yes (lint `info` severity) | Yes | Yes (static) |
+| F11 | Yes (msgspec FE types) | Yes (msgspec high-churn) | Yes (benches) | Yes (API + static) |
+| F12 | — | PyPI `tac-validate` + CLI | Yes | — |
+| F13 | — | PyPI `iwxxm-validate` + SDK | Yes | Via API image |
+| F14 | — | PyPI `tac2iwxxm[+validate]` | Yes | Via API image |
 | M1–M6 | — | — | Yes | Yes |
 
 | F6 capability | Library | HTTP API | Web UI | CI metrics |

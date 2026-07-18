@@ -177,3 +177,21 @@
 | EV-009/F10-R3 | Quick fix | "Add '='" on console line + editor affordance on hint span | ADR-025 |
 | EV-009/F10-R4 | Severity | `info` severity added; MISSING_TERMINATOR error→info; `ok` keyed to error only | ADR-025 |
 | EV-009/F10-R5 | Soft-fail copy | LAYER12_SOFT_FAIL presented as plain-language status, code secondary | ADR-025 |
+
+## EV-010 / F11–F14 — Package publish + validation stack (2026-07-18)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-010/F11-R1 | HTTP msgspec | Response encode + optional post-Form Structs; multipart Form intake unchanged; auth/sessions pydantic | ADR-026 |
+| EV-010/F11-R2 | OpenAPI | Keep pydantic for OpenAPI aliases/export; no dual runtime validation | ADR-026 |
+| EV-010/F11-R3 | Codegen | Production types from published XSD; UML provenance; TAC out of scope | confirmed |
+| EV-010/F11-R4 | Perf gates | Soft benches in build; hard-fail at publish (lib path + HTTP msgspec) | confirmed |
+| EV-010/F11-R5 | Must-ship | Keep 11B; 04 milestones; AskQuestion only if blocked (02 S1.M1=A) | confirmed |
+| EV-010/F12-R1 | Domain depth | All 7 products; METAR/SPECI/TAF full; others template+gates; cite-only paywall | confirmed |
+| EV-010/F12-R2 | PyPI | `tac-validate` `0.1.0`; tag `tac-validate-v0.1.0` | confirmed |
+| EV-010/F13-R1 | Rust Schematron | Native Rust Schematron/SVRL; parity vs lxml; schemas bundled in wheel | confirmed |
+| EV-010/F13-R2 | PyPI | `iwxxm-validate` `0.1.0`; tag `iwxxm-validate-v0.1.0` | confirmed |
+| EV-010/F14-R1 | Extras | `tac2iwxxm[validate]` → tac-validate + iwxxm-validate | confirmed |
+| EV-010/F14-R2 | Publish CI | OIDC trusted publishing per package version tag | confirmed |
+| EV-010/R-deploy | Render | Full 12–13 redeploy (msgspec HTTP); PyPI publish in same cycle | confirmed |
+| EV-010/R-config | Config/deploy docs | Minimal PyPI OIDC notes in config-spec + deploy (02 S8.M1=A) | confirmed |
