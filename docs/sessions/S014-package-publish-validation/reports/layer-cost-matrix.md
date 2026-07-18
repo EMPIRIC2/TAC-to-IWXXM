@@ -10,48 +10,48 @@
 
 | Layer | single_metar | bulletin | golden_iwxxm |
 |-------|-------------:|---------:|-------------:|
-| lint | 0.000002 | 0.000002 | blocked |
-| convert_ir | 0.000022 | 0.000021 | blocked |
-| xsd | 0.000040 | 0.000034 | 0.000036 |
-| schematron | 0.000036 | 0.000035 | 0.000035 |
-| http_dto_pydantic | 0.000007 | 0.000006 | 0.000006 |
-| http_dto_msgspec | 0.000002 | 0.000002 | 0.000002 |
+| lint | 0.000002 | 0.000004 | blocked |
+| convert_ir | 0.000027 | 0.000040 | blocked |
+| xsd | 0.000063 | 0.000034 | 0.000056 |
+| schematron | 0.000034 | 0.000034 | 0.000047 |
+| http_dto_pydantic | 0.000007 | 0.000008 | 0.000009 |
+| http_dto_msgspec | 0.000003 | 0.000003 | 0.000003 |
 
 ## p50 by layer x fixture (seconds)
 
 | Layer | single_metar | bulletin | golden_iwxxm |
 |-------|-------------:|---------:|-------------:|
-| lint | 0.000002 | 0.000002 | blocked |
-| convert_ir | 0.000020 | 0.000020 | blocked |
-| xsd | 0.000033 | 0.000033 | 0.000033 |
-| schematron | 0.000034 | 0.000034 | 0.000034 |
-| http_dto_pydantic | 0.000006 | 0.000006 | 0.000006 |
-| http_dto_msgspec | 0.000002 | 0.000002 | 0.000002 |
+| lint | 0.000002 | 0.000003 | blocked |
+| convert_ir | 0.000021 | 0.000032 | blocked |
+| xsd | 0.000033 | 0.000033 | 0.000032 |
+| schematron | 0.000034 | 0.000033 | 0.000034 |
+| http_dto_pydantic | 0.000006 | 0.000006 | 0.000008 |
+| http_dto_msgspec | 0.000002 | 0.000003 | 0.000003 |
 
 ## Human-readable p95
 
-- **lint** / **single_metar**: 2.2 us (ok)
-- **lint** / **bulletin**: 2.1 us (ok)
+- **lint** / **single_metar**: 2.1 us (ok)
+- **lint** / **bulletin**: 3.8 us (ok)
 - **lint** / **golden_iwxxm**: — (blocked; lint requires TAC; golden IWXXM is XML-only)
-- **convert_ir** / **single_metar**: 22.1 us (ok)
-- **convert_ir** / **bulletin**: 21.4 us (ok)
+- **convert_ir** / **single_metar**: 26.6 us (ok)
+- **convert_ir** / **bulletin**: 39.8 us (ok)
 - **convert_ir** / **golden_iwxxm**: — (blocked; convert_ir requires TAC; golden IWXXM is XML-only)
-- **xsd** / **single_metar**: 40.0 us (ok; converted from tac)
+- **xsd** / **single_metar**: 63.0 us (ok; converted from tac)
 - **xsd** / **bulletin**: 33.8 us (ok; converted from tac)
-- **xsd** / **golden_iwxxm**: 35.6 us (ok; fixture xml)
-- **schematron** / **single_metar**: 36.0 us (ok; converted from tac)
-- **schematron** / **bulletin**: 34.8 us (ok; converted from tac)
-- **schematron** / **golden_iwxxm**: 34.9 us (ok; fixture xml)
-- **http_dto_pydantic** / **single_metar**: 6.6 us (ok; converted from tac)
-- **http_dto_pydantic** / **bulletin**: 6.1 us (ok; converted from tac)
-- **http_dto_pydantic** / **golden_iwxxm**: 6.0 us (ok; fixture xml)
-- **http_dto_msgspec** / **single_metar**: 2.3 us (ok; converted from tac)
-- **http_dto_msgspec** / **bulletin**: 1.8 us (ok; converted from tac)
-- **http_dto_msgspec** / **golden_iwxxm**: 1.9 us (ok; fixture xml)
+- **xsd** / **golden_iwxxm**: 55.8 us (ok; fixture xml)
+- **schematron** / **single_metar**: 34.4 us (ok; converted from tac)
+- **schematron** / **bulletin**: 34.1 us (ok; converted from tac)
+- **schematron** / **golden_iwxxm**: 47.3 us (ok; fixture xml)
+- **http_dto_pydantic** / **single_metar**: 7.2 us (ok; converted from tac)
+- **http_dto_pydantic** / **bulletin**: 8.3 us (ok; converted from tac)
+- **http_dto_pydantic** / **golden_iwxxm**: 8.6 us (ok; fixture xml)
+- **http_dto_msgspec** / **single_metar**: 2.7 us (ok; converted from tac)
+- **http_dto_msgspec** / **bulletin**: 2.9 us (ok; converted from tac)
+- **http_dto_msgspec** / **golden_iwxxm**: 3.3 us (ok; fixture xml)
 
 ## Dominant layer
 
-**xsd** on **single_metar** leads p95 at **40.0 us** (evidence contradicts Schematron-as-dominant assumption).
+**xsd** on **single_metar** leads p95 at **63.0 us** (evidence contradicts Schematron-as-dominant assumption).
 
 ### Caveat — Schematron path
 
@@ -60,9 +60,9 @@ Current `iwxxm-validate` lxml isoschematron **skips** XSLT2 Schematron for `2025
 
 ## Mean p95 by layer (ok cells)
 
-- **lint**: 2.1 us (n=2)
-- **convert_ir**: 21.8 us (n=2)
-- **xsd**: 36.4 us (n=3)
-- **schematron**: 35.2 us (n=3)
-- **http_dto_pydantic**: 6.2 us (n=3)
-- **http_dto_msgspec**: 2.0 us (n=3)
+- **lint**: 3.0 us (n=2)
+- **convert_ir**: 33.2 us (n=2)
+- **xsd**: 50.9 us (n=3)
+- **schematron**: 38.6 us (n=3)
+- **http_dto_pydantic**: 8.0 us (n=3)
+- **http_dto_msgspec**: 3.0 us (n=3)

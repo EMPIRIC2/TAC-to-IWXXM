@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C (build) |
-| **Active milestone** | M1 — Layer cost matrix + benches |
-| **Active task** | T1.3 pending |
-| **Tasks** | 2 / ~39 (T1.1–T1.2 done) |
+| **Active milestone** | M2 — tac-validate domain depth + CLI + publish prep |
+| **Active task** | T2.1 pending |
+| **Tasks** | 3 / ~39 (M1 complete) |
 | **Last updated** | 2026-07-18 |
 
 ## Tech Stack Summary
@@ -42,7 +42,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T1.1 | Test | Bench harness stubs: lint, convert IR, XSD, Schematron, HTTP DTO encode (pydantic map vs msgspec) on single METAR, bulletin, golden IWXXM | TC-F11-002 | — | completed |
 | T1.2 | Code | Implement harness; write p50/p95 to `docs/sessions/S014-…/reports/layer-cost-matrix.md` | F11 acc1; context R5 | T1.1 | completed |
-| T1.3 | Config | Record absolute baselines used for 0.85× / 1.0× hard gates | E10-35 | T1.2 | pending |
+| T1.3 | Config | Record absolute baselines used for 0.85× / 1.0× hard gates | E10-35 | T1.2 | completed |
 
 ### M2 — `tac-validate` domain depth + CLI + publish prep (F12)
 
