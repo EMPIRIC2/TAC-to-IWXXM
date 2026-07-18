@@ -1,0 +1,12 @@
+{
+  "generator": "xsdata+xsdata-pydantic",
+  "adr": "ADR-027",
+  "versions": ["2023-1", "2025-2"],
+  "manifest_pin": {
+    "upstream_repo": "wmo-im/iwxxm",
+    "tag": "v2025-2",
+    "commit_sha": "35180cbe3bec0bc536a78714dd78d2e7ba60931f",
+    "local_path": "vendor/schemas/iwxxm",
+    "tree_sha256": "660380ff2a3077e46803dabde20c2667e1f900297b13a6f15b283dca561c64cd"
+  }
+}

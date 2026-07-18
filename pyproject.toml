@@ -105,3 +105,9 @@ omit = [
 fail_under = 98
 show_missing = true
 skip_covered = false
+
+[tool.ruff]
+extend-exclude = [
+  # ADR-027 xsdata output (T3.6+) — regenerate via make codegen-iwxxm-xsd
+  "packages/shared/src/metar_shared/iwxxm_xsd/v*",
+]

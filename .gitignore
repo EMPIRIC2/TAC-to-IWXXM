@@ -183,3 +183,7 @@ packages/iwxxm-validate/src/iwxxm_validate/schemas/iwxxm/
 packages/iwxxm-validate/src/iwxxm_validate/schemas/iwxxm-us/
 packages/iwxxm-validate/src/iwxxm_validate/schemas/LAST_SYNC.json
 
+# ADR-027 — xsdata pydantic output (regenerate via make codegen-iwxxm-xsd; T3.7 commits)
+packages/shared/src/metar_shared/iwxxm_xsd/v*/
+packages/shared/src/metar_shared/iwxxm_xsd/LAST_RUN.json
+

@@ -179,12 +179,8 @@ bench-validation-stack:
 	fi
 	$(UV) run python scripts/bench/validation_stack.py
 
-# F11 / ADR-027 — xsdata codegen from pinned XSD (T3.6). Stub until pipeline exists.
+# F11 / ADR-027 — xsdata codegen from pinned XSD (T3.6).
 codegen-iwxxm-xsd:
-	@if [ ! -f scripts/codegen/iwxxm_xsd.py ]; then \
-		echo "error: scripts/codegen/iwxxm_xsd.py missing (execution plan T3.6)"; \
-		exit 1; \
-	fi
 	$(UV) run python scripts/codegen/iwxxm_xsd.py
 
 test-unit-iwxxm-validate:
