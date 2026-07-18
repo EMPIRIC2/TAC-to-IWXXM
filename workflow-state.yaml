@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: B→C passed (50B push-then-07); M1 T1.1
+    note: "M1 done (T1.1–T1.3); next M2 T2.1"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,10 +1420,10 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "B→C passed (D-S014-EV010-b-to-c-push / 50B); push then M1 T1.1 in_progress"
-      active_milestone: M1
-      active_task: T1.1
-      active_task_status: in_progress
+      note: "M1 complete (T1.1–T1.3); active milestone M2; next task T2.1; ci-cd.yml only on main/dev — push alone did not run GHA; local format-check + perf tests green"
+      active_milestone: M2
+      active_task: T2.1
+      active_task_status: pending
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1449,6 +1449,7 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-18 S014/EV-010 M1 complete (T1.1–T1.3; 9f9f67b/3ad66cd/70d157b); next M2 T2.1; ci-cd.yml triggers only on main/dev — push alone did not run GHA; local format-check + perf tests green"
     - "2026-07-18 S014/EV-010 delta 07-build in_progress — B→C passed (50B push-then-07); push about to happen; Phase C M1 T1.1 (D-S014-EV010-b-to-c-push)"
     - "2026-07-14 S011/EV-008 PR-EV-008 prepared as #716 open (retitle/update evolve→main; NO merge, NO deploy); T6.4 in_progress (12 done / 13 pending); 13 blocked on merge approval"
     - "2026-07-14 S011/EV-008 D-S011-EV008-deploy-check-A — 12 approved; T6.4 still in_progress (12 done / 13 pending); preparing PR-EV-008; 13 blocked on merge"
@@ -3418,6 +3419,33 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/layer-cost-matrix.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "F11 layer-cost p50/p95 matrix (T1.2 / 3ad66cd)"
+- path: docs/sessions/S014-package-publish-validation/reports/perf-baselines.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "F11 hard-gate absolute baselines E10-35 (T1.3 / 70d157b)"
+- path: docs/sessions/S014-package-publish-validation/reports/perf-baselines.yaml
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "F11 hard-gate absolute baselines E10-35 YAML (T1.3 / 70d157b)"
 - path: docs/sessions/S014-package-publish-validation/reports/06-tech-tooling.md
   kind: report
   stage: 06-tech-tooling
@@ -4194,10 +4222,10 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "B→C passed (50B); push then M1 T1.1 in_progress"
-      active_milestone: M1
-      active_task: T1.1
-      active_task_status: in_progress
+      note: "M1 complete (T1.1–T1.3); active milestone M2; next task T2.1"
+      active_milestone: M2
+      active_task: T2.1
+      active_task_status: pending
   gates:
     a_to_b: pending
     b_to_c: passed
@@ -4213,6 +4241,7 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "2026-07-18 M1 complete (T1.1–T1.3); SHAs 9f9f67b/3ad66cd/70d157b + chore 59a65bd; next M2 T2.1; ci-cd.yml only main/dev — no GHA on push; local format-check + perf green"
   - "2026-07-18 D-S014-EV010-b-to-c-push — B→C passed (option B); push evolve/EV-010 to origin about to happen; Phase C starting at M1 T1.1"
   adrs:
   - docs/adr/ADR-026-msgspec-http-openapi.md
@@ -4242,6 +4271,24 @@ evolve_cycles:
     stage: 06-tech-tooling
     session_id: S014-package-publish-validation
     status: completed
+  - path: docs/sessions/S014-package-publish-validation/reports/layer-cost-matrix.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "F11 layer-cost p50/p95 matrix (T1.2)"
+  - path: docs/sessions/S014-package-publish-validation/reports/perf-baselines.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "F11 hard-gate absolute baselines E10-35 (T1.3)"
+  - path: docs/sessions/S014-package-publish-validation/reports/perf-baselines.yaml
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "F11 hard-gate absolute baselines E10-35 machine-readable (T1.3)"
   issues: []
 
 - id: EV-001
@@ -5456,6 +5503,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "2026-07-18 S014/EV-010 M1 complete — commits 59a65bd/9f9f67b/3ad66cd/70d157b; next M2 T2.1; ci-cd.yml only triggers on main/dev — push alone did not run GHA; local format-check + perf tests green"
   - "2026-07-18 D-S014-EV010-b-to-c-push — B→C passed (50B); push to origin about to happen; Phase C 07-build M1 T1.1 starting"
   - "2026-07-18 S014/EV-010 — 6c3fd7a 06-tech-tooling done (49A); phase_b passed; current_stage=07-build pending B→C"
   - "2026-07-18 S014/EV-010 — 5dbfeb9 Phase B commit; 06-tech-tooling in_progress"
@@ -5708,6 +5756,34 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 70d157b
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T1.3] config: record F11 hard-gate absolute baselines (E10-35)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    files_changed: 5
+    timestamp: "2026-07-18T14:58:00Z"
+  - sha: 3ad66cd
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T1.2] feat: implement layer-cost harness and commit p50/p95 matrix"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    files_changed: 4
+    timestamp: "2026-07-18T14:56:35Z"
+  - sha: 9f9f67b
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T1.1] test: add F11 layer-cost bench harness stubs (TC-F11-002)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    files_changed: 5
+    timestamp: "2026-07-18T14:54:49Z"
+  - sha: 59a65bd
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: record B→C pass (50B) and start 07-build M1 T1.1"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    files_changed: 2
+    timestamp: "2026-07-18T14:52:46Z"
   - sha: 6c3fd7a
     branch: evolve/EV-010-package-publish-validation
     message: "[EV-010] chore(skills): Rust/maturin/xsdata tech tooling (06)"
