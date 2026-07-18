@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M1 done (T1.1–T1.3); next M2 T2.1"
+    note: "M2 done (T2.1–T2.5 through 866ca20); M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,10 +1420,10 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M1 complete (T1.1–T1.3); active milestone M2; next task T2.1; ci-cd.yml only on main/dev — push alone did not run GHA; local format-check + perf tests green"
-      active_milestone: M2
-      active_task: T2.1
-      active_task_status: pending
+      note: "M2 done (T2.1–T2.5 through 866ca20); M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
+      active_milestone: M3
+      active_task: T3.1
+      active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1449,6 +1449,8 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-18 S014/EV-010 user 52:A — continue 07-build at M3 T3.1 after M2 complete"
+    - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
     - "2026-07-18 S014/EV-010 M1 complete (T1.1–T1.3; 9f9f67b/3ad66cd/70d157b); next M2 T2.1; ci-cd.yml triggers only on main/dev — push alone did not run GHA; local format-check + perf tests green"
     - "2026-07-18 S014/EV-010 delta 07-build in_progress — B→C passed (50B push-then-07); push about to happen; Phase C M1 T1.1 (D-S014-EV010-b-to-c-push)"
     - "2026-07-14 S011/EV-008 PR-EV-008 prepared as #716 open (retitle/update evolve→main; NO merge, NO deploy); T6.4 in_progress (12 done / 13 pending); 13 blocked on merge approval"
@@ -1857,6 +1859,17 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S014-EV010-user-52a
+  date: "2026-07-18"
+  timestamp: "2026-07-18"
+  stage: 07-build
+  skill: 07-build
+  skill_id: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: "Continue 07-build at M3 T3.1 after M2 complete (user 52:A)"
+  summary: "2026-07-18 S014/EV-010 user 52:A — continue 07-build at M3 T3.1 after M2 complete"
+  status: confirmed
 - id: D-S014-EV010-b-to-c-push
   date: "2026-07-18"
   timestamp: "2026-07-18"
@@ -4222,10 +4235,10 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M1 complete (T1.1–T1.3); active milestone M2; next task T2.1"
-      active_milestone: M2
-      active_task: T2.1
-      active_task_status: pending
+      note: "M2 done (T2.1–T2.5 through 866ca20); M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
+      active_milestone: M3
+      active_task: T3.1
+      active_task_status: in_progress
   gates:
     a_to_b: pending
     b_to_c: passed
@@ -4241,6 +4254,8 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "2026-07-18 S014/EV-010 user 52:A — continue 07-build at M3 T3.1 after M2 complete"
+  - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
   - "2026-07-18 M1 complete (T1.1–T1.3); SHAs 9f9f67b/3ad66cd/70d157b + chore 59a65bd; next M2 T2.1; ci-cd.yml only main/dev — no GHA on push; local format-check + perf green"
   - "2026-07-18 D-S014-EV010-b-to-c-push — B→C passed (option B); push evolve/EV-010 to origin about to happen; Phase C starting at M1 T1.1"
   adrs:
@@ -5503,6 +5518,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
   - "2026-07-18 S014/EV-010 M1 complete — commits 59a65bd/9f9f67b/3ad66cd/70d157b; next M2 T2.1; ci-cd.yml only triggers on main/dev — push alone did not run GHA; local format-check + perf tests green"
   - "2026-07-18 D-S014-EV010-b-to-c-push — B→C passed (50B); push to origin about to happen; Phase C 07-build M1 T1.1 starting"
   - "2026-07-18 S014/EV-010 — 6c3fd7a 06-tech-tooling done (49A); phase_b passed; current_stage=07-build pending B→C"
@@ -5756,6 +5772,54 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 866ca20
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T2.5] test: clean-venv wheel install smoke for tac-validate"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-18T15:11:11Z"
+  - sha: 1deb7f3
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T2.4] feat: add tac-validate CLI console script and README"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 5
+    timestamp: "2026-07-18T15:09:49Z"
+  - sha: c3e176e
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T2.3] test: add tac-validate CLI smoke tests (xfail until T2.4)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T15:07:53Z"
+  - sha: b52942b
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T2.2] feat: encode F12 product checklist and template-gate rules"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 6
+    timestamp: "2026-07-18T15:06:55Z"
+  - sha: 000db19
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T2.1] test: add F12 negative fixture pack and diagnostic xfails"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 35
+    timestamp: "2026-07-18T15:04:55Z"
+  - sha: ceb6d4a
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: record M1 complete and advance EV-010 to M2 T2.1"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T15:00:17Z"
   - sha: 70d157b
     branch: evolve/EV-010-package-publish-validation
     message: "[T1.3] config: record F11 hard-gate absolute baselines (E10-35)"

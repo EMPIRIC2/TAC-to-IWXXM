@@ -153,18 +153,18 @@ test-unit-tac2iwxxm:
 build-tac2iwxxm-native:
 	cd packages/tac2iwxxm && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
 
-# F13 — scaffolded in T3.1; until then this target errors with a clear message.
+# F13 — optional PyO3 extension (requires rustc + maturin). E10-36 / T3.1.
 build-iwxxm-validate-native:
-	@if [ ! -f packages/iwxxm-validate/rust/Cargo.toml ]; then \
-		echo "error: packages/iwxxm-validate/rust not scaffolded yet (execution plan T3.1)"; \
-		exit 1; \
-	fi
 	cd packages/iwxxm-validate && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
 
 test-tac2iwxxm-native: build-tac2iwxxm-native
 	TAC2IWXXM_REQUIRE_RUST=1 $(UV) run pytest \
 		packages/tac2iwxxm/tests/test_native_scaffold.py \
 		packages/tac2iwxxm/tests/test_pyo3_hotspots.py -v --no-cov
+
+test-iwxxm-validate-native: build-iwxxm-validate-native
+	IWXXM_VALIDATE_REQUIRE_RUST=1 $(UV) run pytest \
+		packages/iwxxm-validate/tests/test_native_scaffold.py -v --no-cov
 
 # M1 — layer cost matrix harness (T1.1–T1.3). Script lands in build; stub until then.
 bench-validation-stack:

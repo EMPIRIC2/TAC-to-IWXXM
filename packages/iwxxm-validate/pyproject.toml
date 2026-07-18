@@ -17,6 +17,13 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/iwxxm_validate"]
 
+# Maturin builds the optional PyO3 cdylib (F13 / E10-36). Pure-Python hatch wheel
+# remains the default ``uv sync`` path; CI rust job runs ``maturin develop``.
+[tool.maturin]
+manifest-path = "rust/Cargo.toml"
+python-source = "src"
+module-name = "iwxxm_validate._rust"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
