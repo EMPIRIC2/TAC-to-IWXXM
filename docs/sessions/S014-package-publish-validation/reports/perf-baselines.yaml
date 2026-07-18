@@ -26,6 +26,21 @@ ceilings_p95_s:
   lib_path_hard: 0.000081175  # 0.85 * lib_path_lxml
   http_msgspec_hard: 0.0000062  # 1.0 * http_pydantic_map
 
+# T3.5 — soft-bench wiring for native validate_iwxxm (E10-35).
+# Observed ratios are measured in tests/perf/test_t35_*; re-record absolute
+# numbers on publish runners before T6.6 hard-fail.
+native_soft_bench:
+  iwxxm_version: "2023-1"
+  profile: annex3
+  hard_env: IWXXM_VALIDATE_HARD_PERF
+  validate_combined_note: >
+    Soft head-to-head vs same-run lxml validate (xsd+schematron). Native
+    Schematron evaluates real rules; lxml may SCHEMATRON_SKIPPED — ratio soft
+    warnings expected until T6.6 re-baselines against native-capable reference.
+  lib_path_ratio: 0.85
+  publish_hard_task: T6.6
+
 caveats:
   - schematron_xslt2_skipped_d_s008_t21_sch
   - rebaseline_after_f13_rust_schematron
+  - t35_soft_benches_native_vs_lxml
