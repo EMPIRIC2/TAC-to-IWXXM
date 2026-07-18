@@ -5884,6 +5884,14 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 01cc7ac4dcdc4d0dc4f701af474d6ab59d9535a9
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: workflow-state after T3.8 — next T3.9"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T23:56:15Z"
   - sha: 8af040b048856c8092a5ac2cb946385dc2302cba
     branch: evolve/EV-010-package-publish-validation
     message: "[T3.8] feat: bind /validate to validate_iwxxm and skip duplicate XSD/SCH"
