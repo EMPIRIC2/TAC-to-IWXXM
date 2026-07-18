@@ -5830,6 +5830,14 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 9b50356c38406debb5bbf8d347ae8190495fa829
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: workflow-state after T3.7a — next T3.7"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T23:40:44Z"
   - sha: b1e53c9a10d1ba86c131cb1150f281db362e4e7d
     branch: evolve/EV-010-package-publish-validation
     message: "[T3.7a] test: codegen regen smoke for importable pydantic models"
