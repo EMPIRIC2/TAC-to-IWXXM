@@ -1,4 +1,4 @@
-"""T2.3 / F12: CLI smoke tests for ``tac-validate`` entry point (xfail until T2.4)."""
+"""T2.3 / F12: CLI smoke tests for ``tac-validate`` entry point."""
 
 from __future__ import annotations
 
@@ -7,30 +7,23 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 ACCEPT_METAR = FIXTURES / "accept" / "metar_basic.tac"
 NEG_METAR = FIXTURES / "negative" / "metar" / "missing_cccc.tac"
 
-_T24 = "T2.4: add tac-validate console script + CLI module"
 
-
-@pytest.mark.xfail(strict=True, reason=_T24)
 def test_cli_module_main_exits_zero_on_accept() -> None:
     from tac_validate.cli import main
 
     assert main(["--product", "METAR", str(ACCEPT_METAR)]) == 0
 
 
-@pytest.mark.xfail(strict=True, reason=_T24)
 def test_cli_module_main_exits_nonzero_on_negative() -> None:
     from tac_validate.cli import main
 
     assert main(["--product", "METAR", str(NEG_METAR)]) == 1
 
 
-@pytest.mark.xfail(strict=True, reason=_T24)
 def test_cli_json_stdout_roundtrip() -> None:
     import io
     from contextlib import redirect_stdout
@@ -47,7 +40,6 @@ def test_cli_json_stdout_roundtrip() -> None:
     assert any(i["code"] == "MISSING_CCCC" for i in payload["issues"])
 
 
-@pytest.mark.xfail(strict=True, reason=_T24)
 def test_console_script_on_path() -> None:
     proc = subprocess.run(
         ["tac-validate", "--help"],

@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C (build) |
 | **Active milestone** | M2 — tac-validate domain depth + CLI + publish prep |
-| **Active task** | T2.3 pending |
-| **Tasks** | 5 / ~39 (T2.1–T2.2 done) |
+| **Active task** | T2.5 pending |
+| **Tasks** | 7 / ~39 (T2.1–T2.4 done) |
 | **Last updated** | 2026-07-18 |
 
 ## Tech Stack Summary
@@ -50,9 +50,9 @@
 |------|------|-------------|-------------|------------|--------|
 | T2.1 | Test | Negative fixtures + diagnostics for METAR/SPECI/TAF full checklist; SIGMET/AIRMET/VAA/TCA template+gate coverage | TC-F12-001; E10-21 | — | completed |
 | T2.2 | Code | Encode mined rules from `docs/domain/` (cite-only Annex); coverage matrix gates | F12; COVERAGE_MATRIX | T2.1 | completed |
-| T2.3 | Test | CLI smoke tests for `tac-validate` entry point | F12 acc1; E10-39 | — | pending |
-| T2.4 | Code | Console script + README install/usage | F12 | T2.3 | pending |
-| T2.5 | Test | Clean-venv wheel install smoke (local) | UJ-DEV-005 | T2.4 | pending |
+| T2.3 | Test | CLI smoke tests for `tac-validate` entry point | F12 acc1; E10-39 | — | completed |
+| T2.4 | Code | Console script + README install/usage | F12 | T2.3 | completed |
+| T2.5 | Test | Clean-venv wheel install smoke (local) | UJ-DEV-005 | T2.4 | in_progress |
 
 ### M3 — `iwxxm-validate` Rust core + schema subset + xsdata codegen (F13 + F11.3)
 

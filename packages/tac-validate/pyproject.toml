@@ -9,6 +9,9 @@ dependencies = [
   "msgspec>=0.19",
 ]
 
+[project.scripts]
+tac-validate = "tac_validate.cli:main"
+
 [build-system]
 requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
