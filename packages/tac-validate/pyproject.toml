@@ -22,6 +22,9 @@ packages = ["src/tac_validate"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = [
+  "slow: longer local/CI smokes (clean-venv wheel installs)",
+]
 
 [tool.coverage.run]
 branch = true
