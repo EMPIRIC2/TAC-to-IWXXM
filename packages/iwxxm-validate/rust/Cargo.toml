@@ -2,7 +2,7 @@
 name = "iwxxm_validate_rust"
 version = "0.1.0"
 edition = "2021"
-description = "PyO3 native core for iwxxm-validate (F13 / E10-36)"
+description = "PyO3 native core for iwxxm-validate (F13 / E10-36 / D-S014-T33-crates)"
 license = "MIT"
 rust-version = "1.74"
 
@@ -12,6 +12,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = { version = "0.23", features = ["extension-module"] }
+xmloxide = { version = "0.4.3", default-features = false }
 
 [package.metadata.maturin]
 python-source = "../src"

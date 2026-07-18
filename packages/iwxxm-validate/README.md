@@ -5,33 +5,36 @@ IWXXM XSD + Schematron validation engine (F2 / F13). MIT licensed.
 ## Usage
 
 ```python
-from iwxxm_validate import validate
+from iwxxm_validate import validate, validate_iwxxm
 
+# lxml path (parity / no rustc)
 report = validate(xml, iwxxm_version="2023-1", profile="annex3")
+
+# F13 SDK — prefers Rust (xmloxide) when the extension is built; else lxml
+report = validate_iwxxm(xml, iwxxm_version="2023-1", profile="annex3")
 if not report.ok:
     for issue in report.issues:
         print(issue.code, issue.message)
 ```
 
 Consumes `vendor/schemas/*` read-only. See ADR-015 / ADR-016 / D-S008-T21-sch
-(xslt2 Schematron → `SCHEMATRON_SKIPPED` on the lxml path; optional Docker/Saxon via
-`IWXXM_VALIDATE_SCHEMATRON_DOCKER=1`).
+(xslt2 Schematron → `SCHEMATRON_SKIPPED` on the **lxml** path only). Native
+`validate_iwxxm` evaluates Schematron via **xmloxide** (D-S014-T33-crates / E10-46)
+and does not emit `SCHEMATRON_SKIPPED`.
 
 ## Optional native extension (F13)
 
-Default install is pure Python (hatch). The PyO3 crate under `rust/` is built with
-maturin when you want the native scaffold (XSD + Schematron hotspots land in later
-tasks):
+Default install is pure Python (hatch). The PyO3 crate under `rust/` uses
+**xmloxide** 0.4.x for well-formed + XSD + native ISO Schematron:
 
 ```bash
 make build-iwxxm-validate-native
 # or: cd packages/iwxxm-validate && uv run maturin develop --manifest-path rust/Cargo.toml --uv
 ```
 
-Check availability:
-
 ```python
-from iwxxm_validate import rust_available
+from iwxxm_validate import rust_available, validate_iwxxm
 
-assert rust_available()  # True after maturin develop
+assert rust_available()
+report = validate_iwxxm(xml, iwxxm_version="2023-1", levels=("schematron",))
 ```

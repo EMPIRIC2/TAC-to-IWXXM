@@ -47,10 +47,12 @@ Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schema
 | lxml | Transitional / parity reference (Python path) | BSD | PyPI |
 | msgspec | Issue / report Struct models (ADR-016) | Apache-2.0 | PyPI |
 | PyO3 / maturin / rustc | Rust XSD + Schematron core (F13 / #699) | Apache-2.0 / MIT | Required for published wheel |
+| **xmloxide** 0.4.x | Native well-formed + XSD + ISO Schematron (D-S014-T33-crates) | MIT | crates.io (`default-features = false`) |
 | Schema assets | Bundled pinned IWXXM XSD/SCH | WMO terms | Copied from `vendor/schemas/*` at build |
 
 Package license: **MIT**. Vendor schemas read-only in monorepo; wheel may bundle pins.
-Schematron: **native Rust** target (F13); lxml isoschematron retained for parity until cutover.
+Schematron: **native Rust via xmloxide** (F13 / E10-22); lxml isoschematron retained for parity until cutover.
+Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system deps / no xslt2 SCH).
 
 ### packages/gifts — Removed at F6 cutover
 
@@ -146,4 +148,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S008 M1 (2026-07-12): msgspec added to tac2iwxxm + tac-validate with shared Encoder/Decoder modules; iwxxm-us vendored from NWS `3.0` tarball pin
   (D-S008-05-batch1)
 - S014 / EV-010 (2026-07-18): backend msgspec high-churn (ADR-026); iwxxm-validate Rust+bundle;
-  PyPI publish deps (maturin/OIDC); **xsdata + xsdata-pydantic** for XSD codegen (ADR-027)
+  PyPI publish deps (maturin/OIDC); **xsdata + xsdata-pydantic** for XSD codegen (ADR-027);
+  **xmloxide 0.4.x** native XSD+Schematron (D-S014-T33-crates / E10-46)

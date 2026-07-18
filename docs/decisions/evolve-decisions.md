@@ -75,6 +75,7 @@ Also: F11 layer cost matrix / benches as gate before deepening Rust paths.
 | E10-43 | Decision | 05 S2.M1 | deploy/config matrix workflow (45A) |
 | E10-44 | Decision | 05 S3.M1 | Add T5.6 H0c CORS re-verify (46B) |
 | E10-45 | Decision | 05 S4.L1 | Add T3.7a + T3.8a tests (47A) |
+| E10-46 | Decision | T3.3 crate stack | **A — xmloxide 0.4.x** (D-S014-T33-crates); reject B quick-xml+xsd-schema, C libxml |
 | E10-46 | Decision | 06 tooling | 49A — rust/maturin/xsdata rule, Makefile stubs, uv deps, hook |
 
 ### Stage log

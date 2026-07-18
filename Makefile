@@ -164,7 +164,8 @@ test-tac2iwxxm-native: build-tac2iwxxm-native
 
 test-iwxxm-validate-native: build-iwxxm-validate-native
 	IWXXM_VALIDATE_REQUIRE_RUST=1 $(UV) run pytest \
-		packages/iwxxm-validate/tests/test_native_scaffold.py -v --no-cov
+		packages/iwxxm-validate/tests/test_native_scaffold.py \
+		packages/iwxxm-validate/tests/test_tc_f13_001_parity.py -v --no-cov
 
 # M1 — layer cost matrix harness (T1.1–T1.3). Script lands in build; stub until then.
 bench-validation-stack:
