@@ -4,8 +4,105 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 13
-active_session: null
+session_counter: 14
+active_session:
+  id: S014-package-publish-validation
+  type: feature
+  status: active
+  started_at: '2026-07-18'
+  intent: >-
+    Validation stack perf (#703); publish tac-validate / iwxxm-validate / tac2iwxxm
+    (#698/#699/#693); domain rules; PyPI + release-tag CI/CD
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-010
+  branch: evolve/EV-010-package-publish-validation
+  artifacts_dir: docs/sessions/S014-package-publish-validation
+  context_briefs:
+  - docs/context/package-publish-validation.md
+  standing_docs_touched: []
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: Session open + scoped brief; Phase 0–1 intake locked E10-1..15
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-07-18'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: F11–F14 + ADR-026 + standing doc deltas; Phase A checkpoint pending
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: PASS — 13 auto + S2.M1/S8.M1/S1.M1 all-A; multipart msgspec clarified
+  - stage: 03-plan-tooling
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: Delta D — PyPI/msgspec rules + hooks + pypi-release-checklist skill
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+    note: Next after Phase A checkpoint
+  - stage: 05-verify-tech
+    required: true
+    mode: delta
+    status: pending
+  - stage: 06-tech-tooling
+    required: true
+    mode: delta
+    status: pending
+    note: Rust/maturin/schema bundle/PyPI workflow deps
+  - stage: 07-build
+    required: true
+    mode: full
+    status: pending
+  - stage: 08-verify-build
+    required: true
+    mode: full
+    status: pending
+  - stage: 09-qa
+    required: true
+    mode: full
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: pending
+  - stage: 11-verify-impl
+    required: true
+    mode: full
+    status: pending
+  - stage: 12-verify-deploy
+    required: true
+    mode: adapted
+    status: pending
+    note: PyPI trusted publishing + release tags + Render deploy checklist
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: pending
+    note: Included per E10-15 msgspec HTTP + Render redeploy
+  skipped_stages: []
+  current_stage: 04-tech-plan
+  completed_at: null
+
+sessions:
 
 sessions:
 
@@ -1033,6 +1130,16 @@ stages:
     - .cursor/agents/spec-consultant.md
     notes:
     - "10 guardrails installed; hooks smoke-tested; connectivity linked via plan-adherence + 07-build"
+    delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      note: Delta D — PyPI/msgspec rules + hooks + pypi-release-checklist skill
+      artifacts:
+      - docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
 
   04-tech-plan:
     status: completed
@@ -1694,6 +1801,73 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S014-EV010-e10-33
+  date: "2026-07-18"
+  category: Decision
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 03-plan-tooling
+  decision: >-
+    E10-33 tooling plan D — full rules/hooks + pypi_release_guard + pypi-release-checklist skill
+- id: D-S014-EV010-02-medium-aaa
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 02-verify-plan
+  decision: >-
+    S2.M1=A multipart Form + msgspec responses; S8.M1=A config/deploy PyPI notes;
+    S1.M1=A keep must-ship. 02 PASS.
+- id: D-S014-EV010-e10-24-27
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 01-requirements
+  decision: >-
+    E10-24=A soft/hard perf gates; E10-25=A OIDC PyPI; E10-26=A UJ-022/023/DEV-005;
+    E10-27=A write standing docs. 01-requirements deltas written.
+- id: D-S014-EV010-e10-19-23
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 01-requirements
+  decision: >-
+    E10-19=A 0.1.0 per-package tags; E10-20=A tac2iwxxm[validate]; E10-21=A tiered
+    domain depth; E10-22=A native Rust Schematron; E10-23=A XSD codegen + CI regen.
+- id: D-S014-EV010-e10-17-18
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 01-requirements
+  decision: >-
+    E10-17=A msgspec on convert/validate/lint/decode; pydantic auth/admin + OpenAPI.
+    E10-18=A thin pydantic aliases/export for OpenAPI; FE types updated same cycle.
+- id: D-S014-EV010-e10-15c
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 16-evolve
+  decision: >-
+    E10-15=C: move high-churn validation from pydantic to msgspec (faster);
+    breaking HTTP OK; include full Render 12–13 (amends E10-3/E10-13). Phase 0–1
+    complete; start 01-requirements.
+- id: D-S014-EV010-phase1-11to14
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 16-evolve
+  decision: >-
+    E10-11=B must-ship everything; E10-12=A F11–F14; E10-13=A routing skip 13;
+    E10-14=A ADR-026 msgspec internals; E10-15 pending (user chose explain).
+- id: D-S014-EV010-intake-e10
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 16-evolve
+  decision: >-
+    Phase 0 intake E10-1..10: one cycle measure-first #703 then packages #698→#699→#693;
+    PyPI names kept; tac2iwxxm[validate]; schema bundle; Rust Schematron design+impl-if-time;
+    msgspec deepen backend; aggressive domain rules; IWXXM codegen prototype; PyPI+tags CI;
+    skip Render 13. Fn F11–F14 + routing + must/stretch pending approval.
 - id: D-S013-EV009-close
   date: "2026-07-18"
   stage: 16-evolve
@@ -3160,6 +3334,15 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
+  kind: report
+  stage: 03-plan-tooling
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "E10-33 tooling plan D — PyPI/msgspec rules + hooks + pypi-release-checklist"
 - path: docs/sessions/S011-f7-operator-ui/reports/pr-review.md
   kind: stage-report
   session_id: S011-f7-operator-ui
@@ -3825,6 +4008,76 @@ artifacts:
   status: complete
 
 evolve_cycles:
+- id: EV-010
+  session_id: S014-package-publish-validation
+  cycle_type: feature
+  feature_ids: [F11, F12, F13, F14]
+  title: "Package publish + validation stack (#703/#698/#699/#693)"
+  status: in_progress
+  started: "2026-07-18"
+  completed: null
+  scope_summary: |
+    Phase 0–1 locked 2026-07-18 E10-1..15. Must-ship ALL (11B). F11–F14. Routing 01–13
+    (PyPI + Render). ADR-026: msgspec over pydantic for high-churn validation (breaking OK).
+    E10-15=C supersedes earlier skip-13.
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 01-requirements
+    - 02-verify-plan
+    - 03-plan-tooling
+    - 04-tech-plan
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    skipped_stages: []
+  current_stage: 04-tech-plan
+  stages:
+    00-context:
+      status: in_progress
+      started: "2026-07-18"
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/session-brief.md
+      - docs/sessions/S014-package-publish-validation/routing-plan.md
+      - docs/context/package-publish-validation.md
+      - docs/decisions/evolve-decisions.md
+    03-plan-tooling:
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      note: Delta D — PyPI/msgspec rules + hooks + pypi-release-checklist skill
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  - path: docs/sessions/S014-package-publish-validation/reports/evolve-summary.md
+    status: pending
+  - path: docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
+    kind: report
+    stage: 03-plan-tooling
+    session_id: S014-package-publish-validation
+    status: completed
+  issues: []
+
 - id: EV-001
   session_id: S001-convert-send-buttons
   cycle_type: feature
@@ -4876,9 +5129,9 @@ evolve_cycles:
   cycle_type: feature
   feature_ids: [F9, F10]
   title: "Value-aware live decode + plain-language summary (F9); workbench IWXXM preview pane + lint UX clarity (F10)"
-  status: in_progress
+  status: completed
   started: "2026-07-16"
-  completed:
+  completed: "2026-07-18"
   scope_summary: |
     User feedback on F7 workbench (post-#716 merge). In one cycle:
     - F9 — Value-aware decode segments for all 7 TAC products (METAR/SPECI/TAF rich;

@@ -1,0 +1,40 @@
+---
+description: ADR-026 msgspec HTTP boundary — responses + post-Form Structs; multipart Form intake unchanged
+globs:
+  - apps/backend/**/*.py
+  - apps/frontend/**/*.{ts,tsx}
+  - packages/**/*.py
+  - docs/api-contract.md
+alwaysApply: false
+---
+
+# msgspec HTTP Boundary (ADR-026 / F11)
+
+Traces to `[Corpus: adr]` ADR-026, `[Corpus: api]` serialization table, E10-28.
+
+## High-churn routes
+
+`POST /api/v1/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`,
+`/decode-tac`:
+
+| Layer | Technology |
+|-------|------------|
+| Request intake | FastAPI **`Form` / `File`** multipart — **unchanged** |
+| After assemble | Optional **msgspec Struct** validation of assembled fields |
+| Response encode | **msgspec** |
+| OpenAPI | Thin **pydantic** aliases / JSON Schema export only — **no** dual runtime validation |
+
+## Do not
+
+- Claim msgspec JSON-decodes the multipart body (`msgspec.json.decode` on raw form bytes).
+- Put msgspec on auth / admin / work-sessions routes — those stay **pydantic**.
+- Dual-run pydantic + msgspec response validation on the same path.
+
+## Do
+
+- Keep packages (`tac2iwxxm`, `tac-validate`, `iwxxm-validate`) on msgspec IR/reports (ADR-016).
+- Update FE OpenAPI/client types in the **same cycle** when response shapes break.
+- Re-run H4–H5 after Render redeploy when F11 HTTP contract changes
+  ([connectivity-gates.md](../../skills/connectivity-gates.md)).
+
+Raise `[Contradiction]` if code or docs say msgspec validates multipart request bodies directly.
