@@ -100,8 +100,9 @@ except ImportError:
     from utilities.security import verify_supabase_token
     from utilities.tac_parser import extract_airport_code
 
-# Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033)
-from iwxxm_validate import validate as iwxxm_validate_fn
+# Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033 / F13)
+# Prefer validate_iwxxm (Rust hot path + lxml fallback) over legacy lxml-only validate.
+from iwxxm_validate import validate_iwxxm as iwxxm_validate_fn
 from tac2iwxxm import BulletinSplitError
 from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
@@ -1258,13 +1259,21 @@ async def validate_comprehensive(
                         f"Valid options: {[l.name for l in ValidationLayer]}",
                     )
 
-        # Run comprehensive validation
+        # F11.4 / T3.8: skip orchestrator XSD+Schematron when the package SDK already ran them.
+        skip_heavy: set[ValidationLayer] = set()
+        if "xsd" in pkg_levels:
+            skip_heavy.add(ValidationLayer.XML_SCHEMA)
+        if "schematron" in pkg_levels:
+            skip_heavy.add(ValidationLayer.SCHEMATRON)
+        orch_layers = [layer for layer in selected_layers if layer not in skip_heavy]
+
+        # Run remaining (non-duplicated) orchestrator layers
         orchestrator = get_validation_orchestrator()
         result = orchestrator.validate_complete(
             tac_text=manual_text,
             xml_content=xml_content,
             version=iwxxm_version,
-            layers=selected_layers,
+            layers=orch_layers,
             stop_on_error=stop_on_error,
         )
 
@@ -1887,22 +1896,26 @@ async def convert(
                         code="SOFT_PREVIEW_PARTIAL",
                     )
 
-                # Optional output validation (Layers 3-7)
+                # Optional output validation (Layers 3-7); F11.4: SDK owns XSD+Schematron
                 validation_layers_passed = [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
 
                 if validation_orchestrator:
+                    pkg_out = iwxxm_validate_fn(
+                        iwxxm_content,
+                        iwxxm_version=iwxxm_version,
+                        profile=profile or "annex3",
+                        levels=("xsd", "schematron"),
+                    )
                     validation_result = validation_orchestrator.validate(
                         iwxxm_content,
                         iwxxm_version=iwxxm_version,
                         layers=[
                             ValidationLayer.XML_WELLFORMED,
-                            ValidationLayer.XML_SCHEMA,
-                            ValidationLayer.SCHEMATRON,
                             ValidationLayer.GML_REFERENCES,
                             ValidationLayer.WMO_CODELISTS,
                         ],
                     )
-                    if validation_result.passed:
+                    if pkg_out.ok and validation_result.passed:
                         validation_layers_passed.extend(
                             [
                                 ValidationLayer.XML_WELLFORMED,
@@ -2376,16 +2389,32 @@ async def convert(
                 layers_passed = [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
                 validation_errors_dict = {}
 
-                # Optionally validate output IWXXM XML (Layers 3-7)
+                # Optionally validate output IWXXM XML (Layers 3-7); F11.4: SDK owns XSD+SCH
                 if validate_output and validation_orchestrator:
                     try:
+                        pkg_out = iwxxm_validate_fn(
+                            xml_text,
+                            iwxxm_version=iwxxm_version,
+                            profile=profile or "annex3",
+                            levels=("xsd", "schematron"),
+                        )
+                        orch_layers = [
+                            layer
+                            for layer in ValidationLayer
+                            if layer
+                            not in (
+                                ValidationLayer.XML_SCHEMA,
+                                ValidationLayer.SCHEMATRON,
+                            )
+                        ]
                         validation_result = validation_orchestrator.validate_complete(
                             tac_text=(data or "").strip(),
                             xml_content=xml_text,
                             version=iwxxm_version,
+                            layers=orch_layers,
                             stop_on_error=False,  # Collect all issues
                         )
-                        if validation_result.is_valid:
+                        if pkg_out.ok and validation_result.is_valid:
                             # Add all passed validation layers
                             for layer in ValidationLayer:
                                 layers_passed.append(layer.value)

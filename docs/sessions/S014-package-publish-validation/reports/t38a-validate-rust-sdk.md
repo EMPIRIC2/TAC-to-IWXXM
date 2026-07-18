@@ -3,7 +3,7 @@
 **Session:** S014 / EV-010  
 **Task:** T3.8a  
 **Date:** 2026-07-18  
-**Status:** completed (tests; T3.8 implements)
+**Status:** completed (green via T3.8)
 
 ## Pass criteria
 
