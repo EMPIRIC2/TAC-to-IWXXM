@@ -1,7 +1,7 @@
-"""TC-F12-001 / E10-21: negative fixture pack + diagnostics (T2.1).
+"""TC-F12-001 / E10-21: negative fixture pack + diagnostics (T2.1/T2.2).
 
-Manifest + fixture files always assert. Lint diagnostic expectations are
-``xfail(strict=True)`` until T2.2 encodes ``check_product_rules``.
+Manifest + fixture files always assert. Lint diagnostics assert expected codes
+and spans once ``check_product_rules`` is encoded (T2.2).
 """
 
 from __future__ import annotations
@@ -16,8 +16,6 @@ from tac_validate import PRODUCTS, lint
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 MANIFEST_PATH = FIXTURES / "manifest.json"
-
-_T22_REASON = "T2.2: encode check_product_rules for F12 checklist/template gates"
 
 
 def _load_manifest() -> dict[str, Any]:
@@ -91,16 +89,17 @@ def test_template_gate_products_covered() -> None:
 
 @pytest.mark.parametrize("case", _accept_cases(), ids=_case_ids(_accept_cases()))
 def test_accept_fixtures_pass_parse_gate(case: dict[str, Any]) -> None:
-    """Accept pack must clear parse-gate (product keyword present)."""
+    """Accept pack must clear parse-gate and product rules."""
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert not any(i.code == "MISSING_PRODUCT_KEYWORD" for i in report.issues)
     assert not any(i.code == "EMPTY_TAC" for i in report.issues)
+    assert report.ok is True
+    assert not any(i.severity == "error" for i in report.issues)
 
 
-@pytest.mark.xfail(strict=True, reason=_T22_REASON)
 @pytest.mark.parametrize("case", _negative_cases(), ids=_case_ids(_negative_cases()))
 def test_negative_fixtures_emit_expected_diagnostics(case: dict[str, Any]) -> None:
-    """Product-rule diagnostics — red until T2.2 implements checklist/gates."""
+    """Product-rule diagnostics with codes, messages, and spans."""
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is False
     codes = {i.code for i in report.issues if i.severity == "error"}

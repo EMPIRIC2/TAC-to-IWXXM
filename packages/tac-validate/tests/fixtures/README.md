@@ -22,5 +22,5 @@ Synthetic **negative** TAC and thin **accept** copies for the seven F6 products.
 ## Expectation contract
 
 `manifest.json` cases list `expected_codes` (error severity unless noted).
-Diagnostics assertions are `xfail(strict=True)` until T2.2 encodes
+Diagnostics assertions require product-rule codes/spans from T2.2
 `check_product_rules`.

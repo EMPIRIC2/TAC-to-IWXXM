@@ -108,13 +108,13 @@ def check_parse_gate(tac_text: str, product: str) -> tuple[list[Issue], list[Fix
 
 def check_product_rules(tac_text: str, product: str) -> list[Issue]:
     """
-    Product-specific skeleton rules (expanded in later milestones).
+    Product-specific checklist / template-gate rules (F12 / E10-21).
 
-    Currently a no-op placeholder once parse-gate passes — keeps dispatch
-    wired for all seven products.
+    Delegates to ``product_rules`` after parse-gate success.
     """
-    _ = tac_text, product
-    return []
+    from tac_validate.product_rules import check_product_rules as _impl
+
+    return _impl(tac_text, product)
 
 
 __all__ = ["check_parse_gate", "check_product_rules"]
