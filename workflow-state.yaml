@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M3 T3.7a pending — T3.6 complete (3056e4c xsdata pipeline + CI hook)"
+    note: "M3 T3.7 pending — T3.7a complete (b1e53c9)"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,9 +1420,9 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M3 T3.7a pending — T3.6 complete (3056e4c xsdata pipeline + CI hook)"
+      note: "M3 T3.7 pending — T3.7a complete (b1e53c9)"
       active_milestone: M3
-      active_task: T3.7a
+      active_task: T3.7
       active_task_status: pending
     - status: completed
       session_id: S004-issue-555-feedback
@@ -1449,6 +1449,7 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "M3 T3.7a complete (b1e53c9) — codegen regen smoke for importable pydantic models; next T3.7"
     - "M3 T3.6 complete (3056e4c) — xsdata IWXXM XSD codegen pipeline + vendor-sync CI hook; next T3.7a"
     - "M3 T3.5 complete (a57001b) — soft native vs lxml benches / 0.85x hard-gate path; next T3.6"
     - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
@@ -3457,6 +3458,15 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/t37a-codegen-regen-smoke.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "T3.7a codegen regen smoke — importable pydantic models (b1e53c9)"
 - path: docs/sessions/S014-package-publish-validation/reports/layer-cost-matrix.md
   kind: report
   stage: 07-build
@@ -4260,9 +4270,9 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M3 T3.7a pending — T3.6 complete (3056e4c xsdata pipeline + CI hook)"
+      note: "M3 T3.7 pending — T3.7a complete (b1e53c9)"
       active_milestone: M3
-      active_task: T3.7a
+      active_task: T3.7
       active_task_status: pending
   gates:
     a_to_b: pending
@@ -4279,6 +4289,7 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "M3 T3.7a complete (b1e53c9) — codegen regen smoke for importable pydantic models; next T3.7"
   - "M3 T3.6 complete (3056e4c) — xsdata IWXXM XSD codegen pipeline + vendor-sync CI hook; next T3.7a"
   - "M3 T3.5 complete (a57001b) — soft native vs lxml benches / 0.85x hard-gate path; next T3.6"
   - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
@@ -4337,6 +4348,12 @@ evolve_cycles:
     session_id: S014-package-publish-validation
     status: completed
     note: "F11 hard-gate absolute baselines E10-35 machine-readable (T1.3)"
+  - path: docs/sessions/S014-package-publish-validation/reports/t37a-codegen-regen-smoke.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T3.7a codegen regen smoke — importable pydantic models (b1e53c9)"
   issues: []
 
 - id: EV-001
@@ -5551,6 +5568,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "M3 T3.7a complete (b1e53c9) — codegen regen smoke for importable pydantic models; next T3.7"
   - "M3 T3.6 complete (3056e4c) — xsdata IWXXM XSD codegen pipeline + vendor-sync CI hook; next T3.7a"
   - "M3 T3.5 complete (a57001b) — soft native vs lxml benches / 0.85x hard-gate path; next T3.6"
   - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
@@ -5812,6 +5830,14 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: b1e53c9a10d1ba86c131cb1150f281db362e4e7d
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.7a] test: codegen regen smoke for importable pydantic models"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: scripts/codegen/iwxxm_xsd.py, tests/codegen/test_tc_f11_codegen_regen_smoke.py, docs/sessions/S014-package-publish-validation/reports/t37a-codegen-regen-smoke.md, docs/sessions/S014-package-publish-validation/reports/execution-plan.md
+    timestamp: "2026-07-18T23:35:51Z"
   - sha: 3056e4cb7e793a3e092b6391806f7e9538f924fa
     branch: evolve/EV-010-package-publish-validation
     message: "[T3.6] config: xsdata IWXXM XSD codegen pipeline and vendor-sync hook"
