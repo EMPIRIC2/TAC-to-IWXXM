@@ -260,9 +260,11 @@ publishing** on version tags:
 | `packages/iwxxm-validate` | `iwxxm-validate-v*` | `iwxxm-validate` |
 | `packages/tac2iwxxm` | `tac2iwxxm-v*` | `tac2iwxxm` |
 
-**First release**: `0.1.0` for each. Workflow builds sdist+wheel, optional smoke-install, then
-publishes. Configure PyPI Trusted Publisher + workflow `id-token: write` (see config-spec
-§F11–F14). Prefer no long-lived `PYPI_API_TOKEN` when OIDC is available.
+**First release**: `0.1.0` for each. **One** GitHub Actions workflow with a **package matrix**
+(three packages) builds sdist+wheel (maturin manylinux/macOS/win for native crates), optional
+smoke-install, then publishes on matching version tags. Configure PyPI Trusted Publisher +
+workflow `id-token: write` (see config-spec §F11–F14). Prefer no long-lived `PYPI_API_TOKEN`
+when OIDC is available.
 
 **Render this cycle**: Still required (E10-15) because msgspec **response** shapes may change —
 redeploy API then frontend; run H4–H5 + UJ-022. PyPI publish does not replace Render smokes.

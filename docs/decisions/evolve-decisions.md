@@ -60,6 +60,21 @@ Also: F11 layer cost matrix / benches as gate before deepening Rust paths.
 | E10-28 | Decision | 02 S2.M1 | msgspec = responses + post-Form Structs; multipart Form intake unchanged |
 | E10-29 | Decision | 02 S8.M1 | Back-add config-spec + deploy PyPI OIDC notes |
 | E10-30 | Decision | 02 S1.M1 | Keep must-ship 11B; 04 kill-switch via AskQuestion only |
+| E10-31 | Decision | 03 tooling | Option D — rules/hooks + pypi_release_guard + pypi-release-checklist |
+| E10-32 | Decision | Phase A checkpoint | 34B — commit docs+tooling then 04 |
+| E10-33 | Decision | 04 milestones | M1 benches → M2 tac-validate → M3 iwxxm-validate Rust → M4 tac2iwxxm+OIDC → M5 msgspec HTTP → M6 08–13 |
+| E10-34 | Decision | 04 schema bundle | Runtime subset only (XSD+SCH+catalogs); exclude modelling/translation bulk |
+| E10-35 | Decision | 04 hard benches | p95 ≤0.85× lxml baseline (lib path); msgspec HTTP p95 ≤1.0× pydantic map; wheel smokes |
+| E10-36 | Decision | 04 Rust SCH | New `packages/iwxxm-validate/rust` via maturin; lxml parity until cutover |
+| E10-37 | Decision | 04 PyPI workflows | One GHA workflow + package matrix (39B) |
+| E10-38 | Decision | 04 msgspec HTTP encode | Thin helper Struct→msgspec.json.encode→Response; pydantic OpenAPI-only (41A) |
+| E10-39 | Decision | 04 wheels/CLI | manylinux/macOS/win maturin; tac-validate CLI; optional iwxxm-validate CLI (42A) |
+| E10-40 | Decision | 04 XSD codegen | **xsdata** (+ xsdata-pydantic) for full Python models; adapt to msgspec/Rust as follow-on in-cycle tasks |
+| E10-41 | Decision | 04 execution plan | Approved M1–M6 (~36 tasks) — 43A |
+| E10-42 | Decision | 05 S1.M1 | feature-list F11 → ADR-027 xsdata (44A) |
+| E10-43 | Decision | 05 S2.M1 | deploy/config matrix workflow (45A) |
+| E10-44 | Decision | 05 S3.M1 | Add T5.6 H0c CORS re-verify (46B) |
+| E10-45 | Decision | 05 S4.L1 | Add T3.7a + T3.8a tests (47A) |
 
 ### Stage log
 
@@ -68,6 +83,9 @@ Also: F11 layer cost matrix / benches as gate before deepening Rust paths.
 | 00-context / Phase 0–1 | 2026-07-18 | E10-1..27 locked; F11–F14 + routing 01–13 |
 | 01-requirements | 2026-07-18 | Feature-list F11–F14; ADR-026; spec/api/journeys/test/deps deltas |
 | 02-verify-plan | 2026-07-18 | PASS — S2.M1/S8.M1/S1.M1 = A; multipart clarification + config/deploy notes |
+| 03-plan-tooling | 2026-07-18 | D — PyPI/msgspec guardrails; commits 1711e75 + 0717f13 |
+| 04-tech-plan | 2026-07-18 | M1–M6 plan approved (43A); ADR-027 xsdata |
+| 05-verify-tech | 2026-07-18 | PASS — 12 auto + 44A–47A applied |
 
 ---
 

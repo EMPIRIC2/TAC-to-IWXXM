@@ -94,6 +94,8 @@ Schematron: **native Rust** target (F13); lxml isoschematron retained for parity
 | docker / compose | system | Local multi-service |
 | Coverage | 95% all members | pytest + Vitest gates (ADR-007); includes tac2iwxxm, tac-validate, iwxxm-validate |
 | cargo / maturin | **required before cutover** | PyO3 wheel build in CI/API image (ADR-017) |
+| xsdata | **dev/codegen** (F11 / ADR-027) | XSD → Python models from pinned IWXXM schemas |
+| xsdata-pydantic | **dev/codegen** (F11 / ADR-027) | pydantic v2 output plugin for xsdata |
 
 **Deployables**: API + static frontend + **F8 Background Worker** (`apps/worker`, ADR-018).
 API image depends on tac2iwxxm + validate packages; worker image uses the same packages plus
@@ -143,4 +145,4 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S008 M1 (2026-07-12): msgspec added to tac2iwxxm + tac-validate with shared Encoder/Decoder modules; iwxxm-us vendored from NWS `3.0` tarball pin
   (D-S008-05-batch1)
 - S014 / EV-010 (2026-07-18): backend msgspec high-churn (ADR-026); iwxxm-validate Rust+bundle;
-  PyPI publish deps (maturin/OIDC)
+  PyPI publish deps (maturin/OIDC); **xsdata + xsdata-pydantic** for XSD codegen (ADR-027)

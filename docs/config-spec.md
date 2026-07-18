@@ -186,7 +186,7 @@ OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when 
 |---------|----------------|-------|
 | msgspec vs pydantic | Code + ADR-026 | Response encode msgspec; multipart Form intake unchanged |
 | OpenAPI aliases | `apps/backend` schemas | Thin pydantic mirrors for docs only |
-| PyPI trusted publishing | GitHub Environment + PyPI project | OIDC; per-package version tags `*-v0.1.0` |
+| PyPI trusted publishing | GitHub Environment + PyPI project | OIDC; **one** workflow + package matrix; tags `*-v0.1.0` |
 | PyPI project names | Package metadata | `tac-validate`, `iwxxm-validate`, `tac2iwxxm` |
 | Schema bundle size | `iwxxm-validate` wheel build | From `vendor/schemas/*` pins; not an env var |
 | Render redeploy | Existing API/static secrets | Required this cycle (E10-15); CORS unchanged |
@@ -196,7 +196,7 @@ OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when 
 | Setting | Purpose |
 |---------|---------|
 | Environment e.g. `pypi` | Optional protection rules for publish jobs |
-| PyPI Trusted Publisher | Links each PyPI project to the workflow + tag filter |
+| PyPI Trusted Publisher | Links each PyPI project to the **same** matrix workflow + that package's tag filter |
 | `id-token: write` | Workflow permission for OIDC |
 
 **Runtime API/FE env**: Unchanged for F11–F14. Redeploy **API before** frontend when response
@@ -206,7 +206,8 @@ JSON shapes change (H4–H5).
 
 - S008 (2026-07-12): F6 — no new config/env; profile default in code; hard cutover
 - S011 / EV-008 (2026-07-13): BYO; deprecate `ADMIN_*` → `E2E_USER_*`; drop `/admin` from baseUrl docs
-- S014 / EV-010 (2026-07-18): PyPI OIDC trusted publishing notes; no new runtime secrets
+- S014 / EV-010 (2026-07-18): PyPI OIDC trusted publishing notes; no new runtime secrets;
+  matrix workflow clarification (05 S2.M1)
 
 ## References
 

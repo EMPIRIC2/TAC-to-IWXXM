@@ -57,17 +57,22 @@ active_session:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: pending
-    note: Next after Phase A checkpoint
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: M1–M6 execution plan approved (43A); ADR-027 xsdata
   - stage: 05-verify-tech
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
   - stage: 06-tech-tooling
     required: true
     mode: delta
     status: pending
-    note: Rust/maturin/schema bundle/PyPI workflow deps
+    note: Phase B checkpoint — Rust/maturin/xsdata/PyPI workflow tooling
   - stage: 07-build
     required: true
     mode: full
@@ -99,7 +104,7 @@ active_session:
     status: pending
     note: Included per E10-15 msgspec HTTP + Render redeploy
   skipped_stages: []
-  current_stage: 04-tech-plan
+  current_stage: 06-tech-tooling
   completed_at: null
 
 sessions:
@@ -1260,11 +1265,23 @@ stages:
       - docs/sessions/S011-f7-operator-ui/reports/execution-plan.md
       notes: |
         D-S011-04-plan-approve-A — execution-plan.md approved; historical baseline status remains completed.
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      note: M1–M6 execution plan approved (43A); ADR-027 xsdata
+      artifacts:
+      - docs/sessions/S014-package-publish-validation/reports/execution-plan.md
+      - docs/adr/ADR-027-xsdata-codegen.md
     notes:
     - "Monorepo plan 2026-06-15; EV-004 delta completed 2026-06-23"
     - "Historical baseline status remains completed — S008 tracked via delta_substages only"
     - "S008 delta 04-tech-plan completed 2026-07-12 — execution plan + ADR-016/017/018 approved"
     - "S011/EV-008 delta 04-tech-plan completed 2026-07-13 — execution-plan.md approved (D-S011-04-plan-approve-A)"
+    - "S014/EV-010 delta 04-tech-plan completed 2026-07-18 — M1–M6 approved (43A); ADR-027 xsdata"
 
   05-verify-tech:
     status: completed
@@ -1310,6 +1327,15 @@ stages:
       - "2026-07-13 started after D-S011-04-plan-approve-A; phase_b pending until 05 completes + user checkpoint"
       - "2026-07-13 D-S011-05-pass — audit PASS (reports/05-verify-tech-audit.md); A1–A3 approved as-is; phase_b remains pending
         until user Phase B AskQuestion"
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      overall: pass
+      note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
     notes:
     - "Technical plan verification complete; 3 source docs updated"
     - "Historical baseline status remains completed — S008 tracked via delta_substages only"
@@ -1320,6 +1346,7 @@ stages:
     - "S008 delta 05-verify-tech completed 2026-07-12 — audit done; Phase B delta cleared (06 N/A); historical baseline status
       unchanged (completed)"
     - "S011/EV-008 delta 05-verify-tech completed 2026-07-13 — audit PASS; A1–A3 as-is; phase_b still pending (no auto-pass)"
+    - "S014/EV-010 delta 05-verify-tech PASS 2026-07-18 — 12 auto + 44A–47A; Phase B checkpoint before 06"
 
   06-tech-tooling:
     status: completed
@@ -1801,6 +1828,20 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S014-EV010-e10-42
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 05-verify-tech
+  decision: >-
+    05 PASS E10-42..45 (44A–47A)
+- id: D-S014-EV010-e10-41
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 04-tech-plan
+  decision: >-
+    E10-41 execution plan approved 43A; E10-40 xsdata ADR-027
 - id: D-S014-EV010-e10-33
   date: "2026-07-18"
   category: Decision
@@ -3334,6 +3375,24 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/execution-plan.md
+  kind: execution-plan
+  stage: 04-tech-plan
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "M1–M6 approved (43A)"
+- path: docs/adr/ADR-027-xsdata-codegen.md
+  kind: adr
+  stage: 04-tech-plan
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "E10-40 xsdata codegen"
 - path: docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
   kind: report
   stage: 03-plan-tooling
@@ -4036,7 +4095,7 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     skipped_stages: []
-  current_stage: 04-tech-plan
+  current_stage: 06-tech-tooling
   stages:
     00-context:
       status: in_progress
@@ -4054,6 +4113,22 @@ evolve_cycles:
       note: Delta D — PyPI/msgspec rules + hooks + pypi-release-checklist skill
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
+    04-tech-plan:
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      note: M1–M6 execution plan approved (43A); ADR-027 xsdata
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/execution-plan.md
+      - docs/adr/ADR-027-xsdata-codegen.md
+    05-verify-tech:
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      overall: pass
+      note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
   gates:
     a_to_b: pending
     b_to_c: pending
@@ -4061,11 +4136,15 @@ evolve_cycles:
     deploy: pending
   checkpoints:
     phase_a: pending
-    phase_b: pending
+    phase_b:
+      status: pending
+      note: "05 PASS; await user to start 06"
     phase_c: pending
     phase_d: pending
     deploy: pending
-  adrs: []
+  adrs:
+  - docs/adr/ADR-026-msgspec-http-openapi.md
+  - docs/adr/ADR-027-xsdata-codegen.md
   artifacts:
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
@@ -4074,6 +4153,16 @@ evolve_cycles:
   - path: docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
     kind: report
     stage: 03-plan-tooling
+    session_id: S014-package-publish-validation
+    status: completed
+  - path: docs/sessions/S014-package-publish-validation/reports/execution-plan.md
+    kind: execution-plan
+    stage: 04-tech-plan
+    session_id: S014-package-publish-validation
+    status: completed
+  - path: docs/adr/ADR-027-xsdata-codegen.md
+    kind: adr
+    stage: 04-tech-plan
     session_id: S014-package-publish-validation
     status: completed
   issues: []
@@ -5288,8 +5377,9 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: evolve/S013-live-decode-preview-ux
+  current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "2026-07-18 S014/EV-010 — Phase A commits 1711e75 + 0717f13; 04-tech-plan in_progress on evolve/EV-010-package-publish-validation"
   - "2026-07-18 S013/EV-009 closed — user approved deploy results (option 1); active_session cleared; F9/F10 Done (#723)"
   - "2026-07-17 S013/EV-009 T4.5 done — #723 merged 4660602; Render live; H1/H0c/H3/H4/H5 + H6' UJ-020/021 PASS; EV-009 completed; awaiting session close"
   - "2026-07-17 S013/EV-009 T4.4 done — checklist + merge/deploy approved (D-S013-EV009-deploy-check-A); deploy gate passed; #723 CI green; current_stage=13-deploy-smoke (T4.5)"
@@ -5323,6 +5413,13 @@ git_history:
   - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+  - name: evolve/EV-010-package-publish-validation
+    purpose: "EV-010 / S014 package publish + validation stack (F11–F14)"
+    base: main
+    status: active
+    created_at: "2026-07-18"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
   - name: fix/S012-empty-bearer-lint-tac
     purpose: "Empty Bearer auth on lint-tac/decode-tac + lint UX issue details"
     base: main
@@ -5531,6 +5628,20 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 0717f13
+    branch: evolve/EV-010-package-publish-validation
+    message: "[EV-010] chore(skills): PyPI/msgspec plan tooling (03)"
+    stage: "03-plan-tooling"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    timestamp: "2026-07-18"
+  - sha: 1711e75
+    branch: evolve/EV-010-package-publish-validation
+    message: "[EV-010] docs: F11–F14 product deltas + ADR-026 (S014 Phase A)"
+    stage: "03-plan-tooling"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    timestamp: "2026-07-18"
   - sha: b6c446b
     branch: main
     message: "chore: close S013/EV-009 — F9/F10 shipped (#723)"

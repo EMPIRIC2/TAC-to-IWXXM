@@ -324,9 +324,12 @@
      FastAPI Form/File. Auth/admin/work-sessions stay pydantic. **Pydantic retained for OpenAPI**
      schema integrations via thin aliases/export (ADR-026). Breaking **response** JSON shapes
      allowed; FE types updated same cycle; full Render 12–13.
-  3. **Production XSD codegen** — generate msgspec Structs / Rust types from published
-     IWXXM **XSD** (modelling UML = provenance only); regenerate in CI on vendor pin bumps.
-     TAC has **no** official model to import.
+  3. **Production XSD codegen** — generate Python models from published IWXXM **XSD**
+     via **xsdata** (+ xsdata-pydantic) (ADR-027; modelling UML = provenance only);
+     regenerate in CI on vendor pin bumps. Follow-on in-cycle tasks adapt generated models
+     toward msgspec Structs and/or Rust types where convert builders benefit. Validate hot
+     path remains Rust XSD+Schematron (F13) — not full Python bind-on-validate. TAC has
+     **no** official model to import.
   4. Dedup orchestrator vs `iwxxm-validate` call paths so convert+validate does not double-run
      heavy layers.
 - **Acceptance**:
@@ -334,7 +337,7 @@
   2. High-churn routes on msgspec; OpenAPI still published; FE types updated
   3. Soft benches during build; hard-fail at publish/cutover: library lint→convert→XSD+SCH
      vs lxml baseline; msgspec HTTP ≤ prior pydantic map path; wheel smokes
-  4. Codegen from XSD in CI; TAC explicitly out of codegen scope
+  4. Codegen from XSD in CI (xsdata → pydantic models per ADR-027; TAC out of scope)
 - **Source**: Issues #703; E10-1..27; ADR-016 amended by ADR-026;
   [Context: package-publish-validation](context/package-publish-validation.md)
 

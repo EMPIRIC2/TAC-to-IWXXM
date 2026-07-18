@@ -35,3 +35,21 @@ OpenAPI: generate/keep schemas via pydantic mirror models or explicit JSON Schem
 | E10-25 | OIDC trusted publishing per package tag |
 | E10-26 | UJ-022 / UJ-023 / UJ-DEV-005 |
 | E10-27 | Write standing docs now |
+
+## Locked (02 audit + 03 + 04 batch 1)
+
+| ID | Decision |
+|----|----------|
+| E10-28 | msgspec = responses + post-Form Structs; multipart Form unchanged |
+| E10-29 | config-spec + deploy PyPI OIDC notes |
+| E10-30 | must-ship kept; 04 kill-switch via AskQuestion only |
+| E10-31 | 03 tooling option D |
+| E10-32 | Phase A: commit then 04 |
+| E10-33 | Milestones M1 benches → M2 tac-validate → M3 iwxxm-validate → M4 tac2iwxxm+OIDC → M5 msgspec HTTP → M6 08–13 |
+| E10-34 | Schema wheel bundle = runtime XSD+SCH+catalogs subset |
+| E10-35 | Hard benches: lib p95 ≤0.85× lxml; HTTP p95 ≤1.0× pydantic map; wheel smokes |
+| E10-36 | New `packages/iwxxm-validate/rust` maturin; lxml parity until cutover |
+| E10-37 | One publish workflow + package matrix |
+| E10-38 | Thin msgspec→Response helper; pydantic OpenAPI-only |
+| E10-39 | manylinux/macOS/win wheels; tac-validate CLI; optional iwxxm-validate CLI |
+| E10-40 | xsdata (+ xsdata-pydantic) full Python models; adapt msgspec/Rust follow-on |

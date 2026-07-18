@@ -1,7 +1,18 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-07-12 (S008 delta append)
+> Last updated: 2026-07-18 (S014 / EV-010 append)
+
+## S014 / EV-010 05-verify-tech (2026-07-18)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| TAUDIT-S014-01 | 2026-07-18 | F11 codegen wording | Align feature-list to ADR-027 xsdata (44A) | confirmed |
+| TAUDIT-S014-02 | 2026-07-18 | PyPI workflow docs | deploy + config-spec: one workflow + matrix (45A) | confirmed |
+| TAUDIT-S014-03 | 2026-07-18 | CORS connectivity | Add T5.6 H0c re-verify after msgspec HTTP (46B) | confirmed |
+| TAUDIT-S014-04 | 2026-07-18 | T3.7/T3.8 TDD | Add T3.7a + T3.8a preceding tests (47A) | confirmed |
+
+Session report: `docs/sessions/S014-package-publish-validation/reports/05-verify-tech-audit.md`.
 
 ## 04-tech-plan (pre-audit)
 
