@@ -17,10 +17,18 @@ if not report.ok:
         print(issue.code, issue.message)
 ```
 
-Consumes `vendor/schemas/*` read-only. See ADR-015 / ADR-016 / D-S008-T21-sch
-(xslt2 Schematron → `SCHEMATRON_SKIPPED` on the **lxml** path only). Native
-`validate_iwxxm` evaluates Schematron via **xmloxide** (D-S014-T33-crates / E10-46)
-and does not emit `SCHEMATRON_SKIPPED`.
+Consumes pinned schemas from the **runtime subset** bundled in the wheel
+(E10-34 / E10-6): XSD + Schematron + RDF codelists + `externalSchema` + IWXXM-US.
+Modelling / translation documentation trees are **not** shipped. In the monorepo,
+paths fall back to `vendor/schemas/*` until you sync:
+
+```bash
+make sync-iwxxm-validate-schemas
+```
+
+See ADR-015 / ADR-016 / D-S008-T21-sch (xslt2 Schematron → `SCHEMATRON_SKIPPED`
+on the **lxml** path only). Native `validate_iwxxm` evaluates Schematron via
+**xmloxide** (D-S014-T33-crates / E10-46) and does not emit `SCHEMATRON_SKIPPED`.
 
 ## Optional native extension (F13)
 

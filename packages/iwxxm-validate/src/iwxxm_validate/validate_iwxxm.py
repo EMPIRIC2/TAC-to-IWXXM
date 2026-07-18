@@ -23,7 +23,11 @@ _VALID_LEVELS = frozenset({"xsd", "schematron"})
 
 
 def _catalog_roots(iwxxm_version: str) -> list[str]:
-    """Return directory roots for xmloxide ``SchemaResolver`` (vendor mirrors)."""
+    """Return directory roots for xmloxide ``SchemaResolver`` (packaged / vendor).
+
+    Runtime subset (E10-34) ships ``iwxxm/externalSchema`` only — no translation
+    modelling bulk. Monorepo may still resolve translation as a last resort.
+    """
     vdir = version_dir(iwxxm_version)
     root = vendor_iwxxm_root()
     candidates = [
@@ -33,6 +37,7 @@ def _catalog_roots(iwxxm_version: str) -> list[str]:
         root / "externalSchema" / "schemas.opengis.net",
         root / "externalSchema" / "schemas.wmo.int",
         root,
+        # Optional monorepo-only fallback (excluded from the wheel subset).
         repo_root() / "vendor" / "schemas" / "iwxxm-translation" / "externalSchema",
     ]
     return [str(p) for p in candidates if p.is_dir()]

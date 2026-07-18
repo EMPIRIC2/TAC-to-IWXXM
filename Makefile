@@ -157,6 +157,10 @@ build-tac2iwxxm-native:
 build-iwxxm-validate-native:
 	cd packages/iwxxm-validate && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
 
+# E10-34 — copy runtime XSD+SCH+catalogs into the package (excludes modelling/translation).
+sync-iwxxm-validate-schemas:
+	$(UV) run python packages/iwxxm-validate/scripts/sync_runtime_schemas.py
+
 test-tac2iwxxm-native: build-tac2iwxxm-native
 	TAC2IWXXM_REQUIRE_RUST=1 $(UV) run pytest \
 		packages/tac2iwxxm/tests/test_native_scaffold.py \

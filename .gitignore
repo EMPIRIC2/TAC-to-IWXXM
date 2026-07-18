@@ -178,3 +178,8 @@ GIFTs/wiki/
 packages/tac2iwxxm/rust/target/
 packages/iwxxm-validate/rust/target/
 
+# E10-34 — synced runtime schema subset (generated; MANIFEST.json is tracked)
+packages/iwxxm-validate/src/iwxxm_validate/schemas/iwxxm/
+packages/iwxxm-validate/src/iwxxm_validate/schemas/iwxxm-us/
+packages/iwxxm-validate/src/iwxxm_validate/schemas/LAST_SYNC.json
+

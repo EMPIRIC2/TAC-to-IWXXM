@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C (build) |
 | **Active milestone** | M3 — iwxxm-validate Rust + schema subset + xsdata |
-| **Active task** | T3.4 pending (T3.3 done — xmloxide / validate_iwxxm) |
-| **Tasks** | 10 / ~39 (M1–M2 complete; T3.1–T3.2 done) |
+| **Active task** | T3.5 pending (T3.4 done — runtime schema wheel subset) |
+| **Tasks** | 12 / ~39 (M1–M2 complete; T3.1–T3.4 done) |
 | **Last updated** | 2026-07-18 |
 
 ## Tech Stack Summary
@@ -61,7 +61,7 @@
 | T3.1 | Config | Scaffold `packages/iwxxm-validate/rust` + maturin (mirror tac2iwxxm); keep hatch pure path | E10-36; ADR-017 | — | completed |
 | T3.2 | Test | Parity suite stubs vs lxml isoschematron + golden IWXXM | TC-F13-001 | — | completed |
 | T3.3 | Code | Rust well-formed + XSD + native Schematron/SVRL; Python SDK `validate_iwxxm` | F13; E10-22 | T3.1, T3.2 | completed |
-| T3.4 | Config | Bundle **runtime schema subset** into wheel (exclude modelling/translation bulk); document subset in session report | E10-34; E10-6 | T3.1 | pending |
+| T3.4 | Config | Bundle **runtime schema subset** into wheel (exclude modelling/translation bulk); document subset in session report | E10-34; E10-6 | T3.1 | completed |
 | T3.5 | Test | Soft benches vs lxml; assert path for hard 0.85× at publish | E10-35; TC-F11-002 | T3.3, T1.3 | pending |
 | T3.6 | Config | xsdata + xsdata-pydantic codegen pipeline from pinned XSD; CI hook on vendor pin bumps | ADR-027; E10-40 | — | pending |
 | T3.7a | Test | Codegen regen smoke — pinned XSD → pydantic models importable / non-empty | ADR-027; F11 acc4 | T3.6 | pending |
