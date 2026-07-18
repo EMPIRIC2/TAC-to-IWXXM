@@ -122,7 +122,7 @@
 
 - [x] Execution plan approved by user
 - [x] 05-verify-tech PASS
-- [ ] 06-tech-tooling for Rust/maturin/xsdata/PyPI workflow deps
+- [x] 06-tech-tooling for Rust/maturin/xsdata/PyPI workflow deps
 
 ## Phase Gate Log
 
@@ -131,3 +131,4 @@
 | A→B | 2026-07-18 | passed | 02 PASS + 03 tooling; 34B commits |
 | B plan | 2026-07-18 | approved | User 43A — M1–M6 execution plan |
 | B tech audit | 2026-07-18 | passed | 05 PASS — 44A–47A applied |
+| B→C | 2026-07-18 | pending | 06 done — await user checkpoint |

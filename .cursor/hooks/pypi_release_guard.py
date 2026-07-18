@@ -66,7 +66,7 @@ def context_for_file(rel: str) -> str | None:
     if is_publish_workflow(rel):
         return (
             f"[pypi-release-guard] Editing '{rel}' — F12–F14 publish path. "
-            f"{PACKAGE_TAG_HINT}"
+            f"Prefer one workflow + package matrix (E10-37). {PACKAGE_TAG_HINT}"
         )
     if rel.startswith("packages/") and rel.endswith("pyproject.toml"):
         pkg = rel.split("/")[1] if "/" in rel else ""
@@ -76,6 +76,26 @@ def context_for_file(rel: str) -> str | None:
                 "Keep name/version aligned with F12–F14; cite-only Annex text in wheels; "
                 "run skill pypi-release-checklist before tagging."
             )
+    # Rust / maturin advisory (F13 / F14)
+    if (
+        rel.endswith("Cargo.toml")
+        or "/rust/" in f"/{rel}/"
+        or (rel.endswith(".rs") and rel.startswith("packages/"))
+    ):
+        return (
+            f"[pypi-release-guard] Editing '{rel}' — native/maturin path (F13/F14). "
+            "Use make build-iwxxm-validate-native or build-tac2iwxxm-native; "
+            "see .cursor/rules/optional/rust-maturin-xsdata.mdc. Validate hot path is "
+            "Rust XSD+Schematron — not xsdata bind-on-validate (ADR-027)."
+        )
+    if "codegen" in rel.lower() and (
+        rel.startswith("scripts/") or "xsdata" in rel.lower()
+    ):
+        return (
+            f"[pypi-release-guard] Editing '{rel}' — XSD codegen path (F11/ADR-027). "
+            "xsdata + xsdata-pydantic → pydantic models; make codegen-iwxxm-xsd; "
+            "TAC out of codegen scope."
+        )
     return None
 
 

@@ -75,6 +75,7 @@ Also: F11 layer cost matrix / benches as gate before deepening Rust paths.
 | E10-43 | Decision | 05 S2.M1 | deploy/config matrix workflow (45A) |
 | E10-44 | Decision | 05 S3.M1 | Add T5.6 H0c CORS re-verify (46B) |
 | E10-45 | Decision | 05 S4.L1 | Add T3.7a + T3.8a tests (47A) |
+| E10-46 | Decision | 06 tooling | 49A — rust/maturin/xsdata rule, Makefile stubs, uv deps, hook |
 
 ### Stage log
 
@@ -86,6 +87,7 @@ Also: F11 layer cost matrix / benches as gate before deepening Rust paths.
 | 03-plan-tooling | 2026-07-18 | D — PyPI/msgspec guardrails; commits 1711e75 + 0717f13 |
 | 04-tech-plan | 2026-07-18 | M1–M6 plan approved (43A); ADR-027 xsdata |
 | 05-verify-tech | 2026-07-18 | PASS — 12 auto + 44A–47A applied |
+| 06-tech-tooling | 2026-07-18 | 49A — maturin/xsdata/Makefile/hook delta |
 
 ---
 

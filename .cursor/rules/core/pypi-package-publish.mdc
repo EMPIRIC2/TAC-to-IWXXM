@@ -15,9 +15,12 @@ Traces to `[Corpus: product]` F12–F14, `[Corpus: system-spec]` package compone
 
 ## Trusted publishing only
 
-- Publish via **GitHub Actions OIDC trusted publishing** — one workflow per package.
+- Publish via **GitHub Actions OIDC trusted publishing**.
+- **One workflow** with a **package matrix** (three packages) — not three unrelated one-off files
+  unless an ADR changes E10-37.
 - Do **not** add long-lived `PYPI_API_TOKEN` / password secrets when OIDC is configured.
-- Workflows need `id-token: write` and a PyPI Trusted Publisher linked to the workflow + tag filter.
+- Workflows need `id-token: write` and a PyPI Trusted Publisher linked to the workflow +
+  **per-package** tag filter.
 
 ## Version tags (F14)
 

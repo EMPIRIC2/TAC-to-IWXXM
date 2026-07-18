@@ -153,10 +153,34 @@ test-unit-tac2iwxxm:
 build-tac2iwxxm-native:
 	cd packages/tac2iwxxm && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
 
+# F13 — scaffolded in T3.1; until then this target errors with a clear message.
+build-iwxxm-validate-native:
+	@if [ ! -f packages/iwxxm-validate/rust/Cargo.toml ]; then \
+		echo "error: packages/iwxxm-validate/rust not scaffolded yet (execution plan T3.1)"; \
+		exit 1; \
+	fi
+	cd packages/iwxxm-validate && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
+
 test-tac2iwxxm-native: build-tac2iwxxm-native
 	TAC2IWXXM_REQUIRE_RUST=1 $(UV) run pytest \
 		packages/tac2iwxxm/tests/test_native_scaffold.py \
 		packages/tac2iwxxm/tests/test_pyo3_hotspots.py -v --no-cov
+
+# M1 — layer cost matrix harness (T1.1–T1.3). Script lands in build; stub until then.
+bench-validation-stack:
+	@if [ ! -f scripts/bench/validation_stack.py ]; then \
+		echo "error: scripts/bench/validation_stack.py missing (execution plan T1.1–T1.2)"; \
+		exit 1; \
+	fi
+	$(UV) run python scripts/bench/validation_stack.py
+
+# F11 / ADR-027 — xsdata codegen from pinned XSD (T3.6). Stub until pipeline exists.
+codegen-iwxxm-xsd:
+	@if [ ! -f scripts/codegen/iwxxm_xsd.py ]; then \
+		echo "error: scripts/codegen/iwxxm_xsd.py missing (execution plan T3.6)"; \
+		exit 1; \
+	fi
+	$(UV) run python scripts/codegen/iwxxm_xsd.py
 
 test-unit-iwxxm-validate:
 	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \

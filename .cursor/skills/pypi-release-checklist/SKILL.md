@@ -32,10 +32,10 @@ description: >
 ### 1. Identity & CI
 
 - [ ] PyPI project names: `tac-validate`, `iwxxm-validate`, `tac2iwxxm` at version `0.1.0` (or next semver)
-- [ ] One GHA workflow per package; trigger on matching version **tags only**
+- [ ] One GHA workflow with a **package matrix** (three packages); trigger on matching version **tags only**
 - [ ] `permissions: id-token: write` present
-- [ ] PyPI Trusted Publisher configured for each project (OIDC) — **no** `PYPI_API_TOKEN` secret when OIDC is live
-- [ ] Build produces sdist + wheel; smoke-install in clean venv before publish job succeeds
+- [ ] PyPI Trusted Publisher configured for each project (OIDC) against that matrix workflow + tag filter — **no** `PYPI_API_TOKEN` secret when OIDC is live
+- [ ] Build produces sdist + wheel (maturin manylinux/macOS/win for native); smoke-install in clean venv before publish job succeeds
 
 ### 2. Tags
 
