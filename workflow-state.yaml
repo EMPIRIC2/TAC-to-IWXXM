@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M3 T3.8a pending — T3.7 complete (98e909a)"
+    note: "M3 T3.9 pending — T3.8 complete (8af040b)"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,9 +1420,9 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M3 T3.8a pending — T3.7 complete (98e909a)"
+      note: "M3 T3.9 pending — T3.8 complete (8af040b)"
       active_milestone: M3
-      active_task: T3.8a
+      active_task: T3.9
       active_task_status: pending
     - status: completed
       session_id: S004-issue-555-feedback
@@ -1449,6 +1449,8 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
+    - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
     - "M3 T3.7 complete (98e909a) — xsdata IWXXM pydantic models + adapt helpers; next T3.8a"
     - "M3 T3.7a complete (b1e53c9) — codegen regen smoke for importable pydantic models; next T3.7"
     - "M3 T3.6 complete (3056e4c) — xsdata IWXXM XSD codegen pipeline + vendor-sync CI hook; next T3.7a"
@@ -3459,6 +3461,24 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/t38-validate-rust-sdk.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "T3.8 bind /validate to validate_iwxxm and skip duplicate XSD/SCH (8af040b)"
+- path: docs/sessions/S014-package-publish-validation/reports/t38a-validate-rust-sdk.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "T3.8a assert /validate binds validate_iwxxm without double XSD/SCH (f95fe7d)"
 - path: docs/sessions/S014-package-publish-validation/reports/t37-committed-xsd-models.md
   kind: report
   stage: 07-build
@@ -4280,9 +4300,9 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M3 T3.8a pending — T3.7 complete (98e909a)"
+      note: "M3 T3.9 pending — T3.8 complete (8af040b)"
       active_milestone: M3
-      active_task: T3.8a
+      active_task: T3.9
       active_task_status: pending
   gates:
     a_to_b: pending
@@ -4299,6 +4319,8 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
+  - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
   - "M3 T3.7 complete (98e909a) — xsdata IWXXM pydantic models + adapt helpers; next T3.8a"
   - "M3 T3.7a complete (b1e53c9) — codegen regen smoke for importable pydantic models; next T3.7"
   - "M3 T3.6 complete (3056e4c) — xsdata IWXXM XSD codegen pipeline + vendor-sync CI hook; next T3.7a"
@@ -4371,6 +4393,18 @@ evolve_cycles:
     session_id: S014-package-publish-validation
     status: completed
     note: "T3.7 committed xsdata IWXXM pydantic models + adapt helpers (98e909a)"
+  - path: docs/sessions/S014-package-publish-validation/reports/t38a-validate-rust-sdk.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T3.8a assert /validate binds validate_iwxxm without double XSD/SCH (f95fe7d)"
+  - path: docs/sessions/S014-package-publish-validation/reports/t38-validate-rust-sdk.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T3.8 bind /validate to validate_iwxxm and skip duplicate XSD/SCH (8af040b)"
   issues: []
 
 - id: EV-001
@@ -5585,6 +5619,8 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
+  - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
   - "M3 T3.7 complete (98e909a) — xsdata IWXXM pydantic models + adapt helpers; next T3.8a"
   - "M3 T3.7a complete (b1e53c9) — codegen regen smoke for importable pydantic models; next T3.7"
   - "M3 T3.6 complete (3056e4c) — xsdata IWXXM XSD codegen pipeline + vendor-sync CI hook; next T3.7a"
@@ -5848,6 +5884,22 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 8af040b048856c8092a5ac2cb946385dc2302cba
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.8] feat: bind /validate to validate_iwxxm and skip duplicate XSD/SCH"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-18T23:54:07Z"
+  - sha: f95fe7df049c6da8f0d23baf2550d7d3997c716a
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.8a] test: assert /validate binds validate_iwxxm without double XSD/SCH"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 3
+    timestamp: "2026-07-18T23:53:12Z"
   - sha: 85090b5e19e5b274754c61d71360d13a1b35d7f8
     branch: evolve/EV-010-package-publish-validation
     message: "chore: workflow-state after T3.7 — next T3.8a"
