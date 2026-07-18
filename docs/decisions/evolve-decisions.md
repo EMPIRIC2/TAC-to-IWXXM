@@ -47,6 +47,13 @@ validation semantics or Schematron rules; F5 history surfaces.
 | 02-verify-plan | 2026-07-16 | PASS — 12 auto + 4 user-approved (S3.1–S3.4); severity enum fixed to `warning` |
 | 04-tech-plan | 2026-07-16 | execution-plan.md approved — M1–M4, 21 tasks, no new deps |
 | 05-verify-tech | 2026-07-16 | PASS — A1–A10 repo-verified; T3.6 note (fixes[] through hook) |
+| 07–08 | 2026-07-17 | M1–M3 built; 08-verify-build PASS |
+| 09–10 | 2026-07-17 | QA PASS (QA-001/002 resolved); E2E UJ-020/021 PASS |
+| 11 | 2026-07-17 | F9 + F10 user-approved; 8/8 acceptance criteria |
+| 12–13 | 2026-07-17 | Checklist approved; PR #723 merged; live smokes PASS |
+| Close | 2026-07-18 | User approved deploy results (option 1); session closed |
+
+**Completed**: 2026-07-18 — PR [#723](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/723) merge `4660602`; F9/F10 Done in production.
 
 ---
 

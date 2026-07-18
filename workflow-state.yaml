@@ -5,12 +5,17 @@ project:
   output_directory: docs/
 
 session_counter: 13
-active_session:
-  id: S013-live-decode-preview-ux
+active_session: null
+
+sessions:
+
+
+- id: S013-live-decode-preview-ux
   type: feature
-  status: in_progress
-  started_at: "2026-07-16"
-  intent: "Value-aware live TAC decode translations + plain-language report summary (F9); workbench IWXXM preview pane + soft-fail/terminator lint UX clarity (F10)"
+  status: completed
+  started_at: '2026-07-16'
+  intent: Value-aware live TAC decode translations + plain-language report summary (F9);
+    workbench IWXXM preview pane + soft-fail/terminator lint UX clarity (F10)
   orchestrator: 16-evolve
   evolve_cycle_id: EV-009
   branch: evolve/S013-live-decode-preview-ux
@@ -23,93 +28,106 @@ active_session:
     required: true
     mode: scoped
     status: completed
-    completed: "2026-07-16"
-    note: "Session open only; context from docs/context/f7-operator-ui.md + live code reading"
+    completed: '2026-07-16'
+    note: Session open only; context from docs/context/f7-operator-ui.md + live code
+      reading
   - stage: 01-requirements
     required: true
     mode: delta
     status: completed
-    started: "2026-07-16"
-    completed: "2026-07-16"
-    note: "Manifest mandatory+api+adr; Batches 1–2 all-recommended; F9/F10 deltas written; ADR-025"
+    started: '2026-07-16'
+    completed: '2026-07-16'
+    note: Manifest mandatory+api+adr; Batches 1–2 all-recommended; F9/F10 deltas written;
+      ADR-025
   - stage: 02-verify-plan
     required: true
     mode: delta
     status: completed
-    started: "2026-07-16"
-    completed: "2026-07-16"
-    note: "PASS — 12 auto + 4 user-approved; severity enum fixed to 'warning'; audit in session reports"
+    started: '2026-07-16'
+    completed: '2026-07-16'
+    note: PASS — 12 auto + 4 user-approved; severity enum fixed to 'warning'; audit
+      in session reports
   - stage: 04-tech-plan
     required: true
     mode: delta
     status: completed
-    started: "2026-07-16"
-    completed: "2026-07-16"
-    note: "execution-plan.md approved (M1–M4, 21 tasks; no new deps; local XML pretty-print util)"
+    started: '2026-07-16'
+    completed: '2026-07-16'
+    note: execution-plan.md approved (M1–M4, 21 tasks; no new deps; local XML pretty-print
+      util)
   - stage: 05-verify-tech
     required: true
     mode: delta
     status: completed
-    started: "2026-07-16"
-    completed: "2026-07-16"
-    note: "PASS — A1–A10 repo-verified; consistency checklist clean; T3.6 note (thread fixes through hook)"
+    started: '2026-07-16'
+    completed: '2026-07-16'
+    note: PASS — A1–A10 repo-verified; consistency checklist clean; T3.6 note (thread
+      fixes through hook)
   - stage: 07-build
     required: true
     mode: full
     status: completed
-    started: "2026-07-16"
-    completed: "2026-07-17"
-    note: "M1–M3 + T4.1 done; C→D passed 2026-07-17; M4 continues via stages 09–13"
+    started: '2026-07-16'
+    completed: '2026-07-17'
+    note: M1–M3 + T4.1 done; C→D passed 2026-07-17; M4 continues via stages 09–13
   - stage: 08-verify-build
     required: true
     mode: full
     status: completed
-    started: "2026-07-16"
-    completed: "2026-07-16"
-    note: "PASS — lint/format/typecheck clean; make test green (backend 1182 @98.01% cov, Vitest 631, tac2iwxxm 136, tac-validate 33, worker 11, bugs 39); H0c CORS 29 passed; gitleaks clean; pip-audit no project-dep CVEs"
+    started: '2026-07-16'
+    completed: '2026-07-16'
+    note: PASS — lint/format/typecheck clean; make test green (backend 1182 @98.01%
+      cov, Vitest 631, tac2iwxxm 136, tac-validate 33, worker 11, bugs 39); H0c CORS
+      29 passed; gitleaks clean; pip-audit no project-dep CVEs
   - stage: 09-qa
     required: true
     mode: full
     status: completed
-    started: "2026-07-17"
-    completed: "2026-07-17"
-    note: "PASS w/ advisories QA-001/QA-002; qa-report.md"
+    started: '2026-07-17'
+    completed: '2026-07-17'
+    note: PASS w/ advisories QA-001/QA-002; qa-report.md
   - stage: 10-e2e
     required: true
     mode: full
     status: completed
-    started: "2026-07-17"
-    completed: "2026-07-17"
-    note: "UJ-020/021 2/2 PASS local browser + live API; e2e-report.md"
+    started: '2026-07-17'
+    completed: '2026-07-17'
+    note: UJ-020/021 2/2 PASS local browser + live API; e2e-report.md
   - stage: 11-verify-impl
     required: true
     mode: full
     status: completed
-    started: "2026-07-17"
-    completed: "2026-07-17"
-    note: "F9 + F10 approved by user ('1 / 1'); 8/8 acceptance criteria PASS; QA-001/QA-002 resolved; verify-impl.md"
+    started: '2026-07-17'
+    completed: '2026-07-17'
+    note: F9 + F10 approved by user ('1 / 1'); 8/8 acceptance criteria PASS; QA-001/QA-002
+      resolved; verify-impl.md
   - stage: 12-verify-deploy
     required: true
     mode: full
     status: completed
-    started: "2026-07-17"
-    completed: "2026-07-17"
-    note: "deploy-checklist.md approved (D-S013-EV009-deploy-check-A); PR-EV-009=#723 CI green; merge + deploy approved"
+    started: '2026-07-17'
+    completed: '2026-07-17'
+    note: deploy-checklist.md approved (D-S013-EV009-deploy-check-A); PR-EV-009=#723
+      CI green; merge + deploy approved
   - stage: 13-deploy-smoke
     required: true
     mode: full
     status: completed
-    started: "2026-07-17"
-    completed: "2026-07-17"
-    note: "Deployed #723; H1/H0c/H3/H4/H5 + H6' UJ-020/021 PASS; deploy-smoke.md"
+    started: '2026-07-17'
+    completed: '2026-07-17'
+    note: 'Deployed #723; H1/H0c/H3/H4/H5 + H6'' UJ-020/021 PASS; deploy-smoke.md'
   skipped_stages:
   - stage: 03-plan-tooling
-    rationale: "Existing hooks/rules cover this scope; no new guardrails"
+    rationale: Existing hooks/rules cover this scope; no new guardrails
   - stage: 06-tech-tooling
-    rationale: "Lint/typecheck/CI already wired; no new dependencies anticipated"
+    rationale: Lint/typecheck/CI already wired; no new dependencies anticipated
   current_stage: null
-
-sessions:
+  completed_at: '2026-07-18'
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/723
+  pr_number: 723
+  merge_sha: '4660602'
+  close_note: EV-009 complete; F9/F10 shipped (#723); deploy smokes H1/H0c/H3/H4/H5
+    + H6' UJ-020/021 PASS; user approved deploy results (option 1) 2026-07-18
 
 - id: S012-empty-bearer-lint-tac
   type: hotfix
@@ -1676,6 +1694,15 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S013-EV009-close
+  date: "2026-07-18"
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S013-live-decode-preview-ux
+  evolve_cycle_id: EV-009
+  decision: "User approved deploy results (option 1) and closed S013/EV-009. F9/F10 shipped via PR #723 (merge 4660602); all routing stages completed; active_session cleared."
+  summary: "S013 closed; EV-009 completed; F9/F10 Done in production."
+  timestamp: "2026-07-18"
 - id: D-S013-EV009-deploy-smoke-pass
   date: "2026-07-17"
   stage: 13-deploy-smoke
@@ -5010,6 +5037,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/S013-live-decode-preview-ux
   notes:
+  - "2026-07-18 S013/EV-009 closed — user approved deploy results (option 1); active_session cleared; F9/F10 Done (#723)"
   - "2026-07-17 S013/EV-009 T4.5 done — #723 merged 4660602; Render live; H1/H0c/H3/H4/H5 + H6' UJ-020/021 PASS; EV-009 completed; awaiting session close"
   - "2026-07-17 S013/EV-009 T4.4 done — checklist + merge/deploy approved (D-S013-EV009-deploy-check-A); deploy gate passed; #723 CI green; current_stage=13-deploy-smoke (T4.5)"
   - "2026-07-17 S013/EV-009 T4.4 in_progress — deploy-checklist.md ready; PR-EV-009=#723 open (evolve→main; NO merge/deploy); awaiting sign-off + CI"

@@ -37,7 +37,7 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S010-issue-655-tac-traceability](S010-issue-655-tac-traceability/session-brief.md) | feature | completed | Source TAC on conversion results (#655) | evolve/EV-007-issue-655-tac-traceability | 2026-07-12 | 2026-07-13 |
 | [S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md) | feature | paused | F7 multi-product UI + workbench/decode/admin (#694/#702/#665/#666/#697); PR #716 open for later resume | evolve/S011-f7-operator-ui | 2026-07-13 | — (paused 2026-07-15) |
 | [S012-empty-bearer-lint-tac](S012-empty-bearer-lint-tac/session-brief.md) | hotfix | completed | Empty Bearer on lint-tac/decode-tac + lint UX issue details | fix/S012-empty-bearer-lint-tac | 2026-07-15 | 2026-07-15 |
-| [S013-live-decode-preview-ux](S013-live-decode-preview-ux/session-brief.md) | feature | in_progress | Value-aware live decode + plain-language summary (F9); IWXXM preview pane + lint UX clarity (F10) — EV-009 | evolve/S013-live-decode-preview-ux | 2026-07-16 | — |
+| [S013-live-decode-preview-ux](S013-live-decode-preview-ux/session-brief.md) | feature | completed | Value-aware live decode + plain-language summary (F9); IWXXM preview pane + lint UX clarity (F10) — EV-009; PR #723 | evolve/S013-live-decode-preview-ux | 2026-07-16 | 2026-07-18 |
 
 ## Active session
 

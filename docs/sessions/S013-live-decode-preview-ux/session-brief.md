@@ -1,12 +1,15 @@
 ---
 session_id: S013-live-decode-preview-ux
 type: feature
-status: in_progress
+status: completed
 branch: evolve/S013-live-decode-preview-ux
 started_at: 2026-07-16
+completed_at: 2026-07-18
 intent: "Value-aware live TAC decode translations + plain-language report summary (F9); workbench IWXXM preview pane + soft-fail/terminator lint UX clarity (F10)"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-009
+pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/723
+merge_sha: 4660602
 context_briefs:
   - docs/context/f7-operator-ui.md
 standing_docs_touched: []
