@@ -61,12 +61,14 @@ def test_output_package_skeleton_after_check() -> None:
 
 
 @pytest.mark.slow
-def test_codegen_smoke_one_version_metar_entry() -> None:
+def test_codegen_smoke_one_version_metar_entry(tmp_path: Path) -> None:
     """Optional slow smoke: generate 2025-2 from metarSpeci.xsd (non-empty tree)."""
     mod = _load_script()
-    summary = mod.generate_version("2025-2", entry="metarSpeci.xsd")
+    out_root = tmp_path / "src" / "metar_shared" / "iwxxm_xsd"
+    out_root.mkdir(parents=True)
+    summary = mod.generate_version("2025-2", entry="metarSpeci.xsd", out_root=out_root)
     assert summary["py_files"] > 0
     assert summary["bytes"] > 1000
-    out = REPO_ROOT / summary["output"]
+    out = out_root / "v2025_2"
     assert out.is_dir()
     assert any(out.rglob("*.py"))

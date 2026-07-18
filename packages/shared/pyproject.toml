@@ -5,6 +5,10 @@ description = "Shared constants and env helpers for METAR to IWXXM monorepo"
 requires-python = ">=3.12"
 dependencies = []
 
+[project.optional-dependencies]
+# ADR-027 — import generated iwxxm_xsd pydantic models (not validate hot path)
+xsd = ["pydantic>=2.0", "xsdata-pydantic>=24.5"]
+
 [build-system]
 requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
@@ -19,7 +23,14 @@ pythonpath = ["src"]
 [tool.coverage.run]
 branch = true
 source = ["src/metar_shared"]
+# ADR-027 generated xsdata trees — not unit-tested line-by-line (T3.7a smoke covers regen)
+omit = [
+  "*/iwxxm_xsd/v*/**",
+]
 
 [tool.coverage.report]
 fail_under = 98
 show_missing = true
+omit = [
+  "*/iwxxm_xsd/v*/**",
+]

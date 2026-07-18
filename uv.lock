@@ -1377,6 +1377,19 @@ name = "metar-shared"
 version = "0.1.0"
 source = { editable = "packages/shared" }
 
+[package.optional-dependencies]
+xsd = [
+    { name = "pydantic" },
+    { name = "xsdata-pydantic" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "pydantic", marker = "extra == 'xsd'", specifier = ">=2.0" },
+    { name = "xsdata-pydantic", marker = "extra == 'xsd'", specifier = ">=24.5" },
+]
+provides-extras = ["xsd"]
+
 [[package]]
 name = "metar-worker"
 version = "0.1.0"

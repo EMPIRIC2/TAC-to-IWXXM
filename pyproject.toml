@@ -66,6 +66,8 @@ exclude = [
   "vendor",
   "apps/frontend/dist",
   "frontend/dist",
+  # ADR-027 generated xsdata trees (T3.7)
+  "packages/shared/src/metar_shared/iwxxm_xsd/v*",
 ]
 reportMissingTypeStubs = false
 reportUnknownMemberType = "warning"
@@ -99,6 +101,8 @@ source = ["apps", "packages"]
 omit = [
   "**/__init__.py",
   "**/tests/**",
+  # ADR-027 generated xsdata trees (T3.7)
+  "*/iwxxm_xsd/v*/**",
 ]
 
 [tool.coverage.report]

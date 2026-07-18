@@ -97,7 +97,7 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 | Coverage | 95% all members | pytest + Vitest gates (ADR-007); includes tac2iwxxm, tac-validate, iwxxm-validate |
 | cargo / maturin | **required before cutover** | PyO3 wheel build in CI/API image (ADR-017) |
 | xsdata | **dev/codegen** (F11 / ADR-027) | XSD → Python models from pinned IWXXM schemas — `xsdata[cli]>=24.5` in workspace `dev` |
-| xsdata-pydantic | **dev/codegen** (F11 / ADR-027) | pydantic v2 output plugin — `>=24.5` in workspace `dev` |
+| xsdata-pydantic | **dev/codegen** (F11 / ADR-027) | pydantic v2 output plugin — `>=24.5` in workspace `dev`; also `metar-shared[xsd]` for importing committed models |
 | maturin | **dev** (F13/F14) | PyO3 wheel build — `>=1.7` in workspace `dev`; also CI |
 
 **Deployables**: API + static frontend + **F8 Background Worker** (`apps/worker`, ADR-018).

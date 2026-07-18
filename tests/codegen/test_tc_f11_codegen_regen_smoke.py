@@ -59,8 +59,10 @@ def _ensure_namespace_pkg(pkg_name: str, version_dir: Path) -> None:
     """
     import types
 
-    if str(SHARED_SRC) not in sys.path:
-        sys.path.insert(0, str(SHARED_SRC))
+    # version_dir = …/metar_shared/iwxxm_xsd/vX → src is parents[2]
+    src_root = version_dir.parents[2]
+    if str(src_root) not in sys.path:
+        sys.path.insert(0, str(src_root))
 
     for parent in ("metar_shared", "metar_shared.iwxxm_xsd"):
         if parent not in sys.modules:
@@ -109,21 +111,28 @@ def _import_leaf_modules(pkg_name: str, version_dir: Path) -> list[str]:
 
 
 @pytest.mark.slow
-def test_t37a_regen_pinned_xsd_nonempty_and_importable() -> None:
+def test_t37a_regen_pinned_xsd_nonempty_and_importable(tmp_path: Path) -> None:
     """
     Regenerate from pinned vendor XSD; models must be non-empty and importable.
+
+    Writes under a temp ``metar_shared/iwxxm_xsd`` so committed trees stay intact.
 
     Spec: ADR-027; F11 acceptance #4 (xsdata → pydantic); execution-plan T3.7a.
     """
     mod = _load_script()
     assert SMOKE_VERSION in mod.load_manifest_versions()
 
-    summary = mod.generate_version(SMOKE_VERSION, entry=SMOKE_ENTRY)
+    out_root = tmp_path / "src" / "metar_shared" / "iwxxm_xsd"
+    out_root.mkdir(parents=True)
+    (tmp_path / "src" / "metar_shared" / "__init__.py").write_text("", encoding="utf-8")
+    (out_root / "__init__.py").write_text("", encoding="utf-8")
+
+    summary = mod.generate_version(SMOKE_VERSION, entry=SMOKE_ENTRY, out_root=out_root)
     assert summary["py_files"] >= 5, summary
     assert summary["bytes"] > 10_000, summary
     assert summary["output"] is not None
 
-    version_dir = REPO_ROOT / summary["output"]
+    version_dir = out_root / mod._version_package(SMOKE_VERSION)
     assert version_dir.is_dir()
     py_files = list(version_dir.rglob("*.py"))
     assert len(py_files) == summary["py_files"]
@@ -132,6 +141,15 @@ def test_t37a_regen_pinned_xsd_nonempty_and_importable() -> None:
     assert basemodels >= 10, f"expected pydantic models, found {basemodels}"
 
     pkg = summary["package"]
+    # Point import helper at the temp tree via sys.path.
+    temp_src = str(tmp_path / "src")
+    if temp_src not in sys.path:
+        sys.path.insert(0, temp_src)
+    # Prefer temp packages over the committed ones for this smoke.
+    for key in list(sys.modules):
+        if key == "metar_shared" or key.startswith("metar_shared."):
+            del sys.modules[key]
+
     imported = _import_leaf_modules(pkg, version_dir)
     assert imported, f"no modules importable under {pkg}"
 

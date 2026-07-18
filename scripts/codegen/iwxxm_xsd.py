@@ -122,7 +122,12 @@ def _patch_xsdata_generators() -> None:
     DataclassGenerator.validate_imports = validate_imports  # type: ignore[method-assign]
 
 
-def generate_version(version: str, *, entry: str = DEFAULT_ENTRY) -> dict[str, Any]:
+def generate_version(
+    version: str,
+    *,
+    entry: str = DEFAULT_ENTRY,
+    out_root: Path | None = None,
+) -> dict[str, Any]:
     """
     Run xsdata pydantic codegen for one IWXXM release line.
 
@@ -132,6 +137,10 @@ def generate_version(version: str, *, entry: str = DEFAULT_ENTRY) -> dict[str, A
         Release line such as ``2025-2``.
     entry :
         Entry XSD filename under ``IWXXM/`` (default ``iwxxm.xsd``).
+    out_root :
+        Package root for generated ``v*`` trees (default: repo ``iwxxm_xsd``).
+        Must be ``…/metar_shared/iwxxm_xsd`` so xsdata package paths resolve.
+        Tests pass a temp root so smoke regen does not clobber committed models.
 
     Returns
     -------
@@ -152,14 +161,20 @@ def generate_version(version: str, *, entry: str = DEFAULT_ENTRY) -> dict[str, A
     if not xsd.is_file():
         raise FileNotFoundError(f"entry XSD missing: {xsd}")
 
+    root = out_root if out_root is not None else OUT_ROOT
+    root.mkdir(parents=True, exist_ok=True)
+    # …/src/metar_shared/iwxxm_xsd → shared_src is …/src
+    shared_src = root.parent.parent
+    if root.name != "iwxxm_xsd" or root.parent.name != "metar_shared":
+        raise ValueError(f"out_root must end with metar_shared/iwxxm_xsd, got {root}")
+
     pkg = f"metar_shared.iwxxm_xsd.{_version_package(version)}"
-    out_dir = OUT_ROOT / _version_package(version)
+    out_dir = root / _version_package(version)
     if out_dir.exists():
         shutil.rmtree(out_dir)
 
-    # xsdata writes packages relative to CWD.
+    # xsdata writes packages relative to CWD (= shared src root).
     prev = Path.cwd()
-    shared_src = REPO_ROOT / "packages" / "shared" / "src"
     os.chdir(shared_src)
     try:
         cfg = GeneratorConfig.create()
@@ -184,11 +199,15 @@ def generate_version(version: str, *, entry: str = DEFAULT_ENTRY) -> dict[str, A
             )
 
     py_files = list(out_dir.rglob("*.py")) if out_dir.is_dir() else []
+    try:
+        output_rel: str | None = str(out_dir.relative_to(REPO_ROOT))
+    except ValueError:
+        output_rel = str(out_dir)
     return {
         "version": version,
         "entry": entry,
         "package": pkg,
-        "output": str(out_dir.relative_to(REPO_ROOT)) if out_dir.exists() else None,
+        "output": output_rel if out_dir.exists() else None,
         "py_files": len(py_files),
         "bytes": sum(p.stat().st_size for p in py_files),
     }
