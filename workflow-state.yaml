@@ -5278,6 +5278,13 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: b6c446b
+    branch: main
+    message: "chore: close S013/EV-009 — F9/F10 shipped (#723)"
+    stage: "16-evolve"
+    session_id: S013-live-decode-preview-ux
+    files_changed: 4
+    timestamp: "2026-07-18T12:50:00Z"
   - sha: 62ef542
     branch: main
     message: "[T4.5] test: 13-deploy-smoke PASS for EV-009 (F9/F10 live)"
