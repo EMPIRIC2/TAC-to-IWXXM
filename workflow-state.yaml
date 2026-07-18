@@ -5848,6 +5848,14 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 85090b5e19e5b274754c61d71360d13a1b35d7f8
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: workflow-state after T3.7 — next T3.8a"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T23:50:54Z"
   - sha: 98e909ac828c9bddb0a39017d25881fa2ce97a63
     branch: evolve/EV-010-package-publish-validation
     message: "[T3.7] feat: commit xsdata IWXXM pydantic models and adapt helpers"
