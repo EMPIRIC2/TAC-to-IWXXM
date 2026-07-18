@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M3 T3.1 complete (1770086); T3.2 in_progress (parity suite stubs)"
+    note: "M3 T3.1–T3.2 complete (1770086 / 947020b); next T3.3 Rust validate_iwxxm"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,10 +1420,10 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M3 T3.1 complete (1770086); T3.2 in_progress (parity suite stubs)"
+      note: "M3 T3.1–T3.2 complete (1770086 / 947020b); next T3.3 Rust validate_iwxxm"
       active_milestone: M3
-      active_task: T3.2
-      active_task_status: in_progress
+      active_task: T3.3
+      active_task_status: pending
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1449,6 +1449,8 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-18 S014/EV-010 T3.2 complete — F13 parity suite stubs vs lxml golden corpus (947020b); active_task T3.3 pending"
+    - "2026-07-18 S014/EV-010 M3 T3.1–T3.2 complete (1770086 / 947020b); next T3.3 Rust validate_iwxxm"
     - "2026-07-18 S014/EV-010 T3.1 complete — iwxxm-validate rust/maturin scaffold; hatch pure path retained"
     - "2026-07-18 S014/EV-010 user 52:A — continue 07-build at M3 T3.1 after M2 complete"
     - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
@@ -4236,10 +4238,10 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M3 T3.1 complete (1770086); T3.2 in_progress (parity suite stubs)"
+      note: "M3 T3.1–T3.2 complete (1770086 / 947020b); next T3.3 Rust validate_iwxxm"
       active_milestone: M3
-      active_task: T3.2
-      active_task_status: in_progress
+      active_task: T3.3
+      active_task_status: pending
   gates:
     a_to_b: pending
     b_to_c: passed
@@ -4255,6 +4257,8 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "2026-07-18 S014/EV-010 T3.2 complete — F13 parity suite stubs vs lxml golden corpus (947020b); active_task T3.3 pending"
+  - "2026-07-18 S014/EV-010 M3 T3.1–T3.2 complete (1770086 / 947020b); next T3.3 Rust validate_iwxxm"
   - "2026-07-18 S014/EV-010 T3.1 complete — iwxxm-validate rust/maturin scaffold; hatch pure path retained"
   - "2026-07-18 S014/EV-010 user 52:A — continue 07-build at M3 T3.1 after M2 complete"
   - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
@@ -5520,6 +5524,8 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "2026-07-18 S014/EV-010 T3.2 complete — F13 parity suite stubs vs lxml golden corpus (947020b); active_task T3.3 pending"
+  - "2026-07-18 S014/EV-010 M3 T3.1–T3.2 complete (1770086 / 947020b); next T3.3 Rust validate_iwxxm"
   - "2026-07-18 S014/EV-010 T3.1 complete — iwxxm-validate rust/maturin scaffold; hatch pure path retained"
   - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
   - "2026-07-18 S014/EV-010 M1 complete — commits 59a65bd/9f9f67b/3ad66cd/70d157b; next M2 T2.1; ci-cd.yml only triggers on main/dev — push alone did not run GHA; local format-check + perf tests green"
@@ -5775,6 +5781,14 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 947020b2b49fb2c818f2f547e09e047be2fc6f8b
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.2] test: add F13 parity suite stubs vs lxml golden corpus"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 3
+    timestamp: "2026-07-18T21:31:50Z"
   - sha: 1770086
     branch: evolve/EV-010-package-publish-validation
     message: "[T3.1] config: scaffold iwxxm-validate rust + maturin"
