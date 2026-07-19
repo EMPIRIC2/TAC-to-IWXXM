@@ -6409,10 +6409,13 @@ evolve_cycles:
 
 git_history:
   current_branch: main
-  ahead_of_origin: 1
+  ahead_of_origin: 2
   pushed: false
   pending_commit: null
   notes:
+  - >-
+    2026-07-19 S014/EV-010 commit 8f7d9c1 on main — chore: record T6.6 close commit
+    640b4d2 in workflow-state; local ahead of origin by 2; not pushed
   - >-
     2026-07-19 S014/EV-010 commit 640b4d2 on main — [T6.6] perf: cache compiled
     XSD/Schematron in iwxxm-validate Rust; local only, ahead of origin by 1; not pushed
@@ -6714,6 +6717,16 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 8f7d9c17344e2913bafdcf694a5ccde4a675f4d5
+    short: 8f7d9c1
+    branch: main
+    message: "chore: record T6.6 close commit 640b4d2 in workflow-state"
+    stage: "16-evolve"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-19T23:30:33Z"
+    note: "Local on main; ahead of origin by 2; not pushed"
   - sha: 640b4d28c8d9e2fbc0dab1d30e8f3dc8108b1b2c
     short: 640b4d2
     branch: main
