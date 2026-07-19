@@ -28,7 +28,7 @@
 | H4 | Live CORS preflight (FE origin + work-sessions PATCH) | **PASS** 2/2 |
 | H5 | Frontend `/config.json` `api.baseUrl` → API | **PASS** |
 | H6′ UJ-022 | Live multipart convert → validate → lint-tac → decode-tac | **PASS** |
-| UJ-023 tag publish | Live PyPI tag → install | **DEFERRED** — Trusted Publisher ×3 not configured |
+| UJ-023 tag publish | Live PyPI install | **PASS (bootstrap)** — `0.1.0` on PyPI via API token; TP on existing projects for next tags |
 
 ### H6′ UJ-022 detail (live)
 
@@ -54,11 +54,13 @@ make test-live-api            # H3
 - CORS matrix unchanged; H4 green post-msgspec (clears prior staging H4 fail / QA-S014-001)
 - FE `config.json` points at production API; `corsOrigins` = FE URL
 
-## PyPI (soft)
+## PyPI
 
-- Workflow OIDC matrix ready; **Trusted Publisher** still BLOCKED for live tags
-- Tag publish smokes (UJ-023) remain after operator configures PyPI ×3
-- T6.6 hard gates: HTTP + wheel smokes **PASS**; lib 0.85× **FAIL** (release) — see `t66-hard-publish-gates.md`
+- `0.1.0` published for all three packages (token bootstrap; see `pypi-bootstrap-token.md`)
+- Clean-venv install of `tac-validate` / `iwxxm-validate` / `tac2iwxxm[validate]==0.1.0` **PASS**
+- Trusted Publishers on **existing** projects for future OIDC tags (`pypi-publish.yml` + env `pypi`)
+- Do **not** re-push `*-v0.1.0` tags; next OIDC cut is `0.1.1+`
+- T6.6 hard gates: XSD/combined 0.85× + HTTP + wheels **PASS** (`t66-hard-publish-gates.md`)
 
 ## Rollback
 
@@ -70,5 +72,5 @@ make test-live-api            # H3
 
 ## Verdict
 
-**T6.5 / 13-deploy-smoke Render path satisfied.** F11 msgspec HTTP + F12–F14 package code are live on Render.  
-PyPI first-tag publish remains operator-blocked (Trusted Publisher) — not a Render deploy failure.
+**T6.5 / T6.6 / 13-deploy-smoke complete.** F11–F14 live on Render; PyPI `0.1.0` live
+(token bootstrap); Trusted Publishers on existing projects for later OIDC tags.

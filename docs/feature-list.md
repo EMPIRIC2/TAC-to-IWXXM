@@ -18,10 +18,10 @@
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018/019; `apps/worker` |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
-| F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Planned | Product | S014 / EV-010; #703 |
-| F12 | Publishable TAC product validation (`tac-validate`) | Planned | Product | S014 / EV-010; #698 |
-| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Planned | Product | S014 / EV-010; #699 |
-| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Planned | Product | S014 / EV-010; #693 |
+| F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
+| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698 |
+| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
+| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |

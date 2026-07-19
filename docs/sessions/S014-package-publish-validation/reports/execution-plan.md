@@ -11,10 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase D (deploy) — M6 hard gates + Render done; PyPI tags deferred |
+| **Active phase** | Phase 4 close — M6 complete; UJ-023 bootstrap PASS |
 | **Active milestone** | M6 — verify & deploy |
-| **Active task** | — (T6.6 completed; UJ-023 Trusted Publisher remaining) |
-| **Tasks** | 36 / ~39 (T6.1–T6.6 complete; live tags deferred) |
+| **Active task** | — (all M6 tasks complete) |
+| **Tasks** | 36 / 36 (T6.1–T6.6 complete; UJ-023 via token bootstrap) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -142,3 +142,5 @@
 | T6.6 lib gate Decision | 2026-07-19 | resolved | User 3 — optimize native to 0.85× (D-S014-EV010-t66-lib-gate); “0.08 x”→0.85× |
 | T6.6 hard gates (post-cache) | 2026-07-19 | passed | Schema cache; XSD+combined+HTTP+wheels PASS |
 | T6.6 close | 2026-07-19 | passed | User 2 — approve + commit on main (D-S014-EV010-t66-close-2) |
+| UJ-023 PyPI bootstrap | 2026-07-19 | passed | User 3 — API token create ×3; TP on existing (D-S014-EV010-pypi-bootstrap-3) |
+| Phase 4 close prep | 2026-07-19 | in_progress | evolve-summary + evolve-report-EV-010; awaiting user checkpoint |

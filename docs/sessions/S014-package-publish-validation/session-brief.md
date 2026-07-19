@@ -1,7 +1,7 @@
 ---
 session_id: S014-package-publish-validation
 type: feature
-status: active
+status: closing  # Phase 4 prep done; awaiting user close checkpoint
 branch: evolve/EV-010-package-publish-validation
 started_at: 2026-07-18
 intent: "Validation stack perf review (#703); publishable tac-validate (#698), iwxxm-validate Rust+SDK (#699), tac2iwxxm with validate extras (#693); domain rule encoding; PyPI + release-tag CI/CD"

@@ -8,7 +8,7 @@ All notable user-facing and deployable changes for METAR to IWXXM.
 - **F11**: msgspec response encode on high-churn convert/validate/lint/decode routes (ADR-026);
   Rust `iwxxm-validate` SDK path; xsdata `iwxxm_xsd` models (ADR-027).
 - **F12–F14**: Publishable `tac-validate` / `iwxxm-validate` / `tac2iwxxm[+validate]` packaging
-  + PyPI OIDC workflow (matrix) — first live tag blocked until Trusted Publisher ×3 configured.
+  + PyPI OIDC workflow (matrix); **0.1.0** live on PyPI (token bootstrap; OIDC for later tags).
 
 ### Changed
 - Backend HTTP response path for operator convert/validate; FE OpenAPI/client types aligned.

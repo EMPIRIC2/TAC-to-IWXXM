@@ -33,6 +33,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-18'
+    note: "Phase 4 close prep complete; awaiting push + session close approval"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -81,7 +82,7 @@ active_session:
     status: completed
     started: '2026-07-18'
     completed: '2026-07-19'
-    note: "M6 complete — T6.6 approved (D-S014-EV010-t66-close-2); live PyPI tags deferred (UJ-023)"
+    note: "M6 complete — T6.6 approved; UJ-023 PyPI 0.1.0 bootstrap PASS (D-S014-EV010-pypi-bootstrap-3)"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -132,11 +133,12 @@ active_session:
     status: completed
     started: '2026-07-19'
     completed: '2026-07-19'
-    note: "T6.5+T6.6 done (D-S014-EV010-t66-close-2); UJ-023 still deferred Trusted Publisher"
+    note: "T6.5+T6.6 done; UJ-023 PyPI 0.1.0 bootstrap PASS (D-S014-EV010-pypi-bootstrap-3)"
     artifacts:
     - docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
     - docs/deploy-state.md
     - docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
+    - docs/sessions/S014-package-publish-validation/reports/pypi-bootstrap-token.md
   skipped_stages: []
   current_stage: 16-evolve
   pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
@@ -2084,6 +2086,26 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S014-EV010-pypi-bootstrap-3
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 16-evolve
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  status: resolved
+  resolved_at: "2026-07-19"
+  decision: >
+    UJ-023 / PyPI PASS via token bootstrap — create projects with one-time PYPI_API_TOKEN
+    then attach Trusted Publishers on existing projects. User confirmed Trusted Publishers
+    path good and to continue (2026-07-19).
+  summary: >
+    Published tac-validate / iwxxm-validate / tac2iwxxm 0.1.0 to production PyPI.
+    Evidence: docs/sessions/S014-package-publish-validation/reports/pypi-bootstrap-token.md.
+    gates.deploy → passed (Render + hard gates + PyPI bootstrap). F11–F14 marked
+    Implemented in feature-list (parent will commit). EV-010 remains in_progress until
+    Phase 4 close AskQuestion; Phase 4 prep done (evolve-summary + evolve-report).
 - id: D-S014-EV010-t66-close-2
   date: "2026-07-19"
   timestamp: "2026-07-19"
@@ -3828,6 +3850,36 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/evolve-summary.md
+  type: report
+  kind: evolve-summary
+  stage: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: ready
+  note: "Phase 4 prep — awaiting user close AskQuestion"
+- path: docs/evolve-report-EV-010.md
+  type: report
+  kind: evolve-report
+  stage: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: ready
+  note: "Phase 4 prep — EV-010 report; awaiting close approval"
+- path: docs/sessions/S014-package-publish-validation/reports/pypi-bootstrap-token.md
+  type: report
+  kind: report
+  stage: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "UJ-023 PyPI 0.1.0 token bootstrap PASS (D-S014-EV010-pypi-bootstrap-3)"
 - path: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
   type: report
   kind: report
@@ -3838,7 +3890,7 @@ artifacts:
   updated_at: "2026-07-19"
   status: completed
   note: >-
-    T6.6 hard gates completed (D-S014-EV010-t66-close-2); UJ-023 Trusted Publisher deferred
+    T6.6 hard gates completed (D-S014-EV010-t66-close-2); UJ-023 later PASS via bootstrap
 - path: tests/perf/test_t66_hard_publish_gates.py
   type: test
   kind: test
@@ -4783,9 +4835,10 @@ evolve_cycles:
   active_task: T6.6
   active_task_status: completed
   note: >-
-    awaiting Trusted Publisher / Phase 4 close — M6 T6.5+T6.6 done
-    (D-S014-EV010-t66-close-2); UJ-023 live tags still deferred; evolve summary pending;
-    T6.6 commit 640b4d2 on main (local, ahead 1, not pushed)
+    Phase 4 prep done — UJ-023 PyPI 0.1.0 bootstrap PASS (D-S014-EV010-pypi-bootstrap-3);
+    F11–F14 Implemented in feature-list (parent will commit); evolve-summary +
+    evolve-report ready; awaiting push + Phase 4 / session close AskQuestion
+  features_status: Implemented  # F11–F14 in feature-list; parent will commit
   pr_id: PR-EV-010
   pr_number: 726
   pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
@@ -4956,7 +5009,7 @@ evolve_cycles:
     a_to_b: pending
     b_to_c: passed
     c_to_d: passed  # D-S014-EV010-c-to-d-pass 2026-07-19
-    deploy: passed_with_deferral  # Render + T6.6 hard gates done; PyPI tags (UJ-023) still Trusted Publisher blocked
+    deploy: passed  # Render + T6.6 hard gates + PyPI 0.1.0 bootstrap (D-S014-EV010-pypi-bootstrap-3)
   checkpoints:
     phase_a: pending
     phase_b:
@@ -4970,7 +5023,15 @@ evolve_cycles:
     phase_d:
       status: passed
       completed: "2026-07-19"
-      note: "User approved Pass Phase D → start T6.3 (D-S014-EV010-phase-d-to-t63)"
+      note: >-
+        Phase D work passed (deploy + PyPI bootstrap); awaiting final Phase 4 close
+        AskQuestion (session/EV-010 not closed)
+    phase_4:
+      status: awaiting_approval
+      completed: null
+      note: >-
+        Phase 4 prep complete — evolve-summary + evolve-report + PyPI bootstrap;
+        awaiting user close AskQuestion (push + session close)
     t65_deploy:
       status: passed
       completed: "2026-07-19"
@@ -4986,12 +5047,16 @@ evolve_cycles:
         ~0.03× PASS; HTTP+wheels PASS; SCH-only soft-warn; evidence
         t66-hard-publish-gates.md
     deploy:
-      status: passed_with_deferral
+      status: passed
       completed: "2026-07-19"
       note: >-
-        Render path + T6.6 hard gates done; PyPI tags (UJ-023) still Trusted Publisher
-        blocked — EV-010 remains open for Trusted Publisher / Phase 4 close
+        Render + T6.6 hard gates + PyPI 0.1.0 bootstrap PASS
+        (D-S014-EV010-pypi-bootstrap-3); Trusted Publishers path confirmed good
   notes:
+  - >-
+    2026-07-19 S014/EV-010 D-S014-EV010-pypi-bootstrap-3 — UJ-023 PyPI 0.1.0 token
+    bootstrap PASS; user confirmed Trusted Publishers path good; Phase 4 prep done;
+    EV-010 still in_progress awaiting Phase 4 close AskQuestion
   - >-
     2026-07-19 S014/EV-010 commit 640b4d2 on main recorded — [T6.6] schema-cache optimize;
     local ahead of origin by 1; not pushed; T6.6/07/13 remain completed; EV-010 open for
@@ -5062,7 +5127,23 @@ evolve_cycles:
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
   - path: docs/sessions/S014-package-publish-validation/reports/evolve-summary.md
-    status: pending
+    kind: evolve-summary
+    stage: 16-evolve
+    session_id: S014-package-publish-validation
+    status: ready
+    note: "Phase 4 prep — awaiting user close AskQuestion"
+  - path: docs/evolve-report-EV-010.md
+    kind: evolve-report
+    stage: 16-evolve
+    session_id: S014-package-publish-validation
+    status: ready
+    note: "Phase 4 prep — awaiting close approval"
+  - path: docs/sessions/S014-package-publish-validation/reports/pypi-bootstrap-token.md
+    kind: report
+    stage: 16-evolve
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "UJ-023 PyPI 0.1.0 token bootstrap PASS (D-S014-EV010-pypi-bootstrap-3)"
   - path: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
     kind: stage-report
     stage: 11-verify-impl
@@ -5076,7 +5157,7 @@ evolve_cycles:
     status: completed
     note: >-
       D-S014-EV010-t64-merge-A — PR #726 MERGED (c73e0ad); CI green tip bd0aee5; T6.4/12
-      complete; T6.5 13-deploy-smoke started; PyPI Trusted Publisher still BLOCKED for live tags
+      complete; T6.5 13-deploy-smoke started; PyPI later PASS via bootstrap-3
   - path: docs/sessions/S014-package-publish-validation/reports/verification-report.md
     kind: verification-report
     stage: 08-verify-build
