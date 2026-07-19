@@ -11,10 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C → D (T6.1 PASS; C→D checkpoint) |
+| **Active phase** | Phase D (verify) — T6.2 complete; Phase D checkpoint before T6.3 |
 | **Active milestone** | M6 — verify & deploy |
-| **Active task** | T6.1 completed; next T6.2 (09-qa + 10-e2e) |
-| **Tasks** | 31 / ~39 (T6.1 PASS) |
+| **Active task** | T6.2 completed; next T6.3 |
+| **Tasks** | 32 / ~39 (T6.2 PASS; Phase D checkpoint before T6.3) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -96,7 +96,7 @@
 | Task | Type | Description | Stage | Depends On | Status |
 |------|------|-------------|-------|------------|--------|
 | T6.1 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5 | completed |
-| T6.2 | Test | 09-qa + 10-e2e — QA + UJ-022/023 / DEV-005 | 09/10 | T6.1 | pending |
+| T6.2 | Test | 09-qa + 10-e2e — QA + UJ-022/023 / DEV-005 | 09/10 | T6.1 | completed |
 | T6.3 | Docs | 11-verify-impl — per-Fn F11–F14 acceptance | 11 | T6.2 | pending |
 | T6.4 | Config | 12-verify-deploy — PyPI OIDC + Render checklist; evolve PR | 12 | T6.3 | pending |
 | T6.5 | Test | 13-deploy-smoke — Render redeploy; H4–H5 + H6′ UJ-022; tag publish smokes (includes live CORS after T5.6) | 13 | T6.4, T5.6 | pending |
@@ -132,3 +132,4 @@
 | B plan | 2026-07-18 | approved | User 43A — M1–M6 execution plan |
 | B tech audit | 2026-07-18 | passed | 05 PASS — 44A–47A applied |
 | B→C | 2026-07-18 | passed | User 50B — push then 07-build M1 T1.1 (D-S014-EV010-b-to-c-push) |
+| C→D | 2026-07-19 | passed | User A — pass gate; start T6.2 09-qa + 10-e2e (D-S014-EV010-c-to-d-pass) |
