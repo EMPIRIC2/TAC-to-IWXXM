@@ -51,9 +51,7 @@ def test_cli_module_main_exits_zero_on_example(monkeypatch: pytest.MonkeyPatch) 
     assert payload["ok"] is (code == 0)
     if code == 0:
         return
-    error_codes = {
-        issue["code"] for issue in payload["issues"] if issue.get("severity") == "error"
-    }
+    error_codes = {issue["code"] for issue in payload["issues"] if issue.get("severity") == "error"}
     assert error_codes, "exit 1 must include at least one error issue"
     assert error_codes <= {"SCHEMA_PARSE_ERROR"}, error_codes
 
