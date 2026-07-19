@@ -7,6 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 REPO_ROOT = Path(__file__).resolve().parents[3]
 VENDOR_EXAMPLE = REPO_ROOT / "vendor" / "schemas" / "iwxxm" / "2023-1" / "IWXXM" / "examples" / "metar-A3-1.xml"
 ANNEX3_GOLDEN = REPO_ROOT / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "annex3_golden" / "metar_basic.golden.xml"
@@ -17,16 +19,21 @@ def test_cli_fixture_paths_exist() -> None:
     assert sys.version_info >= (3, 12)
 
 
-def test_cli_module_main_exits_zero_on_example() -> None:
+def test_cli_module_main_exits_zero_on_example(monkeypatch: pytest.MonkeyPatch) -> None:
+    import iwxxm_validate.paths as paths_mod
     from iwxxm_validate.cli import main
     from iwxxm_validate.native import rust_available
+    from iwxxm_validate.paths import clear_path_caches
 
     # WMO vendor examples need the Rust/xmloxide path for full XSD resolution;
     # pure-lxml often returns SCHEMA_PARSE_ERROR on GML AngleType imports.
     if not rust_available():
-        import pytest
-
         pytest.skip("iwxxm_validate._rust not built (make build-iwxxm-validate-native)")
+
+    # Packaged subset is gitignored; maturin/hatch may materialise an incomplete tree
+    # that xmloxide rejects (observation.xsd NS). Monorepo CI uses vendor pins.
+    monkeypatch.setattr(paths_mod, "packaged_schemas_root", lambda: None)
+    clear_path_caches()
 
     path = VENDOR_EXAMPLE if VENDOR_EXAMPLE.is_file() else ANNEX3_GOLDEN
     assert main(["--version", "2023-1", "--profile", "annex3", str(path)]) == 0
