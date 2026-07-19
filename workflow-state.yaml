@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M4 complete (T4.1–T4.5). Next: M5 msgspec HTTP (T5.1). Branch ahead of origin; single evolve PR at M6."
+    note: "M5 started — T5.1 in progress (msgspec HTTP API tests). Branch ahead of origin; single evolve PR at M6."
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,10 +1420,10 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M4 complete (T4.1–T4.5). Next: M5 msgspec HTTP (T5.1). Branch ahead of origin; single evolve PR at M6."
-      active_milestone: M4
-      active_task: M4-complete
-      active_task_status: completed
+      note: "M5 started — T5.1 in progress (msgspec HTTP API tests). Branch ahead of origin; single evolve PR at M6."
+      active_milestone: M5
+      active_task: T5.1
+      active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1449,6 +1449,7 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-19 S014/EV-010 M5 started — T5.1 in progress (msgspec HTTP API tests)"
     - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
     - "2026-07-19 S014/EV-010 T4.2 completed (24ad415); T4.3 in_progress"
     - "2026-07-19 S014/EV-010 T4.1 completed (c48c692); T4.2 in_progress"
@@ -4314,10 +4315,10 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M4 complete (T4.1–T4.5). Next: M5 msgspec HTTP (T5.1). Branch ahead of origin; single evolve PR at M6."
-      active_milestone: M4
-      active_task: M4-complete
-      active_task_status: completed
+      note: "M5 started — T5.1 in progress (msgspec HTTP API tests). Branch ahead of origin; single evolve PR at M6."
+      active_milestone: M5
+      active_task: T5.1
+      active_task_status: in_progress
   gates:
     a_to_b: pending
     b_to_c: passed
@@ -4333,6 +4334,7 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "2026-07-19 S014/EV-010 M5 started — T5.1 in progress (msgspec HTTP API tests)"
   - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
   - "2026-07-19 S014/EV-010 T4.2 completed (24ad415); T4.3 in_progress"
   - "2026-07-19 S014/EV-010 T4.1 completed (c48c692); T4.2 in_progress"

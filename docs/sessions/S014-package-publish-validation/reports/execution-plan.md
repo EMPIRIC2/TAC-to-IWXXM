@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C (build) |
-| **Active milestone** | M4 complete; next M5 — msgspec HTTP (T5.1) |
-| **Active task** | M4 complete (T4.1–T4.5); next M5 T5.1 |
-| **Tasks** | 24 / ~39 (M1–M4 complete; next M5 T5.1) |
+| **Active milestone** | M5 — msgspec HTTP |
+| **Active task** | T5.2 completed; next T5.3 |
+| **Tasks** | 26 / ~39 (M1–M4 complete; M5 T5.1–T5.2 done) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -84,8 +84,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T5.1 | Test | API tests: convert/validate/lint/decode (+ zip/bulletin) responses via msgspec path; auth unchanged | TC-F11-001; ADR-026 | — | pending |
-| T5.2 | Code | Thin helper Struct→`msgspec.json.encode`→`Response`; pydantic OpenAPI aliases only; Form intake unchanged | E10-28, E10-38 | T5.1 | pending |
+| T5.1 | Test | API tests: convert/validate/lint/decode (+ zip/bulletin) responses via msgspec path; auth unchanged | TC-F11-001; ADR-026 | — | completed |
+| T5.2 | Code | Thin helper Struct→`msgspec.json.encode`→`Response`; pydantic OpenAPI aliases only; Form intake unchanged | E10-28, E10-38 | T5.1 | completed |
 | T5.3 | Test | Soft HTTP bench ≤1.0× pydantic map baseline | E10-35 | T1.3, T5.2 | pending |
 | T5.4 | Test | Vitest / OpenAPI-derived FE type updates for breaking shapes | E10-18; F11 | T5.2 | pending |
 | T5.5 | Code | Frontend client types + workbench call sites | api-contract; UJ-022 | T5.4 | pending |

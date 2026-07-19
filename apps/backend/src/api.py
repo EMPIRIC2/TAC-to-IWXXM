@@ -17,11 +17,12 @@ sys.path.insert(0, str(pathlib.Path(__file__).parent))
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import Response, StreamingResponse
 
 try:
     # Try relative imports first (when run as module in Docker)
     from .config.icao_opmet import get_icao_region, get_translation_centre_info
+    from .msgspec_http import msgspec_json_response
     from .routers import evaluation, icao_opmet, validation, work_sessions
     from .schemas.conversion import (
         ConversionIssue,
@@ -62,6 +63,7 @@ try:
 except ImportError:
     # Fall back to direct imports (when sys.path is set for local development)
     from config.icao_opmet import get_icao_region, get_translation_centre_info
+    from msgspec_http import msgspec_json_response
     from routers import evaluation, icao_opmet, validation, work_sessions
     from schemas.conversion import (
         ConversionIssue,
@@ -829,7 +831,7 @@ async def lint_tac(
     product: str = Form(default="METAR", description="Product hint when known"),
     files: Optional[List[UploadFile]] = File(None),
     user: dict = Depends(verify_supabase_token),
-) -> LintTacResponse:
+) -> Response:
     """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A)."""
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
@@ -847,21 +849,23 @@ async def lint_tac(
             tac_text = joined
 
     report = tac_lint_fn(tac_text, product=product or "METAR")
-    return LintTacResponse(
-        ok=report.ok,
-        product=report.product,
-        issues=[
-            LintIssueModel(
-                severity=i.severity,
-                code=i.code,
-                message=i.message,
-                location=i.location,
-                start=getattr(i, "start", None),
-                end=getattr(i, "end", None),
-            )
-            for i in report.issues
-        ],
-        fixes=[LintFixModel(code=f.code, message=f.message, replacement=f.replacement) for f in report.fixes],
+    return msgspec_json_response(
+        LintTacResponse(
+            ok=report.ok,
+            product=report.product,
+            issues=[
+                LintIssueModel(
+                    severity=i.severity,
+                    code=i.code,
+                    message=i.message,
+                    location=i.location,
+                    start=getattr(i, "start", None),
+                    end=getattr(i, "end", None),
+                )
+                for i in report.issues
+            ],
+            fixes=[LintFixModel(code=f.code, message=f.message, replacement=f.replacement) for f in report.fixes],
+        )
     )
 
 
@@ -881,7 +885,7 @@ async def decode_tac_endpoint(
     manual_text: str = Form(default="", description="TAC text to decode"),
     files: Optional[List[UploadFile]] = File(None),
     user: dict = Depends(verify_supabase_token),
-) -> DecodeTacResponse:
+) -> Response:
     """Thin wrapper over ``tac2iwxxm.decode_tac`` (S011 / #702 / TC-F7-002)."""
     _ = user
     content_type = (request.headers.get("content-type") or "").lower()
@@ -900,19 +904,21 @@ async def decode_tac_endpoint(
             tac_text = joined
 
     result = tac2iwxxm_decode_tac(tac_text, product=product)
-    return DecodeTacResponse(
-        product=result.product,
-        segments=[
-            DecodeSegmentModel(
-                start=s.start,
-                end=s.end,
-                code=s.code,
-                explanation=s.explanation,
-            )
-            for s in result.segments
-        ],
-        residuals=[DecodeResidualModel(start=r.start, end=r.end, text=r.text) for r in result.residuals],
-        summary=result.summary,
+    return msgspec_json_response(
+        DecodeTacResponse(
+            product=result.product,
+            segments=[
+                DecodeSegmentModel(
+                    start=s.start,
+                    end=s.end,
+                    code=s.code,
+                    explanation=s.explanation,
+                )
+                for s in result.segments
+            ],
+            residuals=[DecodeResidualModel(start=r.start, end=r.end, text=r.text) for r in result.residuals],
+            summary=result.summary,
+        )
     )
 
 
@@ -936,7 +942,7 @@ async def convert_bulletin(
     iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
     lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
     user: dict = Depends(verify_supabase_token),
-) -> ConvertBulletinResponse:
+) -> Response:
     """Split a WMO AHL bulletin and convert each TAC report (F6.bulletin / TC-F6-030).
 
     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail
@@ -1036,17 +1042,19 @@ async def convert_bulletin(
             )
         )
 
-    return ConvertBulletinResponse(
-        bulletin_meta=BulletinMetaModel(
-            ahl=split.meta.ahl,
-            report_count=split.meta.report_count,
-            tt=split.meta.tt,
-            aa=split.meta.aa,
-            cccc=split.meta.cccc,
-            yygggg=split.meta.yygggg,
-            bbb=split.meta.bbb,
-        ),
-        results=results,
+    return msgspec_json_response(
+        ConvertBulletinResponse(
+            bulletin_meta=BulletinMetaModel(
+                ahl=split.meta.ahl,
+                report_count=split.meta.report_count,
+                tt=split.meta.tt,
+                aa=split.meta.aa,
+                cccc=split.meta.cccc,
+                yygggg=split.meta.yygggg,
+                bbb=split.meta.bbb,
+            ),
+            results=results,
+        )
     )
 
 
@@ -1278,49 +1286,51 @@ async def validate_comprehensive(
         )
 
         # Format response (HTTP shape unchanged; package metadata additive)
-        return {
-            "is_valid": result.is_valid,
-            "version": result.version,
-            "profile": profile or "annex3",
-            "layers_run": [layer.name for layer in result.layers_run],
-            "layers_passed": [layer.name for layer in result.layers_passed],
-            "layers_failed": [layer.name for layer in result.layers_failed],
-            "total_issues": len(result.all_issues),
-            "issues": [
-                {
-                    "layer": issue.layer.name,
-                    "level": issue.level.name,
-                    "message": issue.message,
-                    "location": issue.location,
-                    "code": issue.code,
-                }
-                for issue in result.all_issues
-            ],
-            "issues_by_layer": {
-                layer.name: [
+        return msgspec_json_response(
+            {
+                "is_valid": result.is_valid,
+                "version": result.version,
+                "profile": profile or "annex3",
+                "layers_run": [layer.name for layer in result.layers_run],
+                "layers_passed": [layer.name for layer in result.layers_passed],
+                "layers_failed": [layer.name for layer in result.layers_failed],
+                "total_issues": len(result.all_issues),
+                "issues": [
                     {
+                        "layer": issue.layer.name,
                         "level": issue.level.name,
                         "message": issue.message,
                         "location": issue.location,
                         "code": issue.code,
                     }
-                    for issue in issues
-                ]
-                for layer, issues in result.issues_by_layer.items()
-            },
-            "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
-            "package_ok": pkg_report.ok,
-            "package_issues": [
-                {
-                    "layer": issue.layer,
-                    "severity": issue.severity,
-                    "message": issue.message,
-                    "location": issue.location,
-                    "code": issue.code,
-                }
-                for issue in pkg_report.issues
-            ],
-        }
+                    for issue in result.all_issues
+                ],
+                "issues_by_layer": {
+                    layer.name: [
+                        {
+                            "level": issue.level.name,
+                            "message": issue.message,
+                            "location": issue.location,
+                            "code": issue.code,
+                        }
+                        for issue in issues
+                    ]
+                    for layer, issues in result.issues_by_layer.items()
+                },
+                "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
+                "package_ok": pkg_report.ok,
+                "package_issues": [
+                    {
+                        "layer": issue.layer,
+                        "severity": issue.severity,
+                        "message": issue.message,
+                        "location": issue.location,
+                        "code": issue.code,
+                    }
+                    for issue in pkg_report.issues
+                ],
+            }
+        )
 
     except HTTPException:
         raise
@@ -1368,7 +1378,7 @@ async def convert(
         description="Minimum severity for conversion/validation/lint process issues echoed to the client",
     ),
     user: dict = Depends(verify_supabase_token),
-) -> ConversionResponse:
+) -> Response:
     logger.info(
         "[CONVERT] Request received method=%s path=%s origin=%s content_type=%s has_auth_header=%s",
         request.method,
@@ -2572,16 +2582,18 @@ async def convert(
     if preview:
         envelope_ok = not preview_saw_soft_fail and len(errors) == 0
 
-    return ConversionResponse(
-        results=results,
-        errors=errors,
-        issues=issues,
-        total_processed=total_inputs,
-        successful=len(results),
-        failed=len(errors),
-        metadata=request_metadata,
-        ok=envelope_ok,
-        failed_spans=preview_failed_spans if preview else [],
+    return msgspec_json_response(
+        ConversionResponse(
+            results=results,
+            errors=errors,
+            issues=issues,
+            total_processed=total_inputs,
+            successful=len(results),
+            failed=len(errors),
+            metadata=request_metadata,
+            ok=envelope_ok,
+            failed_spans=preview_failed_spans if preview else [],
+        )
     )
 
 
