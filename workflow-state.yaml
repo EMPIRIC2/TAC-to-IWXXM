@@ -4784,14 +4784,17 @@ evolve_cycles:
   active_task_status: completed
   note: >-
     awaiting Trusted Publisher / Phase 4 close — M6 T6.5+T6.6 done
-    (D-S014-EV010-t66-close-2); UJ-023 live tags still deferred; evolve summary pending
+    (D-S014-EV010-t66-close-2); UJ-023 live tags still deferred; evolve summary pending;
+    T6.6 commit 640b4d2 on main (local, ahead 1, not pushed)
   pr_id: PR-EV-010
   pr_number: 726
   pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
   pr_status: merged
   pr_merge_commit: c73e0ad
   merge_sha: c73e0ad  # canonical alias for pr_merge_commit
-  pending_commit_sha: null  # parent will commit T6.6 optimize on main; record sha via follow-up
+  pending_commit_sha: null
+  last_main_commit: 640b4d28c8d9e2fbc0dab1d30e8f3dc8108b1b2c
+  last_main_commit_short: 640b4d2
   stages:
     00-context:
       status: in_progress
@@ -4990,6 +4993,10 @@ evolve_cycles:
         blocked — EV-010 remains open for Trusted Publisher / Phase 4 close
   notes:
   - >-
+    2026-07-19 S014/EV-010 commit 640b4d2 on main recorded — [T6.6] schema-cache optimize;
+    local ahead of origin by 1; not pushed; T6.6/07/13 remain completed; EV-010 open for
+    Trusted Publisher / Phase 4
+  - >-
     2026-07-19 S014/EV-010 D-S014-EV010-t66-close-2 — Approve T6.6 + commit on main;
     T6.6/07/13 completed; EV-010 in_progress awaiting Trusted Publisher / Phase 4 close;
     pending_commit_sha null until parent records sha
@@ -5181,14 +5188,14 @@ evolve_cycles:
     kind: code
     stage: 07-build
     session_id: S014-package-publish-validation
-    status: pending_commit
-    note: "schema caches + clear_schema_caches (T6.6); pending_commit_sha via follow-up"
+    status: committed
+    note: "schema caches + clear_schema_caches (T6.6); sha 640b4d2 on main (not pushed)"
   - path: packages/iwxxm-validate/src/iwxxm_validate/native.py
     kind: code
     stage: 07-build
     session_id: S014-package-publish-validation
-    status: pending_commit
-    note: "clear_schema_caches helper (T6.6); pending_commit_sha via follow-up"
+    status: committed
+    note: "clear_schema_caches helper (T6.6); sha 640b4d2 on main (not pushed)"
   issues: []
 
 - id: EV-001
@@ -6402,15 +6409,13 @@ evolve_cycles:
 
 git_history:
   current_branch: main
-  pending_commit:
-    session_id: S014-package-publish-validation
-    evolve_cycle_id: EV-010
-    decision: D-S014-EV010-t66-close-2
-    sha: null  # parent commits T6.6 optimize on main; record sha via follow-up update
-    note: >-
-      Approve T6.6 + commit on main pending — schema cache optimize
-      (rust/src/lib.rs, native.py), t66-hard-publish-gates.md, test_t66_hard_publish_gates.py
+  ahead_of_origin: 1
+  pushed: false
+  pending_commit: null
   notes:
+  - >-
+    2026-07-19 S014/EV-010 commit 640b4d2 on main — [T6.6] perf: cache compiled
+    XSD/Schematron in iwxxm-validate Rust; local only, ahead of origin by 1; not pushed
   - >-
     2026-07-19 S014/EV-010 D-S014-EV010-t66-close-2 — T6.6/07/13 completed; pending_commit
     sha null until parent records main commit
@@ -6709,6 +6714,22 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 640b4d28c8d9e2fbc0dab1d30e8f3dc8108b1b2c
+    short: 640b4d2
+    branch: main
+    message: "[T6.6] perf: cache compiled XSD/Schematron in iwxxm-validate Rust"
+    stage: "13-deploy-smoke"
+    stages:
+    - "13-deploy-smoke"
+    - "16-evolve"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    decision: D-S014-EV010-t66-close-2
+    files_changed: 11
+    timestamp: "2026-07-19T23:29:06Z"
+    note: >-
+      Local commit on main; ahead of origin by 1; not pushed (user did not request push).
+      T6.6/07/13 remain completed; EV-010 open for Trusted Publisher / Phase 4.
   - sha: f1a879980a0472fdca3f0d926374ae9a0dd9e9d4
     short: f1a8799
     branch: evolve/EV-010-package-publish-validation
