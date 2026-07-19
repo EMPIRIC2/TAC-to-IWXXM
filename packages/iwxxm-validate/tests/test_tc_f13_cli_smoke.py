@@ -19,6 +19,14 @@ def test_cli_fixture_paths_exist() -> None:
 
 def test_cli_module_main_exits_zero_on_example() -> None:
     from iwxxm_validate.cli import main
+    from iwxxm_validate.native import rust_available
+
+    # WMO vendor examples need the Rust/xmloxide path for full XSD resolution;
+    # pure-lxml often returns SCHEMA_PARSE_ERROR on GML AngleType imports.
+    if not rust_available():
+        import pytest
+
+        pytest.skip("iwxxm_validate._rust not built (make build-iwxxm-validate-native)")
 
     path = VENDOR_EXAMPLE if VENDOR_EXAMPLE.is_file() else ANNEX3_GOLDEN
     assert main(["--version", "2023-1", "--profile", "annex3", str(path)]) == 0
