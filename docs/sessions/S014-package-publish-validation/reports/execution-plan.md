@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C (build) |
-| **Active milestone** | M5 — msgspec HTTP |
-| **Active task** | T5.3 completed; next T5.4 |
-| **Tasks** | 27 / ~39 (M1–M4 complete; M5 T5.1–T5.3 done) |
+| **Active milestone** | M5 complete; next M6 — verify & deploy (T6.1) |
+| **Active task** | M5 complete (T5.1–T5.6); next M6 T6.1 |
+| **Tasks** | 30 / ~39 (M1–M5 complete; next M6 T6.1) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -87,9 +87,9 @@
 | T5.1 | Test | API tests: convert/validate/lint/decode (+ zip/bulletin) responses via msgspec path; auth unchanged | TC-F11-001; ADR-026 | — | completed |
 | T5.2 | Code | Thin helper Struct→`msgspec.json.encode`→`Response`; pydantic OpenAPI aliases only; Form intake unchanged | E10-28, E10-38 | T5.1 | completed |
 | T5.3 | Test | Soft HTTP bench ≤1.0× pydantic map baseline | E10-35 | T1.3, T5.2 | completed |
-| T5.4 | Test | Vitest / OpenAPI-derived FE type updates for breaking shapes | E10-18; F11 | T5.2 | pending |
-| T5.5 | Code | Frontend client types + workbench call sites | api-contract; UJ-022 | T5.4 | pending |
-| T5.6 | Test | Re-run H0c CORS policy suite + confirm `METAR_CORS_ORIGINS` / staging secrets matrix still cover FE↔API after msgspec HTTP (no new CORS knobs) | connectivity-gates; TC-F11-001 | T5.2 | pending |
+| T5.4 | Test | Vitest / OpenAPI-derived FE type updates for breaking shapes | E10-18; F11 | T5.2 | completed |
+| T5.5 | Code | Frontend client types + workbench call sites | api-contract; UJ-022 | T5.4 | completed |
+| T5.6 | Test | Re-run H0c CORS policy suite + confirm `METAR_CORS_ORIGINS` / staging secrets matrix still cover FE↔API after msgspec HTTP (no new CORS knobs) | connectivity-gates; TC-F11-001 | T5.2 | completed |
 
 ### M6 — Verify & deploy (stages 08–13)
 
