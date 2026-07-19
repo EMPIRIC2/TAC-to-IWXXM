@@ -63,6 +63,8 @@ export interface ConversionResponse {
   total_processed: number;
   successful: number;
   failed: number;
+  /** Echoed request metadata (bulletin_id, validation options, etc.). */
+  metadata?: Record<string, unknown>;
   /** Soft-preview envelope (ADR-022); set when preview=true */
   ok?: boolean | null;
   failed_spans?: FailedSpan[];
@@ -430,8 +432,8 @@ export interface DecodeTacResponse {
   product: string;
   segments: DecodeSegment[];
   residuals: DecodeResidual[];
-  /** Deterministic plain-language paragraph (F9 / ADR-025). */
-  summary?: string;
+  /** Deterministic plain-language paragraph (F9 / ADR-025); always present after msgspec HTTP. */
+  summary: string;
 }
 
 /**
