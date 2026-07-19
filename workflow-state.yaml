@@ -1,15 +1,19 @@
-overall_status: in_progress
+overall_status: completed
 project:
   name: metar-to-IWXXM
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
 session_counter: 14
-active_session:
-  id: S014-package-publish-validation
+active_session: null
+
+sessions:
+
+- id: S014-package-publish-validation
   type: feature
-  status: active
+  status: completed
   started_at: '2026-07-18'
+  completed_at: '2026-07-19'
   intent: >-
     Validation stack perf (#703); publish tac-validate / iwxxm-validate / tac2iwxxm
     (#698/#699/#693); domain rules; PyPI + release-tag CI/CD
@@ -31,9 +35,12 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: '2026-07-18'
-    note: "Phase 4 close prep complete; awaiting push + session close approval"
+    completed: '2026-07-19'
+    note: >-
+      Phase 4 closed (D-S014-EV010-phase4-close-1) — push main bed719e; watch CI;
+      close EV-010/S014; issues #703/#698/#699/#693
   - stage: 01-requirements
     required: true
     mode: delta
@@ -140,19 +147,17 @@ active_session:
     - docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     - docs/sessions/S014-package-publish-validation/reports/pypi-bootstrap-token.md
   skipped_stages: []
-  current_stage: 16-evolve
+  current_stage: null
   pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
   pr_number: 726
   pr_id: PR-EV-010
   pr_status: merged
   pr_merge_commit: c73e0ad
   merge_sha: c73e0ad  # canonical alias for pr_merge_commit
-  completed_at: null
-
-sessions:
-
-sessions:
-
+  close_note: >-
+    EV-010 complete; F11–F14 Implemented; PR #726; PyPI 0.1.0; tip bed719e pushed;
+    issues #703/#698/#699/#693 closed; CI @ bed719e green (ci-cd 29708459114,
+    e2e 29708459110, supabase-sync 29708459115) — D-S014-EV010-phase4-close-1
 
 - id: S013-live-decode-preview-ux
   type: feature
@@ -2086,6 +2091,22 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S014-EV010-phase4-close-1
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 16-evolve
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  status: confirmed
+  resolved_at: "2026-07-19"
+  decision: >
+    User chose option 1 — push main, watch CI, close EV-010/S014; also close GitHub
+    issues #703/#698/#699/#693
+  summary: >
+    Phase 4 closed: main tip bed719e pushed; CI watched (parent finalizes URLs);
+    S014 archived; EV-010 completed; issues #703/#698/#699/#693 to be closed by parent.
 - id: D-S014-EV010-pypi-bootstrap-3
   date: "2026-07-19"
   timestamp: "2026-07-19"
@@ -4807,9 +4828,9 @@ evolve_cycles:
   cycle_type: feature
   feature_ids: [F11, F12, F13, F14]
   title: "Package publish + validation stack (#703/#698/#699/#693)"
-  status: in_progress
+  status: completed
   started: "2026-07-18"
-  completed: null
+  completed: "2026-07-19"
   scope_summary: |
     Phase 0–1 locked 2026-07-18 E10-1..15. Must-ship ALL (11B). F11–F14. Routing 01–13
     (PyPI + Render). ADR-026: msgspec over pydantic for high-churn validation (breaking OK).
@@ -4830,15 +4851,15 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     skipped_stages: []
-  current_stage: 16-evolve
+  current_stage: null
   active_milestone: M6
   active_task: T6.6
   active_task_status: completed
   note: >-
-    Phase 4 prep done — UJ-023 PyPI 0.1.0 bootstrap PASS (D-S014-EV010-pypi-bootstrap-3);
-    F11–F14 Implemented in feature-list (parent will commit); evolve-summary +
-    evolve-report ready; awaiting push + Phase 4 / session close AskQuestion
-  features_status: Implemented  # F11–F14 in feature-list; parent will commit
+    Phase 4 closed (D-S014-EV010-phase4-close-1) — push main bed719e; watch CI;
+    close EV-010/S014; issues #703/#698/#699/#693; F11–F14 Implemented; PR #726;
+    PyPI 0.1.0; T6.6 on tip bed719e
+  features_status: Implemented  # F11–F14 in feature-list
   pr_id: PR-EV-010
   pr_number: 726
   pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
@@ -4846,12 +4867,15 @@ evolve_cycles:
   pr_merge_commit: c73e0ad
   merge_sha: c73e0ad  # canonical alias for pr_merge_commit
   pending_commit_sha: null
-  last_main_commit: 640b4d28c8d9e2fbc0dab1d30e8f3dc8108b1b2c
-  last_main_commit_short: 640b4d2
+  last_main_commit: bed719edc109d730692d11e7f1838abbe46d3645
+  last_main_commit_short: bed719e
   stages:
     00-context:
-      status: in_progress
+      status: completed
       started: "2026-07-18"
+      completed: "2026-07-19"
+      note: >-
+        Closed with Phase 4 (D-S014-EV010-phase4-close-1); session/cycle complete
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/session-brief.md
       - docs/sessions/S014-package-publish-validation/routing-plan.md
@@ -5024,14 +5048,14 @@ evolve_cycles:
       status: passed
       completed: "2026-07-19"
       note: >-
-        Phase D work passed (deploy + PyPI bootstrap); awaiting final Phase 4 close
-        AskQuestion (session/EV-010 not closed)
+        Phase D work passed (deploy + PyPI bootstrap); Phase 4 closed
+        (D-S014-EV010-phase4-close-1)
     phase_4:
-      status: awaiting_approval
-      completed: null
+      status: passed
+      completed: "2026-07-19"
       note: >-
-        Phase 4 prep complete — evolve-summary + evolve-report + PyPI bootstrap;
-        awaiting user close AskQuestion (push + session close)
+        Phase 4 closed (D-S014-EV010-phase4-close-1) — push main bed719e; watch CI;
+        close EV-010/S014; issues #703/#698/#699/#693
     t65_deploy:
       status: passed
       completed: "2026-07-19"
@@ -5053,6 +5077,10 @@ evolve_cycles:
         Render + T6.6 hard gates + PyPI 0.1.0 bootstrap PASS
         (D-S014-EV010-pypi-bootstrap-3); Trusted Publishers path confirmed good
   notes:
+  - >-
+    2026-07-19 D-S014-EV010-phase4-close-1 — Phase 4 closed: push main bed719e
+    (bed719edc109d730692d11e7f1838abbe46d3645); watch CI; close EV-010/S014; close
+    GitHub issues #703/#698/#699/#693
   - >-
     2026-07-19 S014/EV-010 D-S014-EV010-pypi-bootstrap-3 — UJ-023 PyPI 0.1.0 token
     bootstrap PASS; user confirmed Trusted Publishers path good; Phase 4 prep done;
@@ -5125,19 +5153,19 @@ evolve_cycles:
   - docs/adr/ADR-027-xsdata-codegen.md
   artifacts:
   - path: docs/decisions/evolve-decisions.md
-    status: in_progress
+    status: completed
   - path: docs/sessions/S014-package-publish-validation/reports/evolve-summary.md
     kind: evolve-summary
     stage: 16-evolve
     session_id: S014-package-publish-validation
-    status: ready
-    note: "Phase 4 prep — awaiting user close AskQuestion"
+    status: completed
+    note: "Phase 4 closed (D-S014-EV010-phase4-close-1)"
   - path: docs/evolve-report-EV-010.md
     kind: evolve-report
     stage: 16-evolve
     session_id: S014-package-publish-validation
-    status: ready
-    note: "Phase 4 prep — awaiting close approval"
+    status: completed
+    note: "Phase 4 closed (D-S014-EV010-phase4-close-1)"
   - path: docs/sessions/S014-package-publish-validation/reports/pypi-bootstrap-token.md
     kind: report
     stage: 16-evolve
@@ -6490,10 +6518,14 @@ evolve_cycles:
 
 git_history:
   current_branch: main
-  ahead_of_origin: 2
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit: null
   notes:
+  - >-
+    2026-07-19 D-S014-EV010-phase4-close-1 — pushed main tip bed719e
+    (bed719edc109d730692d11e7f1838abbe46d3645) to origin; CI watch in progress
+    (parent finalizes CI URLs); S014/EV-010 closed
   - >-
     2026-07-19 S014/EV-010 commit 8f7d9c1 on main — chore: record T6.6 close commit
     640b4d2 in workflow-state; local ahead of origin by 2; not pushed
@@ -6559,8 +6591,6 @@ git_history:
   - "2026-07-15 S012-empty-bearer-lint-tac open — branch fix/S012-empty-bearer-lint-tac; S011 paused (PR #716 remains open)"
   - "2026-07-14 S011/EV-008 PR-EV-008=#716 open (evolve→main; NO merge, NO deploy); tip dc32d47; T6.4 in_progress (12 done / 13 pending)"
   - "2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first)"
-  - "2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories; T6.3 pending; current_stage=11-verify-impl"
-  - "2026-07-14 S011/EV-008 T6.1 PASS (verification-report.md); integration SKIPPED host ports/disk; active_task T6.2 pending"
   - "2026-07-14 S011/EV-008 M5 complete (T5.1–T5.6); PR-M5 #720 open; active_milestone M6 active_task T6.1 pending"
   - "2026-07-14 S011/EV-008 M3 complete (T3.1–T3.4); PR-M3 #717 open; active_milestone M4 active_task T4.1"
   - "2026-07-13 S011/EV-008 M2 complete (T2.1–T2.8); PR-M2 #716; current_stage=07-build; active_milestone M3 active_task T3.1"
@@ -6581,15 +6611,19 @@ git_history:
   - name: evolve/EV-010-package-publish-validation
     purpose: "EV-010 / S014 package publish + validation stack (F11–F14)"
     base: main
-    status: active
+    status: merged
     created_at: "2026-07-18"
+    merged_at: "2026-07-19"
     session_id: S014-package-publish-validation
     evolve_cycle_id: EV-010
     pr_id: PR-EV-010
     pr_number: 726
     pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
-    tip_sha: f1a8799
-    note: "PR-EV-010=#726 open (evolve→main); pause for CI green + merge approval; NO merge/deploy yet"
+    tip_sha: bed719e
+    merge_sha: c73e0ad
+    note: >-
+      PR-EV-010=#726 MERGED; Phase 4 closed (D-S014-EV010-phase4-close-1); main tip
+      bed719e on origin
   - name: fix/S012-empty-bearer-lint-tac
     purpose: "Empty Bearer auth on lint-tac/decode-tac + lint UX issue details"
     base: main

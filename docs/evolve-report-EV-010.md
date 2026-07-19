@@ -2,14 +2,16 @@
 
 - **Cycle**: EV-010
 - **Session**: S014-package-publish-validation
-- **Status**: completed (awaiting user Phase 4 checkpoint)
+- **Status**: completed (Phase 4 closed — D-S014-EV010-phase4-close-1)
 - **Scope**: Validation stack perf (#703); publish `tac-validate` / `iwxxm-validate` /
   `tac2iwxxm[+validate]` (#698/#699/#693); msgspec HTTP; xsdata; PyPI OIDC + Render 12–13
 - **Stages run**: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 16
 - **ADRs**: ADR-026 (msgspec HTTP), ADR-027 (xsdata)
-- **Deploy**: Render API + frontend-v4-web @ merge `c73e0ad`; T6.6 cache on `main` `640b4d2` (local ahead of origin until push)
+- **Deploy**: Render API + frontend-v4-web @ merge `c73e0ad`; T6.6 + close prep on `main` `bed719e` (pushed; CI green)
 - **PyPI**: `tac-validate` / `iwxxm-validate` / `tac2iwxxm` **0.1.0** live (token bootstrap); OIDC Trusted Publishers for later tags
-- **Open issues**: Push `main` commits if not yet on origin; next package bump `0.1.1` for maturin/OIDC path; rotate bootstrap token after TP attached
+- **GitHub issues**: #703, #698, #699, #693 **closed**
+- **Follow-ups** (non-blocking): next package bump `0.1.1` for maturin/OIDC tag path; rotate bootstrap token after TP attached
+- **CI @ bed719e**: [CI/CD](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29708459114) · [E2E](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29708459110) · [Supabase Sync](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29708459115) — all success
 
 ## Summary
 

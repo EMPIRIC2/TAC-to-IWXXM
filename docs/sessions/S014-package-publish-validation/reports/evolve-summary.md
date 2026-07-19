@@ -1,10 +1,11 @@
 # Evolve summary — S014 / EV-010
 
-> Completed: 2026-07-19 (Phase 4 close pending final user checkpoint)
+> Completed: 2026-07-19 (Phase 4 closed — D-S014-EV010-phase4-close-1)
 > Features: F11 (msgspec HTTP + layer matrix + xsdata), F12 (`tac-validate` PyPI),
 > F13 (`iwxxm-validate` Rust + Schematron), F14 (`tac2iwxxm[+validate]` + OIDC matrix)
 > Branch: `evolve/EV-010-package-publish-validation` → PR [#726](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726) → `main` @ `c73e0ad`
-> Follow-up on `main`: T6.6 schema cache `640b4d2` (+ workflow-state chores); PyPI `0.1.0` bootstrap
+> Follow-up on `main`: T6.6 schema cache through tip `bed719e` (pushed; CI green)
+> PyPI `0.1.0` bootstrap; issues #703/#698/#699/#693 closed
 > Orchestrator: 16-evolve
 
 ## Outcome
