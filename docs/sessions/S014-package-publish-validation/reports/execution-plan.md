@@ -11,10 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase D (verify) — T6.2 complete; Phase D checkpoint before T6.3 |
+| **Active phase** | Phase D (verify) — T6.4 checklist approved; evolve PR next |
 | **Active milestone** | M6 — verify & deploy |
-| **Active task** | T6.2 completed; next T6.3 |
-| **Tasks** | 32 / ~39 (T6.2 PASS; Phase D checkpoint before T6.3) |
+| **Active task** | T6.4 — commit/push/PR then pause for merge |
+| **Tasks** | 33 / ~39 (T6.3 done; T6.4 checklist signed off 1A/2A) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -97,8 +97,8 @@
 |------|------|-------------|-------|------------|--------|
 | T6.1 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5 | completed |
 | T6.2 | Test | 09-qa + 10-e2e — QA + UJ-022/023 / DEV-005 | 09/10 | T6.1 | completed |
-| T6.3 | Docs | 11-verify-impl — per-Fn F11–F14 acceptance | 11 | T6.2 | pending |
-| T6.4 | Config | 12-verify-deploy — PyPI OIDC + Render checklist; evolve PR | 12 | T6.3 | pending |
+| T6.3 | Docs | 11-verify-impl — per-Fn F11–F14 acceptance | 11 | T6.2 | completed |
+| T6.4 | Config | 12-verify-deploy — PyPI OIDC + Render checklist; evolve PR | 12 | T6.3 | in_progress |
 | T6.5 | Test | 13-deploy-smoke — Render redeploy; H4–H5 + H6′ UJ-022; tag publish smokes (includes live CORS after T5.6) | 13 | T6.4, T5.6 | pending |
 | T6.6 | Test | Hard publish gates: 0.85× lib, 1.0× HTTP, wheel smokes | E10-35 | T6.5 | pending |
 
@@ -133,3 +133,6 @@
 | B tech audit | 2026-07-18 | passed | 05 PASS — 44A–47A applied |
 | B→C | 2026-07-18 | passed | User 50B — push then 07-build M1 T1.1 (D-S014-EV010-b-to-c-push) |
 | C→D | 2026-07-19 | passed | User A — pass gate; start T6.2 09-qa + 10-e2e (D-S014-EV010-c-to-d-pass) |
+| Phase D→T6.3 | 2026-07-19 | passed | User — Pass Phase D and start T6.3 (D-S014-EV010-phase-d-to-t63) |
+| T6.3 complete | 2026-07-19 | passed | User — Approve all and proceed; F11–F14 + journeys approved (D-S014-EV010-t63-features); start T6.4 |
+| T6.4 checklist | 2026-07-19 | approved | User 1A/2A — deploy strategy + rollback; commit/push/open PR (D-S014-EV010-t64-deploy-A) |

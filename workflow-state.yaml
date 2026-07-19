@@ -80,7 +80,10 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M6 T6.2 PASS (09+10); Phase D checkpoint before T6.3; branch ahead of origin; single evolve PR at M6."
+    note: >-
+      M6 T6.4 in_progress (12-verify-deploy); checklist drafted pending_signoff;
+      PyPI Trusted Publisher BLOCKED for live tags; Render ready pending PR+signoff;
+      H0c 14 passed; API health 200; no PR yet; branch ahead of origin; 12 not completed
   - stage: 08-verify-build
     required: true
     mode: full
@@ -109,19 +112,30 @@ active_session:
   - stage: 11-verify-impl
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: '2026-07-19'
+    completed: '2026-07-19'
+    note: "verify-impl.md F11–F14 + journeys approved (D-S014-EV010-t63-features / D-S014-EV010-t63-journeys)"
+    artifacts:
+    - docs/sessions/S014-package-publish-validation/reports/verify-impl.md
   - stage: 12-verify-deploy
     required: true
     mode: adapted
-    status: pending
-    note: PyPI trusted publishing + release tags + Render deploy checklist
+    status: in_progress
+    started: '2026-07-19'
+    note: >-
+      T6.4 in_progress — checklist drafted 2026-07-19 (pending_signoff); PyPI Trusted
+      Publisher BLOCKED for live tags; Render path ready pending PR + user signoff;
+      H0c 14 passed; API health 200; no PR yet; branch ahead of origin; 12 not completed
+    artifacts:
+    - docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
   - stage: 13-deploy-smoke
     required: true
     mode: full
     status: pending
     note: Included per E10-15 msgspec HTTP + Render redeploy
   skipped_stages: []
-  current_stage: 10-e2e  # T6.2 done; Phase D checkpoint before T6.3/11
+  current_stage: 12-verify-deploy  # T6.4 in_progress; 11-verify-impl completed
   completed_at: null
 
 sessions:
@@ -1433,10 +1447,13 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M6 T6.2 PASS (09+10); Phase D checkpoint before T6.3; branch ahead of origin; single evolve PR at M6."
+      note: >-
+        M6 T6.4 in_progress (12-verify-deploy); checklist drafted pending_signoff;
+        PyPI Trusted Publisher BLOCKED for live tags; Render ready pending PR+signoff;
+        H0c 14 passed; API health 200; no PR yet; branch ahead of origin; 12 not completed
       active_milestone: M6
-      active_task: T6.3
-      active_task_status: pending
+      active_task: T6.4
+      active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1462,6 +1479,12 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - >-
+      2026-07-19 S014/EV-010 T6.4 12-verify-deploy remains in_progress — deploy-checklist.md
+      drafted (pending_signoff); PyPI Trusted Publisher BLOCKED for live tags; Render path
+      ready pending PR + user signoff; H0c 14 passed; API health 200; no PR yet; branch
+      ahead of origin; 12 not completed
+    - "2026-07-19 S014/EV-010 T6.3 completed (D-S014-EV010-t63-features); T6.4 12-verify-deploy in_progress"
     - "2026-07-19 S014/EV-010 T6.2 PASS (09+10); next T6.3 11-verify-impl after Phase D checkpoint"
     - "2026-07-19 S014/EV-010 C→D passed (D-S014-EV010-c-to-d-pass); T6.2 09-qa+10-e2e in_progress"
     - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED; next T6.2 after C→D; git commit d3dbbfb recorded"
@@ -1535,7 +1558,7 @@ stages:
       note: "PASS w/ advisory QA-S014-001 (H4–H5→13); qa-report.md"
       active_milestone: M6
       active_task: T6.3
-      active_task_status: pending
+      active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1571,7 +1594,7 @@ stages:
     - "2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md"
 
   11-verify-impl:
-    status: completed
+    status: in_progress
     started_at: "2026-06-23T00:00:00Z"
     completed_at: "2026-06-23T12:00:00Z"
     session_id: S003-supabase-keys-config
@@ -1600,6 +1623,19 @@ stages:
         status: completed
     report: docs/sessions/S003-supabase-keys-config/reports/verify-impl.md
     delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      started_at: "2026-07-19"
+      completed_at: "2026-07-19"
+      mode: full
+      overall: approved
+      note: "verify-impl.md F11–F14 + journeys approved (D-S014-EV010-t63-features / D-S014-EV010-t63-journeys); hard publish/live tag/Render deferred to T6.4–T6.6"
+      report: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+      active_milestone: M6
+      active_task: T6.3
+      active_task_status: completed
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1626,6 +1662,9 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
       note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5"
     notes:
+    - "2026-07-19 S014/EV-010 11-verify-impl completed — F11–F14 + journeys approved (D-S014-EV010-t63-features); next T6.4 12-verify-deploy"
+    - "2026-07-19 S014/EV-010 journey signoff complete (D-S014-EV010-t63-journeys); next Fn F11–F14 approval; T6.3/11-verify-impl remains in_progress"
+    - "2026-07-19 S014/EV-010 Phase D passed (D-S014-EV010-phase-d-to-t63); T6.3 11-verify-impl in_progress"
     - "2026-07-14 S011/EV-008 T6.3 completed approved_with_waivers (D-S011-EV008-f7-approve); see reports/verify-impl.md; next T6.4"
     - "S003 / BUG-2026-06-23 — user approved M4+F3 delta; T3 auth + UI E2E deferred"
     - "08-verify-build + 09-qa still pending on routing plan"
@@ -1668,7 +1707,7 @@ stages:
       note: "UJ-022/023/DEV-005 T0+local API PASS; T3/H6′→13; e2e-report.md"
       active_milestone: M6
       active_task: T6.3
-      active_task_status: pending
+      active_task_status: in_progress
     - status: completed
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
@@ -1733,7 +1772,7 @@ stages:
       note: "T6.1 PASS — verification-report.md; integration SKIPPED (docker pull); C→D passed D-S014-EV010-c-to-d-pass"
       active_milestone: M6
       active_task: T6.3
-      active_task_status: pending
+      active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1813,6 +1852,20 @@ stages:
     session_id: S004-issue-555-feedback
     report: docs/sessions/S004-issue-555-feedback/reports/deploy-checklist.md
     delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: in_progress
+      started_at: "2026-07-19"
+      mode: adapted
+      note: >-
+        T6.4 in_progress — checklist drafted 2026-07-19 (pending_signoff); PyPI Trusted
+        Publisher BLOCKED for live tags; Render path ready pending PR + user signoff;
+        H0c 14 passed; API health 200; no PR yet; branch ahead of origin; 12 not completed
+      report: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: in_progress
     - id: S011-f7-operator-ui
       session_id: S011-f7-operator-ui
       evolve_cycle_id: EV-008
@@ -1823,6 +1876,12 @@ stages:
       note: "D-S011-EV008-deploy-check-A — checklist approved; PR-EV-008=#716 open (no merge/deploy); 13 pending on merge approval"
       report: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
     notes:
+    - >-
+      2026-07-19 S014/EV-010 T6.4 12-verify-deploy remains in_progress — deploy-checklist.md
+      drafted (pending_signoff); PyPI Trusted Publisher BLOCKED for live tags; Render path
+      ready pending PR + user signoff; H0c 14 passed; API health 200; no PR yet; branch
+      ahead of origin; 12 not completed
+    - "2026-07-19 S014/EV-010 T6.4 12-verify-deploy in_progress (D-S014-EV010-t63-features); deploy-checklist.md pending; 12 not completed"
     - "2026-07-14 S011/EV-008 PR-EV-008=#716 open (retitled/updated evolve→main; NO merge, NO deploy); 12 done; 13 pending on merge approval; T6.4 in_progress"
     - "2026-07-14 S011/EV-008 D-S011-EV008-deploy-check-A — 12-verify-deploy completed (checklist approved); commit QA-001+reports; prepare PR-EV-008; 13 pending until merge approval; no merge/deploy yet"
     - "2026-07-14 S011/EV-008 12-verify-deploy — checklist written (deploy-checklist.md); awaiting user deploy-strategy approval (blocker: tip 44 commits ahead of main; QA-001 uncommitted); 12 remains in_progress; 13 not started"
@@ -1942,6 +2001,55 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S014-EV010-t63-features
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 11-verify-impl
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: >
+    User "Approve all and proceed" — F11/F12/F13/F14 all approved (recommended A options);
+    hard publish / live tag / Render deferred to T6.4–T6.6 as planned.
+  summary: >
+    Per-Fn signoff at 11-verify-impl: F11 (validation stack perf + msgspec HTTP + XSD codegen),
+    F12 (publishable tac-validate), F13 (fast iwxxm-validate Rust + Schematron), and F14
+    (publish tac2iwxxm[+validate] + PyPI/release CI) all approved via recommended A options.
+    Hard publish gates, live tag smokes, and Render redeploy remain deferred to T6.4–T6.6.
+    11-verify-impl completed; handed off to T6.4 / 12-verify-deploy in_progress.
+  status: confirmed
+- id: D-S014-EV010-t63-journeys
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 11-verify-impl
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: >
+    User approved UJ-022 (T3/H4-H5 waived to 13), UJ-023 (CI-tier; live publish 12-13),
+    UJ-DEV-005 (local wheels; live PyPI 13). Recommended options A/A/A via "Proceed with this".
+  summary: >
+    Journey signoff AskQuestion (recommended A/A/A): UJ-022 approved with T3/H4–H5 waived
+    to 13-deploy-smoke; UJ-023 CI-tier with live publish deferred to 12–13; UJ-DEV-005 local
+    wheels with live PyPI deferred to 13. Feature Fn F11–F14 signoff still pending.
+    T6.3 / 11-verify-impl remains in_progress (stage not completed).
+  status: confirmed
+- id: D-S014-EV010-phase-d-to-t63
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 16-evolve
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: "User approved pass Phase D checkpoint → start T6.3 (11-verify-impl)"
+  summary: >
+    User chose Pass Phase D and start T6.3 (recommended). EV-010 checkpoints.phase_d
+    passed; handed off to T6.3 / 11-verify-impl in_progress. 09-qa and 10-e2e remain
+    completed. Orchestrator remains 16-evolve.
+  status: confirmed
 - id: D-S014-EV010-c-to-d-pass
   date: "2026-07-19"
   timestamp: "2026-07-19"
@@ -3546,6 +3654,27 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+  kind: stage-report
+  stage: 11-verify-impl
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "F11–F14 + journeys approved (D-S014-EV010-t63-features / D-S014-EV010-t63-journeys)"
+- path: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+  kind: deploy-checklist
+  stage: 12-verify-deploy
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: pending_signoff
+  note: >-
+    Checklist drafted 2026-07-19 (in_progress/pending_signoff); PyPI Trusted Publisher
+    BLOCKED for live tags; Render path ready pending PR + user signoff; H0c 14 passed;
+    API health 200; no PR yet; branch ahead of origin; stage 12 remains in_progress
 - path: docs/sessions/S014-package-publish-validation/reports/qa-report.md
   kind: qa-report
   stage: 09-qa
@@ -4437,10 +4566,10 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     skipped_stages: []
-  current_stage: 10-e2e  # T6.2 done; Phase D checkpoint before T6.3/11
+  current_stage: 12-verify-deploy  # T6.4 in_progress; 11-verify-impl completed
   active_milestone: M6
-  active_task: T6.3
-  active_task_status: pending
+  active_task: T6.4
+  active_task_status: in_progress
   stages:
     00-context:
       status: in_progress
@@ -4487,10 +4616,10 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M6 T6.2 PASS (09+10); Phase D checkpoint before T6.3; branch ahead of origin; single evolve PR at M6."
+      note: "M6 T6.4 in_progress (12-verify-deploy); T6.3/11 completed (D-S014-EV010-t63-features); branch ahead of origin; single evolve PR at M6."
       active_milestone: M6
-      active_task: T6.3
-      active_task_status: pending
+      active_task: T6.4
+      active_task_status: in_progress
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/t51-msgspec-http-parity.md
       - docs/sessions/S014-package-publish-validation/reports/t52-msgspec-http-helper.md
@@ -4509,8 +4638,8 @@ evolve_cycles:
       report: docs/sessions/S014-package-publish-validation/reports/verification-report.md
       note: "T6.1 PASS — verification-report.md; integration SKIPPED (docker pull); C→D passed D-S014-EV010-c-to-d-pass"
       active_milestone: M6
-      active_task: T6.3
-      active_task_status: pending
+      active_task: T6.4
+      active_task_status: in_progress
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/verification-report.md
     09-qa:
@@ -4522,8 +4651,8 @@ evolve_cycles:
       report: docs/sessions/S014-package-publish-validation/reports/qa-report.md
       note: "PASS w/ advisory QA-S014-001 (H4–H5→13); qa-report.md"
       active_milestone: M6
-      active_task: T6.3
-      active_task_status: pending
+      active_task: T6.4
+      active_task_status: in_progress
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/qa-report.md
     10-e2e:
@@ -4535,10 +4664,39 @@ evolve_cycles:
       report: docs/sessions/S014-package-publish-validation/reports/e2e-report.md
       note: "UJ-022/023/DEV-005 T0+local API PASS; T3/H6′→13; e2e-report.md"
       active_milestone: M6
-      active_task: T6.3
-      active_task_status: pending
+      active_task: T6.4
+      active_task_status: in_progress
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/e2e-report.md
+    11-verify-impl:
+      status: completed
+      mode: full
+      started: '2026-07-19'
+      started_at: '2026-07-19T16:10:00Z'
+      completed: '2026-07-19'
+      overall: approved
+      note: "verify-impl.md F11–F14 + journeys approved (D-S014-EV010-t63-features / D-S014-EV010-t63-journeys); hard publish/live tag/Render deferred to T6.4–T6.6"
+      report: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+      active_milestone: M6
+      active_task: T6.3
+      active_task_status: completed
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+    12-verify-deploy:
+      status: in_progress
+      mode: adapted
+      started: '2026-07-19'
+      completed: null
+      note: >-
+        T6.4 in_progress — checklist drafted 2026-07-19 (pending_signoff); PyPI Trusted
+        Publisher BLOCKED for live tags; Render path ready pending PR + user signoff;
+        H0c 14 passed; API health 200; no PR yet; branch ahead of origin; 12 not completed
+      report: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: in_progress
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
   gates:
     a_to_b: pending
     b_to_c: passed
@@ -4555,10 +4713,19 @@ evolve_cycles:
       completed: '2026-07-19'
       note: "C→D passed (D-S014-EV010-c-to-d-pass / user A); T6.2 09+10 completed"
     phase_d:
-      status: pending
-      note: "AskQuestion before 11-verify-impl (T6.3)"
+      status: passed
+      completed: "2026-07-19"
+      note: "User approved Pass Phase D → start T6.3 (D-S014-EV010-phase-d-to-t63)"
     deploy: pending
   notes:
+  - >-
+    2026-07-19 S014/EV-010 T6.4 12-verify-deploy remains in_progress — deploy-checklist.md
+    drafted (pending_signoff); PyPI Trusted Publisher BLOCKED for live tags; Render path
+    ready pending PR + user signoff; H0c 14 passed; API health 200; no PR yet; branch
+    ahead of origin; 12 not completed
+  - "2026-07-19 S014/EV-010 T6.3/11-verify-impl completed (D-S014-EV010-t63-features); T6.4 12-verify-deploy in_progress; deploy-checklist.md pending"
+  - "2026-07-19 S014/EV-010 journey signoff complete (D-S014-EV010-t63-journeys); next Fn F11–F14 approval batch; T6.3/11-verify-impl remains in_progress"
+  - "2026-07-19 S014/EV-010 Phase D passed (D-S014-EV010-phase-d-to-t63); T6.3 11-verify-impl in_progress"
   - "2026-07-19 S014/EV-010 T6.2 PASS (09+10); next T6.3 11-verify-impl after Phase D checkpoint"
   - "2026-07-19 S014/EV-010 C→D passed (user A); T6.2 09-qa + 10-e2e in_progress"
   - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED; next T6.2 after C→D; git commit d3dbbfb recorded"
@@ -4595,6 +4762,21 @@ evolve_cycles:
     status: in_progress
   - path: docs/sessions/S014-package-publish-validation/reports/evolve-summary.md
     status: pending
+  - path: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+    kind: stage-report
+    stage: 11-verify-impl
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "F11–F14 + journeys approved (D-S014-EV010-t63-features)"
+  - path: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+    kind: deploy-checklist
+    stage: 12-verify-deploy
+    session_id: S014-package-publish-validation
+    status: pending_signoff
+    note: >-
+      Checklist drafted 2026-07-19 (in_progress/pending_signoff); PyPI Trusted Publisher
+      BLOCKED for live tags; Render path ready pending PR + user signoff; H0c 14 passed;
+      API health 200; no PR yet; branch ahead of origin; stage 12 remains in_progress
   - path: docs/sessions/S014-package-publish-validation/reports/verification-report.md
     kind: verification-report
     stage: 08-verify-build
