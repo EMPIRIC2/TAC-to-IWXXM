@@ -1,6 +1,7 @@
 # T4.3 / TC-F14-001 — OIDC trusted publishing for F12–F14 (E10-37).
 # One workflow + package matrix; tag-driven only (no long-lived PyPI API tokens).
-# Multi-platform maturin wheels: T4.5. Trusted Publisher on PyPI must point at this file.
+# T4.5 — manylinux + macOS + Windows maturin wheels for native packages.
+# Trusted Publisher on PyPI must point at this file.
 name: PyPI Publish
 
 on:
@@ -33,7 +34,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build ${{ matrix.package }}
+    name: Build pure ${{ matrix.package }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -51,9 +52,6 @@ jobs:
     if: >-
       (github.event_name == 'workflow_dispatch' && inputs.package == matrix.package)
       || (github.event_name == 'push' && startsWith(github.ref_name, matrix.tag_prefix))
-    outputs:
-      package: ${{ steps.meta.outputs.package }}
-      version: ${{ steps.meta.outputs.version }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -107,14 +105,61 @@ jobs:
       - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:
-          name: dist-${{ matrix.package }}
+          name: dist-${{ matrix.package }}-pure
           path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  build-native:
+    name: Native ${{ matrix.package }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        package:
+          - name: tac2iwxxm
+            path: packages/tac2iwxxm
+            tag_prefix: tac2iwxxm-v
+          - name: iwxxm-validate
+            path: packages/iwxxm-validate
+            tag_prefix: iwxxm-validate-v
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.package == matrix.package.name)
+      || (github.event_name == 'push' && startsWith(github.ref_name, matrix.package.tag_prefix))
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+
+      - name: Sync iwxxm-validate schema subset into package tree
+        if: matrix.package.name == 'iwxxm-validate'
+        run: uv run python packages/iwxxm-validate/scripts/sync_runtime_schemas.py
+
+      - name: Build maturin wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          working-directory: ${{ matrix.package.path }}
+          manylinux: ${{ matrix.os == 'ubuntu-latest' && 'auto' || 'off' }}
+          args: --release --out dist -m rust/Cargo.toml
+          sccache: "true"
+
+      - name: Upload native distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.package.name }}-native-${{ matrix.os }}
+          path: ${{ matrix.package.path }}/dist/
           if-no-files-found: error
           retention-days: 7
 
   smoke:
     name: Smoke ${{ matrix.package }}
-    needs: build
+    needs: [build, build-native]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -129,6 +174,7 @@ jobs:
     if: >-
       always()
       && needs.build.result == 'success'
+      && (needs.build-native.result == 'success' || needs.build-native.result == 'skipped')
       && (
         (github.event_name == 'workflow_dispatch' && inputs.package == matrix.package)
         || (github.event_name == 'push' && startsWith(github.ref_name, matrix.tag_prefix))
@@ -143,18 +189,24 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Download distributions
+      - name: Download pure (+ native) distributions
         uses: actions/download-artifact@v4
         with:
-          name: dist-${{ matrix.package }}
+          pattern: dist-${{ matrix.package }}-*
           path: dist
+          merge-multiple: true
 
       - name: Clean-venv install smoke
         env:
           PACKAGE: ${{ matrix.package }}
         run: |
           set -euo pipefail
-          wheel="$(ls dist/*.whl | head -n1)"
+          ls -la dist
+          # Prefer a manylinux / linux wheel when present; else any wheel.
+          wheel="$(ls dist/*manylinux*.whl 2>/dev/null | head -n1 || true)"
+          if [[ -z "${wheel}" ]]; then
+            wheel="$(ls dist/*.whl | head -n1)"
+          fi
           uv venv .smoke-venv
           # shellcheck disable=SC1091
           source .smoke-venv/bin/activate
@@ -175,7 +227,7 @@ jobs:
 
   publish:
     name: Publish ${{ matrix.package }}
-    needs: [build, smoke]
+    needs: [build, build-native, smoke]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -191,6 +243,7 @@ jobs:
       always()
       && needs.build.result == 'success'
       && needs.smoke.result == 'success'
+      && (needs.build-native.result == 'success' || needs.build-native.result == 'skipped')
       && (
         (github.event_name == 'push' && startsWith(github.ref_name, matrix.tag_prefix))
         || (github.event_name == 'workflow_dispatch' && inputs.package == matrix.package && inputs.publish == true)
@@ -201,11 +254,12 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - name: Download distributions
+      - name: Download all distributions
         uses: actions/download-artifact@v4
         with:
-          name: dist-${{ matrix.package }}
+          pattern: dist-${{ matrix.package }}-*
           path: dist
+          merge-multiple: true
 
       - name: Publish to PyPI (OIDC)
         uses: pypa/gh-action-pypi-publish@release/v1

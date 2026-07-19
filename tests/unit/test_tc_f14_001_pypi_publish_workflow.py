@@ -40,11 +40,21 @@ def test_pypi_publish_workflow_oidc_and_matrix() -> None:
     assert "workflow_dispatch" in on
 
     jobs = wf["jobs"]
-    assert set(jobs) >= {"build", "smoke", "publish"}
+    assert set(jobs) >= {"build", "build-native", "smoke", "publish"}
 
     build_matrix = jobs["build"]["strategy"]["matrix"]["include"]
     packages = {row["package"] for row in build_matrix}
     assert packages == EXPECTED_PACKAGES
+
+    native = jobs["build-native"]
+    assert set(native["strategy"]["matrix"]["os"]) == {
+        "ubuntu-latest",
+        "macos-latest",
+        "windows-latest",
+    }
+    native_pkgs = {row["name"] for row in native["strategy"]["matrix"]["package"]}
+    assert native_pkgs == {"tac2iwxxm", "iwxxm-validate"}
+    assert "PyO3/maturin-action@" in str(native["steps"])
 
     publish = jobs["publish"]
     assert publish["permissions"]["id-token"] == "write"
