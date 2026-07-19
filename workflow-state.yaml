@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M3 T3.9 pending — T3.8 complete (8af040b)"
+    note: "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,9 +1420,9 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M3 T3.9 pending — T3.8 complete (8af040b)"
+      note: "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
       active_milestone: M3
-      active_task: T3.9
+      active_task: M3-gate
       active_task_status: pending
     - status: completed
       session_id: S004-issue-555-feedback
@@ -1449,6 +1449,7 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
     - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
     - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
     - "M3 T3.7 complete (98e909a) — xsdata IWXXM pydantic models + adapt helpers; next T3.8a"
@@ -3461,6 +3462,15 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/t39-iwxxm-validate-cli.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "T3.9 optional iwxxm-validate CLI + smoke tests (b044871)"
 - path: docs/sessions/S014-package-publish-validation/reports/t38-validate-rust-sdk.md
   kind: report
   stage: 07-build
@@ -4300,9 +4310,9 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M3 T3.9 pending — T3.8 complete (8af040b)"
+      note: "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
       active_milestone: M3
-      active_task: T3.9
+      active_task: M3-gate
       active_task_status: pending
   gates:
     a_to_b: pending
@@ -4319,6 +4329,7 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
   - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
   - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
   - "M3 T3.7 complete (98e909a) — xsdata IWXXM pydantic models + adapt helpers; next T3.8a"
@@ -4405,6 +4416,12 @@ evolve_cycles:
     session_id: S014-package-publish-validation
     status: completed
     note: "T3.8 bind /validate to validate_iwxxm and skip duplicate XSD/SCH (8af040b)"
+  - path: docs/sessions/S014-package-publish-validation/reports/t39-iwxxm-validate-cli.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T3.9 optional iwxxm-validate CLI + smoke tests (b044871)"
   issues: []
 
 - id: EV-001
@@ -5619,6 +5636,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
   - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
   - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
   - "M3 T3.7 complete (98e909a) — xsdata IWXXM pydantic models + adapt helpers; next T3.8a"
@@ -5884,6 +5902,22 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: b044871ad6593b6efbfea14b6a2866dab5a7481b
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.9] test: add optional iwxxm-validate CLI and smoke tests"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 6
+    timestamp: "2026-07-19T00:11:16Z"
+  - sha: 4763d34210c7ec38339b4c2f53822e95648327ba
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: record workflow-state chore SHA after T3.8"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T23:56:15Z"
   - sha: 01cc7ac4dcdc4d0dc4f701af474d6ab59d9535a9
     branch: evolve/EV-010-package-publish-validation
     message: "chore: workflow-state after T3.8 — next T3.9"
