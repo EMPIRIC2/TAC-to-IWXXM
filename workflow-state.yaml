@@ -81,9 +81,9 @@ active_session:
     status: in_progress
     started: '2026-07-18'
     note: >-
-      M6 T6.4 in_progress (12-verify-deploy); checklist drafted pending_signoff;
-      PyPI Trusted Publisher BLOCKED for live tags; Render ready pending PR+signoff;
-      H0c 14 passed; API health 200; no PR yet; branch ahead of origin; 12 not completed
+      M6 T6.4 awaiting_merge (12-verify-deploy); checklist approved (D-S014-EV010-t64-deploy-A);
+      PR-EV-010=#726 open awaiting CI green + merge approval; tip f1a8799; PyPI Trusted
+      Publisher BLOCKED for live tags; next after merge T6.5 13-deploy-smoke
   - stage: 08-verify-build
     required: true
     mode: full
@@ -124,18 +124,22 @@ active_session:
     status: in_progress
     started: '2026-07-19'
     note: >-
-      T6.4 in_progress — checklist drafted 2026-07-19 (pending_signoff); PyPI Trusted
-      Publisher BLOCKED for live tags; Render path ready pending PR + user signoff;
-      H0c 14 passed; API health 200; no PR yet; branch ahead of origin; 12 not completed
+      T6.4 awaiting_merge — checklist + rollback approved (D-S014-EV010-t64-deploy-A 1A);
+      PR-EV-010=#726 open (2A pause for merge); tip f1a8799 pushed; PyPI Trusted Publisher
+      BLOCKED for live tags; stay in_progress until CI green + explicit merge approval;
+      next after merge T6.5 13-deploy-smoke
     artifacts:
     - docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
   - stage: 13-deploy-smoke
     required: true
     mode: full
     status: pending
-    note: Included per E10-15 msgspec HTTP + Render redeploy
+    note: Included per E10-15 msgspec HTTP + Render redeploy; blocked on PR #726 merge
   skipped_stages: []
-  current_stage: 12-verify-deploy  # T6.4 in_progress; 11-verify-impl completed
+  current_stage: 12-verify-deploy  # T6.4 awaiting_merge; PR-EV-010=#726 open
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
+  pr_number: 726
+  pr_id: PR-EV-010
   completed_at: null
 
 sessions:
@@ -1448,9 +1452,9 @@ stages:
       started_at: "2026-07-18"
       mode: full
       note: >-
-        M6 T6.4 in_progress (12-verify-deploy); checklist drafted pending_signoff;
-        PyPI Trusted Publisher BLOCKED for live tags; Render ready pending PR+signoff;
-        H0c 14 passed; API health 200; no PR yet; branch ahead of origin; 12 not completed
+        M6 T6.4 awaiting_merge (12-verify-deploy); checklist approved (D-S014-EV010-t64-deploy-A);
+        PR-EV-010=#726 open; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
+        next after merge T6.5 13-deploy-smoke
       active_milestone: M6
       active_task: T6.4
       active_task_status: in_progress
@@ -1480,10 +1484,9 @@ stages:
       active_task_status: in_progress
     notes:
     - >-
-      2026-07-19 S014/EV-010 T6.4 12-verify-deploy remains in_progress — deploy-checklist.md
-      drafted (pending_signoff); PyPI Trusted Publisher BLOCKED for live tags; Render path
-      ready pending PR + user signoff; H0c 14 passed; API health 200; no PR yet; branch
-      ahead of origin; 12 not completed
+      2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A (1A checklist+rollback;
+      2A PR then pause); PR-EV-010=#726 open; tip f1a8799; Trusted Publisher blocked for tags;
+      12 not completed until CI green + merge approval; next T6.5 13-deploy-smoke
     - "2026-07-19 S014/EV-010 T6.3 completed (D-S014-EV010-t63-features); T6.4 12-verify-deploy in_progress"
     - "2026-07-19 S014/EV-010 T6.2 PASS (09+10); next T6.3 11-verify-impl after Phase D checkpoint"
     - "2026-07-19 S014/EV-010 C→D passed (D-S014-EV010-c-to-d-pass); T6.2 09-qa+10-e2e in_progress"
@@ -1858,11 +1861,15 @@ stages:
       status: in_progress
       started_at: "2026-07-19"
       mode: adapted
+      overall: checklist_approved
       note: >-
-        T6.4 in_progress — checklist drafted 2026-07-19 (pending_signoff); PyPI Trusted
-        Publisher BLOCKED for live tags; Render path ready pending PR + user signoff;
-        H0c 14 passed; API health 200; no PR yet; branch ahead of origin; 12 not completed
+        T6.4 awaiting_merge — checklist + rollback approved (D-S014-EV010-t64-deploy-A);
+        PR-EV-010=#726 open; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
+        stay in_progress until CI green + merge approval; next T6.5 13-deploy-smoke
       report: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
+      pr_number: 726
+      pr_id: PR-EV-010
       active_milestone: M6
       active_task: T6.4
       active_task_status: in_progress
@@ -1877,10 +1884,9 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
     notes:
     - >-
-      2026-07-19 S014/EV-010 T6.4 12-verify-deploy remains in_progress — deploy-checklist.md
-      drafted (pending_signoff); PyPI Trusted Publisher BLOCKED for live tags; Render path
-      ready pending PR + user signoff; H0c 14 passed; API health 200; no PR yet; branch
-      ahead of origin; 12 not completed
+      2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A (1A/2A);
+      PR-EV-010=#726 open https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726;
+      tip f1a8799; checklist_approved; 12 not completed; next after merge T6.5 13-deploy-smoke
     - "2026-07-19 S014/EV-010 T6.4 12-verify-deploy in_progress (D-S014-EV010-t63-features); deploy-checklist.md pending; 12 not completed"
     - "2026-07-14 S011/EV-008 PR-EV-008=#716 open (retitled/updated evolve→main; NO merge, NO deploy); 12 done; 13 pending on merge approval; T6.4 in_progress"
     - "2026-07-14 S011/EV-008 D-S011-EV008-deploy-check-A — 12-verify-deploy completed (checklist approved); commit QA-001+reports; prepare PR-EV-008; 13 pending until merge approval; no merge/deploy yet"
@@ -2001,6 +2007,24 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S014-EV010-t64-deploy-A
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 12-verify-deploy
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: >
+    User 1A — approve deploy strategy + rollback; 2A — commit/push/open PR then pause
+    for merge approval (do not merge or start 13 until explicit approval).
+  summary: >
+    T6.4 deploy checklist strategy and rollback approved. Branch pushed (tip f1a8799);
+    PR-EV-010=#726 open at https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726.
+    12-verify-deploy / T6.4 remain in_progress (checklist_approved / awaiting_merge) until
+    CI green + user merge approval. PyPI Trusted Publisher still blocked for live tags.
+    Next after merge: T6.5 13-deploy-smoke.
+  status: confirmed
 - id: D-S014-EV010-t63-features
   date: "2026-07-19"
   timestamp: "2026-07-19"
@@ -4566,10 +4590,14 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     skipped_stages: []
-  current_stage: 12-verify-deploy  # T6.4 in_progress; 11-verify-impl completed
+  current_stage: 12-verify-deploy  # T6.4 awaiting_merge; PR-EV-010=#726 open
   active_milestone: M6
   active_task: T6.4
   active_task_status: in_progress
+  pr_id: PR-EV-010
+  pr_number: 726
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
+  pr_status: open
   stages:
     00-context:
       status: in_progress
@@ -4616,7 +4644,7 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M6 T6.4 in_progress (12-verify-deploy); T6.3/11 completed (D-S014-EV010-t63-features); branch ahead of origin; single evolve PR at M6."
+      note: "M6 T6.4 awaiting_merge; checklist approved (D-S014-EV010-t64-deploy-A); PR-EV-010=#726 open; tip f1a8799; next after merge T6.5 13-deploy-smoke."
       active_milestone: M6
       active_task: T6.4
       active_task_status: in_progress
@@ -4687,11 +4715,15 @@ evolve_cycles:
       mode: adapted
       started: '2026-07-19'
       completed: null
+      overall: checklist_approved
       note: >-
-        T6.4 in_progress — checklist drafted 2026-07-19 (pending_signoff); PyPI Trusted
-        Publisher BLOCKED for live tags; Render path ready pending PR + user signoff;
-        H0c 14 passed; API health 200; no PR yet; branch ahead of origin; 12 not completed
+        T6.4 awaiting_merge — checklist + rollback approved (D-S014-EV010-t64-deploy-A 1A/2A);
+        PR-EV-010=#726 open; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
+        stay in_progress until CI green + merge approval; next T6.5 13-deploy-smoke
       report: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
+      pr_number: 726
+      pr_id: PR-EV-010
       active_milestone: M6
       active_task: T6.4
       active_task_status: in_progress
@@ -4701,7 +4733,7 @@ evolve_cycles:
     a_to_b: pending
     b_to_c: passed
     c_to_d: passed  # D-S014-EV010-c-to-d-pass 2026-07-19
-    deploy: pending
+    deploy: pending  # awaiting PR #726 merge approval
   checkpoints:
     phase_a: pending
     phase_b:
@@ -4716,13 +4748,13 @@ evolve_cycles:
       status: passed
       completed: "2026-07-19"
       note: "User approved Pass Phase D → start T6.3 (D-S014-EV010-phase-d-to-t63)"
-    deploy: pending
+    deploy: pending  # checklist approved; PR open; pause for merge
   notes:
   - >-
-    2026-07-19 S014/EV-010 T6.4 12-verify-deploy remains in_progress — deploy-checklist.md
-    drafted (pending_signoff); PyPI Trusted Publisher BLOCKED for live tags; Render path
-    ready pending PR + user signoff; H0c 14 passed; API health 200; no PR yet; branch
-    ahead of origin; 12 not completed
+    2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A (1A checklist+rollback;
+    2A commit/push/open PR then pause); PR-EV-010=#726 open
+    https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726; tip f1a8799; Trusted
+    Publisher blocked for tags; 12 not completed; next after merge T6.5 13-deploy-smoke
   - "2026-07-19 S014/EV-010 T6.3/11-verify-impl completed (D-S014-EV010-t63-features); T6.4 12-verify-deploy in_progress; deploy-checklist.md pending"
   - "2026-07-19 S014/EV-010 journey signoff complete (D-S014-EV010-t63-journeys); next Fn F11–F14 approval batch; T6.3/11-verify-impl remains in_progress"
   - "2026-07-19 S014/EV-010 Phase D passed (D-S014-EV010-phase-d-to-t63); T6.3 11-verify-impl in_progress"
@@ -4772,11 +4804,11 @@ evolve_cycles:
     kind: deploy-checklist
     stage: 12-verify-deploy
     session_id: S014-package-publish-validation
-    status: pending_signoff
+    status: checklist_approved
     note: >-
-      Checklist drafted 2026-07-19 (in_progress/pending_signoff); PyPI Trusted Publisher
-      BLOCKED for live tags; Render path ready pending PR + user signoff; H0c 14 passed;
-      API health 200; no PR yet; branch ahead of origin; stage 12 remains in_progress
+      D-S014-EV010-t64-deploy-A (1A strategy+rollback; 2A PR then pause). PR-EV-010=#726
+      open awaiting_merge; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
+      stage 12 remains in_progress until CI green + merge approval; next T6.5 13-deploy-smoke
   - path: docs/sessions/S014-package-publish-validation/reports/verification-report.md
     kind: verification-report
     stage: 08-verify-build
@@ -6077,6 +6109,9 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - >-
+    2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A; commit f1a8799;
+    PR-EV-010=#726 open; tip f1a8799 pushed; pause for CI + merge; next T6.5 13-deploy-smoke
   - "2026-07-19 S014/EV-010 T6.2 PASS (09+10); next T6.3 after Phase D checkpoint"
   - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED; C→D pending; git commit d3dbbfb recorded"
   - "2026-07-19 S014/EV-010 M6 started — T6.1 08-verify-build in_progress"
@@ -6141,6 +6176,11 @@ git_history:
     created_at: "2026-07-18"
     session_id: S014-package-publish-validation
     evolve_cycle_id: EV-010
+    pr_id: PR-EV-010
+    pr_number: 726
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
+    tip_sha: f1a8799
+    note: "PR-EV-010=#726 open (evolve→main); pause for CI green + merge approval; NO merge/deploy yet"
   - name: fix/S012-empty-bearer-lint-tac
     purpose: "Empty Bearer auth on lint-tac/decode-tac + lint UX issue details"
     base: main
@@ -6349,6 +6389,16 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: f1a879980a0472fdca3f0d926374ae9a0dd9e9d4
+    short: f1a8799
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T6.3] docs: 11-verify-impl + 12-verify-deploy checklist (EV-010)"
+    stage: "12-verify-deploy"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-19T22:31:09Z"
+    note: "Also covers 11-verify-impl report; PR-EV-010=#726 opened from this tip"
   - sha: 1b13059d7dbf939518c6b5f9581d14b9970de0e8
     short: 1b13059
     branch: evolve/EV-010-package-publish-validation

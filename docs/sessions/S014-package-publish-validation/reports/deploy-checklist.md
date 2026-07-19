@@ -1,10 +1,10 @@
 # Deploy Checklist — S014 / EV-010 (stage 12-verify-deploy, T6.4)
 
 > Generated: 2026-07-19  
-> Status: **approved** — strategy + rollback signed off (1A/2A, 2026-07-19); PR open pending  
+> Status: **approved** — strategy + rollback signed off (1A/2A, 2026-07-19); PR open  
 > Deployment plan: `docs/deploy.md` (PyPI + Render) + execution-plan §Tech Stack  
-> Branch tip: `880fc7a` on `evolve/EV-010-package-publish-validation` (~57 commits ahead of `main`; **42 ahead of origin**)  
-> PR: **not created yet** — recommended as part of T6.4 before merge/deploy
+> Branch tip: `f1a8799` on `evolve/EV-010-package-publish-validation`  
+> PR: **#726** https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726 — pause for merge approval
 
 ## Target topology (unchanged)
 
@@ -50,7 +50,7 @@ PyPI: **independent** of Render via `.github/workflows/pypi-publish.yml` on vers
 | Package versions | PASS | all three at `0.1.0`; `[validate]` extras declared |
 | PyPI workflow dry-run | PASS | T4.4 checklist; `workflow_dispatch.publish` default false |
 | Hard perf gates at publish | **DEFERRED** | Soft benches recorded; hard 0.85×/1.0× at T6.6 / tag time |
-| Evolve PR | **PENDING** | No PR open; branch ahead of origin — push + `gh pr create` required |
+| Evolve PR | **OPEN** | [#726](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726) — CI watch; merge needs explicit approval |
 
 ## PyPI Release Checklist (stage-12 slice)
 
@@ -100,6 +100,6 @@ Next: open evolve PR → merge → Render 13 → tag when Publisher ready
 
 - [x] User approved implementation (11-verify-impl — F11–F14 + journeys)
 - [x] User approved deploy strategy + rollback (2026-07-19 — 1A / D-S014-EV010-t64-deploy-A)
-- [ ] Evolve PR open + CI green
+- [x] Evolve PR open (#726) — CI pending
 - [ ] Ready to merge / deploy (explicit approval)
 - [ ] PyPI Trusted Publisher configured (blocker for tags only — not for Render 13)
