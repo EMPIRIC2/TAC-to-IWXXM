@@ -134,7 +134,7 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
             f"tac=Path({str(SAMPLE_METAR)!r}).read_text(); "
             "assert lint(tac, product='METAR').ok; "
             "xml=convert(tac, product='METAR').xml; "
-            "assert xml and validate_iwxxm(xml).ok; "
+            "assert xml and validate_iwxxm(xml, iwxxm_version='2025-2').ok; "
             "print('validate-extra-ok')",
         ],
         check=False,

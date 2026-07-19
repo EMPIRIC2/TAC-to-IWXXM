@@ -2665,8 +2665,19 @@ dependencies = [
     { name = "msgspec" },
 ]
 
+[package.optional-dependencies]
+validate = [
+    { name = "iwxxm-validate" },
+    { name = "tac-validate" },
+]
+
 [package.metadata]
-requires-dist = [{ name = "msgspec", specifier = ">=0.19" }]
+requires-dist = [
+    { name = "iwxxm-validate", marker = "extra == 'validate'", editable = "packages/iwxxm-validate" },
+    { name = "msgspec", specifier = ">=0.19" },
+    { name = "tac-validate", marker = "extra == 'validate'", editable = "packages/tac-validate" },
+]
+provides-extras = ["validate"]
 
 [[package]]
 name = "toposort"
