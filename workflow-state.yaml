@@ -6167,6 +6167,15 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 1b13059d7dbf939518c6b5f9581d14b9970de0e8
+    short: 1b13059
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T6.2] docs: 09-qa + 10-e2e reports for F11–F14 (C→D)"
+    stage: "09-qa"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-19T15:50:00Z"
   - sha: d3dbbfb9dccbd35908b092d951d6658319b5fe0e
     short: d3dbbfb
     branch: evolve/EV-010-package-publish-validation
