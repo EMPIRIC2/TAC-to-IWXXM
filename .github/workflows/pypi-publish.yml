@@ -1,5 +1,5 @@
 # T4.3 / TC-F14-001 — OIDC trusted publishing for F12–F14 (E10-37).
-# One workflow + package matrix; tag-driven only (no long-lived PYPI_API_TOKEN).
+# One workflow + package matrix; tag-driven only (no long-lived PyPI API tokens).
 # Multi-platform maturin wheels: T4.5. Trusted Publisher on PyPI must point at this file.
 name: PyPI Publish
 
