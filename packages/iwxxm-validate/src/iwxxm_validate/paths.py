@@ -1,4 +1,11 @@
-"""Resolve vendored IWXXM / IWXXM-US schema paths (read-only)."""
+"""Resolve IWXXM / IWXXM-US schema paths (packaged subset or monorepo vendor).
+
+Resolution order (E10-34 / E10-6):
+
+1. ``IWXXM_VALIDATE_REPO_ROOT`` / ``IWXXM_SCHEMAS_ROOT`` environment overrides
+2. Packaged runtime subset under ``iwxxm_validate/schemas/`` (wheel / after sync)
+3. Monorepo ``vendor/schemas/*`` when developing inside this repository
+"""
 
 from __future__ import annotations
 
@@ -6,8 +13,25 @@ import os
 from functools import lru_cache
 from pathlib import Path
 
-_PACKAGE_ROOT = Path(__file__).resolve().parents[2]
+_PACKAGE_DIR = Path(__file__).resolve().parent
+_PACKAGE_SCHEMAS = _PACKAGE_DIR / "schemas"
+_PACKAGE_ROOT = _PACKAGE_DIR.parents[1]
 _DEFAULT_REPO_ROOT = _PACKAGE_ROOT.parents[1]
+
+
+def packaged_schemas_root() -> Path | None:
+    """
+    Return the packaged schema subset root when materialised.
+
+    The subset is present after ``make sync-iwxxm-validate-schemas`` or inside a
+    published wheel. ``MANIFEST.json`` alone does not count as materialised.
+    """
+    iwxxm = _PACKAGE_SCHEMAS / "iwxxm"
+    if iwxxm.is_dir() and any(iwxxm.iterdir()):
+        # Require at least one version tree (not only empty placeholder).
+        if any((iwxxm / child).is_dir() for child in iwxxm.iterdir()):
+            return _PACKAGE_SCHEMAS
+    return None
 
 
 def repo_root() -> Path:
@@ -30,12 +54,18 @@ def repo_root() -> Path:
 
 
 def vendor_iwxxm_root() -> Path:
-    """Return ``vendor/schemas/iwxxm``."""
+    """Return ``iwxxm`` schema root (packaged subset or ``vendor/schemas/iwxxm``)."""
+    packaged = packaged_schemas_root()
+    if packaged is not None:
+        return packaged / "iwxxm"
     return repo_root() / "vendor" / "schemas" / "iwxxm"
 
 
 def vendor_iwxxm_us_root() -> Path:
-    """Return ``vendor/schemas/iwxxm-us``."""
+    """Return ``iwxxm-us`` schema root (packaged subset or vendor pin)."""
+    packaged = packaged_schemas_root()
+    if packaged is not None:
+        return packaged / "iwxxm-us"
     return repo_root() / "vendor" / "schemas" / "iwxxm-us"
 
 
@@ -83,7 +113,7 @@ def us_catalog_path() -> Path | None:
     """
     Return IWXXM-US catalog path when present.
 
-    Prefers ``3.0/united-states-catalog.xml`` under the vendored pin.
+    Prefers ``3.0/united-states-catalog.xml`` under the vendored / packaged pin.
     """
     root = vendor_iwxxm_us_root()
     candidates = [
@@ -96,8 +126,15 @@ def us_catalog_path() -> Path | None:
     return None
 
 
+def clear_path_caches() -> None:
+    """Clear cached version directory lookups (tests / after schema sync)."""
+    version_dir.cache_clear()
+
+
 __all__ = [
+    "clear_path_caches",
     "codelists_dir",
+    "packaged_schemas_root",
     "repo_root",
     "schematron_path",
     "us_catalog_path",

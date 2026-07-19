@@ -1,0 +1,50 @@
+---
+description: Rust/maturin/xsdata stack guardrails for F11–F14 (iwxxm-validate native + XSD codegen)
+globs:
+  - packages/iwxxm-validate/**
+  - packages/tac2iwxxm/rust/**
+  - packages/**/Cargo.toml
+  - scripts/**/*codegen*
+  - scripts/**/*bench*
+alwaysApply: false
+---
+
+# Rust / maturin / xsdata (F11–F14)
+
+Traces to execution plan M3/M4, ADR-017, ADR-027, E10-36/39/40.
+
+## Native packages (maturin)
+
+| Package | Crate path | Notes |
+|---------|------------|-------|
+| `tac2iwxxm` | `packages/tac2iwxxm/rust` | Existing optional PyO3 |
+| `iwxxm-validate` | `packages/iwxxm-validate/rust` | Scaffold in T3.1; well-formed + XSD + Schematron |
+
+- Use **maturin** for develop/publish wheels; keep hatch pure-Python path for default `uv sync`.
+- Publish **manylinux + macOS + Windows** wheels for native packages (E10-39).
+- Validate hot path = Rust XSD+Schematron — **not** full xsdata bind-on-validate (ADR-027).
+- Keep lxml/Python path for **parity** until cutover.
+
+## Makefile targets
+
+```bash
+make build-tac2iwxxm-native      # existing
+make build-iwxxm-validate-native  # after T3.1 scaffold
+make bench-validation-stack       # M1 layer cost harness
+make codegen-iwxxm-xsd            # xsdata pipeline (T3.6)
+```
+
+Do not invent alternate build entrypoints without updating the Makefile + execution plan.
+
+## xsdata codegen (ADR-027)
+
+- Dev deps: `xsdata`, `xsdata-pydantic` (workspace `dev` / `codegen` group).
+- Output: **pydantic** models from pinned IWXXM XSD; CI regen on vendor pin bumps.
+- Follow-on adapt to msgspec/Rust is explicit tasks (T3.7) — do not silently rewrite generator output.
+- TAC is **out of** XSD codegen scope.
+
+## When editing Rust / Cargo
+
+- Run package tests after `maturin develop`.
+- Do not vendor schema edits inside the crate — consume pinned `vendor/schemas` / wheel subset (E10-34).
+- Raise `[Decision]` before adding new Rust crates beyond the two maturin packages above.

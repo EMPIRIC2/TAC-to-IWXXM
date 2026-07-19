@@ -1,7 +1,7 @@
 # Configuration Specification
 
 > **Project**: METAR to IWXXM Converter  
-> **Last updated**: 2026-07-13 (S011 / EV-008 — BYO + deprecate ADMIN_*)  
+> **Last updated**: 2026-07-18 (S014 / EV-010 — PyPI publish + msgspec Render redeploy)  
 > **Session**: S003-supabase-keys-config (base); S008; S011-f7-operator-ui
 
 ## Precedence Order
@@ -176,10 +176,38 @@ No new `config/*.json` keys for decode/preview/spans. **No new secrets** for F7 
 **Connectivity**: Live workbench increases browser→API call volume; keep CORS correct; H4–H5 gates
 apply. Redeploy API before frontend when contract changes.
 
+## F11–F14 — msgspec HTTP + PyPI publish (S014 / EV-010)
+
+No new `config/*.json` keys for msgspec response encoding. **PyPI publish uses GitHub
+OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when OIDC is configured
+([Real Python](https://realpython.com/pypi-publish-python-package/)).
+
+| Concern | Where it lives | Notes |
+|---------|----------------|-------|
+| msgspec vs pydantic | Code + ADR-026 | Response encode msgspec; multipart Form intake unchanged |
+| OpenAPI aliases | `apps/backend` schemas | Thin pydantic mirrors for docs only |
+| PyPI trusted publishing | GitHub Environment + PyPI project | OIDC; **one** workflow + package matrix; tags `*-v0.1.0` |
+| PyPI project names | Package metadata | `tac-validate`, `iwxxm-validate`, `tac2iwxxm` |
+| Schema bundle size | `iwxxm-validate` wheel build | From `vendor/schemas/*` pins; not an env var |
+| Render redeploy | Existing API/static secrets | Required this cycle (E10-15); CORS unchanged |
+
+**GitHub Actions (publish)** — configure in GitHub UI (not committed secrets):
+
+| Setting | Purpose |
+|---------|---------|
+| Environment e.g. `pypi` | Optional protection rules for publish jobs |
+| PyPI Trusted Publisher | Links each PyPI project to the **same** matrix workflow + that package's tag filter |
+| `id-token: write` | Workflow permission for OIDC |
+
+**Runtime API/FE env**: Unchanged for F11–F14. Redeploy **API before** frontend when response
+JSON shapes change (H4–H5).
+
 ### Session changelog
 
 - S008 (2026-07-12): F6 — no new config/env; profile default in code; hard cutover
 - S011 / EV-008 (2026-07-13): BYO; deprecate `ADMIN_*` → `E2E_USER_*`; drop `/admin` from baseUrl docs
+- S014 / EV-010 (2026-07-18): PyPI OIDC trusted publishing notes; no new runtime secrets;
+  matrix workflow clarification (05 S2.M1)
 
 ## References
 
@@ -187,6 +215,7 @@ apply. Redeploy API before frontend when contract changes.
 - [env-sync-runbook.md](ops/env-sync-runbook.md) — operator rotation steps
 - [ADR-010](adr/ADR-010-supabase-keys-config-split.md)
 - [ADR-014](adr/ADR-014-tac2iwxxm-rust-gifts-removal.md)
+- [ADR-026](adr/ADR-026-msgspec-http-openapi.md)
 - [ADR-020](adr/ADR-020-unified-tac-work-sessions.md)
 - [ADR-021](adr/ADR-021-byo-credentials-admin-removal.md)
 - [deploy.md](deploy.md) §Integration

@@ -13,7 +13,8 @@
     "auth",
     "GIFTs",
     "frontend/dist",
-    "schemas"
+    "schemas",
+    "packages/shared/src/metar_shared/iwxxm_xsd/v*"
   ],
   "pythonVersion": "3.12",
   "typeCheckingMode": "strict",

@@ -107,9 +107,14 @@ metar-to-IWXXM/
   3. Validation / lint routers are **thin wrappers** over **`iwxxm-validate`** /
      **`tac-validate`**; issue objects may include optional integer `start`/`end`.
   4. Decode router (`POST /api/v1/decode-tac`) wraps tac2iwxxm decode/annotate segments.
+- **S014 / EV-010 delta (F11, ADR-026)**: High-churn route **responses**
+  (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`)
+  encode with **msgspec**; multipart **request** intake stays FastAPI `Form`/`File`. Auth and
+  work-sessions remain **pydantic**. OpenAPI kept via thin pydantic aliases/export (no dual
+  runtime validation). FE types updated same cycle.
 - **Error handling**: HTTP 4xx for auth/validation; 5xx for conversion failures with structured
   errors; soft-preview is not a hard 5xx for parse failures when preview mode is selected.
-- **Source**: REQ-004; F6 / ADR-014; S011 / EV-008.
+- **Source**: REQ-004; F6 / ADR-014; S011 / EV-008; S014 / ADR-026.
 
 ### packages/tac2iwxxm
 
@@ -128,14 +133,16 @@ metar-to-IWXXM/
   plain-language `summary` paragraph ("Not decoded: …" clause when residuals exist;
   "partial decode" wording for sparse products). Offsets and existing fields unchanged
   (additive). ADR-025.
+- **S014 / EV-010 delta (F14)**: Published to PyPI as `tac2iwxxm` `0.1.0`; optional extra
+  `[validate]` depends on `tac-validate` + `iwxxm-validate`. Public convert API documented for
+  third-party install.
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
-- **IR**: Spec requires a **versioned IR**; concrete library (msgspec / pydantic / dataclasses)
-  chosen in 04-tech-plan.
-- **Source**: [feature-list.md](feature-list.md) F6; ADR-013; ADR-014;
+- **IR**: **msgspec.Struct** (ADR-016); HTTP high-churn paths also msgspec (ADR-026).
+- **Source**: [feature-list.md](feature-list.md) F6/F14; ADR-013; ADR-014; ADR-026;
   [context/general-tac-iwxxm-converter.md](context/general-tac-iwxxm-converter.md);
-  [context/f7-operator-ui.md](context/f7-operator-ui.md).
+  [context/package-publish-validation.md](context/package-publish-validation.md).
 
 ### packages/tac-validate
 
@@ -147,16 +154,25 @@ metar-to-IWXXM/
 - **S013 delta (F10)**: Severity enum `error | warning | info`; `ok` computed from `error` only.
   `MISSING_TERMINATOR` → `info` with actionable copy + paired `add_terminator` fix entry
   (`replacement` = text with `=` appended) powering the UI quick fix. ADR-025.
+- **S014 / EV-010 delta (F12)**: Published to PyPI `tac-validate` `0.1.0`; encode mined
+  `docs/domain/` rules — full depth METAR/SPECI/TAF; SIGMET/AIRMET/VAA/TCA templates + gates;
+  cite-only for paywalled Annex text. CLI for CI.
 - **SoC**: **No** FastAPI or Supabase imports.
-- **Source**: feature-list F6/F2 amend; S011 / EV-008; S013 / EV-009.
+- **Source**: feature-list F6/F12; S011 / EV-008; S013 / EV-009; S014 / EV-010.
 
 ### packages/iwxxm-validate
 
 - **Purpose**: F2 engine — XSD + Schematron validation of IWXXM XML against vendored schemas.
 - **Inputs**: IWXXM XML; `iwxxm_version`; optional `profile` (US catalogs when `iwxxm_us`).
 - **Outputs**: Validation report (pass/fail + messages).
-- **SoC**: **No** FastAPI or Supabase imports; **read-only** consumption of `vendor/schemas/*`.
-- **Source**: feature-list F2; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md).
+- **S014 / EV-010 delta (F13)**: **Rust core** (well-formed + XSD + native Schematron/SVRL)
+  via PyO3; Python SDK; pinned schemas **bundled** in the wheel; PyPI `iwxxm-validate` `0.1.0`.
+  Parity suite vs historical lxml isoschematron. Optional **XSD-derived** typed models
+  (codegen; F11) — UML modelling is provenance only; TAC has no official model.
+- **SoC**: **No** FastAPI or Supabase imports; **read-only** consumption of `vendor/schemas/*`
+  (and bundled copies in published wheels).
+- **Source**: feature-list F2/F13; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md);
+  [context/package-publish-validation.md](context/package-publish-validation.md).
 
 ### packages/gifts — removed
 
@@ -390,6 +406,8 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 | Vendor sync PR | Minutes | CI job; not user-facing |
 | Live lint/decode (debounced) | &lt; 500ms typical target | Abort in-flight; measure in 04 |
 | Soft-preview convert | TBD | May exceed hard convert; UI must cancel |
+| Library lint→convert→XSD+SCH (S014) | Beat current lxml baseline | Soft benches in build; hard-fail at PyPI publish (F11/F13) |
+| High-churn HTTP DTO (msgspec) | ≤ prior pydantic map path | Hard-fail at publish/cutover (ADR-026) |
 
 ## Known Limitations
 

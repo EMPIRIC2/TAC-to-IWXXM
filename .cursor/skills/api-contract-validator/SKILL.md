@@ -46,6 +46,19 @@ Undocumented routes → `[Scope Drift]` unless back-added to api-contract.md.
 - Auth: Supabase JWT Bearer on protected routes
 - `DISABLE_AUTH=true` — dev only, never production
 
+### 3b. msgspec HTTP boundary (F11 / ADR-026)
+
+High-churn routes (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`,
+`/lint-tac`, `/decode-tac`):
+
+- **Intake**: FastAPI `Form`/`File` multipart — not msgspec JSON body decode
+- **Responses**: msgspec encode (+ optional Struct after form assemble)
+- **OpenAPI**: thin pydantic aliases only — no dual runtime validation
+- Auth/admin/work-sessions remain pydantic
+
+FAIL if implementation or OpenAPI wiring claims msgspec validates the multipart body
+directly. See `.cursor/rules/optional/msgspec-http-boundary.mdc`.
+
 ### 4. CORS
 
 - `METAR_CORS_ORIGINS` must include frontend origin

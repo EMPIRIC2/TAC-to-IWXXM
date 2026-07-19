@@ -12,11 +12,15 @@ from pathlib import Path, PurePosixPath
 
 # Target monorepo tree + transitional legacy paths during migration.
 APPROVED_COMPONENTS: dict[str, str] = {
-    "apps/backend": "Backend API — conversion, validation, auth (F1–F4, M4)",
-    "apps/frontend": "Frontend UI (F1–F4, UJ-001)",
+    "apps/backend": "Backend API — conversion, validation, auth (F1–F11, M4)",
+    "apps/frontend": "Frontend UI (F1–F11, UJ-001)",
+    "apps/worker": "F8 near-RT ingest poller — Background Worker (ADR-018)",
     "apps/e2e": "E2E workspace — Playwright (T2)",
     "packages/auth": "Auth library — Supabase middleware (M4)",
-    "packages/gifts": "GIFTs — TAC → IWXXM (F1, M3)",
+    "packages/tac2iwxxm": "General TAC → IWXXM converter (F6, F14)",
+    "packages/tac-validate": "TAC product validation / lint (F12)",
+    "packages/iwxxm-validate": "IWXXM XSD + Schematron engine (F2, F13)",
+    "packages/gifts": "GIFTs — transitional until F6 cutover delete (F1, M3)",
     "packages/shared": "Shared types and utils (M1, M5)",
     "vendor": "Vendor schemas — read-only wmo-im snapshots (M2, M6)",
     "backend": "Legacy backend — migrate to apps/backend (M1)",
@@ -29,7 +33,7 @@ APPROVED_COMPONENTS: dict[str, str] = {
     "test-data": "Golden fixtures (TC-M003)",
     "docs": "Documentation",
     ".cursor": "Cursor tooling",
-    ".github": "CI/CD workflows",
+    ".github": "CI/CD + PyPI publish workflows (F14, M5, M6)",
     "scripts": "Automation — vendor sync, deploy smoke",
 }
 
@@ -46,9 +50,19 @@ INFRA_PATHS = {
 
 
 def find_repo_root(start: Path) -> Path | None:
+    """Prefer monorepo git root over nested package pyproject.toml."""
     p = start if start.is_dir() else start.parent
+    git_root: Path | None = None
     for candidate in [p, *p.parents]:
-        if (candidate / "pyproject.toml").is_file() or (candidate / ".git").is_dir():
+        if (candidate / ".git").exists():
+            git_root = candidate
+            break
+    if git_root is not None:
+        return git_root
+    for candidate in [p, *p.parents]:
+        if (candidate / "pnpm-workspace.yaml").is_file() or (
+            candidate / "pyproject.toml"
+        ).is_file():
             return candidate
     return None
 
@@ -97,8 +111,8 @@ def main() -> int:
         result = {
             "additional_context": (
                 f"[scope-check] WARNING: '{rel_str}' does not map to any approved "
-                "component in docs/spec.md §Component Overview. Verify scope (F1–F4, "
-                "M1–M6) or raise [Scope Drift]."
+                "component in docs/spec.md §Component Overview. Verify scope "
+                "(F1–F14, M1–M6) or raise [Scope Drift]."
             )
         }
 

@@ -1,0 +1,284 @@
+{
+  "schema_version": 1,
+  "description": "TC-F12-001 / E10-21 negative + accept fixture pack for tac-validate (T2.1).",
+  "cite": [
+    "docs/domain/TAC_VALIDATION.md (A3-2, A5-1, A6, A2-1, A2-2 paraphrase)",
+    "docs/domain/rules/COVERAGE_MATRIX.md"
+  ],
+  "accept": [
+    {
+      "id": "accept_metar_basic",
+      "product": "METAR",
+      "tac": "accept/metar_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_basic",
+      "product": "SPECI",
+      "tac": "accept/speci_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_basic",
+      "product": "TAF",
+      "tac": "accept/taf_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_basic",
+      "product": "SIGMET",
+      "tac": "accept/sigmet_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_airmet_basic",
+      "product": "AIRMET",
+      "tac": "accept/airmet_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_vaa_basic",
+      "product": "VAA",
+      "tac": "accept/vaa_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_tca_basic",
+      "product": "TCA",
+      "tac": "accept/tca_basic.tac",
+      "ok": true
+    }
+  ],
+  "negative": [
+    {
+      "id": "metar_missing_cccc",
+      "product": "METAR",
+      "depth": "full_checklist",
+      "cite": "A3-2 #2 CCCC",
+      "tac": "negative/metar/missing_cccc.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_CCCC"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_missing_obs_time",
+      "product": "METAR",
+      "depth": "full_checklist",
+      "cite": "A3-2 #3 ddhhmmZ",
+      "tac": "negative/metar/missing_obs_time.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_OBS_TIME"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_missing_wind",
+      "product": "METAR",
+      "depth": "full_checklist",
+      "cite": "A3-2 #5 surface wind",
+      "tac": "negative/metar/missing_wind.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_WIND"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_missing_visibility",
+      "product": "METAR",
+      "depth": "full_checklist",
+      "cite": "A3-2 #6 visibility",
+      "tac": "negative/metar/missing_visibility.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_VISIBILITY"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_missing_temp_dewpoint",
+      "product": "METAR",
+      "depth": "full_checklist",
+      "cite": "A3-2 #10 T/Td",
+      "tac": "negative/metar/missing_temp_dewpoint.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_TEMP_DEWPOINT"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_missing_qnh",
+      "product": "METAR",
+      "depth": "full_checklist",
+      "cite": "A3-2 #11 QNH",
+      "tac": "negative/metar/missing_qnh.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_QNH"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_bad_cloud_token",
+      "product": "METAR",
+      "depth": "full_checklist",
+      "cite": "A3-2 #9 cloud/VV",
+      "tac": "negative/metar/bad_cloud_token.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CLOUD_TOKEN"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_missing_cccc",
+      "product": "SPECI",
+      "depth": "full_checklist",
+      "cite": "A3-2 #2 CCCC",
+      "tac": "negative/speci/missing_cccc.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_CCCC"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_missing_wind",
+      "product": "SPECI",
+      "depth": "full_checklist",
+      "cite": "A3-2 #5 surface wind",
+      "tac": "negative/speci/missing_wind.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_WIND"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_missing_visibility",
+      "product": "SPECI",
+      "depth": "full_checklist",
+      "cite": "A3-2 #6 visibility",
+      "tac": "negative/speci/missing_visibility.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_VISIBILITY"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_missing_temp_and_qnh",
+      "product": "SPECI",
+      "depth": "full_checklist",
+      "cite": "A3-2 #10/#11",
+      "tac": "negative/speci/missing_temp_and_qnh.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_TEMP_DEWPOINT", "MISSING_QNH"],
+      "require_spans": true
+    },
+    {
+      "id": "taf_missing_cccc",
+      "product": "TAF",
+      "depth": "full_checklist",
+      "cite": "A5-1 #2 CCCC",
+      "tac": "negative/taf/missing_cccc.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_CCCC"],
+      "require_spans": true
+    },
+    {
+      "id": "taf_missing_issue_time",
+      "product": "TAF",
+      "depth": "full_checklist",
+      "cite": "A5-1 #3 ddhhmmZ",
+      "tac": "negative/taf/missing_issue_time.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_ISSUE_TIME"],
+      "require_spans": true
+    },
+    {
+      "id": "taf_missing_validity",
+      "product": "TAF",
+      "depth": "full_checklist",
+      "cite": "A5-1 #5 validity",
+      "tac": "negative/taf/missing_validity.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_VALIDITY"],
+      "require_spans": true
+    },
+    {
+      "id": "taf_bad_cnl_shape",
+      "product": "TAF",
+      "depth": "full_checklist",
+      "cite": "A5-1 #6 CNL ends message",
+      "tac": "negative/taf/bad_cnl_shape.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CNL_SHAPE"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_missing_valid",
+      "product": "SIGMET",
+      "depth": "template_gate",
+      "cite": "A6 VALID period",
+      "tac": "negative/sigmet/missing_valid.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_VALID"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_multi_phenomenon",
+      "product": "SIGMET",
+      "depth": "template_gate",
+      "cite": "A6 one-phenomenon",
+      "tac": "negative/sigmet/multi_phenomenon.tac",
+      "ok": false,
+      "expected_codes": ["MULTIPLE_PHENOMENA"],
+      "require_spans": true
+    },
+    {
+      "id": "airmet_missing_valid",
+      "product": "AIRMET",
+      "depth": "template_gate",
+      "cite": "A6 VALID period",
+      "tac": "negative/airmet/missing_valid.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_VALID"],
+      "require_spans": true
+    },
+    {
+      "id": "airmet_multi_phenomenon",
+      "product": "AIRMET",
+      "depth": "template_gate",
+      "cite": "A6 one-phenomenon",
+      "tac": "negative/airmet/multi_phenomenon.tac",
+      "ok": false,
+      "expected_codes": ["MULTIPLE_PHENOMENA"],
+      "require_spans": true
+    },
+    {
+      "id": "vaa_missing_dtg",
+      "product": "VAA",
+      "depth": "template_gate",
+      "cite": "A2-1 DTG",
+      "tac": "negative/vaa/missing_dtg.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_DTG"],
+      "require_spans": true
+    },
+    {
+      "id": "vaa_missing_vaac",
+      "product": "VAA",
+      "depth": "template_gate",
+      "cite": "A2-1 VAAC",
+      "tac": "negative/vaa/missing_vaac.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_VAAC"],
+      "require_spans": true
+    },
+    {
+      "id": "tca_missing_dtg",
+      "product": "TCA",
+      "depth": "template_gate",
+      "cite": "A2-2 DTG",
+      "tac": "negative/tca/missing_dtg.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_DTG"],
+      "require_spans": true
+    },
+    {
+      "id": "tca_missing_max_wind",
+      "product": "TCA",
+      "depth": "template_gate",
+      "cite": "A2-2 MAX WIND",
+      "tac": "negative/tca/missing_max_wind.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_MAX_WIND"],
+      "require_spans": true
+    }
+  ]
+}

@@ -532,6 +532,120 @@ describe('API Utils', () => {
     });
   });
 
+  /**
+   * T5.4 / TC-F11-001 / ADR-026 — msgspec HTTP shape parity guards.
+   * Keys match backend contract smoke (T5.1); no OpenAPI→TS codegen this cycle.
+   */
+  describe('msgspec HTTP shape parity (ADR-026 / T5.4)', () => {
+    const requiredKeys = (obj: Record<string, unknown>, keys: string[]) => {
+      for (const key of keys) {
+        expect(obj).toHaveProperty(key);
+      }
+    };
+
+    it('ConversionResponse required keys match msgspec convert contract', () => {
+      const body: ConversionResponse = {
+        results: [
+          {
+            name: 'manual_input.txt',
+            content: '<iwxxm:METAR/>',
+            source: 'manual',
+            size_bytes: 14,
+          },
+        ],
+        errors: [],
+        issues: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
+        metadata: {},
+        ok: true,
+        failed_spans: [],
+      };
+      requiredKeys(body as unknown as Record<string, unknown>, [
+        'results',
+        'errors',
+        'total_processed',
+        'successful',
+        'failed',
+      ]);
+      expect(Array.isArray(body.results)).toBe(true);
+      expect(body.results[0]).toMatchObject({
+        name: expect.any(String),
+        content: expect.any(String),
+        source: expect.any(String),
+        size_bytes: expect.any(Number),
+      });
+    });
+
+    it('LintTacResponse required keys match msgspec lint-tac contract', () => {
+      const body = {
+        ok: true,
+        issues: [] as { severity: string; code: string; message: string }[],
+        fixes: [] as { code: string; message: string; replacement: string }[],
+        product: 'METAR',
+      };
+      requiredKeys(body, ['ok', 'issues', 'fixes']);
+      expect(typeof body.ok).toBe('boolean');
+      expect(Array.isArray(body.issues)).toBe(true);
+      expect(Array.isArray(body.fixes)).toBe(true);
+    });
+
+    it('DecodeTacResponse required keys match msgspec decode-tac contract', () => {
+      const body = {
+        product: 'METAR',
+        segments: [] as {
+          start: number;
+          end: number;
+          code: string;
+          explanation: string;
+        }[],
+        residuals: [] as { start: number; end: number; text: string }[],
+        summary: '',
+      };
+      requiredKeys(body, ['product', 'segments', 'residuals', 'summary']);
+      expect(typeof body.summary).toBe('string');
+    });
+
+    it('ConvertBulletinResponse required keys match msgspec convert-bulletin contract', () => {
+      const body = {
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 1,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+          bbb: null as string | null,
+        },
+        results: [
+          {
+            report_index: 0,
+            ok: true,
+            tac_input: 'METAR KJFK',
+            xml: '<iwxxm:METAR/>',
+            issues: [],
+            fixes: [],
+          },
+        ],
+      };
+      requiredKeys(body, ['bulletin_meta', 'results']);
+      requiredKeys(body.bulletin_meta as unknown as Record<string, unknown>, [
+        'ahl',
+        'report_count',
+        'tt',
+        'aa',
+        'cccc',
+        'yygggg',
+      ]);
+      expect(body.results[0]).toMatchObject({
+        report_index: expect.any(Number),
+        ok: expect.any(Boolean),
+        tac_input: expect.any(String),
+      });
+    });
+  });
+
   // ============= Edge Cases =============
   describe('Edge Cases', () => {
     it('should handle requests without authentication token', async () => {

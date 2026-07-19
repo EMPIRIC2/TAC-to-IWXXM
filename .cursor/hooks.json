@@ -8,6 +8,11 @@
         "matcher": "git\\s+(commit|push)",
         "timeout": 120,
         "failClosed": true
+      },
+      {
+        "command": "python3 .cursor/hooks/pypi_release_guard.py",
+        "matcher": "git\\s+tag",
+        "timeout": 10
       }
     ],
     "preToolUse": [
@@ -25,11 +30,21 @@
         "command": "bash .cursor/hooks/pr-checklist.sh",
         "matcher": "Shell",
         "timeout": 10
+      },
+      {
+        "command": "python3 .cursor/hooks/pypi_release_guard.py",
+        "matcher": "Shell",
+        "timeout": 10
       }
     ],
     "afterFileEdit": [
       {
         "command": "python3 .cursor/hooks/feature_drift.py",
+        "matcher": "Write|TabWrite",
+        "timeout": 10
+      },
+      {
+        "command": "python3 .cursor/hooks/pypi_release_guard.py",
         "matcher": "Write|TabWrite",
         "timeout": 10
       },

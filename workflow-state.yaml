@@ -4,8 +4,145 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 13
-active_session: null
+session_counter: 14
+active_session:
+  id: S014-package-publish-validation
+  type: feature
+  status: active
+  started_at: '2026-07-18'
+  intent: >-
+    Validation stack perf (#703); publish tac-validate / iwxxm-validate / tac2iwxxm
+    (#698/#699/#693); domain rules; PyPI + release-tag CI/CD
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-010
+  branch: evolve/EV-010-package-publish-validation
+  artifacts_dir: docs/sessions/S014-package-publish-validation
+  context_briefs:
+  - docs/context/package-publish-validation.md
+  standing_docs_touched: []
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: Session open + scoped brief; Phase 0–1 intake locked E10-1..15
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-07-18'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: F11–F14 + ADR-026 + standing doc deltas; Phase A checkpoint pending
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: PASS — 13 auto + S2.M1/S8.M1/S1.M1 all-A; multipart msgspec clarified
+  - stage: 03-plan-tooling
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: Delta D — PyPI/msgspec rules + hooks + pypi-release-checklist skill
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: M1–M6 execution plan approved (43A); ADR-027 xsdata
+  - stage: 05-verify-tech
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
+  - stage: 06-tech-tooling
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-18'
+    completed: '2026-07-18'
+    note: 49A — rust/maturin/xsdata rule, Makefile stubs, uv deps, hook
+  - stage: 07-build
+    required: true
+    mode: full
+    status: in_progress
+    started: '2026-07-18'
+    note: >-
+      M6 T6.4 awaiting_merge (12-verify-deploy); checklist approved (D-S014-EV010-t64-deploy-A);
+      PR-EV-010=#726 open awaiting CI green + merge approval; tip f1a8799; PyPI Trusted
+      Publisher BLOCKED for live tags; next after merge T6.5 13-deploy-smoke
+  - stage: 08-verify-build
+    required: true
+    mode: full
+    status: completed
+    started: '2026-07-19'
+    completed: '2026-07-19'
+    note: "T6.1 PASS — verification-report.md; integration SKIPPED (docker pull); C→D passed D-S014-EV010-c-to-d-pass"
+  - stage: 09-qa
+    required: true
+    mode: full
+    status: completed
+    started: '2026-07-19'
+    completed: '2026-07-19'
+    note: "PASS w/ advisory QA-S014-001 (H4–H5→13); qa-report.md"
+    artifacts:
+    - docs/sessions/S014-package-publish-validation/reports/qa-report.md
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-19'
+    completed: '2026-07-19'
+    note: "UJ-022/023/DEV-005 T0+local API PASS; T3/H6′→13; e2e-report.md"
+    artifacts:
+    - docs/sessions/S014-package-publish-validation/reports/e2e-report.md
+  - stage: 11-verify-impl
+    required: true
+    mode: full
+    status: completed
+    started: '2026-07-19'
+    completed: '2026-07-19'
+    note: "verify-impl.md F11–F14 + journeys approved (D-S014-EV010-t63-features / D-S014-EV010-t63-journeys)"
+    artifacts:
+    - docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+  - stage: 12-verify-deploy
+    required: true
+    mode: adapted
+    status: in_progress
+    started: '2026-07-19'
+    note: >-
+      T6.4 awaiting_merge — checklist + rollback approved (D-S014-EV010-t64-deploy-A 1A);
+      PR-EV-010=#726 open (2A pause for merge); tip f1a8799 pushed; PyPI Trusted Publisher
+      BLOCKED for live tags; stay in_progress until CI green + explicit merge approval;
+      next after merge T6.5 13-deploy-smoke
+    artifacts:
+    - docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: pending
+    note: Included per E10-15 msgspec HTTP + Render redeploy; blocked on PR #726 merge
+  skipped_stages: []
+  current_stage: 12-verify-deploy  # T6.4 awaiting_merge; PR-EV-010=#726 open
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
+  pr_number: 726
+  pr_id: PR-EV-010
+  completed_at: null
+
+sessions:
 
 sessions:
 
@@ -1033,6 +1170,16 @@ stages:
     - .cursor/agents/spec-consultant.md
     notes:
     - "10 guardrails installed; hooks smoke-tested; connectivity linked via plan-adherence + 07-build"
+    delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      note: Delta D — PyPI/msgspec rules + hooks + pypi-release-checklist skill
+      artifacts:
+      - docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
 
   04-tech-plan:
     status: completed
@@ -1153,11 +1300,23 @@ stages:
       - docs/sessions/S011-f7-operator-ui/reports/execution-plan.md
       notes: |
         D-S011-04-plan-approve-A — execution-plan.md approved; historical baseline status remains completed.
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      note: M1–M6 execution plan approved (43A); ADR-027 xsdata
+      artifacts:
+      - docs/sessions/S014-package-publish-validation/reports/execution-plan.md
+      - docs/adr/ADR-027-xsdata-codegen.md
     notes:
     - "Monorepo plan 2026-06-15; EV-004 delta completed 2026-06-23"
     - "Historical baseline status remains completed — S008 tracked via delta_substages only"
     - "S008 delta 04-tech-plan completed 2026-07-12 — execution plan + ADR-016/017/018 approved"
     - "S011/EV-008 delta 04-tech-plan completed 2026-07-13 — execution-plan.md approved (D-S011-04-plan-approve-A)"
+    - "S014/EV-010 delta 04-tech-plan completed 2026-07-18 — M1–M6 approved (43A); ADR-027 xsdata"
 
   05-verify-tech:
     status: completed
@@ -1203,6 +1362,15 @@ stages:
       - "2026-07-13 started after D-S011-04-plan-approve-A; phase_b pending until 05 completes + user checkpoint"
       - "2026-07-13 D-S011-05-pass — audit PASS (reports/05-verify-tech-audit.md); A1–A3 approved as-is; phase_b remains pending
         until user Phase B AskQuestion"
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      overall: pass
+      note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
     notes:
     - "Technical plan verification complete; 3 source docs updated"
     - "Historical baseline status remains completed — S008 tracked via delta_substages only"
@@ -1213,6 +1381,7 @@ stages:
     - "S008 delta 05-verify-tech completed 2026-07-12 — audit done; Phase B delta cleared (06 N/A); historical baseline status
       unchanged (completed)"
     - "S011/EV-008 delta 05-verify-tech completed 2026-07-13 — audit PASS; A1–A3 as-is; phase_b still pending (no auto-pass)"
+    - "S014/EV-010 delta 05-verify-tech PASS 2026-07-18 — 12 auto + 44A–47A; Phase B checkpoint before 06"
 
   06-tech-tooling:
     status: completed
@@ -1250,6 +1419,19 @@ stages:
         basedpyright: pass
         pytest_h0c: pass
         verify_connectivity_sh: pass
+    delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      note: 49A — rust/maturin/xsdata rule, Makefile stubs, uv deps, hook
+      artifacts:
+      - docs/sessions/S014-package-publish-validation/reports/06-tech-tooling.md
+    notes:
+    - "S014/EV-010 delta 06-tech-tooling completed 2026-07-18 — 49A; commit 6c3fd7a; Phase B passed; await B→C for 07"
 
   07-build:
     status: completed
@@ -1263,6 +1445,19 @@ stages:
         milestone: M11
         notes: "T11.4 complete — H0c+H4+H5 green on staging; TC-M001–M005 pass; Phase 4 gate criteria met on main"
     delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: in_progress
+      started_at: "2026-07-18"
+      mode: full
+      note: >-
+        M6 T6.4 awaiting_merge (12-verify-deploy); checklist approved (D-S014-EV010-t64-deploy-A);
+        PR-EV-010=#726 open; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
+        next after merge T6.5 13-deploy-smoke
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1288,6 +1483,39 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - >-
+      2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A (1A checklist+rollback;
+      2A PR then pause); PR-EV-010=#726 open; tip f1a8799; Trusted Publisher blocked for tags;
+      12 not completed until CI green + merge approval; next T6.5 13-deploy-smoke
+    - "2026-07-19 S014/EV-010 T6.3 completed (D-S014-EV010-t63-features); T6.4 12-verify-deploy in_progress"
+    - "2026-07-19 S014/EV-010 T6.2 PASS (09+10); next T6.3 11-verify-impl after Phase D checkpoint"
+    - "2026-07-19 S014/EV-010 C→D passed (D-S014-EV010-c-to-d-pass); T6.2 09-qa+10-e2e in_progress"
+    - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED; next T6.2 after C→D; git commit d3dbbfb recorded"
+    - "2026-07-19 S014/EV-010 M6 started — T6.1 08-verify-build in_progress"
+    - "2026-07-19 S014/EV-010 M5 complete (T5.1–T5.6; 59d89af/4202392/2abd4a0/93a67f2); active_milestone M6; active_task T6.1 pending"
+    - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
+    - "2026-07-19 S014/EV-010 M5 started — T5.1 in progress (msgspec HTTP API tests)"
+    - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
+    - "2026-07-19 S014/EV-010 T4.2 completed (24ad415); T4.3 in_progress"
+    - "2026-07-19 S014/EV-010 T4.1 completed (c48c692); T4.2 in_progress"
+    - "2026-07-19 S014/EV-010 M4 T4.1 in_progress — clean-venv convert + [validate] extra; M3 gate deferred per user continue"
+    - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
+    - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
+    - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
+    - "M3 T3.7 complete (98e909a) — xsdata IWXXM pydantic models + adapt helpers; next T3.8a"
+    - "M3 T3.7a complete (b1e53c9) — codegen regen smoke for importable pydantic models; next T3.7"
+    - "M3 T3.6 complete (3056e4c) — xsdata IWXXM XSD codegen pipeline + vendor-sync CI hook; next T3.7a"
+    - "M3 T3.5 complete (a57001b) — soft native vs lxml benches / 0.85x hard-gate path; next T3.6"
+    - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
+    - "M3 T3.3 complete (1c3e8fe) — xmloxide + validate_iwxxm; next T3.4"
+    - "2026-07-18 S014/EV-010 T3.3 in progress — implementing xmloxide path after stack decision A"
+    - "2026-07-18 S014/EV-010 T3.2 complete — F13 parity suite stubs vs lxml golden corpus (947020b); active_task T3.3 pending"
+    - "2026-07-18 S014/EV-010 M3 T3.1–T3.2 complete (1770086 / 947020b); next T3.3 Rust validate_iwxxm"
+    - "2026-07-18 S014/EV-010 T3.1 complete — iwxxm-validate rust/maturin scaffold; hatch pure path retained"
+    - "2026-07-18 S014/EV-010 user 52:A — continue 07-build at M3 T3.1 after M2 complete"
+    - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
+    - "2026-07-18 S014/EV-010 M1 complete (T1.1–T1.3; 9f9f67b/3ad66cd/70d157b); next M2 T2.1; ci-cd.yml triggers only on main/dev — push alone did not run GHA; local format-check + perf tests green"
+    - "2026-07-18 S014/EV-010 delta 07-build in_progress — B→C passed (50B push-then-07); push about to happen; Phase C M1 T1.1 (D-S014-EV010-b-to-c-push)"
     - "2026-07-14 S011/EV-008 PR-EV-008 prepared as #716 open (retitle/update evolve→main; NO merge, NO deploy); T6.4 in_progress (12 done / 13 pending); 13 blocked on merge approval"
     - "2026-07-14 S011/EV-008 D-S011-EV008-deploy-check-A — 12 approved; T6.4 still in_progress (12 done / 13 pending); preparing PR-EV-008; 13 blocked on merge"
     - "2026-07-14 S011/EV-008 T6.3 completed approved_with_waivers (D-S011-EV008-f7-approve); active_task T6.4 in_progress (12-verify-deploy)"
@@ -1321,6 +1549,19 @@ stages:
     session_id: S004-issue-555-feedback
     evolve_cycle_id: EV-004
     delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      started_at: "2026-07-19"
+      completed_at: "2026-07-19"
+      overall: pass_with_advisories
+      mode: full
+      report: docs/sessions/S014-package-publish-validation/reports/qa-report.md
+      note: "PASS w/ advisory QA-S014-001 (H4–H5→13); qa-report.md"
+      active_milestone: M6
+      active_task: T6.3
+      active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1347,6 +1588,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/qa-report.md
       note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted"
     notes:
+    - "2026-07-19 S014/EV-010 09-qa completed — pass_with_advisories (QA-S014-001 H4–H5→13); see qa-report.md"
+    - "2026-07-19 S014/EV-010 09-qa in_progress (T6.2; D-S014-EV010-c-to-d-pass)"
     - "S004 / EV-004 delta — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
     - "Prior monorepo QA 2026-06-20: docs/reports/qa-report.md"
     - "2026-07-12 S008 / EV-006 — pass_with_advisories; see qa-report.md"
@@ -1354,7 +1597,7 @@ stages:
     - "2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md"
 
   11-verify-impl:
-    status: completed
+    status: in_progress
     started_at: "2026-06-23T00:00:00Z"
     completed_at: "2026-06-23T12:00:00Z"
     session_id: S003-supabase-keys-config
@@ -1383,6 +1626,19 @@ stages:
         status: completed
     report: docs/sessions/S003-supabase-keys-config/reports/verify-impl.md
     delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      started_at: "2026-07-19"
+      completed_at: "2026-07-19"
+      mode: full
+      overall: approved
+      note: "verify-impl.md F11–F14 + journeys approved (D-S014-EV010-t63-features / D-S014-EV010-t63-journeys); hard publish/live tag/Render deferred to T6.4–T6.6"
+      report: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+      active_milestone: M6
+      active_task: T6.3
+      active_task_status: completed
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1409,6 +1665,9 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
       note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5"
     notes:
+    - "2026-07-19 S014/EV-010 11-verify-impl completed — F11–F14 + journeys approved (D-S014-EV010-t63-features); next T6.4 12-verify-deploy"
+    - "2026-07-19 S014/EV-010 journey signoff complete (D-S014-EV010-t63-journeys); next Fn F11–F14 approval; T6.3/11-verify-impl remains in_progress"
+    - "2026-07-19 S014/EV-010 Phase D passed (D-S014-EV010-phase-d-to-t63); T6.3 11-verify-impl in_progress"
     - "2026-07-14 S011/EV-008 T6.3 completed approved_with_waivers (D-S011-EV008-f7-approve); see reports/verify-impl.md; next T6.4"
     - "S003 / BUG-2026-06-23 — user approved M4+F3 delta; T3 auth + UI E2E deferred"
     - "08-verify-build + 09-qa still pending on routing plan"
@@ -1439,6 +1698,19 @@ stages:
         status: completed
         notes: "H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred"
     delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      started_at: "2026-07-19"
+      completed_at: "2026-07-19"
+      overall: pass
+      mode: delta
+      report: docs/sessions/S014-package-publish-validation/reports/e2e-report.md
+      note: "UJ-022/023/DEV-005 T0+local API PASS; T3/H6′→13; e2e-report.md"
+      active_milestone: M6
+      active_task: T6.3
+      active_task_status: in_progress
     - status: completed
       session_id: S008-general-tac-iwxxm-converter
       evolve_cycle_id: EV-006
@@ -1458,6 +1730,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
       note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk"
     notes:
+    - "2026-07-19 S014/EV-010 10-e2e completed — UJ-022/023/DEV-005 T0+local API PASS; T3/H6′→13; see e2e-report.md"
+    - "2026-07-19 S014/EV-010 10-e2e in_progress (T6.2; D-S014-EV010-c-to-d-pass)"
     - "S004 delta FAIL — fix Playwright locators + finished-session load; redeploy for H4"
     - "Prior global report: docs/reports/e2e-report.md (2026-06-20)"
     - "2026-07-12 S008 / EV-006 — FAIL (10 pass / 2 fail COR correction e2e); see e2e-report.md"
@@ -1489,6 +1763,19 @@ stages:
       report:
         status: completed
     delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      started_at: "2026-07-19T13:40:01Z"
+      completed_at: "2026-07-19"
+      overall: pass
+      mode: full
+      report: docs/sessions/S014-package-publish-validation/reports/verification-report.md
+      note: "T6.1 PASS — verification-report.md; integration SKIPPED (docker pull); C→D passed D-S014-EV010-c-to-d-pass"
+      active_milestone: M6
+      active_task: T6.3
+      active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1515,6 +1802,9 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: "T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass"
     notes:
+    - "2026-07-19 S014/EV-010 C→D passed (D-S014-EV010-c-to-d-pass); T6.2 09-qa+10-e2e in_progress"
+    - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED (docker pull); C→D pending AskQuestion; git commit d3dbbfb recorded"
+    - "2026-07-19 S014/EV-010 M6 started — T6.1 08-verify-build in_progress"
     - "S001 / EV-001 — PASS 2026-06-22 (docs/sessions/S001-convert-send-buttons/reports/verification-report.md)"
     - "S004 / EV-004 — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
     - "H0c CORS 6/6 pass; connectivity artifacts present"
@@ -1565,6 +1855,24 @@ stages:
     session_id: S004-issue-555-feedback
     report: docs/sessions/S004-issue-555-feedback/reports/deploy-checklist.md
     delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: in_progress
+      started_at: "2026-07-19"
+      mode: adapted
+      overall: checklist_approved
+      note: >-
+        T6.4 awaiting_merge — checklist + rollback approved (D-S014-EV010-t64-deploy-A);
+        PR-EV-010=#726 open; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
+        stay in_progress until CI green + merge approval; next T6.5 13-deploy-smoke
+      report: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
+      pr_number: 726
+      pr_id: PR-EV-010
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: in_progress
     - id: S011-f7-operator-ui
       session_id: S011-f7-operator-ui
       evolve_cycle_id: EV-008
@@ -1575,6 +1883,11 @@ stages:
       note: "D-S011-EV008-deploy-check-A — checklist approved; PR-EV-008=#716 open (no merge/deploy); 13 pending on merge approval"
       report: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
     notes:
+    - >-
+      2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A (1A/2A);
+      PR-EV-010=#726 open https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726;
+      tip f1a8799; checklist_approved; 12 not completed; next after merge T6.5 13-deploy-smoke
+    - "2026-07-19 S014/EV-010 T6.4 12-verify-deploy in_progress (D-S014-EV010-t63-features); deploy-checklist.md pending; 12 not completed"
     - "2026-07-14 S011/EV-008 PR-EV-008=#716 open (retitled/updated evolve→main; NO merge, NO deploy); 12 done; 13 pending on merge approval; T6.4 in_progress"
     - "2026-07-14 S011/EV-008 D-S011-EV008-deploy-check-A — 12-verify-deploy completed (checklist approved); commit QA-001+reports; prepare PR-EV-008; 13 pending until merge approval; no merge/deploy yet"
     - "2026-07-14 S011/EV-008 12-verify-deploy — checklist written (deploy-checklist.md); awaiting user deploy-strategy approval (blocker: tip 44 commits ahead of main; QA-001 uncommitted); 12 remains in_progress; 13 not started"
@@ -1694,6 +2007,211 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S014-EV010-t64-deploy-A
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 12-verify-deploy
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: >
+    User 1A — approve deploy strategy + rollback; 2A — commit/push/open PR then pause
+    for merge approval (do not merge or start 13 until explicit approval).
+  summary: >
+    T6.4 deploy checklist strategy and rollback approved. Branch pushed (tip f1a8799);
+    PR-EV-010=#726 open at https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726.
+    12-verify-deploy / T6.4 remain in_progress (checklist_approved / awaiting_merge) until
+    CI green + user merge approval. PyPI Trusted Publisher still blocked for live tags.
+    Next after merge: T6.5 13-deploy-smoke.
+  status: confirmed
+- id: D-S014-EV010-t63-features
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 11-verify-impl
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: >
+    User "Approve all and proceed" — F11/F12/F13/F14 all approved (recommended A options);
+    hard publish / live tag / Render deferred to T6.4–T6.6 as planned.
+  summary: >
+    Per-Fn signoff at 11-verify-impl: F11 (validation stack perf + msgspec HTTP + XSD codegen),
+    F12 (publishable tac-validate), F13 (fast iwxxm-validate Rust + Schematron), and F14
+    (publish tac2iwxxm[+validate] + PyPI/release CI) all approved via recommended A options.
+    Hard publish gates, live tag smokes, and Render redeploy remain deferred to T6.4–T6.6.
+    11-verify-impl completed; handed off to T6.4 / 12-verify-deploy in_progress.
+  status: confirmed
+- id: D-S014-EV010-t63-journeys
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 11-verify-impl
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: >
+    User approved UJ-022 (T3/H4-H5 waived to 13), UJ-023 (CI-tier; live publish 12-13),
+    UJ-DEV-005 (local wheels; live PyPI 13). Recommended options A/A/A via "Proceed with this".
+  summary: >
+    Journey signoff AskQuestion (recommended A/A/A): UJ-022 approved with T3/H4–H5 waived
+    to 13-deploy-smoke; UJ-023 CI-tier with live publish deferred to 12–13; UJ-DEV-005 local
+    wheels with live PyPI deferred to 13. Feature Fn F11–F14 signoff still pending.
+    T6.3 / 11-verify-impl remains in_progress (stage not completed).
+  status: confirmed
+- id: D-S014-EV010-phase-d-to-t63
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 16-evolve
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: "User approved pass Phase D checkpoint → start T6.3 (11-verify-impl)"
+  summary: >
+    User chose Pass Phase D and start T6.3 (recommended). EV-010 checkpoints.phase_d
+    passed; handed off to T6.3 / 11-verify-impl in_progress. 09-qa and 10-e2e remain
+    completed. Orchestrator remains 16-evolve.
+  status: confirmed
+- id: D-S014-EV010-c-to-d-pass
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 16-evolve
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: "User chose A/option 1 at Phase C→D checkpoint: pass gate and start T6.2 (09-qa + 10-e2e)"
+  summary: >
+    User chose A at Phase C→D checkpoint: EV-010 gates.c_to_d and checkpoints.phase_c
+    passed; handed off to T6.2 with 09-qa + 10-e2e in parallel. Orchestrator remains
+    16-evolve.
+  status: confirmed
+- id: D-S014-T33-crates
+  date: "2026-07-18"
+  timestamp: "2026-07-18"
+  stage: 07-build
+  skill: 07-build
+  skill_id: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: "Approved T3.3 crate stack A — xmloxide"
+  summary: >-
+    Approved T3.3 crate stack A — xmloxide 0.4.x (MIT, default-features=false) for
+    well-formed + XSD + native ISO Schematron; PyO3 0.23; custom SchemaResolver over
+    vendor trees; validate_iwxxm prefers Rust when extension present else lxml
+    validate(). Rejected B (quick-xml+xsd-schema, no Schematron) and C (libxml,
+    system deps / no xslt2 SCH). Experiment: 520 IWXXM docs × 5-run mean; only A
+    runs native SCH.
+  status: confirmed
+- id: D-S014-EV010-user-52a
+  date: "2026-07-18"
+  timestamp: "2026-07-18"
+  stage: 07-build
+  skill: 07-build
+  skill_id: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: "Continue 07-build at M3 T3.1 after M2 complete (user 52:A)"
+  summary: "2026-07-18 S014/EV-010 user 52:A — continue 07-build at M3 T3.1 after M2 complete"
+  status: confirmed
+- id: D-S014-EV010-b-to-c-push
+  date: "2026-07-18"
+  timestamp: "2026-07-18"
+  stage: 16-evolve
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: "Pass B→C — push branch then start 07-build (option B)"
+  summary: >
+    User chose option B at Phase B→C checkpoint (50B): push
+    evolve/EV-010-package-publish-validation to origin first, then start
+    07-build at M1 T1.1. EV-010 checkpoints.phase_b and gates.b_to_c passed;
+    handed off to 07-build Phase C. Orchestrator remains 16-evolve.
+  status: confirmed
+- id: D-S014-EV010-e10-42
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 05-verify-tech
+  decision: >-
+    05 PASS E10-42..45 (44A–47A)
+- id: D-S014-EV010-e10-41
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 04-tech-plan
+  decision: >-
+    E10-41 execution plan approved 43A; E10-40 xsdata ADR-027
+- id: D-S014-EV010-e10-33
+  date: "2026-07-18"
+  category: Decision
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 03-plan-tooling
+  decision: >-
+    E10-33 tooling plan D — full rules/hooks + pypi_release_guard + pypi-release-checklist skill
+- id: D-S014-EV010-02-medium-aaa
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 02-verify-plan
+  decision: >-
+    S2.M1=A multipart Form + msgspec responses; S8.M1=A config/deploy PyPI notes;
+    S1.M1=A keep must-ship. 02 PASS.
+- id: D-S014-EV010-e10-24-27
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 01-requirements
+  decision: >-
+    E10-24=A soft/hard perf gates; E10-25=A OIDC PyPI; E10-26=A UJ-022/023/DEV-005;
+    E10-27=A write standing docs. 01-requirements deltas written.
+- id: D-S014-EV010-e10-19-23
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 01-requirements
+  decision: >-
+    E10-19=A 0.1.0 per-package tags; E10-20=A tac2iwxxm[validate]; E10-21=A tiered
+    domain depth; E10-22=A native Rust Schematron; E10-23=A XSD codegen + CI regen.
+- id: D-S014-EV010-e10-17-18
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 01-requirements
+  decision: >-
+    E10-17=A msgspec on convert/validate/lint/decode; pydantic auth/admin + OpenAPI.
+    E10-18=A thin pydantic aliases/export for OpenAPI; FE types updated same cycle.
+- id: D-S014-EV010-e10-15c
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 16-evolve
+  decision: >-
+    E10-15=C: move high-churn validation from pydantic to msgspec (faster);
+    breaking HTTP OK; include full Render 12–13 (amends E10-3/E10-13). Phase 0–1
+    complete; start 01-requirements.
+- id: D-S014-EV010-phase1-11to14
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 16-evolve
+  decision: >-
+    E10-11=B must-ship everything; E10-12=A F11–F14; E10-13=A routing skip 13;
+    E10-14=A ADR-026 msgspec internals; E10-15 pending (user chose explain).
+- id: D-S014-EV010-intake-e10
+  date: "2026-07-18"
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  skill: 16-evolve
+  decision: >-
+    Phase 0 intake E10-1..10: one cycle measure-first #703 then packages #698→#699→#693;
+    PyPI names kept; tac2iwxxm[validate]; schema bundle; Rust Schematron design+impl-if-time;
+    msgspec deepen backend; aggressive domain rules; IWXXM codegen prototype; PyPI+tags CI;
+    skip Render 13. Fn F11–F14 + routing + must/stretch pending approval.
 - id: D-S013-EV009-close
   date: "2026-07-18"
   stage: 16-evolve
@@ -3160,6 +3678,225 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+  kind: stage-report
+  stage: 11-verify-impl
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "F11–F14 + journeys approved (D-S014-EV010-t63-features / D-S014-EV010-t63-journeys)"
+- path: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+  kind: deploy-checklist
+  stage: 12-verify-deploy
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: pending_signoff
+  note: >-
+    Checklist drafted 2026-07-19 (in_progress/pending_signoff); PyPI Trusted Publisher
+    BLOCKED for live tags; Render path ready pending PR + user signoff; H0c 14 passed;
+    API health 200; no PR yet; branch ahead of origin; stage 12 remains in_progress
+- path: docs/sessions/S014-package-publish-validation/reports/qa-report.md
+  kind: qa-report
+  stage: 09-qa
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "PASS w/ advisory QA-S014-001 (H4–H5→13)"
+- path: docs/sessions/S014-package-publish-validation/reports/e2e-report.md
+  kind: e2e-report
+  stage: 10-e2e
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "UJ-022/023/DEV-005 T0+local API PASS; T3/H6′→13"
+- path: docs/sessions/S014-package-publish-validation/reports/verification-report.md
+  kind: verification-report
+  stage: 08-verify-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T6.1 PASS — integration SKIPPED (docker pull); C→D pending AskQuestion"
+- path: docs/sessions/S014-package-publish-validation/reports/verification-report-m5.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "M5 verification report (T5.1–T5.6 msgspec HTTP + FE types)"
+- path: docs/sessions/S014-package-publish-validation/reports/t56-cors-after-msgspec.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.6 H0c CORS re-check after msgspec HTTP (93a67f2)"
+- path: docs/sessions/S014-package-publish-validation/reports/t55-frontend-msgspec-types.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.5 FE types aligned with msgspec HTTP responses (2abd4a0)"
+- path: docs/sessions/S014-package-publish-validation/reports/t54-vitest-msgspec-shape-parity.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.4 Vitest msgspec HTTP response shape parity (4202392)"
+- path: docs/sessions/S014-package-publish-validation/reports/t53-http-msgspec-soft-benches.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.3 soft HTTP msgspec bench vs pydantic map E10-35 (59d89af)"
+- path: docs/sessions/S014-package-publish-validation/reports/t52-msgspec-http-helper.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.2 msgspec JSON response helper + high-churn wiring (6186888)"
+- path: docs/sessions/S014-package-publish-validation/reports/t51-msgspec-http-parity.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.1 msgspec high-churn HTTP parity TC-F11-001 (54a7180)"
+- path: docs/sessions/S014-package-publish-validation/reports/t39-iwxxm-validate-cli.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "T3.9 optional iwxxm-validate CLI + smoke tests (b044871)"
+- path: docs/sessions/S014-package-publish-validation/reports/t38-validate-rust-sdk.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "T3.8 bind /validate to validate_iwxxm and skip duplicate XSD/SCH (8af040b)"
+- path: docs/sessions/S014-package-publish-validation/reports/t38a-validate-rust-sdk.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "T3.8a assert /validate binds validate_iwxxm without double XSD/SCH (f95fe7d)"
+- path: docs/sessions/S014-package-publish-validation/reports/t37-committed-xsd-models.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "T3.7 committed xsdata IWXXM pydantic models + adapt helpers (98e909a)"
+- path: docs/sessions/S014-package-publish-validation/reports/t37a-codegen-regen-smoke.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "T3.7a codegen regen smoke — importable pydantic models (b1e53c9)"
+- path: docs/sessions/S014-package-publish-validation/reports/layer-cost-matrix.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "F11 layer-cost p50/p95 matrix (T1.2 / 3ad66cd)"
+- path: docs/sessions/S014-package-publish-validation/reports/perf-baselines.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "F11 hard-gate absolute baselines E10-35 (T1.3 / 70d157b)"
+- path: docs/sessions/S014-package-publish-validation/reports/perf-baselines.yaml
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "F11 hard-gate absolute baselines E10-35 YAML (T1.3 / 70d157b)"
+- path: docs/sessions/S014-package-publish-validation/reports/06-tech-tooling.md
+  kind: report
+  stage: 06-tech-tooling
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "49A — rust/maturin/xsdata rule, Makefile stubs, uv deps, hook"
+- path: docs/sessions/S014-package-publish-validation/reports/execution-plan.md
+  kind: execution-plan
+  stage: 04-tech-plan
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "M1–M6 approved (43A)"
+- path: docs/adr/ADR-027-xsdata-codegen.md
+  kind: adr
+  stage: 04-tech-plan
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "E10-40 xsdata codegen"
+- path: docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
+  kind: report
+  stage: 03-plan-tooling
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-18"
+  updated_at: "2026-07-18"
+  status: completed
+  note: "E10-33 tooling plan D — PyPI/msgspec rules + hooks + pypi-release-checklist"
 - path: docs/sessions/S011-f7-operator-ui/reports/pr-review.md
   kind: stage-report
   session_id: S011-f7-operator-ui
@@ -3825,6 +4562,341 @@ artifacts:
   status: complete
 
 evolve_cycles:
+- id: EV-010
+  session_id: S014-package-publish-validation
+  cycle_type: feature
+  feature_ids: [F11, F12, F13, F14]
+  title: "Package publish + validation stack (#703/#698/#699/#693)"
+  status: in_progress
+  started: "2026-07-18"
+  completed: null
+  scope_summary: |
+    Phase 0–1 locked 2026-07-18 E10-1..15. Must-ship ALL (11B). F11–F14. Routing 01–13
+    (PyPI + Render). ADR-026: msgspec over pydantic for high-churn validation (breaking OK).
+    E10-15=C supersedes earlier skip-13.
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 01-requirements
+    - 02-verify-plan
+    - 03-plan-tooling
+    - 04-tech-plan
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    skipped_stages: []
+  current_stage: 12-verify-deploy  # T6.4 awaiting_merge; PR-EV-010=#726 open
+  active_milestone: M6
+  active_task: T6.4
+  active_task_status: in_progress
+  pr_id: PR-EV-010
+  pr_number: 726
+  pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
+  pr_status: open
+  stages:
+    00-context:
+      status: in_progress
+      started: "2026-07-18"
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/session-brief.md
+      - docs/sessions/S014-package-publish-validation/routing-plan.md
+      - docs/context/package-publish-validation.md
+      - docs/decisions/evolve-decisions.md
+    03-plan-tooling:
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      note: Delta D — PyPI/msgspec rules + hooks + pypi-release-checklist skill
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
+    04-tech-plan:
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      note: M1–M6 execution plan approved (43A); ADR-027 xsdata
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/execution-plan.md
+      - docs/adr/ADR-027-xsdata-codegen.md
+    05-verify-tech:
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      overall: pass
+      note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
+    06-tech-tooling:
+      status: completed
+      mode: delta
+      started: '2026-07-18'
+      completed: '2026-07-18'
+      note: 49A — rust/maturin/xsdata rule, Makefile stubs, uv deps, hook
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/06-tech-tooling.md
+    07-build:
+      status: in_progress
+      mode: full
+      started: '2026-07-18'
+      completed: null
+      note: "M6 T6.4 awaiting_merge; checklist approved (D-S014-EV010-t64-deploy-A); PR-EV-010=#726 open; tip f1a8799; next after merge T6.5 13-deploy-smoke."
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: in_progress
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/t51-msgspec-http-parity.md
+      - docs/sessions/S014-package-publish-validation/reports/t52-msgspec-http-helper.md
+      - docs/sessions/S014-package-publish-validation/reports/t53-http-msgspec-soft-benches.md
+      - docs/sessions/S014-package-publish-validation/reports/t54-vitest-msgspec-shape-parity.md
+      - docs/sessions/S014-package-publish-validation/reports/t55-frontend-msgspec-types.md
+      - docs/sessions/S014-package-publish-validation/reports/t56-cors-after-msgspec.md
+      - docs/sessions/S014-package-publish-validation/reports/verification-report-m5.md
+    08-verify-build:
+      status: completed
+      mode: full
+      started: '2026-07-19'
+      started_at: '2026-07-19T13:40:01Z'
+      completed: '2026-07-19'
+      overall: pass
+      report: docs/sessions/S014-package-publish-validation/reports/verification-report.md
+      note: "T6.1 PASS — verification-report.md; integration SKIPPED (docker pull); C→D passed D-S014-EV010-c-to-d-pass"
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: in_progress
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/verification-report.md
+    09-qa:
+      status: completed
+      mode: full
+      started: '2026-07-19'
+      completed: '2026-07-19'
+      overall: pass_with_advisories
+      report: docs/sessions/S014-package-publish-validation/reports/qa-report.md
+      note: "PASS w/ advisory QA-S014-001 (H4–H5→13); qa-report.md"
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: in_progress
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/qa-report.md
+    10-e2e:
+      status: completed
+      mode: delta
+      started: '2026-07-19'
+      completed: '2026-07-19'
+      overall: pass
+      report: docs/sessions/S014-package-publish-validation/reports/e2e-report.md
+      note: "UJ-022/023/DEV-005 T0+local API PASS; T3/H6′→13; e2e-report.md"
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: in_progress
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/e2e-report.md
+    11-verify-impl:
+      status: completed
+      mode: full
+      started: '2026-07-19'
+      started_at: '2026-07-19T16:10:00Z'
+      completed: '2026-07-19'
+      overall: approved
+      note: "verify-impl.md F11–F14 + journeys approved (D-S014-EV010-t63-features / D-S014-EV010-t63-journeys); hard publish/live tag/Render deferred to T6.4–T6.6"
+      report: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+      active_milestone: M6
+      active_task: T6.3
+      active_task_status: completed
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+    12-verify-deploy:
+      status: in_progress
+      mode: adapted
+      started: '2026-07-19'
+      completed: null
+      overall: checklist_approved
+      note: >-
+        T6.4 awaiting_merge — checklist + rollback approved (D-S014-EV010-t64-deploy-A 1A/2A);
+        PR-EV-010=#726 open; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
+        stay in_progress until CI green + merge approval; next T6.5 13-deploy-smoke
+      report: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
+      pr_number: 726
+      pr_id: PR-EV-010
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: in_progress
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+  gates:
+    a_to_b: pending
+    b_to_c: passed
+    c_to_d: passed  # D-S014-EV010-c-to-d-pass 2026-07-19
+    deploy: pending  # awaiting PR #726 merge approval
+  checkpoints:
+    phase_a: pending
+    phase_b:
+      status: passed
+      completed: '2026-07-18'
+      note: "04–06 done; B→C passed (D-S014-EV010-b-to-c-push / 50B)"
+    phase_c:
+      status: passed
+      completed: '2026-07-19'
+      note: "C→D passed (D-S014-EV010-c-to-d-pass / user A); T6.2 09+10 completed"
+    phase_d:
+      status: passed
+      completed: "2026-07-19"
+      note: "User approved Pass Phase D → start T6.3 (D-S014-EV010-phase-d-to-t63)"
+    deploy: pending  # checklist approved; PR open; pause for merge
+  notes:
+  - >-
+    2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A (1A checklist+rollback;
+    2A commit/push/open PR then pause); PR-EV-010=#726 open
+    https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726; tip f1a8799; Trusted
+    Publisher blocked for tags; 12 not completed; next after merge T6.5 13-deploy-smoke
+  - "2026-07-19 S014/EV-010 T6.3/11-verify-impl completed (D-S014-EV010-t63-features); T6.4 12-verify-deploy in_progress; deploy-checklist.md pending"
+  - "2026-07-19 S014/EV-010 journey signoff complete (D-S014-EV010-t63-journeys); next Fn F11–F14 approval batch; T6.3/11-verify-impl remains in_progress"
+  - "2026-07-19 S014/EV-010 Phase D passed (D-S014-EV010-phase-d-to-t63); T6.3 11-verify-impl in_progress"
+  - "2026-07-19 S014/EV-010 T6.2 PASS (09+10); next T6.3 11-verify-impl after Phase D checkpoint"
+  - "2026-07-19 S014/EV-010 C→D passed (user A); T6.2 09-qa + 10-e2e in_progress"
+  - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED; next T6.2 after C→D; git commit d3dbbfb recorded"
+  - "2026-07-19 S014/EV-010 M6 started — T6.1 08-verify-build in_progress"
+  - "2026-07-19 S014/EV-010 M5 complete (T5.1–T5.6; 59d89af/4202392/2abd4a0/93a67f2); active_milestone M6; active_task T6.1 pending"
+  - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
+  - "2026-07-19 S014/EV-010 M5 started — T5.1 in progress (msgspec HTTP API tests)"
+  - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
+  - "2026-07-19 S014/EV-010 T4.2 completed (24ad415); T4.3 in_progress"
+  - "2026-07-19 S014/EV-010 T4.1 completed (c48c692); T4.2 in_progress"
+  - "2026-07-19 S014/EV-010 M4 T4.1 in_progress — clean-venv convert + [validate] extra; M3 gate deferred per user continue"
+  - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
+  - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
+  - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
+  - "M3 T3.7 complete (98e909a) — xsdata IWXXM pydantic models + adapt helpers; next T3.8a"
+  - "M3 T3.7a complete (b1e53c9) — codegen regen smoke for importable pydantic models; next T3.7"
+  - "M3 T3.6 complete (3056e4c) — xsdata IWXXM XSD codegen pipeline + vendor-sync CI hook; next T3.7a"
+  - "M3 T3.5 complete (a57001b) — soft native vs lxml benches / 0.85x hard-gate path; next T3.6"
+  - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
+  - "M3 T3.3 complete (1c3e8fe) — xmloxide + validate_iwxxm; next T3.4"
+  - "2026-07-18 S014/EV-010 T3.3 in progress — implementing xmloxide path after stack decision A"
+  - "2026-07-18 S014/EV-010 T3.2 complete — F13 parity suite stubs vs lxml golden corpus (947020b); active_task T3.3 pending"
+  - "2026-07-18 S014/EV-010 M3 T3.1–T3.2 complete (1770086 / 947020b); next T3.3 Rust validate_iwxxm"
+  - "2026-07-18 S014/EV-010 T3.1 complete — iwxxm-validate rust/maturin scaffold; hatch pure path retained"
+  - "2026-07-18 S014/EV-010 user 52:A — continue 07-build at M3 T3.1 after M2 complete"
+  - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
+  - "2026-07-18 M1 complete (T1.1–T1.3); SHAs 9f9f67b/3ad66cd/70d157b + chore 59a65bd; next M2 T2.1; ci-cd.yml only main/dev — no GHA on push; local format-check + perf green"
+  - "2026-07-18 D-S014-EV010-b-to-c-push — B→C passed (option B); push evolve/EV-010 to origin about to happen; Phase C starting at M1 T1.1"
+  adrs:
+  - docs/adr/ADR-026-msgspec-http-openapi.md
+  - docs/adr/ADR-027-xsdata-codegen.md
+  artifacts:
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  - path: docs/sessions/S014-package-publish-validation/reports/evolve-summary.md
+    status: pending
+  - path: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
+    kind: stage-report
+    stage: 11-verify-impl
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "F11–F14 + journeys approved (D-S014-EV010-t63-features)"
+  - path: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+    kind: deploy-checklist
+    stage: 12-verify-deploy
+    session_id: S014-package-publish-validation
+    status: checklist_approved
+    note: >-
+      D-S014-EV010-t64-deploy-A (1A strategy+rollback; 2A PR then pause). PR-EV-010=#726
+      open awaiting_merge; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
+      stage 12 remains in_progress until CI green + merge approval; next T6.5 13-deploy-smoke
+  - path: docs/sessions/S014-package-publish-validation/reports/verification-report.md
+    kind: verification-report
+    stage: 08-verify-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T6.1 PASS — integration SKIPPED (docker pull); C→D pending"
+  - path: docs/sessions/S014-package-publish-validation/reports/qa-report.md
+    kind: qa-report
+    stage: 09-qa
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "PASS w/ advisory QA-S014-001 (H4–H5→13)"
+  - path: docs/sessions/S014-package-publish-validation/reports/e2e-report.md
+    kind: e2e-report
+    stage: 10-e2e
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "UJ-022/023/DEV-005 T0+local API PASS; T3/H6′→13"
+  - path: docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
+    kind: report
+    stage: 03-plan-tooling
+    session_id: S014-package-publish-validation
+    status: completed
+  - path: docs/sessions/S014-package-publish-validation/reports/execution-plan.md
+    kind: execution-plan
+    stage: 04-tech-plan
+    session_id: S014-package-publish-validation
+    status: completed
+  - path: docs/adr/ADR-027-xsdata-codegen.md
+    kind: adr
+    stage: 04-tech-plan
+    session_id: S014-package-publish-validation
+    status: completed
+  - path: docs/sessions/S014-package-publish-validation/reports/06-tech-tooling.md
+    kind: report
+    stage: 06-tech-tooling
+    session_id: S014-package-publish-validation
+    status: completed
+  - path: docs/sessions/S014-package-publish-validation/reports/layer-cost-matrix.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "F11 layer-cost p50/p95 matrix (T1.2)"
+  - path: docs/sessions/S014-package-publish-validation/reports/perf-baselines.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "F11 hard-gate absolute baselines E10-35 (T1.3)"
+  - path: docs/sessions/S014-package-publish-validation/reports/perf-baselines.yaml
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "F11 hard-gate absolute baselines E10-35 machine-readable (T1.3)"
+  - path: docs/sessions/S014-package-publish-validation/reports/t37a-codegen-regen-smoke.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T3.7a codegen regen smoke — importable pydantic models (b1e53c9)"
+  - path: docs/sessions/S014-package-publish-validation/reports/t37-committed-xsd-models.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T3.7 committed xsdata IWXXM pydantic models + adapt helpers (98e909a)"
+  - path: docs/sessions/S014-package-publish-validation/reports/t38a-validate-rust-sdk.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T3.8a assert /validate binds validate_iwxxm without double XSD/SCH (f95fe7d)"
+  - path: docs/sessions/S014-package-publish-validation/reports/t38-validate-rust-sdk.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T3.8 bind /validate to validate_iwxxm and skip duplicate XSD/SCH (8af040b)"
+  - path: docs/sessions/S014-package-publish-validation/reports/t39-iwxxm-validate-cli.md
+    kind: report
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T3.9 optional iwxxm-validate CLI + smoke tests (b044871)"
+  issues: []
+
 - id: EV-001
   session_id: S001-convert-send-buttons
   cycle_type: feature
@@ -4876,9 +5948,9 @@ evolve_cycles:
   cycle_type: feature
   feature_ids: [F9, F10]
   title: "Value-aware live decode + plain-language summary (F9); workbench IWXXM preview pane + lint UX clarity (F10)"
-  status: in_progress
+  status: completed
   started: "2026-07-16"
-  completed:
+  completed: "2026-07-18"
   scope_summary: |
     User feedback on F7 workbench (post-#716 merge). In one cycle:
     - F9 — Value-aware decode segments for all 7 TAC products (METAR/SPECI/TAF rich;
@@ -5035,8 +6107,35 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: evolve/S013-live-decode-preview-ux
+  current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - >-
+    2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A; commit f1a8799;
+    PR-EV-010=#726 open; tip f1a8799 pushed; pause for CI + merge; next T6.5 13-deploy-smoke
+  - "2026-07-19 S014/EV-010 T6.2 PASS (09+10); next T6.3 after Phase D checkpoint"
+  - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED; C→D pending; git commit d3dbbfb recorded"
+  - "2026-07-19 S014/EV-010 M6 started — T6.1 08-verify-build in_progress"
+  - "2026-07-19 S014/EV-010 M5 complete (T5.1–T5.6; 59d89af/4202392/2abd4a0/93a67f2); active_milestone M6; active_task T6.1 pending"
+  - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
+  - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
+  - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
+  - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
+  - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
+  - "M3 T3.7 complete (98e909a) — xsdata IWXXM pydantic models + adapt helpers; next T3.8a"
+  - "M3 T3.7a complete (b1e53c9) — codegen regen smoke for importable pydantic models; next T3.7"
+  - "M3 T3.6 complete (3056e4c) — xsdata IWXXM XSD codegen pipeline + vendor-sync CI hook; next T3.7a"
+  - "M3 T3.5 complete (a57001b) — soft native vs lxml benches / 0.85x hard-gate path; next T3.6"
+  - "M3 T3.4 complete (b679f69) — bundled runtime schema subset into iwxxm-validate wheel (E10-34/E10-6); next T3.5"
+  - "M3 T3.3 complete (1c3e8fe) — xmloxide + validate_iwxxm; next T3.4"
+  - "2026-07-18 S014/EV-010 T3.2 complete — F13 parity suite stubs vs lxml golden corpus (947020b); active_task T3.3 pending"
+  - "2026-07-18 S014/EV-010 M3 T3.1–T3.2 complete (1770086 / 947020b); next T3.3 Rust validate_iwxxm"
+  - "2026-07-18 S014/EV-010 T3.1 complete — iwxxm-validate rust/maturin scaffold; hatch pure path retained"
+  - "2026-07-18 S014/EV-010 M2 complete (T2.1–T2.5 through 866ca20); advance to M3 T3.1 in_progress (iwxxm-validate Rust/maturin scaffold)"
+  - "2026-07-18 S014/EV-010 M1 complete — commits 59a65bd/9f9f67b/3ad66cd/70d157b; next M2 T2.1; ci-cd.yml only triggers on main/dev — push alone did not run GHA; local format-check + perf tests green"
+  - "2026-07-18 D-S014-EV010-b-to-c-push — B→C passed (50B); push to origin about to happen; Phase C 07-build M1 T1.1 starting"
+  - "2026-07-18 S014/EV-010 — 6c3fd7a 06-tech-tooling done (49A); phase_b passed; current_stage=07-build pending B→C"
+  - "2026-07-18 S014/EV-010 — 5dbfeb9 Phase B commit; 06-tech-tooling in_progress"
+  - "2026-07-18 S014/EV-010 — Phase A commits 1711e75 + 0717f13; 04-tech-plan in_progress on evolve/EV-010-package-publish-validation"
   - "2026-07-18 S013/EV-009 closed — user approved deploy results (option 1); active_session cleared; F9/F10 Done (#723)"
   - "2026-07-17 S013/EV-009 T4.5 done — #723 merged 4660602; Render live; H1/H0c/H3/H4/H5 + H6' UJ-020/021 PASS; EV-009 completed; awaiting session close"
   - "2026-07-17 S013/EV-009 T4.4 done — checklist + merge/deploy approved (D-S013-EV009-deploy-check-A); deploy gate passed; #723 CI green; current_stage=13-deploy-smoke (T4.5)"
@@ -5070,6 +6169,18 @@ git_history:
   - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+  - name: evolve/EV-010-package-publish-validation
+    purpose: "EV-010 / S014 package publish + validation stack (F11–F14)"
+    base: main
+    status: active
+    created_at: "2026-07-18"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    pr_id: PR-EV-010
+    pr_number: 726
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
+    tip_sha: f1a8799
+    note: "PR-EV-010=#726 open (evolve→main); pause for CI green + merge approval; NO merge/deploy yet"
   - name: fix/S012-empty-bearer-lint-tac
     purpose: "Empty Bearer auth on lint-tac/decode-tac + lint UX issue details"
     base: main
@@ -5278,6 +6389,354 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: f1a879980a0472fdca3f0d926374ae9a0dd9e9d4
+    short: f1a8799
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T6.3] docs: 11-verify-impl + 12-verify-deploy checklist (EV-010)"
+    stage: "12-verify-deploy"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-19T22:31:09Z"
+    note: "Also covers 11-verify-impl report; PR-EV-010=#726 opened from this tip"
+  - sha: 1b13059d7dbf939518c6b5f9581d14b9970de0e8
+    short: 1b13059
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T6.2] docs: 09-qa + 10-e2e reports for F11–F14 (C→D)"
+    stage: "09-qa"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-19T15:50:00Z"
+  - sha: d3dbbfb9dccbd35908b092d951d6658319b5fe0e
+    short: d3dbbfb
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T6.1] fix: 08-verify-build — xsdata lint exclude + msgspec/F11.4 tests"
+    stage: "08-verify-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 8
+    timestamp: "2026-07-19T14:05:00Z"
+  - sha: 93a67f2ff68e9591d27fffc5a3c4ae125288ae82
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.6] test: H0c CORS re-check after msgspec HTTP"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-19T13:35:21Z"
+  - sha: 2abd4a02b789eb60879c206e18f862996d7cb988
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.5] feat: align FE types with msgspec HTTP responses"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 2
+    timestamp: "2026-07-19T13:33:41Z"
+  - sha: 420239227d0d05a6d91f7d78d0cd9e2e3de9c170
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.4] test: Vitest msgspec HTTP response shape parity"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 2
+    timestamp: "2026-07-19T13:33:41Z"
+  - sha: 59d89af2357a7ac8a3e1bef7a473d1cb73fd81db
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.3] test: soft HTTP msgspec bench vs pydantic map (E10-35)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 5
+    timestamp: "2026-07-19T13:30:50Z"
+  - sha: 618688877dd105a23e625d2deb70fc8e7a5859ce
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.2] feat: msgspec JSON response helper for high-churn routes"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 7
+    timestamp: "2026-07-19T13:28:17Z"
+  - sha: 54a7180e7edb52fdcdd8c5b4e6d19fa6bed343d1
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.1] test: msgspec high-churn HTTP parity (TC-F11-001)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 2
+    timestamp: "2026-07-19T13:27:51Z"
+  - sha: a5a0fef2a4ef13c8463bc58dfaddf57cacc376dc
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T4.5] ci: add manylinux/macOS/Windows maturin publish jobs"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 3
+    timestamp: "2026-07-19T13:11:49Z"
+  - sha: 4970271222a51e44274049df49fbabcf645608dd
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T4.4] test: PyPI publish workflow OIDC checklist gate"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 3
+    timestamp: "2026-07-19T13:09:42Z"
+  - sha: ab0c5077bb133ffe5ec5372ae51f1371c8325b11
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T4.3] ci: add PyPI OIDC matrix publish workflow"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 2
+    timestamp: "2026-07-19T13:08:12Z"
+  - sha: 24ad415
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T4.2] feat: add tac2iwxxm[validate] extra deps and README"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-19"
+  - sha: c48c692
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T4.1] test: clean-venv convert + validate extra smoke (TC-F14-002)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 2
+    timestamp: "2026-07-19"
+  - sha: 47dbd18d1fe44a97cbde8afcc41a3193ef3ab6e2
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: workflow-state after T3.9 — M3 complete"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-19T00:12:22Z"
+  - sha: b044871ad6593b6efbfea14b6a2866dab5a7481b
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.9] test: add optional iwxxm-validate CLI and smoke tests"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 6
+    timestamp: "2026-07-19T00:11:16Z"
+  - sha: 4763d34210c7ec38339b4c2f53822e95648327ba
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: record workflow-state chore SHA after T3.8"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T23:56:15Z"
+  - sha: 01cc7ac4dcdc4d0dc4f701af474d6ab59d9535a9
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: workflow-state after T3.8 — next T3.9"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T23:56:15Z"
+  - sha: 8af040b048856c8092a5ac2cb946385dc2302cba
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.8] feat: bind /validate to validate_iwxxm and skip duplicate XSD/SCH"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-18T23:54:07Z"
+  - sha: f95fe7df049c6da8f0d23baf2550d7d3997c716a
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.8a] test: assert /validate binds validate_iwxxm without double XSD/SCH"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 3
+    timestamp: "2026-07-18T23:53:12Z"
+  - sha: 85090b5e19e5b274754c61d71360d13a1b35d7f8
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: workflow-state after T3.7 — next T3.8a"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T23:50:54Z"
+  - sha: 98e909ac828c9bddb0a39017d25881fa2ce97a63
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.7] feat: commit xsdata IWXXM pydantic models and adapt helpers"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 221
+    timestamp: "2026-07-18T23:49:13Z"
+  - sha: 9b50356c38406debb5bbf8d347ae8190495fa829
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: workflow-state after T3.7a — next T3.7"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T23:40:44Z"
+  - sha: b1e53c9a10d1ba86c131cb1150f281db362e4e7d
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.7a] test: codegen regen smoke for importable pydantic models"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: scripts/codegen/iwxxm_xsd.py, tests/codegen/test_tc_f11_codegen_regen_smoke.py, docs/sessions/S014-package-publish-validation/reports/t37a-codegen-regen-smoke.md, docs/sessions/S014-package-publish-validation/reports/execution-plan.md
+    timestamp: "2026-07-18T23:35:51Z"
+  - sha: 3056e4cb7e793a3e092b6391806f7e9538f924fa
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.6] config: xsdata IWXXM XSD codegen pipeline and vendor-sync hook"
+    stage: "07-build / 16-evolve"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 12
+    timestamp: "2026-07-18T23:23:41Z"
+  - sha: a57001b3cf6effeb544ab7349c5e59c43a3fb3bf
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.5] test: soft native vs lxml benches and 0.85x hard-gate path"
+    stage: "07-build / 16-evolve"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 6
+    timestamp: "2026-07-18T22:50:32Z"
+  - sha: b679f698203a9d908a0517ab9cf5473faaa26403
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.4] config: bundle runtime schema subset into iwxxm-validate wheel"
+    stage: "07-build / 16-evolve"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 12
+    timestamp: "2026-07-18T22:42:44Z"
+  - sha: 1c3e8fe2bf92f7985a9f62bdb419fab3a409192c
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.3] feat: xmloxide native validate_iwxxm (D-S014-T33-crates)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 12
+    timestamp: "2026-07-18T22:28:13Z"
+  - sha: 947020b2b49fb2c818f2f547e09e047be2fc6f8b
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.2] test: add F13 parity suite stubs vs lxml golden corpus"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 3
+    timestamp: "2026-07-18T21:31:50Z"
+  - sha: 1770086
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T3.1] config: scaffold iwxxm-validate rust + maturin"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: packages/iwxxm-validate/rust/*, native.py, test_native_scaffold.py, pyproject.toml, README, Makefile, .gitignore, execution-plan, workflow-state
+    timestamp: "2026-07-18T21:28:00Z"
+  - sha: 866ca20
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T2.5] test: clean-venv wheel install smoke for tac-validate"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-18T15:11:11Z"
+  - sha: 1deb7f3
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T2.4] feat: add tac-validate CLI console script and README"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 5
+    timestamp: "2026-07-18T15:09:49Z"
+  - sha: c3e176e
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T2.3] test: add tac-validate CLI smoke tests (xfail until T2.4)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T15:07:53Z"
+  - sha: b52942b
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T2.2] feat: encode F12 product checklist and template-gate rules"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 6
+    timestamp: "2026-07-18T15:06:55Z"
+  - sha: 000db19
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T2.1] test: add F12 negative fixture pack and diagnostic xfails"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 35
+    timestamp: "2026-07-18T15:04:55Z"
+  - sha: ceb6d4a
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: record M1 complete and advance EV-010 to M2 T2.1"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 1
+    timestamp: "2026-07-18T15:00:17Z"
+  - sha: 70d157b
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T1.3] config: record F11 hard-gate absolute baselines (E10-35)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    files_changed: 5
+    timestamp: "2026-07-18T14:58:00Z"
+  - sha: 3ad66cd
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T1.2] feat: implement layer-cost harness and commit p50/p95 matrix"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    files_changed: 4
+    timestamp: "2026-07-18T14:56:35Z"
+  - sha: 9f9f67b
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T1.1] test: add F11 layer-cost bench harness stubs (TC-F11-002)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    files_changed: 5
+    timestamp: "2026-07-18T14:54:49Z"
+  - sha: 59a65bd
+    branch: evolve/EV-010-package-publish-validation
+    message: "chore: record B→C pass (50B) and start 07-build M1 T1.1"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    files_changed: 2
+    timestamp: "2026-07-18T14:52:46Z"
+  - sha: 6c3fd7a
+    branch: evolve/EV-010-package-publish-validation
+    message: "[EV-010] chore(skills): Rust/maturin/xsdata tech tooling (06)"
+    stage: "06-tech-tooling"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    timestamp: "2026-07-18"
+  - sha: 5dbfeb9
+    branch: evolve/EV-010-package-publish-validation
+    message: "[EV-010] docs: approve F11–F14 execution plan + 05 tech audit"
+    stage: "05-verify-tech"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    timestamp: "2026-07-18"
+  - sha: 0717f13
+    branch: evolve/EV-010-package-publish-validation
+    message: "[EV-010] chore(skills): PyPI/msgspec plan tooling (03)"
+    stage: "03-plan-tooling"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    timestamp: "2026-07-18"
+  - sha: 1711e75
+    branch: evolve/EV-010-package-publish-validation
+    message: "[EV-010] docs: F11–F14 product deltas + ADR-026 (S014 Phase A)"
+    stage: "03-plan-tooling"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    timestamp: "2026-07-18"
   - sha: b6c446b
     branch: main
     message: "chore: close S013/EV-009 — F9/F10 shipped (#723)"

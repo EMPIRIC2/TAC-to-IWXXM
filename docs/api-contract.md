@@ -1,8 +1,8 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-13 (S011 / EV-008 — F7 decode/spans/preview/unified sessions)
-> **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API (decode, spans, soft-preview, BYO)
+> **Last updated**: 2026-07-18 (S014 / EV-010 — msgspec high-churn HTTP + PyPI packages)
+> **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026)
 
 ## Base URLs
 
@@ -23,6 +23,18 @@ Frontend uses single API base for `/api/v1/*` and `/auth/*`. **`/admin/*` remove
 | Frontend | frontend:5173/8000 | apps/frontend |
 
 ## Endpoints
+
+### Serialization boundary (S014 / ADR-026)
+
+| Surface | Runtime | OpenAPI |
+|---------|---------|---------|
+| High-churn **responses** (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`) | **msgspec** encode (+ optional Struct validate after assemble) | Thin **pydantic** aliases / JSON Schema export — **no** dual runtime validation |
+| High-churn **requests** (same routes) | **multipart/form-data** via FastAPI `Form`/`File` (unchanged intake) | Form fields documented as today |
+| `/auth/*`, work-sessions, airports, ICAO OPMET stats | **pydantic** | pydantic (unchanged) |
+
+Breaking JSON **response** field changes on high-churn routes are allowed in EV-010; frontend
+types update in the same cycle. Prefer additive changes when possible. msgspec does **not**
+JSON-decode the raw multipart body (02 S2.M1).
 
 ### Health
 
@@ -482,5 +494,6 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 - S011 / EV-008 (2026-07-13): admin removed; decode-tac; spans; convert `preview`; unified
   work-sessions `product` (ADR-020)
 - S013 / EV-009 (2026-07-16): decode-tac additive `summary` + value-aware explanations (F9);
-  lint severity enum `error|warning|info`; `MISSING_TERMINATOR` → `info` + `add_terminator` fix
-  (F10; ADR-025)
+  lint-tac `info` severity + MISSING_TERMINATOR advisory (F10); ADR-025
+- S014 / EV-010 (2026-07-18): high-churn routes msgspec runtime (ADR-026); pydantic OpenAPI
+  aliases; PyPI packages `tac-validate` / `iwxxm-validate` / `tac2iwxxm` `0.1.0` (F12–F14)

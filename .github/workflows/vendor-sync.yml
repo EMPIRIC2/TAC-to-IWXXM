@@ -46,6 +46,10 @@ jobs:
       - name: Run vendor integrity tests (TC-M002)
         run: uv run pytest tests/vendor -v
 
+      # ADR-027 / E10-23 / E10-40 — regenerate pydantic models when pins change (T3.6).
+      - name: Regenerate IWXXM XSD pydantic models (xsdata)
+        run: make codegen-iwxxm-xsd
+
       - name: Create pull request
         uses: peter-evans/create-pull-request@v7
         with:
@@ -57,6 +61,7 @@ jobs:
 
             - Updates `vendor/manifest.json` pins from wmo-im latest releases
             - Refreshes `vendor/schemas/*` read-only snapshots
+            - Regenerates `metar_shared.iwxxm_xsd` via xsdata (ADR-027 / T3.6)
             - TC-M002 integrity tests included in workflow
 
             **GIFTs excluded** — manual merges only (ADR-004).

@@ -4,7 +4,7 @@
 > **Date**: 2026-07-12  
 > **Deciders**: User (S008 04-tech-plan Q1–Q2, Q6, Q9, Q11)  
 > **Stage**: 04-tech-plan  
-> **Related**: ADR-015, dependency-inventory.md  
+> **Related**: ADR-015, dependency-inventory.md; **amended by ADR-026** (S014)  
 > **Session**: S008-general-tac-iwxxm-converter
 
 ## Context
@@ -20,6 +20,9 @@ and validate paths, and asked to prioritize msgspec.
    `msgspec.json.Encoder` / `Decoder` instances on hot paths ([msgspec perf tips](https://msgspec.dev/perf-tips.html)).
 3. **HTTP boundary**: FastAPI continues to use **pydantic**; map msgspec → pydantic DTOs at
    router edges (Q2=B, Q9=C).
+   > **Amendment (ADR-026 / S014)**: High-churn convert/validate/lint/decode routes use
+   > **msgspec** at the HTTP edge; pydantic remains for OpenAPI schema integrations and
+   > low-churn routes. See ADR-026.
 4. **Bulletin / lint issues**: Include lint-style `issues[]` and optional `fixes[]` when rules
    can suggest repairs (Q6).
 5. **Perf gates (Q11=C)**: Separate pytest benchmarks for (A) lint | convert | validate alone

@@ -1,0 +1,301 @@
+# T4.3 / TC-F14-001 — OIDC trusted publishing for F12–F14 (E10-37).
+# One workflow + package matrix; tag-driven only (no long-lived PyPI API tokens).
+# T4.5 — manylinux + macOS + Windows maturin wheels for native packages.
+# Trusted Publisher on PyPI must point at this file.
+#
+# Job selection uses a setup job + fromJSON matrices so actionlint-compliant
+# job `if` never references the `matrix` context.
+name: PyPI Publish
+
+on:
+  push:
+    tags:
+      - "tac-validate-v*"
+      - "iwxxm-validate-v*"
+      - "tac2iwxxm-v*"
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package to build (dry-run unless publish=true)
+        type: choice
+        options:
+          - tac-validate
+          - iwxxm-validate
+          - tac2iwxxm
+        required: true
+      publish:
+        description: Publish to PyPI via OIDC (requires Trusted Publisher)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pypi-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  select:
+    name: Select package matrix
+    runs-on: ubuntu-latest
+    outputs:
+      package: ${{ steps.pick.outputs.package }}
+      pure_matrix: ${{ steps.pick.outputs.pure_matrix }}
+      native_matrix: ${{ steps.pick.outputs.native_matrix }}
+      has_native: ${{ steps.pick.outputs.has_native }}
+      should_publish: ${{ steps.pick.outputs.should_publish }}
+    steps:
+      - name: Resolve package from tag or dispatch input
+        id: pick
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_PACKAGE: ${{ inputs.package }}
+          INPUT_PUBLISH: ${{ inputs.publish }}
+        run: |
+          set -euo pipefail
+          if [[ "${EVENT_NAME}" == "workflow_dispatch" ]]; then
+            package="${INPUT_PACKAGE}"
+            should_publish="${INPUT_PUBLISH}"
+          elif [[ "${REF_NAME}" == tac-validate-v* ]]; then
+            package="tac-validate"
+            should_publish="true"
+          elif [[ "${REF_NAME}" == iwxxm-validate-v* ]]; then
+            package="iwxxm-validate"
+            should_publish="true"
+          elif [[ "${REF_NAME}" == tac2iwxxm-v* ]]; then
+            package="tac2iwxxm"
+            should_publish="true"
+          else
+            echo "::error::Unable to resolve package from ${EVENT_NAME} / ${REF_NAME}"
+            exit 1
+          fi
+
+          case "${package}" in
+            tac-validate)
+              pure='[{"package":"tac-validate","path":"packages/tac-validate","tag_prefix":"tac-validate-v"}]'
+              native='[]'
+              has_native='false'
+              ;;
+            iwxxm-validate)
+              pure='[{"package":"iwxxm-validate","path":"packages/iwxxm-validate","tag_prefix":"iwxxm-validate-v"}]'
+              native='[{"os":"ubuntu-latest","package":"iwxxm-validate","path":"packages/iwxxm-validate","tag_prefix":"iwxxm-validate-v"},{"os":"macos-latest","package":"iwxxm-validate","path":"packages/iwxxm-validate","tag_prefix":"iwxxm-validate-v"},{"os":"windows-latest","package":"iwxxm-validate","path":"packages/iwxxm-validate","tag_prefix":"iwxxm-validate-v"}]'
+              has_native='true'
+              ;;
+            tac2iwxxm)
+              pure='[{"package":"tac2iwxxm","path":"packages/tac2iwxxm","tag_prefix":"tac2iwxxm-v"}]'
+              native='[{"os":"ubuntu-latest","package":"tac2iwxxm","path":"packages/tac2iwxxm","tag_prefix":"tac2iwxxm-v"},{"os":"macos-latest","package":"tac2iwxxm","path":"packages/tac2iwxxm","tag_prefix":"tac2iwxxm-v"},{"os":"windows-latest","package":"tac2iwxxm","path":"packages/tac2iwxxm","tag_prefix":"tac2iwxxm-v"}]'
+              has_native='true'
+              ;;
+            *)
+              echo "::error::Unknown package ${package}"
+              exit 1
+              ;;
+          esac
+
+          {
+            echo "package=${package}"
+            echo "should_publish=${should_publish}"
+            echo "has_native=${has_native}"
+            echo "pure_matrix=${pure}"
+            echo "native_matrix=${native}"
+          } >> "${GITHUB_OUTPUT}"
+          echo "Selected package=${package} has_native=${has_native} should_publish=${should_publish}"
+
+  build:
+    name: Build pure ${{ matrix.package }}
+    needs: select
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.select.outputs.pure_matrix) }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+
+      - name: Resolve version from tag / pyproject
+        id: meta
+        env:
+          PACKAGE: ${{ matrix.package }}
+          TAG_PREFIX: ${{ matrix.tag_prefix }}
+          REF_NAME: ${{ github.ref_name }}
+          EVENT_NAME: ${{ github.event_name }}
+          PKG_PATH: ${{ matrix.path }}
+        run: |
+          set -euo pipefail
+          if [[ "${EVENT_NAME}" == "push" ]]; then
+            version="${REF_NAME#"${TAG_PREFIX}"}"
+          else
+            version="$(python -c "import tomllib, pathlib; print(tomllib.loads(pathlib.Path('${PKG_PATH}/pyproject.toml').read_text())['project']['version'])")"
+          fi
+          py_version="$(python -c "import tomllib, pathlib; print(tomllib.loads(pathlib.Path('${PKG_PATH}/pyproject.toml').read_text())['project']['version'])")"
+          if [[ "${EVENT_NAME}" == "push" && "${version}" != "${py_version}" ]]; then
+            echo "::error::Tag version ${version} != pyproject version ${py_version}"
+            exit 1
+          fi
+          echo "package=${PACKAGE}" >> "${GITHUB_OUTPUT}"
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+          echo "Resolved ${PACKAGE}==${version}"
+
+      - name: Build wheel (+ sdist when safe)
+        env:
+          PACKAGE: ${{ matrix.package }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          # --wheel from checkout: iwxxm-validate hatch hook needs vendor/schemas
+          # (sdist→wheel in the uv cache cannot see monorepo vendor; E10-34).
+          uv build --wheel --package "${PACKAGE}" -o dist
+          if [[ "${PACKAGE}" != "iwxxm-validate" ]]; then
+            uv build --sdist --package "${PACKAGE}" -o dist
+          else
+            echo "Skipping standalone sdist for iwxxm-validate (schemas via wheel hook)."
+          fi
+          find dist -maxdepth 1 -type f -printf '%p\n' | sort
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.package }}-pure
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  build-native:
+    name: Native ${{ matrix.package }} (${{ matrix.os }})
+    needs: select
+    if: needs.select.outputs.has_native == 'true'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.select.outputs.native_matrix) }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+
+      - name: Sync iwxxm-validate schema subset into package tree
+        if: matrix.package == 'iwxxm-validate'
+        run: uv run python packages/iwxxm-validate/scripts/sync_runtime_schemas.py
+
+      - name: Build maturin wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          working-directory: ${{ matrix.path }}
+          manylinux: ${{ matrix.os == 'ubuntu-latest' && 'auto' || 'off' }}
+          args: --release --out dist -m rust/Cargo.toml
+          sccache: "true"
+
+      - name: Upload native distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.package }}-native-${{ matrix.os }}
+          path: ${{ matrix.path }}/dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  smoke:
+    name: Smoke ${{ matrix.package }}
+    needs: [select, build, build-native]
+    if: >-
+      always()
+      && needs.select.result == 'success'
+      && needs.build.result == 'success'
+      && (needs.build-native.result == 'success' || needs.build-native.result == 'skipped')
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.select.outputs.pure_matrix) }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+
+      - name: Download pure (+ native) distributions
+        uses: actions/download-artifact@v4
+        with:
+          pattern: dist-${{ matrix.package }}-*
+          path: dist
+          merge-multiple: true
+
+      - name: Clean-venv install smoke
+        env:
+          PACKAGE: ${{ matrix.package }}
+        run: |
+          set -euo pipefail
+          find dist -type f -name '*.whl' -printf '%p\n' | sort
+          # Prefer a manylinux / linux wheel when present; else any wheel.
+          wheel="$(find dist -type f -name '*manylinux*.whl' | head -n1 || true)"
+          if [[ -z "${wheel}" ]]; then
+            wheel="$(find dist -type f -name '*.whl' | head -n1)"
+          fi
+          if [[ -z "${wheel}" ]]; then
+            echo "::error::No wheel found under dist/"
+            exit 1
+          fi
+          uv venv .smoke-venv
+          # shellcheck disable=SC1091
+          source .smoke-venv/bin/activate
+          uv pip install "${wheel}"
+          case "${PACKAGE}" in
+            tac-validate)
+              python -c "from tac_validate import lint; print('tac-validate ok')"
+              tac-validate --help >/dev/null
+              ;;
+            iwxxm-validate)
+              python -c "from iwxxm_validate import validate_iwxxm; print('iwxxm-validate ok')"
+              iwxxm-validate --help >/dev/null
+              ;;
+            tac2iwxxm)
+              python -c "from tac2iwxxm import convert; r=convert('METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=', product='METAR'); assert r.ok and r.xml; print('tac2iwxxm ok')"
+              ;;
+          esac
+
+  publish:
+    name: Publish ${{ needs.select.outputs.package }}
+    needs: [select, build, build-native, smoke]
+    if: >-
+      always()
+      && needs.select.result == 'success'
+      && needs.build.result == 'success'
+      && needs.smoke.result == 'success'
+      && (needs.build-native.result == 'success' || needs.build-native.result == 'skipped')
+      && needs.select.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/${{ needs.select.outputs.package }}
+    permissions:
+      id-token: write
+    steps:
+      - name: Download all distributions
+        uses: actions/download-artifact@v4
+        with:
+          pattern: dist-${{ needs.select.outputs.package }}-*
+          path: dist
+          merge-multiple: true
+
+      - name: Publish to PyPI (OIDC)
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

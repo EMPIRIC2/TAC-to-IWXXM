@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: Render (Docker web service + static site + Background Worker)
-> **Last updated**: 2026-07-12 (S008 ADR-018 F8 worker; D-S008-05-batch1)
+> **Last updated**: 2026-07-18 (S014 / EV-010 — PyPI trusted publishing + msgspec HTTP redeploy)
 
 ## Topology (post-monorepo + F8)
 
@@ -249,9 +249,31 @@ make test-live                # H4–H5 → H3 → H6
 
 See [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) for staging values.
 
+## PyPI package publish (S014 / EV-010 / F12–F14)
+
+Library packages publish **independently** of Render via GitHub Actions **OIDC trusted
+publishing** on version tags:
+
+| Package | Tag pattern | PyPI name |
+|---------|-------------|-----------|
+| `packages/tac-validate` | `tac-validate-v*` | `tac-validate` |
+| `packages/iwxxm-validate` | `iwxxm-validate-v*` | `iwxxm-validate` |
+| `packages/tac2iwxxm` | `tac2iwxxm-v*` | `tac2iwxxm` |
+
+**First release**: `0.1.0` for each. **One** GitHub Actions workflow with a **package matrix**
+(three packages) builds sdist+wheel (maturin manylinux/macOS/win for native crates), optional
+smoke-install, then publishes on matching version tags. Configure PyPI Trusted Publisher +
+workflow `id-token: write` (see config-spec §F11–F14). Prefer no long-lived `PYPI_API_TOKEN`
+when OIDC is available.
+
+**Render this cycle**: Still required (E10-15) because msgspec **response** shapes may change —
+redeploy API then frontend; run H4–H5 + UJ-022. PyPI publish does not replace Render smokes.
+
 ## References
 
 - `render.yaml` — Render Blueprint (API + static frontend)
 - [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) — staging env values
-- [user-journeys.md](user-journeys.md) UJ-OPS-001
+- [user-journeys.md](user-journeys.md) UJ-OPS-001, UJ-023
+- [config-spec.md](config-spec.md) §F11–F14
+- [ADR-026](adr/ADR-026-msgspec-http-openapi.md)
 - Legacy three-service docs: [ARCHIVE/pre-monorepo-deploy/](ARCHIVE/pre-monorepo-deploy/)

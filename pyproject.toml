@@ -20,6 +20,9 @@ dev = [
   "httpx>=0.28",
   "httpx2>=2.0",
   "respx>=0.21",
+  "maturin>=1.7",
+  "xsdata[cli]>=24.5",
+  "xsdata-pydantic>=24.5",
   "metar-shared",
   "metar-auth",
   "metar-backend",
@@ -63,6 +66,8 @@ exclude = [
   "vendor",
   "apps/frontend/dist",
   "frontend/dist",
+  # ADR-027 generated xsdata trees (T3.7)
+  "packages/shared/src/metar_shared/iwxxm_xsd/v*",
 ]
 reportMissingTypeStubs = false
 reportUnknownMemberType = "warning"
@@ -84,6 +89,7 @@ markers = [
   "live_api: live deployed API smoke tests (H3)",
   "smoke: deploy smoke tests",
   "migration: monorepo migration gate tests (TC-M001–M005)",
+  "slow: longer local/CI smokes (clean-venv wheel installs)",
 ]
 filterwarnings = [
   "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning:passlib.utils",
@@ -95,9 +101,17 @@ source = ["apps", "packages"]
 omit = [
   "**/__init__.py",
   "**/tests/**",
+  # ADR-027 generated xsdata trees (T3.7)
+  "*/iwxxm_xsd/v*/**",
 ]
 
 [tool.coverage.report]
 fail_under = 98
 show_missing = true
 skip_covered = false
+
+[tool.ruff]
+extend-exclude = [
+  # ADR-027 xsdata output (T3.6+) — regenerate via make codegen-iwxxm-xsd
+  "packages/shared/src/metar_shared/iwxxm_xsd/v*",
+]

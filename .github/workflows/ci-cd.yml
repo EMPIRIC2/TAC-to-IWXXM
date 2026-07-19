@@ -152,6 +152,20 @@ jobs:
             --cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
             --cov-report=term-missing --cov-fail-under=95 -v
 
+      - name: Install Rust toolchain (iwxxm-validate native)
+        if: matrix.package == 'iwxxm-validate'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build iwxxm-validate._rust extension
+        if: matrix.package == 'iwxxm-validate'
+        working-directory: packages/iwxxm-validate
+        run: |
+          source "$HOME/.cargo/env" 2>/dev/null || true
+          uv pip install maturin
+          # CLI + validate_iwxxm hot path need xmloxide; lxml alone hits SCHEMA_PARSE_ERROR
+          # on GML/ISO imports for WMO examples (F13 / T3.9).
+          uv run maturin develop --manifest-path rust/Cargo.toml --uv
+
       - name: Run iwxxm-validate unit tests with coverage
         if: matrix.package == 'iwxxm-validate'
         run: |

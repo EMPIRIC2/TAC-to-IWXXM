@@ -1,5 +1,26 @@
 # Technical Plan Audit Report
 
+> Stage: 05-verify-tech | Last delta: 2026-07-18 (S014 / EV-010)
+
+## S014 / EV-010 delta (2026-07-18)
+
+| Metric | Count |
+|--------|-------|
+| Documents audited | 7 |
+| Auto-approved (high) | 12 |
+| User-approved (medium/low) | 4 (44A–47A) |
+| Denied | 0 |
+| Consistency issues found | 4 |
+| Consistency issues resolved | 4 |
+
+**Source updates**: feature-list F11.3; deploy.md + config-spec matrix; execution-plan T3.7a/T3.8a/T5.6.
+
+Full statement walk: `docs/sessions/S014-package-publish-validation/reports/05-verify-tech-audit.md`.
+
+---
+
+## Historical (2026-06-15 greenfield)
+
 > Stage: 05-verify-tech | Started: 2026-06-15 | Completed: 2026-06-15
 
 ## Summary

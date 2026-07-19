@@ -1,0 +1,57 @@
+---
+description: Guardrails for PyPI package publish (F12–F14) — OIDC, tags, package boundaries, wheel contents
+globs:
+  - packages/tac2iwxxm/**
+  - packages/tac-validate/**
+  - packages/iwxxm-validate/**
+  - .github/workflows/**
+alwaysApply: false
+---
+
+# PyPI Package Publish (F12–F14)
+
+Traces to `[Corpus: product]` F12–F14, `[Corpus: system-spec]` package components,
+`docs/config-spec.md` §F11–F14, and `docs/context/package-publish-validation.md`.
+
+## Trusted publishing only
+
+- Publish via **GitHub Actions OIDC trusted publishing**.
+- **One workflow** with a **package matrix** (three packages) — not three unrelated one-off files
+  unless an ADR changes E10-37.
+- Do **not** add long-lived `PYPI_API_TOKEN` / password secrets when OIDC is configured.
+- Workflows need `id-token: write` and a PyPI Trusted Publisher linked to the workflow +
+  **per-package** tag filter.
+
+## Version tags (F14)
+
+| Package | PyPI name | Tag pattern |
+|---------|-----------|-------------|
+| `packages/tac-validate` | `tac-validate` | `tac-validate-v*` (e.g. `tac-validate-v0.1.0`) |
+| `packages/iwxxm-validate` | `iwxxm-validate` | `iwxxm-validate-v*` |
+| `packages/tac2iwxxm` | `tac2iwxxm` | `tac2iwxxm-v*` |
+
+- Do not publish from arbitrary branch pushes — **tag-driven** only.
+- First public release this cycle: `0.1.0` for all three.
+- Extra `tac2iwxxm[validate]` must depend on both validators (F14).
+
+## Package boundaries
+
+| Package | May include | Must NOT include |
+|---------|-------------|------------------|
+| `tac-validate` | TAC product rules, CLI, msgspec issue reports | IWXXM / XSD / Schematron |
+| `iwxxm-validate` | Well-formed + XSD + Schematron; bundled pinned schemas; Python SDK | TAC parsing / TAC product rules |
+| `tac2iwxxm` | Conversion (+ optional PyO3); optional validate extra | FastAPI / Supabase imports |
+
+## Wheel / copyright constraints
+
+- **No** copyrighted full Annex 3 / FMH prose in wheels — encode rules + **cite** sources only
+  (`docs/domain/` provenance).
+- `iwxxm-validate` may **bundle** pinned `vendor/schemas/*` snapshots; do not edit vendor
+  content except via sync PRs (M2/M6).
+- Soft benches during build; **hard-fail** perf/parity gates at publish/cutover (F11/F13).
+
+## Before tagging or editing publish workflows
+
+Run skill **pypi-release-checklist** (`.cursor/skills/pypi-release-checklist/SKILL.md`).
+Surface `[Scope Drift]` if a fourth public package or non-OIDC publish path is introduced
+without an evolve cycle / ADR.

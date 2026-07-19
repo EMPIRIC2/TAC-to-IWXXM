@@ -3,6 +3,95 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-010 — Package publish + validation stack (S014)
+
+**Session**: S014-package-publish-validation  
+**Features**: F11–F14 (proposed — pending Phase 1 approval)  
+**Issues**: #703, #699, #698, #693  
+**Started**: 2026-07-18  
+**Branch**: `evolve/EV-010-package-publish-validation`
+
+### Scope (approved Phase 0–1)
+
+Measure-first validation stack review (#703), then must-ship packages + HTTP msgspec:
+
+1. `tac-validate` — full TAC product validation + all-product `docs/domain/` rule encoding (#698)
+2. `iwxxm-validate` — Rust core + Python SDK; schemas bundled; **Rust Schematron implemented** (#699)
+3. `tac2iwxxm` — convert + optional `[validate]` extras (#693)
+4. Shared PyPI trusted publishing + release-tag CI/CD
+5. **msgspec over pydantic** for high-churn request/response validation (breaking OK);
+   full Render 12–13 redeploy (E10-15)
+6. **Production** IWXXM XSD/modelling codegen
+7. ADR-026 amending ADR-016
+
+Also: F11 layer cost matrix / benches as gate before deepening Rust paths.
+
+### Intake decisions
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E10-1 | Decision | Session open | S014 feature → 16-evolve |
+| E10-2 | Decision | Cycle shape | One EV-010: #703 first, then #698→#699→#693 |
+| E10-3 | Decision | Deploy | PyPI + release-tag CI; skip Render unless API wiring |
+| E10-4 | Decision | PyPI names | `tac-validate`, `iwxxm-validate`, `tac2iwxxm` |
+| E10-5 | Decision | Converter scope | Convert + optional `tac2iwxxm[validate]` |
+| E10-6 | Decision | Schema assets | Bundle pinned vendor schemas in iwxxm-validate wheel |
+| E10-7 | Decision | Rust Schematron | Design full this cycle; implement if time |
+| E10-8 | Decision | msgspec vs pydantic | Expand msgspec into backend internal paths (ADR-016 amend) |
+| E10-9 | Decision | docs/domain | Aggressive encode mined rules into packages |
+| E10-10 | Decision | IWXXM model import | Prototype codegen from XSD / iwxxm-modelling |
+| E10-11 | Decision | Must vs stretch | **Everything must-ship** — Rust Schematron, all-product domain rules, production codegen |
+| E10-12 | Decision | Fn allocation | F11 #703+msgspec+codegen; F12 #698; F13 #699; F14 #693+PyPI CI |
+| E10-13 | Decision | Routing | 01–12 incl. 03/06; skip 13 Render; 12 = PyPI+tags |
+| E10-14 | Decision | ADR-016 | New ADR-026 — msgspec internals; pydantic only where OpenAPI needs it |
+| E10-15 | Decision | HTTP / Render | **Breaking OK** — move high-churn validation off pydantic to msgspec (faster); full Render 12–13 this cycle (amends E10-3/E10-13 skip-13) |
+| E10-16 | Decision | 01 document manifest | Mandatory + all recommended (API, deps, config, deploy, ADRs, acceptance) |
+| E10-17 | Decision | msgspec HTTP scope | High-churn convert/validate/lint/decode → msgspec; auth/admin stay pydantic |
+| E10-18 | Decision | OpenAPI / FE | Keep pydantic for OpenAPI schema integrations (thin aliases / export); update FE types same cycle |
+| E10-19 | Decision | PyPI versions | `0.1.0` each; tags `tac-validate-v0.1.0`, `iwxxm-validate-v0.1.0`, `tac2iwxxm-v0.1.0` |
+| E10-20 | Decision | tac2iwxxm extras | `[validate]` → depends on `tac-validate` + `iwxxm-validate`; convert works without |
+| E10-21 | Decision | Domain rules depth | All 7 products; METAR/SPECI/TAF full; SIGMET/AIRMET/VAA/TCA templates+gates; cite-only paywall |
+| E10-22 | Decision | Rust Schematron | Native Rust Schematron/SVRL in crate; parity vs lxml isoschematron |
+| E10-23 | Decision | Codegen source | Production codegen from published **XSD**; modelling UML provenance; CI regen on pin bumps |
+| E10-24 | Decision | Perf CI gates | Soft benches in build; hard-fail at publish (lib path + msgspec HTTP + wheel smokes) |
+| E10-25 | Decision | PyPI publisher | GitHub Actions OIDC trusted publishing; one workflow per package version tag |
+| E10-26 | Decision | User journeys | UJ-022, UJ-023, UJ-DEV-005 |
+| E10-27 | Decision | Write specs | Proceed — standing doc deltas in 01; detail in 04 |
+| E10-28 | Decision | 02 S2.M1 | msgspec = responses + post-Form Structs; multipart Form intake unchanged |
+| E10-29 | Decision | 02 S8.M1 | Back-add config-spec + deploy PyPI OIDC notes |
+| E10-30 | Decision | 02 S1.M1 | Keep must-ship 11B; 04 kill-switch via AskQuestion only |
+| E10-31 | Decision | 03 tooling | Option D — rules/hooks + pypi_release_guard + pypi-release-checklist |
+| E10-32 | Decision | Phase A checkpoint | 34B — commit docs+tooling then 04 |
+| E10-33 | Decision | 04 milestones | M1 benches → M2 tac-validate → M3 iwxxm-validate Rust → M4 tac2iwxxm+OIDC → M5 msgspec HTTP → M6 08–13 |
+| E10-34 | Decision | 04 schema bundle | Runtime subset only (XSD+SCH+catalogs); exclude modelling/translation bulk |
+| E10-35 | Decision | 04 hard benches | p95 ≤0.85× lxml baseline (lib path); msgspec HTTP p95 ≤1.0× pydantic map; wheel smokes |
+| E10-36 | Decision | 04 Rust SCH | New `packages/iwxxm-validate/rust` via maturin; lxml parity until cutover |
+| E10-37 | Decision | 04 PyPI workflows | One GHA workflow + package matrix (39B) |
+| E10-38 | Decision | 04 msgspec HTTP encode | Thin helper Struct→msgspec.json.encode→Response; pydantic OpenAPI-only (41A) |
+| E10-39 | Decision | 04 wheels/CLI | manylinux/macOS/win maturin; tac-validate CLI; optional iwxxm-validate CLI (42A) |
+| E10-40 | Decision | 04 XSD codegen | **xsdata** (+ xsdata-pydantic) for full Python models; adapt to msgspec/Rust as follow-on in-cycle tasks |
+| E10-41 | Decision | 04 execution plan | Approved M1–M6 (~36 tasks) — 43A |
+| E10-42 | Decision | 05 S1.M1 | feature-list F11 → ADR-027 xsdata (44A) |
+| E10-43 | Decision | 05 S2.M1 | deploy/config matrix workflow (45A) |
+| E10-44 | Decision | 05 S3.M1 | Add T5.6 H0c CORS re-verify (46B) |
+| E10-45 | Decision | 05 S4.L1 | Add T3.7a + T3.8a tests (47A) |
+| E10-46 | Decision | T3.3 crate stack | **A — xmloxide 0.4.x** (D-S014-T33-crates); reject B quick-xml+xsd-schema, C libxml |
+| E10-46 | Decision | 06 tooling | 49A — rust/maturin/xsdata rule, Makefile stubs, uv deps, hook |
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context / Phase 0–1 | 2026-07-18 | E10-1..27 locked; F11–F14 + routing 01–13 |
+| 01-requirements | 2026-07-18 | Feature-list F11–F14; ADR-026; spec/api/journeys/test/deps deltas |
+| 02-verify-plan | 2026-07-18 | PASS — S2.M1/S8.M1/S1.M1 = A; multipart clarification + config/deploy notes |
+| 03-plan-tooling | 2026-07-18 | D — PyPI/msgspec guardrails; commits 1711e75 + 0717f13 |
+| 04-tech-plan | 2026-07-18 | M1–M6 plan approved (43A); ADR-027 xsdata |
+| 05-verify-tech | 2026-07-18 | PASS — 12 auto + 44A–47A applied |
+| 06-tech-tooling | 2026-07-18 | 49A — maturin/xsdata/Makefile/hook delta |
+
+---
+
 ## Cycle EV-009 — Live decode translations + preview UX (S013)
 
 **Session**: S013-live-decode-preview-ux  

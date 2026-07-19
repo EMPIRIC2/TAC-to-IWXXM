@@ -9,6 +9,13 @@ dependencies = [
   "msgspec>=0.19",
 ]
 
+[project.optional-dependencies]
+# F14 / E10-20: optional TAC lint + IWXXM XSD/Schematron validators.
+validate = [
+  "tac-validate>=0.1.0",
+  "iwxxm-validate>=0.1.0",
+]
+
 [build-system]
 requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
@@ -26,6 +33,9 @@ module-name = "tac2iwxxm._rust"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = [
+  "slow: longer local/CI smokes (clean-venv wheel installs)",
+]
 
 [tool.coverage.run]
 branch = true

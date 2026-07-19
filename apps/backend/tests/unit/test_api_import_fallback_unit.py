@@ -77,7 +77,11 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
     )
     fake_fastapi_middleware = _stub_module("fastapi.middleware")
     fake_fastapi_cors = _stub_module("fastapi.middleware.cors", CORSMiddleware=object)
-    fake_fastapi_responses = _stub_module("fastapi.responses", StreamingResponse=object)
+    fake_fastapi_responses = _stub_module(
+        "fastapi.responses",
+        Response=object,
+        StreamingResponse=object,
+    )
 
     # Stub fallback absolute import modules used by api.py.
     def extract_airport_code(_text):
@@ -192,6 +196,10 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "fastapi.responses": fake_fastapi_responses,
         "config": _stub_module("config"),
         "config.icao_opmet": fake_config_icao,
+        "msgspec_http": _stub_module(
+            "msgspec_http",
+            msgspec_json_response=lambda obj, **_kwargs: obj,
+        ),
         "routers": fake_routers,
         "schemas": _stub_module("schemas"),
         "schemas.conversion": fake_schemas_conversion,
@@ -209,7 +217,11 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "utilities.observability": fake_util_observability,
         "utilities.security": fake_util_security,
         "utilities.tac_parser": fake_util_tac,
-        "iwxxm_validate": _stub_module("iwxxm_validate", validate=lambda *a, **k: None),
+        "iwxxm_validate": _stub_module(
+            "iwxxm_validate",
+            validate=lambda *a, **k: None,
+            validate_iwxxm=lambda *a, **k: None,
+        ),
         "tac2iwxxm": _stub_module(
             "tac2iwxxm",
             BulletinSplitError=Exception,

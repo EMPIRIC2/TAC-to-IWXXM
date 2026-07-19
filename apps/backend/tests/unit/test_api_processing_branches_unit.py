@@ -702,6 +702,12 @@ def test_convert_json_validate_output_uses_orchestrator_validate_pass(client, mo
     stats = _StatsCapture()
     monkeypatch.setattr(api_module, "statistics_service", stats)
     monkeypatch.setattr(api_module, "get_validation_orchestrator", lambda: _Orchestrator())
+    # F11.4 / T3.8: convert path gates layer credit on package SDK ok + orchestrator pass
+    monkeypatch.setattr(
+        api_module,
+        "iwxxm_validate_fn",
+        lambda *_args, **_kwargs: SimpleNamespace(ok=True, issues=[]),
+    )
 
     response = client.post(
         "/api/v1/convert",
@@ -1094,8 +1100,24 @@ def test_convert_file_validate_output_all_layers_pass(client, monkeypatch):
         def validate_complete(self, **_kwargs):
             return SimpleNamespace(is_valid=True, all_issues=[])
 
+    class _StatsCapture:
+        def __init__(self):
+            self.calls = []
+
+        async def log_translation(self, **kwargs: Any) -> str:
+            self.calls.append(kwargs)
+            return "tid-file-1"
+
+    stats = _StatsCapture()
     monkeypatch.setattr(api_module, "read_uploaded_text", fake_read_uploaded_text)
     monkeypatch.setattr(api_module, "get_validation_orchestrator", lambda: _CompleteOrchestrator())
+    monkeypatch.setattr(api_module, "statistics_service", stats)
+    # F11.4: file convert credits all layers only when package SDK ok + orchestrator valid
+    monkeypatch.setattr(
+        api_module,
+        "iwxxm_validate_fn",
+        lambda *_args, **_kwargs: SimpleNamespace(ok=True, issues=[]),
+    )
 
     response = client.post(
         "/api/v1/convert",
@@ -1105,6 +1127,10 @@ def test_convert_file_validate_output_all_layers_pass(client, monkeypatch):
 
     assert response.status_code == 200
     assert response.json()["successful"] == 1
+    assert stats.calls
+    layers = stats.calls[0]["validation_layers_passed"]
+    assert ValidationLayer.XML_SCHEMA.value in layers
+    assert ValidationLayer.SCHEMATRON.value in layers
 
 
 def test_convert_file_validation_failure_emits_info_and_critical_issues(client, monkeypatch):

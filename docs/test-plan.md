@@ -60,6 +60,9 @@ Unified manual live test harness against Render staging:
 | UJ-019 | F7 | `/admin` negative | H6′ | TC-F7-006 |
 | UJ-020 | F9 | decode values + summary (unit/API/Vitest/Playwright) | H6′ | TC-F9-001, TC-F9-002 |
 | UJ-021 | F10 | preview pane + terminator quick fix | H6′ | TC-F10-001, TC-F10-002 |
+| UJ-022 | F11 | operator convert/validate after msgspec | H6′ | TC-F11-001 |
+| UJ-023 | F12–F14 | PyPI tag → install smoke | CI | TC-F14-001 |
+| UJ-DEV-005 | F12–F14 | pip install packages | CI | TC-F12-001, TC-F13-001, TC-F14-002 |
 | UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
@@ -359,6 +362,61 @@ Before closing S013 / EV-009:
 - [ ] TC-F9-001/002 + TC-F10-001/002 green at T2
 - [ ] Decode-tac contract remains backward-compatible (additive `summary` only)
 - [ ] H6′ live smokes for UJ-020/021 (or documented waiver)
+
+## F11–F14 Test Cases (S014 / EV-010)
+
+### TC-F11-001: msgspec high-churn HTTP parity (UJ-022)
+
+- **Level**: T0 / T2 / T3
+- **Objective**: convert/validate/lint/decode usable by FE after msgspec move
+- **Pass criteria**:
+  1. Contract tests cover msgspec-backed routes; OpenAPI still generates for aliases
+  2. Vitest + Playwright operator convert/validate/lint/decode green
+  3. Bench: msgspec HTTP path ≤ prior pydantic map path (soft until publish; hard at cutover)
+- **Source**: UJ-022; F11; ADR-026
+
+### TC-F11-002: Layer cost matrix (#703)
+
+- **Level**: T0
+- **Objective**: Documented p50/p95 for TAC lint, convert IR, XSD, Schematron, HTTP DTO
+- **Pass criteria**: Matrix committed under session reports; Schematron identified as dominant
+  or contradicted with evidence
+- **Source**: F11; #703
+
+### TC-F12-001: tac-validate PyPI + domain rules (UJ-DEV-005)
+
+- **Level**: T0 / CI
+- **Objective**: Wheel installs; METAR/SPECI/TAF full rules; other products template+gates
+- **Pass criteria**: Clean venv `pip install tac-validate==0.1.0`; fixture suite green
+- **Source**: F12; #698
+
+### TC-F13-001: iwxxm-validate Rust + Schematron parity (UJ-DEV-005)
+
+- **Level**: T0 / CI
+- **Objective**: Rust well-formed+XSD+Schematron; parity vs lxml; schemas bundled
+- **Pass criteria**: `validate_iwxxm` on golden corpus; speedup vs baseline; wheel offline
+- **Source**: F13; #699
+
+### TC-F14-001: Tag → trusted publish (UJ-023)
+
+- **Level**: CI
+- **Objective**: OIDC trusted publishing on `*-v0.1.0` tags
+- **Pass criteria**: Workflow pattern + smoke job for all three packages
+- **Source**: F14; E10-25
+
+### TC-F14-002: tac2iwxxm[validate] extras (UJ-DEV-005)
+
+- **Level**: T0 / CI
+- **Objective**: Convert-only wheel works; `[validate]` pulls both validators
+- **Pass criteria**: Sample METAR → IWXXM; extras resolve tac-validate + iwxxm-validate
+- **Source**: F14; #693
+
+### F11–F14 verify/deploy gate
+
+- [ ] TC-F11-001/002 + TC-F12-001 + TC-F13-001 + TC-F14-001/002 green
+- [ ] Hard perf gates at publish (E10-24)
+- [ ] H4–H5 + H6′ UJ-022 after Render redeploy
+- [ ] PyPI install smokes for three packages
 
 ## Live Test Cases (T3 / H3–H6)
 

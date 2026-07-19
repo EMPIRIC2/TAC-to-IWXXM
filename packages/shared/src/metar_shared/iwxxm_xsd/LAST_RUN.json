@@ -1,0 +1,20 @@
+{
+  "runs": [
+    {
+      "version": "2023-1",
+      "entry": "iwxxm.xsd",
+      "package": "metar_shared.iwxxm_xsd.v2023_1",
+      "output": "packages/shared/src/metar_shared/iwxxm_xsd/v2023_1",
+      "py_files": 102,
+      "bytes": 3864824
+    },
+    {
+      "version": "2025-2",
+      "entry": "iwxxm.xsd",
+      "package": "metar_shared.iwxxm_xsd.v2025_2",
+      "output": "packages/shared/src/metar_shared/iwxxm_xsd/v2025_2",
+      "py_files": 103,
+      "bytes": 3896069
+    }
+  ]
+}

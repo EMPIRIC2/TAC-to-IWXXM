@@ -72,28 +72,28 @@ typecheck-js:
 lint: lint-py lint-js
 
 lint-py:
-	$(UV) run ruff check $(PY_LINT)
+	$(UV) run ruff check --force-exclude $(PY_LINT)
 
 lint-js:
 	$(PNPM) run lint:js
 
 lint-backend:
-	$(UV) run ruff check apps/backend/src apps/backend/tests
+	$(UV) run ruff check --force-exclude apps/backend/src apps/backend/tests
 
 lint-auth:
-	$(UV) run ruff check packages/auth/src packages/auth/tests
+	$(UV) run ruff check --force-exclude packages/auth/src packages/auth/tests
 
 lint-shared:
-	$(UV) run ruff check packages/shared packages/shared/tests
+	$(UV) run ruff check --force-exclude packages/shared packages/shared/tests
 
 lint-tac2iwxxm:
-	$(UV) run ruff check packages/tac2iwxxm/src packages/tac2iwxxm/tests
+	$(UV) run ruff check --force-exclude packages/tac2iwxxm/src packages/tac2iwxxm/tests
 
 lint-iwxxm-validate:
-	$(UV) run ruff check packages/iwxxm-validate/src packages/iwxxm-validate/tests
+	$(UV) run ruff check --force-exclude packages/iwxxm-validate/src packages/iwxxm-validate/tests
 
 lint-tac-validate:
-	$(UV) run ruff check packages/tac-validate/src packages/tac-validate/tests
+	$(UV) run ruff check --force-exclude packages/tac-validate/src packages/tac-validate/tests
 
 lint-frontend:
 	$(PNPM) --filter @metar/frontend run lint
@@ -101,13 +101,13 @@ lint-frontend:
 lint-fix: lint-fix-py lint-fix-frontend
 
 lint-fix-py:
-	$(UV) run ruff check --fix $(PY_LINT)
+	$(UV) run ruff check --fix --force-exclude $(PY_LINT)
 
 lint-fix-backend:
-	$(UV) run ruff check --fix apps/backend/src apps/backend/tests
+	$(UV) run ruff check --fix --force-exclude apps/backend/src apps/backend/tests
 
 lint-fix-auth:
-	$(UV) run ruff check --fix packages/auth/src packages/auth/tests
+	$(UV) run ruff check --fix --force-exclude packages/auth/src packages/auth/tests
 
 lint-fix-frontend:
 	$(PNPM) --filter @metar/frontend exec eslint src --fix
@@ -153,10 +153,35 @@ test-unit-tac2iwxxm:
 build-tac2iwxxm-native:
 	cd packages/tac2iwxxm && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
 
+# F13 — optional PyO3 extension (requires rustc + maturin). E10-36 / T3.1.
+build-iwxxm-validate-native:
+	cd packages/iwxxm-validate && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
+
+# E10-34 — copy runtime XSD+SCH+catalogs into the package (excludes modelling/translation).
+sync-iwxxm-validate-schemas:
+	$(UV) run python packages/iwxxm-validate/scripts/sync_runtime_schemas.py
+
 test-tac2iwxxm-native: build-tac2iwxxm-native
 	TAC2IWXXM_REQUIRE_RUST=1 $(UV) run pytest \
 		packages/tac2iwxxm/tests/test_native_scaffold.py \
 		packages/tac2iwxxm/tests/test_pyo3_hotspots.py -v --no-cov
+
+test-iwxxm-validate-native: build-iwxxm-validate-native
+	IWXXM_VALIDATE_REQUIRE_RUST=1 $(UV) run pytest \
+		packages/iwxxm-validate/tests/test_native_scaffold.py \
+		packages/iwxxm-validate/tests/test_tc_f13_001_parity.py -v --no-cov
+
+# M1 — layer cost matrix harness (T1.1–T1.3). Script lands in build; stub until then.
+bench-validation-stack:
+	@if [ ! -f scripts/bench/validation_stack.py ]; then \
+		echo "error: scripts/bench/validation_stack.py missing (execution plan T1.1–T1.2)"; \
+		exit 1; \
+	fi
+	$(UV) run python scripts/bench/validation_stack.py
+
+# F11 / ADR-027 — xsdata codegen from pinned XSD (T3.6).
+codegen-iwxxm-xsd:
+	$(UV) run python scripts/codegen/iwxxm_xsd.py
 
 test-unit-iwxxm-validate:
 	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
