@@ -2,6 +2,15 @@
 
 IWXXM XSD + Schematron validation engine (F2 / F13). MIT licensed.
 
+## CLI (optional / E10-39)
+
+```bash
+iwxxm-validate path/to/report.xml --version 2023-1 --profile annex3
+iwxxm-validate path/to/report.xml --json
+```
+
+Exit `0` when `report.ok`; `1` on validation or I/O errors.
+
 ## Usage
 
 ```python

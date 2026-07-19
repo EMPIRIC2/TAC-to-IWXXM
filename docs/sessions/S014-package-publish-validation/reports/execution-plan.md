@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C (build) |
 | **Active milestone** | M3 — iwxxm-validate Rust + schema subset + xsdata |
-| **Active task** | T3.9 pending (optional iwxxm-validate CLI smoke) |
-| **Tasks** | 18 / ~39 (M1–M2 complete; T3.1–T3.8 done) |
+| **Active task** | M3 complete — next M4 (or 08-verify-build) |
+| **Tasks** | 19 / ~39 (M1–M3 complete) |
 | **Last updated** | 2026-07-18 |
 
 ## Tech Stack Summary
@@ -68,7 +68,7 @@
 | T3.7 | Code | Commit/regenerate pydantic models; optional msgspec/Rust adapt helpers (follow-on) | F11 acc4; ADR-027 | T3.7a | completed |
 | T3.8a | Test | Backend `/validate` (and convert+validate path) uses Rust SDK; no double heavy-layer run | F11.4; F13; api-contract | T3.3 | completed |
 | T3.8 | Code | Backend F2 wrapper calls Rust SDK (dedupe double-run with convert+validate) | F11.4; F13 | T3.8a | completed |
-| T3.9 | Test | Optional `iwxxm-validate` CLI smoke | E10-39 | T3.3 | pending |
+| T3.9 | Test | Optional `iwxxm-validate` CLI smoke | E10-39 | T3.3 | completed |
 
 ### M4 — `tac2iwxxm[+validate]` + PyPI OIDC matrix (F14)
 
