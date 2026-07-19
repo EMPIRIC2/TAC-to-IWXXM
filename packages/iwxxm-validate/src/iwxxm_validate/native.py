@@ -18,6 +18,16 @@ def rust_available() -> bool:
     return _rust is not None  # pragma: no cover
 
 
+def clear_schema_caches() -> None:
+    """Clear process-wide compiled XSD/Schematron caches (native only; no-op if absent)."""
+    mod = rust_module()
+    if mod is None:
+        return
+    clearer = getattr(mod, "clear_schema_caches", None)
+    if callable(clearer):
+        clearer()
+
+
 def rust_module() -> Any | None:
     """
     Return the loaded ``_rust`` module, or ``None`` if unavailable.

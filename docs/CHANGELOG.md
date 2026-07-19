@@ -2,6 +2,25 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-19 — S014 EV-010 (F11 msgspec HTTP + F12–F14 packages)
+
+### Added
+- **F11**: msgspec response encode on high-churn convert/validate/lint/decode routes (ADR-026);
+  Rust `iwxxm-validate` SDK path; xsdata `iwxxm_xsd` models (ADR-027).
+- **F12–F14**: Publishable `tac-validate` / `iwxxm-validate` / `tac2iwxxm[+validate]` packaging
+  + PyPI OIDC workflow (matrix) — first live tag blocked until Trusted Publisher ×3 configured.
+
+### Changed
+- Backend HTTP response path for operator convert/validate; FE OpenAPI/client types aligned.
+- **F13**: `iwxxm-validate` Rust caches compiled XSD/Schematron (process-wide) so hot-path
+  validate meets E10-35 hard 0.85× vs lxml (T6.6).
+- No new CORS origins, env knobs, or DB migrations this cycle.
+
+### Deploy
+- PR [#726](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726) merged (`c73e0ad`);
+  Render API + frontend-v4-web redeployed 2026-07-19. Smoke: H0ci/H1/H0c/H3/H4/H5 + H6′ UJ-022
+  **PASS** (`docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md`).
+
 ## 2026-07-17 — S013 EV-009 (F9 live decode + F10 preview UX)
 
 ### Added

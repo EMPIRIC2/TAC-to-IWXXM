@@ -11,10 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase D (verify) — T6.4 checklist approved; evolve PR next |
+| **Active phase** | Phase D (deploy) — M6 hard gates + Render done; PyPI tags deferred |
 | **Active milestone** | M6 — verify & deploy |
-| **Active task** | T6.4 — commit/push/PR then pause for merge |
-| **Tasks** | 33 / ~39 (T6.3 done; T6.4 checklist signed off 1A/2A) |
+| **Active task** | — (T6.6 completed; UJ-023 Trusted Publisher remaining) |
+| **Tasks** | 36 / ~39 (T6.1–T6.6 complete; live tags deferred) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -98,9 +98,9 @@
 | T6.1 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5 | completed |
 | T6.2 | Test | 09-qa + 10-e2e — QA + UJ-022/023 / DEV-005 | 09/10 | T6.1 | completed |
 | T6.3 | Docs | 11-verify-impl — per-Fn F11–F14 acceptance | 11 | T6.2 | completed |
-| T6.4 | Config | 12-verify-deploy — PyPI OIDC + Render checklist; evolve PR | 12 | T6.3 | in_progress |
-| T6.5 | Test | 13-deploy-smoke — Render redeploy; H4–H5 + H6′ UJ-022; tag publish smokes (includes live CORS after T5.6) | 13 | T6.4, T5.6 | pending |
-| T6.6 | Test | Hard publish gates: 0.85× lib, 1.0× HTTP, wheel smokes | E10-35 | T6.5 | pending |
+| T6.4 | Config | 12-verify-deploy — PyPI OIDC + Render checklist; evolve PR | 12 | T6.3 | completed |
+| T6.5 | Test | 13-deploy-smoke — Render redeploy; H4–H5 + H6′ UJ-022; tag publish smokes (includes live CORS after T5.6) | 13 | T6.4, T5.6 | completed |
+| T6.6 | Test | Hard publish gates: 0.85× lib, 1.0× HTTP, wheel smokes | E10-35 | T6.5 | completed |
 
 ## Data Dependencies
 
@@ -136,3 +136,9 @@
 | Phase D→T6.3 | 2026-07-19 | passed | User — Pass Phase D and start T6.3 (D-S014-EV010-phase-d-to-t63) |
 | T6.3 complete | 2026-07-19 | passed | User — Approve all and proceed; F11–F14 + journeys approved (D-S014-EV010-t63-features); start T6.4 |
 | T6.4 checklist | 2026-07-19 | approved | User 1A/2A — deploy strategy + rollback; commit/push/open PR (D-S014-EV010-t64-deploy-A) |
+| T6.4 merge | 2026-07-19 | passed | User A — merge #726 and proceed to T6.5 (D-S014-EV010-t64-merge-A); PR MERGED at c73e0ad; CI green tip bd0aee5 |
+| T6.5 Render smokes | 2026-07-19 | passed | H0ci/H1/H0c/H3/H4/H5 + H6′ UJ-022 PASS; PyPI tags deferred (Trusted Publisher) |
+| T6.5 deploy checkpoint | 2026-07-19 | passed | User A — Approve T6.5 → T6.6 (D-S014-EV010-t65-approve-A) |
+| T6.6 lib gate Decision | 2026-07-19 | resolved | User 3 — optimize native to 0.85× (D-S014-EV010-t66-lib-gate); “0.08 x”→0.85× |
+| T6.6 hard gates (post-cache) | 2026-07-19 | passed | Schema cache; XSD+combined+HTTP+wheels PASS |
+| T6.6 close | 2026-07-19 | passed | User 2 — approve + commit on main (D-S014-EV010-t66-close-2) |

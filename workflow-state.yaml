@@ -15,7 +15,7 @@ active_session:
     (#698/#699/#693); domain rules; PyPI + release-tag CI/CD
   orchestrator: 16-evolve
   evolve_cycle_id: EV-010
-  branch: evolve/EV-010-package-publish-validation
+  branch: main
   artifacts_dir: docs/sessions/S014-package-publish-validation
   context_briefs:
   - docs/context/package-publish-validation.md
@@ -78,12 +78,10 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-07-18'
-    note: >-
-      M6 T6.4 awaiting_merge (12-verify-deploy); checklist approved (D-S014-EV010-t64-deploy-A);
-      PR-EV-010=#726 open awaiting CI green + merge approval; tip f1a8799; PyPI Trusted
-      Publisher BLOCKED for live tags; next after merge T6.5 13-deploy-smoke
+    completed: '2026-07-19'
+    note: "M6 complete — T6.6 approved (D-S014-EV010-t66-close-2); live PyPI tags deferred (UJ-023)"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -121,25 +119,32 @@ active_session:
   - stage: 12-verify-deploy
     required: true
     mode: adapted
-    status: in_progress
+    status: completed
     started: '2026-07-19'
+    completed: '2026-07-19'
     note: >-
-      T6.4 awaiting_merge — checklist + rollback approved (D-S014-EV010-t64-deploy-A 1A);
-      PR-EV-010=#726 open (2A pause for merge); tip f1a8799 pushed; PyPI Trusted Publisher
-      BLOCKED for live tags; stay in_progress until CI green + explicit merge approval;
-      next after merge T6.5 13-deploy-smoke
+      T6.4 complete — checklist approved; PR #726 MERGED (c73e0ad); CI green tip bd0aee5
     artifacts:
     - docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
   - stage: 13-deploy-smoke
     required: true
     mode: full
-    status: pending
-    note: Included per E10-15 msgspec HTTP + Render redeploy; blocked on PR #726 merge
+    status: completed
+    started: '2026-07-19'
+    completed: '2026-07-19'
+    note: "T6.5+T6.6 done (D-S014-EV010-t66-close-2); UJ-023 still deferred Trusted Publisher"
+    artifacts:
+    - docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
+    - docs/deploy-state.md
+    - docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
   skipped_stages: []
-  current_stage: 12-verify-deploy  # T6.4 awaiting_merge; PR-EV-010=#726 open
+  current_stage: 16-evolve
   pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
   pr_number: 726
   pr_id: PR-EV-010
+  pr_status: merged
+  pr_merge_commit: c73e0ad
+  merge_sha: c73e0ad  # canonical alias for pr_merge_commit
   completed_at: null
 
 sessions:
@@ -1448,16 +1453,16 @@ stages:
     - id: S014-package-publish-validation
       session_id: S014-package-publish-validation
       evolve_cycle_id: EV-010
-      status: in_progress
+      status: completed
       started_at: "2026-07-18"
+      completed_at: "2026-07-19"
       mode: full
       note: >-
-        M6 T6.4 awaiting_merge (12-verify-deploy); checklist approved (D-S014-EV010-t64-deploy-A);
-        PR-EV-010=#726 open; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
-        next after merge T6.5 13-deploy-smoke
+        M6 complete — T6.6 approved (D-S014-EV010-t66-close-2); live PyPI tags deferred
+        (UJ-023 Trusted Publisher)
       active_milestone: M6
-      active_task: T6.4
-      active_task_status: in_progress
+      active_task: T6.6
+      active_task_status: completed
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1483,6 +1488,26 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - >-
+      2026-07-19 S014/EV-010 T6.6 completed (D-S014-EV010-t66-close-2) — Approve T6.6 and
+      commit on main; 07-build M6 complete; live PyPI tags deferred
+    - >-
+      2026-07-19 S014/EV-010 T6.6 hard gates PASS after Rust schema cache (XSD/combined
+      ~0.03×); SCH-only vs lxml skip soft-warn; HTTP+wheels PASS; awaiting user close
+      approval; uncommitted on main (lib.rs + native.py); UJ-023 Trusted Publisher blocked
+    - >-
+      2026-07-19 S014/EV-010 D-S014-EV010-t66-lib-gate resolved option 3 — optimize native
+      until 0.85× before any tag (user typed "0.08 x" → E10-35 0.85×); T6.6 in_progress
+    - >-
+      2026-07-19 S014/EV-010 T6.6 PARTIAL/blocked — HTTP 1.0× PASS; wheel smokes PASS
+      (F12+F14); lib 0.85× FAIL (~35–52× vs lxml release maturin); UJ-023 Trusted Publisher
+      blocked; evidence t66-hard-publish-gates.md; awaiting D-S014-EV010-t66-lib-gate
+    - >-
+      2026-07-19 S014/EV-010 T6.5 completed (D-S014-EV010-t65-approve-A); T6.6 hard publish
+      gates in_progress (E10-35); 13-deploy-smoke remains in_progress until T6.6 done
+    - >-
+      2026-07-19 S014/EV-010 T6.5 in_progress — D-S014-EV010-t64-merge-A; PR #726 MERGED
+      (c73e0ad); CI green tip bd0aee5; T6.4 complete; 13-deploy-smoke started
     - >-
       2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A (1A checklist+rollback;
       2A PR then pause); PR-EV-010=#726 open; tip f1a8799; Trusted Publisher blocked for tags;
@@ -1858,21 +1883,23 @@ stages:
     - id: S014-package-publish-validation
       session_id: S014-package-publish-validation
       evolve_cycle_id: EV-010
-      status: in_progress
+      status: completed
       started_at: "2026-07-19"
+      completed_at: "2026-07-19"
       mode: adapted
-      overall: checklist_approved
+      overall: approved
       note: >-
-        T6.4 awaiting_merge — checklist + rollback approved (D-S014-EV010-t64-deploy-A);
-        PR-EV-010=#726 open; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
-        stay in_progress until CI green + merge approval; next T6.5 13-deploy-smoke
+        T6.4 complete — checklist approved; PR #726 MERGED (c73e0ad); CI green tip bd0aee5
+        (D-S014-EV010-t64-merge-A)
       report: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
       pr_number: 726
       pr_id: PR-EV-010
+      pr_status: merged
+      merge_sha: c73e0ad
       active_milestone: M6
       active_task: T6.4
-      active_task_status: in_progress
+      active_task_status: completed
     - id: S011-f7-operator-ui
       session_id: S011-f7-operator-ui
       evolve_cycle_id: EV-008
@@ -1883,6 +1910,9 @@ stages:
       note: "D-S011-EV008-deploy-check-A — checklist approved; PR-EV-008=#716 open (no merge/deploy); 13 pending on merge approval"
       report: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
     notes:
+    - >-
+      2026-07-19 S014/EV-010 T6.4 complete — D-S014-EV010-t64-merge-A; PR #726 MERGED
+      (c73e0ad); CI green tip bd0aee5; 12 completed; T6.5 13-deploy-smoke started
     - >-
       2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A (1A/2A);
       PR-EV-010=#726 open https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726;
@@ -1898,6 +1928,47 @@ stages:
     - "S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)"
     - "S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 +
       S003 keys + redeploy required before 13"
+
+  13-deploy-smoke:
+    status: completed
+    started_at: "2026-07-19"
+    completed_at: "2026-07-19"
+    session_id: S014-package-publish-validation
+    delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      started_at: "2026-07-19"
+      completed_at: "2026-07-19"
+      mode: full
+      note: >-
+        T6.5+T6.6 done (D-S014-EV010-t66-close-2); UJ-023 still deferred Trusted Publisher
+      active_milestone: M6
+      active_task: T6.6
+      active_task_status: completed
+      report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
+      hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
+    notes:
+    - >-
+      2026-07-19 S014/EV-010 13-deploy-smoke completed (D-S014-EV010-t66-close-2) —
+      T6.5+T6.6 done; UJ-023 Trusted Publisher still deferred
+    - >-
+      2026-07-19 S014/EV-010 T6.6 hard gates PASS (schema cache ~0.03× XSD/combined);
+      awaiting user close approval; uncommitted on main; UJ-023 Trusted Publisher blocked
+    - >-
+      2026-07-19 S014/EV-010 D-S014-EV010-t66-lib-gate option 3 — optimize until 0.85×;
+      T6.6 in_progress (optimization workstream)
+    - >-
+      2026-07-19 S014/EV-010 T6.6 PARTIAL/blocked — HTTP+wheels PASS; lib 0.85× FAIL;
+      UJ-023 Trusted Publisher blocked; t66-hard-publish-gates.md; D-S014-EV010-t66-lib-gate pending
+    - >-
+      2026-07-19 S014/EV-010 T6.5 APPROVED (D-S014-EV010-t65-approve-A); Render smokes
+      PASS; proceeding T6.6 hard publish gates (E10-35); PyPI tags still deferred
+    - >-
+      2026-07-19 S014/EV-010 T6.5 started — D-S014-EV010-t64-merge-A; PR #726 MERGED
+      (c73e0ad); Render redeploy + H0c/H1–H5 + H6′; PyPI Trusted Publisher BLOCKED for
+      live tags
 
   14-hotfix:
     status: completed
@@ -1929,19 +2000,25 @@ deployment:
     t0_journeys_passed: 4
   staging:
     status: deployed
-    last_verified: "2026-06-24"
-    commit_deployed: "220ad64"
-    commit_head: main
-    drift: true
+    last_verified: '2026-07-19'
+    commit_deployed: c73e0ad
+    commit_head: c73e0ad
+    drift: false
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
+    deploy_ids:
+      api: dep-d9elikt7vvec739dpf7g
+      frontend: dep-d9elilbtqb8s73ao52hg
     health_tiers:
-      H1: pass
+      H0ci: pass
       H0c: pass
-      H4: fail
+      H1: pass
+      H3: pass
+      H4: pass
       H5: pass
-      T3_auth: blocked
+      H6_UJ022: pass
+      UJ023_pypi_tags: deferred
     notes:
     - "Auth routes live on deployed API (E2E-002 resolved)"
     - "S004 stage 12 — H4 FAIL: API rejects v4 frontend CORS origin (400); H5 PASS on /config.json"
@@ -2007,6 +2084,79 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S014-EV010-t66-close-2
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 13-deploy-smoke
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  status: resolved
+  resolved_at: "2026-07-19"
+  decision: >
+    User chose option 2 — Approve T6.6 and commit directly on main (2026-07-19).
+  summary: >
+    T6.6 completed; checkpoints.t66_hard_gates completed; 13-deploy-smoke completed
+    (T6.5+T6.6); 07-build/M6 completed with live PyPI tags deferred (UJ-023 Trusted
+    Publisher). EV-010/session remain in_progress awaiting Trusted Publisher / Phase 4
+    close. Parent will commit schema-cache optimize on main; sha placeholder
+    pending_commit_sha for follow-up.
+- id: D-S014-EV010-t66-lib-gate
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 13-deploy-smoke
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  status: resolved
+  resolved_at: "2026-07-19"
+  decision: >
+    User chose option 3 — Optimize native until 0.85× passes before any tag (2026-07-19).
+    User typed "0.08 x"; interpreted as E10-35 0.85× per AskQuestion option 3.
+  summary: >
+    T6.6 remains in_progress (optimization workstream): optimize iwxxm-validate Rust
+    until library path p95 ≤ 0.85× same-run lxml before any PyPI tag. HTTP 1.0× and
+    wheel smokes already PASS. Evidence:
+    docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md;
+    tests/perf/test_t66_hard_publish_gates.py. UJ-023 Trusted Publisher still soft-blocked.
+- id: D-S014-EV010-t65-approve-A
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 13-deploy-smoke
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: >
+    User chose option A — Approve T6.5 and proceed to T6.6 hard publish gates (2026-07-19).
+  summary: >
+    T6.5 / 13-deploy-smoke Render path APPROVED (H0ci/H1/H0c/H3/H4/H5 + H6′ UJ-022 PASS
+    after #726 merge deploy c73e0ad). Proceed to T6.6 hard publish gates (E10-35: 0.85×
+    lib, 1.0× HTTP, wheel smokes). 13-deploy-smoke remains in_progress covering T6.5+T6.6
+    until both done. PyPI Trusted Publisher still BLOCKED for live tags (soft defer).
+- id: D-S014-EV010-t65-smokes
+  date: '2026-07-19'
+  skill_id: 13-deploy-smoke
+  session_id: S014-package-publish-validation
+  decision: "T6.5 Render path PASS — H0ci/H1/H0c/H3/H4/H5 + H6′ UJ-022 green after #726 merge deploy; PyPI Trusted Publisher still BLOCKED for live tags (soft defer). Awaiting user deploy-results checkpoint."
+- id: D-S014-EV010-t64-merge-A
+  date: "2026-07-19"
+  timestamp: "2026-07-19"
+  stage: 12-verify-deploy
+  skill: 16-evolve
+  skill_id: 16-evolve
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  decision: >
+    User chose A — merge #726 and proceed to T6.5 (13-deploy-smoke). PR already MERGED
+    on GitHub at c73e0ad.
+  summary: >
+    PR-EV-010=#726 MERGED at c73e0ad (CI green tip bd0aee5). T6.4 / 12-verify-deploy
+    completed; T6.5 / 13-deploy-smoke started. PyPI Trusted Publisher still BLOCKED for
+    live tags.
+  status: confirmed
 - id: D-S014-EV010-t64-deploy-A
   date: "2026-07-19"
   timestamp: "2026-07-19"
@@ -3678,6 +3828,44 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
+  type: report
+  kind: report
+  stage: 13-deploy-smoke
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: >-
+    T6.6 hard gates completed (D-S014-EV010-t66-close-2); UJ-023 Trusted Publisher deferred
+- path: tests/perf/test_t66_hard_publish_gates.py
+  type: test
+  kind: test
+  stage: 13-deploy-smoke
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T6.6 hard publish gate tests (E10-35) PASS; closed via D-S014-EV010-t66-close-2"
+- path: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
+  type: report
+  kind: deploy-smoke
+  stage: 13-deploy-smoke
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: >-
+    T6.5 Render path PASS + APPROVED (D-S014-EV010-t65-approve-A); proceeding T6.6;
+    PyPI tags deferred (Trusted Publisher)
+- path: docs/deploy-state.md
+  type: state
+  stage: 13-deploy-smoke
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
 - path: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
   kind: stage-report
   stage: 11-verify-impl
@@ -4590,14 +4778,20 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     skipped_stages: []
-  current_stage: 12-verify-deploy  # T6.4 awaiting_merge; PR-EV-010=#726 open
+  current_stage: 16-evolve
   active_milestone: M6
-  active_task: T6.4
-  active_task_status: in_progress
+  active_task: T6.6
+  active_task_status: completed
+  note: >-
+    awaiting Trusted Publisher / Phase 4 close — M6 T6.5+T6.6 done
+    (D-S014-EV010-t66-close-2); UJ-023 live tags still deferred; evolve summary pending
   pr_id: PR-EV-010
   pr_number: 726
   pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
-  pr_status: open
+  pr_status: merged
+  pr_merge_commit: c73e0ad
+  merge_sha: c73e0ad  # canonical alias for pr_merge_commit
+  pending_commit_sha: null  # parent will commit T6.6 optimize on main; record sha via follow-up
   stages:
     00-context:
       status: in_progress
@@ -4640,14 +4834,16 @@ evolve_cycles:
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/06-tech-tooling.md
     07-build:
-      status: in_progress
+      status: completed
       mode: full
       started: '2026-07-18'
-      completed: null
-      note: "M6 T6.4 awaiting_merge; checklist approved (D-S014-EV010-t64-deploy-A); PR-EV-010=#726 open; tip f1a8799; next after merge T6.5 13-deploy-smoke."
+      completed: '2026-07-19'
+      note: >-
+        M6 complete — T6.6 approved (D-S014-EV010-t66-close-2); live PyPI tags deferred
+        (UJ-023)
       active_milestone: M6
-      active_task: T6.4
-      active_task_status: in_progress
+      active_task: T6.6
+      active_task_status: completed
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/t51-msgspec-http-parity.md
       - docs/sessions/S014-package-publish-validation/reports/t52-msgspec-http-helper.md
@@ -4656,6 +4852,10 @@ evolve_cycles:
       - docs/sessions/S014-package-publish-validation/reports/t55-frontend-msgspec-types.md
       - docs/sessions/S014-package-publish-validation/reports/t56-cors-after-msgspec.md
       - docs/sessions/S014-package-publish-validation/reports/verification-report-m5.md
+      - docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
+      - tests/perf/test_t66_hard_publish_gates.py
+      - packages/iwxxm-validate/rust/src/lib.rs
+      - packages/iwxxm-validate/src/iwxxm_validate/native.py
     08-verify-build:
       status: completed
       mode: full
@@ -4711,29 +4911,49 @@ evolve_cycles:
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/verify-impl.md
     12-verify-deploy:
-      status: in_progress
+      status: completed
       mode: adapted
       started: '2026-07-19'
-      completed: null
-      overall: checklist_approved
+      completed: '2026-07-19'
+      overall: approved
       note: >-
-        T6.4 awaiting_merge — checklist + rollback approved (D-S014-EV010-t64-deploy-A 1A/2A);
-        PR-EV-010=#726 open; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
-        stay in_progress until CI green + merge approval; next T6.5 13-deploy-smoke
+        T6.4 complete — checklist approved; PR #726 MERGED (c73e0ad); CI green tip bd0aee5
+        (D-S014-EV010-t64-merge-A)
       report: docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726
       pr_number: 726
       pr_id: PR-EV-010
+      pr_status: merged
+      merge_sha: c73e0ad
       active_milestone: M6
       active_task: T6.4
-      active_task_status: in_progress
+      active_task_status: completed
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/deploy-checklist.md
+    13-deploy-smoke:
+      status: completed
+      mode: full
+      started: '2026-07-19'
+      completed: '2026-07-19'
+      note: >-
+        T6.5+T6.6 done (D-S014-EV010-t66-close-2); UJ-023 still deferred Trusted Publisher
+      active_milestone: M6
+      active_task: T6.6
+      active_task_status: completed
+      report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
+      hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
+      - docs/deploy-state.md
+      - docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
+      - tests/perf/test_t66_hard_publish_gates.py
+      - packages/iwxxm-validate/rust/src/lib.rs
+      - packages/iwxxm-validate/src/iwxxm_validate/native.py
   gates:
     a_to_b: pending
     b_to_c: passed
     c_to_d: passed  # D-S014-EV010-c-to-d-pass 2026-07-19
-    deploy: pending  # awaiting PR #726 merge approval
+    deploy: passed_with_deferral  # Render + T6.6 hard gates done; PyPI tags (UJ-023) still Trusted Publisher blocked
   checkpoints:
     phase_a: pending
     phase_b:
@@ -4748,8 +4968,50 @@ evolve_cycles:
       status: passed
       completed: "2026-07-19"
       note: "User approved Pass Phase D → start T6.3 (D-S014-EV010-phase-d-to-t63)"
-    deploy: pending  # checklist approved; PR open; pause for merge
+    t65_deploy:
+      status: passed
+      completed: "2026-07-19"
+      note: >-
+        Phase Gate Log: T6.5 deploy checkpoint PASSED — User A Approve T6.5 → T6.6
+        (D-S014-EV010-t65-approve-A); Render H0ci/H1/H0c/H3/H4/H5 + H6′ UJ-022 PASS;
+        PyPI tags deferred (Trusted Publisher)
+    t66_hard_gates:
+      status: completed
+      completed: "2026-07-19"
+      note: >-
+        T6.6 hard gates completed (D-S014-EV010-t66-close-2) — schema cache XSD/combined
+        ~0.03× PASS; HTTP+wheels PASS; SCH-only soft-warn; evidence
+        t66-hard-publish-gates.md
+    deploy:
+      status: passed_with_deferral
+      completed: "2026-07-19"
+      note: >-
+        Render path + T6.6 hard gates done; PyPI tags (UJ-023) still Trusted Publisher
+        blocked — EV-010 remains open for Trusted Publisher / Phase 4 close
   notes:
+  - >-
+    2026-07-19 S014/EV-010 D-S014-EV010-t66-close-2 — Approve T6.6 + commit on main;
+    T6.6/07/13 completed; EV-010 in_progress awaiting Trusted Publisher / Phase 4 close;
+    pending_commit_sha null until parent records sha
+  - >-
+    2026-07-19 S014/EV-010 T6.6 hard gates PASS — schema caches in rust/src/lib.rs +
+    native.py clear_schema_caches; XSD/combined ~0.03×; SCH-only soft-warn; HTTP+wheels
+    PASS; awaiting_approval to complete; uncommitted on main; UJ-023 Trusted Publisher blocked
+  - >-
+    2026-07-19 S014/EV-010 D-S014-EV010-t66-lib-gate resolved option 3 — Optimize native
+    until 0.85× passes before any tag (user typed "0.08 x" → E10-35 0.85×); T6.6
+    in_progress optimizing iwxxm-validate Rust; 13+07 remain in_progress
+  - >-
+    2026-07-19 S014/EV-010 T6.6 PARTIAL/blocked — HTTP 1.0× PASS; wheels PASS; lib
+    0.85× FAIL (~35–52×); UJ-023 Trusted Publisher blocked; t66-hard-publish-gates.md;
+    D-S014-EV010-t66-lib-gate pending AskQuestion; 13+07 remain in_progress
+  - >-
+    2026-07-19 S014/EV-010 T6.5 completed/APPROVED (D-S014-EV010-t65-approve-A); T6.6
+    hard publish gates in_progress (E10-35); 13-deploy-smoke remains in_progress until
+    T6.6 done; PyPI tags still deferred
+  - >-
+    2026-07-19 S014/EV-010 T6.5 started — D-S014-EV010-t64-merge-A; PR #726 MERGED
+    (c73e0ad); CI green tip bd0aee5; T6.4/12 complete; 13-deploy-smoke in_progress
   - >-
     2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A (1A checklist+rollback;
     2A commit/push/open PR then pause); PR-EV-010=#726 open
@@ -4804,11 +5066,10 @@ evolve_cycles:
     kind: deploy-checklist
     stage: 12-verify-deploy
     session_id: S014-package-publish-validation
-    status: checklist_approved
+    status: completed
     note: >-
-      D-S014-EV010-t64-deploy-A (1A strategy+rollback; 2A PR then pause). PR-EV-010=#726
-      open awaiting_merge; tip f1a8799; PyPI Trusted Publisher BLOCKED for live tags;
-      stage 12 remains in_progress until CI green + merge approval; next T6.5 13-deploy-smoke
+      D-S014-EV010-t64-merge-A — PR #726 MERGED (c73e0ad); CI green tip bd0aee5; T6.4/12
+      complete; T6.5 13-deploy-smoke started; PyPI Trusted Publisher still BLOCKED for live tags
   - path: docs/sessions/S014-package-publish-validation/reports/verification-report.md
     kind: verification-report
     stage: 08-verify-build
@@ -4895,6 +5156,39 @@ evolve_cycles:
     session_id: S014-package-publish-validation
     status: completed
     note: "T3.9 optional iwxxm-validate CLI + smoke tests (b044871)"
+  - path: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
+    kind: deploy-smoke
+    stage: 13-deploy-smoke
+    session_id: S014-package-publish-validation
+    status: completed
+    note: >-
+      T6.5 Render path PASS + APPROVED (D-S014-EV010-t65-approve-A); H0ci/H1/H0c/H3/H4/H5
+      + H6′ UJ-022; PyPI tags deferred; T6.6 next
+  - path: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
+    kind: report
+    stage: 13-deploy-smoke
+    session_id: S014-package-publish-validation
+    status: completed
+    note: >-
+      T6.6 hard gates completed (D-S014-EV010-t66-close-2); UJ-023 Trusted Publisher deferred
+  - path: tests/perf/test_t66_hard_publish_gates.py
+    kind: test
+    stage: 13-deploy-smoke
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T6.6 hard publish gate tests (E10-35) PASS; task closed via D-S014-EV010-t66-close-2"
+  - path: packages/iwxxm-validate/rust/src/lib.rs
+    kind: code
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: pending_commit
+    note: "schema caches + clear_schema_caches (T6.6); pending_commit_sha via follow-up"
+  - path: packages/iwxxm-validate/src/iwxxm_validate/native.py
+    kind: code
+    stage: 07-build
+    session_id: S014-package-publish-validation
+    status: pending_commit
+    note: "clear_schema_caches helper (T6.6); pending_commit_sha via follow-up"
   issues: []
 
 - id: EV-001
@@ -6107,8 +6401,34 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: evolve/EV-010-package-publish-validation
+  current_branch: main
+  pending_commit:
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    decision: D-S014-EV010-t66-close-2
+    sha: null  # parent commits T6.6 optimize on main; record sha via follow-up update
+    note: >-
+      Approve T6.6 + commit on main pending — schema cache optimize
+      (rust/src/lib.rs, native.py), t66-hard-publish-gates.md, test_t66_hard_publish_gates.py
   notes:
+  - >-
+    2026-07-19 S014/EV-010 D-S014-EV010-t66-close-2 — T6.6/07/13 completed; pending_commit
+    sha null until parent records main commit
+  - >-
+    2026-07-19 S014/EV-010 T6.6 hard gates PASS (schema cache); awaiting_approval;
+    work on main with uncommitted changes (no commit requested)
+  - >-
+    2026-07-19 S014/EV-010 D-S014-EV010-t66-lib-gate option 3 — optimize native until
+    0.85× before tag; T6.6 in_progress; 13+07 remain in_progress
+  - >-
+    2026-07-19 S014/EV-010 T6.6 PARTIAL/blocked — lib 0.85× FAIL; HTTP+wheels PASS;
+    D-S014-EV010-t66-lib-gate pending; 13+07 remain in_progress
+  - >-
+    2026-07-19 S014/EV-010 T6.5 APPROVED (D-S014-EV010-t65-approve-A); T6.6 hard publish
+    gates in_progress; 13-deploy-smoke remains in_progress until T6.6 done
+  - >-
+    2026-07-19 S014/EV-010 T6.5 started — D-S014-EV010-t64-merge-A; PR #726 MERGED
+    (c73e0ad); CI green tip bd0aee5; T6.4 complete; 13-deploy-smoke in_progress
   - >-
     2026-07-19 S014/EV-010 T6.4 awaiting_merge — D-S014-EV010-t64-deploy-A; commit f1a8799;
     PR-EV-010=#726 open; tip f1a8799 pushed; pause for CI + merge; next T6.5 13-deploy-smoke
