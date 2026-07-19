@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
+    note: "M4 complete (T4.1–T4.5). Next: M5 msgspec HTTP (T5.1). Branch ahead of origin; single evolve PR at M6."
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,10 +1420,10 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
-      active_milestone: M3
-      active_task: M3-gate
-      active_task_status: pending
+      note: "M4 complete (T4.1–T4.5). Next: M5 msgspec HTTP (T5.1). Branch ahead of origin; single evolve PR at M6."
+      active_milestone: M4
+      active_task: M4-complete
+      active_task_status: completed
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1449,6 +1449,10 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
+    - "2026-07-19 S014/EV-010 T4.2 completed (24ad415); T4.3 in_progress"
+    - "2026-07-19 S014/EV-010 T4.1 completed (c48c692); T4.2 in_progress"
+    - "2026-07-19 S014/EV-010 M4 T4.1 in_progress — clean-venv convert + [validate] extra; M3 gate deferred per user continue"
     - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
     - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
     - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
@@ -4310,10 +4314,10 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
-      active_milestone: M3
-      active_task: M3-gate
-      active_task_status: pending
+      note: "M4 complete (T4.1–T4.5). Next: M5 msgspec HTTP (T5.1). Branch ahead of origin; single evolve PR at M6."
+      active_milestone: M4
+      active_task: M4-complete
+      active_task_status: completed
   gates:
     a_to_b: pending
     b_to_c: passed
@@ -4329,6 +4333,10 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
+  - "2026-07-19 S014/EV-010 T4.2 completed (24ad415); T4.3 in_progress"
+  - "2026-07-19 S014/EV-010 T4.1 completed (c48c692); T4.2 in_progress"
+  - "2026-07-19 S014/EV-010 M4 T4.1 in_progress — clean-venv convert + [validate] extra; M3 gate deferred per user continue"
   - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
   - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
   - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
@@ -5636,6 +5644,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
   - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
   - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
   - "M3 T3.8a complete (f95fe7d) — assert /validate binds validate_iwxxm without double XSD/SCH; next T3.8"
@@ -5902,6 +5911,46 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: a5a0fef2a4ef13c8463bc58dfaddf57cacc376dc
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T4.5] ci: add manylinux/macOS/Windows maturin publish jobs"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 3
+    timestamp: "2026-07-19T13:11:49Z"
+  - sha: 4970271222a51e44274049df49fbabcf645608dd
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T4.4] test: PyPI publish workflow OIDC checklist gate"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 3
+    timestamp: "2026-07-19T13:09:42Z"
+  - sha: ab0c5077bb133ffe5ec5372ae51f1371c8325b11
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T4.3] ci: add PyPI OIDC matrix publish workflow"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 2
+    timestamp: "2026-07-19T13:08:12Z"
+  - sha: 24ad415
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T4.2] feat: add tac2iwxxm[validate] extra deps and README"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-19"
+  - sha: c48c692
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T4.1] test: clean-venv convert + validate extra smoke (TC-F14-002)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 2
+    timestamp: "2026-07-19"
   - sha: 47dbd18d1fe44a97cbde8afcc41a3193ef3ab6e2
     branch: evolve/EV-010-package-publish-validation
     message: "chore: workflow-state after T3.9 — M3 complete"

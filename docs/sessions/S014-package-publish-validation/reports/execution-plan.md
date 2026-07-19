@@ -12,10 +12,10 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C (build) |
-| **Active milestone** | M3 — iwxxm-validate Rust + schema subset + xsdata |
-| **Active task** | M3 complete — next M4 (or 08-verify-build) |
-| **Tasks** | 19 / ~39 (M1–M3 complete) |
-| **Last updated** | 2026-07-18 |
+| **Active milestone** | M4 complete; next M5 — msgspec HTTP (T5.1) |
+| **Active task** | M4 complete (T4.1–T4.5); next M5 T5.1 |
+| **Tasks** | 24 / ~39 (M1–M4 complete; next M5 T5.1) |
+| **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
 
@@ -74,11 +74,11 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Test | Convert sample METAR in clean venv; `[validate]` extra resolves both validators | TC-F14-002 | T2.5, T3.3 | pending |
-| T4.2 | Code | `tac2iwxxm[validate]` extra deps; README | F14; E10-20 | T4.1 | pending |
-| T4.3 | Config | Single GHA publish workflow + **matrix** (3 packages); OIDC `id-token: write`; tag filters | TC-F14-001; E10-37 | — | pending |
-| T4.4 | Test | Workflow dry-run / act or CI on tag push to TestPyPI if configured; else checklist gate | pypi-release-checklist | T4.3 | pending |
-| T4.5 | Config | manylinux + macOS + Windows maturin wheel jobs for native packages | E10-39 | T4.3, T3.1 | pending |
+| T4.1 | Test | Convert sample METAR in clean venv; `[validate]` extra resolves both validators | TC-F14-002 | T2.5, T3.3 | completed |
+| T4.2 | Code | `tac2iwxxm[validate]` extra deps; README | F14; E10-20 | T4.1 | completed |
+| T4.3 | Config | Single GHA publish workflow + **matrix** (3 packages); OIDC `id-token: write`; tag filters | TC-F14-001; E10-37 | — | completed |
+| T4.4 | Test | Workflow dry-run / act or CI on tag push to TestPyPI if configured; else checklist gate | pypi-release-checklist | T4.3 | completed |
+| T4.5 | Config | manylinux + macOS + Windows maturin wheel jobs for native packages | E10-39 | T4.3, T3.1 | completed |
 
 ### M5 — msgspec high-churn HTTP + FE types (F11.2)
 
