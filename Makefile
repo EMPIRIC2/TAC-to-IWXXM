@@ -72,28 +72,28 @@ typecheck-js:
 lint: lint-py lint-js
 
 lint-py:
-	$(UV) run ruff check $(PY_LINT)
+	$(UV) run ruff check --force-exclude $(PY_LINT)
 
 lint-js:
 	$(PNPM) run lint:js
 
 lint-backend:
-	$(UV) run ruff check apps/backend/src apps/backend/tests
+	$(UV) run ruff check --force-exclude apps/backend/src apps/backend/tests
 
 lint-auth:
-	$(UV) run ruff check packages/auth/src packages/auth/tests
+	$(UV) run ruff check --force-exclude packages/auth/src packages/auth/tests
 
 lint-shared:
-	$(UV) run ruff check packages/shared packages/shared/tests
+	$(UV) run ruff check --force-exclude packages/shared packages/shared/tests
 
 lint-tac2iwxxm:
-	$(UV) run ruff check packages/tac2iwxxm/src packages/tac2iwxxm/tests
+	$(UV) run ruff check --force-exclude packages/tac2iwxxm/src packages/tac2iwxxm/tests
 
 lint-iwxxm-validate:
-	$(UV) run ruff check packages/iwxxm-validate/src packages/iwxxm-validate/tests
+	$(UV) run ruff check --force-exclude packages/iwxxm-validate/src packages/iwxxm-validate/tests
 
 lint-tac-validate:
-	$(UV) run ruff check packages/tac-validate/src packages/tac-validate/tests
+	$(UV) run ruff check --force-exclude packages/tac-validate/src packages/tac-validate/tests
 
 lint-frontend:
 	$(PNPM) --filter @metar/frontend run lint
@@ -101,13 +101,13 @@ lint-frontend:
 lint-fix: lint-fix-py lint-fix-frontend
 
 lint-fix-py:
-	$(UV) run ruff check --fix $(PY_LINT)
+	$(UV) run ruff check --fix --force-exclude $(PY_LINT)
 
 lint-fix-backend:
-	$(UV) run ruff check --fix apps/backend/src apps/backend/tests
+	$(UV) run ruff check --fix --force-exclude apps/backend/src apps/backend/tests
 
 lint-fix-auth:
-	$(UV) run ruff check --fix packages/auth/src packages/auth/tests
+	$(UV) run ruff check --fix --force-exclude packages/auth/src packages/auth/tests
 
 lint-fix-frontend:
 	$(PNPM) --filter @metar/frontend exec eslint src --fix

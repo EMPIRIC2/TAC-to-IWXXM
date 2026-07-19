@@ -4,16 +4,28 @@ from __future__ import annotations
 
 import builtins
 import io
+import json
 from types import SimpleNamespace
+from typing import Any
 
 import pytest
 from fastapi import UploadFile
 from fastapi.testclient import TestClient
+from starlette.responses import Response
 
 from src import api as api_module
 from src.schemas.validation import ValidationLayer, ValidationLevel
 from src.utilities.conversion import ConversionError
 from src.utilities.security import verify_supabase_token
+
+
+def _json_payload(response: Any) -> dict[str, Any]:
+    """Decode msgspec/FastAPI Response bodies or pass through plain mappings (ADR-026)."""
+    if isinstance(response, Response):
+        return json.loads(response.body)
+    if isinstance(response, dict):
+        return response
+    raise TypeError(f"unexpected validate response type: {type(response)!r}")
 
 
 @pytest.fixture
@@ -130,6 +142,7 @@ async def test_parse_optional_files_filters_non_upload_values():
 
 @pytest.mark.asyncio
 async def test_validate_comprehensive_json_body_maps_level_to_layers(monkeypatch):
+    """schematron level: package SDK owns Schematron; orchestrator layers are empty (F11.4)."""
     captured = {}
 
     def fake_normalize(version):
@@ -144,8 +157,8 @@ async def test_validate_comprehensive_json_body_maps_level_to_layers(monkeypatch
             return SimpleNamespace(
                 is_valid=True,
                 version=kwargs["version"],
-                layers_run=[ValidationLayer.SCHEMATRON],
-                layers_passed=[ValidationLayer.SCHEMATRON],
+                layers_run=kwargs["layers"],
+                layers_passed=kwargs["layers"],
                 layers_failed=[],
                 all_issues=[],
                 issues_by_layer={},
@@ -157,6 +170,11 @@ async def test_validate_comprehensive_json_body_maps_level_to_layers(monkeypatch
     monkeypatch.setattr(versions_module, "normalize_version", fake_normalize)
     monkeypatch.setattr(versions_module, "get_version_config", fake_get_version_config)
     monkeypatch.setattr(api_module, "get_validation_orchestrator", lambda: _Orchestrator())
+    monkeypatch.setattr(
+        api_module,
+        "iwxxm_validate_fn",
+        lambda *_a, **_k: SimpleNamespace(ok=True, issues=[]),
+    )
 
     request_body = api_module.ValidateRequest(
         iwxxm_xml="<iwxxm:METAR/>",
@@ -169,8 +187,9 @@ async def test_validate_comprehensive_json_body_maps_level_to_layers(monkeypatch
         user={"sub": "test-user", "aud": "test-aud"},
     )
 
-    assert response["is_valid"] is True
-    assert captured["layers"] == [ValidationLayer.SCHEMATRON]
+    payload = _json_payload(response)
+    assert payload["is_valid"] is True
+    assert captured["layers"] == []
     assert captured["stop_on_error"] is not False
 
 
@@ -178,7 +197,8 @@ async def test_validate_comprehensive_json_body_maps_level_to_layers(monkeypatch
 @pytest.mark.parametrize(
     "level,expected",
     [
-        ("schema", [ValidationLayer.XML_WELLFORMED, ValidationLayer.XML_SCHEMA]),
+        # schema: package owns XSD; orchestrator keeps well-formed only (F11.4)
+        ("schema", [ValidationLayer.XML_WELLFORMED]),
         ("icao_opmet", [ValidationLayer.WMO_CODELISTS, ValidationLayer.GML_REFERENCES]),
         ("unexpected", [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]),
     ],
@@ -206,6 +226,11 @@ async def test_validate_comprehensive_json_level_mapping_variants(monkeypatch, l
             )
 
     monkeypatch.setattr(api_module, "get_validation_orchestrator", lambda: _Orchestrator())
+    monkeypatch.setattr(
+        api_module,
+        "iwxxm_validate_fn",
+        lambda *_a, **_k: SimpleNamespace(ok=True, issues=[]),
+    )
 
     request_body = api_module.ValidateRequest(
         iwxxm_xml="<iwxxm:METAR/>",
@@ -219,7 +244,8 @@ async def test_validate_comprehensive_json_level_mapping_variants(monkeypatch, l
         user={"sub": "test-user", "aud": "test-aud"},
     )
 
-    assert response["is_valid"] is True
+    payload = _json_payload(response)
+    assert payload["is_valid"] is True
     assert captured["layers"] == expected
 
 
@@ -416,6 +442,7 @@ async def test_validate_comprehensive_comprehensive_level_and_import_fallback(mo
         user={"sub": "test-user", "aud": "test-aud"},
     )
 
-    assert response["is_valid"] is True
+    payload = _json_payload(response)
+    assert payload["is_valid"] is True
     assert captured["layers"]
     assert ValidationLayer.AIRPORT_ICAO in captured["layers"]

@@ -20,6 +20,13 @@ packages = ["src/metar_shared"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 
+# ADR-027 — when `make lint` passes `packages/shared`, Ruff uses this pyproject as
+# project root (root extend-exclude does not apply). Keep generated trees out of lint.
+[tool.ruff]
+extend-exclude = [
+  "src/metar_shared/iwxxm_xsd/v*",
+]
+
 [tool.coverage.run]
 branch = true
 source = ["src/metar_shared"]

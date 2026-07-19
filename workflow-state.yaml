@@ -80,11 +80,14 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M5 complete (T5.1–T5.6). Next: M6 T6.1. Branch ahead of origin; single evolve PR at M6."
+    note: "M5 complete (T5.1–T5.6). T6.1 PASS; C→D pending AskQuestion; next T6.2 after C→D. Branch ahead of origin; single evolve PR at M6."
   - stage: 08-verify-build
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: '2026-07-19'
+    completed: '2026-07-19'
+    note: "T6.1 PASS — verification-report.md; integration SKIPPED (docker pull); C→D pending AskQuestion; next after C→D: 09-qa"
   - stage: 09-qa
     required: true
     mode: full
@@ -108,7 +111,7 @@ active_session:
     status: pending
     note: Included per E10-15 msgspec HTTP + Render redeploy
   skipped_stages: []
-  current_stage: 07-build
+  current_stage: 08-verify-build  # held until C→D AskQuestion; next stage 09-qa
   completed_at: null
 
 sessions:
@@ -1420,9 +1423,9 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M5 complete (T5.1–T5.6). Next: M6 T6.1. Branch ahead of origin; single evolve PR at M6."
+      note: "M5 complete; T6.1 PASS (08-verify-build); C→D pending AskQuestion; next T6.2 after C→D. Branch ahead of origin; single evolve PR at M6."
       active_milestone: M6
-      active_task: T6.1
+      active_task: T6.2
       active_task_status: pending
     - status: completed
       session_id: S004-issue-555-feedback
@@ -1449,6 +1452,8 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED; next T6.2 after C→D; git commit for T6.1 about to happen (parent)"
+    - "2026-07-19 S014/EV-010 M6 started — T6.1 08-verify-build in_progress"
     - "2026-07-19 S014/EV-010 M5 complete (T5.1–T5.6; 59d89af/4202392/2abd4a0/93a67f2); active_milestone M6; active_task T6.1 pending"
     - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
     - "2026-07-19 S014/EV-010 M5 started — T5.1 in progress (msgspec HTTP API tests)"
@@ -1674,6 +1679,19 @@ stages:
       report:
         status: completed
     delta_substages:
+    - id: S014-package-publish-validation
+      session_id: S014-package-publish-validation
+      evolve_cycle_id: EV-010
+      status: completed
+      started_at: "2026-07-19T13:40:01Z"
+      completed_at: "2026-07-19"
+      overall: pass
+      mode: full
+      report: docs/sessions/S014-package-publish-validation/reports/verification-report.md
+      note: "T6.1 PASS — verification-report.md; integration SKIPPED (docker pull); C→D pending AskQuestion; next T6.2 after C→D"
+      active_milestone: M6
+      active_task: T6.2
+      active_task_status: pending
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1700,6 +1718,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: "T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass"
     notes:
+    - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED (docker pull); C→D pending AskQuestion; git commit for T6.1 about to happen (parent)"
+    - "2026-07-19 S014/EV-010 M6 started — T6.1 08-verify-build in_progress"
     - "S001 / EV-001 — PASS 2026-06-22 (docs/sessions/S001-convert-send-buttons/reports/verification-report.md)"
     - "S004 / EV-004 — FAIL 2026-06-24 on feat/S004-issue-555-feedback"
     - "H0c CORS 6/6 pass; connectivity artifacts present"
@@ -3469,6 +3489,15 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/verification-report.md
+  kind: verification-report
+  stage: 08-verify-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T6.1 PASS — integration SKIPPED (docker pull); C→D pending AskQuestion"
 - path: docs/sessions/S014-package-publish-validation/reports/verification-report-m5.md
   kind: report
   stage: 07-build
@@ -4333,7 +4362,10 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     skipped_stages: []
-  current_stage: 07-build
+  current_stage: 08-verify-build  # held until C→D AskQuestion; next stage 09-qa (T6.2)
+  active_milestone: M6
+  active_task: T6.2
+  active_task_status: pending
   stages:
     00-context:
       status: in_progress
@@ -4380,9 +4412,9 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M5 complete (T5.1–T5.6). Next: M6 T6.1. Branch ahead of origin; single evolve PR at M6."
+      note: "M5 complete (T5.1–T5.6). T6.1 PASS; C→D pending AskQuestion; next T6.2 after C→D. Branch ahead of origin; single evolve PR at M6."
       active_milestone: M6
-      active_task: T6.1
+      active_task: T6.2
       active_task_status: pending
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/t51-msgspec-http-parity.md
@@ -4392,10 +4424,24 @@ evolve_cycles:
       - docs/sessions/S014-package-publish-validation/reports/t55-frontend-msgspec-types.md
       - docs/sessions/S014-package-publish-validation/reports/t56-cors-after-msgspec.md
       - docs/sessions/S014-package-publish-validation/reports/verification-report-m5.md
+    08-verify-build:
+      status: completed
+      mode: full
+      started: '2026-07-19'
+      started_at: '2026-07-19T13:40:01Z'
+      completed: '2026-07-19'
+      overall: pass
+      report: docs/sessions/S014-package-publish-validation/reports/verification-report.md
+      note: "T6.1 PASS — verification-report.md; integration SKIPPED (docker pull); C→D pending AskQuestion; next T6.2 after C→D"
+      active_milestone: M6
+      active_task: T6.2
+      active_task_status: pending
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/verification-report.md
   gates:
     a_to_b: pending
     b_to_c: passed
-    c_to_d: pending
+    c_to_d: pending  # await user C→D checkpoint AskQuestion before 09-qa
     deploy: pending
   checkpoints:
     phase_a: pending
@@ -4407,6 +4453,8 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED; next T6.2 after C→D; git commit for T6.1 about to happen (parent)"
+  - "2026-07-19 S014/EV-010 M6 started — T6.1 08-verify-build in_progress"
   - "2026-07-19 S014/EV-010 M5 complete (T5.1–T5.6; 59d89af/4202392/2abd4a0/93a67f2); active_milestone M6; active_task T6.1 pending"
   - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
   - "2026-07-19 S014/EV-010 M5 started — T5.1 in progress (msgspec HTTP API tests)"
@@ -4439,6 +4487,12 @@ evolve_cycles:
     status: in_progress
   - path: docs/sessions/S014-package-publish-validation/reports/evolve-summary.md
     status: pending
+  - path: docs/sessions/S014-package-publish-validation/reports/verification-report.md
+    kind: verification-report
+    stage: 08-verify-build
+    session_id: S014-package-publish-validation
+    status: completed
+    note: "T6.1 PASS — integration SKIPPED (docker pull); C→D pending"
   - path: docs/sessions/S014-package-publish-validation/reports/03-plan-tooling.md
     kind: report
     stage: 03-plan-tooling
@@ -5721,6 +5775,8 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED; C→D pending; git commit for T6.1 about to happen (parent)"
+  - "2026-07-19 S014/EV-010 M6 started — T6.1 08-verify-build in_progress"
   - "2026-07-19 S014/EV-010 M5 complete (T5.1–T5.6; 59d89af/4202392/2abd4a0/93a67f2); active_milestone M6; active_task T6.1 pending"
   - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
   - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"

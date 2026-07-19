@@ -11,10 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C (build) |
-| **Active milestone** | M5 complete; next M6 — verify & deploy (T6.1) |
-| **Active task** | M5 complete (T5.1–T5.6); next M6 T6.1 |
-| **Tasks** | 30 / ~39 (M1–M5 complete; next M6 T6.1) |
+| **Active phase** | Phase C → D (T6.1 PASS; C→D checkpoint) |
+| **Active milestone** | M6 — verify & deploy |
+| **Active task** | T6.1 completed; next T6.2 (09-qa + 10-e2e) |
+| **Tasks** | 31 / ~39 (T6.1 PASS) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -95,7 +95,7 @@
 
 | Task | Type | Description | Stage | Depends On | Status |
 |------|------|-------------|-------|------------|--------|
-| T6.1 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5 | pending |
+| T6.1 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5 | completed |
 | T6.2 | Test | 09-qa + 10-e2e — QA + UJ-022/023 / DEV-005 | 09/10 | T6.1 | pending |
 | T6.3 | Docs | 11-verify-impl — per-Fn F11–F14 acceptance | 11 | T6.2 | pending |
 | T6.4 | Config | 12-verify-deploy — PyPI OIDC + Render checklist; evolve PR | 12 | T6.3 | pending |
