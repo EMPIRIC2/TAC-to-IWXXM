@@ -29,7 +29,7 @@ def test_pypi_publish_workflow_oidc_and_matrix() -> None:
     """
     Checklist gate when TestPyPI / act is not configured (T4.4).
 
-    Asserts one matrix workflow, tag filters, and ``id-token: write`` on publish.
+    Asserts select→fromJSON matrices, tag filters, and ``id-token: write`` on publish.
     """
     wf = _load_workflow()
     assert wf.get("name") == "PyPI Publish"
@@ -40,25 +40,36 @@ def test_pypi_publish_workflow_oidc_and_matrix() -> None:
     assert "workflow_dispatch" in on
 
     jobs = wf["jobs"]
-    assert set(jobs) >= {"build", "build-native", "smoke", "publish"}
+    assert set(jobs) >= {"select", "build", "build-native", "smoke", "publish"}
 
-    build_matrix = jobs["build"]["strategy"]["matrix"]["include"]
-    packages = {row["package"] for row in build_matrix}
-    assert packages == EXPECTED_PACKAGES
+    select = jobs["select"]
+    assert "pure_matrix" in select["outputs"]
+    assert "native_matrix" in select["outputs"]
+    select_run = "\n".join(
+        str(step.get("run", "")) for step in select["steps"] if isinstance(step, dict)
+    )
+    for pkg in EXPECTED_PACKAGES:
+        assert pkg in select_run
+
+    build = jobs["build"]
+    assert "fromJSON(needs.select.outputs.pure_matrix)" in str(
+        build["strategy"]["matrix"]["include"]
+    )
 
     native = jobs["build-native"]
-    assert set(native["strategy"]["matrix"]["os"]) == {
-        "ubuntu-latest",
-        "macos-latest",
-        "windows-latest",
-    }
-    native_pkgs = {row["name"] for row in native["strategy"]["matrix"]["package"]}
-    assert native_pkgs == {"tac2iwxxm", "iwxxm-validate"}
+    assert native["if"] == "needs.select.outputs.has_native == 'true'"
+    assert "fromJSON(needs.select.outputs.native_matrix)" in str(
+        native["strategy"]["matrix"]["include"]
+    )
     assert "PyO3/maturin-action@" in str(native["steps"])
+    # Native packages (no pure-only tac-validate in select native_matrix).
+    assert "tac2iwxxm" in select_run and "iwxxm-validate" in select_run
+    assert "native='[]'" in select_run or 'native="[]"' in select_run
 
     publish = jobs["publish"]
     assert publish["permissions"]["id-token"] == "write"
     assert publish["environment"]["name"] == "pypi"
+    assert "should_publish" in str(publish["if"])
 
     # Trusted publishing: no password / API token wiring in the publish step.
     publish_steps = publish["steps"]
