@@ -40,6 +40,15 @@ native_soft_bench:
   lib_path_ratio: 0.85
   publish_hard_task: T6.6
 
+# T5.3 — soft-bench wiring for msgspec HTTP encode (E10-35).
+http_soft_bench:
+  hard_env: IWXXM_VALIDATE_HARD_PERF
+  http_msgspec_ratio: 1.0
+  note: >
+    Soft head-to-head msgspec encode vs same-run pydantic model_dump_json;
+    helper path vs committed http_pydantic_map ceiling. Hard-fail at T6.6.
+  publish_hard_task: T6.6
+
 caveats:
   - schematron_xslt2_skipped_d_s008_t21_sch
   - rebaseline_after_f13_rust_schematron

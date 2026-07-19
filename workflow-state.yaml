@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M5 started — T5.1 in progress (msgspec HTTP API tests). Branch ahead of origin; single evolve PR at M6."
+    note: "M5 T5.1–T5.2 done; next T5.3 (msgspec HTTP). Branch ahead of origin; single evolve PR at M6."
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,9 +1420,9 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M5 started — T5.1 in progress (msgspec HTTP API tests). Branch ahead of origin; single evolve PR at M6."
+      note: "M5 T5.1–T5.2 done; next T5.3 (msgspec HTTP). Branch ahead of origin; single evolve PR at M6."
       active_milestone: M5
-      active_task: T5.1
+      active_task: T5.3
       active_task_status: in_progress
     - status: completed
       session_id: S004-issue-555-feedback
@@ -1449,6 +1449,7 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
     - "2026-07-19 S014/EV-010 M5 started — T5.1 in progress (msgspec HTTP API tests)"
     - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
     - "2026-07-19 S014/EV-010 T4.2 completed (24ad415); T4.3 in_progress"
@@ -3467,6 +3468,24 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/t52-msgspec-http-helper.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.2 msgspec JSON response helper + high-churn wiring (6186888)"
+- path: docs/sessions/S014-package-publish-validation/reports/t51-msgspec-http-parity.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.1 msgspec high-churn HTTP parity TC-F11-001 (54a7180)"
 - path: docs/sessions/S014-package-publish-validation/reports/t39-iwxxm-validate-cli.md
   kind: report
   stage: 07-build
@@ -4315,10 +4334,13 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M5 started — T5.1 in progress (msgspec HTTP API tests). Branch ahead of origin; single evolve PR at M6."
+      note: "M5 T5.1–T5.2 done; next T5.3 (msgspec HTTP). Branch ahead of origin; single evolve PR at M6."
       active_milestone: M5
-      active_task: T5.1
+      active_task: T5.3
       active_task_status: in_progress
+      artifacts_updated:
+      - docs/sessions/S014-package-publish-validation/reports/t51-msgspec-http-parity.md
+      - docs/sessions/S014-package-publish-validation/reports/t52-msgspec-http-helper.md
   gates:
     a_to_b: pending
     b_to_c: passed
@@ -4334,6 +4356,7 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
   - "2026-07-19 S014/EV-010 M5 started — T5.1 in progress (msgspec HTTP API tests)"
   - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
   - "2026-07-19 S014/EV-010 T4.2 completed (24ad415); T4.3 in_progress"
@@ -5646,6 +5669,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
   - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
   - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
   - "M3 T3.8 complete (8af040b) — bind /validate to validate_iwxxm and skip duplicate XSD/SCH; next T3.9"
@@ -5913,6 +5937,22 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 618688877dd105a23e625d2deb70fc8e7a5859ce
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.2] feat: msgspec JSON response helper for high-churn routes"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 7
+    timestamp: "2026-07-19T13:28:17Z"
+  - sha: 54a7180e7edb52fdcdd8c5b4e6d19fa6bed343d1
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.1] test: msgspec high-churn HTTP parity (TC-F11-001)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 2
+    timestamp: "2026-07-19T13:27:51Z"
   - sha: a5a0fef2a4ef13c8463bc58dfaddf57cacc376dc
     branch: evolve/EV-010-package-publish-validation
     message: "[T4.5] ci: add manylinux/macOS/Windows maturin publish jobs"
