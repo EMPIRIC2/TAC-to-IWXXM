@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-18'
-    note: "M5 T5.1–T5.2 done; next T5.3 (msgspec HTTP). Branch ahead of origin; single evolve PR at M6."
+    note: "M5 complete (T5.1–T5.6). Next: M6 T6.1. Branch ahead of origin; single evolve PR at M6."
   - stage: 08-verify-build
     required: true
     mode: full
@@ -1420,10 +1420,10 @@ stages:
       status: in_progress
       started_at: "2026-07-18"
       mode: full
-      note: "M5 T5.1–T5.2 done; next T5.3 (msgspec HTTP). Branch ahead of origin; single evolve PR at M6."
-      active_milestone: M5
-      active_task: T5.3
-      active_task_status: in_progress
+      note: "M5 complete (T5.1–T5.6). Next: M6 T6.1. Branch ahead of origin; single evolve PR at M6."
+      active_milestone: M6
+      active_task: T6.1
+      active_task_status: pending
     - status: completed
       session_id: S004-issue-555-feedback
       evolve_cycle_id: EV-004
@@ -1449,6 +1449,7 @@ stages:
       active_task: T6.4
       active_task_status: in_progress
     notes:
+    - "2026-07-19 S014/EV-010 M5 complete (T5.1–T5.6; 59d89af/4202392/2abd4a0/93a67f2); active_milestone M6; active_task T6.1 pending"
     - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
     - "2026-07-19 S014/EV-010 M5 started — T5.1 in progress (msgspec HTTP API tests)"
     - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
@@ -3468,6 +3469,51 @@ decisions_log:
   status: confirmed
 
 artifacts:
+- path: docs/sessions/S014-package-publish-validation/reports/verification-report-m5.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "M5 verification report (T5.1–T5.6 msgspec HTTP + FE types)"
+- path: docs/sessions/S014-package-publish-validation/reports/t56-cors-after-msgspec.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.6 H0c CORS re-check after msgspec HTTP (93a67f2)"
+- path: docs/sessions/S014-package-publish-validation/reports/t55-frontend-msgspec-types.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.5 FE types aligned with msgspec HTTP responses (2abd4a0)"
+- path: docs/sessions/S014-package-publish-validation/reports/t54-vitest-msgspec-shape-parity.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.4 Vitest msgspec HTTP response shape parity (4202392)"
+- path: docs/sessions/S014-package-publish-validation/reports/t53-http-msgspec-soft-benches.md
+  kind: report
+  stage: 07-build
+  session_id: S014-package-publish-validation
+  evolve_cycle_id: EV-010
+  created_at: "2026-07-19"
+  updated_at: "2026-07-19"
+  status: completed
+  note: "T5.3 soft HTTP msgspec bench vs pydantic map E10-35 (59d89af)"
 - path: docs/sessions/S014-package-publish-validation/reports/t52-msgspec-http-helper.md
   kind: report
   stage: 07-build
@@ -4334,13 +4380,18 @@ evolve_cycles:
       mode: full
       started: '2026-07-18'
       completed: null
-      note: "M5 T5.1–T5.2 done; next T5.3 (msgspec HTTP). Branch ahead of origin; single evolve PR at M6."
-      active_milestone: M5
-      active_task: T5.3
-      active_task_status: in_progress
+      note: "M5 complete (T5.1–T5.6). Next: M6 T6.1. Branch ahead of origin; single evolve PR at M6."
+      active_milestone: M6
+      active_task: T6.1
+      active_task_status: pending
       artifacts_updated:
       - docs/sessions/S014-package-publish-validation/reports/t51-msgspec-http-parity.md
       - docs/sessions/S014-package-publish-validation/reports/t52-msgspec-http-helper.md
+      - docs/sessions/S014-package-publish-validation/reports/t53-http-msgspec-soft-benches.md
+      - docs/sessions/S014-package-publish-validation/reports/t54-vitest-msgspec-shape-parity.md
+      - docs/sessions/S014-package-publish-validation/reports/t55-frontend-msgspec-types.md
+      - docs/sessions/S014-package-publish-validation/reports/t56-cors-after-msgspec.md
+      - docs/sessions/S014-package-publish-validation/reports/verification-report-m5.md
   gates:
     a_to_b: pending
     b_to_c: passed
@@ -4356,6 +4407,7 @@ evolve_cycles:
     phase_d: pending
     deploy: pending
   notes:
+  - "2026-07-19 S014/EV-010 M5 complete (T5.1–T5.6; 59d89af/4202392/2abd4a0/93a67f2); active_milestone M6; active_task T6.1 pending"
   - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
   - "2026-07-19 S014/EV-010 M5 started — T5.1 in progress (msgspec HTTP API tests)"
   - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
@@ -5669,6 +5721,7 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-010-package-publish-validation
   notes:
+  - "2026-07-19 S014/EV-010 M5 complete (T5.1–T5.6; 59d89af/4202392/2abd4a0/93a67f2); active_milestone M6; active_task T6.1 pending"
   - "2026-07-19 S014/EV-010 T5.1–T5.2 completed (54a7180 / 6186888); active_task T5.3 in_progress"
   - "2026-07-19 S014/EV-010 M4 complete (T4.1–T4.5); next M5 T5.1"
   - "M3 complete (T3.1–T3.9; b044871) — awaiting 08-verify-build / M3 minor PR then M4"
@@ -5937,6 +5990,38 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 93a67f2ff68e9591d27fffc5a3c4ae125288ae82
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.6] test: H0c CORS re-check after msgspec HTTP"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 4
+    timestamp: "2026-07-19T13:35:21Z"
+  - sha: 2abd4a02b789eb60879c206e18f862996d7cb988
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.5] feat: align FE types with msgspec HTTP responses"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 2
+    timestamp: "2026-07-19T13:33:41Z"
+  - sha: 420239227d0d05a6d91f7d78d0cd9e2e3de9c170
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.4] test: Vitest msgspec HTTP response shape parity"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 2
+    timestamp: "2026-07-19T13:33:41Z"
+  - sha: 59d89af2357a7ac8a3e1bef7a473d1cb73fd81db
+    branch: evolve/EV-010-package-publish-validation
+    message: "[T5.3] test: soft HTTP msgspec bench vs pydantic map (E10-35)"
+    stage: "07-build"
+    session_id: S014-package-publish-validation
+    evolve_cycle_id: EV-010
+    files_changed: 5
+    timestamp: "2026-07-19T13:30:50Z"
   - sha: 618688877dd105a23e625d2deb70fc8e7a5859ce
     branch: evolve/EV-010-package-publish-validation
     message: "[T5.2] feat: msgspec JSON response helper for high-churn routes"
