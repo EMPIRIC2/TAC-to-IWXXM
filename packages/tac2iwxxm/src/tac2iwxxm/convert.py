@@ -35,6 +35,7 @@ _REMARK_SPAN_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("malformed SLP", re.compile(r"\bSLP(?!\d{3}\b)\w*\b")),
     ("malformed PK WND", re.compile(r"\bPK\s+WND\b")),
 )
+_RMK_TOKEN = re.compile(r"\bRMK\b")
 
 
 _PREVIEW_ROOTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"})
@@ -219,6 +220,21 @@ def convert(
         return _fail("PARSE_ERROR", str(exc), span=True)
 
     issues: list[ConvertIssue] = []
+    if profile_l == "annex3" and product_u in {"METAR", "SPECI"} and ir.get("remarks_present"):
+        rmk_match = _RMK_TOKEN.search(tac)
+        issues.append(
+            ConvertIssue(
+                severity="info",
+                code="REMARKS_EXCLUDED",
+                message=(
+                    "REMARKS (RMK) present in TAC but excluded from annex3 IWXXM output; "
+                    "use profile=iwxxm_us to retain US remarks"
+                ),
+                location="remarks",
+                start=rmk_match.start() if rmk_match else None,
+                end=rmk_match.end() if rmk_match else None,
+            )
+        )
     if profile_l == "iwxxm_us":
         raw_remarks: object = ir.get("remark_issues")
         if isinstance(raw_remarks, list):
