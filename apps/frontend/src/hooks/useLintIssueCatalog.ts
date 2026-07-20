@@ -31,6 +31,7 @@ export function useLintIssueCatalog(options: {
       return;
     }
     const controller = new AbortController();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch catalog when product/token changes
     setLoading(true);
     setError(null);
     fetchLintIssueCatalog({
