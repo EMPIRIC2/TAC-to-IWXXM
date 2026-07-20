@@ -34,6 +34,34 @@
       "ok": true
     },
     {
+      "id": "accept_metar_r2_vis_sm",
+      "product": "METAR",
+      "theme": "R2",
+      "tac": "accept/metar_r2_vis_sm.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r2_vis_9999",
+      "product": "METAR",
+      "theme": "R2",
+      "tac": "accept/metar_r2_vis_9999.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r2_vis_meters",
+      "product": "METAR",
+      "theme": "R2",
+      "tac": "accept/metar_r2_vis_meters.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_r2_vis_sm",
+      "product": "SPECI",
+      "theme": "R2",
+      "tac": "accept/speci_r2_vis_sm.tac",
+      "ok": true
+    },
+    {
       "id": "accept_taf_basic",
       "product": "TAF",
       "tac": "accept/taf_basic.tac",
@@ -345,6 +373,67 @@
       "ok": true,
       "expected_codes": ["ODD_FIELD_ORDER"],
       "expected_severity": "warning",
+      "require_spans": true
+    }
+  ],
+  "r2_fraction_accept": [
+    {
+      "id": "accept_metar_r2_vis_half_sm",
+      "product": "METAR",
+      "theme": "R2",
+      "cite": "US SM fraction 1/2SM; research R2",
+      "tac": "accept/metar_r2_vis_half_sm.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r2_vis_mixed_fraction",
+      "product": "METAR",
+      "theme": "R2",
+      "cite": "US SM mixed fraction 1 1/2SM; research R2",
+      "tac": "accept/metar_r2_vis_mixed_fraction.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r2_vis_m_prefix",
+      "product": "METAR",
+      "theme": "R2",
+      "cite": "US M1/4SM less-than prefix; research R2",
+      "tac": "accept/metar_r2_vis_m_prefix.tac",
+      "ok": true
+    }
+  ],
+  "visibility_errors": [
+    {
+      "id": "metar_invalid_vis_km",
+      "product": "METAR",
+      "theme": "R2",
+      "depth": "full_checklist",
+      "cite": "visibility not KM; research R2",
+      "tac": "negative/metar/invalid_vis_km.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_VISIBILITY"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_invalid_vis_five_digit",
+      "product": "METAR",
+      "theme": "R2",
+      "depth": "full_checklist",
+      "cite": "meters are 4 digits; research R2",
+      "tac": "negative/metar/invalid_vis_five_digit.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_VISIBILITY"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_invalid_vis_miles_word",
+      "product": "SPECI",
+      "theme": "R2",
+      "depth": "full_checklist",
+      "cite": "visibility not MILES word; research R2",
+      "tac": "negative/speci/invalid_vis_miles_word.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_VISIBILITY"],
       "require_spans": true
     }
   ]

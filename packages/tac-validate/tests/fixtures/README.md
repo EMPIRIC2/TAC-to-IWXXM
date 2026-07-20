@@ -42,11 +42,13 @@ Convert goldens live under `packages/tac2iwxxm/tests/fixtures/{annex3_golden,iwx
 Diagnostics assertions require product-rule codes/spans from
 `check_product_rules`.
 
-| Manifest key     | `ok`    | Role                                                |
-| ---------------- | ------- | --------------------------------------------------- |
-| `accept`         | `true`  | Thin accept / theme accept (e.g. R1 station/time)   |
-| `negative`       | `false` | Error-severity checklist / template gates           |
-| `order_warnings` | `true`  | Warning-only R1 odd field order (`ODD_FIELD_ORDER`) |
+| Manifest key         | `ok`    | Role                                                |
+| -------------------- | ------- | --------------------------------------------------- |
+| `accept`             | `true`  | Thin accept / theme accept (R1, R2 SM/9999/meters)  |
+| `negative`           | `false` | Error-severity checklist / template gates           |
+| `order_warnings`     | `true`  | Warning-only R1 odd field order (`ODD_FIELD_ORDER`) |
+| `r2_fraction_accept` | `true`  | US SM fractions / M-prefix (encoded in T3.4)        |
+| `visibility_errors`  | `false` | R2 malformed visibility (`INVALID_VISIBILITY`)      |
 
 ## Tooling
 
