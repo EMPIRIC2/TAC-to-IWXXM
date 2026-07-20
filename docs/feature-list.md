@@ -22,7 +22,7 @@
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698 |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Planned | Product | S015 / EV-011; #732 |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; shipped 2026-07-20 (#742) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -390,7 +390,8 @@
 
 ### F15: Maintainable TAC Lint Issue Registry + METAR/SPECI Quality Bar
 
-- **Status**: **Planned** — S015 / EV-011 ([#732](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/732)).
+- **Status**: **Done** — shipped S015 / EV-011 (2026-07-20, PR [#742](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/742));
+  issue [#732](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/732) closed on cycle close.
 - **What it does**: Introduces a **maintainable issue registry** in `packages/tac-validate`
   (machine-readable `code` + default `severity` `info`|`warning`|`error` + message template).
   Rules import registry entries; a docs/generated catalog lists all codes for operators and

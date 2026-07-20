@@ -11,9 +11,9 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase D — 09→13 |
+| **Active phase** | Phase D — **complete** (cycle closed) |
 | **Active milestone** | M5 — Catalog API + FE + verify/deploy |
-| **Active task** | T5.10 — 13-deploy-smoke **completed** (await Phase D close) |
+| **Active task** | — (all tasks completed; EV-011 closed) |
 | **Tasks** | 35 / 35 completed |
 | **Last updated** | 2026-07-20 |
 

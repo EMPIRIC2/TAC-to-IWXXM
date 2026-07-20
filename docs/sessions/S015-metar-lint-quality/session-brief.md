@@ -1,9 +1,11 @@
 ---
 session_id: S015-metar-lint-quality
 type: feature
-status: in_progress
+status: completed
 branch: evolve/EV-011-metar-lint-quality
 started_at: 2026-07-19
+completed_at: 2026-07-20
+close_decision: D-S015-EV011-phase4-close-1
 intent: "METAR lint issue registry (INFO/WARNING/ERROR) + #732 METAR TAC lint/validate/convert quality; research + validation/conversion expansion from external METAR/IWXXM resources"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-011
