@@ -9,7 +9,7 @@
 | **Remediation path** | Fix locally + PR (P0+P1; Vendor Sync explained, not fixed this PR) |
 | **Session** | — |
 | **Branch** | `fix/BUG-2026-07-20-actions-dead-workflows` |
-| **PR** | — |
+| **PR** | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/745 |
 
 ## Error description
 
