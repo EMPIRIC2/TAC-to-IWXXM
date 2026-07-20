@@ -88,14 +88,14 @@ test.describe('UJ-026: METAR REMARKS retain / exclusion', () => {
   test('UI: annex3 convert with RMK still yields results', async ({ page }) => {
     await loginAndOpenConverter(page);
     const product = page.locator('#param-product');
-    if (await product.isVisible().catch(() => false)) {
+    if (!(await product.isVisible().catch(() => false))) {
       await page
         .getByLabel(/Expand parameters/i)
         .click()
         .catch(() => undefined);
-      await page.locator('#param-product').selectOption('METAR');
-      await page.locator('#param-profile').selectOption('annex3');
     }
+    await page.locator('#param-product').selectOption('METAR');
+    await page.locator('#param-profile').selectOption('annex3');
     await convertManualMetar(page, TAC_RMK);
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
       {

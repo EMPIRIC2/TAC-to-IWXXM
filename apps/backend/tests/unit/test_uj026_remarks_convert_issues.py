@@ -2,11 +2,19 @@
 
 from __future__ import annotations
 
+from enum import Enum
+
 import pytest
 from fastapi.testclient import TestClient
 
 from src import api as api_module
+from src.utilities.conversion import _normalize_issue_severity
 from src.utilities.security import verify_supabase_token
+
+
+class _Severity(Enum):
+    ERROR = "error"
+    WARNING = "warning"
 
 
 @pytest.fixture
@@ -33,6 +41,21 @@ def _convert(client: TestClient, *, tac: str, profile: str) -> dict:
     )
     assert response.status_code == 200, response.text[:500]
     return response.json()
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        ("info", "info"),
+        ("WARNING", "warning"),
+        (_Severity.ERROR, "error"),
+        ("Severity.WARNING", "warning"),
+        (None, "info"),
+        ("unknown", "info"),
+    ],
+)
+def test_normalize_issue_severity(raw: object, expected: str) -> None:
+    assert _normalize_issue_severity(raw) == expected
 
 
 def test_annex3_convert_echoes_remarks_excluded(client: TestClient) -> None:

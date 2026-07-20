@@ -1657,7 +1657,9 @@ async def convert(
         """Echo tac2iwxxm non-fatal convert issues (e.g. REMARKS_EXCLUDED) to the client."""
         for raw in soft.get("convert_issues") or []:
             data = raw.model_dump() if hasattr(raw, "model_dump") else dict(raw)
-            sev_raw = str(data.get("severity") or "info").lower()
+            sev_raw = str(data.get("severity") or "info").strip().lower()
+            if "." in sev_raw:
+                sev_raw = sev_raw.rsplit(".", 1)[-1]
             if sev_raw == "error":
                 severity = ConversionIssueSeverity.ERROR
             elif sev_raw == "warning":

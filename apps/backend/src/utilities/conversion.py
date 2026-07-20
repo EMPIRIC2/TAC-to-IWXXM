@@ -44,6 +44,19 @@ def _load_service_validation_error() -> type[Exception]:
 ServiceValidationError = _load_service_validation_error()
 
 
+def _normalize_issue_severity(value: object) -> str:
+    """Return ``error`` / ``warning`` / ``info`` from str or enum-like severity."""
+    if value is None:
+        return "info"
+    raw = getattr(value, "value", value)
+    text = str(raw or "info").strip().lower()
+    if "." in text:
+        text = text.rsplit(".", 1)[-1]
+    if text in {"error", "warning", "info"}:
+        return text
+    return "info"
+
+
 class ConversionError(Exception):
     """Raised when METAR to IWXXM conversion fails."""
 
@@ -240,7 +253,7 @@ def convert_metar_tac_with_metadata(
     if soft_preview_out is not None:
         soft_preview_out["convert_issues"] = [
             {
-                "severity": str(getattr(issue, "severity", "") or "info"),
+                "severity": _normalize_issue_severity(getattr(issue, "severity", None)),
                 "code": str(getattr(issue, "code", "") or ""),
                 "message": str(getattr(issue, "message", "") or ""),
                 "location": getattr(issue, "location", None),
