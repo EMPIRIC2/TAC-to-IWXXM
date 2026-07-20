@@ -76,3 +76,44 @@ def test_iwxxm_us_convert_retains_human_readable_text(client: TestClient) -> Non
     xml = (body.get("results") or [{}])[0].get("content") or ""
     assert "iwxxm-us:humanReadableText" in xml
     assert "WND DATA ESTMD" in xml
+
+
+def test_convert_absorbs_enum_like_and_warning_error_severities(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Cover absorb_convert_issues severity branches (enum-style / warning / error)."""
+
+    def _fake_convert(*_args, soft_preview_out=None, **_kwargs):
+        if soft_preview_out is not None:
+            soft_preview_out.clear()
+            soft_preview_out["ok"] = True
+            soft_preview_out["failed_spans"] = []
+            soft_preview_out["convert_issues"] = [
+                {
+                    "severity": "Severity.ERROR",
+                    "code": "FAKE_ERROR",
+                    "message": "error-ish",
+                },
+                {
+                    "severity": "warning",
+                    "code": "FAKE_WARN",
+                    "message": "warn-ish",
+                },
+                {
+                    "severity": "info",
+                    "code": "FAKE_INFO",
+                    "message": "info-ish",
+                },
+            ]
+        return ('<?xml version="1.0"?><iwxxm:METAR/>', None)
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", _fake_convert)
+    body = _convert(
+        client,
+        tac="METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
+        profile="annex3",
+    )
+    by_code = {i.get("code"): i.get("severity") for i in (body.get("issues") or [])}
+    assert by_code.get("FAKE_ERROR") == "error"
+    assert by_code.get("FAKE_WARN") == "warning"
+    assert by_code.get("FAKE_INFO") == "info"
