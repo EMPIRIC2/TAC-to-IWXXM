@@ -19,6 +19,39 @@ _VIS_BAD = re.compile(
     r"\b(\d+KM|\d+MILES|\d{5,})\b",
     re.IGNORECASE,
 )
+# R3: WMO 306 Table 4678 subset — intensity / descriptor / phenomenon grammar.
+_WX_PHENOMENA = frozenset(
+    {
+        "DZ",
+        "RA",
+        "SN",
+        "SG",
+        "IC",
+        "PL",
+        "GR",
+        "GS",
+        "UP",
+        "BR",
+        "FG",
+        "FU",
+        "VA",
+        "DU",
+        "SA",
+        "HZ",
+        "PY",
+        "PO",
+        "SQ",
+        "FC",
+        "SS",
+        "DS",
+    }
+)
+_WX_DESCRIPTORS = ("VC", "MI", "BC", "PR", "DR", "BL", "SH", "TS", "FZ")
+_WX_STANDALONE = frozenset({"TS", "SS", "DS", "SQ", "FC", "PO", "BR", "FG", "FU", "HZ", "VA", "DU", "SA", "PY"})
+_WX_SPECIAL = frozenset({"UP", "//"})
+_RVR = re.compile(r"^R\d{2}")
+_CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
+_WX_TOKEN_SHAPE = re.compile(r"^(?://|[+-]{1,2}[A-Z]{2,8}|[A-Z]{2,8}[+-]|[+-]?[A-Z]{2,8})$")
 _TEMP = re.compile(r"\bM?\d{2}/M?\d{2}\b")
 _QNH = re.compile(r"\b[QA]\d{4}\b")
 _CLOUD_OK = re.compile(r"\b(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)\d{0,3}(?:CB|TCU)?\b")
@@ -104,6 +137,78 @@ def _first_icao_index(tokens: list[str], skip: frozenset[str]) -> int | None:
         if _ICAO.fullmatch(tok) and tok not in {"KT", "MPS", "SM"}:
             return i
     return None
+
+
+def _consume_wx_descriptors(rest: str) -> str:
+    while len(rest) >= 2:
+        matched = False
+        for desc in _WX_DESCRIPTORS:
+            if rest.startswith(desc):
+                rest = rest[len(desc) :]
+                matched = True
+                break
+        if not matched:
+            break
+    return rest
+
+
+def _is_valid_weather_token(token: str) -> bool:
+    """Return True when ``token`` is a valid A3-2 present weather group (4678 subset)."""
+    if token in _WX_SPECIAL:
+        return True
+    if not _WX_TOKEN_SHAPE.fullmatch(token):
+        return False
+    if token.endswith(("+", "-")):
+        return False
+    rest = token
+    if rest and rest[0] in "-+":
+        if len(rest) > 1 and rest[1] in "-+":
+            return False
+        if "VC" in rest:
+            return False
+        rest = rest[1:]
+    if not rest:
+        return False
+    rest = _consume_wx_descriptors(rest)
+    if not rest:
+        return False
+    if rest in _WX_STANDALONE or rest in _WX_PHENOMENA:
+        return True
+    while rest:
+        matched = False
+        for phen in sorted(_WX_PHENOMENA, key=len, reverse=True):
+            if rest.startswith(phen):
+                rest = rest[len(phen) :]
+                matched = True
+                break
+        if not matched:
+            return False
+    return True
+
+
+def _weather_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
+    """Return (index, token) pairs for optional present-weather groups after visibility."""
+    wind_i = _token_index(tokens, _WIND)
+    if wind_i is None:
+        return []
+    candidates: list[tuple[int, str]] = []
+    for i, tok in enumerate(tokens[wind_i + 1 :], start=wind_i + 1):
+        if _CLOUD_START.match(tok) or _TEMP.fullmatch(tok) or _QNH.fullmatch(tok):
+            break
+        if tok in _METAR_SPECI_SKIP or _RVR.match(tok):
+            continue
+        if _WIND.fullmatch(tok) or _VIS_OK.fullmatch(tok) or _VIS_BAD.fullmatch(tok):
+            continue
+        if _WX_TOKEN_SHAPE.fullmatch(tok):
+            candidates.append((i, tok))
+    return candidates
+
+
+def _token_span_in_core(core: str, token: str, body_start: int) -> tuple[int, int] | None:
+    match = re.search(r"\b" + re.escape(token) + r"\b", core)
+    if not match:
+        return None
+    return body_start + match.start(), body_start + match.end()
 
 
 def _check_metar_speci_field_order(
@@ -200,6 +305,32 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
                 location="visibility",
             )
         )
+
+    for _i, wx_tok in _weather_candidate_tokens(tokens):
+        if _is_valid_weather_token(wx_tok):
+            continue
+        span = _token_span_in_core(core, wx_tok, start)
+        if span is None:
+            issues.append(
+                _issue(
+                    "INVALID_WEATHER",
+                    f"{product} invalid present weather token {wx_tok!r} — A3-2 #8 / research R3",
+                    start=start,
+                    end=end,
+                    location="weather",
+                )
+            )
+        else:
+            wx_start, wx_end = span
+            issues.append(
+                _issue(
+                    "INVALID_WEATHER",
+                    f"{product} invalid present weather token {wx_tok!r} — A3-2 #8 / research R3",
+                    start=wx_start,
+                    end=wx_end,
+                    location="weather",
+                )
+            )
 
     if not _TEMP.search(core):
         issues.append(

@@ -47,6 +47,18 @@
       ]
     },
     {
+      "code": "INVALID_WEATHER",
+      "severity": "error",
+      "message_template": "{product} invalid present weather token {token!r} \u2014 A3-2 #8",
+      "product": null,
+      "tags": [
+        "weather",
+        "metar",
+        "speci",
+        "r3"
+      ]
+    },
+    {
       "code": "MISSING_CCCC",
       "severity": "error",
       "message_template": "{product} missing ICAO location (CCCC)",
