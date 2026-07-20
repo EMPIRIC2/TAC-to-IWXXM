@@ -36,6 +36,7 @@ class TestM10VendorSyncWorkflow:
         assert workflow_text.index("sync_iwxxm.py") < workflow_text.index(
             "--refresh-tree-hashes"
         )
+
     def test_vendor_sync_runs_tc_m002(self, workflow_text: str) -> None:
         assert "tests/vendor" in workflow_text
 
