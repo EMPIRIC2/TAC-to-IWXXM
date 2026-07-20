@@ -4,8 +4,107 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 17
+session_counter: 18
 active_session:
+  id: S018-metar-remarks-667
+  type: feature
+  intent: >-
+    Handle Remark Portion of METARs (#667) — annex3 exclusion messaging + iwxxm_us
+    never-drop/freeText + T/P emit
+  status: in_progress
+  branch: cursor/metar-remarks-667-2e2e
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-013
+  artifacts_dir: docs/sessions/S018-metar-remarks-667/
+  current_stage: 16-evolve
+  started_at: '2026-07-20'
+  context_briefs: []
+  standing_docs_touched: []
+  routing_plan:
+    - stage: 00-context
+      required: true
+      mode: scoped
+      status: completed
+      started: '2026-07-20'
+      completed: '2026-07-20'
+      skip_rationale:
+      note: >-
+        Session open; Phase 0 intake locked Assumed (E13-1/E13-2/E13-3);
+        AskQuestion UI waived (cloud)
+    - stage: 16-evolve
+      required: true
+      mode: orchestrator
+      status: in_progress
+      started: '2026-07-20'
+      skip_rationale:
+      note: >-
+        Phase 0 intake complete via Assumed; moving to 01-requirements;
+        Standard routing (needs 07-build)
+    - stage: 01-requirements
+      required: true
+      mode: delta
+      status: pending
+      skip_rationale:
+    - stage: 02-verify-plan
+      required: true
+      mode: delta
+      status: pending
+      skip_rationale:
+    - stage: 03-plan-tooling
+      required: false
+      mode: skipped
+      status: skipped
+      skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+    - stage: 04-tech-plan
+      required: true
+      mode: delta
+      status: pending
+      skip_rationale:
+    - stage: 05-verify-tech
+      required: false
+      mode: skipped
+      status: skipped
+      skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+    - stage: 06-tech-tooling
+      required: false
+      mode: skipped
+      status: skipped
+      skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+    - stage: 07-build
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+    - stage: 08-verify-build
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+    - stage: 09-qa
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+    - stage: 10-e2e
+      required: false
+      mode: skipped
+      status: skipped
+      skip_rationale: 'Standard routing for #667 — not in approved stage list (E13-2)'
+    - stage: 11-verify-impl
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+    - stage: 12-verify-deploy
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+    - stage: 13-deploy-smoke
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
 sessions:
 
   - id: S017-skill-trim-retro
@@ -1174,8 +1273,9 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: manual-tac-input-modes
-    session_id: S016-manual-tac-input-modes
+    scoped_slug: metar-remarks-667
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
     started_at: "2026-07-20"
     completed_at: "2026-07-20"
     substeps:
@@ -1187,6 +1287,8 @@ stages:
       phase3: completed
       phase4: completed
     artifacts:
+      - docs/sessions/S018-metar-remarks-667/session-brief.md
+      - docs/sessions/S018-metar-remarks-667/routing-plan.md
       - docs/context/issue-555-feedback.md
       - docs/sessions/S004-issue-555-feedback/session-brief.md
       - docs/sessions/S004-issue-555-feedback/routing-plan.md
@@ -1201,6 +1303,10 @@ stages:
       - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
       - docs/context/manual-tac-input-modes.md
     notes:
+      - >-
+        2026-07-20 S018/EV-013 00-context completed — Phase 0 intake locked Assumed
+        (E13-1/E13-2/E13-3); AskQuestion UI waived (cloud); Standard routing; handoff
+        16-evolve → 01-requirements
       - 2026-07-20 S016/EV-012 00-context completed — Phase 0 intake locked; lean+13 routing approved 
         (D-S016-EV012-route-1); handoff to 01-requirements
       - "2026-07-19 S015/EV-011 00-context completed — routing approved (D-S015-EV011-route-1); max expansion scope (D-S015-EV011-research-1);
@@ -2777,6 +2883,17 @@ stages:
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; 
       RA-007/RA-008 remain open
 
+  16-evolve:
+    status: in_progress
+    mode: orchestrator
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    started_at: '2026-07-20'
+    current_stage: 16-evolve
+    note: >-
+      S018/EV-013 — Phase 0 intake complete via Assumed (E13-1/E13-2/E13-3); AskQuestion UI
+      waived (cloud); Standard routing; moving to 01-requirements
+
 stages_pending: []
 
 stages_pending: []
@@ -2884,6 +3001,89 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S018-aq-waive-cloud
+    stage: 00-context
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    skill: 00-context
+    skill_id: 00-context
+    topic: AskQuestion UI waived (cloud)
+    decision: >-
+      AskQuestion UI unavailable this cloud session — waived interactive AskQuestion;
+      record Assumed decisions in decisions_log (same pattern as S017). Parent proceeds
+      on written user intent + Assumed scope/routing.
+    status: confirmed
+    resolved_at: '2026-07-20'
+  - id: D-S018-EV013-E13-1-scope
+    stage: 00-context
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    skill: 00-context
+    skill_id: 00-context
+    topic: 'E13-1 scope Assumed — Handle METAR remarks (#667)'
+    decision: >-
+      Assumed scope (user: "great let's start building on this task" after #667 partial-done
+      verification). No new Fn — deepen F6 (convert) + touch F12/F15 lint codes only if needed.
+      Close #667 acceptance bar: (1) annex3 profile: when METAR/SPECI contains RMK, emit
+      structured ConvertIssue (e.g. REMARKS_EXCLUDED) so exclusion is not silent; (2) iwxxm_us
+      profile: keep AO2/SLP/PK WND emit; retain unparsed RMK remainder as iwxxm-us
+      Remarks/freeText or Addendum humanReadableText; (3) Map additive T######## / P#### into
+      iwxxm-us elements where schema supports (R5 convert gap). Out: full FMH-1 remark catalog
+      beyond T/P/AO/SLP/PK WND; non-METAR products; UI redesign.
+    status: confirmed
+    resolved_at: '2026-07-20'
+    note: Assumed — AskQuestion UI waived (cloud)
+  - id: D-S018-EV013-E13-2-routing
+    stage: 00-context
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    skill: 00-context
+    skill_id: 00-context
+    topic: E13-2 routing Standard Assumed
+    decision: >-
+      Assumed Standard routing preset (needs 07-build):
+      00 → 16 → 01 → 02 → 04 → 07 → 08 → 09 → 11 → 12 → 13; skip 03/05/06
+      (and 10-e2e not in approved list). Cycle EV-013; Session S018-metar-remarks-667;
+      branch cursor/metar-remarks-667-2e2e (cloud agent naming override); orchestrator 16-evolve.
+    status: confirmed
+    resolved_at: '2026-07-20'
+    note: Assumed — AskQuestion UI waived (cloud)
+  - id: D-S018-EV013-E13-3-no-new-fn
+    stage: 00-context
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    skill: 00-context
+    skill_id: 00-context
+    topic: E13-3 no new Fn — deepen F6
+    decision: >-
+      Assumed — no new feature id. Deepen F6 (TAC→IWXXM convert remarks handling);
+      touch F12/F15 lint codes only if needed for REMARKS_EXCLUDED / related codes.
+    status: confirmed
+    resolved_at: '2026-07-20'
+    note: Assumed — AskQuestion UI waived (cloud)
+  - id: D-S018-open
+    stage: 00-context
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    skill: 00-context
+    skill_id: 00-context
+    topic: 'Open S018 feature session for EV-013 / #667'
+    decision: >-
+      Opened S018-metar-remarks-667 (feature) with orchestrator 16-evolve; allocated EV-013;
+      branch cursor/metar-remarks-667-2e2e; artifacts_dir docs/sessions/S018-metar-remarks-667/;
+      session_counter 18.
+    status: confirmed
+    resolved_at: '2026-07-20'
   - id: D-S017-RET001-aq-waive
     stage: 17-retrospective
     date: '2026-07-20'
@@ -6663,6 +6863,123 @@ retrospective_cycles:
         status: completed
 
 evolve_cycles:
+  - id: EV-013
+    session_id: S018-metar-remarks-667
+    cycle_type: feature
+    feature_ids:
+      - F6
+    feature_id:
+    title: 'Handle METAR remarks (#667)'
+    status: in_progress
+    started: '2026-07-20'
+    completed:
+    scope_summary: >-
+      Assumed E13-1: No new Fn — deepen F6 (convert) + touch F12/F15 lint codes only if needed.
+      Close #667 acceptance bar: (1) annex3 — when METAR/SPECI contains RMK, emit structured
+      ConvertIssue (e.g. REMARKS_EXCLUDED) so exclusion is not silent; (2) iwxxm_us — keep
+      AO2/SLP/PK WND emit; retain unparsed RMK remainder as iwxxm-us Remarks/freeText or
+      Addendum humanReadableText; (3) Map additive T######## / P#### into iwxxm-us elements
+      where schema supports (R5 convert gap). Out: full FMH-1 remark catalog beyond
+      T/P/AO/SLP/PK WND; non-METAR products; UI redesign.
+    github_issue: 667
+    routing_plan:
+      required_stages:
+        - 00-context
+        - 16-evolve
+        - 01-requirements
+        - 02-verify-plan
+        - 04-tech-plan
+        - 07-build
+        - 08-verify-build
+        - 09-qa
+        - 11-verify-impl
+        - 12-verify-deploy
+        - 13-deploy-smoke
+      skipped_stages:
+        - 03-plan-tooling
+        - 05-verify-tech
+        - 06-tech-tooling
+        - 10-e2e
+    current_stage: 16-evolve
+    notes:
+      - >-
+        2026-07-20 S018/EV-013 open — Phase 0 intake complete via Assumed (E13-1/E13-2/E13-3);
+        AskQuestion UI waived (cloud); Standard routing; moving toward 01-requirements
+    stages:
+      00-context:
+        status: completed
+        mode: scoped
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        substeps:
+          phase0: locked
+        note: >-
+          Phase 0 intake locked Assumed (E13-1 scope, E13-2 Standard routing, E13-3 no new Fn);
+          AskQuestion UI waived (cloud)
+      16-evolve:
+        status: in_progress
+        started: '2026-07-20'
+        note: >-
+          Phase 0 intake complete via Assumed; orchestrator in_progress; next 01-requirements
+      01-requirements:
+        status: pending
+        mode: delta
+      02-verify-plan:
+        status: pending
+        mode: delta
+      03-plan-tooling:
+        status: skipped
+        skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+      04-tech-plan:
+        status: pending
+        mode: delta
+      05-verify-tech:
+        status: skipped
+        skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+      06-tech-tooling:
+        status: skipped
+        skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+      07-build:
+        status: pending
+        mode: full
+      08-verify-build:
+        status: pending
+        mode: full
+      09-qa:
+        status: pending
+        mode: full
+      10-e2e:
+        status: skipped
+        skip_rationale: Not in Standard approved stage list (E13-2)
+      11-verify-impl:
+        status: pending
+        mode: full
+      12-verify-deploy:
+        status: pending
+        mode: full
+      13-deploy-smoke:
+        status: pending
+        mode: full
+    gates:
+      a_to_b: pending
+      b_to_c: pending
+      c_to_d: pending
+      deploy: pending
+    checkpoints:
+      phase_a: pending
+      phase_b: pending
+      phase_c: pending
+      phase_d: pending
+      deploy: pending
+    adrs: []
+    artifacts:
+      - path: docs/sessions/S018-metar-remarks-667/session-brief.md
+        status: pending
+      - path: docs/sessions/S018-metar-remarks-667/routing-plan.md
+        status: pending
+      - path: docs/sessions/S018-metar-remarks-667/reports/evolve-summary.md
+        status: pending
+    issues: []
   - id: EV-012
     session_id: S016-manual-tac-input-modes
     cycle_type: general  # validation/acceptance under F7, no new Fn
@@ -9073,11 +9390,14 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: docs/EV-012-close
-  ahead_of_origin: 1
-  pushed: true
+  current_branch: cursor/metar-remarks-667-2e2e
+  ahead_of_origin: 0
+  pushed: false
   pending_commit:
   notes:
+    - >-
+      2026-07-20 S018/EV-013 open — branch cursor/metar-remarks-667-2e2e recorded active
+      (base main); Phase 0 Assumed (E13-1/E13-2/E13-3); AskQuestion UI waived (cloud)
     - '2026-07-20 S017/RET-001 — skill-trim applied; branch chore/S017-skill-trim-retro'
     - '2026-07-20 S016/EV-012 — Phase 4 closed (D-S016-EV012-phase4-close-1); issue #730 CLOSED; branch docs/EV-012-close
       for close docs + workflow-state'
@@ -9239,6 +9559,15 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: cursor/metar-remarks-667-2e2e
+      base: main
+      status: active
+      created_at: '2026-07-20'
+      session_id: S018-metar-remarks-667
+      evolve_cycle_id: EV-013
+      purpose: 'EV-013 / S018 Handle METAR remarks (#667) — annex3 + iwxxm_us T/P'
+      pushed: false
+      note: Cloud agent naming override; Standard routing; Phase 0 Assumed
     - name: chore/S017-skill-trim-retro
       base: main
       status: active
