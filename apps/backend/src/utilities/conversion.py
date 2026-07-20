@@ -174,8 +174,10 @@ def convert_metar_tac_with_metadata(
         Soft-preview mode (ADR-022): return best-effort XML instead of raising on
         parse/convert failure.
     soft_preview_out :
-        Optional mutable dict filled when ``preview=True`` with ``ok`` and
-        ``failed_spans`` for the API response envelope.
+        Optional mutable dict. When ``preview=True``, filled with ``ok`` and
+        ``failed_spans``. On any successful convert, also filled with
+        ``convert_issues`` (tac2iwxxm non-fatal issues such as ``REMARKS_EXCLUDED``)
+        when the caller passes a dict — including hard convert (EV-013 / #667).
 
     Returns
     -------
@@ -234,6 +236,19 @@ def convert_metar_tac_with_metadata(
         soft_preview_out.clear()
         soft_preview_out["ok"] = True
         soft_preview_out["failed_spans"] = []
+
+    if soft_preview_out is not None:
+        soft_preview_out["convert_issues"] = [
+            {
+                "severity": str(getattr(issue, "severity", "") or "info"),
+                "code": str(getattr(issue, "code", "") or ""),
+                "message": str(getattr(issue, "message", "") or ""),
+                "location": getattr(issue, "location", None),
+                "start": getattr(issue, "start", None),
+                "end": getattr(issue, "end", None),
+            }
+            for issue in (result.issues or [])
+        ]
 
     xml_string = result.xml
     if not xml_string.lstrip().startswith("<?xml"):

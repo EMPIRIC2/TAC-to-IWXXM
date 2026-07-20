@@ -269,6 +269,12 @@ US extension XML (profile isolation). See also UJ-026 for annex3 exclusion messa
 
 **Tier**: T0 / T2 primarily.
 
+**Automated tests**:
+- Package: `packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py`
+- API unit: `apps/backend/tests/unit/test_uj026_remarks_convert_issues.py`
+- Live API: `tests/live/test_uj026_metar_remarks_live.py`
+- Playwright: `apps/e2e/uj026-metar-remarks.e2e.spec.ts`
+
 **Source**: S018 / EV-013
 
 ---
