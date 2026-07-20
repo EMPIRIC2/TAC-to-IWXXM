@@ -12,11 +12,11 @@ active_session:
     Handle Remark Portion of METARs (#667) — annex3 exclusion messaging + iwxxm_us
     never-drop/freeText + T/P emit
   status: in_progress
-  branch: cursor/metar-remarks-667-2e2e
+  branch: cursor/metar-remarks-live-e2e-2e2e
   orchestrator: 16-evolve
   evolve_cycle_id: EV-013
   artifacts_dir: docs/sessions/S018-metar-remarks-667/
-  current_stage: 08-verify-build
+  current_stage: 13-deploy-smoke
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched: []
@@ -38,8 +38,8 @@ active_session:
       started: '2026-07-20'
       skip_rationale:
       note: >-
-        Implementation landed (07-build); 08-verify-build in_progress;
-        Standard routing
+        Implementation landed (07-build); 13-deploy-smoke completed
+        pass_with_advisories (#750 live; #752 pending)
     - stage: 01-requirements
       required: true
       mode: delta
@@ -114,8 +114,13 @@ active_session:
     - stage: 13-deploy-smoke
       required: true
       mode: full
-      status: pending
+      status: completed
+      started: '2026-07-20'
+      completed: '2026-07-20'
       skip_rationale:
+      note: >-
+        partial PASS — pass_with_advisories; full UJ-026 annex3 blocked on #752 deploy
+
 sessions:
 
   - id: S017-skill-trim-retro
@@ -2786,9 +2791,25 @@ stages:
   13-deploy-smoke:
     status: completed
     started_at: "2026-07-19"
-    completed_at: "2026-07-19"
-    session_id: S014-package-publish-validation
+    completed_at: "2026-07-20"
+    session_id: S018-metar-remarks-667
     delta_substages:
+      - id: S018-metar-remarks-667
+        session_id: S018-metar-remarks-667
+        evolve_cycle_id: EV-013
+        status: completed
+        started_at: '2026-07-20'
+        completed_at: '2026-07-20'
+        mode: full
+        note: >-
+          partial PASS — full UJ-026 annex3 blocked on #752 deploy; staging #750 live @
+          ccfb8cc; H1/H3/H4/H5 pass; REMARKS_EXCLUDED API echo needs #752
+        report: docs/sessions/S018-metar-remarks-667/reports/deploy-smoke.md
+        overall: pass_with_advisories
+        merge_sha: ccfb8ccc01a7c99aa3e5b3895682a8b1b3e21126
+        pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/750
+        pr_number: 750
+        followup_pr: 752
       - id: S016-manual-tac-input-modes
         session_id: S016-manual-tac-input-modes
         evolve_cycle_id: EV-012
@@ -2835,6 +2856,10 @@ stages:
         report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
         hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+      - >-
+        2026-07-20 S018/EV-013 13-deploy-smoke COMPLETE / pass_with_advisories —
+        partial PASS; #750 live @ ccfb8cc; H1/H3/H4/H5 pass; full UJ-026 annex3 blocked
+        on #752 deploy
       - >-
         2026-07-20 S016/EV-012 13-deploy-smoke COMPLETE / PASS — PR #746 merged 37be5f8;
         CI/CD 29766213356 SUCCESS; Render LIVE; H0c/H3/H4/H5 + AHL 200 + COLLECT 501 +
@@ -2900,10 +2925,10 @@ stages:
     session_id: S018-metar-remarks-667
     evolve_cycle_id: EV-013
     started_at: '2026-07-20'
-    current_stage: 16-evolve
+    current_stage: 13-deploy-smoke
     note: >-
-      S018/EV-013 — Phase 0 intake complete via Assumed (E13-1/E13-2/E13-3); AskQuestion UI
-      waived (cloud); Standard routing; moving to 01-requirements
+      S018/EV-013 — 13-deploy-smoke completed pass_with_advisories; #750 live @
+      ccfb8cc; full UJ-026 annex3 blocked on #752
 
 stages_pending: []
 
@@ -2921,9 +2946,9 @@ deployment:
   staging:
     status: deployed
     last_verified: '2026-07-20'
-    commit_deployed: 37be5f8
-    commit_head: 37be5f8
-    drift: false
+    commit_deployed: ccfb8cc
+    commit_head: 99102ab
+    drift: true
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
@@ -2941,10 +2966,14 @@ deployment:
       H3: pass
       H4: pass
       H5: pass
+      UJ026_annex3: pending
       AHL_convert_bulletin: pass
       COLLECT_ingest_collect: expected_501
       Playwright_workbench: pass
     notes:
+      - S018/EV-013 #750 METAR remarks live @ ccfb8cc; 13-deploy-smoke pass_with_advisories
+      - uj026_annex3 pending #752 (REMARKS_EXCLUDED API echo); drift true until #752 lands (main tip will move)
+      - H1/H3/H4/H5 pass; iwxxm_us UJ-026 retain PASS on staging
       - S016/EV-012 Manual TAC Input modes live @ 37be5f8 (PR #746); 13-deploy-smoke PASS
       - CI/CD run 29766213356 SUCCESS including Deploy; images 20260720180925-37be5f8
       - H0c PASS; H3 21/21; H4 2/2; H5 PASS; AHL convert-bulletin 200; COLLECT ingest-collect 501; live Playwright 
@@ -3012,6 +3041,25 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S018-EV013-13-partial
+    stage: 13-deploy-smoke
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    skill: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    topic: '13-deploy-smoke partial PASS — #750 live; #752 pending'
+    decision: >-
+      Staging #750 live @ ccfb8cc; H1/H3/H4/H5 pass; iwxxm_us UJ-026 retain PASS.
+      Full UJ-026 annex3 (REMARKS_EXCLUDED API echo) blocked on #752 merge/deploy.
+      Record 13-deploy-smoke completed with overall pass_with_advisories; drift true
+      until #752 lands.
+    status: confirmed
+    resolved_at: '2026-07-20'
+    summary: >-
+      partial PASS — #750 live; REMARKS_EXCLUDED API echo needs #752;
+      pass_with_advisories
   - id: D-S018-aq-waive-cloud
     stage: 00-context
     date: '2026-07-20'
@@ -5584,6 +5632,19 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/sessions/S018-metar-remarks-667/reports/deploy-smoke.md
+    type: report
+    kind: deploy-smoke
+    stage: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    created_at: '2026-07-20'
+    updated_at: '2026-07-20'
+    status: completed
+    overall: pass_with_advisories
+    note: >-
+      partial PASS — full UJ-026 annex3 blocked on #752 deploy; #750 live @ ccfb8cc
   - path: docs/sessions/S016-manual-tac-input-modes/reports/e2e-report.md
     type: report
     kind: e2e-report
@@ -6911,8 +6972,11 @@ evolve_cycles:
         - 05-verify-tech
         - 06-tech-tooling
         - 10-e2e
-    current_stage: 08-verify-build
+    current_stage: 13-deploy-smoke
     notes:
+      - >-
+        2026-07-20 S018/EV-013 13-deploy-smoke completed pass_with_advisories —
+        #750 live @ ccfb8cc; full UJ-026 annex3 blocked on #752
       - >-
         2026-07-20 S018/EV-013 — implementation landed (07-build); 08-verify-build
         in_progress; commits 8ee3176 (docs scope) + 19d6684 (feat remarks)
@@ -6934,7 +6998,8 @@ evolve_cycles:
         status: in_progress
         started: '2026-07-20'
         note: >-
-          Orchestrator in_progress; implementation landed; verification next
+          Orchestrator in_progress; 13-deploy-smoke completed pass_with_advisories;
+          #750 live; #752 pending for full UJ-026 annex3
       01-requirements:
         status: completed
         mode: delta
@@ -6983,19 +7048,25 @@ evolve_cycles:
         status: pending
         mode: full
       13-deploy-smoke:
-        status: pending
+        status: completed
         mode: full
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        overall: pass_with_advisories
+        note: >-
+          partial PASS — full UJ-026 annex3 blocked on #752 deploy; #750 live @
+          ccfb8cc; report docs/sessions/S018-metar-remarks-667/reports/deploy-smoke.md
     gates:
       a_to_b: pending
       b_to_c: pending
       c_to_d: pending
-      deploy: pending
+      deploy: pass_with_advisories
     checkpoints:
       phase_a: pending
       phase_b: pending
       phase_c: pending
       phase_d: pending
-      deploy: pending
+      deploy: pass_with_advisories
     adrs: []
     artifacts:
       - path: docs/sessions/S018-metar-remarks-667/session-brief.md
@@ -7006,6 +7077,9 @@ evolve_cycles:
         status: present
       - path: packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
         status: present
+      - path: docs/sessions/S018-metar-remarks-667/reports/deploy-smoke.md
+        status: completed
+        kind: deploy-smoke
       - path: docs/sessions/S018-metar-remarks-667/reports/evolve-summary.md
         status: pending
     issues: []
@@ -9419,12 +9493,16 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/metar-remarks-667-2e2e
+  current_branch: cursor/metar-remarks-live-e2e-2e2e
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 19d6684e5205bf46013a385ecf91d40b94bbb121
+  tip_sha: 99102ab703efba985c976359ca06b3b4ed5844ac
   notes:
+    - >-
+      2026-07-20 S018/EV-013 — tip 99102ab on cursor/metar-remarks-live-e2e-2e2e
+      (deploy-smoke report); fix e13138f (#752); staging deployed ccfb8cc (#750);
+      drift until #752 lands
     - >-
       2026-07-20 S018/EV-013 — commits 8ee3176 (docs scope) + 19d6684 (feat remarks);
       tip 19d6684; current_stage 08-verify-build; branch synced with origin
@@ -9592,16 +9670,29 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
-    - name: cursor/metar-remarks-667-2e2e
+    - name: cursor/metar-remarks-live-e2e-2e2e
       base: main
       status: active
+      created_at: '2026-07-20'
+      session_id: S018-metar-remarks-667
+      evolve_cycle_id: EV-013
+      purpose: 'EV-013 live e2e + REMARKS_EXCLUDED API echo (#752) after #750'
+      pushed: true
+      tip_sha: 99102ab703efba985c976359ca06b3b4ed5844ac
+      note: >-
+        13-deploy-smoke partial PASS; blocked on #752 deploy for full UJ-026 annex3
+    - name: cursor/metar-remarks-667-2e2e
+      base: main
+      status: superseded
       created_at: '2026-07-20'
       session_id: S018-metar-remarks-667
       evolve_cycle_id: EV-013
       purpose: 'EV-013 / S018 Handle METAR remarks (#667) — annex3 + iwxxm_us T/P'
       pushed: true
       tip_sha: 19d6684e5205bf46013a385ecf91d40b94bbb121
-      note: Cloud agent naming override; Standard routing; 08-verify-build in_progress
+      note: >-
+        Cloud agent naming override; #750 merged to main; superseded by
+        cursor/metar-remarks-live-e2e-2e2e
     - name: chore/S017-skill-trim-retro
       base: main
       status: active
@@ -9898,6 +9989,35 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 99102ab703efba985c976359ca06b3b4ed5844ac
+      short: 99102ab
+      branch: cursor/metar-remarks-live-e2e-2e2e
+      message: '[S018] docs: EV-013 deploy-smoke report for #667 staging verify'
+      stage: 13-deploy-smoke
+      session_id: S018-metar-remarks-667
+      evolve_cycle_id: EV-013
+      timestamp: '2026-07-20T20:39:48Z'
+      files_changed:
+        - docs/sessions/S018-metar-remarks-667/reports/deploy-smoke.md
+      pushed: true
+    - sha: e13138fb6b8e4444f62a3930585e5b0e7bb4ea71
+      short: e13138f
+      branch: cursor/metar-remarks-live-e2e-2e2e
+      message: '[EV-013] fix: echo REMARKS_EXCLUDED on convert API + UJ-026 e2e'
+      stage: 13-deploy-smoke
+      session_id: S018-metar-remarks-667
+      evolve_cycle_id: EV-013
+      timestamp: '2026-07-20T20:34:26Z'
+      files_changed:
+        - README.md
+        - apps/backend/src/api.py
+        - apps/backend/src/utilities/conversion.py
+        - apps/backend/tests/unit/test_uj026_remarks_convert_issues.py
+        - apps/e2e/uj026-metar-remarks.e2e.spec.ts
+        - docs/user-journeys.md
+        - tests/live/test_uj026_metar_remarks_live.py
+      pushed: true
+      note: 'PR #752 — REMARKS_EXCLUDED API echo; awaiting merge/deploy'
     - sha: 19d6684e5205bf46013a385ecf91d40b94bbb121
       short: 19d6684
       branch: cursor/metar-remarks-667-2e2e
