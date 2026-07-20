@@ -101,7 +101,7 @@
 | T5.7 | Test | 09-qa + 10-e2e — UJ-024 / TC-F15-001..005 | 09/10 | T5.6 | completed |
 | T5.8 | Docs | 11-verify-impl — per-Fn F15 + F6/F12 deepen sign-off | 11 | T5.7 | completed |
 | T5.9 | Config | 12-verify-deploy — Render checklist + `tac-validate-v0.1.1` tag plan | 12; E11-25 | T5.8 | completed |
-| T5.10 | Test | 13-deploy-smoke — API+FE redeploy; H1–H5 (H4–H5 required); re-run **H0c** CORS unit tests when API image changes | 13; E11-26; connectivity-gates | T5.9 | pending |
+| T5.10 | Test | 13-deploy-smoke — API+FE redeploy; H1–H5 (H4–H5 required); re-run **H0c** CORS unit tests when API image changes | 13; E11-26; connectivity-gates | T5.9 | in_progress |
 
 ## Data Dependencies
 
