@@ -1,15 +1,16 @@
 ---
 session_id: S011-f7-operator-ui
 type: feature
-status: paused
+status: completed
 branch: evolve/S011-f7-operator-ui
 started_at: 2026-07-13
-paused_at: 2026-07-15
-pause_reason: "Closed to open hotfix session for empty Bearer lint-tac/decode-tac + lint UX; PR #716 remains open"
+completed_at: 2026-07-19
 intent: "F7 multi-product TAC operator UI (7 products) + workbench (#694), decode panel (#702), failed-TAC/partial UX (#665/#666), remove admin / BYO DB (#697); #5 kept as parent tracker"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-008
 pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716
+pr_merged_at: 2026-07-15
+pr_merge_commit: 22a6199823d6299758aeedab1340885e38d572aa
 context_briefs:
   - docs/context/f7-operator-ui.md
 standing_docs_touched: []
@@ -25,11 +26,11 @@ phase3_resolutions:
 
 # Session S011 — F7 operator UI + workbench / decode / admin
 
-> **Paused 2026-07-15** — closed/archived to open hotfix
-> [S012-empty-bearer-lint-tac](../S012-empty-bearer-lint-tac/session-brief.md).
-> Close reason: *Closed to open hotfix session for empty Bearer lint-tac/decode-tac +
-> lint UX; PR #716 remains open.* EV-008 is suspended (not deleted); resume PR-EV-008
-> (#716) after S012.
+> **Completed 2026-07-19** — user closed session to start
+> [S015-metar-lint-quality](../S015-metar-lint-quality/session-brief.md).
+> PR [#716](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716) merged `22a6199`
+> (2026-07-15); EV-008 `13-deploy-smoke` waived (later deploys via S013/S014).
+> Previously paused 2026-07-15 for hotfix S012; PR was already merged before this close.
 
 ## Intent
 

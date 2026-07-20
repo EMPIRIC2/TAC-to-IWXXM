@@ -19,6 +19,7 @@ _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _QNH_HPA = re.compile(r"\bQ(?P<qnh>\d{3,4})\b")
 _CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})\b")
 _NIL = re.compile(r"\bNIL\b")
+_AUTO = re.compile(r"\bAUTO\b")
 _RMK = re.compile(r"\bRMK\b(?P<rmk>.*)$")
 _AO = re.compile(r"\bAO(?P<ao>[12])\b")
 _SLP = re.compile(r"\bSLP(?P<code>\d{3})\b")
@@ -166,6 +167,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         "minute": minute,
         "nil": bool(_NIL.search(rest)),
         "correction": correction,
+        "auto": bool(_AUTO.search(rest)),
     }
 
     if ir["nil"]:

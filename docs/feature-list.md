@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-18 (S014 / EV-010 — package publish + validation stack)
+> **Last updated**: 2026-07-19 (S015 / EV-011 — METAR lint registry + #732 quality)
 
 ## Summary
 
@@ -22,6 +22,7 @@
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698 |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Planned | Product | S015 / EV-011; #732 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -313,7 +314,7 @@
 
 ### F11: Validation Stack Perf Review + msgspec HTTP + XSD Codegen
 
-- **Status**: **Planned** — S014 / EV-010 (#703 + ADR-026).
+- **Status**: **Implemented** — S014 / EV-010 (#703 + ADR-026).
 - **What it does**:
   1. **Layer cost matrix** — measure TAC lint, convert IR, XSD, Schematron, and HTTP DTO
      encode/decode (pydantic map vs msgspec) on single METAR, bulletin, and golden IWXXM;
@@ -343,7 +344,7 @@
 
 ### F12: Publishable TAC Product Validation (`tac-validate`)
 
-- **Status**: **Planned** — S014 / EV-010 (#698).
+- **Status**: **Implemented** — S014 / EV-010 (#698); deepen METAR/SPECI via F15 / EV-011.
 - **What it does**: Design + publish **`tac-validate`** `0.1.0` to PyPI — standalone TAC
   product validation for all seven F6 products with structured issues (code, severity, span).
   Aggressively encode mined rules from `docs/domain/` (cite-only for paywalled Annex text):
@@ -358,7 +359,7 @@
 
 ### F13: Fast IWXXM Validate (Rust Core + Schematron + PyPI)
 
-- **Status**: **Planned** — S014 / EV-010 (#699).
+- **Status**: **Implemented** — S014 / EV-010 (#699).
 - **What it does**: Publish **`iwxxm-validate`** `0.1.0` with Rust core (PyO3/maturin):
   well-formed + XSD + **native Rust Schematron/SVRL**; Python SDK
   `validate_iwxxm(...)`; pinned `vendor/schemas/*` **bundled** in the wheel; version/profile
@@ -374,7 +375,7 @@
 
 ### F14: Publish `tac2iwxxm` + Validate Extras + PyPI/Release CI
 
-- **Status**: **Planned** — S014 / EV-010 (#693).
+- **Status**: **Implemented** — S014 / EV-010 (#693).
 - **What it does**: Publish **`tac2iwxxm`** `0.1.0` to PyPI (conversion library + optional
   PyO3). Extra **`tac2iwxxm[validate]`** depends on `tac-validate` + `iwxxm-validate`.
   Shared GitHub Actions **OIDC trusted publishing** — one workflow per package on version
@@ -386,6 +387,55 @@
   3. Tag-driven publish CI green; README install/usage
   4. UJ-DEV-005 / UJ-023 smokes pass
 - **Source**: #693; E10-5/19/20/25
+
+### F15: Maintainable TAC Lint Issue Registry + METAR/SPECI Quality Bar
+
+- **Status**: **Planned** — S015 / EV-011 ([#732](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/732)).
+- **What it does**: Introduces a **maintainable issue registry** in `packages/tac-validate`
+  (machine-readable `code` + default `severity` `info`|`warning`|`error` + message template).
+  Rules import registry entries; a docs/generated catalog lists all codes for operators and
+  maintainers. Raises **METAR and SPECI** TAC lint, convert, and IWXXM-validate quality to the
+  F6.a/F6.b reference-product bar: expand accept/negative fixtures, golden TAC→IWXXM→XSD+Schematron,
+  coverage-matrix METAR/SPECI row review, METAR↔SPECI adjacency, and opportunistic rule/convert
+  improvements from external METAR/IWXXM research (MetarCentral, AviationRef, iwxxmConverter —
+  cite-only for paywalled Annex text).
+- **Registry home**: `packages/tac-validate` module + docs/generated catalog (**ADR-028**).
+  Product-agnostic shape from day one; **this cycle encodes METAR/SPECI deeply** (R1–R8 +
+  opportunistic); other products may gain thin registry rows when rules already emit codes.
+- **Code stability**: Public issue codes are **stable** — renames require a deprecation note;
+  default severities may tighten in minor releases (E11-10).
+- **Deepens**:
+  | Feature | Role this cycle |
+  |---------|-----------------|
+  | **F6** | METAR convert fidelity + `product_matrix` / golden IWXXM; Annex-3 + `iwxxm_us` where fixtures allow (COR/NIL/RMK as scoped) |
+  | **F12** | METAR checklist rules wired through registry; accept + negative fixtures; no silent success |
+- **Acceptance**:
+  1. All METAR/**SPECI** lint emissions use registry codes; CI fails on unknown codes
+  2. Adding a rule = registry row + fixture(s); no ad-hoc severity string literals in rule bodies
+  3. Coverage-matrix METAR/**SPECI** rows updated; **R1–R8 themes closed this cycle** (HARD —
+     E11-23/28); non–R-theme gaps only may defer with rationale + AskQuestion
+  4. Accept METAR **and SPECI** → convert → `iwxxm-validate` XSD+Schematron pass (pinned
+     versions) for expanded golden pack
+  5. Negative METAR/**SPECI** fixtures produce useful diagnostics (no silent success)
+  6. Workbench / `product=metar` **and** `product=speci` lint+convert smoke documented
+     (F7 remains Planned; smoke only under F15); METAR↔SPECI adjacency covered (UJ-024 / TC-F15-005);
+     catalog tooltips via `GET /api/v1/lint-issue-catalog` (E11-31)
+- **Out of scope**: New products beyond the seven F6 set; COLLECT/dissemination; FlightPlanDatabase
+  FMS as METAR authority; closing sibling product-quality tickets unless registry sharing requires it.
+- **Source**: #732; E11-1..E11-10; [context/metar-lint-quality.md](context/metar-lint-quality.md);
+  ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`
+
+### F6 deepen (S015 / EV-011 — METAR)
+
+- **Status note**: F6 remains **Implemented**; this cycle **deepens METAR/SPECI** convert/golden
+  fidelity under F15 acceptance (not a new Fn). Track gaps vs #732 known list (COR/NIL/remarks;
+  IWXXM-US AO2/SLP/PK WND; AHL+SPECI adjacency) — **R1–R8 themes must close** (HARD); other
+  convert gaps outside those themes may defer only via AskQuestion + coverage note.
+
+### F12 deepen (S015 / EV-011 — METAR)
+
+- **Status note**: F12 remains **Implemented** (PyPI `0.1.0`); this cycle routes METAR/**SPECI**
+  rules through the F15 registry and expands accept/negative packs to full-depth checklist targets.
 
 ## Platform Feature Details (Monorepo Migration)
 
@@ -467,6 +517,7 @@
 | F12 | — | PyPI `tac-validate` + CLI | Yes | — |
 | F13 | — | PyPI `iwxxm-validate` + SDK | Yes | Via API image |
 | F14 | — | PyPI `tac2iwxxm[+validate]` | Yes | Via API image |
+| F15 | Yes (METAR/SPECI workbench smoke) | Yes (`lint-tac` registry codes) | Yes (registry + goldens) | Yes if API/FE contract changes |
 | M1–M6 | — | — | Yes | Yes |
 
 | F6 capability | Library | HTTP API | Web UI | CI metrics |

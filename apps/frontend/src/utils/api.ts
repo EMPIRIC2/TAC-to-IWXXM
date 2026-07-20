@@ -512,6 +512,54 @@ export async function lintTac(params: {
   return (await response.json()) as LintTacResponse;
 }
 
+export interface LintIssueCatalogEntry {
+  code: string;
+  severity: string;
+  message_template: string;
+  product?: string | null;
+  tags: string[];
+}
+
+export interface LintIssueCatalogResponse {
+  issues: LintIssueCatalogEntry[];
+}
+
+/**
+ * Fetch the tac-validate issue registry catalog (F15 / E11-31).
+ *
+ * **Endpoint**: GET /api/v1/lint-issue-catalog
+ */
+export async function fetchLintIssueCatalog(params?: {
+  product?: string;
+  accessToken?: string;
+  signal?: AbortSignal;
+}): Promise<LintIssueCatalogResponse> {
+  const token = params?.accessToken || getAccessToken() || '';
+  const qs =
+    params?.product && params.product.trim()
+      ? `?product=${encodeURIComponent(params.product.trim().toLowerCase())}`
+      : '';
+  const response = await withTimeout(
+    fetch(apiUrl(`/lint-issue-catalog${qs}`), {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      signal: params?.signal,
+    }),
+    15000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Catalog fetch failed: ${response.statusText}`,
+    }));
+    throw new Error(apiErrorMessage(error, `HTTP ${response.status}`));
+  }
+
+  return (await response.json()) as LintIssueCatalogResponse;
+}
+
 export async function decodeTac(params: {
   manualText: string;
   product: string;
@@ -641,6 +689,7 @@ export default {
   convertMetarToIwxxmZip,
   lintTac,
   decodeTac,
+  fetchLintIssueCatalog,
   fetchAirportRegion,
   downloadBlob,
 };

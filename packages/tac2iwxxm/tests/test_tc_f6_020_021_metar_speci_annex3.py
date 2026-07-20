@@ -60,19 +60,29 @@ def test_convert_result_is_msgspec_struct() -> None:
 def test_annex3_golden_manifest_present(golden_manifest: dict) -> None:
     assert golden_manifest.get("schema_version") == 1
     cases = golden_manifest.get("cases", [])
-    assert len(cases) >= 3
+    assert len(cases) >= 7
+    ids = {c["id"] for c in cases}
+    assert {"metar_basic", "speci_basic", "metar_nil", "metar_cor", "metar_auto", "metar_cavok", "speci_cor"} <= ids
     for case in cases:
         assert (FIXTURES / case["tac"]).is_file()
         assert (FIXTURES / case["golden"]).is_file()
         assert case["product"] in {"METAR", "SPECI"}
 
 
-@pytest.mark.parametrize(
-    "case_id",
-    ["metar_basic", "speci_basic", "metar_nil"],
+ANNEX3_CASE_IDS = (
+    "metar_basic",
+    "speci_basic",
+    "metar_nil",
+    "metar_cor",
+    "metar_auto",
+    "metar_cavok",
+    "speci_cor",
 )
+
+
+@pytest.mark.parametrize("case_id", ANNEX3_CASE_IDS)
 def test_tc_f6_020_m_parse_xsd_sch_annex3(case_id: str, golden_manifest: dict) -> None:
-    """M-parse / M-xsd / M-sch on golden pack (TC-F6-020)."""
+    """M-parse / M-xsd / M-sch on golden pack (TC-F6-020 / TC-F15-002)."""
     from iwxxm_validate import validate
 
     from tac2iwxxm import convert
@@ -104,10 +114,7 @@ def test_tc_f6_020_m_parse_xsd_sch_annex3(case_id: str, golden_manifest: dict) -
     assert not blocking, f"M-xsd/M-sch blocking issues for {case_id}: {[(i.code, i.message) for i in blocking]}"
 
 
-@pytest.mark.parametrize(
-    "case_id",
-    ["metar_basic", "speci_basic", "metar_nil"],
-)
+@pytest.mark.parametrize("case_id", ANNEX3_CASE_IDS)
 def test_tc_f6_021_m_golden_annex3(case_id: str, golden_manifest: dict) -> None:
     """M-golden: canonicalize(convert XML) == canonicalize(fixture golden)."""
     from tac2iwxxm import convert
@@ -130,10 +137,7 @@ def test_tc_f6_021_m_golden_annex3(case_id: str, golden_manifest: dict) -> None:
     )
 
 
-@pytest.mark.parametrize(
-    "case_id",
-    ["metar_basic", "speci_basic", "metar_nil"],
-)
+@pytest.mark.parametrize("case_id", ANNEX3_CASE_IDS)
 def test_tc_f6_021_m_field_where_annotated(case_id: str, golden_manifest: dict, field_annotations: dict) -> None:
     """M-field: IR field equality only when the fixture pack annotates expected fields."""
     annotations = field_annotations.get("cases", {}).get(case_id)

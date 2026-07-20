@@ -1,24 +1,55 @@
 {
   "schema_version": 1,
-  "description": "TC-F6-020/021 annex3 METAR/SPECI golden pack (WMO-shaped; not gifts)",
+  "description": "TC-F6-020/021 / TC-F15-002 annex3 METAR/SPECI golden pack (WMO-shaped; R6 expand)",
   "cases": [
     {
       "id": "metar_basic",
       "product": "METAR",
       "tac": "metar_basic.tac",
-      "golden": "metar_basic.golden.xml"
+      "golden": "metar_basic.golden.xml",
+      "theme": "R6"
     },
     {
       "id": "speci_basic",
       "product": "SPECI",
       "tac": "speci_basic.tac",
-      "golden": "speci_basic.golden.xml"
+      "golden": "speci_basic.golden.xml",
+      "theme": "R6"
     },
     {
       "id": "metar_nil",
       "product": "METAR",
       "tac": "metar_nil.tac",
-      "golden": "metar_nil.golden.xml"
+      "golden": "metar_nil.golden.xml",
+      "theme": "R8"
+    },
+    {
+      "id": "metar_cor",
+      "product": "METAR",
+      "theme": "R8",
+      "tac": "metar_cor.tac",
+      "golden": "metar_cor.golden.xml"
+    },
+    {
+      "id": "metar_auto",
+      "product": "METAR",
+      "theme": "R8",
+      "tac": "metar_auto.tac",
+      "golden": "metar_auto.golden.xml"
+    },
+    {
+      "id": "metar_cavok",
+      "product": "METAR",
+      "theme": "R4",
+      "tac": "metar_cavok.tac",
+      "golden": "metar_cavok.golden.xml"
+    },
+    {
+      "id": "speci_cor",
+      "product": "SPECI",
+      "theme": "R8",
+      "tac": "speci_cor.tac",
+      "golden": "speci_cor.golden.xml"
     }
   ]
 }

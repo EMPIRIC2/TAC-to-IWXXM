@@ -43,6 +43,8 @@ try:
         DecodeSegmentModel,
         DecodeTacResponse,
         LintFixModel,
+        LintIssueCatalogEntryModel,
+        LintIssueCatalogResponse,
         LintIssueModel,
         LintTacResponse,
         ValidateRequest,
@@ -84,6 +86,8 @@ except ImportError:
         DecodeSegmentModel,
         DecodeTacResponse,
         LintFixModel,
+        LintIssueCatalogEntryModel,
+        LintIssueCatalogResponse,
         LintIssueModel,
         LintTacResponse,
         ValidateRequest,
@@ -109,6 +113,7 @@ from tac2iwxxm import BulletinSplitError
 from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
 from tac_validate import lint as tac_lint_fn
+from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
 
 setup_logging("backend")
 logger = logging.getLogger(__name__)
@@ -814,6 +819,37 @@ def get_schema_status():
         "default": DEFAULT_VERSION,
         "metadata": metadata_summary,
     }
+
+
+@app.get(
+    "/api/v1/lint-issue-catalog",
+    tags=["Validation"],
+    response_model=LintIssueCatalogResponse,
+    responses={
+        401: {"description": "Unauthorized - Invalid or missing authentication token"},
+    },
+)
+async def lint_issue_catalog(
+    product: Optional[str] = None,
+    user: dict = Depends(verify_supabase_token),
+) -> Response:
+    """Export the tac-validate issue registry for FE tooltips / catalog panel (E11-31)."""
+    _ = user
+    entries = tac_catalog_entries(product=product)
+    return msgspec_json_response(
+        LintIssueCatalogResponse(
+            issues=[
+                LintIssueCatalogEntryModel(
+                    code=spec.code,
+                    severity=spec.severity,
+                    message_template=spec.message_template,
+                    product=spec.product,
+                    tags=list(spec.tags),
+                )
+                for spec in entries
+            ]
+        )
+    )
 
 
 @app.post(

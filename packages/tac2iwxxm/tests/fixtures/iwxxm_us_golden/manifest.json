@@ -1,25 +1,28 @@
 {
   "schema_version": 1,
-  "description": "TC-F6-003: iwxxm_us METAR/SPECI + TAF/SIGMET/AIRMET (F6.b / T4.10 / T5.4)",
+  "description": "TC-F6-003 / TC-F15-002: iwxxm_us METAR/SPECI + TAF/SIGMET/AIRMET (R5/R6/R8 expand)",
   "profile": "iwxxm_us",
   "cases": [
     {
       "id": "metar_us_ao2_slp",
       "product": "METAR",
       "tac": "metar_us_ao2_slp.tac",
-      "golden": "metar_us_ao2_slp.golden.xml"
+      "golden": "metar_us_ao2_slp.golden.xml",
+      "theme": "R5"
     },
     {
       "id": "speci_us_ao2",
       "product": "SPECI",
       "tac": "speci_us_ao2.tac",
-      "golden": "speci_us_ao2.golden.xml"
+      "golden": "speci_us_ao2.golden.xml",
+      "theme": "R5"
     },
     {
       "id": "metar_us_pk_wnd",
       "product": "METAR",
       "tac": "metar_us_pk_wnd.tac",
-      "golden": "metar_us_pk_wnd.golden.xml"
+      "golden": "metar_us_pk_wnd.golden.xml",
+      "theme": "R5"
     },
     {
       "id": "taf_us_altimeter",
@@ -38,6 +41,20 @@
       "product": "AIRMET",
       "tac": "airmet_us_basic.tac",
       "golden": "airmet_us_basic.golden.xml"
+    },
+    {
+      "id": "metar_us_auto_ao2",
+      "product": "METAR",
+      "theme": "R5",
+      "tac": "metar_us_auto_ao2.tac",
+      "golden": "metar_us_auto_ao2.golden.xml"
+    },
+    {
+      "id": "speci_us_cor",
+      "product": "SPECI",
+      "theme": "R8",
+      "tac": "speci_us_cor.tac",
+      "golden": "speci_us_cor.golden.xml"
     }
   ]
 }

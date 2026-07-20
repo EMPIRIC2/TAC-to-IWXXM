@@ -44,6 +44,11 @@
         "timeout": 10
       },
       {
+        "command": "python3 .cursor/hooks/issue_registry_guard.py",
+        "matcher": "Write|TabWrite",
+        "timeout": 10
+      },
+      {
         "command": "python3 .cursor/hooks/pypi_release_guard.py",
         "matcher": "Write|TabWrite",
         "timeout": 10

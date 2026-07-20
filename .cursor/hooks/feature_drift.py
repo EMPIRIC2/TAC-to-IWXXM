@@ -20,7 +20,7 @@ FEATURE_MAP: dict[str, str] = {
     "apps/worker": "F8 — Near-RT ingest worker",
     "apps/e2e": "UJ-001–023 — E2E tests (T2)",
     "packages/tac2iwxxm": "F6, F9, F14 — tac2iwxxm convert/decode + PyPI",
-    "packages/tac-validate": "F12 — tac-validate PyPI + TAC product rules",
+    "packages/tac-validate": "F12, F15 — tac-validate PyPI + issue registry + TAC product rules",
     "packages/iwxxm-validate": "F2, F13 — iwxxm-validate Rust/XSD/Schematron + PyPI",
     "packages/gifts": "F1, M3 — GIFTs library (transitional)",
     "packages/auth": "M4 — Auth merged into backend",
@@ -103,7 +103,7 @@ def main() -> int:
     else:
         context = (
             f"[feature-drift] Edit in '{rel_str}' — no automatic feature mapping. "
-            "Verify against docs/feature-list.md (F1–F14, M1–M6)."
+            "Verify against docs/feature-list.md (F1–F15, M1–M6)."
         )
 
     print(json.dumps({"additional_context": context}))

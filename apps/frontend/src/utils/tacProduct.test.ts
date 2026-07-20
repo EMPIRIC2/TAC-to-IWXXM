@@ -11,6 +11,15 @@ describe('detectTacProduct', () => {
     );
   });
 
+  it('detects SPECI in a METAR+SPECI bulletin neighbor (R7 / TC-F15-005)', () => {
+    const bulletin =
+      'METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=\n' +
+      'SPECI KJFK 232045Z 18012KT 5SM BKN015 15/07 A3005=\n';
+    // First keyword wins for whole-string detect; callers split reports for per-line identity.
+    expect(detectTacProduct(bulletin)).toBe('METAR');
+    expect(detectTacProduct(bulletin.split('\n')[1]!)).toBe('SPECI');
+  });
+
   it('detects TAF', () => {
     expect(
       detectTacProduct('TAF KJFK 121730Z 1218/1324 24012KT P6SM SCT040 BKN080'),

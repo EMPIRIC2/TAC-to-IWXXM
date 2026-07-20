@@ -39,6 +39,7 @@ HIGH_CHURN_JSON_PATHS = (
     "/api/v1/validate",
     "/api/v1/lint-tac",
     "/api/v1/decode-tac",
+    "/api/v1/lint-issue-catalog",
 )
 
 
@@ -132,6 +133,7 @@ def test_api_binds_msgspec_json_response() -> None:
     assert bound.__module__.endswith("msgspec_http")
     # High-churn handlers reference the bound name in source
     assert "msgspec_json_response" in inspect.getsource(api_module.lint_tac)
+    assert "msgspec_json_response" in inspect.getsource(api_module.lint_issue_catalog)
 
 
 @pytest.mark.parametrize(
@@ -227,11 +229,13 @@ def test_high_churn_openapi_keeps_pydantic_response_aliases() -> None:
         "LintTacResponse",
         "DecodeTacResponse",
         "ConvertBulletinResponse",
+        "LintIssueCatalogResponse",
     ):
         assert name in components, f"OpenAPI missing pydantic alias schema {name}"
 
     for path in HIGH_CHURN_JSON_PATHS:
-        route = _route_for(path)
+        method = "GET" if path.endswith("/lint-issue-catalog") else "POST"
+        route = _route_for(path, method=method)
         assert route.response_model is not None, f"{path} must keep response_model for OpenAPI"
         assert issubclass(route.response_model, BaseModel)
 
@@ -359,7 +363,7 @@ def test_high_churn_handlers_annotated_or_return_response() -> None:
     """T5.2 handlers should return Response from msgspec helper (not live pydantic encode)."""
     from starlette.responses import Response
 
-    for name in ("lint_tac", "decode_tac_endpoint", "convert_bulletin", "validate_comprehensive"):
+    for name in ("lint_tac", "lint_issue_catalog", "decode_tac_endpoint", "convert_bulletin", "validate_comprehensive"):
         fn = getattr(api_module, name)
         # Either annotation is Response, or source references msgspec_json_response
         src = inspect.getsource(fn)

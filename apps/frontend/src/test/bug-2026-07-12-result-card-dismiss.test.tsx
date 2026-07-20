@@ -23,6 +23,7 @@ vi.mock('/utils/supabase/logout', () => ({
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
   convertTafToIwxxm: vi.fn(),
+  fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
   lintTac: vi.fn().mockResolvedValue({
     ok: true,
     issues: [],

@@ -275,6 +275,22 @@ class LintTacResponse(BaseModel):
     product: Optional[str] = None
 
 
+class LintIssueCatalogEntryModel(BaseModel):
+    """One registry row exported by GET /api/v1/lint-issue-catalog (E11-31)."""
+
+    code: str
+    severity: str
+    message_template: str
+    product: Optional[str] = None
+    tags: List[str] = Field(default_factory=list)
+
+
+class LintIssueCatalogResponse(BaseModel):
+    """Response for GET /api/v1/lint-issue-catalog."""
+
+    issues: List[LintIssueCatalogEntryModel] = Field(default_factory=list)
+
+
 class DecodeSegmentModel(BaseModel):
     """HTTP DTO for one TAC decode/annotate segment (S011 / #702)."""
 

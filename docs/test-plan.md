@@ -2,15 +2,16 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-13 (S011 / EV-008 — F7 operator UI test plan)
+> **Last updated**: 2026-07-19 (S015 / EV-011 — F15 METAR lint registry + #732)
 
 ## Scope
 
-**In scope**: Product features F1–F8 (F1 superseded by F6 engine; **F7 built this cycle**
-S011 / EV-008; F8 Implemented); monorepo migration validation M1–M6 (M3 deprecated at
-F6 cutover); connectivity tiers **H0c–H7** (local + live Render); tac2iwxxm + `tac-validate` +
-`iwxxm-validate` metrics (library/CI); backend thin wrappers; F7 decode/spans/soft-preview/
-workbench/unified sessions; admin-route negative tests.
+**In scope**: Product features F1–F15 (F1 superseded by F6 engine; F7 Planned — workbench
+smoke under F15 only; F8–F14 as prior cycles); monorepo migration validation M1–M6 (M3
+deprecated at F6 cutover); connectivity tiers **H0c–H7** (local + live Render); tac2iwxxm +
+`tac-validate` + `iwxxm-validate` metrics (library/CI); backend thin wrappers; F7
+decode/spans/soft-preview/workbench/unified sessions; admin-route negative tests;
+**F15** issue registry + METAR golden/negative packs (UJ-024).
 
 **Out of scope**: Performance/load testing; wmo-im / IWXXM-US schema correctness beyond our fixtures;
 scheduled CI live jobs (manual/Makefile only); **convert-response metrics fields** (F6-R11);
@@ -64,6 +65,7 @@ Unified manual live test harness against Render staging:
 | UJ-023 | F12–F14 | PyPI tag → install smoke | CI | TC-F14-001 |
 | UJ-DEV-005 | F12–F14 | pip install packages | CI | TC-F12-001, TC-F13-001, TC-F14-002 |
 | UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
+| UJ-024 | F15 | METAR/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F15-001..005 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -417,6 +419,56 @@ Before closing S013 / EV-009:
 - [ ] Hard perf gates at publish (E10-24)
 - [ ] H4–H5 + H6′ UJ-022 after Render redeploy
 - [ ] PyPI install smokes for three packages
+
+### TC-F15-001: Issue registry completeness (UJ-024)
+
+- **Level**: T0 / CI
+- **Objective**: Every METAR/**SPECI** lint emission uses a registered code; catalog export in sync
+- **Pass criteria**: CI fails on unknown codes; registry row required for new rules; no ad-hoc
+  severity literals for registered issues (ADR-028)
+- **Source**: F15; #732; E11-8..E11-10
+
+### TC-F15-002: METAR/SPECI accept → convert → XSD+Schematron (UJ-024)
+
+- **Level**: T0 / CI (`tac2iwxxm` + `iwxxm-validate`)
+- **Objective**: Expanded METAR **and SPECI** golden packs convert and pass M-xsd / M-sch on
+  pinned versions
+- **Pass criteria**: `product_matrix` / golden fixtures green for annex3 for both products;
+  `iwxxm_us` where fixtures exist or documented N/A
+- **Source**: F15 + F6 deepen; #732
+
+### TC-F15-003: METAR/SPECI negative fixtures → registry diagnostics (UJ-024)
+
+- **Level**: T0 / CI (`tac-validate`)
+- **Objective**: Rule-violating METAR/SPECI TAC never silent-succeeds
+- **Pass criteria**: Each negative case asserts expected registry `code`(s); useful messages;
+  at least one SPECI-specific negative (e.g. missing SPECI keyword when product=speci)
+- **Source**: F15 + F12 deepen; #732
+
+### TC-F15-004: Workbench METAR/SPECI lint+convert smoke (UJ-024)
+
+- **Level**: T2 / T3 (H4–H5 when redeployed)
+- **Objective**: Operator Product=METAR and Product=SPECI (and Auto-detect) lint + convert;
+  catalog tooltips via `GET /api/v1/lint-issue-catalog`
+- **Pass criteria**: Console shows registry codes; tooltips/catalog panel resolve codes;
+  convert+strict validation path works for both
+- **Source**: F15; #732; E11-29; E11-31; F7 remains Planned (smoke only)
+
+### TC-F15-005: METAR↔SPECI adjacency (UJ-024)
+
+- **Level**: T0 / T2
+- **Objective**: Shared METAR/SPECI pack does not mis-route or silent-pass across products
+- **Pass criteria**: Auto-detect / product hint selects SPECI for `SPECI …` TAC; bulletin or
+  paired fixtures keep per-report product identity; lint codes remain registry-backed
+- **Source**: F15; #732 known gap AHL+SPECI adjacency
+
+### F15 verify/deploy gate
+
+- [ ] TC-F15-001..005 green
+- [ ] Coverage-matrix METAR/SPECI **R1–R8** closed (HARD); non–R gaps only with AskQuestion + note
+- [ ] Research catalog (R1–R8 + SPECI adjacency R7) linked from session report / domain notes
+- [ ] H4–H5 if API/FE contract or workbench copy changes; H0c when API image changes
+- [ ] api-contract: lint-tac wire shape unchanged (ADR-028); additive `GET /lint-issue-catalog` (E11-31)
 
 ## Live Test Cases (T3 / H3–H6)
 

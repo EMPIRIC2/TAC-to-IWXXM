@@ -2,8 +2,9 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI;
-> S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP
-> **Last updated**: 2026-07-18
+> S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP;
+> S015 / EV-011 F15 METAR lint registry + #732 quality
+> **Last updated**: 2026-07-19
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -35,6 +36,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-021 | IWXXM preview pane + terminator quick fix | apps/frontend | F10 | T2 / **T3** |
 | UJ-022 | Operator convert/validate after msgspec HTTP | apps/frontend | F11 | T2 / **T3** / H6′ |
 | UJ-023 | PyPI release tag → install smoke | CI / maintainer | F12–F14 | CI |
+| UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -617,6 +619,41 @@ Extended: sync may include **iwxxm-us** pin updates via manifest (in addition to
 
 ---
 
+### UJ-024: METAR/SPECI Lint Registry + Convert→Validate Golden (F15 / #732)
+
+**Actor**: Operator / CI maintainer
+
+**Goal**: Lint **METAR and SPECI** TAC with stable registry issue codes; convert accept
+fixtures to IWXXM; validate with XSD+Schematron; see useful diagnostics on negative fixtures.
+SPECI shares the METAR/SPECI rule pack and `metarSpeci` IWXXM schemas — adjacency is explicit
+(product hint `speci`, Auto-detect, and AHL bulletin METAR/SPECI neighbors).
+
+**Steps (operator — T2/T3)**:
+
+1. Open workbench; set Product = **METAR** (or Auto-detect when unambiguous).
+2. Paste a valid METAR accept fixture; run lint — `ok: true` or only `info` (e.g. terminator);
+   all issue `code` values exist in the `tac-validate` registry catalog
+   (`GET /api/v1/lint-issue-catalog` powers tooltips / catalog panel — E11-31).
+3. Convert → Strict Validation — XSD+Schematron pass for pinned `iwxxm_version`.
+4. Paste a known-bad METAR negative fixture — lint returns registry codes with useful messages
+   (no silent success); hover/code tooltip resolves via catalog endpoint.
+5. Repeat steps 1–4 with Product = **SPECI** (and at least one SPECI accept + one SPECI
+   negative fixture); confirm Auto-detect chooses SPECI when the TAC starts with `SPECI`.
+
+**Steps (CI — T0)**:
+
+1. Registry CI: every emitted METAR/SPECI code is registered; catalog export in sync.
+2. Golden pack: METAR **and** SPECI TAC → `tac2iwxxm` → `iwxxm-validate` (M-xsd / M-sch) green.
+3. Negative pack: expected registry codes asserted for both products.
+4. Adjacency: bulletin or paired fixtures where METAR and SPECI coexist do not mis-route
+   product selection or silent-pass lint.
+
+**Acceptance**: F15 criteria 1–6 (METAR + SPECI); coverage-matrix METAR/SPECI **R1–R8** closed
+this cycle (HARD — E11-23/28); non–R-theme gaps only may defer with rationale + AskQuestion.
+**Tier: T0 / T2 / T3** (T3 = workbench smoke when API/FE redeployed).
+
+---
+
 ## Operations Journeys
 
 ### UJ-OPS-001: Deploy Render stack (API + static + F8 worker)
@@ -639,3 +676,5 @@ live smoke (T7.4) when scheduled.
 - S011 / EV-008 (2026-07-13): UJ-004 unified filter; UJ-013 expanded; UJ-015–019 added; UJ-014
   Implemented note; admin journeys retired via UJ-019
 - S014 / EV-010 (2026-07-18): UJ-022/023 + UJ-DEV-005 (F11–F14 msgspec HTTP + PyPI)
+- S015 / EV-011 (2026-07-19): UJ-024 METAR/**SPECI** lint registry + convert→validate golden
+  (F15 / #732; SPECI adjacency explicit; catalog via `GET /lint-issue-catalog` E11-31)

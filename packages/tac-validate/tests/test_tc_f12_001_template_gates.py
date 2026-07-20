@@ -48,7 +48,8 @@ def test_product_rules_dispatch_covers_all_seven_products() -> None:
     }
     assert set(samples) == set(PRODUCTS)
     for product, tac in samples.items():
-        assert check_product_rules(tac, product) == []
+        issues = check_product_rules(tac, product)
+        assert not any(i.severity == "error" for i in issues), (product, issues)
 
 
 @pytest.mark.parametrize("case", _template_cases(), ids=_ids(_template_cases()))

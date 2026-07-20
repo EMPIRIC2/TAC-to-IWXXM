@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
-  "description": "TC-F12-001 / E10-21 negative + accept fixture pack for tac-validate (T2.1).",
+  "description": "TC-F12-001 / E10-21 / TC-F15-003 fixture pack for tac-validate (F12 + F15 R1\u2013R8).",
   "cite": [
     "docs/domain/TAC_VALIDATION.md (A3-2, A5-1, A6, A2-1, A2-2 paraphrase)",
-    "docs/domain/rules/COVERAGE_MATRIX.md"
+    "docs/domain/rules/COVERAGE_MATRIX.md",
+    "docs/sessions/S015-metar-lint-quality/reports/metar-research-catalog.md (R1\u2013R8)"
   ],
   "accept": [
     {
@@ -13,9 +14,51 @@
       "ok": true
     },
     {
+      "id": "accept_metar_r1_station_time",
+      "product": "METAR",
+      "theme": "R1",
+      "tac": "accept/metar_r1_station_time.tac",
+      "ok": true
+    },
+    {
       "id": "accept_speci_basic",
       "product": "SPECI",
       "tac": "accept/speci_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_r1_station_time",
+      "product": "SPECI",
+      "theme": "R1",
+      "tac": "accept/speci_r1_station_time.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r2_vis_sm",
+      "product": "METAR",
+      "theme": "R2",
+      "tac": "accept/metar_r2_vis_sm.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r2_vis_9999",
+      "product": "METAR",
+      "theme": "R2",
+      "tac": "accept/metar_r2_vis_9999.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r2_vis_meters",
+      "product": "METAR",
+      "theme": "R2",
+      "tac": "accept/metar_r2_vis_meters.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_r2_vis_sm",
+      "product": "SPECI",
+      "theme": "R2",
+      "tac": "accept/speci_r2_vis_sm.tac",
       "ok": true
     },
     {
@@ -47,6 +90,190 @@
       "product": "TCA",
       "tac": "accept/tca_basic.tac",
       "ok": true
+    },
+    {
+      "id": "accept_metar_r3_wx_light_rain",
+      "product": "METAR",
+      "theme": "R3",
+      "cite": "A3-2 #8 intensity + precip; research R3",
+      "tac": "accept/metar_r3_wx_light_rain.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r3_wx_heavy_snow",
+      "product": "METAR",
+      "theme": "R3",
+      "cite": "A3-2 #8 +SN; research R3",
+      "tac": "accept/metar_r3_wx_heavy_snow.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r3_wx_vicinity_fog",
+      "product": "METAR",
+      "theme": "R3",
+      "cite": "A3-2 #8 VC* vicinity; research R3",
+      "tac": "accept/metar_r3_wx_vicinity_fog.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r3_wx_tsra",
+      "product": "METAR",
+      "theme": "R3",
+      "cite": "A3-2 #8 TS+RA combo; research R3",
+      "tac": "accept/metar_r3_wx_tsra.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r3_wx_fzra",
+      "product": "METAR",
+      "theme": "R3",
+      "cite": "A3-2 #8 FZ descriptor; research R3",
+      "tac": "accept/metar_r3_wx_fzra.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_r3_wx_shra",
+      "product": "SPECI",
+      "theme": "R3",
+      "cite": "A3-2 #8 -SHRA shower; research R3",
+      "tac": "accept/speci_r3_wx_shra.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r4_cavok",
+      "product": "METAR",
+      "theme": "R4",
+      "cite": "A3-2 #9 CAVOK replaces cloud; research R4",
+      "tac": "accept/metar_r4_cavok.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r4_few040",
+      "product": "METAR",
+      "theme": "R4",
+      "cite": "A3-2 #9 FEW + 3-digit height; research R4",
+      "tac": "accept/metar_r4_few040.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r4_vv002",
+      "product": "METAR",
+      "theme": "R4",
+      "cite": "A3-2 #9 VV + 3-digit vertical visibility; research R4",
+      "tac": "accept/metar_r4_vv002.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r4_nsc",
+      "product": "METAR",
+      "theme": "R4",
+      "cite": "A3-2 #9 NSC no significant cloud; research R4",
+      "tac": "accept/metar_r4_nsc.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r5_rmk_ao2_slp",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "US RMK AO2+SLP; research R5 / iwxxm_us",
+      "tac": "accept/metar_r5_rmk_ao2_slp.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r5_rmk_ao1",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "US RMK AO1; research R5 / iwxxm_us",
+      "tac": "accept/metar_r5_rmk_ao1.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r5_rmk_precip",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "US RMK P#### precip; research R5 / iwxxm_us",
+      "tac": "accept/metar_r5_rmk_precip.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r5_rmk_temp_tenths",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "US RMK T########; research R5 / iwxxm_us",
+      "tac": "accept/metar_r5_rmk_temp_tenths.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_r5_rmk_ao2",
+      "product": "SPECI",
+      "theme": "R5",
+      "cite": "SPECI US RMK AO2; research R5 / iwxxm_us",
+      "tac": "accept/speci_r5_rmk_ao2.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_auto",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "AUTO modifier; research R8",
+      "tac": "accept/metar_r8_auto.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_cor",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "COR modifier; research R8",
+      "tac": "accept/metar_r8_cor.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_nosig",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "NOSIG trend; research R8",
+      "tac": "accept/metar_r8_nosig.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_tempo",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "TEMPO trend; research R8",
+      "tac": "accept/metar_r8_tempo.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_rvr",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "RVR group; research R8",
+      "tac": "accept/metar_r8_rvr.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_vrb_gust",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "VRB + gust wind; research R8",
+      "tac": "accept/metar_r8_vrb_gust.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_r8_auto_rvr",
+      "product": "SPECI",
+      "theme": "R8",
+      "cite": "SPECI AUTO+RVR; research R8",
+      "tac": "accept/speci_r8_auto_rvr.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_nil",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "NIL report body; research R8",
+      "tac": "accept/metar_r8_nil.tac",
+      "ok": true
     }
   ],
   "negative": [
@@ -54,6 +281,7 @@
       "id": "metar_missing_cccc",
       "product": "METAR",
       "depth": "full_checklist",
+      "theme": "R1",
       "cite": "A3-2 #2 CCCC",
       "tac": "negative/metar/missing_cccc.tac",
       "ok": false,
@@ -64,6 +292,7 @@
       "id": "metar_missing_obs_time",
       "product": "METAR",
       "depth": "full_checklist",
+      "theme": "R1",
       "cite": "A3-2 #3 ddhhmmZ",
       "tac": "negative/metar/missing_obs_time.tac",
       "ok": false,
@@ -114,7 +343,8 @@
       "id": "metar_bad_cloud_token",
       "product": "METAR",
       "depth": "full_checklist",
-      "cite": "A3-2 #9 cloud/VV",
+      "theme": "R4",
+      "cite": "A3-2 #9 cloud/VV; research R4",
       "tac": "negative/metar/bad_cloud_token.tac",
       "ok": false,
       "expected_codes": ["INVALID_CLOUD_TOKEN"],
@@ -124,10 +354,22 @@
       "id": "speci_missing_cccc",
       "product": "SPECI",
       "depth": "full_checklist",
+      "theme": "R1",
       "cite": "A3-2 #2 CCCC",
       "tac": "negative/speci/missing_cccc.tac",
       "ok": false,
       "expected_codes": ["MISSING_CCCC"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_missing_obs_time",
+      "product": "SPECI",
+      "depth": "full_checklist",
+      "theme": "R1",
+      "cite": "A3-2 #3 ddhhmmZ",
+      "tac": "negative/speci/missing_obs_time.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_OBS_TIME"],
       "require_spans": true
     },
     {
@@ -278,6 +520,438 @@
       "tac": "negative/tca/missing_max_wind.tac",
       "ok": false,
       "expected_codes": ["MISSING_MAX_WIND"],
+      "require_spans": true
+    }
+  ],
+  "order_warnings": [
+    {
+      "id": "metar_odd_order_time_before_cccc",
+      "product": "METAR",
+      "theme": "R1",
+      "depth": "full_checklist",
+      "cite": "A3-2 body order CCCC\u2192ddhhmmZ; research R1",
+      "tac": "negative/metar/odd_order_time_before_cccc.tac",
+      "ok": true,
+      "expected_codes": ["ODD_FIELD_ORDER"],
+      "expected_severity": "warning",
+      "require_spans": true
+    },
+    {
+      "id": "metar_odd_order_wind_before_time",
+      "product": "METAR",
+      "theme": "R1",
+      "depth": "full_checklist",
+      "cite": "A3-2 body order ddhhmmZ\u2192wind; research R1",
+      "tac": "negative/metar/odd_order_wind_before_time.tac",
+      "ok": true,
+      "expected_codes": ["ODD_FIELD_ORDER"],
+      "expected_severity": "warning",
+      "require_spans": true
+    },
+    {
+      "id": "speci_odd_order_time_before_cccc",
+      "product": "SPECI",
+      "theme": "R1",
+      "depth": "full_checklist",
+      "cite": "A3-2 body order CCCC\u2192ddhhmmZ; research R1",
+      "tac": "negative/speci/odd_order_time_before_cccc.tac",
+      "ok": true,
+      "expected_codes": ["ODD_FIELD_ORDER"],
+      "expected_severity": "warning",
+      "require_spans": true
+    }
+  ],
+  "r2_fraction_accept": [
+    {
+      "id": "accept_metar_r2_vis_half_sm",
+      "product": "METAR",
+      "theme": "R2",
+      "cite": "US SM fraction 1/2SM; research R2",
+      "tac": "accept/metar_r2_vis_half_sm.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r2_vis_mixed_fraction",
+      "product": "METAR",
+      "theme": "R2",
+      "cite": "US SM mixed fraction 1 1/2SM; research R2",
+      "tac": "accept/metar_r2_vis_mixed_fraction.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r2_vis_m_prefix",
+      "product": "METAR",
+      "theme": "R2",
+      "cite": "US M1/4SM less-than prefix; research R2",
+      "tac": "accept/metar_r2_vis_m_prefix.tac",
+      "ok": true
+    }
+  ],
+  "visibility_errors": [
+    {
+      "id": "metar_invalid_vis_km",
+      "product": "METAR",
+      "theme": "R2",
+      "depth": "full_checklist",
+      "cite": "visibility not KM; research R2",
+      "tac": "negative/metar/invalid_vis_km.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_VISIBILITY"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_invalid_vis_five_digit",
+      "product": "METAR",
+      "theme": "R2",
+      "depth": "full_checklist",
+      "cite": "meters are 4 digits; research R2",
+      "tac": "negative/metar/invalid_vis_five_digit.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_VISIBILITY"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_invalid_vis_miles_word",
+      "product": "SPECI",
+      "theme": "R2",
+      "depth": "full_checklist",
+      "cite": "visibility not MILES word; research R2",
+      "tac": "negative/speci/invalid_vis_miles_word.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_VISIBILITY"],
+      "require_spans": true
+    }
+  ],
+  "weather_errors": [
+    {
+      "id": "metar_wx_intensity_with_vc",
+      "product": "METAR",
+      "theme": "R3",
+      "depth": "full_checklist",
+      "cite": "VC* must not carry intensity +/-; research R3",
+      "tac": "negative/metar/wx_intensity_with_vc.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WEATHER"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_wx_unknown_token",
+      "product": "METAR",
+      "theme": "R3",
+      "depth": "full_checklist",
+      "cite": "unknown present weather token; research R3",
+      "tac": "negative/metar/wx_unknown_token.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WEATHER"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_wx_double_intensity",
+      "product": "METAR",
+      "theme": "R3",
+      "depth": "full_checklist",
+      "cite": "double intensity prefix; research R3",
+      "tac": "negative/metar/wx_double_intensity.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WEATHER"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_wx_trailing_intensity",
+      "product": "SPECI",
+      "theme": "R3",
+      "depth": "full_checklist",
+      "cite": "intensity must prefix phenomenon; research R3",
+      "tac": "negative/speci/wx_trailing_intensity.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WEATHER"],
+      "require_spans": true
+    }
+  ],
+  "cloud_errors": [
+    {
+      "id": "metar_cloud_short_height",
+      "product": "METAR",
+      "theme": "R4",
+      "depth": "full_checklist",
+      "cite": "cloud height must be 3 digits; research R4",
+      "tac": "negative/metar/cloud_short_height.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CLOUD_TOKEN"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_cloud_bad_suffix",
+      "product": "METAR",
+      "theme": "R4",
+      "depth": "full_checklist",
+      "cite": "only CB/TCU suffixes allowed; research R4",
+      "tac": "negative/metar/cloud_bad_suffix.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CLOUD_TOKEN"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_vv_short_height",
+      "product": "METAR",
+      "theme": "R4",
+      "depth": "full_checklist",
+      "cite": "VV height must be 3 digits; research R4",
+      "tac": "negative/metar/vv_short_height.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CLOUD_TOKEN"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_cloud_short_height",
+      "product": "SPECI",
+      "theme": "R4",
+      "depth": "full_checklist",
+      "cite": "cloud height must be 3 digits; research R4",
+      "tac": "negative/speci/cloud_short_height.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CLOUD_TOKEN"],
+      "require_spans": true
+    }
+  ],
+  "cloud_cb_tcu_info": [
+    {
+      "id": "metar_r4_ovc_cb",
+      "product": "METAR",
+      "theme": "R4",
+      "cite": "CB convective type \u2192 INFO; research R4",
+      "tac": "accept/metar_r4_ovc_cb.tac",
+      "ok": true,
+      "expected_codes": ["CLOUD_CB_OR_TCU"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_r4_bkn_tcu",
+      "product": "SPECI",
+      "theme": "R4",
+      "cite": "TCU convective type \u2192 INFO; research R4",
+      "tac": "accept/speci_r4_bkn_tcu.tac",
+      "ok": true,
+      "expected_codes": ["CLOUD_CB_OR_TCU"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "remark_us_info": [
+    {
+      "id": "metar_r5_rmk_ao2_slp_info",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "AO2/SLP \u2192 INFO iwxxm_us awareness; research R5",
+      "tac": "accept/metar_r5_rmk_ao2_slp.tac",
+      "ok": true,
+      "expected_codes": ["REMARK_US_EXTENSION"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r5_rmk_temp_tenths_info",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "T######## \u2192 INFO iwxxm_us; research R5",
+      "tac": "accept/metar_r5_rmk_temp_tenths.tac",
+      "ok": true,
+      "expected_codes": ["REMARK_US_EXTENSION"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r5_rmk_pk_wnd_info",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "PK WND \u2192 INFO iwxxm_us; research R5",
+      "tac": "accept/metar_r5_rmk_pk_wnd.tac",
+      "ok": true,
+      "expected_codes": ["REMARK_US_EXTENSION"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_r5_rmk_ao2_info",
+      "product": "SPECI",
+      "theme": "R5",
+      "cite": "SPECI AO2 \u2192 INFO iwxxm_us; research R5",
+      "tac": "accept/speci_r5_rmk_ao2.tac",
+      "ok": true,
+      "expected_codes": ["REMARK_US_EXTENSION"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "remark_errors": [
+    {
+      "id": "metar_rmk_bad_slp",
+      "product": "METAR",
+      "theme": "R5",
+      "depth": "full_checklist",
+      "cite": "SLP must be 3 digits; research R5",
+      "tac": "negative/metar/rmk_bad_slp.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_REMARK"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_rmk_bad_precip",
+      "product": "METAR",
+      "theme": "R5",
+      "depth": "full_checklist",
+      "cite": "P precip must be 4 digits; research R5",
+      "tac": "negative/metar/rmk_bad_precip.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_REMARK"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_rmk_bad_pk_wnd",
+      "product": "METAR",
+      "theme": "R5",
+      "depth": "full_checklist",
+      "cite": "PK WND needs dddss/tt; research R5",
+      "tac": "negative/metar/rmk_bad_pk_wnd.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_REMARK"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_rmk_bad_temp_tenths",
+      "product": "SPECI",
+      "theme": "R5",
+      "depth": "full_checklist",
+      "cite": "T temp tenths must be 8 digits; research R5",
+      "tac": "negative/speci/rmk_bad_temp_tenths.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_REMARK"],
+      "require_spans": true
+    }
+  ],
+  "r8_modifier_info": [
+    {
+      "id": "metar_r8_auto_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "AUTO \u2192 info; research R8",
+      "tac": "accept/metar_r8_auto.tac",
+      "ok": true,
+      "expected_codes": ["AUTO_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_cor_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "COR \u2192 info; research R8",
+      "tac": "accept/metar_r8_cor.tac",
+      "ok": true,
+      "expected_codes": ["COR_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_nil_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "NIL \u2192 info; research R8",
+      "tac": "accept/metar_r8_nil.tac",
+      "ok": true,
+      "expected_codes": ["NIL_REPORT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_nosig_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "NOSIG \u2192 info; research R8",
+      "tac": "accept/metar_r8_nosig.tac",
+      "ok": true,
+      "expected_codes": ["NOSIG_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_tempo_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "TEMPO \u2192 info; research R8",
+      "tac": "accept/metar_r8_tempo.tac",
+      "ok": true,
+      "expected_codes": ["TEMPO_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_rvr_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "RVR \u2192 info; research R8",
+      "tac": "accept/metar_r8_rvr.tac",
+      "ok": true,
+      "expected_codes": ["RVR_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_vrb_gust_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "VRB/gust \u2192 info; research R8",
+      "tac": "accept/metar_r8_vrb_gust.tac",
+      "ok": true,
+      "expected_codes": ["WIND_VRB_OR_GUST"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "r8_errors": [
+    {
+      "id": "metar_nil_with_body",
+      "product": "METAR",
+      "theme": "R8",
+      "depth": "full_checklist",
+      "cite": "NIL must not carry body groups; research R8",
+      "tac": "negative/metar/nil_with_body.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_NIL"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_bad_rvr",
+      "product": "METAR",
+      "theme": "R8",
+      "depth": "full_checklist",
+      "cite": "malformed RVR; research R8",
+      "tac": "negative/metar/bad_rvr.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_RVR"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_bad_wind_gust",
+      "product": "METAR",
+      "theme": "R8",
+      "depth": "full_checklist",
+      "cite": "gust without mean speed; research R8",
+      "tac": "negative/metar/bad_wind_gust.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WIND"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_bad_vrb",
+      "product": "SPECI",
+      "theme": "R8",
+      "depth": "full_checklist",
+      "cite": "VRB without speed; research R8",
+      "tac": "negative/speci/bad_vrb.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WIND"],
       "require_spans": true
     }
   ]

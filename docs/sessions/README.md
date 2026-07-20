@@ -35,9 +35,11 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S008-general-tac-iwxxm-converter](S008-general-tac-iwxxm-converter/session-brief.md) | feature | completed | General TAC→IWXXM + near-RT ingest (EV-006) | evolve/S008-general-tac-iwxxm-converter | 2026-07-12 | 2026-07-12 |
 | [S009-result-card-dismiss](S009-result-card-dismiss/session-brief.md) | hotfix | completed | Results Card stays after Cancel/Remove | fix/S009-result-card-dismiss | 2026-07-12 | 2026-07-12 |
 | [S010-issue-655-tac-traceability](S010-issue-655-tac-traceability/session-brief.md) | feature | completed | Source TAC on conversion results (#655) | evolve/EV-007-issue-655-tac-traceability | 2026-07-12 | 2026-07-13 |
-| [S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md) | feature | paused | F7 multi-product UI + workbench/decode/admin (#694/#702/#665/#666/#697); PR #716 open for later resume | evolve/S011-f7-operator-ui | 2026-07-13 | — (paused 2026-07-15) |
+| [S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md) | feature | completed | F7 multi-product UI + workbench/decode/admin (#694/#702/#665/#666/#697); PR #716 merged | evolve/S011-f7-operator-ui | 2026-07-13 | 2026-07-19 |
 | [S012-empty-bearer-lint-tac](S012-empty-bearer-lint-tac/session-brief.md) | hotfix | completed | Empty Bearer on lint-tac/decode-tac + lint UX issue details | fix/S012-empty-bearer-lint-tac | 2026-07-15 | 2026-07-15 |
 | [S013-live-decode-preview-ux](S013-live-decode-preview-ux/session-brief.md) | feature | completed | Value-aware live decode + plain-language summary (F9); IWXXM preview pane + lint UX clarity (F10) — EV-009; PR #723 | evolve/S013-live-decode-preview-ux | 2026-07-16 | 2026-07-18 |
+| [S014-package-publish-validation](S014-package-publish-validation/session-brief.md) | feature | completed | Validation stack perf + PyPI packages F11–F14 (#703/#698/#699/#693) — EV-010 | evolve/EV-010-package-publish-validation | 2026-07-18 | 2026-07-19 |
+| [S015-metar-lint-quality](S015-metar-lint-quality/session-brief.md) | feature | in_progress | METAR lint issue registry + #732 quality (lint/validate/convert) — EV-011; F15 + F6/F12 deepen | evolve/EV-011-metar-lint-quality | 2026-07-19 | — |
 
 ## Active session
 

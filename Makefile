@@ -27,6 +27,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
 	install-hooks pre-commit-run \
+	catalog-regen catalog-check \
+	issue-registry-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
 # --- Monorepo workspace ---
@@ -41,6 +43,21 @@ install-hooks:
 
 pre-commit-run:
 	$(UV) run pre-commit run --all-files
+
+# --- F15 issue catalog (ADR-028 / EV-011) ---
+
+catalog-regen:
+	$(UV) run python scripts/tac-validate/regen_issue_catalog.py
+
+catalog-check: catalog-regen
+	@git diff --quiet -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json \
+		|| (echo "ISSUE_CATALOG drift — run make catalog-regen and commit"; git diff --stat -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json; exit 1)
+
+# F15 — hard-fail on severity= literals in rule modules (T2.2a / E11-32)
+issue-registry-guard:
+	ISSUE_REGISTRY_GUARD_STRICT=1 $(UV) run python scripts/ci/check_issue_registry_literals.py \
+		packages/tac-validate/src/tac_validate/rules.py \
+		packages/tac-validate/src/tac_validate/product_rules.py
 
 # --- Formatting ---
 
@@ -378,7 +395,7 @@ validate-yaml:
 	$(UV) run pre-commit run actionlint --all-files
 	$(UV) run pre-commit run yamllint --all-files
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check issue-registry-guard
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v
