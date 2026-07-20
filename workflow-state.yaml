@@ -8945,9 +8945,9 @@ evolve_cycles:
 
 git_history:
   current_branch: docs/EV-012-close
-  ahead_of_origin: 0
-  pushed: false
-  pending_commit: '[S016] docs: close EV-012 / S016 (Manual TAC Input modes)'
+  ahead_of_origin: 1
+  pushed: true
+  pending_commit:
   notes:
     - '2026-07-20 S016/EV-012 — Phase 4 closed (D-S016-EV012-phase4-close-1); issue #730 CLOSED; branch docs/EV-012-close
       for close docs + workflow-state'
@@ -9116,8 +9116,9 @@ git_history:
       session_id: S016-manual-tac-input-modes
       purpose: EV-012 / S016 Phase 4 close docs + workflow-state
       status: active
-      pushed: false
-      note: Phase 4 close (D-S016-EV012-phase4-close-1)
+      pushed: true
+      note: '[S016] docs: close EV-012 / S016 — tip 9a63ecf'
+      tip_sha: 9a63ecf
     - name: docs/EV-012-deploy-smoke
       purpose: EV-012 / S016 13-deploy-smoke report + workflow-state
       base: main
@@ -9395,8 +9396,8 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
-    - sha: PENDING
-      short: PENDING
+    - sha: 9a63ecfec153630252c063543e3d77634e15a288
+      short: 9a63ecf
       branch: docs/EV-012-close
       message: '[S016] docs: close EV-012 / S016 (Manual TAC Input modes)'
       stage: 16-evolve
