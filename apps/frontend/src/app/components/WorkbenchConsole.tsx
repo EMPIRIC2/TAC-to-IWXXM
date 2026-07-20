@@ -1,11 +1,16 @@
 /**
  * Pull-up structured console for the F7 live workbench (UJ-017 / #694).
+ * F15: registry code tooltips + lightweight catalog panel (E11-29 / E11-31).
  */
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ChevronDown, ChevronUp, Terminal } from 'lucide-react';
 import type { LiveWorkbenchConsoleLine } from '@/hooks/useLiveWorkbenchAssist';
+import type { LintIssueCatalogEntry } from '@/utils/api';
+import { resolveLintIssueTooltip } from '@/utils/lintIssueCatalog';
 import { consoleLevelPasses, type ConvertLogLevel } from '/utils/convertParams';
+
+const CODE_TOKEN = /(\[[A-Z][A-Z0-9_]*\])/g;
 
 export interface WorkbenchConsoleProps {
   lines: LiveWorkbenchConsoleLine[];
@@ -15,13 +20,44 @@ export interface WorkbenchConsoleProps {
   defaultOpen?: boolean;
   /** Minimum severity to show (operator Log Level). Default INFO. */
   minLogLevel?: ConvertLogLevel;
+  /** Registry catalog keyed by code (GET /lint-issue-catalog). */
+  catalogByCode?: Map<string, LintIssueCatalogEntry>;
+  /** Full catalog rows for the lightweight panel. */
+  catalogEntries?: LintIssueCatalogEntry[];
+}
+
+function messageWithCodeTooltips(
+  message: string,
+  catalogByCode: Map<string, LintIssueCatalogEntry> | undefined,
+): ReactNode {
+  if (!catalogByCode || catalogByCode.size === 0) {
+    return message;
+  }
+  const parts = message.split(CODE_TOKEN);
+  return parts.map((part, index) => {
+    const match = /^\[([A-Z][A-Z0-9_]*)\]$/.exec(part);
+    if (!match) {
+      return <span key={index}>{part}</span>;
+    }
+    const code = match[1];
+    return (
+      <span
+        key={index}
+        title={resolveLintIssueTooltip(catalogByCode, code)}
+        className="cursor-help underline decoration-dotted underline-offset-2"
+        data-testid={`lint-code-tooltip-${code}`}
+      >
+        {part}
+      </span>
+    );
+  });
 }
 
 /**
  * Collapsible pull-up console for live-assist messages.
  *
- * @param props.lines - Structured console entries
  * @param props.minLogLevel - Filter lines below this severity (client-side)
+ * @param props.catalogByCode - Optional registry map for code tooltips
  */
 export function WorkbenchConsole({
   lines,
@@ -29,8 +65,11 @@ export function WorkbenchConsole({
   onLineAction,
   defaultOpen = false,
   minLogLevel = 'INFO',
+  catalogByCode,
+  catalogEntries = [],
 }: WorkbenchConsoleProps) {
   const [open, setOpen] = useState(defaultOpen);
+  const [catalogOpen, setCatalogOpen] = useState(false);
   const visibleLines = lines.filter((line) =>
     consoleLevelPasses(line.level, minLogLevel),
   );
@@ -101,7 +140,7 @@ export function WorkbenchConsole({
                 <span className="text-gray-500 dark:text-gray-400">
                   [{line.source}]
                 </span>{' '}
-                {line.message}
+                {messageWithCodeTooltips(line.message, catalogByCode)}
                 {line.action && onLineAction ? (
                   <button
                     type="button"
@@ -116,6 +155,42 @@ export function WorkbenchConsole({
             ))
           )}
         </ul>
+      ) : null}
+      {catalogEntries.length > 0 ? (
+        <div
+          className="border-t border-gray-200 px-3 py-2 dark:border-gray-700"
+          data-testid="lint-issue-catalog-panel"
+        >
+          <button
+            type="button"
+            className="text-xs font-medium text-gray-700 underline dark:text-gray-200"
+            aria-expanded={catalogOpen}
+            onClick={() => setCatalogOpen((v) => !v)}
+            data-testid="lint-issue-catalog-toggle"
+          >
+            Lint issue catalog ({catalogEntries.length})
+          </button>
+          {catalogOpen ? (
+            <ul
+              className="mt-2 max-h-36 space-y-1 overflow-y-auto font-mono text-[11px] text-gray-700 dark:text-gray-300"
+              data-testid="lint-issue-catalog-list"
+            >
+              {catalogEntries.slice(0, 80).map((entry) => (
+                <li key={entry.code} title={entry.message_template}>
+                  <span className="font-semibold">{entry.code}</span>{' '}
+                  <span className="text-gray-500 dark:text-gray-400">
+                    ({entry.severity})
+                  </span>
+                </li>
+              ))}
+              {catalogEntries.length > 80 ? (
+                <li className="text-gray-500">
+                  …and {catalogEntries.length - 80} more
+                </li>
+              ) : null}
+            </ul>
+          ) : null}
+        </div>
       ) : null}
     </section>
   );

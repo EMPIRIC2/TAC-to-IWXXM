@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M4 — Goldens R6 + SPECI adjacency R7 |
-| **Active task** | M5 / T5.3 — FE catalog tooltip Vitest (next) |
-| **Tasks** | 26 / 35 completed (… T5.1–T5.2) |
+| **Active task** | M5 / T5.5 — API smoke metar+speci+catalog (next) |
+| **Tasks** | 28 / 35 completed (… T5.1–T5.4) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -94,8 +94,8 @@
 |------|------|-------------|-------------|------------|--------|
 | T5.1 | Test | API tests for `GET /api/v1/lint-issue-catalog` (auth, shape, codes ⊆ registry) | api-contract; E11-31 | T1.4 | completed |
 | T5.2 | Code | Backend route exporting registry (msgspec); OpenAPI alias | api-contract; E11-31 | T5.1 | completed |
-| T5.3 | Test | Vitest: lint issue code tooltip resolves via catalog API client | TC-F15-004; E11-29 | T5.2 | pending |
-| T5.4 | Code | FE: fetch catalog; tooltip + lightweight catalog panel on workbench | E11-29; UJ-024 | T5.3 | pending |
+| T5.3 | Test | Vitest: lint issue code tooltip resolves via catalog API client | TC-F15-004; E11-29 | T5.2 | completed |
+| T5.4 | Code | FE: fetch catalog; tooltip + lightweight catalog panel on workbench | E11-29; UJ-024 | T5.3 | completed |
 | T5.5 | Test | API smoke `product=metar` + `product=speci` lint+convert + catalog GET (H3) | TC-F15-004 | T4.3, T5.2 | pending |
 | T5.6 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M4, T5.4, T6.0 | pending |
 | T5.7 | Test | 09-qa + 10-e2e — UJ-024 / TC-F15-001..005 | 09/10 | T5.6 | pending |

@@ -14,6 +14,7 @@ import {
 import { SoftPreviewControl } from './SoftPreviewControl';
 import { LiveIwxxmToggle } from './LiveIwxxmToggle';
 import { WorkbenchConsole } from './WorkbenchConsole';
+import { useLintIssueCatalog } from '@/hooks/useLintIssueCatalog';
 import {
   Upload,
   X,
@@ -1129,6 +1130,13 @@ export function FileConverter({
     liveIwxxmRunner,
   });
 
+  const { entries: lintCatalogEntries, byCode: lintCatalogByCode } =
+    useLintIssueCatalog({
+      product: liveAssistProduct,
+      accessToken,
+      enabled: Boolean(accessToken) && !isReadOnly,
+    });
+
   const applyLintFix = useCallback(
     (fixCode: string) => {
       const fix = lintFixes.find((f) => f.code === fixCode);
@@ -1444,6 +1452,8 @@ export function FileConverter({
                 lines={consoleLines}
                 minLogLevel={conversionParams.logLevel as ConvertLogLevel}
                 onLineAction={applyLintFix}
+                catalogByCode={lintCatalogByCode}
+                catalogEntries={lintCatalogEntries}
                 onClear={() => {
                   clearConsole();
                   appendConsole({
