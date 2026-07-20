@@ -24,7 +24,7 @@
 
 - [x] H0c unit coverage includes `/lint-issue-catalog` GET preflight
 - [x] Plan: `scripts/deploy/verify_connectivity.sh` (or project equivalent) after redeploy for H4–H5
-- [ ] H4–H5 executed (T5.10)
+- [x] H4–H5 executed (T5.10) — PASS 2026-07-20 (see `deploy-smoke.md`)
 
 ### Failure modes
 
