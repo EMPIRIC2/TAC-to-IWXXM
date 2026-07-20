@@ -101,7 +101,7 @@ active_session:
       mode: full
       status: in_progress
       started: '2026-07-19'
-      note: in_progress — M1+M2 done; next M3 T3.1 R1 fixtures
+      note: "in_progress — M3 T3.1–T3.4 done; next T3.5"
     - stage: 08-verify-build
       required: true
       mode: full
@@ -128,9 +128,7 @@ active_session:
       status: pending
   skipped_stages: []
   current_stage: 07-build
-  note: >-
-    EV-011 07-build: M1+M2 complete. Next T3.1 (R1 fixtures).
-    Latest commits include T2.1 08af6d6, T2.2 da22b32, T2.2a 4233a7f, T2.3 4048e86.
+  note: "EV-011 07-build: T3.1–T3.4 done (R1+R2); next T3.5 R3 wx fixtures"
 sessions:
 
   - id: S015-metar-lint-quality
@@ -6307,9 +6305,9 @@ evolve_cycles:
         mode: full
         started: '2026-07-19'
         completed:
-        note: M1+M2 complete; 153 tac-validate tests green; next HARD R1–R8
-        active_milestone: M2-complete
-        active_task: T3.1
+        note: "T3.1–T3.4 complete (926daf1/1e26a36/bdfeb8f/f5b9294); 189 tac-validate tests green; next T3.5 R3"
+        active_milestone: M3
+        active_task: T3.5
         active_task_status: pending
   - id: EV-010
     session_id: S014-package-publish-validation
@@ -8084,10 +8082,10 @@ git_history:
       created_at: "2026-07-19"
       session_id: S015-metar-lint-quality
       evolve_cycle_id: EV-011
-      tip_sha: 79aa67c
+      tip_sha: f5b9294
       note: >-
-        tip 79aa67c (T1.4 ISSUE_CATALOG export); M1 T1.1–T1.4 complete
-        (e0189d4/ac0a282/a1abc7c/79aa67c); ahead of origin by 11; not pushed
+        tip 1e26a36 (T3.2 ODD_FIELD_ORDER); T3.1 926daf1 + T3.2 complete;
+        next T3.3 R2 visibility fixtures
     - name: evolve/EV-010-package-publish-validation
       purpose: "EV-010 / S014 package publish + validation stack (F11–F14)"
       base: main
@@ -8312,6 +8310,34 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: f5b9294
+      branch: evolve/EV-011-metar-lint-quality
+      message: "[T3.4] feat: encode R2 visibility grammar and INVALID_VISIBILITY"
+      stage: "07-build"
+      session_id: S015-metar-lint-quality
+      files_changed: 6
+      timestamp: "2026-07-20T03:05:00Z"
+    - sha: bdfeb8f
+      branch: evolve/EV-011-metar-lint-quality
+      message: "[T3.3] test: R2 visibility SM/meters/fractions/9999 fixtures"
+      stage: "07-build"
+      session_id: S015-metar-lint-quality
+      files_changed: 14
+      timestamp: "2026-07-20T03:00:00Z"
+    - sha: 1e26a36
+      branch: evolve/EV-011-metar-lint-quality
+      message: "[T3.2] feat: encode R1 ODD_FIELD_ORDER warning for METAR/SPECI"
+      stage: "07-build"
+      session_id: S015-metar-lint-quality
+      files_changed: 6
+      timestamp: "2026-07-20T02:45:00Z"
+    - sha: 926daf1
+      branch: evolve/EV-011-metar-lint-quality
+      message: "[T3.1] test: R1 station/time/order accept and negative fixtures"
+      stage: "07-build"
+      session_id: S015-metar-lint-quality
+      files_changed: 10
+      timestamp: "2026-07-20T02:40:00Z"
     - sha: 4048e86
       branch: evolve/EV-011-metar-lint-quality
       message: "[T2.3] test: negative fixture expected_codes must be registered"
