@@ -8660,9 +8660,9 @@ git_history:
       created_at: '2026-07-20'
       session_id: S016-manual-tac-input-modes
       evolve_cycle_id: EV-012
-      tip_sha: eb2768e
+      tip_sha: 704be17
       pushed: true
-      note: '[S016] docs: 13-deploy-smoke PASS — tip eb2768e'
+      note: '[S016] docs: 13-deploy-smoke PASS — tip 704be17'
     - name: evolve/EV-012-manual-tac-input-modes
       purpose: EV-012 / S016 Validate Manual TAC Input modes (#730 / ADR-024 under F7)
       base: main
@@ -8927,8 +8927,8 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
-    - sha: 6ee2ea533376249e26e6f865a106e2836c4ee9f0
-      short: 6ee2ea5
+    - sha: 704be17788b3cf9ec18c5d15868bddcdbe326477
+      short: 704be17
       branch: docs/EV-012-deploy-smoke
       message: '[S016] docs: 13-deploy-smoke PASS for Manual TAC Input modes'
       stage: 13-deploy-smoke
