@@ -4,9 +4,36 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 16
+session_counter: 17
 active_session:
 sessions:
+
+  - id: S017-skill-trim-retro
+    type: process
+    status: completed
+    started_at: '2026-07-20'
+    intent: >-
+      Skill trim retrospective (RET-001) — corpus-first, lean routing, archive legacy
+      twins; implement approved RA skill-trim package
+    orchestrator:
+    evolve_cycle_id:
+    retrospective_cycle_id: RET-001
+    branch: chore/S017-skill-trim-retro
+    artifacts_dir: docs/sessions/S017-skill-trim-retro/
+    current_stage:
+    context_briefs: []
+    standing_docs_touched: []
+    routing_plan:
+      - stage: 17-retrospective
+        required: true
+        mode: full
+        status: completed
+        started: '2026-07-20'
+        skip_rationale:
+        note: RET-001 skill-trim; AskQuestion waived (written blanket approval)
+        completed: '2026-07-20'
+    completed_at: '2026-07-20'
+    close_note: 'RET-001 skill-trim workshop completed; S017 closed. S016/EV-012 later completed on main (#748).'
 
   - id: S016-manual-tac-input-modes
     type: feature
@@ -2739,6 +2766,19 @@ stages:
       - "2026-07-12 — S009-result-card-dismiss open (FileConverter result card dismiss after Cancel/Remove)."
       - "S009 Batch A recorded — production stuck results Card after Cancel/Remove; after last deploy"
 
+  17-retrospective:
+    status: completed
+    started: '2026-07-20'
+    completed: '2026-07-20'
+    last_report: docs/retrospectives/2026-07-20-skill-trim.md
+    cycles_completed: 1
+    session_id: S017-skill-trim-retro
+    retrospective_cycle_id: RET-001
+    note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; 
+      RA-007/RA-008 remain open
+
+stages_pending: []
+
 stages_pending: []
 
 deployment:
@@ -2844,6 +2884,38 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S017-RET001-aq-waive
+    stage: 17-retrospective
+    date: '2026-07-20'
+    session_id: S017-skill-trim-retro
+    retrospective_cycle_id: RET-001
+    topic: AskQuestion waived — RET skill-trim package
+    decision: AskQuestion waived — user written blanket approval for RET skill-trim package.
+    status: confirmed
+  - id: D-S017-open
+    stage: 00-context
+    date: '2026-07-20'
+    session_id: S017-skill-trim-retro
+    retrospective_cycle_id: RET-001
+    topic: Open S017 process session for RET-001
+    decision: Opened S017-skill-trim-retro (process) with routing 17-retrospective only; allocated RET-001.
+    status: confirmed
+  - id: D-S017-RET001-workshop-complete
+    stage: 17-retrospective
+    date: '2026-07-20'
+    session_id: S017-skill-trim-retro
+    retrospective_cycle_id: RET-001
+    topic: RET-001 skill-trim workshop completed
+    decision: Applied RA-001..RA-006 skill-trim package; RA-008 (optional slim 01-13) remains open.
+    status: confirmed
+  - id: D-S017-close
+    stage: 17-retrospective
+    date: '2026-07-20'
+    session_id: S017-skill-trim-retro
+    retrospective_cycle_id: RET-001
+    topic: Close S017 after RET-001
+    decision: Closed S017 after RET-001; S016/EV-012 subsequently completed on main (Phase 4 / PR #748).
+    status: confirmed
   - id: D-S016-EV012-phase4-close-1
     date: '2026-07-20'
     timestamp: '2026-07-20'
@@ -6533,6 +6605,63 @@ artifacts:
     session_id: S008-general-tac-iwxxm-converter
     status: complete
 
+retrospective_cycles:
+  - id: RET-001
+    title: Skill trim — corpus-first, lean routing, archive legacy
+    status: completed
+    started: '2026-07-20'
+    completed: '2026-07-20'
+    session_id: S017-skill-trim-retro
+    scope:
+      mode: custom
+      stages:
+        - 00-context
+        - 16-evolve
+        - 14-hotfix
+        - pipeline
+        - 17-retrospective
+    time_window: session_only
+    depth: light
+    transcript_consent: full
+    current_phase: 7
+    skill_workshop: completed
+    evidence_summary: User-approved skill-trim package from conversation evidence (~60 sessions).
+    interview:
+      themes_confirmed:
+        - archive-legacy-twins
+        - lean-standard-full-presets
+        - split-fat-skills
+        - protocol-card
+        - corpus-first
+        - batch-workflow-state
+    actions:
+      - id: RA-001
+        description: Stub legacy twins + archive
+        status: done
+      - id: RA-002
+        description: Add protocol-card.md
+        status: done
+      - id: RA-003
+        description: Lean/Standard/Full presets
+        status: done
+      - id: RA-004
+        description: Split fat skills to reference.md
+        status: done
+      - id: RA-005
+        description: CORPUS-first + batched state
+        status: done
+      - id: RA-006
+        description: Do not attach full skill bodies
+        status: done
+      - id: RA-008
+        description: Optional slim remaining 01-13 SKILL.md
+        status: open
+    artifacts:
+      - path: docs/retrospectives/2026-07-20-skill-trim.md
+        status: completed
+      - path: docs/retrospective-actions.md
+        status: completed
+
 evolve_cycles:
   - id: EV-012
     session_id: S016-manual-tac-input-modes
@@ -8949,6 +9078,7 @@ git_history:
   pushed: true
   pending_commit:
   notes:
+    - '2026-07-20 S017/RET-001 — skill-trim applied; branch chore/S017-skill-trim-retro'
     - '2026-07-20 S016/EV-012 — Phase 4 closed (D-S016-EV012-phase4-close-1); issue #730 CLOSED; branch docs/EV-012-close
       for close docs + workflow-state'
     - '2026-07-20 S016/EV-012 — PR #747 merged dd305baa4fa6f8f5e85ae2fd451276c0d68b6c73 (docs: 13-deploy-smoke PASS)'
@@ -9109,6 +9239,15 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: chore/S017-skill-trim-retro
+      base: main
+      status: active
+      created_at: '2026-07-20'
+      session_id: S017-skill-trim-retro
+      retrospective_cycle_id: RET-001
+      purpose: RET-001 skill-trim retrospective (S017)
+      pushed: false
+      note: RET-001 skill-trim; merge to main
     - name: docs/EV-012-close
       base: main
       created_at: '2026-07-20'

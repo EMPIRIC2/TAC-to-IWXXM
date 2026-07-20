@@ -14,15 +14,17 @@ Take an **existing** service from change request (including **multiple new featu
 cycle**) through updated specs, verified plans, implementation, and redeploy — reusing stages
 **00–15** in **delta mode**.
 
-**Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
+**Protocol:** [protocol-card.md](../protocol-card.md) — corpus-first, Lean/Standard/Full, batched state.
+**Detail:** [reference.md](reference.md) · [pipeline-preamble.md](../pipeline-preamble.md)
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `feature` or `new_service` active_session.
 **Routing:** [docs/skill-routing.md](../../docs/skill-routing.md) — when to use evolve vs hotfix vs pipeline.
-**Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
-**Connectivity:** Any evolve cycle that adds or changes **browser-facing** surfaces must re-run
-the applicable rows in connectivity-gates §Pipeline stages 00–15 (at minimum: 01/04 spec delta,
-07 implementation, 12–13 redeploy with H4–H5).
+**Corpus:** Open [docs/CORPUS.md](../../docs/CORPUS.md) rows for **touched features only** — not the
+entire minimal corpus on every cycle. Domain/guides opt-in.
+
+**Connectivity:** Browser-facing changes → applicable [connectivity-gates.md](../connectivity-gates.md)
+rows (at minimum 01/04 delta, 07, 12–13 with H4–H5 when UI ships).
 
 **User is the source of truth.** Interview before editing specs or code. Every ambiguous,
 uncertain, or contradictory finding uses **AskQuestion** — never guess.
@@ -163,11 +165,20 @@ agent records cycle metadata).
 
 ## Phase 1 — Fn allocation, impact analysis, routing
 
-1. **Multi-feature default:** one cycle, multiple Fn — assign F19, F20, F21 from `feature-list.md`.
-2. List **artifacts to update** and **routing_plan** — [reference.md](reference.md) §Stage routing matrix.
-3. Default for net-new features: 01, 02, 03 (if guardrails), 04, 05, 06 (if stack), 07–13.
-4. Present plan via AskQuestion; user confirms or adjusts stages.
-5. Agent `update`: create evolve cycle with `feature_ids: [F19, F20, ...]`, `checkpoints`, routing.
+1. **Multi-feature default:** one cycle, multiple Fn — assign next Fn ids from `feature-list.md`.
+2. List **docs to update** and **routing_plan** — [reference.md](reference.md) (Stage routing matrix).
+3. **Presets** (AskQuestion; default **Lean** on existing apps — see protocol-card):
+
+   | Preset | Required stages (typical) |
+   |--------|---------------------------|
+   | **Lean** | `00 → 16 → 01 → 02 → 10 → 13` |
+   | **Standard** | Lean + `04 → 07 → 08 → 09 → 11 → 12` |
+   | **Full** | Standard + `03` / `05` / `06` as needed |
+
+4. Present preset + skip rationale via AskQuestion; user confirms or adjusts.
+5. Agent `update`: create evolve cycle with `feature_ids`, `checkpoints`, routing.
+6. **Checkpoints:** mandatory after A/B/C/D/deploy on **Standard/Full**; on **Lean**, only on
+   gate failure or user request (token/step savings — RET-001).
 
 ## Phase 2 — Execute routed stages (delta mode)
 
@@ -187,10 +198,12 @@ between stages.
 
 ### Interactive checkpoint
 
-After phases **A, B, C, D**, and after **13-deploy-smoke**, present progress digest then AskQuestion
-before continuing. Template: [reference.md](reference.md) §Checkpoint digest.
+**Standard/Full:** after phases **A, B, C, D**, and after **13-deploy-smoke**, present digest then
+AskQuestion. Template: [reference.md](reference.md) §Checkpoint digest.
 
-For **11-verify-impl**, include **per–acceptance-criterion** status for each Fn.
+**Lean:** skip routine checkpoints; AskQuestion only on gate failure or user request.
+
+For **11-verify-impl** (when routed), include **per–acceptance-criterion** status for each Fn.
 
 ### Phase gates (blocking)
 
@@ -231,9 +244,10 @@ Same as pipeline — never re-run entire phases for verification failures.
 1. **One routed stage at a time** (except 09+10).
 2. **Delta by default** — full regeneration only with user approval.
 3. **Multi-Fn in one cycle** unless user splits via AskQuestion.
-4. **Checkpoints mandatory** between phases A–D and deploy.
-5. **Child skills own detail** — 16-evolve orchestrates; read child SKILL.md when invoking.
-6. **State via agent only** — never edit `workflow-state.yaml` directly.
+4. **Checkpoints** — Standard/Full: after A–D and deploy; Lean: on gate failure only.
+5. **Child skills own detail** — read child `SKILL.md` when invoking; not full `reference.md` unless needed.
+6. **State via agent** — batch start+exit updates per protocol-card; never edit YAML directly.
+7. **Do not `@`-attach** full skill bodies — name + routing-plan is enough.
 
 ## Additional resources
 
