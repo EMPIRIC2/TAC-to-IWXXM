@@ -1,8 +1,21 @@
 # Skill routing
 
-Quick reference for which `.cursor/skills/` stage to invoke. Full conventions:
+Quick reference for which `.cursor/skills/` stage to invoke. Short shared rules:
+[protocol-card.md](../.cursor/skills/protocol-card.md). Full conventions:
 [pipeline-preamble.md](../.cursor/skills/pipeline-preamble.md) and
 [sessions-reference.md](../.cursor/skills/sessions-reference.md).
+
+## Routing presets (00 / 16)
+
+Default for **existing apps**: **Lean**. Greenfield uses **Full** via [pipeline](../.cursor/skills/pipeline/SKILL.md).
+
+| Preset | Typical stages | When |
+|--------|----------------|------|
+| **Lean** | `00 → 16 → 01 → 02 → 10 → 13` | UX/docs/tests; no API/arch change |
+| **Standard** | Lean + `04 → 07 → 08 → 09 → 11 → 12` | New Fn / contract change |
+| **Full** | Standard + `03` / `05` / `06` as needed | New guardrails, stack change, greenfield |
+
+Record the preset and skip rationale in `docs/sessions/SNNN-slug/routing-plan.md`.
 
 ## Session-first entry (recommended)
 
@@ -114,3 +127,17 @@ Once **00-context** opens a session (`active_session` in `workflow-state.yaml`),
 | 16 | F — Evolve | Feature / new_service session orchestrator |
 | 17 | F — Learn | Retrospective |
 | 18–19 | G — Review | PR review and remediation |
+
+## Legacy skills (do not invoke)
+
+| Stub | Use instead |
+|------|-------------|
+| `gather-context` | [00-context](../.cursor/skills/00-context/SKILL.md) |
+| `doc-planner` | [01-requirements](../.cursor/skills/01-requirements/SKILL.md) |
+| `audit-docs` | [02-verify-plan](../.cursor/skills/02-verify-plan/SKILL.md) / [05-verify-tech](../.cursor/skills/05-verify-tech/SKILL.md) |
+| `build-planner` | [04-tech-plan](../.cursor/skills/04-tech-plan/SKILL.md) |
+| `build-executor` | [07-build](../.cursor/skills/07-build/SKILL.md) |
+| `verify-build` | [08-verify-build](../.cursor/skills/08-verify-build/SKILL.md) |
+| `deploy-verify` | [13-deploy-smoke](../.cursor/skills/13-deploy-smoke/SKILL.md) |
+
+Archives: [.cursor/skills/_archive/](../.cursor/skills/_archive/README.md).

@@ -36,7 +36,13 @@ that file directly.
 
 ## During work
 
-After **each substep** that changes stage progress, artifacts, gates, git history, sessions, or cycles:
+Prefer **batched** updates (RET-001 / protocol-card):
+
+| When | Update |
+|------|--------|
+| Stage **start** | `status: in_progress`, `started`, `current_stage` |
+| Stage **exit** | `status` + artifacts + routing_plan row + batched `git_history.commits` |
+| Blocking event | Immediate `update` (gate fail, session open/close, cycle create) |
 
 ```yaml
 operation: update
@@ -45,7 +51,8 @@ session_id: <active_session.id when set>
 update_payload: { ... }
 ```
 
-Never buffer updates across substeps.
+Do **not** spawn a Task/subagent per micro-event (e.g. one commit sha). Buffer commit rows
+in-memory until the stage-exit `update`, unless the user needs an intermediate checkpoint.
 
 Session reports: write under `active_session.artifacts_dir/reports/`; append to `artifacts[]`
 with `session_id` tag.

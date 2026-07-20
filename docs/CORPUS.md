@@ -58,14 +58,17 @@ Cite as: `[Corpus: <id>]` or `[Corpus: <path> §section]`.
 
 | Skill / rule | Must read at least |
 |--------------|-------------------|
+| All stages (first hop) | This file’s band for the stage + [protocol-card](../.cursor/skills/protocol-card.md) |
 | 01–03 (product) | product, journeys, decisions |
 | 04–06 (tech) | system-spec, tech-spec, adr, dependency-inventory |
 | 07–11 (build/verify) | product, system-spec, api, tests, journeys |
 | 12–13 (deploy) | tech-spec, deploy, env-contract |
 | 14-hotfix | product + system-spec; then tech-spec / api / tests as symptom requires |
 | 15-service-health | tech-spec, deploy, env-contract |
-| 16-evolve | full minimal corpus for touched features |
+| 16-evolve | CORPUS rows for **touched features only** (not always full minimal set) |
 | plan-adherence / spec-adherence rules | this file + rows above |
+
+Do **not** preload `docs/domain/**` or guides unless the session scope is domain mining.
 
 ## Change control
 

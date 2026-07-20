@@ -7,20 +7,28 @@ explicitly documents an exception.
 **Orchestrators** (not numbered stages): [pipeline](pipeline/SKILL.md) (greenfield **session**),
 [16-evolve](16-evolve/SKILL.md) (feature / new_service **sessions**).
 
+**Start here (short):** [protocol-card.md](protocol-card.md) — corpus-first, routing presets,
+batched state, legacy redirects. Prefer the card over re-reading this entire preamble each hop.
+
 **Sessions:** [sessions-reference.md](sessions-reference.md) — session-first work model; reports
 under `docs/sessions/{session-id}/`.
 
 **Which skill?** → [docs/skill-routing.md](../../docs/skill-routing.md)
 
 **Design / parity corpus (mandatory):** [docs/CORPUS.md](../../docs/CORPUS.md) — product,
-system-spec, tech-spec, api, tests, adr, decisions. Cite `[Corpus: <id>]`.
+system-spec, tech-spec, api, tests, adr, decisions. Cite `[Corpus: <id>]`. Open **only** the
+rows for the current stage band (CORPUS §Skill obligations); domain/guides are opt-in.
 
 **State agent (mandatory):** [workflow-state-manager](../agents/workflow-state-manager.md) —
-sole writer of `workflow-state.yaml`.
+sole writer of `workflow-state.yaml`. Batch updates per protocol-card (start + exit).
 
-**Deep policy** (do not duplicate in each skill): [considerations.md](considerations.md),
-[connectivity-gates.md](connectivity-gates.md),
+**Deep policy** (open on failure / gate / resume — do not duplicate in each skill):
+[considerations.md](considerations.md), [connectivity-gates.md](connectivity-gates.md),
 [workflow-state-reference.md](workflow-state-reference.md).
+
+**Legacy twins** (do not invoke): `gather-context`, `doc-planner`, `build-planner`,
+`build-executor`, `verify-build`, `audit-docs`, `deploy-verify` — stubs redirect; archives under
+[_archive/](_archive/README.md).
 
 ---
 
@@ -112,8 +120,8 @@ connectivity-gates — hybrid deploys (static UI + separate API) are never “AP
 
 | Rule | Requirement |
 |------|-------------|
-| **Read first** | Invoke agent `operation: read_context` as first action on every invocation |
-| **Write via agent** | Invoke agent `operation: update` after each substep — never buffer |
+| **Read first** | Invoke agent `operation: read_context` once at stage start |
+| **Write via agent** | Batch `update` at stage start + stage exit (see protocol-card); immediate on gates/session ops |
 | **Resume** | Agent context brief reports `status`, timestamps, substeps, **active_session**, cycles |
 | **Stage key** | Agent maps `skill_id` → `stages.{key}` (e.g. `stages.07-build`) |
 | **Sessions** | `active_session` (in flight), `sessions[]` (archive), `session_counter` |
