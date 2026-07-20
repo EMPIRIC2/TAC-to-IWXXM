@@ -25,10 +25,11 @@ One BIG dissemination evolve cycle covering:
 
 ## Intake status
 
-**Phase 0 — NOT fully approved.** Batch 1 locked Assumed (written interview; AskQuestion UI
-waived in cloud). **Batch 2 pending** before routing lock and any `F16+` in `feature-list.md`.
+**Phase 0 — NOT fully approved.** Batch 1 + Batch 2 locked Assumed (written interview;
+AskQuestion UI waived in cloud). **Batch 3 pending** before routing lock and any `F16+`
+in `feature-list.md`.
 
-### Batch 1 (Assumed / written)
+### Batch 1 (Assumed / written) — still locked 2026-07-20
 
 | ID | Decision |
 |----|----------|
@@ -39,6 +40,19 @@ waived in cloud). **Batch 2 pending** before routing lock and any `F16+` in `fea
 | Q2=A | Any authenticated user |
 | Q3=A | Schema preflight clarity is the success metric |
 | Q4=D | Include WIS2 + EDIS scaffolding in this ONE cycle |
+
+### Batch 2 (Assumed / written) — locked 2026-07-20
+
+| ID | Decision |
+|----|----------|
+| Q5=A | Paste in drawer → backend memory-only for preflight+upload (**never persist**) |
+| Q6=B | URI-only + preflight + send (no discrete field form in v1) |
+| Q7=A | Structured schema diff in drawer; **block Send** until preflight green |
+| Q8=C | Ship all three to usable MVP — live wis2box + live EDIS path (**highest risk**) |
+| Q9=A | Same drawer: destination type Postgres (now) / WIS2 / EDIS |
+
+**Advisory:** Q8=C needs a credential/environment readiness interview before implementation
+commits for live wis2box + EDIS paths.
 
 ### Prior session
 

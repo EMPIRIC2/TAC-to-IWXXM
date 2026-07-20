@@ -10,9 +10,9 @@
 **Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
 **Started**: 2026-07-20  
 **Branch**: `cursor/dissemination-upload-e25c`  
-**Status**: Phase 0 intake **PARTIAL** — Batch 2 pending
+**Status**: Phase 0 intake **PARTIAL** — Batch 1+2 locked; Batch 3 pending
 
-### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview)
+### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked
 
 | ID | Decision |
 |----|----------|
@@ -24,10 +24,22 @@
 | Q3=A | Schema preflight clarity is success metric |
 | Q4=D | Include WIS2 + EDIS scaffolding in ONE BIG dissemination cycle with #729 |
 
+### Intake (Batch 2 Assumed — AskQuestion waived / cloud written interview) — locked 2026-07-20
+
+| ID | Decision |
+|----|----------|
+| Q5=A | Paste in drawer → backend memory-only for preflight+upload (never persist) |
+| Q6=B | URI-only + preflight + send (no discrete field form in v1) |
+| Q7=A | Structured schema diff in drawer; block Send until preflight green |
+| Q8=C | Ship all three to usable MVP — live wis2box + live EDIS path (highest risk) |
+| Q9=A | Same drawer: destination type Postgres (now) / WIS2 / EDIS |
+
 ### Notes
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
 - Do **not** invent feature ids F16+ in `feature-list.md` until Phase 0 fully approved
+- **Batch 3 pending** before routing lock / Phase 0 full approval
+- **Advisory deviation:** Q8=C (live wis2box + live EDIS MVP) needs credential/environment readiness interview before implementation commits for those paths
 
 ---
 

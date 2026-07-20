@@ -28,21 +28,22 @@ active_session:
       skip_rationale:
       started: '2026-07-20'
       completed: '2026-07-20'
-      note: Session open; Phase 0 intake partial (Batch 1 locked Assumed); AskQuestion UI waived (cloud written 
-        interview); Batch 2 / routing approval pending
+      note: Session open; Phase 0 intake partial (Batch 1+2 locked Assumed); AskQuestion UI waived (cloud written 
+        interview); Batch 3 / routing approval pending
     - stage: 16-evolve
       required: true
       mode: orchestrator
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: Phase 0 intake in progress — Batch 2 pending; no F16+ yet
+      note: Phase 0 intake in progress — Batch 1+2 locked; Batch 3 pending; no F16+ yet; advisory Q8=C
+        credential/environment readiness interview needed
     - stage: 01-requirements
       required: true
       mode: delta
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 3)
     - stage: 02-verify-plan
       required: true
       mode: delta
@@ -1442,6 +1443,8 @@ stages:
       - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
       - docs/context/manual-tac-input-modes.md
     notes:
+      - 2026-07-20 S019/EV-014 Phase 0 Batch 2 locked Assumed (Q5=A Q6=B Q7=A Q8=C Q9=A); Batch 1 still locked;
+        Batch 3 pending; no F16+; advisory Q8=C needs credential/environment readiness interview
       - 2026-07-20 S019-dissemination-upload/EV-014 00-context — session open; Phase 0 intake partial (Batch 1 Assumed);
         AskQuestion UI waived (cloud); Batch 2 / routing approval pending; S018/EV-013 closed Q0=A waive
       - >-
@@ -3052,7 +3055,8 @@ stages:
     started_at: '2026-07-20'
     current_stage: 16-evolve
     note: >-
-      S019-dissemination-upload/EV-014 — Phase 0 intake in progress (Batch 1 Assumed; Batch 2 pending); prior S018/EV-013
+      S019-dissemination-upload/EV-014 — Phase 0 intake in progress (Batch 1+2 locked Assumed; Batch 3 pending);
+      no F16+ yet; advisory deviation Q8=C needs credential/environment readiness interview; prior S018/EV-013
       closed completed-with-waiver (Q0=A)
 
 stages_pending: []
@@ -3164,6 +3168,38 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-intake-batch2
+    stage: 16-evolve
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 16-evolve
+    skill_id: 16-evolve
+    topic: Phase 0 intake Batch 2 lock — Batch 3 pending
+    decision: 'Batch 2 locked Assumed (AskQuestion waived cloud written): Q5=A paste in drawer → backend memory-only for
+      preflight+upload (never persist); Q6=B URI-only + preflight + send (no discrete field form in v1); Q7=A structured
+      schema diff in drawer, block Send until preflight green; Q8=C ship all three to usable MVP — live wis2box + live EDIS
+      path (highest risk); Q9=A same drawer destination type Postgres (now) / WIS2 / EDIS. Batch 1 still locked. Phase 0
+      NOT fully approved — Batch 3 pending. Do not invent F16+ yet.'
+    status: assumed
+    resolved_at: '2026-07-20'
+    note: Assumed — AskQuestion UI waived (cloud written interview); Batch 3 pending
+  - id: D-S019-EV014-Q8C-advisory
+    stage: 16-evolve
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 16-evolve
+    skill_id: 16-evolve
+    topic: Advisory deviation — Q8=C credential/environment readiness
+    decision: 'Q8=C commits to usable MVP for all three destinations including live wis2box + live EDIS (highest risk).
+      Flag advisory deviation: credential/environment readiness interview required before implementation commits for live
+      WIS2/EDIS paths. Does not unblock Batch 3 or allocate F16+.'
+    status: advisory
+    resolved_at: '2026-07-20'
+    note: Deviation flagged — readiness interview pending; not a Phase 0 block by itself
   - id: D-S019-EV014-open
     stage: 00-context
     date: '2026-07-20'
@@ -3207,7 +3243,8 @@ decisions_log:
       #729 Upload to Database. Phase 0 NOT fully approved — Batch 2 pending. Do not invent F16+ in feature-list.md yet.'
     status: assumed
     resolved_at: '2026-07-20'
-    note: Assumed — AskQuestion UI waived (cloud written interview); Batch 2 pending
+    note: Assumed — AskQuestion UI waived (cloud written interview); Batch 1 still locked; Batch 2 now locked 2026-07-20
+      (see D-S019-EV014-intake-batch2); Batch 3 pending
   - id: D-S018-EV013-Q0A-close-waive
     stage: 16-evolve
     date: '2026-07-20'
@@ -7125,21 +7162,25 @@ evolve_cycles:
     status: in_progress
     started: '2026-07-20'
     completed:
-    scope_summary: 'Phase 0 intake PARTIAL (not fully approved — Batch 2 pending). Locked so far (Assumed / written interview;
-      AskQuestion UI waived cloud): one-shot session credentials (paste in UI; never persist / never saved profiles); drawer
-      UI for send/upload destination + preflight; require existing table matching versioned writer contract (no create-if-missing);
-      Q1=A convert-in-app then send IWXXM to user Postgres; Q2=A any authenticated user; Q3=A schema preflight clarity is
-      success metric; Q4=D include WIS2/EDIS scaffolding in ONE BIG dissemination cycle. Issues: #729 Upload to Database;
-      #2 WIS2; #6 EDIS. Do NOT invent F16+ until Phase 0 fully approved.'
+    scope_summary: 'Phase 0 intake PARTIAL (not fully approved — Batch 3 pending). Batch 1+2 locked Assumed (AskQuestion UI
+      waived cloud written). Batch 1 (still locked): one-shot session credentials (paste UI; never persist); drawer UI +
+      preflight; require-existing versioned table contract; Q1=A convert-then-send; Q2=A any auth user; Q3=A schema preflight
+      clarity success metric; Q4=D WIS2+EDIS in ONE cycle. Batch 2: Q5=A paste→backend memory-only (never persist); Q6=B
+      URI-only + preflight + send (no discrete field form v1); Q7=A structured schema diff, block Send until preflight green;
+      Q8=C ship all three to usable MVP — live wis2box + live EDIS (highest risk); Q9=A same drawer destination Postgres/WIS2/EDIS.
+      Issues: #729 Upload DB; #2 WIS2; #6 EDIS. Do NOT invent F16+ until Phase 0 fully approved. Advisory: Q8=C needs
+      credential/environment readiness interview.'
     github_issue: 729
     routing_plan:
       required_stages:
         - 00-context
         - 16-evolve
       skipped_stages: []
-      note: Full required_stages TBD after Batch 2 / routing approval
+      note: Full required_stages TBD after Batch 3 / routing approval
     current_stage: 16-evolve
     notes:
+      - 2026-07-20 S019/EV-014 Phase 0 Batch 2 locked Assumed (Q5=A Q6=B Q7=A Q8=C Q9=A); Batch 1 confirmed still locked;
+        Batch 3 pending; no F16+; advisory deviation Q8=C needs credential/environment readiness interview
       - 2026-07-20 S019/EV-014 open — Phase 0 intake partial (Batch 1 Assumed); AskQuestion UI waived (cloud written 
         interview); Batch 2 pending; no F16+ yet
     stages:
@@ -7150,12 +7191,11 @@ evolve_cycles:
         completed: '2026-07-20'
         substeps:
           phase0: partial
-        note: Phase 0 intake partial — Batch 1 locked Assumed (credentials/drawer/table/Q1–Q4); Batch 2 pending; 
-          AskQuestion UI waived (cloud)
+        note: Phase 0 intake partial — Batch 1+2 locked Assumed; Batch 3 pending; AskQuestion UI waived (cloud)
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: Phase 0 intake in progress — Batch 2 pending before full routing lock
+        note: Phase 0 intake in progress — Batch 1+2 locked; Batch 3 pending before full routing lock; Q8=C advisory
     gates:
       a_to_b: pending
       b_to_c: pending
@@ -10258,6 +10298,20 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: d6a84ba7d90c1ca37e537a40c579adfd4bb7a194
+      short: d6a84ba
+      message: 'docs(S019): lock EV-014 Phase 0 Batch 2 intake'
+      branch: cursor/dissemination-upload-e25c
+      date: '2026-07-20'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      stage: 16-evolve
+      files_changed:
+        - workflow-state.yaml
+        - docs/decisions/evolve-decisions.md
+        - docs/sessions/S019-dissemination-upload/session-brief.md
+      pushed: true
+      note: Phase 0 Batch 2 locked (Q5=A Q6=B Q7=A Q8=C Q9=A); Batch 1 still locked; Batch 3 pending; Q8=C advisory
     - sha: c8a949fbe06d0c93580d5f4d63c227e1fe95cad8
       short: c8a949f
       message: 'docs: close S018/EV-013; open S019/EV-014 dissemination intake'
