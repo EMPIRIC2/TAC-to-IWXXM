@@ -170,6 +170,46 @@
       "cite": "A3-2 #9 NSC no significant cloud; research R4",
       "tac": "accept/metar_r4_nsc.tac",
       "ok": true
+    },
+    {
+      "id": "accept_metar_r5_rmk_ao2_slp",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "US RMK AO2+SLP; research R5 / iwxxm_us",
+      "tac": "accept/metar_r5_rmk_ao2_slp.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r5_rmk_ao1",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "US RMK AO1; research R5 / iwxxm_us",
+      "tac": "accept/metar_r5_rmk_ao1.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r5_rmk_precip",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "US RMK P#### precip; research R5 / iwxxm_us",
+      "tac": "accept/metar_r5_rmk_precip.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r5_rmk_temp_tenths",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "US RMK T########; research R5 / iwxxm_us",
+      "tac": "accept/metar_r5_rmk_temp_tenths.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_r5_rmk_ao2",
+      "product": "SPECI",
+      "theme": "R5",
+      "cite": "SPECI US RMK AO2; research R5 / iwxxm_us",
+      "tac": "accept/speci_r5_rmk_ao2.tac",
+      "ok": true
     }
   ],
   "negative": [
@@ -631,6 +671,98 @@
       "ok": true,
       "expected_codes": ["CLOUD_CB_OR_TCU"],
       "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "remark_us_info": [
+    {
+      "id": "metar_r5_rmk_ao2_slp_info",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "AO2/SLP → INFO iwxxm_us awareness; research R5",
+      "tac": "accept/metar_r5_rmk_ao2_slp.tac",
+      "ok": true,
+      "expected_codes": ["REMARK_US_EXTENSION"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r5_rmk_temp_tenths_info",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "T######## → INFO iwxxm_us; research R5",
+      "tac": "accept/metar_r5_rmk_temp_tenths.tac",
+      "ok": true,
+      "expected_codes": ["REMARK_US_EXTENSION"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r5_rmk_pk_wnd_info",
+      "product": "METAR",
+      "theme": "R5",
+      "cite": "PK WND → INFO iwxxm_us; research R5",
+      "tac": "accept/metar_r5_rmk_pk_wnd.tac",
+      "ok": true,
+      "expected_codes": ["REMARK_US_EXTENSION"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_r5_rmk_ao2_info",
+      "product": "SPECI",
+      "theme": "R5",
+      "cite": "SPECI AO2 → INFO iwxxm_us; research R5",
+      "tac": "accept/speci_r5_rmk_ao2.tac",
+      "ok": true,
+      "expected_codes": ["REMARK_US_EXTENSION"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "remark_errors": [
+    {
+      "id": "metar_rmk_bad_slp",
+      "product": "METAR",
+      "theme": "R5",
+      "depth": "full_checklist",
+      "cite": "SLP must be 3 digits; research R5",
+      "tac": "negative/metar/rmk_bad_slp.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_REMARK"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_rmk_bad_precip",
+      "product": "METAR",
+      "theme": "R5",
+      "depth": "full_checklist",
+      "cite": "P precip must be 4 digits; research R5",
+      "tac": "negative/metar/rmk_bad_precip.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_REMARK"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_rmk_bad_pk_wnd",
+      "product": "METAR",
+      "theme": "R5",
+      "depth": "full_checklist",
+      "cite": "PK WND needs dddss/tt; research R5",
+      "tac": "negative/metar/rmk_bad_pk_wnd.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_REMARK"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_rmk_bad_temp_tenths",
+      "product": "SPECI",
+      "theme": "R5",
+      "depth": "full_checklist",
+      "cite": "T temp tenths must be 8 digits; research R5",
+      "tac": "negative/speci/rmk_bad_temp_tenths.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_REMARK"],
       "require_spans": true
     }
   ]

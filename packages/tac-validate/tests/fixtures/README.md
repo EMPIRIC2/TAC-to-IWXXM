@@ -52,6 +52,8 @@ Diagnostics assertions require product-rule codes/spans from
 | `weather_errors`     | `false` | R3 malformed present weather (`INVALID_WEATHER`)            |
 | `cloud_errors`       | `false` | R4 malformed cloud/VV height/suffix (`INVALID_CLOUD_TOKEN`) |
 | `cloud_cb_tcu_info`  | `true`  | R4 CB/TCU convective type (`CLOUD_CB_OR_TCU` info)          |
+| `remark_us_info`     | `true`  | R5 known US RMK tokens (`REMARK_US_EXTENSION` info)         |
+| `remark_errors`      | `false` | R5 malformed RMK groups (`INVALID_REMARK`)                  |
 
 ## Tooling
 
