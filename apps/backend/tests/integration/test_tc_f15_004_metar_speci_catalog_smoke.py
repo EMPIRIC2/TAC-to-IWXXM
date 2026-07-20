@@ -11,10 +11,10 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
+from tac_validate.issue_registry import ISSUES
 
 from src.api import app
 from src.utilities.security import verify_supabase_token
-from tac_validate.issue_registry import ISSUES
 
 pytestmark = [pytest.mark.integration, pytest.mark.smoke]
 

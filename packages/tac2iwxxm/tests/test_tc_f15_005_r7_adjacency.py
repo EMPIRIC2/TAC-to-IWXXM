@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from tac2iwxxm import convert
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
+
+from tac2iwxxm import convert
 
 ANNEX3 = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
 

@@ -7,10 +7,10 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
+from tac_validate.issue_registry import ISSUES, by_code
 
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
-from tac_validate.issue_registry import ISSUES, by_code
 
 
 @pytest.fixture
