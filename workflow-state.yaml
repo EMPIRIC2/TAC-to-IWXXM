@@ -8129,10 +8129,15 @@ evolve_cycles:
 
 git_history:
   current_branch: evolve/EV-011-metar-lint-quality
-  ahead_of_origin: 2
+  ahead_of_origin: 4
   pushed: false
   pending_commit:
   notes:
+    - >-
+      2026-07-19 S015/EV-011 git — recorded fa328ac48e6c1165f66d056a6e6801b5097b8830
+      (fa328ac) docs 05-verify-tech pass + tip
+      b097adb5258f7e628480113692de5a97c6126a10 (b097adb) chore sync; ahead of
+      origin by 4; not pushed
     - >-
       2026-07-19 S015/EV-011 git — recorded 3ea894d17b7018247469de9e92bd33dfe82ec429
       (3ea894d) chore: record 04-tech-plan commit in workflow-state; tip ahead of
@@ -8249,10 +8254,10 @@ git_history:
       created_at: "2026-07-19"
       session_id: S015-metar-lint-quality
       evolve_cycle_id: EV-011
-      tip_sha: 3ea894d17b7018247469de9e92bd33dfe82ec429
+      tip_sha: b097adb5258f7e628480113692de5a97c6126a10
       note: >-
-        tip 3ea894d (chore: record 04-tech-plan commit); prior 6bfe5df 04-tech-plan;
-        05-verify-tech in_progress (D-S015-EV011-05-start); ahead of origin by 2
+        tip b097adb (chore: sync after 05-verify-tech); prior fa328ac 05-verify-tech
+        pass + 3ea894d/6bfe5df 04-tech-plan; ahead of origin by 4
     - name: evolve/EV-010-package-publish-validation
       purpose: "EV-010 / S014 package publish + validation stack (F11–F14)"
       base: main
@@ -8477,6 +8482,28 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: b097adb5258f7e628480113692de5a97c6126a10
+      short: b097adb
+      branch: evolve/EV-011-metar-lint-quality
+      message: "chore: sync workflow-state after 05-verify-tech pass"
+      stage: "05-verify-tech"
+      session_id: S015-metar-lint-quality
+      evolve_cycle_id: EV-011
+      files_changed: 1
+      timestamp: "2026-07-20T01:49:54Z"
+      note: >-
+        Syncs 05-verify-tech PASS state into workflow-state; tip ahead of origin by 4; not pushed
+    - sha: fa328ac48e6c1165f66d056a6e6801b5097b8830
+      short: fa328ac
+      branch: evolve/EV-011-metar-lint-quality
+      message: "docs(S015): pass 05-verify-tech — HARD R1–R8 and 35-task plan"
+      stage: "05-verify-tech"
+      session_id: S015-metar-lint-quality
+      evolve_cycle_id: EV-011
+      files_changed: 12
+      timestamp: "2026-07-19"
+      note: >-
+        HARD R1–R8 audit + 35-task plan; ahead of origin; not pushed
     - sha: 3ea894d17b7018247469de9e92bd33dfe82ec429
       short: 3ea894d
       branch: evolve/EV-011-metar-lint-quality
