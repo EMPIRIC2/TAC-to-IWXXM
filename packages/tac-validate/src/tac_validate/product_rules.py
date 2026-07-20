@@ -54,6 +54,12 @@ _CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
 # R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
 _CLOUD_OK = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$")
 _CLOUD_LIKE = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})")
+# R5: US METAR remarks (iwxxm_us) — AO1/AO2, SLP###, P####, T########, PK WND dddss/tt.
+_RMK_AO = frozenset({"AO1", "AO2"})
+_RMK_SLP_OK = re.compile(r"^SLP\d{3}$")
+_RMK_P_OK = re.compile(r"^P\d{4}$")
+_RMK_T_OK = re.compile(r"^T\d{8}$")
+_RMK_PK_VAL = re.compile(r"^\d{5}/\d{2,4}$")
 _WX_TOKEN_SHAPE = re.compile(r"^(?://|[+-]{1,2}[A-Z]{2,8}|[A-Z]{2,8}[+-]|[+-]?[A-Z]{2,8})$")
 _TEMP = re.compile(r"\bM?\d{2}/M?\d{2}\b")
 _QNH = re.compile(r"\b[QA]\d{4}\b")
@@ -237,6 +243,130 @@ def _cloud_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
     return candidates
 
 
+def _append_remark_issue(
+    issues: list[Issue],
+    *,
+    code: str,
+    message: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    token: str,
+) -> None:
+    span = _token_span_in_core(core, token, body_start)
+    if span is None:
+        start, end = body_start, body_end
+    else:
+        start, end = span
+    issues.append(_issue(code, message, start=start, end=end, location="remark"))
+
+
+def _check_us_remarks(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+) -> list[Issue]:
+    """Lint US REMARKS after ``RMK`` (research R5 / iwxxm_us awareness)."""
+    if "RMK" not in tokens:
+        return []
+    rmk_i = tokens.index("RMK")
+    remark = tokens[rmk_i + 1 :]
+    issues: list[Issue] = []
+    saw_us = False
+    i = 0
+    while i < len(remark):
+        tok = remark[i]
+        if tok in _RMK_AO:
+            saw_us = True
+            i += 1
+            continue
+        if _RMK_SLP_OK.fullmatch(tok):
+            saw_us = True
+            i += 1
+            continue
+        if tok.startswith("SLP") and tok[3:].isdigit():
+            _append_remark_issue(
+                issues,
+                code="INVALID_REMARK",
+                message=f"{product} malformed remark {tok!r} (SLP needs 3 digits) — research R5 / iwxxm_us",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            i += 1
+            continue
+        if _RMK_P_OK.fullmatch(tok):
+            saw_us = True
+            i += 1
+            continue
+        if len(tok) > 1 and tok[0] == "P" and tok[1:].isdigit():
+            _append_remark_issue(
+                issues,
+                code="INVALID_REMARK",
+                message=f"{product} malformed remark {tok!r} (P precip needs 4 digits) — research R5 / iwxxm_us",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            i += 1
+            continue
+        if _RMK_T_OK.fullmatch(tok):
+            saw_us = True
+            i += 1
+            continue
+        if len(tok) > 1 and tok[0] == "T" and tok[1:].isdigit():
+            _append_remark_issue(
+                issues,
+                code="INVALID_REMARK",
+                message=f"{product} malformed remark {tok!r} (T tenths needs 8 digits) — research R5 / iwxxm_us",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            i += 1
+            continue
+        if tok == "PK":
+            has_wnd = i + 1 < len(remark) and remark[i + 1] == "WND"
+            has_val = has_wnd and i + 2 < len(remark) and _RMK_PK_VAL.fullmatch(remark[i + 2])
+            if has_val:
+                saw_us = True
+                i += 3
+                continue
+            span_tok = "WND" if has_wnd else "PK"
+            _append_remark_issue(
+                issues,
+                code="INVALID_REMARK",
+                message=f"{product} malformed remark PK WND (need dddss/tt) — research R5 / iwxxm_us",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=span_tok,
+            )
+            i += 2 if has_wnd else 1
+            continue
+        i += 1
+
+    if saw_us:
+        _append_remark_issue(
+            issues,
+            code="REMARK_US_EXTENSION",
+            message=(
+                f"{product} US remarks present (AO1/AO2/SLP/P/T/PK WND) — iwxxm_us profile awareness; research R5"
+            ),
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="RMK",
+        )
+    return issues
+
+
 def _check_metar_speci_field_order(
     tokens: list[str],
     *,
@@ -309,7 +439,10 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
     if order_issue is not None:
         issues.append(order_issue)
 
-    bad_vis = list(_VIS_BAD.finditer(core))
+    # Visibility lives before RMK — do not treat PK WND dddss/tt digits as vis (R2/R5).
+    rmk_at = core.find("RMK")
+    vis_core = core[:rmk_at] if rmk_at >= 0 else core
+    bad_vis = list(_VIS_BAD.finditer(vis_core))
     if bad_vis:
         for match in bad_vis:
             issues.append(
@@ -321,7 +454,7 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
                     location="visibility",
                 )
             )
-    elif not _VIS_OK.search(core):
+    elif not _VIS_OK.search(vis_core):
         issues.append(
             _issue(
                 "MISSING_VISIBILITY",
@@ -407,6 +540,16 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
                     location="cloud",
                 )
             )
+
+    issues.extend(
+        _check_us_remarks(
+            tokens,
+            product=product,
+            core=core,
+            body_start=start,
+            body_end=end,
+        )
+    )
 
     return issues
 

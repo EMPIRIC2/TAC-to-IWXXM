@@ -64,7 +64,6 @@ def test_r5_accept_body_with_rmk_ok(case: dict[str, Any]) -> None:
 
 
 @pytest.mark.parametrize("case", _REMARK_INFO, ids=_case_ids(_REMARK_INFO))
-@pytest.mark.xfail(strict=True, reason="T3.10 encodes REMARK_US_EXTENSION info")
 def test_r5_us_remark_emits_info(case: dict[str, Any]) -> None:
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is True
@@ -78,7 +77,6 @@ def test_r5_us_remark_emits_info(case: dict[str, Any]) -> None:
 
 
 @pytest.mark.parametrize("case", _REMARK_ERRORS, ids=_case_ids(_REMARK_ERRORS))
-@pytest.mark.xfail(strict=True, reason="T3.10 encodes INVALID_REMARK")
 def test_r5_invalid_remark_emits_error(case: dict[str, Any]) -> None:
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is False

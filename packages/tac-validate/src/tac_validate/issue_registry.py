@@ -147,6 +147,18 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("cloud", "metar", "speci", "r4", "cb", "tcu"),
     ),
     _row(
+        "REMARK_US_EXTENSION",
+        "info",
+        "{product} US remarks present — iwxxm_us profile awareness",
+        tags=("remark", "metar", "speci", "r5", "iwxxm_us"),
+    ),
+    _row(
+        "INVALID_REMARK",
+        "error",
+        "{product} malformed remark group {token!r}",
+        tags=("remark", "metar", "speci", "r5", "iwxxm_us"),
+    ),
+    _row(
         "MISSING_ISSUE_TIME",
         "error",
         "TAF missing issue time ddhhmmZ — A5-1 #3",

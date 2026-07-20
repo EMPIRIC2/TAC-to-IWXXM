@@ -50,6 +50,19 @@
       ]
     },
     {
+      "code": "INVALID_REMARK",
+      "severity": "error",
+      "message_template": "{product} malformed remark group {token!r}",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "r5",
+        "iwxxm_us"
+      ]
+    },
+    {
       "code": "INVALID_VISIBILITY",
       "severity": "error",
       "message_template": "{product} invalid visibility token (use SM, meters, or CAVOK)",
@@ -247,6 +260,19 @@
         "metar",
         "speci",
         "r1"
+      ]
+    },
+    {
+      "code": "REMARK_US_EXTENSION",
+      "severity": "info",
+      "message_template": "{product} US remarks present \u2014 iwxxm_us profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "r5",
+        "iwxxm_us"
       ]
     },
     {
