@@ -11,7 +11,7 @@ import json
 from importlib import import_module
 from pathlib import Path
 from types import ModuleType
-from typing import Any
+from typing import Any, cast
 
 _PACKAGE_ROOT = Path(__file__).resolve().parent
 _STATUS_PATH = _PACKAGE_ROOT / "STATUS.json"
@@ -26,11 +26,18 @@ def available_versions() -> list[str]:
     """Return pinned IWXXM versions recorded in ``STATUS.json``."""
     if not _STATUS_PATH.is_file():
         return []
-    data = json.loads(_STATUS_PATH.read_text(encoding="utf-8"))
-    raw = data.get("versions") or []
-    if not isinstance(raw, list):
+    loaded: object = json.loads(_STATUS_PATH.read_text(encoding="utf-8"))
+    if not isinstance(loaded, dict):
         return []
-    return [str(v) for v in raw if isinstance(v, (str, int, float))]
+    data = cast(dict[str, Any], loaded)
+    versions_field: object = data.get("versions", [])
+    if not isinstance(versions_field, list):
+        return []
+    versions: list[str] = []
+    for item in cast(list[object], versions_field):
+        if isinstance(item, (str, int, float)):
+            versions.append(str(item))
+    return versions
 
 
 def package_name(version: str) -> str:
