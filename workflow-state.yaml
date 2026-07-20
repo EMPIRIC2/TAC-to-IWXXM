@@ -39,7 +39,9 @@ active_session:
       mode: orchestrator
       status: in_progress
       started: '2026-07-20'
-      note: EV-012 Phase A complete; 10-e2e completed; 13-deploy-smoke pending
+      note: >-
+        EV-012 Phase A+10 complete; path A (D-S016-EV012-13-path-A) — PR #746 open;
+        13-deploy-smoke in_progress blocked on merge+Render deploy before live H4–H5
     - stage: 01-requirements
       required: true
       mode: delta
@@ -64,8 +66,11 @@ active_session:
     - stage: 13-deploy-smoke
       required: true
       mode: full
-      status: pending
-      note: H4–H5 + authenticated AHL + COLLECT 501
+      status: in_progress
+      started: '2026-07-20'
+      note: >-
+        PR #746 opened (path A); blocked on merge+Render deploy before live H4–H5 +
+        authenticated AHL + COLLECT 501
 sessions:
 
   - id: S015-metar-lint-quality
@@ -2447,9 +2452,15 @@ stages:
       - id: S016-manual-tac-input-modes
         session_id: S016-manual-tac-input-modes
         evolve_cycle_id: EV-012
-        status: pending
+        status: in_progress
+        started_at: '2026-07-20'
         mode: full
-        note: H4–H5 + authenticated AHL + COLLECT 501
+        note: >-
+          PR #746 opened (D-S016-EV012-13-path-A); blocked on merge+Render deploy before
+          live H4–H5 + authenticated AHL + COLLECT 501
+        pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/746
+        pr_number: 746
+        pr_id: PR-EV-012
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2480,6 +2491,9 @@ stages:
         report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
         hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+      - >-
+        2026-07-20 S016/EV-012 13-deploy-smoke STARTED (in_progress) — PR #746 open;
+        path A (D-S016-EV012-13-path-A); blocked on merge+Render deploy before live H4–H5
       - 2026-07-20 S016/EV-012 13-deploy-smoke pending (current_stage after 10-e2e PASS)
       - 2026-07-20 S015/EV-011 13-deploy-smoke completed — T5.10 PASS — Render LIVE; H0ci/H1/H0c/H3/H4/H5 + F15 catalog 35 issues
       - >-
@@ -2613,6 +2627,21 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S016-EV012-13-path-A
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    stage: 13-deploy-smoke
+    skill: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    status: confirmed
+    resolved_at: '2026-07-20'
+    decision: >-
+      Path A — push branch + open PR, then run 13-deploy-smoke staging after merge/deploy
+    summary: >-
+      User chose push+PR (#746) then live H4–H5 / AHL / COLLECT 501 smoke after merge and
+      Render deploy. 13-deploy-smoke started in_progress; not completed until post-deploy gates pass.
   - id: D-S016-EV012-route-1
     date: '2026-07-20'
     timestamp: '2026-07-20'
@@ -6182,6 +6211,10 @@ evolve_cycles:
         - 12-verify-deploy
     current_stage: 13-deploy-smoke
     notes:
+      - >-
+        2026-07-20 S016/EV-012 13-deploy-smoke STARTED (in_progress) — path A
+        (D-S016-EV012-13-path-A); branch pushed; PR #746 open; blocked on merge+Render
+        deploy before live H4–H5; checkpoints.phase_d / gates.deploy remain pending
       - 2026-07-20 S016/EV-012 10-e2e COMPLETE — PASS TC-F7-007 T1-T6 + Vitest; e2e-report.md; handoff 13-deploy-smoke (pending); checkpoints.phase_d remains pending until 13
       - 2026-07-20 S016/EV-012 10-e2e STARTED (in_progress)
       - 2026-07-20 S016/EV-012 02-verify-plan COMPLETE — PASS — S2.1 H6+UJ-025; S2.2 T1-T6 hard; S2.3 UJ-025; Phase A complete; handoff 10-e2e (pending); gates.a_to_b remains waived
@@ -6202,6 +6235,9 @@ evolve_cycles:
         status: in_progress
         started: '2026-07-20'
         completed:
+        note: >-
+          Path A (D-S016-EV012-13-path-A) — PR #746 open; 13-deploy-smoke in_progress
+          blocked on merge+Render deploy
       01-requirements:
         status: completed
         started: '2026-07-20'
@@ -6220,7 +6256,14 @@ evolve_cycles:
         note: PASS TC-F7-007 T1-T6 + Vitest; e2e-report.md
         report: docs/sessions/S016-manual-tac-input-modes/reports/e2e-report.md
       13-deploy-smoke:
-        status: pending
+        status: in_progress
+        started: '2026-07-20'
+        mode: full
+        note: >-
+          PR #746 opened (path A); blocked on merge+Render deploy before live H4–H5
+        pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/746
+        pr_number: 746
+        pr_id: PR-EV-012
     gates:
       a_to_b: waived  # lean: no Phase B tech stages
       b_to_c: waived # lean: no 07 build phase
@@ -8409,9 +8452,17 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-012-manual-tac-input-modes
   ahead_of_origin: 0
-  pushed: false
+  pushed: true
   pending_commit:
   notes:
+    - >-
+      2026-07-20 S016/EV-012 git — branch evolve/EV-012-manual-tac-input-modes pushed to
+      origin; PR-EV-012=#746 open https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/746
+      (path A / D-S016-EV012-13-path-A); 13-deploy-smoke in_progress blocked on merge+deploy
+    - >-
+      2026-07-20 S016/EV-012 git — recorded 0b56fd13910e6314f4b4a7b462c406d9112c7829
+      (0b56fd1) chore(S016): record 10-e2e completion in workflow-state; tip pushed with
+      branch to origin ahead of this chore commit
     - >-
       2026-07-20 S016/EV-012 git — recorded 7e052f43c0725fe590da50c455bb393281e0af98
       (7e052f4) test(S016): add TC-F7-007 Playwright suite for Manual TAC Input modes;
@@ -8544,9 +8595,14 @@ git_history:
       created_at: '2026-07-20'
       session_id: S016-manual-tac-input-modes
       evolve_cycle_id: EV-012
-      tip_sha: 7e052f4
+      tip_sha: 0b56fd1
+      pushed: true
+      pr_id: PR-EV-012
+      pr_number: 746
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/746
       note: >-
-        Branch active; tip 7e052f4 (10-e2e TC-F7-007 Playwright suite); not pushed
+        Branch pushed to origin; PR #746 open (path A); tip 0b56fd1 pre 13-start chore;
+        13-deploy-smoke in_progress blocked on merge+Render deploy
     - name: evolve/EV-011-metar-lint-quality
       purpose: "EV-011 / S015 METAR lint issue registry + #732 quality (F15 + F6/F12 deepen)"
       base: main
@@ -8795,6 +8851,17 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 0b56fd1
+      short: 0b56fd1
+      branch: evolve/EV-012-manual-tac-input-modes
+      message: 'chore(S016): record 10-e2e completion in workflow-state'
+      stage: 10-e2e
+      session_id: S016-manual-tac-input-modes
+      evolve_cycle_id: EV-012
+      files_changed:
+        - workflow-state.yaml
+      timestamp: '2026-07-20'
+      pushed: true
     - sha: 7e052f4
       short: 7e052f4
       branch: evolve/EV-012-manual-tac-input-modes
@@ -8810,6 +8877,7 @@ git_history:
         - docs/sessions/S016-manual-tac-input-modes/reports/e2e-report.md
         - workflow-state.yaml
       timestamp: '2026-07-20T15:37:28Z'
+      pushed: true
     - sha: 8124163
       short: 8124163
       branch: evolve/EV-012-manual-tac-input-modes
