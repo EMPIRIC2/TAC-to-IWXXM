@@ -49,6 +49,7 @@ Diagnostics assertions require product-rule codes/spans from
 | `order_warnings`     | `true`  | Warning-only R1 odd field order (`ODD_FIELD_ORDER`) |
 | `r2_fraction_accept` | `true`  | US SM fractions / M-prefix (encoded in T3.4)        |
 | `visibility_errors`  | `false` | R2 malformed visibility (`INVALID_VISIBILITY`)      |
+| `weather_errors`     | `false` | R3 malformed present weather (`INVALID_WEATHER`)    |
 
 ## Tooling
 

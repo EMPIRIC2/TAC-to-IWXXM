@@ -90,6 +90,54 @@
       "product": "TCA",
       "tac": "accept/tca_basic.tac",
       "ok": true
+    },
+    {
+      "id": "accept_metar_r3_wx_light_rain",
+      "product": "METAR",
+      "theme": "R3",
+      "cite": "A3-2 #8 intensity + precip; research R3",
+      "tac": "accept/metar_r3_wx_light_rain.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r3_wx_heavy_snow",
+      "product": "METAR",
+      "theme": "R3",
+      "cite": "A3-2 #8 +SN; research R3",
+      "tac": "accept/metar_r3_wx_heavy_snow.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r3_wx_vicinity_fog",
+      "product": "METAR",
+      "theme": "R3",
+      "cite": "A3-2 #8 VC* vicinity; research R3",
+      "tac": "accept/metar_r3_wx_vicinity_fog.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r3_wx_tsra",
+      "product": "METAR",
+      "theme": "R3",
+      "cite": "A3-2 #8 TS+RA combo; research R3",
+      "tac": "accept/metar_r3_wx_tsra.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r3_wx_fzra",
+      "product": "METAR",
+      "theme": "R3",
+      "cite": "A3-2 #8 FZ descriptor; research R3",
+      "tac": "accept/metar_r3_wx_fzra.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_r3_wx_shra",
+      "product": "SPECI",
+      "theme": "R3",
+      "cite": "A3-2 #8 -SHRA shower; research R3",
+      "tac": "accept/speci_r3_wx_shra.tac",
+      "ok": true
     }
   ],
   "negative": [
@@ -434,6 +482,52 @@
       "tac": "negative/speci/invalid_vis_miles_word.tac",
       "ok": false,
       "expected_codes": ["INVALID_VISIBILITY"],
+      "require_spans": true
+    }
+  ],
+  "weather_errors": [
+    {
+      "id": "metar_wx_intensity_with_vc",
+      "product": "METAR",
+      "theme": "R3",
+      "depth": "full_checklist",
+      "cite": "VC* must not carry intensity +/-; research R3",
+      "tac": "negative/metar/wx_intensity_with_vc.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WEATHER"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_wx_unknown_token",
+      "product": "METAR",
+      "theme": "R3",
+      "depth": "full_checklist",
+      "cite": "unknown present weather token; research R3",
+      "tac": "negative/metar/wx_unknown_token.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WEATHER"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_wx_double_intensity",
+      "product": "METAR",
+      "theme": "R3",
+      "depth": "full_checklist",
+      "cite": "double intensity prefix; research R3",
+      "tac": "negative/metar/wx_double_intensity.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WEATHER"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_wx_trailing_intensity",
+      "product": "SPECI",
+      "theme": "R3",
+      "depth": "full_checklist",
+      "cite": "intensity must prefix phenomenon; research R3",
+      "tac": "negative/speci/wx_trailing_intensity.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WEATHER"],
       "require_spans": true
     }
   ]
