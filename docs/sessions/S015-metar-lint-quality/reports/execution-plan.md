@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M1 — Issue registry + unknown-code CI + catalog stub |
-| **Active task** | T1.1 — Registry API tests (in_progress) |
-| **Tasks** | 1 / 35 (T6.0 done; T1.1 in_progress) |
+| **Active task** | T1.3 — CI gate for unknown Issue.code (next) |
+| **Tasks** | 2 / 35 completed (T6.0 + T1.1 + T1.2; next T1.3) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -42,9 +42,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Registry API tests: `IssueSpec`, `by_code`, `issue_from`; reject unknown codes | TC-F15-001; ADR-028 | — | in_progress |
-| T1.2 | Code | Add `issue_registry.py`; seed rows for existing emitted codes (`EMPTY_TAC`, `MISSING_*`, `MISSING_TERMINATOR`, …) | F15; E11-20 | T1.1 | pending |
-| T1.3 | Test | CI gate: any `Issue.code` not in registry fails | TC-F15-001; E11-27 | T1.2 | pending |
+| T1.1 | Test | Registry API tests: `IssueSpec`, `by_code`, `issue_from`; reject unknown codes | TC-F15-001; ADR-028 | — | completed |
+| T1.2 | Code | Add `issue_registry.py`; seed rows for existing emitted codes (`EMPTY_TAC`, `MISSING_*`, `MISSING_TERMINATOR`, …) | F15; E11-20 | T1.1 | completed |
+| T1.3 | Test | CI gate: any `Issue.code` not in registry fails | TC-F15-001; E11-27 | T1.2 | in_progress |
 | T1.4 | Config | Generate stub `ISSUE_CATALOG.md` (+ JSON); Makefile target `catalog-regen`; drift test | E11-22; E11-27 | T1.2 | pending |
 
 ### M2 — Migrate rule bodies onto registry (F15 / F12)
