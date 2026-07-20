@@ -11,11 +11,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — 07-build |
-| **Active milestone** | M4 — Goldens R6 + SPECI adjacency R7 |
-| **Active task** | Phase C checkpoint — then T5.7 09/10 (after T5.6 commit) |
-| **Tasks** | 30 / 35 completed (… T5.1–T5.6) |
-| **Last updated** | 2026-07-19 |
+| **Active phase** | Phase D — 09→13 |
+| **Active milestone** | M5 — Catalog API + FE + verify/deploy |
+| **Active task** | T5.8 — 11-verify-impl (next) |
+| **Tasks** | 31 / 35 completed (… T5.7) |
+| **Last updated** | 2026-07-20 |
 
 ## Tech Stack Summary
 
@@ -98,7 +98,7 @@
 | T5.4 | Code | FE: fetch catalog; tooltip + lightweight catalog panel on workbench | E11-29; UJ-024 | T5.3 | completed |
 | T5.5 | Test | API smoke `product=metar` + `product=speci` lint+convert + catalog GET (H3) | TC-F15-004 | T4.3, T5.2 | completed |
 | T5.6 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M4, T5.4, T6.0 | completed |
-| T5.7 | Test | 09-qa + 10-e2e — UJ-024 / TC-F15-001..005 | 09/10 | T5.6 | pending |
+| T5.7 | Test | 09-qa + 10-e2e — UJ-024 / TC-F15-001..005 | 09/10 | T5.6 | completed |
 | T5.8 | Docs | 11-verify-impl — per-Fn F15 + F6/F12 deepen sign-off | 11 | T5.7 | pending |
 | T5.9 | Config | 12-verify-deploy — Render checklist + `tac-validate-v0.1.1` tag plan | 12; E11-25 | T5.8 | pending |
 | T5.10 | Test | 13-deploy-smoke — API+FE redeploy; H1–H5 (H4–H5 required); re-run **H0c** CORS unit tests when API image changes | 13; E11-26; connectivity-gates | T5.9 | pending |
