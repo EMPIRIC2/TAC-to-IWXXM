@@ -9,6 +9,7 @@ import {
   downloadBlob,
   EndpointNotImplementedError,
   fetchAirportRegion,
+  fetchLintIssueCatalog,
   ingestCollect,
   lintTac,
   type ConversionResponse,
@@ -756,6 +757,35 @@ describe('API Utils', () => {
       await expect(
         lintTac({ manualText: 'METAR', product: 'METAR' }),
       ).rejects.toThrow();
+    });
+
+    it('GETs lint-issue-catalog with optional product filter', async () => {
+      mockFetchResponse({
+        issues: [
+          {
+            code: 'MISSING_TERMINATOR',
+            severity: 'info',
+            message_template: "Reports end with '='",
+            product: null,
+            tags: ['terminator'],
+          },
+        ],
+      });
+      const result = await fetchLintIssueCatalog({
+        product: 'METAR',
+        accessToken: 'tok',
+      });
+      expect(result.issues).toHaveLength(1);
+      expect(result.issues[0].code).toBe('MISSING_TERMINATOR');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/lint-issue-catalog\?product=metar$/),
+        expect.objectContaining({
+          method: 'GET',
+          headers: expect.objectContaining({
+            Authorization: 'Bearer tok',
+          }),
+        }),
+      );
     });
 
     it('posts decode-tac with abort signal', async () => {
