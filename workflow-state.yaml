@@ -4,19 +4,19 @@ project:
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 18
+session_counter: 19
 active_session:
-  id: S018-metar-remarks-667
+  id: S019-dissemination-upload
   type: feature
-  intent: >-
-    Handle Remark Portion of METARs (#667) — annex3 exclusion messaging + iwxxm_us
-    never-drop/freeText + T/P emit
+  intent: 'Dissemination epic: Upload to Database user-supplied one-shot Postgres credentials + schema preflight + send drawer
+    UI (#729); WIS2 pathway scaffolding (#2); EDIS-compliant dissemination scaffolding (#6). Convert-then-send; any authenticated
+    user; require-existing versioned table contract; credentials never persisted.'
   status: in_progress
-  branch: cursor/metar-remarks-live-e2e-2e2e
+  branch: cursor/dissemination-upload-e25c
   orchestrator: 16-evolve
-  evolve_cycle_id: EV-013
-  artifacts_dir: docs/sessions/S018-metar-remarks-667/
-  current_stage: 13-deploy-smoke
+  evolve_cycle_id: EV-014
+  artifacts_dir: docs/sessions/S019-dissemination-upload/
+  current_stage: 16-evolve
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched: []
@@ -25,104 +25,225 @@ active_session:
       required: true
       mode: scoped
       status: completed
+      skip_rationale:
       started: '2026-07-20'
       completed: '2026-07-20'
-      skip_rationale:
-      note: >-
-        Session open; Phase 0 intake locked Assumed (E13-1/E13-2/E13-3);
-        AskQuestion UI waived (cloud)
+      note: Session open; Phase 0 intake partial (Batch 1 locked Assumed); AskQuestion UI waived (cloud written 
+        interview); Batch 2 / routing approval pending
     - stage: 16-evolve
       required: true
       mode: orchestrator
       status: in_progress
-      started: '2026-07-20'
       skip_rationale:
-      note: >-
-        Implementation landed (07-build); 13-deploy-smoke completed
-        pass_with_advisories (#750 live; #752 pending)
+      started: '2026-07-20'
+      note: Phase 0 intake in progress — Batch 2 pending; no F16+ yet
     - stage: 01-requirements
       required: true
       mode: delta
-      status: completed
-      started: '2026-07-20'
-      completed: '2026-07-20'
+      status: pending
       skip_rationale:
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 02-verify-plan
       required: true
       mode: delta
-      status: completed
-      started: '2026-07-20'
-      completed: '2026-07-20'
+      status: pending
       skip_rationale:
-      note: Delta consistency via corpus updates
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 03-plan-tooling
       required: false
-      mode: skipped
-      status: skipped
-      skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+      mode: pending
+      status: pending
+      skip_rationale:
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 04-tech-plan
       required: true
       mode: delta
-      status: completed
-      started: '2026-07-20'
-      completed: '2026-07-20'
+      status: pending
       skip_rationale:
-      note: Thin execution-plan written
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 05-verify-tech
       required: false
-      mode: skipped
-      status: skipped
-      skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+      mode: pending
+      status: pending
+      skip_rationale:
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 06-tech-tooling
       required: false
-      mode: skipped
-      status: skipped
-      skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+      mode: pending
+      status: pending
+      skip_rationale:
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 07-build
       required: true
       mode: full
-      status: completed
-      started: '2026-07-20'
-      completed: '2026-07-20'
+      status: pending
       skip_rationale:
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 08-verify-build
       required: true
       mode: full
-      status: in_progress
-      started: '2026-07-20'
+      status: pending
       skip_rationale:
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 09-qa
       required: true
       mode: full
       status: pending
       skip_rationale:
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 10-e2e
-      required: false
-      mode: skipped
-      status: skipped
-      skip_rationale: 'Standard routing for #667 — not in approved stage list (E13-2)'
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 11-verify-impl
       required: true
       mode: full
       status: pending
       skip_rationale:
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 12-verify-deploy
       required: true
       mode: full
       status: pending
       skip_rationale:
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
     - stage: 13-deploy-smoke
       required: true
       mode: full
-      status: completed
-      started: '2026-07-20'
-      completed: '2026-07-20'
+      status: pending
       skip_rationale:
-      note: >-
-        partial PASS — pass_with_advisories; full UJ-026 annex3 blocked on #752 deploy
-
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
 sessions:
 
+  - id: S018-metar-remarks-667
+    type: feature
+    status: completed
+    started_at: '2026-07-20'
+    completed_at: '2026-07-20'
+    intent: >-
+      Handle Remark Portion of METARs (#667) — annex3 exclusion messaging + iwxxm_us
+      never-drop/freeText + T/P emit
+    orchestrator: 16-evolve
+    evolve_cycle_id: EV-013
+    branch: cursor/metar-remarks-live-e2e-2e2e
+    artifacts_dir: docs/sessions/S018-metar-remarks-667/
+    current_stage:
+    context_briefs: []
+    standing_docs_touched: []
+    routing_plan:
+      - stage: 00-context
+        required: true
+        mode: scoped
+        status: completed
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        skip_rationale:
+        note: >-
+          Session open; Phase 0 intake locked Assumed (E13-1/E13-2/E13-3);
+          AskQuestion UI waived (cloud)
+      - stage: 16-evolve
+        required: true
+        mode: orchestrator
+        status: completed
+        started: '2026-07-20'
+        skip_rationale:
+        note: >-
+          Closed for new upload/dissemination cycle (S019/EV-014). User Q0=A waived leftover 08/09/11/12; 13-deploy-smoke
+          pass_with_advisories; #750 live.
+        completed: '2026-07-20'
+      - stage: 01-requirements
+        required: true
+        mode: delta
+        status: completed
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        skip_rationale:
+      - stage: 02-verify-plan
+        required: true
+        mode: delta
+        status: completed
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        skip_rationale:
+        note: Delta consistency via corpus updates
+      - stage: 03-plan-tooling
+        required: false
+        mode: skipped
+        status: skipped
+        skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+      - stage: 04-tech-plan
+        required: true
+        mode: delta
+        status: completed
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        skip_rationale:
+        note: Thin execution-plan written
+      - stage: 05-verify-tech
+        required: false
+        mode: skipped
+        status: skipped
+        skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+      - stage: 06-tech-tooling
+        required: false
+        mode: skipped
+        status: skipped
+        skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
+      - stage: 07-build
+        required: true
+        mode: full
+        status: completed
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        skip_rationale:
+      - stage: 08-verify-build
+        required: true
+        mode: full
+        status: skipped
+        started: '2026-07-20'
+        skip_rationale: User Q0=A waive leftover verify bookkeeping (08/09/11/12) to close S018/EV-013 and start 
+          upload/dissemination evolve (#729/#2/#6)
+        completed: '2026-07-20'
+      - stage: 09-qa
+        required: true
+        mode: full
+        status: skipped
+        skip_rationale: User Q0=A waive leftover verify bookkeeping (08/09/11/12) to close S018/EV-013 and start 
+          upload/dissemination evolve (#729/#2/#6)
+        completed: '2026-07-20'
+      - stage: 10-e2e
+        required: false
+        mode: skipped
+        status: skipped
+        skip_rationale: 'Standard routing for #667 — not in approved stage list (E13-2)'
+      - stage: 11-verify-impl
+        required: true
+        mode: full
+        status: skipped
+        skip_rationale: User Q0=A waive leftover verify bookkeeping (08/09/11/12) to close S018/EV-013 and start 
+          upload/dissemination evolve (#729/#2/#6)
+        completed: '2026-07-20'
+      - stage: 12-verify-deploy
+        required: true
+        mode: full
+        status: skipped
+        skip_rationale: User Q0=A waive leftover verify bookkeeping (08/09/11/12) to close S018/EV-013 and start 
+          upload/dissemination evolve (#729/#2/#6)
+        completed: '2026-07-20'
+      - stage: 13-deploy-smoke
+        required: true
+        mode: full
+        status: completed
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        skip_rationale:
+        note: >-
+          partial PASS — pass_with_advisories; full UJ-026 annex3 blocked on #752 deploy
+
+    close_note: 'User Q0=A waived leftover verify bookkeeping to start upload/dissemination evolve (#729/#2/#6); EV-013 closed;
+      #750 remarks live'
   - id: S017-skill-trim-retro
     type: process
     status: completed
@@ -1289,13 +1410,13 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: metar-remarks-667
-    session_id: S018-metar-remarks-667
-    evolve_cycle_id: EV-013
+    scoped_slug: dissemination-upload
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
     started_at: "2026-07-20"
     completed_at: "2026-07-20"
     substeps:
-      phase0: completed
+      phase0: partial
       phase1a: completed
       phase1b: skipped
       phase1c: skipped
@@ -1303,6 +1424,8 @@ stages:
       phase3: completed
       phase4: completed
     artifacts:
+      - docs/sessions/S019-dissemination-upload/session-brief.md
+      - docs/sessions/S019-dissemination-upload/routing-plan.md
       - docs/sessions/S018-metar-remarks-667/session-brief.md
       - docs/sessions/S018-metar-remarks-667/routing-plan.md
       - docs/context/issue-555-feedback.md
@@ -1319,6 +1442,8 @@ stages:
       - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
       - docs/context/manual-tac-input-modes.md
     notes:
+      - 2026-07-20 S019-dissemination-upload/EV-014 00-context — session open; Phase 0 intake partial (Batch 1 Assumed);
+        AskQuestion UI waived (cloud); Batch 2 / routing approval pending; S018/EV-013 closed Q0=A waive
       - >-
         2026-07-20 S018/EV-013 00-context completed — Phase 0 intake locked Assumed
         (E13-1/E13-2/E13-3); AskQuestion UI waived (cloud); Standard routing; handoff
@@ -2922,15 +3047,13 @@ stages:
   16-evolve:
     status: in_progress
     mode: orchestrator
-    session_id: S018-metar-remarks-667
-    evolve_cycle_id: EV-013
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
     started_at: '2026-07-20'
-    current_stage: 13-deploy-smoke
+    current_stage: 16-evolve
     note: >-
-      S018/EV-013 — 13-deploy-smoke completed pass_with_advisories; #750 live @
-      ccfb8cc; full UJ-026 annex3 blocked on #752
-
-stages_pending: []
+      S019-dissemination-upload/EV-014 — Phase 0 intake in progress (Batch 1 Assumed; Batch 2 pending); prior S018/EV-013
+      closed completed-with-waiver (Q0=A)
 
 stages_pending: []
 
@@ -3041,6 +3164,64 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-open
+    stage: 00-context
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 00-context
+    skill_id: 00-context
+    topic: Open S019 feature session for EV-014 dissemination epic
+    decision: Opened S019-dissemination-upload (feature) with orchestrator 16-evolve; allocated EV-014; branch 
+      cursor/dissemination-upload-e25c; artifacts_dir docs/sessions/S019-dissemination-upload/; session_counter 19. 
+      Phase 0 intake partial — no F16+ until fully approved.
+    status: confirmed
+    resolved_at: '2026-07-20'
+  - id: D-S019-EV014-aq-waive-cloud
+    stage: 00-context
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 00-context
+    skill_id: 00-context
+    topic: AskQuestion UI waived (cloud) — written interview
+    decision: AskQuestion UI unavailable this cloud session — waived interactive AskQuestion; record Assumed / written 
+      options in decisions_log (same pattern as S017/S018).
+    status: confirmed
+    resolved_at: '2026-07-20'
+  - id: D-S019-EV014-intake-partial
+    stage: 00-context
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 00-context
+    skill_id: 00-context
+    topic: Phase 0 intake partial lock (Batch 1) — Batch 2 pending
+    decision: 'Partial Phase 0 lock (Assumed / written): one-shot session credentials (paste UI; never persist / never saved
+      profiles); drawer UI for send/upload destination + preflight; require-existing table matching versioned writer contract
+      (no create-if-missing); Q1=A convert-in-app then send IWXXM to user Postgres; Q2=A any authenticated user; Q3=A schema
+      preflight clarity is success metric; Q4=D include WIS2 (#2) + EDIS (#6) scaffolding in ONE BIG dissemination cycle with
+      #729 Upload to Database. Phase 0 NOT fully approved — Batch 2 pending. Do not invent F16+ in feature-list.md yet.'
+    status: assumed
+    resolved_at: '2026-07-20'
+    note: Assumed — AskQuestion UI waived (cloud written interview); Batch 2 pending
+  - id: D-S018-EV013-Q0A-close-waive
+    stage: 16-evolve
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    skill: 16-evolve
+    skill_id: 16-evolve
+    topic: Q0=A close S018/EV-013 — waive leftover 08/09/11/12 bookkeeping
+    decision: 'User Q0=A: Close S018/EV-013 now; waive leftover 08-verify-build / 09-qa / 11-verify-impl / 12-verify-deploy
+      bookkeeping. 13-deploy-smoke already completed pass_with_advisories; #750 live. New work: data upload + dissemination
+      epic (#729, #2 WIS2, #6 EDIS) as S019/EV-014.'
+    status: confirmed
+    resolved_at: '2026-07-20'
   - id: D-S018-EV013-13-partial
     stage: 13-deploy-smoke
     date: '2026-07-20'
@@ -6935,6 +7116,67 @@ retrospective_cycles:
         status: completed
 
 evolve_cycles:
+  - id: EV-014
+    session_id: S019-dissemination-upload
+    cycle_type: feature
+    feature_ids: []
+    feature_id:
+    title: Dissemination epic — Upload DB + WIS2 + EDIS (#729/#2/#6)
+    status: in_progress
+    started: '2026-07-20'
+    completed:
+    scope_summary: 'Phase 0 intake PARTIAL (not fully approved — Batch 2 pending). Locked so far (Assumed / written interview;
+      AskQuestion UI waived cloud): one-shot session credentials (paste in UI; never persist / never saved profiles); drawer
+      UI for send/upload destination + preflight; require existing table matching versioned writer contract (no create-if-missing);
+      Q1=A convert-in-app then send IWXXM to user Postgres; Q2=A any authenticated user; Q3=A schema preflight clarity is
+      success metric; Q4=D include WIS2/EDIS scaffolding in ONE BIG dissemination cycle. Issues: #729 Upload to Database;
+      #2 WIS2; #6 EDIS. Do NOT invent F16+ until Phase 0 fully approved.'
+    github_issue: 729
+    routing_plan:
+      required_stages:
+        - 00-context
+        - 16-evolve
+      skipped_stages: []
+      note: Full required_stages TBD after Batch 2 / routing approval
+    current_stage: 16-evolve
+    notes:
+      - 2026-07-20 S019/EV-014 open — Phase 0 intake partial (Batch 1 Assumed); AskQuestion UI waived (cloud written 
+        interview); Batch 2 pending; no F16+ yet
+    stages:
+      00-context:
+        status: completed
+        mode: scoped
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        substeps:
+          phase0: partial
+        note: Phase 0 intake partial — Batch 1 locked Assumed (credentials/drawer/table/Q1–Q4); Batch 2 pending; 
+          AskQuestion UI waived (cloud)
+      16-evolve:
+        status: in_progress
+        started: '2026-07-20'
+        note: Phase 0 intake in progress — Batch 2 pending before full routing lock
+    gates:
+      a_to_b: pending
+      b_to_c: pending
+      c_to_d: pending
+      deploy: pending
+    checkpoints:
+      phase_a: pending
+      phase_b: pending
+      phase_c: pending
+      phase_d: pending
+      deploy: pending
+    adrs: []
+    artifacts:
+      - path: docs/sessions/S019-dissemination-upload/session-brief.md
+        status: present
+      - path: docs/sessions/S019-dissemination-upload/routing-plan.md
+        status: stub
+      - path: docs/decisions/evolve-decisions.md
+        status: present
+        kind: evolve-decisions-EV-014
+    issues: []
   - id: EV-013
     session_id: S018-metar-remarks-667
     cycle_type: feature
@@ -6942,9 +7184,9 @@ evolve_cycles:
       - F6
     feature_id:
     title: 'Handle METAR remarks (#667)'
-    status: in_progress
+    status: completed
     started: '2026-07-20'
-    completed:
+    completed: '2026-07-20'
     scope_summary: >-
       Assumed E13-1: No new Fn — deepen F6 (convert) + touch F12/F15 lint codes only if needed.
       Close #667 acceptance bar: (1) annex3 — when METAR/SPECI contains RMK, emit structured
@@ -6972,8 +7214,10 @@ evolve_cycles:
         - 05-verify-tech
         - 06-tech-tooling
         - 10-e2e
-    current_stage: 13-deploy-smoke
+    current_stage:
     notes:
+      - '2026-07-20 S018/EV-013 CLOSED (completed-with-waiver) — user Q0=A waived leftover verify stages 08/09/11/12 bookkeeping;
+        13-deploy-smoke completed pass_with_advisories; #750 live; new work → S019/EV-014 dissemination epic (#729/#2/#6)'
       - >-
         2026-07-20 S018/EV-013 13-deploy-smoke completed pass_with_advisories —
         #750 live @ ccfb8cc; full UJ-026 annex3 blocked on #752
@@ -6995,11 +7239,12 @@ evolve_cycles:
           Phase 0 intake locked Assumed (E13-1 scope, E13-2 Standard routing, E13-3 no new Fn);
           AskQuestion UI waived (cloud)
       16-evolve:
-        status: in_progress
+        status: completed
         started: '2026-07-20'
         note: >-
-          Orchestrator in_progress; 13-deploy-smoke completed pass_with_advisories;
-          #750 live; #752 pending for full UJ-026 annex3
+          Closed for new upload/dissemination cycle (S019/EV-014). User Q0=A waived leftover 08/09/11/12 bookkeeping; 13-deploy-smoke
+          already pass_with_advisories; #750 live.
+        completed: '2026-07-20'
       01-requirements:
         status: completed
         mode: delta
@@ -7032,21 +7277,33 @@ evolve_cycles:
         started: '2026-07-20'
         completed: '2026-07-20'
       08-verify-build:
-        status: in_progress
+        status: skipped
         mode: full
         started: '2026-07-20'
+        skip_rationale: User Q0=A waive leftover verify bookkeeping (08/09/11/12) to close S018/EV-013 and start 
+          upload/dissemination evolve (#729/#2/#6)
+        completed: '2026-07-20'
       09-qa:
-        status: pending
+        status: skipped
         mode: full
+        skip_rationale: User Q0=A waive leftover verify bookkeeping (08/09/11/12) to close S018/EV-013 and start 
+          upload/dissemination evolve (#729/#2/#6)
+        completed: '2026-07-20'
       10-e2e:
         status: skipped
         skip_rationale: Not in Standard approved stage list (E13-2)
       11-verify-impl:
-        status: pending
+        status: skipped
         mode: full
+        skip_rationale: User Q0=A waive leftover verify bookkeeping (08/09/11/12) to close S018/EV-013 and start 
+          upload/dissemination evolve (#729/#2/#6)
+        completed: '2026-07-20'
       12-verify-deploy:
-        status: pending
+        status: skipped
         mode: full
+        skip_rationale: User Q0=A waive leftover verify bookkeeping (08/09/11/12) to close S018/EV-013 and start 
+          upload/dissemination evolve (#729/#2/#6)
+        completed: '2026-07-20'
       13-deploy-smoke:
         status: completed
         mode: full
@@ -7057,15 +7314,15 @@ evolve_cycles:
           partial PASS — full UJ-026 annex3 blocked on #752 deploy; #750 live @
           ccfb8cc; report docs/sessions/S018-metar-remarks-667/reports/deploy-smoke.md
     gates:
-      a_to_b: pending
-      b_to_c: pending
-      c_to_d: pending
+      a_to_b: waived
+      b_to_c: waived
+      c_to_d: waived
       deploy: pass_with_advisories
     checkpoints:
-      phase_a: pending
-      phase_b: pending
-      phase_c: pending
-      phase_d: pending
+      phase_a: waived
+      phase_b: waived
+      phase_c: waived
+      phase_d: waived
       deploy: pass_with_advisories
     adrs: []
     artifacts:
@@ -9493,12 +9750,14 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/metar-remarks-live-e2e-2e2e
+  current_branch: cursor/dissemination-upload-e25c
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 99102ab703efba985c976359ca06b3b4ed5844ac
+  tip_sha: c8a949fbe06d0c93580d5f4d63c227e1fe95cad8
   notes:
+    - '2026-07-20 S018/EV-013 CLOSED (Q0=A waive 08/09/11/12) — #750 live; opened S019-dissemination-upload/EV-014 on branch
+      cursor/dissemination-upload-e25c (dissemination epic #729/#2/#6); Phase 0 intake partial'
     - >-
       2026-07-20 S018/EV-013 — tip 99102ab on cursor/metar-remarks-live-e2e-2e2e
       (deploy-smoke report); fix e13138f (#752); staging deployed ccfb8cc (#750);
@@ -9670,9 +9929,19 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: cursor/dissemination-upload-e25c
+      base: cursor/metar-remarks-live-e2e-2e2e
+      status: active
+      created_at: '2026-07-20'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      purpose: 'EV-014 / S019 dissemination epic (#729 Upload DB + #2 WIS2 + #6 EDIS)'
+      pushed: true
+      note: Opened from S018 close; Phase 0 intake partial
+      tip_sha: c8a949fbe06d0c93580d5f4d63c227e1fe95cad8
     - name: cursor/metar-remarks-live-e2e-2e2e
       base: main
-      status: active
+      status: completed
       created_at: '2026-07-20'
       session_id: S018-metar-remarks-667
       evolve_cycle_id: EV-013
@@ -9680,7 +9949,7 @@ git_history:
       pushed: true
       tip_sha: 99102ab703efba985c976359ca06b3b4ed5844ac
       note: >-
-        13-deploy-smoke partial PASS; blocked on #752 deploy for full UJ-026 annex3
+        S018/EV-013 closed Q0=A waive leftover verify; 13-deploy-smoke pass_with_advisories; #750 live
     - name: cursor/metar-remarks-667-2e2e
       base: main
       status: superseded
@@ -9989,6 +10258,20 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: c8a949fbe06d0c93580d5f4d63c227e1fe95cad8
+      short: c8a949f
+      message: 'docs: close S018/EV-013; open S019/EV-014 dissemination intake'
+      branch: cursor/dissemination-upload-e25c
+      date: '2026-07-20'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      stage: 00-context
+      files_changed:
+        - workflow-state.yaml
+        - docs/decisions/evolve-decisions.md
+        - docs/sessions/S018-metar-remarks-667/session-brief.md
+        - docs/sessions/S019-dissemination-upload/session-brief.md
+        - docs/sessions/S019-dissemination-upload/routing-plan.md
     - sha: 99102ab703efba985c976359ca06b3b4ed5844ac
       short: 99102ab
       branch: cursor/metar-remarks-live-e2e-2e2e

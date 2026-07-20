@@ -3,6 +3,51 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-014 — Dissemination epic (#729 / #2 / #6) (S019)
+
+**Session**: S019-dissemination-upload  
+**Features**: TBD — **no F16+ until Phase 0 fully approved**  
+**Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
+**Started**: 2026-07-20  
+**Branch**: `cursor/dissemination-upload-e25c`  
+**Status**: Phase 0 intake **PARTIAL** — Batch 2 pending
+
+### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview)
+
+| ID | Decision |
+|----|----------|
+| Creds | One-shot session credentials (paste in UI); never persist / never saved profiles |
+| UI | Drawer for send/upload destination + preflight |
+| Schema | Require existing table matching versioned writer contract (no create-if-missing) |
+| Q1=A | Convert-in-app then send IWXXM to user's Postgres |
+| Q2=A | Any authenticated user |
+| Q3=A | Schema preflight clarity is success metric |
+| Q4=D | Include WIS2 + EDIS scaffolding in ONE BIG dissemination cycle with #729 |
+
+### Notes
+
+- Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
+- Do **not** invent feature ids F16+ in `feature-list.md` until Phase 0 fully approved
+
+---
+
+## Cycle EV-013 — Handle METAR remarks (#667) (S018)
+
+**Session**: S018-metar-remarks-667  
+**Features**: F6 (deepen)  
+**Issues**: [#667](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/667)  
+**Started**: 2026-07-20  
+**Completed**: 2026-07-20 (D-S018-EV013-Q0A-close-waive)  
+**Deploy**: #750 live; 13-deploy-smoke `pass_with_advisories`
+
+### Close
+
+| ID | Decision |
+|----|----------|
+| D-S018-EV013-Q0A-close-waive | Close EV-013/S018; waive leftover 08/09/11/12 bookkeeping; start S019/EV-014 dissemination |
+
+---
+
 ## Cycle EV-012 — Validate Manual TAC Input modes (#730) (S016)
 
 **Session**: S016-manual-tac-input-modes  

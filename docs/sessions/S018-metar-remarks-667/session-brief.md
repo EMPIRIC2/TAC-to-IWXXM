@@ -1,12 +1,14 @@
 ---
 session_id: S018-metar-remarks-667
 type: feature
-status: in_progress
-branch: cursor/metar-remarks-667-2e2e
+status: completed
+branch: cursor/metar-remarks-live-e2e-2e2e
 started_at: 2026-07-20
+completed_at: 2026-07-20
 intent: "Handle Remark Portion of METARs (#667)"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-013
+close_note: "User Q0=A waived leftover verify bookkeeping to start upload/dissemination evolve (#729/#2/#6); EV-013 closed; #750 remarks live"
 context_briefs:
   - docs/context/metar-remarks-667.md
 standing_docs_touched:
