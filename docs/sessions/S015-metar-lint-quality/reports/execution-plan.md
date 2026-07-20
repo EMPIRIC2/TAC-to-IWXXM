@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M1 — Issue registry + unknown-code CI + catalog stub |
-| **Active task** | M1 complete — next M2 / T2.1 |
-| **Tasks** | 4 / 35 completed (T6.0 + T1.1–T1.4); next T2.1 |
+| **Active milestone** | M2 — Migrate rule bodies onto registry |
+| **Active task** | T2.1 — parity tests (in_progress) |
+| **Tasks** | 4 / 35 completed (T1.1–T1.4 + T6.0); M1 verified |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -51,7 +51,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | Existing METAR/SPECI/shared lint tests still green after migration (parity) | TC-F12-001; TC-F15-001 | T1.3 | pending |
+| T2.1 | Test | Existing METAR/SPECI/shared lint tests still green after migration (parity) | TC-F12-001; TC-F15-001 | T1.3 | in_progress |
 | T2.2 | Code | `rules.py` + `product_rules.py` emit via registry helpers only (no `severity=` literals) | F15 acc2; ADR-028 | T2.1 | pending |
 | T2.2a | Config | Escalate `issue_registry_guard` from warn → **error** on `severity=` in `rules`/`product_rules` | E11-30; E11-32 | T2.2 | pending |
 | T2.3 | Test | Negative fixtures assert `expected_codes` ⊆ registry | TC-F15-003 | T2.2a | pending |
