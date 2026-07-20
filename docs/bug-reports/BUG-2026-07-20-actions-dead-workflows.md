@@ -6,7 +6,7 @@
 | **Feature** | M5 (workspace tooling / CI) — ops hygiene |
 | **Severity** | medium (noise on Actions board; not blocking `main` merge) |
 | **Classification** | integration / process (broken scheduled + legacy workflows) |
-| **Remediation path** | Fix locally + PR (P0+P1; Vendor Sync explained, not fixed this PR) |
+| **Remediation path** | Fix locally + PR (P0+P1 + Vendor Sync checksum order) |
 | **Session** | — |
 | **Branch** | `fix/BUG-2026-07-20-actions-dead-workflows` |
 | **PR** | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/745 |
@@ -138,8 +138,13 @@ P0+P1 applied on `fix/BUG-2026-07-20-actions-dead-workflows`:
 - Delete `.github/workflows/smoke-tests-deploy.yml`
 - Delete `.github/workflows/test-coverage-95.yml`
 - `e2e-tests.yml`: remove `schedule` cron; remove Performance Benchmarks job
-- Vendor Sync: **documented only** — fix deferred (step order + stale `tree_sha256`)
 
+Vendor Sync (same PR follow-up):
+
+- `check_upstream.py --update` pops stale `tree_sha256` when pins change
+- `vendor-sync.yml` runs `sync_iwxxm.py --no-verify` **before**
+  `--refresh-tree-hashes`; TC-M002 (`tests/vendor`) remains the integrity gate
+- Regression coverage in `tests/bugs/test_bug_2026_07_20_actions_dead_workflows.py`
 ## Interview record
 
 | Step | Answer |

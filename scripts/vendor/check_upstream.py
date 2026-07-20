@@ -82,6 +82,9 @@ def check_upstream(manifest_path: Path, *, update: bool) -> bool:
 
             entry["tag"] = tag_name
             entry["commit_sha"] = commit_sha
+            # Stale tree_sha256 would fail sync_iwxxm mid-check before
+            # --refresh-tree-hashes runs (BUG-2026-07-20 Vendor Sync).
+            entry.pop("tree_sha256", None)
             changed = True
             print(f"{name}: pinned to {tag_name} @ {commit_sha}")
 

@@ -31,7 +31,11 @@ class TestM10VendorSyncWorkflow:
     def test_vendor_sync_uses_vendor_scripts(self, workflow_text: str) -> None:
         assert "scripts/vendor/check_upstream.py" in workflow_text
         assert "scripts/vendor/sync_iwxxm.py" in workflow_text
-
+        assert "--no-verify" in workflow_text
+        assert "--refresh-tree-hashes" in workflow_text
+        assert workflow_text.index("sync_iwxxm.py") < workflow_text.index(
+            "--refresh-tree-hashes"
+        )
     def test_vendor_sync_runs_tc_m002(self, workflow_text: str) -> None:
         assert "tests/vendor" in workflow_text
 
