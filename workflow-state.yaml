@@ -6914,6 +6914,9 @@ evolve_cycles:
     current_stage: 08-verify-build
     notes:
       - >-
+        2026-07-20 S018/EV-013 — TC-F6-013 tests expanded (12 cases) on
+        cursor/metar-remarks-667-tests-1fe0 / PR #751 (stacked on feature branch)
+      - >-
         2026-07-20 S018/EV-013 — implementation landed (07-build); 08-verify-build
         in_progress; commits 8ee3176 (docs scope) + 19d6684 (feat remarks)
       - >-
@@ -9592,6 +9595,17 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: cursor/metar-remarks-667-tests-1fe0
+      base: cursor/metar-remarks-667-2e2e
+      status: active
+      created_at: '2026-07-20'
+      session_id: S018-metar-remarks-667
+      evolve_cycle_id: EV-013
+      purpose: 'EV-013 / S018 expand TC-F6-013 targeted remark tests (#667)'
+      pushed: true
+      tip_sha: 3993cfcbe82ab1caadc1d82c5f94c8d38e0a9064
+      pr: 'https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/751'
+      note: Stacked test PR; local pytest 12/12 green
     - name: cursor/metar-remarks-667-2e2e
       base: main
       status: active
@@ -9898,6 +9912,19 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 3993cfcbe82ab1caadc1d82c5f94c8d38e0a9064
+      short: 3993cfc
+      branch: cursor/metar-remarks-667-tests-1fe0
+      message: '[EV-013] test: expand TC-F6-013 METAR remarks coverage (#667)'
+      stage: 08-verify-build
+      session_id: S018-metar-remarks-667
+      evolve_cycle_id: EV-013
+      timestamp: '2026-07-20T19:42:00Z'
+      files_changed:
+        - packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
+        - docs/sessions/S018-metar-remarks-667/reports/execution-plan.md
+      pushed: true
+      pr: 'https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/751'
     - sha: 19d6684e5205bf46013a385ecf91d40b94bbb121
       short: 19d6684
       branch: cursor/metar-remarks-667-2e2e
