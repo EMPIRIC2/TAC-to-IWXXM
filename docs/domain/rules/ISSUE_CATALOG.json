@@ -1,6 +1,209 @@
 {
   "schema_version": 1,
-  "source": "stub \u2014 packages/tac-validate issue_registry not present yet (T1.2)",
+  "source": "generated from tac_validate.issue_registry",
   "generated": "2026-07-20",
-  "issues": []
+  "issues": [
+    {
+      "code": "EMPTY_TAC",
+      "severity": "error",
+      "message_template": "TAC text is empty",
+      "product": null,
+      "tags": [
+        "parse_gate",
+        "body"
+      ]
+    },
+    {
+      "code": "INVALID_CLOUD_TOKEN",
+      "severity": "error",
+      "message_template": "{product} invalid cloud/VV token {token!r} \u2014 A3-2 #9",
+      "product": null,
+      "tags": [
+        "cloud",
+        "metar",
+        "speci"
+      ]
+    },
+    {
+      "code": "INVALID_CNL_SHAPE",
+      "severity": "error",
+      "message_template": "TAF CNL must end the message \u2014 A5-1 #6",
+      "product": "taf",
+      "tags": [
+        "cnl",
+        "taf"
+      ]
+    },
+    {
+      "code": "MISSING_CCCC",
+      "severity": "error",
+      "message_template": "{product} missing ICAO location (CCCC)",
+      "product": null,
+      "tags": [
+        "station",
+        "metar",
+        "speci",
+        "taf"
+      ]
+    },
+    {
+      "code": "MISSING_DTG",
+      "severity": "error",
+      "message_template": "{product} missing DTG: template field",
+      "product": null,
+      "tags": [
+        "dtg",
+        "vaa",
+        "tca"
+      ]
+    },
+    {
+      "code": "MISSING_ISSUE_TIME",
+      "severity": "error",
+      "message_template": "TAF missing issue time ddhhmmZ \u2014 A5-1 #3",
+      "product": "taf",
+      "tags": [
+        "time",
+        "taf"
+      ]
+    },
+    {
+      "code": "MISSING_MAX_WIND",
+      "severity": "error",
+      "message_template": "TCA missing MAX WIND: template field \u2014 A2-2",
+      "product": "tca",
+      "tags": [
+        "max_wind",
+        "tca"
+      ]
+    },
+    {
+      "code": "MISSING_OBS_TIME",
+      "severity": "error",
+      "message_template": "{product} missing observation time ddhhmmZ \u2014 A3-2 #3",
+      "product": null,
+      "tags": [
+        "time",
+        "metar",
+        "speci"
+      ]
+    },
+    {
+      "code": "MISSING_PRODUCT_KEYWORD",
+      "severity": "error",
+      "message_template": "{product} TAC must contain one of {keywords}",
+      "product": null,
+      "tags": [
+        "parse_gate",
+        "header"
+      ]
+    },
+    {
+      "code": "MISSING_QNH",
+      "severity": "error",
+      "message_template": "{product} missing QNH/altimeter (Qnnnn/Annnn) \u2014 A3-2 #11",
+      "product": null,
+      "tags": [
+        "pressure",
+        "metar",
+        "speci"
+      ]
+    },
+    {
+      "code": "MISSING_TEMP_DEWPOINT",
+      "severity": "error",
+      "message_template": "{product} missing temperature/dewpoint tt/td \u2014 A3-2 #10",
+      "product": null,
+      "tags": [
+        "temperature",
+        "metar",
+        "speci"
+      ]
+    },
+    {
+      "code": "MISSING_TERMINATOR",
+      "severity": "info",
+      "message_template": "Reports in bulletins end with '=' \u2014 add it before publishing",
+      "product": null,
+      "tags": [
+        "terminator",
+        "metar",
+        "speci",
+        "taf"
+      ]
+    },
+    {
+      "code": "MISSING_VAAC",
+      "severity": "error",
+      "message_template": "VAA missing VAAC: template field \u2014 A2-1",
+      "product": "vaa",
+      "tags": [
+        "vaac",
+        "vaa"
+      ]
+    },
+    {
+      "code": "MISSING_VALID",
+      "severity": "error",
+      "message_template": "{product} missing VALID ddhhmm/ddhhmm period \u2014 A6 identity",
+      "product": null,
+      "tags": [
+        "valid",
+        "sigmet",
+        "airmet"
+      ]
+    },
+    {
+      "code": "MISSING_VALIDITY",
+      "severity": "error",
+      "message_template": "TAF missing validity period ddhh/ddhh \u2014 A5-1 #5",
+      "product": "taf",
+      "tags": [
+        "validity",
+        "taf"
+      ]
+    },
+    {
+      "code": "MISSING_VISIBILITY",
+      "severity": "error",
+      "message_template": "{product} missing visibility or CAVOK \u2014 A3-2 #6",
+      "product": null,
+      "tags": [
+        "visibility",
+        "metar",
+        "speci"
+      ]
+    },
+    {
+      "code": "MISSING_WIND",
+      "severity": "error",
+      "message_template": "{product} missing surface wind group \u2014 A3-2 #5",
+      "product": null,
+      "tags": [
+        "wind",
+        "metar",
+        "speci"
+      ]
+    },
+    {
+      "code": "MULTIPLE_PHENOMENA",
+      "severity": "error",
+      "message_template": "{product} encodes multiple phenomenon families {hit} \u2014 A6 one-phenomenon gate",
+      "product": null,
+      "tags": [
+        "phenomenon",
+        "sigmet",
+        "airmet"
+      ]
+    },
+    {
+      "code": "UNKNOWN_PRODUCT",
+      "severity": "error",
+      "message_template": "Unknown product {product!r}; expected one of {expected}",
+      "product": null,
+      "tags": [
+        "parse_gate"
+      ]
+    }
+  ]
 }

@@ -26,6 +26,18 @@ def _load_rows() -> tuple[list[dict[str, object]], str]:
     sys.path.insert(0, str(SRC))
     try:
         from tac_validate.issue_registry import ISSUES  # type: ignore[import-not-found]
+    except ModuleNotFoundError as exc:
+        # Stub only when the registry module itself is absent (pre-T1.2).
+        # Other missing deps (e.g. msgspec under bare python) must surface.
+        missing = exc.name or ""
+        if missing in {"tac_validate", "tac_validate.issue_registry"} or missing.startswith(
+            "tac_validate."
+        ):
+            return (
+                _stub_rows(),
+                "stub — packages/tac-validate issue_registry not present yet (T1.2)",
+            )
+        raise
     except ImportError:
         return (
             _stub_rows(),

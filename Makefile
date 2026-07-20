@@ -46,7 +46,7 @@ pre-commit-run:
 # --- F15 issue catalog (ADR-028 / EV-011) ---
 
 catalog-regen:
-	python3 scripts/tac-validate/regen_issue_catalog.py
+	$(UV) run python scripts/tac-validate/regen_issue_catalog.py
 
 catalog-check: catalog-regen
 	@git diff --quiet -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json \
