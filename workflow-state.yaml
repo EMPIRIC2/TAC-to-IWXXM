@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-012
   branch: evolve/EV-012-manual-tac-input-modes
   artifacts_dir: docs/sessions/S016-manual-tac-input-modes
-  current_stage: 02-verify-plan
+  current_stage: 10-e2e
   context_briefs:
     - docs/context/manual-tac-input-modes.md
   standing_docs_touched:
@@ -39,7 +39,7 @@ active_session:
       mode: orchestrator
       status: in_progress
       started: '2026-07-20'
-      note: EV-012 Phase 0 complete; 01-requirements completed; current_stage 02-verify-plan
+      note: EV-012 Phase A complete; 02-verify-plan completed; current_stage 10-e2e (pending)
     - stage: 01-requirements
       required: true
       mode: delta
@@ -50,7 +50,10 @@ active_session:
     - stage: 02-verify-plan
       required: true
       mode: delta
-      status: pending
+      status: completed
+      started: '2026-07-20'
+      completed: '2026-07-20'
+      note: 'PASS — S2.1 H6+UJ-025; S2.2 T1-T6 hard; S2.3 UJ-025; Phase A complete'
     - stage: 10-e2e
       required: true
       mode: delta
@@ -4896,6 +4899,28 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/sessions/S016-manual-tac-input-modes/reports/02-verify-plan-audit.md
+    type: report
+    kind: verify-plan-audit
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    created_at: '2026-07-20'
+    updated_at: '2026-07-20'
+    status: completed
+    note: 'PASS — S2.1 H6+UJ-025; S2.2 T1-T6 hard; S2.3 UJ-025; Phase A complete'
+  - path: docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-a-complete.md
+    type: checkpoint
+    kind: phase-a-complete
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    created_at: '2026-07-20'
+    updated_at: '2026-07-20'
+    status: completed
+    note: Phase A complete (lean; gates.a_to_b remains waived)
   - path: docs/sessions/S016-manual-tac-input-modes/reports/01-requirements.md
     type: report
     kind: requirements-report
@@ -6124,9 +6149,11 @@ evolve_cycles:
         - 09-qa
         - 11-verify-impl
         - 12-verify-deploy
-    current_stage: 02-verify-plan
+    current_stage: 10-e2e
     notes:
-      - 2026-07-20 S016/EV-012 01-requirements COMPLETE — UJ-025 + TC-F7-007; handoff to 02-verify-plan (pending)
+      - 2026-07-20 S016/EV-012 02-verify-plan COMPLETE — PASS — S2.1 H6+UJ-025; S2.2 T1-T6 hard; S2.3 UJ-025; Phase A complete; handoff 10-e2e (pending); gates.a_to_b remains waived
+      - 2026-07-20 S016/EV-012 02-verify-plan STARTED (in_progress)
+      - 2026-07-20 S016/EV-012 01-requirements COMPLETE — UJ-025 + TC-F7-007; handoff to 02-verify-plan
       - 2026-07-20 S016/EV-012 01-requirements started (in_progress)
       - 2026-07-20 S016/EV-012 Phase 0 locked; lean+13 routing approved (D-S016-EV012-route-1)
     stages:
@@ -6148,7 +6175,10 @@ evolve_cycles:
         completed: '2026-07-20'
         note: UJ-025 + TC-F7-007
       02-verify-plan:
-        status: pending
+        status: completed
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        note: 'PASS — S2.1 H6+UJ-025; S2.2 T1-T6 hard; S2.3 UJ-025; Phase A complete'
       10-e2e:
         status: pending
       13-deploy-smoke:
@@ -6159,7 +6189,7 @@ evolve_cycles:
       c_to_d: waived
       deploy: pending
     checkpoints:
-      phase_a: pending
+      phase_a: passed
       phase_b: waived
       phase_c: waived
       phase_d: pending
@@ -6178,6 +6208,10 @@ evolve_cycles:
       - path: docs/sessions/S016-manual-tac-input-modes/reports/01-requirements.md
         status: completed
       - path: docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-a.md
+        status: completed
+      - path: docs/sessions/S016-manual-tac-input-modes/reports/02-verify-plan-audit.md
+        status: completed
+      - path: docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-a-complete.md
         status: completed
       - path: docs/decisions/evolve-decisions.md
         status: in_progress
@@ -8339,6 +8373,10 @@ git_history:
   pending_commit:
   notes:
     - >-
+      2026-07-20 S016/EV-012 git — recorded eab76dbd9876f0c57041aa7ab9d4adfaaf9e3d88
+      (eab76db) chore(S016): record EV-012 01-requirements completion in workflow-state;
+      01-requirements; local tip on evolve/EV-012-manual-tac-input-modes
+    - >-
       2026-07-20 S016/EV-012 git — recorded 143670ac6d6e912aa16c8ea175a3e04e4695fb64
       (143670a) docs(S016): add UJ-025 and TC-F7-007 for Manual TAC Input modes;
       01-requirements; local tip on evolve/EV-012-manual-tac-input-modes; not pushed
@@ -8713,6 +8751,16 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: eab76db
+      short: eab76db
+      branch: evolve/EV-012-manual-tac-input-modes
+      message: 'chore(S016): record EV-012 01-requirements completion in workflow-state'
+      stage: 01-requirements
+      session_id: S016-manual-tac-input-modes
+      evolve_cycle_id: EV-012
+      files_changed:
+        - workflow-state.yaml
+      timestamp: '2026-07-20'
     - sha: 143670a
       short: 143670a
       branch: evolve/EV-012-manual-tac-input-modes

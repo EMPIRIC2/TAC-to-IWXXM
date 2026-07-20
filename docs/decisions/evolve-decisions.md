@@ -25,10 +25,13 @@
 | ID | Category | Question | Decision | ADR |
 |----|----------|----------|----------|-----|
 | E12-1 | decision | Cycle type | A — F7 validation; no new Fn; COLLECT 501 | ADR-024 |
-| E12-2 | decision | Automation depth | Vitest + Playwright T1–T4 + live staging all green | — |
+| E12-2 | decision | Automation depth | Vitest + Playwright T1–T6 (hard) + live staging all green | — |
 | E12-3 | decision | Auto-switch (T3) | Required acceptance | ADR-024 |
 | E12-4 | decision | Deploy | Include 13-deploy-smoke | — |
 | D-S016-EV012-route-1 | decision | Routing vs lean/deploy contradiction | Lean + 13 (skip 03–09, 11–12) | — |
+| S2.1 | contradiction | H6 omits UJ-025 | Fix: add UJ-025 to H6/H6′ row | — |
+| S2.2 | ambiguity | T5/T6 vs all tests | T1–T6 all hard gates | — |
+| S2.3 | decision | UJ id | Keep UJ-025 (not fold into UJ-013) | — |
 
 ### Stage log
 
@@ -37,7 +40,7 @@
 | 00-context | 2026-07-20 | Session + scoped brief |
 | 16-evolve | — | Phase 0 complete; Phase A in progress |
 | 01-requirements | 2026-07-20 | UJ-025 + TC-F7-007 + F7 validation note |
-| 02-verify-plan | | |
+| 02-verify-plan | 2026-07-20 | PASS — S2.1 fix H6; S2.2 T1–T6 hard; S2.3 UJ-025 |
 | 10-e2e | | |
 | 13-deploy-smoke | | |
 

@@ -691,12 +691,12 @@ placeholder; does **not** replace H7 API gate design.
 3. AHL path uses `/convert-bulletin` with summary/results
 4. COLLECT path uses `/ingest-collect` and treats **501** as placeholder UX
 5. Auto-switch on paste/upload works (T3)
-6. Playwright T1–T4 green (T2/T3); Vitest anchors remain green; staging H4–H5 + AHL + COLLECT
+6. Playwright **T1–T6** green (T2/T3); Vitest anchors remain green; staging H4–H5 + AHL + COLLECT
    501 (13-deploy-smoke)
 7. Gaps vs H7 (API-only UJ-011) documented; defects filed as separate bugs linked from #730
 
 **Automated tests**: Vitest (`inputKind`, `api` 501, `FileConverter` mode group); Playwright
-`apps/e2e/` (TC-F7-007); live H6′ / staging smoke. **Tier: T2 / T3 / H6′**.
+`apps/e2e/` (TC-F7-007 T1–T6 hard); live H6′ / staging smoke. **Tier: T2 / T3 / H6′**.
 
 ---
 

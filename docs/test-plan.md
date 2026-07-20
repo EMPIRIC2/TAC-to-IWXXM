@@ -88,7 +88,7 @@ admin suite modules.
 | H3 | Live API smoke (pytest) | `make test-live-api` |
 | H4 | Live CORS preflight | `make test-live-connectivity` |
 | H5 | Frontend bundle URLs | `make test-live-connectivity` |
-| H6 | Live Playwright UJ-001–007 (+ UJ-008) + F7 UJ-013/015–019 smokes | `make test-live-e2e` |
+| H6 | Live Playwright UJ-001–007 (+ UJ-008) + F7 UJ-013/015–019 + **UJ-025** (H6′) | `make test-live-e2e` |
 | **H7** | Live bulletin → split → convert → Schematron (UJ-011) | `make test-live-bulletin` (planned) |
 
 **Post-migration**: Single API origin simplifies CORS — auth routes on same host as `/api/v1/*`.
@@ -295,12 +295,12 @@ admin suite modules.
 
 - **Pass criteria**:
   1. Vitest: `inputKind`, `api` (convert-bulletin + ingest-collect 501), `FileConverter` mode group
-  2. Playwright (`apps/e2e/`): T1–T4 smoke green (T5/T6 as coverage allows)
+  2. Playwright (`apps/e2e/`): **T1–T6 all green** (hard gate — S2.2)
   3. No silent AHL fall-through to single `/convert`; COLLECT 501 not treated as success
   4. Staging (13): H4–H5 + authenticated AHL happy path + COLLECT 501 notice
   5. H7 (`make test-live-bulletin` / UJ-011) remains API gate — not replaced by this TC
 - **Source**: UJ-025; ADR-024; [#730](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/730);
-  S016 / EV-012 (E12-1..E12-4)
+  S016 / EV-012 (E12-1..E12-4; S2.2 = T1–T6 hard)
 
 ### F7 UI↔API connection integration
 
@@ -328,9 +328,10 @@ Before closing S011 / EV-008:
 
 ### F7 input-modes validation gate (S016 / EV-012 / #730)
 
-- [ ] TC-F7-007 green at T2 (Playwright T1–T4 + Vitest anchors)
+- [ ] TC-F7-007 green at T2 (Playwright **T1–T6** + Vitest anchors)
 - [ ] H4–H5 + authenticated AHL + COLLECT 501 on staging (13-deploy-smoke)
 - [ ] Auto-switch (T3) required — no waiver without AskQuestion
+- [ ] T5 (`.gz`) and T6 (read-only disable) hard gates (S2.2)
 - [ ] #730 checklist documented; defects filed as separate bugs
 - [ ] F7 status remains **Planned** (no Implemented flip this cycle)
 

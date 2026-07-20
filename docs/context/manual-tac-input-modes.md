@@ -34,7 +34,7 @@ end-to-end success/placeholder behavior.
 |----|------------|
 | R1 | Validation-only under F7; no new Fn |
 | R2 | Auto-switch on paste/upload is acceptance-critical |
-| R3 | Playwright authored in stage **10** (lean; no 07) |
+| R3 | Playwright authored in stage **10** (lean; no 07); **T1–T6 hard gates** (S2.2) |
 | R4 | Staging smoke required (H4–H5 + AHL + COLLECT 501) |
 | R5 | COLLECT member extract remains deferred |
 

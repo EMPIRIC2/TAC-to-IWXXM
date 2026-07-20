@@ -215,7 +215,7 @@
 - **Deferred (still Later)**: Full COLLECT member extract inside `ingest-collect` (UI + 501
   placeholder shipped ADR-024); deep honor of `include_nil_reasons` in tac2iwxxm emit.
 - **Validation deepen (S016 / EV-012 / #730)**: Operator-visible Manual TAC Input modes
-  (TAC / AHL / COLLECT) validated via UJ-025 / TC-F7-007 (Playwright T1–T4 + Vitest + staging
+  (TAC / AHL / COLLECT) validated via UJ-025 / TC-F7-007 (Playwright **T1–T6** hard + Vitest + staging
   H4–H5 / AHL / COLLECT 501). Auto-switch required. Does **not** flip F7 → Implemented.
 - **F6 engine companions (still F6 packages; UX under F7)**: decode segments; optional integer
   `start`/`end` on lint/validate issues; soft-preview / partial convert (flag or dedicated
