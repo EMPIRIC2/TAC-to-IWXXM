@@ -89,9 +89,11 @@ def test_bug_2026_07_20_pin_update_clears_stale_tree_sha256(tmp_path: Path) -> N
         encoding="utf-8",
     )
     new_sha = "1" * 40
-    with patch.object(check, "latest_release_tag", return_value=("v2025-2", new_sha)):
-        with patch.object(check, "VENDOR_BUNDLE_NAMES", ("iwxxm",)):
-            changed = check.check_upstream(manifest_path, update=True)
+    with (
+        patch.object(check, "latest_release_tag", return_value=("v2025-2", new_sha)),
+        patch.object(check, "VENDOR_BUNDLE_NAMES", ("iwxxm",)),
+    ):
+        changed = check.check_upstream(manifest_path, update=True)
 
     assert changed is True
     updated = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -181,30 +183,34 @@ def test_bug_2026_07_20_sync_rejects_stale_hash_without_no_verify(
             shutil.rmtree(destination)
         shutil.copytree(fixture, destination)
 
-    with patch.object(sync, "_fetch_github_tree", side_effect=_fake_fetch):
-        with patch.object(sync, "GITHUB_BUNDLE_NAMES", ("iwxxm",)):
-            try:
-                sync.sync_from_manifest(
-                    repo,
-                    manifest_path,
-                    prefer_legacy=False,
-                    verify=True,
-                )
-                raised = False
-            except ValueError as exc:
-                raised = True
-                assert "post-sync checksum mismatch" in str(exc)
+    with (
+        patch.object(sync, "_fetch_github_tree", side_effect=_fake_fetch),
+        patch.object(sync, "GITHUB_BUNDLE_NAMES", ("iwxxm",)),
+    ):
+        try:
+            sync.sync_from_manifest(
+                repo,
+                manifest_path,
+                prefer_legacy=False,
+                verify=True,
+            )
+            raised = False
+        except ValueError as exc:
+            raised = True
+            assert "post-sync checksum mismatch" in str(exc)
 
     assert raised, "stale tree_sha256 must fail sync when verify=True"
 
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
     data["bundles"]["iwxxm"].pop("tree_sha256", None)
     manifest_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-    with patch.object(sync, "_fetch_github_tree", side_effect=_fake_fetch):
-        with patch.object(sync, "GITHUB_BUNDLE_NAMES", ("iwxxm",)):
-            sync.sync_from_manifest(
-                repo,
-                manifest_path,
-                prefer_legacy=False,
-                verify=False,
-            )
+    with (
+        patch.object(sync, "_fetch_github_tree", side_effect=_fake_fetch),
+        patch.object(sync, "GITHUB_BUNDLE_NAMES", ("iwxxm",)),
+    ):
+        sync.sync_from_manifest(
+            repo,
+            manifest_path,
+            prefer_legacy=False,
+            verify=False,
+        )
