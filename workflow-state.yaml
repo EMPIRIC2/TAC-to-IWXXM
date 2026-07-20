@@ -8500,9 +8500,9 @@ git_history:
       created_at: '2026-07-20'
       session_id: S016-manual-tac-input-modes
       evolve_cycle_id: EV-012
-      tip_sha: 143670a
+      tip_sha: 8124163
       note: >-
-        Branch active; tip 143670a (01-requirements UJ-025 / TC-F7-007); not pushed
+        Branch active; tip 8124163 (02-verify-plan pass); not pushed
     - name: evolve/EV-011-metar-lint-quality
       purpose: "EV-011 / S015 METAR lint issue registry + #732 quality (F15 + F6/F12 deepen)"
       base: main
@@ -8751,6 +8751,23 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 8124163
+      short: 8124163
+      branch: evolve/EV-012-manual-tac-input-modes
+      message: 'docs(S016): pass 02-verify-plan for Manual TAC Input modes'
+      stage: 02-verify-plan
+      session_id: S016-manual-tac-input-modes
+      evolve_cycle_id: EV-012
+      files_changed:
+        - docs/context/manual-tac-input-modes.md
+        - docs/decisions/evolve-decisions.md
+        - docs/feature-list.md
+        - docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-a-complete.md
+        - docs/sessions/S016-manual-tac-input-modes/reports/02-verify-plan-audit.md
+        - docs/test-plan.md
+        - docs/user-journeys.md
+        - workflow-state.yaml
+      timestamp: '2026-07-20'
     - sha: eab76db
       short: eab76db
       branch: evolve/EV-012-manual-tac-input-modes
