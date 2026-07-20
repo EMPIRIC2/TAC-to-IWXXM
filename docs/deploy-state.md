@@ -10,7 +10,7 @@
 | 1 | Deploy | done | 2026-07-20T05:16Z | 2026-07-20T05:22Z | CI Deploy `29718764520`; hooks → API + FE live @ `b405a96` |
 | 2 | Smoke tests | done | 2026-07-20T05:23Z | 2026-07-20T05:24Z | H0c/H1/H3/H4/H5 + F15 catalog PASS |
 | 3 | Health check | done | 2026-07-20T05:23Z | 2026-07-20T05:23Z | `/health` healthy; tac2iwxxm_available |
-| 4 | Changelog | pending | — | — | S015 entry at evolve close |
+| 4 | Changelog | done | 2026-07-20 | 2026-07-20 | `docs/CHANGELOG.md` S015 entry |
 | 5 | Monitoring baseline | done | 2026-07-20T05:23Z | 2026-07-20T05:24Z | H3 response-times acceptable |
 
 ## Current Deployment

@@ -9,7 +9,15 @@
 **Features**: F15 (new) + deepen F6/F12  
 **Issues**: [#732](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/732)  
 **Started**: 2026-07-19  
-**Branch**: `evolve/EV-011-metar-lint-quality`
+**Branch**: `evolve/EV-011-metar-lint-quality`  
+**Completed**: 2026-07-20 (D-S015-EV011-phase4-close-1)  
+**Merge**: PR [#742](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/742) → `b405a96`; deploy-smoke PR [#743](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/743)
+
+### Close
+
+| ID | Decision |
+|----|----------|
+| D-S015-EV011-phase4-close-1 | Close EV-011/S015; F15 **Done**; defer PyPI `tac-validate-v0.1.1`; close #732 |
 
 ### Scope (Phase 0–1 locked 2026-07-19)
 

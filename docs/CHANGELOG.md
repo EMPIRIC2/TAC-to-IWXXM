@@ -2,6 +2,24 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-20 — S015 EV-011 (F15 METAR lint registry + #732 quality)
+
+### Added
+- **F15**: Maintainable `tac-validate` issue registry (`IssueSpec` / SCREAMING_SNAKE codes +
+  `info`|`warning`|`error`); docs/JSON catalog with CI drift gates; R1–R8 METAR/SPECI accept +
+  negative fixtures; `GET /api/v1/lint-issue-catalog` + workbench catalog tooltips/panel (ADR-028).
+- Convert goldens: expanded Annex-3 / IWXXM-US METAR/SPECI (AUTO/CAVOK/COR adjacency) + R6/R7 tests.
+
+### Changed
+- Deepened **F6** / **F12** METAR/SPECI lint and convert fidelity; coverage-matrix R1–R8 closed.
+- No new CORS origins, env knobs, or DB migrations this cycle.
+
+### Deploy
+- PR [#742](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/742) merged (`b405a96`);
+  Render API + frontend-v4-web redeployed 2026-07-20. Smoke: H0ci/H1/H0c/H3/H4/H5 + F15 catalog
+  **PASS** (`docs/sessions/S015-metar-lint-quality/reports/deploy-smoke.md`).
+- PyPI `tac-validate-v0.1.1` deferred (follow-up).
+
 ## 2026-07-19 — S014 EV-010 (F11 msgspec HTTP + F12–F14 packages)
 
 ### Added
