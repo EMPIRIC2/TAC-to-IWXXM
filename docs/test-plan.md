@@ -586,6 +586,12 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: Structured errors; no gifts fallback; no silent annex3 downgrade on US profile
 - **Plan ownership**: T5.6 (API/package); UJ-008 live smoke in T8.4 (D-S008-05-batch2)
 
+### TC-F6-013: METAR REMARKS retain / exclusion (#667 / UJ-026)
+
+- **Objectives**: annex3 `REMARKS_EXCLUDED`; iwxxm_us `humanReadableText` for unparsed RMK; T/P IR
+- **Pass criteria**: `packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py` green
+- **Source**: S018 / EV-013
+
 ### TC-F6-020: M-parse / M-xsd / M-sch on golden pack
 
 - **Level**: Package CI (`packages/tac2iwxxm` + **`packages/iwxxm-validate`** for M-xsd / M-sch)

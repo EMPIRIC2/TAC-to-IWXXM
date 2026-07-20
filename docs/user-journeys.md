@@ -38,6 +38,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-023 | PyPI release tag → install smoke | CI / maintainer | F12–F14 | CI |
 | UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-025 | Manual TAC Input modes (TAC / AHL / COLLECT) | apps/frontend | F7 (ADR-024) | T2 / **T3** / H6′ |
+| UJ-026 | METAR REMARKS retain / exclusion (#667) | UI / API / package | F6 | T0 / T2 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -249,10 +250,26 @@ and **no** gifts fallback.
 
 **Goal**: Under `iwxxm_us`, malformed REMARKS yield structured diagnostics (not silent drop).
 
-**Acceptance**: Error/issues list non-empty; annex3 mode still ignores US-only remarks without
-failing international validation (profile isolation).
+**Acceptance**: Error/issues list non-empty (`MALFORMED_REMARKS`); annex3 still does not emit
+US extension XML (profile isolation). See also UJ-026 for annex3 exclusion messaging.
 
 **Tier**: T0 / T2 primarily.
+
+---
+
+### UJ-026: METAR REMARKS retain / exclusion (#667)
+
+**Goal**: Remark portion of METAR/SPECI is not silently ignored ([#667](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/667)).
+
+**Acceptance**:
+1. `profile=annex3` with `RMK` → convert succeeds with `ConvertIssue` code `REMARKS_EXCLUDED` (info).
+2. `profile=iwxxm_us` → structured AO2/SLP/PK WND still emitted; unparsed remainder retained in
+   `iwxxm-us:humanReadableText` (never drop).
+3. Additive `T########` / `P####` parsed into IR and retained in free-text until structured codecs land.
+
+**Tier**: T0 / T2 primarily.
+
+**Source**: S018 / EV-013
 
 ---
 

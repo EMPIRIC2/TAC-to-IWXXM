@@ -24,8 +24,12 @@ _RMK = re.compile(r"\bRMK\b(?P<rmk>.*)$")
 _AO = re.compile(r"\bAO(?P<ao>[12])\b")
 _SLP = re.compile(r"\bSLP(?P<code>\d{3})\b")
 _PK_WND = re.compile(r"\bPK\s+WND\s+(?P<dir>\d{3})(?P<spd>\d{2,3})/(?P<hhmm>\d{4})\b")
+_RMK_T = re.compile(r"\bT(?P<tsign>[01])(?P<tttt>\d{3})(?P<dsign>[01])(?P<dddd>\d{3})\b")
+_RMK_P = re.compile(r"\bP(?P<p>\d{4})\b")
 _COR_AFTER_TIME = re.compile(r"^\s*COR\b\s*")
 _OBS_SYSTEM_HREF = "https://codes.nws.noaa.gov/FMH-1/ObservingSystemType/AO{ao}"
+# Structured tokens removed before free-text retain (AO/SLP/PK only — T/P stay in free-text).
+_CONSUMED_REMARK = re.compile(r"\bAO[12]\b|\bSLP\d{3}\b|\bPK\s+WND\s+\d{3}\d{2,3}/\d{4}\b")
 
 
 def _celsius(token: str) -> int:
@@ -62,17 +66,38 @@ def _slp_code_to_hpa(code: int) -> float:
     return 900.0 + code / 10.0
 
 
+def _tenths_celsius(sign: str, digits: str) -> float:
+    """Decode FMH-1 additive T sign+three-digit tenths to Celsius."""
+    value = int(digits) / 10.0
+    return -value if sign == "1" else value
+
+
+def _remarks_free_text(remarks: str) -> str:
+    """
+    Return REMARKS remainder after removing structured AO/SLP/PK tokens.
+
+    Additive T/P and plain language stay so ``iwxxm_us`` can retain them in
+    ``humanReadableText`` (#667 / UJ-026 never-drop).
+    """
+    leftover = _CONSUMED_REMARK.sub(" ", remarks)
+    leftover = re.sub(r"\s+", " ", leftover).strip(" =")
+    return leftover
+
+
 def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     """
-    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND).
+    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, T, P).
 
     Malformed US REMARKS tokens append to ``ir['remark_issues']`` for UJ-010 /
-    TC-F6-012 diagnostics (profile isolation: annex3 emit ignores them).
+    TC-F6-012 diagnostics (profile isolation: annex3 emit ignores extensions).
+    Unparsed remainder is stored in ``remarks_free_text`` for never-drop emit.
     """
     rmk = _RMK.search(rest)
     if rmk is None:
         return
     remarks = rmk.group("rmk")
+    ir["remarks_present"] = True
+    ir["remarks_text"] = remarks.strip().rstrip("=").strip()
     issues: list[str] = list(ir.get("remark_issues") or [])
 
     if re.search(r"\bAO(?![12]\b)\w*\b", remarks):
@@ -97,6 +122,19 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
         hhmm = pk.group("hhmm")
         ir["peak_wind_hour"] = int(hhmm[0:2])
         ir["peak_wind_minute"] = int(hhmm[2:4])
+
+    temp_tenths = _RMK_T.search(remarks)
+    if temp_tenths is not None:
+        ir["remark_temp_tenths_c"] = _tenths_celsius(temp_tenths.group("tsign"), temp_tenths.group("tttt"))
+        ir["remark_dewpoint_tenths_c"] = _tenths_celsius(temp_tenths.group("dsign"), temp_tenths.group("dddd"))
+
+    precip = _RMK_P.search(remarks)
+    if precip is not None:
+        ir["precip_inches"] = int(precip.group("p")) / 100.0
+
+    free = _remarks_free_text(remarks)
+    if free:
+        ir["remarks_free_text"] = free
 
     if issues:
         ir["remark_issues"] = issues

@@ -33,12 +33,15 @@ def _peak_timestamp(ir: dict[str, Any]) -> str:
 
 def _addendum_extension(ir: dict[str, Any]) -> str:
     """Serialize observation-level ``iwxxm-us:Addendum`` when REMARKS present."""
-    if not ir.get("observing_system_type") and ir.get("sea_level_pressure_hpa") is None:
+    free_text = str(ir.get("remarks_free_text") or "").strip()
+    if not ir.get("observing_system_type") and ir.get("sea_level_pressure_hpa") is None and not free_text:
         return ""
     parts: list[str] = ["      <iwxxm:extension>", "        <iwxxm-us:Addendum>"]
     if ir.get("observing_system_href"):
         href = escape(str(ir["observing_system_href"]))
         parts.append(f'          <iwxxm-us:observingSystemType xlink:href="{href}"/>')
+    if free_text:
+        parts.append(f"          <iwxxm-us:humanReadableText>{escape(free_text)}</iwxxm-us:humanReadableText>")
     if ir.get("sea_level_pressure_hpa") is not None:
         parts.append(
             f'          <iwxxm-us:seaLevelPressure uom="hPa">{ir["sea_level_pressure_hpa"]}</iwxxm-us:seaLevelPressure>'

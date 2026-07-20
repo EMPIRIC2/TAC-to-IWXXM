@@ -171,8 +171,12 @@
   8. **Bulletin split** required for package acceptance (single-report input still supported)
   9. **`tac-validate` + `iwxxm-validate`** library APIs + CI; backend **thin wrappers** for
      validate (and convert) call these packages
+- **S018 / EV-013 delta (#667 REMARKS)**: `annex3` emits `REMARKS_EXCLUDED` (info) when `RMK`
+  present; `iwxxm_us` retains unparsed RMK remainder as `humanReadableText` (AO2/SLP/PK WND
+  structured emit unchanged; T/P parsed to IR + free-text). Closes UJ-026.
 - **Limitations**: US AIRMET/SIGMET docs thinner than METAR/TAF — may gate fixture depth inside
   F6.d; F5 not extended to other products in v1; exact AHL dialect coverage TBD in fixtures.
+  Full FMH-1 remark catalog beyond AO/SLP/PK/T/P free-text is still scoped deepen work.
 - **S011 / F7 engine deltas** (packages stay under F6; operator UX under F7):
   - `POST /api/v1/decode-tac` — ordered segments with `start`/`end` (+ short explanations).
   - Optional integer `start`/`end` on lint-tac / validate issue objects (span highlight).
