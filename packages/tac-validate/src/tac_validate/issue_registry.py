@@ -93,6 +93,12 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("time", "metar", "speci"),
     ),
     _row(
+        "ODD_FIELD_ORDER",
+        "warning",
+        "{product} groups out of A3-2 order (CCCC → ddhhmmZ → wind)",
+        tags=("order", "station", "time", "metar", "speci", "r1"),
+    ),
+    _row(
         "MISSING_WIND",
         "error",
         "{product} missing surface wind group — A3-2 #5",

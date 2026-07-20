@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — R1–R8 rules |
-| **Active task** | T3.2 — Encode R1 (next) |
-| **Tasks** | 9 / 35 completed (T1.1–T1.4, T2.1–T2.3, T2.2a, T6.0, T3.1) |
+| **Active task** | T3.3 — R2 visibility fixtures (next) |
+| **Tasks** | 10 / 35 completed (… T3.1, T3.2) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -61,7 +61,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T3.1 | Test | Accept/negative fixtures for R1 (station/time/order) | Research R1; TC-F15-003 | T2.3 | completed |
-| T3.2 | Code | Encode R1 rules + registry rows | F15; COVERAGE_MATRIX | T3.1 | pending |
+| T3.2 | Code | Encode R1 rules + registry rows | F15; COVERAGE_MATRIX | T3.1 | completed |
 | T3.3 | Test | Fixtures R2 (visibility SM/m/fractions/9999) | Research R2 | T3.2 | pending |
 | T3.4 | Code | Encode R2 | F15 | T3.3 | pending |
 | T3.5 | Test | Fixtures R3 (wx phenomena grammar) | Research R3 | T3.4 | pending |

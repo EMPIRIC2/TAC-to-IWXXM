@@ -85,6 +85,48 @@ def _first_icao(tokens: list[str], skip: frozenset[str]) -> str | None:
     return None
 
 
+def _token_index(tokens: list[str], matcher: re.Pattern[str]) -> int | None:
+    for i, tok in enumerate(tokens):
+        if matcher.fullmatch(tok):
+            return i
+    return None
+
+
+def _first_icao_index(tokens: list[str], skip: frozenset[str]) -> int | None:
+    for i, tok in enumerate(tokens):
+        if tok in skip:
+            continue
+        if _ICAO.fullmatch(tok) and tok not in {"KT", "MPS", "SM"}:
+            return i
+    return None
+
+
+def _check_metar_speci_field_order(
+    tokens: list[str],
+    *,
+    product: str,
+    start: int,
+    end: int,
+) -> Issue | None:
+    """Warn when CCCC / ddhhmmZ / wind are present but not in A3-2 body order."""
+    cccc_i = _first_icao_index(tokens, _METAR_SPECI_SKIP)
+    time_i = _token_index(tokens, _OBS_TIME)
+    wind_i = _token_index(tokens, _WIND)
+    present = [(i, name) for i, name in ((cccc_i, "CCCC"), (time_i, "time"), (wind_i, "wind")) if i is not None]
+    if len(present) < 2:
+        return None
+    indices = [i for i, _ in present]
+    if indices == sorted(indices):
+        return None
+    return _issue(
+        "ODD_FIELD_ORDER",
+        f"{product} groups out of A3-2 order (CCCC → ddhhmmZ → wind) — research R1",
+        start=start,
+        end=end,
+        location="order",
+    )
+
+
 def _check_metar_speci(tac: str, product: str) -> list[Issue]:
     start, end, body = _body_span(tac)
     upper = body.upper()
@@ -126,6 +168,10 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
                 location="wind",
             )
         )
+
+    order_issue = _check_metar_speci_field_order(tokens, product=product, start=start, end=end)
+    if order_issue is not None:
+        issues.append(order_issue)
 
     if not _VIS.search(core):
         issues.append(

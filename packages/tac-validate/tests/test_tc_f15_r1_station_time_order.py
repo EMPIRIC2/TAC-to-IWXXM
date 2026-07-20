@@ -1,7 +1,7 @@
-"""TC-F15-003 / Research R1 — station, observation time, and field-order fixtures (T3.1).
+"""TC-F15-003 / Research R1 — station, observation time, and field-order fixtures (T3.1/T3.2).
 
-Accept + missing CCCC/ddhhmmZ assert against current rules. Odd-order cases expect
-``ODD_FIELD_ORDER`` (warning) once T3.2 encodes the rule + registry row.
+Accept + missing CCCC/ddhhmmZ assert error codes. Odd-order cases expect
+``ODD_FIELD_ORDER`` (warning) without failing ``report.ok``.
 """
 
 from __future__ import annotations
@@ -79,12 +79,8 @@ def test_r1_missing_cccc_or_obs_time_errors(case: dict[str, Any]) -> None:
 
 
 @pytest.mark.parametrize("case", _ORDER_WARNINGS, ids=_case_ids(_ORDER_WARNINGS))
-@pytest.mark.xfail(
-    strict=True,
-    reason="T3.2 encodes ODD_FIELD_ORDER registry row + field-order rule",
-)
 def test_r1_odd_field_order_emits_warning(case: dict[str, Any]) -> None:
-    """Red until T3.2 — warning-only; report.ok stays True."""
+    """Warning-only odd order — report.ok stays True (errors absent)."""
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is True
     matched = [i for i in report.issues if i.code == "ODD_FIELD_ORDER"]

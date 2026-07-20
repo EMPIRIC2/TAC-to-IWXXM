@@ -197,6 +197,20 @@
       ]
     },
     {
+      "code": "ODD_FIELD_ORDER",
+      "severity": "warning",
+      "message_template": "{product} groups out of A3-2 order (CCCC \u2192 ddhhmmZ \u2192 wind)",
+      "product": null,
+      "tags": [
+        "order",
+        "station",
+        "time",
+        "metar",
+        "speci",
+        "r1"
+      ]
+    },
+    {
       "code": "UNKNOWN_PRODUCT",
       "severity": "error",
       "message_template": "Unknown product {product!r}; expected one of {expected}",
