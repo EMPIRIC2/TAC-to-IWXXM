@@ -8,7 +8,7 @@
     gml:id="metar.us.ao2.slp.kjfk"
     reportStatus="NORMAL"
     permissibleUsage="OPERATIONAL"
-    automatedStation="false">
+    automatedStation="true">
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
       <gml:timePosition>2023-06-23T17:51:00Z</gml:timePosition>

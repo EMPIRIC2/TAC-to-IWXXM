@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M4 — Goldens R6 + SPECI adjacency R7 |
-| **Active task** | T4.2 — Convert fidelity for new goldens (next) |
-| **Tasks** | 21 / 35 completed (… T3.12, T4.1) |
+| **Active task** | T4.3 — R7 METAR↔SPECI adjacency (next) |
+| **Tasks** | 22 / 35 completed (… T4.1–T4.2) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -78,7 +78,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T4.1 | Test | Expand annex3 + iwxxm_us golden manifests (METAR+SPECI); M-parse/M-xsd/M-sch stubs | TC-F15-002; TC-F6-020 | T3.12 | completed |
-| T4.2 | Code | Convert fidelity fixes for new goldens (COR/NIL/RMK/US) — HARD themes must green; “scoped” = fixture depth within theme, not theme drop | F6 deepen; #732; E11-23 | T4.1 | pending |
+| T4.2 | Code | Convert fidelity fixes for new goldens (COR/NIL/RMK/US) — HARD themes must green; “scoped” = fixture depth within theme, not theme drop | F6 deepen; #732; E11-23 | T4.1 | completed |
 | T4.3 | Test | R7 adjacency: METAR↔SPECI shared pack; no silent cross-product pass | TC-F15-005; UJ-024 | T4.2 | pending |
 | T4.4 | Docs | Update COVERAGE_MATRIX METAR/SPECI rows; link research catalog | F15 acc3 | T4.3 | pending |
 

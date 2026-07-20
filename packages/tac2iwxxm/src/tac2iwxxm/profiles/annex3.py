@@ -58,6 +58,9 @@ def emit_metar_speci_annex3(
     if ir.get("nil"):
         gml_id = f"{root.lower()}.nil.{station.lower()}"
     report_status = "CORRECTION" if ir.get("correction") else "NORMAL"
+    automated = "true" if ir.get("auto") else "false"
+    cavok = bool(ir.get("cavok"))
+    cavok_attr = "true" if cavok else "false"
 
     if ir.get("nil"):
         observation = '  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
@@ -71,13 +74,21 @@ def emit_metar_speci_annex3(
             wind_dir = ""
         else:
             wind_dir = f'\n          <iwxxm:meanWindDirection uom="deg">{ir["wind_dir_deg"]}</iwxxm:meanWindDirection>'
-        vis_op = ""
-        if ir.get("visibility_above"):
-            vis_op = "\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
+        vis_block = ""
         cloud = ""
-        if ir.get("cloud_amount") and ir.get("cloud_base_ft") is not None:
-            href = CLOUD_HREF.format(amt=ir["cloud_amount"])
-            cloud = f"""      <iwxxm:cloud>
+        if not cavok:
+            vis_op = ""
+            if ir.get("visibility_above"):
+                vis_op = "\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
+            vis_block = f"""      <iwxxm:visibility>
+        <iwxxm:AerodromeHorizontalVisibility>
+          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}
+        </iwxxm:AerodromeHorizontalVisibility>
+      </iwxxm:visibility>
+"""
+            if ir.get("cloud_amount") and ir.get("cloud_base_ft") is not None:
+                href = CLOUD_HREF.format(amt=ir["cloud_amount"])
+                cloud = f"""      <iwxxm:cloud>
         <iwxxm:AerodromeCloud>
           <iwxxm:layer>
             <iwxxm:CloudLayer>
@@ -89,7 +100,7 @@ def emit_metar_speci_annex3(
       </iwxxm:cloud>
 """
         observation = f"""  <iwxxm:observation>
-    <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="false">
+    <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="{cavok_attr}">
       <iwxxm:airTemperature uom="Cel">{ir["temp_c"]}</iwxxm:airTemperature>
       <iwxxm:dewpointTemperature uom="Cel">{ir["dewpoint_c"]}</iwxxm:dewpointTemperature>
       <iwxxm:qnh uom="hPa">{ir["qnh_hpa"]}</iwxxm:qnh>
@@ -98,12 +109,7 @@ def emit_metar_speci_annex3(
           <iwxxm:meanWindSpeed uom="[kn_i]">{ir["wind_speed_kt"]}</iwxxm:meanWindSpeed>{wind_gust}
         </iwxxm:AerodromeSurfaceWind>
       </iwxxm:surfaceWind>
-      <iwxxm:visibility>
-        <iwxxm:AerodromeHorizontalVisibility>
-          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}
-        </iwxxm:AerodromeHorizontalVisibility>
-      </iwxxm:visibility>
-{cloud}    </iwxxm:MeteorologicalAerodromeObservation>
+{vis_block}{cloud}    </iwxxm:MeteorologicalAerodromeObservation>
   </iwxxm:observation>
 """
 
@@ -116,7 +122,7 @@ def emit_metar_speci_annex3(
     gml:id="{gml_id}"
     reportStatus="{report_status}"
     permissibleUsage="OPERATIONAL"
-    automatedStation="false">
+    automatedStation="{automated}">
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
       <gml:timePosition>{stamp}</gml:timePosition>
