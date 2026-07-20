@@ -22,7 +22,13 @@ HIGH_CHURN_PATHS = (
     "/api/v1/validate",
     "/api/v1/lint-tac",
     "/api/v1/decode-tac",
+    "/api/v1/lint-issue-catalog",
 )
+
+# Preflight request method must match the route's primary verb (GET catalog vs POST others).
+_PATH_PREFLIGHT_METHOD = {
+    "/api/v1/lint-issue-catalog": "GET",
+}
 
 
 @pytest.fixture
@@ -39,18 +45,19 @@ def allowed_origin() -> str:
 
 @pytest.mark.parametrize("path", HIGH_CHURN_PATHS)
 def test_high_churn_options_preflight_allows_post(client: TestClient, allowed_origin: str, path: str) -> None:
-    """Browser preflight for msgspec high-churn routes remains POST-capable."""
+    """Browser preflight for msgspec high-churn routes remains verb-capable."""
+    method = _PATH_PREFLIGHT_METHOD.get(path, "POST")
     response = client.options(
         path,
         headers={
             "Origin": allowed_origin,
-            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Method": method,
             "Access-Control-Request-Headers": "authorization,content-type",
         },
     )
     assert response.status_code in {200, 204}, response.text[:300]
     allow_methods = response.headers.get("access-control-allow-methods", "")
-    assert "POST" in allow_methods.upper() or allow_methods == "*"
+    assert method in allow_methods.upper() or allow_methods == "*"
     assert response.headers.get("access-control-allow-origin") == allowed_origin
 
 

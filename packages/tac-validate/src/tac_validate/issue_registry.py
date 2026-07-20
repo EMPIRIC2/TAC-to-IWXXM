@@ -276,6 +276,35 @@ ISSUES: tuple[IssueSpec, ...] = (
 _BY_CODE: dict[str, IssueSpec] = {spec.code: spec for spec in ISSUES}
 
 
+def catalog_entries(*, product: str | None = None) -> tuple[IssueSpec, ...]:
+    """
+    Return registry rows for HTTP/docs catalog export.
+
+    Parameters
+    ----------
+    product :
+        Optional product filter (case-insensitive). When set, include rows whose
+        ``product`` field matches or whose ``tags`` contain that product id
+        (e.g. ``metar``, ``speci``). When omitted, return the full registry.
+
+    Returns
+    -------
+    tuple[IssueSpec, ...]
+        Frozen catalog rows in registry order.
+    """
+    if product is None or not str(product).strip():
+        return ISSUES
+    key = str(product).strip().lower()
+    selected: list[IssueSpec] = []
+    for spec in ISSUES:
+        if spec.product is not None and spec.product.lower() == key:
+            selected.append(spec)
+            continue
+        if key in {tag.lower() for tag in spec.tags}:
+            selected.append(spec)
+    return tuple(selected)
+
+
 def by_code(code: str) -> IssueSpec:
     """
     Return the registered ``IssueSpec`` for ``code``.
@@ -353,4 +382,4 @@ def issue_from(
     )
 
 
-__all__ = ["ISSUES", "IssueSpec", "by_code", "issue_from"]
+__all__ = ["ISSUES", "IssueSpec", "by_code", "catalog_entries", "issue_from"]
