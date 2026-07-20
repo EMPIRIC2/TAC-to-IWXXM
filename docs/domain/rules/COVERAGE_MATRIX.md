@@ -52,8 +52,8 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 
 | F6 product | TAC validation URL? | Conversion URL? | IWXXM validation URL? | Gap vs GIFTs |
 |------------|---------------------|-----------------|-----------------------|--------------|
-| **METAR** | ✅ Annex 3 (paywall; [dig](../mining/icao-annex-3-mining-notes.md) Table A3-2, CAVOK, AUTO/missing) + codes.wmo.int weather/nils; FMH-1 for US | ✅ TAC-to-XML-Guidance + FM 205 + examples | ✅ schemas.wmo.int/2025-2 + SCH | US REMARKS; aviation nils under-used — **S015/EV-011 (#732)**: issue registry + R1–R6 expansion in progress; see [metar-lint-quality.md](../../context/metar-lint-quality.md) |
-| **SPECI** | ✅ same as METAR (+ App 3 §2.3.2 shall / §2.3.3 Rec thresholds) | ✅ same package `metarSpeci.xsd` | ✅ same | same |
+| **METAR** | ✅ Annex 3 (paywall; [dig](../mining/icao-annex-3-mining-notes.md) Table A3-2, CAVOK, AUTO/missing) + codes.wmo.int weather/nils; FMH-1 for US | ✅ TAC-to-XML-Guidance + FM 205 + examples | ✅ schemas.wmo.int/2025-2 + SCH | **S015/EV-011 (#732)**: F15 registry + **R1–R8 themes closed** (lint/fixtures/goldens/adjacency) — [research catalog](../../sessions/S015-metar-lint-quality/reports/metar-research-catalog.md) · [ISSUE_CATALOG](./ISSUE_CATALOG.md) · [context](../../context/metar-lint-quality.md) |
+| **SPECI** | ✅ same as METAR (+ App 3 §2.3.2 shall / §2.3.3 Rec thresholds) | ✅ same package `metarSpeci.xsd` | ✅ same | **Same as METAR** — shared `metar`/`speci` rule pack; R7 adjacency tests (TC-F15-005 / UJ-024); SPECI goldens in annex3 + iwxxm_us manifests |
 | **TAF** | ✅ Annex 3 App 5 (§1.3 change/PROB; Table A5-2) / Doc 8896 (paywall); vocab via 49-2 / 306 | ✅ Guidance + examples (CNL/NIL/AMD) | ✅ `taf.xsd` + SCH | Outside GIFTs depth; SPECI↔TAF thresholds parallel ≠ identical |
 | **SIGMET** | ✅ Annex 3 Ch.7 + App 6 phenomena/validity (paywall); SigWxPhenomena registry | ✅ Guidance + examples + FM 205 (+ METCE for TC/VA members) | ✅ `sigmet.xsd` + SCH (+ METCE 1.2) | **Entire product** outside GIFTs |
 | **AIRMET** | ✅ Annex 3 Ch.7 + App 6; AirWxPhenomena + VIS-cause lists | ✅ Guidance + examples + FM 205 | ✅ `airmet.xsd` + SCH | Entire product outside GIFTs |
@@ -135,6 +135,26 @@ Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quaran
 
 ---
 
+## METAR / SPECI — F15 research themes (S015 / EV-011)
+
+Hard themes from [metar-research-catalog.md](../../sessions/S015-metar-lint-quality/reports/metar-research-catalog.md)
+(E11-23/28). Codes live in [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) / `packages/tac-validate` registry.
+
+| Theme | Lint (F12/F15) | Convert (F6) | Validate / goldens | Status |
+|-------|----------------|--------------|--------------------|--------|
+| **R1** Station / time / field order | `MISSING_CCCC` / `MISSING_OBS_TIME` / odd-order warnings | Emit CCCC + obs time | — | ✅ closed |
+| **R2** Visibility SM / m / fractions / 9999 | `INVALID_VISIBILITY` / `MISSING_VISIBILITY` | Units in IWXXM | XSD units | ✅ closed |
+| **R3** Weather phenomena grammar | `INVALID_WEATHER` | wx → IWXXM | SCH where applicable | ✅ closed |
+| **R4** Clouds / CAVOK / VV / CB·TCU | `INVALID_CLOUD_TOKEN` / `CLOUD_CB_OR_TCU` | CAVOK → `cloudAndVisibilityOK` | SCH | ✅ closed |
+| **R5** US RMK (AO1/AO2/SLP/P/T/PK WND) | `REMARK_US_EXTENSION` / `INVALID_REMARK` | `iwxxm_us` extensions | US schema | ✅ closed |
+| **R6** Golden convert + SCH | — | Expanded annex3 + iwxxm_us manifests | M-parse / M-xsd / M-sch / M-golden | ✅ closed |
+| **R7** METAR↔SPECI adjacency | Shared pack; no silent cross-product | Same `metarSpeci` path | SPECI goldens + TC-F15-005 | ✅ closed |
+| **R8** AUTO / COR / NIL / NOSIG / TEMPO / RVR / VRB·gust | Registry + accept/negative each | AUTO/CAVOK fidelity where fixtures allow | As fixtures allow | ✅ closed |
+
+Non–R-theme gaps (broader aviation nils, full COLLECT packing) remain outside F15 HARD scope.
+
+---
+
 ## Acceptance checklist (#719)
 
 - [x] ≥1 normative or semi-official URL (or explicit paywall/TBD) per F6 product for validation
@@ -142,3 +162,4 @@ Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quaran
 - [x] Labels: normative vs informative vs historical-GIFTs
 - [x] Cross-links to #698 / #699 in [RULE_SOURCE_URLS.md](./RULE_SOURCE_URLS.md)
 - [x] No secrets or scraped copyrighted full-text in-repo
+- [x] F15 acc3 — METAR/SPECI rows + R1–R8 closed (S015 / EV-011; see table above)
