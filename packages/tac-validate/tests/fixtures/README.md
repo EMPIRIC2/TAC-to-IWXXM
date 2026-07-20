@@ -55,7 +55,6 @@ Diagnostics assertions require product-rule codes/spans from
 | `remark_us_info`     | `true`  | R5 known US RMK tokens (`REMARK_US_EXTENSION` info)         |
 | `remark_errors`      | `false` | R5 malformed RMK groups (`INVALID_REMARK`)                  |
 | `r8_modifier_info`   | `true`  | R8 AUTO/COR/NIL/NOSIG/TEMPO/RVR/VRB·gust info codes         |
-| `r8_nil_accept`      | `true`  | R8 NIL short-circuit accept (encoded in T3.12)              |
 | `r8_errors`          | `false` | R8 malformed NIL/RVR/wind (`INVALID_*`)                     |
 
 ## Tooling

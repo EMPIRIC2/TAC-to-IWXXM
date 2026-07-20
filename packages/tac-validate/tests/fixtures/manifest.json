@@ -266,6 +266,14 @@
       "cite": "SPECI AUTO+RVR; research R8",
       "tac": "accept/speci_r8_auto_rvr.tac",
       "ok": true
+    },
+    {
+      "id": "accept_metar_r8_nil",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "NIL report body; research R8",
+      "tac": "accept/metar_r8_nil.tac",
+      "ok": true
     }
   ],
   "negative": [
@@ -945,16 +953,6 @@
       "ok": false,
       "expected_codes": ["INVALID_WIND"],
       "require_spans": true
-    }
-  ],
-  "r8_nil_accept": [
-    {
-      "id": "accept_metar_r8_nil",
-      "product": "METAR",
-      "theme": "R8",
-      "cite": "NIL report body; research R8",
-      "tac": "accept/metar_r8_nil.tac",
-      "ok": true
     }
   ]
 }

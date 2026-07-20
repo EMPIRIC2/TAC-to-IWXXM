@@ -4,6 +4,18 @@
   "generated": "2026-07-20",
   "issues": [
     {
+      "code": "AUTO_PRESENT",
+      "severity": "info",
+      "message_template": "{product} AUTO modifier present \u2014 research R8",
+      "product": null,
+      "tags": [
+        "modifier",
+        "metar",
+        "speci",
+        "r8"
+      ]
+    },
+    {
       "code": "CLOUD_CB_OR_TCU",
       "severity": "info",
       "message_template": "{product} cloud group includes convective type CB/TCU",
@@ -15,6 +27,18 @@
         "r4",
         "cb",
         "tcu"
+      ]
+    },
+    {
+      "code": "COR_PRESENT",
+      "severity": "info",
+      "message_template": "{product} COR modifier present \u2014 research R8",
+      "product": null,
+      "tags": [
+        "modifier",
+        "metar",
+        "speci",
+        "r8"
       ]
     },
     {
@@ -50,6 +74,18 @@
       ]
     },
     {
+      "code": "INVALID_NIL",
+      "severity": "error",
+      "message_template": "{product} NIL must not include body groups \u2014 research R8",
+      "product": null,
+      "tags": [
+        "nil",
+        "metar",
+        "speci",
+        "r8"
+      ]
+    },
+    {
       "code": "INVALID_REMARK",
       "severity": "error",
       "message_template": "{product} malformed remark group {token!r}",
@@ -60,6 +96,18 @@
         "speci",
         "r5",
         "iwxxm_us"
+      ]
+    },
+    {
+      "code": "INVALID_RVR",
+      "severity": "error",
+      "message_template": "{product} invalid RVR token {token!r} \u2014 research R8",
+      "product": null,
+      "tags": [
+        "rvr",
+        "metar",
+        "speci",
+        "r8"
       ]
     },
     {
@@ -84,6 +132,18 @@
         "metar",
         "speci",
         "r3"
+      ]
+    },
+    {
+      "code": "INVALID_WIND",
+      "severity": "error",
+      "message_template": "{product} invalid wind token {token!r} \u2014 research R8",
+      "product": null,
+      "tags": [
+        "wind",
+        "metar",
+        "speci",
+        "r8"
       ]
     },
     {
@@ -249,6 +309,30 @@
       ]
     },
     {
+      "code": "NIL_REPORT",
+      "severity": "info",
+      "message_template": "{product} NIL report \u2014 research R8",
+      "product": null,
+      "tags": [
+        "nil",
+        "metar",
+        "speci",
+        "r8"
+      ]
+    },
+    {
+      "code": "NOSIG_PRESENT",
+      "severity": "info",
+      "message_template": "{product} NOSIG trend present \u2014 research R8",
+      "product": null,
+      "tags": [
+        "trend",
+        "metar",
+        "speci",
+        "r8"
+      ]
+    },
+    {
       "code": "ODD_FIELD_ORDER",
       "severity": "warning",
       "message_template": "{product} groups out of A3-2 order (CCCC \u2192 ddhhmmZ \u2192 wind)",
@@ -276,12 +360,48 @@
       ]
     },
     {
+      "code": "RVR_PRESENT",
+      "severity": "info",
+      "message_template": "{product} RVR group present \u2014 research R8",
+      "product": null,
+      "tags": [
+        "rvr",
+        "metar",
+        "speci",
+        "r8"
+      ]
+    },
+    {
+      "code": "TEMPO_PRESENT",
+      "severity": "info",
+      "message_template": "{product} TEMPO trend present \u2014 research R8",
+      "product": null,
+      "tags": [
+        "trend",
+        "metar",
+        "speci",
+        "r8"
+      ]
+    },
+    {
       "code": "UNKNOWN_PRODUCT",
       "severity": "error",
       "message_template": "Unknown product {product!r}; expected one of {expected}",
       "product": null,
       "tags": [
         "parse_gate"
+      ]
+    },
+    {
+      "code": "WIND_VRB_OR_GUST",
+      "severity": "info",
+      "message_template": "{product} wind uses VRB and/or gust \u2014 research R8",
+      "product": null,
+      "tags": [
+        "wind",
+        "metar",
+        "speci",
+        "r8"
       ]
     }
   ]

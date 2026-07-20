@@ -37,7 +37,8 @@ def _case_ids(cases: list[dict[str, Any]]) -> list[str]:
 
 _MANIFEST = _load_manifest()
 _R8_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "R8"]
-_R8_ACCEPT_NIL = list(_MANIFEST.get("r8_nil_accept", []))
+_R8_ACCEPT_NIL = [c for c in _R8_ACCEPT if c["id"] == "accept_metar_r8_nil"]
+_R8_ACCEPT_OTHER = [c for c in _R8_ACCEPT if c["id"] != "accept_metar_r8_nil"]
 _R8_INFO = list(_MANIFEST.get("r8_modifier_info", []))
 _R8_ERRORS = list(_MANIFEST.get("r8_errors", []))
 
@@ -53,12 +54,12 @@ _INFO_CODES = {
 
 
 def test_r8_manifest_sections_present() -> None:
-    assert len(_R8_ACCEPT) >= 7
+    assert len(_R8_ACCEPT) >= 8
     assert {c["product"] for c in _R8_ACCEPT} == {"METAR", "SPECI"}
     assert len(_R8_ACCEPT_NIL) >= 1
     assert len(_R8_INFO) >= 7
     assert len(_R8_ERRORS) >= 4
-    for case in _R8_ACCEPT + _R8_ACCEPT_NIL + _R8_INFO + _R8_ERRORS:
+    for case in _R8_ACCEPT + _R8_INFO + _R8_ERRORS:
         assert (_read_tac(case["tac"])).strip()
     codes = {c["expected_codes"][0] for c in _R8_INFO}
     assert codes == _INFO_CODES
@@ -66,14 +67,13 @@ def test_r8_manifest_sections_present() -> None:
         assert case["expected_codes"][0] in {"INVALID_NIL", "INVALID_RVR", "INVALID_WIND"}
 
 
-@pytest.mark.parametrize("case", _R8_ACCEPT, ids=_case_ids(_R8_ACCEPT))
+@pytest.mark.parametrize("case", _R8_ACCEPT_OTHER, ids=_case_ids(_R8_ACCEPT_OTHER))
 def test_r8_accept_modifiers_ok(case: dict[str, Any]) -> None:
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is True
 
 
 @pytest.mark.parametrize("case", _R8_ACCEPT_NIL, ids=_case_ids(_R8_ACCEPT_NIL))
-@pytest.mark.xfail(strict=True, reason="T3.12 encodes NIL short-circuit + NIL_REPORT")
 def test_r8_accept_nil_ok(case: dict[str, Any]) -> None:
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is True
@@ -81,7 +81,6 @@ def test_r8_accept_nil_ok(case: dict[str, Any]) -> None:
 
 
 @pytest.mark.parametrize("case", _R8_INFO, ids=_case_ids(_R8_INFO))
-@pytest.mark.xfail(strict=True, reason="T3.12 encodes R8 modifier info codes")
 def test_r8_modifier_emits_info(case: dict[str, Any]) -> None:
     code = case["expected_codes"][0]
     report = lint(_read_tac(case["tac"]), product=case["product"])
@@ -95,7 +94,6 @@ def test_r8_modifier_emits_info(case: dict[str, Any]) -> None:
 
 
 @pytest.mark.parametrize("case", _R8_ERRORS, ids=_case_ids(_R8_ERRORS))
-@pytest.mark.xfail(strict=True, reason="T3.12 encodes INVALID_NIL/RVR/WIND")
 def test_r8_invalid_modifier_emits_error(case: dict[str, Any]) -> None:
     code = case["expected_codes"][0]
     report = lint(_read_tac(case["tac"]), product=case["product"])

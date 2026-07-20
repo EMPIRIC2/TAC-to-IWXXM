@@ -50,6 +50,9 @@ _WX_DESCRIPTORS = ("VC", "MI", "BC", "PR", "DR", "BL", "SH", "TS", "FZ")
 _WX_STANDALONE = frozenset({"TS", "SS", "DS", "SQ", "FC", "PO", "BR", "FG", "FU", "HZ", "VA", "DU", "SA", "PY"})
 _WX_SPECIAL = frozenset({"UP", "//"})
 _RVR = re.compile(r"^R\d{2}")
+# R8: RVR runway visual range (simplified ICAO/US shapes).
+_RVR_OK = re.compile(r"^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT|N)?$")
+_WIND_TOKEN = re.compile(r"(?:KT|MPS)$|^CALM$")
 _CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
 # R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
 _CLOUD_OK = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$")
@@ -367,6 +370,127 @@ def _check_us_remarks(
     return issues
 
 
+def _emit_token_info(
+    issues: list[Issue],
+    *,
+    code: str,
+    message: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    token: str,
+) -> None:
+    span = _token_span_in_core(core, token, body_start)
+    if span is None:
+        start, end = body_start, body_end
+    else:
+        start, end = span
+    issues.append(_issue(code, message, start=start, end=end, location="modifier"))
+
+
+def _check_r8_pack(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+) -> list[Issue]:
+    """AUTO/COR/NOSIG/TEMPO/RVR/VRB·gust info + INVALID_RVR/WIND (research R8)."""
+    issues: list[Issue] = []
+    if "AUTO" in tokens:
+        _emit_token_info(
+            issues,
+            code="AUTO_PRESENT",
+            message=f"{product} AUTO modifier present — research R8",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="AUTO",
+        )
+    if "COR" in tokens:
+        _emit_token_info(
+            issues,
+            code="COR_PRESENT",
+            message=f"{product} COR modifier present — research R8",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="COR",
+        )
+    if "NOSIG" in tokens:
+        _emit_token_info(
+            issues,
+            code="NOSIG_PRESENT",
+            message=f"{product} NOSIG trend present — research R8",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="NOSIG",
+        )
+    if "TEMPO" in tokens:
+        _emit_token_info(
+            issues,
+            code="TEMPO_PRESENT",
+            message=f"{product} TEMPO trend present — research R8",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="TEMPO",
+        )
+
+    for tok in tokens:
+        if not _RVR.match(tok):
+            continue
+        if _RVR_OK.fullmatch(tok):
+            _emit_token_info(
+                issues,
+                code="RVR_PRESENT",
+                message=f"{product} RVR group {tok!r} present — research R8",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+        else:
+            _emit_token_info(
+                issues,
+                code="INVALID_RVR",
+                message=f"{product} invalid RVR token {tok!r} — research R8",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+
+    wind_tokens = [t for t in tokens if t == "CALM" or t.endswith(("KT", "MPS"))]
+    bad_winds = [t for t in wind_tokens if not _WIND.fullmatch(t)]
+    good_winds = [t for t in wind_tokens if _WIND.fullmatch(t)]
+    for tok in bad_winds:
+        _emit_token_info(
+            issues,
+            code="INVALID_WIND",
+            message=f"{product} invalid wind token {tok!r} — research R8",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=tok,
+        )
+    for tok in good_winds:
+        if tok.startswith("VRB") or "G" in tok:
+            _emit_token_info(
+                issues,
+                code="WIND_VRB_OR_GUST",
+                message=f"{product} wind {tok!r} uses VRB and/or gust — research R8",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            break
+    return issues
+
+
 def _check_metar_speci_field_order(
     tokens: list[str],
     *,
@@ -424,7 +548,54 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
             )
         )
 
-    if not _WIND.search(core):
+    # R8 NIL: short-circuit body checklist when NIL is the report content.
+    if "NIL" in tokens:
+        if "AUTO" in tokens:
+            _emit_token_info(
+                issues,
+                code="AUTO_PRESENT",
+                message=f"{product} AUTO modifier present — research R8",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="AUTO",
+            )
+        if "COR" in tokens:
+            _emit_token_info(
+                issues,
+                code="COR_PRESENT",
+                message=f"{product} COR modifier present — research R8",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="COR",
+            )
+        trailing = tokens[tokens.index("NIL") + 1 :]
+        if trailing:
+            _emit_token_info(
+                issues,
+                code="INVALID_NIL",
+                message=f"{product} NIL must not include body groups — research R8",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="NIL",
+            )
+        else:
+            _emit_token_info(
+                issues,
+                code="NIL_REPORT",
+                message=f"{product} NIL report — research R8",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="NIL",
+            )
+        return issues
+
+    wind_tokens = [t for t in tokens if t == "CALM" or t.endswith(("KT", "MPS"))]
+    has_good_wind = any(_WIND.fullmatch(t) for t in wind_tokens)
+    if not has_good_wind and not wind_tokens:
         issues.append(
             _issue(
                 "MISSING_WIND",
@@ -543,6 +714,15 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
 
     issues.extend(
         _check_us_remarks(
+            tokens,
+            product=product,
+            core=core,
+            body_start=start,
+            body_end=end,
+        )
+    )
+    issues.extend(
+        _check_r8_pack(
             tokens,
             product=product,
             core=core,
