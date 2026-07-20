@@ -41,7 +41,7 @@
 | 16-evolve | — | Phase 0 complete; Phase A in progress |
 | 01-requirements | 2026-07-20 | UJ-025 + TC-F7-007 + F7 validation note |
 | 02-verify-plan | 2026-07-20 | PASS — S2.1 fix H6; S2.2 T1–T6 hard; S2.3 UJ-025 |
-| 10-e2e | | |
+| 10-e2e | 2026-07-20 | PASS — TC-F7-007 T1–T6 Playwright + Vitest anchors |
 | 13-deploy-smoke | | |
 
 ---

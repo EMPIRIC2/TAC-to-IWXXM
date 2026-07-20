@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-012
   branch: evolve/EV-012-manual-tac-input-modes
   artifacts_dir: docs/sessions/S016-manual-tac-input-modes
-  current_stage: 10-e2e
+  current_stage: 13-deploy-smoke
   context_briefs:
     - docs/context/manual-tac-input-modes.md
   standing_docs_touched:
@@ -39,7 +39,7 @@ active_session:
       mode: orchestrator
       status: in_progress
       started: '2026-07-20'
-      note: EV-012 Phase A complete; 02-verify-plan completed; current_stage 10-e2e (pending)
+      note: EV-012 Phase A complete; 10-e2e completed; 13-deploy-smoke pending
     - stage: 01-requirements
       required: true
       mode: delta
@@ -57,8 +57,10 @@ active_session:
     - stage: 10-e2e
       required: true
       mode: delta
-      status: pending
-      note: Author + run Playwright T1–T4; Vitest gap check
+      status: completed
+      started: '2026-07-20'
+      completed: '2026-07-20'
+      note: PASS TC-F7-007 T1-T6 + Vitest; e2e-report.md
     - stage: 13-deploy-smoke
       required: true
       mode: full
@@ -2188,6 +2190,16 @@ stages:
         status: completed
         notes: "H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred"
     delta_substages:
+      - id: S016-manual-tac-input-modes
+        session_id: S016-manual-tac-input-modes
+        evolve_cycle_id: EV-012
+        status: completed
+        started_at: '2026-07-20'
+        completed_at: '2026-07-20'
+        mode: delta
+        overall: pass
+        report: docs/sessions/S016-manual-tac-input-modes/reports/e2e-report.md
+        note: PASS TC-F7-007 T1-T6 + Vitest; e2e-report.md
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2231,6 +2243,7 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
         note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk"
     notes:
+      - 2026-07-20 S016/EV-012 10-e2e completed — PASS TC-F7-007 T1-T6 + Vitest; e2e-report.md; next 13-deploy-smoke (pending)
       - 2026-07-20 S015/EV-011 10-e2e completed — PASS — e2e-report.md; UJ-024 catalog smoke
       - "2026-07-19 S014/EV-010 10-e2e completed — UJ-022/023/DEV-005 T0+local API PASS; T3/H6′→13; see e2e-report.md"
       - "2026-07-19 S014/EV-010 10-e2e in_progress (T6.2; D-S014-EV010-c-to-d-pass)"
@@ -2431,6 +2444,12 @@ stages:
     completed_at: "2026-07-19"
     session_id: S014-package-publish-validation
     delta_substages:
+      - id: S016-manual-tac-input-modes
+        session_id: S016-manual-tac-input-modes
+        evolve_cycle_id: EV-012
+        status: pending
+        mode: full
+        note: H4–H5 + authenticated AHL + COLLECT 501
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2461,6 +2480,7 @@ stages:
         report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
         hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+      - 2026-07-20 S016/EV-012 13-deploy-smoke pending (current_stage after 10-e2e PASS)
       - 2026-07-20 S015/EV-011 13-deploy-smoke completed — T5.10 PASS — Render LIVE; H0ci/H1/H0c/H3/H4/H5 + F15 catalog 35 issues
       - >-
         2026-07-19 S014/EV-010 13-deploy-smoke completed (D-S014-EV010-t66-close-2) —
@@ -4899,6 +4919,17 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/sessions/S016-manual-tac-input-modes/reports/e2e-report.md
+    type: report
+    kind: e2e-report
+    stage: 10-e2e
+    skill_id: 10-e2e
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    created_at: '2026-07-20'
+    updated_at: '2026-07-20'
+    status: completed
+    note: PASS TC-F7-007 T1-T6 + Vitest
   - path: docs/sessions/S016-manual-tac-input-modes/reports/02-verify-plan-audit.md
     type: report
     kind: verify-plan-audit
@@ -6149,8 +6180,10 @@ evolve_cycles:
         - 09-qa
         - 11-verify-impl
         - 12-verify-deploy
-    current_stage: 10-e2e
+    current_stage: 13-deploy-smoke
     notes:
+      - 2026-07-20 S016/EV-012 10-e2e COMPLETE — PASS TC-F7-007 T1-T6 + Vitest; e2e-report.md; handoff 13-deploy-smoke (pending); checkpoints.phase_d remains pending until 13
+      - 2026-07-20 S016/EV-012 10-e2e STARTED (in_progress)
       - 2026-07-20 S016/EV-012 02-verify-plan COMPLETE — PASS — S2.1 H6+UJ-025; S2.2 T1-T6 hard; S2.3 UJ-025; Phase A complete; handoff 10-e2e (pending); gates.a_to_b remains waived
       - 2026-07-20 S016/EV-012 02-verify-plan STARTED (in_progress)
       - 2026-07-20 S016/EV-012 01-requirements COMPLETE — UJ-025 + TC-F7-007; handoff to 02-verify-plan
@@ -6180,7 +6213,12 @@ evolve_cycles:
         completed: '2026-07-20'
         note: 'PASS — S2.1 H6+UJ-025; S2.2 T1-T6 hard; S2.3 UJ-025; Phase A complete'
       10-e2e:
-        status: pending
+        status: completed
+        mode: delta
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        note: PASS TC-F7-007 T1-T6 + Vitest; e2e-report.md
+        report: docs/sessions/S016-manual-tac-input-modes/reports/e2e-report.md
       13-deploy-smoke:
         status: pending
     gates:
@@ -6212,6 +6250,8 @@ evolve_cycles:
       - path: docs/sessions/S016-manual-tac-input-modes/reports/02-verify-plan-audit.md
         status: completed
       - path: docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-a-complete.md
+        status: completed
+      - path: docs/sessions/S016-manual-tac-input-modes/reports/e2e-report.md
         status: completed
       - path: docs/decisions/evolve-decisions.md
         status: in_progress
