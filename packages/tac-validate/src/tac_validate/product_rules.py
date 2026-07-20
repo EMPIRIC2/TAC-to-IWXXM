@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import re
 
+from tac_validate.issue_registry import issue_from
 from tac_validate.models import Issue
 
 _ICAO = re.compile(r"\b[A-Z]{4}\b")
@@ -57,9 +58,9 @@ def _issue(
     end: int,
     location: str = "body",
 ) -> Issue:
-    return Issue(
-        severity="error",
-        code=code,
+    """Build an Issue via the registry (severity from IssueSpec; message preserved)."""
+    return issue_from(
+        code,
         message=message,
         location=location,
         start=start,

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from tac_validate.issue_registry import issue_from
 from tac_validate.models import Fix, Issue
 from tac_validate.products import PRODUCT_KEYWORDS, PRODUCTS
 
@@ -42,10 +43,10 @@ def check_parse_gate(tac_text: str, product: str) -> tuple[list[Issue], list[Fix
 
     if product not in PRODUCTS:
         issues.append(
-            Issue(
-                severity="error",
-                code="UNKNOWN_PRODUCT",
-                message=f"Unknown product {product!r}; expected one of {list(PRODUCTS)}",
+            issue_from(
+                "UNKNOWN_PRODUCT",
+                product=product,
+                expected=list(PRODUCTS),
             )
         )
         return issues, fixes
@@ -53,10 +54,8 @@ def check_parse_gate(tac_text: str, product: str) -> tuple[list[Issue], list[Fix
     start, end, stripped = _content_bounds(tac_text)
     if not stripped:
         issues.append(
-            Issue(
-                severity="error",
-                code="EMPTY_TAC",
-                message="TAC text is empty",
+            issue_from(
+                "EMPTY_TAC",
                 location="body",
                 start=start,
                 end=end,
@@ -68,10 +67,10 @@ def check_parse_gate(tac_text: str, product: str) -> tuple[list[Issue], list[Fix
     upper = stripped.upper()
     if not any(keyword in upper for keyword in keywords):
         issues.append(
-            Issue(
-                severity="error",
-                code="MISSING_PRODUCT_KEYWORD",
-                message=f"{product} TAC must contain one of {list(keywords)}",
+            issue_from(
+                "MISSING_PRODUCT_KEYWORD",
+                product=product,
+                keywords=list(keywords),
                 location="header",
                 start=start,
                 end=end,
@@ -86,10 +85,8 @@ def check_parse_gate(tac_text: str, product: str) -> tuple[list[Issue], list[Fix
             term_end = start + len(core)
             term_start = term_end - 1 if core else start
             issues.append(
-                Issue(
-                    severity="info",
-                    code="MISSING_TERMINATOR",
-                    message="Reports in bulletins end with '=' — add it before publishing",
+                issue_from(
+                    "MISSING_TERMINATOR",
                     location="terminator",
                     start=term_start,
                     end=term_end,

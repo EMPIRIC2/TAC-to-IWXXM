@@ -70,17 +70,17 @@ def _string_const(node: ast.AST) -> str | None:
     return None
 
 
-def _codes_from_issue_call(node: ast.Call) -> list[str]:
-    """Extract code= kwargs or positional string from Issue(...) / _issue(...)."""
+def _codes_from_call(node: ast.Call) -> list[str]:
+    """Extract code strings from Issue(...), _issue(...), or issue_from(...)."""
     codes: list[str] = []
+    func_name = node.func.id if isinstance(node.func, ast.Name) else ""
     for kw in node.keywords:
         if kw.arg == "code":
             value = _string_const(kw.value)
             if value is not None:
                 codes.append(value)
-    # _issue("CODE", "message", ...) — first positional is the code.
-    func_name = node.func.id if isinstance(node.func, ast.Name) else ""
-    if func_name == "_issue" and node.args:
+    # _issue("CODE", ...) / issue_from("CODE", ...) — first positional is the code.
+    if func_name in {"_issue", "issue_from"} and node.args:
         value = _string_const(node.args[0])
         if value is not None:
             codes.append(value)
@@ -88,22 +88,17 @@ def _codes_from_issue_call(node: ast.Call) -> list[str]:
 
 
 def test_rule_module_issue_code_literals_are_registered() -> None:
-    """Static scan: Issue/_issue string codes in rule modules must be registered.
-
-    Remains useful until T2.2 migrates emissions onto ``issue_from`` exclusively.
-    """
+    """Static scan: Issue/_issue/issue_from string codes must be registered."""
     found: set[str] = set()
     for path in _RULE_MODULES:
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
         for node in ast.walk(tree):
             if not isinstance(node, ast.Call):
                 continue
-            name = ""
-            if isinstance(node.func, ast.Name):
-                name = node.func.id
-            if name not in {"Issue", "_issue"}:
+            name = node.func.id if isinstance(node.func, ast.Name) else ""
+            if name not in {"Issue", "_issue", "issue_from"}:
                 continue
-            for code in _codes_from_issue_call(node):
+            for code in _codes_from_call(node):
                 found.add(code)
                 _assert_registered(code)
-    assert found, "expected Issue/_issue code literals in rule modules"
+    assert found, "expected Issue/_issue/issue_from code literals in rule modules"
