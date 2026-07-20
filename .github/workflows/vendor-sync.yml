@@ -34,11 +34,17 @@ jobs:
           python -m pip install --upgrade pip uv
           uv sync
 
+      # Pin updates clear tree_sha256; sync must not verify until hashes refresh
+      # (BUG-2026-07-20 — otherwise weekly runs fail on checksum mismatch).
       - name: Check upstream wmo-im releases
         run: uv run python scripts/vendor/check_upstream.py --update
 
       - name: Sync vendor schema trees
-        run: uv run python scripts/vendor/sync_iwxxm.py --manifest vendor/manifest.json --no-legacy
+        run: >
+          uv run python scripts/vendor/sync_iwxxm.py
+          --manifest vendor/manifest.json
+          --no-legacy
+          --no-verify
 
       - name: Refresh manifest tree hashes
         run: uv run python scripts/vendor/check_upstream.py --refresh-tree-hashes
