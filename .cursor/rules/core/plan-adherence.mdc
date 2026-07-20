@@ -30,7 +30,7 @@ All implementation work must map to an approved feature in `[Corpus: product]`
 | F12 | Publishable `tac-validate` PyPI — **Implemented** (S014 / EV-010); deepen via F15 |
 | F13 | Fast `iwxxm-validate` Rust + Schematron + PyPI — **Implemented** (S014 / EV-010) |
 | F14 | Publish `tac2iwxxm[+validate]` + PyPI/release CI — **Implemented** (S014 / EV-010) |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar — **Planned** (S015 / EV-011; #732; ADR-028) |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar — **Done** (S015 / EV-011; #732; #742) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-* + iwxxm-us) |
 | M3 | GIFTs as in-repo package — **deprecated** at F6 cutover |
