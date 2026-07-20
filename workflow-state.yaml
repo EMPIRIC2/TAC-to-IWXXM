@@ -101,7 +101,7 @@ active_session:
       mode: full
       status: in_progress
       started: '2026-07-19'
-      note: in_progress — M1 T1.1–T1.4 complete; next 08@M1 then T2.1
+      note: in_progress — M1+M2 done; next M3 T3.1 R1 fixtures
     - stage: 08-verify-build
       required: true
       mode: full
@@ -129,9 +129,8 @@ active_session:
   skipped_stages: []
   current_stage: 07-build
   note: >-
-    B→C passed (D-S015-EV011-b-to-c=A). M1 complete: T1.1–T1.4 done.
-    Commits: e0189d4 T1.1, ac0a282 T1.2, a1abc7c T1.3, 79aa67c T1.4.
-    Next: 08-verify-build (M1) then M2 T2.1.
+    EV-011 07-build: M1+M2 complete. Next T3.1 (R1 fixtures).
+    Latest commits include T2.1 08af6d6, T2.2 da22b32, T2.2a 4233a7f, T2.3 4048e86.
 sessions:
 
   - id: S015-metar-lint-quality
@@ -228,7 +227,7 @@ sessions:
         mode: full
         status: in_progress
         started: '2026-07-19'
-        note: in_progress — M1 T1.1–T1.4 complete; next 08@M1 then T2.1
+        note: in_progress — M1+M2 done; next M3 T3.1 R1 fixtures
       - stage: 08-verify-build
         required: true
         mode: full
@@ -256,9 +255,8 @@ sessions:
     skipped_stages: []
     current_stage: 07-build
     note: >-
-      B→C passed (D-S015-EV011-b-to-c=A). M1 complete: T1.1–T1.4 done.
-      Commits: e0189d4 T1.1, ac0a282 T1.2, a1abc7c T1.3, 79aa67c T1.4.
-      Next: 08-verify-build (M1) then M2 T2.1.
+      EV-011 07-build: M1+M2 complete. Next T3.1 (R1 fixtures).
+      Latest commits include T2.1 08af6d6, T2.2 da22b32, T2.2a 4233a7f, T2.3 4048e86.
   - id: S014-package-publish-validation
     type: feature
     status: completed
@@ -1905,9 +1903,9 @@ stages:
         started_at: '2026-07-19'
         started: '2026-07-19'
         mode: full
-        note: M1 done; proceeding to 08-verify-build then M2
-        active_milestone: M1-complete
-        active_task: T2.1
+        note: M1+M2 complete; 153 tac-validate tests green; next HARD R1–R8
+        active_milestone: M2-complete
+        active_task: T3.1
         active_task_status: pending
       - id: S014-package-publish-validation
         session_id: S014-package-publish-validation
@@ -1947,6 +1945,9 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - >-
+        2026-07-20 S015/EV-011 M1+M2 complete (T2.1 08af6d6, T2.2 da22b32, T2.2a 4233a7f,
+        T2.3 4048e86); 153 tac-validate tests green; next M3 T3.1 R1 fixtures
       - >-
         2026-07-20 S015/EV-011 M1 complete (T1.1–T1.4; e0189d4/ac0a282/a1abc7c/79aa67c);
         next 08-verify-build (M1) then M2 T2.1
@@ -2033,7 +2034,7 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-19'
-      note: in_progress — M1 T1.1–T1.4 complete; next 08@M1 then T2.1
+      note: in_progress — M1+M2 done; next M3 T3.1 R1 fixtures
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -5954,6 +5955,8 @@ evolve_cycles:
       Phase B ready for B→C AskQuestion (b_to_c / phase_b still pending; do not start 07).
       E11-35 (D-S015-EV011-b-to-c=A): Phase B→C passed; 07-build started at T1.1.
       E11-36: M1 complete (T1.1–T1.4; e0189d4/ac0a282/a1abc7c/79aa67c); next 08-verify-build then M2 T2.1.
+      E11-37: M1+M2 complete (T2.1 08af6d6, T2.2 da22b32, T2.2a 4233a7f, T2.3 4048e86);
+      153 tac-validate tests green; next M3 T3.1 R1 fixtures (HARD R1–R8).
     routing_plan:
       required_stages:
         - 00-context
@@ -5976,9 +5979,8 @@ evolve_cycles:
       decision_id: D-S015-EV011-route-1
     current_stage: 07-build
     note: >-
-      B→C passed (D-S015-EV011-b-to-c=A). M1 complete: T1.1–T1.4 done.
-      Commits: e0189d4 T1.1, ac0a282 T1.2, a1abc7c T1.3, 79aa67c T1.4.
-      Next: 08-verify-build (M1) then M2 T2.1.
+      EV-011 07-build: M1+M2 complete. Next T3.1 (R1 fixtures).
+      Latest commits include T2.1 08af6d6, T2.2 da22b32, T2.2a 4233a7f, T2.3 4048e86.
     gates:
       a_to_b: passed  # 03-plan-tooling COMPLETE (D-S015-EV011-03-tooling-12); Phase A stages 01–03 done
       b_to_c: passed  # D-S015-EV011-b-to-c=A 2026-07-19; Phase B→C; start 07 at T1.1
@@ -6305,9 +6307,9 @@ evolve_cycles:
         mode: full
         started: '2026-07-19'
         completed:
-        note: M1 done; proceeding to 08-verify-build then M2
-        active_milestone: M1-complete
-        active_task: T2.1
+        note: M1+M2 complete; 153 tac-validate tests green; next HARD R1–R8
+        active_milestone: M2-complete
+        active_task: T3.1
         active_task_status: pending
   - id: EV-010
     session_id: S014-package-publish-validation
@@ -8310,6 +8312,34 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 4048e86
+      branch: evolve/EV-011-metar-lint-quality
+      message: "[T2.3] test: negative fixture expected_codes must be registered"
+      stage: "07-build"
+      session_id: S015-metar-lint-quality
+      files_changed: 2
+      timestamp: "2026-07-20T02:28:29Z"
+    - sha: 4233a7f
+      branch: evolve/EV-011-metar-lint-quality
+      message: "[T2.2a] config: escalate issue-registry-guard to hard-fail (STRICT=1)"
+      stage: "07-build"
+      session_id: S015-metar-lint-quality
+      files_changed: 4
+      timestamp: "2026-07-20T02:28:29Z"
+    - sha: da22b32
+      branch: evolve/EV-011-metar-lint-quality
+      message: "[T2.2] refactor: emit lint Issues via issue_from (no severity literals)"
+      stage: "07-build"
+      session_id: S015-metar-lint-quality
+      files_changed: 4
+      timestamp: "2026-07-20T02:26:15Z"
+    - sha: 08af6d6
+      branch: evolve/EV-011-metar-lint-quality
+      message: "[T2.1] test: M2 parity baseline for fixture codes vs registry severities"
+      stage: "07-build"
+      session_id: S015-metar-lint-quality
+      files_changed: 2
+      timestamp: "2026-07-20T02:24:17Z"
     - sha: 79aa67c
       branch: evolve/EV-011-metar-lint-quality
       message: "[T1.4] config: export ISSUE_CATALOG from registry + drift tests"
