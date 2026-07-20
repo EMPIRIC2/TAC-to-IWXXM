@@ -48,6 +48,7 @@ vi.mock('/utils/api', () => ({
   ingestCollect: vi.fn(),
   EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
+  fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
   lintTac: vi.fn().mockResolvedValue({
     ok: true,
     issues: [],

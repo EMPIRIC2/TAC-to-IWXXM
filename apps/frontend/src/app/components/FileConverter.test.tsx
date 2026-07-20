@@ -86,6 +86,7 @@ vi.mock('/utils/api', () => ({
   convertTafToIwxxm: vi
     .fn()
     .mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
+  fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
   lintTac: mockLintTac,
   decodeTac: mockDecodeTac,
   fetchAirportRegion: vi

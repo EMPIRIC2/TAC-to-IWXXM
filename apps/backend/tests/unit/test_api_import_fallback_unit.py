@@ -146,6 +146,8 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         LintTacResponse=_StubModel,
         LintIssueModel=_StubModel,
         LintFixModel=_StubModel,
+        LintIssueCatalogEntryModel=_StubModel,
+        LintIssueCatalogResponse=_StubModel,
     )
 
     fake_statistics_service = types.SimpleNamespace()
@@ -229,6 +231,11 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
             split_bulletin=lambda *a, **k: None,
         ),
         "tac_validate": _stub_module("tac_validate", lint=lambda *a, **k: None),
+        "tac_validate.issue_registry": _stub_module(
+            "tac_validate.issue_registry",
+            catalog_entries=lambda **_kwargs: (),
+            ISSUES=(),
+        ),
     }
 
     for name, module in stubs.items():

@@ -158,6 +158,27 @@ def test_missing_terminator_default_severity_is_info() -> None:
     assert by_code("MISSING_TERMINATOR").severity == "info"
 
 
+def test_catalog_entries_returns_full_registry_when_unfiltered() -> None:
+    from tac_validate.issue_registry import ISSUES, catalog_entries
+
+    assert catalog_entries() is ISSUES
+    assert catalog_entries(product=None) is ISSUES
+    assert catalog_entries(product="  ") is ISSUES
+
+
+def test_catalog_entries_filters_by_product_tag_or_field() -> None:
+    from tac_validate.issue_registry import catalog_entries
+
+    metar_codes = {spec.code for spec in catalog_entries(product="METAR")}
+    assert "MISSING_OBS_TIME" in metar_codes
+    assert "MISSING_TERMINATOR" in metar_codes
+    assert "MISSING_VALIDITY" not in metar_codes
+
+    taf_codes = {spec.code for spec in catalog_entries(product="taf")}
+    assert "MISSING_VALIDITY" in taf_codes
+    assert "MISSING_OBS_TIME" not in taf_codes
+
+
 def _missing(code: str, by_code: object) -> bool:
     try:
         by_code(code)  # type: ignore[operator]
