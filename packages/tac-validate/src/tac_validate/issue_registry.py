@@ -111,6 +111,12 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("visibility", "metar", "speci"),
     ),
     _row(
+        "INVALID_VISIBILITY",
+        "error",
+        "{product} invalid visibility token (use SM, meters, or CAVOK)",
+        tags=("visibility", "metar", "speci", "r2"),
+    ),
+    _row(
         "MISSING_TEMP_DEWPOINT",
         "error",
         "{product} missing temperature/dewpoint tt/td — A3-2 #10",

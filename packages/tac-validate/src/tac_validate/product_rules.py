@@ -13,7 +13,12 @@ from tac_validate.models import Issue
 _ICAO = re.compile(r"\b[A-Z]{4}\b")
 _OBS_TIME = re.compile(r"\b\d{6}Z\b")
 _WIND = re.compile(r"\b(?:(?:VRB|\d{3})\d{2,3}(?:G\d{2,3})?(?:KT|MPS)|CALM)\b")
-_VIS = re.compile(r"\b(?:CAVOK|P?\d{1,2}SM|\d{4})\b")
+# R2: CAVOK | statute miles (incl. fractions / M|P prefix) | 4-digit meters (9999).
+_VIS_OK = re.compile(r"\b(?:CAVOK|P?\d{1,2}SM|[MP]?\d{1,2}/\d{1,2}SM|\d{1,2}\s+[MP]?\d{1,2}/\d{1,2}SM|\d{4})\b")
+_VIS_BAD = re.compile(
+    r"\b(\d+KM|\d+MILES|\d{5,})\b",
+    re.IGNORECASE,
+)
 _TEMP = re.compile(r"\bM?\d{2}/M?\d{2}\b")
 _QNH = re.compile(r"\b[QA]\d{4}\b")
 _CLOUD_OK = re.compile(r"\b(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)\d{0,3}(?:CB|TCU)?\b")
@@ -173,7 +178,19 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
     if order_issue is not None:
         issues.append(order_issue)
 
-    if not _VIS.search(core):
+    bad_vis = list(_VIS_BAD.finditer(core))
+    if bad_vis:
+        for match in bad_vis:
+            issues.append(
+                _issue(
+                    "INVALID_VISIBILITY",
+                    f"{product} invalid visibility token {match.group(1)!r} — research R2",
+                    start=start + match.start(1),
+                    end=start + match.end(1),
+                    location="visibility",
+                )
+            )
+    elif not _VIS_OK.search(core):
         issues.append(
             _issue(
                 "MISSING_VISIBILITY",

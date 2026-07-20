@@ -1,7 +1,6 @@
-"""Research R2 / TC-F15-003 — visibility SM / meters / fractions / 9999 fixtures (T3.3).
+"""Research R2 / TC-F15-003 — visibility SM / meters / fractions / 9999 (T3.3/T3.4).
 
-Baseline + fraction SM accepts assert now. ``INVALID_VISIBILITY`` errors xfail
-until T3.4 registers the code and distinguishes malformed vis from missing.
+Baseline + fraction SM accepts; malformed vis emits ``INVALID_VISIBILITY``.
 """
 
 from __future__ import annotations
@@ -69,7 +68,6 @@ def test_r2_fraction_sm_accept_ok(case: dict[str, Any]) -> None:
 
 
 @pytest.mark.parametrize("case", _VIS_ERRORS, ids=_case_ids(_VIS_ERRORS))
-@pytest.mark.xfail(strict=True, reason="T3.4 encodes INVALID_VISIBILITY registry + rule")
 def test_r2_invalid_visibility_emits_error(case: dict[str, Any]) -> None:
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is False

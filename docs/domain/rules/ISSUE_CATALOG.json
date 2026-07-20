@@ -35,6 +35,18 @@
       ]
     },
     {
+      "code": "INVALID_VISIBILITY",
+      "severity": "error",
+      "message_template": "{product} invalid visibility token (use SM, meters, or CAVOK)",
+      "product": null,
+      "tags": [
+        "visibility",
+        "metar",
+        "speci",
+        "r2"
+      ]
+    },
+    {
       "code": "MISSING_CCCC",
       "severity": "error",
       "message_template": "{product} missing ICAO location (CCCC)",
