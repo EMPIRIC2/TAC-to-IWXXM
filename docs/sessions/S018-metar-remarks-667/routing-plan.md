@@ -16,7 +16,7 @@
 | 03-plan-tooling | no | — | No new guardrails |
 | 05-verify-tech | no | — | Thin 04; fold into 02 |
 | 06-tech-tooling | no | — | No stack change |
-| 10-e2e | no | — | Package/API convert issues; covered by unit + 13 |
+| 10-e2e | yes | delta | Amended 2026-07-20 (user request); UJ-026/UJ-010 T0 library |
 
 ## Approved
 

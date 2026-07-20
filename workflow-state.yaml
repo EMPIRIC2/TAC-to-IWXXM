@@ -16,7 +16,7 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-013
   artifacts_dir: docs/sessions/S018-metar-remarks-667/
-  current_stage: 08-verify-build
+  current_stage: 11-verify-impl
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched: []
@@ -38,8 +38,8 @@ active_session:
       started: '2026-07-20'
       skip_rationale:
       note: >-
-        Implementation landed (07-build); 08-verify-build in_progress;
-        Standard routing
+        09-qa + 10-e2e completed (QA pass_with_advisories; e2e PASS);
+        current_stage 11-verify-impl pending
     - stage: 01-requirements
       required: true
       mode: delta
@@ -88,19 +88,32 @@ active_session:
     - stage: 08-verify-build
       required: true
       mode: full
-      status: in_progress
+      status: completed
       started: '2026-07-20'
+      completed: '2026-07-20'
       skip_rationale:
+      note: CI already green — completed without re-run
     - stage: 09-qa
       required: true
       mode: full
-      status: pending
+      status: completed
+      started: '2026-07-20T19:54:52Z'
+      completed: '2026-07-20T20:18:31Z'
       skip_rationale:
+      note: >-
+        pass_with_advisories (QA-001 FE flake under load; clean re-run green);
+        report docs/sessions/S018-metar-remarks-667/reports/qa-report.md
     - stage: 10-e2e
-      required: false
-      mode: skipped
-      status: skipped
-      skip_rationale: 'Standard routing for #667 — not in approved stage list (E13-2)'
+      required: true
+      mode: full
+      status: completed
+      started: '2026-07-20T19:54:52Z'
+      completed: '2026-07-20T20:18:31Z'
+      skip_rationale:
+      note: >-
+        PASS T0 UJ-026/UJ-010; report
+        docs/sessions/S018-metar-remarks-667/reports/e2e-report.md
+        (amended routing D-S018-EV013-amend-10-e2e)
     - stage: 11-verify-impl
       required: true
       mode: full
@@ -2330,13 +2343,24 @@ stages:
       note: 'M1–M5 complete (T1.1–T5.10); PR #742 merged b405a96'
   09-qa:
     status: completed
-    started_at: "2026-06-24T14:55:00Z"
-    completed_at: "2026-06-24T15:10:00Z"
-    report: docs/sessions/S004-issue-555-feedback/reports/qa-report.md
-    overall: fail
-    session_id: S004-issue-555-feedback
-    evolve_cycle_id: EV-004
+    started_at: "2026-07-20T19:54:52Z"
+    completed_at: "2026-07-20T20:18:31Z"
+    report: docs/sessions/S018-metar-remarks-667/reports/qa-report.md
+    overall: pass_with_advisories
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
     delta_substages:
+      - id: S018-metar-remarks-667
+        session_id: S018-metar-remarks-667
+        evolve_cycle_id: EV-013
+        status: completed
+        started_at: '2026-07-20T19:54:52Z'
+        completed_at: '2026-07-20T20:18:31Z'
+        overall: pass_with_advisories
+        mode: full
+        report: docs/sessions/S018-metar-remarks-667/reports/qa-report.md
+        note: >-
+          pass_with_advisories (QA-001 FE flake under load; clean re-run green)
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2387,6 +2411,10 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/qa-report.md
         note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted"
     notes:
+      - >-
+        2026-07-20 S018/EV-013 09-qa completed — pass_with_advisories (QA-001 FE flake;
+        clean re-run green); qa-report.md; next 11-verify-impl
+      - 2026-07-20 S018/EV-013 09-qa in_progress (parallel 10-e2e; D-S018-EV013-amend-10-e2e)
       - 2026-07-20 S015/EV-011 09-qa completed — PASS — qa-report.md
       - "2026-07-19 S014/EV-010 09-qa completed — pass_with_advisories (QA-S014-001 H4–H5→13); see qa-report.md"
       - "2026-07-19 S014/EV-010 09-qa in_progress (T6.2; D-S014-EV010-c-to-d-pass)"
@@ -2495,11 +2523,12 @@ stages:
 
   10-e2e:
     status: completed
-    started_at: "2026-06-24T15:00:00Z"
-    completed_at: "2026-06-24T15:20:00Z"
-    report: docs/sessions/S004-issue-555-feedback/reports/e2e-report.md
-    overall: fail
-    session_id: S004-issue-555-feedback
+    started_at: "2026-07-20T19:54:52Z"
+    completed_at: "2026-07-20T20:18:31Z"
+    report: docs/sessions/S018-metar-remarks-667/reports/e2e-report.md
+    overall: pass
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
     substeps:
       extract_journeys:
         status: completed
@@ -2516,6 +2545,16 @@ stages:
         status: completed
         notes: "H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred"
     delta_substages:
+      - id: S018-metar-remarks-667
+        session_id: S018-metar-remarks-667
+        evolve_cycle_id: EV-013
+        status: completed
+        started_at: '2026-07-20T19:54:52Z'
+        completed_at: '2026-07-20T20:18:31Z'
+        overall: pass
+        mode: full
+        report: docs/sessions/S018-metar-remarks-667/reports/e2e-report.md
+        note: PASS T0 UJ-026/UJ-010 (amended routing D-S018-EV013-amend-10-e2e)
       - id: S016-manual-tac-input-modes
         session_id: S016-manual-tac-input-modes
         evolve_cycle_id: EV-012
@@ -2569,6 +2608,10 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
         note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk"
     notes:
+      - >-
+        2026-07-20 S018/EV-013 10-e2e completed — PASS T0 UJ-026/UJ-010; e2e-report.md;
+        next 11-verify-impl
+      - 2026-07-20 S018/EV-013 10-e2e in_progress (amended from skipped; D-S018-EV013-amend-10-e2e)
       - 2026-07-20 S016/EV-012 10-e2e completed — PASS TC-F7-007 T1-T6 + Vitest; e2e-report.md; next 13-deploy-smoke 
         (pending)
       - 2026-07-20 S015/EV-011 10-e2e completed — PASS — e2e-report.md; UJ-024 catalog smoke
@@ -2584,9 +2627,11 @@ stages:
   08-verify-build:
     status: completed
     started_at: "2026-06-22T17:27:00Z"
-    completed_at: "2026-06-24T14:30:00Z"
+    completed_at: "2026-07-20T19:54:52Z"
     overall: fail
     report: docs/sessions/S004-issue-555-feedback/reports/verification-report.md
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
     substeps:
       lint:
         status: completed
@@ -2605,6 +2650,14 @@ stages:
       report:
         status: completed
     delta_substages:
+      - id: S018-metar-remarks-667
+        session_id: S018-metar-remarks-667
+        evolve_cycle_id: EV-013
+        status: completed
+        started_at: '2026-07-20'
+        completed_at: '2026-07-20'
+        mode: full
+        note: CI already green — completed without re-run; handoff 09-qa+10-e2e
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2655,6 +2708,7 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
         note: "T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass"
     notes:
+      - 2026-07-20 S018/EV-013 08-verify-build completed — CI green; handoff 09-qa+10-e2e
       - 2026-07-20 S015/EV-011 08-verify-build completed — T5.1 PASS — verification-report.md; C→D passed
       - "2026-07-19 S014/EV-010 C→D passed (D-S014-EV010-c-to-d-pass); T6.2 09-qa+10-e2e in_progress"
       - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED (docker pull); C→D pending AskQuestion;
@@ -2900,10 +2954,10 @@ stages:
     session_id: S018-metar-remarks-667
     evolve_cycle_id: EV-013
     started_at: '2026-07-20'
-    current_stage: 16-evolve
+    current_stage: 11-verify-impl
     note: >-
-      S018/EV-013 — Phase 0 intake complete via Assumed (E13-1/E13-2/E13-3); AskQuestion UI
-      waived (cloud); Standard routing; moving to 01-requirements
+      S018/EV-013 — 09-qa + 10-e2e completed; current_stage 11-verify-impl
+      pending (QA pass_with_advisories; e2e PASS)
 
 stages_pending: []
 
@@ -3012,6 +3066,40 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S018-EV013-qa-001-fe-flake
+    stage: 09-qa
+    date: '2026-07-20'
+    timestamp: '2026-07-20T20:18:31Z'
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    skill: 09-qa
+    skill_id: 09-qa
+    topic: QA-001 FE flake advisory under load
+    decision: >-
+      QA-001: frontend Vitest saw 2 timeouts under concurrent load; clean re-run
+      green (644/644). Recorded as advisory only — overall pass_with_advisories;
+      does not block 11-verify-impl.
+    status: noted
+    resolved_at: '2026-07-20'
+    note: Advisory from qa-report.md; clean re-run green
+  - id: D-S018-EV013-amend-10-e2e
+    stage: 09-qa
+    date: '2026-07-20'
+    timestamp: '2026-07-20T19:54:52Z'
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    skill: 09-qa
+    skill_id: 09-qa
+    topic: Amend routing — include 10-e2e for EV-013 #667 remarks
+    decision: >-
+      User requested 10-e2e despite prior E13-2 Standard skip (10-e2e not in approved
+      stage list). Amend active_session.routing_plan and EV-013: 10-e2e skipped →
+      required/in_progress; run 09-qa + 10-e2e in parallel after 08-verify-build
+      completed (CI green). Intent: verify all tests passing + run 09-qa and 10-e2e
+      for EV-013 #667 remarks.
+    status: confirmed
+    resolved_at: '2026-07-20'
+    note: User-amended routing plan (amendment of D-S018-EV013-E13-2-routing)
   - id: D-S018-aq-waive-cloud
     stage: 00-context
     date: '2026-07-20'
@@ -5584,6 +5672,28 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/sessions/S018-metar-remarks-667/reports/qa-report.md
+    type: report
+    kind: qa-report
+    stage: 09-qa
+    skill_id: 09-qa
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    created_at: '2026-07-20'
+    updated_at: '2026-07-20T20:18:31Z'
+    status: completed
+    note: pass_with_advisories (QA-001 FE flake; clean re-run green)
+  - path: docs/sessions/S018-metar-remarks-667/reports/e2e-report.md
+    type: report
+    kind: e2e-report
+    stage: 10-e2e
+    skill_id: 10-e2e
+    session_id: S018-metar-remarks-667
+    evolve_cycle_id: EV-013
+    created_at: '2026-07-20'
+    updated_at: '2026-07-20T20:18:31Z'
+    status: completed
+    note: PASS T0 UJ-026/UJ-010
   - path: docs/sessions/S016-manual-tac-input-modes/reports/e2e-report.md
     type: report
     kind: e2e-report
@@ -6903,6 +7013,7 @@ evolve_cycles:
         - 07-build
         - 08-verify-build
         - 09-qa
+        - 10-e2e
         - 11-verify-impl
         - 12-verify-deploy
         - 13-deploy-smoke
@@ -6910,9 +7021,14 @@ evolve_cycles:
         - 03-plan-tooling
         - 05-verify-tech
         - 06-tech-tooling
-        - 10-e2e
-    current_stage: 08-verify-build
+    current_stage: 11-verify-impl
     notes:
+      - >-
+        2026-07-20 S018/EV-013 — 09-qa + 10-e2e completed (QA pass_with_advisories;
+        e2e PASS); current_stage 11-verify-impl pending
+      - >-
+        2026-07-20 S018/EV-013 — 08-verify-build completed (CI green); 09-qa + 10-e2e
+        in_progress parallel (D-S018-EV013-amend-10-e2e)
       - >-
         2026-07-20 S018/EV-013 — TC-F6-013 tests expanded (12 cases) on
         cursor/metar-remarks-667-tests-1fe0 / PR #751 (stacked on feature branch)
@@ -6937,7 +7053,7 @@ evolve_cycles:
         status: in_progress
         started: '2026-07-20'
         note: >-
-          Orchestrator in_progress; implementation landed; verification next
+          Orchestrator in_progress; 09+10 done; current_stage 11-verify-impl pending
       01-requirements:
         status: completed
         mode: delta
@@ -6970,15 +7086,28 @@ evolve_cycles:
         started: '2026-07-20'
         completed: '2026-07-20'
       08-verify-build:
-        status: in_progress
+        status: completed
         mode: full
         started: '2026-07-20'
+        completed: '2026-07-20'
+        note: CI already green — completed without re-run
       09-qa:
-        status: pending
+        status: completed
         mode: full
+        started: '2026-07-20T19:54:52Z'
+        completed: '2026-07-20T20:18:31Z'
+        overall: pass_with_advisories
+        report: docs/sessions/S018-metar-remarks-667/reports/qa-report.md
+        note: >-
+          pass_with_advisories (QA-001 FE flake under load; clean re-run green)
       10-e2e:
-        status: skipped
-        skip_rationale: Not in Standard approved stage list (E13-2)
+        status: completed
+        mode: full
+        started: '2026-07-20T19:54:52Z'
+        completed: '2026-07-20T20:18:31Z'
+        overall: pass
+        report: docs/sessions/S018-metar-remarks-667/reports/e2e-report.md
+        note: PASS T0 UJ-026/UJ-010 (amended routing)
       11-verify-impl:
         status: pending
         mode: full
@@ -7008,6 +7137,10 @@ evolve_cycles:
       - path: docs/sessions/S018-metar-remarks-667/reports/execution-plan.md
         status: present
       - path: packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
+        status: present
+      - path: docs/sessions/S018-metar-remarks-667/reports/qa-report.md
+        status: present
+      - path: docs/sessions/S018-metar-remarks-667/reports/e2e-report.md
         status: present
       - path: docs/sessions/S018-metar-remarks-667/reports/evolve-summary.md
         status: pending
