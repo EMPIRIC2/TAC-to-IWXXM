@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Warn (exit 0) on ad-hoc severity literals in tac-validate rule modules.
+"""Hard-fail (when strict) on ad-hoc severity literals in tac-validate rule modules.
 
-Pre-commit / CI helper for F15. Escalates to hard-fail in T2.2a after registry migration.
-Always exits 0 until ``ISSUE_REGISTRY_GUARD_STRICT=1`` (set by T2.2a / CI later).
+Pre-commit / CI helper for F15 (ADR-028). Set ``ISSUE_REGISTRY_GUARD_STRICT=1``
+(T2.2a) to exit non-zero on hits; without it, prints WARN and exits 0.
 """
 
 from __future__ import annotations
@@ -59,7 +59,7 @@ def main(argv: list[str]) -> int:
             print(f"  … +{len(findings) - 20} more")
         if strict:
             return 1
-        print("  (advisory until T2.2a sets ISSUE_REGISTRY_GUARD_STRICT=1)")
+        print("  (advisory — set ISSUE_REGISTRY_GUARD_STRICT=1 for hard-fail)")
     return 0
 
 

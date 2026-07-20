@@ -1,6 +1,7 @@
-"""Cursor afterFileEdit hook: warn on ad-hoc severity literals in tac-validate rules.
+"""Cursor afterFileEdit hook: flag ad-hoc severity literals in tac-validate rules.
 
-Advisory (exit 0) until T2.2a escalates CI via ISSUE_REGISTRY_GUARD_STRICT=1.
+CI/pre-commit hard-fails via ``ISSUE_REGISTRY_GUARD_STRICT=1`` (T2.2a). This hook
+still exits 0 so edits are not blocked in-editor, but messages say ERROR.
 Skips the registry module itself and tests.
 """
 
