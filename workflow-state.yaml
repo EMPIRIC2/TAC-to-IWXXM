@@ -10298,8 +10298,8 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
-    - sha: d6a84ba7d90c1ca37e537a40c579adfd4bb7a194
-      short: d6a84ba
+    - sha: 16a399ad3f6ae81cf0f7d6d1ee98812d8dc74eb0
+      short: 16a399a
       message: 'docs(S019): lock EV-014 Phase 0 Batch 2 intake'
       branch: cursor/dissemination-upload-e25c
       date: '2026-07-20'
