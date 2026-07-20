@@ -8413,6 +8413,10 @@ git_history:
   pending_commit:
   notes:
     - >-
+      2026-07-20 S016/EV-012 git — recorded 7e052f43c0725fe590da50c455bb393281e0af98
+      (7e052f4) test(S016): add TC-F7-007 Playwright suite for Manual TAC Input modes;
+      10-e2e; local tip on evolve/EV-012-manual-tac-input-modes; not pushed
+    - >-
       2026-07-20 S016/EV-012 git — recorded eab76dbd9876f0c57041aa7ab9d4adfaaf9e3d88
       (eab76db) chore(S016): record EV-012 01-requirements completion in workflow-state;
       01-requirements; local tip on evolve/EV-012-manual-tac-input-modes
@@ -8540,9 +8544,9 @@ git_history:
       created_at: '2026-07-20'
       session_id: S016-manual-tac-input-modes
       evolve_cycle_id: EV-012
-      tip_sha: 8124163
+      tip_sha: 7e052f4
       note: >-
-        Branch active; tip 8124163 (02-verify-plan pass); not pushed
+        Branch active; tip 7e052f4 (10-e2e TC-F7-007 Playwright suite); not pushed
     - name: evolve/EV-011-metar-lint-quality
       purpose: "EV-011 / S015 METAR lint issue registry + #732 quality (F15 + F6/F12 deepen)"
       base: main
@@ -8791,6 +8795,21 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 7e052f4
+      short: 7e052f4
+      branch: evolve/EV-012-manual-tac-input-modes
+      message: 'test(S016): add TC-F7-007 Playwright suite for Manual TAC Input modes'
+      stage: 10-e2e
+      session_id: S016-manual-tac-input-modes
+      evolve_cycle_id: EV-012
+      files_changed:
+        - README.md
+        - apps/e2e/f7-manual-tac-input-modes.e2e.spec.ts
+        - apps/frontend/src/app/components/FileConverter.tsx
+        - docs/decisions/evolve-decisions.md
+        - docs/sessions/S016-manual-tac-input-modes/reports/e2e-report.md
+        - workflow-state.yaml
+      timestamp: '2026-07-20T15:37:28Z'
     - sha: 8124163
       short: 8124163
       branch: evolve/EV-012-manual-tac-input-modes
