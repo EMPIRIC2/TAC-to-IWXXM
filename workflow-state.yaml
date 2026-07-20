@@ -15,12 +15,17 @@ active_session:
   evolve_cycle_id: EV-012
   branch: evolve/EV-012-manual-tac-input-modes
   artifacts_dir: docs/sessions/S016-manual-tac-input-modes
+  current_stage: 02-verify-plan
   context_briefs:
     - docs/context/manual-tac-input-modes.md
   standing_docs_touched:
     - docs/decisions/evolve-decisions.md
     - docs/context/manual-tac-input-modes.md
     - docs/sessions/S016-manual-tac-input-modes/session-brief.md
+    - docs/user-journeys.md
+    - docs/test-plan.md
+    - docs/feature-list.md
+    - docs/spec.md
   routing_plan:
     - stage: 00-context
       required: true
@@ -34,11 +39,14 @@ active_session:
       mode: orchestrator
       status: in_progress
       started: '2026-07-20'
-      note: EV-012 Phase 0 complete; next 01-requirements delta
+      note: EV-012 Phase 0 complete; 01-requirements completed; current_stage 02-verify-plan
     - stage: 01-requirements
       required: true
       mode: delta
-      status: pending
+      status: completed
+      started: '2026-07-20'
+      completed: '2026-07-20'
+      note: UJ-025 + TC-F7-007
     - stage: 02-verify-plan
       required: true
       mode: delta
@@ -4888,6 +4896,27 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/sessions/S016-manual-tac-input-modes/reports/01-requirements.md
+    type: report
+    kind: requirements-report
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    created_at: '2026-07-20'
+    updated_at: '2026-07-20'
+    status: completed
+    note: UJ-025 + TC-F7-007
+  - path: docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-a.md
+    type: checkpoint
+    kind: phase-a
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    created_at: '2026-07-20'
+    updated_at: '2026-07-20'
+    status: completed
   - path: docs/sessions/S015-metar-lint-quality/reports/evolve-summary.md
     type: report
     kind: evolve-summary
@@ -6095,9 +6124,11 @@ evolve_cycles:
         - 09-qa
         - 11-verify-impl
         - 12-verify-deploy
-    current_stage: 01-requirements  # pending until user approves start
+    current_stage: 02-verify-plan
     notes:
-      - 2026-07-20 S016/EV-012 Phase 0 locked; lean+13 routing approved; awaiting user approval to start 01-requirements
+      - 2026-07-20 S016/EV-012 01-requirements COMPLETE — UJ-025 + TC-F7-007; handoff to 02-verify-plan (pending)
+      - 2026-07-20 S016/EV-012 01-requirements started (in_progress)
+      - 2026-07-20 S016/EV-012 Phase 0 locked; lean+13 routing approved (D-S016-EV012-route-1)
     stages:
       00-context:
         status: completed
@@ -6112,9 +6143,10 @@ evolve_cycles:
         started: '2026-07-20'
         completed:
       01-requirements:
-        status: pending  # pending until user approves start
-        started:
-        completed:
+        status: completed
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        note: UJ-025 + TC-F7-007
       02-verify-plan:
         status: pending
       10-e2e:
@@ -6142,6 +6174,10 @@ evolve_cycles:
       - path: docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-0.md
         status: completed
       - path: docs/context/manual-tac-input-modes.md
+        status: completed
+      - path: docs/sessions/S016-manual-tac-input-modes/reports/01-requirements.md
+        status: completed
+      - path: docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-a.md
         status: completed
       - path: docs/decisions/evolve-decisions.md
         status: in_progress
@@ -8297,11 +8333,15 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: docs/EV-011-deploy-smoke
+  current_branch: evolve/EV-012-manual-tac-input-modes
   ahead_of_origin: 0
   pushed: false
   pending_commit:
   notes:
+    - >-
+      2026-07-20 S016/EV-012 git — recorded 143670ac6d6e912aa16c8ea175a3e04e4695fb64
+      (143670a) docs(S016): add UJ-025 and TC-F7-007 for Manual TAC Input modes;
+      01-requirements; local tip on evolve/EV-012-manual-tac-input-modes; not pushed
     - 2026-07-20 S016/EV-012 open — branch evolve/EV-012-manual-tac-input-modes recorded active (base main); Phase 0 complete; lean+13 routing approved
     - '2026-07-20 S015/EV-011 — PR #742 merged b405a96; T5.10 deploy-smoke PASS; docs a73bbe0 on docs/EV-011-deploy-smoke; EV-011 open pending Phase D close'
     - >-
@@ -8422,7 +8462,9 @@ git_history:
       created_at: '2026-07-20'
       session_id: S016-manual-tac-input-modes
       evolve_cycle_id: EV-012
-      note: Branch recorded active; parent creates git branch
+      tip_sha: 143670a
+      note: >-
+        Branch active; tip 143670a (01-requirements UJ-025 / TC-F7-007); not pushed
     - name: evolve/EV-011-metar-lint-quality
       purpose: "EV-011 / S015 METAR lint issue registry + #732 quality (F15 + F6/F12 deepen)"
       base: main
@@ -8671,6 +8713,39 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 143670a
+      short: 143670a
+      branch: evolve/EV-012-manual-tac-input-modes
+      message: 'docs(S016): add UJ-025 and TC-F7-007 for Manual TAC Input modes'
+      stage: 01-requirements
+      session_id: S016-manual-tac-input-modes
+      evolve_cycle_id: EV-012
+      files_changed:
+        - docs/user-journeys.md
+        - docs/test-plan.md
+        - docs/feature-list.md
+        - docs/spec.md
+        - docs/decisions/evolve-decisions.md
+        - docs/sessions/S016-manual-tac-input-modes/reports/01-requirements.md
+        - docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-a.md
+      timestamp: '2026-07-20'
+    - sha: aedb4ae
+      short: aedb4ae
+      branch: evolve/EV-012-manual-tac-input-modes
+      message: 'docs(S016): open EV-012 for Manual TAC Input mode validation (#730)'
+      stage: 00-context
+      session_id: S016-manual-tac-input-modes
+      evolve_cycle_id: EV-012
+      files_changed:
+        - docs/context/README.md
+        - docs/context/manual-tac-input-modes.md
+        - docs/decisions/evolve-decisions.md
+        - docs/sessions/README.md
+        - docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-0.md
+        - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
+        - docs/sessions/S016-manual-tac-input-modes/session-brief.md
+        - workflow-state.yaml
+      timestamp: '2026-07-20'
     - sha: a73bbe0
       short: a73bbe0
       branch: docs/EV-011-deploy-smoke
