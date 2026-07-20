@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
-  "description": "TC-F12-001 / E10-21 negative + accept fixture pack for tac-validate (T2.1).",
+  "description": "TC-F12-001 / E10-21 / TC-F15-003 fixture pack for tac-validate (F12 + F15 R1–R8).",
   "cite": [
     "docs/domain/TAC_VALIDATION.md (A3-2, A5-1, A6, A2-1, A2-2 paraphrase)",
-    "docs/domain/rules/COVERAGE_MATRIX.md"
+    "docs/domain/rules/COVERAGE_MATRIX.md",
+    "docs/sessions/S015-metar-lint-quality/reports/metar-research-catalog.md (R1–R8)"
   ],
   "accept": [
     {
@@ -13,9 +14,23 @@
       "ok": true
     },
     {
+      "id": "accept_metar_r1_station_time",
+      "product": "METAR",
+      "theme": "R1",
+      "tac": "accept/metar_r1_station_time.tac",
+      "ok": true
+    },
+    {
       "id": "accept_speci_basic",
       "product": "SPECI",
       "tac": "accept/speci_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_r1_station_time",
+      "product": "SPECI",
+      "theme": "R1",
+      "tac": "accept/speci_r1_station_time.tac",
       "ok": true
     },
     {
@@ -54,6 +69,7 @@
       "id": "metar_missing_cccc",
       "product": "METAR",
       "depth": "full_checklist",
+      "theme": "R1",
       "cite": "A3-2 #2 CCCC",
       "tac": "negative/metar/missing_cccc.tac",
       "ok": false,
@@ -64,6 +80,7 @@
       "id": "metar_missing_obs_time",
       "product": "METAR",
       "depth": "full_checklist",
+      "theme": "R1",
       "cite": "A3-2 #3 ddhhmmZ",
       "tac": "negative/metar/missing_obs_time.tac",
       "ok": false,
@@ -124,10 +141,22 @@
       "id": "speci_missing_cccc",
       "product": "SPECI",
       "depth": "full_checklist",
+      "theme": "R1",
       "cite": "A3-2 #2 CCCC",
       "tac": "negative/speci/missing_cccc.tac",
       "ok": false,
       "expected_codes": ["MISSING_CCCC"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_missing_obs_time",
+      "product": "SPECI",
+      "depth": "full_checklist",
+      "theme": "R1",
+      "cite": "A3-2 #3 ddhhmmZ",
+      "tac": "negative/speci/missing_obs_time.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_OBS_TIME"],
       "require_spans": true
     },
     {
@@ -278,6 +307,44 @@
       "tac": "negative/tca/missing_max_wind.tac",
       "ok": false,
       "expected_codes": ["MISSING_MAX_WIND"],
+      "require_spans": true
+    }
+  ],
+  "order_warnings": [
+    {
+      "id": "metar_odd_order_time_before_cccc",
+      "product": "METAR",
+      "theme": "R1",
+      "depth": "full_checklist",
+      "cite": "A3-2 body order CCCC→ddhhmmZ; research R1",
+      "tac": "negative/metar/odd_order_time_before_cccc.tac",
+      "ok": true,
+      "expected_codes": ["ODD_FIELD_ORDER"],
+      "expected_severity": "warning",
+      "require_spans": true
+    },
+    {
+      "id": "metar_odd_order_wind_before_time",
+      "product": "METAR",
+      "theme": "R1",
+      "depth": "full_checklist",
+      "cite": "A3-2 body order ddhhmmZ→wind; research R1",
+      "tac": "negative/metar/odd_order_wind_before_time.tac",
+      "ok": true,
+      "expected_codes": ["ODD_FIELD_ORDER"],
+      "expected_severity": "warning",
+      "require_spans": true
+    },
+    {
+      "id": "speci_odd_order_time_before_cccc",
+      "product": "SPECI",
+      "theme": "R1",
+      "depth": "full_checklist",
+      "cite": "A3-2 body order CCCC→ddhhmmZ; research R1",
+      "tac": "negative/speci/odd_order_time_before_cccc.tac",
+      "ok": true,
+      "expected_codes": ["ODD_FIELD_ORDER"],
+      "expected_severity": "warning",
       "require_spans": true
     }
   ]

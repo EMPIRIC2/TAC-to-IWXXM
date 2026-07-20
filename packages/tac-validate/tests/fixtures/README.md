@@ -42,6 +42,12 @@ Convert goldens live under `packages/tac2iwxxm/tests/fixtures/{annex3_golden,iwx
 Diagnostics assertions require product-rule codes/spans from
 `check_product_rules`.
 
+| Manifest key     | `ok`    | Role                                                |
+| ---------------- | ------- | --------------------------------------------------- |
+| `accept`         | `true`  | Thin accept / theme accept (e.g. R1 station/time)   |
+| `negative`       | `false` | Error-severity checklist / template gates           |
+| `order_warnings` | `true`  | Warning-only R1 odd field order (`ODD_FIELD_ORDER`) |
+
 ## Tooling
 
 ```bash
