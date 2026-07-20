@@ -39,15 +39,14 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S012-empty-bearer-lint-tac](S012-empty-bearer-lint-tac/session-brief.md) | hotfix | completed | Empty Bearer on lint-tac/decode-tac + lint UX issue details | fix/S012-empty-bearer-lint-tac | 2026-07-15 | 2026-07-15 |
 | [S013-live-decode-preview-ux](S013-live-decode-preview-ux/session-brief.md) | feature | completed | Value-aware live decode + plain-language summary (F9); IWXXM preview pane + lint UX clarity (F10) — EV-009; PR #723 | evolve/S013-live-decode-preview-ux | 2026-07-16 | 2026-07-18 |
 | [S014-package-publish-validation](S014-package-publish-validation/session-brief.md) | feature | completed | Validation stack perf + PyPI packages F11–F14 (#703/#698/#699/#693) — EV-010 | evolve/EV-010-package-publish-validation | 2026-07-18 | 2026-07-19 |
-| [S015-metar-lint-quality](S015-metar-lint-quality/session-brief.md) | feature | in_progress | METAR lint issue registry + #732 quality (lint/validate/convert) — EV-011; F15 + F6/F12 deepen | evolve/EV-011-metar-lint-quality | 2026-07-19 | — |
+| [S015-metar-lint-quality](S015-metar-lint-quality/session-brief.md) | feature | completed | METAR lint issue registry + #732 quality — EV-011; F15 Done; PR #742 | evolve/EV-011-metar-lint-quality | 2026-07-19 | 2026-07-20 |
+| [S016-manual-tac-input-modes](S016-manual-tac-input-modes/session-brief.md) | feature | in_progress | Validate Manual TAC Input modes (#730 / ADR-024) — EV-012 | evolve/EV-012-manual-tac-input-modes | 2026-07-20 | — |
 
 ## Active session
 
-**[S013-live-decode-preview-ux](S013-live-decode-preview-ux/session-brief.md)** — EV-009 (F9/F10), orchestrated by 16-evolve.
+**[S016-manual-tac-input-modes](S016-manual-tac-input-modes/session-brief.md)** — EV-012 (#730 Manual TAC Input validation), orchestrated by 16-evolve.
 
-Parked: **[S011-f7-operator-ui](S011-f7-operator-ui/session-brief.md)** — EV-008; PR [#716](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/716) merged 2026-07-15; 13-deploy-smoke closeout pending resume.
-
-Last closed: **[S012-empty-bearer-lint-tac](S012-empty-bearer-lint-tac/session-brief.md)** — BUG resolved; PR [#721](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/721) merged (`6412b21`).
+Last closed: **[S015-metar-lint-quality](S015-metar-lint-quality/session-brief.md)** — F15 Done; PR [#742](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/742) merged.
 
 ## Folder layout
 

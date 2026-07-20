@@ -1,11 +1,58 @@
-overall_status: completed
+overall_status: in_progress
 project:
   name: metar-to-IWXXM
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 15
-active_session: null
+session_counter: 16
+active_session:
+  id: S016-manual-tac-input-modes
+  type: feature
+  status: in_progress
+  started_at: '2026-07-20'
+  intent: 'Validate Manual TAC Input modes (TAC / AHL bulletin / IWXXM COLLECT) per GitHub #730 / ADR-024; Playwright T1–T4 + Vitest + staging smoke; COLLECT stays 501; F7 stays Planned'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-012
+  branch: evolve/EV-012-manual-tac-input-modes
+  artifacts_dir: docs/sessions/S016-manual-tac-input-modes
+  context_briefs:
+    - docs/context/manual-tac-input-modes.md
+  standing_docs_touched:
+    - docs/decisions/evolve-decisions.md
+    - docs/context/manual-tac-input-modes.md
+    - docs/sessions/S016-manual-tac-input-modes/session-brief.md
+  routing_plan:
+    - stage: 00-context
+      required: true
+      mode: scoped
+      status: completed
+      started: '2026-07-20'
+      completed: '2026-07-20'
+      note: Phase 0 intake locked; routing lean+13 approved (D-S016-EV012-route-1)
+    - stage: 16-evolve
+      required: true
+      mode: orchestrator
+      status: in_progress
+      started: '2026-07-20'
+      note: EV-012 Phase 0 complete; next 01-requirements delta
+    - stage: 01-requirements
+      required: true
+      mode: delta
+      status: pending
+    - stage: 02-verify-plan
+      required: true
+      mode: delta
+      status: pending
+    - stage: 10-e2e
+      required: true
+      mode: delta
+      status: pending
+      note: Author + run Playwright T1–T4; Vitest gap check
+    - stage: 13-deploy-smoke
+      required: true
+      mode: full
+      status: pending
+      note: H4–H5 + authenticated AHL + COLLECT 501
 sessions:
 
   - id: S015-metar-lint-quality
@@ -990,10 +1037,10 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: empty-bearer-lint-tac
-    session_id: S012-empty-bearer-lint-tac
-    started_at: "2026-07-15"
-    completed_at: "2026-07-15"
+    scoped_slug: manual-tac-input-modes
+    session_id: S016-manual-tac-input-modes
+    started_at: "2026-07-20"
+    completed_at: "2026-07-20"
     substeps:
       phase0: completed
       phase1a: completed
@@ -1013,7 +1060,11 @@ stages:
       - docs/sessions/S015-metar-lint-quality/routing-plan.md
       - docs/context/metar-lint-quality.md
       - docs/decisions/evolve-decisions.md
+      - docs/sessions/S016-manual-tac-input-modes/session-brief.md
+      - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
+      - docs/context/manual-tac-input-modes.md
     notes:
+      - 2026-07-20 S016/EV-012 00-context completed — Phase 0 intake locked; lean+13 routing approved (D-S016-EV012-route-1); handoff to 01-requirements
       - "2026-07-19 S015/EV-011 00-context completed — routing approved (D-S015-EV011-route-1); max expansion scope (D-S015-EV011-research-1); handoff to 01-requirements"
       - "2026-07-19 S015/EV-011 open — scoped_slug metar-lint-quality; Phase 0 intake locked; routing approval pending; S011 session-brief.md updated on disk to completed"
       - "2026-07-15 S012-empty-bearer-lint-tac open — scoped hotfix empty Bearer lint-tac/decode-tac + lint UX; S011/EV-008 paused (PR #716 remains open)"
@@ -2531,6 +2582,66 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S016-EV012-route-1
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    stage: 00-context
+    skill: 00-context
+    skill_id: 00-context
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    status: confirmed
+    resolved_at: '2026-07-20'
+    decision: Approve reconciled lean+13 routing (00 → 16 → 01 → 02 → 10 → 13)
+    summary: 'Routing approved: required 00-context, 16-evolve, 01-requirements (delta), 02-verify-plan (delta), 10-e2e (delta), 13-deploy-smoke (full). Skip 03–09, 11–12. Gates a_to_b/b_to_c/c_to_d waived (no Phase B/C).'
+  - id: D-S016-EV012-intake-4
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    stage: 00-context
+    skill: 00-context
+    skill_id: 00-context
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    status: confirmed
+    resolved_at: '2026-07-20'
+    decision: Include 13-deploy-smoke in routing (H4–H5 + AHL + COLLECT 501)
+    summary: 'Lean product/tech path still requires full 13-deploy-smoke: browser H4–H5, authenticated AHL happy path, and COLLECT 501 UX on staging.'
+  - id: D-S016-EV012-intake-3
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    stage: 00-context
+    skill: 00-context
+    skill_id: 00-context
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    status: confirmed
+    resolved_at: '2026-07-20'
+    decision: Auto-switch between Manual TAC Input modes is required
+    summary: FileConverter must auto-switch mode detection among TAC report / AHL bulletin / IWXXM COLLECT per ADR-024; tests must assert auto-switch behavior.
+  - id: D-S016-EV012-intake-2
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    stage: 00-context
+    skill: 00-context
+    skill_id: 00-context
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    status: confirmed
+    resolved_at: '2026-07-20'
+    decision: All tests required — Vitest anchors + Playwright T1–T4 + live staging smoke
+    summary: Acceptance coverage includes unit/Vitest gap check, Playwright T1–T4 for Manual TAC Input modes, and live staging H4–H5 plus authenticated AHL happy path and COLLECT 501 UX.
+  - id: D-S016-EV012-intake-1
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    stage: 00-context
+    skill: 00-context
+    skill_id: 00-context
+    session_id: S016-manual-tac-input-modes
+    evolve_cycle_id: EV-012
+    status: confirmed
+    resolved_at: '2026-07-20'
+    decision: Cycle type A under F7 — validation/acceptance only; no new Fn; COLLECT stays 501
+    summary: EV-012 is a general validation cycle under F7/ADR-024 Manual TAC Input modes. No new feature id; COLLECT member extract out of scope and endpoint remains 501; F7 stays Planned.
   - id: D-S015-EV011-phase4-close-1
     date: '2026-07-20'
     timestamp: '2026-07-20'
@@ -2752,7 +2863,9 @@ decisions_log:
     status: confirmed
     resolved_at: '2026-07-19'
     decision: >-
-      Milestone structure: M1 registry+CI+catalog stub; M2 migrate codes; M3 R1–R5(+R8 capacity); M4 goldens R6 + SPECI R7; M5 coverage/smoke/verify-deploy. Kill-switch → deferred row + coverage note (E11-16). Superseded for R themes by E11-23 / D-S015-EV011-04-qual-1 (HARD).
+      Milestone structure: M1 registry+CI+catalog stub; M2 migrate codes; M3 R1–R5(+R8 capacity); M4 goldens R6 + SPECI R7;
+      M5 coverage/smoke/verify-deploy. Kill-switch → deferred row + coverage note (E11-16). Superseded for R themes by E11-23
+      / D-S015-EV011-04-qual-1 (HARD).
   - id: D-S015-EV011-04-arch-2
     date: '2026-07-19'
     timestamp: '2026-07-19'
@@ -2764,7 +2877,8 @@ decisions_log:
     status: confirmed
     resolved_at: '2026-07-19'
     decision: >-
-      Registry API: packages/tac-validate issue_registry.py with frozen IssueSpec + ISSUES/by_code(); rules emit via registry helpers (no severity literals).
+      Registry API: packages/tac-validate issue_registry.py with frozen IssueSpec + ISSUES/by_code(); rules emit via registry
+      helpers (no severity literals).
   - id: D-S015-EV011-04-arch-3
     date: '2026-07-19'
     timestamp: '2026-07-19'
@@ -5951,6 +6065,89 @@ artifacts:
     status: complete
 
 evolve_cycles:
+  - id: EV-012
+    session_id: S016-manual-tac-input-modes
+    cycle_type: general  # validation/acceptance under F7, no new Fn
+    feature_ids:
+      - F7
+    feature_id:
+    title: Validate Manual TAC Input modes (#730)
+    status: in_progress
+    started: '2026-07-20'
+    completed:
+    scope_summary: "Test/acceptance under F7/ADR-024 for FileConverter Manual TAC Input modes\n(TAC report / AHL bulletin / IWXXM COLLECT). Playwright T1–T4 + Vitest anchors\n+ staging H4–H5 + AHL happy path + COLLECT 501 UX. Auto-switch required.\nNo new Fn; COLLECT member extract out of scope; F7 remains Planned.\n"
+    github_issue: 730
+    routing_plan:
+      required_stages:
+        - 00-context
+        - 16-evolve
+        - 01-requirements
+        - 02-verify-plan
+        - 10-e2e
+        - 13-deploy-smoke
+      skipped_stages:
+        - 03-plan-tooling
+        - 04-tech-plan
+        - 05-verify-tech
+        - 06-tech-tooling
+        - 07-build
+        - 08-verify-build
+        - 09-qa
+        - 11-verify-impl
+        - 12-verify-deploy
+    current_stage: 01-requirements  # pending until user approves start
+    notes:
+      - 2026-07-20 S016/EV-012 Phase 0 locked; lean+13 routing approved; awaiting user approval to start 01-requirements
+    stages:
+      00-context:
+        status: completed
+        mode: scoped
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        substeps:
+          phase0: locked
+        note: Phase 0 locked; routing lean+13 approved (D-S016-EV012-route-1)
+      16-evolve:
+        status: in_progress
+        started: '2026-07-20'
+        completed:
+      01-requirements:
+        status: pending  # pending until user approves start
+        started:
+        completed:
+      02-verify-plan:
+        status: pending
+      10-e2e:
+        status: pending
+      13-deploy-smoke:
+        status: pending
+    gates:
+      a_to_b: waived  # lean: no Phase B tech stages
+      b_to_c: waived # lean: no 07 build phase
+      c_to_d: waived
+      deploy: pending
+    checkpoints:
+      phase_a: pending
+      phase_b: waived
+      phase_c: waived
+      phase_d: pending
+      deploy: pending
+    adrs:
+      - docs/adr/ADR-024-operator-input-modes.md
+    artifacts:
+      - path: docs/sessions/S016-manual-tac-input-modes/session-brief.md
+        status: completed
+      - path: docs/sessions/S016-manual-tac-input-modes/routing-plan.md
+        status: completed
+      - path: docs/sessions/S016-manual-tac-input-modes/checkpoints/phase-0.md
+        status: completed
+      - path: docs/context/manual-tac-input-modes.md
+        status: completed
+      - path: docs/decisions/evolve-decisions.md
+        status: in_progress
+      - path: docs/sessions/S016-manual-tac-input-modes/reports/evolve-summary.md
+        status: pending
+    issues: []
   - id: EV-011
     session_id: S015-metar-lint-quality
     cycle_type: feature
@@ -8105,6 +8302,7 @@ git_history:
   pushed: false
   pending_commit:
   notes:
+    - 2026-07-20 S016/EV-012 open — branch evolve/EV-012-manual-tac-input-modes recorded active (base main); Phase 0 complete; lean+13 routing approved
     - '2026-07-20 S015/EV-011 — PR #742 merged b405a96; T5.10 deploy-smoke PASS; docs a73bbe0 on docs/EV-011-deploy-smoke; EV-011 open pending Phase D close'
     - >-
       2026-07-20 S015/EV-011 M1 complete — commits e0189d4/ac0a282/a1abc7c/79aa67c
@@ -8217,6 +8415,14 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: evolve/EV-012-manual-tac-input-modes
+      purpose: EV-012 / S016 Validate Manual TAC Input modes (#730 / ADR-024 under F7)
+      base: main
+      status: active
+      created_at: '2026-07-20'
+      session_id: S016-manual-tac-input-modes
+      evolve_cycle_id: EV-012
+      note: Branch recorded active; parent creates git branch
     - name: evolve/EV-011-metar-lint-quality
       purpose: "EV-011 / S015 METAR lint issue registry + #732 quality (F15 + F6/F12 deepen)"
       base: main
