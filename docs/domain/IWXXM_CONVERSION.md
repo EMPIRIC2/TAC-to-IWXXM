@@ -121,6 +121,7 @@ Full Guidance paraphrase tables: §Conversion highlights below.
 | US extensions | https://nws.weather.gov/schemas/iwxxm-us/3.0/ | normative-schema (national) |
 | PPT-02 IWXXM Framework (workshop) | https://www.icao.int/filebrowser/download/26741?fid=26741 | informative |
 | OPMET IWXXM Exchange Guidelines (5th Ed.) | https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf | normative-exchange |
+| EUR Doc 014 SIGMET/AIRMET Guide (5th Ed. 2023) | https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf | normative-conversion-notes (regional TAC/AHL; [mining](mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md)) |
 
 Local vendor mirrors: `vendor/schemas/iwxxm`, `iwxxm-modelling` (UML generators only), `iwxxm-translation`, `iwxxm-us`.
 

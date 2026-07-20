@@ -111,6 +111,7 @@ App 3 §2.3 (not this table).
 | AIRMET tokens (examples) | SFC WIND/VIS(+cause); ISOL/OCNL TS; MT OBSC; BKN/OVC CLD; ISOL/OCNL/FRQ CB/TCU; MOD TURB/ICE/MTW |
 | Geometry / levels | FIR/CTA + location (+ TC/VA extras); flight levels per template |
 | Cancel | `CNL SIGMET|AIRMET …` (+ VA MOV TO FIR when applicable) |
+| Corrections | Prefer **CNL + new** — do **not** use `COR` (not in Annex 3; unsupported in IWXXM) — [EUR Doc 014](mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) |
 | Do not pair | TS (+TC) messages must **not** also describe associated TURB/ICE |
 
 **Shall IWXXM:** App 6 §**1.1.6** (SIGMET) · §**2.1.6** (AIRMET). Href SoT: SigWx / AirWx registries.
@@ -224,6 +225,17 @@ https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/aviation
 | Access | **Paywall** |
 | Label | normative (practice) |
 | Use | Harmonized SIGMET/TCA practice, OPMET handling tips feeding operator lint messages |
+
+### ICAO EUR Doc 014 — EUR SIGMET and AIRMET Guide (5th Ed. 2023)
+
+| Field | Value |
+|-------|-------|
+| Title | EUR SIGMET and AIRMET Guide |
+| URL | https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf |
+| Access | **Public** |
+| Label | normative-conversion-notes (regional); Annex 3 remains SARPs SoT |
+| Use | Public companion for **A6 checklist**: WMO AHL (`WS`/`WV`/`WC`/`WA`), first-line `VALID`, sequence forms, CNL, **no `COR`**, validity caps, App A abbreviations, App C examples |
+| Notes | [mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md](mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) · local 90-page extract under `.local/reference/icao-eur-doc-14-sigmet-airmet-2023/` |
 
 ### ICAO Doc 10003 (encode / exchange — not primary TAC SARPs)
 

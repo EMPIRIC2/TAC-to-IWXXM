@@ -1,7 +1,7 @@
 # Rule source URL catalog
 
 **Status:** living catalog (discovery from [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)).  
-**Updated:** 2026-07-14 (A3-2/A5-1/A6 TAC checklists · US RMK→iwxxm-us map).  
+**Updated:** 2026-07-20 (EUR Doc 014 SIGMET/AIRMET Guide 5th · public PDF dig).  
 **Vendor pin:** `vendor/manifest.json` → `iwxxm` **v2025-2**, `iwxxm-codelists` **49-2**, `iwxxm-us` **3.0**.
 
 **Inventory pass:** [mining/iwxxm-2025-2-reference-set-mining-notes.md](../mining/iwxxm-2025-2-reference-set-mining-notes.md)
@@ -67,6 +67,19 @@ Canonical companions:
 - **Consumer:** `tac-validate`, UI-decode
 - **Label:** normative (practice manual)
 - **Caveats:** complements Annex 3; cite chapters, do not mirror text
+
+### ICAO EUR Doc 014 — EUR SIGMET and AIRMET Guide (5th Ed. 2023)
+
+- **Publisher:** ICAO EUR/NAT (EASPG METG)
+- **URL:** https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf
+- **Landing:** http://www.icao.int/EURNAT/Pages/welcome.aspx (EUR Documents → 014 – EUR SIGMET and AIRMET Guide)
+- **Access:** **public**
+- **Applies to:** products=[SIGMET,AIRMET]; profiles=[annex3]; role=[validation, conversion, bulletin]
+- **Gap vs GIFTs:** entire SIGMET/AIRMET products; AHL `WS`/`WV`/`WC`/`WA` ↔ IWXXM `LS`/`LV`/`LY`/`LW`; CNL; no `COR`; EUR TAC examples (App C)
+- **Consumer:** `tac-validate`, `tac2iwxxm`, bulletin, UI-decode
+- **Label:** normative-conversion-notes (regional guide; Annex 3 remains SARPs SoT)
+- **Caveats:** Complements Annex 3 App 6 / Table A6-1A — do not override SARPs. IWXXM formatting defers to `schemas.wmo.int/iwxxm/<pin>/` (vendor manifest **v2025-2**). Space weather out of scope. EU Reg 2017/373 AMC sequence-number form is regional. Local extract: `.local/reference/icao-eur-doc-14-sigmet-airmet-2023/` (90/90 pages verified 2026-07-20).
+- **Mined:** 2026-07-20 · [mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md)
 
 ### ICAO Doc 10003 — Manual on the Digital Exchange of Aeronautical Meteorological Information
 

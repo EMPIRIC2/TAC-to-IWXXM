@@ -23,6 +23,7 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [iwxxm-modelling-v2025-2-mining-notes.md](./iwxxm-modelling-v2025-2-mining-notes.md) | UML/EA generators |
 | [WMO-306-vI-3-2023-mining-notes.md](./WMO-306-vI-3-2023-mining-notes.md) | Manual on Codes Vol I.3 / FM 205 |
 | [OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md](./OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) | ICAO OPMET exchange Guidelines 5th |
+| [icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md](./icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) | ICAO EUR Doc 014 (5th Ed. 2023): EUR SIGMET/AIRMET Guide — TAC structure, AHL, CNL, dual IWXXM |
 | [PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) | Informative workshop deck (TAC↔IWXXM + package matrix) |
 | [ICAO-Doc-10003-draft-2014-mining-notes.md](./ICAO-Doc-10003-draft-2014-mining-notes.md) | Historical Doc 10003 Advance 2014 |
 | [icao-annex-3-mining-notes.md](./icao-annex-3-mining-notes.md) | ICAO Annex 3 (20th + Amd 81): F6 SARPs; SPECI/TAF thresholds; TREND; SIGMET/AIRMET; IWXXM shall; App 2 VAA/TCA templates |
