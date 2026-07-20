@@ -75,6 +75,7 @@
 | 03-plan-tooling | 2026-07-19 | plan-adherence + registry rule + afterFileEdit guard |
 | 04-tech-plan | 2026-07-19 | Execution plan approved E11-31 (GET catalog); later 35 tasks after E11-32 |
 | 05-verify-tech | 2026-07-19 | PASS — S1–S4 = 1/1/1/1 (E11-32); HARD docs + ADR-028 amend |
+| 06-tech-tooling | 2026-07-19 | T6.0 — catalog-regen, fixture README, warn pre-commit; connectivity OK |
 | 05-verify-tech | | |
 | 06-tech-tooling | | |
 | 07-build | | |

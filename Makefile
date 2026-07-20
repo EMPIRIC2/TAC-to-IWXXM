@@ -27,6 +27,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
 	install-hooks pre-commit-run \
+	catalog-regen catalog-check \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
 # --- Monorepo workspace ---
@@ -41,6 +42,15 @@ install-hooks:
 
 pre-commit-run:
 	$(UV) run pre-commit run --all-files
+
+# --- F15 issue catalog (ADR-028 / EV-011) ---
+
+catalog-regen:
+	python3 scripts/tac-validate/regen_issue_catalog.py
+
+catalog-check: catalog-regen
+	@git diff --quiet -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json \
+		|| (echo "ISSUE_CATALOG drift — run make catalog-regen and commit"; git diff --stat -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json; exit 1)
 
 # --- Formatting ---
 

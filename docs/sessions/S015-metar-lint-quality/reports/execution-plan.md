@@ -86,7 +86,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.0 | Config | Stage 06: Makefile catalog regen; fixture README; optional pre-commit; keep `issue_registry_guard` at **warn** until T2.2 — then escalate to **error** (see T2.2a). **No new deps** | E11-30; E11-32 | Plan approval | pending |
+| T6.0 | Config | Stage 06: Makefile catalog regen; fixture README; optional pre-commit; keep `issue_registry_guard` at **warn** until T2.2 — then escalate to **error** (see T2.2a). **No new deps** | E11-30; E11-32 | Plan approval | completed |
 
 ### M5 — Catalog API + FE tooltips + smoke + verify/deploy (F15)
 
@@ -131,7 +131,7 @@
 
 - [x] Execution plan approved by user (E11-31)
 - [x] 05-verify-tech PASS (E11-32)
-- [ ] 06-tech-tooling delta complete (T6.0 / stage 06)
+- [x] 06-tech-tooling delta complete (T6.0 / stage 06)
 
 ## Phase Gate Log
 

@@ -1,6 +1,7 @@
-# tac-validate fixture pack (F12 / TC-F12-001 / T2.1)
+# tac-validate fixture pack (F12 / F15 / TC-F12-001 / TC-F15-003)
 
 Synthetic **negative** TAC and thin **accept** copies for the seven F6 products.
+S015 / EV-011 deepens **METAR** and **SPECI** under the F15 issue registry.
 
 ## Provenance
 
@@ -10,17 +11,40 @@ Synthetic **negative** TAC and thin **accept** copies for the seven F6 products.
   Rule `code` values cite paraphrase tables in
   [`docs/domain/TAC_VALIDATION.md`](../../../../docs/domain/TAC_VALIDATION.md)
   (A3-2, A5-1, A6, A2-1, A2-2). **Do not** paste paywalled Annex 3 / FMH prose
-  into fixtures or wheels (E10-21).
+  into fixtures or wheels (E10-21). Prefer short synthetic cases over long
+  copied decoder pages (E11-24).
 
-## Depth (E10-21)
+## Layout (F15)
 
-| Product                     | Fixture intent                                    |
-| --------------------------- | ------------------------------------------------- |
-| METAR / SPECI / TAF         | Full checklist negatives (group presence / shape) |
-| SIGMET / AIRMET / VAA / TCA | Template + gate negatives only                    |
+| Path                       | Role                                      |
+| -------------------------- | ----------------------------------------- |
+| `accept/*.tac`             | Thin accept cases (all products)          |
+| `negative/metar/`          | METAR negatives — expand for R1–R8        |
+| `negative/speci/`          | SPECI negatives — adjacency + shared pack |
+| `negative/{taf,sigmet,…}/` | Other products (template/gate depth)      |
+| `manifest.json`            | Cases + `expected_codes`                  |
+
+Convert goldens live under `packages/tac2iwxxm/tests/fixtures/{annex3_golden,iwxxm_us_golden}/`
+— do not duplicate full IWXXM XML here.
+
+## Depth
+
+| Product                     | Fixture intent                           |
+| --------------------------- | ---------------------------------------- |
+| METAR / SPECI               | Full checklist + R1–R8 (HARD this cycle) |
+| TAF                         | Full checklist negatives                 |
+| SIGMET / AIRMET / VAA / TCA | Template + gate negatives only           |
 
 ## Expectation contract
 
-`manifest.json` cases list `expected_codes` (error severity unless noted).
-Diagnostics assertions require product-rule codes/spans from T2.2
+`manifest.json` cases list `expected_codes`. Every code must exist in the
+`tac-validate` issue registry after M2 (`docs/domain/rules/ISSUE_CATALOG.md`).
+Diagnostics assertions require product-rule codes/spans from
 `check_product_rules`.
+
+## Tooling
+
+```bash
+make catalog-regen   # refresh ISSUE_CATALOG.md/.json from registry
+make catalog-check   # fail if catalog drifts from working tree
+```

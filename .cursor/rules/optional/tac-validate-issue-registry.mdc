@@ -23,6 +23,14 @@ Traces to `[Corpus: product]` F15, `[Corpus: adr]` ADR-028, `#732`, S015 / EV-01
 - Cover new codes with accept and/or negative fixtures (`expected_codes`).
 - Keep public codes **stable**; renames require an explicit deprecation note.
 - Allow default severities to **tighten** in minor releases; loosening needs ADR/changelog.
+- Run `make catalog-regen` after registry changes; commit `ISSUE_CATALOG.md` / `.json`.
+
+## Guard severity (EV-011)
+
+| Stage | Behavior |
+|-------|----------|
+| 03 / 06 (now) | Cursor `issue_registry_guard.py` + pre-commit **warn** (exit 0) |
+| After T2.2a | Set `ISSUE_REGISTRY_GUARD_STRICT=1` — CI/`check_issue_registry_literals.py` **errors** |
 
 ## Do not
 

@@ -1,6 +1,7 @@
 """Cursor afterFileEdit hook: warn on ad-hoc severity literals in tac-validate rules.
 
-Advisory only — always exits 0. Skips the registry module itself and tests.
+Advisory (exit 0) until T2.2a escalates CI via ISSUE_REGISTRY_GUARD_STRICT=1.
+Skips the registry module itself and tests.
 """
 
 from __future__ import annotations

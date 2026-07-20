@@ -45,6 +45,12 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: issue-registry-guard-warn
+        name: tac-validate issue registry severity literals (warn until T2.2a)
+        entry: python3 scripts/ci/check_issue_registry_literals.py
+        language: system
+        files: ^packages/tac-validate/src/.*\.py$
+        pass_filenames: true
       - id: make-ci
         name: make ci (full suite)
         entry: make ci
