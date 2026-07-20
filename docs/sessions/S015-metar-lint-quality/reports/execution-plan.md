@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — R1–R8 rules |
-| **Active task** | T3.11 — Full R8 fixtures (next) |
-| **Tasks** | 18 / 35 completed (… T3.1–T3.10) |
+| **Active task** | T3.12 — Encode full R8 (next) |
+| **Tasks** | 19 / 35 completed (… T3.1–T3.11) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -70,7 +70,7 @@
 | T3.8 | Code | Encode R4 | F15 | T3.7 | completed |
 | T3.9 | Test | Fixtures R5 (RMK AO1/AO2/SLP/P/T/PK WND) | Research R5 | T3.8 | completed |
 | T3.10 | Code | Encode R5 (+ `iwxxm_us` awareness in lint messages) | F15; F6 deepen | T3.9 | completed |
-| T3.11 | Test | Fixtures **full R8**: AUTO, COR, NIL, NOSIG, TEMPO, RVR, wind VRB/gust | E11-28; Research R8 | T3.10 | pending |
+| T3.11 | Test | Fixtures **full R8**: AUTO, COR, NIL, NOSIG, TEMPO, RVR, wind VRB/gust | E11-28; Research R8 | T3.10 | completed |
 | T3.12 | Code | Encode full R8 pack (HARD — no deferral) | E11-23; E11-28 | T3.11 | pending |
 
 ### M4 — Goldens R6 + SPECI adjacency R7 (F15 / F6)

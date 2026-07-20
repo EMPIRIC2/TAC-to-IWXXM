@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "description": "TC-F12-001 / E10-21 / TC-F15-003 fixture pack for tac-validate (F12 + F15 R1–R8).",
+  "description": "TC-F12-001 / E10-21 / TC-F15-003 fixture pack for tac-validate (F12 + F15 R1\u2013R8).",
   "cite": [
     "docs/domain/TAC_VALIDATION.md (A3-2, A5-1, A6, A2-1, A2-2 paraphrase)",
     "docs/domain/rules/COVERAGE_MATRIX.md",
-    "docs/sessions/S015-metar-lint-quality/reports/metar-research-catalog.md (R1–R8)"
+    "docs/sessions/S015-metar-lint-quality/reports/metar-research-catalog.md (R1\u2013R8)"
   ],
   "accept": [
     {
@@ -209,6 +209,62 @@
       "theme": "R5",
       "cite": "SPECI US RMK AO2; research R5 / iwxxm_us",
       "tac": "accept/speci_r5_rmk_ao2.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_auto",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "AUTO modifier; research R8",
+      "tac": "accept/metar_r8_auto.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_cor",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "COR modifier; research R8",
+      "tac": "accept/metar_r8_cor.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_nosig",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "NOSIG trend; research R8",
+      "tac": "accept/metar_r8_nosig.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_tempo",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "TEMPO trend; research R8",
+      "tac": "accept/metar_r8_tempo.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_rvr",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "RVR group; research R8",
+      "tac": "accept/metar_r8_rvr.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r8_vrb_gust",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "VRB + gust wind; research R8",
+      "tac": "accept/metar_r8_vrb_gust.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_r8_auto_rvr",
+      "product": "SPECI",
+      "theme": "R8",
+      "cite": "SPECI AUTO+RVR; research R8",
+      "tac": "accept/speci_r8_auto_rvr.tac",
       "ok": true
     }
   ],
@@ -465,7 +521,7 @@
       "product": "METAR",
       "theme": "R1",
       "depth": "full_checklist",
-      "cite": "A3-2 body order CCCC→ddhhmmZ; research R1",
+      "cite": "A3-2 body order CCCC\u2192ddhhmmZ; research R1",
       "tac": "negative/metar/odd_order_time_before_cccc.tac",
       "ok": true,
       "expected_codes": ["ODD_FIELD_ORDER"],
@@ -477,7 +533,7 @@
       "product": "METAR",
       "theme": "R1",
       "depth": "full_checklist",
-      "cite": "A3-2 body order ddhhmmZ→wind; research R1",
+      "cite": "A3-2 body order ddhhmmZ\u2192wind; research R1",
       "tac": "negative/metar/odd_order_wind_before_time.tac",
       "ok": true,
       "expected_codes": ["ODD_FIELD_ORDER"],
@@ -489,7 +545,7 @@
       "product": "SPECI",
       "theme": "R1",
       "depth": "full_checklist",
-      "cite": "A3-2 body order CCCC→ddhhmmZ; research R1",
+      "cite": "A3-2 body order CCCC\u2192ddhhmmZ; research R1",
       "tac": "negative/speci/odd_order_time_before_cccc.tac",
       "ok": true,
       "expected_codes": ["ODD_FIELD_ORDER"],
@@ -655,7 +711,7 @@
       "id": "metar_r4_ovc_cb",
       "product": "METAR",
       "theme": "R4",
-      "cite": "CB convective type → INFO; research R4",
+      "cite": "CB convective type \u2192 INFO; research R4",
       "tac": "accept/metar_r4_ovc_cb.tac",
       "ok": true,
       "expected_codes": ["CLOUD_CB_OR_TCU"],
@@ -666,7 +722,7 @@
       "id": "speci_r4_bkn_tcu",
       "product": "SPECI",
       "theme": "R4",
-      "cite": "TCU convective type → INFO; research R4",
+      "cite": "TCU convective type \u2192 INFO; research R4",
       "tac": "accept/speci_r4_bkn_tcu.tac",
       "ok": true,
       "expected_codes": ["CLOUD_CB_OR_TCU"],
@@ -679,7 +735,7 @@
       "id": "metar_r5_rmk_ao2_slp_info",
       "product": "METAR",
       "theme": "R5",
-      "cite": "AO2/SLP → INFO iwxxm_us awareness; research R5",
+      "cite": "AO2/SLP \u2192 INFO iwxxm_us awareness; research R5",
       "tac": "accept/metar_r5_rmk_ao2_slp.tac",
       "ok": true,
       "expected_codes": ["REMARK_US_EXTENSION"],
@@ -690,7 +746,7 @@
       "id": "metar_r5_rmk_temp_tenths_info",
       "product": "METAR",
       "theme": "R5",
-      "cite": "T######## → INFO iwxxm_us; research R5",
+      "cite": "T######## \u2192 INFO iwxxm_us; research R5",
       "tac": "accept/metar_r5_rmk_temp_tenths.tac",
       "ok": true,
       "expected_codes": ["REMARK_US_EXTENSION"],
@@ -701,7 +757,7 @@
       "id": "metar_r5_rmk_pk_wnd_info",
       "product": "METAR",
       "theme": "R5",
-      "cite": "PK WND → INFO iwxxm_us; research R5",
+      "cite": "PK WND \u2192 INFO iwxxm_us; research R5",
       "tac": "accept/metar_r5_rmk_pk_wnd.tac",
       "ok": true,
       "expected_codes": ["REMARK_US_EXTENSION"],
@@ -712,7 +768,7 @@
       "id": "speci_r5_rmk_ao2_info",
       "product": "SPECI",
       "theme": "R5",
-      "cite": "SPECI AO2 → INFO iwxxm_us; research R5",
+      "cite": "SPECI AO2 \u2192 INFO iwxxm_us; research R5",
       "tac": "accept/speci_r5_rmk_ao2.tac",
       "ok": true,
       "expected_codes": ["REMARK_US_EXTENSION"],
@@ -764,6 +820,141 @@
       "ok": false,
       "expected_codes": ["INVALID_REMARK"],
       "require_spans": true
+    }
+  ],
+  "r8_modifier_info": [
+    {
+      "id": "metar_r8_auto_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "AUTO \u2192 info; research R8",
+      "tac": "accept/metar_r8_auto.tac",
+      "ok": true,
+      "expected_codes": ["AUTO_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_cor_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "COR \u2192 info; research R8",
+      "tac": "accept/metar_r8_cor.tac",
+      "ok": true,
+      "expected_codes": ["COR_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_nil_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "NIL \u2192 info; research R8",
+      "tac": "accept/metar_r8_nil.tac",
+      "ok": true,
+      "expected_codes": ["NIL_REPORT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_nosig_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "NOSIG \u2192 info; research R8",
+      "tac": "accept/metar_r8_nosig.tac",
+      "ok": true,
+      "expected_codes": ["NOSIG_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_tempo_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "TEMPO \u2192 info; research R8",
+      "tac": "accept/metar_r8_tempo.tac",
+      "ok": true,
+      "expected_codes": ["TEMPO_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_rvr_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "RVR \u2192 info; research R8",
+      "tac": "accept/metar_r8_rvr.tac",
+      "ok": true,
+      "expected_codes": ["RVR_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_r8_vrb_gust_info",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "VRB/gust \u2192 info; research R8",
+      "tac": "accept/metar_r8_vrb_gust.tac",
+      "ok": true,
+      "expected_codes": ["WIND_VRB_OR_GUST"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "r8_errors": [
+    {
+      "id": "metar_nil_with_body",
+      "product": "METAR",
+      "theme": "R8",
+      "depth": "full_checklist",
+      "cite": "NIL must not carry body groups; research R8",
+      "tac": "negative/metar/nil_with_body.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_NIL"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_bad_rvr",
+      "product": "METAR",
+      "theme": "R8",
+      "depth": "full_checklist",
+      "cite": "malformed RVR; research R8",
+      "tac": "negative/metar/bad_rvr.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_RVR"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_bad_wind_gust",
+      "product": "METAR",
+      "theme": "R8",
+      "depth": "full_checklist",
+      "cite": "gust without mean speed; research R8",
+      "tac": "negative/metar/bad_wind_gust.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WIND"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_bad_vrb",
+      "product": "SPECI",
+      "theme": "R8",
+      "depth": "full_checklist",
+      "cite": "VRB without speed; research R8",
+      "tac": "negative/speci/bad_vrb.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_WIND"],
+      "require_spans": true
+    }
+  ],
+  "r8_nil_accept": [
+    {
+      "id": "accept_metar_r8_nil",
+      "product": "METAR",
+      "theme": "R8",
+      "cite": "NIL report body; research R8",
+      "tac": "accept/metar_r8_nil.tac",
+      "ok": true
     }
   ]
 }
