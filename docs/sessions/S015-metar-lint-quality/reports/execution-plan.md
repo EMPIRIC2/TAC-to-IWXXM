@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — R1–R8 rules |
-| **Active task** | T3.7 — R4 clouds/CAVOK/VV/CB/TCU fixtures (next) |
-| **Tasks** | 14 / 35 completed (… T3.1–T3.6) |
+| **Active task** | T3.8 — Encode R4 (next) |
+| **Tasks** | 15 / 35 completed (… T3.1–T3.7) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -66,7 +66,7 @@
 | T3.4 | Code | Encode R2 | F15 | T3.3 | completed |
 | T3.5 | Test | Fixtures R3 (wx phenomena grammar) | Research R3 | T3.4 | completed |
 | T3.6 | Code | Encode R3 | F15 | T3.5 | completed |
-| T3.7 | Test | Fixtures R4 (clouds/CAVOK/VV/CB/TCU) | Research R4 | T3.6 | pending |
+| T3.7 | Test | Fixtures R4 (clouds/CAVOK/VV/CB/TCU) | Research R4 | T3.6 | completed |
 | T3.8 | Code | Encode R4 | F15 | T3.7 | pending |
 | T3.9 | Test | Fixtures R5 (RMK AO1/AO2/SLP/P/T/PK WND) | Research R5 | T3.8 | pending |
 | T3.10 | Code | Encode R5 (+ `iwxxm_us` awareness in lint messages) | F15; F6 deepen | T3.9 | pending |

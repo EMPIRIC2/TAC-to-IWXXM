@@ -138,6 +138,38 @@
       "cite": "A3-2 #8 -SHRA shower; research R3",
       "tac": "accept/speci_r3_wx_shra.tac",
       "ok": true
+    },
+    {
+      "id": "accept_metar_r4_cavok",
+      "product": "METAR",
+      "theme": "R4",
+      "cite": "A3-2 #9 CAVOK replaces cloud; research R4",
+      "tac": "accept/metar_r4_cavok.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r4_few040",
+      "product": "METAR",
+      "theme": "R4",
+      "cite": "A3-2 #9 FEW + 3-digit height; research R4",
+      "tac": "accept/metar_r4_few040.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r4_vv002",
+      "product": "METAR",
+      "theme": "R4",
+      "cite": "A3-2 #9 VV + 3-digit vertical visibility; research R4",
+      "tac": "accept/metar_r4_vv002.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_r4_nsc",
+      "product": "METAR",
+      "theme": "R4",
+      "cite": "A3-2 #9 NSC no significant cloud; research R4",
+      "tac": "accept/metar_r4_nsc.tac",
+      "ok": true
     }
   ],
   "negative": [
@@ -207,7 +239,8 @@
       "id": "metar_bad_cloud_token",
       "product": "METAR",
       "depth": "full_checklist",
-      "cite": "A3-2 #9 cloud/VV",
+      "theme": "R4",
+      "cite": "A3-2 #9 cloud/VV; research R4",
       "tac": "negative/metar/bad_cloud_token.tac",
       "ok": false,
       "expected_codes": ["INVALID_CLOUD_TOKEN"],
@@ -528,6 +561,76 @@
       "tac": "negative/speci/wx_trailing_intensity.tac",
       "ok": false,
       "expected_codes": ["INVALID_WEATHER"],
+      "require_spans": true
+    }
+  ],
+  "cloud_errors": [
+    {
+      "id": "metar_cloud_short_height",
+      "product": "METAR",
+      "theme": "R4",
+      "depth": "full_checklist",
+      "cite": "cloud height must be 3 digits; research R4",
+      "tac": "negative/metar/cloud_short_height.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CLOUD_TOKEN"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_cloud_bad_suffix",
+      "product": "METAR",
+      "theme": "R4",
+      "depth": "full_checklist",
+      "cite": "only CB/TCU suffixes allowed; research R4",
+      "tac": "negative/metar/cloud_bad_suffix.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CLOUD_TOKEN"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_vv_short_height",
+      "product": "METAR",
+      "theme": "R4",
+      "depth": "full_checklist",
+      "cite": "VV height must be 3 digits; research R4",
+      "tac": "negative/metar/vv_short_height.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CLOUD_TOKEN"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_cloud_short_height",
+      "product": "SPECI",
+      "theme": "R4",
+      "depth": "full_checklist",
+      "cite": "cloud height must be 3 digits; research R4",
+      "tac": "negative/speci/cloud_short_height.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CLOUD_TOKEN"],
+      "require_spans": true
+    }
+  ],
+  "cloud_cb_tcu_info": [
+    {
+      "id": "metar_r4_ovc_cb",
+      "product": "METAR",
+      "theme": "R4",
+      "cite": "CB convective type → INFO; research R4",
+      "tac": "accept/metar_r4_ovc_cb.tac",
+      "ok": true,
+      "expected_codes": ["CLOUD_CB_OR_TCU"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_r4_bkn_tcu",
+      "product": "SPECI",
+      "theme": "R4",
+      "cite": "TCU convective type → INFO; research R4",
+      "tac": "accept/speci_r4_bkn_tcu.tac",
+      "ok": true,
+      "expected_codes": ["CLOUD_CB_OR_TCU"],
+      "expected_severity": "info",
       "require_spans": true
     }
   ]

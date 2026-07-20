@@ -42,14 +42,16 @@ Convert goldens live under `packages/tac2iwxxm/tests/fixtures/{annex3_golden,iwx
 Diagnostics assertions require product-rule codes/spans from
 `check_product_rules`.
 
-| Manifest key         | `ok`    | Role                                                |
-| -------------------- | ------- | --------------------------------------------------- |
-| `accept`             | `true`  | Thin accept / theme accept (R1, R2 SM/9999/meters)  |
-| `negative`           | `false` | Error-severity checklist / template gates           |
-| `order_warnings`     | `true`  | Warning-only R1 odd field order (`ODD_FIELD_ORDER`) |
-| `r2_fraction_accept` | `true`  | US SM fractions / M-prefix (encoded in T3.4)        |
-| `visibility_errors`  | `false` | R2 malformed visibility (`INVALID_VISIBILITY`)      |
-| `weather_errors`     | `false` | R3 malformed present weather (`INVALID_WEATHER`)    |
+| Manifest key         | `ok`    | Role                                                        |
+| -------------------- | ------- | ----------------------------------------------------------- |
+| `accept`             | `true`  | Thin accept / theme accept (R1, R2 SM/9999/meters)          |
+| `negative`           | `false` | Error-severity checklist / template gates                   |
+| `order_warnings`     | `true`  | Warning-only R1 odd field order (`ODD_FIELD_ORDER`)         |
+| `r2_fraction_accept` | `true`  | US SM fractions / M-prefix (encoded in T3.4)                |
+| `visibility_errors`  | `false` | R2 malformed visibility (`INVALID_VISIBILITY`)              |
+| `weather_errors`     | `false` | R3 malformed present weather (`INVALID_WEATHER`)            |
+| `cloud_errors`       | `false` | R4 malformed cloud/VV height/suffix (`INVALID_CLOUD_TOKEN`) |
+| `cloud_cb_tcu_info`  | `true`  | R4 CB/TCU convective type (`CLOUD_CB_OR_TCU` info)          |
 
 ## Tooling
 
