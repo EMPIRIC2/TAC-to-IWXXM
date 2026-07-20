@@ -16,7 +16,7 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-013
   artifacts_dir: docs/sessions/S018-metar-remarks-667/
-  current_stage: 16-evolve
+  current_stage: 08-verify-build
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched: []
@@ -38,18 +38,23 @@ active_session:
       started: '2026-07-20'
       skip_rationale:
       note: >-
-        Phase 0 intake complete via Assumed; moving to 01-requirements;
-        Standard routing (needs 07-build)
+        Implementation landed (07-build); 08-verify-build in_progress;
+        Standard routing
     - stage: 01-requirements
       required: true
       mode: delta
-      status: pending
+      status: completed
+      started: '2026-07-20'
+      completed: '2026-07-20'
       skip_rationale:
     - stage: 02-verify-plan
       required: true
       mode: delta
-      status: pending
+      status: completed
+      started: '2026-07-20'
+      completed: '2026-07-20'
       skip_rationale:
+      note: Delta consistency via corpus updates
     - stage: 03-plan-tooling
       required: false
       mode: skipped
@@ -58,8 +63,11 @@ active_session:
     - stage: 04-tech-plan
       required: true
       mode: delta
-      status: pending
+      status: completed
+      started: '2026-07-20'
+      completed: '2026-07-20'
       skip_rationale:
+      note: Thin execution-plan written
     - stage: 05-verify-tech
       required: false
       mode: skipped
@@ -73,12 +81,15 @@ active_session:
     - stage: 07-build
       required: true
       mode: full
-      status: pending
+      status: completed
+      started: '2026-07-20'
+      completed: '2026-07-20'
       skip_rationale:
     - stage: 08-verify-build
       required: true
       mode: full
-      status: pending
+      status: in_progress
+      started: '2026-07-20'
       skip_rationale:
     - stage: 09-qa
       required: true
@@ -6900,8 +6911,11 @@ evolve_cycles:
         - 05-verify-tech
         - 06-tech-tooling
         - 10-e2e
-    current_stage: 16-evolve
+    current_stage: 08-verify-build
     notes:
+      - >-
+        2026-07-20 S018/EV-013 — implementation landed (07-build); 08-verify-build
+        in_progress; commits 8ee3176 (docs scope) + 19d6684 (feat remarks)
       - >-
         2026-07-20 S018/EV-013 open — Phase 0 intake complete via Assumed (E13-1/E13-2/E13-3);
         AskQuestion UI waived (cloud); Standard routing; moving toward 01-requirements
@@ -6920,19 +6934,27 @@ evolve_cycles:
         status: in_progress
         started: '2026-07-20'
         note: >-
-          Phase 0 intake complete via Assumed; orchestrator in_progress; next 01-requirements
+          Orchestrator in_progress; implementation landed; verification next
       01-requirements:
-        status: pending
+        status: completed
         mode: delta
+        started: '2026-07-20'
+        completed: '2026-07-20'
       02-verify-plan:
-        status: pending
+        status: completed
         mode: delta
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        note: Delta consistency via corpus updates
       03-plan-tooling:
         status: skipped
         skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
       04-tech-plan:
-        status: pending
+        status: completed
         mode: delta
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        note: Thin execution-plan written
       05-verify-tech:
         status: skipped
         skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
@@ -6940,11 +6962,14 @@ evolve_cycles:
         status: skipped
         skip_rationale: Standard preset — skip 03/05/06 (E13-2 Assumed)
       07-build:
-        status: pending
+        status: completed
         mode: full
+        started: '2026-07-20'
+        completed: '2026-07-20'
       08-verify-build:
-        status: pending
+        status: in_progress
         mode: full
+        started: '2026-07-20'
       09-qa:
         status: pending
         mode: full
@@ -6974,9 +6999,13 @@ evolve_cycles:
     adrs: []
     artifacts:
       - path: docs/sessions/S018-metar-remarks-667/session-brief.md
-        status: pending
+        status: present
       - path: docs/sessions/S018-metar-remarks-667/routing-plan.md
-        status: pending
+        status: present
+      - path: docs/sessions/S018-metar-remarks-667/reports/execution-plan.md
+        status: present
+      - path: packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
+        status: present
       - path: docs/sessions/S018-metar-remarks-667/reports/evolve-summary.md
         status: pending
     issues: []
@@ -9392,9 +9421,13 @@ evolve_cycles:
 git_history:
   current_branch: cursor/metar-remarks-667-2e2e
   ahead_of_origin: 0
-  pushed: false
+  pushed: true
   pending_commit:
+  tip_sha: 19d6684e5205bf46013a385ecf91d40b94bbb121
   notes:
+    - >-
+      2026-07-20 S018/EV-013 — commits 8ee3176 (docs scope) + 19d6684 (feat remarks);
+      tip 19d6684; current_stage 08-verify-build; branch synced with origin
     - >-
       2026-07-20 S018/EV-013 open — branch cursor/metar-remarks-667-2e2e recorded active
       (base main); Phase 0 Assumed (E13-1/E13-2/E13-3); AskQuestion UI waived (cloud)
@@ -9566,8 +9599,9 @@ git_history:
       session_id: S018-metar-remarks-667
       evolve_cycle_id: EV-013
       purpose: 'EV-013 / S018 Handle METAR remarks (#667) — annex3 + iwxxm_us T/P'
-      pushed: false
-      note: Cloud agent naming override; Standard routing; Phase 0 Assumed
+      pushed: true
+      tip_sha: 19d6684e5205bf46013a385ecf91d40b94bbb121
+      note: Cloud agent naming override; Standard routing; 08-verify-build in_progress
     - name: chore/S017-skill-trim-retro
       base: main
       status: active
@@ -9864,6 +9898,38 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 19d6684e5205bf46013a385ecf91d40b94bbb121
+      short: 19d6684
+      branch: cursor/metar-remarks-667-2e2e
+      message: '[EV-013] feat: retain METAR remarks or report exclusion (#667)'
+      stage: 07-build
+      session_id: S018-metar-remarks-667
+      evolve_cycle_id: EV-013
+      timestamp: '2026-07-20T19:31:15Z'
+      files_changed:
+        - packages/tac2iwxxm/src/tac2iwxxm/convert.py
+        - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
+        - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
+        - packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
+      pushed: true
+    - sha: 8ee3176e598144feaeeefdcf1f1c4e04bbcd55b1
+      short: 8ee3176
+      branch: cursor/metar-remarks-667-2e2e
+      message: '[S018] docs: EV-013 scope for METAR remarks (#667)'
+      stage: 16-evolve
+      session_id: S018-metar-remarks-667
+      evolve_cycle_id: EV-013
+      timestamp: '2026-07-20T19:31:15Z'
+      files_changed:
+        - docs/context/metar-remarks-667.md
+        - docs/feature-list.md
+        - docs/sessions/S018-metar-remarks-667/reports/execution-plan.md
+        - docs/sessions/S018-metar-remarks-667/routing-plan.md
+        - docs/sessions/S018-metar-remarks-667/session-brief.md
+        - docs/test-plan.md
+        - docs/user-journeys.md
+        - workflow-state.yaml
+      pushed: true
     - sha: 9a63ecfec153630252c063543e3d77634e15a288
       short: 9a63ecf
       branch: docs/EV-012-close
