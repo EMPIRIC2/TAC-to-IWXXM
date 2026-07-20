@@ -65,7 +65,6 @@ def test_r4_accept_cloud_grammar_ok(case: dict[str, Any]) -> None:
 
 
 @pytest.mark.parametrize("case", _CLOUD_ERRORS, ids=_case_ids(_CLOUD_ERRORS))
-@pytest.mark.xfail(strict=True, reason="T3.8 encodes R4 cloud height/suffix INVALID_CLOUD_TOKEN")
 def test_r4_invalid_cloud_emits_error(case: dict[str, Any]) -> None:
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is False
@@ -78,7 +77,6 @@ def test_r4_invalid_cloud_emits_error(case: dict[str, Any]) -> None:
 
 
 @pytest.mark.parametrize("case", _CB_TCU_INFO, ids=_case_ids(_CB_TCU_INFO))
-@pytest.mark.xfail(strict=True, reason="T3.8 encodes CLOUD_CB_OR_TCU info")
 def test_r4_cb_tcu_emits_info(case: dict[str, Any]) -> None:
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is True

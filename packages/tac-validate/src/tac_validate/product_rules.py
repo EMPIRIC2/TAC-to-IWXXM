@@ -51,11 +51,12 @@ _WX_STANDALONE = frozenset({"TS", "SS", "DS", "SQ", "FC", "PO", "BR", "FG", "FU"
 _WX_SPECIAL = frozenset({"UP", "//"})
 _RVR = re.compile(r"^R\d{2}")
 _CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
+# R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
+_CLOUD_OK = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$")
+_CLOUD_LIKE = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})")
 _WX_TOKEN_SHAPE = re.compile(r"^(?://|[+-]{1,2}[A-Z]{2,8}|[A-Z]{2,8}[+-]|[+-]?[A-Z]{2,8})$")
 _TEMP = re.compile(r"\bM?\d{2}/M?\d{2}\b")
 _QNH = re.compile(r"\b[QA]\d{4}\b")
-_CLOUD_OK = re.compile(r"\b(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)\d{0,3}(?:CB|TCU)?\b")
-_CLOUD_BAD = re.compile(r"\b([A-Z]{3}\d{3})\b")
 _TAF_VALIDITY = re.compile(r"\b\d{4}/\d{4}\b")
 _VALID_PERIOD = re.compile(r"\bVALID\s+\d{6}/\d{6}\b", re.IGNORECASE)
 _DTG_LINE = re.compile(r"(?m)^\s*DTG\s*:", re.IGNORECASE)
@@ -211,6 +212,31 @@ def _token_span_in_core(core: str, token: str, body_start: int) -> tuple[int, in
     return body_start + match.start(), body_start + match.end()
 
 
+def _is_valid_cloud_token(token: str) -> bool:
+    """Return True when ``token`` is a valid A3-2 cloud / VV / NSC-class group."""
+    return bool(_CLOUD_OK.fullmatch(token))
+
+
+def _cloud_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
+    """Return (index, token) pairs for cloud-like groups after wind / visibility / wx."""
+    wind_i = _token_index(tokens, _WIND)
+    if wind_i is None:
+        return []
+    candidates: list[tuple[int, str]] = []
+    for i, tok in enumerate(tokens[wind_i + 1 :], start=wind_i + 1):
+        if _TEMP.fullmatch(tok) or _QNH.fullmatch(tok) or tok == "RMK":
+            break
+        if tok in _METAR_SPECI_SKIP or _RVR.match(tok):
+            continue
+        if _WIND.fullmatch(tok) or _VIS_OK.fullmatch(tok) or _VIS_BAD.fullmatch(tok):
+            continue
+        if _WX_TOKEN_SHAPE.fullmatch(tok) and _is_valid_weather_token(tok):
+            continue
+        if _CLOUD_LIKE.match(tok) or _CLOUD_START.match(tok):
+            candidates.append((i, tok))
+    return candidates
+
+
 def _check_metar_speci_field_order(
     tokens: list[str],
     *,
@@ -354,25 +380,33 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
             )
         )
 
-    # Flag unknown XXX### cloud-like tokens that are not valid cloud groups.
-    for match in _CLOUD_BAD.finditer(core):
-        token = match.group(1)
-        if _CLOUD_OK.fullmatch(token):
-            continue
-        # Wind already matched as \d{3}\d{2}KT — not XXX###.
-        if token[:3] in {"FEW", "SCT", "BKN", "OVC"}:
-            continue
-        abs_start = start + match.start(1)
-        abs_end = start + match.end(1)
-        issues.append(
-            _issue(
-                "INVALID_CLOUD_TOKEN",
-                f"{product} invalid cloud/VV token {token!r} — A3-2 #9",
-                start=abs_start,
-                end=abs_end,
-                location="cloud",
+    for _i, cloud_tok in _cloud_candidate_tokens(tokens):
+        span = _token_span_in_core(core, cloud_tok, start)
+        if span is None:
+            cloud_start, cloud_end = start, end
+        else:
+            cloud_start, cloud_end = span
+        if not _is_valid_cloud_token(cloud_tok):
+            issues.append(
+                _issue(
+                    "INVALID_CLOUD_TOKEN",
+                    f"{product} invalid cloud/VV token {cloud_tok!r} — A3-2 #9 / research R4",
+                    start=cloud_start,
+                    end=cloud_end,
+                    location="cloud",
+                )
             )
-        )
+            continue
+        if cloud_tok.endswith(("CB", "TCU")):
+            issues.append(
+                _issue(
+                    "CLOUD_CB_OR_TCU",
+                    f"{product} cloud group {cloud_tok!r} includes convective type — research R4",
+                    start=cloud_start,
+                    end=cloud_end,
+                    location="cloud",
+                )
+            )
 
     return issues
 

@@ -4,6 +4,20 @@
   "generated": "2026-07-20",
   "issues": [
     {
+      "code": "CLOUD_CB_OR_TCU",
+      "severity": "info",
+      "message_template": "{product} cloud group includes convective type CB/TCU",
+      "product": null,
+      "tags": [
+        "cloud",
+        "metar",
+        "speci",
+        "r4",
+        "cb",
+        "tcu"
+      ]
+    },
+    {
       "code": "EMPTY_TAC",
       "severity": "error",
       "message_template": "TAC text is empty",
@@ -21,7 +35,8 @@
       "tags": [
         "cloud",
         "metar",
-        "speci"
+        "speci",
+        "r4"
       ]
     },
     {

@@ -138,7 +138,13 @@ ISSUES: tuple[IssueSpec, ...] = (
         "INVALID_CLOUD_TOKEN",
         "error",
         "{product} invalid cloud/VV token {token!r} — A3-2 #9",
-        tags=("cloud", "metar", "speci"),
+        tags=("cloud", "metar", "speci", "r4"),
+    ),
+    _row(
+        "CLOUD_CB_OR_TCU",
+        "info",
+        "{product} cloud group includes convective type CB/TCU",
+        tags=("cloud", "metar", "speci", "r4", "cb", "tcu"),
     ),
     _row(
         "MISSING_ISSUE_TIME",
