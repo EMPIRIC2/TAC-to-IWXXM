@@ -35,8 +35,8 @@
 | Stage | Completed | Notes |
 |-------|-----------|-------|
 | 00-context | 2026-07-20 | Session + scoped brief |
-| 16-evolve | — | Phase 0 complete; Phase A next |
-| 01-requirements | | |
+| 16-evolve | — | Phase 0 complete; Phase A in progress |
+| 01-requirements | 2026-07-20 | UJ-025 + TC-F7-007 + F7 validation note |
 | 02-verify-plan | | |
 | 10-e2e | | |
 | 13-deploy-smoke | | |

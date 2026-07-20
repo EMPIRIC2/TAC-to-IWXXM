@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-19 (S015 / EV-011 — F15 METAR lint registry + #732)
+> **Last updated**: 2026-07-20 (S016 / EV-012 — Manual TAC Input modes #730 / UJ-025 / TC-F7-007)
 
 ## Scope
 
@@ -66,6 +66,7 @@ Unified manual live test harness against Render staging:
 | UJ-DEV-005 | F12–F14 | pip install packages | CI | TC-F12-001, TC-F13-001, TC-F14-002 |
 | UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
 | UJ-024 | F15 | METAR/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F15-001..005 |
+| UJ-025 | F7 | Manual TAC Input modes (ADR-024 / #730) | H6′ | TC-F7-007 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -273,9 +274,33 @@ admin suite modules.
 ### TC-F7-006: Admin routes removed (UJ-019)
 
 - **Level**: T2 / T3
-- **Objective**: `/admin` and legacy admin deep links are not-found; old admin suite retired
-- **Pass criteria**: Negative Playwright/API asserts; no AdminDashboard route registration
-- **Source**: UJ-019; #697
+- **Objective**: `/admin` and legacy admin deep links are gone
+- **Pass criteria**: Not-found / no AdminDashboard; authenticated convert still works
+- **Source**: UJ-019; F7.a / #697
+
+### TC-F7-007: Manual TAC Input modes (UJ-025 / #730)
+
+- **Level**: T2 (Vitest + Playwright) / T3 (H6′ / staging smoke)
+- **Objective**: Validate FileConverter Manual TAC Input modes per ADR-024 matrix
+- **Matrix**:
+
+  | Case | Input | Mode | Expect |
+  | ---- | ----- | ---- | ------ |
+  | T1 | Single METAR TAC | TAC report | Convert OK; Product Auto-detect |
+  | T2 | Multi-report WMO AHL | AHL bulletin | `/convert-bulletin` + summary/results |
+  | T3 | AHL or COLLECT pasted in TAC mode | (auto-switch) | Switches mode + toast (**required**) |
+  | T4 | COLLECT XML (fixture) | IWXXM COLLECT | `/ingest-collect` → **501** placeholder UX |
+  | T5 | `.gz` COLLECT/bulletin if accepted | matching | Inflate + same as T2/T4 |
+  | T6 | Read-only finished session | any | Mode buttons disabled |
+
+- **Pass criteria**:
+  1. Vitest: `inputKind`, `api` (convert-bulletin + ingest-collect 501), `FileConverter` mode group
+  2. Playwright (`apps/e2e/`): T1–T4 smoke green (T5/T6 as coverage allows)
+  3. No silent AHL fall-through to single `/convert`; COLLECT 501 not treated as success
+  4. Staging (13): H4–H5 + authenticated AHL happy path + COLLECT 501 notice
+  5. H7 (`make test-live-bulletin` / UJ-011) remains API gate — not replaced by this TC
+- **Source**: UJ-025; ADR-024; [#730](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/730);
+  S016 / EV-012 (E12-1..E12-4)
 
 ### F7 UI↔API connection integration
 
@@ -287,6 +312,7 @@ Cross-layer coverage for workbench connection points (not only isolated unit/TC 
 | Decode panel | `POST /api/v1/decode-tac` | same | same |
 | Soft-preview / Failed-TAC | `POST /api/v1/convert` (`preview=true`) | same + `test_frontend_contract_integration.py` | same |
 | My METARs / sessions | `/api/v1/work-sessions*` + `product` | same | same |
+| Manual TAC Input modes | `/convert`, `/convert-bulletin`, `/ingest-collect` | existing convert/bulletin tests + 501 | TC-F7-007 e2e (S016) |
 | Browser CORS (H0i) | OPTIONS on lint/decode/convert | same + `test_h0i_connectivity.py` | — |
 
 ### F7 verify/deploy gate
@@ -299,6 +325,14 @@ Before closing S011 / EV-008:
 - [ ] H6′ live smokes for UJ-013/015–019 (or documented waiver)
 - [ ] Admin E2E modules removed or converted to TC-F7-006
 - [ ] Child issues #697/#702/#665/#666/#694 closed or linked; #5 remains open
+
+### F7 input-modes validation gate (S016 / EV-012 / #730)
+
+- [ ] TC-F7-007 green at T2 (Playwright T1–T4 + Vitest anchors)
+- [ ] H4–H5 + authenticated AHL + COLLECT 501 on staging (13-deploy-smoke)
+- [ ] Auto-switch (T3) required — no waiver without AskQuestion
+- [ ] #730 checklist documented; defects filed as separate bugs
+- [ ] F7 status remains **Planned** (no Implemented flip this cycle)
 
 ## F9/F10 Test Cases (S013 / EV-009)
 
@@ -645,6 +679,8 @@ Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
 - S011 / EV-008 (2026-07-13): TC-F7-001–006; TC-004 unified; admin E2E retired; H6′ F7 smokes;
   scope includes F7 build
   (D-S008-05-batch2)
+- S016 / EV-012 (2026-07-20): TC-F7-007 / UJ-025 Manual TAC Input modes (#730 / ADR-024);
+  H6′ + staging gate; F7 stays Planned
 
 ### TC-LIVE-005: Stale Test Migration
 
