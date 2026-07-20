@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — R1–R8 rules |
-| **Active task** | T3.5 — R3 wx phenomena fixtures (next) |
-| **Tasks** | 12 / 35 completed (… T3.1–T3.4) |
+| **Active task** | T3.7 — R4 clouds/CAVOK/VV/CB/TCU fixtures (next) |
+| **Tasks** | 14 / 35 completed (… T3.1–T3.6) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -64,8 +64,8 @@
 | T3.2 | Code | Encode R1 rules + registry rows | F15; COVERAGE_MATRIX | T3.1 | completed |
 | T3.3 | Test | Fixtures R2 (visibility SM/m/fractions/9999) | Research R2 | T3.2 | completed |
 | T3.4 | Code | Encode R2 | F15 | T3.3 | completed |
-| T3.5 | Test | Fixtures R3 (wx phenomena grammar) | Research R3 | T3.4 | pending |
-| T3.6 | Code | Encode R3 | F15 | T3.5 | pending |
+| T3.5 | Test | Fixtures R3 (wx phenomena grammar) | Research R3 | T3.4 | completed |
+| T3.6 | Code | Encode R3 | F15 | T3.5 | completed |
 | T3.7 | Test | Fixtures R4 (clouds/CAVOK/VV/CB/TCU) | Research R4 | T3.6 | pending |
 | T3.8 | Code | Encode R4 | F15 | T3.7 | pending |
 | T3.9 | Test | Fixtures R5 (RMK AO1/AO2/SLP/P/T/PK WND) | Research R5 | T3.8 | pending |
