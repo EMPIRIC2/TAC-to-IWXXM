@@ -10,7 +10,7 @@
 **Issues**: [#730](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/730)  
 **Started**: 2026-07-20  
 **Branch**: `evolve/EV-012-manual-tac-input-modes`  
-**Completed**: —
+**Completed**: 2026-07-20 (D-S016-EV012-phase4-close-1)
 
 ### Scope (Phase 0 locked 2026-07-20)
 
@@ -32,17 +32,20 @@
 | S2.1 | contradiction | H6 omits UJ-025 | Fix: add UJ-025 to H6/H6′ row | — |
 | S2.2 | ambiguity | T5/T6 vs all tests | T1–T6 all hard gates | — |
 | S2.3 | decision | UJ id | Keep UJ-025 (not fold into UJ-013) | — |
+| D-S016-EV012-13-path-A | decision | Deploy path | Push/PR then smoke after merge/deploy | — |
+| D-S016-EV012-13-pass | decision | 13 result | Deploy smoke PASS @ `37be5f8` | — |
+| D-S016-EV012-phase4-close-1 | decision | Phase 4 | Close EV-012/S016; close #730 | — |
 
 ### Stage log
 
 | Stage | Completed | Notes |
 |-------|-----------|-------|
 | 00-context | 2026-07-20 | Session + scoped brief |
-| 16-evolve | — | Phase 0 complete; Phase A in progress |
+| 16-evolve | 2026-07-20 | Phase 4 closed |
 | 01-requirements | 2026-07-20 | UJ-025 + TC-F7-007 + F7 validation note |
 | 02-verify-plan | 2026-07-20 | PASS — S2.1 fix H6; S2.2 T1–T6 hard; S2.3 UJ-025 |
 | 10-e2e | 2026-07-20 | PASS — TC-F7-007 T1–T6 Playwright + Vitest anchors |
-| 13-deploy-smoke | | |
+| 13-deploy-smoke | 2026-07-20 | PASS — H0ci–H5 + AHL + COLLECT 501 + live workbench |
 
 ---
 

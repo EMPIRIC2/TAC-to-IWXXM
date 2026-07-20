@@ -2,6 +2,21 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-20 — S016 EV-012 (Manual TAC Input modes validation / #730)
+
+### Added
+- Playwright **TC-F7-007** (UJ-025): Manual TAC Input modes T1–T6 (TAC / AHL / COLLECT,
+  auto-switch, `.gz` COLLECT, read-only finished session).
+
+### Changed
+- Workbench: toast on convert-time AHL/COLLECT auto-switch; classify COLLECT after gzip inflate.
+- Specs: UJ-025 + TC-F7-007; F7 remains **Planned**; COLLECT stays **501** (ADR-024).
+
+### Deploy
+- PR [#746](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/746) merged (`37be5f8`);
+  Render API + frontend-v4-web redeployed 2026-07-20. Smoke: H0ci/H0c/H3/H4/H5 + AHL + COLLECT
+  501 + live workbench **PASS** (`docs/sessions/S016-manual-tac-input-modes/reports/deploy-smoke.md`).
+
 ## 2026-07-20 — S015 EV-011 (F15 METAR lint registry + #732 quality)
 
 ### Added
