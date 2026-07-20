@@ -21,7 +21,13 @@ FIELD_ANNOTATIONS_PATH = Path(__file__).resolve().parent / "fixtures" / "iwxxm_u
 
 IWXXM_VERSION = "2025-2"
 PROFILE = "iwxxm_us"
-CASE_IDS = ("metar_us_ao2_slp", "speci_us_ao2", "metar_us_pk_wnd")
+CASE_IDS = (
+    "metar_us_ao2_slp",
+    "speci_us_ao2",
+    "metar_us_pk_wnd",
+    "metar_us_auto_ao2",
+    "speci_us_cor",
+)
 
 
 def _load_manifest() -> dict:
@@ -46,7 +52,9 @@ def test_iwxxm_us_golden_manifest_present(golden_manifest: dict) -> None:
     assert golden_manifest.get("schema_version") == 1
     assert golden_manifest.get("profile") == PROFILE
     cases = golden_manifest.get("cases", [])
-    assert len(cases) >= 3
+    assert len(cases) >= 5
+    ids = {c["id"] for c in cases}
+    assert {"metar_us_ao2_slp", "speci_us_ao2", "metar_us_pk_wnd", "metar_us_auto_ao2", "speci_us_cor"} <= ids
     for case in cases:
         assert (FIXTURES / case["tac"]).is_file()
         assert (FIXTURES / case["golden"]).is_file()
