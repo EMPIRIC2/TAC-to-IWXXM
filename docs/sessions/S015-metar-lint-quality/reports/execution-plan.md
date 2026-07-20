@@ -14,7 +14,7 @@
 | **Active phase** | Phase B — awaiting 05-verify-tech |
 | **Active milestone** | — (build not started) |
 | **Active task** | — |
-| **Tasks** | 0 / 31 pending (T1.1–T5.10 + T6.0) |
+| **Tasks** | 0 / 35 pending (T1.1–T5.10 + T2.2a + T6.0) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -53,7 +53,8 @@
 |------|------|-------------|-------------|------------|--------|
 | T2.1 | Test | Existing METAR/SPECI/shared lint tests still green after migration (parity) | TC-F12-001; TC-F15-001 | T1.3 | pending |
 | T2.2 | Code | `rules.py` + `product_rules.py` emit via registry helpers only (no `severity=` literals) | F15 acc2; ADR-028 | T2.1 | pending |
-| T2.3 | Test | Negative fixtures assert `expected_codes` ⊆ registry | TC-F15-003 | T2.2 | pending |
+| T2.2a | Config | Escalate `issue_registry_guard` from warn → **error** on `severity=` in `rules`/`product_rules` | E11-30; E11-32 | T2.2 | pending |
+| T2.3 | Test | Negative fixtures assert `expected_codes` ⊆ registry | TC-F15-003 | T2.2a | pending |
 
 ### M3 — METAR/SPECI rules R1–R5 + full R8 (F15 / F12)
 
@@ -77,7 +78,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T4.1 | Test | Expand annex3 + iwxxm_us golden manifests (METAR+SPECI); M-parse/M-xsd/M-sch stubs | TC-F15-002; TC-F6-020 | T3.12 | pending |
-| T4.2 | Code | Convert fidelity fixes for new goldens (COR/NIL/RMK/US as scoped) | F6 deepen; #732 | T4.1 | pending |
+| T4.2 | Code | Convert fidelity fixes for new goldens (COR/NIL/RMK/US) — HARD themes must green; “scoped” = fixture depth within theme, not theme drop | F6 deepen; #732; E11-23 | T4.1 | pending |
 | T4.3 | Test | R7 adjacency: METAR↔SPECI shared pack; no silent cross-product pass | TC-F15-005; UJ-024 | T4.2 | pending |
 | T4.4 | Docs | Update COVERAGE_MATRIX METAR/SPECI rows; link research catalog | F15 acc3 | T4.3 | pending |
 
@@ -85,7 +86,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.0 | Config | Harden `issue_registry_guard` to **error** on `severity=` in `rules`/`product_rules`; Makefile catalog regen; optional pre-commit; fixture README — **no new deps** | E11-30 | Plan approval | pending |
+| T6.0 | Config | Stage 06: Makefile catalog regen; fixture README; optional pre-commit; keep `issue_registry_guard` at **warn** until T2.2 — then escalate to **error** (see T2.2a). **No new deps** | E11-30; E11-32 | Plan approval | pending |
 
 ### M5 — Catalog API + FE tooltips + smoke + verify/deploy (F15)
 
@@ -100,7 +101,7 @@
 | T5.7 | Test | 09-qa + 10-e2e — UJ-024 / TC-F15-001..005 | 09/10 | T5.6 | pending |
 | T5.8 | Docs | 11-verify-impl — per-Fn F15 + F6/F12 deepen sign-off | 11 | T5.7 | pending |
 | T5.9 | Config | 12-verify-deploy — Render checklist + `tac-validate-v0.1.1` tag plan | 12; E11-25 | T5.8 | pending |
-| T5.10 | Test | 13-deploy-smoke — API+FE redeploy; H1–H5 (H4–H5 required) | 13; E11-26 | T5.9 | pending |
+| T5.10 | Test | 13-deploy-smoke — API+FE redeploy; H1–H5 (H4–H5 required); re-run **H0c** CORS unit tests when API image changes | 13; E11-26; connectivity-gates | T5.9 | pending |
 
 ## Data Dependencies
 
@@ -129,7 +130,7 @@
 ## Phase Gate Check (B→C)
 
 - [x] Execution plan approved by user (E11-31)
-- [ ] 05-verify-tech PASS
+- [x] 05-verify-tech PASS (E11-32)
 - [ ] 06-tech-tooling delta complete (T6.0 / stage 06)
 
 ## Phase Gate Log
@@ -138,3 +139,4 @@
 |------|------|--------|-------|
 | A→B | 2026-07-19 | passed | 01–03 complete; D-S015-EV011-phase-a-pass |
 | B plan | 2026-07-19 | approved | User option 2 — GET lint-issue-catalog (E11-31) |
+| B tech audit | 2026-07-19 | passed | 05 PASS — S1–S4 all option 1 (E11-32); 35 tasks; HARD docs aligned |

@@ -6,7 +6,7 @@
 > **Stage**: 01-requirements  
 > **Related**: feature-list F15; packages/tac-validate; #732  
 > **Session**: S015-metar-lint-quality / EV-011  
-> **Decision id**: E11-8 / E11-9 / E11-10
+> **Decision id**: E11-8 / E11-9 / E11-10; amended E11-32 (05-verify-tech)
 
 ## Context
 
@@ -31,7 +31,10 @@ that can grow without renaming public codes casually.
    note (old code → new code). Default severities **may tighten** in minor releases; loosening
    severity for a published code is an ADR/changelog decision.
 5. **CI**: Unknown codes emitted by rules fail tests. Registry row without a covering fixture
-   is allowed only when marked `deferred` with rationale (coverage-matrix / session notes).
+   may be marked `deferred` **only** for non–R1–R8 / thin non-METAR-SPECI product rows this
+   cycle (E11-23/32). **R1–R8 METAR/SPECI themes must ship green fixtures** — no silent deferral.
+6. **HTTP catalog (E11-31)**: Additive `GET /api/v1/lint-issue-catalog` exports the registry for
+   FE tooltips; `POST /lint-tac` wire shape unchanged.
 
 ## Alternatives Considered
 
@@ -44,9 +47,9 @@ that can grow without renaming public codes casually.
 
 ## Consequences
 
-- F15 implementation adds registry + migrates existing METAR (and shared) codes onto it.
+- F15 implementation adds registry + migrates existing METAR/SPECI (and shared) codes onto it.
 - ADR-025 terminator/`info` semantics unchanged; registry records `MISSING_TERMINATOR` as `info`.
-- Frontend may continue to display `code` + `severity` without a breaking HTTP change if the
-  wire shape stays the same; document any new codes in api-contract only if response schema
-  fields change.
-- Coverage-matrix and research catalog (EV-011) cite registry codes for METAR R1–R6 themes.
+- Frontend displays `code` + `severity` from lint-tac; catalog panel/tooltips use
+  `GET /api/v1/lint-issue-catalog` (E11-31) without changing lint-tac fields.
+- Coverage-matrix and research catalog (EV-011) cite registry codes for METAR/SPECI **R1–R8**
+  themes (HARD — E11-23/28).

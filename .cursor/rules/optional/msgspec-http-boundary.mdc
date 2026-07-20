@@ -14,8 +14,11 @@ Traces to `[Corpus: adr]` ADR-026, `[Corpus: api]` serialization table, E10-28.
 
 ## High-churn routes
 
-`POST /api/v1/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`,
-`/decode-tac`:
+High-churn **msgspec response** routes:
+
+- `POST /api/v1/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`,
+  `/decode-tac` (multipart Form/File intake unchanged)
+- `GET /api/v1/lint-issue-catalog` (JSON GET; msgspec response encode — E11-31)
 
 | Layer | Technology |
 |-------|------------|

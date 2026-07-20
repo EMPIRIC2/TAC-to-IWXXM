@@ -1,6 +1,24 @@
 # Technical Plan Audit Report
 
-> Stage: 05-verify-tech | Last delta: 2026-07-18 (S014 / EV-010)
+> Stage: 05-verify-tech | Last delta: 2026-07-19 (S015 / EV-011)
+
+## S015 / EV-011 delta (2026-07-19)
+
+| Metric | Count |
+|--------|-------|
+| Documents audited | 8 |
+| Auto-approved (high) | 20 |
+| User-approved (medium/low) | 4 (S1–S4 all option 1 / E11-32) |
+| Denied | 0 |
+| Consistency issues found | 4 hard + bundle |
+| Consistency issues resolved | all |
+
+**Source updates**: execution-plan 35 tasks + T2.2a; F15/UJ/test HARD; ADR-028 amend;
+research R8; msgspec rule; H0c on T5.10.
+
+Full statement walk: `docs/sessions/S015-metar-lint-quality/reports/05-verify-tech-audit.md`.
+
+---
 
 ## S014 / EV-010 delta (2026-07-18)
 

@@ -23,7 +23,7 @@
 | R5 | Remarks (AO1/AO2, SLP, P, T, PK WND) | INFO/WARNING for known RMK; ERROR malformed | `iwxxm_us` extensions | US schema |
 | R6 | Golden convert + SCH round-trip | — | Expand product_matrix goldens | M-xsd / M-sch CI |
 | R7 | METAR↔SPECI adjacency | Product hint / Auto-detect; shared rule pack; no silent cross-product pass | Same `metarSpeci` path; SPECI goldens | M-xsd/M-sch for SPECI |
-| R8+ | Opportunistic | AUTO/COR/NIL/NOSIG/TEMPO adjacency; runway visual range; wind VRB/gust | Match iwxxmConverter edge cases where Annex-3 allows | As fixtures allow |
+| R8 | AUTO / COR / NIL / NOSIG / TEMPO / RVR / wind VRB·gust | Registry code + accept/negative each (**HARD** — E11-28) | Match Annex-3 / US where fixtures allow | As fixtures allow |
 
 ## Sample TAC seeds (from public decoder pages — for fixtures, not copyright claims)
 

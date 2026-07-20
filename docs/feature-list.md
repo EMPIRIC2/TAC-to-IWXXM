@@ -410,13 +410,16 @@
   | **F6** | METAR convert fidelity + `product_matrix` / golden IWXXM; Annex-3 + `iwxxm_us` where fixtures allow (COR/NIL/RMK as scoped) |
   | **F12** | METAR checklist rules wired through registry; accept + negative fixtures; no silent success |
 - **Acceptance**:
-  1. All METAR lint emissions use registry codes; CI fails on unknown codes
+  1. All METAR/**SPECI** lint emissions use registry codes; CI fails on unknown codes
   2. Adding a rule = registry row + fixture(s); no ad-hoc severity string literals in rule bodies
-  3. Coverage-matrix METAR row updated; gaps closed or deferred with rationale
-  4. Accept METAR → convert → `iwxxm-validate` XSD+Schematron pass (pinned versions) for expanded golden pack
-  5. Negative METAR fixtures produce useful diagnostics (no silent success)
+  3. Coverage-matrix METAR/**SPECI** rows updated; **R1–R8 themes closed this cycle** (HARD —
+     E11-23/28); non–R-theme gaps only may defer with rationale + AskQuestion
+  4. Accept METAR **and SPECI** → convert → `iwxxm-validate` XSD+Schematron pass (pinned
+     versions) for expanded golden pack
+  5. Negative METAR/**SPECI** fixtures produce useful diagnostics (no silent success)
   6. Workbench / `product=metar` **and** `product=speci` lint+convert smoke documented
-     (F7 remains Planned; smoke only under F15); METAR↔SPECI adjacency covered (UJ-024 / TC-F15-005)
+     (F7 remains Planned; smoke only under F15); METAR↔SPECI adjacency covered (UJ-024 / TC-F15-005);
+     catalog tooltips via `GET /api/v1/lint-issue-catalog` (E11-31)
 - **Out of scope**: New products beyond the seven F6 set; COLLECT/dissemination; FlightPlanDatabase
   FMS as METAR authority; closing sibling product-quality tickets unless registry sharing requires it.
 - **Source**: #732; E11-1..E11-10; [context/metar-lint-quality.md](context/metar-lint-quality.md);
@@ -424,9 +427,10 @@
 
 ### F6 deepen (S015 / EV-011 — METAR)
 
-- **Status note**: F6 remains **Implemented**; this cycle **deepens METAR** convert/golden
+- **Status note**: F6 remains **Implemented**; this cycle **deepens METAR/SPECI** convert/golden
   fidelity under F15 acceptance (not a new Fn). Track gaps vs #732 known list (COR/NIL/remarks;
-  IWXXM-US AO2/SLP/PK WND; AHL+SPECI adjacency) — close or defer with rationale in coverage notes.
+  IWXXM-US AO2/SLP/PK WND; AHL+SPECI adjacency) — **R1–R8 themes must close** (HARD); other
+  convert gaps outside those themes may defer only via AskQuestion + coverage note.
 
 ### F12 deepen (S015 / EV-011 — METAR)
 

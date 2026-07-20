@@ -1,7 +1,18 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-07-18 (S014 / EV-010 append)
+> Last updated: 2026-07-19 (S015 / EV-011 append)
+
+## S015 / EV-011 05-verify-tech (2026-07-19)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| TAUDIT-S015-01 | 2026-07-19 | Task count | 35 tasks (was miscounted 31; +T2.2a) | confirmed |
+| TAUDIT-S015-02 | 2026-07-19 | HARD R1–R8 | Product docs: no R-theme deferral | confirmed |
+| TAUDIT-S015-03 | 2026-07-19 | Guard timing | T6.0 warn; T2.2a error after migrate | confirmed |
+| TAUDIT-S015-04 | 2026-07-19 | ADR/FE/HTTP | ADR-028 R1–R8+GET; msgspec catalog; H0c on T5.10 | confirmed |
+
+Session report: `docs/sessions/S015-metar-lint-quality/reports/05-verify-tech-audit.md`.
 
 ## S014 / EV-010 05-verify-tech (2026-07-18)
 

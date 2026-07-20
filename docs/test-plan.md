@@ -465,9 +465,9 @@ Before closing S013 / EV-009:
 ### F15 verify/deploy gate
 
 - [ ] TC-F15-001..005 green
-- [ ] Coverage-matrix METAR/SPECI rows reviewed (gaps closed or deferred)
-- [ ] Research catalog (R1–R6 + SPECI adjacency) linked from session report / domain notes
-- [ ] H4–H5 if API/FE contract or workbench copy changes
+- [ ] Coverage-matrix METAR/SPECI **R1–R8** closed (HARD); non–R gaps only with AskQuestion + note
+- [ ] Research catalog (R1–R8 + SPECI adjacency R7) linked from session report / domain notes
+- [ ] H4–H5 if API/FE contract or workbench copy changes; H0c when API image changes
 - [ ] api-contract: lint-tac wire shape unchanged (ADR-028); additive `GET /lint-issue-catalog` (E11-31)
 
 ## Live Test Cases (T3 / H3–H6)

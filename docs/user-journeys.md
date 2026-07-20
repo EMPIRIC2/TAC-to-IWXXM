@@ -648,8 +648,8 @@ SPECI shares the METAR/SPECI rule pack and `metarSpeci` IWXXM schemas — adjace
 4. Adjacency: bulletin or paired fixtures where METAR and SPECI coexist do not mis-route
    product selection or silent-pass lint.
 
-**Acceptance**: F15 criteria 1–6 (METAR + SPECI); coverage-matrix METAR/SPECI gaps closed or
-deferred with rationale.
+**Acceptance**: F15 criteria 1–6 (METAR + SPECI); coverage-matrix METAR/SPECI **R1–R8** closed
+this cycle (HARD — E11-23/28); non–R-theme gaps only may defer with rationale + AskQuestion.
 **Tier: T0 / T2 / T3** (T3 = workbench smoke when API/FE redeployed).
 
 ---

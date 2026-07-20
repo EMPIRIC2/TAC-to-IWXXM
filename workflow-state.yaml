@@ -82,7 +82,9 @@ active_session:
     - stage: 05-verify-tech
       required: true
       mode: delta
-      status: pending
+      status: in_progress
+      started: '2026-07-19'
+      note: 'STARTED (D-S015-EV011-05-start) — user option 1 start 05 now; Phase B'
     - stage: 06-tech-tooling
       required: true
       mode: delta
@@ -117,8 +119,8 @@ active_session:
       mode: full
       status: pending
   skipped_stages: []
-  current_stage:
-  note: '04-tech-plan complete; next 05-verify-tech'
+  current_stage: 05-verify-tech
+  note: '05-verify-tech in_progress (D-S015-EV011-05-start); Phase B'
 sessions:
 
   - id: S015-metar-lint-quality
@@ -196,7 +198,9 @@ sessions:
       - stage: 05-verify-tech
         required: true
         mode: delta
-        status: pending
+        status: in_progress
+        started: '2026-07-19'
+        note: 'STARTED (D-S015-EV011-05-start) — user option 1 start 05 now; Phase B'
       - stage: 06-tech-tooling
         required: true
         mode: delta
@@ -231,8 +235,8 @@ sessions:
         mode: full
         status: pending
     skipped_stages: []
-    current_stage:
-    note: '04-tech-plan complete; next 05-verify-tech'
+    current_stage: 05-verify-tech
+    note: '05-verify-tech in_progress (D-S015-EV011-05-start); Phase B'
   - id: S014-package-publish-validation
     type: feature
     status: completed
@@ -1800,7 +1804,7 @@ stages:
       completed_at: '2026-07-19'
       note: >-
         COMPLETE E11-31 — plan approved; GET lint-issue-catalog; 31 tasks;
-        awaiting user to start 05-verify-tech
+        handed off to 05-verify-tech (D-S015-EV011-05-start)
   05-verify-tech:
     status: completed
     started_at: "2026-06-15T01:15:00Z"
@@ -1821,6 +1825,17 @@ stages:
       - docs/decisions/tech-audit.md
       - docs/decisions/tech-decisions.md
     delta_substages:
+      - id: S015-metar-lint-quality
+        session_id: S015-metar-lint-quality
+        evolve_cycle_id: EV-011
+        skill_id: 05-verify-tech
+        status: in_progress
+        mode: delta
+        started_at: '2026-07-19'
+        started: '2026-07-19'
+        note: >-
+          STARTED (D-S015-EV011-05-start) — user option 1; Phase B delta audit of
+          execution-plan + tech specs (E11-19..31)
       - id: S008-f6-tac2iwxxm
         session_id: S008-general-tac-iwxxm-converter
         status: completed
@@ -1855,6 +1870,9 @@ stages:
         overall: pass
         note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
     notes:
+      - >-
+        2026-07-19 S015/EV-011 05-verify-tech STARTED (D-S015-EV011-05-start) — user option 1;
+        Phase B delta; historical baseline status remains completed
       - "Technical plan verification complete; 3 source docs updated"
       - "Historical baseline status remains completed — S008 tracked via delta_substages only"
       - "S008 delta 05-verify-tech statement walk in progress 2026-07-12 — auto-approved high-confidence stack; VT-S008-C01–C10
@@ -1866,6 +1884,15 @@ stages:
       - "S011/EV-008 delta 05-verify-tech completed 2026-07-13 — audit PASS; A1–A3 as-is; phase_b still pending (no auto-pass)"
       - "S014/EV-010 delta 05-verify-tech PASS 2026-07-18 — 12 auto + 44A–47A; Phase B checkpoint before 06"
 
+    active_session:
+      session_id: S015-metar-lint-quality
+      evolve_cycle_id: EV-011
+      skill_id: 05-verify-tech
+      status: in_progress
+      mode: delta
+      started_at: '2026-07-19'
+      note: >-
+        STARTED (D-S015-EV011-05-start) — user option 1; Phase B delta audit
   06-tech-tooling:
     status: completed
     started_at: "2026-06-14T12:00:00Z"
@@ -2597,6 +2624,20 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S015-EV011-05-start
+    date: '2026-07-19'
+    timestamp: '2026-07-19'
+    stage: 05-verify-tech
+    skill: 05-verify-tech
+    skill_id: 05-verify-tech
+    session_id: S015-metar-lint-quality
+    evolve_cycle_id: EV-011
+    status: confirmed
+    resolved_at: '2026-07-19'
+    decision: Start 05-verify-tech now (user option 1) — S015/EV-011 Phase B
+    summary: >-
+      05-verify-tech in_progress after 04 complete; delta audit of tech plan / execution
+      plan; Phase B continues (b_to_c / phase_b still pending until 05+06 complete)
   - id: D-S015-EV011-04-approve
     date: '2026-07-19'
     timestamp: '2026-07-19'
@@ -5991,6 +6032,7 @@ evolve_cycles:
       E11-29 (D-S015-EV011-04-fe-1): FE this cycle — registry catalog UI + code tooltips (not lint-tac wire-shape); FE redeploy + H4–H5 required.
       E11-30 (D-S015-EV011-04-06-1): 06 delta — harden issue_registry_guard to error on severity= in rules/product_rules; Makefile catalog regen; optional pre-commit; fixture README; no new deps.
       E11-31 (D-S015-EV011-04-approve): execution plan approved — GET /api/v1/lint-issue-catalog; 31 tasks M1–M5+T6.0.
+      E11-32 (D-S015-EV011-05-start): start 05-verify-tech now (user option 1) — Phase B delta audit.
     routing_plan:
       required_stages:
         - 00-context
@@ -6011,8 +6053,8 @@ evolve_cycles:
       approved: true
       approved_at: '2026-07-19'
       decision_id: D-S015-EV011-route-1
-    current_stage:
-    note: '04 done; awaiting 05-verify-tech'
+    current_stage: 05-verify-tech
+    note: '05-verify-tech in_progress (D-S015-EV011-05-start); Phase B'
     gates:
       a_to_b: passed  # 03-plan-tooling COMPLETE (D-S015-EV011-03-tooling-12); Phase A stages 01–03 done
       b_to_c: pending
@@ -6109,6 +6151,13 @@ evolve_cycles:
     adrs:
       - docs/adr/ADR-028-tac-validate-issue-registry.md
     notes:
+      - >-
+        2026-07-19 S015/EV-011 05-verify-tech STARTED (D-S015-EV011-05-start) —
+        user option 1 start 05 now; Phase B delta audit in_progress
+      - >-
+        2026-07-19 S015/EV-011 git — recorded 3ea894d17b7018247469de9e92bd33dfe82ec429
+        (3ea894d) chore: record 04-tech-plan commit in workflow-state; tip ahead of
+        origin by 2; not pushed
       - >-
         2026-07-19 S015/EV-011 git — 04-tech-plan committed as
         6bfe5df591c25b6791627f4cb34f8680ce5c61a8 (6bfe5df) on
@@ -6278,6 +6327,13 @@ evolve_cycles:
           - docs/test-plan.md
           - docs/dependency-inventory.md
           - docs/decisions/evolve-decisions.md
+      05-verify-tech:
+        status: in_progress
+        mode: delta
+        started: '2026-07-19'
+        note: >-
+          STARTED (D-S015-EV011-05-start) — user option 1; Phase B delta audit of
+          execution-plan + tech specs (E11-19..31)
   - id: EV-010
     session_id: S014-package-publish-validation
     cycle_type: feature
@@ -8012,10 +8068,14 @@ evolve_cycles:
 
 git_history:
   current_branch: evolve/EV-011-metar-lint-quality
-  ahead_of_origin: 1
+  ahead_of_origin: 2
   pushed: false
   pending_commit:
   notes:
+    - >-
+      2026-07-19 S015/EV-011 git — recorded 3ea894d17b7018247469de9e92bd33dfe82ec429
+      (3ea894d) chore: record 04-tech-plan commit in workflow-state; tip ahead of
+      origin by 2; not pushed
     - >-
       2026-07-19 S015/EV-011 04-tech-plan — commit 6bfe5df591c25b6791627f4cb34f8680ce5c61a8
       (6bfe5df) on evolve/EV-011-metar-lint-quality; ~30 files (Phase A+B docs, ADR-028,
@@ -8128,10 +8188,10 @@ git_history:
       created_at: "2026-07-19"
       session_id: S015-metar-lint-quality
       evolve_cycle_id: EV-011
-      tip_sha: 6bfe5df591c25b6791627f4cb34f8680ce5c61a8
+      tip_sha: 3ea894d17b7018247469de9e92bd33dfe82ec429
       note: >-
-        04-tech-plan complete (E11-31); tip 6bfe5df (~30 files Phase A+B docs, ADR-028,
-        tooling, execution plan); awaiting 05-verify-tech; local ahead of origin by 1
+        tip 3ea894d (chore: record 04-tech-plan commit); prior 6bfe5df 04-tech-plan;
+        05-verify-tech in_progress (D-S015-EV011-05-start); ahead of origin by 2
     - name: evolve/EV-010-package-publish-validation
       purpose: "EV-010 / S014 package publish + validation stack (F11–F14)"
       base: main
@@ -8356,6 +8416,17 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 3ea894d17b7018247469de9e92bd33dfe82ec429
+      short: 3ea894d
+      branch: evolve/EV-011-metar-lint-quality
+      message: "chore: record 04-tech-plan commit in workflow-state"
+      stage: "04-tech-plan"
+      session_id: S015-metar-lint-quality
+      evolve_cycle_id: EV-011
+      files_changed: 1
+      timestamp: "2026-07-20T01:27:57Z"
+      note: >-
+        Records 6bfe5df in workflow-state git_history; tip ahead of origin by 2; not pushed
     - sha: 6bfe5df591c25b6791627f4cb34f8680ce5c61a8
       short: 6bfe5df
       branch: evolve/EV-011-metar-lint-quality
