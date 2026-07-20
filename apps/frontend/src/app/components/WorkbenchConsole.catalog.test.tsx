@@ -4,6 +4,7 @@
 
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { WorkbenchConsole } from './WorkbenchConsole';
 import type { LintIssueCatalogEntry } from '@/utils/api';
 
@@ -20,7 +21,8 @@ const ENTRY: LintIssueCatalogEntry = {
 };
 
 describe('WorkbenchConsole catalog tooltips (T5.4)', () => {
-  it('renders dotted underline tooltip span for [CODE] tokens', () => {
+  it('renders dotted underline tooltip span for [CODE] tokens', async () => {
+    const user = userEvent.setup();
     const byCode = new Map([['MISSING_TERMINATOR', ENTRY]]);
     render(
       <WorkbenchConsole
@@ -40,5 +42,9 @@ describe('WorkbenchConsole catalog tooltips (T5.4)', () => {
     const tip = screen.getByTestId('lint-code-tooltip-MISSING_TERMINATOR');
     expect(tip).toHaveAttribute('title', "info: Reports in bulletins end with '='");
     expect(screen.getByTestId('lint-issue-catalog-panel')).toBeInTheDocument();
+    await user.click(screen.getByTestId('lint-issue-catalog-toggle'));
+    expect(screen.getByTestId('lint-issue-catalog-list')).toHaveTextContent(
+      'MISSING_TERMINATOR',
+    );
   });
 });
