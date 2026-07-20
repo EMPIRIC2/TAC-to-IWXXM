@@ -22,14 +22,15 @@ All implementation work must map to an approved feature in `[Corpus: product]`
 | F4 | IWXXM version handling |
 | F5 | Work history (METAR/SPECI sessions) |
 | F6 | General TAC→IWXXM (`tac2iwxxm` + bulletin + products) |
-| F7 | Multi-product operator UI — **Done** (S011 / EV-008) |
+| F7 | Multi-product operator UI — **Planned** (S011 / EV-008 closed; PR #716 merged; smoke under F15) |
 | F8 | Near-RT ingest worker (`apps/worker`) — **Done** (ADR-018) |
 | F9 | Value-aware live decode + plain-language summary — **Done** (S013) |
 | F10 | Workbench IWXXM preview + soft-fail/terminator lint UX — **Done** (S013) |
-| F11 | Validation stack perf + msgspec HTTP + XSD codegen — **Planned** (S014 / EV-010) |
-| F12 | Publishable `tac-validate` PyPI — **Planned** (S014 / EV-010) |
-| F13 | Fast `iwxxm-validate` Rust + Schematron + PyPI — **Planned** (S014 / EV-010) |
-| F14 | Publish `tac2iwxxm[+validate]` + PyPI/release CI — **Planned** (S014 / EV-010) |
+| F11 | Validation stack perf + msgspec HTTP + XSD codegen — **Implemented** (S014 / EV-010) |
+| F12 | Publishable `tac-validate` PyPI — **Implemented** (S014 / EV-010); deepen via F15 |
+| F13 | Fast `iwxxm-validate` Rust + Schematron + PyPI — **Implemented** (S014 / EV-010) |
+| F14 | Publish `tac2iwxxm[+validate]` + PyPI/release CI — **Implemented** (S014 / EV-010) |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar — **Planned** (S015 / EV-011; #732; ADR-028) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-* + iwxxm-us) |
 | M3 | GIFTs as in-repo package — **deprecated** at F6 cutover |

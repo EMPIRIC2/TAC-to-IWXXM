@@ -157,8 +157,14 @@ metar-to-IWXXM/
 - **S014 / EV-010 delta (F12)**: Published to PyPI `tac-validate` `0.1.0`; encode mined
   `docs/domain/` rules — full depth METAR/SPECI/TAF; SIGMET/AIRMET/VAA/TCA templates + gates;
   cite-only for paywalled Annex text. CLI for CI.
+- **S015 / EV-011 delta (F15)**: **Issue registry** module is the single source of lint
+  `code` + default `severity` + message template (ADR-028). Rules import registry entries;
+  docs/generated catalog lists codes. METAR rule pack expanded (R1–R6 + opportunistic);
+  CI rejects unknown codes. Public codes stable; severities may tighten in minor releases.
+  Workbench METAR lint+convert smoke under F15 (F7 status unchanged).
 - **SoC**: **No** FastAPI or Supabase imports.
-- **Source**: feature-list F6/F12; S011 / EV-008; S013 / EV-009; S014 / EV-010.
+- **Source**: feature-list F6/F12/F15; S011 / EV-008; S013 / EV-009; S014 / EV-010;
+  S015 / EV-011.
 
 ### packages/iwxxm-validate
 

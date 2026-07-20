@@ -1,8 +1,9 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-18 (S014 / EV-010 — msgspec high-churn HTTP + PyPI packages)
-> **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026)
+> **Last updated**: 2026-07-19 (S015 / EV-011 — F15 issue registry; wire shape unchanged)
+> **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
+> F15 registry codes (ADR-028)
 
 ## Base URLs
 
@@ -28,7 +29,7 @@ Frontend uses single API base for `/api/v1/*` and `/auth/*`. **`/admin/*` remove
 
 | Surface | Runtime | OpenAPI |
 |---------|---------|---------|
-| High-churn **responses** (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`) | **msgspec** encode (+ optional Struct validate after assemble) | Thin **pydantic** aliases / JSON Schema export — **no** dual runtime validation |
+| High-churn **responses** (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`, `/lint-issue-catalog`) | **msgspec** encode (+ optional Struct validate after assemble) | Thin **pydantic** aliases / JSON Schema export — **no** dual runtime validation |
 | High-churn **requests** (same routes) | **multipart/form-data** via FastAPI `Form`/`File` (unchanged intake) | Form fields documented as today |
 | `/auth/*`, work-sessions, airports, ICAO OPMET stats | **pydantic** | pydantic (unchanged) |
 
@@ -292,6 +293,47 @@ powers the UI one-click "Add `=`" quick fix (TC-F10-002).
 
 Must support TC-F6-031 and TC-F7-004 span highlight.
 
+**S015 / EV-011 (F15 / ADR-028)**: HTTP **wire shape unchanged** — clients still receive
+`ok`, `issues[]` (`severity`, `code`, `message`, `location`, optional `start`/`end`), and
+optional `fixes[]`. New/migrated METAR/SPECI lint `code` values come from the
+`tac-validate` issue registry; no new response fields on this route.
+
+### Lint issue catalog (S015 / EV-011 / E11-31)
+
+```
+GET /api/v1/lint-issue-catalog
+```
+
+**Purpose**: Export the `tac-validate` issue registry for operator UI tooltips and a
+lightweight catalog panel (F15). Does **not** change `POST /lint-tac` response shape.
+
+**Auth**: Same as convert / lint-tac (unless `DISABLE_AUTH=true`).
+
+**Query** (optional):
+
+| Param | Required | Description |
+|-------|----------|-------------|
+| `product` | no | If set, filter rows tagged for that product (e.g. `metar`, `speci`); omit = all |
+
+**Response** (msgspec encode; pydantic OpenAPI alias):
+
+```json
+{
+  "issues": [
+    {
+      "code": "MISSING_TERMINATOR",
+      "severity": "info",
+      "message_template": "Reports in bulletins end with '=' — add it before publishing",
+      "product": null,
+      "tags": ["terminator", "metar", "speci"]
+    }
+  ]
+}
+```
+
+`code` / default `severity` / `message_template` match the registry module. FE uses this for
+code tooltips; live lint findings still come from `POST /lint-tac`.
+
 ### Decode TAC (S011 / #702)
 
 ```
@@ -497,3 +539,6 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
   lint-tac `info` severity + MISSING_TERMINATOR advisory (F10); ADR-025
 - S014 / EV-010 (2026-07-18): high-churn routes msgspec runtime (ADR-026); pydantic OpenAPI
   aliases; PyPI packages `tac-validate` / `iwxxm-validate` / `tac2iwxxm` `0.1.0` (F12–F14)
+- S015 / EV-011 (2026-07-19): F15 registry — lint-tac **wire shape unchanged**; codes from
+  `tac-validate` registry (ADR-028); METAR+SPECI adjacency in UJ-024 / TC-F15;
+  **additive** `GET /api/v1/lint-issue-catalog` (E11-31) for FE tooltips/catalog panel

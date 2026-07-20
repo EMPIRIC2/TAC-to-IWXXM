@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-18 (S014 — msgspec HTTP + Rust iwxxm-validate + PyPI)
+> **Last updated**: 2026-07-19 (S015 / EV-011 — F15 registry; no new runtime deps)
 
 ## Runtime Dependencies
 
@@ -150,3 +150,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S014 / EV-010 (2026-07-18): backend msgspec high-churn (ADR-026); iwxxm-validate Rust+bundle;
   PyPI publish deps (maturin/OIDC); **xsdata + xsdata-pydantic** for XSD codegen (ADR-027);
   **xmloxide 0.4.x** native XSD+Schematron (D-S014-T33-crates / E10-46)
+- S015 / EV-011 (2026-07-19): F15 issue registry — **no new runtime deps**; catalog HTTP + docs
+  export from existing `tac-validate` / msgspec stack (E11-30)

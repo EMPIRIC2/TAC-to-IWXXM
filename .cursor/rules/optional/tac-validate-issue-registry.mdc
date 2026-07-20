@@ -1,0 +1,39 @@
+---
+description: F15/ADR-028 — tac-validate issue registry; no ad-hoc severity/code literals
+globs:
+  - packages/tac-validate/**
+alwaysApply: false
+---
+
+# tac-validate Issue Registry (F15 / ADR-028)
+
+Traces to `[Corpus: product]` F15, `[Corpus: adr]` ADR-028, `#732`, S015 / EV-011.
+
+## Single source of truth
+
+- Lint issue **`code`**, default **`severity`** (`error` | `warning` | `info`), and message
+  templates live in the **`tac-validate` issue registry** module (not scattered string
+  literals in rule bodies).
+- Rules **import** registry entries when emitting `Issue(...)`.
+- A docs/generated **catalog** must stay in sync with the registry (CI drift check).
+
+## Do
+
+- Add a registry row before adding a new METAR/SPECI (or shared) lint rule.
+- Cover new codes with accept and/or negative fixtures (`expected_codes`).
+- Keep public codes **stable**; renames require an explicit deprecation note.
+- Allow default severities to **tighten** in minor releases; loosening needs ADR/changelog.
+
+## Do not
+
+- Invent ad-hoc `severity="error"` / `"warning"` / `"info"` in rule modules for registered
+  issues — use the registry’s severity (or a documented override that still references the
+  registry code).
+- Emit unknown `code` strings — CI must fail on unregistered codes.
+- Put IWXXM/XSD/Schematron logic in `tac-validate`.
+- Treat FlightPlanDatabase FMS format as METAR authority.
+
+## Related
+
+- Hook: `.cursor/hooks/issue_registry_guard.py` (advisory on afterFileEdit)
+- Tests: TC-F15-001; models still use `Issue.severity` as `str` on the wire

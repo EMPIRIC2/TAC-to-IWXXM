@@ -3,6 +3,88 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-011 — METAR lint registry + #732 quality (S015)
+
+**Session**: S015-metar-lint-quality  
+**Features**: F15 (new) + deepen F6/F12  
+**Issues**: [#732](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/732)  
+**Started**: 2026-07-19  
+**Branch**: `evolve/EV-011-metar-lint-quality`
+
+### Scope (Phase 0–1 locked 2026-07-19)
+
+1. Maintainable METAR lint **issue registry** (`info` / `warning` / `error`), additive and documented
+2. Full [#732](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/732) METAR quality bar — lint, convert, IWXXM validate, API/UI path
+3. Golden TAC → IWXXM → XSD+Schematron where fixtures exist or are expanded
+4. **Max research + validation/conversion expansion** — research catalog in 01 **and** aggressive encode of R1–R6 **and** registry/goldens **and** any other in-scope METAR quality wins (MetarCentral, AviationRef, iwxxmConverter)
+5. New **F15**; deepen **F6** (convert/goldens) and **F12** (tac-validate METAR pack)
+6. Routing **00–13** including 03/06 and Render 12–13
+
+**Out**: FMS flight-plan spec as METAR authority; new products beyond seven; COLLECT/dissemination; sibling product tickets unless registry sharing requires it.
+
+### Prior cycle close
+
+| Item | Decision |
+|------|----------|
+| S011 / EV-008 | Completed 2026-07-19 — user close; PR #716 already merged (`22a6199`); 13 waived |
+
+### Intake decisions
+
+| ID | Category | Question | Decision | ADR |
+|----|----------|----------|----------|-----|
+| E11-1 | Decision | EV-008 disposition | Close S011/EV-008; start new | — |
+| E11-2 | Decision | Session open | S015 feature → 16-evolve | — |
+| E11-3 | Decision | Scope | Full #732 + registry + goldens + research/validation/conversion expansion | — |
+| E11-4 | Decision | Fn allocation | New F15 + deepen F6/F12 | — |
+| E11-5 | Decision | Routing | Approve 00–13 incl. 03/06 + Render 12–13 | — |
+| E11-6 | Decision | Research depth | 1+2+3+: aggressive R1–R6 + catalog in 01 + registry/goldens + opportunistic METAR improvements | — |
+| E11-7 | Decision | Doc manifest | Approve as proposed (feature-list, spec, journeys, test-plan, coverage/research, ADR; API if shape changes) | — |
+| E11-8 | Decision | Registry home | `packages/tac-validate` registry module + docs/generated catalog | ADR-028 |
+| E11-9 | Decision | F15 Feature List | Approve as written | — |
+| E11-10 | Decision | Code stability | Stable public codes; severities may tighten in minor releases | ADR-028 |
+| E11-11 | Decision | F7 status | Leave Planned; METAR workbench smoke under F15 only | — |
+| E11-12 | Decision | Spec/ADR/catalog | Approve + api-contract note: lint-tac wire shape unchanged | — |
+| E11-13 | Decision | UJ/TC | Approve UJ-024 + TC-F15 **with SPECI adjacency** (TC-F15-005) | — |
+| E11-14 | Decision | After 01 | Phase A checkpoint → 02-verify-plan | — |
+| E11-15 | Decision | S1.M1 | Keep METAR+SPECI in F15; note #732 SPECI shares pack | — |
+| E11-16 | Decision | S1.M2 | Max R1–R8 scope; 04 kill-switch if blocked | — |
+| E11-17 | Decision | S9.M1 | CORPUS product scope → F1–F15 / M1–M6 | — |
+| E11-18 | Decision | 03 tooling | plan-adherence + registry rule + issue_registry_guard hook | — |
+| E11-19 | Decision | 04 milestones | M1 registry+CI+catalog stub; M2 migrate codes; M3 R1–R5(+R8 capacity); M4 goldens R6 + SPECI R7; M5 coverage/smoke/verify-deploy; soft kill-switch → deferred + coverage note (E11-16) — **superseded for R themes by E11-23** | — |
+| E11-20 | Decision | 04 registry API | `packages/tac-validate` `issue_registry.py` — frozen IssueSpec + ISSUES/by_code(); rules emit via helpers (no severity literals) | — |
+| E11-21 | Decision | 04 code namespace | Keep SCREAMING_SNAKE public codes; optional product/tags on registry row, not in code string | — |
+| E11-22 | Decision | 04 catalog | `docs/domain/rules/ISSUE_CATALOG.md` (+ optional JSON); make/pytest drift check vs registry module | — |
+| E11-23 | Decision | 04 kill-switch | **HARD** — every R1–R8 theme ships green rule+fixture this cycle; NO deferred rows for R themes; overrides soft E11-16 deferral for quality themes; registry M1–M2 still mandatory; if blocked mid-build stop + AskQuestion (do not silently defer) | — |
+| E11-24 | Decision | 04 fixtures | Convert goldens stay in tac2iwxxm `annex3_golden` + `iwxxm_us_golden` (extend manifests); lint accept/negative under `tac-validate` `tests/fixtures/{accept,negative}/metar` or `speci/`; short synthetic TAC only | — |
+| E11-25 | Decision | 04 PyPI | Implement on 0.1.0 line; tag/publish `tac-validate-v0.1.1` after F15 acceptance; no iwxxm-validate/tac2iwxxm bump unless convert goldens force it | — |
+| E11-26 | Decision | 04 deploy | Full Render 12–13; no new CORS/VITE knobs; H1–H3 always; H4–H5 when FE redeployed for TC-F15-004; if FE unchanged document reuse/waive with evidence — **H4–H5 now required via E11-29 FE work** | — |
+| E11-27 | Decision | 04 CI | CI = pytest unknown-code + catalog drift + expanded golden M-xsd/M-sch + negative `expected_codes`; no new GHA workflow | — |
+| E11-28 | Decision | 04 R8 pack | R8 HARD full pack mandatory — AUTO, COR, NIL, NOSIG, TEMPO, RVR, wind VRB/gust — each green registry+fixture this cycle | — |
+| E11-29 | Decision | 04 FE | FE this cycle — registry catalog UI + code tooltips (not wire-shape change to lint-tac); implies FE redeploy + H4–H5 required | — |
+| E11-30 | Decision | 04→06 tooling | 06 delta — harden `issue_registry_guard` to error on `severity=` in rules/product_rules; Makefile catalog regen; optional pre-commit; fixture README; no new deps | — |
+| E11-31 | Decision | 04 plan approve | Approve M1–M5 + T6.0; FE catalog via **`GET /api/v1/lint-issue-catalog`** (not static-only); lint-tac wire still unchanged | — |
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-07-19 | Session + scoped brief; routing approved E11-5/E11-6 |
+| 01-requirements | 2026-07-19 | F15 + ADR-028 + spec/api/journeys/test-plan + research catalog; SPECI adjacency |
+| 02-verify-plan | 2026-07-19 | PASS — 12 auto + S1.M1/M2/S9.M1 = 1; CORPUS fixed |
+| 03-plan-tooling | 2026-07-19 | plan-adherence + registry rule + afterFileEdit guard |
+| 04-tech-plan | 2026-07-19 | Execution plan approved E11-31 (GET catalog); 31 tasks; Batches 1–3 |
+| 05-verify-tech | | |
+| 06-tech-tooling | | |
+| 07-build | | |
+| 08-verify-build | | |
+| 09-qa | | |
+| 10-e2e | | |
+| 11-verify-impl | | |
+| 12-verify-deploy | | |
+| 13-deploy-smoke | | |
+
+---
+
 ## Cycle EV-010 — Package publish + validation stack (S014)
 
 **Session**: S014-package-publish-validation  
