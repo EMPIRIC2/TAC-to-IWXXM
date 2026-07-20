@@ -11,10 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — awaiting 05-verify-tech |
-| **Active milestone** | — (build not started) |
-| **Active task** | — |
-| **Tasks** | 0 / 35 pending (T1.1–T5.10 + T2.2a + T6.0) |
+| **Active phase** | Phase C — 07-build |
+| **Active milestone** | M1 — Issue registry + unknown-code CI + catalog stub |
+| **Active task** | T1.1 — Registry API tests (in_progress) |
+| **Tasks** | 1 / 35 (T6.0 done; T1.1 in_progress) |
 | **Last updated** | 2026-07-19 |
 
 ## Tech Stack Summary
@@ -42,7 +42,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Registry API tests: `IssueSpec`, `by_code`, `issue_from`; reject unknown codes | TC-F15-001; ADR-028 | — | pending |
+| T1.1 | Test | Registry API tests: `IssueSpec`, `by_code`, `issue_from`; reject unknown codes | TC-F15-001; ADR-028 | — | in_progress |
 | T1.2 | Code | Add `issue_registry.py`; seed rows for existing emitted codes (`EMPTY_TAC`, `MISSING_*`, `MISSING_TERMINATOR`, …) | F15; E11-20 | T1.1 | pending |
 | T1.3 | Test | CI gate: any `Issue.code` not in registry fails | TC-F15-001; E11-27 | T1.2 | pending |
 | T1.4 | Config | Generate stub `ISSUE_CATALOG.md` (+ JSON); Makefile target `catalog-regen`; drift test | E11-22; E11-27 | T1.2 | pending |
@@ -140,3 +140,4 @@
 | A→B | 2026-07-19 | passed | 01–03 complete; D-S015-EV011-phase-a-pass |
 | B plan | 2026-07-19 | approved | User option 2 — GET lint-issue-catalog (E11-31) |
 | B tech audit | 2026-07-19 | passed | 05 PASS — S1–S4 all option 1 (E11-32); 35 tasks; HARD docs aligned |
+| B→C | 2026-07-19 | passed | D-S015-EV011-b-to-c=A — start 07-build @ T1.1 |
