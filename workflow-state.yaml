@@ -19,7 +19,9 @@ active_session:
   current_stage: 16-evolve
   started_at: '2026-07-20'
   context_briefs: []
-  standing_docs_touched: []
+  standing_docs_touched:
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S019-dissemination-upload/session-brief.md
   routing_plan:
     - stage: 00-context
       required: true
@@ -28,22 +30,22 @@ active_session:
       skip_rationale:
       started: '2026-07-20'
       completed: '2026-07-20'
-      note: Session open; Phase 0 intake partial (Batch 1+2 locked Assumed); AskQuestion UI waived (cloud written 
-        interview); Batch 3 / routing approval pending
+      note: Session open; Phase 0 intake partial (Batch 1+2 locked; Batch 3 partial); AskQuestion UI waived (cloud
+        written interview); Q10/Q11/Q14 clarifications + routing approval pending
     - stage: 16-evolve
       required: true
       mode: orchestrator
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: Phase 0 intake in progress — Batch 1+2 locked; Batch 3 pending; no F16+ yet; advisory Q8=C
-        credential/environment readiness interview needed
+      note: Phase 0 intake in progress — Batch 1+2 locked; Batch 3 PARTIAL (Q12=B Q13=A Q14=B Q15=A locked;
+        Q10 Ambiguity; Q11 pending rec); no F16+ yet; Q15=A blocks close until Postgres+WIS2+EDIS green on real targets
     - stage: 01-requirements
       required: true
       mode: delta
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 3)
+      note: Pending routing-plan approval (Phase 0 incomplete — Batch 3 clarifications)
     - stage: 02-verify-plan
       required: true
       mode: delta
@@ -1443,6 +1445,12 @@ stages:
       - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
       - docs/context/manual-tac-input-modes.md
     notes:
+      - 2026-07-20 S019/EV-014 Phase 0 Batch 3 PARTIAL (AskQuestion waived cloud): Q10 recorded as stated + Ambiguity
+        unresolved (1 drop Auth+DB / 2 other IdP / 3 dest-only BYO); Q11 not locked (pending agent rec + confirm);
+        Q12=B staging wis2box in-project; Q13=A real SMTP to NWS TG RTH Washington; Q14=B only (profiles OOS) + Ambiguity
+        multi-select; Q15=A keep Q8=C block close until Postgres+WIS2+EDIS green on real targets. Corpus contradictions
+        noted (ADR-021, F5 Supabase, non-goals push sinks/paste-keys, Batch 1 require-existing + convert-then-send).
+        Phase 0 still not fully approved; no F16+.
       - 2026-07-20 S019/EV-014 Phase 0 Batch 2 locked Assumed (Q5=A Q6=B Q7=A Q8=C Q9=A); Batch 1 still locked;
         Batch 3 pending; no F16+; advisory Q8=C needs credential/environment readiness interview
       - 2026-07-20 S019-dissemination-upload/EV-014 00-context — session open; Phase 0 intake partial (Batch 1 Assumed);
@@ -3055,8 +3063,9 @@ stages:
     started_at: '2026-07-20'
     current_stage: 16-evolve
     note: >-
-      S019-dissemination-upload/EV-014 — Phase 0 intake in progress (Batch 1+2 locked Assumed; Batch 3 pending);
-      no F16+ yet; advisory deviation Q8=C needs credential/environment readiness interview; prior S018/EV-013
+      S019-dissemination-upload/EV-014 — Phase 0 intake PARTIAL (Batch 1+2 locked; Batch 3 partial — Q12=B Q13=A
+      Q14=B Q15=A locked; Q10 Ambiguity; Q11 pending rec; Q14 multi-select Ambiguity); no F16+ yet; Q15=A+Q8=C
+      hard close gate (Postgres+WIS2+EDIS green on real targets); corpus contradictions noted; prior S018/EV-013
       closed completed-with-waiver (Q0=A)
 
 stages_pending: []
@@ -3110,6 +3119,53 @@ deployment:
     method: "bash scripts/deploy/verify_connectivity.sh"
 
 issue_log:
+  - id: I-S019-EV014-Q10-supabase-byo
+    category: Ambiguity
+    stage: 16-evolve
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    summary: >-
+      Q10 recorded as stated ("we're dropping supabase support just user has to provide byo credentials") but
+      unresolved which meaning: (1) drop Supabase Auth+DB entirely and replace with user-pasted credentials for
+      auth AND data; (2) drop hosted Supabase for app auth in favor of another IdP; (3) only dissemination
+      destinations are BYO-paste while app auth changes separately. Do NOT invent resolution.
+    status: open
+    blocking_for: Phase 0 full approval / routing lock / F16+ allocation
+    date: '2026-07-20'
+  - id: I-S019-EV014-Q11-pending-rec
+    category: Ambiguity
+    stage: 16-evolve
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    summary: >-
+      Q11 not locked — user asked for recommendation; pending agent recommendation + user confirm. Do not lock yet.
+    status: open
+    blocking_for: Phase 0 full approval / routing lock
+    date: '2026-07-20'
+  - id: I-S019-EV014-Q14-multiselect
+    category: Ambiguity
+    stage: 16-evolve
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    summary: >-
+      Q14=B only selected (saved/encrypted connection profiles out of scope). Options A/C/D/E not selected —
+      confirm whether only B is out of scope or user misunderstood multi-select.
+    status: open
+    blocking_for: Phase 0 full approval / non-goal inventory
+    date: '2026-07-20'
+  - id: I-S019-EV014-corpus-contradictions
+    category: Contradiction
+    stage: 16-evolve
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    summary: >-
+      Batch 1–3 tension with prior corpus: ADR-021 BYO deploy-env Supabase (no paste-keys) vs in-app paste BYO /
+      Q10 drop-supabase; F5 work history on Supabase vs Q10; non-goals push sinks + paste-keys vs Q8=C live
+      WIS2+EDIS + paste credentials; Batch 1 require-existing table (DDL out) and Q1=A convert-then-send
+      (drag-drop external IWXXM maybe out). Noted only — not resolved this batch.
+    status: open
+    blocking_for: 01-requirements delta / ADR amend if Q10 resolves to (1) or (2)
+    date: '2026-07-20'
   - id: I-S008-04-pyo3-required
     category: Contradiction
     stage: 04-tech-plan
@@ -3168,6 +3224,31 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-intake-batch3-partial
+    stage: 16-evolve
+    date: '2026-07-20'
+    timestamp: '2026-07-20'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 16-evolve
+    skill_id: 16-evolve
+    topic: Phase 0 intake Batch 3 PARTIAL — clarifications still needed
+    decision: >-
+      Batch 3 PARTIAL (AskQuestion waived cloud written). Locked Assumed: Q12=B staging wis2box in this project's
+      infra; Q13=A real SMTP/submission to NWS Telecommunications Gateway (RTH Washington); Q14=B only —
+      saved/encrypted connection profiles out of scope (Ambiguity I-S019-EV014-Q14-multiselect: A/C/D/E not
+      selected — confirm only-B-out vs multi-select misunderstanding); Q15=A keep Q8=C — block cycle close until
+      Postgres + WIS2 + EDIS all green on real targets. Q10 RECORD as stated ("we're dropping supabase support
+      just user has to provide byo credentials") but Ambiguity I-S019-EV014-Q10-supabase-byo unresolved —
+      interpretations (1) drop Supabase Auth+DB entirely → pasted creds for auth AND data; (2) drop hosted
+      Supabase app auth for another IdP; (3) dissemination destinations BYO-paste only, app auth separate —
+      do NOT invent resolution. Q11 NOT locked — user asked for recommendation; pending agent recommendation
+      + user confirm (I-S019-EV014-Q11-pending-rec). Corpus contradictions noted (I-S019-EV014-corpus-contradictions):
+      ADR-021 BYO deploy-env Supabase; F5 work history on Supabase; non-goals push sinks + paste-keys; Batch 1
+      require-existing table + Q1=A convert-then-send. Phase 0 NOT fully approved. Do not invent F16+ yet.
+    status: assumed
+    resolved_at: '2026-07-20'
+    note: Assumed partial — AskQuestion UI waived (cloud); Q10/Q11/Q14 remain open
   - id: D-S019-EV014-intake-batch2
     stage: 16-evolve
     date: '2026-07-20'
@@ -3184,7 +3265,8 @@ decisions_log:
       NOT fully approved — Batch 3 pending. Do not invent F16+ yet.'
     status: assumed
     resolved_at: '2026-07-20'
-    note: Assumed — AskQuestion UI waived (cloud written interview); Batch 3 pending
+    note: Assumed — AskQuestion UI waived (cloud written interview); Batch 3 now PARTIAL 2026-07-20
+      (see D-S019-EV014-intake-batch3-partial)
   - id: D-S019-EV014-Q8C-advisory
     stage: 16-evolve
     date: '2026-07-20'
@@ -3199,7 +3281,8 @@ decisions_log:
       WIS2/EDIS paths. Does not unblock Batch 3 or allocate F16+.'
     status: advisory
     resolved_at: '2026-07-20'
-    note: Deviation flagged — readiness interview pending; not a Phase 0 block by itself
+    note: Superseded in part by Q15=A (Batch 3) — hard close gate until Postgres+WIS2+EDIS green on real targets
+      (Q12=B in-project wis2box; Q13=A RTH Washington). Readiness still required; now a cycle-close block.
   - id: D-S019-EV014-open
     stage: 00-context
     date: '2026-07-20'
@@ -3244,7 +3327,7 @@ decisions_log:
     status: assumed
     resolved_at: '2026-07-20'
     note: Assumed — AskQuestion UI waived (cloud written interview); Batch 1 still locked; Batch 2 now locked 2026-07-20
-      (see D-S019-EV014-intake-batch2); Batch 3 pending
+      (see D-S019-EV014-intake-batch2); Batch 3 PARTIAL 2026-07-20 (see D-S019-EV014-intake-batch3-partial)
   - id: D-S018-EV013-Q0A-close-waive
     stage: 16-evolve
     date: '2026-07-20'
@@ -7162,23 +7245,27 @@ evolve_cycles:
     status: in_progress
     started: '2026-07-20'
     completed:
-    scope_summary: 'Phase 0 intake PARTIAL (not fully approved — Batch 3 pending). Batch 1+2 locked Assumed (AskQuestion UI
-      waived cloud written). Batch 1 (still locked): one-shot session credentials (paste UI; never persist); drawer UI +
-      preflight; require-existing versioned table contract; Q1=A convert-then-send; Q2=A any auth user; Q3=A schema preflight
-      clarity success metric; Q4=D WIS2+EDIS in ONE cycle. Batch 2: Q5=A paste→backend memory-only (never persist); Q6=B
-      URI-only + preflight + send (no discrete field form v1); Q7=A structured schema diff, block Send until preflight green;
-      Q8=C ship all three to usable MVP — live wis2box + live EDIS (highest risk); Q9=A same drawer destination Postgres/WIS2/EDIS.
-      Issues: #729 Upload DB; #2 WIS2; #6 EDIS. Do NOT invent F16+ until Phase 0 fully approved. Advisory: Q8=C needs
-      credential/environment readiness interview.'
+    scope_summary: 'Phase 0 intake PARTIAL (not fully approved — Batch 3 clarifications needed). Batch 1+2 locked Assumed
+      (AskQuestion UI waived cloud written). Batch 1 (still locked): one-shot session credentials (paste UI; never persist);
+      drawer UI + preflight; require-existing versioned table contract; Q1=A convert-then-send; Q2=A any auth user; Q3=A
+      schema preflight clarity; Q4=D WIS2+EDIS in ONE cycle. Batch 2: Q5=A paste→backend memory-only; Q6=B URI-only; Q7=A
+      schema diff block Send; Q8=C ship all three usable MVP live wis2box+EDIS; Q9=A same drawer destinations. Batch 3
+      PARTIAL: Q10 recorded as stated + Ambiguity (1 drop Auth+DB / 2 other IdP / 3 dest-only BYO — do not invent);
+      Q11 not locked (pending agent rec + confirm); Q12=B staging wis2box in-project; Q13=A real SMTP to NWS TG RTH
+      Washington; Q14=B only (profiles OOS) + multi-select Ambiguity; Q15=A keep Q8=C block close until Postgres+WIS2+EDIS
+      green on real targets. Corpus contradictions noted (ADR-021, F5 Supabase, non-goals push sinks/paste-keys, Batch 1
+      require-existing + convert-then-send). Issues: #729/#2/#6. Do NOT invent F16+ until Phase 0 fully approved.'
     github_issue: 729
     routing_plan:
       required_stages:
         - 00-context
         - 16-evolve
       skipped_stages: []
-      note: Full required_stages TBD after Batch 3 / routing approval
+      note: Full required_stages TBD after Batch 3 clarifications (Q10/Q11/Q14) / routing approval
     current_stage: 16-evolve
     notes:
+      - 2026-07-20 S019/EV-014 Phase 0 Batch 3 PARTIAL — Q12=B Q13=A Q14=B Q15=A locked; Q10 Ambiguity; Q11 pending
+        rec; Q14 multi-select Ambiguity; corpus contradictions noted; no F16+; Phase 0 still not fully approved
       - 2026-07-20 S019/EV-014 Phase 0 Batch 2 locked Assumed (Q5=A Q6=B Q7=A Q8=C Q9=A); Batch 1 confirmed still locked;
         Batch 3 pending; no F16+; advisory deviation Q8=C needs credential/environment readiness interview
       - 2026-07-20 S019/EV-014 open — Phase 0 intake partial (Batch 1 Assumed); AskQuestion UI waived (cloud written 
@@ -7191,11 +7278,11 @@ evolve_cycles:
         completed: '2026-07-20'
         substeps:
           phase0: partial
-        note: Phase 0 intake partial — Batch 1+2 locked Assumed; Batch 3 pending; AskQuestion UI waived (cloud)
+        note: Phase 0 intake partial — Batch 1+2 locked; Batch 3 PARTIAL; AskQuestion UI waived (cloud)
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: Phase 0 intake in progress — Batch 1+2 locked; Batch 3 pending before full routing lock; Q8=C advisory
+        note: Phase 0 intake — Batch 1+2 locked; Batch 3 PARTIAL (Q10/Q11/Q14 open); Q15=A+Q8=C hard close gate
     gates:
       a_to_b: pending
       b_to_c: pending
@@ -7216,7 +7303,11 @@ evolve_cycles:
       - path: docs/decisions/evolve-decisions.md
         status: present
         kind: evolve-decisions-EV-014
-    issues: []
+    issues:
+      - I-S019-EV014-Q10-supabase-byo
+      - I-S019-EV014-Q11-pending-rec
+      - I-S019-EV014-Q14-multiselect
+      - I-S019-EV014-corpus-contradictions
   - id: EV-013
     session_id: S018-metar-remarks-667
     cycle_type: feature
@@ -9794,8 +9885,10 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: c8a949fbe06d0c93580d5f4d63c227e1fe95cad8
+  tip_sha: 2f2d9184fe5dae034450e4f2107e6400c65c5888
   notes:
+    - '2026-07-20 S019/EV-014 Phase 0 Batch 3 PARTIAL recorded (2f2d918) — Q12=B Q13=A Q14=B Q15=A locked;
+      Q10/Q11/Q14 ambiguities open; corpus contradictions noted; Phase 0 still not fully approved'
     - '2026-07-20 S018/EV-013 CLOSED (Q0=A waive 08/09/11/12) — #750 live; opened S019-dissemination-upload/EV-014 on branch
       cursor/dissemination-upload-e25c (dissemination epic #729/#2/#6); Phase 0 intake partial'
     - >-
@@ -10298,6 +10391,21 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 2f2d9184fe5dae034450e4f2107e6400c65c5888
+      short: 2f2d918
+      message: 'docs(S019): record EV-014 Batch 3 partial + ambiguities'
+      branch: cursor/dissemination-upload-e25c
+      date: '2026-07-20'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      stage: 16-evolve
+      files_changed:
+        - workflow-state.yaml
+        - docs/decisions/evolve-decisions.md
+        - docs/sessions/S019-dissemination-upload/session-brief.md
+      pushed: true
+      note: Batch 3 PARTIAL — Q12=B Q13=A Q14=B Q15=A locked; Q10 Ambiguity; Q11 pending rec; Q14 multi-select
+        Ambiguity; corpus contradictions noted; Phase 0 still not fully approved; no F16+
     - sha: 16a399ad3f6ae81cf0f7d6d1ee98812d8dc74eb0
       short: 16a399a
       message: 'docs(S019): lock EV-014 Phase 0 Batch 2 intake'
