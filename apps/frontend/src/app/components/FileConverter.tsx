@@ -464,7 +464,8 @@ export function FileConverter({
         } else {
           content = await file.text();
         }
-        const kind = detectInputKind(file.name, content);
+        // Classify by decompressed display name + content (not raw .gz → kind "gzip")
+        const kind = detectInputKind(displayName, content);
         detectedMode = kindToMode(kind);
         newPendingFiles.push({
           id: `${displayName}-${Date.now()}-${i}`,
@@ -532,14 +533,16 @@ export function FileConverter({
         .filter(Boolean)
         .join('\n');
 
-      // Auto-switch when paste looks like bulletin / COLLECT
+      // Auto-switch when paste looks like bulletin / COLLECT (UJ-025 / ADR-024)
       let mode = inputMode;
       if (mode === 'tac' && looksLikeAhlBulletin(tacForDetect)) {
         mode = 'ahl_bulletin';
         setInputMode('ahl_bulletin');
+        toast.info('Detected AHL bulletin — switched input mode');
       } else if (mode === 'tac' && looksLikeCollectIwxxm(tacForDetect)) {
         mode = 'collect_iwxxm';
         setInputMode('collect_iwxxm');
+        toast.info('Detected IWXXM COLLECT — switched input mode');
       }
 
       const resolvedProduct = resolveConvertProduct(

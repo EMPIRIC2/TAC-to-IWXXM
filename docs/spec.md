@@ -219,7 +219,8 @@ metar-to-IWXXM/
 - **F7 input modes (ADR-024)**: TAC | AHL bulletin (`/convert-bulletin`) | IWXXM COLLECT
   (`/ingest-collect` 501 placeholder). Accept `.xml`/`.gz` (inflate). `log_level` +
   `include_nil_reasons` on Convert. Log Level filters Conversion log + console for lint/validate
-  process messages.
+  process messages. **Validation**: UJ-025 / TC-F7-007 (S016 / EV-012 / #730) — auto-switch
+  required; COLLECT 501 honest UX; F7 status unchanged.
 - **F5**: Unchanged product scope — METAR/SPECI work sessions only (not extended to other
   products); admin browse path removed.
 - **F9/F10 delta (S013)**: Decode panel gains a top **"Plain language"** block rendering the

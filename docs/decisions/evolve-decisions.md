@@ -3,6 +3,49 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-012 — Validate Manual TAC Input modes (#730) (S016)
+
+**Session**: S016-manual-tac-input-modes  
+**Features**: F7 (validation deepen only; status stays Planned)  
+**Issues**: [#730](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/730)  
+**Started**: 2026-07-20  
+**Branch**: `evolve/EV-012-manual-tac-input-modes`  
+**Completed**: —
+
+### Scope (Phase 0 locked 2026-07-20)
+
+1. Test/acceptance under **F7 / ADR-024** for Manual TAC Input modes (TAC / AHL / COLLECT)
+2. Playwright T1–T4 + Vitest anchors + staging H4–H5 + AHL happy path + COLLECT **501** UX
+3. Auto-switch on paste/upload is **required**
+4. **No new Fn**; COLLECT member extract out of scope; F7 remains **Planned**
+5. Routing **lean + 13**: 00 → 16 → 01 → 02 → 10 → 13
+
+### Intake decisions
+
+| ID | Category | Question | Decision | ADR |
+|----|----------|----------|----------|-----|
+| E12-1 | decision | Cycle type | A — F7 validation; no new Fn; COLLECT 501 | ADR-024 |
+| E12-2 | decision | Automation depth | Vitest + Playwright T1–T6 (hard) + live staging all green | — |
+| E12-3 | decision | Auto-switch (T3) | Required acceptance | ADR-024 |
+| E12-4 | decision | Deploy | Include 13-deploy-smoke | — |
+| D-S016-EV012-route-1 | decision | Routing vs lean/deploy contradiction | Lean + 13 (skip 03–09, 11–12) | — |
+| S2.1 | contradiction | H6 omits UJ-025 | Fix: add UJ-025 to H6/H6′ row | — |
+| S2.2 | ambiguity | T5/T6 vs all tests | T1–T6 all hard gates | — |
+| S2.3 | decision | UJ id | Keep UJ-025 (not fold into UJ-013) | — |
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-07-20 | Session + scoped brief |
+| 16-evolve | — | Phase 0 complete; Phase A in progress |
+| 01-requirements | 2026-07-20 | UJ-025 + TC-F7-007 + F7 validation note |
+| 02-verify-plan | 2026-07-20 | PASS — S2.1 fix H6; S2.2 T1–T6 hard; S2.3 UJ-025 |
+| 10-e2e | 2026-07-20 | PASS — TC-F7-007 T1–T6 Playwright + Vitest anchors |
+| 13-deploy-smoke | | |
+
+---
+
 ## Cycle EV-011 — METAR lint registry + #732 quality (S015)
 
 **Session**: S015-metar-lint-quality  

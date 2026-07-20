@@ -3,8 +3,8 @@
 > **Project**: METAR to IWXXM Converter
 > **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI;
 > S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP;
-> S015 / EV-011 F15 METAR lint registry + #732 quality
-> **Last updated**: 2026-07-19
+> S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730)
+> **Last updated**: 2026-07-20
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -37,6 +37,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-022 | Operator convert/validate after msgspec HTTP | apps/frontend | F11 | T2 / **T3** / H6′ |
 | UJ-023 | PyPI release tag → install smoke | CI / maintainer | F12–F14 | CI |
 | UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
+| UJ-025 | Manual TAC Input modes (TAC / AHL / COLLECT) | apps/frontend | F7 (ADR-024) | T2 / **T3** / H6′ |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -654,6 +655,51 @@ this cycle (HARD — E11-23/28); non–R-theme gaps only may defer with rational
 
 ---
 
+### UJ-025: Manual TAC Input Modes (TAC / AHL Bulletin / IWXXM COLLECT)
+
+**Actor**: Operator
+
+**Goal**: Use FileConverter **Manual TAC Input** modes correctly — TAC report convert,
+AHL bulletin → `/convert-bulletin`, IWXXM COLLECT → `/ingest-collect` **501** placeholder —
+with honest UX and required paste/upload auto-switch (ADR-024 / [#730](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/730)).
+
+**Feature**: F7 (validation deepen; status remains Planned) — S016 / EV-012
+
+**Relationship**: UI surface that routes operators onto UJ-011 (bulletin API) and the COLLECT
+placeholder; does **not** replace H7 API gate design.
+
+**Steps**:
+
+1. Open operator workbench → Manual TAC Input (`data-testid="input-mode-group"`).
+2. **T1 — TAC report**: Mode = TAC; Product = Auto-detect; paste single METAR; convert succeeds.
+3. **T2 — AHL bulletin**: Mode = AHL; paste multi-report WMO AHL; convert hits
+   `POST /api/v1/convert-bulletin`; UI shows bulletin summary and/or per-report results/errors
+   (no silent fall-through to single `/convert`).
+4. **T3 — Auto-switch**: With Mode = TAC, paste AHL-looking bulletin (or COLLECT XML) → mode
+   switches to AHL (or COLLECT) with toast (“Detected AHL bulletin…” / “Detected IWXXM
+   COLLECT…”). **Required** — fail if missing (E12-3).
+5. **T4 — IWXXM COLLECT**: Mode = COLLECT; paste/upload COLLECT (`.xml` / `.gz` if supported)
+   → `POST /api/v1/ingest-collect` → **501** surfaces as placeholder notice / warning toast
+   (not success, not silent fail).
+6. **T5 — gzip** (when UI accepts): `.gz` COLLECT or bulletin inflates then matches T2/T4.
+7. **T6 — Read-only**: Finished/read-only session → mode buttons disabled.
+
+**Acceptance**:
+
+1. Mode toggle + helper copy visible; disabled when session read-only
+2. TAC Auto-detect convert happy path
+3. AHL path uses `/convert-bulletin` with summary/results
+4. COLLECT path uses `/ingest-collect` and treats **501** as placeholder UX
+5. Auto-switch on paste/upload works (T3)
+6. Playwright **T1–T6** green (T2/T3); Vitest anchors remain green; staging H4–H5 + AHL + COLLECT
+   501 (13-deploy-smoke)
+7. Gaps vs H7 (API-only UJ-011) documented; defects filed as separate bugs linked from #730
+
+**Automated tests**: Vitest (`inputKind`, `api` 501, `FileConverter` mode group); Playwright
+`apps/e2e/` (TC-F7-007 T1–T6 hard); live H6′ / staging smoke. **Tier: T2 / T3 / H6′**.
+
+---
+
 ## Operations Journeys
 
 ### UJ-OPS-001: Deploy Render stack (API + static + F8 worker)
@@ -677,4 +723,5 @@ live smoke (T7.4) when scheduled.
   Implemented note; admin journeys retired via UJ-019
 - S014 / EV-010 (2026-07-18): UJ-022/023 + UJ-DEV-005 (F11–F14 msgspec HTTP + PyPI)
 - S015 / EV-011 (2026-07-19): UJ-024 METAR/**SPECI** lint registry + convert→validate golden
+- S016 / EV-012 (2026-07-20): UJ-025 Manual TAC Input modes (ADR-024 / #730)
   (F15 / #732; SPECI adjacency explicit; catalog via `GET /lint-issue-catalog` E11-31)
