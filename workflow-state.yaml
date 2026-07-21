@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'T6.4 PASS; next T6.5; report verification-report.md; progress 27/29'
+  note: 'T6.5 PASS (deploy-checklist); next T6.6; progress 28/29; PR #771'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -56,6 +56,7 @@ active_session:
     - packages/dissemination/tests/test_allowlist.py
     - docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
     - docs/sessions/S019-dissemination-upload/reports/verification-report.md
+    - docs/sessions/S019-dissemination-upload/reports/deploy-checklist.md
   routing_plan:
     - stage: 00-context
       required: true
@@ -71,7 +72,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build M6 T6.4 PASS; next T6.5; progress 27/29"
+      note: "Phase C — 07-build M6 T6.5 PASS; next T6.6; progress 28/29"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -126,7 +127,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-21'
-      note: 'T6.4 PASS (08-verify-build); progress 27/29; next T6.5 (12-verify-deploy)'
+      note: 'T6.5 PASS (12-verify-deploy checklist); progress 28/29; next T6.6 (13-deploy-smoke)'
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2389,7 +2390,7 @@ stages:
         started_at: '2026-07-21'
         started: '2026-07-21'
         mode: full
-        note: 'T6.4 PASS; next T6.5; report verification-report.md; progress 27/29'
+        note: 'T6.5 PASS (deploy-checklist); next T6.6; progress 28/29; PR #771'
         progress: '27/29'
         active_milestone: M6
         active_task: T6.5
@@ -7780,12 +7781,13 @@ evolve_cycles:
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
     current_stage: 07-build
     active_milestone: M6
-    active_task: T6.5
+    active_task: T6.6
     active_task_status: pending
-    progress: '27/29'
+    progress: '28/29'
     branch: cursor/s019-t64-verify-build-7820
-    note: 'T6.4 08-verify-build PASS; next T6.5; progress 27/29'
+    note: 'T6.5 12-verify-deploy checklist PASS; next T6.6; progress 28/29'
     notes:
+      - '2026-07-21 S019/EV-014 T6.5 COMPLETE — 12-verify-deploy checklist PASS (allowlist docs + Compose harness; live Render allowlist confirm at T6.6). Artifact deploy-checklist.md. Progress 28/29.'
       - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS (prettier UJ-027–030 e2e + badge_audit drop gifts); next T6.5 12-verify-deploy; progress 27/29. Artifact docs/sessions/S019-dissemination-upload/reports/verification-report.md. Branch cursor/s019-t64-verify-build-7820.'
       - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29. Artifact docs/sessions/S019-dissemination-upload/reports/07-build-t63.md; log /opt/cursor/artifacts/t63-playwright-uj027-030.log.'
       - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
@@ -10521,6 +10523,7 @@ git_history:
   tip_sha_full: 2ce8bb9
   note: 'T6.4 PASS; PR #771 CI green (29846488131); next T6.5; progress 27/29'
   notes:
+    - '2026-07-21 S019/EV-014 T6.5 COMPLETE — deploy-checklist.md PASS; next T6.6; progress 28/29; tip pending'
     - '2026-07-21 S019/EV-014 PR #771 CI/CD Pipeline success (29846488131); tip 2ce8bb9; T6.4 complete; next T6.5'
     - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS on cursor/s019-t64-verify-build-7820 (prettier UJ e2e + badge_audit gifts drop); next T6.5; progress 27/29; report verification-report.md'
     - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open (https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/770); next T6.4; progress 26/29'
