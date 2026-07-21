@@ -12,12 +12,12 @@ active_session:
     test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase
     0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-t27-odbc-docs-ee99
+  branch: cursor/s019-t31-wis2-unit-tests-ee99
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'T2.7 done (PR #761); M2 complete; next T3.1'
+  note: 'T3.1–T3.2 done; next T3.3; T2.7 PR #761 still open'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-20'
-    note: "Phase C — 07-build M2 complete (T2.7 / PR #761); next M3 T3.1 WIS2 sink adapter unit tests"
+    note: "Phase C — 07-build M3 T3.1–T3.2 done (PR #762); next T3.3; T2.7 PR #761 still open"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -126,7 +126,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-21'
-    note: 'T2.7 completed — ODBC docs (PR #761 open @ 399771f); M2 complete; next M3 T3.1 WIS2 sink adapter unit tests'
+    note: 'T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762 open @ 8ebfa3a); next T3.3 wis2box Compose harness; T2.7 PR #761 still open (CI green)'
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2548,9 +2548,9 @@ stages:
       started_at: '2026-07-21'
       started: '2026-07-21'
       mode: full
-      note: 'T2.7 completed — ODBC docs (PR #761 open @ 399771f); M2 complete; next M3 T3.1 WIS2 sink adapter unit tests'
+      note: 'T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762 open @ 8ebfa3a); next T3.3 wis2box Compose harness; T2.7 PR #761 still open (CI green)'
       active_milestone: M3
-      active_task: T3.1
+      active_task: T3.3
       active_task_status: pending
     - id: S015-metar-lint-quality
       session_id: S015-metar-lint-quality
@@ -2603,6 +2603,9 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - >-
+      2026-07-21 S019/EV-014 T2.7 PR #761 open (CI green). T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762). Next T3.3 wis2box Compose harness.
+      Tip 8ebfa3a; T3.1=32d8c83 T3.2=49fe476; next T3.3 pending.
     - >-
       2026-07-21 S019/EV-014 T2.7 completed — ODBC docs; M2 complete; PR #761 open. Next: M3 T3.1 WIS2 sink adapter unit tests.
       Branch cursor/s019-t27-odbc-docs-ee99 tip 399771f; PR #761 open.
@@ -2738,9 +2741,9 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: 'T2.7 completed — ODBC docs (PR #761 open @ 399771f); M2 complete; next M3 T3.1 WIS2 sink adapter unit tests'
+      note: 'T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762 open @ 8ebfa3a); next T3.3 wis2box Compose harness; T2.7 PR #761 still open (CI green)'
       active_milestone: M3
-      active_task: T3.1
+      active_task: T3.3
       active_task_status: pending
   09-qa:
     status: completed
@@ -3334,7 +3337,7 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M2 complete (T2.7 / PR #761); next M3 T3.1 WIS2 sink adapter unit tests; Q15=A+Q8=C+Q21=A live BYOC hard close gate
+      Phase C — 07-build M3 T3.1–T3.2 done (PR #762); next T3.3; T2.7 PR #761 still open; Q15=A+Q8=C+Q21=A live BYOC hard close gate
 
 stages_pending: []
 
@@ -3570,6 +3573,17 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: N-S019-EV014-T31-T32-complete
+  date: '2026-07-21'
+  session_id: S019-dissemination-upload
+  evolve_cycle_id: EV-014
+  stage: 07-build
+  skill_id: 07-build
+  status: noted
+  decision: >-
+    T2.7 PR #761 open (CI green). T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762). Next T3.3 wis2box Compose harness.
+    Commits 32d8c83/49fe476; tip 8ebfa3a; PR #762 open.
+    Next T3.3 pending (not started). No user decision; progress note.
 - id: N-S019-EV014-T27-complete
   date: '2026-07-21'
   session_id: S019-dissemination-upload
@@ -8020,6 +8034,9 @@ evolve_cycles:
   current_stage: 07-build
   notes:
   - >-
+    2026-07-21 S019/EV-014 T2.7 PR #761 open (CI green). T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762). Next T3.3 wis2box Compose harness.
+    Tip 8ebfa3a; next T3.3 pending.
+  - >-
     2026-07-21 S019/EV-014 T2.7 completed — ODBC docs; M2 complete; PR #761 open. Next: M3 T3.1 WIS2 sink adapter unit tests.
     Tip 399771f; PR #761 open; next T3.1 pending.
   - >-
@@ -8093,7 +8110,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-20'
-      note: "Phase C — 07-build M2 complete (T2.7 / PR #761); next M3 T3.1 WIS2 sink adapter unit tests"
+      note: "Phase C — 07-build M3 T3.1–T3.2 done (PR #762); next T3.3; T2.7 PR #761 still open"
     01-requirements:
       status: completed
       mode: delta
@@ -8170,9 +8187,9 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-07-21'
-      note: 'T2.7 completed — ODBC docs (PR #761 open @ 399771f); M2 complete; next M3 T3.1 WIS2 sink adapter unit tests'
+      note: 'T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762 open @ 8ebfa3a); next T3.3 wis2box Compose harness; T2.7 PR #761 still open (CI green)'
       active_milestone: M3
-      active_task: T3.1
+      active_task: T3.3
       active_task_status: pending
   gates:
     a_to_b: passed
@@ -10835,13 +10852,16 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-t27-odbc-docs-ee99
+  current_branch: cursor/s019-t31-wis2-unit-tests-ee99
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: 399771ff3ebd315df4ba1a680eb324892d0b746e
-  tip_sha_full: 399771ff3ebd315df4ba1a680eb324892d0b746e
+  tip_sha: 8ebfa3a86d9eb82ca0e673e9d0ead10cc267a282
+  tip_sha_full: 8ebfa3a86d9eb82ca0e673e9d0ead10cc267a282
   notes:
+  - >-
+    2026-07-21 S019/EV-014 T2.7 PR #761 open (CI green). T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762). Next T3.3 wis2box Compose harness.
+    tip 8ebfa3a on cursor/s019-t31-wis2-unit-tests-ee99; PR #762 open; T2.7 PR #761 still open
   - >-
     2026-07-21 S019/EV-014 T2.7 completed — ODBC docs; M2 complete; PR #761 open. Next: M3 T3.1 WIS2 sink adapter unit tests.
     tip 399771f on cursor/s019-t27-odbc-docs-ee99; PR #761 open
@@ -11048,6 +11068,24 @@ git_history:
   - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+  - name: cursor/s019-t31-wis2-unit-tests-ee99
+    status: active
+    base: cursor/s019-t27-odbc-docs-ee99
+    created: '2026-07-21'
+    created_at: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    purpose: S019/EV-014 07-build M3 T3.1–T3.2 WIS2 sink
+    tip_sha: 8ebfa3a86d9eb82ca0e673e9d0ead10cc267a282
+    tip_sha_full: 8ebfa3a86d9eb82ca0e673e9d0ead10cc267a282
+    pushed: true
+    pr_number: 762
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/762
+    pr_title: '[T3.1–T3.2] WIS2 sink adapter + mocked unit tests (S019/EV-014)'
+    pr_base: main
+    pr_head: cursor/s019-t31-wis2-unit-tests-ee99
+    pr_status: open
+    note: T3.1–T3.2 complete; PR #762 open; next T3.3
   - name: cursor/s019-t27-odbc-docs-ee99
     status: active
     base: main
@@ -11065,7 +11103,7 @@ git_history:
     pr_base: main
     pr_head: cursor/s019-t27-odbc-docs-ee99
     pr_status: open
-    note: T2.7 complete; PR #761 open; M2 complete; next T3.1
+    note: T2.7 PR #761 still open (CI green); stacked under by T3.1–T3.2 branch
   - name: cursor/s019-t26-wf-state-4b72
     status: merged
     base: main
@@ -11477,6 +11515,34 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 8ebfa3a86d9eb82ca0e673e9d0ead10cc267a282
+    short: 8ebfa3a
+    branch: cursor/s019-t31-wis2-unit-tests-ee99
+    message: "[S019] docs: mark T3.1–T3.2 completed; handoff at T3.3"
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    timestamp: '2026-07-21'
+  - sha: 49fe476de85072c48055d2dfd34ebced8c556562
+    short: 49fe476
+    branch: cursor/s019-t31-wis2-unit-tests-ee99
+    message: "[T3.2] feat: WIS2 sink adapter with injectable MQTT/HTTP transports"
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    timestamp: '2026-07-21'
+    files_changed:
+    - packages/dissemination/src/dissemination/wis2.py
+  - sha: 32d8c836007c66e76c358e8bb05f4a3174b766f3
+    short: 32d8c83
+    branch: cursor/s019-t31-wis2-unit-tests-ee99
+    message: "[T3.1] test: WIS2 sink unit tests with mocked MQTT/HTTP"
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    timestamp: '2026-07-21'
+    files_changed:
+    - packages/dissemination/tests/test_wis2_sink.py
   - sha: 399771ff3ebd315df4ba1a680eb324892d0b746e
     short: 399771f
     branch: cursor/s019-t27-odbc-docs-ee99
