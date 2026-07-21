@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'M4 complete via T4.3/#766; next T5.1; lingering #765 ready for review'
+  note: 'M4 complete (20/29); T5.1 pending; #765+#766 ready_for_review (CI green); prefer merge #765 then #766'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -69,7 +69,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build M4 complete (T4.3/#766); next M5 T5.1; #765 ready for review"
+      note: "Phase C — 07-build M4 complete (20/29); T5.1 pending; #765+#766 ready_for_review; prefer merge #765 then #766"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -124,7 +124,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-21'
-      note: 'M4 complete via T4.3 @ ab62daf / PR #766 draft; next T5.1; #765 ready for review (CI green); progress 20/29'
+      note: 'M4 complete @ tip 1002baa / PR #766 ready_for_review (CI green); next T5.1; #765 ready_for_review; prefer merge #765 then #766; progress 20/29'
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2387,7 +2387,7 @@ stages:
         started_at: '2026-07-21'
         started: '2026-07-21'
         mode: full
-        note: 'M4 complete via T4.3 @ ab62daf / PR #766; next T5.1 pending; #765 ready for review; progress 20/29'
+        note: 'M4 complete @ tip 1002baa / #766 ready_for_review (CI green); T5.1 pending; prefer merge #765 then #766; progress 20/29'
         active_milestone: M5
         active_task: T5.1
         active_task_status: pending
@@ -2441,6 +2441,7 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - '2026-07-21 S019/EV-014 #766 ready_for_review (CI green) @ tip 1002baa; recorded coverage fix + CI trigger + 07edc63 chore. Prefer merge #765 then #766. T5.1 still pending; 20/29.'
       - '2026-07-21 S019/EV-014 T4.3 completed — SMTP preflight (no live send) @ ab62daf on cursor/s019-t43-smtp-preflight-ac66; PR #766 open draft (base t41). M4 complete (20/29). Next M5 T5.1. #765 ready for review.'
       - '2026-07-21 S019/EV-014 T4.3 STARTED — SMTP preflight connectivity (no live send in CI) on cursor/s019-t43-smtp-preflight-ac66; lingering PR #765 draft (T4.1–T4.2) on cursor/s019-t41-edis-format-c6f7 — CI nearly green'
       - '2026-07-21 S019/EV-014 T4.1–T4.2 completed — EDIS WMO AHL format + mocked SMTP sink @ 67f73d2 on cursor/s019-t41-edis-format-c6f7. PR #764 merged (T3.4). Next T4.3.'
@@ -2568,7 +2569,7 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: 'M4 complete via T4.3 @ ab62daf / PR #766; next T5.1 pending; #765 ready for review; progress 20/29'
+      note: 'M4 complete @ tip 1002baa / #766 ready_for_review (CI green); T5.1 pending; prefer merge #765 then #766; progress 20/29'
       active_milestone: M5
       active_task: T5.1
       active_task_status: pending
@@ -3138,8 +3139,8 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M4 complete (T4.3/#766 @ ab62daf); next M5 T5.1;
-      #765 ready for review
+      Phase C — 07-build M4 complete (20/29) tip 1002baa; #765+#766 ready_for_review
+      (CI green); prefer merge #765 then #766; next T5.1
 
 stages_pending: []
 
@@ -7731,8 +7732,9 @@ evolve_cycles:
     active_task: T5.1
     active_task_status: pending
     branch: cursor/s019-t43-smtp-preflight-ac66
-    note: 'M4 complete via T4.3/#766; next T5.1; lingering #765 ready for review; progress 20/29'
+    note: 'M4 complete (20/29); T5.1 pending; #765+#766 ready_for_review (CI green); prefer merge #765 then #766'
     notes:
+      - '2026-07-21 S019/EV-014 #766 ready_for_review (CI green) @ tip 1002baa (coverage + CI trigger + 07edc63). Prefer merge #765 then #766. T5.1 pending; session/cycle open; 20/29.'
       - '2026-07-21 S019/EV-014 T4.3 completed — SMTP preflight (no live send) @ ab62daf on cursor/s019-t43-smtp-preflight-ac66; PR #766 open_draft (base cursor/s019-t41-edis-format-c6f7). M4 complete (20/29). Next M5 T5.1. #765 undrafted / ready_for_review (CI green). Session/cycle remain open.'
       - '2026-07-21 S019/EV-014 T4.3 STARTED — SMTP preflight connectivity (no live send in CI) on cursor/s019-t43-smtp-preflight-ac66; lingering PR #765 draft (T4.1–T4.2) CI nearly green. T4.3 not completed.'
       - '2026-07-21 S019/EV-014 T4.1–T4.2 completed — EDIS WMO AHL format + mocked SMTP sink @ 67f73d2. PR #764 merged (T3.4). Next T4.3.'
@@ -7802,7 +7804,7 @@ evolve_cycles:
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase C — 07-build M4 complete (T4.3/#766); next M5 T5.1; #765 ready for review"
+        note: "Phase C — 07-build M4 complete (20/29); T5.1 pending; #765+#766 ready_for_review; prefer merge #765 then #766"
       01-requirements:
         status: completed
         mode: delta
@@ -7879,7 +7881,7 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-21'
-        note: 'M4 complete via T4.3 @ ab62daf / PR #766; next T5.1 pending; #765 ready for review; progress 20/29'
+        note: 'M4 complete @ tip 1002baa / #766 ready_for_review (CI green); T5.1 pending; prefer merge #765 then #766; progress 20/29'
         active_milestone: M5
         active_task: T5.1
         active_task_status: pending
@@ -10446,9 +10448,10 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: ab62daf6f9391c74fedc9afd5c3326130da40855
-  tip_sha_full: ab62daf6f9391c74fedc9afd5c3326130da40855
+  tip_sha: 1002baaae781aa37f1ebc75276522cc106b3310b
+  tip_sha_full: 1002baaae781aa37f1ebc75276522cc106b3310b
   notes:
+    - '2026-07-21 S019/EV-014 tip 1002baa on t43 — coverage fix + d903085 CI trigger + 07edc63 chore; #766 ready_for_review (CI green). Prefer merge #765 then #766. T5.1 pending; 20/29.'
     - '2026-07-21 S019/EV-014 T4.3 completed — ab62daf on cursor/s019-t43-smtp-preflight-ac66; PR #766 open_draft (base t41). M4 done (20/29); next T5.1. #765 ready_for_review / CI green.'
     - '2026-07-21 S019/EV-014 T4.3 STARTED — working branch cursor/s019-t43-smtp-preflight-ac66 (build agent); lingering PR #765 draft (T4.1–T4.2) on cursor/s019-t41-edis-format-c6f7 — CI nearly green. T4.3 not completed.'
     - '2026-07-21 S019/EV-014 T4.1–T4.2 completed — EDIS WMO AHL format + mocked SMTP sink on cursor/s019-t41-edis-format-c6f7 @ 67f73d2. PR #765 open draft; #764 merged (T3.4). Next T4.3.'
@@ -10652,16 +10655,16 @@ git_history:
       session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
       purpose: S019/EV-014 07-build M4 T4.3 SMTP preflight connectivity (no live send in CI)
-      tip_sha: ab62daf6f9391c74fedc9afd5c3326130da40855
-      tip_sha_full: ab62daf6f9391c74fedc9afd5c3326130da40855
+      tip_sha: 1002baaae781aa37f1ebc75276522cc106b3310b
+      tip_sha_full: 1002baaae781aa37f1ebc75276522cc106b3310b
       pushed: true
       pr_number: 766
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/766
       pr_title: '[T4.3] EDIS SMTP preflight connectivity (no live send in CI)'
-      pr_base: cursor/s019-t41-edis-format-c6f7
+      pr_base: main
       pr_head: cursor/s019-t43-smtp-preflight-ac66
-      pr_status: open_draft
-      note: 'T4.3 complete @ ab62daf; PR #766 open draft; M4 done → next T5.1'
+      pr_status: ready_for_review
+      note: 'T4.3 complete tip 1002baa; PR #766 ready_for_review (CI green); prefer merge #765 then #766'
     - name: cursor/s019-t41-edis-format-c6f7
       status: open
       base: main
@@ -10679,7 +10682,7 @@ git_history:
       pr_base: main
       pr_head: cursor/s019-t41-edis-format-c6f7
       pr_status: ready_for_review
-      note: 'T4.1–T4.2 complete; PR #765 undrafted / ready_for_review — CI green; lingering stack base for #766'
+      note: 'T4.1–T4.2 complete; PR #765 ready_for_review (CI green); merge before #766'
     - name: cursor/s019-t34-wis2box-publish-c6f7
       status: merged
       base: main
@@ -11167,6 +11170,37 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 1002baaae781aa37f1ebc75276522cc106b3310b
+      short: 1002baa
+      branch: cursor/s019-t43-smtp-preflight-ac66
+      message: '[T4.3] test: cover AiosmtpClient branches for 95% gate'
+      stage: 07-build / 16-evolve
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+      files_changed:
+        - packages/dissemination/tests/test_edis_preflight.py
+    - sha: d90308513fed6fcca7139e2f7bc56584eb280215
+      short: d903085
+      branch: cursor/s019-t43-smtp-preflight-ac66
+      message: 'chore: trigger CI for T4.3 PR #766'
+      stage: 07-build / 16-evolve
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+      files_changed: []
+      note: empty commit
+    - sha: 07edc6361f2c8269d0695155368cd3e2566c338e
+      short: 07edc63
+      branch: cursor/s019-t43-smtp-preflight-ac66
+      message: '[S019] chore: record T4.3/#766; next M5 T5.1 in workflow-state'
+      stage: 07-build / 16-evolve
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+      files_changed:
+        - docs/sessions/S019-dissemination-upload/HANDOFF.md
+        - workflow-state.yaml
     - sha: ab62daf6f9391c74fedc9afd5c3326130da40855
       short: ab62daf
       branch: cursor/s019-t43-smtp-preflight-ac66
