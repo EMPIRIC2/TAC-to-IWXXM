@@ -11,10 +11,10 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Merged | #761–#767 (through **M4**) |
-| Open PR | [#769](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/769) M5+T6.1+T6.2 (superset of #768) → `main` — **CI green** |
+| Open PR | [#769](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/769) M5+T6.1+T6.2 → `main`; T6.3 on `cursor/s019-t63-dissemination-e2e-8b16` |
 | Done | M1–M5; **T6.1** Vitest; **T6.2** drawer UI + FileConverter wire |
-| Next | **T6.3** Playwright UJ-027–030 smokes (H6′) |
-| Branch | `cursor/s019-t61-drawer-vitest-a804` |
+| Next | **T6.3** Playwright UJ-027–030 smokes (H6′) — in progress |
+| Branch | `cursor/s019-t63-dissemination-e2e-8b16` |
 
 ## Do not skip
 

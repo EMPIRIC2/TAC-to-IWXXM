@@ -10,12 +10,12 @@ active_session:
   type: feature
   intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2) staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-t61-drawer-vitest-a804
+  branch: cursor/s019-t63-dissemination-e2e-8b16
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'T6.1+T6.2 done. PR #769 CI green (CI/CD Pipeline passed; frontend coverage restored). Next M6 T6.3 Playwright UJ-027–030 smokes. Progress 25/29. Tip 6e247af on cursor/s019-t61-drawer-vitest-a804.'
+  note: 'Starting M6 T6.3 Playwright UJ-027–030 smokes. Branch cursor/s019-t63-dissemination-e2e-8b16 (based on cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -69,7 +69,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build M6 T6.1+T6.2 done; PR #769 CI green (frontend coverage restored); next T6.3 Playwright UJ-027–030; progress 25/29; tip 6e247af"
+      note: "Phase C — 07-build starting M6 T6.3 Playwright UJ-027–030; branch cursor/s019-t63-dissemination-e2e-8b16; progress 25/29"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -124,7 +124,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-21'
-      note: 'T6.1+T6.2 done; PR #769 CI green; next M6 T6.3 Playwright UJ-027–030 smokes on cursor/s019-t61-drawer-vitest-a804; progress 25/29; tip 6e247af'
+      note: 'starting M6 T6.3 Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16; progress still 25/29 until T6.3 completes; tip 1f7d9b5'
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2387,11 +2387,11 @@ stages:
         started_at: '2026-07-21'
         started: '2026-07-21'
         mode: full
-        note: 'T6.1+T6.2 done. PR #769 CI green (CI/CD Pipeline passed; frontend coverage restored). Next M6 T6.3 Playwright UJ-027–030 smokes. Progress 25/29. Tip 6e247af on cursor/s019-t61-drawer-vitest-a804.'
+        note: 'Starting M6 T6.3 Playwright UJ-027–030 smokes. Branch cursor/s019-t63-dissemination-e2e-8b16 (based on cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
         progress: '25/29'
         active_milestone: M6
         active_task: T6.3
-        active_task_status: pending
+        active_task_status: in_progress
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2442,6 +2442,7 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
       - '2026-07-21 S019/EV-014 PR #769 CI/CD Pipeline passed (frontend coverage restored). T6.1+T6.2 done; tip 6e247af on cursor/s019-t61-drawer-vitest-a804; next M6 T6.3; progress 25/29.'
       - '2026-07-21 S019/EV-014 T6.2 completed @ fcec16f (plus follow-up chore @ 36287f8) — DisseminationDrawer + non-DB BYOC params. Next M6 T6.3 Playwright UJ-027–030 smokes. Progress 25/29. PR #769 → main (includes M5 tip + T6.1 + T6.2; supersedes stacking on #768). Tip 36287f8.'
       - '2026-07-21 S019/EV-014 T6.1 completed @ c56f8ed — Vitest drawer sink chooser + preflight + block Send. Next M6 T6.2 drawer UI. Progress 24/29. Lingering M5 PR #768.'
@@ -2577,11 +2578,11 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: 'T6.1+T6.2 done. PR #769 CI green (CI/CD Pipeline passed; frontend coverage restored). Next M6 T6.3 Playwright UJ-027–030 smokes. Progress 25/29. Tip 6e247af on cursor/s019-t61-drawer-vitest-a804.'
+      note: 'Starting M6 T6.3 Playwright UJ-027–030 smokes. Branch cursor/s019-t63-dissemination-e2e-8b16 (based on cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
       progress: '25/29'
       active_milestone: M6
       active_task: T6.3
-      active_task_status: pending
+      active_task_status: in_progress
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -3148,8 +3149,8 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M6 T6.1+T6.2 done; PR #769 CI green (frontend coverage restored);
-      next T6.3 Playwright UJ-027–030; progress 25/29; tip 6e247af
+      Phase C — 07-build starting M6 T6.3 Playwright UJ-027–030;
+      branch cursor/s019-t63-dissemination-e2e-8b16; progress still 25/29 until T6.3 completes; tip 1f7d9b5
 
 stages_pending: []
 
@@ -7750,11 +7751,12 @@ evolve_cycles:
     current_stage: 07-build
     active_milestone: M6
     active_task: T6.3
-    active_task_status: pending
+    active_task_status: in_progress
     progress: '25/29'
-    branch: cursor/s019-t61-drawer-vitest-a804
-    note: 'T6.1+T6.2 done. PR #769 CI green (CI/CD Pipeline passed; frontend coverage restored). Next M6 T6.3 Playwright UJ-027–030 smokes. Progress 25/29. Tip 6e247af on cursor/s019-t61-drawer-vitest-a804.'
+    branch: cursor/s019-t63-dissemination-e2e-8b16
+    note: 'Starting M6 T6.3 Playwright UJ-027–030 smokes. Branch cursor/s019-t63-dissemination-e2e-8b16 (based on cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
     notes:
+      - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
       - '2026-07-21 S019/EV-014 PR #769 CI/CD Pipeline passed (frontend coverage restored). T6.1+T6.2 done; tip 6e247af on cursor/s019-t61-drawer-vitest-a804; next M6 T6.3; progress 25/29.'
       - '2026-07-21 S019/EV-014 T6.2 completed @ fcec16f (plus follow-up chore @ 36287f8) — DisseminationDrawer + non-DB BYOC params. Next M6 T6.3 Playwright UJ-027–030 smokes. Progress 25/29. PR #769 → main (includes M5 tip + T6.1 + T6.2; supersedes stacking on #768). Tip 36287f8.'
       - '2026-07-21 S019/EV-014 T6.1 completed @ c56f8ed — Vitest drawer sink chooser + preflight + block Send. Next M6 T6.2 drawer UI. Progress 24/29. Lingering M5 PR #768.'
@@ -7909,11 +7911,11 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-21'
-        note: 'T6.1+T6.2 done. PR #769 CI green (CI/CD Pipeline passed; frontend coverage restored). Next M6 T6.3 Playwright UJ-027–030 smokes. Progress 25/29. Tip 6e247af on cursor/s019-t61-drawer-vitest-a804.'
+        note: 'Starting M6 T6.3 Playwright UJ-027–030 smokes. Branch cursor/s019-t63-dissemination-e2e-8b16 (based on cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
         progress: '25/29'
         active_milestone: M6
         active_task: T6.3
-        active_task_status: pending
+        active_task_status: in_progress
     gates:
       a_to_b: passed
       b_to_c: passed
@@ -10473,14 +10475,15 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-t61-drawer-vitest-a804
+  current_branch: cursor/s019-t63-dissemination-e2e-8b16
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: 6e247af3c93543953f03d1beabbe7de686d1873e
-  tip_sha_full: 6e247af3c93543953f03d1beabbe7de686d1873e
-  note: 'T6.1+T6.2 done; PR #769 CI green (frontend coverage restored); next T6.3 Playwright UJ-027–030; progress 25/29; tip 6e247af'
+  tip_sha: 1f7d9b5b6f1786081edcf08cb5c5478b7dffcd64
+  tip_sha_full: 1f7d9b5b6f1786081edcf08cb5c5478b7dffcd64
+  note: 'starting M6 T6.3 Playwright UJ-027–030; branch cursor/s019-t63-dissemination-e2e-8b16; progress still 25/29 until T6.3 completes; tip 1f7d9b5'
   notes:
+    - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
     - '2026-07-21 S019/EV-014 PR #769 CI/CD Pipeline passed (frontend coverage restored). T6.1+T6.2 done; tip 6e247af on cursor/s019-t61-drawer-vitest-a804; next M6 T6.3; progress 25/29.'
     - '2026-07-21 S019/EV-014 T6.2 completed @ fcec16f (plus follow-up chore @ 36287f8) — DisseminationDrawer + non-DB BYOC; PR #769 → main; next T6.3; tip 36287f8; progress 25/29'
     - '2026-07-21 S019/EV-014 T6.1 completed @ c56f8ed — Vitest drawer sink chooser + preflight + block Send; next T6.2; tip c56f8ed; progress 24/29'
@@ -10684,6 +10687,19 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: cursor/s019-t63-dissemination-e2e-8b16
+      status: open
+      base: cursor/s019-t61-drawer-vitest-a804
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      purpose: S019/EV-014 07-build M6 T6.3 Playwright UJ-027–030 dissemination e2e smokes
+      tip_sha: 1f7d9b5b6f1786081edcf08cb5c5478b7dffcd64
+      tip_sha_full: 1f7d9b5b6f1786081edcf08cb5c5478b7dffcd64
+      pushed: false
+      pr_url: null
+      note: 'T6.3 in_progress; based on cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5; progress still 25/29'
     - name: cursor/s019-t61-drawer-vitest-a804
       status: open
       base: cursor/s019-t51-adapter-stubs-584b
@@ -10691,9 +10707,9 @@ git_history:
       created_at: '2026-07-21'
       session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
-      purpose: S019/EV-014 07-build M6 T6.1–T6.2 Dissemination drawer (Vitest + UI wire); next T6.3 Playwright
-      tip_sha: 6e247af3c93543953f03d1beabbe7de686d1873e
-      tip_sha_full: 6e247af3c93543953f03d1beabbe7de686d1873e
+      purpose: S019/EV-014 07-build M6 T6.1–T6.2 Dissemination drawer (Vitest + UI wire); base for T6.3
+      tip_sha: 1f7d9b5b6f1786081edcf08cb5c5478b7dffcd64
+      tip_sha_full: 1f7d9b5b6f1786081edcf08cb5c5478b7dffcd64
       pushed: true
       pr_number: 769
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/769
