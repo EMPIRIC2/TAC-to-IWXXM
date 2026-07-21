@@ -97,7 +97,9 @@ async function parseJson<T>(response: Response): Promise<T> {
  * @param preflight - Latest preflight response, or null if none yet
  * @returns true only when ok, no diffs, and a memory-only handle is present
  */
-export function isPreflightGreen(preflight: PreflightResponse | null | undefined): boolean {
+export function isPreflightGreen(
+  preflight: PreflightResponse | null | undefined,
+): boolean {
   if (!preflight) return false;
   if (!preflight.ok || !preflight.connectivity_ok) return false;
   if (preflight.diffs.length > 0) return false;

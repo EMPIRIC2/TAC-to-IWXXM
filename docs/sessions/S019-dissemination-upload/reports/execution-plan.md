@@ -101,7 +101,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T6.1 | Test | Vitest: drawer sink chooser + preflight diff + block Send | TC-F16-001/004; UJ-027 | T2.4 | **completed** |
-| T6.2 | Code | Dissemination drawer UI (URI, drag-drop, sink types) | F16–F19; E14-10 | T6.1 | pending |
+| T6.2 | Code | Dissemination drawer UI (URI, drag-drop, sink types) | F16–F19; E14-10 | T6.1 | **completed** |
 | T6.3 | Test | Playwright UJ-027–030 smokes (H6′) | test-plan H6′ | T6.2, T3.4, T4.3, T5.3 | pending |
 | T6.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5, T6.2 | pending |
 | T6.5 | Config | 12-verify-deploy checklist (allowlist + Compose harness) | 12; E14-08 | T6.4 | pending |

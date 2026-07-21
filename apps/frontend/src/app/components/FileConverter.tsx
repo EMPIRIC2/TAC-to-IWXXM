@@ -35,6 +35,7 @@ import JSZip from 'jszip';
 import { toast } from 'sonner';
 import { ThemeToggle } from './ThemeToggle';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
+import { DisseminationDrawer } from './DisseminationDrawer';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
 import { AirportDetailsCard } from './AirportDetailsCard';
@@ -192,6 +193,7 @@ export function FileConverter({
   }>({ type: 'idle' });
   const [conversionLog, setConversionLog] = useState<ConversionLog | null>(null);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [isDisseminationOpen, setIsDisseminationOpen] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isParamsExpanded, setIsParamsExpanded] = useState(false);
   const [isLogoutMenuOpen, setIsLogoutMenuOpen] = useState(false);
@@ -1858,6 +1860,17 @@ export function FileConverter({
                   </span>
                 </Button>
                 <Button
+                  type="button"
+                  data-testid="open-dissemination-drawer"
+                  onClick={() => setIsDisseminationOpen(true)}
+                  disabled={isBusy || isReadOnly || !accessToken}
+                  variant="outline"
+                  className="min-w-[10rem] bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                  aria-label="Open dissemination drawer for BYOC upload or publish"
+                >
+                  Disseminate
+                </Button>
+                <Button
                   onClick={handleDownloadAll}
                   disabled={isBusy || !hasConverted}
                   variant="outline"
@@ -2129,6 +2142,15 @@ export function FileConverter({
         isOpen={isUploadDialogOpen}
         onClose={() => setIsUploadDialogOpen(false)}
         accessToken={accessToken}
+      />
+
+      <DisseminationDrawer
+        open={isDisseminationOpen}
+        onOpenChange={setIsDisseminationOpen}
+        accessToken={accessToken}
+        iwxxmXml={convertedFiles[0]?.convertedContent}
+        tacText={manualInput || undefined}
+        product={conversionParams.product === 'speci' ? 'speci' : 'metar'}
       />
 
       {/* User Preferences Dialog */}

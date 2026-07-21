@@ -3,14 +3,15 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { DRAWER_SINK_TYPES, isPreflightGreen } from '/utils/dissemination';
 
 vi.mock('/utils/apiBase', () => ({
-  apiUrl: (path: string) => `http://api.test/api/v1${path.startsWith('/') ? path : `/${path}`}`,
+  apiUrl: (path: string) =>
+    `http://api.test/api/v1${path.startsWith('/') ? path : `/${path}`}`,
   getApiBaseUrl: () => 'http://api.test',
 }));
 
@@ -37,7 +38,14 @@ describe('isPreflightGreen', () => {
       isPreflightGreen({
         ok: true,
         connectivity_ok: true,
-        diffs: [{ kind: 'missing_column', table: 'iwxxm_reports', detail: 'need created_at', column: 'created_at' }],
+        diffs: [
+          {
+            kind: 'missing_column',
+            table: 'iwxxm_reports',
+            detail: 'need created_at',
+            column: 'created_at',
+          },
+        ],
         handle: 'h1',
       }),
     ).toBe(false);
@@ -80,15 +88,15 @@ describe('DisseminationDrawer', () => {
     render(<DisseminationDrawer {...defaultProps} />);
 
     expect(screen.getByTestId('dissemination-drawer')).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: /dissemination/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /dissemination/i })).toBeInTheDocument();
 
     const chooser = screen.getByTestId('dissemination-sink-chooser');
     expect(chooser).toBeInTheDocument();
 
     for (const sink of DRAWER_SINK_TYPES) {
-      expect(screen.getByTestId(`dissemination-sink-option-${sink}`)).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`dissemination-sink-option-${sink}`),
+      ).toBeInTheDocument();
     }
     expect(DRAWER_SINK_TYPES).toHaveLength(9);
   });
@@ -127,8 +135,12 @@ describe('DisseminationDrawer', () => {
     await waitFor(() => {
       expect(screen.getByTestId('dissemination-preflight-diffs')).toBeInTheDocument();
     });
-    expect(screen.getByTestId('dissemination-diff-item')).toHaveTextContent(/missing_column/);
-    expect(screen.getByTestId('dissemination-diff-item')).toHaveTextContent(/iwxxm_xml/);
+    expect(screen.getByTestId('dissemination-diff-item')).toHaveTextContent(
+      /missing_column/,
+    );
+    expect(screen.getByTestId('dissemination-diff-item')).toHaveTextContent(
+      /iwxxm_xml/,
+    );
     expect(sendBtn).toBeDisabled();
     expect(global.fetch).toHaveBeenCalledWith(
       'http://api.test/api/v1/dissemination/preflight',
@@ -169,7 +181,10 @@ describe('DisseminationDrawer', () => {
       screen.getByTestId('dissemination-sink-chooser'),
       'sqlite',
     );
-    await user.type(screen.getByTestId('dissemination-uri-input'), 'sqlite:////tmp/wx.db');
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/wx.db',
+    );
     await user.click(screen.getByTestId('dissemination-preflight-button'));
 
     await waitFor(() => {
@@ -182,7 +197,9 @@ describe('DisseminationDrawer', () => {
     await user.click(sendBtn);
 
     await waitFor(() => {
-      expect(screen.getByTestId('dissemination-send-success')).toHaveTextContent(/kv:upload:1/);
+      expect(screen.getByTestId('dissemination-send-success')).toHaveTextContent(
+        /kv:upload:1/,
+      );
     });
 
     expect(global.fetch).toHaveBeenNthCalledWith(
@@ -230,12 +247,17 @@ describe('DisseminationDrawer', () => {
     await user.upload(input, file);
 
     await waitFor(() => {
-      expect(screen.getByTestId('dissemination-payload-status')).toHaveTextContent(/TAC/);
+      expect(screen.getByTestId('dissemination-payload-status')).toHaveTextContent(
+        /TAC/,
+      );
     });
 
     expect(screen.getByTestId('dissemination-send-button')).toBeDisabled();
 
-    await user.type(screen.getByTestId('dissemination-uri-input'), 'sqlite:////tmp/drop.db');
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/drop.db',
+    );
     await user.click(screen.getByTestId('dissemination-preflight-button'));
 
     await waitFor(() => {
@@ -249,8 +271,11 @@ describe('DisseminationDrawer', () => {
     });
 
     const sendBody = JSON.parse(
-      (global.fetch as unknown as { mock: { calls: [unknown, [string, { body: string }]] } })
-        .mock.calls[1][1].body,
+      (
+        global.fetch as unknown as {
+          mock: { calls: [unknown, [string, { body: string }]] };
+        }
+      ).mock.calls[1][1].body,
     );
     expect(sendBody.handle).toBe('drop-handle');
     expect(sendBody.tac_text).toContain('METAR KJFK');
@@ -260,13 +285,60 @@ describe('DisseminationDrawer', () => {
     const user = userEvent.setup();
     render(<DisseminationDrawer {...defaultProps} accessToken={undefined} />);
 
-    await user.type(screen.getByTestId('dissemination-uri-input'), 'sqlite:////tmp/x.db');
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/x.db',
+    );
     await user.click(screen.getByTestId('dissemination-preflight-button'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('dissemination-error')).toHaveTextContent(/authentication/i);
+      expect(screen.getByTestId('dissemination-error')).toHaveTextContent(
+        /authentication/i,
+      );
     });
     expect(screen.getByTestId('dissemination-send-button')).toBeDisabled();
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it('shows BYOC JSON params for non-DB sinks and includes them in preflight (T6.2)', async () => {
+    const user = userEvent.setup();
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        ok: true,
+        connectivity_ok: true,
+        diffs: [],
+        handle: 'wis2-handle',
+      }),
+    } as Response);
+
+    render(<DisseminationDrawer {...defaultProps} />);
+
+    await user.selectOptions(screen.getByTestId('dissemination-sink-chooser'), 'wis2');
+    expect(screen.getByTestId('dissemination-byoc-params')).toBeInTheDocument();
+    expect(screen.queryByTestId('dissemination-uri-input')).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId('dissemination-byoc-params'), {
+      target: {
+        value: JSON.stringify({
+          broker: 'mqtt://wis2.example',
+          topic: 'origin/a/wis2',
+        }),
+      },
+    });
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    });
+    const body = JSON.parse(
+      (global.fetch as unknown as { mock: { calls: [[string, { body: string }]] } })
+        .mock.calls[0][1].body,
+    );
+    expect(body.sink_type).toBe('wis2');
+    expect(body.params).toEqual({
+      broker: 'mqtt://wis2.example',
+      topic: 'origin/a/wis2',
+    });
   });
 });

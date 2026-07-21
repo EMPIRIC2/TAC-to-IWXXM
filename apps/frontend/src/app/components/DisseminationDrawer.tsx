@@ -44,23 +44,44 @@ export function DisseminationDrawer({
   open,
   onOpenChange,
   accessToken,
-  iwxxmXml: initialIwxxm,
-  tacText: initialTac,
+  iwxxmXml: propIwxxm,
+  tacText: propTac,
   product = 'metar',
 }: DisseminationDrawerProps) {
   const [sinkType, setSinkType] = useState<SinkType>('postgres');
   const [uri, setUri] = useState('');
   const [ddl, setDdl] = useState(false);
-  const [iwxxmXml, setIwxxmXml] = useState(initialIwxxm ?? '');
-  const [tacText, setTacText] = useState(initialTac ?? '');
+  /** Memory-only BYOC JSON for non-DB sinks (WIS2/EDIS/AMHS/SWIM/AFS). */
+  const [byocParamsJson, setByocParamsJson] = useState('{}');
+  /** Drag-drop overrides; props win when null. */
+  const [droppedIwxxm, setDroppedIwxxm] = useState<string | null>(null);
+  const [droppedTac, setDroppedTac] = useState<string | null>(null);
   const [preflight, setPreflight] = useState<PreflightResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [sendResult, setSendResult] = useState<string | null>(null);
 
+  const iwxxmXml = droppedIwxxm ?? propIwxxm ?? '';
+  const tacText = droppedTac ?? propTac ?? '';
+
   const needsUri = DB_SINK_TYPES.includes(sinkType);
   const canSend = isPreflightGreen(preflight);
   const hasPayload = Boolean(iwxxmXml.trim() || tacText.trim());
+
+  const parseByocParams = useCallback((): Record<string, unknown> | null => {
+    if (needsUri) return {};
+    try {
+      const parsed: unknown = JSON.parse(byocParamsJson || '{}');
+      if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        setError('BYOC params must be a JSON object (memory-only).');
+        return null;
+      }
+      return parsed as Record<string, unknown>;
+    } catch {
+      setError('BYOC params JSON is invalid.');
+      return null;
+    }
+  }, [byocParamsJson, needsUri]);
 
   const diffSummary = useMemo(() => {
     if (!preflight) return null;
@@ -75,6 +96,8 @@ export function DisseminationDrawer({
       setError('Authentication required. Please log in again.');
       return;
     }
+    const params = parseByocParams();
+    if (params === null) return;
     setBusy(true);
     setError(null);
     setSendResult(null);
@@ -83,8 +106,9 @@ export function DisseminationDrawer({
       const result = await disseminationPreflight(accessToken, {
         sink_type: sinkType,
         uri: needsUri ? uri : undefined,
-        ddl,
+        ddl: needsUri ? ddl : false,
         product,
+        params,
       });
       setPreflight(result);
       if (!isPreflightGreen(result) && result.detail) {
@@ -96,7 +120,7 @@ export function DisseminationDrawer({
     } finally {
       setBusy(false);
     }
-  }, [accessToken, ddl, needsUri, product, sinkType, uri]);
+  }, [accessToken, ddl, needsUri, parseByocParams, product, sinkType, uri]);
 
   const runSend = useCallback(async () => {
     if (!accessToken || !canSend || !preflight?.handle) return;
@@ -119,15 +143,7 @@ export function DisseminationDrawer({
     } finally {
       setBusy(false);
     }
-  }, [
-    accessToken,
-    canSend,
-    hasPayload,
-    iwxxmXml,
-    preflight,
-    product,
-    tacText,
-  ]);
+  }, [accessToken, canSend, hasPayload, iwxxmXml, preflight, product, tacText]);
 
   const onDropFiles = useCallback((files: FileList | null) => {
     if (!files?.length) return;
@@ -137,9 +153,11 @@ export function DisseminationDrawer({
       const text = String(reader.result ?? '');
       const name = file.name.toLowerCase();
       if (name.endsWith('.xml') || text.trimStart().startsWith('<')) {
-        setIwxxmXml(text);
+        setDroppedIwxxm(text);
+        setDroppedTac(null);
       } else {
-        setTacText(text);
+        setDroppedTac(text);
+        setDroppedIwxxm(null);
       }
       // Dropping a new payload invalidates prior preflight handle.
       setPreflight(null);
@@ -147,6 +165,15 @@ export function DisseminationDrawer({
     };
     reader.readAsText(file);
   }, []);
+
+  const closeDrawer = useCallback(() => {
+    setDroppedIwxxm(null);
+    setDroppedTac(null);
+    setPreflight(null);
+    setSendResult(null);
+    setError(null);
+    onOpenChange(false);
+  }, [onOpenChange]);
 
   if (!open) return null;
 
@@ -163,7 +190,7 @@ export function DisseminationDrawer({
         className="absolute inset-0 cursor-default"
         aria-label="Close dissemination drawer backdrop"
         data-testid="dissemination-drawer-backdrop"
-        onClick={() => onOpenChange(false)}
+        onClick={closeDrawer}
       />
       <aside
         className="relative z-10 flex h-full w-full max-w-md flex-col gap-4 overflow-y-auto border-l border-gray-200 bg-white p-4 shadow-xl dark:border-gray-700 dark:bg-gray-900"
@@ -181,7 +208,7 @@ export function DisseminationDrawer({
             variant="ghost"
             size="sm"
             data-testid="dissemination-drawer-close"
-            onClick={() => onOpenChange(false)}
+            onClick={closeDrawer}
           >
             Close
           </Button>
@@ -201,7 +228,11 @@ export function DisseminationDrawer({
             }}
           >
             {DRAWER_SINK_TYPES.map((sink) => (
-              <option key={sink} value={sink} data-testid={`dissemination-sink-option-${sink}`}>
+              <option
+                key={sink}
+                value={sink}
+                data-testid={`dissemination-sink-option-${sink}`}
+              >
                 {sinkTypeLabel(sink)}
               </option>
             ))}
@@ -240,10 +271,32 @@ export function DisseminationDrawer({
             </label>
           </div>
         ) : (
-          <p className="text-sm text-gray-600 dark:text-gray-400" data-testid="dissemination-non-db-hint">
-            Paste BYOC connection params for {sinkTypeLabel(sinkType)} in a follow-on field
-            (memory-only; never persisted).
-          </p>
+          <div className="space-y-2">
+            <Label htmlFor="dissemination-byoc-params">
+              BYOC params (JSON, memory-only) — {sinkTypeLabel(sinkType)}
+            </Label>
+            <textarea
+              id="dissemination-byoc-params"
+              data-testid="dissemination-byoc-params"
+              className="min-h-[6rem] w-full rounded border border-gray-300 bg-white px-2 py-2 font-mono text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+              spellCheck={false}
+              autoComplete="off"
+              placeholder='{"endpoint":"…","token":"…"}'
+              value={byocParamsJson}
+              onChange={(e) => {
+                setByocParamsJson(e.target.value);
+                setPreflight(null);
+                setSendResult(null);
+              }}
+            />
+            <p
+              className="text-xs text-gray-500 dark:text-gray-400"
+              data-testid="dissemination-non-db-hint"
+            >
+              Credentials stay in browser memory for this session only; never stored in
+              work history.
+            </p>
+          </div>
         )}
 
         <div
@@ -257,7 +310,9 @@ export function DisseminationDrawer({
             onDropFiles(e.dataTransfer.files);
           }}
         >
-          <Label htmlFor="dissemination-file-input">Drag-drop IWXXM/TAC or choose file</Label>
+          <Label htmlFor="dissemination-file-input">
+            Drag-drop IWXXM/TAC or choose file
+          </Label>
           <input
             id="dissemination-file-input"
             data-testid="dissemination-file-input"
@@ -267,8 +322,12 @@ export function DisseminationDrawer({
             onChange={(e) => onDropFiles(e.target.files)}
           />
           {(iwxxmXml || tacText) && (
-            <p className="mt-2 text-xs text-gray-600 dark:text-gray-400" data-testid="dissemination-payload-status">
-              Payload ready ({iwxxmXml ? 'IWXXM' : 'TAC'}, {((iwxxmXml || tacText).length)} chars)
+            <p
+              className="mt-2 text-xs text-gray-600 dark:text-gray-400"
+              data-testid="dissemination-payload-status"
+            >
+              Payload ready ({iwxxmXml ? 'IWXXM' : 'TAC'},{' '}
+              {(iwxxmXml || tacText).length} chars)
             </p>
           )}
         </div>
@@ -293,7 +352,10 @@ export function DisseminationDrawer({
         </div>
 
         {diffSummary && (
-          <p className="text-sm text-green-700 dark:text-green-400" data-testid="dissemination-preflight-green">
+          <p
+            className="text-sm text-green-700 dark:text-green-400"
+            data-testid="dissemination-preflight-green"
+          >
             {diffSummary}
           </p>
         )}
@@ -304,7 +366,10 @@ export function DisseminationDrawer({
             data-testid="dissemination-preflight-diffs"
           >
             {preflight.diffs.map((diff, idx) => (
-              <li key={`${diff.table}-${diff.kind}-${idx}`} data-testid="dissemination-diff-item">
+              <li
+                key={`${diff.table}-${diff.kind}-${idx}`}
+                data-testid="dissemination-diff-item"
+              >
                 <span className="font-medium">{diff.kind}</span>
                 {': '}
                 {diff.table}
@@ -315,13 +380,20 @@ export function DisseminationDrawer({
         )}
 
         {error && (
-          <p className="text-sm text-red-600 dark:text-red-400" data-testid="dissemination-error" role="alert">
+          <p
+            className="text-sm text-red-600 dark:text-red-400"
+            data-testid="dissemination-error"
+            role="alert"
+          >
             {error}
           </p>
         )}
 
         {sendResult && (
-          <p className="text-sm text-green-700 dark:text-green-400" data-testid="dissemination-send-success">
+          <p
+            className="text-sm text-green-700 dark:text-green-400"
+            data-testid="dissemination-send-success"
+          >
             Sent — key {sendResult}
           </p>
         )}
