@@ -14,10 +14,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — **06-tech-tooling** complete (T0.1); next Phase B checkpoint → **07-build** M1 T1.1 |
-| **Active milestone** | M1 — Package scaffold + SSRF/allowlist (start after B→C) |
-| **Active task** | — (07-build not started) |
-| **Tasks** | 1 / **29** completed (T0.1) |
+| **Active phase** | Phase C — **07-build** M1 |
+| **Active milestone** | M1 — Package scaffold + SSRF/allowlist |
+| **Active task** | T1.1 (completing) |
+| **Tasks** | 1 / **29** completed (T0.1); M1 in progress |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -52,11 +52,11 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Package layout + import smoke; no FastAPI/Supabase imports | ADR-030; plan-adherence | — | pending |
-| T1.2 | Config | Add `packages/dissemination` workspace member + pyproject deps (sqlalchemy, asyncpg, aiomysql, aiosqlite, aioodbc, aiosmtplib, msgspec) | dependency-inventory; E14-06 | T1.1 | pending |
-| T1.3 | Test | Allowlist parse + fail-closed when empty; DNS/private-range deny unit tests | ADR-029; TC-F16-002 | T1.2 | pending |
-| T1.4 | Code | SSRF/allowlist helpers in package; env `DISSEMINATION_EGRESS_ALLOWLIST` | env-contract; E14-08 | T1.3 | pending |
-| T1.5 | Config | `.env.example` + staging-secrets note; Makefile target for Compose stub (placeholder) | config-spec F16–F19 | T1.4 | pending |
+| T1.1 | Test | Package layout + import smoke; no FastAPI/Supabase imports | ADR-030; plan-adherence | — | **completed** |
+| T1.2 | Config | Add `packages/dissemination` workspace member + pyproject deps (sqlalchemy, asyncpg, aiomysql, aiosqlite, aioodbc, aiosmtplib, msgspec) | dependency-inventory; E14-06 | T1.1 | **completed** |
+| T1.3 | Test | Allowlist parse + fail-closed when empty; DNS/private-range deny unit tests | ADR-029; TC-F16-002 | T1.2 | **completed** |
+| T1.4 | Code | SSRF/allowlist helpers in package; env `DISSEMINATION_EGRESS_ALLOWLIST` | env-contract; E14-08 | T1.3 | **completed** |
+| T1.5 | Config | `.env.example` + staging-secrets note; Makefile target for Compose stub (placeholder) | config-spec F16–F19 | T1.4 | **completed** |
 
 ### M2 — Multi-DB writer-contract + preflight/send API (F16)
 

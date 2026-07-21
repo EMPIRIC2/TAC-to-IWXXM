@@ -3,7 +3,7 @@
 ## Resume in next chat
 
 ```
-/16-evolve continue S019/EV-014 — start 07-build M1 T1.1
+/16-evolve continue S019/EV-014 — 07-build M2 T2.1
 ```
 
 | Field | Value |
@@ -11,19 +11,17 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Features | F16–F19 Planned |
-| Branch / tip | `cursor/s019-06-tech-tooling-9a92` (06 tooling); base `main` @ `#753` |
-| Last completed stage | **06-tech-tooling** + Phase B Assumed PASS |
-| Next | **07-build** M1 T1.1 |
+| Branch | `cursor/s019-07-build-m1-9a92` |
+| Last completed | **M1** T1.1–T1.5 (package + allowlist) |
+| Next | **M2** T2.1 writer-contract schema diff tests |
 
-## Approved artifacts
+## M1 done
 
-- [execution-plan.md](reports/execution-plan.md) — **29** tasks; **T0.1 completed**
-- [06-tech-tooling.md](reports/06-tech-tooling.md)
-- [05-verify-tech-audit.md](reports/05-verify-tech-audit.md) — PASS
-- [ADR-030](../../adr/ADR-030-dissemination-package-architecture.md)
-- [ADR-029](../../adr/ADR-029-dissemination-ssrf-allowlist.md)
+- `packages/dissemination` workspace member + deps
+- ADR-029 allowlist fail-closed helpers
+- `.env.example` + Compose stub targets (from T0.1)
 
 ## Do not skip
 
-- Live BYOC close gate (Postgres + WIS2 + EDIS) before cycle close
-- TDD order on M1 (T1.1 test before T1.2 config)
+- Live BYOC close gate before cycle close
+- TDD on M2 (T2.1 before T2.2)
