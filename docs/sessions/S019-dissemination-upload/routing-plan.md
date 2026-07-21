@@ -12,13 +12,13 @@
 | 04-tech-plan | yes | delta | completed | Q34=A plan approved; ADR-030; Batch 1–2; #753 MERGED |
 | 05-verify-tech | yes | delta | completed | D-S019-EV014-Q35A-05 PASS — 29 tasks; S1–S8 fixes |
 | 06-tech-tooling | yes | delta | completed | T0.1 — coverage + CI Compose hooks (D-S019-EV014-Q36A-06) |
-| 07-build | yes | full | pending | **NEXT** — M1 T1.1 (Phase B Assumed D-S019-EV014-Q37A-phase-b) |
-| 08-verify-build | yes | full | pending | |
+| 07-build | yes | full | in_progress | M6 T6.6 **blocked** (H0c/H1/H4/H5 PASS; BYOC pending) |
+| 08-verify-build | yes | full | pending | Invoked under T6.4 — report PASS; stage row pending C→D |
 | 09-qa | yes | full | pending | |
-| 10-e2e | yes | full | pending | UJ-027–030 |
+| 10-e2e | yes | full | pending | UJ-027–030 (Playwright code done T6.3) |
 | 11-verify-impl | yes | full | pending | Per-Fn AC |
-| 12-verify-deploy | yes | full | pending | Allowlist + wis2box |
-| 13-deploy-smoke | yes | full | pending | Staging merge OK; live BYOC before cycle close |
+| 12-verify-deploy | yes | full | pending | Checklist PASS (T6.5); live allowlist still blocked |
+| 13-deploy-smoke | yes | full | in_progress | Partial T6.6 — live BYOC before cycle close |
 
 ## Approved
 

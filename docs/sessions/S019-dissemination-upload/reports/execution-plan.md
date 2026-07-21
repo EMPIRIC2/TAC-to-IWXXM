@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase C — **07-build** M6 in progress |
 | **Active milestone** | M6 — FE drawer + connectivity + verify |
-| **Active task** | T6.6 (next) |
-| **Tasks** | 28 / **29** completed (through T6.5) |
-| **Branch** | `cursor/s019-t64-verify-build-7820` (PR #771) |
+| **Active task** | T6.6 (**blocked** — live BYOC / allowlist / auth secrets) |
+| **Tasks** | 28 / **29** completed (through T6.5); T6.6 partial smoke done |
+| **Branch** | `cursor/s019-t66-deploy-smoke-151c` (from #771 tip) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -105,7 +105,7 @@
 | T6.3 | Test | Playwright UJ-027–030 smokes (H6′) | test-plan H6′ | T6.2, T3.4, T4.3, T5.3 | **completed** |
 | T6.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5, T6.2 | **completed** |
 | T6.5 | Config | 12-verify-deploy checklist (allowlist + Compose harness) | 12; E14-08 | T6.4 | **completed** |
-| T6.6 | Config | 13-deploy-smoke H1–H5 + H0c; live BYOC close gate evidence | 13; Q15/Q21; TC-F17-002 | T6.5 | pending |
+| T6.6 | Config | 13-deploy-smoke H1–H5 + H0c; live BYOC close gate evidence | 13; Q15/Q21; TC-F17-002 | T6.5 | **blocked** (H0c/H1/H4/H5 PASS; BYOC+allowlist+auth pending) |
 
 ### Stage 06 (before 07-build; optional tooling)
 

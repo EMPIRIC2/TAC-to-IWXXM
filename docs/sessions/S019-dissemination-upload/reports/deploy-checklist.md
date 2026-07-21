@@ -36,7 +36,7 @@
 | `.env.example` placeholder | **PASS** | `DISSEMINATION_EGRESS_ALLOWLIST=` + commented harness hosts |
 | Package fail-closed when empty | **PASS** | T1.3/T1.4 unit tests; CI Test (dissemination) green |
 | Staging harness hosts documented | **PASS** | `wis2box,127.0.0.1,localhost` in deploy.md / `.env.example` |
-| Live Render value set | **DEFERRED → T6.6** | No local `.env` / Render workspace selected this agent; confirm non-empty allowlist (or intentional empty = deny) before live BYOC |
+| Live Render value set | **BLOCKED (T6.6)** | T6.6 agent: no `.env` `RENDER_API_KEY`; Render MCP unauthorized — still confirm non-empty allowlist (or intentional empty = deny) before live BYOC |
 
 ## Compose wis2box harness (E14-04)
 
@@ -57,7 +57,7 @@
 | `configure_cors` on API | **PASS** | backend |
 | `scripts/deploy/verify_connectivity.sh` | **PASS** | present |
 | `tests/smoke/test_staging_connectivity.py` | **PASS** | present |
-| H4–H5 live | **PLANNED T6.6** | After merge + Render redeploy |
+| H4–H5 live | **PASS (T6.6)** | `verify_connectivity.sh` H4 2/2 + H5 config.json; FE drawer still not on live bundle until #771 |
 | H6′ UJ-027–030 | **PASS (code)** | T6.3 Playwright 6/6; re-run live at 13 if needed |
 
 ## Failure modes & mitigations
@@ -76,10 +76,10 @@
 | Gate | Result |
 |------|--------|
 | T6.5 allowlist + Compose checklist | **PASS** |
-| Ready for T6.6 `13-deploy-smoke` | **YES** (after #771 merge; confirm Render allowlist value; live BYOC demos) |
-| Live BYOC close gate (Postgres + WIS2 + EDIS) | **Pending T6.6** |
+| Ready for T6.6 `13-deploy-smoke` | **PARTIAL** — connectivity PASS; BYOC/allowlist/auth still blocked |
+| Live BYOC close gate (Postgres + WIS2 + EDIS) | **Blocked** — see `deploy-smoke.md` |
 | F19 live demo | Optional (evidence or waive) |
 
 ## Next
 
-**T6.6** — 13-deploy-smoke H1–H5 + H0c; live BYOC close-gate evidence (TC-F17-002 / TC-F18-002).
+**Unblock T6.6** — `.env` + merge #771 + allowlist confirm + live BYOC (TC-F17-002 / TC-F18-002).

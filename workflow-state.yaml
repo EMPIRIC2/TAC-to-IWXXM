@@ -10,12 +10,12 @@ active_session:
   type: feature
   intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2) staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-t64-verify-build-7820
+  branch: cursor/s019-t66-deploy-smoke-151c
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'T6.5 PASS (deploy-checklist); next T6.6; progress 28/29; PR #771'
+  note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending). Progress 28/29; PR #771 open.'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -57,6 +57,7 @@ active_session:
     - docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
     - docs/sessions/S019-dissemination-upload/reports/verification-report.md
     - docs/sessions/S019-dissemination-upload/reports/deploy-checklist.md
+    - docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
   routing_plan:
     - stage: 00-context
       required: true
@@ -72,7 +73,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build M6 T6.5 PASS; next T6.6; progress 28/29"
+      note: "Phase C — 07-build M6 T6.6 blocked (partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -127,7 +128,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-21'
-      note: 'T6.5 PASS (12-verify-deploy checklist); progress 28/29; next T6.6 (13-deploy-smoke)'
+      note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29; branch cursor/s019-t66-deploy-smoke-151c'
     - stage: 08-verify-build
       required: true
       mode: full
@@ -161,9 +162,10 @@ active_session:
     - stage: 13-deploy-smoke
       required: true
       mode: full
-      status: pending
+      status: in_progress
       skip_rationale:
-      note: Full routing (Q24=A) — await prior stages; Q15=A+Q8=C+Q21=A live BYOC hard close gate
+      started: '2026-07-21'
+      note: 'PARTIAL — H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge/live FE drawer blocked (D-S019-EV014-T66-partial); report deploy-smoke.md'
 sessions:
 
   - id: S018-metar-remarks-667
@@ -2390,13 +2392,13 @@ stages:
         started_at: '2026-07-21'
         started: '2026-07-21'
         mode: full
-        note: 'T6.5 PASS (deploy-checklist); next T6.6; progress 28/29; PR #771'
-        progress: '27/29'
+        note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29; PR #771'
+        progress: '28/29'
         active_milestone: M6
-        active_task: T6.5
-        active_task_status: pending
-        report: docs/sessions/S019-dissemination-upload/reports/verification-report.md
-        branch: cursor/s019-t64-verify-build-7820
+        active_task: T6.6
+        active_task_status: blocked
+        report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
+        branch: cursor/s019-t66-deploy-smoke-151c
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2447,6 +2449,7 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; commit sha PENDING'
       - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29. Artifact docs/sessions/S019-dissemination-upload/reports/07-build-t63.md; log /opt/cursor/artifacts/t63-playwright-uj027-030.log.'
       - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
       - '2026-07-21 S019/EV-014 PR #769 CI/CD Pipeline passed (frontend coverage restored). T6.1+T6.2 done; tip 6e247af on cursor/s019-t61-drawer-vitest-a804; next M6 T6.3; progress 25/29.'
@@ -3036,6 +3039,25 @@ stages:
     completed_at: "2026-07-20"
     session_id: S018-metar-remarks-667
     delta_substages:
+      - id: S019-dissemination-upload
+        session_id: S019-dissemination-upload
+        evolve_cycle_id: EV-014
+        skill_id: 13-deploy-smoke
+        status: in_progress
+        started_at: '2026-07-21'
+        started: '2026-07-21'
+        mode: full
+        note: >-
+          PARTIAL — H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge/live FE drawer
+          blocked (D-S019-EV014-T66-partial); T6.6 remains blocked; progress 28/29
+        overall: partial
+        report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
+        branch: cursor/s019-t66-deploy-smoke-151c
+        active_milestone: M6
+        active_task: T6.6
+        active_task_status: blocked
+        pr_number: 771
+        pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771
       - id: S018-metar-remarks-667
         session_id: S018-metar-remarks-667
         evolve_cycle_id: EV-013
@@ -3098,6 +3120,10 @@ stages:
         report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
         hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+      - >-
+        2026-07-21 S019/EV-014 13-deploy-smoke PARTIAL / in_progress (D-S019-EV014-T66-partial) —
+        H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge blocked; T6.6 blocked; report
+        docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
       - >-
         2026-07-20 S018/EV-013 13-deploy-smoke COMPLETE / pass_with_advisories —
         partial PASS; #750 live @ ccfb8cc; H1/H3/H4/H5 pass; full UJ-026 annex3 blocked
@@ -3397,6 +3423,24 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-T66-partial
+    date: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 07-build
+    skill_id: 07-build
+    status: blocked
+    decision: >-
+      T6.6 / 13-deploy-smoke PARTIAL — H0c + H1 (public) + H4 + H5 PASS; T6.6 remains blocked
+      pending .env credentials (E2E auth), RENDER_API_KEY / live DISSEMINATION_EGRESS_ALLOWLIST
+      confirm, PR #771 merge + Render FE redeploy, and live BYOC (Postgres + WIS2 + EDIS)
+      close-gate evidence (Q15/Q21). Branch cursor/s019-t66-deploy-smoke-151c (base tip of #771 /
+      cursor/s019-t64-verify-build-7820 @ 7fba0a5). Report
+      docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md. Progress remains 28/29.
+      git_history.commits entry deferred until docs commit lands (message planned:
+      "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked").
+    related_pr: 771
+    artifact: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
   - id: N-S019-EV014-T61-start
     date: '2026-07-21'
     session_id: S019-dissemination-upload
@@ -6386,6 +6430,20 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
+    type: report
+    kind: deploy-smoke
+    stage: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    created_at: '2026-07-21'
+    updated_at: '2026-07-21'
+    status: partial
+    overall: partial
+    note: >-
+      T6.6 PARTIAL — H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge blocked
+      (D-S019-EV014-T66-partial); branch cursor/s019-t66-deploy-smoke-151c
   - path: docs/sessions/S018-metar-remarks-667/reports/deploy-smoke.md
     type: report
     kind: deploy-smoke
@@ -7782,11 +7840,12 @@ evolve_cycles:
     current_stage: 07-build
     active_milestone: M6
     active_task: T6.6
-    active_task_status: pending
+    active_task_status: blocked
     progress: '28/29'
-    branch: cursor/s019-t64-verify-build-7820
-    note: 'T6.5 12-verify-deploy checklist PASS; next T6.6; progress 28/29'
+    branch: cursor/s019-t66-deploy-smoke-151c
+    note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29; PR #771'
     notes:
+      - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; git commit PENDING'
       - '2026-07-21 S019/EV-014 T6.5 COMPLETE — 12-verify-deploy checklist PASS (allowlist docs + Compose harness; live Render allowlist confirm at T6.6). Artifact deploy-checklist.md. Progress 28/29.'
       - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS (prettier UJ-027–030 e2e + badge_audit drop gifts); next T6.5 12-verify-deploy; progress 27/29. Artifact docs/sessions/S019-dissemination-upload/reports/verification-report.md. Branch cursor/s019-t64-verify-build-7820.'
       - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29. Artifact docs/sessions/S019-dissemination-upload/reports/07-build-t63.md; log /opt/cursor/artifacts/t63-playwright-uj027-030.log.'
@@ -7868,7 +7927,7 @@ evolve_cycles:
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase C — 07-build M6 T6.2 done @ fcec16f; next T6.3 Playwright UJ-027–030; progress 25/29; PR #769 → main (supersedes #768 stack)"
+        note: "Phase C — 07-build M6 T6.6 blocked (partial 13-deploy-smoke); progress 28/29; PR #771"
       01-requirements:
         status: completed
         mode: delta
@@ -7945,12 +8004,23 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-21'
-        note: 'T6.3 Playwright UJ-027–030 6/6 green; PR #770; next T6.4 08-verify-build; tip TBD after commit'
-        progress: '26/29'
+        note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29'
+        progress: '28/29'
         active_milestone: M6
-        active_task: T6.4
-        active_task_status: pending
-        report: docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
+        active_task: T6.6
+        active_task_status: blocked
+        report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
+      13-deploy-smoke:
+        status: in_progress
+        mode: full
+        started: '2026-07-21'
+        note: >-
+          PARTIAL — H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge blocked
+          (D-S019-EV014-T66-partial); T6.6 remains blocked
+        overall: partial
+        report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
+        active_task: T6.6
+        active_task_status: blocked
     gates:
       a_to_b: passed
       b_to_c: passed
@@ -8040,6 +8110,13 @@ evolve_cycles:
         kind: stage_report
         stage: 07-build
         note: T6.3 Playwright UJ-027–030 6/6 green; PR #770
+      - path: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
+        status: partial
+        kind: deploy-smoke
+        stage: 13-deploy-smoke
+        note: >-
+          T6.6 PARTIAL — H0c/H1/H4/H5 PASS; allowlist/auth/BYOC blocked
+          (D-S019-EV014-T66-partial)
     issues:
       - I-S019-EV014-Q20C-vendors
       - I-S019-EV014-Q14r-extras-enum
@@ -10515,14 +10592,15 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-t64-verify-build-7820
+  current_branch: cursor/s019-t66-deploy-smoke-151c
   ahead_of_origin: 0
-  pushed: true
-  pending_commit: null
-  tip_sha: 2ce8bb9
-  tip_sha_full: 2ce8bb9
-  note: 'T6.4 PASS; PR #771 CI green (29846488131); next T6.5; progress 27/29'
+  pushed: false
+  pending_commit: '[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked'
+  tip_sha: 7fba0a5
+  tip_sha_full: 7fba0a5759a89f378a8c029a3b0ed3a88ee952c1
+  note: 'T6.6 blocked (partial 13-deploy-smoke); progress 28/29; docs commit PENDING on cursor/s019-t66-deploy-smoke-151c; PR #771 open'
   notes:
+    - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — branch cursor/s019-t66-deploy-smoke-151c (base tip of #771 / t64 @ 7fba0a5); H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending; commit sha PENDING (planned message "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked"); progress 28/29'
     - '2026-07-21 S019/EV-014 T6.5 COMPLETE — deploy-checklist.md PASS; next T6.6; progress 28/29; tip pending'
     - '2026-07-21 S019/EV-014 PR #771 CI/CD Pipeline success (29846488131); tip 2ce8bb9; T6.4 complete; next T6.5'
     - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS on cursor/s019-t64-verify-build-7820 (prettier UJ e2e + badge_audit gifts drop); next T6.5; progress 27/29; report verification-report.md'
@@ -10731,6 +10809,22 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: cursor/s019-t66-deploy-smoke-151c
+      status: open
+      base: cursor/s019-t64-verify-build-7820
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      purpose: S019/EV-014 07-build M6 T6.6 / 13-deploy-smoke (partial H0c/H1/H4/H5)
+      tip_sha: 7fba0a5
+      tip_sha_full: 7fba0a5759a89f378a8c029a3b0ed3a88ee952c1
+      pushed: false
+      pr_number: 771
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771
+      note: >-
+        Base tip of #771 (t64 @ 7fba0a5). T6.6 blocked after partial 13-deploy-smoke;
+        docs commit PENDING (D-S019-EV014-T66-partial); progress 28/29
     - name: cursor/s019-t64-verify-build-7820
       status: active
       base: cursor/s019-t63-dissemination-e2e-8b16
