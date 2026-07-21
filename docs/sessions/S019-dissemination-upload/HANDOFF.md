@@ -12,6 +12,7 @@
 | Cycle | `EV-014` |
 | Branch | `cursor/s019-t34-wis2box-publish-c6f7` (T3.4) |
 | PR (T3.3) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/763 (merged) |
+| PR (T3.4) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/764 (CI green) |
 | Done | M1; M2; **M3 complete** (through T3.4 TC-F17-001 harness publish) |
 | Next | **T4.1** EDIS SMTP format fixtures (F18) |
 
