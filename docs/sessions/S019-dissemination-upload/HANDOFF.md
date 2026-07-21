@@ -11,6 +11,7 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Branch | `cursor/s019-t41-edis-format-c6f7` (T4.1–T4.2) |
+| PR (T4.1–T4.2) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/765 (CI green) |
 | Merged | #761–#764 (through M3 / T3.4) |
 | Done | M1; M2; M3; M4 through **T4.2** (EDIS format + sink) |
 | Next | **T4.3** Preflight connectivity check for SMTP params |
