@@ -11,7 +11,7 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Features | F16–F19 Planned |
-| Branch / tip | `main` after PR #753 merge (was `cursor/dissemination-upload-e25c`) |
+| Branch / tip | **`main` @ `3c9ee81`** (PR [#753](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753) MERGED) |
 | Last completed stage | **04-tech-plan** (Q34=A) |
 | Next stage | **05-verify-tech** |
 

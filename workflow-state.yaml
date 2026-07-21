@@ -10,14 +10,14 @@ active_session:
   type: feature
   intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2) staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/dissemination-upload-e25c
+  branch: main
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 05-verify-tech
   note: >-
-    04-tech-plan COMPLETE (Q34=A); handoff — resume at 05-verify-tech after #753→main;
-    see docs/sessions/S019-dissemination-upload/HANDOFF.md
+    #753 MERGED to main @ 3c9ee81; 04 complete; START 05-verify-tech next chat;
+    HANDOFF.md
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -3251,6 +3251,17 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-753-merged-main
+    date: "2026-07-21"
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    status: confirmed
+    decision: >-
+      PR #753 MERGED to main (3c9ee81) — S019 Phase A + 04-tech-plan written work
+      on main for session handoff; next chat starts 05-verify-tech; active_session open.
+    related_pr: 753
   - id: D-S019-EV014-Q34A-04-approve
     date: "2026-07-21"
     stage: 04-tech-plan
@@ -7442,6 +7453,9 @@ evolve_cycles:
     current_stage: 05-verify-tech
     notes:
       - >-
+        2026-07-21 S019/EV-014 PR #753 MERGED to main (3c9ee81) — handoff ready;
+        next 05-verify-tech
+      - >-
         2026-07-21 S019/EV-014 04-tech-plan COMPLETE (Q34=A / D-S019-EV014-Q34A-04-approve) —
         plan approved; handoff merge #753→main; next 05-verify-tech
       - 2026-07-21 S019/EV-014 04 Batch 2 LOCKED (all A / D-S019-EV014-Q33A-04-batch2) — E14-06..10; execution-plan pending Q34
@@ -10071,12 +10085,13 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/dissemination-upload-e25c
+  current_branch: main
   ahead_of_origin: 0
   pushed: true
   pending_commit: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
-  tip_sha: 986f1467953a60c751064fda33e0bc84a70e1bee
+  tip_sha: 3c9ee814beda3f0572d5d8bc3bb09c7f00106b1a
   notes:
+    - "2026-07-21 PR #753 merged to main @ 3c9ee81 — S019/EV-014 04 handoff"
     - >-
       2026-07-21 S019/EV-014 tip 986f146 — [EV-014] docs: lock 04 Batch 1 architecture
       (Q32=A / ADR-030); Batch 2 pending
