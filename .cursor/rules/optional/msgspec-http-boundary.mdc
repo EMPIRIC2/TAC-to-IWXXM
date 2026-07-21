@@ -19,6 +19,8 @@ High-churn **msgspec response** routes:
 - `POST /api/v1/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`,
   `/decode-tac` (multipart Form/File intake unchanged)
 - `GET /api/v1/lint-issue-catalog` (JSON GET; msgspec response encode — E11-31)
+- `POST /api/v1/dissemination/preflight`, `/dissemination/send` (JSON body; msgspec —
+  E14-07=A / ADR-030)
 
 | Layer | Technology |
 |-------|------------|

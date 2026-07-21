@@ -24,7 +24,7 @@
 | [ADR-018](ADR-018-f8-worker-template.md) | F8 Render worker + template static+api+worker (amends ADR-015) | Accepted |
 | [ADR-019](ADR-019-s008-f6-f8-implemented-status.md) | Mark F6 and F8 Implemented after S008 11-verify-impl | Accepted |
 | [ADR-020](ADR-020-unified-tac-work-sessions.md) | Unified `tac_work_sessions` + F5 migrate | Accepted |
-| [ADR-021](ADR-021-byo-credentials-admin-removal.md) | BYO credentials; remove admin dashboard | Accepted |
+| [ADR-021](ADR-021-byo-credentials-admin-removal.md) | BYO credentials; remove admin dashboard (**amended** EV-014 dest paste) | Accepted |
 | [ADR-022](ADR-022-convert-preview-flag.md) | Soft-preview via `preview=true` on `/api/v1/convert` | Accepted |
 | [ADR-023](ADR-023-wire-convert-params.md) | Wire dormant FileConverter convert parameters | Accepted |
 | [ADR-024](ADR-024-operator-input-modes.md) | AHL / COLLECT input modes, log_level, nil reasons | Accepted |
@@ -32,6 +32,8 @@
 | [ADR-026](ADR-026-msgspec-http-openapi.md) | msgspec on high-churn HTTP; pydantic for OpenAPI (amends ADR-016) | Accepted |
 | [ADR-027](ADR-027-xsdata-codegen.md) | XSD codegen via xsdata (+ pydantic plugin); Rust remains validate hot path | Accepted |
 | [ADR-028](ADR-028-tac-validate-issue-registry.md) | Maintainable `tac-validate` issue registry (codes + severities) | Accepted |
+| [ADR-029](ADR-029-dissemination-ssrf-allowlist.md) | Dissemination SSRF controls + required egress allowlist | Accepted |
+| [ADR-030](ADR-030-dissemination-package-architecture.md) | `packages/dissemination` + sink/API/wis2box/EDIS architecture (F16–F19) | Accepted |
 
 ## Process
 

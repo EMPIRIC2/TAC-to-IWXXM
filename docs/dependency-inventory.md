@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-19 (S015 / EV-011 — F15 registry; no new runtime deps)
+> **Last updated**: 2026-07-21 (S019 / EV-014 — Planned `packages/dissemination` deps; ADR-030)
 
 ## Runtime Dependencies
 
@@ -21,6 +21,22 @@
 | tac-validate | TAC lint / rules | MIT | workspace path |
 | iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
 | gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
+| dissemination | F16–F19 sinks (Planned) | MIT | workspace path (ADR-030) |
+
+### packages/dissemination (Planned — S019 / EV-014)
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| sqlalchemy | Async engine / DDL / writer-contract | MIT | PyPI (≥2.0; already on backend) |
+| asyncpg | Postgres async driver | Apache-2.0 | PyPI (already on backend) |
+| aiomysql | MySQL/MariaDB async | MIT | PyPI — **new** (`>=0.2.0`; pin in M1) |
+| aiosqlite | SQLite async | MIT | PyPI — **new** (`>=0.20.0`; pin in M1) |
+| aioodbc | SQL Server async (ODBC) | MIT | PyPI — **new** (`>=0.5.0`; E14-06=A); document ODBC driver in deploy |
+| aiosmtplib | EDIS SMTP submit | MIT | PyPI — **new** (`>=3.0.0`; pin in M1) |
+| msgspec | Preflight/send models + HTTP encode | Apache-2.0 | PyPI (E14-07=A) |
+
+Package license: **MIT**. No FastAPI/Supabase imports. Backend already has `sqlalchemy` +
+`asyncpg` + `psycopg`; package may declare overlapping pins via workspace.
 
 ### packages/tac2iwxxm
 
@@ -152,3 +168,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
   **xmloxide 0.4.x** native XSD+Schematron (D-S014-T33-crates / E10-46)
 - S015 / EV-011 (2026-07-19): F15 issue registry — **no new runtime deps**; catalog HTTP + docs
   export from existing `tac-validate` / msgspec stack (E11-30)
+- S019 / EV-014 (2026-07-21): Planned `packages/dissemination` — SQLAlchemy async + aiomysql /
+  aiosqlite / **aioodbc** (E14-06=A) + aiosmtplib; msgspec HTTP (E14-07=A); pins in M1

@@ -1653,14 +1653,42 @@ async def convert(
     preview_failed_spans: List[FailedSpan] = []
     preview_saw_soft_fail = False
 
-    def absorb_soft_preview(soft: dict, *, base_offset: int = 0) -> None:
+    def absorb_convert_issues(soft: dict, *, source: str) -> None:
+        """Echo tac2iwxxm non-fatal convert issues (e.g. REMARKS_EXCLUDED) to the client."""
+        for raw in soft.get("convert_issues") or []:
+            data = raw.model_dump() if hasattr(raw, "model_dump") else dict(raw)
+            sev_raw = str(data.get("severity") or "info").strip().lower()
+            if "." in sev_raw:
+                sev_raw = sev_raw.rsplit(".", 1)[-1]
+            if sev_raw == "error":
+                severity = ConversionIssueSeverity.ERROR
+            elif sev_raw == "warning":
+                severity = ConversionIssueSeverity.WARNING
+            else:
+                severity = ConversionIssueSeverity.INFO
+            code = data.get("code") or None
+            add_issue(
+                source=source,
+                message=str(data.get("message") or code or "Convert issue"),
+                severity=severity,
+                hint=("Use profile=iwxxm_us to retain US REMARKS in IWXXM." if code == "REMARKS_EXCLUDED" else None),
+                code=code,
+                location=data.get("location"),
+            )
+
+    def absorb_soft_preview(soft: dict, *, base_offset: int = 0, source: str | None = None) -> None:
         """Merge soft-preview envelope fields from convert_metar_tac_with_metadata.
 
         ``base_offset`` shifts entry-local span offsets into the original
         ``manual_text`` buffer (multi-line editor documents).
+        Always absorbs ``convert_issues`` when ``source`` is provided (EV-013 / #667).
         """
         nonlocal preview_saw_soft_fail
-        if not preview or not soft:
+        if not soft:
+            return
+        if source:
+            absorb_convert_issues(soft, source=source)
+        if not preview:
             return
         if soft.get("ok") is False:
             preview_saw_soft_fail = True
@@ -1930,9 +1958,9 @@ async def convert(
                     product=product,
                     profile=profile,
                     preview=preview,
-                    soft_preview_out=soft_preview_buf if preview else None,
+                    soft_preview_out=soft_preview_buf,
                 )
-                absorb_soft_preview(soft_preview_buf)
+                absorb_soft_preview(soft_preview_buf, source=metar_name)
                 if preview and soft_preview_buf.get("ok") is False:
                     add_issue(
                         source=metar_name,
@@ -2187,9 +2215,9 @@ async def convert(
                 product=product,
                 profile=profile,
                 preview=preview,
-                soft_preview_out=soft_preview_buf if preview else None,
+                soft_preview_out=soft_preview_buf,
             )
-            absorb_soft_preview(soft_preview_buf, base_offset=entry_offset)
+            absorb_soft_preview(soft_preview_buf, base_offset=entry_offset, source=manual_source)
             if preview and soft_preview_buf.get("ok") is False:
                 add_issue(
                     source=manual_source,
@@ -2416,9 +2444,9 @@ async def convert(
                     product=product,
                     profile=profile,
                     preview=preview,
-                    soft_preview_out=soft_preview_buf if preview else None,
+                    soft_preview_out=soft_preview_buf,
                 )
-                absorb_soft_preview(soft_preview_buf)
+                absorb_soft_preview(soft_preview_buf, source=source_name)
                 if preview and soft_preview_buf.get("ok") is False:
                     add_issue(
                         source=source_name,

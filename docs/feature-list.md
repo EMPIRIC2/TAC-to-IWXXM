@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-19 (S015 / EV-011 — METAR lint registry + #732 quality)
+> **Last updated**: 2026-07-21 (S019 / EV-014 — dissemination epic F16–F19 Planned)
 
 ## Summary
 
@@ -23,6 +23,10 @@
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; shipped 2026-07-20 (#742) |
+| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Planned | Product | S019 / EV-014; #729 |
+| F17 | WIS2 dissemination pathway | Planned | Product | S019 / EV-014; #2 |
+| F18 | EDIS → RTH Washington dissemination | Planned | Product | S019 / EV-014; #6 |
+| F19 | AMHS / SWIM / AFS adapters | Planned | Product | S019 / EV-014; non-goals overturn |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -258,7 +262,8 @@
   replicas** (drop nothing). Product scope = F6 seven.
 - **Deployable**: Render Background Worker at `apps/worker/`; HTTPS/object poller; Supabase
   store + separate quarantine; service-role JWT for writers. Template → `static+api+worker`.
-- **Non-goals (still)**: AMHS/SWIM/AFS adapters; public machine-ingest auth UX; **push sinks**.
+- **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
+  results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
 - **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R2–R15; ADR-018;
   [execution-plan](sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md)
 
@@ -445,6 +450,67 @@
 - **Status note**: F12 remains **Implemented** (PyPI `0.1.0`); this cycle routes METAR/**SPECI**
   rules through the F15 registry and expands accept/negative packs to full-depth checklist targets.
 
+### F16: Dissemination drawer + multi-DB upload (BYOC URI) — S019 / EV-014
+
+- **Status**: **Planned** (Phase 0 approved 2026-07-21; Q24=A).
+- **What it does**: Unified **dissemination drawer** for Convert&Send / Upload: any authenticated
+  user pastes a **one-shot** destination URI (memory-only on API; never persisted; no saved
+  profiles). Backend-mediated preflight + send with structured schema diff; **block Send** until
+  green. Supports **convert-then-send** and **drag-drop** of external IWXXM/TAC. **DDL /
+  create-if-missing** against a versioned writer contract when the target table is missing or
+  mismatched. Multi-DB sinks: **Postgres, MySQL/MariaDB, SQL Server, SQLite** (Q23=A–D; no other
+  named vendor).
+- **Auth vs destination**: Supabase **Auth + F5 work history** remain deploy-time BYO (ADR-021 /
+  Q10A=D / Q19=A). Destination secrets are **not** Supabase and are never stored on sessions
+  (only `kv_upload_key` / metadata).
+- **Security (Q11=A+B)**: Backend-only egress; deny private/metadata ranges; DNS rebinding guard;
+  TLS preferred; timeouts/size limits; secret redaction; rate limits; **required**
+  `DISSEMINATION_EGRESS_ALLOWLIST` (empty ⇒ no user-URI egress).
+- **UI**: Sink chooser in same drawer — Postgres/MySQL/… (F16), WIS2 (F17), EDIS (F18),
+  AMHS/SWIM/AFS (F19).
+- **Acceptance**:
+  1. Preflight returns actionable schema/permission/auth diffs; Send disabled until green
+  2. One-shot URI never appears in logs, session JSON, or F5 rows
+  3. Allowlist enforced; private-IP / metadata targets rejected
+  4. DDL path creates/migrates to versioned writer contract when opted
+  5. Drag-drop and convert-then-send both reach the same preflight→send path
+  6. All four DB engines covered by contract tests (SQLite may be file/local harness)
+- **Out of scope**: Saved/encrypted connection profiles; pasting Supabase **auth** keys in-app
+- **Source**: #729; S019 / EV-014; ADR-021 amend; ADR-029 (SSRF); ADR-030 (package/API)
+
+### F17: WIS2 dissemination pathway — S019 / EV-014
+
+- **Status**: **Planned**.
+- **What it does**: Publish converted IWXXM via **WIS2** (MQTT notification + HTTP dataset) from
+  the dissemination drawer. **Test harness**: project-operated staging **wis2box** on Render/Docker
+  (Q12=B / Q17). **Live**: user BYOC WIS2 node/endpoint credentials (memory-only); cycle close
+  requires live BYOC green (Q15=A / Q21=A).
+- **Acceptance**: Staging wis2box e2e in CI/staging; live BYOC demo before EV-014 close; drawer
+  sink type WIS2 with preflight-equivalent connectivity checks.
+- **Source**: #2; WIS2 overview / wis2box; S019 / EV-014
+
+### F18: EDIS → RTH Washington dissemination — S019 / EV-014
+
+- **Status**: **Planned**.
+- **What it does**: Produce **EDIS-compliant** ASCII messages with correct WMO abbreviated headers
+  and submit to **NWS Telecommunications Gateway (RTH Washington)** using **one-shot BYOC**
+  SMTP/gateway settings in the drawer (Q18≈A / Q16). Cycle close requires live BYOC green (Q15=A).
+- **Acceptance**: Format validation + live submission demo with user-supplied gateway creds;
+  secrets never persisted; allowlist/SSRF policy applies to SMTP hosts.
+- **Source**: #6; S019 / EV-014
+
+### F19: AMHS / SWIM / AFS adapters — S019 / EV-014
+
+- **Status**: **Planned** (overturns prior Non-Goals for AMHS/SWIM/AFS).
+- **What it does**: Dissemination adapters for **AMHS**, **SWIM**, and **AFS** selectable in the
+  same drawer (Q20=D). BYOC connection parameters; backend-mediated; same secret/SSRF posture as
+  F16–F18.
+- **Acceptance**: Each adapter has a documented contract + staging/test path green before
+  EV-014 close. **Hard close gate** remains Postgres + WIS2 + EDIS live BYOC (Q15=A / Q21=A).
+  F19 **live** demos are optional — record green evidence or an explicit AskQuestion waive
+  (does not block close if staging/test path is green).
+- **Source**: S019 / EV-014 Phase 0 Q20=D / Q24=A; 02-verify-plan S-EV014-M2 (Q28=A)
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout
@@ -526,6 +592,10 @@
 | F13 | — | PyPI `iwxxm-validate` + SDK | Yes | Via API image |
 | F14 | — | PyPI `tac2iwxxm[+validate]` | Yes | Via API image |
 | F15 | Yes (METAR/SPECI workbench smoke) | Yes (`lint-tac` registry codes) | Yes (registry + goldens) | Yes if API/FE contract changes |
+| F16 | Yes (dissemination drawer) | Yes (preflight/upload APIs) | Yes | Yes (API + static + allowlist env) |
+| F17 | Yes (WIS2 sink) | Yes (WIS2 publish) | Yes (wis2box harness) | Yes (staging wis2box + API) |
+| F18 | Yes (EDIS sink) | Yes (EDIS submit) | Yes | Yes (API; BYOC SMTP) |
+| F19 | Yes (AMHS/SWIM/AFS sinks) | Yes (adapter APIs) | Yes | Yes (API) |
 | M1–M6 | — | — | Yes | Yes |
 
 | F6 capability | Library | HTTP API | Web UI | CI metrics |
@@ -564,8 +634,13 @@
 
 - ~~Building **F7** UI or multi-product sessions.~~ **Superseded** — F7 is **in scope** for
   S011 / EV-008 (see Non-Goals F7 below).
-- AMHS / SWIM / AFS ingest adapters.
-- **Push sinks** (webhook/S3/AMHS) — store + quarantine only for F8 v1.
+- ~~AMHS / SWIM / AFS ingest adapters.~~ **Superseded by S019 / EV-014 F19** — AMHS / SWIM /
+  AFS **dissemination** adapters are **in scope** (Q20=D). F8 **ingest** remains store +
+  quarantine only unless separately evolved.
+- ~~**Push sinks** (webhook/S3/AMHS) — store + quarantine only for F8 v1.~~ **Superseded for
+  operator dissemination (F16–F19)** — WIS2 / EDIS / AMHS / SWIM / AFS / multi-DB upload are
+  **in scope** under EV-014. F8 worker v1 still does **not** auto-push ingest results unless
+  wired later.
 - Public machine-ingest auth UX (worker uses service-role JWT internally — ADR-018).
 - Schematron applied to TAC (Schematron stays on IWXXM; TAC uses `tac-validate`).
 - Dedicated converter API service (rejected; F8 worker is the new deployable).
@@ -577,10 +652,20 @@
 - Extending **F5** as a permanent parallel METAR-only store after unified cutover (F5 UX remains
   as My METARs filter on `tac_work_sessions`).
 - Separate F7-only sessions table alongside `metar_work_sessions` (rejected — R2′).
-- Per-user in-app “paste Supabase / DB keys” UI (BYO is deploy/env only — R6).
+- ~~Per-user in-app “paste Supabase / DB keys” UI (BYO is deploy/env only — R6).~~ **Amended
+  S019 / EV-014**: paste of **Supabase auth keys** remains a non-goal (ADR-021 / Q10A=D).
+  Paste of **one-shot dissemination destination** credentials (DB URI / WIS2 / EDIS SMTP /
+  AMHS params) is **in scope** (F16–F19); memory-only; never saved profiles.
 - Shared hosted multi-tenant admin dashboard, approval queues, or toggle-admin (#697).
-- AMHS / SWIM / AFS; F8 push sinks.
+- ~~AMHS / SWIM / AFS; F8 push sinks.~~ **Superseded by F16–F19** (see S008 amend above).
 - Rewriting conversion engines beyond span / decode / soft-preview hooks.
+
+## Non-Goals (S019 / EV-014 — dissemination)
+
+- Saved / encrypted connection profiles (Q14).
+- Pasting Supabase **Auth** keys in the product UI (auth stays deploy-time BYO).
+- Storing destination secrets on `tac_work_sessions` or in logs (Q19=A / Q11).
+- Arbitrary SQL admin console / free-form DDL beyond the versioned writer-contract path.
 
 ## Planned Features (Post-Migration)
 

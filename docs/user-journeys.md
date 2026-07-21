@@ -3,8 +3,9 @@
 > **Project**: METAR to IWXXM Converter
 > **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI;
 > S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP;
-> S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730)
-> **Last updated**: 2026-07-20
+> S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
+> S019 / EV-014 dissemination epic F16–F19
+> **Last updated**: 2026-07-21
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -39,6 +40,10 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-025 | Manual TAC Input modes (TAC / AHL / COLLECT) | apps/frontend | F7 (ADR-024) | T2 / **T3** / H6′ |
 | UJ-026 | METAR REMARKS retain / exclusion (#667) | UI / API / package | F6 | T0 / T2 |
+| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) | apps/frontend | F16 | T2 / **T3** / H6′ |
+| UJ-028 | Dissemination drawer — WIS2 publish | apps/frontend | F17 | T2 / **T3** / H6′ |
+| UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3** (live BYOC) |
+| UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3** |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -268,6 +273,12 @@ US extension XML (profile isolation). See also UJ-026 for annex3 exclusion messa
 3. Additive `T########` / `P####` parsed into IR and retained in free-text until structured codecs land.
 
 **Tier**: T0 / T2 primarily.
+
+**Automated tests**:
+- Package: `packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py`
+- API unit: `apps/backend/tests/unit/test_uj026_remarks_convert_issues.py`
+- Live API: `tests/live/test_uj026_metar_remarks_live.py`
+- Playwright: `apps/e2e/uj026-metar-remarks.e2e.spec.ts`
 
 **Source**: S018 / EV-013
 
@@ -717,6 +728,61 @@ placeholder; does **not** replace H7 API gate design.
 
 ---
 
+### UJ-027: Dissemination drawer — multi-DB upload (F16 / #729)
+
+**Actor**: Any authenticated user  
+**Goal**: Convert (or drag-drop IWXXM/TAC) and send to a user-supplied database via one-shot URI.
+
+**Steps**:
+1. Log in (Supabase Auth — deploy BYO; no paste of auth keys).
+2. Convert TAC → IWXXM **or** drag-drop existing IWXXM/TAC into the workbench/drawer.
+3. Open **Dissemination** drawer; choose DB sink (Postgres / MySQL|MariaDB / SQL Server / SQLite).
+4. Paste destination **URI only**; run **Preflight**.
+5. Review structured schema/permission diff; if missing/mismatched table, use **DDL /
+   create-if-missing** path to versioned writer contract (optional confirm).
+6. When preflight green, **Send**. API holds URI in memory only; allowlist + SSRF guards apply.
+7. On success, session Finished with `kv_upload_key` (no secrets stored).
+
+**Errors**: Auth/SSL/allowlist/private-IP/schema mismatch — actionable drawer messages; Send blocked.  
+**Tier**: T2 / T3 / H6′. **Tests**: TC-F16-001..004.
+
+### UJ-028: Dissemination drawer — WIS2 publish (F17 / #2)
+
+**Actor**: Authenticated user (test: staging wis2box; live: BYOC node)  
+**Goal**: Publish IWXXM to WIS2 (MQTT notify + HTTP dataset).
+
+**Steps**:
+1. From drawer, select **WIS2**.
+2. For staging: use project wis2box harness (Render/Docker). For live: paste BYOC endpoint creds
+   (memory-only).
+3. Preflight connectivity/topic checks → Send.
+4. Confirm notification + retrievable dataset (staging automated; live BYOC before cycle close).
+
+**Tier**: T2 / T3 / H6′. **Tests**: TC-F17-001..002.
+
+### UJ-029: Dissemination drawer — EDIS → RTH Washington (F18 / #6)
+
+**Actor**: Authenticated user with BYOC gateway credentials  
+**Goal**: Submit EDIS-compliant ASCII + WMO headers to RTH Washington.
+
+**Steps**:
+1. Select **EDIS** in drawer; paste SMTP/gateway settings (one-shot).
+2. Preview formatted message (ASCII-only, headers).
+3. Preflight → Send to gateway; redact secrets in errors/logs.
+4. Live BYOC demo required before EV-014 close (Q15=A / Q21=A).
+
+**Tier**: T2 / T3 (live BYOC). **Tests**: TC-F18-001..002.
+
+### UJ-030: Dissemination drawer — AMHS / SWIM / AFS (F19)
+
+**Actor**: Authenticated user  
+**Goal**: Send via AMHS, SWIM, or AFS adapter using BYOC params in the same drawer.
+
+**Steps**: Select adapter → paste BYOC connection params → preflight → send (SSRF/allowlist).  
+**Tier**: T2 / T3. **Tests**: TC-F19-001..003.
+
+---
+
 ## Operations Journeys
 
 ### UJ-OPS-001: Deploy Render stack (API + static + F8 worker)
@@ -742,3 +808,4 @@ live smoke (T7.4) when scheduled.
 - S015 / EV-011 (2026-07-19): UJ-024 METAR/**SPECI** lint registry + convert→validate golden
 - S016 / EV-012 (2026-07-20): UJ-025 Manual TAC Input modes (ADR-024 / #730)
   (F15 / #732; SPECI adjacency explicit; catalog via `GET /lint-issue-catalog` E11-31)
+- S019 / EV-014 (2026-07-21): UJ-027–030 dissemination drawer (F16–F19; #729/#2/#6)

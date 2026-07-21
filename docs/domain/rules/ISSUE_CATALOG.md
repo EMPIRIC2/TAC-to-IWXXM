@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry  
-> **Generated**: 2026-07-20 via `make catalog-regen`  
+> **Generated**: 2026-07-21 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011
 
 Public `code` values are stable. Default severities may tighten in minor releases.

@@ -202,12 +202,27 @@ OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when 
 **Runtime API/FE env**: Unchanged for F11–F14. Redeploy **API before** frontend when response
 JSON shapes change (H4–H5).
 
+## F16–F19 — Dissemination (S019 / EV-014)
+
+No new `config/*.json` keys for sink credentials (memory-only paste). **One new API env var**:
+
+| Concern | Where it lives | Notes |
+|---------|----------------|-------|
+| Egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | Host/CIDR list; empty = fail-closed (ADR-029; E14-08=A) |
+| Destination creds | Request body only | Never env / never F5 persistence |
+| wis2box harness | `docker-compose` (+ CI) | Not a Render web service (E14-04=B) |
+| Dissemination HTTP | msgspec encode | Align ADR-026 (E14-07=A) |
+| CORS | Existing `corsOrigins` | No new origins; H4–H5 when drawer ships (E14-10=A) |
+
+**`.env.example`**: Add commented `DISSEMINATION_EGRESS_ALLOWLIST=` placeholder when M1 lands.
+
 ### Session changelog
 
 - S008 (2026-07-12): F6 — no new config/env; profile default in code; hard cutover
 - S011 / EV-008 (2026-07-13): BYO; deprecate `ADMIN_*` → `E2E_USER_*`; drop `/admin` from baseUrl docs
 - S014 / EV-010 (2026-07-18): PyPI OIDC trusted publishing notes; no new runtime secrets;
   matrix workflow clarification (05 S2.M1)
+- S019 / EV-014 (2026-07-21): `DISSEMINATION_EGRESS_ALLOWLIST` (E14-08=A); no config JSON for sinks
 
 ## References
 
@@ -218,6 +233,8 @@ JSON shapes change (H4–H5).
 - [ADR-026](adr/ADR-026-msgspec-http-openapi.md)
 - [ADR-020](adr/ADR-020-unified-tac-work-sessions.md)
 - [ADR-021](adr/ADR-021-byo-credentials-admin-removal.md)
+- [ADR-029](adr/ADR-029-dissemination-ssrf-allowlist.md)
+- [ADR-030](adr/ADR-030-dissemination-package-architecture.md)
 - [deploy.md](deploy.md) §Integration
 - [api-contract.md](api-contract.md)
 - Supabase: [API keys](https://supabase.com/docs/guides/api/api-keys)

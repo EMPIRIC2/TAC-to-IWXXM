@@ -40,6 +40,16 @@ are **not** a shared multi-tenant admin product. No in-app paste-keys UI.
 | F8 worker service role | `SUPABASE_SERVICE_ROLE_KEY` | Render worker / local `.env` (writers only) |
 | F8 poller feed URL | `INGEST_POLLER_URL` | Render worker / local `.env` |
 | F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Render worker env (default `30`) |
+| Dissemination egress allowlist (F16–F19) | `DISSEMINATION_EGRESS_ALLOWLIST` | Render API / local `.env` (ADR-029 / E14-08=A) |
+
+### Dissemination egress (S019 / EV-014)
+
+| Setting | Rules |
+|---------|-------|
+| `DISSEMINATION_EGRESS_ALLOWLIST` | Comma-separated hostnames and/or CIDRs. **Empty ⇒ fail-closed** — no user-URI / user-host egress in that environment (ADR-029). |
+| Production (Render API) | Operator sets explicit list of destinations they allow (live BYOC hosts). Never commit secrets; hosts/CIDRs only. |
+| Staging / CI | May list Compose wis2box hostname(s) + CI testcontainer networks as needed for TC-F17-001. |
+| User-pasted DB/WIS2/EDIS/AMHS creds | **Not** env vars — memory-only on preflight/send (ADR-021 amend / ADR-030). |
 
 ### Deprecated (S011)
 
@@ -57,6 +67,7 @@ are **not** a shared multi-tenant admin product. No in-app paste-keys UI.
 | `SUPABASE_PUBLISHABLE_KEY` | env (`sync: false`) | inject into `/config.json` at build | API Keys |
 | `SUPABASE_SECRET_KEY` | env (`sync: false`) | **never** | API Keys |
 | `DATABASE_URL` | env (`sync: false`) | **never** | Database → Connect |
+| `DISSEMINATION_EGRESS_ALLOWLIST` | env (`sync: false`) | **never** | Operator destination hosts/CIDRs (ADR-029) |
 | `config/prod.json` | loaded via `METAR_CONFIG_ENV=prod` | copied to `public/config.json` | — |
 | Auth redirect URLs | — | — | Must include `api.frontendUrl` |
 | Legacy JWT keys | — | — | **Disable** after migration |
@@ -109,4 +120,5 @@ make env-check LIVE=1       # optional: probe Render /health + Supabase auth hea
 - [env-sync-runbook.md](ops/env-sync-runbook.md)
 - [deploy.md](deploy.md)
 - [ADR-021](adr/ADR-021-byo-credentials-admin-removal.md)
+- [ADR-029](adr/ADR-029-dissemination-ssrf-allowlist.md)
 - [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) — **deprecated**; use this document instead

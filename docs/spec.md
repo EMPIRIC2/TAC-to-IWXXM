@@ -3,7 +3,7 @@
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
 > **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
-> **Last updated**: 2026-07-13
+> **Last updated**: 2026-07-21 (S019 / EV-014 F16–F19 Planned)
 
 ## Overview
 
@@ -12,9 +12,11 @@ to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via `packages/tac-validate`
 validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron) against authoritative WMO
 and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`. The system is a
 **single-git monorepo** with `apps/` (deployables), `packages/` (libraries), and `vendor/`
-(read-only upstream snapshots). **F7** (multi-product operator UI / sessions) is **built this
-cycle** (S011 / EV-008). **F8** (near-realtime ingest worker) is **Implemented** (ADR-018/019).
-Credentials are **BYO** (operator-owned Supabase + Postgres/`DATABASE_URL` via deploy env).
+(read-only upstream snapshots). **F7** (multi-product operator UI / sessions) is **Planned**
+(S011). **F8** (near-realtime ingest worker) is **Implemented** (ADR-018/019).
+**App auth** credentials are **BYO** (operator-owned Supabase via deploy env — ADR-021).
+**Dissemination destinations** (F16–F19) use **one-shot user-pasted BYOC** credentials
+(memory-only; never saved profiles) under SSRF + required egress allowlist (ADR-029).
 
 ## System Architecture
 
@@ -76,13 +78,14 @@ metar-to-IWXXM/
 
 | Component | Purpose | Location | Dependencies |
 |-----------|---------|----------|--------------|
-| Backend API | Conversion, validation, auth (thin wrappers) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, auth, shared, vendor |
-| Frontend | Operator UI (workbench, decode, F7 sessions) | `apps/frontend/` | shared (types); CodeMirror 6 |
+| Backend API | Conversion, validation, auth; **Planned** F16–F19 dissemination preflight/send (BYOC, memory-only) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, dissemination, auth, shared, vendor |
+| Frontend | Operator UI (workbench, decode, F7 sessions; **Planned** dissemination drawer) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase middleware | `packages/auth/` | supabase-py |
 | tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles) | `packages/tac2iwxxm/` | tac-validate (optional), vendor; PyO3 required at cutover (ADR-017) |
 | tac-validate | TAC lint / shared rule pack | `packages/tac-validate/` | — (no FastAPI/Supabase) |
 | iwxxm-validate | XSD + Schematron (F2 engine) | `packages/iwxxm-validate/` | vendor schemas (read-only) |
+| Dissemination | Sink adapters, writer-contract DDL, SSRF helpers (F16–F19) | `packages/dissemination/` | SQLAlchemy async + dialect drivers; aiosmtplib (ADR-030) |
 | Shared | Cross-cutting utils/types | `packages/shared/` | — |
 | Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im + iwxxm-us snapshots |
 | Work history (F5) | Per-user METAR session persistence | Supabase Postgres + `apps/backend` router | auth, shared |
@@ -93,11 +96,15 @@ metar-to-IWXXM/
 ### apps/backend
 
 - **Purpose**: Single HTTP API for health, conversion, validation, lint, decode, soft-preview,
-  auth, and F5/F7 work sessions. **No** `/admin/*` product surface after F7.a (#697).
+  auth, and F5/F7 work sessions. **Planned (F16–F19)**: backend-mediated dissemination
+  preflight/send for one-shot BYOC destinations (memory-only; ADR-029 allowlist). Route shapes
+  in api-contract (Planned). **No** `/admin/*` product surface after F7.a (#697).
 - **Inputs**: HTTP multipart/JSON (TAC + `product` + `profile` + version; decode/lint bodies),
-  JWT bearer tokens, env config (BYO Supabase + optional `DATABASE_URL`).
+  JWT bearer tokens, env config (BYO Supabase + optional `DATABASE_URL`; Planned
+  `DISSEMINATION_EGRESS_ALLOWLIST`).
 - **Outputs**: JSON responses, IWXXM XML, auth session endpoints, span-aware issue lists,
-  decode segments, soft-preview payloads.
+  decode segments, soft-preview payloads; Planned structured preflight/send results (no
+  destination secrets persisted).
 - **Algorithm**:
   1. Auth middleware validates JWT via Supabase (`packages/auth`); local/CI may use
      `DISABLE_AUTH` (G1).
@@ -107,6 +114,8 @@ metar-to-IWXXM/
   3. Validation / lint routers are **thin wrappers** over **`iwxxm-validate`** /
      **`tac-validate`**; issue objects may include optional integer `start`/`end`.
   4. Decode router (`POST /api/v1/decode-tac`) wraps tac2iwxxm decode/annotate segments.
+  5. **Planned (F16–F19)**: Dissemination routers are thin wrappers over
+     **`packages/dissemination`** (`/api/v1/dissemination/preflight` + `/send`; ADR-030).
 - **S014 / EV-010 delta (F11, ADR-026)**: High-churn route **responses**
   (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`)
   encode with **msgspec**; multipart **request** intake stays FastAPI `Form`/`File`. Auth and
@@ -205,8 +214,10 @@ metar-to-IWXXM/
 ### apps/frontend
 
 - **Purpose**: Operator converter UI (product/profile/version), CodeMirror 6 workbench, decode
-  panel, Failed-TAC / soft-preview UX, F5 My METARs, and F7 multi-product sessions. **No**
-  AdminDashboard or `/admin/*` routes after F7.a.
+  panel, Failed-TAC / soft-preview UX, F5 My METARs, and F7 multi-product sessions.
+  **Planned (F16–F19)**: Dissemination drawer (sink chooser, one-shot URI/params, preflight,
+  Send blocked until green; convert-then-send and drag-drop). **No** AdminDashboard or
+  `/admin/*` routes after F7.a.
 - **F6 delta**: Product select (7 values + auto-detect), profile select (`annex3` | `iwxxm_us`),
   version control; values passed via `conversion_params` / multipart to `/api/v1/convert`.
 - **F7 delta (S011)**: Debounced JWT calls to lint/decode/validate/preview with AbortController;
@@ -236,8 +247,11 @@ metar-to-IWXXM/
 - **Purpose**: Non-secret per-environment settings (URLs, CORS, validation flags).
 - **Files**: `config/local.json`, `config/prod.json` (committed).
 - **Frontend**: Static host serves `/config.json` (prod copy + publishable key injected at deploy).
-- **BYO (R6)**: Operator deploy env supplies Supabase URL/keys and optional Postgres/`DATABASE_URL`;
-  no in-app paste-keys UI.
+- **BYO (R6 / ADR-021)**: Operator deploy env supplies Supabase URL/keys (and optional app
+  `DATABASE_URL` for legacy primary upload). **No** in-app paste of **Supabase auth** keys.
+- **Dissemination BYOC (S019 / EV-014)**: Users may paste **one-shot destination** credentials
+  (DB URI / WIS2 / EDIS SMTP / AMHS params) in the dissemination drawer; API memory-only;
+  required `DISSEMINATION_EGRESS_ALLOWLIST` (ADR-029).
 - **Source**: [config-spec.md](config-spec.md), S003 session; S011 / EV-008.
 
 ### F5 — User METAR work history (S004 / EV-004; unified under F7 in S011)
@@ -292,8 +306,27 @@ metar-to-IWXXM/
 - **Purpose**: Continuous ingest → unified pipeline → store; quarantine on fail;
   &lt;5–15s target; scale workers via Render Background Worker (`apps/worker/`).
 - **Status**: **Implemented** (S008 / EV-006 — ADR-018/019). Live staging smoke may be deferred.
-- **Non-goals (still)**: AMHS/SWIM/AFS adapters; public machine-ingest auth UX; push sinks.
+- **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
+  results. Operator **dissemination push sinks** are **F16–F19** (separate UI/API path), not F8 v1.
 - **Source**: [feature-list.md](feature-list.md) F8; ADR-018.
+
+### F16–F19 — Dissemination epic (S019 / EV-014) — Planned
+
+- **Purpose**: Unified dissemination **drawer** for sending converted (or drag-dropped) IWXXM/TAC
+  to operator-chosen destinations with schema/connectivity preflight.
+- **F16**: Multi-DB upload (Postgres, MySQL/MariaDB, SQL Server, SQLite) via one-shot URI;
+  DDL/create-if-missing vs versioned writer contract; SSRF + allowlist.
+- **F17**: WIS2 publish — staging wis2box harness for test; live BYOC node for close gate.
+- **F18**: EDIS-compliant submit to RTH Washington — BYOC SMTP/gateway in drawer.
+- **F19**: AMHS / SWIM / AFS adapters in the same drawer.
+- **Auth / F5**: Supabase Auth + `tac_work_sessions` unchanged; never store destination secrets
+  (`kv_upload_key` only on success).
+- **Close gate**: Live BYOC demos for **Postgres + WIS2 + EDIS** before EV-014 close
+  (Q15=A / Q21=A); staging evidence may merge earlier. F19 staging/test path required; F19 live
+  demo optional with AskQuestion waive (S-EV014-M2).
+- **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist); ADR-030
+  (`packages/dissemination` + sink/API/wis2box/EDIS).
+- **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014.
 
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
 

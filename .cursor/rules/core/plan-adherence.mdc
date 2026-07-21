@@ -31,6 +31,10 @@ All implementation work must map to an approved feature in `[Corpus: product]`
 | F13 | Fast `iwxxm-validate` Rust + Schematron + PyPI — **Implemented** (S014 / EV-010) |
 | F14 | Publish `tac2iwxxm[+validate]` + PyPI/release CI — **Implemented** (S014 / EV-010) |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar — **Done** (S015 / EV-011; #732; #742) |
+| F16 | Dissemination drawer + multi-DB BYOC URI upload — **Planned** (S019 / EV-014; #729) |
+| F17 | WIS2 dissemination pathway — **Planned** (S019 / EV-014; #2) |
+| F18 | EDIS → RTH Washington — **Planned** (S019 / EV-014; #6) |
+| F19 | AMHS / SWIM / AFS adapters — **Planned** (S019 / EV-014) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-* + iwxxm-us) |
 | M3 | GIFTs as in-repo package — **deprecated** at F6 cutover |
@@ -67,6 +71,7 @@ New files must map to an approved component from `[Corpus: system-spec]`
 | tac2iwxxm | `packages/tac2iwxxm/` |
 | tac-validate | `packages/tac-validate/` |
 | iwxxm-validate | `packages/iwxxm-validate/` |
+| Dissemination (F16–F19) | `packages/dissemination/` |
 | Shared | `packages/shared/` |
 | Vendor schemas | `vendor/schemas/*` (read-only) |
 | gifts (transitional) | `packages/gifts/` until F6 cutover delete |
@@ -88,4 +93,15 @@ If the dependency is not listed:
 ## Browser Connectivity
 
 Frontend-facing API changes must trace to connectivity tasks in the execution plan and
-`docs/test-plan.md` tiers H4–H5. See [connectivity-gates.md](../../skills/connectivity-gates.md).
+`docs/test-plan.md` tiers **H4–H5** (plus **H6′** for UJ-027–030 when F16–F19 ships).
+See [connectivity-gates.md](../../skills/connectivity-gates.md). Dissemination drawer work
+without H4–H5/H6′ tasks is `[Scope Drift]` unless waived by ADR/AskQuestion.
+
+## Dissemination (F16–F19)
+
+- One-shot BYOC destination credentials are **memory-only** — never persist to F5 sessions,
+  logs, or saved profiles (ADR-021 amend; ADR-029).
+- Egress is **backend-mediated** with required `DISSEMINATION_EGRESS_ALLOWLIST` (empty ⇒ deny).
+- Do **not** reintroduce in-app paste of Supabase **auth** keys.
+- F8 worker must **not** auto-push ingest results; operator push sinks are F16–F19 only.
+- Optional rule: [dissemination-egress-ssrf.mdc](../optional/dissemination-egress-ssrf.mdc).

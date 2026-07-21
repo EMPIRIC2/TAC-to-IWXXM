@@ -3,6 +3,169 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-014 — Dissemination epic (#729 / #2 / #6) (S019)
+
+**Session**: S019-dissemination-upload  
+**Features**: **F16–F19 Planned** (Phase 0 approved Q24=A 2026-07-21)  
+**Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
+**Started**: 2026-07-20  
+**Branch**: `cursor/dissemination-upload-e25c`  
+**Status**: Phase B **in progress** — **04-tech-plan completed** (Q34=A); next **05-verify-tech**; #753 → main handoff
+
+### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked (**amended Batch 5**)
+
+| ID | Decision |
+|----|----------|
+| Creds | One-shot session credentials (paste in UI); never persist / never saved profiles |
+| UI | Drawer for send/upload destination + preflight |
+| Schema | **Superseded by Q20=A:** DDL / create-if-missing allowed (overrides earlier require-existing-only) |
+| Q1 | **Amended by Q20=B:** Convert-in-app then send **plus** drag-drop upload of external IWXXM/TAC |
+| Q2=A | Any authenticated user |
+| Q3=A | Schema preflight clarity is success metric |
+| Q4=D | Include WIS2 + EDIS scaffolding in ONE BIG dissemination cycle with #729 |
+
+### Intake (Batch 2 Assumed — AskQuestion waived / cloud written interview) — locked 2026-07-20
+
+| ID | Decision |
+|----|----------|
+| Q5=A | Paste in drawer → backend memory-only for preflight+upload (never persist) |
+| Q6=B | URI-only + preflight + send (no discrete field form in v1) |
+| Q7=A | Structured schema diff in drawer; block Send until preflight green |
+| Q8=C | Ship all three to usable MVP — live wis2box + live EDIS path (highest risk) |
+| Q9=A | Same drawer: destination type Postgres (now) / WIS2 / EDIS |
+
+### Intake (Batch 3 Assumed — AskQuestion waived / cloud written interview) — clarifications 2026-07-20/21
+
+| ID | Status | Decision / note |
+|----|--------|-----------------|
+| Q10 | **Locked Assumed** | **NOT** dropping Supabase Auth — login stays Supabase-handled. “Dropping Supabase for database” = Sending/converting dissemination destination only: one-shot BYO Postgres URI for upload/send (not Supabase as ops/send DB). **Q10A=D:** deploy-time BYO for app auth (operator sets Supabase env once; users don’t paste app auth) — aligned with ADR-021. **Q10B:** N/A. |
+| Q11=A+B | **Locked Assumed** | Max-security SSRF: full recommended baseline (backend-only egress, deny private/metadata ranges, DNS rebinding guard, TLS preferred, timeouts/size limits, secret redaction, rate limit) **PLUS require** `DISSEMINATION_EGRESS_ALLOWLIST` (host/CIDR) — empty allowlist = no user-URI egress in prod (staging may use explicit list). |
+| Q12=B | **Locked Assumed** (amended Batch 4 / Q17) | Staging wis2box in this project's infra = **test harness only**; live WIS2 acceptance = user-supplied endpoint creds (BYOC). |
+| Q13=A | Locked Assumed | Real SMTP/submission to NWS Telecommunications Gateway (RTH Washington) |
+| Q14=A | **Locked Assumed** (literal kept) | Only saved/encrypted profiles out of scope (B-only from OOS list). Literal Q14=A kept; see Q14r for intentional expand. |
+| Q15=A | Locked Assumed | Keep Q8=C — block cycle close until Postgres + WIS2 + EDIS all green on real targets |
+| Q16 | **Locked Assumed** | BYO credentials (EDIS/RTH; WIS2/DB as applicable). Not provisioned by us except staging wis2box **test harness** (Q12=B/Q17). Live-green close gate still applies (Q15=A). |
+
+### Intake (Batch 4 Assumed — AskQuestion waived / cloud written interview) — locked 2026-07-21
+
+| ID | Status | Decision / note |
+|----|--------|-----------------|
+| Q14r=B | **Locked Assumed** (enum resolved Batch 5) | Keep Q14=A literally. Epic **also designs** DDL, drag-drop, multi-DB, **and** AMHS — user chose **expand scope (B)** over recommended pack (A). v1 IN-set enumerated Batch 5 Q20 (all four). |
+| Q17=A | **Locked Assumed** (**testing only**) | Staging wis2box on Render/Docker for **test**; live WIS2 = BYOC user node/creds. Amends Q12=B. |
+| Q18≈A (BYOC) | **Locked Assumed** | User BYOC for EDIS (and live paths). **Q18≈A:** one-shot user-pasted SMTP/gateway settings in drawer (memory-only), **not** deploy-only operator SMTP. Testing also BYOC. |
+| Q19=A | **Locked Assumed** | Work history stays Supabase `tac_work_sessions` / `kv_upload_key`; **never** store destination secrets. |
+
+### Intake (Batch 5 Assumed — AskQuestion waived / cloud written interview) — locked 2026-07-21
+
+| ID | Status | Decision / note |
+|----|--------|-----------------|
+| Q20=B,C,A,D | **Locked Assumed** | **All four extras IN:** DDL; drag-drop; multi-DB; AMHS/SWIM/AFS. |
+| Q21=A | **Locked Assumed** | Staging/test OK for merge; **live BYOC demos required before cycle close** (with Q15=A). |
+| Q22=A | **Locked Assumed** | **Full routing** approved with Q24=A. |
+| Q23=A–D | **Locked Assumed** | Multi-DB vendors: Postgres, MySQL/MariaDB, SQL Server, SQLite (no other named). Resolves **I-S019-EV014-Q20C-vendors**. |
+| Q24=A | **Locked Assumed** | Approve F16–F19 + Full routing; write feature-list; start 01-requirements. |
+
+### Fn allocation (APPROVED — in `feature-list.md`)
+
+| Fn | Title | Issues |
+|----|-------|--------|
+| F16 | Dissemination drawer + multi-DB upload (URI, preflight, DDL, drag-drop) | #729 |
+| F17 | WIS2 live pathway (staging wis2box test + live BYOC) | #2 |
+| F18 | EDIS → RTH Washington (BYOC SMTP/gateway) | #6 |
+| F19 | AMHS / SWIM / AFS adapters | non-goals overturn |
+
+### Phase 0 approval
+
+- **Approved** 2026-07-21 (Q23 + Q24=A). Proceed to Phase A: 01 → 02 → 03.
+
+### Resolved Batch 5
+
+- **I-S019-EV014-Q14r-extras-enum** — all four extras IN (Q20=A,B,C,D)
+- Batch 1 Schema require-existing-only — **superseded** by Q20=A
+- Batch 1 Q1=A convert-then-send-only — **amended** by Q20=B
+
+### Resolved Batch 4
+
+- **I-S019-EV014-Q14-batch1** — resolved as **scope expanded intentionally** (Q14r=B vs recommended pack A); extras enum → I-S019-EV014-Q14r-extras-enum (now resolved Batch 5)
+- Prior Batch 3: I-S019-EV014-Q10-supabase-byo, I-S019-EV014-Q11-pending-rec, I-S019-EV014-Q14-multiselect
+
+### Corpus amendments required (after Phase 0 approval → 01-requirements)
+
+| Corpus | Required change |
+|--------|-----------------|
+| Non-Goals push sinks | Overturn / narrow — push sinks IN (WIS2/EDIS/AMHS/SWIM/AFS) |
+| Non-Goals paste-keys | Clarify: paste for **upload/destination creds only** (not app auth) |
+| Non-Goals AMHS/SWIM/AFS | Overturn — adapters IN (Q20=D → F19) |
+| ADR-021 | Amend for destination paste (URI/SMTP memory-only; app auth stays deploy-time) |
+| ADR new | Dissemination security / SSRF (Q11=A+B) |
+
+### Corpus contradictions (updated)
+
+| Corpus | Status / tension |
+|--------|------------------|
+| ADR-021 BYO deploy-env Supabase (no paste-keys for app auth) | **Eased by Q10** — Q10A=D deploy-time Supabase auth; paste is destination URI/SMTP only (Q5/Q18≈A) — **ADR-021 amend required** |
+| F5 work history on Supabase | **Locked by Q19=A** — Auth+F5 remain Supabase; never store destination secrets |
+| Non-goals: push sinks; paste-keys; AMHS/SWIM/AFS | **Inventory pending** after Phase 0 approval — Q8=C + Q20=D overturn push sinks / AMHS; paste = dest only |
+| Batch 1 require-existing + Q1=A | **Superseded/amended** by Q20=A (DDL) + Q20=B (drag-drop) |
+
+### 04-tech-plan Batch 1 — Architecture (LOCKED — Q32=A / D-S019-EV014-Q32A-04-batch1)
+
+| ID | Answer | Decision |
+|----|--------|----------|
+| E14-01 | B | New `packages/dissemination` + thin `apps/backend` routers |
+| E14-02 | A | SQLAlchemy 2 async + dialect drivers; versioned writer-contract DDL per engine |
+| E14-03 | A | Unified `POST /api/v1/dissemination/preflight` + `…/send` |
+| E14-04 | B | Staging wis2box = Docker Compose / CI harness (not Render web service) |
+| E14-05 | A | EDIS via `aiosmtplib`; F19 AMHS/SWIM/AFS on same sink adapter interface |
+
+**ADR-030** Accepted. Corpus back-adds: spec Component Overview, plan-adherence,
+template-conformance, api-contract Planned routes, dependency-inventory Planned deps.
+
+### 04-tech-plan Batch 2 — Deploy / test / integration (LOCKED — all A / D-S019-EV014-Q33A-04-batch2)
+
+| ID | Answer | Decision |
+|----|--------|----------|
+| E14-06 | A | SQL Server via `aioodbc` + documented ODBC requirement |
+| E14-07 | A | msgspec encode for dissemination routes (ADR-026 align) |
+| E14-08 | A | `DISSEMINATION_EGRESS_ALLOWLIST` in env-contract + config-spec + Render API; empty fail-closed; staging lists Compose/CI hosts |
+| E14-09 | A | Unit + Testcontainers/Compose (PG/MySQL/SQLite) + mocked SMTP/WIS2; Playwright drawer; live BYOC = close gate only |
+| E14-10 | A | Ship FE drawer this cycle; H4–H5 required after FE+API redeploy |
+
+### 04-tech-plan complete (Q34=A / D-S019-EV014-Q34A-04-approve)
+
+- Execution plan **approved** — M1–M6 + T0.1 (32 tasks).
+- 04-tech-plan stage **completed**; handoff: merge written work to `main` via PR #753;
+  next chat starts at **05-verify-tech**.
+
+### Notes
+
+- Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
+- Phase 0 approved 2026-07-21 — F16–F19 in feature-list; Full routing; 01-requirements delta landed
+- **Close gate (Q15=A + Q8=C + Q21=A + Q16/Q17/Q18):** staging/test OK for merge; block cycle
+  close until live BYOC demos green for **Postgres + WIS2 + EDIS**. F19 (AMHS/SWIM/AFS) requires
+  staging/test path green; live F19 demo optional with AskQuestion waive (S-EV014-M2 / Q28=A).
+- PR: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753
+- 2026-07-21: 04 Batch 1 locked (Q32=A); Batch 2 deploy/test/integration interview next
+
+---
+
+## Cycle EV-013 — Handle METAR remarks (#667) (S018)
+
+**Session**: S018-metar-remarks-667  
+**Features**: F6 (deepen)  
+**Issues**: [#667](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/667)  
+**Started**: 2026-07-20  
+**Completed**: 2026-07-20 (D-S018-EV013-Q0A-close-waive)  
+**Deploy**: #750 live; 13-deploy-smoke `pass_with_advisories`
+
+### Close
+
+| ID | Decision |
+|----|----------|
+| D-S018-EV013-Q0A-close-waive | Close EV-013/S018; waive leftover 08/09/11/12 bookkeeping; start S019/EV-014 dissemination |
+
+---
+
 ## Cycle EV-012 — Validate Manual TAC Input modes (#730) (S016)
 
 **Session**: S016-manual-tac-input-modes  

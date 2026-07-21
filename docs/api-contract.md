@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-19 (S015 / EV-011 — F15 issue registry; wire shape unchanged)
+> **Last updated**: 2026-07-21 (S019 / EV-014 — Planned dissemination routes; ADR-030)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028)
 
@@ -481,6 +481,34 @@ F6/F7 fields do **not** change CORS headers. Frontend and API remain different o
 configure `config.*.api.corsOrigins` accordingly. Live workbench increases request volume
 (debounce/Abort on client — H4–H5 still required).
 
+## Dissemination (F16–F19) — Planned (S019 / EV-014)
+
+> **Status**: Planned — shapes locked at architecture level (ADR-030 / E14-03=A).
+> Exact JSON field names and error codes finalize in remaining 04 batches / before 07-build.
+
+Auth: Bearer JWT (same as other `/api/v1/*`). Destination credentials are **memory-only**
+(never persisted; never returned in responses). Egress subject to ADR-029 allowlist.
+
+### `POST /api/v1/dissemination/preflight`
+
+| Field | Notes |
+|-------|-------|
+| Request | JSON: `sink_type` (`postgres` \| `mysql` \| `sqlserver` \| `sqlite` \| `wis2` \| `edis` \| `amhs` \| `swim` \| `afs`) + sink-specific connection params (DB URI or WIS2/EDIS/AMHS fields) + optional `payload` metadata (product, schema version) + `ddl` flag for create-if-missing |
+| Success | Structured preflight result: connectivity OK, schema/writer-contract diff (empty when green), optional short-lived opaque `handle` |
+| Failure | 400/422 structured errors (allowlist/SSRF, auth to dest, schema mismatch, missing columns); secrets redacted |
+
+### `POST /api/v1/dissemination/send`
+
+| Field | Notes |
+|-------|-------|
+| Request | JSON: either `handle` from green preflight **or** full sink params again + IWXXM/TAC body (or reference to in-session convert result / drag-drop content) |
+| Success | Sink ack + optional `kv_upload_key` metadata for F5 Finished (no dest secrets stored) |
+| Failure | Same structured/redacted errors as preflight; block if preflight would not be green |
+
+Encoding: **msgspec** request Struct validation + response encode; thin pydantic OpenAPI
+aliases only (E14-07=A / ADR-026). CORS: no new origins; reuse existing
+`METAR_CORS_ORIGINS` / `corsOrigins` (H4–H5 when FE drawer ships — E14-10=A).
+
 ## Error Format
 
 ```json
@@ -542,3 +570,5 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 - S015 / EV-011 (2026-07-19): F15 registry — lint-tac **wire shape unchanged**; codes from
   `tac-validate` registry (ADR-028); METAR+SPECI adjacency in UJ-024 / TC-F15;
   **additive** `GET /api/v1/lint-issue-catalog` (E11-31) for FE tooltips/catalog panel
+- S019 / EV-014 (2026-07-21): Planned `POST /api/v1/dissemination/preflight` + `/send`
+  (ADR-030); F16–F19 sinks; Batch 1 architecture locked (Q32=A)

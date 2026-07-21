@@ -42,3 +42,10 @@
 | 2026-07-16 | EV009-S3.2 | approved | Quick fix via existing lint fixes[] — code add_terminator, replacement = text + '=' |
 | 2026-07-16 | EV009-S3.3 | approved | Preview pane shows most recent preview only (no history v1) |
 | 2026-07-16 | EV009-S3.4 | approved | Passing preview badge copy: "Passed" |
+| 2026-07-21 | EV014-S1.H1–S6.H3 | auto-approved | 28 high-confidence F16–F19 claims from Q5–Q24 / requirements-decisions EV-014 (see S019 02-verify-plan-audit) |
+| 2026-07-21 | C-EV014-1 | approved (modified) | Q26=A — F8 bullet narrowed to worker path; AMHS/push sinks → F16–F19 |
+| 2026-07-21 | S-EV014-M1 | approved (modified) | Q27=A — Component Overview + backend/frontend purpose note Planned F16–F19 |
+| 2026-07-21 | S-EV014-M2 | approved (modified) | Q28=A — hard close PG+WIS2+EDIS; F19 live optional with waive |
+| 2026-07-21 | S-EV014-M3 | approved (modified) | Q28 batch — H6 / live harness list UJ-027–030 when F16–F19 ships |
+| 2026-07-21 | S-EV014-M4 | approved (modified) | Q28 batch — ADR-029 → Accepted |
+| 2026-07-21 | S-EV014-L1 | approved | Q28 batch — allowlist config/env-contract deferred to 04 |
