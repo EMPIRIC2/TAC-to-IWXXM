@@ -170,7 +170,11 @@ async def close_db_engine():
 
     if _engine is not None:
         logger.info("Closing database engine")
-        await _engine.dispose()
+        dispose = getattr(_engine, "dispose", None)
+        if callable(dispose):
+            result = dispose()
+            if hasattr(result, "__await__"):
+                await result  # type: ignore[misc]
         _engine = None
         _async_session_maker = None
         logger.info("Database engine closed")

@@ -131,3 +131,48 @@ def test_send_invalid_handle_rejected(client: TestClient) -> None:
     )
     assert resp.status_code == 400
     assert "handle" in resp.text.lower()
+
+
+def test_preflight_rejects_invalid_json_body(client: TestClient) -> None:
+    resp = client.post(
+        "/api/v1/dissemination/preflight",
+        content=b"{not-json",
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 422
+
+
+def test_preflight_unimplemented_sink(client: TestClient) -> None:
+    resp = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps({"sink_type": "wis2", "uri": "mqtt://example.com"}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 501
+
+
+def test_send_requires_iwxxm_xml(client: TestClient, tmp_path: Path) -> None:
+    uri = _sqlite_uri(tmp_path)
+    pre = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps({"sink_type": "sqlite", "uri": uri, "ddl": True}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert pre.status_code == 200, pre.text
+    handle = pre.json()["handle"]
+    send = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps({"handle": handle, "iwxxm_xml": "", "product": "metar"}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert send.status_code == 400
+    assert "iwxxm_xml" in send.text.lower()
+
+
+def test_send_without_uri_or_handle_rejected(client: TestClient) -> None:
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps({"sink_type": "sqlite", "iwxxm_xml": "<x/>", "product": "metar"}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 400
