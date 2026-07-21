@@ -215,6 +215,18 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 - Artifacts: `docs/evolve-report-EV-014.md`,
   `docs/sessions/S019-dissemination-upload/reports/evolve-summary.md`
 
+### Closeout hygiene (D-S019-EV014-closeout-1)
+
+- 2026-07-21: Bookkeeping PR [#774](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/774)
+  MERGED (`915f41e`).
+- Closed superseded draft [#770](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/770)
+  (T6.3 already on `main` via #771/#772).
+- Closed tracking issues [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729),
+  [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2),
+  [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6) (F16–F18 Done).
+- `workflow-state.yaml` hygiene: S019 branches marked merged/superseded; top-level
+  `16-evolve` / `11-verify-impl` / `overall_status` → completed.
+
 ---
 
 ## Cycle EV-013 — Handle METAR remarks (#667) (S018)

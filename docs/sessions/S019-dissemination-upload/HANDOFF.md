@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Session | `S019-dissemination-upload` — **closing** with EV-014 |
+| Session | `S019-dissemination-upload` — **completed** |
 | Cycle | `EV-014` — **completed** (`D-S019-EV014-phase4-close`) |
 | Features | F16–F19 **Done** |
-| Merged | #761–#**772** (T6.6 mock BYOC on #772 → `c61273a`) |
-| Close PR | bookkeeping on `cursor/s019-ev014-phase-d-close-f898` |
+| Merged | #761–#**772** (code); #**774** (Phase C/D bookkeeping → `915f41e`) |
+| Closeout | `D-S019-EV014-closeout-1` — closed superseded #770; closed issues #729 / #2 / #6 |
 | Decision | `D-S019-EV014-Q15-mock-waive` + Phase C/D Assumed PASS |
 
 ## Secrets policy

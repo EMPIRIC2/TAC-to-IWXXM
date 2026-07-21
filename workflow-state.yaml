@@ -1,4 +1,4 @@
-overall_status: in_progress
+overall_status: completed
 project:
   name: metar-to-IWXXM
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
@@ -2702,10 +2702,14 @@ stages:
       - "2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md"
 
   11-verify-impl:
-    status: in_progress
+    status: completed
     started_at: "2026-06-23T00:00:00Z"
-    completed_at: "2026-06-23T12:00:00Z"
-    session_id: S003-supabase-keys-config
+    completed_at: "2026-07-21"
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    note: >-
+      EV-014 / S019 completed — verify-impl.md PASS (D-S019-EV014-Q40A-11); F16–F19 Done;
+      closeout hygiene after #774 merge; no active session
     substeps:
       collect_results:
         status: completed
@@ -2792,6 +2796,9 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
         note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5"
     notes:
+      - >-
+        2026-07-21 S019/EV-014 closeout hygiene — 11-verify-impl remains completed (EV-014 done;
+        PR #774 merged 915f41e; issues #729/#2/#6 closed); no reopen
       - 2026-07-21 S019/EV-014 11-verify-impl COMPLETE — verify-impl.md PASS D-S019-EV014-Q40A-11
       - 2026-07-20 S015/EV-011 11-verify-impl completed — F15 approved — verify-impl.md; phase_d work complete pending close
       - "2026-07-19 S014/EV-010 11-verify-impl completed — F11–F14 + journeys approved (D-S014-EV010-t63-features); next T6.4 12-verify-deploy"
@@ -3270,17 +3277,18 @@ stages:
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
 
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     started_at: '2026-07-20'
-    current_stage: 07-build
-    note: >-
-      Phase C — M6/T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29;
-      Phase C ready for checkpoint (c_to_d=pending_checkpoint); session/cycle remain open
-
+    completed_at: '2026-07-21'
+    current_stage:
+    note: 'EV-014 closed; no active evolve cycle'
     notes:
+      - >-
+        2026-07-21 S019/EV-014 closeout hygiene — 16-evolve completed/idle (EV-014 closed; no active
+        evolve cycle); PR #774 merged 915f41e; draft PR #770 closed superseded; issues #729/#2/#6 closed
       - 2026-07-21 S019/EV-014 16-evolve COMPLETE — Phase 4 close D-S019-EV014-phase4-close; EV-014 completed
 stages_pending: []
 
@@ -3510,6 +3518,34 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-closeout-1
+    date: '2026-07-21'
+    timestamp: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 16-evolve
+    skill_id: workflow-state-manager
+    status: confirmed
+    topic: EV-014 post-merge closeout hygiene
+    summary: >-
+      Close superseded PR #770; close issues #729/#2/#6; workflow-state hygiene after #774 merge
+    decision: >-
+      Post-EV-014 closeout hygiene after PR #774 MERGED to main
+      (915f41efa5f292e10b099f1e879e35e1e450d372): close draft PR #770 as superseded (T6.3 already on
+      main via #771/#772/#774); close GitHub issues #729, #2, #6 (F16–F19 Done / EV-014); mark
+      S019 branches merged/closed; set overall_status completed; stages 16-evolve + 11-verify-impl
+      completed; active_session remains null (do not reopen S019/EV-014). Q8/live BYOC advisories
+      stay advisory/resolved.
+    related_prs:
+      - 774
+      - 770
+      - 772
+      - 771
+    related_issues:
+      - 729
+      - 2
+      - 6
+    commit_sha: 915f41efa5f292e10b099f1e879e35e1e450d372
   - id: D-S019-EV014-phase4-close
     date: '2026-07-21'
     timestamp: '2026-07-21'
@@ -10937,14 +10973,23 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-ev014-phase-d-close-f898
+  current_branch: cursor/s019-ev014-closeout-hygiene-f898
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
-  tip_sha_full: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
-  note: 'bookkeeping close branch after #772 merge c61273a — S019/EV-014 Phase C/D bookkeeping + cycle close; PR #774 open draft'
+  tip_sha: 1b6df32ba531311a08c86a3a4d05f05486a37034
+  tip_sha_full: 1b6df32ba531311a08c86a3a4d05f05486a37034
+  note: >-
+    closeout hygiene tip 1b6df32 — "[S019] chore: EV-014 closeout hygiene (#770, #729/#2/#6, state)";
+    hygiene PR pending/created (pr TBD); EV-014/S019 completed; active_session null
   notes:
+    - >-
+      2026-07-21 S019/EV-014 closeout hygiene commit 1b6df32 on cursor/s019-ev014-closeout-hygiene-f898
+      pushed; hygiene PR pending/created (pr number TBD); active_session null; EV-014 completed
+    - >-
+      2026-07-21 S019/EV-014 closeout hygiene — PR #774 MERGED 915f41e; draft PR #770 CLOSED
+      superseded; issues #729/#2/#6 CLOSED; branch cursor/s019-ev014-closeout-hygiene-f898 (base main);
+      tip_sha = origin/main 915f41e until hygiene commit; pushed false; active_session null
     - '2026-07-21 S019/EV-014 Phase C/D bookkeeping tip 73d4ff4 — "[S019] docs: Phase C/D bookkeeping + close EV-014"; PR #774 open draft; active_session remains null; EV-014 completed / S019 archived'
     - '2026-07-21 S019/EV-014 Phase 4 close — bookkeeping branch cursor/s019-ev014-phase-d-close-f898 after #772 merge c61273a; EV-014/S019 completed'
     - '2026-07-21 S019/EV-014 workflow-state update — T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29; gates.c_to_d=pending_checkpoint; session/cycle remain open (5b3db91)'
@@ -11158,9 +11203,23 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
-    - name: cursor/s019-ev014-phase-d-close-f898
+    - name: cursor/s019-ev014-closeout-hygiene-f898
       base: main
       status: open
+      purpose: S019/EV-014 post-merge closeout hygiene (PR #770 close; issues #729/#2/#6; workflow-state)
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      tip_sha: 1b6df32ba531311a08c86a3a4d05f05486a37034
+      tip_sha_full: 1b6df32ba531311a08c86a3a4d05f05486a37034
+      pushed: true
+      note: >-
+        Closeout hygiene commit 1b6df32 pushed; hygiene PR pending/created (pr TBD when known);
+        active_session null; EV-014/S019 completed (do not reopen)
+    - name: cursor/s019-ev014-phase-d-close-f898
+      base: main
+      status: merged
       purpose: S019/EV-014 Phase C/D bookkeeping + cycle close
       session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
@@ -11172,8 +11231,12 @@ git_history:
       pr: 774
       pr_number: 774
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/774
-      pr_status: open_draft
-      note: 'PR #774 open draft for Phase C/D close bookkeeping (EV-014 completed; S019 archived)'
+      pr_status: merged
+      merged_at: '2026-07-21'
+      merge_commit: 915f41efa5f292e10b099f1e879e35e1e450d372
+      note: >-
+        PR #774 MERGED to main @ 915f41efa5f292e10b099f1e879e35e1e450d372 (2026-07-21). Phase C/D
+        close bookkeeping; EV-014 completed; S019 archived.
     - name: cursor/s019-t66-deploy-smoke-151c
       status: merged
       base: cursor/s019-t64-verify-build-7820
@@ -11187,6 +11250,7 @@ git_history:
       pushed: true
       pr_number: 772
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/772
+      pr_status: merged
       note: >-
         Tip 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked". T6.6 still blocked (D-S019-EV014-T66-partial); progress 28/29; base tip of #771
 
@@ -11194,7 +11258,7 @@ git_history:
       merged_at: '2026-07-21'
       merge_commit: c61273a90c85ab33eb65bc9a03e35e51ba13cea8
     - name: cursor/s019-t64-verify-build-7820
-      status: active
+      status: merged
       base: cursor/s019-t63-dissemination-e2e-8b16
       created: '2026-07-21'
       created_at: '2026-07-21'
@@ -11206,9 +11270,14 @@ git_history:
       pushed: true
       pr_number: 771
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771
-      note: 'T6.4 PASS; CI green #771; next T6.5; progress 27/29'
+      pr_status: merged
+      merged_at: '2026-07-21'
+      merge_commit: 2bbe9f53687a2893a10a0778c0596c8282ec34d6
+      note: >-
+        PR #771 MERGED to main @ 2bbe9f53687a2893a10a0778c0596c8282ec34d6 (2026-07-21). T6.4 PASS;
+        T6.3 content landed via this stack (#770 superseded).
     - name: cursor/s019-t63-dissemination-e2e-8b16
-      status: open
+      status: superseded
       base: cursor/s019-t61-drawer-vitest-a804
       created: '2026-07-21'
       created_at: '2026-07-21'
@@ -11223,10 +11292,13 @@ git_history:
       pr_title: '[T6.3] Playwright UJ-027–030 dissemination drawer H6′ smokes'
       pr_base: cursor/s019-t61-drawer-vitest-a804
       pr_head: cursor/s019-t63-dissemination-e2e-8b16
-      pr_status: open
-      note: 'T6.3 completed; Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4; progress 26/29; tip 9f755d5'
+      pr_status: closed_superseded
+      closed_at: '2026-07-21'
+      note: >-
+        Draft PR #770 CLOSED as superseded (2026-07-21) — T6.3 already on main via #771/#772/#774.
+        Branch status closed/superseded; do not reopen.
     - name: cursor/s019-t61-drawer-vitest-a804
-      status: open
+      status: merged
       base: cursor/s019-t51-adapter-stubs-584b
       created: '2026-07-21'
       created_at: '2026-07-21'
@@ -11241,10 +11313,14 @@ git_history:
       pr_title: '[M5+T6.1+T6.2] Dissemination drawer + F19 stubs (S019 / EV-014)'
       pr_base: main
       pr_head: cursor/s019-t61-drawer-vitest-a804
-      pr_status: open
-      note: 'T6.1+T6.2 done; PR #769 CI green (frontend coverage restored); tip 6e247af; next T6.3 Playwright UJ-027–030; progress 25/29'
+      pr_status: merged
+      merged_at: '2026-07-21'
+      merge_commit: 1f7d9b5b6f1786081edcf08cb5c5478b7dffcd64
+      note: >-
+        PR #769 MERGED to main @ 1f7d9b5b6f1786081edcf08cb5c5478b7dffcd64 (2026-07-21). T6.1+T6.2
+        (includes M5 tip); supersedes stacking on #768.
     - name: cursor/s019-t51-adapter-stubs-584b
-      status: open
+      status: merged
       base: main
       created: '2026-07-21'
       created_at: '2026-07-21'
@@ -11256,7 +11332,11 @@ git_history:
       pushed: true
       pr_number: 768
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/768
-      note: 'M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0); PR #768 superseded for merge stacking by #769 (t61 includes M5 tip + T6.1 + T6.2)'
+      pr_status: merged
+      merged_at: '2026-07-21'
+      note: >-
+        M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0); PR #768 MERGED
+        (2026-07-21) with stack landing via #769; M5 tip included in #769 merge to main.
     - name: cursor/s019-t43-smtp-preflight-ac66
       status: merged
       base: cursor/s019-t41-edis-format-c6f7
@@ -11786,6 +11866,18 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 1b6df32ba531311a08c86a3a4d05f05486a37034
+      short: 1b6df32
+      branch: cursor/s019-ev014-closeout-hygiene-f898
+      message: '[S019] chore: EV-014 closeout hygiene (#770, #729/#2/#6, state)'
+      stage: 16-evolve
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+      pushed: true
+      note: >-
+        Closeout hygiene pushed; branch status open; hygiene PR pending/created (pr TBD);
+        active_session null; EV-014 completed
     - sha: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
       short: 73d4ff4
       branch: cursor/s019-ev014-phase-d-close-f898
