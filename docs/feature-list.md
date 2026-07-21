@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-21 (S019 / EV-014 — dissemination epic F16–F19 Planned)
+> **Last updated**: 2026-07-21 (S019 / EV-014 — dissemination epic F16–F19 Done)
 
 ## Summary
 
@@ -23,10 +23,10 @@
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; shipped 2026-07-20 (#742) |
-| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Planned | Product | S019 / EV-014; #729 |
-| F17 | WIS2 dissemination pathway | Planned | Product | S019 / EV-014; #2 |
-| F18 | EDIS → RTH Washington dissemination | Planned | Product | S019 / EV-014; #6 |
-| F19 | AMHS / SWIM / AFS adapters | Planned | Product | S019 / EV-014; non-goals overturn |
+| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; shipped 2026-07-21 (#771/#772) |
+| F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; mock-BYOC close (Q15 waive) |
+| F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; mock-BYOC close (Q15 waive) |
+| F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; staging stubs; live optional |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -452,7 +452,7 @@
 
 ### F16: Dissemination drawer + multi-DB upload (BYOC URI) — S019 / EV-014
 
-- **Status**: **Planned** (Phase 0 approved 2026-07-21; Q24=A).
+- **Status**: **Done** (EV-014 closed 2026-07-21; #771/#772).
 - **What it does**: Unified **dissemination drawer** for Convert&Send / Upload: any authenticated
   user pastes a **one-shot** destination URI (memory-only on API; never persisted; no saved
   profiles). Backend-mediated preflight + send with structured schema diff; **block Send** until
@@ -480,36 +480,38 @@
 
 ### F17: WIS2 dissemination pathway — S019 / EV-014
 
-- **Status**: **Planned**.
+- **Status**: **Done** (EV-014 closed 2026-07-21; live destination BYOC waived via
+  `D-S019-EV014-Q15-mock-waive`).
 - **What it does**: Publish converted IWXXM via **WIS2** (MQTT notification + HTTP dataset) from
   the dissemination drawer. **Test harness**: project **Docker Compose / CI** wis2box
   (Q12=B / Q17 / E14-04=B — **not** a long-lived Render web service; may run on CI or a
   disposable Docker host). **Live**: user BYOC WIS2 node/endpoint credentials (memory-only);
-  cycle close requires live BYOC green (Q15=A / Q21=A).
-- **Acceptance**: Staging wis2box e2e in CI/staging; live BYOC demo before EV-014 close; drawer
-  sink type WIS2 with preflight-equivalent connectivity checks.
+  EV-014 close used mock/harness evidence instead of live destination demos (Q15/Q21 amended).
+- **Acceptance**: Staging wis2box e2e in CI/staging; mock BYOC close-gate evidence for EV-014;
+  drawer sink type WIS2 with preflight-equivalent connectivity checks.
 - **Source**: #2; WIS2 overview / wis2box; S019 / EV-014
 
 ### F18: EDIS → RTH Washington dissemination — S019 / EV-014
 
-- **Status**: **Planned**.
+- **Status**: **Done** (EV-014 closed 2026-07-21; live destination BYOC waived via
+  `D-S019-EV014-Q15-mock-waive`).
 - **What it does**: Produce **EDIS-compliant** ASCII messages with correct WMO abbreviated headers
   and submit to **NWS Telecommunications Gateway (RTH Washington)** using **one-shot BYOC**
-  SMTP/gateway settings in the drawer (Q18≈A / Q16). Cycle close requires live BYOC green (Q15=A).
-- **Acceptance**: Format validation + live submission demo with user-supplied gateway creds;
-  secrets never persisted; allowlist/SSRF policy applies to SMTP hosts.
+  SMTP/gateway settings in the drawer (Q18≈A / Q16). EV-014 close used mocked SMTP/harness
+  evidence (Q15/Q21 amended).
+- **Acceptance**: Format validation + mocked submission path green; secrets never persisted;
+  allowlist/SSRF policy applies to SMTP hosts.
 - **Source**: #6; S019 / EV-014
 
 ### F19: AMHS / SWIM / AFS adapters — S019 / EV-014
 
-- **Status**: **Planned** (overturns prior Non-Goals for AMHS/SWIM/AFS).
+- **Status**: **Done** (EV-014 closed 2026-07-21; staging stubs; live demos optional / not required).
 - **What it does**: Dissemination adapters for **AMHS**, **SWIM**, and **AFS** selectable in the
   same drawer (Q20=D). BYOC connection parameters; backend-mediated; same secret/SSRF posture as
   F16–F18.
-- **Acceptance**: Each adapter has a documented contract + staging/test path green before
-  EV-014 close. **Hard close gate** remains Postgres + WIS2 + EDIS live BYOC (Q15=A / Q21=A).
-  F19 **live** demos are optional — record green evidence or an explicit AskQuestion waive
-  (does not block close if staging/test path is green).
+- **Acceptance**: Each adapter has a documented contract + staging/test path green (met).
+  Postgres + WIS2 + EDIS close gate satisfied via mock BYOC waive for EV-014. F19 **live**
+  demos remain optional follow-up.
 - **Source**: S019 / EV-014 Phase 0 Q20=D / Q24=A; 02-verify-plan S-EV014-M2 (Q28=A)
 
 ## Platform Feature Details (Monorepo Migration)

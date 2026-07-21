@@ -2,6 +2,27 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-21 — S019 EV-014 (Dissemination epic F16–F19)
+
+### Added
+- **F16–F19**: Operator dissemination drawer (Convert&Send / Upload) with backend-mediated
+  `POST /api/v1/dissemination/preflight` + `/send`; multi-DB writer-contract (Postgres, MySQL,
+  SQL Server, SQLite); WIS2 + EDIS sinks; AMHS/SWIM/AFS staging stubs (`packages/dissemination`).
+- SSRF egress allowlist (`DISSEMINATION_EGRESS_ALLOWLIST`, ADR-029); Compose wis2box CI harness.
+- Playwright UJ-027–030 + `make test-mock-byoc-smoke` close-gate evidence.
+
+### Changed
+- Feature-list F16–F19 → **Done**; Q15/Q21 close gate amended to mock/harness BYOC for EV-014
+  (`D-S019-EV014-Q15-mock-waive`). Live destination demos deferred (optional follow-up).
+- ADR-021 amended (destination secrets memory-only); ADR-030 package/API cut.
+
+### Deploy
+- PRs [#771](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771) /
+  [#772](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/772) merged; API + frontend
+  drawer live. Smoke: H0c/H1/H4/H5 + mock BYOC
+  (`docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md`).
+- Live Render allowlist left empty (fail-closed) until operator sets exact BYOC hosts.
+
 ## 2026-07-20 — S016 EV-012 (Manual TAC Input modes validation / #730)
 
 ### Added

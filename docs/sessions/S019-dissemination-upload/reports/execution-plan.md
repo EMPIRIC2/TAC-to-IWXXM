@@ -14,13 +14,13 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — **07-build** M6 **complete** (T6.6 done via mock BYOC) |
-| **Active milestone** | M6 — FE drawer + connectivity + verify |
-| **Active task** | T6.6 (**completed** — D-S019-EV014-Q15-mock-waive) |
-| **Blockers** | None for M6. Live destination BYOC **waived** in favor of mock/harness evidence. |
+| **Active phase** | **CLOSED** — Phase D complete; EV-014 Phase 4 close |
+| **Active milestone** | M6 — complete |
+| **Active task** | none (all done) |
+| **Blockers** | None. Live destination BYOC **waived** (`D-S019-EV014-Q15-mock-waive`). |
 | **Tasks** | **29 / 29** completed |
-| **Branch** | `cursor/s019-t66-deploy-smoke-151c` (PR #772) |
-| **Last updated** | 2026-07-21 (mock BYOC unblock) |
+| **Branch** | `main` @ #772 (`c61273a`); close bookkeeping `cursor/s019-ev014-phase-d-close-f898` |
+| **Last updated** | 2026-07-21 (Phase C/D checkpoints + cycle close) |
 
 ## Tech Stack Summary
 
@@ -131,12 +131,14 @@
 | M3→M4 | TC-F17-001 harness green |
 | M4→M5 | EDIS mocked path green |
 | M5→M6 | F19 staging stubs green |
-| C→D | M1–M6 tasks done; 08 pass |
-| Cycle close | Live BYOC Postgres+WIS2+EDIS (Q15=A); F19 live optional waive |
+| C→D | M1–M6 tasks done; 08 pass — **PASSED** `D-S019-EV014-Q38A-phase-c` |
+| Cycle close | Mock BYOC Postgres+WIS2+EDIS (`D-S019-EV014-Q15-mock-waive`); F19 staging green — **CLOSED** `D-S019-EV014-phase4-close` |
 
 ## Approval
 
 **Approved** 2026-07-21 — Q34=A (D-S019-EV014-Q34A-04-approve). 04-tech-plan complete.  
 **05-verify-tech** PASS 2026-07-21 — D-S019-EV014-Q35A-05 (29 tasks; branch/ADR/matrix fixes).  
 **06-tech-tooling** complete 2026-07-21 — D-S019-EV014-Q36A-06 (T0.1 coverage + Compose hooks).  
-Next: Phase B checkpoint → **07-build** (M1 T1.1).
+**Phase C** PASS 2026-07-21 — D-S019-EV014-Q38A-phase-c.  
+**Phase D** PASS 2026-07-21 — D-S019-EV014-Q39A-phase-d (08–13 bookkeeping).  
+**Cycle close** 2026-07-21 — D-S019-EV014-phase4-close.
