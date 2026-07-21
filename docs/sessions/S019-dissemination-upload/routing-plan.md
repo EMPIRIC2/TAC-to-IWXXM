@@ -9,7 +9,7 @@
 | 01-requirements | yes | delta | completed | F16–F19 + corpus amend + ADRs |
 | 02-verify-plan | yes | delta | completed | 28 high + 6 review fixes (Q26–Q28); ADR-029 Accepted |
 | 03-plan-tooling | yes | delta | completed | Q30=A — plan-adherence F16–F19 + SSRF rule + hooks |
-| 04-tech-plan | yes | delta | in_progress | Batch 1 locked Q32=A (E14-01..05 / ADR-030); Batch 2 pending |
+| 04-tech-plan | yes | delta | in_progress | Batch 1–2 locked; execution-plan pending Q34 |
 | 05-verify-tech | yes | delta | pending | Full preset |
 | 06-tech-tooling | yes | delta | pending | Full preset |
 | 07-build | yes | full | pending | |

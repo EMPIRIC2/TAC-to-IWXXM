@@ -29,11 +29,11 @@
 |---------|---------|---------|--------|
 | sqlalchemy | Async engine / DDL / writer-contract | MIT | PyPI (≥2.0; already on backend) |
 | asyncpg | Postgres async driver | Apache-2.0 | PyPI (already on backend) |
-| aiomysql | MySQL/MariaDB async | MIT | PyPI — **new** (Batch 2 pin) |
-| aiosqlite | SQLite async | MIT | PyPI — **new** (Batch 2 pin) |
-| (SQL Server async) | SQL Server dialect/driver | TBD | PyPI — **new**; pin in Batch 2 |
-| aiosmtplib | EDIS SMTP submit | MIT | PyPI — **new** (Batch 2 pin) |
-| msgspec | Structured preflight/send models (preferred; confirm Batch 2) | Apache-2.0 | PyPI |
+| aiomysql | MySQL/MariaDB async | MIT | PyPI — **new** (`>=0.2.0`; pin in M1) |
+| aiosqlite | SQLite async | MIT | PyPI — **new** (`>=0.20.0`; pin in M1) |
+| aioodbc | SQL Server async (ODBC) | MIT | PyPI — **new** (`>=0.5.0`; E14-06=A); document ODBC driver in deploy |
+| aiosmtplib | EDIS SMTP submit | MIT | PyPI — **new** (`>=3.0.0`; pin in M1) |
+| msgspec | Preflight/send models + HTTP encode | Apache-2.0 | PyPI (E14-07=A) |
 
 Package license: **MIT**. No FastAPI/Supabase imports. Backend already has `sqlalchemy` +
 `asyncpg` + `psycopg`; package may declare overlapping pins via workspace.
@@ -169,4 +169,4 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S015 / EV-011 (2026-07-19): F15 issue registry — **no new runtime deps**; catalog HTTP + docs
   export from existing `tac-validate` / msgspec stack (E11-30)
 - S019 / EV-014 (2026-07-21): Planned `packages/dissemination` — SQLAlchemy async + aiomysql /
-  aiosqlite / SQL Server driver + aiosmtplib (ADR-030 / E14-01..05); exact pins in Batch 2
+  aiosqlite / **aioodbc** (E14-06=A) + aiosmtplib; msgspec HTTP (E14-07=A); pins in M1

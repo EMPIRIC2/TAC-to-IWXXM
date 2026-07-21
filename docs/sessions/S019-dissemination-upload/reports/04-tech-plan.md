@@ -2,11 +2,11 @@
 
 **Date**: 2026-07-21  
 **Mode**: delta / evolve  
-**Status**: in_progress — Batch 1 locked (Q32=A); Batch 2 pending
+**Status**: in_progress — Batch 1–2 locked; execution-plan pending approval (Q34)
 
 ## Inputs
 
-- Phase A passed (Q31=A); deferred_from_01 tech intake
+- Phase A passed (Q31=A)
 - PR [#753](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753)
 
 ## Batch 1 — Architecture (LOCKED — Q32=A)
@@ -21,25 +21,27 @@
 
 **ADR**: [ADR-030](../../../adr/ADR-030-dissemination-package-architecture.md) Accepted
 
-## Artifacts updated (Batch 1)
+## Batch 2 — Deploy / test / integration (LOCKED — all A / Q33)
+
+| ID | Answer | Decision |
+|----|--------|----------|
+| E14-06 | A | SQL Server via `aioodbc` + ODBC docs |
+| E14-07 | A | msgspec on dissemination routes |
+| E14-08 | A | `DISSEMINATION_EGRESS_ALLOWLIST` env-contract + Render; empty fail-closed |
+| E14-09 | A | Unit + Compose/Testcontainers + mocks; live BYOC = close gate |
+| E14-10 | A | Ship FE drawer this cycle; H4–H5 required |
+
+## Artifacts
 
 | Document | Delta |
 |----------|-------|
 | ADR-030 | Package + sink architecture |
-| `docs/spec.md` | Component Overview + F16–F19 ADR cite |
-| `docs/api-contract.md` | Planned dissemination routes |
-| `docs/dependency-inventory.md` | Planned package + deps |
-| plan-adherence / template-conformance | `packages/dissemination` |
-| evolve-decisions EV-014 | Batch 1 table |
-
-## Pending batches
-
-| Batch | Topics |
-|-------|--------|
-| 2 | Deploy / harness / allowlist env / test strategy / FE connectivity |
-| 3 | Exact driver pins + msgspec vs pydantic on dissemination routes + milestone cut |
-| Plan approve | execution-plan.md tasks |
+| execution-plan.md | M1–M6 + T0.1 (32 tasks) — **pending Q34** |
+| env-contract / config-spec / deploy | Allowlist |
+| api-contract | msgspec encode locked |
+| dependency-inventory | aioodbc / pin notes |
+| msgspec-http-boundary | dissemination routes |
 
 ## Next
 
-Batch 2 written interview → then draft `execution-plan.md`.
+**Q34** — approve execution plan → complete 04 → 05-verify-tech.

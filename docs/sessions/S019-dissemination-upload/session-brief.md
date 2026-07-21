@@ -19,6 +19,9 @@ standing_docs_touched:
   - docs/adr/ADR-030-dissemination-package-architecture.md
   - docs/api-contract.md
   - docs/dependency-inventory.md
+  - docs/env-contract.md
+  - docs/config-spec.md
+  - docs/deploy.md
 ---
 
 # Session S019 — dissemination-upload
@@ -46,6 +49,7 @@ One BIG dissemination evolve cycle:
 | Q30=A | Approve all 03 delta guardrails |
 | Q31=A | Phase A approved → 04-tech-plan |
 | Q32=A | Lock 04 Batch 1 architecture (E14-01..05 / ADR-030) |
+| Q33=A×5 | Lock 04 Batch 2 (E14-06..10 all A) |
 | AskQuestion | Waived (cloud written interview) |
 
 ### Locked intake (summary)
@@ -70,7 +74,7 @@ One BIG dissemination evolve cycle:
 
 ## Current stage
 
-**04-tech-plan** (delta) — Batch 1 locked (Q32=A); Batch 2 pending.
+**04-tech-plan** (delta) — Batch 1–2 locked; execution-plan awaiting Q34.
 
 ## Links
 

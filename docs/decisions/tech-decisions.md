@@ -13,6 +13,12 @@
 | E14-04 | 2026-07-21 | wis2box | Docker Compose / CI harness (not Render web service) | confirmed |
 | E14-05 | 2026-07-21 | EDIS/F19 | `aiosmtplib` + shared sink adapter interface | confirmed |
 | D-S019-EV014-Q32A-04-batch1 | 2026-07-21 | Gate | Lock Batch 1 mapping; ADR-030 Accepted | confirmed |
+| E14-06 | 2026-07-21 | SQL Server | `aioodbc` + ODBC docs | confirmed |
+| E14-07 | 2026-07-21 | HTTP encode | msgspec on dissemination routes | confirmed |
+| E14-08 | 2026-07-21 | Allowlist env | env-contract + Render; empty fail-closed | confirmed |
+| E14-09 | 2026-07-21 | Tests | Unit + Compose/Testcontainers + mocks; live BYOC close-only | confirmed |
+| E14-10 | 2026-07-21 | FE / H4–H5 | Ship drawer this cycle; H4–H5 required | confirmed |
+| D-S019-EV014-Q33A-04-batch2 | 2026-07-21 | Gate | Lock Batch 2 (all A) | confirmed |
 
 ## S015 / EV-011 05-verify-tech (2026-07-19)
 

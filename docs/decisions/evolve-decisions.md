@@ -10,7 +10,7 @@
 **Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
 **Started**: 2026-07-20  
 **Branch**: `cursor/dissemination-upload-e25c`  
-**Status**: Phase B **in progress** — 04-tech-plan Batch 1 locked (Q32=A); Batch 2 pending (PR #753)
+**Status**: Phase B **in progress** — 04 Batch 1–2 locked; execution-plan pending Q34 (PR #753)
 
 ### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked (**amended Batch 5**)
 
@@ -120,6 +120,16 @@
 
 **ADR-030** Accepted. Corpus back-adds: spec Component Overview, plan-adherence,
 template-conformance, api-contract Planned routes, dependency-inventory Planned deps.
+
+### 04-tech-plan Batch 2 — Deploy / test / integration (LOCKED — all A / D-S019-EV014-Q33A-04-batch2)
+
+| ID | Answer | Decision |
+|----|--------|----------|
+| E14-06 | A | SQL Server via `aioodbc` + documented ODBC requirement |
+| E14-07 | A | msgspec encode for dissemination routes (ADR-026 align) |
+| E14-08 | A | `DISSEMINATION_EGRESS_ALLOWLIST` in env-contract + config-spec + Render API; empty fail-closed; staging lists Compose/CI hosts |
+| E14-09 | A | Unit + Testcontainers/Compose (PG/MySQL/SQLite) + mocked SMTP/WIS2; Playwright drawer; live BYOC = close gate only |
+| E14-10 | A | Ship FE drawer this cycle; H4–H5 required after FE+API redeploy |
 
 ### Notes
 

@@ -242,6 +242,7 @@ make test-live                # H4–H5 → H3 → H6
 | Variable | Service | Purpose |
 |----------|---------|---------|
 | `METAR_CORS_ORIGINS` | metar-api | Allowed browser origins (comma-separated) |
+| `DISSEMINATION_EGRESS_ALLOWLIST` | metar-api | Host/CIDR allowlist for BYOC dissemination egress (ADR-029); empty = fail-closed |
 | `VITE_API_BASE_URL` | metar-frontend (build) | API base URL embedded in static bundle |
 | `LIVE_API_URL` | live test scripts | Live API base for H3–H4 |
 | `LIVE_FRONTEND_URL` | live test scripts | Browser origin for H4 + Playwright base for H6 |

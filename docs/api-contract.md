@@ -505,8 +505,9 @@ Auth: Bearer JWT (same as other `/api/v1/*`). Destination credentials are **memo
 | Success | Sink ack + optional `kv_upload_key` metadata for F5 Finished (no dest secrets stored) |
 | Failure | Same structured/redacted errors as preflight; block if preflight would not be green |
 
-Encoding (msgspec vs pydantic) for these routes — **Batch 2/3**. CORS: no new origins; reuse
-existing `METAR_CORS_ORIGINS` / `corsOrigins` (H4–H5 when FE drawer ships).
+Encoding: **msgspec** request Struct validation + response encode; thin pydantic OpenAPI
+aliases only (E14-07=A / ADR-026). CORS: no new origins; reuse existing
+`METAR_CORS_ORIGINS` / `corsOrigins` (H4–H5 when FE drawer ships — E14-10=A).
 
 ## Error Format
 
