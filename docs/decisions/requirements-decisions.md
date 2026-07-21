@@ -195,3 +195,22 @@
 | EV-010/F14-R2 | Publish CI | OIDC trusted publishing per package version tag | confirmed |
 | EV-010/R-deploy | Render | Full 12–13 redeploy (msgspec HTTP); PyPI publish in same cycle | confirmed |
 | EV-010/R-config | Config/deploy docs | Minimal PyPI OIDC notes in config-spec + deploy (02 S8.M1=A) | confirmed |
+
+## EV-014 / F16–F19 — Dissemination epic (2026-07-21)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-014/F16-R1 | Creds | One-shot destination URI/params; API memory-only; no saved profiles | confirmed |
+| EV-014/F16-R2 | Auth | Supabase Auth stays deploy BYO; no paste of Supabase auth keys | ADR-021 amend |
+| EV-014/F16-R3 | UI | Dissemination drawer; URI-only DB fields; preflight; block Send until green | confirmed |
+| EV-014/F16-R4 | Schema | DDL / create-if-missing vs versioned writer contract | confirmed |
+| EV-014/F16-R5 | Entry | Convert-then-send **and** drag-drop IWXXM/TAC | confirmed |
+| EV-014/F16-R6 | Engines | Postgres, MySQL/MariaDB, SQL Server, SQLite | confirmed |
+| EV-014/F16-R7 | SSRF | Full baseline + required `DISSEMINATION_EGRESS_ALLOWLIST` | ADR-029 |
+| EV-014/F16-R8 | F5 | Keep history in Supabase; never store destination secrets | confirmed |
+| EV-014/F17-R1 | WIS2 test | Staging wis2box on Render/Docker | confirmed |
+| EV-014/F17-R2 | WIS2 live | User BYOC node/creds; required before cycle close | confirmed |
+| EV-014/F18-R1 | EDIS | Real RTH Washington; BYOC SMTP/gateway in drawer | confirmed |
+| EV-014/F19-R1 | Adapters | AMHS / SWIM / AFS in same drawer (non-goals overturn) | confirmed |
+| EV-014/R-close | Gate | Staging OK to merge; live BYOC Postgres+WIS2+EDIS before close | confirmed |
+| EV-014/R-route | Routing | Full 00→16→01…13 | confirmed |

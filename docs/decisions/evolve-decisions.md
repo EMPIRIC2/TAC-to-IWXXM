@@ -6,11 +6,11 @@
 ## Cycle EV-014 — Dissemination epic (#729 / #2 / #6) (S019)
 
 **Session**: S019-dissemination-upload  
-**Features**: **Draft F16–F19 proposed** — **no `feature-list.md` rows until Phase 0 approval gate**  
+**Features**: **F16–F19 Planned** (Phase 0 approved Q24=A 2026-07-21)  
 **Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
 **Started**: 2026-07-20  
 **Branch**: `cursor/dissemination-upload-e25c`  
-**Status**: Phase 0 intake **PARTIAL** — Batch 1–5 locked Assumed; **awaiting (1) Q20C vendor list (2) user approval of Fn+scope+Full routing**
+**Status**: Phase 0 **APPROVED** — Full routing; **01-requirements** in progress
 
 ### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked (**amended Batch 5**)
 
@@ -59,27 +59,24 @@
 
 | ID | Status | Decision / note |
 |----|--------|-----------------|
-| Q20=B,C,A,D | **Locked Assumed** | **All four extras IN:** **A)** DDL / create-if-missing (**supersedes** Batch 1 require-existing-only); **B)** drag-drop IWXXM/TAC **in addition to** convert-then-send; **C)** multi-DB beyond Postgres — **vendor list still needed** (**I-S019-EV014-Q20C-vendors** open); **D)** AMHS / SWIM / AFS adapters **IN** this cycle. Resolves **I-S019-EV014-Q14r-extras-enum**. |
+| Q20=B,C,A,D | **Locked Assumed** | **All four extras IN:** DDL; drag-drop; multi-DB; AMHS/SWIM/AFS. |
 | Q21=A | **Locked Assumed** | Staging/test OK for merge; **live BYOC demos required before cycle close** (with Q15=A). |
-| Q22=A | **Locked Assumed** (proposed) | **Full routing preset** (stages 00–13). Awaiting user approval gate with Fn+scope. |
+| Q22=A | **Locked Assumed** | **Full routing** approved with Q24=A. |
+| Q23=A–D | **Locked Assumed** | Multi-DB vendors: Postgres, MySQL/MariaDB, SQL Server, SQLite (no other named). Resolves **I-S019-EV014-Q20C-vendors**. |
+| Q24=A | **Locked Assumed** | Approve F16–F19 + Full routing; write feature-list; start 01-requirements. |
 
-### Draft Fn allocation (PROPOSED — session-brief + evolve-decisions only; **not** in `feature-list.md` yet)
+### Fn allocation (APPROVED — in `feature-list.md`)
 
 | Fn | Title | Issues |
 |----|-------|--------|
-| F16 | Dissemination drawer + DB upload (URI one-shot, preflight, DDL, drag-drop, multi-DB) | #729 |
+| F16 | Dissemination drawer + multi-DB upload (URI, preflight, DDL, drag-drop) | #729 |
 | F17 | WIS2 live pathway (staging wis2box test + live BYOC) | #2 |
 | F18 | EDIS → RTH Washington (BYOC SMTP/gateway) | #6 |
-| F19 | AMHS / SWIM / AFS adapters | (new / expand non-goals overturn) |
+| F19 | AMHS / SWIM / AFS adapters | non-goals overturn |
 
-### Open ambiguity (blocks Phase 0 full approval)
+### Phase 0 approval
 
-- **I-S019-EV014-Q20C-vendors** — Q20=C multi-DB beyond Postgres is IN; **vendor/engine list not yet specified**.
-
-### Awaiting Phase 0 approval gate
-
-1. Multi-DB vendor list (I-S019-EV014-Q20C-vendors)
-2. User approval of draft Fn allocation + scope + Full routing (Q22=A)
+- **Approved** 2026-07-21 (Q23 + Q24=A). Proceed to Phase A: 01 → 02 → 03.
 
 ### Resolved Batch 5
 
@@ -114,9 +111,9 @@
 ### Notes
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
-- Do **not** write F16–F19 rows in `feature-list.md` until Phase 0 approval gate (vendors + Fn + Full routing)
-- **Phase 0 blocked on:** (1) I-S019-EV014-Q20C-vendors (2) user approval of draft Fn+scope+Full routing
+- Phase 0 approved 2026-07-21 — F16–F19 in feature-list; Full routing; 01-requirements delta landed
 - **Close gate (Q15=A + Q8=C + Q21=A + Q16/Q17/Q18):** staging/test OK for merge; block cycle close until live BYOC demos green for Postgres + WIS2 + EDIS (+ AMHS/SWIM/AFS per Q20=D)
+- PR: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753
 
 ---
 

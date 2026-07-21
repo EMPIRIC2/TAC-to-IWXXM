@@ -3,7 +3,7 @@
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
 > **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
-> **Last updated**: 2026-07-13
+> **Last updated**: 2026-07-21 (S019 / EV-014 F16–F19 Planned)
 
 ## Overview
 
@@ -12,9 +12,11 @@ to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via `packages/tac-validate`
 validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron) against authoritative WMO
 and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`. The system is a
 **single-git monorepo** with `apps/` (deployables), `packages/` (libraries), and `vendor/`
-(read-only upstream snapshots). **F7** (multi-product operator UI / sessions) is **built this
-cycle** (S011 / EV-008). **F8** (near-realtime ingest worker) is **Implemented** (ADR-018/019).
-Credentials are **BYO** (operator-owned Supabase + Postgres/`DATABASE_URL` via deploy env).
+(read-only upstream snapshots). **F7** (multi-product operator UI / sessions) is **Planned**
+(S011). **F8** (near-realtime ingest worker) is **Implemented** (ADR-018/019).
+**App auth** credentials are **BYO** (operator-owned Supabase via deploy env — ADR-021).
+**Dissemination destinations** (F16–F19) use **one-shot user-pasted BYOC** credentials
+(memory-only; never saved profiles) under SSRF + required egress allowlist (ADR-029).
 
 ## System Architecture
 
@@ -236,8 +238,11 @@ metar-to-IWXXM/
 - **Purpose**: Non-secret per-environment settings (URLs, CORS, validation flags).
 - **Files**: `config/local.json`, `config/prod.json` (committed).
 - **Frontend**: Static host serves `/config.json` (prod copy + publishable key injected at deploy).
-- **BYO (R6)**: Operator deploy env supplies Supabase URL/keys and optional Postgres/`DATABASE_URL`;
-  no in-app paste-keys UI.
+- **BYO (R6 / ADR-021)**: Operator deploy env supplies Supabase URL/keys (and optional app
+  `DATABASE_URL` for legacy primary upload). **No** in-app paste of **Supabase auth** keys.
+- **Dissemination BYOC (S019 / EV-014)**: Users may paste **one-shot destination** credentials
+  (DB URI / WIS2 / EDIS SMTP / AMHS params) in the dissemination drawer; API memory-only;
+  required `DISSEMINATION_EGRESS_ALLOWLIST` (ADR-029).
 - **Source**: [config-spec.md](config-spec.md), S003 session; S011 / EV-008.
 
 ### F5 — User METAR work history (S004 / EV-004; unified under F7 in S011)
@@ -292,8 +297,25 @@ metar-to-IWXXM/
 - **Purpose**: Continuous ingest → unified pipeline → store; quarantine on fail;
   &lt;5–15s target; scale workers via Render Background Worker (`apps/worker/`).
 - **Status**: **Implemented** (S008 / EV-006 — ADR-018/019). Live staging smoke may be deferred.
-- **Non-goals (still)**: AMHS/SWIM/AFS adapters; public machine-ingest auth UX; push sinks.
+- **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
+  results. Operator **dissemination push sinks** are **F16–F19** (separate UI/API path), not F8 v1.
 - **Source**: [feature-list.md](feature-list.md) F8; ADR-018.
+
+### F16–F19 — Dissemination epic (S019 / EV-014) — Planned
+
+- **Purpose**: Unified dissemination **drawer** for sending converted (or drag-dropped) IWXXM/TAC
+  to operator-chosen destinations with schema/connectivity preflight.
+- **F16**: Multi-DB upload (Postgres, MySQL/MariaDB, SQL Server, SQLite) via one-shot URI;
+  DDL/create-if-missing vs versioned writer contract; SSRF + allowlist.
+- **F17**: WIS2 publish — staging wis2box harness for test; live BYOC node for close gate.
+- **F18**: EDIS-compliant submit to RTH Washington — BYOC SMTP/gateway in drawer.
+- **F19**: AMHS / SWIM / AFS adapters in the same drawer.
+- **Auth / F5**: Supabase Auth + `tac_work_sessions` unchanged; never store destination secrets
+  (`kv_upload_key` only on success).
+- **Close gate**: Live BYOC demos for Postgres + WIS2 + EDIS before EV-014 close (Q15=A / Q21=A);
+  staging evidence may merge earlier.
+- **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist).
+- **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014.
 
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
 

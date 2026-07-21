@@ -2,20 +2,22 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-20 (S016 / EV-012 — Manual TAC Input modes #730 / UJ-025 / TC-F7-007)
+> **Last updated**: 2026-07-21 (S019 / EV-014 — dissemination F16–F19 / UJ-027–030)
 
 ## Scope
 
-**In scope**: Product features F1–F15 (F1 superseded by F6 engine; F7 Planned — workbench
-smoke under F15 only; F8–F14 as prior cycles); monorepo migration validation M1–M6 (M3
-deprecated at F6 cutover); connectivity tiers **H0c–H7** (local + live Render); tac2iwxxm +
-`tac-validate` + `iwxxm-validate` metrics (library/CI); backend thin wrappers; F7
-decode/spans/soft-preview/workbench/unified sessions; admin-route negative tests;
-**F15** issue registry + METAR golden/negative packs (UJ-024).
+**In scope**: Product features F1–F19 (F1 superseded by F6 engine; F7 Planned — workbench
+smoke under F15 only; F8–F15 as prior cycles; **F16–F19 Planned** dissemination epic);
+monorepo migration validation M1–M6 (M3 deprecated at F6 cutover); connectivity tiers
+**H0c–H7** (local + live Render); tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics
+(library/CI); backend thin wrappers; F7 decode/spans/soft-preview/workbench/unified sessions;
+admin-route negative tests; **F15** issue registry + METAR golden/negative packs (UJ-024);
+**F16–F19** dissemination drawer, multi-DB upload, WIS2, EDIS, AMHS/SWIM/AFS (UJ-027–030).
 
 **Out of scope**: Performance/load testing; wmo-im / IWXXM-US schema correctness beyond our fixtures;
 scheduled CI live jobs (manual/Makefile only); **convert-response metrics fields** (F6-R11);
-teaching CMS; AMHS/SWIM/AFS; push sinks; in-app paste-keys UI.
+teaching CMS; saved/encrypted destination profiles; in-app paste of **Supabase auth** keys
+(destination BYOC paste is **in scope** for F16–F19).
 
 ### Live harness (delta 2026-06-22; H7 2026-07-12)
 
@@ -67,6 +69,10 @@ Unified manual live test harness against Render staging:
 | UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
 | UJ-024 | F15 | METAR/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F15-001..005 |
 | UJ-025 | F7 | Manual TAC Input modes (ADR-024 / #730) | H6′ | TC-F7-007 |
+| UJ-027 | F16 | Dissemination drawer multi-DB BYOC URI | H6′ | TC-F16-001..004 |
+| UJ-028 | F17 | WIS2 publish (staging wis2box + live BYOC) | H6′ | TC-F17-001..002 |
+| UJ-029 | F18 | EDIS → RTH Washington BYOC | live BYOC | TC-F18-001..002 |
+| UJ-030 | F19 | AMHS / SWIM / AFS adapters | H6′ | TC-F19-001..003 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -504,6 +510,78 @@ Before closing S013 / EV-009:
 - [ ] Research catalog (R1–R8 + SPECI adjacency R7) linked from session report / domain notes
 - [ ] H4–H5 if API/FE contract or workbench copy changes; H0c when API image changes
 - [ ] api-contract: lint-tac wire shape unchanged (ADR-028); additive `GET /lint-issue-catalog` (E11-31)
+
+### TC-F16-001: Drawer preflight schema diff (UJ-027)
+
+- **Level**: T0 / T2
+- **Objective**: One-shot URI preflight returns structured schema/permission/auth diffs; Send blocked until green
+- **Pass criteria**: Missing column / no INSERT / auth fail messages actionable; secrets redacted
+- **Source**: F16; #729; Q7=A
+
+### TC-F16-002: SSRF + allowlist (UJ-027)
+
+- **Level**: T0 / T2
+- **Objective**: Private/metadata IPs rejected; empty `DISSEMINATION_EGRESS_ALLOWLIST` blocks user-URI egress
+- **Pass criteria**: DNS-rebinding and RFC1918 targets fail closed; allowlisted public host proceeds
+- **Source**: F16; Q11=A+B; ADR-029
+
+### TC-F16-003: Multi-DB engines + DDL (UJ-027)
+
+- **Level**: T0 / T2
+- **Objective**: Postgres, MySQL/MariaDB, SQL Server, SQLite writer-contract + create-if-missing path
+- **Pass criteria**: Contract tests per engine; DDL migrates to versioned shape when opted
+- **Source**: F16; Q20=A,C; Q23=A–D
+
+### TC-F16-004: Drag-drop + convert-then-send (UJ-027)
+
+- **Level**: T2 / T3 (H6′)
+- **Objective**: Both entry paths reach same preflight→send; F5 stores `kv_upload_key` only
+- **Pass criteria**: No destination secrets in session JSON; Finished after success
+- **Source**: F16; Q19=A; Q20=B
+
+### TC-F17-001: Staging wis2box publish (UJ-028)
+
+- **Level**: T2 / staging
+- **Objective**: Publish IWXXM to project wis2box harness (Render/Docker)
+- **Pass criteria**: MQTT notify + HTTP dataset retrievable
+- **Source**: F17; #2; Q12=B / Q17
+
+### TC-F17-002: Live WIS2 BYOC close gate (UJ-028)
+
+- **Level**: T3 (live BYOC)
+- **Objective**: User-supplied WIS2 node demo before EV-014 close
+- **Pass criteria**: Live green recorded in deploy/evolve report (Q15=A / Q21=A)
+- **Source**: F17; Q16
+
+### TC-F18-001: EDIS message format (UJ-029)
+
+- **Level**: T0 / T2
+- **Objective**: ASCII-only message + correct WMO abbreviated headers
+- **Pass criteria**: Format fixtures pass; non-ASCII rejected
+- **Source**: F18; #6
+
+### TC-F18-002: Live EDIS → RTH Washington BYOC (UJ-029)
+
+- **Level**: T3 (live BYOC)
+- **Objective**: Real gateway submission with user-pasted SMTP/gateway settings
+- **Pass criteria**: Live green before cycle close; secrets not persisted
+- **Source**: F18; Q13=A; Q18≈A
+
+### TC-F19-001..003: AMHS / SWIM / AFS adapters (UJ-030)
+
+- **Level**: T2 / T3
+- **Objective**: Each adapter preflight + send with BYOC params under SSRF/allowlist
+- **Pass criteria**: One TC per adapter; live bar or explicit waive via AskQuestion
+- **Source**: F19; Q20=D
+
+### F16–F19 verify/deploy gate
+
+- [ ] TC-F16-001..004 green (multi-DB + SSRF + drawer)
+- [ ] TC-F17-001 staging wis2box green; TC-F17-002 live BYOC before cycle close
+- [ ] TC-F18-001 format green; TC-F18-002 live BYOC before cycle close
+- [ ] TC-F19-001..003 green or waived with decision id
+- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes
+- [ ] `DISSEMINATION_EGRESS_ALLOWLIST` documented in config-spec / env-contract
 
 ## Live Test Cases (T3 / H3–H6)
 

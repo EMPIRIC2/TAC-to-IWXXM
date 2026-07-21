@@ -8,20 +8,29 @@ session_counter: 19
 active_session:
   id: S019-dissemination-upload
   type: feature
-  intent: 'Dissemination epic: Upload to Database (#729) URI one-shot + preflight + DDL + drag-drop + multi-DB; WIS2 (#2)
-    staging test + live BYOC; EDIS (#6) RTH Washington BYOC SMTP; AMHS/SWIM/AFS adapters (Q20=D). Credentials never persisted;
-    draft F16-F19 proposed (not in feature-list yet).'
+  intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2)
+    staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never
+    persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
   branch: cursor/dissemination-upload-e25c
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
-  current_stage: 16-evolve
+  current_stage: 02-verify-plan
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
     - docs/decisions/evolve-decisions.md
+    - docs/decisions/requirements-decisions.md
+    - docs/feature-list.md
+    - docs/user-journeys.md
+    - docs/test-plan.md
+    - docs/spec.md
+    - docs/adr/ADR-021-byo-credentials-admin-removal.md
+    - docs/adr/ADR-029-dissemination-ssrf-allowlist.md
     - docs/sessions/S019-dissemination-upload/session-brief.md
+    - docs/sessions/S019-dissemination-upload/routing-plan.md
+    - docs/sessions/S019-dissemination-upload/reports/01-requirements.md
   routing_plan:
     - stage: 00-context
       required: true
@@ -30,92 +39,94 @@ active_session:
       skip_rationale:
       started: '2026-07-20'
       completed: '2026-07-20'
-      note: "Session open; Phase 0 intake partial (Batch 1-5 locked; Q14r extras resolved all-four IN; awaiting Q20C vendors + Fn/routing approval); AskQuestion UI waived (cloud)"
+      note: "Session open; Phase 0 approved 2026-07-21 (Q23=A–D vendors + Q24=A Full); AskQuestion UI waived (cloud)"
     - stage: 16-evolve
       required: true
       mode: orchestrator
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase 0 intake in progress - Batch 1-5 locked; Q20=A,B,C,D all extras IN (DDL/drag-drop/multi-DB/AMHS); Q21=A staging merge OK + live BYOC close; Q22=A Full routing proposed; draft F16-F19; Phase 0 blocked on Q20C vendors + Fn/routing approval; no feature-list rows yet"
+      note: "Phase 0 approved (Q23+Q24=A); F16–F19 Planned; 01-requirements delta completed; current_stage 02-verify-plan"
     - stage: 01-requirements
       required: true
       mode: delta
-      status: pending
+      status: completed
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      started: '2026-07-21'
+      completed: '2026-07-21'
+      note: "01 delta done — F16–F19 + non-goals amend + ADR-021/029 + UJ-027–030 + TC-F16..F19; report 01-requirements.md"
     - stage: 02-verify-plan
       required: true
       mode: delta
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Next — delta consistency pass after 01-requirements (Phase A)
     - stage: 03-plan-tooling
       required: false
       mode: pending
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages
     - stage: 04-tech-plan
       required: true
       mode: delta
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages
     - stage: 05-verify-tech
       required: false
       mode: pending
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages
     - stage: 06-tech-tooling
       required: false
       mode: pending
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages
     - stage: 07-build
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages
     - stage: 08-verify-build
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages
     - stage: 09-qa
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages
     - stage: 10-e2e
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages
     - stage: 11-verify-impl
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages
     - stage: 12-verify-deploy
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages
     - stage: 13-deploy-smoke
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending Phase 0 approval gate (Q20C vendors + Fn/scope/Full routing)
+      note: Full routing (Q24=A) — await prior stages; Q15=A+Q8=C+Q21=A live BYOC hard close gate
 sessions:
 
   - id: S018-metar-remarks-667
@@ -1417,7 +1428,7 @@ stages:
     started_at: "2026-07-20"
     completed_at: "2026-07-20"
     substeps:
-      phase0: partial
+      phase0: approved
       phase1a: completed
       phase1b: skipped
       phase1c: skipped
@@ -1443,6 +1454,7 @@ stages:
       - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
       - docs/context/manual-tac-input-modes.md
     notes:
+      - "2026-07-21 S019/EV-014 Phase 0 APPROVED (Q23=A–D + Q24=A Full) — multi-DB Postgres/MySQL/SQLServer/SQLite; F16–F19; 01-requirements delta completed; handoff 02-verify-plan (D-S019-EV014-phase0-approve / D-S019-EV014-01-requirements-delta)"
       - "2026-07-21 S019/EV-014 Phase 0 Batch 5 locked (AskQuestion waived cloud): Q20=B,C,A,D all four extras IN — A) DDL/create-if-missing supersedes Batch 1 require-existing-only; B) drag-drop IWXXM/TAC in addition to convert-then-send; C) multi-DB beyond Postgres (vendor list open I-S019-EV014-Q20C-vendors); D) AMHS/SWIM/AFS adapters IN. Resolves I-S019-EV014-Q14r-extras-enum. Q21=A staging/test OK for merge; live BYOC demos required before cycle close (with Q15=A). Q22=A Full routing proposed. Draft Fn F16-F19 in session-brief+evolve-decisions only (no feature-list rows). Phase 0 awaiting (1) Q20C vendors (2) user approval Fn+scope+Full routing."
       - "2026-07-21 S019/EV-014 Phase 0 Batch 4 locked (AskQuestion waived cloud): Q14r=B keep Q14=A literal + expand design DDL/drag-drop/multi-DB/and-or AMHS (user chose expand over recommended pack A); I-S019-EV014-Q14-batch1 resolved scope-expanded-intentionally; open Ambiguity I-S019-EV014-Q14r-extras-enum (v1 IN-set not enumerated) blocks Phase 0. Q17=A testing-only staging wis2box (Render/Docker); amend Q12=B = test harness; live WIS2 BYOC. Q18≈A BYOC one-shot paste SMTP/gateway in drawer (memory-only) not deploy-only operator SMTP; testing also BYOC. Q19=A work history stays Supabase tac_work_sessions/kv_upload_key; never store destination secrets. No F16+."
       - "2026-07-20/21 S019/EV-014 Phase 0 Batch 3 clarifications (AskQuestion waived cloud): Q10 locked - NOT drop Supabase Auth; send/ops destination BYO Postgres only; Q10A=D deploy-time app auth (ADR-021); Q10B N/A. Q11=A+B max SSRF baseline + required DISSEMINATION_EGRESS_ALLOWLIST (empty=no user-URI egress in prod). Q12=B Q13=A Q15=A still locked; Q14=A only profiles OOS + Contradiction vs Batch 1 require-existing/Q1=A (I-S019-EV014-Q14-batch1) - superseded by Batch 4 Q14r; Q16 BYO operator credentials (except staging wis2box). ADR-021/F5 tensions eased; non-goals push sinks/paste-keys still open. No F16+."
@@ -1492,7 +1504,7 @@ stages:
   01-requirements:
     status: completed
     started_at: "2026-06-14T00:00:00Z"
-    completed_at: "2026-07-13"
+    completed_at: "2026-07-21"
     substeps:
       interviews:
         completed: 8
@@ -1500,45 +1512,40 @@ stages:
         current_template:
         current_section: complete
     active_session:
-      session_id: S015-metar-lint-quality
-      evolve_cycle_id: EV-011
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
       status: completed
       mode: delta
-      started_at: '2026-07-19'
-      completed_at: '2026-07-19'
+      started_at: '2026-07-21'
+      completed_at: '2026-07-21'
       note: >-
-        S015/EV-011 01-requirements delta COMPLETE — interviews 7/7; E11-12/13/14 approved
-        (D-S015-EV011-spec-2/speci-3/phase-a-next); Phase A passed (D-S015-EV011-phase-a-pass)
+        S019/EV-014 01-requirements delta COMPLETE (D-S019-EV014-01-requirements-delta) —
+        F16–F19 Planned; non-goals amended; ADR-021 amend + ADR-029 Proposed; UJ-027–030;
+        TC-F16..F19; handoff 02-verify-plan
       document_manifest:
-        approved_at: '2026-07-19'
-        decision_id: D-S015-EV011-manifest-1
+        approved_at: '2026-07-21'
+        decision_id: D-S019-EV014-01-requirements-delta
         approved_documents:
           - feature-list
           - spec
           - user-journeys
           - test-plan
-          - api-contract
-          - domain-research-catalog
           - ADR
+          - evolve-decisions
+          - requirements-decisions
         skipped_documents:
+          - api-contract
           - config-spec
           - env-contract
           - dependency-inventory
           - data-management-plan
           - roadmap
           - README rewrite
-      registry_home:
-        decision_id: D-S015-EV011-registry-1
-        location: packages/tac-validate registry module + generated/docs catalog
-        adr_required: true
-        adr_number: '028'
-        adr_path: docs/adr/ADR-028-tac-validate-issue-registry.md
-        adr_status: Accepted
       substeps:
         interviews:
           status: completed
-          completed: 7
-          total: 7
+          completed: 1
+          total: 1
           current_template:
           current_section: complete
           planned_docs:
@@ -1547,10 +1554,50 @@ stages:
               spec: completed
               user-journeys: completed
               test-plan: completed
-              api-contract: completed
-              domain-research-catalog: completed
               ADR: completed
     delta_substages:
+      - status: completed
+        mode: delta
+        session_id: S019-dissemination-upload
+        evolve_cycle_id: EV-014
+        started_at: '2026-07-21'
+        completed_at: '2026-07-21'
+        note: >-
+          S019/EV-014 01-requirements delta COMPLETE — Phase 0 approved (Q23+Q24=A); F16–F19
+          Planned; non-goals push-sinks/paste-keys/AMHS amended; ADR-021 dest-paste amend;
+          ADR-029 SSRF+allowlist Proposed; UJ-027–030; TC-F16..F19; resolves
+          I-S019-EV014-Q20C-vendors + I-S019-EV014-corpus-contradictions
+        proposed_features:
+          - F16
+          - F17
+          - F18
+          - F19
+        artifacts:
+          - docs/feature-list.md
+          - docs/spec.md
+          - docs/user-journeys.md
+          - docs/test-plan.md
+          - docs/adr/ADR-021-byo-credentials-admin-removal.md
+          - docs/adr/ADR-029-dissemination-ssrf-allowlist.md
+          - docs/decisions/evolve-decisions.md
+          - docs/decisions/requirements-decisions.md
+          - docs/sessions/S019-dissemination-upload/reports/01-requirements.md
+          - docs/sessions/S019-dissemination-upload/session-brief.md
+          - docs/sessions/S019-dissemination-upload/routing-plan.md
+        document_manifest:
+          approved_at: '2026-07-21'
+          decision_id: D-S019-EV014-01-requirements-delta
+          mode: delta
+          approved_documents:
+            - feature-list
+            - spec
+            - user-journeys
+            - test-plan
+            - ADRs
+          skipped_documents:
+            - api-contract
+            - config-spec
+            - dependency-inventory
       - status: completed
         mode: delta
         session_id: S003-supabase-keys-config
@@ -1723,6 +1770,10 @@ stages:
                 domain-research-catalog: completed
                 ADR: completed
     notes:
+      - >-
+        2026-07-21 S019/EV-014 01-requirements COMPLETE (D-S019-EV014-01-requirements-delta) —
+        F16–F19 Planned; non-goals amended; ADR-021/029; UJ-027–030; TC-F16..F19; handoff
+        02-verify-plan; Phase A checkpoint pending
       - >-
         2026-07-19 S015/EV-011 02-verify-plan COMPLETE (D-S015-EV011-s1m1-1/s1m2-1/s9m1-1) —
         PASS; handoff 03-plan-tooling
@@ -3057,12 +3108,11 @@ stages:
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     started_at: '2026-07-20'
-    current_stage: 16-evolve
+    current_stage: 02-verify-plan
     note: >-
-      S019-dissemination-upload/EV-014 — Phase 0 intake PARTIAL (Batch 1-5 locked; Q14r extras resolved
-      all-four IN; awaiting Q20C vendors + Fn/routing approval); Q20=A,B,C,D; Q21=A staging merge + live
-      BYOC close; Q22=A Full routing proposed; draft F16-F19 (no feature-list rows); Q15=A+Q8=C+Q21=A
-      hard close gate; prior S018/EV-013 closed completed-with-waiver (Q0=A)
+      S019-dissemination-upload/EV-014 — Phase 0 APPROVED (Q23=A–D + Q24=A Full); F16–F19 Planned;
+      01-requirements delta completed; current_stage 02-verify-plan pending; Q15=A+Q8=C+Q21=A live
+      BYOC hard close gate; prior S018/EV-013 closed completed-with-waiver (Q0=A)
 
 stages_pending: []
 
@@ -3124,9 +3174,13 @@ issue_log:
       Q20=C locks multi-DB beyond Postgres IN for this cycle, but the vendor/engine list is not yet
       specified (e.g. MySQL, SQL Server, Oracle, SQLite, others). Phase 0 NOT fully approved until
       vendors are enumerated and user approves draft Fn+scope+Full routing.
-    status: open
-    blocking_for: Phase 0 full approval / F16 multi-DB scope / non-goal inventory / feature-list rows
-    related_decision: D-S019-EV014-intake-batch5
+    status: resolved
+    resolution: >-
+      2026-07-21 Q23=A–D (D-S019-EV014-phase0-approve) — multi-DB vendors locked: Postgres,
+      MySQL/MariaDB, SQL Server, SQLite (no other named vendor). Phase 0 approved with Q24=A.
+    resolved_at: '2026-07-21'
+    blocking_for:
+    related_decision: D-S019-EV014-phase0-approve
     date: '2026-07-21'
   - id: I-S019-EV014-Q14r-extras-enum
     category: Ambiguity
@@ -3228,8 +3282,14 @@ issue_log:
       (DDL + drag-drop). ADR-021 and F5 locked (Q10/Q19=A). Paste destination URI/SMTP intentional (Q5/Q18≈A).
       Remaining for 01-requirements after Phase 0 approval: non-goals push sinks / paste-keys (dest only) /
       AMHS-SWIM-AFS overturn; ADR-021 amend for dest paste; new ADR dissemination security/SSRF; Q20C vendor list.
-    status: open
-    blocking_for: 01-requirements delta / non-goal inventory after Phase 0 approval gate
+    status: resolved
+    resolution: >-
+      2026-07-21 01-requirements delta (D-S019-EV014-01-requirements-delta) — non-goals amended in
+      feature-list.md (push sinks / paste-keys dest-only / AMHS-SWIM-AFS superseded by F16–F19);
+      ADR-021 destination-paste amend; ADR-029 SSRF+allowlist Proposed; Q20C vendors resolved via Q23.
+    resolved_at: '2026-07-21'
+    blocking_for:
+    related_decision: D-S019-EV014-01-requirements-delta
     date: '2026-07-20'
     updated_at: '2026-07-21'
   - id: I-S008-04-pyo3-required
@@ -3290,6 +3350,44 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-phase0-approve
+    stage: 16-evolve
+    date: '2026-07-21'
+    timestamp: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 16-evolve
+    skill_id: 16-evolve
+    topic: Phase 0 approval — Q23 multi-DB vendors + Q24=A Full routing / F16–F19
+    decision: >-
+      User answers 2026-07-21 (AskQuestion waived cloud). Q23=A–D — multi-DB vendors locked:
+      Postgres, MySQL/MariaDB, SQL Server, SQLite (no other named vendor). Resolves
+      I-S019-EV014-Q20C-vendors. Q24=A — approve F16–F19 + Full routing; write feature-list;
+      start 01-requirements. Phase 0 fully approved. Related Batch 5 Q22=A Full routing now
+      approved (no longer proposed-only).
+    status: assumed
+    resolved_at: '2026-07-21'
+    note: Assumed — AskQuestion UI waived (cloud); Phase 0 complete → Phase A (01→02→03)
+  - id: D-S019-EV014-01-requirements-delta
+    stage: 01-requirements
+    date: '2026-07-21'
+    timestamp: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 01-requirements
+    skill_id: 01-requirements
+    topic: 01-requirements delta — F16–F19 corpus + non-goals + ADRs
+    decision: >-
+      After Phase 0 approval (D-S019-EV014-phase0-approve), write standing corpus delta:
+      feature-list F16–F19 Planned; non-goals amended (push sinks / paste-keys dest-only /
+      AMHS-SWIM-AFS overturn); user-journeys UJ-027–030; test-plan TC-F16..F19; spec F16–F19
+      + BYO amend; ADR-021 destination-paste amendment; ADR-029 dissemination SSRF+allowlist
+      (Proposed); evolve-decisions + requirements-decisions updated. Resolves
+      I-S019-EV014-corpus-contradictions. API sketch / writer DDL / wis2box / SMTP / AMHS
+      protocol details deferred to 04-tech-plan. Next: 02-verify-plan.
+    status: assumed
+    resolved_at: '2026-07-21'
+    note: Assumed — AskQuestion UI waived (cloud); artifacts in reports/01-requirements.md
   - id: D-S019-EV014-intake-batch5
     stage: 16-evolve
     date: '2026-07-21'
@@ -7382,13 +7480,17 @@ evolve_cycles:
   - id: EV-014
     session_id: S019-dissemination-upload
     cycle_type: feature
-    feature_ids: []
+    feature_ids:
+      - F16
+      - F17
+      - F18
+      - F19
     feature_id:
-    title: Dissemination epic — Upload DB + WIS2 + EDIS + AMHS (#729/#2/#6; draft F16-F19)
+    title: Dissemination epic — Upload DB + WIS2 + EDIS + AMHS (#729/#2/#6; F16–F19)
     status: in_progress
     started: '2026-07-20'
     completed:
-    scope_summary: "Phase 0 intake PARTIAL (not fully approved — awaiting Q20C vendors + Fn/scope/Full routing approval). Batch 1-5 locked Assumed (AskQuestion UI waived cloud written). Batch 5: Q20=B,C,A,D all four extras IN (DDL supersedes require-existing; drag-drop amends Q1; multi-DB vendors open I-S019-EV014-Q20C-vendors; AMHS/SWIM/AFS IN); Q14r-extras-enum resolved; Q21=A staging merge OK + live BYOC close (with Q15=A); Q22=A Full routing proposed. Draft Fn F16-F19 in session-brief+evolve-decisions only (no feature-list rows). Corpus amendments pending: Non-Goals push sinks / paste-keys dest-only / AMHS-SWIM-AFS; ADR-021 amend; ADR new dissemination SSRF. Issues: #729/#2/#6."
+    scope_summary: "Phase 0 approved Q24=A; multi-DB Postgres/MySQL/SQLServer/SQLite; Full routing; F16-F19"
     github_issue: 729
     routing_plan:
       required_stages:
@@ -7408,9 +7510,11 @@ evolve_cycles:
         - 12-verify-deploy
         - 13-deploy-smoke
       skipped_stages: []
-      note: Proposed Full (Q22=A) — awaiting Phase 0 approval gate (Q20C vendors + Fn/scope)
-    current_stage: 16-evolve
+      note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
+    current_stage: 02-verify-plan
     notes:
+      - "2026-07-21 S019/EV-014 01-requirements delta COMPLETE — F16–F19 Planned; non-goals amended; ADR-021/029; UJ-027–030; TC-F16..F19; handoff 02-verify-plan (D-S019-EV014-01-requirements-delta)"
+      - "2026-07-21 S019/EV-014 Phase 0 APPROVED — Q23=A–D multi-DB Postgres/MySQL/SQLServer/SQLite; Q24=A Full routing + F16–F19; resolves I-S019-EV014-Q20C-vendors (D-S019-EV014-phase0-approve)"
       - "2026-07-21 S019/EV-014 Phase 0 Batch 5 locked - Q20=A,B,C,D all extras IN; Q14r-extras-enum resolved; Q21=A staging merge + live BYOC close; Q22=A Full routing proposed; draft F16-F19; open I-S019-EV014-Q20C-vendors; Phase 0 still not approved"
       - "2026-07-21 S019/EV-014 Phase 0 Batch 4 locked - Q14r=B expand intentional + Ambiguity extras enum; Q17=A test-only wis2box / Q12=B harness; Q18≈A BYOC paste SMTP; Q19=A F5 no dest secrets; Phase 0 still not approved; no F16+"
       - "2026-07-20/21 S019/EV-014 Phase 0 Batch 3 clarifications - Q10 auth vs send-DB locked; Q11=A+B max SSRF; Q14 Contradiction vs Batch 1 (superseded by Batch 4 Q14r); Q16 BYO creds; no F16+"
@@ -7427,32 +7531,77 @@ evolve_cycles:
         started: '2026-07-20'
         completed: '2026-07-20'
         substeps:
-          phase0: partial
-        note: Phase 0 intake partial — Batch 1-5 locked; Q14r extras resolved; awaiting Q20C vendors + Fn/routing approval
+          phase0: approved
+        note: Phase 0 approved 2026-07-21 (Q23=A–D + Q24=A Full); Batch 1-5 locked; AskQuestion waived (cloud)
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase 0 intake - Batch 1-5 locked; Q20C vendors + Fn/routing approval blocks; Q15=A+Q8=C+Q21=A BYOC hard close gate"
+        note: "Phase 0 approved; orchestrating Phase A — 01 completed; current_stage 02-verify-plan; Q15=A+Q8=C+Q21=A BYOC hard close gate"
+      01-requirements:
+        status: completed
+        mode: delta
+        started: '2026-07-21'
+        completed: '2026-07-21'
+        note: >-
+          F16–F19 Planned; non-goals amended; ADR-021 amend + ADR-029 Proposed; UJ-027–030;
+          TC-F16..F19 (D-S019-EV014-01-requirements-delta)
+        artifacts:
+          - docs/feature-list.md
+          - docs/spec.md
+          - docs/user-journeys.md
+          - docs/test-plan.md
+          - docs/adr/ADR-021-byo-credentials-admin-removal.md
+          - docs/adr/ADR-029-dissemination-ssrf-allowlist.md
+          - docs/decisions/evolve-decisions.md
+          - docs/decisions/requirements-decisions.md
+          - docs/sessions/S019-dissemination-upload/reports/01-requirements.md
+          - docs/sessions/S019-dissemination-upload/session-brief.md
+          - docs/sessions/S019-dissemination-upload/routing-plan.md
+      02-verify-plan:
+        status: pending
+        mode: delta
+        note: Next after 01-requirements — delta consistency pass (Phase A)
     gates:
       a_to_b: pending
       b_to_c: pending
       c_to_d: pending
       deploy: pending
     checkpoints:
-      phase_a: pending
+      phase_a:
+        status: pending
+        note: '01-requirements completed 2026-07-21; 02-verify-plan + 03-plan-tooling remain for Phase A'
       phase_b: pending
       phase_c: pending
       phase_d: pending
       deploy: pending
-    adrs: []
+    adrs:
+      - docs/adr/ADR-021-byo-credentials-admin-removal.md
+      - docs/adr/ADR-029-dissemination-ssrf-allowlist.md
     artifacts:
       - path: docs/sessions/S019-dissemination-upload/session-brief.md
         status: present
       - path: docs/sessions/S019-dissemination-upload/routing-plan.md
+        status: approved
+      - path: docs/sessions/S019-dissemination-upload/reports/01-requirements.md
+        status: completed
+      - path: docs/feature-list.md
+        status: updated
+        note: F16–F19 Planned; non-goals amended
+      - path: docs/spec.md
+        status: updated
+      - path: docs/user-journeys.md
+        status: updated
+      - path: docs/test-plan.md
+        status: updated
+      - path: docs/adr/ADR-021-byo-credentials-admin-removal.md
+        status: amended
+      - path: docs/adr/ADR-029-dissemination-ssrf-allowlist.md
         status: proposed
       - path: docs/decisions/evolve-decisions.md
         status: present
         kind: evolve-decisions-EV-014
+      - path: docs/decisions/requirements-decisions.md
+        status: updated
     issues:
       - I-S019-EV014-Q20C-vendors
       - I-S019-EV014-Q14r-extras-enum
@@ -10037,9 +10186,10 @@ git_history:
   current_branch: cursor/dissemination-upload-e25c
   ahead_of_origin: 0
   pushed: true
-  pending_commit:
+  pending_commit: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
   tip_sha: 8fa04afca98aa48930c61af235a2b83769e6fdc8
   notes:
+    - '2026-07-21 S019/EV-014 Phase 0 APPROVED + 01-requirements delta (d3e69fbedb11079dbeee20404297beb59cabe661) — Q23=A–D vendors; Q24=A Full; F16–F19 Planned; non-goals amended; ADR-021/029; handoff 02-verify-plan'
     - '2026-07-21 S019/EV-014 Phase 0 Batch 5 locked (8fa04af) — Q20=A,B,C,D all extras IN; Q14r-extras-enum resolved; Q21=A; Q22=A Full proposed; draft F16-F19; open Q20C vendors; Phase 0 still not approved'
     - '2026-07-21 S019/EV-014 Phase 0 Batch 4 locked (da674f6) — Q14r=B expand pending enum; Q17=A test wis2box; Q18≈A BYOC SMTP; Q19=A F5; Phase 0 still not approved'
     - '2026-07-21 S019/EV-014 Phase 0 Batch 3 clarifications (898795f) — Q10 auth vs send-DB; Q11=A+B max SSRF; Q14 Contradiction vs Batch 1; Q16 BYO creds; Phase 0 still not approved'
@@ -10547,6 +10697,32 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: d3e69fbedb11079dbeee20404297beb59cabe661
+      short: PENDING
+      message: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
+      branch: cursor/dissemination-upload-e25c
+      date: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      stage: 01-requirements
+      files_changed:
+        - workflow-state.yaml
+        - docs/feature-list.md
+        - docs/spec.md
+        - docs/user-journeys.md
+        - docs/test-plan.md
+        - docs/adr/ADR-021-byo-credentials-admin-removal.md
+        - docs/adr/ADR-029-dissemination-ssrf-allowlist.md
+        - docs/adr/README.md
+        - docs/decisions/evolve-decisions.md
+        - docs/decisions/requirements-decisions.md
+        - docs/sessions/S019-dissemination-upload/session-brief.md
+        - docs/sessions/S019-dissemination-upload/routing-plan.md
+        - docs/sessions/S019-dissemination-upload/reports/01-requirements.md
+      pushed: false
+      note: >-
+        Placeholder — parent will commit. Phase 0 approve (Q23+Q24=A); 01 delta F16–F19;
+        resolves I-S019-EV014-Q20C-vendors + I-S019-EV014-corpus-contradictions; next 02-verify-plan
     - sha: 8fa04afca98aa48930c61af235a2b83769e6fdc8
       short: 8fa04af
       message: 'docs(S019): lock EV-014 Q20-Q22; draft F16-F19'
