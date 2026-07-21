@@ -14,10 +14,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — **06-tech-tooling** complete (T0.1); next Phase B checkpoint → **07-build** M1 T1.1 |
-| **Active milestone** | M1 — Package scaffold + SSRF/allowlist (start after B→C) |
-| **Active task** | — (07-build not started) |
-| **Tasks** | 1 / **29** completed (T0.1) |
+| **Active phase** | Phase C — **07-build** M2 in progress |
+| **Active milestone** | M2 — Multi-DB writer-contract + preflight/send API |
+| **Active task** | T2.5 (next) |
+| **Tasks** | 10 / **29** completed (through T2.4) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -52,20 +52,20 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Package layout + import smoke; no FastAPI/Supabase imports | ADR-030; plan-adherence | — | pending |
-| T1.2 | Config | Add `packages/dissemination` workspace member + pyproject deps (sqlalchemy, asyncpg, aiomysql, aiosqlite, aioodbc, aiosmtplib, msgspec) | dependency-inventory; E14-06 | T1.1 | pending |
-| T1.3 | Test | Allowlist parse + fail-closed when empty; DNS/private-range deny unit tests | ADR-029; TC-F16-002 | T1.2 | pending |
-| T1.4 | Code | SSRF/allowlist helpers in package; env `DISSEMINATION_EGRESS_ALLOWLIST` | env-contract; E14-08 | T1.3 | pending |
-| T1.5 | Config | `.env.example` + staging-secrets note; Makefile target for Compose stub (placeholder) | config-spec F16–F19 | T1.4 | pending |
+| T1.1 | Test | Package layout + import smoke; no FastAPI/Supabase imports | ADR-030; plan-adherence | — | **completed** |
+| T1.2 | Config | Add `packages/dissemination` workspace member + pyproject deps (sqlalchemy, asyncpg, aiomysql, aiosqlite, aioodbc, aiosmtplib, msgspec) | dependency-inventory; E14-06 | T1.1 | **completed** |
+| T1.3 | Test | Allowlist parse + fail-closed when empty; DNS/private-range deny unit tests | ADR-029; TC-F16-002 | T1.2 | **completed** |
+| T1.4 | Code | SSRF/allowlist helpers in package; env `DISSEMINATION_EGRESS_ALLOWLIST` | env-contract; E14-08 | T1.3 | **completed** |
+| T1.5 | Config | `.env.example` + staging-secrets note; Makefile target for Compose stub (placeholder) | config-spec F16–F19 | T1.4 | **completed** |
 
 ### M2 — Multi-DB writer-contract + preflight/send API (F16)
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | Writer-contract schema diff fixtures (PG/MySQL/SQLite); DDL create-if-missing | TC-F16-001/003; F16-R4 | T1.4 | pending |
-| T2.2 | Code | Engine adapters + versioned writer-contract DDL | ADR-030; E14-02 | T2.1 | pending |
-| T2.3 | Test | API tests: preflight/send msgspec shapes; secret redaction; handle memory-only; per-user rate-limit deny (ADR-029 §5) | api-contract; TC-F16-002; ADR-029 | T2.2 | pending |
-| T2.4 | Code | Thin backend routers `/dissemination/preflight` + `/send` (+ rate limit) | api-contract; E14-03/07; ADR-029 | T2.3 | pending |
+| T2.1 | Test | Writer-contract schema diff fixtures (PG/MySQL/SQLite); DDL create-if-missing | TC-F16-001/003; F16-R4 | T1.4 | **completed** |
+| T2.2 | Code | Engine adapters + versioned writer-contract DDL | ADR-030; E14-02 | T2.1 | **completed** |
+| T2.3 | Test | API tests: preflight/send msgspec shapes; secret redaction; handle memory-only; per-user rate-limit deny (ADR-029 §5) | api-contract; TC-F16-002; ADR-029 | T2.2 | **completed** |
+| T2.4 | Code | Thin backend routers `/dissemination/preflight` + `/send` (+ rate limit) | api-contract; E14-03/07; ADR-029 | T2.3 | **completed** |
 | T2.5 | Test | Compose/Testcontainers integration PG+MySQL+SQLite happy + mismatch | TC-F16-003; E14-09 | T2.4 | pending |
 | T2.6 | Test | SQL Server path via aioodbc (CI skip if no ODBC; document) | E14-06; TC-F16-003 | T2.4 | pending |
 | T2.7 | Docs | ODBC driver notes in deploy.md / package README | E14-06 | T2.6 | pending |

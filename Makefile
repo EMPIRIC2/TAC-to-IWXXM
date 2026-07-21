@@ -10,6 +10,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/tac2iwxxm/src packages/tac2iwxxm/tests \
 	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
 	packages/tac-validate/src packages/tac-validate/tests \
+	packages/dissemination/src packages/dissemination/tests \
 	tests
 
 .PHONY: install test test-unit vendor-sync \
@@ -114,13 +115,9 @@ lint-iwxxm-validate:
 lint-tac-validate:
 	$(UV) run ruff check --force-exclude packages/tac-validate/src packages/tac-validate/tests
 
-# F16–F19 — skip until T1.1/T1.2 scaffolds packages/dissemination.
+# F16–F19 — package present after T1.1; keep target for scoped lint.
 lint-dissemination:
-	@if [ -d packages/dissemination/src ]; then \
-		$(UV) run ruff check --force-exclude packages/dissemination/src packages/dissemination/tests; \
-	else \
-		echo "skip: packages/dissemination not scaffolded (T1.1/T1.2)"; \
-	fi
+	$(UV) run ruff check --force-exclude packages/dissemination/src packages/dissemination/tests
 
 lint-frontend:
 	$(PNPM) --filter @metar/frontend run lint

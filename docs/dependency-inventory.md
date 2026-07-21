@@ -21,19 +21,19 @@
 | tac-validate | TAC lint / rules | MIT | workspace path |
 | iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
 | gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
-| dissemination | F16–F19 sinks (Planned) | MIT | workspace path (ADR-030) |
+| dissemination | F16–F19 sinks | MIT | workspace path (ADR-030) |
 
-### packages/dissemination (Planned — S019 / EV-014)
+### packages/dissemination (S019 / EV-014 — M1)
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| sqlalchemy | Async engine / DDL / writer-contract | MIT | PyPI (≥2.0; already on backend) |
-| asyncpg | Postgres async driver | Apache-2.0 | PyPI (already on backend) |
-| aiomysql | MySQL/MariaDB async | MIT | PyPI — **new** (`>=0.2.0`; pin in M1) |
-| aiosqlite | SQLite async | MIT | PyPI — **new** (`>=0.20.0`; pin in M1) |
-| aioodbc | SQL Server async (ODBC) | MIT | PyPI — **new** (`>=0.5.0`; E14-06=A); document ODBC driver in deploy |
-| aiosmtplib | EDIS SMTP submit | MIT | PyPI — **new** (`>=3.0.0`; pin in M1) |
-| msgspec | Preflight/send models + HTTP encode | Apache-2.0 | PyPI (E14-07=A) |
+| sqlalchemy[asyncio] | Async engine / DDL / writer-contract | MIT | PyPI (`>=2.0`) |
+| asyncpg | Postgres async driver | Apache-2.0 | PyPI (`>=0.29`) |
+| aiomysql | MySQL/MariaDB async | MIT | PyPI (`>=0.2.0`) |
+| aiosqlite | SQLite async | MIT | PyPI (`>=0.20.0`) |
+| aioodbc | SQL Server async (ODBC) | MIT | PyPI (`>=0.5.0`; E14-06=A) |
+| aiosmtplib | EDIS SMTP submit | MIT | PyPI (`>=3.0.0`) |
+| msgspec | Preflight/send models + HTTP encode | Apache-2.0 | PyPI (`>=0.19`) |
 
 Package license: **MIT**. No FastAPI/Supabase imports. Backend already has `sqlalchemy` +
 `asyncpg` + `psycopg`; package may declare overlapping pins via workspace.

@@ -9,6 +9,7 @@ dependencies = [
     "tac2iwxxm",
     "tac-validate",
     "iwxxm-validate",
+    "dissemination",
     "fastapi>=0.110",
     "uvicorn>=0.23",
     "python-multipart>=0.0.20",
@@ -123,3 +124,4 @@ metar-auth = { workspace = true }
 metar-shared = { workspace = true }
 tac-validate = { workspace = true }
 iwxxm-validate = { workspace = true }
+dissemination = { workspace = true }
