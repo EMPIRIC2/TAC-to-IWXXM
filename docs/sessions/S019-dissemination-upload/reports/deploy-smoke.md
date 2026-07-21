@@ -89,4 +89,24 @@ uv run pytest tests/live/test_t72_h3_live_smoke.py tests/live/test_t83_h4_h5_con
 |-------|--------|
 | PR #771 | **MERGED** `2bbe9f5` — CI/CD Pipeline + Deploy **success** |
 | Live FE drawer | **PASS** — `/assets/App-C1eOPfC1.js` contains `dissemination` / `preflight` / `open-dissemination` (drawer is code-split; index chunk alone is insufficient probe) |
-| Auth H3 / live BYOC | **Still BLOCKED** — no workspace `.env` (secrets must not be committed) |
+| Auth H3 / live BYOC | Was blocked — superseded by mock waive below |
+
+## Update 2026-07-21T18:00Z — mock BYOC unblock (`D-S019-EV014-Q15-mock-waive`)
+
+Operator authorized **mock credentials / mock DB / mocked WIS2+EDIS** instead of live
+destination services. Secrets stay in gitignored `.env` only (never committed).
+
+| Check | Result |
+|-------|--------|
+| Mock `.env` | **Created locally** (`E2E_USER_*` / `ADMIN_*` placeholders + local allowlist) — gitignored |
+| Fixture shapes | `docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json` |
+| `make test-mock-byoc-smoke` | **PASS** — **134** tests (SQLite stand-in + WIS2 mocks + EDIS mocks + F19 stubs + API unit) |
+| Compose wis2box / Testcontainers PG | **Skipped** this env (no Docker); covered when Docker available via same script |
+| Live H3 auth against Render | **Waived** — fake login cannot authenticate Supabase; API unit uses `DISABLE_AUTH` + mocked user |
+| Live destination BYOC | **Waived** per Q15/Q21 amendment |
+
+### Final T6.6 verdict
+
+**COMPLETED** with advisories: public H0c/H1/H4/H5 + live FE drawer + mock BYOC close-gate
+evidence. Live authenticated H3 and live Postgres/WIS2/EDIS demos deferred indefinitely for
+EV-014 under `D-S019-EV014-Q15-mock-waive`.

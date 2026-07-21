@@ -43,7 +43,7 @@
 | Q12=B | **Locked Assumed** (amended Batch 4 / Q17) | Staging wis2box in this project's infra = **test harness only**; live WIS2 acceptance = user-supplied endpoint creds (BYOC). |
 | Q13=A | Locked Assumed | Real SMTP/submission to NWS Telecommunications Gateway (RTH Washington) |
 | Q14=A | **Locked Assumed** (literal kept) | Only saved/encrypted profiles out of scope (B-only from OOS list). Literal Q14=A kept; see Q14r for intentional expand. |
-| Q15=A | Locked Assumed | Keep Q8=C — block cycle close until Postgres + WIS2 + EDIS all green on real targets |
+| Q15=A | Locked Assumed → **amended** | Keep Q8=C — block cycle close until Postgres + WIS2 + EDIS all green on real targets. **Amended 2026-07-21** by `D-S019-EV014-Q15-mock-waive`: operator authorized mock/harness credentials (gitignored `.env` + committed fixture shapes + transport mocks / Compose when Docker available) in lieu of live destination BYOC for EV-014 T6.6 / cycle close. |
 | Q16 | **Locked Assumed** | BYO credentials (EDIS/RTH; WIS2/DB as applicable). Not provisioned by us except staging wis2box **test harness** (Q12=B/Q17). Live-green close gate still applies (Q15=A). |
 
 ### Intake (Batch 4 Assumed — AskQuestion waived / cloud written interview) — locked 2026-07-21
@@ -60,7 +60,7 @@
 | ID | Status | Decision / note |
 |----|--------|-----------------|
 | Q20=B,C,A,D | **Locked Assumed** | **All four extras IN:** DDL; drag-drop; multi-DB; AMHS/SWIM/AFS. |
-| Q21=A | **Locked Assumed** | Staging/test OK for merge; **live BYOC demos required before cycle close** (with Q15=A). |
+| Q21=A | **Locked Assumed** → **amended** | Staging/test OK for merge; **live BYOC demos required before cycle close** (with Q15=A). **Amended** with Q15 mock waive (`D-S019-EV014-Q15-mock-waive`): mock BYOC + staging harness evidence satisfies close for EV-014. |
 | Q22=A | **Locked Assumed** | **Full routing** approved with Q24=A. |
 | Q23=A–D | **Locked Assumed** | Multi-DB vendors: Postgres, MySQL/MariaDB, SQL Server, SQLite (no other named). Resolves **I-S019-EV014-Q20C-vendors**. |
 | Q24=A | **Locked Assumed** | Approve F16–F19 + Full routing; write feature-list; start 01-requirements. |
@@ -177,11 +177,18 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
 - Phase 0 approved 2026-07-21 — F16–F19 in feature-list; Full routing; 01-requirements delta landed
-- **Close gate (Q15=A + Q8=C + Q21=A + Q16/Q17/Q18):** staging/test OK for merge; block cycle
-  close until live BYOC demos green for **Postgres + WIS2 + EDIS**. F19 (AMHS/SWIM/AFS) requires
-  staging/test path green; live F19 demo optional with AskQuestion waive (S-EV014-M2 / Q28=A).
+- **Close gate (Q15=A + Q8=C + Q21=A + Q16/Q17/Q18):** staging/test OK for merge; originally
+  block cycle close until live BYOC demos green for **Postgres + WIS2 + EDIS**. F19
+  (AMHS/SWIM/AFS) requires staging/test path green; live F19 demo optional with AskQuestion
+  waive (S-EV014-M2 / Q28=A).
+- **`D-S019-EV014-Q15-mock-waive` (2026-07-21):** Operator chose mock credentials / mock DB /
+  mocked WIS2+EDIS (and Compose wis2box when Docker available) instead of live destination
+  services. Evidence: `make test-mock-byoc-smoke` (134 passed this session; Docker optional
+  extras skipped). Secrets stay gitignored (`.env`); fixture shapes committed under
+  `docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json`.
 - PR (04): https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753 MERGED
 - 2026-07-21: 04 Batch 1–2 locked; plan approved; 05 PASS; 06 T0.1 complete; Phase B Assumed
+- 2026-07-21: #771 MERGED; T6.6 completed via mock BYOC waive (PR #772)
 
 ---
 
