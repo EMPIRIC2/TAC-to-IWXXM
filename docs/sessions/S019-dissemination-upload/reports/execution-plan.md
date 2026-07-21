@@ -14,10 +14,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — **07-build** M1 **complete**; next M2 T2.1 |
+| **Active phase** | Phase C — **07-build** M2 in progress |
 | **Active milestone** | M2 — Multi-DB writer-contract + preflight/send API |
-| **Active task** | T2.1 (next) |
-| **Tasks** | 6 / **29** completed (T0.1 + T1.1–T1.5) |
+| **Active task** | T2.3 (next) |
+| **Tasks** | 8 / **29** completed (T0.1 + T1.1–T1.5 + T2.1–T2.2) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -62,8 +62,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | Writer-contract schema diff fixtures (PG/MySQL/SQLite); DDL create-if-missing | TC-F16-001/003; F16-R4 | T1.4 | pending |
-| T2.2 | Code | Engine adapters + versioned writer-contract DDL | ADR-030; E14-02 | T2.1 | pending |
+| T2.1 | Test | Writer-contract schema diff fixtures (PG/MySQL/SQLite); DDL create-if-missing | TC-F16-001/003; F16-R4 | T1.4 | **completed** |
+| T2.2 | Code | Engine adapters + versioned writer-contract DDL | ADR-030; E14-02 | T2.1 | **completed** |
 | T2.3 | Test | API tests: preflight/send msgspec shapes; secret redaction; handle memory-only; per-user rate-limit deny (ADR-029 §5) | api-contract; TC-F16-002; ADR-029 | T2.2 | pending |
 | T2.4 | Code | Thin backend routers `/dissemination/preflight` + `/send` (+ rate limit) | api-contract; E14-03/07; ADR-029 | T2.3 | pending |
 | T2.5 | Test | Compose/Testcontainers integration PG+MySQL+SQLite happy + mismatch | TC-F16-003; E14-09 | T2.4 | pending |
