@@ -10,12 +10,12 @@ active_session:
   type: feature
   intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2) staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-t51-adapter-stubs-584b
+  branch: cursor/s019-t61-drawer-vitest-a804
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'M5 complete (T5.1–T5.3 F19 staging stubs). Next M6 T6.1 Vitest drawer. Progress 23/29.'
+  note: 'T6.1 completed @ c56f8ed. Next M6 T6.2 drawer UI. Progress 24/29. Lingering M5 PR #768.'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -69,7 +69,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build M6 T6.1 pending (cursor/s019-t51-adapter-stubs-584b); progress 23/29; M5 done"
+      note: "Phase C — 07-build M6 T6.1 done @ c56f8ed; next T6.2 drawer UI; progress 24/29; PR #768 still open (M5 base)"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -124,7 +124,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-21'
-      note: 'M6 T6.1 pending on cursor/s019-t51-adapter-stubs-584b; tip a8f2cb0; progress 23/29; M5 done (T5.1–T5.3)'
+      note: 'T6.1 completed @ c56f8ed. Next M6 T6.2 drawer UI on cursor/s019-t61-drawer-vitest-a804; progress 24/29; PR #768 still open on cursor/s019-t51-adapter-stubs-584b'
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2387,10 +2387,10 @@ stages:
         started_at: '2026-07-21'
         started: '2026-07-21'
         mode: full
-        note: 'M5 complete (T5.1–T5.3 F19 staging stubs). Next M6 T6.1 Vitest drawer. Progress 23/29.'
-        progress: '23/29'
+        note: 'T6.1 completed @ c56f8ed. Next M6 T6.2 Dissemination drawer UI polish + workbench wire. Progress 24/29. Lingering M5 PR #768.'
+        progress: '24/29'
         active_milestone: M6
-        active_task: T6.1
+        active_task: T6.2
         active_task_status: pending
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
@@ -2442,6 +2442,8 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - '2026-07-21 S019/EV-014 T6.1 completed @ c56f8ed — Vitest drawer sink chooser + preflight + block Send. Next M6 T6.2 drawer UI. Progress 24/29. Lingering M5 PR #768.'
+      - '2026-07-21 S019/EV-014 T6.1 in_progress — Vitest drawer sink chooser + preflight + block Send on cursor/s019-t61-drawer-vitest-a804 (off M5 tip / PR #768 base). Progress 23/29.'
       - '2026-07-21 S019/EV-014 M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0). Next M6 T6.1 Vitest drawer. Progress 23/29.'
       - '2026-07-21 S019/EV-014 T5.1 in_progress — adapter interface + staging stub behaviors (F19) on cursor/s019-t51-adapter-stubs-584b off origin/main; progress 20/29'
       - '2026-07-21 S019/EV-014 M4 MERGED to main — #765 @ 4cc4b58 (12:55:49Z) then #766 @ df34500 (12:55:59Z). Next T5.1 off main. Progress 20/29. Session/cycle remain open.'
@@ -3144,7 +3146,7 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M6 T6.1 pending (cursor/s019-t51-adapter-stubs-584b); progress 23/29; M5 done
+      Phase C — 07-build M6 T6.1 in_progress (cursor/s019-t61-drawer-vitest-a804 off M5 tip); progress 23/29; PR #768 still open (M5 base)
 
 stages_pending: []
 
@@ -3374,6 +3376,17 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: N-S019-EV014-T61-start
+    date: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 07-build
+    skill_id: 07-build
+    status: noted
+    decision: >-
+      M6 T6.1 started on cursor/s019-t61-drawer-vitest-a804 branched from M5 tip
+      cursor/s019-t51-adapter-stubs-584b (lingering PR #768 still open with M5 work — base of this branch).
+      Progress 23/29; previous M5 session work continued via branch-from-tip rather than waiting on #768 merge.
   - id: D-S019-EV014-T34-transports
     date: '2026-07-21'
     session_id: S019-dissemination-upload
@@ -7733,12 +7746,14 @@ evolve_cycles:
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
     current_stage: 07-build
     active_milestone: M6
-    active_task: T6.1
+    active_task: T6.2
     active_task_status: pending
-    progress: '23/29'
-    branch: cursor/s019-t51-adapter-stubs-584b
-    note: 'M5 complete (T5.1–T5.3 F19 staging stubs). Next M6 T6.1 Vitest drawer.'
+    progress: '24/29'
+    branch: cursor/s019-t61-drawer-vitest-a804
+    note: 'T6.1 completed @ c56f8ed. Next M6 T6.2 drawer UI. Progress 24/29. Lingering M5 PR #768.'
     notes:
+      - '2026-07-21 S019/EV-014 T6.1 completed @ c56f8ed — Vitest drawer sink chooser + preflight + block Send. Next M6 T6.2 drawer UI. Progress 24/29. Lingering M5 PR #768.'
+      - '2026-07-21 S019/EV-014 T6.1 in_progress on cursor/s019-t61-drawer-vitest-a804 (off M5 tip / PR #768 base cursor/s019-t51-adapter-stubs-584b). M5 work continued via branch-from-tip; #768 still open. Progress 23/29.'
       - '2026-07-21 S019/EV-014 M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0). Next M6 T6.1 Vitest drawer. Progress 23/29.'
       - '2026-07-21 S019/EV-014 T5.1 in_progress — adapter interface + staging stub behaviors (F19) on cursor/s019-t51-adapter-stubs-584b off origin/main; progress 20/29'
       - '2026-07-21 S019/EV-014 M4 MERGED to main — #765 @ 4cc4b5840e6451587718c7fdccb40f3516988079 (12:55:49Z) then #766 @ df3450043bbbaf85f4bed9949e1b657483e4a06e (12:55:59Z). Next T5.1 off main. Progress 20/29. Session/cycle remain open.'
@@ -7812,7 +7827,7 @@ evolve_cycles:
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase C — 07-build M4 merged (#765+#766→main); next M5 T5.1 off main; progress 20/29"
+        note: "Phase C — 07-build M6 T6.1 done @ c56f8ed; next T6.2 drawer UI; progress 24/29; PR #768 still open (M5 base)"
       01-requirements:
         status: completed
         mode: delta
@@ -7889,10 +7904,10 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-21'
-        note: 'M5 complete (T5.1–T5.3 F19 staging stubs). Next M6 T6.1 Vitest drawer. Progress 23/29.'
-        progress: '23/29'
+        note: 'T6.1 completed @ c56f8ed. Next M6 T6.2 drawer UI. Progress 24/29. Lingering M5 PR #768.'
+        progress: '24/29'
         active_milestone: M6
-        active_task: T6.1
+        active_task: T6.2
         active_task_status: pending
     gates:
       a_to_b: passed
@@ -10453,14 +10468,16 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-t51-adapter-stubs-584b
+  current_branch: cursor/s019-t61-drawer-vitest-a804
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
-  tip_sha_full: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
-  note: 'M5 complete (T5.1–T5.3) on cursor/s019-t51-adapter-stubs-584b; tip a8f2cb0; next M6 T6.1; progress 23/29'
+  tip_sha: c56f8ed095e7a257e8791334f7161bfd9f48003f
+  tip_sha_full: c56f8ed095e7a257e8791334f7161bfd9f48003f
+  note: 'T6.1 completed @ c56f8ed on cursor/s019-t61-drawer-vitest-a804; next T6.2; progress 24/29; lingering M5 PR #768'
   notes:
+    - '2026-07-21 S019/EV-014 T6.1 completed @ c56f8ed — Vitest drawer sink chooser + preflight + block Send; next T6.2; tip c56f8ed; progress 24/29'
+    - '2026-07-21 S019/EV-014 T6.1 in_progress — branch cursor/s019-t61-drawer-vitest-a804 off cursor/s019-t51-adapter-stubs-584b (PR #768 still open); tip 9adac89; progress 23/29'
     - '2026-07-21 S019/EV-014 M5 complete (T5.1–T5.3 @ 33705dd/17b1094/a8f2cb0) on cursor/s019-t51-adapter-stubs-584b; next M6 T6.1 Vitest drawer; progress 23/29'
     - '2026-07-21 S019/EV-014 T5.1 in_progress — adapter interface + staging stub behaviors (F19) on cursor/s019-t51-adapter-stubs-584b off origin/main; progress 20/29; tip 58cc427'
     - '2026-07-21 S019/EV-014 M4 MERGED to main — #765 @ 4cc4b58 (12:55:49Z) then #766 @ df34500 (12:55:59Z). Branches t41+t43 merged. Next T5.1 off main. Progress 20/29.'
@@ -10660,6 +10677,18 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: cursor/s019-t61-drawer-vitest-a804
+      status: open
+      base: cursor/s019-t51-adapter-stubs-584b
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      purpose: S019/EV-014 07-build M6 T6.1 Vitest drawer sink chooser + preflight + block Send
+      tip_sha: c56f8ed095e7a257e8791334f7161bfd9f48003f
+      tip_sha_full: c56f8ed095e7a257e8791334f7161bfd9f48003f
+      pushed: true
+      note: 'T6.1 completed @ c56f8ed; next T6.2 drawer UI; branched from M5 tip (PR #768 still open on base cursor/s019-t51-adapter-stubs-584b)'
     - name: cursor/s019-t51-adapter-stubs-584b
       status: open
       base: main
@@ -10667,11 +10696,13 @@ git_history:
       created_at: '2026-07-21'
       session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
-      purpose: S019/EV-014 07-build M5 T5.1–T5.3 F19 adapter stubs; next M6 T6.1
+      purpose: S019/EV-014 07-build M5 T5.1–T5.3 F19 adapter stubs; base for M6 T6.1 branch
       tip_sha: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
       tip_sha_full: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
       pushed: true
-      note: 'M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0); next M6 T6.1 Vitest drawer'
+      pr_number: 768
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/768
+      note: 'M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0); PR #768 still open; M6 T6.1 branched from this tip'
     - name: cursor/s019-t43-smtp-preflight-ac66
       status: merged
       base: cursor/s019-t41-edis-format-c6f7
@@ -11201,6 +11232,19 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: c56f8ed095e7a257e8791334f7161bfd9f48003f
+      short: c56f8ed
+      branch: cursor/s019-t61-drawer-vitest-a804
+      message: '[T6.1] test: Vitest drawer sink chooser + preflight + block Send'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21T13:51:32Z'
+      files_changed:
+        - apps/frontend/src/app/components/DisseminationDrawer.test.tsx
+        - apps/frontend/src/app/components/DisseminationDrawer.tsx
+        - apps/frontend/src/utils/dissemination.test.ts
+        - apps/frontend/src/utils/dissemination.ts
     - sha: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
       short: a8f2cb0
       branch: cursor/s019-t51-adapter-stubs-584b
