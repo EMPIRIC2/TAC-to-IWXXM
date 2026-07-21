@@ -11,6 +11,7 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Branch | `cursor/s019-t27-odbc-docs-ee99` (T2.7); base `main` |
+| PR | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/761 (T2.7 → main; CI green) |
 | Merged to main | #753–#760 (session stack through T2.6 + WF chore) |
 | Done | M1; **M2 complete** (through T2.7 ODBC docs) |
 | Next | **T3.1** WIS2 sink adapter unit tests (mocked MQTT/HTTP) |
