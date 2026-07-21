@@ -12,13 +12,12 @@ active_session:
     test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase
     0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-06-tech-tooling-9a92
+  branch: cursor/s019-07-build-m1-9a92
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: >-
-    06-tech-tooling completed (T0.1); Phase B Assumed PASS (D-S019-EV014-Q37A-phase-b); next 07-build M1 T1.1
+  note: 07-build M1 complete (T1.1–T1.5); next M2 T2.1
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -51,6 +50,12 @@ active_session:
   - scripts/ci/run_dissemination_coverage.sh
   - scripts/ci/run_wis2box_harness.sh
   - docker-compose.wis2box.yml
+  - packages/dissemination/README.md
+  - packages/dissemination/pyproject.toml
+  - packages/dissemination/src/dissemination/__init__.py
+  - packages/dissemination/src/dissemination/allowlist.py
+  - packages/dissemination/tests/test_package_layout.py
+  - packages/dissemination/tests/test_allowlist.py
   routing_plan:
   - stage: 00-context
     required: true
@@ -66,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-20'
-    note: "Phase B passed; next 07-build"
+    note: "Phase C — 07-build M1 done; next M2 T2.1"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -118,9 +123,10 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: pending
+    status: in_progress
     skip_rationale:
-    note: Full routing (Q24=A) — await prior stages
+    started: '2026-07-21'
+    note: M1 done; next M2 T2.1
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2534,6 +2540,18 @@ stages:
         milestone: M11
         notes: "T11.4 complete — H0c+H4+H5 green on staging; TC-M001–M005 pass; Phase 4 gate criteria met on main"
     delta_substages:
+    - id: S019-dissemination-upload
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-07-21'
+      started: '2026-07-21'
+      mode: full
+      note: M1 complete (T1.1–T1.5); next M2 T2.1
+      active_milestone: M2
+      active_task: T2.1
+      active_task_status: pending
     - id: S015-metar-lint-quality
       session_id: S015-metar-lint-quality
       evolve_cycle_id: EV-011
@@ -2585,6 +2603,12 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - >-
+      2026-07-21 S019/EV-014 07-build M1 complete (T1.1–T1.5; 4b523db/2a47a87/5c2be0c/f0332cf/66f1177);
+      next M2 T2.1
+    - >-
+      2026-07-21 S019/EV-014 07-build STARTED — M1 T1.1 package layout + import smoke;
+      historical greenfield status remains completed
     - '2026-07-20 S015/EV-011 07-build completed — M1–M5 complete (T1.1–T5.10); PR #742 merged b405a96'
     - >-
       2026-07-20 S015/EV-011 M1+M2 complete (T2.1 08af6d6, T2.2 da22b32, T2.2a 4233a7f,
@@ -2686,14 +2710,13 @@ stages:
     - "2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task
       T6.3 in_progress"
     active_session:
-      session_id: S015-metar-lint-quality
-      evolve_cycle_id: EV-011
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
       skill_id: 07-build
-      status: completed
+      status: in_progress
       mode: full
-      started_at: '2026-07-19'
-      completed_at: '2026-07-20'
-      note: 'M1–M5 complete (T1.1–T5.10); PR #742 merged b405a96'
+      started_at: '2026-07-21'
+      note: M1 T1.1 package layout + import smoke
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -3286,8 +3309,7 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      S019/EV-014 Phase B Assumed PASS (D-S019-EV014-Q37A-phase-b); next 07-build M1 T1.1;
-      Q15=A+Q8=C+Q21=A live BYOC hard close gate
+      Phase C — 07-build M1 complete; next M2 T2.1; Q15=A+Q8=C+Q21=A live BYOC hard close gate
 
 stages_pending: []
 
@@ -7906,6 +7928,7 @@ evolve_cycles:
     note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
   current_stage: 07-build
   notes:
+  - 2026-07-21 S019/EV-014 07-build M1 complete (T1.1–T1.5; 4b523db/2a47a87/5c2be0c/f0332cf/66f1177); next M2 T2.1
   - 2026-07-21 S019/EV-014 Phase B Assumed PASS (D-S019-EV014-Q37A-phase-b) — 06 T0.1 done; B→C passed; next 07-build M1 T1.1
   - 2026-07-21 S019/EV-014 06-tech-tooling COMPLETE (D-S019-EV014-Q37A-phase-b) — T0.1 coverage + CI Compose wis2box hooks
   - 2026-07-21 S019/EV-014 06-tech-tooling STARTED (D-S019-EV014-Q36A-06) — T0.1 coverage + CI Compose wis2box hooks
@@ -7963,7 +7986,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-20'
-      note: "Phase B passed; next 07-build"
+      note: "Phase C — 07-build M1 done; next M2 T2.1"
     01-requirements:
       status: completed
       mode: delta
@@ -8036,6 +8059,11 @@ evolve_cycles:
       started: '2026-07-21'
       completed: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; report 06-tech-tooling.md
+    07-build:
+      status: in_progress
+      mode: full
+      started: '2026-07-21'
+      note: M1 T1.1 package layout + import smoke
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -10697,7 +10725,7 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-06-tech-tooling-9a92
+  current_branch: cursor/s019-07-build-m1-9a92
   ahead_of_origin: 0
   pushed: true
   pending_commit: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
@@ -10892,6 +10920,14 @@ git_history:
   - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+  - name: cursor/s019-07-build-m1-9a92
+    status: active
+    base: cursor/s019-06-tech-tooling-9a92
+    created: '2026-07-21'
+    created_at: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    purpose: S019 EV-014 07-build M1
   - name: cursor/s019-06-tech-tooling-9a92
     status: active
     base: cursor/s019-05-verify-tech-b45b
@@ -11239,6 +11275,64 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 66f1177ef7134a418bc6fe93ccb33f037034d12e
+    short: 66f1177
+    branch: cursor/s019-07-build-m1-9a92
+    message: '[T1.5] config: document DISSEMINATION_EGRESS_ALLOWLIST and lint paths'
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    timestamp: '2026-07-21'
+    files_changed:
+    - .env.example
+    - Makefile
+    - docs/ops/staging-secrets-matrix.md
+    - docs/sessions/S019-dissemination-upload/HANDOFF.md
+    - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+    - packages/dissemination/README.md
+  - sha: f0332cfabfc4e70aae37fecfa3c4d01d5a6fdc55
+    short: f0332cf
+    branch: cursor/s019-07-build-m1-9a92
+    message: '[T1.4] feat: dissemination egress allowlist helpers'
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    timestamp: '2026-07-21'
+    files_changed:
+    - packages/dissemination/src/dissemination/__init__.py
+    - packages/dissemination/src/dissemination/allowlist.py
+  - sha: 5c2be0c48cf3a084f7dfc9e5239e479142719a90
+    short: 5c2be0c
+    branch: cursor/s019-07-build-m1-9a92
+    message: '[T1.3] test: allowlist fail-closed and SSRF deny cases'
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    timestamp: '2026-07-21'
+    files_changed:
+    - packages/dissemination/tests/test_allowlist.py
+  - sha: 2a47a8719e29cd5bbdff165727761ff856d1b856
+    short: 2a47a87
+    branch: cursor/s019-07-build-m1-9a92
+    message: '[T1.2] config: pin dissemination workspace deps (ADR-030)'
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    timestamp: '2026-07-21'
+    files_changed:
+    - docs/dependency-inventory.md
+    - packages/dissemination/pyproject.toml
+    - uv.lock
+  - sha: 4b523dbc8e947d23f16fc4c774065f847e63691b
+    short: 4b523db
+    branch: cursor/s019-07-build-m1-9a92
+    message: '[T1.1] test: dissemination package layout + import smoke'
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    timestamp: '2026-07-21'
+    files_changed:
+    - packages/dissemination/README.md
+    - packages/dissemination/pyproject.toml
+    - packages/dissemination/src/dissemination/__init__.py
+    - packages/dissemination/tests/test_package_layout.py
+    - pyproject.toml
+    - uv.lock
   - sha: 5c1502ccbe90bcfd0806b3b360ca65f7d4ea0880
     short: 5c1502c
     branch: cursor/s019-06-tech-tooling-9a92
