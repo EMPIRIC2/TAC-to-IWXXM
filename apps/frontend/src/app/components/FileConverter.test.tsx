@@ -1237,6 +1237,20 @@ describe('FileConverter Component', () => {
       });
     });
 
+    it('opens dissemination drawer from Disseminate control (T6.2)', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      const disseminate = screen.getByTestId('open-dissemination-drawer');
+      expect(disseminate).toBeEnabled();
+      await user.click(disseminate);
+
+      expect(screen.getByTestId('dissemination-drawer')).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: /dissemination/i }),
+      ).toBeInTheDocument();
+    });
+
     it('handles partial multi-file conversion where only one result is returned', async () => {
       const user = userEvent.setup();
       mockConvertMetarToIwxxm.mockResolvedValueOnce({

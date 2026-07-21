@@ -300,6 +300,144 @@ describe('DisseminationDrawer', () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
+  it('rejects invalid BYOC JSON before calling preflight', async () => {
+    const user = userEvent.setup();
+    render(<DisseminationDrawer {...defaultProps} />);
+
+    await user.selectOptions(screen.getByTestId('dissemination-sink-chooser'), 'edis');
+    fireEvent.change(screen.getByTestId('dissemination-byoc-params'), {
+      target: { value: 'not-json' },
+    });
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    expect(screen.getByTestId('dissemination-error')).toHaveTextContent(/invalid/i);
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it('blocks Send when payload is empty even after green preflight', async () => {
+    const user = userEvent.setup();
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        ok: true,
+        connectivity_ok: true,
+        diffs: [],
+        handle: 'no-payload-handle',
+      }),
+    } as Response);
+
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        iwxxmXml={undefined}
+        tacText={undefined}
+      />,
+    );
+
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/empty.db',
+    );
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-preflight-green')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('dissemination-send-button')).toBeDisabled();
+  });
+
+  it('closes via close control', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(<DisseminationDrawer {...defaultProps} onOpenChange={onOpenChange} />);
+
+    await user.click(screen.getByTestId('dissemination-drawer-close'));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('toggles DDL and accepts drag-drop IWXXM on the dropzone', async () => {
+    const user = userEvent.setup();
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        iwxxmXml={undefined}
+        tacText={undefined}
+      />,
+    );
+
+    const ddl = screen.getByTestId('dissemination-ddl-toggle');
+    expect(ddl).not.toBeChecked();
+    await user.click(ddl);
+    expect(ddl).toBeChecked();
+
+    const dropzone = screen.getByTestId('dissemination-dropzone');
+    const file = new File(['<iwxxm:METAR/>'], 'report.xml', { type: 'text/xml' });
+    fireEvent.dragOver(dropzone, {
+      dataTransfer: { files: [file] },
+    });
+    fireEvent.drop(dropzone, {
+      dataTransfer: { files: [file] },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-payload-status')).toHaveTextContent(
+        /IWXXM/,
+      );
+    });
+  });
+
+  it('rejects non-object BYOC JSON arrays', async () => {
+    const user = userEvent.setup();
+    render(<DisseminationDrawer {...defaultProps} />);
+
+    await user.selectOptions(screen.getByTestId('dissemination-sink-chooser'), 'amhs');
+    fireEvent.change(screen.getByTestId('dissemination-byoc-params'), {
+      target: { value: '[]' },
+    });
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    expect(screen.getByTestId('dissemination-error')).toHaveTextContent(/JSON object/i);
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it('surfaces send API errors after green preflight', async () => {
+    const user = userEvent.setup();
+    vi.mocked(global.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          ok: true,
+          connectivity_ok: true,
+          diffs: [],
+          handle: 'send-fail-handle',
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Server Error',
+        json: async () => ({ detail: 'sink unavailable' }),
+      } as Response);
+
+    render(<DisseminationDrawer {...defaultProps} />);
+
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/s.db',
+    );
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-send-button')).toBeEnabled();
+    });
+    await user.click(screen.getByTestId('dissemination-send-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-error')).toHaveTextContent(
+        /sink unavailable/,
+      );
+    });
+  });
+
   it('shows BYOC JSON params for non-DB sinks and includes them in preflight (T6.2)', async () => {
     const user = userEvent.setup();
     vi.mocked(global.fetch).mockResolvedValue({
