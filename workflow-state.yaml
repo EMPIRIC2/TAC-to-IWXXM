@@ -17,7 +17,7 @@ active_session:
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 07-build M1 complete (T1.1–T1.5); next M2 T2.1
+  note: 07-build M2 T2.1–T2.2 done; next T2.3 API tests
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -126,7 +126,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-21'
-    note: M1 done; next M2 T2.1
+    note: M1 done; M2 T2.1–T2.2 done; next T2.3
   - stage: 08-verify-build
     required: true
     mode: full
@@ -11275,6 +11275,26 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: f3506cdad61e9867d6e9c765bf056c5467386aee
+    short: f3506cd
+    branch: cursor/s019-07-build-m1-9a92
+    message: '[T2.2] feat: versioned iwxxm_reports writer-contract DDL + diff'
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    timestamp: '2026-07-21'
+    files_changed:
+    - packages/dissemination/pyproject.toml
+    - packages/dissemination/src/dissemination/__init__.py
+    - packages/dissemination/src/dissemination/writer_contract.py
+  - sha: c1957f65a7c0445556dba9c1936e6f92e0f77b19
+    short: c1957f6
+    branch: cursor/s019-07-build-m1-9a92
+    message: '[T2.1] test: writer-contract schema diff fixtures (SQLite)'
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    timestamp: '2026-07-21'
+    files_changed:
+    - packages/dissemination/tests/test_writer_contract.py
   - sha: 66f1177ef7134a418bc6fe93ccb33f037034d12e
     short: 66f1177
     branch: cursor/s019-07-build-m1-9a92
