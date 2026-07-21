@@ -189,6 +189,31 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 - PR (04): https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753 MERGED
 - 2026-07-21: 04 Batch 1–2 locked; plan approved; 05 PASS; 06 T0.1 complete; Phase B Assumed
 - 2026-07-21: #771 MERGED; T6.6 completed via mock BYOC waive (PR #772)
+- 2026-07-21: #772 MERGED (`c61273a`); Phase C Assumed PASS → Phase D bookkeeping → cycle close
+
+### Phase C checkpoint (D-S019-EV014-Q38A-phase-c)
+
+- Assumed PASS (cloud AQ waived; operator continue authorized): M1–M6 **29/29**; T6.4 08 PASS;
+  T6.6 mock BYOC complete; C→D open.
+- Report: `docs/sessions/S019-dissemination-upload/reports/phase-c-checkpoint.md`
+
+### Phase D (08–13 bookkeeping) + checkpoint (D-S019-EV014-Q39A-phase-d)
+
+- 08 = T6.4 `verification-report.md` PASS  
+- 09 = `qa-report.md` PASS (advisories: live BYOC / Render allowlist / H3)  
+- 10 = `e2e-report.md` PASS (UJ-027–030 + mock BYOC)  
+- 11 = `verify-impl.md` PASS (`D-S019-EV014-Q40A-11`)  
+- 12 = T6.5 `deploy-checklist.md` PASS  
+- 13 = T6.6 `deploy-smoke.md` COMPLETE (mock waive)  
+- Phase D Assumed PASS (cloud AQ waived).
+- Report: `docs/sessions/S019-dissemination-upload/reports/phase-d-checkpoint.md`
+
+### Phase 4 close (D-S019-EV014-phase4-close)
+
+- Close EV-014 / S019: F16–F19 **Done**; evolve-report + evolve-summary written;
+  leftover live destination BYOC remains optional follow-up (not blocking).
+- Artifacts: `docs/evolve-report-EV-014.md`,
+  `docs/sessions/S019-dissemination-upload/reports/evolve-summary.md`
 
 ---
 

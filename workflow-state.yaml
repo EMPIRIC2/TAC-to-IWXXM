@@ -5,174 +5,193 @@ project:
   output_directory: docs/
 
 session_counter: 19
-active_session:
-  id: S019-dissemination-upload
-  type: feature
-  intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2) staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
-  status: in_progress
-  branch: cursor/s019-t66-deploy-smoke-151c
-  orchestrator: 16-evolve
-  evolve_cycle_id: EV-014
-  artifacts_dir: docs/sessions/S019-dissemination-upload/
-  current_stage: 07-build
-  note: >-
-    M6 complete — T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29.
-    Phase C checkpoint next (gates.c_to_d=pending_checkpoint). Phase D remain.
-    Session/cycle remain open. Branch cursor/s019-t66-deploy-smoke-151c.
-  started_at: '2026-07-20'
-  context_briefs: []
-  standing_docs_touched:
-    - docs/decisions/evolve-decisions.md
-    - docs/decisions/requirements-decisions.md
-    - docs/feature-list.md
-    - docs/user-journeys.md
-    - docs/test-plan.md
-    - docs/spec.md
-    - docs/adr/ADR-021-byo-credentials-admin-removal.md
-    - docs/adr/ADR-029-dissemination-ssrf-allowlist.md
-    - docs/sessions/S019-dissemination-upload/session-brief.md
-    - docs/sessions/S019-dissemination-upload/routing-plan.md
-    - docs/sessions/S019-dissemination-upload/reports/01-requirements.md
-    - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
-    - docs/sessions/S019-dissemination-upload/reports/03-plan-tooling.md
-    - .cursor/rules/core/plan-adherence.mdc
-    - .cursor/rules/optional/dissemination-egress-ssrf.mdc
-    - docs/sessions/S019-dissemination-upload/reports/05-verify-tech-audit.md
-    - docs/sessions/S019-dissemination-upload/reports/04-tech-plan.md
-    - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
-    - docs/sessions/S019-dissemination-upload/HANDOFF.md
-    - docs/adr/ADR-030-dissemination-package-architecture.md
-    - docs/api-contract.md
-    - docs/ops/staging-secrets-matrix.md
-    - docs/decisions/tech-decisions.md
-    - docs/dependency-inventory.md
-    - docs/sessions/S019-dissemination-upload/reports/06-tech-tooling.md
-    - .cursor/rules/optional/dissemination-coverage-compose.mdc
-    - scripts/ci/run_dissemination_coverage.sh
-    - scripts/ci/run_wis2box_harness.sh
-    - docker-compose.wis2box.yml
-    - packages/dissemination/README.md
-    - packages/dissemination/pyproject.toml
-    - packages/dissemination/src/dissemination/__init__.py
-    - packages/dissemination/src/dissemination/allowlist.py
-    - packages/dissemination/tests/test_package_layout.py
-    - packages/dissemination/tests/test_allowlist.py
-    - docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
-    - docs/sessions/S019-dissemination-upload/reports/verification-report.md
-    - docs/sessions/S019-dissemination-upload/reports/deploy-checklist.md
-    - docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
-  routing_plan:
-    - stage: 00-context
-      required: true
-      mode: scoped
-      status: completed
-      skip_rationale:
-      started: '2026-07-20'
-      completed: '2026-07-20'
-      note: "Session open; Phase 0 approved 2026-07-21 (Q23=A–D vendors + Q24=A Full); AskQuestion UI waived (cloud)"
-    - stage: 16-evolve
-      required: true
-      mode: orchestrator
-      status: in_progress
-      skip_rationale:
-      started: '2026-07-20'
-      note: "Phase C — M6/T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29; Phase C ready for checkpoint (c_to_d=pending_checkpoint)"
-    - stage: 01-requirements
-      required: true
-      mode: delta
-      status: completed
-      skip_rationale:
-      started: '2026-07-21'
-      completed: '2026-07-21'
-      note: "01 delta done — F16–F19 + non-goals amend + ADR-021/029 + UJ-027–030 + TC-F16..F19; report 01-requirements.md"
-    - stage: 02-verify-plan
-      required: true
-      mode: delta
-      status: completed
-      skip_rationale:
-      note: 02 delta PASS — 28 high + Q26–Q28 (C1/M1–M4/L1); ADR-029 Accepted; D-S019-EV014-Q28A-batch
-      started: '2026-07-21'
-      completed: '2026-07-21'
-    - stage: 03-plan-tooling
-      required: false
-      mode: delta
-      status: completed
-      skip_rationale:
-      note: 03 delta PASS — plan-adherence F16–F19 + SSRF rule + feature_drift/scope_check (D-S019-EV014-Q30A-03-tooling)
-      started: '2026-07-21'
-      completed: '2026-07-21'
-    - stage: 04-tech-plan
-      required: true
-      mode: delta
-      status: completed
-      skip_rationale:
-      note: "Q34=A plan approved; ADR-030; Batch 1–2; merge handoff #753→main"
-      started: '2026-07-21'
-      completed: '2026-07-21'
-    - stage: 05-verify-tech
-      required: false
-      mode: delta
-      status: completed
-      skip_rationale:
-      note: "05 PASS (D-S019-EV014-Q35A-05) — 29 tasks; S1–S8 applied; audit docs/sessions/S019-dissemination-upload/reports/05-verify-tech-audit.md"
-      started: '2026-07-21'
-      completed: '2026-07-21'
-    - stage: 06-tech-tooling
-      required: false
-      mode: delta
-      status: completed
-      skip_rationale:
-      started: '2026-07-21'
-      completed: '2026-07-21'
-      note: T0.1 done — coverage + CI Compose hooks; report 06-tech-tooling.md
-    - stage: 07-build
-      required: true
-      mode: full
-      status: completed
-      skip_rationale:
-      started: '2026-07-21'
-      completed: '2026-07-21'
-      note: 'M6 complete — T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29; Phase C checkpoint next'
-    - stage: 08-verify-build
-      required: true
-      mode: full
-      status: pending
-      skip_rationale:
-      note: 'Full routing (Q24=A) — T6.4 invoked 08 as M6 config under 07-build (PASS; verification-report.md); stage still pending for C→D'
-    - stage: 09-qa
-      required: true
-      mode: full
-      status: pending
-      skip_rationale:
-      note: Full routing (Q24=A) — await prior stages
-    - stage: 10-e2e
-      required: true
-      mode: full
-      status: pending
-      skip_rationale:
-      note: Full routing (Q24=A) — await prior stages
-    - stage: 11-verify-impl
-      required: true
-      mode: full
-      status: pending
-      skip_rationale:
-      note: Full routing (Q24=A) — await prior stages
-    - stage: 12-verify-deploy
-      required: true
-      mode: full
-      status: pending
-      skip_rationale:
-      note: Full routing (Q24=A) — await prior stages
-    - stage: 13-deploy-smoke
-      required: true
-      mode: full
-      status: completed
-      skip_rationale:
-      started: '2026-07-21'
-      completed: '2026-07-21'
-      note: 'T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock BYOC); H0c/H1/H4/H5 prior PASS + mock close-gate; report deploy-smoke.md'
+active_session: null
 sessions:
 
+  - id: S019-dissemination-upload
+    type: feature
+    intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2) staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
+    status: completed
+    branch: cursor/s019-ev014-phase-d-close-f898
+    orchestrator: 16-evolve
+    evolve_cycle_id: EV-014
+    artifacts_dir: docs/sessions/S019-dissemination-upload/
+    current_stage:
+    note: >-
+      EV-014 Phase 4 close — F16–F19 Done; PR #772 merged c61273a; Phase C/D passed; mock BYOC T6.6
+    started_at: '2026-07-20'
+    context_briefs: []
+    standing_docs_touched:
+      - docs/decisions/evolve-decisions.md
+      - docs/decisions/requirements-decisions.md
+      - docs/feature-list.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/spec.md
+      - docs/adr/ADR-021-byo-credentials-admin-removal.md
+      - docs/adr/ADR-029-dissemination-ssrf-allowlist.md
+      - docs/sessions/S019-dissemination-upload/session-brief.md
+      - docs/sessions/S019-dissemination-upload/routing-plan.md
+      - docs/sessions/S019-dissemination-upload/reports/01-requirements.md
+      - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
+      - docs/sessions/S019-dissemination-upload/reports/03-plan-tooling.md
+      - .cursor/rules/core/plan-adherence.mdc
+      - .cursor/rules/optional/dissemination-egress-ssrf.mdc
+      - docs/sessions/S019-dissemination-upload/reports/05-verify-tech-audit.md
+      - docs/sessions/S019-dissemination-upload/reports/04-tech-plan.md
+      - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+      - docs/sessions/S019-dissemination-upload/HANDOFF.md
+      - docs/adr/ADR-030-dissemination-package-architecture.md
+      - docs/api-contract.md
+      - docs/ops/staging-secrets-matrix.md
+      - docs/decisions/tech-decisions.md
+      - docs/dependency-inventory.md
+      - docs/sessions/S019-dissemination-upload/reports/06-tech-tooling.md
+      - .cursor/rules/optional/dissemination-coverage-compose.mdc
+      - scripts/ci/run_dissemination_coverage.sh
+      - scripts/ci/run_wis2box_harness.sh
+      - docker-compose.wis2box.yml
+      - packages/dissemination/README.md
+      - packages/dissemination/pyproject.toml
+      - packages/dissemination/src/dissemination/__init__.py
+      - packages/dissemination/src/dissemination/allowlist.py
+      - packages/dissemination/tests/test_package_layout.py
+      - packages/dissemination/tests/test_allowlist.py
+      - docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
+      - docs/sessions/S019-dissemination-upload/reports/verification-report.md
+      - docs/sessions/S019-dissemination-upload/reports/deploy-checklist.md
+      - docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
+      - docs/sessions/S019-dissemination-upload/reports/phase-c-checkpoint.md
+      - docs/sessions/S019-dissemination-upload/reports/phase-d-checkpoint.md
+      - docs/sessions/S019-dissemination-upload/reports/qa-report.md
+      - docs/sessions/S019-dissemination-upload/reports/e2e-report.md
+      - docs/sessions/S019-dissemination-upload/reports/verify-impl.md
+      - docs/sessions/S019-dissemination-upload/reports/evolve-summary.md
+      - docs/evolve-report-EV-014.md
+      - docs/CHANGELOG.md
+    routing_plan:
+      - stage: 00-context
+        required: true
+        mode: scoped
+        status: completed
+        skip_rationale:
+        started: '2026-07-20'
+        completed: '2026-07-20'
+        note: "Session open; Phase 0 approved 2026-07-21 (Q23=A–D vendors + Q24=A Full); AskQuestion UI waived (cloud)"
+      - stage: 16-evolve
+        required: true
+        mode: orchestrator
+        status: completed
+        skip_rationale:
+        started: '2026-07-20'
+        note: "Phase 4 close D-S019-EV014-phase4-close; EV-014 completed"
+        completed: '2026-07-21'
+      - stage: 01-requirements
+        required: true
+        mode: delta
+        status: completed
+        skip_rationale:
+        started: '2026-07-21'
+        completed: '2026-07-21'
+        note: "01 delta done — F16–F19 + non-goals amend + ADR-021/029 + UJ-027–030 + TC-F16..F19; report 01-requirements.md"
+      - stage: 02-verify-plan
+        required: true
+        mode: delta
+        status: completed
+        skip_rationale:
+        note: 02 delta PASS — 28 high + Q26–Q28 (C1/M1–M4/L1); ADR-029 Accepted; D-S019-EV014-Q28A-batch
+        started: '2026-07-21'
+        completed: '2026-07-21'
+      - stage: 03-plan-tooling
+        required: false
+        mode: delta
+        status: completed
+        skip_rationale:
+        note: 03 delta PASS — plan-adherence F16–F19 + SSRF rule + feature_drift/scope_check (D-S019-EV014-Q30A-03-tooling)
+        started: '2026-07-21'
+        completed: '2026-07-21'
+      - stage: 04-tech-plan
+        required: true
+        mode: delta
+        status: completed
+        skip_rationale:
+        note: "Q34=A plan approved; ADR-030; Batch 1–2; merge handoff #753→main"
+        started: '2026-07-21'
+        completed: '2026-07-21'
+      - stage: 05-verify-tech
+        required: false
+        mode: delta
+        status: completed
+        skip_rationale:
+        note: "05 PASS (D-S019-EV014-Q35A-05) — 29 tasks; S1–S8 applied; audit docs/sessions/S019-dissemination-upload/reports/05-verify-tech-audit.md"
+        started: '2026-07-21'
+        completed: '2026-07-21'
+      - stage: 06-tech-tooling
+        required: false
+        mode: delta
+        status: completed
+        skip_rationale:
+        started: '2026-07-21'
+        completed: '2026-07-21'
+        note: T0.1 done — coverage + CI Compose hooks; report 06-tech-tooling.md
+      - stage: 07-build
+        required: true
+        mode: full
+        status: completed
+        skip_rationale:
+        started: '2026-07-21'
+        completed: '2026-07-21'
+        note: 'M6 complete — T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29; Phase C checkpoint next'
+      - stage: 08-verify-build
+        required: true
+        mode: full
+        status: completed
+        skip_rationale:
+        note: 'T6.4 verification-report.md PASS'
+        started: '2026-07-21'
+        completed: '2026-07-21'
+      - stage: 09-qa
+        required: true
+        mode: full
+        status: completed
+        skip_rationale:
+        note: qa-report.md PASS (advisories)
+        started: '2026-07-21'
+        completed: '2026-07-21'
+      - stage: 10-e2e
+        required: true
+        mode: full
+        status: completed
+        skip_rationale:
+        note: e2e-report.md UJ-027–030 + mock BYOC
+        started: '2026-07-21'
+        completed: '2026-07-21'
+      - stage: 11-verify-impl
+        required: true
+        mode: full
+        status: completed
+        skip_rationale:
+        note: verify-impl.md PASS D-S019-EV014-Q40A-11
+        started: '2026-07-21'
+        completed: '2026-07-21'
+      - stage: 12-verify-deploy
+        required: true
+        mode: full
+        status: completed
+        skip_rationale:
+        note: T6.5 deploy-checklist.md PASS
+        started: '2026-07-21'
+        completed: '2026-07-21'
+      - stage: 13-deploy-smoke
+        required: true
+        mode: full
+        status: completed
+        skip_rationale:
+        started: '2026-07-21'
+        completed: '2026-07-21'
+        note: 'T6.6 mock BYOC D-S019-EV014-Q15-mock-waive'
+    completed_at: '2026-07-21'
+    close_note: 'EV-014 Phase 4 close — F16–F19 Done; PR #772 merged c61273a; Phase C/D passed; mock BYOC T6.6'
   - id: S018-metar-remarks-667
     type: feature
     status: completed
@@ -849,8 +868,6 @@ sessions:
       - stage: 15-service-health
         rationale: "User approved 14-only routing; 15 not in plan"
     current_stage:
-
-
   - id: S011-f7-operator-ui
     type: feature
     status: completed
@@ -2594,15 +2611,16 @@ stages:
       session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
       skill_id: 07-build
-      status: in_progress
+      status: completed
       mode: full
       started_at: '2026-07-21'
-      note: 'T6.3 Playwright UJ-027–030 6/6 green; PR #770; next T6.4 08-verify-build; tip TBD after commit'
+      note: 'EV-014 Phase 4 closed; session archived'
       progress: '26/29'
       active_milestone: M6
       active_task: T6.4
       active_task_status: pending
       report: docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
+      completed_at: '2026-07-21'
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -2612,6 +2630,17 @@ stages:
     session_id: S004-issue-555-feedback
     evolve_cycle_id: EV-004
     delta_substages:
+      - id: S019-dissemination-upload
+        session_id: S019-dissemination-upload
+        evolve_cycle_id: EV-014
+        skill_id: 09-qa
+        status: completed
+        started_at: '2026-07-21'
+        started: '2026-07-21'
+        completed_at: '2026-07-21'
+        completed: '2026-07-21'
+        mode: full
+        note: qa-report.md PASS (advisories)
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2662,6 +2691,7 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/qa-report.md
         note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted"
     notes:
+      - 2026-07-21 S019/EV-014 09-qa COMPLETE — qa-report.md PASS (advisories)
       - 2026-07-20 S015/EV-011 09-qa completed — PASS — qa-report.md
       - "2026-07-19 S014/EV-010 09-qa completed — pass_with_advisories (QA-S014-001 H4–H5→13); see qa-report.md"
       - "2026-07-19 S014/EV-010 09-qa in_progress (T6.2; D-S014-EV010-c-to-d-pass)"
@@ -2701,6 +2731,17 @@ stages:
         status: completed
     report: docs/sessions/S003-supabase-keys-config/reports/verify-impl.md
     delta_substages:
+      - id: S019-dissemination-upload
+        session_id: S019-dissemination-upload
+        evolve_cycle_id: EV-014
+        skill_id: 11-verify-impl
+        status: completed
+        started_at: '2026-07-21'
+        started: '2026-07-21'
+        completed_at: '2026-07-21'
+        completed: '2026-07-21'
+        mode: full
+        note: verify-impl.md PASS D-S019-EV014-Q40A-11
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2751,6 +2792,7 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
         note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5"
     notes:
+      - 2026-07-21 S019/EV-014 11-verify-impl COMPLETE — verify-impl.md PASS D-S019-EV014-Q40A-11
       - 2026-07-20 S015/EV-011 11-verify-impl completed — F15 approved — verify-impl.md; phase_d work complete pending close
       - "2026-07-19 S014/EV-010 11-verify-impl completed — F11–F14 + journeys approved (D-S014-EV010-t63-features); next T6.4 12-verify-deploy"
       - "2026-07-19 S014/EV-010 journey signoff complete (D-S014-EV010-t63-journeys); next Fn F11–F14 approval; T6.3/11-verify-impl remains in_progress"
@@ -2785,6 +2827,17 @@ stages:
         status: completed
         notes: "H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred"
     delta_substages:
+      - id: S019-dissemination-upload
+        session_id: S019-dissemination-upload
+        evolve_cycle_id: EV-014
+        skill_id: 10-e2e
+        status: completed
+        started_at: '2026-07-21'
+        started: '2026-07-21'
+        completed_at: '2026-07-21'
+        completed: '2026-07-21'
+        mode: full
+        note: e2e-report.md UJ-027–030 + mock BYOC
       - id: S016-manual-tac-input-modes
         session_id: S016-manual-tac-input-modes
         evolve_cycle_id: EV-012
@@ -2838,6 +2891,7 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
         note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk"
     notes:
+      - 2026-07-21 S019/EV-014 10-e2e COMPLETE — e2e-report.md UJ-027–030 + mock BYOC
       - 2026-07-20 S016/EV-012 10-e2e completed — PASS TC-F7-007 T1-T6 + Vitest; e2e-report.md; next 13-deploy-smoke (pending)
       - 2026-07-20 S015/EV-011 10-e2e completed — PASS — e2e-report.md; UJ-024 catalog smoke
       - "2026-07-19 S014/EV-010 10-e2e completed — UJ-022/023/DEV-005 T0+local API PASS; T3/H6′→13; see e2e-report.md"
@@ -2876,13 +2930,15 @@ stages:
       - id: S019-dissemination-upload
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
-        status: pass
+        status: completed
         mode: delta
-        note: 'T6.4 config task under 07-build — verification-report.md PASS'
+        note: 'T6.4 verification-report.md PASS'
         report: docs/sessions/S019-dissemination-upload/reports/verification-report.md
         active_milestone: M6
         active_task: T6.4
         active_task_status: completed
+        completed: '2026-07-21'
+        completed_at: '2026-07-21'
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2932,6 +2988,7 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
         note: "T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass"
     notes:
+      - 2026-07-21 S019/EV-014 08-verify-build COMPLETE — T6.4 verification-report.md PASS
       - 2026-07-20 S015/EV-011 08-verify-build completed — T5.1 PASS — verification-report.md; C→D passed
       - "2026-07-19 S014/EV-010 C→D passed (D-S014-EV010-c-to-d-pass); T6.2 09-qa+10-e2e in_progress"
       - "2026-07-19 S014/EV-010 T6.1 PASS (verification-report.md); integration SKIPPED (docker pull); C→D pending AskQuestion; git commit d3dbbfb recorded"
@@ -2979,6 +3036,17 @@ stages:
     session_id: S004-issue-555-feedback
     report: docs/sessions/S004-issue-555-feedback/reports/deploy-checklist.md
     delta_substages:
+      - id: S019-dissemination-upload
+        session_id: S019-dissemination-upload
+        evolve_cycle_id: EV-014
+        skill_id: 12-verify-deploy
+        status: completed
+        started_at: '2026-07-21'
+        started: '2026-07-21'
+        completed_at: '2026-07-21'
+        completed: '2026-07-21'
+        mode: full
+        note: T6.5 deploy-checklist.md PASS
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -3024,6 +3092,7 @@ stages:
         note: "D-S011-EV008-deploy-check-A — checklist approved; PR-EV-008=#716 open (no merge/deploy); 13 pending on merge approval"
         report: docs/sessions/S011-f7-operator-ui/reports/deploy-checklist.md
     notes:
+      - 2026-07-21 S019/EV-014 12-verify-deploy COMPLETE — T6.5 deploy-checklist.md PASS
       - '2026-07-20 S015/EV-011 12-verify-deploy completed — T5.9 checklist approved; PR #742 merged (D-S015-EV011-deploy-merge)'
       - >-
         2026-07-19 S014/EV-010 T6.4 complete — D-S014-EV010-t64-merge-A; PR #726 MERGED
@@ -3060,8 +3129,7 @@ stages:
         completed: '2026-07-21'
         mode: full
         note: >-
-          T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock BYOC); prior H0c/H1/H4/H5 PASS
-          + mock close-gate amendment to Q15/Q21; progress 29/29
+          T6.6 mock BYOC D-S019-EV014-Q15-mock-waive
         overall: pass_mock_waive
         report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
         branch: cursor/s019-t66-deploy-smoke-151c
@@ -3134,6 +3202,7 @@ stages:
         report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
         hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+      - 2026-07-21 S019/EV-014 13-deploy-smoke COMPLETE — T6.6 mock BYOC D-S019-EV014-Q15-mock-waive
       - >-
         2026-07-21 S019/EV-014 T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock .env + fixture shapes + transport mocks / optional Compose); progress 29/29; Phase C ready for checkpoint (gates.c_to_d=pending_checkpoint); session/cycle remain open. Tip cursor/s019-t66-deploy-smoke-151c.
       - >-
@@ -3211,6 +3280,8 @@ stages:
       Phase C — M6/T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29;
       Phase C ready for checkpoint (c_to_d=pending_checkpoint); session/cycle remain open
 
+    notes:
+      - 2026-07-21 S019/EV-014 16-evolve COMPLETE — Phase 4 close D-S019-EV014-phase4-close; EV-014 completed
 stages_pending: []
 
 deployment:
@@ -3439,6 +3510,44 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-phase4-close
+    date: '2026-07-21'
+    timestamp: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 16-evolve
+    skill_id: 16-evolve
+    status: confirmed
+    topic: Phase 4 cycle/session close
+    summary: Close EV-014/S019; F16–F19 Done
+    decision: 'Close EV-014 and archive/close S019-dissemination-upload — F16–F19 Done; PR #772 merged c61273a; Phase C/D passed.'
+    related_pr: 772
+    commit_sha: c61273a90c85ab33eb65bc9a03e35e51ba13cea8
+    artifact: docs/evolve-report-EV-014.md
+  - id: D-S019-EV014-Q39A-phase-d
+    date: '2026-07-21'
+    timestamp: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 16-evolve
+    skill_id: 16-evolve
+    status: confirmed
+    topic: Phase D checkpoint
+    summary: Phase D Assumed PASS; 08–13 bookkeeping
+    decision: 'Assumed (cloud AQ waived): Phase D PASS — 08–13 bookkeeping complete (D-S019-EV014-Q39A-phase-d).'
+    artifact: docs/sessions/S019-dissemination-upload/reports/phase-d-checkpoint.md
+  - id: D-S019-EV014-Q38A-phase-c
+    date: '2026-07-21'
+    timestamp: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 16-evolve
+    skill_id: 16-evolve
+    status: confirmed
+    topic: Phase C checkpoint
+    summary: Phase C Assumed PASS; C→D
+    decision: 'Assumed (cloud AQ waived): Phase C PASS — M1–M6 29/29; 08 PASS; mock BYOC T6.6; C→D open (D-S019-EV014-Q38A-phase-c).'
+    artifact: docs/sessions/S019-dissemination-upload/reports/phase-c-checkpoint.md
   - id: D-S019-EV014-Q15-mock-waive
     date: '2026-07-21'
     timestamp: '2026-07-21'
@@ -7798,6 +7907,78 @@ artifacts:
     kind: handoff
     status: updated
     created: '2026-07-21'
+  - path: docs/sessions/S019-dissemination-upload/reports/phase-c-checkpoint.md
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 16-evolve
+    status: completed
+    kind: checkpoint
+    note: Phase C PASS D-S019-EV014-Q38A-phase-c
+    date: '2026-07-21'
+  - path: docs/sessions/S019-dissemination-upload/reports/phase-d-checkpoint.md
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 16-evolve
+    status: completed
+    kind: checkpoint
+    note: Phase D PASS D-S019-EV014-Q39A-phase-d
+    date: '2026-07-21'
+  - path: docs/sessions/S019-dissemination-upload/reports/qa-report.md
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 09-qa
+    status: completed
+    kind: stage_report
+    note: PASS (advisories)
+    date: '2026-07-21'
+  - path: docs/sessions/S019-dissemination-upload/reports/e2e-report.md
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 10-e2e
+    status: completed
+    kind: stage_report
+    note: UJ-027–030 + mock BYOC
+    date: '2026-07-21'
+  - path: docs/sessions/S019-dissemination-upload/reports/verify-impl.md
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 11-verify-impl
+    status: completed
+    kind: stage_report
+    note: PASS D-S019-EV014-Q40A-11
+    date: '2026-07-21'
+  - path: docs/sessions/S019-dissemination-upload/reports/evolve-summary.md
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 16-evolve
+    status: completed
+    kind: evolve_summary
+    note: Phase 4 close D-S019-EV014-phase4-close
+    date: '2026-07-21'
+  - path: docs/evolve-report-EV-014.md
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 16-evolve
+    status: completed
+    kind: evolve_report
+    note: EV-014 cycle close report
+    date: '2026-07-21'
+  - path: docs/sessions/S019-dissemination-upload/reports/verification-report.md
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 08-verify-build
+    status: completed
+    kind: stage_report
+    note: T6.4 PASS
+    date: '2026-07-21'
+  - path: docs/sessions/S019-dissemination-upload/reports/deploy-checklist.md
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 12-verify-deploy
+    status: completed
+    kind: stage_report
+    note: T6.5 PASS
+    date: '2026-07-21'
 retrospective_cycles:
   - id: RET-001
     title: Skill trim — corpus-first, lean routing, archive legacy
@@ -7866,9 +8047,9 @@ evolve_cycles:
       - F19
     feature_id:
     title: Dissemination epic — Upload DB + WIS2 + EDIS + AMHS (#729/#2/#6; F16–F19)
-    status: in_progress
+    status: completed
     started: '2026-07-20'
-    completed:
+    completed: '2026-07-21'
     scope_summary: "Phase 0 approved Q24=A; multi-DB Postgres/MySQL/SQLServer/SQLite; Full routing; F16-F19"
     github_issue: 729
     routing_plan:
@@ -7890,19 +8071,21 @@ evolve_cycles:
         - 13-deploy-smoke
       skipped_stages: []
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
-    current_stage: 07-build
-    active_milestone: M6
-    active_task: T6.6
-    active_task_status: completed
+    current_stage:
+    active_milestone:
+    active_task:
+    active_task_status:
     progress: '29/29'
-    branch: cursor/s019-t66-deploy-smoke-151c
+    branch: cursor/s019-ev014-phase-d-close-f898
     note: >-
-      T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29 (M1–M6 done).
-      Phase C ready for checkpoint / Phase D remain. Session and cycle remain open.
-      Branch cursor/s019-t66-deploy-smoke-151c.
+      EV-014 COMPLETE — Phase 4 close D-S019-EV014-phase4-close; F16–F19 Done; PR #772 merged c61273a; Phase C/D passed; mock BYOC T6.6.
     decision_refs:
       - D-S019-EV014-Q15-mock-waive
+      - D-S019-EV014-Q38A-phase-c
+      - D-S019-EV014-Q39A-phase-d
+      - D-S019-EV014-phase4-close
     notes:
+      - '2026-07-21 S019/EV-014 CLOSED (completed) — Phase 4 close D-S019-EV014-phase4-close; F16–F19 Done; PR #772 merged c61273a; Phase C PASS Q38A; Phase D PASS Q39A; 08–13 bookkeeping complete; mock BYOC T6.6.'
       - '2026-07-21 S019/EV-014 T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock .env + fixture shapes + transport mocks / optional Compose); progress 29/29; Phase C ready for checkpoint (gates.c_to_d=pending_checkpoint); session/cycle remain open. Tip cursor/s019-t66-deploy-smoke-151c.'
       - '2026-07-21 S019/EV-014 resume confirmed at T6.6 blocked (D-S019-EV014-T66-resume-blocked-2026-07-21) — cannot complete without operator secrets (.env E2E_USER_*) + #771 merge/redeploy + live BYOC destinations; Render MCP/API key deferred. Tip cursor/s019-t66-deploy-smoke-151c (PR #772); progress 28/29.'
       - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; git commit @ 8fc9fec'
@@ -7985,9 +8168,10 @@ evolve_cycles:
           phase0: approved
         note: Phase 0 approved 2026-07-21 (Q23=A–D + Q24=A Full); Batch 1-5 locked; AskQuestion waived (cloud)
       16-evolve:
-        status: in_progress
+        status: completed
         started: '2026-07-20'
-        note: "Phase C — M6/T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29; Phase C ready for checkpoint"
+        note: "Phase 4 close D-S019-EV014-phase4-close"
+        completed: '2026-07-21'
       01-requirements:
         status: completed
         mode: delta
@@ -8081,25 +8265,62 @@ evolve_cycles:
         started: '2026-07-21'
         completed: '2026-07-21'
         note: >-
-          T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock BYOC); prior H0c/H1/H4/H5 PASS
-          + mock close-gate amendment to Q15/Q21
+          T6.6 mock BYOC D-S019-EV014-Q15-mock-waive
         overall: pass_mock_waive
         report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
         active_task: T6.6
         active_task_status: completed
         decision_id: D-S019-EV014-Q15-mock-waive
+      08-verify-build:
+        status: completed
+        mode: full
+        started: '2026-07-21'
+        completed: '2026-07-21'
+        note: T6.4 verification-report.md PASS
+        report: docs/sessions/S019-dissemination-upload/reports/verification-report.md
+      09-qa:
+        status: completed
+        mode: full
+        started: '2026-07-21'
+        completed: '2026-07-21'
+        note: qa-report.md PASS (advisories)
+        report: docs/sessions/S019-dissemination-upload/reports/qa-report.md
+      10-e2e:
+        status: completed
+        mode: full
+        started: '2026-07-21'
+        completed: '2026-07-21'
+        note: e2e-report.md UJ-027–030 + mock BYOC
+        report: docs/sessions/S019-dissemination-upload/reports/e2e-report.md
+      11-verify-impl:
+        status: completed
+        mode: full
+        started: '2026-07-21'
+        completed: '2026-07-21'
+        note: verify-impl.md PASS D-S019-EV014-Q40A-11
+        report: docs/sessions/S019-dissemination-upload/reports/verify-impl.md
+        decision_id: D-S019-EV014-Q40A-11
+      12-verify-deploy:
+        status: completed
+        mode: full
+        started: '2026-07-21'
+        completed: '2026-07-21'
+        note: T6.5 deploy-checklist.md PASS
+        report: docs/sessions/S019-dissemination-upload/reports/deploy-checklist.md
     gates:
       a_to_b: passed
       b_to_c: passed
-      c_to_d: pending_checkpoint
-      deploy: pending
+      c_to_d: passed
+      deploy: passed
       a_to_b_note: PASSED Q31=A — Fn in feature-list; delta specs; 02 pass; 03 done
       a_to_b_passed_at: '2026-07-21'
       b_to_c_note: PASSED Assumed Q37A — 05 audited; 06 T0.1 tooling installed; consistency OK
       b_to_c_passed_at: '2026-07-21'
       c_to_d_note: >-
-        M1–M6 done (29/29); T6.6 via D-S019-EV014-Q15-mock-waive; Phase C ready for
-        checkpoint — do not start Phase D until checkpoint AskQuestion
+        PASSED D-S019-EV014-Q38A-phase-c — M1–M6 29/29; 08 PASS; mock BYOC T6.6
+      c_to_d_passed_at: '2026-07-21'
+      deploy_note: PASSED with advisories — T6.6 mock BYOC (D-S019-EV014-Q15-mock-waive); H0c/H1/H4/H5 + live FE drawer
+      deploy_passed_at: '2026-07-21'
     checkpoints:
       phase_a:
         status: passed
@@ -8121,13 +8342,18 @@ evolve_cycles:
           Assumed (cloud AQ waived): Phase B checkpoint PASS — 05 audited, 06 T0.1
           tooling installed, consistency OK; proceed B→C / 07-build M1 T1.1
       phase_c:
-        status: pending_checkpoint
-        note: >-
-          M1–M6 done; ready for Phase C checkpoint AskQuestion
-          (D-S019-EV014-Q15-mock-waive)
-        decision_ref: D-S019-EV014-Q15-mock-waive
-      phase_d: pending
-      deploy: pending
+        status: passed
+        decision: D-S019-EV014-Q38A-phase-c
+        completed_at: '2026-07-21'
+        note: 'Assumed (cloud AQ waived): Phase C PASS — 29/29; C→D open'
+      phase_d:
+        status: passed
+        decision: D-S019-EV014-Q39A-phase-d
+        completed_at: '2026-07-21'
+        note: 'Assumed (cloud AQ waived): Phase D PASS — 08–13 bookkeeping complete'
+      deploy:
+        status: passed
+        note: 13-deploy-smoke COMPLETE via mock BYOC waive; public H tiers PASS
     adrs:
       - docs/adr/ADR-021-byo-credentials-admin-removal.md
       - docs/adr/ADR-029-dissemination-ssrf-allowlist.md
@@ -8170,8 +8396,8 @@ evolve_cycles:
         stage: 05-verify-tech
         note: PASS D-S019-EV014-Q35A-05
       - path: docs/sessions/S019-dissemination-upload/HANDOFF.md
-        status: updated
-        note: Resume at 07-build M1 T1.1 (Phase B Assumed PASS)
+        status: closed
+        note: Session closed — EV-014 Phase 4 complete
       - path: docs/sessions/S019-dissemination-upload/reports/06-tech-tooling.md
         status: completed
         kind: stage_report
@@ -8186,12 +8412,56 @@ evolve_cycles:
         stage: 07-build
         note: T6.3 Playwright UJ-027–030 6/6 green; PR #770
       - path: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
-        status: partial
+        status: completed
         kind: deploy-smoke
         stage: 13-deploy-smoke
         note: >-
-          T6.6 PARTIAL — H0c/H1/H4/H5 PASS; allowlist/auth/BYOC blocked
-          (D-S019-EV014-T66-partial)
+          T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock BYOC); H0c/H1/H4/H5 PASS
+      - path: docs/sessions/S019-dissemination-upload/reports/phase-c-checkpoint.md
+        status: completed
+        kind: checkpoint
+        stage: 16-evolve
+        note: Phase C PASS D-S019-EV014-Q38A-phase-c
+      - path: docs/sessions/S019-dissemination-upload/reports/phase-d-checkpoint.md
+        status: completed
+        kind: checkpoint
+        stage: 16-evolve
+        note: Phase D PASS D-S019-EV014-Q39A-phase-d
+      - path: docs/sessions/S019-dissemination-upload/reports/qa-report.md
+        status: completed
+        kind: stage_report
+        stage: 09-qa
+        note: PASS (advisories)
+      - path: docs/sessions/S019-dissemination-upload/reports/e2e-report.md
+        status: completed
+        kind: stage_report
+        stage: 10-e2e
+        note: UJ-027–030 + mock BYOC
+      - path: docs/sessions/S019-dissemination-upload/reports/verify-impl.md
+        status: completed
+        kind: stage_report
+        stage: 11-verify-impl
+        note: PASS D-S019-EV014-Q40A-11
+      - path: docs/sessions/S019-dissemination-upload/reports/evolve-summary.md
+        status: completed
+        kind: evolve_summary
+        stage: 16-evolve
+        note: Phase 4 close D-S019-EV014-phase4-close
+      - path: docs/evolve-report-EV-014.md
+        status: completed
+        kind: evolve_report
+        stage: 16-evolve
+        note: EV-014 cycle close report
+      - path: docs/sessions/S019-dissemination-upload/reports/verification-report.md
+        status: completed
+        kind: stage_report
+        stage: 08-verify-build
+        note: T6.4 PASS
+      - path: docs/sessions/S019-dissemination-upload/reports/deploy-checklist.md
+        status: completed
+        kind: stage_report
+        stage: 12-verify-deploy
+        note: T6.5 PASS
     issues:
       - I-S019-EV014-Q20C-vendors
       - I-S019-EV014-Q14r-extras-enum
@@ -10667,14 +10937,16 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-t66-deploy-smoke-151c
+  current_branch: cursor/s019-ev014-phase-d-close-f898
   ahead_of_origin: 0
   pushed: true
-  pending_commit: null
-  tip_sha: 5b3db91
-  tip_sha_full: 5b3db913e507da6576bf996ab47174569b5cc96f
-  note: 'T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29; Phase C pending_checkpoint; tip 5b3db91 on cursor/s019-t66-deploy-smoke-151c'
+  pending_commit:
+  tip_sha: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
+  tip_sha_full: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
+  note: 'bookkeeping close branch after #772 merge c61273a — S019/EV-014 Phase C/D bookkeeping + cycle close; PR #774 open draft'
   notes:
+    - '2026-07-21 S019/EV-014 Phase C/D bookkeeping tip 73d4ff4 — "[S019] docs: Phase C/D bookkeeping + close EV-014"; PR #774 open draft; active_session remains null; EV-014 completed / S019 archived'
+    - '2026-07-21 S019/EV-014 Phase 4 close — bookkeeping branch cursor/s019-ev014-phase-d-close-f898 after #772 merge c61273a; EV-014/S019 completed'
     - '2026-07-21 S019/EV-014 workflow-state update — T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29; gates.c_to_d=pending_checkpoint; session/cycle remain open (5b3db91)'
     - '2026-07-21 S019/EV-014 T6.6 docs @ 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked" on cursor/s019-t66-deploy-smoke-151c; H0c/H1/H4/H5 PASS; allowlist/auth/BYOC still pending; progress 28/29 (D-S019-EV014-T66-partial)'
     - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — branch cursor/s019-t66-deploy-smoke-151c (base tip of #771 / t64 @ 7fba0a5); H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending; commit later recorded @ 8fc9fec; progress 28/29'
@@ -10886,8 +11158,24 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
-    - name: cursor/s019-t66-deploy-smoke-151c
+    - name: cursor/s019-ev014-phase-d-close-f898
+      base: main
       status: open
+      purpose: S019/EV-014 Phase C/D bookkeeping + cycle close
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      tip_sha: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
+      tip_sha_full: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
+      pushed: true
+      pr: 774
+      pr_number: 774
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/774
+      pr_status: open_draft
+      note: 'PR #774 open draft for Phase C/D close bookkeeping (EV-014 completed; S019 archived)'
+    - name: cursor/s019-t66-deploy-smoke-151c
+      status: merged
       base: cursor/s019-t64-verify-build-7820
       created: '2026-07-21'
       created_at: '2026-07-21'
@@ -10897,11 +11185,14 @@ git_history:
       tip_sha: 8fc9fec
       tip_sha_full: 8fc9fec587e4cc7e0a526f88d54f9ae6673ff405
       pushed: true
-      pr_number: 771
-      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771
+      pr_number: 772
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/772
       note: >-
-        Tip 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked".
-        T6.6 still blocked (D-S019-EV014-T66-partial); progress 28/29; base tip of #771
+        Tip 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked". T6.6 still blocked (D-S019-EV014-T66-partial); progress 28/29; base tip of #771
+
+        PR #772 MERGED to main @ c61273a (2026-07-21).
+      merged_at: '2026-07-21'
+      merge_commit: c61273a90c85ab33eb65bc9a03e35e51ba13cea8
     - name: cursor/s019-t64-verify-build-7820
       status: active
       base: cursor/s019-t63-dissemination-e2e-8b16
@@ -11495,6 +11786,25 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
+      short: 73d4ff4
+      branch: cursor/s019-ev014-phase-d-close-f898
+      message: '[S019] docs: Phase C/D bookkeeping + close EV-014'
+      stage: 16-evolve
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+      files_changed:
+        - docs/evolve-report-EV-014.md
+        - docs/sessions/S019-dissemination-upload/reports/*
+        - docs/feature-list.md
+        - docs/CHANGELOG.md
+        - workflow-state.yaml
+      pr: 774
+      pr_number: 774
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/774
+      pr_status: open_draft
+      note: 'PR #774 open draft for close bookkeeping; EV-014 completed; S019 archived; active_session null'
     - sha: 5b3db913e507da6576bf996ab47174569b5cc96f
       short: 5b3db91
       branch: cursor/s019-t66-deploy-smoke-151c
