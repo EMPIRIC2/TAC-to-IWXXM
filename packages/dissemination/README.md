@@ -22,12 +22,12 @@ sink adapters, and SSRF/allowlist helpers ([ADR-030](../../docs/adr/ADR-030-diss
 
 **SQL Server ODBC (T2.7 / E14-06)**
 
-| Item | Detail |
-|------|--------|
-| Async driver | `aioodbc` → SQLAlchemy URL prefix `mssql+aioodbc://` |
-| Preferred system driver | Microsoft **ODBC Driver 18** for SQL Server (then 17) |
-| Fallback | FreeTDS / legacy “SQL Server” ODBC names |
-| Probe API | `dissemination.odbc.list_sqlserver_odbc_drivers()`, `odbc_sqlserver_available()`, `preferred_sqlserver_odbc_driver()` |
+| Item                    | Detail                                                                                                                |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Async driver            | `aioodbc` → SQLAlchemy URL prefix `mssql+aioodbc://`                                                                  |
+| Preferred system driver | Microsoft **ODBC Driver 18** for SQL Server (then 17)                                                                 |
+| Fallback                | FreeTDS / legacy “SQL Server” ODBC names                                                                              |
+| Probe API               | `dissemination.odbc.list_sqlserver_odbc_drivers()`, `odbc_sqlserver_available()`, `preferred_sqlserver_odbc_driver()` |
 
 Install a system driver before live SQL Server tests or BYOC send:
 
