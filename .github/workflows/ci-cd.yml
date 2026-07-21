@@ -186,6 +186,11 @@ jobs:
         if: matrix.package == 'dissemination'
         run: bash scripts/ci/run_dissemination_coverage.sh
 
+      # F16 / T2.5 — TC-F16-003 PG+MySQL Testcontainers + SQLite (skip PG/MySQL if no Docker).
+      - name: Run dissemination multi-DB integration tests
+        if: matrix.package == 'dissemination'
+        run: make test-integration-dissemination
+
       - name: Run frontend tests with coverage
         if: matrix.package == 'frontend'
         run: pnpm --filter @metar/frontend run test:coverage

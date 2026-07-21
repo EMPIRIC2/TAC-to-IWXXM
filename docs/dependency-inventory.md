@@ -35,6 +35,12 @@
 | aiosmtplib | EDIS SMTP submit | MIT | PyPI (`>=3.0.0`) |
 | msgspec | Preflight/send models + HTTP encode | Apache-2.0 | PyPI (`>=0.19`) |
 
+#### packages/dissemination — test / integration (E14-09)
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| testcontainers[mysql,postgres] | PG/MySQL Testcontainers for TC-F16-003 (T2.5) | MIT | PyPI (`>=4.8`); workspace `dev` + package optional `integration` |
+
 Package license: **MIT**. No FastAPI/Supabase imports. Backend already has `sqlalchemy` +
 `asyncpg` + `psycopg`; package may declare overlapping pins via workspace.
 
@@ -170,3 +176,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
   export from existing `tac-validate` / msgspec stack (E11-30)
 - S019 / EV-014 (2026-07-21): Planned `packages/dissemination` — SQLAlchemy async + aiomysql /
   aiosqlite / **aioodbc** (E14-06=A) + aiosmtplib; msgspec HTTP (E14-07=A); pins in M1
+- S019 / EV-014 T2.5 (2026-07-21): **testcontainers[mysql,postgres]≥4.8** — multi-DB writer-contract
+  integration (TC-F16-003 / E14-09); SQLite in-process; PG/MySQL skip without Docker
