@@ -10491,8 +10491,11 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
-  tip_sha: 8fa04afca98aa48930c61af235a2b83769e6fdc8
+  tip_sha: 986f1467953a60c751064fda33e0bc84a70e1bee
   notes:
+    - >-
+      2026-07-21 S019/EV-014 tip 986f146 — [EV-014] docs: lock 04 Batch 1 architecture
+      (Q32=A / ADR-030); Batch 2 pending
     - >-
       2026-07-21 S019/EV-014 04 Batch 1 LOCKED (Q32=A / D-S019-EV014-Q32A-04-batch1) —
       E14-01..05; ADR-030 Accepted; Batch 2 pending (PR #753)
@@ -10687,8 +10690,8 @@ git_history:
       evolve_cycle_id: EV-014
       purpose: 'EV-014 / S019 dissemination epic (#729 Upload DB + #2 WIS2 + #6 EDIS)'
       pushed: true
-      note: EV-014 / S019 — Phase A passed; 04-tech-plan in_progress; tip d2e29b0
-      tip_sha: d2e29b0cdee3a09b19b6fc57128752eba3814d1d
+      note: EV-014 / S019 — 04 Batch 1 locked (ADR-030); tip 986f146; Batch 2 pending
+      tip_sha: 986f1467953a60c751064fda33e0bc84a70e1bee
     - name: cursor/metar-remarks-live-e2e-2e2e
       base: main
       status: completed
@@ -11008,6 +11011,20 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 986f1467953a60c751064fda33e0bc84a70e1bee
+      short: 986f146
+      message: "[EV-014] docs: lock 04 Batch 1 architecture (Q32=A / ADR-030)"
+      branch: cursor/dissemination-upload-e25c
+      stage: 04-tech-plan
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: "2026-07-21"
+      files_changed:
+        - docs/adr/ADR-030-dissemination-package-architecture.md
+        - docs/sessions/S019-dissemination-upload/reports/04-tech-plan.md
+        - docs/api-contract.md
+        - docs/spec.md
+        - workflow-state.yaml
     - sha: d2e29b0cdee3a09b19b6fc57128752eba3814d1d
       short: d2e29b0
       branch: cursor/dissemination-upload-e25c
