@@ -153,7 +153,7 @@ describe('dissemination helpers', () => {
       json: async () => {
         throw new Error('not json');
       },
-    } as Response);
+    } as unknown as Response);
 
     await expect(
       disseminationPreflight('tok', { sink_type: 'wis2', params: {} }),
