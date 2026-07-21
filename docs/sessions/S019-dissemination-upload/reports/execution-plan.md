@@ -14,10 +14,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — **07-build** M4 complete; next M5 |
-| **Active milestone** | M5 — AMHS / SWIM / AFS (F19) |
-| **Active task** | T5.1 (next) |
-| **Tasks** | 20 / **29** completed (through T4.3) |
+| **Active phase** | Phase C — **07-build** M5 complete; next M6 |
+| **Active milestone** | M6 — FE drawer + connectivity + verify |
+| **Active task** | T6.1 (next) |
+| **Tasks** | 23 / **29** completed (through T5.3) |
+| **Branch** | `cursor/s019-t51-adapter-stubs-584b` (M5; PR → `main`) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -91,9 +92,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T5.1 | Test | Adapter interface + staging stub behaviors | F19; S-EV014-M2 | T2.4 | pending |
-| T5.2 | Code | AMHS/SWIM/AFS sink stubs + drawer-ready sink_type enums | ADR-030; E14-05 | T5.1 | pending |
-| T5.3 | Test | Staging/test path green for each adapter (mocked transport OK) | TC-F19; E14-09 | T5.2 | pending |
+| T5.1 | Test | Adapter interface + staging stub behaviors | F19; S-EV014-M2 | T2.4 | **completed** |
+| T5.2 | Code | AMHS/SWIM/AFS sink stubs + drawer-ready sink_type enums | ADR-030; E14-05 | T5.1 | **completed** |
+| T5.3 | Test | Staging/test path green for each adapter (mocked transport OK) | TC-F19; E14-09 | T5.2 | **completed** |
 
 ### M6 — FE drawer + connectivity + verify (F16–F19 UI)
 

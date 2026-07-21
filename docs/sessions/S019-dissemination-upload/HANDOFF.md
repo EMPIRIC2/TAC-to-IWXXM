@@ -3,21 +3,22 @@
 ## Resume in next chat
 
 ```
-/16-evolve continue S019/EV-014 — 07-build M5 T5.1
+/16-evolve continue S019/EV-014 — 07-build M6 T6.1
 ```
 
 | Field | Value |
 |-------|-------|
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
-| Merged | #761–#766 (through **M4** / T4.3 EDIS SMTP preflight) |
-| Latest merges | #765 (T4.1–T4.2), #766 (T4.3) → `main` |
-| Done | M1; M2; M3; **M4 complete** (F18 EDIS) |
-| Next | **T5.1** Adapter interface + staging stub behaviors (F19) |
-| Branch for next work | create `cursor/s019-t51-…-ac66` (or repo convention) off **`main`** |
+| Merged | #761–#767 (through **M4** / handoff) |
+| Open PR | M5 F19 stubs — `cursor/s019-t51-adapter-stubs-584b` (T5.1–T5.3) |
+| Done | M1; M2; M3; M4; **M5 complete** (F19 staging stubs) |
+| Next | **T6.1** Vitest: drawer sink chooser + preflight diff + block Send |
+| Branch for next work | create `cursor/s019-t61-…-584b` off **`main`** after M5 PR merges (or continue on tip) |
 
 ## Do not skip
 
 - Live BYOC close gate before cycle close (Postgres + WIS2 + EDIS)
 - TC-F18-002 live EDIS remains cycle-close only
 - F19 live demo optional (evidence or waive); does not block EV-014 close
+- M6 ships FE drawer + H4–H5 (E14-10)

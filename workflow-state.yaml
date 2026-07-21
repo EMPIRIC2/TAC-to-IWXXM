@@ -10,12 +10,12 @@ active_session:
   type: feature
   intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2) staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: main
+  branch: cursor/s019-t51-adapter-stubs-584b
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'M4 merged via #765+#766; next T5.1 off main'
+  note: 'M5 complete (T5.1–T5.3 F19 staging stubs). Next M6 T6.1 Vitest drawer. Progress 23/29.'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -69,7 +69,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build M4 merged (#765+#766→main); next M5 T5.1 off main; progress 20/29"
+      note: "Phase C — 07-build M6 T6.1 pending (cursor/s019-t51-adapter-stubs-584b); progress 23/29; M5 done"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -124,7 +124,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-21'
-      note: 'M4 merged via #765 (4cc4b58) + #766 (df34500)→main; next T5.1 off main; progress 20/29'
+      note: 'M6 T6.1 pending on cursor/s019-t51-adapter-stubs-584b; tip a8f2cb0; progress 23/29; M5 done (T5.1–T5.3)'
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2387,9 +2387,10 @@ stages:
         started_at: '2026-07-21'
         started: '2026-07-21'
         mode: full
-        note: 'M4 merged via #765+#766→main; next T5.1 off main; progress 20/29'
-        active_milestone: M5
-        active_task: T5.1
+        note: 'M5 complete (T5.1–T5.3 F19 staging stubs). Next M6 T6.1 Vitest drawer. Progress 23/29.'
+        progress: '23/29'
+        active_milestone: M6
+        active_task: T6.1
         active_task_status: pending
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
@@ -2441,6 +2442,8 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - '2026-07-21 S019/EV-014 M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0). Next M6 T6.1 Vitest drawer. Progress 23/29.'
+      - '2026-07-21 S019/EV-014 T5.1 in_progress — adapter interface + staging stub behaviors (F19) on cursor/s019-t51-adapter-stubs-584b off origin/main; progress 20/29'
       - '2026-07-21 S019/EV-014 M4 MERGED to main — #765 @ 4cc4b58 (12:55:49Z) then #766 @ df34500 (12:55:59Z). Next T5.1 off main. Progress 20/29. Session/cycle remain open.'
       - '2026-07-21 S019/EV-014 #766 ready_for_review (CI green) @ tip 1002baa; recorded coverage fix + CI trigger + 07edc63 chore. Prefer merge #765 then #766. T5.1 still pending; 20/29.'
       - '2026-07-21 S019/EV-014 T4.3 completed — SMTP preflight (no live send) @ ab62daf on cursor/s019-t43-smtp-preflight-ac66; PR #766 open draft (base t41). M4 complete (20/29). Next M5 T5.1. #765 ready for review.'
@@ -2570,9 +2573,10 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: 'M4 merged via #765+#766→main; next T5.1 off main; progress 20/29'
-      active_milestone: M5
-      active_task: T5.1
+      note: 'M5 complete (T5.1–T5.3 F19 staging stubs). Next M6 T6.1 Vitest drawer. Progress 23/29.'
+      progress: '23/29'
+      active_milestone: M6
+      active_task: T6.1
       active_task_status: pending
   09-qa:
     status: completed
@@ -3140,7 +3144,7 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M4 merged (#765+#766→main); next T5.1 off main; progress 20/29
+      Phase C — 07-build M6 T6.1 pending (cursor/s019-t51-adapter-stubs-584b); progress 23/29; M5 done
 
 stages_pending: []
 
@@ -7728,12 +7732,15 @@ evolve_cycles:
       skipped_stages: []
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
     current_stage: 07-build
-    active_milestone: M5
-    active_task: T5.1
+    active_milestone: M6
+    active_task: T6.1
     active_task_status: pending
-    branch: main
-    note: 'M4 merged via #765+#766; next T5.1 off main; progress 20/29'
+    progress: '23/29'
+    branch: cursor/s019-t51-adapter-stubs-584b
+    note: 'M5 complete (T5.1–T5.3 F19 staging stubs). Next M6 T6.1 Vitest drawer.'
     notes:
+      - '2026-07-21 S019/EV-014 M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0). Next M6 T6.1 Vitest drawer. Progress 23/29.'
+      - '2026-07-21 S019/EV-014 T5.1 in_progress — adapter interface + staging stub behaviors (F19) on cursor/s019-t51-adapter-stubs-584b off origin/main; progress 20/29'
       - '2026-07-21 S019/EV-014 M4 MERGED to main — #765 @ 4cc4b5840e6451587718c7fdccb40f3516988079 (12:55:49Z) then #766 @ df3450043bbbaf85f4bed9949e1b657483e4a06e (12:55:59Z). Next T5.1 off main. Progress 20/29. Session/cycle remain open.'
       - '2026-07-21 S019/EV-014 #766 ready_for_review (CI green) @ tip 1002baa (coverage + CI trigger + 07edc63). Prefer merge #765 then #766. T5.1 pending; session/cycle open; 20/29.'
       - '2026-07-21 S019/EV-014 T4.3 completed — SMTP preflight (no live send) @ ab62daf on cursor/s019-t43-smtp-preflight-ac66; PR #766 open_draft (base cursor/s019-t41-edis-format-c6f7). M4 complete (20/29). Next M5 T5.1. #765 undrafted / ready_for_review (CI green). Session/cycle remain open.'
@@ -7882,9 +7889,10 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-21'
-        note: 'M4 merged via #765+#766→main; next T5.1 off main; progress 20/29'
-        active_milestone: M5
-        active_task: T5.1
+        note: 'M5 complete (T5.1–T5.3 F19 staging stubs). Next M6 T6.1 Vitest drawer. Progress 23/29.'
+        progress: '23/29'
+        active_milestone: M6
+        active_task: T6.1
         active_task_status: pending
     gates:
       a_to_b: passed
@@ -10445,14 +10453,16 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: main
+  current_branch: cursor/s019-t51-adapter-stubs-584b
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: df3450043bbbaf85f4bed9949e1b657483e4a06e
-  tip_sha_full: df3450043bbbaf85f4bed9949e1b657483e4a06e
-  note: 'Next work (T5.1) should branch from main @ df34500 (#766 merge tip)'
+  tip_sha: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
+  tip_sha_full: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
+  note: 'M5 complete (T5.1–T5.3) on cursor/s019-t51-adapter-stubs-584b; tip a8f2cb0; next M6 T6.1; progress 23/29'
   notes:
+    - '2026-07-21 S019/EV-014 M5 complete (T5.1–T5.3 @ 33705dd/17b1094/a8f2cb0) on cursor/s019-t51-adapter-stubs-584b; next M6 T6.1 Vitest drawer; progress 23/29'
+    - '2026-07-21 S019/EV-014 T5.1 in_progress — adapter interface + staging stub behaviors (F19) on cursor/s019-t51-adapter-stubs-584b off origin/main; progress 20/29; tip 58cc427'
     - '2026-07-21 S019/EV-014 M4 MERGED to main — #765 @ 4cc4b58 (12:55:49Z) then #766 @ df34500 (12:55:59Z). Branches t41+t43 merged. Next T5.1 off main. Progress 20/29.'
     - '2026-07-21 S019/EV-014 tip 1002baa on t43 — coverage fix + d903085 CI trigger + 07edc63 chore; #766 ready_for_review (CI green). Prefer merge #765 then #766. T5.1 pending; 20/29.'
     - '2026-07-21 S019/EV-014 T4.3 completed — ab62daf on cursor/s019-t43-smtp-preflight-ac66; PR #766 open_draft (base t41). M4 done (20/29); next T5.1. #765 ready_for_review / CI green.'
@@ -10650,6 +10660,18 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: cursor/s019-t51-adapter-stubs-584b
+      status: open
+      base: main
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      purpose: S019/EV-014 07-build M5 T5.1–T5.3 F19 adapter stubs; next M6 T6.1
+      tip_sha: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
+      tip_sha_full: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
+      pushed: true
+      note: 'M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0); next M6 T6.1 Vitest drawer'
     - name: cursor/s019-t43-smtp-preflight-ac66
       status: merged
       base: cursor/s019-t41-edis-format-c6f7
@@ -11179,6 +11201,30 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
+      short: a8f2cb0
+      branch: cursor/s019-t51-adapter-stubs-584b
+      message: '[T5.3] test: TC-F19-001..003 staging path green per adapter'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+    - sha: 17b109444aa0cdc0f80115d6bf4374e6574cfd9e
+      short: 17b1094
+      branch: cursor/s019-t51-adapter-stubs-584b
+      message: '[T5.2] feat: F19 SinkAdapter + AMHS/SWIM/AFS staging stubs'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+    - sha: 33705dda8da6cb94592fb702e7208190cf8e640c
+      short: 33705dd
+      branch: cursor/s019-t51-adapter-stubs-584b
+      message: '[T5.1] test: F19 adapter interface + staging stub behaviors'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
     - sha: df3450043bbbaf85f4bed9949e1b657483e4a06e
       short: df34500
       branch: main
