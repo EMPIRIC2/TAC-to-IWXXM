@@ -14,10 +14,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — **07-build** M4 complete; next M5 |
-| **Active milestone** | M5 — AMHS / SWIM / AFS (F19) |
-| **Active task** | T5.1 (next) |
-| **Tasks** | 20 / **29** completed (through T4.3) |
+| **Active phase** | Phase C — **07-build** M6 in progress |
+| **Active milestone** | M6 — FE drawer + connectivity + verify |
+| **Active task** | T6.6 (next) |
+| **Tasks** | 28 / **29** completed (through T6.5) |
+| **Branch** | `cursor/s019-t64-verify-build-7820` (PR #771) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -91,19 +92,19 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T5.1 | Test | Adapter interface + staging stub behaviors | F19; S-EV014-M2 | T2.4 | pending |
-| T5.2 | Code | AMHS/SWIM/AFS sink stubs + drawer-ready sink_type enums | ADR-030; E14-05 | T5.1 | pending |
-| T5.3 | Test | Staging/test path green for each adapter (mocked transport OK) | TC-F19; E14-09 | T5.2 | pending |
+| T5.1 | Test | Adapter interface + staging stub behaviors | F19; S-EV014-M2 | T2.4 | **completed** |
+| T5.2 | Code | AMHS/SWIM/AFS sink stubs + drawer-ready sink_type enums | ADR-030; E14-05 | T5.1 | **completed** |
+| T5.3 | Test | Staging/test path green for each adapter (mocked transport OK) | TC-F19; E14-09 | T5.2 | **completed** |
 
 ### M6 — FE drawer + connectivity + verify (F16–F19 UI)
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.1 | Test | Vitest: drawer sink chooser + preflight diff + block Send | TC-F16-001/004; UJ-027 | T2.4 | pending |
-| T6.2 | Code | Dissemination drawer UI (URI, drag-drop, sink types) | F16–F19; E14-10 | T6.1 | pending |
-| T6.3 | Test | Playwright UJ-027–030 smokes (H6′) | test-plan H6′ | T6.2, T3.4, T4.3, T5.3 | pending |
-| T6.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5, T6.2 | pending |
-| T6.5 | Config | 12-verify-deploy checklist (allowlist + Compose harness) | 12; E14-08 | T6.4 | pending |
+| T6.1 | Test | Vitest: drawer sink chooser + preflight diff + block Send | TC-F16-001/004; UJ-027 | T2.4 | **completed** |
+| T6.2 | Code | Dissemination drawer UI (URI, drag-drop, sink types) | F16–F19; E14-10 | T6.1 | **completed** |
+| T6.3 | Test | Playwright UJ-027–030 smokes (H6′) | test-plan H6′ | T6.2, T3.4, T4.3, T5.3 | **completed** |
+| T6.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5, T6.2 | **completed** |
+| T6.5 | Config | 12-verify-deploy checklist (allowlist + Compose harness) | 12; E14-08 | T6.4 | **completed** |
 | T6.6 | Config | 13-deploy-smoke H1–H5 + H0c; live BYOC close gate evidence | 13; Q15/Q21; TC-F17-002 | T6.5 | pending |
 
 ### Stage 06 (before 07-build; optional tooling)

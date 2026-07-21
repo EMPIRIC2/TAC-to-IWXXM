@@ -65,6 +65,14 @@ Deploy / image notes (CI skip policy, stock API Dockerfile without `msodbcsql18`
 - `dissemination.transports.AiosmtpClient` — `aiosmtplib` SMTP client; preflight is
   connect/login only (never `send_message` in CI)
 
+**F19 AMHS / SWIM / AFS (T5.1–T5.2 / S-EV014-M2)**
+
+- `dissemination.sink.SinkAdapter` — shared preflight/send Protocol (E14-05)
+- `dissemination.f19_stubs` — staging stubs (`get_staging_sink`); allowlist only,
+  no live AMHS/SWIM/AFS libraries this cycle
+- `dissemination.models.DRAWER_SINK_TYPES` — drawer-ready sink enum tuple (F16–F19)
+- Live F19 demo optional at cycle close; staging/test path required
+
 - Env: `DISSEMINATION_EGRESS_ALLOWLIST` (see `.env.example`, ADR-029)
 - Empty ⇒ fail-closed
 - Compose wis2box harness: `make compose-wis2box-up` / `compose-wis2box-harness`

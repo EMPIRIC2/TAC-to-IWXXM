@@ -11,7 +11,6 @@ ROOT = Path(__file__).resolve().parents[2]
 README_PATHS = [
     ROOT / "README.md",
     ROOT / "apps" / "frontend" / "README.md",
-    ROOT / "packages" / "gifts" / "README.md",
     ROOT / "vendor" / "schemas" / "iwxxm-translation" / "README.md",
     ROOT / "vendor" / "schemas" / "iwxxm" / "README.md",
     ROOT / "vendor" / "schemas" / "iwxxm-codelists" / "README.md",

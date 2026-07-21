@@ -10,12 +10,12 @@ active_session:
   type: feature
   intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2) staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: main
+  branch: cursor/s019-t64-verify-build-7820
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'M4 merged via #765+#766; next T5.1 off main'
+  note: 'T6.5 PASS (deploy-checklist); next T6.6; progress 28/29; PR #771'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -54,6 +54,9 @@ active_session:
     - packages/dissemination/src/dissemination/allowlist.py
     - packages/dissemination/tests/test_package_layout.py
     - packages/dissemination/tests/test_allowlist.py
+    - docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
+    - docs/sessions/S019-dissemination-upload/reports/verification-report.md
+    - docs/sessions/S019-dissemination-upload/reports/deploy-checklist.md
   routing_plan:
     - stage: 00-context
       required: true
@@ -69,7 +72,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build M4 merged (#765+#766→main); next M5 T5.1 off main; progress 20/29"
+      note: "Phase C — 07-build M6 T6.5 PASS; next T6.6; progress 28/29"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -124,13 +127,13 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-21'
-      note: 'M4 merged via #765 (4cc4b58) + #766 (df34500)→main; next T5.1 off main; progress 20/29'
+      note: 'T6.5 PASS (12-verify-deploy checklist); progress 28/29; next T6.6 (13-deploy-smoke)'
     - stage: 08-verify-build
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Full routing (Q24=A) — await prior stages
+      note: 'Full routing (Q24=A) — T6.4 invoked 08 as M6 config under 07-build (PASS; verification-report.md); stage still pending for C→D'
     - stage: 09-qa
       required: true
       mode: full
@@ -2387,10 +2390,13 @@ stages:
         started_at: '2026-07-21'
         started: '2026-07-21'
         mode: full
-        note: 'M4 merged via #765+#766→main; next T5.1 off main; progress 20/29'
-        active_milestone: M5
-        active_task: T5.1
+        note: 'T6.5 PASS (deploy-checklist); next T6.6; progress 28/29; PR #771'
+        progress: '27/29'
+        active_milestone: M6
+        active_task: T6.5
         active_task_status: pending
+        report: docs/sessions/S019-dissemination-upload/reports/verification-report.md
+        branch: cursor/s019-t64-verify-build-7820
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2441,6 +2447,14 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29. Artifact docs/sessions/S019-dissemination-upload/reports/07-build-t63.md; log /opt/cursor/artifacts/t63-playwright-uj027-030.log.'
+      - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
+      - '2026-07-21 S019/EV-014 PR #769 CI/CD Pipeline passed (frontend coverage restored). T6.1+T6.2 done; tip 6e247af on cursor/s019-t61-drawer-vitest-a804; next M6 T6.3; progress 25/29.'
+      - '2026-07-21 S019/EV-014 T6.2 completed @ fcec16f (plus follow-up chore @ 36287f8) — DisseminationDrawer + non-DB BYOC params. Next M6 T6.3 Playwright UJ-027–030 smokes. Progress 25/29. PR #769 → main (includes M5 tip + T6.1 + T6.2; supersedes stacking on #768). Tip 36287f8.'
+      - '2026-07-21 S019/EV-014 T6.1 completed @ c56f8ed — Vitest drawer sink chooser + preflight + block Send. Next M6 T6.2 drawer UI. Progress 24/29. Lingering M5 PR #768.'
+      - '2026-07-21 S019/EV-014 T6.1 in_progress — Vitest drawer sink chooser + preflight + block Send on cursor/s019-t61-drawer-vitest-a804 (off M5 tip / PR #768 base). Progress 23/29.'
+      - '2026-07-21 S019/EV-014 M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0). Next M6 T6.1 Vitest drawer. Progress 23/29.'
+      - '2026-07-21 S019/EV-014 T5.1 in_progress — adapter interface + staging stub behaviors (F19) on cursor/s019-t51-adapter-stubs-584b off origin/main; progress 20/29'
       - '2026-07-21 S019/EV-014 M4 MERGED to main — #765 @ 4cc4b58 (12:55:49Z) then #766 @ df34500 (12:55:59Z). Next T5.1 off main. Progress 20/29. Session/cycle remain open.'
       - '2026-07-21 S019/EV-014 #766 ready_for_review (CI green) @ tip 1002baa; recorded coverage fix + CI trigger + 07edc63 chore. Prefer merge #765 then #766. T5.1 still pending; 20/29.'
       - '2026-07-21 S019/EV-014 T4.3 completed — SMTP preflight (no live send) @ ab62daf on cursor/s019-t43-smtp-preflight-ac66; PR #766 open draft (base t41). M4 complete (20/29). Next M5 T5.1. #765 ready for review.'
@@ -2570,10 +2584,12 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: 'M4 merged via #765+#766→main; next T5.1 off main; progress 20/29'
-      active_milestone: M5
-      active_task: T5.1
+      note: 'T6.3 Playwright UJ-027–030 6/6 green; PR #770; next T6.4 08-verify-build; tip TBD after commit'
+      progress: '26/29'
+      active_milestone: M6
+      active_task: T6.4
       active_task_status: pending
+      report: docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -2844,6 +2860,16 @@ stages:
       report:
         status: completed
     delta_substages:
+      - id: S019-dissemination-upload
+        session_id: S019-dissemination-upload
+        evolve_cycle_id: EV-014
+        status: pass
+        mode: delta
+        note: 'T6.4 config task under 07-build — verification-report.md PASS'
+        report: docs/sessions/S019-dissemination-upload/reports/verification-report.md
+        active_milestone: M6
+        active_task: T6.4
+        active_task_status: completed
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -3140,7 +3166,8 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M4 merged (#765+#766→main); next T5.1 off main; progress 20/29
+      Phase C — 07-build T6.3 done (Playwright UJ-027–030 6/6); PR #770;
+      next T6.4 08-verify-build; progress 26/29; tip 9f755d5
 
 stages_pending: []
 
@@ -3370,6 +3397,17 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: N-S019-EV014-T61-start
+    date: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 07-build
+    skill_id: 07-build
+    status: noted
+    decision: >-
+      M6 T6.1 started on cursor/s019-t61-drawer-vitest-a804 branched from M5 tip
+      cursor/s019-t51-adapter-stubs-584b (lingering PR #768 still open with M5 work — base of this branch).
+      Progress 23/29; previous M5 session work continued via branch-from-tip rather than waiting on #768 merge.
   - id: D-S019-EV014-T34-transports
     date: '2026-07-21'
     session_id: S019-dissemination-upload
@@ -7591,6 +7629,20 @@ artifacts:
     session_id: S008-general-tac-iwxxm-converter
     status: complete
 
+  - path: docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
+    kind: stage_report
+    type: report
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 07-build
+    skill_id: 07-build
+    status: completed
+    created: '2026-07-21'
+    created_at: '2026-07-21'
+    updated_at: '2026-07-21'
+    note: >-
+      T6.3 Playwright UJ-027–030 6/6 green; PR #770; log
+      /opt/cursor/artifacts/t63-playwright-uj027-030.log
   - path: docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     kind: stage_report
     session_id: S019-dissemination-upload
@@ -7728,12 +7780,23 @@ evolve_cycles:
       skipped_stages: []
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
     current_stage: 07-build
-    active_milestone: M5
-    active_task: T5.1
+    active_milestone: M6
+    active_task: T6.6
     active_task_status: pending
-    branch: main
-    note: 'M4 merged via #765+#766; next T5.1 off main; progress 20/29'
+    progress: '28/29'
+    branch: cursor/s019-t64-verify-build-7820
+    note: 'T6.5 12-verify-deploy checklist PASS; next T6.6; progress 28/29'
     notes:
+      - '2026-07-21 S019/EV-014 T6.5 COMPLETE — 12-verify-deploy checklist PASS (allowlist docs + Compose harness; live Render allowlist confirm at T6.6). Artifact deploy-checklist.md. Progress 28/29.'
+      - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS (prettier UJ-027–030 e2e + badge_audit drop gifts); next T6.5 12-verify-deploy; progress 27/29. Artifact docs/sessions/S019-dissemination-upload/reports/verification-report.md. Branch cursor/s019-t64-verify-build-7820.'
+      - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29. Artifact docs/sessions/S019-dissemination-upload/reports/07-build-t63.md; log /opt/cursor/artifacts/t63-playwright-uj027-030.log.'
+      - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
+      - '2026-07-21 S019/EV-014 PR #769 CI/CD Pipeline passed (frontend coverage restored). T6.1+T6.2 done; tip 6e247af on cursor/s019-t61-drawer-vitest-a804; next M6 T6.3; progress 25/29.'
+      - '2026-07-21 S019/EV-014 T6.2 completed @ fcec16f (plus follow-up chore @ 36287f8) — DisseminationDrawer + non-DB BYOC params. Next M6 T6.3 Playwright UJ-027–030 smokes. Progress 25/29. PR #769 → main (includes M5 tip + T6.1 + T6.2; supersedes stacking on #768). Tip 36287f8.'
+      - '2026-07-21 S019/EV-014 T6.1 completed @ c56f8ed — Vitest drawer sink chooser + preflight + block Send. Next M6 T6.2 drawer UI. Progress 24/29. Lingering M5 PR #768.'
+      - '2026-07-21 S019/EV-014 T6.1 in_progress on cursor/s019-t61-drawer-vitest-a804 (off M5 tip / PR #768 base cursor/s019-t51-adapter-stubs-584b). M5 work continued via branch-from-tip; #768 still open. Progress 23/29.'
+      - '2026-07-21 S019/EV-014 M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0). Next M6 T6.1 Vitest drawer. Progress 23/29.'
+      - '2026-07-21 S019/EV-014 T5.1 in_progress — adapter interface + staging stub behaviors (F19) on cursor/s019-t51-adapter-stubs-584b off origin/main; progress 20/29'
       - '2026-07-21 S019/EV-014 M4 MERGED to main — #765 @ 4cc4b5840e6451587718c7fdccb40f3516988079 (12:55:49Z) then #766 @ df3450043bbbaf85f4bed9949e1b657483e4a06e (12:55:59Z). Next T5.1 off main. Progress 20/29. Session/cycle remain open.'
       - '2026-07-21 S019/EV-014 #766 ready_for_review (CI green) @ tip 1002baa (coverage + CI trigger + 07edc63). Prefer merge #765 then #766. T5.1 pending; session/cycle open; 20/29.'
       - '2026-07-21 S019/EV-014 T4.3 completed — SMTP preflight (no live send) @ ab62daf on cursor/s019-t43-smtp-preflight-ac66; PR #766 open_draft (base cursor/s019-t41-edis-format-c6f7). M4 complete (20/29). Next M5 T5.1. #765 undrafted / ready_for_review (CI green). Session/cycle remain open.'
@@ -7805,7 +7868,7 @@ evolve_cycles:
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase C — 07-build M4 merged (#765+#766→main); next M5 T5.1 off main; progress 20/29"
+        note: "Phase C — 07-build M6 T6.2 done @ fcec16f; next T6.3 Playwright UJ-027–030; progress 25/29; PR #769 → main (supersedes #768 stack)"
       01-requirements:
         status: completed
         mode: delta
@@ -7882,10 +7945,12 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-21'
-        note: 'M4 merged via #765+#766→main; next T5.1 off main; progress 20/29'
-        active_milestone: M5
-        active_task: T5.1
+        note: 'T6.3 Playwright UJ-027–030 6/6 green; PR #770; next T6.4 08-verify-build; tip TBD after commit'
+        progress: '26/29'
+        active_milestone: M6
+        active_task: T6.4
         active_task_status: pending
+        report: docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
     gates:
       a_to_b: passed
       b_to_c: passed
@@ -7969,7 +8034,12 @@ evolve_cycles:
         note: T0.1 done — coverage + CI Compose hooks
       - path: docs/sessions/S019-dissemination-upload/reports/execution-plan.md
         status: updated
-        note: 29 tasks; S1–S8 fixes from 05 audit
+        note: 29 tasks; S1–S8 fixes from 05 audit; T6.3 completed (26/29)
+      - path: docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
+        status: completed
+        kind: stage_report
+        stage: 07-build
+        note: T6.3 Playwright UJ-027–030 6/6 green; PR #770
     issues:
       - I-S019-EV014-Q20C-vendors
       - I-S019-EV014-Q14r-extras-enum
@@ -10445,14 +10515,25 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: main
+  current_branch: cursor/s019-t64-verify-build-7820
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: df3450043bbbaf85f4bed9949e1b657483e4a06e
-  tip_sha_full: df3450043bbbaf85f4bed9949e1b657483e4a06e
-  note: 'Next work (T5.1) should branch from main @ df34500 (#766 merge tip)'
+  tip_sha: 2ce8bb9
+  tip_sha_full: 2ce8bb9
+  note: 'T6.4 PASS; PR #771 CI green (29846488131); next T6.5; progress 27/29'
   notes:
+    - '2026-07-21 S019/EV-014 T6.5 COMPLETE — deploy-checklist.md PASS; next T6.6; progress 28/29; tip pending'
+    - '2026-07-21 S019/EV-014 PR #771 CI/CD Pipeline success (29846488131); tip 2ce8bb9; T6.4 complete; next T6.5'
+    - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS on cursor/s019-t64-verify-build-7820 (prettier UJ e2e + badge_audit gifts drop); next T6.5; progress 27/29; report verification-report.md'
+    - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open (https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/770); next T6.4; progress 26/29'
+    - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
+    - '2026-07-21 S019/EV-014 PR #769 CI/CD Pipeline passed (frontend coverage restored). T6.1+T6.2 done; tip 6e247af on cursor/s019-t61-drawer-vitest-a804; next M6 T6.3; progress 25/29.'
+    - '2026-07-21 S019/EV-014 T6.2 completed @ fcec16f (plus follow-up chore @ 36287f8) — DisseminationDrawer + non-DB BYOC; PR #769 → main; next T6.3; tip 36287f8; progress 25/29'
+    - '2026-07-21 S019/EV-014 T6.1 completed @ c56f8ed — Vitest drawer sink chooser + preflight + block Send; next T6.2; tip c56f8ed; progress 24/29'
+    - '2026-07-21 S019/EV-014 T6.1 in_progress — branch cursor/s019-t61-drawer-vitest-a804 off cursor/s019-t51-adapter-stubs-584b (PR #768 still open); tip 9adac89; progress 23/29'
+    - '2026-07-21 S019/EV-014 M5 complete (T5.1–T5.3 @ 33705dd/17b1094/a8f2cb0) on cursor/s019-t51-adapter-stubs-584b; next M6 T6.1 Vitest drawer; progress 23/29'
+    - '2026-07-21 S019/EV-014 T5.1 in_progress — adapter interface + staging stub behaviors (F19) on cursor/s019-t51-adapter-stubs-584b off origin/main; progress 20/29; tip 58cc427'
     - '2026-07-21 S019/EV-014 M4 MERGED to main — #765 @ 4cc4b58 (12:55:49Z) then #766 @ df34500 (12:55:59Z). Branches t41+t43 merged. Next T5.1 off main. Progress 20/29.'
     - '2026-07-21 S019/EV-014 tip 1002baa on t43 — coverage fix + d903085 CI trigger + 07edc63 chore; #766 ready_for_review (CI green). Prefer merge #765 then #766. T5.1 pending; 20/29.'
     - '2026-07-21 S019/EV-014 T4.3 completed — ab62daf on cursor/s019-t43-smtp-preflight-ac66; PR #766 open_draft (base t41). M4 done (20/29); next T5.1. #765 ready_for_review / CI green.'
@@ -10650,6 +10731,70 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: cursor/s019-t64-verify-build-7820
+      status: active
+      base: cursor/s019-t63-dissemination-e2e-8b16
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      purpose: S019/EV-014 07-build M6 T6.4 08-verify-build
+      tip_sha: 2ce8bb9
+      tip_sha_full: 2ce8bb90f91e99abc9efa44385f137a1576393ba
+      pushed: true
+      pr_number: 771
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771
+      note: 'T6.4 PASS; CI green #771; next T6.5; progress 27/29'
+    - name: cursor/s019-t63-dissemination-e2e-8b16
+      status: open
+      base: cursor/s019-t61-drawer-vitest-a804
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      purpose: S019/EV-014 07-build M6 T6.3 Playwright UJ-027–030 dissemination e2e smokes
+      tip_sha: 9f755d523804eae08e07fc5711dcdd736f71bd11
+      tip_sha_full: 9f755d523804eae08e07fc5711dcdd736f71bd11
+      pushed: true
+      pr_number: 770
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/770
+      pr_title: '[T6.3] Playwright UJ-027–030 dissemination drawer H6′ smokes'
+      pr_base: cursor/s019-t61-drawer-vitest-a804
+      pr_head: cursor/s019-t63-dissemination-e2e-8b16
+      pr_status: open
+      note: 'T6.3 completed; Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4; progress 26/29; tip 9f755d5'
+    - name: cursor/s019-t61-drawer-vitest-a804
+      status: open
+      base: cursor/s019-t51-adapter-stubs-584b
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      purpose: S019/EV-014 07-build M6 T6.1–T6.2 Dissemination drawer (Vitest + UI wire); base for T6.3
+      tip_sha: 1f7d9b5b6f1786081edcf08cb5c5478b7dffcd64
+      tip_sha_full: 1f7d9b5b6f1786081edcf08cb5c5478b7dffcd64
+      pushed: true
+      pr_number: 769
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/769
+      pr_title: '[M5+T6.1+T6.2] Dissemination drawer + F19 stubs (S019 / EV-014)'
+      pr_base: main
+      pr_head: cursor/s019-t61-drawer-vitest-a804
+      pr_status: open
+      note: 'T6.1+T6.2 done; PR #769 CI green (frontend coverage restored); tip 6e247af; next T6.3 Playwright UJ-027–030; progress 25/29'
+    - name: cursor/s019-t51-adapter-stubs-584b
+      status: open
+      base: main
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      purpose: S019/EV-014 07-build M5 T5.1–T5.3 F19 adapter stubs; base for M6 T6.1 branch
+      tip_sha: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
+      tip_sha_full: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
+      pushed: true
+      pr_number: 768
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/768
+      note: 'M5 complete (T5.1–T5.3 F19 staging stubs @ 33705dd/17b1094/a8f2cb0); PR #768 superseded for merge stacking by #769 (t61 includes M5 tip + T6.1 + T6.2)'
     - name: cursor/s019-t43-smtp-preflight-ac66
       status: merged
       base: cursor/s019-t41-edis-format-c6f7
@@ -11179,6 +11324,109 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 9f755d523804eae08e07fc5711dcdd736f71bd11
+      short: 9f755d5
+      branch: cursor/s019-t63-dissemination-e2e-8b16
+      message: '[T6.3] test: Playwright UJ-027–030 dissemination drawer H6′ smokes'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21T15:35:00Z'
+      files_changed:
+        - apps/e2e
+        - docs/sessions/S019-dissemination-upload
+      note: 'T6.3 Playwright UJ-027–030 6/6 green; PR #770 open; tip may be amended if tip moves'
+      pr_number: 770
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/770
+      pr_status: open
+    - sha: 9fce1edf470ca1968ce3673f7fd763b7816651da
+      short: 9fce1ed
+      branch: cursor/s019-t61-drawer-vitest-a804
+      message: '[S019] chore: record #769 CI green; next M6 T6.3'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21T14:29:24Z'
+      files_changed:
+        - workflow-state.yaml
+      note: 'Record PR #769 CI/CD Pipeline green (frontend coverage restored); next T6.3'
+    - sha: 6e247af3c93543953f03d1beabbe7de686d1873e
+      short: 6e247af
+
+      branch: cursor/s019-t61-drawer-vitest-a804
+      message: '[S019] docs: note PR #769 CI green; next T6.3 Playwright'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21T14:20:00Z'
+      files_changed:
+        - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+      note: 'PR #769 CI/CD Pipeline passed; frontend coverage restored; tip before workflow-state chore'
+    - sha: 36287f8e84c21a3780668254c95860ebe28a7c42
+      short: 36287f8
+      branch: cursor/s019-t61-drawer-vitest-a804
+      message: '[S019] chore: mark T6.2 complete; next M6 T6.3'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21T14:00:32Z'
+      files_changed:
+        - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+      note: 'Follow-up chore after T6.2; tip of PR #769'
+    - sha: fcec16fdf1fec8a2a3d83ed027f4116b042cf234
+      short: fcec16f
+      branch: cursor/s019-t61-drawer-vitest-a804
+      message: '[T6.2] feat: wire DisseminationDrawer + non-DB BYOC params'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21T14:00:12Z'
+      files_changed:
+        - apps/frontend/src/app/components/DisseminationDrawer.test.tsx
+        - apps/frontend/src/app/components/DisseminationDrawer.tsx
+        - apps/frontend/src/app/components/FileConverter.tsx
+        - apps/frontend/src/utils/dissemination.ts
+        - docs/sessions/S019-dissemination-upload/HANDOFF.md
+        - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+    - sha: c56f8ed095e7a257e8791334f7161bfd9f48003f
+      short: c56f8ed
+      branch: cursor/s019-t61-drawer-vitest-a804
+      message: '[T6.1] test: Vitest drawer sink chooser + preflight + block Send'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21T13:50:41Z'
+      files_changed:
+        - apps/frontend/src/app/components/DisseminationDrawer.test.tsx
+        - apps/frontend/src/app/components/DisseminationDrawer.tsx
+        - apps/frontend/src/utils/dissemination.test.ts
+        - apps/frontend/src/utils/dissemination.ts
+        - docs/sessions/S019-dissemination-upload/HANDOFF.md
+        - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+    - sha: a8f2cb05c0129405d84fcf1d4cfe85a20094dfaf
+      short: a8f2cb0
+      branch: cursor/s019-t51-adapter-stubs-584b
+      message: '[T5.3] test: TC-F19-001..003 staging path green per adapter'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+    - sha: 17b109444aa0cdc0f80115d6bf4374e6574cfd9e
+      short: 17b1094
+      branch: cursor/s019-t51-adapter-stubs-584b
+      message: '[T5.2] feat: F19 SinkAdapter + AMHS/SWIM/AFS staging stubs'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+    - sha: 33705dda8da6cb94592fb702e7208190cf8e640c
+      short: 33705dd
+      branch: cursor/s019-t51-adapter-stubs-584b
+      message: '[T5.1] test: F19 adapter interface + staging stub behaviors'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
     - sha: df3450043bbbaf85f4bed9949e1b657483e4a06e
       short: df34500
       branch: main

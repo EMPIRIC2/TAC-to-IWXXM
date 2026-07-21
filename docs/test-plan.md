@@ -69,10 +69,10 @@ Unified manual live test harness against Render staging:
 | UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
 | UJ-024 | F15 | METAR/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F15-001..005 |
 | UJ-025 | F7 | Manual TAC Input modes (ADR-024 / #730) | H6′ | TC-F7-007 |
-| UJ-027 | F16 | Dissemination drawer multi-DB BYOC URI | H6′ | TC-F16-001..004 |
-| UJ-028 | F17 | WIS2 publish (staging wis2box + live BYOC) | H6′ | TC-F17-001..002 |
-| UJ-029 | F18 | EDIS → RTH Washington BYOC | live BYOC | TC-F18-001..002 |
-| UJ-030 | F19 | AMHS / SWIM / AFS adapters | H6′ | TC-F19-001..003 |
+| UJ-027 | F16 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F16-001..004 |
+| UJ-028 | F17 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F17-001..002 |
+| UJ-029 | F18 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (UI smoke; live BYOC cycle-close) | live BYOC | TC-F18-001..002 |
+| UJ-030 | F19 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F19-001..003 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old

@@ -18,6 +18,19 @@ SinkType = Literal[
     "afs",
 ]
 
+# Drawer chooser order — keep FE enums aligned (T5.2 / E14-05 / E14-10).
+DRAWER_SINK_TYPES: tuple[SinkType, ...] = (
+    "postgres",
+    "mysql",
+    "sqlserver",
+    "sqlite",
+    "wis2",
+    "edis",
+    "amhs",
+    "swim",
+    "afs",
+)
+
 
 class SchemaDiffItem(msgspec.Struct, frozen=True):
     kind: str
