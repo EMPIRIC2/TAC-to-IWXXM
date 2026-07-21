@@ -2150,7 +2150,7 @@ export function FileConverter({
         accessToken={accessToken}
         iwxxmXml={convertedFiles[0]?.convertedContent}
         tacText={manualInput || undefined}
-        product={conversionParams.product === 'speci' ? 'speci' : 'metar'}
+        product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
       />
 
       {/* User Preferences Dialog */}
