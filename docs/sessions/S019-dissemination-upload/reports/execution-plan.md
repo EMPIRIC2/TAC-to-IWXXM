@@ -14,10 +14,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — **07-build** M2 in progress |
-| **Active milestone** | M2 — Multi-DB writer-contract + preflight/send API |
-| **Active task** | T2.7 (next) |
-| **Tasks** | 12 / **29** completed (through T2.6) |
+| **Active phase** | Phase C — **07-build** M3 next |
+| **Active milestone** | M2 — Multi-DB writer-contract + preflight/send API (**complete**) |
+| **Active task** | T3.1 (next) |
+| **Tasks** | 13 / **29** completed (through T2.7) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -41,7 +41,7 @@
 | Asset | Staging | Needed By |
 |-------|---------|-----------|
 | Compose wis2box image/config | pending (M3) | T3.x / TC-F17-001 |
-| ODBC driver (CI/docs for SQL Server) | staged (skip-without-ODBC tests) | T2.6 done; T2.7 docs |
+| ODBC driver (CI/docs for SQL Server) | staged (skip-without-ODBC tests) | T2.6–T2.7 done |
 | Live BYOC creds (operator) | cycle close only | TC-F16/17/18 live gates |
 
 ## Milestones & Tasks (TDD order)
@@ -68,7 +68,7 @@
 | T2.4 | Code | Thin backend routers `/dissemination/preflight` + `/send` (+ rate limit) | api-contract; E14-03/07; ADR-029 | T2.3 | **completed** |
 | T2.5 | Test | Compose/Testcontainers integration PG+MySQL+SQLite happy + mismatch | TC-F16-003; E14-09 | T2.4 | **completed** |
 | T2.6 | Test | SQL Server path via aioodbc (CI skip if no ODBC; document) | E14-06; TC-F16-003 | T2.4 | **completed** |
-| T2.7 | Docs | ODBC driver notes in deploy.md / package README | E14-06 | T2.6 | pending |
+| T2.7 | Docs | ODBC driver notes in deploy.md / package README | E14-06 | T2.6 | **completed** |
 
 ### M3 — WIS2 + Compose wis2box harness (F17)
 

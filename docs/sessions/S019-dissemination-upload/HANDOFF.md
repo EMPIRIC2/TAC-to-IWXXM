@@ -3,20 +3,19 @@
 ## Resume in next chat
 
 ```
-/16-evolve continue S019/EV-014 — 07-build M2 T2.7
+/16-evolve continue S019/EV-014 — 07-build M3 T3.1
 ```
 
 | Field | Value |
 |-------|-------|
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
-| Branch | `cursor/s019-t26-sqlserver-aioodbc-4b72` (T2.6); base `main` |
-| PR | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/759 (T2.6 → main) |
-| Merged to main | #755, #756, #757, #758 (session stack) |
-| Done | M1; M2 through **T2.6** (SQL Server aioodbc; skip without ODBC) |
-| Next | **T2.7** ODBC driver notes in deploy.md / package README |
+| Branch | `cursor/s019-t27-odbc-docs-ee99` (T2.7); base `main` |
+| Merged to main | #753–#760 (session stack through T2.6 + WF chore) |
+| Done | M1; **M2 complete** (through T2.7 ODBC docs) |
+| Next | **T3.1** WIS2 sink adapter unit tests (mocked MQTT/HTTP) |
 
 ## Do not skip
 
 - Live BYOC close gate before cycle close
-- T2.7 ODBC docs before M2→M3 gate
+- M2→M3 gate: preflight/send API green for PG+MySQL+SQLite (met by T2.3–T2.5)

@@ -17,9 +17,36 @@ sink adapters, and SSRF/allowlist helpers ([ADR-030](../../docs/adr/ADR-030-diss
 - `make test-integration-dissemination` (or `pytest packages/dissemination/tests -m integration`)
 - Postgres + MySQL via Testcontainers (requires Docker); SQLite in-process
 - SQL Server via Testcontainers + **aioodbc** (requires Docker **and** a system ODBC
-  SQL Server driver, e.g. Microsoft ODBC Driver 18). Without ODBC, SQL Server cases
-  **skip** (E14-06; CI may omit ODBC — see deploy notes in T2.7)
+  SQL Server driver). Without ODBC, SQL Server cases **skip** (E14-06)
 - Without Docker, PG/MySQL/SQL Server cases skip; SQLite still runs
+
+**SQL Server ODBC (T2.7 / E14-06)**
+
+| Item | Detail |
+|------|--------|
+| Async driver | `aioodbc` → SQLAlchemy URL prefix `mssql+aioodbc://` |
+| Preferred system driver | Microsoft **ODBC Driver 18** for SQL Server (then 17) |
+| Fallback | FreeTDS / legacy “SQL Server” ODBC names |
+| Probe API | `dissemination.odbc.list_sqlserver_odbc_drivers()`, `odbc_sqlserver_available()`, `preferred_sqlserver_odbc_driver()` |
+
+Install a system driver before live SQL Server tests or BYOC send:
+
+```bash
+# Debian/Ubuntu — see Microsoft docs for the current repo snippet, then:
+sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18 unixodbc-dev
+
+# Verify (from repo root with uv env):
+uv run python -c "from dissemination.odbc import list_sqlserver_odbc_drivers; print(list_sqlserver_odbc_drivers())"
+```
+
+Example URI (spaces in the driver name must be URL-encoded as `+` or `%20`):
+
+```text
+mssql+aioodbc://sa:Your_password123@127.0.0.1:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
+```
+
+Deploy / image notes (CI skip policy, stock API Dockerfile without `msodbcsql18`):
+[docs/deploy.md](../../docs/deploy.md) §Local Development → SQL Server ODBC.
 
 **Egress allowlist**
 

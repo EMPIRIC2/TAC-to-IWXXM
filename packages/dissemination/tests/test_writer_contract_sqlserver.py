@@ -1,8 +1,8 @@
 """SQL Server writer-contract via aioodbc (T2.6 / TC-F16-003 / E14-06).
 
 Live engine tests require Docker (Testcontainers) **and** a system ODBC SQL Server
-driver (e.g. Microsoft ODBC Driver 18). Without ODBC, cases skip — document that
-CI may omit ODBC; full driver notes are T2.7.
+driver (e.g. Microsoft ODBC Driver 18). Without ODBC, cases skip — CI may omit ODBC.
+Driver install notes: ``docs/deploy.md`` §SQL Server ODBC and this package README.
 """
 
 from __future__ import annotations

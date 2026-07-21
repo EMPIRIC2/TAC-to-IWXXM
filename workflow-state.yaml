@@ -12,12 +12,12 @@ active_session:
     test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase
     0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: main
+  branch: cursor/s019-t27-odbc-docs-ee99
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'M2 T2.6 done (merged #759); next T2.7'
+  note: 'T2.7 in progress — ODBC driver notes (deploy.md + package README)'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-20'
-    note: "Phase C — 07-build M2 T2.6 done (merged #759); next T2.7; PRs #755–#759 all merged to main"
+    note: "Phase C — 07-build M2 T2.7 in_progress (ODBC docs); MR cleanup: #753–#760 merged, no open S019 PRs"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -126,7 +126,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-21'
-    note: 'T2.6 merged via PR #759; next T2.7 ODBC docs. Session PRs #755–#759 all merged to main.'
+    note: 'T2.7 in_progress — ODBC driver docs (deploy.md + package README) on cursor/s019-t27-odbc-docs-ee99; MR cleanup: #753–#760 merged, open PR list empty.'
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2548,10 +2548,10 @@ stages:
       started_at: '2026-07-21'
       started: '2026-07-21'
       mode: full
-      note: 'T2.6 merged via PR #759; next T2.7 ODBC docs. Session PRs #755–#759 all merged to main.'
+      note: 'T2.7 in_progress — ODBC driver docs (deploy.md + package README) on cursor/s019-t27-odbc-docs-ee99; MR cleanup: #753–#760 merged, open PR list empty.'
       active_milestone: M2
       active_task: T2.7
-      active_task_status: pending
+      active_task_status: in_progress
     - id: S015-metar-lint-quality
       session_id: S015-metar-lint-quality
       evolve_cycle_id: EV-011
@@ -2604,13 +2604,15 @@ stages:
       completed_at: '2026-07-19'
     notes:
     - >-
+      2026-07-21 S019/EV-014 MR cleanup: no open S019 PRs (all #753–#760 merged; open PR list empty). Starting 07-build M2 T2.7 ODBC docs on branch cursor/s019-t27-odbc-docs-ee99 off origin/main.
+    - >-
       2026-07-21 S019/EV-014 07-build M2 T2.6 merged via PR #759 (2e8305e) —
       SQL Server aioodbc path + ODBC skip; next T2.7 ODBC docs;
       Session PRs #755–#759 all merged to main
     - >-
       2026-07-21 S019/EV-014 07-build M2 T2.6 done — SQL Server aioodbc path + ODBC skip;
       next T2.7 ODBC driver docs; branch cursor/s019-t26-sqlserver-aioodbc-4b72
-      tip 50d213d; PR #759 open
+      tip 50d213d; PR #759 later merged to main
     - >-
       2026-07-21 S019/EV-014 open PR stack #755 #756 #757 #758 merged to main
       (7a9cb37/4afa313/1b9ac97/77a37c7)
@@ -2733,10 +2735,10 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: 'T2.6 merged via PR #759; next T2.7 ODBC docs. Session PRs #755–#759 all merged to main.'
+      note: 'T2.7 in_progress — ODBC driver docs (deploy.md + package README) on cursor/s019-t27-odbc-docs-ee99; MR cleanup: #753–#760 merged, open PR list empty.'
       active_milestone: M2
       active_task: T2.7
-      active_task_status: pending
+      active_task_status: in_progress
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -3329,8 +3331,7 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M2 T2.6 done (merged #759); next T2.7; PRs #755–#759
-      all merged to main; Q15=A+Q8=C+Q21=A live BYOC hard close gate
+      Phase C — 07-build M2 T2.7 in_progress (ODBC docs); MR cleanup: #753–#760 merged, no open S019 PRs; Q15=A+Q8=C+Q21=A live BYOC hard close gate
 
 stages_pending: []
 
@@ -3566,6 +3567,17 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: N-S019-EV014-T27-start
+  date: '2026-07-21'
+  session_id: S019-dissemination-upload
+  evolve_cycle_id: EV-014
+  stage: 07-build
+  skill_id: 07-build
+  status: noted
+  decision: >-
+    MR cleanup: no open S019 PRs (all #753–#760 merged; open PR list empty).
+    Starting 07-build M2 T2.7 ODBC docs on branch cursor/s019-t27-odbc-docs-ee99
+    off origin/main (tip e912167). No user decision; progress note.
 - id: N-S019-EV014-T26-merged
   date: '2026-07-21'
   session_id: S019-dissemination-upload
@@ -3586,7 +3598,8 @@ decisions_log:
   decision: >-
     T2.6 completed — SQL Server aioodbc path + ODBC skip when driver absent;
     next T2.7 ODBC driver docs. Branch cursor/s019-t26-sqlserver-aioodbc-4b72;
-    tip 50d213d (50d213d277b7d66bc1afeca928b9d47b3e46b9f2); PR #759 open. No user decision; progress note.
+    tip 50d213d (50d213d277b7d66bc1afeca928b9d47b3e46b9f2); PR #759 later merged.
+    No user decision; progress note.
 - id: N-S019-EV014-prs-755-758-merged
   date: '2026-07-21'
   session_id: S019-dissemination-upload
@@ -7993,6 +8006,8 @@ evolve_cycles:
   current_stage: 07-build
   notes:
   - >-
+    2026-07-21 S019/EV-014 MR cleanup: no open S019 PRs (all #753–#760 merged; open PR list empty). Starting 07-build M2 T2.7 ODBC docs on branch cursor/s019-t27-odbc-docs-ee99 off origin/main.
+  - >-
     2026-07-21 S019/EV-014 07-build M2 T2.6 merged via PR #759 (2e8305e);
     next T2.7 ODBC docs; Session PRs #755–#759 all merged to main
   - >-
@@ -8061,7 +8076,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-20'
-      note: "Phase C — 07-build M2 T2.6 done (merged #759); next T2.7; PRs #755–#759 all merged to main"
+      note: "Phase C — 07-build M2 T2.7 in_progress (ODBC docs); MR cleanup: #753–#760 merged, no open S019 PRs"
     01-requirements:
       status: completed
       mode: delta
@@ -8138,10 +8153,10 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-07-21'
-      note: 'T2.6 merged via PR #759; next T2.7 ODBC docs. Session PRs #755–#759 all merged to main.'
+      note: 'T2.7 in_progress — ODBC driver docs (deploy.md + package README) on cursor/s019-t27-odbc-docs-ee99; MR cleanup: #753–#760 merged, open PR list empty.'
       active_milestone: M2
       active_task: T2.7
-      active_task_status: pending
+      active_task_status: in_progress
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -10803,20 +10818,22 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: main
+  current_branch: cursor/s019-t27-odbc-docs-ee99
   ahead_of_origin: 0
-  pushed: true
+  pushed: false
   pending_commit: null
-  tip_sha: 2e8305e6a6ef332165b4acd4e2468c587cb55213
-  tip_sha_full: 2e8305e6a6ef332165b4acd4e2468c587cb55213
+  tip_sha: e9121678ec7d26c87d3ab6ecb3bd3dc219d8d530
+  tip_sha_full: e9121678ec7d26c87d3ab6ecb3bd3dc219d8d530
   notes:
+  - >-
+    2026-07-21 S019/EV-014 MR cleanup: no open S019 PRs (all #753–#760 merged; open PR list empty). Starting 07-build M2 T2.7 ODBC docs on branch cursor/s019-t27-odbc-docs-ee99 off origin/main. tip e912167 (= origin/main / #760 merge)
   - >-
     2026-07-21 S019/EV-014 tip 2e8305e on main — PR #759 merged
     (cursor/s019-t26-sqlserver-aioodbc-4b72); T2.6 done; next T2.7;
     Session PRs #755–#759 all merged to main
   - >-
     2026-07-21 S019/EV-014 tip 50d213d (50d213d277b7d66bc1afeca928b9d47b3e46b9f2) on
-    cursor/s019-t26-sqlserver-aioodbc-4b72; [T2.6] recorded; PR #759 open; next T2.7
+    cursor/s019-t26-sqlserver-aioodbc-4b72; [T2.6] recorded; PR #759 later merged; next T2.7
   - >-
     2026-07-21 S019/EV-014 PR stack merged to main — #755 (7a9cb37), #756 (4afa313),
     #757 (1b9ac97), #758 (77a37c7)
@@ -11011,6 +11028,34 @@ git_history:
   - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+  - name: cursor/s019-t27-odbc-docs-ee99
+    status: active
+    base: main
+    created: '2026-07-21'
+    created_at: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    purpose: S019/EV-014 07-build M2 T2.7 ODBC docs
+    tip_sha: e9121678ec7d26c87d3ab6ecb3bd3dc219d8d530
+    tip_sha_full: e9121678ec7d26c87d3ab6ecb3bd3dc219d8d530
+    pushed: false
+    note: branched from origin/main @ e912167 (#760 merge); T2.7 in_progress
+  - name: cursor/s019-t26-wf-state-4b72
+    status: merged
+    base: main
+    created: '2026-07-21'
+    created_at: '2026-07-21'
+    merged_at: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    purpose: S019/EV-014 workflow-state bookkeeping
+    tip_sha: 9936f6a836da4645b5d60ba8dad1a550c44e51db
+    merge_sha: e9121678ec7d26c87d3ab6ecb3bd3dc219d8d530
+    pushed: true
+    pr_number: 760
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/760
+    pr_status: merged
+    note: merged to main via #760
   - name: cursor/s019-t26-sqlserver-aioodbc-4b72
     status: merged
     base: main
@@ -11075,14 +11120,18 @@ git_history:
     note: merged to main via PR #755 (7a9cb37)
   - name: cursor/dissemination-upload-e25c
     base: cursor/metar-remarks-live-e2e-2e2e
-    status: active
+    status: merged
     created_at: '2026-07-20'
+    merged_at: '2026-07-21'
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     purpose: 'EV-014 / S019 dissemination epic (#729 Upload DB + #2 WIS2 + #6 EDIS)'
     pushed: true
-    note: EV-014 / S019 — 04 Batch 1 locked (ADR-030); tip 986f146; Batch 2 pending
     tip_sha: 986f1467953a60c751064fda33e0bc84a70e1bee
+    pr_number: 753
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753
+    pr_status: merged
+    note: merged to main via PR #753 (3c9ee81); no longer active work branch
   - name: cursor/metar-remarks-live-e2e-2e2e
     base: main
     status: completed
