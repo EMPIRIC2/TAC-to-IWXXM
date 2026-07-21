@@ -11,7 +11,7 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Merged | #761–#767 (through **M4**) |
-| Open PRs | [#771](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771) **M5+M6 T6.1–T6.5** → `main` (CI green @ T6.4 tip) |
+| Open PRs | [#771](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771) **M5+M6 T6.1–T6.5** → `main` (CI green [29846967679](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29846967679)) |
 | Done | M1–M5; T6.1–T6.4; **T6.5** 12-verify-deploy checklist **PASS** |
 | Next | **T6.6** 13-deploy-smoke H1–H5 + H0c; live BYOC close gate |
 | Branch | `cursor/s019-t64-verify-build-7820` |
