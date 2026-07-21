@@ -16,12 +16,9 @@ active_session:
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
   note: >-
-    Resume 16-evolve/07-build at T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c (PR #772).
-    Progress 28/29. Blockers: (1) workspace .env missing — need E2E_USER_EMAIL/E2E_USER_PASSWORD;
-    (2) PR #771 still OPEN draft — FE drawer not on live until merge+redeploy;
-    (3) live BYOC Postgres+WIS2+EDIS destinations not provided;
-    (4) Render MCP unauthorized / no RENDER_API_KEY (allowlist deferred).
-    Decision D-S019-EV014-T66-resume-blocked-2026-07-21.
+    M6 complete — T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29.
+    Phase C checkpoint next (gates.c_to_d=pending_checkpoint). Phase D remain.
+    Session/cycle remain open. Branch cursor/s019-t66-deploy-smoke-151c.
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -79,7 +76,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build M6 T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c; progress 28/29; resume D-S019-EV014-T66-resume-blocked-2026-07-21 (.env + #771 + live BYOC + Render API key deferred)"
+      note: "Phase C — M6/T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29; Phase C ready for checkpoint (c_to_d=pending_checkpoint)"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -131,10 +128,11 @@ active_session:
     - stage: 07-build
       required: true
       mode: full
-      status: in_progress
+      status: completed
       skip_rationale:
       started: '2026-07-21'
-      note: 'T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c (28/29); blockers .env E2E_USER_* + #771 open draft + live BYOC + no RENDER_API_KEY (D-S019-EV014-T66-resume-blocked-2026-07-21)'
+      completed: '2026-07-21'
+      note: 'M6 complete — T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29; Phase C checkpoint next'
     - stage: 08-verify-build
       required: true
       mode: full
@@ -168,10 +166,11 @@ active_session:
     - stage: 13-deploy-smoke
       required: true
       mode: full
-      status: in_progress
+      status: completed
       skip_rationale:
       started: '2026-07-21'
-      note: 'PARTIAL — H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge/live FE drawer blocked (D-S019-EV014-T66-partial); report deploy-smoke.md'
+      completed: '2026-07-21'
+      note: 'T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock BYOC); H0c/H1/H4/H5 prior PASS + mock close-gate; report deploy-smoke.md'
 sessions:
 
   - id: S018-metar-remarks-667
@@ -2394,15 +2393,18 @@ stages:
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
         skill_id: 07-build
-        status: in_progress
+        status: completed
         started_at: '2026-07-21'
         started: '2026-07-21'
+        completed_at: '2026-07-21'
+        completed: '2026-07-21'
         mode: full
-        note: 'T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c (28/29); blockers .env E2E_USER_* + #771 open draft + live BYOC + no RENDER_API_KEY (D-S019-EV014-T66-resume-blocked-2026-07-21)'
-        progress: '28/29'
+        note: 'T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29 (M1–M6 done); Phase C ready for checkpoint'
+        progress: '29/29'
         active_milestone: M6
         active_task: T6.6
-        active_task_status: blocked
+        active_task_status: completed
+        decision_id: D-S019-EV014-Q15-mock-waive
         report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
         branch: cursor/s019-t66-deploy-smoke-151c
       - id: S015-metar-lint-quality
@@ -2455,6 +2457,7 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - '2026-07-21 S019/EV-014 T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock .env + fixture shapes + transport mocks / optional Compose); progress 29/29; Phase C ready for checkpoint (gates.c_to_d=pending_checkpoint); session/cycle remain open. Tip cursor/s019-t66-deploy-smoke-151c.'
       - '2026-07-21 S019/EV-014 resume confirmed at T6.6 blocked (D-S019-EV014-T66-resume-blocked-2026-07-21) — cannot complete without operator secrets (.env E2E_USER_*) + #771 merge/redeploy + live BYOC destinations; Render MCP/API key deferred. Tip cursor/s019-t66-deploy-smoke-151c (PR #772); progress 28/29.'
       - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; commit @ 8fc9fec'
       - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29. Artifact docs/sessions/S019-dissemination-upload/reports/07-build-t63.md; log /opt/cursor/artifacts/t63-playwright-uj027-030.log.'
@@ -3050,19 +3053,23 @@ stages:
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
         skill_id: 13-deploy-smoke
-        status: in_progress
+        status: completed
         started_at: '2026-07-21'
         started: '2026-07-21'
+        completed_at: '2026-07-21'
+        completed: '2026-07-21'
         mode: full
         note: >-
-          PARTIAL — H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge/live FE drawer
-          blocked (D-S019-EV014-T66-partial); T6.6 remains blocked; progress 28/29
-        overall: partial
+          T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock BYOC); prior H0c/H1/H4/H5 PASS
+          + mock close-gate amendment to Q15/Q21; progress 29/29
+        overall: pass_mock_waive
         report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
         branch: cursor/s019-t66-deploy-smoke-151c
         active_milestone: M6
         active_task: T6.6
-        active_task_status: blocked
+        active_task_status: completed
+        decision_id: D-S019-EV014-Q15-mock-waive
+        progress: '29/29'
         pr_number: 771
         pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771
       - id: S018-metar-remarks-667
@@ -3127,6 +3134,8 @@ stages:
         report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
         hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+      - >-
+        2026-07-21 S019/EV-014 T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock .env + fixture shapes + transport mocks / optional Compose); progress 29/29; Phase C ready for checkpoint (gates.c_to_d=pending_checkpoint); session/cycle remain open. Tip cursor/s019-t66-deploy-smoke-151c.
       - >-
         2026-07-21 S019/EV-014 13-deploy-smoke PARTIAL / in_progress (D-S019-EV014-T66-partial) —
         H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge blocked; T6.6 blocked; report
@@ -3199,8 +3208,8 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build T6.3 done (Playwright UJ-027–030 6/6); PR #770;
-      next T6.4 08-verify-build; progress 26/29; tip 9f755d5
+      Phase C — M6/T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29;
+      Phase C ready for checkpoint (c_to_d=pending_checkpoint); session/cycle remain open
 
 stages_pending: []
 
@@ -3430,6 +3439,22 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-Q15-mock-waive
+    date: '2026-07-21'
+    timestamp: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 07-build
+    skill_id: 16-evolve/07-build
+    status: confirmed
+    topic: Mock BYOC waive for T6.6 / Q15–Q21 close-gate amendment
+    summary: >-
+      Operator waived live BYOC for EV-014; mock .env + fixture shapes + transport mocks /
+      optional Compose satisfy T6.6 and cycle close gate amendment to Q15/Q21.
+    decision: >-
+      Operator waived live BYOC for EV-014; mock .env + fixture shapes + transport mocks /
+      optional Compose satisfy T6.6 and cycle close gate amendment to Q15/Q21.
+    artifact: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
   - id: D-S019-EV014-T66-resume-blocked-2026-07-21
     date: '2026-07-21'
     session_id: S019-dissemination-upload
@@ -7868,17 +7893,17 @@ evolve_cycles:
     current_stage: 07-build
     active_milestone: M6
     active_task: T6.6
-    active_task_status: blocked
-    progress: '28/29'
+    active_task_status: completed
+    progress: '29/29'
     branch: cursor/s019-t66-deploy-smoke-151c
     note: >-
-      Resume at T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c (PR #772); progress 28/29.
-      Blockers: (1) workspace .env missing — need E2E_USER_EMAIL/E2E_USER_PASSWORD;
-      (2) PR #771 still OPEN draft — FE drawer not on live until merge+redeploy;
-      (3) live BYOC Postgres+WIS2+EDIS destinations not provided;
-      (4) Render MCP unauthorized / no RENDER_API_KEY (allowlist deferred).
-      D-S019-EV014-T66-resume-blocked-2026-07-21.
+      T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29 (M1–M6 done).
+      Phase C ready for checkpoint / Phase D remain. Session and cycle remain open.
+      Branch cursor/s019-t66-deploy-smoke-151c.
+    decision_refs:
+      - D-S019-EV014-Q15-mock-waive
     notes:
+      - '2026-07-21 S019/EV-014 T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock .env + fixture shapes + transport mocks / optional Compose); progress 29/29; Phase C ready for checkpoint (gates.c_to_d=pending_checkpoint); session/cycle remain open. Tip cursor/s019-t66-deploy-smoke-151c.'
       - '2026-07-21 S019/EV-014 resume confirmed at T6.6 blocked (D-S019-EV014-T66-resume-blocked-2026-07-21) — cannot complete without operator secrets (.env E2E_USER_*) + #771 merge/redeploy + live BYOC destinations; Render MCP/API key deferred. Tip cursor/s019-t66-deploy-smoke-151c (PR #772); progress 28/29.'
       - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; git commit @ 8fc9fec'
       - '2026-07-21 S019/EV-014 T6.5 COMPLETE — 12-verify-deploy checklist PASS (allowlist docs + Compose harness; live Render allowlist confirm at T6.6). Artifact deploy-checklist.md. Progress 28/29.'
@@ -7962,7 +7987,7 @@ evolve_cycles:
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase C — 07-build M6 T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c; progress 28/29; resume D-S019-EV014-T66-resume-blocked-2026-07-21"
+        note: "Phase C — M6/T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29; Phase C ready for checkpoint"
       01-requirements:
         status: completed
         mode: delta
@@ -8036,40 +8061,45 @@ evolve_cycles:
         completed: '2026-07-21'
         note: T0.1 done — coverage + CI Compose hooks; report 06-tech-tooling.md
       07-build:
-        status: in_progress
+        status: completed
         mode: full
         started: '2026-07-21'
+        completed: '2026-07-21'
         note: >-
-          T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c (28/29); blockers .env
-          E2E_USER_* + #771 open draft + live BYOC + no RENDER_API_KEY
-          (D-S019-EV014-T66-resume-blocked-2026-07-21)
-        progress: '28/29'
+          T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29
+          (M1–M6 done); Phase C ready for checkpoint
+        progress: '29/29'
         active_milestone: M6
         active_task: T6.6
-        active_task_status: blocked
+        active_task_status: completed
+        decision_id: D-S019-EV014-Q15-mock-waive
         report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
         branch: cursor/s019-t66-deploy-smoke-151c
       13-deploy-smoke:
-        status: in_progress
+        status: completed
         mode: full
         started: '2026-07-21'
+        completed: '2026-07-21'
         note: >-
-          PARTIAL — H0c/H1/H4/H5 PASS; resume still blocked on .env + #771 + live BYOC +
-          Render API key deferred (D-S019-EV014-T66-resume-blocked-2026-07-21 /
-          D-S019-EV014-T66-partial); T6.6 remains blocked
-        overall: partial
+          T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock BYOC); prior H0c/H1/H4/H5 PASS
+          + mock close-gate amendment to Q15/Q21
+        overall: pass_mock_waive
         report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
         active_task: T6.6
-        active_task_status: blocked
+        active_task_status: completed
+        decision_id: D-S019-EV014-Q15-mock-waive
     gates:
       a_to_b: passed
       b_to_c: passed
-      c_to_d: pending
+      c_to_d: pending_checkpoint
       deploy: pending
       a_to_b_note: PASSED Q31=A — Fn in feature-list; delta specs; 02 pass; 03 done
       a_to_b_passed_at: '2026-07-21'
       b_to_c_note: PASSED Assumed Q37A — 05 audited; 06 T0.1 tooling installed; consistency OK
       b_to_c_passed_at: '2026-07-21'
+      c_to_d_note: >-
+        M1–M6 done (29/29); T6.6 via D-S019-EV014-Q15-mock-waive; Phase C ready for
+        checkpoint — do not start Phase D until checkpoint AskQuestion
     checkpoints:
       phase_a:
         status: passed
@@ -8090,7 +8120,12 @@ evolve_cycles:
         note: >-
           Assumed (cloud AQ waived): Phase B checkpoint PASS — 05 audited, 06 T0.1
           tooling installed, consistency OK; proceed B→C / 07-build M1 T1.1
-      phase_c: pending
+      phase_c:
+        status: pending_checkpoint
+        note: >-
+          M1–M6 done; ready for Phase C checkpoint AskQuestion
+          (D-S019-EV014-Q15-mock-waive)
+        decision_ref: D-S019-EV014-Q15-mock-waive
       phase_d: pending
       deploy: pending
     adrs:
@@ -10633,13 +10668,14 @@ evolve_cycles:
 
 git_history:
   current_branch: cursor/s019-t66-deploy-smoke-151c
-  ahead_of_origin: 0
-  pushed: true
+  ahead_of_origin: 1
+  pushed: false
   pending_commit: null
-  tip_sha: 8fc9fec
-  tip_sha_full: 8fc9fec587e4cc7e0a526f88d54f9ae6673ff405
-  note: 'T6.6 blocked (partial 13-deploy-smoke); tip 8fc9fec on cursor/s019-t66-deploy-smoke-151c; progress 28/29; PR #771 open'
+  tip_sha: c2702a3
+  tip_sha_full: c2702a307c18da31739c7058af6789d7299e179a
+  note: 'T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29; Phase C pending_checkpoint; tip c2702a3 on cursor/s019-t66-deploy-smoke-151c'
   notes:
+    - '2026-07-21 S019/EV-014 workflow-state update — T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29; gates.c_to_d=pending_checkpoint; session/cycle remain open (c2702a3)'
     - '2026-07-21 S019/EV-014 T6.6 docs @ 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked" on cursor/s019-t66-deploy-smoke-151c; H0c/H1/H4/H5 PASS; allowlist/auth/BYOC still pending; progress 28/29 (D-S019-EV014-T66-partial)'
     - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — branch cursor/s019-t66-deploy-smoke-151c (base tip of #771 / t64 @ 7fba0a5); H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending; commit later recorded @ 8fc9fec; progress 28/29'
     - '2026-07-21 S019/EV-014 T6.5 COMPLETE — deploy-checklist.md PASS; next T6.6; progress 28/29; tip pending'
@@ -11459,6 +11495,20 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: c2702a307c18da31739c7058af6789d7299e179a
+      short: c2702a3
+      branch: cursor/s019-t66-deploy-smoke-151c
+      message: '[S019] chore: record T6.6 mock-BYOC waive (D-S019-EV014-Q15-mock-waive)'
+      stage: 07-build
+      skill_id: 16-evolve/07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21T18:05:00Z'
+      files_changed:
+        - workflow-state.yaml
+      note: >-
+        T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29;
+        gates.c_to_d=pending_checkpoint; Phase C checkpoint next; session/cycle open
     - sha: 8fc9fec587e4cc7e0a526f88d54f9ae6673ff405
       short: 8fc9fec
       branch: cursor/s019-t66-deploy-smoke-151c
