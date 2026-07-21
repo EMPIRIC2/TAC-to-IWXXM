@@ -40,6 +40,7 @@
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
 | testcontainers[mysql,postgres] | PG/MySQL Testcontainers for TC-F16-003 (T2.5) | MIT | PyPI (`>=4.8`); workspace `dev` + package optional `integration` |
+| python:3.12.11-slim-bookworm + mosquitto (apt) | F17 wis2box Compose harness image (T3.3) — MQTT + HTTP dataset stand-in | PSF / EPL-2.0 (mosquitto) | Docker Hub / Debian; build context `packages/dissemination/docker/wis2box-harness` |
 
 Package license: **MIT**. No FastAPI/Supabase imports. Backend already has `sqlalchemy` +
 `asyncpg` + `psycopg`; package may declare overlapping pins via workspace.
@@ -182,3 +183,6 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
   tests **skip when no ODBC driver** (E14-06)
 - S019 / EV-014 T2.7 (2026-07-21): ODBC driver install/verify notes in `docs/deploy.md` +
   `packages/dissemination/README.md` (E14-06); stock API image still omits `msodbcsql18`
+- S019 / EV-014 T3.3 (2026-07-21): wis2box Compose harness — **lightweight MQTT+HTTP image**
+  (`python:3.12.11-slim-bookworm` + Debian `mosquitto`); reject full WMO wis2box release stack
+  for CI cost (E14-04 / Q17); not a Render service

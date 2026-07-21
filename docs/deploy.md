@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: Render (Docker web service + static site + Background Worker)
-> **Last updated**: 2026-07-21 (S019 / EV-014 T2.7 — SQL Server ODBC driver notes)
+> **Last updated**: 2026-07-21 (S019 / EV-014 T3.3 — wis2box Compose harness)
 
 ## Topology (post-monorepo + F8)
 
@@ -150,6 +150,22 @@ E14-06). Default CI images may omit ODBC — that is expected.
 `msodbcsql18`. Stock Render **metar-api** cannot open SQL Server BYOC URIs until the image
 (or base) gains a system ODBC SQL Server driver. Postgres / MySQL / SQLite sinks do not need
 ODBC. Package README: [`packages/dissemination/README.md`](../packages/dissemination/README.md).
+
+### wis2box Compose harness (F17 / E14-04)
+
+Staging WIS2 uses a **Docker Compose / CI harness** — not a Render web service. Image build
+context: `packages/dissemination/docker/wis2box-harness` (MQTT `:1883` + HTTP dataset
+`:8080` / host `:9080`). Overlay: `docker-compose.wis2box.yml` (profile `wis2box`).
+
+```bash
+make compose-wis2box-up
+curl -s http://127.0.0.1:9080/health
+make compose-wis2box-harness   # CI hook: up + probe + PUT/GET smoke
+make compose-wis2box-down
+```
+
+Set `DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,localhost` when exercising the sink
+against the harness. Live WIS2 acceptance remains operator BYOC (TC-F17-002).
 
 ## Docker Build Context
 

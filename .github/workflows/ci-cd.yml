@@ -221,7 +221,7 @@ jobs:
           cd apps/backend && uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
           docker compose down
 
-      # F17 / E14-04 — wis2box Compose harness hook (skips until T3.3 defines wis2box service).
+      # F17 / E14-04 / T3.3 — wis2box Compose harness (MQTT + HTTP dataset smoke).
       - name: Run wis2box Compose harness hook
         if: matrix.package == 'integration'
         run: bash scripts/ci/run_wis2box_harness.sh

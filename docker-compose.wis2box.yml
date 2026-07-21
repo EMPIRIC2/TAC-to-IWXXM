@@ -1,12 +1,44 @@
 # F17 / E14-04 / ADR-030 — wis2box test harness overlay (Compose / CI only).
-# Not a Render web service. Real `wis2box` service + image pin land in T3.3.
+# Not a Render web service. Lightweight MQTT + HTTP dataset stand-in (T3.3);
+# full WMO wis2box stack is out of scope for CI cost (Q17 testing-only).
 #
-# Usage (after T3.3):
+# Usage:
 #   docker compose -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box up -d
 #   make compose-wis2box-up
 #   bash scripts/ci/run_wis2box_harness.sh
 #
-# Readiness probe for tooling: scripts/ci/run_wis2box_harness.sh looks for a
-# top-level `wis2box:` service key. Until then the script exits 0 (skip).
+# Host ports (override via .env):
+#   WIS2BOX_MQTT_HOST_PORT (default 1883)
+#   WIS2BOX_HTTP_HOST_PORT (default 9080)
+# Dataset URL example (host): http://127.0.0.1:9080/datasets/example.xml
+# Dataset URL example (compose net): http://wis2box:8080/datasets/example.xml
 
-services: {}
+services:
+  wis2box:
+    profiles: ["wis2box"]
+    build:
+      context: ./packages/dissemination/docker/wis2box-harness
+      dockerfile: Dockerfile
+    image: metar-iwxxm-wis2box-harness:local
+    container_name: metar-iwxxm-wis2box
+    ports:
+      - "${WIS2BOX_MQTT_HOST_PORT:-1883}:1883"
+      - "${WIS2BOX_HTTP_HOST_PORT:-9080}:8080"
+    environment:
+      - WIS2BOX_HTTP_PORT=8080
+      - WIS2BOX_DATASET_DIR=/var/lib/wis2box-harness/datasets
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-sf",
+          "http://127.0.0.1:8080/health",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    networks:
+      - metar-network
+    restart: unless-stopped
