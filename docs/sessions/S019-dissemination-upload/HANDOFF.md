@@ -11,7 +11,7 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Merged | #761–#767 (through **M4** / handoff) |
-| Open PR | M5 F19 stubs — `cursor/s019-t51-adapter-stubs-584b` (T5.1–T5.3) |
+| Open PR | [#768](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/768) M5 F19 stubs (T5.1–T5.3) — CI green |
 | Done | M1; M2; M3; M4; **M5 complete** (F19 staging stubs) |
 | Next | **T6.1** Vitest: drawer sink chooser + preflight diff + block Send |
 | Branch for next work | create `cursor/s019-t61-…-584b` off **`main`** after M5 PR merges (or continue on tip) |
