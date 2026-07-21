@@ -35,7 +35,7 @@
 
 | ID | Decision |
 |----|----------|
-| Q34=A | Approve [execution-plan.md](execution-plan.md) — M1–M6 + T0.1 (32 tasks) |
+| Q34=A | Approve [execution-plan.md](execution-plan.md) — M1–M6 + T0.1 (**29** tasks after 05 count fix; was mislabeled 32) |
 
 ## Artifacts
 

@@ -9,8 +9,8 @@
 **Features**: **F16–F19 Planned** (Phase 0 approved Q24=A 2026-07-21)  
 **Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
 **Started**: 2026-07-20  
-**Branch**: `cursor/dissemination-upload-e25c`  
-**Status**: Phase B **in progress** — **04-tech-plan completed** (Q34=A); next **05-verify-tech**; #753 → main handoff
+**Branch**: `main` @ `3c9ee81` (#753 MERGED); build branches `cursor/*-b45b` off main  
+**Status**: Phase B **in progress** — **05-verify-tech PASS** (D-S019-EV014-Q35A-05); next **06-tech-tooling**
 
 ### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked (**amended Batch 5**)
 
@@ -133,9 +133,16 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 ### 04-tech-plan complete (Q34=A / D-S019-EV014-Q34A-04-approve)
 
-- Execution plan **approved** — M1–M6 + T0.1 (32 tasks).
-- 04-tech-plan stage **completed**; handoff: merge written work to `main` via PR #753;
-  next chat starts at **05-verify-tech**.
+- Execution plan **approved** — M1–M6 + T0.1 (**29** tasks after 05 count fix; was mislabeled 32).
+- 04-tech-plan stage **completed**; #753 MERGED to `main` @ `3c9ee81`.
+
+### 05-verify-tech complete (D-S019-EV014-Q35A-05)
+
+- Audit **PASS** — 22 high auto-approved; S1–S8 Modify applied (task count, git strategy,
+  secrets matrix allowlist, ADR-029/030 stale language, api-contract wording, rate-limit on
+  T2.3/T2.4, F17 Compose/CI align). AskQuestion waived / cloud Assumed.
+- Report: `docs/sessions/S019-dissemination-upload/reports/05-verify-tech-audit.md`
+- Next: **06-tech-tooling** (T0.1) → Phase B checkpoint → 07-build M1 T1.1.
 
 ### Notes
 
@@ -144,8 +151,8 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 - **Close gate (Q15=A + Q8=C + Q21=A + Q16/Q17/Q18):** staging/test OK for merge; block cycle
   close until live BYOC demos green for **Postgres + WIS2 + EDIS**. F19 (AMHS/SWIM/AFS) requires
   staging/test path green; live F19 demo optional with AskQuestion waive (S-EV014-M2 / Q28=A).
-- PR: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753
-- 2026-07-21: 04 Batch 1 locked (Q32=A); Batch 2 deploy/test/integration interview next
+- PR (04): https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753 MERGED
+- 2026-07-21: 04 Batch 1–2 locked; plan approved; 05 PASS
 
 ---
 

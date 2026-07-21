@@ -37,7 +37,8 @@ leakage risk if the API opens arbitrary sockets.
 
 ## Consequences
 
-- Config/env-contract must document `DISSEMINATION_EGRESS_ALLOWLIST` (deferred to
-  **04-tech-plan** / S-EV014-L1; product corpus + this ADR are authoritative until then).
+- Config/env-contract **documents** `DISSEMINATION_EGRESS_ALLOWLIST` (S-EV014-L1 **resolved**
+  at 04-tech-plan / E14-08=A — see `docs/env-contract.md`, `docs/config-spec.md`,
+  `docs/deploy.md`). Staging secrets matrix also lists the Render API row (05-verify-tech).
 - Preflight/send APIs return structured errors when allowlist/SSRF checks fail.
 - Live BYOC demos require operator to populate allowlist for their destination hosts.

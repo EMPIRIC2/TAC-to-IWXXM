@@ -1,7 +1,23 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-07-21 (S019 / EV-014 04 Batch 1)
+> Last updated: 2026-07-21 (S019 / EV-014 05-verify-tech)
+
+## S019 / EV-014 05-verify-tech (2026-07-21)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| S1 | 2026-07-21 | Task count | **29** unique tasks (mislabeled 32) | confirmed |
+| S2 | 2026-07-21 | Git strategy | Build off `main` post-#753; do not reopen e25c | confirmed |
+| S3 | 2026-07-21 | Secrets matrix | Add `DISSEMINATION_EGRESS_ALLOWLIST` API row | confirmed |
+| S4 | 2026-07-21 | ADR-030 | SQL Server = `aioodbc` (E14-06); drop TBD | confirmed |
+| S5 | 2026-07-21 | ADR-029 L1 | Allowlist docs resolved at 04; consequence updated | confirmed |
+| S6 | 2026-07-21 | api-contract | Field names finalize before 07 (04 done) | confirmed |
+| S7 | 2026-07-21 | Rate limit | Cover in T2.3/T2.4 (ADR-029 §5) | confirmed |
+| S8 | 2026-07-21 | F17 harness | Compose/CI not long-lived Render web (align FL) | confirmed |
+| D-S019-EV014-Q35A-05 | 2026-07-21 | Gate | 05 PASS; Assumed cloud (AskQuestion waived) | confirmed |
+
+Session report: `docs/sessions/S019-dissemination-upload/reports/05-verify-tech-audit.md`.
 
 ## S019 / EV-014 04-tech-plan Batch 1 (2026-07-21)
 
@@ -19,7 +35,7 @@
 | E14-09 | 2026-07-21 | Tests | Unit + Compose/Testcontainers + mocks; live BYOC close-only | confirmed |
 | E14-10 | 2026-07-21 | FE / H4–H5 | Ship drawer this cycle; H4–H5 required | confirmed |
 | D-S019-EV014-Q33A-04-batch2 | 2026-07-21 | Gate | Lock Batch 2 (all A) | confirmed |
-| D-S019-EV014-Q34A-04-approve | 2026-07-21 | Plan | Approve execution-plan M1–M6 (32 tasks); 04 complete | confirmed |
+| D-S019-EV014-Q34A-04-approve | 2026-07-21 | Plan | Approve execution-plan M1–M6 (**29** tasks; 05 fixed miscount from 32); 04 complete | confirmed |
 
 ## S015 / EV-011 05-verify-tech (2026-07-19)
 

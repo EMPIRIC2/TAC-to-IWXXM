@@ -48,6 +48,7 @@ Set on Render static site build environment:
 | `DISABLE_AUTH` | `false` | Yes | Production auth enabled per 04-tech-plan |
 | `PORT` | Render-injected | Yes | Bind `0.0.0.0:$PORT` |
 | `DATABASE_URL` | *(dashboard)* | If used | Postgres connection |
+| `DISSEMINATION_EGRESS_ALLOWLIST` | *(dashboard — sync: false)* | Yes (F16–F19) | Host/CIDR allowlist; **empty = fail-closed** (ADR-029 / E14-08). Staging lists Compose/CI wis2box hosts when harness runs. |
 
 ### Deprecated (remove after migration)
 
