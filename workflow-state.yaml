@@ -2449,7 +2449,7 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
-      - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; commit sha PENDING'
+      - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; commit @ 8fc9fec'
       - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29. Artifact docs/sessions/S019-dissemination-upload/reports/07-build-t63.md; log /opt/cursor/artifacts/t63-playwright-uj027-030.log.'
       - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
       - '2026-07-21 S019/EV-014 PR #769 CI/CD Pipeline passed (frontend coverage restored). T6.1+T6.2 done; tip 6e247af on cursor/s019-t61-drawer-vitest-a804; next M6 T6.3; progress 25/29.'
@@ -3437,9 +3437,10 @@ decisions_log:
       close-gate evidence (Q15/Q21). Branch cursor/s019-t66-deploy-smoke-151c (base tip of #771 /
       cursor/s019-t64-verify-build-7820 @ 7fba0a5). Report
       docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md. Progress remains 28/29.
-      git_history.commits entry deferred until docs commit lands (message planned:
-      "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked").
+      Docs commit recorded @ 8fc9fec587e4cc7e0a526f88d54f9ae6673ff405
+      ("[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked").
     related_pr: 771
+    commit_sha: 8fc9fec587e4cc7e0a526f88d54f9ae6673ff405
     artifact: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
   - id: N-S019-EV014-T61-start
     date: '2026-07-21'
@@ -7845,7 +7846,7 @@ evolve_cycles:
     branch: cursor/s019-t66-deploy-smoke-151c
     note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29; PR #771'
     notes:
-      - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; git commit PENDING'
+      - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; git commit @ 8fc9fec'
       - '2026-07-21 S019/EV-014 T6.5 COMPLETE — 12-verify-deploy checklist PASS (allowlist docs + Compose harness; live Render allowlist confirm at T6.6). Artifact deploy-checklist.md. Progress 28/29.'
       - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS (prettier UJ-027–030 e2e + badge_audit drop gifts); next T6.5 12-verify-deploy; progress 27/29. Artifact docs/sessions/S019-dissemination-upload/reports/verification-report.md. Branch cursor/s019-t64-verify-build-7820.'
       - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29. Artifact docs/sessions/S019-dissemination-upload/reports/07-build-t63.md; log /opt/cursor/artifacts/t63-playwright-uj027-030.log.'
@@ -10594,13 +10595,14 @@ evolve_cycles:
 git_history:
   current_branch: cursor/s019-t66-deploy-smoke-151c
   ahead_of_origin: 0
-  pushed: false
-  pending_commit: '[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked'
-  tip_sha: 7fba0a5
-  tip_sha_full: 7fba0a5759a89f378a8c029a3b0ed3a88ee952c1
-  note: 'T6.6 blocked (partial 13-deploy-smoke); progress 28/29; docs commit PENDING on cursor/s019-t66-deploy-smoke-151c; PR #771 open'
+  pushed: true
+  pending_commit: null
+  tip_sha: 8fc9fec
+  tip_sha_full: 8fc9fec587e4cc7e0a526f88d54f9ae6673ff405
+  note: 'T6.6 blocked (partial 13-deploy-smoke); tip 8fc9fec on cursor/s019-t66-deploy-smoke-151c; progress 28/29; PR #771 open'
   notes:
-    - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — branch cursor/s019-t66-deploy-smoke-151c (base tip of #771 / t64 @ 7fba0a5); H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending; commit sha PENDING (planned message "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked"); progress 28/29'
+    - '2026-07-21 S019/EV-014 T6.6 docs @ 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked" on cursor/s019-t66-deploy-smoke-151c; H0c/H1/H4/H5 PASS; allowlist/auth/BYOC still pending; progress 28/29 (D-S019-EV014-T66-partial)'
+    - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — branch cursor/s019-t66-deploy-smoke-151c (base tip of #771 / t64 @ 7fba0a5); H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending; commit later recorded @ 8fc9fec; progress 28/29'
     - '2026-07-21 S019/EV-014 T6.5 COMPLETE — deploy-checklist.md PASS; next T6.6; progress 28/29; tip pending'
     - '2026-07-21 S019/EV-014 PR #771 CI/CD Pipeline success (29846488131); tip 2ce8bb9; T6.4 complete; next T6.5'
     - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS on cursor/s019-t64-verify-build-7820 (prettier UJ e2e + badge_audit gifts drop); next T6.5; progress 27/29; report verification-report.md'
@@ -10817,14 +10819,14 @@ git_history:
       session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
       purpose: S019/EV-014 07-build M6 T6.6 / 13-deploy-smoke (partial H0c/H1/H4/H5)
-      tip_sha: 7fba0a5
-      tip_sha_full: 7fba0a5759a89f378a8c029a3b0ed3a88ee952c1
-      pushed: false
+      tip_sha: 8fc9fec
+      tip_sha_full: 8fc9fec587e4cc7e0a526f88d54f9ae6673ff405
+      pushed: true
       pr_number: 771
       pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771
       note: >-
-        Base tip of #771 (t64 @ 7fba0a5). T6.6 blocked after partial 13-deploy-smoke;
-        docs commit PENDING (D-S019-EV014-T66-partial); progress 28/29
+        Tip 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked".
+        T6.6 still blocked (D-S019-EV014-T66-partial); progress 28/29; base tip of #771
     - name: cursor/s019-t64-verify-build-7820
       status: active
       base: cursor/s019-t63-dissemination-e2e-8b16
@@ -11418,6 +11420,22 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 8fc9fec587e4cc7e0a526f88d54f9ae6673ff405
+      short: 8fc9fec
+      branch: cursor/s019-t66-deploy-smoke-151c
+      message: '[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked'
+      stage: 07-build
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21T16:29:00Z'
+      files_changed:
+        - docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
+        - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+        - docs/sessions/S019-dissemination-upload/reports/deploy-checklist.md
+        - docs/sessions/S019-dissemination-upload/HANDOFF.md
+        - docs/sessions/S019-dissemination-upload/routing-plan.md
+        - workflow-state.yaml
+      note: 'T6.6 PARTIAL recorded (D-S019-EV014-T66-partial); H0c/H1/H4/H5 PASS; allowlist/auth/BYOC blocked; progress 28/29'
     - sha: 9f755d523804eae08e07fc5711dcdd736f71bd11
       short: 9f755d5
       branch: cursor/s019-t63-dissemination-e2e-8b16
