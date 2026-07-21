@@ -78,8 +78,8 @@ metar-to-IWXXM/
 
 | Component | Purpose | Location | Dependencies |
 |-----------|---------|----------|--------------|
-| Backend API | Conversion, validation, auth (thin wrappers) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, auth, shared, vendor |
-| Frontend | Operator UI (workbench, decode, F7 sessions) | `apps/frontend/` | shared (types); CodeMirror 6 |
+| Backend API | Conversion, validation, auth; **Planned** F16–F19 dissemination preflight/send (BYOC, memory-only) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, auth, shared, vendor |
+| Frontend | Operator UI (workbench, decode, F7 sessions; **Planned** dissemination drawer) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase middleware | `packages/auth/` | supabase-py |
 | tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles) | `packages/tac2iwxxm/` | tac-validate (optional), vendor; PyO3 required at cutover (ADR-017) |
@@ -95,11 +95,15 @@ metar-to-IWXXM/
 ### apps/backend
 
 - **Purpose**: Single HTTP API for health, conversion, validation, lint, decode, soft-preview,
-  auth, and F5/F7 work sessions. **No** `/admin/*` product surface after F7.a (#697).
+  auth, and F5/F7 work sessions. **Planned (F16–F19)**: backend-mediated dissemination
+  preflight/send for one-shot BYOC destinations (memory-only; ADR-029 allowlist). Route shapes
+  deferred to api-contract / 04. **No** `/admin/*` product surface after F7.a (#697).
 - **Inputs**: HTTP multipart/JSON (TAC + `product` + `profile` + version; decode/lint bodies),
-  JWT bearer tokens, env config (BYO Supabase + optional `DATABASE_URL`).
+  JWT bearer tokens, env config (BYO Supabase + optional `DATABASE_URL`; Planned
+  `DISSEMINATION_EGRESS_ALLOWLIST`).
 - **Outputs**: JSON responses, IWXXM XML, auth session endpoints, span-aware issue lists,
-  decode segments, soft-preview payloads.
+  decode segments, soft-preview payloads; Planned structured preflight/send results (no
+  destination secrets persisted).
 - **Algorithm**:
   1. Auth middleware validates JWT via Supabase (`packages/auth`); local/CI may use
      `DISABLE_AUTH` (G1).
@@ -207,8 +211,10 @@ metar-to-IWXXM/
 ### apps/frontend
 
 - **Purpose**: Operator converter UI (product/profile/version), CodeMirror 6 workbench, decode
-  panel, Failed-TAC / soft-preview UX, F5 My METARs, and F7 multi-product sessions. **No**
-  AdminDashboard or `/admin/*` routes after F7.a.
+  panel, Failed-TAC / soft-preview UX, F5 My METARs, and F7 multi-product sessions.
+  **Planned (F16–F19)**: Dissemination drawer (sink chooser, one-shot URI/params, preflight,
+  Send blocked until green; convert-then-send and drag-drop). **No** AdminDashboard or
+  `/admin/*` routes after F7.a.
 - **F6 delta**: Product select (7 values + auto-detect), profile select (`annex3` | `iwxxm_us`),
   version control; values passed via `conversion_params` / multipart to `/api/v1/convert`.
 - **F7 delta (S011)**: Debounced JWT calls to lint/decode/validate/preview with AbortController;

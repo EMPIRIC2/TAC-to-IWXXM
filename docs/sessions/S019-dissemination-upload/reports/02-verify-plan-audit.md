@@ -2,7 +2,7 @@
 
 **Date**: 2026-07-21  
 **Mode**: delta / evolve  
-**Status**: in_progress — inventory + consistency done; medium/low review (1/6 done)  
+**Status**: in_progress — inventory + consistency done; medium/low review (2/6 done)  
 **PR**: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753
 
 ## Phase 1 — Document inventory (delta scope)
@@ -25,7 +25,7 @@ writer-contract DDL, wis2box service shape.
 
 | Check | Result | Notes |
 |-------|--------|-------|
-| Feature ↔ Spec | **Pass*** | F16–F19 section present; *Component Overview still omits dissemination (S-EV014-M1) |
+| Feature ↔ Spec | **Pass** | F16–F19 section + Component Overview Planned notes (Q27=A) |
 | Feature ↔ Journey | **Pass** | UJ-027–030 |
 | Journey ↔ Test | **Pass** | TC-F16..F19 mapped |
 | Feature ↔ Test | **Pass** | Acceptance ↔ TCs |
@@ -72,7 +72,7 @@ Derived from `requirements-decisions.md` EV-014 / F16–F19 table + locked intak
 | ID | Conf | Category | Claim |
 |----|------|----------|-------|
 | C-EV014-1 | Low | `[Contradiction]` | **Approved/modified Q26=A** — F8 non-goals → worker-path only; dissemination = F16–F19 |
-| S-EV014-M1 | Medium | Spec completeness | Component Overview / backend purpose omit dissemination drawer + preflight APIs |
+| S-EV014-M1 | Medium | Spec completeness | **Approved/modified Q27=A** — Component Overview + backend/frontend purpose |
 | S-EV014-M2 | Medium | `[Ambiguity]` | F19 live demo “required or waive” vs evolve-decisions note including AMHS in close gate vs Q15=A (Postgres+WIS2+EDIS only) |
 | S-EV014-M3 | Medium | Connectivity | H6 harness blurb does not yet list UJ-027–030 (journeys/TCs use H6′) |
 | S-EV014-M4 | Medium | ADR hygiene | ADR-029 still **Proposed** though Q11 locked |

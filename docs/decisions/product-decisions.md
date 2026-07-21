@@ -44,7 +44,7 @@
 | 2026-07-16 | EV009-S3.4 | approved | Passing preview badge copy: "Passed" |
 | 2026-07-21 | EV014-S1.H1–S6.H3 | auto-approved | 28 high-confidence F16–F19 claims from Q5–Q24 / requirements-decisions EV-014 (see S019 02-verify-plan-audit) |
 | 2026-07-21 | C-EV014-1 | approved (modified) | Q26=A — F8 bullet narrowed to worker path; AMHS/push sinks → F16–F19 |
-| 2026-07-21 | S-EV014-M1 | pending | Component Overview dissemination gap |
+| 2026-07-21 | S-EV014-M1 | approved (modified) | Q27=A — Component Overview + backend/frontend purpose note Planned F16–F19 |
 | 2026-07-21 | S-EV014-M2 | pending | F19 live close-gate vs waive |
 | 2026-07-21 | S-EV014-M3 | pending | H6 blurb vs UJ-027–030 |
 | 2026-07-21 | S-EV014-M4 | pending | ADR-029 Proposed → Accepted |

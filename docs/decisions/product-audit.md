@@ -119,7 +119,7 @@
 
 | Check | Result |
 |-------|--------|
-| Feature ↔ Spec | Pass* (Component Overview gap → S-EV014-M1) |
+| Feature ↔ Spec | Pass (S-EV014-M1 fixed Q27=A) |
 | Feature ↔ Journey | Pass |
 | Journey ↔ Test | Pass |
 | Feature ↔ Test | Pass |
@@ -137,7 +137,7 @@
 | ID | Confidence | Category |
 |----|------------|----------|
 | C-EV014-1 | Low | `[Contradiction]` F8 non-goals — **resolved** Q26=A (worker-path wording) |
-| S-EV014-M1 | Medium | Component Overview omits dissemination |
+| S-EV014-M1 | Medium | Component Overview — **resolved** Q27=A |
 | S-EV014-M2 | Medium | `[Ambiguity]` F19 live close-gate vs waive |
 | S-EV014-M3 | Medium | H6 harness text vs UJ-027–030 H6′ |
 | S-EV014-M4 | Medium | ADR-029 Proposed → Accepted? |
