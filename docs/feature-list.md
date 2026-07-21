@@ -262,7 +262,8 @@
   replicas** (drop nothing). Product scope = F6 seven.
 - **Deployable**: Render Background Worker at `apps/worker/`; HTTPS/object poller; Supabase
   store + separate quarantine; service-role JWT for writers. Template → `static+api+worker`.
-- **Non-goals (still)**: AMHS/SWIM/AFS adapters; public machine-ingest auth UX; **push sinks**.
+- **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
+  results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
 - **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R2–R15; ADR-018;
   [execution-plan](sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md)
 

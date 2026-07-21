@@ -124,7 +124,7 @@
 | Journey ↔ Test | Pass |
 | Feature ↔ Test | Pass |
 | Spec ↔ Config | Deferred to 04 (S-EV014-L1) |
-| Scope boundaries | Fail → C-EV014-1 (F8 non-goals bullet) |
+| Scope boundaries | Pass (C-EV014-1 fixed Q26=A) |
 | Template static+api+worker | Pass |
 | Connectivity H4–H5/H6′ | Pass* (H6 blurb → S-EV014-M3) |
 
@@ -136,7 +136,7 @@
 
 | ID | Confidence | Category |
 |----|------------|----------|
-| C-EV014-1 | Low | `[Contradiction]` F8 non-goals still list AMHS/push sinks |
+| C-EV014-1 | Low | `[Contradiction]` F8 non-goals — **resolved** Q26=A (worker-path wording) |
 | S-EV014-M1 | Medium | Component Overview omits dissemination |
 | S-EV014-M2 | Medium | `[Ambiguity]` F19 live close-gate vs waive |
 | S-EV014-M3 | Medium | H6 harness text vs UJ-027–030 H6′ |

@@ -2,7 +2,7 @@
 
 **Date**: 2026-07-21  
 **Mode**: delta / evolve  
-**Status**: in_progress — inventory + consistency done; medium/low review pending  
+**Status**: in_progress — inventory + consistency done; medium/low review (1/6 done)  
 **PR**: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753
 
 ## Phase 1 — Document inventory (delta scope)
@@ -32,7 +32,7 @@ writer-contract DDL, wis2box service shape.
 | Spec ↔ Config | **Deferred** | `DISSEMINATION_EGRESS_ALLOWLIST` → 04 (S-EV014-L1) |
 | Test ↔ Acceptance | **Pass*** | *F19 live bar ambiguous vs Q15 (S-EV014-M2) |
 | Cross-doc naming | **Pass** | drawer / BYOC / wis2box / allowlist consistent |
-| Scope boundaries | **Fail → review** | F8 detail still lists AMHS/push sinks as non-goals (C-EV014-1) |
+| Scope boundaries | **Pass** (after C-EV014-1) | F8 bullet narrowed to worker path (Q26=A) |
 | Template `static+api+worker` | **Pass** | No new deployable; H4–H5 called out for FE/API |
 | Connectivity | **Pass*** | UJ claim H6′; harness H6 text not yet expanded (S-EV014-M3) |
 
@@ -71,7 +71,7 @@ Derived from `requirements-decisions.md` EV-014 / F16–F19 table + locked intak
 
 | ID | Conf | Category | Claim |
 |----|------|----------|-------|
-| C-EV014-1 | Low | `[Contradiction]` | F8 § still says non-goals include AMHS/SWIM/AFS + push sinks without F8-worker qualifier |
+| C-EV014-1 | Low | `[Contradiction]` | **Approved/modified Q26=A** — F8 non-goals → worker-path only; dissemination = F16–F19 |
 | S-EV014-M1 | Medium | Spec completeness | Component Overview / backend purpose omit dissemination drawer + preflight APIs |
 | S-EV014-M2 | Medium | `[Ambiguity]` | F19 live demo “required or waive” vs evolve-decisions note including AMHS in close gate vs Q15=A (Postgres+WIS2+EDIS only) |
 | S-EV014-M3 | Medium | Connectivity | H6 harness blurb does not yet list UJ-027–030 (journeys/TCs use H6′) |
