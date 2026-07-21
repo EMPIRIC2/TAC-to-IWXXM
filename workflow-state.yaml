@@ -10,12 +10,12 @@ active_session:
   type: feature
   intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2) staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-t34-wis2box-publish-c6f7
+  branch: cursor/s019-t41-edis-format-c6f7
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'T3.4 done; M3 complete; next T4.1; PR for T3.4'
+  note: 'T4.1–T4.2 done; M4 in progress; next T4.3; PR for EDIS'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -69,7 +69,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build M3 complete (T3.4 TC-F17-001); #763 merged; next M4 T4.1"
+      note: "Phase C — 07-build M4 T4.1–T4.2 EDIS format+sink; #764 merged; next T4.3"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -124,7 +124,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-21'
-      note: 'T3.4 done on cursor/s019-t34-wis2box-publish-c6f7 (@ f3ba8e7); M3 complete; next T4.1; PR for T3.4; #763 merged'
+      note: 'T4.1–T4.2 done on cursor/s019-t41-edis-format-c6f7 (@ 67f73d2); EDIS format+sink landed; #764 merged; next T4.3; PR for EDIS'
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2387,9 +2387,9 @@ stages:
         started_at: '2026-07-21'
         started: '2026-07-21'
         mode: full
-        note: 'T3.4 done on cursor/s019-t34-wis2box-publish-c6f7 (@ f3ba8e7); M3 complete; next T4.1; PR for T3.4; #763 merged'
+        note: 'T4.1–T4.2 done on cursor/s019-t41-edis-format-c6f7 (@ 67f73d2); EDIS format+sink landed; #764 merged; next T4.3; PR for EDIS'
         active_milestone: M4
-        active_task: T4.1
+        active_task: T4.3
         active_task_status: pending
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
@@ -2441,6 +2441,7 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - '2026-07-21 S019/EV-014 T4.1–T4.2 completed — EDIS WMO AHL format + mocked SMTP sink @ 67f73d2 on cursor/s019-t41-edis-format-c6f7. PR #764 merged (T3.4). Next T4.3.'
       - '2026-07-21 S019/EV-014 T3.4 completed — TC-F17-001 wis2box harness publish green @ f3ba8e7. PR #763 merged. M3 complete. Next M4 T4.1.'
       - >-
         2026-07-21 S019/EV-014 T3.3 completed — wis2box Compose harness; PR #763 open @ f222f90. #761+#762 merged to main. Next T3.4 staging harness publish green (TC-F17-001).
@@ -2565,9 +2566,9 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: 'T3.4 done on cursor/s019-t34-wis2box-publish-c6f7 (@ f3ba8e7); M3 complete; next T4.1; PR for T3.4; #763 merged'
+      note: 'T4.1–T4.2 done on cursor/s019-t41-edis-format-c6f7 (@ 67f73d2); EDIS format+sink landed; #764 merged; next T4.3; PR for EDIS'
       active_milestone: M4
-      active_task: T4.1
+      active_task: T4.3
       active_task_status: pending
   09-qa:
     status: completed
@@ -3135,7 +3136,7 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M3 complete (T3.4 TC-F17-001); #763 merged; next M4 T4.1
+      Phase C — 07-build M4 T4.1–T4.2 EDIS format+sink; #764 merged; next T4.3
 
 stages_pending: []
 
@@ -7724,11 +7725,12 @@ evolve_cycles:
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
     current_stage: 07-build
     active_milestone: M4
-    active_task: T4.1
+    active_task: T4.3
     active_task_status: pending
-    branch: cursor/s019-t34-wis2box-publish-c6f7
-    note: 'T3.4 completed (TC-F17-001); #763 merged; M3→M4 gate green'
+    branch: cursor/s019-t41-edis-format-c6f7
+    note: 'T4.1–T4.2 done; EDIS format+sink landed; #764 merged; next T4.3; PR for EDIS'
     notes:
+      - '2026-07-21 S019/EV-014 T4.1–T4.2 completed — EDIS WMO AHL format + mocked SMTP sink @ 67f73d2. PR #764 merged (T3.4). Next T4.3.'
       - '2026-07-21 S019/EV-014 T3.4 completed — TC-F17-001 wis2box harness publish green @ f3ba8e7. PR #763 merged. M3 complete; M3→M4 gate green. Next M4 T4.1 EDIS SMTP format fixtures.'
       - >-
         2026-07-21 S019/EV-014 T3.3 completed — wis2box Compose harness; PR #763 open @ f222f90. #761+#762 merged to main. Next T3.4 staging harness publish green (TC-F17-001).
@@ -7795,7 +7797,7 @@ evolve_cycles:
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase C — 07-build M3 complete (T3.4 TC-F17-001); #763 merged; next M4 T4.1"
+        note: "Phase C — 07-build M4 T4.1–T4.2 EDIS format+sink; #764 merged; next T4.3"
       01-requirements:
         status: completed
         mode: delta
@@ -7872,9 +7874,9 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-21'
-        note: 'T3.4 done on cursor/s019-t34-wis2box-publish-c6f7 (@ f3ba8e7); M3 complete; next T4.1; PR for T3.4; #763 merged'
+        note: 'T4.1–T4.2 done on cursor/s019-t41-edis-format-c6f7 (@ 67f73d2); EDIS format+sink landed; #764 merged; next T4.3; PR for EDIS'
         active_milestone: M4
-        active_task: T4.1
+        active_task: T4.3
         active_task_status: pending
     gates:
       a_to_b: passed
@@ -10435,14 +10437,15 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-t34-wis2box-publish-c6f7
+  current_branch: cursor/s019-t41-edis-format-c6f7
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: f3ba8e7ae8c91ce77418f18a9154f7c0c0ff8061
-  tip_sha_full: f3ba8e7ae8c91ce77418f18a9154f7c0c0ff8061
+  tip_sha: 67f73d2cfb49c511f0eb550a01ddf793e3978021
+  tip_sha_full: 67f73d2cfb49c511f0eb550a01ddf793e3978021
   notes:
-    - '2026-07-21 S019/EV-014 T3.4 completed — TC-F17-001 harness publish on cursor/s019-t34-wis2box-publish-c6f7 @ f3ba8e7. PR #763 merged. M3 complete; next M4 T4.1.'
+    - '2026-07-21 S019/EV-014 T4.1–T4.2 completed — EDIS WMO AHL format + mocked SMTP sink on cursor/s019-t41-edis-format-c6f7 @ 67f73d2. PR #764 merged (T3.4). Next T4.3; PR for EDIS pending.'
+    - '2026-07-21 S019/EV-014 T3.4 completed — TC-F17-001 harness publish on cursor/s019-t34-wis2box-publish-c6f7 @ f3ba8e7. PR #764 merged. M3 complete; next M4 T4.1.'
     - >-
       2026-07-21 S019/EV-014 T3.3 completed — wis2box Compose harness on cursor/s019-t33-wis2box-harness-c6f7 (PR #763 open @ f222f90). #761+#762 merged to main. Next T3.4.
       tip f222f90 on cursor/s019-t33-wis2box-harness-c6f7; PR #763 open; #761+#762 merged to main
@@ -10634,18 +10637,37 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
-    - name: cursor/s019-t34-wis2box-publish-c6f7
+    - name: cursor/s019-t41-edis-format-c6f7
       status: open
       base: main
       created: '2026-07-21'
       created_at: '2026-07-21'
       session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
+      purpose: S019/EV-014 07-build M4 T4.1–T4.2 EDIS WMO AHL format + mocked SMTP sink
+      tip_sha: 67f73d2cfb49c511f0eb550a01ddf793e3978021
+      tip_sha_full: 67f73d2cfb49c511f0eb550a01ddf793e3978021
+      pushed: true
+      note: 'T4.1–T4.2 complete; PR for EDIS pending'
+    - name: cursor/s019-t34-wis2box-publish-c6f7
+      status: merged
+      base: main
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      merged_at: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
       purpose: S019/EV-014 07-build M3 T3.4 TC-F17-001 wis2box harness publish
       tip_sha: f3ba8e7ae8c91ce77418f18a9154f7c0c0ff8061
       tip_sha_full: f3ba8e7ae8c91ce77418f18a9154f7c0c0ff8061
       pushed: true
-      note: 'T3.4 complete; PR for T3.4 pending; #763 merged'
+      pr_number: 764
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/764
+      pr_title: '[T3.4] test: TC-F17-001 wis2box harness publish green (S019/EV-014)'
+      pr_base: main
+      pr_head: cursor/s019-t34-wis2box-publish-c6f7
+      pr_status: merged
+      note: 'T3.4 merged via PR #764 to main'
     - name: cursor/s019-t33-wis2box-harness-c6f7
       status: merged
       base: main
@@ -11114,6 +11136,20 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 67f73d2cfb49c511f0eb550a01ddf793e3978021
+      short: 67f73d2
+      branch: cursor/s019-t41-edis-format-c6f7
+      message: '[T4.1–T4.2] feat: EDIS WMO AHL format + mocked SMTP sink'
+      stage: 07-build / 16-evolve
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+      files_changed:
+        - docs/sessions/S019-dissemination-upload/HANDOFF.md
+        - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+        - packages/dissemination/README.md
+        - packages/dissemination/src/dissemination/edis.py
+        - packages/dissemination/tests/test_edis_format.py
     - sha: f3ba8e7ae8c91ce77418f18a9154f7c0c0ff8061
       short: f3ba8e7
       branch: cursor/s019-t34-wis2box-publish-c6f7

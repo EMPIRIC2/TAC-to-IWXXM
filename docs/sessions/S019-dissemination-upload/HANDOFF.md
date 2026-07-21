@@ -3,20 +3,20 @@
 ## Resume in next chat
 
 ```
-/16-evolve continue S019/EV-014 — 07-build M4 T4.1
+/16-evolve continue S019/EV-014 — 07-build M4 T4.3
 ```
 
 | Field | Value |
 |-------|-------|
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
-| Branch | `cursor/s019-t34-wis2box-publish-c6f7` (T3.4) |
-| PR (T3.3) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/763 (merged) |
-| PR (T3.4) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/764 (CI green) |
-| Done | M1; M2; **M3 complete** (through T3.4 TC-F17-001 harness publish) |
-| Next | **T4.1** EDIS SMTP format fixtures (F18) |
+| Branch | `cursor/s019-t41-edis-format-c6f7` (T4.1–T4.2) |
+| PR (T4.1–T4.2) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/765 (CI green) |
+| Merged | #761–#764 (through M3 / T3.4) |
+| Done | M1; M2; M3; M4 through **T4.2** (EDIS format + sink) |
+| Next | **T4.3** Preflight connectivity check for SMTP params |
 
 ## Do not skip
 
 - Live BYOC close gate before cycle close (Postgres + WIS2 + EDIS)
-- After M3 PR merges: run **08-verify-build** only at M6 (T6.4); continue M4 without waiting
+- TC-F18-002 live EDIS remains cycle-close only

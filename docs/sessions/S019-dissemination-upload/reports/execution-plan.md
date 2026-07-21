@@ -14,10 +14,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — **07-build** M4 next |
-| **Active milestone** | M3 — WIS2 + Compose wis2box harness (**complete**) |
-| **Active task** | T4.1 (next) |
-| **Tasks** | 17 / **29** completed (through T3.4) |
+| **Active phase** | Phase C — **07-build** M4 in progress |
+| **Active milestone** | M4 — EDIS SMTP (F18) |
+| **Active task** | T4.3 (next) |
+| **Tasks** | 19 / **29** completed (through T4.2) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -83,8 +83,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Test | EDIS message formatting + mocked aiosmtplib submit | TC-F18; E14-05/09 | T2.4 | pending |
-| T4.2 | Code | EDIS sink + RTH header helpers | F18; #6 | T4.1 | pending |
+| T4.1 | Test | EDIS message formatting + mocked aiosmtplib submit | TC-F18; E14-05/09 | T2.4 | **completed** |
+| T4.2 | Code | EDIS sink + RTH header helpers | F18; #6 | T4.1 | **completed** |
 | T4.3 | Test | Preflight connectivity check for SMTP params (no live send in CI) | TC-F18; E14-09 | T4.2 | pending |
 
 ### M5 — AMHS / SWIM / AFS adapters (F19)
