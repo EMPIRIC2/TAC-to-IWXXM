@@ -50,8 +50,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase 0 approved; Phase A — 01+02+03 complete; awaiting Phase A checkpoint before 04-tech-plan; Q15=A+Q8=C+Q21=A
-        BYOC hard close gate"
+      note: "Phase A PASSED (Q31=A); Phase B — 04-tech-plan in_progress; Q15=A+Q8=C+Q21=A BYOC hard close gate"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -80,9 +79,10 @@ active_session:
     - stage: 04-tech-plan
       required: true
       mode: delta
-      status: pending
+      status: in_progress
       skip_rationale:
-      note: Next after Phase A checkpoint — Full routing delta (Q24=A); awaiting user
+      note: 04 delta in_progress (Q31=A Phase A passed / D-S019-EV014-Q31A-phase-a) — F16–F19 tech intake
+      started: '2026-07-21'
     - stage: 05-verify-tech
       required: false
       mode: pending
@@ -2063,6 +2063,25 @@ stages:
       - docs/adr/ADR-011-work-sessions-data-access.md
       - docs/adr/ADR-012-metar-work-sessions-retention.md
     delta_substages:
+      - session_id: S019-dissemination-upload
+        evolve_cycle_id: EV-014
+        skill_id: 04-tech-plan
+        status: in_progress
+        started_at: '2026-07-21'
+        mode: delta
+        feature_ids:
+          - F16
+          - F17
+          - F18
+          - F19
+        note: S019/EV-014 04-tech-plan delta starting (Q31=A Phase A passed) — F16–F19 deferred tech intake
+        deferred_from_01:
+          - API sketch (preflight/send)
+          - writer-contract column DDL per engine
+          - wis2box Render service shape
+          - EDIS SMTP library choice
+          - AMHS/SWIM/AFS protocol details
+          - DISSEMINATION_EGRESS_ALLOWLIST in config-spec/env-contract
       - status: completed
         mode: delta
         session_id: S004-issue-555-feedback
@@ -2178,6 +2197,7 @@ stages:
           - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
           - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+      - 2026-07-21 S019/EV-014 04-tech-plan delta starting (Q31=A Phase A passed) — F16–F19 deferred tech intake
       - >-
         2026-07-19 S015/EV-011 04-tech-plan COMPLETE (D-S015-EV011-04-approve / E11-31) —
         plan approved with GET /api/v1/lint-issue-catalog; 31 tasks M1–M5+T6.0; awaiting 05-verify-tech
@@ -2200,16 +2220,13 @@ stages:
       - "S015/EV-011 delta 04-tech-plan completed 2026-07-19 — E11-31 GET lint-issue-catalog; 31 tasks approved"
 
     active_session:
-      session_id: S015-metar-lint-quality
-      evolve_cycle_id: EV-011
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
       skill_id: 04-tech-plan
-      status: completed
+      status: in_progress
       mode: delta
-      started_at: '2026-07-19'
-      completed_at: '2026-07-19'
-      note: >-
-        COMPLETE E11-31 — plan approved; GET lint-issue-catalog; 31 tasks;
-        handed off to 05-verify-tech (D-S015-EV011-05-start)
+      started_at: '2026-07-21'
+      note: S019/EV-014 04-tech-plan delta starting (Q31=A Phase A passed) — F16–F19 deferred tech intake
   05-verify-tech:
     status: completed
     started_at: "2026-06-15T01:15:00Z"
@@ -3408,6 +3425,20 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-Q31A-phase-a
+    stage: 16-evolve
+    date: '2026-07-21'
+    timestamp: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 16-evolve
+    skill_id: 04-tech-plan
+    topic: Q31=A — Phase A approved; proceed to 04-tech-plan
+    decision: Q31=A — Approve Phase A → run 04-tech-plan now
+    status: confirmed
+    at: '2026-07-21'
+    related_pr: 753
+    note: Phase A 01–03 complete; gates.a_to_b passed; starts 04-tech-plan delta for F16–F19
   - id: D-S019-EV014-Q30A-03-tooling
     stage: 03-plan-tooling
     date: '2026-07-21'
@@ -7672,6 +7703,8 @@ evolve_cycles:
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
     current_stage: 04-tech-plan
     notes:
+      - 2026-07-21 S019/EV-014 Phase A PASSED (Q31=A / D-S019-EV014-Q31A-phase-a) — gates.a_to_b passed; 04-tech-plan 
+        STARTED
       - 2026-07-21 S019/EV-014 03-plan-tooling COMPLETE (D-S019-EV014-Q30A-03-tooling) — Phase A 01–03 ready; awaiting 
         checkpoint AskQuestion before 04-tech-plan
       - '2026-07-21 S019/EV-014 03-plan-tooling STARTED (Q29=A / D-S019-EV014-Q29A-run-03) — PR #753; F16–F19 delta guardrails'
@@ -7711,8 +7744,7 @@ evolve_cycles:
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase 0 approved; Phase A 01–03 done; awaiting Phase A checkpoint; current_stage 04-tech-plan pending; Q15=A+Q8=C+Q21=A
-          BYOC hard close gate"
+        note: "Phase A PASSED (Q31=A); Phase B — 04-tech-plan in_progress; Q15=A+Q8=C+Q21=A BYOC hard close gate"
       01-requirements:
         status: completed
         mode: delta
@@ -7755,24 +7787,40 @@ evolve_cycles:
           - .cursor/hooks/feature_drift.py
           - .cursor/hooks/scope_check.py
       04-tech-plan:
-        status: pending
+        status: in_progress
         mode: delta
-        note: Awaiting Phase A checkpoint before start
+        note: delta intake starting — deferred API/DDL/wis2box/SMTP/AMHS/ALLOWLIST from 01
+        started: '2026-07-21'
+        feature_ids:
+          - F16
+          - F17
+          - F18
+          - F19
+        deferred_from_01:
+          - API sketch (preflight/send)
+          - writer-contract column DDL per engine
+          - wis2box Render service shape
+          - EDIS SMTP library choice
+          - AMHS/SWIM/AFS protocol details
+          - DISSEMINATION_EGRESS_ALLOWLIST in config-spec/env-contract
     gates:
-      a_to_b: pending
+      a_to_b: passed
       b_to_c: pending
       c_to_d: pending
       deploy: pending
-      a_to_b_note: criteria met (Fn in feature-list; delta specs; 02 pass; 03 done) — await user Phase A checkpoint
+      a_to_b_note: PASSED Q31=A — Fn in feature-list; delta specs; 02 pass; 03 done
+      a_to_b_passed_at: '2026-07-21'
     checkpoints:
       phase_a:
-        status: pending_user
-        note: '01+02+03 complete; awaiting Phase A checkpoint before 04'
+        status: passed
+        note: 'Phase A PASSED (Q31=A) — 01+02+03 complete; proceeding to 04-tech-plan'
         criteria_met:
           - Fn F16–F19 in feature-list
           - delta specs (01) complete
           - 02-verify-plan PASS
           - 03-plan-tooling done
+        completed_at: '2026-07-21'
+        decision_id: D-S019-EV014-Q31A-phase-a
       phase_b: pending
       phase_c: pending
       phase_d: pending
@@ -10591,8 +10639,8 @@ git_history:
       evolve_cycle_id: EV-014
       purpose: 'EV-014 / S019 dissemination epic (#729 Upload DB + #2 WIS2 + #6 EDIS)'
       pushed: true
-      note: EV-014 / S019 — 03 COMPLETE; Phase A pending_user checkpoint; tip 5a4b982
-      tip_sha: 5a4b98277844688afc6b77905ac30a24006caef1
+      note: EV-014 / S019 — Phase A passed; 04-tech-plan in_progress; tip d2e29b0
+      tip_sha: d2e29b0cdee3a09b19b6fc57128752eba3814d1d
     - name: cursor/metar-remarks-live-e2e-2e2e
       base: main
       status: completed
@@ -10912,6 +10960,18 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: d2e29b0cdee3a09b19b6fc57128752eba3814d1d
+      short: d2e29b0
+      branch: cursor/dissemination-upload-e25c
+      message: 'docs(S019): sync state — 03-plan-tooling completed'
+      stage: 03-plan-tooling
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      date: '2026-07-21'
+      pushed: true
+      files_changed:
+        - workflow-state.yaml
+      note: tip sync recorded at Phase A pass / 04 start
     - sha: 5a4b98277844688afc6b77905ac30a24006caef1
       short: 5a4b982
       branch: cursor/dissemination-upload-e25c

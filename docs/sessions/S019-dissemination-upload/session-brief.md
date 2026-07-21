@@ -41,6 +41,7 @@ One BIG dissemination evolve cycle:
 | Q28=A (+batch) | Close-gate clarify; H6 UJ-027–030; ADR-029 Accepted; L1 defer 04 |
 | Q29=A | Run 03-plan-tooling |
 | Q30=A | Approve all 03 delta guardrails |
+| Q31=A | Phase A approved → 04-tech-plan |
 | AskQuestion | Waived (cloud written interview) |
 
 ### Locked intake (summary)
