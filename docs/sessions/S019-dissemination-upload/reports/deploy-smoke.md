@@ -82,3 +82,11 @@ uv run pytest tests/live/test_t72_h3_live_smoke.py tests/live/test_t83_h4_h5_con
 **Connectivity half of T6.6 PASS** (H0c + H1 public + H4 + H5).  
 **Local/CI allowlist recommendation applied** (docs + `.env.example`).  
 **T6.6 overall remains blocked** on auth + live BYOC (+ optional Render allowlist set when API key available; FE drawer after #771).
+
+## Update 2026-07-21T17:50Z (post-#771 merge)
+
+| Check | Result |
+|-------|--------|
+| PR #771 | **MERGED** `2bbe9f5` — CI/CD Pipeline + Deploy **success** |
+| Live FE drawer | **PASS** — `/assets/App-C1eOPfC1.js` contains `dissemination` / `preflight` / `open-dissemination` (drawer is code-split; index chunk alone is insufficient probe) |
+| Auth H3 / live BYOC | **Still BLOCKED** — no workspace `.env` (secrets must not be committed) |
