@@ -285,9 +285,14 @@ async def test_create_tables_swallows_engine_errors() -> None:
 
             yield _Conn()
 
-    db._engine = _BrokenEngine()
+        async def dispose(self) -> None:
+            return None
 
-    await db.create_tables()
+    db._engine = _BrokenEngine()
+    try:
+        await db.create_tables()
+    finally:
+        db._engine = None
 
 
 @pytest.mark.asyncio

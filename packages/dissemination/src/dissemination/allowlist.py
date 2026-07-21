@@ -203,7 +203,10 @@ def _ip_on_allowlist(
 
 
 def _resolve_ips(host: str) -> list[ipaddress.IPv4Address | ipaddress.IPv6Address]:
-    infos = socket.getaddrinfo(host, None)
+    try:
+        infos = socket.getaddrinfo(host, None)
+    except OSError:
+        return []
     out: list[ipaddress.IPv4Address | ipaddress.IPv6Address] = []
     seen: set[str] = set()
     for info in infos:

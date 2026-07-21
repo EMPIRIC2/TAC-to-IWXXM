@@ -3,19 +3,20 @@
 ## Resume in next chat
 
 ```
-/16-evolve continue S019/EV-014 — 07-build M2 T2.6
+/16-evolve continue S019/EV-014 — 07-build M2 T2.7
 ```
 
 | Field | Value |
 |-------|-------|
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
-| Branch | `cursor/s019-t25-writer-contract-engines-ce70` (T2.5); base `cursor/s019-07-build-m1-9a92` |
-| PR | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/758 (T2.5 → base); umbrella #757 |
-| Done | M1; M2 through **T2.5** (PG+MySQL Testcontainers + SQLite) |
-| Next | **T2.6** SQL Server path via aioodbc (CI skip if no ODBC) |
+| Branch | `cursor/s019-t26-sqlserver-aioodbc-4b72` (T2.6); base `main` |
+| PR | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/759 (T2.6 → main) |
+| Merged to main | #755, #756, #757, #758 (session stack) |
+| Done | M1; M2 through **T2.6** (SQL Server aioodbc; skip without ODBC) |
+| Next | **T2.7** ODBC driver notes in deploy.md / package README |
 
 ## Do not skip
 
 - Live BYOC close gate before cycle close
-- T2.6 SQL Server (skip/document when ODBC absent) before M2 docs T2.7
+- T2.7 ODBC docs before M2→M3 gate

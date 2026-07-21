@@ -130,6 +130,16 @@ def test_validate_denies_when_dns_returns_no_addresses() -> None:
             validate_egress_host("empty.example.com", allowlist=al)
 
 
+def test_validate_denies_when_dns_raises_oserror() -> None:
+    al = parse_allowlist("nx.example.com")
+    with patch(
+        "dissemination.allowlist.socket.getaddrinfo",
+        side_effect=OSError("name resolution failed"),
+    ):
+        with pytest.raises(EgressDenied, match="did not resolve"):
+            validate_egress_host("nx.example.com", allowlist=al)
+
+
 def test_iter_allowlist_entries_and_default_env_load(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

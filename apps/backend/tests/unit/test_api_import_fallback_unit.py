@@ -185,6 +185,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
     fake_router_module = _stub_module("router_mod", router=object())
     fake_routers = _stub_module(
         "routers",
+        dissemination=fake_router_module,
         evaluation=fake_router_module,
         icao_opmet=fake_router_module,
         validation=fake_router_module,

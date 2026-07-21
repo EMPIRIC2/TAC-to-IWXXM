@@ -7,9 +7,6 @@ import uuid
 from typing import Any
 
 import msgspec
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from sqlalchemy.ext.asyncio import create_async_engine
-
 from dissemination.db_preflight import (
     EgressDenied,
     dialect_for_sink,
@@ -26,6 +23,8 @@ from dissemination.models import (
 from dissemination.rate_limit import RateLimitExceeded, default_rate_limiter
 from dissemination.redact import redact_secrets
 from dissemination.writer_contract import CONTRACT_TABLE, apply_writer_contract
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from ..msgspec_http import msgspec_json_response
 from ..utilities.security import verify_supabase_token
