@@ -7,8 +7,8 @@
 | Session | `S019-dissemination-upload` — **completed** |
 | Cycle | `EV-014` — **completed** (`D-S019-EV014-phase4-close`) |
 | Features | F16–F19 **Done** |
-| Merged | #761–#**772** (code); #**774** (Phase C/D bookkeeping → `915f41e`) |
-| Closeout | `D-S019-EV014-closeout-1` — closed superseded #770; closed issues #729 / #2 / #6 |
+| Merged | #761–#**772** (code); #**774** (bookkeeping); #**775** (closeout hygiene → `32aa0cc`) |
+| Closeout | `D-S019-EV014-closeout-1` + `closeout-2` — #770/#729/#2/#6 closed; session archived |
 | Decision | `D-S019-EV014-Q15-mock-waive` + Phase C/D Assumed PASS |
 
 ## Secrets policy

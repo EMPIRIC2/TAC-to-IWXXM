@@ -3518,6 +3518,27 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-closeout-2
+    date: '2026-07-21'
+    timestamp: '2026-07-21T20:02:13Z'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 16-evolve
+    skill_id: workflow-state-manager
+    status: confirmed
+    topic: EV-014 session/cycle close confirmed after hygiene PR merge
+    summary: >-
+      Session/cycle close confirmed; hygiene PR #775 merged
+    decision: >-
+      Confirm S019/EV-014 remain completed and active_session null after PR #775 MERGED to main
+      (32aa0cce32c9e607809f83630d988e29b9dbde60, 2026-07-21T20:02:13Z). Mark branch
+      cursor/s019-ev014-closeout-hygiene-f898 merged; tip_sha/current_branch = main @ merge commit;
+      overall_status stays completed. No reopen; no close_session needed (already archived).
+    related_prs:
+      - 775
+      - 774
+      - 770
+    commit_sha: 32aa0cce32c9e607809f83630d988e29b9dbde60
   - id: D-S019-EV014-closeout-1
     date: '2026-07-21'
     timestamp: '2026-07-21'
@@ -10973,16 +10994,21 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-ev014-closeout-hygiene-f898
+  current_branch: main
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 1b6df32ba531311a08c86a3a4d05f05486a37034
-  tip_sha_full: 1b6df32ba531311a08c86a3a4d05f05486a37034
+  tip_sha: 32aa0cce32c9e607809f83630d988e29b9dbde60
+  tip_sha_full: 32aa0cce32c9e607809f83630d988e29b9dbde60
   note: >-
-    closeout hygiene tip 1b6df32 — "[S019] chore: EV-014 closeout hygiene (#770, #729/#2/#6, state)";
-    hygiene PR pending/created (pr TBD); EV-014/S019 completed; active_session null
+    main @ 32aa0cc — Merge PR #775 (EV-014 closeout hygiene); S019/EV-014 completed;
+    active_session null; overall_status completed
   notes:
+    - >-
+      2026-07-21 S019/EV-014 closeout hygiene PR #775 MERGED to main @
+      32aa0cce32c9e607809f83630d988e29b9dbde60 (2026-07-21T20:02:13Z); branch
+      cursor/s019-ev014-closeout-hygiene-f898 merged; tip_sha/current_branch = main;
+      active_session null; D-S019-EV014-closeout-2
     - >-
       2026-07-21 S019/EV-014 closeout hygiene commit 1b6df32 on cursor/s019-ev014-closeout-hygiene-f898
       pushed; hygiene PR pending/created (pr number TBD); active_session null; EV-014 completed
@@ -11205,7 +11231,7 @@ git_history:
   branches:
     - name: cursor/s019-ev014-closeout-hygiene-f898
       base: main
-      status: open
+      status: merged
       purpose: S019/EV-014 post-merge closeout hygiene (PR #770 close; issues #729/#2/#6; workflow-state)
       session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
@@ -11214,9 +11240,15 @@ git_history:
       tip_sha: 1b6df32ba531311a08c86a3a4d05f05486a37034
       tip_sha_full: 1b6df32ba531311a08c86a3a4d05f05486a37034
       pushed: true
+      pr: 775
+      pr_number: 775
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/775
+      pr_status: merged
+      merged_at: '2026-07-21T20:02:13Z'
+      merge_commit: 32aa0cce32c9e607809f83630d988e29b9dbde60
       note: >-
-        Closeout hygiene commit 1b6df32 pushed; hygiene PR pending/created (pr TBD when known);
-        active_session null; EV-014/S019 completed (do not reopen)
+        PR #775 MERGED to main @ 32aa0cce32c9e607809f83630d988e29b9dbde60 (2026-07-21T20:02:13Z).
+        Closeout hygiene; EV-014/S019 completed; active_session null (D-S019-EV014-closeout-2)
     - name: cursor/s019-ev014-phase-d-close-f898
       base: main
       status: merged
@@ -11866,6 +11898,23 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 32aa0cce32c9e607809f83630d988e29b9dbde60
+      short: 32aa0cc
+      branch: main
+      message: 'Merge pull request #775 from joseph-c-mcguire/cursor/s019-ev014-closeout-hygiene-f898'
+      stage: 16-evolve
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21T20:02:13Z'
+      pushed: true
+      pr: 775
+      pr_number: 775
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/775
+      pr_status: merged
+      merge_commit: 32aa0cce32c9e607809f83630d988e29b9dbde60
+      note: >-
+        PR #775 MERGED; closeout hygiene on main; D-S019-EV014-closeout-2;
+        active_session null; S019/EV-014 completed
     - sha: 1b6df32ba531311a08c86a3a4d05f05486a37034
       short: 1b6df32
       branch: cursor/s019-ev014-closeout-hygiene-f898
@@ -11875,8 +11924,12 @@ git_history:
       evolve_cycle_id: EV-014
       timestamp: '2026-07-21'
       pushed: true
+      pr: 775
+      pr_number: 775
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/775
+      pr_status: merged
       note: >-
-        Closeout hygiene pushed; branch status open; hygiene PR pending/created (pr TBD);
+        Closeout hygiene commit; later merged via PR #775 @ 32aa0cc;
         active_session null; EV-014 completed
     - sha: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
       short: 73d4ff4
