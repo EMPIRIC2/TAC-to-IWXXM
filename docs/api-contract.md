@@ -484,7 +484,7 @@ configure `config.*.api.corsOrigins` accordingly. Live workbench increases reque
 ## Dissemination (F16–F19) — Planned (S019 / EV-014)
 
 > **Status**: Planned — shapes locked at architecture level (ADR-030 / E14-03=A).
-> Exact JSON field names and error codes finalize in remaining 04 batches / before 07-build.
+> Exact JSON field names and error codes finalize **before 07-build** (04 batches complete).
 
 Auth: Bearer JWT (same as other `/api/v1/*`). Destination credentials are **memory-only**
 (never persisted; never returned in responses). Egress subject to ADR-029 allowlist.

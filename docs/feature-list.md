@@ -482,9 +482,10 @@
 
 - **Status**: **Planned**.
 - **What it does**: Publish converted IWXXM via **WIS2** (MQTT notification + HTTP dataset) from
-  the dissemination drawer. **Test harness**: project-operated staging **wis2box** on Render/Docker
-  (Q12=B / Q17). **Live**: user BYOC WIS2 node/endpoint credentials (memory-only); cycle close
-  requires live BYOC green (Q15=A / Q21=A).
+  the dissemination drawer. **Test harness**: project **Docker Compose / CI** wis2box
+  (Q12=B / Q17 / E14-04=B — **not** a long-lived Render web service; may run on CI or a
+  disposable Docker host). **Live**: user BYOC WIS2 node/endpoint credentials (memory-only);
+  cycle close requires live BYOC green (Q15=A / Q21=A).
 - **Acceptance**: Staging wis2box e2e in CI/staging; live BYOC demo before EV-014 close; drawer
   sink type WIS2 with preflight-equivalent connectivity checks.
 - **Source**: #2; WIS2 overview / wis2box; S019 / EV-014

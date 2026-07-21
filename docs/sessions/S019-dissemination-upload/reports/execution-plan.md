@@ -1,10 +1,12 @@
 # Execution plan — S019 / EV-014 (F16–F19 dissemination)
 
-> **Status**: **approved** (2026-07-21) — Q34=A / D-S019-EV014-Q34A-04-approve  
-> **Branch**: `cursor/dissemination-upload-e25c`  
+> **Status**: **approved** (2026-07-21) — Q34=A / D-S019-EV014-Q34A-04-approve;
+> **05-verify-tech** PASS (D-S019-EV014-Q35A-05) — task count corrected to **29**  
+> **Branch**: build off `main` @ `#753` merge (`3c9ee81`); prior plan branch
+> `cursor/dissemination-upload-e25c` **merged**  
 > **Evolve cycle**: EV-014  
 > **Features**: F16, F17, F18, F19  
-> **PR**: [#753](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753)  
+> **PR (04)**: [#753](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753) MERGED  
 > **Spec sources**: feature-list F16–F19; ADR-021/029/030; spec §F16–F19; UJ-027–030;
 > TC-F16..F19; api-contract Dissemination; env-contract allowlist; E14-01..10
 
@@ -12,10 +14,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — next **05-verify-tech** (04 complete; plan on `main` after #753) |
-| **Active milestone** | M1 — Package scaffold + SSRF/allowlist (start after 05/06 or B→C) |
+| **Active phase** | Phase B — **05-verify-tech** PASS; next **06-tech-tooling** (T0.1) → B→C → 07 |
+| **Active milestone** | M1 — Package scaffold + SSRF/allowlist (start after 06 / B→C) |
 | **Active task** | — (07-build not started) |
-| **Tasks** | 0 / 32 completed |
+| **Tasks** | 0 / **29** completed |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -62,8 +64,8 @@
 |------|------|-------------|-------------|------------|--------|
 | T2.1 | Test | Writer-contract schema diff fixtures (PG/MySQL/SQLite); DDL create-if-missing | TC-F16-001/003; F16-R4 | T1.4 | pending |
 | T2.2 | Code | Engine adapters + versioned writer-contract DDL | ADR-030; E14-02 | T2.1 | pending |
-| T2.3 | Test | API tests: preflight/send msgspec shapes; secret redaction; handle memory-only | api-contract; TC-F16-002 | T2.2 | pending |
-| T2.4 | Code | Thin backend routers `/dissemination/preflight` + `/send` | api-contract; E14-03/07 | T2.3 | pending |
+| T2.3 | Test | API tests: preflight/send msgspec shapes; secret redaction; handle memory-only; per-user rate-limit deny (ADR-029 §5) | api-contract; TC-F16-002; ADR-029 | T2.2 | pending |
+| T2.4 | Code | Thin backend routers `/dissemination/preflight` + `/send` (+ rate limit) | api-contract; E14-03/07; ADR-029 | T2.3 | pending |
 | T2.5 | Test | Compose/Testcontainers integration PG+MySQL+SQLite happy + mismatch | TC-F16-003; E14-09 | T2.4 | pending |
 | T2.6 | Test | SQL Server path via aioodbc (CI skip if no ODBC; document) | E14-06; TC-F16-003 | T2.4 | pending |
 | T2.7 | Docs | ODBC driver notes in deploy.md / package README | E14-06 | T2.6 | pending |
@@ -112,7 +114,9 @@
 
 ## Git Strategy
 
-- Branch: `cursor/dissemination-upload-e25c` (PR #753 → base per cloud agent)
+- Base: `main` @ `#753` (`3c9ee81`). Build branch: `cursor/<slug>-b45b` (or
+  `evolve/EV-014-dissemination`) off `main` — do **not** reopen merged
+  `cursor/dissemination-upload-e25c`.
 - Atomic commits per task: `[T{n}.{m}] type: …`
 - One logical PR for build; minor PRs per milestone optional
 
@@ -130,5 +134,6 @@
 
 ## Approval
 
-**Approved** 2026-07-21 — Q34=A (D-S019-EV014-Q34A-04-approve). 04-tech-plan complete.
-Next: **05-verify-tech** → 06-tech-tooling → Phase B checkpoint → 07-build (M1 T1.1).
+**Approved** 2026-07-21 — Q34=A (D-S019-EV014-Q34A-04-approve). 04-tech-plan complete.  
+**05-verify-tech** PASS 2026-07-21 — D-S019-EV014-Q35A-05 (29 tasks; branch/ADR/matrix fixes).  
+Next: **06-tech-tooling** (T0.1) → Phase B checkpoint → 07-build (M1 T1.1).

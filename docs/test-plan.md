@@ -583,8 +583,8 @@ Before closing S013 / EV-009:
 - [ ] TC-F18-001 format green; TC-F18-002 live BYOC before cycle close
 - [ ] TC-F19-001..003 staging/test green; live F19 optional (evidence or waive id)
 - [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes; H6′ UJ-027–030
-- [ ] `DISSEMINATION_EGRESS_ALLOWLIST` documented in config-spec / env-contract (**04-tech-plan**;
-      product corpus cites ADR-029 until then — S-EV014-L1)
+- [ ] `DISSEMINATION_EGRESS_ALLOWLIST` in config-spec / env-contract / deploy / staging-secrets-matrix
+      (S-EV014-L1 **resolved** at 04; matrix row added at 05-verify-tech)
 
 ## Live Test Cases (T3 / H3–H6)
 
