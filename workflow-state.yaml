@@ -10668,8 +10668,8 @@ evolve_cycles:
 
 git_history:
   current_branch: cursor/s019-t66-deploy-smoke-151c
-  ahead_of_origin: 2
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit: null
   tip_sha: 5b3db91
   tip_sha_full: 5b3db913e507da6576bf996ab47174569b5cc96f
