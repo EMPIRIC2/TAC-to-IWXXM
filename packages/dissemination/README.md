@@ -48,12 +48,14 @@ mssql+aioodbc://sa:Your_password123@127.0.0.1:1433/master?driver=ODBC+Driver+18+
 Deploy / image notes (CI skip policy, stock API Dockerfile without `msodbcsql18`):
 [docs/deploy.md](../../docs/deploy.md) §Local Development → SQL Server ODBC.
 
-**WIS2 sink (T3.1–T3.2 / F17)**
+**WIS2 sink (T3.1–T3.4 / F17)**
 
 - `dissemination.wis2` — `wis2_preflight` / `wis2_publish` with injectable MQTT + HTTP
-  clients (unit-tested with mocks; no broker required)
-- Compose wis2box harness (T3.3): MQTT + HTTP dataset stand-in under
-  `packages/dissemination/docker/wis2box-harness` — see that README
+  clients (unit-tested with mocks)
+- `dissemination.transports` — `HttpxDatasetClient` + `AiomqttClient` (httpx / aiomqtt)
+- Compose wis2box harness: MQTT + HTTP dataset stand-in under
+  `packages/dissemination/docker/wis2box-harness`
+- Staging publish: `make compose-wis2box-harness` runs TC-F17-001 pytest
 - Live BYOC remains the cycle-close gate (TC-F17-002)
 
 **Egress allowlist**

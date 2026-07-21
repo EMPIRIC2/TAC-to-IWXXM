@@ -14,10 +14,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — **07-build** M3 in progress |
-| **Active milestone** | M3 — WIS2 + Compose wis2box harness |
-| **Active task** | T3.4 (next) |
-| **Tasks** | 16 / **29** completed (through T3.3) |
+| **Active phase** | Phase C — **07-build** M4 next |
+| **Active milestone** | M3 — WIS2 + Compose wis2box harness (**complete**) |
+| **Active task** | T4.1 (next) |
+| **Tasks** | 17 / **29** completed (through T3.4) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -77,7 +77,7 @@
 | T3.1 | Test | WIS2 sink adapter unit tests (mocked MQTT/HTTP) | TC-F17-001; E14-09 | T2.4 | **completed** |
 | T3.2 | Code | WIS2 sink in `packages/dissemination` | F17; ADR-030 | T3.1 | **completed** |
 | T3.3 | Config | `docker-compose` wis2box harness + CI service/job | E14-04; TC-F17-001 | T3.2 | **completed** |
-| T3.4 | Test | Staging harness publish green (TC-F17-001) | UJ-028 | T3.3 | pending |
+| T3.4 | Test | Staging harness publish green (TC-F17-001) | UJ-028 | T3.3 | **completed** |
 
 ### M4 — EDIS SMTP (F18)
 

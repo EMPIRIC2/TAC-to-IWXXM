@@ -62,28 +62,20 @@ if [[ "${GOT}" != "${SMOKE_BODY}" ]]; then
 fi
 echo "[wis2box-harness] HTTP dataset PUT/GET smoke ok"
 
-# Optional pytest path when TC-F17-001 tests exist (T3.4).
-# Allowlist loopback/harness hosts for sink egress during those tests.
-export DISSEMINATION_EGRESS_ALLOWLIST="${DISSEMINATION_EGRESS_ALLOWLIST:-wis2box,127.0.0.1,localhost}"
+# TC-F17-001 publish pytest (T3.4) — only real .py files named *harness* / *staging*.
+# Loopback CIDR required for ADR-029 DNS-rebinding guard when using localhost/127.0.0.1.
+export DISSEMINATION_EGRESS_ALLOWLIST="${DISSEMINATION_EGRESS_ALLOWLIST:-wis2box,127.0.0.1,127.0.0.0/8,localhost}"
+export WIS2BOX_HARNESS_EXTERNAL=1
 
-shopt -s nullglob
-wis2_tests=(
-  "${ROOT}"/packages/dissemination/tests/**/*wis2*
-  "${ROOT}"/tests/**/*wis2*
+mapfile -t harness_tests < <(
+  find "${ROOT}/packages/dissemination/tests" "${ROOT}/tests" \
+    -type f \( -name '*harness*.py' -o -name '*staging*.py' \) 2>/dev/null | sort || true
 )
-# Unit tests under test_wis2_sink.py are mocked — only run files tagged for harness
-# when T3.4 adds them. Prefer explicit *harness* / *staging* names if present.
-harness_tests=()
-for f in "${wis2_tests[@]}"; do
-  case "$(basename "${f}")" in
-    *harness*|*staging*|*compose*) harness_tests+=("${f}") ;;
-  esac
-done
 
 if ((${#harness_tests[@]} > 0)); then
   uv run pytest "${harness_tests[@]}" \
-    -m "not live and not live_api" \
+    -m "integration and not live and not live_api" \
     -v --no-cov
 else
-  echo "[wis2box-harness] compose profile wis2box green (publish pytest deferred to T3.4)."
+  echo "[wis2box-harness] compose profile wis2box green (no *harness*/*staging* pytest files)."
 fi

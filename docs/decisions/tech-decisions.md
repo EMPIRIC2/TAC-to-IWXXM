@@ -33,6 +33,7 @@ Session report: `docs/sessions/S019-dissemination-upload/reports/05-verify-tech-
 | E14-07 | 2026-07-21 | HTTP encode | msgspec on dissemination routes | confirmed |
 | E14-08 | 2026-07-21 | Allowlist env | env-contract + Render; empty fail-closed | confirmed |
 | E14-09 | 2026-07-21 | Tests | Unit + Compose/Testcontainers + mocks; live BYOC close-only | confirmed |
+| D-S019-EV014-T34-transports | 2026-07-21 | WIS2 | httpx + aiomqtt≥2.3,<3 transports for TC-F17-001 | confirmed |
 | E14-10 | 2026-07-21 | FE / H4–H5 | Ship drawer this cycle; H4–H5 required | confirmed |
 | D-S019-EV014-Q33A-04-batch2 | 2026-07-21 | Gate | Lock Batch 2 (all A) | confirmed |
 | D-S019-EV014-Q34A-04-approve | 2026-07-21 | Plan | Approve execution-plan M1–M6 (**29** tasks; 05 fixed miscount from 32); 04 complete | confirmed |

@@ -167,6 +167,12 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
   testing-only). Live WIS2 remains BYOC (TC-F17-002).
 - Merged session stack before T3.3: PR #761 (T2.7), #762 (T3.1–T3.2) → `main`.
 
+### T3.4 harness publish transports (D-S019-EV014-T34-transports)
+
+- **A — httpx + aiomqtt≥2.3,<3** concrete transports in `dissemination.transports`
+  (`HttpxDatasetClient`, `AiomqttClient`) for TC-F17-001 Compose harness publish.
+- Reject aiomqtt 3.x alpha for this milestone (API churn).
+
 ### Notes
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
