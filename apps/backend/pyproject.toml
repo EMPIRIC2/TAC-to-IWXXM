@@ -82,6 +82,7 @@ filterwarnings = [
 [tool.coverage.run]
 branch = true
 source = ["src"]
+concurrency = ["thread", "greenlet"]
 omit = [
     "src/**/__main__.py",
     "src/__main__.py",
