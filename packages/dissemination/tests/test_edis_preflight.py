@@ -169,6 +169,7 @@ async def test_aiosmtp_client_connect_login_quit_no_send_via_mocked_lib() -> Non
 async def test_aiosmtp_client_smtps_port_uses_implicit_tls() -> None:
     inner = AsyncMock()
     inner.connect = AsyncMock()
+    inner.is_connected = True
     inner.quit = AsyncMock()
     smtp_ctor = MagicMock(return_value=inner)
     with patch("dissemination.transports.aiosmtplib.SMTP", smtp_ctor):
@@ -178,3 +179,89 @@ async def test_aiosmtp_client_smtps_port_uses_implicit_tls() -> None:
     kwargs = smtp_ctor.call_args.kwargs
     assert kwargs["use_tls"] is True
     assert kwargs.get("start_tls") is False
+    inner.quit.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_aiosmtp_client_plain_no_tls() -> None:
+    inner = AsyncMock()
+    inner.connect = AsyncMock()
+    inner.is_connected = True
+    inner.quit = AsyncMock()
+    smtp_ctor = MagicMock(return_value=inner)
+    with patch("dissemination.transports.aiosmtplib.SMTP", smtp_ctor):
+        client = AiosmtpClient(hostname="smtp.example.test", port=25, use_tls=False)
+        await client.connect()
+        await client.quit()
+    kwargs = smtp_ctor.call_args.kwargs
+    assert kwargs["use_tls"] is False
+    assert kwargs["start_tls"] is False
+
+
+@pytest.mark.asyncio
+async def test_aiosmtp_client_connect_is_idempotent_when_connected() -> None:
+    inner = AsyncMock()
+    inner.connect = AsyncMock()
+    inner.is_connected = True
+    smtp_ctor = MagicMock(return_value=inner)
+    with patch("dissemination.transports.aiosmtplib.SMTP", smtp_ctor):
+        client = AiosmtpClient(hostname="smtp.example.test")
+        await client.connect()
+        await client.connect()
+    assert smtp_ctor.call_count == 1
+    assert inner.connect.await_count == 1
+
+
+@pytest.mark.asyncio
+async def test_aiosmtp_client_login_and_send_require_connect() -> None:
+    from email.message import EmailMessage
+
+    client = AiosmtpClient(hostname="smtp.example.test")
+    with pytest.raises(RuntimeError, match="not connected"):
+        await client.login("u", "p")
+    with pytest.raises(RuntimeError, match="not connected"):
+        await client.send_message(EmailMessage())
+
+
+@pytest.mark.asyncio
+async def test_aiosmtp_client_send_message_and_quit_close_paths() -> None:
+    from email.message import EmailMessage
+
+    inner = AsyncMock()
+    inner.connect = AsyncMock()
+    inner.is_connected = False
+    inner.send_message = AsyncMock(return_value=({}, "ok"))
+    inner.close = AsyncMock()
+    inner.quit = AsyncMock()
+    smtp_ctor = MagicMock(return_value=inner)
+    msg = EmailMessage()
+    msg["From"] = "a@example.test"
+    msg["To"] = "b@example.test"
+    msg.set_content("x")
+    with patch("dissemination.transports.aiosmtplib.SMTP", smtp_ctor):
+        client = AiosmtpClient(hostname="smtp.example.test")
+        await client.connect()
+        # Force not-connected so quit uses close()
+        inner.is_connected = False
+        result = await client.send_message(msg)
+        await client.quit()
+    assert result == ({}, "ok")
+    inner.send_message.assert_awaited_once()
+    inner.close.assert_awaited_once()
+    inner.quit.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_aiosmtp_client_quit_noop_and_context_manager() -> None:
+    inner = AsyncMock()
+    inner.connect = AsyncMock()
+    inner.is_connected = True
+    inner.quit = AsyncMock()
+    smtp_ctor = MagicMock(return_value=inner)
+    with patch("dissemination.transports.aiosmtplib.SMTP", smtp_ctor):
+        client = AiosmtpClient(hostname="smtp.example.test")
+        await client.quit()  # never connected
+        async with AiosmtpClient(hostname="smtp.example.test") as opened:
+            assert opened is not None
+    inner.connect.assert_awaited()
+    inner.quit.assert_awaited()
