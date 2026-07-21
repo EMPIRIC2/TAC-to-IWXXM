@@ -165,3 +165,63 @@ async def test_staging_errors_redact_password(sink_type: str) -> None:
 def test_get_staging_sink_rejects_unknown_type() -> None:
     with pytest.raises(ValueError, match="sink_type"):
         get_staging_sink("wis2")  # type: ignore[arg-type]
+
+
+def test_staging_adapter_init_rejects_unknown_type() -> None:
+    with pytest.raises(ValueError, match="sink_type"):
+        StagingSinkAdapter("wis2")  # type: ignore[arg-type]
+
+
+@pytest.mark.asyncio
+async def test_staging_preflight_rejects_mismatched_sink_type() -> None:
+    adapter = get_staging_sink("amhs")
+    with pytest.raises(ValueError, match="does not match"):
+        await adapter.preflight(
+            params=_params("swim"),
+            allowlist=_allowlist("gateway.example.test"),
+        )
+
+
+@pytest.mark.asyncio
+async def test_staging_send_rejects_mismatched_sink_type() -> None:
+    adapter = get_staging_sink("swim")
+    with pytest.raises(ValueError, match="does not match"):
+        await adapter.send(
+            params=_params("amhs"),
+            allowlist=_allowlist("gateway.example.test"),
+            iwxxm_xml="<iwxxm/>",
+        )
+
+
+@pytest.mark.asyncio
+async def test_staging_send_accepts_tac_text_only() -> None:
+    adapter = get_staging_sink("afs")
+    result = await adapter.send(
+        params=_params("afs"),
+        allowlist=_allowlist("gateway.example.test"),
+        tac_text="METAR KJFK 121251Z ...",
+    )
+    assert result.ok is True
+    assert "afs" in (result.kv_upload_key or "")
+
+
+@pytest.mark.asyncio
+async def test_staging_preflight_without_credentials() -> None:
+    adapter = get_staging_sink("amhs")
+    params = _params("amhs", username=None, password=None)
+    result = await adapter.preflight(
+        params=params,
+        allowlist=_allowlist("gateway.example.test"),
+    )
+    assert result.ok is True
+
+
+@pytest.mark.asyncio
+async def test_staging_missing_host_without_password_still_mentions_host() -> None:
+    adapter = get_staging_sink("amhs")
+    params = _params("amhs", host="", username=None, password=None)
+    with pytest.raises(ValueError, match="host"):
+        await adapter.preflight(
+            params=params,
+            allowlist=_allowlist("gateway.example.test"),
+        )
