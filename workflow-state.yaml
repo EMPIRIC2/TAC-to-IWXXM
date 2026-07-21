@@ -12,12 +12,12 @@ active_session:
     test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase
     0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-t26-sqlserver-aioodbc-4b72
+  branch: main
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: M2 T2.6 done; next T2.7
+  note: 'M2 T2.6 done (merged #759); next T2.7'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-20'
-    note: "Phase C — 07-build M2 T2.6 done; next T2.7; PRs #755–#758 merged to main"
+    note: "Phase C — 07-build M2 T2.6 done (merged #759); next T2.7; PRs #755–#759 all merged to main"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -126,7 +126,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-21'
-    note: T2.6 completed; next T2.7 ODBC driver docs
+    note: 'T2.6 merged via PR #759; next T2.7 ODBC docs. Session PRs #755–#759 all merged to main.'
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2548,7 +2548,7 @@ stages:
       started_at: '2026-07-21'
       started: '2026-07-21'
       mode: full
-      note: T2.6 completed; next T2.7 ODBC driver docs
+      note: 'T2.6 merged via PR #759; next T2.7 ODBC docs. Session PRs #755–#759 all merged to main.'
       active_milestone: M2
       active_task: T2.7
       active_task_status: pending
@@ -2603,6 +2603,10 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - >-
+      2026-07-21 S019/EV-014 07-build M2 T2.6 merged via PR #759 (2e8305e) —
+      SQL Server aioodbc path + ODBC skip; next T2.7 ODBC docs;
+      Session PRs #755–#759 all merged to main
     - >-
       2026-07-21 S019/EV-014 07-build M2 T2.6 done — SQL Server aioodbc path + ODBC skip;
       next T2.7 ODBC driver docs; branch cursor/s019-t26-sqlserver-aioodbc-4b72
@@ -2729,7 +2733,7 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: T2.6 completed; next T2.7 ODBC driver docs
+      note: 'T2.6 merged via PR #759; next T2.7 ODBC docs. Session PRs #755–#759 all merged to main.'
       active_milestone: M2
       active_task: T2.7
       active_task_status: pending
@@ -3325,8 +3329,8 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M2 T2.6 done; next T2.7; PRs #755–#758 merged to main;
-      Q15=A+Q8=C+Q21=A live BYOC hard close gate
+      Phase C — 07-build M2 T2.6 done (merged #759); next T2.7; PRs #755–#759
+      all merged to main; Q15=A+Q8=C+Q21=A live BYOC hard close gate
 
 stages_pending: []
 
@@ -3562,6 +3566,16 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: N-S019-EV014-T26-merged
+  date: '2026-07-21'
+  session_id: S019-dissemination-upload
+  evolve_cycle_id: EV-014
+  stage: 07-build
+  skill_id: 07-build
+  status: noted
+  decision: >-
+    T2.6 merged via PR #759 (2e8305e) to main; next T2.7 ODBC docs.
+    Session PRs #755–#759 all merged to main. No user decision; progress note.
 - id: N-S019-EV014-T26-complete
   date: '2026-07-21'
   session_id: S019-dissemination-upload
@@ -7979,6 +7993,9 @@ evolve_cycles:
   current_stage: 07-build
   notes:
   - >-
+    2026-07-21 S019/EV-014 07-build M2 T2.6 merged via PR #759 (2e8305e);
+    next T2.7 ODBC docs; Session PRs #755–#759 all merged to main
+  - >-
     2026-07-21 S019/EV-014 07-build M2 T2.6 completed — SQL Server aioodbc path + ODBC skip;
     next T2.7 ODBC driver docs; branch cursor/s019-t26-sqlserver-aioodbc-4b72
   - >-
@@ -8044,7 +8061,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-20'
-      note: "Phase C — 07-build M2 T2.6 done; next T2.7; PRs #755–#758 merged to main"
+      note: "Phase C — 07-build M2 T2.6 done (merged #759); next T2.7; PRs #755–#759 all merged to main"
     01-requirements:
       status: completed
       mode: delta
@@ -8121,7 +8138,7 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-07-21'
-      note: T2.6 completed; next T2.7 ODBC driver docs
+      note: 'T2.6 merged via PR #759; next T2.7 ODBC docs. Session PRs #755–#759 all merged to main.'
       active_milestone: M2
       active_task: T2.7
       active_task_status: pending
@@ -10786,13 +10803,17 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-t26-sqlserver-aioodbc-4b72
+  current_branch: main
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: 50d213d277b7d66bc1afeca928b9d47b3e46b9f2
-  tip_sha_full: 50d213d277b7d66bc1afeca928b9d47b3e46b9f2
+  tip_sha: 2e8305e6a6ef332165b4acd4e2468c587cb55213
+  tip_sha_full: 2e8305e6a6ef332165b4acd4e2468c587cb55213
   notes:
+  - >-
+    2026-07-21 S019/EV-014 tip 2e8305e on main — PR #759 merged
+    (cursor/s019-t26-sqlserver-aioodbc-4b72); T2.6 done; next T2.7;
+    Session PRs #755–#759 all merged to main
   - >-
     2026-07-21 S019/EV-014 tip 50d213d (50d213d277b7d66bc1afeca928b9d47b3e46b9f2) on
     cursor/s019-t26-sqlserver-aioodbc-4b72; [T2.6] recorded; PR #759 open; next T2.7
@@ -10991,23 +11012,25 @@ git_history:
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
   - name: cursor/s019-t26-sqlserver-aioodbc-4b72
-    status: active
+    status: merged
     base: main
     created: '2026-07-21'
     created_at: '2026-07-21'
+    merged_at: '2026-07-21'
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     purpose: S019/EV-014 07-build M2 T2.6 SQL Server aioodbc
     tip_sha: 50d213d277b7d66bc1afeca928b9d47b3e46b9f2
     tip_sha_full: 50d213d277b7d66bc1afeca928b9d47b3e46b9f2
+    merge_sha: 2e8305e6a6ef332165b4acd4e2468c587cb55213
     pushed: true
     pr_number: 759
     pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/759
     pr_title: '[T2.6] SQL Server aioodbc writer-contract path (S019/EV-014)'
     pr_base: main
     pr_head: cursor/s019-t26-sqlserver-aioodbc-4b72
-    pr_status: open
-    note: T2.6 committed (50d213d); PR #759 open; next T2.7 ODBC driver docs
+    pr_status: merged
+    note: 'merged to main via #759'
   - name: cursor/s019-t25-writer-contract-engines-ce70
     status: merged
     base: cursor/s019-07-build-m1-9a92
