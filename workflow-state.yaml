@@ -10515,12 +10515,13 @@ evolve_cycles:
 git_history:
   current_branch: cursor/s019-t64-verify-build-7820
   ahead_of_origin: 0
-  pushed: false
-  pending_commit: true
-  tip_sha: abf2580d096f59de80fdc8501a4e661323b310d3
-  tip_sha_full: abf2580d096f59de80fdc8501a4e661323b310d3
-  note: 'T6.4 08-verify-build PASS on cursor/s019-t64-verify-build-7820 (base t63 @ abf2580); next T6.5; progress 27/29; commits pending push'
+  pushed: true
+  pending_commit: null
+  tip_sha: 2ce8bb9
+  tip_sha_full: 2ce8bb9
+  note: 'T6.4 PASS; PR #771 CI green (29846488131); next T6.5; progress 27/29'
   notes:
+    - '2026-07-21 S019/EV-014 PR #771 CI/CD Pipeline success (29846488131); tip 2ce8bb9; T6.4 complete; next T6.5'
     - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS on cursor/s019-t64-verify-build-7820 (prettier UJ e2e + badge_audit gifts drop); next T6.5; progress 27/29; report verification-report.md'
     - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open (https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/770); next T6.4; progress 26/29'
     - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
@@ -10735,9 +10736,12 @@ git_history:
       session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
       purpose: S019/EV-014 07-build M6 T6.4 08-verify-build
-      tip_sha: pending
-      pushed: false
-      note: 'T6.4 08-verify-build PASS; next T6.5; progress 27/29'
+      tip_sha: 2ce8bb9
+      tip_sha_full: 2ce8bb90f91e99abc9efa44385f137a1576393ba
+      pushed: true
+      pr_number: 771
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771
+      note: 'T6.4 PASS; CI green #771; next T6.5; progress 27/29'
     - name: cursor/s019-t63-dissemination-e2e-8b16
       status: open
       base: cursor/s019-t61-drawer-vitest-a804

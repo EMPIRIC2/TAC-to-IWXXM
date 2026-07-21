@@ -11,8 +11,8 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Merged | #761–#767 (through **M4**) |
-| Open PRs | [#769](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/769) M5+T6.1+T6.2 → `main`; [#770](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/770) T6.3 → t61; **T6.4** on `cursor/s019-t64-verify-build-7820` |
-| Done | M1–M5; T6.1–T6.3; **T6.4** 08-verify-build **PASS** |
+| Open PRs | [#771](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771) **M5+M6 T6.1–T6.4** → `main` (CI green); #768–#770 superseded/stacked |
+| Done | M1–M5; T6.1–T6.3; **T6.4** 08-verify-build **PASS** (CI [29846488131](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29846488131)) |
 | Next | **T6.5** 12-verify-deploy checklist (allowlist + Compose harness) |
 | Branch | `cursor/s019-t64-verify-build-7820` |
 | Report | `docs/sessions/S019-dissemination-upload/reports/verification-report.md` |
