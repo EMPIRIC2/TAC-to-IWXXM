@@ -12,11 +12,14 @@ sink adapters, and SSRF/allowlist helpers ([ADR-030](../../docs/adr/ADR-030-diss
 
 - Local/CI: `make test-unit-dissemination` (95% branch gate)
 
-**Multi-DB integration (T2.5 / TC-F16-003)**
+**Multi-DB integration (T2.5–T2.6 / TC-F16-003)**
 
-- `pytest packages/dissemination/tests/test_writer_contract_engines.py -m integration`
+- `make test-integration-dissemination` (or `pytest packages/dissemination/tests -m integration`)
 - Postgres + MySQL via Testcontainers (requires Docker); SQLite in-process
-- Without Docker, PG/MySQL cases skip; SQLite still runs
+- SQL Server via Testcontainers + **aioodbc** (requires Docker **and** a system ODBC
+  SQL Server driver, e.g. Microsoft ODBC Driver 18). Without ODBC, SQL Server cases
+  **skip** (E14-06; CI may omit ODBC — see deploy notes in T2.7)
+- Without Docker, PG/MySQL/SQL Server cases skip; SQLite still runs
 
 **Egress allowlist**
 

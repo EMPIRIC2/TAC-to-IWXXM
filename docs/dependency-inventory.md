@@ -178,3 +178,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
   aiosqlite / **aioodbc** (E14-06=A) + aiosmtplib; msgspec HTTP (E14-07=A); pins in M1
 - S019 / EV-014 T2.5 (2026-07-21): **testcontainers[mysql,postgres]≥4.8** — multi-DB writer-contract
   integration (TC-F16-003 / E14-09); SQLite in-process; PG/MySQL skip without Docker
+- S019 / EV-014 T2.6 (2026-07-21): SQL Server via **aioodbc** + Testcontainers; integration
+  tests **skip when no ODBC driver** (E14-06); ODBC install docs deferred to T2.7

@@ -12,12 +12,12 @@ active_session:
     test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase
     0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-t25-writer-contract-engines-ce70
+  branch: cursor/s019-t26-sqlserver-aioodbc-4b72
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 07-build M2 T2.5 done; next T2.6
+  note: M2 T2.6 done; next T2.7
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-20'
-    note: "Phase C — 07-build M2 T2.5 done; next T2.6"
+    note: "Phase C — 07-build M2 T2.6 done; next T2.7; PRs #755–#758 merged to main"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -126,7 +126,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-21'
-    note: M2 T2.5 done; next T2.6 SQL Server aioodbc
+    note: T2.6 completed; next T2.7 ODBC driver docs
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2548,9 +2548,9 @@ stages:
       started_at: '2026-07-21'
       started: '2026-07-21'
       mode: full
-      note: M2 T2.5 done; next T2.6 SQL Server aioodbc
+      note: T2.6 completed; next T2.7 ODBC driver docs
       active_milestone: M2
-      active_task: T2.6
+      active_task: T2.7
       active_task_status: pending
     - id: S015-metar-lint-quality
       session_id: S015-metar-lint-quality
@@ -2603,6 +2603,13 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - >-
+      2026-07-21 S019/EV-014 07-build M2 T2.6 done — SQL Server aioodbc path + ODBC skip;
+      next T2.7 ODBC driver docs; branch cursor/s019-t26-sqlserver-aioodbc-4b72
+      (commit pending append after git)
+    - >-
+      2026-07-21 S019/EV-014 open PR stack #755 #756 #757 #758 merged to main
+      (7a9cb37/4afa313/1b9ac97/77a37c7)
     - >-
       2026-07-21 S019/EV-014 07-build M2 T2.5 done (aa5ea23) — Compose/Testcontainers
       PG+MySQL+SQLite writer-contract; next T2.6 SQL Server aioodbc
@@ -2722,9 +2729,9 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: M2 T2.5 done; next T2.6 SQL Server aioodbc
+      note: T2.6 completed; next T2.7 ODBC driver docs
       active_milestone: M2
-      active_task: T2.6
+      active_task: T2.7
       active_task_status: pending
   09-qa:
     status: completed
@@ -3318,7 +3325,8 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M2 T2.5 done; next T2.6; Q15=A+Q8=C+Q21=A live BYOC hard close gate
+      Phase C — 07-build M2 T2.6 done; next T2.7; PRs #755–#758 merged to main;
+      Q15=A+Q8=C+Q21=A live BYOC hard close gate
 
 stages_pending: []
 
@@ -3554,6 +3562,29 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: N-S019-EV014-T26-complete
+  date: '2026-07-21'
+  session_id: S019-dissemination-upload
+  evolve_cycle_id: EV-014
+  stage: 07-build
+  skill_id: 07-build
+  status: noted
+  decision: >-
+    T2.6 completed — SQL Server aioodbc path + ODBC skip when driver absent;
+    next T2.7 ODBC driver docs. Branch cursor/s019-t26-sqlserver-aioodbc-4b72;
+    [T2.6] commit pending append after git. No user decision; progress note.
+- id: N-S019-EV014-prs-755-758-merged
+  date: '2026-07-21'
+  session_id: S019-dissemination-upload
+  evolve_cycle_id: EV-014
+  stage: 07-build
+  skill_id: 07-build
+  status: noted
+  decision: >-
+    S019 open PR stack #755 #756 #757 #758 merged to main (2026-07-21) —
+    #755 cursor/s019-05-verify-tech-b45b (7a9cb37); #756 cursor/s019-06-tech-tooling-9a92
+    (4afa313); #757 cursor/s019-07-build-m1-9a92 (1b9ac97); #758
+    cursor/s019-t25-writer-contract-engines-ce70 (77a37c7). Progress note.
 - id: N-S019-EV014-T25-complete
   date: '2026-07-21'
   session_id: S019-dissemination-upload
@@ -7947,6 +7978,12 @@ evolve_cycles:
     note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
   current_stage: 07-build
   notes:
+  - >-
+    2026-07-21 S019/EV-014 07-build M2 T2.6 completed — SQL Server aioodbc path + ODBC skip;
+    next T2.7 ODBC driver docs; branch cursor/s019-t26-sqlserver-aioodbc-4b72
+  - >-
+    2026-07-21 S019/EV-014 open PR stack #755 #756 #757 #758 merged to main
+    (7a9cb37/4afa313/1b9ac97/77a37c7)
   - 2026-07-21 S019/EV-014 07-build M2 T2.5 completed (aa5ea23); next T2.6 SQL Server aioodbc
   - 2026-07-21 S019/EV-014 07-build M2 T2.5 in_progress — Compose/Testcontainers PG+MySQL+SQLite (TC-F16-003)
   - 2026-07-21 S019/EV-014 07-build M1 complete (T1.1–T1.5; 4b523db/2a47a87/5c2be0c/f0332cf/66f1177); next M2 T2.1
@@ -8007,7 +8044,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-20'
-      note: "Phase C — 07-build M2 T2.5 done; next T2.6"
+      note: "Phase C — 07-build M2 T2.6 done; next T2.7; PRs #755–#758 merged to main"
     01-requirements:
       status: completed
       mode: delta
@@ -8084,9 +8121,9 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-07-21'
-      note: M2 T2.5 done; next T2.6 SQL Server aioodbc
+      note: T2.6 completed; next T2.7 ODBC driver docs
       active_milestone: M2
-      active_task: T2.6
+      active_task: T2.7
       active_task_status: pending
   gates:
     a_to_b: passed
@@ -10749,12 +10786,18 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-t25-writer-contract-engines-ce70
+  current_branch: cursor/s019-t26-sqlserver-aioodbc-4b72
   ahead_of_origin: 0
   pushed: true
-  pending_commit: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
-  tip_sha: aa5ea23a19acfac0e55adca903bb21ecdd0841d7
+  pending_commit: '[T2.6] SQL Server aioodbc path + ODBC skip (append after git)'
+  tip_sha: 77a37c7a9aefb3d38ec5a3728851921ad1a7fd05
   notes:
+  - >-
+    2026-07-21 S019/EV-014 tip 77a37c7 on cursor/s019-t26-sqlserver-aioodbc-4b72 (tracks main
+    after #755–#758); T2.6 work uncommitted — [T2.6] commit pending append after git; next T2.7
+  - >-
+    2026-07-21 S019/EV-014 PR stack merged to main — #755 (7a9cb37), #756 (4afa313),
+    #757 (1b9ac97), #758 (77a37c7)
   - "2026-07-21 S019/EV-014 tip aa5ea23 — [T2.5] Compose/Testcontainers PG+MySQL+SQLite writer-contract; next T2.6"
   - "2026-07-21 S019/EV-014 branch cursor/s019-t25-writer-contract-engines-ce70 — M2 T2.5 in_progress"
   - "2026-07-21 S019/EV-014 tip 3e8a10a — [T0.1] chore: dissemination coverage paths + CI Compose wis2box hooks; Phase B Assumed PASS"
@@ -10946,8 +10989,18 @@ git_history:
   - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
-  - name: cursor/s019-t25-writer-contract-engines-ce70
+  - name: cursor/s019-t26-sqlserver-aioodbc-4b72
     status: active
+    base: main
+    created: '2026-07-21'
+    created_at: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    purpose: S019/EV-014 07-build M2 T2.6 SQL Server aioodbc
+    tip_sha: 77a37c7a9aefb3d38ec5a3728851921ad1a7fd05
+    note: T2.6 completed (uncommitted); next T2.7 ODBC docs; [T2.6] commit pending append after git
+  - name: cursor/s019-t25-writer-contract-engines-ce70
+    status: merged
     base: cursor/s019-07-build-m1-9a92
     created: '2026-07-21'
     created_at: '2026-07-21'
@@ -10955,33 +11008,39 @@ git_history:
     evolve_cycle_id: EV-014
     purpose: S019 EV-014 07-build M2 T2.5 multi-DB integration
     tip_sha: aa5ea23a19acfac0e55adca903bb21ecdd0841d7
-    note: T2.5 completed; next T2.6 SQL Server aioodbc
+    pr_number: 758
+    note: merged to main via PR #758 (77a37c7)
   - name: cursor/s019-07-build-m1-9a92
-    status: active
+    status: merged
     base: cursor/s019-06-tech-tooling-9a92
     created: '2026-07-21'
     created_at: '2026-07-21'
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     purpose: S019 EV-014 07-build M1
+    pr_number: 757
+    note: merged to main via PR #757 (1b9ac97)
   - name: cursor/s019-06-tech-tooling-9a92
-    status: active
+    status: merged
     base: cursor/s019-05-verify-tech-b45b
     created: '2026-07-21'
     created_at: '2026-07-21'
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     purpose: S019/EV-014 06-tech-tooling T0.1
+    pr_number: 756
+    note: merged to main via PR #756 (4afa313)
   - name: cursor/s019-05-verify-tech-b45b
     base: main
-    status: in_progress
+    status: merged
     created_at: "2026-07-21"
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     purpose: "S019/EV-014 05-verify-tech PASS for dissemination plan"
     pushed: true
     tip_sha: 4abb451
-    note: "[S019] docs: 05-verify-tech PASS — tip 4abb451"
+    pr_number: 755
+    note: merged to main via PR #755 (7a9cb37)
   - name: cursor/dissemination-upload-e25c
     base: cursor/metar-remarks-live-e2e-2e2e
     status: active

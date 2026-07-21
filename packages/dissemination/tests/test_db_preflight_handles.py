@@ -47,9 +47,7 @@ def test_handle_store_create_get_pop_and_user_isolation() -> None:
 
 def test_handle_store_expires_and_clear() -> None:
     store = HandleStore(ttl_seconds=10)
-    h = store.create(
-        user_id="a", sink_type="sqlite", uri="sqlite:///:memory:", now=1000.0
-    )
+    h = store.create(user_id="a", sink_type="sqlite", uri="sqlite:///:memory:", now=1000.0)
     assert store.get(h, user_id="a", now=1005.0) is not None
     assert store.get(h, user_id="a", now=1020.0) is None
     store.create(user_id="a", sink_type="sqlite", uri="x", now=2000.0)
@@ -57,11 +55,17 @@ def test_handle_store_expires_and_clear() -> None:
     assert store.pop("missing", user_id="a") is None
 
 
-def test_normalize_mysql_and_sqlite_prefixes() -> None:
+def test_normalize_mysql_sqlite_and_sqlserver_prefixes() -> None:
     assert normalize_sqlalchemy_uri("mysql://h/db", "mysql").startswith("mysql+aiomysql://")
-    assert normalize_sqlalchemy_uri("sqlite:///tmp/x.db", "sqlite").startswith(
-        "sqlite+aiosqlite://"
-    )
+    assert normalize_sqlalchemy_uri("sqlite:///tmp/x.db", "sqlite").startswith("sqlite+aiosqlite://")
+    assert dialect_for_sink("sqlserver") == "mssql"
+    assert normalize_sqlalchemy_uri("mssql://h/db", "sqlserver").startswith("mssql+aioodbc://")
+    assert normalize_sqlalchemy_uri("mssql+pymssql://h/db", "sqlserver").startswith("mssql+aioodbc://")
+    assert normalize_sqlalchemy_uri("mssql+pyodbc://h/db", "sqlserver").startswith("mssql+aioodbc://")
+    already = "mssql+aioodbc://h/db?driver=ODBC+Driver+18+for+SQL+Server"
+    assert normalize_sqlalchemy_uri(already, "sqlserver") == already
+    # Non-mssql scheme left unchanged for sqlserver sink
+    assert normalize_sqlalchemy_uri("postgresql://h/db", "sqlserver") == "postgresql://h/db"
 
 
 @pytest.mark.asyncio

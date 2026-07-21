@@ -224,7 +224,7 @@ test-unit-dissemination:
 
 # F16 / T2.5 — TC-F16-003 multi-DB (SQLite always; PG/MySQL via Testcontainers when Docker up).
 test-integration-dissemination:
-	$(UV) run pytest packages/dissemination/tests/test_writer_contract_engines.py \
+	$(UV) run pytest packages/dissemination/tests \
 		-m integration -v --tb=short --no-cov
 
 # F17 / E14-04 — wis2box Compose harness (overlay); real service in T3.3.

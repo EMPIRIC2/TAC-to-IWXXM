@@ -51,7 +51,7 @@ def writer_contract_ddl(dialect: str) -> str:
     Parameters
     ----------
     dialect :
-        ``postgresql``, ``mysql``, or ``sqlite`` (SQL Server via ``mssql`` later).
+        ``postgresql``, ``mysql``, ``sqlite``, or ``mssql`` / ``sqlserver`` (aioodbc).
 
     Returns
     -------

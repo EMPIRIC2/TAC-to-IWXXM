@@ -41,6 +41,15 @@ def normalize_sqlalchemy_uri(uri: str, sink_type: str) -> str:
         return "mysql+aiomysql://" + uri.removeprefix("mysql://")
     if sink_type == "sqlite" and uri.startswith("sqlite://"):
         return "sqlite+aiosqlite://" + uri.removeprefix("sqlite://")
+    if sink_type == "sqlserver":
+        for prefix in (
+            "mssql+aioodbc://",
+            "mssql+pyodbc://",
+            "mssql+pymssql://",
+            "mssql://",
+        ):
+            if uri.startswith(prefix):
+                return "mssql+aioodbc://" + uri.removeprefix(prefix)
     return uri
 
 
