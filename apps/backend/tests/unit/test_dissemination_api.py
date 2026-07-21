@@ -6,10 +6,10 @@ import json
 from pathlib import Path
 
 import pytest
-from fastapi.testclient import TestClient
-
 from dissemination.handles import default_handle_store
 from dissemination.rate_limit import DisseminationRateLimiter
+from fastapi.testclient import TestClient
+
 from src import api as api_module
 from src.routers import dissemination as diss_router
 from src.utilities.security import verify_supabase_token
