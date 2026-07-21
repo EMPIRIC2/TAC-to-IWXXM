@@ -10,7 +10,7 @@
 **Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
 **Started**: 2026-07-20  
 **Branch**: `cursor/dissemination-upload-e25c`  
-**Status**: Phase 0 intake **PARTIAL** — Batch 1+2 locked; Batch 3 **partial** (clarifications still needed)
+**Status**: Phase 0 intake **PARTIAL** — Batch 1+2 locked; Batch 3 Q10/Q11/Q12/Q13/Q15/Q16 locked; **Q14 [Contradiction] blocks approval**
 
 ### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked
 
@@ -34,39 +34,43 @@
 | Q8=C | Ship all three to usable MVP — live wis2box + live EDIS path (highest risk) |
 | Q9=A | Same drawer: destination type Postgres (now) / WIS2 / EDIS |
 
-### Intake (Batch 3 Assumed — AskQuestion waived / cloud written interview) — PARTIAL 2026-07-20
+### Intake (Batch 3 Assumed — AskQuestion waived / cloud written interview) — clarifications 2026-07-20/21
 
 | ID | Status | Decision / note |
 |----|--------|-----------------|
-| Q10 | Recorded as stated; **[Ambiguity] unresolved** | User verbatim: *"we're dropping supabase support just user has to provide byo credentials"*. Open interpretations — **do not invent resolution**: **(1)** drop Supabase Auth+DB entirely → user-pasted credentials for auth AND data; **(2)** drop hosted Supabase for app auth in favor of another IdP; **(3)** only dissemination destinations are BYO-paste; app auth changes separately. |
-| Q11 | **Not locked** | User asked for recommendation — pending agent recommendation + user confirm |
+| Q10 | **Locked Assumed** | **NOT** dropping Supabase Auth — login stays Supabase-handled. “Dropping Supabase for database” = Sending/converting dissemination destination only: one-shot BYO Postgres URI for upload/send (not Supabase as ops/send DB). **Q10A=D:** deploy-time BYO for app auth (operator sets Supabase env once; users don’t paste app auth) — aligned with ADR-021. **Q10B:** N/A. |
+| Q11=A+B | **Locked Assumed** | Max-security SSRF: full recommended baseline (backend-only egress, deny private/metadata ranges, DNS rebinding guard, TLS preferred, timeouts/size limits, secret redaction, rate limit) **PLUS require** `DISSEMINATION_EGRESS_ALLOWLIST` (host/CIDR) — empty allowlist = no user-URI egress in prod (staging may use explicit list). |
 | Q12=B | Locked Assumed | Staging wis2box stood up in this project's infra |
 | Q13=A | Locked Assumed | Real SMTP/submission to NWS Telecommunications Gateway (RTH Washington) |
-| Q14=B | Locked Assumed + **[Ambiguity]** | Only B selected (saved/encrypted connection profiles out of scope). Confirm: only B out, or multi-select misunderstanding (A/C/D/E not selected)? |
+| Q14=A | Locked Assumed + **[Contradiction]** | Only saved/encrypted profiles out of scope (B-only from OOS list). Do **not** assume DDL/drag-drop/AMHS/multi-DB are in. Contradicts Batch 1 require-existing + Q1=A — Phase 0 NOT approved until next interview resolves. |
 | Q15=A | Locked Assumed | Keep Q8=C — block cycle close until Postgres + WIS2 + EDIS all green on real targets |
+| Q16 | **Locked Assumed** | BYO credentials (EDIS/RTH; WIS2/DB as applicable). Not provisioned by us except staging wis2box (Q12=B). Live-green close gate still applies (Q15=A). |
 
-### Unresolved ambiguities (block Phase 0 full approval)
+### Open contradiction (blocks Phase 0 full approval)
 
-- **I-S019-EV014-Q10-supabase-byo** — Q10 meaning (1)/(2)/(3)
-- **I-S019-EV014-Q11-pending-rec** — agent rec + user confirm before lock
-- **I-S019-EV014-Q14-multiselect** — only-B-out vs multi-select misunderstanding
+- **I-S019-EV014-Q14-batch1** — Q14=A (only profiles OOS) vs Batch 1 require-existing / no create-if-missing + Q1=A convert-then-send. Do not expand to DDL / drag-drop / AMHS / multi-DB without interview resolution.
 
-### Corpus contradictions noted (unresolved — for 01-requirements / ADR amend)
+### Resolved this clarification turn
 
-| Corpus | Tension |
-|--------|---------|
-| ADR-021 BYO deploy-env Supabase (no paste-keys UI) | vs Q5/Q10 in-app paste BYO + “dropping supabase support” |
-| F5 work history on Supabase | vs Q10 drop-supabase reading |
-| Non-goals: push sinks; paste-keys | vs Q8=C / Q12–Q13 live WIS2+EDIS + paste credentials |
-| Batch 1 require-existing table | DDL/create-if-missing out (unless later reversed) |
-| Batch 1 Q1=A convert-then-send | drag-drop external IWXXM maybe out |
+- **I-S019-EV014-Q10-supabase-byo** — auth stays Supabase; send-DB BYO only; Q10A=D ↔ ADR-021
+- **I-S019-EV014-Q11-pending-rec** — Q11=A+B max-security + required allowlist
+- **I-S019-EV014-Q14-multiselect** — superseded by Q14=A + I-S019-EV014-Q14-batch1
+
+### Corpus contradictions (updated)
+
+| Corpus | Status / tension |
+|--------|------------------|
+| ADR-021 BYO deploy-env Supabase (no paste-keys for app auth) | **Eased by Q10** — Q10A=D deploy-time Supabase auth; paste is destination URI only |
+| F5 work history on Supabase | **Eased by Q10** — Auth+F5 remain Supabase; send destination is BYO |
+| Non-goals: push sinks; paste-keys | Still open vs Q8=C / Q12–Q13 live WIS2+EDIS + paste destination credentials |
+| Batch 1 require-existing + Q1=A | **Open Contradiction** with Q14=A (I-S019-EV014-Q14-batch1) |
 
 ### Notes
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
 - Do **not** invent feature ids F16+ in `feature-list.md` until Phase 0 fully approved
-- **Batch 3 partial** — resolve Q10/Q11/Q14 ambiguities before routing lock / Phase 0 full approval
-- **Close gate (Q15=A + Q8=C):** block cycle close until Postgres + WIS2 + EDIS green on real targets (staging wis2box in-project; EDIS → RTH Washington)
+- **Phase 0 blocked on Q14 contradiction** — next interview turn must resolve OOS inventory vs Batch 1 locks
+- **Close gate (Q15=A + Q8=C + Q16):** block cycle close until Postgres + WIS2 + EDIS green on real targets with operator-supplied credentials (staging wis2box in-project; EDIS → RTH Washington)
 
 ---
 
