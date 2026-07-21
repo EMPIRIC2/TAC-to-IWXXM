@@ -1,0 +1,52 @@
+{
+  "$comment": "Committed MOCK destination shapes for S019/EV-014 T6.6. Not real credentials. Pass as memory-only preflight/send body params (ADR-021/029). Do not use against production RTH/WIS2/DB hosts.",
+  "postgres_sqlite_standin": {
+    "sink_type": "sqlite",
+    "uri": "sqlite+aiosqlite:////tmp/s019-mock-byoc.db",
+    "ddl": true,
+    "product": "metar",
+    "note": "In-process SQLite stands in for Postgres when Docker/Testcontainers unavailable. With Docker, prefer postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/postgres via Testcontainers."
+  },
+  "wis2_mock": {
+    "sink_type": "wis2",
+    "params": {
+      "mqtt_host": "wis2box",
+      "mqtt_port": 1883,
+      "mqtt_topic": "origin/a/wis2/test-centre/data/core/weather/aviation/metar",
+      "dataset_url": "http://127.0.0.1:9080/datasets/mock-metar.xml",
+      "centre_id": "test-centre",
+      "mqtt_username": "mock-publisher",
+      "mqtt_password": "mock-wis2-token-not-real",
+      "use_tls": false
+    },
+    "note": "Package-level mocked MQTT/HTTP (test_wis2_sink.py) or Compose wis2box harness (TC-F17-001). HTTP API returns 501 for wis2 until wired."
+  },
+  "edis_mock": {
+    "sink_type": "edis",
+    "params": {
+      "smtp_host": "127.0.0.1",
+      "smtp_port": 1025,
+      "mail_from": "mock-sender@example.test",
+      "mail_to": "mock-rth@example.test",
+      "username": "mock-smtp-user",
+      "password": "mock-smtp-password-not-real",
+      "use_tls": false,
+      "tt": "SA",
+      "aa": "US",
+      "ii": "31",
+      "cccc": "KXXX",
+      "yygggg": "211200"
+    },
+    "note": "aiosmtplib AsyncMock only (test_edis_*.py). No local SMTP container; never hits live RTH."
+  },
+  "f19_stubs": {
+    "sink_types": ["amhs", "swim", "afs"],
+    "params_template": {
+      "host": "127.0.0.1",
+      "port": 9999,
+      "username": "mock-f19",
+      "password": "mock-f19-password-not-real"
+    },
+    "note": "Staging stubs (test_f19_*.py). Live F19 optional waive."
+  }
+}

@@ -208,13 +208,13 @@ No new `config/*.json` keys for sink credentials (memory-only paste). **One new 
 
 | Concern | Where it lives | Notes |
 |---------|----------------|-------|
-| Egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | Host/CIDR list; empty = fail-closed (ADR-029; E14-08=A) |
+| Egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | Host/CIDR list; empty = fail-closed (ADR-029; E14-08=A). Local/CI: `wis2box,127.0.0.1,127.0.0.0/8,localhost`. Live BYOC demos: exact hostnames only. |
 | Destination creds | Request body only | Never env / never F5 persistence |
 | wis2box harness | `docker-compose` (+ CI) | Not a Render web service (E14-04=B) |
 | Dissemination HTTP | msgspec encode | Align ADR-026 (E14-07=A) |
 | CORS | Existing `corsOrigins` | No new origins; H4–H5 when drawer ships (E14-10=A) |
 
-**`.env.example`**: Add commented `DISSEMINATION_EGRESS_ALLOWLIST=` placeholder when M1 lands.
+**`.env.example`**: Local/CI recommended allowlist set; Render/prod guidance in comments.
 
 ### Session changelog
 
@@ -223,6 +223,7 @@ No new `config/*.json` keys for sink credentials (memory-only paste). **One new 
 - S014 / EV-010 (2026-07-18): PyPI OIDC trusted publishing notes; no new runtime secrets;
   matrix workflow clarification (05 S2.M1)
 - S019 / EV-014 (2026-07-21): `DISSEMINATION_EGRESS_ALLOWLIST` (E14-08=A); no config JSON for sinks
+- S019 / EV-014 T6.6 (2026-07-21): document local/CI recommended allowlist value; Render live value still operator-set (no `RENDER_API_KEY` in cloud agent)
 
 ## References
 

@@ -164,8 +164,18 @@ make compose-wis2box-harness   # CI hook: up + probe + PUT/GET smoke
 make compose-wis2box-down
 ```
 
-Set `DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,localhost` when exercising the sink
-against the harness. Live WIS2 acceptance remains operator BYOC (TC-F17-002).
+**Local / CI harness (recommended):**
+
+```bash
+DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost
+```
+
+(`scripts/ci/run_wis2box_harness.sh` defaults to the same list when unset.)
+
+**Render / prod:** leave empty (fail-closed) when not demoing. For live BYOC close-gate
+demos (TC-F17-002 / TC-F18-002), set only the exact operator Postgres / WIS2 / EDIS SMTP
+hostnames — never wildcards or destination secrets. Live WIS2 acceptance remains operator
+BYOC.
 
 ## Docker Build Context
 
@@ -300,7 +310,7 @@ make test-live                # H4–H5 → H3 → H6
 | Variable | Service | Purpose |
 |----------|---------|---------|
 | `METAR_CORS_ORIGINS` | metar-api | Allowed browser origins (comma-separated) |
-| `DISSEMINATION_EGRESS_ALLOWLIST` | metar-api | Host/CIDR allowlist for BYOC dissemination egress (ADR-029); empty = fail-closed |
+| `DISSEMINATION_EGRESS_ALLOWLIST` | metar-api | Host/CIDR allowlist for BYOC dissemination egress (ADR-029); empty = fail-closed; local/CI use `wis2box,127.0.0.1,127.0.0.0/8,localhost`; live demos = exact BYOC hosts only |
 | `VITE_API_BASE_URL` | metar-frontend (build) | API base URL embedded in static bundle |
 | `LIVE_API_URL` | live test scripts | Live API base for H3–H4 |
 | `LIVE_FRONTEND_URL` | live test scripts | Browser origin for H4 + Playwright base for H6 |

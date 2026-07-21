@@ -302,6 +302,10 @@ define load_dotenv
 	export STAGING_FRONTEND_URL="$$LIVE_FRONTEND_URL"
 endef
 
+# S019 T6.6 — mock BYOC smoke (no live destination credentials; gitignored .env OK)
+test-mock-byoc-smoke:
+	bash scripts/deploy/run_mock_byoc_smoke.sh
+
 test-live-connectivity:
 	@$(load_dotenv); \
 	bash scripts/deploy/verify_connectivity.sh

@@ -3,23 +3,38 @@
 ## Resume in next chat
 
 ```
-/16-evolve continue S019/EV-014 — 07-build M6 T6.6
+/16-evolve continue S019/EV-014 — Phase C checkpoint then Phase D (08–13 bookkeeping; T6.6 done via mock BYOC)
 ```
 
 | Field | Value |
 |-------|-------|
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
-| Merged | #761–#767 (through **M4**) |
-| Open PRs | [#771](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771) **M5+M6 T6.1–T6.5** → `main` (CI green [29846967679](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29846967679)) |
-| Done | M1–M5; T6.1–T6.4; **T6.5** 12-verify-deploy checklist **PASS** |
-| Next | **T6.6** 13-deploy-smoke H1–H5 + H0c; live BYOC close gate |
-| Branch | `cursor/s019-t64-verify-build-7820` |
-| Reports | `verification-report.md` (T6.4); `deploy-checklist.md` (T6.5) |
+| Merged | #761–#**771** (through **T6.5**; M5+M6 code on `main`) |
+| Open PRs | [#772](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/772) T6.6 smoke + mock BYOC evidence |
+| Done | **M1–M6 all 29 tasks** including T6.6 (mock BYOC waive) |
+| Decision | `D-S019-EV014-Q15-mock-waive` — mock/harness credentials instead of live BYOC |
+| Branch | `cursor/s019-t66-deploy-smoke-151c` |
+| Reports | `deploy-smoke.md`; `fixtures/mock-byoc-destinations.json`; `make test-mock-byoc-smoke` |
 
-## Do not skip
+## Secrets policy
 
-- Confirm Render `DISSEMINATION_EGRESS_ALLOWLIST` before live BYOC (T6.5 deferred live value check)
-- Live BYOC close gate: Postgres + WIS2 + EDIS
-- TC-F18-002 live EDIS remains cycle-close only
-- F19 live demo optional (evidence or waive); does not block EV-014 close
+- **Never commit** `.env` (gitignored). Mock placeholders only for testing.
+- BYOC destination params memory-only (ADR-021/029).
+- Fixture shapes (no real secrets): `docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json`
+
+## Mock stack (T6.6 evidence)
+
+```bash
+# gitignored .env with mock E2E_* + allowlist (created locally; not in git)
+make test-mock-byoc-smoke
+# → 134 passed (SQLite stand-in + WIS2 mocks + EDIS mocks + F19 stubs + API)
+# With Docker: also Compose wis2box + Testcontainers PG/MySQL
+```
+
+## Next
+
+1. Undraft + merge #772 (or keep for Phase C checkpoint).
+2. Phase C checkpoint AskQuestion → C→D.
+3. Phase D stages 08–13 bookkeeping (much of 08/12 already done as T6.4/T6.5).
+4. Close EV-014 / S019 when Phase D + evolve summary done.

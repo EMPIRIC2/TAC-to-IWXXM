@@ -46,7 +46,7 @@ are **not** a shared multi-tenant admin product. No in-app paste-keys UI.
 
 | Setting | Rules |
 |---------|-------|
-| `DISSEMINATION_EGRESS_ALLOWLIST` | Comma-separated hostnames and/or CIDRs. **Empty ⇒ fail-closed** — no user-URI / user-host egress in that environment (ADR-029). |
+| `DISSEMINATION_EGRESS_ALLOWLIST` | Comma-separated hostnames and/or CIDRs. **Empty ⇒ fail-closed** — no user-URI / user-host egress in that environment (ADR-029). **Local/CI:** `wis2box,127.0.0.1,127.0.0.0/8,localhost`. **Live BYOC demos:** exact destination hostnames only (no wildcards). |
 | Production (Render API) | Operator sets explicit list of destinations they allow (live BYOC hosts). Never commit secrets; hosts/CIDRs only. |
 | Staging / CI | May list Compose wis2box hostname(s) + CI testcontainer networks as needed for TC-F17-001. |
 | User-pasted DB/WIS2/EDIS/AMHS creds | **Not** env vars — memory-only on preflight/send (ADR-021 amend / ADR-030). |
