@@ -78,13 +78,14 @@ metar-to-IWXXM/
 
 | Component | Purpose | Location | Dependencies |
 |-----------|---------|----------|--------------|
-| Backend API | Conversion, validation, auth; **Planned** F16–F19 dissemination preflight/send (BYOC, memory-only) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, auth, shared, vendor |
+| Backend API | Conversion, validation, auth; **Planned** F16–F19 dissemination preflight/send (BYOC, memory-only) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, dissemination, auth, shared, vendor |
 | Frontend | Operator UI (workbench, decode, F7 sessions; **Planned** dissemination drawer) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase middleware | `packages/auth/` | supabase-py |
 | tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles) | `packages/tac2iwxxm/` | tac-validate (optional), vendor; PyO3 required at cutover (ADR-017) |
 | tac-validate | TAC lint / shared rule pack | `packages/tac-validate/` | — (no FastAPI/Supabase) |
 | iwxxm-validate | XSD + Schematron (F2 engine) | `packages/iwxxm-validate/` | vendor schemas (read-only) |
+| Dissemination | Sink adapters, writer-contract DDL, SSRF helpers (F16–F19) | `packages/dissemination/` | SQLAlchemy async + dialect drivers; aiosmtplib (ADR-030) |
 | Shared | Cross-cutting utils/types | `packages/shared/` | — |
 | Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im + iwxxm-us snapshots |
 | Work history (F5) | Per-user METAR session persistence | Supabase Postgres + `apps/backend` router | auth, shared |
@@ -97,7 +98,7 @@ metar-to-IWXXM/
 - **Purpose**: Single HTTP API for health, conversion, validation, lint, decode, soft-preview,
   auth, and F5/F7 work sessions. **Planned (F16–F19)**: backend-mediated dissemination
   preflight/send for one-shot BYOC destinations (memory-only; ADR-029 allowlist). Route shapes
-  deferred to api-contract / 04. **No** `/admin/*` product surface after F7.a (#697).
+  in api-contract (Planned). **No** `/admin/*` product surface after F7.a (#697).
 - **Inputs**: HTTP multipart/JSON (TAC + `product` + `profile` + version; decode/lint bodies),
   JWT bearer tokens, env config (BYO Supabase + optional `DATABASE_URL`; Planned
   `DISSEMINATION_EGRESS_ALLOWLIST`).
@@ -113,6 +114,8 @@ metar-to-IWXXM/
   3. Validation / lint routers are **thin wrappers** over **`iwxxm-validate`** /
      **`tac-validate`**; issue objects may include optional integer `start`/`end`.
   4. Decode router (`POST /api/v1/decode-tac`) wraps tac2iwxxm decode/annotate segments.
+  5. **Planned (F16–F19)**: Dissemination routers are thin wrappers over
+     **`packages/dissemination`** (`/api/v1/dissemination/preflight` + `/send`; ADR-030).
 - **S014 / EV-010 delta (F11, ADR-026)**: High-churn route **responses**
   (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`)
   encode with **msgspec**; multipart **request** intake stays FastAPI `Form`/`File`. Auth and
@@ -321,7 +324,8 @@ metar-to-IWXXM/
 - **Close gate**: Live BYOC demos for **Postgres + WIS2 + EDIS** before EV-014 close
   (Q15=A / Q21=A); staging evidence may merge earlier. F19 staging/test path required; F19 live
   demo optional with AskQuestion waive (S-EV014-M2).
-- **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist).
+- **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist); ADR-030
+  (`packages/dissemination` + sink/API/wis2box/EDIS).
 - **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014.
 
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)

@@ -10,7 +10,7 @@
 **Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
 **Started**: 2026-07-20  
 **Branch**: `cursor/dissemination-upload-e25c`  
-**Status**: Phase A **complete** (01–03); next **04-tech-plan** (PR #753)
+**Status**: Phase B **in progress** — 04-tech-plan Batch 1 locked (Q32=A); Batch 2 pending (PR #753)
 
 ### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked (**amended Batch 5**)
 
@@ -108,6 +108,19 @@
 | Non-goals: push sinks; paste-keys; AMHS/SWIM/AFS | **Inventory pending** after Phase 0 approval — Q8=C + Q20=D overturn push sinks / AMHS; paste = dest only |
 | Batch 1 require-existing + Q1=A | **Superseded/amended** by Q20=A (DDL) + Q20=B (drag-drop) |
 
+### 04-tech-plan Batch 1 — Architecture (LOCKED — Q32=A / D-S019-EV014-Q32A-04-batch1)
+
+| ID | Answer | Decision |
+|----|--------|----------|
+| E14-01 | B | New `packages/dissemination` + thin `apps/backend` routers |
+| E14-02 | A | SQLAlchemy 2 async + dialect drivers; versioned writer-contract DDL per engine |
+| E14-03 | A | Unified `POST /api/v1/dissemination/preflight` + `…/send` |
+| E14-04 | B | Staging wis2box = Docker Compose / CI harness (not Render web service) |
+| E14-05 | A | EDIS via `aiosmtplib`; F19 AMHS/SWIM/AFS on same sink adapter interface |
+
+**ADR-030** Accepted. Corpus back-adds: spec Component Overview, plan-adherence,
+template-conformance, api-contract Planned routes, dependency-inventory Planned deps.
+
 ### Notes
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
@@ -116,6 +129,7 @@
   close until live BYOC demos green for **Postgres + WIS2 + EDIS**. F19 (AMHS/SWIM/AFS) requires
   staging/test path green; live F19 demo optional with AskQuestion waive (S-EV014-M2 / Q28=A).
 - PR: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753
+- 2026-07-21: 04 Batch 1 locked (Q32=A); Batch 2 deploy/test/integration interview next
 
 ---
 

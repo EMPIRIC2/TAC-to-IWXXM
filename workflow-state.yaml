@@ -17,6 +17,8 @@ active_session:
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 04-tech-plan
+  note: >-
+    04-tech-plan Batch 1 locked (Q32=A / E14-01..05 / ADR-030); Batch 2 pending
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -50,7 +52,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase A PASSED (Q31=A); Phase B — 04-tech-plan in_progress; Q15=A+Q8=C+Q21=A BYOC hard close gate"
+      note: "Phase B — 04 Batch 1 locked; Batch 2 deploy/test interview next"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -81,7 +83,7 @@ active_session:
       mode: delta
       status: in_progress
       skip_rationale:
-      note: 04 delta in_progress (Q31=A Phase A passed / D-S019-EV014-Q31A-phase-a) — F16–F19 tech intake
+      note: "Batch 1 locked Q32=A (E14-01..05 / ADR-030); Batch 2 pending"
       started: '2026-07-21'
     - stage: 05-verify-tech
       required: false
@@ -2074,7 +2076,8 @@ stages:
           - F17
           - F18
           - F19
-        note: S019/EV-014 04-tech-plan delta starting (Q31=A Phase A passed) — F16–F19 deferred tech intake
+        note: >-
+          Batch 1 locked (Q32=A / E14-01..05 / ADR-030); Batch 2 pending
         deferred_from_01:
           - API sketch (preflight/send)
           - writer-contract column DDL per engine
@@ -2082,6 +2085,25 @@ stages:
           - EDIS SMTP library choice
           - AMHS/SWIM/AFS protocol details
           - DISSEMINATION_EGRESS_ALLOWLIST in config-spec/env-contract
+        artifacts:
+          - docs/sessions/S019-dissemination-upload/reports/04-tech-plan.md
+          - docs/adr/ADR-030-dissemination-package-architecture.md
+        interview:
+          batch_1_architecture:
+            status: locked
+            decision_id: D-S019-EV014-Q32A-04-batch1
+            answers:
+              "1": "B"
+              "2": "A"
+              "3": "A"
+              "4": "B"
+              "5": "A"
+            ids:
+              - E14-01
+              - E14-02
+              - E14-03
+              - E14-04
+              - E14-05
       - status: completed
         mode: delta
         session_id: S004-issue-555-feedback
@@ -2197,6 +2219,9 @@ stages:
           - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
           - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+      - >-
+        2026-07-21 S019/EV-014 04 Batch 1 LOCKED (Q32=A) — E14-01..05 / ADR-030;
+        Batch 2 pending
       - 2026-07-21 S019/EV-014 04-tech-plan delta starting (Q31=A Phase A passed) — F16–F19 deferred tech intake
       - >-
         2026-07-19 S015/EV-011 04-tech-plan COMPLETE (D-S015-EV011-04-approve / E11-31) —
@@ -2226,7 +2251,8 @@ stages:
       status: in_progress
       mode: delta
       started_at: '2026-07-21'
-      note: S019/EV-014 04-tech-plan delta starting (Q31=A Phase A passed) — F16–F19 deferred tech intake
+      note: >-
+        Batch 1 locked (Q32=A / E14-01..05 / ADR-030); Batch 2 pending
   05-verify-tech:
     status: completed
     started_at: "2026-06-15T01:15:00Z"
@@ -3425,6 +3451,20 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-Q32A-04-batch1
+    date: "2026-07-21"
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    status: confirmed
+    decision: >-
+      04 Batch 1 architecture LOCKED (Q32=A): E14-01=B packages/dissemination + thin
+      routers; E14-02=A SQLAlchemy 2 async + writer-contract DDL; E14-03=A unified
+      POST /api/v1/dissemination/preflight + /send; E14-04=B wis2box Compose/CI harness
+      (not Render web service); E14-05=A aiosmtplib + F19 sink adapters. ADR-030 Accepted.
+      Corpus back-adds: spec, plan-adherence, template-conformance, api-contract, deps.
+    related_pr: 753
   - id: D-S019-EV014-Q31A-phase-a
     stage: 16-evolve
     date: '2026-07-21'
@@ -7703,6 +7743,9 @@ evolve_cycles:
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
     current_stage: 04-tech-plan
     notes:
+      - >-
+        2026-07-21 S019/EV-014 04 Batch 1 LOCKED (Q32=A / D-S019-EV014-Q32A-04-batch1) —
+        E14-01..05; ADR-030; Batch 2 pending
       - 2026-07-21 S019/EV-014 Phase A PASSED (Q31=A / D-S019-EV014-Q31A-phase-a) — gates.a_to_b passed; 04-tech-plan 
         STARTED
       - 2026-07-21 S019/EV-014 03-plan-tooling COMPLETE (D-S019-EV014-Q30A-03-tooling) — Phase A 01–03 ready; awaiting 
@@ -7744,7 +7787,7 @@ evolve_cycles:
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase A PASSED (Q31=A); Phase B — 04-tech-plan in_progress; Q15=A+Q8=C+Q21=A BYOC hard close gate"
+        note: "Phase B — 04 Batch 1 locked; Batch 2 deploy/test interview next"
       01-requirements:
         status: completed
         mode: delta
@@ -7789,8 +7832,10 @@ evolve_cycles:
       04-tech-plan:
         status: in_progress
         mode: delta
-        note: delta intake starting — deferred API/DDL/wis2box/SMTP/AMHS/ALLOWLIST from 01
-        started: '2026-07-21'
+        started: "2026-07-21"
+        note: >-
+          Batch 1 locked (Q32=A); deferred API/DDL/wis2box/SMTP/AMHS partially resolved
+          via ADR-030; Batch 2 deploy/test/deps pins pending
         feature_ids:
           - F16
           - F17
@@ -10448,6 +10493,9 @@ git_history:
   pending_commit: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
   tip_sha: 8fa04afca98aa48930c61af235a2b83769e6fdc8
   notes:
+    - >-
+      2026-07-21 S019/EV-014 04 Batch 1 LOCKED (Q32=A / D-S019-EV014-Q32A-04-batch1) —
+      E14-01..05; ADR-030 Accepted; Batch 2 pending (PR #753)
     - '2026-07-21 S019/EV-014 Phase 0 APPROVED + 01-requirements delta (af43dd97407cd8ba8783368a29d5036002b87ffb) — Q23=A–D
       vendors; Q24=A Full; F16–F19 Planned; non-goals amended; ADR-021/029; handoff 02-verify-plan'
     - '2026-07-21 S019/EV-014 Phase 0 Batch 5 locked (8fa04af) — Q20=A,B,C,D all extras IN; Q14r-extras-enum resolved; Q21=A;

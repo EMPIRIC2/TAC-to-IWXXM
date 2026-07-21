@@ -16,6 +16,9 @@ standing_docs_touched:
   - docs/spec.md
   - docs/adr/ADR-021-byo-credentials-admin-removal.md
   - docs/adr/ADR-029-dissemination-ssrf-allowlist.md
+  - docs/adr/ADR-030-dissemination-package-architecture.md
+  - docs/api-contract.md
+  - docs/dependency-inventory.md
 ---
 
 # Session S019 — dissemination-upload
@@ -42,6 +45,7 @@ One BIG dissemination evolve cycle:
 | Q29=A | Run 03-plan-tooling |
 | Q30=A | Approve all 03 delta guardrails |
 | Q31=A | Phase A approved → 04-tech-plan |
+| Q32=A | Lock 04 Batch 1 architecture (E14-01..05 / ADR-030) |
 | AskQuestion | Waived (cloud written interview) |
 
 ### Locked intake (summary)
@@ -66,7 +70,7 @@ One BIG dissemination evolve cycle:
 
 ## Current stage
 
-**01-requirements** (delta) — in progress after Phase 0 approval.
+**04-tech-plan** (delta) — Batch 1 locked (Q32=A); Batch 2 pending.
 
 ## Links
 

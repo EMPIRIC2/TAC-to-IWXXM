@@ -476,7 +476,7 @@
   5. Drag-drop and convert-then-send both reach the same preflight→send path
   6. All four DB engines covered by contract tests (SQLite may be file/local harness)
 - **Out of scope**: Saved/encrypted connection profiles; pasting Supabase **auth** keys in-app
-- **Source**: #729; S019 / EV-014; ADR-021 amend; ADR-029 (dissemination SSRF)
+- **Source**: #729; S019 / EV-014; ADR-021 amend; ADR-029 (SSRF); ADR-030 (package/API)
 
 ### F17: WIS2 dissemination pathway — S019 / EV-014
 

@@ -1,7 +1,18 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-07-19 (S015 / EV-011 append)
+> Last updated: 2026-07-21 (S019 / EV-014 04 Batch 1)
+
+## S019 / EV-014 04-tech-plan Batch 1 (2026-07-21)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| E14-01 | 2026-07-21 | Package layout | `packages/dissemination` + thin backend routers | confirmed |
+| E14-02 | 2026-07-21 | DB stack | SQLAlchemy 2 async + dialect drivers; writer-contract DDL | confirmed |
+| E14-03 | 2026-07-21 | API | `/api/v1/dissemination/preflight` + `/send` | confirmed |
+| E14-04 | 2026-07-21 | wis2box | Docker Compose / CI harness (not Render web service) | confirmed |
+| E14-05 | 2026-07-21 | EDIS/F19 | `aiosmtplib` + shared sink adapter interface | confirmed |
+| D-S019-EV014-Q32A-04-batch1 | 2026-07-21 | Gate | Lock Batch 1 mapping; ADR-030 Accepted | confirmed |
 
 ## S015 / EV-011 05-verify-tech (2026-07-19)
 

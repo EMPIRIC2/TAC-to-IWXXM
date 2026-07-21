@@ -71,6 +71,7 @@ New files must map to an approved component from `[Corpus: system-spec]`
 | tac2iwxxm | `packages/tac2iwxxm/` |
 | tac-validate | `packages/tac-validate/` |
 | iwxxm-validate | `packages/iwxxm-validate/` |
+| Dissemination (F16–F19) | `packages/dissemination/` |
 | Shared | `packages/shared/` |
 | Vendor schemas | `vendor/schemas/*` (read-only) |
 | gifts (transitional) | `packages/gifts/` until F6 cutover delete |
