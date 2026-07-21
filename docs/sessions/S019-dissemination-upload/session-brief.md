@@ -39,6 +39,8 @@ One BIG dissemination evolve cycle:
 | Q26=A | Fix F8 non-goals → worker-path only |
 | Q27=A | Component Overview notes Planned F16–F19 |
 | Q28=A (+batch) | Close-gate clarify; H6 UJ-027–030; ADR-029 Accepted; L1 defer 04 |
+| Q29=A | Run 03-plan-tooling |
+| Q30=A | Approve all 03 delta guardrails |
 | AskQuestion | Waived (cloud written interview) |
 
 ### Locked intake (summary)

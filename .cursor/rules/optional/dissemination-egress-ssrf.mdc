@@ -1,0 +1,50 @@
+---
+description: F16–F19 / ADR-029 — dissemination BYOC egress; allowlist; no secret persistence
+globs:
+  - apps/backend/**/*.py
+  - apps/frontend/**/*.{ts,tsx}
+  - apps/e2e/**/*
+  - docs/adr/ADR-029*.md
+  - docs/adr/ADR-021*.md
+  - render.yaml
+alwaysApply: false
+---
+
+# Dissemination Egress & BYOC Secrets (F16–F19 / ADR-029)
+
+Traces to `[Corpus: product]` F16–F19, `[Corpus: adr]` ADR-029 + ADR-021 amend,
+S019 / EV-014, `#729` / `#2` / `#6`.
+
+## Hard rules
+
+1. **Backend-only egress** — browser never opens DB / MQTT / SMTP sockets to user destinations.
+2. **Memory-only credentials** — one-shot pasted URI/params for the request (or short-lived
+   handle); **never** write destination secrets to `tac_work_sessions`, logs, config, or
+   saved profiles. On success store `kv_upload_key` / metadata only.
+3. **Required allowlist** — deploy env `DISSEMINATION_EGRESS_ALLOWLIST` (host/CIDR).
+   **Empty allowlist ⇒ no user-URI / user-host egress** (fail closed).
+4. **SSRF baseline** — deny private/link-local/metadata ranges; DNS rebinding guard
+   (resolve → validate IPs → connect only to those IPs); TLS preferred; timeouts/size limits;
+   secret redaction; rate-limit preflight/send.
+5. **Supabase auth keys** — still deploy-time BYO only; do **not** paste app auth keys in UI.
+
+## Do
+
+- Mediate preflight + send through `apps/backend`; return structured allowlist/SSRF errors.
+- Block Send in the drawer until preflight is green (F16).
+- Cover TC-F16-002 (SSRF + empty allowlist) and H4–H5 / H6′ UJ-027–030 when UI ships.
+- Document `DISSEMINATION_EGRESS_ALLOWLIST` in config-spec / env-contract at **04-tech-plan**.
+
+## Do not
+
+- Persist destination connection strings or SMTP passwords anywhere durable.
+- Trust authenticated users to reach arbitrary hosts without allowlist checks.
+- Auto-push from the F8 worker (operator dissemination is F16–F19 drawer/API only).
+- Treat staging wis2box harness credentials as a substitute for the live BYOC close gate
+  (Postgres + WIS2 + EDIS live demos; F19 live optional with AskQuestion waive).
+
+## Related
+
+- Plan adherence: `.cursor/rules/core/plan-adherence.mdc` §Dissemination
+- Feature map: `.cursor/hooks/feature_drift.py` (F16–F19 prefixes)
+- Tests: TC-F16-001..004, TC-F17-001..002, TC-F18-001..002, TC-F19-001..003

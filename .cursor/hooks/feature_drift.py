@@ -15,10 +15,17 @@ FEATURE_MAP: dict[str, str] = {
     "apps/backend/src/routers/validation": "F2 — IWXXM validation",
     "apps/backend/src/services/openaip": "F3 — Airport data services",
     "apps/backend/src/services/reconciliation": "F3 — Airport data services",
-    "apps/backend": "F1–F11, M4 — Backend API (msgspec high-churn = F11/ADR-026)",
-    "apps/frontend": "F1–F11 — Frontend UI (FE types with F11 contract)",
-    "apps/worker": "F8 — Near-RT ingest worker",
-    "apps/e2e": "UJ-001–023 — E2E tests (T2)",
+    # Longer prefixes win — place F16–F19 paths before generic apps/backend|frontend.
+    "apps/backend/src/routers/dissemination": "F16–F19 — Dissemination preflight/send (ADR-029)",
+    "apps/backend/src/services/dissemination": "F16–F19 — Dissemination egress / writers",
+    "apps/backend/src/dissemination": "F16–F19 — Dissemination module",
+    "apps/frontend/src/components/Dissemination": "F16–F19 — Dissemination drawer UI",
+    "apps/frontend/src/dissemination": "F16–F19 — Dissemination drawer UI",
+    "apps/e2e/dissemination": "UJ-027–030 — Dissemination E2E (H6′)",
+    "apps/backend": "F1–F19, M4 — Backend API (msgspec = F11; dissemination = F16–F19)",
+    "apps/frontend": "F1–F19 — Frontend UI (dissemination drawer = F16–F19)",
+    "apps/worker": "F8 — Near-RT ingest worker (no auto push sinks)",
+    "apps/e2e": "UJ-001–030 — E2E tests (T2 / H6′)",
     "packages/tac2iwxxm": "F6, F9, F14 — tac2iwxxm convert/decode + PyPI",
     "packages/tac-validate": "F12, F15 — tac-validate PyPI + issue registry + TAC product rules",
     "packages/iwxxm-validate": "F2, F13 — iwxxm-validate Rust/XSD/Schematron + PyPI",
@@ -26,6 +33,7 @@ FEATURE_MAP: dict[str, str] = {
     "packages/auth": "M4 — Auth merged into backend",
     "packages/shared": "M1, M5 — Shared workspace package",
     "vendor": "M2, M6 — Vendor snapshot sync (read-only)",
+    "docs/adr/ADR-029": "F16–F19 — Dissemination SSRF / allowlist (ADR-029)",
     "backend/src/utilities/conversion": "F1 — METAR → IWXXM (legacy path)",
     "backend/src/routers/validation": "F2 — IWXXM validation (legacy path)",
     "backend": "F1–F4, M4 — Legacy backend",
@@ -36,7 +44,7 @@ FEATURE_MAP: dict[str, str] = {
     ".github/workflows": "F14, M5, M6 — CI, vendor sync, PyPI publish Actions",
     "Makefile": "M5 — Workspace tooling",
     "docker-compose.yml": "M4 — Deploy topology",
-    "render.yaml": "M4, UJ-OPS-001 — Render deploy",
+    "render.yaml": "M4, F16–F19, UJ-OPS-001 — Render deploy (+ wis2box / allowlist env)",
 }
 
 
@@ -103,7 +111,7 @@ def main() -> int:
     else:
         context = (
             f"[feature-drift] Edit in '{rel_str}' — no automatic feature mapping. "
-            "Verify against docs/feature-list.md (F1–F15, M1–M6)."
+            "Verify against docs/feature-list.md (F1–F19, M1–M6)."
         )
 
     print(json.dumps({"additional_context": context}))
