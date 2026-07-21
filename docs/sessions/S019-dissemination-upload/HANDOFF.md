@@ -10,14 +10,14 @@
 |-------|-------|
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
-| Branch | `cursor/s019-t43-smtp-preflight-ac66` (T4.3) |
-| PR (T4.1–T4.2) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/765 (ready for review; CI green) |
-| PR (T4.3) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/766 (draft; stacks on #765) |
-| Merged | #761–#764 (through M3 / T3.4) |
-| Done | M1; M2; M3; **M4 complete** (T4.1–T4.3 EDIS format + sink + SMTP preflight) |
+| Merged | #761–#766 (through **M4** / T4.3 EDIS SMTP preflight) |
+| Latest merges | #765 (T4.1–T4.2), #766 (T4.3) → `main` |
+| Done | M1; M2; M3; **M4 complete** (F18 EDIS) |
 | Next | **T5.1** Adapter interface + staging stub behaviors (F19) |
+| Branch for next work | create `cursor/s019-t51-…-ac66` (or repo convention) off **`main`** |
 
 ## Do not skip
 
 - Live BYOC close gate before cycle close (Postgres + WIS2 + EDIS)
 - TC-F18-002 live EDIS remains cycle-close only
+- F19 live demo optional (evidence or waive); does not block EV-014 close
