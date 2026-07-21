@@ -542,8 +542,10 @@ Before closing S013 / EV-009:
 ### TC-F17-001: Staging wis2box publish (UJ-028)
 
 - **Level**: T2 / staging
-- **Objective**: Publish IWXXM to project wis2box harness (Render/Docker)
-- **Pass criteria**: MQTT notify + HTTP dataset retrievable
+- **Objective**: Publish IWXXM to project wis2box Compose harness (E14-04; not Render)
+- **Harness (T3.3)**: `docker-compose.wis2box.yml` profile `wis2box` — MQTT + HTTP dataset
+  stand-in; CI hook `scripts/ci/run_wis2box_harness.sh` (up + health + PUT/GET smoke)
+- **Pass criteria**: MQTT notify + HTTP dataset retrievable (publish path = T3.4)
 - **Source**: F17; #2; Q12=B / Q17
 
 ### TC-F17-002: Live WIS2 BYOC close gate (UJ-028)
@@ -798,7 +800,7 @@ pre-commit fast hooks where applicable. Scheduled workflows (`vendor-sync`, load
 | Trigger | Workflow | Jobs | Checks |
 |---------|----------|------|--------|
 | PR / push `main`, `dev` | `ci-cd.yml` | **validate** | ruff format/check, prettier, eslint, basedpyright, tsc, gitleaks, actionlint/yamllint, config-guard (`tests/test_config_placeholders.py`), frontend npm audit |
-| PR / push `main`, `dev` | `ci-cd.yml` | **test** | matrix unit+coverage (backend, auth, **tac2iwxxm**, **tac-validate**, **iwxxm-validate**, **dissemination** (skip until scaffolded), frontend, shared @ 98% — **gifts removed at F6 cutover**), integration matrix (docker compose + wis2box harness hook skip-until-T3.3), Codecov upload (95% gate) |
+| PR / push `main`, `dev` | `ci-cd.yml` | **test** | matrix unit+coverage (backend, auth, **tac2iwxxm**, **tac-validate**, **iwxxm-validate**, **dissemination**, frontend, shared @ 98% — **gifts removed at F6 cutover**), integration matrix (docker compose + **wis2box Compose harness** T3.3 MQTT/HTTP smoke), Codecov upload (95% gate) |
 | push `main` only | `ci-cd.yml` | **deploy** | Docker build/push GHCR, Render deploy hooks |
 | Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
 | Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 scope |

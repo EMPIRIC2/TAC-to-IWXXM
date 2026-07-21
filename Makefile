@@ -227,16 +227,13 @@ test-integration-dissemination:
 	$(UV) run pytest packages/dissemination/tests \
 		-m integration -v --tb=short --no-cov
 
-# F17 / E14-04 — wis2box Compose harness (overlay); real service in T3.3.
+# F17 / E14-04 — wis2box Compose harness (MQTT + HTTP dataset overlay; T3.3).
 compose-wis2box-up:
-	@if ! grep -Eq '^[[:space:]]*wis2box:[[:space:]]*$$' docker-compose.wis2box.yml 2>/dev/null; then \
-		echo "skip: wis2box service not defined yet (T3.3) — see docker-compose.wis2box.yml"; \
-	else \
-		$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box up -d; \
-	fi
+	$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box up -d --build --wait wis2box
 
 compose-wis2box-down:
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box down --remove-orphans || true
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box stop wis2box || true
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box rm -f wis2box || true
 
 compose-wis2box-harness:
 	bash scripts/ci/run_wis2box_harness.sh

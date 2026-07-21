@@ -157,6 +157,16 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 - Assumed PASS (cloud AQ waived): 05 audited; 06 T0.1 installed; B→C open.
 - Next: **07-build** M1 T1.1.
 
+### T3.3 wis2box harness image (D-S019-EV014-T33-harness)
+
+- **A — Lightweight MQTT + HTTP dataset stand-in** under
+  `packages/dissemination/docker/wis2box-harness` (`python:3.12.11-slim-bookworm` + Debian
+  `mosquitto`); Compose overlay `docker-compose.wis2box.yml` profile `wis2box`; CI hook
+  `scripts/ci/run_wis2box_harness.sh` on integration matrix.
+- Reject full WMO wis2box-release multi-container stack for CI cost/ops (E14-04 / Q17
+  testing-only). Live WIS2 remains BYOC (TC-F17-002).
+- Merged session stack before T3.3: PR #761 (T2.7), #762 (T3.1–T3.2) → `main`.
+
 ### Notes
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live

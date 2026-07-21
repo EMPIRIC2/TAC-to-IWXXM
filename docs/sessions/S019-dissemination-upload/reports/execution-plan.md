@@ -16,8 +16,8 @@
 |-------|-------|
 | **Active phase** | Phase C — **07-build** M3 in progress |
 | **Active milestone** | M3 — WIS2 + Compose wis2box harness |
-| **Active task** | T3.3 (next) |
-| **Tasks** | 15 / **29** completed (through T3.2) |
+| **Active task** | T3.4 (next) |
+| **Tasks** | 16 / **29** completed (through T3.3) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -40,7 +40,7 @@
 
 | Asset | Staging | Needed By |
 |-------|---------|-----------|
-| Compose wis2box image/config | pending (M3) | T3.x / TC-F17-001 |
+| Compose wis2box image/config | staged (T3.3 harness image) | T3.4 / TC-F17-001 |
 | ODBC driver (CI/docs for SQL Server) | staged (skip-without-ODBC tests) | T2.6–T2.7 done |
 | Live BYOC creds (operator) | cycle close only | TC-F16/17/18 live gates |
 
@@ -76,7 +76,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T3.1 | Test | WIS2 sink adapter unit tests (mocked MQTT/HTTP) | TC-F17-001; E14-09 | T2.4 | **completed** |
 | T3.2 | Code | WIS2 sink in `packages/dissemination` | F17; ADR-030 | T3.1 | **completed** |
-| T3.3 | Config | `docker-compose` wis2box harness + CI service/job | E14-04; TC-F17-001 | T3.2 | pending |
+| T3.3 | Config | `docker-compose` wis2box harness + CI service/job | E14-04; TC-F17-001 | T3.2 | **completed** |
 | T3.4 | Test | Staging harness publish green (TC-F17-001) | UJ-028 | T3.3 | pending |
 
 ### M4 — EDIS SMTP (F18)

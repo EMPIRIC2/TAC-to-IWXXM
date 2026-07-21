@@ -52,10 +52,13 @@ Deploy / image notes (CI skip policy, stock API Dockerfile without `msodbcsql18`
 
 - `dissemination.wis2` — `wis2_preflight` / `wis2_publish` with injectable MQTT + HTTP
   clients (unit-tested with mocks; no broker required)
-- Compose wis2box harness lands in T3.3; live BYOC remains the cycle-close gate
+- Compose wis2box harness (T3.3): MQTT + HTTP dataset stand-in under
+  `packages/dissemination/docker/wis2box-harness` — see that README
+- Live BYOC remains the cycle-close gate (TC-F17-002)
 
 **Egress allowlist**
 
 - Env: `DISSEMINATION_EGRESS_ALLOWLIST` (see `.env.example`, ADR-029)
 - Empty ⇒ fail-closed
-- Compose wis2box harness: `make compose-wis2box-up` / `compose-wis2box-harness` (T3.3 fills service)
+- Compose wis2box harness: `make compose-wis2box-up` / `compose-wis2box-harness`
+  (allowlist `wis2box,127.0.0.1,localhost` when calling the sink)
