@@ -10941,10 +10941,11 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 5b3db91
-  tip_sha_full: 5b3db913e507da6576bf996ab47174569b5cc96f
-  note: 'bookkeeping close branch after #772 merge c61273a — S019/EV-014 Phase C/D bookkeeping + cycle close'
+  tip_sha: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
+  tip_sha_full: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
+  note: 'bookkeeping close branch after #772 merge c61273a — S019/EV-014 Phase C/D bookkeeping + cycle close; PR #774 open draft'
   notes:
+    - '2026-07-21 S019/EV-014 Phase C/D bookkeeping tip 73d4ff4 — "[S019] docs: Phase C/D bookkeeping + close EV-014"; PR #774 open draft; active_session remains null; EV-014 completed / S019 archived'
     - '2026-07-21 S019/EV-014 Phase 4 close — bookkeeping branch cursor/s019-ev014-phase-d-close-f898 after #772 merge c61273a; EV-014/S019 completed'
     - '2026-07-21 S019/EV-014 workflow-state update — T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29; gates.c_to_d=pending_checkpoint; session/cycle remain open (5b3db91)'
     - '2026-07-21 S019/EV-014 T6.6 docs @ 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked" on cursor/s019-t66-deploy-smoke-151c; H0c/H1/H4/H5 PASS; allowlist/auth/BYOC still pending; progress 28/29 (D-S019-EV014-T66-partial)'
@@ -11165,6 +11166,14 @@ git_history:
       evolve_cycle_id: EV-014
       created: '2026-07-21'
       created_at: '2026-07-21'
+      tip_sha: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
+      tip_sha_full: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
+      pushed: true
+      pr: 774
+      pr_number: 774
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/774
+      pr_status: open_draft
+      note: 'PR #774 open draft for Phase C/D close bookkeeping (EV-014 completed; S019 archived)'
     - name: cursor/s019-t66-deploy-smoke-151c
       status: merged
       base: cursor/s019-t64-verify-build-7820
@@ -11777,6 +11786,25 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 73d4ff4872090e9fd0cfa3de6ec31cce8cd8b3a7
+      short: 73d4ff4
+      branch: cursor/s019-ev014-phase-d-close-f898
+      message: '[S019] docs: Phase C/D bookkeeping + close EV-014'
+      stage: 16-evolve
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      timestamp: '2026-07-21'
+      files_changed:
+        - docs/evolve-report-EV-014.md
+        - docs/sessions/S019-dissemination-upload/reports/*
+        - docs/feature-list.md
+        - docs/CHANGELOG.md
+        - workflow-state.yaml
+      pr: 774
+      pr_number: 774
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/774
+      pr_status: open_draft
+      note: 'PR #774 open draft for close bookkeeping; EV-014 completed; S019 archived; active_session null'
     - sha: 5b3db913e507da6576bf996ab47174569b5cc96f
       short: 5b3db91
       branch: cursor/s019-t66-deploy-smoke-151c
