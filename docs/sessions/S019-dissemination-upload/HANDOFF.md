@@ -11,7 +11,7 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Branch | `cursor/s019-t25-writer-contract-engines-ce70` (T2.5); base `cursor/s019-07-build-m1-9a92` |
-| PR | T2.5 PR off base; umbrella https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/757 |
+| PR | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/758 (T2.5 → base); umbrella #757 |
 | Done | M1; M2 through **T2.5** (PG+MySQL Testcontainers + SQLite) |
 | Next | **T2.6** SQL Server path via aioodbc (CI skip if no ODBC) |
 
