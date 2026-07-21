@@ -19,6 +19,7 @@
 | E14-09 | 2026-07-21 | Tests | Unit + Compose/Testcontainers + mocks; live BYOC close-only | confirmed |
 | E14-10 | 2026-07-21 | FE / H4–H5 | Ship drawer this cycle; H4–H5 required | confirmed |
 | D-S019-EV014-Q33A-04-batch2 | 2026-07-21 | Gate | Lock Batch 2 (all A) | confirmed |
+| D-S019-EV014-Q34A-04-approve | 2026-07-21 | Plan | Approve execution-plan M1–M6 (32 tasks); 04 complete | confirmed |
 
 ## S015 / EV-011 05-verify-tech (2026-07-19)
 

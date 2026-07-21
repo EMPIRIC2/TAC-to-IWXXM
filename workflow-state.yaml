@@ -14,9 +14,10 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
-  current_stage: 04-tech-plan
+  current_stage: 05-verify-tech
   note: >-
-    04 Batch 1–2 locked; execution-plan pending Q34 approval
+    04-tech-plan COMPLETE (Q34=A); handoff — resume at 05-verify-tech after #753→main;
+    see docs/sessions/S019-dissemination-upload/HANDOFF.md
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -50,7 +51,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase B — 04 Batch 1–2 locked; plan approval next"
+      note: "Phase B — 04 done; next 05-verify-tech (session handoff)"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -78,16 +79,17 @@ active_session:
     - stage: 04-tech-plan
       required: true
       mode: delta
-      status: in_progress
+      status: completed
       skip_rationale:
-      note: "Batch 1–2 locked; execution-plan pending Q34"
+      note: "Q34=A plan approved; ADR-030; Batch 1–2; merge handoff #753→main"
       started: '2026-07-21'
+      completed: '2026-07-21'
     - stage: 05-verify-tech
       required: false
       mode: pending
       status: pending
       skip_rationale:
-      note: Full routing (Q24=A) — await prior stages
+      note: "START HERE next chat"
     - stage: 06-tech-tooling
       required: false
       mode: pending
@@ -1906,8 +1908,10 @@ stages:
       - session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
         skill_id: 04-tech-plan
-        status: in_progress
+        status: completed
         started_at: '2026-07-21'
+        completed: '2026-07-21'
+        completed_at: '2026-07-21'
         mode: delta
         feature_ids:
           - F16
@@ -1915,7 +1919,7 @@ stages:
           - F18
           - F19
         note: >-
-          Batch 1–2 locked; execution-plan pending Q34
+          COMPLETE Q34=A — execution-plan approved; Batch 1–2; ADR-030; handoff to 05
         deferred_from_01:
           - API sketch (preflight/send)
           - writer-contract column DDL per engine
@@ -1927,6 +1931,7 @@ stages:
           - docs/sessions/S019-dissemination-upload/reports/04-tech-plan.md
           - docs/adr/ADR-030-dissemination-package-architecture.md
           - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+          - docs/sessions/S019-dissemination-upload/HANDOFF.md
         interview:
           batch_1_architecture:
             status: locked
@@ -2072,6 +2077,8 @@ stages:
           - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
           - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+      - >-
+        2026-07-21 S019/EV-014 04 COMPLETE (Q34=A) — plan approved; handoff #753→main
       - 2026-07-21 S019/EV-014 04 Batch 2 LOCKED (all A) — E14-06..10; plan pending Q34
       - >-
         2026-07-21 S019/EV-014 04 Batch 1 LOCKED (Q32=A) — E14-01..05 / ADR-030;
@@ -2101,11 +2108,12 @@ stages:
       session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-07-21'
+      completed_at: '2026-07-21'
       note: >-
-        Batch 1 locked (Q32=A / E14-01..05 / ADR-030); Batch 2 pending
+        COMPLETE Q34=A — execution-plan approved; Batch 1–2; ADR-030; handoff to 05
   05-verify-tech:
     status: completed
     started_at: "2026-06-15T01:15:00Z"
@@ -3010,11 +3018,10 @@ stages:
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     started_at: '2026-07-20'
-    current_stage: 02-verify-plan
+    current_stage: 05-verify-tech
     note: >-
-      S019-dissemination-upload/EV-014 — Phase 0 APPROVED (Q23=A–D + Q24=A Full); F16–F19 Planned;
-      01-requirements delta completed; current_stage 02-verify-plan pending; Q15=A+Q8=C+Q21=A live
-      BYOC hard close gate; prior S018/EV-013 closed completed-with-waiver (Q0=A)
+      S019/EV-014 Phase B — 04-tech-plan COMPLETE (Q34=A); handoff #753→main; next
+      05-verify-tech (active_session open); Q15=A+Q8=C+Q21=A live BYOC hard close gate
 
 stages_pending: []
 
@@ -3244,6 +3251,18 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-Q34A-04-approve
+    date: "2026-07-21"
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    status: confirmed
+    decision: >-
+      Q34=A — approve execution-plan.md (M1–M6 + T0.1, 32 tasks); mark 04-tech-plan
+      completed; user requested merge of written work to main via PR #753 for session
+      handoff; next stage 05-verify-tech (active_session remains open).
+    related_pr: 753
   - id: D-S019-EV014-Q33A-04-batch2
     date: '2026-07-21'
     stage: 04-tech-plan
@@ -7420,8 +7439,11 @@ evolve_cycles:
         - 13-deploy-smoke
       skipped_stages: []
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
-    current_stage: 04-tech-plan
+    current_stage: 05-verify-tech
     notes:
+      - >-
+        2026-07-21 S019/EV-014 04-tech-plan COMPLETE (Q34=A / D-S019-EV014-Q34A-04-approve) —
+        plan approved; handoff merge #753→main; next 05-verify-tech
       - 2026-07-21 S019/EV-014 04 Batch 2 LOCKED (all A / D-S019-EV014-Q33A-04-batch2) — E14-06..10; execution-plan pending Q34
       - >-
         2026-07-21 S019/EV-014 04 Batch 1 LOCKED (Q32=A / D-S019-EV014-Q32A-04-batch1) —
@@ -7454,7 +7476,7 @@ evolve_cycles:
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase B — 04 Batch 1 locked; Batch 2 deploy/test interview next"
+        note: "Phase B — 04 done; next 05-verify-tech (session handoff)"
       01-requirements:
         status: completed
         mode: delta
@@ -7496,11 +7518,11 @@ evolve_cycles:
           - .cursor/hooks/feature_drift.py
           - .cursor/hooks/scope_check.py
       04-tech-plan:
-        status: in_progress
+        status: completed
         mode: delta
         started: "2026-07-21"
-        note: >-
-          Batch 1–2 locked; env-contract allowlist + deps pins; execution-plan.md pending Q34 (32 tasks)
+        completed: "2026-07-21"
+        note: "Q34=A approved; execution-plan + ADR-030; Batch 1–2"
         feature_ids:
           - F16
           - F17
@@ -7513,6 +7535,9 @@ evolve_cycles:
           - EDIS SMTP library choice
           - AMHS/SWIM/AFS protocol details
           - DISSEMINATION_EGRESS_ALLOWLIST in config-spec/env-contract
+      05-verify-tech:
+        status: pending
+        note: "START HERE next chat after main merge"
     gates:
       a_to_b: passed
       b_to_c: pending

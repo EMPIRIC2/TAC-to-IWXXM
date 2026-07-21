@@ -50,6 +50,7 @@ One BIG dissemination evolve cycle:
 | Q31=A | Phase A approved → 04-tech-plan |
 | Q32=A | Lock 04 Batch 1 architecture (E14-01..05 / ADR-030) |
 | Q33=A×5 | Lock 04 Batch 2 (E14-06..10 all A) |
+| Q34=A | Approve execution-plan.md; finish 04; merge handoff to main |
 | AskQuestion | Waived (cloud written interview) |
 
 ### Locked intake (summary)
@@ -74,7 +75,14 @@ One BIG dissemination evolve cycle:
 
 ## Current stage
 
-**04-tech-plan** (delta) — Batch 1–2 locked; execution-plan awaiting Q34.
+**04-tech-plan** — **completed** (Q34=A). Next chat: **05-verify-tech** → 06 → B→C → 07-build M1.
+
+### Handoff
+
+- Resume session **S019-dissemination-upload** / **EV-014**
+- Approved plan: `docs/sessions/S019-dissemination-upload/reports/execution-plan.md`
+- PR #753 merged (or merging) to `main` for pick-up
+- Do **not** start 07-build until 05 (+06 if routed) and Phase B checkpoint pass
 
 ## Links
 

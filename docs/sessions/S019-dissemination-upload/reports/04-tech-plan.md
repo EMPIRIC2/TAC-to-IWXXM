@@ -2,12 +2,12 @@
 
 **Date**: 2026-07-21  
 **Mode**: delta / evolve  
-**Status**: in_progress — Batch 1–2 locked; execution-plan pending approval (Q34)
+**Status**: **completed** — Q34=A plan approved; handoff for next chat
 
 ## Inputs
 
 - Phase A passed (Q31=A)
-- PR [#753](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753)
+- PR [#753](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753) → retarget/`main` merge for session handoff
 
 ## Batch 1 — Architecture (LOCKED — Q32=A)
 
@@ -21,7 +21,7 @@
 
 **ADR**: [ADR-030](../../../adr/ADR-030-dissemination-package-architecture.md) Accepted
 
-## Batch 2 — Deploy / test / integration (LOCKED — all A / Q33)
+## Batch 2 — Deploy / test / integration (LOCKED — all A)
 
 | ID | Answer | Decision |
 |----|--------|----------|
@@ -31,17 +31,25 @@
 | E14-09 | A | Unit + Compose/Testcontainers + mocks; live BYOC = close gate |
 | E14-10 | A | Ship FE drawer this cycle; H4–H5 required |
 
+## Plan approval
+
+| ID | Decision |
+|----|----------|
+| Q34=A | Approve [execution-plan.md](execution-plan.md) — M1–M6 + T0.1 (32 tasks) |
+
 ## Artifacts
 
-| Document | Delta |
-|----------|-------|
-| ADR-030 | Package + sink architecture |
-| execution-plan.md | M1–M6 + T0.1 (32 tasks) — **pending Q34** |
-| env-contract / config-spec / deploy | Allowlist |
-| api-contract | msgspec encode locked |
-| dependency-inventory | aioodbc / pin notes |
-| msgspec-http-boundary | dissemination routes |
+| Document | Status |
+|----------|--------|
+| ADR-030 | Accepted |
+| execution-plan.md | **Approved** |
+| env-contract / config-spec / deploy | Allowlist documented |
+| api-contract | Planned dissemination + msgspec |
+| dependency-inventory | Planned package deps |
 
-## Next
+## Handoff (next chat)
 
-**Q34** — approve execution plan → complete 04 → 05-verify-tech.
+1. Resume **S019 / EV-014** on `main` after #753 merge (or branch tip).
+2. Run **05-verify-tech** (delta audit of execution plan + corpus).
+3. Then **06-tech-tooling** (T0.1) → Phase B checkpoint → **07-build** M1 T1.1.
+4. Close gate unchanged: live BYOC Postgres + WIS2 + EDIS before cycle close.
