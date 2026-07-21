@@ -80,6 +80,7 @@ jobs:
             tac2iwxxm,
             iwxxm-validate,
             tac-validate,
+            dissemination,
             integration,
             bugs,
           ]
@@ -180,6 +181,11 @@ jobs:
             --cov-config=packages/tac-validate/pyproject.toml --cov-branch \
             --cov-report=term-missing --cov-fail-under=95 -v
 
+      # F16–F19 / T0.1 — skips until packages/dissemination is scaffolded (T1.1/T1.2).
+      - name: Run dissemination unit tests with coverage
+        if: matrix.package == 'dissemination'
+        run: bash scripts/ci/run_dissemination_coverage.sh
+
       - name: Run frontend tests with coverage
         if: matrix.package == 'frontend'
         run: pnpm --filter @metar/frontend run test:coverage
@@ -209,6 +215,11 @@ jobs:
           cd apps/backend && uv run pytest tests/integration/test_h0i_connectivity.py -v --no-cov
           cd apps/backend && uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
           docker compose down
+
+      # F17 / E14-04 — wis2box Compose harness hook (skips until T3.3 defines wis2box service).
+      - name: Run wis2box Compose harness hook
+        if: matrix.package == 'integration'
+        run: bash scripts/ci/run_wis2box_harness.sh
 
       - name: Upload backend coverage artifact
         if: always() && matrix.package == 'backend'

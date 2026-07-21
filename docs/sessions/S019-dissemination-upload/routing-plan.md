@@ -5,14 +5,14 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | completed | Session open |
-| 16-evolve | yes | orchestrator | in_progress | EV-014; Phase B — next 06-tech-tooling (05 done) |
+| 16-evolve | yes | orchestrator | in_progress | EV-014; Phase B — 06 done; next B checkpoint → 07 |
 | 01-requirements | yes | delta | completed | F16–F19 + corpus amend + ADRs |
 | 02-verify-plan | yes | delta | completed | 28 high + 6 review fixes (Q26–Q28); ADR-029 Accepted |
 | 03-plan-tooling | yes | delta | completed | Q30=A — plan-adherence F16–F19 + SSRF rule + hooks |
 | 04-tech-plan | yes | delta | completed | Q34=A plan approved; ADR-030; Batch 1–2; #753 MERGED |
 | 05-verify-tech | yes | delta | completed | D-S019-EV014-Q35A-05 PASS — 29 tasks; S1–S8 fixes |
-| 06-tech-tooling | yes | delta | pending | **START HERE** — T0.1 coverage + CI Compose hooks |
-| 07-build | yes | full | pending | |
+| 06-tech-tooling | yes | delta | completed | T0.1 — coverage + CI Compose hooks (D-S019-EV014-Q36A-06) |
+| 07-build | yes | full | pending | **NEXT** after Phase B checkpoint — M1 T1.1 |
 | 08-verify-build | yes | full | pending | |
 | 09-qa | yes | full | pending | |
 | 10-e2e | yes | full | pending | UJ-027–030 |

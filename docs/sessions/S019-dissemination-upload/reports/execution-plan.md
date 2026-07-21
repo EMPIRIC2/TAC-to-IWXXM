@@ -14,10 +14,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — **05-verify-tech** PASS; next **06-tech-tooling** (T0.1) → B→C → 07 |
-| **Active milestone** | M1 — Package scaffold + SSRF/allowlist (start after 06 / B→C) |
+| **Active phase** | Phase B — **06-tech-tooling** complete (T0.1); next Phase B checkpoint → **07-build** M1 T1.1 |
+| **Active milestone** | M1 — Package scaffold + SSRF/allowlist (start after B→C) |
 | **Active task** | — (07-build not started) |
-| **Tasks** | 0 / **29** completed |
+| **Tasks** | 1 / **29** completed (T0.1) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -110,7 +110,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T0.1 | Config | 06-tech-tooling: coverage paths for `packages/dissemination`; CI Compose service hooks | 06; E14-09 | Plan approval | pending |
+| T0.1 | Config | 06-tech-tooling: coverage paths for `packages/dissemination`; CI Compose service hooks | 06; E14-09 | Plan approval | **completed** |
 
 ## Git Strategy
 
@@ -136,4 +136,5 @@
 
 **Approved** 2026-07-21 — Q34=A (D-S019-EV014-Q34A-04-approve). 04-tech-plan complete.  
 **05-verify-tech** PASS 2026-07-21 — D-S019-EV014-Q35A-05 (29 tasks; branch/ADR/matrix fixes).  
-Next: **06-tech-tooling** (T0.1) → Phase B checkpoint → 07-build (M1 T1.1).
+**06-tech-tooling** complete 2026-07-21 — D-S019-EV014-Q36A-06 (T0.1 coverage + Compose hooks).  
+Next: Phase B checkpoint → **07-build** (M1 T1.1).

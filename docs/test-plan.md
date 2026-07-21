@@ -798,7 +798,7 @@ pre-commit fast hooks where applicable. Scheduled workflows (`vendor-sync`, load
 | Trigger | Workflow | Jobs | Checks |
 |---------|----------|------|--------|
 | PR / push `main`, `dev` | `ci-cd.yml` | **validate** | ruff format/check, prettier, eslint, basedpyright, tsc, gitleaks, actionlint/yamllint, config-guard (`tests/test_config_placeholders.py`), frontend npm audit |
-| PR / push `main`, `dev` | `ci-cd.yml` | **test** | matrix unit+coverage (backend, auth, **tac2iwxxm**, **tac-validate**, **iwxxm-validate**, frontend, shared @ 98% — **gifts removed at F6 cutover**), integration matrix (docker compose), Codecov upload (95% gate) |
+| PR / push `main`, `dev` | `ci-cd.yml` | **test** | matrix unit+coverage (backend, auth, **tac2iwxxm**, **tac-validate**, **iwxxm-validate**, **dissemination** (skip until scaffolded), frontend, shared @ 98% — **gifts removed at F6 cutover**), integration matrix (docker compose + wis2box harness hook skip-until-T3.3), Codecov upload (95% gate) |
 | push `main` only | `ci-cd.yml` | **deploy** | Docker build/push GHCR, Render deploy hooks |
 | Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
 | Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 scope |

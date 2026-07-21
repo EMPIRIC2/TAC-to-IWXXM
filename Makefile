@@ -15,16 +15,18 @@ PY_LINT := apps/backend/src apps/backend/tests \
 .PHONY: install test test-unit vendor-sync \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-auth test-unit-frontend \
-	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-unit-worker test-bugs \
+	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
+	test-unit-dissemination test-unit-worker test-bugs \
+	compose-wis2box-up compose-wis2box-down compose-wis2box-harness \
 	format format-check typecheck typecheck-py typecheck-js \
 	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-shared \
-	lint-tac2iwxxm lint-iwxxm-validate lint-tac-validate \
+	lint-tac2iwxxm lint-iwxxm-validate lint-tac-validate lint-dissemination \
 	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
 	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live-bulletin test-live \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-shared \
-	coverage-modules coverage-all ci acci badge-audit audit-frontend \
+	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
 	install-hooks pre-commit-run \
 	catalog-regen catalog-check \
@@ -111,6 +113,14 @@ lint-iwxxm-validate:
 
 lint-tac-validate:
 	$(UV) run ruff check --force-exclude packages/tac-validate/src packages/tac-validate/tests
+
+# F16–F19 — skip until T1.1/T1.2 scaffolds packages/dissemination.
+lint-dissemination:
+	@if [ -d packages/dissemination/src ]; then \
+		$(UV) run ruff check --force-exclude packages/dissemination/src packages/dissemination/tests; \
+	else \
+		echo "skip: packages/dissemination not scaffolded (T1.1/T1.2)"; \
+	fi
 
 lint-frontend:
 	$(PNPM) --filter @metar/frontend run lint
@@ -210,6 +220,24 @@ test-unit-tac-validate:
 		--cov-config=packages/tac-validate/pyproject.toml --cov-branch \
 		--cov-report=term-missing --cov-fail-under=95 -v
 
+# F16–F19 / T0.1 — coverage paths; skips until packages/dissemination exists (T1.1/T1.2).
+test-unit-dissemination:
+	bash scripts/ci/run_dissemination_coverage.sh
+
+# F17 / E14-04 — wis2box Compose harness (overlay); real service in T3.3.
+compose-wis2box-up:
+	@if ! grep -Eq '^[[:space:]]*wis2box:[[:space:]]*$$' docker-compose.wis2box.yml 2>/dev/null; then \
+		echo "skip: wis2box service not defined yet (T3.3) — see docker-compose.wis2box.yml"; \
+	else \
+		$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box up -d; \
+	fi
+
+compose-wis2box-down:
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box down --remove-orphans || true
+
+compose-wis2box-harness:
+	bash scripts/ci/run_wis2box_harness.sh
+
 test-unit-worker:
 	$(UV) run pytest apps/worker/tests -v --no-cov
 
@@ -217,7 +245,8 @@ test-bugs:
 	$(UV) run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
 test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
-	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-unit-worker test-bugs
+	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
+	test-unit-dissemination test-unit-worker test-bugs
 
 test: test-unit
 
@@ -317,7 +346,10 @@ coverage-shared:
 	$(UV) run pytest packages/shared/tests --cov=metar_shared \
 		--cov-config=packages/shared/pyproject.toml --cov-report=term-missing -v
 
-coverage-modules: coverage-backend coverage-auth coverage-frontend coverage-shared
+coverage-dissemination: test-unit-dissemination
+
+coverage-modules: coverage-backend coverage-auth coverage-frontend coverage-shared \
+	coverage-dissemination
 
 coverage-all: coverage-modules
 
@@ -426,6 +458,7 @@ supabase-pull:
 validate-ci: validate-fast config-guard env-check audit-frontend
 
 ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
-	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-unit-worker test-bugs test-integration badge-audit
+	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-unit-dissemination \
+	test-unit-worker test-bugs test-integration badge-audit
 
 acci: ci test-e2e-playwright-smoke audit-frontend

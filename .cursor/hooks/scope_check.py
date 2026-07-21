@@ -20,6 +20,7 @@ APPROVED_COMPONENTS: dict[str, str] = {
     "packages/tac2iwxxm": "General TAC → IWXXM converter (F6, F14)",
     "packages/tac-validate": "TAC product validation / lint (F12)",
     "packages/iwxxm-validate": "IWXXM XSD + Schematron engine (F2, F13)",
+    "packages/dissemination": "Dissemination sinks / writer-contract / SSRF (F16–F19; ADR-030)",
     "packages/gifts": "GIFTs — transitional until F6 cutover delete (F1, M3)",
     "packages/shared": "Shared types and utils (M1, M5)",
     "vendor": "Vendor schemas — read-only wmo-im snapshots (M2, M6)",
@@ -33,13 +34,14 @@ APPROVED_COMPONENTS: dict[str, str] = {
     "test-data": "Golden fixtures (TC-M003)",
     "docs": "Documentation",
     ".cursor": "Cursor tooling",
-    ".github": "CI/CD + PyPI publish workflows (F14, M5, M6)",
-    "scripts": "Automation — vendor sync, deploy smoke",
+    ".github": "CI/CD + PyPI publish workflows (F14, M5, M6, F16–F19)",
+    "scripts": "Automation — vendor sync, deploy smoke, dissemination/wis2box CI hooks",
 }
 
 INFRA_PATHS = {
     "Makefile",
     "docker-compose.yml",
+    "docker-compose.wis2box.yml",
     "render.yaml",
     "pyproject.toml",
     "pnpm-workspace.yaml",
@@ -112,7 +114,7 @@ def main() -> int:
             "additional_context": (
                 f"[scope-check] WARNING: '{rel_str}' does not map to any approved "
                 "component in docs/spec.md §Component Overview. Verify scope "
-                "(F1–F14, M1–M6) or raise [Scope Drift]."
+                "(F1–F19, M1–M6) or raise [Scope Drift]."
             )
         }
 

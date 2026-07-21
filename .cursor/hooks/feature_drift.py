@@ -29,11 +29,13 @@ FEATURE_MAP: dict[str, str] = {
     "packages/tac2iwxxm": "F6, F9, F14 — tac2iwxxm convert/decode + PyPI",
     "packages/tac-validate": "F12, F15 — tac-validate PyPI + issue registry + TAC product rules",
     "packages/iwxxm-validate": "F2, F13 — iwxxm-validate Rust/XSD/Schematron + PyPI",
+    "packages/dissemination": "F16–F19 — Dissemination sinks / writer-contract / SSRF (ADR-030)",
     "packages/gifts": "F1, M3 — GIFTs library (transitional)",
     "packages/auth": "M4 — Auth merged into backend",
     "packages/shared": "M1, M5 — Shared workspace package",
     "vendor": "M2, M6 — Vendor snapshot sync (read-only)",
     "docs/adr/ADR-029": "F16–F19 — Dissemination SSRF / allowlist (ADR-029)",
+    "docs/adr/ADR-030": "F16–F19 — Dissemination package architecture (ADR-030)",
     "backend/src/utilities/conversion": "F1 — METAR → IWXXM (legacy path)",
     "backend/src/routers/validation": "F2 — IWXXM validation (legacy path)",
     "backend": "F1–F4, M4 — Legacy backend",
@@ -41,10 +43,11 @@ FEATURE_MAP: dict[str, str] = {
     "GIFTs": "F1, M3 — Legacy GIFTs",
     "auth": "M4 — Legacy auth",
     "schemas": "M2 — Legacy schemas",
-    ".github/workflows": "F14, M5, M6 — CI, vendor sync, PyPI publish Actions",
-    "Makefile": "M5 — Workspace tooling",
+    ".github/workflows": "F14, M5, M6, F16–F19 — CI, vendor sync, PyPI, dissemination coverage/Compose",
+    "Makefile": "M5, F16–F19 — Workspace tooling (+ dissemination / wis2box targets)",
     "docker-compose.yml": "M4 — Deploy topology",
-    "render.yaml": "M4, F16–F19, UJ-OPS-001 — Render deploy (+ wis2box / allowlist env)",
+    "docker-compose.wis2box.yml": "F17 — wis2box Compose/CI harness overlay (E14-04; not Render)",
+    "render.yaml": "M4, F16–F19, UJ-OPS-001 — Render deploy (+ allowlist env; no wis2box service)",
 }
 
 

@@ -144,6 +144,14 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 - Report: `docs/sessions/S019-dissemination-upload/reports/05-verify-tech-audit.md`
 - Next: **06-tech-tooling** (T0.1) → Phase B checkpoint → 07-build M1 T1.1.
 
+### 06-tech-tooling complete (D-S019-EV014-Q36A-06)
+
+- Assumed approve-all delta tooling (cloud AQ waived).
+- T0.1: dissemination coverage runner (≥95% when scaffolded) + wis2box Compose CI hooks
+  (skip until T3.3); Makefile + `ci-cd.yml` matrix; optional Cursor rule; hook maps.
+- Report: `docs/sessions/S019-dissemination-upload/reports/06-tech-tooling.md`
+- Next: Phase B checkpoint → **07-build** M1 T1.1.
+
 ### Notes
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
@@ -152,7 +160,7 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
   close until live BYOC demos green for **Postgres + WIS2 + EDIS**. F19 (AMHS/SWIM/AFS) requires
   staging/test path green; live F19 demo optional with AskQuestion waive (S-EV014-M2 / Q28=A).
 - PR (04): https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753 MERGED
-- 2026-07-21: 04 Batch 1–2 locked; plan approved; 05 PASS
+- 2026-07-21: 04 Batch 1–2 locked; plan approved; 05 PASS; 06 T0.1 complete
 
 ---
 
