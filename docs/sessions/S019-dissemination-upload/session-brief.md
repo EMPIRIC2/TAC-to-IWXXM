@@ -4,7 +4,7 @@ type: feature
 status: in_progress
 branch: cursor/dissemination-upload-e25c
 started_at: 2026-07-20
-intent: "Dissemination epic — Upload to Database (#729) + WIS2 (#2) + EDIS (#6)"
+intent: "Dissemination epic — Upload to Database (#729) + WIS2 (#2) + EDIS (#6) + AMHS/SWIM/AFS"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-014
 context_briefs: []
@@ -19,25 +19,31 @@ standing_docs_touched:
 One BIG dissemination evolve cycle covering:
 
 1. **Upload to Database** ([#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729)) —
-   user-supplied one-shot Postgres credentials + schema preflight + send drawer UI
-2. **WIS2 pathway scaffolding** ([#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2))
-3. **EDIS-compliant dissemination scaffolding** ([#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6))
+   user-supplied one-shot DB credentials + schema preflight + send drawer UI
+   (DDL create-if-missing, drag-drop IWXXM/TAC, multi-DB beyond Postgres)
+2. **WIS2 pathway** ([#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2)) —
+   staging wis2box test harness + live BYOC
+3. **EDIS-compliant dissemination** ([#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)) —
+   RTH Washington via BYOC SMTP/gateway
+4. **AMHS / SWIM / AFS adapters** (Q20=D — overturn prior non-goals for this cycle)
 
 ## Intake status
 
-**Phase 0 — NOT fully approved.** Batch 1–3 locked Assumed (written interview;
-AskQuestion UI waived in cloud). **Batch 4 locked 2026-07-21** — Q14r/Q17/Q18/Q19 recorded;
-**Q14r extras enum [Ambiguity] open** blocks Phase 0 approval until next interview enumerates
-which of {DDL, drag-drop, multi-DB, AMHS} are IN for v1. No `F16+` in `feature-list.md` yet.
+**Phase 0 — NOT fully approved.** Batch 1–5 locked Assumed (written interview;
+AskQuestion UI waived in cloud). **Batch 5 locked 2026-07-21** — Q20/Q21/Q22 recorded;
+**I-S019-EV014-Q14r-extras-enum resolved** (all four extras IN). **Still open:**
+**I-S019-EV014-Q20C-vendors** (multi-DB vendor list) + **user approval gate** on draft
+Fn allocation + scope + Full routing (Q22=A). No `F16+` rows in `feature-list.md` yet
+(draft Fn table below only — awaiting approval).
 
-### Batch 1 (Assumed / written) — still locked 2026-07-20
+### Batch 1 (Assumed / written) — still locked 2026-07-20 (**amended Batch 5**)
 
 | ID | Decision |
 |----|----------|
 | Creds | One-shot session credentials — paste in UI; **never persist** / never saved profiles |
 | UI | Drawer for send/upload destination + preflight |
-| Schema | Require **existing** table matching versioned writer contract (no create-if-missing) — *may be amended if DDL selected in Q14r enum* |
-| Q1=A | Convert-in-app then send IWXXM to user's Postgres — *may be amended if drag-drop selected in Q14r enum* |
+| Schema | **Superseded by Q20=A:** DDL / create-if-missing allowed (overrides earlier require-existing-only) |
+| Q1 | **Amended by Q20=B:** Convert-in-app then send **plus** drag-drop upload of external IWXXM/TAC |
 | Q2=A | Any authenticated user |
 | Q3=A | Schema preflight clarity is the success metric |
 | Q4=D | Include WIS2 + EDIS scaffolding in this ONE cycle |
@@ -68,32 +74,67 @@ which of {DDL, drag-drop, multi-DB, AMHS} are IN for v1. No `F16+` in `feature-l
 
 | ID | Status | Decision / note |
 |----|--------|-----------------|
-| Q14r=B | **Locked Assumed** + **[Ambiguity] pending enum** | Keep **Q14=A literally** (profiles still OOS). Epic **also designs** DDL, drag-drop external IWXXM, multi-DB, **and/or** AMHS — user chose **expand scope (B)** rather than recommended pack (A). **Still-[Ambiguity]:** which of {DDL, drag-drop, multi-DB, AMHS} are **IN for v1** of this cycle — “and/or” not enumerated. Phase 0 **blocked** on that enumeration (next interview). Prior Contradiction **I-S019-EV014-Q14-batch1** resolved as **scope expanded intentionally**; sub-issue **I-S019-EV014-Q14r-extras-enum** open for which extras. |
+| Q14r=B | **Locked Assumed** (enum resolved Batch 5) | Keep **Q14=A literally** (profiles still OOS). Epic **also designs** DDL, drag-drop external IWXXM, multi-DB, **and** AMHS — user chose **expand scope (B)**. v1 IN-set enumerated in Batch 5 Q20 (all four). |
 | Q17=A | **Locked Assumed** (**testing only**) | Stand up staging wis2box on Render/Docker **for test**. For **live** WIS2 the user brings own credentials/node (**BYOC**). Amends Q12=B: project staging wis2box = test harness; production acceptance = user-supplied WIS2 endpoint creds. |
 | Q18≈A (BYOC) | **Locked Assumed** | User brings own credentials for EDIS (and live paths). Interpret as **Q18≈A**: backend uses **one-shot user-pasted SMTP/gateway settings in drawer** (memory-only), **not** deploy-only operator SMTP. Testing also BYOC. |
 | Q19=A | **Locked Assumed** | Work history stays in Supabase `tac_work_sessions` / `kv_upload_key`; **never** store destination secrets. |
 
-**Advisory (supersedes Batch 2 readiness note):** Q15=A + Q8=C means live Postgres + WIS2 + EDIS
-(RTH Washington) are hard close gates — not optional smoke later. Staging wis2box is in-project
-**test harness** only (Q17); live WIS2 + EDIS + DB destinations are BYOC (Q16/Q17/Q18).
+### Batch 5 (Assumed / written) — locked 2026-07-21 (AskQuestion waived / cloud)
+
+| ID | Status | Decision / note |
+|----|--------|-----------------|
+| Q20=B,C,A,D | **Locked Assumed** | **All four extras IN** for this cycle: **A)** DDL / create-if-missing (**supersedes** Batch 1 require-existing-only); **B)** drag-drop upload of IWXXM/TAC **in addition to** convert-then-send; **C)** multi-DB beyond Postgres — **vendor list still needed** (open **I-S019-EV014-Q20C-vendors**); **D)** AMHS / SWIM / AFS adapters **IN** this cycle. Resolves **I-S019-EV014-Q14r-extras-enum**. |
+| Q21=A | **Locked Assumed** | Staging/test OK for merge; **live BYOC demos required before cycle close** (with Q15=A). |
+| Q22=A | **Locked Assumed** (proposed) | **Full routing preset** (stages 00–13). Awaiting user approval gate with Fn+scope. |
+
+**Advisory (supersedes Batch 2 readiness note):** Q15=A + Q8=C + Q21=A means live Postgres + WIS2 + EDIS
+(RTH Washington) (+ AMHS/SWIM/AFS per Q20=D) are hard close gates — staging/test can merge;
+live BYOC demos required before cycle close. Staging wis2box is in-project **test harness**
+only (Q17); live WIS2 + EDIS + DB destinations are BYOC (Q16/Q17/Q18).
 
 ### Open [Ambiguity] (blocks Phase 0 full approval)
 
-1. **I-S019-EV014-Q14r-extras-enum** — Q14r=B expands epic design to DDL / drag-drop / multi-DB / AMHS (“and/or”), but **v1 IN-set not enumerated**. Next interview must pick which of {DDL, drag-drop, multi-DB, AMHS} are in for this cycle’s v1.
+1. **I-S019-EV014-Q20C-vendors** — Q20=C multi-DB beyond Postgres is IN, but **vendor/engine list
+   not yet specified** (e.g. MySQL, SQL Server, Oracle, SQLite, …). Next interview must lock vendors.
 
-### Resolved this Batch 4 turn
+### Awaiting Phase 0 approval gate
 
-- **I-S019-EV014-Q14-batch1** — resolved: user chose expand scope (Q14r=B) rather than recommended pack (A); contradiction closed as **scope expanded intentionally**; extras enum tracked as I-S019-EV014-Q14r-extras-enum
-- **F5 / destination secrets** — locked by Q19=A (work history stays Supabase; never store destination secrets)
+1. Multi-DB vendor list (I-S019-EV014-Q20C-vendors)
+2. User approval of draft Fn allocation + scope + Full routing (Q22=A)
+
+### Resolved this Batch 5 turn
+
+- **I-S019-EV014-Q14r-extras-enum** — resolved: all four extras IN (Q20=A,B,C,D)
+- Batch 1 Schema require-existing-only — **superseded** by Q20=A (DDL / create-if-missing)
+- Batch 1 Q1=A convert-then-send-only — **amended** by Q20=B (plus drag-drop)
+
+### Draft Fn allocation (PROPOSED — do NOT write `feature-list.md` rows until user approves)
+
+| Fn | Title | Issues |
+|----|-------|--------|
+| F16 | Dissemination drawer + DB upload (URI one-shot, preflight, DDL, drag-drop, multi-DB) | #729 |
+| F17 | WIS2 live pathway (staging wis2box test + live BYOC) | #2 |
+| F18 | EDIS → RTH Washington (BYOC SMTP/gateway) | #6 |
+| F19 | AMHS / SWIM / AFS adapters | (new / expand non-goals overturn) |
+
+### Corpus amendments required (after Phase 0 approval → 01-requirements)
+
+| Corpus item | Required change |
+|-------------|-----------------|
+| **Non-Goals** push sinks | Overturn / narrow — push sinks IN this cycle (WIS2/EDIS/AMHS/SWIM/AFS) |
+| **Non-Goals** paste-keys | Clarify: paste allowed for **upload/destination creds only** (not app auth) |
+| **Non-Goals** AMHS/SWIM/AFS | Overturn — adapters IN this cycle (Q20=D → F19) |
+| **ADR-021** | Amend for destination paste (URI/SMTP memory-only; app auth stays deploy-time) |
+| **ADR new** | Dissemination security / SSRF (Q11=A+B allowlist + baseline) |
 
 ### Corpus contradictions (updated)
 
 | Corpus item | Status / tension |
 |-------------|------------------|
-| **ADR-021** BYO deploy-env Supabase (no in-app paste-keys for app auth) | **Eased by Q10** — app auth stays deploy-time Supabase (Q10A=D); paste BYO is **destination** URI/SMTP only (Q5/Q6/Q18) |
+| **ADR-021** BYO deploy-env Supabase (no in-app paste-keys for app auth) | **Eased by Q10** — app auth stays deploy-time Supabase (Q10A=D); paste BYO is **destination** URI/SMTP only (Q5/Q6/Q18) — **ADR-021 amend required** |
 | **F5** work history on Supabase | **Locked by Q19=A** — Auth+F5 store remain Supabase; never store destination secrets |
-| **Non-goals**: push sinks; paste-keys UI | Partially eased — paste is intentional for **destination** creds (Q5/Q18≈A memory-only); push-sinks non-goal vs Q8=C live WIS2+EDIS still needs non-goal inventory after Q14r enum |
-| **Batch 1**: require-existing + Q1=A | **Contradiction resolved** as intentional expand (Q14r=B); **v1 extras enum still open** |
+| **Non-goals**: push sinks; paste-keys; AMHS/SWIM/AFS | **Inventory pending** after Phase 0 approval — Q8=C + Q20=D overturn push sinks / AMHS; paste = dest only |
+| **Batch 1**: require-existing + Q1=A | **Superseded/amended** by Q20=A (DDL) + Q20=B (drag-drop) |
 
 ### Prior session
 
@@ -101,7 +142,8 @@ S018 / EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12 bookkeeping); #
 
 ## Feature mapping
 
-TBD after Phase 0 fully approved — **do not invent F16+ yet**.
+**Draft only** (see table above) — write `feature-list.md` rows **only after** user approves
+Phase 0 scope (vendors + Fn + Full routing).
 
 ## Links
 

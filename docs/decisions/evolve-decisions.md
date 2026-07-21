@@ -6,20 +6,20 @@
 ## Cycle EV-014 — Dissemination epic (#729 / #2 / #6) (S019)
 
 **Session**: S019-dissemination-upload  
-**Features**: TBD — **no F16+ until Phase 0 fully approved**  
+**Features**: **Draft F16–F19 proposed** — **no `feature-list.md` rows until Phase 0 approval gate**  
 **Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
 **Started**: 2026-07-20  
 **Branch**: `cursor/dissemination-upload-e25c`  
-**Status**: Phase 0 intake **PARTIAL** — Batch 1–4 locked Assumed; **Q14r extras enum [Ambiguity] blocks approval**
+**Status**: Phase 0 intake **PARTIAL** — Batch 1–5 locked Assumed; **awaiting (1) Q20C vendor list (2) user approval of Fn+scope+Full routing**
 
-### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked
+### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked (**amended Batch 5**)
 
 | ID | Decision |
 |----|----------|
 | Creds | One-shot session credentials (paste in UI); never persist / never saved profiles |
 | UI | Drawer for send/upload destination + preflight |
-| Schema | Require existing table matching versioned writer contract (no create-if-missing) — *may amend if DDL in Q14r v1 enum* |
-| Q1=A | Convert-in-app then send IWXXM to user's Postgres — *may amend if drag-drop in Q14r v1 enum* |
+| Schema | **Superseded by Q20=A:** DDL / create-if-missing allowed (overrides earlier require-existing-only) |
+| Q1 | **Amended by Q20=B:** Convert-in-app then send **plus** drag-drop upload of external IWXXM/TAC |
 | Q2=A | Any authenticated user |
 | Q3=A | Schema preflight clarity is success metric |
 | Q4=D | Include WIS2 + EDIS scaffolding in ONE BIG dissemination cycle with #729 |
@@ -50,35 +50,73 @@
 
 | ID | Status | Decision / note |
 |----|--------|-----------------|
-| Q14r=B | **Locked Assumed** + **[Ambiguity] pending enum** | Keep Q14=A literally. Epic **also designs** DDL, drag-drop, multi-DB, **and/or** AMHS — user chose **expand scope (B)** over recommended pack (A). **Still-[Ambiguity]:** which of {DDL, drag-drop, multi-DB, AMHS} are **IN for v1** — “and/or” not enumerated. Phase 0 blocked on that enum (next interview). |
+| Q14r=B | **Locked Assumed** (enum resolved Batch 5) | Keep Q14=A literally. Epic **also designs** DDL, drag-drop, multi-DB, **and** AMHS — user chose **expand scope (B)** over recommended pack (A). v1 IN-set enumerated Batch 5 Q20 (all four). |
 | Q17=A | **Locked Assumed** (**testing only**) | Staging wis2box on Render/Docker for **test**; live WIS2 = BYOC user node/creds. Amends Q12=B. |
 | Q18≈A (BYOC) | **Locked Assumed** | User BYOC for EDIS (and live paths). **Q18≈A:** one-shot user-pasted SMTP/gateway settings in drawer (memory-only), **not** deploy-only operator SMTP. Testing also BYOC. |
 | Q19=A | **Locked Assumed** | Work history stays Supabase `tac_work_sessions` / `kv_upload_key`; **never** store destination secrets. |
 
+### Intake (Batch 5 Assumed — AskQuestion waived / cloud written interview) — locked 2026-07-21
+
+| ID | Status | Decision / note |
+|----|--------|-----------------|
+| Q20=B,C,A,D | **Locked Assumed** | **All four extras IN:** **A)** DDL / create-if-missing (**supersedes** Batch 1 require-existing-only); **B)** drag-drop IWXXM/TAC **in addition to** convert-then-send; **C)** multi-DB beyond Postgres — **vendor list still needed** (**I-S019-EV014-Q20C-vendors** open); **D)** AMHS / SWIM / AFS adapters **IN** this cycle. Resolves **I-S019-EV014-Q14r-extras-enum**. |
+| Q21=A | **Locked Assumed** | Staging/test OK for merge; **live BYOC demos required before cycle close** (with Q15=A). |
+| Q22=A | **Locked Assumed** (proposed) | **Full routing preset** (stages 00–13). Awaiting user approval gate with Fn+scope. |
+
+### Draft Fn allocation (PROPOSED — session-brief + evolve-decisions only; **not** in `feature-list.md` yet)
+
+| Fn | Title | Issues |
+|----|-------|--------|
+| F16 | Dissemination drawer + DB upload (URI one-shot, preflight, DDL, drag-drop, multi-DB) | #729 |
+| F17 | WIS2 live pathway (staging wis2box test + live BYOC) | #2 |
+| F18 | EDIS → RTH Washington (BYOC SMTP/gateway) | #6 |
+| F19 | AMHS / SWIM / AFS adapters | (new / expand non-goals overturn) |
+
 ### Open ambiguity (blocks Phase 0 full approval)
 
-- **I-S019-EV014-Q14r-extras-enum** — which of {DDL, drag-drop, multi-DB, AMHS} are IN for v1 of this cycle (Q14r=B “and/or” not enumerated).
+- **I-S019-EV014-Q20C-vendors** — Q20=C multi-DB beyond Postgres is IN; **vendor/engine list not yet specified**.
+
+### Awaiting Phase 0 approval gate
+
+1. Multi-DB vendor list (I-S019-EV014-Q20C-vendors)
+2. User approval of draft Fn allocation + scope + Full routing (Q22=A)
+
+### Resolved Batch 5
+
+- **I-S019-EV014-Q14r-extras-enum** — all four extras IN (Q20=A,B,C,D)
+- Batch 1 Schema require-existing-only — **superseded** by Q20=A
+- Batch 1 Q1=A convert-then-send-only — **amended** by Q20=B
 
 ### Resolved Batch 4
 
-- **I-S019-EV014-Q14-batch1** — resolved as **scope expanded intentionally** (Q14r=B vs recommended pack A); extras enum → I-S019-EV014-Q14r-extras-enum
+- **I-S019-EV014-Q14-batch1** — resolved as **scope expanded intentionally** (Q14r=B vs recommended pack A); extras enum → I-S019-EV014-Q14r-extras-enum (now resolved Batch 5)
 - Prior Batch 3: I-S019-EV014-Q10-supabase-byo, I-S019-EV014-Q11-pending-rec, I-S019-EV014-Q14-multiselect
+
+### Corpus amendments required (after Phase 0 approval → 01-requirements)
+
+| Corpus | Required change |
+|--------|-----------------|
+| Non-Goals push sinks | Overturn / narrow — push sinks IN (WIS2/EDIS/AMHS/SWIM/AFS) |
+| Non-Goals paste-keys | Clarify: paste for **upload/destination creds only** (not app auth) |
+| Non-Goals AMHS/SWIM/AFS | Overturn — adapters IN (Q20=D → F19) |
+| ADR-021 | Amend for destination paste (URI/SMTP memory-only; app auth stays deploy-time) |
+| ADR new | Dissemination security / SSRF (Q11=A+B) |
 
 ### Corpus contradictions (updated)
 
 | Corpus | Status / tension |
 |--------|------------------|
-| ADR-021 BYO deploy-env Supabase (no paste-keys for app auth) | **Eased by Q10** — Q10A=D deploy-time Supabase auth; paste is destination URI/SMTP only (Q5/Q18≈A) |
+| ADR-021 BYO deploy-env Supabase (no paste-keys for app auth) | **Eased by Q10** — Q10A=D deploy-time Supabase auth; paste is destination URI/SMTP only (Q5/Q18≈A) — **ADR-021 amend required** |
 | F5 work history on Supabase | **Locked by Q19=A** — Auth+F5 remain Supabase; never store destination secrets |
-| Non-goals: push sinks; paste-keys | Paste destination creds intentional (Q5/Q18≈A memory-only); push-sinks vs Q8=C still needs non-goal inventory after Q14r enum |
-| Batch 1 require-existing + Q1=A | **Contradiction resolved** (intentional expand Q14r=B); **v1 extras enum still open** |
+| Non-goals: push sinks; paste-keys; AMHS/SWIM/AFS | **Inventory pending** after Phase 0 approval — Q8=C + Q20=D overturn push sinks / AMHS; paste = dest only |
+| Batch 1 require-existing + Q1=A | **Superseded/amended** by Q20=A (DDL) + Q20=B (drag-drop) |
 
 ### Notes
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
-- Do **not** invent feature ids F16+ in `feature-list.md` until Phase 0 fully approved
-- **Phase 0 blocked on Q14r extras enum** — next interview must enumerate which of {DDL, drag-drop, multi-DB, AMHS} are IN for v1
-- **Close gate (Q15=A + Q8=C + Q16/Q17/Q18):** block cycle close until Postgres + WIS2 + EDIS green on real targets with BYOC credentials (staging wis2box = test harness only; live WIS2 BYOC; EDIS → RTH Washington via pasted SMTP/gateway)
+- Do **not** write F16–F19 rows in `feature-list.md` until Phase 0 approval gate (vendors + Fn + Full routing)
+- **Phase 0 blocked on:** (1) I-S019-EV014-Q20C-vendors (2) user approval of draft Fn+scope+Full routing
+- **Close gate (Q15=A + Q8=C + Q21=A + Q16/Q17/Q18):** staging/test OK for merge; block cycle close until live BYOC demos green for Postgres + WIS2 + EDIS (+ AMHS/SWIM/AFS per Q20=D)
 
 ---
 
