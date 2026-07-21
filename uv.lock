@@ -4,6 +4,7 @@ requires-python = ">=3.12"
 
 [manifest]
 members = [
+    "dissemination",
     "iwxxm-validate",
     "metar-auth",
     "metar-backend",
@@ -542,6 +543,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/5a/d3/8ae2869247df154b6
 wheels = [
     { url = "https://files.pythonhosted.org/packages/02/c3/253a89ee03fc9b9682f1541728eb66db7db22148cd94f89ab22528cd1e1b/deprecation-2.1.0-py2.py3-none-any.whl", hash = "sha256:a10811591210e1fb0e768a8c25517cabeabcba6f0bf96564f8ff45189f90b14a", size = 11178, upload-time = "2020-04-20T14:23:36.581Z" },
 ]
+
+[[package]]
+name = "dissemination"
+version = "0.1.0"
+source = { editable = "packages/dissemination" }
 
 [[package]]
 name = "distlib"
@@ -1329,6 +1335,7 @@ source = { virtual = "." }
 [package.dev-dependencies]
 dev = [
     { name = "basedpyright" },
+    { name = "dissemination" },
     { name = "httpx" },
     { name = "httpx2" },
     { name = "iwxxm-validate" },
@@ -1354,6 +1361,7 @@ dev = [
 [package.metadata.requires-dev]
 dev = [
     { name = "basedpyright", specifier = ">=1.29" },
+    { name = "dissemination", editable = "packages/dissemination" },
     { name = "httpx", specifier = ">=0.28" },
     { name = "httpx2", specifier = ">=2.0" },
     { name = "iwxxm-validate", editable = "packages/iwxxm-validate" },

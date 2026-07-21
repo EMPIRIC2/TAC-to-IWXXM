@@ -30,6 +30,7 @@ dev = [
   "tac2iwxxm",
   "iwxxm-validate",
   "tac-validate",
+  "dissemination",
 ]
 
 [tool.uv.sources]
@@ -40,6 +41,7 @@ metar-worker = { workspace = true }
 tac2iwxxm = { workspace = true }
 iwxxm-validate = { workspace = true }
 tac-validate = { workspace = true }
+dissemination = { workspace = true }
 
 [tool.uv.workspace]
 members = [
@@ -48,6 +50,7 @@ members = [
   "packages/tac2iwxxm",
   "packages/iwxxm-validate",
   "packages/tac-validate",
+  "packages/dissemination",
   "apps/backend",
   "apps/worker",
 ]
