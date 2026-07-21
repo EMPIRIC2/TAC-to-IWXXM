@@ -505,10 +505,11 @@
 - **What it does**: Dissemination adapters for **AMHS**, **SWIM**, and **AFS** selectable in the
   same drawer (Q20=D). BYOC connection parameters; backend-mediated; same secret/SSRF posture as
   F16–F18.
-- **Acceptance**: Each adapter has a documented contract + staging/test path; live bar for cycle
-  close coordinated with Q15=A (Postgres/WIS2/EDIS hard gate; F19 live demo required or explicit
-  waive via AskQuestion).
-- **Source**: S019 / EV-014 Phase 0 Q20=D / Q24=A
+- **Acceptance**: Each adapter has a documented contract + staging/test path green before
+  EV-014 close. **Hard close gate** remains Postgres + WIS2 + EDIS live BYOC (Q15=A / Q21=A).
+  F19 **live** demos are optional — record green evidence or an explicit AskQuestion waive
+  (does not block close if staging/test path is green).
+- **Source**: S019 / EV-014 Phase 0 Q20=D / Q24=A; 02-verify-plan S-EV014-M2 (Q28=A)
 
 ## Platform Feature Details (Monorepo Migration)
 

@@ -103,42 +103,47 @@
 ## S019 / EV-014 delta — Dissemination F16–F19 (2026-07-21)
 
 **Session report**: [`docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md`](../sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md)  
-**Status**: in_progress — 28 high auto-approved; 6 statements pending user review
+**Status**: **completed** — 28 high auto-approved; 6 user-approved (modified)
 
 ### Delta inventory
 
 | # | Document | Statements | Status |
 |---|----------|------------|--------|
-| 1 | feature-list.md (F16–F19 + Non-Goals) | 14 | reviewing |
-| 2 | spec.md (F16–F19 + BYO + F8) | 8 | reviewing |
-| 3 | user-journeys.md (UJ-027–030) | 6 | reviewing |
-| 4 | test-plan.md (TC-F16..F19) | 10 | reviewing |
-| 5–6 | ADR-021 amend + ADR-029 | 7 | reviewing |
+| 1 | feature-list.md (F16–F19 + Non-Goals) | 14 | complete |
+| 2 | spec.md (F16–F19 + BYO + F8) | 8 | complete |
+| 3 | user-journeys.md (UJ-027–030) | 6 | complete |
+| 4 | test-plan.md (TC-F16..F19) | 10 | complete |
+| 5–6 | ADR-021 amend + ADR-029 | 7 | complete |
 
-### Consistency (delta)
+### Consistency (delta) — final
 
 | Check | Result |
 |-------|--------|
-| Feature ↔ Spec | Pass (S-EV014-M1 fixed Q27=A) |
+| Feature ↔ Spec | Pass (S-EV014-M1 Q27=A) |
 | Feature ↔ Journey | Pass |
 | Journey ↔ Test | Pass |
 | Feature ↔ Test | Pass |
-| Spec ↔ Config | Deferred to 04 (S-EV014-L1) |
-| Scope boundaries | Pass (C-EV014-1 fixed Q26=A) |
+| Spec ↔ Config | Deferred OK (S-EV014-L1) |
+| Scope boundaries | Pass (C-EV014-1 Q26=A) |
 | Template static+api+worker | Pass |
-| Connectivity H4–H5/H6′ | Pass* (H6 blurb → S-EV014-M3) |
+| Connectivity H4–H5/H6′ | Pass (S-EV014-M3) |
+| Test ↔ Acceptance | Pass (S-EV014-M2 Q28=A) |
 
 ### Auto-approved (high)
 
-28 statements — see session report table S1.H1–S6.H3 (interview Q5–Q24 / requirements-decisions EV-014).
+28 statements — see session report (interview Q5–Q24 / requirements-decisions EV-014).
 
-### Pending review
+### User review (all resolved)
 
-| ID | Confidence | Category |
-|----|------------|----------|
-| C-EV014-1 | Low | `[Contradiction]` F8 non-goals — **resolved** Q26=A (worker-path wording) |
-| S-EV014-M1 | Medium | Component Overview — **resolved** Q27=A |
-| S-EV014-M2 | Medium | `[Ambiguity]` F19 live close-gate vs waive |
-| S-EV014-M3 | Medium | H6 harness text vs UJ-027–030 H6′ |
-| S-EV014-M4 | Medium | ADR-029 Proposed → Accepted? |
-| S-EV014-L1 | Low | Allowlist env deferred to 04 |
+| ID | Verdict |
+|----|---------|
+| C-EV014-1 | approved/modified Q26=A |
+| S-EV014-M1 | approved/modified Q27=A |
+| S-EV014-M2 | approved/modified Q28=A |
+| S-EV014-M3 | approved/modified Q28 batch |
+| S-EV014-M4 | approved/modified Q28 batch — ADR-029 Accepted |
+| S-EV014-L1 | approved Q28 batch |
+
+### Next
+
+**03-plan-tooling** (Full routing).

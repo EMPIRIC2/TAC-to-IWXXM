@@ -1,9 +1,9 @@
 # ADR-029: Dissemination egress SSRF controls and required allowlist
 
-> **Status**: Proposed (S019 / EV-014 Phase 0 → 01)  
+> **Status**: Accepted (S019 / EV-014; promoted 02-verify-plan S-EV014-M4)  
 > **Date**: 2026-07-21  
 > **Deciders**: User (EV-014 Q11=A+B)  
-> **Stage**: 01-requirements  
+> **Stage**: 02-verify-plan (decision locked at 01-requirements)  
 > **Related**: ADR-021 (amended for destination paste); feature-list F16–F19; #729  
 > **Session**: S019-dissemination-upload / EV-014  
 > **Decision id**: D-S019-EV014-Q11
@@ -37,6 +37,7 @@ leakage risk if the API opens arbitrary sockets.
 
 ## Consequences
 
-- Config/env-contract must document `DISSEMINATION_EGRESS_ALLOWLIST`.
+- Config/env-contract must document `DISSEMINATION_EGRESS_ALLOWLIST` (deferred to
+  **04-tech-plan** / S-EV014-L1; product corpus + this ADR are authoritative until then).
 - Preflight/send APIs return structured errors when allowlist/SSRF checks fail.
 - Live BYOC demos require operator to populate allowlist for their destination hosts.

@@ -10,7 +10,7 @@
 **Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
 **Started**: 2026-07-20  
 **Branch**: `cursor/dissemination-upload-e25c`  
-**Status**: Phase A — **01-requirements** completed; **02-verify-plan** in progress (PR #753)
+**Status**: Phase A — **01** + **02-verify-plan** completed; next **03-plan-tooling** (PR #753)
 
 ### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked (**amended Batch 5**)
 
@@ -112,7 +112,9 @@
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
 - Phase 0 approved 2026-07-21 — F16–F19 in feature-list; Full routing; 01-requirements delta landed
-- **Close gate (Q15=A + Q8=C + Q21=A + Q16/Q17/Q18):** staging/test OK for merge; block cycle close until live BYOC demos green for Postgres + WIS2 + EDIS (+ AMHS/SWIM/AFS per Q20=D)
+- **Close gate (Q15=A + Q8=C + Q21=A + Q16/Q17/Q18):** staging/test OK for merge; block cycle
+  close until live BYOC demos green for **Postgres + WIS2 + EDIS**. F19 (AMHS/SWIM/AFS) requires
+  staging/test path green; live F19 demo optional with AskQuestion waive (S-EV014-M2 / Q28=A).
 - PR: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753
 
 ---

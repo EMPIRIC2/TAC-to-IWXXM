@@ -318,8 +318,9 @@ metar-to-IWXXM/
 - **F19**: AMHS / SWIM / AFS adapters in the same drawer.
 - **Auth / F5**: Supabase Auth + `tac_work_sessions` unchanged; never store destination secrets
   (`kv_upload_key` only on success).
-- **Close gate**: Live BYOC demos for Postgres + WIS2 + EDIS before EV-014 close (Q15=A / Q21=A);
-  staging evidence may merge earlier.
+- **Close gate**: Live BYOC demos for **Postgres + WIS2 + EDIS** before EV-014 close
+  (Q15=A / Q21=A); staging evidence may merge earlier. F19 staging/test path required; F19 live
+  demo optional with AskQuestion waive (S-EV014-M2).
 - **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist).
 - **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014.
 

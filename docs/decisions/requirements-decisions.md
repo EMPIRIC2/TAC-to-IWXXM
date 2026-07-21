@@ -214,3 +214,5 @@
 | EV-014/F19-R1 | Adapters | AMHS / SWIM / AFS in same drawer (non-goals overturn) | confirmed |
 | EV-014/R-close | Gate | Staging OK to merge; live BYOC Postgres+WIS2+EDIS before close | confirmed |
 | EV-014/R-route | Routing | Full 00→16→01…13 | confirmed |
+| EV-014/S-M2 | Close | F19 staging required; F19 live optional + waive (Q28=A) | confirmed |
+| EV-014/S-M4 | ADR | ADR-029 Accepted (02-verify-plan) | confirmed |

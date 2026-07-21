@@ -32,7 +32,7 @@
 | [ADR-026](ADR-026-msgspec-http-openapi.md) | msgspec on high-churn HTTP; pydantic for OpenAPI (amends ADR-016) | Accepted |
 | [ADR-027](ADR-027-xsdata-codegen.md) | XSD codegen via xsdata (+ pydantic plugin); Rust remains validate hot path | Accepted |
 | [ADR-028](ADR-028-tac-validate-issue-registry.md) | Maintainable `tac-validate` issue registry (codes + severities) | Accepted |
-| [ADR-029](ADR-029-dissemination-ssrf-allowlist.md) | Dissemination SSRF controls + required egress allowlist | Proposed |
+| [ADR-029](ADR-029-dissemination-ssrf-allowlist.md) | Dissemination SSRF controls + required egress allowlist | Accepted |
 
 ## Process
 

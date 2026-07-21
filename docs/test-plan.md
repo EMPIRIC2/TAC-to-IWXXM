@@ -27,7 +27,7 @@ Unified manual live test harness against Render staging:
 |------|-------|-----------------|
 | H3 | Live API pytest (health, convert, validate, auth) | `make test-live-api` |
 | H4–H5 | CORS preflight + frontend bundle URLs | `make test-live-connectivity` |
-| H6 | Playwright UJ-001–007 (+ UJ-008 smoke) + F7 smokes UJ-013/015–019 | `make test-live-e2e` |
+| H6 | Playwright UJ-001–007 (+ UJ-008 smoke) + F7 smokes UJ-013/015–019 + **UJ-027–030** (H6′ when F16–F19 ships) | `make test-live-e2e` |
 | **H7** | Live bulletin gate: multi-report AHL → split → convert → Schematron | `make test-live-bulletin` (planned) |
 | All | Sequential H4–H5 → H3 → H6 → H7 | `make test-live` (extend when H7 lands) |
 
@@ -94,7 +94,7 @@ admin suite modules.
 | H3 | Live API smoke (pytest) | `make test-live-api` |
 | H4 | Live CORS preflight | `make test-live-connectivity` |
 | H5 | Frontend bundle URLs | `make test-live-connectivity` |
-| H6 | Live Playwright UJ-001–007 (+ UJ-008) + F7 UJ-013/015–019 + **UJ-025** (H6′) | `make test-live-e2e` |
+| H6 | Live Playwright UJ-001–007 (+ UJ-008) + F7 UJ-013/015–019 + **UJ-025** + **UJ-027–030** (H6′ when F16–F19 ships) | `make test-live-e2e` |
 | **H7** | Live bulletin → split → convert → Schematron (UJ-011) | `make test-live-bulletin` (planned) |
 
 **Post-migration**: Single API origin simplifies CORS — auth routes on same host as `/api/v1/*`.
@@ -571,17 +571,20 @@ Before closing S013 / EV-009:
 
 - **Level**: T2 / T3
 - **Objective**: Each adapter preflight + send with BYOC params under SSRF/allowlist
-- **Pass criteria**: One TC per adapter; live bar or explicit waive via AskQuestion
-- **Source**: F19; Q20=D
+- **Pass criteria**: One TC per adapter with staging/test path green; F19 **live** demo
+  optional (evidence or AskQuestion waive) — does not block EV-014 close (Q15=A hard gate
+  is Postgres + WIS2 + EDIS only; S-EV014-M2)
+- **Source**: F19; Q20=D; 02-verify-plan Q28=A
 
 ### F16–F19 verify/deploy gate
 
 - [ ] TC-F16-001..004 green (multi-DB + SSRF + drawer)
 - [ ] TC-F17-001 staging wis2box green; TC-F17-002 live BYOC before cycle close
 - [ ] TC-F18-001 format green; TC-F18-002 live BYOC before cycle close
-- [ ] TC-F19-001..003 green or waived with decision id
-- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes
-- [ ] `DISSEMINATION_EGRESS_ALLOWLIST` documented in config-spec / env-contract
+- [ ] TC-F19-001..003 staging/test green; live F19 optional (evidence or waive id)
+- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes; H6′ UJ-027–030
+- [ ] `DISSEMINATION_EGRESS_ALLOWLIST` documented in config-spec / env-contract (**04-tech-plan**;
+      product corpus cites ADR-029 until then — S-EV014-L1)
 
 ## Live Test Cases (T3 / H3–H6)
 

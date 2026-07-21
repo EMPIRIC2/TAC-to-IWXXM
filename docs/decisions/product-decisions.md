@@ -45,7 +45,7 @@
 | 2026-07-21 | EV014-S1.H1–S6.H3 | auto-approved | 28 high-confidence F16–F19 claims from Q5–Q24 / requirements-decisions EV-014 (see S019 02-verify-plan-audit) |
 | 2026-07-21 | C-EV014-1 | approved (modified) | Q26=A — F8 bullet narrowed to worker path; AMHS/push sinks → F16–F19 |
 | 2026-07-21 | S-EV014-M1 | approved (modified) | Q27=A — Component Overview + backend/frontend purpose note Planned F16–F19 |
-| 2026-07-21 | S-EV014-M2 | pending | F19 live close-gate vs waive |
-| 2026-07-21 | S-EV014-M3 | pending | H6 blurb vs UJ-027–030 |
-| 2026-07-21 | S-EV014-M4 | pending | ADR-029 Proposed → Accepted |
-| 2026-07-21 | S-EV014-L1 | pending | Allowlist env deferred to 04 |
+| 2026-07-21 | S-EV014-M2 | approved (modified) | Q28=A — hard close PG+WIS2+EDIS; F19 live optional with waive |
+| 2026-07-21 | S-EV014-M3 | approved (modified) | Q28 batch — H6 / live harness list UJ-027–030 when F16–F19 ships |
+| 2026-07-21 | S-EV014-M4 | approved (modified) | Q28 batch — ADR-029 → Accepted |
+| 2026-07-21 | S-EV014-L1 | approved | Q28 batch — allowlist config/env-contract deferred to 04 |
