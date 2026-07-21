@@ -58,10 +58,12 @@ Deploy / image notes (CI skip policy, stock API Dockerfile without `msodbcsql18`
 - Staging publish: `make compose-wis2box-harness` runs TC-F17-001 pytest
 - Live BYOC remains the cycle-close gate (TC-F17-002)
 
-**EDIS sink (T4.1–T4.2 / F18)**
+**EDIS sink (T4.1–T4.3 / F18)**
 
 - `dissemination.edis` — WMO AHL formatting (ASCII-only) + `edis_preflight` /
   `edis_submit` with injectable SMTP (mocked in unit tests; live BYOC = TC-F18-002)
+- `dissemination.transports.AiosmtpClient` — `aiosmtplib` SMTP client; preflight is
+  connect/login only (never `send_message` in CI)
 
 - Env: `DISSEMINATION_EGRESS_ALLOWLIST` (see `.env.example`, ADR-029)
 - Empty ⇒ fail-closed

@@ -1,7 +1,9 @@
 """EDIS → RTH Washington sink — WMO AHL formatting + SMTP submit (F18 / E14-05).
 
 Messages are ASCII-only with a WMO abbreviated heading (``T1T2A1A2ii CCCC YYGGgg [BBB]``).
-SMTP transport is injected for unit tests; live BYOC remains TC-F18-002.
+``edis_preflight`` is connect/login only (no ``send_message``). Inject
+``dissemination.transports.AiosmtpClient`` or a test double; live BYOC remains
+TC-F18-002.
 """
 
 from __future__ import annotations
