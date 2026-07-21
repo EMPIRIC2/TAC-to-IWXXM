@@ -10,7 +10,7 @@
 **Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
 **Started**: 2026-07-20  
 **Branch**: `cursor/dissemination-upload-e25c`  
-**Status**: Phase 0 intake **PARTIAL** — Batch 1+2 locked; Batch 3 Q10/Q11/Q12/Q13/Q15/Q16 locked; **Q14 [Contradiction] blocks approval**
+**Status**: Phase 0 intake **PARTIAL** — Batch 1–4 locked Assumed; **Q14r extras enum [Ambiguity] blocks approval**
 
 ### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked
 
@@ -18,8 +18,8 @@
 |----|----------|
 | Creds | One-shot session credentials (paste in UI); never persist / never saved profiles |
 | UI | Drawer for send/upload destination + preflight |
-| Schema | Require existing table matching versioned writer contract (no create-if-missing) |
-| Q1=A | Convert-in-app then send IWXXM to user's Postgres |
+| Schema | Require existing table matching versioned writer contract (no create-if-missing) — *may amend if DDL in Q14r v1 enum* |
+| Q1=A | Convert-in-app then send IWXXM to user's Postgres — *may amend if drag-drop in Q14r v1 enum* |
 | Q2=A | Any authenticated user |
 | Q3=A | Schema preflight clarity is success metric |
 | Q4=D | Include WIS2 + EDIS scaffolding in ONE BIG dissemination cycle with #729 |
@@ -40,37 +40,45 @@
 |----|--------|-----------------|
 | Q10 | **Locked Assumed** | **NOT** dropping Supabase Auth — login stays Supabase-handled. “Dropping Supabase for database” = Sending/converting dissemination destination only: one-shot BYO Postgres URI for upload/send (not Supabase as ops/send DB). **Q10A=D:** deploy-time BYO for app auth (operator sets Supabase env once; users don’t paste app auth) — aligned with ADR-021. **Q10B:** N/A. |
 | Q11=A+B | **Locked Assumed** | Max-security SSRF: full recommended baseline (backend-only egress, deny private/metadata ranges, DNS rebinding guard, TLS preferred, timeouts/size limits, secret redaction, rate limit) **PLUS require** `DISSEMINATION_EGRESS_ALLOWLIST` (host/CIDR) — empty allowlist = no user-URI egress in prod (staging may use explicit list). |
-| Q12=B | Locked Assumed | Staging wis2box stood up in this project's infra |
+| Q12=B | **Locked Assumed** (amended Batch 4 / Q17) | Staging wis2box in this project's infra = **test harness only**; live WIS2 acceptance = user-supplied endpoint creds (BYOC). |
 | Q13=A | Locked Assumed | Real SMTP/submission to NWS Telecommunications Gateway (RTH Washington) |
-| Q14=A | Locked Assumed + **[Contradiction]** | Only saved/encrypted profiles out of scope (B-only from OOS list). Do **not** assume DDL/drag-drop/AMHS/multi-DB are in. Contradicts Batch 1 require-existing + Q1=A — Phase 0 NOT approved until next interview resolves. |
+| Q14=A | **Locked Assumed** (literal kept) | Only saved/encrypted profiles out of scope (B-only from OOS list). Literal Q14=A kept; see Q14r for intentional expand. |
 | Q15=A | Locked Assumed | Keep Q8=C — block cycle close until Postgres + WIS2 + EDIS all green on real targets |
-| Q16 | **Locked Assumed** | BYO credentials (EDIS/RTH; WIS2/DB as applicable). Not provisioned by us except staging wis2box (Q12=B). Live-green close gate still applies (Q15=A). |
+| Q16 | **Locked Assumed** | BYO credentials (EDIS/RTH; WIS2/DB as applicable). Not provisioned by us except staging wis2box **test harness** (Q12=B/Q17). Live-green close gate still applies (Q15=A). |
 
-### Open contradiction (blocks Phase 0 full approval)
+### Intake (Batch 4 Assumed — AskQuestion waived / cloud written interview) — locked 2026-07-21
 
-- **I-S019-EV014-Q14-batch1** — Q14=A (only profiles OOS) vs Batch 1 require-existing / no create-if-missing + Q1=A convert-then-send. Do not expand to DDL / drag-drop / AMHS / multi-DB without interview resolution.
+| ID | Status | Decision / note |
+|----|--------|-----------------|
+| Q14r=B | **Locked Assumed** + **[Ambiguity] pending enum** | Keep Q14=A literally. Epic **also designs** DDL, drag-drop, multi-DB, **and/or** AMHS — user chose **expand scope (B)** over recommended pack (A). **Still-[Ambiguity]:** which of {DDL, drag-drop, multi-DB, AMHS} are **IN for v1** — “and/or” not enumerated. Phase 0 blocked on that enum (next interview). |
+| Q17=A | **Locked Assumed** (**testing only**) | Staging wis2box on Render/Docker for **test**; live WIS2 = BYOC user node/creds. Amends Q12=B. |
+| Q18≈A (BYOC) | **Locked Assumed** | User BYOC for EDIS (and live paths). **Q18≈A:** one-shot user-pasted SMTP/gateway settings in drawer (memory-only), **not** deploy-only operator SMTP. Testing also BYOC. |
+| Q19=A | **Locked Assumed** | Work history stays Supabase `tac_work_sessions` / `kv_upload_key`; **never** store destination secrets. |
 
-### Resolved this clarification turn
+### Open ambiguity (blocks Phase 0 full approval)
 
-- **I-S019-EV014-Q10-supabase-byo** — auth stays Supabase; send-DB BYO only; Q10A=D ↔ ADR-021
-- **I-S019-EV014-Q11-pending-rec** — Q11=A+B max-security + required allowlist
-- **I-S019-EV014-Q14-multiselect** — superseded by Q14=A + I-S019-EV014-Q14-batch1
+- **I-S019-EV014-Q14r-extras-enum** — which of {DDL, drag-drop, multi-DB, AMHS} are IN for v1 of this cycle (Q14r=B “and/or” not enumerated).
+
+### Resolved Batch 4
+
+- **I-S019-EV014-Q14-batch1** — resolved as **scope expanded intentionally** (Q14r=B vs recommended pack A); extras enum → I-S019-EV014-Q14r-extras-enum
+- Prior Batch 3: I-S019-EV014-Q10-supabase-byo, I-S019-EV014-Q11-pending-rec, I-S019-EV014-Q14-multiselect
 
 ### Corpus contradictions (updated)
 
 | Corpus | Status / tension |
 |--------|------------------|
-| ADR-021 BYO deploy-env Supabase (no paste-keys for app auth) | **Eased by Q10** — Q10A=D deploy-time Supabase auth; paste is destination URI only |
-| F5 work history on Supabase | **Eased by Q10** — Auth+F5 remain Supabase; send destination is BYO |
-| Non-goals: push sinks; paste-keys | Still open vs Q8=C / Q12–Q13 live WIS2+EDIS + paste destination credentials |
-| Batch 1 require-existing + Q1=A | **Open Contradiction** with Q14=A (I-S019-EV014-Q14-batch1) |
+| ADR-021 BYO deploy-env Supabase (no paste-keys for app auth) | **Eased by Q10** — Q10A=D deploy-time Supabase auth; paste is destination URI/SMTP only (Q5/Q18≈A) |
+| F5 work history on Supabase | **Locked by Q19=A** — Auth+F5 remain Supabase; never store destination secrets |
+| Non-goals: push sinks; paste-keys | Paste destination creds intentional (Q5/Q18≈A memory-only); push-sinks vs Q8=C still needs non-goal inventory after Q14r enum |
+| Batch 1 require-existing + Q1=A | **Contradiction resolved** (intentional expand Q14r=B); **v1 extras enum still open** |
 
 ### Notes
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
 - Do **not** invent feature ids F16+ in `feature-list.md` until Phase 0 fully approved
-- **Phase 0 blocked on Q14 contradiction** — next interview turn must resolve OOS inventory vs Batch 1 locks
-- **Close gate (Q15=A + Q8=C + Q16):** block cycle close until Postgres + WIS2 + EDIS green on real targets with operator-supplied credentials (staging wis2box in-project; EDIS → RTH Washington)
+- **Phase 0 blocked on Q14r extras enum** — next interview must enumerate which of {DDL, drag-drop, multi-DB, AMHS} are IN for v1
+- **Close gate (Q15=A + Q8=C + Q16/Q17/Q18):** block cycle close until Postgres + WIS2 + EDIS green on real targets with BYOC credentials (staging wis2box = test harness only; live WIS2 BYOC; EDIS → RTH Washington via pasted SMTP/gateway)
 
 ---
 

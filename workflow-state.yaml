@@ -30,92 +30,92 @@ active_session:
       skip_rationale:
       started: '2026-07-20'
       completed: '2026-07-20'
-      note: "Session open; Phase 0 intake partial (Batch 1+2 locked; Batch 3 clarifications 2026-07-20/21 - Q10/Q11/Q12/Q13/Q15/Q16 locked; Q14 Contradiction blocks approval); AskQuestion UI waived (cloud)"
+      note: "Session open; Phase 0 intake partial (Batch 1-4 locked; Q14r extras enum Ambiguity blocks approval); AskQuestion UI waived (cloud)"
     - stage: 16-evolve
       required: true
       mode: orchestrator
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase 0 intake in progress - Batch 1+2 locked; Batch 3 Q10 locked (auth Supabase / send-DB BYO; Q10A=D); Q11=A+B max SSRF + required allowlist; Q12=B Q13=A Q15=A Q16 BYO creds locked; Q14=A Contradiction vs Batch 1 blocks Phase 0; no F16+ yet"
+      note: "Phase 0 intake in progress - Batch 1-4 locked; Q14=A literal + Q14r=B expand (pending enum DDL/drag-drop/multi-DB/AMHS); Q12=B amended test-harness; Q17=A testing-only wis2box; Q18≈A BYOC paste SMTP; Q19=A F5 Supabase no dest secrets; Phase 0 blocked on Q14r enum; no F16+ yet"
     - stage: 01-requirements
       required: true
       mode: delta
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Q14 Contradiction)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 02-verify-plan
       required: true
       mode: delta
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 03-plan-tooling
       required: false
       mode: pending
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 04-tech-plan
       required: true
       mode: delta
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 05-verify-tech
       required: false
       mode: pending
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 06-tech-tooling
       required: false
       mode: pending
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 07-build
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 08-verify-build
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 09-qa
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 10-e2e
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 11-verify-impl
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 12-verify-deploy
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
     - stage: 13-deploy-smoke
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Pending routing-plan approval (Phase 0 incomplete — Batch 2)
+      note: Pending routing-plan approval (Phase 0 incomplete — Q14r extras enum)
 sessions:
 
   - id: S018-metar-remarks-667
@@ -1443,7 +1443,8 @@ stages:
       - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
       - docs/context/manual-tac-input-modes.md
     notes:
-      - "2026-07-20/21 S019/EV-014 Phase 0 Batch 3 clarifications (AskQuestion waived cloud): Q10 locked - NOT drop Supabase Auth; send/ops destination BYO Postgres only; Q10A=D deploy-time app auth (ADR-021); Q10B N/A. Q11=A+B max SSRF baseline + required DISSEMINATION_EGRESS_ALLOWLIST (empty=no user-URI egress in prod). Q12=B Q13=A Q15=A still locked; Q14=A only profiles OOS + Contradiction vs Batch 1 require-existing/Q1=A (I-S019-EV014-Q14-batch1) - Phase 0 NOT approved; Q16 BYO operator credentials (except staging wis2box). ADR-021/F5 tensions eased; non-goals push sinks/paste-keys still open. No F16+."
+      - "2026-07-21 S019/EV-014 Phase 0 Batch 4 locked (AskQuestion waived cloud): Q14r=B keep Q14=A literal + expand design DDL/drag-drop/multi-DB/and-or AMHS (user chose expand over recommended pack A); I-S019-EV014-Q14-batch1 resolved scope-expanded-intentionally; open Ambiguity I-S019-EV014-Q14r-extras-enum (v1 IN-set not enumerated) blocks Phase 0. Q17=A testing-only staging wis2box (Render/Docker); amend Q12=B = test harness; live WIS2 BYOC. Q18≈A BYOC one-shot paste SMTP/gateway in drawer (memory-only) not deploy-only operator SMTP; testing also BYOC. Q19=A work history stays Supabase tac_work_sessions/kv_upload_key; never store destination secrets. No F16+."
+      - "2026-07-20/21 S019/EV-014 Phase 0 Batch 3 clarifications (AskQuestion waived cloud): Q10 locked - NOT drop Supabase Auth; send/ops destination BYO Postgres only; Q10A=D deploy-time app auth (ADR-021); Q10B N/A. Q11=A+B max SSRF baseline + required DISSEMINATION_EGRESS_ALLOWLIST (empty=no user-URI egress in prod). Q12=B Q13=A Q15=A still locked; Q14=A only profiles OOS + Contradiction vs Batch 1 require-existing/Q1=A (I-S019-EV014-Q14-batch1) - superseded by Batch 4 Q14r; Q16 BYO operator credentials (except staging wis2box). ADR-021/F5 tensions eased; non-goals push sinks/paste-keys still open. No F16+."
       - "2026-07-20 S019/EV-014 Phase 0 Batch 3 PARTIAL (superseded by clarifications above): Q10 Ambiguity / Q11 pending / Q14 multi-select Ambiguity recorded; Q12=B Q13=A Q14=B Q15=A locked."
       - 2026-07-20 S019/EV-014 Phase 0 Batch 2 locked Assumed (Q5=A Q6=B Q7=A Q8=C Q9=A); Batch 1 still locked;
         Batch 3 pending; no F16+; advisory Q8=C needs credential/environment readiness interview
@@ -3057,10 +3058,10 @@ stages:
     started_at: '2026-07-20'
     current_stage: 16-evolve
     note: >-
-      S019-dissemination-upload/EV-014 — Phase 0 intake PARTIAL (Batch 1+2 locked; Batch 3 clarifications
-      2026-07-20/21 — Q10 locked auth Supabase / send-DB BYO Q10A=D; Q11=A+B max SSRF + allowlist; Q12=B Q13=A
-      Q15=A Q16 BYO creds locked; Q14=A Contradiction vs Batch 1 blocks approval); no F16+ yet; Q15=A+Q8=C+Q16
-      hard close gate; prior S018/EV-013 closed completed-with-waiver (Q0=A)
+      S019-dissemination-upload/EV-014 — Phase 0 intake PARTIAL (Batch 1-4 locked; Q14r extras enum
+      Ambiguity blocks approval); Q14=A literal + Q14r=B expand intentional; Q17=A test-only wis2box /
+      Q12=B amended harness; Q18≈A BYOC paste SMTP; Q19=A F5 Supabase no dest secrets; no F16+ yet;
+      Q15=A+Q8=C+BYOC hard close gate; prior S018/EV-013 closed completed-with-waiver (Q0=A)
 
 stages_pending: []
 
@@ -3113,6 +3114,20 @@ deployment:
     method: "bash scripts/deploy/verify_connectivity.sh"
 
 issue_log:
+  - id: I-S019-EV014-Q14r-extras-enum
+    category: Ambiguity
+    stage: 16-evolve
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    summary: >-
+      Q14r=B keeps Q14=A literally (profiles OOS) and expands epic design to DDL, drag-drop external
+      IWXXM, multi-DB, and/or AMHS — but "and/or" does not enumerate which are IN for v1 of this cycle.
+      Phase 0 NOT approved until next interview enumerates the v1 IN-set from {DDL, drag-drop, multi-DB, AMHS}.
+    status: open
+    blocking_for: Phase 0 full approval / routing lock / F16+ allocation / non-goal inventory / Batch 1 Schema+Q1 amendments
+    parent_issue: I-S019-EV014-Q14-batch1
+    related_decision: D-S019-EV014-intake-batch4
+    date: '2026-07-21'
   - id: I-S019-EV014-Q14-batch1
     category: Contradiction
     stage: 16-evolve
@@ -3123,8 +3138,14 @@ issue_log:
       can imply DDL/create-if-missing, drag-drop external IWXXM, AMHS, or multi-DB are in — which contradicts
       Batch 1 require-existing table (no create-if-missing) and Q1=A convert-then-send. Do NOT assume those are
       in scope. Phase 0 NOT approved until next interview turn resolves OOS inventory vs Batch 1 locks.
-    status: open
-    blocking_for: Phase 0 full approval / routing lock / F16+ allocation / non-goal inventory
+    status: resolved
+    resolution: >-
+      2026-07-21 Batch 4 Q14r=B — user chose expand scope (B) rather than recommended pack (A). Contradiction
+      resolved as "scope expanded intentionally" (keep Q14=A literally; epic also designs DDL/drag-drop/multi-DB/and-or
+      AMHS). Sub-issue I-S019-EV014-Q14r-extras-enum remains open for which extras are IN for v1.
+    resolved_at: '2026-07-21'
+    related_decision: D-S019-EV014-intake-batch4
+    blocking_for:
     date: '2026-07-21'
   - id: I-S019-EV014-Q10-supabase-byo
     category: Ambiguity
@@ -3183,12 +3204,12 @@ issue_log:
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     summary: >-
-      Batch 1–3 tension with prior corpus. After Q10 clarifications: ADR-021 and F5 (Auth+work history on
-      Supabase) eased — app auth stays deploy-time Supabase (Q10A=D); paste BYO is destination URI only.
-      Remaining open: non-goals push sinks + paste-keys vs Q8=C live WIS2+EDIS + paste destination credentials;
-      Q14=A vs Batch 1 require-existing/Q1=A tracked separately as I-S019-EV014-Q14-batch1.
+      Batch 1–4 tension with prior corpus. After Batch 4: ADR-021 and F5 locked (Q10/Q19=A — Auth+work history
+      on Supabase; never store destination secrets). Paste destination URI/SMTP intentional (Q5/Q18≈A memory-only).
+      Remaining: non-goals push sinks vs Q8=C live WIS2+EDIS; Q14r v1 extras enum (I-S019-EV014-Q14r-extras-enum);
+      Batch 1 require-existing/Q1=A may amend once extras enumerated.
     status: open
-    blocking_for: 01-requirements delta / non-goal inventory after Q14 interview
+    blocking_for: 01-requirements delta / non-goal inventory after Q14r enum interview
     date: '2026-07-20'
     updated_at: '2026-07-21'
   - id: I-S008-04-pyo3-required
@@ -3249,6 +3270,30 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-intake-batch4
+    stage: 16-evolve
+    date: '2026-07-21'
+    timestamp: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 16-evolve
+    skill_id: 16-evolve
+    topic: Phase 0 Batch 4 — Q14r expand + Q17 test wis2box + Q18 BYOC SMTP + Q19 F5
+    decision: >-
+      User answers 2026-07-21 (AskQuestion waived cloud). Q14r=B: keep Q14=A literally (profiles still OOS);
+      epic ALSO designs DDL, drag-drop external IWXXM, multi-DB, and/or AMHS — user chose expand scope (B)
+      rather than recommended pack (A). Still-[Ambiguity] which of {DDL, drag-drop, multi-DB, AMHS} are IN
+      for v1 (and/or not enumerated) — Phase 0 blocked on that enum (I-S019-EV014-Q14r-extras-enum). Resolve
+      I-S019-EV014-Q14-batch1 as "scope expanded intentionally"; open sub-issue for which extras.
+      Q17=A for testing only: stand up staging wis2box on Render/Docker for test; live WIS2 = user BYOC
+      credentials/node. Amend Q12=B: project staging wis2box = test harness; production acceptance uses
+      user-supplied WIS2 endpoint creds. Q18=BYOC interpreted as Q18≈A: backend uses one-shot user-pasted
+      SMTP/gateway settings in drawer (memory-only), not deploy-only operator SMTP; testing also BYOC.
+      Q19=A: work history stays Supabase tac_work_sessions / kv_upload_key; never store destination secrets.
+      Do not invent F16+ yet.
+    status: assumed
+    resolved_at: '2026-07-21'
+    note: Assumed — AskQuestion UI waived (cloud); Phase 0 still blocked on Q14r extras enum
   - id: D-S019-EV014-intake-batch3-clarify
     stage: 16-evolve
     date: '2026-07-21'
@@ -3272,10 +3317,10 @@ decisions_log:
       NOT approved until next interview. Q16: operator BYO credentials (EDIS/RTH; WIS2/DB as applicable);
       not provisioned by us except staging wis2box (Q12=B); live-green close gate still applies (Q15=A).
       Resolves I-S019-EV014-Q10-supabase-byo, I-S019-EV014-Q11-pending-rec, I-S019-EV014-Q14-multiselect.
-      Do not invent F16+ yet.
+      Do not invent F16+ yet. (Superseded for Q14 path by D-S019-EV014-intake-batch4.)
     status: assumed
     resolved_at: '2026-07-21'
-    note: Assumed — AskQuestion UI waived (cloud); Phase 0 still blocked on Q14 Contradiction
+    note: Assumed — AskQuestion UI waived (cloud); Q14 contradiction path superseded by Batch 4 Q14r
   - id: D-S019-EV014-intake-batch3-partial
     stage: 16-evolve
     date: '2026-07-20'
@@ -7297,17 +7342,18 @@ evolve_cycles:
     status: in_progress
     started: '2026-07-20'
     completed:
-    scope_summary: "Phase 0 intake PARTIAL (not fully approved - Q14 Contradiction blocks). Batch 1+2 locked Assumed (AskQuestion UI waived cloud written). Batch 1 (still locked): one-shot session credentials (paste UI; never persist); drawer UI + preflight; require-existing versioned table contract; Q1=A convert-then-send; Q2=A any auth user; Q3=A schema preflight clarity; Q4=D WIS2+EDIS in ONE cycle. Batch 2: Q5=A paste->backend memory-only; Q6=B URI-only; Q7=A schema diff block Send; Q8=C ship all three usable MVP live wis2box+EDIS; Q9=A same drawer destinations. Batch 3 clarifications 2026-07-20/21: Q10 locked - NOT drop Supabase Auth; send/ops destination BYO Postgres only; Q10A=D deploy-time app auth (ADR-021); Q11=A+B max SSRF + required DISSEMINATION_EGRESS_ALLOWLIST; Q12=B Q13=A Q15=A locked; Q14=A only profiles OOS + Contradiction vs Batch 1 (I-S019-EV014-Q14-batch1); Q16 BYO operator credentials (except staging wis2box). Issues: #729/#2/#6. Do NOT invent F16+ until Phase 0 fully approved."
+    scope_summary: "Phase 0 intake PARTIAL (not fully approved - Q14r extras enum Ambiguity blocks). Batch 1-4 locked Assumed (AskQuestion UI waived cloud written). Batch 1 (still locked): one-shot session credentials (paste UI; never persist); drawer UI + preflight; require-existing versioned table contract (may amend if DDL in Q14r enum); Q1=A convert-then-send (may amend if drag-drop in enum); Q2=A any auth user; Q3=A schema preflight clarity; Q4=D WIS2+EDIS in ONE cycle. Batch 2: Q5=A paste->backend memory-only; Q6=B URI-only; Q7=A schema diff block Send; Q8=C ship all three usable MVP live wis2box+EDIS; Q9=A same drawer destinations. Batch 3 clarifications: Q10 auth Supabase / send-DB BYO Q10A=D; Q11=A+B max SSRF + allowlist; Q12=B amended Batch 4 as test harness; Q13=A Q14=A literal Q15=A Q16 BYO. Batch 4: Q14r=B expand intentional (DDL/drag-drop/multi-DB/and-or AMHS; v1 enum open I-S019-EV014-Q14r-extras-enum); Q17=A testing-only staging wis2box; Q18≈A BYOC paste SMTP/gateway memory-only; Q19=A F5 Supabase tac_work_sessions/kv_upload_key never store dest secrets. Issues: #729/#2/#6. Do NOT invent F16+ until Phase 0 fully approved."
     github_issue: 729
     routing_plan:
       required_stages:
         - 00-context
         - 16-evolve
       skipped_stages: []
-      note: Full required_stages TBD after Q14 Contradiction resolution / routing approval
+      note: Full required_stages TBD after Q14r extras enum resolution / routing approval
     current_stage: 16-evolve
     notes:
-      - "2026-07-20/21 S019/EV-014 Phase 0 Batch 3 clarifications - Q10 auth vs send-DB locked; Q11=A+B max SSRF; Q14 Contradiction vs Batch 1; Q16 BYO creds; Phase 0 still not approved; no F16+"
+      - "2026-07-21 S019/EV-014 Phase 0 Batch 4 locked - Q14r=B expand intentional + Ambiguity extras enum; Q17=A test-only wis2box / Q12=B harness; Q18≈A BYOC paste SMTP; Q19=A F5 no dest secrets; Phase 0 still not approved; no F16+"
+      - "2026-07-20/21 S019/EV-014 Phase 0 Batch 3 clarifications - Q10 auth vs send-DB locked; Q11=A+B max SSRF; Q14 Contradiction vs Batch 1 (superseded by Batch 4 Q14r); Q16 BYO creds; no F16+"
       - 2026-07-20 S019/EV-014 Phase 0 Batch 3 PARTIAL — Q12=B Q13=A Q14=B Q15=A locked; Q10 Ambiguity; Q11 pending
         rec; Q14 multi-select Ambiguity; corpus contradictions noted; no F16+; Phase 0 still not fully approved
       - 2026-07-20 S019/EV-014 Phase 0 Batch 2 locked Assumed (Q5=A Q6=B Q7=A Q8=C Q9=A); Batch 1 confirmed still locked;
@@ -7322,11 +7368,11 @@ evolve_cycles:
         completed: '2026-07-20'
         substeps:
           phase0: partial
-        note: Phase 0 intake partial — Batch 1+2 locked; Batch 3 clarifications recorded; Q14 Contradiction open
+        note: Phase 0 intake partial — Batch 1-4 locked; Q14r extras enum Ambiguity open
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase 0 intake - Batch 1+2 locked; Batch 3 Q10/Q11/Q12/Q13/Q15/Q16 locked; Q14 Contradiction blocks; Q15=A+Q8=C+Q16 hard close gate"
+        note: "Phase 0 intake - Batch 1-4 locked; Q14r extras enum blocks; Q15=A+Q8=C+BYOC hard close gate"
     gates:
       a_to_b: pending
       b_to_c: pending
@@ -7348,8 +7394,9 @@ evolve_cycles:
         status: present
         kind: evolve-decisions-EV-014
     issues:
-      - I-S019-EV014-Q14-batch1
+      - I-S019-EV014-Q14r-extras-enum
       - I-S019-EV014-corpus-contradictions
+      - I-S019-EV014-Q14-batch1
       - I-S019-EV014-Q10-supabase-byo
       - I-S019-EV014-Q11-pending-rec
       - I-S019-EV014-Q14-multiselect
@@ -9930,8 +9977,9 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 898795f0f80db61107b0694eb9b4c821f4e15a66
+  tip_sha: 644dcbd17a70c7b6b1230b682b4f18084d91764f
   notes:
+    - '2026-07-21 S019/EV-014 Phase 0 Batch 4 locked (644dcbd) — Q14r=B expand pending enum; Q17=A test wis2box; Q18≈A BYOC SMTP; Q19=A F5; Phase 0 still not approved'
     - '2026-07-21 S019/EV-014 Phase 0 Batch 3 clarifications (898795f) — Q10 auth vs send-DB; Q11=A+B max SSRF; Q14 Contradiction vs Batch 1; Q16 BYO creds; Phase 0 still not approved'
     - '2026-07-20 S019/EV-014 Phase 0 Batch 3 PARTIAL recorded (8de29e5) — Q12=B Q13=A Q14=B Q15=A locked;
       Q10/Q11/Q14 ambiguities open; corpus contradictions noted; Phase 0 still not fully approved'
@@ -10116,8 +10164,8 @@ git_history:
       evolve_cycle_id: EV-014
       purpose: 'EV-014 / S019 dissemination epic (#729 Upload DB + #2 WIS2 + #6 EDIS)'
       pushed: true
-      note: Opened from S018 close; Phase 0 intake partial
-      tip_sha: c8a949fbe06d0c93580d5f4d63c227e1fe95cad8
+      note: Opened from S018 close; Phase 0 intake partial; Batch 4 locked
+      tip_sha: 644dcbd17a70c7b6b1230b682b4f18084d91764f
     - name: cursor/metar-remarks-live-e2e-2e2e
       base: main
       status: completed
@@ -10437,6 +10485,21 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 644dcbd17a70c7b6b1230b682b4f18084d91764f
+      short: 644dcbd
+      message: 'docs(S019): lock EV-014 Batch 4; Q14r expand pending enum'
+      branch: cursor/dissemination-upload-e25c
+      date: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      stage: 16-evolve
+      files_changed:
+        - workflow-state.yaml
+        - docs/decisions/evolve-decisions.md
+        - docs/sessions/S019-dissemination-upload/session-brief.md
+        - docs/sessions/S019-dissemination-upload/routing-plan.md
+      pushed: true
+      note: Batch 4 — Q14r=B expand intentional + Ambiguity extras enum; Q17=A test-only wis2box; Q18≈A BYOC paste SMTP; Q19=A F5; Phase 0 still not approved; no F16+
     - sha: 898795f0f80db61107b0694eb9b4c821f4e15a66
       short: 898795f
       message: 'docs(S019): resolve EV-014 Q10 auth vs send-DB; lock Q11 max SSRF'
