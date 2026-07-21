@@ -48,6 +48,12 @@ mssql+aioodbc://sa:Your_password123@127.0.0.1:1433/master?driver=ODBC+Driver+18+
 Deploy / image notes (CI skip policy, stock API Dockerfile without `msodbcsql18`):
 [docs/deploy.md](../../docs/deploy.md) §Local Development → SQL Server ODBC.
 
+**WIS2 sink (T3.1–T3.2 / F17)**
+
+- `dissemination.wis2` — `wis2_preflight` / `wis2_publish` with injectable MQTT + HTTP
+  clients (unit-tested with mocks; no broker required)
+- Compose wis2box harness lands in T3.3; live BYOC remains the cycle-close gate
+
 **Egress allowlist**
 
 - Env: `DISSEMINATION_EGRESS_ALLOWLIST` (see `.env.example`, ADR-029)
