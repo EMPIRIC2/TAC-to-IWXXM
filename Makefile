@@ -30,7 +30,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
-	install-hooks pre-commit-run pre-push-run \
+	install-hooks pre-commit-run pre-push-run ci-prepush \
 	catalog-regen catalog-check \
 	issue-registry-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
@@ -464,8 +464,12 @@ supabase-pull:
 
 validate-ci: validate-fast config-guard env-check audit-frontend
 
-ci: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
-	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate test-unit-dissemination \
-	test-unit-worker test-bugs test-integration badge-audit
+# Unit/matrix parity for pre-push (CI test job packages without local Compose).
+# Use `make ci` / `make test-integration` when Docker ports 18000/18001 are free.
+ci-prepush: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth \
+	test-unit-frontend test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
+	test-unit-dissemination test-unit-worker test-bugs badge-audit
+
+ci: ci-prepush test-integration
 
 acci: ci test-e2e-playwright-smoke audit-frontend

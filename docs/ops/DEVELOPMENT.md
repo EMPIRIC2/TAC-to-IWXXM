@@ -216,10 +216,11 @@ Local gates (dual-run with CI validate + test):
 ```bash
 make install-hooks    # installs pre-commit + pre-push hooks
 pre-commit run --all-files          # fast commit gates
-make pre-push-run                   # make validate-ci + make ci (same as git push hooks)
+make pre-push-run                   # make validate-ci + make ci-prepush (same as git push)
 make validate-fast                  # format/lint/typecheck/secrets/yaml/catalog
 make validate-ci                    # CI validate job locally
-make ci                             # full suite (tests + integration) — CI test parity
+make ci-prepush                     # unit/matrix suite (no Compose)
+make ci                             # ci-prepush + test-integration (needs ports 18000/18001)
 ```
 
 Hooks (after `make install-hooks`):
@@ -227,9 +228,10 @@ Hooks (after `make install-hooks`):
 | Git hook | Runs |
 |----------|------|
 | **pre-commit** | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint |
-| **pre-push** | `make validate-ci` then `make ci` (blocks push if CI would fail) |
+| **pre-push** | `make validate-ci` then `make ci-prepush` (blocks push if CI validate/unit would fail) |
 
 Bypass only when intentional: `git commit --no-verify` / `git push --no-verify`.
+Also update `ci-quality-guard.sh` message if it mentions make ci.
 
 - Python 3.12 + Node 22
 - Unit tests and 95% Codecov gate on `apps/backend`, `packages/*`, `apps/frontend`

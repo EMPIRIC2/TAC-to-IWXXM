@@ -1,10 +1,11 @@
 # Local gates mirroring .github/workflows/ci-cd.yml
 # - default (pre-commit): fast checks ≈ make validate-fast pieces
-# - pre-push: make validate-ci + make ci (CI validate + test parity)
+# - pre-push: make validate-ci + make ci-prepush (validate + unit matrix)
 # Install both: make install-hooks
 #
 # pre-commit 4.x default_stages includes every hook type; pin to pre-commit so
-# omitted stages do not also fire on push (validate-ci/ci are explicit below).
+# omitted stages do not also fire on push (validate-ci/ci-prepush are explicit).
+# Full `make ci` (incl. Compose integration) stays manual — needs free 18000/18001.
 default_stages: [pre-commit]
 default_install_hook_types: [pre-commit, pre-push]
 
@@ -76,9 +77,9 @@ repos:
         always_run: true
         require_serial: true
         stages: [pre-push]
-      - id: make-ci
-        name: make ci (CI test parity)
-        entry: make ci
+      - id: make-ci-prepush
+        name: make ci-prepush (CI unit/matrix parity)
+        entry: make ci-prepush
         language: system
         pass_filenames: false
         always_run: true

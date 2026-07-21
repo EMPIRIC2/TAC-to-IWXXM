@@ -69,7 +69,7 @@ if [[ ${#failures[@]} -eq 0 ]]; then
 fi
 
 if [[ "$command_line" =~ git[[:space:]]+push ]]; then
-  summary="CI validate gates would fail on push. Run 'make validate-ci' (and 'make ci' before push) before retrying."
+  summary="CI validate gates would fail on push. Run 'make validate-ci' (and 'make ci-prepush' before push) before retrying."
 else
   summary="CI Quality Gates would fail on commit. Run 'make validate-fast' (or 'make format' to fix) before commit."
 fi
