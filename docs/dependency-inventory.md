@@ -179,4 +179,6 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S019 / EV-014 T2.5 (2026-07-21): **testcontainers[mysql,postgres]≥4.8** — multi-DB writer-contract
   integration (TC-F16-003 / E14-09); SQLite in-process; PG/MySQL skip without Docker
 - S019 / EV-014 T2.6 (2026-07-21): SQL Server via **aioodbc** + Testcontainers; integration
-  tests **skip when no ODBC driver** (E14-06); ODBC install docs deferred to T2.7
+  tests **skip when no ODBC driver** (E14-06)
+- S019 / EV-014 T2.7 (2026-07-21): ODBC driver install/verify notes in `docs/deploy.md` +
+  `packages/dissemination/README.md` (E14-06); stock API image still omits `msodbcsql18`

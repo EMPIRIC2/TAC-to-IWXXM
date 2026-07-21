@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: Render (Docker web service + static site + Background Worker)
-> **Last updated**: 2026-07-18 (S014 / EV-010 — PyPI trusted publishing + msgspec HTTP redeploy)
+> **Last updated**: 2026-07-21 (S019 / EV-014 T2.7 — SQL Server ODBC driver notes)
 
 ## Topology (post-monorepo + F8)
 
@@ -108,6 +108,48 @@ make dev
 
 Post-migration compose: **backend + frontend** (two services). Worker may run via
 `make worker` / separate process locally (T6.2).
+
+### SQL Server ODBC (F16 / E14-06)
+
+BYOC SQL Server sinks use SQLAlchemy async + **aioodbc** (`mssql+aioodbc://`). A **system
+ODBC SQL Server driver** must be registered with the host ODBC manager — Python wheels alone
+are not enough. Preferred driver: **Microsoft ODBC Driver 18 for SQL Server** (then 17);
+**FreeTDS** is accepted as a fallback. Probe helpers live in
+`packages/dissemination` (`dissemination.odbc`).
+
+**Verify install**
+
+```bash
+uv run python -c "from dissemination.odbc import list_sqlserver_odbc_drivers, odbc_sqlserver_available; print(list_sqlserver_odbc_drivers()); print(odbc_sqlserver_available())"
+```
+
+**Debian / Ubuntu (Microsoft Driver 18)** — follow current Microsoft docs for the distro
+codename; typical shape:
+
+```bash
+# unixODBC + Microsoft package repo, then:
+sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18 unixodbc-dev
+```
+
+**macOS**: install via Microsoft’s Homebrew tap (`msodbcsql18`) or their pkg installer.
+
+**URI shape** (driver query param required at connect time; integration tests attach the
+preferred driver automatically):
+
+```text
+mssql+aioodbc://USER:PASS@HOST:1433/DB?driver=ODBC+Driver+18+for+SQL+Server
+# Testcontainers / self-signed TLS often also need:
+#   &TrustServerCertificate=yes
+```
+
+**CI / tests**: `make test-integration-dissemination` runs SQL Server cases only when Docker
+**and** an ODBC SQL Server driver are present; otherwise those cases **skip** (TC-F16-003 /
+E14-06). Default CI images may omit ODBC — that is expected.
+
+**API Docker image**: `apps/backend/docker/Dockerfile` does **not** currently install
+`msodbcsql18`. Stock Render **metar-api** cannot open SQL Server BYOC URIs until the image
+(or base) gains a system ODBC SQL Server driver. Postgres / MySQL / SQLite sinks do not need
+ODBC. Package README: [`packages/dissemination/README.md`](../packages/dissemination/README.md).
 
 ## Docker Build Context
 
