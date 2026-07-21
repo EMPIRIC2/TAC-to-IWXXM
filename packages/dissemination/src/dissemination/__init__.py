@@ -13,15 +13,31 @@ from dissemination.allowlist import (
     parse_allowlist,
     validate_egress_host,
 )
+from dissemination.writer_contract import (
+    CONTRACT_TABLE,
+    CONTRACT_VERSION,
+    DiffKind,
+    SchemaDiff,
+    apply_writer_contract,
+    diff_writer_contract,
+    writer_contract_ddl,
+)
 
 __version__ = "0.1.0"
 
 __all__ = [
     "Allowlist",
     "AllowlistError",
+    "CONTRACT_TABLE",
+    "CONTRACT_VERSION",
+    "DiffKind",
     "EgressDenied",
+    "SchemaDiff",
     "__version__",
+    "apply_writer_contract",
+    "diff_writer_contract",
     "load_allowlist_from_env",
     "parse_allowlist",
     "validate_egress_host",
+    "writer_contract_ddl",
 ]
