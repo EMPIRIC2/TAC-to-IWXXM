@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase C — **07-build** M6 in progress |
 | **Active milestone** | M6 — FE drawer + connectivity + verify |
-| **Active task** | T6.2 (next) |
-| **Tasks** | 24 / **29** completed (through T6.1) |
-| **Branch** | `cursor/s019-t61-drawer-vitest-a804` (includes M5 tip; PR #768 still open on `cursor/s019-t51-adapter-stubs-584b`) |
+| **Active task** | T6.3 (next) |
+| **Tasks** | 25 / **29** completed (through T6.2) |
+| **Branch** | `cursor/s019-t61-drawer-vitest-a804` (M5+T6.1+T6.2; PR #769 → main) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
