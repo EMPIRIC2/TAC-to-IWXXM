@@ -1,14 +1,17 @@
-"""Concrete MQTT + HTTP transports for the WIS2 sink (F17 / T3.4).
+"""Concrete transports for WIS2 + EDIS sinks (F17 / F18).
 
-Implements the Protocols in ``dissemination.wis2`` using ``httpx`` and ``aiomqtt``.
+Implements the Protocols in ``dissemination.wis2`` / ``dissemination.edis`` using
+``httpx``, ``aiomqtt``, and ``aiosmtplib``.
 """
 
 from __future__ import annotations
 
 import asyncio
+from email.message import EmailMessage
 from typing import Self
 
 import aiomqtt
+import aiosmtplib
 import httpx
 
 
@@ -137,7 +140,79 @@ class AiomqttClient:
         await self.disconnect()
 
 
+class AiosmtpClient:
+    """``SmtpClient`` backed by ``aiosmtplib`` (EDIS / F18).
+
+    Prefers STARTTLS on submission ports (e.g. 587); uses implicit TLS on 465.
+    """
+
+    def __init__(
+        self,
+        *,
+        hostname: str,
+        port: int = 587,
+        use_tls: bool = True,
+        timeout: float = 30.0,
+    ) -> None:
+        self._hostname = hostname
+        self._port = port
+        self._use_tls = use_tls
+        self._timeout = timeout
+        self._client: aiosmtplib.SMTP | None = None
+
+    def _tls_kwargs(self) -> dict[str, bool]:
+        if not self._use_tls:
+            return {"use_tls": False, "start_tls": False}
+        if self._port == 465:
+            return {"use_tls": True, "start_tls": False}
+        return {"use_tls": False, "start_tls": True}
+
+    async def connect(self) -> None:
+        """Open an SMTP connection (STARTTLS or implicit TLS per port)."""
+        if self._client is not None and self._client.is_connected:
+            return
+        client = aiosmtplib.SMTP(
+            hostname=self._hostname,
+            port=self._port,
+            timeout=self._timeout,
+            **self._tls_kwargs(),
+        )
+        await client.connect()
+        self._client = client
+
+    async def login(self, username: str, password: str) -> None:
+        """Authenticate with the SMTP server."""
+        if self._client is None:
+            raise RuntimeError("smtp client is not connected")
+        await self._client.login(username, password)
+
+    async def send_message(self, message: EmailMessage) -> object:
+        """Submit ``message`` via SMTP DATA."""
+        if self._client is None:
+            raise RuntimeError("smtp client is not connected")
+        return await self._client.send_message(message)
+
+    async def quit(self) -> None:
+        """Close the SMTP connection if open."""
+        client = self._client
+        self._client = None
+        if client is None:
+            return
+        if client.is_connected:
+            await client.quit()
+        else:
+            await client.close()
+
+    async def __aenter__(self) -> Self:
+        await self.connect()
+        return self
+
+    async def __aexit__(self, *exc: object) -> None:
+        await self.quit()
+
+
 __all__ = [
     "AiomqttClient",
+    "AiosmtpClient",
     "HttpxDatasetClient",
 ]
