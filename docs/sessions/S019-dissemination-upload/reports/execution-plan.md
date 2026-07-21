@@ -16,8 +16,8 @@
 |-------|-------|
 | **Active phase** | Phase C — **07-build** M2 in progress |
 | **Active milestone** | M2 — Multi-DB writer-contract + preflight/send API |
-| **Active task** | T2.5 (next) |
-| **Tasks** | 10 / **29** completed (through T2.4) |
+| **Active task** | T2.6 (next) |
+| **Tasks** | 11 / **29** completed (through T2.5) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -66,7 +66,7 @@
 | T2.2 | Code | Engine adapters + versioned writer-contract DDL | ADR-030; E14-02 | T2.1 | **completed** |
 | T2.3 | Test | API tests: preflight/send msgspec shapes; secret redaction; handle memory-only; per-user rate-limit deny (ADR-029 §5) | api-contract; TC-F16-002; ADR-029 | T2.2 | **completed** |
 | T2.4 | Code | Thin backend routers `/dissemination/preflight` + `/send` (+ rate limit) | api-contract; E14-03/07; ADR-029 | T2.3 | **completed** |
-| T2.5 | Test | Compose/Testcontainers integration PG+MySQL+SQLite happy + mismatch | TC-F16-003; E14-09 | T2.4 | pending |
+| T2.5 | Test | Compose/Testcontainers integration PG+MySQL+SQLite happy + mismatch | TC-F16-003; E14-09 | T2.4 | **completed** |
 | T2.6 | Test | SQL Server path via aioodbc (CI skip if no ODBC; document) | E14-06; TC-F16-003 | T2.4 | pending |
 | T2.7 | Docs | ODBC driver notes in deploy.md / package README | E14-06 | T2.6 | pending |
 
