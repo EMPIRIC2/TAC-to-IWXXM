@@ -1897,7 +1897,7 @@ stages:
           - F17
           - F18
           - F19
-        note: inventory+consistency done; 28 high auto-approved; pending C-EV014-1 + S-EV014-M1..M4 + L1
+        note: C-EV014-1 resolved (Q26=A); next S-EV014-M1..M4 + L1
         artifacts:
           - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
       - status: completed
@@ -3374,6 +3374,20 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-Q26A-C-EV014-1
+    stage: 02-verify-plan
+    date: '2026-07-21'
+    timestamp: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    skill: 02-verify-plan
+    skill_id: 02-verify-plan
+    topic: Q26=A — C-EV014-1 F8 non-goals worker-path wording
+    decision: 'Q26=A — approve edit: F8 non-goals narrowed to worker-path; dissemination = F16–F19'
+    status: confirmed
+    at: '2026-07-21'
+    related_commit: f4ef78e85deecfbc3ae8b843e515e113e58a521f
+    note: Resolves C-EV014-1; next S-EV014-M1
   - id: D-S019-EV014-Q25A-run-02
     stage: 02-verify-plan
     date: '2026-07-21'
@@ -7558,6 +7572,7 @@ evolve_cycles:
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
     current_stage: 02-verify-plan
     notes:
+      - '2026-07-21 S019/EV-014 02 review: C-EV014-1 resolved (Q26=A / D-S019-EV014-Q26A-C-EV014-1); next S-EV014-M1'
       - 2026-07-21 S019/EV-014 02-verify-plan — inventory+consistency done; 28 high auto-approved; pending C-EV014-1 + 
         S-EV014-M1..M4 + L1
       - '2026-07-21 S019/EV-014 02-verify-plan delta STARTED (Q25=A / D-S019-EV014-Q25A-run-02) — PR #753'
@@ -7615,7 +7630,7 @@ evolve_cycles:
       02-verify-plan:
         status: in_progress
         mode: delta
-        note: in_progress — inventory+consistency done; 28 high auto-approved; pending C-EV014-1 + S-EV014-M1..M4 + L1
+        note: in_progress — C-EV014-1 resolved; next S-EV014-M1..M4 + L1
         started: '2026-07-21'
     gates:
       a_to_b: pending
@@ -10440,8 +10455,8 @@ git_history:
       evolve_cycle_id: EV-014
       purpose: 'EV-014 / S019 dissemination epic (#729 Upload DB + #2 WIS2 + #6 EDIS)'
       pushed: true
-      note: EV-014 / S019 — 02-verify-plan delta in_progress; tip after start-audit commit
-      tip_sha: ec7568046fba6bed14b0f75108748aac01f9b0bf
+      note: EV-014 / S019 — 02-verify-plan; C-EV014-1 resolved (Q26=A); tip f4ef78e
+      tip_sha: f4ef78e85deecfbc3ae8b843e515e113e58a521f
     - name: cursor/metar-remarks-live-e2e-2e2e
       base: main
       status: completed
@@ -10761,6 +10776,21 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: f4ef78e85deecfbc3ae8b843e515e113e58a521f
+      short: f4ef78e
+      branch: cursor/dissemination-upload-e25c
+      message: '[EV-014] docs: resolve C-EV014-1 F8 non-goals worker-path wording'
+      stage: 02-verify-plan
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      date: '2026-07-21'
+      timestamp: '2026-07-21'
+      pushed: true
+      files_changed:
+        - docs/feature-list.md
+        - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
+        - docs/decisions/product-audit.md
+        - docs/decisions/product-decisions.md
     - sha: ec7568046fba6bed14b0f75108748aac01f9b0bf
       short: ec75680
       branch: cursor/dissemination-upload-e25c
