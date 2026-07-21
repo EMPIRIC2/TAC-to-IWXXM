@@ -9977,9 +9977,9 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 644dcbd17a70c7b6b1230b682b4f18084d91764f
+  tip_sha: 82a35e1d4969f70fa358d052854988b9adaca061
   notes:
-    - '2026-07-21 S019/EV-014 Phase 0 Batch 4 locked (644dcbd) — Q14r=B expand pending enum; Q17=A test wis2box; Q18≈A BYOC SMTP; Q19=A F5; Phase 0 still not approved'
+    - '2026-07-21 S019/EV-014 Phase 0 Batch 4 locked (da674f6) — Q14r=B expand pending enum; Q17=A test wis2box; Q18≈A BYOC SMTP; Q19=A F5; Phase 0 still not approved'
     - '2026-07-21 S019/EV-014 Phase 0 Batch 3 clarifications (898795f) — Q10 auth vs send-DB; Q11=A+B max SSRF; Q14 Contradiction vs Batch 1; Q16 BYO creds; Phase 0 still not approved'
     - '2026-07-20 S019/EV-014 Phase 0 Batch 3 PARTIAL recorded (8de29e5) — Q12=B Q13=A Q14=B Q15=A locked;
       Q10/Q11/Q14 ambiguities open; corpus contradictions noted; Phase 0 still not fully approved'
@@ -10165,7 +10165,7 @@ git_history:
       purpose: 'EV-014 / S019 dissemination epic (#729 Upload DB + #2 WIS2 + #6 EDIS)'
       pushed: true
       note: Opened from S018 close; Phase 0 intake partial; Batch 4 locked
-      tip_sha: 644dcbd17a70c7b6b1230b682b4f18084d91764f
+      tip_sha: 82a35e1d4969f70fa358d052854988b9adaca061
     - name: cursor/metar-remarks-live-e2e-2e2e
       base: main
       status: completed
@@ -10485,8 +10485,20 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
-    - sha: 644dcbd17a70c7b6b1230b682b4f18084d91764f
-      short: 644dcbd
+    - sha: 82a35e1d4969f70fa358d052854988b9adaca061
+      short: 82a35e1
+      message: 'docs(S019): sync git_history sha for Batch 4 lock'
+      branch: cursor/dissemination-upload-e25c
+      date: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      stage: 16-evolve
+      files_changed:
+        - workflow-state.yaml
+      pushed: true
+      note: Sync tip_sha after Batch 4 lock
+    - sha: da674f6033f1f7ef598478fcaace94c955958d84
+      short: da674f6
       message: 'docs(S019): lock EV-014 Batch 4; Q14r expand pending enum'
       branch: cursor/dissemination-upload-e25c
       date: '2026-07-21'
