@@ -5,6 +5,23 @@ No FastAPI or Supabase imports (ADR-030). Thin HTTP routers live in ``apps/backe
 
 from __future__ import annotations
 
+from dissemination.allowlist import (
+    Allowlist,
+    AllowlistError,
+    EgressDenied,
+    load_allowlist_from_env,
+    parse_allowlist,
+    validate_egress_host,
+)
+
 __version__ = "0.1.0"
 
-__all__ = ["__version__"]
+__all__ = [
+    "Allowlist",
+    "AllowlistError",
+    "EgressDenied",
+    "__version__",
+    "load_allowlist_from_env",
+    "parse_allowlist",
+    "validate_egress_host",
+]
