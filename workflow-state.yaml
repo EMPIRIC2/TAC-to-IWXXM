@@ -12,13 +12,13 @@ active_session:
     test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase
     0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: main
+  branch: cursor/s019-06-tech-tooling-9a92
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 06-tech-tooling
   note: >-
-    05 PASS (D-S019-EV014-Q35A-05); next 06-tech-tooling; HANDOFF.md
+    06-tech-tooling in_progress — T0.1 coverage + CI Compose hooks (D-S019-EV014-Q36A-06 Assumed approve all)
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -61,7 +61,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-20'
-    note: "Phase B — 05 done; next 06"
+    note: "Phase B — 06 in_progress"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -104,10 +104,11 @@ active_session:
     completed: '2026-07-21'
   - stage: 06-tech-tooling
     required: false
-    mode: pending
-    status: pending
+    mode: delta
+    status: in_progress
     skip_rationale:
-    note: START HERE — 06-tech-tooling (T0.1 coverage + CI Compose hooks); do not start until resumed
+    started: '2026-07-21'
+    note: T0.1 — coverage paths packages/dissemination + CI Compose wis2box hooks
   - stage: 07-build
     required: true
     mode: full
@@ -2446,6 +2447,15 @@ stages:
         pytest_h0c: pass
         verify_connectivity_sh: pass
     delta_substages:
+    - id: S019-dissemination-upload
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      skill_id: 06-tech-tooling
+      status: in_progress
+      mode: delta
+      started: '2026-07-21'
+      started_at: '2026-07-21'
+      note: T0.1 — coverage paths packages/dissemination + CI Compose wis2box hooks
     - id: S015-metar-lint-quality
       session_id: S015-metar-lint-quality
       evolve_cycle_id: EV-011
@@ -2474,6 +2484,10 @@ stages:
       - docs/sessions/S014-package-publish-validation/reports/06-tech-tooling.md
     notes:
     - >-
+      2026-07-21 S019/EV-014 06-tech-tooling STARTED (D-S019-EV014-Q36A-06) —
+      T0.1 coverage paths packages/dissemination + CI Compose wis2box hooks;
+      historical baseline status remains completed
+    - >-
       2026-07-19 S015/EV-011 06-tech-tooling COMPLETE (D-S015-EV011-06-done) —
       T6.0 catalog-regen, warn pre-commit, fixture README, connectivity OK;
       Phase B ready for B→C AskQuestion (b_to_c still pending; do not start 07)
@@ -2483,16 +2497,13 @@ stages:
     - "S014/EV-010 delta 06-tech-tooling completed 2026-07-18 — 49A; commit 6c3fd7a; Phase B passed; await B→C for 07"
 
     active_session:
-      session_id: S015-metar-lint-quality
-      evolve_cycle_id: EV-011
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
       skill_id: 06-tech-tooling
-      status: completed
+      status: in_progress
       mode: delta
-      started_at: '2026-07-19'
-      completed_at: '2026-07-19'
-      note: >-
-        COMPLETE (D-S015-EV011-06-done) — T6.0 catalog-regen, warn pre-commit,
-        fixture README, connectivity OK; Phase B ready for B→C / 07-build
+      started_at: '2026-07-21'
+      note: T0.1 — coverage paths packages/dissemination + CI Compose wis2box hooks
   07-build:
     status: completed
     started_at: "2026-06-14T12:45:00Z"
@@ -3255,9 +3266,9 @@ stages:
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     started_at: '2026-07-20'
-    current_stage: 05-verify-tech
+    current_stage: 06-tech-tooling
     note: >-
-      S019/EV-014 Phase B — 05-verify-tech in_progress on main (post-#753); Q15=A+Q8=C+Q21=A live BYOC hard close gate
+      S019/EV-014 Phase B — 06-tech-tooling in_progress; Q15=A+Q8=C+Q21=A live BYOC hard close gate
 
 stages_pending: []
 
@@ -3493,6 +3504,17 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S019-EV014-Q36A-06
+  date: '2026-07-21'
+  session_id: S019-dissemination-upload
+  evolve_cycle_id: EV-014
+  skill_id: 06-tech-tooling
+  stage: 06-tech-tooling
+  status: confirmed
+  decision: >-
+    Assumed (cloud AQ waived D-S019-EV014-aq-waive-cloud): Approve all 06 delta tooling plan —
+    coverage paths for packages/dissemination (95% like sibling packages) + CI Compose wis2box
+    service hooks; merge don't overwrite existing 03/06 tooling; no new deps
 - id: D-S019-EV014-Q35A-05
   date: '2026-07-21'
   session_id: S019-dissemination-upload
@@ -7855,6 +7877,7 @@ evolve_cycles:
     note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
   current_stage: 06-tech-tooling
   notes:
+  - 2026-07-21 S019/EV-014 06-tech-tooling STARTED (D-S019-EV014-Q36A-06) — T0.1 coverage + CI Compose wis2box hooks
   - 2026-07-21 S019/EV-014 05-verify-tech PASS (D-S019-EV014-Q35A-05) — 29 tasks; S1–S8 applied; overall pass; next 
     06-tech-tooling
   - 2026-07-21 S019/EV-014 05-verify-tech START on main (post-#753) — delta audit of execution-plan + ADR-030 + deps
@@ -7909,7 +7932,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-20'
-      note: "Phase B — 05-verify-tech in_progress on main (post-#753)"
+      note: "Phase B — 06 in_progress"
     01-requirements:
       status: completed
       mode: delta
@@ -7976,6 +7999,11 @@ evolve_cycles:
       completed: '2026-07-21'
       overall: pass
       report: docs/sessions/S019-dissemination-upload/reports/05-verify-tech-audit.md
+    06-tech-tooling:
+      status: in_progress
+      mode: delta
+      started: '2026-07-21'
+      note: T0.1 — coverage paths packages/dissemination + CI Compose wis2box hooks
   gates:
     a_to_b: passed
     b_to_c: pending
@@ -10622,7 +10650,7 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: main
+  current_branch: cursor/s019-06-tech-tooling-9a92
   ahead_of_origin: 0
   pushed: true
   pending_commit: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
@@ -10816,6 +10844,14 @@ git_history:
   - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+  - name: cursor/s019-06-tech-tooling-9a92
+    status: active
+    base: cursor/s019-05-verify-tech-b45b
+    created: '2026-07-21'
+    created_at: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    purpose: S019/EV-014 06-tech-tooling T0.1
   - name: cursor/s019-05-verify-tech-b45b
     base: main
     status: in_progress
