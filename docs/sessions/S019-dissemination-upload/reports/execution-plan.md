@@ -14,10 +14,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — **07-build** M3 next |
-| **Active milestone** | M2 — Multi-DB writer-contract + preflight/send API (**complete**) |
-| **Active task** | T3.1 (next) |
-| **Tasks** | 13 / **29** completed (through T2.7) |
+| **Active phase** | Phase C — **07-build** M3 in progress |
+| **Active milestone** | M3 — WIS2 + Compose wis2box harness |
+| **Active task** | T3.3 (next) |
+| **Tasks** | 15 / **29** completed (through T3.2) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -74,8 +74,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Test | WIS2 sink adapter unit tests (mocked MQTT/HTTP) | TC-F17-001; E14-09 | T2.4 | pending |
-| T3.2 | Code | WIS2 sink in `packages/dissemination` | F17; ADR-030 | T3.1 | pending |
+| T3.1 | Test | WIS2 sink adapter unit tests (mocked MQTT/HTTP) | TC-F17-001; E14-09 | T2.4 | **completed** |
+| T3.2 | Code | WIS2 sink in `packages/dissemination` | F17; ADR-030 | T3.1 | **completed** |
 | T3.3 | Config | `docker-compose` wis2box harness + CI service/job | E14-04; TC-F17-001 | T3.2 | pending |
 | T3.4 | Test | Staging harness publish green (TC-F17-001) | UJ-028 | T3.3 | pending |
 

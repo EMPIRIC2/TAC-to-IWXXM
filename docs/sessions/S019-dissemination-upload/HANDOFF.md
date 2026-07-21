@@ -3,20 +3,20 @@
 ## Resume in next chat
 
 ```
-/16-evolve continue S019/EV-014 — 07-build M3 T3.1
+/16-evolve continue S019/EV-014 — 07-build M3 T3.3
 ```
 
 | Field | Value |
 |-------|-------|
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
-| Branch | `cursor/s019-t27-odbc-docs-ee99` (T2.7); base `main` |
-| PR | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/761 (T2.7 → main; CI green) |
-| Merged to main | #753–#760 (session stack through T2.6 + WF chore) |
-| Done | M1; **M2 complete** (through T2.7 ODBC docs) |
-| Next | **T3.1** WIS2 sink adapter unit tests (mocked MQTT/HTTP) |
+| Branch | `cursor/s019-t31-wis2-unit-tests-ee99` (T3.1–T3.2; includes T2.7 tip) |
+| PR (T2.7) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/761 (CI green) |
+| PR (T3.1–T3.2) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/762 (CI green) |
+| Done | M1; M2; M3 through **T3.2** (WIS2 sink + mocked unit tests) |
+| Next | **T3.3** `docker-compose` wis2box harness + CI service/job |
 
 ## Do not skip
 
 - Live BYOC close gate before cycle close
-- M2→M3 gate: preflight/send API green for PG+MySQL+SQLite (met by T2.3–T2.5)
+- Merge #761 then #762 (or squash stack) before T3.3 lands on `main`
