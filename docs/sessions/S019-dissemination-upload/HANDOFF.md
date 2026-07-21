@@ -11,7 +11,7 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Merged | #761–#767 (through **M4**) |
-| Open PRs | [#771](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771) M5+M6 T6.1–T6.5 → `main` (CI green); T6.6 report branch `cursor/s019-t66-deploy-smoke-151c` |
+| Open PRs | [#771](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771) M5+M6 T6.1–T6.5; [#772](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/772) T6.6 partial smoke (CI green [29848981419](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/29848981419)) |
 | Done | M1–M5; T6.1–T6.5; T6.6 **partial** (H0c/H1/H4/H5 PASS) |
 | Blocked | **T6.6** — Render allowlist confirm; authenticated H3; live BYOC Postgres+WIS2+EDIS; FE drawer not on live until #771 merge |
 | Branch | `cursor/s019-t66-deploy-smoke-151c` |
