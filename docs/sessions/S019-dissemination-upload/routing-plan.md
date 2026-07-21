@@ -5,9 +5,9 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | completed | Session open |
-| 16-evolve | yes | orchestrator | in_progress | EV-014; Phase 0 approved; Phase A (01) next |
-| 01-requirements | yes | delta | in_progress | F16–F19 + corpus amend + ADRs |
-| 02-verify-plan | yes | delta | pending | After 01 |
+| 16-evolve | yes | orchestrator | in_progress | EV-014; Phase A — 02-verify-plan in progress |
+| 01-requirements | yes | delta | completed | F16–F19 + corpus amend + ADRs |
+| 02-verify-plan | yes | delta | in_progress | Consistency + medium/low review (Q26+) |
 | 03-plan-tooling | yes | delta | pending | Full preset |
 | 04-tech-plan | yes | delta | pending | |
 | 05-verify-tech | yes | delta | pending | Full preset |

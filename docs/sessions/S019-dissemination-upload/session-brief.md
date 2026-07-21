@@ -35,6 +35,7 @@ One BIG dissemination evolve cycle:
 |------|----------|
 | Q23 | Multi-DB: Postgres, MySQL/MariaDB, SQL Server, SQLite (A–D; no other named vendor) |
 | Q24=A | Approve F16–F19 + **Full** routing → write feature-list + start 01-requirements |
+| Q25=A | Run 02-verify-plan now (PR #753) |
 | AskQuestion | Waived (cloud written interview) |
 
 ### Locked intake (summary)

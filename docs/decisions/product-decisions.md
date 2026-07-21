@@ -42,3 +42,10 @@
 | 2026-07-16 | EV009-S3.2 | approved | Quick fix via existing lint fixes[] — code add_terminator, replacement = text + '=' |
 | 2026-07-16 | EV009-S3.3 | approved | Preview pane shows most recent preview only (no history v1) |
 | 2026-07-16 | EV009-S3.4 | approved | Passing preview badge copy: "Passed" |
+| 2026-07-21 | EV014-S1.H1–S6.H3 | auto-approved | 28 high-confidence F16–F19 claims from Q5–Q24 / requirements-decisions EV-014 (see S019 02-verify-plan-audit) |
+| 2026-07-21 | C-EV014-1 | pending | F8 non-goals bullet vs F16–F19 supersession |
+| 2026-07-21 | S-EV014-M1 | pending | Component Overview dissemination gap |
+| 2026-07-21 | S-EV014-M2 | pending | F19 live close-gate vs waive |
+| 2026-07-21 | S-EV014-M3 | pending | H6 blurb vs UJ-027–030 |
+| 2026-07-21 | S-EV014-M4 | pending | ADR-029 Proposed → Accepted |
+| 2026-07-21 | S-EV014-L1 | pending | Allowlist env deferred to 04 |

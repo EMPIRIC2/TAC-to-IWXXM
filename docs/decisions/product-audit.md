@@ -97,3 +97,48 @@
 ## Next Step
 
 **03-plan-tooling** — create scope-checking hooks, plan-adherence rules, and domain-specific skills.
+
+---
+
+## S019 / EV-014 delta — Dissemination F16–F19 (2026-07-21)
+
+**Session report**: [`docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md`](../sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md)  
+**Status**: in_progress — 28 high auto-approved; 6 statements pending user review
+
+### Delta inventory
+
+| # | Document | Statements | Status |
+|---|----------|------------|--------|
+| 1 | feature-list.md (F16–F19 + Non-Goals) | 14 | reviewing |
+| 2 | spec.md (F16–F19 + BYO + F8) | 8 | reviewing |
+| 3 | user-journeys.md (UJ-027–030) | 6 | reviewing |
+| 4 | test-plan.md (TC-F16..F19) | 10 | reviewing |
+| 5–6 | ADR-021 amend + ADR-029 | 7 | reviewing |
+
+### Consistency (delta)
+
+| Check | Result |
+|-------|--------|
+| Feature ↔ Spec | Pass* (Component Overview gap → S-EV014-M1) |
+| Feature ↔ Journey | Pass |
+| Journey ↔ Test | Pass |
+| Feature ↔ Test | Pass |
+| Spec ↔ Config | Deferred to 04 (S-EV014-L1) |
+| Scope boundaries | Fail → C-EV014-1 (F8 non-goals bullet) |
+| Template static+api+worker | Pass |
+| Connectivity H4–H5/H6′ | Pass* (H6 blurb → S-EV014-M3) |
+
+### Auto-approved (high)
+
+28 statements — see session report table S1.H1–S6.H3 (interview Q5–Q24 / requirements-decisions EV-014).
+
+### Pending review
+
+| ID | Confidence | Category |
+|----|------------|----------|
+| C-EV014-1 | Low | `[Contradiction]` F8 non-goals still list AMHS/push sinks |
+| S-EV014-M1 | Medium | Component Overview omits dissemination |
+| S-EV014-M2 | Medium | `[Ambiguity]` F19 live close-gate vs waive |
+| S-EV014-M3 | Medium | H6 harness text vs UJ-027–030 H6′ |
+| S-EV014-M4 | Medium | ADR-029 Proposed → Accepted? |
+| S-EV014-L1 | Low | Allowlist env deferred to 04 |
