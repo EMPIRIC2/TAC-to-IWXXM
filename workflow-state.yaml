@@ -10189,7 +10189,7 @@ git_history:
   pending_commit: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
   tip_sha: 8fa04afca98aa48930c61af235a2b83769e6fdc8
   notes:
-    - '2026-07-21 S019/EV-014 Phase 0 APPROVED + 01-requirements delta (d3e69fbedb11079dbeee20404297beb59cabe661) — Q23=A–D vendors; Q24=A Full; F16–F19 Planned; non-goals amended; ADR-021/029; handoff 02-verify-plan'
+    - '2026-07-21 S019/EV-014 Phase 0 APPROVED + 01-requirements delta (af43dd97407cd8ba8783368a29d5036002b87ffb) — Q23=A–D vendors; Q24=A Full; F16–F19 Planned; non-goals amended; ADR-021/029; handoff 02-verify-plan'
     - '2026-07-21 S019/EV-014 Phase 0 Batch 5 locked (8fa04af) — Q20=A,B,C,D all extras IN; Q14r-extras-enum resolved; Q21=A; Q22=A Full proposed; draft F16-F19; open Q20C vendors; Phase 0 still not approved'
     - '2026-07-21 S019/EV-014 Phase 0 Batch 4 locked (da674f6) — Q14r=B expand pending enum; Q17=A test wis2box; Q18≈A BYOC SMTP; Q19=A F5; Phase 0 still not approved'
     - '2026-07-21 S019/EV-014 Phase 0 Batch 3 clarifications (898795f) — Q10 auth vs send-DB; Q11=A+B max SSRF; Q14 Contradiction vs Batch 1; Q16 BYO creds; Phase 0 still not approved'
@@ -10697,7 +10697,7 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
-    - sha: d3e69fbedb11079dbeee20404297beb59cabe661
+    - sha: af43dd97407cd8ba8783368a29d5036002b87ffb
       short: PENDING
       message: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
       branch: cursor/dissemination-upload-e25c
