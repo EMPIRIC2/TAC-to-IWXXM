@@ -11,6 +11,7 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Branch | `cursor/s019-t33-wis2box-harness-c6f7` (T3.3) |
+| PR (T3.3) | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/763 (CI green) |
 | Merged into `main` | #761 (T2.7), #762 (T3.1–T3.2) |
 | Done | M1; M2; M3 through **T3.3** (Compose wis2box harness + CI hook) |
 | Next | **T3.4** Staging harness publish green (TC-F17-001) |
