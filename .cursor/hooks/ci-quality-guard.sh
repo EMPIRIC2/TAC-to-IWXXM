@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Cursor beforeShellExecution hook: block git commit/push when CI Quality Gates would fail.
-# Matches ci-cd.yml job "quality-gates" (ruff format --check apps packages tests + pnpm format:check).
+# Cursor beforeShellExecution hook: block git commit/push when local CI gates would fail.
+# pre-commit → make validate-fast pieces; pre-push → make validate-ci (see .pre-commit-config.yaml).
 set -euo pipefail
 
 payload="$(cat)"
@@ -29,20 +29,37 @@ repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$repo_root"
 
 failures=()
+detail=""
 
-if command -v uv >/dev/null 2>&1 && [[ -f pyproject.toml ]]; then
-  if ! uv run ruff format --check apps packages tests >/tmp/ci-quality-guard-ruff.out 2>&1; then
-    failures+=("Python: uv run ruff format --check apps packages tests")
-    ruff_out="$(head -20 /tmp/ci-quality-guard-ruff.out)"
+run_check() {
+  local label="$1"
+  shift
+  local out
+  out="$(mktemp)"
+  if ! "$@" >"$out" 2>&1; then
+    failures+=("$label")
+    detail="${detail}
+
+${label}:
+$(head -40 "$out")"
   fi
-else
-  failures+=("Python: uv not available — run 'make install' before commit")
-fi
+  rm -f "$out"
+}
 
-if command -v pnpm >/dev/null 2>&1 && [[ -f package.json ]]; then
-  if ! pnpm run format:check >/tmp/ci-quality-guard-pnpm.out 2>&1; then
-    failures+=("JS/TS: pnpm run format:check")
-    pnpm_out="$(head -20 /tmp/ci-quality-guard-pnpm.out)"
+if ! command -v uv >/dev/null 2>&1 || [[ ! -f pyproject.toml ]]; then
+  failures+=("Python: uv not available — run 'make install' before commit")
+else
+  # Match Makefile validate-fast / CI validate job entry points.
+  if [[ "$command_line" =~ git[[:space:]]+push ]]; then
+    run_check "make validate-ci" make validate-ci
+  else
+    run_check "make format-check" make format-check
+    run_check "make lint" make lint
+    run_check "make typecheck" make typecheck
+    run_check "make secrets-check" make secrets-check
+    run_check "make validate-yaml" make validate-yaml
+    run_check "make catalog-check" make catalog-check
+    run_check "make issue-registry-guard" make issue-registry-guard
   fi
 fi
 
@@ -51,16 +68,11 @@ if [[ ${#failures[@]} -eq 0 ]]; then
   exit 0
 fi
 
-summary="CI Quality Gates would fail on push to main. Run 'make format-check' (or 'make format' to fix) before commit/push."
-detail=""
-[[ -n "${ruff_out:-}" ]] && detail="${detail}
-
-Ruff:
-${ruff_out}"
-[[ -n "${pnpm_out:-}" ]] && detail="${detail}
-
-Prettier:
-${pnpm_out}"
+if [[ "$command_line" =~ git[[:space:]]+push ]]; then
+  summary="CI validate gates would fail on push. Run 'make validate-ci' (and 'make ci' before push) before retrying."
+else
+  summary="CI Quality Gates would fail on commit. Run 'make validate-fast' (or 'make format' to fix) before commit."
+fi
 
 agent_msg="${summary}
 

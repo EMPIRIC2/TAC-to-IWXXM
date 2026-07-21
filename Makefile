@@ -30,7 +30,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
-	install-hooks pre-commit-run \
+	install-hooks pre-commit-run pre-push-run \
 	catalog-regen catalog-check \
 	issue-registry-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
@@ -43,10 +43,13 @@ install:
 	$(PNPM) install
 
 install-hooks:
-	$(UV) run pre-commit install
+	$(UV) run pre-commit install --hook-type pre-commit --hook-type pre-push
 
 pre-commit-run:
 	$(UV) run pre-commit run --all-files
+
+pre-push-run:
+	$(UV) run pre-commit run --hook-stage pre-push --all-files
 
 # --- F15 issue catalog (ADR-028 / EV-011) ---
 

@@ -235,9 +235,11 @@ jobs:
             apps/backend/htmlcov/
             apps/backend/coverage.xml
 
+      # v7+ fetches the Codecov CLI GPG key from codecovsecops (v5/v6.0.1 Keybase
+      # codecovsecurity URL 404s → "Could not verify signature" with fail_ci_if_error).
       - name: Upload backend coverage to Codecov
         if: always() && matrix.package == 'backend'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: joseph-c-mcguire/metar-to-IWXXM
@@ -257,7 +259,7 @@ jobs:
 
       - name: Upload auth coverage to Codecov
         if: always() && matrix.package == 'auth'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: joseph-c-mcguire/metar-to-IWXXM
@@ -275,7 +277,7 @@ jobs:
 
       - name: Upload frontend coverage to Codecov
         if: always() && matrix.package == 'frontend'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: joseph-c-mcguire/metar-to-IWXXM

@@ -211,14 +211,25 @@ Primary workflow: `.github/workflows/ci-cd.yml` (EV-002: **validate → test →
 | **test** | Matrix: shared, backend, auth, gifts, frontend, integration — pytest 98% + Codecov 95% |
 | **deploy** | Docker build/push + Render hooks (`main` push only) |
 
-Local fast gates (dual-run with CI validate):
+Local gates (dual-run with CI validate + test):
 
 ```bash
-make install-hooks    # pre-commit install
-pre-commit run --all-files
-make validate-fast    # same checks without config-guard/audit
-make ci               # full suite (tests + integration) — matches CI test job + badge-audit
+make install-hooks    # installs pre-commit + pre-push hooks
+pre-commit run --all-files          # fast commit gates
+make pre-push-run                   # make validate-ci + make ci (same as git push hooks)
+make validate-fast                  # format/lint/typecheck/secrets/yaml/catalog
+make validate-ci                    # CI validate job locally
+make ci                             # full suite (tests + integration) — CI test parity
 ```
+
+Hooks (after `make install-hooks`):
+
+| Git hook | Runs |
+|----------|------|
+| **pre-commit** | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint |
+| **pre-push** | `make validate-ci` then `make ci` (blocks push if CI would fail) |
+
+Bypass only when intentional: `git commit --no-verify` / `git push --no-verify`.
 
 - Python 3.12 + Node 22
 - Unit tests and 95% Codecov gate on `apps/backend`, `packages/*`, `apps/frontend`

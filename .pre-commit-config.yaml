@@ -1,3 +1,9 @@
+# Local gates mirroring .github/workflows/ci-cd.yml
+# - default (pre-commit): fast checks ≈ make validate-fast pieces
+# - pre-push: make validate-ci + make ci (CI validate + test parity)
+# Install both: make install-hooks
+default_install_hook_types: [pre-commit, pre-push]
+
 repos:
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.24.3
@@ -17,7 +23,8 @@ repos:
         always_run: true
       - id: ruff-check
         name: ruff check
-        entry: uv run ruff check apps/backend/src apps/backend/tests packages/auth/src packages/auth/tests packages/tac2iwxxm/src packages/tac2iwxxm/tests packages/shared packages/shared/tests tests
+        # Keep paths in sync with Makefile PY_LINT
+        entry: uv run ruff check --force-exclude apps/backend/src apps/backend/tests packages/auth/src packages/auth/tests packages/shared packages/shared/tests packages/tac2iwxxm/src packages/tac2iwxxm/tests packages/iwxxm-validate/src packages/iwxxm-validate/tests packages/tac-validate/src packages/tac-validate/tests packages/dissemination/src packages/dissemination/tests tests
         language: system
         pass_filenames: false
         always_run: true
@@ -45,20 +52,34 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: catalog-check
+        name: ISSUE_CATALOG drift check
+        entry: make catalog-check
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: issue-registry-guard
         name: tac-validate issue registry severity literals (error)
-        entry: env ISSUE_REGISTRY_GUARD_STRICT=1 python3 scripts/ci/check_issue_registry_literals.py
+        entry: make issue-registry-guard
         language: system
-        files: ^packages/tac-validate/src/.*\.py$
-        pass_filenames: true
+        pass_filenames: false
+        always_run: true
+      - id: make-validate-ci
+        name: make validate-ci (CI validate job)
+        entry: make validate-ci
+        language: system
+        pass_filenames: false
+        always_run: true
+        require_serial: true
+        stages: [pre-push]
       - id: make-ci
-        name: make ci (full suite)
+        name: make ci (CI test parity)
         entry: make ci
         language: system
         pass_filenames: false
         always_run: true
         require_serial: true
-        stages: [manual]
+        stages: [pre-push]
 
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.7
