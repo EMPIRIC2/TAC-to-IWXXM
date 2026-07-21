@@ -11,6 +11,7 @@
 | Session | `S019-dissemination-upload` |
 | Cycle | `EV-014` |
 | Branch | `cursor/s019-t26-sqlserver-aioodbc-4b72` (T2.6); base `main` |
+| PR | https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/759 (T2.6 → main) |
 | Merged to main | #755, #756, #757, #758 (session stack) |
 | Done | M1; M2 through **T2.6** (SQL Server aioodbc; skip without ODBC) |
 | Next | **T2.7** ODBC driver notes in deploy.md / package README |

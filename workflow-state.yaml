@@ -2606,7 +2606,7 @@ stages:
     - >-
       2026-07-21 S019/EV-014 07-build M2 T2.6 done — SQL Server aioodbc path + ODBC skip;
       next T2.7 ODBC driver docs; branch cursor/s019-t26-sqlserver-aioodbc-4b72
-      (commit pending append after git)
+      tip 50d213d; PR #759 open
     - >-
       2026-07-21 S019/EV-014 open PR stack #755 #756 #757 #758 merged to main
       (7a9cb37/4afa313/1b9ac97/77a37c7)
@@ -3572,7 +3572,7 @@ decisions_log:
   decision: >-
     T2.6 completed — SQL Server aioodbc path + ODBC skip when driver absent;
     next T2.7 ODBC driver docs. Branch cursor/s019-t26-sqlserver-aioodbc-4b72;
-    [T2.6] commit pending append after git. No user decision; progress note.
+    tip 50d213d (50d213d277b7d66bc1afeca928b9d47b3e46b9f2); PR #759 open. No user decision; progress note.
 - id: N-S019-EV014-prs-755-758-merged
   date: '2026-07-21'
   session_id: S019-dissemination-upload
@@ -10789,12 +10789,13 @@ git_history:
   current_branch: cursor/s019-t26-sqlserver-aioodbc-4b72
   ahead_of_origin: 0
   pushed: true
-  pending_commit: '[T2.6] SQL Server aioodbc path + ODBC skip (append after git)'
-  tip_sha: 77a37c7a9aefb3d38ec5a3728851921ad1a7fd05
+  pending_commit: null
+  tip_sha: 50d213d277b7d66bc1afeca928b9d47b3e46b9f2
+  tip_sha_full: 50d213d277b7d66bc1afeca928b9d47b3e46b9f2
   notes:
   - >-
-    2026-07-21 S019/EV-014 tip 77a37c7 on cursor/s019-t26-sqlserver-aioodbc-4b72 (tracks main
-    after #755–#758); T2.6 work uncommitted — [T2.6] commit pending append after git; next T2.7
+    2026-07-21 S019/EV-014 tip 50d213d (50d213d277b7d66bc1afeca928b9d47b3e46b9f2) on
+    cursor/s019-t26-sqlserver-aioodbc-4b72; [T2.6] recorded; PR #759 open; next T2.7
   - >-
     2026-07-21 S019/EV-014 PR stack merged to main — #755 (7a9cb37), #756 (4afa313),
     #757 (1b9ac97), #758 (77a37c7)
@@ -10997,8 +10998,16 @@ git_history:
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     purpose: S019/EV-014 07-build M2 T2.6 SQL Server aioodbc
-    tip_sha: 77a37c7a9aefb3d38ec5a3728851921ad1a7fd05
-    note: T2.6 completed (uncommitted); next T2.7 ODBC docs; [T2.6] commit pending append after git
+    tip_sha: 50d213d277b7d66bc1afeca928b9d47b3e46b9f2
+    tip_sha_full: 50d213d277b7d66bc1afeca928b9d47b3e46b9f2
+    pushed: true
+    pr_number: 759
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/759
+    pr_title: '[T2.6] SQL Server aioodbc writer-contract path (S019/EV-014)'
+    pr_base: main
+    pr_head: cursor/s019-t26-sqlserver-aioodbc-4b72
+    pr_status: open
+    note: T2.6 committed (50d213d); PR #759 open; next T2.7 ODBC driver docs
   - name: cursor/s019-t25-writer-contract-engines-ce70
     status: merged
     base: cursor/s019-07-build-m1-9a92
@@ -11370,6 +11379,29 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 50d213d277b7d66bc1afeca928b9d47b3e46b9f2
+    short: 50d213d
+    branch: cursor/s019-t26-sqlserver-aioodbc-4b72
+    message: "[T2.6] test: SQL Server aioodbc path with ODBC skip"
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    timestamp: '2026-07-21T03:56:00Z'
+    files_changed_note: odbc.py, sqlserver tests, URI normalize, README, Makefile, workflow-state, handoff
+    files_changed:
+    - Makefile
+    - docs/dependency-inventory.md
+    - docs/sessions/S019-dissemination-upload/HANDOFF.md
+    - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+    - packages/dissemination/README.md
+    - packages/dissemination/pyproject.toml
+    - packages/dissemination/src/dissemination/db_preflight.py
+    - packages/dissemination/src/dissemination/odbc.py
+    - packages/dissemination/src/dissemination/writer_contract.py
+    - packages/dissemination/tests/test_db_preflight_handles.py
+    - packages/dissemination/tests/test_odbc.py
+    - packages/dissemination/tests/test_writer_contract_sqlserver.py
+    - workflow-state.yaml
   - sha: aa5ea23a19acfac0e55adca903bb21ecdd0841d7
     short: aa5ea23
     branch: cursor/s019-t25-writer-contract-engines-ce70
