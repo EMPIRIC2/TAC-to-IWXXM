@@ -16,9 +16,9 @@
 |-------|-------|
 | **Active phase** | Phase C — **07-build** M6 in progress |
 | **Active milestone** | M6 — FE drawer + connectivity + verify |
-| **Active task** | T6.4 (next) |
-| **Tasks** | 26 / **29** completed (through T6.3) |
-| **Branch** | `cursor/s019-t63-dissemination-e2e-8b16` (PR #770) |
+| **Active task** | T6.5 (next) |
+| **Tasks** | 27 / **29** completed (through T6.4) |
+| **Branch** | `cursor/s019-t64-verify-build-7820` |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -103,7 +103,7 @@
 | T6.1 | Test | Vitest: drawer sink chooser + preflight diff + block Send | TC-F16-001/004; UJ-027 | T2.4 | **completed** |
 | T6.2 | Code | Dissemination drawer UI (URI, drag-drop, sink types) | F16–F19; E14-10 | T6.1 | **completed** |
 | T6.3 | Test | Playwright UJ-027–030 smokes (H6′) | test-plan H6′ | T6.2, T3.4, T4.3, T5.3 | **completed** |
-| T6.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5, T6.2 | pending |
+| T6.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5, T6.2 | **completed** |
 | T6.5 | Config | 12-verify-deploy checklist (allowlist + Compose harness) | 12; E14-08 | T6.4 | pending |
 | T6.6 | Config | 13-deploy-smoke H1–H5 + H0c; live BYOC close gate evidence | 13; Q15/Q21; TC-F17-002 | T6.5 | pending |
 

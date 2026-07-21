@@ -10,12 +10,12 @@ active_session:
   type: feature
   intent: 'Dissemination epic: F16 multi-DB upload (#729) URI one-shot + preflight + DDL + drag-drop; F17 WIS2 (#2) staging test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase 0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-t63-dissemination-e2e-8b16
+  branch: cursor/s019-t64-verify-build-7820
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'T6.3 Playwright UJ-027–030 6/6 green; PR #770; next T6.4 08-verify-build; tip TBD after commit'
+  note: 'T6.4 PASS; next T6.5; report verification-report.md; progress 27/29'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -55,6 +55,7 @@ active_session:
     - packages/dissemination/tests/test_package_layout.py
     - packages/dissemination/tests/test_allowlist.py
     - docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
+    - docs/sessions/S019-dissemination-upload/reports/verification-report.md
   routing_plan:
     - stage: 00-context
       required: true
@@ -70,7 +71,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build T6.3 done (Playwright UJ-027–030 6/6); PR #770; next T6.4; progress 26/29"
+      note: "Phase C — 07-build M6 T6.4 PASS; next T6.5; progress 27/29"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -125,13 +126,13 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-21'
-      note: 'T6.3 completed (Playwright UJ-027–030 6/6 green); PR #770 open; next T6.4 08-verify-build; progress 26/29; tip 9f755d5'
+      note: 'T6.4 PASS (08-verify-build); progress 27/29; next T6.5 (12-verify-deploy)'
     - stage: 08-verify-build
       required: true
       mode: full
       status: pending
       skip_rationale:
-      note: Full routing (Q24=A) — await prior stages
+      note: 'Full routing (Q24=A) — T6.4 invoked 08 as M6 config under 07-build (PASS; verification-report.md); stage still pending for C→D'
     - stage: 09-qa
       required: true
       mode: full
@@ -2388,12 +2389,13 @@ stages:
         started_at: '2026-07-21'
         started: '2026-07-21'
         mode: full
-        note: 'T6.3 Playwright UJ-027–030 6/6 green; PR #770; next T6.4 08-verify-build; tip TBD after commit'
-        progress: '26/29'
+        note: 'T6.4 PASS; next T6.5; report verification-report.md; progress 27/29'
+        progress: '27/29'
         active_milestone: M6
-        active_task: T6.4
+        active_task: T6.5
         active_task_status: pending
-        report: docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
+        report: docs/sessions/S019-dissemination-upload/reports/verification-report.md
+        branch: cursor/s019-t64-verify-build-7820
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -2857,6 +2859,16 @@ stages:
       report:
         status: completed
     delta_substages:
+      - id: S019-dissemination-upload
+        session_id: S019-dissemination-upload
+        evolve_cycle_id: EV-014
+        status: pass
+        mode: delta
+        note: 'T6.4 config task under 07-build — verification-report.md PASS'
+        report: docs/sessions/S019-dissemination-upload/reports/verification-report.md
+        active_milestone: M6
+        active_task: T6.4
+        active_task_status: completed
       - id: S015-metar-lint-quality
         session_id: S015-metar-lint-quality
         evolve_cycle_id: EV-011
@@ -7768,12 +7780,13 @@ evolve_cycles:
       note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
     current_stage: 07-build
     active_milestone: M6
-    active_task: T6.4
+    active_task: T6.5
     active_task_status: pending
-    progress: '26/29'
-    branch: cursor/s019-t63-dissemination-e2e-8b16
-    note: 'T6.3 Playwright UJ-027–030 6/6 green; PR #770; next T6.4 08-verify-build; tip TBD after commit'
+    progress: '27/29'
+    branch: cursor/s019-t64-verify-build-7820
+    note: 'T6.4 08-verify-build PASS; next T6.5; progress 27/29'
     notes:
+      - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS (prettier UJ-027–030 e2e + badge_audit drop gifts); next T6.5 12-verify-deploy; progress 27/29. Artifact docs/sessions/S019-dissemination-upload/reports/verification-report.md. Branch cursor/s019-t64-verify-build-7820.'
       - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29. Artifact docs/sessions/S019-dissemination-upload/reports/07-build-t63.md; log /opt/cursor/artifacts/t63-playwright-uj027-030.log.'
       - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
       - '2026-07-21 S019/EV-014 PR #769 CI/CD Pipeline passed (frontend coverage restored). T6.1+T6.2 done; tip 6e247af on cursor/s019-t61-drawer-vitest-a804; next M6 T6.3; progress 25/29.'
@@ -10500,14 +10513,15 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-t63-dissemination-e2e-8b16
+  current_branch: cursor/s019-t64-verify-build-7820
   ahead_of_origin: 0
-  pushed: true
-  pending_commit: null
-  tip_sha: 9f755d523804eae08e07fc5711dcdd736f71bd11
-  tip_sha_full: 9f755d523804eae08e07fc5711dcdd736f71bd11
-  note: 'T6.3 completed — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29; tip 9f755d5 (amend if tip moves)'
+  pushed: false
+  pending_commit: true
+  tip_sha: abf2580d096f59de80fdc8501a4e661323b310d3
+  tip_sha_full: abf2580d096f59de80fdc8501a4e661323b310d3
+  note: 'T6.4 08-verify-build PASS on cursor/s019-t64-verify-build-7820 (base t63 @ abf2580); next T6.5; progress 27/29; commits pending push'
   notes:
+    - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS on cursor/s019-t64-verify-build-7820 (prettier UJ e2e + badge_audit gifts drop); next T6.5; progress 27/29; report verification-report.md'
     - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open (https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/770); next T6.4; progress 26/29'
     - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
     - '2026-07-21 S019/EV-014 PR #769 CI/CD Pipeline passed (frontend coverage restored). T6.1+T6.2 done; tip 6e247af on cursor/s019-t61-drawer-vitest-a804; next M6 T6.3; progress 25/29.'
@@ -10713,6 +10727,17 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: cursor/s019-t64-verify-build-7820
+      status: active
+      base: cursor/s019-t63-dissemination-e2e-8b16
+      created: '2026-07-21'
+      created_at: '2026-07-21'
+      session_id: S019-dissemination-upload
+      evolve_cycle_id: EV-014
+      purpose: S019/EV-014 07-build M6 T6.4 08-verify-build
+      tip_sha: pending
+      pushed: false
+      note: 'T6.4 08-verify-build PASS; next T6.5; progress 27/29'
     - name: cursor/s019-t63-dissemination-e2e-8b16
       status: open
       base: cursor/s019-t61-drawer-vitest-a804

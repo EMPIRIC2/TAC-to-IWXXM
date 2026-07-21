@@ -7,10 +7,7 @@
 import { expect, test, type Page, type Request } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  fillManualTac,
-  openConverterForE2e,
-} from './playwright-e2e-helpers';
+import { fillManualTac, openConverterForE2e } from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
 const IWXXM_XML =
@@ -124,9 +121,7 @@ async function openDisseminationDrawer(page: Page): Promise<void> {
   await expect(openBtn).toBeEnabled({ timeout: 15000 });
   await openBtn.click();
   await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: /dissemination/i }),
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: /dissemination/i })).toBeVisible();
 }
 
 async function prepareWorkbench(page: Page): Promise<void> {
@@ -197,9 +192,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
 
     await openDisseminationDrawer(page);
 
-    await page
-      .getByTestId('dissemination-sink-chooser')
-      .selectOption('postgres');
+    await page.getByTestId('dissemination-sink-chooser').selectOption('postgres');
     await page
       .getByTestId('dissemination-uri-input')
       .fill('postgresql://u:p@db.example.com:5432/wx');
@@ -267,17 +260,13 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
 
     await openDisseminationDrawer(page);
 
-    await page
-      .getByTestId('dissemination-sink-chooser')
-      .selectOption('sqlite');
+    await page.getByTestId('dissemination-sink-chooser').selectOption('sqlite');
     await page
       .getByTestId('dissemination-uri-input')
       .fill('sqlite:////tmp/e2e-dissemination.db');
 
     await page.getByTestId('dissemination-file-input').setInputFiles(FIXTURE_TAC);
-    await expect(page.getByTestId('dissemination-payload-status')).toContainText(
-      /TAC/,
-    );
+    await expect(page.getByTestId('dissemination-payload-status')).toContainText(/TAC/);
 
     await page.getByTestId('dissemination-preflight-button').click();
     await expect(page.getByTestId('dissemination-preflight-green')).toBeVisible();
@@ -290,9 +279,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     expect(sendBody.tac_text).toContain('METAR');
   });
 
-  test('UJ-028: WIS2 sink uses BYOC params (staging path mocked)', async ({
-    page,
-  }) => {
+  test('UJ-028: WIS2 sink uses BYOC params (staging path mocked)', async ({ page }) => {
     await prepareWorkbench(page);
     const captured = await stubDisseminationApis(page, {
       preflightBody: {
@@ -401,9 +388,11 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
 
       await openDisseminationDrawer(page);
       await page.getByTestId('dissemination-sink-chooser').selectOption(sink);
-      await page.getByTestId('dissemination-byoc-params').fill(
-        JSON.stringify({ endpoint: `https://${sink}.example.test/v1`, token: 't' }),
-      );
+      await page
+        .getByTestId('dissemination-byoc-params')
+        .fill(
+          JSON.stringify({ endpoint: `https://${sink}.example.test/v1`, token: 't' }),
+        );
 
       await page.getByTestId('dissemination-preflight-button').click();
       await expect(page.getByTestId('dissemination-preflight-green')).toBeVisible();
