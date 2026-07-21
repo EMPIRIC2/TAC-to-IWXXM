@@ -14,10 +14,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — **07-build** M1 |
-| **Active milestone** | M1 — Package scaffold + SSRF/allowlist |
-| **Active task** | T1.1 (completing) |
-| **Tasks** | 1 / **29** completed (T0.1); M1 in progress |
+| **Active phase** | Phase C — **07-build** M1 **complete**; next M2 T2.1 |
+| **Active milestone** | M2 — Multi-DB writer-contract + preflight/send API |
+| **Active task** | T2.1 (next) |
+| **Tasks** | 6 / **29** completed (T0.1 + T1.1–T1.5) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
