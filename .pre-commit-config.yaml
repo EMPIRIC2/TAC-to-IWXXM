@@ -2,6 +2,10 @@
 # - default (pre-commit): fast checks ≈ make validate-fast pieces
 # - pre-push: make validate-ci + make ci (CI validate + test parity)
 # Install both: make install-hooks
+#
+# pre-commit 4.x default_stages includes every hook type; pin to pre-commit so
+# omitted stages do not also fire on push (validate-ci/ci are explicit below).
+default_stages: [pre-commit]
 default_install_hook_types: [pre-commit, pre-push]
 
 repos:

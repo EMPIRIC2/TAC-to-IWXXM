@@ -8,11 +8,14 @@ from tests.live_env import live_api_url, live_frontend_url
 
 @pytest.fixture(autouse=True)
 def _clear_live_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Clear every name live_env._first_non_empty may read so developer .env /
+    # shell exports cannot leak into precedence tests.
     for key in (
         "LIVE_API_URL",
         "LIVE_FRONTEND_URL",
         "STAGING_API_URL",
         "STAGING_FRONTEND_ORIGIN",
+        "STAGING_FRONTEND_URL",
         "E2E_API_URL",
         "E2E_BACKEND_URL",
         "E2E_FRONTEND_URL",
