@@ -10668,14 +10668,14 @@ evolve_cycles:
 
 git_history:
   current_branch: cursor/s019-t66-deploy-smoke-151c
-  ahead_of_origin: 1
+  ahead_of_origin: 2
   pushed: false
   pending_commit: null
-  tip_sha: c2702a3
-  tip_sha_full: c2702a307c18da31739c7058af6789d7299e179a
-  note: 'T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29; Phase C pending_checkpoint; tip c2702a3 on cursor/s019-t66-deploy-smoke-151c'
+  tip_sha: 5b3db91
+  tip_sha_full: 5b3db913e507da6576bf996ab47174569b5cc96f
+  note: 'T6.6 completed via D-S019-EV014-Q15-mock-waive (mock BYOC); progress 29/29; Phase C pending_checkpoint; tip 5b3db91 on cursor/s019-t66-deploy-smoke-151c'
   notes:
-    - '2026-07-21 S019/EV-014 workflow-state update — T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29; gates.c_to_d=pending_checkpoint; session/cycle remain open (c2702a3)'
+    - '2026-07-21 S019/EV-014 workflow-state update — T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29; gates.c_to_d=pending_checkpoint; session/cycle remain open (5b3db91)'
     - '2026-07-21 S019/EV-014 T6.6 docs @ 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked" on cursor/s019-t66-deploy-smoke-151c; H0c/H1/H4/H5 PASS; allowlist/auth/BYOC still pending; progress 28/29 (D-S019-EV014-T66-partial)'
     - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — branch cursor/s019-t66-deploy-smoke-151c (base tip of #771 / t64 @ 7fba0a5); H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending; commit later recorded @ 8fc9fec; progress 28/29'
     - '2026-07-21 S019/EV-014 T6.5 COMPLETE — deploy-checklist.md PASS; next T6.6; progress 28/29; tip pending'
@@ -11495,8 +11495,8 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
-    - sha: c2702a307c18da31739c7058af6789d7299e179a
-      short: c2702a3
+    - sha: 5b3db913e507da6576bf996ab47174569b5cc96f
+      short: 5b3db91
       branch: cursor/s019-t66-deploy-smoke-151c
       message: '[S019] chore: record T6.6 mock-BYOC waive (D-S019-EV014-Q15-mock-waive)'
       stage: 07-build
