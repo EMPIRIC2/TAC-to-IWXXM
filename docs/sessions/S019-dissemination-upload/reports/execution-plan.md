@@ -16,10 +16,11 @@
 |-------|-------|
 | **Active phase** | Phase C — **07-build** M6 in progress |
 | **Active milestone** | M6 — FE drawer + connectivity + verify |
-| **Active task** | T6.6 (**blocked** — live BYOC / auth secrets; Render API key deferred) |
+| **Active task** | T6.6 (**blocked** — resume D-S019-EV014-T66-resume-blocked-2026-07-21) |
+| **Blockers** | (1) `.env` missing E2E_USER_EMAIL/E2E_USER_PASSWORD; (2) PR #771 OPEN draft — FE drawer not live until merge+redeploy; (3) live BYOC Postgres+WIS2+EDIS not provided; (4) Render MCP unauthorized / no RENDER_API_KEY (allowlist deferred) |
 | **Tasks** | 28 / **29** completed (through T6.5); T6.6 partial + local/CI allowlist docs |
-| **Branch** | `cursor/s019-t66-deploy-smoke-151c` (from #771 tip) |
-| **Last updated** | 2026-07-21 |
+| **Branch** | `cursor/s019-t66-deploy-smoke-151c` (PR #772; from #771 tip) |
+| **Last updated** | 2026-07-21 (resume) |
 
 ## Tech Stack Summary
 
@@ -105,7 +106,7 @@
 | T6.3 | Test | Playwright UJ-027–030 smokes (H6′) | test-plan H6′ | T6.2, T3.4, T4.3, T5.3 | **completed** |
 | T6.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5, T6.2 | **completed** |
 | T6.5 | Config | 12-verify-deploy checklist (allowlist + Compose harness) | 12; E14-08 | T6.4 | **completed** |
-| T6.6 | Config | 13-deploy-smoke H1–H5 + H0c; live BYOC close gate evidence | 13; Q15/Q21; TC-F17-002 | T6.5 | **blocked** (H0c/H1/H4/H5 PASS; BYOC+allowlist+auth pending) |
+| T6.6 | Config | 13-deploy-smoke H1–H5 + H0c; live BYOC close gate evidence | 13; Q15/Q21; TC-F17-002 | T6.5 | **blocked** (H0c/H1/H4/H5 PASS; need .env E2E_USER_* + #771 merge + live BYOC; RENDER_API_KEY deferred) |
 
 ### Stage 06 (before 07-build; optional tooling)
 

@@ -15,7 +15,13 @@ active_session:
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending). Progress 28/29; PR #771 open.'
+  note: >-
+    Resume 16-evolve/07-build at T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c (PR #772).
+    Progress 28/29. Blockers: (1) workspace .env missing — need E2E_USER_EMAIL/E2E_USER_PASSWORD;
+    (2) PR #771 still OPEN draft — FE drawer not on live until merge+redeploy;
+    (3) live BYOC Postgres+WIS2+EDIS destinations not provided;
+    (4) Render MCP unauthorized / no RENDER_API_KEY (allowlist deferred).
+    Decision D-S019-EV014-T66-resume-blocked-2026-07-21.
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -73,7 +79,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-20'
-      note: "Phase C — 07-build M6 T6.6 blocked (partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29"
+      note: "Phase C — 07-build M6 T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c; progress 28/29; resume D-S019-EV014-T66-resume-blocked-2026-07-21 (.env + #771 + live BYOC + Render API key deferred)"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -128,7 +134,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-21'
-      note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29; branch cursor/s019-t66-deploy-smoke-151c'
+      note: 'T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c (28/29); blockers .env E2E_USER_* + #771 open draft + live BYOC + no RENDER_API_KEY (D-S019-EV014-T66-resume-blocked-2026-07-21)'
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2392,7 +2398,7 @@ stages:
         started_at: '2026-07-21'
         started: '2026-07-21'
         mode: full
-        note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29; PR #771'
+        note: 'T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c (28/29); blockers .env E2E_USER_* + #771 open draft + live BYOC + no RENDER_API_KEY (D-S019-EV014-T66-resume-blocked-2026-07-21)'
         progress: '28/29'
         active_milestone: M6
         active_task: T6.6
@@ -2449,6 +2455,7 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - '2026-07-21 S019/EV-014 resume confirmed at T6.6 blocked (D-S019-EV014-T66-resume-blocked-2026-07-21) — cannot complete without operator secrets (.env E2E_USER_*) + #771 merge/redeploy + live BYOC destinations; Render MCP/API key deferred. Tip cursor/s019-t66-deploy-smoke-151c (PR #772); progress 28/29.'
       - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; commit @ 8fc9fec'
       - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open; next T6.4 08-verify-build; progress 26/29. Artifact docs/sessions/S019-dissemination-upload/reports/07-build-t63.md; log /opt/cursor/artifacts/t63-playwright-uj027-030.log.'
       - '2026-07-21 S019/EV-014 T6.3 in_progress — starting Playwright UJ-027–030 on cursor/s019-t63-dissemination-e2e-8b16 (base cursor/s019-t61-drawer-vitest-a804 / tip 1f7d9b5). Progress still 25/29 until T6.3 completes.'
@@ -3423,6 +3430,26 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S019-EV014-T66-resume-blocked-2026-07-21
+    date: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    stage: 07-build
+    skill_id: 16-evolve
+    status: blocked
+    decision: >-
+      Resume confirmed at T6.6 on tip cursor/s019-t66-deploy-smoke-151c (PR #772; orchestrator
+      16-evolve → 07-build). Cannot complete T6.6 without operator secrets + #771 merge.
+      Blockers: (1) workspace .env missing — need E2E_USER_EMAIL/E2E_USER_PASSWORD;
+      (2) PR #771 still OPEN draft — FE drawer not on live until merge+redeploy;
+      (3) live BYOC Postgres+WIS2+EDIS destinations not provided;
+      (4) Render MCP unauthorized / no RENDER_API_KEY (allowlist deferred).
+      Session/cycle remain open; T6.6 not completed; progress 28/29.
+    related_pr: 772
+    related_prs:
+      - 771
+      - 772
+    artifact: docs/sessions/S019-dissemination-upload/HANDOFF.md
   - id: D-S019-EV014-T66-partial
     date: '2026-07-21'
     session_id: S019-dissemination-upload
@@ -7844,8 +7871,15 @@ evolve_cycles:
     active_task_status: blocked
     progress: '28/29'
     branch: cursor/s019-t66-deploy-smoke-151c
-    note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29; PR #771'
+    note: >-
+      Resume at T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c (PR #772); progress 28/29.
+      Blockers: (1) workspace .env missing — need E2E_USER_EMAIL/E2E_USER_PASSWORD;
+      (2) PR #771 still OPEN draft — FE drawer not on live until merge+redeploy;
+      (3) live BYOC Postgres+WIS2+EDIS destinations not provided;
+      (4) Render MCP unauthorized / no RENDER_API_KEY (allowlist deferred).
+      D-S019-EV014-T66-resume-blocked-2026-07-21.
     notes:
+      - '2026-07-21 S019/EV-014 resume confirmed at T6.6 blocked (D-S019-EV014-T66-resume-blocked-2026-07-21) — cannot complete without operator secrets (.env E2E_USER_*) + #771 merge/redeploy + live BYOC destinations; Render MCP/API key deferred. Tip cursor/s019-t66-deploy-smoke-151c (PR #772); progress 28/29.'
       - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; git commit @ 8fc9fec'
       - '2026-07-21 S019/EV-014 T6.5 COMPLETE — 12-verify-deploy checklist PASS (allowlist docs + Compose harness; live Render allowlist confirm at T6.6). Artifact deploy-checklist.md. Progress 28/29.'
       - '2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS (prettier UJ-027–030 e2e + badge_audit drop gifts); next T6.5 12-verify-deploy; progress 27/29. Artifact docs/sessions/S019-dissemination-upload/reports/verification-report.md. Branch cursor/s019-t64-verify-build-7820.'
@@ -7928,7 +7962,7 @@ evolve_cycles:
       16-evolve:
         status: in_progress
         started: '2026-07-20'
-        note: "Phase C — 07-build M6 T6.6 blocked (partial 13-deploy-smoke); progress 28/29; PR #771"
+        note: "Phase C — 07-build M6 T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c; progress 28/29; resume D-S019-EV014-T66-resume-blocked-2026-07-21"
       01-requirements:
         status: completed
         mode: delta
@@ -8005,19 +8039,24 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-21'
-        note: 'T6.6 blocked after partial 13-deploy-smoke (H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending); progress 28/29'
+        note: >-
+          T6.6 blocked on tip cursor/s019-t66-deploy-smoke-151c (28/29); blockers .env
+          E2E_USER_* + #771 open draft + live BYOC + no RENDER_API_KEY
+          (D-S019-EV014-T66-resume-blocked-2026-07-21)
         progress: '28/29'
         active_milestone: M6
         active_task: T6.6
         active_task_status: blocked
         report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
+        branch: cursor/s019-t66-deploy-smoke-151c
       13-deploy-smoke:
         status: in_progress
         mode: full
         started: '2026-07-21'
         note: >-
-          PARTIAL — H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge blocked
-          (D-S019-EV014-T66-partial); T6.6 remains blocked
+          PARTIAL — H0c/H1/H4/H5 PASS; resume still blocked on .env + #771 + live BYOC +
+          Render API key deferred (D-S019-EV014-T66-resume-blocked-2026-07-21 /
+          D-S019-EV014-T66-partial); T6.6 remains blocked
         overall: partial
         report: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
         active_task: T6.6
