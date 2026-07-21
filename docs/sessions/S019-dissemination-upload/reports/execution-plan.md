@@ -14,11 +14,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — **07-build** M5 complete; next M6 |
+| **Active phase** | Phase C — **07-build** M6 in progress |
 | **Active milestone** | M6 — FE drawer + connectivity + verify |
-| **Active task** | T6.1 (next) |
-| **Tasks** | 23 / **29** completed (through T5.3) |
-| **Branch** | `cursor/s019-t51-adapter-stubs-584b` (M5; PR → `main`) |
+| **Active task** | T6.2 (next) |
+| **Tasks** | 24 / **29** completed (through T6.1) |
+| **Branch** | `cursor/s019-t61-drawer-vitest-a804` (includes M5 tip; PR #768 still open on `cursor/s019-t51-adapter-stubs-584b`) |
 | **Last updated** | 2026-07-21 |
 
 ## Tech Stack Summary
@@ -100,7 +100,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.1 | Test | Vitest: drawer sink chooser + preflight diff + block Send | TC-F16-001/004; UJ-027 | T2.4 | pending |
+| T6.1 | Test | Vitest: drawer sink chooser + preflight diff + block Send | TC-F16-001/004; UJ-027 | T2.4 | **completed** |
 | T6.2 | Code | Dissemination drawer UI (URI, drag-drop, sink types) | F16–F19; E14-10 | T6.1 | pending |
 | T6.3 | Test | Playwright UJ-027–030 smokes (H6′) | test-plan H6′ | T6.2, T3.4, T4.3, T5.3 | pending |
 | T6.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M1–M5, T6.2 | pending |
