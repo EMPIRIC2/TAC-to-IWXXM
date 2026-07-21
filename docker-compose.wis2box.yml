@@ -1,0 +1,12 @@
+# F17 / E14-04 / ADR-030 — wis2box test harness overlay (Compose / CI only).
+# Not a Render web service. Real `wis2box` service + image pin land in T3.3.
+#
+# Usage (after T3.3):
+#   docker compose -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box up -d
+#   make compose-wis2box-up
+#   bash scripts/ci/run_wis2box_harness.sh
+#
+# Readiness probe for tooling: scripts/ci/run_wis2box_harness.sh looks for a
+# top-level `wis2box:` service key. Until then the script exits 0 (skip).
+
+services: {}

@@ -1,0 +1,32 @@
+---
+description: F16–F19 / EV-014 — dissemination coverage gate + wis2box Compose harness (not Render)
+globs: packages/dissemination/**,docker-compose.wis2box.yml,scripts/ci/run_dissemination_coverage.sh,scripts/ci/run_wis2box_harness.sh,.github/workflows/ci-cd.yml
+alwaysApply: false
+---
+
+# Dissemination coverage + Compose harness (S019 / EV-014)
+
+Traces to ADR-007, ADR-030, E14-04, E14-09, execution-plan T0.1 / T3.3.
+
+## Coverage (`packages/dissemination`)
+
+- Enforce **≥95%** branch coverage via `packages/dissemination/pyproject.toml`
+  `[tool.coverage.report] fail_under = 95` (sibling bar: tac2iwxxm / tac-validate).
+- Local / CI entrypoint: `make test-unit-dissemination` →
+  `scripts/ci/run_dissemination_coverage.sh`.
+- Script **skips (exit 0)** until T1.1/T1.2 create `packages/dissemination/pyproject.toml`.
+- Do **not** lower the global ADR-007 95% floor.
+
+## wis2box Compose harness (F17)
+
+- Overlay file: `docker-compose.wis2box.yml` (profile `wis2box`).
+- **Not** a long-lived Render web service (E14-04=B).
+- CI/Makefile: `make compose-wis2box-up` / `scripts/ci/run_wis2box_harness.sh`.
+- Harness script skips until a `wis2box:` service exists (T3.3).
+- Staging allowlist may list Compose/CI hosts when the harness runs
+  (`DISSEMINATION_EGRESS_ALLOWLIST` — ADR-029).
+
+## Package boundary
+
+- No FastAPI / Supabase imports in `packages/dissemination` (ADR-030).
+- Thin routers live under `apps/backend` only.
