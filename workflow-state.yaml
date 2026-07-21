@@ -17,7 +17,7 @@ active_session:
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'T2.7 in progress — ODBC driver notes (deploy.md + package README)'
+  note: 'T2.7 done (PR #761); M2 complete; next T3.1'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-20'
-    note: "Phase C — 07-build M2 T2.7 in_progress (ODBC docs); MR cleanup: #753–#760 merged, no open S019 PRs"
+    note: "Phase C — 07-build M2 complete (T2.7 / PR #761); next M3 T3.1 WIS2 sink adapter unit tests"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -126,7 +126,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-21'
-    note: 'T2.7 in_progress — ODBC driver docs (deploy.md + package README) on cursor/s019-t27-odbc-docs-ee99; MR cleanup: #753–#760 merged, open PR list empty.'
+    note: 'T2.7 completed — ODBC docs (PR #761 open @ 399771f); M2 complete; next M3 T3.1 WIS2 sink adapter unit tests'
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2548,10 +2548,10 @@ stages:
       started_at: '2026-07-21'
       started: '2026-07-21'
       mode: full
-      note: 'T2.7 in_progress — ODBC driver docs (deploy.md + package README) on cursor/s019-t27-odbc-docs-ee99; MR cleanup: #753–#760 merged, open PR list empty.'
-      active_milestone: M2
-      active_task: T2.7
-      active_task_status: in_progress
+      note: 'T2.7 completed — ODBC docs (PR #761 open @ 399771f); M2 complete; next M3 T3.1 WIS2 sink adapter unit tests'
+      active_milestone: M3
+      active_task: T3.1
+      active_task_status: pending
     - id: S015-metar-lint-quality
       session_id: S015-metar-lint-quality
       evolve_cycle_id: EV-011
@@ -2603,6 +2603,9 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - >-
+      2026-07-21 S019/EV-014 T2.7 completed — ODBC docs; M2 complete; PR #761 open. Next: M3 T3.1 WIS2 sink adapter unit tests.
+      Branch cursor/s019-t27-odbc-docs-ee99 tip 399771f; PR #761 open.
     - >-
       2026-07-21 S019/EV-014 MR cleanup: no open S019 PRs (all #753–#760 merged; open PR list empty). Starting 07-build M2 T2.7 ODBC docs on branch cursor/s019-t27-odbc-docs-ee99 off origin/main.
     - >-
@@ -2735,10 +2738,10 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: 'T2.7 in_progress — ODBC driver docs (deploy.md + package README) on cursor/s019-t27-odbc-docs-ee99; MR cleanup: #753–#760 merged, open PR list empty.'
-      active_milestone: M2
-      active_task: T2.7
-      active_task_status: in_progress
+      note: 'T2.7 completed — ODBC docs (PR #761 open @ 399771f); M2 complete; next M3 T3.1 WIS2 sink adapter unit tests'
+      active_milestone: M3
+      active_task: T3.1
+      active_task_status: pending
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -3331,7 +3334,7 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M2 T2.7 in_progress (ODBC docs); MR cleanup: #753–#760 merged, no open S019 PRs; Q15=A+Q8=C+Q21=A live BYOC hard close gate
+      Phase C — 07-build M2 complete (T2.7 / PR #761); next M3 T3.1 WIS2 sink adapter unit tests; Q15=A+Q8=C+Q21=A live BYOC hard close gate
 
 stages_pending: []
 
@@ -3567,6 +3570,17 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: N-S019-EV014-T27-complete
+  date: '2026-07-21'
+  session_id: S019-dissemination-upload
+  evolve_cycle_id: EV-014
+  stage: 07-build
+  skill_id: 07-build
+  status: noted
+  decision: >-
+    T2.7 completed — ODBC docs; M2 complete; PR #761 open. Next: M3 T3.1 WIS2 sink adapter unit tests.
+    Tip 399771f on cursor/s019-t27-odbc-docs-ee99; PR #761 open. Next T3.1 pending (not started).
+    No user decision; progress note.
 - id: N-S019-EV014-T27-start
   date: '2026-07-21'
   session_id: S019-dissemination-upload
@@ -8006,6 +8020,9 @@ evolve_cycles:
   current_stage: 07-build
   notes:
   - >-
+    2026-07-21 S019/EV-014 T2.7 completed — ODBC docs; M2 complete; PR #761 open. Next: M3 T3.1 WIS2 sink adapter unit tests.
+    Tip 399771f; PR #761 open; next T3.1 pending.
+  - >-
     2026-07-21 S019/EV-014 MR cleanup: no open S019 PRs (all #753–#760 merged; open PR list empty). Starting 07-build M2 T2.7 ODBC docs on branch cursor/s019-t27-odbc-docs-ee99 off origin/main.
   - >-
     2026-07-21 S019/EV-014 07-build M2 T2.6 merged via PR #759 (2e8305e);
@@ -8076,7 +8093,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-20'
-      note: "Phase C — 07-build M2 T2.7 in_progress (ODBC docs); MR cleanup: #753–#760 merged, no open S019 PRs"
+      note: "Phase C — 07-build M2 complete (T2.7 / PR #761); next M3 T3.1 WIS2 sink adapter unit tests"
     01-requirements:
       status: completed
       mode: delta
@@ -8153,10 +8170,10 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-07-21'
-      note: 'T2.7 in_progress — ODBC driver docs (deploy.md + package README) on cursor/s019-t27-odbc-docs-ee99; MR cleanup: #753–#760 merged, open PR list empty.'
-      active_milestone: M2
-      active_task: T2.7
-      active_task_status: in_progress
+      note: 'T2.7 completed — ODBC docs (PR #761 open @ 399771f); M2 complete; next M3 T3.1 WIS2 sink adapter unit tests'
+      active_milestone: M3
+      active_task: T3.1
+      active_task_status: pending
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -10820,11 +10837,14 @@ evolve_cycles:
 git_history:
   current_branch: cursor/s019-t27-odbc-docs-ee99
   ahead_of_origin: 0
-  pushed: false
+  pushed: true
   pending_commit: null
-  tip_sha: e9121678ec7d26c87d3ab6ecb3bd3dc219d8d530
-  tip_sha_full: e9121678ec7d26c87d3ab6ecb3bd3dc219d8d530
+  tip_sha: 399771ff3ebd315df4ba1a680eb324892d0b746e
+  tip_sha_full: 399771ff3ebd315df4ba1a680eb324892d0b746e
   notes:
+  - >-
+    2026-07-21 S019/EV-014 T2.7 completed — ODBC docs; M2 complete; PR #761 open. Next: M3 T3.1 WIS2 sink adapter unit tests.
+    tip 399771f on cursor/s019-t27-odbc-docs-ee99; PR #761 open
   - >-
     2026-07-21 S019/EV-014 MR cleanup: no open S019 PRs (all #753–#760 merged; open PR list empty). Starting 07-build M2 T2.7 ODBC docs on branch cursor/s019-t27-odbc-docs-ee99 off origin/main. tip e912167 (= origin/main / #760 merge)
   - >-
@@ -11036,10 +11056,16 @@ git_history:
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     purpose: S019/EV-014 07-build M2 T2.7 ODBC docs
-    tip_sha: e9121678ec7d26c87d3ab6ecb3bd3dc219d8d530
-    tip_sha_full: e9121678ec7d26c87d3ab6ecb3bd3dc219d8d530
-    pushed: false
-    note: branched from origin/main @ e912167 (#760 merge); T2.7 in_progress
+    tip_sha: 399771ff3ebd315df4ba1a680eb324892d0b746e
+    tip_sha_full: 399771ff3ebd315df4ba1a680eb324892d0b746e
+    pushed: true
+    pr_number: 761
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/761
+    pr_title: '[T2.7] ODBC driver docs for SQL Server aioodbc (S019/EV-014)'
+    pr_base: main
+    pr_head: cursor/s019-t27-odbc-docs-ee99
+    pr_status: open
+    note: T2.7 complete; PR #761 open; M2 complete; next T3.1
   - name: cursor/s019-t26-wf-state-4b72
     status: merged
     base: main
@@ -11451,6 +11477,23 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: 399771ff3ebd315df4ba1a680eb324892d0b746e
+    short: 399771f
+    branch: cursor/s019-t27-odbc-docs-ee99
+    message: "[T2.7] docs: ODBC driver notes in deploy.md and dissemination README"
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    timestamp: '2026-07-21'
+    files_changed_note: deploy.md, dissemination README, execution-plan, HANDOFF, dependency-inventory, WF
+    files_changed:
+    - docs/dependency-inventory.md
+    - docs/deploy.md
+    - docs/sessions/S019-dissemination-upload/HANDOFF.md
+    - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
+    - packages/dissemination/README.md
+    - packages/dissemination/tests/test_writer_contract_sqlserver.py
+    - workflow-state.yaml
   - sha: 50d213d277b7d66bc1afeca928b9d47b3e46b9f2
     short: 50d213d
     branch: cursor/s019-t26-sqlserver-aioodbc-4b72
