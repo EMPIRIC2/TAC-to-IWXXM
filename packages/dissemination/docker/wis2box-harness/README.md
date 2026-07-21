@@ -16,5 +16,8 @@ make compose-wis2box-harness   # CI hook (up + probe + optional wis2* pytest)
 make compose-wis2box-down
 ```
 
-Allowlist Compose/CI hosts when exercising the sink (ADR-029), e.g.
-`DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,localhost`.
+Allowlist Compose/CI hosts when exercising the sink (ADR-029), recommended:
+
+`DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost`
+
+(same default as `scripts/ci/run_wis2box_harness.sh` / `.env.example`).

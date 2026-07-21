@@ -16,8 +16,8 @@
 |-------|-------|
 | **Active phase** | Phase C — **07-build** M6 in progress |
 | **Active milestone** | M6 — FE drawer + connectivity + verify |
-| **Active task** | T6.6 (**blocked** — live BYOC / allowlist / auth secrets) |
-| **Tasks** | 28 / **29** completed (through T6.5); T6.6 partial smoke done |
+| **Active task** | T6.6 (**blocked** — live BYOC / auth secrets; Render API key deferred) |
+| **Tasks** | 28 / **29** completed (through T6.5); T6.6 partial + local/CI allowlist docs |
 | **Branch** | `cursor/s019-t66-deploy-smoke-151c` (from #771 tip) |
 | **Last updated** | 2026-07-21 |
 

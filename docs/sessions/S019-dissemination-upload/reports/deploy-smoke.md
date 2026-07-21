@@ -1,10 +1,11 @@
 # Deploy & Smoke — S019 / EV-014 (T6.6 / 13-deploy-smoke)
 
 > Date: 2026-07-21T16:24Z  
-> Status: **PARTIAL** — H0c + H1 (public) + H4 + H5 **PASS**; authenticated H3 / allowlist value / live BYOC **BLOCKED**  
+> Status: **PARTIAL** — H0c + H1 (public) + H4 + H5 **PASS**; authenticated H3 / live Render allowlist / live BYOC **BLOCKED**  
 > Branch: `cursor/s019-t66-deploy-smoke-151c` (from tip `cursor/s019-t64-verify-build-7820` @ `7fba0a5`)  
 > Open stack: [#771](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771) M5+M6 T6.1–T6.5 (CI green, not merged)  
-> Agent: cloud run without private-worker `.env` / Render MCP auth
+> Agent: cloud run without private-worker `.env` / Render MCP auth  
+> Follow-up: local/CI allowlist recommendation applied in `.env.example` + corpus docs; **live Render env not changed** (`RENDER_API_KEY` deferred)
 
 ## Staging topology
 
@@ -35,7 +36,8 @@
 | H5 | **PASS** | `/config.json` `api.baseUrl` = `https://metar-to-iwxxm-api.onrender.com` |
 | Dissemination API presence | **PASS (route)** | OpenAPI: `POST /api/v1/dissemination/preflight` + `/send`; unauth POST → **401** `Missing authorization credentials` |
 | FE drawer live | **FAIL / not deployed** | Drawer code on #771 tip only; not on live bundle |
-| Allowlist live value | **BLOCKED** | Cannot read Render env; cannot auth-probe fail-closed vs allowlisted host |
+| Allowlist local/CI docs | **PASS** | `.env.example` + deploy/env-contract set recommended `wis2box,127.0.0.1,127.0.0.0/8,localhost` |
+| Allowlist live Render value | **DEFERRED** | No `RENDER_API_KEY` this session — leave Render empty (fail-closed) until BYOC hosts known |
 | Live BYOC (Postgres + WIS2 + EDIS) | **BLOCKED** | No operator BYOC destination URIs/creds in this environment (Q15/Q21 close gate) |
 | F19 live | Optional | Not attempted |
 
@@ -55,14 +57,20 @@ uv run pytest tests/live/test_t72_h3_live_smoke.py tests/live/test_t83_h4_h5_con
 # → 4 passed, 2 skipped (auth)
 ```
 
-## Blockers (must clear before T6.6 → completed / cycle close)
+## Proceeding without `RENDER_API_KEY` (operator approved)
 
-1. **Provide `.env` (or private-worker secrets)** with at least:
-   - `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` (or deprecated `ADMIN_*`)
-   - `RENDER_API_KEY` (allowlist confirm) — or paste current `DISSEMINATION_EGRESS_ALLOWLIST` value
-   - Live BYOC destinations for **Postgres + WIS2 + EDIS** (memory-only; never commit)
-2. **Merge #771** (and close superseded stack #768–#770 as appropriate) → wait for GHCR + Render API/FE redeploy.
-3. Re-run: allowlist confirm → authenticated H3 → live BYOC preflight/send evidence (TC-F17-002 / TC-F18-002 / TC-F16 live) → optional F19 waive.
+| Action | Status |
+|--------|--------|
+| Document + set local/CI recommended allowlist in `.env.example` / corpus | **Done** |
+| Change live Render `DISSEMINATION_EGRESS_ALLOWLIST` | **Skipped** — keep empty fail-closed until API key + exact BYOC hosts |
+| Authenticated H3 / live BYOC | **Still blocked** — needs `E2E_USER_*` (admin login) + destination hosts |
+
+## Remaining blockers (T6.6 → completed / cycle close)
+
+1. **Provide `.env` (or private-worker secrets)** with `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` (admin login) and live BYOC destinations for **Postgres + WIS2 + EDIS** (memory-only).
+2. **Optional later:** `RENDER_API_KEY` to set/confirm live allowlist to exact demo hostnames before BYOC.
+3. **Merge #771** → wait for GHCR + Render API/FE redeploy (drawer on live bundle).
+4. Re-run: authenticated H3 → live BYOC preflight/send evidence → optional F19 waive.
 
 ## Rollback
 
@@ -72,4 +80,5 @@ uv run pytest tests/live/test_t72_h3_live_smoke.py tests/live/test_t83_h4_h5_con
 ## Verdict
 
 **Connectivity half of T6.6 PASS** (H0c + H1 public + H4 + H5).  
-**T6.6 overall = blocked** until Render allowlist confirm + authenticated probes + live BYOC close-gate evidence (and FE drawer live after #771).
+**Local/CI allowlist recommendation applied** (docs + `.env.example`).  
+**T6.6 overall remains blocked** on auth + live BYOC (+ optional Render allowlist set when API key available; FE drawer after #771).

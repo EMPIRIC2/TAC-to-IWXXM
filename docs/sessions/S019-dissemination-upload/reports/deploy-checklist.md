@@ -33,10 +33,10 @@
 | `docs/config-spec.md` documents var | **PASS** | config-spec §Dissemination |
 | `docs/deploy.md` Render table + Compose usage | **PASS** | deploy.md allowlist + wis2box sections |
 | `docs/ops/staging-secrets-matrix.md` API row | **PASS** | matrix row (dashboard, sync: false) |
-| `.env.example` placeholder | **PASS** | `DISSEMINATION_EGRESS_ALLOWLIST=` + commented harness hosts |
+| `.env.example` local/CI value | **PASS** | `DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost` + Render/prod guidance |
 | Package fail-closed when empty | **PASS** | T1.3/T1.4 unit tests; CI Test (dissemination) green |
 | Staging harness hosts documented | **PASS** | `wis2box,127.0.0.1,localhost` in deploy.md / `.env.example` |
-| Live Render value set | **BLOCKED (T6.6)** | T6.6 agent: no `.env` `RENDER_API_KEY`; Render MCP unauthorized — still confirm non-empty allowlist (or intentional empty = deny) before live BYOC |
+| Live Render value set | **DEFERRED** | Operator: proceed without `RENDER_API_KEY` for now — keep Render **empty** (fail-closed). Local/CI recommended value is in `.env.example`. Set exact BYOC hosts on Render only when demos + API key available. |
 
 ## Compose wis2box harness (E14-04)
 

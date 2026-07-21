@@ -48,7 +48,7 @@ Set on Render static site build environment:
 | `DISABLE_AUTH` | `false` | Yes | Production auth enabled per 04-tech-plan |
 | `PORT` | Render-injected | Yes | Bind `0.0.0.0:$PORT` |
 | `DATABASE_URL` | *(dashboard)* | If used | Postgres connection |
-| `DISSEMINATION_EGRESS_ALLOWLIST` | *(dashboard — sync: false)* | Yes (F16–F19) | Host/CIDR allowlist; **empty = fail-closed** (ADR-029 / E14-08). Staging lists Compose/CI wis2box hosts when harness runs. Documented in `.env.example`; secrets never stored — hosts/CIDRs only. |
+| `DISSEMINATION_EGRESS_ALLOWLIST` | *(dashboard — sync: false)* | Yes (F16–F19) | Host/CIDR allowlist; **empty = fail-closed** (ADR-029 / E14-08). **Local/CI recommended:** `wis2box,127.0.0.1,127.0.0.0/8,localhost` (see `.env.example` + CI harness default). **Render:** keep empty until live BYOC demos, then exact Postgres/WIS2/EDIS hostnames only. Secrets never stored — hosts/CIDRs only. |
 
 ### Deprecated (remove after migration)
 

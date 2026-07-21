@@ -25,7 +25,8 @@ Traces to ADR-007, ADR-030, E14-04, E14-09, execution-plan T0.1 / T3.3.
 - CI/Makefile: `make compose-wis2box-up` / `scripts/ci/run_wis2box_harness.sh`
   (integration job in `ci-cd.yml`).
 - Staging allowlist must list Compose/CI hosts when the harness runs
-  (`DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,localhost` — ADR-029).
+  (`DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost` — ADR-029;
+  matches `.env.example` + `scripts/ci/run_wis2box_harness.sh`).
 
 ## Package boundary
 
