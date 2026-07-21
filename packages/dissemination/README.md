@@ -12,6 +12,12 @@ sink adapters, and SSRF/allowlist helpers ([ADR-030](../../docs/adr/ADR-030-diss
 
 - Local/CI: `make test-unit-dissemination` (95% branch gate)
 
+**Multi-DB integration (T2.5 / TC-F16-003)**
+
+- `pytest packages/dissemination/tests/test_writer_contract_engines.py -m integration`
+- Postgres + MySQL via Testcontainers (requires Docker); SQLite in-process
+- Without Docker, PG/MySQL cases skip; SQLite still runs
+
 **Egress allowlist**
 
 - Env: `DISSEMINATION_EGRESS_ALLOWLIST` (see `.env.example`, ADR-029)

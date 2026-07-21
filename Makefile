@@ -18,6 +18,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-backend test-unit-auth test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
+	test-integration-dissemination \
 	compose-wis2box-up compose-wis2box-down compose-wis2box-harness \
 	format format-check typecheck typecheck-py typecheck-js \
 	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-shared \
@@ -220,6 +221,11 @@ test-unit-tac-validate:
 # F16–F19 / T0.1 — coverage paths; skips until packages/dissemination exists (T1.1/T1.2).
 test-unit-dissemination:
 	bash scripts/ci/run_dissemination_coverage.sh
+
+# F16 / T2.5 — TC-F16-003 multi-DB (SQLite always; PG/MySQL via Testcontainers when Docker up).
+test-integration-dissemination:
+	$(UV) run pytest packages/dissemination/tests/test_writer_contract_engines.py \
+		-m integration -v --tb=short --no-cov
 
 # F17 / E14-04 — wis2box Compose harness (overlay); real service in T3.3.
 compose-wis2box-up:
