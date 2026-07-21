@@ -34,6 +34,8 @@
 | aioodbc | SQL Server async (ODBC) | MIT | PyPI (`>=0.5.0`; E14-06=A) |
 | aiosmtplib | EDIS SMTP submit | MIT | PyPI (`>=3.0.0`) |
 | msgspec | Preflight/send models + HTTP encode | Apache-2.0 | PyPI (`>=0.19`) |
+| httpx | WIS2 HTTP dataset client (`HttpxDatasetClient`) | BSD | PyPI (`>=0.28`) |
+| aiomqtt | WIS2 MQTT client (`AiomqttClient`; 2.x / paho) | BSD-3-Clause | PyPI (`>=2.3.0,<3`) |
 
 #### packages/dissemination — test / integration (E14-09)
 
@@ -186,3 +188,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S019 / EV-014 T3.3 (2026-07-21): wis2box Compose harness — **lightweight MQTT+HTTP image**
   (`python:3.12.11-slim-bookworm` + Debian `mosquitto`); reject full WMO wis2box release stack
   for CI cost (E14-04 / Q17); not a Render service
+- S019 / EV-014 T3.4 (2026-07-21): **httpx** + **aiomqtt≥2.3,<3** — concrete WIS2 transports
+  for TC-F17-001 harness publish (D-S019-EV014-T34-transports); reject aiomqtt 3.x alpha

@@ -545,7 +545,9 @@ Before closing S013 / EV-009:
 - **Objective**: Publish IWXXM to project wis2box Compose harness (E14-04; not Render)
 - **Harness (T3.3)**: `docker-compose.wis2box.yml` profile `wis2box` — MQTT + HTTP dataset
   stand-in; CI hook `scripts/ci/run_wis2box_harness.sh` (up + health + PUT/GET smoke)
-- **Pass criteria**: MQTT notify + HTTP dataset retrievable (publish path = T3.4)
+- **Pass criteria**: MQTT notify + HTTP dataset retrievable (publish path = T3.4 —
+  `packages/dissemination/tests/test_wis2_harness_publish.py` via
+  `scripts/ci/run_wis2box_harness.sh`)
 - **Source**: F17; #2; Q12=B / Q17
 
 ### TC-F17-002: Live WIS2 BYOC close gate (UJ-028)
