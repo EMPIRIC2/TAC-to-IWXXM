@@ -12,12 +12,12 @@ active_session:
     test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase
     0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-07-build-m1-9a92
+  branch: cursor/s019-t25-writer-contract-engines-ce70
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 07-build M2 T2.1–T2.2 done; next T2.3 API tests
+  note: 07-build M2 T2.5 done; next T2.6
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-20'
-    note: "Phase C — 07-build M1 done; next M2 T2.1"
+    note: "Phase C — 07-build M2 T2.5 done; next T2.6"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -126,7 +126,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-21'
-    note: M1 done; M2 T2.1–T2.2 done; next T2.3
+    note: M2 T2.5 done; next T2.6 SQL Server aioodbc
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2548,9 +2548,9 @@ stages:
       started_at: '2026-07-21'
       started: '2026-07-21'
       mode: full
-      note: M1 complete (T1.1–T1.5); next M2 T2.1
+      note: M2 T2.5 done; next T2.6 SQL Server aioodbc
       active_milestone: M2
-      active_task: T2.1
+      active_task: T2.6
       active_task_status: pending
     - id: S015-metar-lint-quality
       session_id: S015-metar-lint-quality
@@ -2603,6 +2603,12 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - >-
+      2026-07-21 S019/EV-014 07-build M2 T2.5 done (aa5ea23) — Compose/Testcontainers
+      PG+MySQL+SQLite writer-contract; next T2.6 SQL Server aioodbc
+    - >-
+      2026-07-21 S019/EV-014 07-build M2 T2.5 in_progress — Compose/Testcontainers
+      PG+MySQL+SQLite (TC-F16-003); branch cursor/s019-t25-writer-contract-engines-ce70
     - >-
       2026-07-21 S019/EV-014 07-build M1 complete (T1.1–T1.5; 4b523db/2a47a87/5c2be0c/f0332cf/66f1177);
       next M2 T2.1
@@ -2716,7 +2722,10 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: M1 T1.1 package layout + import smoke
+      note: M2 T2.5 done; next T2.6 SQL Server aioodbc
+      active_milestone: M2
+      active_task: T2.6
+      active_task_status: pending
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -3309,7 +3318,7 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M1 complete; next M2 T2.1; Q15=A+Q8=C+Q21=A live BYOC hard close gate
+      Phase C — 07-build M2 T2.5 done; next T2.6; Q15=A+Q8=C+Q21=A live BYOC hard close gate
 
 stages_pending: []
 
@@ -3545,6 +3554,16 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: N-S019-EV014-T25-complete
+  date: '2026-07-21'
+  session_id: S019-dissemination-upload
+  evolve_cycle_id: EV-014
+  stage: 07-build
+  skill_id: 07-build
+  status: noted
+  decision: >-
+    T2.5 completed (aa5ea23) — Compose/Testcontainers PG+MySQL+SQLite writer-contract;
+    next T2.6 SQL Server aioodbc. No user decision; progress note.
 - id: D-S019-EV014-Q37A-phase-b
   date: '2026-07-21'
   session_id: S019-dissemination-upload
@@ -7928,6 +7947,8 @@ evolve_cycles:
     note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
   current_stage: 07-build
   notes:
+  - 2026-07-21 S019/EV-014 07-build M2 T2.5 completed (aa5ea23); next T2.6 SQL Server aioodbc
+  - 2026-07-21 S019/EV-014 07-build M2 T2.5 in_progress — Compose/Testcontainers PG+MySQL+SQLite (TC-F16-003)
   - 2026-07-21 S019/EV-014 07-build M1 complete (T1.1–T1.5; 4b523db/2a47a87/5c2be0c/f0332cf/66f1177); next M2 T2.1
   - 2026-07-21 S019/EV-014 Phase B Assumed PASS (D-S019-EV014-Q37A-phase-b) — 06 T0.1 done; B→C passed; next 07-build M1 T1.1
   - 2026-07-21 S019/EV-014 06-tech-tooling COMPLETE (D-S019-EV014-Q37A-phase-b) — T0.1 coverage + CI Compose wis2box hooks
@@ -7986,7 +8007,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-20'
-      note: "Phase C — 07-build M1 done; next M2 T2.1"
+      note: "Phase C — 07-build M2 T2.5 done; next T2.6"
     01-requirements:
       status: completed
       mode: delta
@@ -8063,7 +8084,10 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-07-21'
-      note: M1 T1.1 package layout + import smoke
+      note: M2 T2.5 done; next T2.6 SQL Server aioodbc
+      active_milestone: M2
+      active_task: T2.6
+      active_task_status: pending
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -10725,12 +10749,14 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-07-build-m1-9a92
+  current_branch: cursor/s019-t25-writer-contract-engines-ce70
   ahead_of_origin: 0
   pushed: true
   pending_commit: 'docs(S019): Phase 0 approve + 01-requirements delta (F16–F19)'
-  tip_sha: 3e8a10a623b18ced8d0902f930fce61795185f08
+  tip_sha: aa5ea23a19acfac0e55adca903bb21ecdd0841d7
   notes:
+  - "2026-07-21 S019/EV-014 tip aa5ea23 — [T2.5] Compose/Testcontainers PG+MySQL+SQLite writer-contract; next T2.6"
+  - "2026-07-21 S019/EV-014 branch cursor/s019-t25-writer-contract-engines-ce70 — M2 T2.5 in_progress"
   - "2026-07-21 S019/EV-014 tip 3e8a10a — [T0.1] chore: dissemination coverage paths + CI Compose wis2box hooks; Phase B Assumed PASS"
   - "2026-07-21 PR #753 merged to main @ 3c9ee81 — S019/EV-014 04 handoff"
   - >-
@@ -10920,6 +10946,16 @@ git_history:
   - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+  - name: cursor/s019-t25-writer-contract-engines-ce70
+    status: active
+    base: cursor/s019-07-build-m1-9a92
+    created: '2026-07-21'
+    created_at: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    purpose: S019 EV-014 07-build M2 T2.5 multi-DB integration
+    tip_sha: aa5ea23a19acfac0e55adca903bb21ecdd0841d7
+    note: T2.5 completed; next T2.6 SQL Server aioodbc
   - name: cursor/s019-07-build-m1-9a92
     status: active
     base: cursor/s019-06-tech-tooling-9a92
@@ -11275,6 +11311,24 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: aa5ea23a19acfac0e55adca903bb21ecdd0841d7
+    short: aa5ea23
+    branch: cursor/s019-t25-writer-contract-engines-ce70
+    message: "[T2.5] test: Compose/Testcontainers PG+MySQL+SQLite writer-contract"
+    stage: 07-build
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    timestamp: '2026-07-21T03:37:00Z'
+    files_changed:
+    - .github/workflows/ci-cd.yml
+    - Makefile
+    - docs/dependency-inventory.md
+    - packages/dissemination/README.md
+    - packages/dissemination/pyproject.toml
+    - packages/dissemination/tests/test_writer_contract_engines.py
+    - pyproject.toml
+    - scripts/ci/run_dissemination_coverage.sh
+    - uv.lock
   - sha: f3506cdad61e9867d6e9c765bf056c5467386aee
     short: f3506cd
     branch: cursor/s019-07-build-m1-9a92
