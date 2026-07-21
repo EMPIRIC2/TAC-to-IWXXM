@@ -12,12 +12,12 @@ active_session:
     test + live BYOC; F18 EDIS (#6) RTH Washington BYOC SMTP; F19 AMHS/SWIM/AFS adapters. Credentials never persisted. Phase
     0 approved (Q23=A–D, Q24=A Full); F16–F19 Planned in feature-list.'
   status: in_progress
-  branch: cursor/s019-t31-wis2-unit-tests-ee99
+  branch: cursor/s019-t33-wis2box-harness-c6f7
   orchestrator: 16-evolve
   evolve_cycle_id: EV-014
   artifacts_dir: docs/sessions/S019-dissemination-upload/
   current_stage: 07-build
-  note: 'T3.1–T3.2 done; next T3.3; T2.7 PR #761 still open'
+  note: 'T3.3 done; next T3.4; #761+#762 merged to main; PR #763 open for T3.3'
   started_at: '2026-07-20'
   context_briefs: []
   standing_docs_touched:
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-20'
-    note: "Phase C — 07-build M3 T3.1–T3.2 done (PR #762); next T3.3; T2.7 PR #761 still open"
+    note: "Phase C — 07-build M3 T3.3 done (PR #763); next T3.4; #761+#762 merged to main"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -126,7 +126,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-21'
-    note: 'T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762 open @ 8ebfa3a); next T3.3 wis2box Compose harness; T2.7 PR #761 still open (CI green)'
+    note: 'T3.3 done on cursor/s019-t33-wis2box-harness-c6f7 (PR #763 open @ f222f90); next T3.4 staging harness publish green; #761+#762 merged to main'
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2548,9 +2548,9 @@ stages:
       started_at: '2026-07-21'
       started: '2026-07-21'
       mode: full
-      note: 'T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762 open @ 8ebfa3a); next T3.3 wis2box Compose harness; T2.7 PR #761 still open (CI green)'
+      note: 'T3.3 done on cursor/s019-t33-wis2box-harness-c6f7 (PR #763 open @ f222f90); next T3.4 staging harness publish green; #761+#762 merged to main'
       active_milestone: M3
-      active_task: T3.3
+      active_task: T3.4
       active_task_status: pending
     - id: S015-metar-lint-quality
       session_id: S015-metar-lint-quality
@@ -2603,6 +2603,8 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - >-
+      2026-07-21 S019/EV-014 T3.3 completed — wis2box Compose harness; PR #763 open @ f222f90. #761+#762 merged to main. Next T3.4 staging harness publish green (TC-F17-001).
     - >-
       2026-07-21 S019/EV-014 T2.7 PR #761 open (CI green). T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762). Next T3.3 wis2box Compose harness.
       Tip 8ebfa3a; T3.1=32d8c83 T3.2=49fe476; next T3.3 pending.
@@ -2741,9 +2743,9 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-21'
-      note: 'T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762 open @ 8ebfa3a); next T3.3 wis2box Compose harness; T2.7 PR #761 still open (CI green)'
+      note: 'T3.3 done on cursor/s019-t33-wis2box-harness-c6f7 (PR #763 open @ f222f90); next T3.4 staging harness publish green; #761+#762 merged to main'
       active_milestone: M3
-      active_task: T3.3
+      active_task: T3.4
       active_task_status: pending
   09-qa:
     status: completed
@@ -3337,7 +3339,7 @@ stages:
     started_at: '2026-07-20'
     current_stage: 07-build
     note: >-
-      Phase C — 07-build M3 T3.1–T3.2 done (PR #762); next T3.3; T2.7 PR #761 still open; Q15=A+Q8=C+Q21=A live BYOC hard close gate
+      Phase C — 07-build M3 T3.3 done (PR #763); next T3.4; #761+#762 merged to main; Q15=A+Q8=C+Q21=A live BYOC hard close gate
 
 stages_pending: []
 
@@ -3573,6 +3575,20 @@ issue_log:
   resolved_at: "2026-07-12"
 
 decisions_log:
+- id: D-S019-EV014-T33-harness
+  date: '2026-07-21'
+  session_id: S019-dissemination-upload
+  evolve_cycle_id: EV-014
+  stage: 07-build
+  skill_id: 07-build
+  status: confirmed
+  decision: >-
+    Lightweight MQTT + HTTP dataset stand-in for wis2box staging/CI (E14-04 / Q17 testing-only):
+    packages/dissemination/docker/wis2box-harness (python:3.12.11-slim-bookworm + Debian mosquitto);
+    docker-compose.wis2box.yml profile wis2box; scripts/ci/run_wis2box_harness.sh on integration matrix.
+    Reject full WMO wis2box-release multi-container stack for CI cost/ops; live WIS2 remains BYOC.
+    T3.3 complete @ f222f90; PR #763 open; #761+#762 merged to main; next T3.4 TC-F17-001 publish green.
+  related_pr: 763
 - id: N-S019-EV014-T31-T32-complete
   date: '2026-07-21'
   session_id: S019-dissemination-upload
@@ -8032,7 +8048,14 @@ evolve_cycles:
     skipped_stages: []
     note: Full routing approved (Q24=A / D-S019-EV014-phase0-approve); 01 completed → 02-verify-plan
   current_stage: 07-build
+  active_milestone: M3
+  active_task: T3.4
+  active_task_status: pending
+  branch: cursor/s019-t33-wis2box-harness-c6f7
+  note: 'T3.3 completed; #761+#762 merged to main; PR #763 open for T3.3'
   notes:
+  - >-
+    2026-07-21 S019/EV-014 T3.3 completed — wis2box Compose harness; PR #763 open @ f222f90. #761+#762 merged to main. Next T3.4 staging harness publish green (TC-F17-001).
   - >-
     2026-07-21 S019/EV-014 T2.7 PR #761 open (CI green). T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762). Next T3.3 wis2box Compose harness.
     Tip 8ebfa3a; next T3.3 pending.
@@ -8110,7 +8133,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-20'
-      note: "Phase C — 07-build M3 T3.1–T3.2 done (PR #762); next T3.3; T2.7 PR #761 still open"
+      note: "Phase C — 07-build M3 T3.3 done (PR #763); next T3.4; #761+#762 merged to main"
     01-requirements:
       status: completed
       mode: delta
@@ -8187,9 +8210,9 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-07-21'
-      note: 'T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762 open @ 8ebfa3a); next T3.3 wis2box Compose harness; T2.7 PR #761 still open (CI green)'
+      note: 'T3.3 done on cursor/s019-t33-wis2box-harness-c6f7 (PR #763 open @ f222f90); next T3.4 staging harness publish green; #761+#762 merged to main'
       active_milestone: M3
-      active_task: T3.3
+      active_task: T3.4
       active_task_status: pending
   gates:
     a_to_b: passed
@@ -10852,13 +10875,16 @@ evolve_cycles:
   merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-t31-wis2-unit-tests-ee99
+  current_branch: cursor/s019-t33-wis2box-harness-c6f7
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: 8ebfa3a86d9eb82ca0e673e9d0ead10cc267a282
-  tip_sha_full: 8ebfa3a86d9eb82ca0e673e9d0ead10cc267a282
+  tip_sha: f222f901917d65ad2bfb8be9a496d0b885c5e4c0
+  tip_sha_full: f222f901917d65ad2bfb8be9a496d0b885c5e4c0
   notes:
+  - >-
+    2026-07-21 S019/EV-014 T3.3 completed — wis2box Compose harness on cursor/s019-t33-wis2box-harness-c6f7 (PR #763 open @ f222f90). #761+#762 merged to main. Next T3.4.
+    tip f222f90 on cursor/s019-t33-wis2box-harness-c6f7; PR #763 open; #761+#762 merged to main
   - >-
     2026-07-21 S019/EV-014 T2.7 PR #761 open (CI green). T3.1+T3.2 done on cursor/s019-t31-wis2-unit-tests-ee99 (PR #762). Next T3.3 wis2box Compose harness.
     tip 8ebfa3a on cursor/s019-t31-wis2-unit-tests-ee99; PR #762 open; T2.7 PR #761 still open
@@ -11068,11 +11094,30 @@ git_history:
   - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
   - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+  - name: cursor/s019-t33-wis2box-harness-c6f7
+    status: open
+    base: main
+    created: '2026-07-21'
+    created_at: '2026-07-21'
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    purpose: S019/EV-014 07-build M3 T3.3 wis2box Compose harness
+    tip_sha: f222f901917d65ad2bfb8be9a496d0b885c5e4c0
+    tip_sha_full: f222f901917d65ad2bfb8be9a496d0b885c5e4c0
+    pushed: true
+    pr_number: 763
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/763
+    pr_title: '[T3.3] docker-compose wis2box harness + CI service (S019/EV-014)'
+    pr_base: main
+    pr_head: cursor/s019-t33-wis2box-harness-c6f7
+    pr_status: open
+    note: T3.3 complete; PR #763 open; next T3.4
   - name: cursor/s019-t31-wis2-unit-tests-ee99
-    status: active
+    status: merged
     base: cursor/s019-t27-odbc-docs-ee99
     created: '2026-07-21'
     created_at: '2026-07-21'
+    merged_at: '2026-07-21'
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     purpose: S019/EV-014 07-build M3 T3.1–T3.2 WIS2 sink
@@ -11084,13 +11129,14 @@ git_history:
     pr_title: '[T3.1–T3.2] WIS2 sink adapter + mocked unit tests (S019/EV-014)'
     pr_base: main
     pr_head: cursor/s019-t31-wis2-unit-tests-ee99
-    pr_status: open
-    note: T3.1–T3.2 complete; PR #762 open; next T3.3
+    pr_status: merged
+    note: T3.1–T3.2 merged via PR #762 to main
   - name: cursor/s019-t27-odbc-docs-ee99
-    status: active
+    status: merged
     base: main
     created: '2026-07-21'
     created_at: '2026-07-21'
+    merged_at: '2026-07-21'
     session_id: S019-dissemination-upload
     evolve_cycle_id: EV-014
     purpose: S019/EV-014 07-build M2 T2.7 ODBC docs
@@ -11102,8 +11148,8 @@ git_history:
     pr_title: '[T2.7] ODBC driver docs for SQL Server aioodbc (S019/EV-014)'
     pr_base: main
     pr_head: cursor/s019-t27-odbc-docs-ee99
-    pr_status: open
-    note: T2.7 PR #761 still open (CI green); stacked under by T3.1–T3.2 branch
+    pr_status: merged
+    note: T2.7 merged via PR #761 to main
   - name: cursor/s019-t26-wf-state-4b72
     status: merged
     base: main
@@ -11515,6 +11561,29 @@ git_history:
     pr_number: 716
     note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+  - sha: f222f901917d65ad2bfb8be9a496d0b885c5e4c0
+    short: f222f90
+    branch: cursor/s019-t33-wis2box-harness-c6f7
+    message: "[T3.3] config: docker-compose wis2box harness + CI service"
+    stage: "07-build / 16-evolve"
+    session_id: S019-dissemination-upload
+    evolve_cycle_id: EV-014
+    timestamp: '2026-07-21'
+    files_changed:
+    - docker-compose.wis2box.yml
+    - packages/dissemination/docker/wis2box-harness/Dockerfile
+    - packages/dissemination/docker/wis2box-harness/README.md
+    - packages/dissemination/docker/wis2box-harness/dataset_server.py
+    - packages/dissemination/docker/wis2box-harness/entrypoint.sh
+    - scripts/ci/run_wis2box_harness.sh
+    - Makefile
+    - docs/deploy.md
+    - docs/dependency-inventory.md
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S019-dissemination-upload/HANDOFF.md
+    - packages/dissemination/README.md
+    - .cursor/rules/optional/dissemination-coverage-compose.mdc
+    - workflow-state.yaml
   - sha: 8ebfa3a86d9eb82ca0e673e9d0ead10cc267a282
     short: 8ebfa3a
     branch: cursor/s019-t31-wis2-unit-tests-ee99

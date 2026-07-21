@@ -3,8 +3,8 @@
 Lightweight **test harness** for TC-F17-001 — MQTT broker + HTTP dataset PUT/GET.
 Not a long-lived Render service (E14-04=B). Not the full WMO wis2box release stack.
 
-| Surface | Port (container) | Host default |
-|---------|------------------|--------------|
+| Surface | Port (container) | Host default                    |
+| ------- | ---------------- | ------------------------------- |
 | MQTT    | 1883             | `WIS2BOX_MQTT_HOST_PORT` (1883) |
 | HTTP    | 8080             | `WIS2BOX_HTTP_HOST_PORT` (9080) |
 
