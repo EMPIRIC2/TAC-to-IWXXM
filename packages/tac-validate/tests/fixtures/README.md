@@ -58,6 +58,8 @@ Diagnostics assertions require product-rule codes/spans from
 | `r8_errors`          | `false` | R8 malformed NIL/RVR/wind (`INVALID_*`)                     |
 | `t1_modifier_info`   | `true`  | F20 T1 TAF NIL/CNL/AMD/COR info codes                       |
 | `t1_errors`          | `false` | F20 T1 malformed TAF NIL/CNL                                |
+| `t2_modifier_info`   | `true`  | F20 T2 TAF FM/BECMG/TEMPO/PROB/TL/AT info                   |
+| `t2_errors`          | `false` | F20 T2 invalid PROB                                         |
 
 ## Tooling
 
