@@ -1,8 +1,8 @@
 /**
  * T5.1 / TC-F20-005 — catalog panel filters/copy for TAF tags (E15-14).
  *
- * Red until T5.2 extends WorkbenchConsole: list rows show tags (+ product when
- * set); tag filter control can narrow to `taf`.
+ * Green after T5.2: list rows show tags (+ product when set); tag filter
+ * narrows to `taf`.
  */
 
 import { describe, expect, it, vi } from 'vitest';

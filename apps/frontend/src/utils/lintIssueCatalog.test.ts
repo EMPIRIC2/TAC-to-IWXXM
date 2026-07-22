@@ -1,28 +1,16 @@
 /**
  * T5.3 / TC-F15-004 — catalog tooltip resolver (E11-29 / E11-31).
- * T5.1 / E15-14 — TAF tag filter + list-copy helpers (red until T5.2 exports).
+ * T5.1 / E15-14 — TAF tag filter + list-copy helpers (green after T5.2).
  */
 
 import { describe, expect, it } from 'vitest';
-import { indexCatalogByCode, resolveLintIssueTooltip } from './lintIssueCatalog';
-import * as lintIssueCatalog from './lintIssueCatalog';
+import {
+  filterCatalogByTag,
+  formatCatalogEntryCopy,
+  indexCatalogByCode,
+  resolveLintIssueTooltip,
+} from './lintIssueCatalog';
 import type { LintIssueCatalogEntry } from './api';
-
-/** T5.2 will export these; cast keeps tsc green while Vitest stays red. */
-const filterCatalogByTag = (
-  lintIssueCatalog as unknown as {
-    filterCatalogByTag: (
-      entries: LintIssueCatalogEntry[],
-      tag: string,
-    ) => LintIssueCatalogEntry[];
-  }
-).filterCatalogByTag;
-
-const formatCatalogEntryCopy = (
-  lintIssueCatalog as unknown as {
-    formatCatalogEntryCopy: (entry: LintIssueCatalogEntry) => string;
-  }
-).formatCatalogEntryCopy;
 
 const SAMPLE: LintIssueCatalogEntry[] = [
   {
