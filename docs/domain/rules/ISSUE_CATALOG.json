@@ -4,6 +4,29 @@
   "generated": "2026-07-22",
   "issues": [
     {
+      "code": "AMD_PRESENT",
+      "severity": "info",
+      "message_template": "{product} AMD modifier present \u2014 research T1",
+      "product": "taf",
+      "tags": [
+        "modifier",
+        "taf",
+        "t1"
+      ]
+    },
+    {
+      "code": "AT_PRESENT",
+      "severity": "info",
+      "message_template": "{product} AT time group present \u2014 research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "at"
+      ]
+    },
+    {
       "code": "AUTO_PRESENT",
       "severity": "info",
       "message_template": "{product} AUTO modifier present \u2014 research R8",
@@ -13,6 +36,29 @@
         "metar",
         "speci",
         "r8"
+      ]
+    },
+    {
+      "code": "BECMG_PRESENT",
+      "severity": "info",
+      "message_template": "{product} BECMG change group present \u2014 research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "becmg"
+      ]
+    },
+    {
+      "code": "CAVOK_PRESENT",
+      "severity": "info",
+      "message_template": "{product} CAVOK present \u2014 research T3",
+      "product": "taf",
+      "tags": [
+        "cavok",
+        "taf",
+        "t3"
       ]
     },
     {
@@ -30,15 +76,28 @@
       ]
     },
     {
+      "code": "CNL_REPORT",
+      "severity": "info",
+      "message_template": "{product} CNL cancel report \u2014 research T1",
+      "product": "taf",
+      "tags": [
+        "cnl",
+        "taf",
+        "t1"
+      ]
+    },
+    {
       "code": "COR_PRESENT",
       "severity": "info",
-      "message_template": "{product} COR modifier present \u2014 research R8",
+      "message_template": "{product} COR modifier present \u2014 research R8 / T1",
       "product": null,
       "tags": [
         "modifier",
         "metar",
         "speci",
-        "r8"
+        "taf",
+        "r8",
+        "t1"
       ]
     },
     {
@@ -49,6 +108,18 @@
       "tags": [
         "parse_gate",
         "body"
+      ]
+    },
+    {
+      "code": "FM_PRESENT",
+      "severity": "info",
+      "message_template": "{product} FM change group present \u2014 research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "fm"
       ]
     },
     {
@@ -70,19 +141,34 @@
       "product": "taf",
       "tags": [
         "cnl",
-        "taf"
+        "taf",
+        "t1"
       ]
     },
     {
       "code": "INVALID_NIL",
       "severity": "error",
-      "message_template": "{product} NIL must not include body groups \u2014 research R8",
+      "message_template": "{product} NIL must not include body groups \u2014 research R8 / T1",
       "product": null,
       "tags": [
         "nil",
         "metar",
         "speci",
-        "r8"
+        "taf",
+        "r8",
+        "t1"
+      ]
+    },
+    {
+      "code": "INVALID_PROB",
+      "severity": "error",
+      "message_template": "{product} invalid PROB (only 30|40; must not qualify BECMG/FM) \u2014 App 5 \u00a71.4 / research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "prob"
       ]
     },
     {
@@ -108,6 +194,17 @@
         "metar",
         "speci",
         "r8"
+      ]
+    },
+    {
+      "code": "INVALID_TX_TN",
+      "severity": "error",
+      "message_template": "{product} TX/TN allowed on base forecast only \u2014 research T3",
+      "product": "taf",
+      "tags": [
+        "temperature",
+        "taf",
+        "t3"
       ]
     },
     {
@@ -311,13 +408,15 @@
     {
       "code": "NIL_REPORT",
       "severity": "info",
-      "message_template": "{product} NIL report \u2014 research R8",
+      "message_template": "{product} NIL report \u2014 research R8 / T1",
       "product": null,
       "tags": [
         "nil",
         "metar",
         "speci",
-        "r8"
+        "taf",
+        "r8",
+        "t1"
       ]
     },
     {
@@ -333,6 +432,28 @@
       ]
     },
     {
+      "code": "NSC_PRESENT",
+      "severity": "info",
+      "message_template": "{product} NSC present \u2014 research T3",
+      "product": "taf",
+      "tags": [
+        "cloud",
+        "taf",
+        "t3"
+      ]
+    },
+    {
+      "code": "NSW_PRESENT",
+      "severity": "info",
+      "message_template": "{product} NSW present \u2014 research T3",
+      "product": "taf",
+      "tags": [
+        "weather",
+        "taf",
+        "t3"
+      ]
+    },
+    {
       "code": "ODD_FIELD_ORDER",
       "severity": "warning",
       "message_template": "{product} groups out of A3-2 order (CCCC \u2192 ddhhmmZ \u2192 wind)",
@@ -344,6 +465,18 @@
         "metar",
         "speci",
         "r1"
+      ]
+    },
+    {
+      "code": "PROB_PRESENT",
+      "severity": "info",
+      "message_template": "{product} PROB30/40 change group present \u2014 research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "prob"
       ]
     },
     {
@@ -374,13 +507,39 @@
     {
       "code": "TEMPO_PRESENT",
       "severity": "info",
-      "message_template": "{product} TEMPO trend present \u2014 research R8",
+      "message_template": "{product} TEMPO trend present \u2014 research R8 / T2",
       "product": null,
       "tags": [
         "trend",
+        "change",
         "metar",
         "speci",
-        "r8"
+        "taf",
+        "r8",
+        "t2"
+      ]
+    },
+    {
+      "code": "TL_PRESENT",
+      "severity": "info",
+      "message_template": "{product} TL time group present \u2014 research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "tl"
+      ]
+    },
+    {
+      "code": "TX_TN_PRESENT",
+      "severity": "info",
+      "message_template": "{product} TX/TN temperature forecasts on base \u2014 research T3",
+      "product": "taf",
+      "tags": [
+        "temperature",
+        "taf",
+        "t3"
       ]
     },
     {
@@ -390,6 +549,18 @@
       "product": null,
       "tags": [
         "parse_gate"
+      ]
+    },
+    {
+      "code": "VV_OMIT",
+      "severity": "info",
+      "message_template": "{product} VV/// \u2014 omit verticalVisibility without nilReason \u2014 research T3",
+      "product": "taf",
+      "tags": [
+        "cloud",
+        "taf",
+        "t3",
+        "vv"
       ]
     },
     {

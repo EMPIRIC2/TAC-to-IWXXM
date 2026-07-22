@@ -1,10 +1,11 @@
 {
   "schema_version": 1,
-  "description": "TC-F12-001 / E10-21 / TC-F15-003 fixture pack for tac-validate (F12 + F15 R1\u2013R8).",
+  "description": "TC-F12-001 / E10-21 / TC-F15-003 / TC-F20-004 fixture pack for tac-validate (F12 + F15 R1\u2013R8 + F20 T1\u2013T3 TAF themes).",
   "cite": [
     "docs/domain/TAC_VALIDATION.md (A3-2, A5-1, A6, A2-1, A2-2 paraphrase)",
     "docs/domain/rules/COVERAGE_MATRIX.md",
-    "docs/sessions/S015-metar-lint-quality/reports/metar-research-catalog.md (R1\u2013R8)"
+    "docs/sessions/S015-metar-lint-quality/reports/metar-research-catalog.md (R1\u2013R8)",
+    "docs/sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md (T1\u2013T4 / S1\u2013S3 / C1)"
   ],
   "accept": [
     {
@@ -65,6 +66,38 @@
       "id": "accept_taf_basic",
       "product": "TAF",
       "tac": "accept/taf_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_t1_nil",
+      "product": "TAF",
+      "theme": "T1",
+      "cite": "A5-1 #4 NIL; research T1",
+      "tac": "accept/taf_t1_nil.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_t1_cnl",
+      "product": "TAF",
+      "theme": "T1",
+      "cite": "A5-1 #6 CNL; research T1",
+      "tac": "accept/taf_t1_cnl.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_t1_amd",
+      "product": "TAF",
+      "theme": "T1",
+      "cite": "TAF AMD; research T1",
+      "tac": "accept/taf_t1_amd.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_t1_cor",
+      "product": "TAF",
+      "theme": "T1",
+      "cite": "TAF COR; research T1",
+      "tac": "accept/taf_t1_cor.tac",
       "ok": true
     },
     {
@@ -440,7 +473,8 @@
       "tac": "negative/taf/bad_cnl_shape.tac",
       "ok": false,
       "expected_codes": ["INVALID_CNL_SHAPE"],
-      "require_spans": true
+      "require_spans": true,
+      "theme": "T1"
     },
     {
       "id": "sigmet_missing_valid",
@@ -952,6 +986,76 @@
       "tac": "negative/speci/bad_vrb.tac",
       "ok": false,
       "expected_codes": ["INVALID_WIND"],
+      "require_spans": true
+    }
+  ],
+  "t1_modifier_info": [
+    {
+      "id": "taf_t1_nil_info",
+      "product": "TAF",
+      "theme": "T1",
+      "cite": "NIL \u2192 info",
+      "tac": "accept/taf_t1_nil.tac",
+      "ok": true,
+      "expected_codes": ["NIL_REPORT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "taf_t1_cnl_info",
+      "product": "TAF",
+      "theme": "T1",
+      "cite": "CNL \u2192 info",
+      "tac": "accept/taf_t1_cnl.tac",
+      "ok": true,
+      "expected_codes": ["CNL_REPORT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "taf_t1_amd_info",
+      "product": "TAF",
+      "theme": "T1",
+      "cite": "AMD \u2192 info",
+      "tac": "accept/taf_t1_amd.tac",
+      "ok": true,
+      "expected_codes": ["AMD_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "taf_t1_cor_info",
+      "product": "TAF",
+      "theme": "T1",
+      "cite": "COR \u2192 info",
+      "tac": "accept/taf_t1_cor.tac",
+      "ok": true,
+      "expected_codes": ["COR_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "t1_errors": [
+    {
+      "id": "taf_nil_with_body",
+      "product": "TAF",
+      "theme": "T1",
+      "depth": "full_checklist",
+      "cite": "NIL body; research T1",
+      "tac": "negative/taf/nil_with_body.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_NIL"],
+      "require_spans": true
+    },
+    {
+      "id": "taf_bad_cnl_shape_t1",
+      "product": "TAF",
+      "theme": "T1",
+      "depth": "full_checklist",
+      "cite": "CNL shape; research T1",
+      "tac": "negative/taf/bad_cnl_shape.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_CNL_SHAPE"],
       "require_spans": true
     }
   ]

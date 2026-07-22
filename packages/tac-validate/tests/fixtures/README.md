@@ -56,6 +56,8 @@ Diagnostics assertions require product-rule codes/spans from
 | `remark_errors`      | `false` | R5 malformed RMK groups (`INVALID_REMARK`)                  |
 | `r8_modifier_info`   | `true`  | R8 AUTO/COR/NIL/NOSIG/TEMPO/RVR/VRB·gust info codes         |
 | `r8_errors`          | `false` | R8 malformed NIL/RVR/wind (`INVALID_*`)                     |
+| `t1_modifier_info`   | `true`  | F20 T1 TAF NIL/CNL/AMD/COR info codes                       |
+| `t1_errors`          | `false` | F20 T1 malformed TAF NIL/CNL                                |
 
 ## Tooling
 
