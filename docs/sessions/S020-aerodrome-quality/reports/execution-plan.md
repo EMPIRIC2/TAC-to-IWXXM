@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M3 — SPECI S1–S3 (next) |
-| **Active task** | T3.1 (pending) |
-| **Tasks** | 11 / 28 completed (through T2.3) |
+| **Active milestone** | M3 — SPECI S1–S3 |
+| **Active task** | T3.2 (pending) |
+| **Tasks** | 12 / 28 completed (through T3.1) |
 | **Last updated** | 2026-07-22 |
 
 ## Tech Stack Summary
@@ -78,7 +78,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Test | SPECI accept/negative deepen (S1); registry codes | TC-F20-004; #734 | T2.3 | pending |
+| T3.1 | Test | SPECI accept/negative deepen (S1); registry codes | TC-F20-004; #734 | T2.3 | completed |
 | T3.2 | Code | SPECI rule deepen via registry | F12; F20 | T3.1 | pending |
 | T3.3 | Test | Mis-classification guards SPECI↔METAR (S2) | TC-F20-006 | T3.2 | pending |
 | T3.4 | Code | Auto-detect / product-hint fixes if any fail | F20 | T3.3 | pending |
