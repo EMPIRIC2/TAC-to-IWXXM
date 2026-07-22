@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:SPECI xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+    xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="speci.us.nil.kjfk"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL"
+    automatedStation="false">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2023-06-23T17:51:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.kjfk">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.kjfk">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>KJFK</aixm:designator>
+          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+  <iwxxm:observationTime>
+    <gml:TimeInstant gml:id="t.obs">
+      <gml:timePosition>2023-06-23T17:51:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:observationTime>
+  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>
+</iwxxm:SPECI>

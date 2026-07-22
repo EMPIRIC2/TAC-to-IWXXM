@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "TC-F6-020/021 / TC-F15-002 / TC-F20-002 annex3 METAR/SPECI/TAF golden pack (WMO-shaped; R6 + F20 T4 expand)",
+  "description": "TC-F6-020/021 / TC-F15-002 / TC-F20-002 / TC-F20-003 annex3 METAR/SPECI/TAF golden pack (WMO-shaped; R6 + F20 T4/S3 expand)",
   "cases": [
     {
       "id": "metar_basic",
@@ -14,7 +14,7 @@
       "product": "SPECI",
       "tac": "speci_basic.tac",
       "golden": "speci_basic.golden.xml",
-      "theme": "R6"
+      "theme": "S3"
     },
     {
       "id": "metar_nil",
@@ -47,7 +47,7 @@
     {
       "id": "speci_cor",
       "product": "SPECI",
-      "theme": "R8",
+      "theme": "S3",
       "tac": "speci_cor.tac",
       "golden": "speci_cor.golden.xml"
     },
@@ -92,6 +92,76 @@
       "theme": "T4",
       "tac": "taf_cavok.tac",
       "golden": "taf_cavok.golden.xml"
+    },
+    {
+      "id": "speci_nil",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_nil.tac",
+      "golden": "speci_nil.golden.xml"
+    },
+    {
+      "id": "speci_cavok",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_cavok.tac",
+      "golden": "speci_cavok.golden.xml"
+    },
+    {
+      "id": "speci_nsc",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_nsc.tac",
+      "golden": "speci_nsc.golden.xml"
+    },
+    {
+      "id": "speci_ncd",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_ncd.tac",
+      "golden": "speci_ncd.golden.xml"
+    },
+    {
+      "id": "speci_nosig",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_nosig.tac",
+      "golden": "speci_nosig.golden.xml"
+    },
+    {
+      "id": "speci_nsw_trend",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_nsw_trend.tac",
+      "golden": "speci_nsw_trend.golden.xml"
+    },
+    {
+      "id": "speci_vv_not_obs",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_vv_not_obs.tac",
+      "golden": "speci_vv_not_obs.golden.xml"
+    },
+    {
+      "id": "speci_wx_slash",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_wx_slash.tac",
+      "golden": "speci_wx_slash.golden.xml"
+    },
+    {
+      "id": "speci_rvr",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_rvr.tac",
+      "golden": "speci_rvr.golden.xml"
+    },
+    {
+      "id": "speci_wind_sector",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_wind_sector.tac",
+      "golden": "speci_wind_sector.golden.xml"
     }
   ]
 }
