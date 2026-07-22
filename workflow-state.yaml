@@ -41,7 +41,7 @@ active_session:
     - docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
     - docs/decisions/tech-decisions.md
   note: >-
-    Phase C 07-build — M0+M1 done; next M2 TAF goldens T4 @ T2.1; no commit yet (user rule). Batch1+Batch2 locked (E15-1..E15-8 all A); Phase 0 approved 2026-07-22; Lean+build D-S020-EV015-route-1. 00/01/02 COMPLETE 2026-07-22; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2). Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE 2026-07-22 (E15-16..19 all A; D-S020-EV015-plan-1; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B.
+    Phase C 07-build — M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003) (D-S020-EV015-q22-a). Batch1+Batch2 locked (E15-1..E15-8 all A); Phase 0 approved 2026-07-22; Lean+build D-S020-EV015-route-1. 00/01/02 COMPLETE 2026-07-22; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2). Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE 2026-07-22 (E15-16..19 all A; D-S020-EV015-plan-1; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B.
   routing_plan:
     - stage: 00-context
       required: true
@@ -101,7 +101,7 @@ active_session:
       skip_rationale:
       started: '2026-07-22'
       note: >-
-        M0+M1 COMPLETE; next M2 T2.1 (TAF goldens T4) pending start; no commit yet
+        M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003)
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2722,12 +2722,9 @@ stages:
         started: '2026-07-22'
         mode: full
         note: >-
-          M0 COMPLETE (T0.1 research catalog; T0.2 COVERAGE_MATRIX linked);
-          M1 COMPLETE (T1.1–T1.6 TAF lint T1–T3; registry + ISSUE_CATALOG;
-          tac-validate 365 passed); next M2 T2.1 pending start (TAF goldens T4);
-          no commit yet (user rule)
-        active_milestone: M2
-        active_task: T2.1
+          M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003)
+        active_milestone: M3
+        active_task: T3.5
         active_task_status: pending
         decision_id: D-S020-EV015-phase-b-pass
         branch: evolve/EV-015-aerodrome-quality
@@ -2799,6 +2796,8 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - >-
+        2026-07-22 S020/EV-015 M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003); D-S020-EV015-q22-a; tip 039712f; 07 remains in_progress
       - >-
         2026-07-22 S020/EV-015 M0+M1 COMPLETE — T0.1 catalog + T0.2 COVERAGE_MATRIX;
         T1.1–T1.6 TAF lint T1–T3 (registry + ISSUE_CATALOG; tac-validate 365);
@@ -2944,10 +2943,9 @@ stages:
       mode: full
       started_at: '2026-07-22'
       note: >-
-        Phase C 07-build — M0+M1 done; next M2 TAF goldens T4 @ T2.1; no commit yet
-        (user rule)
-      active_milestone: M2
-      active_task: T2.1
+        M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003)
+      active_milestone: M3
+      active_task: T3.5
       active_task_status: pending
       decision_id: D-S020-EV015-phase-b-pass
       branch: evolve/EV-015-aerodrome-quality
@@ -3619,9 +3617,11 @@ stages:
       from taf-quality (D-S020-EV015-s1m2-2); Phase A PASSED (D-S020-EV015-phase-a-pass);
       gates.a_to_b passed; 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19 all A;
       04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass);
-      gates.b_to_c passed; 07-build STARTED at T0.1; do not re-open Phase 0/B;
+      gates.b_to_c passed; 07-build in_progress — M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003); do not re-open Phase 0/B;
       Lean+build D-S020-EV015-route-1
     notes:
+      - >-
+        2026-07-22 S020/EV-015 M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003); D-S020-EV015-q22-a; tip 039712f
       - >-
         2026-07-22 S020/EV-015 Phase B PASSED (D-S020-EV015-phase-b-pass) — gates.b_to_c
         passed; 07-build STARTED at T0.1; do not re-open Phase 0/B
@@ -3867,6 +3867,17 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S020-EV015-q22-a
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 07-build
+    skill: 07-build
+    skill_id: 07-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    decision: User Q22=A — commit M2 then continue M3
   - id: D-S020-EV015-phase-b-pass
     date: '2026-07-22'
     timestamp: '2026-07-22'
@@ -9024,14 +9035,13 @@ evolve_cycles:
         checkpoints (parent uses after phases); Phase A / a_to_b passed 2026-07-22;
         Phase B / b_to_c passed 2026-07-22 (D-S020-EV015-phase-b-pass).
     current_stage: 07-build
-    active_milestone: M2
-    active_task: T2.1
+    active_milestone: M3
+    active_task: T3.5
     active_task_status: pending
     progress:
     branch: evolve/EV-015-aerodrome-quality
     note: >-
-      M1 complete. Phase C 07-build — M0+M1 done; next M2 TAF goldens T4 @ T2.1;
-      no commit yet (user rule). Phase 0 approved 2026-07-22; 00/01/02/04 COMPLETE;
+      M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003) (D-S020-EV015-q22-a). Phase 0 approved 2026-07-22; 00/01/02/04 COMPLETE;
       renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2);
       Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE
       2026-07-22 (D-S020-EV015-plan-1; E15-16..19 all A; 04-exit consistency PASS; 05/06 skipped);
@@ -9064,6 +9074,8 @@ evolve_cycles:
       - D-S020-EV015-plan-1
       - D-S020-EV015-phase-b-pass
     notes:
+      - >-
+        2026-07-22 M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003); D-S020-EV015-q22-a; tip 039712f; 07 remains in_progress
       - >-
         2026-07-22 M0+M1 COMPLETE — T0.1 research catalog + T0.2 COVERAGE_MATRIX;
         T1.1–T1.6 TAF lint themes T1–T3 (NIL/CNL/AMD/COR; FM/BECMG/TEMPO/PROB/TL/AT;
@@ -9141,7 +9153,7 @@ evolve_cycles:
         mode: full
         started: '2026-07-22'
         note: >-
-          STARTED T0.1 mining catalog after D-S020-EV015-phase-b-pass
+          M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003)
       08-verify-build:
         status: pending
         mode: full
@@ -12120,8 +12132,8 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 1b6df32ba531311a08c86a3a4d05f05486a37034
-  tip_sha_full: 1b6df32ba531311a08c86a3a4d05f05486a37034
+  tip_sha: 039712f
+  tip_sha_full: 039712f53a5f8a505d0039448d976d633c5e6124
   note: >-
     S020/EV-015 02-verify-plan COMPLETE 2026-07-22 (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1);
     renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality; Phase A
@@ -12377,13 +12389,13 @@ git_history:
       created_at: '2026-07-22'
       renamed_from: evolve/EV-015-taf-quality
       renamed_at: '2026-07-22'
-      tip_sha:
-      tip_sha_full:
+      tip_sha: 039712f
+      tip_sha_full: 039712f53a5f8a505d0039448d976d633c5e6124
       pushed: false
       note: >-
         Active (base main). Renamed from evolve/EV-015-taf-quality
-        (D-S020-EV015-s1m2-2). 00/01/02/04 COMPLETE; Phase B checkpoint pending
-        before 07-build; Lean+build D-S020-EV015-route-1.
+        (D-S020-EV015-s1m2-2). 07-build in_progress — M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003); tip 039712f;
+        Lean+build D-S020-EV015-route-1.
     - name: cursor/s019-ev014-closeout-hygiene-f898
       base: main
       status: open
@@ -13047,6 +13059,69 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 039712f53a5f8a505d0039448d976d633c5e6124
+      short: 039712f
+      branch: evolve/EV-015-aerodrome-quality
+      message: '[T3.4] docs: confirm S1/S2 guards; no product-hint code changes'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      timestamp: '2026-07-22'
+      date: '2026-07-22'
+    - sha: 858928733ac43d890df45ca6c2f948a40ebee323
+      short: 8589287
+      branch: evolve/EV-015-aerodrome-quality
+      message: '[T3.3] test: deepen SPECI↔METAR mis-classification guards (TC-F20-006)'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      timestamp: '2026-07-22'
+      date: '2026-07-22'
+    - sha: ebcbf4a081389aa01c3f3dd804de9905e54ee6e8
+      short: ebcbf4a
+      branch: evolve/EV-015-aerodrome-quality
+      message: '[T3.2] feat: encode SPECI S1 exceptional lint diagnostics'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      timestamp: '2026-07-22'
+      date: '2026-07-22'
+    - sha: 875e7cf062bb60385e4573eb80bcfedc9fd7dd2b
+      short: 875e7cf
+      branch: evolve/EV-015-aerodrome-quality
+      message: '[T3.1] test: add SPECI S1 exceptional-rule fixtures'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      timestamp: '2026-07-22'
+      date: '2026-07-22'
+    - sha: e9e790307cf55a43fcdf5937e5d21e6bea8fa0b7
+      short: e9e7903
+      branch: evolve/EV-015-aerodrome-quality
+      message: '[T2.3] docs: mark COVERAGE_MATRIX T1–T4 M2 progress'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      timestamp: '2026-07-22'
+      date: '2026-07-22'
+    - sha: 7460e9b39e4647684e2c143936bd02ffc586eac3
+      short: 7460e9b
+      branch: evolve/EV-015-aerodrome-quality
+      message: '[T2.2] feat: TAF NIL/CNL/AMD/COR/CAVOK convert fidelity'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      timestamp: '2026-07-22'
+      date: '2026-07-22'
+    - sha: d0c313ea8b6113d0393e1b093c9c9a0c809c0742
+      short: d0c313e
+      branch: evolve/EV-015-aerodrome-quality
+      message: '[T2.1] test: expand annex3 TAF golden pack for TC-F20-002'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      timestamp: '2026-07-22'
+      date: '2026-07-22'
     - sha: 1b6df32ba531311a08c86a3a4d05f05486a37034
       short: 1b6df32
       branch: cursor/s019-ev014-closeout-hygiene-f898
