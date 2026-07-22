@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-21 (S019 / EV-014 — dissemination epic F16–F19 Done)
+> **Last updated**: 2026-07-22 (S020 / EV-015 — F20 TAF+SPECI quality Planned)
 
 ## Summary
 
@@ -27,6 +27,7 @@
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; mock-BYOC close (Q15 waive) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; mock-BYOC close (Q15 waive) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; staging stubs; live optional |
+| F20 | TAF + SPECI quality bar (F15 sequel) | Planned | Product | S020 / EV-015; #735/#734 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -514,6 +515,52 @@
   demos remain optional follow-up.
 - **Source**: S019 / EV-014 Phase 0 Q20=D / Q24=A; 02-verify-plan S-EV014-M2 (Q28=A)
 
+### F20: TAF + SPECI Quality Bar (F15 Sequel) — S020 / EV-015
+
+- **Status**: **Planned** — S020 / EV-015 Phase 0 approved 2026-07-22 (E15-1..E15-8;
+  `D-S020-EV015-route-1` Lean+build).
+- **What it does**: Raises **TAF** and **SPECI** TAC lint, convert, and IWXXM-validate quality
+  to the same bar F15 set for METAR/SPECI. Reuses the **ADR-028** issue registry (new TAF codes
+  + SPECI deepen as needed; no new registry architecture). Audits encode paths against WMO
+  `TAC-to-XML-Guidance.txt` **plus** 2025-2 corrections (no removed `runwayState`). Expands
+  accept/negative fixtures, golden TAC→IWXXM→XSD+Schematron, and coverage-matrix **TAF** +
+  **SPECI** rows. SPECI is a **full** parallel quality bar (#734), not residual-only — including
+  Auto-detect / lint never mis-classifying SPECI↔METAR.
+- **Issues**: [#735](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/735) (TAF),
+  [#734](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/734) (SPECI).
+- **Deepens**:
+  | Feature | Role this cycle |
+  |---------|-----------------|
+  | **F6** | F6.c TAF Annex-3 + IWXXM-US forecast extensions; F6.b SPECI convert/golden fidelity |
+  | **F12** | TAF + SPECI checklist rules via registry; accept + negative fixtures; no silent success |
+  | **F15** | Registry already product-agnostic; this cycle adds/extends codes only (F15 stays Done) |
+- **Acceptance**:
+  1. TAF and SPECI lint emissions use registry codes; CI fails on unknown codes
+  2. #735 exceptional-rule table (NIL/CNL/AMD/COR, FM/BECMG/TEMPO/PROB, TX/TN, CAVOK/NSC/NSW, …)
+     has accept + negative fixtures (or explicit deferrals with rationale)
+  3. #734 exceptional-rule table (shared METAR/SPECI rules + mis-classification guards) has
+     accept + negative fixtures (or explicit deferrals)
+  4. Coverage-matrix TAF + SPECI rows updated; guidance gaps filed or closed
+  5. Accept TAF **and** SPECI → convert → `iwxxm-validate` XSD+Schematron pass (pinned versions)
+     for expanded golden pack; roots match `iwxxm:TAF` / `iwxxm:SPECI`
+  6. Workbench / `product=taf` **and** `product=speci` lint+convert smoke documented
+     (F7 remains Planned; smoke only under F20); H1–H3 if API ships; H4–H5 when FE touched
+- **Out of scope**: Sibling product-quality tickets (#731, #733, #736–#741, …) unless shared
+  common-rule touch; PyPI release bumps; F16–F19 changes; COLLECT; new products beyond F6 seven
+- **Source**: #735/#734; E15-1..E15-8; [context/aerodrome-quality.md](context/aerodrome-quality.md);
+  ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`; predecessor F15 / EV-011
+
+### F6 deepen (S020 / EV-015 — TAF + SPECI)
+
+- **Status note**: F6 remains **Implemented**; this cycle **deepens TAF (F6.c) and SPECI (F6.b)**
+  convert/golden fidelity under F20 acceptance (not a new Fn). Track gaps vs #735/#734
+  exceptional-rule tables and WMO guidance + 2025-2 corrections.
+
+### F12 deepen (S020 / EV-015 — TAF + SPECI)
+
+- **Status note**: F12 remains **Implemented**; this cycle expands TAF/**SPECI** rules through
+  the ADR-028 registry and accept/negative packs to full-depth checklist targets for both products.
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout
@@ -599,6 +646,7 @@
 | F17 | Yes (WIS2 sink) | Yes (WIS2 publish) | Yes (wis2box harness) | Yes (staging wis2box + API) |
 | F18 | Yes (EDIS sink) | Yes (EDIS submit) | Yes | Yes (API; BYOC SMTP) |
 | F19 | Yes (AMHS/SWIM/AFS sinks) | Yes (adapter APIs) | Yes | Yes (API) |
+| F20 | Yes (TAF/SPECI workbench smoke) | Yes (`lint-tac` / convert `taf`/`speci`) | Yes (goldens + matrix) | Yes if API/FE contract changes |
 | M1–M6 | — | — | Yes | Yes |
 
 | F6 capability | Library | HTTP API | Web UI | CI metrics |

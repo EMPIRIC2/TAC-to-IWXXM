@@ -22,7 +22,7 @@ All implementation work must map to an approved feature in `[Corpus: product]`
 | F4 | IWXXM version handling |
 | F5 | Work history (METAR/SPECI sessions) |
 | F6 | General TAC→IWXXM (`tac2iwxxm` + bulletin + products) |
-| F7 | Multi-product operator UI — **Planned** (S011 / EV-008 closed; PR #716 merged; smoke under F15) |
+| F7 | Multi-product operator UI — **Planned** (S011 / EV-008 closed; PR #716 merged; smoke under F15/F20) |
 | F8 | Near-RT ingest worker (`apps/worker`) — **Done** (ADR-018) |
 | F9 | Value-aware live decode + plain-language summary — **Done** (S013) |
 | F10 | Workbench IWXXM preview + soft-fail/terminator lint UX — **Done** (S013) |
@@ -31,10 +31,11 @@ All implementation work must map to an approved feature in `[Corpus: product]`
 | F13 | Fast `iwxxm-validate` Rust + Schematron + PyPI — **Implemented** (S014 / EV-010) |
 | F14 | Publish `tac2iwxxm[+validate]` + PyPI/release CI — **Implemented** (S014 / EV-010) |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar — **Done** (S015 / EV-011; #732; #742) |
-| F16 | Dissemination drawer + multi-DB BYOC URI upload — **Planned** (S019 / EV-014; #729) |
-| F17 | WIS2 dissemination pathway — **Planned** (S019 / EV-014; #2) |
-| F18 | EDIS → RTH Washington — **Planned** (S019 / EV-014; #6) |
-| F19 | AMHS / SWIM / AFS adapters — **Planned** (S019 / EV-014) |
+| F16 | Dissemination drawer + multi-DB BYOC URI upload — **Done** (S019 / EV-014; #729) |
+| F17 | WIS2 dissemination pathway — **Done** (S019 / EV-014; #2) |
+| F18 | EDIS → RTH Washington — **Done** (S019 / EV-014; #6) |
+| F19 | AMHS / SWIM / AFS adapters — **Done** (S019 / EV-014) |
+| F20 | TAF + SPECI quality bar (F15 sequel) — **Planned** (S020 / EV-015; #735/#734) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-* + iwxxm-us) |
 | M3 | GIFTs as in-repo package — **deprecated** at F6 cutover |

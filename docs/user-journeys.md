@@ -4,8 +4,8 @@
 > **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI;
 > S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP;
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
-> S019 / EV-014 dissemination epic F16–F19
-> **Last updated**: 2026-07-21
+> S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734)
+> **Last updated**: 2026-07-22
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -44,6 +44,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-028 | Dissemination drawer — WIS2 publish | apps/frontend | F17 | T2 / **T3** / H6′ |
 | UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3** (live BYOC) |
 | UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3** |
+| UJ-031 | TAF + SPECI lint / convert→validate golden | UI / API / CI | F20 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -683,6 +684,37 @@ this cycle (HARD — E11-23/28); non–R-theme gaps only may defer with rational
 
 ---
 
+### UJ-031: TAF + SPECI Lint / Convert→Validate Golden (F20 / #735 / #734)
+
+**Actor**: Operator / CI maintainer
+
+**Goal**: Lint **TAF** and **SPECI** TAC with stable registry issue codes; convert accept
+fixtures to IWXXM (`iwxxm:TAF` / `iwxxm:SPECI`); validate with XSD+Schematron; useful
+diagnostics on negative fixtures. SPECI full quality bar (#734) is parallel to TAF (#735),
+including Auto-detect / product-hint never mis-classifying SPECI↔METAR.
+
+**Steps (operator — T2/T3)**:
+
+1. Open workbench; set Product = **TAF** (or Auto-detect when unambiguous).
+2. Paste a valid TAF accept fixture; run lint — registry codes only
+   (`GET /api/v1/lint-issue-catalog` for tooltips).
+3. Convert → Strict Validation — XSD+Schematron pass for pinned `iwxxm_version`; root `iwxxm:TAF`.
+4. Paste a known-bad TAF negative fixture — lint returns registry codes (no silent success).
+5. Repeat with Product = **SPECI** (accept + negative); confirm Auto-detect chooses SPECI for
+   TAC starting with `SPECI`; root `iwxxm:SPECI`.
+
+**Steps (CI — T0)**:
+
+1. Registry CI: every emitted TAF/SPECI code is registered; catalog export in sync.
+2. Golden pack: TAF **and** SPECI TAC → `tac2iwxxm` → `iwxxm-validate` (M-xsd / M-sch) green.
+3. Negative pack: expected registry codes for both products (#735/#734 exceptional-rule tables).
+4. Guidance audit: exceptional rules covered or explicitly deferred with rationale in coverage matrix.
+
+**Acceptance**: F20 criteria 1–6; coverage-matrix TAF + SPECI rows updated; gaps filed or closed.
+**Tier: T0 / T2 / T3** (T3 = workbench smoke when API/FE redeployed; H4–H5 when FE touched).
+
+---
+
 ### UJ-025: Manual TAC Input Modes (TAC / AHL Bulletin / IWXXM COLLECT)
 
 **Actor**: Operator
@@ -809,3 +841,4 @@ live smoke (T7.4) when scheduled.
 - S016 / EV-012 (2026-07-20): UJ-025 Manual TAC Input modes (ADR-024 / #730)
   (F15 / #732; SPECI adjacency explicit; catalog via `GET /lint-issue-catalog` E11-31)
 - S019 / EV-014 (2026-07-21): UJ-027–030 dissemination drawer (F16–F19; #729/#2/#6)
+- S020 / EV-015 (2026-07-22): UJ-031 TAF + SPECI lint / convert→validate golden (F20; #735/#734)

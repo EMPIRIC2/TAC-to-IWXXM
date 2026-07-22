@@ -1,9 +1,9 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-21 (S019 / EV-014 — Planned dissemination routes; ADR-030)
+> **Last updated**: 2026-07-22 (S020 / EV-015 — F20 TAF+SPECI quality; full endpoint review)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
-> F15 registry codes (ADR-028)
+> F15 registry codes (ADR-028); F20 TAF/SPECI quality (wire shape unchanged)
 
 ## Base URLs
 
@@ -572,3 +572,24 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
   **additive** `GET /api/v1/lint-issue-catalog` (E11-31) for FE tooltips/catalog panel
 - S019 / EV-014 (2026-07-21): Planned `POST /api/v1/dissemination/preflight` + `/send`
   (ADR-030); F16–F19 sinks; Batch 1 architecture locked (Q32=A)
+- S020 / EV-015 (2026-07-22): F20 TAF+SPECI quality — **full endpoint review**; no new routes;
+  wire shapes unchanged. `product` enum already includes `taf` \| `speci` on convert /
+  convert-bulletin / lint-tac / decode-tac. Registry codes for TAF (+ SPECI deepen) flow through
+  existing `lint-tac` + `GET /lint-issue-catalog`. Convert roots `iwxxm:TAF` / `iwxxm:SPECI`
+  asserted in goldens (UJ-031 / TC-F20-*). Dissemination routes unchanged (OOS).
+
+## S020 / EV-015 — Endpoint review (F20)
+
+| Endpoint | Change for F20? | Notes |
+|----------|-----------------|-------|
+| `POST /api/v1/convert` | **None (wire)** | `product=taf` \| `speci` already required enum; quality deepen is package-side |
+| `POST /api/v1/convert-bulletin` | **None (wire)** | Per-report product identity for SPECI/TAF in bulletins; TC-F20-006 |
+| `POST /api/v1/lint-tac` | **None (wire)** | New TAF (+ SPECI) registry codes in issue payloads; catalog stays source of truth |
+| `GET /api/v1/lint-issue-catalog` | **Additive content** | New codes appear in catalog export; response schema unchanged |
+| `POST /api/v1/decode-tac` | **None (wire)** | TAF change-group / SPECI value-aware decode already F9 scope; fixtures may expand |
+| `POST /api/v1/validate` | **None (wire)** | Round-trip goldens use existing validate levels |
+| `POST /api/v1/dissemination/*` | **OOS** | No F16–F19 changes this cycle (E15-6) |
+| `/auth/*`, work-sessions | **None** | Unchanged |
+
+**Breaking changes**: None expected. Frontend OpenAPI types update only if catalog/issue
+content requires new documented code enums (prefer additive).

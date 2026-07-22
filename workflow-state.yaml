@@ -1,11 +1,135 @@
-overall_status: completed
+overall_status: in_progress
 project:
   name: metar-to-IWXXM
   description: METAR/SPECI TAC to IWXXM XML converter — monorepo migration
   output_directory: docs/
 
-session_counter: 19
-active_session: null
+session_counter: 20
+active_session:
+  id: S020-aerodrome-quality
+  type: feature
+  intent: >-
+    Aerodrome quality deepen (F15 sequel): #735 TAF + #734 SPECI full quality bars;
+    same stack as EV-011; F20 + deepen F6/F12
+  status: in_progress
+  branch: evolve/EV-015-aerodrome-quality
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-015
+  artifacts_dir: docs/sessions/S020-aerodrome-quality/
+  current_stage: 07-build
+  started_at: '2026-07-22'
+  context_briefs:
+    - docs/context/aerodrome-quality.md
+  standing_docs_touched:
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S020-aerodrome-quality/session-brief.md
+    - docs/sessions/S020-aerodrome-quality/routing-plan.md
+    - docs/context/aerodrome-quality.md
+    - docs/feature-list.md
+    - docs/spec.md
+    - docs/user-journeys.md
+    - docs/test-plan.md
+    - docs/api-contract.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/decisions/requirements-decisions.md
+    - docs/sessions/S020-aerodrome-quality/reports/01-requirements.md
+    - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
+    - docs/sessions/S020-aerodrome-quality/checkpoints/phase-a.md
+    - .cursor/rules/core/plan-adherence.mdc
+    - docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
+    - docs/sessions/S020-aerodrome-quality/reports/04-tech-plan.md
+    - docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
+    - docs/decisions/tech-decisions.md
+  note: >-
+    Phase C 07-build — M0+M1 done; next M2 TAF goldens T4 @ T2.1; no commit yet (user rule). Batch1+Batch2 locked (E15-1..E15-8 all A); Phase 0 approved 2026-07-22; Lean+build D-S020-EV015-route-1. 00/01/02 COMPLETE 2026-07-22; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2). Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE 2026-07-22 (E15-16..19 all A; D-S020-EV015-plan-1; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B.
+  routing_plan:
+    - stage: 00-context
+      required: true
+      mode: scoped
+      status: completed
+      skip_rationale:
+      started: '2026-07-22'
+      completed: '2026-07-22'
+      note: >-
+        Phase 0 Batch1+Batch2 locked (E15-5..E15-8 all A); parent artifacts + F20
+        feature-list; completed 2026-07-22; handoff 01-requirements
+    - stage: 16-evolve
+      required: true
+      mode: orchestrator
+      status: in_progress
+      skip_rationale:
+      started: '2026-07-22'
+      completed:
+      note: >-
+        EV-015 orchestrator; routing approved Lean+build; cycle open; Phase A PASSED;
+        04-tech-plan completed; Phase B PASSED (D-S020-EV015-phase-b-pass); 07 in_progress
+    - stage: 01-requirements
+      required: true
+      mode: delta
+      status: completed
+      skip_rationale:
+      started: '2026-07-22'
+      completed: '2026-07-22'
+      note: >-
+        Delta COMPLETE 2026-07-22 (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; manifest B; ADR skipped (ADR-028 reuse); handoff 02-verify-plan
+    - stage: 02-verify-plan
+      required: true
+      mode: delta
+      status: completed
+      skip_rationale:
+      started: '2026-07-22'
+      completed: '2026-07-22'
+      note: >-
+        Delta COMPLETE 2026-07-22 — PASS; S1.M1=1 (D-S020-EV015-s1m1-1), S1.M2=2 rename
+        (D-S020-EV015-s1m2-2), S9.M1=1 keep skip 05 (D-S020-EV015-s9m1-1); Phase A
+        PASSED (D-S020-EV015-phase-a-pass)
+    - stage: 04-tech-plan
+      required: true
+      mode: delta
+      status: completed
+      skip_rationale:
+      started: '2026-07-22'
+      completed: '2026-07-22'
+      note: >-
+        COMPLETE 2026-07-22 — Batch2 E15-16..19 all A; plan approved
+        D-S020-EV015-plan-1; 04-exit consistency PASS (05/06 skipped); Phase B
+        checkpoint pending before 07
+    - stage: 07-build
+      required: true
+      mode: full
+      status: in_progress
+      skip_rationale:
+      started: '2026-07-22'
+      note: >-
+        M0+M1 COMPLETE; next M2 T2.1 (TAF goldens T4) pending start; no commit yet
+    - stage: 08-verify-build
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+    - stage: 09-qa
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+    - stage: 10-e2e
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+    - stage: 11-verify-impl
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+    - stage: 13-deploy-smoke
+      required: true
+      mode: full
+      status: pending
+      skip_rationale:
+  routing_preset: Lean+build
+  routing_provisional: false
+  routing_decision_id: D-S020-EV015-route-1
 sessions:
 
   - id: S019-dissemination-upload
@@ -1401,20 +1525,30 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: dissemination-upload
-    session_id: S019-dissemination-upload
-    evolve_cycle_id: EV-014
-    started_at: "2026-07-20"
-    completed_at: "2026-07-20"
+    scoped_slug: aerodrome-quality
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    started_at: "2026-07-22"
+    completed_at: "2026-07-22"
     substeps:
-      phase0: approved
+      phase0: completed
       phase1a: completed
       phase1b: skipped
       phase1c: skipped
       phase2: completed
       phase3: completed
       phase4: completed
+    note: >-
+      S020/EV-015 00-context COMPLETE 2026-07-22 — Batch1+Batch2 locked
+      (E15-1..E15-8 all A); Phase 0 approved; Lean+build D-S020-EV015-route-1;
+      handoff 01-requirements delta (F20 + deepen F6/F12)
     artifacts:
+      - docs/sessions/S020-aerodrome-quality/session-brief.md
+      - docs/sessions/S020-aerodrome-quality/routing-plan.md
+      - docs/context/aerodrome-quality.md
+      - docs/decisions/evolve-decisions.md
+      - docs/feature-list.md
+      - docs/sessions/S020-aerodrome-quality/
       - docs/sessions/S019-dissemination-upload/session-brief.md
       - docs/sessions/S019-dissemination-upload/routing-plan.md
       - docs/sessions/S018-metar-remarks-667/session-brief.md
@@ -1433,6 +1567,13 @@ stages:
       - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
       - docs/context/manual-tac-input-modes.md
     notes:
+      - >-
+        2026-07-22 S020/EV-015 00-context COMPLETE — Batch2 E15-5..E15-8 all A;
+        Phase 0 scope approved; F20 written to feature-list; handoff 01-requirements
+      - >-
+        2026-07-22 S020/EV-015 parent artifacts recorded (session-brief, routing-plan,
+        docs/context/aerodrome-quality.md, evolve-decisions EV-015); Batch1+routing locked;
+        Phase 0 Batch2 pending — 00-context stays in_progress
       - "2026-07-21 S019/EV-014 Phase 0 APPROVED (Q23=A–D + Q24=A Full) — multi-DB Postgres/MySQL/SQLServer/SQLite; F16–F19; 01-requirements delta completed; handoff 02-verify-plan (D-S019-EV014-phase0-approve / D-S019-EV014-01-requirements-delta)"
       - "2026-07-21 S019/EV-014 Phase 0 Batch 5 locked (AskQuestion waived cloud): Q20=B,C,A,D all four extras IN — A) DDL/create-if-missing supersedes Batch 1 require-existing-only; B) drag-drop IWXXM/TAC in addition to convert-then-send; C) multi-DB beyond Postgres (vendor list open I-S019-EV014-Q20C-vendors); D) AMHS/SWIM/AFS adapters IN. Resolves I-S019-EV014-Q14r-extras-enum. Q21=A staging/test OK for merge; live BYOC demos required before cycle close (with Q15=A). Q22=A Full routing proposed. Draft Fn F16-F19 in session-brief+evolve-decisions only (no feature-list rows). Phase 0 awaiting (1) Q20C vendors (2) user approval Fn+scope+Full routing."
       - "2026-07-21 S019/EV-014 Phase 0 Batch 4 locked (AskQuestion waived cloud): Q14r=B keep Q14=A literal + expand design DDL/drag-drop/multi-DB/and-or AMHS (user chose expand over recommended pack A); I-S019-EV014-Q14-batch1 resolved scope-expanded-intentionally; open Ambiguity I-S019-EV014-Q14r-extras-enum (v1 IN-set not enumerated) blocks Phase 0. Q17=A testing-only staging wis2box (Render/Docker); amend Q12=B = test harness; live WIS2 BYOC. Q18≈A BYOC one-shot paste SMTP/gateway in drawer (memory-only) not deploy-only operator SMTP; testing also BYOC. Q19=A work history stays Supabase tac_work_sessions/kv_upload_key; never store destination secrets. No F16+."
@@ -1465,49 +1606,65 @@ stages:
       - "Phase 4 wrote docs/context/f7-operator-ui.md; indexed in docs/context/README.md"
   01-requirements:
     status: completed
+    mode: delta
     started_at: "2026-06-14T00:00:00Z"
-    completed_at: "2026-07-21"
+    completed_at: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    note: >-
+      S020/EV-015 01-requirements delta COMPLETE 2026-07-22 (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; document_manifest approved B (D-S020-EV015-manifest-1 / E15-9); ADR skipped (ADR-028 reuse); handoff 02-verify-plan. Historical baseline completed 2026-07-21 (S019); tracked via delta_substages + active_session.
     substeps:
       interviews:
-        completed: 8
-        total: 8
+        status: completed
+        completed: 6
+        total: 6
         current_template:
         current_section: complete
+        planned_docs:
+          status:
+            feature-list: completed
+            spec: completed
+            user-journeys: completed
+            test-plan: completed
+            api-contract: completed
+            coverage-matrix: completed
+            ADR: skipped
     active_session:
-      session_id: S019-dissemination-upload
-      evolve_cycle_id: EV-014
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
       status: completed
       mode: delta
-      started_at: '2026-07-21'
-      completed_at: '2026-07-21'
+      started_at: '2026-07-22'
+      completed_at: '2026-07-22'
       note: >-
-        S019/EV-014 01-requirements delta COMPLETE (D-S019-EV014-01-requirements-delta) —
-        F16–F19 Planned; non-goals amended; ADR-021 amend + ADR-029 Proposed; UJ-027–030;
-        TC-F16..F19; handoff 02-verify-plan
+        S020/EV-015 01-requirements delta COMPLETE (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; manifest B; ADR skipped (ADR-028 reuse); handoff 02-verify-plan
+      proposed_features:
+        - F20
+      deepen:
+        - F6.b
+        - F6.c
+        - F12
       document_manifest:
-        approved_at: '2026-07-21'
-        decision_id: D-S019-EV014-01-requirements-delta
+        status: approved
+        approved_at: '2026-07-22'
+        decision_id: D-S020-EV015-manifest-1
+        option: B
+        mode: delta
         approved_documents:
           - feature-list
           - spec
           - user-journeys
           - test-plan
-          - ADR
-          - evolve-decisions
-          - requirements-decisions
-        skipped_documents:
           - api-contract
-          - config-spec
-          - env-contract
-          - dependency-inventory
-          - data-management-plan
-          - roadmap
-          - README rewrite
+          - coverage-matrix
+        skipped_documents:
+          - ADR
+        skip_note: ADR skipped — ADR-028 reuse
       substeps:
         interviews:
           status: completed
-          completed: 1
-          total: 1
+          completed: 6
+          total: 6
           current_template:
           current_section: complete
           planned_docs:
@@ -1516,8 +1673,76 @@ stages:
               spec: completed
               user-journeys: completed
               test-plan: completed
-              ADR: completed
+              api-contract: completed
+              coverage-matrix: completed
+              ADR: skipped
+      artifacts:
+        - docs/feature-list.md
+        - docs/spec.md
+        - docs/user-journeys.md
+        - docs/test-plan.md
+        - docs/api-contract.md
+        - docs/domain/rules/COVERAGE_MATRIX.md
+        - docs/decisions/requirements-decisions.md
+        - docs/sessions/S020-aerodrome-quality/reports/01-requirements.md
+        - .cursor/rules/core/plan-adherence.mdc
     delta_substages:
+      - status: completed
+        mode: delta
+        session_id: S020-aerodrome-quality
+        evolve_cycle_id: EV-015
+        started_at: '2026-07-22'
+        completed_at: '2026-07-22'
+        note: >-
+          S020/EV-015 01-requirements delta COMPLETE (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; document_manifest approved B (D-S020-EV015-manifest-1 / E15-9); ADR skipped (ADR-028 reuse); proposed_features [F20]; deepen F6.b/F6.c/F12; handoff 02-verify-plan
+        proposed_features:
+          - F20
+        deepen:
+          - F6.b
+          - F6.c
+          - F12
+        artifacts:
+          - docs/feature-list.md
+          - docs/spec.md
+          - docs/user-journeys.md
+          - docs/test-plan.md
+          - docs/api-contract.md
+          - docs/domain/rules/COVERAGE_MATRIX.md
+          - docs/decisions/requirements-decisions.md
+          - docs/sessions/S020-aerodrome-quality/reports/01-requirements.md
+          - .cursor/rules/core/plan-adherence.mdc
+        document_manifest:
+          status: approved
+          approved_at: '2026-07-22'
+          decision_id: D-S020-EV015-manifest-1
+          option: B
+          mode: delta
+          approved_documents:
+            - feature-list
+            - spec
+            - user-journeys
+            - test-plan
+            - api-contract
+            - coverage-matrix
+          skipped_documents:
+            - ADR
+          skip_note: ADR skipped — ADR-028 reuse
+        substeps:
+          interviews:
+            status: completed
+            completed: 6
+            total: 6
+            current_template:
+            current_section: complete
+            planned_docs:
+              status:
+                feature-list: completed
+                spec: completed
+                user-journeys: completed
+                test-plan: completed
+                api-contract: completed
+                coverage-matrix: completed
+                ADR: skipped
       - status: completed
         mode: delta
         session_id: S019-dissemination-upload
@@ -1728,6 +1953,12 @@ stages:
                 domain-research-catalog: completed
                 ADR: completed
     notes:
+      - 2026-07-22 S020/EV-015 01-requirements COMPLETE (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; manifest B; ADR skipped (ADR-028 reuse); handoff 02-verify-plan
+      - 2026-07-22 S020/EV-015 01-requirements interviews 6/6 written — manifest B approved (D-S020-EV015-manifest-1 / E15-9); ADR skipped (ADR-028 reuse); current_template=user_confirm / pending_confirm; status remains in_progress pending user confirm of written deltas
+      - >-
+        2026-07-22 S020/EV-015 01-requirements STARTED (delta) — Phase 0 approved
+        E15-5..E15-8 all A; feature-list F20 completed (1); current_template pending
+        document_manifest; proposed_features [F20]; deepen F6.b/F6.c/F12
       - >-
         2026-07-21 S019/EV-014 01-requirements COMPLETE (D-S019-EV014-01-requirements-delta) —
         F16–F19 Planned; non-goals amended; ADR-021/029; UJ-027–030; TC-F16..F19; handoff
@@ -1766,34 +1997,66 @@ stages:
 
   02-verify-plan:
     status: completed
+    mode: delta
     started_at: "2026-06-14T23:45:00Z"
-    completed_at: "2026-06-14T23:59:00Z"
+    completed_at: "2026-07-22"
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    note: >-
+      S020/EV-015 02-verify-plan delta COMPLETE 2026-07-22 — PASS; medium verdicts
+      S1.M1=1 (D-S020-EV015-s1m1-1), S1.M2=2 rename (D-S020-EV015-s1m2-2),
+      S9.M1=1 keep skip 05 (D-S020-EV015-s9m1-1). Session/branch renamed to
+      aerodrome-quality. Phase A checkpoint pending before 04-tech-plan (do not
+      start 04). Historical baseline completed 2026-07-21 (S019).
     substeps:
       inventory:
         status: completed
       consistency_check:
         status: completed
-        notes: "All 6 issues resolved (C1-C6)"
       statement_review:
-        auto_approved: 38
+        auto_approved: 12
         pending: 0
-        reviewed: 24
+        reviewed: 3
     current_document:
     current_statement:
     active_session:
-      session_id: S019-dissemination-upload
-      evolve_cycle_id: EV-014
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
       skill_id: 02-verify-plan
       status: completed
       mode: delta
-      started_at: '2026-07-21'
-      completed_at: '2026-07-21'
-      note: S019/EV-014 02-verify-plan delta PASS — 28 high + Q26–Q28 review fixes; ADR-029 Accepted; artifact audit PASS
+      started_at: '2026-07-22'
+      completed_at: '2026-07-22'
+      note: >-
+        S020/EV-015 02-verify-plan delta COMPLETE 2026-07-22 — PASS;
+        D-S020-EV015-s1m1-1/s1m2-2/s9m1-1; rename to aerodrome-quality;
+        Phase A checkpoint pending before 04
     artifacts:
       - docs/decisions/product-audit.md
       - docs/decisions/product-decisions.md
+      - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
       - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+      - session_id: S020-aerodrome-quality
+        evolve_cycle_id: EV-015
+        skill_id: 02-verify-plan
+        status: completed
+        started_at: '2026-07-22'
+        completed_at: '2026-07-22'
+        mode: delta
+        feature_ids:
+          - F20
+        deepen:
+          - F6.b
+          - F6.c
+          - F12
+        note: >-
+          COMPLETE 2026-07-22 PASS — 12 auto + S1.M1/S1.M2/S9.M1 confirmed
+          (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1); rename aerodrome-quality;
+          Phase A pending before 04
+        artifacts:
+          - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
+          - docs/sessions/S020-aerodrome-quality/checkpoints/phase-a.md
       - session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
         skill_id: 02-verify-plan
@@ -1826,6 +2089,8 @@ stages:
           - docs/feature-list.md
           - docs/CORPUS.md
     notes:
+      - 2026-07-22 S020/EV-015 02-verify-plan COMPLETE (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1) — PASS; 12 auto + medium verdicts; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality; Phase A checkpoint pending before 04-tech-plan; do not start 04
+      - 2026-07-22 S020/EV-015 02-verify-plan STARTED (delta) — E15-10 / D-S020-EV015-01-confirm = A; 01 completed; mode delta; handoff from 01-requirements
       - 2026-07-21 S019/EV-014 02-verify-plan COMPLETE (D-S019-EV014-Q28A-batch) — 28 high + 6 review fixes Q26-Q28; ADR-029 Accepted; handoff 03-plan-tooling
       - 2026-07-21 S019/EV-014 delta audit starting (historical stage completed; new delta_substages entry)
       - >-
@@ -1955,6 +2220,40 @@ stages:
       - docs/adr/ADR-011-work-sessions-data-access.md
       - docs/adr/ADR-012-metar-work-sessions-retention.md
     delta_substages:
+      - session_id: S020-aerodrome-quality
+        evolve_cycle_id: EV-015
+        skill_id: 04-tech-plan
+        status: completed
+        started_at: '2026-07-22'
+        started: '2026-07-22'
+        completed_at: '2026-07-22'
+        completed: '2026-07-22'
+        mode: delta
+        feature_ids:
+          - F20
+        note: >-
+          COMPLETE 2026-07-22 — Batch2 E15-16..19 all A; plan approved
+          D-S020-EV015-plan-1; M0–M5 (28 tasks); 04-exit consistency PASS (05/06
+          skipped); Phase B checkpoint pending (do not start 07)
+        artifacts:
+          - docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
+          - docs/sessions/S020-aerodrome-quality/reports/04-tech-plan.md
+          - docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
+          - docs/decisions/tech-decisions.md
+        interview:
+          batch_2_ci_deploy_approve:
+            status: locked
+            decision_id: D-S020-EV015-plan-1
+            answers:
+              '1': A
+              '2': A
+              '3': A
+              '4': A
+            ids:
+              - E15-16
+              - E15-17
+              - E15-18
+              - E15-19
       - session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
         skill_id: 04-tech-plan
@@ -2128,6 +2427,13 @@ stages:
           - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
       - >-
+        2026-07-22 S020/EV-015 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19
+        all A) — M0–M5 (28 tasks); 04-exit consistency PASS; 05/06 skipped; Phase B
+        checkpoint pending (do not start 07)
+      - >-
+        2026-07-22 S020/EV-015 04-tech-plan STARTED (D-S020-EV015-phase-a-pass) — Phase A
+        PASSED; gates.a_to_b passed; mode delta; execution plan TBD by parent
+      - >-
         2026-07-21 S019/EV-014 04 COMPLETE (Q34=A) — plan approved; handoff #753→main
       - 2026-07-21 S019/EV-014 04 Batch 2 LOCKED (all A) — E14-06..10; plan pending Q34
       - >-
@@ -2155,15 +2461,16 @@ stages:
       - "S015/EV-011 delta 04-tech-plan completed 2026-07-19 — E11-31 GET lint-issue-catalog; 31 tasks approved"
 
     active_session:
-      session_id: S019-dissemination-upload
-      evolve_cycle_id: EV-014
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
       skill_id: 04-tech-plan
       status: completed
       mode: delta
-      started_at: '2026-07-21'
-      completed_at: '2026-07-21'
+      started_at: '2026-07-22'
+      completed_at: '2026-07-22'
       note: >-
-        COMPLETE Q34=A — execution-plan approved; Batch 1–2; ADR-030; handoff to 05
+        COMPLETE 2026-07-22 (D-S020-EV015-plan-1; E15-16..19 all A) — M0–M5 (28
+        tasks); 04-exit consistency PASS; 05/06 skipped; Phase B checkpoint pending
   05-verify-tech:
     status: completed
     started_at: "2026-06-15T01:15:00Z"
@@ -2406,6 +2713,24 @@ stages:
         milestone: M11
         notes: "T11.4 complete — H0c+H4+H5 green on staging; TC-M001–M005 pass; Phase 4 gate criteria met on main"
     delta_substages:
+      - id: S020-aerodrome-quality
+        session_id: S020-aerodrome-quality
+        evolve_cycle_id: EV-015
+        skill_id: 07-build
+        status: in_progress
+        started_at: '2026-07-22'
+        started: '2026-07-22'
+        mode: full
+        note: >-
+          M0 COMPLETE (T0.1 research catalog; T0.2 COVERAGE_MATRIX linked);
+          M1 COMPLETE (T1.1–T1.6 TAF lint T1–T3; registry + ISSUE_CATALOG;
+          tac-validate 365 passed); next M2 T2.1 pending start (TAF goldens T4);
+          no commit yet (user rule)
+        active_milestone: M2
+        active_task: T2.1
+        active_task_status: pending
+        decision_id: D-S020-EV015-phase-b-pass
+        branch: evolve/EV-015-aerodrome-quality
       - id: S019-dissemination-upload
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
@@ -2474,6 +2799,10 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - >-
+        2026-07-22 S020/EV-015 M0+M1 COMPLETE — T0.1 catalog + T0.2 COVERAGE_MATRIX;
+        T1.1–T1.6 TAF lint T1–T3 (registry + ISSUE_CATALOG; tac-validate 365);
+        active_milestone M2; active_task T2.1 pending; no commit yet; 07 remains in_progress
       - '2026-07-21 S019/EV-014 T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock .env + fixture shapes + transport mocks / optional Compose); progress 29/29; Phase C ready for checkpoint (gates.c_to_d=pending_checkpoint); session/cycle remain open. Tip cursor/s019-t66-deploy-smoke-151c.'
       - '2026-07-21 S019/EV-014 resume confirmed at T6.6 blocked (D-S019-EV014-T66-resume-blocked-2026-07-21) — cannot complete without operator secrets (.env E2E_USER_*) + #771 merge/redeploy + live BYOC destinations; Render MCP/API key deferred. Tip cursor/s019-t66-deploy-smoke-151c (PR #772); progress 28/29.'
       - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — partial 13-deploy-smoke H0c/H1/H4/H5 PASS; allowlist/auth/BYOC + #771 merge pending; progress 28/29; report deploy-smoke.md; branch cursor/s019-t66-deploy-smoke-151c; commit @ 8fc9fec'
@@ -2608,19 +2937,20 @@ stages:
       - "2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories (qa-report.md + e2e-report.md); Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted; active_task T6.3 pending"
       - "2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress"
     active_session:
-      session_id: S019-dissemination-upload
-      evolve_cycle_id: EV-014
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
       skill_id: 07-build
-      status: completed
+      status: in_progress
       mode: full
-      started_at: '2026-07-21'
-      note: 'EV-014 Phase 4 closed; session archived'
-      progress: '26/29'
-      active_milestone: M6
-      active_task: T6.4
+      started_at: '2026-07-22'
+      note: >-
+        Phase C 07-build — M0+M1 done; next M2 TAF goldens T4 @ T2.1; no commit yet
+        (user rule)
+      active_milestone: M2
+      active_task: T2.1
       active_task_status: pending
-      report: docs/sessions/S019-dissemination-upload/reports/07-build-t63.md
-      completed_at: '2026-07-21'
+      decision_id: D-S020-EV015-phase-b-pass
+      branch: evolve/EV-015-aerodrome-quality
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -3277,15 +3607,34 @@ stages:
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
 
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S019-dissemination-upload
-    evolve_cycle_id: EV-014
-    started_at: '2026-07-20'
-    completed_at: '2026-07-21'
-    current_stage:
-    note: 'EV-014 closed; no active evolve cycle'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    started_at: '2026-07-22'
+    completed_at:
+    current_stage: 07-build
+    note: >-
+      EV-015 open (S020-aerodrome-quality); 00/01/02/04 COMPLETE 2026-07-22; renamed
+      from taf-quality (D-S020-EV015-s1m2-2); Phase A PASSED (D-S020-EV015-phase-a-pass);
+      gates.a_to_b passed; 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19 all A;
+      04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass);
+      gates.b_to_c passed; 07-build STARTED at T0.1; do not re-open Phase 0/B;
+      Lean+build D-S020-EV015-route-1
     notes:
+      - >-
+        2026-07-22 S020/EV-015 Phase B PASSED (D-S020-EV015-phase-b-pass) — gates.b_to_c
+        passed; 07-build STARTED at T0.1; do not re-open Phase 0/B
+      - >-
+        2026-07-22 S020/EV-015 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19
+        all A) — 04-exit consistency PASS; Phase B checkpoint pending; do not start 07
+      - 2026-07-22 S020/EV-015 Phase A PASSED (D-S020-EV015-phase-a-pass) — gates.a_to_b passed; 04-tech-plan STARTED (delta)
+      - 2026-07-22 S020/EV-015 02 COMPLETE — PASS (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1); rename aerodrome-quality; Phase A checkpoint pending before 04; do not start 04
+      - 2026-07-22 S020/EV-015 01→02 — 01-requirements COMPLETE (E15-10 / D-S020-EV015-01-confirm = A); interviews 6/6; 02-verify-plan delta started
+      - 2026-07-22 S020/EV-015 01-requirements interviews 6/6 written — manifest B approved; user_confirm pending before 01 complete / 02-verify-plan
+      - >-
+        2026-07-22 S020/EV-015 16-evolve in_progress — 00-context completed; handoff
+        01-requirements; Phase 0 Batch1+Batch2 locked (E15-1..E15-8 all A)
       - >-
         2026-07-21 S019/EV-014 closeout hygiene — 16-evolve completed/idle (EV-014 closed; no active
         evolve cycle); PR #774 merged 915f41e; draft PR #770 closed superseded; issues #729/#2/#6 closed
@@ -3518,6 +3867,383 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S020-EV015-phase-b-pass
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 16-evolve
+    skill: 16-evolve
+    skill_id: 16-evolve
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: Phase B checkpoint — approve B→C → start 07-build @ T0.1
+    summary: Phase B checkpoint A — B→C passed; start 07 @ T0.1
+    decision: >-
+      User Q20=A (2026-07-22). Approve B→C → start 07-build @ T0.1.
+      checkpoints.phase_b=passed; gates.b_to_c=passed (decision_id
+      D-S020-EV015-phase-b-pass); current_stage=07-build; 07-build in_progress
+      (STARTED T0.1 mining catalog). Do not re-open Phase 0/B. Related:
+      D-S020-EV015-plan-1; Lean+build skip 05/06.
+  - id: D-S020-EV015-plan-1
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 04-tech-plan
+    skill: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: Approve M0–M5 execution plan (Batch 2)
+    summary: >-
+      D-S020-EV015-plan-1 / E15-19=A — approve execution plan M0–M5 (28 tasks)
+    decision: >-
+      User Batch 2 all A (E15-16..19) confirmed 2026-07-22. Execution plan approved
+      (D-S020-EV015-plan-1). 04-exit consistency PASS; 05/06 skipped (S9.M1 /
+      Lean+build). checkpoints.phase_b=pending; gates.b_to_c=pending;
+      current_stage=phase-b-checkpoint; do not start 07. Related: E15-16, E15-17,
+      E15-18, E15-19.
+  - id: E15-19
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: Approve execution plan
+    summary: E15-19=A — Approve M0–M5 (28 tasks)
+    decision: >-
+      E15-19 option A confirmed 2026-07-22 — approve M0–M5 execution plan (28 TDD
+      tasks). Related: D-S020-EV015-plan-1.
+  - id: E15-18
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: Deploy / health tiers
+    summary: E15-18=A — API+FE; H1–H3 + H4–H5 required
+    decision: >-
+      E15-18 option A confirmed 2026-07-22 — API+FE redeploy at M5; H1–H3 plus
+      H4–H5 required. Related: D-S020-EV015-plan-1.
+  - id: E15-17
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: Mining scope
+    summary: E15-17=A — Full dig TAF+SPECI only
+    decision: >-
+      E15-17 option A confirmed 2026-07-22 — full dig TAF+SPECI only; siblings
+      cite-only. Related: D-S020-EV015-plan-1.
+  - id: E15-16
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: CI scope
+    summary: E15-16=A — Existing pytest + ci.yml only
+    decision: >-
+      E15-16 option A confirmed 2026-07-22 — existing pytest / ci.yml only; no new
+      GHA workflow. Related: D-S020-EV015-plan-1.
+  - id: D-S020-EV015-phase-a-pass
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 16-evolve
+    skill: 16-evolve
+    skill_id: 04-tech-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: Phase A checkpoint — approve → start 04-tech-plan
+    summary: >-
+      D-S020-EV015-phase-a-pass = A — Approve Phase A → start 04-tech-plan
+    decision: >-
+      User Phase A checkpoint = A (2026-07-22). Approve Phase A → start 04-tech-plan.
+      checkpoints.phase_a=passed; gates.a_to_b=passed; current_stage=04-tech-plan;
+      04-tech-plan in_progress (mode delta). Related: D-S020-EV015-s1m1-1/s1m2-2/s9m1-1;
+      Lean+build skip 03/05.
+  - id: D-S020-EV015-s1m1-1
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 02-verify-plan
+    skill: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: S1.M1 full HARD themes + 04 kill-switch
+    summary: S1.M1 = 1 — keep full HARD themes; 04 milestones with AskQuestion kill-switch
+    decision: >-
+      S1.M1 option 1 confirmed 2026-07-22 — keep full HARD matrix themes
+      (T1–T4 / S1–S3 / C1); 04-tech-plan milestones use AskQuestion kill-switch
+      if blocked. Related: E15-5.
+  - id: D-S020-EV015-s1m2-2
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 02-verify-plan
+    skill: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: Rename session/branch to aerodrome-quality
+    summary: S1.M2 = 2 — rename S020-taf-quality → S020-aerodrome-quality
+    decision: >-
+      S1.M2 option 2 confirmed 2026-07-22 — rename session id, artifacts_dir,
+      context brief, and git branch from taf-quality to aerodrome-quality
+      (S020-aerodrome-quality / evolve/EV-015-aerodrome-quality /
+      docs/context/aerodrome-quality.md). Filesystem rename by parent; state
+      updated to match.
+  - id: D-S020-EV015-s9m1-1
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 02-verify-plan
+    skill: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: Keep skip 05; 04-exit consistency
+    summary: S9.M1 = 1 — keep skip 05-verify-tech; lightweight consistency at 04 exit
+    decision: >-
+      S9.M1 option 1 confirmed 2026-07-22 — keep Lean+build skip of 05-verify-tech;
+      run a lightweight consistency pass at 04-tech-plan exit. Do not re-add 05
+      to routing now.
+  - id: D-S020-EV015-01-confirm
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 01-requirements
+    skill_id: 01-requirements
+    status: confirmed
+    topic: Approve 01 deltas → complete 01 → start 02-verify-plan
+    summary: E15-10 / D-S020-EV015-01-confirm = A — approve 01 deltas as written; complete 01; start 02-verify-plan
+    decision: >-
+      Approve 01-requirements deltas as written (option A). Mark 01-requirements
+      completed 2026-07-22; interviews 6/6 done; start 02-verify-plan (mode delta).
+      Related: E15-10, D-S020-EV015-manifest-1, E15-9.
+  - id: E15-10
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 01-requirements
+    skill_id: 01-requirements
+    status: confirmed
+    topic: User confirm 01 written deltas (option A)
+    summary: E15-10 = A — approve 01 deltas as written → complete 01 → start 02
+    decision: >-
+      Option A confirmed 2026-07-22. Approve 01 deltas as written; complete
+      01-requirements; hand off to 02-verify-plan. Related: D-S020-EV015-01-confirm.
+  - id: D-S020-EV015-manifest-1
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 01-requirements
+    skill_id: 01-requirements
+    status: confirmed
+    topic: Document manifest option B (E15-9)
+    summary: E15-9 / D-S020-EV015-manifest-1 = B — mandatory + coverage matrix + full API review; ADR skipped (ADR-028 reuse)
+    decision: 'Approve document manifest option B: feature-list, spec, user-journeys, test-plan, api-contract, coverage-matrix. Skip new ADR (reuse ADR-028). Parent wrote approved docs; user confirm of written deltas still pending before marking 01-requirements completed.'
+  - id: E15-9
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 01-requirements
+    skill_id: 01-requirements
+    status: confirmed
+    topic: 01 document manifest option B
+    summary: Manifest B — mandatory + coverage matrix + full API review
+    decision: 'Option B approved: interview feature-list, spec, user-journeys, test-plan, api-contract, coverage-matrix; skip ADR (ADR-028 reuse). Related: D-S020-EV015-manifest-1.'
+  - id: D-S020-EV015-phase0-approve
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Phase 0 scope approved — start 01-requirements
+    summary: >-
+      Phase 0 locked (Batch1+Batch2); F20 written; hand off 01-requirements delta
+    decision: >-
+      Confirm E15-5..E15-8 all A (Batch 2). Phase 0 scope approved 2026-07-22.
+      Parent wrote F20 in docs/feature-list.md. Mark 00-context completed; start
+      01-requirements delta (mode delta); proposed_features [F20]; deepen F6.b,
+      F6.c, F12. Related: E15-5, E15-6, E15-7, E15-8, D-S020-EV015-route-1.
+  - id: E15-5
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Research / encode depth (Batch 2)
+    summary: >-
+      Batch2 E15-5=A — full #735/#734 AC for TAF and SPECI
+    decision: >-
+      Full #735/#734 acceptance criteria: guidance + fixtures + goldens + coverage
+      matrix for TAF and SPECI (not residual-only).
+  - id: E15-6
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Out of scope (Batch 2)
+    summary: >-
+      Batch2 E15-6=A — siblings OOS; no PyPI; no F16–F19; F7 Planned smoke only
+    decision: >-
+      Out of scope this cycle: sibling product quality bars; PyPI publish bump;
+      F16–F19 dissemination work. F7 remains Planned (workbench smoke only under F20).
+  - id: E15-7
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Deploy / smoke path for stage 13 (Batch 2)
+    summary: >-
+      Batch2 E15-7=A — redeploy if API/FE; H1–H3 if API; H4–H5 taf/speci smoke
+    decision: >-
+      Redeploy if API/FE changes; run H1–H3 when API ships; H4–H5 workbench smoke
+      for taf/speci product paths.
+  - id: E15-8
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Lock Phase 0 → F20 + 01-requirements
+    summary: >-
+      Batch2 E15-8=A — lock Phase 0; write F20; start 01-requirements delta
+    decision: >-
+      Lock Phase 0 scope. Parent allocates F20 in docs/feature-list.md and hands
+      off to 01-requirements delta (Lean+build routing unchanged).
+  - id: E15-1
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Open session S020 / allocate EV-015
+    summary: >-
+      Batch1 1A — Open S020-aerodrome-quality, type feature, scoped → 16-evolve EV-015
+    decision: >-
+      Open S020-aerodrome-quality (feature); orchestrator 16-evolve; evolve_cycle_id EV-015;
+      branch evolve/EV-015-aerodrome-quality (recorded; parent creates git branch);
+      artifacts_dir docs/sessions/S020-aerodrome-quality/
+  - id: E15-2
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Scope — full SPECI + TAF quality bars
+    summary: >-
+      Batch1 2A — Full parallel SPECI quality bar (#734 AC) + #735 TAF (NOT residual-only)
+    decision: >-
+      Full parallel SPECI quality bar matching #734 acceptance criteria, plus #735 TAF
+      quality bar. Explicitly NOT residual-only SPECI work.
+  - id: E15-3
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Feature allocation F20 + deepen F6/F12
+    summary: >-
+      Batch1 3A — New F20 + deepen F6/F12 (reuse ADR-028 registry); reconcile 2A+3A
+    decision: >-
+      New F20 = TAF + SPECI quality bar (mirror F15 METAR/SPECI); deepen F6.b SPECI +
+      F6.c TAF + F12 (tac-validate). Reuse ADR-028 issue registry. Do not invent F20
+      feature-list row until parent writes after routing amend.
+  - id: E15-4
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Routing preset Lean (provisional)
+    summary: >-
+      Batch1 4C — Lean preset 00 → 16 → 01 → 02 → 10 → 13 (provisional);
+      superseded by E15-route-amend=A / D-S020-EV015-route-1
+    decision: >-
+      User requested Lean (4C). Recorded as provisional routing_plan only —
+      see E15-route-amend. Superseded 2026-07-22 by E15-route-amend=A (Lean+build).
+  - id: E15-route-amend
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Routing amend — Lean vs Lean+build vs Standard
+    summary: >-
+      Confirmed A — Lean+build (supersedes E15-4 provisional Lean)
+    decision: >-
+      User answered E15-route-amend=A (2026-07-22): Lean+build. Required:
+      00, 16, 01(delta), 02(delta), 04(delta), 07, 08, 09, 10, 11, 13.
+      Skipped unless later needed: 03, 05, 06, 12. Formalize as
+      D-S020-EV015-route-1; clear provisional Lean / routing_blocker.
+  - id: D-S020-EV015-route-1
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    stage: 00-context
+    skill_id: 00-context
+    status: confirmed
+    topic: Approve Lean+build routing for EV-015
+    summary: >-
+      Lean+build approved — build stages included; Standard-like A/B/C/D checkpoints pending
+    decision: >-
+      Approve EV-015 / S020 routing_plan as Lean+build (E15-route-amend=A).
+      required_stages: 00-context, 16-evolve, 01-requirements, 02-verify-plan,
+      04-tech-plan, 07-build, 08-verify-build, 09-qa, 10-e2e, 11-verify-impl,
+      13-deploy-smoke. skipped_stages: 03-plan-tooling, 05-verify-tech,
+      06-tech-tooling, 12-verify-deploy. Batch1 confirmed: E15-1=1A, E15-2=2A,
+      E15-3=3A (F20 + deepen F6.b/F6.c/F12); E15-4 provisional Lean superseded.
+      Checkpoints phase_a/b/c/d + deploy remain pending for parent after A/B/C/D
+      (Lean+build recommends Standard-like checkpoint cadence).
   - id: D-S019-EV014-closeout-1
     date: '2026-07-21'
     timestamp: '2026-07-21'
@@ -6628,6 +7354,181 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
+    type: session-report
+    kind: execution-plan
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: >-
+      Approved D-S020-EV015-plan-1 / E15-19=A — M0–M5 (28 TDD tasks); Batch2
+      E15-16..18 all A
+  - path: docs/sessions/S020-aerodrome-quality/reports/04-tech-plan.md
+    type: session-report
+    kind: tech-plan
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: >-
+      04-tech-plan COMPLETE — 04-exit consistency PASS; 05/06 skipped; Phase B
+      checkpoint pending
+  - path: docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
+    type: checkpoint
+    kind: phase-b
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: pending
+    note: >-
+      Phase B checkpoint draft — pending user AskQuestion before 07-build;
+      gates.b_to_c pending
+  - path: docs/decisions/tech-decisions.md
+    type: standing-doc
+    kind: tech-decisions
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: >-
+      S020/EV-015 04 rows — E15-12..19 + D-S020-EV015-plan-1 confirmed
+  - path: docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
+    type: session-report
+    kind: verify-plan-audit
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: >-
+      02-verify-plan PASS — 12 auto + S1.M1/S1.M2/S9.M1 confirmed
+      (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1); rename aerodrome-quality
+  - path: docs/sessions/S020-aerodrome-quality/checkpoints/phase-a.md
+    type: checkpoint
+    kind: phase-a
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: Phase A PASSED 2026-07-22 (D-S020-EV015-phase-a-pass); 04-tech-plan started then completed
+  - path: docs/feature-list.md
+    type: standing-doc
+    kind: feature-list
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: >-
+      F20 Planned (TAF+SPECI quality bar) + deepen F6.b/F6.c/F12; interviews 6/6 written; pending user confirm of written deltas
+  - path: docs/spec.md
+    type: standing-doc
+    kind: spec
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: S020/EV-015 01-requirements delta — written under manifest B (D-S020-EV015-manifest-1); user confirm pending
+  - path: docs/user-journeys.md
+    type: standing-doc
+    kind: user-journeys
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: S020/EV-015 01-requirements delta — written under manifest B (D-S020-EV015-manifest-1); user confirm pending
+  - path: docs/test-plan.md
+    type: standing-doc
+    kind: test-plan
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: S020/EV-015 01-requirements delta — written under manifest B (D-S020-EV015-manifest-1); user confirm pending
+  - path: docs/api-contract.md
+    type: standing-doc
+    kind: api-contract
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: S020/EV-015 01-requirements delta — written under manifest B (D-S020-EV015-manifest-1); user confirm pending
+  - path: docs/domain/rules/COVERAGE_MATRIX.md
+    type: standing-doc
+    kind: coverage-matrix
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: S020/EV-015 01-requirements delta — written under manifest B (D-S020-EV015-manifest-1); user confirm pending
+  - path: docs/decisions/requirements-decisions.md
+    type: standing-doc
+    kind: requirements-decisions
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: S020/EV-015 01-requirements delta — written under manifest B (D-S020-EV015-manifest-1); user confirm pending
+  - path: docs/sessions/S020-aerodrome-quality/reports/01-requirements.md
+    type: report
+    kind: 01-requirements
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: in_progress
+    note: S020/EV-015 01-requirements report — interviews 6/6 written; pending user confirm
+  - path: .cursor/rules/core/plan-adherence.mdc
+    type: rule
+    kind: plan-adherence
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: '2026-07-22'
+    updated_at: '2026-07-22'
+    status: completed
+    note: S020/EV-015 01-requirements delta — written under manifest B (D-S020-EV015-manifest-1); user confirm pending
   - path: docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md
     type: report
     kind: deploy-smoke
@@ -8073,6 +8974,248 @@ retrospective_cycles:
         status: completed
 
 evolve_cycles:
+  - id: EV-015
+    session_id: S020-aerodrome-quality
+    cycle_type: feature
+    feature_ids:
+      - F20
+    feature_id:
+    feature_note: >-
+      deepen F6.b SPECI + F6.c TAF + F12 (tac-validate); reuse ADR-028 registry;
+      F20 = TAF + SPECI quality bar (mirror F15)
+    title: "F15 sequel — aerodrome quality TAF+SPECI (#735/#734)"
+    status: in_progress
+    started: '2026-07-22'
+    completed:
+    scope_summary: >-
+      Phase 0 approved 2026-07-22 (E15-1..E15-8 all A; Lean+build
+      D-S020-EV015-route-1). Full parallel SPECI (#734 AC) + TAF (#735) quality
+      bars (NOT residual-only); F20 Planned in feature-list + deepen F6/F12;
+      same stack as EV-011.
+    github_issue: 735
+    related_issues:
+      - 735
+      - 734
+    routing_plan:
+      required_stages:
+        - 00-context
+        - 16-evolve
+        - 01-requirements
+        - 02-verify-plan
+        - 04-tech-plan
+        - 07-build
+        - 08-verify-build
+        - 09-qa
+        - 10-e2e
+        - 11-verify-impl
+        - 13-deploy-smoke
+      skipped_stages:
+        - 03-plan-tooling
+        - 05-verify-tech
+        - 06-tech-tooling
+        - 12-verify-deploy
+      approved: true
+      provisional: false
+      preset: Lean+build
+      decision_id: D-S020-EV015-route-1
+      note: >-
+        Approved Lean+build (E15-route-amend=A). Build stages included;
+        skip 03/05/06/12 unless later needed. Recommend Standard-like A/B/C/D
+        checkpoints (parent uses after phases); Phase A / a_to_b passed 2026-07-22;
+        Phase B / b_to_c passed 2026-07-22 (D-S020-EV015-phase-b-pass).
+    current_stage: 07-build
+    active_milestone: M2
+    active_task: T2.1
+    active_task_status: pending
+    progress:
+    branch: evolve/EV-015-aerodrome-quality
+    note: >-
+      M1 complete. Phase C 07-build — M0+M1 done; next M2 TAF goldens T4 @ T2.1;
+      no commit yet (user rule). Phase 0 approved 2026-07-22; 00/01/02/04 COMPLETE;
+      renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2);
+      Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE
+      2026-07-22 (D-S020-EV015-plan-1; E15-16..19 all A; 04-exit consistency PASS; 05/06 skipped);
+      Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B;
+      Lean+build D-S020-EV015-route-1.
+    decision_refs:
+      - E15-1
+      - E15-2
+      - E15-3
+      - E15-4
+      - E15-route-amend
+      - D-S020-EV015-route-1
+      - E15-5
+      - E15-6
+      - E15-7
+      - E15-8
+      - D-S020-EV015-phase0-approve
+      - E15-9
+      - D-S020-EV015-manifest-1
+      - E15-10
+      - D-S020-EV015-01-confirm
+      - D-S020-EV015-s1m1-1
+      - D-S020-EV015-s1m2-2
+      - D-S020-EV015-s9m1-1
+      - D-S020-EV015-phase-a-pass
+      - E15-16
+      - E15-17
+      - E15-18
+      - E15-19
+      - D-S020-EV015-plan-1
+      - D-S020-EV015-phase-b-pass
+    notes:
+      - >-
+        2026-07-22 M0+M1 COMPLETE — T0.1 research catalog + T0.2 COVERAGE_MATRIX;
+        T1.1–T1.6 TAF lint themes T1–T3 (NIL/CNL/AMD/COR; FM/BECMG/TEMPO/PROB/TL/AT;
+        TX/TN/CAVOK/NSC/NSW/VV///); registry + ISSUE_CATALOG; tac-validate 365 passed;
+        active_milestone M2; active_task T2.1 pending; 07 remains in_progress; no commit yet
+      - >-
+        2026-07-22 Phase B PASSED (D-S020-EV015-phase-b-pass) — gates.b_to_c passed;
+        07-build STARTED at T0.1; do not re-open Phase 0/B
+      - >-
+        2026-07-22 04 COMPLETE (D-S020-EV015-plan-1; E15-16..19 all A) — 04-exit
+        consistency PASS; 05/06 skipped; Phase B checkpoint pending; do not start 07
+      - 2026-07-22 Phase A PASSED (D-S020-EV015-phase-a-pass) — gates.a_to_b passed; 04-tech-plan STARTED (delta)
+      - 2026-07-22 02 COMPLETE — PASS (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1); rename aerodrome-quality; Phase A pending before 04; gates.a_to_b remains pending
+      - 2026-07-22 01→02 — 01-requirements COMPLETE (E15-10 / D-S020-EV015-01-confirm = A); interviews 6/6 done; 02-verify-plan delta started
+      - 2026-07-22 01-requirements interviews 6/6 written — manifest B approved (D-S020-EV015-manifest-1 / E15-9); ADR skipped (ADR-028 reuse); user_confirm pending (01 remains in_progress)
+      - >-
+        2026-07-22 Phase 0 APPROVED (E15-5..E15-8 all A / D-S020-EV015-phase0-approve)
+        — 00-context completed; F20 written; 01-requirements delta started
+      - >-
+        2026-07-22 parent artifacts recorded (session-brief, routing-plan,
+        aerodrome-quality context, EV-015 evolve-decisions); Batch1+routing locked;
+        Phase 0 Batch2 pending — 00-context stays in_progress
+      - >-
+        2026-07-22 E15-route-amend=A confirmed — Lean+build approved
+        (D-S020-EV015-route-1); E15-4 provisional Lean superseded; checkpoints
+        phase_a/b/c/d + deploy pending for Standard-like cadence
+      - >-
+        2026-07-22 S020/EV-015 open — Batch1 1A/2A/3A/4C; Lean provisional;
+        BLOCKER E15-route-amend (work/build vs Lean skip 07); branch recorded
+        evolve/EV-015-aerodrome-quality (parent creates git branch)
+    stages:
+      00-context:
+        status: completed
+        mode: scoped
+        started: '2026-07-22'
+        completed: '2026-07-22'
+        substeps:
+          phase0: completed
+        note: >-
+          Phase 0 Batch1+Batch2 locked (E15-5..E15-8 all A); completed 2026-07-22;
+          handoff 01-requirements
+      16-evolve:
+        status: in_progress
+        started: '2026-07-22'
+        completed:
+        note: >-
+          Orchestrator open; Phase A PASSED; 04-tech-plan completed; Phase B PASSED
+          (D-S020-EV015-phase-b-pass); 07 in_progress
+      01-requirements:
+        status: completed
+        mode: delta
+        started: '2026-07-22'
+        completed: '2026-07-22'
+        note: >-
+          Delta COMPLETE 2026-07-22 (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; document_manifest approved B (D-S020-EV015-manifest-1); ADR skipped (ADR-028 reuse); handoff 02-verify-plan
+      02-verify-plan:
+        status: completed
+        mode: delta
+        started: '2026-07-22'
+        completed: '2026-07-22'
+        note: >-
+          Delta COMPLETE 2026-07-22 PASS — D-S020-EV015-s1m1-1/s1m2-2/s9m1-1;
+          rename aerodrome-quality; Phase A PASSED (D-S020-EV015-phase-a-pass)
+      04-tech-plan:
+        status: completed
+        mode: delta
+        started: '2026-07-22'
+        completed: '2026-07-22'
+        note: >-
+          COMPLETE 2026-07-22 — Batch2 E15-16..19 all A; plan approved
+          D-S020-EV015-plan-1; 04-exit consistency PASS (05/06 skipped); Phase B
+          checkpoint pending
+      07-build:
+        status: in_progress
+        mode: full
+        started: '2026-07-22'
+        note: >-
+          STARTED T0.1 mining catalog after D-S020-EV015-phase-b-pass
+      08-verify-build:
+        status: pending
+        mode: full
+      09-qa:
+        status: pending
+        mode: full
+      10-e2e:
+        status: pending
+        mode: full
+      11-verify-impl:
+        status: pending
+        mode: full
+      13-deploy-smoke:
+        status: pending
+        mode: full
+    gates:
+      a_to_b: passed
+      b_to_c: passed
+      c_to_d: pending
+      deploy: pending
+      a_to_b_note: >-
+        PASSED D-S020-EV015-phase-a-pass — F20 in feature-list; 01+02 complete;
+        Lean+build skip 03; Phase A approved → 04-tech-plan
+      a_to_b_passed_at: '2026-07-22'
+      b_to_c_note: >-
+        PASSED D-S020-EV015-phase-b-pass — 04 complete (D-S020-EV015-plan-1);
+        04-exit consistency PASS; 05/06 skipped; Phase B approved → 07-build @ T0.1
+      b_to_c_passed_at: '2026-07-22'
+      b_to_c_decision_id: D-S020-EV015-phase-b-pass
+    checkpoints:
+      phase_a: passed
+      phase_b: passed
+      phase_c: pending
+      phase_d: pending
+      deploy: pending
+    adrs:
+      - docs/adr/ADR-028-metar-lint-issue-registry.md
+    artifacts:
+      - path: docs/feature-list.md
+        status: present
+        note: F20 Planned row + deepen F6/F12 notes; parent-written Phase 0
+      - path: docs/sessions/S020-aerodrome-quality/session-brief.md
+        status: present
+        note: Parent-written; recorded by 00-context update
+      - path: docs/sessions/S020-aerodrome-quality/routing-plan.md
+        status: present
+        note: Parent-written; Lean+build approved D-S020-EV015-route-1
+      - path: docs/context/aerodrome-quality.md
+        status: present
+        note: Parent-written scoped context brief
+      - path: docs/decisions/evolve-decisions.md
+        status: present
+        note: EV-015 section prepended by parent
+      - path: docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
+        status: present
+        note: 02-verify-plan PASS 2026-07-22; medium verdicts confirmed
+      - path: docs/sessions/S020-aerodrome-quality/checkpoints/phase-a.md
+        status: present
+        note: Phase A PASSED 2026-07-22 (D-S020-EV015-phase-a-pass); 04-tech-plan started
+      - path: docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
+        status: present
+        note: Approved D-S020-EV015-plan-1 / E15-19=A — M0–M5 (28 tasks)
+      - path: docs/sessions/S020-aerodrome-quality/reports/04-tech-plan.md
+        status: present
+        note: 04 COMPLETE 2026-07-22; 04-exit consistency PASS; 05/06 skipped
+      - path: docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
+        status: present
+        note: >-
+          Phase B PASSED 2026-07-22 (D-S020-EV015-phase-b-pass); gates.b_to_c
+          passed; 07-build STARTED at T0.1
+      - path: docs/decisions/tech-decisions.md
+        status: present
+        note: E15-12..19 + D-S020-EV015-plan-1 confirmed
+    issues: []
   - id: EV-014
     session_id: S019-dissemination-upload
     cycle_type: feature
@@ -10973,16 +12116,35 @@ evolve_cycles:
     merge_sha: "4660602"
 
 git_history:
-  current_branch: cursor/s019-ev014-closeout-hygiene-f898
+  current_branch: evolve/EV-015-aerodrome-quality
   ahead_of_origin: 0
   pushed: true
   pending_commit:
   tip_sha: 1b6df32ba531311a08c86a3a4d05f05486a37034
   tip_sha_full: 1b6df32ba531311a08c86a3a4d05f05486a37034
   note: >-
-    closeout hygiene tip 1b6df32 — "[S019] chore: EV-014 closeout hygiene (#770, #729/#2/#6, state)";
-    hygiene PR pending/created (pr TBD); EV-014/S019 completed; active_session null
+    S020/EV-015 02-verify-plan COMPLETE 2026-07-22 (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1);
+    renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality; Phase A
+    checkpoint pending before 04-tech-plan (do not start 04). Branch active / base main.
   notes:
+    - 2026-07-22 S020/EV-015 02 COMPLETE + rename — PASS (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1); Phase A pending before 04; branch evolve/EV-015-aerodrome-quality active
+    - 2026-07-22 S020/EV-015 01→02 — 01 COMPLETE (E15-10 / D-S020-EV015-01-confirm = A); interviews 6/6; 02-verify-plan delta started
+    - 2026-07-22 S020/EV-015 01-requirements interviews 6/6 written — manifest B (D-S020-EV015-manifest-1); ADR skipped (ADR-028 reuse); user_confirm pending; 01 remains in_progress
+    - >-
+      2026-07-22 S020/EV-015 00-context COMPLETE / 01-requirements STARTED —
+      Batch2 E15-5..E15-8 all A; Phase 0 approved; artifact docs/feature-list.md
+      (F20); current_stage=01-requirements
+    - >-
+      2026-07-22 S020/EV-015 parent artifacts recorded — context_briefs=
+      [docs/context/aerodrome-quality.md]; standing_docs + EV-015 artifacts updated;
+      00-context remains in_progress (Batch2 pending)
+    - >-
+      2026-07-22 S020/EV-015 Lean+build approved (E15-route-amend=A /
+      D-S020-EV015-route-1); E15-4 provisional Lean superseded
+    - >-
+      2026-07-22 S020/EV-015 open — branch evolve/EV-015-aerodrome-quality recorded active
+      (base main; git create deferred to parent); Batch1 1A/2A/3A/4C; Lean provisional;
+      BLOCKER E15-route-amend
     - >-
       2026-07-21 S019/EV-014 closeout hygiene commit 1b6df32 on cursor/s019-ev014-closeout-hygiene-f898
       pushed; hygiene PR pending/created (pr number TBD); active_session null; EV-014 completed
@@ -11203,6 +12365,25 @@ git_history:
     - "2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)"
     - "2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl"
   branches:
+    - name: evolve/EV-015-aerodrome-quality
+      base: main
+      status: active
+      purpose: >-
+        S020/EV-015 F15 sequel — aerodrome quality TAF (#735) + SPECI (#734);
+        F20 + deepen F6/F12 (renamed from EV-015-taf-quality / D-S020-EV015-s1m2-2)
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      created: '2026-07-22'
+      created_at: '2026-07-22'
+      renamed_from: evolve/EV-015-taf-quality
+      renamed_at: '2026-07-22'
+      tip_sha:
+      tip_sha_full:
+      pushed: false
+      note: >-
+        Active (base main). Renamed from evolve/EV-015-taf-quality
+        (D-S020-EV015-s1m2-2). 00/01/02/04 COMPLETE; Phase B checkpoint pending
+        before 07-build; Lean+build D-S020-EV015-route-1.
     - name: cursor/s019-ev014-closeout-hygiene-f898
       base: main
       status: open

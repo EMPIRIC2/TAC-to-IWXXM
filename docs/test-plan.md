@@ -2,22 +2,25 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-21 (S019 / EV-014 — dissemination F16–F19 / UJ-027–030)
+> **Last updated**: 2026-07-22 (S020 / EV-015 — F20 TAF+SPECI quality / UJ-031)
 
 ## Scope
 
-**In scope**: Product features F1–F19 (F1 superseded by F6 engine; F7 Planned — workbench
-smoke under F15 only; F8–F15 as prior cycles; **F16–F19 Planned** dissemination epic);
+**In scope**: Product features F1–F20 (F1 superseded by F6 engine; F7 Planned — workbench
+smoke under F15/F20 only; F8–F15 as prior cycles; **F16–F19 Done** dissemination epic;
+**F20 Planned** TAF+SPECI quality);
 monorepo migration validation M1–M6 (M3 deprecated at F6 cutover); connectivity tiers
 **H0c–H7** (local + live Render); tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics
 (library/CI); backend thin wrappers; F7 decode/spans/soft-preview/workbench/unified sessions;
 admin-route negative tests; **F15** issue registry + METAR golden/negative packs (UJ-024);
-**F16–F19** dissemination drawer, multi-DB upload, WIS2, EDIS, AMHS/SWIM/AFS (UJ-027–030).
+**F16–F19** dissemination drawer, multi-DB upload, WIS2, EDIS, AMHS/SWIM/AFS (UJ-027–030);
+**F20** TAF + SPECI quality bar (UJ-031; #735/#734).
 
 **Out of scope**: Performance/load testing; wmo-im / IWXXM-US schema correctness beyond our fixtures;
 scheduled CI live jobs (manual/Makefile only); **convert-response metrics fields** (F6-R11);
 teaching CMS; saved/encrypted destination profiles; in-app paste of **Supabase auth** keys
-(destination BYOC paste is **in scope** for F16–F19).
+(destination BYOC paste is **in scope** for F16–F19); sibling product-quality tickets beyond
+#735/#734 this cycle.
 
 ### Live harness (delta 2026-06-22; H7 2026-07-12)
 
@@ -73,6 +76,7 @@ Unified manual live test harness against Render staging:
 | UJ-028 | F17 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F17-001..002 |
 | UJ-029 | F18 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (UI smoke; live BYOC cycle-close) | live BYOC | TC-F18-001..002 |
 | UJ-030 | F19 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F19-001..003 |
+| UJ-031 | F20 | TAF/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F20-001..006 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -507,9 +511,58 @@ Before closing S013 / EV-009:
 
 - [ ] TC-F15-001..005 green
 - [ ] Coverage-matrix METAR/SPECI **R1–R8** closed (HARD); non–R gaps only with AskQuestion + note
-- [ ] Research catalog (R1–R8 + SPECI adjacency R7) linked from session report / domain notes
-- [ ] H4–H5 if API/FE contract or workbench copy changes; H0c when API image changes
-- [ ] api-contract: lint-tac wire shape unchanged (ADR-028); additive `GET /lint-issue-catalog` (E11-31)
+
+### TC-F20-001: TAF/SPECI registry completeness (UJ-031)
+
+- **Level**: T0 / CI
+- **Objective**: Every TAF/**SPECI** lint emission uses a registered code; catalog export in sync
+- **Pass criteria**: CI fails on unknown codes; registry row required for new rules; ADR-028
+- **Source**: F20; #735/#734; E15-5
+
+### TC-F20-002: TAF accept → convert → XSD+Schematron (UJ-031)
+
+- **Level**: T0 / CI (`tac2iwxxm` + `iwxxm-validate`)
+- **Objective**: Expanded TAF golden pack converts; root `iwxxm:TAF`; M-xsd / M-sch on pinned versions
+- **Pass criteria**: annex3 goldens green; `iwxxm_us` where fixtures exist or documented N/A;
+  #735 exceptional rules covered or deferred with rationale
+- **Source**: F20 + F6.c deepen; #735
+
+### TC-F20-003: SPECI accept → convert → XSD+Schematron (UJ-031)
+
+- **Level**: T0 / CI (`tac2iwxxm` + `iwxxm-validate`)
+- **Objective**: Full #734 SPECI golden bar (not residual-only); root `iwxxm:SPECI`
+- **Pass criteria**: annex3 (+ iwxxm_us where applicable) green; exceptional-rule table covered
+  or deferred with rationale
+- **Source**: F20 + F6.b deepen; #734
+
+### TC-F20-004: TAF/SPECI negative fixtures → registry diagnostics (UJ-031)
+
+- **Level**: T0 / CI (`tac-validate`)
+- **Objective**: Rule-violating TAF/SPECI TAC never silent-succeeds
+- **Pass criteria**: Each negative asserts expected registry `code`(s); useful messages
+- **Source**: F20 + F12 deepen; #735/#734
+
+### TC-F20-005: Workbench TAF/SPECI lint+convert smoke (UJ-031)
+
+- **Level**: T2 / T3 (H4–H5 when redeployed)
+- **Objective**: Operator Product=TAF and Product=SPECI (and Auto-detect) lint + convert;
+  catalog via `GET /api/v1/lint-issue-catalog`
+- **Pass criteria**: Console shows registry codes; convert+strict validation works for both
+- **Source**: F20; E15-7; F7 remains Planned (smoke only)
+
+### TC-F20-006: SPECI↔METAR mis-classification guards (UJ-031)
+
+- **Level**: T0 / T2
+- **Objective**: Full #734 adjacency — never silent-swap SPECI↔METAR on shared structure
+- **Pass criteria**: Auto-detect / product hint selects SPECI for `SPECI …` TAC; bulletin or
+  paired fixtures keep per-report product identity; lint codes registry-backed
+- **Source**: F20; #734; complements TC-F15-005
+
+### F20 verify/deploy gate
+
+- [ ] TC-F20-001..006 green
+- [ ] Coverage-matrix TAF + SPECI rows updated; guidance gaps filed or closed
+- [ ] H1–H3 if API ships; H4–H5 when FE touched (E15-7)
 
 ### TC-F16-001: Drawer preflight schema diff (UJ-027)
 

@@ -216,3 +216,25 @@
 | EV-014/R-route | Routing | Full 00→16→01…13 | confirmed |
 | EV-014/S-M2 | Close | F19 staging required; F19 live optional + waive (Q28=A) | confirmed |
 | EV-014/S-M4 | ADR | ADR-029 Accepted (02-verify-plan) | confirmed |
+
+## EV-015 / F20 — TAF + SPECI quality (2026-07-22)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-015/F20-R1 | Scope | Full #735 TAF + full #734 SPECI quality bars | confirmed |
+| EV-015/F20-R2 | Fn | New F20 + deepen F6.b/F6.c + F12; ADR-028 reuse | confirmed |
+| EV-015/F20-R3 | Routing | Lean+build (01/02/04/07–11/13; skip 03/05/06/12) | confirmed |
+| EV-015/F20-R4 | Depth | Guidance audit + fixtures + goldens + matrix themes | confirmed |
+| EV-015/F20-R5 | OOS | Sibling product tickets; PyPI; F16–F19; F7 Planned | confirmed |
+| EV-015/F20-R6 | Smoke | H1–H3 if API; H4–H5 workbench taf/speci when FE | confirmed |
+| EV-015/F20-R7 | Journeys | UJ-031; TC-F20-001..006 | confirmed |
+| EV-015/F20-R8 | API | Full endpoint review; no new routes; wire unchanged | confirmed |
+| EV-015/E15-12 | Milestones | TAF lint → TAF goldens → SPECI → C1 → smoke | confirmed |
+| EV-015/E15-13 | Research | Full mining pass + session research catalog | confirmed |
+| EV-015/E15-14 | FE | Extend catalog panel TAF tag filters/copy | confirmed |
+| EV-015/E15-15 | Deps | AskQuestion per new dep (prefer none) | confirmed |
+| EV-015/E15-16 | CI | Existing pytest + ci.yml only | confirmed |
+| EV-015/E15-17 | Mining | Full dig TAF+SPECI only | confirmed |
+| EV-015/E15-18 | Deploy | API+FE; H1–H3 + H4–H5 required | confirmed |
+| EV-015/E15-19 | Plan | Approve M0–M5 execution plan | confirmed |
+| EV-015/manifest | Docs | Spec, journeys, test-plan, coverage matrix, API contract | confirmed |

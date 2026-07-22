@@ -3,6 +3,60 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-015 — F15 sequel: TAF + SPECI quality (#735 / #734) (S020)
+
+**Session**: S020-aerodrome-quality  
+**Features**: **F20** (new) + deepen **F6.b / F6.c** + **F12**  
+**Issues**: [#735](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/735), [#734](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/734)  
+**Started**: 2026-07-22  
+**Branch**: `evolve/EV-015-aerodrome-quality`  
+**Status**: Phase A complete pending checkpoint; 02 PASS
+
+### Scope (Batch 1 — locked 2026-07-22; S1.M2 rename amend)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E15-1 | decision | Open session? | **A** then **amended** → `S020-aerodrome-quality` (`D-S020-EV015-s1m2-2`) |
+| E15-2 | decision | #734 SPECI scope? | **A** — full parallel quality bar + #735 TAF |
+| E15-3 | decision | Fn allocation? | **A** — F20 (TAF+SPECI quality) + deepen F6/F12; ADR-028 reuse |
+| E15-4 | decision | Routing preset? | **C** Lean — **superseded** by E15-route-amend |
+| E15-route-amend | decision | Lean vs build? | **A** Lean+build — `D-S020-EV015-route-1` |
+
+### Scope (Batch 2 — locked 2026-07-22)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E15-5 | decision | Research / encode depth? | **A** — full #735/#734 AC (guidance + fixtures + goldens + matrix) for TAF **and** SPECI |
+| E15-6 | decision | Out of scope? | **A** — siblings OOS; no PyPI bump; no F16–F19; F7 Planned (smoke only) |
+| E15-7 | decision | Deploy / smoke (13)? | **A** — redeploy if API/FE changes; H1–H3 if API; H4–H5 workbench `taf`/`speci` |
+| E15-8 | decision | Proceed to F20 + 01? | **A** — lock Phase 0; hand off 01-requirements delta |
+
+**Phase 0 scope approved** — proceed to allocate F20 in `feature-list.md` and 01 delta.
+
+### Routing (`D-S020-EV015-route-1`)
+
+**Required:** 00 → 16 → 01 → 02 → 04 → 07 → 08 → 09 → 10 → 11 → 13  
+**Skipped:** 03, 05, 06, 12 (unless later needed)
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-07-22 | brief + routing + Phase 0 Batch1/2 locked |
+| 01-requirements | 2026-07-22 | F20 + UJ-031 + TC-F20 + API review; E15-10=A |
+| 02-verify-plan | 2026-07-22 | PASS; S1.M1=1, S1.M2=2 rename, S9.M1=1 |
+| 04-tech-plan | 2026-07-22 | M0–M5 approved E15-16..19; 04-exit consistency PASS |
+
+### 02 medium verdicts
+
+| ID | Verdict |
+|----|---------|
+| S1.M1 | Keep full HARD themes; 04 kill-switch |
+| S1.M2 | Rename → aerodrome-quality |
+| S9.M1 | Keep skip 05; 04-exit consistency |
+
+---
+
 ## Cycle EV-014 — Dissemination epic (#729 / #2 / #6) (S019)
 
 **Session**: S019-dissemination-upload  

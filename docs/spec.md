@@ -3,7 +3,7 @@
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
 > **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
-> **Last updated**: 2026-07-21 (S019 / EV-014 F16–F19 Planned)
+> **Last updated**: 2026-07-22 (S020 / EV-015 F20 TAF+SPECI quality Planned)
 
 ## Overview
 
@@ -78,7 +78,7 @@ metar-to-IWXXM/
 
 | Component | Purpose | Location | Dependencies |
 |-----------|---------|----------|--------------|
-| Backend API | Conversion, validation, auth; **Planned** F16–F19 dissemination preflight/send (BYOC, memory-only) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, dissemination, auth, shared, vendor |
+| Backend API | Conversion, validation, auth; **Done** F16–F19 dissemination preflight/send (BYOC, memory-only) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, dissemination, auth, shared, vendor |
 | Frontend | Operator UI (workbench, decode, F7 sessions; **Planned** dissemination drawer) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase middleware | `packages/auth/` | supabase-py |
@@ -96,7 +96,7 @@ metar-to-IWXXM/
 ### apps/backend
 
 - **Purpose**: Single HTTP API for health, conversion, validation, lint, decode, soft-preview,
-  auth, and F5/F7 work sessions. **Planned (F16–F19)**: backend-mediated dissemination
+  auth, and F5/F7 work sessions. **Done (F16–F19)**: backend-mediated dissemination
   preflight/send for one-shot BYOC destinations (memory-only; ADR-029 allowlist). Route shapes
   in api-contract (Planned). **No** `/admin/*` product surface after F7.a (#697).
 - **Inputs**: HTTP multipart/JSON (TAC + `product` + `profile` + version; decode/lint bodies),
@@ -114,7 +114,7 @@ metar-to-IWXXM/
   3. Validation / lint routers are **thin wrappers** over **`iwxxm-validate`** /
      **`tac-validate`**; issue objects may include optional integer `start`/`end`.
   4. Decode router (`POST /api/v1/decode-tac`) wraps tac2iwxxm decode/annotate segments.
-  5. **Planned (F16–F19)**: Dissemination routers are thin wrappers over
+  5. **Done (F16–F19)**: Dissemination routers are thin wrappers over
      **`packages/dissemination`** (`/api/v1/dissemination/preflight` + `/send`; ADR-030).
 - **S014 / EV-010 delta (F11, ADR-026)**: High-churn route **responses**
   (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`)
@@ -145,13 +145,18 @@ metar-to-IWXXM/
 - **S014 / EV-010 delta (F14)**: Published to PyPI as `tac2iwxxm` `0.1.0`; optional extra
   `[validate]` depends on `tac-validate` + `iwxxm-validate`. Public convert API documented for
   third-party install.
+- **S020 / EV-015 delta (F20)**: Deepen **TAF (F6.c)** and **SPECI (F6.b)** convert/golden
+  fidelity — exceptional-rule tables from #735/#734; guidance + 2025-2 corrections; expanded
+  annex3 / `iwxxm_us` goldens; convert → `iwxxm-validate` round-trip. Roots `iwxxm:TAF` /
+  `iwxxm:SPECI`.
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
 - **IR**: **msgspec.Struct** (ADR-016); HTTP high-churn paths also msgspec (ADR-026).
-- **Source**: [feature-list.md](feature-list.md) F6/F14; ADR-013; ADR-014; ADR-026;
+- **Source**: [feature-list.md](feature-list.md) F6/F14/F20; ADR-013; ADR-014; ADR-026;
   [context/general-tac-iwxxm-converter.md](context/general-tac-iwxxm-converter.md);
-  [context/package-publish-validation.md](context/package-publish-validation.md).
+  [context/package-publish-validation.md](context/package-publish-validation.md);
+  [context/aerodrome-quality.md](context/aerodrome-quality.md).
 
 ### packages/tac-validate
 
@@ -171,9 +176,13 @@ metar-to-IWXXM/
   docs/generated catalog lists codes. METAR rule pack expanded (R1–R6 + opportunistic);
   CI rejects unknown codes. Public codes stable; severities may tighten in minor releases.
   Workbench METAR lint+convert smoke under F15 (F7 status unchanged).
+- **S020 / EV-015 delta (F20)**: Same registry — add/extend **TAF** codes and deepen **SPECI**
+  rules/fixtures to the #734 full quality bar (not residual-only). Coverage-matrix TAF + SPECI
+  rows; exceptional-rule accept/negative packs. Workbench `product=taf` / `product=speci` smoke
+  under F20 (F7 status unchanged). No new registry architecture (ADR-028 reuse).
 - **SoC**: **No** FastAPI or Supabase imports.
-- **Source**: feature-list F6/F12/F15; S011 / EV-008; S013 / EV-009; S014 / EV-010;
-  S015 / EV-011.
+- **Source**: feature-list F6/F12/F15/F20; S011 / EV-008; S013 / EV-009; S014 / EV-010;
+  S015 / EV-011; S020 / EV-015.
 
 ### packages/iwxxm-validate
 
@@ -215,7 +224,7 @@ metar-to-IWXXM/
 
 - **Purpose**: Operator converter UI (product/profile/version), CodeMirror 6 workbench, decode
   panel, Failed-TAC / soft-preview UX, F5 My METARs, and F7 multi-product sessions.
-  **Planned (F16–F19)**: Dissemination drawer (sink chooser, one-shot URI/params, preflight,
+  **Done (F16–F19)**: Dissemination drawer (sink chooser, one-shot URI/params, preflight,
   Send blocked until green; convert-then-send and drag-drop). **No** AdminDashboard or
   `/admin/*` routes after F7.a.
 - **F6 delta**: Product select (7 values + auto-detect), profile select (`annex3` | `iwxxm_us`),
@@ -310,23 +319,37 @@ metar-to-IWXXM/
   results. Operator **dissemination push sinks** are **F16–F19** (separate UI/API path), not F8 v1.
 - **Source**: [feature-list.md](feature-list.md) F8; ADR-018.
 
-### F16–F19 — Dissemination epic (S019 / EV-014) — Planned
+### F16–F19 — Dissemination epic (S019 / EV-014) — Done
 
 - **Purpose**: Unified dissemination **drawer** for sending converted (or drag-dropped) IWXXM/TAC
   to operator-chosen destinations with schema/connectivity preflight.
 - **F16**: Multi-DB upload (Postgres, MySQL/MariaDB, SQL Server, SQLite) via one-shot URI;
   DDL/create-if-missing vs versioned writer contract; SSRF + allowlist.
-- **F17**: WIS2 publish — staging wis2box harness for test; live BYOC node for close gate.
-- **F18**: EDIS-compliant submit to RTH Washington — BYOC SMTP/gateway in drawer.
-- **F19**: AMHS / SWIM / AFS adapters in the same drawer.
+- **F17**: WIS2 publish — staging wis2box harness for test; live BYOC waived at EV-014 close (Q15).
+- **F18**: EDIS-compliant submit to RTH Washington — BYOC SMTP/gateway in drawer; live waived (Q15).
+- **F19**: AMHS / SWIM / AFS adapters in the same drawer (staging stubs; live optional).
 - **Auth / F5**: Supabase Auth + `tac_work_sessions` unchanged; never store destination secrets
   (`kv_upload_key` only on success).
-- **Close gate**: Live BYOC demos for **Postgres + WIS2 + EDIS** before EV-014 close
-  (Q15=A / Q21=A); staging evidence may merge earlier. F19 staging/test path required; F19 live
-  demo optional with AskQuestion waive (S-EV014-M2).
+- **Status**: **Done** (EV-014 closed 2026-07-21; PR #771/#772).
 - **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist); ADR-030
   (`packages/dissemination` + sink/API/wis2box/EDIS).
 - **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014.
+
+### F20 — TAF + SPECI quality bar (S020 / EV-015) — Planned
+
+- **Purpose**: F15 sequel — raise **TAF** (#735) and **SPECI** (#734) lint / convert /
+  IWXXM-validate quality to the METAR/SPECI bar. Reuse ADR-028 registry; deepen F6.b/F6.c and F12.
+- **Encode authority**: WMO `TAC-to-XML-Guidance.txt` + 2025-2 corrections (no `runwayState`);
+  FM 205 / Manual on Codes I.3; pinned XSD + Schematron.
+- **TAF exceptional rules** (fixtures or explicit deferrals): NIL, CNL, AMD, COR, CAVOK, NSC,
+  NSW, VV///, FM/TL/AT, TX/TN on base forecast, change groups FM/BECMG/TEMPO/PROB.
+- **SPECI**: Full #734 AC parallel to TAF — shared METAR/SPECI pack + mis-classification guards
+  (Auto-detect / product hint never silent-swap SPECI↔METAR).
+- **Status**: **Planned** — flips Done after verify/deploy gate (Lean+build routing).
+- **Non-goals**: Sibling product-quality tickets; PyPI bumps; F16–F19 changes; new ADR unless
+  registry architecture changes.
+- **Source**: [feature-list.md](feature-list.md) F20; #735/#734; [context/aerodrome-quality.md](context/aerodrome-quality.md);
+  evolve-decisions EV-015; ADR-028.
 
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
 
