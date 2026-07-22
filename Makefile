@@ -20,6 +20,9 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-dissemination test-unit-worker test-bugs \
 	test-integration-dissemination \
 	compose-wis2box-up compose-wis2box-down compose-wis2box-harness \
+	compose-mock-byoc-up compose-mock-byoc-down compose-mock-byoc-full-up \
+	compose-mock-byoc-all-up compose-mock-byoc-all-down \
+	test-mock-byoc-smoke test-mock-byoc-compose test-mock-byoc-all-sinks \
 	format format-check typecheck typecheck-py typecheck-js \
 	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-shared \
 	lint-tac2iwxxm lint-iwxxm-validate lint-tac-validate lint-dissemination \
@@ -241,6 +244,26 @@ compose-wis2box-down:
 compose-wis2box-harness:
 	bash scripts/ci/run_wis2box_harness.sh
 
+# F16–F19 mock BYOC destinations (Postgres / MySQL / SQL Server / MailHog / F19) — local only.
+compose-mock-byoc-up:
+	$(COMPOSE) -f docker-compose.yml -f docker-compose.mock-byoc.yml --profile mock-byoc \
+		up -d --build --wait byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19
+
+compose-mock-byoc-down:
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.mock-byoc.yml --profile mock-byoc \
+		stop byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19 || true
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.mock-byoc.yml --profile mock-byoc \
+		rm -f byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19 || true
+
+compose-mock-byoc-full-up:
+	$(COMPOSE) -f docker-compose.yml -f docker-compose.mock-byoc.yml -f docker-compose.wis2box.yml \
+		--profile mock-byoc --profile wis2box up -d --build --wait \
+		byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19 wis2box
+
+compose-mock-byoc-all-up: compose-mock-byoc-full-up
+
+compose-mock-byoc-all-down: compose-mock-byoc-down compose-wis2box-down
+
 test-unit-worker:
 	$(UV) run pytest apps/worker/tests -v --no-cov
 
@@ -308,6 +331,14 @@ endef
 # S019 T6.6 — mock BYOC smoke (no live destination credentials; gitignored .env OK)
 test-mock-byoc-smoke:
 	bash scripts/deploy/run_mock_byoc_smoke.sh
+
+# Compose mock destinations (requires compose-mock-byoc-up)
+test-mock-byoc-compose:
+	bash scripts/deploy/run_mock_byoc_compose_smoke.sh
+
+# All drawer sinks vs local mocks (requires compose-mock-byoc-all-up)
+test-mock-byoc-all-sinks:
+	bash scripts/deploy/run_mock_byoc_all_sinks.sh
 
 test-live-connectivity:
 	@$(load_dotenv); \

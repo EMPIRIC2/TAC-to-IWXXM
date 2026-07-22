@@ -6,7 +6,7 @@
       {
         "command": "bash .cursor/hooks/ci-quality-guard.sh",
         "matcher": "git\\s+(commit|push)",
-        "timeout": 120,
+        "timeout": 600,
         "failClosed": true
       },
       {

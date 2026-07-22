@@ -1,11 +1,39 @@
 {
-  "$comment": "Committed MOCK destination shapes for S019/EV-014 T6.6. Not real credentials. Pass as memory-only preflight/send body params (ADR-021/029). Do not use against production RTH/WIS2/DB hosts.",
+  "$comment": "Committed MOCK destination shapes for S019/EV-014 BYOC testing. Not real credentials. Pass as memory-only preflight/send body params (ADR-021/029). Do not use against production RTH/WIS2/DB hosts.",
+  "live_api_sqlite_standin": {
+    "sink_type": "sqlite",
+    "uri": "sqlite+aiosqlite:////tmp/live-mock-byoc.db",
+    "ddl": true,
+    "product": "metar",
+    "note": "Works against live Render API (ephemeral FS). Preferred live smoke when no public BYOC host is allowlisted."
+  },
   "postgres_sqlite_standin": {
     "sink_type": "sqlite",
     "uri": "sqlite+aiosqlite:////tmp/s019-mock-byoc.db",
     "ddl": true,
     "product": "metar",
-    "note": "In-process SQLite stands in for Postgres when Docker/Testcontainers unavailable. With Docker, prefer postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/postgres via Testcontainers."
+    "note": "In-process SQLite stands in for Postgres when Docker/Testcontainers unavailable."
+  },
+  "postgres_compose": {
+    "sink_type": "postgres",
+    "uri": "postgresql+asyncpg://byoc:byoc-mock-password-not-real@127.0.0.1:25432/byoc",
+    "ddl": true,
+    "product": "metar",
+    "note": "docker-compose.mock-byoc.yml service byoc-postgres (host port BYOC_POSTGRES_HOST_PORT, default 25432)."
+  },
+  "mysql_compose": {
+    "sink_type": "mysql",
+    "uri": "mysql+aiomysql://byoc:byoc-mock-password-not-real@127.0.0.1:13306/byoc",
+    "ddl": true,
+    "product": "metar",
+    "note": "docker-compose.mock-byoc.yml service byoc-mysql (host port BYOC_MYSQL_HOST_PORT)."
+  },
+  "sqlserver_compose": {
+    "sink_type": "sqlserver",
+    "uri": "mssql+aioodbc://sa:Byoc_Mock_Passw0rd%21@127.0.0.1:11433/master?TrustServerCertificate=yes",
+    "ddl": true,
+    "product": "metar",
+    "note": "byoc-sqlserver on :11433. Requires Microsoft ODBC Driver 18 on the host. Password URL-encoded (! → %21)."
   },
   "wis2_mock": {
     "sink_type": "wis2",
@@ -19,7 +47,19 @@
       "mqtt_password": "mock-wis2-token-not-real",
       "use_tls": false
     },
-    "note": "Package-level mocked MQTT/HTTP (test_wis2_sink.py) or Compose wis2box harness (TC-F17-001). HTTP API returns 501 for wis2 until wired."
+    "note": "Package-level mocked MQTT/HTTP or Compose wis2box harness (TC-F17-001)."
+  },
+  "wis2_compose_host": {
+    "sink_type": "wis2",
+    "params": {
+      "mqtt_host": "127.0.0.1",
+      "mqtt_port": 1883,
+      "mqtt_topic": "origin/a/wis2/test-centre/data/core/weather/aviation/metar",
+      "dataset_url": "http://127.0.0.1:9080/datasets/mock-metar.xml",
+      "centre_id": "test-centre",
+      "use_tls": false
+    },
+    "note": "Host-side URLs against compose wis2box harness (anonymous MQTT)."
   },
   "edis_mock": {
     "sink_type": "edis",
@@ -37,16 +77,67 @@
       "cccc": "KXXX",
       "yygggg": "211200"
     },
-    "note": "aiosmtplib AsyncMock only (test_edis_*.py). No local SMTP container; never hits live RTH."
+    "note": "Unit tests use aiosmtplib AsyncMock. For local SMTP capture use edis_mailhog."
+  },
+  "edis_mailhog": {
+    "sink_type": "edis",
+    "params": {
+      "smtp_host": "127.0.0.1",
+      "smtp_port": 11025,
+      "mail_from": "mock-sender@example.test",
+      "mail_to": "mock-rth@example.test",
+      "use_tls": false,
+      "tt": "SA",
+      "aa": "US",
+      "ii": "31",
+      "cccc": "KXXX",
+      "yygggg": "211200"
+    },
+    "note": "docker-compose.mock-byoc.yml byoc-mailhog (SMTP 11025, UI http://127.0.0.1:18025). Omit username/password — MailHog has no AUTH."
   },
   "f19_stubs": {
     "sink_types": ["amhs", "swim", "afs"],
     "params_template": {
       "host": "127.0.0.1",
-      "port": 9999,
+      "port": 19099,
       "username": "mock-f19",
       "password": "mock-f19-password-not-real"
     },
-    "note": "Staging stubs (test_f19_*.py). Live F19 optional waive."
+    "note": "Staging stubs (test_f19_*.py). Prefer f19_compose for local harness."
+  },
+  "f19_compose": {
+    "sink_types": ["amhs", "swim", "afs"],
+    "params_by_sink": {
+      "amhs": {
+        "host": "127.0.0.1",
+        "port": 19099,
+        "endpoint": "/amhs",
+        "username": "mock-f19",
+        "password": "mock-f19-password-not-real"
+      },
+      "swim": {
+        "host": "127.0.0.1",
+        "port": 19099,
+        "endpoint": "/swim",
+        "username": "mock-f19",
+        "password": "mock-f19-password-not-real"
+      },
+      "afs": {
+        "host": "127.0.0.1",
+        "port": 19099,
+        "endpoint": "/afs",
+        "username": "mock-f19",
+        "password": "mock-f19-password-not-real"
+      }
+    },
+    "note": "byoc-f19 HTTP harness on :19099. Staging stub checks allowlist; harness accepts POST /amhs|/swim|/afs."
+  },
+  "negative_allowlist": {
+    "sink_type": "postgres",
+    "uri": "postgresql+asyncpg://u:p@evil.example.com:5432/db",
+    "ddl": false,
+    "product": "metar",
+    "expect_status": 403,
+    "note": "Expect host not on allowlist when DISSEMINATION_EGRESS_ALLOWLIST excludes evil.example.com."
   }
 }

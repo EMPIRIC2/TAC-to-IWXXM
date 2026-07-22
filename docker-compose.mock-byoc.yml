@@ -1,0 +1,127 @@
+# Mock BYOC destination environments for ALL drawer sinks (F16–F19).
+# Not Render services. Credentials are mock-only — never use against live RTH/WIS2.
+#
+# Usage (all mocks including wis2box + SQL Server + F19):
+#   make compose-mock-byoc-all-up
+#   make test-mock-byoc-all-sinks
+#
+# Subset (DB + MailHog + F19 only):
+#   make compose-mock-byoc-up
+#
+# Allowlist (local):
+#   DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost
+#
+# Paste-ready params:
+#   docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json
+
+services:
+  byoc-postgres:
+    profiles: ["mock-byoc"]
+    image: postgres:16
+    container_name: metar-iwxxm-byoc-postgres
+    environment:
+      POSTGRES_USER: byoc
+      POSTGRES_PASSWORD: byoc-mock-password-not-real
+      POSTGRES_DB: byoc
+    ports:
+      - "${BYOC_POSTGRES_HOST_PORT:-25432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U byoc -d byoc"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 8s
+    networks:
+      - metar-network
+    restart: unless-stopped
+
+  byoc-mysql:
+    profiles: ["mock-byoc"]
+    image: mysql:8.4
+    container_name: metar-iwxxm-byoc-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: byoc-mock-root-not-real
+      MYSQL_DATABASE: byoc
+      MYSQL_USER: byoc
+      MYSQL_PASSWORD: byoc-mock-password-not-real
+    ports:
+      - "${BYOC_MYSQL_HOST_PORT:-13306}:3306"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "127.0.0.1",
+          "-ubyoc",
+          "-pbyoc-mock-password-not-real",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    networks:
+      - metar-network
+    restart: unless-stopped
+
+  byoc-sqlserver:
+    profiles: ["mock-byoc"]
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: metar-iwxxm-byoc-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Byoc_Mock_Passw0rd!"
+    ports:
+      - "${BYOC_SQLSERVER_HOST_PORT:-11433}:1433"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Byoc_Mock_Passw0rd!' -C -Q 'SELECT 1' || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Byoc_Mock_Passw0rd!' -Q 'SELECT 1'",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    networks:
+      - metar-network
+    restart: unless-stopped
+
+  byoc-mailhog:
+    profiles: ["mock-byoc"]
+    image: mailhog/mailhog:v1.0.1
+    container_name: metar-iwxxm-byoc-mailhog
+    ports:
+      - "${BYOC_SMTP_HOST_PORT:-11025}:1025"
+      - "${BYOC_MAILHOG_UI_HOST_PORT:-18025}:8025"
+    networks:
+      - metar-network
+    restart: unless-stopped
+
+  byoc-f19:
+    profiles: ["mock-byoc"]
+    build:
+      context: ./packages/dissemination/docker/f19-harness
+      dockerfile: Dockerfile
+    image: metar-iwxxm-f19-harness:local
+    container_name: metar-iwxxm-byoc-f19
+    environment:
+      F19_HARNESS_PORT: "9099"
+    ports:
+      - "${BYOC_F19_HOST_PORT:-19099}:9099"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9099/health').read()",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    networks:
+      - metar-network
+    restart: unless-stopped

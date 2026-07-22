@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry",
-  "generated": "2026-07-21",
+  "generated": "2026-07-22",
   "issues": [
     {
       "code": "AUTO_PRESENT",

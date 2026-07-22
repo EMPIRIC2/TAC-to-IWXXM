@@ -231,7 +231,6 @@ Hooks (after `make install-hooks`):
 | **pre-push** | `make validate-ci` then `make ci-prepush` (blocks push if CI validate/unit would fail) |
 
 Bypass only when intentional: `git commit --no-verify` / `git push --no-verify`.
-Also update `ci-quality-guard.sh` message if it mentions make ci.
 
 - Python 3.12 + Node 22
 - Unit tests and 95% Codecov gate on `apps/backend`, `packages/*`, `apps/frontend`
