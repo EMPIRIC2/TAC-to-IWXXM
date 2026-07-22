@@ -42,8 +42,9 @@ active_session:
     - docs/sessions/S020-aerodrome-quality/reports/t51-vitest-catalog-taf-tags.md
     - docs/sessions/S020-aerodrome-quality/reports/t52-fe-catalog-taf-tags.md
     - docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md
+    - docs/sessions/S020-aerodrome-quality/reports/verification-report.md
     - docs/decisions/tech-decisions.md
-  note: "Phase C 07-build — T5.3 COMPLETE @ 80e638c (API smoke taf+speci); active_milestone M5; active_task T5.4 pending; progress 24/28; gates.c_to_d remains pending; next 08-verify-build."
+  note: "Phase C 07-build — T5.4 COMPLETE — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; commit pending; gates.c_to_d remains pending."
   routing_plan:
     - stage: 00-context
       required: true
@@ -65,6 +66,7 @@ active_session:
       note: >-
         EV-015 orchestrator; routing approved Lean+build; cycle open; Phase A PASSED;
         04-tech-plan completed; Phase B PASSED (D-S020-EV015-phase-b-pass); 07 in_progress
+        (T5.4 COMPLETE; next T5.5; 08 completed; progress 25/28)
     - stage: 01-requirements
       required: true
       mode: delta
@@ -102,12 +104,15 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-22'
-      note: "T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; M5 active; progress 24/28"
+      note: "T5.4 COMPLETE — 08-verify-build PASS; next T5.5 09+10; M5 active; progress 25/28; commit pending"
     - stage: 08-verify-build
       required: true
       mode: full
-      status: pending
+      status: completed
       skip_rationale:
+      started: '2026-07-22'
+      completed: '2026-07-22'
+      note: "T5.4 COMPLETE — Overall PASS; report verification-report.md; next T5.5 09+10; progress 25/28; gates.c_to_d remains pending"
     - stage: 09-qa
       required: true
       mode: full
@@ -2722,14 +2727,14 @@ stages:
         started_at: '2026-07-22'
         started: '2026-07-22'
         mode: full
-        note: "T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; M5 active; progress 24/28"
+        note: "T5.4 COMPLETE — 08-verify-build PASS; next T5.5 09+10; M5 active; progress 25/28; commit pending"
         active_milestone: M5
-        active_task: T5.4
+        active_task: T5.5
         active_task_status: pending
         decision_id: D-S020-EV015-phase-b-pass
         branch: evolve/EV-015-aerodrome-quality
-        progress: "24/28"
-        report: docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md
+        progress: "25/28"
+        report: docs/sessions/S020-aerodrome-quality/reports/verification-report.md
       - id: S019-dissemination-upload
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
@@ -2798,6 +2803,8 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - 2026-07-22 S020/EV-015 T5.4 COMPLETE — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; commit pending; gates.c_to_d remains pending.
+      - 2026-07-22 S020/EV-015 T5.4 STARTED — 08-verify-build lint/typecheck/format/full suites; active_task T5.4 in_progress; M5 and 07-build remain active; progress 24/28 until T5.4 completes; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; progress 24/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.3 STARTED — API smoke product=taf + product=speci lint+convert + catalog GET (TC-F20-005); active_task T5.3 in_progress; M5 and 07-build remain active; progress 23/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.2 COMPLETE @ b630aa8 — FE catalog panel TAF tag filters/copy (E15-14; UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke product=taf+speci; progress 23/28; gates.c_to_d remains pending.
@@ -2962,14 +2969,14 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-22'
-      note: "T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; M5 active; progress 24/28"
+      note: "T5.4 COMPLETE — 08-verify-build PASS; next T5.5 09+10; M5 active; progress 25/28; commit pending"
       active_milestone: M5
-      active_task: T5.4
+      active_task: T5.5
       active_task_status: pending
       decision_id: D-S020-EV015-phase-b-pass
       branch: evolve/EV-015-aerodrome-quality
-      progress: "24/28"
-      report: docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md
+      progress: "25/28"
+      report: docs/sessions/S020-aerodrome-quality/reports/verification-report.md
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -3283,6 +3290,24 @@ stages:
       report:
         status: completed
     delta_substages:
+      - id: S020-aerodrome-quality
+        session_id: S020-aerodrome-quality
+        evolve_cycle_id: EV-015
+        skill_id: 08-verify-build
+        status: completed
+        started_at: '2026-07-22'
+        started: '2026-07-22'
+        completed_at: '2026-07-22'
+        completed: '2026-07-22'
+        mode: full
+        overall: pass
+        note: "T5.4 COMPLETE — Overall PASS; next T5.5 09+10; progress 25/28; commit pending; gates.c_to_d remains pending"
+        report: docs/sessions/S020-aerodrome-quality/reports/verification-report.md
+        active_milestone: M5
+        active_task: T5.4
+        active_task_status: completed
+        branch: evolve/EV-015-aerodrome-quality
+        progress: "25/28"
       - id: S019-dissemination-upload
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
@@ -3344,6 +3369,8 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
         note: "T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass"
     notes:
+      - 2026-07-22 S020/EV-015 T5.4 COMPLETE — Overall PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient); report verification-report.md; next T5.5 09+10; progress 25/28; gates.c_to_d remains pending.
+      - 2026-07-22 S020/EV-015 T5.4 STARTED — 08-verify-build lint/typecheck/format/full suites; progress 24/28 until T5.4 completes; gates.c_to_d remains pending.
       - 2026-07-21 S019/EV-014 08-verify-build COMPLETE — T6.4 verification-report.md PASS
       - 2026-07-20 S015/EV-011 08-verify-build completed — T5.1 PASS — verification-report.md; C→D passed
       - "2026-07-19 S014/EV-010 C→D passed (D-S014-EV010-c-to-d-pass); T6.2 09-qa+10-e2e in_progress"
@@ -3633,8 +3660,10 @@ stages:
     started_at: '2026-07-22'
     completed_at:
     current_stage: 07-build
-    note: "EV-015 open; 07-build in_progress — T5.3 COMPLETE @ 80e638c; active_task T5.4 pending; M5 active; progress 24/28; gates.c_to_d pending."
+    note: "EV-015 open; 07-build in_progress — T5.4 COMPLETE — 08-verify-build PASS; next T5.5 09+10; progress 25/28; commit pending; gates.c_to_d remains pending."
     notes:
+      - 2026-07-22 S020/EV-015 T5.4 COMPLETE — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; commit pending; gates.c_to_d remains pending.
+      - 2026-07-22 S020/EV-015 T5.4 STARTED — 08-verify-build lint/typecheck/format/full suites; active_task T5.4 in_progress; M5 and 07-build remain active; progress 24/28 until T5.4 completes; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; progress 24/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.3 STARTED — API smoke product=taf + product=speci lint+convert + catalog GET (TC-F20-005); active_task T5.3 in_progress; M5 and 07-build remain active; progress 23/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.2 COMPLETE @ b630aa8 — FE catalog panel TAF tag filters/copy (E15-14; UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke product=taf+speci; progress 23/28; gates.c_to_d remains pending.
@@ -3898,6 +3927,38 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: N-S020-EV015-T54-done
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 08-verify-build
+    skill: 08-verify-build
+    skill_id: 08-verify-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: noted
+    decision: >-
+      2026-07-22 S020/EV-015 T5.4 COMPLETE — 08-verify-build PASS (format/lint/typecheck;
+      tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes;
+      pip-audit SKIPPED ambient; detect-secrets on commit PASS); report
+      docs/sessions/S020-aerodrome-quality/reports/verification-report.md; commit pending (do not invent sha; tip unchanged);
+      next T5.5 09+10; active_milestone M5; active_task T5.5 pending; progress 25/28;
+      current_stage 07-build; stages.08-verify-build S020 delta completed; cycle remains
+      in_progress; gates.c_to_d remains pending. Progress note.
+  - id: N-S020-EV015-T54-start
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 07-build
+    skill: 07-build
+    skill_id: 07-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: noted
+    decision: >-
+      2026-07-22 S020/EV-015 T5.4 STARTED — 08-verify-build lint/typecheck/format/full
+      suites (invoked from 07-build); active_milestone M5; active_task T5.4 in_progress;
+      progress 24/28 until T5.4 completes; current_stage 07-build; stages.08-verify-build
+      S020 delta in_progress; cycle remains in_progress; gates.c_to_d remains pending.
+      Progress note.
   - id: N-S020-EV015-T53-done
     date: '2026-07-22'
     timestamp: '2026-07-22'
@@ -9193,11 +9254,11 @@ evolve_cycles:
         Phase B / b_to_c passed 2026-07-22 (D-S020-EV015-phase-b-pass).
     current_stage: 07-build
     active_milestone: M5
-    active_task: T5.4
+    active_task: T5.5
     active_task_status: pending
-    progress: "24/28 tasks"
+    progress: "25/28 tasks"
     branch: evolve/EV-015-aerodrome-quality
-    note: "Phase C 07-build — T5.3 COMPLETE @ 80e638c (API smoke taf+speci); active_milestone M5; active_task T5.4 pending; progress 24/28; gates.c_to_d remains pending."
+    note: "Phase C 07-build — T5.4 COMPLETE — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; commit pending; gates.c_to_d remains pending."
     decision_refs:
       - E15-1
       - E15-2
@@ -9225,6 +9286,8 @@ evolve_cycles:
       - D-S020-EV015-plan-1
       - D-S020-EV015-phase-b-pass
     notes:
+      - 2026-07-22 T5.4 COMPLETE — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; commit pending; gates.c_to_d remains pending.
+      - 2026-07-22 T5.4 STARTED — 08-verify-build lint/typecheck/format/full suites; active_task T5.4 in_progress; M5 and 07-build remain active; progress 24/28 until T5.4 completes; gates.c_to_d remains pending.
       - 2026-07-22 T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; progress 24/28; gates.c_to_d remains pending.
       - 2026-07-22 T5.3 STARTED — API smoke product=taf + product=speci lint+convert + catalog GET (TC-F20-005); active_task T5.3 in_progress; M5 and 07-build remain active; progress 23/28; gates.c_to_d remains pending.
       - 2026-07-22 T5.2 COMPLETE @ b630aa8 — FE catalog panel TAF tag filters/copy (E15-14; UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke product=taf+speci; progress 23/28; gates.c_to_d remains pending.
@@ -9290,7 +9353,7 @@ evolve_cycles:
         status: in_progress
         started: '2026-07-22'
         completed:
-        note: "Orchestrator open; 07-build in_progress — T5.3 COMPLETE @ 80e638c; active_task T5.4 pending; M5 active; progress 24/28."
+        note: "Orchestrator open; 07-build in_progress — T5.4 COMPLETE; next T5.5 09+10; M5 active; progress 25/28; gates.c_to_d pending."
       01-requirements:
         status: completed
         mode: delta
@@ -9319,12 +9382,16 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-22'
-        active_task: T5.4
+        active_task: T5.5
         active_task_status: pending
-        note: "T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; M5 active; progress 24/28"
+        note: "T5.4 COMPLETE — 08-verify-build PASS; next T5.5 09+10; M5 active; progress 25/28; commit pending"
       08-verify-build:
-        status: pending
+        status: completed
         mode: full
+        started: '2026-07-22'
+        completed: '2026-07-22'
+        report: docs/sessions/S020-aerodrome-quality/reports/verification-report.md
+        note: "T5.4 COMPLETE — Overall PASS; report verification-report.md; next T5.5 09+10; progress 25/28; gates.c_to_d remains pending"
       09-qa:
         status: pending
         mode: full
@@ -9360,6 +9427,9 @@ evolve_cycles:
     adrs:
       - docs/adr/ADR-028-metar-lint-issue-registry.md
     artifacts:
+      - path: docs/sessions/S020-aerodrome-quality/reports/verification-report.md
+        status: present
+        note: T5.4 COMPLETE — 08-verify-build PASS; next T5.5 09+10; commit pending
       - path: docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md
         status: present
         note: T5.3 COMPLETE — API smoke taf+speci (TC-F20-005); next T5.4
