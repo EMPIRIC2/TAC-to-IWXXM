@@ -40,8 +40,7 @@ active_session:
     - docs/sessions/S020-aerodrome-quality/reports/04-tech-plan.md
     - docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
     - docs/decisions/tech-decisions.md
-  note: >-
-    Phase C 07-build — M4 T4.3 COMPLETE @ 53ae150 (COVERAGE_MATRIX F20 acc checklist closed T1–T4/S1–S3/C1 closed or deferred; ISSUE_CATALOG regen); active_task T4.4 pending (TC-F20-001 registry completeness). Batch1+Batch2 locked (E15-1..E15-8 all A); Phase 0 approved 2026-07-22; Lean+build D-S020-EV015-route-1. 00/01/02 COMPLETE 2026-07-22; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2). Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE 2026-07-22 (E15-16..19 all A; D-S020-EV015-plan-1; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B.
+  note: "Phase C 07-build — T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags. Evolve cycle remains open; gates.c_to_d remains pending."
   routing_plan:
     - stage: 00-context
       required: true
@@ -100,8 +99,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-22'
-      note: >-
-        T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc closed; ISSUE_CATALOG regen; next T4.4 TC-F20-001 registry completeness (pending)
+      note: "T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags"
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2721,10 +2719,9 @@ stages:
         started_at: '2026-07-22'
         started: '2026-07-22'
         mode: full
-        note: >-
-          T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1 closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness.
-        active_milestone: M4
-        active_task: T4.4
+        note: "T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags"
+        active_milestone: M5
+        active_task: T5.1
         active_task_status: pending
         decision_id: D-S020-EV015-phase-b-pass
         branch: evolve/EV-015-aerodrome-quality
@@ -2796,6 +2793,9 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - 2026-07-22 S020/EV-015 T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests);
+        tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags.
+      - 2026-07-22 S020/EV-015 T4.4 STARTED — TC-F20-001 registry completeness; active_task T4.4 in_progress; M4 and 07-build remain active.
       - 2026-07-22 S020/EV-015 T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1 closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness.
       - 2026-07-22 S020/EV-015 T4.3 STARTED — COVERAGE_MATRIX F20 acc checklist + ISSUE_CATALOG regen (F20 acc4); tip acee58f; dep T4.2 complete
       - 2026-07-22 S020/EV-015 T4.2 COMPLETE @ acee58f — Encode/defer C1 (MULTI_REPORT_BULLETIN + c1 tags; CRS/translationFailedTAC/COLLECT/code-list convert-only on COVERAGE_MATRIX). Next T4.3 matrix checklist + ISSUE_CATALOG regen.
@@ -2951,10 +2951,9 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-22'
-      note: >-
-        T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1 closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness.
-      active_milestone: M4
-      active_task: T4.4
+      note: "T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags"
+      active_milestone: M5
+      active_task: T5.1
       active_task_status: pending
       decision_id: D-S020-EV015-phase-b-pass
       branch: evolve/EV-015-aerodrome-quality
@@ -3621,8 +3620,7 @@ stages:
     started_at: '2026-07-22'
     completed_at:
     current_stage: 07-build
-    note: >-
-      EV-015 open (S020-aerodrome-quality); 00/01/02/04 COMPLETE 2026-07-22; renamed from taf-quality (D-S020-EV015-s1m2-2); Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19 all A; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; 07-build in_progress — M4 T4.3 COMPLETE @ 53ae150; active_task T4.4 pending (TC-F20-001); do not re-open Phase 0/B; Lean+build D-S020-EV015-route-1
+    note: "EV-015 open; 07-build in_progress — T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags; gates.c_to_d pending."
     notes:
       - 2026-07-22 S020/EV-015 T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1 closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness.
       - 2026-07-22 S020/EV-015 T4.3 STARTED — COVERAGE_MATRIX F20 acc checklist + ISSUE_CATALOG regen (F20 acc4); tip acee58f; dep T4.2 complete
@@ -7378,6 +7376,28 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: packages/tac-validate/tests/test_tc_f20_001_registry_completeness.py
+    type: test
+    kind: tc-f20-001-registry-completeness
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: "2026-07-22"
+    updated_at: "2026-07-22"
+    status: completed
+    note: TC-F20-001 registry completeness — 7 tests green; tac-validate 471 passed
+  - path: docs/sessions/S020-aerodrome-quality/reports/t44-tc-f20-001-registry-completeness.md
+    type: session-report
+    kind: t44-registry-completeness
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: "2026-07-22"
+    updated_at: "2026-07-22"
+    status: completed
+    note: T4.4 completion report; TC-F20-001 green; M4 closed
   - path: docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
     type: session-report
     kind: execution-plan
@@ -9048,13 +9068,12 @@ evolve_cycles:
         checkpoints (parent uses after phases); Phase A / a_to_b passed 2026-07-22;
         Phase B / b_to_c passed 2026-07-22 (D-S020-EV015-phase-b-pass).
     current_stage: 07-build
-    active_milestone: M4
-    active_task: T4.4
+    active_milestone: M5
+    active_task: T5.1
     active_task_status: pending
-    progress:
+    progress: "21/28 tasks"
     branch: evolve/EV-015-aerodrome-quality
-    note: >-
-      Phase C 07-build — M4 T4.3 COMPLETE @ 53ae150 (COVERAGE_MATRIX F20 acc checklist closed T1–T4/S1–S3/C1 closed or deferred; ISSUE_CATALOG regen); active_task T4.4 pending (TC-F20-001 registry completeness). Phase 0 approved 2026-07-22; 00/01/02/04 COMPLETE; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2); Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE 2026-07-22 (D-S020-EV015-plan-1; E15-16..19 all A; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B; Lean+build D-S020-EV015-route-1.
+    note: "Phase C 07-build — T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags. Evolve cycle remains open; gates.c_to_d remains pending."
     decision_refs:
       - E15-1
       - E15-2
@@ -9082,6 +9101,9 @@ evolve_cycles:
       - D-S020-EV015-plan-1
       - D-S020-EV015-phase-b-pass
     notes:
+      - 2026-07-22 T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate
+        471 passed; M4 closed; next T5.1 Vitest catalog TAF tags.
+      - 2026-07-22 T4.4 STARTED — TC-F20-001 registry completeness; active_task T4.4 in_progress; M4 and 07-build remain active.
       - 2026-07-22 T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1 closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness.
       - 2026-07-22 T4.3 STARTED — COVERAGE_MATRIX F20 acc checklist + ISSUE_CATALOG regen (F20 acc4); tip acee58f; dep T4.2 complete
       - 2026-07-22 T4.2 COMPLETE @ acee58f — Encode/defer C1 (MULTI_REPORT_BULLETIN + c1 tags; CRS/translationFailedTAC/COLLECT/code-list convert-only on COVERAGE_MATRIX). Next T4.3 matrix checklist + ISSUE_CATALOG regen.
@@ -9138,9 +9160,7 @@ evolve_cycles:
         status: in_progress
         started: '2026-07-22'
         completed:
-        note: >-
-          Orchestrator open; Phase A PASSED; 04-tech-plan completed; Phase B PASSED
-          (D-S020-EV015-phase-b-pass); 07 in_progress
+        note: "Orchestrator open; 07-build in_progress — M4 closed; next T5.1."
       01-requirements:
         status: completed
         mode: delta
@@ -9169,10 +9189,9 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-22'
-        active_task: T4.4
+        active_task: T5.1
         active_task_status: pending
-        note: >-
-          T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc closed; ISSUE_CATALOG regen; next T4.4 TC-F20-001 registry completeness (pending)
+        note: "T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags"
       08-verify-build:
         status: pending
         mode: full
@@ -17321,4 +17340,5 @@ pr_remediation_cycles:
     notes:
       - "AskQuestion unavailable; user asked for bugs+blockers+advisories → assumed full PRR-019 backlog"
       - "PRM-016 completed — fixed F1–F4; deferred F5 (Playwright T2/H4-H5); CI green on 95c7647"
+
 
