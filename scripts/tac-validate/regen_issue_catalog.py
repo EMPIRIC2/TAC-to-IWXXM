@@ -66,7 +66,7 @@ def _write_md(rows: list[dict[str, object]], source: str) -> None:
         "",
         f"> **Source**: {source}  ",
         f"> **Generated**: {date.today().isoformat()} via `make catalog-regen`  ",
-        "> **ADR**: ADR-028 / F15 / EV-011",
+        "> **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015",
         "",
         "Public `code` values are stable. Default severities may tighten in minor releases.",
         "Do not invent ad-hoc `severity=` literals in rule bodies — import from the registry.",

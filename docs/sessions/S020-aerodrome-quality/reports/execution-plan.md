@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M4 — Common C1 + matrix close (F20) |
-| **Active task** | T4.3 (pending) |
-| **Tasks** | 19 / 28 completed (through T4.2) |
+| **Active task** | T4.4 (pending) |
+| **Tasks** | 20 / 28 completed (through T4.3) |
 | **Last updated** | 2026-07-22 |
 
 ## Tech Stack Summary
@@ -91,7 +91,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T4.1 | Test | Common-rule fixtures (reportStatus/nilReasons/CRS/one-report) where lint applies | matrix C1; #735/#734 | T3.6 | completed |
 | T4.2 | Code | Encode/defer C1 with rationale | F20; guidance | T4.1 | completed |
-| T4.3 | Docs | COVERAGE_MATRIX F20 acc checklist; ISSUE_CATALOG regen | F20 acc4 | T4.2 | pending |
+| T4.3 | Docs | COVERAGE_MATRIX F20 acc checklist; ISSUE_CATALOG regen | F20 acc4 | T4.2 | completed |
 | T4.4 | Test | TC-F20-001 registry completeness green | TC-F20-001 | T4.3 | pending |
 
 ### M5 — FE catalog TAF tags + smoke + verify (F20)
