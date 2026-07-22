@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M5 — FE catalog TAF tags + smoke + verify (F20) |
-| **Active task** | T5.1 (pending) |
-| **Tasks** | 21 / 28 completed (through T4.4; M4 closed) |
+| **Active task** | T5.2 (pending) |
+| **Tasks** | 22 / 28 completed (through T5.1; M5 in progress) |
 | **Last updated** | 2026-07-22 |
 
 ## Tech Stack Summary
@@ -98,7 +98,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T5.1 | Test | Vitest: catalog panel filters/copy for TAF tags | E15-14; TC-F20-005 | T4.4 | pending |
+| T5.1 | Test | Vitest: catalog panel filters/copy for TAF tags | E15-14; TC-F20-005 | T4.4 | completed |
 | T5.2 | Code | FE: extend catalog panel filters/copy for TAF (additive) | E15-14; UJ-031 | T5.1 | pending |
 | T5.3 | Test | API smoke `product=taf` + `product=speci` lint+convert + catalog GET | TC-F20-005 | T5.2 | pending |
 | T5.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M4, T5.2 | pending |
