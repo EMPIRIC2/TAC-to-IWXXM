@@ -149,6 +149,46 @@
       "ok": true
     },
     {
+      "id": "accept_taf_t3_vv_omit",
+      "product": "TAF",
+      "theme": "T3",
+      "cite": "VV///; research T3",
+      "tac": "accept/taf_t3_vv_omit.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_t3_nsw",
+      "product": "TAF",
+      "theme": "T3",
+      "cite": "NSW; research T3",
+      "tac": "accept/taf_t3_nsw.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_t3_nsc",
+      "product": "TAF",
+      "theme": "T3",
+      "cite": "NSC; research T3",
+      "tac": "accept/taf_t3_nsc.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_t3_cavok",
+      "product": "TAF",
+      "theme": "T3",
+      "cite": "CAVOK; research T3",
+      "tac": "accept/taf_t3_cavok.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_t3_tx_tn",
+      "product": "TAF",
+      "theme": "T3",
+      "cite": "TX/TN base; research T3",
+      "tac": "accept/taf_t3_tx_tn.tac",
+      "ok": true
+    },
+    {
       "id": "accept_sigmet_basic",
       "product": "SIGMET",
       "tac": "accept/sigmet_basic.tac",
@@ -1207,6 +1247,76 @@
       "tac": "negative/taf/prob_on_fm.tac",
       "ok": false,
       "expected_codes": ["INVALID_PROB"],
+      "require_spans": true
+    }
+  ],
+  "t3_modifier_info": [
+    {
+      "id": "taf_t3_tx_tn_info",
+      "product": "TAF",
+      "theme": "T3",
+      "tac": "accept/taf_t3_tx_tn.tac",
+      "ok": true,
+      "expected_codes": ["TX_TN_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true,
+      "cite": "TX/TN"
+    },
+    {
+      "id": "taf_t3_cavok_info",
+      "product": "TAF",
+      "theme": "T3",
+      "tac": "accept/taf_t3_cavok.tac",
+      "ok": true,
+      "expected_codes": ["CAVOK_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true,
+      "cite": "CAVOK"
+    },
+    {
+      "id": "taf_t3_nsc_info",
+      "product": "TAF",
+      "theme": "T3",
+      "tac": "accept/taf_t3_nsc.tac",
+      "ok": true,
+      "expected_codes": ["NSC_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true,
+      "cite": "NSC"
+    },
+    {
+      "id": "taf_t3_nsw_info",
+      "product": "TAF",
+      "theme": "T3",
+      "tac": "accept/taf_t3_nsw.tac",
+      "ok": true,
+      "expected_codes": ["NSW_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true,
+      "cite": "NSW"
+    },
+    {
+      "id": "taf_t3_vv_omit_info",
+      "product": "TAF",
+      "theme": "T3",
+      "tac": "accept/taf_t3_vv_omit.tac",
+      "ok": true,
+      "expected_codes": ["VV_OMIT"],
+      "expected_severity": "info",
+      "require_spans": true,
+      "cite": "VV///"
+    }
+  ],
+  "t3_errors": [
+    {
+      "id": "taf_tx_on_change",
+      "product": "TAF",
+      "theme": "T3",
+      "depth": "full_checklist",
+      "cite": "TX/TN base only",
+      "tac": "negative/taf/tx_on_change.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_TX_TN"],
       "require_spans": true
     }
   ]
