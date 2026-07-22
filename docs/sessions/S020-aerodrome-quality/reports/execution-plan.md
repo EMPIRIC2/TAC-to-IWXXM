@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — SPECI S1–S3 |
-| **Active task** | T3.5 (completed) → next T3.6 |
-| **Tasks** | 16 / 28 completed (through T3.5) |
+| **Active task** | T3.6 (completed) → next T4.1 |
+| **Tasks** | 17 / 28 completed (through T3.6) |
 | **Last updated** | 2026-07-22 |
 
 ## Tech Stack Summary
@@ -83,7 +83,7 @@
 | T3.3 | Test | Mis-classification guards SPECI↔METAR (S2) | TC-F20-006 | T3.2 | completed |
 | T3.4 | Code | Auto-detect / product-hint fixes if any fail | F20 | T3.3 | completed |
 | T3.5 | Test | Expand SPECI goldens annex3/iwxxm_us (S3); root `iwxxm:SPECI` | TC-F20-003 | T3.4 | completed |
-| T3.6 | Code | Convert fidelity for new SPECI goldens | F6.b | T3.5 | pending |
+| T3.6 | Code | Convert fidelity for new SPECI goldens | F6.b | T3.5 | completed |
 
 ### M4 — Common C1 + matrix close (F20)
 

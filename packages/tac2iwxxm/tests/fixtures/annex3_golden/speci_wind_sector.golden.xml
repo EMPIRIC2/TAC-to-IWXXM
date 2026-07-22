@@ -39,8 +39,8 @@
         <iwxxm:AerodromeSurfaceWind variableWindDirection="false">
           <iwxxm:meanWindDirection uom="deg">270</iwxxm:meanWindDirection>
           <iwxxm:meanWindSpeed uom="[kn_i]">15</iwxxm:meanWindSpeed>
-          <iwxxm:extremeCounterClockwiseWindDirection uom="deg">240</iwxxm:extremeCounterClockwiseWindDirection>
           <iwxxm:extremeClockwiseWindDirection uom="deg">300</iwxxm:extremeClockwiseWindDirection>
+          <iwxxm:extremeCounterClockwiseWindDirection uom="deg">240</iwxxm:extremeCounterClockwiseWindDirection>
         </iwxxm:AerodromeSurfaceWind>
       </iwxxm:surfaceWind>
       <iwxxm:visibility>
