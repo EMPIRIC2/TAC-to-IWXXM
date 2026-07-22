@@ -39,8 +39,9 @@ active_session:
     - docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
     - docs/sessions/S020-aerodrome-quality/reports/04-tech-plan.md
     - docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
+    - docs/sessions/S020-aerodrome-quality/reports/t51-vitest-catalog-taf-tags.md
     - docs/decisions/tech-decisions.md
-  note: "Phase C 07-build — T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags. Evolve cycle remains open; gates.c_to_d remains pending."
+  note: "Phase C 07-build — T5.1 COMPLETE (red TDD Vitest catalog panel TAF tag filters/copy; E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE extend catalog panel filters/copy for TAF; active_milestone M5; active_task T5.2 pending. Evolve cycle remains open; gates.c_to_d remains pending."
   routing_plan:
     - stage: 00-context
       required: true
@@ -99,7 +100,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-22'
-      note: "T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags"
+      note: "T5.1 COMPLETE (red TDD Vitest catalog TAF tags; E15-14; TC-F20-005); active_task T5.2 pending; M5 active"
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2719,12 +2720,14 @@ stages:
         started_at: '2026-07-22'
         started: '2026-07-22'
         mode: full
-        note: "T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags"
+        note: "T5.1 COMPLETE (red TDD Vitest catalog TAF tags; E15-14; TC-F20-005); active_task T5.2 pending; M5 active"
         active_milestone: M5
-        active_task: T5.1
+        active_task: T5.2
         active_task_status: pending
         decision_id: D-S020-EV015-phase-b-pass
         branch: evolve/EV-015-aerodrome-quality
+        progress: "22/28"
+        report: docs/sessions/S020-aerodrome-quality/reports/t51-vitest-catalog-taf-tags.md
       - id: S019-dissemination-upload
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
@@ -2793,6 +2796,8 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - 2026-07-22 S020/EV-015 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE extend catalog panel filters/copy for TAF; progress 22/28; gates.c_to_d remains pending.
+      - 2026-07-22 S020/EV-015 T5.1 STARTED — Vitest catalog panel filters/copy for TAF tags (E15-14; TC-F20-005); active_task T5.1 in_progress; M5 and 07-build remain active.
       - 2026-07-22 S020/EV-015 T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests);
         tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags.
       - 2026-07-22 S020/EV-015 T4.4 STARTED — TC-F20-001 registry completeness; active_task T4.4 in_progress; M4 and 07-build remain active.
@@ -2951,12 +2956,14 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-22'
-      note: "T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags"
+      note: "T5.1 COMPLETE (red TDD Vitest catalog TAF tags; E15-14; TC-F20-005); active_task T5.2 pending; M5 active"
       active_milestone: M5
-      active_task: T5.1
+      active_task: T5.2
       active_task_status: pending
       decision_id: D-S020-EV015-phase-b-pass
       branch: evolve/EV-015-aerodrome-quality
+      progress: "22/28"
+      report: docs/sessions/S020-aerodrome-quality/reports/t51-vitest-catalog-taf-tags.md
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -3620,8 +3627,11 @@ stages:
     started_at: '2026-07-22'
     completed_at:
     current_stage: 07-build
-    note: "EV-015 open; 07-build in_progress — T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags; gates.c_to_d pending."
+    note: "EV-015 open; 07-build in_progress — T5.1 COMPLETE (red TDD Vitest catalog TAF tags); next T5.2; M5 active; gates.c_to_d pending."
     notes:
+      - 2026-07-22 S020/EV-015 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE extend catalog panel filters/copy for TAF; progress 22/28; gates.c_to_d remains pending.
+      - 2026-07-22 S020/EV-015 T5.1 STARTED — Vitest catalog panel filters/copy for TAF tags (E15-14; TC-F20-005); active_task T5.1 in_progress; M5 and 07-build remain active.
+      - 2026-07-22 S020/EV-015 T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags.
       - 2026-07-22 S020/EV-015 T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1 closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness.
       - 2026-07-22 S020/EV-015 T4.3 STARTED — COVERAGE_MATRIX F20 acc checklist + ISSUE_CATALOG regen (F20 acc4); tip acee58f; dep T4.2 complete
       - 2026-07-22 S020/EV-015 T4.2 COMPLETE @ acee58f — Encode/defer C1 (MULTI_REPORT_BULLETIN + c1 tags; CRS/translationFailedTAC/COLLECT/code-list convert-only on COVERAGE_MATRIX). Next T4.3 matrix checklist + ISSUE_CATALOG regen.
@@ -3878,6 +3888,37 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: N-S020-EV015-T51-done
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 07-build
+    skill: 07-build
+    skill_id: 07-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: noted
+    decision: >-
+      2026-07-22 S020/EV-015 T5.1 COMPLETE (red TDD) — Vitest catalog panel TAF tag
+      filters/copy (E15-14; TC-F20-005); commit message pattern
+      "[T5.1] test: Vitest catalog panel TAF tag filters/copy (E15-14)"; report
+      docs/sessions/S020-aerodrome-quality/reports/t51-vitest-catalog-taf-tags.md;
+      tip/sha 1810db4 (1810db4b6699f7b45bcfc1cd066ce75161cb939a); next T5.2 FE extend catalog panel
+      filters/copy for TAF; active_milestone M5; active_task T5.2 pending;
+      progress 22/28; current_stage 07-build; cycle remains in_progress;
+      gates.c_to_d remains pending. Progress note.
+  - id: N-S020-EV015-T51-start
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 07-build
+    skill: 07-build
+    skill_id: 07-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: noted
+    decision: >-
+      2026-07-22 S020/EV-015 T5.1 STARTED — Vitest catalog panel filters/copy for TAF tags
+      (E15-14; TC-F20-005); user approved continuing with T5.1; active_milestone M5;
+      active_task T5.1 in_progress; M4 closed; T5.1 not completed. Progress note.
   - id: D-S020-EV015-q22-a
     date: '2026-07-22'
     timestamp: '2026-07-22'
@@ -7376,6 +7417,30 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/sessions/S020-aerodrome-quality/reports/t51-vitest-catalog-taf-tags.md
+    type: session-report
+    kind: t51-vitest-catalog-taf-tags
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: "2026-07-22"
+    updated_at: "2026-07-22"
+    status: completed
+    note: >-
+      T5.1 COMPLETE (red TDD) — Vitest catalog panel TAF tag filters/copy (E15-14;
+      TC-F20-005); next T5.2 FE extend catalog panel filters/copy for TAF
+  - path: apps/frontend/src/app/components/WorkbenchConsole.catalog-taf.test.tsx
+    type: test
+    kind: vitest-catalog-taf-tags
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: "2026-07-22"
+    updated_at: "2026-07-22"
+    status: completed
+    note: T5.1 red TDD — WorkbenchConsole catalog TAF tag filter/copy Vitest suite
   - path: packages/tac-validate/tests/test_tc_f20_001_registry_completeness.py
     type: test
     kind: tc-f20-001-registry-completeness
@@ -9069,11 +9134,11 @@ evolve_cycles:
         Phase B / b_to_c passed 2026-07-22 (D-S020-EV015-phase-b-pass).
     current_stage: 07-build
     active_milestone: M5
-    active_task: T5.1
+    active_task: T5.2
     active_task_status: pending
-    progress: "21/28 tasks"
+    progress: "22/28 tasks"
     branch: evolve/EV-015-aerodrome-quality
-    note: "Phase C 07-build — T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags. Evolve cycle remains open; gates.c_to_d remains pending."
+    note: "Phase C 07-build — T5.1 COMPLETE (red TDD Vitest catalog panel TAF tag filters/copy; E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE extend catalog panel filters/copy for TAF; active_milestone M5; active_task T5.2 pending. Evolve cycle remains open; gates.c_to_d remains pending."
     decision_refs:
       - E15-1
       - E15-2
@@ -9101,6 +9166,8 @@ evolve_cycles:
       - D-S020-EV015-plan-1
       - D-S020-EV015-phase-b-pass
     notes:
+      - 2026-07-22 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE catalog filters/copy; progress 22/28; gates.c_to_d remains pending.
+      - 2026-07-22 T5.1 STARTED — Vitest catalog panel filters/copy for TAF tags (E15-14; TC-F20-005); active_task T5.1 in_progress; M5 and 07-build remain active.
       - 2026-07-22 T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate
         471 passed; M4 closed; next T5.1 Vitest catalog TAF tags.
       - 2026-07-22 T4.4 STARTED — TC-F20-001 registry completeness; active_task T4.4 in_progress; M4 and 07-build remain active.
@@ -9160,7 +9227,7 @@ evolve_cycles:
         status: in_progress
         started: '2026-07-22'
         completed:
-        note: "Orchestrator open; 07-build in_progress — M4 closed; next T5.1."
+        note: "Orchestrator open; 07-build in_progress — T5.1 COMPLETE (red TDD Vitest catalog TAF tags); next T5.2; M5 active."
       01-requirements:
         status: completed
         mode: delta
@@ -9189,9 +9256,9 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-22'
-        active_task: T5.1
+        active_task: T5.2
         active_task_status: pending
-        note: "T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags"
+        note: "T5.1 COMPLETE (red TDD Vitest catalog TAF tags; E15-14; TC-F20-005); active_task T5.2 pending; M5 active"
       08-verify-build:
         status: pending
         mode: full
@@ -9230,6 +9297,9 @@ evolve_cycles:
     adrs:
       - docs/adr/ADR-028-metar-lint-issue-registry.md
     artifacts:
+      - path: docs/sessions/S020-aerodrome-quality/reports/t51-vitest-catalog-taf-tags.md
+        status: present
+        note: T5.1 COMPLETE — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); next T5.2
       - path: docs/feature-list.md
         status: present
         note: F20 Planned row + deepen F6/F12 notes; parent-written Phase 0
@@ -12167,14 +12237,18 @@ evolve_cycles:
 
 git_history:
   current_branch: evolve/EV-015-aerodrome-quality
-  ahead_of_origin: 2
+  ahead_of_origin: 29
   pushed: false
   pending_commit:
-  tip_sha: 53ae150
-  tip_sha_full: 53ae15039083021772f10f626d090080e5cbf390
+  tip_sha: 1810db4
+  tip_sha_full: 1810db4b6699f7b45bcfc1cd066ce75161cb939a
   note: >-
-    S020/EV-015 T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1 closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness. Branch evolve/EV-015-aerodrome-quality active / base main.
+    S020/EV-015 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag
+    filters/copy (E15-14; TC-F20-005); message pattern "[T5.1] test: Vitest catalog
+    panel TAF tag filters/copy (E15-14)"; report t51-vitest-catalog-taf-tags.md;
+    next T5.2 FE catalog filters/copy. Branch evolve/EV-015-aerodrome-quality active / base main.
   notes:
+    - 2026-07-22 S020/EV-015 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE extend catalog panel filters/copy for TAF; progress 22/28; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1 closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness.
     - 2026-07-22 S020/EV-015 T4.3 STARTED — COVERAGE_MATRIX F20 acc checklist + ISSUE_CATALOG regen (F20 acc4); tip acee58f; dep T4.2 complete
     - 2026-07-22 S020/EV-015 T4.2 COMPLETE @ acee58f — Encode/defer C1 (MULTI_REPORT_BULLETIN + c1 tags; CRS/translationFailedTAC/COLLECT/code-list convert-only on COVERAGE_MATRIX). Next T4.3 matrix checklist + ISSUE_CATALOG regen.
@@ -13098,6 +13172,23 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 1810db4b6699f7b45bcfc1cd066ce75161cb939a
+      short: 1810db4
+      branch: evolve/EV-015-aerodrome-quality
+      message: "[T5.1] test: Vitest catalog panel TAF tag filters/copy (E15-14)"
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      files_changed:
+        - apps/frontend/src/utils/lintIssueCatalog.test.ts
+        - apps/frontend/src/app/components/WorkbenchConsole.catalog-taf.test.tsx
+        - docs/sessions/S020-aerodrome-quality/reports/t51-vitest-catalog-taf-tags.md
+        - docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
+      timestamp: '2026-07-22T22:11:12Z'
+      date: '2026-07-22'
+      note: >-
+        T5.1 COMPLETE (red TDD); sha corrected from premature bbe6dc8 chore-sync tip
+        to real atomic commit 1810db4
     - sha: 53ae15039083021772f10f626d090080e5cbf390
       short: 53ae150
       branch: evolve/EV-015-aerodrome-quality
