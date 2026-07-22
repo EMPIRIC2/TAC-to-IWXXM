@@ -6,12 +6,13 @@
     {
       "code": "AMD_PRESENT",
       "severity": "info",
-      "message_template": "{product} AMD modifier present \u2014 research T1",
+      "message_template": "{product} AMD modifier present \u2014 research T1 / C1",
       "product": "taf",
       "tags": [
         "modifier",
         "taf",
-        "t1"
+        "t1",
+        "c1"
       ]
     },
     {
@@ -92,7 +93,7 @@
     {
       "code": "COR_PRESENT",
       "severity": "info",
-      "message_template": "{product} COR modifier present \u2014 research R8 / T1",
+      "message_template": "{product} COR modifier present \u2014 research R8 / T1 / C1",
       "product": null,
       "tags": [
         "modifier",
@@ -100,7 +101,8 @@
         "speci",
         "taf",
         "r8",
-        "t1"
+        "t1",
+        "c1"
       ]
     },
     {
@@ -151,7 +153,7 @@
     {
       "code": "INVALID_NIL",
       "severity": "error",
-      "message_template": "{product} NIL must not include body groups \u2014 research R8 / T1",
+      "message_template": "{product} NIL must not include body groups \u2014 research R8 / T1 / C1",
       "product": null,
       "tags": [
         "nil",
@@ -159,7 +161,8 @@
         "speci",
         "taf",
         "r8",
-        "t1"
+        "t1",
+        "c1"
       ]
     },
     {
@@ -409,6 +412,20 @@
       ]
     },
     {
+      "code": "MULTI_REPORT_BULLETIN",
+      "severity": "info",
+      "message_template": "{product} bulletin has multiple TAC reports \u2014 one IWXXM report per TAC (Guidance C1)",
+      "product": null,
+      "tags": [
+        "bulletin",
+        "metar",
+        "speci",
+        "taf",
+        "c1",
+        "one_report"
+      ]
+    },
+    {
       "code": "NCD_PRESENT",
       "severity": "info",
       "message_template": "{product} NCD present \u2014 research S1",
@@ -424,7 +441,7 @@
     {
       "code": "NIL_REPORT",
       "severity": "info",
-      "message_template": "{product} NIL report \u2014 research R8 / T1",
+      "message_template": "{product} NIL report \u2014 research R8 / T1 / C1",
       "product": null,
       "tags": [
         "nil",
@@ -432,7 +449,8 @@
         "speci",
         "taf",
         "r8",
-        "t1"
+        "t1",
+        "c1"
       ]
     },
     {
@@ -450,7 +468,7 @@
     {
       "code": "NSC_PRESENT",
       "severity": "info",
-      "message_template": "{product} NSC present \u2014 research T3 / S1",
+      "message_template": "{product} NSC present \u2014 research T3 / S1 / C1",
       "product": null,
       "tags": [
         "cloud",
@@ -458,7 +476,8 @@
         "speci",
         "taf",
         "t3",
-        "s1"
+        "s1",
+        "c1"
       ]
     },
     {

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "TC-F12-001 / E10-21 / TC-F15-003 / TC-F20-004 fixture pack for tac-validate (F12 + F15 R1\u2013R8 + F20 T1\u2013T3 TAF + S1 SPECI themes).",
+  "description": "TC-F12-001 / E10-21 / TC-F15-003 / TC-F20-004 fixture pack for tac-validate (F12 + F15 R1\u2013R8 + F20 T1\u2013T3 TAF + S1 SPECI + C1 common themes).",
   "cite": [
     "docs/domain/TAC_VALIDATION.md (A3-2, A5-1, A6, A2-1, A2-2 paraphrase)",
     "docs/domain/rules/COVERAGE_MATRIX.md",
@@ -482,6 +482,110 @@
       "theme": "S1",
       "cite": "COR; research S1 / #734",
       "tac": "accept/speci_s1_cor.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_c1_normal",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "reportStatus NORMAL (default); research C1",
+      "tac": "accept/metar_c1_normal.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_c1_cor",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "COR \u2192 reportStatus CORRECTION; research C1",
+      "tac": "accept/metar_c1_cor.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_c1_nil",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "NIL \u2192 nilReason missing; research C1",
+      "tac": "accept/metar_c1_nil.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_c1_nsc",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "NSC \u2192 nilReason nothingOfOperationalSignificance; research C1",
+      "tac": "accept/metar_c1_nsc.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_c1_multi_report",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "one IWXXM report per TAC report; research C1",
+      "tac": "accept/metar_c1_multi_report.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_speci_c1_multi_report",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "mixed METAR/SPECI bulletin awareness; research C1",
+      "tac": "accept/metar_speci_c1_multi_report.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_c1_normal",
+      "product": "SPECI",
+      "theme": "C1",
+      "cite": "reportStatus NORMAL; research C1",
+      "tac": "accept/speci_c1_normal.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_c1_cor",
+      "product": "SPECI",
+      "theme": "C1",
+      "cite": "COR \u2192 reportStatus CORRECTION; research C1",
+      "tac": "accept/speci_c1_cor.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_c1_nil",
+      "product": "SPECI",
+      "theme": "C1",
+      "cite": "NIL \u2192 nilReason missing; research C1",
+      "tac": "accept/speci_c1_nil.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_c1_normal",
+      "product": "TAF",
+      "theme": "C1",
+      "cite": "reportStatus NORMAL; research C1",
+      "tac": "accept/taf_c1_normal.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_c1_amd",
+      "product": "TAF",
+      "theme": "C1",
+      "cite": "AMD \u2192 reportStatus AMENDMENT; research C1",
+      "tac": "accept/taf_c1_amd.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_c1_cor",
+      "product": "TAF",
+      "theme": "C1",
+      "cite": "COR \u2192 reportStatus CORRECTION; research C1",
+      "tac": "accept/taf_c1_cor.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_taf_c1_nil",
+      "product": "TAF",
+      "theme": "C1",
+      "cite": "NIL \u2192 nilReason missing; research C1",
+      "tac": "accept/taf_c1_nil.tac",
       "ok": true
     }
   ],
@@ -1539,6 +1643,153 @@
       "depth": "full_checklist",
       "cite": "NIL must not carry body groups; research S1",
       "tac": "negative/speci/nil_with_body.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_NIL"],
+      "require_spans": true
+    }
+  ],
+  "c1_modifier_info": [
+    {
+      "id": "metar_c1_cor_info",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "COR \u2192 COR_PRESENT; research C1",
+      "tac": "accept/metar_c1_cor.tac",
+      "ok": true,
+      "expected_codes": ["COR_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_c1_nil_info",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "NIL \u2192 NIL_REPORT; research C1",
+      "tac": "accept/metar_c1_nil.tac",
+      "ok": true,
+      "expected_codes": ["NIL_REPORT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_c1_nsc_info",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "NSC \u2192 NSC_PRESENT; research C1",
+      "tac": "accept/metar_c1_nsc.tac",
+      "ok": true,
+      "expected_codes": ["NSC_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_c1_multi_report_info",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "multi-report \u2192 MULTI_REPORT_BULLETIN; research C1",
+      "tac": "accept/metar_c1_multi_report.tac",
+      "ok": true,
+      "expected_codes": ["MULTI_REPORT_BULLETIN"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "metar_speci_c1_multi_report_info",
+      "product": "METAR",
+      "theme": "C1",
+      "cite": "mixed bulletin \u2192 MULTI_REPORT_BULLETIN; research C1",
+      "tac": "accept/metar_speci_c1_multi_report.tac",
+      "ok": true,
+      "expected_codes": ["MULTI_REPORT_BULLETIN"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_c1_cor_info",
+      "product": "SPECI",
+      "theme": "C1",
+      "cite": "COR \u2192 COR_PRESENT; research C1",
+      "tac": "accept/speci_c1_cor.tac",
+      "ok": true,
+      "expected_codes": ["COR_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_c1_nil_info",
+      "product": "SPECI",
+      "theme": "C1",
+      "cite": "NIL \u2192 NIL_REPORT; research C1",
+      "tac": "accept/speci_c1_nil.tac",
+      "ok": true,
+      "expected_codes": ["NIL_REPORT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "taf_c1_amd_info",
+      "product": "TAF",
+      "theme": "C1",
+      "cite": "AMD \u2192 AMD_PRESENT; research C1",
+      "tac": "accept/taf_c1_amd.tac",
+      "ok": true,
+      "expected_codes": ["AMD_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "taf_c1_cor_info",
+      "product": "TAF",
+      "theme": "C1",
+      "cite": "COR \u2192 COR_PRESENT; research C1",
+      "tac": "accept/taf_c1_cor.tac",
+      "ok": true,
+      "expected_codes": ["COR_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "taf_c1_nil_info",
+      "product": "TAF",
+      "theme": "C1",
+      "cite": "NIL \u2192 NIL_REPORT; research C1",
+      "tac": "accept/taf_c1_nil.tac",
+      "ok": true,
+      "expected_codes": ["NIL_REPORT"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "c1_errors": [
+    {
+      "id": "metar_c1_nil_with_body",
+      "product": "METAR",
+      "theme": "C1",
+      "depth": "full_checklist",
+      "cite": "NIL with body; research C1",
+      "tac": "negative/metar/c1_nil_with_body.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_NIL"],
+      "require_spans": true
+    },
+    {
+      "id": "speci_c1_nil_with_body",
+      "product": "SPECI",
+      "theme": "C1",
+      "depth": "full_checklist",
+      "cite": "NIL with body; research C1",
+      "tac": "negative/speci/c1_nil_with_body.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_NIL"],
+      "require_spans": true
+    },
+    {
+      "id": "taf_c1_nil_with_body",
+      "product": "TAF",
+      "theme": "C1",
+      "depth": "full_checklist",
+      "cite": "NIL with body; research C1",
+      "tac": "negative/taf/c1_nil_with_body.tac",
       "ok": false,
       "expected_codes": ["INVALID_NIL"],
       "require_spans": true

@@ -9,19 +9,19 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 
 | Code | Severity | Message template | Product | Tags |
 |------|----------|------------------|---------|------|
-| `AMD_PRESENT` | `info` | {product} AMD modifier present — research T1 | taf | modifier, taf, t1 |
+| `AMD_PRESENT` | `info` | {product} AMD modifier present — research T1 / C1 | taf | modifier, taf, t1, c1 |
 | `AT_PRESENT` | `info` | {product} AT time group present — research T2 | taf | change, taf, t2, at |
 | `AUTO_PRESENT` | `info` | {product} AUTO modifier present — research R8 | — | modifier, metar, speci, r8 |
 | `BECMG_PRESENT` | `info` | {product} BECMG change group present — research T2 | taf | change, taf, t2, becmg |
 | `CAVOK_PRESENT` | `info` | {product} CAVOK present — research T3 / S1 | — | cavok, metar, speci, taf, t3, s1 |
 | `CLOUD_CB_OR_TCU` | `info` | {product} cloud group includes convective type CB/TCU | — | cloud, metar, speci, r4, cb, tcu |
 | `CNL_REPORT` | `info` | {product} CNL cancel report — research T1 | taf | cnl, taf, t1 |
-| `COR_PRESENT` | `info` | {product} COR modifier present — research R8 / T1 | — | modifier, metar, speci, taf, r8, t1 |
+| `COR_PRESENT` | `info` | {product} COR modifier present — research R8 / T1 / C1 | — | modifier, metar, speci, taf, r8, t1, c1 |
 | `EMPTY_TAC` | `error` | TAC text is empty | — | parse_gate, body |
 | `FM_PRESENT` | `info` | {product} FM change group present — research T2 | taf | change, taf, t2, fm |
 | `INVALID_CLOUD_TOKEN` | `error` | {product} invalid cloud/VV token {token!r} — A3-2 #9 | — | cloud, metar, speci, r4 |
 | `INVALID_CNL_SHAPE` | `error` | TAF CNL must end the message — A5-1 #6 | taf | cnl, taf, t1 |
-| `INVALID_NIL` | `error` | {product} NIL must not include body groups — research R8 / T1 | — | nil, metar, speci, taf, r8, t1 |
+| `INVALID_NIL` | `error` | {product} NIL must not include body groups — research R8 / T1 / C1 | — | nil, metar, speci, taf, r8, t1, c1 |
 | `INVALID_PROB` | `error` | {product} invalid PROB (only 30|40; must not qualify BECMG/FM) — App 5 §1.4 / research T2 | taf | change, taf, t2, prob |
 | `INVALID_REMARK` | `error` | {product} malformed remark group {token!r} | — | remark, metar, speci, r5, iwxxm_us |
 | `INVALID_RVR` | `error` | {product} invalid RVR token {token!r} — research R8 | — | rvr, metar, speci, r8 |
@@ -44,10 +44,11 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_VISIBILITY` | `error` | {product} missing visibility or CAVOK — A3-2 #6 | — | visibility, metar, speci |
 | `MISSING_WIND` | `error` | {product} missing surface wind group — A3-2 #5 | — | wind, metar, speci |
 | `MULTIPLE_PHENOMENA` | `error` | {product} encodes multiple phenomenon families {hit} — A6 one-phenomenon gate | — | phenomenon, sigmet, airmet |
+| `MULTI_REPORT_BULLETIN` | `info` | {product} bulletin has multiple TAC reports — one IWXXM report per TAC (Guidance C1) | — | bulletin, metar, speci, taf, c1, one_report |
 | `NCD_PRESENT` | `info` | {product} NCD present — research S1 | — | cloud, metar, speci, s1, auto |
-| `NIL_REPORT` | `info` | {product} NIL report — research R8 / T1 | — | nil, metar, speci, taf, r8, t1 |
+| `NIL_REPORT` | `info` | {product} NIL report — research R8 / T1 / C1 | — | nil, metar, speci, taf, r8, t1, c1 |
 | `NOSIG_PRESENT` | `info` | {product} NOSIG trend present — research R8 | — | trend, metar, speci, r8 |
-| `NSC_PRESENT` | `info` | {product} NSC present — research T3 / S1 | — | cloud, metar, speci, taf, t3, s1 |
+| `NSC_PRESENT` | `info` | {product} NSC present — research T3 / S1 / C1 | — | cloud, metar, speci, taf, t3, s1, c1 |
 | `NSW_PRESENT` | `info` | {product} NSW present — research T3 / S1 | — | weather, metar, speci, taf, t3, s1 |
 | `ODD_FIELD_ORDER` | `warning` | {product} groups out of A3-2 order (CCCC → ddhhmmZ → wind) | — | order, station, time, metar, speci, r1 |
 | `PROB_PRESENT` | `info` | {product} PROB30/40 change group present — research T2 | taf | change, taf, t2, prob |

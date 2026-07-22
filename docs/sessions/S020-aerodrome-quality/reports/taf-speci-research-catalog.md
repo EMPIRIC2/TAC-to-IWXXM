@@ -160,8 +160,11 @@ From Guidance **All reports** + #735/#734 common table:
 | Missing / unknown / N/A | `xsi:nil` + correct `nilReason` — never fabricate |
 | Multi-report TAC bulletin | One IWXXM report object per TAC report |
 
-Lint applies where TAC surface tokens exist (AMD/COR/NIL); CRS / translation-failed /
-COLLECT packing may be convert-only with matrix note if lint N/A.
+Lint applies where TAC surface tokens exist (AMD/COR/NIL/NSC) plus multi-report
+bulletin awareness (`MULTI_REPORT_BULLETIN`). **Explicit convert-only (T4.2):** CRS
+(`srsName` / `srsDimension="2"` / `axisLabels`), `translationFailedTAC`, COLLECT /
+one-IWXXM-per-TAC packing, and WMO code-list URI emission — no TAC surface for lint;
+tracked on COVERAGE_MATRIX C1 row (not silent deferral).
 
 ---
 
@@ -177,7 +180,7 @@ Candidate codes (names illustrative — finalize in T1.2 / T3.2):
 | T3 | `TAF_TX_TN_BASE_ONLY`, `TAF_CAVOK`, `TAF_NSC`, `TAF_NSW`, `TAF_VV_OMIT` |
 | S1 deepen | Reuse / extend R8 + CAVOK/NSC/NCD/NOSIG/NSW/`//`/RVR/VRB codes with `speci` tag |
 | S2 | `PRODUCT_MISCLASSIFIED` (or harden existing auto-detect errors) |
-| C1 | Status / bulletin awareness codes where lintable |
+| C1 | Reuse `AMD_PRESENT` / `COR_PRESENT` / `NIL_REPORT` / `INVALID_NIL` / `NSC_PRESENT` (+ `c1` tag); `MULTI_REPORT_BULLETIN` for one-report awareness. **Convert-only (no registry codes):** CRS, `translationFailedTAC`, COLLECT packing, code-list URIs |
 
 Regenerate `ISSUE_CATALOG.md` (+ JSON) after registry edits; keep HTTP
 `GET /api/v1/lint-issue-catalog` wire unchanged (FE filters at M5).

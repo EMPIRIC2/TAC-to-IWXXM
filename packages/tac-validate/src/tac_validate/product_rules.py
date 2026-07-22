@@ -524,6 +524,32 @@ def _check_metar_speci_field_order(
     )
 
 
+def _report_segment_count(body: str) -> int:
+    """Count '='-delimited TAC report segments in a bulletin body."""
+    return sum(1 for part in body.split("=") if part.strip())
+
+
+def _check_c1_multi_report(tac: str, product: str) -> list[Issue]:
+    """
+    Emit MULTI_REPORT_BULLETIN when the input packs multiple TAC reports.
+
+    Guidance common / C1: one IWXXM report object per TAC report. CRS,
+    translationFailedTAC, and COLLECT packing remain convert-only (lint N/A).
+    """
+    start, end, body = _body_span(tac)
+    if _report_segment_count(body) < 2:
+        return []
+    return [
+        _issue(
+            "MULTI_REPORT_BULLETIN",
+            f"{product} bulletin has multiple TAC reports — one IWXXM report per TAC (Guidance C1)",
+            start=start,
+            end=end,
+            location="bulletin",
+        )
+    ]
+
+
 def _check_metar_speci(tac: str, product: str) -> list[Issue]:
     start, end, body = _body_span(tac)
     upper = body.upper()
@@ -531,6 +557,7 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
     core = upper[:-1] if upper.endswith("=") else upper
     tokens = core.replace("=", " ").split()
     issues: list[Issue] = []
+    issues.extend(_check_c1_multi_report(tac, product))
 
     cccc = _first_icao(tokens, _METAR_SPECI_SKIP)
     if cccc is None:
@@ -843,6 +870,7 @@ def _check_taf(tac: str) -> list[Issue]:
     tokens = core.replace("=", " ").split()
     issues: list[Issue] = []
     product = "TAF"
+    issues.extend(_check_c1_multi_report(tac, product))
 
     if _first_icao(tokens, _TAF_SKIP) is None:
         issues.append(

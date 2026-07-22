@@ -167,21 +167,21 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "COR_PRESENT",
         "info",
-        "{product} COR modifier present — research R8 / T1",
-        tags=("modifier", "metar", "speci", "taf", "r8", "t1"),
+        "{product} COR modifier present — research R8 / T1 / C1",
+        tags=("modifier", "metar", "speci", "taf", "r8", "t1", "c1"),
     ),
     _row(
         "AMD_PRESENT",
         "info",
-        "{product} AMD modifier present — research T1",
+        "{product} AMD modifier present — research T1 / C1",
         product="taf",
-        tags=("modifier", "taf", "t1"),
+        tags=("modifier", "taf", "t1", "c1"),
     ),
     _row(
         "NIL_REPORT",
         "info",
-        "{product} NIL report — research R8 / T1",
-        tags=("nil", "metar", "speci", "taf", "r8", "t1"),
+        "{product} NIL report — research R8 / T1 / C1",
+        tags=("nil", "metar", "speci", "taf", "r8", "t1", "c1"),
     ),
     _row(
         "CNL_REPORT",
@@ -193,8 +193,14 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "INVALID_NIL",
         "error",
-        "{product} NIL must not include body groups — research R8 / T1",
-        tags=("nil", "metar", "speci", "taf", "r8", "t1"),
+        "{product} NIL must not include body groups — research R8 / T1 / C1",
+        tags=("nil", "metar", "speci", "taf", "r8", "t1", "c1"),
+    ),
+    _row(
+        "MULTI_REPORT_BULLETIN",
+        "info",
+        "{product} bulletin has multiple TAC reports — one IWXXM report per TAC (Guidance C1)",
+        tags=("bulletin", "metar", "speci", "taf", "c1", "one_report"),
     ),
     _row(
         "NOSIG_PRESENT",
@@ -318,8 +324,8 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "NSC_PRESENT",
         "info",
-        "{product} NSC present — research T3 / S1",
-        tags=("cloud", "metar", "speci", "taf", "t3", "s1"),
+        "{product} NSC present — research T3 / S1 / C1",
+        tags=("cloud", "metar", "speci", "taf", "t3", "s1", "c1"),
     ),
     _row(
         "NCD_PRESENT",

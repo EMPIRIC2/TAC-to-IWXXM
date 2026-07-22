@@ -172,7 +172,7 @@ ADR-028 registry.
 | **S1** SPECI exceptional rules (shared METAR/SPECI) | Deepen pack + negatives | `iwxxm:SPECI` root | Existing + expand | ✅ lint deepen (M3 T3.1–T3.2); convert goldens open (S3) |
 | **S2** SPECI↔METAR mis-classification | Product hint / Auto-detect | Per-report identity | TC-F20-006 | ✅ guards (MISSING_PRODUCT_KEYWORD + convert mismatch; TC-F20-006) |
 | **S3** SPECI golden convert + SCH | — | Expand annex3 / iwxxm_us | M-xsd / M-sch | 🔲 F20 |
-| **C1** Common rules (reportStatus, nilReasons, CRS, one-report) | Where lint applies | Guidance common table | Round-trip | 🔲 F20 |
+| **C1** Common rules (reportStatus, nilReasons, CRS, one-report) | ✅ where TAC tokens (AMD/COR/NIL/NSC + `MULTI_REPORT_BULLETIN`); **convert-only** (lint N/A): 2-D CRS (`srsName`/`srsDimension`/`axisLabels`), `translationFailedTAC`, COLLECT packing, code-list URIs — no TAC surface; catalog §C1 | Guidance common table | Round-trip | ✅ lint (T4.2); convert CRS deepen open |
 
 Deferral of any HARD theme requires AskQuestion + matrix note (E15-5).
 
