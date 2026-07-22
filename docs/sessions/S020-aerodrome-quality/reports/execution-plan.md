@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — SPECI S1–S3 |
-| **Active task** | T3.4 (pending) |
-| **Tasks** | 14 / 28 completed (through T3.3) |
+| **Active task** | T3.5 (pending) |
+| **Tasks** | 15 / 28 completed (through T3.4) |
 | **Last updated** | 2026-07-22 |
 
 ## Tech Stack Summary
@@ -81,7 +81,7 @@
 | T3.1 | Test | SPECI accept/negative deepen (S1); registry codes | TC-F20-004; #734 | T2.3 | completed |
 | T3.2 | Code | SPECI rule deepen via registry | F12; F20 | T3.1 | completed |
 | T3.3 | Test | Mis-classification guards SPECI↔METAR (S2) | TC-F20-006 | T3.2 | completed |
-| T3.4 | Code | Auto-detect / product-hint fixes if any fail | F20 | T3.3 | pending |
+| T3.4 | Code | Auto-detect / product-hint fixes if any fail | F20 | T3.3 | completed |
 | T3.5 | Test | Expand SPECI goldens annex3/iwxxm_us (S3); root `iwxxm:SPECI` | TC-F20-003 | T3.4 | pending |
 | T3.6 | Code | Convert fidelity for new SPECI goldens | F6.b | T3.5 | pending |
 
