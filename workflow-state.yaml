@@ -16,7 +16,7 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-015
   artifacts_dir: docs/sessions/S020-aerodrome-quality/
-  current_stage: 07-build
+  current_stage: 13-deploy-smoke
   started_at: '2026-07-22'
   context_briefs:
     - docs/context/aerodrome-quality.md
@@ -45,8 +45,9 @@ active_session:
     - docs/sessions/S020-aerodrome-quality/reports/verification-report.md
     - docs/sessions/S020-aerodrome-quality/reports/qa-report.md
     - docs/sessions/S020-aerodrome-quality/reports/e2e-report.md
+    - docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
     - docs/decisions/tech-decisions.md
-  note: "Phase C/D — T5.5 COMPLETE — 09-qa pass_with_advisories (H4–H5→13) + 10-e2e T0 PASS (162 pytest + 10 Vitest); M5 active; progress 26/28; active_task T5.6 pending; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending."
+  note: "Phase C/D — T5.6 COMPLETE (D-S020-EV015-11-A): 11-verify-impl PASS (verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); M5 active; progress 27/28; active_task T5.7 pending; tip still 766606b (T5.6 commit pending); gates.c_to_d remains pending until T5.7 / Phase C close."
   routing_plan:
     - stage: 00-context
       required: true
@@ -66,9 +67,7 @@ active_session:
       started: '2026-07-22'
       completed:
       note: >-
-        EV-015 orchestrator; routing approved Lean+build; cycle open; Phase A PASSED;
-        04-tech-plan completed; Phase B PASSED (D-S020-EV015-phase-b-pass); 07 in_progress
-        (T5.5 COMPLETE; 09+10 completed; T5.6 pending; progress 26/28; tip ca79381 T5.5 commit pending)
+        EV-015 orchestrator; routing approved Lean+build; cycle open; Phase A PASSED; 04-tech-plan completed; Phase B PASSED (D-S020-EV015-phase-b-pass); 07 in_progress / 11 completed (T5.6 PASS D-S020-EV015-11-A; T5.7 pending; progress 27/28; tip 766606b T5.6 commit pending)
     - stage: 01-requirements
       required: true
       mode: delta
@@ -106,7 +105,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-22'
-      note: "T5.5 COMPLETE — 09+10 done; active_task T5.6 pending (11-verify-impl); M5 active; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending"
+      note: "T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS; F20+F6/F12 deepen approved_live_deferred (H4–H5→T5.7); M5 active; progress 27/28; active_task T5.7 pending; tip still 766606b (T5.6 commit pending); gates.c_to_d remains pending"
     - stage: 08-verify-build
       required: true
       mode: full
@@ -135,8 +134,11 @@ active_session:
     - stage: 11-verify-impl
       required: true
       mode: full
-      status: pending
+      status: completed
       skip_rationale:
+      started: '2026-07-22'
+      completed: '2026-07-22'
+      note: "T5.6 COMPLETE — verify-impl.md PASS D-S020-EV015-11-A; F20+F6/F12 deepen approved_live_deferred (H4–H5 deferred to T5.7); progress 27/28; tip still 766606b (T5.6 commit pending)"
     - stage: 13-deploy-smoke
       required: true
       mode: full
@@ -2736,14 +2738,14 @@ stages:
         started_at: '2026-07-22'
         started: '2026-07-22'
         mode: full
-        note: "T5.5 COMPLETE — 09+10 done (qa pass_with_advisories; e2e T0 PASS); active_task T5.6 pending; M5 active; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending"
+        note: "T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS; F20+F6/F12 deepen approved_live_deferred (H4–H5→T5.7); M5 active; progress 27/28; active_task T5.7 pending; tip still 766606b (T5.6 commit pending); gates.c_to_d remains pending"
         active_milestone: M5
-        active_task: T5.6
+        active_task: T5.7
         active_task_status: pending
-        decision_id: D-S020-EV015-phase-b-pass
+        decision_id: D-S020-EV015-11-A
         branch: evolve/EV-015-aerodrome-quality
-        progress: "26/28"
-        report: docs/sessions/S020-aerodrome-quality/reports/qa-report.md
+        progress: "27/28"
+        report: docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
       - id: S019-dissemination-upload
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
@@ -2812,6 +2814,9 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); active_task T5.7 pending; progress 27/28; tip still 766606b (T5.6 commit pending — not yet recorded in git_history); gates.c_to_d remains pending until T5.7 / Phase C close.
+      - 2026-07-22 S020/EV-015 T5.6 STARTED — 11-verify-impl draft written (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md) awaiting user sign-off; AskQuestion for F20 (recommend approve with H4–H5 deferred to T5.7); active_task T5.6 in_progress; progress 26/28 until approve; tip 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); T5.5 commit recorded; gates.c_to_d remains pending.
+      - 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test: 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 COMPLETE — 09-qa pass_with_advisories (H4–H5→13) + 10-e2e T0 PASS (162 pytest + 10 Vitest); reports qa-report.md + e2e-report.md; next T5.6 11-verify-impl pending; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 STARTED — 09-qa + 10-e2e (UJ-031 / TC-F20-001..006) in parallel; active_task T5.5 in_progress; M5 and 07-build remain active; progress 25/28 until T5.5 completes; tip ca79381; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.4 COMPLETE @ ca79381 — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; tip ca79381; gates.c_to_d remains pending.
@@ -2980,14 +2985,14 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-22'
-      note: "T5.5 COMPLETE — 09+10 done; active_task T5.6 pending (11-verify-impl); M5 active; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending"
+      note: "T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS; F20+F6/F12 deepen approved_live_deferred (H4–H5→T5.7); M5 active; progress 27/28; active_task T5.7 pending; tip still 766606b (T5.6 commit pending); gates.c_to_d remains pending"
       active_milestone: M5
-      active_task: T5.6
+      active_task: T5.7
       active_task_status: pending
-      decision_id: D-S020-EV015-phase-b-pass
+      decision_id: D-S020-EV015-11-A
       branch: evolve/EV-015-aerodrome-quality
-      progress: "26/28"
-      report: docs/sessions/S020-aerodrome-quality/reports/qa-report.md
+      progress: "27/28"
+      report: docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -3009,7 +3014,7 @@ stages:
         mode: full
         overall: pass_with_advisories
         report: docs/sessions/S020-aerodrome-quality/reports/qa-report.md
-        note: "T5.5 COMPLETE — pass_with_advisories (H4–H5→13); qa-report.md; progress 26/28; tip ca79381 (T5.5 commit pending)"
+        note: "T5.5 COMPLETE — pass_with_advisories (H4–H5→13); qa-report.md; progress 26/28; tip 766606b (T5.5 tip recorded)"
         active_milestone: M5
         active_task: T5.5
         active_task_status: completed
@@ -3076,7 +3081,7 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/qa-report.md
         note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted"
     notes:
-      - 2026-07-22 S020/EV-015 09-qa COMPLETE — pass_with_advisories (H4–H5→13); qa-report.md; T5.5 done; progress 26/28; tip ca79381 (T5.5 commit pending)
+      - 2026-07-22 S020/EV-015 09-qa COMPLETE — pass_with_advisories (H4–H5→13); qa-report.md; T5.5 done; progress 26/28; tip 766606b
       - 2026-07-22 S020/EV-015 09-qa STARTED (T5.5; parallel with 10-e2e; UJ-031 / TC-F20-001..006); progress 25/28
       - 2026-07-21 S019/EV-014 09-qa COMPLETE — qa-report.md PASS (advisories)
       - 2026-07-20 S015/EV-011 09-qa completed — PASS — qa-report.md
@@ -3122,6 +3127,29 @@ stages:
         status: completed
     report: docs/sessions/S003-supabase-keys-config/reports/verify-impl.md
     delta_substages:
+      - id: S020-aerodrome-quality
+        session_id: S020-aerodrome-quality
+        evolve_cycle_id: EV-015
+        skill_id: 11-verify-impl
+        status: completed
+        started_at: '2026-07-22'
+        started: '2026-07-22'
+        completed_at: '2026-07-22'
+        completed: '2026-07-22'
+        mode: full
+        overall: pass
+        note: "T5.6 COMPLETE — verify-impl.md PASS D-S020-EV015-11-A; F20+F6/F12 deepen approved_live_deferred (H4–H5 deferred to T5.7); progress 27/28; tip still 766606b (T5.6 commit pending)"
+        active_milestone: M5
+        active_task: T5.6
+        active_task_status: completed
+        decision_id: D-S020-EV015-11-A
+        branch: evolve/EV-015-aerodrome-quality
+        progress: "27/28"
+        report: docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
+        feature_signoffs:
+          F20: approved_live_deferred
+          F6: approved_live_deferred
+          F12: approved_live_deferred
       - id: S019-dissemination-upload
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
@@ -3183,6 +3211,8 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
         note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5"
     notes:
+      - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); active_task T5.7 pending; progress 27/28; tip still 766606b (T5.6 commit pending — not yet recorded in git_history); gates.c_to_d remains pending until T5.7 / Phase C close.
+      - 2026-07-22 S020/EV-015 11-verify-impl COMPLETE — verify-impl.md PASS D-S020-EV015-11-A; F20 approved_live_deferred; next T5.7
       - >-
         2026-07-21 S019/EV-014 closeout hygiene — 11-verify-impl remains completed (EV-014 done;
         PR #774 merged 915f41e; issues #729/#2/#6 closed); no reopen
@@ -3233,7 +3263,7 @@ stages:
         mode: full
         overall: pass
         report: docs/sessions/S020-aerodrome-quality/reports/e2e-report.md
-        note: "T5.5 COMPLETE — T0 PASS; 162 pytest + 10 Vitest; e2e-report.md; progress 26/28; tip ca79381 (T5.5 commit pending)"
+        note: "T5.5 COMPLETE — T0 PASS; 162 pytest + 10 Vitest; e2e-report.md; progress 26/28; tip 766606b (T5.5 tip recorded)"
         active_milestone: M5
         active_task: T5.5
         active_task_status: completed
@@ -3303,7 +3333,7 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
         note: "T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk"
     notes:
-      - 2026-07-22 S020/EV-015 10-e2e COMPLETE — T0 PASS; 162 pytest + 10 Vitest; e2e-report.md; T5.5 done; progress 26/28; tip ca79381 (T5.5 commit pending)
+      - 2026-07-22 S020/EV-015 10-e2e COMPLETE — T0 PASS; 162 pytest + 10 Vitest; e2e-report.md; T5.5 done; progress 26/28; tip 766606b
       - 2026-07-22 S020/EV-015 10-e2e STARTED (T5.5; parallel with 09-qa; UJ-031 / TC-F20-001..006); progress 25/28
       - 2026-07-21 S019/EV-014 10-e2e COMPLETE — e2e-report.md UJ-027–030 + mock BYOC
       - 2026-07-20 S016/EV-012 10-e2e completed — PASS TC-F7-007 T1-T6 + Vitest; e2e-report.md; next 13-deploy-smoke (pending)
@@ -3710,9 +3740,12 @@ stages:
     evolve_cycle_id: EV-015
     started_at: '2026-07-22'
     completed_at:
-    current_stage: 07-build
-    note: "EV-015 open; T5.5 COMPLETE — 09+10 done; T5.6 pending (11-verify-impl); 07-build M5 remain active; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending."
+    current_stage: 13-deploy-smoke
+    note: "EV-015 open; T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS; F20 approved_live_deferred (H4–H5→T5.7); current_stage 13-deploy-smoke; M5 progress 27/28; active_task T5.7 pending; tip still 766606b (T5.6 commit pending); gates.c_to_d remains pending."
     notes:
+      - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); active_task T5.7 pending; progress 27/28; tip still 766606b (T5.6 commit pending — not yet recorded in git_history); gates.c_to_d remains pending until T5.7 / Phase C close.
+      - 2026-07-22 S020/EV-015 T5.6 STARTED — 11-verify-impl draft written (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md) awaiting user sign-off; AskQuestion for F20 (recommend approve with H4–H5 deferred to T5.7); active_task T5.6 in_progress; progress 26/28 until approve; tip 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); T5.5 commit recorded; gates.c_to_d remains pending.
+      - 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test: 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 COMPLETE — 09-qa pass_with_advisories (H4–H5→13) + 10-e2e T0 PASS (162 pytest + 10 Vitest); next T5.6 11-verify-impl pending; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 STARTED — 09-qa + 10-e2e (UJ-031 / TC-F20-001..006) in parallel; active_task T5.5 in_progress; M5 and 07-build remain active; progress 25/28 until T5.5 completes; tip ca79381; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.4 COMPLETE @ ca79381 — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; tip ca79381; gates.c_to_d remains pending.
@@ -3980,6 +4013,48 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: D-S020-EV015-11-A
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: confirmed
+    resolved_at: '2026-07-22'
+    topic: 11-verify-impl F20 + F6/F12 deepen sign-off
+    summary: >-
+      Approve option A — 11-verify-impl PASS; live H4–H5 deferred to T5.7
+    decision: >-
+      User approved D-S020-EV015-11-A (option A, 2026-07-22): 11-verify-impl PASS;
+      approve F20 + F6/F12 deepen for merge-ready review; live H4–H5 / UJ-031 browser
+      proof deferred to T5.7 (13-deploy-smoke). feature_signoffs.F20=approved_live_deferred
+      (F6/F12 deepen same posture). T5.6 completed; progress 27/28; active_task T5.7 pending;
+      tip still 766606b (T5.6 commit pending); gates.c_to_d remains pending until T5.7 /
+      Phase C close.
+  - id: N-S020-EV015-T56-start
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 11-verify-impl
+    skill: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: noted
+    decision: >-
+      2026-07-22 S020/EV-015 T5.6 STARTED — 11-verify-impl draft written (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md) awaiting user sign-off; AskQuestion for F20 (recommend approve with H4–H5 deferred to T5.7); active_task T5.6 in_progress; progress 26/28 until approve; tip 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); T5.5 commit recorded; gates.c_to_d remains pending.
+  - id: N-S020-EV015-T55-tip
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 09-qa
+    skill: 09-qa / 10-e2e
+    skill_id: 09-qa
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: noted
+    decision: >-
+      2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test: 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
   - id: N-S020-EV015-T55-done
     date: '2026-07-22'
     timestamp: '2026-07-22'
@@ -3993,9 +4068,9 @@ decisions_log:
       2026-07-22 S020/EV-015 T5.5 COMPLETE — 09-qa pass_with_advisories (H4–H5→13;
       qa-report.md) + 10-e2e T0 PASS (162 pytest + 10 Vitest; e2e-report.md);
       stages.09-qa and stages.10-e2e S020 deltas completed; routing_plan 09+10
-      completed; active_milestone M5; active_task T5.6 pending (11-verify-impl);
-      progress 26/28; tip remains ca79381 (T5.5 commit pending — tip sha not yet);
-      current_stage 07-build; cycle remains in_progress; gates.c_to_d remains pending
+      completed; active_milestone M5; active_task T5.6 in_progress (11-verify-impl);
+      progress 26/28; tip now 766606b (T5.5 tip recorded); T5.6 awaiting F20 sign-off;
+      current_stage 11-verify-impl; cycle remains in_progress; gates.c_to_d remains pending
       (Phase C not fully closed until M5 done). Progress note.
   - id: N-S020-EV015-T54-tip
     date: '2026-07-22'
@@ -7620,6 +7695,22 @@ decisions_log:
     status: confirmed
 
 artifacts:
+  - path: docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
+    type: session-report
+    kind: verify-impl
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    created_at: "2026-07-22"
+    updated_at: "2026-07-22"
+    status: completed
+    overall: pass
+    decision_id: D-S020-EV015-11-A
+    note: >-
+      T5.6 COMPLETE — PASS D-S020-EV015-11-A; F20+F6/F12 deepen
+      approved_live_deferred (H4–H5→T5.7); progress 27/28; tip still 766606b
+      (T5.6 commit pending)
   - path: docs/sessions/S020-aerodrome-quality/reports/qa-report.md
     type: session-report
     kind: qa-report
@@ -7631,8 +7722,8 @@ artifacts:
     updated_at: "2026-07-22"
     status: completed
     note: >-
-      T5.5 COMPLETE — pass_with_advisories (H4–H5→13); next T5.6 11-verify-impl;
-      tip ca79381 (T5.5 commit pending)
+      T5.5 COMPLETE — pass_with_advisories (H4–H5→13); tip 766606b recorded;
+      T5.6 COMPLETE (D-S020-EV015-11-A) — next T5.7
   - path: docs/sessions/S020-aerodrome-quality/reports/e2e-report.md
     type: session-report
     kind: e2e-report
@@ -7644,8 +7735,8 @@ artifacts:
     updated_at: "2026-07-22"
     status: completed
     note: >-
-      T5.5 COMPLETE — T0 PASS; 162 pytest + 10 Vitest; next T5.6 11-verify-impl;
-      tip ca79381 (T5.5 commit pending)
+      T5.5 COMPLETE — T0 PASS; 162 pytest + 10 Vitest; tip 766606b recorded;
+      T5.6 COMPLETE (D-S020-EV015-11-A) — next T5.7
   - path: docs/sessions/S020-aerodrome-quality/reports/t51-vitest-catalog-taf-tags.md
     type: session-report
     kind: t51-vitest-catalog-taf-tags
@@ -9361,13 +9452,13 @@ evolve_cycles:
         skip 03/05/06/12 unless later needed. Recommend Standard-like A/B/C/D
         checkpoints (parent uses after phases); Phase A / a_to_b passed 2026-07-22;
         Phase B / b_to_c passed 2026-07-22 (D-S020-EV015-phase-b-pass).
-    current_stage: 07-build
+    current_stage: 13-deploy-smoke
     active_milestone: M5
-    active_task: T5.6
+    active_task: T5.7
     active_task_status: pending
-    progress: "26/28 tasks"
+    progress: "27/28 tasks"
     branch: evolve/EV-015-aerodrome-quality
-    note: "Phase C/D — T5.5 COMPLETE — 09+10 done; T5.6 pending (11-verify-impl); M5 active; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending."
+    note: "Phase C/D — T5.6 COMPLETE (D-S020-EV015-11-A): 11-verify-impl PASS (verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); M5 active; progress 27/28; active_task T5.7 pending; tip still 766606b (T5.6 commit pending); gates.c_to_d remains pending until T5.7 / Phase C close."
     decision_refs:
       - E15-1
       - E15-2
@@ -9394,7 +9485,11 @@ evolve_cycles:
       - E15-19
       - D-S020-EV015-plan-1
       - D-S020-EV015-phase-b-pass
+      - D-S020-EV015-11-A
     notes:
+      - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); active_task T5.7 pending; progress 27/28; tip still 766606b (T5.6 commit pending — not yet recorded in git_history); gates.c_to_d remains pending until T5.7 / Phase C close.
+      - 2026-07-22 S020/EV-015 T5.6 STARTED — 11-verify-impl draft written (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md) awaiting user sign-off; AskQuestion for F20 (recommend approve with H4–H5 deferred to T5.7); active_task T5.6 in_progress; progress 26/28 until approve; tip 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); T5.5 commit recorded; gates.c_to_d remains pending.
+      - 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test: 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 COMPLETE — 09-qa pass_with_advisories (H4–H5→13) + 10-e2e T0 PASS (162 pytest + 10 Vitest); next T5.6 11-verify-impl pending; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 STARTED — 09-qa + 10-e2e (UJ-031 / TC-F20-001..006) in parallel; active_task T5.5 in_progress; M5 and 07-build remain active; progress 25/28 until T5.5 completes; tip ca79381; gates.c_to_d remains pending.
       - 2026-07-22 T5.4 COMPLETE @ ca79381 — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; tip ca79381; gates.c_to_d remains pending.
@@ -9464,7 +9559,7 @@ evolve_cycles:
         status: in_progress
         started: '2026-07-22'
         completed:
-        note: "Orchestrator open; T5.5 COMPLETE — 09+10 done; T5.6 pending; M5/07 remain active; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d pending."
+        note: "Orchestrator open; T5.6 COMPLETE (D-S020-EV015-11-A) — 11 PASS; T5.7 pending (13-deploy-smoke); progress 27/28; tip 766606b (T5.6 commit pending); gates.c_to_d pending."
       01-requirements:
         status: completed
         mode: delta
@@ -9493,16 +9588,16 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-22'
-        active_task: T5.6
+        active_task: T5.7
         active_task_status: pending
-        note: "T5.5 COMPLETE — 09+10 done; active_task T5.6 pending (11-verify-impl); M5 active; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending"
+        note: "T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS; F20+F6/F12 deepen approved_live_deferred (H4–H5→T5.7); M5 active; progress 27/28; active_task T5.7 pending; tip still 766606b (T5.6 commit pending); gates.c_to_d remains pending"
       08-verify-build:
         status: completed
         mode: full
         started: '2026-07-22'
         completed: '2026-07-22'
         report: docs/sessions/S020-aerodrome-quality/reports/verification-report.md
-        note: "T5.4 COMPLETE @ ca79381 — Overall PASS; report verification-report.md; T5.5 COMPLETE; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending"
+        note: "T5.4 COMPLETE @ ca79381 — Overall PASS; T5.5 COMPLETE @ 766606b; progress 26/28; tip 766606b; gates.c_to_d remains pending"
       09-qa:
         status: completed
         mode: full
@@ -9520,8 +9615,20 @@ evolve_cycles:
         report: docs/sessions/S020-aerodrome-quality/reports/e2e-report.md
         note: "T5.5 COMPLETE — T0 PASS; 162 pytest + 10 Vitest; e2e-report.md; progress 26/28"
       11-verify-impl:
-        status: pending
+        status: completed
         mode: full
+        started: '2026-07-22'
+        completed: '2026-07-22'
+        active_task: T5.6
+        active_task_status: completed
+        overall: pass
+        decision_id: D-S020-EV015-11-A
+        report: docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
+        note: "T5.6 COMPLETE — verify-impl.md PASS D-S020-EV015-11-A; F20+F6/F12 deepen approved_live_deferred (H4–H5 deferred to T5.7); progress 27/28; tip still 766606b (T5.6 commit pending)"
+        feature_signoffs:
+          F20: approved_live_deferred
+          F6: approved_live_deferred
+          F12: approved_live_deferred
       13-deploy-smoke:
         status: pending
         mode: full
@@ -9539,6 +9646,9 @@ evolve_cycles:
         04-exit consistency PASS; 05/06 skipped; Phase B approved → 07-build @ T0.1
       b_to_c_passed_at: '2026-07-22'
       b_to_c_decision_id: D-S020-EV015-phase-b-pass
+      c_to_d_note: >-
+        PENDING until T5.7 / Phase C close — 11-verify-impl PASS (D-S020-EV015-11-A);
+        live H4–H5 still at T5.7; M5 27/28
     checkpoints:
       phase_a: passed
       phase_b: passed
@@ -9548,15 +9658,18 @@ evolve_cycles:
     adrs:
       - docs/adr/ADR-028-metar-lint-issue-registry.md
     artifacts:
+      - path: docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
+        status: completed
+        note: T5.6 COMPLETE — PASS D-S020-EV015-11-A; F20 approved_live_deferred; tip 766606b (T5.6 commit pending)
       - path: docs/sessions/S020-aerodrome-quality/reports/qa-report.md
         status: present
-        note: T5.5 COMPLETE — pass_with_advisories (H4–H5→13); tip ca79381 (T5.5 commit pending)
+        note: T5.5 COMPLETE — pass_with_advisories (H4–H5→13); tip 766606b
       - path: docs/sessions/S020-aerodrome-quality/reports/e2e-report.md
         status: present
-        note: T5.5 COMPLETE — T0 PASS; 162 pytest + 10 Vitest; tip ca79381 (T5.5 commit pending)
+        note: T5.5 COMPLETE — T0 PASS; 162 pytest + 10 Vitest; tip 766606b
       - path: docs/sessions/S020-aerodrome-quality/reports/verification-report.md
         status: present
-        note: T5.4 COMPLETE @ ca79381 — 08-verify-build PASS; T5.5 COMPLETE; tip ca79381 (T5.5 commit pending)
+        note: T5.4 COMPLETE @ ca79381 — 08-verify-build PASS; T5.5 COMPLETE @ 766606b; tip 766606b
       - path: docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md
         status: present
         note: T5.3 COMPLETE — API smoke taf+speci (TC-F20-005); next T5.4
@@ -12503,14 +12616,17 @@ evolve_cycles:
 
 git_history:
   current_branch: evolve/EV-015-aerodrome-quality
-  ahead_of_origin: 35
+  ahead_of_origin: 36
   pushed: false
   pending_commit:
-  tip_sha: ca79381
-  tip_sha_full: ca79381c7f2bc4c063199f4bf87b0c0523f91f47
+  tip_sha: 766606b
+  tip_sha_full: 766606bad6f74d481c5215952ccb91e34bb9bb8d
   note: >-
-    S020/EV-015 T5.5 COMPLETE — 09+10 done; progress 26/28; tip remains ca79381 (T5.5 commit pending — tip sha not yet); next T5.6 11-verify-impl; gates.c_to_d remains pending. Branch evolve/EV-015-aerodrome-quality active / base main.
+    S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS; F20 approved_live_deferred (H4–H5→T5.7); progress 27/28; active_task T5.7 pending; tip still 766606b (T5.6 commit pending). Branch evolve/EV-015-aerodrome-quality active / base main.
   notes:
+    - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS; F20+F6/F12 deepen approved_live_deferred; progress 27/28; tip still 766606b (T5.6 commit pending); gates.c_to_d remains pending until T5.7 / Phase C close.
+    - 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test: 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
+    - 2026-07-22 S020/EV-015 T5.6 STARTED — 11-verify-impl draft written (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md) awaiting user sign-off; AskQuestion for F20 (recommend approve with H4–H5 deferred to T5.7); active_task T5.6 in_progress; progress 26/28 until approve; tip 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); T5.5 commit recorded; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.5 COMPLETE — 09-qa pass_with_advisories + 10-e2e T0 PASS; tip remains ca79381 (T5.5 commit pending); next T5.6 pending; progress 26/28; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.4 COMPLETE @ ca79381 — 08-verify-build PASS for M5; tip ca79381 (ca79381c7f2bc4c063199f4bf87b0c0523f91f47); next T5.5 pending; progress 25/28; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; progress 24/28; gates.c_to_d remains pending.
@@ -12773,11 +12889,11 @@ git_history:
       created_at: '2026-07-22'
       renamed_from: evolve/EV-015-taf-quality
       renamed_at: '2026-07-22'
-      tip_sha: ca79381
-      tip_sha_full: ca79381c7f2bc4c063199f4bf87b0c0523f91f47
+      tip_sha: 766606b
+      tip_sha_full: 766606bad6f74d481c5215952ccb91e34bb9bb8d
       pushed: true
       note: >-
-        Active (base main). Renamed from evolve/EV-015-taf-quality (D-S020-EV015-s1m2-2). T5.4 COMPLETE @ ca79381 (08-verify-build PASS); next T5.5 pending; progress 25/28; gates.c_to_d pending; Lean+build D-S020-EV015-route-1.
+        Active (base main). T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS; T5.7 pending; progress 27/28; tip still 766606b (T5.6 commit pending); gates.c_to_d pending; Lean+build D-S020-EV015-route-1.
     - name: cursor/s019-ev014-closeout-hygiene-f898
       base: main
       status: open
@@ -13441,6 +13557,21 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 766606bad6f74d481c5215952ccb91e34bb9bb8d
+      short: 766606b
+      branch: evolve/EV-015-aerodrome-quality
+      message: "[T5.5] test: 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"
+      stage: 09-qa
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      files_changed:
+        - docs/sessions/S020-aerodrome-quality/reports/e2e-report.md
+        - docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
+        - docs/sessions/S020-aerodrome-quality/reports/qa-report.md
+        - workflow-state.yaml
+      timestamp: '2026-07-22T22:59:32Z'
+      date: '2026-07-22'
+      note: T5.5 COMPLETE — 09-qa + 10-e2e (UJ-031 / TC-F20-001..006 T0 PASS); next T5.6 11-verify-impl; progress 26/28
     - sha: ca79381c7f2bc4c063199f4bf87b0c0523f91f47
       short: ca79381
       branch: evolve/EV-015-aerodrome-quality
