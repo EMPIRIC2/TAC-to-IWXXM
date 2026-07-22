@@ -39,12 +39,96 @@ def emit_taf_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ns = _ns(iwxxm_version)
     station = str(ir["station"])
     issue = _taf_issue_stamp(ir)
-    begin, end = _taf_period(ir)
     gml_id = f"taf.basic.{station.lower()}"
+    if ir.get("nil"):
+        gml_id = f"taf.nil.{station.lower()}"
+    elif ir.get("cancel"):
+        gml_id = f"taf.cnl.{station.lower()}"
+
+    if ir.get("correction"):
+        status = "CORRECTION"
+    elif ir.get("amendment"):
+        status = "AMENDMENT"
+    else:
+        status = "NORMAL"
+
+    # CNL — Guidance: isCancelReport + cancelledReportValidPeriod; omit valid/base/change.
+    if ir.get("cancel"):
+        begin, end = _taf_period(ir)
+        return f"""<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:TAF xmlns:iwxxm="{ns}"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="{gml_id}"
+    reportStatus="{status}"
+    permissibleUsage="OPERATIONAL"
+    isCancelReport="true">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>{issue}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.{station.lower()}">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.{station.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>{escape(station)}</aixm:designator>
+          <aixm:locationIndicatorICAO>{escape(station)}</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+  <iwxxm:cancelledReportValidPeriod>
+    <gml:TimePeriod gml:id="t.cancelled">
+      <gml:beginPosition>{begin}</gml:beginPosition>
+      <gml:endPosition>{end}</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:cancelledReportValidPeriod>
+</iwxxm:TAF>
+"""
+
+    # NIL without validity — empty baseForecast; omit validPeriod when unknown.
+    if ir.get("nil") and "valid_from_day" not in ir:
+        return f"""<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:TAF xmlns:iwxxm="{ns}"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="{gml_id}"
+    reportStatus="{status}"
+    permissibleUsage="OPERATIONAL">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>{issue}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.{station.lower()}">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.{station.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>{escape(station)}</aixm:designator>
+          <aixm:locationIndicatorICAO>{escape(station)}</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+  <iwxxm:baseForecast nilReason="http://codes.wmo.int/common/nil/missing"/>
+</iwxxm:TAF>
+"""
+
+    begin, end = _taf_period(ir)
 
     if ir.get("nil"):
         base_fcst = '  <iwxxm:baseForecast nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
     else:
+        cavok = "true" if ir.get("cavok") else "false"
         wind = ""
         if ir.get("wind_variable"):
             wind = """      <iwxxm:surfaceWind>
@@ -68,12 +152,13 @@ def emit_taf_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
       </iwxxm:surfaceWind>
 """
         vis = ""
-        if ir.get("visibility_m") is not None:
-            vis = f'      <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>\n'
         cloud = ""
-        if ir.get("cloud_amount") and ir.get("cloud_base_ft") is not None:
-            href = _CLOUD_HREF.format(amt=ir["cloud_amount"])
-            cloud = f"""      <iwxxm:cloud>
+        if not ir.get("cavok"):
+            if ir.get("visibility_m") is not None:
+                vis = f'      <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>\n'
+            if ir.get("cloud_amount") and ir.get("cloud_base_ft") is not None:
+                href = _CLOUD_HREF.format(amt=ir["cloud_amount"])
+                cloud = f"""      <iwxxm:cloud>
         <iwxxm:AerodromeCloudForecast gml:id="cloud.base.{station.lower()}">
           <iwxxm:layer>
             <iwxxm:CloudLayer>
@@ -85,7 +170,7 @@ def emit_taf_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
       </iwxxm:cloud>
 """
         base_fcst = f"""  <iwxxm:baseForecast>
-    <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.{station.lower()}" cloudAndVisibilityOK="false">
+    <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.{station.lower()}" cloudAndVisibilityOK="{cavok}">
       <iwxxm:phenomenonTime xlink:href="#t.valid"/>
 {vis}{wind}{cloud}    </iwxxm:MeteorologicalAerodromeForecast>
   </iwxxm:baseForecast>
@@ -98,7 +183,7 @@ def emit_taf_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     gml:id="{gml_id}"
-    reportStatus="NORMAL"
+    reportStatus="{status}"
     permissibleUsage="OPERATIONAL">
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
