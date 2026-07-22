@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M1 — TAF lint themes T1–T3 (**complete**) |
-| **Active task** | T2.1 (pending — next: TAF goldens T4) |
-| **Tasks** | 8 / 28 completed (T0.1–T0.2, T1.1–T1.6) |
+| **Active milestone** | M3 — SPECI S1–S3 (next) |
+| **Active task** | T3.1 (pending) |
+| **Tasks** | 11 / 28 completed (through T2.3) |
 | **Last updated** | 2026-07-22 |
 
 ## Tech Stack Summary
@@ -70,9 +70,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | Expand annex3 (+ iwxxm_us) TAF golden manifests; M-xsd/M-sch stubs | TC-F20-002 | T1.6 | pending |
-| T2.2 | Code | Convert fidelity fixes for TAF exceptional rules; root `iwxxm:TAF` | F6.c; #735 | T2.1 | pending |
-| T2.3 | Docs | Mark matrix T1–T4 closed or AskQuestion-deferred | S1.M1 | T2.2 | pending |
+| T2.1 | Test | Expand annex3 (+ iwxxm_us) TAF golden manifests; M-xsd/M-sch stubs | TC-F20-002 | T1.6 | completed |
+| T2.2 | Code | Convert fidelity fixes for TAF exceptional rules; root `iwxxm:TAF` | F6.c; #735 | T2.1 | completed |
+| T2.3 | Docs | Mark matrix T1–T4 closed or AskQuestion-deferred | S1.M1 | T2.2 | completed |
 
 ### M3 — SPECI S1–S3 (F20 / F6.b / F12)
 
