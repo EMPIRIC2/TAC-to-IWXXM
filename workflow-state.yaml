@@ -47,7 +47,7 @@ active_session:
     - docs/sessions/S020-aerodrome-quality/reports/e2e-report.md
     - docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
     - docs/decisions/tech-decisions.md
-  note: "Phase C/D — T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip dc64b77 (T5.6 recorded); evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending"
+  note: "Phase C/D — T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip d604db7 (chore sync after T5.6/T5.7 start); PR-EV-015=#778 open (evolve → main); merge required before GHCR/Render redeploy; H1–H5 after merge; gates.c_to_d remains pending"
   routing_plan:
     - stage: 00-context
       required: true
@@ -67,7 +67,7 @@ active_session:
       started: '2026-07-22'
       completed:
       note: >-
-        EV-015 orchestrator; routing approved Lean+build; cycle open; Phase A PASSED; 04-tech-plan completed; Phase B PASSED (D-S020-EV015-phase-b-pass); 07 in_progress / 11 completed / 13 in_progress (T5.6 tip dc64b77; T5.7 in_progress 13-deploy-smoke; progress 27/28; evolve PR to open; merge before GHCR main-latest redeploy; H1–H5 after merge)
+        EV-015 orchestrator; routing approved Lean+build; cycle open; Phase A PASSED; 04-tech-plan completed; Phase B PASSED (D-S020-EV015-phase-b-pass); 07 in_progress / 11 completed / 13 in_progress (tip d604db7; T5.7 in_progress 13-deploy-smoke; progress 27/28; PR-EV-015=#778 open; merge before GHCR main-latest redeploy; H1–H5 after merge)
     - stage: 01-requirements
       required: true
       mode: delta
@@ -105,7 +105,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-22'
-      note: "T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip dc64b77 (T5.6 recorded); evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending"
+      note: "T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip d604db7 (chore sync after T5.6/T5.7 start); PR-EV-015=#778 open (evolve/EV-015-aerodrome-quality → main); merge required before GHCR main-latest image redeploy; H1–H5 after merge+redeploy; gates.c_to_d remains pending"
     - stage: 08-verify-build
       required: true
       mode: full
@@ -146,7 +146,7 @@ active_session:
       skip_rationale:
       started: '2026-07-22'
       completed:
-      note: "T5.7 in_progress — evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; tip dc64b77; progress 27/28"
+      note: "T5.7 in_progress — PR-EV-015=#778 open; merge required before GHCR main-latest image redeploy; H1–H5 after merge+redeploy; tip d604db7; progress 27/28; gates.c_to_d remains pending"
   routing_preset: Lean+build
   routing_provisional: false
   routing_decision_id: D-S020-EV015-route-1
@@ -2741,15 +2741,15 @@ stages:
         started_at: '2026-07-22'
         started: '2026-07-22'
         mode: full
-        note: "T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip dc64b77 (T5.6 recorded); evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending"
+        note: "T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip d604db7 (chore sync after T5.6/T5.7 start); PR-EV-015=#778 open (evolve/EV-015-aerodrome-quality → main); merge required before GHCR main-latest image redeploy; H1–H5 after merge+redeploy; gates.c_to_d remains pending"
         active_milestone: M5
         active_task: T5.7
         active_task_status: in_progress
         decision_id: D-S020-EV015-11-A
         branch: evolve/EV-015-aerodrome-quality
         progress: "27/28"
-        tip_sha: dc64b77
-        tip_sha_full: dc64b77d07913c582668239c537832be381efad1
+        tip_sha: d604db7
+        tip_sha_full: d604db73fde878e22a4a6a6a03e221dfb2d98859
         report: docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
       - id: S019-dissemination-upload
         session_id: S019-dissemination-upload
@@ -2819,10 +2819,12 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
-      - 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs: 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
+      - ? 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs
+        : 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); active_task T5.7 pending; progress 27/28; tip still 766606b (T5.6 commit pending — not yet recorded in git_history); gates.c_to_d remains pending until T5.7 / Phase C close.
       - 2026-07-22 S020/EV-015 T5.6 STARTED — 11-verify-impl draft written (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md) awaiting user sign-off; AskQuestion for F20 (recommend approve with H4–H5 deferred to T5.7); active_task T5.6 in_progress; progress 26/28 until approve; tip 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); T5.5 commit recorded; gates.c_to_d remains pending.
-      - 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test: 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
+      - ? 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test
+        : 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 COMPLETE — 09-qa pass_with_advisories (H4–H5→13) + 10-e2e T0 PASS (162 pytest + 10 Vitest); reports qa-report.md + e2e-report.md; next T5.6 11-verify-impl pending; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 STARTED — 09-qa + 10-e2e (UJ-031 / TC-F20-001..006) in parallel; active_task T5.5 in_progress; M5 and 07-build remain active; progress 25/28 until T5.5 completes; tip ca79381; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.4 COMPLETE @ ca79381 — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; tip ca79381; gates.c_to_d remains pending.
@@ -2833,8 +2835,7 @@ stages:
       - 2026-07-22 S020/EV-015 T5.2 STARTED — FE extend catalog panel filters/copy for TAF (E15-14; UJ-031); active_task T5.2 in_progress; M5 and 07-build remain active; progress 22/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE extend catalog panel filters/copy for TAF; progress 22/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.1 STARTED — Vitest catalog panel filters/copy for TAF tags (E15-14; TC-F20-005); active_task T5.1 in_progress; M5 and 07-build remain active.
-      - 2026-07-22 S020/EV-015 T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests);
-        tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags.
+      - 2026-07-22 S020/EV-015 T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags.
       - 2026-07-22 S020/EV-015 T4.4 STARTED — TC-F20-001 registry completeness; active_task T4.4 in_progress; M4 and 07-build remain active.
       - 2026-07-22 S020/EV-015 T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1 closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness.
       - 2026-07-22 S020/EV-015 T4.3 STARTED — COVERAGE_MATRIX F20 acc checklist + ISSUE_CATALOG regen (F20 acc4); tip acee58f; dep T4.2 complete
@@ -2991,15 +2992,15 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-22'
-      note: "T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip dc64b77 (T5.6 recorded); evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending"
+      note: "T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip d604db7 (chore sync after T5.6/T5.7 start); PR-EV-015=#778 open (evolve/EV-015-aerodrome-quality → main); merge required before GHCR main-latest image redeploy; H1–H5 after merge+redeploy; gates.c_to_d remains pending"
       active_milestone: M5
       active_task: T5.7
       active_task_status: in_progress
       decision_id: D-S020-EV015-11-A
       branch: evolve/EV-015-aerodrome-quality
       progress: "27/28"
-      tip_sha: dc64b77
-      tip_sha_full: dc64b77d07913c582668239c537832be381efad1
+      tip_sha: d604db7
+      tip_sha_full: d604db73fde878e22a4a6a6a03e221dfb2d98859
       report: docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
   09-qa:
     status: completed
@@ -3221,7 +3222,8 @@ stages:
         report: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
         note: "D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5"
     notes:
-      - 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs: 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
+      - ? 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs
+        : 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); active_task T5.7 pending; progress 27/28; tip still 766606b (T5.6 commit pending — not yet recorded in git_history); gates.c_to_d remains pending until T5.7 / Phase C close.
       - 2026-07-22 S020/EV-015 11-verify-impl COMPLETE — verify-impl.md PASS D-S020-EV015-11-A; F20 approved_live_deferred; next T5.7
       - >-
@@ -3601,14 +3603,14 @@ stages:
         started_at: '2026-07-22'
         started: '2026-07-22'
         mode: full
-        note: "T5.7 in_progress — evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; tip dc64b77; progress 27/28; gates.c_to_d remains pending"
+        note: "T5.7 in_progress — PR-EV-015=#778 open; merge required before GHCR main-latest image redeploy; H1–H5 after merge+redeploy; tip d604db7; progress 27/28; gates.c_to_d remains pending"
         active_milestone: M5
         active_task: T5.7
         active_task_status: in_progress
         branch: evolve/EV-015-aerodrome-quality
         progress: "27/28"
-        tip_sha: dc64b77
-        tip_sha_full: dc64b77d07913c582668239c537832be381efad1
+        tip_sha: d604db7
+        tip_sha_full: d604db73fde878e22a4a6a6a03e221dfb2d98859
       - id: S019-dissemination-upload
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
@@ -3693,7 +3695,8 @@ stages:
         report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
         hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
-      - 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs: 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
+      - ? 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs
+        : 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
       - 2026-07-21 S019/EV-014 13-deploy-smoke COMPLETE — T6.6 mock BYOC D-S019-EV014-Q15-mock-waive
       - >-
         2026-07-21 S019/EV-014 T6.6 COMPLETE via D-S019-EV014-Q15-mock-waive (mock .env + fixture shapes + transport mocks / optional Compose); progress 29/29; Phase C ready for checkpoint (gates.c_to_d=pending_checkpoint); session/cycle remain open. Tip cursor/s019-t66-deploy-smoke-151c.
@@ -3771,10 +3774,12 @@ stages:
     current_stage: 13-deploy-smoke
     note: "EV-015 open; T5.7 in_progress (13-deploy-smoke); T5.6 tip dc64b77 recorded; M5 progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending."
     notes:
-      - 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs: 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
+      - ? 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs
+        : 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); active_task T5.7 pending; progress 27/28; tip still 766606b (T5.6 commit pending — not yet recorded in git_history); gates.c_to_d remains pending until T5.7 / Phase C close.
       - 2026-07-22 S020/EV-015 T5.6 STARTED — 11-verify-impl draft written (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md) awaiting user sign-off; AskQuestion for F20 (recommend approve with H4–H5 deferred to T5.7); active_task T5.6 in_progress; progress 26/28 until approve; tip 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); T5.5 commit recorded; gates.c_to_d remains pending.
-      - 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test: 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
+      - ? 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test
+        : 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 COMPLETE — 09-qa pass_with_advisories (H4–H5→13) + 10-e2e T0 PASS (162 pytest + 10 Vitest); next T5.6 11-verify-impl pending; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 STARTED — 09-qa + 10-e2e (UJ-031 / TC-F20-001..006) in parallel; active_task T5.5 in_progress; M5 and 07-build remain active; progress 25/28 until T5.5 completes; tip ca79381; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.4 COMPLETE @ ca79381 — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; tip ca79381; gates.c_to_d remains pending.
@@ -4042,6 +4047,28 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: N-S020-EV015-T57-tip-d604db7
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 13-deploy-smoke
+    skill: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: noted
+    decision: '2026-07-22 S020/EV-015 tip recorded — tip/sha d604db7 (d604db73fde878e22a4a6a6a03e221dfb2d98859); message "chore(S020): sync workflow-state after M5 T5.6 / T5.7 start"; stage 13-deploy-smoke; appended git_history.commits; T5.7 still in_progress (awaiting merge + GHCR/Render redeploy for H1–H5); PR-EV-015 opened as #778 (evolve/EV-015-aerodrome-quality → main); merge required before T5.7 live smoke; progress 27/28; gates.c_to_d remains pending.'
+  - id: N-S020-EV015-PR778
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 13-deploy-smoke
+    skill: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: noted
+    related_prs:
+      - 778
+    decision: 'PR-EV-015 opened as #778; merge required before T5.7 live smoke (GHCR/Render redeploy for H1–H5). Tip d604db7 recorded. T5.7 remains in_progress; progress 27/28; gates.c_to_d pending.'
   - id: N-S020-EV015-T56-tip
     date: '2026-07-22'
     timestamp: '2026-07-22'
@@ -7834,8 +7861,7 @@ artifacts:
     updated_at: '2026-07-22'
     status: completed
     note: >-
-      Approved D-S020-EV015-plan-1 / E15-19=A — M0–M5 (28 TDD tasks); Batch2
-      E15-16..18 all A
+      Approved D-S020-EV015-plan-1 / E15-19=A — M0–M5 (28 TDD tasks); Batch2 E15-16..18 all A; PR-EV-015=#778 open (no PR Plan table in execution-plan — skipped table row)
   - path: docs/sessions/S020-aerodrome-quality/reports/04-tech-plan.md
     type: session-report
     kind: tech-plan
@@ -9498,9 +9524,9 @@ evolve_cycles:
     active_task_status: in_progress
     progress: "27/28 tasks"
     branch: evolve/EV-015-aerodrome-quality
-    tip_sha: dc64b77
-    tip_sha_full: dc64b77d07913c582668239c537832be381efad1
-    note: "Phase C/D — T5.7 in_progress (13-deploy-smoke); T5.6 tip dc64b77 recorded; progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending."
+    tip_sha: d604db7
+    tip_sha_full: d604db73fde878e22a4a6a6a03e221dfb2d98859
+    note: "Phase C/D — T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip d604db7 (chore sync after T5.6/T5.7 start); PR-EV-015=#778 open (evolve → main); merge required before GHCR/Render redeploy; H1–H5 after merge; gates.c_to_d remains pending"
     decision_refs:
       - E15-1
       - E15-2
@@ -9528,11 +9554,15 @@ evolve_cycles:
       - D-S020-EV015-plan-1
       - D-S020-EV015-phase-b-pass
       - D-S020-EV015-11-A
+      - N-S020-EV015-PR778
     notes:
-      - 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs: 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
+      - '2026-07-22 S020/EV-015 tip recorded — tip/sha d604db7 (d604db73fde878e22a4a6a6a03e221dfb2d98859); message "chore(S020): sync workflow-state after M5 T5.6 / T5.7 start"; stage 13-deploy-smoke; appended git_history.commits; T5.7 still in_progress (awaiting merge + GHCR/Render redeploy for H1–H5); PR-EV-015 opened as #778 (evolve/EV-015-aerodrome-quality → main); merge required before T5.7 live smoke; progress 27/28; gates.c_to_d remains pending.'
+      - ? 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs
+        : 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); active_task T5.7 pending; progress 27/28; tip still 766606b (T5.6 commit pending — not yet recorded in git_history); gates.c_to_d remains pending until T5.7 / Phase C close.
       - 2026-07-22 S020/EV-015 T5.6 STARTED — 11-verify-impl draft written (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md) awaiting user sign-off; AskQuestion for F20 (recommend approve with H4–H5 deferred to T5.7); active_task T5.6 in_progress; progress 26/28 until approve; tip 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); T5.5 commit recorded; gates.c_to_d remains pending.
-      - 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test: 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
+      - ? 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test
+        : 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 COMPLETE — 09-qa pass_with_advisories (H4–H5→13) + 10-e2e T0 PASS (162 pytest + 10 Vitest); next T5.6 11-verify-impl pending; progress 26/28; tip ca79381 (T5.5 commit pending); gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.5 STARTED — 09-qa + 10-e2e (UJ-031 / TC-F20-001..006) in parallel; active_task T5.5 in_progress; M5 and 07-build remain active; progress 25/28 until T5.5 completes; tip ca79381; gates.c_to_d remains pending.
       - 2026-07-22 T5.4 COMPLETE @ ca79381 — 08-verify-build PASS (format/lint/typecheck; tac-validate 471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets on commit PASS); next T5.5 09+10; progress 25/28; tip ca79381; gates.c_to_d remains pending.
@@ -9543,8 +9573,7 @@ evolve_cycles:
       - 2026-07-22 T5.2 STARTED — FE extend catalog panel filters/copy for TAF (E15-14; UJ-031); active_task T5.2 in_progress; M5 and 07-build remain active; progress 22/28; gates.c_to_d remains pending.
       - 2026-07-22 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE catalog filters/copy; progress 22/28; gates.c_to_d remains pending.
       - 2026-07-22 T5.1 STARTED — Vitest catalog panel filters/copy for TAF tags (E15-14; TC-F20-005); active_task T5.1 in_progress; M5 and 07-build remain active.
-      - 2026-07-22 T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate
-        471 passed; M4 closed; next T5.1 Vitest catalog TAF tags.
+      - 2026-07-22 T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate 471 passed; M4 closed; next T5.1 Vitest catalog TAF tags.
       - 2026-07-22 T4.4 STARTED — TC-F20-001 registry completeness; active_task T4.4 in_progress; M4 and 07-build remain active.
       - 2026-07-22 T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1 closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness.
       - 2026-07-22 T4.3 STARTED — COVERAGE_MATRIX F20 acc checklist + ISSUE_CATALOG regen (F20 acc4); tip acee58f; dep T4.2 complete
@@ -9633,8 +9662,9 @@ evolve_cycles:
         started: '2026-07-22'
         active_task: T5.7
         active_task_status: in_progress
-        tip_sha: dc64b77
-        note: "T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip dc64b77 (T5.6 recorded); evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending"
+        tip_sha: d604db7
+        note: "T5.7 in_progress — 13-deploy-smoke; progress 27/28; tip d604db7 (chore sync after T5.6/T5.7 start); PR-EV-015=#778 open (evolve/EV-015-aerodrome-quality → main); merge required before GHCR main-latest image redeploy; H1–H5 after merge+redeploy; gates.c_to_d remains pending"
+        tip_sha_full: d604db73fde878e22a4a6a6a03e221dfb2d98859
       08-verify-build:
         status: completed
         mode: full
@@ -9679,8 +9709,9 @@ evolve_cycles:
         started: '2026-07-22'
         active_task: T5.7
         active_task_status: in_progress
-        tip_sha: dc64b77
-        note: "T5.7 in_progress — evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; progress 27/28"
+        tip_sha: d604db7
+        note: "T5.7 in_progress — PR-EV-015=#778 open; merge required before GHCR main-latest image redeploy; H1–H5 after merge+redeploy; tip d604db7; progress 27/28; gates.c_to_d remains pending"
+        tip_sha_full: d604db73fde878e22a4a6a6a03e221dfb2d98859
     gates:
       a_to_b: passed
       b_to_c: passed
@@ -9696,8 +9727,7 @@ evolve_cycles:
       b_to_c_passed_at: '2026-07-22'
       b_to_c_decision_id: D-S020-EV015-phase-b-pass
       c_to_d_note: >-
-        PENDING until T5.7 / Phase C close — 11-verify-impl PASS (D-S020-EV015-11-A);
-        live H4–H5 still at T5.7; M5 27/28
+        PENDING until T5.7 / Phase C close — PR-EV-015=#778 open; merge + GHCR/Render redeploy required before live H1–H5; M5 27/28
     checkpoints:
       phase_a: passed
       phase_b: passed
@@ -9764,6 +9794,13 @@ evolve_cycles:
         status: present
         note: E15-12..19 + D-S020-EV015-plan-1 confirmed
     issues: []
+    pr_id: PR-EV-015
+    pr_number: 778
+    pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/778
+    pr_title: '[EV-015] F20 TAF+SPECI quality bar (S020)'
+    pr_status: open
+    pr_base: main
+    pr_head: evolve/EV-015-aerodrome-quality
   - id: EV-014
     session_id: S019-dissemination-upload
     cycle_type: feature
@@ -12665,17 +12702,20 @@ evolve_cycles:
 
 git_history:
   current_branch: evolve/EV-015-aerodrome-quality
-  ahead_of_origin: 37
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit:
-  tip_sha: dc64b77
-  tip_sha_full: dc64b77d07913c582668239c537832be381efad1
+  tip_sha: d604db7
+  tip_sha_full: d604db73fde878e22a4a6a6a03e221dfb2d98859
   note: >-
-    S020/EV-015 T5.6 tip recorded @ dc64b77; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge. Branch evolve/EV-015-aerodrome-quality active / base main.
+    S020/EV-015 tip recorded @ d604db7; T5.7 in_progress (13-deploy-smoke); progress 27/28; PR-EV-015=#778 open (evolve → main); merge required before GHCR main-latest image redeploy; H1–H5 after merge. Branch evolve/EV-015-aerodrome-quality active / base main.
   notes:
-    - 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs: 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
+    - '2026-07-22 S020/EV-015 tip recorded — tip/sha d604db7 (d604db73fde878e22a4a6a6a03e221dfb2d98859); message "chore(S020): sync workflow-state after M5 T5.6 / T5.7 start"; stage 13-deploy-smoke; appended git_history.commits; T5.7 still in_progress (awaiting merge + GHCR/Render redeploy for H1–H5); PR-EV-015 opened as #778 (evolve/EV-015-aerodrome-quality → main); merge required before T5.7 live smoke; progress 27/28; gates.c_to_d remains pending.'
+    - ? 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs
+      : 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS; F20+F6/F12 deepen approved_live_deferred; progress 27/28; tip still 766606b (T5.6 commit pending); gates.c_to_d remains pending until T5.7 / Phase C close.
-    - 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test: 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
+    - ? 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); message "[T5.5] test
+      : 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits; T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.6 STARTED — 11-verify-impl draft written (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md) awaiting user sign-off; AskQuestion for F20 (recommend approve with H4–H5 deferred to T5.7); active_task T5.6 in_progress; progress 26/28 until approve; tip 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d); T5.5 commit recorded; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.5 COMPLETE — 09-qa pass_with_advisories + 10-e2e T0 PASS; tip remains ca79381 (T5.5 commit pending); next T5.6 pending; progress 26/28; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.4 COMPLETE @ ca79381 — 08-verify-build PASS for M5; tip ca79381 (ca79381c7f2bc4c063199f4bf87b0c0523f91f47); next T5.5 pending; progress 25/28; gates.c_to_d remains pending.
@@ -12939,11 +12979,19 @@ git_history:
       created_at: '2026-07-22'
       renamed_from: evolve/EV-015-taf-quality
       renamed_at: '2026-07-22'
-      tip_sha: dc64b77
-      tip_sha_full: dc64b77d07913c582668239c537832be381efad1
-      pushed: false
+      tip_sha: d604db7
+      tip_sha_full: d604db73fde878e22a4a6a6a03e221dfb2d98859
+      pushed: true
       note: >-
-        Active (base main). T5.6 tip dc64b77 recorded; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d pending; Lean+build D-S020-EV015-route-1.
+        Active (base main). Tip d604db7; T5.7 in_progress (13-deploy-smoke); progress 27/28; PR-EV-015=#778 open → main; merge required before GHCR/Render redeploy; H1–H5 after merge; gates.c_to_d pending; Lean+build D-S020-EV015-route-1.
+      pr: 778
+      pr_number: 778
+      pr_url: https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/778
+      pr_title: '[EV-015] F20 TAF+SPECI quality bar (S020)'
+      pr_base: main
+      pr_head: evolve/EV-015-aerodrome-quality
+      pr_status: open
+      pr_id: PR-EV-015
     - name: cursor/s019-ev014-closeout-hygiene-f898
       base: main
       status: open
@@ -13607,6 +13655,19 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: d604db73fde878e22a4a6a6a03e221dfb2d98859
+      short: d604db7
+      branch: evolve/EV-015-aerodrome-quality
+      message: 'chore(S020): sync workflow-state after M5 T5.6 / T5.7 start'
+      stage: 13-deploy-smoke
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      files_changed:
+        - docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
+        - workflow-state.yaml
+      timestamp: '2026-07-22T23:26:43Z'
+      date: '2026-07-22'
+      note: 'Tip sync after T5.6/T5.7 start; T5.7 still in_progress; PR #778 opened after push'
     - sha: dc64b77d07913c582668239c537832be381efad1
       short: dc64b77
       branch: evolve/EV-015-aerodrome-quality
