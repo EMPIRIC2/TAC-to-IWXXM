@@ -53,8 +53,8 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | F6 product | TAC validation URL? | Conversion URL? | IWXXM validation URL? | Gap vs GIFTs |
 |------------|---------------------|-----------------|-----------------------|--------------|
 | **METAR** | ✅ Annex 3 (paywall; [dig](../mining/icao-annex-3-mining-notes.md) Table A3-2, CAVOK, AUTO/missing) + codes.wmo.int weather/nils; FMH-1 for US | ✅ TAC-to-XML-Guidance + FM 205 + examples | ✅ schemas.wmo.int/2025-2 + SCH | **S015/EV-011 (#732)**: F15 registry + **R1–R8 themes closed** (lint/fixtures/goldens/adjacency) — [research catalog](../../sessions/S015-metar-lint-quality/reports/metar-research-catalog.md) · [ISSUE_CATALOG](./ISSUE_CATALOG.md) · [context](../../context/metar-lint-quality.md) |
-| **SPECI** | ✅ same as METAR (+ App 3 §2.3.2 shall / §2.3.3 Rec thresholds) | ✅ same package `metarSpeci.xsd` | ✅ same | **Same as METAR** — shared `metar`/`speci` rule pack; R7 adjacency tests (TC-F15-005 / UJ-024); SPECI goldens in annex3 + iwxxm_us manifests |
-| **TAF** | ✅ Annex 3 App 5 (§1.3 change/PROB; Table A5-2) / Doc 8896 (paywall); vocab via 49-2 / 306 | ✅ Guidance + examples (CNL/NIL/AMD) | ✅ `taf.xsd` + SCH | Outside GIFTs depth; SPECI↔TAF thresholds parallel ≠ identical |
+| **SPECI** | ✅ same as METAR (+ App 3 §2.3.2 shall / §2.3.3 Rec thresholds) | ✅ same package `metarSpeci.xsd` | ✅ same | **F15** R1–R8 + adjacency closed; **F20 / #734** full SPECI quality bar — [research catalog](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md) (S1–S3) · S020/EV-015 |
+| **TAF** | ✅ Annex 3 App 5 (§1.3 change/PROB; Table A5-2) / Doc 8896 (paywall); vocab via 49-2 / 306 | ✅ Guidance + examples (CNL/NIL/AMD) | ✅ `taf.xsd` + SCH | **F20 / #735** TAF quality bar — [research catalog](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md) (T1–T4) · S020/EV-015 |
 | **SIGMET** | ✅ Annex 3 Ch.7 + App 6 phenomena/validity (paywall); SigWxPhenomena registry; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) public TAC guide | ✅ Guidance + examples + FM 205 (+ METCE for TC/VA members); EUR Doc 014 AHL `WS`/`WV`/`WC`→`LS`/`LV`/`LY` | ✅ `sigmet.xsd` + SCH (+ METCE 1.2) | **Entire product** outside GIFTs |
 | **AIRMET** | ✅ Annex 3 Ch.7 + App 6; AirWxPhenomena + VIS-cause lists; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) | ✅ Guidance + examples + FM 205; EUR Doc 014 AHL `WA`→`LW` | ✅ `airmet.xsd` + SCH | Entire product outside GIFTs |
 | **VAA** | ✅ Annex 3 App 2 §3.1.2 **shall** IWXXM + Table **A2-1** ([dig](../mining/icao-annex-3-mining-notes.md)); Doc 9766 paywall for colour **meanings**; colour machine IDs via registry ✅ | ✅ Guidance + examples + AviationColourCode + [METCE 1.2](https://schemas.wmo.int/metce/1.2/) `Volcano` | ✅ `volcanicAshAdvisory.xsd` (+ METCE embed) | Entire product outside GIFTs |
@@ -155,6 +155,29 @@ Non–R-theme gaps (broader aviation nils, full COLLECT packing) remain outside 
 
 ---
 
+## TAF / SPECI — F20 quality themes (S020 / EV-015)
+
+Hard themes from [taf-speci-research-catalog.md](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md)
+(E15-13; #735 / #734 exceptional-rule tables + WMO `TAC-to-XML-Guidance.txt` + 2025-2
+corrections — no `runwayState`). Paywalled Annex 3 / FMH / FM 205 prose: **cite-only** via
+mining notes (see catalog Sources). Codes extend [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) /
+ADR-028 registry.
+
+| Theme | Lint (F12/F20) | Convert (F6) | Validate / goldens | Status |
+|-------|----------------|--------------|--------------------|--------|
+| **T1** TAF NIL / CNL / AMD / COR | Registry + negatives | `reportStatus` / cancel / nil baseForecast | SCH | 🔲 F20 |
+| **T2** TAF change groups FM/BECMG/TEMPO/PROB + TL/AT | Validity / PROB rules | Ordered `changeForecast` | SCH | 🔲 F20 |
+| **T3** TAF TX/TN on base only; CAVOK/NSC/NSW/VV/// | Checklist | Guidance exceptional map | XSD/SCH | 🔲 F20 |
+| **T4** TAF golden convert + SCH | — | Expanded annex3 (+ iwxxm_us) | M-xsd / M-sch / M-golden | 🔲 F20 |
+| **S1** SPECI exceptional rules (shared METAR/SPECI) | Deepen pack + negatives | `iwxxm:SPECI` root | Existing + expand | 🔲 F20 |
+| **S2** SPECI↔METAR mis-classification | Product hint / Auto-detect | Per-report identity | TC-F20-006 | 🔲 F20 |
+| **S3** SPECI golden convert + SCH | — | Expand annex3 / iwxxm_us | M-xsd / M-sch | 🔲 F20 |
+| **C1** Common rules (reportStatus, nilReasons, CRS, one-report) | Where lint applies | Guidance common table | Round-trip | 🔲 F20 |
+
+Deferral of any HARD theme requires AskQuestion + matrix note (E15-5).
+
+---
+
 ## Acceptance checklist (#719)
 
 - [x] ≥1 normative or semi-official URL (or explicit paywall/TBD) per F6 product for validation
@@ -163,3 +186,4 @@ Non–R-theme gaps (broader aviation nils, full COLLECT packing) remain outside 
 - [x] Cross-links to #698 / #699 in [RULE_SOURCE_URLS.md](./RULE_SOURCE_URLS.md)
 - [x] No secrets or scraped copyrighted full-text in-repo
 - [x] F15 acc3 — METAR/SPECI rows + R1–R8 closed (S015 / EV-011; see table above)
+- [ ] F20 acc — TAF + SPECI themes T1–T4 / S1–S3 / C1 closed or deferred (S020 / EV-015)
