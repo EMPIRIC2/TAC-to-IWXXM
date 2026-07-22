@@ -517,6 +517,8 @@ Before closing S013 / EV-009:
 - **Level**: T0 / CI
 - **Objective**: Every TAF/**SPECI** lint emission uses a registered code; catalog export in sync
 - **Pass criteria**: CI fails on unknown codes; registry row required for new rules; ADR-028
+- **Status**: **green** (S020/EV-015 T4.4) —
+  `packages/tac-validate/tests/test_tc_f20_001_registry_completeness.py`
 - **Source**: F20; #735/#734; E15-5
 
 ### TC-F20-002: TAF accept → convert → XSD+Schematron (UJ-031)
