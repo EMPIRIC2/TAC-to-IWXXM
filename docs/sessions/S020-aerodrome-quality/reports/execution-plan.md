@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M5 — FE catalog TAF tags + smoke + verify (F20) |
-| **Active task** | T5.3 (pending) |
-| **Tasks** | 23 / 28 completed (through T5.2; M5 in progress) |
+| **Active task** | T5.4 (pending) |
+| **Tasks** | 24 / 28 completed (through T5.3; M5 in progress) |
 | **Last updated** | 2026-07-22 |
 
 ## Tech Stack Summary
@@ -100,7 +100,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T5.1 | Test | Vitest: catalog panel filters/copy for TAF tags | E15-14; TC-F20-005 | T4.4 | completed |
 | T5.2 | Code | FE: extend catalog panel filters/copy for TAF (additive) | E15-14; UJ-031 | T5.1 | completed |
-| T5.3 | Test | API smoke `product=taf` + `product=speci` lint+convert + catalog GET | TC-F20-005 | T5.2 | pending |
+| T5.3 | Test | API smoke `product=taf` + `product=speci` lint+convert + catalog GET | TC-F20-005 | T5.2 | completed |
 | T5.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M4, T5.2 | pending |
 | T5.5 | Test | 09-qa + 10-e2e — UJ-031 / TC-F20-001..006 | 09/10 | T5.4 | pending |
 | T5.6 | Docs | 11-verify-impl — per-Fn F20 + F6/F12 deepen sign-off | 11 | T5.5 | pending |

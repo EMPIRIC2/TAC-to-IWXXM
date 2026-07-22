@@ -550,6 +550,9 @@ Before closing S013 / EV-009:
 - **Objective**: Operator Product=TAF and Product=SPECI (and Auto-detect) lint + convert;
   catalog via `GET /api/v1/lint-issue-catalog`
 - **Pass criteria**: Console shows registry codes; convert+strict validation works for both
+- **Status**: **green** (S020/EV-015 T5.3 API smoke) —
+  `apps/backend/tests/integration/test_tc_f20_005_taf_speci_catalog_smoke.py`
+  (FE catalog filters T5.1–T5.2; live H4–H5 at T5.7)
 - **Source**: F20; E15-7; F7 remains Planned (smoke only)
 
 ### TC-F20-006: SPECI↔METAR mis-classification guards (UJ-031)
