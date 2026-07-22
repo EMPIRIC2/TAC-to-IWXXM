@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "TC-F6-020/021 / TC-F15-002 annex3 METAR/SPECI golden pack (WMO-shaped; R6 expand)",
+  "description": "TC-F6-020/021 / TC-F15-002 / TC-F20-002 annex3 METAR/SPECI/TAF golden pack (WMO-shaped; R6 + F20 T4 expand)",
   "cases": [
     {
       "id": "metar_basic",
@@ -50,6 +50,48 @@
       "theme": "R8",
       "tac": "speci_cor.tac",
       "golden": "speci_cor.golden.xml"
+    },
+    {
+      "id": "taf_basic",
+      "product": "TAF",
+      "theme": "T4",
+      "tac": "taf_basic.tac",
+      "golden": "taf_basic.golden.xml"
+    },
+    {
+      "id": "taf_nil",
+      "product": "TAF",
+      "theme": "T4",
+      "tac": "taf_nil.tac",
+      "golden": "taf_nil.golden.xml"
+    },
+    {
+      "id": "taf_cnl",
+      "product": "TAF",
+      "theme": "T4",
+      "tac": "taf_cnl.tac",
+      "golden": "taf_cnl.golden.xml"
+    },
+    {
+      "id": "taf_amd",
+      "product": "TAF",
+      "theme": "T4",
+      "tac": "taf_amd.tac",
+      "golden": "taf_amd.golden.xml"
+    },
+    {
+      "id": "taf_cor",
+      "product": "TAF",
+      "theme": "T4",
+      "tac": "taf_cor.tac",
+      "golden": "taf_cor.golden.xml"
+    },
+    {
+      "id": "taf_cavok",
+      "product": "TAF",
+      "theme": "T4",
+      "tac": "taf_cavok.tac",
+      "golden": "taf_cavok.golden.xml"
     }
   ]
 }
