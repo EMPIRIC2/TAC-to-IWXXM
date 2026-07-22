@@ -12,8 +12,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M3 — SPECI S1–S3 |
-| **Active task** | T3.6 (completed) → next T4.1 |
+| **Active milestone** | M4 — Common C1 + matrix close (F20) |
+| **Active task** | T4.1 (pending) |
 | **Tasks** | 17 / 28 completed (through T3.6) |
 | **Last updated** | 2026-07-22 |
 

@@ -41,7 +41,7 @@ active_session:
     - docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
     - docs/decisions/tech-decisions.md
   note: >-
-    Phase C 07-build — M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003) (D-S020-EV015-q22-a). Batch1+Batch2 locked (E15-1..E15-8 all A); Phase 0 approved 2026-07-22; Lean+build D-S020-EV015-route-1. 00/01/02 COMPLETE 2026-07-22; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2). Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE 2026-07-22 (E15-16..19 all A; D-S020-EV015-plan-1; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B.
+    Phase C 07-build — M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2. Batch1+Batch2 locked (E15-1..E15-8 all A); Phase 0 approved 2026-07-22; Lean+build D-S020-EV015-route-1. 00/01/02 COMPLETE 2026-07-22; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2). Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE 2026-07-22 (E15-16..19 all A; D-S020-EV015-plan-1; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B.
   routing_plan:
     - stage: 00-context
       required: true
@@ -101,7 +101,7 @@ active_session:
       skip_rationale:
       started: '2026-07-22'
       note: >-
-        M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003)
+        M3 complete through T3.6; next T4.1
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2722,9 +2722,9 @@ stages:
         started: '2026-07-22'
         mode: full
         note: >-
-          M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003)
-        active_milestone: M3
-        active_task: T3.5
+          M3 complete through T3.6; next T4.1 Common C1 fixtures
+        active_milestone: M4
+        active_task: T4.1
         active_task_status: pending
         decision_id: D-S020-EV015-phase-b-pass
         branch: evolve/EV-015-aerodrome-quality
@@ -2796,6 +2796,8 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - >-
+        2026-07-22 S020/EV-015 M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2; 07 remains in_progress
       - >-
         2026-07-22 S020/EV-015 M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003); D-S020-EV015-q22-a; tip 039712f; 07 remains in_progress
       - >-
@@ -2943,9 +2945,9 @@ stages:
       mode: full
       started_at: '2026-07-22'
       note: >-
-        M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003)
-      active_milestone: M3
-      active_task: T3.5
+        M3 complete through T3.6; next T4.1 Common C1 fixtures
+      active_milestone: M4
+      active_task: T4.1
       active_task_status: pending
       decision_id: D-S020-EV015-phase-b-pass
       branch: evolve/EV-015-aerodrome-quality
@@ -3617,9 +3619,11 @@ stages:
       from taf-quality (D-S020-EV015-s1m2-2); Phase A PASSED (D-S020-EV015-phase-a-pass);
       gates.a_to_b passed; 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19 all A;
       04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass);
-      gates.b_to_c passed; 07-build in_progress — M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003); do not re-open Phase 0/B;
+      gates.b_to_c passed; 07-build in_progress — M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2; do not re-open Phase 0/B;
       Lean+build D-S020-EV015-route-1
     notes:
+      - >-
+        2026-07-22 S020/EV-015 M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2
       - >-
         2026-07-22 S020/EV-015 M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003); D-S020-EV015-q22-a; tip 039712f
       - >-
@@ -9035,13 +9039,13 @@ evolve_cycles:
         checkpoints (parent uses after phases); Phase A / a_to_b passed 2026-07-22;
         Phase B / b_to_c passed 2026-07-22 (D-S020-EV015-phase-b-pass).
     current_stage: 07-build
-    active_milestone: M3
-    active_task: T3.5
+    active_milestone: M4
+    active_task: T4.1
     active_task_status: pending
     progress:
     branch: evolve/EV-015-aerodrome-quality
     note: >-
-      M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003) (D-S020-EV015-q22-a). Phase 0 approved 2026-07-22; 00/01/02/04 COMPLETE;
+      Phase C 07-build — M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2. Phase 0 approved 2026-07-22; 00/01/02/04 COMPLETE;
       renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2);
       Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE
       2026-07-22 (D-S020-EV015-plan-1; E15-16..19 all A; 04-exit consistency PASS; 05/06 skipped);
@@ -9074,6 +9078,8 @@ evolve_cycles:
       - D-S020-EV015-plan-1
       - D-S020-EV015-phase-b-pass
     notes:
+      - >-
+        2026-07-22 M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2; 07 remains in_progress
       - >-
         2026-07-22 M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003); D-S020-EV015-q22-a; tip 039712f; 07 remains in_progress
       - >-
@@ -9152,8 +9158,10 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-22'
+        active_task: T4.1
+        active_task_status: pending
         note: >-
-          M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003)
+          M3 complete through T3.6; next T4.1 Common C1 fixtures
       08-verify-build:
         status: pending
         mode: full
@@ -12132,8 +12140,8 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 039712f
-  tip_sha_full: 039712f53a5f8a505d0039448d976d633c5e6124
+  tip_sha: d1fb9d2
+  tip_sha_full: d1fb9d2a3739f3afa1473d76f97f4e28885364af
   note: >-
     S020/EV-015 02-verify-plan COMPLETE 2026-07-22 (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1);
     renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality; Phase A
@@ -12389,12 +12397,12 @@ git_history:
       created_at: '2026-07-22'
       renamed_from: evolve/EV-015-taf-quality
       renamed_at: '2026-07-22'
-      tip_sha: 039712f
-      tip_sha_full: 039712f53a5f8a505d0039448d976d633c5e6124
+      tip_sha: d1fb9d2
+      tip_sha_full: d1fb9d2a3739f3afa1473d76f97f4e28885364af
       pushed: false
       note: >-
         Active (base main). Renamed from evolve/EV-015-taf-quality
-        (D-S020-EV015-s1m2-2). 07-build in_progress — M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003); tip 039712f;
+        (D-S020-EV015-s1m2-2). 07-build in_progress — M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2;
         Lean+build D-S020-EV015-route-1.
     - name: cursor/s019-ev014-closeout-hygiene-f898
       base: main
@@ -13059,6 +13067,24 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: d1fb9d2a3739f3afa1473d76f97f4e28885364af
+      short: d1fb9d2
+      branch: evolve/EV-015-aerodrome-quality
+      message: '[T3.6] feat: SPECI S3 convert fidelity for exceptional goldens'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      timestamp: '2026-07-22'
+      date: '2026-07-22'
+    - sha: cd2260495819652a620dee762aed210ac5abca68
+      short: cd22604
+      branch: evolve/EV-015-aerodrome-quality
+      message: '[T3.5] test: expand SPECI annex3/iwxxm_us goldens (TC-F20-003)'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      timestamp: '2026-07-22'
+      date: '2026-07-22'
     - sha: 039712f53a5f8a505d0039448d976d633c5e6124
       short: 039712f
       branch: evolve/EV-015-aerodrome-quality
