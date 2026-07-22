@@ -41,7 +41,7 @@ active_session:
     - docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
     - docs/decisions/tech-decisions.md
   note: >-
-    Phase C 07-build — M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2. Batch1+Batch2 locked (E15-1..E15-8 all A); Phase 0 approved 2026-07-22; Lean+build D-S020-EV015-route-1. 00/01/02 COMPLETE 2026-07-22; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2). Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE 2026-07-22 (E15-16..19 all A; D-S020-EV015-plan-1; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B.
+    Phase C 07-build — M4 T4.1 COMPLETE @ 0e269fd; next T4.2 Encode/defer C1 (pending). Batch1+Batch2 locked (E15-1..E15-8 all A); Phase 0 approved 2026-07-22; Lean+build D-S020-EV015-route-1. 00/01/02 COMPLETE 2026-07-22; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2). Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE 2026-07-22 (E15-16..19 all A; D-S020-EV015-plan-1; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B.
   routing_plan:
     - stage: 00-context
       required: true
@@ -101,7 +101,7 @@ active_session:
       skip_rationale:
       started: '2026-07-22'
       note: >-
-        M3 complete through T3.6; next T4.1
+        next T4.2; tip 0e269fd — T4.1 COMPLETE (C1 fixtures); active_task T4.2 pending
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2722,9 +2722,9 @@ stages:
         started: '2026-07-22'
         mode: full
         note: >-
-          M3 complete through T3.6; next T4.1 Common C1 fixtures
+          T4.1 COMPLETE @ 0e269fd — C1 lint fixtures; next T4.2 Encode/defer C1 (pending); CRS convert-only deferred to T4.2; assertions with T4.2
         active_milestone: M4
-        active_task: T4.1
+        active_task: T4.2
         active_task_status: pending
         decision_id: D-S020-EV015-phase-b-pass
         branch: evolve/EV-015-aerodrome-quality
@@ -2796,6 +2796,9 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - 2026-07-22 S020/EV-015 T4.1 COMPLETE @ 0e269fd — C1 lint fixtures (reportStatus NORMAL/AMD/COR, nilReasons NIL/NSC, one-report multi bulletins, nil-with-body negatives). CRS convert-only deferred to T4.2. Assertions land with T4.2. Next T4.2 Encode/defer C1.
+      - >-
+        2026-07-22 S020/EV-015 T4.1 STARTED — common-rule fixtures (C1: reportStatus / nilReasons / CRS / one-report) where lint applies; tip 5557e9f; assertions deferred to T4.2 per S020 T*.1 pattern; 07 remains in_progress
       - >-
         2026-07-22 S020/EV-015 M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2; 07 remains in_progress
       - >-
@@ -2945,9 +2948,9 @@ stages:
       mode: full
       started_at: '2026-07-22'
       note: >-
-        M3 complete through T3.6; next T4.1 Common C1 fixtures
+        next T4.2; tip 0e269fd — T4.1 COMPLETE (C1 fixtures); active_task T4.2 pending
       active_milestone: M4
-      active_task: T4.1
+      active_task: T4.2
       active_task_status: pending
       decision_id: D-S020-EV015-phase-b-pass
       branch: evolve/EV-015-aerodrome-quality
@@ -3615,13 +3618,11 @@ stages:
     completed_at:
     current_stage: 07-build
     note: >-
-      EV-015 open (S020-aerodrome-quality); 00/01/02/04 COMPLETE 2026-07-22; renamed
-      from taf-quality (D-S020-EV015-s1m2-2); Phase A PASSED (D-S020-EV015-phase-a-pass);
-      gates.a_to_b passed; 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19 all A;
-      04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass);
-      gates.b_to_c passed; 07-build in_progress — M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2; do not re-open Phase 0/B;
-      Lean+build D-S020-EV015-route-1
+      EV-015 open (S020-aerodrome-quality); 00/01/02/04 COMPLETE 2026-07-22; renamed from taf-quality (D-S020-EV015-s1m2-2); Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19 all A; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; 07-build in_progress — M4 T4.1 COMPLETE @ 0e269fd; next T4.2 pending; do not re-open Phase 0/B; Lean+build D-S020-EV015-route-1
     notes:
+      - 2026-07-22 S020/EV-015 T4.1 COMPLETE @ 0e269fd — C1 lint fixtures (reportStatus NORMAL/AMD/COR, nilReasons NIL/NSC, one-report multi bulletins, nil-with-body negatives). CRS convert-only deferred to T4.2. Assertions land with T4.2. Next T4.2 Encode/defer C1.
+      - >-
+        2026-07-22 S020/EV-015 T4.1 STARTED — common-rule fixtures (C1: reportStatus / nilReasons / CRS / one-report) where lint applies; tip 5557e9f; assertions deferred to T4.2 per S020 T*.1 pattern
       - >-
         2026-07-22 S020/EV-015 M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2
       - >-
@@ -9040,17 +9041,12 @@ evolve_cycles:
         Phase B / b_to_c passed 2026-07-22 (D-S020-EV015-phase-b-pass).
     current_stage: 07-build
     active_milestone: M4
-    active_task: T4.1
+    active_task: T4.2
     active_task_status: pending
     progress:
     branch: evolve/EV-015-aerodrome-quality
     note: >-
-      Phase C 07-build — M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2. Phase 0 approved 2026-07-22; 00/01/02/04 COMPLETE;
-      renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2);
-      Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE
-      2026-07-22 (D-S020-EV015-plan-1; E15-16..19 all A; 04-exit consistency PASS; 05/06 skipped);
-      Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B;
-      Lean+build D-S020-EV015-route-1.
+      Phase C 07-build — M4 T4.1 COMPLETE @ 0e269fd; next T4.2 Encode/defer C1 (pending). Phase 0 approved 2026-07-22; 00/01/02/04 COMPLETE; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality (D-S020-EV015-s1m2-2); Phase A PASSED (D-S020-EV015-phase-a-pass); gates.a_to_b passed; 04-tech-plan COMPLETE 2026-07-22 (D-S020-EV015-plan-1; E15-16..19 all A; 04-exit consistency PASS; 05/06 skipped); Phase B PASSED (D-S020-EV015-phase-b-pass); gates.b_to_c passed; do not re-open Phase 0/B; Lean+build D-S020-EV015-route-1.
     decision_refs:
       - E15-1
       - E15-2
@@ -9078,6 +9074,9 @@ evolve_cycles:
       - D-S020-EV015-plan-1
       - D-S020-EV015-phase-b-pass
     notes:
+      - 2026-07-22 T4.1 COMPLETE @ 0e269fd — C1 lint fixtures (reportStatus NORMAL/AMD/COR, nilReasons NIL/NSC, one-report multi bulletins, nil-with-body negatives). CRS convert-only deferred to T4.2. Assertions land with T4.2. Next T4.2 Encode/defer C1.
+      - >-
+        2026-07-22 T4.1 STARTED — common-rule fixtures (C1: reportStatus / nilReasons / CRS / one-report) where lint applies; tip 5557e9f; assertions deferred to T4.2 per S020 T*.1 pattern; 07 remains in_progress
       - >-
         2026-07-22 M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2; 07 remains in_progress
       - >-
@@ -9158,10 +9157,10 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-22'
-        active_task: T4.1
+        active_task: T4.2
         active_task_status: pending
         note: >-
-          M3 complete through T3.6; next T4.1 Common C1 fixtures
+          next T4.2; tip 0e269fd — T4.1 COMPLETE (C1 fixtures); active_task T4.2 pending
       08-verify-build:
         status: pending
         mode: full
@@ -12140,13 +12139,13 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: d1fb9d2
-  tip_sha_full: d1fb9d2a3739f3afa1473d76f97f4e28885364af
+  tip_sha: 0e269fd
+  tip_sha_full: 0e269fd751c1d988341613b39246e8151c1207e5
   note: >-
-    S020/EV-015 02-verify-plan COMPLETE 2026-07-22 (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1);
-    renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality; Phase A
-    checkpoint pending before 04-tech-plan (do not start 04). Branch active / base main.
+    S020/EV-015 07-build M4 T4.1 COMPLETE @ 0e269fd; next T4.2 pending. Branch evolve/EV-015-aerodrome-quality active / base main.
   notes:
+    - 2026-07-22 S020/EV-015 T4.1 COMPLETE @ 0e269fd — C1 lint fixtures (reportStatus NORMAL/AMD/COR, nilReasons NIL/NSC, one-report multi bulletins, nil-with-body negatives). CRS convert-only deferred to T4.2. Assertions land with T4.2. Next T4.2 Encode/defer C1.
+    - 2026-07-22 S020/EV-015 T4.1 STARTED — common-rule fixtures (C1: reportStatus / nilReasons / CRS / one-report) where lint applies; tip 5557e9f; assertions deferred to T4.2 per S020 T*.1 pattern
     - 2026-07-22 S020/EV-015 02 COMPLETE + rename — PASS (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1); Phase A pending before 04; branch evolve/EV-015-aerodrome-quality active
     - 2026-07-22 S020/EV-015 01→02 — 01 COMPLETE (E15-10 / D-S020-EV015-01-confirm = A); interviews 6/6; 02-verify-plan delta started
     - 2026-07-22 S020/EV-015 01-requirements interviews 6/6 written — manifest B (D-S020-EV015-manifest-1); ADR skipped (ADR-028 reuse); user_confirm pending; 01 remains in_progress
@@ -12397,13 +12396,11 @@ git_history:
       created_at: '2026-07-22'
       renamed_from: evolve/EV-015-taf-quality
       renamed_at: '2026-07-22'
-      tip_sha: d1fb9d2
-      tip_sha_full: d1fb9d2a3739f3afa1473d76f97f4e28885364af
-      pushed: false
+      tip_sha: 0e269fd
+      tip_sha_full: 0e269fd751c1d988341613b39246e8151c1207e5
+      pushed: true
       note: >-
-        Active (base main). Renamed from evolve/EV-015-taf-quality
-        (D-S020-EV015-s1m2-2). 07-build in_progress — M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2;
-        Lean+build D-S020-EV015-route-1.
+        Active (base main). Renamed from evolve/EV-015-taf-quality (D-S020-EV015-s1m2-2). 07-build in_progress — M4 T4.1 COMPLETE @ 0e269fd; next T4.2 pending; Lean+build D-S020-EV015-route-1.
     - name: cursor/s019-ev014-closeout-hygiene-f898
       base: main
       status: open
@@ -13067,6 +13064,25 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 0e269fd751c1d988341613b39246e8151c1207e5
+      short: 0e269fd
+      branch: evolve/EV-015-aerodrome-quality
+      message: '[T4.1] test: add common-rule C1 fixtures (reportStatus/nilReasons/one-report)'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      files_changed: 17
+      timestamp: '2026-07-22T19:51:25Z'
+      date: '2026-07-22'
+    - sha: 5557e9fe5089f292b559e0392855253c732e94bf
+      short: 5557e9f
+      branch: evolve/EV-015-aerodrome-quality
+      message: 'chore(S020): sync workflow-state after M3 T3.5–T3.6'
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      timestamp: '2026-07-22'
+      date: '2026-07-22'
     - sha: d1fb9d2a3739f3afa1473d76f97f4e28885364af
       short: d1fb9d2
       branch: evolve/EV-015-aerodrome-quality
