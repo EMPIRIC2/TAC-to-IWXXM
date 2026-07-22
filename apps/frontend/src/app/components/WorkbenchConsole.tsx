@@ -1,13 +1,18 @@
 /**
  * Pull-up structured console for the F7 live workbench (UJ-017 / #694).
  * F15: registry code tooltips + lightweight catalog panel (E11-29 / E11-31).
+ * F20 / E15-14: catalog tag filter + enriched list copy (TAF tags).
  */
 
 import { useState, type ReactNode } from 'react';
 import { ChevronDown, ChevronUp, Terminal } from 'lucide-react';
 import type { LiveWorkbenchConsoleLine } from '@/hooks/useLiveWorkbenchAssist';
 import type { LintIssueCatalogEntry } from '@/utils/api';
-import { resolveLintIssueTooltip } from '@/utils/lintIssueCatalog';
+import {
+  filterCatalogByTag,
+  formatCatalogEntryCopy,
+  resolveLintIssueTooltip,
+} from '@/utils/lintIssueCatalog';
 import { consoleLevelPasses, type ConvertLogLevel } from '/utils/convertParams';
 
 const CODE_TOKEN = /(\[[A-Z][A-Z0-9_]*\])/g;
@@ -58,6 +63,7 @@ function messageWithCodeTooltips(
  *
  * @param props.minLogLevel - Filter lines below this severity (client-side)
  * @param props.catalogByCode - Optional registry map for code tooltips
+ * @param props.catalogEntries - Optional full catalog for the lightweight panel
  */
 export function WorkbenchConsole({
   lines,
@@ -70,9 +76,14 @@ export function WorkbenchConsole({
 }: WorkbenchConsoleProps) {
   const [open, setOpen] = useState(defaultOpen);
   const [catalogOpen, setCatalogOpen] = useState(false);
+  const [tagFilter, setTagFilter] = useState('');
   const visibleLines = lines.filter((line) =>
     consoleLevelPasses(line.level, minLogLevel),
   );
+  const filteredCatalog = filterCatalogByTag(catalogEntries, tagFilter);
+  const catalogTagOptions = [
+    ...new Set(catalogEntries.flatMap((entry) => entry.tags ?? [])),
+  ].sort((a, b) => a.localeCompare(b));
 
   return (
     <section
@@ -168,27 +179,47 @@ export function WorkbenchConsole({
             onClick={() => setCatalogOpen((v) => !v)}
             data-testid="lint-issue-catalog-toggle"
           >
-            Lint issue catalog ({catalogEntries.length})
+            Lint issue catalog ({filteredCatalog.length})
           </button>
           {catalogOpen ? (
-            <ul
-              className="mt-2 max-h-36 space-y-1 overflow-y-auto font-mono text-[11px] text-gray-700 dark:text-gray-300"
-              data-testid="lint-issue-catalog-list"
-            >
-              {catalogEntries.slice(0, 80).map((entry) => (
-                <li key={entry.code} title={entry.message_template}>
-                  <span className="font-semibold">{entry.code}</span>{' '}
-                  <span className="text-gray-500 dark:text-gray-400">
-                    ({entry.severity})
-                  </span>
-                </li>
-              ))}
-              {catalogEntries.length > 80 ? (
-                <li className="text-gray-500">
-                  …and {catalogEntries.length - 80} more
-                </li>
-              ) : null}
-            </ul>
+            <div className="mt-2 space-y-2">
+              <label className="flex items-center gap-2 text-[11px] text-gray-600 dark:text-gray-400">
+                <span className="shrink-0">Tag filter</span>
+                <select
+                  className="rounded border border-gray-300 bg-white px-1.5 py-0.5 font-mono text-[11px] text-gray-800 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200"
+                  value={tagFilter}
+                  onChange={(event) => setTagFilter(event.target.value)}
+                  data-testid="lint-issue-catalog-tag-filter"
+                  aria-label="Filter lint issue catalog by tag"
+                >
+                  <option value="">All tags</option>
+                  {catalogTagOptions.map((tag) => (
+                    <option key={tag} value={tag}>
+                      {tag}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <ul
+                className="max-h-36 space-y-1 overflow-y-auto font-mono text-[11px] text-gray-700 dark:text-gray-300"
+                data-testid="lint-issue-catalog-list"
+              >
+                {filteredCatalog.slice(0, 80).map((entry) => (
+                  <li
+                    key={entry.code}
+                    title={entry.message_template}
+                    data-testid={`lint-issue-catalog-entry-${entry.code}`}
+                  >
+                    {formatCatalogEntryCopy(entry)}
+                  </li>
+                ))}
+                {filteredCatalog.length > 80 ? (
+                  <li className="text-gray-500">
+                    …and {filteredCatalog.length - 80} more
+                  </li>
+                ) : null}
+              </ul>
+            </div>
           ) : null}
         </div>
       ) : null}

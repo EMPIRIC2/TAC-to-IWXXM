@@ -56,6 +56,16 @@ Diagnostics assertions require product-rule codes/spans from
 | `remark_errors`      | `false` | R5 malformed RMK groups (`INVALID_REMARK`)                  |
 | `r8_modifier_info`   | `true`  | R8 AUTO/COR/NIL/NOSIG/TEMPO/RVR/VRB·gust info codes         |
 | `r8_errors`          | `false` | R8 malformed NIL/RVR/wind (`INVALID_*`)                     |
+| `t1_modifier_info`   | `true`  | F20 T1 TAF NIL/CNL/AMD/COR info codes                       |
+| `t1_errors`          | `false` | F20 T1 malformed TAF NIL/CNL                                |
+| `t2_modifier_info`   | `true`  | F20 T2 TAF FM/BECMG/TEMPO/PROB/TL/AT info                   |
+| `t2_errors`          | `false` | F20 T2 invalid PROB                                         |
+| `t3_modifier_info`   | `true`  | F20 T3 TX/TN CAVOK NSC NSW VV/// info                       |
+| `t3_errors`          | `false` | F20 T3 TX/TN on change group                                |
+| `s1_modifier_info`   | `true`  | F20 S1 SPECI exceptional NIL/CAVOK/NSC/NCD/… info           |
+| `s1_errors`          | `false` | F20 S1 SPECI malformed NIL                                  |
+| `c1_modifier_info`   | `true`  | F20 C1 reportStatus / nil / multi-report info               |
+| `c1_errors`          | `false` | F20 C1 NIL-with-body (INVALID_NIL)                          |
 
 ## Tooling
 

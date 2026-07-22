@@ -1,7 +1,24 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-07-21 (S019 / EV-014 05-verify-tech)
+> Last updated: 2026-07-22 (S020 / EV-015 04-tech-plan)
+
+## S020 / EV-015 04-tech-plan (2026-07-22)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| E15-12 | 2026-07-22 | Milestones | TAF lint → TAF goldens → SPECI → C1 → smoke | confirmed |
+| E15-13 | 2026-07-22 | Research | Full mining pass + session catalog | confirmed |
+| E15-14 | 2026-07-22 | FE | Catalog panel TAF tag filters/copy | confirmed |
+| E15-15 | 2026-07-22 | Deps | AskQuestion per new dep (prefer none) | confirmed |
+| E15-16 | 2026-07-22 | CI | Existing pytest + ci.yml only | confirmed |
+| E15-17 | 2026-07-22 | Mining | Full dig TAF+SPECI only | confirmed |
+| E15-18 | 2026-07-22 | Deploy | API+FE; H1–H3 + H4–H5 required | confirmed |
+| E15-19 | 2026-07-22 | Plan | Approve M0–M5 (28 tasks) | confirmed |
+| S9.M1 | 2026-07-22 | 05 skip | 04-exit consistency substitutes for 05 | confirmed |
+| D-S020-EV015-plan-1 | 2026-07-22 | Gate | Execution plan approved | confirmed |
+
+Session plan: `docs/sessions/S020-aerodrome-quality/reports/execution-plan.md`.
 
 ## S019 / EV-014 05-verify-tech (2026-07-21)
 

@@ -20,6 +20,24 @@ _QNH_HPA = re.compile(r"\bQ(?P<qnh>\d{3,4})\b")
 _CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})\b")
 _NIL = re.compile(r"\bNIL\b")
 _AUTO = re.compile(r"\bAUTO\b")
+_NOSIG = re.compile(r"\bNOSIG\b")
+_NSC = re.compile(r"\bNSC\b")
+_NCD = re.compile(r"\bNCD\b")
+_VV_NOT_OBS = re.compile(r"\bVV///(?![A-Z0-9/])")
+_WIND_SECTOR = re.compile(r"\b(?P<ccw>\d{3})V(?P<cw>\d{3})\b")
+_RVR = re.compile(r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<op>[PM])?(?P<val>\d{4})(?P<tend>[UDN])?(?P<ft>FT)?\b")
+# Present weather: `//` (not observable) or coded group (-SN, FG, VCSH, …).
+_WX_TOKEN = re.compile(
+    r"(?<![A-Z0-9/])(?P<wx>//|"
+    r"(?:\+|-|VC)?"
+    r"(?:MI|PR|BC|DR|BL|SH|TS|FZ)?"
+    r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+"
+    r")(?![A-Z0-9/])"
+)
+_TEMPO_TREND = re.compile(
+    r"\bTEMPO\b(?P<body>.*?)(?=\b(?:BECMG|TEMPO|NOSIG)\b|$)",
+    re.DOTALL,
+)
 _RMK = re.compile(r"\bRMK\b(?P<rmk>.*)$")
 _AO = re.compile(r"\bAO(?P<ao>[12])\b")
 _SLP = re.compile(r"\bSLP(?P<code>\d{3})\b")
@@ -274,6 +292,62 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     if clouds:
         ir["cloud_amount"] = clouds[0][0]
         ir["cloud_base_ft"] = clouds[0][1]
+
+    # Strip REMARKS before scanning body exceptional tokens (RMK may contain // etc.).
+    body_for_wx = _RMK.split(rest, maxsplit=1)[0]
+
+    if _NOSIG.search(body_for_wx):
+        ir["nosig"] = True
+    if _NSC.search(body_for_wx):
+        ir["nsc"] = True
+    if _NCD.search(body_for_wx):
+        ir["ncd"] = True
+    if _VV_NOT_OBS.search(body_for_wx):
+        ir["vertical_visibility_not_observable"] = True
+
+    sector = _WIND_SECTOR.search(body_for_wx)
+    if sector is not None:
+        ir["wind_dir_ccw_deg"] = int(sector.group("ccw"))
+        ir["wind_dir_cw_deg"] = int(sector.group("cw"))
+
+    rvr = _RVR.search(body_for_wx)
+    if rvr is not None:
+        val = int(rvr.group("val"))
+        # US FT → metres; ICAO metre groups stay as-is.
+        if rvr.group("ft"):
+            metres = int(round(val * 0.3048))
+        else:
+            metres = val
+        ir["rvr"] = {
+            "runway": rvr.group("rwy"),
+            "mean_m": metres,
+            "operator": {"P": "ABOVE", "M": "BELOW"}.get(rvr.group("op") or ""),
+            "tendency": {"U": "UPWARD", "D": "DOWNWARD", "N": "NO_CHANGE"}.get(rvr.group("tend") or ""),
+        }
+
+    present: list[str] = []
+    wx_not_obs = False
+    for wx_m in _WX_TOKEN.finditer(body_for_wx):
+        token = wx_m.group("wx")
+        if token == "//":
+            wx_not_obs = True
+        else:
+            present.append(token)
+    if wx_not_obs:
+        ir["present_weather_not_observable"] = True
+    if present:
+        ir["present_weather"] = present
+
+    tempo = _TEMPO_TREND.search(body_for_wx)
+    if tempo is not None:
+        tbody = tempo.group("body")
+        trend: dict[str, Any] = {"change_indicator": "TEMPORARY_FLUCTUATIONS"}
+        vis_m = _VIS_M.search(tbody)
+        if vis_m is not None:
+            trend["visibility_m"] = int(vis_m.group("vis"))
+        if re.search(r"\bNSW\b", tbody):
+            trend["weather_nsw"] = True
+        ir["tempo_trend"] = trend
 
     _parse_remarks(rest, ir)
     return ir

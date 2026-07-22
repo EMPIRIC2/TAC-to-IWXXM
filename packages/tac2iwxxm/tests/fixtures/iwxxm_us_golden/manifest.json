@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "TC-F6-003 / TC-F15-002: iwxxm_us METAR/SPECI + TAF/SIGMET/AIRMET (R5/R6/R8 expand)",
+  "description": "TC-F6-003 / TC-F15-002 / TC-F20-003: iwxxm_us METAR/SPECI + TAF/SIGMET/AIRMET (R5/R6/R8 + F20 S3 SPECI expand)",
   "profile": "iwxxm_us",
   "cases": [
     {
@@ -15,7 +15,7 @@
       "product": "SPECI",
       "tac": "speci_us_ao2.tac",
       "golden": "speci_us_ao2.golden.xml",
-      "theme": "R5"
+      "theme": "S3"
     },
     {
       "id": "metar_us_pk_wnd",
@@ -52,9 +52,37 @@
     {
       "id": "speci_us_cor",
       "product": "SPECI",
-      "theme": "R8",
+      "theme": "S3",
       "tac": "speci_us_cor.tac",
       "golden": "speci_us_cor.golden.xml"
+    },
+    {
+      "id": "speci_us_cavok",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_us_cavok.tac",
+      "golden": "speci_us_cavok.golden.xml"
+    },
+    {
+      "id": "speci_us_nil",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_us_nil.tac",
+      "golden": "speci_us_nil.golden.xml"
+    },
+    {
+      "id": "speci_us_nosig",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_us_nosig.tac",
+      "golden": "speci_us_nosig.golden.xml"
+    },
+    {
+      "id": "speci_us_auto",
+      "product": "SPECI",
+      "theme": "S3",
+      "tac": "speci_us_auto.tac",
+      "golden": "speci_us_auto.golden.xml"
     }
   ]
 }

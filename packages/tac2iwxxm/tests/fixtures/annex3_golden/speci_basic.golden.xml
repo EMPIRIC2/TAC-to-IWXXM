@@ -47,6 +47,7 @@
           <iwxxm:prevailingVisibility uom="m">12875</iwxxm:prevailingVisibility>
                   </iwxxm:AerodromeHorizontalVisibility>
       </iwxxm:visibility>
+      <iwxxm:presentWeather xlink:href="http://codes.wmo.int/306/4678/-SN"/>
       <iwxxm:cloud>
         <iwxxm:AerodromeCloud>
           <iwxxm:layer>

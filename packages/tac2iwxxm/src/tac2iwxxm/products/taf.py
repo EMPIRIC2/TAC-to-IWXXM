@@ -7,7 +7,13 @@ from typing import Any
 
 _TAF = re.compile(
     r"^(?:TAF\s+)?(?:AMD\s+|COR\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
-    r"(?P<issue>\d{6})Z\s+(?P<valid_from>\d{4})/(?P<valid_to>\d{4})\b(?P<body>.*)$",
+    r"(?P<issue>\d{6})Z\s+"
+    r"(?:(?P<valid_from>\d{4})/(?P<valid_to>\d{4})\s+)?(?P<body>.*)$",
+    re.DOTALL,
+)
+_TAF_NIL_ONLY = re.compile(
+    r"^(?:TAF\s+)?(?:AMD\s+|COR\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
+    r"(?P<issue>\d{6})Z\s+NIL\b(?P<body>.*)$",
     re.DOTALL,
 )
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
@@ -15,6 +21,17 @@ _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
 _CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})\b")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _NIL = re.compile(r"\bNIL\b")
+_CNL = re.compile(r"\bCNL\b")
+_CAVOK = re.compile(r"\bCAVOK\b")
+
+
+def _modifier_flags(joined: str) -> dict[str, bool]:
+    upper = joined.upper()
+    # "TAF AMD …" / "TAF COR …" (not station-embedded).
+    return {
+        "amendment": bool(re.search(r"\bTAF\s+AMD\b", upper)),
+        "correction": bool(re.search(r"\bTAF\s+COR\b", upper)),
+    }
 
 
 def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
@@ -48,12 +65,48 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
     if not joined.upper().startswith("TAF"):
         joined = f"TAF {joined}"
 
+    mods = _modifier_flags(joined)
+
+    match = _TAF_NIL_ONLY.match(joined)
+    if match is not None:
+        issue = match.group("issue")
+        return {
+            "ir_version": 1,
+            "product": "TAF",
+            "station": match.group("station"),
+            "issue_day": int(issue[0:2]),
+            "issue_hour": int(issue[2:4]),
+            "issue_minute": int(issue[4:6]),
+            "nil": True,
+            "amendment": mods["amendment"],
+            "correction": mods["correction"],
+            "raw": joined,
+        }
+
     match = _TAF.match(joined)
     if match is None:
         raise ValueError("unable to parse TAF header")
 
     issue = match.group("issue")
-    body = match.group("body")
+    body = match.group("body") or ""
+    valid_from = match.group("valid_from")
+    valid_to = match.group("valid_to")
+    if valid_from is None or valid_to is None:
+        if not _NIL.search(body):
+            raise ValueError("unable to parse TAF header")
+        return {
+            "ir_version": 1,
+            "product": "TAF",
+            "station": match.group("station"),
+            "issue_day": int(issue[0:2]),
+            "issue_hour": int(issue[2:4]),
+            "issue_minute": int(issue[4:6]),
+            "nil": True,
+            "amendment": mods["amendment"],
+            "correction": mods["correction"],
+            "raw": joined,
+        }
+
     ir: dict[str, Any] = {
         "ir_version": 1,
         "product": "TAF",
@@ -61,15 +114,19 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
         "issue_day": int(issue[0:2]),
         "issue_hour": int(issue[2:4]),
         "issue_minute": int(issue[4:6]),
-        "valid_from_day": int(match.group("valid_from")[0:2]),
-        "valid_from_hour": int(match.group("valid_from")[2:4]),
-        "valid_to_day": int(match.group("valid_to")[0:2]),
-        "valid_to_hour": int(match.group("valid_to")[2:4]),
+        "valid_from_day": int(valid_from[0:2]),
+        "valid_from_hour": int(valid_from[2:4]),
+        "valid_to_day": int(valid_to[0:2]),
+        "valid_to_hour": int(valid_to[2:4]),
         "nil": bool(_NIL.search(body)),
+        "cancel": bool(_CNL.search(body)),
+        "cavok": bool(_CAVOK.search(body)),
+        "amendment": mods["amendment"],
+        "correction": mods["correction"],
         "raw": joined,
     }
 
-    if ir["nil"]:
+    if ir["nil"] or ir["cancel"]:
         return ir
 
     wind = _WIND.search(body)
@@ -83,14 +140,15 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
         else:
             ir["wind_speed_kt"] = spd
 
-    vis = _VIS_M.search(body)
-    if vis is not None:
-        ir["visibility_m"] = int(vis.group("vis"))
+    if not ir["cavok"]:
+        vis = _VIS_M.search(body)
+        if vis is not None:
+            ir["visibility_m"] = int(vis.group("vis"))
 
-    cloud = _CLOUD.search(body)
-    if cloud is not None:
-        ir["cloud_amount"] = cloud.group("amt")
-        ir["cloud_base_ft"] = int(cloud.group("base")) * 100
+        cloud = _CLOUD.search(body)
+        if cloud is not None:
+            ir["cloud_amount"] = cloud.group("amt")
+            ir["cloud_base_ft"] = int(cloud.group("base")) * 100
 
     alt = _ALT_INHG.search(body)
     if alt is not None:

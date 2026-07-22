@@ -9,17 +9,25 @@ from __future__ import annotations
 from typing import Any
 from xml.sax.saxutils import escape
 
-from tac2iwxxm.profiles.annex3 import CLOUD_HREF, NS, obs_timestamp
+from tac2iwxxm.profiles.annex3 import NS, build_observation_and_trends, obs_timestamp
 
 
 def _us_gml_id(ir: dict[str, Any], product: str) -> str:
-    """Stable gml:id for US golden fixtures."""
+    """Stable gml:id for US golden fixtures (theme-aware for F20 S3)."""
     root = product.lower()
     station = str(ir["station"]).lower()
     if ir.get("peak_wind_dir_deg") is not None:
         return f"{root}.us.pk.wnd.{station}"
     if ir.get("sea_level_pressure_hpa") is not None:
         return f"{root}.us.ao2.slp.{station}"
+    if ir.get("nil"):
+        return f"{root}.us.nil.{station}"
+    if ir.get("cavok"):
+        return f"{root}.us.cavok.{station}"
+    if ir.get("nosig"):
+        return f"{root}.us.nosig.{station}"
+    if ir.get("auto") and product.upper() == "SPECI" and not ir.get("correction"):
+        return f"{root}.us.auto.{station}"
     return f"{root}.us.ao2.{station}"
 
 
@@ -102,61 +110,14 @@ def emit_metar_speci_iwxxm_us(
     gml_id = _us_gml_id(ir, root)
     report_status = "CORRECTION" if ir.get("correction") else "NORMAL"
     automated = "true" if ir.get("auto") else "false"
-    cavok = bool(ir.get("cavok"))
-    cavok_attr = "true" if cavok else "false"
 
-    if ir.get("nil"):
-        observation = '  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
-    else:
-        wind_gust = ""
-        if ir.get("wind_gust_kt") is not None:
-            wind_gust = f'\n          <iwxxm:windGustSpeed uom="[kn_i]">{ir["wind_gust_kt"]}</iwxxm:windGustSpeed>'
-        variable = bool(ir.get("wind_variable"))
-        var_attr = "true" if variable else "false"
-        if variable:
-            wind_dir = ""
-        else:
-            wind_dir = f'\n          <iwxxm:meanWindDirection uom="deg">{ir["wind_dir_deg"]}</iwxxm:meanWindDirection>'
-        vis_block = ""
-        cloud = ""
-        if not cavok:
-            vis_op = ""
-            if ir.get("visibility_above"):
-                vis_op = "\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
-            vis_block = f"""      <iwxxm:visibility>
-        <iwxxm:AerodromeHorizontalVisibility>
-          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}
-        </iwxxm:AerodromeHorizontalVisibility>
-      </iwxxm:visibility>
-"""
-            if ir.get("cloud_amount") and ir.get("cloud_base_ft") is not None:
-                href = CLOUD_HREF.format(amt=ir["cloud_amount"])
-                cloud = f"""      <iwxxm:cloud>
-        <iwxxm:AerodromeCloud>
-          <iwxxm:layer>
-            <iwxxm:CloudLayer>
-              <iwxxm:amount xlink:href="{escape(href)}"/>
-              <iwxxm:base uom="[ft_i]">{ir["cloud_base_ft"]}</iwxxm:base>
-            </iwxxm:CloudLayer>
-          </iwxxm:layer>
-        </iwxxm:AerodromeCloud>
-      </iwxxm:cloud>
-"""
-        peak = _peak_wind_extension(ir)
-        addendum = _addendum_extension(ir)
-        observation = f"""  <iwxxm:observation>
-    <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="{cavok_attr}">
-      <iwxxm:airTemperature uom="Cel">{ir["temp_c"]}</iwxxm:airTemperature>
-      <iwxxm:dewpointTemperature uom="Cel">{ir["dewpoint_c"]}</iwxxm:dewpointTemperature>
-      <iwxxm:qnh uom="hPa">{ir["qnh_hpa"]}</iwxxm:qnh>
-      <iwxxm:surfaceWind>
-        <iwxxm:AerodromeSurfaceWind variableWindDirection="{var_attr}">{wind_dir}
-          <iwxxm:meanWindSpeed uom="[kn_i]">{ir["wind_speed_kt"]}</iwxxm:meanWindSpeed>{wind_gust}
-{peak}        </iwxxm:AerodromeSurfaceWind>
-      </iwxxm:surfaceWind>
-{vis_block}{cloud}{addendum}    </iwxxm:MeteorologicalAerodromeObservation>
-  </iwxxm:observation>
-"""
+    addendum = _addendum_extension(ir)
+    peak = _peak_wind_extension(ir)
+    observation, trends = build_observation_and_trends(
+        ir,
+        addendum_extension=addendum,
+        peak_extension=peak,
+    )
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:{root} xmlns:iwxxm="{ns}"
@@ -191,7 +152,7 @@ def emit_metar_speci_iwxxm_us(
       <gml:timePosition>{stamp}</gml:timePosition>
     </gml:TimeInstant>
   </iwxxm:observationTime>
-{observation}</iwxxm:{root}>
+{observation}{trends}</iwxxm:{root}>
 """
 
 

@@ -4,6 +4,30 @@
   "generated": "2026-07-22",
   "issues": [
     {
+      "code": "AMD_PRESENT",
+      "severity": "info",
+      "message_template": "{product} AMD modifier present \u2014 research T1 / C1",
+      "product": "taf",
+      "tags": [
+        "modifier",
+        "taf",
+        "t1",
+        "c1"
+      ]
+    },
+    {
+      "code": "AT_PRESENT",
+      "severity": "info",
+      "message_template": "{product} AT time group present \u2014 research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "at"
+      ]
+    },
+    {
       "code": "AUTO_PRESENT",
       "severity": "info",
       "message_template": "{product} AUTO modifier present \u2014 research R8",
@@ -13,6 +37,32 @@
         "metar",
         "speci",
         "r8"
+      ]
+    },
+    {
+      "code": "BECMG_PRESENT",
+      "severity": "info",
+      "message_template": "{product} BECMG change group present \u2014 research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "becmg"
+      ]
+    },
+    {
+      "code": "CAVOK_PRESENT",
+      "severity": "info",
+      "message_template": "{product} CAVOK present \u2014 research T3 / S1",
+      "product": null,
+      "tags": [
+        "cavok",
+        "metar",
+        "speci",
+        "taf",
+        "t3",
+        "s1"
       ]
     },
     {
@@ -30,15 +80,29 @@
       ]
     },
     {
+      "code": "CNL_REPORT",
+      "severity": "info",
+      "message_template": "{product} CNL cancel report \u2014 research T1",
+      "product": "taf",
+      "tags": [
+        "cnl",
+        "taf",
+        "t1"
+      ]
+    },
+    {
       "code": "COR_PRESENT",
       "severity": "info",
-      "message_template": "{product} COR modifier present \u2014 research R8",
+      "message_template": "{product} COR modifier present \u2014 research R8 / T1 / C1",
       "product": null,
       "tags": [
         "modifier",
         "metar",
         "speci",
-        "r8"
+        "taf",
+        "r8",
+        "t1",
+        "c1"
       ]
     },
     {
@@ -49,6 +113,18 @@
       "tags": [
         "parse_gate",
         "body"
+      ]
+    },
+    {
+      "code": "FM_PRESENT",
+      "severity": "info",
+      "message_template": "{product} FM change group present \u2014 research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "fm"
       ]
     },
     {
@@ -70,19 +146,35 @@
       "product": "taf",
       "tags": [
         "cnl",
-        "taf"
+        "taf",
+        "t1"
       ]
     },
     {
       "code": "INVALID_NIL",
       "severity": "error",
-      "message_template": "{product} NIL must not include body groups \u2014 research R8",
+      "message_template": "{product} NIL must not include body groups \u2014 research R8 / T1 / C1",
       "product": null,
       "tags": [
         "nil",
         "metar",
         "speci",
-        "r8"
+        "taf",
+        "r8",
+        "t1",
+        "c1"
+      ]
+    },
+    {
+      "code": "INVALID_PROB",
+      "severity": "error",
+      "message_template": "{product} invalid PROB (only 30|40; must not qualify BECMG/FM) \u2014 App 5 \u00a71.4 / research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "prob"
       ]
     },
     {
@@ -108,6 +200,17 @@
         "metar",
         "speci",
         "r8"
+      ]
+    },
+    {
+      "code": "INVALID_TX_TN",
+      "severity": "error",
+      "message_template": "{product} TX/TN allowed on base forecast only \u2014 research T3",
+      "product": "taf",
+      "tags": [
+        "temperature",
+        "taf",
+        "t3"
       ]
     },
     {
@@ -309,15 +412,45 @@
       ]
     },
     {
+      "code": "MULTI_REPORT_BULLETIN",
+      "severity": "info",
+      "message_template": "{product} bulletin has multiple TAC reports \u2014 one IWXXM report per TAC (Guidance C1)",
+      "product": null,
+      "tags": [
+        "bulletin",
+        "metar",
+        "speci",
+        "taf",
+        "c1",
+        "one_report"
+      ]
+    },
+    {
+      "code": "NCD_PRESENT",
+      "severity": "info",
+      "message_template": "{product} NCD present \u2014 research S1",
+      "product": null,
+      "tags": [
+        "cloud",
+        "metar",
+        "speci",
+        "s1",
+        "auto"
+      ]
+    },
+    {
       "code": "NIL_REPORT",
       "severity": "info",
-      "message_template": "{product} NIL report \u2014 research R8",
+      "message_template": "{product} NIL report \u2014 research R8 / T1 / C1",
       "product": null,
       "tags": [
         "nil",
         "metar",
         "speci",
-        "r8"
+        "taf",
+        "r8",
+        "t1",
+        "c1"
       ]
     },
     {
@@ -333,6 +466,35 @@
       ]
     },
     {
+      "code": "NSC_PRESENT",
+      "severity": "info",
+      "message_template": "{product} NSC present \u2014 research T3 / S1 / C1",
+      "product": null,
+      "tags": [
+        "cloud",
+        "metar",
+        "speci",
+        "taf",
+        "t3",
+        "s1",
+        "c1"
+      ]
+    },
+    {
+      "code": "NSW_PRESENT",
+      "severity": "info",
+      "message_template": "{product} NSW present \u2014 research T3 / S1",
+      "product": null,
+      "tags": [
+        "weather",
+        "metar",
+        "speci",
+        "taf",
+        "t3",
+        "s1"
+      ]
+    },
+    {
       "code": "ODD_FIELD_ORDER",
       "severity": "warning",
       "message_template": "{product} groups out of A3-2 order (CCCC \u2192 ddhhmmZ \u2192 wind)",
@@ -344,6 +506,18 @@
         "metar",
         "speci",
         "r1"
+      ]
+    },
+    {
+      "code": "PROB_PRESENT",
+      "severity": "info",
+      "message_template": "{product} PROB30/40 change group present \u2014 research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "prob"
       ]
     },
     {
@@ -374,13 +548,39 @@
     {
       "code": "TEMPO_PRESENT",
       "severity": "info",
-      "message_template": "{product} TEMPO trend present \u2014 research R8",
+      "message_template": "{product} TEMPO trend present \u2014 research R8 / T2",
       "product": null,
       "tags": [
         "trend",
+        "change",
         "metar",
         "speci",
-        "r8"
+        "taf",
+        "r8",
+        "t2"
+      ]
+    },
+    {
+      "code": "TL_PRESENT",
+      "severity": "info",
+      "message_template": "{product} TL time group present \u2014 research T2",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "t2",
+        "tl"
+      ]
+    },
+    {
+      "code": "TX_TN_PRESENT",
+      "severity": "info",
+      "message_template": "{product} TX/TN temperature forecasts on base \u2014 research T3",
+      "product": "taf",
+      "tags": [
+        "temperature",
+        "taf",
+        "t3"
       ]
     },
     {
@@ -393,6 +593,43 @@
       ]
     },
     {
+      "code": "VV_NOT_OBSERVABLE",
+      "severity": "info",
+      "message_template": "{product} VV/// \u2014 verticalVisibility nil notObservable \u2014 research S1",
+      "product": null,
+      "tags": [
+        "cloud",
+        "metar",
+        "speci",
+        "s1",
+        "vv"
+      ]
+    },
+    {
+      "code": "VV_OMIT",
+      "severity": "info",
+      "message_template": "{product} VV/// \u2014 omit verticalVisibility without nilReason \u2014 research T3",
+      "product": "taf",
+      "tags": [
+        "cloud",
+        "taf",
+        "t3",
+        "vv"
+      ]
+    },
+    {
+      "code": "WIND_DIR_VARIATION",
+      "severity": "info",
+      "message_template": "{product} wind direction variation dddVddd \u2014 research S1",
+      "product": null,
+      "tags": [
+        "wind",
+        "metar",
+        "speci",
+        "s1"
+      ]
+    },
+    {
       "code": "WIND_VRB_OR_GUST",
       "severity": "info",
       "message_template": "{product} wind uses VRB and/or gust \u2014 research R8",
@@ -402,6 +639,18 @@
         "metar",
         "speci",
         "r8"
+      ]
+    },
+    {
+      "code": "WX_NOT_OBSERVABLE",
+      "severity": "info",
+      "message_template": "{product} present weather // \u2014 nil notObservable \u2014 research S1",
+      "product": null,
+      "tags": [
+        "weather",
+        "metar",
+        "speci",
+        "s1"
       ]
     }
   ]

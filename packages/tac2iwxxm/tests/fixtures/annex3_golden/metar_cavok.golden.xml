@@ -4,7 +4,7 @@
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    gml:id="metar.basic.kjfk"
+    gml:id="metar.cavok.kjfk"
     reportStatus="NORMAL"
     permissibleUsage="OPERATIONAL"
     automatedStation="false">
