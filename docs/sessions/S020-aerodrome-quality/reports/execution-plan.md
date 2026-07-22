@@ -13,7 +13,7 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M5 — FE catalog TAF tags + smoke + verify (F20) |
-| **Active task** | T5.7 (pending) |
+| **Active task** | T5.7 (in_progress) |
 | **Tasks** | 27 / 28 completed (through T5.6; M5 in progress) |
 | **Last updated** | 2026-07-22 |
 
@@ -104,7 +104,7 @@
 | T5.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M4, T5.2 | completed |
 | T5.5 | Test | 09-qa + 10-e2e — UJ-031 / TC-F20-001..006 | 09/10 | T5.4 | completed |
 | T5.6 | Docs | 11-verify-impl — per-Fn F20 + F6/F12 deepen sign-off | 11 | T5.5 | completed |
-| T5.7 | Test | 13-deploy-smoke — redeploy if API/FE changed; H1–H3 if API; **H4–H5 if FE** (T5.2) | 13; E15-7 | T5.6 | pending |
+| T5.7 | Test | 13-deploy-smoke — redeploy if API/FE changed; H1–H3 if API; **H4–H5 if FE** (T5.2) | 13; E15-7 | T5.6 | in_progress |
 
 ## Data Dependencies
 
