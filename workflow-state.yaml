@@ -41,8 +41,9 @@ active_session:
     - docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
     - docs/sessions/S020-aerodrome-quality/reports/t51-vitest-catalog-taf-tags.md
     - docs/sessions/S020-aerodrome-quality/reports/t52-fe-catalog-taf-tags.md
+    - docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md
     - docs/decisions/tech-decisions.md
-  note: "Phase C 07-build — T5.2 COMPLETE (FE catalog panel TAF tag filters/copy; E15-14; UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke product=taf+speci; active_milestone M5; active_task T5.3 pending. Evolve cycle remains open; gates.c_to_d remains pending."
+  note: "Phase C 07-build — T5.3 COMPLETE @ 80e638c (API smoke taf+speci); active_milestone M5; active_task T5.4 pending; progress 24/28; gates.c_to_d remains pending; next 08-verify-build."
   routing_plan:
     - stage: 00-context
       required: true
@@ -101,7 +102,7 @@ active_session:
       status: in_progress
       skip_rationale:
       started: '2026-07-22'
-      note: "T5.2 COMPLETE (FE catalog panel TAF tag filters/copy; E15-14; UJ-031); next T5.3 API smoke; M5 active"
+      note: "T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; M5 active; progress 24/28"
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2721,14 +2722,14 @@ stages:
         started_at: '2026-07-22'
         started: '2026-07-22'
         mode: full
-        note: "T5.2 COMPLETE (FE catalog panel TAF tag filters/copy; E15-14; UJ-031); next T5.3 API smoke; M5 active"
+        note: "T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; M5 active; progress 24/28"
         active_milestone: M5
-        active_task: T5.3
+        active_task: T5.4
         active_task_status: pending
         decision_id: D-S020-EV015-phase-b-pass
         branch: evolve/EV-015-aerodrome-quality
-        progress: "23/28"
-        report: docs/sessions/S020-aerodrome-quality/reports/t52-fe-catalog-taf-tags.md
+        progress: "24/28"
+        report: docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md
       - id: S019-dissemination-upload
         session_id: S019-dissemination-upload
         evolve_cycle_id: EV-014
@@ -2797,6 +2798,8 @@ stages:
         active_task_status: completed
         completed_at: '2026-07-19'
     notes:
+      - 2026-07-22 S020/EV-015 T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; progress 24/28; gates.c_to_d remains pending.
+      - 2026-07-22 S020/EV-015 T5.3 STARTED — API smoke product=taf + product=speci lint+convert + catalog GET (TC-F20-005); active_task T5.3 in_progress; M5 and 07-build remain active; progress 23/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.2 COMPLETE @ b630aa8 — FE catalog panel TAF tag filters/copy (E15-14; UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke product=taf+speci; progress 23/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.2 STARTED — FE extend catalog panel filters/copy for TAF (E15-14; UJ-031); active_task T5.2 in_progress; M5 and 07-build remain active; progress 22/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE extend catalog panel filters/copy for TAF; progress 22/28; gates.c_to_d remains pending.
@@ -2959,14 +2962,14 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-22'
-      note: "T5.2 COMPLETE (FE catalog panel TAF tag filters/copy; E15-14; UJ-031); next T5.3 API smoke; M5 active"
+      note: "T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; M5 active; progress 24/28"
       active_milestone: M5
-      active_task: T5.3
+      active_task: T5.4
       active_task_status: pending
       decision_id: D-S020-EV015-phase-b-pass
       branch: evolve/EV-015-aerodrome-quality
-      progress: "23/28"
-      report: docs/sessions/S020-aerodrome-quality/reports/t52-fe-catalog-taf-tags.md
+      progress: "24/28"
+      report: docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md
   09-qa:
     status: completed
     started_at: "2026-06-24T14:55:00Z"
@@ -3630,8 +3633,10 @@ stages:
     started_at: '2026-07-22'
     completed_at:
     current_stage: 07-build
-    note: "EV-015 open; 07-build in_progress — T5.2 COMPLETE (FE catalog panel TAF tag filters/copy); next T5.3; M5 active; gates.c_to_d pending."
+    note: "EV-015 open; 07-build in_progress — T5.3 COMPLETE @ 80e638c; active_task T5.4 pending; M5 active; progress 24/28; gates.c_to_d pending."
     notes:
+      - 2026-07-22 S020/EV-015 T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; progress 24/28; gates.c_to_d remains pending.
+      - 2026-07-22 S020/EV-015 T5.3 STARTED — API smoke product=taf + product=speci lint+convert + catalog GET (TC-F20-005); active_task T5.3 in_progress; M5 and 07-build remain active; progress 23/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.2 COMPLETE @ b630aa8 — FE catalog panel TAF tag filters/copy (E15-14; UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke product=taf+speci; progress 23/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.2 STARTED — FE extend catalog panel filters/copy for TAF (E15-14; UJ-031); active_task T5.2 in_progress; M5 and 07-build remain active; progress 22/28; gates.c_to_d remains pending.
       - 2026-07-22 S020/EV-015 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE extend catalog panel filters/copy for TAF; progress 22/28; gates.c_to_d remains pending.
@@ -3893,6 +3898,38 @@ issue_log:
     resolved_at: "2026-07-12"
 
 decisions_log:
+  - id: N-S020-EV015-T53-done
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 07-build
+    skill: 07-build
+    skill_id: 07-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: noted
+    decision: >-
+      2026-07-22 S020/EV-015 T5.3 COMPLETE — API smoke product=taf+speci lint+convert
+      + catalog GET (TC-F20-005); commit message
+      "[T5.3] test: API smoke product=taf+speci lint+convert + catalog GET (TC-F20-005)";
+      report docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md;
+      module apps/backend/tests/integration/test_tc_f20_005_taf_speci_catalog_smoke.py;
+      tip/sha 80e638c (80e638c065cd7a4cb76b66bf557fd6923c6deca4); next T5.4 (08-verify-build); active_milestone M5;
+      active_task T5.4 pending; progress 24/28; current_stage 07-build; cycle remains
+      in_progress; gates.c_to_d remains pending. Progress note.
+  - id: N-S020-EV015-T53-start
+    date: '2026-07-22'
+    timestamp: '2026-07-22'
+    stage: 07-build
+    skill: 07-build
+    skill_id: 07-build
+    session_id: S020-aerodrome-quality
+    evolve_cycle_id: EV-015
+    status: noted
+    decision: >-
+      2026-07-22 S020/EV-015 T5.3 STARTED — API smoke product=taf + product=speci
+      lint+convert + catalog GET (TC-F20-005); active_milestone M5; active_task
+      T5.3 in_progress; progress 23/28 until complete; current_stage 07-build;
+      cycle remains in_progress; gates.c_to_d remains pending. Progress note.
   - id: N-S020-EV015-T52-done
     date: '2026-07-22'
     timestamp: '2026-07-22'
@@ -9156,11 +9193,11 @@ evolve_cycles:
         Phase B / b_to_c passed 2026-07-22 (D-S020-EV015-phase-b-pass).
     current_stage: 07-build
     active_milestone: M5
-    active_task: T5.3
+    active_task: T5.4
     active_task_status: pending
-    progress: "23/28 tasks"
+    progress: "24/28 tasks"
     branch: evolve/EV-015-aerodrome-quality
-    note: "Phase C 07-build — T5.2 COMPLETE (FE catalog panel TAF tag filters/copy; E15-14; UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke product=taf+speci; active_milestone M5; active_task T5.3 pending. Evolve cycle remains open; gates.c_to_d remains pending."
+    note: "Phase C 07-build — T5.3 COMPLETE @ 80e638c (API smoke taf+speci); active_milestone M5; active_task T5.4 pending; progress 24/28; gates.c_to_d remains pending."
     decision_refs:
       - E15-1
       - E15-2
@@ -9188,6 +9225,8 @@ evolve_cycles:
       - D-S020-EV015-plan-1
       - D-S020-EV015-phase-b-pass
     notes:
+      - 2026-07-22 T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; progress 24/28; gates.c_to_d remains pending.
+      - 2026-07-22 T5.3 STARTED — API smoke product=taf + product=speci lint+convert + catalog GET (TC-F20-005); active_task T5.3 in_progress; M5 and 07-build remain active; progress 23/28; gates.c_to_d remains pending.
       - 2026-07-22 T5.2 COMPLETE @ b630aa8 — FE catalog panel TAF tag filters/copy (E15-14; UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke product=taf+speci; progress 23/28; gates.c_to_d remains pending.
       - 2026-07-22 T5.2 STARTED — FE extend catalog panel filters/copy for TAF (E15-14; UJ-031); active_task T5.2 in_progress; M5 and 07-build remain active; progress 22/28; gates.c_to_d remains pending.
       - 2026-07-22 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE catalog filters/copy; progress 22/28; gates.c_to_d remains pending.
@@ -9251,7 +9290,7 @@ evolve_cycles:
         status: in_progress
         started: '2026-07-22'
         completed:
-        note: "Orchestrator open; 07-build in_progress — T5.1 COMPLETE (red TDD Vitest catalog TAF tags); next T5.2; M5 active."
+        note: "Orchestrator open; 07-build in_progress — T5.3 COMPLETE @ 80e638c; active_task T5.4 pending; M5 active; progress 24/28."
       01-requirements:
         status: completed
         mode: delta
@@ -9280,9 +9319,9 @@ evolve_cycles:
         status: in_progress
         mode: full
         started: '2026-07-22'
-        active_task: T5.3
+        active_task: T5.4
         active_task_status: pending
-        note: "T5.2 COMPLETE (FE catalog panel TAF tag filters/copy; E15-14; UJ-031); next T5.3 API smoke; M5 active"
+        note: "T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; M5 active; progress 24/28"
       08-verify-build:
         status: pending
         mode: full
@@ -9321,6 +9360,9 @@ evolve_cycles:
     adrs:
       - docs/adr/ADR-028-metar-lint-issue-registry.md
     artifacts:
+      - path: docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md
+        status: present
+        note: T5.3 COMPLETE — API smoke taf+speci (TC-F20-005); next T5.4
       - path: docs/sessions/S020-aerodrome-quality/reports/t52-fe-catalog-taf-tags.md
         status: present
         note: T5.2 COMPLETE — FE catalog panel TAF tag filters/copy (E15-14; UJ-031); next T5.3
@@ -12264,17 +12306,16 @@ evolve_cycles:
 
 git_history:
   current_branch: evolve/EV-015-aerodrome-quality
-  ahead_of_origin: 31
+  ahead_of_origin: 33
   pushed: false
   pending_commit:
-  tip_sha: b630aa8
-  tip_sha_full: b630aa86988483bf5e0f787127ea7d05c92333d8
+  tip_sha: 80e638c
+  tip_sha_full: 80e638c065cd7a4cb76b66bf557fd6923c6deca4
   note: >-
-    S020/EV-015 T5.2 COMPLETE @ b630aa8 — FE catalog panel TAF tag filters/copy
-    (E15-14; UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke
-    product=taf+speci; active_task T5.3 pending; progress 23/28. Branch
-    evolve/EV-015-aerodrome-quality active / base main.
+    S020/EV-015 T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; progress 24/28; tip 80e638c. Branch evolve/EV-015-aerodrome-quality active / base main.
   notes:
+    - 2026-07-22 S020/EV-015 T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; progress 24/28; gates.c_to_d remains pending.
+    - 2026-07-22 S020/EV-015 T5.3 STARTED — API smoke product=taf + product=speci lint+convert + catalog GET (TC-F20-005); active_task T5.3 in_progress; M5 and 07-build remain active; progress 23/28; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.2 COMPLETE @ b630aa8 — FE catalog panel TAF tag filters/copy (E15-14; UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke product=taf+speci; progress 23/28; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.2 STARTED — FE extend catalog panel filters/copy for TAF (E15-14; UJ-031); active_task T5.2 in_progress; M5 and 07-build remain active; progress 22/28; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE extend catalog panel filters/copy for TAF; progress 22/28; gates.c_to_d remains pending.
@@ -13201,6 +13242,21 @@ git_history:
       pr_number: 716
       note: "PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy"
   commits:
+    - sha: 80e638c065cd7a4cb76b66bf557fd6923c6deca4
+      short: 80e638c
+      branch: evolve/EV-015-aerodrome-quality
+      message: "[T5.3] test: API smoke product=taf+speci lint+convert + catalog GET (TC-F20-005)"
+      stage: 07-build
+      session_id: S020-aerodrome-quality
+      evolve_cycle_id: EV-015
+      files_changed:
+        - apps/backend/tests/integration/test_tc_f20_005_taf_speci_catalog_smoke.py
+        - docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
+        - docs/sessions/S020-aerodrome-quality/reports/t53-api-smoke-taf-speci.md
+        - docs/test-plan.md
+      timestamp: '2026-07-22T22:36:12Z'
+      date: '2026-07-22'
+      note: T5.3 COMPLETE — API smoke taf+speci (TC-F20-005); next T5.4
     - sha: b630aa86988483bf5e0f787127ea7d05c92333d8
       short: b630aa8
       branch: evolve/EV-015-aerodrome-quality
