@@ -62,6 +62,8 @@ Diagnostics assertions require product-rule codes/spans from
 | `t2_errors`          | `false` | F20 T2 invalid PROB                                         |
 | `t3_modifier_info`   | `true`  | F20 T3 TX/TN CAVOK NSC NSW VV/// info                       |
 | `t3_errors`          | `false` | F20 T3 TX/TN on change group                                |
+| `s1_modifier_info`   | `true`  | F20 S1 SPECI exceptional NIL/CAVOK/NSC/NCD/… info           |
+| `s1_errors`          | `false` | F20 S1 SPECI malformed NIL                                  |
 
 ## Tooling
 

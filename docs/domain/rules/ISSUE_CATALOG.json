@@ -53,12 +53,15 @@
     {
       "code": "CAVOK_PRESENT",
       "severity": "info",
-      "message_template": "{product} CAVOK present \u2014 research T3",
-      "product": "taf",
+      "message_template": "{product} CAVOK present \u2014 research T3 / S1",
+      "product": null,
       "tags": [
         "cavok",
+        "metar",
+        "speci",
         "taf",
-        "t3"
+        "t3",
+        "s1"
       ]
     },
     {
@@ -406,6 +409,19 @@
       ]
     },
     {
+      "code": "NCD_PRESENT",
+      "severity": "info",
+      "message_template": "{product} NCD present \u2014 research S1",
+      "product": null,
+      "tags": [
+        "cloud",
+        "metar",
+        "speci",
+        "s1",
+        "auto"
+      ]
+    },
+    {
       "code": "NIL_REPORT",
       "severity": "info",
       "message_template": "{product} NIL report \u2014 research R8 / T1",
@@ -434,23 +450,29 @@
     {
       "code": "NSC_PRESENT",
       "severity": "info",
-      "message_template": "{product} NSC present \u2014 research T3",
-      "product": "taf",
+      "message_template": "{product} NSC present \u2014 research T3 / S1",
+      "product": null,
       "tags": [
         "cloud",
+        "metar",
+        "speci",
         "taf",
-        "t3"
+        "t3",
+        "s1"
       ]
     },
     {
       "code": "NSW_PRESENT",
       "severity": "info",
-      "message_template": "{product} NSW present \u2014 research T3",
-      "product": "taf",
+      "message_template": "{product} NSW present \u2014 research T3 / S1",
+      "product": null,
       "tags": [
         "weather",
+        "metar",
+        "speci",
         "taf",
-        "t3"
+        "t3",
+        "s1"
       ]
     },
     {
@@ -552,6 +574,19 @@
       ]
     },
     {
+      "code": "VV_NOT_OBSERVABLE",
+      "severity": "info",
+      "message_template": "{product} VV/// \u2014 verticalVisibility nil notObservable \u2014 research S1",
+      "product": null,
+      "tags": [
+        "cloud",
+        "metar",
+        "speci",
+        "s1",
+        "vv"
+      ]
+    },
+    {
       "code": "VV_OMIT",
       "severity": "info",
       "message_template": "{product} VV/// \u2014 omit verticalVisibility without nilReason \u2014 research T3",
@@ -564,6 +599,18 @@
       ]
     },
     {
+      "code": "WIND_DIR_VARIATION",
+      "severity": "info",
+      "message_template": "{product} wind direction variation dddVddd \u2014 research S1",
+      "product": null,
+      "tags": [
+        "wind",
+        "metar",
+        "speci",
+        "s1"
+      ]
+    },
+    {
       "code": "WIND_VRB_OR_GUST",
       "severity": "info",
       "message_template": "{product} wind uses VRB and/or gust \u2014 research R8",
@@ -573,6 +620,18 @@
         "metar",
         "speci",
         "r8"
+      ]
+    },
+    {
+      "code": "WX_NOT_OBSERVABLE",
+      "severity": "info",
+      "message_template": "{product} present weather // \u2014 nil notObservable \u2014 research S1",
+      "product": null,
+      "tags": [
+        "weather",
+        "metar",
+        "speci",
+        "s1"
       ]
     }
   ]

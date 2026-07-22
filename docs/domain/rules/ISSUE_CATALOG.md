@@ -13,7 +13,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `AT_PRESENT` | `info` | {product} AT time group present — research T2 | taf | change, taf, t2, at |
 | `AUTO_PRESENT` | `info` | {product} AUTO modifier present — research R8 | — | modifier, metar, speci, r8 |
 | `BECMG_PRESENT` | `info` | {product} BECMG change group present — research T2 | taf | change, taf, t2, becmg |
-| `CAVOK_PRESENT` | `info` | {product} CAVOK present — research T3 | taf | cavok, taf, t3 |
+| `CAVOK_PRESENT` | `info` | {product} CAVOK present — research T3 / S1 | — | cavok, metar, speci, taf, t3, s1 |
 | `CLOUD_CB_OR_TCU` | `info` | {product} cloud group includes convective type CB/TCU | — | cloud, metar, speci, r4, cb, tcu |
 | `CNL_REPORT` | `info` | {product} CNL cancel report — research T1 | taf | cnl, taf, t1 |
 | `COR_PRESENT` | `info` | {product} COR modifier present — research R8 / T1 | — | modifier, metar, speci, taf, r8, t1 |
@@ -44,10 +44,11 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_VISIBILITY` | `error` | {product} missing visibility or CAVOK — A3-2 #6 | — | visibility, metar, speci |
 | `MISSING_WIND` | `error` | {product} missing surface wind group — A3-2 #5 | — | wind, metar, speci |
 | `MULTIPLE_PHENOMENA` | `error` | {product} encodes multiple phenomenon families {hit} — A6 one-phenomenon gate | — | phenomenon, sigmet, airmet |
+| `NCD_PRESENT` | `info` | {product} NCD present — research S1 | — | cloud, metar, speci, s1, auto |
 | `NIL_REPORT` | `info` | {product} NIL report — research R8 / T1 | — | nil, metar, speci, taf, r8, t1 |
 | `NOSIG_PRESENT` | `info` | {product} NOSIG trend present — research R8 | — | trend, metar, speci, r8 |
-| `NSC_PRESENT` | `info` | {product} NSC present — research T3 | taf | cloud, taf, t3 |
-| `NSW_PRESENT` | `info` | {product} NSW present — research T3 | taf | weather, taf, t3 |
+| `NSC_PRESENT` | `info` | {product} NSC present — research T3 / S1 | — | cloud, metar, speci, taf, t3, s1 |
+| `NSW_PRESENT` | `info` | {product} NSW present — research T3 / S1 | — | weather, metar, speci, taf, t3, s1 |
 | `ODD_FIELD_ORDER` | `warning` | {product} groups out of A3-2 order (CCCC → ddhhmmZ → wind) | — | order, station, time, metar, speci, r1 |
 | `PROB_PRESENT` | `info` | {product} PROB30/40 change group present — research T2 | taf | change, taf, t2, prob |
 | `REMARK_US_EXTENSION` | `info` | {product} US remarks present — iwxxm_us profile awareness | — | remark, metar, speci, r5, iwxxm_us |
@@ -56,5 +57,8 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `TL_PRESENT` | `info` | {product} TL time group present — research T2 | taf | change, taf, t2, tl |
 | `TX_TN_PRESENT` | `info` | {product} TX/TN temperature forecasts on base — research T3 | taf | temperature, taf, t3 |
 | `UNKNOWN_PRODUCT` | `error` | Unknown product {product!r}; expected one of {expected} | — | parse_gate |
+| `VV_NOT_OBSERVABLE` | `info` | {product} VV/// — verticalVisibility nil notObservable — research S1 | — | cloud, metar, speci, s1, vv |
 | `VV_OMIT` | `info` | {product} VV/// — omit verticalVisibility without nilReason — research T3 | taf | cloud, taf, t3, vv |
+| `WIND_DIR_VARIATION` | `info` | {product} wind direction variation dddVddd — research S1 | — | wind, metar, speci, s1 |
 | `WIND_VRB_OR_GUST` | `info` | {product} wind uses VRB and/or gust — research R8 | — | wind, metar, speci, r8 |
+| `WX_NOT_OBSERVABLE` | `info` | {product} present weather // — nil notObservable — research S1 | — | weather, metar, speci, s1 |

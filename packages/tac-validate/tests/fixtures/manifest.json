@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "TC-F12-001 / E10-21 / TC-F15-003 / TC-F20-004 fixture pack for tac-validate (F12 + F15 R1\u2013R8 + F20 T1\u2013T3 TAF themes).",
+  "description": "TC-F12-001 / E10-21 / TC-F15-003 / TC-F20-004 fixture pack for tac-validate (F12 + F15 R1\u2013R8 + F20 T1\u2013T3 TAF + S1 SPECI themes).",
   "cite": [
     "docs/domain/TAC_VALIDATION.md (A3-2, A5-1, A6, A2-1, A2-2 paraphrase)",
     "docs/domain/rules/COVERAGE_MATRIX.md",
@@ -394,6 +394,94 @@
       "theme": "R8",
       "cite": "NIL report body; research R8",
       "tac": "accept/metar_r8_nil.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_nil",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "NIL obs; research S1 / #734",
+      "tac": "accept/speci_s1_nil.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_cavok",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "CAVOK; research S1 / #734",
+      "tac": "accept/speci_s1_cavok.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_nsc",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "NSC; research S1 / #734",
+      "tac": "accept/speci_s1_nsc.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_ncd",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "NCD; research S1 / #734",
+      "tac": "accept/speci_s1_ncd.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_nosig",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "NOSIG; research S1 / #734",
+      "tac": "accept/speci_s1_nosig.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_nsw_trend",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "NSW in trend; research S1 / #734",
+      "tac": "accept/speci_s1_nsw_trend.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_vv_not_obs",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "VV/// notObservable; research S1 / #734",
+      "tac": "accept/speci_s1_vv_not_obs.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_wx_slash",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "wx // notObservable; research S1 / #734",
+      "tac": "accept/speci_s1_wx_slash.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_rvr",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "RVR present; research S1 / #734",
+      "tac": "accept/speci_s1_rvr.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_wind_sector",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "dddVddd; research S1 / #734",
+      "tac": "accept/speci_s1_wind_sector.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_speci_s1_cor",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "COR; research S1 / #734",
+      "tac": "accept/speci_s1_cor.tac",
       "ok": true
     }
   ],
@@ -1317,6 +1405,142 @@
       "tac": "negative/taf/tx_on_change.tac",
       "ok": false,
       "expected_codes": ["INVALID_TX_TN"],
+      "require_spans": true
+    }
+  ],
+  "s1_modifier_info": [
+    {
+      "id": "speci_s1_nil_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "NIL \u2192 info; research S1",
+      "tac": "accept/speci_s1_nil.tac",
+      "ok": true,
+      "expected_codes": ["NIL_REPORT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_s1_cavok_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "CAVOK \u2192 info; research S1",
+      "tac": "accept/speci_s1_cavok.tac",
+      "ok": true,
+      "expected_codes": ["CAVOK_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_s1_nsc_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "NSC \u2192 info; research S1",
+      "tac": "accept/speci_s1_nsc.tac",
+      "ok": true,
+      "expected_codes": ["NSC_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_s1_ncd_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "NCD \u2192 info; research S1",
+      "tac": "accept/speci_s1_ncd.tac",
+      "ok": true,
+      "expected_codes": ["NCD_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_s1_nosig_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "NOSIG \u2192 info; research S1",
+      "tac": "accept/speci_s1_nosig.tac",
+      "ok": true,
+      "expected_codes": ["NOSIG_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_s1_nsw_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "NSW \u2192 info; research S1",
+      "tac": "accept/speci_s1_nsw_trend.tac",
+      "ok": true,
+      "expected_codes": ["NSW_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_s1_vv_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "VV/// \u2192 VV_NOT_OBSERVABLE; research S1",
+      "tac": "accept/speci_s1_vv_not_obs.tac",
+      "ok": true,
+      "expected_codes": ["VV_NOT_OBSERVABLE"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_s1_wx_slash_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "// \u2192 WX_NOT_OBSERVABLE; research S1",
+      "tac": "accept/speci_s1_wx_slash.tac",
+      "ok": true,
+      "expected_codes": ["WX_NOT_OBSERVABLE"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_s1_rvr_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "RVR \u2192 info; research S1",
+      "tac": "accept/speci_s1_rvr.tac",
+      "ok": true,
+      "expected_codes": ["RVR_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_s1_wind_sector_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "dddVddd \u2192 WIND_DIR_VARIATION; research S1",
+      "tac": "accept/speci_s1_wind_sector.tac",
+      "ok": true,
+      "expected_codes": ["WIND_DIR_VARIATION"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "speci_s1_cor_info",
+      "product": "SPECI",
+      "theme": "S1",
+      "cite": "COR \u2192 info; research S1",
+      "tac": "accept/speci_s1_cor.tac",
+      "ok": true,
+      "expected_codes": ["COR_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "s1_errors": [
+    {
+      "id": "speci_nil_with_body",
+      "product": "SPECI",
+      "theme": "S1",
+      "depth": "full_checklist",
+      "cite": "NIL must not carry body groups; research S1",
+      "tac": "negative/speci/nil_with_body.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_NIL"],
       "require_spans": true
     }
   ]

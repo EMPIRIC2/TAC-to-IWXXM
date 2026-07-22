@@ -13,6 +13,8 @@ from tac_validate.models import Issue
 _ICAO = re.compile(r"\b[A-Z]{4}\b")
 _OBS_TIME = re.compile(r"\b\d{6}Z\b")
 _WIND = re.compile(r"\b(?:(?:VRB|\d{3})\d{2,3}(?:G\d{2,3})?(?:KT|MPS)|CALM)\b")
+# Extreme direction variation group (Guidance: counter-clockwise then clockwise).
+_WIND_DIR_VAR = re.compile(r"^\d{3}V\d{3}$")
 # R2: CAVOK | statute miles (incl. fractions / M|P prefix) | 4-digit meters (9999).
 _VIS_OK = re.compile(r"\b(?:CAVOK|P?\d{1,2}SM|[MP]?\d{1,2}/\d{1,2}SM|\d{1,2}\s+[MP]?\d{1,2}/\d{1,2}SM|\d{4})\b")
 _VIS_BAD = re.compile(
@@ -735,7 +737,101 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
             body_end=end,
         )
     )
+    issues.extend(
+        _check_s1_exceptional(
+            tokens,
+            product=product,
+            core=core,
+            body_start=start,
+            body_end=end,
+        )
+    )
 
+    return issues
+
+
+def _check_s1_exceptional(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+) -> list[Issue]:
+    """S1 exceptional METAR/SPECI tokens (Guidance + #734) — info diagnostics."""
+    issues: list[Issue] = []
+    if "CAVOK" in tokens:
+        _emit_token_info(
+            issues,
+            code="CAVOK_PRESENT",
+            message=f"{product} CAVOK present — research T3 / S1",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="CAVOK",
+        )
+    if "NSC" in tokens:
+        _emit_token_info(
+            issues,
+            code="NSC_PRESENT",
+            message=f"{product} NSC present — research T3 / S1",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="NSC",
+        )
+    if "NCD" in tokens:
+        _emit_token_info(
+            issues,
+            code="NCD_PRESENT",
+            message=f"{product} NCD present — research S1",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="NCD",
+        )
+    if "NSW" in tokens:
+        _emit_token_info(
+            issues,
+            code="NSW_PRESENT",
+            message=f"{product} NSW present — research T3 / S1",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="NSW",
+        )
+    if "VV///" in tokens:
+        _emit_token_info(
+            issues,
+            code="VV_NOT_OBSERVABLE",
+            message=f"{product} VV/// — verticalVisibility nil notObservable — research S1",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="VV///",
+        )
+    if "//" in tokens:
+        _emit_token_info(
+            issues,
+            code="WX_NOT_OBSERVABLE",
+            message=f"{product} present weather // — nil notObservable — research S1",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="//",
+        )
+    for tok in tokens:
+        if _WIND_DIR_VAR.fullmatch(tok):
+            _emit_token_info(
+                issues,
+                code="WIND_DIR_VARIATION",
+                message=f"{product} wind direction variation {tok!r} — research S1",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            break
     return issues
 
 
@@ -943,7 +1039,7 @@ def _check_taf_t3_elements(
         _emit_token_info(
             issues,
             code="CAVOK_PRESENT",
-            message=f"{product} CAVOK present — research T3",
+            message=f"{product} CAVOK present — research T3 / S1",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -953,7 +1049,7 @@ def _check_taf_t3_elements(
         _emit_token_info(
             issues,
             code="NSC_PRESENT",
-            message=f"{product} NSC present — research T3",
+            message=f"{product} NSC present — research T3 / S1",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -963,7 +1059,7 @@ def _check_taf_t3_elements(
         _emit_token_info(
             issues,
             code="NSW_PRESENT",
-            message=f"{product} NSW present — research T3",
+            message=f"{product} NSW present — research T3 / S1",
             core=core,
             body_start=body_start,
             body_end=body_end,
