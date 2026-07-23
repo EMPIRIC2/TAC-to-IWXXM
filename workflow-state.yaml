@@ -17,8 +17,8 @@ active_session:
   evolve_cycle_id: EV-016
   artifacts_dir: docs/sessions/S021-golden-examples-ui/
   current_stage: 01-requirements
-  note: S021/EV-016 open — Phase 0 Batch1 locked (E16-1..E16-4 all A); Lean+build; 00-context completed; 16-evolve 
-    orchestrating; next 01-requirements delta (deepen F7)
+  note: >-
+    S021/EV-016 Phase 0 complete — Batch1 locked (E16-1..E16-4 all A); Lean+build; 00-context completed; next is 01-requirements interview (pending until 01 skill starts)
   started_at: '2026-07-22'
   context_briefs:
   - docs/context/golden-examples-ui.md
@@ -49,7 +49,8 @@ active_session:
     mode: delta
     status: pending
     skip_rationale:
-    note:
+    note: Phase 0 complete; pending until 01 skill formally starts
+
   - stage: 02-verify-plan
     required: true
     mode: delta
@@ -10275,8 +10276,8 @@ evolve_cycles:
       (Lean+build).
   current_stage: 01-requirements
   branch: evolve/EV-016-golden-examples-ui
-  note: 'S021/EV-016 open — Phase 0 Batch1 locked (E16-1..E16-4 all A); 00 completed; next 01-requirements delta (deepen F7
-    / #780)'
+  note: >-
+    S021/EV-016 Phase 0 complete — Batch1 locked (E16-1..E16-4 all A); Lean+build; 00-context completed; next is 01-requirements interview (pending until 01 skill starts)
   decision_refs:
   - E16-1
   - E16-2
@@ -10297,11 +10298,13 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-22'
-      note: Orchestrator in_progress after Phase 0 scope lock; next 01-requirements
+      note: Phase 0 complete; orchestrating — next 01-requirements interview
+
     01-requirements:
       status: pending
       mode: delta
-      note:
+      note: Phase 0 complete; awaiting 01-requirements interview start
+
     02-verify-plan:
       status: pending
       mode: delta
@@ -13845,12 +13848,13 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: eae8bdc
-  tip_sha_full: eae8bdcfea86351f7755c8e54750ac14a33130b1
+  tip_sha: 9f2f552
+  tip_sha_full: 9f2f5526d28a6b2c30ef787e4de42c0f4ac80385
   note: >-
     S020/EV-015 PR #778 MERGED @ eae8bdc; T5.7 in_progress (13-deploy-smoke); progress 27/28; awaiting Deploy/GHCR main-latest
     + Render redeploy; then H1–H5 + catalog taf/speci. Branch evolve/EV-015-aerodrome-quality (merged to main).
   notes:
+  - '2026-07-22 S021/EV-016 session-open commit recorded — 9f2f552 (9f2f5526d28a6b2c30ef787e4de42c0f4ac80385); Phase 0 complete; next 01-requirements interview (pending)'
   - '2026-07-22 S020/EV-015 PR #778 MERGED to main @ eae8bdc (eae8bdcfea86351f7755c8e54750ac14a33130b1); T5.7 still in_progress
     — awaiting Deploy/GHCR main-latest + Render redeploy; then H1–H5 + catalog taf/speci; progress 27/28; gates.c_to_d remains
     pending.'
@@ -17795,6 +17799,23 @@ git_history:
     timestamp: "2026-07-15T23:45:00Z"
     session_id: S012-empty-bearer-lint-tac
     note: "PR #721 merged; production verified"
+  - sha: 9f2f5526d28a6b2c30ef787e4de42c0f4ac80385
+    short: 9f2f552
+    branch: evolve/EV-016-golden-examples-ui
+    message: 'chore(S021): open EV-016 golden-examples-ui session (#780)'
+    stage: 00-context
+    skill_id: 16-evolve
+    session_id: S021-golden-examples-ui
+    evolve_cycle_id: EV-016
+    files_changed:
+    - docs/sessions/S021-golden-examples-ui/session-brief.md
+    - docs/sessions/S021-golden-examples-ui/routing-plan.md
+    - docs/context/golden-examples-ui.md
+    - docs/decisions/evolve-decisions.md
+    - workflow-state.yaml
+    timestamp: '2026-07-22'
+    note: 'S021/EV-016 session open — Phase 0 complete; next 01-requirements interview (pending)'
+
 pr_review_cycles:
 - id: PRR-001
   pr_number: 679
