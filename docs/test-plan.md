@@ -2,13 +2,13 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-22 (S020 / EV-015 — F20 TAF+SPECI quality / UJ-031)
+> **Last updated**: 2026-07-22 (S021 / EV-016 — F7.g golden examples / UJ-032 / TC-F7-008)
 
 ## Scope
 
 **In scope**: Product features F1–F20 (F1 superseded by F6 engine; F7 Planned — workbench
-smoke under F15/F20 only; F8–F15 as prior cycles; **F16–F19 Done** dissemination epic;
-**F20 Planned** TAF+SPECI quality);
+smoke under F15/F20; **F7.g** golden examples #780 / UJ-032; F8–F15 as prior cycles;
+**F16–F19 Done** dissemination epic; **F20** TAF+SPECI quality);
 monorepo migration validation M1–M6 (M3 deprecated at F6 cutover); connectivity tiers
 **H0c–H7** (local + live Render); tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics
 (library/CI); backend thin wrappers; F7 decode/spans/soft-preview/workbench/unified sessions;
@@ -77,6 +77,7 @@ Unified manual live test harness against Render staging:
 | UJ-029 | F18 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (UI smoke; live BYOC cycle-close) | live BYOC | TC-F18-001..002 |
 | UJ-030 | F19 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F19-001..003 |
 | UJ-031 | F20 | TAF/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F20-001..006 |
+| UJ-032 | F7 | Golden examples load (convert + validate) | H4–H5 if FE | TC-F7-008 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -312,6 +313,27 @@ admin suite modules.
 - **Source**: UJ-025; ADR-024; [#730](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/730);
   S016 / EV-012 (E12-1..E12-4; S2.2 = T1–T6 hard)
 
+### TC-F7-008: Golden examples load (UJ-032 / #780)
+
+- **Level**: T0 / T2 (Vitest hard) / H4–H5 when FE deploys
+- **Objective**: Frontend static example catalog loads into FileConverter correctly
+- **Matrix**:
+
+  | Case | Action | Expect |
+  | ---- | ------ | ------ |
+  | C1 | Catalog completeness | ≥2 TAC/product **or** documented 1-fixture gap; ≥1 AHL; ≥1 happy-path IWXXM |
+  | C2 | Load TAC example | Editor body set; `product` set; toast; demo labeling |
+  | C3 | Load AHL example | `inputMode` = `ahl_bulletin`; multi-report body |
+  | C4 | Load IWXXM example | `inputMode` = `collect_iwxxm` (or validate path); happy-path XML |
+  | C5 | Soft-fail / file-queue | **Out of v1** — not tested |
+
+- **Pass criteria**:
+  1. Vitest: catalog unit + FileConverter click-to-load green
+  2. No backend / env / DB dependency
+  3. Staging H4–H5 smoke when frontend ships (13-deploy-smoke)
+- **Source**: UJ-032; [#780](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/780);
+  S021 / EV-016 (E16-5..E16-9)
+
 ### F7 UI↔API connection integration
 
 Cross-layer coverage for workbench connection points (not only isolated unit/TC modules):
@@ -323,6 +345,7 @@ Cross-layer coverage for workbench connection points (not only isolated unit/TC 
 | Soft-preview / Failed-TAC | `POST /api/v1/convert` (`preview=true`) | same + `test_frontend_contract_integration.py` | same |
 | My METARs / sessions | `/api/v1/work-sessions*` + `product` | same | same |
 | Manual TAC Input modes | `/convert`, `/convert-bulletin`, `/ingest-collect` | existing convert/bulletin tests + 501 | TC-F7-007 e2e (S016) |
+| Golden examples (static FE) | (none — client fixtures) | — | TC-F7-008 Vitest (S021) |
 | Browser CORS (H0i) | OPTIONS on lint/decode/convert | same + `test_h0i_connectivity.py` | — |
 
 ### F7 verify/deploy gate
@@ -342,6 +365,13 @@ Before closing S011 / EV-008:
 - [ ] H4–H5 + authenticated AHL + COLLECT 501 on staging (13-deploy-smoke)
 - [ ] Auto-switch (T3) required — no waiver without AskQuestion
 - [ ] T5 (`.gz`) and T6 (read-only disable) hard gates (S2.2)
+
+### F7 golden-examples gate (S021 / EV-016 / #780)
+
+- [ ] TC-F7-008 green at T0/T2 (Vitest catalog + click-to-load)
+- [ ] F7.g acceptance in feature-list met (or documented 1-fixture gaps)
+- [ ] No backend / env / DB changes
+- [ ] H4–H5 when FE deploys (13-deploy-smoke)
 - [ ] #730 checklist documented; defects filed as separate bugs
 - [ ] F7 status remains **Planned** (no Implemented flip this cycle)
 

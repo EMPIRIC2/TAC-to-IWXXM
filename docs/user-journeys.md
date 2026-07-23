@@ -45,6 +45,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3** (live BYOC) |
 | UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3** |
 | UJ-031 | TAF + SPECI lint / convert→validate golden | UI / API / CI | F20 (+F6/F12) | T0 / T2 / **T3** |
+| UJ-032 | Load golden example → convert / validate | apps/frontend | F7 (#780) | T0 / T2 / H4–H5 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -757,6 +758,46 @@ placeholder; does **not** replace H7 API gate design.
 
 **Automated tests**: Vitest (`inputKind`, `api` 501, `FileConverter` mode group); Playwright
 `apps/e2e/` (TC-F7-007 T1–T6 hard); live H6′ / staging smoke. **Tier: T2 / T3 / H6′**.
+
+---
+
+### UJ-032: Load Golden Example → Convert / Validate (F7.g / #780)
+
+**Actor**: Operator
+
+**Goal**: One-click load a curated **demo / non-operational** TAC, AHL bulletin, or
+happy-path IWXXM sample into the workbench — no paste — then convert or validate using
+existing APIs.
+
+**Feature**: F7 deepen (F7.g) — S021 / EV-016; status remains **Planned**
+
+**Relationship**: Complements UJ-025 input modes and UJ-005/UJ-002 convert/validate paths;
+does **not** add backend fixture APIs.
+
+**Steps**:
+
+1. Open operator workbench → Manual TAC Input / FileConverter.
+2. Open **Examples** control (product-aware dropdown or chip row).
+3. Select a named example for a product (e.g. METAR basic) → editor fills; `product` set;
+   toast (“Loaded METAR basic example”); label shows demo / non-operational.
+4. Convert (TAC mode) succeeds for happy-path goldens.
+5. Select AHL bulletin example → `inputMode` = `ahl_bulletin`; body is multi-report bulletin.
+6. Select IWXXM COLLECT/XML example → `inputMode` = `collect_iwxxm` (or validate path);
+   body is happy-path IWXXM (soft-fail examples **out of v1**).
+7. Repeat for remaining products; where only one in-repo fixture exists
+   (SIGMET/AIRMET/VAA/TCA), catalog documents the gap — do not invent TAC.
+
+**Acceptance**:
+
+1. Catalog exposes ≥2 TAC examples per product **or** an explicit 1-fixture gap note
+2. ≥1 AHL + ≥1 happy-path IWXXM loadable
+3. Load sets body + product + inputMode when relevant
+4. Vitest TC-F7-008 green (catalog completeness + click-to-load)
+5. No backend / env / DB changes; examples are static FE assets
+6. H4–H5 smoke when frontend deploys (optional Playwright smoke — Vitest is hard gate)
+
+**Automated tests**: Vitest catalog + FileConverter Examples UX (TC-F7-008); staging H4–H5
+when FE ships. **Tier: T0 / T2 / H4–H5**.
 
 ---
 

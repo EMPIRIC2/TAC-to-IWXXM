@@ -22,6 +22,16 @@
 | E16-3 | decision | Routing preset? | **A** — Lean+build (`00→16→01→02→04→07→08→09→10→11→13`) |
 | E16-4 | decision | Scope lock? | **A** — #780 AC (FE fixtures + Examples UX + Vitest; no backend) |
 
+### Scope (Batch 2 — 01-requirements — locked 2026-07-22)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E16-5 | decision | User journey? | **A** — **UJ-032** + **TC-F7-008** |
+| E16-6 | decision | F7 status? | **A** — stay **Planned**; add slice **F7.g** |
+| E16-7 | decision | Optional #780 items? | **A** — happy-path IWXXM only; skip soft-fail + file-upload queue |
+| E16-8 | ambiguity | Thin hazard fixtures? | **A** — use in-repo only; allow **1** + document gap; no invented TAC |
+| E16-9 | decision | Spec delta set? | **A** — feature-list + user-journeys + test-plan + light spec; no api/config/deploy env |
+
 ### Scope summary (approved)
 
 Frontend-only pre-loaded goldens for convert + validate: ≥2 TAC/product × 7 products;

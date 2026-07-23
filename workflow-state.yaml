@@ -18,7 +18,8 @@ active_session:
   artifacts_dir: docs/sessions/S021-golden-examples-ui/
   current_stage: 01-requirements
   note: >-
-    S021/EV-016 Phase 0 complete — Batch1 locked (E16-1..E16-4 all A); Lean+build; 00-context completed; next is 01-requirements interview (pending until 01 skill starts)
+    S021/EV-016 01-requirements in_progress — Phase 0 locked (E16-1..E16-4 all A); Lean+build; 00-context completed; 01 delta
+    interview started
   started_at: '2026-07-22'
   context_briefs:
   - docs/context/golden-examples-ui.md
@@ -47,10 +48,11 @@ active_session:
   - stage: 01-requirements
     required: true
     mode: delta
-    status: pending
+    status: in_progress
     skip_rationale:
-    note: Phase 0 complete; pending until 01 skill formally starts
+    note: 'S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780; interview in progress'
 
+    started: '2026-07-22'
   - stage: 02-verify-plan
     required: true
     mode: delta
@@ -1848,64 +1850,44 @@ stages:
     - "Phase 3 R1–R6 resolved by user 2026-07-13; R6 BYO-only includes Postgres/DATABASE_URL/SQL URIs"
     - "Phase 4 wrote docs/context/f7-operator-ui.md; indexed in docs/context/README.md"
   01-requirements:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: "2026-06-14T00:00:00Z"
-    completed_at: '2026-07-22'
-    session_id: S020-aerodrome-quality
-    evolve_cycle_id: EV-015
+    started_at: "2026-07-22"
+    completed_at:
+    session_id: S021-golden-examples-ui
+    evolve_cycle_id: EV-016
     note: >-
-      S020/EV-015 01-requirements delta COMPLETE 2026-07-22 (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done;
-      document_manifest approved B (D-S020-EV015-manifest-1 / E15-9); ADR skipped (ADR-028 reuse); handoff 02-verify-plan.
-      Historical baseline completed 2026-07-21 (S019); tracked via delta_substages + active_session.
+      S021/EV-016 01-requirements STARTED (delta) 2026-07-22 — deepen F7 / #780 goldens UI; historical baseline completed
+      2026-07-22 (S020); tracked via delta_substages + active_session.
     substeps:
       interviews:
-        status: completed
-        completed: 6
+        status: in_progress
+        completed: 0
         total: 6
         current_template:
-        current_section: complete
+        current_section:
         planned_docs:
           status:
-            feature-list: completed
-            spec: completed
-            user-journeys: completed
-            test-plan: completed
-            api-contract: completed
-            coverage-matrix: completed
-            ADR: skipped
+            feature-list: pending
+            spec: pending
+            user-journeys: pending
+            test-plan: pending
+            api-contract: pending
+            coverage-matrix: pending
+            ADR: pending
     active_session:
-      session_id: S020-aerodrome-quality
-      evolve_cycle_id: EV-015
-      status: completed
+      session_id: S021-golden-examples-ui
+      evolve_cycle_id: EV-016
+      status: in_progress
       mode: delta
       started_at: '2026-07-22'
-      completed_at: '2026-07-22'
+      completed_at:
       note: >-
-        S020/EV-015 01-requirements delta COMPLETE (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; manifest
-        B; ADR skipped (ADR-028 reuse); handoff 02-verify-plan
-      proposed_features:
-      - F20
+        S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780; interview in progress
+      proposed_features: []
       deepen:
-      - F6.b
-      - F6.c
-      - F12
+      - F7
       document_manifest:
-        status: approved
-        approved_at: '2026-07-22'
-        decision_id: D-S020-EV015-manifest-1
-        option: B
-        mode: delta
-        approved_documents:
-        - feature-list
-        - spec
-        - user-journeys
-        - test-plan
-        - api-contract
-        - coverage-matrix
-        skipped_documents:
-        - ADR
-        skip_note: ADR skipped — ADR-028 reuse
       substeps:
         interviews:
           status: completed
@@ -1922,16 +1904,7 @@ stages:
               api-contract: completed
               coverage-matrix: completed
               ADR: skipped
-      artifacts:
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/api-contract.md
-      - docs/domain/rules/COVERAGE_MATRIX.md
-      - docs/decisions/requirements-decisions.md
-      - docs/sessions/S020-aerodrome-quality/reports/01-requirements.md
-      - .cursor/rules/core/plan-adherence.mdc
+      artifacts: []
     delta_substages:
     - status: completed
       mode: delta
@@ -2205,6 +2178,7 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - '2026-07-22 S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780 goldens UI; interview in progress'
     - 2026-07-22 S020/EV-015 01-requirements COMPLETE (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; 
       manifest B; ADR skipped (ADR-028 reuse); handoff 02-verify-plan
     - 2026-07-22 S020/EV-015 01-requirements interviews 6/6 written — manifest B approved (D-S020-EV015-manifest-1 / 
@@ -10277,13 +10251,15 @@ evolve_cycles:
   current_stage: 01-requirements
   branch: evolve/EV-016-golden-examples-ui
   note: >-
-    S021/EV-016 Phase 0 complete — Batch1 locked (E16-1..E16-4 all A); Lean+build; 00-context completed; next is 01-requirements interview (pending until 01 skill starts)
+    S021/EV-016 01-requirements in_progress — Phase 0 Batch1 locked (E16-1..E16-4 all A); Lean+build; 00 completed; 01 delta
+    interview started
   decision_refs:
   - E16-1
   - E16-2
   - E16-3
   - E16-4
   notes:
+  - '2026-07-22 S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780; interview in progress'
   - '2026-07-22 S021/EV-016 open — Batch1 E16-1..E16-4 all A; Lean+build; deepen F7 only; #780 FE goldens+Examples UX+Vitest;
     no backend; branch evolve/EV-016-golden-examples-ui'
   stages:
@@ -10301,10 +10277,11 @@ evolve_cycles:
       note: Phase 0 complete; orchestrating — next 01-requirements interview
 
     01-requirements:
-      status: pending
+      status: in_progress
       mode: delta
-      note: Phase 0 complete; awaiting 01-requirements interview start
+      note: 'S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780'
 
+      started: '2026-07-22'
     02-verify-plan:
       status: pending
       mode: delta
@@ -13854,7 +13831,8 @@ git_history:
     S020/EV-015 PR #778 MERGED @ eae8bdc; T5.7 in_progress (13-deploy-smoke); progress 27/28; awaiting Deploy/GHCR main-latest
     + Render redeploy; then H1–H5 + catalog taf/speci. Branch evolve/EV-015-aerodrome-quality (merged to main).
   notes:
-  - '2026-07-22 S021/EV-016 session-open commit recorded — 9f2f552 (9f2f5526d28a6b2c30ef787e4de42c0f4ac80385); Phase 0 complete; next 01-requirements interview (pending)'
+  - '2026-07-22 S021/EV-016 session-open commit recorded — 9f2f552 (9f2f5526d28a6b2c30ef787e4de42c0f4ac80385); Phase 0 complete;
+    next 01-requirements interview (pending)'
   - '2026-07-22 S020/EV-015 PR #778 MERGED to main @ eae8bdc (eae8bdcfea86351f7755c8e54750ac14a33130b1); T5.7 still in_progress
     — awaiting Deploy/GHCR main-latest + Render redeploy; then H1–H5 + catalog taf/speci; progress 27/28; gates.c_to_d remains
     pending.'

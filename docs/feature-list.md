@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-22 (S020 / EV-015 — F20 TAF+SPECI quality Done; #778 live)
+> **Last updated**: 2026-07-22 (S021 / EV-016 — F7.g golden examples / #780 in progress)
 
 ## Summary
 
@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
 | F5 | User METAR work history | Planned | Product | docs/context/metar-work-history.md, S004 |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011 / EV-008; build this cycle |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011 / EV-008; F7.g #780 (S021) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018/019; `apps/worker` |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
@@ -214,6 +214,7 @@
   | F7.d | #694 | Live workbench (debounced lint/decode/validate/convert, spans, console) |
   | F7.e | F7 / R2′ | Unified `tac_work_sessions` + migrate F5; My METARs filter |
   | F7.f | — | Verify & deploy (08–13) |
+  | F7.g | #780 | Pre-loaded golden examples (convert + validate) — S021 / EV-016 |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); JWT; editor cursor and character spans
@@ -226,6 +227,12 @@
 - **Validation deepen (S016 / EV-012 / #730)**: Operator-visible Manual TAC Input modes
   (TAC / AHL / COLLECT) validated via UJ-025 / TC-F7-007 (Playwright **T1–T6** hard + Vitest + staging
   H4–H5 / AHL / COLLECT 501). Auto-switch required. Does **not** flip F7 → Implemented.
+- **Golden examples (S021 / EV-016 / #780)**: Frontend-only static catalog in
+  `apps/frontend` (copy from package goldens — no Python runtime import). Product-aware
+  Examples control in `FileConverter` loads TAC / AHL / happy-path IWXXM into existing
+  input modes and sets `product` / `inputMode`. Soft-fail IWXXM and file-upload queue
+  **out of v1**. Hazard products may ship **1** known-good when a second in-repo fixture
+  is absent (do not invent TAC). UJ-032 / TC-F7-008. Does **not** flip F7 → Implemented.
 - **F6 engine companions (still F6 packages; UX under F7)**: decode segments; optional integer
   `start`/`end` on lint/validate issues; soft-preview / partial convert (flag or dedicated
   endpoint — finalize in 04-tech-plan).
@@ -242,6 +249,13 @@
      = METAR/SPECI filter
   7. H4–H5 connectivity for new browser→API calls; admin E2E retired
   8. Child issues #697/#702/#665/#666/#694 closed or linked; #5 remains open with summary
+- **Acceptance (F7.g / #780 — does not complete F7 v1)**:
+  1. Each of seven products has ≥2 loadable TAC examples **or** documented 1-fixture gap
+     (SIGMET/AIRMET/VAA/TCA when only one in-repo golden exists)
+  2. ≥1 AHL bulletin and ≥1 happy-path IWXXM COLLECT/XML example loadable
+  3. Loading sets editor body + `product` + `inputMode` when relevant; demo labeling clear
+  4. Vitest: catalog completeness + click-to-load (TC-F7-008); H4–H5 smoke when FE deploys
+  5. No backend routes, env vars, or DB seeds required
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -251,7 +265,8 @@
   | G4 | VAA/TCA decode spans: **best-effort + explicit residuals** in v1 (full field offsets not required) |
   | R2′ | **Override R2**: unified `tac_work_sessions` + migrate F5 rows (Spec Batch 2 A / 2026-07-13) |
 - **Source**: S011 Phase 0 R1–R6; Feature List Batches 1–2 (2026-07-13);
-  [Context: f7-operator-ui](context/f7-operator-ui.md); issues #694/#702/#665/#666/#697
+  [Context: f7-operator-ui](context/f7-operator-ui.md); issues #694/#702/#665/#666/#697;
+  [Context: golden-examples-ui](context/golden-examples-ui.md); #780 (S021 / EV-016)
 
 ### F8: Near-Realtime TAC Ingest → IWXXM Gate
 

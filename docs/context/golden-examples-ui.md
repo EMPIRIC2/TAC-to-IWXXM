@@ -36,6 +36,9 @@ TAC / AHL / IWXXM samples into the convert + validate workbench without pasting.
 | R2 | Frontend static catalog; copy from package fixtures — never import Python at runtime |
 | R3 | Wire into existing FileConverter input modes — no new modes |
 | R4 | Lean+build routing; skip 03/05/06/12 unless forced |
+| R5 | UJ-032 + TC-F7-008; F7.g slice; F7 stays Planned (E16-5..E16-6) |
+| R6 | Happy-path IWXXM only; no soft-fail / file-queue v1 (E16-7) |
+| R7 | Thin hazard fixtures: allow 1 + document gap; no invented TAC (E16-8) |
 
 ## Non-goals (cycle)
 

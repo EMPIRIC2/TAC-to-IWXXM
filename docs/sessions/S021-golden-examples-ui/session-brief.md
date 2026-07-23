@@ -9,7 +9,13 @@ orchestrator: 16-evolve
 evolve_cycle_id: EV-016
 context_briefs:
   - docs/context/golden-examples-ui.md
-standing_docs_touched: []
+standing_docs_touched:
+  - docs/feature-list.md
+  - docs/user-journeys.md
+  - docs/test-plan.md
+  - docs/spec.md
+  - docs/decisions/evolve-decisions.md
+  - docs/decisions/requirements-decisions.md
 ---
 
 # Session S021 — golden-examples-ui
@@ -36,6 +42,11 @@ Complements F7 sample loaders called out in #714; does **not** change F6/F2 engi
 | E16-2 | Deepen **F7** only (no new Fn) |
 | E16-3 | Routing **Lean+build** |
 | E16-4 | Scope lock = #780 AC (FE fixtures + Examples UX + Vitest; no backend) |
+| E16-5 | UJ-032 + TC-F7-008 |
+| E16-6 | F7 stays Planned; slice F7.g |
+| E16-7 | Happy-path IWXXM only; skip soft-fail + file-upload queue |
+| E16-8 | Thin hazard fixtures: in-repo only; allow 1 + document gap |
+| E16-9 | Spec deltas: feature-list + journeys + test-plan + light spec |
 | AskQuestion | Waived (written interview; UI unavailable) |
 
 ## Proposed Fn allocation
