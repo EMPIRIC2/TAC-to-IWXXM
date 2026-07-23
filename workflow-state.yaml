@@ -15,9 +15,9 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-016
   artifacts_dir: docs/sessions/S021-golden-examples-ui/
-  current_stage: 02-verify-plan
+  current_stage: 04-tech-plan
   note: >-
-    S021-golden-examples-ui/EV-016 02-verify-plan in_progress 2026-07-22 — product plan delta audit started (after 01-requirements E16-5..E16-9)
+    S021/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS; current_stage=04-tech-plan (pending); gates.a_to_b pending until user approves Phase A→B
   started_at: '2026-07-22'
   context_briefs:
   - docs/context/golden-examples-ui.md
@@ -27,6 +27,7 @@ active_session:
   - docs/sessions/S021-golden-examples-ui/session-brief.md
   - docs/sessions/S021-golden-examples-ui/routing-plan.md
   - docs/sessions/S021-golden-examples-ui/reports/01-requirements.md
+  - docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md
   - docs/context/golden-examples-ui.md
   - docs/feature-list.md
   - docs/user-journeys.md
@@ -47,7 +48,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-22'
-    note: EV-016 orchestrator in_progress — 02-verify-plan started 2026-07-22
+    note: EV-016 orchestrator in_progress — 02 COMPLETE; awaiting Phase A→B before 04-tech-plan
   - stage: 01-requirements
     required: true
     mode: delta
@@ -61,16 +62,17 @@ active_session:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     skip_rationale:
-    note: 'S021-golden-examples-ui/EV-016 02-verify-plan STARTED (delta) 2026-07-22 — in_progress; inventory/consistency/statement review pending'
+    note: 'S021/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS (F7.g / UJ-032 / TC-F7-008); artifact docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md; Phase A / gates.a_to_b pending before 04; do not start 04'
     started: '2026-07-22'
+    completed: '2026-07-22'
   - stage: 04-tech-plan
     required: true
     mode: delta
     status: pending
     skip_rationale:
-    note:
+    note: 'Awaiting Phase A→B (gates.a_to_b pending); do not start until user approves'
   - stage: 07-build
     required: true
     mode: full
@@ -2183,53 +2185,56 @@ stages:
     - "2026-07-12 S008-realtime-ingest amend COMPLETE — delta status completed; overall 01-requirements completed; advancing to 04-tech-plan (pending)"
 
   02-verify-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: "2026-07-22"
-    completed_at:
+    completed_at: "2026-07-22"
     session_id: S021-golden-examples-ui
     evolve_cycle_id: EV-016
     note: >-
-      S021-golden-examples-ui/EV-016 02-verify-plan delta in_progress 2026-07-22. Prior S020/EV-015 COMPLETE 2026-07-22 retained in delta_substages.
+      S021-golden-examples-ui/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS. Prior S020/EV-015 COMPLETE retained in delta_substages.
+      Phase A / gates.a_to_b pending before 04-tech-plan.
     substeps:
       inventory:
-        status: pending
+        status: completed
       consistency_check:
-        status: pending
+        status: completed
       statement_review:
-        auto_approved: 0
+        auto_approved: 8
         pending: 0
-        reviewed: 0
+        reviewed: 8
     current_document:
     current_statement:
     active_session:
       session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
       skill_id: 02-verify-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-07-22'
-      completed_at:
-      note: S021-golden-examples-ui/EV-016 02-verify-plan STARTED (delta) 2026-07-22 — in_progress; inventory/consistency/statement review pending
+      completed_at: '2026-07-22'
+      note: S021/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS (F7.g / UJ-032 / TC-F7-008); artifact docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md; Phase A / gates.a_to_b pending before 04; do not start 04
     artifacts:
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
+    - docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
     - session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
       skill_id: 02-verify-plan
-      status: in_progress
+      status: completed
       started_at: '2026-07-22'
-      completed_at:
+      completed_at: '2026-07-22'
       mode: delta
       feature_ids:
       - F7
       deepen:
       - F7
-      note: S021-golden-examples-ui/EV-016 02-verify-plan STARTED (delta) 2026-07-22 — in_progress; inventory/consistency/statement review pending
-      artifacts: []
+      note: S021/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS (F7.g / UJ-032 / TC-F7-008); artifact docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md; Phase A / gates.a_to_b pending before 04; do not start 04
+      artifacts:
+      - docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md
     - session_id: S020-aerodrome-quality
       evolve_cycle_id: EV-015
       skill_id: 02-verify-plan
@@ -2282,6 +2287,7 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - 2026-07-22 S021-golden-examples-ui/EV-016 02-verify-plan COMPLETE — PASS; Phase A / a_to_b pending before 04; do not start 04
     - 2026-07-22 S021-golden-examples-ui/EV-016 02-verify-plan STARTED (delta) — in_progress
     - 2026-07-22 S020/EV-015 02-verify-plan COMPLETE (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1) — PASS; 12 auto + medium verdicts; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality; Phase A checkpoint pending before 04-tech-plan; do not start 04
     - 2026-07-22 S020/EV-015 02-verify-plan STARTED (delta) — E15-10 / D-S020-EV015-01-confirm = A; 01 completed; mode delta; handoff from 01-requirements
@@ -2414,6 +2420,17 @@ stages:
     - docs/adr/ADR-011-work-sessions-data-access.md
     - docs/adr/ADR-012-metar-work-sessions-retention.md
     delta_substages:
+    - session_id: S021-golden-examples-ui
+      evolve_cycle_id: EV-016
+      skill_id: 04-tech-plan
+      status: pending
+      mode: delta
+      feature_ids:
+      - F7
+      deepen:
+      - F7
+      note: 'Awaiting Phase A→B (gates.a_to_b pending); 04-tech-plan not started'
+      artifacts: []
     - session_id: S020-aerodrome-quality
       evolve_cycle_id: EV-015
       skill_id: 04-tech-plan
@@ -2620,6 +2637,7 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - 2026-07-22 S021/EV-016 04-tech-plan remains pending — awaiting Phase A→B (gates.a_to_b); do not start
     - >-
       2026-07-22 S020/EV-015 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19
       all A) — M0–M5 (28 tasks); 04-exit consistency PASS; 05/06 skipped; Phase B
@@ -3960,9 +3978,10 @@ stages:
     evolve_cycle_id: EV-016
     started_at: '2026-07-22'
     completed_at:
-    current_stage: 01-requirements
-    note: "S021/EV-016 in_progress — Phase 0 locked (E16-1..E16-4); 00 completed; next 01-requirements delta (deepen F7 / #780)"
+    current_stage: 04-tech-plan
+    note: "S021/EV-016 in_progress — 02 COMPLETE; current_stage=04-tech-plan (pending); gates.a_to_b pending"
     notes:
+    - 2026-07-22 S021/EV-016 02 COMPLETE — PASS; handoff 04-tech-plan pending until Phase A→B
     - 2026-07-22 S021/EV-016 open — orchestrator in_progress after Phase 0; current_stage 01-requirements pending
     - '2026-07-22 S020/EV-015 16-evolve COMPLETE — Phase 4 close D-S020-EV015-phase4-close; EV-015 completed; F20 Done; PR #778 eae8bdc'
     - 2026-07-22 S020/EV-015 T5.7 PASS; F20 Done on main eae8bdc; Phase 4 close pending — 07+13 completed; cycle/session remain open for Phase 4.
@@ -9916,10 +9935,10 @@ evolve_cycles:
     preset: Lean+build
     decision_id: E16-3
     note: Approved Lean+build (E16-3=A). Build stages included; skip 03/05/06/12. Checkpoints on gate failure only (Lean+build).
-  current_stage: 02-verify-plan
+  current_stage: 04-tech-plan
   branch: evolve/EV-016-golden-examples-ui
   note: >-
-    S021-golden-examples-ui/EV-016 02-verify-plan in_progress 2026-07-22 — product plan delta audit started (after 01-requirements E16-5..E16-9)
+    S021/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS; current_stage=04-tech-plan (pending); gates.a_to_b pending until user approves Phase A→B
   decision_refs:
   - E16-1
   - E16-2
@@ -9931,6 +9950,7 @@ evolve_cycles:
   - E16-8
   - E16-9
   notes:
+  - 2026-07-22 S021-golden-examples-ui/EV-016 02-verify-plan COMPLETE — PASS; Phase A / a_to_b pending before 04; do not start 04
   - 2026-07-22 S021-golden-examples-ui/EV-016 02-verify-plan STARTED (delta) — in_progress
   - '2026-07-22 S021/EV-016 01-requirements COMPLETE (E16-5..E16-9 all A) — F7.g / UJ-032 / TC-F7-008; handoff 02-verify-plan pending'
   - '2026-07-22 S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780; interview in progress'
@@ -9947,7 +9967,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-22'
-      note: Orchestrating — 02-verify-plan in_progress (started 2026-07-22)
+      note: Orchestrating — 02 COMPLETE; awaiting Phase A→B before 04-tech-plan
 
     01-requirements:
       status: completed
@@ -9966,14 +9986,17 @@ evolve_cycles:
       - docs/decisions/evolve-decisions.md
       - docs/decisions/requirements-decisions.md
     02-verify-plan:
-      status: in_progress
+      status: completed
       mode: delta
-      note: 'S021-golden-examples-ui/EV-016 02-verify-plan STARTED (delta) 2026-07-22 — in_progress; inventory/consistency/statement review pending'
+      note: 'S021/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS (F7.g / UJ-032 / TC-F7-008); artifact docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md; Phase A / gates.a_to_b pending before 04; do not start 04'
       started: '2026-07-22'
+      completed: '2026-07-22'
+      artifacts:
+      - docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md
     04-tech-plan:
       status: pending
       mode: delta
-      note:
+      note: 'Awaiting Phase A→B (gates.a_to_b pending); do not start until user approves'
     07-build:
       status: pending
       mode: full
@@ -10012,6 +10035,7 @@ evolve_cycles:
       note: Lean+build skip (E16-3)
   gates:
     a_to_b: pending
+    a_to_b_note: '02 PASS 2026-07-22; pending user Phase A→B approval before 04-tech-plan'
     b_to_c: pending
     c_to_d: pending
     deploy: pending
@@ -13339,12 +13363,12 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 9f2f552
-  tip_sha_full: 9f2f5526d28a6b2c30ef787e4de42c0f4ac80385
+  tip_sha: e7069b5
+  tip_sha_full: e7069b531b3708ad3a604608e11c2b4a8d7183b5
   note: >-
-    S020/EV-015 PR #778 MERGED @ eae8bdc; T5.7 in_progress (13-deploy-smoke); progress 27/28; awaiting Deploy/GHCR main-latest
-    + Render redeploy; then H1–H5 + catalog taf/speci. Branch evolve/EV-015-aerodrome-quality (merged to main).
+    S021/EV-016 02-verify-plan COMPLETE @ e7069b5; current_stage=04-tech-plan (pending); gates.a_to_b pending Phase A→B.
   notes:
+  - '2026-07-22 S021/EV-016 02-verify-plan commit recorded — e7069b5 (e7069b531b3708ad3a604608e11c2b4a8d7183b5); stage 02-verify-plan'
   - '2026-07-22 S021/EV-016 01-requirements commit recorded — 6afd01f (6afd01f7b2c9513a2963b952a20fc18e78116401); stage 01-requirements'
   - '2026-07-22 S021/EV-016 session-open commit recorded — 9f2f552 (9f2f5526d28a6b2c30ef787e4de42c0f4ac80385); Phase 0 complete; next 01-requirements interview (pending)'
   - '2026-07-22 S020/EV-015 PR #778 MERGED to main @ eae8bdc (eae8bdcfea86351f7755c8e54750ac14a33130b1); T5.7 still in_progress — awaiting Deploy/GHCR main-latest + Render redeploy; then H1–H5 + catalog taf/speci; progress 27/28; gates.c_to_d remains pending.'
@@ -17244,6 +17268,22 @@ git_history:
     - workflow-state.yaml
     timestamp: '2026-07-22'
     note: 'S021/EV-016 01-requirements delta COMPLETE — F7.g / UJ-032 / TC-F7-008 (E16-5..E16-9)'
+  - sha: e7069b531b3708ad3a604608e11c2b4a8d7183b5
+    short: e7069b5
+    branch: evolve/EV-016-golden-examples-ui
+    message: '[S021] docs: 02-verify-plan PASS for F7.g / UJ-032 (#780)'
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S021-golden-examples-ui
+    evolve_cycle_id: EV-016
+    files_changed:
+    - .cursor/rules/core/plan-adherence.mdc
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S021-golden-examples-ui/reports/01-requirements.md
+    - docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md
+    - workflow-state.yaml
+    timestamp: '2026-07-22'
+    note: 'S021/EV-016 02-verify-plan PASS — F7.g / UJ-032; Phase A / a_to_b pending'
 
 pr_review_cycles:
 - id: PRR-001
