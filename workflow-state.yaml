@@ -16,18 +16,24 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-016
   artifacts_dir: docs/sessions/S021-golden-examples-ui/
-  current_stage: 01-requirements
+  current_stage: 02-verify-plan
   note: >-
-    S021/EV-016 01-requirements in_progress — Phase 0 locked (E16-1..E16-4 all A); Lean+build; 00-context completed; 01 delta
-    interview started
+    S021/EV-016 01-requirements COMPLETE 2026-07-22 (E16-5..E16-9 all A) — F7.g / UJ-032 / TC-F7-008; handoff
+    02-verify-plan (pending; await user approval before start)
   started_at: '2026-07-22'
   context_briefs:
   - docs/context/golden-examples-ui.md
   standing_docs_touched:
   - docs/decisions/evolve-decisions.md
+  - docs/decisions/requirements-decisions.md
   - docs/sessions/S021-golden-examples-ui/session-brief.md
   - docs/sessions/S021-golden-examples-ui/routing-plan.md
+  - docs/sessions/S021-golden-examples-ui/reports/01-requirements.md
   - docs/context/golden-examples-ui.md
+  - docs/feature-list.md
+  - docs/user-journeys.md
+  - docs/test-plan.md
+  - docs/spec.md
   routing_plan:
   - stage: 00-context
     required: true
@@ -44,21 +50,23 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-22'
-    note: EV-016 orchestrator in_progress — Phase 0 scope locked; next 01-requirements
+    note: EV-016 orchestrator in_progress — 01-requirements complete; next 02-verify-plan (pending user approval)
   - stage: 01-requirements
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     skip_rationale:
-    note: 'S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780; interview in progress'
-
+    note: >-
+      S021/EV-016 01-requirements COMPLETE 2026-07-22 (E16-5..E16-9 all A) — deepen F7.g / #780;
+      UJ-032 + TC-F7-008; artifacts feature-list/user-journeys/test-plan/spec + reports/01-requirements.md
     started: '2026-07-22'
+    completed: '2026-07-22'
   - stage: 02-verify-plan
     required: true
     mode: delta
     status: pending
     skip_rationale:
-    note:
+    note: 'S021/EV-016 next — pending user approval before start (do not mark in_progress yet)'
   - stage: 04-tech-plan
     required: true
     mode: delta
@@ -1850,44 +1858,60 @@ stages:
     - "Phase 3 R1–R6 resolved by user 2026-07-13; R6 BYO-only includes Postgres/DATABASE_URL/SQL URIs"
     - "Phase 4 wrote docs/context/f7-operator-ui.md; indexed in docs/context/README.md"
   01-requirements:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: "2026-07-22"
-    completed_at:
+    completed_at: "2026-07-22"
     session_id: S021-golden-examples-ui
     evolve_cycle_id: EV-016
     note: >-
-      S021/EV-016 01-requirements STARTED (delta) 2026-07-22 — deepen F7 / #780 goldens UI; historical baseline completed
-      2026-07-22 (S020); tracked via delta_substages + active_session.
+      S021/EV-016 01-requirements COMPLETE 2026-07-22 (E16-5..E16-9 all A) — F7.g / UJ-032 / TC-F7-008;
+      deepen F7; handoff 02-verify-plan (pending). Historical baseline S020 completed 2026-07-22.
     substeps:
       interviews:
-        status: in_progress
-        completed: 0
+        status: completed
+        completed: 6
         total: 6
         current_template:
-        current_section:
+        current_section: complete
         planned_docs:
           status:
-            feature-list: pending
-            spec: pending
-            user-journeys: pending
-            test-plan: pending
-            api-contract: pending
-            coverage-matrix: pending
-            ADR: pending
+            feature-list: completed
+            spec: completed
+            user-journeys: completed
+            test-plan: completed
+            api-contract: skipped
+            coverage-matrix: skipped
+            ADR: skipped
     active_session:
       session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-07-22'
-      completed_at:
+      completed_at: '2026-07-22'
       note: >-
-        S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780; interview in progress
+        S021/EV-016 01-requirements COMPLETE 2026-07-22 (E16-5..E16-9 all A) — deepen F7.g / #780;
+        handoff 02-verify-plan (pending user approval)
       proposed_features: []
       deepen:
       - F7
       document_manifest:
+        status: approved
+        approved_at: '2026-07-22'
+        decision_id: E16-9
+        mode: delta
+        approved_documents:
+        - feature-list
+        - user-journeys
+        - test-plan
+        - spec
+        skipped_documents:
+        - api-contract
+        - config-spec
+        - coverage-matrix
+        - ADR
+        skip_note: E16-9 — light spec set only; no api/config/deploy env
       substeps:
         interviews:
           status: completed
@@ -1901,11 +1925,70 @@ stages:
               spec: completed
               user-journeys: completed
               test-plan: completed
-              api-contract: completed
-              coverage-matrix: completed
+              api-contract: skipped
+              coverage-matrix: skipped
               ADR: skipped
-      artifacts: []
+      artifacts:
+      - docs/feature-list.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/spec.md
+      - docs/sessions/S021-golden-examples-ui/reports/01-requirements.md
+      - docs/decisions/evolve-decisions.md
+      - docs/decisions/requirements-decisions.md
     delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S021-golden-examples-ui
+      evolve_cycle_id: EV-016
+      started_at: '2026-07-22'
+      completed_at: '2026-07-22'
+      note: >-
+        S021/EV-016 01-requirements delta COMPLETE (E16-5..E16-9 all A) — F7 stays Planned; slice F7.g;
+        UJ-032 + TC-F7-008; happy-path IWXXM only; thin hazard fixtures in-repo; light spec set; handoff
+        02-verify-plan (pending)
+      proposed_features: []
+      deepen:
+      - F7
+      artifacts:
+      - docs/feature-list.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/spec.md
+      - docs/sessions/S021-golden-examples-ui/reports/01-requirements.md
+      - docs/decisions/evolve-decisions.md
+      - docs/decisions/requirements-decisions.md
+      document_manifest:
+        status: approved
+        approved_at: '2026-07-22'
+        decision_id: E16-9
+        mode: delta
+        approved_documents:
+        - feature-list
+        - user-journeys
+        - test-plan
+        - spec
+        skipped_documents:
+        - api-contract
+        - config-spec
+        - coverage-matrix
+        - ADR
+      substeps:
+        interviews:
+          status: completed
+          completed: 6
+          total: 6
+          current_template:
+          current_section: complete
+          planned_docs:
+            status:
+              feature-list: completed
+              spec: completed
+              user-journeys: completed
+              test-plan: completed
+              api-contract: skipped
+              coverage-matrix: skipped
+              ADR: skipped
     - status: completed
       mode: delta
       session_id: S020-aerodrome-quality
@@ -4540,6 +4623,61 @@ decisions_log:
     FileConverter Examples UX; Vitest; no backend/API/env. Related issue: 780.'
   related_issues:
   - 780
+- id: E16-5
+  date: '2026-07-22'
+  timestamp: '2026-07-22'
+  session_id: S021-golden-examples-ui
+  evolve_cycle_id: EV-016
+  stage: 01-requirements
+  skill_id: 01-requirements
+  status: confirmed
+  topic: User journey + test case for goldens UI
+  summary: Batch2 5A — UJ-032 + TC-F7-008
+  decision: Add user journey UJ-032 and test case TC-F7-008 for workbench golden examples (#780).
+- id: E16-6
+  date: '2026-07-22'
+  timestamp: '2026-07-22'
+  session_id: S021-golden-examples-ui
+  evolve_cycle_id: EV-016
+  stage: 01-requirements
+  skill_id: 01-requirements
+  status: confirmed
+  topic: F7 status — stay Planned; add slice F7.g
+  summary: Batch2 6A — F7 remains Planned; deepen via slice F7.g
+  decision: Do not mark F7 Done; add planned slice F7.g (UI pre-loaded golden examples) under F7.
+- id: E16-7
+  date: '2026-07-22'
+  timestamp: '2026-07-22'
+  session_id: S021-golden-examples-ui
+  evolve_cycle_id: EV-016
+  stage: 01-requirements
+  skill_id: 01-requirements
+  status: confirmed
+  topic: Optional #780 items — happy-path only
+  summary: Batch2 7A — happy-path IWXXM only; skip soft-fail + file-upload golden
+  decision: 'Scope optional #780 items: happy-path IWXXM goldens only; skip soft-fail and file-upload golden paths this cycle.'
+- id: E16-8
+  date: '2026-07-22'
+  timestamp: '2026-07-22'
+  session_id: S021-golden-examples-ui
+  evolve_cycle_id: EV-016
+  stage: 01-requirements
+  skill_id: 01-requirements
+  status: confirmed
+  topic: Thin hazard fixtures ambiguity
+  summary: Batch2 8A — in-repo only; allow 1 + document gap; no invented TAC
+  decision: Use in-repo hazard fixtures only; allow a single thin product with documented gap; do not invent TAC.
+- id: E16-9
+  date: '2026-07-22'
+  timestamp: '2026-07-22'
+  session_id: S021-golden-examples-ui
+  evolve_cycle_id: EV-016
+  stage: 01-requirements
+  skill_id: 01-requirements
+  status: confirmed
+  topic: Spec delta document set
+  summary: Batch2 9A — feature-list + user-journeys + test-plan + light spec; no api/config/deploy env
+  decision: 'Approved delta docs: feature-list, user-journeys, test-plan, light spec.md. Skip api-contract, config-spec, deploy env.'
 - id: D-S020-EV015-phase-d
   date: '2026-07-22'
   timestamp: '2026-07-22'
@@ -10248,17 +10386,23 @@ evolve_cycles:
     decision_id: E16-3
     note: Approved Lean+build (E16-3=A). Build stages included; skip 03/05/06/12. Checkpoints on gate failure only 
       (Lean+build).
-  current_stage: 01-requirements
+  current_stage: 02-verify-plan
   branch: evolve/EV-016-golden-examples-ui
   note: >-
-    S021/EV-016 01-requirements in_progress — Phase 0 Batch1 locked (E16-1..E16-4 all A); Lean+build; 00 completed; 01 delta
-    interview started
+    S021/EV-016 01-requirements COMPLETE 2026-07-22 (E16-5..E16-9 all A) — F7.g / UJ-032 / TC-F7-008;
+    current_stage 02-verify-plan pending (await user approval before start)
   decision_refs:
   - E16-1
   - E16-2
   - E16-3
   - E16-4
+  - E16-5
+  - E16-6
+  - E16-7
+  - E16-8
+  - E16-9
   notes:
+  - '2026-07-22 S021/EV-016 01-requirements COMPLETE (E16-5..E16-9 all A) — F7.g / UJ-032 / TC-F7-008; handoff 02-verify-plan pending'
   - '2026-07-22 S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780; interview in progress'
   - '2026-07-22 S021/EV-016 open — Batch1 E16-1..E16-4 all A; Lean+build; deepen F7 only; #780 FE goldens+Examples UX+Vitest;
     no backend; branch evolve/EV-016-golden-examples-ui'
@@ -10274,18 +10418,28 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-22'
-      note: Phase 0 complete; orchestrating — next 01-requirements interview
+      note: Orchestrating — 01-requirements complete; next 02-verify-plan (pending user approval)
 
     01-requirements:
-      status: in_progress
+      status: completed
       mode: delta
-      note: 'S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780'
-
       started: '2026-07-22'
+      completed: '2026-07-22'
+      note: >-
+        COMPLETE 2026-07-22 (E16-5..E16-9 all A) — F7.g / UJ-032 / TC-F7-008; light spec set; handoff
+        02-verify-plan pending
+      artifacts:
+      - docs/feature-list.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/spec.md
+      - docs/sessions/S021-golden-examples-ui/reports/01-requirements.md
+      - docs/decisions/evolve-decisions.md
+      - docs/decisions/requirements-decisions.md
     02-verify-plan:
       status: pending
       mode: delta
-      note:
+      note: 'Pending user approval before start — do not mark in_progress yet'
     04-tech-plan:
       status: pending
       mode: delta
@@ -10339,9 +10493,27 @@ evolve_cycles:
     deploy: pending
   adrs: []
   artifacts:
+  - path: docs/feature-list.md
+    status: present
+    note: F7.g slice; F7 stays Planned (E16-6)
+  - path: docs/user-journeys.md
+    status: present
+    note: UJ-032 (E16-5)
+  - path: docs/test-plan.md
+    status: present
+    note: TC-F7-008 (E16-5)
+  - path: docs/spec.md
+    status: present
+    note: Light spec delta (E16-9)
+  - path: docs/sessions/S021-golden-examples-ui/reports/01-requirements.md
+    status: present
+    note: 01-requirements report COMPLETE 2026-07-22
   - path: docs/decisions/evolve-decisions.md
     status: present
-    note: EV-016 section prepended; E16-1..E16-4 locked
+    note: EV-016 Batch1 E16-1..E16-4 + Batch2 E16-5..E16-9 locked
+  - path: docs/decisions/requirements-decisions.md
+    status: present
+    note: 01-requirements decisions touch for S021
   - path: docs/sessions/S021-golden-examples-ui/session-brief.md
     status: present
     note: Parent-written; recorded on open
@@ -13831,6 +14003,7 @@ git_history:
     S020/EV-015 PR #778 MERGED @ eae8bdc; T5.7 in_progress (13-deploy-smoke); progress 27/28; awaiting Deploy/GHCR main-latest
     + Render redeploy; then H1–H5 + catalog taf/speci. Branch evolve/EV-015-aerodrome-quality (merged to main).
   notes:
+  - '2026-07-22 S021/EV-016 01-requirements commit recorded — 6afd01f (6afd01f7b2c9513a2963b952a20fc18e78116401); stage 01-requirements'
   - '2026-07-22 S021/EV-016 session-open commit recorded — 9f2f552 (9f2f5526d28a6b2c30ef787e4de42c0f4ac80385); Phase 0 complete;
     next 01-requirements interview (pending)'
   - '2026-07-22 S020/EV-015 PR #778 MERGED to main @ eae8bdc (eae8bdcfea86351f7755c8e54750ac14a33130b1); T5.7 still in_progress
@@ -17793,6 +17966,27 @@ git_history:
     - workflow-state.yaml
     timestamp: '2026-07-22'
     note: 'S021/EV-016 session open — Phase 0 complete; next 01-requirements interview (pending)'
+  - sha: 6afd01f7b2c9513a2963b952a20fc18e78116401
+    short: 6afd01f
+    branch: evolve/EV-016-golden-examples-ui
+    message: '[S021] docs: 01-requirements delta for F7.g golden examples (#780)'
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S021-golden-examples-ui
+    evolve_cycle_id: EV-016
+    files_changed:
+    - docs/context/golden-examples-ui.md
+    - docs/decisions/evolve-decisions.md
+    - docs/decisions/requirements-decisions.md
+    - docs/feature-list.md
+    - docs/sessions/S021-golden-examples-ui/reports/01-requirements.md
+    - docs/sessions/S021-golden-examples-ui/session-brief.md
+    - docs/spec.md
+    - docs/test-plan.md
+    - docs/user-journeys.md
+    - workflow-state.yaml
+    timestamp: '2026-07-22'
+    note: 'S021/EV-016 01-requirements delta COMPLETE — F7.g / UJ-032 / TC-F7-008 (E16-5..E16-9)'
 
 pr_review_cycles:
 - id: PRR-001
