@@ -3,7 +3,7 @@
 **Stage**: 01-requirements (delta)  
 **Date**: 2026-07-22  
 **Feature**: F7.g deepen (#780)  
-**Status**: completed (pending user approve → 02-verify-plan)
+**Status**: completed
 
 ## Intake (Batch 2)
 

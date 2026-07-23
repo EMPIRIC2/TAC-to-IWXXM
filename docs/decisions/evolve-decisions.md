@@ -34,9 +34,16 @@
 
 ### Scope summary (approved)
 
-Frontend-only pre-loaded goldens for convert + validate: ≥2 TAC/product × 7 products;
-≥1 AHL + ≥1 IWXXM COLLECT; Examples control in FileConverter sets product/inputMode;
-copy from package goldens into `apps/frontend`; Vitest coverage; no API/env/DB.
+Frontend-only pre-loaded goldens for convert + validate: ≥2 TAC/product × 7 products
+(or documented 1-fixture gap for thin hazard products); ≥1 AHL + ≥1 happy-path IWXXM COLLECT;
+Examples control in FileConverter sets product/inputMode; copy from package goldens into
+`apps/frontend`; Vitest TC-F7-008; no API/env/DB. Soft-fail XML and file-upload queue OOS v1.
+
+### Phase A gate (02-verify-plan)
+
+| ID | Decision |
+|----|----------|
+| E16-02-pass | Consistency PASS 2026-07-22 — audit `reports/02-verify-plan-audit.md` |
 
 ## Cycle EV-015 — F15 sequel: TAF + SPECI quality (#735 / #734) (S020)
 
