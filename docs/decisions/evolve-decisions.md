@@ -3,6 +3,31 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-016 — Workbench golden examples (#780) (S021)
+
+**Session**: S021-golden-examples-ui  
+**Features**: deepen **F7** only (no new Fn)  
+**Issues**: [#780](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/780)  
+**Started**: 2026-07-22  
+**Completed**: —  
+**Branch**: `evolve/EV-016-golden-examples-ui`  
+**Status**: **in_progress** — Phase 0 scope locked; routing Lean+build
+
+### Scope (Batch 1 — locked 2026-07-22)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E16-1 | decision | Open session? | **A** — `S021-golden-examples-ui` → 16-evolve / EV-016 |
+| E16-2 | decision | Feature id? | **A** — deepen **F7** only (no F21) |
+| E16-3 | decision | Routing preset? | **A** — Lean+build (`00→16→01→02→04→07→08→09→10→11→13`) |
+| E16-4 | decision | Scope lock? | **A** — #780 AC (FE fixtures + Examples UX + Vitest; no backend) |
+
+### Scope summary (approved)
+
+Frontend-only pre-loaded goldens for convert + validate: ≥2 TAC/product × 7 products;
+≥1 AHL + ≥1 IWXXM COLLECT; Examples control in FileConverter sets product/inputMode;
+copy from package goldens into `apps/frontend`; Vitest coverage; no API/env/DB.
+
 ## Cycle EV-015 — F15 sequel: TAF + SPECI quality (#735 / #734) (S020)
 
 **Session**: S020-aerodrome-quality  
