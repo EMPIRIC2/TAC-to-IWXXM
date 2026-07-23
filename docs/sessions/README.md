@@ -44,15 +44,15 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S017-skill-trim-retro](S017-skill-trim-retro/session-brief.md) | process | in_progress | Skill trim retrospective RET-001 | chore/S017-skill-trim-retro | 2026-07-20 | — |
 | [S018-metar-remarks-667](S018-metar-remarks-667/session-brief.md) | feature | completed | Handle METAR remarks (#667) — EV-013 | evolve/EV-013-metar-remarks-667 | 2026-07-20 | 2026-07-20 |
 | [S019-dissemination-upload](S019-dissemination-upload/session-brief.md) | feature | completed | Dissemination epic F16–F19 — EV-014; PR #772 | evolve/EV-014 / cursor/* | 2026-07-20 | 2026-07-21 |
-| [S020-aerodrome-quality](S020-aerodrome-quality/session-brief.md) | feature | in_progress | F15 sequel — TAF+#735 + SPECI+#734 quality (F20) — EV-015 | evolve/EV-015-aerodrome-quality | 2026-07-22 | — |
+| [S020-aerodrome-quality](S020-aerodrome-quality/session-brief.md) | feature | completed | F15 sequel — TAF+#735 + SPECI+#734 quality (F20) — EV-015; PR #778 | evolve/EV-015-aerodrome-quality | 2026-07-22 | 2026-07-22 |
 
 ## Active session
 
-**[S020-aerodrome-quality](S020-aerodrome-quality/session-brief.md)** — EV-015 F20 TAF+SPECI quality (Phase A checkpoint → 04).
+**None** — S020 / EV-015 closed (`D-S020-EV015-phase4-close`).
 
 Parked/other: see rows above (S016 paused; S017 process).
 
-Last closed: **[S015-metar-lint-quality](S015-metar-lint-quality/session-brief.md)** — F15 Done; PR [#742](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/742) merged.
+Last closed: **[S020-aerodrome-quality](S020-aerodrome-quality/session-brief.md)** — F20 Done; PR [#778](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/778) merged `eae8bdc`.
 
 ## Folder layout
 

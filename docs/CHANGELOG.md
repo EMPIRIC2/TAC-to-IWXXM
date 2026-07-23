@@ -2,6 +2,20 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-22 — S020 EV-015 (F20 TAF + SPECI quality bar)
+
+### Added
+- **F20**: TAF + SPECI quality bar (F15 sequel) — registry deepen, accept/negative fixtures,
+  Annex-3 / IWXXM-US goldens, FE catalog TAF tag filters, API catalog `product=taf|speci`.
+
+### Changed
+- Feature-list F20 → **Done**; deepens F6.b / F6.c / F12.
+
+### Deploy
+- PR [#778](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/778) merged `eae8bdc`;
+  Render API+FE `…-eae8bdc`; H1–H5 + catalog taf/speci live smoke PASS
+  (`docs/sessions/S020-aerodrome-quality/reports/deploy-smoke.md`).
+
 ## 2026-07-21 — S019 EV-014 (Dissemination epic F16–F19)
 
 ### Added

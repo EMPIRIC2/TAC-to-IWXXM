@@ -1,9 +1,12 @@
 ---
 session_id: S020-aerodrome-quality
 type: feature
-status: in_progress
+status: completed
 branch: evolve/EV-015-aerodrome-quality
 started_at: 2026-07-22
+completed_at: 2026-07-22
+close_decision: D-S020-EV015-phase4-close
+merge_sha: eae8bdcfea86351f7755c8e54750ac14a33130b1
 intent: "F15 sequel — TAF + SPECI quality bars (#735/#734); F20 + deepen F6/F12; EV-011 stack"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-015

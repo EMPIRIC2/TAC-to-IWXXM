@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
-> **Last updated**: 2026-07-22 (S020 / EV-015 — F20 TAF+SPECI quality Planned)
+> **Last updated**: 2026-07-22 (S020 / EV-015 — F20 TAF+SPECI quality Done; #778 live)
 
 ## Summary
 
@@ -27,7 +27,7 @@
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; mock-BYOC close (Q15 waive) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; mock-BYOC close (Q15 waive) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; staging stubs; live optional |
-| F20 | TAF + SPECI quality bar (F15 sequel) | Planned | Product | S020 / EV-015; #735/#734 |
+| F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -517,7 +517,9 @@
 
 ### F20: TAF + SPECI Quality Bar (F15 Sequel) — S020 / EV-015
 
-- **Status**: **Planned** — S020 / EV-015 Phase 0 approved 2026-07-22 (E15-1..E15-8;
+- **Status**: **Done** — S020 / EV-015; PR [#778](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/778)
+  merged `eae8bdc`; T5.7 H1–H5 + catalog taf/speci live 2026-07-22
+  (`reports/deploy-smoke.md`). Phase 0 approved 2026-07-22 (E15-1..E15-8;
   `D-S020-EV015-route-1` Lean+build).
 - **What it does**: Raises **TAF** and **SPECI** TAC lint, convert, and IWXXM-validate quality
   to the same bar F15 set for METAR/SPECI. Reuses the **ADR-028** issue registry (new TAF codes

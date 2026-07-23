@@ -9,8 +9,17 @@
 **Features**: **F20** (new) + deepen **F6.b / F6.c** + **F12**  
 **Issues**: [#735](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/735), [#734](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/734)  
 **Started**: 2026-07-22  
-**Branch**: `evolve/EV-015-aerodrome-quality`  
-**Status**: Phase A complete pending checkpoint; 02 PASS
+**Completed**: 2026-07-22 (`D-S020-EV015-phase4-close`)  
+**Branch**: `evolve/EV-015-aerodrome-quality` → PR [#778](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/778) @ `eae8bdc`  
+**Status**: **completed** — F20 Done; #735/#734 closed; Render live `…-eae8bdc`
+
+### Phase 4 close (`D-S020-EV015-phase4-close`)
+
+| ID | Decision |
+|----|----------|
+| D-S020-EV015-merge-778 | Merge #778; Deploy; H1–H5 + catalog taf/speci; close M5/Phase D |
+| D-S020-EV015-phase-d | T5.7 PASS; gates c_to_d + deploy passed; F20 Done |
+| D-S020-EV015-phase4-close | Commit+push closeout; close #735/#734; evolve-summary; complete EV-015; close S020 |
 
 ### Scope (Batch 1 — locked 2026-07-22; S1.M2 rename amend)
 
@@ -46,6 +55,9 @@
 | 01-requirements | 2026-07-22 | F20 + UJ-031 + TC-F20 + API review; E15-10=A |
 | 02-verify-plan | 2026-07-22 | PASS; S1.M1=1, S1.M2=2 rename, S9.M1=1 |
 | 04-tech-plan | 2026-07-22 | M0–M5 approved E15-16..19; 04-exit consistency PASS |
+| 07–11 | 2026-07-22 | M0–M5 28/28; 08/09/10/11 PASS |
+| 13-deploy-smoke | 2026-07-22 | #778 merge; H1–H5 + catalog taf/speci PASS |
+| 16-evolve Phase 4 | 2026-07-22 | `D-S020-EV015-phase4-close` |
 
 ### 02 medium verdicts
 

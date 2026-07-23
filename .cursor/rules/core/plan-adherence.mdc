@@ -35,7 +35,7 @@ All implementation work must map to an approved feature in `[Corpus: product]`
 | F17 | WIS2 dissemination pathway — **Done** (S019 / EV-014; #2) |
 | F18 | EDIS → RTH Washington — **Done** (S019 / EV-014; #6) |
 | F19 | AMHS / SWIM / AFS adapters — **Done** (S019 / EV-014) |
-| F20 | TAF + SPECI quality bar (F15 sequel) — **Planned** (S020 / EV-015; #735/#734) |
+| F20 | TAF + SPECI quality bar (F15 sequel) — **Done** (S020 / EV-015; #735/#734; #778) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-* + iwxxm-us) |
 | M3 | GIFTs as in-repo package — **deprecated** at F6 cutover |
