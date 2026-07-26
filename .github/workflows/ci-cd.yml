@@ -242,7 +242,7 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: joseph-c-mcguire/metar-to-IWXXM
+          slug: EMPIRIC2/TAC-to-IWXXM
           files: ./apps/backend/coverage.xml
           flags: backend
           name: backend-coverage
@@ -262,7 +262,7 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: joseph-c-mcguire/metar-to-IWXXM
+          slug: EMPIRIC2/TAC-to-IWXXM
           files: ./packages/auth/coverage.xml
           flags: auth
           name: auth-coverage
@@ -280,7 +280,7 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: joseph-c-mcguire/metar-to-IWXXM
+          slug: EMPIRIC2/TAC-to-IWXXM
           files: ./apps/frontend/coverage/lcov.info
           flags: frontend
           name: frontend-coverage
