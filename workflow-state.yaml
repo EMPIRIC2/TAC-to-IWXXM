@@ -14,8 +14,8 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-016
   artifacts_dir: docs/sessions/S021-golden-examples-ui/
-  current_stage: 09-qa
-  note: S021/EV-016 08-verify-build PASS 2026-07-26 — tip 90a8507; current_stage→09-qa pending; next 09-qa + 10-e2e parallel; C→D still pending until 09+10+11 (do not mark c_to_d passed yet)
+  current_stage: 11-verify-impl
+  note: S021/EV-016 11-verify-impl STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; gates.c_to_d / phase_c / phase_d remain pending (do NOT mark yet)
   started_at: '2026-07-22'
   context_briefs:
   - docs/context/golden-examples-ui.md
@@ -47,7 +47,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-22'
-    note: EV-016 orchestrator in_progress — 08-verify-build PASS; current_stage→09-qa pending; next 09-qa + 10-e2e parallel; C→D still pending until 09+10+11
+    note: 'EV-016 orchestrator in_progress — 11-verify-impl STARTED 2026-07-26; user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; C→D still pending until 11'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -91,21 +91,26 @@ active_session:
   - stage: 09-qa
     required: true
     mode: full
-    status: pending
+    status: completed
     skip_rationale:
-    note: READY pending — S021/EV-016 after 08 PASS; run in parallel with 10-e2e; C→D still pending until 09+10+11
+    note: 'S021/EV-016 09-qa COMPLETE 2026-07-26 — pass_with_advisories; FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5 advisory→13; tip 3d1c58b; C→D still pending until 11'
+    started: '2026-07-26'
+    completed: '2026-07-26'
   - stage: 10-e2e
     required: true
     mode: full
-    status: pending
+    status: completed
     skip_rationale:
-    note: READY pending — S021/EV-016 after 08 PASS; run in parallel with 09-qa; C→D still pending until 09+10+11
+    note: 'S021/EV-016 10-e2e COMPLETE 2026-07-26 — UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13; tip 3d1c58b; C→D still pending until 11'
+    started: '2026-07-26'
+    completed: '2026-07-26'
   - stage: 11-verify-impl
     required: true
     mode: full
-    status: pending
+    status: in_progress
     skip_rationale:
-    note:
+    note: STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; do NOT mark c_to_d / phase_c / phase_d yet
+    started: '2026-07-26'
   - stage: 13-deploy-smoke
     required: true
     mode: full
@@ -3025,13 +3030,30 @@ stages:
       tip_sha: '1896829'
   09-qa:
     status: completed
-    started_at: '2026-06-24T14:55:00Z'
-    completed_at: '2026-06-24T15:10:00Z'
-    report: docs/sessions/S004-issue-555-feedback/reports/qa-report.md
-    overall: fail
-    session_id: S004-issue-555-feedback
-    evolve_cycle_id: EV-004
+    started_at: '2026-07-26'
+    completed_at: '2026-07-26'
+    report: docs/sessions/S021-golden-examples-ui/reports/qa-report.md
+    overall: pass_with_advisories
+    session_id: S021-golden-examples-ui
+    evolve_cycle_id: EV-016
     delta_substages:
+    - id: S021-golden-examples-ui
+      session_id: S021-golden-examples-ui
+      evolve_cycle_id: EV-016
+      skill_id: 09-qa
+      status: completed
+      mode: full
+      started: '2026-07-26'
+      started_at: '2026-07-26'
+      branch: evolve/EV-016-golden-examples-ui
+      tip_sha: 3d1c58b
+      tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
+      decision_id: E16-18
+      note: 'FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5 advisory→13'
+      completed: '2026-07-26'
+      completed_at: '2026-07-26'
+      overall: pass_with_advisories
+      report: docs/sessions/S021-golden-examples-ui/reports/qa-report.md
     - id: S020-aerodrome-quality
       session_id: S020-aerodrome-quality
       evolve_cycle_id: EV-015
@@ -3111,6 +3133,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/qa-report.md
       note: T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted
     notes:
+    - COMPLETE 2026-07-26 — S021/EV-016 09-qa FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5 advisory→13; tip 3d1c58b; report qa-report.md; overall pass_with_advisories; C→D / phase_c / phase_d remain pending until 11-verify-impl; current_stage→11-verify-impl (pending, not started)
+    - 'STARTED 2026-07-26 — S021/EV-016 09-qa in_progress (user A: run now, not push/PR first); parallel with 10-e2e; tip 3d1c58b; C→D / phase_c / phase_d remain pending until 09+10+11'
     - 2026-07-26 READY pending — S021/EV-016 after 08 PASS; run in parallel with 10-e2e; C→D still pending until 09+10+11
     - 2026-07-22 S020/EV-015 09-qa COMPLETE — pass_with_advisories (H4–H5→13); qa-report.md; T5.5 done; progress 26/28; tip 766606b
     - 2026-07-22 S020/EV-015 09-qa STARTED (T5.5; parallel with 10-e2e; UJ-031 / TC-F20-001..006); progress 25/28
@@ -3123,13 +3147,32 @@ stages:
     - 2026-07-12 S008 / EV-006 — pass_with_advisories; see qa-report.md
     - 2026-07-14 S011/EV-008 09-qa in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
+    started: '2026-07-26'
+    active_session:
+      session_id: S021-golden-examples-ui
+      evolve_cycle_id: EV-016
+      skill_id: 09-qa
+      status: completed
+      started_at: '2026-07-26'
+      started: '2026-07-26'
+      mode: full
+      note: 'FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5 advisory→13'
+      branch: evolve/EV-016-golden-examples-ui
+      tip_sha: 3d1c58b
+      tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
+      decision_id: E16-18
+      completed: '2026-07-26'
+      completed_at: '2026-07-26'
+      overall: pass_with_advisories
+      report: docs/sessions/S021-golden-examples-ui/reports/qa-report.md
+    completed: '2026-07-26'
+    note: FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5 advisory→13
   11-verify-impl:
-    status: completed
-    started_at: '2026-06-23T00:00:00Z'
-    completed_at: '2026-07-21'
-    session_id: S019-dissemination-upload
-    evolve_cycle_id: EV-014
-    note: 'EV-014 / S019 completed — verify-impl.md PASS (D-S019-EV014-Q40A-11); F16–F19 Done; closeout hygiene after #774 merge; no active session'
+    status: in_progress
+    started_at: '2026-07-26'
+    session_id: S021-golden-examples-ui
+    evolve_cycle_id: EV-016
+    note: 'STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; do NOT mark c_to_d / phase_c / phase_d yet'
     substeps:
       collect_results:
         status: completed
@@ -3153,8 +3196,19 @@ stages:
         status: completed
       summary:
         status: completed
-    report: docs/sessions/S003-supabase-keys-config/reports/verify-impl.md
     delta_substages:
+    - id: S021-golden-examples-ui
+      session_id: S021-golden-examples-ui
+      evolve_cycle_id: EV-016
+      skill_id: 11-verify-impl
+      status: in_progress
+      started: '2026-07-26'
+      started_at: '2026-07-26'
+      mode: full
+      branch: evolve/EV-016-golden-examples-ui
+      tip_sha: 3d1c58b
+      tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
+      note: STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; do NOT mark c_to_d / phase_c / phase_d yet
     - id: S020-aerodrome-quality
       session_id: S020-aerodrome-quality
       evolve_cycle_id: EV-015
@@ -3241,6 +3295,7 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
       note: D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5
     notes:
+    - S021/EV-016 11-verify-impl STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; gates.c_to_d / phase_c / phase_d remain pending (do NOT mark yet)
     - ? 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs
       : 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
     - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md); F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); active_task T5.7 pending; progress 27/28; tip still 766606b (T5.6 commit pending — not yet recorded in git_history); gates.c_to_d remains pending until T5.7 / Phase C close.
@@ -3257,13 +3312,27 @@ stages:
     - 'Next: 12-verify-deploy (Render key rotation)'
     - 2026-07-12 S008 / EV-006 — overall approved; see verify-impl.md
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first)
+    started: '2026-07-26'
+    skill_id: 11-verify-impl
+    active_session:
+      session_id: S021-golden-examples-ui
+      evolve_cycle_id: EV-016
+      skill_id: 11-verify-impl
+      status: in_progress
+      started_at: '2026-07-26'
+      started: '2026-07-26'
+      mode: full
+      note: STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; do NOT mark c_to_d / phase_c / phase_d yet
+      branch: evolve/EV-016-golden-examples-ui
+      tip_sha: 3d1c58b
+      tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
   10-e2e:
     status: completed
-    started_at: '2026-06-24T15:00:00Z'
-    completed_at: '2026-06-24T15:20:00Z'
-    report: docs/sessions/S004-issue-555-feedback/reports/e2e-report.md
-    overall: fail
-    session_id: S004-issue-555-feedback
+    started_at: '2026-07-26'
+    completed_at: '2026-07-26'
+    report: docs/sessions/S021-golden-examples-ui/reports/e2e-report.md
+    overall: pass
+    session_id: S021-golden-examples-ui
     substeps:
       extract_journeys:
         status: completed
@@ -3280,6 +3349,23 @@ stages:
         status: completed
         notes: H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred
     delta_substages:
+    - id: S021-golden-examples-ui
+      session_id: S021-golden-examples-ui
+      evolve_cycle_id: EV-016
+      skill_id: 10-e2e
+      status: completed
+      mode: full
+      started: '2026-07-26'
+      started_at: '2026-07-26'
+      branch: evolve/EV-016-golden-examples-ui
+      tip_sha: 3d1c58b
+      tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
+      decision_id: E16-18
+      note: 'UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13'
+      completed: '2026-07-26'
+      completed_at: '2026-07-26'
+      overall: pass
+      report: docs/sessions/S021-golden-examples-ui/reports/e2e-report.md
     - id: S020-aerodrome-quality
       session_id: S020-aerodrome-quality
       evolve_cycle_id: EV-015
@@ -3362,6 +3448,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
       note: T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk
     notes:
+    - COMPLETE 2026-07-26 — S021/EV-016 10-e2e UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13; tip 3d1c58b; report e2e-report.md; C→D / phase_c / phase_d remain pending until 11-verify-impl; current_stage→11-verify-impl (pending, not started)
+    - 'STARTED 2026-07-26 — S021/EV-016 10-e2e in_progress (user A: run now, not push/PR first); parallel with 09-qa; tip 3d1c58b; C→D / phase_c / phase_d remain pending until 09+10+11'
     - 2026-07-26 READY pending — S021/EV-016 after 08 PASS; run in parallel with 09-qa; C→D still pending until 09+10+11
     - 2026-07-22 S020/EV-015 10-e2e COMPLETE — T0 PASS; 162 pytest + 10 Vitest; e2e-report.md; T5.5 done; progress 26/28; tip 766606b
     - 2026-07-22 S020/EV-015 10-e2e STARTED (T5.5; parallel with 09-qa; UJ-031 / TC-F20-001..006); progress 25/28
@@ -3376,6 +3464,27 @@ stages:
     - 2026-07-12 S008 / EV-006 — PASS after COR hotfix re-verify (12/12 Playwright smoke); T0 PASS
     - 2026-07-14 S011/EV-008 10-e2e in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md
+    started: '2026-07-26'
+    active_session:
+      session_id: S021-golden-examples-ui
+      evolve_cycle_id: EV-016
+      skill_id: 10-e2e
+      status: completed
+      started_at: '2026-07-26'
+      started: '2026-07-26'
+      mode: full
+      note: 'UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13'
+      branch: evolve/EV-016-golden-examples-ui
+      tip_sha: 3d1c58b
+      tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
+      decision_id: E16-18
+      completed: '2026-07-26'
+      completed_at: '2026-07-26'
+      overall: pass
+      report: docs/sessions/S021-golden-examples-ui/reports/e2e-report.md
+    completed: '2026-07-26'
+    evolve_cycle_id: EV-016
+    note: UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13
   08-verify-build:
     status: completed
     started_at: '2026-06-22T17:27:00Z'
@@ -7489,6 +7598,19 @@ decisions_log:
   topic: 07-build M1–M3 complete → handoff 08-verify-build
   summary: E16-17 — S021/EV-016 07-build M1–M3 (T1.1–T3.4) complete; FE Vitest 688 passed; ready for 08-verify-build; C→D still pending until 08
   decision: 'S021/EV-016 07-build COMPLETE 2026-07-26 — all M1–M3 tasks (T1.1–T3.4) done. Tip SHA 1896829 ([T3.3] HANDOFF + mark M1–M3 completed). Also recorded: 144af06 (ISSUE_CATALOG date stable), 2a5a738 (04 complete), 44ded4a (T1.1), d8403c5 (T2.2). FE Vitest 688 passed. Mark 07-build completed; advance active_session.current_stage to 08-verify-build (pending/ready). gates.c_to_d remains pending until 08-verify-build. Do not start 08 implementation in this update.'
+- id: E16-18
+  date: '2026-07-26'
+  timestamp: '2026-07-26'
+  resolved_at: '2026-07-26'
+  session_id: S021-golden-examples-ui
+  evolve_cycle_id: EV-016
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 09-qa
+  status: confirmed
+  topic: Post-08 — run 09-qa + 10-e2e now vs push/PR first
+  summary: E16-18 = A — run 09-qa + 10-e2e now (not push/PR first); tip 3d1c58b; do not mark c_to_d or phase_c/phase_d yet
+  decision: User chose A on 2026-07-26 — start 09-qa and 10-e2e in parallel now without push/PR first. Tip on evolve/EV-016-golden-examples-ui is 3d1c58b (after 90a8507 08 PASS). gates.c_to_d and phase_c/phase_d remain pending until 09+10+11 complete.
 artifacts:
 - path: docs/sessions/S021-golden-examples-ui/reports/verification-report.md
   type: session-report
@@ -9192,6 +9314,30 @@ artifacts:
   status: present
   note: T3.3 HANDOFF (E16-17) — FE-only 08→13 @ 1896829
   created: '2026-07-26'
+- path: docs/sessions/S021-golden-examples-ui/reports/qa-report.md
+  type: session-report
+  kind: stage_report
+  stage: 09-qa
+  skill_id: 09-qa
+  session_id: S021-golden-examples-ui
+  evolve_cycle_id: EV-016
+  created_at: '2026-07-26'
+  updated_at: '2026-07-26'
+  status: completed
+  overall: pass_with_advisories
+  note: S021/EV-016 09-qa COMPLETE — FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5 advisory→13; tip 3d1c58b
+- path: docs/sessions/S021-golden-examples-ui/reports/e2e-report.md
+  type: session-report
+  kind: stage_report
+  stage: 10-e2e
+  skill_id: 10-e2e
+  session_id: S021-golden-examples-ui
+  evolve_cycle_id: EV-016
+  created_at: '2026-07-26'
+  updated_at: '2026-07-26'
+  status: completed
+  overall: pass
+  note: S021/EV-016 10-e2e COMPLETE — UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13; tip 3d1c58b
 retrospective_cycles:
 - id: RET-001
   title: Skill trim — corpus-first, lean routing, archive legacy
@@ -9287,9 +9433,9 @@ evolve_cycles:
     preset: Lean+build
     decision_id: E16-3
     note: Approved Lean+build (E16-3=A). Build stages included; skip 03/05/06/12. Checkpoints on gate failure only (Lean+build).
-  current_stage: 09-qa
+  current_stage: 11-verify-impl
   branch: evolve/EV-016-golden-examples-ui
-  note: S021/EV-016 08-verify-build PASS 2026-07-26 — tip 90a8507; current_stage→09-qa pending; next 09-qa + 10-e2e parallel; gates.c_to_d still pending until 09+10+11
+  note: S021/EV-016 11-verify-impl STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; gates.c_to_d / phase_c / phase_d remain pending (do NOT mark yet)
   decision_refs:
   - E16-1
   - E16-2
@@ -9309,6 +9455,9 @@ evolve_cycles:
   - E16-16
   - E16-17
   notes:
+  - S021/EV-016 11-verify-impl STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; gates.c_to_d / phase_c / phase_d remain pending (do NOT mark yet)
+  - 2026-07-26 S021/EV-016 09-qa + 10-e2e COMPLETE — 09 pass_with_advisories; 10 T0 PASS; current_stage→11-verify-impl (pending); tip 3d1c58b; gates.c_to_d / phase_c / phase_d remain pending
+  - S021/EV-016 User chose A (2026-07-26) — run 09-qa + 10-e2e now (not push/PR first); tip 3d1c58b (after 90a8507 08 PASS); parallel 09+10; do NOT mark c_to_d or phase_c/phase_d yet
   - S021/EV-016 08-verify-build COMPLETE 2026-07-26 — PASS; artifact docs/sessions/S021-golden-examples-ui/reports/verification-report.md; tip 90a8507; C→D still pending until 09+10+11; ready for 09-qa and 10-e2e (parallel)
   - S021/EV-016 08-verify-build STARTED 2026-07-26 — milestone-boundary verify after M1–M3 complete (11/11; T1.1–T3.4); tip 1896829; gates.c_to_d / phase_c still pending until 08 PASS
   - 2026-07-26 S021/EV-016 07-build COMPLETE (E16-17) — M1–M3 / 11 tasks (T1.1–T3.4); FE Vitest 688 passed; tip 1896829 (T3.3 HANDOFF); current_stage→08-verify-build pending/ready; gates.c_to_d remains pending until 08
@@ -9332,7 +9481,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-22'
-      note: EV-016 orchestrator in_progress — 08-verify-build PASS; current_stage→09-qa pending; next 09-qa + 10-e2e parallel; C→D still pending until 09+10+11
+      note: 'EV-016 orchestrator in_progress — 11-verify-impl STARTED 2026-07-26; user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; C→D still pending until 11'
     01-requirements:
       status: completed
       mode: delta
@@ -9400,17 +9549,35 @@ evolve_cycles:
       artifacts:
       - docs/sessions/S021-golden-examples-ui/reports/verification-report.md
     09-qa:
-      status: pending
+      status: completed
       mode: full
-      note: READY pending — S021/EV-016 after 08 PASS; run in parallel with 10-e2e; C→D still pending until 09+10+11
+      started: '2026-07-26'
+      started_at: '2026-07-26'
+      note: 'FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5 advisory→13'
+      tip_sha: 3d1c58b
+      tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
+      completed: '2026-07-26'
+      completed_at: '2026-07-26'
+      report: docs/sessions/S021-golden-examples-ui/reports/qa-report.md
+      overall: pass_with_advisories
     10-e2e:
-      status: pending
+      status: completed
       mode: full
-      note: READY pending — S021/EV-016 after 08 PASS; run in parallel with 09-qa; C→D still pending until 09+10+11
+      started: '2026-07-26'
+      started_at: '2026-07-26'
+      note: 'UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13'
+      tip_sha: 3d1c58b
+      tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
+      completed: '2026-07-26'
+      completed_at: '2026-07-26'
+      report: docs/sessions/S021-golden-examples-ui/reports/e2e-report.md
+      overall: pass
     11-verify-impl:
-      status: pending
+      status: in_progress
       mode: full
-      note:
+      note: STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; do NOT mark c_to_d / phase_c / phase_d yet
+      started: '2026-07-26'
+      started_at: '2026-07-26'
     13-deploy-smoke:
       status: pending
       mode: full
@@ -9486,6 +9653,22 @@ evolve_cycles:
   - path: docs/sessions/S021-golden-examples-ui/reports/HANDOFF.md
     status: present
     note: T3.3 HANDOFF for 08→13 (FE-only deploy; H4–H5 on 13) @ 1896829
+  - path: docs/sessions/S021-golden-examples-ui/reports/qa-report.md
+    status: completed
+    stage: 09-qa
+    overall: pass_with_advisories
+    note: FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5 advisory→13
+    session_id: S021-golden-examples-ui
+    evolve_cycle_id: EV-016
+    date: '2026-07-26'
+  - path: docs/sessions/S021-golden-examples-ui/reports/e2e-report.md
+    status: completed
+    stage: 10-e2e
+    overall: pass
+    note: UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13
+    session_id: S021-golden-examples-ui
+    evolve_cycle_id: EV-016
+    date: '2026-07-26'
   issues:
   - id: 780
     title: 'UI: pre-loaded golden examples for convert + validate (per product / input type)'
@@ -12621,10 +12804,11 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 90a8507
-  tip_sha_full: 90a850758ac4157af4c4c366db05f60c64f68a81
-  note: S021/EV-016 08-verify-build PASS 2026-07-26 — tip 90a8507; current_stage→09-qa pending; next 09+10 parallel; C→D still pending until 09+10+11
+  tip_sha: 3d1c58b
+  tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
+  note: S021/EV-016 09-qa + 10-e2e COMPLETE 2026-07-26 — tip remains 3d1c58b until report docs committed; current_stage→11-verify-impl (pending, not started); C→D still pending until 11
   notes:
+  - 2026-07-26 S021/EV-016 tip remains 3d1c58b after 09+10 COMPLETE (qa-report.md / e2e-report.md may be uncommitted); do not advance tip until user commits report docs
   - 2026-07-26 S021/EV-016 08-verify-build PASS commit recorded — 90a8507 (90a850758ac4157af4c4c366db05f60c64f68a81); stage 08-verify-build; C→D still pending until 09+10+11
   - 2026-07-26 S021/EV-016 Phase A→B APPROVED (E16-10) — gates.a_to_b passed; 04-tech-plan in_progress (delta); next FE catalog + FileConverter wiring
   - 2026-07-22 S021/EV-016 02-verify-plan commit recorded — e7069b5 (e7069b531b3708ad3a604608e11c2b4a8d7183b5); stage 02-verify-plan
@@ -12794,9 +12978,9 @@ git_history:
     created_at: '2026-07-22'
     session_id: S021-golden-examples-ui
     evolve_cycle_id: EV-016
-    note: Active (base main). 07-build COMPLETE (E16-17) M1–M3 / 11/11; tip 1896829; 08-verify-build pending/ready; C→D pending until 08.
-    tip_sha: '1896829'
-    tip_sha_full: 1896829ab8d78bd0cee16131ae087ce95fab5861
+    note: Active (base main). 08-verify-build PASS @ 90a8507; tip 3d1c58b (chore mark 08 complete); 09-qa + 10-e2e in_progress (user A); C→D pending until 09+10+11.
+    tip_sha: '3d1c58b'
+    tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
   - name: evolve/EV-015-aerodrome-quality
     base: main
     status: merged

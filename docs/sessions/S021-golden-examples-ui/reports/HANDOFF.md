@@ -25,4 +25,4 @@ See `apps/frontend/src/fixtures/examples/FIXTURE_GAPS.md` (VAA/TCA 1-fixture).
 
 ## Next stages
 
-08-verify-build → 09-qa → 10-e2e → 11-verify-impl → 13-deploy-smoke (H4–H5).
+09-qa + 10-e2e **done** (2026-07-26) → **11-verify-impl** → minor PR → 13-deploy-smoke (H4–H5).

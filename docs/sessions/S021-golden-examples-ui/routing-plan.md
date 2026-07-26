@@ -15,9 +15,9 @@
 | 06-tech-tooling | **no** | — | No new tooling |
 | 07-build | yes | full | Frontend fixtures + Examples UX |
 | 08-verify-build | yes | full | — |
-| 09-qa | yes | full | — |
-| 10-e2e | yes | full | Vitest + H4–H5 workbench smoke when FE deploys |
-| 11-verify-impl | yes | full | Per–acceptance-criterion (F7 deepen / #780) |
+| 09-qa | yes | full | **completed** 2026-07-26 — `pass_with_advisories` (`reports/qa-report.md`) |
+| 10-e2e | yes | full | **completed** 2026-07-26 — T0 PASS UJ-032/TC-F7-008; H4–H5 → 13 (`reports/e2e-report.md`) |
+| 11-verify-impl | yes | full | Per–acceptance-criterion (F7 deepen / #780) — **next** |
 | 12-verify-deploy | **no** | — | Lean+build; run only if deploy checklist forced |
 | 13-deploy-smoke | yes | full | H4–H5 when frontend ships; no API/env changes expected |
 
