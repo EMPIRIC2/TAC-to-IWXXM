@@ -34,9 +34,11 @@ import {
 import JSZip from 'jszip';
 import { toast } from 'sonner';
 import { ThemeToggle } from './ThemeToggle';
+import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
+import { getExampleById } from '@/fixtures/examples/examplesCatalog';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
 import { AirportDetailsCard } from './AirportDetailsCard';
 import { signOutWithScope } from '/utils/supabase/logout';
@@ -177,6 +179,7 @@ export function FileConverter({
     string | undefined
   >();
   const [inputMode, setInputMode] = useState<OperatorInputMode>('tac');
+  const [demoExampleLabel, setDemoExampleLabel] = useState<string | null>(null);
   const [bulletinSummary, setBulletinSummary] = useState<string | null>(null);
   const [placeholderNotice, setPlaceholderNotice] = useState<string | null>(null);
   // Restore the guest's custom output filename from the session snapshot (R5).
@@ -937,6 +940,7 @@ export function FileConverter({
   const handleNewMetar = () => {
     setPendingFiles([]);
     setManualInput('');
+    setDemoExampleLabel(null);
     setOutputFilename('');
     setConvertedFiles([]);
     setConversionLog(null);
@@ -947,6 +951,24 @@ export function FileConverter({
       isReadOnly ? 'Starting a new METAR session' : 'Starting a new METAR draft',
     );
   };
+
+  const handleLoadGoldenExample = useCallback((exampleId: string) => {
+    const example = getExampleById(exampleId);
+    if (!example) {
+      return;
+    }
+    const loadedProduct = example.product;
+    setManualInput(example.body.replace(/\s+$/, ''));
+    setInputMode(example.inputMode);
+    if (loadedProduct) {
+      setConversionParams((prev) => ({
+        ...prev,
+        product: loadedProduct,
+      }));
+    }
+    setDemoExampleLabel(example.label);
+    toast.info(`Loaded ${example.label} example`);
+  }, []);
 
   const handleDownloadSingle = (file: ConvertedFile) => {
     const blob = new Blob([file.convertedContent], { type: 'text/xml' });
@@ -1371,8 +1393,21 @@ export function FileConverter({
                     <option value="VAA">VAA</option>
                     <option value="TCA">TCA</option>
                   </select>
+                  <GoldenExamplesSelect
+                    disabled={isReadOnly}
+                    onSelectExample={handleLoadGoldenExample}
+                  />
                 </div>
               </div>
+              {demoExampleLabel && (
+                <p
+                  className="mb-2 rounded border border-amber-200 bg-amber-50 px-2 py-1 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100"
+                  data-testid="demo-example-banner"
+                  role="status"
+                >
+                  Demo / non-operational example: {demoExampleLabel}
+                </p>
+              )}
               {inputMode === 'ahl_bulletin' && (
                 <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
                   AHL bulletins are split and converted via{' '}

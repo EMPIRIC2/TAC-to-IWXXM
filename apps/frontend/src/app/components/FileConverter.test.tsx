@@ -2117,4 +2117,59 @@ describe('FileConverter Component', () => {
       });
     });
   });
+
+  describe('Golden examples (TC-F7-008 C2–C4)', () => {
+    it('loads a TAC example into the editor and sets product (C2)', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      const trigger = screen.getByTestId('examples-select');
+      await user.click(trigger);
+      const option = await screen.findByRole('option', {
+        name: /METAR basic \(annex3\)/i,
+      });
+      await user.click(option);
+
+      const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
+      expect(editor.value).toContain('METAR KJFK');
+      expect(screen.getByTestId('product-type-select')).toHaveValue('METAR');
+      expect(screen.getByTestId('demo-example-banner')).toHaveTextContent(
+        /Demo \/ non-operational example: METAR basic/i,
+      );
+      expect(mockToast.info).toHaveBeenCalledWith(
+        expect.stringContaining('Loaded METAR basic'),
+      );
+    });
+
+    it('loads an AHL bulletin example and switches input mode (C3)', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByTestId('examples-select'));
+      const option = await screen.findByRole('option', {
+        name: /AHL METAR multi-report/i,
+      });
+      await user.click(option);
+
+      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
+      const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
+      expect(editor.value).toMatch(/SAUS31/);
+      expect(editor.value).toContain('METAR KJFK');
+    });
+
+    it('loads an IWXXM example onto collect_iwxxm mode (C4)', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByTestId('examples-select'));
+      const option = await screen.findByRole('option', {
+        name: /IWXXM METAR basic/i,
+      });
+      await user.click(option);
+
+      expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-600');
+      const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
+      expect(editor.value).toMatch(/<\?xml|iwxxm|METAR/i);
+    });
+  });
 });
