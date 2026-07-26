@@ -246,7 +246,8 @@ jobs:
           files: ./apps/backend/coverage.xml
           flags: backend
           name: backend-coverage
-          fail_ci_if_error: true
+          # Codecov project not yet linked for EMPIRIC2/TAC-to-IWXXM rename.
+          fail_ci_if_error: false
 
       - name: Upload auth coverage artifact
         if: always() && matrix.package == 'auth'
@@ -266,7 +267,7 @@ jobs:
           files: ./packages/auth/coverage.xml
           flags: auth
           name: auth-coverage
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
       - name: Upload frontend coverage artifact
         if: always() && matrix.package == 'frontend'
@@ -284,7 +285,7 @@ jobs:
           files: ./apps/frontend/coverage/lcov.info
           flags: frontend
           name: frontend-coverage
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
       - name: Stop service stack after integration tests
         if: always() && matrix.package == 'integration'
