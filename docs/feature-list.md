@@ -1,7 +1,7 @@
 # Feature List
 
 > **Project**: METAR to IWXXM Converter
-> **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
+> **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
 > **Last updated**: 2026-07-22 (S021 / EV-016 — F7.g golden examples / #780 in progress)
 
 ## Summary
@@ -237,7 +237,7 @@
   `start`/`end` on lint/validate issues; soft-preview / partial convert (flag or dedicated
   endpoint — finalize in 04-tech-plan).
 - **Editor**: **CodeMirror 6** (new frontend dependency — inventory in 01; install in 04/07).
-- **Parent tracker**: GitHub [#5](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/5)
+- **Parent tracker**: GitHub [#5](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/5)
   stays open; close/link child issues as slices land.
 - **Acceptance (F7 v1 done)**:
   1. `/admin/*` and AdminDashboard gone; no approval/toggle-admin UI; BYO env documented
@@ -418,8 +418,8 @@
 
 ### F15: Maintainable TAC Lint Issue Registry + METAR/SPECI Quality Bar
 
-- **Status**: **Done** — shipped S015 / EV-011 (2026-07-20, PR [#742](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/742));
-  issue [#732](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/732) closed on cycle close.
+- **Status**: **Done** — shipped S015 / EV-011 (2026-07-20, PR [#742](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/742));
+  issue [#732](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/732) closed on cycle close.
 - **What it does**: Introduces a **maintainable issue registry** in `packages/tac-validate`
   (machine-readable `code` + default `severity` `info`|`warning`|`error` + message template).
   Rules import registry entries; a docs/generated catalog lists all codes for operators and
@@ -532,7 +532,7 @@
 
 ### F20: TAF + SPECI Quality Bar (F15 Sequel) — S020 / EV-015
 
-- **Status**: **Done** — S020 / EV-015; PR [#778](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/778)
+- **Status**: **Done** — S020 / EV-015; PR [#778](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/778)
   merged `eae8bdc`; T5.7 H1–H5 + catalog taf/speci live 2026-07-22
   (`reports/deploy-smoke.md`). Phase 0 approved 2026-07-22 (E15-1..E15-8;
   `D-S020-EV015-route-1` Lean+build).
@@ -543,8 +543,8 @@
   accept/negative fixtures, golden TAC→IWXXM→XSD+Schematron, and coverage-matrix **TAF** +
   **SPECI** rows. SPECI is a **full** parallel quality bar (#734), not residual-only — including
   Auto-detect / lint never mis-classifying SPECI↔METAR.
-- **Issues**: [#735](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/735) (TAF),
-  [#734](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/734) (SPECI).
+- **Issues**: [#735](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/735) (TAF),
+  [#734](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/734) (SPECI).
 - **Deepens**:
   | Feature | Role this cycle |
   |---------|-----------------|

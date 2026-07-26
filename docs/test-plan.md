@@ -1,7 +1,7 @@
 # Test Plan
 
 > **Project**: METAR to IWXXM Converter
-> **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
+> **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
 > **Last updated**: 2026-07-22 (S021 / EV-016 — F7.g golden examples / UJ-032 / TC-F7-008)
 
 ## Scope
@@ -310,7 +310,7 @@ admin suite modules.
   3. No silent AHL fall-through to single `/convert`; COLLECT 501 not treated as success
   4. Staging (13): H4–H5 + authenticated AHL happy path + COLLECT 501 notice
   5. H7 (`make test-live-bulletin` / UJ-011) remains API gate — not replaced by this TC
-- **Source**: UJ-025; ADR-024; [#730](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/730);
+- **Source**: UJ-025; ADR-024; [#730](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/730);
   S016 / EV-012 (E12-1..E12-4; S2.2 = T1–T6 hard)
 
 ### TC-F7-008: Golden examples load (UJ-032 / #780)
@@ -331,7 +331,7 @@ admin suite modules.
   1. Vitest: catalog unit + FileConverter click-to-load green
   2. No backend / env / DB dependency
   3. Staging H4–H5 smoke when frontend ships (13-deploy-smoke)
-- **Source**: UJ-032; [#780](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/780);
+- **Source**: UJ-032; [#780](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/780);
   S021 / EV-016 (E16-5..E16-9)
 
 ### F7 UI↔API connection integration

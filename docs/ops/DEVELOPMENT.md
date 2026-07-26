@@ -18,8 +18,8 @@ Vendor schemas ship in-repo — a plain `git clone` is all you need.
 ## Quick start (local)
 
 ```bash
-git clone https://github.com/joseph-c-mcguire/metar-to-IWXXM.git
-cd metar-to-IWXXM
+git clone https://github.com/EMPIRIC2/TAC-to-IWXXM.git
+cd TAC-to-IWXXM
 
 cp .env.example .env
 # Edit .env: SUPABASE_PUBLISHABLE_KEY, SUPABASE_SECRET_KEY, DATABASE_URL (see config-spec.md)

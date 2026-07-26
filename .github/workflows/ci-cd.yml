@@ -9,9 +9,10 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  BACKEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/backend
-  FRONTEND_IMAGE: joseph-c-mcguire/metar-to-iwxxm/frontend
-  WORKER_IMAGE: joseph-c-mcguire/metar-to-iwxxm/worker
+  # GHCR owner/name are lowercase; repo lives under EMPIRIC2/TAC-to-IWXXM.
+  BACKEND_IMAGE: empiric2/tac-to-iwxxm/backend
+  FRONTEND_IMAGE: empiric2/tac-to-iwxxm/frontend
+  WORKER_IMAGE: empiric2/tac-to-iwxxm/worker
   RENDER_DEPLOY_MODE: image
   # Canonical Supabase secrets (preferred). Deprecated FRONTEND_VITE_* kept for one-release shim.
   SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}

@@ -64,6 +64,30 @@ Record choice + skip rationale in `routing-plan.md`.
 4. AskQuestion — approve/edit plan; set `active_session`; create branch.
 5. Hand off to orchestrator / first stage.
 
+## UI preview offer (non-deployed)
+
+When session scope includes or may touch a **browser UI** (frontend, workbench, admin),
+AskQuestion once during session open or early scoped discovery:
+
+```
+prompt: "UI reference (non-deployed): Would you like to preview the current UI on a
+  local / non-deployed instance to ground this session?
+
+  This is not staging or production — local or in-repo only. Deployed URLs are for
+  later verify/deploy stages (12/13), not this context pass."
+
+options:
+  1. "Yes — show non-deployed / local UI"
+  2. "No — proceed from docs/repo only"
+  3. "N/A — no UI in this session"
+  4. "Let me explain / provide more context"
+```
+
+- If **Yes**: start or point at the **local** frontend (dev server / existing local URL).
+  State explicitly in the reply and session-brief that the instance is **non-deployed**.
+- Do **not** default to staging/production URLs for this offer.
+- Note the choice in `session-brief.md` (and scoped brief when used).
+
 ## Context phases (abbreviated)
 
 | Phase | Project | Scoped |
@@ -86,3 +110,4 @@ Record choice + skip rationale in `routing-plan.md`.
 - [ ] Session allocated (or waived) with approved routing-plan
 - [ ] Context brief written when mode requires it
 - [ ] Next orchestrator / stage identified
+- [ ] If UI in scope: non-deployed preview AskQuestion offered (accept/decline recorded)

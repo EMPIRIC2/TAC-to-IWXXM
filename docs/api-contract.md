@@ -142,7 +142,7 @@ existing string fields.
 
 **Response**: `ConversionResponse` — see docs/guides/API.md (shape unchanged).
 
-Each `ConversionResult` includes optional `tac_input` (original TAC echo) for input traceability ([#594](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/594)).
+Each `ConversionResult` includes optional `tac_input` (original TAC echo) for input traceability ([#594](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/594)).
 
 **Errors** (F6): Prefer existing `errors` / `issues` arrays; include machine-readable `code` when applicable:
 

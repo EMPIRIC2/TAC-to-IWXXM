@@ -30,6 +30,29 @@ Product specs **must** define browser wiring before build:
 
 Ask in interview if UI calls APIs on a **different origin** than the static site.
 
+## UI preview offer (non-deployed)
+
+When the interview covers **browser UI** features or journeys, AskQuestion early in the
+interview (after Feature List batch or before User Journeys):
+
+```
+prompt: "UI reference (non-deployed): Would you like to preview a local / non-deployed
+  UI instance while we specify requirements?
+
+  This is not staging or production — local build or current in-repo UI only, so we can
+  align journeys and acceptance criteria. Deployed sign-off is later (11/12/13)."
+
+options:
+  1. "Yes — open non-deployed / local UI for reference"
+  2. "No — interview from description/docs only"
+  3. "N/A — no UI features in this interview"
+  4. "Let me explain / provide more context"
+```
+
+- If **Yes**: use a **non-deployed** instance only; label every shared URL as local/dev.
+- Record accept/decline in `docs/decisions/requirements-decisions.md` (or session report).
+- Do not treat a local preview as H4–H5 / production proof.
+
 ## Prerequisites
 
 1. **Optional**: `docs/context-brief.md` (00-context **project** mode). If it exists,
@@ -351,3 +374,5 @@ Next step: 02-verify-plan
 6. **Immediate persistence**: Write each document after its interview completes. State
    updates after every batch.
 7. **Template-faithful**: Generated documents follow template structure exactly.
+8. **UI preview (non-deployed)**: When UI is in scope, AskQuestion for a local / non-deployed
+   reference preview; never imply it is staging or production.

@@ -132,7 +132,7 @@ make test-live-connectivity
 
 1. Confirm no code references hardcoded JWTs: `grep -r "eyJhbGci" --include='*.py' --include='*.ts' .`
 2. Revoke old `service_role` JWT in Supabase.
-3. Close [GitHub secret-scanning alert #1](https://github.com/joseph-c-mcguire/metar-to-IWXXM/security/secret-scanning/1) as **revoked**.
+3. Close [GitHub secret-scanning alert #1](https://github.com/EMPIRIC2/TAC-to-IWXXM/security/secret-scanning/1) as **revoked**.
 
 ## Database advisor remediation (METAR tables)
 

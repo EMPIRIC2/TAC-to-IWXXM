@@ -266,7 +266,7 @@ US extension XML (profile isolation). See also UJ-026 for annex3 exclusion messa
 
 ### UJ-026: METAR REMARKS retain / exclusion (#667)
 
-**Goal**: Remark portion of METAR/SPECI is not silently ignored ([#667](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/667)).
+**Goal**: Remark portion of METAR/SPECI is not silently ignored ([#667](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/667)).
 
 **Acceptance**:
 1. `profile=annex3` with `RMK` → convert succeeds with `ConvertIssue` code `REMARKS_EXCLUDED` (info).
@@ -722,7 +722,7 @@ including Auto-detect / product-hint never mis-classifying SPECI↔METAR.
 
 **Goal**: Use FileConverter **Manual TAC Input** modes correctly — TAC report convert,
 AHL bulletin → `/convert-bulletin`, IWXXM COLLECT → `/ingest-collect` **501** placeholder —
-with honest UX and required paste/upload auto-switch (ADR-024 / [#730](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/730)).
+with honest UX and required paste/upload auto-switch (ADR-024 / [#730](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/730)).
 
 **Feature**: F7 (validation deepen; status remains Planned) — S016 / EV-012
 

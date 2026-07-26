@@ -1,7 +1,7 @@
 # Technical Specification
 
 > **Project**: METAR to IWXXM Converter
-> **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
+> **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
 > **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
 > **Last updated**: 2026-07-22 (S020 / EV-015 F20 TAF+SPECI quality Planned)
 
