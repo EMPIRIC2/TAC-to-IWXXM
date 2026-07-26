@@ -7,6 +7,7 @@
   },
   "packageManager": "pnpm@9.15.4",
   "scripts": {
+    "prepare": "husky",
     "format": "prettier --write \"apps/**/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\"",
     "format:check": "prettier --check \"apps/**/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\"",
     "lint:js": "eslint apps/frontend/src apps/e2e packages/shared/src packages/shared/tests --max-warnings 0",
@@ -18,6 +19,7 @@
     "eslint": "^9.0.0",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.0",
+    "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.0.0"

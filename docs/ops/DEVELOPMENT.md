@@ -202,39 +202,41 @@ Playwright env vars:
 
 ## CI/CD
 
-Primary workflow: `.github/workflows/ci-cd.yml` (EV-002: **validate → test → deploy** on push to
-`main`; PRs run validate + test only).
+Primary workflow: `.github/workflows/ci-cd.yml`.
+
+**Temporary (post EMPIRIC2 transfer):** remote CI runs **validate** only. The former
+`test` / `e2e-smoke` / `tac2iwxxm-native` matrix runs locally via **husky pre-push**.
+**Deploy** on `main` skips cleanly when GHCR login or Render deploy-hook secrets are missing.
 
 | Job | Checks |
 |-----|--------|
 | **validate** | `make validate-ci` — format, lint, typecheck, gitleaks, actionlint/yamllint, config-guard, frontend npm audit |
-| **test** | Matrix: shared, backend, auth, gifts, frontend, integration — pytest 98% + Codecov 95% |
-| **deploy** | Docker build/push + Render hooks (`main` push only) |
+| **deploy** | Docker build/push + Render hooks (`main` push only; skipped if CD credentials incomplete) |
 
-Local gates (dual-run with CI validate + test):
+Local gates:
 
 ```bash
-make install-hooks    # installs pre-commit + pre-push hooks
+make install-hooks    # husky (.husky/*) + pre-commit hook environments
 pre-commit run --all-files          # fast commit gates
 make pre-push-run                   # make validate-ci + make ci-prepush (same as git push)
 make validate-fast                  # format/lint/typecheck/secrets/yaml/catalog
 make validate-ci                    # CI validate job locally
-make ci-prepush                     # unit/matrix suite (no Compose)
+make ci-prepush                     # unit/matrix suite (no Compose) — husky pre-push
 make ci                             # ci-prepush + test-integration (needs ports 18000/18001)
 ```
 
-Hooks (after `make install-hooks`):
+Hooks (after `make install-hooks`; husky sets `core.hooksPath=.husky`):
 
 | Git hook | Runs |
 |----------|------|
-| **pre-commit** | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint |
-| **pre-push** | `make validate-ci` then `make ci-prepush` (blocks push if CI validate/unit would fail) |
+| **pre-commit** (husky → pre-commit) | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint |
+| **pre-push** (husky) | `make validate-ci` then `make ci-prepush` (unit/matrix formerly in CI) |
 
 Bypass only when intentional: `git commit --no-verify` / `git push --no-verify`.
 
 - Python 3.12 + Node 22
-- Unit tests and 95% Codecov gate on `apps/backend`, `packages/*`, `apps/frontend`
-- Builds API Docker image from repo root context
+- Unit coverage gates enforced locally via husky / `make ci-prepush`
+- Builds API Docker image from repo root context (when CD credentials present)
 - Builds frontend static assets from `apps/frontend`
 
 Removed standalone PR workflows (merged into `ci-cd.yml` validate): `secret-scan.yml`,

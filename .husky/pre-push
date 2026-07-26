@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+# Long-running unit/matrix parity formerly in GitHub Actions `test` /
+# `e2e-smoke` / `tac2iwxxm-native` jobs. Temporary: run locally before push
+# while remote CI stays on validate-only (org CD credential settle).
+set -e
+echo "husky pre-push: make validate-ci"
+make validate-ci
+echo "husky pre-push: make ci-prepush"
+make ci-prepush

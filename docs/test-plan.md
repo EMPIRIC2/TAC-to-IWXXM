@@ -884,18 +884,22 @@ Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
 
 ## CI/CD (Monorepo)
 
-**Policy (EV-002)**: Single workflow file for PR/push; ≤3 jobs; all checks dual-run locally via
-pre-commit fast hooks where applicable. Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
+**Policy (EV-002)**: Single workflow file for PR/push; dual-run locally via husky + pre-commit.
+Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
+
+**Temporary (S021 / org transfer):** GitHub `ci-cd.yml` runs **validate** (+ optional **deploy**).
+Unit/matrix / e2e-smoke / native suites moved to **husky pre-push** (`make validate-ci` +
+`make ci-prepush`). Deploy skips when GHCR or Render hook credentials are missing.
 
 | Trigger | Workflow | Jobs | Checks |
 |---------|----------|------|--------|
 | PR / push `main`, `dev` | `ci-cd.yml` | **validate** | ruff format/check, prettier, eslint, basedpyright, tsc, gitleaks, actionlint/yamllint, config-guard (`tests/test_config_placeholders.py`), frontend npm audit |
-| PR / push `main`, `dev` | `ci-cd.yml` | **test** | matrix unit+coverage (backend, auth, **tac2iwxxm**, **tac-validate**, **iwxxm-validate**, **dissemination**, frontend, shared @ 98% — **gifts removed at F6 cutover**), integration matrix (docker compose + **wis2box Compose harness** T3.3 MQTT/HTTP smoke), Codecov upload (95% gate) |
-| push `main` only | `ci-cd.yml` | **deploy** | Docker build/push GHCR, Render deploy hooks |
+| push `main` only | `ci-cd.yml` | **deploy** | Docker build/push GHCR, Render deploy hooks — **skip** if credentials incomplete |
+| Local (husky pre-push) | `.husky/pre-push` | — | `make validate-ci` + `make ci-prepush` (unit/matrix @ package coverage gates) |
 | Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
 | Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 scope |
 
-### Pre-commit (local fast gates)
+### Pre-commit / husky (local gates)
 
 | Hook | Tool | CI equivalent |
 |------|------|---------------|
@@ -907,8 +911,9 @@ pre-commit fast hooks where applicable. Scheduled workflows (`vendor-sync`, load
 | JS types | `tsc --noEmit` | validate job |
 | Secrets | `gitleaks` | validate job (replaces `secret-scan.yml`) |
 | Workflow YAML | `actionlint`, `yamllint` | validate job (replaces `github-yaml-lint.yml`) |
+| husky pre-push | `make validate-ci` + `make ci-prepush` | former CI **test** matrix (temporary) |
 
-Slow checks (`make ci` integration, full unit matrix) remain CI-only; optional via `pre-commit` `make-ci` hook.
+Slow Compose integration (`make ci`) stays local/manual — needs free ports 18000/18001.
 
 ### Removed workflows (EV-002)
 

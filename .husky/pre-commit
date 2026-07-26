@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# Fast gates (ruff/prettier/eslint/types/gitleaks/actionlint) via pre-commit framework.
+set -e
+uv run pre-commit run
