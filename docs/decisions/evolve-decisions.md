@@ -11,7 +11,7 @@
 **Started**: 2026-07-22  
 **Completed**: —  
 **Branch**: `evolve/EV-016-golden-examples-ui`  
-**Status**: **in_progress** — Phase 0 scope locked; routing Lean+build
+**Status**: **in_progress** — 11 approved (E16-19); minor PR → 13-deploy-smoke
 
 ### Scope (Batch 1 — locked 2026-07-22)
 
@@ -57,12 +57,20 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 | E16-15 | decision | Select component | **B′** — reuse existing Radix `ui/select` (no new npm dep) |
 | E16-16 | decision | Execution plan | **A** — approve M1–M3 / 11 tasks as written; B→C; start 07 @ T1.1 |
 
+### Verify / Phase C→D (2026-07-26)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E16-18 | decision | After 08: run 09+10 now? | **A** — run 09-qa + 10-e2e (not push/PR first) |
+| E16-19 | decision | 11-verify-impl sign-off? | **A** — Approve UJ-032 + F7.g (T0 + local UI preview; H4–H5 waived to 13; QA-001–004 accepted) |
+
 ### Tech plan artifacts
 
 | Artifact | Path |
 |----------|------|
 | 04 report | `docs/sessions/S021-golden-examples-ui/reports/04-tech-plan.md` (**completed**) |
 | Execution plan | `docs/sessions/S021-golden-examples-ui/reports/execution-plan.md` (**approved** E16-16) |
+| 11 verify | `docs/sessions/S021-golden-examples-ui/reports/verify-impl.md` (**approved** E16-19) |
 
 ## Cycle EV-015 — F15 sequel: TAF + SPECI quality (#735 / #734) (S020)
 

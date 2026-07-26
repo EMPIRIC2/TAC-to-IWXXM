@@ -17,7 +17,7 @@
 | 08-verify-build | yes | full | — |
 | 09-qa | yes | full | **completed** 2026-07-26 — `pass_with_advisories` (`reports/qa-report.md`) |
 | 10-e2e | yes | full | **completed** 2026-07-26 — T0 PASS UJ-032/TC-F7-008; H4–H5 → 13 (`reports/e2e-report.md`) |
-| 11-verify-impl | yes | full | Per–acceptance-criterion (F7 deepen / #780) — **next** |
+| 11-verify-impl | yes | full | **completed** 2026-07-26 — approved E16-19 (`reports/verify-impl.md`) |
 | 12-verify-deploy | **no** | — | Lean+build; run only if deploy checklist forced |
 | 13-deploy-smoke | yes | full | H4–H5 when frontend ships; no API/env changes expected |
 
