@@ -43,7 +43,7 @@ export interface GoldenExample {
   id: string;
   /** Operator-visible label */
   label: string;
-  /** TAC product when inputMode is `tac`; omitted for AHL/IWXXM */
+  /** Product for convert params; set for TAC/AHL/IWXXM when known (else load → `auto`) */
   product?: TacProduct;
   /** ADR-024 input mode to apply on load */
   inputMode: OperatorInputMode;
@@ -198,6 +198,7 @@ export const EXAMPLES: readonly GoldenExample[] = [
   {
     id: 'ahl_metar_multi',
     label: 'AHL METAR multi-report bulletin',
+    product: 'METAR',
     inputMode: 'ahl_bulletin',
     body: metarMultiAhl,
     nonOperational: true,

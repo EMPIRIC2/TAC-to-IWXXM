@@ -58,6 +58,7 @@ describe('examplesCatalog (TC-F7-008 C1)', () => {
     const ahl = EXAMPLES.filter((example) => example.inputMode === 'ahl_bulletin');
     expect(ahl.length).toBeGreaterThanOrEqual(1);
     expect(ahl[0]?.body).toMatch(/^[A-Z]{4}\d{2}\s+/m);
+    expect(ahl[0]?.product).toBe('METAR');
   });
 
   it('includes ≥1 happy-path IWXXM example on collect_iwxxm', () => {

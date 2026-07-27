@@ -204,14 +204,18 @@ Playwright env vars:
 
 Primary workflow: `.github/workflows/ci-cd.yml`.
 
-**Temporary (post EMPIRIC2 transfer):** remote CI runs **validate** only. The former
-`test` / `e2e-smoke` / `tac2iwxxm-native` matrix runs locally via **husky pre-push**.
-**Deploy** on `main` skips cleanly when GHCR login or Render deploy-hook secrets are missing.
+Remote CI runs **validate** then the **test** matrix, **tac2iwxxm-native**, and
+**e2e-smoke**. Husky **pre-push** mirrors validate + unit/matrix locally.
+**Deploy** on `main` requires `test` + `tac2iwxxm-native`, and skips cleanly when
+GHCR login or Render deploy-hook secrets are missing.
 
 | Job | Checks |
 |-----|--------|
 | **validate** | `make validate-ci` — format, lint, typecheck, gitleaks, actionlint/yamllint, config-guard, frontend npm audit |
-| **deploy** | Docker build/push + Render hooks (`main` push only; skipped if CD credentials incomplete) |
+| **test** | Package unit/integration matrix (backend, auth, frontend, packages, bugs, …) |
+| **tac2iwxxm-native** | PyO3 / maturin smoke |
+| **e2e-smoke** | Playwright smoke |
+| **deploy** | Docker build/push + Render hooks (`main` push only; needs test + native; skipped if CD credentials incomplete) |
 
 Local gates:
 
@@ -230,12 +234,13 @@ Hooks (after `make install-hooks`; husky sets `core.hooksPath=.husky`):
 | Git hook | Runs |
 |----------|------|
 | **pre-commit** (husky → pre-commit) | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint |
-| **pre-push** (husky) | `make validate-ci` then `make ci-prepush` (unit/matrix formerly in CI) |
+| **pre-push** (husky) | `make validate-ci` then `make ci-prepush` (local parity with remote test matrix) |
 
 Bypass only when intentional: `git commit --no-verify` / `git push --no-verify`.
+Do **not** use `--no-verify` as a merge path for `main` — remote CI must stay green.
 
 - Python 3.12 + Node 22
-- Unit coverage gates enforced locally via husky / `make ci-prepush`
+- Unit coverage gates enforced in CI (`test` job) and locally via husky / `make ci-prepush`
 - Builds API Docker image from repo root context (when CD credentials present)
 - Builds frontend static assets from `apps/frontend`
 

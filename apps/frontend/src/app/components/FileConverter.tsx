@@ -957,15 +957,27 @@ export function FileConverter({
     if (!example) {
       return;
     }
-    const loadedProduct = example.product;
+    // Drop prior conversion/preview state so demo TAC is never paired with stale XML.
+    setPendingFiles([]);
+    setConvertedFiles([]);
+    setConversionLog(null);
+    setConversionStatus({ type: 'idle' });
+    setFailedSpans([]);
+    setPreviewXml('');
+    setPreviewStatus('empty');
+    setPreviewMode('idle');
+    setPreviewSoftFailDetail(undefined);
+    setBulletinSummary(null);
+    setPlaceholderNotice(null);
+    setDecodeError(null);
+
     setManualInput(example.body.replace(/\s+$/, ''));
     setInputMode(example.inputMode);
-    if (loadedProduct) {
-      setConversionParams((prev) => ({
-        ...prev,
-        product: loadedProduct,
-      }));
-    }
+    // Always set product — omit → auto — so a prior TAF pick cannot stick on AHL/TAC demos.
+    setConversionParams((prev) => ({
+      ...prev,
+      product: example.product ?? 'auto',
+    }));
     setDemoExampleLabel(example.label);
     toast.info(`Loaded ${example.label} example`);
   }, []);
@@ -1058,6 +1070,7 @@ export function FileConverter({
   const handleClear = () => {
     setPendingFiles([]);
     setManualInput('');
+    setDemoExampleLabel(null);
     setOutputFilename('');
     setConvertedFiles([]);
     setConversionLog(null);
@@ -1067,6 +1080,9 @@ export function FileConverter({
     setPreviewStatus('empty');
     setPreviewMode('idle');
     setPreviewSoftFailDetail(undefined);
+    setBulletinSummary(null);
+    setPlaceholderNotice(null);
+    setDecodeError(null);
     toast.info('Queue cleared');
   };
 

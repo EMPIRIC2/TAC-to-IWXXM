@@ -26,8 +26,6 @@ env:
 jobs:
   # ============================================================================
   # VALIDATE — format, lint, typecheck, secrets, yaml, config-guard, npm audit
-  # Long-running unit/matrix/e2e/native suites run locally via husky pre-push
-  # (make validate-ci + make ci-prepush) — temporary until org CD credentials settle.
   # ============================================================================
   validate:
     runs-on: ubuntu-latest
@@ -64,6 +62,331 @@ jobs:
       - name: Run validate gates
         run: make validate-ci
 
+  test:
+    runs-on: ubuntu-latest
+    name: Test (${{ matrix.package }})
+    needs: [validate]
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          [
+            shared,
+            backend,
+            auth,
+            frontend,
+            tac2iwxxm,
+            iwxxm-validate,
+            tac-validate,
+            dissemination,
+            integration,
+            bugs,
+          ]
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Install pnpm
+        if: matrix.package == 'shared' || matrix.package == 'frontend'
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        if: matrix.package == 'shared' || matrix.package == 'frontend'
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install JavaScript dependencies
+        if: matrix.package == 'shared' || matrix.package == 'frontend'
+        run: pnpm install --frozen-lockfile
+
+      - name: Create frontend test environment file
+        if: matrix.package == 'frontend'
+        working-directory: ./apps/frontend
+        run: |
+          printf 'VITE_API_BASE_URL=http://localhost:18001\nVITE_APP_URL=http://localhost:18000\n' > .env
+
+      - name: Run shared package tests
+        if: matrix.package == 'shared'
+        run: |
+          uv run pytest packages/shared/tests --cov=metar_shared \
+            --cov-config=packages/shared/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=98 -v
+          pnpm --filter @metar/shared run test:coverage
+
+      - name: Run backend unit tests with coverage
+        if: matrix.package == 'backend'
+        run: |
+          cd apps/backend && uv run pytest tests/unit \
+            --cov=src --cov-config=pyproject.toml --cov-branch \
+            --cov-report=xml:coverage.xml --cov-report=term-missing \
+            --cov-fail-under=98 -v
+
+      - name: Run auth unit tests with coverage
+        if: matrix.package == 'auth'
+        run: |
+          cd packages/auth && uv run pytest tests \
+            --cov=src --cov-config=pyproject.toml --cov-branch \
+            --cov-report=xml:coverage.xml --cov-report=term-missing \
+            --cov-fail-under=98 -v
+
+      - name: Run tac2iwxxm unit tests with coverage
+        if: matrix.package == 'tac2iwxxm'
+        run: |
+          uv run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
+            --cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=95 -v
+
+      - name: Install Rust toolchain (iwxxm-validate native)
+        if: matrix.package == 'iwxxm-validate'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build iwxxm-validate._rust extension
+        if: matrix.package == 'iwxxm-validate'
+        working-directory: packages/iwxxm-validate
+        run: |
+          source "$HOME/.cargo/env" 2>/dev/null || true
+          uv pip install maturin
+          # CLI + validate_iwxxm hot path need xmloxide; lxml alone hits SCHEMA_PARSE_ERROR
+          # on GML/ISO imports for WMO examples (F13 / T3.9).
+          uv run maturin develop --manifest-path rust/Cargo.toml --uv
+
+      - name: Run iwxxm-validate unit tests with coverage
+        if: matrix.package == 'iwxxm-validate'
+        run: |
+          uv run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
+            --cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=95 -v
+
+      - name: Run tac-validate unit tests with coverage
+        if: matrix.package == 'tac-validate'
+        run: |
+          uv run pytest packages/tac-validate/tests --cov=tac_validate \
+            --cov-config=packages/tac-validate/pyproject.toml --cov-branch \
+            --cov-report=term-missing --cov-fail-under=95 -v
+
+      # F16–F19 / T0.1 — skips until packages/dissemination is scaffolded (T1.1/T1.2).
+      - name: Run dissemination unit tests with coverage
+        if: matrix.package == 'dissemination'
+        run: bash scripts/ci/run_dissemination_coverage.sh
+
+      # F16 / T2.5 — TC-F16-003 PG+MySQL Testcontainers + SQLite (skip PG/MySQL if no Docker).
+      - name: Run dissemination multi-DB integration tests
+        if: matrix.package == 'dissemination'
+        run: make test-integration-dissemination
+
+      - name: Run frontend tests with coverage
+        if: matrix.package == 'frontend'
+        run: pnpm --filter @metar/frontend run test:coverage
+
+      - name: Run bug regression tests (tests/bugs)
+        if: matrix.package == 'bugs'
+        run: uv run pytest tests/bugs -m "not live and not live_api" --no-cov -v
+
+      - name: Set integration stack environment
+        if: matrix.package == 'integration'
+        run: |
+          PUBLISHABLE="${SUPABASE_PUBLISHABLE_KEY:-${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-}}"
+          {
+            echo "METAR_CONFIG_ENV=local"
+            echo "SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE}"
+            echo "SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY:-}"
+            echo "DATABASE_URL=${DATABASE_URL:-}"
+          } >> "$GITHUB_ENV"
+          bash scripts/frontend/prepare-config.sh
+
+      - name: Run integration tests
+        if: matrix.package == 'integration'
+        run: |
+          docker compose up -d backend frontend
+          sleep 30
+          uv run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_integration.py -v
+          cd apps/backend && uv run pytest tests/integration/test_h0i_connectivity.py -v --no-cov
+          cd apps/backend && uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
+          docker compose down
+
+      # F17 / E14-04 / T3.3 — wis2box Compose harness (MQTT + HTTP dataset smoke).
+      - name: Run wis2box Compose harness hook
+        if: matrix.package == 'integration'
+        run: bash scripts/ci/run_wis2box_harness.sh
+
+      - name: Upload backend coverage artifact
+        if: always() && matrix.package == 'backend'
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: |
+            apps/backend/htmlcov/
+            apps/backend/coverage.xml
+
+      # v7+ fetches the Codecov CLI GPG key from codecovsecops (v5/v6.0.1 Keybase
+      # codecovsecurity URL 404s → "Could not verify signature" with fail_ci_if_error).
+      - name: Upload backend coverage to Codecov
+        if: always() && matrix.package == 'backend'
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: EMPIRIC2/TAC-to-IWXXM
+          files: ./apps/backend/coverage.xml
+          flags: backend
+          name: backend-coverage
+          # Codecov project not yet linked for EMPIRIC2/TAC-to-IWXXM rename.
+          fail_ci_if_error: false
+
+      - name: Upload auth coverage artifact
+        if: always() && matrix.package == 'auth'
+        uses: actions/upload-artifact@v4
+        with:
+          name: auth-coverage-report
+          path: |
+            packages/auth/htmlcov/
+            packages/auth/coverage.xml
+
+      - name: Upload auth coverage to Codecov
+        if: always() && matrix.package == 'auth'
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: EMPIRIC2/TAC-to-IWXXM
+          files: ./packages/auth/coverage.xml
+          flags: auth
+          name: auth-coverage
+          fail_ci_if_error: false
+
+      - name: Upload frontend coverage artifact
+        if: always() && matrix.package == 'frontend'
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage-report
+          path: apps/frontend/coverage/
+
+      - name: Upload frontend coverage to Codecov
+        if: always() && matrix.package == 'frontend'
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: EMPIRIC2/TAC-to-IWXXM
+          files: ./apps/frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+          fail_ci_if_error: false
+
+      - name: Stop service stack after integration tests
+        if: always() && matrix.package == 'integration'
+        run: docker compose down
+
+  # ============================================================================
+  # NATIVE — tac2iwxxm PyO3 / maturin scaffold (ADR-017 / T4.3)
+  # ============================================================================
+  tac2iwxxm-native:
+    runs-on: ubuntu-latest
+    name: tac2iwxxm PyO3 (maturin)
+    needs: [validate]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install uv + workspace
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install maturin
+        run: uv pip install maturin
+
+      - name: Build tac2iwxxm._rust extension
+        working-directory: packages/tac2iwxxm
+        run: |
+          source "$HOME/.cargo/env" 2>/dev/null || true
+          uv run maturin develop --manifest-path rust/Cargo.toml --uv
+
+      - name: Smoke-test required native extension
+        env:
+          TAC2IWXXM_REQUIRE_RUST: '1'
+        run: |
+          uv run pytest packages/tac2iwxxm/tests/test_native_scaffold.py \
+            packages/tac2iwxxm/tests/test_pyo3_hotspots.py -v --no-cov
+
+  # ============================================================================
+  # E2E SMOKE — Playwright browser smoke (auth bootstrap + TAC conversion)
+  # Free on public repos (ubuntu-latest). Self-contained: config/local.json sets
+  # disableAuth=true, so no Supabase secrets are required (mock session path).
+  # ============================================================================
+  e2e-smoke:
+    runs-on: ubuntu-latest
+    name: E2E Smoke (Playwright)
+    needs: [validate]
+    env:
+      METAR_CONFIG_ENV: local
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browser (chromium)
+        run: pnpm --filter @metar/e2e exec playwright install --with-deps chromium
+
+      - name: Run Playwright smoke specs
+        run: make test-e2e-playwright-smoke
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-smoke-report
+          path: |
+            apps/e2e/playwright-report/
+            apps/e2e/test-results/
+          retention-days: 7
+
   # ============================================================================
   # DEPLOY — build/push images and trigger Render (main push only)
   # TEMPORARY: skip cleanly when GHCR login or Render deploy hooks are missing
@@ -72,7 +395,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy
-    needs: [validate]
+    needs: [test, tac2iwxxm-native]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read

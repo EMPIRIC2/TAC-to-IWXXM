@@ -887,14 +887,15 @@ Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
 **Policy (EV-002)**: Single workflow file for PR/push; dual-run locally via husky + pre-commit.
 Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
 
-**Temporary (S021 / org transfer):** GitHub `ci-cd.yml` runs **validate** (+ optional **deploy**).
-Unit/matrix / e2e-smoke / native suites moved to **husky pre-push** (`make validate-ci` +
-`make ci-prepush`). Deploy skips when GHCR or Render hook credentials are missing.
+GitHub `ci-cd.yml` runs **validate**, then **test** / **tac2iwxxm-native** / **e2e-smoke**.
+Husky **pre-push** mirrors validate + unit/matrix locally. **Deploy** on `main` needs
+`test` + `tac2iwxxm-native`, and skips when GHCR or Render hook credentials are missing.
 
 | Trigger | Workflow | Jobs | Checks |
 |---------|----------|------|--------|
 | PR / push `main`, `dev` | `ci-cd.yml` | **validate** | ruff format/check, prettier, eslint, basedpyright, tsc, gitleaks, actionlint/yamllint, config-guard (`tests/test_config_placeholders.py`), frontend npm audit |
-| push `main` only | `ci-cd.yml` | **deploy** | Docker build/push GHCR, Render deploy hooks — **skip** if credentials incomplete |
+| PR / push `main`, `dev` | `ci-cd.yml` | **test**, **tac2iwxxm-native**, **e2e-smoke** | package unit/integration matrix, PyO3 smoke, Playwright smoke |
+| push `main` only | `ci-cd.yml` | **deploy** | needs test + native; Docker build/push GHCR, Render deploy hooks — **skip** if credentials incomplete |
 | Local (husky pre-push) | `.husky/pre-push` | — | `make validate-ci` + `make ci-prepush` (unit/matrix @ package coverage gates) |
 | Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
 | Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 scope |
@@ -911,7 +912,7 @@ Unit/matrix / e2e-smoke / native suites moved to **husky pre-push** (`make valid
 | JS types | `tsc --noEmit` | validate job |
 | Secrets | `gitleaks` | validate job (replaces `secret-scan.yml`) |
 | Workflow YAML | `actionlint`, `yamllint` | validate job (replaces `github-yaml-lint.yml`) |
-| husky pre-push | `make validate-ci` + `make ci-prepush` | former CI **test** matrix (temporary) |
+| husky pre-push | `make validate-ci` + `make ci-prepush` | local parity with CI **test** matrix |
 
 Slow Compose integration (`make ci`) stays local/manual — needs free ports 18000/18001.
 

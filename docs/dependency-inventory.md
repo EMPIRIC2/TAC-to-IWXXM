@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-26 (S021 — husky pre-push for unit/matrix; temporary CI slim)
+> **Last updated**: 2026-07-26 (S021 — husky pre-push + restored remote CI test matrix)
 
 ## Runtime Dependencies
 
