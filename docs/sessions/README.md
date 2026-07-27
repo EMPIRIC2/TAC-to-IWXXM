@@ -46,14 +46,15 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S019-dissemination-upload](S019-dissemination-upload/session-brief.md) | feature | completed | Dissemination epic F16–F19 — EV-014; PR #772 | evolve/EV-014 / cursor/* | 2026-07-20 | 2026-07-21 |
 | [S020-aerodrome-quality](S020-aerodrome-quality/session-brief.md) | feature | completed | F15 sequel — TAF+#735 + SPECI+#734 quality (F20) — EV-015; PR #778 | evolve/EV-015-aerodrome-quality | 2026-07-22 | 2026-07-22 |
 | [S021-golden-examples-ui](S021-golden-examples-ui/session-brief.md) | feature | completed | F7.g golden examples (#780) — EV-016; PR #782; live H4–H5 → #781 | evolve/EV-016-golden-examples-ui | 2026-07-22 | 2026-07-27 |
+| [S022-rename-cutover](S022-rename-cutover/session-brief.md) | ops | completed | #781 EMPIRIC2 rename cutover (Render/GHCR) + live goldens; PyPI follow-up | infra/S022-rename-cutover | 2026-07-27 | 2026-07-27 |
 
 ## Active session
 
-**None** — S021 / EV-016 closed (`D-S021-EV016-phase4-close`; live H4–H5 waived → #781).
+**None** — S022 closed (`D-S022-close-option1`). Primary #781 cutover + live UJ-032 done; PyPI Trusted Publisher remains on [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781).
 
 Parked/other: see rows above (S016 paused; S017 process).
 
-Last closed: **[S021-golden-examples-ui](S021-golden-examples-ui/session-brief.md)** — F7.g on `main` @ `c49f22b`; PR [#782](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/782); live smoke deferred to [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781).
+Last closed: **[S022-rename-cutover](S022-rename-cutover/session-brief.md)** — Empiric2 GHCR/Render cutover; H0c/H1/H4/H5 + UJ-032 PASS.
 
 ## Folder layout
 

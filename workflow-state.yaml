@@ -3,10 +3,65 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 21
+session_counter: 22
 evolve_cycle_counter: 16
 active_session:
 sessions:
+- id: S022-rename-cutover
+  type: ops
+  intent: 'ops: finish EMPIRIC2/TAC-to-IWXXM rename cutover (Render, GHCR, secrets, PyPI) — #781; unlock live H4–H5 / UJ-032 goldens deferred from S021'
+  status: completed
+  branch: infra/S022-rename-cutover
+  orchestrator: 13-deploy-smoke
+  evolve_cycle_id:
+  github_issue: 781
+  artifacts_dir: docs/sessions/S022-rename-cutover/
+  current_stage:
+  note: 'Primary #781 cutover + live UJ-032 PASS; PyPI Trusted Publisher and optional Actions secrets left as follow-ups on issue #781 (D-S022-00-approve-routing scope; user chose close option 1)'
+  started_at: '2026-07-27'
+  completed_at: '2026-07-27'
+  prior_session: S021-golden-examples-ui
+  prior_session_note: 'S021/EV-016 closed with live H4–H5 / UJ-032 waived to #781 (D-S021-EV016-13-waive-live-h4h5); S022 ops finishes rename cutover then unlocks those goldens'
+  context_briefs:
+  - docs/context/rename-cutover-781.md
+  routing_decision_id: D-S022-00-approve-routing
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    skip_rationale:
+    started: '2026-07-27'
+    completed: '2026-07-27'
+    note: 'S022 open approved (D-S022-00-approve-routing) — routing 00→15→13; #781 full rename cutover scope; prior_session S021 (live H4–H5/UJ-032 deferred from EV-016)'
+  - stage: 15-service-health
+    required: true
+    mode: full
+    status: completed
+    skip_rationale:
+    note: 'Render imagePath cutover to empiric2 + GHCR classic read:packages cred; API/FE/worker live; H0c/H1/H4/H5 PASS; goldens in FE bundle; UJ-032 browser → 13; PyPI/secrets remaining'
+    started: '2026-07-27'
+    completed: '2026-07-27'
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: completed
+    skip_rationale:
+    note: H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending
+    started: '2026-07-27'
+    completed: '2026-07-27'
+  skipped:
+  - 16-evolve
+  - 01-requirements
+  - 02-verify-plan
+  - 04-tech-plan
+  - 07-build
+  - 08-verify-build
+  - 09-qa
+  - 10-e2e
+  - 11-verify-impl
+  - 12-verify-deploy
+  - 14-hotfix
 - id: S021-golden-examples-ui
   type: feature
   intent: UI pre-loaded golden examples for convert+validate (#780); deepen F7; FE fixtures ×7 products + AHL/COLLECT; FileConverter Examples UX; Vitest; no backend
@@ -1607,12 +1662,12 @@ template:
 stages:
   00-context:
     status: completed
-    mode: scoped
+    mode: session
     scoped_slug: golden-examples-ui
-    session_id: S021-golden-examples-ui
-    evolve_cycle_id: EV-016
+    session_id: S022-rename-cutover
+    evolve_cycle_id:
     started_at: '2026-07-22'
-    completed_at: '2026-07-22'
+    completed_at: '2026-07-27'
     substeps:
       phase0: completed
       phase1a: completed
@@ -1621,8 +1676,10 @@ stages:
       phase2: completed
       phase3: completed
       phase4: completed
-    note: 'S021/EV-016 00-context COMPLETE 2026-07-22 — Batch1 locked (E16-1..E16-4 all A); Phase 0 scope approved; Lean+build E16-3; handoff 01-requirements delta (deepen F7 / #780)'
+    note: 'S022-rename-cutover 00-context COMPLETE 2026-07-27 — ops session open approved (D-S022-00-approve-routing); routing 00→15→13; #781 full rename cutover; prior_session S021 (live H4–H5 deferred from EV-016); handoff 15-service-health'
     artifacts:
+    - docs/context/rename-cutover-781.md
+    - docs/sessions/S022-rename-cutover/
     - docs/sessions/S021-golden-examples-ui/session-brief.md
     - docs/sessions/S021-golden-examples-ui/routing-plan.md
     - docs/context/golden-examples-ui.md
@@ -1650,6 +1707,7 @@ stages:
     - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
     - docs/context/manual-tac-input-modes.md
     notes:
+    - 2026-07-27 — S022-rename-cutover opened (ops); D-S022-00-approve-routing; 00 completed; current_stage=15-service-health; no evolve cycle
     - '2026-07-22 S021/EV-016 00-context COMPLETE — Batch1 E16-1..E16-4 all A; Phase 0 scope locked; Lean+build; handoff 01-requirements (deepen F7 / #780)'
     - 2026-07-22 S020/EV-015 00-context COMPLETE — Batch2 E15-5..E15-8 all A; Phase 0 scope approved; F20 written to feature-list; handoff 01-requirements
     - 2026-07-22 S020/EV-015 parent artifacts recorded (session-brief, routing-plan, docs/context/aerodrome-quality.md, evolve-decisions EV-015); Batch1+routing locked; Phase 0 Batch2 pending — 00-context stays in_progress
@@ -3769,8 +3827,25 @@ stages:
   13-deploy-smoke:
     status: completed
     started_at: '2026-07-27'
-    session_id: S021-golden-examples-ui
+    session_id: S022-rename-cutover
     delta_substages:
+    - id: S022-rename-cutover
+      session_id: S022-rename-cutover
+      evolve_cycle_id:
+      skill_id: 13-deploy-smoke
+      status: completed
+      mode: full
+      branch: infra/S022-rename-cutover
+      started: '2026-07-27'
+      started_at: '2026-07-27'
+      note: H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending
+      github_issue: 781
+      prior_stage_15_note: Render imagePath cutover to empiric2 + GHCR classic read:packages cred; API/FE/worker live; H0c/H1/H4/H5 PASS; goldens in FE bundle; UJ-032 browser → 13; PyPI/secrets remaining
+      completed: '2026-07-27'
+      completed_at: '2026-07-27'
+      overall: pass
+      report: docs/sessions/S022-rename-cutover/reports/deploy-smoke.md
+      decision_id: D-S022-13-uj032-pass
     - id: S021-golden-examples-ui
       session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
@@ -3910,6 +3985,8 @@ stages:
       report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
       hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+    - 2026-07-27 S022 13-deploy-smoke COMPLETE — H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending
+    - 2026-07-27 S022 13-deploy-smoke STARTED (in_progress) — after 15-service-health completed; commit 6b9d2b9; empiric2 main-latest live; goldens_ui_live; PyPI/secrets remaining
     - '2026-07-27 S021/EV-016 13-deploy-smoke COMPLETE (waived) — live H4–H5 / UJ-032 waived to #781 (D-S021-EV016-13-waive-live-h4h5); user option 3 on 2026-07-27; blocked/cleared'
     - '2026-07-27 S021/EV-016 13-deploy-smoke BLOCKED (in_progress) — PR #782 MERGED (c49f22b); #780 CLOSED; CI 30227888075 tests green / Deploy FAILED (Render hook 400 on empiric2 imgURL); images pushed ghcr.io/empiric2/tac-to-iwxxm/*:20260727004311-c49f22b+main-latest; live Render still ghcr.io/joseph-c-mcguire/metar-to-iwxxm/* (FE dep-d9jalpb7uimc73cobuog old main-latest, no goldens UI); blocker #781 GHCR cutover — pending user decision on minimal cutover; session/EV-016 remain open'
     - '2026-07-27 S021/EV-016 13-deploy-smoke STARTED (in_progress) — PR #782 MERGED (mergeCommit c49f22b, mergedAt 2026-07-27); issue #780 CLOSED; user directed finish EV-016: H4–H5 live goldens UI then close; #781 next backlog after close (do not open new cycle yet)'
@@ -3935,10 +4012,10 @@ stages:
     blocked: false
     blocker_issue:
     ci_run: '30227888075'
-    overall: waived
+    overall: pass
     completed: '2026-07-27'
     completed_at: '2026-07-27'
-    note: 'live H4–H5 / UJ-032 waived to #781 (D-S021-EV016-13-waive-live-h4h5); user option 3 on 2026-07-27; blocked/cleared'
+    note: 'H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending'
   14-hotfix:
     status: completed
     session_id: S012-empty-bearer-lint-tac
@@ -4020,6 +4097,15 @@ stages:
     - '2026-07-21 S019/EV-014 closeout hygiene — 16-evolve completed/idle (EV-014 closed; no active evolve cycle); PR #774 merged 915f41e; draft PR #770 closed superseded; issues #729/#2/#6 closed'
     - 2026-07-21 S019/EV-014 16-evolve COMPLETE — Phase 4 close D-S019-EV014-phase4-close; EV-014 completed
     completed: '2026-07-27'
+  15-service-health:
+    status: completed
+    session_id: S022-rename-cutover
+    note: 'Render imagePath cutover to empiric2 + GHCR classic read:packages cred; API/FE/worker live; H0c/H1/H4/H5 PASS; goldens in FE bundle; UJ-032 browser → 13; PyPI/secrets remaining'
+    started_at: '2026-07-27'
+    notes: Render imagePath cutover to empiric2 + GHCR classic read:packages cred; API/FE/worker live; H0c/H1/H4/H5 PASS; goldens in FE bundle; UJ-032 browser → 13; PyPI/secrets remaining
+    completed: '2026-07-27'
+    completed_at: '2026-07-27'
+    skill_id: 15-service-health
 stages_pending: []
 deployment:
   local_build:
@@ -4031,11 +4117,11 @@ deployment:
     t0_result: pass
     t0_journeys_passed: 4
   staging:
-    status: deploy_failed_cutover_blocked
+    status: deployed
     last_verified: '2026-07-27'
-    commit_deployed: eae8bdcfea86351f7755c8e54750ac14a33130b1
-    commit_head: c49f22b
-    drift: true
+    commit_deployed: 6b9d2b9
+    commit_head: 6b9d2b9
+    drift: false
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
@@ -4044,22 +4130,30 @@ deployment:
       frontend: dep-d9gljfrbc2fs738q90d0
     ci_deploy_run: '30227888075'
     images:
-      api: ghcr.io/joseph-c-mcguire/metar-to-iwxxm/backend:20260722235831-eae8bdc
-      frontend: ghcr.io/joseph-c-mcguire/metar-to-iwxxm/frontend:20260722235831-eae8bdc
-      note: still on ghcr.io/joseph-c-mcguire/metar-to-iwxxm/* @ older tip; empiric2 20260727004311-c49f22b not live
+      api: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
+      frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:main-latest
+      note: S022 cutover — empiric2 imagePath + classic read:packages GHCR cred; live main-latest
     health_tiers:
-      H0ci: tests_green_deploy_failed
+      H0ci: note_deploy_hook_may_still_need_verify
       H0c: pass
       H1: pass
       H3: pass
-      H4: blocked
-      H5: blocked
+      H4: pass
+      H5: pass
       UJ026_annex3: pending
       AHL_convert_bulletin: pass
       COLLECT_ingest_collect: expected_501
       Playwright_workbench: pass
-      goldens_ui: blocked
+      goldens_ui: pass
+      h0c: pass
+      h1: pass
+      h4: pass
+      h5: pass
+      h0ci: note_deploy_hook_may_still_need_verify
+      uj032: pass
     notes:
+    - 2026-07-27 S022 13-deploy-smoke PASS — UJ-032 live verified; PyPI Trusted Publisher still pending
+    - 2026-07-27 S022/15 cutover PASS — Render imagePath → empiric2; classic PAT read:packages; API/FE/worker live @ 6b9d2b9 / main-latest; H0c/H1/H4/H5 PASS; goldens_ui_live; UJ-032 → 13; PyPI/secrets remaining; H0ci deploy-hook may still need verify
     - 'S021/EV-016 13-deploy-smoke BLOCKED 2026-07-27 — CI 30227888075 tests green; Deploy FAILED (Render deploy hook 400 for empiric2 GHCR imgURL); pushed ghcr.io/empiric2/tac-to-iwxxm/*:20260727004311-c49f22b+main-latest; live still ghcr.io/joseph-c-mcguire/metar-to-iwxxm/*; FE redeploy dep-d9jalpb7uimc73cobuog re-pulled old main-latest (no goldens UI); blocker #781 private EMPIRIC2 GHCR cutover (PATCH imagePath could not be fetched; local gh token lacks packages scopes; joseph GHCR push permission_denied). Pending user decision on #781 minimal cutover.'
     - S020/EV-015 T5.7 Phase D PASS @ eae8bdc — images 20260722235831-eae8bdc; deploys dep-d9gljeupbkes73bspkl0 / dep-d9gljfrbc2fs738q90d0; CI 29967487455; H0ci–H5 pass
     - F20 catalog taf/speci + lint/convert live PASS; S020 T5.7
@@ -4071,7 +4165,7 @@ deployment:
     - H0c PASS; H3 21/21; H4 2/2; H5 PASS; AHL convert-bulletin 200; COLLECT ingest-collect 501; live Playwright workbench PASS
     - Phase D / Phase 4 close still pending user deploy approval (session open)
     ci_tests: green
-    ci_deploy: failed
+    ci_deploy: note_may_still_need_verify
     images_attempted:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260727004311-c49f22b
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260727004311-c49f22b
@@ -4079,7 +4173,7 @@ deployment:
       main_latest: true
       registry: ghcr.io/empiric2/tac-to-iwxxm
     frontend_redeploy_attempt: dep-d9jalpb7uimc73cobuog
-    goldens_ui_live: false
+    goldens_ui_live: true
   url_discovery:
     method: bash scripts/deploy/verify_connectivity.sh
 issue_log:
@@ -7798,6 +7892,57 @@ decisions_log:
   related_pr: 782
   merge_sha: c49f22b
   artifact: docs/evolve-report-EV-016.md
+- id: D-S022-00-approve-routing
+  summary: 'User approved option A/1 — open S022 ops session with routing 00→15→13; full #781 scope including PyPI/secrets'
+  timestamp: '2026-07-27'
+  date: '2026-07-27'
+  session_id: S022-rename-cutover
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  category: routing
+  status: approved
+  decision: 'Open S022-rename-cutover (ops) orchestrated by 15-service-health; routing 00-context (completed) → 15-service-health → 13-deploy-smoke; skip evolve/requirements/build/qa/e2e/verify/hotfix; full #781 cutover scope'
+  related_issue: 781
+  prior_session: S021-golden-examples-ui
+  prior_decision: D-S021-EV016-13-waive-live-h4h5
+- id: D-S022-15-classic-pat-ghcr
+  summary: Fine-grained PAT cannot access Packages; used classic read:packages for Render GHCR credential; cutover applied
+  timestamp: '2026-07-27'
+  date: '2026-07-27'
+  session_id: S022-rename-cutover
+  skill: 15-service-health
+  skill_id: 15-service-health
+  stage: 15-service-health
+  category: infra
+  status: confirmed
+  decision: Fine-grained PAT lacks Packages access; use classic PAT with read:packages for Render GHCR pull credential; imagePath cutover to empiric2 applied
+  related_issue: 781
+- id: D-S022-13-uj032-pass
+  summary: Live UJ-032 verified after Empiric2 cutover; guest can load Examples; Convert requires auth
+  timestamp: '2026-07-27'
+  date: '2026-07-27'
+  session_id: S022-rename-cutover
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  category: verification
+  status: confirmed
+  decision: Live UJ-032 verified after Empiric2 cutover; guest can load Examples; Convert requires auth; H0c/H1/H4/H5 PASS; PyPI Trusted Publisher still pending — session remains open
+  related_issue: 781
+- id: D-S022-close-option1
+  summary: User closed S022; primary Render/GHCR/worker cutover + H4–H5/UJ-032 done; PyPI/secrets remain on #781
+  timestamp: '2026-07-27'
+  date: '2026-07-27'
+  session_id: S022-rename-cutover
+  skill: 00-context
+  skill_id: 00-context
+  stage: session-close
+  category: session
+  status: confirmed
+  decision: 'Close S022-rename-cutover (option 1); archive status=completed; active_session=null; primary #781 cutover + live UJ-032 PASS; PyPI Trusted Publisher and optional Actions secrets remain follow-ups on #781 (D-S022-00-approve-routing scope)'
+  related_issue: 781
+  related_decision: D-S022-00-approve-routing
 artifacts:
 - path: docs/sessions/S021-golden-examples-ui/reports/verify-impl.md
   type: session-report
@@ -9573,6 +9718,26 @@ artifacts:
   updated_at: '2026-07-27'
   status: completed
   note: EV-016 cycle close report — D-S021-EV016-phase4-close
+- path: docs/sessions/S022-rename-cutover/reports/service-health.md
+  type: session-report
+  kind: service-health
+  stage: 15-service-health
+  skill_id: 15-service-health
+  session_id: S022-rename-cutover
+  created_at: '2026-07-27'
+  updated_at: '2026-07-27'
+  status: completed
+  note: Render imagePath cutover to empiric2 + GHCR classic read:packages cred; API/FE/worker live; H0c/H1/H4/H5 PASS; goldens in FE bundle; UJ-032 browser → 13; PyPI/secrets remaining
+- path: docs/sessions/S022-rename-cutover/reports/deploy-smoke.md
+  type: session-report
+  kind: deploy-smoke
+  stage: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  session_id: S022-rename-cutover
+  created_at: '2026-07-27'
+  updated_at: '2026-07-27'
+  status: completed
+  note: H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending
 retrospective_cycles:
 - id: RET-001
   title: Skill trim — corpus-first, lean routing, archive legacy
@@ -13135,7 +13300,7 @@ evolve_cycles:
   pr_number: 723
   merge_sha: '4660602'
 git_history:
-  current_branch: evolve/EV-016-golden-examples-ui
+  current_branch: infra/S022-rename-cutover
   ahead_of_origin: 0
   pushed: true
   pending_commit:
@@ -13991,6 +14156,13 @@ git_history:
     pr_id: PR-EV-008
     pr_number: 716
     note: PR-EV-008=#716 open (retitled/updated evolve→main); NO merge, NO deploy
+  - name: infra/S022-rename-cutover
+    purpose: S022 ops — EMPIRIC2/TAC-to-IWXXM rename cutover (#781)
+    base: main
+    status: open
+    created_at: '2026-07-27'
+    session_id: S022-rename-cutover
+    pr_url:
   commits:
   - sha: d604db73fde878e22a4a6a6a03e221dfb2d98859
     short: d604db7
