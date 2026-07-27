@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+# Local parity with GitHub Actions validate + unit/matrix (make ci-prepush).
+# Remote CI also runs test / tac2iwxxm-native / e2e-smoke; deploy needs test + native.
+set -e
+echo "husky pre-push: make validate-ci"
+make validate-ci
+echo "husky pre-push: make ci-prepush"
+make ci-prepush

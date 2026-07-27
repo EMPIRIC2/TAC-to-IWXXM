@@ -1,6 +1,6 @@
 # Authentication Service - Supabase Middleware Proxy
 
-[![codecov](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM/graph/badge.svg)](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM)
+[![codecov](https://codecov.io/gh/EMPIRIC2/TAC-to-IWXXM/graph/badge.svg)](https://codecov.io/gh/EMPIRIC2/TAC-to-IWXXM)
 
 A middleware authentication service that proxies requests between the frontend/backend and Supabase, providing centralized auth management, security isolation, and easier monitoring.
 

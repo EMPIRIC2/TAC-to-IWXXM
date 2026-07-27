@@ -78,8 +78,38 @@ or proceed with a reduced doc set (record waiver via workflow-state-manager).
 | Ambiguity / contradiction | Category label in prompt: `[Decision]`, `[Ambiguity]`, `[Contradiction]`, `[Uncertainty]` |
 | Phase gate failure | List unmet criteria; **block** until resolved (no silent proceed) |
 | Phase checkpoint (A–D, deploy) | Progress digest + AskQuestion before next phase |
+| **UI in scope** | AskQuestion: offer a **non-deployed** (local) UI preview — see §UI preview |
 
 Do not post interview prompts as markdown lists expecting inline replies.
+
+## UI preview (when the cycle includes UI)
+
+Whenever the evolve cycle adds or changes a **browser UI** surface, offer a preview via
+AskQuestion. Label it clearly as a **non-deployed / local instance** — not staging or
+production (those remain 12/13 / H4–H5).
+
+**When to ask (at least once per cycle with UI; re-ask after material UI changes):**
+
+| Moment | Ask |
+|--------|-----|
+| Phase 0 intake (UI mentioned) | Optional early look at current local UI to ground scope |
+| After Phase C (07/08 done) | Preview the built UI before Verify |
+| When **11-verify-impl** is routed | Child skill runs its required preview AskQuestion; orchestrator ensures it was offered |
+| Phase D / close checkpoint | If user skipped earlier, offer once more before deploy |
+
+```
+prompt: "UI preview (non-deployed): Preview the UI on a local / non-deployed instance?
+
+  Not staging or production — local build only."
+
+options:
+  1. "Yes — open non-deployed preview"
+  2. "No — continue without preview"
+  3. "Remind me at 11-verify-impl"
+  4. "Let me explain / provide more context"
+```
+
+Record accept/decline in the cycle checkpoint digest / evolve summary.
 
 ## Session management
 
@@ -248,6 +278,8 @@ Same as pipeline — never re-run entire phases for verification failures.
 5. **Child skills own detail** — read child `SKILL.md` when invoking; not full `reference.md` unless needed.
 6. **State via agent** — batch start+exit updates per protocol-card; never edit YAML directly.
 7. **Do not `@`-attach** full skill bodies — name + routing-plan is enough.
+8. **UI preview** — when UI is in scope, AskQuestion for a **non-deployed** preview; never
+   present staging/production as that preview unless the user explicitly requests it.
 
 ## Additional resources
 

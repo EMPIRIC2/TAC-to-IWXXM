@@ -30,6 +30,32 @@ Before approving **UI features** (e.g. F11 Chat UI, F12 Admin UI):
 Per-journey AskQuestion for browser UJs: “Does T0 prove this in production browser?” — if no,
 record **T3/connectivity pending**; do not mark journey approved without waiver.
 
+## UI preview (required when UI exists)
+
+When the verification scope includes any **browser UI** (frontend app, operator workbench,
+admin, drawer, etc.), **AskQuestion before Phase 3 feature approval**:
+
+```
+prompt: "UI preview (non-deployed): Would you like to preview the UI on a local /
+  non-deployed instance before approving these features?
+
+  This is not staging or production — local build only (dev server or T0-equivalent).
+  Staging/live review stays with 12/13 / H4–H5."
+
+options:
+  1. "Yes — start a non-deployed preview (recommended when UI changed)"
+  2. "No — approve from reports/tests only"
+  3. "Later — remind me at the next UI feature"
+  4. "Let me explain / provide more context"
+```
+
+- If **Yes**: start the project's local frontend (and API if needed) per `docs/tech-spec.md`
+  / Makefile; share the local URL; label it clearly as **non-deployed**. Do not point the
+  user at staging/production unless they explicitly ask.
+- Record the choice in `{artifacts_dir}/reports/verify-impl.md` (preview offered / accepted /
+  declined).
+- Skip this AskQuestion only when the scope is API/worker/docs-only with no UI surface.
+
 ## Prerequisites
 
 1. **09-qa** must be `completed` — QA report available
@@ -140,6 +166,9 @@ Do **not** mark 11-verify-impl `completed` if any **modal-tier** journey lacks T
 or documented T3 waiver. Feed flags into Phase 4 patches or 14-hotfix / 16-evolve routing.
 
 ### Phase 3 — Present to User
+
+If UI is in scope and the preview AskQuestion (above) was accepted, complete the
+non-deployed preview (or note blocker) before the first UI feature approval.
 
 Present a unified view via AskQuestion, feature by feature:
 
@@ -262,3 +291,5 @@ Write `docs/reports/implementation-verification.md`.
 3. **Feature-level granularity**: Present results per feature, not per file or per check.
 4. **Scope awareness**: Detect both creep and gaps.
 5. **Evidence-backed**: Every finding cites QA report, E2E report, or acceptance criteria.
+6. **UI preview offer**: When UI is in scope, AskQuestion for a **non-deployed** preview
+   before feature approval; never imply the preview is staging/production.

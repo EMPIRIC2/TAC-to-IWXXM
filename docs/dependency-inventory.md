@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-21 (S019 / EV-014 — Planned `packages/dissemination` deps; ADR-030)
+> **Last updated**: 2026-07-26 (S021 — husky pre-push + restored remote CI test matrix)
 
 ## Runtime Dependencies
 
@@ -114,7 +114,8 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 | prettier | workspace TS | Format apps/* and packages/* TypeScript |
 | eslint | workspace TS | Lint apps/frontend, apps/e2e, packages/shared |
 | make | system | Orchestration |
-| pre-commit | dev group (pyproject) | Git hooks — fast gates |
+| pre-commit | dev group (pyproject) | Fast commit gates (invoked from husky) |
+| husky | root `package.json` devDependency (^9.1.7) | Git hooksPath — pre-commit + pre-push (unit/matrix) |
 | actionlint | pre-commit hook | GitHub Actions workflow lint (EV-002) |
 | yamllint | pre-commit hook | `.github/` YAML lint (EV-002) |
 | supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` |

@@ -238,3 +238,16 @@
 | EV-015/E15-18 | Deploy | API+FE; H1–H3 + H4–H5 required | confirmed |
 | EV-015/E15-19 | Plan | Approve M0–M5 execution plan | confirmed |
 | EV-015/manifest | Docs | Spec, journeys, test-plan, coverage matrix, API contract | confirmed |
+
+## EV-016 / F7.g — Workbench golden examples (2026-07-22)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-016/F7-R1 | Scope | Frontend-only goldens per #780; deepen F7 | confirmed |
+| EV-016/F7-R2 | Journey | UJ-032 + TC-F7-008 | confirmed |
+| EV-016/F7-R3 | Status | F7 stays Planned; slice F7.g | confirmed |
+| EV-016/F7-R4 | Optional | Happy-path IWXXM only; no soft-fail / file-queue v1 | confirmed |
+| EV-016/F7-R5 | Thin fixtures | In-repo only; allow 1 + document gap; no invented TAC | confirmed |
+| EV-016/F7-R6 | Docs | feature-list + user-journeys + test-plan + light spec | confirmed |
+| EV-016/F7-R7 | Non-goals | No api-contract / config / deploy env changes | confirmed |
+

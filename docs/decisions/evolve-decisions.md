@@ -3,14 +3,83 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-016 — Workbench golden examples (#780) (S021)
+
+**Session**: S021-golden-examples-ui  
+**Features**: deepen **F7** only (no new Fn)  
+**Issues**: [#780](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/780)  
+**Started**: 2026-07-22  
+**Completed**: —  
+**Branch**: `evolve/EV-016-golden-examples-ui`  
+**Status**: **in_progress** — 11 approved (E16-19); minor PR → 13-deploy-smoke
+
+### Scope (Batch 1 — locked 2026-07-22)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E16-1 | decision | Open session? | **A** — `S021-golden-examples-ui` → 16-evolve / EV-016 |
+| E16-2 | decision | Feature id? | **A** — deepen **F7** only (no F21) |
+| E16-3 | decision | Routing preset? | **A** — Lean+build (`00→16→01→02→04→07→08→09→10→11→13`) |
+| E16-4 | decision | Scope lock? | **A** — #780 AC (FE fixtures + Examples UX + Vitest; no backend) |
+
+### Scope (Batch 2 — 01-requirements — locked 2026-07-22)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E16-5 | decision | User journey? | **A** — **UJ-032** + **TC-F7-008** |
+| E16-6 | decision | F7 status? | **A** — stay **Planned**; add slice **F7.g** |
+| E16-7 | decision | Optional #780 items? | **A** — happy-path IWXXM only; skip soft-fail + file-upload queue |
+| E16-8 | ambiguity | Thin hazard fixtures? | **A** — use in-repo only; allow **1** + document gap; no invented TAC |
+| E16-9 | decision | Spec delta set? | **A** — feature-list + user-journeys + test-plan + light spec; no api/config/deploy env |
+
+### Scope summary (approved)
+
+Frontend-only pre-loaded goldens for convert + validate: ≥2 TAC/product × 7 products
+(or documented 1-fixture gap for thin hazard products); ≥1 AHL + ≥1 happy-path IWXXM COLLECT;
+Examples control in FileConverter sets product/inputMode; copy from package goldens into
+`apps/frontend`; Vitest TC-F7-008; no API/env/DB. Soft-fail XML and file-upload queue OOS v1.
+
+### Phase A gate (02-verify-plan)
+
+| ID | Decision |
+|----|----------|
+| E16-02-pass | Consistency PASS 2026-07-22 — audit `reports/02-verify-plan-audit.md` |
+| E16-10 | decision | Phase A→B | **Approve** — proceed to 04-tech-plan (2026-07-26) |
+
+### Tech plan (04 Batch 1 — locked 2026-07-26)
+
+| ID | Category | Topic | Decision |
+|----|----------|-------|----------|
+| E16-11 | decision | Catalog shape | **A** — typed TS catalog + copied fixtures under `apps/frontend/src/fixtures/examples/` |
+| E16-12 | decision | Examples placement | **A** — control next to product / Manual TAC Input |
+| E16-13 | decision | Fixture pairing | **A** — annex3 + product_matrix + iwxxm_us; VAA/TCA 1 + documented gap |
+| E16-14 | decision | IWXXM sample | **A** — happy-path single-report golden XML → `collect_iwxxm` |
+| E16-15 | decision | Select component | **B′** — reuse existing Radix `ui/select` (no new npm dep) |
+| E16-16 | decision | Execution plan | **A** — approve M1–M3 / 11 tasks as written; B→C; start 07 @ T1.1 |
+
+### Verify / Phase C→D (2026-07-26)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E16-18 | decision | After 08: run 09+10 now? | **A** — run 09-qa + 10-e2e (not push/PR first) |
+| E16-19 | decision | 11-verify-impl sign-off? | **A** — Approve UJ-032 + F7.g (T0 + local UI preview; H4–H5 waived to 13; QA-001–004 accepted) |
+
+### Tech plan artifacts
+
+| Artifact | Path |
+|----------|------|
+| 04 report | `docs/sessions/S021-golden-examples-ui/reports/04-tech-plan.md` (**completed**) |
+| Execution plan | `docs/sessions/S021-golden-examples-ui/reports/execution-plan.md` (**approved** E16-16) |
+| 11 verify | `docs/sessions/S021-golden-examples-ui/reports/verify-impl.md` (**approved** E16-19) |
+
 ## Cycle EV-015 — F15 sequel: TAF + SPECI quality (#735 / #734) (S020)
 
 **Session**: S020-aerodrome-quality  
 **Features**: **F20** (new) + deepen **F6.b / F6.c** + **F12**  
-**Issues**: [#735](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/735), [#734](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/734)  
+**Issues**: [#735](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/735), [#734](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/734)  
 **Started**: 2026-07-22  
 **Completed**: 2026-07-22 (`D-S020-EV015-phase4-close`)  
-**Branch**: `evolve/EV-015-aerodrome-quality` → PR [#778](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/778) @ `eae8bdc`  
+**Branch**: `evolve/EV-015-aerodrome-quality` → PR [#778](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/778) @ `eae8bdc`  
 **Status**: **completed** — F20 Done; #735/#734 closed; Render live `…-eae8bdc`
 
 ### Phase 4 close (`D-S020-EV015-phase4-close`)
@@ -73,7 +142,7 @@
 
 **Session**: S019-dissemination-upload  
 **Features**: **F16–F19 Planned** (Phase 0 approved Q24=A 2026-07-21)  
-**Issues**: [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729), [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2), [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6)  
+**Issues**: [#729](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/729), [#2](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/2), [#6](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/6)  
 **Started**: 2026-07-20  
 **Branch**: `main` @ `3c9ee81` (#753 MERGED); build branches `cursor/*-b45b` off main  
 **Status**: Phase B **in progress** — **05-verify-tech PASS** (D-S019-EV014-Q35A-05); next **06-tech-tooling**
@@ -252,7 +321,7 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
   services. Evidence: `make test-mock-byoc-smoke` (134 passed this session; Docker optional
   extras skipped). Secrets stay gitignored (`.env`); fixture shapes committed under
   `docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json`.
-- PR (04): https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/753 MERGED
+- PR (04): https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/753 MERGED
 - 2026-07-21: 04 Batch 1–2 locked; plan approved; 05 PASS; 06 T0.1 complete; Phase B Assumed
 - 2026-07-21: #771 MERGED; T6.6 completed via mock BYOC waive (PR #772)
 - 2026-07-21: #772 MERGED (`c61273a`); Phase C Assumed PASS → Phase D bookkeeping → cycle close
@@ -283,13 +352,13 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 ### Closeout hygiene (D-S019-EV014-closeout-1)
 
-- 2026-07-21: Bookkeeping PR [#774](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/774)
+- 2026-07-21: Bookkeeping PR [#774](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/774)
   MERGED (`915f41e`).
-- Closed superseded draft [#770](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/770)
+- Closed superseded draft [#770](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/770)
   (T6.3 already on `main` via #771/#772).
-- Closed tracking issues [#729](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/729),
-  [#2](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/2),
-  [#6](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/6) (F16–F18 Done).
+- Closed tracking issues [#729](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/729),
+  [#2](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/2),
+  [#6](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/6) (F16–F18 Done).
 - `workflow-state.yaml` hygiene: S019 branches marked merged/superseded; top-level
   `16-evolve` / `11-verify-impl` / `overall_status` → completed.
 
@@ -299,7 +368,7 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 **Session**: S018-metar-remarks-667  
 **Features**: F6 (deepen)  
-**Issues**: [#667](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/667)  
+**Issues**: [#667](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/667)  
 **Started**: 2026-07-20  
 **Completed**: 2026-07-20 (D-S018-EV013-Q0A-close-waive)  
 **Deploy**: #750 live; 13-deploy-smoke `pass_with_advisories`
@@ -316,7 +385,7 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 **Session**: S016-manual-tac-input-modes  
 **Features**: F7 (validation deepen only; status stays Planned)  
-**Issues**: [#730](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/730)  
+**Issues**: [#730](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/730)  
 **Started**: 2026-07-20  
 **Branch**: `evolve/EV-012-manual-tac-input-modes`  
 **Completed**: 2026-07-20 (D-S016-EV012-phase4-close-1)
@@ -362,11 +431,11 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 **Session**: S015-metar-lint-quality  
 **Features**: F15 (new) + deepen F6/F12  
-**Issues**: [#732](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/732)  
+**Issues**: [#732](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/732)  
 **Started**: 2026-07-19  
 **Branch**: `evolve/EV-011-metar-lint-quality`  
 **Completed**: 2026-07-20 (D-S015-EV011-phase4-close-1)  
-**Merge**: PR [#742](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/742) → `b405a96`; deploy-smoke PR [#743](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/743)
+**Merge**: PR [#742](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/742) → `b405a96`; deploy-smoke PR [#743](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/743)
 
 ### Close
 
@@ -377,7 +446,7 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 ### Scope (Phase 0–1 locked 2026-07-19)
 
 1. Maintainable METAR lint **issue registry** (`info` / `warning` / `error`), additive and documented
-2. Full [#732](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/732) METAR quality bar — lint, convert, IWXXM validate, API/UI path
+2. Full [#732](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/732) METAR quality bar — lint, convert, IWXXM validate, API/UI path
 3. Golden TAC → IWXXM → XSD+Schematron where fixtures exist or are expanded
 4. **Max research + validation/conversion expansion** — research catalog in 01 **and** aggressive encode of R1–R6 **and** registry/goldens **and** any other in-scope METAR quality wins (MetarCentral, AviationRef, iwxxmConverter)
 5. New **F15**; deepen **F6** (convert/goldens) and **F12** (tac-validate METAR pack)
@@ -590,7 +659,7 @@ validation semantics or Schematron rules; F5 history surfaces.
 | 12–13 | 2026-07-17 | Checklist approved; PR #723 merged; live smokes PASS |
 | Close | 2026-07-18 | User approved deploy results (option 1); session closed |
 
-**Completed**: 2026-07-18 — PR [#723](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/723) merge `4660602`; F9/F10 Done in production.
+**Completed**: 2026-07-18 — PR [#723](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/723) merge `4660602`; F9/F10 Done in production.
 
 ---
 
@@ -625,7 +694,7 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-001 — Convert & Convert&Send UI (S001)
 
-**GitHub**: [#656](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/656)  
+**GitHub**: [#656](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/656)  
 **Session**: S001-convert-send-buttons  
 **Feature**: F1 (conversion UI + database send)  
 **Approved**: 2026-06-22
@@ -719,7 +788,7 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-003 — Issue #594 COR + input traceability (S002)
 
-**GitHub**: [#594](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/594)  
+**GitHub**: [#594](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/594)  
 **Session**: S002-issue-594-feedback  
 **Feature**: F1 (METAR → IWXXM conversion + UI traceability)  
 **Approved**: 2026-06-22  
@@ -759,7 +828,7 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-004 — #555 UX + F5 work history + S003 Supabase (S004)
 
-**GitHub**: [#555](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/555)  
+**GitHub**: [#555](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/555)  
 **Session**: S004-issue-555-feedback  
 **Features**: F1 (converter UX), F5 (user METAR work history), S003 (Supabase keys/runtime config)  
 **Approved**: 2026-06-23  
@@ -822,7 +891,7 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-005 — Custom output filename for manual METAR input (S006)
 
-**GitHub**: [#664](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/664)  
+**GitHub**: [#664](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/664)  
 **Session**: S006-issue-664-output-filename  
 **Features**: F1 (manual-input custom output filename UX) + F5 touch (persist the name on the work session)  
 **Approved**: 2026-06-25  
@@ -890,7 +959,7 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-007 — Issue #655 TAC traceability UX (S010)
 
-**GitHub**: [#655](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/655)  
+**GitHub**: [#655](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/655)  
 **Session**: S010-issue-655-tac-traceability  
 **Feature**: F6 (general converter UI — input traceability delta)  
 **Approved**: 2026-07-12  

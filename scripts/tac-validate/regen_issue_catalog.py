@@ -60,12 +60,28 @@ def _load_rows() -> tuple[list[dict[str, object]], str]:
     return rows, "generated from tac_validate.issue_registry"
 
 
-def _write_md(rows: list[dict[str, object]], source: str) -> None:
+def _stable_generated(rows: list[dict[str, object]], source: str) -> str:
+    """Keep prior generated date when issue rows/source are unchanged (CI-friendly)."""
+    today = date.today().isoformat()
+    if not CATALOG_JSON.exists():
+        return today
+    try:
+        prior = json.loads(CATALOG_JSON.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return today
+    if prior.get("source") == source and prior.get("issues") == rows:
+        prev = prior.get("generated")
+        if isinstance(prev, str) and prev:
+            return prev
+    return today
+
+
+def _write_md(rows: list[dict[str, object]], source: str, generated: str) -> None:
     lines = [
         "# TAC lint issue catalog",
         "",
         f"> **Source**: {source}  ",
-        f"> **Generated**: {date.today().isoformat()} via `make catalog-regen`  ",
+        f"> **Generated**: {generated} via `make catalog-regen`  ",
         "> **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015",
         "",
         "Public `code` values are stable. Default severities may tighten in minor releases.",
@@ -88,11 +104,11 @@ def _write_md(rows: list[dict[str, object]], source: str) -> None:
     CATALOG_MD.write_text("\n".join(lines), encoding="utf-8")
 
 
-def _write_json(rows: list[dict[str, object]], source: str) -> None:
+def _write_json(rows: list[dict[str, object]], source: str, generated: str) -> None:
     payload = {
         "schema_version": 1,
         "source": source,
-        "generated": date.today().isoformat(),
+        "generated": generated,
         "issues": rows,
     }
     CATALOG_JSON.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
@@ -100,8 +116,9 @@ def _write_json(rows: list[dict[str, object]], source: str) -> None:
 
 def main() -> int:
     rows, source = _load_rows()
-    _write_md(rows, source)
-    _write_json(rows, source)
+    generated = _stable_generated(rows, source)
+    _write_md(rows, source, generated)
+    _write_json(rows, source, generated)
     print(
         f"Wrote {CATALOG_MD.relative_to(REPO)} and {CATALOG_JSON.relative_to(REPO)} ({source})"
     )

@@ -1,13 +1,12 @@
-# Local gates mirroring .github/workflows/ci-cd.yml
+# Local gates mirroring .github/workflows/ci-cd.yml validate job
 # - default (pre-commit): fast checks ≈ make validate-fast pieces
-# - pre-push: make validate-ci + make ci-prepush (validate + unit matrix)
-# Install both: make install-hooks
+# - husky pre-push: make validate-ci + make ci-prepush (long unit/matrix)
+# Install: make install-hooks  (husky + pre-commit)
 #
 # pre-commit 4.x default_stages includes every hook type; pin to pre-commit so
-# omitted stages do not also fire on push (validate-ci/ci-prepush are explicit).
-# Full `make ci` (incl. Compose integration) stays manual — needs free 18000/18001.
+# omitted stages do not also fire on push. Long suites live in .husky/pre-push.
 default_stages: [pre-commit]
-default_install_hook_types: [pre-commit, pre-push]
+default_install_hook_types: [pre-commit]
 
 repos:
   - repo: https://github.com/gitleaks/gitleaks
@@ -69,22 +68,6 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
-      - id: make-validate-ci
-        name: make validate-ci (CI validate job)
-        entry: make validate-ci
-        language: system
-        pass_filenames: false
-        always_run: true
-        require_serial: true
-        stages: [pre-push]
-      - id: make-ci-prepush
-        name: make ci-prepush (CI unit/matrix parity)
-        entry: make ci-prepush
-        language: system
-        pass_filenames: false
-        always_run: true
-        require_serial: true
-        stages: [pre-push]
 
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.7

@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import {
+  act,
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  cleanup,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from './FileConverter';
 
@@ -2115,6 +2122,116 @@ describe('FileConverter Component', () => {
           }),
         );
       });
+    });
+  });
+
+  describe('Golden examples (TC-F7-008 C2–C4)', () => {
+    afterEach(() => {
+      cleanup();
+      vi.clearAllMocks();
+      localStorage.clear();
+    });
+
+    async function selectGoldenExample(label: RegExp) {
+      const user = userEvent.setup();
+      await user.click(screen.getByTestId('examples-select'));
+      const option = await screen.findByRole('option', { name: label });
+      await user.click(option);
+      return user;
+    }
+
+    it('loads a TAC example into the editor and sets product (C2)', async () => {
+      render(<FileConverter {...defaultProps} />);
+
+      await selectGoldenExample(/METAR basic \(annex3\)/i);
+
+      const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
+      expect(editor.value).toContain('METAR KJFK');
+      expect(screen.getByTestId('product-type-select')).toHaveValue('METAR');
+      expect(screen.getByTestId('demo-example-banner')).toHaveTextContent(
+        /Demo \/ non-operational example: METAR basic/i,
+      );
+      expect(mockToast.info).toHaveBeenCalledWith(
+        expect.stringContaining('Loaded METAR basic'),
+      );
+    });
+
+    it('loads an AHL bulletin example and switches input mode (C3)', async () => {
+      render(<FileConverter {...defaultProps} />);
+
+      await selectGoldenExample(/AHL METAR multi-report/i);
+
+      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
+      const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
+      expect(editor.value).toMatch(/SAUS31/);
+      expect(editor.value).toContain('METAR KJFK');
+      expect(screen.getByTestId('product-type-select')).toHaveValue('METAR');
+    });
+
+    it('loads an IWXXM example onto collect_iwxxm mode (C4)', async () => {
+      render(<FileConverter {...defaultProps} />);
+
+      await selectGoldenExample(/IWXXM METAR basic/i);
+
+      expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-600');
+      const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
+      expect(editor.value).toMatch(/<\?xml|iwxxm|METAR/i);
+    });
+
+    it('clears prior conversion results when loading an example', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<iwxxm>stale-prior</iwxxm>' }],
+      });
+
+      render(<FileConverter {...defaultProps} />);
+      const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
+      await user.type(editor, 'METAR KJFK 121651Z 18005KT 10SM FEW030 24/16 A2992');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /conversion results/i }),
+        ).toBeInTheDocument();
+      });
+
+      await selectGoldenExample(/METAR basic \(annex3\)/i);
+
+      expect(
+        screen.queryByRole('region', { name: /conversion results/i }),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText(/stale-prior/i)).not.toBeInTheDocument();
+      expect(screen.getByTestId('demo-example-banner')).toBeInTheDocument();
+    });
+
+    it('resets a stale product picker when loading an AHL example', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'TAF');
+      expect(screen.getByTestId('product-type-select')).toHaveValue('TAF');
+
+      await selectGoldenExample(/AHL METAR multi-report/i);
+
+      expect(screen.getByTestId('product-type-select')).toHaveValue('METAR');
+      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
+    });
+
+    it('clears the demo banner when Clear is clicked', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await selectGoldenExample(/METAR basic \(annex3\)/i);
+      expect(screen.getByTestId('demo-example-banner')).toBeInTheDocument();
+
+      await user.click(
+        screen.getByRole('button', {
+          name: /clear all pending files and manual input/i,
+        }),
+      );
+
+      expect(screen.queryByTestId('demo-example-banner')).not.toBeInTheDocument();
+      expect((screen.getByTestId('tac-editor') as HTMLTextAreaElement).value).toBe('');
     });
   });
 });

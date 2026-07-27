@@ -1,7 +1,7 @@
 # Technical Specification
 
 > **Project**: METAR to IWXXM Converter
-> **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
+> **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
 > **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
 > **Last updated**: 2026-07-22 (S020 / EV-015 F20 TAF+SPECI quality Planned)
 
@@ -241,6 +241,10 @@ metar-to-IWXXM/
   `include_nil_reasons` on Convert. Log Level filters Conversion log + console for lint/validate
   process messages. **Validation**: UJ-025 / TC-F7-007 (S016 / EV-012 / #730) — auto-switch
   required; COLLECT 501 honest UX; F7 status unchanged.
+- **F7.g golden examples (S021 / EV-016 / #780)**: Static frontend catalog (copied package
+  goldens) + Examples control in FileConverter; loads TAC / AHL / happy-path IWXXM into
+  existing modes; sets product/inputMode; demo labeling. No new API routes. Soft-fail XML
+  and file-upload queue deferred. UJ-032 / TC-F7-008. F7 status unchanged.
 - **F5**: Unchanged product scope — METAR/SPECI work sessions only (not extended to other
   products); admin browse path removed.
 - **F9/F10 delta (S013)**: Decode panel gains a top **"Plain language"** block rendering the
@@ -297,18 +301,20 @@ metar-to-IWXXM/
   Failed-TAC cue — plus **unified work sessions** on `tac_work_sessions` (R2′). Built this cycle.
 - **Status**: **Planned (build-ready)** — flips Implemented after verify/deploy gate.
 - **Slices**: F7.a #697 → F7.b #702 → F7.c #665/#666 → F7.d #694 → F7.e unified sessions migrate →
-  F7.f verify.
+  F7.f verify → **F7.g #780** golden examples (S021 / EV-016; frontend-only).
 - **Sessions (R2′)**: Single canonical `tac_work_sessions` table (see F5 section). F5 My METARs
   becomes a product filter; do **not** keep a parallel F7-only sessions table.
 - **API companions**: `POST /api/v1/decode-tac`; lint/validate `start`/`end`; soft-preview convert;
   session CRUD retargeted to unified table (route names may keep F5 paths for METAR UX or
   generalize — finalize in api-contract / 04).
 - **Editor**: CodeMirror 6.
+- **Golden examples (F7.g)**: Typed static catalog under `apps/frontend` (no fixture-serving
+  API); Examples UX wires into ADR-024 modes; prefer annex3 + known package goldens.
 - **BYO / admin**: Deploy-env credentials only; AdminDashboard deleted; clean cut for former
   shared-project users (G3).
 - **ADR**: Document R2′ unified sessions + F5 migration (new ADR in 01 ADR pass).
 - **Source**: [feature-list.md](feature-list.md) F7; [context/f7-operator-ui.md](context/f7-operator-ui.md);
-  D-S011-01-spec-r2-prime.
+  D-S011-01-spec-r2-prime; [context/golden-examples-ui.md](context/golden-examples-ui.md); #780.
 
 ### F8 — Near-realtime ingest (Implemented)
 

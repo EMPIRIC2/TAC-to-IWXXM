@@ -46,13 +46,21 @@ install:
 	$(PNPM) install
 
 install-hooks:
-	$(UV) run pre-commit install --hook-type pre-commit --hook-type pre-push
+	# husky owns core.hooksPath (.husky/*); pre-commit framework runs from .husky/pre-commit.
+	# Long unit/matrix suites: .husky/pre-push → make validate-ci + make ci-prepush.
+	corepack enable
+	$(PNPM) install
+	$(PNPM) exec husky
+	$(UV) run pre-commit install-hooks
+	chmod +x .husky/pre-commit .husky/pre-push
 
 pre-commit-run:
 	$(UV) run pre-commit run --all-files
 
 pre-push-run:
-	$(UV) run pre-commit run --hook-stage pre-push --all-files
+	# Same as husky pre-push (CI unit/matrix parity; not in GitHub Actions temporarily).
+	make validate-ci
+	make ci-prepush
 
 # --- F15 issue catalog (ADR-028 / EV-011) ---
 

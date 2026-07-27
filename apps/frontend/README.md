@@ -1,5 +1,5 @@
-[![Frontend Repo](https://img.shields.io/badge/repo-Metartoiwxxmfrontend-blue)](https://github.com/joseph-c-mcguire/Metartoiwxxmfrontend)
-[![Frontend Branch](https://img.shields.io/badge/branch-dev-green)](https://github.com/joseph-c-mcguire/Metartoiwxxmfrontend/tree/dev)
+[![Frontend Repo](https://img.shields.io/badge/repo-EMPIRIC2%2FTAC--to--IWXXM-blue)](https://github.com/EMPIRIC2/TAC-to-IWXXM)
+[![Frontend Branch](https://img.shields.io/badge/branch-main-green)](https://github.com/EMPIRIC2/TAC-to-IWXXM/tree/main)
 
 # METAR-2-IWXXM
 

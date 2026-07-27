@@ -18,8 +18,8 @@ Vendor schemas ship in-repo — a plain `git clone` is all you need.
 ## Quick start (local)
 
 ```bash
-git clone https://github.com/joseph-c-mcguire/metar-to-IWXXM.git
-cd metar-to-IWXXM
+git clone https://github.com/EMPIRIC2/TAC-to-IWXXM.git
+cd TAC-to-IWXXM
 
 cp .env.example .env
 # Edit .env: SUPABASE_PUBLISHABLE_KEY, SUPABASE_SECRET_KEY, DATABASE_URL (see config-spec.md)
@@ -202,39 +202,46 @@ Playwright env vars:
 
 ## CI/CD
 
-Primary workflow: `.github/workflows/ci-cd.yml` (EV-002: **validate → test → deploy** on push to
-`main`; PRs run validate + test only).
+Primary workflow: `.github/workflows/ci-cd.yml`.
+
+Remote CI runs **validate** then the **test** matrix, **tac2iwxxm-native**, and
+**e2e-smoke**. Husky **pre-push** mirrors validate + unit/matrix locally.
+**Deploy** on `main` requires `test` + `tac2iwxxm-native`, and skips cleanly when
+GHCR login or Render deploy-hook secrets are missing.
 
 | Job | Checks |
 |-----|--------|
 | **validate** | `make validate-ci` — format, lint, typecheck, gitleaks, actionlint/yamllint, config-guard, frontend npm audit |
-| **test** | Matrix: shared, backend, auth, gifts, frontend, integration — pytest 98% + Codecov 95% |
-| **deploy** | Docker build/push + Render hooks (`main` push only) |
+| **test** | Package unit/integration matrix (backend, auth, frontend, packages, bugs, …) |
+| **tac2iwxxm-native** | PyO3 / maturin smoke |
+| **e2e-smoke** | Playwright smoke |
+| **deploy** | Docker build/push + Render hooks (`main` push only; needs test + native; skipped if CD credentials incomplete) |
 
-Local gates (dual-run with CI validate + test):
+Local gates:
 
 ```bash
-make install-hooks    # installs pre-commit + pre-push hooks
+make install-hooks    # husky (.husky/*) + pre-commit hook environments
 pre-commit run --all-files          # fast commit gates
 make pre-push-run                   # make validate-ci + make ci-prepush (same as git push)
 make validate-fast                  # format/lint/typecheck/secrets/yaml/catalog
 make validate-ci                    # CI validate job locally
-make ci-prepush                     # unit/matrix suite (no Compose)
+make ci-prepush                     # unit/matrix suite (no Compose) — husky pre-push
 make ci                             # ci-prepush + test-integration (needs ports 18000/18001)
 ```
 
-Hooks (after `make install-hooks`):
+Hooks (after `make install-hooks`; husky sets `core.hooksPath=.husky`):
 
 | Git hook | Runs |
 |----------|------|
-| **pre-commit** | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint |
-| **pre-push** | `make validate-ci` then `make ci-prepush` (blocks push if CI validate/unit would fail) |
+| **pre-commit** (husky → pre-commit) | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint |
+| **pre-push** (husky) | `make validate-ci` then `make ci-prepush` (local parity with remote test matrix) |
 
 Bypass only when intentional: `git commit --no-verify` / `git push --no-verify`.
+Do **not** use `--no-verify` as a merge path for `main` — remote CI must stay green.
 
 - Python 3.12 + Node 22
-- Unit tests and 95% Codecov gate on `apps/backend`, `packages/*`, `apps/frontend`
-- Builds API Docker image from repo root context
+- Unit coverage gates enforced in CI (`test` job) and locally via husky / `make ci-prepush`
+- Builds API Docker image from repo root context (when CD credentials present)
 - Builds frontend static assets from `apps/frontend`
 
 Removed standalone PR workflows (merged into `ci-cd.yml` validate): `secret-scan.yml`,

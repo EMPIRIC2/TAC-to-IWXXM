@@ -1,6 +1,6 @@
 # Backend: METAR to IWXXM Conversion API
 
-[![codecov](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM/graph/badge.svg)](https://codecov.io/gh/joseph-c-mcguire/metar-to-IWXXM)
+[![codecov](https://codecov.io/gh/EMPIRIC2/TAC-to-IWXXM/graph/badge.svg)](https://codecov.io/gh/EMPIRIC2/TAC-to-IWXXM)
 
 ## Overview
 

@@ -23,6 +23,8 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 | [package-publish-validation](package-publish-validation.md) | PyPI packages + validation stack perf (#703/#698/#699/#693) | active | 2026-07-18 | F11–F14, S014/EV-010 |
 | [metar-lint-quality](metar-lint-quality.md) | METAR lint issue registry + #732 quality (lint/validate/convert) | active | 2026-07-19 | F15, F6, F12, S015/EV-011 |
 | [manual-tac-input-modes](manual-tac-input-modes.md) | Validate Manual TAC Input modes TAC/AHL/COLLECT (#730 / ADR-024) | active | 2026-07-20 | F7, S016/EV-012 |
+| [aerodrome-quality](aerodrome-quality.md) | TAF + SPECI quality bar (#735/#734) | active | 2026-07-22 | F20, S020/EV-015 |
+| [golden-examples-ui](golden-examples-ui.md) | Pre-loaded workbench golden examples (#780) | active | 2026-07-22 | F7, S021/EV-016 |
 
 **Convention**: One brief per topic at `docs/context/<slug>.md`. Reference downstream as
 `[Context: <slug> R#]`.

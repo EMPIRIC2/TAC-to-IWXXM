@@ -12,7 +12,7 @@ All notable user-facing and deployable changes for METAR to IWXXM.
 - Feature-list F20 → **Done**; deepens F6.b / F6.c / F12.
 
 ### Deploy
-- PR [#778](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/778) merged `eae8bdc`;
+- PR [#778](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/778) merged `eae8bdc`;
   Render API+FE `…-eae8bdc`; H1–H5 + catalog taf/speci live smoke PASS
   (`docs/sessions/S020-aerodrome-quality/reports/deploy-smoke.md`).
 
@@ -31,8 +31,8 @@ All notable user-facing and deployable changes for METAR to IWXXM.
 - ADR-021 amended (destination secrets memory-only); ADR-030 package/API cut.
 
 ### Deploy
-- PRs [#771](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/771) /
-  [#772](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/772) merged; API + frontend
+- PRs [#771](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/771) /
+  [#772](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/772) merged; API + frontend
   drawer live. Smoke: H0c/H1/H4/H5 + mock BYOC
   (`docs/sessions/S019-dissemination-upload/reports/deploy-smoke.md`).
 - Live Render allowlist left empty (fail-closed) until operator sets exact BYOC hosts.
@@ -48,7 +48,7 @@ All notable user-facing and deployable changes for METAR to IWXXM.
 - Specs: UJ-025 + TC-F7-007; F7 remains **Planned**; COLLECT stays **501** (ADR-024).
 
 ### Deploy
-- PR [#746](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/746) merged (`37be5f8`);
+- PR [#746](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/746) merged (`37be5f8`);
   Render API + frontend-v4-web redeployed 2026-07-20. Smoke: H0ci/H0c/H3/H4/H5 + AHL + COLLECT
   501 + live workbench **PASS** (`docs/sessions/S016-manual-tac-input-modes/reports/deploy-smoke.md`).
 
@@ -65,7 +65,7 @@ All notable user-facing and deployable changes for METAR to IWXXM.
 - No new CORS origins, env knobs, or DB migrations this cycle.
 
 ### Deploy
-- PR [#742](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/742) merged (`b405a96`);
+- PR [#742](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/742) merged (`b405a96`);
   Render API + frontend-v4-web redeployed 2026-07-20. Smoke: H0ci/H1/H0c/H3/H4/H5 + F15 catalog
   **PASS** (`docs/sessions/S015-metar-lint-quality/reports/deploy-smoke.md`).
 - PyPI `tac-validate-v0.1.1` deferred (follow-up).
@@ -85,7 +85,7 @@ All notable user-facing and deployable changes for METAR to IWXXM.
 - No new CORS origins, env knobs, or DB migrations this cycle.
 
 ### Deploy
-- PR [#726](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/726) merged (`c73e0ad`);
+- PR [#726](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/726) merged (`c73e0ad`);
   Render API + frontend-v4-web redeployed 2026-07-19. Smoke: H0ci/H1/H0c/H3/H4/H5 + H6′ UJ-022
   **PASS** (`docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md`).
 
@@ -104,7 +104,7 @@ All notable user-facing and deployable changes for METAR to IWXXM.
 - No new endpoints, env vars, CORS origins, or DB migrations.
 
 ### Deploy
-- PR [#723](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/723) merged; Render API +
+- PR [#723](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/723) merged; Render API +
   frontend-v4-web redeployed 2026-07-17. Smoke: H1/H0c/H3/H4/H5 + H6′ UJ-020/021 **PASS**
   (`docs/sessions/S013-live-decode-preview-ux/reports/deploy-smoke.md`).
 

@@ -1,7 +1,7 @@
 # Migration Plan — Submodule to Monorepo
 
 > **Project**: METAR to IWXXM Converter
-> **Repository**: https://github.com/joseph-c-mcguire/metar-to-IWXXM
+> **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
 > **Last updated**: 2026-06-14
 
 ## Summary
