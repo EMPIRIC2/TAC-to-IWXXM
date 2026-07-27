@@ -19,7 +19,7 @@
 | 10-e2e | yes | full | **completed** 2026-07-26 — T0 PASS UJ-032/TC-F7-008; H4–H5 → 13 (`reports/e2e-report.md`) |
 | 11-verify-impl | yes | full | **completed** 2026-07-26 — approved E16-19 (`reports/verify-impl.md`) |
 | 12-verify-deploy | **no** | — | Lean+build; run only if deploy checklist forced |
-| 13-deploy-smoke | yes | full | H4–H5 when frontend ships; no API/env changes expected |
+| 13-deploy-smoke | yes | full | **completed 2026-07-27** — live H4–H5 **waived** → #781 (`reports/deploy-smoke.md`) |
 
 ## Approved
 
@@ -28,5 +28,6 @@
 | Session open | S021-golden-examples-ui / EV-016 | 2026-07-22 (E16-1) |
 | Fn allocation | Deepen **F7** only | 2026-07-22 (E16-2) |
 | Routing | **Lean+build** | 2026-07-22 (E16-3) |
+| Phase 4 close | Waive live H4–H5; close EV-016 / S021 | 2026-07-27 (option 3) |
 | Scope | #780 AC locked | 2026-07-22 (E16-4) |
 | AskQuestion | Written interview waive | 2026-07-22 |

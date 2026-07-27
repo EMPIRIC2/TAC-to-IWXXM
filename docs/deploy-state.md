@@ -1,7 +1,7 @@
 # Deploy State
 
-> Last updated: 2026-07-22  
-> Status: deployed
+> Last updated: 2026-07-27  
+> Status: deployed (FE tip still pre–F7.g; EV-016 live smoke waived → #781)
 
 ## Deployment Log
 

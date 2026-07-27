@@ -64,6 +64,17 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 | E16-18 | decision | After 08: run 09+10 now? | **A** — run 09-qa + 10-e2e (not push/PR first) |
 | E16-19 | decision | 11-verify-impl sign-off? | **A** — Approve UJ-032 + F7.g (T0 + local UI preview; H4–H5 waived to 13; QA-001–004 accepted) |
 
+### Phase 4 close (`D-S021-EV016-phase4-close`) — 2026-07-27
+
+| ID | Decision |
+|----|----------|
+| D-S021-EV016-13-waive-live-h4h5 | User option **3** — waive live H4–H5 / UJ-032 goldens UI; defer to [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781) |
+| D-S021-EV016-phase4-close | Complete 13 as waived; mark EV-016 completed; close S021; F7 stays Planned |
+
+**Completed**: 2026-07-27  
+**Branch**: `evolve/EV-016-golden-examples-ui` → PR [#782](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/782) @ `c49f22b`  
+**Status**: **completed** — #780 closed; live FE smoke owned by #781
+
 ### Tech plan artifacts
 
 | Artifact | Path |
@@ -71,6 +82,9 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 | 04 report | `docs/sessions/S021-golden-examples-ui/reports/04-tech-plan.md` (**completed**) |
 | Execution plan | `docs/sessions/S021-golden-examples-ui/reports/execution-plan.md` (**approved** E16-16) |
 | 11 verify | `docs/sessions/S021-golden-examples-ui/reports/verify-impl.md` (**approved** E16-19) |
+| 13 deploy | `docs/sessions/S021-golden-examples-ui/reports/deploy-smoke.md` (**waived** live H4–H5) |
+| Evolve summary | `docs/sessions/S021-golden-examples-ui/reports/evolve-summary.md` |
+| Evolve report | `docs/evolve-report-EV-016.md` |
 
 ## Cycle EV-015 — F15 sequel: TAF + SPECI quality (#735 / #734) (S020)
 

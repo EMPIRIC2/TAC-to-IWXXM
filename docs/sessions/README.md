@@ -45,14 +45,15 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 | [S018-metar-remarks-667](S018-metar-remarks-667/session-brief.md) | feature | completed | Handle METAR remarks (#667) — EV-013 | evolve/EV-013-metar-remarks-667 | 2026-07-20 | 2026-07-20 |
 | [S019-dissemination-upload](S019-dissemination-upload/session-brief.md) | feature | completed | Dissemination epic F16–F19 — EV-014; PR #772 | evolve/EV-014 / cursor/* | 2026-07-20 | 2026-07-21 |
 | [S020-aerodrome-quality](S020-aerodrome-quality/session-brief.md) | feature | completed | F15 sequel — TAF+#735 + SPECI+#734 quality (F20) — EV-015; PR #778 | evolve/EV-015-aerodrome-quality | 2026-07-22 | 2026-07-22 |
+| [S021-golden-examples-ui](S021-golden-examples-ui/session-brief.md) | feature | completed | F7.g golden examples (#780) — EV-016; PR #782; live H4–H5 → #781 | evolve/EV-016-golden-examples-ui | 2026-07-22 | 2026-07-27 |
 
 ## Active session
 
-**None** — S020 / EV-015 closed (`D-S020-EV015-phase4-close`).
+**None** — S021 / EV-016 closed (`D-S021-EV016-phase4-close`; live H4–H5 waived → #781).
 
 Parked/other: see rows above (S016 paused; S017 process).
 
-Last closed: **[S020-aerodrome-quality](S020-aerodrome-quality/session-brief.md)** — F20 Done; PR [#778](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/778) merged `eae8bdc`.
+Last closed: **[S021-golden-examples-ui](S021-golden-examples-ui/session-brief.md)** — F7.g on `main` @ `c49f22b`; PR [#782](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/782); live smoke deferred to [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781).
 
 ## Folder layout
 

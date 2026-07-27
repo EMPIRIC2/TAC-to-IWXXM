@@ -2,6 +2,22 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-27 — S021 EV-016 (F7.g workbench golden examples)
+
+### Added
+- **F7.g**: Pre-loaded golden examples in FileConverter (TAC / AHL / happy-path IWXXM),
+  demo labeling, Vitest TC-F7-008 / UJ-032 (T0).
+
+### Changed
+- F7 remains **Planned**; F7.g deepen merged via PR
+  [#782](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/782) (`c49f22b`); #780 closed.
+
+### Deploy
+- CI pushed `ghcr.io/empiric2/tac-to-iwxxm/*:20260727004311-c49f22b`; **live Render not
+  updated** (still joseph GHCR paths). Live H4–H5 / UJ-032 **waived** to
+  [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781)
+  (`docs/sessions/S021-golden-examples-ui/reports/deploy-smoke.md`).
+
 ## 2026-07-22 — S020 EV-015 (F20 TAF + SPECI quality bar)
 
 ### Added

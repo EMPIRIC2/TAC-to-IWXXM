@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-22 (S021 / EV-016 — F7.g golden examples / #780 in progress)
+> **Last updated**: 2026-07-27 (S021 / EV-016 closed — F7.g on `main` @ `c49f22b`; live H4–H5 → #781)
 
 ## Summary
 
@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
 | F5 | User METAR work history | Planned | Product | docs/context/metar-work-history.md, S004 |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011 / EV-008; F7.g #780 (S021) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011 / EV-008; F7.g #780 merged #782 (live H4–H5 → #781) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018/019; `apps/worker` |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
@@ -255,6 +255,8 @@
   2. ≥1 AHL bulletin and ≥1 happy-path IWXXM COLLECT/XML example loadable
   3. Loading sets editor body + `product` + `inputMode` when relevant; demo labeling clear
   4. Vitest: catalog completeness + click-to-load (TC-F7-008); H4–H5 smoke when FE deploys
+     (**live H4–H5 waived 2026-07-27** → [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781);
+     code on `main` @ `c49f22b` / PR #782)
   5. No backend routes, env vars, or DB seeds required
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
