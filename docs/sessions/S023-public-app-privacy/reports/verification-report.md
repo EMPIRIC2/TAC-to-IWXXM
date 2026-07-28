@@ -1,70 +1,79 @@
-# Verification Report
+# 08-verify-build — S023 / EV-017 (F21 public app + F22 privacy / #783)
 
-> Generated: 2026-07-28  
-> Scope: **Phase C / M7 complete** — S023 / EV-017 (F21 public app + F22 privacy)  
-> Branch: `main` @ `aaf2aee` (#786/#787/#788)  
-> Stage: **08-verify-build**
+**Date**: 2026-07-28  
+**Scope**: Phase C closeout — M1–M7 complete (28/28); post-merge #786/#787/#788  
+**Branch**: `evolve/EV-017-public-app-privacy`  
+**Tip**: `73f8389`  
+**Note**: Security WIP stashed (`stash@{0}`) for this run
 
-## Summary
+## Result: **PASS**
 
 | Check | Status | Findings | Auto-Fixed | Tool |
 |-------|--------|----------|------------|------|
-| Format | PASS | 0 | 0 | ruff format + prettier |
-| Lint | PASS | 0 | 0 | ruff + eslint |
-| Typecheck | PASS | 0 | — | basedpyright + tsc |
-| Unit tests | PASS | 0 failed | — | `make test-unit` |
-| Bugs | PASS | 32 passed, 5 skipped | — | `make test-bugs` |
-| H0c CORS | PASS | 6/6 | — | `tests/unit/test_cors_policy.py` |
-| H0i + F21 auth-gone | PASS | 14/14 | — | CI-parity pytest |
-| Root integration | PASS | 23/23 | — | `tests/test_*integration*` |
-| Live H4–H5 | PASS | H0c+H4+H5 | — | `verify_connectivity.sh` |
+| Format | PASS | 0 | — | `make format-check` (ruff + prettier) |
+| Lint | PASS | 0 | — | `make lint` (ruff + eslint) |
+| Typecheck | PASS | 0 | — | `make typecheck` (basedpyright + tsc) |
 | Secrets | PASS | 0 | — | gitleaks |
-| pip-audit | PASS | 0 known vulns | — | `uvx pip-audit` |
-| Frontend audit | PASS* | 1 high ignored | — | `audit:ci` (brace-expansion GHSA pinned) |
-| Template | PASS | auth package deleted; layout OK | — | static+api+worker |
-| Docker compose integration | SKIPPED | no local `docker` | — | `make test-integration` |
-| Main CI | PASS | Deploy + Test (integration) green | — | [run 30396669779](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30396669779) |
+| YAML / Actions | PASS | 0 | — | yamllint + actionlint |
+| ISSUE_CATALOG | PASS | 0 drift | — | catalog-check |
+| Issue registry guard | PASS | — | — | ISSUE_REGISTRY_GUARD_STRICT |
+| Tests (unit) | PASS | all green | — | `make test` |
+| CORS H0c | PASS | 6/6 | — | `tests/unit/test_cors_policy.py` |
+| Connectivity artifacts | present | smoke + verify script | — | paths below |
+| Integration (Compose) | SKIPPED | Docker unavailable on host | — | `make test-integration` |
+| Security (pip-audit) | PASS | 0 known; 1 ignored (`ecdsa`) | `pyasn1` → 0.6.4 | lockfile export |
 
-\* Known accepted ignore: `GHSA-mh99-v99m-4gvg` (brace-expansion via eslint/minimatch@3); documented in `audit-ci.sh`.
+Overall: **PASS**
 
-**Overall: PASS**
-
-## Unit suite highlights (`make test-unit`)
-
-| Package | Result |
-|---------|--------|
-| Workspace / shared (py+js) | pass (coverage gates met) |
-| Backend unit | **1199** passed (98%+ cov) |
-| Frontend Vitest | **698** passed (80 files) |
-| tac2iwxxm / iwxxm-validate / tac-validate / dissemination | pass |
-| Worker | 11 passed |
-| Bugs (non-live) | 32 passed |
-
-## Connectivity (stage 08 blocking)
-
-| Artifact | Present |
-|----------|---------|
-| `tests/unit/test_cors_policy.py` | yes |
-| `tests/smoke/test_staging_connectivity.py` | yes |
-| `scripts/deploy/verify_connectivity.sh` | yes |
-| `configure_cors` / `CORSMiddleware` on API | yes |
-
-Live: `/auth/login` 404, public convert OK, FE `/config.json` omits `disableAuth` (post-#787).
-
-## F21 / F22 delta focus
+## Unit test rollup (`make test`)
 
 | Suite | Result |
 |-------|--------|
-| `test_tc_f21_auth_gone_unit` + abuse controls | 10/10 |
-| FE `tc-f21-auth-gone` + privacy + localWorkSessionStore | 34/34 |
-| H0i public conversion + Auth/work-sessions gone | included in 14/14 |
+| workspace / shared py | 44 + 76 passed |
+| shared js | 4 passed |
+| backend | **1199** passed |
+| frontend Vitest | **698** passed (80 files) |
+| tac2iwxxm | 231 passed, 10 skipped |
+| iwxxm-validate | 76 passed, 1 skipped |
+| tac-validate | 471 passed |
+| dissemination | 127 passed, 15 deselected |
+| worker | 11 passed |
+| bugs (non-live) | 32 passed, 5 skipped, 1 deselected |
 
-## Notes
+## Connectivity (stage 08)
 
-- Local `make test-integration` (compose stack) skipped — Docker CLI unavailable on this host; CI **Test (integration)** succeeded on `main`.
-- Full `apps/backend/tests/integration/` beyond H0i not required for 08 (Auth-era e2e stack / phenomenon corpus — out of CI matrix).
-- Security WIP (static analysis skill) remains **unstaged** on `evolve/EV-017-public-app-privacy` — not part of this verify.
+- **Blocking H0c**: `tests/unit/test_cors_policy.py` — **PASS** (6)
+- Artifacts present:
+  - `tests/smoke/test_staging_connectivity.py`
+  - `scripts/deploy/verify_connectivity.sh`
+- Live H4–H5 already recorded under M7: `reports/t7.2-h4-h5-connectivity.md`
+
+## Template / F21 structural
+
+- `packages/auth`: **ABSENT** (expected after T5.4)
+- Template `static+api+worker` unchanged (ADR-018 / ADR-031)
+
+## Security detail
+
+Project-scoped:
+
+```bash
+uv export --format requirements-txt --no-emit-workspace --all-groups -o /tmp/project-reqs.txt
+uvx pip-audit -r /tmp/project-reqs.txt --disable-pip \
+  $(grep -v '^#' audit/pip-audit-ignore.txt | grep -v '^$' | sed 's/^/--ignore-vuln /')
+```
+
+| Package | Version | IDs | Disposition |
+|---------|---------|-----|-------------|
+| ecdsa | 0.19.2 | PYSEC-2026-1325 | Ignored — `audit/pip-audit-ignore.txt` (S013 QA-001) |
+| pyasn1 | **0.6.4** | — | **Upgraded** (D-S023-08-pyasn1-A) from 0.6.3; `uv.lock` + `apps/backend/uv.lock` |
+
+Re-audit after bump: **No known vulnerabilities found, 1 ignored**.
+
+## Auto-corrections
+
+- Lockfile bump: `pyasn1` 0.6.3 → 0.6.4 (root + `apps/backend/uv.lock`).
 
 ## Next
 
-Phase C checkpoint → routing **09-qa** + **10-e2e** (Standard) → **11-verify-impl**.
+Phase C checkpoint → Phase D (`09-qa` + `10-e2e` in parallel) → `11-verify-impl` → `12` → `13`.

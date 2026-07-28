@@ -69,7 +69,10 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
   }) => {
     await openPublicConverter(page);
 
-    await page.getByRole('button', { name: /open privacy settings/i }).click();
+    // Footer control (exact) — notice also has "Open privacy settings from notice".
+    await page
+      .getByRole('button', { name: 'Open privacy settings', exact: true })
+      .click();
     await expect(page.getByTestId('privacy-settings-dialog')).toBeVisible();
     await expect(page.getByText(/Work history and converter sessions/i)).toBeVisible();
     await expect(page.getByLabel(/necessary storage always enabled/i)).toBeDisabled();
@@ -89,9 +92,16 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     });
 
     await page.goto('/');
+    await expect(
+      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
+    ).toBeVisible({ timeout: 10_000 });
     await dismissPrivacyNoticeIfPresent(page);
+    await expect(page.getByTestId('privacy-notice')).toHaveCount(0);
 
-    await page.getByRole('button', { name: /open privacy settings/i }).click();
+    await page
+      .getByRole('button', { name: 'Open privacy settings', exact: true })
+      .click();
+    await expect(page.getByTestId('privacy-settings-dialog')).toBeVisible();
     await expect(page.getByTestId('privacy-gpc-active')).toBeVisible();
   });
 

@@ -2,9 +2,7 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
-## 2026-07-28 — S023 EV-017 (F21 public app + F22 privacy) — draft
-
-> Draft bullets for the EV-017 cutover release. Finalize on merge / deploy (T7.3).
+## 2026-07-28 — S023 EV-017 (F21 public app + F22 privacy)
 
 ### Added
 - **F21**: Public unauthenticated converter — no operator login/JWT; Auth routes 404.
@@ -20,9 +18,11 @@ All notable user-facing and deployable changes for METAR to IWXXM.
   [env-contract.md](env-contract.md)); ADR-031 Accepted (supersedes ADR-020 for operator history).
 
 ### Deploy
-- Interim draft PR [#786](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786); final cutover after
-  M7 / 08–13. Single deploy: FE + API together (E17-18). Remove unused Auth secrets from API
-  Render service (T7.4).
+- Cutover PRs [#786](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786) /
+  [#787](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/787) / [#788](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/788).
+- Live smoke COMPLETE (H0c–H5 + Playwright F21/F22 5/5). API Auth leftovers removed
+  (`SUPABASE_URL` / `SUPABASE_SECRET_KEY`); worker service-role retained. Redeploy
+  `dep-d9kii12jobas73fl4bi0`.
 
 ## 2026-07-27 — S021 EV-016 (F7.g workbench golden examples)
 

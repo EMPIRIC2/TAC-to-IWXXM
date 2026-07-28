@@ -6,8 +6,9 @@ from unittest.mock import MagicMock, patch
 import pytest
 from fastapi.testclient import TestClient
 
-from src.api import app, verify_supabase_token
+from src.api import app
 from src.utilities.conversion import ConversionError
+from src.utilities.security import verify_supabase_token
 
 
 @pytest.fixture

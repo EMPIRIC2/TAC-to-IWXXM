@@ -1,7 +1,7 @@
 # Execution plan — S023 / EV-017 (F21 public app + F22 privacy / #783)
 
-> **Status**: **approved** (D-S023-04-plan-approve-A) — Phase C build verified (08 PASS)  
-> **Branch**: `main` (EV-017 merged via #786/#787/#788); evolve branch retained for WIP  
+> **Status**: **complete** (08–13 PASS; live smoke + API SUPABASE cleanup)  
+> **Branch**: `evolve/EV-017-public-app-privacy` (PR #790)  
 > **Evolve cycle**: EV-017  
 > **Features**: **F21**, **F22**; deepen **F5** / **F7.h**; delete **packages/auth** (M4)  
 > **Mode**: delta  
@@ -12,10 +12,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — 08-verify-build **PASS** → handoff 09/10 |
-| **Active milestone** | M7 — E2E / docs / connectivity gate — **COMPLETE** |
-| **Active task** | 08-verify-build completed — see reports/verification-report.md |
-| **Tasks** | 28 / ~28 completed |
+| **Active phase** | Phase D — 13-deploy-smoke **COMPLETE** |
+| **Active milestone** | M7 — COMPLETE; verify/deploy closed |
+| **Active task** | EV-017 close (PR #790) |
+| **Tasks** | 28 / 28 completed |
 | **Last updated** | 2026-07-28 |
 
 ## Tech Stack Summary (S023 delta)
@@ -141,13 +141,12 @@
 
 | PR | When | Status |
 |----|------|--------|
-| Draft #786 | Interim → merged | **merged** |
-| #787 FE config bake | H5 fix | **merged** |
-| #788 M7 closeout docs | T7.2/T7.4 | **merged** |
-| Final EV-017 | After 08–11 (or earlier docs+code) | pending Phase D |
+| #786 / #787 / #788 | Interim + M7 cutover | merged |
+| Final EV-017 | After 08–11 (or earlier docs+code) | pending |
 
 ## References
 
 - ADR-031, evolve-decisions EV-017 (E17-12..25)
 - reports/02-verify-plan.md; impact-analysis.md
+- reports/t7.2-h4-h5-connectivity.md; reports/t7.4-render-env-checklist.md
 - Issue #783
