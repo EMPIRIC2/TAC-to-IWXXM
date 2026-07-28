@@ -48,11 +48,11 @@ class TestRuntimeConfigProfiles:
         assert str(api.get("baseUrl")).endswith(":18001")
         assert str(api.get("frontendUrl")).endswith(":18000")
 
-    def test_e2e_profile_enables_auth_ui(self) -> None:
+    def test_e2e_profile_omits_retired_disable_auth(self) -> None:
         cfg = _load_json(CONFIG_DIR / "e2e.json")
         api = cfg["api"]
         assert isinstance(api, dict)
-        assert api.get("disableAuth") is False
+        assert "disableAuth" not in api
 
 
 class TestFrontendEnvExamples:
@@ -101,4 +101,4 @@ class TestPrepareConfigScript:
 
         api = written.get("api")
         assert isinstance(api, dict)
-        assert api.get("disableAuth") is False
+        assert "disableAuth" not in api
