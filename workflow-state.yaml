@@ -3,9 +3,102 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 23
-evolve_cycle_counter: 17
-active_session: null
+session_counter: 24
+evolve_cycle_counter: 18
+active_session:
+  id: S024-dissemination-file-select
+  type: feature
+  intent: "Multi-file selection in dissemination portal for export preflight/send (#785)"
+  status: in_progress
+  branch: evolve/EV-018-dissemination-file-select
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-018
+  github_issue: 785
+  artifacts_dir: docs/sessions/S024-dissemination-file-select/
+  current_stage: 10-e2e
+  feature_ids:
+  - F16
+  feature_note: "Deepen F16 (E18-2); F17–F19 reuse selection contract; no F23"
+  started_at: "2026-07-28"
+  preset: Lean+build
+  routing_decision_id: D-S024-E18-scope-lock
+  context_briefs:
+  - docs/context/dissemination-file-select.md
+  note: "08 PASS; verification-report.md; uncommitted EV-018 work; handoff 10-e2e; #785"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    skip_rationale:
+    started: "2026-07-28"
+    completed: "2026-07-28"
+    note: "COMPLETE — D-S024-E18-scope-lock; Batch 1+2 E18-1..8; Lean+build; handoff 01"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    skip_rationale:
+    started: "2026-07-28"
+    note: "Orchestrating post-08; next 10 after commit"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    skip_rationale:
+    started: "2026-07-28"
+    completed: "2026-07-28"
+    note: "COMPLETE — D-S024-01-requirements-delta; handoff 02-verify-plan"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    skip_rationale:
+    started: "2026-07-28"
+    completed: "2026-07-28"
+    note: "COMPLETE — Phase A PASSED (D-S024-02-phase-a-A); M1/M2 deferred to 04; handoff 04-tech-plan"
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    skip_rationale:
+    started: "2026-07-28T23:04:36Z"
+    completed: "2026-07-28T23:21:03Z"
+    note: "COMPLETE — D-S024-04-plan-approve-A (option A); execution plan approved (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C; handoff 07 @ T1.1"
+  - stage: 07-build
+    required: true
+    mode: full
+    status: completed
+    skip_rationale:
+    started: "2026-07-28T23:21:03Z"
+    completed: "2026-07-28T23:30:05Z"
+    note: "COMPLETE — M1–M4 / 14 tasks (FE multi-select + interleaved queue + progress graphic + e2e updates); tip a4b75f2; HANDOFF; ready for 08"
+  - stage: 08-verify-build
+    required: true
+    mode: full
+    status: completed
+    skip_rationale:
+    started: "2026-07-28T23:30:05Z"
+    completed: "2026-07-28T23:42:27Z"
+    note: "COMPLETE — PASS; FE 727 Vitest; coverage F 96.3% B 85.27%; prettier+queue edge tests; tip base a4b75f2 uncommitted; report docs/sessions/S024-dissemination-file-select/reports/verification-report.md; handoff 10-e2e"
+  - stage: 10-e2e
+    required: true
+    mode: full
+    status: pending
+    skip_rationale:
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: pending
+    skip_rationale:
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 11-verify-impl
+  - 12-verify-deploy
+  note_skipped: "Lean+build E18-7 — skip 03/05/06/09/11/12"
 sessions:
 - id: S023-public-app-privacy
   type: feature
@@ -1797,21 +1890,21 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: public-app-privacy
-    session_id: S023-public-app-privacy
-    evolve_cycle_id: EV-017
-    started_at: '2026-07-27'
-    completed_at: '2026-07-27'
-    completed: '2026-07-27'
+    scoped_slug: dissemination-file-select
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    started_at: '2026-07-28'
+    completed_at: '2026-07-28'
+    completed: '2026-07-28'
     substeps:
       phase0: completed
       phase1a: completed
-      phase1b: completed
-      phase1c: completed
+      phase1b: skipped
+      phase1c: skipped
       phase2: completed
       phase3: completed
       phase4: completed
-    note: 'S023/EV-017 00-context COMPLETE 2026-07-27 — E17-4A..E17-11 locked (D-S023-E17-scope-lock); F21/F22; IndexedDB F5/F7; Solution A privacy; handoff 16-evolve → 01-requirements; #783'
+    note: 'S024/EV-018 00-context COMPLETE 2026-07-28 — D-S024-E18-scope-lock; E18-1..8; Lean+build; handoff 01-requirements; #785'
     artifacts:
     - docs/sessions/S023-public-app-privacy/
     - docs/context/public-app-privacy.md
@@ -2346,25 +2439,24 @@ stages:
   02-verify-plan:
     status: completed
     mode: delta
-    started_at: '2026-07-27'
-    completed: '2026-07-27'
-    previous_completed_at: '2026-07-22'
-    session_id: S023-public-app-privacy
-    evolve_cycle_id: EV-017
-    note: 'S023/EV-017 02-verify-plan COMPLETE 2026-07-27 (delta) — 10 auto-approved; C-EV017.1–6 resolved via D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A PASSED (D-S023-02-phase-a-A) → 04'
-    auto_approved: 10
+    started_at: '2026-07-28'
+    completed: '2026-07-28'
+    completed_at: '2026-07-28'
+    previous_completed_at: '2026-07-27'
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    note: 'S024/EV-018 02-verify-plan COMPLETE 2026-07-28 (delta) — Phase A PASSED (D-S024-02-phase-a-A); C1/C2 fixed; M1/M2 deferred to 04; report docs/sessions/S024-dissemination-file-select/reports/02-verify-plan.md; handoff 04-tech-plan'
+    auto_approved: 9
     contradictions_resolved:
-    - C-EV017.1
-    - C-EV017.2
-    - C-EV017.3
-    - C-EV017.4
-    - C-EV017.6
+    - C-EV018-1
+    - C-EV018-2
     contradictions_deferred:
-    - C-EV017.5
+    - M1
+    - M2
     decision_refs:
-    - D-S023-02-verify-plan-gate-A
-    - D-S023-02-C-EV017-A
-    - D-S023-02-phase-a-A
+    - D-S024-02-phase-a-A
+    - C-EV018-1
+    - C-EV018-2
     substeps:
       inventory:
         status: completed
@@ -2377,22 +2469,53 @@ stages:
     current_document:
     current_statement:
     active_session:
-      session_id: S023-public-app-privacy
-      evolve_cycle_id: EV-017
+      session_id: S024-dissemination-file-select
+      evolve_cycle_id: EV-018
       skill_id: 02-verify-plan
       status: completed
       mode: delta
-      started_at: '2026-07-27'
-      completed_at: '2026-07-27'
-      note: 'S023/EV-017 02-verify-plan COMPLETE 2026-07-27 (delta) — 10 auto-approved; C-EV017.1–6 resolved via D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A PASSED (D-S023-02-phase-a-A) → 04'
+      started_at: '2026-07-28'
+      completed_at: '2026-07-28'
+      note: 'S024/EV-018 02-verify-plan COMPLETE 2026-07-28 — Phase A PASSED (D-S024-02-phase-a-A); M1/M2 deferred to 04; handoff 04-tech-plan'
     artifacts:
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
+    - docs/sessions/S024-dissemination-file-select/reports/02-verify-plan.md
     - docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
     - docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S024-dissemination-file-select
+      evolve_cycle_id: EV-018
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-07-28'
+      completed_at: '2026-07-28'
+      mode: delta
+      feature_ids:
+      - F16
+      deepen:
+      - F16
+      user_gate:
+        decision: A
+        approved_at: '2026-07-28'
+        decision_id: D-S024-02-phase-a-A
+        note: Pass Gate A — complete 02 → 04-tech-plan; accept M1/M2 deferrals
+      auto_approved: 9
+      contradictions_resolved:
+      - C-EV018-1
+      - C-EV018-2
+      contradictions_deferred:
+      - M1
+      - M2
+      decision_refs:
+      - D-S024-02-phase-a-A
+      - C-EV018-1
+      - C-EV018-2
+      artifacts:
+      - docs/sessions/S024-dissemination-file-select/reports/02-verify-plan.md
+      note: 'S024/EV-018 02-verify-plan COMPLETE 2026-07-28 — Phase A PASSED (D-S024-02-phase-a-A); C1/C2 fixed; M1/M2 deferred to 04; handoff 04-tech-plan'
     - session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
       skill_id: 02-verify-plan
@@ -2489,6 +2612,8 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-07-28 S024/EV-018 Phase A PASSED (D-S024-02-phase-a-A) — gates.a_to_b passed; M1/M2 deferred to 04; 04-tech-plan STARTED; 03 skipped (Lean+build)'
+    - '2026-07-28 S024/EV-018 02-verify-plan COMPLETE — Phase A PASSED (D-S024-02-phase-a-A); C1/C2 fixed; M1/M2 deferred to 04; report docs/sessions/S024-dissemination-file-select/reports/02-verify-plan.md; handoff 04-tech-plan'
     - '2026-07-28 S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A) — gates.a_to_b passed; 04-tech-plan STARTED; 03 skipped (04 prerequisite waived)'
     - '2026-07-27 S023/EV-017 02-verify-plan COMPLETE — 10 auto-approved; D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A PASSED (D-S023-02-phase-a-A) → 04; corpus fixes may be pending commit (no SHA invented)'
     - 2026-07-22 S021-golden-examples-ui/EV-016 02-verify-plan COMPLETE — PASS; Phase A / a_to_b pending before 04; do not start 04
@@ -2594,10 +2719,13 @@ stages:
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
     status: completed
-    started_at: '2026-06-15T00:30:00Z'
-    completed_at: '2026-06-23T12:00:00Z'
-    session_id: S004-issue-555-feedback
-    evolve_cycle_id: EV-004
+    started_at: '2026-07-28T23:04:36Z'
+    completed_at: '2026-07-28T23:21:03Z'
+    previous_started_at: '2026-06-15T00:30:00Z'
+    previous_completed_at: '2026-06-23T12:00:00Z'
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    note: 'S024/EV-018 04-tech-plan COMPLETE 2026-07-28 (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C; handoff 07 @ T1.1; #785'
     substeps:
       phase_1_toolchain:
         status: completed
@@ -2624,6 +2752,59 @@ stages:
     - docs/adr/ADR-011-work-sessions-data-access.md
     - docs/adr/ADR-012-metar-work-sessions-retention.md
     delta_substages:
+    - session_id: S024-dissemination-file-select
+      evolve_cycle_id: EV-018
+      skill_id: 04-tech-plan
+      status: completed
+      started_at: '2026-07-28T23:04:36Z'
+      started: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28T23:21:03Z'
+      mode: delta
+      feature_ids:
+      - F16
+      deepen:
+      - F16
+      deferred_from_02:
+      - M1
+      - M2
+      note: 'COMPLETE 2026-07-28 (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 04-exit via Lean+build skip 05/06; B→C passed; handoff 07 @ T1.1; #785'
+      interview:
+        batch_1:
+          status: locked
+          decision_ids:
+          - E18-9
+          - E18-10
+          - E18-11
+          - E18-12
+          - D-S024-04-E18-9
+          - D-S024-04-E18-10
+          - D-S024-04-E18-11
+          - D-S024-04-E18-12
+          locked_at: '2026-07-28'
+          note: 'A single-candidate auto-select; B interleaved preflight→send + progress graphic; A continue-on-fail; A M1–M4'
+        batch_2:
+          status: locked
+          decision_ids:
+          - E18-13
+          - E18-14
+          - E18-15
+          - E18-16
+          - D-S024-04-E18-13
+          - D-S024-04-E18-14
+          - D-S024-04-E18-15
+          - D-S024-04-E18-16
+          locked_at: '2026-07-28'
+          note: 'A CSS+motion+lucide no new deps; C hide graphic text-only reduced-motion; A Disseminate+optional Preflight-only; B Vitest+Playwright+progress-row screenshot; H6′ @ 13'
+        plan_approve:
+          status: locked
+          note: Option A — execution plan approved (M1–M4 / 14 tasks); complete 04; skip 05/06; start 07 @ T1.1
+          decision_id: D-S024-04-plan-approve-A
+          answers:
+            '1': A
+          locked_at: '2026-07-28'
+      artifacts:
+      - docs/sessions/S024-dissemination-file-select/reports/execution-plan.md
     - session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
       skill_id: 04-tech-plan
@@ -2919,6 +3100,10 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-28 S024/EV-018 04-tech-plan COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C; start 07 @ T1.1; #785'
+    - '2026-07-28 S024/EV-018 04 Batch 2 locked (E18-13..16 / D-S024-04-E18-13..16) — progress A CSS+motion+lucide; reduced-motion C hide; Disseminate A + optional Preflight-only; tests B Vitest+Playwright+screenshot; H6′ @ 13; execution-plan.md pending_approval (B→C); stage remains in_progress; #785'
+    - '2026-07-28 S024/EV-018 04 Batch 1 locked (E18-9..12 / D-S024-04-E18-9..12) — single-candidate A; sequencing B interleaved+progress graphic; mid-run A continue; milestones A M1–M4; Batch 2 pending (progress graphic impl + tests); stage remains in_progress; #785'
+    - '2026-07-28 S024/EV-018 04-tech-plan STARTED (D-S024-02-phase-a-A) — Phase A PASSED; gates.a_to_b passed; mode delta; M1/M2 deferred from 02; interview pending; #785'
     - 2026-07-28 S023/EV-017 04-tech-plan COMPLETE (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved; 05/06 skipped Standard; B→C; start 07 @ T1.1
     - '2026-07-28 S023/EV-017 04 Batch 3 locked (E17-21..25 / D-S023-04-batch3) — 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve; artifacts drafted; awaiting plan approve AskQuestion'
     - '2026-07-28 S023/EV-017 04 Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops) — GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON tac-work-sessions-export-v1; interview Batch 3 pending'
@@ -2945,19 +3130,14 @@ stages:
     - S014/EV-010 delta 04-tech-plan completed 2026-07-18 — M1–M6 approved (43A); ADR-027 xsdata
     - S015/EV-011 delta 04-tech-plan completed 2026-07-19 — E11-31 GET lint-issue-catalog; 31 tasks approved
     active_session:
-      session_id: S023-public-app-privacy
-      evolve_cycle_id: EV-017
-      skill_id: 07-build
-      status: in_progress
-      mode: full
-      started_at: '2026-07-28'
-      note: 'T7.3 COMPLETE @ f5aa024; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28'
-      active_milestone: M7
-      active_task: T7.4
-      active_task_status: blocked
-      progress: 27/~28
-      tip_sha: d459164
-      tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+      session_id: S024-dissemination-file-select
+      evolve_cycle_id: EV-018
+      skill_id: 04-tech-plan
+      status: completed
+      mode: delta
+      started_at: '2026-07-28T23:04:36Z'
+      completed_at: '2026-07-28T23:21:03Z'
+      note: 'COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved; B→C; handoff 07 @ T1.1; #785'
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -3164,16 +3344,43 @@ stages:
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
     status: completed
-    started_at: '2026-06-14T12:45:00Z'
-    completed_at: '2026-06-22T02:30:00Z'
+    started_at: '2026-07-28T23:21:03Z'
+    completed_at: '2026-07-28T23:30:05Z'
+    previous_started_at: '2026-06-14T12:45:00Z'
+    previous_completed_at: '2026-06-22T02:30:00Z'
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    note: 'S024/EV-018 07-build COMPLETE 2026-07-28 — M1–M4 / 14 tasks (FE multi-select + interleaved queue + progress graphic + e2e); tip a4b75f2; HANDOFF; ready for 08-verify-build; #785'
     substeps:
       task_loop:
         status: completed
-        current_task:
-        phase: 4
-        milestone: M11
-        notes: T11.4 complete — H0c+H4+H5 green on staging; TC-M001–M005 pass; Phase 4 gate criteria met on main
+        current_task: T4.x
+        phase: C
+        milestone: M4
+        notes: S024/EV-018 M1–M4 all 14 tasks completed — handoff 08-verify-build
     delta_substages:
+    - id: S024-dissemination-file-select
+      session_id: S024-dissemination-file-select
+      evolve_cycle_id: EV-018
+      skill_id: 07-build
+      status: completed
+      started_at: '2026-07-28T23:21:03Z'
+      started: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28T23:30:05Z'
+      mode: full
+      note: 'COMPLETE 2026-07-28 — M1–M4 / 14 tasks (FE multi-select + interleaved queue + progress graphic + e2e updates); tip a4b75f2; handoff 08-verify-build; #785'
+      active_milestone: M4
+      active_task: T4.x
+      active_task_status: completed
+      decision_id: D-S024-04-plan-approve-A
+      branch: evolve/EV-018-dissemination-file-select
+      progress: 14/14
+      tip_sha: a4b75f2
+      tip_sha_full: a4b75f222ae71d959de0939da3f391adc97a832c
+      report: docs/sessions/S024-dissemination-file-select/reports/HANDOFF.md
+      feature_ids:
+      - F16
     - id: S023-public-app-privacy
       session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
@@ -3316,6 +3523,8 @@ stages:
     - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress 12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
     - '2026-07-28 S023/EV-017 T2.3 COMPLETE — M2 T2.1–T2.3 done; active_task T2.4; progress 7/~28; tip 70738ab; #783'
     - '2026-07-28 S023/EV-017 M1 COMPLETE (T1.1–T1.4) — ADR-031 Accepted; dependency inventory; env-contract rewrite; rate-limit env back-add; next T2.1; progress 4/~28; tip 8ecd271; #783'
+    - '2026-07-28 S024/EV-018 07-build COMPLETE — M1–M4 / 14 tasks (FE multi-select + interleaved queue + progress graphic + e2e); tip a4b75f2; HANDOFF; handoff 08-verify-build; #785'
+    - '2026-07-28 S024/EV-018 07-build STARTED (D-S024-04-plan-approve-A B→C) — active task T1.1; M1–M4 / 14 tasks; progress 0/14; #785'
     - '2026-07-28 S023/EV-017 07-build STARTED (D-S023-04-plan-approve-A B→C) — active task T1.1 (Accept ADR-031; mark ADR-020 Superseded); M1–M7 / 27 tasks; progress 0/27; #783'
     - 2026-07-26 S021/EV-016 07-build COMPLETE (E16-17) — M1–M3 / 11 tasks (T1.1–T3.4); FE Vitest 688 passed; tip 1896829; current_stage→08-verify-build pending/ready; gates.c_to_d remains pending until 08
     - 2026-07-26 S021/EV-016 07-build STARTED (E16-16 B→C) — active task T1.1 catalog completeness tests; M1–M3 / 11 tasks; progress 0/11
@@ -3437,21 +3646,22 @@ stages:
     - 2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories (qa-report.md + e2e-report.md); Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted; active_task T6.3 pending
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
     active_session:
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
+      session_id: S024-dissemination-file-select
+      evolve_cycle_id: EV-018
       skill_id: 07-build
       status: completed
       mode: full
-      started_at: '2026-07-26'
-      completed_at: '2026-07-26'
-      note: COMPLETE 2026-07-26 (E16-17) — M1–M3 / 11 tasks; FE Vitest 688 passed; tip 1896829; next 08-verify-build pending/ready
-      active_milestone: M3
-      active_task: T3.4
+      started_at: '2026-07-28T23:21:03Z'
+      completed_at: '2026-07-28T23:30:05Z'
+      note: 'COMPLETE 2026-07-28 — M1–M4 / 14 tasks; tip a4b75f2; HANDOFF; ready for 08-verify-build; #785'
+      active_milestone: M4
+      active_task: T4.x
       active_task_status: completed
-      decision_id: E16-17
-      branch: evolve/EV-016-golden-examples-ui
-      progress: 11/11
-      tip_sha: '1896829'
+      decision_id: D-S024-04-plan-approve-A
+      branch: evolve/EV-018-dissemination-file-select
+      progress: 14/14
+      tip_sha: a4b75f2
+      report: docs/sessions/S024-dissemination-file-select/reports/HANDOFF.md
   09-qa:
     status: completed
     started_at: '2026-07-26'
@@ -3988,10 +4198,16 @@ stages:
     note: UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13
   08-verify-build:
     status: completed
-    started_at: '2026-06-22T17:27:00Z'
-    completed_at: '2026-06-24T14:30:00Z'
-    overall: fail
-    report: docs/sessions/S004-issue-555-feedback/reports/verification-report.md
+    started_at: '2026-07-28T23:30:05Z'
+    completed_at: '2026-07-28T23:42:27Z'
+    completed: '2026-07-28'
+    previous_started_at: '2026-06-22T17:27:00Z'
+    previous_completed_at: '2026-06-24T14:30:00Z'
+    overall: pass
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    note: 'S024/EV-018 08-verify-build COMPLETE 2026-07-28 — PASS; FE 727 Vitest; coverage F 96.3% B 85.27%; prettier+queue edge tests; tip base a4b75f2 uncommitted; report docs/sessions/S024-dissemination-file-select/reports/verification-report.md; handoff 10-e2e; #785'
+    report: docs/sessions/S024-dissemination-file-select/reports/verification-report.md
     substeps:
       lint:
         status: completed
@@ -4010,6 +4226,26 @@ stages:
       report:
         status: completed
     delta_substages:
+    - id: S024-dissemination-file-select
+      session_id: S024-dissemination-file-select
+      evolve_cycle_id: EV-018
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-07-28T23:30:05Z'
+      started: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28T23:42:27Z'
+      mode: full
+      overall: pass
+      note: 'COMPLETE — PASS; FE 727 Vitest; coverage F 96.3% B 85.27%; prettier+queue edge tests; tip base a4b75f2 uncommitted; report docs/sessions/S024-dissemination-file-select/reports/verification-report.md; handoff 10-e2e'
+      report: docs/sessions/S024-dissemination-file-select/reports/verification-report.md
+      branch: evolve/EV-018-dissemination-file-select
+      tip_sha: a4b75f2
+      tip_sha_full: a4b75f222ae71d959de0939da3f391adc97a832c
+      progress: 14/14
+      feature_ids:
+      - F16
+      uncommitted: true
     - id: S023-public-app-privacy
       session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
@@ -4130,6 +4366,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass
     notes:
+    - '2026-07-28 S024/EV-018 08-verify-build COMPLETE — PASS; report verification-report.md; work still uncommitted; handoff 10-e2e after commit; #785'
+    - '2026-07-28 S024/EV-018 08-verify-build STARTED — after 07 M1–M4 complete (14/14); tip a4b75f2; lint/typecheck/full FE Vitest; #785'
     - S021/EV-016 08-verify-build COMPLETE 2026-07-26 — PASS; artifact docs/sessions/S021-golden-examples-ui/reports/verification-report.md; tip 90a8507; C→D still pending until 09+10+11; ready for 09-qa and 10-e2e (parallel)
     - S021/EV-016 08-verify-build STARTED 2026-07-26 — milestone-boundary verify after M1–M3 complete (11/11; T1.1–T3.4); tip 1896829; gates.c_to_d / phase_c still pending until 08 PASS
     - 2026-07-26 S021/EV-016 08-verify-build READY (E16-17) — 07-build complete; FE Vitest 688 passed; tip 1896829; C→D still pending until 08; do not start implementation yet
@@ -4150,22 +4388,25 @@ stages:
     - 2026-07-12 S008 / EV-006 — Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c); Overall PASS; awaiting C→D AskQuestion; c_to_d/phase_c remain pending
     - 2026-07-14 S011/EV-008 08-verify-build completed (T6.1 PASS; verification-report.md); C→D passed D-S011-EV008-c-to-d-pass
     active_session:
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
+      session_id: S024-dissemination-file-select
+      evolve_cycle_id: EV-018
       skill_id: 08-verify-build
       status: completed
-      started_at: '2026-07-26'
-      started: '2026-07-26'
+      started_at: '2026-07-28T23:30:05Z'
+      started: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28T23:42:27Z'
       mode: full
-      note: COMPLETE 2026-07-26 — PASS; tip 90a8507; next 09-qa pending (+10 parallel); C→D still pending until 09+10+11
-      branch: evolve/EV-016-golden-examples-ui
-      tip_sha: 90a8507
-      decision_id: E16-17
-      completed_at: '2026-07-26'
-      completed: '2026-07-26'
       overall: pass
-      report: docs/sessions/S021-golden-examples-ui/reports/verification-report.md
-      tip_sha_full: 90a850758ac4157af4c4c366db05f60c64f68a81
+      note: 'COMPLETE — PASS; FE 727 Vitest; coverage F 96.3% B 85.27%; prettier+queue edge tests; tip base a4b75f2 uncommitted; report docs/sessions/S024-dissemination-file-select/reports/verification-report.md; handoff 10-e2e'
+      report: docs/sessions/S024-dissemination-file-select/reports/verification-report.md
+      branch: evolve/EV-018-dissemination-file-select
+      tip_sha: a4b75f2
+      tip_sha_full: a4b75f222ae71d959de0939da3f391adc97a832c
+      progress: 14/14
+      feature_ids:
+      - F16
+      uncommitted: true
   18-pr-review:
     status: completed
     started: '2026-07-12'
@@ -4581,6 +4822,8 @@ stages:
     - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress 12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
     - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress 12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
     - '2026-07-28 S023/EV-017 M2 COMPLETE (T2.1–T2.5) — IndexedDB wire + export/import UI + verification-report-M2; active_milestone M3; active_task T3.1; progress 9/~28; tip 2783bcb; commits dac094a/303083d/2783bcb; #783'
+    - '2026-07-28 S024/EV-018 04 COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C passed; handoff 07-build @ T1.1; #785'
+    - '2026-07-28 S024/EV-018 07-build STARTED (D-S024-04-plan-approve-A B→C) — active task T1.1; M1–M4 / 14 tasks; progress 0/14; #785'
     - '2026-07-28 S023/EV-017 04 COMPLETE (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved (7 milestones; delete packages/auth; single-deploy cutover; slowapi baselines); 05/06 skipped (Standard); B→C passed; handoff 07-build @ T1.1; #783'
     - '2026-07-28 S023/EV-017 07-build STARTED (D-S023-04-plan-approve-A B→C) — active task T1.1 (Accept ADR-031; mark ADR-020 Superseded); M1–M7 / 27 tasks; progress 0/27; #783'
     - '2026-07-28 S023/EV-017 04 Batch 3 locked (E17-21..25 / D-S023-04-batch3) — 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve; artifacts drafted; awaiting plan approve AskQuestion; #783'
@@ -4870,6 +5113,408 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S024-04-plan-approve-A
+  date: '2026-07-28'
+  timestamp: '2026-07-28T23:21:03Z'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  skill: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Decision A — Approve execution plan (M1–M4 / 14 tasks)
+  summary: Option A — Approve execution plan M1–M4 / 14 tasks; skip 05/06; start 07 @ T1.1
+  decision: 'User approved 2026-07-28 (D-S024-04-plan-approve-A / option A). Execution plan approved (M1–M4 / 14 tasks). 04-tech-plan COMPLETE; 05/06 remain skipped (Lean+build / E18-7); gates.b_to_c + checkpoints.phase_b passed; 07-build STARTED @ T1.1. Related: E18-9..16, D-S024-04-E18-9..16, #785.'
+  related_issue: 785
+  related_decisions:
+  - E18-9
+  - E18-10
+  - E18-11
+  - E18-12
+  - E18-13
+  - E18-14
+  - E18-15
+  - E18-16
+  - D-S024-04-E18-9
+  - D-S024-04-E18-10
+  - D-S024-04-E18-11
+  - D-S024-04-E18-12
+  - D-S024-04-E18-13
+  - D-S024-04-E18-14
+  - D-S024-04-E18-15
+  - D-S024-04-E18-16
+  answers:
+    '1': A
+- id: E18-13
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — progress graphic impl
+  summary: E18-13 / D-S024-04-E18-13 — Progress graphic = A (CSS + motion + lucide; no new deps)
+  decision: Progress graphic = A (CSS + existing motion + lucide; no new deps). Locked 2026-07-28 Batch 2 (D-S024-04-E18-13).
+  related_issue: 785
+  related_decision: D-S024-04-E18-13
+- id: D-S024-04-E18-13
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — progress graphic impl
+  summary: D-S024-04-E18-13 / E18-13 — Progress graphic = A (CSS + motion + lucide; no new deps)
+  decision: Progress graphic = A (CSS + existing motion + lucide; no new deps)
+  related_issue: 785
+  related_decision: E18-13
+- id: E18-14
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — reduced motion / a11y
+  summary: E18-14 / D-S024-04-E18-14 — Reduced motion = C (hide graphic; text-only)
+  decision: Reduced motion = C (hide graphic; text-only progress list when prefers-reduced-motion). Locked 2026-07-28 Batch 2 (D-S024-04-E18-14).
+  related_issue: 785
+  related_decision: D-S024-04-E18-14
+- id: D-S024-04-E18-14
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — reduced motion / a11y
+  summary: D-S024-04-E18-14 / E18-14 — Reduced motion = C (hide graphic; text-only)
+  decision: Reduced motion = C (hide graphic; text-only progress list when prefers-reduced-motion)
+  related_issue: 785
+  related_decision: E18-14
+- id: E18-15
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — Disseminate vs Preflight
+  summary: E18-15 / D-S024-04-E18-15 — Primary Disseminate + optional Preflight-only = A
+  decision: Primary Disseminate (preflight→send per file) + optional Preflight-only secondary = A. Locked 2026-07-28 Batch 2 (D-S024-04-E18-15).
+  related_issue: 785
+  related_decision: D-S024-04-E18-15
+- id: D-S024-04-E18-15
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — Disseminate vs Preflight
+  summary: D-S024-04-E18-15 / E18-15 — Primary Disseminate + optional Preflight-only = A
+  decision: Primary Disseminate (preflight→send per file) + optional Preflight-only secondary = A
+  related_issue: 785
+  related_decision: E18-15
+- id: E18-16
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — tests / connectivity
+  summary: E18-16 / D-S024-04-E18-16 — Tests = B (Vitest + Playwright + progress-row screenshot; H6′ @ 13)
+  decision: Tests = B (Vitest + Playwright UJ-027–030 + progress-row visual snapshot; H6′ at 13). Locked 2026-07-28 Batch 2 (D-S024-04-E18-16).
+  related_issue: 785
+  related_decision: D-S024-04-E18-16
+- id: D-S024-04-E18-16
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — tests / connectivity
+  summary: D-S024-04-E18-16 / E18-16 — Tests = B (Vitest + Playwright + progress-row screenshot; H6′ @ 13)
+  decision: Tests = B (Vitest + Playwright UJ-027–030 + progress-row visual snapshot; H6′ at 13)
+  related_issue: 785
+  related_decision: E18-16
+- id: E18-9
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — single-candidate UX
+  summary: E18-9 / D-S024-04-E18-9 — Single-candidate UX = A (auto-select; panel collapsed/optional)
+  decision: Single-candidate UX = A (auto-select; panel collapsed/optional). Locked 2026-07-28 Batch 1 (D-S024-04-E18-9).
+  related_issue: 785
+  related_decision: D-S024-04-E18-9
+- id: D-S024-04-E18-9
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — single-candidate UX
+  summary: D-S024-04-E18-9 / E18-9 — Single-candidate UX = A (auto-select; panel collapsed/optional)
+  decision: Single-candidate UX = A (auto-select; panel collapsed/optional)
+  related_issue: 785
+  related_decision: E18-9
+- id: E18-10
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — preflight/send sequencing
+  summary: E18-10 / D-S024-04-E18-10 — Sequencing = B interleaved preflight→send per file + interactive per-file progress graphic
+  decision: Sequencing = B interleaved preflight→send per file + interactive per-file progress graphic (mail→destination along arrow; red fail mark). Locked 2026-07-28 Batch 1 (D-S024-04-E18-10).
+  related_issue: 785
+  related_decision: D-S024-04-E18-10
+- id: D-S024-04-E18-10
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — preflight/send sequencing
+  summary: D-S024-04-E18-10 / E18-10 — Sequencing = B interleaved preflight→send per file + interactive per-file progress graphic
+  decision: Sequencing = B interleaved preflight→send per file + interactive per-file progress graphic (mail→destination along arrow; red fail mark)
+  related_issue: 785
+  related_decision: E18-10
+- id: E18-11
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — mid-run failure policy
+  summary: E18-11 / D-S024-04-E18-11 — Mid-run failure = A continue remaining; aggregate statuses
+  decision: Mid-run failure = A continue remaining; aggregate statuses. Locked 2026-07-28 Batch 1 (D-S024-04-E18-11).
+  related_issue: 785
+  related_decision: D-S024-04-E18-11
+- id: D-S024-04-E18-11
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — mid-run failure policy
+  summary: D-S024-04-E18-11 / E18-11 — Mid-run failure = A continue remaining; aggregate statuses
+  decision: Mid-run failure = A continue remaining; aggregate statuses
+  related_issue: 785
+  related_decision: E18-11
+- id: E18-12
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — milestone shape
+  summary: E18-12 / D-S024-04-E18-12 — Milestone shape = A (M1–M4)
+  decision: Milestone shape = A (M1–M4). Locked 2026-07-28 Batch 1 (D-S024-04-E18-12).
+  related_issue: 785
+  related_decision: D-S024-04-E18-12
+- id: D-S024-04-E18-12
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — milestone shape
+  summary: D-S024-04-E18-12 / E18-12 — Milestone shape = A (M1–M4)
+  decision: Milestone shape = A (M1–M4)
+  related_issue: 785
+  related_decision: E18-12
+- id: D-S024-02-phase-a-A
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  skill: 16-evolve
+  skill_id: 04-tech-plan
+  stage: 16-evolve
+  category: checkpoint
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: Phase A checkpoint — approve → start 04-tech-plan
+  summary: Pass Gate A — complete 02 → 04-tech-plan; accept M1/M2 deferrals (single-candidate UX; preflight-all-then-send vs interleaved)
+  decision: Pass Gate A — complete 02 → 04-tech-plan; accept M1/M2 deferrals (single-candidate UX; preflight-all-then-send vs interleaved)
+  related_issue: 785
+  related_decision: D-S024-01-requirements-delta
+- id: C-EV018-1
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 02-verify-plan
+  skill_id: 02-verify-plan
+  status: resolved
+  topic: test-plan TC-F16 range
+  decision: Fixed checklist TC-F16-001..004 → ..005
+- id: C-EV018-2
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 02-verify-plan
+  skill_id: 02-verify-plan
+  status: resolved
+  topic: UJ-029/030 actor vs F21
+  decision: Updated actors to public F21 + export selection reuse
+- id: D-S024-01-requirements-delta
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 01-requirements
+  skill_id: 01-requirements
+  status: confirmed
+  topic: Confirm 01-requirements deltas
+  decision: Approved F16 deepen corpus deltas; mark 01 completed; proceed 02-verify-plan
+- id: D-S024-01-requirements-delta-draft
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 01-requirements
+  skill_id: 01-requirements
+  status: provisional
+  topic: F16 deepen corpus deltas
+  decision: Wrote feature-list/spec/api-contract/user-journeys/test-plan deltas for #785; awaiting user confirm
+- id: D-S024-E18-scope-lock
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Phase 0 scope lock
+  decision: Lock EV-018 scope (deepen F16 multi-select; E18-1..8); complete 00-context; handoff 01-requirements delta
+- id: E18-5
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: API shape
+  decision: N sequential /preflight+/send; UI aggregates; no batch API v1
+- id: E18-6
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Selection size caps
+  decision: Count cap ≤20 + existing body/size limits; clear UI error when over
+- id: E18-7
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Routing amend Lean+build
+  decision: Amend E18-3 Lean → Lean+build (00→16→01→02→04→07→08→10→13)
+- id: E18-8
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: UI preview non-deployed
+  decision: Open local / non-deployed UI preview now to ground scope
+- id: E18-1
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Open S024 / EV-018
+  decision: Open S024-dissemination-file-select (feature) → 16-evolve / EV-018 for #785
+- id: E18-2
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Feature id
+  decision: Deepen F16; F17–F19 reuse selection contract; no F23
+- id: E18-3
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Routing preset
+  decision: Lean (00→16→01→02→10→13); Batch 2 E18-7 may amend to Lean+build
+- id: E18-4
+  date: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: History sources in v1
+  decision: Current-session + dropped files only; Finished IndexedDB history deferred
+- id: D-S024-00-open-provisional
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  stage: 00-context
+  skill_id: 00-context
+  status: provisional
+  topic: Open S024 / allocate EV-018 for #785
+  summary: Opened S024-dissemination-file-select (feature) with orchestrator 16-evolve; allocated EV-018; branch evolve/EV-018-dissemination-file-select; Phase 0 Batch 1 pending; AskQuestion UI waived (written interview)
+  decision: Provisional open — awaiting user confirm E18-1..E18-6 (session, F23, Standard routing, history sources, API shape, UI preview)
 - id: E16-1
   date: '2026-07-22'
   timestamp: '2026-07-22'
@@ -9090,6 +9735,46 @@ decisions_log:
   do_not_auto_merge: true
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790
 artifacts:
+- path: docs/sessions/S024-dissemination-file-select/reports/verification-report.md
+  type: session-report
+  kind: verification-report
+  stage: 08-verify-build
+  skill_id: 08-verify-build
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28T23:42:27Z'
+  status: completed
+  overall: pass
+  tip_sha: a4b75f2
+  tip_sha_full: a4b75f222ae71d959de0939da3f391adc97a832c
+  uncommitted: true
+  note: 'S024/EV-018 08-verify-build COMPLETE — PASS; FE 727 Vitest; coverage F 96.3% B 85.27%; tip base a4b75f2 uncommitted; handoff 10-e2e; #785'
+- path: docs/sessions/S024-dissemination-file-select/reports/HANDOFF.md
+  type: session-report
+  kind: handoff
+  stage: 07-build
+  skill_id: 07-build
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28T23:30:05Z'
+  status: completed
+  tip_sha: a4b75f2
+  tip_sha_full: a4b75f222ae71d959de0939da3f391adc97a832c
+  note: 'S024/EV-018 07-build COMPLETE — M1–M4 / 14 tasks; handoff 08-verify-build; #785'
+- path: docs/sessions/S024-dissemination-file-select/reports/execution-plan.md
+  type: execution-plan
+  kind: execution-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28T23:21:03Z'
+  status: approved
+  decision_id: D-S024-04-plan-approve-A
+  note: 'S024/EV-018 execution-plan APPROVED (D-S024-04-plan-approve-A) — M1–M4 / 14 tasks; B→C; 07-build @ T1.1; #785'
 - path: docs/sessions/S023-public-app-privacy/reports/deploy-smoke.md
   type: session-report
   kind: deploy-smoke
@@ -11151,6 +11836,194 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-018
+  session_id: S024-dissemination-file-select
+  cycle_type: feature
+  feature_ids:
+  - F16
+  feature_id:
+  feature_note: "Deepen F16 (E18-2); F17–F19 reuse selection contract; no F23"
+  title: "Dissemination multi-file export selection (#785)"
+  status: in_progress
+  started: "2026-07-28"
+  completed: null
+  scope_summary: |
+    Deepen F16 multi-file export selection: current-session + drops only;
+    multi-select; N sequential preflight/send with UI aggregation; ≤20 cap;
+    F17–F19 reuse selection contract; BYOC memory-only unchanged. Lean+build.
+    Phase 0 scope-lock gate pending.
+  github_issue: 785
+  related_issues:
+  - 785
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 10-e2e
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 09-qa
+    - 11-verify-impl
+    - 12-verify-deploy
+    approved: true
+    provisional: false
+    preset: Lean+build
+    decision_id: D-S024-E18-scope-lock
+    note: "Phase 0 locked; Lean+build approved; handoff 01-requirements"
+  current_stage: 10-e2e
+  branch: evolve/EV-018-dissemination-file-select
+  note: "S024/EV-018 08 COMPLETE — PASS; verification-report.md; uncommitted EV-018 work; handoff 10-e2e after commit; tip base a4b75f2; #785"
+  decision_refs:
+  - E18-1
+  - E18-2
+  - E18-3
+  - E18-4
+  - E18-5
+  - E18-6
+  - E18-7
+  - E18-8
+  - E18-9
+  - E18-10
+  - E18-11
+  - E18-12
+  - E18-13
+  - E18-14
+  - E18-15
+  - E18-16
+  - D-S024-E18-scope-lock
+  - D-S024-01-requirements-delta
+  - D-S024-02-phase-a-A
+  - D-S024-04-E18-9
+  - D-S024-04-E18-10
+  - D-S024-04-E18-11
+  - D-S024-04-E18-12
+  - D-S024-04-E18-13
+  - D-S024-04-E18-14
+  - D-S024-04-E18-15
+  - D-S024-04-E18-16
+  - D-S024-04-plan-approve-A
+  notes:
+  - '2026-07-28 S024/EV-018 08-verify-build COMPLETE — PASS; report verification-report.md; work still uncommitted; handoff 10-e2e after commit; #785'
+  - '2026-07-28 S024/EV-018 07 COMPLETE (M1–M4 / 14 tasks) — FE multi-select + interleaved queue + progress graphic + e2e; tip a4b75f2; HANDOFF; 08-verify-build STARTED; #785'
+  - '2026-07-28 S024/EV-018 04 COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C passed; handoff 07-build @ T1.1; #785'
+  - '2026-07-28 S024/EV-018 07-build STARTED (D-S024-04-plan-approve-A B→C) — active task T1.1; M1–M4 / 14 tasks; progress 0/14; #785'
+  stages:
+    00-context:
+      status: completed
+      started: "2026-07-28"
+      completed: "2026-07-28"
+      artifacts_updated:
+      - docs/sessions/S024-dissemination-file-select/
+      - docs/context/dissemination-file-select.md
+      - docs/decisions/evolve-decisions.md
+    01-requirements:
+      status: completed
+      started: "2026-07-28"
+      completed: "2026-07-28"
+      artifacts_updated:
+      - docs/feature-list.md
+      - docs/spec.md
+      - docs/api-contract.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/sessions/S024-dissemination-file-select/reports/01-requirements.md
+    02-verify-plan:
+      status: completed
+      started: "2026-07-28"
+      completed: "2026-07-28"
+      artifacts_updated:
+      - docs/sessions/S024-dissemination-file-select/reports/02-verify-plan.md
+      - docs/test-plan.md
+      - docs/user-journeys.md
+      decision_id: D-S024-02-phase-a-A
+      note: Phase A PASSED; M1/M2 deferred to 04
+    04-tech-plan:
+      status: completed
+      started: "2026-07-28T23:04:36Z"
+      completed: "2026-07-28T23:21:03Z"
+      artifacts_updated:
+      - docs/sessions/S024-dissemination-file-select/reports/execution-plan.md
+      decision_id: D-S024-04-plan-approve-A
+      note: COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved; B→C; handoff 07 @ T1.1
+    07-build:
+      status: completed
+      started: "2026-07-28T23:21:03Z"
+      completed: "2026-07-28T23:30:05Z"
+      mode: full
+      active_task: T4.x
+      active_milestone: M4
+      progress: 14/14
+      tip_sha: a4b75f2
+      decision_id: D-S024-04-plan-approve-A
+      note: COMPLETE — M1–M4 / 14 tasks (FE multi-select + interleaved queue + progress graphic + e2e); tip a4b75f2; HANDOFF; ready for 08
+      artifacts_updated:
+      - docs/sessions/S024-dissemination-file-select/reports/HANDOFF.md
+    08-verify-build:
+      status: completed
+      started: "2026-07-28T23:30:05Z"
+      completed: "2026-07-28T23:42:27Z"
+      mode: full
+      overall: pass
+      tip_sha: a4b75f2
+      uncommitted: true
+      note: COMPLETE — PASS; FE 727 Vitest; coverage F 96.3% B 85.27%; prettier+queue edge tests; tip base a4b75f2 uncommitted; report docs/sessions/S024-dissemination-file-select/reports/verification-report.md; handoff 10-e2e
+      artifacts_updated:
+      - docs/sessions/S024-dissemination-file-select/reports/verification-report.md
+    16-evolve:
+      status: in_progress
+      started: "2026-07-28"
+      completed: null
+      note: Orchestrating post-08; next 10 after commit
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  - path: docs/sessions/S024-dissemination-file-select/reports/execution-plan.md
+    status: approved
+    stage: 04-tech-plan
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    date: '2026-07-28'
+    decision_id: D-S024-04-plan-approve-A
+  - path: docs/sessions/S024-dissemination-file-select/reports/HANDOFF.md
+    status: completed
+    stage: 07-build
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    date: '2026-07-28'
+    tip_sha: a4b75f2
+    note: 'S024/EV-018 07→08 HANDOFF — M1–M4 done; ready for 08-verify-build'
+  - path: docs/sessions/S024-dissemination-file-select/reports/verification-report.md
+    status: completed
+    stage: 08-verify-build
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    date: '2026-07-28'
+    tip_sha: a4b75f2
+    overall: pass
+    note: 'S024/EV-018 08 COMPLETE — PASS; tip base a4b75f2 uncommitted; handoff 10-e2e'
+  - path: docs/sessions/S024-dissemination-file-select/reports/evolve-summary.md
+    status: pending
+  issues: []
 - id: EV-017
   session_id: S023-public-app-privacy
   cycle_type: feature
@@ -15078,7 +15951,7 @@ evolve_cycles:
   pr_number: 723
   merge_sha: '4660602'
 git_history:
-  current_branch: evolve/EV-017-public-app-privacy
+  current_branch: evolve/EV-018-dissemination-file-select
   ahead_of_origin: 0
   pushed: true
   pending_commit:
@@ -15268,6 +16141,16 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-018-dissemination-file-select
+    purpose: 'S024/EV-018 dissemination multi-file export selection (#785)'
+    base: main
+    status: active
+    created: '2026-07-28'
+    created_at: '2026-07-28'
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    note: 'Session opened; Phase 0 intake pending; not pushed'
+    pushed: false
   - name: evolve/EV-017-public-app-privacy
     purpose: 'S023/EV-017 public app + local history + privacy (#783)'
     base: main

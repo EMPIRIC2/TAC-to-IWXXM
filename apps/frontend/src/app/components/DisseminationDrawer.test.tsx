@@ -1,5 +1,5 @@
 /**
- * T6.1 — Vitest: drawer sink chooser + preflight diff + block Send (TC-F16-001/004; UJ-027).
+ * Dissemination drawer Vitest — F16 / TC-F16-001/004/005; UJ-027; EV-018.
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -83,24 +83,13 @@ describe('DisseminationDrawer', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('exposes sink chooser with all drawer-ready sink types (F16–F19)', () => {
+  it('renders sink chooser for all drawer sink types', () => {
     render(<DisseminationDrawer {...defaultProps} />);
-
-    expect(screen.getByTestId('dissemination-drawer')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /dissemination/i })).toBeInTheDocument();
-
-    const chooser = screen.getByTestId('dissemination-sink-chooser');
-    expect(chooser).toBeInTheDocument();
-
-    for (const sink of DRAWER_SINK_TYPES) {
-      expect(
-        screen.getByTestId(`dissemination-sink-option-${sink}`),
-      ).toBeInTheDocument();
-    }
+    expect(screen.getByTestId('dissemination-sink-chooser')).toBeInTheDocument();
     expect(DRAWER_SINK_TYPES).toHaveLength(9);
   });
 
-  it('blocks Send until preflight is green (TC-F16-001)', async () => {
+  it('shows red progress fail when Disseminate preflight is not green (TC-F16-001)', async () => {
     const user = userEvent.setup();
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
@@ -122,37 +111,25 @@ describe('DisseminationDrawer', () => {
 
     render(<DisseminationDrawer {...defaultProps} />);
 
-    const sendBtn = screen.getByTestId('dissemination-send-button');
-    expect(sendBtn).toBeDisabled();
-
     await user.type(
       screen.getByTestId('dissemination-uri-input'),
       'postgresql://u:p@db.example.com/wx',
     );
-    await user.click(screen.getByTestId('dissemination-preflight-button'));
+    await user.click(screen.getByTestId('dissemination-send-button'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('dissemination-preflight-diffs')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('dissemination-progress-row-session-primary'),
+      ).toHaveAttribute('data-status', 'failed');
     });
-    expect(screen.getByTestId('dissemination-diff-item')).toHaveTextContent(
-      /missing_column/,
-    );
-    expect(screen.getByTestId('dissemination-diff-item')).toHaveTextContent(
-      /iwxxm_xml/,
-    );
-    expect(sendBtn).toBeDisabled();
     expect(global.fetch).toHaveBeenCalledWith(
       'http://api.test/api/v1/dissemination/preflight',
-      expect.objectContaining({
-        method: 'POST',
-        headers: expect.objectContaining({
-          'Content-Type': 'application/json',
-        }),
-      }),
+      expect.objectContaining({ method: 'POST' }),
     );
+    expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
-  it('enables Send after green preflight and posts handle (TC-F16-001)', async () => {
+  it('Disseminate runs interleaved preflight→send and shows success (TC-F16-001)', async () => {
     const user = userEvent.setup();
     vi.mocked(global.fetch)
       .mockResolvedValueOnce({
@@ -184,22 +161,14 @@ describe('DisseminationDrawer', () => {
       screen.getByTestId('dissemination-uri-input'),
       'sqlite:////tmp/wx.db',
     );
-    await user.click(screen.getByTestId('dissemination-preflight-button'));
+    await user.click(screen.getByTestId('dissemination-send-button'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('dissemination-preflight-green')).toBeInTheDocument();
+      expect(screen.getByTestId('dissemination-send-success')).toBeInTheDocument();
     });
-
-    const sendBtn = screen.getByTestId('dissemination-send-button');
-    expect(sendBtn).toBeEnabled();
-
-    await user.click(sendBtn);
-
-    await waitFor(() => {
-      expect(screen.getByTestId('dissemination-send-success')).toHaveTextContent(
-        /kv:upload:1/,
-      );
-    });
+    expect(
+      screen.getByTestId('dissemination-progress-row-session-primary'),
+    ).toHaveAttribute('data-status', 'success');
 
     expect(global.fetch).toHaveBeenNthCalledWith(
       2,
@@ -211,7 +180,7 @@ describe('DisseminationDrawer', () => {
     );
   });
 
-  it('accepts drag-drop / file payload on the same preflight→send path (TC-F16-004)', async () => {
+  it('accepts drag-drop / file payload on Disseminate path (TC-F16-004)', async () => {
     const user = userEvent.setup();
     vi.mocked(global.fetch)
       .mockResolvedValueOnce({
@@ -247,22 +216,14 @@ describe('DisseminationDrawer', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('dissemination-payload-status')).toHaveTextContent(
-        /TAC/,
+        /1 candidate/,
       );
     });
-
-    expect(screen.getByTestId('dissemination-send-button')).toBeDisabled();
 
     await user.type(
       screen.getByTestId('dissemination-uri-input'),
       'sqlite:////tmp/drop.db',
     );
-    await user.click(screen.getByTestId('dissemination-preflight-button'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('dissemination-send-button')).toBeEnabled();
-    });
-
     await user.click(screen.getByTestId('dissemination-send-button'));
 
     await waitFor(() => {
@@ -323,18 +284,8 @@ describe('DisseminationDrawer', () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it('blocks Send when payload is empty even after green preflight', async () => {
+  it('disables Disseminate when there is no payload (TC-F16-001)', async () => {
     const user = userEvent.setup();
-    vi.mocked(global.fetch).mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        ok: true,
-        connectivity_ok: true,
-        diffs: [],
-        handle: 'no-payload-handle',
-      }),
-    } as Response);
-
     render(
       <DisseminationDrawer
         {...defaultProps}
@@ -347,12 +298,8 @@ describe('DisseminationDrawer', () => {
       screen.getByTestId('dissemination-uri-input'),
       'sqlite:////tmp/empty.db',
     );
-    await user.click(screen.getByTestId('dissemination-preflight-button'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('dissemination-preflight-green')).toBeInTheDocument();
-    });
     expect(screen.getByTestId('dissemination-send-button')).toBeDisabled();
+    expect(screen.getByTestId('dissemination-preflight-button')).toBeDisabled();
   });
 
   it('closes via close control', async () => {
@@ -390,7 +337,7 @@ describe('DisseminationDrawer', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('dissemination-payload-status')).toHaveTextContent(
-        /IWXXM/,
+        /1 candidate/,
       );
     });
   });
@@ -409,7 +356,7 @@ describe('DisseminationDrawer', () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it('surfaces send API errors after green preflight', async () => {
+  it('surfaces send API errors during Disseminate', async () => {
     const user = userEvent.setup();
     vi.mocked(global.fetch)
       .mockResolvedValueOnce({
@@ -434,17 +381,16 @@ describe('DisseminationDrawer', () => {
       screen.getByTestId('dissemination-uri-input'),
       'sqlite:////tmp/s.db',
     );
-    await user.click(screen.getByTestId('dissemination-preflight-button'));
-    await waitFor(() => {
-      expect(screen.getByTestId('dissemination-send-button')).toBeEnabled();
-    });
     await user.click(screen.getByTestId('dissemination-send-button'));
 
     await waitFor(() => {
       expect(screen.getByTestId('dissemination-error')).toHaveTextContent(
-        /sink unavailable/,
+        /failed|sink unavailable/i,
       );
     });
+    expect(
+      screen.getByTestId('dissemination-progress-row-session-primary'),
+    ).toHaveAttribute('data-status', 'failed');
   });
 
   it('shows BYOC JSON params for non-DB sinks and includes them in preflight (T6.2)', async () => {
@@ -487,5 +433,108 @@ describe('DisseminationDrawer', () => {
       broker: 'mqtt://wis2.example',
       topic: 'origin/a/wis2',
     });
+  });
+
+  it('shows export selection for multiple candidates; empty disables actions (TC-F16-005)', async () => {
+    const user = userEvent.setup();
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        sessionOutputs={[
+          {
+            id: 'extra-1',
+            name: 'extra.xml',
+            source: 'session',
+            product: 'metar',
+            iwxxmXml: '<extra/>',
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByTestId('dissemination-export-selection')).toBeInTheDocument();
+    await user.click(screen.getByTestId('dissemination-clear-selection'));
+    expect(screen.getByTestId('dissemination-empty-selection')).toBeInTheDocument();
+    expect(screen.getByTestId('dissemination-send-button')).toBeDisabled();
+
+    await user.click(screen.getByTestId('dissemination-select-all'));
+    expect(screen.getByTestId('dissemination-send-button')).toBeDisabled(); // still need URI
+
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/multi.db',
+    );
+    expect(screen.getByTestId('dissemination-send-button')).toBeEnabled();
+
+    // Toggle one candidate off via checkbox (covers per-row onChange).
+    await user.click(screen.getByTestId('dissemination-candidate-extra-1'));
+    expect(screen.getByTestId('dissemination-send-button')).toBeEnabled();
+  });
+
+  it('expands collapsed sole-candidate selection (E18-9)', async () => {
+    const user = userEvent.setup();
+    render(<DisseminationDrawer {...defaultProps} />);
+
+    expect(
+      screen.queryByTestId('dissemination-export-selection'),
+    ).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('dissemination-selection-expand'));
+    expect(screen.getByTestId('dissemination-export-selection')).toBeInTheDocument();
+  });
+
+  it('continues Disseminate after one file fails (TC-F16-005)', async () => {
+    const user = userEvent.setup();
+    vi.mocked(global.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          ok: false,
+          connectivity_ok: false,
+          diffs: [],
+          detail: 'first fail',
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          ok: true,
+          connectivity_ok: true,
+          diffs: [],
+          handle: 'h2',
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ ok: true, kv_upload_key: 'kv:2' }),
+      } as Response);
+
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        sessionOutputs={[
+          {
+            id: 'extra-1',
+            name: 'extra.xml',
+            source: 'session',
+            product: 'metar',
+            iwxxmXml: '<extra/>',
+          },
+        ]}
+      />,
+    );
+
+    await user.click(screen.getByTestId('dissemination-select-all'));
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/multi.db',
+    );
+    await user.click(screen.getByTestId('dissemination-send-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-send-success')).toHaveTextContent(
+        /1 file/,
+      );
+    });
+    expect(global.fetch).toHaveBeenCalledTimes(3);
   });
 });

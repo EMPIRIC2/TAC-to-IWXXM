@@ -3,6 +3,87 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-018 — Dissemination multi-file export selection (#785) (S024)
+
+**Session**: S024-dissemination-file-select  
+**Features**: **Deepen F16** (F17–F19 reuse selection contract); no F23  
+**Issues**: [#785](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/785)  
+**Started**: 2026-07-28  
+**Completed**: —  
+**Branch**: `evolve/EV-018-dissemination-file-select`  
+**Status**: **in_progress** — Phase B passed; **07-build** @ T1.1
+
+### Scope (Batch 1 — locked 2026-07-28)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E18-1 | decision | Open session? | **A** — `S024-dissemination-file-select` → 16-evolve / EV-018 |
+| E18-2 | decision | Feature id? | **B** — Deepen **F16**; F17–F19 reuse same selection contract (no new Fn) |
+| E18-3 | decision | Routing preset? | **B** — Lean (amended by E18-7 → Lean+build) |
+| E18-4 | ambiguity | History sources in v1? | **A** — Current-session + dropped files only; Finished history deferred |
+
+### Scope (Batch 2 — locked 2026-07-28)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E18-5 | decision | Batched API vs N sends? | **A** — N sequential `/preflight`+`/send`; UI aggregates |
+| E18-6 | decision | Selection / payload size caps? | **A** — Count cap **≤20** + existing body/size limits |
+| E18-7 | ambiguity | Lean vs Lean+build? | **A** — **Lean+build** `00→16→01→02→04→07→08→10→13` |
+| E18-8 | decision | UI preview (non-deployed)? | **A** — Open local UI now |
+
+### Approved scope (D-S024-E18-scope-lock — 2026-07-28)
+
+Deepen **F16** multi-file export selection in the dissemination drawer: selectable
+candidates from current-session conversion outputs and dropped files only; multi-select
+with select-all/clear; empty selection disables Preflight/Send; N sequential preflight/send
+with per-file results; ≤20 selection cap; F17–F19 reuse the same UI selection contract;
+BYOC memory-only and egress allowlist unchanged. No batch dissemination API, no history
+sources, no saved profiles in v1. Routing: **Lean+build**.
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-07-28 | D-S024-E18-scope-lock |
+| 01-requirements | 2026-07-28 | D-S024-01-requirements-delta — corpus deltas approved |
+| 02-verify-plan | 2026-07-28 | Phase A PASSED (D-S024-02-phase-a-A); C1/C2 fixed; M1/M2 → 04 |
+| 04-tech-plan | 2026-07-28 | D-S024-04-plan-approve-A — plan approved; B→C; handoff 07 @ T1.1 |
+| 07-build | *in_progress* | STARTED @ T1.1 (D-S024-04-plan-approve-A) |
+
+### Phase A checkpoint (2026-07-28)
+
+| ID | Decision |
+|----|----------|
+| D-S024-02-phase-a-A | **A** — Pass Gate A; complete 02 → **04-tech-plan**; accept M1/M2 deferrals (single-candidate UX; preflight-all-then-send vs interleaved) |
+
+### 04-tech-plan Batch 1 (locked 2026-07-28)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E18-9 | decision | Single-candidate UX (M1)? | **A** — Auto-select sole candidate; Export selection collapsed/optional |
+| E18-10 | decision | Preflight→Send sequencing (M2)? | **B** — **Interleaved** per file: preflight→send, then next; interactive per-file progress graphic (mail→destination along arrow; red mark on fail) |
+| E18-11 | decision | Mid-run failure? | **A** — Continue remaining files; aggregate pass/fail/skip |
+| E18-12 | decision | Milestone shape? | **A** — M1 selection state → M2 sequential aggregator → M3 drawer UI (+ progress graphic) → M4 Vitest/e2e |
+
+### 04-tech-plan Batch 2 (locked 2026-07-28)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E18-13 | decision | Progress graphic impl? | **A** — CSS + existing `motion` + lucide; **no new deps** |
+| E18-14 | decision | Reduced motion / a11y? | **C** — Hide graphic; text-only progress list when `prefers-reduced-motion` |
+| E18-15 | decision | Combined Preflight+Send? | **A** — Primary **Disseminate** (preflight→send per file); optional **Preflight only** secondary |
+| E18-16 | decision | Tests / connectivity? | **B** — Vitest + Playwright UJ-027–030 + **visual snapshot** of progress row; H6′ at 13 |
+
+### Phase B checkpoint / plan approve (2026-07-28)
+
+| ID | Category | Decision |
+|----|----------|----------|
+| D-S024-04-plan-approve-A | gate | **A** — Approve execution plan (M1–M4 / 14 tasks); skip 05/06 (Lean+build); start **07-build** @ T1.1 |
+
+**Execution plan artifact**: `docs/sessions/S024-dissemination-file-select/reports/execution-plan.md` (**approved** — D-S024-04-plan-approve-A).
+
+---
+
 ## Cycle EV-017 — Public app + local history + privacy (#783) (S023)
 
 **Session**: S023-public-app-privacy

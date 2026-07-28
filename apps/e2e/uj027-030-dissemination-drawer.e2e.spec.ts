@@ -132,7 +132,7 @@ async function prepareWorkbench(page: Page): Promise<void> {
 }
 
 test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
-  test('UJ-027: multi-DB BYOC — schema diff blocks Send; green unlocks Send', async ({
+  test('UJ-027: multi-DB BYOC — failed Disseminate shows red progress; retry succeeds', async ({
     page,
   }) => {
     await prepareWorkbench(page);
@@ -193,34 +193,30 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     await openDisseminationDrawer(page);
 
     await page.getByTestId('dissemination-sink-chooser').selectOption('postgres');
-    await page
-      .getByTestId('dissemination-uri-input')
-      .fill('postgresql://u:p@db.example.com:5432/wx');
-
     const sendBtn = page.getByTestId('dissemination-send-button');
     await expect(sendBtn).toBeDisabled();
 
-    await page.getByTestId('dissemination-preflight-button').click();
-    await expect(page.getByTestId('dissemination-preflight-diffs')).toBeVisible();
-    await expect(page.getByTestId('dissemination-diff-item')).toContainText(
-      /missing_column/,
-    );
-    await expect(sendBtn).toBeDisabled();
+    await page
+      .getByTestId('dissemination-uri-input')
+      .fill('postgresql://u:p@db.example.com:5432/wx');
+    await expect(sendBtn).toBeEnabled();
 
-    // Change URI to re-enable a fresh preflight (drawer clears handle on URI edit).
+    await sendBtn.click();
+    await expect(
+      page.locator('[data-testid^="dissemination-progress-row-"]').first(),
+    ).toHaveAttribute('data-status', 'failed');
+    expect(captured.send.length).toBe(0);
+
     await page
       .getByTestId('dissemination-uri-input')
       .fill('postgresql://u:p@db.example.com:5432/wx_ok');
     await page.getByTestId('dissemination-ddl-toggle').check();
-    await page.getByTestId('dissemination-preflight-button').click();
-
-    await expect(page.getByTestId('dissemination-preflight-green')).toBeVisible();
-    await expect(sendBtn).toBeEnabled();
-
     await sendBtn.click();
-    await expect(page.getByTestId('dissemination-send-success')).toContainText(
-      /kv:e2e:pg:1/,
-    );
+
+    await expect(page.getByTestId('dissemination-send-success')).toBeVisible();
+    await expect(
+      page.locator('[data-testid^="dissemination-progress-row-"]').first(),
+    ).toHaveAttribute('data-status', 'success');
 
     expect(captured.preflight.length).toBe(2);
     expect(captured.send.length).toBe(1);
@@ -236,11 +232,10 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
       tac_text?: string;
     };
     expect(sendBody.handle).toBe('e2e-pg-handle');
-    // Convert-then-send or TAC from workbench — either payload path is OK.
     expect(Boolean(sendBody.iwxxm_xml || sendBody.tac_text)).toBe(true);
   });
 
-  test('UJ-027: drag-drop TAC file reaches preflight→send (TC-F16-004)', async ({
+  test('UJ-027: drag-drop TAC file reaches Disseminate (TC-F16-004)', async ({
     page,
   }) => {
     await stubWorkbenchNoise(page);
@@ -266,17 +261,89 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
       .fill('sqlite:////tmp/e2e-dissemination.db');
 
     await page.getByTestId('dissemination-file-input').setInputFiles(FIXTURE_TAC);
-    await expect(page.getByTestId('dissemination-payload-status')).toContainText(/TAC/);
-
-    await page.getByTestId('dissemination-preflight-button').click();
-    await expect(page.getByTestId('dissemination-preflight-green')).toBeVisible();
-    await page.getByTestId('dissemination-send-button').click();
-    await expect(page.getByTestId('dissemination-send-success')).toContainText(
-      /kv:e2e:drop:1/,
+    await expect(page.getByTestId('dissemination-payload-status')).toContainText(
+      /1 candidate/,
     );
+
+    await page.getByTestId('dissemination-send-button').click();
+    await expect(page.getByTestId('dissemination-send-success')).toBeVisible();
 
     const sendBody = captured.send[0].postDataJSON() as { tac_text?: string };
     expect(sendBody.tac_text).toContain('METAR');
+  });
+
+  test('UJ-027: multi-select drop + forced fail continues; progress screenshot (TC-F16-005)', async ({
+    page,
+  }) => {
+    await stubWorkbenchNoise(page);
+    await openConverterForE2e(page);
+
+    let preflightCalls = 0;
+    await page.route('**/api/v1/dissemination/preflight', async (route) => {
+      preflightCalls += 1;
+      if (preflightCalls === 1) {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            ok: false,
+            connectivity_ok: false,
+            diffs: [],
+            detail: 'first fail',
+          }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ok: true,
+          connectivity_ok: true,
+          diffs: [],
+          handle: 'e2e-multi-ok',
+        }),
+      });
+    });
+    await page.route('**/api/v1/dissemination/send', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: true, kv_upload_key: 'kv:e2e:multi:1' }),
+      });
+    });
+
+    await openDisseminationDrawer(page);
+    await page.getByTestId('dissemination-sink-chooser').selectOption('sqlite');
+    await page
+      .getByTestId('dissemination-uri-input')
+      .fill('sqlite:////tmp/e2e-multi.db');
+
+    await page.getByTestId('dissemination-file-input').setInputFiles(FIXTURE_TAC);
+    // Second drop — create a second file via setInputFiles again with a copy name.
+    await page.getByTestId('dissemination-file-input').setInputFiles({
+      name: 'second.tac',
+      mimeType: 'text/plain',
+      buffer: Buffer.from('METAR KJFK 121251Z 24008KT 10SM CLR 18/12 A3012='),
+    });
+
+    await expect(page.getByTestId('dissemination-export-selection')).toBeVisible();
+    await page.getByTestId('dissemination-select-all').click();
+    await page.getByTestId('dissemination-send-button').click();
+
+    await expect(page.getByTestId('dissemination-send-success')).toContainText(
+      /1 file/,
+    );
+    const failRow = page
+      .locator('[data-testid^="dissemination-progress-row-"][data-status="failed"]')
+      .first();
+    await expect(failRow).toBeVisible();
+    await expect(failRow.getByTestId(/dissemination-progress-fail-/)).toBeVisible();
+
+    await expect(page.getByTestId('dissemination-progress-list')).toHaveScreenshot(
+      'dissemination-progress-multi-partial-fail.png',
+      { animations: 'disabled' },
+    );
   });
 
   test('UJ-028: WIS2 sink uses BYOC params (staging path mocked)', async ({ page }) => {
@@ -308,12 +375,8 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
       }),
     );
 
-    await page.getByTestId('dissemination-preflight-button').click();
-    await expect(page.getByTestId('dissemination-preflight-green')).toBeVisible();
     await page.getByTestId('dissemination-send-button').click();
-    await expect(page.getByTestId('dissemination-send-success')).toContainText(
-      /kv:e2e:wis2:1/,
-    );
+    await expect(page.getByTestId('dissemination-send-success')).toBeVisible();
 
     const body = captured.preflight[0].postDataJSON() as {
       sink_type: string;
@@ -323,7 +386,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     expect(body.params.broker).toContain('wis2box');
   });
 
-  test('UJ-029: EDIS sink — BYOC JSON + mocked preflight/send (live BYOC cycle-close)', async ({
+  test('UJ-029: EDIS sink — BYOC JSON + mocked Disseminate (live BYOC cycle-close)', async ({
     page,
   }) => {
     await prepareWorkbench(page);
@@ -351,22 +414,17 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
       }),
     );
 
-    await page.getByTestId('dissemination-preflight-button').click();
-    await expect(page.getByTestId('dissemination-preflight-green')).toBeVisible();
     await page.getByTestId('dissemination-send-button').click();
-    await expect(page.getByTestId('dissemination-send-success')).toContainText(
-      /kv:e2e:edis:1/,
-    );
+    await expect(page.getByTestId('dissemination-send-success')).toBeVisible();
 
     const body = captured.preflight[0].postDataJSON() as { sink_type: string };
     expect(body.sink_type).toBe('edis');
-    // Password may appear in request body (memory-only) but must not land in F5 — UI smoke only.
     expect(captured.send[0].postDataJSON()).toMatchObject({
       handle: 'e2e-edis-handle',
     });
   });
 
-  test('UJ-030: AMHS / SWIM / AFS adapters each reach green preflight→send', async ({
+  test('UJ-030: AMHS / SWIM / AFS adapters each reach Disseminate success', async ({
     page,
   }) => {
     await prepareWorkbench(page);
@@ -394,12 +452,8 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
           JSON.stringify({ endpoint: `https://${sink}.example.test/v1`, token: 't' }),
         );
 
-      await page.getByTestId('dissemination-preflight-button').click();
-      await expect(page.getByTestId('dissemination-preflight-green')).toBeVisible();
       await page.getByTestId('dissemination-send-button').click();
-      await expect(page.getByTestId('dissemination-send-success')).toContainText(
-        new RegExp(`kv:e2e:${sink}:1`),
-      );
+      await expect(page.getByTestId('dissemination-send-success')).toBeVisible();
 
       const body = captured.preflight[0].postDataJSON() as { sink_type: string };
       expect(body.sink_type).toBe(sink);
@@ -407,7 +461,6 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
       await page.getByTestId('dissemination-drawer-close').click();
       await expect(page.getByTestId('dissemination-drawer')).toHaveCount(0);
 
-      // Unroute so the next adapter gets a fresh stub.
       await page.unroute('**/api/v1/dissemination/preflight');
       await page.unroute('**/api/v1/dissemination/send');
     }
@@ -431,8 +484,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     await page.getByTestId('dissemination-preflight-button').click();
 
     await expect(page.getByTestId('dissemination-error')).toContainText(
-      /allowlist|egress|not on/i,
+      /allowlist|egress|not on|failed/i,
     );
-    await expect(page.getByTestId('dissemination-send-button')).toBeDisabled();
   });
 });

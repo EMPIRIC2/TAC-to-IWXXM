@@ -81,7 +81,7 @@ metar-to-IWXXM/
 | Component | Purpose | Location | Dependencies |
 |-----------|---------|----------|--------------|
 | Backend API | Conversion, validation, auth; **Done** F16–F19 dissemination preflight/send (BYOC, memory-only) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, dissemination, auth, shared, vendor |
-| Frontend | Operator UI (workbench, decode, F7 sessions; **Planned** dissemination drawer) | `apps/frontend/` | shared (types); CodeMirror 6 |
+| Frontend | Operator UI (workbench, decode, F7 sessions; **Done** F16–F19 drawer; **EV-018** multi-select deepen) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase middleware | `packages/auth/` | supabase-py |
 | tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles) | `packages/tac2iwxxm/` | tac-validate (optional), vendor; PyO3 required at cutover (ADR-017) |
@@ -229,7 +229,9 @@ metar-to-IWXXM/
   panel, Failed-TAC / soft-preview UX, **IndexedDB** F5 My METARs + F7 multi-product sessions
   (F7.h), and F22 privacy notice/settings. **Done (F16–F19)**: Dissemination drawer (sink
   chooser, one-shot URI/params, preflight, Send blocked until green; convert-then-send and
-  drag-drop). **No** AdminDashboard, `/admin/*`, or operator login (F21).
+  drag-drop). **EV-018 / #785**: **Export selection** multi-select (current-session + drops;
+  ≤20; N sequential preflight/send with per-file results). **No** AdminDashboard, `/admin/*`,
+  or operator login (F21).
 - **F6 delta**: Product select (7 values + auto-detect), profile select (`annex3` | `iwxxm_us`),
   version control; values passed via `conversion_params` / multipart to `/api/v1/convert`.
 - **F7 delta (S011; F21 amend)**: Debounced **public** calls to lint/decode/validate/preview with
@@ -322,15 +324,22 @@ metar-to-IWXXM/
   to operator-chosen destinations with schema/connectivity preflight.
 - **F16**: Multi-DB upload (Postgres, MySQL/MariaDB, SQL Server, SQLite) via one-shot URI;
   DDL/create-if-missing vs versioned writer contract; SSRF + allowlist.
+- **F16 deepen (S024 / EV-018 / #785)**: **Export selection** multi-select for current-session
+  outputs + dropped files; select-all/clear; empty selection disables Preflight/Send; client
+  **N sequential** `/preflight`+`/send` with per-file aggregated results; selection count
+  **≤20**; Finished IndexedDB history and batched multi-payload API **out of scope** v1.
+  F17–F19 reuse the same selection UI contract.
 - **F17**: WIS2 publish — staging wis2box harness for test; live BYOC waived at EV-014 close (Q15).
 - **F18**: EDIS-compliant submit to RTH Washington — BYOC SMTP/gateway in drawer; live waived (Q15).
 - **F19**: AMHS / SWIM / AFS adapters in the same drawer (staging stubs; live optional).
 - **Auth / F5**: Public dissemination (F21 — no operator JWT). Local session may record
   `kv_upload_key` on Finished in IndexedDB only; never store destination secrets.
-- **Status**: **Done** (EV-014 closed 2026-07-21; PR #771/#772).
+- **Status**: **Done** (EV-014 closed 2026-07-21; PR #771/#772). Multi-select deepen **in
+  progress** (EV-018).
 - **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist); ADR-030
   (`packages/dissemination` + sink/API/wis2box/EDIS).
-- **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014.
+- **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014;
+  **#785; evolve-decisions EV-018**.
 
 ### F20 — TAF + SPECI quality bar (S020 / EV-015) — Planned
 

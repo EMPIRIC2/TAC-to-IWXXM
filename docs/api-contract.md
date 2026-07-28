@@ -437,20 +437,20 @@ F6/F7 fields do **not** change CORS headers. Frontend and API remain different o
 configure `config.*.api.corsOrigins` accordingly. Live workbench increases request volume
 (debounce/Abort on client — H4–H5 still required).
 
-## Dissemination (F16–F19) — Planned (S019 / EV-014)
+## Dissemination (F16–F19) — Done (EV-014); multi-select deepen EV-018
 
-> **Status**: Planned — shapes locked at architecture level (ADR-030 / E14-03=A).
-> Exact JSON field names and error codes finalize **before 07-build** (04 batches complete).
+> **Status**: Shipped EV-014 (#771/#772). **EV-018 / #785**: UI multi-file selection — **no**
+> new batch endpoint; existing single-payload routes reused via N sequential client calls.
 
 Auth: **None** (F21 public — same as other `/api/v1/*`). Destination credentials are
 **memory-only** (never persisted; never returned in responses). Egress subject to ADR-029
-allowlist. Abuse controls apply (rate limits / body size — finalize in 04).
+allowlist. Abuse controls apply (rate limits / body size).
 
 ### `POST /api/v1/dissemination/preflight`
 
 | Field | Notes |
 |-------|-------|
-| Request | JSON: `sink_type` (`postgres` \| `mysql` \| `sqlserver` \| `sqlite` \| `wis2` \| `edis` \| `amhs` \| `swim` \| `afs`) + sink-specific connection params (DB URI or WIS2/EDIS/AMHS fields) + optional `payload` metadata (product, schema version) + `ddl` flag for create-if-missing |
+| Request | JSON: `sink_type` (`postgres` \| `mysql` \| `sqlserver` \| `sqlite` \| `wis2` \| `edis` \| `amhs` \| `swim` \| `afs`) + sink-specific connection params (DB URI or WIS2/EDIS/AMHS fields) + optional `payload` metadata (product, schema version) + `ddl` flag for create-if-missing + **single** IWXXM/TAC body (or in-session/drop reference) |
 | Success | Structured preflight result: connectivity OK, schema/writer-contract diff (empty when green), optional short-lived opaque `handle` |
 | Failure | 400/422 structured errors (allowlist/SSRF, auth to dest, schema mismatch, missing columns); secrets redacted |
 
@@ -458,13 +458,24 @@ allowlist. Abuse controls apply (rate limits / body size — finalize in 04).
 
 | Field | Notes |
 |-------|-------|
-| Request | JSON: either `handle` from green preflight **or** full sink params again + IWXXM/TAC body (or reference to in-session convert result / drag-drop content) |
-| Success | Sink ack + optional `kv_upload_key` metadata for F5 Finished (no dest secrets stored) |
+| Request | JSON: either `handle` from green preflight **or** full sink params again + **single** IWXXM/TAC body (or reference to in-session convert result / drag-drop content) |
+| Success | Sink ack + optional `kv_upload_key` metadata for local Finished (no dest secrets stored) |
 | Failure | Same structured/redacted errors as preflight; block if preflight would not be green |
+
+### Multi-file selection (EV-018 / #785) — client contract
+
+| Rule | Notes |
+|------|-------|
+| API shape | **Unchanged** single-payload preflight/send (E18-5). No `payloads[]` batch endpoint in v1. |
+| Client | For selection size N (1…**20**), **interleaved** per file: preflight → send → next (E18-10); continue after failures; aggregate per-file status in the drawer (E18-11). Primary **Disseminate**; optional **Preflight only** (E18-15). |
+| Cap | Selection count **≤20**; existing body/size limits still apply per call (E18-6). |
+| Candidates | Current-session conversion outputs + dropped files only (E18-4). Sole candidate auto-selected; panel optional (E18-9). |
+| Empty | UI disables Disseminate / Preflight-only when selection is empty. |
+| Progress | Per-file UI progress (mail→sink graphic or text-only under reduced-motion) — client-only; no API change (E18-13/14). |
 
 Encoding: **msgspec** request Struct validation + response encode; thin pydantic OpenAPI
 aliases only (E14-07=A / ADR-026). CORS: no new origins; reuse existing
-`METAR_CORS_ORIGINS` / `corsOrigins` (H4–H5 when FE drawer ships — E14-10=A).
+`METAR_CORS_ORIGINS` / `corsOrigins` (H4–H5 / H6′ for UJ-027–030).
 
 ## Error Format
 
@@ -539,6 +550,9 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
   convert-bulletin / lint-tac / decode-tac. Registry codes for TAF (+ SPECI deepen) flow through
   existing `lint-tac` + `GET /lint-issue-catalog`. Convert roots `iwxxm:TAF` / `iwxxm:SPECI`
   asserted in goldens (UJ-031 / TC-F20-*). Dissemination routes unchanged (OOS).
+- S024 / EV-018 (2026-07-28): F16 multi-file selection deepen (#785) — **no new routes**;
+  document client N-sequential preflight/send + ≤20 selection cap; single-payload request
+  shape unchanged (E18-5/E18-6).
 
 ## S020 / EV-015 — Endpoint review (F20)
 

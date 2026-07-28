@@ -1,23 +1,37 @@
 /**
- * Dissemination drawer (F16–F19 / UJ-027–030) — sink chooser, preflight diff, Send gate.
- *
- * T6.1 ships the Vitest contract + minimal UI; T6.2 expands drag-drop polish and
- * workbench wiring (E14-10).
+ * Dissemination drawer (F16–F19 / UJ-027–030) — multi-select export, interleaved
+ * Disseminate, per-file progress (EV-018 / #785).
  */
 
 import { useCallback, useMemo, useState } from 'react';
 import { Button } from './ui/button';
 import { Label } from './ui/label';
 import {
+  DisseminationProgressRow,
+  type ProgressRowStatus,
+} from './DisseminationProgressRow';
+import {
   DRAWER_SINK_TYPES,
   DB_SINK_TYPES,
   disseminationPreflight,
   disseminationSend,
-  isPreflightGreen,
   sinkTypeLabel,
-  type PreflightResponse,
   type SinkType,
 } from '/utils/dissemination';
+import {
+  buildExportCandidates,
+  canActOnSelection,
+  clearSelection,
+  initialSelectedIds,
+  selectAll,
+  toggleSelection,
+  type ExportCandidate,
+  type ExportCandidateInput,
+} from '/utils/exportSelection';
+import {
+  runDisseminationQueue,
+  type DisseminationFileResult,
+} from '/utils/disseminationQueue';
 
 export interface DisseminationDrawerProps {
   open: boolean;
@@ -27,16 +41,24 @@ export interface DisseminationDrawerProps {
   /** Optional TAC text for drag-drop / convert paths. */
   tacText?: string;
   product?: string;
+  /** Extra current-session outputs (beyond primary convert props). */
+  sessionOutputs?: ExportCandidateInput[];
+}
+
+interface RowUiState {
+  status: ProgressRowStatus;
+  detail?: string;
 }
 
 /**
- * Drawer UI for BYOC dissemination: choose sink → preflight → Send when green.
+ * Drawer UI for BYOC dissemination with multi-file export selection.
  *
  * @param props.open - Whether the drawer panel is visible
  * @param props.onOpenChange - Open-state callback
  * @param props.iwxxmXml - Optional in-session convert result
  * @param props.tacText - Optional TAC payload
  * @param props.product - Product tag for API (default metar)
+ * @param props.sessionOutputs - Additional session candidates
  */
 export function DisseminationDrawer({
   open,
@@ -44,26 +66,72 @@ export function DisseminationDrawer({
   iwxxmXml: propIwxxm,
   tacText: propTac,
   product = 'metar',
+  sessionOutputs = [],
 }: DisseminationDrawerProps) {
   const [sinkType, setSinkType] = useState<SinkType>('postgres');
   const [uri, setUri] = useState('');
   const [ddl, setDdl] = useState(false);
-  /** Memory-only BYOC JSON for non-DB sinks (WIS2/EDIS/AMHS/SWIM/AFS). */
   const [byocParamsJson, setByocParamsJson] = useState('{}');
-  /** Drag-drop overrides; props win when null. */
-  const [droppedIwxxm, setDroppedIwxxm] = useState<string | null>(null);
-  const [droppedTac, setDroppedTac] = useState<string | null>(null);
-  const [preflight, setPreflight] = useState<PreflightResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [dropped, setDropped] = useState<ExportCandidateInput[]>([]);
+  const [selectedIdsState, setSelectedIdsState] = useState<string[]>([]);
+  const [selectionKey, setSelectionKey] = useState('');
+  const [selectionError, setSelectionError] = useState<string | null>(null);
+  const [forceExpanded, setForceExpanded] = useState(false);
+  const [expandKey, setExpandKey] = useState('');
   const [busy, setBusy] = useState(false);
-  const [sendResult, setSendResult] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [rowState, setRowState] = useState<Record<string, RowUiState>>({});
+  const [lastResults, setLastResults] = useState<DisseminationFileResult[]>([]);
 
-  const iwxxmXml = droppedIwxxm ?? propIwxxm ?? '';
-  const tacText = droppedTac ?? propTac ?? '';
+  const primarySession: ExportCandidateInput[] = useMemo(() => {
+    if (!propIwxxm?.trim() && !propTac?.trim()) return [];
+    return [
+      {
+        id: 'session-primary',
+        name: propIwxxm?.trim() ? 'session-convert.xml' : 'session-convert.tac',
+        source: 'session',
+        product,
+        iwxxmXml: propIwxxm,
+        tacText: propTac,
+        status: 'ready',
+      },
+    ];
+  }, [propIwxxm, propTac, product]);
+
+  const candidates: ExportCandidate[] = useMemo(
+    () =>
+      buildExportCandidates({
+        sessionOutputs: [...primarySession, ...sessionOutputs],
+        droppedFiles: dropped,
+      }),
+    [dropped, primarySession, sessionOutputs],
+  );
+
+  const candidateKey = candidates.map((c) => c.id).join('|');
+  const selectedIds =
+    open && selectionKey === candidateKey
+      ? selectedIdsState
+      : initialSelectedIds(candidates);
+  const selectionExpanded =
+    expandKey === candidateKey ? forceExpanded : candidates.length > 1;
+
+  const setSelectedIds = useCallback(
+    (ids: string[], err?: string | null) => {
+      setSelectionKey(candidateKey);
+      setSelectedIdsState(ids);
+      setSelectionError(err ?? null);
+    },
+    [candidateKey],
+  );
 
   const needsUri = DB_SINK_TYPES.includes(sinkType);
-  const canSend = isPreflightGreen(preflight);
-  const hasPayload = Boolean(iwxxmXml.trim() || tacText.trim());
+  const canAct = canActOnSelection(selectedIds) && !(needsUri && !uri.trim()) && !busy;
+  const showSelectionPanel = candidates.length > 1 || selectionExpanded;
+
+  const selectedCandidates = useMemo(
+    () => candidates.filter((c) => selectedIds.includes(c.id)),
+    [candidates, selectedIds],
+  );
 
   const parseByocParams = useCallback((): Record<string, unknown> | null => {
     if (needsUri) return {};
@@ -80,90 +148,136 @@ export function DisseminationDrawer({
     }
   }, [byocParamsJson, needsUri]);
 
-  const diffSummary = useMemo(() => {
-    if (!preflight) return null;
-    if (preflight.diffs.length === 0 && preflight.ok) {
-      return 'Preflight green — no schema diffs.';
-    }
-    return null;
-  }, [preflight]);
-
-  const runPreflight = useCallback(async () => {
-    const params = parseByocParams();
-    if (params === null) return;
-    setBusy(true);
-    setError(null);
-    setSendResult(null);
-    setPreflight(null);
-    try {
-      const result = await disseminationPreflight({
-        sink_type: sinkType,
-        uri: needsUri ? uri : undefined,
-        ddl: needsUri ? ddl : false,
-        product,
-        params,
-      });
-      setPreflight(result);
-      if (!isPreflightGreen(result) && result.detail) {
-        setError(result.detail);
+  const runQueue = useCallback(
+    async (mode: 'disseminate' | 'preflight_only') => {
+      if (!canActOnSelection(selectedIds)) {
+        setError('Select at least one export file before continuing.');
+        return;
       }
-    } catch (err) {
-      setPreflight(null);
-      setError(err instanceof Error ? err.message : 'Preflight failed');
-    } finally {
-      setBusy(false);
-    }
-  }, [ddl, needsUri, parseByocParams, product, sinkType, uri]);
+      const params = parseByocParams();
+      if (params === null) return;
 
-  const runSend = useCallback(async () => {
-    if (!canSend || !preflight?.handle) return;
-    if (!hasPayload) {
-      setError('Provide IWXXM or TAC payload (convert or drag-drop) before Send.');
-      return;
-    }
-    setBusy(true);
-    setError(null);
-    try {
-      const result = await disseminationSend({
-        handle: preflight.handle,
-        iwxxm_xml: iwxxmXml.trim() || undefined,
-        tac_text: tacText.trim() || undefined,
-        product,
-      });
-      setSendResult(result.kv_upload_key ?? result.detail ?? 'sent');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Send failed');
-    } finally {
-      setBusy(false);
-    }
-  }, [canSend, hasPayload, iwxxmXml, preflight, product, tacText]);
-
-  const onDropFiles = useCallback((files: FileList | null) => {
-    if (!files?.length) return;
-    const file = files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      const text = String(reader.result ?? '');
-      const name = file.name.toLowerCase();
-      if (name.endsWith('.xml') || text.trimStart().startsWith('<')) {
-        setDroppedIwxxm(text);
-        setDroppedTac(null);
-      } else {
-        setDroppedTac(text);
-        setDroppedIwxxm(null);
+      setBusy(true);
+      setError(null);
+      setLastResults([]);
+      const initial: Record<string, RowUiState> = {};
+      for (const c of selectedCandidates) {
+        initial[c.id] = { status: 'pending' };
       }
-      // Dropping a new payload invalidates prior preflight handle.
-      setPreflight(null);
-      setSendResult(null);
-    };
-    reader.readAsText(file);
-  }, []);
+      setRowState(initial);
+
+      try {
+        const results: DisseminationFileResult[] = [];
+        for await (const event of runDisseminationQueue({
+          candidates: selectedCandidates,
+          mode,
+          sink: {
+            sinkType,
+            uri: needsUri ? uri : undefined,
+            ddl: needsUri ? ddl : false,
+            product,
+            params,
+          },
+          preflight: async (candidate, sink) =>
+            disseminationPreflight({
+              sink_type: sink.sinkType,
+              uri: sink.uri,
+              ddl: sink.ddl,
+              product: sink.product ?? candidate.product,
+              params: sink.params,
+            }),
+          send: async (candidate, handle) =>
+            disseminationSend({
+              handle,
+              iwxxm_xml: candidate.iwxxmXml?.trim() || undefined,
+              tac_text: candidate.tacText?.trim() || undefined,
+              product: candidate.product ?? product,
+            }),
+        })) {
+          if (event.type === 'progress') {
+            setRowState((prev) => ({
+              ...prev,
+              [event.candidateId]: { status: event.phase },
+            }));
+          } else {
+            results.push(event.result);
+            setRowState((prev) => ({
+              ...prev,
+              [event.result.candidateId]: {
+                status: event.result.status === 'success' ? 'success' : 'failed',
+                detail: event.result.detail,
+              },
+            }));
+          }
+        }
+        setLastResults(results);
+        const failed = results.filter((r) => r.status === 'failed');
+        if (failed.length > 0) {
+          const firstDetail = failed[0]?.detail;
+          setError(
+            firstDetail
+              ? `${failed.length} of ${results.length} file(s) failed: ${firstDetail}`
+              : `${failed.length} of ${results.length} file(s) failed — see progress below.`,
+          );
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Dissemination failed');
+      } finally {
+        setBusy(false);
+      }
+    },
+    [
+      ddl,
+      needsUri,
+      parseByocParams,
+      product,
+      selectedCandidates,
+      selectedIds,
+      sinkType,
+      uri,
+    ],
+  );
+
+  const onDropFiles = useCallback(
+    (files: FileList | null) => {
+      if (!files?.length) return;
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const text = String(reader.result ?? '');
+        const name = file.name.toLowerCase();
+        const isXml = name.endsWith('.xml') || text.trimStart().startsWith('<');
+        const id = `drop-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        setDropped((prev) => [
+          ...prev,
+          {
+            id,
+            name: file.name || (isXml ? 'drop.xml' : 'drop.tac'),
+            source: 'drop',
+            product,
+            iwxxmXml: isXml ? text : undefined,
+            tacText: isXml ? undefined : text,
+            status: 'ready',
+            sizeBytes: text.length,
+          },
+        ]);
+        setLastResults([]);
+        setRowState({});
+      };
+      reader.readAsText(file);
+    },
+    [product],
+  );
 
   const closeDrawer = useCallback(() => {
-    setDroppedIwxxm(null);
-    setDroppedTac(null);
-    setPreflight(null);
-    setSendResult(null);
+    setDropped([]);
+    setSelectionKey('');
+    setSelectedIdsState([]);
+    setSelectionError(null);
+    setExpandKey('');
+    setForceExpanded(false);
+    setRowState({});
+    setLastResults([]);
     setError(null);
     onOpenChange(false);
   }, [onOpenChange]);
@@ -216,8 +330,8 @@ export function DisseminationDrawer({
             value={sinkType}
             onChange={(e) => {
               setSinkType(e.target.value as SinkType);
-              setPreflight(null);
-              setSendResult(null);
+              setLastResults([]);
+              setRowState({});
             }}
           >
             {DRAWER_SINK_TYPES.map((sink) => (
@@ -246,8 +360,8 @@ export function DisseminationDrawer({
               value={uri}
               onChange={(e) => {
                 setUri(e.target.value);
-                setPreflight(null);
-                setSendResult(null);
+                setLastResults([]);
+                setRowState({});
               }}
             />
             <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -257,7 +371,6 @@ export function DisseminationDrawer({
                 checked={ddl}
                 onChange={(e) => {
                   setDdl(e.target.checked);
-                  setPreflight(null);
                 }}
               />
               Create-if-missing (DDL)
@@ -278,8 +391,8 @@ export function DisseminationDrawer({
               value={byocParamsJson}
               onChange={(e) => {
                 setByocParamsJson(e.target.value);
-                setPreflight(null);
-                setSendResult(null);
+                setLastResults([]);
+                setRowState({});
               }}
             />
             <p
@@ -314,62 +427,140 @@ export function DisseminationDrawer({
             className="mt-2 block w-full text-sm"
             onChange={(e) => onDropFiles(e.target.files)}
           />
-          {(iwxxmXml || tacText) && (
+          {candidates.length > 0 && (
             <p
               className="mt-2 text-xs text-gray-600 dark:text-gray-400"
               data-testid="dissemination-payload-status"
             >
-              Payload ready ({iwxxmXml ? 'IWXXM' : 'TAC'},{' '}
-              {(iwxxmXml || tacText).length} chars)
+              {candidates.length} candidate(s) ready
             </p>
           )}
         </div>
 
-        <div className="flex gap-2">
-          <Button
+        {candidates.length === 1 && !showSelectionPanel && (
+          <button
             type="button"
-            data-testid="dissemination-preflight-button"
-            disabled={busy || (needsUri && !uri.trim())}
-            onClick={() => void runPreflight()}
+            className="text-left text-xs text-blue-600 underline dark:text-blue-400"
+            data-testid="dissemination-selection-expand"
+            onClick={() => {
+              setExpandKey(candidateKey);
+              setForceExpanded(true);
+            }}
           >
-            Preflight
-          </Button>
+            Export selection (1 file selected)
+          </button>
+        )}
+
+        {showSelectionPanel && (
+          <div
+            className="space-y-2 rounded border border-gray-200 p-3 dark:border-gray-700"
+            data-testid="dissemination-export-selection"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <Label>Export selection</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  data-testid="dissemination-select-all"
+                  onClick={() => {
+                    const result = selectAll(candidates);
+                    setSelectedIds(result.selected, result.error ?? null);
+                  }}
+                >
+                  Select all
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  data-testid="dissemination-clear-selection"
+                  onClick={() => {
+                    setSelectedIds(clearSelection(), null);
+                  }}
+                >
+                  Clear
+                </Button>
+              </div>
+            </div>
+            <ul className="space-y-1">
+              {candidates.map((c) => (
+                <li key={c.id}>
+                  <label className="flex items-center gap-2 text-sm text-gray-800 dark:text-gray-200">
+                    <input
+                      type="checkbox"
+                      data-testid={`dissemination-candidate-${c.id}`}
+                      checked={selectedIds.includes(c.id)}
+                      onChange={() => {
+                        const result = toggleSelection(selectedIds, c.id);
+                        setSelectedIds(result.selected, result.error ?? null);
+                      }}
+                    />
+                    <span className="truncate">
+                      {c.name}{' '}
+                      <span className="text-xs text-gray-500">({c.source})</span>
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+            {!canActOnSelection(selectedIds) && (
+              <p
+                className="text-xs text-amber-700 dark:text-amber-400"
+                data-testid="dissemination-empty-selection"
+              >
+                Select at least one file to Disseminate or Preflight.
+              </p>
+            )}
+            {selectionError && (
+              <p
+                className="text-xs text-red-600 dark:text-red-400"
+                data-testid="dissemination-selection-cap-error"
+                role="alert"
+              >
+                {selectionError}
+              </p>
+            )}
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-2">
           <Button
             type="button"
             data-testid="dissemination-send-button"
-            disabled={busy || !canSend || !hasPayload}
-            onClick={() => void runSend()}
+            disabled={!canAct}
+            onClick={() => void runQueue('disseminate')}
           >
-            Send
+            Disseminate
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            data-testid="dissemination-preflight-button"
+            disabled={!canAct}
+            onClick={() => void runQueue('preflight_only')}
+          >
+            Preflight only
           </Button>
         </div>
 
-        {diffSummary && (
-          <p
-            className="text-sm text-green-700 dark:text-green-400"
-            data-testid="dissemination-preflight-green"
-          >
-            {diffSummary}
-          </p>
-        )}
-
-        {preflight && preflight.diffs.length > 0 && (
-          <ul
-            className="space-y-1 rounded border border-amber-300 bg-amber-50 p-3 text-sm dark:border-amber-700 dark:bg-amber-950"
-            data-testid="dissemination-preflight-diffs"
-          >
-            {preflight.diffs.map((diff, idx) => (
-              <li
-                key={`${diff.table}-${diff.kind}-${idx}`}
-                data-testid="dissemination-diff-item"
-              >
-                <span className="font-medium">{diff.kind}</span>
-                {': '}
-                {diff.table}
-                {diff.column ? `.${diff.column}` : ''} — {diff.detail}
-              </li>
-            ))}
-          </ul>
+        {(Object.keys(rowState).length > 0 || lastResults.length > 0) && (
+          <div className="space-y-2" data-testid="dissemination-progress-list">
+            {selectedCandidates.map((c) => {
+              const state = rowState[c.id] ?? { status: 'pending' as const };
+              return (
+                <DisseminationProgressRow
+                  key={c.id}
+                  candidateId={c.id}
+                  name={c.name}
+                  status={state.status}
+                  detail={state.detail}
+                  sinkType={sinkType}
+                />
+              );
+            })}
+          </div>
         )}
 
         {error && (
@@ -382,12 +573,12 @@ export function DisseminationDrawer({
           </p>
         )}
 
-        {sendResult && (
+        {lastResults.some((r) => r.status === 'success') && (
           <p
             className="text-sm text-green-700 dark:text-green-400"
             data-testid="dissemination-send-success"
           >
-            Sent — key {sendResult}
+            {lastResults.filter((r) => r.status === 'success').length} file(s) succeeded
           </p>
         )}
       </aside>

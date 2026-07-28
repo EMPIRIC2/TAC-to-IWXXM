@@ -73,7 +73,7 @@ Unified manual live test harness against Render staging:
 | UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
 | UJ-024 | F15 | METAR/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F15-001..005 |
 | UJ-025 | F7 | Manual TAC Input modes (ADR-024 / #730) | H6′ | TC-F7-007 |
-| UJ-027 | F16 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F16-001..004 |
+| UJ-027 | F16 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F16-001..005 |
 | UJ-028 | F17 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F17-001..002 |
 | UJ-029 | F18 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (UI smoke; live BYOC cycle-close) | live BYOC | TC-F18-001..002 |
 | UJ-030 | F19 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F19-001..003 |
@@ -669,9 +669,25 @@ Before closing S013 / EV-009:
 ### TC-F16-004: Drag-drop + convert-then-send (UJ-027)
 
 - **Level**: T2 / T3 (H6′)
-- **Objective**: Both entry paths reach same preflight→send; F5 stores `kv_upload_key` only
-- **Pass criteria**: No destination secrets in session JSON; Finished after success
+- **Objective**: Both entry paths reach same preflight→send; local history may store `kv_upload_key` only
+- **Pass criteria**: No destination secrets in IndexedDB/session JSON; Finished after success
 - **Source**: F16; Q19=A; Q20=B
+
+### TC-F16-005: Multi-file export selection (UJ-027 / #785)
+
+- **Level**: T0 (Vitest drawer) / T2 / T3 (H6′)
+- **Objective**: When >1 candidate (current-session + drops), operator multi-selects; Disseminate
+  runs interleaved preflight→send per file; per-file progress + results visible
+- **Pass criteria**:
+  1. Select-all / clear / individual checkboxes work
+  2. Empty selection disables Disseminate and Preflight-only with clear message
+  3. Selection >20 rejected with clear error (E18-6)
+  4. Partial failure: failed files show red mark; remaining continue and are reported (E18-11)
+  5. Finished IndexedDB history items are **not** listed as candidates (E18-4)
+  6. No destination secrets persisted; no batch API required (E18-5)
+  7. Progress row: mail→destination animation (or text-only under reduced-motion); Playwright
+     `toHaveScreenshot` for in-flight + failed states (E18-13/14/16)
+- **Source**: F16 deepen; S024 / EV-018; #785; E18-4..E18-6; E18-9..E18-16
 
 ### TC-F17-001: Staging wis2box publish (UJ-028)
 
@@ -716,7 +732,7 @@ Before closing S013 / EV-009:
 
 ### F16–F19 verify/deploy gate
 
-- [ ] TC-F16-001..004 green (multi-DB + SSRF + drawer)
+- [ ] TC-F16-001..005 green (multi-DB + SSRF + drawer + multi-select)
 - [ ] TC-F17-001 staging wis2box green; TC-F17-002 live BYOC before cycle close
 - [ ] TC-F18-001 format green; TC-F18-002 live BYOC before cycle close
 - [ ] TC-F19-001..003 staging/test green; live F19 optional (evidence or waive id)

@@ -41,7 +41,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-025 | Manual TAC Input modes (TAC / AHL / COLLECT) | apps/frontend | F7 (ADR-024) | T2 / **T3** / H6′ |
 | UJ-026 | METAR REMARKS retain / exclusion (#667) | UI / API / package | F6 | T0 / T2 |
-| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) | apps/frontend | F16 | T2 / **T3** / H6′ |
+| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ |
 | UJ-028 | Dissemination drawer — WIS2 publish | apps/frontend | F17 | T2 / **T3** / H6′ |
 | UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3** (live BYOC) |
 | UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3** |
@@ -837,56 +837,71 @@ H4–H5 when FE deploys.
 
 ---
 
-### UJ-027: Dissemination drawer — multi-DB upload (F16 / #729)
+### UJ-027: Dissemination drawer — multi-DB upload (F16 / #729; multi-select #785)
 
 **Actor**: Anyone (public — F21; no login)
-**Goal**: Convert (or drag-drop IWXXM/TAC) and send to a user-supplied database via one-shot URI.
+**Goal**: Convert (or drag-drop IWXXM/TAC) and send **selected** file(s) to a user-supplied
+database via one-shot URI.
 
 **Steps**:
 1. Convert TAC → IWXXM **or** drag-drop existing IWXXM/TAC into the workbench/drawer (no login).
+   Multiple conversion/drop results may appear as **export candidates** (current-session +
+   drops only — not Finished IndexedDB history).
 2. Open **Dissemination** drawer; choose DB sink (Postgres / MySQL|MariaDB / SQL Server / SQLite).
-3. Paste destination **URI only**; run **Preflight**.
-4. Review structured schema/permission diff; if missing/mismatched table, use **DDL /
-   create-if-missing** path to versioned writer contract (optional confirm).
-5. When preflight green, **Send**. API holds URI in memory only; allowlist + SSRF guards apply.
-6. On success, local session may mark Finished with send ref (no secrets stored; IndexedDB only).
+3. In **Export selection**, review candidates (name, product, size/status, source); select
+   subset (checkboxes / select-all / clear). Empty selection keeps Disseminate / Preflight-only
+   disabled. Sole candidate is auto-selected (panel may be collapsed).
+4. Paste destination **URI only**. Optionally run **Preflight only** on the selection, or
+   proceed with primary **Disseminate** (interleaved per file: `/preflight` → `/send` → next;
+   N ≤ 20).
+5. Watch per-file progress (mail travels along an arrow to the sink; green check / red fail).
+   Under `prefers-reduced-motion`, text-only status replaces the graphic. One failure must not
+   stop remaining files; results stay visible.
+6. If a file needs DDL / create-if-missing after preflight diffs, use that path (optional
+   confirm) then continue Disseminate for remaining green files.
+7. On success, local session may mark Finished with send ref (no secrets stored; IndexedDB only).
 
-**Errors**: Auth/SSL/allowlist/private-IP/schema mismatch — actionable drawer messages; Send blocked.
-**Tier**: T2 / T3 / H6′. **Tests**: TC-F16-001..004.
+**Errors**: Auth/SSL/allowlist/private-IP/schema mismatch — actionable drawer messages; Send
+blocked for non-green files; over-cap (>20) shows clear error.
+**Tier**: T2 / T3 / H6′. **Tests**: TC-F16-001..005.
 
 ### UJ-028: Dissemination drawer — WIS2 publish (F17 / #2)
 
-**Actor**: Authenticated user (test: staging wis2box; live: BYOC node)
-**Goal**: Publish IWXXM to WIS2 (MQTT notify + HTTP dataset).
+**Actor**: Anyone (public — F21; no login)
+**Goal**: Publish **selected** IWXXM file(s) to WIS2 (MQTT notify + HTTP dataset).
 
 **Steps**:
-1. From drawer, select **WIS2**.
+1. From drawer, select **WIS2**. Use the same **Export selection** multi-select as UJ-027
+   when multiple candidates exist (current-session + drops; ≤20).
 2. For staging: use project wis2box harness (Render/Docker). For live: paste BYOC endpoint creds
    (memory-only).
-3. Preflight connectivity/topic checks → Send.
+3. Preflight connectivity/topic checks → Send (N sequential calls when multi-selected).
 4. Confirm notification + retrievable dataset (staging automated; live BYOC before cycle close).
 
 **Tier**: T2 / T3 / H6′. **Tests**: TC-F17-001..002.
 
 ### UJ-029: Dissemination drawer — EDIS → RTH Washington (F18 / #6)
 
-**Actor**: Authenticated user with BYOC gateway credentials
-**Goal**: Submit EDIS-compliant ASCII + WMO headers to RTH Washington.
+**Actor**: Anyone (public — F21; no login) with BYOC gateway credentials
+**Goal**: Submit **selected** EDIS-compliant ASCII + WMO headers to RTH Washington.
 
 **Steps**:
-1. Select **EDIS** in drawer; paste SMTP/gateway settings (one-shot).
-2. Preview formatted message (ASCII-only, headers).
-3. Preflight → Send to gateway; redact secrets in errors/logs.
-4. Live BYOC demo required before EV-014 close (Q15=A / Q21=A).
+1. Select **EDIS** in drawer; use the same **Export selection** multi-select as UJ-027 when
+   multiple candidates exist (current-session + drops; ≤20).
+2. Paste SMTP/gateway settings (one-shot).
+3. Preview formatted message (ASCII-only, headers).
+4. Preflight → Send (N sequential when multi-selected); redact secrets in errors/logs.
 
 **Tier**: T2 / T3 (live BYOC). **Tests**: TC-F18-001..002.
 
 ### UJ-030: Dissemination drawer — AMHS / SWIM / AFS (F19)
 
-**Actor**: Authenticated user
-**Goal**: Send via AMHS, SWIM, or AFS adapter using BYOC params in the same drawer.
+**Actor**: Anyone (public — F21; no login)
+**Goal**: Send **selected** file(s) via AMHS, SWIM, or AFS adapter using BYOC params in the
+same drawer (same export selection contract as UJ-027).
 
-**Steps**: Select adapter → paste BYOC connection params → preflight → send (SSRF/allowlist).
+**Steps**: Select adapter → select files if multi-candidate → paste BYOC connection params →
+preflight → send (SSRF/allowlist; N sequential when multi-selected).
 **Tier**: T2 / T3. **Tests**: TC-F19-001..003.
 
 ---
@@ -920,3 +935,5 @@ live smoke (T7.4) when scheduled.
 - S020 / EV-015 (2026-07-22): UJ-031 TAF + SPECI lint / convert→validate golden (F20; #735/#734)
 - S023 / EV-017 (2026-07-27): UJ-003 superseded; UJ-001/004/018 public + IndexedDB; UJ-033 privacy
   (F21/F22; #783)
+- S024 / EV-018 (2026-07-28): UJ-027 multi-file export selection (F16 deepen; #785); UJ-028–030
+  reuse same selection contract
