@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'Phase A+B passed; 04 COMPLETE; 07-build in_progress — M1–M5 complete; active M6 (Privacy preference center); M6 complete (T6.1–T6.3); next T7.1; progress 25/~28; tip PENDING; interim draft PR #786 open (stale until push); #783'
+  note: 'Phase A+B passed; 04 COMPLETE; 07-build in_progress — M1–M5 complete; active M6 (Privacy preference center); M6 complete (T6.1–T6.3); next T7.1; progress 25/~28; tip 15f69d9; interim draft PR #786 open (stale until push); #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M5 complete; active M6 (Privacy preference center); M6 complete (T6.1–T6.3); next T7.1; progress 25/~28; tip PENDING; interim draft PR #786 open (stale until push); #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M5 complete; active M6 (Privacy preference center); M6 complete (T6.1–T6.3); next T7.1; progress 25/~28; tip 15f69d9; interim draft PR #786 open (stale until push); #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-28'
-    note: 'S023/EV-017 07-build in_progress — M1–M5 complete; active milestone M6 (Privacy preference center); active_task — (M6 complete); next T7.1; progress 25/~28; tip PENDING; #783'
+    note: 'S023/EV-017 07-build in_progress — M1–M5 complete; active milestone M6 (Privacy preference center); active_task — (M6 complete); next T7.1; progress 25/~28; tip 15f69d9; #783'
   - stage: 08-verify-build
     required: true
     mode: full
@@ -14343,9 +14343,9 @@ git_history:
   ahead_of_origin: 33
   pushed: false
   pending_commit:
-  tip_sha: 1926e19
-  tip_sha_full: 1926e19e30c76f835e617e94611cd5f730bdc111
-  note: 'S023/EV-017 tip 1926e19 — T6.1 TC-F22 contract red; next T6.2; progress 23/~28; interim draft PR #786 (stale until push; ahead 35)'
+  tip_sha: 15f69d9
+  tip_sha_full: 15f69d910eaa40af5a34560013fe08da6c446ec8
+  note: 'S023/EV-017 tip 15f69d9 — M6 complete (T6.1–T6.3); next T7.1; progress 25/~28; interim draft PR #786 (stale until push; ahead 37)'
   notes:
   - '2026-07-28 S023/EV-017 tip synced — 91fd231 (91fd2314cd318c60d9be974b52bcb14dd7258f8a); M5 COMPLETE (T5.4–T5.5); stage 07-build; active M6/T6.1 (Privacy preference center); progress 22/~28; recorded c9cebfa/91fd231; pending_commit cleared; interim draft PR #786 stale until push (ahead 33)'
   - '2026-07-28 S023/EV-017 tip synced — 5772a42 (5772a4227b61480e2cdc142b3a9c9cb2bf116287); T5.3 COMPLETE (unmount work-sessions; TC-F21-auth-gone green); stage 07-build; active T5.4 (delete packages/auth); progress 21/~28; recorded 5800cfc/5772a42; pending_commit cleared'
@@ -15231,6 +15231,15 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 15f69d910eaa40af5a34560013fe08da6c446ec8
+    short: 15f69d9
+    branch: evolve/EV-017-public-app-privacy
+    message: "[T6.3] feat: honor GPC for privacy preference opt-outs"
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    timestamp: '2026-07-28T14:34:10Z'
+
   - sha: 1926e19e30c76f835e617e94611cd5f730bdc111
     short: 1926e19
     branch: evolve/EV-017-public-app-privacy
