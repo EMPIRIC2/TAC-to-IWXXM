@@ -118,7 +118,7 @@
 | T7.1 | Test | Playwright: public UJ-001/004/013/018; Auth-gone negative; privacy smoke | test-plan; H6 | M2–M6 | completed |
 | T7.2 | Test | H4–H5 connectivity after FE/API deploy | connectivity-gates | T7.1 | pending |
 | T7.3 | Docs | Update deploy.md / CORPUS refs; session 04 report; CHANGELOG draft bullets | docs corpus | T5.4 | completed |
-| T7.4 | Config | Confirm Render env: remove Auth secrets from API if unused; keep F8 + allowlist | env-contract | T1.3 | pending |
+| T7.4 | Config | Confirm Render env: remove Auth secrets from API if unused; keep F8 + allowlist | env-contract | T1.3 | blocked — no RENDER_API_KEY locally; see reports/t7.4-render-env-checklist.md |
 
 ## Phase Gate Check (B→C)
 
