@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M1 — ADR + inventory + env contract |
-| **Active task** | T1.3 — env-contract full F21 rewrite |
-| **Tasks** | 2 / ~28 completed |
+| **Active task** | T1.4 — Back-add rate-limit env to config-spec / staging-secrets-matrix |
+| **Tasks** | 3 / ~28 completed |
 | **Last updated** | 2026-07-28 |
 
 ## Tech Stack Summary (S023 delta)
@@ -64,7 +64,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T1.1 | Docs | Accept ADR-031; mark ADR-020 Superseded | ADR-031; E17-23 | — | completed |
 | T1.2 | Docs | dependency-inventory: add `idb`, `slowapi`; remove `packages/auth` / operator supabase-js Auth | E17-12/15/22 | T1.1 | completed |
-| T1.3 | Docs | env-contract full F21 rewrite (rate-limit env names; drop E2E_USER/DISABLE_AUTH) | E17-24; C-EV017.5 | T1.1 | pending |
+| T1.3 | Docs | env-contract full F21 rewrite (rate-limit env names; drop E2E_USER/DISABLE_AUTH) | E17-24; C-EV017.5 | T1.1 | completed |
 | T1.4 | Docs | Back-add rate-limit env names to config-spec / staging-secrets-matrix stubs | connectivity; E17-19 | T1.3 | pending |
 
 ### M2 — IndexedDB local sessions (F7.h / F5)

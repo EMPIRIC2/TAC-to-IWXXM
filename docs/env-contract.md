@@ -4,6 +4,7 @@
 > **Session**: S023-public-app-privacy / EV-017 (F21/F22)  
 > **Example deploy project** (historical ref only): `ktvxijislbtgqapllmuk`  
 > **Last updated**: 2026-07-28 (S023 / EV-017 — **F21 rewrite**; closes C-EV017.5)
+> **Status**: **Accepted** for build (07-build T1.3 / D-S023-04-plan-approve-A)
 
 Single source of truth for **what** each layer owns and **which name** to use everywhere.
 
