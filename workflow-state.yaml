@@ -39,7 +39,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — 01 COMPLETE (D-S023-01-requirements-delta); current_stage 02-verify-plan (pending user gate)'
+    note: 'S023/EV-017 16-evolve in_progress — 01 docs committed+pushed; interim draft PR #786 open; next gate 02-verify-plan (pending user gate A/B)'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -10053,15 +10053,16 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: Approved Standard routing (D-S023-00-open / User 1A 2B 3A). Skip 03/05/06.
+    note: 'Approved Standard routing (D-S023-00-open / User 1A 2B 3A). Skip 03/05/06. 01 docs committed+pushed; interim draft PR #786 open; next gate 02-verify-plan (pending user gate A/B).'
   current_stage: 02-verify-plan
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 01 COMPLETE (D-S023-01-requirements-delta) — F21/F22 corpus deltas; deepen F5/F7; current_stage 02-verify-plan (pending); #783'
+  note: 'S023/EV-017 01 docs committed+pushed; interim draft PR #786 open; next gate 02-verify-plan (pending user gate A/B); #783'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
   - D-S023-01-requirements-delta
   notes:
+  - '2026-07-27 S023/EV-017 01 docs committed+pushed; interim draft PR #786 open (evolve/EV-017-public-app-privacy); next gate 02-verify-plan pending user gate A/B'
   - '2026-07-27 S023/EV-017 01-requirements COMPLETE — D-S023-01-requirements-delta; F21/F22 corpus deltas from recommended architecture; deepen F5/F7; reports 01-requirements.md + impact-analysis.md; current_stage → 02-verify-plan (pending user gate)'
   - '2026-07-27 S023/EV-017 scope locked — D-S023-E17-scope-lock (E17-4A..E17-11); F21/F22; IndexedDB F5/F7; Solution A privacy + GPC; abuse controls; 30d legacy archive; 00 COMPLETE; 16+01 in_progress'
   - '2026-07-27 S023/EV-017 open — D-S023-00-open (User 1A 2B 3A); architecture baseline with tweaks; Standard routing; branch evolve/EV-017-public-app-privacy; feature_ids TBD after Fn allocation'
@@ -10145,6 +10146,20 @@ evolve_cycles:
     status: completed
   - path: docs/context/public-app-privacy.md
     status: completed
+  - path: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786
+    status: draft
+    stage: 16-evolve
+    kind: interim_pr
+    note: 'Interim docs PR for S023/EV-017; branch pushed; 02-verify-plan remains pending user gate A/B.'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
+  pr_id: PR-EV-017
+  pr_number: 786
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786
+  pr_status: draft
+  pr_base: main
+  pr_head: evolve/EV-017-public-app-privacy
 - id: EV-016
   session_id: S021-golden-examples-ui
   cycle_type: feature
@@ -13825,13 +13840,19 @@ git_history:
   - name: evolve/EV-017-public-app-privacy
     purpose: 'S023/EV-017 public app + local history + privacy (#783)'
     base: main
-    status: active
+    status: open
     created: '2026-07-27'
     created_at: '2026-07-27'
     session_id: S023-public-app-privacy
     evolve_cycle_id: EV-017
-    note: 'Active (base main). Session open D-S023-00-open; git create may be deferred to parent; 00-context in_progress; feature_ids TBD'
-    pushed: false
+    note: 'Open/in_progress (base main). 01 docs committed+pushed; interim draft PR #786 open; next gate 02-verify-plan pending user gate A/B.'
+    pushed: true
+    pr_id: PR-EV-017
+    pr_number: 786
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786
+    pr_base: main
+    pr_head: evolve/EV-017-public-app-privacy
+    pr_status: draft
   - name: evolve/EV-016-golden-examples-ui
     purpose: S021/EV-016 UI pre-loaded golden examples (#780); deepen F7; FE-only
     base: main
@@ -14525,6 +14546,38 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: bbf4fdd
+    short: bbf4fdd
+    branch: evolve/EV-017-public-app-privacy
+    message: 'docs(S023/EV-017): lock F21/F22 public-app privacy requirements'
+    stage: 16-evolve
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
+  - sha: 79ea20b
+    short: 79ea20b
+    branch: evolve/EV-017-public-app-privacy
+    message: 'chore(hooks): resolve uv/pnpm on Cursor commit PATH'
+    stage: 16-evolve
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
+  - sha: e1d8302
+    short: e1d8302
+    branch: evolve/EV-017-public-app-privacy
+    message: 'fix(ci): make frontend audit-ci portable on macOS bash'
+    stage: 16-evolve
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
+  - sha: 64fca66
+    short: 64fca66
+    branch: evolve/EV-017-public-app-privacy
+    message: 'chore(hooks): also prepend ~/.cargo/bin for native builds'
+    stage: 16-evolve
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
   - sha: d604db73fde878e22a4a6a6a03e221dfb2d98859
     short: d604db7
     branch: evolve/EV-015-aerodrome-quality
