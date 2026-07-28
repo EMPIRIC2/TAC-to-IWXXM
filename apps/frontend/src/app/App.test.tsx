@@ -18,10 +18,6 @@ vi.mock('@/utils/guestConverterState', () => ({
   clearGuestConverterState: vi.fn(),
 }));
 
-vi.mock('@/utils/runtime-config', () => ({
-  isAuthDisabled: () => false,
-}));
-
 const toastMocks = vi.hoisted(() => ({
   error: vi.fn(),
   success: vi.fn(),

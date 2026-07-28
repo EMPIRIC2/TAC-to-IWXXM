@@ -31,21 +31,20 @@ F8 worker context: worker still needs service-role + poller URL (see [env-contra
 - **Purpose**: Production URLs, CORS, validation flags, observability, live-test URLs
 - **Selected when**: `METAR_CONFIG_ENV=prod` (default on Render API + static deploy)
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `environment` | string | Yes | `"prod"` |
-| `api.baseUrl` | string (URL) | Yes | Public API origin (`/api/v1`, `/auth`) — **no** `/admin` |
-| `api.frontendUrl` | string (URL) | Yes | Public static site URL (auth redirects) |
-| `api.corsOrigins` | string[] | Yes | Allowed browser origins for API CORS |
-| `api.disableAuth` | boolean | Yes | `false` in production |
-| `supabase.url` | string (URL) | Yes | Supabase project URL (public) |
-| `validation.wmoOnline` | boolean | No | WMO online validation toggle |
-| `validation.wmoTimeoutSeconds` | number | No | WMO request timeout |
-| `validation.schematronUseDocker` | boolean | No | Docker-backed Schematron |
-| `observability.logLevel` | string | No | Python log level |
-| `observability.enableStatistics` | boolean | No | Translation statistics |
-| `liveE2e.apiUrl` | string (URL) | No | Canonical live API for `make test-live*` |
-| `liveE2e.frontendUrl` | string (URL) | No | Canonical live frontend for H4–H6 |
+| Field                            | Type         | Required | Description                                              |
+| -------------------------------- | ------------ | -------- | -------------------------------------------------------- |
+| `environment`                    | string       | Yes      | `"prod"`                                                 |
+| `api.baseUrl`                    | string (URL) | Yes      | Public API origin (`/api/v1`, `/auth`) — **no** `/admin` |
+| `api.frontendUrl`                | string (URL) | Yes      | Public static site URL (auth redirects)                  |
+| `api.corsOrigins`                | string[]     | Yes      | Allowed browser origins for API CORS                     |
+| `supabase.url`                   | string (URL) | Yes      | Supabase project URL (public; edge helpers)              |
+| `validation.wmoOnline`           | boolean      | No       | WMO online validation toggle                             |
+| `validation.wmoTimeoutSeconds`   | number       | No       | WMO request timeout                                      |
+| `validation.schematronUseDocker` | boolean      | No       | Docker-backed Schematron                                 |
+| `observability.logLevel`         | string       | No       | Python log level                                         |
+| `observability.enableStatistics` | boolean      | No       | Translation statistics                                   |
+| `liveE2e.apiUrl`                 | string (URL) | No       | Canonical live API for `make test-live*`                 |
+| `liveE2e.frontendUrl`            | string (URL) | No       | Canonical live frontend for H4–H6                        |
 
 ### `config/local.json`
 
@@ -56,13 +55,13 @@ F8 worker context: worker still needs service-role + poller URL (see [env-contra
 
 Same schema as `prod.json` with local values:
 
-| Field | Local value |
-|-------|-------------|
-| `api.baseUrl` | `http://localhost:18001` |
-| `api.frontendUrl` | `http://localhost:18000` |
-| `api.corsOrigins` | `["http://localhost:18000"]` |
-| `api.disableAuth` | `true` |
-| `supabase.url` | `https://ktvxijislbtgqapllmuk.supabase.co` |
+| Field             | Local value                                |
+| ----------------- | ------------------------------------------ |
+| `api.baseUrl`     | `http://localhost:18001`                   |
+| `api.frontendUrl` | `http://localhost:18000`                   |
+| `api.corsOrigins` | `["http://localhost:18000"]`               |
+| `supabase.url`    | project URL                                |
+| `supabase.url`    | `https://ktvxijislbtgqapllmuk.supabase.co` |
 
 **Port standard (S003-R4):** Frontend `18000`, API `18001` everywhere — compose, config, and
 `start-dev-servers.sh`.
@@ -88,52 +87,52 @@ Injected at deploy time (not committed):
 
 Minimal `.env.example` — copy to repo-root `.env`. **Canonical names:** [env-contract.md](env-contract.md).
 
-| Variable | Required | Description | Source |
-|----------|----------|-------------|--------|
-| `RATE_LIMIT_PUBLIC_PER_MIN` | No | Convert/lint/decode/validate/preview — default **60**/min/IP | ADR-031 / E17-19 |
-| `RATE_LIMIT_DISSEMINATION_PER_MIN` | No | Dissemination preflight/send — default **10**/min/IP | ADR-031 / E17-19 |
-| `MAX_REQUEST_BODY_BYTES` | No | Max request body — default **2097152** (2 MiB) | ADR-031 / E17-19 |
-| `DISSEMINATION_EGRESS_ALLOWLIST` | Yes (F16–F19) | Host/CIDR allowlist; empty = fail-closed | ADR-029 |
-| `METAR_CONFIG_ENV` | No | `local` \| `prod` — selects `config/*.json` | Default `local` |
-| `DATABASE_URL` | Ops/F8 only | Postgres pooler / SQL URI | Legacy archive / F8 store |
-| `SUPABASE_SECRET_KEY` / `SUPABASE_SERVICE_ROLE_KEY` | F8 worker | Service-role for ingest — **never** FE | ADR-018 |
+| Variable                                            | Required      | Description                                                  | Source                    |
+| --------------------------------------------------- | ------------- | ------------------------------------------------------------ | ------------------------- |
+| `RATE_LIMIT_PUBLIC_PER_MIN`                         | No            | Convert/lint/decode/validate/preview — default **60**/min/IP | ADR-031 / E17-19          |
+| `RATE_LIMIT_DISSEMINATION_PER_MIN`                  | No            | Dissemination preflight/send — default **10**/min/IP         | ADR-031 / E17-19          |
+| `MAX_REQUEST_BODY_BYTES`                            | No            | Max request body — default **2097152** (2 MiB)               | ADR-031 / E17-19          |
+| `DISSEMINATION_EGRESS_ALLOWLIST`                    | Yes (F16–F19) | Host/CIDR allowlist; empty = fail-closed                     | ADR-029                   |
+| `METAR_CONFIG_ENV`                                  | No            | `local` \| `prod` — selects `config/*.json`                  | Default `local`           |
+| `DATABASE_URL`                                      | Ops/F8 only   | Postgres pooler / SQL URI                                    | Legacy archive / F8 store |
+| `SUPABASE_SECRET_KEY` / `SUPABASE_SERVICE_ROLE_KEY` | F8 worker     | Service-role for ingest — **never** FE                       | ADR-018                   |
 
 ### Retired (F21 — do not set for operator product)
 
-| Name | Status | Replacement |
-|------|--------|-------------|
-| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | **Retired F21** | Public convert; `TC-F21-auth-gone` |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | **Removed** (S011) | — |
-| `DISABLE_AUTH` / `config.*.api.disableAuth` | **Retired F21** | Public by default (ADR-031) |
-| `SUPABASE_PUBLISHABLE_KEY` (browser Auth) | **Retired F21** | No FE Auth bootstrap |
-| Product `/admin/*` APIs | **Removed** (S011) | — |
+| Name                                        | Status             | Replacement                        |
+| ------------------------------------------- | ------------------ | ---------------------------------- |
+| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`      | **Retired F21**    | Public convert; `TC-F21-auth-gone` |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD`            | **Removed** (S011) | —                                  |
+| `DISABLE_AUTH` / `config.*.api.disableAuth` | **Retired F21**    | Public by default (ADR-031)        |
+| `SUPABASE_PUBLISHABLE_KEY` (browser Auth)   | **Retired F21**    | No FE Auth bootstrap               |
+| Product `/admin/*` APIs                     | **Removed** (S011) | —                                  |
 
 `create_admin_user.py` / bootstrap scripts (if retained) must not imply a shared multi-tenant
 admin dashboard; prefer documenting operator Supabase dashboard invite policy for **F8/ops only**.
 
 ### Deprecated aliases (read with warning; remove after one release)
 
-| Deprecated | Canonical |
-|------------|-----------|
-| `SUPABASE_ANON_KEY` | Retired for FE Auth; ops-only if still present |
-| `SUPABASE_SERVICE_ROLE_KEY` | F8 worker env (see env-contract) |
-| `VITE_SUPABASE_URL` | Retired for Auth path (F21) |
-| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | Retired for Auth path (F21) |
-| `VITE_API_BASE_URL` | `config.*.api.baseUrl` |
-| `VITE_APP_URL` | `config.*.api.frontendUrl` |
-| `METAR_CORS_ORIGINS` | `config.*.api.corsOrigins` |
-| `DISABLE_AUTH` | **Retired F21** — do not set |
-| `FRONTEND_VITE_*` (GitHub secrets) | Retired for Auth path |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Already retired (S011) |
-| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | **Retired F21** |
+| Deprecated                              | Canonical                                      |
+| --------------------------------------- | ---------------------------------------------- |
+| `SUPABASE_ANON_KEY`                     | Retired for FE Auth; ops-only if still present |
+| `SUPABASE_SERVICE_ROLE_KEY`             | F8 worker env (see env-contract)               |
+| `VITE_SUPABASE_URL`                     | Retired for Auth path (F21)                    |
+| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | Retired for Auth path (F21)                    |
+| `VITE_API_BASE_URL`                     | `config.*.api.baseUrl`                         |
+| `VITE_APP_URL`                          | `config.*.api.frontendUrl`                     |
+| `METAR_CORS_ORIGINS`                    | `config.*.api.corsOrigins`                     |
+| `DISABLE_AUTH`                          | **Retired F21** — do not set                   |
+| `FRONTEND_VITE_*` (GitHub secrets)      | Retired for Auth path                          |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD`        | Already retired (S011)                         |
+| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`  | **Retired F21**                                |
 
 ## CLI / Makefile
 
-| Target | Action |
-|--------|--------|
-| `make env-check` | Run `scripts/env/verify-sync.sh` — validate `.env` + config JSON |
-| `make dev` | `METAR_CONFIG_ENV=local` |
-| `make test-integration` | Requires secrets in `.env` + local config |
+| Target                  | Action                                                           |
+| ----------------------- | ---------------------------------------------------------------- |
+| `make env-check`        | Run `scripts/env/verify-sync.sh` — validate `.env` + config JSON |
+| `make dev`              | `METAR_CONFIG_ENV=local`                                         |
+| `make test-integration` | Requires secrets in `.env` + local config                        |
 
 No new CLI flags.
 
@@ -150,14 +149,14 @@ No new CLI flags.
 
 No new `config/*.json` keys and **no new environment variables** for F6.
 
-| Concern | Where it lives | Notes |
-|---------|----------------|-------|
-| Default IWXXM version | Existing shared/app constants | Not a new config field |
-| Default profile | Code constant `annex3` | API omits → annex3; not in JSON config |
-| Product | **Required** on convert multipart | No server default; UI may auto-detect then send |
-| Feature / cutover flag | **None** | Hard cutover in one PR (ADR-014) |
-| IWXXM-US enable | Request `profile=iwxxm_us` | Not an env kill switch |
-| Converter engine | Code path (`tac2iwxxm`) | Not env-selected |
+| Concern                | Where it lives                    | Notes                                           |
+| ---------------------- | --------------------------------- | ----------------------------------------------- |
+| Default IWXXM version  | Existing shared/app constants     | Not a new config field                          |
+| Default profile        | Code constant `annex3`            | API omits → annex3; not in JSON config          |
+| Product                | **Required** on convert multipart | No server default; UI may auto-detect then send |
+| Feature / cutover flag | **None**                          | Hard cutover in one PR (ADR-014)                |
+| IWXXM-US enable        | Request `profile=iwxxm_us`        | Not an env kill switch                          |
+| Converter engine       | Code path (`tac2iwxxm`)           | Not env-selected                                |
 
 **Connectivity**: Frontend and API remain different origins on Render. Keep `api.corsOrigins`
 correct; redeploy **API before** frontend sign-off when CORS/API contract changes. F6 UI pickers
@@ -169,14 +168,14 @@ use runtime `/config.json` — no new `VITE_*` required.
 
 No new `config/*.json` keys for decode/preview/spans. **No new secrets** for F7 APIs.
 
-| Concern | Where it lives | Notes |
-|---------|----------------|-------|
-| BYO Supabase / Postgres | `config.*.supabase.url` + env secrets | Operator-owned; clean cut (G3) |
-| Admin UI / `/admin` | Removed | UJ-019 / TC-F7-006 |
-| Live harness login | ~~`E2E_USER_*`~~ | **Retired F21** — public convert |
-| Workbench debounce | Frontend code | Not config |
-| CodeMirror 6 | Frontend dependency | See dependency-inventory |
-| Local sessions (F7.h) | Browser IndexedDB (`idb`) | ADR-031 — not server env |
+| Concern                 | Where it lives                        | Notes                            |
+| ----------------------- | ------------------------------------- | -------------------------------- |
+| BYO Supabase / Postgres | `config.*.supabase.url` + env secrets | Operator-owned; clean cut (G3)   |
+| Admin UI / `/admin`     | Removed                               | UJ-019 / TC-F7-006               |
+| Live harness login      | ~~`E2E_USER_*`~~                      | **Retired F21** — public convert |
+| Workbench debounce      | Frontend code                         | Not config                       |
+| CodeMirror 6            | Frontend dependency                   | See dependency-inventory         |
+| Local sessions (F7.h)   | Browser IndexedDB (`idb`)             | ADR-031 — not server env         |
 
 **Connectivity**: Live workbench increases browser→API call volume; keep CORS correct; H4–H5 gates
 apply. Redeploy API before frontend when contract changes.
@@ -187,22 +186,22 @@ No new `config/*.json` keys for msgspec response encoding. **PyPI publish uses G
 OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when OIDC is configured
 ([Real Python](https://realpython.com/pypi-publish-python-package/)).
 
-| Concern | Where it lives | Notes |
-|---------|----------------|-------|
-| msgspec vs pydantic | Code + ADR-026 | Response encode msgspec; multipart Form intake unchanged |
-| OpenAPI aliases | `apps/backend` schemas | Thin pydantic mirrors for docs only |
+| Concern                 | Where it lives                    | Notes                                                    |
+| ----------------------- | --------------------------------- | -------------------------------------------------------- |
+| msgspec vs pydantic     | Code + ADR-026                    | Response encode msgspec; multipart Form intake unchanged |
+| OpenAPI aliases         | `apps/backend` schemas            | Thin pydantic mirrors for docs only                      |
 | PyPI trusted publishing | GitHub Environment + PyPI project | OIDC; **one** workflow + package matrix; tags `*-v0.1.0` |
-| PyPI project names | Package metadata | `tac-validate`, `iwxxm-validate`, `tac2iwxxm` |
-| Schema bundle size | `iwxxm-validate` wheel build | From `vendor/schemas/*` pins; not an env var |
-| Render redeploy | Existing API/static secrets | Required this cycle (E10-15); CORS unchanged |
+| PyPI project names      | Package metadata                  | `tac-validate`, `iwxxm-validate`, `tac2iwxxm`            |
+| Schema bundle size      | `iwxxm-validate` wheel build      | From `vendor/schemas/*` pins; not an env var             |
+| Render redeploy         | Existing API/static secrets       | Required this cycle (E10-15); CORS unchanged             |
 
 **GitHub Actions (publish)** — configure in GitHub UI (not committed secrets):
 
-| Setting | Purpose |
-|---------|---------|
-| Environment e.g. `pypi` | Optional protection rules for publish jobs |
-| PyPI Trusted Publisher | Links each PyPI project to the **same** matrix workflow + that package's tag filter |
-| `id-token: write` | Workflow permission for OIDC |
+| Setting                 | Purpose                                                                             |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| Environment e.g. `pypi` | Optional protection rules for publish jobs                                          |
+| PyPI Trusted Publisher  | Links each PyPI project to the **same** matrix workflow + that package's tag filter |
+| `id-token: write`       | Workflow permission for OIDC                                                        |
 
 **Runtime API/FE env**: Unchanged for F11–F14. Redeploy **API before** frontend when response
 JSON shapes change (H4–H5).
@@ -211,13 +210,13 @@ JSON shapes change (H4–H5).
 
 No new `config/*.json` keys for sink credentials (memory-only paste). **One new API env var**:
 
-| Concern | Where it lives | Notes |
-|---------|----------------|-------|
-| Egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | Host/CIDR list; empty = fail-closed (ADR-029; E14-08=A). Local/CI: `wis2box,127.0.0.1,127.0.0.0/8,localhost`. Live BYOC demos: exact hostnames only. |
-| Destination creds | Request body only | Never env / never F5 persistence |
-| wis2box harness | `docker-compose` (+ CI) | Not a Render web service (E14-04=B) |
-| Dissemination HTTP | msgspec encode | Align ADR-026 (E14-07=A) |
-| CORS | Existing `corsOrigins` | No new origins; H4–H5 when drawer ships (E14-10=A) |
+| Concern            | Where it lives                   | Notes                                                                                                                                                |
+| ------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Egress allowlist   | `DISSEMINATION_EGRESS_ALLOWLIST` | Host/CIDR list; empty = fail-closed (ADR-029; E14-08=A). Local/CI: `wis2box,127.0.0.1,127.0.0.0/8,localhost`. Live BYOC demos: exact hostnames only. |
+| Destination creds  | Request body only                | Never env / never F5 persistence                                                                                                                     |
+| wis2box harness    | `docker-compose` (+ CI)          | Not a Render web service (E14-04=B)                                                                                                                  |
+| Dissemination HTTP | msgspec encode                   | Align ADR-026 (E14-07=A)                                                                                                                             |
+| CORS               | Existing `corsOrigins`           | No new origins; H4–H5 when drawer ships (E14-10=A)                                                                                                   |
 
 **`.env.example`**: Local/CI recommended allowlist set; Render/prod guidance in comments.
 
@@ -226,14 +225,14 @@ No new `config/*.json` keys for sink credentials (memory-only paste). **One new 
 No new `config/*.json` keys for IndexedDB or privacy prefs (client-only). **New API env knobs**
 (non-secret; defaults in ADR-031):
 
-| Concern | Where it lives | Notes |
-|---------|----------------|-------|
-| Public rate limit | `RATE_LIMIT_PUBLIC_PER_MIN` | Default 60/min/IP (slowapi; E17-19) |
-| Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | Default 10/min/IP |
-| Max body | `MAX_REQUEST_BODY_BYTES` | Default 2 MiB |
-| Operator Auth / `DISABLE_AUTH` | **Removed** | ADR-031; `/auth/*` → 404 |
-| Work sessions API | **Removed** | IndexedDB FE (ADR-031 supersedes ADR-020) |
-| Privacy prefs / GPC | FE `localStorage` + headers | F22 — not server env |
+| Concern                        | Where it lives                     | Notes                                     |
+| ------------------------------ | ---------------------------------- | ----------------------------------------- |
+| Public rate limit              | `RATE_LIMIT_PUBLIC_PER_MIN`        | Default 60/min/IP (slowapi; E17-19)       |
+| Dissemination rate limit       | `RATE_LIMIT_DISSEMINATION_PER_MIN` | Default 10/min/IP                         |
+| Max body                       | `MAX_REQUEST_BODY_BYTES`           | Default 2 MiB                             |
+| Operator Auth / `DISABLE_AUTH` | **Removed**                        | ADR-031; `/auth/*` → 404                  |
+| Work sessions API              | **Removed**                        | IndexedDB FE (ADR-031 supersedes ADR-020) |
+| Privacy prefs / GPC            | FE `localStorage` + headers        | F22 — not server env                      |
 
 **Connectivity**: Public convert increases anonymous API traffic — keep CORS + H4–H5; rate limits
 apply. Single-deploy cutover with Auth strip (E17-18).

@@ -58,43 +58,17 @@ export async function loginAndOpenConverter(page: Page): Promise<void> {
   await loginAsE2EUser(page);
 }
 
+/** Open the public converter (F21 — no login / mock JWT). */
 export async function openConverterWithMockSession(page: Page): Promise<void> {
-  const futureExpiry = Math.floor(Date.now() / 1000) + 3600;
-
-  await page.addInitScript((expiry) => {
-    window.localStorage.setItem('access_token', 'playwright-access-token');
-    window.localStorage.setItem('refresh_token', 'playwright-refresh-token');
-    window.localStorage.setItem('expires_at', String(expiry));
-    window.localStorage.setItem('supabase_access_token', 'playwright-supabase-token');
-  }, futureExpiry);
-
   await page.goto('/');
   await expect(
     page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
   ).toBeVisible({ timeout: 10000 });
 }
 
-/** Local T2 path: mock session when runtime config disables auth; otherwise real user login. */
+/** Local T2 path: F21 public app — open converter without login/JWT. */
 export async function openConverterForE2e(page: Page): Promise<void> {
-  const envDisableAuth = (process.env.DISABLE_AUTH ?? 'true').toLowerCase() !== 'false';
-
-  const disableAuth = await page
-    .evaluate(async () => {
-      const response = await fetch('/config.json', { cache: 'no-store' });
-      if (!response.ok) {
-        return null;
-      }
-      const cfg = (await response.json()) as { api?: { disableAuth?: boolean } };
-      return cfg.api?.disableAuth === true;
-    })
-    .catch(() => null);
-
-  if (disableAuth ?? envDisableAuth) {
-    await openConverterWithMockSession(page);
-    return;
-  }
-
-  await loginAndOpenConverter(page);
+  await openConverterWithMockSession(page);
 }
 
 export async function fillManualTac(page: Page, metar: string): Promise<void> {

@@ -79,8 +79,8 @@ if actual_api != expected_api:
     raise SystemExit(
         f"config.json api.baseUrl mismatch: expected {expected_api!r}, got {actual_api!r}"
     )
-if cfg.get("api", {}).get("disableAuth") is True:
-    raise SystemExit("config.json api.disableAuth must be false in production")
+if "disableAuth" in cfg.get("api", {}):
+    raise SystemExit("config.json api.disableAuth is retired (F21 public app)")
 print(f"OK: {frontend_base}/config.json api.baseUrl={actual_api}")
 PY
 
