@@ -15,7 +15,7 @@
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M4 — Frontend Auth removal (F21) |
 | **Active task** | T4.1 — Vitest/Playwright: no login chrome; convert without JWT |
-| **Tasks** | 12 / ~28 completed |
+| **Tasks** | 15 / ~28 completed (M3 done; T4.1 in progress) |
 | **Last updated** | 2026-07-28 |
 
 ## Tech Stack Summary (S023 delta)
@@ -89,7 +89,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Test | Vitest/Playwright: no login chrome; convert without JWT; Auth routes absent in FE | TC-F21-auth-gone; UJ-001 | T2.4 | pending |
+| T4.1 | Test | Vitest/Playwright: no login chrome; convert without JWT; Auth routes absent in FE | TC-F21-auth-gone; UJ-001 | T2.4 | in_progress |
 | T4.2 | Code | Remove authService/login/register UX; stop attaching Bearer to public API | F21; api-contract | T4.1 | pending |
 | T4.3 | Code | Drop FE Supabase Auth client usage from `/config.json` path (if any) | E17-24 | T4.2 | pending |
 
