@@ -36,6 +36,12 @@ import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
+import { PrivacyNotice } from './PrivacyNotice';
+import { PrivacySettingsDialog } from './PrivacySettingsDialog';
+import {
+  acknowledgePrivacyNotice,
+  shouldShowPrivacyNotice,
+} from '@/utils/privacyPreferences';
 import { getExampleById } from '@/fixtures/examples/examplesCatalog';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
 import { AirportDetailsCard } from './AirportDetailsCard';
@@ -182,6 +188,10 @@ export function FileConverter({
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [isDisseminationOpen, setIsDisseminationOpen] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
+  const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
+  const [showPrivacyNotice, setShowPrivacyNotice] = useState(() =>
+    shouldShowPrivacyNotice(),
+  );
   const [isParamsExpanded, setIsParamsExpanded] = useState(false);
   const [conversionParams, setConversionParams] = useState<ConversionParams>({
     bulletinId: '',
@@ -1172,6 +1182,18 @@ export function FileConverter({
             Convert. Upload files from the compact drop zone under the console when
             preferred.
           </p>
+          <PrivacyNotice
+            open={showPrivacyNotice}
+            onDismiss={() => {
+              acknowledgePrivacyNotice();
+              setShowPrivacyNotice(false);
+            }}
+            onOpenSettings={() => {
+              acknowledgePrivacyNotice();
+              setShowPrivacyNotice(false);
+              setIsPrivacySettingsOpen(true);
+            }}
+          />
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
@@ -2012,6 +2034,16 @@ export function FileConverter({
                 <code className="text-xs">iwxxm-validate</code>. Downloads are IWXXM{' '}
                 <code className="text-xs">.xml</code> files.
               </p>
+              <p className="mt-2">
+                <button
+                  type="button"
+                  className="underline underline-offset-2 hover:text-gray-700 dark:hover:text-gray-200"
+                  onClick={() => setIsPrivacySettingsOpen(true)}
+                  aria-label="Open privacy settings"
+                >
+                  Privacy settings
+                </button>
+              </p>
             </div>
           </div>
           {onLoadWorkSession && (
@@ -2047,6 +2079,11 @@ export function FileConverter({
         onClose={() => setIsPreferencesDialogOpen(false)}
         userEmail="Operator"
         onPreferencesSaved={handlePreferencesSaved}
+      />
+
+      <PrivacySettingsDialog
+        isOpen={isPrivacySettingsOpen}
+        onClose={() => setIsPrivacySettingsOpen(false)}
       />
     </div>
   );

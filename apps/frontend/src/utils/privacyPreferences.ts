@@ -1,9 +1,8 @@
 /**
  * Privacy preference store (F22 / ADR-031 / E17-7/16/17).
  *
- * Persistence target: `localStorage` (work sessions stay in IndexedDB). This stub
- * exists so TC-F22-001..003 can import the contract and fail red until T6.2
- * (notice + settings) and T6.3 (GPC honor).
+ * Preferences live in `localStorage`. Work sessions stay in IndexedDB.
+ * GPC detect/apply (E17-16) is completed in T6.3.
  */
 
 /** localStorage key for versioned privacy preferences (E17-17). */
@@ -57,8 +56,18 @@ export const STORAGE_INVENTORY: readonly StorageInventoryItem[] = [
   },
 ] as const;
 
+export type PrivacyPreferencesPatch = Partial<
+  Omit<PrivacyPreferences, 'necessary' | 'schemaVersion'>
+> & {
+  schemaVersion?: number;
+};
+
 function notImplemented(op: string): never {
-  throw new Error(`privacyPreferences.${op}: not implemented (T6.2/T6.3)`);
+  throw new Error(`privacyPreferences.${op}: not implemented (T6.3)`);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 /** Default Solution A preferences (non-essential off; notice not acknowledged). */
@@ -75,23 +84,78 @@ export function defaultPrivacyPreferences(): PrivacyPreferences {
   };
 }
 
-/** Load preferences from localStorage (applies GPC overrides when implemented). */
+function normalizePrivacyPreferences(input: unknown): PrivacyPreferences {
+  const base = defaultPrivacyPreferences();
+  if (!isRecord(input)) {
+    return base;
+  }
+  return {
+    schemaVersion:
+      typeof input.schemaVersion === 'number'
+        ? input.schemaVersion
+        : base.schemaVersion,
+    necessary: true,
+    analytics: Boolean(input.analytics),
+    marketing: Boolean(input.marketing),
+    saleOrSharingOptOut: Boolean(input.saleOrSharingOptOut),
+    targetedAdvertisingOptOut: Boolean(input.targetedAdvertisingOptOut),
+    noticeAcknowledgedAt:
+      typeof input.noticeAcknowledgedAt === 'string'
+        ? input.noticeAcknowledgedAt
+        : null,
+    noticeSchemaVersion:
+      typeof input.noticeSchemaVersion === 'number' ? input.noticeSchemaVersion : null,
+  };
+}
+
+function readStoredPreferences(): PrivacyPreferences {
+  if (typeof localStorage === 'undefined') {
+    return defaultPrivacyPreferences();
+  }
+  try {
+    const raw = localStorage.getItem(PRIVACY_PREFS_STORAGE_KEY);
+    if (!raw) {
+      return defaultPrivacyPreferences();
+    }
+    return normalizePrivacyPreferences(JSON.parse(raw) as unknown);
+  } catch {
+    return defaultPrivacyPreferences();
+  }
+}
+
+function writeStoredPreferences(prefs: PrivacyPreferences): void {
+  if (typeof localStorage === 'undefined') {
+    return;
+  }
+  localStorage.setItem(PRIVACY_PREFS_STORAGE_KEY, JSON.stringify(prefs));
+}
+
+/** Load preferences from localStorage (GPC overrides applied in T6.3). */
 export function loadPrivacyPreferences(): PrivacyPreferences {
-  notImplemented('loadPrivacyPreferences');
+  return readStoredPreferences();
 }
 
 /** Persist preferences to localStorage (client-only; no server PII). */
 export function savePrivacyPreferences(
-  _partial: Partial<Omit<PrivacyPreferences, 'necessary' | 'schemaVersion'>> & {
-    schemaVersion?: number;
-  },
+  partial: PrivacyPreferencesPatch,
 ): PrivacyPreferences {
-  notImplemented('savePrivacyPreferences');
+  const current = readStoredPreferences();
+  const next = normalizePrivacyPreferences({
+    ...current,
+    ...partial,
+    necessary: true,
+  });
+  writeStoredPreferences(next);
+  return next;
 }
 
 /** Acknowledge / dismiss the first-visit privacy notice for the current schema. */
 export function acknowledgePrivacyNotice(): PrivacyPreferences {
-  notImplemented('acknowledgePrivacyNotice');
+  const current = readStoredPreferences();
+  return savePrivacyPreferences({
+    noticeAcknowledgedAt: new Date().toISOString(),
+    noticeSchemaVersion: current.schemaVersion,
+  });
 }
 
 /**
@@ -101,12 +165,16 @@ export function acknowledgePrivacyNotice(): PrivacyPreferences {
  * acknowledged version.
  */
 export function shouldShowPrivacyNotice(): boolean {
-  notImplemented('shouldShowPrivacyNotice');
+  const prefs = readStoredPreferences();
+  if (prefs.noticeAcknowledgedAt == null || prefs.noticeSchemaVersion == null) {
+    return true;
+  }
+  return prefs.noticeSchemaVersion < prefs.schemaVersion;
 }
 
 /**
  * Detect Global Privacy Control from `navigator.globalPrivacyControl` and/or an
- * explicit Sec-GPC signal (E17-16).
+ * explicit Sec-GPC signal (E17-16). Implemented in T6.3.
  *
  * @param options.navigatorGpc - `navigator.globalPrivacyControl` when available
  * @param options.secGpc - request/header Sec-GPC value (`"1"` ⇒ enabled)
@@ -121,6 +189,7 @@ export function detectGlobalPrivacyControl(_options?: {
 /**
  * Force sale/sharing and targeted-advertising opt-outs when GPC is on.
  * Does not disable disclosed necessary IndexedDB work history.
+ * Implemented in T6.3.
  */
 export function applyGpcToPreferences(
   _prefs: PrivacyPreferences,
@@ -131,5 +200,8 @@ export function applyGpcToPreferences(
 
 /** Clear privacy preferences from localStorage (site-data wipe / tests). */
 export function clearPrivacyPreferences(): void {
-  notImplemented('clearPrivacyPreferences');
+  if (typeof localStorage === 'undefined') {
+    return;
+  }
+  localStorage.removeItem(PRIVACY_PREFS_STORAGE_KEY);
 }
