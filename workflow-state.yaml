@@ -5,11 +5,12 @@ project:
   output_directory: docs/
 session_counter: 23
 evolve_cycle_counter: 17
-active_session:
-  id: S023-public-app-privacy
+active_session: null
+sessions:
+- id: S023-public-app-privacy
   type: feature
   intent: "Remove end-user auth; public/stateless converter; IndexedDB local F5/F7 history; privacy-minimizing preference center + GPC (#783)"
-  status: in_progress
+  status: completed
   branch: evolve/EV-017-public-app-privacy
   orchestrator: 16-evolve
   evolve_cycle_id: EV-017
@@ -24,7 +25,17 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'S023/EV-017 13 COMPLETE — smoke approved; API SUPABASE_* removed; redeploy live; evolve close AskQuestion pending; tip 7837cd1; #783'
+  note: 'Phase 4 close D-S023-close — EV-017/S023 complete; PR #790 open (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790; tip 2e2f6c0; CI 30404410993 success; mergeable; do not auto-merge); #783'
+  completed_at: '2026-07-28'
+  close_note: 'D-S023-close — user option 2 push then close; PR #790 opened; CI run 30404410993 success; tip 2e2f6c0; do not auto-merge; EV-017 remains completed'
+  close_decision_id: D-S023-close
+  pr_number: 790
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790
+  pr_status: open
+  tip_sha: 2e2f6c0
+  tip_sha_full: 2e2f6c022324585423f30765541f7ddc435def68
+  ci_run: '30404410993'
+  do_not_auto_merge: true
   routing_plan:
   - stage: 00-context
     required: true
@@ -37,10 +48,11 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve — Phase D 13 COMPLETE; EV-017 completed; session close AskQuestion pending; tip 7837cd1; #783'
+    completed: '2026-07-28'
+    note: 'S023/EV-017 16-evolve COMPLETE — Phase 4 close D-S023-close; EV-017 completed; PR #790 open (tip 2e2f6c0; CI 30404410993 green; mergeable; do not auto-merge); #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -129,7 +141,6 @@ active_session:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-sessions:
 - id: S022-rename-cutover
   type: ops
   intent: 'ops: finish EMPIRIC2/TAC-to-IWXXM rename cutover (Render, GHCR, secrets, PyPI) — #781; unlock live H4–H5 / UJ-032 goldens deferred from S021'
@@ -9054,6 +9065,30 @@ decisions_log:
   decision: 'User option 2 — smoke approved; deleted API SUPABASE_URL/SECRET; redeploy dep-d9kii12jobas73fl4bi0; health/convert/H4-H5 re-PASS; tip 7837cd1; #783'
   related_issue: 783
   deploy_id: dep-d9kii12jobas73fl4bi0
+- id: D-S023-close
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  resolved_at: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  status: confirmed
+  topic: Close S023 / EV-017 session after push + PR
+  summary: 'User option 2 — push then close; PR #790 opened; CI run 30404410993 success; tip 2e2f6c0; do not auto-merge'
+  decision: 'Close S023-public-app-privacy (Phase 4). User option 2: push then close. Archive session; active_session=null; mark routing_plan 16-evolve completed. Record PR #790 (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790) open/mergeable; CI/CD Pipeline run 30404410993 success on tip 2e2f6c0. EV-017 remains completed. Do not auto-merge PR #790.'
+  related_prs:
+  - 790
+  related_issues:
+  - 783
+  related_pr: 790
+  tip_sha: 2e2f6c0
+  tip_sha_full: 2e2f6c022324585423f30765541f7ddc435def68
+  ci_run: '30404410993'
+  user_option: 2
+  do_not_auto_merge: true
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790
 artifacts:
 - path: docs/sessions/S023-public-app-privacy/reports/deploy-smoke.md
   type: session-report
@@ -11158,10 +11193,10 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. All required stages COMPLETE; session close AskQuestion pending; tip 7837cd1.'
+    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. All required stages COMPLETE including 16-evolve; session closed D-S023-close; PR #790 open tip 2e2f6c0 (do not auto-merge).'
   current_stage:
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 COMPLETE (pending session close AskQuestion) — 13 smoke approved; API SUPABASE_* removed; redeploy dep-d9kii12jobas73fl4bi0; tip 7837cd1; #783'
+  note: 'S023/EV-017 COMPLETE (session closed D-S023-close) — PR #790 open (tip 2e2f6c0; CI 30404410993 success; mergeable; do not auto-merge); 13 smoke approved; #783'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
@@ -11201,7 +11236,9 @@ evolve_cycles:
   - D-S023-12-mitigations
   - D-S023-12-rollback
   - D-S023-13-approve-cleanup
+  - D-S023-close
   notes:
+  - '2026-07-28 S023/EV-017 CLOSED (D-S023-close) — user option 2 push then close; PR #790 open https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790 tip 2e2f6c0; CI 30404410993 success; mergeable; do not auto-merge; active_session=null; EV-017 remains completed; #783'
   - '2026-07-28 S023/EV-017 13-deploy-smoke COMPLETE — smoke approved; API SUPABASE_* removed; redeploy dep-d9kii12jobas73fl4bi0; tip 7837cd1; #783'
   - '2026-07-28 S023/EV-017 13-deploy-smoke SMOKE PASS (pending user approve) — H0c–H5 PASS; Playwright 5/5; tip 7837cd1; optional SUPABASE_* cleanup; validate-existing 2026-07-28; report deploy-smoke.md; #783'
   - '2026-07-28 S023/EV-017 13-deploy-smoke STARTED — tip 52c14e9 (12 tip 62af980); checklist READY; optional API SUPABASE_* cleanup; #783'
@@ -11249,9 +11286,10 @@ evolve_cycles:
       completed: '2026-07-27'
       note: E17-4A..E17-11 locked (D-S023-E17-scope-lock); F21/F22 allocated
     16-evolve:
-      status: in_progress
+      status: completed
       started: '2026-07-27'
-      note: Orchestrator active; 13-deploy-smoke SMOKE PASS pending user approve; tip 7837cd1; 03/05/06 skipped
+      completed: '2026-07-28'
+      note: 'COMPLETE — Phase 4 close D-S023-close; PR #790 open (tip 2e2f6c0; CI 30404410993; do not auto-merge); 03/05/06 skipped'
     01-requirements:
       status: completed
       mode: delta
@@ -15041,13 +15079,15 @@ evolve_cycles:
   merge_sha: '4660602'
 git_history:
   current_branch: evolve/EV-017-public-app-privacy
-  ahead_of_origin: 7
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit:
-  tip_sha: 7837cd1
-  tip_sha_full: 7837cd1bd50b75279e195293eab696073fa284ce
-  note: 'S023/EV-017 tip 7837cd1 — 13-deploy-smoke SMOKE PASS (pending user approve); H0c–H5 PASS; Playwright 5/5; validate-existing 2026-07-28; optional SUPABASE_* cleanup; #783'
+  tip_sha: 2e2f6c0
+  tip_sha_full: 2e2f6c022324585423f30765541f7ddc435def68
+  note: 'S023 CLOSED (D-S023-close) — tip 2e2f6c0; PR #790 open (CI 30404410993 success; mergeable; do not auto-merge); active_session=null; EV-017 completed; #783'
   notes:
+  - '2026-07-28 S023/EV-017 CLOSED (D-S023-close) — user option 2 push then close; PR #790 opened https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790; tip 2e2f6c0 (merge resolve main); CI run 30404410993 success; mergeable; do not auto-merge; active_session=null'
+  - '2026-07-28 S023/EV-017 tip synced — 2e2f6c0 (2e2f6c022324585423f30765541f7ddc435def68); "merge: resolve main into evolve/EV-017 for PR #790"; stage 16-evolve close; PR #790 open'
   - '2026-07-28 S023/EV-017 tip synced — 7837cd1 (7837cd1bd50b75279e195293eab696073fa284ce); "[13] fix: harden F22 privacy E2E locators + record live smoke"; stage 13-deploy-smoke; SMOKE PASS pending user approve; H0c–H5 PASS; Playwright 5/5'
   - '2026-07-28 S023/EV-017 tip synced — d459164 (d459164efe76caacb46ef38adaaa33d72beb731e); T7.4 checklist COMMITTED (still blocked awaiting RENDER_API_KEY for live env deletes); stage 07-build; active T7.4 blocked / T7.2 pending after T7.4; progress 27/~28; pending_commit cleared'
   - '2026-07-28 S023/EV-017 tip synced — f5aa024 (f5aa024483d2eef87611a4173ae0803efa1d372e); T7.3 COMPLETE (F21 public deploy corpus + EV-017 CHANGELOG draft); T7.4 blocked (D-S023-07-T7.4-blocked); stage 07-build; active T7.4 blocked / T7.2 pending after T7.4; progress 27/~28'
@@ -15236,16 +15276,20 @@ git_history:
     created_at: '2026-07-27'
     session_id: S023-public-app-privacy
     evolve_cycle_id: EV-017
-    note: 'Open/in_progress (base main). 07-build — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786 open.'
-    tip_sha: d459164
-    tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+    note: 'Session closed D-S023-close (base main). EV-017 completed; tip 2e2f6c0; PR #790 open (CI 30404410993 success; mergeable; do not auto-merge). Interim draft PR #786 superseded/merged earlier.'
+    tip_sha: 2e2f6c0
+    tip_sha_full: 2e2f6c022324585423f30765541f7ddc435def68
     pushed: true
     pr_id: PR-EV-017
-    pr_number: 786
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786
+    pr_number: 790
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790
+    pr_title: '[EV-017] docs: S023 verify/deploy closeout + F22 E2E locator fix'
     pr_base: main
     pr_head: evolve/EV-017-public-app-privacy
-    pr_status: draft
+    pr_status: open
+    ci_run: '30404410993'
+    mergeable: true
+    do_not_auto_merge: true
   - name: evolve/EV-016-golden-examples-ui
     purpose: S021/EV-016 UI pre-loaded golden examples (#780); deepen F7; FE-only
     base: main
@@ -15939,6 +15983,18 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 2e2f6c022324585423f30765541f7ddc435def68
+    short: 2e2f6c0
+    branch: evolve/EV-017-public-app-privacy
+    message: 'merge: resolve main into evolve/EV-017 for PR #790'
+    stage: 16-evolve
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed: merge
+    timestamp: '2026-07-28'
+    pr_number: 790
+    note: 'Merge commit for PR #790; CI 30404410993 success; do not auto-merge'
+
   - sha: 7837cd1bd50b75279e195293eab696073fa284ce
     short: 7837cd1
     branch: evolve/EV-017-public-app-privacy

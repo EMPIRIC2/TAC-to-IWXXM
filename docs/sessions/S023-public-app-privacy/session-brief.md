@@ -1,13 +1,18 @@
 ---
 session_id: S023-public-app-privacy
 type: feature
-status: in_progress
+status: completed
 branch: evolve/EV-017-public-app-privacy
 started_at: 2026-07-27
+completed_at: 2026-07-28
 intent: "Remove end-user auth; public/stateless converter; IndexedDB local F5/F7 history; privacy-minimizing preference center + GPC (#783)"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-017
 github_issue: 783
+close_decision_id: D-S023-close
+pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790
+pr_status: open
+do_not_auto_merge: true
 context_briefs:
   - docs/context/public-app-privacy.md
 standing_docs_touched:
