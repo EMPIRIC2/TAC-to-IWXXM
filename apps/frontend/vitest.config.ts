@@ -36,12 +36,12 @@ export default defineConfig({
         'src/utils/gunzip.ts',
       ],
       thresholds: {
-        // S011 / ADR-024: workbench + input-mode growth; raise back toward 98 after FileConverter
-        // branch suites for AHL/COLLECT/gzip UI paths land (tracked PRM-016 follow-up).
+        // S011 / ADR-024 + S023 / F22 privacy UI: FileConverter + preference-center growth.
+        // Raise statements/branches back toward 98 after T7.1 Playwright privacy smoke.
         lines: 95,
         functions: 96,
-        branches: 86,
-        statements: 95,
+        branches: 85,
+        statements: 94,
       },
     },
   },

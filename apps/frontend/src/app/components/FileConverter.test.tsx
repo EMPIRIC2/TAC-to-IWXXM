@@ -237,6 +237,39 @@ describe('FileConverter Component', () => {
       expect(container).toBeTruthy();
     });
 
+    it('shows first-visit privacy notice and opens settings from footer', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      expect(screen.getByTestId('privacy-notice')).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: /dismiss privacy notice/i }));
+      expect(screen.queryByTestId('privacy-notice')).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole('button', { name: /open privacy settings/i }));
+      expect(screen.getByTestId('privacy-settings-dialog')).toBeInTheDocument();
+    });
+
+    it('opens privacy settings from the first-visit notice CTA', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(
+        screen.getByRole('button', { name: /open privacy settings from notice/i }),
+      );
+      expect(screen.queryByTestId('privacy-notice')).not.toBeInTheDocument();
+      expect(screen.getByTestId('privacy-settings-dialog')).toBeInTheDocument();
+    });
+
+    it('hides the privacy notice after it was previously acknowledged', async () => {
+      const { acknowledgePrivacyNotice } = await import('@/utils/privacyPreferences');
+      acknowledgePrivacyNotice();
+      render(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('privacy-notice')).not.toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /open privacy settings/i }),
+      ).toBeInTheDocument();
+    });
+
     it('should display user email', () => {
       render(<FileConverter {...defaultProps} />);
       // User email is passed to UserPreferencesDialog but not directly displayed

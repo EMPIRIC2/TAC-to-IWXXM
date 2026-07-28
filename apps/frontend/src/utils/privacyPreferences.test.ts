@@ -165,5 +165,52 @@ describe('privacyPreferences (TC-F22)', () => {
       expect(loaded.saleOrSharingOptOut).toBe(true);
       expect(loaded.targetedAdvertisingOptOut).toBe(true);
     });
+
+    it('detectGlobalPrivacyControl reads navigator when called without options', () => {
+      Object.defineProperty(globalThis.navigator, 'globalPrivacyControl', {
+        configurable: true,
+        get: () => true,
+      });
+      expect(detectGlobalPrivacyControl()).toBe(true);
+
+      Object.defineProperty(globalThis.navigator, 'globalPrivacyControl', {
+        configurable: true,
+        get: () => false,
+      });
+      expect(detectGlobalPrivacyControl()).toBe(false);
+
+      Object.defineProperty(globalThis.navigator, 'globalPrivacyControl', {
+        configurable: true,
+        get: () => '1' as unknown as boolean,
+      });
+      expect(detectGlobalPrivacyControl()).toBe(false);
+    });
+
+    it('recovers from corrupt localStorage JSON', () => {
+      localStorage.setItem(PRIVACY_PREFS_STORAGE_KEY, '{not-json');
+      const loaded = loadPrivacyPreferences();
+      expect(loaded.schemaVersion).toBe(PRIVACY_SCHEMA_VERSION);
+      expect(loaded.necessary).toBe(true);
+    });
+
+    it('tolerates missing localStorage APIs', () => {
+      const original = globalThis.localStorage;
+      Object.defineProperty(globalThis, 'localStorage', {
+        configurable: true,
+        value: undefined,
+      });
+      try {
+        expect(loadPrivacyPreferences().necessary).toBe(true);
+        expect(savePrivacyPreferences({ saleOrSharingOptOut: true }).necessary).toBe(
+          true,
+        );
+        expect(() => clearPrivacyPreferences()).not.toThrow();
+      } finally {
+        Object.defineProperty(globalThis, 'localStorage', {
+          configurable: true,
+          value: original,
+        });
+      }
+    });
   });
 });
