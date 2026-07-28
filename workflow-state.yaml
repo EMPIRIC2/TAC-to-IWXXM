@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'S023/EV-017 12-verify-deploy COMPLETE — checklist READY; mitigations+rollback approved; optional API SUPABASE_* cleanup at 13; next 13-deploy-smoke; tip 62af980; #783'
+  note: 'S023/EV-017 13-deploy-smoke STARTED — tip 52c14e9 (12 tip 62af980); checklist READY; optional API SUPABASE_* cleanup; #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase D 12 COMPLETE; next 13-deploy-smoke; tip 62af980; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase D 13-deploy-smoke STARTED; tip 52c14e9; #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -116,8 +116,11 @@ active_session:
   - stage: 13-deploy-smoke
     required: true
     mode: full
-    status: pending
+    status: in_progress
     skip_rationale:
+    started: '2026-07-28'
+    started_at: '2026-07-28'
+    note: 'S023/EV-017 13-deploy-smoke STARTED 2026-07-28 — tip 52c14e9; reports/deploy-checklist.md READY; optional API SUPABASE_* cleanup; #783'
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
@@ -4271,10 +4274,35 @@ stages:
     - S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
   13-deploy-smoke:
-    status: completed
-    started_at: '2026-07-27'
-    session_id: S022-rename-cutover
+    status: in_progress
+    started_at: '2026-07-28'
+    started: '2026-07-28'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    note: 'S023/EV-017 13-deploy-smoke STARTED — tip 52c14e9 (12 tip 62af980); checklist READY; optional API SUPABASE_* cleanup; #783'
+    tip_sha: 52c14e9
+    tip_sha_full: 52c14e90dc5c53adabb2c172ef7b2612994e217d
+    prior_tip_12: 62af980
+    report_expected: docs/sessions/S023-public-app-privacy/reports/deploy-smoke.md
+    checklist: docs/sessions/S023-public-app-privacy/reports/deploy-checklist.md
+    t7_2_report: docs/sessions/S023-public-app-privacy/reports/t7.2-h4-h5-connectivity.md
     delta_substages:
+    - id: S023-public-app-privacy
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 13-deploy-smoke
+      status: in_progress
+      mode: full
+      branch: evolve/EV-017-public-app-privacy
+      started: '2026-07-28'
+      started_at: '2026-07-28'
+      tip_sha: 52c14e9
+      tip_sha_full: 52c14e90dc5c53adabb2c172ef7b2612994e217d
+      prior_tip_12: 62af980
+      github_issue: 783
+      note: 'S023/EV-017 13-deploy-smoke STARTED 2026-07-28 — tip 52c14e9; reports/deploy-checklist.md READY; optional API SUPABASE_* cleanup; #783'
+      checklist: docs/sessions/S023-public-app-privacy/reports/deploy-checklist.md
+      t7_2_report: docs/sessions/S023-public-app-privacy/reports/t7.2-h4-h5-connectivity.md
     - id: S022-rename-cutover
       session_id: S022-rename-cutover
       evolve_cycle_id:
@@ -4495,8 +4523,9 @@ stages:
     started_at: '2026-07-27'
     completed_at:
     current_stage: 13-deploy-smoke
-    note: 'S023/EV-017 16-evolve in_progress — Phase D 12 COMPLETE; next 13-deploy-smoke; tip 62af980; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase D 13-deploy-smoke STARTED; tip 52c14e9; #783'
     notes:
+    - '2026-07-28 S023/EV-017 13-deploy-smoke STARTED — tip 52c14e9 (12 tip 62af980); checklist READY; optional API SUPABASE_* cleanup; #783'
     - '2026-07-28 S023/EV-017 12-verify-deploy COMPLETE — READY; mitigations+rollback approved; artifact reports/deploy-checklist.md; tip 62af980; next 13; #783'
     - '2026-07-28 S023/EV-017 12-verify-deploy STARTED — tip 62af980; #783'
     - '2026-07-28 S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; verify-impl.md; tip 17ad563; next 12-verify-deploy; #783'
@@ -11062,10 +11091,10 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B+C passed; Phase D 09+10+11+12 COMPLETE; next 13-deploy-smoke; tip 62af980.'
+    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B+C passed; Phase D 09+10+11+12 COMPLETE; 13-deploy-smoke STARTED; tip 52c14e9.'
   current_stage: 13-deploy-smoke
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 12-verify-deploy COMPLETE — checklist READY; mitigations+rollback approved; optional API SUPABASE_* cleanup at 13; next 13-deploy-smoke; tip 62af980; #783'
+  note: 'S023/EV-017 13-deploy-smoke STARTED — tip 52c14e9 (12 tip 62af980); checklist READY; optional API SUPABASE_* cleanup; #783'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
@@ -11105,6 +11134,7 @@ evolve_cycles:
   - D-S023-12-mitigations
   - D-S023-12-rollback
   notes:
+  - '2026-07-28 S023/EV-017 13-deploy-smoke STARTED — tip 52c14e9 (12 tip 62af980); checklist READY; optional API SUPABASE_* cleanup; #783'
   - '2026-07-28 S023/EV-017 12-verify-deploy COMPLETE — READY; mitigations+rollback approved; artifact reports/deploy-checklist.md; tip 62af980; next 13; #783'
   - '2026-07-28 S023/EV-017 12-verify-deploy STARTED — tip 62af980; #783'
   - '2026-07-28 S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; verify-impl.md; tip 17ad563; next 12-verify-deploy; #783'
@@ -11151,7 +11181,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-27'
-      note: Orchestrator active; 12-verify-deploy STARTED; tip 62af980; 03/05/06 skipped
+      note: Orchestrator active; 13-deploy-smoke STARTED; tip 52c14e9; 03/05/06 skipped
     01-requirements:
       status: completed
       mode: delta
@@ -11257,15 +11287,28 @@ evolve_cycles:
       - D-S023-11-uj-018-033
       - D-S023-11-ui-preview-declined
     12-verify-deploy:
+      status: completed
+      started: '2026-07-28'
+      started_at: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28'
+      mode: full
+      tip_sha: 62af980
+      tip_sha_full: 62af9806b5c76711cebb8fa74b59923f8f9e9637
+      overall: ready
+      report: docs/sessions/S023-public-app-privacy/reports/deploy-checklist.md
+      note: 'COMPLETE 2026-07-28 — READY; mitigations+rollback approved; tip 62af980; next 13; #783'
+    13-deploy-smoke:
       status: in_progress
       started: '2026-07-28'
       started_at: '2026-07-28'
       mode: full
-      tip_sha: 62af980
-      tip_sha_full: 62af9806b5c76711cebb8fa74b59923f8f9e9637
-      note: 'S023/EV-017 12-verify-deploy STARTED — tip 62af980; #783'
-    13-deploy-smoke:
-      status: pending
+      tip_sha: 52c14e9
+      tip_sha_full: 52c14e90dc5c53adabb2c172ef7b2612994e217d
+      prior_tip_12: 62af980
+      note: 'S023/EV-017 13-deploy-smoke STARTED 2026-07-28 — tip 52c14e9; reports/deploy-checklist.md READY; optional API SUPABASE_* cleanup; #783'
+      checklist: docs/sessions/S023-public-app-privacy/reports/deploy-checklist.md
+      t7_2_report: docs/sessions/S023-public-app-privacy/reports/t7.2-h4-h5-connectivity.md
     03-plan-tooling:
       status: skipped
       note: Standard routing skip; 04 prerequisite waived

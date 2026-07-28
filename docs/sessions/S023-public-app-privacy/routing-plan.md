@@ -20,7 +20,7 @@
 | 10-e2e | yes | full | completed | T0 PASS (8 Playwright + Vitest + F21) — `reports/e2e-report.md` |
 | 11-verify-impl | yes | full | completed | F21/F22 approved; F5/F7.h ack; T3→13; `reports/verify-impl.md` |
 | 12-verify-deploy | yes | full | completed | READY — `reports/deploy-checklist.md`; mitigations+rollback approved |
-| 13-deploy-smoke | yes | full | pending | Live public convert + privacy settings; optional API SUPABASE_* cleanup |
+| 13-deploy-smoke | yes | full | in_progress | Validate-existing: H0c–H5 PASS; Playwright 5/5; user sign-off next |
 
 ## Skip rationale
 
