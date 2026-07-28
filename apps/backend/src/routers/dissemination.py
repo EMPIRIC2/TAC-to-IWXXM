@@ -27,11 +27,13 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from ..msgspec_http import msgspec_json_response
+from ..utilities.abuse_controls import dissemination_limit, get_limiter
 from ..utilities.security import verify_supabase_token
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/dissemination", tags=["Dissemination"])
+_limiter = get_limiter()
 
 _DB_SINKS = frozenset({"postgres", "mysql", "sqlserver", "sqlite"})
 _decoder_preflight = msgspec.json.Decoder(PreflightRequest)
@@ -54,6 +56,7 @@ async def _read_struct(request: Request, decoder: msgspec.json.Decoder) -> Any:
 
 
 @router.post("/preflight")
+@dissemination_limit(_limiter)
 async def dissemination_preflight(
     request: Request,
     user: dict[str, Any] = Depends(verify_supabase_token),
@@ -114,6 +117,7 @@ async def dissemination_preflight(
 
 
 @router.post("/send")
+@dissemination_limit(_limiter)
 async def dissemination_send(
     request: Request,
     user: dict[str, Any] = Depends(verify_supabase_token),

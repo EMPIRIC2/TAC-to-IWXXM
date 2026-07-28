@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M3 — Public API abuse controls (F21) |
-| **Active task** | T3.1 — Rate-limit + body-size unit/integration (429 / 413) |
-| **Tasks** | 9 / ~28 completed |
+| **Active milestone** | M4 — Frontend Auth removal (F21) |
+| **Active task** | T4.1 — Vitest/Playwright: no login chrome; convert without JWT |
+| **Tasks** | 12 / ~28 completed |
 | **Last updated** | 2026-07-28 |
 
 ## Tech Stack Summary (S023 delta)
@@ -81,9 +81,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Test | Rate-limit + body-size unit/integration (429 / 413) | E17-19; api-contract | T1.3 | pending |
-| T3.2 | Code | Add `slowapi`; wire limits on public `/api/v1/*`; env knobs | ADR-031; E17-15 | T3.1 | pending |
-| T3.3 | Test | Dissemination routes use stricter limit; allowlist unchanged | ADR-029; E17-19 | T3.2 | pending |
+| T3.1 | Test | Rate-limit + body-size unit/integration (429 / 413) | E17-19; api-contract | T1.3 | completed |
+| T3.2 | Code | Add `slowapi`; wire limits on public `/api/v1/*`; env knobs | ADR-031; E17-15 | T3.1 | completed |
+| T3.3 | Test | Dissemination routes use stricter limit; allowlist unchanged | ADR-029; E17-19 | T3.2 | completed |
 
 ### M4 — Frontend Auth removal (F21)
 
