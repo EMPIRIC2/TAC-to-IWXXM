@@ -32,6 +32,7 @@ cd "$repo_root"
 # Prepend common tool locations so `uv` / `pnpm` resolve the same as interactive shells.
 _hook_path_extras=()
 [[ -d "${HOME}/.local/bin" ]] && _hook_path_extras+=("${HOME}/.local/bin")
+[[ -d "${HOME}/.cargo/bin" ]] && _hook_path_extras+=("${HOME}/.cargo/bin")
 if [[ -d "${HOME}/.nvm/versions/node" ]]; then
   _nvm_node_bin="$(find "${HOME}/.nvm/versions/node" -maxdepth 2 -type d -name bin 2>/dev/null | sort -V | tail -1 || true)"
   [[ -n "${_nvm_node_bin}" ]] && _hook_path_extras+=("${_nvm_node_bin}")
