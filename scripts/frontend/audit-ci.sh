@@ -24,7 +24,11 @@ if printf '%s\n' "$OUTPUT" | grep -Eqi '410|ERR_PNPM_AUDIT_BAD_RESPONSE|endpoint
 fi
 
 # Sole remaining GHSA is brace-expansion advisory (see header comment).
-mapfile -t GHSAS < <(printf '%s\n' "$OUTPUT" | grep -oE 'GHSA-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}' | sort -u || true)
+# Portable for macOS /bin/bash 3.2 (no mapfile).
+GHSAS=()
+while IFS= read -r id; do
+  [[ -n "$id" ]] && GHSAS+=("$id")
+done < <(printf '%s\n' "$OUTPUT" | grep -oE 'GHSA-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}' | sort -u || true)
 OTHER=()
 for id in "${GHSAS[@]+"${GHSAS[@]}"}"; do
   if [[ "$id" != "GHSA-mh99-v99m-4gvg" ]]; then
