@@ -49,3 +49,11 @@
 | 2026-07-21 | S-EV014-M3 | approved (modified) | Q28 batch — H6 / live harness list UJ-027–030 when F16–F19 ships |
 | 2026-07-21 | S-EV014-M4 | approved (modified) | Q28 batch — ADR-029 → Accepted |
 | 2026-07-21 | S-EV014-L1 | approved | Q28 batch — allowlist config/env-contract deferred to 04 |
+| 2026-07-27 | S-EV017.1–10 | auto-approved | 10 high-confidence F21/F22 locks from E17-4A…E17-11 (S023 02-verify-plan) |
+| 2026-07-27 | C-EV017.1 | modified | api-contract Auth → None (F21 public) for lint/decode/catalog/dissemination |
+| 2026-07-27 | C-EV017.2 | modified | test-plan TC-003 retired; TC-004 + live E2E → IndexedDB / no JWT |
+| 2026-07-27 | C-EV017.3 | modified | spec backend/frontend overview + Security → public + abuse + IndexedDB |
+| 2026-07-27 | C-EV017.4 | modified | UJ-013/015 (+ related) → public + IndexedDB |
+| 2026-07-27 | C-EV017.5 | deferred | env-contract stale-until-F21 banner; full rewrite 04/12 |
+| 2026-07-27 | C-EV017.6 | modified | Added TC-F21-auth-gone + TC-F22-001..003 stubs |
+| 2026-07-27 | D-S023-02-C-EV017-A | approved | Contradiction batch option A |

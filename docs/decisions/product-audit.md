@@ -147,3 +147,39 @@
 ### Next
 
 **03-plan-tooling** (Full routing).
+
+---
+
+## S023 / EV-017 delta (2026-07-27) — F21/F22 public app + privacy
+
+**Session**: S023-public-app-privacy  
+**Decision**: `D-S023-02-C-EV017-A` (option A)  
+**Report**: `docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md`
+
+| Metric | Count |
+|--------|-------|
+| Documents audited | 6 |
+| Auto-approved (high) | 10 (S-EV017.1–10) |
+| Contradictions found | 6 (C-EV017.1–6) |
+| Resolved now | 5 (C1–4, C6) |
+| Deferred | 1 (C5 env-contract full rewrite → 04/12) |
+
+### Consistency after fixes
+
+| Check | Result |
+|-------|--------|
+| Feature ↔ Spec | Pass |
+| Feature ↔ Journey | Pass |
+| Journey ↔ Test | Pass (stubs OK) |
+| Feature ↔ Test | Pass |
+| Scope boundaries | Pass |
+| Template static+api+worker | Pass |
+
+### Source documents updated
+
+`api-contract.md`, `spec.md`, `user-journeys.md`, `test-plan.md`, `env-contract.md` (banner),
+`evolve-decisions.md`, `product-decisions.md`.
+
+### Next
+
+Phase A checkpoint → **04-tech-plan** (03 skipped per Standard routing).

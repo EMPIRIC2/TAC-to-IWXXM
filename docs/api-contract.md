@@ -259,7 +259,7 @@ POST /api/v1/lint-tac
 **Purpose**: Thin wrapper over `packages/tac-validate` (parse gate + shared rule pack).
 **Not** Schematron.
 
-**Auth**: Same as convert (unless `DISABLE_AUTH=true`).
+**Auth**: **None** (F21 public) — same as convert.
 
 **Request** (**multipart/form-data only** — Q8=A):
 
@@ -314,7 +314,7 @@ GET /api/v1/lint-issue-catalog
 **Purpose**: Export the `tac-validate` issue registry for operator UI tooltips and a
 lightweight catalog panel (F15). Does **not** change `POST /lint-tac` response shape.
 
-**Auth**: Same as convert / lint-tac (unless `DISABLE_AUTH=true`).
+**Auth**: **None** (F21 public) — same as convert / lint-tac.
 
 **Query** (optional):
 
@@ -349,7 +349,7 @@ POST /api/v1/decode-tac
 
 **Purpose**: Ordered TAC decode/annotate segments for the Code \| Explanation panel.
 
-**Auth**: Same as convert (unless `DISABLE_AUTH=true`).
+**Auth**: **None** (F21 public) — same as convert.
 
 **Request** (multipart/form-data; JSON body alternative deferred to 04 if needed):
 
@@ -429,7 +429,7 @@ POST   /api/v1/work-sessions/{id}/restore
 |--------|-------|
 | `Access-Control-Allow-Origin` | Origins from `config.*.api.corsOrigins` |
 | `Access-Control-Allow-Methods` | GET, POST, OPTIONS |
-| `Access-Control-Allow-Headers` | Authorization, Content-Type |
+| `Access-Control-Allow-Headers` | Content-Type (Authorization optional/legacy) |
 
 Preflight: `OPTIONS` on `/api/v1/*` (legacy `/auth/*` gone — F21).
 
@@ -442,8 +442,9 @@ configure `config.*.api.corsOrigins` accordingly. Live workbench increases reque
 > **Status**: Planned — shapes locked at architecture level (ADR-030 / E14-03=A).
 > Exact JSON field names and error codes finalize **before 07-build** (04 batches complete).
 
-Auth: Bearer JWT (same as other `/api/v1/*`). Destination credentials are **memory-only**
-(never persisted; never returned in responses). Egress subject to ADR-029 allowlist.
+Auth: **None** (F21 public — same as other `/api/v1/*`). Destination credentials are
+**memory-only** (never persisted; never returned in responses). Egress subject to ADR-029
+allowlist. Abuse controls apply (rate limits / body size — finalize in 04).
 
 ### `POST /api/v1/dissemination/preflight`
 
@@ -484,9 +485,10 @@ key injected from `SUPABASE_PUBLISHABLE_KEY`).
 
 | Config field | Purpose |
 |--------------|---------|
-| `api.baseUrl` | API + auth base (`/api/v1`, `/auth`) — **no** `/admin` |
-| `supabase.url` | Supabase project URL (operator BYO) |
-| `supabase.publishableKey` | Client-side Supabase auth (injected at deploy) |
+| `api.baseUrl` | API base (`/api/v1` only — **no** `/auth`, **no** `/admin`) |
+
+**F21**: Operator frontend no longer needs `supabase.url` / `supabase.publishableKey` for Auth.
+F8 worker and legacy ops may still use server-side Supabase credentials off the public router.
 
 **Deprecated**: `VITE_API_BASE_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`,
 `VITE_APP_URL` — one-release shim during S003 migration.
@@ -500,7 +502,11 @@ key injected from `SUPABASE_PUBLISHABLE_KEY`).
 - `/admin/*` removed
 - `POST /api/v1/decode-tac` added
 - `preview` on `/convert`; optional `start`/`end` on lint/validate issues
-- Work sessions: top-level `product`; storage `tac_work_sessions`; no admin list
+- Work sessions: top-level `product`; storage was `tac_work_sessions` (pre-EV-017)
+
+**Breaking (F21 / S023 / EV-017)**:
+- Operator Auth / `/auth/*` / JWT gates removed from public API
+- Server work-session CRUD removed; history → browser IndexedDB (F7.h)
 
 OpenAPI / shared TS codegen remains planned (P1); this contract is the requirements SoT until then.
 

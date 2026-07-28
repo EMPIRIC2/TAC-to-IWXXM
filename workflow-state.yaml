@@ -51,10 +51,11 @@ active_session:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 02-verify-plan STARTED (delta) — user gate A approved; F21/F22 / UJ-033 / api-contract Auth removal consistency pass'
+    completed: '2026-07-27'
+    note: 'S023/EV-017 02-verify-plan COMPLETE 2026-07-27 (delta) — 10 auto-approved; C-EV017.1–6 resolved via D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A checkpoint pending before 04'
   - stage: 04-tech-plan
     required: true
     mode: delta
@@ -2303,20 +2304,34 @@ stages:
     - 2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. interviews.completed 7/7; planned_docs api-contract+adr completed
     - 2026-07-12 S008-realtime-ingest amend COMPLETE — delta status completed; overall 01-requirements completed; advancing to 04-tech-plan (pending)
   02-verify-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-07-27'
+    completed: '2026-07-27'
     previous_completed_at: '2026-07-22'
     session_id: S023-public-app-privacy
     evolve_cycle_id: EV-017
-    note: S023/EV-017 02-verify-plan STARTED 2026-07-27 (delta) — user gate A approved; full cross-document consistency pass for F21/F22, F5/F7 IndexedDB, and M4 operator Auth deprecation.
+    note: 'S023/EV-017 02-verify-plan COMPLETE 2026-07-27 (delta) — 10 auto-approved; C-EV017.1–6 resolved via D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A checkpoint pending before 04'
+    auto_approved: 10
+    contradictions_resolved:
+    - C-EV017.1
+    - C-EV017.2
+    - C-EV017.3
+    - C-EV017.4
+    - C-EV017.6
+    contradictions_deferred:
+    - C-EV017.5
+    decision_refs:
+    - D-S023-02-verify-plan-gate-A
+    - D-S023-02-C-EV017-A
+    pending_commit_note: Corpus contradiction fixes (C1–4+C6 + C5 banner) may be uncommitted; refresh git_history tip after user commits — do not invent SHAs.
     substeps:
       inventory:
-        status: pending
+        status: completed
       consistency_check:
-        status: pending
+        status: completed
       statement_review:
-        auto_approved: 0
+        auto_approved: 10
         pending: 0
         reviewed: 0
     current_document:
@@ -2325,13 +2340,15 @@ stages:
       session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
       skill_id: 02-verify-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-07-27'
-      note: S023/EV-017 02-verify-plan STARTED (delta) — user gate A approved; F21/F22 scope and corpus consistency pass in progress.
+      completed_at: '2026-07-27'
+      note: 'S023/EV-017 02-verify-plan COMPLETE 2026-07-27 (delta) — 10 auto-approved; C-EV017.1–6 resolved via D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A checkpoint pending before 04'
     artifacts:
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
+    - docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
     - docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
@@ -2339,8 +2356,9 @@ stages:
     - session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
       skill_id: 02-verify-plan
-      status: in_progress
+      status: completed
       started_at: '2026-07-27'
+      completed_at: '2026-07-27'
       mode: delta
       feature_ids:
       - F21
@@ -2354,7 +2372,21 @@ stages:
         decision: A
         approved_at: '2026-07-27'
         note: User authorized the 02-verify-plan delta consistency pass.
-      note: S023/EV-017 02-verify-plan STARTED (delta) — user gate A approved; audit F21/F22 plus F5/F7 IndexedDB and M4 operator Auth deprecation.
+      auto_approved: 10
+      contradictions_resolved:
+      - C-EV017.1
+      - C-EV017.2
+      - C-EV017.3
+      - C-EV017.4
+      - C-EV017.6
+      contradictions_deferred:
+      - C-EV017.5
+      decision_refs:
+      - D-S023-02-verify-plan-gate-A
+      - D-S023-02-C-EV017-A
+      artifacts:
+      - docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
+      note: 'S023/EV-017 02-verify-plan COMPLETE 2026-07-27 (delta) — 10 auto-approved; C-EV017.1–6 resolved via D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A checkpoint pending before 04'
     - session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
       skill_id: 02-verify-plan
@@ -2416,6 +2448,7 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-07-27 S023/EV-017 02-verify-plan COMPLETE — 10 auto-approved; D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A checkpoint pending before 04; corpus fixes may be pending commit (no SHA invented)'
     - 2026-07-22 S021-golden-examples-ui/EV-016 02-verify-plan COMPLETE — PASS; Phase A / a_to_b pending before 04; do not start 04
     - 2026-07-22 S021-golden-examples-ui/EV-016 02-verify-plan STARTED (delta) — in_progress
     - 2026-07-22 S020/EV-015 02-verify-plan COMPLETE (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1) — PASS; 12 auto + medium verdicts; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality; Phase A checkpoint pending before 04-tech-plan; do not start 04
@@ -4214,8 +4247,9 @@ stages:
     started_at: '2026-07-27'
     completed_at:
     current_stage: 02-verify-plan
-    note: 'S023/EV-017 16-evolve in_progress — 01 COMPLETE (D-S023-01-requirements-delta); F21/F22; current_stage 02-verify-plan (pending); #783'
+    note: 'S023/EV-017 16-evolve in_progress — 02-verify-plan COMPLETE (D-S023-02-C-EV017-A); Phase A checkpoint pending before 04-tech-plan (03 skipped); #783'
     notes:
+    - '2026-07-27 S023/EV-017 02 COMPLETE — D-S023-02-C-EV017-A; 10 auto-approved; C1–4+C6 fixed; C5 deferred 04/12; Phase A AskQuestion next → 04-tech-plan (03 skipped); #783'
     - '2026-07-27 S023/EV-017 01 COMPLETE — D-S023-01-requirements-delta; F21/F22 corpus deltas; handoff 02-verify-plan (pending user gate); #783'
     - '2026-07-27 S023/EV-017 16-evolve STARTED — 00-context COMPLETE; E17-4A..E17-11 locked (D-S023-E17-scope-lock); F21/F22; current_stage 01-requirements; #783'
     - '2026-07-27 S023/EV-017 16-evolve PENDING — session opened (D-S023-00-open); awaiting 00-context Phase 0 completion before orchestrator start; #783'
@@ -8155,6 +8189,29 @@ decisions_log:
   decision: 'F21/F22 corpus deltas written from recommended architecture (feature-list, spec, user-journeys, test-plan, api-contract, evolve-decisions, context brief). Mark 01-requirements completed 2026-07-27; hand off to 02-verify-plan (pending until user confirms / Phase A gate). Related: D-S023-E17-scope-lock, #783.'
   related_issue: 783
   related_decision: D-S023-E17-scope-lock
+- id: D-S023-02-C-EV017-A
+  date: '2026-07-27'
+  timestamp: '2026-07-27'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: contradiction
+  status: confirmed
+  topic: Contradiction batch A — C-EV017.1–6
+  summary: Contradiction batch A — apply C1–4+C6 now; C5 env-contract banner + defer full rewrite to 04/12
+  decision: 'Apply C-EV017.1–4 and C-EV017.6 now; for C-EV017.5 add env-contract banner and defer full rewrite to 04-tech-plan / 12-verify-deploy. Completes 02-verify-plan delta; Phase A checkpoint pending before 04 (03 skipped). Related: D-S023-02-verify-plan-gate-A, #783.'
+  related_issue: 783
+  related_decision: D-S023-02-verify-plan-gate-A
+  contradictions_resolved:
+  - C-EV017.1
+  - C-EV017.2
+  - C-EV017.3
+  - C-EV017.4
+  - C-EV017.6
+  contradictions_deferred:
+  - C-EV017.5
 artifacts:
 - path: docs/sessions/S023-public-app-privacy/reports/01-requirements.md
   type: session-report
@@ -8180,6 +8237,18 @@ artifacts:
   status: completed
   decision_id: D-S023-01-requirements-delta
   note: 'S023/EV-017 Phase 1 impact analysis — FE/BE/auth/E2E/docs; ADR deferred to 04'
+- path: docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
+  type: session-report
+  kind: verify-plan
+  stage: 02-verify-plan
+  skill_id: 02-verify-plan
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-27'
+  updated_at: '2026-07-27'
+  status: completed
+  decision_id: D-S023-02-C-EV017-A
+  note: 'S023/EV-017 02-verify-plan COMPLETE — 10 auto-approved; C1–4+C6 fixed; C5 deferred 04/12; Phase A pending'
 - path: docs/sessions/S021-golden-examples-ui/reports/verify-impl.md
   type: session-report
   stage: 11-verify-impl
@@ -10075,13 +10144,15 @@ evolve_cycles:
     note: 'Approved Standard routing (D-S023-00-open / User 1A 2B 3A). Skip 03/05/06. 01 docs committed+pushed; interim draft PR #786 open; user gate A approved 02-verify-plan.'
   current_stage: 02-verify-plan
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 02-verify-plan in_progress (delta) — user gate A approved; interim draft PR #786 open; #783.'
+  note: 'S023/EV-017 02-verify-plan COMPLETE (pending Phase A AskQuestion) — D-S023-02-C-EV017-A; next → 04-tech-plan (03 skipped); interim draft PR #786 open; #783.'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
   - D-S023-01-requirements-delta
   - D-S023-02-verify-plan-gate-A
+  - D-S023-02-C-EV017-A
   notes:
+  - '2026-07-27 S023/EV-017 02-verify-plan COMPLETE — D-S023-02-C-EV017-A; 10 auto-approved; C1–4+C6 fixed; C5 banner+defer 04/12; report 02-verify-plan.md; Phase A checkpoint next → 04-tech-plan (03 skipped); corpus commit may be pending'
   - '2026-07-27 S023/EV-017 02-verify-plan STARTED (delta) — user gate A approved; F21/F22, F5/F7 IndexedDB, and M4 operator Auth deprecation consistency audit in progress'
   - '2026-07-27 S023/EV-017 01 docs committed+pushed; interim draft PR #786 open (evolve/EV-017-public-app-privacy); next gate 02-verify-plan pending user gate A/B'
   - '2026-07-27 S023/EV-017 01-requirements COMPLETE — D-S023-01-requirements-delta; F21/F22 corpus deltas from recommended architecture; deepen F5/F7; reports 01-requirements.md + impact-analysis.md; current_stage → 02-verify-plan (pending user gate)'
@@ -10097,7 +10168,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-27'
-      note: Orchestrator active; current_stage 02-verify-plan (in_progress; user gate A approved)
+      note: Orchestrator active; current_stage 02-verify-plan COMPLETE pending Phase A AskQuestion → 04-tech-plan (03 skipped)
     01-requirements:
       status: completed
       mode: delta
@@ -10105,10 +10176,24 @@ evolve_cycles:
       completed: '2026-07-27'
       note: COMPLETE (D-S023-01-requirements-delta) — F21/F22 corpus deltas; deepen F5/F7; ADR deferred to 04
     02-verify-plan:
-      status: in_progress
+      status: completed
       started: '2026-07-27'
+      completed: '2026-07-27'
       mode: delta
-      note: User gate A approved; F21/F22, F5/F7 IndexedDB, and M4 operator Auth deprecation audit in progress.
+      note: 'COMPLETE (D-S023-02-C-EV017-A) — 10 auto-approved; C1–4+C6 fixed; C5 banner+defer 04/12; Phase A checkpoint pending before 04'
+      auto_approved: 10
+      contradictions_resolved:
+      - C-EV017.1
+      - C-EV017.2
+      - C-EV017.3
+      - C-EV017.4
+      - C-EV017.6
+      contradictions_deferred:
+      - C-EV017.5
+      decision_refs:
+      - D-S023-02-verify-plan-gate-A
+      - D-S023-02-C-EV017-A
+      report: docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
     04-tech-plan:
       status: pending
     07-build:
@@ -10155,6 +10240,12 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S023-public-app-privacy/reports/impact-analysis.md
     status: completed
+  - path: docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
+    status: completed
+    stage: 02-verify-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
   - path: docs/decisions/evolve-decisions.md
     status: completed
   - path: docs/feature-list.md
@@ -10173,7 +10264,7 @@ evolve_cycles:
     status: draft
     stage: 16-evolve
     kind: interim_pr
-    note: 'Interim docs PR for S023/EV-017; branch pushed; 02-verify-plan remains pending user gate A/B.'
+    note: 'Interim docs PR for S023/EV-017; branch pushed; 02-verify-plan COMPLETE pending Phase A → 04.'
     session_id: S023-public-app-privacy
     evolve_cycle_id: EV-017
     date: '2026-07-27'

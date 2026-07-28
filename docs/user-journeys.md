@@ -338,28 +338,29 @@ contract (04). **Tier: T2**.
 
 ### UJ-013: Multi-Product Operator Entry / Workbench Shell (F7)
 
-**Actor**: Operator (guest may convert; login required for session persist)
+**Actor**: Anyone (public app — F21; no login)
 
 **Goal**: Use the F7 workbench shell for any of the seven F6 products (editor + product/profile/
 version + convert path), as the umbrella entry for F7 UI.
 
-**Feature**: F7 (S011 / EV-008)
+**Feature**: F7 (S011 / EV-008; public + IndexedDB — S023 / F21 / F7.h)
 
 **Steps**:
 
-1. Open frontend converter / workbench (CodeMirror 6 editor replaces plain textarea).
+1. Open frontend converter / workbench (CodeMirror 6 editor replaces plain textarea) — **no login**.
 2. Select or auto-detect **product**; set **profile** and **version**.
 3. Paste or upload TAC; observe product-aware chrome (not METAR-only copy).
 4. Run **Convert** (hard path) and view IWXXM / Source TAC / downloads (UJ-001/005 behaviors).
 5. Optionally open decode (UJ-015), exercise Failed-TAC/preview (UJ-016), live assist (UJ-017),
-   or save/resume session (UJ-018).
+   or save/resume **local** session (UJ-018 / IndexedDB).
 
 **Acceptance**: All seven products reachable from the same operator entry; H4–H5 connectivity;
-no `/admin` dependency.
+no `/admin` or `/auth` dependency; sessions persist locally without JWT.
 
 **Automated tests**: Playwright workbench shell + product matrix extension (T2); live T3 smoke.
 
-**Browser wiring**: API base from `/config.json`; CORS allows frontend origin (H4–H5).
+**Browser wiring**: API base from `/config.json`; CORS allows frontend origin (H4–H5); public
+`/api/v1/*` (F21).
 
 ---
 
@@ -376,16 +377,16 @@ Live: T7.4 / Phase 6 gate (may remain deferred).
 
 ### UJ-015: TAC Decode Panel (Code | Explanation)
 
-**Actor**: Operator
+**Actor**: Anyone (public — F21)
 
 **Goal**: See ordered decode segments for the current TAC with short explanations and explicit
 residuals (#702).
 
 **Steps**:
 
-1. Enter TAC for any of the seven products in the workbench.
+1. Enter TAC for any of the seven products in the workbench (no login).
 2. Open **Decode** panel (collapsible Code | Explanation).
-3. UI calls `POST /api/v1/decode-tac` (JWT when required).
+3. UI calls `POST /api/v1/decode-tac` (**no JWT** — F21 public).
 4. Segments show `start`/`end`; clicking/hovering highlights spans in the editor when offsets exist.
 5. Undecoded material appears as explicit **residuals** (esp. VAA/TCA — G4).
 
@@ -438,7 +439,8 @@ fixture; console captures errors without crashing the editor.
 
 **Automated tests**: Vitest debounce helpers; Playwright live-edit smoke (T2); live T3 light.
 
-**Browser wiring**: Multiple JWT API calls to lint/decode/validate/preview — H4–H5 required.
+**Browser wiring**: Multiple public API calls to lint/decode/validate/preview — H4–H5 required
+(no JWT — F21).
 
 ---
 
@@ -511,7 +513,7 @@ renders live for all seven products; residuals named when present.
 **Automated tests**: `decode_tac` unit tests (T0); decode-tac API contract + Vitest panel
 (T0/T2); Playwright live-typing smoke (T2); live T3 sample.
 
-**Browser wiring**: Same decode-tac JWT call as UJ-015 — no new origins (H4–H5 unchanged).
+**Browser wiring**: Same public decode-tac call as UJ-015 — no new origins (H4–H5 unchanged).
 
 ---
 
@@ -554,13 +556,13 @@ move to msgspec (ADR-026); any breaking JSON shapes are reflected in the FE.
 
 **Steps**:
 
-1. Log in (BYO) and open the workbench.
+1. Open the workbench (no login — F21).
 2. Convert a golden METAR (product/profile as today) — result card / preview pane populate.
 3. Run validate on produced IWXXM — pass/fail + issues render.
-4. Lint and decode update live (debounce) without auth regressions.
+4. Lint and decode update live (debounce) without Auth regressions.
 
 **Acceptance**: Functional parity with pre-msgspec operator paths; TypeScript types match
-OpenAPI/alias schemas; H4–H5 still green after Render redeploy.
+OpenAPI/alias schemas; H4–H5 still green after Render redeploy; **no JWT required**.
 
 **Automated tests**: Contract + Vitest (T2); Playwright H6′ (T3); live connectivity H4–H5.
 

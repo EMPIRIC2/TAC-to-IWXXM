@@ -1,9 +1,16 @@
 # Environment Contract — Render ↔ Supabase ↔ Local
 
 > **Project**: METAR to IWXXM Converter  
-> **Session**: S003-supabase-keys-config; S011-f7-operator-ui (BYO)  
+> **Session**: S003-supabase-keys-config; S011-f7-operator-ui (BYO); **S023 / EV-017 (F21)**  
 > **Example deploy project** (not product tenancy): `ktvxijislbtgqapllmuk`  
-> **Last updated**: 2026-07-13 (S011 / EV-008)
+> **Last updated**: 2026-07-27 (S023 / EV-017 — stale-until-F21 banner)
+
+> **⚠️ Stale until F21 cutover (S023 / EV-017 / C-EV017.5)** — This contract still documents
+> operator Auth (`E2E_USER_*`, `DISABLE_AUTH` / `disableAuth`, `/auth` on `api.baseUrl`,
+> browser Supabase publishable key). Those are **superseded** by F21 (public app) and F7.h
+> (IndexedDB history). **Full rewrite deferred to 04-tech-plan / 12-verify-deploy.** Until then:
+> treat Auth/JWT/E2E login rows as **historical**; F8 worker service-role +
+> `DISSEMINATION_EGRESS_ALLOWLIST` rows remain current.
 
 Single source of truth for **what** each layer owns and **which name** to use everywhere.
 

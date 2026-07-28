@@ -2,13 +2,14 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-22 (S021 / EV-016 — F7.g golden examples / UJ-032 / TC-F7-008)
+> **Last updated**: 2026-07-27 (S023 / EV-017 — F21 public + F22 privacy; IndexedDB TC rewrite)
 
 ## Scope
 
-**In scope**: Product features F1–F20 (F1 superseded by F6 engine; F7 Planned — workbench
-smoke under F15/F20; **F7.g** golden examples #780 / UJ-032; F8–F15 as prior cycles;
-**F16–F19 Done** dissemination epic; **F20** TAF+SPECI quality);
+**In scope**: Product features F1–F22 (F1 superseded by F6 engine; F7 Planned — workbench
+smoke under F15/F20; **F7.g** golden examples #780 / UJ-032; **F7.h** IndexedDB sessions;
+F8–F15 as prior cycles; **F16–F19 Done** dissemination epic; **F20** TAF+SPECI quality;
+**F21** public unauthenticated app; **F22** privacy preference center);
 monorepo migration validation M1–M6 (M3 deprecated at F6 cutover); connectivity tiers
 **H0c–H7** (local + live Render); tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics
 (library/CI); backend thin wrappers; F7 decode/spans/soft-preview/workbench/unified sessions;
@@ -103,18 +104,20 @@ admin suite modules.
 | H6 | Live Playwright UJ-001–007 (+ UJ-008) + F7 UJ-013/015–019 + **UJ-025** + **UJ-027–030** (H6′ when F16–F19 ships) | `make test-live-e2e` |
 | **H7** | Live bulletin → split → convert → Schematron (UJ-011) | `make test-live-bulletin` (planned) |
 
-**Post-migration**: Single API origin simplifies CORS — auth routes on same host as `/api/v1/*`.
+**Post-migration / F21**: Single API origin for `/api/v1/*` only — operator `/auth/*` removed.
 **H7** is a dedicated connectivity gate for bulletin ingest path (not F8 worker); see
 [connectivity-gates.md](../.cursor/skills/connectivity-gates.md).
 
-**Env wiring** (see [config-spec.md](config-spec.md)):
+**Env wiring** (see [config-spec.md](config-spec.md); env-contract **stale-until-F21** banner):
 
 - `config.*.api.baseUrl` — API URL (replaces `VITE_API_BASE_URL`)
 - `config.*.api.corsOrigins` — backend allowed origins (replaces `METAR_CORS_ORIGINS`)
-- `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` — secrets in `.env` / Render only
 - `LIVE_API_URL` / `LIVE_FRONTEND_URL` — from `config.prod.liveE2e` or env override
-- `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` — runtime JWT via `POST /auth/login` (local/CI; replaces deprecated `ADMIN_*`)
+- ~~`E2E_USER_EMAIL` / `E2E_USER_PASSWORD`~~ — **retired for operator path (F21)**; negative
+  Auth-gone coverage uses `TC-F21-auth-gone` (no login fixture)
+- F8 worker secrets remain server-only (`SUPABASE_SERVICE_ROLE_KEY`, poller URL)
 - `make env-check` — validates canonical names and config JSON before integration/live runs
+  (full rewrite in 04/12)
 
 ## Test Strategy
 
@@ -169,15 +172,11 @@ admin suite modules.
 - **Pass criteria**: All checks pass.
 - **Source**: M1 layout / Phase 4 finalize (T11.1)
 
-### TC-M005: Auth Merge Behavior
+### TC-M005: Auth Merge Behavior — **Superseded (F21)**
 
-- **Objective**: Auth endpoints available on backend; separate auth service removed from compose.
-- **Steps**:
-  1. `POST /auth/login` (or equivalent) on backend port.
-  2. Use JWT on `/api/v1/convert`.
-  3. Confirm docker-compose has two app services (backend, frontend) not three.
-- **Pass criteria**: UJ-003 passes; no auth container required.
-- **Source**: M4, REQ-004
+- **Status**: **Superseded** by F21 / `TC-F21-auth-gone`. Historical: Auth endpoints on backend.
+- **Historical objective**: Auth endpoints available on backend; separate auth service removed.
+- **Source**: M4, REQ-004 (historical); S023 / EV-017
 
 ## Product Test Cases
 
@@ -185,7 +184,7 @@ admin suite modules.
 
 - **Objective**: UJ-001 happy path
 - **Input**: Sample `.tac` in test-data
-- **Pass criteria**: IWXXM XML returned; HTTP 200
+- **Pass criteria**: IWXXM XML returned; HTTP 200 (**no JWT** — F21)
 - **Source**: apps/e2e/tac-file-conversion.e2e.spec.ts
 
 ### TC-001b: COR-after-time + TAC traceability (EV-003 / #594; UX hardening EV-007 / #655)
@@ -213,8 +212,9 @@ admin suite modules.
   - Download All ZIP archive is named `base.zip` when a custom name is set; else `converted_files_<ts>.zip`
   - File-upload results keep their original filename (custom name not applied)
   - Sanitizer strips path/illegal chars + extension, trims; empty-after-sanitize ⇒ `manual_input`
-  - The custom name round-trips through the converter snapshot / `conversion_params` and survives reload
-    (guest sessionStorage + logged-in work session) — no API/schema change
+  - The custom name round-trips through the converter snapshot / `conversion_params` and survives
+    reload (guest sessionStorage + **IndexedDB** work session — F7.h) — no API/schema change
+  - ~~logged-in work session~~ superseded by F21 / IndexedDB
 - **Source**: `apps/frontend/src/utils/*filename*.test.ts`, `apps/frontend/src/app/components/FileConverter.test.tsx`, `apps/e2e/tac-file-conversion.e2e.spec.ts`
 
 ### TC-002: Validation Pass
@@ -222,25 +222,39 @@ admin suite modules.
 - **Objective**: UJ-002 for known-good output
 - **Pass criteria**: validation status `pass` or equivalent
 
-### TC-003: Auth Gate
+### TC-003: Auth Gate — **Retired (F21)**
 
-- **Objective**: UJ-003 — unauthorized blocked, authorized allowed
-- **Pass criteria**: 401 without token; 200 with valid JWT
+- **Status**: **Retired** — operator Auth removed (F21). Negative coverage → **TC-F21-auth-gone**.
+- **Historical objective**: UJ-003 — unauthorized blocked, authorized allowed
+- **Historical pass criteria**: 401 without token; 200 with valid JWT
+- **Source**: UJ-003 (superseded); S023 / EV-017
 
-### TC-004: Work session lifecycle (F5 / UJ-004) — unified table
+### TC-004: Local work session lifecycle (F5 / UJ-004) — IndexedDB
 
-- **Objective**: Draft auto-save → convert → WIP → send → Finished; resume on login; My METARs
-  filters METAR/SPECI on `tac_work_sessions` (ADR-020)
+- **Objective**: Draft auto-save → convert → WIP → send → Finished in **browser IndexedDB**;
+  resume after reload **without login**; My METARs filters METAR/SPECI locally (F7.h / F21)
 - **Steps**:
-  1. Authenticated user creates draft via PATCH upsert (`product` = metar|speci)
-  2. Convert success moves to WIP (reject second WIP — one WIP per user total)
+  1. Public user creates draft via local upsert (`product` = metar|speci) — **no**
+     `/api/v1/work-sessions`
+  2. Convert success moves to WIP (reject second WIP — one WIP per browser profile total)
   3. Partial convert failure sets Failed; edit + re-convert transitions appropriately
-  4. Send success sets Finished with `kv_upload_key`
-  5. Soft-delete + restore within 30 days
+  4. Dissemination success sets Finished with `kv_upload_key` (local only; no dest secrets)
+  5. Soft-delete + restore within local trash policy
   6. My METARs does **not** list non-METAR products; workbench history may (TC-F7-005)
-  7. ~~Admin GET lists all users~~ **Removed** — covered by TC-F7-006 negative
-- **Pass criteria**: Status rules enforced; RLS isolates user data; no admin list
-- **Source**: UJ-004; ADR-020; backend integration tests + Playwright T2
+  7. Clearing site data loses history (disclosed in F22)
+- **Pass criteria**: Status rules enforced locally; **no** JWT / RLS / server session calls
+- **Source**: UJ-004; F7.h / F21; ADR-020 historical; FE IndexedDB unit + Playwright T2
+
+### TC-F21-auth-gone: Operator Auth removed (UJ-003 superseded)
+
+- **Level**: T2 / T3 (optional negative)
+- **Objective**: `/auth/*` and JWT gates are gone from the public product surface
+- **Pass criteria**:
+  - `POST /auth/login` (and sibling Auth routes) → **404** (or equivalent not-found)
+  - `POST /api/v1/convert` (and lint/decode/validate/preview) succeed **without** Authorization
+  - Frontend has no login/register UX; no JWT bootstrap for convert path
+  - `DISABLE_AUTH` dual path absent from runtime config contract (after 04 rewrite)
+- **Source**: UJ-003 superseded; F21 / S023 / EV-017 / #783
 
 ## F7 Test Cases (S011 / EV-008)
 
@@ -275,20 +289,20 @@ admin suite modules.
   messages without crashing editor
 - **Source**: UJ-017; #694
 
-### TC-F7-005: Unified sessions + F5 migrate smoke (UJ-018)
+### TC-F7-005: Unified local sessions + My METARs filter (UJ-018)
 
 - **Level**: T2 / T3
-- **Objective**: CRUD on `tac_work_sessions` for non-METAR; migrate smoke for legacy METAR rows
-- **Pass criteria**: TAF (or other) Draft survives reload; My METARs filter correct; migrated METAR
-  session resumes (UJ-004)
-- **Source**: UJ-018; ADR-020
+- **Objective**: IndexedDB CRUD for non-METAR; My METARs METAR/SPECI filter (F7.h)
+- **Pass criteria**: TAF (or other) Draft survives reload **without login**; My METARs filter
+  correct; METAR session resumes (UJ-004); **no** `/api/v1/work-sessions`
+- **Source**: UJ-018; F7.h / F21; ADR-020 historical
 
 ### TC-F7-006: Admin routes removed (UJ-019)
 
 - **Level**: T2 / T3
 - **Objective**: `/admin` and legacy admin deep links are gone
-- **Pass criteria**: Not-found / no AdminDashboard; authenticated convert still works
-- **Source**: UJ-019; F7.a / #697
+- **Pass criteria**: Not-found / no AdminDashboard; **public** convert still works (no JWT)
+- **Source**: UJ-019; F7.a / #697; F21
 
 ### TC-F7-007: Manual TAC Input modes (UJ-025 / #730)
 
@@ -600,6 +614,37 @@ Before closing S013 / EV-009:
 - [ ] Coverage-matrix TAF + SPECI rows updated; guidance gaps filed or closed
 - [ ] H1–H3 if API ships; H4–H5 when FE touched (E15-7)
 
+## F21 / F22 Test Cases (S023 / EV-017) — stubs
+
+> Detailed steps finalize in **04-tech-plan**. Objectives and pass criteria locked at 02
+> (`D-S023-02-C-EV017-A`).
+
+### TC-F22-001: First-visit privacy notice (UJ-033)
+
+- **Level**: T2 / T3
+- **Objective**: First visit shows Solution A privacy notice disclosing IndexedDB work history /
+  preference storage; dismiss/ack persists preference
+- **Pass criteria**: Notice visible once per preference scope; no CMP/analytics scripts; copy
+  matches F22 acceptance
+- **Source**: UJ-033; F22 / E17-7 / E17-9
+
+### TC-F22-002: Privacy settings preference center (UJ-033)
+
+- **Level**: T2 / T3
+- **Objective**: Settings UI lets user view/change privacy preferences (Solution A)
+- **Pass criteria**: Preferences read/write in client storage only; no server PII endpoints;
+  clearing site data resets prefs (disclosed)
+- **Source**: UJ-033; F22
+
+### TC-F22-003: Global Privacy Control (GPC) honor (UJ-033)
+
+- **Level**: T2 / T3
+- **Objective**: When browser signals GPC, app treats preference as opt-out of non-essential
+  client storage beyond disclosed IndexedDB work history (per F22 scope)
+- **Pass criteria**: GPC signal detected; preference center reflects GPC; no marketing/analytics
+  scripts introduced
+- **Source**: UJ-033; F22 / E17-9
+
 ### TC-F16-001: Drawer preflight schema diff (UJ-027)
 
 - **Level**: T0 / T2
@@ -686,19 +731,18 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 ### TC-LIVE-001: Live Health & Convert
 
 - **Objective**: H3 — API health and METAR conversion against Render
-- **Preconditions**: E2E-001 schema path fixed; `LIVE_API_URL` set; JWT obtained via login fixture
+- **Preconditions**: E2E-001 schema path fixed; `LIVE_API_URL` set; **no JWT** (F21 public)
 - **Steps**:
-  1. `curl -sf "${LIVE_API_URL}/health"` — expect 200, `gifts_available: true`
+  1. `curl -sf "${LIVE_API_URL}/health"` — expect 200, `tac2iwxxm_available: true`
   2. `pytest apps/backend/tests/infrastructure/test_live_api_health.py -m live_api`
 - **Pass criteria**: All live_api tests green; cold-start retries (3×, 30s backoff) succeed
 - **Resilience**: Exponential backoff on HTTP 429
-- **F6 note**: Health should report tac2iwxxm availability (not `gifts_available`) after cutover.
 - **Source**: UJ-001, H3
 
 ### TC-LIVE-002: Live Validation
 
 - **Objective**: H3 — validation endpoint against Render
-- **Preconditions**: E2E-001 resolved; valid JWT; sample IWXXM from convert step
+- **Preconditions**: E2E-001 resolved; **no JWT**; sample IWXXM from convert step
 - **Steps**:
   1. POST `/api/v1/validation/validate` with converted XML
   2. Assert validation status pass for selected IWXXM version
@@ -719,14 +763,16 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 ### TC-LIVE-004: Live Playwright UJ-001–007
 
 - **Objective**: H6 — product journeys against Render frontend (includes F6 matrix)
-- **Preconditions**: `PLAYWRIGHT_BASE_URL=${LIVE_FRONTEND_URL}`; `DISABLE_AUTH=false`; admin credentials in `.env`
+- **Preconditions**: `PLAYWRIGHT_BASE_URL=${LIVE_FRONTEND_URL}`; **no** Auth login fixture
+  (F21 public); IndexedDB available in browser context
 - **Steps**:
   1. Run `00-preflight.e2e.spec.ts` first (wake + health)
-  2. `make test-live-e2e` — auth, METAR convert, F6 product/profile matrix (UJ-005), validation (UJ-002/007), UJ-008 smoke
+  2. `make test-live-e2e` — public METAR convert, F6 product/profile matrix (UJ-005),
+     validation (UJ-002/007), UJ-008 smoke; **skip** retired Auth bootstrap
   3. Playwright config disables local `webServer` when base URL is remote
-- **Pass criteria**: UJ-001–007 specs green against live URLs
+- **Pass criteria**: UJ-001–007 specs green against live URLs (UJ-003 = Auth-gone negative only)
 - **Resilience**: Cold-start retry in preflight; serial execution (no parallel live requests)
-- **Source**: UJ-001–007, H6
+- **Source**: UJ-001–007, H6; F21
 
 ### TC-LIVE-F6-001 / TC-LIVE-F6-002 / TC-LIVE-F6-003
 

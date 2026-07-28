@@ -11,7 +11,7 @@
 **Started**: 2026-07-27
 **Completed**: —
 **Branch**: `evolve/EV-017-public-app-privacy`
-**Status**: **in_progress** — Phase A (01-requirements)
+**Status**: **in_progress** — Phase A (02-verify-plan)
 
 ### Scope (Batch 1 — session open 2026-07-27)
 
@@ -64,6 +64,16 @@ Privacy: Solution A + one global preference center + GPC. Retire operator Auth U
 | **F5** (deepen) | Work history → IndexedDB | METAR/SPECI local history; no server ownership |
 | **F7** (deepen) | Multi-product sessions → IndexedDB | Unified local sessions; slice **F7.h** |
 | **M4** | Auth merged into backend | **Deprecated** for operator Auth (library may remain only if F8/internal still needs helpers — decide in ADR) |
+
+### Phase A — 02-verify-plan (2026-07-27)
+
+| ID | Category | Decision |
+|----|----------|----------|
+| D-S023-02-verify-plan-gate-A | decision | Run 02 delta consistency pass (user **A**) |
+| D-S023-02-C-EV017-A | contradiction | **A** — apply C-EV017.1–4 + C6 now; C5 = stale-until-F21 banner + defer full env-contract rewrite to 04/12 |
+
+**Corpus fixes applied**: `api-contract.md`, `spec.md`, `user-journeys.md`, `test-plan.md`
+(TC-004 IndexedDB + TC-F21-auth-gone + TC-F22-001..003 stubs); `env-contract.md` banner only.
 
 ---
 
