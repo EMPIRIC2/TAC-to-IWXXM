@@ -2,6 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Last updated**: 2026-07-28 (S023 / EV-017 — F21 public app: `idb`, `slowapi`; delete `packages/auth`)
+> **Status**: **Accepted** for build (07-build T1.2 / D-S023-04-plan-approve-A) — drafted in bf4eaf1
 
 ## Runtime Dependencies
 
