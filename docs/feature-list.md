@@ -579,7 +579,7 @@
 
 ### F21: Public Unauthenticated Operator App — S023 / EV-017
 
-- **Status**: **Planned** (S023 / EV-017 / [#783](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/783))
+- **Status**: **Implemented** (S023 / EV-017 / [#783](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/783); 11-verify-impl approved 2026-07-28)
 - **What it does**: Makes the operator product **public** — no login/signup/logout/password-reset
   UX; no required Bearer JWT for convert, validate, lint, decode, preview, or dissemination-drawer
   flows. HTTP APIs are **stateless** with **baseline abuse controls** (per-IP + global rate limits,
@@ -601,7 +601,7 @@
 
 ### F22: Privacy Preference Center — S023 / EV-017
 
-- **Status**: **Planned** (S023 / EV-017 / #783)
+- **Status**: **Implemented** (S023 / EV-017 / #783; 11-verify-impl approved 2026-07-28)
 - **What it does**: **Solution A** (no non-essential tracking). Inventory cookies/`localStorage`/
   `sessionStorage`/IndexedDB/CDN. Footer **Privacy settings** + short first-visit notice.
   One global preference schema (versioned); `necessary` always on; preferences/analytics/marketing

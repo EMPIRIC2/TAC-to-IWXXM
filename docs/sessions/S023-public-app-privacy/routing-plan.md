@@ -7,7 +7,7 @@
 | Stage | Required | Mode | Status | Skip rationale |
 |-------|----------|------|--------|----------------|
 | 00-context | yes | scoped | completed | Session open + `docs/context/public-app-privacy.md` |
-| 16-evolve | yes | orchestrator | in_progress | EV-017 — next 11-verify-impl |
+| 16-evolve | yes | orchestrator | in_progress | EV-017 — 11 COMPLETE; next 12-verify-deploy |
 | 01-requirements | yes | delta | completed | F21/F22 + F5/F7/M4 deltas — `reports/01-requirements.md` |
 | 02-verify-plan | yes | delta | completed | Gate A 2026-07-27; D-S023-02-C-EV017-A; Phase A passed |
 | 03-plan-tooling | **no** | — | skipped | No new Cursor rules/hooks expected at open; add if ADR needs guardrails |
@@ -18,7 +18,7 @@
 | 08-verify-build | yes | full | completed | PASS 2026-07-28 — `reports/verification-report.md`; pyasn1 0.6.4 @ `836c1a4` |
 | 09-qa | yes | full | completed | pass_with_advisories — `reports/qa-report.md` |
 | 10-e2e | yes | full | completed | T0 PASS (8 Playwright + Vitest + F21) — `reports/e2e-report.md` |
-| 11-verify-impl | yes | full | pending | Next — per-Fn AC + UI preview (pending handoff) |
+| 11-verify-impl | yes | full | completed | F21/F22 approved; F5/F7.h ack; T3→13; `reports/verify-impl.md` |
 | 12-verify-deploy | yes | full | pending | Env matrix / secret cleanup checklist |
 | 13-deploy-smoke | yes | full | pending | Live public convert + privacy settings |
 
@@ -43,3 +43,5 @@
 | 08-verify-build | PASS (D-S023-08-pyasn1-A) | 2026-07-28 |
 | Phase C (C→D) | **Passed** — D-S023-phase-c-A (user 2 then 1) | 2026-07-28 |
 | 09-qa / 10-e2e | COMPLETE — next 11 | 2026-07-28 |
+| 11 UI preview | Declined — reports/tests only (D-S023-11-ui-preview-declined) | 2026-07-28 |
+| 11-verify-impl | **COMPLETE** — F21/F22 approved; F5/F7.h ack; advisories disposed; T3→13 | 2026-07-28 |

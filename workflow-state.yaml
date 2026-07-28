@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-017
   github_issue: 783
   artifacts_dir: docs/sessions/S023-public-app-privacy/
-  current_stage: 11-verify-impl
+  current_stage: 12-verify-deploy
   feature_ids:
   - F21
   - F22
@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'S023/EV-017 Phase D 09+10 COMPLETE — 09 pass_with_advisories; 10 T0 PASS; next 11-verify-impl (pending handoff); tip 836c1a4; uncommitted: coverage_boost import fix + qa/e2e reports + workflow-state; security WIP stashed; #783'
+  note: 'S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; tip 657d440; next 12-verify-deploy; #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase C PASSED; Phase D 09+10 COMPLETE; next 11-verify-impl; tip 836c1a4; uncommitted coverage_boost + qa/e2e reports + workflow-state; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase C PASSED; Phase D 09+10+11 COMPLETE; next 12-verify-deploy (pending start); tip 657d440; #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -100,9 +100,11 @@ active_session:
   - stage: 11-verify-impl
     required: true
     mode: full
-    status: pending
+    status: completed
     skip_rationale:
-    note: 'S023/EV-017 11-verify-impl pending handoff — Phase D 09+10 done; tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; #783'
+    started: '2026-07-28'
+    completed: '2026-07-28'
+    note: 'S023/EV-017 11-verify-impl COMPLETE 2026-07-28 — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; artifacts docs/sessions/S023-public-app-privacy/reports/verify-impl.md + docs/reports/implementation-verification.md; tip 657d440; next 12-verify-deploy; #783'
   - stage: 12-verify-deploy
     required: true
     mode: full
@@ -3449,12 +3451,12 @@ stages:
       completed: '2026-07-28'
       completed_at: '2026-07-28'
       branch: evolve/EV-017-public-app-privacy
-      tip_sha: 836c1a4
-      tip_sha_full: 836c1a4c856d25a3a341bdb2b3437a998d190926
+      tip_sha: 657d440
+      tip_sha_full: 657d4408b5b92aacd2dd465a9d7382bfea7144ba
       decision_id: D-S023-phase-c-A
       overall: pass_with_advisories
       report: docs/sessions/S023-public-app-privacy/reports/qa-report.md
-      note: 'COMPLETE 2026-07-28 — pass_with_advisories; tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; #783'
+      note: 'COMPLETE 2026-07-28 — pass_with_advisories; tip 657d440 ([10] coverage_boost + reports); #783'
       feature_ids:
       - F21
       - F22
@@ -3591,9 +3593,13 @@ stages:
   11-verify-impl:
     status: completed
     started_at: '2026-07-26'
-    session_id: S021-golden-examples-ui
-    evolve_cycle_id: EV-016
-    note: 'COMPLETE 2026-07-26 (E16-19=A) — Approve UJ-032 + F7.g (T0 + local preview; H4–H5 waived to 13; QA-001–004 accepted); overall approved; artifact docs/sessions/S021-golden-examples-ui/reports/verify-impl.md; gates.c_to_d + phase_c passed; phase_d/deploy remain pending; next: open minor PR then 13-deploy-smoke'
+    completed: '2026-07-28'
+    completed_at: '2026-07-28'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    note: 'S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; tip 657d440; next 12-verify-deploy; #783'
+    report: docs/sessions/S023-public-app-privacy/reports/verify-impl.md
+    overall: approved
     substeps:
       collect_results:
         status: completed
@@ -3601,23 +3607,43 @@ stages:
         status: completed
       journey_signoff:
         status: completed
-        approved: 2
+        approved: 4
         flagged: 0
-        total: 2
-        notes: UJ-003 + UJ-OPS-001 approved; T3 auth waived to 12-verify-deploy
+        total: 4
+        notes: UJ-001/004/018/033 approved; T3 waived to 13-deploy-smoke (D-S023-11-uj-001-004, D-S023-11-uj-018-033)
       feature_approval:
         status: completed
         approved: 2
         flagged: 0
         total: 2
+        notes: F21/F22 approved; F5/F7.h deepen acknowledged
       fixes_applied:
         status: completed
-        notes: None required — user approved with T3 waiver
+        notes: QA-003 fixed @ 657d440; QA-001/002 accept; QA-004→13 (D-S023-11-advisories)
       scope_analysis:
         status: completed
       summary:
         status: completed
     delta_substages:
+    - id: S023-public-app-privacy
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 11-verify-impl
+      status: completed
+      started: '2026-07-28'
+      started_at: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28'
+      mode: full
+      branch: evolve/EV-017-public-app-privacy
+      tip_sha: 657d440
+      tip_sha_full: 657d4408b5b92aacd2dd465a9d7382bfea7144ba
+      note: 'COMPLETE 2026-07-28 — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; artifacts verify-impl.md + implementation-verification.md; tip 657d440; next 12-verify-deploy; #783'
+      report: docs/sessions/S023-public-app-privacy/reports/verify-impl.md
+      overall: approved
+      feature_ids:
+      - F21
+      - F22
     - id: S021-golden-examples-ui
       session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
@@ -3721,6 +3747,7 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
       note: D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5
     notes:
+    - '2026-07-28 S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; verify-impl.md; tip 657d440; next 12-verify-deploy; #783'
     - S021/EV-016 11-verify-impl STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; gates.c_to_d / phase_c / phase_d remain pending (do NOT mark yet)
     - ? 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs
       : 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits; T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
@@ -3793,12 +3820,12 @@ stages:
       completed: '2026-07-28'
       completed_at: '2026-07-28'
       branch: evolve/EV-017-public-app-privacy
-      tip_sha: 836c1a4
-      tip_sha_full: 836c1a4c856d25a3a341bdb2b3437a998d190926
+      tip_sha: 657d440
+      tip_sha_full: 657d4408b5b92aacd2dd465a9d7382bfea7144ba
       decision_id: D-S023-phase-c-A
       overall: pass
       report: docs/sessions/S023-public-app-privacy/reports/e2e-report.md
-      note: 'COMPLETE 2026-07-28 — T0 PASS (8 Playwright + Vitest + F21 unit); tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; #783'
+      note: 'COMPLETE 2026-07-28 — T0 PASS (8 Playwright + Vitest + F21 unit); tip 657d440 ([10] coverage_boost + reports); #783'
       feature_ids:
       - F21
       - F22
@@ -4441,9 +4468,13 @@ stages:
     evolve_cycle_id: EV-017
     started_at: '2026-07-27'
     completed_at:
-    current_stage: 11-verify-impl
-    note: 'S023/EV-017 16-evolve in_progress — Phase D 09+10 COMPLETE; next 11-verify-impl (pending handoff); tip 836c1a4; uncommitted coverage_boost + qa/e2e reports + workflow-state; security WIP stashed; #783'
+    current_stage: 12-verify-deploy
+    note: 'S023/EV-017 16-evolve in_progress — 11 COMPLETE; next 12-verify-deploy (pending start); tip 657d440; #783'
     notes:
+    - '2026-07-28 S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; verify-impl.md; tip 657d440; next 12-verify-deploy; #783'
+    - '2026-07-28 S023/EV-017 D-S023-11-ui-preview-declined — UI preview declined (option 2 reports/tests only); journey + feature sign-off next; tip 657d440; #783'
+    - '2026-07-28 S023/EV-017 tip 657d440 — [10] fix coverage_boost + 09/10 reports; 11-verify-impl still in_progress; verify-impl.md draft untracked; #783'
+    - '2026-07-28 S023/EV-017 11-verify-impl STARTED — UI preview AskQuestion pending before feature approval; scope F21/F22 + F5/F7.h deepen; tip 836c1a4; uncommitted coverage_boost + qa/e2e reports + workflow-state; #783'
     - '2026-07-28 S023/EV-017 Phase D 09+10 COMPLETE — 09 pass_with_advisories (qa-report.md); 10 T0 PASS 8 Playwright+Vitest+F21 (e2e-report.md); next 11-verify-impl; tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; #783'
     - '2026-07-28 S023/EV-017 Phase C PASSED (D-S023-phase-c-A / user 2 then 1) — commit 836c1a4 then proceed Phase D; 09-qa+10-e2e STARTED parallel; tip 836c1a4; #783'
     - '2026-07-28 S023/EV-017 08-verify-build COMPLETE PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; report verification-report.md; C→D criteria met; Phase C checkpoint pending; tip 73f8389 (locks uncommitted); #783'
@@ -8791,7 +8822,137 @@ decisions_log:
   answers:
   - '2 then 1'
   artifact: docs/sessions/S023-public-app-privacy/checkpoints/phase-c.md
+- id: D-S023-11-ui-preview-declined
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  session: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  skill: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: UI preview declined — approve from reports/tests only
+  summary: User declined live UI preview; continue 11-verify-impl from reports/tests only; journey + feature sign-off next
+  decision: UI preview declined; approve from reports/tests only
+  related_issue: 783
+- id: D-S023-11-f21
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  session: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  skill: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: F21 feature approval
+  summary: F21 (public unauthenticated operator app) approved at 11-verify-impl
+  decision: F21 approved
+  related_issue: 783
+- id: D-S023-11-f22
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  session: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  skill: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: F22 feature approval
+  summary: F22 (privacy preference center) approved at 11-verify-impl
+  decision: F22 approved
+  related_issue: 783
+- id: D-S023-11-f5-f7h
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  session: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  skill: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: F5/F7.h IndexedDB deepen acknowledgement
+  summary: F5/F7.h IndexedDB deepen acknowledged at 11-verify-impl
+  decision: F5/F7.h deepen acknowledged
+  related_issue: 783
+- id: D-S023-11-advisories
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  session: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  skill: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: QA advisories disposition
+  summary: QA-001/002 accept; QA-003 fixed; QA-004 deferred to 13-deploy-smoke
+  decision: QA-001/002 accept; QA-003 fixed; QA-004→13
+  related_issue: 783
+- id: D-S023-11-uj-001-004
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  session: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  skill: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: Journey signoff UJ-001 / UJ-004
+  summary: UJ-001 and UJ-004 approved; T3 live browser re-check waived to 13-deploy-smoke
+  decision: UJ-001/004 approved; T3 waived to 13
+  related_issue: 783
+- id: D-S023-11-uj-018-033
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  session: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  skill: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: Journey signoff UJ-018 / UJ-033
+  summary: UJ-018 and UJ-033 approved; T3 live browser re-check waived to 13-deploy-smoke
+  decision: UJ-018/033 approved; T3 waived to 13
+  related_issue: 783
 artifacts:
+- path: docs/sessions/S023-public-app-privacy/reports/verify-impl.md
+  type: session-report
+  kind: verify-impl
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: completed
+  overall: approved
+  tip_sha: 657d440
+  note: 'S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed'
+- path: docs/reports/implementation-verification.md
+  type: standing-doc
+  kind: implementation-verification
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: completed
+  overall: approved
+  note: 'S023/EV-017 standing implementation-verification updated — F21/F22 approved'
 - path: docs/sessions/S023-public-app-privacy/checkpoints/phase-c.md
   type: session-checkpoint
   kind: phase-c
@@ -10830,10 +10991,10 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B+C passed; Phase D 09+10 COMPLETE; next 11-verify-impl; tip 836c1a4.'
-  current_stage: 11-verify-impl
+    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B+C passed; Phase D 09+10+11 COMPLETE; next 12-verify-deploy (pending); tip 657d440.'
+  current_stage: 12-verify-deploy
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 Phase D 09+10 COMPLETE — 09 pass_with_advisories; 10 T0 PASS; next 11-verify-impl (pending handoff); tip 836c1a4; uncommitted: coverage_boost import fix + qa/e2e reports + workflow-state; security WIP stashed; #783.'
+  note: 'S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; tip 657d440; next 12-verify-deploy; #783'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
@@ -10863,7 +11024,18 @@ evolve_cycles:
   - D-S023-07-T7.4-blocked
   - D-S023-08-pyasn1-A
   - D-S023-phase-c-A
+  - D-S023-11-ui-preview-declined
+  - D-S023-11-f21
+  - D-S023-11-f22
+  - D-S023-11-f5-f7h
+  - D-S023-11-advisories
+  - D-S023-11-uj-001-004
+  - D-S023-11-uj-018-033
   notes:
+  - '2026-07-28 S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; verify-impl.md; tip 657d440; next 12-verify-deploy; #783'
+  - '2026-07-28 S023/EV-017 D-S023-11-ui-preview-declined — UI preview declined (option 2 reports/tests only); journey + feature sign-off next; tip 657d440; #783'
+  - '2026-07-28 S023/EV-017 tip 657d440 — [10] fix coverage_boost + 09/10 reports committed; 11-verify-impl still in_progress; verify-impl.md draft untracked; #783'
+  - '2026-07-28 S023/EV-017 11-verify-impl STARTED — UI preview AskQuestion pending before feature approval; scope F21/F22 + F5/F7.h deepen; tip 836c1a4; uncommitted coverage_boost + qa/e2e reports + workflow-state; #783'
   - '2026-07-28 S023/EV-017 Phase D 09+10 COMPLETE — 09 pass_with_advisories (qa-report.md); 10 T0 PASS 8 Playwright+Vitest+F21 (e2e-report.md); next 11-verify-impl; tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; #783'
   - '2026-07-28 S023/EV-017 Phase C PASSED (D-S023-phase-c-A / user 2 then 1) — commit 836c1a4 then proceed Phase D; 09-qa+10-e2e STARTED parallel; tip 836c1a4; #783'
   - '2026-07-28 S023/EV-017 08-verify-build COMPLETE PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; report verification-report.md; C→D criteria met; Phase C checkpoint pending AskQuestion; tip 73f8389 (locks uncommitted); security WIP stashed; #783'
@@ -10904,7 +11076,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-27'
-      note: Orchestrator active; Phase C PASSED; Phase D 09+10 COMPLETE; next 11-verify-impl; tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; 03/05/06 skipped
+      note: Orchestrator active; 11 COMPLETE; next 12-verify-deploy (pending start); tip 657d440; 03/05/06 skipped
     01-requirements:
       status: completed
       mode: delta
@@ -10989,8 +11161,26 @@ evolve_cycles:
       tip_sha: 836c1a4
       decision_id: D-S023-phase-c-A
     11-verify-impl:
-      status: pending
-      note: 'Pending handoff — Phase D 09+10 done; tip 836c1a4; uncommitted coverage_boost + qa/e2e reports + workflow-state; #783'
+      status: completed
+      started: '2026-07-28'
+      completed: '2026-07-28'
+      mode: full
+      overall: approved
+      note: 'COMPLETE 2026-07-28 — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; verify-impl.md; tip 657d440; next 12-verify-deploy; #783'
+      tip_sha: 657d440
+      tip_sha_full: 657d4408b5b92aacd2dd465a9d7382bfea7144ba
+      report: docs/sessions/S023-public-app-privacy/reports/verify-impl.md
+      feature_ids:
+      - F21
+      - F22
+      decision_refs:
+      - D-S023-11-f21
+      - D-S023-11-f22
+      - D-S023-11-f5-f7h
+      - D-S023-11-advisories
+      - D-S023-11-uj-001-004
+      - D-S023-11-uj-018-033
+      - D-S023-11-ui-preview-declined
     12-verify-deploy:
       status: pending
     13-deploy-smoke:
@@ -11018,6 +11208,20 @@ evolve_cycles:
   adrs:
   - docs/adr/ADR-031-public-app-indexeddb-history.md
   artifacts:
+  - path: docs/sessions/S023-public-app-privacy/reports/verify-impl.md
+    status: completed
+    stage: 11-verify-impl
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    note: '11 COMPLETE — F21/F22 approved; F5/F7.h ack'
+  - path: docs/reports/implementation-verification.md
+    status: completed
+    stage: 11-verify-impl
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    note: 'Standing implementation-verification updated for S023'
   - path: docs/sessions/S023-public-app-privacy/session-brief.md
     status: completed
   - path: docs/sessions/S023-public-app-privacy/routing-plan.md
@@ -15533,6 +15737,19 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 657d4408b5b92aacd2dd465a9d7382bfea7144ba
+    short: 657d440
+    branch: evolve/EV-017-public-app-privacy
+    message: "[10] fix: F21 coverage_boost import + record 09/10 reports"
+    stage: 10-e2e
+    stages:
+    - 10-e2e
+    - 09-qa
+    files_changed: 5
+    timestamp: '2026-07-28T21:11:43Z'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+
   - sha: 836c1a4c856d25a3a341bdb2b3437a998d190926
     short: 836c1a4
     branch: evolve/EV-017-public-app-privacy
