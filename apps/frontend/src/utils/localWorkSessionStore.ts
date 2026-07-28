@@ -92,3 +92,15 @@ export async function importLocalWorkSessions(
 ): Promise<{ imported: number }> {
   notImplemented('importLocalWorkSessions');
 }
+
+export interface GuestMigrateResult {
+  migrated: boolean;
+  sessionId: string | null;
+}
+
+/**
+ * One-time migrate of guest ``metar_guest_converter_state`` → IndexedDB (E17-14).
+ */
+export async function migrateGuestSessionStorageToIndexedDb(): Promise<GuestMigrateResult> {
+  notImplemented('migrateGuestSessionStorageToIndexedDb');
+}
