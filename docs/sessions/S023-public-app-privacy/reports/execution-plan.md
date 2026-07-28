@@ -1,7 +1,7 @@
 # Execution plan — S023 / EV-017 (F21 public app + F22 privacy / #783)
 
-> **Status**: **approved** (D-S023-04-plan-approve-A) — 07-build in progress  
-> **Branch**: `evolve/EV-017-public-app-privacy`  
+> **Status**: **approved** (D-S023-04-plan-approve-A) — Phase C build verified (08 PASS)  
+> **Branch**: `main` (EV-017 merged via #786/#787/#788); evolve branch retained for WIP  
 > **Evolve cycle**: EV-017  
 > **Features**: **F21**, **F22**; deepen **F5** / **F7.h**; delete **packages/auth** (M4)  
 > **Mode**: delta  
@@ -12,9 +12,9 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — 07-build |
+| **Active phase** | Phase C — 08-verify-build **PASS** → handoff 09/10 |
 | **Active milestone** | M7 — E2E / docs / connectivity gate — **COMPLETE** |
-| **Active task** | M7 done — handoff 08-verify-build |
+| **Active task** | 08-verify-build completed — see reports/verification-report.md |
 | **Tasks** | 28 / ~28 completed |
 | **Last updated** | 2026-07-28 |
 
@@ -141,8 +141,10 @@
 
 | PR | When | Status |
 |----|------|--------|
-| Draft #786 | Interim docs | open |
-| Final EV-017 | After 08–11 (or earlier docs+code) | pending |
+| Draft #786 | Interim → merged | **merged** |
+| #787 FE config bake | H5 fix | **merged** |
+| #788 M7 closeout docs | T7.2/T7.4 | **merged** |
+| Final EV-017 | After 08–11 (or earlier docs+code) | pending Phase D |
 
 ## References
 
