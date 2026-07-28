@@ -75,6 +75,12 @@ Privacy: Solution A + one global preference center + GPC. Retire operator Auth U
 **Corpus fixes applied**: `api-contract.md`, `spec.md`, `user-journeys.md`, `test-plan.md`
 (TC-004 IndexedDB + TC-F21-auth-gone + TC-F22-001..003 stubs); `env-contract.md` banner only.
 
+### Phase A checkpoint (2026-07-28)
+
+| ID | Decision |
+|----|----------|
+| D-S023-02-phase-a-A | **A** — Phase A pass; start **04-tech-plan** (03 skipped) |
+
 ---
 
 ## Cycle EV-016 — Workbench golden examples (#780) (S021)
