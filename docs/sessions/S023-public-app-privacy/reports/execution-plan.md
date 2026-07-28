@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M2 — IndexedDB local sessions (F7.h / F5) |
-| **Active task** | T2.4 — Wire autosave/resume/sidebar/My METARs to IndexedDB |
-| **Tasks** | 7 / ~28 completed |
+| **Active task** | T2.5 — Export/import UI for tac-work-sessions-export-v1 |
+| **Tasks** | 8 / ~28 completed |
 | **Last updated** | 2026-07-28 |
 
 ## Tech Stack Summary (S023 delta)
@@ -74,7 +74,7 @@
 | T2.1 | Test | Unit tests: IDB CRUD, My METARs filter, soft-delete, export/import round-trip (TC-004) | TC-004; UJ-004/018 | T1.2 | completed |
 | T2.2 | Test | One-time sessionStorage → IndexedDB migrate test | E17-14 | T2.1 | completed |
 | T2.3 | Code | Add `idb` dep; implement local session store reusing `workSessionPayload` | E17-12/13; ADR-031 | T2.1 | completed |
-| T2.4 | Code | Wire autosave/resume/sidebar/My METARs to IndexedDB (no `workSessionApi` HTTP) | UJ-004/018; F7.h | T2.3 | pending |
+| T2.4 | Code | Wire autosave/resume/sidebar/My METARs to IndexedDB (no `workSessionApi` HTTP) | UJ-004/018; F7.h | T2.3 | completed |
 | T2.5 | Code | Export/import UI for `tac-work-sessions-export-v1` | E17-20 | T2.3 | pending |
 
 ### M3 — Public API abuse controls (F21)

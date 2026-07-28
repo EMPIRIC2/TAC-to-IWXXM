@@ -2,17 +2,16 @@ import { useCallback, useEffect, useState } from 'react';
 import type { WorkSession, WorkSessionStatus } from '@metar/shared';
 import { ArrowLeft, Loader2, Trash2, RotateCcw } from 'lucide-react';
 import {
-  MY_METARS_PRODUCTS,
-  deleteWorkSession,
-  listWorkSessions,
-  restoreWorkSession,
-} from '/utils/workSessionApi';
+  deleteLocalWorkSession,
+  listMyMetars,
+  restoreLocalWorkSession,
+} from '/utils/localWorkSessionStore';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 
 interface MyMetarsPageProps {
-  accessToken: string;
-  userEmail: string;
+  /** Optional subtitle (local history — no account required). */
+  userEmail?: string;
   onBack: () => void;
   onOpenSession: (session: WorkSession) => void;
 }
@@ -26,8 +25,7 @@ const STATUS_OPTIONS: Array<WorkSessionStatus | 'all'> = [
 ];
 
 export function MyMetarsPage({
-  accessToken,
-  userEmail,
+  userEmail = 'Local history',
   onBack,
   onOpenSession,
 }: MyMetarsPageProps) {
@@ -41,9 +39,8 @@ export function MyMetarsPage({
     setLoading(true);
     setError(null);
     try {
-      const response = await listWorkSessions(accessToken, {
+      const response = await listMyMetars({
         status: statusFilter === 'all' ? undefined : statusFilter,
-        product: MY_METARS_PRODUCTS,
         include_deleted: includeDeleted,
         limit: 50,
       });
@@ -53,7 +50,7 @@ export function MyMetarsPage({
     } finally {
       setLoading(false);
     }
-  }, [accessToken, includeDeleted, statusFilter]);
+  }, [includeDeleted, statusFilter]);
 
   /* eslint-disable react-hooks/set-state-in-effect -- refetch list when filters change */
   useEffect(() => {
@@ -62,12 +59,12 @@ export function MyMetarsPage({
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleDelete = async (sessionId: string) => {
-    await deleteWorkSession(accessToken, sessionId);
+    await deleteLocalWorkSession(sessionId);
     await loadSessions();
   };
 
   const handleRestore = async (sessionId: string) => {
-    await restoreWorkSession(accessToken, sessionId);
+    await restoreLocalWorkSession(sessionId);
     await loadSessions();
   };
 

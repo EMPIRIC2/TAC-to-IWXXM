@@ -14,15 +14,10 @@ import { getAccessToken, isLoggedIn, logout } from '@/utils/authService';
 import { requireApiBaseUrl } from '@/utils/apiBase';
 import { isAuthDisabled } from '@/utils/runtime-config';
 import type { WorkSession } from '@metar/shared';
-import { createWorkSession, listWorkSessions } from '@/utils/workSessionApi';
 import {
-  buildWorkSessionPayload,
-  hasConverterContent,
-} from '@/utils/workSessionPayload';
-import {
-  clearGuestConverterState,
-  readGuestConverterState,
-} from '@/utils/guestConverterState';
+  listLocalWorkSessions,
+  migrateGuestSessionStorageToIndexedDb,
+} from '@/utils/localWorkSessionStore';
 
 // Validate required environment variables on app load
 function validateAuthEnv() {
@@ -67,29 +62,19 @@ function App() {
     validateAuthEnv();
   }, []);
 
-  const initializeWorkSessions = useCallback(async (token: string) => {
-    if (sessionInitRef.current === token) {
+  const initializeWorkSessions = useCallback(async () => {
+    if (sessionInitRef.current === 'done') {
       return;
     }
-    sessionInitRef.current = token;
+    sessionInitRef.current = 'done';
 
     try {
-      const guestSnapshot = readGuestConverterState();
-      let activeSession: WorkSession | null = null;
-
-      if (guestSnapshot && hasConverterContent(guestSnapshot)) {
-        activeSession = await createWorkSession(
-          token,
-          buildWorkSessionPayload(guestSnapshot, { status: 'draft' }),
-        );
-        clearGuestConverterState();
-      } else {
-        const response = await listWorkSessions(token, { limit: 20 });
-        activeSession =
-          response.items.find(
-            (session) => session.status !== 'finished' && session.deleted_at == null,
-          ) ?? null;
-      }
+      await migrateGuestSessionStorageToIndexedDb();
+      const response = await listLocalWorkSessions({ limit: 20 });
+      const activeSession =
+        response.items.find(
+          (session) => session.status !== 'finished' && session.deleted_at == null,
+        ) ?? null;
 
       if (activeSession) {
         setActiveWorkSessionId(activeSession.id);
@@ -97,16 +82,14 @@ function App() {
       }
     } catch (error) {
       console.error('[App] work session init failed:', error);
+      sessionInitRef.current = null;
     }
   }, []);
 
-  /* eslint-disable react-hooks/set-state-in-effect -- F5 resume/create work sessions after login or page reload */
+  /* eslint-disable react-hooks/set-state-in-effect -- F7.h resume IndexedDB on load */
   useEffect(() => {
-    if (!accessToken || disableAuth) {
-      return;
-    }
-    void initializeWorkSessions(accessToken);
-  }, [accessToken, disableAuth, initializeWorkSessions]);
+    void initializeWorkSessions();
+  }, [initializeWorkSessions]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   // Handle auth callback route
@@ -137,9 +120,7 @@ function App() {
       setIsAuthenticated(true);
       sessionInitRef.current = null;
       setCurrentView('converter');
-      if (token) {
-        void initializeWorkSessions(token);
-      }
+      void initializeWorkSessions();
     }
   };
 
@@ -153,9 +134,7 @@ function App() {
     setAccessToken(token || '');
     sessionInitRef.current = null;
     setCurrentView('converter');
-    if (token) {
-      void initializeWorkSessions(token);
-    }
+    void initializeWorkSessions();
   };
 
   const handleLogout = async () => {
@@ -247,8 +226,8 @@ function App() {
             accessToken={isAuthenticated ? accessToken : undefined}
             isGuest={isGuestConverter}
             onRequestLogin={handleRequestLogin}
-            onOpenHistory={isAuthenticated ? handleOpenHistory : undefined}
-            onLoadWorkSession={isAuthenticated ? handleLoadWorkSession : undefined}
+            onOpenHistory={handleOpenHistory}
+            onLoadWorkSession={handleLoadWorkSession}
             onNewMetar={handleNewMetar}
             onSessionUpdated={handleSessionUpdated}
             onActiveSessionIdChange={setActiveWorkSessionId}
@@ -257,10 +236,9 @@ function App() {
           />
         )}
 
-      {currentView === 'history' && isAuthenticated && (
+      {currentView === 'history' && (
         <MyMetarsPage
-          accessToken={accessToken}
-          userEmail={userEmail}
+          userEmail={isAuthenticated ? userEmail || 'Local history' : 'Local history'}
           onBack={handleSwitchToConverter}
           onOpenSession={handleLoadWorkSession}
         />

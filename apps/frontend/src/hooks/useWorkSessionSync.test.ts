@@ -6,9 +6,9 @@ import type { ConverterSnapshot } from '@/utils/workSessionPayload';
 const mockCreate = vi.fn();
 const mockUpdate = vi.fn();
 
-vi.mock('/utils/workSessionApi', () => ({
-  createWorkSession: (...args: unknown[]) => mockCreate(...args),
-  updateWorkSession: (...args: unknown[]) => mockUpdate(...args),
+vi.mock('/utils/localWorkSessionStore', () => ({
+  createLocalWorkSession: (...args: unknown[]) => mockCreate(...args),
+  updateLocalWorkSession: (...args: unknown[]) => mockUpdate(...args),
 }));
 
 const snapshot: ConverterSnapshot = {
@@ -37,7 +37,7 @@ describe('useWorkSessionSync', () => {
       conversion_params: {},
       kv_upload_key: null,
       deleted_at: null,
-      user_id: 'user-1',
+      user_id: 'local',
       created_at: '2026-06-24T00:00:00Z',
       updated_at: '2026-06-24T00:00:00Z',
     });
@@ -54,7 +54,7 @@ describe('useWorkSessionSync', () => {
       conversion_params: {},
       kv_upload_key: null,
       deleted_at: null,
-      user_id: 'user-1',
+      user_id: 'local',
       created_at: '2026-06-24T00:00:00Z',
       updated_at: '2026-06-24T00:00:01Z',
     });
@@ -64,13 +64,12 @@ describe('useWorkSessionSync', () => {
     vi.useRealTimers();
   });
 
-  it('debounces auto-save by 3 seconds (F5-R6)', async () => {
+  it('debounces auto-save by 3 seconds without JWT (F7.h)', async () => {
     const onSessionSaved = vi.fn();
     const onSessionIdAssigned = vi.fn();
 
     const { result } = renderHook(() =>
       useWorkSessionSync({
-        accessToken: 'token',
         sessionId: null,
         sessionStatus: null,
         onSessionSaved,
@@ -98,10 +97,9 @@ describe('useWorkSessionSync', () => {
     expect(onSessionSaved).toHaveBeenCalled();
   });
 
-  it('PATCHes existing session on persist when sessionId is set', async () => {
+  it('updates existing session on persist when sessionId is set', async () => {
     const { result } = renderHook(() =>
       useWorkSessionSync({
-        accessToken: 'token',
         sessionId: 'existing-session',
         sessionStatus: 'draft',
         onSessionSaved: vi.fn(),
@@ -113,18 +111,13 @@ describe('useWorkSessionSync', () => {
       await result.current.persistSession(snapshot);
     });
 
-    expect(mockUpdate).toHaveBeenCalledWith(
-      'token',
-      'existing-session',
-      expect.any(Object),
-    );
+    expect(mockUpdate).toHaveBeenCalledWith('existing-session', expect.any(Object));
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
   it('skips persist when session is finished (read-only)', async () => {
     const { result } = renderHook(() =>
       useWorkSessionSync({
-        accessToken: 'token',
         sessionId: 'finished-session',
         sessionStatus: 'finished',
         onSessionSaved: vi.fn(),
@@ -145,7 +138,6 @@ describe('useWorkSessionSync', () => {
   it('skips debounced auto-save when read-only', () => {
     const { result } = renderHook(() =>
       useWorkSessionSync({
-        accessToken: 'token',
         sessionId: 'finished-session',
         sessionStatus: 'finished',
         onSessionSaved: vi.fn(),
@@ -163,7 +155,6 @@ describe('useWorkSessionSync', () => {
   it('flushAutoSave clears pending debounce and persists immediately', async () => {
     const { result } = renderHook(() =>
       useWorkSessionSync({
-        accessToken: 'token',
         sessionId: 'existing-session',
         sessionStatus: 'draft',
         onSessionSaved: vi.fn(),
@@ -186,7 +177,6 @@ describe('useWorkSessionSync', () => {
     mockCreate.mockRejectedValueOnce(new Error('save failed'));
     const { result } = renderHook(() =>
       useWorkSessionSync({
-        accessToken: 'token',
         sessionId: null,
         sessionStatus: null,
         onSessionSaved: vi.fn(),
@@ -207,7 +197,6 @@ describe('useWorkSessionSync', () => {
 
     const { result } = renderHook(() =>
       useWorkSessionSync({
-        accessToken: 'token',
         sessionId: null,
         sessionStatus: null,
         onSessionSaved,

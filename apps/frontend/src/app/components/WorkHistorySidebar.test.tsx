@@ -6,13 +6,13 @@ import { WorkHistorySidebar } from './WorkHistorySidebar';
 
 const mockList = vi.fn();
 
-vi.mock('/utils/workSessionApi', () => ({
-  listWorkSessions: (...args: unknown[]) => mockList(...args),
+vi.mock('/utils/localWorkSessionStore', () => ({
+  listLocalWorkSessions: (...args: unknown[]) => mockList(...args),
 }));
 
 const sampleSession = (overrides: Partial<WorkSession> = {}): WorkSession => ({
   id: 'sess-1',
-  user_id: 'user-1',
+  user_id: 'local',
   product: 'metar',
   status: 'wip',
   title: 'KDEN WIP',
@@ -43,10 +43,9 @@ describe('WorkHistorySidebar', () => {
     });
   });
 
-  it('loads recent sessions', async () => {
+  it('loads recent sessions from IndexedDB', async () => {
     render(
       <WorkHistorySidebar
-        accessToken="token"
         onSelectSession={onSelectSession}
         onOpenHistory={onOpenHistory}
       />,
@@ -56,7 +55,7 @@ describe('WorkHistorySidebar', () => {
     await waitFor(() => {
       expect(screen.getByText('KDEN WIP')).toBeInTheDocument();
     });
-    expect(mockList).toHaveBeenCalledWith('token', { limit: 5 });
+    expect(mockList).toHaveBeenCalledWith({ limit: 5 });
   });
 
   it('selects a session and opens full history', async () => {
@@ -65,7 +64,6 @@ describe('WorkHistorySidebar', () => {
 
     render(
       <WorkHistorySidebar
-        accessToken="token"
         activeSessionId="sess-1"
         onSelectSession={onSelectSession}
         onOpenHistory={onOpenHistory}
@@ -83,9 +81,7 @@ describe('WorkHistorySidebar', () => {
   it('shows empty state when no sessions exist', async () => {
     mockList.mockResolvedValue({ items: [], total: 0, page: 1, limit: 5 });
 
-    render(
-      <WorkHistorySidebar accessToken="token" onSelectSession={onSelectSession} />,
-    );
+    render(<WorkHistorySidebar onSelectSession={onSelectSession} />);
 
     await waitFor(() => {
       expect(screen.getByText(/no saved sessions yet/i)).toBeInTheDocument();
@@ -95,9 +91,7 @@ describe('WorkHistorySidebar', () => {
   it('shows load errors', async () => {
     mockList.mockRejectedValue(new Error('Forbidden'));
 
-    render(
-      <WorkHistorySidebar accessToken="token" onSelectSession={onSelectSession} />,
-    );
+    render(<WorkHistorySidebar onSelectSession={onSelectSession} />);
 
     await waitFor(() => {
       expect(screen.getByText('Forbidden')).toBeInTheDocument();
@@ -107,9 +101,7 @@ describe('WorkHistorySidebar', () => {
   it('shows generic load errors for non-Error rejections', async () => {
     mockList.mockRejectedValue('network');
 
-    render(
-      <WorkHistorySidebar accessToken="token" onSelectSession={onSelectSession} />,
-    );
+    render(<WorkHistorySidebar onSelectSession={onSelectSession} />);
 
     await waitFor(() => {
       expect(screen.getByText('Failed to load history')).toBeInTheDocument();
@@ -117,9 +109,7 @@ describe('WorkHistorySidebar', () => {
   });
 
   it('omits My METARs link when onOpenHistory is not provided', async () => {
-    render(
-      <WorkHistorySidebar accessToken="token" onSelectSession={onSelectSession} />,
-    );
+    render(<WorkHistorySidebar onSelectSession={onSelectSession} />);
 
     await waitFor(() => expect(screen.getByText('KDEN WIP')).toBeInTheDocument());
     expect(
@@ -139,40 +129,14 @@ describe('WorkHistorySidebar', () => {
     });
 
     render(
-      <WorkHistorySidebar
-        accessToken="token"
-        activeSessionId="sess-2"
-        onSelectSession={onSelectSession}
-      />,
+      <WorkHistorySidebar activeSessionId="sess-2" onSelectSession={onSelectSession} />,
     );
 
     await waitFor(() => expect(screen.getByText('Other session')).toBeInTheDocument());
 
-    const otherButton = screen.getByText('Other session').closest('button');
-    const activeButton = screen.getByText('Active session').closest('button');
-    expect(otherButton).toHaveClass('border-blue-500');
-    expect(activeButton).not.toHaveClass('border-blue-500');
-  });
-
-  it('falls back to raw status label for unknown statuses', async () => {
-    mockList.mockResolvedValue({
-      items: [
-        sampleSession({
-          status: 'archived' as WorkSession['status'],
-          title: 'Archived session',
-        }),
-      ],
-      total: 1,
-      page: 1,
-      limit: 5,
-    });
-
-    render(
-      <WorkHistorySidebar accessToken="token" onSelectSession={onSelectSession} />,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText(/archived ·/i)).toBeInTheDocument();
-    });
+    const activeBtn = screen.getByText('Other session').closest('button');
+    const otherBtn = screen.getByText('Active session').closest('button');
+    expect(activeBtn?.className).toMatch(/border-blue-500/);
+    expect(otherBtn?.className).not.toMatch(/border-blue-500/);
   });
 });

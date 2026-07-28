@@ -70,10 +70,7 @@ import {
   type ConverterSnapshot,
   resolveManualLineMetaFromResult,
 } from '/utils/workSessionPayload';
-import {
-  readGuestConverterState,
-  saveGuestConverterState,
-} from '/utils/guestConverterState';
+import { readGuestConverterState } from '/utils/guestConverterState';
 import {
   manualOutputName,
   outputArchiveName,
@@ -244,7 +241,6 @@ export function FileConverter({
 
   const { isReadOnly, saveIndicator, scheduleAutoSave, persistSession } =
     useWorkSessionSync({
-      accessToken,
       sessionId: activeWorkSessionId ?? null,
       sessionStatus: loadedWorkSession?.status ?? null,
       onSessionSaved: (session) => onSessionUpdated?.(session),
@@ -387,7 +383,7 @@ export function FileConverter({
   /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
-    if (!accessToken || isReadOnly) {
+    if (isReadOnly) {
       return;
     }
     scheduleAutoSave(buildSnapshot());
@@ -398,24 +394,7 @@ export function FileConverter({
     convertedFiles,
     conversionLog,
     outputFilename,
-    accessToken,
     isReadOnly,
-  ]);
-
-  useEffect(() => {
-    if (accessToken || isGuest === false) {
-      return;
-    }
-    saveGuestConverterState(buildSnapshot());
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- guest state mirror
-  }, [
-    manualInput,
-    pendingFiles,
-    convertedFiles,
-    conversionLog,
-    outputFilename,
-    isGuest,
-    accessToken,
   ]);
 
   const handlePreferencesSaved = () => {
@@ -841,21 +820,19 @@ export function FileConverter({
         } else {
           toast.success(`Successfully converted ${result.files.length} file(s)`);
         }
-        if (accessToken) {
-          const snapshot = buildSnapshot({
-            convertedFiles: result.files.map((file) => ({
-              originalName: file.originalName,
-              originalContent: file.originalContent,
-              convertedContent: file.convertedContent,
-            })),
-            manualInput: '',
-            pendingFiles: [],
-          });
-          await persistSession(snapshot, {
-            status: result.hasErrors ? 'failed' : 'wip',
-          });
-        }
-      } else if (accessToken) {
+        const snapshot = buildSnapshot({
+          convertedFiles: result.files.map((file) => ({
+            originalName: file.originalName,
+            originalContent: file.originalContent,
+            convertedContent: file.convertedContent,
+          })),
+          manualInput: '',
+          pendingFiles: [],
+        });
+        await persistSession(snapshot, {
+          status: result.hasErrors ? 'failed' : 'wip',
+        });
+      } else {
         await persistSession(buildSnapshot(), { status: 'failed' });
       }
     } finally {
@@ -1832,35 +1809,31 @@ export function FileConverter({
 
             {/* Action Buttons — fixed strip; status lives outside so busy/save text cannot reflow */}
             <div className="mb-8" data-testid="action-button-strip">
-              {accessToken && (
-                <div
-                  className="mb-2 flex h-5 items-center"
-                  aria-live="polite"
-                  data-testid="autosave-indicator"
-                >
-                  {saveIndicatorLabel ? (
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {saveIndicatorLabel}
-                    </span>
-                  ) : (
-                    <span className="sr-only">Autosave idle</span>
-                  )}
-                </div>
-              )}
-              <div className="flex min-h-10 flex-wrap items-center gap-3">
-                {accessToken && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleNewMetar}
-                    disabled={isBusy}
-                    data-testid="new-metar-button"
-                    aria-label="Start a new METAR session"
-                    className="min-w-[7.5rem]"
-                  >
-                    New METAR
-                  </Button>
+              <div
+                className="mb-2 flex h-5 items-center"
+                aria-live="polite"
+                data-testid="autosave-indicator"
+              >
+                {saveIndicatorLabel ? (
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    {saveIndicatorLabel}
+                  </span>
+                ) : (
+                  <span className="sr-only">Autosave idle</span>
                 )}
+              </div>
+              <div className="flex min-h-10 flex-wrap items-center gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleNewMetar}
+                  disabled={isBusy}
+                  data-testid="new-metar-button"
+                  aria-label="Start a new METAR session"
+                  className="min-w-[7.5rem]"
+                >
+                  New METAR
+                </Button>
                 <Button
                   data-testid="convert-button"
                   onClick={handleConvert}
@@ -2174,10 +2147,9 @@ export function FileConverter({
               </p>
             </div>
           </div>
-          {accessToken && onLoadWorkSession && (
+          {onLoadWorkSession && (
             <aside className="lg:sticky lg:top-8 lg:mt-8 lg:self-start">
               <WorkHistorySidebar
-                accessToken={accessToken}
                 activeSessionId={activeWorkSessionId}
                 onSelectSession={onLoadWorkSession}
                 onOpenHistory={onOpenHistory}

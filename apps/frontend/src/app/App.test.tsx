@@ -14,8 +14,8 @@ const toastMocks = vi.hoisted(() => ({
 }));
 
 const workSessionMocks = vi.hoisted(() => ({
-  listWorkSessions: vi.fn(),
-  createWorkSession: vi.fn(),
+  listLocalWorkSessions: vi.fn(),
+  migrateGuestSessionStorageToIndexedDb: vi.fn(),
 }));
 
 // Setup all mocks FIRST before any imports
@@ -41,14 +41,10 @@ vi.mock('@/utils/authService', () => ({
   getAccessToken: authServiceMocks.getAccessToken,
 }));
 
-vi.mock('@/utils/workSessionApi', () => ({
-  listWorkSessions: workSessionMocks.listWorkSessions,
-  createWorkSession: workSessionMocks.createWorkSession,
-}));
-
-vi.mock('@/utils/guestConverterState', () => ({
-  readGuestConverterState: vi.fn(() => null),
-  clearGuestConverterState: vi.fn(),
+vi.mock('@/utils/localWorkSessionStore', () => ({
+  listLocalWorkSessions: workSessionMocks.listLocalWorkSessions,
+  migrateGuestSessionStorageToIndexedDb:
+    workSessionMocks.migrateGuestSessionStorageToIndexedDb,
 }));
 
 vi.mock('sonner', async (importOriginal) => {
@@ -281,13 +277,6 @@ vi.mock('./components/ui/sonner', () => ({
 
 // Now import App and mocked dependencies
 import App from './App';
-import {
-  readGuestConverterState,
-  clearGuestConverterState,
-} from '@/utils/guestConverterState';
-
-const mockReadGuest = vi.mocked(readGuestConverterState);
-const mockClearGuest = vi.mocked(clearGuestConverterState);
 
 describe('App Component', () => {
   beforeEach(() => {
@@ -296,24 +285,15 @@ describe('App Component', () => {
     authServiceMocks.isLoggedIn.mockReturnValue(false);
     authServiceMocks.getAccessToken.mockReturnValue(null);
     authServiceMocks.logout.mockResolvedValue(undefined);
-    mockReadGuest.mockReturnValue(null);
-    workSessionMocks.listWorkSessions.mockResolvedValue({ items: [], total: 0 });
-    workSessionMocks.createWorkSession.mockResolvedValue({
-      id: 'sess-new',
-      user_id: 'user-1',
-      product: 'metar',
-      status: 'draft',
-      title: 'Draft',
-      manual_tac: '',
-      pending_files: [],
-      converted_results: [],
-      errors: [],
-      issues: [],
-      conversion_params: {},
-      kv_upload_key: null,
-      deleted_at: null,
-      created_at: '2026-06-24T00:00:00Z',
-      updated_at: '2026-06-24T00:00:00Z',
+    workSessionMocks.listLocalWorkSessions.mockResolvedValue({
+      items: [],
+      total: 0,
+      page: 1,
+      limit: 20,
+    });
+    workSessionMocks.migrateGuestSessionStorageToIndexedDb.mockResolvedValue({
+      migrated: false,
+      sessionId: null,
     });
     vi.unstubAllEnvs();
     vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
@@ -585,12 +565,12 @@ describe('App Component', () => {
       expect(screen.getByTestId('file-converter')).toBeInTheDocument();
     });
 
-    it('resumes an active draft on login via work session API', async () => {
-      workSessionMocks.listWorkSessions.mockResolvedValue({
+    it('resumes an active draft from IndexedDB on load', async () => {
+      workSessionMocks.listLocalWorkSessions.mockResolvedValue({
         items: [
           {
             id: 'sess-resume',
-            user_id: 'user-1',
+            user_id: 'local',
             product: 'metar',
             status: 'draft',
             title: 'Resume me',
@@ -607,6 +587,8 @@ describe('App Component', () => {
           },
         ],
         total: 1,
+        page: 1,
+        limit: 20,
       });
 
       const user = userEvent.setup();
@@ -614,17 +596,17 @@ describe('App Component', () => {
       await user.click(screen.getByTestId('do-login'));
 
       await vi.waitFor(() => {
-        expect(workSessionMocks.listWorkSessions).toHaveBeenCalled();
+        expect(workSessionMocks.listLocalWorkSessions).toHaveBeenCalled();
+        expect(
+          workSessionMocks.migrateGuestSessionStorageToIndexedDb,
+        ).toHaveBeenCalled();
       });
     });
 
-    it('creates draft from guest converter state on login (F5-R33)', async () => {
-      mockReadGuest.mockReturnValue({
-        manualInput: 'METAR KJFK 121251Z',
-        pendingFiles: [],
-        convertedFiles: [],
-        conversionLog: null,
-        conversionParams: {},
+    it('runs one-time guest sessionStorage migrate on init (E17-14)', async () => {
+      workSessionMocks.migrateGuestSessionStorageToIndexedDb.mockResolvedValue({
+        migrated: true,
+        sessionId: 'migrated-1',
       });
 
       const user = userEvent.setup();
@@ -632,8 +614,9 @@ describe('App Component', () => {
       await user.click(screen.getByTestId('do-login'));
 
       await vi.waitFor(() => {
-        expect(workSessionMocks.createWorkSession).toHaveBeenCalled();
-        expect(mockClearGuest).toHaveBeenCalled();
+        expect(
+          workSessionMocks.migrateGuestSessionStorageToIndexedDb,
+        ).toHaveBeenCalled();
       });
     });
 
@@ -653,14 +636,14 @@ describe('App Component', () => {
       const consoleErrorSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
-      workSessionMocks.listWorkSessions.mockRejectedValue(new Error('init failed'));
+      workSessionMocks.listLocalWorkSessions.mockRejectedValue(
+        new Error('init failed'),
+      );
 
-      const user = userEvent.setup();
       render(<App />);
-      await user.click(screen.getByTestId('do-login'));
 
       await waitFor(() => {
-        expect(workSessionMocks.listWorkSessions).toHaveBeenCalled();
+        expect(workSessionMocks.listLocalWorkSessions).toHaveBeenCalled();
         expect(consoleErrorSpy).toHaveBeenCalled();
       });
       expect(consoleErrorSpy.mock.calls[0]?.[0]).toBe(

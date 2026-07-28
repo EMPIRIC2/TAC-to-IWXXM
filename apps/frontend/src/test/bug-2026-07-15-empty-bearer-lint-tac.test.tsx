@@ -22,9 +22,11 @@ vi.mock('@/utils/authService', () => ({
   getAccessToken: authServiceMocks.getAccessToken,
 }));
 
-vi.mock('@/utils/workSessionApi', () => ({
-  listWorkSessions: vi.fn().mockResolvedValue({ items: [] }),
-  createWorkSession: vi.fn(),
+vi.mock('@/utils/localWorkSessionStore', () => ({
+  listLocalWorkSessions: vi.fn().mockResolvedValue({ items: [], total: 0 }),
+  migrateGuestSessionStorageToIndexedDb: vi
+    .fn()
+    .mockResolvedValue({ migrated: false, sessionId: null }),
 }));
 
 vi.mock('@/utils/guestConverterState', () => ({

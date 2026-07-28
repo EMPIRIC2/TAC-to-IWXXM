@@ -8,16 +8,15 @@ const mockList = vi.fn();
 const mockDelete = vi.fn();
 const mockRestore = vi.fn();
 
-vi.mock('/utils/workSessionApi', () => ({
-  MY_METARS_PRODUCTS: ['metar', 'speci'],
-  listWorkSessions: (...args: unknown[]) => mockList(...args),
-  deleteWorkSession: (...args: unknown[]) => mockDelete(...args),
-  restoreWorkSession: (...args: unknown[]) => mockRestore(...args),
+vi.mock('/utils/localWorkSessionStore', () => ({
+  listMyMetars: (...args: unknown[]) => mockList(...args),
+  deleteLocalWorkSession: (...args: unknown[]) => mockDelete(...args),
+  restoreLocalWorkSession: (...args: unknown[]) => mockRestore(...args),
 }));
 
 const sampleSession = (overrides: Partial<WorkSession> = {}): WorkSession => ({
   id: 'sess-1',
-  user_id: 'user-1',
+  user_id: 'local',
   product: 'metar',
   status: 'draft',
   title: 'KJFK draft',
@@ -50,25 +49,23 @@ describe('MyMetarsPage', () => {
     mockRestore.mockResolvedValue(sampleSession());
   });
 
-  it('loads and displays work sessions', async () => {
+  it('loads and displays work sessions from IndexedDB', async () => {
     render(
       <MyMetarsPage
-        accessToken="token"
-        userEmail="user@example.com"
+        userEmail="Local history"
         onBack={onBack}
         onOpenSession={onOpenSession}
       />,
     );
 
     expect(screen.getByText('My METARs')).toBeInTheDocument();
-    expect(screen.getByText('user@example.com')).toBeInTheDocument();
+    expect(screen.getByText('Local history')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText('KJFK draft')).toBeInTheDocument();
     });
-    expect(mockList).toHaveBeenCalledWith('token', {
+    expect(mockList).toHaveBeenCalledWith({
       status: undefined,
-      product: ['metar', 'speci'],
       include_deleted: false,
       limit: 50,
     });
@@ -79,14 +76,7 @@ describe('MyMetarsPage', () => {
     const session = sampleSession();
     mockList.mockResolvedValue({ items: [session], total: 1, page: 1, limit: 50 });
 
-    render(
-      <MyMetarsPage
-        accessToken="token"
-        userEmail="user@example.com"
-        onBack={onBack}
-        onOpenSession={onOpenSession}
-      />,
-    );
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
 
     await waitFor(() => {
       expect(screen.getByText('KJFK draft')).toBeInTheDocument();
@@ -97,22 +87,14 @@ describe('MyMetarsPage', () => {
 
   it('refetches when status filter changes', async () => {
     const user = userEvent.setup();
-    render(
-      <MyMetarsPage
-        accessToken="token"
-        userEmail="user@example.com"
-        onBack={onBack}
-        onOpenSession={onOpenSession}
-      />,
-    );
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
 
     await waitFor(() => expect(mockList).toHaveBeenCalledTimes(1));
 
     await user.selectOptions(screen.getByDisplayValue('All'), 'wip');
     await waitFor(() => {
-      expect(mockList).toHaveBeenLastCalledWith('token', {
+      expect(mockList).toHaveBeenLastCalledWith({
         status: 'wip',
-        product: ['metar', 'speci'],
         include_deleted: false,
         limit: 50,
       });
@@ -121,22 +103,14 @@ describe('MyMetarsPage', () => {
 
   it('includes deleted sessions when trash filter is enabled', async () => {
     const user = userEvent.setup();
-    render(
-      <MyMetarsPage
-        accessToken="token"
-        userEmail="user@example.com"
-        onBack={onBack}
-        onOpenSession={onOpenSession}
-      />,
-    );
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
 
     await waitFor(() => expect(mockList).toHaveBeenCalledTimes(1));
     await user.click(screen.getByLabelText(/show trash/i));
 
     await waitFor(() => {
-      expect(mockList).toHaveBeenLastCalledWith('token', {
+      expect(mockList).toHaveBeenLastCalledWith({
         status: undefined,
-        product: ['metar', 'speci'],
         include_deleted: true,
         limit: 50,
       });
@@ -165,35 +139,21 @@ describe('MyMetarsPage', () => {
         limit: 50,
       });
 
-    render(
-      <MyMetarsPage
-        accessToken="token"
-        userEmail="user@example.com"
-        onBack={onBack}
-        onOpenSession={onOpenSession}
-      />,
-    );
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
 
     await waitFor(() => expect(screen.getByText('KJFK draft')).toBeInTheDocument());
     await user.click(screen.getByRole('button', { name: '' }));
-    expect(mockDelete).toHaveBeenCalledWith('token', 'sess-1');
+    expect(mockDelete).toHaveBeenCalledWith('sess-1');
 
     await waitFor(() => expect(mockRestore).toHaveBeenCalled);
     await user.click(screen.getByRole('button', { name: '' }));
-    expect(mockRestore).toHaveBeenCalledWith('token', 'sess-1');
+    expect(mockRestore).toHaveBeenCalledWith('sess-1');
   });
 
   it('shows API errors', async () => {
     mockList.mockRejectedValue(new Error('Network down'));
 
-    render(
-      <MyMetarsPage
-        accessToken="token"
-        userEmail="user@example.com"
-        onBack={onBack}
-        onOpenSession={onOpenSession}
-      />,
-    );
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
 
     await waitFor(() => {
       expect(screen.getByText('Network down')).toBeInTheDocument();
@@ -203,14 +163,7 @@ describe('MyMetarsPage', () => {
   it('shows generic API errors for non-Error rejections', async () => {
     mockList.mockRejectedValue('offline');
 
-    render(
-      <MyMetarsPage
-        accessToken="token"
-        userEmail="user@example.com"
-        onBack={onBack}
-        onOpenSession={onOpenSession}
-      />,
-    );
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
 
     await waitFor(() => {
       expect(screen.getByText('Failed to load sessions')).toBeInTheDocument();
@@ -219,14 +172,7 @@ describe('MyMetarsPage', () => {
 
   it('navigates back to converter', async () => {
     const user = userEvent.setup();
-    render(
-      <MyMetarsPage
-        accessToken="token"
-        userEmail="user@example.com"
-        onBack={onBack}
-        onOpenSession={onOpenSession}
-      />,
-    );
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
 
     await user.click(screen.getByRole('button', { name: /back to converter/i }));
     expect(onBack).toHaveBeenCalled();

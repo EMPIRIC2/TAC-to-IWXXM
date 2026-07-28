@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { WorkSession } from '@metar/shared';
 import { Loader2, History } from 'lucide-react';
-import { listWorkSessions } from '/utils/workSessionApi';
+import { listLocalWorkSessions } from '/utils/localWorkSessionStore';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 
 interface WorkHistorySidebarProps {
-  accessToken: string;
   activeSessionId?: string | null;
   onSelectSession: (session: WorkSession) => void;
   onOpenHistory?: () => void;
@@ -20,7 +19,6 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export function WorkHistorySidebar({
-  accessToken,
   activeSessionId,
   onSelectSession,
   onOpenHistory,
@@ -35,7 +33,7 @@ export function WorkHistorySidebar({
       setLoading(true);
       setError(null);
       try {
-        const response = await listWorkSessions(accessToken, { limit: 5 });
+        const response = await listLocalWorkSessions({ limit: 5 });
         if (!cancelled) {
           setSessions(response.items);
         }
@@ -52,7 +50,7 @@ export function WorkHistorySidebar({
     return () => {
       cancelled = true;
     };
-  }, [accessToken]);
+  }, [activeSessionId]);
 
   return (
     <Card className="p-4" aria-label="Recent work sessions">
