@@ -1,6 +1,6 @@
 # Execution plan — S023 / EV-017 (F21 public app + F22 privacy / #783)
 
-> **Status**: **approved** (D-S023-04-plan-approve-A) — 07-build in progress  
+> **Status**: **approved** (D-S023-04-plan-approve-A) — 08-verify-build in progress  
 > **Branch**: `evolve/EV-017-public-app-privacy`  
 > **Evolve cycle**: EV-017  
 > **Features**: **F21**, **F22**; deepen **F5** / **F7.h**; delete **packages/auth** (M4)  
@@ -12,10 +12,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — 07-build |
-| **Active milestone** | M7 — E2E / docs / connectivity gate |
-| **Active task** | T7.4 blocked on F21 image cutover (RENDER_API_KEY OK; inventory done) |
-| **Tasks** | 27 / ~28 completed |
+| **Active phase** | Phase C — 08-verify-build |
+| **Active milestone** | M7 — E2E / docs / connectivity gate (**complete**) |
+| **Active task** | 08-verify-build |
+| **Tasks** | 28 / 28 completed |
 | **Last updated** | 2026-07-28 |
 
 ## Tech Stack Summary (S023 delta)
@@ -116,9 +116,9 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T7.1 | Test | Playwright: public UJ-001/004/013/018; Auth-gone negative; privacy smoke | test-plan; H6 | M2–M6 | completed |
-| T7.2 | Test | H4–H5 connectivity after FE/API deploy | connectivity-gates | T7.1 | pending |
+| T7.2 | Test | H4–H5 connectivity after FE/API deploy | connectivity-gates | T7.1 | completed — see reports/t7.2-h4-h5-connectivity.md |
 | T7.3 | Docs | Update deploy.md / CORPUS refs; session 04 report; CHANGELOG draft bullets | docs corpus | T5.4 | completed |
-| T7.4 | Config | Confirm Render env: remove Auth secrets from API if unused; keep F8 + allowlist | env-contract | T1.3 | blocked — live still Auth-era `main-latest`; delete env only after F21 image deploy; see reports/t7.4-render-env-checklist.md |
+| T7.4 | Config | Confirm Render env: remove Auth secrets from API if unused; keep F8 + allowlist | env-contract | T1.3 | completed — see reports/t7.4-render-env-checklist.md |
 
 ## Phase Gate Check (B→C)
 
@@ -141,11 +141,12 @@
 
 | PR | When | Status |
 |----|------|--------|
-| Draft #786 | Interim docs | open |
+| #786 / #787 / #788 | Interim + M7 cutover | merged |
 | Final EV-017 | After 08–11 (or earlier docs+code) | pending |
 
 ## References
 
 - ADR-031, evolve-decisions EV-017 (E17-12..25)
 - reports/02-verify-plan.md; impact-analysis.md
+- reports/t7.2-h4-h5-connectivity.md; reports/t7.4-render-env-checklist.md
 - Issue #783

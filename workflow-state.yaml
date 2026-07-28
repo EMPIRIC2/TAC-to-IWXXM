@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-017
   github_issue: 783
   artifacts_dir: docs/sessions/S023-public-app-privacy/
-  current_stage: 07-build
+  current_stage: 08-verify-build
   feature_ids:
   - F21
   - F22
@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.3 completed @ f5aa024; T7.4 blocked (checklist committed @ d459164; awaiting RENDER_API_KEY for live env cutover); T7.2 pending (needs deploy after T7.4); progress 27/~28; tip d459164; interim draft PR #786; #783'
+  note: 'S023/EV-017 08-verify-build PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; C→D criteria met; Phase C checkpoint pending AskQuestion before 09+10; tip 73f8389 (locks uncommitted); security WIP stashed; report docs/sessions/S023-public-app-privacy/reports/verification-report.md; #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; 08 PASS; C→D criteria met; Phase C checkpoint pending AskQuestion before 09+10; tip 73f8389 (locks uncommitted); security WIP stashed; #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -68,15 +68,19 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     skip_rationale:
     started: '2026-07-28'
-    note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164'
+    completed: '2026-07-28'
+    note: 'S023/EV-017 07-build COMPLETE 2026-07-28 — M1–M7 all done (T7.1–T7.4); tip 73f8389 before 08; PRs #786/#787/#788 merged; handoff 08-verify-build'
   - stage: 08-verify-build
     required: true
     mode: full
-    status: pending
+    status: completed
     skip_rationale:
+    started: '2026-07-28'
+    completed: '2026-07-28'
+    note: 'S023/EV-017 08-verify-build COMPLETE 2026-07-28 — PASS; pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; report docs/sessions/S023-public-app-privacy/reports/verification-report.md; tip 73f8389 (locks uncommitted); Phase C checkpoint pending; #783'
   - stage: 09-qa
     required: true
     mode: full
@@ -3144,19 +3148,21 @@ stages:
       session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
       skill_id: 07-build
-      status: in_progress
+      status: completed
       started_at: '2026-07-28'
       started: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28'
       mode: full
-      note: 'T7.3 COMPLETE @ f5aa024; T7.4 blocked — checklist committed @ d459164; awaiting RENDER_API_KEY for live env deletes; artifact docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md; T7.2 pending (needs deploy after T7.4); progress 27/~28'
+      note: 'COMPLETE 2026-07-28 — M1–M7 all done (T7.1–T7.4); tip 73f8389 before 08; PRs #786/#787/#788 merged; artifacts t7.2-h4-h5-connectivity.md + t7.4-render-env-checklist.md; handoff 08-verify-build'
       active_milestone: M7
       active_task: T7.4
-      active_task_status: blocked
+      active_task_status: completed
       decision_id: D-S023-07-T7.4-blocked
       branch: evolve/EV-017-public-app-privacy
-      progress: 27/~28
-      tip_sha: d459164
-      tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+      progress: 28/28
+      tip_sha: 73f8389
+      tip_sha_full: 73f8389ebd2ae764eb77ffd8b3e5e3acf12088c8
       report: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
       feature_ids:
       - F21
@@ -3909,6 +3915,28 @@ stages:
       report:
         status: completed
     delta_substages:
+    - id: S023-public-app-privacy
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-07-28'
+      started: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28'
+      mode: full
+      overall: pass
+      note: 'COMPLETE 2026-07-28 — PASS; pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; tip 73f8389 (locks uncommitted); security WIP stashed; Phase C checkpoint pending AskQuestion before 09+10; #783'
+      report: docs/sessions/S023-public-app-privacy/reports/verification-report.md
+      decision_id: D-S023-08-pyasn1-A
+      active_milestone: M7
+      progress: 28/28
+      tip_sha: 73f8389
+      tip_sha_full: 73f8389ebd2ae764eb77ffd8b3e5e3acf12088c8
+      branch: evolve/EV-017-public-app-privacy
+      feature_ids:
+      - F21
+      - F22
     - id: S021-golden-examples-ui
       session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
@@ -4366,9 +4394,12 @@ stages:
     evolve_cycle_id: EV-017
     started_at: '2026-07-27'
     completed_at:
-    current_stage: 07-build
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B PASSED; current_stage 07-build; M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; 03/05/06 skipped; #783'
+    current_stage: 08-verify-build
+    note: 'S023/EV-017 16-evolve in_progress — 08 PASS; C→D criteria met; Phase C checkpoint pending AskQuestion before 09+10; pyasn1 0.6.4 (D-S023-08-pyasn1-A); tip 73f8389 (locks uncommitted); security WIP stashed; #783'
     notes:
+    - '2026-07-28 S023/EV-017 08-verify-build COMPLETE PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; report verification-report.md; C→D criteria met; Phase C checkpoint pending; tip 73f8389 (locks uncommitted); #783'
+    - '2026-07-28 S023/EV-017 08-verify-build FAIL (security gate blocking C→D) — pending pyasn1 0.6.3→0.6.4 (PYSEC-2026-3455/3456/3457); ecdsa PYSEC-2026-1325 ignored; report verification-report.md; tip 73f8389; #783'
+    - '2026-07-28 S023/EV-017 08-verify-build STARTED — M7 COMPLETE (T7.1–T7.4); 07-build COMPLETE; tip 73f8389; PRs #786/#787/#788 merged; security WIP stashed; #783'
     - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked) awaiting RENDER_API_KEY; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — T7.4 blocked (D-S023-07-T7.4-blocked); T7.2 pending after T7.4; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
@@ -8675,7 +8706,48 @@ decisions_log:
   related_issue: 783
   related_decision: D-S023-07-resume-T7.1
   artifact: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
+- id: D-S023-08-pyasn1-A
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 08-verify-build
+  skill_id: 08-verify-build
+  skill: 08-verify-build
+  category: security
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: Upgrade pyasn1 0.6.3→0.6.4 for 08 security gate
+  summary: Upgrade pyasn1 0.6.3→0.6.4 (PYSEC-2026-3455/3456/3457); ecdsa PYSEC-2026-1325 remains ignored per audit/pip-audit-ignore.txt
+  decision: Upgrade pyasn1 0.6.3→0.6.4 to clear 08-verify-build security gate (D-S023-08-pyasn1-A). ecdsa PYSEC-2026-1325 ignored per existing audit/pip-audit-ignore.txt policy. 08 PASS; C→D criteria met; Phase C checkpoint AskQuestion pending before 09+10.
+  related_issue: 783
+  artifact: docs/sessions/S023-public-app-privacy/reports/verification-report.md
 artifacts:
+- path: docs/sessions/S023-public-app-privacy/checkpoints/phase-c.md
+  type: session-checkpoint
+  kind: phase-c
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: pending
+  decision_id: D-S023-08-pyasn1-A
+  note: 'S023/EV-017 Phase C checkpoint drafted — 08 PASS; C→D criteria met; awaiting AskQuestion approval before 09+10'
+- path: docs/sessions/S023-public-app-privacy/reports/verification-report.md
+  type: session-report
+  kind: verification-report
+  stage: 08-verify-build
+  skill_id: 08-verify-build
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: completed
+  decision_id: D-S023-08-pyasn1-A
+  tip_sha: 73f8389
+  note: 'S023/EV-017 08-verify-build PASS — pyasn1 0.6.4; ecdsa ignored'
 - path: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
   type: session-report
   kind: checklist
@@ -10665,10 +10737,10 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07-build — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786.'
-  current_stage: 07-build
+    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07+08 COMPLETE; 08 PASS (pyasn1 0.6.4 / D-S023-08-pyasn1-A); C→D criteria met; Phase C checkpoint pending AskQuestion; tip 73f8389 (locks uncommitted).'
+  current_stage: 08-verify-build
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 Phase A+B PASSED — gates.a_to_b+b_to_c passed; current_stage 07-build — M1–M6 complete; M7 active; T7.3 completed @ f5aa024; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28; tip d459164; 03/05/06 skipped; interim draft PR #786; #783.'
+  note: 'S023/EV-017 08 PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; C→D criteria met; Phase C checkpoint pending AskQuestion before 09+10; tip 73f8389 (locks uncommitted); security WIP stashed; report docs/sessions/S023-public-app-privacy/reports/verification-report.md; #783.'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
@@ -10696,7 +10768,11 @@ evolve_cycles:
   - D-S023-04-plan-approve-A
   - D-S023-07-resume-T7.1
   - D-S023-07-T7.4-blocked
+  - D-S023-08-pyasn1-A
   notes:
+  - '2026-07-28 S023/EV-017 08-verify-build COMPLETE PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; report verification-report.md; C→D criteria met; Phase C checkpoint pending AskQuestion; tip 73f8389 (locks uncommitted); security WIP stashed; #783'
+  - '2026-07-28 S023/EV-017 08-verify-build FAIL (security gate blocking C→D) — pending pyasn1 0.6.3→0.6.4 (PYSEC-2026-3455/3456/3457); ecdsa PYSEC-2026-1325 ignored per audit/pip-audit-ignore.txt; report docs/sessions/S023-public-app-privacy/reports/verification-report.md; tip 73f8389; security WIP still stashed; #783'
+  - '2026-07-28 S023/EV-017 08-verify-build STARTED — M7 COMPLETE (T7.1–T7.4); 07-build COMPLETE; tip 73f8389; PRs #786/#787/#788 merged; security WIP stashed; #783'
   - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked) awaiting RENDER_API_KEY for live env cutover; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
   - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — F21 public deploy corpus + EV-017 CHANGELOG draft; T7.4 blocked (D-S023-07-T7.4-blocked, no RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
   - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
@@ -10732,7 +10808,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-27'
-      note: Orchestrator active; Phase A+B PASSED; current_stage 07-build — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; 03/05/06 skipped
+      note: Orchestrator active; Phase A+B PASSED; 08 PASS; C→D criteria met; Phase C checkpoint pending AskQuestion before 09+10; tip 73f8389 (locks uncommitted); 03/05/06 skipped
     01-requirements:
       status: completed
       mode: delta
@@ -10772,21 +10848,30 @@ evolve_cycles:
       - docs/sessions/S023-public-app-privacy/reports/04-tech-plan.md
       completed: '2026-07-28'
     07-build:
-      status: in_progress
+      status: completed
       started: '2026-07-28'
+      completed: '2026-07-28'
       mode: full
-      note: 'T7.3 COMPLETE @ f5aa024; T7.4 blocked (checklist @ d459164; D-S023-07-T7.4-blocked awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28'
+      note: 'COMPLETE 2026-07-28 — M1–M7 all done (T7.1–T7.4); tip 73f8389 before 08; PRs #786/#787/#788 merged; artifacts t7.2-h4-h5-connectivity.md + t7.4-render-env-checklist.md'
       active_task: T7.4
       active_milestone: M7
-      active_task_status: blocked
-      progress: 27/~28
-      tip: d459164
-      tip_sha: d459164
-      tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+      active_task_status: completed
+      progress: 28/28
+      tip: 73f8389
+      tip_sha: 73f8389
+      tip_sha_full: 73f8389ebd2ae764eb77ffd8b3e5e3acf12088c8
       decision_id: D-S023-07-T7.4-blocked
       report: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
     08-verify-build:
-      status: pending
+      status: completed
+      started: '2026-07-28'
+      completed: '2026-07-28'
+      mode: full
+      overall: pass
+      note: 'COMPLETE 2026-07-28 — PASS; pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; tip 73f8389 (locks uncommitted); security WIP stashed; Phase C checkpoint pending; #783'
+      report: docs/sessions/S023-public-app-privacy/reports/verification-report.md
+      decision_id: D-S023-08-pyasn1-A
+      tip_sha: 73f8389
     09-qa:
       status: pending
     10-e2e:
@@ -10824,6 +10909,23 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S023-public-app-privacy/routing-plan.md
     status: completed
+  - path: docs/sessions/S023-public-app-privacy/checkpoints/phase-c.md
+    status: pending
+    stage: 16-evolve
+    kind: phase-c
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    decision_id: D-S023-08-pyasn1-A
+    date: '2026-07-28'
+    note: '08 PASS; C→D criteria met; awaiting Phase C checkpoint AskQuestion before 09+10'
+  - path: docs/sessions/S023-public-app-privacy/reports/verification-report.md
+    status: completed
+    stage: 08-verify-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    decision_id: D-S023-08-pyasn1-A
+    date: '2026-07-28'
+    note: '08 PASS — pyasn1 0.6.4; ecdsa ignored'
   - path: docs/sessions/S023-public-app-privacy/reports/01-requirements.md
     status: completed
   - path: docs/sessions/S023-public-app-privacy/reports/impact-analysis.md
