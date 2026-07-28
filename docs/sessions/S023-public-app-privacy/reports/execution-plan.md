@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M5 — Backend Auth + work-sessions teardown |
-| **Active task** | — (M5 complete; next M6 Privacy preference center) |
-| **Tasks** | 22 / ~28 completed |
+| **Active milestone** | M6 — Privacy preference center |
+| **Active task** | T6.2 — First-visit notice + Privacy settings (next) |
+| **Tasks** | 23 / ~28 completed |
 | **Last updated** | 2026-07-28 |
 
 ## Tech Stack Summary (S023 delta)
@@ -107,7 +107,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.1 | Test | TC-F22-001..003: notice, settings, GPC | UJ-033; TC-F22-* | T4.2 | pending |
+| T6.1 | Test | TC-F22-001..003: notice, settings, GPC | UJ-033; TC-F22-* | T4.2 | completed |
 | T6.2 | Code | First-visit notice + Privacy settings; localStorage prefs; disclose IndexedDB | F22; E17-7/16/17 | T6.1 | pending |
 | T6.3 | Code | Honor Sec-GPC + `navigator.globalPrivacyControl` | E17-16 | T6.2 | pending |
 

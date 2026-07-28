@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'Phase A+B passed; 04 COMPLETE; 07-build in_progress — M1–M5 complete; active M6 (Privacy preference center); next T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 open (stale until push; ahead 33); #783'
+  note: 'Phase A+B passed; 04 COMPLETE; 07-build in_progress — M1–M5 complete; active M6 (Privacy preference center); T6.1 complete (red contract); next T6.2; progress 23/~28; tip PENDING; interim draft PR #786 open (stale until push); #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M5 complete; active M6 (Privacy preference center); next T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 open (stale until push; ahead 33); #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M5 complete; active M6 (Privacy preference center); T6.1 complete (red until T6.2/T6.3); next T6.2; progress 23/~28; tip PENDING; interim draft PR #786 open (stale until push); #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-28'
-    note: 'S023/EV-017 07-build in_progress — M1–M5 complete; active milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; #783'
+    note: 'S023/EV-017 07-build in_progress — M1–M5 complete; active milestone M6 (Privacy preference center); active_task T6.2; T6.1 complete; progress 23/~28; tip PENDING; #783'
   - stage: 08-verify-build
     required: true
     mode: full
