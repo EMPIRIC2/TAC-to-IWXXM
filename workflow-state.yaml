@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-017
   github_issue: 783
   artifacts_dir: docs/sessions/S023-public-app-privacy/
-  current_stage: 08-verify-build
+  current_stage: 11-verify-impl
   feature_ids:
   - F21
   - F22
@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'S023/EV-017 08-verify-build PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; C→D criteria met; Phase C checkpoint pending AskQuestion before 09+10; tip 73f8389 (locks uncommitted); security WIP stashed; report docs/sessions/S023-public-app-privacy/reports/verification-report.md; #783'
+  note: 'S023/EV-017 Phase D 09+10 COMPLETE — 09 pass_with_advisories; 10 T0 PASS; next 11-verify-impl (pending handoff); tip 836c1a4; uncommitted: coverage_boost import fix + qa/e2e reports + workflow-state; security WIP stashed; #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; 08 PASS; C→D criteria met; Phase C checkpoint pending AskQuestion before 09+10; tip 73f8389 (locks uncommitted); security WIP stashed; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase C PASSED; Phase D 09+10 COMPLETE; next 11-verify-impl; tip 836c1a4; uncommitted coverage_boost + qa/e2e reports + workflow-state; #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -80,22 +80,29 @@ active_session:
     skip_rationale:
     started: '2026-07-28'
     completed: '2026-07-28'
-    note: 'S023/EV-017 08-verify-build COMPLETE 2026-07-28 — PASS; pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; report docs/sessions/S023-public-app-privacy/reports/verification-report.md; tip 73f8389 (locks uncommitted); Phase C checkpoint pending; #783'
+    note: 'S023/EV-017 08-verify-build COMPLETE 2026-07-28 — PASS; pyasn1 0.6.4 (D-S023-08-pyasn1-A); tip 836c1a4; #783'
   - stage: 09-qa
     required: true
     mode: full
-    status: pending
+    status: completed
     skip_rationale:
+    started: '2026-07-28'
+    completed: '2026-07-28'
+    note: 'S023/EV-017 09-qa COMPLETE 2026-07-28 — overall pass_with_advisories; report docs/sessions/S023-public-app-privacy/reports/qa-report.md; tip 836c1a4; #783'
   - stage: 10-e2e
     required: true
     mode: full
-    status: pending
+    status: completed
     skip_rationale:
+    started: '2026-07-28'
+    completed: '2026-07-28'
+    note: 'S023/EV-017 10-e2e COMPLETE 2026-07-28 — T0 PASS (8 Playwright + Vitest + F21 unit); report docs/sessions/S023-public-app-privacy/reports/e2e-report.md; tip 836c1a4; #783'
   - stage: 11-verify-impl
     required: true
     mode: full
     status: pending
     skip_rationale:
+    note: 'S023/EV-017 11-verify-impl pending handoff — Phase D 09+10 done; tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; #783'
   - stage: 12-verify-deploy
     required: true
     mode: full
@@ -3425,12 +3432,32 @@ stages:
   09-qa:
     status: completed
     started_at: '2026-07-26'
-    completed_at: '2026-07-26'
-    report: docs/sessions/S021-golden-examples-ui/reports/qa-report.md
+    completed_at: '2026-07-28'
+    report: docs/sessions/S023-public-app-privacy/reports/qa-report.md
     overall: pass_with_advisories
-    session_id: S021-golden-examples-ui
-    evolve_cycle_id: EV-016
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
     delta_substages:
+    - id: S023-public-app-privacy
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 09-qa
+      status: completed
+      mode: full
+      started: '2026-07-28'
+      started_at: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28'
+      branch: evolve/EV-017-public-app-privacy
+      tip_sha: 836c1a4
+      tip_sha_full: 836c1a4c856d25a3a341bdb2b3437a998d190926
+      decision_id: D-S023-phase-c-A
+      overall: pass_with_advisories
+      report: docs/sessions/S023-public-app-privacy/reports/qa-report.md
+      note: 'COMPLETE 2026-07-28 — pass_with_advisories; tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; #783'
+      feature_ids:
+      - F21
+      - F22
     - id: S021-golden-examples-ui
       session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
@@ -3735,10 +3762,10 @@ stages:
   10-e2e:
     status: completed
     started_at: '2026-07-26'
-    completed_at: '2026-07-26'
-    report: docs/sessions/S021-golden-examples-ui/reports/e2e-report.md
+    completed_at: '2026-07-28'
+    report: docs/sessions/S023-public-app-privacy/reports/e2e-report.md
     overall: pass
-    session_id: S021-golden-examples-ui
+    session_id: S023-public-app-privacy
     substeps:
       extract_journeys:
         status: completed
@@ -3755,6 +3782,26 @@ stages:
         status: completed
         notes: H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred
     delta_substages:
+    - id: S023-public-app-privacy
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 10-e2e
+      status: completed
+      mode: full
+      started: '2026-07-28'
+      started_at: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28'
+      branch: evolve/EV-017-public-app-privacy
+      tip_sha: 836c1a4
+      tip_sha_full: 836c1a4c856d25a3a341bdb2b3437a998d190926
+      decision_id: D-S023-phase-c-A
+      overall: pass
+      report: docs/sessions/S023-public-app-privacy/reports/e2e-report.md
+      note: 'COMPLETE 2026-07-28 — T0 PASS (8 Playwright + Vitest + F21 unit); tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; #783'
+      feature_ids:
+      - F21
+      - F22
     - id: S021-golden-examples-ui
       session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
@@ -4394,9 +4441,11 @@ stages:
     evolve_cycle_id: EV-017
     started_at: '2026-07-27'
     completed_at:
-    current_stage: 08-verify-build
-    note: 'S023/EV-017 16-evolve in_progress — 08 PASS; C→D criteria met; Phase C checkpoint pending AskQuestion before 09+10; pyasn1 0.6.4 (D-S023-08-pyasn1-A); tip 73f8389 (locks uncommitted); security WIP stashed; #783'
+    current_stage: 11-verify-impl
+    note: 'S023/EV-017 16-evolve in_progress — Phase D 09+10 COMPLETE; next 11-verify-impl (pending handoff); tip 836c1a4; uncommitted coverage_boost + qa/e2e reports + workflow-state; security WIP stashed; #783'
     notes:
+    - '2026-07-28 S023/EV-017 Phase D 09+10 COMPLETE — 09 pass_with_advisories (qa-report.md); 10 T0 PASS 8 Playwright+Vitest+F21 (e2e-report.md); next 11-verify-impl; tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; #783'
+    - '2026-07-28 S023/EV-017 Phase C PASSED (D-S023-phase-c-A / user 2 then 1) — commit 836c1a4 then proceed Phase D; 09-qa+10-e2e STARTED parallel; tip 836c1a4; #783'
     - '2026-07-28 S023/EV-017 08-verify-build COMPLETE PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; report verification-report.md; C→D criteria met; Phase C checkpoint pending; tip 73f8389 (locks uncommitted); #783'
     - '2026-07-28 S023/EV-017 08-verify-build FAIL (security gate blocking C→D) — pending pyasn1 0.6.3→0.6.4 (PYSEC-2026-3455/3456/3457); ecdsa PYSEC-2026-1325 ignored; report verification-report.md; tip 73f8389; #783'
     - '2026-07-28 S023/EV-017 08-verify-build STARTED — M7 COMPLETE (T7.1–T7.4); 07-build COMPLETE; tip 73f8389; PRs #786/#787/#788 merged; security WIP stashed; #783'
@@ -8722,6 +8771,26 @@ decisions_log:
   decision: Upgrade pyasn1 0.6.3→0.6.4 to clear 08-verify-build security gate (D-S023-08-pyasn1-A). ecdsa PYSEC-2026-1325 ignored per existing audit/pip-audit-ignore.txt policy. 08 PASS; C→D criteria met; Phase C checkpoint AskQuestion pending before 09+10.
   related_issue: 783
   artifact: docs/sessions/S023-public-app-privacy/reports/verification-report.md
+- id: D-S023-phase-c-A
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 16-evolve
+  skill_id: 16-evolve
+  skill: 16-evolve
+  category: checkpoint
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: Phase C checkpoint — C→D (user 2 then 1)
+  summary: User choice "2 then 1" — commit pyasn1/verify-build lock, then proceed Phase D (09-qa + 10-e2e parallel)
+  decision: 'Phase C PASSED (D-S023-phase-c-A / 2026-07-28). User AskQuestion "2 then 1": commit [08] pyasn1 bump + verify-build close @ 836c1a4, then proceed Phase D. gates.c_to_d + checkpoints.phase_c passed; start 09-qa + 10-e2e in parallel. Related: D-S023-08-pyasn1-A, #783.'
+  related_issue: 783
+  related_decisions:
+  - D-S023-08-pyasn1-A
+  answers:
+  - '2 then 1'
+  artifact: docs/sessions/S023-public-app-privacy/checkpoints/phase-c.md
 artifacts:
 - path: docs/sessions/S023-public-app-privacy/checkpoints/phase-c.md
   type: session-checkpoint
@@ -8732,9 +8801,33 @@ artifacts:
   evolve_cycle_id: EV-017
   created_at: '2026-07-28'
   updated_at: '2026-07-28'
-  status: pending
-  decision_id: D-S023-08-pyasn1-A
-  note: 'S023/EV-017 Phase C checkpoint drafted — 08 PASS; C→D criteria met; awaiting AskQuestion approval before 09+10'
+  status: approved
+  decision_id: D-S023-phase-c-A
+  note: 'S023/EV-017 Phase C checkpoint APPROVED (D-S023-phase-c-A / user 2 then 1) — C→D passed; Phase D 09+10 completed; next 11'
+- path: docs/sessions/S023-public-app-privacy/reports/qa-report.md
+  type: session-report
+  kind: qa-report
+  stage: 09-qa
+  skill_id: 09-qa
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: completed
+  tip_sha: 836c1a4
+  note: 'S023/EV-017 09-qa COMPLETE — pass_with_advisories'
+- path: docs/sessions/S023-public-app-privacy/reports/e2e-report.md
+  type: session-report
+  kind: e2e-report
+  stage: 10-e2e
+  skill_id: 10-e2e
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: completed
+  tip_sha: 836c1a4
+  note: 'S023/EV-017 10-e2e COMPLETE — T0 PASS (8 Playwright + Vitest + F21 unit)'
 - path: docs/sessions/S023-public-app-privacy/reports/verification-report.md
   type: session-report
   kind: verification-report
@@ -8746,7 +8839,7 @@ artifacts:
   updated_at: '2026-07-28'
   status: completed
   decision_id: D-S023-08-pyasn1-A
-  tip_sha: 73f8389
+  tip_sha: 836c1a4
   note: 'S023/EV-017 08-verify-build PASS — pyasn1 0.6.4; ecdsa ignored'
 - path: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
   type: session-report
@@ -10737,10 +10830,10 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07+08 COMPLETE; 08 PASS (pyasn1 0.6.4 / D-S023-08-pyasn1-A); C→D criteria met; Phase C checkpoint pending AskQuestion; tip 73f8389 (locks uncommitted).'
-  current_stage: 08-verify-build
+    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B+C passed; Phase D 09+10 COMPLETE; next 11-verify-impl; tip 836c1a4.'
+  current_stage: 11-verify-impl
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 08 PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; C→D criteria met; Phase C checkpoint pending AskQuestion before 09+10; tip 73f8389 (locks uncommitted); security WIP stashed; report docs/sessions/S023-public-app-privacy/reports/verification-report.md; #783.'
+  note: 'S023/EV-017 Phase D 09+10 COMPLETE — 09 pass_with_advisories; 10 T0 PASS; next 11-verify-impl (pending handoff); tip 836c1a4; uncommitted: coverage_boost import fix + qa/e2e reports + workflow-state; security WIP stashed; #783.'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
@@ -10769,7 +10862,10 @@ evolve_cycles:
   - D-S023-07-resume-T7.1
   - D-S023-07-T7.4-blocked
   - D-S023-08-pyasn1-A
+  - D-S023-phase-c-A
   notes:
+  - '2026-07-28 S023/EV-017 Phase D 09+10 COMPLETE — 09 pass_with_advisories (qa-report.md); 10 T0 PASS 8 Playwright+Vitest+F21 (e2e-report.md); next 11-verify-impl; tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; #783'
+  - '2026-07-28 S023/EV-017 Phase C PASSED (D-S023-phase-c-A / user 2 then 1) — commit 836c1a4 then proceed Phase D; 09-qa+10-e2e STARTED parallel; tip 836c1a4; #783'
   - '2026-07-28 S023/EV-017 08-verify-build COMPLETE PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; report verification-report.md; C→D criteria met; Phase C checkpoint pending AskQuestion; tip 73f8389 (locks uncommitted); security WIP stashed; #783'
   - '2026-07-28 S023/EV-017 08-verify-build FAIL (security gate blocking C→D) — pending pyasn1 0.6.3→0.6.4 (PYSEC-2026-3455/3456/3457); ecdsa PYSEC-2026-1325 ignored per audit/pip-audit-ignore.txt; report docs/sessions/S023-public-app-privacy/reports/verification-report.md; tip 73f8389; security WIP still stashed; #783'
   - '2026-07-28 S023/EV-017 08-verify-build STARTED — M7 COMPLETE (T7.1–T7.4); 07-build COMPLETE; tip 73f8389; PRs #786/#787/#788 merged; security WIP stashed; #783'
@@ -10808,7 +10904,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-27'
-      note: Orchestrator active; Phase A+B PASSED; 08 PASS; C→D criteria met; Phase C checkpoint pending AskQuestion before 09+10; tip 73f8389 (locks uncommitted); 03/05/06 skipped
+      note: Orchestrator active; Phase C PASSED; Phase D 09+10 COMPLETE; next 11-verify-impl; tip 836c1a4; uncommitted coverage_boost + reports + workflow-state; 03/05/06 skipped
     01-requirements:
       status: completed
       mode: delta
@@ -10868,16 +10964,33 @@ evolve_cycles:
       completed: '2026-07-28'
       mode: full
       overall: pass
-      note: 'COMPLETE 2026-07-28 — PASS; pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa ignored; tip 73f8389 (locks uncommitted); security WIP stashed; Phase C checkpoint pending; #783'
+      note: 'COMPLETE 2026-07-28 — PASS; pyasn1 0.6.4 (D-S023-08-pyasn1-A); tip 836c1a4; #783'
       report: docs/sessions/S023-public-app-privacy/reports/verification-report.md
       decision_id: D-S023-08-pyasn1-A
-      tip_sha: 73f8389
+      tip_sha: 836c1a4
     09-qa:
-      status: pending
+      status: completed
+      started: '2026-07-28'
+      completed: '2026-07-28'
+      mode: full
+      overall: pass_with_advisories
+      note: 'COMPLETE 2026-07-28 — pass_with_advisories; tip 836c1a4; #783'
+      report: docs/sessions/S023-public-app-privacy/reports/qa-report.md
+      tip_sha: 836c1a4
+      decision_id: D-S023-phase-c-A
     10-e2e:
-      status: pending
+      status: completed
+      started: '2026-07-28'
+      completed: '2026-07-28'
+      mode: full
+      overall: pass
+      note: 'COMPLETE 2026-07-28 — T0 PASS (8 Playwright + Vitest + F21 unit); tip 836c1a4; #783'
+      report: docs/sessions/S023-public-app-privacy/reports/e2e-report.md
+      tip_sha: 836c1a4
+      decision_id: D-S023-phase-c-A
     11-verify-impl:
       status: pending
+      note: 'Pending handoff — Phase D 09+10 done; tip 836c1a4; uncommitted coverage_boost + qa/e2e reports + workflow-state; #783'
     12-verify-deploy:
       status: pending
     13-deploy-smoke:
@@ -10894,12 +11007,12 @@ evolve_cycles:
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
+    c_to_d: passed
     deploy: pending
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
+    phase_c: passed
     phase_d: pending
     deploy: pending
   adrs:
@@ -10909,15 +11022,29 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S023-public-app-privacy/routing-plan.md
     status: completed
+  - path: docs/sessions/S023-public-app-privacy/reports/qa-report.md
+    status: completed
+    stage: 09-qa
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    note: '09-qa pass_with_advisories'
+  - path: docs/sessions/S023-public-app-privacy/reports/e2e-report.md
+    status: completed
+    stage: 10-e2e
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    note: '10-e2e T0 PASS (8 Playwright + Vitest + F21 unit)'
   - path: docs/sessions/S023-public-app-privacy/checkpoints/phase-c.md
-    status: pending
+    status: approved
     stage: 16-evolve
     kind: phase-c
     session_id: S023-public-app-privacy
     evolve_cycle_id: EV-017
-    decision_id: D-S023-08-pyasn1-A
+    decision_id: D-S023-phase-c-A
     date: '2026-07-28'
-    note: '08 PASS; C→D criteria met; awaiting Phase C checkpoint AskQuestion before 09+10'
+    note: 'Phase C PASSED (D-S023-phase-c-A / user 2 then 1); C→D open; Phase D 09+10 completed'
   - path: docs/sessions/S023-public-app-privacy/reports/verification-report.md
     status: completed
     stage: 08-verify-build
@@ -15406,6 +15533,16 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 836c1a4c856d25a3a341bdb2b3437a998d190926
+    short: 836c1a4
+    branch: evolve/EV-017-public-app-privacy
+    message: "[08] fix: bump pyasn1 0.6.3→0.6.4 and close verify-build"
+    stage: 08-verify-build
+    files_changed: 8
+    timestamp: '2026-07-28T20:58:30Z'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+
   - sha: d459164efe76caacb46ef38adaaa33d72beb731e
     short: d459164
     branch: evolve/EV-017-public-app-privacy
