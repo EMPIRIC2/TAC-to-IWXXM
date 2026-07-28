@@ -1,7 +1,5 @@
 /**
  * TC — one-time guest sessionStorage → IndexedDB migrate (E17-14 / F7.h).
- *
- * Red until T2.3 wires migration against the local store.
  */
 
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -14,6 +12,7 @@ import {
   clearLocalWorkSessions,
   listLocalWorkSessions,
   migrateGuestSessionStorageToIndexedDb,
+  resetLocalWorkSessionDbCache,
 } from './localWorkSessionStore';
 
 const snapshot: ConverterSnapshot = {
@@ -28,7 +27,8 @@ describe('migrateGuestSessionStorageToIndexedDb (E17-14)', () => {
   beforeEach(async () => {
     clearGuestConverterState();
     sessionStorage.clear();
-    await clearLocalWorkSessions().catch(() => undefined);
+    resetLocalWorkSessionDbCache();
+    await clearLocalWorkSessions();
   });
 
   it('migrates guest sessionStorage into IndexedDB once and clears the guest key', async () => {

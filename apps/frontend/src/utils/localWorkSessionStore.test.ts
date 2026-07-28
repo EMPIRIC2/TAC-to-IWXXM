@@ -1,7 +1,5 @@
 /**
  * TC-004 — Local IndexedDB work session lifecycle (F7.h / F21 / ADR-031).
- *
- * Red until T2.3 implements the store with `idb`.
  */
 
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -17,6 +15,7 @@ import {
   importLocalWorkSessions,
   listLocalWorkSessions,
   listMyMetars,
+  resetLocalWorkSessionDbCache,
   restoreLocalWorkSession,
   updateLocalWorkSession,
 } from './localWorkSessionStore';
@@ -40,9 +39,8 @@ function draftPayload(
 
 describe('localWorkSessionStore (TC-004)', () => {
   beforeEach(async () => {
-    await clearLocalWorkSessions().catch(() => {
-      // Stub throws until T2.3 — ignore so individual assertions surface.
-    });
+    resetLocalWorkSessionDbCache();
+    await clearLocalWorkSessions();
   });
 
   it('creates and reads a draft session without JWT', async () => {

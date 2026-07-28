@@ -100,6 +100,7 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 | react | UI | MIT | npm |
 | vite | Bundler | MIT | npm |
 | **idb** | IndexedDB wrapper for local work sessions (F7.h) | ISC | npm (E17-12 / ADR-031) |
+| fake-indexeddb | Vitest IndexedDB polyfill for TC-004 | Unlicense | npm (dev; T2.3) |
 | ~~@supabase/supabase-js~~ | ~~Client auth~~ | — | **Removed** from operator Auth path (F21); drop dep when Auth code deleted |
 | CodeMirror 6 | F7 workbench editor | MIT | npm — pinned S011 M2 T2.5: `codemirror@6.0.2`, `@codemirror/view@6.43.6`, `@codemirror/state@6.7.1`, `@codemirror/commands@6.10.4`, `@codemirror/language@6.12.4` (autocomplete deferred until needed) |
 
