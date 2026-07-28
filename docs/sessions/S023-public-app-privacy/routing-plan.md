@@ -7,7 +7,7 @@
 | Stage | Required | Mode | Status | Skip rationale |
 |-------|----------|------|--------|----------------|
 | 00-context | yes | scoped | completed | Session open + `docs/context/public-app-privacy.md` |
-| 16-evolve | yes | orchestrator | in_progress | EV-017 — 11 COMPLETE; next 12-verify-deploy |
+| 16-evolve | yes | orchestrator | in_progress | EV-017 — 12 COMPLETE; next 13-deploy-smoke |
 | 01-requirements | yes | delta | completed | F21/F22 + F5/F7/M4 deltas — `reports/01-requirements.md` |
 | 02-verify-plan | yes | delta | completed | Gate A 2026-07-27; D-S023-02-C-EV017-A; Phase A passed |
 | 03-plan-tooling | **no** | — | skipped | No new Cursor rules/hooks expected at open; add if ADR needs guardrails |
@@ -19,8 +19,8 @@
 | 09-qa | yes | full | completed | pass_with_advisories — `reports/qa-report.md` |
 | 10-e2e | yes | full | completed | T0 PASS (8 Playwright + Vitest + F21) — `reports/e2e-report.md` |
 | 11-verify-impl | yes | full | completed | F21/F22 approved; F5/F7.h ack; T3→13; `reports/verify-impl.md` |
-| 12-verify-deploy | yes | full | pending | Env matrix / secret cleanup checklist |
-| 13-deploy-smoke | yes | full | pending | Live public convert + privacy settings |
+| 12-verify-deploy | yes | full | completed | READY — `reports/deploy-checklist.md`; mitigations+rollback approved |
+| 13-deploy-smoke | yes | full | pending | Live public convert + privacy settings; optional API SUPABASE_* cleanup |
 
 ## Skip rationale
 
@@ -45,3 +45,4 @@
 | 09-qa / 10-e2e | COMPLETE — next 11 | 2026-07-28 |
 | 11 UI preview | Declined — reports/tests only (D-S023-11-ui-preview-declined) | 2026-07-28 |
 | 11-verify-impl | **COMPLETE** — F21/F22 approved; F5/F7.h ack; advisories disposed; T3→13 | 2026-07-28 |
+| 12-verify-deploy | **COMPLETE** — mitigations+rollback approved; checklist READY → 13 | 2026-07-28 |
