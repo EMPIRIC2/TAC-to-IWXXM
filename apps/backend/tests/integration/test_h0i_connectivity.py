@@ -57,7 +57,8 @@ class TestH0iCorsPreflight:
         allow_methods = response.headers.get("access-control-allow-methods", "")
         assert "POST" in allow_methods.upper()
 
-    def test_options_auth_login_allows_post(self, h0i_client: TestClient) -> None:
+    def test_options_auth_login_gone(self, h0i_client: TestClient) -> None:
+        """F21: /auth/login is not mounted — preflight is not a CORS success path."""
         response = h0i_client.options(
             "/auth/login",
             headers={
@@ -65,11 +66,10 @@ class TestH0iCorsPreflight:
                 "Access-Control-Request-Method": "POST",
             },
         )
-        assert response.status_code == 200
-        allow_methods = response.headers.get("access-control-allow-methods", "")
-        assert "POST" in allow_methods.upper()
+        assert response.status_code in {404, 405}
 
-    def test_options_work_sessions_allows_patch_and_delete(self, h0i_client: TestClient) -> None:
+    def test_options_work_sessions_gone(self, h0i_client: TestClient) -> None:
+        """F21 / F7.h: work-sessions HTTP removed — OPTIONS is not required."""
         for method in ("PATCH", "DELETE"):
             response = h0i_client.options(
                 "/api/v1/work-sessions",
@@ -78,9 +78,7 @@ class TestH0iCorsPreflight:
                     "Access-Control-Request-Method": method,
                 },
             )
-            assert response.status_code == 200
-            allow_methods = response.headers.get("access-control-allow-methods", "").upper()
-            assert method in allow_methods
+            assert response.status_code in {404, 405}
 
     @pytest.mark.parametrize(
         "path",

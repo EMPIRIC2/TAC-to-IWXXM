@@ -196,7 +196,6 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         evaluation=fake_router_module,
         icao_opmet=fake_router_module,
         validation=fake_router_module,
-        work_sessions=fake_router_module,
     )
 
     stubs = {

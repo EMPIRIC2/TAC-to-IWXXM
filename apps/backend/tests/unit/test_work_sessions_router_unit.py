@@ -8,10 +8,9 @@ from unittest.mock import patch
 from uuid import UUID, uuid4
 
 import pytest
-from fastapi import HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 
-from src.api import app
 from src.routers import work_sessions as ws_router
 from src.schemas.work_session import (
     WorkSession,
@@ -85,6 +84,7 @@ class _FakeService:
 
 @pytest.fixture
 def work_session_client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
+    """Mount retired work-sessions router on a local app (not production api.app)."""
     fake = _FakeService()
 
     async def override_verify_token() -> dict[str, str]:
@@ -93,11 +93,13 @@ def work_session_client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
     def override_service() -> _FakeService:
         return fake
 
-    app.dependency_overrides[verify_supabase_token] = override_verify_token
-    app.dependency_overrides[ws_router.work_session_service] = override_service
-    client = TestClient(app)
+    test_app = FastAPI()
+    test_app.include_router(ws_router.router, prefix="/api/v1/work-sessions")
+    test_app.dependency_overrides[verify_supabase_token] = override_verify_token
+    test_app.dependency_overrides[ws_router.work_session_service] = override_service
+    client = TestClient(test_app)
     yield client
-    app.dependency_overrides.clear()
+    test_app.dependency_overrides.clear()
 
 
 def test_list_work_sessions_returns_items(work_session_client: TestClient) -> None:
@@ -131,7 +133,7 @@ def test_patch_wip_conflict_returns_409(work_session_client: TestClient) -> None
     def override_service() -> _FakeService:
         return fake
 
-    app.dependency_overrides[ws_router.work_session_service] = override_service
+    work_session_client.app.dependency_overrides[ws_router.work_session_service] = override_service
 
     response = work_session_client.patch(
         f"/api/v1/work-sessions/{fake.sessions[1].id}",

@@ -7,10 +7,9 @@ from typing import Any, Optional
 from uuid import UUID, uuid4
 
 import pytest
-from fastapi import HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 
-from src.api import app
 from src.routers import work_sessions as ws_router
 from src.schemas.work_session import (
     WorkSession,
@@ -93,17 +92,20 @@ class _Store:
 
 @pytest.fixture
 def client() -> TestClient:
+    """Local mount of retired work-sessions router (production app no longer includes it)."""
     store = _Store()
 
     async def _auth() -> dict[str, str]:
         return {"sub": str(USER_ID)}
 
-    app.dependency_overrides[verify_supabase_token] = _auth
-    app.dependency_overrides[ws_router.work_session_service] = lambda: store
-    test_client = TestClient(app)
+    test_app = FastAPI()
+    test_app.include_router(ws_router.router, prefix="/api/v1/work-sessions")
+    test_app.dependency_overrides[verify_supabase_token] = _auth
+    test_app.dependency_overrides[ws_router.work_session_service] = lambda: store
+    test_client = TestClient(test_app)
     test_client.store = store  # type: ignore[attr-defined]
     yield test_client
-    app.dependency_overrides.clear()
+    test_app.dependency_overrides.clear()
 
 
 def test_tc_f7_005_non_metar_draft_survives_get(client: TestClient) -> None:

@@ -7,10 +7,9 @@ from typing import Any, Optional
 from uuid import UUID, uuid4
 
 import pytest
-from fastapi import HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 
-from src.api import app
 from src.routers import work_sessions as ws_router
 from src.schemas.work_session import (
     WorkSession,
@@ -97,17 +96,20 @@ class _FakeService:
 
 @pytest.fixture
 def client() -> TestClient:
+    """Local mount of retired work-sessions router (production app no longer includes it)."""
     fake = _FakeService()
 
     async def override_verify_token() -> dict[str, str]:
         return {"sub": str(USER_ID), "aud": "test-project", "role": "user"}
 
-    app.dependency_overrides[verify_supabase_token] = override_verify_token
-    app.dependency_overrides[ws_router.work_session_service] = lambda: fake
-    test_client = TestClient(app)
+    test_app = FastAPI()
+    test_app.include_router(ws_router.router, prefix="/api/v1/work-sessions")
+    test_app.dependency_overrides[verify_supabase_token] = override_verify_token
+    test_app.dependency_overrides[ws_router.work_session_service] = lambda: fake
+    test_client = TestClient(test_app)
     test_client.fake_service = fake  # type: ignore[attr-defined]
     yield test_client
-    app.dependency_overrides.clear()
+    test_app.dependency_overrides.clear()
 
 
 def test_create_requires_product_field(client: TestClient) -> None:

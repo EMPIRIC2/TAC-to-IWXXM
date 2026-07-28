@@ -219,21 +219,9 @@ class _SessionStore:
 
 
 class TestUiWorkSessionsConnection:
-    """UI connection: My METARs / workbench history → /api/v1/work-sessions*."""
+    """F21 / F7.h: work-sessions HTTP is gone; FE uses IndexedDB."""
 
-    @pytest.fixture
-    def sessions_client(self, client: TestClient):
-        store = _SessionStore()
-        store.rows[uuid4()] = _session_row(product=WorkSessionProduct.METAR, manual_tac=VALID_METAR)
-        store.rows[uuid4()] = _session_row(product=WorkSessionProduct.TAF, manual_tac="TAF KJFK 121730Z ...")
-        app.dependency_overrides[ws_router.work_session_service] = lambda: store
-        yield client, store
-        app.dependency_overrides.pop(ws_router.work_session_service, None)
-
-    def test_create_and_list_include_product_for_frontend(
-        self, sessions_client: tuple[TestClient, _SessionStore]
-    ) -> None:
-        client, store = sessions_client
+    def test_work_sessions_http_gone_for_frontend(self, client: TestClient) -> None:
         created = client.post(
             "/api/v1/work-sessions",
             headers={"Authorization": "Bearer t"},
@@ -244,38 +232,13 @@ class TestUiWorkSessionsConnection:
                 "manual_tac": "TAF KJFK 121730Z 1218/1324 18010KT=",
             },
         )
-        assert created.status_code in {200, 201}, created.text
-        body = created.json()
-        assert body["product"] == "taf"
-        assert isinstance(body["id"], str)
-        assert isinstance(body["manual_tac"], str)
-        assert isinstance(body["status"], str)
+        assert created.status_code == 404, created.text
 
-        # Seed My METARs filter after create so list totals stay stable.
-        store.rows[uuid4()] = _session_row(product=WorkSessionProduct.SPECI)
-
-        my_metars = client.get(
+        listed = client.get(
             "/api/v1/work-sessions?product=metar,speci",
             headers={"Authorization": "Bearer t"},
         )
-        assert my_metars.status_code == 200
-        listing = my_metars.json()
-        assert isinstance(listing["items"], list)
-        assert isinstance(listing["total"], int)
-        assert isinstance(listing["page"], int)
-        assert isinstance(listing["limit"], int)
-        products = {item["product"] for item in listing["items"]}
-        assert products <= {"metar", "speci"}
-        assert "taf" not in products
-
-        workbench = client.get(
-            "/api/v1/work-sessions?limit=50",
-            headers={"Authorization": "Bearer t"},
-        )
-        assert workbench.status_code == 200
-        all_products = {item["product"] for item in workbench.json()["items"]}
-        assert "taf" in all_products
-        assert "metar" in all_products
+        assert listed.status_code == 404
 
 
 class TestUiBrowserCorsConnection:

@@ -23,7 +23,7 @@ try:
     # Try relative imports first (when run as module in Docker)
     from .config.icao_opmet import get_icao_region, get_translation_centre_info
     from .msgspec_http import msgspec_json_response
-    from .routers import dissemination, evaluation, icao_opmet, validation, work_sessions
+    from .routers import dissemination, evaluation, icao_opmet, validation
     from .schemas.conversion import (
         ConversionIssue,
         ConversionIssueSeverity,
@@ -66,7 +66,7 @@ except ImportError:
     # Fall back to direct imports (when sys.path is set for local development)
     from config.icao_opmet import get_icao_region, get_translation_centre_info
     from msgspec_http import msgspec_json_response
-    from routers import dissemination, evaluation, icao_opmet, validation, work_sessions
+    from routers import dissemination, evaluation, icao_opmet, validation
     from schemas.conversion import (
         ConversionIssue,
         ConversionIssueSeverity,
@@ -609,12 +609,8 @@ try:
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include evaluation router: {e}", exc_info=True)
 
-try:
-    app.include_router(work_sessions.router, prefix="/api/v1/work-sessions", tags=["Work Sessions"])
-    # Admin work-sessions list removed (S011 / ADR-021 / #697).
-    logger.info("DEBUG: included work sessions routers successfully")
-except Exception as e:  # pragma: no cover - defensive
-    logger.error(f"DEBUG: Failed to include work sessions routers: {e}", exc_info=True)
+# Work-sessions HTTP API removed (F7.h / ADR-031 / T5.3) — IndexedDB is the operator store.
+# /api/v1/work-sessions* returns 404.
 
 try:
     app.include_router(dissemination.router)
