@@ -81,6 +81,15 @@ Privacy: Solution A + one global preference center + GPC. Retire operator Auth U
 |----|----------|
 | D-S023-02-phase-a-A | **A** — Phase A pass; start **04-tech-plan** (03 skipped) |
 
+### Tech plan Batch 1 — Architecture (2026-07-28)
+
+| ID | Category | Decision |
+|----|----------|----------|
+| E17-12 | decision | IndexedDB library = **`idb`** (Jake Archibald) |
+| E17-13 | decision | Local session schema = **reuse** `workSessionPayload` / ConverterSnapshot |
+| E17-14 | decision | **One-time** migrate guest `sessionStorage` → IndexedDB on first F7.h load |
+| E17-15 | decision | Abuse controls = **`slowapi`** (in-memory; Render single-instance baseline) |
+
 ---
 
 ## Cycle EV-016 — Workbench golden examples (#780) (S021)
