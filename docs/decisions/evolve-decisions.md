@@ -110,6 +110,12 @@ Privacy: Solution A + one global preference center + GPC. Retire operator Auth U
 | E17-24 | decision | **Full env-contract rewrite now** (closes C-EV017.5) |
 | E17-25 | decision | Draft ADR-031 + execution-plan + dependency-inventory; then approve plan |
 
+### Plan approve (2026-07-28)
+
+| ID | Category | Decision |
+|----|----------|----------|
+| D-S023-04-plan-approve-A | gate | **A** — ADR-031 **Accepted**; execution plan approved (M1–M7); 05/06 skipped (Standard); start **07-build** @ T1.1 |
+
 ---
 
 ## Cycle EV-016 — Workbench golden examples (#780) (S021)

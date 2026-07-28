@@ -1,6 +1,6 @@
 # Execution plan — S023 / EV-017 (F21 public app + F22 privacy / #783)
 
-> **Status**: **draft** — awaiting Batch 3 plan approve (E17-25=A)  
+> **Status**: **approved** (D-S023-04-plan-approve-A) — 07-build in progress  
 > **Branch**: `evolve/EV-017-public-app-privacy`  
 > **Evolve cycle**: EV-017  
 > **Features**: **F21**, **F22**; deepen **F5** / **F7.h**; delete **packages/auth** (M4)  
@@ -12,10 +12,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — 04-tech-plan (pending approve → 07) |
-| **Active milestone** | — (approve first) |
-| **Active task** | — |
-| **Tasks** | 0 / ~28 pending |
+| **Active phase** | Phase C — 07-build |
+| **Active milestone** | M1 — ADR + inventory + env contract |
+| **Active task** | T1.2 — dependency-inventory (`idb`, `slowapi`; remove packages/auth) |
+| **Tasks** | 1 / ~28 completed |
 | **Last updated** | 2026-07-28 |
 
 ## Tech Stack Summary (S023 delta)
@@ -62,7 +62,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Docs | Accept ADR-031; mark ADR-020 Superseded | ADR-031; E17-23 | — | pending |
+| T1.1 | Docs | Accept ADR-031; mark ADR-020 Superseded | ADR-031; E17-23 | — | completed |
 | T1.2 | Docs | dependency-inventory: add `idb`, `slowapi`; remove `packages/auth` / operator supabase-js Auth | E17-12/15/22 | T1.1 | pending |
 | T1.3 | Docs | env-contract full F21 rewrite (rate-limit env names; drop E2E_USER/DISABLE_AUTH) | E17-24; C-EV017.5 | T1.1 | pending |
 | T1.4 | Docs | Back-add rate-limit env names to config-spec / staging-secrets-matrix stubs | connectivity; E17-19 | T1.3 | pending |
@@ -122,11 +122,11 @@
 
 ## Phase Gate Check (B→C)
 
-- [ ] Execution plan approved (E17-25 / AskQuestion)
-- [ ] ADR-031 Accepted (status flip on approve)
-- [ ] 05/06 skipped per Standard (re-open only if hooks/deps conflict)
-- [ ] env-contract rewrite committed (E17-24)
-- [ ] No tasks outside F21/F22/F5/F7.h/auth-delete scope
+- [x] Execution plan approved (E17-25 / D-S023-04-plan-approve-A)
+- [x] ADR-031 Accepted (T1.1 / D-S023-04-plan-approve-A)
+- [x] 05/06 skipped per Standard (re-open only if hooks/deps conflict)
+- [x] env-contract rewrite committed (E17-24; bf4eaf1; T1.3 affirms)
+- [x] No tasks outside F21/F22/F5/F7.h/auth-delete scope
 
 ## Git Strategy
 
