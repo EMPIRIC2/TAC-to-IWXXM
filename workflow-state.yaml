@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-017
   github_issue: 783
   artifacts_dir: docs/sessions/S023-public-app-privacy/
-  current_stage: 07-build
+  current_stage: 09-qa
   feature_ids:
   - F21
   - F22
@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.3 completed @ f5aa024; T7.4 blocked (checklist committed @ d459164; awaiting RENDER_API_KEY for live env cutover); T7.2 pending (needs deploy after T7.4); progress 27/~28; tip d459164; interim draft PR #786; #783'
+  note: 'S023/EV-017 08-verify-build PASS @ aaf2aee — format/lint/type/unit/H0c/H0i/H4–H5/security green; M7 complete; handoff 09-qa (+10-e2e parallel); #786/#787/#788; #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B PASSED; 07+08 PASS; M7 complete; current_stage 09-qa; #786/#787/#788; #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -68,15 +68,19 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     skip_rationale:
     started: '2026-07-28'
-    note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164'
+    completed: '2026-07-28'
+    note: 'S023/EV-017 07-build COMPLETE — M1–M7 / T1.1–T7.4; #786 merged; tip train aaf2aee'
   - stage: 08-verify-build
     required: true
     mode: full
-    status: pending
+    status: completed
     skip_rationale:
+    started: '2026-07-28'
+    completed: '2026-07-28'
+    note: 'S023/EV-017 08-verify-build PASS — reports/verification-report.md; handoff 09-qa'
   - stage: 09-qa
     required: true
     mode: full
