@@ -34,7 +34,6 @@ const defaultProps = {
   convertedFiles: sampleFiles,
   isOpen: true,
   onClose: vi.fn(),
-  accessToken: 'upload-token',
 };
 
 describe('DatabaseUploadDialog', () => {
@@ -73,16 +72,25 @@ describe('DatabaseUploadDialog', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('requires authentication before upload', async () => {
+  it('uploads without requiring authentication (F21)', async () => {
     const user = userEvent.setup();
-    render(<DatabaseUploadDialog {...defaultProps} accessToken={undefined} />);
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'Uploaded 1 file' }),
+      text: async () => JSON.stringify({ message: 'Uploaded 1 file' }),
+    } as Response);
+
+    render(<DatabaseUploadDialog {...defaultProps} />);
 
     await user.click(screen.getByRole('button', { name: /upload files to database/i }));
 
-    expect(mockToast.error).toHaveBeenCalledWith(
-      'Authentication required. Please log in again.',
-    );
-    expect(global.fetch).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    });
+    const init = vi.mocked(global.fetch).mock.calls[0][1] as RequestInit;
+    expect(
+      (init.headers as Record<string, string> | undefined)?.Authorization,
+    ).toBeUndefined();
   });
 
   it('uploads selected options successfully and auto-closes', async () => {
@@ -109,7 +117,7 @@ describe('DatabaseUploadDialog', () => {
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
-            Authorization: 'Bearer upload-token',
+            'Content-Type': 'application/json',
           }),
         }),
       );

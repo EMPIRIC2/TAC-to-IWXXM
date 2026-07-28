@@ -308,7 +308,7 @@ describe('API Utils', () => {
       await convertMetarToIwxxm({ manualText: 'KJFK 121851Z' });
 
       const fetchCall = (global.fetch as any).mock.calls[0];
-      expect(fetchCall[1].headers['Authorization']).toBe('Bearer test-token-123');
+      expect(fetchCall[1].headers?.Authorization).toBeUndefined();
     });
 
     it('should handle multiple file conversions', async () => {
@@ -663,7 +663,7 @@ describe('API Utils', () => {
       await convertMetarToIwxxm({ manualText: 'KJFK' });
 
       const fetchCall = (global.fetch as any).mock.calls[0];
-      expect(fetchCall[1].headers['Authorization']).toBe('Bearer ');
+      expect(fetchCall[1].headers?.Authorization).toBeUndefined();
     });
 
     it('should handle very long METAR strings', async () => {
@@ -781,9 +781,6 @@ describe('API Utils', () => {
         expect.stringMatching(/\/lint-issue-catalog\?product=metar$/),
         expect.objectContaining({
           method: 'GET',
-          headers: expect.objectContaining({
-            Authorization: 'Bearer tok',
-          }),
         }),
       );
     });

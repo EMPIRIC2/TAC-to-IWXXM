@@ -91,7 +91,7 @@ describe('dissemination helpers', () => {
         json: async () => ({ ok: true, kv_upload_key: 'kv:1' }),
       } as Response);
 
-    const pre = await disseminationPreflight('tok', {
+    const pre = await disseminationPreflight({
       sink_type: 'sqlite',
       uri: 'sqlite:////tmp/x.db',
       ddl: true,
@@ -101,11 +101,11 @@ describe('dissemination helpers', () => {
       'http://api.test/api/v1/dissemination/preflight',
       expect.objectContaining({
         method: 'POST',
-        headers: expect.objectContaining({ Authorization: 'Bearer tok' }),
+        headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
       }),
     );
 
-    const send = await disseminationSend('tok', {
+    const send = await disseminationSend({
       handle: 'h1',
       iwxxm_xml: '<x/>',
     });
@@ -125,7 +125,7 @@ describe('dissemination helpers', () => {
     } as Response);
 
     await expect(
-      disseminationPreflight('tok', {
+      disseminationPreflight({
         sink_type: 'postgres',
         uri: 'postgresql://u:p@host/db',
       }),
@@ -141,7 +141,7 @@ describe('dissemination helpers', () => {
     } as Response);
 
     await expect(
-      disseminationSend('tok', { handle: 'bad', iwxxm_xml: '<x/>' }),
+      disseminationSend({ handle: 'bad', iwxxm_xml: '<x/>' }),
     ).rejects.toThrow(/missing column/);
   });
 
@@ -156,7 +156,7 @@ describe('dissemination helpers', () => {
     } as unknown as Response);
 
     await expect(
-      disseminationPreflight('tok', { sink_type: 'wis2', params: {} }),
+      disseminationPreflight({ sink_type: 'wis2', params: {} }),
     ).rejects.toThrow('Server Error');
   });
 
@@ -168,8 +168,8 @@ describe('dissemination helpers', () => {
       json: async () => ({ detail: '' }),
     } as Response);
 
-    await expect(
-      disseminationSend('tok', { handle: 'h', iwxxm_xml: '<x/>' }),
-    ).rejects.toThrow('HTTP 429');
+    await expect(disseminationSend({ handle: 'h', iwxxm_xml: '<x/>' })).rejects.toThrow(
+      'HTTP 429',
+    );
   });
 });

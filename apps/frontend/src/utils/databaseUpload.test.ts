@@ -55,7 +55,6 @@ describe('databaseUpload', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer test-token',
         },
         body: JSON.stringify({
           files,

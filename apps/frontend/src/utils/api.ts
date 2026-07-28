@@ -87,19 +87,6 @@ export interface ApiError {
   total_errors?: number;
 }
 
-/**
- * Get the access token from local storage.
- *
- * Must match ``authService`` (`access_token`). Legacy ``supabase_access_token``
- * is read as a fallback for older sessions (BUG-2026-07-15).
- */
-function getAccessToken(): string | null {
-  return (
-    localStorage.getItem('access_token') ||
-    localStorage.getItem('supabase_access_token')
-  );
-}
-
 /** Prefer FastAPI string ``detail``, then nested message, then ``message``. */
 function apiErrorMessage(
   error: { detail?: unknown; message?: unknown },
@@ -120,17 +107,6 @@ function apiErrorMessage(
     return error.message;
   }
   return fallback;
-}
-
-/**
- * Create authorization headers for API requests
- */
-function _getAuthHeaders(): HeadersInit {
-  const token = getAccessToken();
-  return {
-    Authorization: token ? `Bearer ${token}` : '',
-    'Content-Type': 'application/json',
-  };
 }
 
 /**
@@ -228,19 +204,11 @@ export async function convertMetarToIwxxm(params: {
   }
 
   try {
-    const token = params.accessToken || getAccessToken() || '';
-    console.log(
-      '[API] convertMetarToIwxxm called with token:',
-      token ? `${token.substring(0, 20)}...` : 'MISSING',
-    );
     console.log('[API] Request to:', apiUrl('/convert'));
 
     const response = await withTimeout(
       fetch(apiUrl('/convert'), {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         body: formData,
         signal: params.signal,
       }),
@@ -319,11 +287,9 @@ export async function convertBulletin(params: {
   formData.append('iwxxm_version', params.iwxxmVersion || '2025-2');
   formData.append('lint', params.lint === false ? 'false' : 'true');
 
-  const token = params.accessToken || getAccessToken() || '';
   const response = await withTimeout(
     fetch(apiUrl('/convert-bulletin'), {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
       body: formData,
       signal: params.signal,
     }),
@@ -381,11 +347,9 @@ export async function ingestCollect(params: {
   formData.append('profile', params.profile || 'annex3');
   formData.append('iwxxm_version', params.iwxxmVersion || '2025-2');
 
-  const token = params.accessToken || getAccessToken() || '';
   const response = await withTimeout(
     fetch(apiUrl('/ingest-collect'), {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
       body: formData,
       signal: params.signal,
     }),
@@ -489,13 +453,9 @@ export async function lintTac(params: {
     formData.append('product', params.product.toUpperCase());
   }
 
-  const token = params.accessToken || getAccessToken() || '';
   const response = await withTimeout(
     fetch(apiUrl('/lint-tac'), {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
       body: formData,
       signal: params.signal,
     }),
@@ -534,7 +494,6 @@ export async function fetchLintIssueCatalog(params?: {
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<LintIssueCatalogResponse> {
-  const token = params?.accessToken || getAccessToken() || '';
   const qs =
     params?.product && params.product.trim()
       ? `?product=${encodeURIComponent(params.product.trim().toLowerCase())}`
@@ -542,9 +501,6 @@ export async function fetchLintIssueCatalog(params?: {
   const response = await withTimeout(
     fetch(apiUrl(`/lint-issue-catalog${qs}`), {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
       signal: params?.signal,
     }),
     15000,
@@ -570,13 +526,9 @@ export async function decodeTac(params: {
   formData.append('manual_text', params.manualText);
   formData.append('product', params.product.toUpperCase());
 
-  const token = params.accessToken || getAccessToken() || '';
   const response = await withTimeout(
     fetch(apiUrl('/decode-tac'), {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
       body: formData,
       signal: params.signal,
     }),
@@ -625,9 +577,6 @@ export async function convertMetarToIwxxmZip(params: {
   try {
     const response = await fetch(apiUrl('/convert-zip'), {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${getAccessToken() || ''}`,
-      },
       body: formData,
     });
 
@@ -654,9 +603,7 @@ export async function convertMetarToIwxxmZip(params: {
 export async function fetchAirportRegion(icao: string): Promise<AirportRegionResponse> {
   const code = icao.trim().toUpperCase();
   const response = await withTimeout(
-    fetch(apiUrl(`/translation/airport-region/${code}`), {
-      headers: _getAuthHeaders(),
-    }),
+    fetch(apiUrl(`/translation/airport-region/${code}`), {}),
   );
 
   if (!response.ok) {

@@ -26,8 +26,6 @@ import {
   Settings,
   ChevronDown,
   ChevronUp,
-  Shield,
-  LogOut,
   AlertCircle,
   XCircle,
 } from 'lucide-react';
@@ -41,7 +39,6 @@ import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { getExampleById } from '@/fixtures/examples/examplesCatalog';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
 import { AirportDetailsCard } from './AirportDetailsCard';
-import { signOutWithScope } from '/utils/supabase/logout';
 import {
   convertMetarToIwxxm as callBackendConversion,
   convertBulletin,
@@ -116,12 +113,8 @@ interface PendingFile {
 }
 
 interface FileConverterProps {
-  onLogout: () => void;
-  userEmail: string;
+  /** @deprecated F21 public — ignored */
   accessToken?: string;
-  isGuest?: boolean;
-  onRequestLogin?: () => void;
-  onSwitchToAdmin?: () => void;
   onOpenHistory?: () => void;
   onLoadWorkSession?: (session: WorkSession) => void;
   onNewMetar?: () => void;
@@ -148,12 +141,6 @@ interface ConversionParams {
 }
 
 export function FileConverter({
-  onLogout,
-  userEmail,
-  accessToken,
-  isGuest = false,
-  onRequestLogin,
-  onSwitchToAdmin,
   onOpenHistory,
   onLoadWorkSession,
   onNewMetar,
@@ -196,7 +183,6 @@ export function FileConverter({
   const [isDisseminationOpen, setIsDisseminationOpen] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isParamsExpanded, setIsParamsExpanded] = useState(false);
-  const [isLogoutMenuOpen, setIsLogoutMenuOpen] = useState(false);
   const [conversionParams, setConversionParams] = useState<ConversionParams>({
     bulletinId: '',
     issuingCenter: '',
@@ -246,16 +232,6 @@ export function FileConverter({
       onSessionSaved: (session) => onSessionUpdated?.(session),
       onSessionIdAssigned: (id) => onActiveSessionIdChange?.(id),
     });
-
-  const handleLogoutWithScope = async (scope: 'global' | 'local' | 'others') => {
-    const success = await signOutWithScope(scope);
-    if (success) {
-      setIsLogoutMenuOpen(false);
-      setTimeout(() => {
-        onLogout();
-      }, 500);
-    }
-  };
 
   // Load user preferences on mount from localStorage
   useEffect(() => {
@@ -553,7 +529,6 @@ export function FileConverter({
             files: filesToConvert.length > 0 ? filesToConvert : undefined,
             profile: conversionParams.profile,
             iwxxmVersion: conversionParams.iwxxmVersion,
-            accessToken,
           });
           toast.success('COLLECT ingest succeeded');
           setConversionStatus({ type: 'idle' });
@@ -589,7 +564,6 @@ export function FileConverter({
           profile: conversionParams.profile,
           iwxxmVersion: conversionParams.iwxxmVersion,
           lint: true,
-          accessToken,
         });
         const meta = bulletinResponse.bulletin_meta;
         setBulletinSummary(
@@ -650,7 +624,6 @@ export function FileConverter({
         manualInput: manualInput.trim() ? 'provided' : 'none',
         fileCount: filesToConvert.length,
         softPreview,
-        accessToken: accessToken ? `${accessToken.substring(0, 20)}...` : 'MISSING',
       });
 
       const { validateOutput, validationLevel } = mapStrictToValidation(
@@ -674,7 +647,6 @@ export function FileConverter({
         includeNilReasons: conversionParams.includeNilReasons,
         logLevel: conversionParams.logLevel,
         preview: softPreview,
-        accessToken: accessToken,
       });
 
       console.log('[FileConverter] Conversion response:', response);
@@ -844,11 +816,6 @@ export function FileConverter({
     if (isReadOnly) {
       return;
     }
-    if (!accessToken) {
-      toast.error('Authentication required. Please log in again.');
-      return;
-    }
-
     setIsConvertAndSending(true);
     try {
       const result = await performConversion();
@@ -892,7 +859,6 @@ export function FileConverter({
       try {
         const data = await uploadConvertedFiles({
           files: result.files,
-          accessToken,
           options: CONVERT_AND_SEND_UPLOAD_OPTIONS,
         });
         setConversionStatus({ type: 'idle' });
@@ -1088,7 +1054,6 @@ export function FileConverter({
           iwxxmVersion: conversionParams.iwxxmVersion,
           validateOutput: false,
           preview: true,
-          accessToken,
           signal,
         });
         if (signal.aborted) {
@@ -1126,7 +1091,6 @@ export function FileConverter({
       liveAssistProduct,
       conversionParams.profile,
       conversionParams.iwxxmVersion,
-      accessToken,
     ],
   );
 
@@ -1144,7 +1108,6 @@ export function FileConverter({
   } = useLiveWorkbenchAssist({
     text: manualInput,
     product: liveAssistProduct,
-    accessToken,
     enabled: !isReadOnly,
     liveIwxxm,
     liveIwxxmRunner,
@@ -1153,8 +1116,7 @@ export function FileConverter({
   const { entries: lintCatalogEntries, byCode: lintCatalogByCode } =
     useLintIssueCatalog({
       product: liveAssistProduct,
-      accessToken,
-      enabled: Boolean(accessToken) && !isReadOnly,
+      enabled: !isReadOnly,
     });
 
   const applyLintFix = useCallback(
@@ -1189,38 +1151,6 @@ export function FileConverter({
               METAR → IWXXM Converter
             </h1>
             <div className="flex items-center gap-3">
-              {onSwitchToAdmin && (
-                <div className="flex items-center gap-2">
-                  <Shield
-                    className="w-4 h-4 text-purple-600 dark:text-purple-400"
-                    aria-hidden="true"
-                  />
-                  <select
-                    value="converter"
-                    onChange={(e) => {
-                      if (e.target.value === 'admin') {
-                        console.log('User selected admin view from dropdown');
-                        onSwitchToAdmin?.();
-                      }
-                    }}
-                    className="px-3 py-1.5 text-sm font-medium bg-purple-600 text-white border-0 rounded-md hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 focus:ring-2 focus:ring-purple-500 focus:outline-none cursor-pointer"
-                    aria-label="Switch view"
-                  >
-                    <option
-                      value="converter"
-                      className="bg-white text-gray-900 dark:bg-gray-800 dark:text-white"
-                    >
-                      File Converter
-                    </option>
-                    <option
-                      value="admin"
-                      className="bg-white text-gray-900 dark:bg-gray-800 dark:text-white"
-                    >
-                      Admin Dashboard
-                    </option>
-                  </select>
-                </div>
-              )}
               <Button
                 onClick={() => setIsPreferencesDialogOpen(true)}
                 variant="outline"
@@ -1234,69 +1164,6 @@ export function FileConverter({
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600 dark:text-gray-400">Theme</span>
                 <ThemeToggle />
-              </div>
-
-              {/* Logout Menu */}
-              <div className="relative">
-                <Button
-                  variant="outline"
-                  className="bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border-0"
-                  aria-label={isGuest ? 'Sign in to save work' : 'Logout options'}
-                  onClick={() => {
-                    if (isGuest) {
-                      onRequestLogin?.();
-                      return;
-                    }
-                    setIsLogoutMenuOpen(!isLogoutMenuOpen);
-                  }}
-                >
-                  <LogOut className="w-4 h-4 mr-2" aria-hidden="true" />
-                  {isGuest ? 'Sign in' : 'Logout'}
-                  <ChevronDown className="w-4 h-4 ml-1" aria-hidden="true" />
-                </Button>
-
-                {isLogoutMenuOpen && !isGuest && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10">
-                    <div className="p-3 space-y-2">
-                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-1">
-                        Sign out scope:
-                      </p>
-
-                      <button
-                        onClick={() => handleLogoutWithScope('local')}
-                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label="Sign out from this device only"
-                      >
-                        <div className="font-medium">This Device</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Only this session
-                        </div>
-                      </button>
-
-                      <button
-                        onClick={() => handleLogoutWithScope('global')}
-                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label="Sign out from all devices"
-                      >
-                        <div className="font-medium">All Devices</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Every logged-in session
-                        </div>
-                      </button>
-
-                      <button
-                        onClick={() => handleLogoutWithScope('others')}
-                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label="Sign out from other devices"
-                      >
-                        <div className="font-medium">Other Devices</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Keep this session active
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -1855,7 +1722,7 @@ export function FileConverter({
                 <Button
                   data-testid="convert-and-send-button"
                   onClick={handleConvertAndSend}
-                  disabled={convertDisabled || !accessToken}
+                  disabled={convertDisabled}
                   className="min-w-[9.5rem] bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   aria-busy={isConvertAndSending}
                   aria-label={
@@ -1887,7 +1754,7 @@ export function FileConverter({
                   type="button"
                   data-testid="open-dissemination-drawer"
                   onClick={() => setIsDisseminationOpen(true)}
-                  disabled={isBusy || isReadOnly || !accessToken}
+                  disabled={isBusy || isReadOnly}
                   variant="outline"
                   className="min-w-[10rem] bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
                   aria-label="Open dissemination drawer for BYOC upload or publish"
@@ -2164,13 +2031,11 @@ export function FileConverter({
         convertedFiles={convertedFiles}
         isOpen={isUploadDialogOpen}
         onClose={() => setIsUploadDialogOpen(false)}
-        accessToken={accessToken}
       />
 
       <DisseminationDrawer
         open={isDisseminationOpen}
         onOpenChange={setIsDisseminationOpen}
-        accessToken={accessToken}
         iwxxmXml={convertedFiles[0]?.convertedContent}
         tacText={manualInput || undefined}
         product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
@@ -2180,7 +2045,7 @@ export function FileConverter({
       <UserPreferencesDialog
         isOpen={isPreferencesDialogOpen}
         onClose={() => setIsPreferencesDialogOpen(false)}
-        userEmail={userEmail}
+        userEmail="Operator"
         onPreferencesSaved={handlePreferencesSaved}
       />
     </div>
