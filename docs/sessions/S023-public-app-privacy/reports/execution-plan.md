@@ -1,7 +1,7 @@
 # Execution plan — S023 / EV-017 (F21 public app + F22 privacy / #783)
 
-> **Status**: **approved** (D-S023-04-plan-approve-A) — 08-verify-build in progress  
-> **Branch**: `evolve/EV-017-public-app-privacy`  
+> **Status**: **complete** (08–13 PASS; live smoke + API SUPABASE cleanup)  
+> **Branch**: `evolve/EV-017-public-app-privacy` (PR #790)  
 > **Evolve cycle**: EV-017  
 > **Features**: **F21**, **F22**; deepen **F5** / **F7.h**; delete **packages/auth** (M4)  
 > **Mode**: delta  
@@ -12,9 +12,9 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — 08-verify-build |
-| **Active milestone** | M7 — E2E / docs / connectivity gate (**complete**) |
-| **Active task** | 08-verify-build |
+| **Active phase** | Phase D — 13-deploy-smoke **COMPLETE** |
+| **Active milestone** | M7 — COMPLETE; verify/deploy closed |
+| **Active task** | EV-017 close (PR #790) |
 | **Tasks** | 28 / 28 completed |
 | **Last updated** | 2026-07-28 |
 
