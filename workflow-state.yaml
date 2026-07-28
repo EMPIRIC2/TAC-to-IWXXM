@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.1 completed; next T7.2 (H4–H5 after deploy) or T7.3 docs / T7.4 Render env; progress 26/~28; tip ad28389; interim draft PR #786; #783'
+  note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.3 completed @ f5aa024; T7.4 blocked (checklist committed @ d459164; awaiting RENDER_API_KEY for live env cutover); T7.2 pending (needs deploy after T7.4); progress 27/~28; tip d459164; interim draft PR #786; #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389; interim draft PR #786; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-28'
-    note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389'
+    note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164'
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2917,13 +2917,13 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-28'
-      note: T7.1 Playwright public UJ + Auth-gone + privacy smoke COMPLETE
+      note: 'T7.3 COMPLETE @ f5aa024; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28'
       active_milestone: M7
-      active_task: T7.2
-      active_task_status: pending
-      progress: 26/~28
-      tip_sha: ad28389
-      tip_sha_full: ad28389d47325bcf74f994af24d1f878ebc617b7
+      active_task: T7.4
+      active_task_status: blocked
+      progress: 27/~28
+      tip_sha: d459164
+      tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -3148,15 +3148,16 @@ stages:
       started_at: '2026-07-28'
       started: '2026-07-28'
       mode: full
-      note: T7.1 Playwright public UJ + Auth-gone + privacy smoke COMPLETE
+      note: 'T7.3 COMPLETE @ f5aa024; T7.4 blocked — checklist committed @ d459164; awaiting RENDER_API_KEY for live env deletes; artifact docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md; T7.2 pending (needs deploy after T7.4); progress 27/~28'
       active_milestone: M7
-      active_task: T7.2
-      active_task_status: pending
-      decision_id: D-S023-07-resume-T7.1
+      active_task: T7.4
+      active_task_status: blocked
+      decision_id: D-S023-07-T7.4-blocked
       branch: evolve/EV-017-public-app-privacy
-      progress: 26/~28
-      tip_sha: ad28389
-      tip_sha_full: ad28389d47325bcf74f994af24d1f878ebc617b7
+      progress: 27/~28
+      tip_sha: d459164
+      tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+      report: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
       feature_ids:
       - F21
       - F22
@@ -3266,6 +3267,8 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked) awaiting RENDER_API_KEY for live env cutover; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
+    - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — F21 public deploy corpus + EV-017 CHANGELOG draft; T7.4 blocked (D-S023-07-T7.4-blocked, no RENDER_API_KEY); T7.2 pending after T7.4 deploy; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
     - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
@@ -4364,8 +4367,10 @@ stages:
     started_at: '2026-07-27'
     completed_at:
     current_stage: 07-build
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B PASSED; current_stage 07-build; M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389; interim draft PR #786; 03/05/06 skipped; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B PASSED; current_stage 07-build; M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; 03/05/06 skipped; #783'
     notes:
+    - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked) awaiting RENDER_API_KEY; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
+    - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — T7.4 blocked (D-S023-07-T7.4-blocked); T7.2 pending after T7.4; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
     - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
@@ -8653,7 +8658,37 @@ decisions_log:
   decision: User Continue → resume 07-build at T7.1 (M7); leave unrelated dirty security-static-analysis / abuse_controls WIP unstaged
   related_issue: 783
   related_decision: D-S023-04-plan-approve-A
+- id: D-S023-07-T7.4-blocked
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 07-build
+  skill_id: 07-build
+  skill: 07-build
+  category: build
+  status: blocked
+  resolved_at:
+  topic: T7.4 Render env cutover blocked without RENDER_API_KEY
+  summary: Render env cutover blocked without RENDER_API_KEY; checklist committed @ d459164 (docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md); live env deletes still pending
+  decision: T7.4 blocked — checklist committed @ d459164; unblock by providing RENDER_API_KEY then apply Render env cutover; T7.2 (H4–H5) waits on deploy after T7.4
+  related_issue: 783
+  related_decision: D-S023-07-resume-T7.1
+  artifact: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
 artifacts:
+- path: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
+  type: session-report
+  kind: checklist
+  stage: 07-build
+  skill_id: 07-build
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: blocked
+  decision_id: D-S023-07-T7.4-blocked
+  tip_sha: d459164
+  note: 'S023/EV-017 T7.4 Render env cutover checklist committed @ d459164 — blocked without RENDER_API_KEY for live env deletes'
 - path: docs/adr/ADR-031-public-app-indexeddb-history.md
   type: adr
   kind: adr
@@ -10630,10 +10665,10 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07-build — M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389; interim draft PR #786.'
+    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07-build — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786.'
   current_stage: 07-build
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 Phase A+B PASSED — gates.a_to_b+b_to_c passed; current_stage 07-build — M1–M6 complete; M7 active; T7.1 completed; next T7.2 (H4–H5 after deploy) or T7.3 docs / T7.4 Render env; progress 26/~28; tip ad28389; 03/05/06 skipped; interim draft PR #786; #783.'
+  note: 'S023/EV-017 Phase A+B PASSED — gates.a_to_b+b_to_c passed; current_stage 07-build — M1–M6 complete; M7 active; T7.3 completed @ f5aa024; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28; tip d459164; 03/05/06 skipped; interim draft PR #786; #783.'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
@@ -10660,7 +10695,10 @@ evolve_cycles:
   - D-S023-04-batch3
   - D-S023-04-plan-approve-A
   - D-S023-07-resume-T7.1
+  - D-S023-07-T7.4-blocked
   notes:
+  - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked) awaiting RENDER_API_KEY for live env cutover; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
+  - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — F21 public deploy corpus + EV-017 CHANGELOG draft; T7.4 blocked (D-S023-07-T7.4-blocked, no RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
   - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
   - '2026-07-28 S023/EV-017 07-build resume T7.1 (D-S023-07-resume-T7.1) — User Continue; M1–M6 complete; active M7; active_task T7.1 in_progress; progress 25/~28; tip 3c0a5a0; leave unrelated security-static-analysis / abuse_controls WIP unstaged; #783'
   - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
@@ -10694,7 +10732,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-27'
-      note: Orchestrator active; Phase A+B PASSED; current_stage 07-build — M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389; 03/05/06 skipped
+      note: Orchestrator active; Phase A+B PASSED; current_stage 07-build — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; 03/05/06 skipped
     01-requirements:
       status: completed
       mode: delta
@@ -10737,14 +10775,16 @@ evolve_cycles:
       status: in_progress
       started: '2026-07-28'
       mode: full
-      note: T7.1 Playwright public UJ + Auth-gone + privacy smoke COMPLETE
-      active_task: T7.2
+      note: 'T7.3 COMPLETE @ f5aa024; T7.4 blocked (checklist @ d459164; D-S023-07-T7.4-blocked awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28'
+      active_task: T7.4
       active_milestone: M7
-      active_task_status: pending
-      progress: 26/~28
-      tip: ad28389
-      tip_sha: ad28389
-      tip_sha_full: ad28389d47325bcf74f994af24d1f878ebc617b7
+      active_task_status: blocked
+      progress: 27/~28
+      tip: d459164
+      tip_sha: d459164
+      tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+      decision_id: D-S023-07-T7.4-blocked
+      report: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
     08-verify-build:
       status: pending
     09-qa:
@@ -14367,13 +14407,15 @@ evolve_cycles:
   merge_sha: '4660602'
 git_history:
   current_branch: evolve/EV-017-public-app-privacy
-  ahead_of_origin: 1
+  ahead_of_origin: 3
   pushed: false
   pending_commit:
-  tip_sha: ad28389
-  tip_sha_full: ad28389d47325bcf74f994af24d1f878ebc617b7
-  note: 'S023/EV-017 tip ad28389 — M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; interim draft PR #786; #783'
+  tip_sha: d459164
+  tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+  note: 'S023/EV-017 tip d459164 — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist committed; awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28; interim draft PR #786; #783'
   notes:
+  - '2026-07-28 S023/EV-017 tip synced — d459164 (d459164efe76caacb46ef38adaaa33d72beb731e); T7.4 checklist COMMITTED (still blocked awaiting RENDER_API_KEY for live env deletes); stage 07-build; active T7.4 blocked / T7.2 pending after T7.4; progress 27/~28; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — f5aa024 (f5aa024483d2eef87611a4173ae0803efa1d372e); T7.3 COMPLETE (F21 public deploy corpus + EV-017 CHANGELOG draft); T7.4 blocked (D-S023-07-T7.4-blocked); stage 07-build; active T7.4 blocked / T7.2 pending after T7.4; progress 27/~28'
   - '2026-07-28 S023/EV-017 tip synced — ad28389 (ad28389d47325bcf74f994af24d1f878ebc617b7); T7.1 COMPLETE (Playwright public UJ + Auth-gone + privacy smoke); stage 07-build; active T7.2 pending; progress 26/~28; leave unrelated security-static-analysis / abuse_controls WIP unstaged'
   - '2026-07-28 S023/EV-017 tip synced — 3c0a5a0 (3c0a5a03324a0b38ac002d148767a0aa336add01); resume 07-build at T7.1 (M7); progress 25/~28; D-S023-07-resume-T7.1; leave unrelated security-static-analysis / abuse_controls WIP unstaged'
   - '2026-07-28 S023/EV-017 tip synced — 91fd231 (91fd2314cd318c60d9be974b52bcb14dd7258f8a); M5 COMPLETE (T5.4–T5.5); stage 07-build; active M6/T6.1 (Privacy preference center); progress 22/~28; recorded c9cebfa/91fd231; pending_commit cleared; interim draft PR #786 stale until push (ahead 33)'
@@ -14559,9 +14601,9 @@ git_history:
     created_at: '2026-07-27'
     session_id: S023-public-app-privacy
     evolve_cycle_id: EV-017
-    note: 'Open/in_progress (base main). 07-build — M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389; interim draft PR #786 open.'
-    tip_sha: ad28389
-    tip_sha_full: ad28389d47325bcf74f994af24d1f878ebc617b7
+    note: 'Open/in_progress (base main). 07-build — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786 open.'
+    tip_sha: d459164
+    tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
     pushed: true
     pr_id: PR-EV-017
     pr_number: 786
@@ -15262,6 +15304,28 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: d459164efe76caacb46ef38adaaa33d72beb731e
+    short: d459164
+    branch: evolve/EV-017-public-app-privacy
+    message: "[T7.4] docs: Render Auth secret cutover checklist (blocked on API key)"
+    stage: 07-build
+    files_changed: 2
+    timestamp: '2026-07-28T19:55:05Z'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    task_id: T7.4
+
+  - sha: f5aa024483d2eef87611a4173ae0803efa1d372e
+    short: f5aa024
+    branch: evolve/EV-017-public-app-privacy
+    message: "[T7.3] docs: F21 public deploy corpus + EV-017 CHANGELOG draft"
+    stage: 07-build
+    files_changed: 6
+    timestamp: '2026-07-28T19:54:12Z'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    task_id: T7.3
+
   - sha: ad28389d47325bcf74f994af24d1f878ebc617b7
     short: ad28389
     branch: evolve/EV-017-public-app-privacy
