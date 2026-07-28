@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M5 — Backend Auth + work-sessions teardown |
-| **Active task** | T5.5 — Ops note: ~30-day archive of legacy rows |
-| **Tasks** | 21 / ~28 completed |
+| **Active task** | — (M5 complete; next M6 Privacy preference center) |
+| **Tasks** | 22 / ~28 completed |
 | **Last updated** | 2026-07-28 |
 
 ## Tech Stack Summary (S023 delta)
@@ -101,7 +101,7 @@
 | T5.2 | Code | Remove auth routers/middleware/JWT gates; retire DISABLE_AUTH | F21; ADR-031 | T5.1 | completed |
 | T5.3 | Code | Remove work-sessions routers; stop writing `tac_work_sessions` from API | F7.h; E17-5 | T5.2 | completed |
 | T5.4 | Config | Delete `packages/auth` workspace member; fix Docker/CI/Makefile/coverage gates; inline residuals | E17-22 | T5.2 | completed |
-| T5.5 | Docs | Ops note: ~30-day archive of legacy rows (no public API) | E17-5 | T5.3 | in_progress |
+| T5.5 | Docs | Ops note: ~30-day archive of legacy rows (no public API) | E17-5 | T5.3 | completed |
 
 ### M6 — Privacy preference center (F22)
 

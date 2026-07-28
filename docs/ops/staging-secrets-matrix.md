@@ -100,7 +100,8 @@ See [deploy.md](../deploy.md) §Live test harness and ADR-009 / ADR-031.
 ### EV-004 / F5 work history (2026-06-24) — **historical**
 
 Pre-F21 server `tac_work_sessions` used Supabase JWT. **F21 / ADR-031**: local IndexedDB only;
-legacy rows archive ~30 days then delete (no public API). H0i work-sessions CORS checks retire
+legacy rows archive ~30 days then delete (no public API). Ops runbook:
+[`legacy-tac-work-sessions-archive.md`](legacy-tac-work-sessions-archive.md). H0i work-sessions CORS checks retire
 with M5.
 
 ### Redeploy order (F21)
