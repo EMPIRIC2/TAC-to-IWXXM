@@ -57,6 +57,7 @@ try:
     from .services.validation import ValidationService
     from .services.validation_orchestrator import get_validation_orchestrator
     from .services.webhooks import webhook_service
+    from .utilities.abuse_controls import install_abuse_controls
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
     from .utilities.observability import install_fastapi_observability, setup_logging
@@ -100,6 +101,7 @@ except ImportError:
     from services.validation import ValidationService
     from services.validation_orchestrator import get_validation_orchestrator
     from services.webhooks import webhook_service
+    from utilities.abuse_controls import install_abuse_controls
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from utilities.metar_normalizer import normalize_recent_weather_tokens
     from utilities.observability import install_fastapi_observability, setup_logging
@@ -155,6 +157,7 @@ app = FastAPI(
 )
 
 install_fastapi_observability(app=app, service_name="backend")
+install_abuse_controls(app)
 
 
 class ConvertRequestLoggingMiddleware:
