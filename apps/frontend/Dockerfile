@@ -61,11 +61,9 @@ const cfg = { \
     baseUrl: process.env.VITE_API_BASE_URL || '', \
     frontendUrl: process.env.VITE_APP_URL || '', \
     corsOrigins: process.env.VITE_APP_URL ? [process.env.VITE_APP_URL] : [], \
-    disableAuth: false, \
   }, \
   supabase: { \
     url: process.env.VITE_SUPABASE_URL || '', \
-    publishableKey: process.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY || '', \
   }, \
 }; \
 fs.mkdirSync('public', { recursive: true }); \
