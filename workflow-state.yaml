@@ -2324,7 +2324,6 @@ stages:
     decision_refs:
     - D-S023-02-verify-plan-gate-A
     - D-S023-02-C-EV017-A
-    pending_commit_note: Corpus contradiction fixes (C1–4+C6 + C5 banner) may be uncommitted; refresh git_history tip after user commits — do not invent SHAs.
     substeps:
       inventory:
         status: completed
@@ -13783,10 +13782,11 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 2c9f643
-  tip_sha_full: 2c9f643acef912e15a89df7c5944c2c8e6813fde
-  note: '11-verify-impl approved (E16-19); PR #782 open; next after merge: 13-deploy-smoke (H4–H5); do not start 13 until merge unless user asks; phase_d/deploy pending; tip 2c9f643'
+  tip_sha: ac11fb0
+  tip_sha_full: ac11fb0ec7b3450d75b1022d7e92547b9d11973b
+  note: 'S023/EV-017 tip ac11fb0 — 02-verify-plan corpus contradiction fixes (C-EV017.1–6); interim draft PR #786'
   notes:
+  - '2026-07-27 S023/EV-017 tip recorded — ac11fb0 (ac11fb0ec7b3450d75b1022d7e92547b9d11973b); "[S023/EV-017] docs: resolve C-EV017.1–6 corpus contradictions (02)"; stage 02-verify-plan; pending_commit_note cleared'
   - '2026-07-27 S023/EV-017 open — branch evolve/EV-017-public-app-privacy recorded active (base main; git create deferred to parent); D-S023-00-open; Standard routing; feature_ids TBD; #783'
   - '2026-07-26 S021/EV-016 — 11-verify-impl approved (E16-19); PR #782 opened; next after merge: 13-deploy-smoke (H4–H5). Do not start 13 until merge unless user asks. phase_d/deploy still pending; tip 2c9f643'
   - 2026-07-26 S021/EV-016 tip remains 3d1c58b after 09+10 COMPLETE (qa-report.md / e2e-report.md may be uncommitted); do not advance tip until user commits report docs
@@ -17763,6 +17763,25 @@ git_history:
     timestamp: '2026-07-26T21:52:12Z'
     date: '2026-07-26'
     note: 'audit chore on EV-016 tip before PR #782; tip_sha 2c9f643'
+  - sha: ac11fb0ec7b3450d75b1022d7e92547b9d11973b
+    short: ac11fb0
+    branch: evolve/EV-017-public-app-privacy
+    message: '[S023/EV-017] docs: resolve C-EV017.1–6 corpus contradictions (02)'
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - docs/api-contract.md
+    - docs/spec.md
+    - docs/user-journeys.md
+    - docs/test-plan.md
+    - docs/env-contract.md
+    - docs/decisions/*
+    - docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
+    - workflow-state.yaml
+    timestamp: '2026-07-27'
+    date: '2026-07-27'
 pr_review_cycles:
 - id: PRR-001
   pr_number: 679
