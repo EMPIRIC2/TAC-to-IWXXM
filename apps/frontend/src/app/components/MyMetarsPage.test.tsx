@@ -7,11 +7,16 @@ import { MyMetarsPage } from './MyMetarsPage';
 const mockList = vi.fn();
 const mockDelete = vi.fn();
 const mockRestore = vi.fn();
+const mockExport = vi.fn();
+const mockImport = vi.fn();
 
 vi.mock('/utils/localWorkSessionStore', () => ({
+  EXPORT_SCHEMA_ID: 'tac-work-sessions-export-v1',
   listMyMetars: (...args: unknown[]) => mockList(...args),
   deleteLocalWorkSession: (...args: unknown[]) => mockDelete(...args),
   restoreLocalWorkSession: (...args: unknown[]) => mockRestore(...args),
+  exportLocalWorkSessions: (...args: unknown[]) => mockExport(...args),
+  importLocalWorkSessions: (...args: unknown[]) => mockImport(...args),
 }));
 
 const sampleSession = (overrides: Partial<WorkSession> = {}): WorkSession => ({
@@ -47,6 +52,12 @@ describe('MyMetarsPage', () => {
     });
     mockDelete.mockResolvedValue(sampleSession({ deleted_at: '2026-06-24T13:00:00Z' }));
     mockRestore.mockResolvedValue(sampleSession());
+    mockExport.mockResolvedValue({
+      schema: 'tac-work-sessions-export-v1',
+      exported_at: '2026-07-28T00:00:00Z',
+      sessions: [sampleSession()],
+    });
+    mockImport.mockResolvedValue({ imported: 1 });
   });
 
   it('loads and displays work sessions from IndexedDB', async () => {
@@ -176,5 +187,51 @@ describe('MyMetarsPage', () => {
 
     await user.click(screen.getByRole('button', { name: /back to converter/i }));
     expect(onBack).toHaveBeenCalled();
+  });
+
+  it('exports sessions as tac-work-sessions-export-v1 JSON', async () => {
+    const user = userEvent.setup();
+    const createObjectURL = vi.fn(() => 'blob:export');
+    const revokeObjectURL = vi.fn();
+    vi.stubGlobal('URL', {
+      ...URL,
+      createObjectURL,
+      revokeObjectURL,
+    });
+
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
+    await waitFor(() => expect(screen.getByText('KJFK draft')).toBeInTheDocument());
+    await user.click(screen.getByTestId('export-sessions'));
+
+    await waitFor(() => {
+      expect(mockExport).toHaveBeenCalled();
+      expect(screen.getByText(/exported 1 session/i)).toBeInTheDocument();
+    });
+    vi.unstubAllGlobals();
+  });
+
+  it('imports sessions from a JSON file', async () => {
+    const user = userEvent.setup();
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
+    await waitFor(() => expect(screen.getByText('KJFK draft')).toBeInTheDocument());
+
+    const file = new File(
+      [
+        JSON.stringify({
+          schema: 'tac-work-sessions-export-v1',
+          exported_at: '2026-07-28T00:00:00Z',
+          sessions: [sampleSession({ id: 'imported' })],
+        }),
+      ],
+      'export.json',
+      { type: 'application/json' },
+    );
+    const input = screen.getByTestId('import-sessions-input');
+    await user.upload(input, file);
+
+    await waitFor(() => {
+      expect(mockImport).toHaveBeenCalled();
+      expect(screen.getByText(/imported 1 session/i)).toBeInTheDocument();
+    });
   });
 });
