@@ -100,6 +100,16 @@ Privacy: Solution A + one global preference center + GPC. Retire operator Auth U
 | E17-19 | decision | slowapi baseline: **60/min/IP** convert+lint+decode; **10/min** dissemination; **2 MB** body (exact table in ADR-031) |
 | E17-20 | decision | Export/import = JSON **`tac-work-sessions-export-v1`** download/upload in Privacy or History UI |
 
+### Tech plan Batch 3 — Milestones / ADR / packages / env (2026-07-28)
+
+| ID | Category | Decision |
+|----|----------|----------|
+| E17-21 | decision | **7 milestones**: ADR+deps → IndexedDB+migrate+export → slowapi → FE Auth strip → BE Auth/work-sessions 404 → Privacy+GPC → env/E2E/docs |
+| E17-22 | decision | **Delete `packages/auth` entirely** this cycle; inline any F8 helpers if needed |
+| E17-23 | decision | **Supersede ADR-020** with **ADR-031** (IndexedDB local history) |
+| E17-24 | decision | **Full env-contract rewrite now** (closes C-EV017.5) |
+| E17-25 | decision | Draft ADR-031 + execution-plan + dependency-inventory; then approve plan |
+
 ---
 
 ## Cycle EV-016 — Workbench golden examples (#780) (S021)

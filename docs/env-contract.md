@@ -1,131 +1,112 @@
-# Environment Contract — Render ↔ Supabase ↔ Local
+# Environment Contract — Render ↔ Local (F21 public app)
 
 > **Project**: METAR to IWXXM Converter  
-> **Session**: S003-supabase-keys-config; S011-f7-operator-ui (BYO); **S023 / EV-017 (F21)**  
-> **Example deploy project** (not product tenancy): `ktvxijislbtgqapllmuk`  
-> **Last updated**: 2026-07-27 (S023 / EV-017 — stale-until-F21 banner)
-
-> **⚠️ Stale until F21 cutover (S023 / EV-017 / C-EV017.5)** — This contract still documents
-> operator Auth (`E2E_USER_*`, `DISABLE_AUTH` / `disableAuth`, `/auth` on `api.baseUrl`,
-> browser Supabase publishable key). Those are **superseded** by F21 (public app) and F7.h
-> (IndexedDB history). **Full rewrite deferred to 04-tech-plan / 12-verify-deploy.** Until then:
-> treat Auth/JWT/E2E login rows as **historical**; F8 worker service-role +
-> `DISSEMINATION_EGRESS_ALLOWLIST` rows remain current.
+> **Session**: S023-public-app-privacy / EV-017 (F21/F22)  
+> **Example deploy project** (historical ref only): `ktvxijislbtgqapllmuk`  
+> **Last updated**: 2026-07-28 (S023 / EV-017 — **F21 rewrite**; closes C-EV017.5)
 
 Single source of truth for **what** each layer owns and **which name** to use everywhere.
 
-## BYO model (S011 / R6 / #697)
+## Model (F21)
 
-Each operator deploy points at **their** Supabase project + Postgres/`DATABASE_URL`. The
-committed example project ref / URLs document the current hosted deploy for this repo — they
-are **not** a shared multi-tenant admin product. No in-app paste-keys UI.
+- **Operator product** is **public and unauthenticated** — no browser JWT, no `/auth/*`,
+  no `E2E_USER_*` login harness for convert paths.
+- **Work history** lives in the browser (IndexedDB) — not in server session tables.
+- **F8 worker** remains a private machine path with service-role credentials (ADR-018).
+- **Dissemination** BYOC credentials are **memory-only** (ADR-021/029); egress allowlist required.
 
 ## Source of truth by layer
 
 | Layer | Owns | Does not own |
 |-------|------|--------------|
-| **Operator Supabase** | Project URL, publishable key, secret key, `DATABASE_URL`, auth dashboard settings (signup/invite — G2) | Render URLs, CORS |
-| **Render** | Deploy URLs, `PORT`, runtime secret injection, static `/config.json` build | Key generation (copy from operator Supabase) |
-| **Repo** | `config/*.json` (non-secrets), `.env.example` (secret names), canonical contract | Live secret values |
-| **Local** | `.env` (gitignored secrets), `METAR_CONFIG_ENV=local` | Production URLs unless testing live |
+| **Render API** | Deploy URL, `PORT`, rate-limit/body env, dissemination allowlist, F8-unrelated API secrets if any remain for legacy ops | Browser Auth keys |
+| **Render static** | Frontend URL; `/config.json` with **`api.baseUrl`** (+ cors-related non-secrets) | Supabase publishable key for Auth (removed) |
+| **Render worker (F8)** | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, poller URL/interval | Operator JWT |
+| **Repo** | `config/*.json`, `.env.example`, this contract | Live secret values |
+| **Local** | `.env` (gitignored), `METAR_CONFIG_ENV=local` | Production URLs unless live testing |
 
 ## Canonical names (one name per concern)
 
 | Concern | Canonical | Where set |
 |---------|-----------|-----------|
-| Supabase project URL | `config.*.supabase.url` | `config/{local,prod}.json` (operator-specific) |
-| Publishable key | `SUPABASE_PUBLISHABLE_KEY` | `.env` / Render API / GitHub CI |
-| Secret key | `SUPABASE_SECRET_KEY` | `.env` / Render API only — **never** static frontend |
-| Postgres | `DATABASE_URL` | `.env` / Render API |
-| API public URL | `config.*.api.baseUrl` | `config/*.json` (`/api/v1` + `/auth` only) |
+| API public URL | `config.*.api.baseUrl` | `config/*.json` (`/api/v1` **only** — no `/auth`) |
 | Frontend public URL | `config.*.api.frontendUrl` | `config/*.json` |
 | CORS | `config.*.api.corsOrigins` | `config/*.json` |
-| Auth bypass (dev) | `config.*.api.disableAuth` | `config/local.json` only (G1) |
-| Live/E2E login user | `E2E_USER_EMAIL`, `E2E_USER_PASSWORD` | local `.env` / CI secrets for harness |
-| Converter engine (F6) | *(code — `packages/tac2iwxxm`)* | Not an env var; hard cutover, no engine flag |
+| Public rate limit | `RATE_LIMIT_PUBLIC_PER_MIN` | Render API / `.env` (default **60**) |
+| Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | Render API / `.env` (default **10**) |
+| Max request body | `MAX_REQUEST_BODY_BYTES` | Render API / `.env` (default **2097152** = 2 MiB) |
+| Dissemination egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | Render API / `.env` (ADR-029) |
+| Converter engine (F6) | *(code — `packages/tac2iwxxm`)* | Not an env var |
 | F8 worker Supabase URL | `SUPABASE_URL` | Render worker / local `.env` |
-| F8 worker service role | `SUPABASE_SERVICE_ROLE_KEY` | Render worker / local `.env` (writers only) |
+| F8 worker service role | `SUPABASE_SERVICE_ROLE_KEY` | Render worker / local `.env` |
 | F8 poller feed URL | `INGEST_POLLER_URL` | Render worker / local `.env` |
-| F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Render worker env (default `30`) |
-| Dissemination egress allowlist (F16–F19) | `DISSEMINATION_EGRESS_ALLOWLIST` | Render API / local `.env` (ADR-029 / E14-08=A) |
+| F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Render worker (default `30`) |
 
-### Dissemination egress (S019 / EV-014)
+### Optional / legacy ops (not required for public FE)
+
+| Concern | Canonical | Notes |
+|---------|-----------|-------|
+| Postgres | `DATABASE_URL` | F8 ingest store / legacy archive ops only — **not** operator Auth |
+| Supabase secret | `SUPABASE_SECRET_KEY` | Server ops / archive scripts only — **never** frontend |
+
+### Dissemination egress (F16–F19)
 
 | Setting | Rules |
 |---------|-------|
-| `DISSEMINATION_EGRESS_ALLOWLIST` | Comma-separated hostnames and/or CIDRs. **Empty ⇒ fail-closed** — no user-URI / user-host egress in that environment (ADR-029). **Local/CI:** `wis2box,127.0.0.1,127.0.0.0/8,localhost`. **Live BYOC demos:** exact destination hostnames only (no wildcards). |
-| Production (Render API) | Operator sets explicit list of destinations they allow (live BYOC hosts). Never commit secrets; hosts/CIDRs only. |
-| Staging / CI | May list Compose wis2box hostname(s) + CI testcontainer networks as needed for TC-F17-001. |
-| User-pasted DB/WIS2/EDIS/AMHS creds | **Not** env vars — memory-only on preflight/send (ADR-021 amend / ADR-030). |
+| `DISSEMINATION_EGRESS_ALLOWLIST` | Comma-separated hostnames and/or CIDRs. **Empty ⇒ fail-closed**. Local/CI: `wis2box,127.0.0.1,127.0.0.0/8,localhost`. |
+| User-pasted dest creds | **Not** env vars — memory-only on preflight/send |
 
-### Deprecated (S011)
+## Retired (F21 — do not set for operator product)
 
-| Deprecated | Replacement |
-|------------|-------------|
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` (ordinary user; **not** admin role) |
-| Product `/admin/*` | Removed |
+| Retired | Replacement |
+|---------|-------------|
+| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | None — public convert; use `TC-F21-auth-gone` |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Already retired (S011) |
+| `DISABLE_AUTH` / `config.*.api.disableAuth` | Public by default — dual path removed |
+| Browser `SUPABASE_PUBLISHABLE_KEY` in `/config.json` for Auth | Removed from FE Auth path |
+| `config.*.api.baseUrl` including `/auth` | `/api/v1` only |
+| Operator `/auth/*` | 404 |
 
 ## Per-environment matrix
 
-### Production (Render + operator Supabase)
+### Production (Render)
 
-| Setting | Render API | Render static | Supabase dashboard |
-|---------|------------|---------------|-------------------|
-| `SUPABASE_PUBLISHABLE_KEY` | env (`sync: false`) | inject into `/config.json` at build | API Keys |
-| `SUPABASE_SECRET_KEY` | env (`sync: false`) | **never** | API Keys |
-| `DATABASE_URL` | env (`sync: false`) | **never** | Database → Connect |
-| `DISSEMINATION_EGRESS_ALLOWLIST` | env (`sync: false`) | **never** | Operator destination hosts/CIDRs (ADR-029) |
-| `config/prod.json` | loaded via `METAR_CONFIG_ENV=prod` | copied to `public/config.json` | — |
-| Auth redirect URLs | — | — | Must include `api.frontendUrl` |
-| Legacy JWT keys | — | — | **Disable** after migration |
-
-Example project historically used in this repo: `ktvxijislbtgqapllmuk` — replace when BYO.
+| Setting | Render API | Render static | Render worker |
+|---------|------------|---------------|---------------|
+| `RATE_LIMIT_PUBLIC_PER_MIN` | env (default 60) | — | — |
+| `RATE_LIMIT_DISSEMINATION_PER_MIN` | env (default 10) | — | — |
+| `MAX_REQUEST_BODY_BYTES` | env (default 2097152) | — | — |
+| `DISSEMINATION_EGRESS_ALLOWLIST` | env | — | — |
+| `config/prod.json` | `METAR_CONFIG_ENV=prod` | copy → `public/config.json` (`api.baseUrl` only) | — |
+| F8 secrets | — | — | `SUPABASE_*`, poller |
 
 ### Local (`METAR_CONFIG_ENV=local`)
 
 | Setting | Value |
 |---------|-------|
-| `config/local.json` | Ports **18000** (frontend) / **18001** (API) |
-| `.env` | Secrets placeholders (see [config-spec.md](config-spec.md)) |
-| `api.disableAuth` | `true` |
-| `api.corsOrigins` | `["http://localhost:18000"]` |
-| Live auth tests | Prefer `DISABLE_AUTH`/local; else `E2E_USER_*` |
+| Ports | **18000** frontend / **18001** API |
+| CORS | `["http://localhost:18000"]` |
+| Rate limits | Defaults OK; may raise for local soak |
+| Auth bypass | **N/A** (no Auth) |
 
 ### CI (GitHub Actions)
 
-| Setting | Canonical secret name (target) |
-|---------|-------------------------------|
-| Publishable key | `SUPABASE_PUBLISHABLE_KEY` |
-| Supabase URL | In `config/prod.json` or test fixture — not duplicated in CI env |
-| Live login (if used) | `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` |
-| Integration job | Maps canonical names only; deprecate `FRONTEND_VITE_*` prefix |
-
-## Drift problems addressed (S003 + S011)
-
-| Issue | Remediation |
-|-------|-------------|
-| Same key, 4+ env names | Single `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` |
-| URL in `.env` and `VITE_*` | `config.*.supabase.url` only |
-| Secret key missing in compose | Pass `SUPABASE_SECRET_KEY` to API service |
-| Non-secrets in `.env` | Move to `config/*.json` |
-| Port 5173/8001 vs 18000/18001 | Standardize on compose ports (S003-R4) |
-| `FRONTEND_VITE_*` CI secrets | Rename to canonical |
-| Render `sync: false` drift | `make env-check` + [env-sync-runbook.md](ops/env-sync-runbook.md) |
-| Shared-admin assumption | BYO + remove `/admin` (ADR-021) |
-| `ADMIN_*` confused with admin role | Rename to `E2E_USER_*` |
+| Setting | Notes |
+|---------|-------|
+| Live login secrets | **Not required** for public path |
+| F8 / dissemination integration | Use allowlist + worker fixtures as today |
 
 ## Verification
 
 ```bash
 make env-check              # local: .env + config JSON valid
-make env-check LIVE=1       # optional: probe Render /health + Supabase auth health
+make env-check LIVE=1       # optional: probe Render /health (no Auth health)
 ```
 
 ## References
 
-- [config-spec.md](config-spec.md)
-- [env-sync-runbook.md](ops/env-sync-runbook.md)
-- [deploy.md](deploy.md)
-- [ADR-021](adr/ADR-021-byo-credentials-admin-removal.md)
+- [ADR-031](adr/ADR-031-public-app-indexeddb-history.md)
+- [ADR-018](adr/ADR-018-f8-worker-template.md)
 - [ADR-029](adr/ADR-029-dissemination-ssrf-allowlist.md)
-- [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) — **deprecated**; use this document instead
+- [config-spec.md](config-spec.md)
+- [deploy.md](deploy.md)

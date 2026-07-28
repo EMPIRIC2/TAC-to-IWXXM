@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'Phase A passed (D-S023-02-phase-a-A); 03 skipped (waive prerequisite for 04); 04-tech-plan in_progress — Batch 1+2 locked (E17-12..20 / D-S023-04-batch1-arch + D-S023-04-batch2-privacy-ops); interview Batch 3 pending'
+  note: 'Phase A passed (D-S023-02-phase-a-A); 03 skipped (waive prerequisite for 04); 04-tech-plan in_progress — Batch 1+2+3 locked (E17-12..25 / D-S023-04-batch1-arch + D-S023-04-batch2-privacy-ops + D-S023-04-batch3); artifacts drafted; awaiting plan approve AskQuestion'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A passed (D-S023-02-phase-a-A); current_stage 04-tech-plan; Batch 1+2 locked (E17-12..20 / D-S023-04-batch1-arch + D-S023-04-batch2-privacy-ops); interview Batch 3 pending; interim draft PR #786 open; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A passed (D-S023-02-phase-a-A); current_stage 04-tech-plan; Batch 1+2+3 locked (E17-12..25 / D-S023-04-batch1-arch + D-S023-04-batch2-privacy-ops + D-S023-04-batch3); artifacts drafted; awaiting plan approve AskQuestion; interim draft PR #786 open; #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -63,7 +63,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-28'
-    note: 'S023/EV-017 04-tech-plan in_progress 2026-07-28 (delta) — Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops); interview Batch 3 pending; C5 env rewrite in scope; ADR public-app pending'
+    note: 'S023/EV-017 04-tech-plan in_progress 2026-07-28 (delta) — Batch 3 locked (E17-21..25 / D-S023-04-batch3); ADR-031 + execution-plan + 04-tech-plan drafted; awaiting plan approve AskQuestion'
   - stage: 07-build
     required: true
     mode: full
@@ -2597,7 +2597,11 @@ stages:
       feature_ids:
       - F21
       - F22
-      note: 'Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops); Batch 1 arch locked (E17-12..15); interview Batch 3 pending; C5 env rewrite in scope; ADR public-app pending'
+      note: 'Batch 3 locked (E17-21..25 / D-S023-04-batch3); Batch 1+2 locked; artifacts drafted (ADR-031 + execution-plan + 04-tech-plan); awaiting plan approve AskQuestion'
+      artifacts:
+      - docs/adr/ADR-031-public-app-indexeddb-history.md
+      - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+      - docs/sessions/S023-public-app-privacy/reports/04-tech-plan.md
       interview:
         batch_1_architecture:
           status: locked
@@ -2620,9 +2624,20 @@ stages:
           - E17-20
           locked_at: '2026-07-28'
           note: GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON export v1
-        batch_3_approve_plan:
+        batch_3_milestones_adr_env:
+          status: locked
+          decision_id: D-S023-04-batch3
+          decision_ids:
+          - E17-21
+          - E17-22
+          - E17-23
+          - E17-24
+          - E17-25
+          locked_at: '2026-07-28'
+          note: 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve
+        plan_approve:
           status: pending
-          note: Interview Batch 3 pending after Batch 2 lock
+          note: Artifacts drafted; awaiting plan approve AskQuestion (E17-25)
     - session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
       skill_id: 04-tech-plan
@@ -2861,6 +2876,7 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-28 S023/EV-017 04 Batch 3 locked (E17-21..25 / D-S023-04-batch3) — 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve; artifacts drafted; awaiting plan approve AskQuestion'
     - '2026-07-28 S023/EV-017 04 Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops) — GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON tac-work-sessions-export-v1; interview Batch 3 pending'
     - '2026-07-28 S023/EV-017 04 Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch) — idb; reuse workSessionPayload; one-time sessionStorage→IndexedDB; slowapi; interview Batch 2 pending'
     - '2026-07-28 S023/EV-017 04-tech-plan STARTED (D-S023-02-phase-a-A) — Phase A PASSED; gates.a_to_b passed; mode delta; interview pending; C5 env rewrite in scope; ADR public-app pending'
@@ -2891,7 +2907,7 @@ stages:
       status: in_progress
       mode: delta
       started_at: '2026-07-28'
-      note: 'Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch); interview Batch 2 pending; C5 env rewrite in scope; ADR public-app pending'
+      note: 'Batch 3 locked (E17-21..25 / D-S023-04-batch3); Batch 1+2 locked; artifacts drafted; awaiting plan approve AskQuestion'
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -4300,8 +4316,9 @@ stages:
     started_at: '2026-07-27'
     completed_at:
     current_stage: 04-tech-plan
-    note: 'S023/EV-017 16-evolve in_progress — Phase A PASSED (D-S023-02-phase-a-A); current_stage 04-tech-plan (delta); 03 skipped; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A PASSED (D-S023-02-phase-a-A); current_stage 04-tech-plan (delta); Batch 1+2+3 locked (E17-12..25 / D-S023-04-batch3); artifacts drafted; awaiting plan approve AskQuestion; 03 skipped; #783'
     notes:
+    - '2026-07-28 S023/EV-017 04 Batch 3 locked (E17-21..25 / D-S023-04-batch3) — 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve; artifacts drafted; awaiting plan approve AskQuestion; #783'
     - '2026-07-28 S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A) — gates.a_to_b passed; 04-tech-plan STARTED (delta); 03 skipped (04 prerequisite waived); #783'
     - '2026-07-27 S023/EV-017 02 COMPLETE — D-S023-02-C-EV017-A; 10 auto-approved; C1–4+C6 fixed; C5 deferred 04/12; Phase A AskQuestion next → 04-tech-plan (03 skipped); #783'
     - '2026-07-27 S023/EV-017 01 COMPLETE — D-S023-01-requirements-delta; F21/F22 corpus deltas; handoff 02-verify-plan (pending user gate); #783'
@@ -8356,7 +8373,222 @@ decisions_log:
   - E17-13
   - E17-14
   - E17-15
+- id: E17-16
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — GPC honor Sec-GPC + navigator
+  summary: 'E17-16 — GPC = honor Sec-GPC: 1 + navigator.globalPrivacyControl → opt-out non-essential prefs'
+  decision: 'GPC = honor Sec-GPC: 1 + navigator.globalPrivacyControl → opt-out non-essential prefs. Locked 2026-07-28 Batch 2 (D-S023-04-batch2-privacy-ops).'
+  related_issue: 783
+  related_decision: D-S023-04-batch2-privacy-ops
+- id: E17-17
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — prefs localStorage / sessions IndexedDB
+  summary: E17-17 — prefs in localStorage; work sessions in IndexedDB only
+  decision: Prefs in localStorage; work sessions in IndexedDB only. Locked 2026-07-28 Batch 2 (D-S023-04-batch2-privacy-ops).
+  related_issue: 783
+  related_decision: D-S023-04-batch2-privacy-ops
+- id: E17-18
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — single deploy cutover
+  summary: E17-18 — single deploy cutover IndexedDB live + /auth/* + work-sessions → 404 same release
+  decision: Single deploy cutover — IndexedDB live + /auth/* + work-sessions → 404 same release. Locked 2026-07-28 Batch 2 (D-S023-04-batch2-privacy-ops).
+  related_issue: 783
+  related_decision: D-S023-04-batch2-privacy-ops
+- id: E17-19
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — slowapi baseline rates
+  summary: E17-19 — slowapi 60/min/IP convert+lint+decode; 10/min dissemination; 2 MB body
+  decision: slowapi baseline 60/min/IP convert+lint+decode; 10/min dissemination; 2 MB body (exact table in ADR-031). Locked 2026-07-28 Batch 2 (D-S023-04-batch2-privacy-ops).
+  related_issue: 783
+  related_decision: D-S023-04-batch2-privacy-ops
+- id: E17-20
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — export/import JSON v1
+  summary: E17-20 — export/import JSON tac-work-sessions-export-v1 download/upload
+  decision: Export/import = JSON tac-work-sessions-export-v1 download/upload in Privacy or History UI. Locked 2026-07-28 Batch 2 (D-S023-04-batch2-privacy-ops).
+  related_issue: 783
+  related_decision: D-S023-04-batch2-privacy-ops
+- id: D-S023-04-batch2-privacy-ops
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch 2 privacy/ops lock — E17-16..20
+  summary: Batch 2 privacy/ops locked (E17-16..20); interview Batch 3 pending
+  decision: '04 Batch 2 privacy/ops LOCKED (D-S023-04-batch2-privacy-ops / 2026-07-28): E17-16=GPC Sec-GPC+navigator; E17-17=prefs localStorage / sessions IndexedDB; E17-18=single deploy cutover; E17-19=slowapi 60/10 + 2MB; E17-20=JSON tac-work-sessions-export-v1. Interview Batch 3 pending. Related: #783.'
+  related_issue: 783
+  related_decisions:
+  - E17-16
+  - E17-17
+  - E17-18
+  - E17-19
+  - E17-20
+- id: E17-21
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch3 — 7 milestones
+  summary: E17-21 — 7 milestones (ADR+deps → IndexedDB+migrate+export → slowapi → FE Auth strip → BE Auth/work-sessions 404 → Privacy+GPC → env/E2E/docs)
+  decision: 7 milestones — ADR+deps → IndexedDB+migrate+export → slowapi → FE Auth strip → BE Auth/work-sessions 404 → Privacy+GPC → env/E2E/docs. Locked 2026-07-28 Batch 3 (D-S023-04-batch3).
+  related_issue: 783
+  related_decision: D-S023-04-batch3
+- id: E17-22
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch3 — delete packages/auth
+  summary: E17-22 — delete packages/auth entirely this cycle; inline any F8 helpers if needed
+  decision: Delete packages/auth entirely this cycle; inline any F8 helpers if needed. Locked 2026-07-28 Batch 3 (D-S023-04-batch3).
+  related_issue: 783
+  related_decision: D-S023-04-batch3
+- id: E17-23
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch3 — ADR-031 supersedes ADR-020
+  summary: E17-23 — supersede ADR-020 with ADR-031 (IndexedDB local history)
+  decision: Supersede ADR-020 with ADR-031 (IndexedDB local history). Locked 2026-07-28 Batch 3 (D-S023-04-batch3).
+  related_issue: 783
+  related_decision: D-S023-04-batch3
+  related_adr: ADR-031
+- id: E17-24
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch3 — full env-contract rewrite
+  summary: E17-24 — full env-contract rewrite now (closes C-EV017.5)
+  decision: Full env-contract rewrite now (closes C-EV017.5). Locked 2026-07-28 Batch 3 (D-S023-04-batch3).
+  related_issue: 783
+  related_decision: D-S023-04-batch3
+- id: E17-25
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch3 — draft ADR+plan+inventory then approve
+  summary: E17-25 — draft ADR-031 + execution-plan + dependency-inventory; then approve plan
+  decision: Draft ADR-031 + execution-plan + dependency-inventory; then approve plan. Locked 2026-07-28 Batch 3 (D-S023-04-batch3). Artifacts drafted; awaiting plan approve AskQuestion.
+  related_issue: 783
+  related_decision: D-S023-04-batch3
+- id: D-S023-04-batch3
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch 3 milestones/ADR/env lock — E17-21..25
+  summary: Batch 3 locked (E17-21..25); artifacts drafted; awaiting plan approve AskQuestion
+  decision: '04 Batch 3 LOCKED (D-S023-04-batch3 / 2026-07-28): E17-21=7 milestones; E17-22=delete packages/auth; E17-23=ADR-031 supersedes ADR-020; E17-24=full env-contract rewrite; E17-25=draft ADR+plan+inventory then approve. Artifacts drafted (ADR-031, execution-plan, 04-tech-plan); awaiting plan approve AskQuestion. Related: #783.'
+  related_issue: 783
+  related_decisions:
+  - E17-21
+  - E17-22
+  - E17-23
+  - E17-24
+  - E17-25
 artifacts:
+- path: docs/adr/ADR-031-public-app-indexeddb-history.md
+  type: adr
+  kind: adr
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: drafted
+  decision_id: D-S023-04-batch3
+  note: 'S023/EV-017 ADR-031 drafted (E17-23) — IndexedDB local history; supersedes ADR-020; awaiting plan approve AskQuestion'
+- path: docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+  type: session-report
+  kind: execution-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: drafted
+  decision_id: D-S023-04-batch3
+  note: 'S023/EV-017 execution-plan drafted (E17-21/E17-25) — 7 milestones; awaiting plan approve AskQuestion'
+- path: docs/sessions/S023-public-app-privacy/reports/04-tech-plan.md
+  type: session-report
+  kind: tech-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: drafted
+  decision_id: D-S023-04-batch3
+  note: 'S023/EV-017 04-tech-plan drafted (Batch 1–3 locked E17-12..25); awaiting plan approve AskQuestion'
 - path: docs/sessions/S023-public-app-privacy/checkpoints/phase-a.md
   type: checkpoint
   kind: phase-a
@@ -10297,10 +10529,10 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open / User 1A 2B 3A). Skip 03/05/06. Phase A passed (D-S023-02-phase-a-A); 04-tech-plan in_progress; interim draft PR #786 open.'
+    note: 'Approved Standard routing (D-S023-00-open / User 1A 2B 3A). Skip 03/05/06. Phase A passed (D-S023-02-phase-a-A); 04-tech-plan in_progress — Batch 3 locked; artifacts drafted; awaiting plan approve AskQuestion; interim draft PR #786 open.'
   current_stage: 04-tech-plan
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A) — gates.a_to_b passed; current_stage 04-tech-plan in_progress (delta); Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch); interview Batch 2 pending; 03 skipped; interim draft PR #786 open; #783.'
+  note: 'S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A) — gates.a_to_b passed; current_stage 04-tech-plan in_progress (delta); Batch 1+2+3 locked (E17-12..25 / D-S023-04-batch1-arch + D-S023-04-batch2-privacy-ops + D-S023-04-batch3); artifacts drafted; awaiting plan approve AskQuestion; 03 skipped; interim draft PR #786 open; #783.'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
@@ -10313,7 +10545,21 @@ evolve_cycles:
   - E17-14
   - E17-15
   - D-S023-04-batch1-arch
+  - E17-16
+  - E17-17
+  - E17-18
+  - E17-19
+  - E17-20
+  - D-S023-04-batch2-privacy-ops
+  - E17-21
+  - E17-22
+  - E17-23
+  - E17-24
+  - E17-25
+  - D-S023-04-batch3
   notes:
+  - '2026-07-28 S023/EV-017 04 Batch 3 locked (E17-21..25 / D-S023-04-batch3) — 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve; artifacts drafted; awaiting plan approve AskQuestion'
+  - '2026-07-28 S023/EV-017 04 Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops) — GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON tac-work-sessions-export-v1; interview Batch 3 pending'
   - '2026-07-28 S023/EV-017 04 Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch) — idb; reuse workSessionPayload; one-time sessionStorage→IndexedDB; slowapi; interview Batch 2 pending'
   - '2026-07-28 S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A) — user A; gates.a_to_b passed; checkpoints.phase_a=passed; 03 skipped (04 prerequisite waived); 04-tech-plan STARTED (delta); interview pending; C5 env rewrite in scope; ADR public-app pending'
   - '2026-07-27 S023/EV-017 02-verify-plan COMPLETE — D-S023-02-C-EV017-A; 10 auto-approved; C1–4+C6 fixed; C5 banner+defer 04/12; report 02-verify-plan.md; Phase A checkpoint next → 04-tech-plan (03 skipped); corpus commit may be pending'
@@ -10332,7 +10578,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-27'
-      note: Orchestrator active; Phase A PASSED (D-S023-02-phase-a-A); current_stage 04-tech-plan in_progress (03 skipped); Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch); interview Batch 2 pending
+      note: Orchestrator active; Phase A PASSED (D-S023-02-phase-a-A); current_stage 04-tech-plan in_progress (03 skipped); Batch 1+2+3 locked (E17-12..25 / D-S023-04-batch3); artifacts drafted; awaiting plan approve AskQuestion
     01-requirements:
       status: completed
       mode: delta
@@ -10365,7 +10611,11 @@ evolve_cycles:
       started: '2026-07-28'
       session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
-      note: 'Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch); interview Batch 2 pending; C5 env rewrite in scope; ADR public-app pending'
+      note: 'Batch 3 locked (E17-21..25 / D-S023-04-batch3); Batch 1+2 locked; artifacts drafted; awaiting plan approve AskQuestion'
+      artifacts:
+      - docs/adr/ADR-031-public-app-indexeddb-history.md
+      - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+      - docs/sessions/S023-public-app-privacy/reports/04-tech-plan.md
     07-build:
       status: pending
     08-verify-build:
@@ -10400,7 +10650,8 @@ evolve_cycles:
     phase_c: pending
     phase_d: pending
     deploy: pending
-  adrs: []
+  adrs:
+  - docs/adr/ADR-031-public-app-indexeddb-history.md
   artifacts:
   - path: docs/sessions/S023-public-app-privacy/session-brief.md
     status: completed
@@ -10416,6 +10667,27 @@ evolve_cycles:
     session_id: S023-public-app-privacy
     evolve_cycle_id: EV-017
     date: '2026-07-27'
+  - path: docs/adr/ADR-031-public-app-indexeddb-history.md
+    status: drafted
+    stage: 04-tech-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    decision_id: D-S023-04-batch3
+  - path: docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    status: drafted
+    stage: 04-tech-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    decision_id: D-S023-04-batch3
+  - path: docs/sessions/S023-public-app-privacy/reports/04-tech-plan.md
+    status: drafted
+    stage: 04-tech-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    decision_id: D-S023-04-batch3
   - path: docs/sessions/S023-public-app-privacy/checkpoints/phase-a.md
     status: pending
     stage: 16-evolve
@@ -13961,10 +14233,10 @@ git_history:
   current_branch: evolve/EV-017-public-app-privacy
   ahead_of_origin: 4
   pushed: false
-  pending_commit: 'docs/decisions/evolve-decisions.md — EV-017 04 Batch 1 architecture (E17-12..15 / D-S023-04-batch1-arch); SHA TBD after orchestrator commit'
+  pending_commit: 'docs/decisions/evolve-decisions.md — EV-017 04 Batch 1+2 (E17-12..20 / D-S023-04-batch1-arch + D-S023-04-batch2-privacy-ops); SHA TBD after orchestrator commit (no SHA invented)'
   tip_sha: c73cc62
   tip_sha_full: c73cc62e5289b494812c493206cde98b88f3ca95
-  note: 'S023/EV-017 tip c73cc62 — Phase A pass / start 04-tech-plan; pending_commit evolve-decisions Batch 1 (E17-12..15); interim draft PR #786'
+  note: 'S023/EV-017 tip c73cc62 — Phase A pass / start 04-tech-plan; Batch 2 privacy/ops locked (E17-16..20); pending_commit evolve-decisions Batch 1+2; interim draft PR #786'
   notes:
   - '2026-07-28 S023/EV-017 tip synced — c73cc62 (c73cc62e5289b494812c493206cde98b88f3ca95); "[S023/EV-017] docs: Phase A pass; start 04-tech-plan"; stage 04-tech-plan; pending_commit=evolve-decisions Batch 1 (E17-12..15 / D-S023-04-batch1-arch); no new SHA invented for uncommitted evolve-decisions'
   - '2026-07-27 S023/EV-017 tip recorded — ac11fb0 (ac11fb0ec7b3450d75b1022d7e92547b9d11973b); "[S023/EV-017] docs: resolve C-EV017.1–6 corpus contradictions (02)"; stage 02-verify-plan; pending_commit_note cleared'
