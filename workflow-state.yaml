@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'Phase A+B passed; 04 COMPLETE; 07-build in_progress — M1–M5 complete; active M6 (Privacy preference center); M6 complete (T6.1–T6.3); next T7.1; progress 25/~28; tip 15f69d9; interim draft PR #786 open (stale until push); #783'
+  note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.1 completed; next T7.2 (H4–H5 after deploy) or T7.3 docs / T7.4 Render env; progress 26/~28; tip ad28389; interim draft PR #786; #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M5 complete; active M6 (Privacy preference center); M6 complete (T6.1–T6.3); next T7.1; progress 25/~28; tip 15f69d9; interim draft PR #786 open (stale until push); #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389; interim draft PR #786; #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-28'
-    note: 'S023/EV-017 07-build in_progress — M1–M5 complete; active milestone M6 (Privacy preference center); active_task — (M6 complete); next T7.1; progress 25/~28; tip 15f69d9; #783'
+    note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389'
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2917,11 +2917,13 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-28'
-      note: 'S023/EV-017 07-build — M1–M5 complete; active milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; #783'
-      active_milestone: M6
-      active_task: T6.1
+      note: T7.1 Playwright public UJ + Auth-gone + privacy smoke COMPLETE
+      active_milestone: M7
+      active_task: T7.2
       active_task_status: pending
-      progress: 22/~28
+      progress: 26/~28
+      tip_sha: ad28389
+      tip_sha_full: ad28389d47325bcf74f994af24d1f878ebc617b7
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -3146,15 +3148,15 @@ stages:
       started_at: '2026-07-28'
       started: '2026-07-28'
       mode: full
-      note: 'S023/EV-017 07-build — M1–M5 complete; active milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; #783'
-      active_milestone: M6
-      active_task: T6.1
+      note: T7.1 Playwright public UJ + Auth-gone + privacy smoke COMPLETE
+      active_milestone: M7
+      active_task: T7.2
       active_task_status: pending
-      decision_id: D-S023-04-plan-approve-A
+      decision_id: D-S023-07-resume-T7.1
       branch: evolve/EV-017-public-app-privacy
-      progress: 22/~28
-      tip_sha: 91fd231
-      tip_sha_full: 91fd2314cd318c60d9be974b52bcb14dd7258f8a
+      progress: 26/~28
+      tip_sha: ad28389
+      tip_sha_full: ad28389d47325bcf74f994af24d1f878ebc617b7
       feature_ids:
       - F21
       - F22
@@ -3264,6 +3266,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
     - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
     - '2026-07-28 S023/EV-017 T5.3 COMPLETE @ 5772a42 — unmount work-sessions API; TC-F21-auth-gone green; active_task T5.4 in_progress (delete packages/auth); progress 21/~28; tip 5772a42; #783'
@@ -4361,8 +4364,9 @@ stages:
     started_at: '2026-07-27'
     completed_at:
     current_stage: 07-build
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B PASSED; current_stage 07-build; M1–M5 complete; active M6 (Privacy preference center); next T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 (stale until push; ahead 33); 03/05/06 skipped; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B PASSED; current_stage 07-build; M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389; interim draft PR #786; 03/05/06 skipped; #783'
     notes:
+    - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
     - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
     - '2026-07-28 S023/EV-017 T5.3 COMPLETE @ 5772a42 — unmount work-sessions API; TC-F21-auth-gone green; active_task T5.4 in_progress (delete packages/auth); progress 21/~28; tip 5772a42; #783'
@@ -8633,6 +8637,22 @@ decisions_log:
   - E17-25
   answers:
     '1': A
+- id: D-S023-07-resume-T7.1
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 07-build
+  skill_id: 07-build
+  skill: 07-build
+  category: build
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: Resume 07-build at T7.1 after user Continue
+  summary: User Continue → resume 07-build at T7.1 (M7); leave unrelated dirty WIP unstaged
+  decision: User Continue → resume 07-build at T7.1 (M7); leave unrelated dirty security-static-analysis / abuse_controls WIP unstaged
+  related_issue: 783
+  related_decision: D-S023-04-plan-approve-A
 artifacts:
 - path: docs/adr/ADR-031-public-app-indexeddb-history.md
   type: adr
@@ -10610,10 +10630,10 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07-build — M1–M5 complete; active M6/T6.1; progress 22/~28; interim draft PR #786 open (stale until push; ahead 33).'
+    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07-build — M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389; interim draft PR #786.'
   current_stage: 07-build
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 Phase A+B PASSED — gates.a_to_b+b_to_c passed; current_stage 07-build — M1–M5 complete; active M6 (Privacy preference center); next T6.1; progress 22/~28; 03/05/06 skipped; interim draft PR #786 open (stale until push; ahead 33); #783.'
+  note: 'S023/EV-017 Phase A+B PASSED — gates.a_to_b+b_to_c passed; current_stage 07-build — M1–M6 complete; M7 active; T7.1 completed; next T7.2 (H4–H5 after deploy) or T7.3 docs / T7.4 Render env; progress 26/~28; tip ad28389; 03/05/06 skipped; interim draft PR #786; #783.'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
@@ -10639,7 +10659,10 @@ evolve_cycles:
   - E17-25
   - D-S023-04-batch3
   - D-S023-04-plan-approve-A
+  - D-S023-07-resume-T7.1
   notes:
+  - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
+  - '2026-07-28 S023/EV-017 07-build resume T7.1 (D-S023-07-resume-T7.1) — User Continue; M1–M6 complete; active M7; active_task T7.1 in_progress; progress 25/~28; tip 3c0a5a0; leave unrelated security-static-analysis / abuse_controls WIP unstaged; #783'
   - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
   - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
   - '2026-07-28 S023/EV-017 T5.3 COMPLETE @ 5772a42 — unmount work-sessions API; TC-F21-auth-gone green; active_task T5.4 in_progress (delete packages/auth); progress 21/~28; tip 5772a42; #783'
@@ -10671,7 +10694,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-27'
-      note: Orchestrator active; Phase A+B PASSED; current_stage 07-build — M1–M5 complete; active M6 / T6.1; progress 22/~28; 03/05/06 skipped
+      note: Orchestrator active; Phase A+B PASSED; current_stage 07-build — M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389; 03/05/06 skipped
     01-requirements:
       status: completed
       mode: delta
@@ -10714,10 +10737,14 @@ evolve_cycles:
       status: in_progress
       started: '2026-07-28'
       mode: full
-      note: 'S023/EV-017 07-build — M1–M5 complete; active milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; #783'
-      active_task: T6.1
-      active_milestone: M6
-      progress: 22/~28
+      note: T7.1 Playwright public UJ + Auth-gone + privacy smoke COMPLETE
+      active_task: T7.2
+      active_milestone: M7
+      active_task_status: pending
+      progress: 26/~28
+      tip: ad28389
+      tip_sha: ad28389
+      tip_sha_full: ad28389d47325bcf74f994af24d1f878ebc617b7
     08-verify-build:
       status: pending
     09-qa:
@@ -14340,13 +14367,15 @@ evolve_cycles:
   merge_sha: '4660602'
 git_history:
   current_branch: evolve/EV-017-public-app-privacy
-  ahead_of_origin: 33
+  ahead_of_origin: 1
   pushed: false
   pending_commit:
-  tip_sha: 15f69d9
-  tip_sha_full: 15f69d910eaa40af5a34560013fe08da6c446ec8
-  note: 'S023/EV-017 tip 15f69d9 — M6 complete (T6.1–T6.3); next T7.1; progress 25/~28; interim draft PR #786 (stale until push; ahead 37)'
+  tip_sha: ad28389
+  tip_sha_full: ad28389d47325bcf74f994af24d1f878ebc617b7
+  note: 'S023/EV-017 tip ad28389 — M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; interim draft PR #786; #783'
   notes:
+  - '2026-07-28 S023/EV-017 tip synced — ad28389 (ad28389d47325bcf74f994af24d1f878ebc617b7); T7.1 COMPLETE (Playwright public UJ + Auth-gone + privacy smoke); stage 07-build; active T7.2 pending; progress 26/~28; leave unrelated security-static-analysis / abuse_controls WIP unstaged'
+  - '2026-07-28 S023/EV-017 tip synced — 3c0a5a0 (3c0a5a03324a0b38ac002d148767a0aa336add01); resume 07-build at T7.1 (M7); progress 25/~28; D-S023-07-resume-T7.1; leave unrelated security-static-analysis / abuse_controls WIP unstaged'
   - '2026-07-28 S023/EV-017 tip synced — 91fd231 (91fd2314cd318c60d9be974b52bcb14dd7258f8a); M5 COMPLETE (T5.4–T5.5); stage 07-build; active M6/T6.1 (Privacy preference center); progress 22/~28; recorded c9cebfa/91fd231; pending_commit cleared; interim draft PR #786 stale until push (ahead 33)'
   - '2026-07-28 S023/EV-017 tip synced — 5772a42 (5772a4227b61480e2cdc142b3a9c9cb2bf116287); T5.3 COMPLETE (unmount work-sessions; TC-F21-auth-gone green); stage 07-build; active T5.4 (delete packages/auth); progress 21/~28; recorded 5800cfc/5772a42; pending_commit cleared'
   - '2026-07-28 S023/EV-017 tip synced — a38da22 (a38da2255cf007218e5dff1b8edd228d5985d563); T5.1 committed red; stage 07-build; active T5.2 (strip auth); progress 19/~28; no git_history.commits row until parent records [T5.1]; pending_commit cleared'
@@ -14530,7 +14559,9 @@ git_history:
     created_at: '2026-07-27'
     session_id: S023-public-app-privacy
     evolve_cycle_id: EV-017
-    note: 'Open/in_progress (base main). 04 COMPLETE (D-S023-04-plan-approve-A); ADR-031 Accepted; plan approved; 07-build — M1+M2 done (T2.1–T2.5); active T3.1; progress 9/~28; interim draft PR #786 open.'
+    note: 'Open/in_progress (base main). 07-build — M1–M6 complete; M7 active; T7.1 completed; next T7.2; progress 26/~28; tip ad28389; interim draft PR #786 open.'
+    tip_sha: ad28389
+    tip_sha_full: ad28389d47325bcf74f994af24d1f878ebc617b7
     pushed: true
     pr_id: PR-EV-017
     pr_number: 786
@@ -15231,6 +15262,16 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: ad28389d47325bcf74f994af24d1f878ebc617b7
+    short: ad28389
+    branch: evolve/EV-017-public-app-privacy
+    message: "[T7.1] test: Playwright public UJ + Auth-gone + privacy smoke"
+    stage: 07-build
+    files_changed: 16
+    timestamp: '2026-07-28T19:50:00Z'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+
   - sha: 15f69d910eaa40af5a34560013fe08da6c446ec8
     short: 15f69d9
     branch: evolve/EV-017-public-app-privacy

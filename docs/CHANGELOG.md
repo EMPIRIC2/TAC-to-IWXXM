@@ -2,6 +2,28 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-28 — S023 EV-017 (F21 public app + F22 privacy) — draft
+
+> Draft bullets for the EV-017 cutover release. Finalize on merge / deploy (T7.3).
+
+### Added
+- **F21**: Public unauthenticated converter — no operator login/JWT; Auth routes 404.
+- **F7.h**: Work history in browser IndexedDB (local Draft/WIP/Finished); no `/api/v1/work-sessions`.
+- **F22**: Privacy notice + settings (Solution A) + Global Privacy Control honor; IndexedDB
+  disclosure; preferences in localStorage only.
+- Abuse controls: public + dissemination rate limits (`slowapi`); request body size cap.
+
+### Changed
+- Deleted `packages/auth`; retired `DISABLE_AUTH` / `api.disableAuth` dual path.
+- Live E2E / H6: no `E2E_USER_*` login fixture (`TC-F21-auth-gone`).
+- Deploy + env-contract rewritten for public API + F8 worker secrets only ([deploy.md](deploy.md),
+  [env-contract.md](env-contract.md)); ADR-031 Accepted (supersedes ADR-020 for operator history).
+
+### Deploy
+- Interim draft PR [#786](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786); final cutover after
+  M7 / 08–13. Single deploy: FE + API together (E17-18). Remove unused Auth secrets from API
+  Render service (T7.4).
+
 ## 2026-07-27 — S021 EV-016 (F7.g workbench golden examples)
 
 ### Added
