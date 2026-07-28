@@ -1,11 +1,12 @@
 # Staging Secrets & Connectivity Matrix
 
 > **⚠️ Superseded for env naming** — use [env-contract.md](../env-contract.md) and
-> [config-spec.md](../config-spec.md) (S003, 2026-06-23). This file retained for historical
-> staging URL reference until fully migrated.
+> [config-spec.md](../config-spec.md) (S003, 2026-06-23; **F21 rewrite S023 / EV-017**). This file
+> retained for historical staging URL reference until fully migrated.
 
 > **Project**: METAR to IWXXM Converter
 > **Generated**: 2026-06-15 (04-tech-plan)
+> **Updated**: 2026-07-28 (S023 / EV-017 — F21 rate-limit stubs; Auth retired)
 > **Platform**: Render
 
 ## Origin Map
@@ -14,10 +15,11 @@ Post-migration topology uses **two deployables** on existing onrender.com URLs (
 
 | Role | Service name (Render) | URL |
 |------|----------------------|-----|
-| API (backend + auth) | `metar-to-iwxxm-api` | `https://metar-to-iwxxm-api.onrender.com` |
+| API (public `/api/v1/*`) | `metar-to-iwxxm-api` | `https://metar-to-iwxxm-api.onrender.com` |
 | Frontend (static site) | `metar-to-iwxxm-frontend-v4-web` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
 
 **Removed post-migration**: `metar-to-iwxxm-auth-v2` (auth merged into API per ADR-002).
+**F21**: Operator `/auth/*` removed (404); no separate Auth secrets on API for convert paths.
 
 ## Build-Time (Frontend Static Site)
 
@@ -25,39 +27,41 @@ Set on Render static site build environment:
 
 | Variable | Staging value | Required | Notes |
 |----------|---------------|----------|-------|
-| `VITE_API_BASE_URL` | `https://metar-to-iwxxm-api.onrender.com` | Yes | Single origin for `/api/v1/*` and `/auth/*` |
-| `VITE_SUPABASE_URL` | *(Render dashboard — sync: false)* | Yes | Supabase project URL |
-| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | *(Render dashboard — sync: false)* | Yes | Supabase anon/publishable key |
-| `VITE_APP_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` | Yes | Public frontend URL for redirects |
+| `VITE_API_BASE_URL` | `https://metar-to-iwxxm-api.onrender.com` | Yes* | Prefer runtime `/config.json` `api.baseUrl` (`/api/v1` only) |
+| `VITE_APP_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` | Optional | Public frontend URL |
 
-### Deprecated (remove after migration)
+\* Prefer committed `config/prod.json` + runtime config over build-time `VITE_*` when possible.
 
-| Variable | Replaced by |
-|----------|-------------|
-| `VITE_BACKEND_URL` | `VITE_API_BASE_URL` |
-| `VITE_AUTH_SERVICE_URL` | `VITE_API_BASE_URL` |
+### Retired (F21 — do not set for Auth)
+
+| Variable | Notes |
+|----------|-------|
+| `VITE_SUPABASE_URL` | FE Auth removed (ADR-031) |
+| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | FE Auth removed (ADR-031) |
+| `VITE_BACKEND_URL` / `VITE_AUTH_SERVICE_URL` | Historical — use `VITE_API_BASE_URL` / config |
 
 ## Runtime (API Web Service)
 
 | Variable | Staging value | Required | Notes |
 |----------|---------------|----------|-------|
-| `METAR_CORS_ORIGINS` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` | Yes | Comma-separated if multiple origins |
-| `FRONTEND_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` | Yes | Redirects / email links |
-| `SUPABASE_URL` | *(dashboard)* | Yes | Server-side auth |
-| `SUPABASE_ANON_KEY` | *(dashboard)* | Yes | JWT validation |
-| `DISABLE_AUTH` | `false` | Yes | Production auth enabled per 04-tech-plan |
+| `METAR_CORS_ORIGINS` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` | Yes | Or `config.*.api.corsOrigins` |
+| `RATE_LIMIT_PUBLIC_PER_MIN` | `60` (default) | No | F21 / ADR-031 — convert+lint+decode |
+| `RATE_LIMIT_DISSEMINATION_PER_MIN` | `10` (default) | No | F21 dissemination stricter bucket |
+| `MAX_REQUEST_BODY_BYTES` | `2097152` (default) | No | 2 MiB body cap |
 | `PORT` | Render-injected | Yes | Bind `0.0.0.0:$PORT` |
-| `DATABASE_URL` | *(dashboard)* | If used | Postgres connection |
 | `DISSEMINATION_EGRESS_ALLOWLIST` | *(dashboard — sync: false)* | Yes (F16–F19) | Host/CIDR allowlist; **empty = fail-closed** (ADR-029 / E14-08). **Local/CI recommended:** `wis2box,127.0.0.1,127.0.0.0/8,localhost` (see `.env.example` + CI harness default). **Render:** keep empty until live BYOC demos, then exact Postgres/WIS2/EDIS hostnames only. Secrets never stored — hosts/CIDRs only. |
+| `DATABASE_URL` | *(dashboard)* | Ops/F8 only | Legacy archive / F8 — not operator Auth |
 
-### Deprecated (remove after migration)
+### Retired (F21 — do not set on API for operator product)
 
-| Variable | Replaced by |
-|----------|-------------|
-| `ALLOWED_ORIGINS` | `METAR_CORS_ORIGINS` |
-| `AUTH_SERVICE_URL` | — (auth inlined) |
-| `CORS_ORIGINS` (auth service) | `METAR_CORS_ORIGINS` |
-| `LOKI_*`, `OBSERVABILITY_ENV` | — (observability removed from Blueprint) |
+| Variable | Notes |
+|----------|-------|
+| `DISABLE_AUTH` | Public by default (ADR-031) |
+| `SUPABASE_URL` / `SUPABASE_ANON_KEY` (operator JWT) | Auth path removed |
+| `FRONTEND_URL` (Auth redirects) | No Auth redirects |
+| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Public convert; no login harness |
+| `ALLOWED_ORIGINS` / `AUTH_SERVICE_URL` / `CORS_ORIGINS` | Historical — use `METAR_CORS_ORIGINS` |
+| `LOKI_*`, `OBSERVABILITY_ENV` | Observability removed from Blueprint |
 
 ## Local Development
 
@@ -66,7 +70,9 @@ Set on Render static site build environment:
 | `VITE_API_BASE_URL` | `http://localhost:18001` |
 | `VITE_APP_URL` | `http://localhost:18000` |
 | `METAR_CORS_ORIGINS` | `http://localhost:18000,http://localhost:5173` |
-| `DISABLE_AUTH` | `true` (local dev convenience) |
+| `RATE_LIMIT_PUBLIC_PER_MIN` | `60` |
+| `RATE_LIMIT_DISSEMINATION_PER_MIN` | `10` |
+| `MAX_REQUEST_BODY_BYTES` | `2097152` |
 
 ## Local Live Test Runs (manual)
 
@@ -77,38 +83,37 @@ Populate `.env` from `.env.example` before `make test-live*`:
 | `LIVE_API_URL` | `https://metar-to-iwxxm-api.onrender.com` |
 | `LIVE_FRONTEND_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
 | `PLAYWRIGHT_BASE_URL` | Same as `LIVE_FRONTEND_URL` |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Supabase admin user (runtime JWT) |
 
-See [deploy.md](../deploy.md) §Live test harness and ADR-009.
+F21: no `E2E_USER_*` / `ADMIN_*` — public convert smoke + `TC-F21-auth-gone`.
+
+See [deploy.md](../deploy.md) §Live test harness and ADR-009 / ADR-031.
 
 ## Connectivity Verification
 
 | Tier | Command |
 |------|---------|
 | H0c | `pytest apps/backend/tests/unit/test_cors_policy.py` |
-| H0i | `pytest apps/backend/tests/integration/test_h0i_connectivity.py` (includes work-sessions CORS) |
+| H0i | `pytest apps/backend/tests/integration/test_h0i_connectivity.py` |
 | H4 | CORS preflight from frontend origin → API |
 | H5 | `bash scripts/deploy/verify_connectivity.sh` |
 
-### EV-004 / F5 work history (2026-06-24)
+### EV-004 / F5 work history (2026-06-24) — **historical**
 
-No new Render secrets for F5 — work sessions use the existing Supabase JWT + publishable key
-pattern (ADR-011). Operator steps before enabling F5 in production:
+Pre-F21 server `tac_work_sessions` used Supabase JWT. **F21 / ADR-031**: local IndexedDB only;
+legacy rows archive ~30 days then delete (no public API). H0i work-sessions CORS checks retire
+with M5.
 
-1. Apply Supabase migrations through `20250623000007_metar_work_sessions.sql` (`supabase db push` or dashboard).
-2. Redeploy API so `/api/v1/work-sessions` and `/admin/work-sessions` routes are live.
-3. Confirm H0i work-sessions CORS preflight (PATCH/DELETE) and H4 staging origin pass after redeploy.
+### Redeploy order (F21)
 
-See [deploy.md](../deploy.md) §Migrations (F5) and ADR-012 for pg_cron retention.
-
-### Redeploy order
-
-1. Deploy API with `METAR_CORS_ORIGINS` and `DISABLE_AUTH=false`.
-2. Rebuild static frontend with `VITE_API_BASE_URL` pointing to live API.
-3. Run H4 + H5.
+1. Deploy API with CORS + rate-limit/body env (Auth + work-sessions routes gone).
+2. Rebuild static frontend with IndexedDB history (no Auth bootstrap).
+3. Run H4 + H5 (public convert; Auth-gone negatives).
 
 ## References
 
+- docs/env-contract.md (**canonical F21**)
+- docs/config-spec.md §F21
 - docs/deploy.md §Integration
 - docs/test-plan.md §Connectivity
 - `.cursor/skills/connectivity-gates.md`
+- ADR-031
