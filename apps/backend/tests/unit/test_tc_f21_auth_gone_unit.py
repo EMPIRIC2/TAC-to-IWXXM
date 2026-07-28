@@ -7,15 +7,18 @@ from fastapi.routing import APIRoute
 from fastapi.testclient import TestClient
 
 
-def _iter_route_paths(routes) -> list[str]:
+def _iter_route_paths(routes, prefix: str = "") -> list[str]:
     paths: list[str] = []
     for route in routes:
         if isinstance(route, APIRoute):
-            paths.append(route.path)
+            paths.append(f"{prefix}{route.path}" if route.path is not None else prefix)
         elif type(route).__name__ == "_IncludedRouter":
-            paths.extend(_iter_route_paths(route.original_router.routes))
+            ctx = getattr(route, "include_context", None)
+            nested_prefix = prefix + (getattr(ctx, "prefix", "") or "")
+            paths.extend(_iter_route_paths(route.original_router.routes, nested_prefix))
         elif hasattr(route, "routes") and route.routes:
-            paths.extend(_iter_route_paths(route.routes))
+            mount_path = getattr(route, "path", "") or ""
+            paths.extend(_iter_route_paths(route.routes, f"{prefix}{mount_path}"))
     return paths
 
 
@@ -70,7 +73,7 @@ def test_convert_succeeds_without_authorization() -> None:
     response = client.post(
         "/api/v1/convert",
         data={
-            "manual_text": "METAR KJFK 121851Z 09014KT 10SM FEW250",
+            "manual_text": "METAR KJFK 121851Z 09014KT 10SM FEW250 22/14 A3015=",
             "product": "METAR",
             "profile": "annex3",
             "iwxxm_version": "2025-2",

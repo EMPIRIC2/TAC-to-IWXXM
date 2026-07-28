@@ -58,17 +58,6 @@ async def test_get_centre_info_parses_online_since(monkeypatch: pytest.MonkeyPat
 
 
 @pytest.mark.asyncio
-async def test_get_translation_statistics_rejects_non_admin() -> None:
-    req = TranslationStatisticsRequest(
-        start_date=datetime(2026, 2, 1, tzinfo=timezone.utc),
-        end_date=datetime(2026, 2, 2, tzinfo=timezone.utc),
-    )
-
-    with pytest.raises(HTTPException, match="administrator privileges"):
-        await router_module.get_translation_statistics(req, user={"role": "viewer"})
-
-
-@pytest.mark.asyncio
 async def test_get_translation_statistics_validates_date_order() -> None:
     req = TranslationStatisticsRequest(
         start_date=datetime(2026, 2, 2, tzinfo=timezone.utc),
@@ -76,7 +65,7 @@ async def test_get_translation_statistics_validates_date_order() -> None:
     )
 
     with pytest.raises(HTTPException, match="end_date must be after start_date"):
-        await router_module.get_translation_statistics(req, user={"role": "admin"})
+        await router_module.get_translation_statistics(req)
 
 
 @pytest.mark.asyncio
@@ -87,7 +76,7 @@ async def test_get_translation_statistics_validates_max_range() -> None:
     )
 
     with pytest.raises(HTTPException, match="Date range cannot exceed"):
-        await router_module.get_translation_statistics(req, user={"role": "admin"})
+        await router_module.get_translation_statistics(req)
 
 
 @pytest.mark.asyncio
@@ -115,16 +104,10 @@ async def test_get_translation_statistics_success(
 
     monkeypatch.setattr(router_module, "statistics_service", SimpleNamespace(get_statistics=fake_get_statistics))
 
-    response = await router_module.get_translation_statistics(req, user={"role": "admin"})
+    response = await router_module.get_translation_statistics(req)
 
     assert response.total_translations == 100
     assert response.success_rate == 90.0
-
-
-@pytest.mark.asyncio
-async def test_get_recent_statistics_rejects_non_admin() -> None:
-    with pytest.raises(HTTPException, match="administrator privileges"):
-        await router_module.get_recent_statistics(user={"role": "viewer"})
 
 
 @pytest.mark.asyncio
@@ -145,19 +128,15 @@ async def test_get_recent_statistics_success(
         hours=12,
         icao_region=ICAORegion.EUR,
         iwxxm_version="2023-1",
-        user={"role": "admin"},
     )
 
     assert response.failed_translations == 8
 
 
 @pytest.mark.asyncio
-async def test_get_statistics_by_region_auth_and_success(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_get_statistics_by_region_success(monkeypatch: pytest.MonkeyPatch) -> None:
     start = datetime(2026, 2, 1, tzinfo=timezone.utc)
     end = datetime(2026, 2, 2, tzinfo=timezone.utc)
-
-    with pytest.raises(HTTPException, match="administrator privileges"):
-        await router_module.get_statistics_by_region(start, end, user={"role": "user"})
 
     async def fake_by_region(**kwargs):
         assert kwargs["start_date"] == start
@@ -166,7 +145,7 @@ async def test_get_statistics_by_region_auth_and_success(monkeypatch: pytest.Mon
 
     monkeypatch.setattr(router_module, "statistics_service", SimpleNamespace(get_statistics_by_region=fake_by_region))
 
-    response = await router_module.get_statistics_by_region(start, end, user={"role": "admin"})
+    response = await router_module.get_statistics_by_region(start, end)
     assert response["NAM"]["total"] == 10
 
 

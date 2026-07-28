@@ -176,9 +176,8 @@ class TestCreateEvaluationJob:
         data = response.json()
         assert data["station_count"] == 100  # Default sample size
 
-    def test_create_job_requires_authentication(self):
-        """Test endpoint requires authentication."""
-        # Create client without auth override
+    def test_create_job_is_public_without_jwt(self):
+        """F21: evaluation create does not require Authorization."""
         client = TestClient(app)
 
         response = client.post(
@@ -190,7 +189,8 @@ class TestCreateEvaluationJob:
             },
         )
 
-        assert response.status_code == 401
+        assert response.status_code != 401
+        assert response.status_code != 403
 
     def test_create_job_invalid_mode(self, client):
         """Test creating job with invalid mode fails."""

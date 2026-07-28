@@ -23,12 +23,11 @@ from dissemination.models import (
 from dissemination.rate_limit import RateLimitExceeded, default_rate_limiter
 from dissemination.redact import redact_secrets
 from dissemination.writer_contract import CONTRACT_TABLE, apply_writer_contract
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from ..msgspec_http import msgspec_json_response
 from ..utilities.abuse_controls import dissemination_limit, get_limiter
-from ..utilities.security import verify_supabase_token
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +39,11 @@ _decoder_preflight = msgspec.json.Decoder(PreflightRequest)
 _decoder_send = msgspec.json.Decoder(SendRequest)
 
 
-def _user_id(user: dict[str, Any]) -> str:
-    return str(user.get("sub") or user.get("user_id") or "anonymous")
+def _client_id(request: Request) -> str:
+    """Stable key for in-memory dissemination handles / package rate limiter (F21)."""
+    if request.client and request.client.host:
+        return request.client.host
+    return "anonymous"
 
 
 async def _read_struct(request: Request, decoder: msgspec.json.Decoder) -> Any:
@@ -59,10 +61,9 @@ async def _read_struct(request: Request, decoder: msgspec.json.Decoder) -> Any:
 @dissemination_limit(_limiter)
 async def dissemination_preflight(
     request: Request,
-    user: dict[str, Any] = Depends(verify_supabase_token),
 ):
     """Run sink preflight; return schema diffs and optional memory-only handle."""
-    uid = _user_id(user)
+    uid = _client_id(request)
     try:
         default_rate_limiter.check(uid)
     except RateLimitExceeded as exc:
@@ -120,10 +121,9 @@ async def dissemination_preflight(
 @dissemination_limit(_limiter)
 async def dissemination_send(
     request: Request,
-    user: dict[str, Any] = Depends(verify_supabase_token),
 ):
     """Send IWXXM via a green preflight handle or inline sink params."""
-    uid = _user_id(user)
+    uid = _client_id(request)
     try:
         default_rate_limiter.check(uid)
     except RateLimitExceeded as exc:

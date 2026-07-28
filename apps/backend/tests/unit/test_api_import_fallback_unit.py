@@ -179,6 +179,13 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         install_fastapi_observability=lambda **_kwargs: None,
         setup_logging=lambda *_args, **_kwargs: None,
     )
+    fake_util_abuse = _stub_module(
+        "utilities.abuse_controls",
+        install_abuse_controls=lambda *_a, **_k: None,
+        get_limiter=lambda: None,
+        dissemination_limit=lambda *_a, **_k: lambda f: f,
+        public_limit=lambda *_a, **_k: lambda f: f,
+    )
     fake_util_security = _stub_module("utilities.security", verify_supabase_token=verify_supabase_token)
     fake_util_tac = _stub_module("utilities.tac_parser", extract_airport_code=extract_airport_code)
 
@@ -215,6 +222,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "services.validation_orchestrator": fake_services_orchestrator,
         "services.webhooks": fake_services_webhooks,
         "utilities": _stub_module("utilities"),
+        "utilities.abuse_controls": fake_util_abuse,
         "utilities.conversion": fake_util_conversion,
         "utilities.metar_normalizer": fake_util_metar_normalizer,
         "utilities.observability": fake_util_observability,
@@ -252,4 +260,4 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
 
     assert "app" in result
     assert result["extract_airport_code"] is extract_airport_code
-    assert result["verify_supabase_token"] is verify_supabase_token
+    assert "verify_supabase_token" not in result  # F21: JWT import removed from api.py

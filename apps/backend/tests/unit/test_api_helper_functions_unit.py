@@ -205,12 +205,13 @@ async def test_parse_files_filters_non_file_and_empty_filename_entries():
     assert files[0].filename == "valid.txt"
 
 
-def test_custom_openapi_adds_bearer_auth_and_caches():
+def test_custom_openapi_has_no_bearer_auth_and_caches():
     original = api_module.app.openapi_schema
     try:
         api_module.app.openapi_schema = None
         schema = api_module.custom_openapi()
-        assert "BearerAuth" in schema["components"]["securitySchemes"]
+        schemes = schema.get("components", {}).get("securitySchemes")
+        assert not schemes
 
         # Cached branch should return same object without regenerating.
         cached = api_module.custom_openapi()

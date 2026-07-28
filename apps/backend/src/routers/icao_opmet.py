@@ -9,7 +9,7 @@ import logging
 from datetime import UTC, datetime, timedelta
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query
 
 from ..config.icao_opmet import (
     SUPPORTED_IWXXM_VERSIONS,
@@ -23,7 +23,6 @@ from ..schemas.icao_opmet import (
     TranslationStatisticsRequest,
 )
 from ..services.statistics import statistics_service
-from ..utilities.security import verify_supabase_token
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/translation", tags=["ICAO OPMET Statistics"])
@@ -65,7 +64,6 @@ async def get_centre_info():
 @router.post("/statistics", response_model=TranslationStatistics)
 async def get_translation_statistics(
     request: TranslationStatisticsRequest,
-    user: dict = Depends(verify_supabase_token),
 ):
     """
     Query aggregated translation statistics.
@@ -73,7 +71,7 @@ async def get_translation_statistics(
     Retrieves translation centre statistics for a specified time period with optional filters.
     Implements ICAO OPMET Data Exchange Guidelines Section 7 reporting requirements.
 
-    **Authentication**: Requires valid Supabase JWT token with admin privileges.
+    **Authentication**: Public (no JWT) — F21 / ADR-031.
 
     **Request Parameters**:
     - **start_date** (required): Statistics period start (ISO 8601)
@@ -105,9 +103,6 @@ async def get_translation_statistics(
     }
     ```
     """
-    # Check for admin role
-    if user.get("role") != "admin":
-        raise HTTPException(status_code=403, detail="This endpoint requires administrator privileges")
 
     # Validate date range
     if request.end_date < request.start_date:
@@ -145,14 +140,13 @@ async def get_recent_statistics(
     hours: int = Query(24, ge=1, le=168, description="Number of hours to query (1-168)"),
     icao_region: Optional[ICAORegion] = Query(None, description="Filter by ICAO region"),
     iwxxm_version: Optional[str] = Query(None, description="Filter by IWXXM version"),
-    user: dict = Depends(verify_supabase_token),
 ):
     """
     Get recent translation statistics (last N hours).
 
     Convenience endpoint for querying recent activity without specifying exact dates.
 
-    **Authentication**: Requires valid Supabase JWT token with admin privileges.
+    **Authentication**: Public (no JWT) — F21 / ADR-031.
 
     **Query Parameters**:
     - **hours**: Number of hours to look back (1-168, default: 24)
@@ -162,9 +156,6 @@ async def get_recent_statistics(
     **Returns**:
     Aggregated translation statistics for the specified time window.
     """
-    # Check for admin role
-    if user.get("role") != "admin":
-        raise HTTPException(status_code=403, detail="This endpoint requires administrator privileges")
 
     end_date = datetime.now(UTC).replace(tzinfo=None)
     start_date = end_date - timedelta(hours=hours)
@@ -197,7 +188,6 @@ async def get_recent_statistics(
 async def get_statistics_by_region(
     start_date: datetime = Query(..., description="Statistics period start (ISO 8601)"),
     end_date: datetime = Query(..., description="Statistics period end (ISO 8601)"),
-    user: dict = Depends(verify_supabase_token),
 ):
     """
     Get translation statistics grouped by ICAO region.
@@ -205,7 +195,7 @@ async def get_statistics_by_region(
     Returns translation activity summary for all ICAO regions.
     Useful for identifying regional distribution and capacity planning.
 
-    **Authentication**: Requires valid Supabase JWT token with admin privileges.
+    **Authentication**: Public (no JWT) — F21 / ADR-031.
 
     **Query Parameters**:
     - **start_date**: Statistics period start (ISO 8601)
@@ -221,9 +211,6 @@ async def get_statistics_by_region(
     }
     ```
     """
-    # Check for admin role
-    if user.get("role") != "admin":
-        raise HTTPException(status_code=403, detail="This endpoint requires administrator privileges")
 
     # Query region-grouped statistics from database
     logger.info(f"Region statistics query: {start_date} to {end_date}")

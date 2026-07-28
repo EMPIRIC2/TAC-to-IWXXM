@@ -193,7 +193,7 @@ def test_custom_openapi_caches_schema() -> None:
         second = api_module.custom_openapi()
 
         assert first is second
-        assert "BearerAuth" in first["components"]["securitySchemes"]
+        assert not first.get("components", {}).get("securitySchemes")
     finally:
         api_module.app.openapi_schema = previous
 

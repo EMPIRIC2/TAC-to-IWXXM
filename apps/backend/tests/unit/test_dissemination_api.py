@@ -12,25 +12,21 @@ from fastapi.testclient import TestClient
 
 from src import api as api_module
 from src.routers import dissemination as diss_router
-from src.utilities.security import verify_supabase_token
-
-
-async def _auth_user() -> dict:
-    return {"sub": "user-dissemination-test", "user_id": "user-dissemination-test"}
+from src.utilities.abuse_controls import get_limiter
 
 
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setenv("DISABLE_AUTH", "true")
     monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "")
     lim = DisseminationRateLimiter(max_per_minute=1000)
     monkeypatch.setattr(diss_router, "default_rate_limiter", lim)
     default_handle_store.clear()
-    api_module.app.dependency_overrides[verify_supabase_token] = _auth_user
+    get_limiter().reset()
     with TestClient(api_module.app) as c:
         yield c
     api_module.app.dependency_overrides.clear()
     default_handle_store.clear()
+    get_limiter().reset()
 
 
 def _sqlite_uri(tmp_path: Path) -> str:

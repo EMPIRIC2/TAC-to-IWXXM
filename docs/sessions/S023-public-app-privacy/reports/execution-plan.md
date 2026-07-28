@@ -14,7 +14,7 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M5 — Backend Auth + work-sessions teardown |
-| **Active task** | T5.1 — `/auth/*` and work-sessions → 404; convert without Authorization |
+| **Active task** | T5.2 — Remove auth routers/JWT gates; retire DISABLE_AUTH |
 | **Tasks** | 18 / ~28 completed |
 | **Last updated** | 2026-07-28 |
 
@@ -98,7 +98,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T5.1 | Test | `/auth/*` and `/api/v1/work-sessions*` → 404; convert without Authorization | TC-F21-auth-gone | T3.2 | in_progress |
-| T5.2 | Code | Remove auth routers/middleware/JWT gates; retire DISABLE_AUTH | F21; ADR-031 | T5.1 | pending |
+| T5.2 | Code | Remove auth routers/middleware/JWT gates; retire DISABLE_AUTH | F21; ADR-031 | T5.1 | in_progress |
 | T5.3 | Code | Remove work-sessions routers; stop writing `tac_work_sessions` from API | F7.h; E17-5 | T5.2 | pending |
 | T5.4 | Config | Delete `packages/auth` workspace member; fix Docker/CI/Makefile/coverage gates; inline residuals | E17-22 | T5.2 | pending |
 | T5.5 | Docs | Ops note: ~30-day archive of legacy rows (no public API) | E17-5 | T5.3 | pending |

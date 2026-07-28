@@ -24,11 +24,13 @@ def client():
     api_module.app.dependency_overrides.clear()
 
 
-def test_lint_issue_catalog_requires_auth() -> None:
-    """Same auth gate as convert / lint-tac when DISABLE_AUTH is unset."""
+def test_lint_issue_catalog_is_public() -> None:
+    """F21: catalog is public — no Authorization required."""
     bare = TestClient(api_module.app)
     response = bare.get("/api/v1/lint-issue-catalog")
-    assert response.status_code == 401
+    assert response.status_code != 401
+    assert response.status_code != 403
+    assert response.status_code == 200
 
 
 def test_lint_issue_catalog_shape_and_registry_subset(client: TestClient) -> None:

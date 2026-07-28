@@ -184,7 +184,6 @@ async def test_validate_comprehensive_json_body_maps_level_to_layers(monkeypatch
     )
     response = await api_module.validate_comprehensive(
         request_body=request_body,
-        user={"sub": "test-user", "aud": "test-aud"},
     )
 
     payload = _json_payload(response)
@@ -241,7 +240,6 @@ async def test_validate_comprehensive_json_level_mapping_variants(monkeypatch, l
 
     response = await api_module.validate_comprehensive(
         request_body=request_body,
-        user={"sub": "test-user", "aud": "test-aud"},
     )
 
     payload = _json_payload(response)
@@ -439,7 +437,6 @@ async def test_validate_comprehensive_comprehensive_level_and_import_fallback(mo
             validation_level="comprehensive",
             stop_on_error=False,
         ),
-        user={"sub": "test-user", "aud": "test-aud"},
     )
 
     payload = _json_payload(response)
