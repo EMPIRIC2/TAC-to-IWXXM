@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-018
   github_issue: 785
   artifacts_dir: docs/sessions/S024-dissemination-file-select/
-  current_stage: 10-e2e
+  current_stage: 13-deploy-smoke
   feature_ids:
   - F16
   feature_note: "Deepen F16 (E18-2); F17–F19 reuse selection contract; no F23"
@@ -24,7 +24,7 @@ active_session:
   routing_decision_id: D-S024-E18-scope-lock
   context_briefs:
   - docs/context/dissemination-file-select.md
-  note: "08 PASS; verification-report.md; uncommitted EV-018 work; handoff 10-e2e; #785"
+  note: "tip bf90a02; 10-e2e COMPLETE PASS; handoff 13-deploy-smoke (pending); #785"
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: "2026-07-28"
-    note: "Orchestrating post-08; next 10 after commit"
+    note: "orchestrating 13-deploy-smoke (pending, not started)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -84,13 +84,17 @@ active_session:
   - stage: 10-e2e
     required: true
     mode: full
-    status: pending
+    status: completed
     skip_rationale:
+    started: "2026-07-28T23:47:35Z"
+    completed: "2026-07-28T23:54:49Z"
+    note: "COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report docs/sessions/S024-dissemination-file-select/reports/e2e-report.md; tip bf90a02; handoff 13"
   - stage: 13-deploy-smoke
     required: true
     mode: full
     status: pending
     skip_rationale:
+    note: "pending ready — after 10-e2e PASS; not started"
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
@@ -4019,11 +4023,16 @@ stages:
     decision_id: E16-19
   10-e2e:
     status: completed
-    started_at: '2026-07-26'
-    completed_at: '2026-07-28'
-    report: docs/sessions/S023-public-app-privacy/reports/e2e-report.md
+    started_at: '2026-07-28T23:47:35Z'
+    completed_at: '2026-07-28T23:54:49Z'
+    completed: '2026-07-28'
+    previous_started_at: '2026-07-26'
+    previous_completed_at: '2026-07-28'
+    report: docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
     overall: pass
-    session_id: S023-public-app-privacy
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    note: 'S024/EV-018 10-e2e COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report docs/sessions/S024-dissemination-file-select/reports/e2e-report.md; tip bf90a02; handoff 13; #785'
     substeps:
       extract_journeys:
         status: completed
@@ -4040,6 +4049,24 @@ stages:
         status: completed
         notes: H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred
     delta_substages:
+    - id: S024-dissemination-file-select
+      session_id: S024-dissemination-file-select
+      evolve_cycle_id: EV-018
+      skill_id: 10-e2e
+      status: completed
+      mode: full
+      started: '2026-07-28T23:47:35Z'
+      started_at: '2026-07-28T23:47:35Z'
+      completed: '2026-07-28T23:54:49Z'
+      completed_at: '2026-07-28T23:54:49Z'
+      branch: evolve/EV-018-dissemination-file-select
+      tip_sha: bf90a02
+      tip_sha_full: bf90a0288bd21fc56848cbebe4da56ee7e07f2e0
+      overall: pass
+      report: docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
+      note: 'COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report docs/sessions/S024-dissemination-file-select/reports/e2e-report.md; tip bf90a02; handoff 13; #785'
+      feature_ids:
+      - F16
     - id: S023-public-app-privacy
       session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
@@ -4159,6 +4186,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
       note: T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk
     notes:
+    - '2026-07-28 S024/EV-018 10-e2e COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report e2e-report.md; tip bf90a02; handoff 13-deploy-smoke (pending, not started); #785'
+    - '2026-07-28 S024/EV-018 10-e2e STARTED after commit bf90a02; tip bf90a02; #785'
     - COMPLETE 2026-07-26 — S021/EV-016 10-e2e UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13; tip 3d1c58b; report e2e-report.md; C→D / phase_c / phase_d remain pending until 11-verify-impl; current_stage→11-verify-impl (pending, not started)
     - 'STARTED 2026-07-26 — S021/EV-016 10-e2e in_progress (user A: run now, not push/PR first); parallel with 09-qa; tip 3d1c58b; C→D / phase_c / phase_d remain pending until 09+10+11'
     - 2026-07-26 READY pending — S021/EV-016 after 08 PASS; run in parallel with 09-qa; C→D still pending until 09+10+11
@@ -4175,27 +4204,26 @@ stages:
     - 2026-07-12 S008 / EV-006 — PASS after COR hotfix re-verify (12/12 Playwright smoke); T0 PASS
     - 2026-07-14 S011/EV-008 10-e2e in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md
-    started: '2026-07-26'
+    started: '2026-07-28T23:47:35Z'
     active_session:
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
+      session_id: S024-dissemination-file-select
+      evolve_cycle_id: EV-018
       skill_id: 10-e2e
       status: completed
-      started_at: '2026-07-26'
-      started: '2026-07-26'
+      started_at: '2026-07-28T23:47:35Z'
+      started: '2026-07-28T23:47:35Z'
+      completed: '2026-07-28T23:54:49Z'
+      completed_at: '2026-07-28T23:54:49Z'
       mode: full
-      note: UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13
-      branch: evolve/EV-016-golden-examples-ui
-      tip_sha: 3d1c58b
-      tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
-      decision_id: E16-18
-      completed: '2026-07-26'
-      completed_at: '2026-07-26'
       overall: pass
-      report: docs/sessions/S021-golden-examples-ui/reports/e2e-report.md
-    completed: '2026-07-26'
-    evolve_cycle_id: EV-016
-    note: UJ-032/TC-F7-008 T0 PASS (100 focused + 688 FE); T2/T3 H4–H5 pending 13
+      note: 'COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report docs/sessions/S024-dissemination-file-select/reports/e2e-report.md; tip bf90a02; handoff 13; #785'
+      branch: evolve/EV-018-dissemination-file-select
+      tip_sha: bf90a02
+      tip_sha_full: bf90a0288bd21fc56848cbebe4da56ee7e07f2e0
+      report: docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
+    completed: '2026-07-28'
+    evolve_cycle_id: EV-018
+    note: 'S024/EV-018 10-e2e COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; tip bf90a02; handoff 13; #785'
   08-verify-build:
     status: completed
     started_at: '2026-07-28T23:30:05Z'
@@ -9735,6 +9763,20 @@ decisions_log:
   do_not_auto_merge: true
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790
 artifacts:
+- path: docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
+  type: session-report
+  kind: e2e-report
+  stage: 10-e2e
+  skill_id: 10-e2e
+  session_id: S024-dissemination-file-select
+  evolve_cycle_id: EV-018
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28T23:54:49Z'
+  status: completed
+  overall: pass
+  tip_sha: bf90a02
+  tip_sha_full: bf90a0288bd21fc56848cbebe4da56ee7e07f2e0
+  note: 'S024/EV-018 10-e2e COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; tip bf90a02; handoff 13; #785'
 - path: docs/sessions/S024-dissemination-file-select/reports/verification-report.md
   type: session-report
   kind: verification-report
@@ -11878,9 +11920,11 @@ evolve_cycles:
     preset: Lean+build
     decision_id: D-S024-E18-scope-lock
     note: "Phase 0 locked; Lean+build approved; handoff 01-requirements"
-  current_stage: 10-e2e
+  current_stage: 13-deploy-smoke
+  tip_sha: bf90a02
+  tip_sha_full: bf90a0288bd21fc56848cbebe4da56ee7e07f2e0
   branch: evolve/EV-018-dissemination-file-select
-  note: "S024/EV-018 08 COMPLETE — PASS; verification-report.md; uncommitted EV-018 work; handoff 10-e2e after commit; tip base a4b75f2; #785"
+  note: "S024/EV-018 tip bf90a02; 10-e2e COMPLETE PASS; handoff 13-deploy-smoke (pending, not started); #785"
   decision_refs:
   - E18-1
   - E18-2
@@ -11911,6 +11955,8 @@ evolve_cycles:
   - D-S024-04-E18-16
   - D-S024-04-plan-approve-A
   notes:
+  - '2026-07-28 S024/EV-018 10-e2e COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report e2e-report.md; tip bf90a02; handoff 13-deploy-smoke (pending, not started); #785'
+  - '2026-07-28 S024/EV-018 10-e2e STARTED after commit bf90a02; tip bf90a02; #785'
   - '2026-07-28 S024/EV-018 08-verify-build COMPLETE — PASS; report verification-report.md; work still uncommitted; handoff 10-e2e after commit; #785'
   - '2026-07-28 S024/EV-018 07 COMPLETE (M1–M4 / 14 tasks) — FE multi-select + interleaved queue + progress graphic + e2e; tip a4b75f2; HANDOFF; 08-verify-build STARTED; #785'
   - '2026-07-28 S024/EV-018 04 COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C passed; handoff 07-build @ T1.1; #785'
@@ -11977,11 +12023,26 @@ evolve_cycles:
       note: COMPLETE — PASS; FE 727 Vitest; coverage F 96.3% B 85.27%; prettier+queue edge tests; tip base a4b75f2 uncommitted; report docs/sessions/S024-dissemination-file-select/reports/verification-report.md; handoff 10-e2e
       artifacts_updated:
       - docs/sessions/S024-dissemination-file-select/reports/verification-report.md
+    10-e2e:
+      status: completed
+      started: "2026-07-28T23:47:35Z"
+      completed: "2026-07-28T23:54:49Z"
+      mode: full
+      overall: pass
+      tip_sha: bf90a02
+      report: docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
+      note: COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; tip bf90a02; handoff 13
+      artifacts_updated:
+      - docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
+    13-deploy-smoke:
+      status: pending
+      mode: full
+      note: pending ready — after 10-e2e PASS; not started
     16-evolve:
       status: in_progress
       started: "2026-07-28"
       completed: null
-      note: Orchestrating post-08; next 10 after commit
+      note: orchestrating 13-deploy-smoke (pending, not started)
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -12021,6 +12082,15 @@ evolve_cycles:
     tip_sha: a4b75f2
     overall: pass
     note: 'S024/EV-018 08 COMPLETE — PASS; tip base a4b75f2 uncommitted; handoff 10-e2e'
+  - path: docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
+    status: completed
+    stage: 10-e2e
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    date: '2026-07-28'
+    tip_sha: bf90a02
+    overall: pass
+    note: 'S024/EV-018 10 COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; tip bf90a02; handoff 13'
   - path: docs/sessions/S024-dissemination-file-select/reports/evolve-summary.md
     status: pending
   issues: []
@@ -16866,6 +16936,16 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: bf90a0288bd21fc56848cbebe4da56ee7e07f2e0
+    short: bf90a02
+    branch: evolve/EV-018-dissemination-file-select
+    message: "[EV-018] feat: multi-file dissemination selection + interleaved queue"
+    stage: 16-evolve
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    files_changed: 27
+    timestamp: "2026-07-28T23:47:35Z"
+
   - sha: 2e2f6c022324585423f30765541f7ddc435def68
     short: 2e2f6c0
     branch: evolve/EV-017-public-app-privacy

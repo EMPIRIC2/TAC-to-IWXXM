@@ -16,9 +16,9 @@
 | 05-verify-tech | **no** | — | skipped | Lean+build skip unless 04 adds deps/ADR conflict |
 | 06-tech-tooling | **no** | — | skipped | No new tooling expected |
 | 07-build | yes | full | completed | M1–M4 / 14 tasks done; tip a4b75f2; `reports/HANDOFF.md` |
-| 08-verify-build | yes | full | in_progress | Lint / typecheck / full suite — STARTED after 07 |
+| 08-verify-build | yes | full | completed | PASS — `reports/verification-report.md`; tip bf90a02 |
 | 09-qa | **no** | — | skipped | Lean+build; coverage via 08 + 10 |
-| 10-e2e | yes | full | pending | Extend UJ-027–030 |
+| 10-e2e | yes | full | completed | PASS — UJ-027–030 **7**/7; snapshot baseline; `reports/e2e-report.md` |
 | 11-verify-impl | **no** | — | skipped | Lean+build |
 | 12-verify-deploy | **no** | — | skipped | Lean+build; allowlist unchanged |
 | 13-deploy-smoke | yes | full | pending | Live dissemination smoke when approved |
