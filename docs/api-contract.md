@@ -1,27 +1,30 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-22 (S020 / EV-015 — F20 TAF+SPECI quality; full endpoint review)
+> **Last updated**: 2026-07-27 (S023 / EV-017 — F21 public app + F22 privacy; #783)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
-> F15 registry codes (ADR-028); F20 TAF/SPECI quality (wire shape unchanged)
+> F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 remove operator Auth / public APIs**;
+> **F22 privacy preferences (client-only)**
 
 ## Base URLs
 
-| Environment | Frontend | API (includes auth) |
-|-------------|----------|---------------------|
+| Environment | Frontend | API |
+|-------------|----------|-----|
 | Local dev | `http://localhost:18000` | `http://localhost:18001` |
 | Render | `https://<frontend-host>` | `https://<api-host>` |
 
-**Post-migration change**: Auth endpoints move from separate `:8003` service to same host as backend.
-Frontend uses single API base for `/api/v1/*` and `/auth/*`. **`/admin/*` removed** (S011 / #697).
+**EV-017 / F21**: Operator Auth removed. Frontend uses single API base for `/api/v1/*` only.
+Legacy `/auth/*` and `/admin/*` are **gone** (404). Work history is **client IndexedDB** — not
+HTTP session CRUD.
 
 ## Services
 
-| Service | Pre-migration | Post-migration |
-|---------|---------------|----------------|
-| Conversion API | backend:8001 | apps/backend |
-| Auth | auth:8003 | apps/backend (packages/auth) |
-| Frontend | frontend:5173/8000 | apps/frontend |
+| Service | Pre-migration | Post-migration | EV-017 |
+|---------|---------------|----------------|--------|
+| Conversion API | backend:8001 | apps/backend | Public + abuse controls |
+| Auth | auth:8003 | apps/backend (packages/auth) | **Removed** (operator) |
+| Frontend | frontend:5173/8000 | apps/frontend | No login UX |
+| Worker | — | apps/worker | Unchanged (service-role) |
 
 ## Endpoints
 
@@ -31,7 +34,8 @@ Frontend uses single API base for `/api/v1/*` and `/auth/*`. **`/admin/*` remove
 |---------|---------|---------|
 | High-churn **responses** (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`, `/lint-issue-catalog`) | **msgspec** encode (+ optional Struct validate after assemble) | Thin **pydantic** aliases / JSON Schema export — **no** dual runtime validation |
 | High-churn **requests** (same routes) | **multipart/form-data** via FastAPI `Form`/`File` (unchanged intake) | Form fields documented as today |
-| `/auth/*`, work-sessions, airports, ICAO OPMET stats | **pydantic** | pydantic (unchanged) |
+| `/auth/*`, work-sessions | **Removed (F21)** | — |
+| airports, ICAO OPMET stats | **pydantic** | pydantic (unchanged) |
 
 Breaking JSON **response** field changes on high-churn routes are allowed in EV-010; frontend
 types update in the same cycle. Prefer additive changes when possible. msgspec does **not**
@@ -53,7 +57,7 @@ GET /health
 ```
 
 **Breaking (F6 cutover)**: `gifts_available` removed; clients must use `tac2iwxxm_available`.
-### Authentication (packages/auth — same host post-migration)
+### Authentication — Removed (S023 / EV-017 / F21)
 
 ```
 POST /auth/register
@@ -63,9 +67,11 @@ GET  /auth/me
 GET  /auth/health
 ```
 
-**Auth**: Supabase JWT; Bearer token on protected routes.
+**Status**: **Removed** from product surface (prefer HTTP **404**). Operator JWT and
+`DISABLE_AUTH` dual path retired. F8 worker retains service-role credentials **off** the
+public operator router (ADR-018).
 
-**Migration note**: Paths preserved for frontend compatibility; proxy config simplified.
+**Historical**: Supabase JWT via `packages/auth` on same host as API (M4 / REQ-017).
 
 ### Admin — Removed (S011 / #697)
 
@@ -90,8 +96,9 @@ Auth Admin / bootstrap scripts only (ADR-010). Operator credentials are **BYO** 
 POST /api/v1/convert
 ```
 
-**Auth**: Required unless `DISABLE_AUTH=true` (dev/CI — G1). Guests may convert when that policy
-applies; work-session persistence still requires JWT.
+**Auth**: **None** (F21 public). Abuse controls: per-IP + global rate limits, body/batch size,
+timeouts/concurrency (finalize numeric defaults in 04-tech-plan). Guests and operators share
+the same public convert path. Work history is **not** server-persisted (IndexedDB — F5/F7.h).
 
 **Request** (multipart/form-data **only** for product/profile — not read from JSON body):
 
@@ -389,10 +396,10 @@ POST /api/v1/validate
 **Response**: Pass/fail + messages; each issue may include optional integer `start` / `end`
 (S011) when the validator can map to TAC or XML offsets — otherwise omit.
 
-### Work sessions (F5+F7 — unified `tac_work_sessions`, ADR-020)
+### Work sessions (F5+F7 — **retired HTTP**; IndexedDB client — S023 / EV-017)
 
-All routes require Bearer JWT unless noted. User routes enforce RLS via caller JWT
-(`auth.uid() = user_id`). Storage: **`tac_work_sessions`** after F7.e migration.
+**Status**: Server CRUD on `tac_work_sessions` is **removed from the public API** (F21 / F7.h).
+Prefer HTTP **404** / gone for:
 
 ```
 GET    /api/v1/work-sessions
@@ -403,69 +410,18 @@ DELETE /api/v1/work-sessions/{id}
 POST   /api/v1/work-sessions/{id}/restore
 ```
 
-**Query params** (`GET` list): `status`, `product`, `from`, `to`, `include_deleted` (trash view),
-`page`, `limit`. My METARs UI passes `product=metar,speci` (or equivalent filter).
+**Client**: IndexedDB workspace (UUID per item; export/import JSON). Legacy Supabase rows are
+**not** publicly readable; archive/delete after ~30 days post-cutover.
 
-**Request body** (`POST` / `PATCH`):
+**Historical (pre-EV-017)**: Bearer JWT + RLS (`auth.uid() = user_id`) on unified
+`tac_work_sessions` (ADR-020).
 
-```json
-{
-  "title": "optional — default auto ICAO + timestamp",
-  "product": "metar",
-  "manual_tac": "string",
-  "pending_files": [{ "name": "file.tac", "content": "METAR ..." }],
-  "converted_results": [],
-  "errors": [],
-  "issues": [],
-  "conversion_params": { "iwxxm_version": "2025-2", "product": "metar", "profile": "annex3" },
-  "status": "draft | wip | finished | failed",
-  "kv_upload_key": "optional — set on successful send"
-}
-```
+**Admin work-sessions list**: Already removed (`GET /admin/work-sessions`).
 
-`product` is **required** on create (and when changing product). Prefer top-level `product`
-matching `conversion_params.product`.
+**Guest users**: Convert/validate/lint/decode/preview/dissemination without login; history local.
 
-**Response** (`WorkSession`):
-
-```json
-{
-  "id": "uuid",
-  "user_id": "uuid",
-  "product": "metar",
-  "status": "draft",
-  "title": "KJFK 2026-06-23",
-  "manual_tac": "...",
-  "pending_files": [],
-  "converted_results": [],
-  "errors": [],
-  "issues": [],
-  "conversion_params": {},
-  "kv_upload_key": null,
-  "deleted_at": null,
-  "created_at": "ISO8601",
-  "updated_at": "ISO8601"
-}
-```
-
-**Status transitions** (server-enforced):
-
-| From | Event | To |
-|------|-------|-----|
-| — | Auto-save / create | draft |
-| draft / failed | Convert success (no send) | wip (**reject if another wip exists — one WIP per user total**) |
-| draft / failed | Convert failure | failed |
-| wip | Send success | finished (+ kv_upload_key) |
-| wip | Send failure | wip (unchanged — user may retry) |
-| any | User soft-delete | deleted_at set |
-| deleted | Restore within 30 days | deleted_at cleared |
-
-**Admin work-sessions list**: **Removed** (`GET /admin/work-sessions` — see Admin section).
-
-**Guest users**: Work-session routes require JWT. Unauthenticated users may call `/api/v1/convert`
-but receive no session persistence until login. On first authenticated request after login, if the
-frontend holds unsaved converter state, it **POST**s a new **draft** session from that state before
-resume logic runs.
+**Historical HTTP shapes** (pre-EV-017 — removed): list query params, POST/PATCH bodies, and
+`WorkSession` responses documented in git history / ADR-020; not part of the public contract.
 
 ## CORS
 
@@ -475,7 +431,7 @@ resume logic runs.
 | `Access-Control-Allow-Methods` | GET, POST, OPTIONS |
 | `Access-Control-Allow-Headers` | Authorization, Content-Type |
 
-Preflight: `OPTIONS` on `/api/v1/*` and `/auth/*` (admin paths no longer product surface).
+Preflight: `OPTIONS` on `/api/v1/*` (legacy `/auth/*` gone — F21).
 
 F6/F7 fields do **not** change CORS headers. Frontend and API remain different origins on Render;
 configure `config.*.api.corsOrigins` accordingly. Live workbench increases request volume

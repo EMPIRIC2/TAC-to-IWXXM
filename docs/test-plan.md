@@ -28,7 +28,7 @@ Unified manual live test harness against Render staging:
 
 | Tier | Scope | Makefile target |
 |------|-------|-----------------|
-| H3 | Live API pytest (health, convert, validate, auth) | `make test-live-api` |
+| H3 | Live API pytest (health, convert, validate; **no auth login**) | `make test-live-api` |
 | H4–H5 | CORS preflight + frontend bundle URLs | `make test-live-connectivity` |
 | H6 | Playwright UJ-001–007 (+ UJ-008 smoke) + F7 smokes UJ-013/015–019 + **UJ-027–030** (H6′ when F16–F19 ships) | `make test-live-e2e` |
 | **H7** | Live bulletin gate: multi-report AHL → split → convert → Schematron | `make test-live-bulletin` (planned) |
@@ -49,8 +49,8 @@ Unified manual live test harness against Render staging:
 |---------|---------|------------------|----------|--------------|
 | UJ-001 | F6 | `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/e2e/tac-file-upload-database.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-001, TC-LIVE-001 |
 | UJ-002 | F2+F6 | backend validation tests + UI Strict Validation → `validate_output` (ADR-023) | H3 validate + H6 where exposed | TC-002, TC-LIVE-002 |
-| UJ-003 | Auth | `apps/e2e/auth.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-003, TC-LIVE-003 |
-| UJ-004 | F5+F7 | `apps/e2e/metar-work-history.e2e.spec.ts` (unified filter) | H6 UJ-004 | TC-004, TC-LIVE-006 |
+| UJ-003 | Auth | **Superseded F21** — negative Auth-gone tests | H6 optional negative | TC-003 retired / TC-F21-auth-gone |
+| UJ-004 | F5+F7+F21 | IndexedDB history Playwright | H6 UJ-004 | TC-004 (local store) |
 | UJ-005 | F6 | F6 product-matrix Playwright (planned) | H6 | TC-F6-001, TC-LIVE-F6-001 |
 | UJ-006 | F6 | API product-matrix pytest | H3 live | TC-F6-002, TC-LIVE-F6-002 |
 | UJ-007 | F2+F6 | US-profile validate | H3 / H6 | TC-F6-003, TC-LIVE-F6-003 |
@@ -78,6 +78,7 @@ Unified manual live test harness against Render staging:
 | UJ-030 | F19 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F19-001..003 |
 | UJ-031 | F20 | TAF/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F20-001..006 |
 | UJ-032 | F7 | Golden examples load (convert + validate) | H4–H5 if FE | TC-F7-008 |
+| UJ-033 | F22 | Privacy notice + settings + GPC | H4–H5 if FE | TC-F22-001..003 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old

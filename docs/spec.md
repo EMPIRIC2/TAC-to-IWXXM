@@ -267,54 +267,42 @@ metar-to-IWXXM/
   required `DISSEMINATION_EGRESS_ALLOWLIST` (ADR-029).
 - **Source**: [config-spec.md](config-spec.md), S003 session; S011 / EV-008.
 
-### F5 — User METAR work history (S004 / EV-004; unified under F7 in S011)
+### F5 — User METAR work history (S004 / EV-004; unified under F7; **IndexedDB — S023**)
 
-- **Purpose**: Durable per-user converter **work history** (current session state, not an
-  append-only audit log) in Supabase Postgres, linked to `auth.users` via RLS; exposed through
-  backend REST (not direct browser DB access).
-- **Canonical table (S011 / R2′)**: `tac_work_sessions` with `product` covering all seven F6
-  products. Existing `metar_work_sessions` rows **migrate** to `tac_work_sessions`
-  (`product` = `metar` | `speci`); `metar_work_sessions` deprecated then dropped after cutover.
-- **Columns** (product-generalized from F5):
-  - `user_id`, `product`, `status` (`draft` | `wip` | `finished` | `failed`)
-  - `title` (auto ICAO + time / product hint; user-renamable)
-  - `manual_tac`, `pending_files` JSONB (name + inline TAC content)
-  - `converted_results`, `errors`, `issues`, `conversion_params` JSONB
-  - `kv_upload_key` (nullable — set when send succeeds; METAR/SPECI and any product that already supports Upload)
-  - `deleted_at` (nullable — soft delete / trash)
-  - `created_at`, `updated_at`
-- **RLS**: `auth.uid() = user_id` for user CRUD; `service_role` for pg_cron Draft purge.
-  **Admin read via `is_admin()` is removed** with F7.a / #697.
-- **Business rules**: Same Draft/WIP/Finished/Failed lifecycle as S004 F5 (WIP uniqueness per user
-  applies across products unless 04 says otherwise — default: **one WIP per user total**).
-- **Frontend**: Debounced draft sync (~3s); converter sidebar (**5 recent**, all products or
-  filtered); **My METARs** = filter `product IN (metar, speci)` on unified table; workbench
-  history lists all products; #555 error log panel; **no** `/admin/work-sessions`.
-- **Migration**: One-time copy + dual-read/dual-write window as needed; finalize in 04-tech-plan;
-  no silent dual-table forever.
-- **Source**: F5 requirements delta 2026-06-23; [metar-work-history.md](context/metar-work-history.md);
-  S011 Spec Batch 2 A (R2′ override).
+- **Purpose**: Durable converter **work history** (current session state) for METAR/SPECI —
+  **browser IndexedDB** after S023 / EV-017 / #783 (no login, no server ownership).
+- **Historical (pre-EV-017)**: Supabase `tac_work_sessions` + JWT RLS (ADR-020 / R2′). That HTTP
+  + table model is **retired** from the public product path; legacy rows archived/deleted after
+  ~30 days with no public API access.
+- **Client store**: UUID per work item; fields mirror prior session shape (product, status,
+  title, TAC, results, errors, params, timestamps, soft-delete). Export/import JSON workspace.
+- **Frontend**: Debounced draft sync (~3s) to IndexedDB; sidebar (**5 recent**); **My METARs**
+  = filter `product IN (metar, speci)`; **no** `/api/v1/work-sessions`.
+- **Source**: F5 requirements 2026-06-23; S011 R2′; **S023 / EV-017** (R2″ IndexedDB).
 
-### F7 — Multi-product operator UI / sessions (S011 / EV-008)
+### F7 — Multi-product operator UI / sessions (S011 / EV-008; **F7.h IndexedDB — S023**)
 
 - **Purpose**: Operator UI for all seven F6 products — workbench, decode, soft-preview,
-  Failed-TAC cue — plus **unified work sessions** on `tac_work_sessions` (R2′). Built this cycle.
+  Failed-TAC cue — plus **local unified work sessions** in IndexedDB (F7.h).
 - **Status**: **Planned (build-ready)** — flips Implemented after verify/deploy gate.
-- **Slices**: F7.a #697 → F7.b #702 → F7.c #665/#666 → F7.d #694 → F7.e unified sessions migrate →
-  F7.f verify → **F7.g #780** golden examples (S021 / EV-016; frontend-only).
-- **Sessions (R2′)**: Single canonical `tac_work_sessions` table (see F5 section). F5 My METARs
-  becomes a product filter; do **not** keep a parallel F7-only sessions table.
-- **API companions**: `POST /api/v1/decode-tac`; lint/validate `start`/`end`; soft-preview convert;
-  session CRUD retargeted to unified table (route names may keep F5 paths for METAR UX or
-  generalize — finalize in api-contract / 04).
+- **Slices**: F7.a–F7.g as before; **F7.h #783** IndexedDB local sessions + drop JWT session APIs.
+- **Sessions (R2″)**: Client IndexedDB for all seven products; My METARs remains METAR/SPECI filter.
+- **API companions**: decode/lint/validate/convert remain public (F21); session CRUD **removed**.
 - **Editor**: CodeMirror 6.
-- **Golden examples (F7.g)**: Typed static catalog under `apps/frontend` (no fixture-serving
-  API); Examples UX wires into ADR-024 modes; prefer annex3 + known package goldens.
-- **BYO / admin**: Deploy-env credentials only; AdminDashboard deleted; clean cut for former
-  shared-project users (G3).
-- **ADR**: Document R2′ unified sessions + F5 migration (new ADR in 01 ADR pass).
-- **Source**: [feature-list.md](feature-list.md) F7; [context/f7-operator-ui.md](context/f7-operator-ui.md);
-  D-S011-01-spec-r2-prime; [context/golden-examples-ui.md](context/golden-examples-ui.md); #780.
+- **Golden examples (F7.g)**: Unchanged static FE catalog.
+- **BYO / admin**: AdminDashboard deleted (#697); operator Auth removed (F21).
+- **Source**: S011; S021 F7.g; **S023 / EV-017** F7.h + F21.
+
+### F21 — Public unauthenticated operator app (S023 / EV-017)
+
+- **Purpose**: Remove operator Auth; public convert/validate/lint/decode/preview/dissemination
+  with abuse controls; retire `DISABLE_AUTH` dual path; keep F8 machine auth private.
+- **Source**: #783; [feature-list.md](feature-list.md) F21.
+
+### F22 — Privacy preference center (S023 / EV-017)
+
+- **Purpose**: Solution A privacy notice + settings + GPC; disclose IndexedDB; no CMP/analytics.
+- **Source**: #783; [feature-list.md](feature-list.md) F22.
 
 ### F8 — Near-realtime ingest (Implemented)
 

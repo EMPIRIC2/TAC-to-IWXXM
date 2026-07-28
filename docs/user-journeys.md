@@ -4,8 +4,9 @@
 > **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI;
 > S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP;
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
-> S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734)
-> **Last updated**: 2026-07-22
+> S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
+> S023 / EV-017 public app + privacy (#783)
+> **Last updated**: 2026-07-27
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -14,10 +15,10 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 
 | ID | Journey | Entry point | Feature | E2E tier |
 |----|---------|-------------|---------|----------|
-| UJ-001 | Convert METAR via UI (shorthand) | apps/frontend | F6 (was F1) | T2 / **T3** |
-| UJ-002 | Validate IWXXM output (`iwxxm-validate`) | apps/frontend / API | F2+F6 | T2 / **T3** |
-| UJ-003 | Register and login | apps/frontend | Auth | T2 / **T3** |
-| UJ-004 | Resume & browse METAR work history (unified sessions filter) | apps/frontend | F5+F7 | T2 / **T3** |
+| UJ-001 | Convert METAR via UI (shorthand) | apps/frontend | F6+F21 (was F1) | T2 / **T3** |
+| UJ-002 | Validate IWXXM output (`iwxxm-validate`) | apps/frontend / API | F2+F6+F21 | T2 / **T3** |
+| UJ-003 | Register and login | apps/frontend | Auth | **Superseded** (F21 / S023) |
+| UJ-004 | Resume & browse METAR work history (local IndexedDB) | apps/frontend | F5+F7+F21 | T2 / **T3** |
 | UJ-005 | Convert with product + profile via UI | apps/frontend | F6 | T2 / **T3** (all 7 products) |
 | UJ-006 | Convert non-METAR product via API | HTTP API | F6 | T2 / **T3** |
 | UJ-007 | Validate IWXXM-US profile document | apps/frontend / API | F2+F6 | T2 / **T3** |
@@ -31,7 +32,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-015 | TAC decode panel (Code \| Explanation) | apps/frontend | F7 | T2 / **T3** |
 | UJ-016 | Failed-TAC cue + soft-preview / partial | apps/frontend | F7 | T2 / **T3** |
 | UJ-017 | Live workbench (debounce, spans, console, live IWXXM) | apps/frontend | F7 | T2 / **T3** |
-| UJ-018 | Unified sessions persist/resume + F5 migrate smoke | apps/frontend | F5+F7 | T2 / **T3** |
+| UJ-018 | Unified local sessions persist/resume (IndexedDB) | apps/frontend | F5+F7+F21 | T2 / **T3** |
 | UJ-019 | Admin routes removed / BYO operator surface | apps/frontend | F7 / M4 | T2 / **T3** |
 | UJ-020 | Value-aware decode + plain-language summary | apps/frontend | F9 | T0 / T2 / **T3** |
 | UJ-021 | IWXXM preview pane + terminator quick fix | apps/frontend | F10 | T2 / **T3** |
@@ -46,6 +47,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3** |
 | UJ-031 | TAF + SPECI lint / convert→validate golden | UI / API / CI | F20 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-032 | Load golden example → convert / validate | apps/frontend | F7 (#780) | T0 / T2 / H4–H5 |
+| UJ-033 | Privacy notice + settings + GPC | apps/frontend | F22 | T0 / T2 / H4–H5 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -60,8 +62,8 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 - **T2** — Local docker-compose or `make dev`; Playwright in `apps/e2e/`.
 - **T3** — Deployed Render stack; Playwright + pytest against live URLs (manual `make test-live`).
 
-Run local E2E: `make test-e2e-playwright`  
-Run live E2E: `make test-live` (requires `.env` with `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` when auth is enabled)
+Run local E2E: `make test-e2e-playwright`
+Run live E2E: `make test-live` (after F21: public convert path needs **no** `E2E_USER_*`)
 
 **T3 URLs** (canonical):
 
@@ -80,27 +82,27 @@ must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US 
 
 ### UJ-001: Convert METAR via UI (shorthand)
 
-**Actor**: User (authenticated for persistence; guests may convert without save — F5-R22)
+**Actor**: Anyone (public app — F21; no login)
 
 **Goal**: Upload or paste METAR TAC and receive IWXXM XML (default product/profile).
 
-**Feature**: F6 (supersedes F1 engine). Full product/profile matrix is **UJ-005**.
+**Feature**: F6 (+ F21). Full product/profile matrix is **UJ-005**. History optional via **UJ-004**.
 
 **Steps**:
 
-1. Open frontend in browser.
-2. Optionally log in (UJ-003) — required for work history persistence (UJ-004).
-3. Drag-drop `.tac` file or paste manual text (METAR/SPECI).
-4. Optionally leave product on **auto** / METAR and profile **annex3** (defaults).
-5. **#664 (EV-005)**: Optionally type an **Output filename** for manually entered TAC.
-6. Choose **Convert**, **Convert&Send**, or **Upload to Database**.
-7. View output; each result card shows **TAC-derived title**, optional **Line N of M** for
+1. Open frontend in browser (no login).
+2. Drag-drop `.tac` file or paste manual text (METAR/SPECI).
+3. Optionally leave product on **auto** / METAR and profile **annex3** (defaults).
+4. **#664 (EV-005)**: Optionally type an **Output filename** for manually entered TAC.
+5. Choose **Convert**, **Convert&Send**, or **Upload to Database**.
+6. View output; each result card shows **TAC-derived title**, optional **Line N of M** for
    multi-line manual input, prominent **Source TAC** panel, and download filename when it
    differs (#655 / EV-007). #555 replace-on-success and error log panel behavior unchanged.
-8. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
+7. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
+8. Work may auto-save to IndexedDB (UJ-004) — not to server session APIs.
 
-**Acceptance**: METAR converts without error via tac2iwxxm; schema/Schematron pass for selected
-version; UX behaviors from #555/#664 preserved.
+**Acceptance**: METAR converts without error via tac2iwxxm; **no JWT required**; schema/Schematron
+pass for selected version; UX behaviors from #555/#664 preserved.
 
 **Automated tests**: `apps/e2e/tac-file-conversion.e2e.spec.ts` (T2); `make test-live-e2e` (T3)
 
@@ -110,7 +112,7 @@ version; UX behaviors from #555/#664 preserved.
 
 ### UJ-002: Validate IWXXM Output
 
-**Actor**: Authenticated user or API client
+**Actor**: Anyone (public) or API client
 
 **Goal**: Confirm generated XML passes schema/Schematron validation via
 `packages/iwxxm-validate` (backend thin wrapper).
@@ -126,45 +128,49 @@ version; UX behaviors from #555/#664 preserved.
 5. If `profile=iwxxm_us`, validation uses **combined** WMO + iwxxm-us catalogs; `annex3` uses WMO only.
 
 **Acceptance**: Valid sample produces validation pass for selected IWXXM version and profile.
-Soft-preview Convert does **not** satisfy UJ-002 (ADR-022 / ADR-023).
+Soft-preview Convert does **not** satisfy UJ-002 (ADR-022 / ADR-023). **No JWT required** (F21).
 
 **Automated tests**: `packages/iwxxm-validate` unit + backend wrapper tests + FE convert-params
 mapping (ADR-023) + E2E where exposed (T2); H3 + H6 (T3)
 
 ---
 
-### UJ-003: Register and Login
+### UJ-003: Register and Login — Superseded
 
-Unchanged from prior interview (Supabase JWT via merged `/auth/*`).
+**Status**: **Superseded** by F21 (S023 / EV-017 / #783). Operator Auth UX and JWT gates removed.
 
-**Acceptance**: Protected `/api/v1/*` returns 401 without token, 200 with valid token.
+**Historical**: Supabase JWT via merged `/auth/*`; protected `/api/v1/*` returned 401 without token.
 
-**Automated tests**: `apps/e2e/auth.e2e.spec.ts` (T2); `make test-live-e2e` (T3)
+**Replacement**: Public convert/validate (UJ-001/002); local history (UJ-004); privacy (UJ-033).
+
+**Automated tests**: Retire or rewrite `apps/e2e/auth.e2e.spec.ts` to assert Auth routes absent /
+gone (negative). Live H6 must not require `E2E_USER_*` for primary journeys.
 
 ---
 
 ### UJ-004: Resume & Browse METAR Work History
 
-**Actor**: Authenticated user
+**Actor**: Anyone (same browser / origin)
 
-**Goal**: Resume Draft/WIP and browse Finished/Failed METAR/SPECI work after F7 unified sessions
-(R2′ / ADR-020).
+**Goal**: Resume Draft/WIP and browse Finished/Failed METAR/SPECI work from **IndexedDB**
+(F5 deepen / F7.h — S023).
 
 **Steps**:
 
-1. Log in (UJ-003).
+1. Open converter (no login).
 2. Open converter sidebar (**5 recent**) and/or **My METARs** (`/history`).
-3. My METARs lists only rows with `product IN (metar, speci)` on `tac_work_sessions`.
-4. Open a Draft — editor restores TAC + `conversion_params`; auto-save (~3s) continues.
-5. Finished sessions open read-only; soft-deleted sessions appear in trash (30-day) as before.
-6. **No** admin cross-user browse (UJ-019).
+3. My METARs lists local rows with `product IN (metar, speci)`.
+4. Open a Draft — editor restores TAC + `conversion_params`; auto-save (~3s) continues locally.
+5. Use **Export workspace** / **Import workspace** (JSON) for backup or device move.
+6. Finished sessions open read-only; soft-deleted sessions appear in local trash.
+7. **No** admin cross-user browse (UJ-019); **no** `/api/v1/work-sessions` calls.
 
-**Acceptance**: F5 UX preserved for METAR/SPECI on unified storage; migrated legacy
-`metar_work_sessions` rows remain visible after cutover (UJ-018).
+**Acceptance**: F5 UX preserved for METAR/SPECI on IndexedDB; clearing site data loses history
+unless exported.
 
-**Automated tests**: `apps/e2e/metar-work-history.e2e.spec.ts` (T2); live H6 delta (T3)
+**Automated tests**: FE unit + Playwright history (T2); live H6 delta (T3)
 
-**Browser wiring**: Frontend → session APIs with JWT; CORS H4.
+**Browser wiring**: Local IndexedDB for persistence; convert APIs CORS H4.
 
 ---
 
@@ -436,24 +442,25 @@ fixture; console captures errors without crashing the editor.
 
 ---
 
-### UJ-018: Unified Sessions Persist/Resume + F5 Migrate Smoke
+### UJ-018: Unified Local Sessions Persist/Resume (IndexedDB)
 
-**Actor**: Authenticated operator
+**Actor**: Anyone (same browser — F21)
 
-**Goal**: Persist/resume work for any of seven products on `tac_work_sessions`; verify migrated
-F5 rows still load (ADR-020).
+**Goal**: Persist/resume work for any of seven products in **IndexedDB** (F7.h / S023); My METARs
+filters METAR/SPECI locally.
 
 **Steps**:
 
-1. Log in; create Draft for a non-METAR product (e.g. TAF); wait for autosave.
-2. Reload — session restores TAC + product/profile.
-3. Convert to WIP/Finished per status rules (one WIP per user total across products).
+1. Create Draft for a non-METAR product (e.g. TAF); wait for local autosave.
+2. Reload — session restores TAC + product/profile from IndexedDB.
+3. Convert to WIP/Finished per status rules (one WIP per browser workspace).
 4. Open My METARs — non-METAR draft **not** listed; workbench history **does** list it.
-5. After migration: open a pre-migrate METAR session — still resumes (UJ-004).
+5. Export workspace JSON; import on another profile/browser to restore (no server sync).
 
-**Acceptance**: CRUD on unified table; product filter correct; migration smoke passes once.
+**Acceptance**: Local CRUD for seven products; product filter correct; **no** `/api/v1/work-sessions`;
+legacy Supabase rows not exposed.
 
-**Automated tests**: API session tests + Playwright (T2); staging migrate smoke (T3).
+**Automated tests**: FE IndexedDB unit + Playwright (T2); staging smoke (T3).
 
 ---
 
@@ -467,11 +474,11 @@ F5 rows still load (ADR-020).
 
 1. Navigate to `/admin` and legacy admin deep links — expect **404** / not found (no dashboard).
 2. Confirm no UI for approval queue, toggle-admin, or cross-user session browse.
-3. Authenticated user can still convert and use own sessions (UJ-013/018).
-4. Operator deploy docs/env describe Supabase + optional `DATABASE_URL` (no paste-keys UI).
+3. Public user can convert and use local sessions (UJ-013/018) **without** login (F21).
+4. Operator deploy docs/env describe remaining infra secrets (F8 / dissemination allowlist) —
+   no paste of Supabase **Auth** keys; no operator Auth required after F21.
 
-**Acceptance**: Admin UI/routes absent; user JWT session paths still work; E2E admin suite retired
-or rewritten as negative tests.
+**Acceptance**: Admin UI/routes absent; public convert works; E2E admin suite remains negative.
 
 **Automated tests**: Playwright negative `/admin` (T2/T3); retire prior admin panel locators.
 
@@ -797,31 +804,57 @@ does **not** add backend fixture APIs.
 6. H4–H5 smoke when frontend deploys (optional Playwright smoke — Vitest is hard gate)
 
 **Automated tests**: Vitest catalog + FileConverter Examples UX (TC-F7-008); staging H4–H5
-when FE ships. **Tier: T0 / T2 / H4–H5**.
+
+---
+
+### UJ-033: Privacy Notice + Settings + GPC (F22 / #783)
+
+**Actor**: Anyone (public)
+
+**Goal**: See a short first-visit privacy notice; open **Privacy settings** from the footer;
+manage versioned preferences; confirm GPC is honored when present.
+
+**Feature**: F22 — Solution A (no non-essential tracking)
+
+**Steps**:
+
+1. First visit (or after preference schema bump) — short notice with link to Privacy settings;
+   equally clear dismiss / open settings (no dark patterns).
+2. Open footer **Privacy settings** — see categories actually in use (at minimum: necessary +
+   disclosure of IndexedDB work history / preference storage).
+3. Non-essential categories (if present) default off; reject as easy as accept.
+4. With `navigator.globalPrivacyControl === true`, sale/sharing / targeted-advertising opt-outs
+   are forced on and confirmation is visible.
+5. Withdraw / change preferences anytime; applicable non-essential storage cleared on withdraw.
+
+**Acceptance**: Settings always reachable; preferences persist with `schemaVersion`; no CMP;
+no marketing/analytics scripts in v1; IndexedDB history disclosed.
+
+**Automated tests**: Vitest preference store + GPC (TC-F22-001..003); Playwright smoke (T2);
+H4–H5 when FE deploys.
 
 ---
 
 ### UJ-027: Dissemination drawer — multi-DB upload (F16 / #729)
 
-**Actor**: Any authenticated user  
+**Actor**: Anyone (public — F21; no login)
 **Goal**: Convert (or drag-drop IWXXM/TAC) and send to a user-supplied database via one-shot URI.
 
 **Steps**:
-1. Log in (Supabase Auth — deploy BYO; no paste of auth keys).
-2. Convert TAC → IWXXM **or** drag-drop existing IWXXM/TAC into the workbench/drawer.
-3. Open **Dissemination** drawer; choose DB sink (Postgres / MySQL|MariaDB / SQL Server / SQLite).
-4. Paste destination **URI only**; run **Preflight**.
-5. Review structured schema/permission diff; if missing/mismatched table, use **DDL /
+1. Convert TAC → IWXXM **or** drag-drop existing IWXXM/TAC into the workbench/drawer (no login).
+2. Open **Dissemination** drawer; choose DB sink (Postgres / MySQL|MariaDB / SQL Server / SQLite).
+3. Paste destination **URI only**; run **Preflight**.
+4. Review structured schema/permission diff; if missing/mismatched table, use **DDL /
    create-if-missing** path to versioned writer contract (optional confirm).
-6. When preflight green, **Send**. API holds URI in memory only; allowlist + SSRF guards apply.
-7. On success, session Finished with `kv_upload_key` (no secrets stored).
+5. When preflight green, **Send**. API holds URI in memory only; allowlist + SSRF guards apply.
+6. On success, local session may mark Finished with send ref (no secrets stored; IndexedDB only).
 
-**Errors**: Auth/SSL/allowlist/private-IP/schema mismatch — actionable drawer messages; Send blocked.  
+**Errors**: Auth/SSL/allowlist/private-IP/schema mismatch — actionable drawer messages; Send blocked.
 **Tier**: T2 / T3 / H6′. **Tests**: TC-F16-001..004.
 
 ### UJ-028: Dissemination drawer — WIS2 publish (F17 / #2)
 
-**Actor**: Authenticated user (test: staging wis2box; live: BYOC node)  
+**Actor**: Authenticated user (test: staging wis2box; live: BYOC node)
 **Goal**: Publish IWXXM to WIS2 (MQTT notify + HTTP dataset).
 
 **Steps**:
@@ -835,7 +868,7 @@ when FE ships. **Tier: T0 / T2 / H4–H5**.
 
 ### UJ-029: Dissemination drawer — EDIS → RTH Washington (F18 / #6)
 
-**Actor**: Authenticated user with BYOC gateway credentials  
+**Actor**: Authenticated user with BYOC gateway credentials
 **Goal**: Submit EDIS-compliant ASCII + WMO headers to RTH Washington.
 
 **Steps**:
@@ -848,10 +881,10 @@ when FE ships. **Tier: T0 / T2 / H4–H5**.
 
 ### UJ-030: Dissemination drawer — AMHS / SWIM / AFS (F19)
 
-**Actor**: Authenticated user  
+**Actor**: Authenticated user
 **Goal**: Send via AMHS, SWIM, or AFS adapter using BYOC params in the same drawer.
 
-**Steps**: Select adapter → paste BYOC connection params → preflight → send (SSRF/allowlist).  
+**Steps**: Select adapter → paste BYOC connection params → preflight → send (SSRF/allowlist).
 **Tier**: T2 / T3. **Tests**: TC-F19-001..003.
 
 ---
@@ -883,3 +916,5 @@ live smoke (T7.4) when scheduled.
   (F15 / #732; SPECI adjacency explicit; catalog via `GET /lint-issue-catalog` E11-31)
 - S019 / EV-014 (2026-07-21): UJ-027–030 dissemination drawer (F16–F19; #729/#2/#6)
 - S020 / EV-015 (2026-07-22): UJ-031 TAF + SPECI lint / convert→validate golden (F20; #735/#734)
+- S023 / EV-017 (2026-07-27): UJ-003 superseded; UJ-001/004/018 public + IndexedDB; UJ-033 privacy
+  (F21/F22; #783)

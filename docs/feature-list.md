@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-27 (S021 / EV-016 closed — F7.g on `main` @ `c49f22b`; live H4–H5 → #781)
+> **Last updated**: 2026-07-27 (S023 / EV-017 — F21/F22 public app + privacy; #783)
 
 ## Summary
 
@@ -12,9 +12,9 @@
 | F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate` |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
-| F5 | User METAR work history | Planned | Product | docs/context/metar-work-history.md, S004 |
+| F5 | User METAR work history | Planned | Product | S023 / EV-017 → **IndexedDB** (was Supabase JWT); #783 |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011 / EV-008; F7.g #780 merged #782 (live H4–H5 → #781) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011 / EV-008; F7.g #780; **F7.h** IndexedDB (#783) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018/019; `apps/worker` |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
@@ -28,10 +28,12 @@
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; mock-BYOC close (Q15 waive) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; staging stubs; live optional |
 | F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778 |
+| F21 | Public unauthenticated operator app | Planned | Product | S023 / EV-017; #783 |
+| F22 | Privacy preference center (Solution A + GPC) | Planned | Product | S023 / EV-017; #783 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
-| M4 | Auth merged into backend API | Planned | Platform | REQ-004 |
+| M4 | Auth merged into backend API | Deprecated (operator) | Platform | S023 / EV-017; #783 — operator Auth removed; F8 machine auth remains |
 | M5 | Workspace tooling (uv + pnpm + Makefile) | Planned | Platform | REQ-005 |
 | M6 | Vendor upstream sync (wmo-im iwxxm-*) | Planned | Platform | REQ-009 |
 
@@ -91,33 +93,23 @@
 
 ### F5: User METAR Work History
 
-- **What it does**: Persists per-user METAR converter work in Supabase Postgres — status lifecycle
-  **Draft → WIP → Finished** plus **Failed** for convert errors; resumable on login; browseable
-  from converter sidebar and **My METARs** page.
-- **Inputs**: Manual TAC textarea, queued `.tac`/`.txt` files, conversion params; JWT on all API calls.
-- **Outputs**: Session rows with full TAC, IWXXM (when converted), errors/issues JSON, optional
-  `kv_upload_key` when sent to operational database.
-- **Status rules**:
-  | Status | Meaning | Transition |
-  |--------|---------|------------|
-  | Draft | Saved input; not successfully converted | Auto-save (3s debounce); multiple Drafts allowed |
-  | WIP | Convert succeeded; not sent to operational DB | At most **one** WIP per user |
-  | Finished | Successfully sent via Convert&Send or Upload to Database | Stores KV upload reference |
-  | Failed | Convert failed or partial failure | Treated like Draft for multi-session rules; stays Failed until user edits and re-converts |
-- **UI**: Compact recent-history panel on converter (5 recent); **New METAR** button for fresh Draft;
-  full **My METARs** page with status + date filters; Finished sessions open **read-only**; 30-day trash
-  for soft-deleted sessions. **Admin page** for cross-user browse is **removed** by F7 / #697
-  (S011 / EV-008) — operators use BYO credentials; no shared multi-tenant admin UI.
-- **Retention**: Auto-purge **Draft** rows older than 30 days (Supabase pg_cron); WIP/Finished/Failed kept until user soft-deletes.
-- **F6 non-goal (historical)**: F6 v1 did not extend F5 to non-METAR. **S011 / R2′** unifies
-  persistence under F7 `tac_work_sessions` (see F7); F5 UI (My METARs) becomes a METAR/SPECI
-  filter on the unified table after migration.
-- **Limitations**: Persistence requires login (guests may convert without save; login auto-creates Draft
-  from in-browser content); no append-only status audit trail in v1; WIP stays WIP when input edited
-  before re-convert; Finished sessions disable convert/send (use **New METAR**); send failure keeps
-  **WIP**; last-write-wins on multi-tab auto-save; no backfill from existing KV uploads; backend REST
-  only (no direct browser Postgres writes).
-- **Source**: GitHub #555 follow-on, requirements interview 2026-06-23 (F5 delta)
+- **Status**: **Planned** — **storage model superseded** by S023 / EV-017 / [#783](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/783).
+- **What it does (EV-017)**: Persists METAR/SPECI converter work **in the browser (IndexedDB)** —
+  status lifecycle **Draft → WIP → Finished** plus **Failed**; resumable on same device without
+  login; browseable from converter sidebar and **My METARs**. Client-generated UUID per work item.
+  **Export workspace** / **Import workspace** (JSON) for backup/move. No cross-device sync in v1.
+- **Historical (pre-EV-017)**: Per-user Supabase Postgres via JWT + `tac_work_sessions` (unified
+  under F7 / ADR-020). That server model is **retired for the public product path**.
+- **Inputs**: Manual TAC textarea, queued files, conversion params — **no JWT**.
+- **Outputs**: Local session records (TAC, IWXXM, errors/issues, timestamps, status). Dissemination
+  send refs may be stored locally only; never upload history to public APIs.
+- **UI**: Compact recent-history panel (5 recent); **New METAR**; My METARs with status + date
+  filters; soft-delete trash (local). Admin cross-user browse remains removed (#697).
+- **Legacy server rows**: No public API access. Archive/delete after ~**30-day** window post-cutover
+  (optional one-time export if prod data exists). Do not mix IndexedDB IDs with old `user_id` rows.
+- **Limitations**: Device-local only; clearing site data loses history unless exported; multi-tab
+  last-write-wins locally; no RLS/server ownership.
+- **Source**: #555 / S004; unified under F7 (S011); **IndexedDB amend** S023 / EV-017 / #783
 
 ### F6: General TAC→IWXXM Converter (`tac2iwxxm`)
 
@@ -215,10 +207,11 @@
   | F7.e | F7 / R2′ | Unified `tac_work_sessions` + migrate F5; My METARs filter |
   | F7.f | — | Verify & deploy (08–13) |
   | F7.g | #780 | Pre-loaded golden examples (convert + validate) — S021 / EV-016 |
+  | F7.h | #783 | IndexedDB local sessions (all products); drop JWT session APIs — S023 / EV-017 |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
-  `validate_output` / `validation_level` (ADR-023); JWT; editor cursor and character spans
-  for highlight/hover.
+  `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
+  for highlight/hover. **No operator JWT** after F21 (S023).
 - **Outputs**: Ordered decode segments (`start`/`end` + explanation); span-aware lint/validate
   issues; best-effort IWXXM + failed-span markers on soft-preview; F7 session rows for seven
   products; optional in-band XSD/Schematron when Strict Validation is on (hard Convert).
@@ -266,9 +259,13 @@
   | G3 | **No product migration** of shared-project users/data; clean BYO cut (point env at own project) |
   | G4 | VAA/TCA decode spans: **best-effort + explicit residuals** in v1 (full field offsets not required) |
   | R2′ | **Override R2**: unified `tac_work_sessions` + migrate F5 rows (Spec Batch 2 A / 2026-07-13) |
+  | R2″ | **Override R2′ storage**: browser IndexedDB (S023 / EV-017 / #783); server session table retired from public product |
+- **G1 amend (EV-017)**: Retire `DISABLE_AUTH` dual path when operator Auth is removed (F21) —
+  public routes are the only operator path; F8 keeps separate machine credentials.
 - **Source**: S011 Phase 0 R1–R6; Feature List Batches 1–2 (2026-07-13);
   [Context: f7-operator-ui](context/f7-operator-ui.md); issues #694/#702/#665/#666/#697;
-  [Context: golden-examples-ui](context/golden-examples-ui.md); #780 (S021 / EV-016)
+  [Context: golden-examples-ui](context/golden-examples-ui.md); #780 (S021 / EV-016);
+  [Context: public-app-privacy](context/public-app-privacy.md); #783 (S023 / EV-017)
 
 ### F8: Near-Realtime TAC Ingest → IWXXM Gate
 
@@ -580,6 +577,44 @@
 - **Status note**: F12 remains **Implemented**; this cycle expands TAF/**SPECI** rules through
   the ADR-028 registry and accept/negative packs to full-depth checklist targets for both products.
 
+### F21: Public Unauthenticated Operator App — S023 / EV-017
+
+- **Status**: **Planned** (S023 / EV-017 / [#783](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/783))
+- **What it does**: Makes the operator product **public** — no login/signup/logout/password-reset
+  UX; no required Bearer JWT for convert, validate, lint, decode, preview, or dissemination-drawer
+  flows. HTTP APIs are **stateless** with **baseline abuse controls** (per-IP + global rate limits,
+  request/batch size limits, conversion timeouts/concurrency, content validation, generic errors).
+  Dissemination keeps SSRF controls + destination allowlists; BYOC credentials memory-only
+  (ADR-021/029). Retire operator `/auth/*` and `DISABLE_AUTH` dual path. **F8** worker
+  service-role remains private (not part of the public router).
+- **Sequence**: Ship IndexedDB F5/F7 (F7.h) **before** tearing down JWT session ownership.
+- **Acceptance**:
+  1. Unauthenticated user completes convert → validate → download/send without login
+  2. No operator-facing `/auth/login` required in production
+  3. Public `/api/v1/work-sessions*` removed or return gone; no access to legacy Supabase rows
+  4. Abuse-control tests green; dissemination allowlist/SSRF unchanged in spirit
+  5. Env/docs no longer require operator Supabase Auth for the public product path
+  6. E2E: UJ-003 superseded; UJ-001/004/018 and H3–H6 updated for public path
+- **Out of scope**: Legal DPIA; removing F8 credentials; admin UX; optional accounts; anonymous
+  server sessions; CMP/analytics
+- **Source**: #783; E17-4..E17-10; [Context: public-app-privacy](context/public-app-privacy.md)
+
+### F22: Privacy Preference Center — S023 / EV-017
+
+- **Status**: **Planned** (S023 / EV-017 / #783)
+- **What it does**: **Solution A** (no non-essential tracking). Inventory cookies/`localStorage`/
+  `sessionStorage`/IndexedDB/CDN. Footer **Privacy settings** + short first-visit notice.
+  One global preference schema (versioned); `necessary` always on; preferences/analytics/marketing
+  default **false** and only shown if used. Honor **GPC**. Disclose IndexedDB work history.
+  No CMP. Do not imply sale/share if the product does not sell personal information — still honor GPC.
+- **Acceptance**:
+  1. Privacy settings reachable from footer; preferences persist and are withdrawable
+  2. Non-essential scripts (if any later) blocked until allowed — v1 has none
+  3. GPC detection forces sale/sharing opt-out flags when applicable
+  4. Privacy/Cookie policy links with jurisdiction-aware language (engineering copy; counsel review OOS)
+  5. UJ-033 + TC-F22-* cover notice + settings + GPC
+- **Source**: #783; E17-7/E17-9; ICO / CPPA baselines (engineering only)
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout
@@ -616,15 +651,14 @@
 - **Historical**: Moved GIFTs to `packages/gifts/`; REQ-014 manual upstream merges.
 - **Source**: REQ-003; ADR-014
 
-### M4: Auth Merged Into Backend
+### M4: Auth Merged Into Backend — Deprecated (operator)
 
-- **What it does**: Collapses auth microservice into backend app using `packages/auth` library.
-- **S003 security delta (2026-06-23)**: Publishable/Secret keys, runtime `config.json`, env sync
-  (Render ↔ Supabase ↔ local). ADR-010.
-- **S011 / F7.a (#697)**: Remove `/admin/*` routes and admin role UX; auth surface shrinks to
-  operator/user JWT for convert, validation, lint, decode, preview, and F5/F7 sessions. BYO
-  Supabase + Postgres credentials via deploy env (no shared multi-tenant admin assumption).
-- **Source**: REQ-004, REQ-009; S011 / EV-008
+- **Status**: **Deprecated for operator Auth** (S023 / EV-017 / #783). Historical: collapsed auth
+  microservice into backend via `packages/auth` (REQ-004); S003 key split (ADR-010); S011 removed
+  `/admin/*` (#697).
+- **EV-017**: Operator login/JWT surface removed (F21). F8 / internal service-role credentials
+  remain. Fate of `packages/auth` code (delete vs narrow helpers) decided in ADR this cycle.
+- **Source**: REQ-004, REQ-009; S011 / EV-008; **S023 / EV-017**
 
 ### M5: Workspace Tooling
 
@@ -666,6 +700,8 @@
 | F18 | Yes (EDIS sink) | Yes (EDIS submit) | Yes | Yes (API; BYOC SMTP) |
 | F19 | Yes (AMHS/SWIM/AFS sinks) | Yes (adapter APIs) | Yes | Yes (API) |
 | F20 | Yes (TAF/SPECI workbench smoke) | Yes (`lint-tac` / convert `taf`/`speci`) | Yes (goldens + matrix) | Yes if API/FE contract changes |
+| F21 | Yes (no login) | Yes (public + rate limits) | Yes (abuse tests) | Yes (API + static; Auth secrets optional) |
+| F22 | Yes (privacy settings) | — | Yes | Yes (static) |
 | M1–M6 | — | — | Yes | Yes |
 
 | F6 capability | Library | HTTP API | Web UI | CI metrics |
@@ -736,6 +772,16 @@
 - Pasting Supabase **Auth** keys in the product UI (auth stays deploy-time BYO).
 - Storing destination secrets on `tac_work_sessions` or in logs (Q19=A / Q11).
 - Arbitrary SQL admin console / free-form DDL beyond the versioned writer-contract path.
+
+## Non-Goals (S023 / EV-017 — public app + privacy)
+
+- Formal legal advice / DPIA (engineering supports counsel review).
+- Removing F8 worker **service-role** credentials or Render↔Supabase machine auth.
+- Reintroducing admin role UX (#697).
+- Optional user accounts or anonymous server sessions in v1.
+- Cross-device work-history sync.
+- Full CMP / analytics / marketing tags (Solution B/C) unless a later evolve cycle adds them.
+- Per-US-state separate privacy UI variants (one global strict preference center).
 
 ## Planned Features (Post-Migration)
 

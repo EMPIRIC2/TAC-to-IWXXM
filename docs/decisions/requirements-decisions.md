@@ -251,3 +251,22 @@
 | EV-016/F7-R6 | Docs | feature-list + user-journeys + test-plan + light spec | confirmed |
 | EV-016/F7-R7 | Non-goals | No api-contract / config / deploy env changes | confirmed |
 
+## EV-017 / F21+F22 — Public app + privacy (#783) (2026-07-27)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-017/F21-R1 | Auth | Public operator app; no login/JWT for convert/validate/lint/decode/preview/dissemination | confirmed |
+| EV-017/F21-R2 | History | IndexedDB F5/F7; export/import; no cross-device sync v1 | confirmed |
+| EV-017/F21-R3 | Legacy DB | No public API to old rows; ~30-day archive then delete | confirmed |
+| EV-017/F21-R4 | Abuse | Baseline rate/size/timeouts this cycle; keep SSRF/allowlist | confirmed |
+| EV-017/F21-R5 | Sequence | Local history before auth teardown | confirmed |
+| EV-017/F21-R6 | F8 | Service-role remains private / out of public router | confirmed |
+| EV-017/F22-R1 | Tracking | Solution A — no non-essential analytics/marketing | confirmed |
+| EV-017/F22-R2 | UI | Footer Privacy settings + first-visit notice + GPC; no CMP | confirmed |
+| EV-017/F22-R3 | Schema | Versioned PrivacyPreferences; necessary always on; others default false | confirmed |
+| EV-017/M4-R1 | M4 | Deprecated for operator Auth; fate of packages/auth in ADR | confirmed |
+| EV-017/UJ-R1 | Journeys | UJ-003 superseded; UJ-033 added; UJ-001/004/018 public+IndexedDB | confirmed |
+| EV-017/API-R1 | Contract | `/auth/*` + work-sessions HTTP removed; convert public | confirmed |
+| EV-017/manifest | Docs | feature-list, spec, journeys, test-plan, api-contract | confirmed |
+| EV-017/UI-preview | Preview | Deferred to 11-verify-impl | confirmed |
+

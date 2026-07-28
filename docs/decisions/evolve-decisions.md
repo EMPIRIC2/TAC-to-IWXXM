@@ -3,14 +3,78 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-017 — Public app + local history + privacy (#783) (S023)
+
+**Session**: S023-public-app-privacy
+**Features**: **F21**, **F22**; deepen **F5** / **F7**; deprecate operator **M4**
+**Issues**: [#783](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/783)
+**Started**: 2026-07-27
+**Completed**: —
+**Branch**: `evolve/EV-017-public-app-privacy`
+**Status**: **in_progress** — Phase A (01-requirements)
+
+### Scope (Batch 1 — session open 2026-07-27)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E17-1 | decision | Open session? | **A** — `S023-public-app-privacy` → 16-evolve / EV-017 |
+| E17-2 | decision | Architecture baseline? | **B** — adopt recommended architecture **with tweaks** |
+| E17-3 | decision | Routing preset? | **A** — **Standard** (`00→16→01→02→04→07→08→09→10→11→12→13`; skip 03/05/06) |
+
+### Scope (Batch 2 — tweaks — locked 2026-07-27)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E17-4 | decision | Feature IDs? | **A** — **F21** public unauthenticated app + **F22** privacy preference center; deepen **F5/F7** → IndexedDB; deprecate operator **M4** |
+| E17-5 | decision | Legacy Supabase sessions? | **A** — no public API to old rows; archive/delete after **~30-day** window; optional one-time export if prod data exists |
+| E17-6 | decision | Abuse controls? | **A** — ship baseline now (per-IP + global rate, body/batch size, timeouts; keep SSRF/allowlist) |
+| E17-7 | decision | Privacy UI? | **A** — Solution A: footer Privacy settings + short first-visit notice; GPC; no CMP; categories only for tech in use |
+| E17-8 | decision | Auth model? | **1** — public + local IndexedDB history (not anonymous server sessions / optional accounts) |
+| E17-9 | decision | Tracking? | **Solution A** — no non-essential analytics/marketing |
+| E17-10 | decision | Sequence? | Local history replacement **before** JWT / `/auth/*` teardown |
+| E17-11 | decision | UI preview (Phase 0) | Deferred to **11-verify-impl** (AskQuestion unavailable; default) |
+
+### Scope summary (approved)
+
+Public/stateless operator convert→validate→download/send without login. F5/F7 work
+history in browser IndexedDB (client UUID; export/import JSON; no cross-device sync v1).
+No public access to legacy `tac_work_sessions` / per-user rows; ~30-day archive then
+drop. Public APIs with baseline abuse controls; F8 service-role remains private.
+Privacy: Solution A + one global preference center + GPC. Retire operator Auth UX and
+`DISABLE_AUTH` dual path. F8 machine auth unchanged. Dissemination BYOC stays memory-only
+(ADR-021/029).
+
+### Deliverable sequence (milestones — for 04-tech-plan)
+
+1. ADR: public app + local-only history
+2. Storage/tracker inventory
+3. IndexedDB F5/F7 + export/import (before auth strip)
+4. Public API abuse controls
+5. Frontend auth removal
+6. Backend JWT / `/auth/*` teardown
+7. Privacy preference center + GPC
+8. Docs, env matrix, E2E, secret cleanup
+
+### Fn allocation
+
+| Fn | Title | Role |
+|----|-------|------|
+| **F21** | Public unauthenticated operator app | Strip login/JWT gates; public convert/validate/lint/decode/preview/dissemination-drawer; abuse controls; retire operator `/auth/*` |
+| **F22** | Privacy preference center | Inventory disclosure; settings + notice; GPC; Solution A schema |
+| **F5** (deepen) | Work history → IndexedDB | METAR/SPECI local history; no server ownership |
+| **F7** (deepen) | Multi-product sessions → IndexedDB | Unified local sessions; slice **F7.h** |
+| **M4** | Auth merged into backend | **Deprecated** for operator Auth (library may remain only if F8/internal still needs helpers — decide in ADR) |
+
+---
+
 ## Cycle EV-016 — Workbench golden examples (#780) (S021)
 
-**Session**: S021-golden-examples-ui  
-**Features**: deepen **F7** only (no new Fn)  
-**Issues**: [#780](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/780)  
-**Started**: 2026-07-22  
-**Completed**: —  
-**Branch**: `evolve/EV-016-golden-examples-ui`  
+**Session**: S021-golden-examples-ui
+**Features**: deepen **F7** only (no new Fn)
+**Issues**: [#780](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/780)
+**Started**: 2026-07-22
+**Completed**: —
+**Branch**: `evolve/EV-016-golden-examples-ui`
 **Status**: **in_progress** — 11 approved (E16-19); minor PR → 13-deploy-smoke
 
 ### Scope (Batch 1 — locked 2026-07-22)
@@ -71,8 +135,8 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 | D-S021-EV016-13-waive-live-h4h5 | User option **3** — waive live H4–H5 / UJ-032 goldens UI; defer to [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781) |
 | D-S021-EV016-phase4-close | Complete 13 as waived; mark EV-016 completed; close S021; F7 stays Planned |
 
-**Completed**: 2026-07-27  
-**Branch**: `evolve/EV-016-golden-examples-ui` → PR [#782](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/782) @ `c49f22b`  
+**Completed**: 2026-07-27
+**Branch**: `evolve/EV-016-golden-examples-ui` → PR [#782](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/782) @ `c49f22b`
 **Status**: **completed** — #780 closed; live FE smoke owned by #781
 
 ### Tech plan artifacts
@@ -88,12 +152,12 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 
 ## Cycle EV-015 — F15 sequel: TAF + SPECI quality (#735 / #734) (S020)
 
-**Session**: S020-aerodrome-quality  
-**Features**: **F20** (new) + deepen **F6.b / F6.c** + **F12**  
-**Issues**: [#735](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/735), [#734](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/734)  
-**Started**: 2026-07-22  
-**Completed**: 2026-07-22 (`D-S020-EV015-phase4-close`)  
-**Branch**: `evolve/EV-015-aerodrome-quality` → PR [#778](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/778) @ `eae8bdc`  
+**Session**: S020-aerodrome-quality
+**Features**: **F20** (new) + deepen **F6.b / F6.c** + **F12**
+**Issues**: [#735](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/735), [#734](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/734)
+**Started**: 2026-07-22
+**Completed**: 2026-07-22 (`D-S020-EV015-phase4-close`)
+**Branch**: `evolve/EV-015-aerodrome-quality` → PR [#778](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/778) @ `eae8bdc`
 **Status**: **completed** — F20 Done; #735/#734 closed; Render live `…-eae8bdc`
 
 ### Phase 4 close (`D-S020-EV015-phase4-close`)
@@ -127,7 +191,7 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 
 ### Routing (`D-S020-EV015-route-1`)
 
-**Required:** 00 → 16 → 01 → 02 → 04 → 07 → 08 → 09 → 10 → 11 → 13  
+**Required:** 00 → 16 → 01 → 02 → 04 → 07 → 08 → 09 → 10 → 11 → 13
 **Skipped:** 03, 05, 06, 12 (unless later needed)
 
 ### Stage log
@@ -154,11 +218,11 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 
 ## Cycle EV-014 — Dissemination epic (#729 / #2 / #6) (S019)
 
-**Session**: S019-dissemination-upload  
-**Features**: **F16–F19 Planned** (Phase 0 approved Q24=A 2026-07-21)  
-**Issues**: [#729](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/729), [#2](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/2), [#6](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/6)  
-**Started**: 2026-07-20  
-**Branch**: `main` @ `3c9ee81` (#753 MERGED); build branches `cursor/*-b45b` off main  
+**Session**: S019-dissemination-upload
+**Features**: **F16–F19 Planned** (Phase 0 approved Q24=A 2026-07-21)
+**Issues**: [#729](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/729), [#2](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/2), [#6](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/6)
+**Started**: 2026-07-20
+**Branch**: `main` @ `3c9ee81` (#753 MERGED); build branches `cursor/*-b45b` off main
 **Status**: Phase B **in progress** — **05-verify-tech PASS** (D-S019-EV014-Q35A-05); next **06-tech-tooling**
 
 ### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked (**amended Batch 5**)
@@ -348,12 +412,12 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 ### Phase D (08–13 bookkeeping) + checkpoint (D-S019-EV014-Q39A-phase-d)
 
-- 08 = T6.4 `verification-report.md` PASS  
-- 09 = `qa-report.md` PASS (advisories: live BYOC / Render allowlist / H3)  
-- 10 = `e2e-report.md` PASS (UJ-027–030 + mock BYOC)  
-- 11 = `verify-impl.md` PASS (`D-S019-EV014-Q40A-11`)  
-- 12 = T6.5 `deploy-checklist.md` PASS  
-- 13 = T6.6 `deploy-smoke.md` COMPLETE (mock waive)  
+- 08 = T6.4 `verification-report.md` PASS
+- 09 = `qa-report.md` PASS (advisories: live BYOC / Render allowlist / H3)
+- 10 = `e2e-report.md` PASS (UJ-027–030 + mock BYOC)
+- 11 = `verify-impl.md` PASS (`D-S019-EV014-Q40A-11`)
+- 12 = T6.5 `deploy-checklist.md` PASS
+- 13 = T6.6 `deploy-smoke.md` COMPLETE (mock waive)
 - Phase D Assumed PASS (cloud AQ waived).
 - Report: `docs/sessions/S019-dissemination-upload/reports/phase-d-checkpoint.md`
 
@@ -380,11 +444,11 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 ## Cycle EV-013 — Handle METAR remarks (#667) (S018)
 
-**Session**: S018-metar-remarks-667  
-**Features**: F6 (deepen)  
-**Issues**: [#667](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/667)  
-**Started**: 2026-07-20  
-**Completed**: 2026-07-20 (D-S018-EV013-Q0A-close-waive)  
+**Session**: S018-metar-remarks-667
+**Features**: F6 (deepen)
+**Issues**: [#667](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/667)
+**Started**: 2026-07-20
+**Completed**: 2026-07-20 (D-S018-EV013-Q0A-close-waive)
 **Deploy**: #750 live; 13-deploy-smoke `pass_with_advisories`
 
 ### Close
@@ -397,11 +461,11 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 ## Cycle EV-012 — Validate Manual TAC Input modes (#730) (S016)
 
-**Session**: S016-manual-tac-input-modes  
-**Features**: F7 (validation deepen only; status stays Planned)  
-**Issues**: [#730](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/730)  
-**Started**: 2026-07-20  
-**Branch**: `evolve/EV-012-manual-tac-input-modes`  
+**Session**: S016-manual-tac-input-modes
+**Features**: F7 (validation deepen only; status stays Planned)
+**Issues**: [#730](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/730)
+**Started**: 2026-07-20
+**Branch**: `evolve/EV-012-manual-tac-input-modes`
 **Completed**: 2026-07-20 (D-S016-EV012-phase4-close-1)
 
 ### Scope (Phase 0 locked 2026-07-20)
@@ -443,12 +507,12 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 ## Cycle EV-011 — METAR lint registry + #732 quality (S015)
 
-**Session**: S015-metar-lint-quality  
-**Features**: F15 (new) + deepen F6/F12  
-**Issues**: [#732](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/732)  
-**Started**: 2026-07-19  
-**Branch**: `evolve/EV-011-metar-lint-quality`  
-**Completed**: 2026-07-20 (D-S015-EV011-phase4-close-1)  
+**Session**: S015-metar-lint-quality
+**Features**: F15 (new) + deepen F6/F12
+**Issues**: [#732](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/732)
+**Started**: 2026-07-19
+**Branch**: `evolve/EV-011-metar-lint-quality`
+**Completed**: 2026-07-20 (D-S015-EV011-phase4-close-1)
 **Merge**: PR [#742](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/742) → `b405a96`; deploy-smoke PR [#743](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/743)
 
 ### Close
@@ -536,10 +600,10 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 ## Cycle EV-010 — Package publish + validation stack (S014)
 
-**Session**: S014-package-publish-validation  
-**Features**: F11–F14 (proposed — pending Phase 1 approval)  
-**Issues**: #703, #699, #698, #693  
-**Started**: 2026-07-18  
+**Session**: S014-package-publish-validation
+**Features**: F11–F14 (proposed — pending Phase 1 approval)
+**Issues**: #703, #699, #698, #693
+**Started**: 2026-07-18
 **Branch**: `evolve/EV-010-package-publish-validation`
 
 ### Scope (approved Phase 0–1)
@@ -625,9 +689,9 @@ Also: F11 layer cost matrix / benches as gate before deepening Rust paths.
 
 ## Cycle EV-009 — Live decode translations + preview UX (S013)
 
-**Session**: S013-live-decode-preview-ux  
+**Session**: S013-live-decode-preview-ux
 **Features**: F9 (value-aware live decode + plain-language summary), F10 (workbench preview
-clarity)  
+clarity)
 **Started**: 2026-07-16
 
 ### Scope (approved Phase 0)
@@ -679,9 +743,9 @@ validation semantics or Schematron rules; F5 history surfaces.
 
 ## Cycle EV-008 — F7 multi-product operator UI (S011)
 
-**Session**: S011-f7-operator-ui  
-**Features**: F7 (primary); F5/F6/M4 touchpoints  
-**Issues**: #694, #702, #665, #666, #697 (#5 parent)  
+**Session**: S011-f7-operator-ui
+**Features**: F7 (primary); F5/F6/M4 touchpoints
+**Issues**: #694, #702, #665, #666, #697 (#5 parent)
 **Started**: 2026-07-13
 
 ### Scope (approved Phase 0)
@@ -708,9 +772,9 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-001 — Convert & Convert&Send UI (S001)
 
-**GitHub**: [#656](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/656)  
-**Session**: S001-convert-send-buttons  
-**Feature**: F1 (conversion UI + database send)  
+**GitHub**: [#656](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/656)
+**Session**: S001-convert-send-buttons
+**Feature**: F1 (conversion UI + database send)
 **Approved**: 2026-06-22
 
 ### Scope
@@ -745,9 +809,9 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-002 — CI consolidation (M5)
 
-**Session**: S002-ci-consolidation (pending open)  
-**Feature**: M5 (Workspace tooling)  
-**Approved**: 2026-06-22  
+**Session**: S002-ci-consolidation (pending open)
+**Feature**: M5 (Workspace tooling)
+**Approved**: 2026-06-22
 **Cycle type**: general
 
 ### Scope
@@ -802,10 +866,10 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-003 — Issue #594 COR + input traceability (S002)
 
-**GitHub**: [#594](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/594)  
-**Session**: S002-issue-594-feedback  
-**Feature**: F1 (METAR → IWXXM conversion + UI traceability)  
-**Approved**: 2026-06-22  
+**GitHub**: [#594](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/594)
+**Session**: S002-issue-594-feedback
+**Feature**: F1 (METAR → IWXXM conversion + UI traceability)
+**Approved**: 2026-06-22
 **Cycle type**: feature (delta on F1)
 
 ### Scope
@@ -842,10 +906,10 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-004 — #555 UX + F5 work history + S003 Supabase (S004)
 
-**GitHub**: [#555](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/555)  
-**Session**: S004-issue-555-feedback  
-**Features**: F1 (converter UX), F5 (user METAR work history), S003 (Supabase keys/runtime config)  
-**Approved**: 2026-06-23  
+**GitHub**: [#555](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/555)
+**Session**: S004-issue-555-feedback
+**Features**: F1 (converter UX), F5 (user METAR work history), S003 (Supabase keys/runtime config)
+**Approved**: 2026-06-23
 **Cycle type**: feature (multi-Fn delta)
 
 ### Scope
@@ -905,10 +969,10 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-005 — Custom output filename for manual METAR input (S006)
 
-**GitHub**: [#664](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/664)  
-**Session**: S006-issue-664-output-filename  
-**Features**: F1 (manual-input custom output filename UX) + F5 touch (persist the name on the work session)  
-**Approved**: 2026-06-25  
+**GitHub**: [#664](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/664)
+**Session**: S006-issue-664-output-filename
+**Features**: F1 (manual-input custom output filename UX) + F5 touch (persist the name on the work session)
+**Approved**: 2026-06-25
 **Cycle type**: feature (delta on F1; light F5 persistence touch)
 
 ### Scope
@@ -961,8 +1025,8 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-006 — S008 F6 / validate packages / F8
 
-**Session**: S008-general-tac-iwxxm-converter  
-**Features**: F6, F2→`iwxxm-validate`, F8  
+**Session**: S008-general-tac-iwxxm-converter
+**Features**: F6, F2→`iwxxm-validate`, F8
 **Approved build**: 2026-07-12 (B→C)
 
 ### Decisions (build)
@@ -973,10 +1037,10 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ## Cycle EV-007 — Issue #655 TAC traceability UX (S010)
 
-**GitHub**: [#655](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/655)  
-**Session**: S010-issue-655-tac-traceability  
-**Feature**: F6 (general converter UI — input traceability delta)  
-**Approved**: 2026-07-12  
+**GitHub**: [#655](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/655)
+**Session**: S010-issue-655-tac-traceability
+**Feature**: F6 (general converter UI — input traceability delta)
+**Approved**: 2026-07-12
 **Cycle type**: feature (UI-only delta on F6)
 
 ### Scope
