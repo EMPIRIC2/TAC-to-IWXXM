@@ -6,6 +6,11 @@ User report: after admin login, console shows
 Production repro: POST /api/v1/work-sessions → 502 while GET list → 200.
 Root cause: supabase-py 2.28 insert/update builders have no ``.select()``;
 ``insert(data).select('*').execute()`` raises AttributeError, mapped to 502.
+
+F21 / ADR-031 (S023 / EV-017): server work-sessions API and schemas were removed;
+IndexedDB is the operator store. This regression stays skipped (module-level) so
+ci-prepush ``test-bugs`` can collect; historical bug report remains under
+``docs/bug-reports/``.
 """
 
 from __future__ import annotations
@@ -23,6 +28,12 @@ from fastapi import HTTPException
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 BACKEND_ROOT = REPO_ROOT / "apps" / "backend"
 SERVICE_FILE = BACKEND_ROOT / "src" / "services" / "work_session_service.py"
+
+if not SERVICE_FILE.is_file():
+    pytest.skip(
+        "F21/ADR-031: work_session_service.py removed — BUG-2026-06-24 N/A",
+        allow_module_level=True,
+    )
 
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
