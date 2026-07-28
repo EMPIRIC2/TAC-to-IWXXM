@@ -24,7 +24,6 @@ LEGACY_PATH_FRAGMENTS = (
 
 MONOREPO_PATH_FRAGMENTS = (
     "apps/backend",
-    "packages/auth",
     "packages/tac2iwxxm",
     "apps/frontend",
 )

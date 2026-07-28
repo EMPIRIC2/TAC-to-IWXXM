@@ -1,4 +1,4 @@
-"""TC-M001 workspace import smoke — post gifts cutover."""
+"""TC-M001 workspace import smoke — post gifts cutover + Auth delete (F21)."""
 
 from __future__ import annotations
 
@@ -24,19 +24,19 @@ class TestWorkspaceImportSmoke:
         module = importlib.import_module("tac2iwxxm")
         assert callable(getattr(module, "convert", None))
 
-    def test_auth_workspace_member_importable(self) -> None:
-        module = importlib.import_module("auth.security")
-        assert hasattr(module, "create_access_token")
-        assert hasattr(module, "decode_access_token")
+    def test_auth_package_not_importable(self) -> None:
+        with pytest.raises(ModuleNotFoundError):
+            importlib.import_module("auth.security")
 
     def test_uv_workspace_member_declared_in_root_pyproject(self) -> None:
         content = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
         assert "packages/shared" in content
         assert "packages/tac2iwxxm" in content
         assert "packages/gifts" not in content
+        assert "packages/auth" not in content
         assert "metar-shared" in content
         assert "tac2iwxxm = { workspace = true }" in content
-        assert "metar-auth = { workspace = true }" in content
+        assert "metar-auth" not in content
 
     def test_pnpm_workspace_discovers_shared_package(self) -> None:
         content = (ROOT / "pnpm-workspace.yaml").read_text(encoding="utf-8")

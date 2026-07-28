@@ -5,10 +5,10 @@
 #     $(grep -v '^#' audit/pip-audit-ignore.txt | sed 's/^/--ignore-vuln /')
 #
 # PYSEC-2026-1325 (CVE-2024-23342) — ecdsa 0.19.x Minerva timing attack on P-256.
-# Transitive dep of python-jose (packages/auth, apps/backend). Upstream declares
-# side-channel attacks out of scope for pure-Python code: NO FIX PLANNED.
-# Risk accepted 2026-07-17 (S013/EV-009 QA-001 remediation): our JWT paths use
-# HS256 (HMAC) exclusively (packages/auth/src/security.py JWT_ALGO = "HS256"),
-# and python-jose[cryptography] delegates EC operations to pyca/cryptography —
-# the vulnerable ecdsa.SigningKey.sign_digest() path is never exercised.
+# Transitive dep of python-jose (apps/backend). Upstream declares side-channel
+# attacks out of scope for pure-Python code: NO FIX PLANNED.
+# Risk accepted 2026-07-17 (S013/EV-009 QA-001 remediation): operator JWT Auth
+# removed in F21 (ADR-031); residual python-jose[cryptography] use (if any)
+# delegates EC operations to pyca/cryptography — the vulnerable
+# ecdsa.SigningKey.sign_digest() path is not exercised for public convert.
 PYSEC-2026-1325

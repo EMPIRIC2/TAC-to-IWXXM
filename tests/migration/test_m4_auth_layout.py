@@ -1,4 +1,4 @@
-"""M4 layout checks — migration-plan.md Step 2, spec.md §packages/auth."""
+"""M4 layout checks — packages/auth deleted (F21 / ADR-031 / E17-22)."""
 
 from __future__ import annotations
 
@@ -11,26 +11,21 @@ PACKAGES_AUTH = ROOT / "packages" / "auth"
 
 
 @pytest.mark.migration
-class TestM4AuthPackageLayout:
-    """packages/auth contains the in-repo auth library source tree."""
+class TestM4AuthPackageDeleted:
+    """Operator Auth library is removed from the workspace (EV-017)."""
 
-    def test_packages_auth_directory_exists(self) -> None:
-        assert PACKAGES_AUTH.is_dir(), "packages/auth must exist after T4.2"
-
-    def test_packages_auth_has_security_module(self) -> None:
-        security = PACKAGES_AUTH / "src" / "auth" / "security.py"
-        assert security.is_file(), (
-            "packages/auth/src/auth/security.py required for JWT middleware"
+    def test_packages_auth_directory_absent(self) -> None:
+        assert not PACKAGES_AUTH.exists(), (
+            "packages/auth must be deleted (F21 / ADR-031 / E17-22)"
         )
 
-    def test_packages_auth_has_supabase_proxy(self) -> None:
-        proxy = PACKAGES_AUTH / "src" / "auth" / "supabase_proxy.py"
-        assert proxy.is_file(), (
-            "packages/auth/src/auth/supabase_proxy.py required for TC-M005"
+    def test_root_pyproject_omits_auth_member(self) -> None:
+        content = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        assert "packages/auth" not in content
+        assert "metar-auth" not in content
+
+    def test_backend_pyproject_omits_metar_auth(self) -> None:
+        content = (ROOT / "apps" / "backend" / "pyproject.toml").read_text(
+            encoding="utf-8"
         )
-
-    def test_packages_auth_has_pyproject(self) -> None:
-        assert (PACKAGES_AUTH / "pyproject.toml").is_file()
-
-    def test_packages_auth_has_tests_tree(self) -> None:
-        assert (PACKAGES_AUTH / "tests").is_dir()
+        assert "metar-auth" not in content

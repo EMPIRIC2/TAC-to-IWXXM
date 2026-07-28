@@ -12,12 +12,6 @@ scrape_configs:
       - targets:
           - metar-to-iwxxm-api:10000
 
-  - job_name: metar-auth
-    metrics_path: /metrics
-    static_configs:
-      - targets:
-          - metar-to-iwxxm-auth-v2:8000
-
   - job_name: locust
     metrics_path: /metrics
     static_configs:

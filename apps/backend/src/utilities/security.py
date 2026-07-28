@@ -1,8 +1,8 @@
 """Operator JWT gate retired (F21 / ADR-031 / T5.2).
 
 Public convert / validate / lint / decode / dissemination no longer depend on this
-module. ``verify_supabase_token`` remains as a transitional no-op for routers that
-still declare the dependency (work-sessions) until T5.3 unmounts them.
+module. ``verify_supabase_token`` remains as a transitional no-op for any leftover
+call sites that still declare the dependency.
 
 The ``DISABLE_AUTH`` dual path is removed — there is no JWT enforcement path left
 for the operator API.

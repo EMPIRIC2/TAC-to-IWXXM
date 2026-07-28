@@ -31,6 +31,8 @@ class TestCoverageConfig:
         )
         assert "fail_under = 95" in content
 
-    def test_auth_package_fail_under_98(self) -> None:
-        content = (ROOT / "packages/auth/pyproject.toml").read_text(encoding="utf-8")
-        assert "fail_under = 98" in content
+    def test_auth_package_absent_from_coverage_gates(self) -> None:
+        assert not (ROOT / "packages/auth/pyproject.toml").exists()
+        codecov = (ROOT / ".codecov.yml").read_text(encoding="utf-8")
+        assert "packages/auth" not in codecov
+        assert "flags: [auth]" not in codecov

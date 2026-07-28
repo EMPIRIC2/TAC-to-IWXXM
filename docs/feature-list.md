@@ -625,11 +625,11 @@
 - **Key parameters**:
   | Parameter | Default | Description |
   |-----------|---------|-------------|
-  | `apps/backend` | FastAPI API + merged auth | Single HTTP deployable |
+  | `apps/backend` | FastAPI API (public F21) | Single HTTP deployable |
   | `apps/frontend` | React/Vite UI | Static deployable |
   | `apps/worker` | F8 near-RT ingest poller | Render Background Worker (ADR-018) |
   | `apps/e2e` | Playwright cross-app tests | Dedicated workspace |
-  | `packages/auth` | Supabase middleware library | Imported by backend, not separate service |
+  | `packages/auth` | — | **Deleted** F21 / ADR-031 (E17-22) |
   | `packages/tac2iwxxm` | General TAC→IWXXM (F6) | uv workspace member; MIT |
   | `packages/tac-validate` | TAC lint / business rules | All seven product TAC forms |
   | `packages/iwxxm-validate` | XSD + Schematron (F2) | Consumes vendor schemas |
@@ -657,7 +657,8 @@
   microservice into backend via `packages/auth` (REQ-004); S003 key split (ADR-010); S011 removed
   `/admin/*` (#697).
 - **EV-017**: Operator login/JWT surface removed (F21). F8 / internal service-role credentials
-  remain. Fate of `packages/auth` code (delete vs narrow helpers) decided in ADR this cycle.
+  remain. **`packages/auth` deleted entirely** this cycle (E17-22 / ADR-031); no residual
+  helpers required for F8.
 - **Source**: REQ-004, REQ-009; S011 / EV-008; **S023 / EV-017**
 
 ### M5: Workspace Tooling

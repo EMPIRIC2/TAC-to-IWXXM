@@ -11,24 +11,14 @@ docs/test-plan.md TC-F7-002–005; connectivity-gates H0i.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
-from uuid import UUID, uuid4
+from typing import Any
+from uuid import uuid4
 
 import pytest
-from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 from src.api import app
-from src.routers import work_sessions as ws_router
-from src.schemas.work_session import (
-    WorkSession,
-    WorkSessionCreate,
-    WorkSessionProduct,
-    WorkSessionStatus,
-    WorkSessionUpdate,
-)
 from src.utilities.security import verify_supabase_token
 
 FIXTURES = Path(__file__).resolve().parents[4] / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "product_matrix"
@@ -36,7 +26,6 @@ VALID_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
 BAD_METAR_TAC = "METAR XXXX NOT_A_REAL_REPORT GARBAGE="
 BROWSER_ORIGIN = "http://localhost:18000"
 USER_ID = uuid4()
-NOW = datetime(2026, 7, 14, 22, 0, tzinfo=timezone.utc)
 
 pytestmark = [pytest.mark.integration]
 
@@ -150,72 +139,6 @@ class TestUiSoftPreviewConnection:
             assert isinstance(span["start"], int)
             assert isinstance(span["end"], int)
             _assert_optional_offsets(span)
-
-
-def _session_row(
-    *,
-    product: WorkSessionProduct,
-    status: WorkSessionStatus = WorkSessionStatus.DRAFT,
-    session_id: UUID | None = None,
-    manual_tac: str = "",
-) -> WorkSession:
-    return WorkSession(
-        id=session_id or uuid4(),
-        user_id=USER_ID,
-        product=product,
-        status=status,
-        title=f"{product.value} draft",
-        manual_tac=manual_tac,
-        created_at=NOW,
-        updated_at=NOW,
-    )
-
-
-class _SessionStore:
-    def __init__(self) -> None:
-        self.rows: dict[UUID, WorkSession] = {}
-
-    def list_sessions(self, **kwargs: Any) -> tuple[list[WorkSession], int]:
-        products: Optional[list[WorkSessionProduct]] = kwargs.get("products")
-        items = list(self.rows.values())
-        if products:
-            allowed = {p.value for p in products}
-            items = [r for r in items if r.product.value in allowed]
-        return items, len(items)
-
-    def get_session(self, session_id: UUID) -> WorkSession:
-        row = self.rows.get(session_id)
-        if row is None:
-            raise HTTPException(status_code=404, detail="Work session not found")
-        return row
-
-    def create_session(self, user_id: str, payload: WorkSessionCreate) -> WorkSession:
-        row = _session_row(
-            product=payload.product,
-            status=payload.status or WorkSessionStatus.DRAFT,
-            manual_tac=payload.manual_tac or "",
-        )
-        self.rows[row.id] = row
-        return row
-
-    def update_session(self, session_id: UUID, payload: WorkSessionUpdate) -> WorkSession:
-        row = self.get_session(session_id)
-        data = row.model_dump()
-        if payload.manual_tac is not None:
-            data["manual_tac"] = payload.manual_tac
-        if payload.product is not None:
-            data["product"] = payload.product
-        if payload.status is not None:
-            data["status"] = payload.status
-        updated = WorkSession(**data)
-        self.rows[session_id] = updated
-        return updated
-
-    def soft_delete(self, session_id: UUID) -> WorkSession:
-        return self.get_session(session_id)
-
-    def restore_session(self, session_id: UUID) -> WorkSession:
-        return self.get_session(session_id)
 
 
 class TestUiWorkSessionsConnection:

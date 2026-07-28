@@ -12,11 +12,10 @@ from pathlib import Path, PurePosixPath
 
 # Target monorepo tree + transitional legacy paths during migration.
 APPROVED_COMPONENTS: dict[str, str] = {
-    "apps/backend": "Backend API — conversion, validation, auth, Planned F16–F19 dissemination (M4)",
-    "apps/frontend": "Frontend UI (F1–F19; Planned dissemination drawer UJ-027–030)",
+    "apps/backend": "Backend API — conversion, validation, Planned F16–F19 dissemination (public F21)",
+    "apps/frontend": "Frontend UI (F1–F22; Planned dissemination drawer UJ-027–030)",
     "apps/worker": "F8 near-RT ingest poller — Background Worker (ADR-018; no auto push)",
     "apps/e2e": "E2E workspace — Playwright (T2 / H6′ incl. UJ-027–030)",
-    "packages/auth": "Auth library — Supabase middleware (M4)",
     "packages/tac2iwxxm": "General TAC → IWXXM converter (F6, F14)",
     "packages/tac-validate": "TAC product validation / lint (F12)",
     "packages/iwxxm-validate": "IWXXM XSD + Schematron engine (F2, F13)",
@@ -27,7 +26,7 @@ APPROVED_COMPONENTS: dict[str, str] = {
     "backend": "Legacy backend — migrate to apps/backend (M1)",
     "frontend": "Legacy frontend — migrate to apps/frontend (M1)",
     "GIFTs": "Legacy GIFTs — migrate to packages/gifts (M3)",
-    "auth": "Legacy auth — migrate to packages/auth (M4)",
+    "auth": "Legacy auth — deleted with packages/auth (F21 / ADR-031)",
     "schemas": "Legacy schemas — migrate to vendor/schemas (M2)",
     "data/iwxxm-translation": "Legacy translation data — migrate to vendor/schemas (M2)",
     "tests": "Test suite",
