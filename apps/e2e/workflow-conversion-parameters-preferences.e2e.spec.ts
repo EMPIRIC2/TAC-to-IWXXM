@@ -1,21 +1,14 @@
+/**
+ * Conversion parameters on the public converter (F21 — no Auth).
+ */
 import { expect, test } from '@playwright/test';
-import {
-  ADMIN_EMAIL,
-  ADMIN_PASSWORD,
-  convertManualMetar,
-  loginAndOpenConverter,
-} from './playwright-e2e-helpers';
+import { convertManualMetar, openPublicConverter } from './playwright-e2e-helpers';
 
 test.describe('Workflow: Conversion Parameters And Preferences', () => {
   test('changing parameters before manual conversion produces conversion output', async ({
     page,
   }) => {
-    test.skip(
-      !ADMIN_EMAIL || !ADMIN_PASSWORD,
-      'Requires PLAYWRIGHT_ADMIN_EMAIL and PLAYWRIGHT_ADMIN_PASSWORD',
-    );
-
-    await loginAndOpenConverter(page);
+    await openPublicConverter(page);
 
     await page.getByLabel(/Expand parameters/i).click();
     await page.locator('#param-iwxxm-version').selectOption('2023-1');
@@ -40,12 +33,7 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
   test('preferences save and apply to converter parameter controls', async ({
     page,
   }) => {
-    test.skip(
-      !ADMIN_EMAIL || !ADMIN_PASSWORD,
-      'Requires PLAYWRIGHT_ADMIN_EMAIL and PLAYWRIGHT_ADMIN_PASSWORD',
-    );
-
-    await loginAndOpenConverter(page);
+    await openPublicConverter(page);
 
     await page.getByRole('button', { name: /Open user preferences/i }).click();
     await expect(
@@ -53,16 +41,9 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
     ).toBeVisible();
 
     await page.locator('#iwxxm-version').selectOption('2023-1');
-    await page.locator('#on-error').selectOption('fail');
     await page.getByRole('button', { name: /Save Preferences/i }).click();
-
-    await expect(page.getByText(/Preferences saved successfully!/i)).toBeVisible({
-      timeout: 10000,
-    });
-    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
 
     await page.getByLabel(/Expand parameters/i).click();
     await expect(page.locator('#param-iwxxm-version')).toHaveValue('2023-1');
-    await expect(page.locator('#param-on-error')).toHaveValue('fail');
   });
 });

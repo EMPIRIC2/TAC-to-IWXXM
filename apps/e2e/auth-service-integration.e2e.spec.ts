@@ -1,12 +1,12 @@
+/**
+ * Merged API public-surface integration (F21 — Auth routes gone).
+ */
 import { expect, test } from '@playwright/test';
+import { openPublicConverter, playwrightApiBaseUrl } from './playwright-e2e-helpers';
 
-const API_BASE_URL =
-  process.env.PLAYWRIGHT_API_BASE_URL ??
-  process.env.LIVE_API_URL ??
-  process.env.VITE_API_BASE_URL ??
-  'http://localhost:18001';
+const API_BASE_URL = playwrightApiBaseUrl();
 
-test.describe('Merged API Auth Integration', () => {
+test.describe('Merged API public integration (F21)', () => {
   test('frontend boots without missing auth env errors', async ({ page }) => {
     const consoleErrors: string[] = [];
 
@@ -16,8 +16,7 @@ test.describe('Merged API Auth Integration', () => {
       }
     });
 
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(500);
+    await openPublicConverter(page);
 
     expect(
       consoleErrors.some((message) =>
@@ -40,32 +39,28 @@ test.describe('Merged API Auth Integration', () => {
     expect(body.tac2iwxxm_available).toBe(true);
   });
 
-  test('auth routes are served on the merged API host', async ({ request }) => {
+  test('auth routes return 404 on the API host (TC-F21-auth-gone)', async ({
+    request,
+  }) => {
     const response = await request.post(`${API_BASE_URL}/auth/login`, {
       data: { email: 'missing@example.com', password: 'invalid' },
       timeout: 5000,
     });
 
-    expect([400, 401, 404, 422]).toContain(response.status());
+    expect(response.status()).toBe(404);
   });
 
-  test('app load does not generate 400 auth bootstrap requests', async ({ page }) => {
-    const badRequests: string[] = [];
+  test('app load does not generate auth bootstrap requests', async ({ page }) => {
+    const authRequests: string[] = [];
 
-    page.on('response', async (response) => {
-      if (response.status() !== 400) {
-        return;
-      }
-
-      const url = response.url();
+    page.on('request', (request) => {
+      const url = request.url();
       if (url.includes('/auth/')) {
-        badRequests.push(`${response.request().method()} ${url}`);
+        authRequests.push(`${request.method()} ${url}`);
       }
     });
 
-    await page.goto('/', { waitUntil: 'networkidle' });
-    await page.waitForTimeout(1000);
-
-    expect(badRequests).toEqual([]);
+    await openPublicConverter(page);
+    expect(authRequests).toEqual([]);
   });
 });

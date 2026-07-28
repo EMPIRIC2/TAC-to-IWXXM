@@ -1,32 +1,11 @@
 /**
- * Auth readiness without admin dashboard (S011 / ADR-021).
+ * Auth readiness workflow — **retired F21** (operator Auth removed).
+ * Coverage moved to auth.e2e.spec.ts / public-app-f21-f22.e2e.spec.ts (TC-F21-auth-gone).
  */
-import { expect, test } from '@playwright/test';
-import {
-  E2E_USER_EMAIL,
-  E2E_USER_PASSWORD,
-  loginAsE2EUser,
-} from './playwright-e2e-helpers';
+import { test } from '@playwright/test';
 
 test.describe('Workflow: Auth readiness', () => {
-  test('startup and login reach converter (no admin dashboard)', async ({ page }) => {
-    test.skip(
-      !E2E_USER_EMAIL || !E2E_USER_PASSWORD,
-      'Requires E2E_USER_EMAIL and E2E_USER_PASSWORD (or legacy PLAYWRIGHT_* aliases)',
-    );
-
-    await page.goto('/');
-    await expect(page.getByRole('heading', { name: /METAR Converter/i })).toBeVisible();
-    await expect(page.locator('#email')).toBeVisible();
-    await expect(page.locator('#password')).toBeVisible();
-
-    await loginAsE2EUser(page);
-
-    await expect(page.getByRole('heading', { name: /Admin Dashboard/i })).toHaveCount(
-      0,
-    );
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+  test('startup and login reach converter (no admin dashboard)', async () => {
+    test.skip(true, 'Retired F21 — operator Auth UX removed (TC-F21-auth-gone)');
   });
 });

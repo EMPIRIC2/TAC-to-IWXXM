@@ -6,7 +6,7 @@
  * fulfilled with shapes from apps/frontend/src/utils/api.ts so UI wiring is
  * exercised end-to-end without depending on a live convert engine.
  *
- * Spec: docs/test-plan.md TC-F7-001–005; docs/api-contract.md.
+ * Spec: docs/test-plan.md TC-F7-001–005; docs/api-contract.md; F21 IndexedDB (UJ-018).
  */
 import { expect, test, type Page, type Request } from '@playwright/test';
 import { openConverterForE2e } from './playwright-e2e-helpers';
@@ -109,121 +109,10 @@ async function wireF7ApiStubs(page: Page): Promise<Captured> {
     });
   });
 
+  // F21: work-sessions API is gone — capture any accidental calls (expect zero).
   await page.route('**/api/v1/work-sessions**', async (route) => {
     captured.sessions.push(route.request());
-    const method = route.request().method();
-    const url = route.request().url();
-
-    if (method === 'GET' && !/\/work-sessions\/[^/?]+/.test(url)) {
-      const productFilter = new URL(url).searchParams.get('product');
-      const items =
-        productFilter === 'metar,speci'
-          ? [
-              {
-                id: 'sess-metar',
-                user_id: 'user-1',
-                product: 'metar',
-                status: 'draft',
-                title: 'KJFK',
-                manual_tac: METAR_TAC,
-                pending_files: [],
-                converted_results: [],
-                errors: [],
-                issues: [],
-                conversion_params: {},
-                kv_upload_key: null,
-                deleted_at: null,
-                created_at: '2026-07-14T00:00:00Z',
-                updated_at: '2026-07-14T00:00:00Z',
-              },
-            ]
-          : [
-              {
-                id: 'sess-taf',
-                user_id: 'user-1',
-                product: 'taf',
-                status: 'draft',
-                title: 'TAF',
-                manual_tac: 'TAF KJFK 121730Z 1218/1324 18010KT=',
-                pending_files: [],
-                converted_results: [],
-                errors: [],
-                issues: [],
-                conversion_params: {},
-                kv_upload_key: null,
-                deleted_at: null,
-                created_at: '2026-07-14T00:00:00Z',
-                updated_at: '2026-07-14T00:00:00Z',
-              },
-            ];
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          items,
-          total: items.length,
-          page: 1,
-          limit: 20,
-        }),
-      });
-      return;
-    }
-
-    if (method === 'POST') {
-      await route.fulfill({
-        status: 201,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          id: 'sess-new',
-          user_id: 'user-1',
-          product: 'metar',
-          status: 'draft',
-          title: 'KJFK',
-          manual_tac: METAR_TAC,
-          pending_files: [],
-          converted_results: [],
-          errors: [],
-          issues: [],
-          conversion_params: {},
-          kv_upload_key: null,
-          deleted_at: null,
-          created_at: '2026-07-14T00:00:00Z',
-          updated_at: '2026-07-14T00:00:00Z',
-        }),
-      });
-      return;
-    }
-
-    if (method === 'PATCH') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          id: 'sess-new',
-          user_id: 'user-1',
-          product: 'metar',
-          status: 'draft',
-          title: 'KJFK',
-          manual_tac: METAR_TAC,
-          pending_files: [],
-          converted_results: [],
-          errors: [],
-          issues: [],
-          conversion_params: {},
-          kv_upload_key: null,
-          deleted_at: null,
-          created_at: '2026-07-14T00:00:00Z',
-          updated_at: '2026-07-14T00:00:01Z',
-        }),
-      });
-      return;
-    }
-
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ ok: true }),
-    });
+    await route.fulfill({ status: 404, body: 'not found' });
   });
 
   return captured;
@@ -303,7 +192,7 @@ test.describe('F7 UI↔API connection points', () => {
     });
   });
 
-  test('work-sessions connection posts/patches with product field', async ({
+  test('UJ-018: IndexedDB autosave does not call work-sessions API', async ({
     page,
   }) => {
     const captured = await wireF7ApiStubs(page);
@@ -312,21 +201,9 @@ test.describe('F7 UI↔API connection points', () => {
     const editor = page.getByLabel(/Enter METAR data manually/i);
     await editor.fill(METAR_TAC);
 
-    await expect
-      .poll(
-        () =>
-          captured.sessions.filter((r) => ['POST', 'PATCH'].includes(r.method()))
-            .length,
-        { timeout: 10000 },
-      )
-      .toBeGreaterThan(0);
-
-    const write = captured.sessions.find((r) =>
-      ['POST', 'PATCH'].includes(r.method()),
-    )!;
-    expect(write.url()).toContain('/api/v1/work-sessions');
-    const body = write.postData() ?? '';
-    // JSON body from workSessionApi
-    expect(body).toMatch(/"product"\s*:\s*"(metar|METAR)"/i);
+    await expect(page.getByTestId('autosave-indicator')).toContainText(/saved/i, {
+      timeout: 10_000,
+    });
+    expect(captured.sessions).toEqual([]);
   });
 });

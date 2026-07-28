@@ -1,19 +1,11 @@
 /**
- * Credential preflight guard.
+ * Public-app preflight guard (F21).
  *
- * This file is named "00-preflight" so it sorts before all other spec files
- * and runs first. It verifies that the admin credentials are configured AND
- * actually work against the app.  When credentials are wrong you get one clear
- * failure here instead of 12+ repeated timeout failures scattered across the
- * rest of the suite.
- *
- * If your test run does not need admin credentials (smoke / CI without secrets)
- * run only the credential-free spec files instead:
- *
- *   make test-e2e-playwright-smoke
+ * Runs first (00- prefix). Wakes live API when configured and asserts the
+ * converter shell loads without Auth login.
  */
 import { expect, test } from '@playwright/test';
-import { ADMIN_EMAIL, ADMIN_PASSWORD } from './playwright-e2e-helpers';
+import { openPublicConverter, playwrightApiBaseUrl } from './playwright-e2e-helpers';
 
 const LIVE_API_URL =
   process.env.LIVE_API_URL?.replace(/\/$/, '') ??
@@ -46,32 +38,26 @@ async function wakeLiveApiHealth(): Promise<void> {
   );
 }
 
-test.describe('Preflight: Admin Credential Guard', () => {
-  test('admin credentials are configured and authenticate successfully', async ({
+test.describe('Preflight: Public app readiness (F21)', () => {
+  test('API health is reachable and converter loads without login', async ({
     page,
+    request,
   }) => {
-    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
-      throw new Error(
-        'Preflight failed: PLAYWRIGHT_ADMIN_EMAIL and PLAYWRIGHT_ADMIN_PASSWORD are not set.\n' +
-          'Set them in your shell or .env before running login-dependent tests.\n' +
-          'To skip login tests entirely, run: make test-e2e-playwright-smoke',
-      );
-    }
-
     await wakeLiveApiHealth();
 
-    await page.goto('/');
-    await expect(page.getByRole('heading', { name: /METAR Converter/i })).toBeVisible();
+    const health = await request.get(`${playwrightApiBaseUrl()}/health`, {
+      timeout: 15_000,
+    });
+    expect(
+      health.ok(),
+      `Preflight failed: ${playwrightApiBaseUrl()}/health → HTTP ${health.status()}`,
+    ).toBe(true);
 
-    await page.locator('#email').fill(ADMIN_EMAIL);
-    await page.locator('#password').fill(ADMIN_PASSWORD);
-    await page.getByRole('button', { name: /sign in to account/i }).click();
-
-    await expect(
-      page.getByRole('heading', { name: /Admin Dashboard/i }),
-      `Preflight failed: login with "${ADMIN_EMAIL}" did not reach the Admin Dashboard. ` +
-        'PLAYWRIGHT_ADMIN_EMAIL / PLAYWRIGHT_ADMIN_PASSWORD appear to be invalid. ' +
-        'Fix the credentials before re-running the full suite.',
-    ).toBeVisible({ timeout: 15000 });
+    await openPublicConverter(page);
+    await expect(page.locator('#email')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /sign in to account/i })).toHaveCount(
+      0,
+    );
+    await expect(page.getByTestId('convert-button')).toBeVisible();
   });
 });
