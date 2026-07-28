@@ -7,7 +7,7 @@
 | Stage | Required | Mode | Status | Skip rationale |
 |-------|----------|------|--------|----------------|
 | 00-context | yes | scoped | completed | Session open + `docs/context/public-app-privacy.md` |
-| 16-evolve | yes | orchestrator | in_progress | EV-017 — 12 COMPLETE; next 13-deploy-smoke |
+| 16-evolve | yes | orchestrator | in_progress | EV-017 — 13 COMPLETE; Phase D / close pending |
 | 01-requirements | yes | delta | completed | F21/F22 + F5/F7/M4 deltas — `reports/01-requirements.md` |
 | 02-verify-plan | yes | delta | completed | Gate A 2026-07-27; D-S023-02-C-EV017-A; Phase A passed |
 | 03-plan-tooling | **no** | — | skipped | No new Cursor rules/hooks expected at open; add if ADR needs guardrails |
@@ -20,7 +20,7 @@
 | 10-e2e | yes | full | completed | T0 PASS (8 Playwright + Vitest + F21) — `reports/e2e-report.md` |
 | 11-verify-impl | yes | full | completed | F21/F22 approved; F5/F7.h ack; T3→13; `reports/verify-impl.md` |
 | 12-verify-deploy | yes | full | completed | READY — `reports/deploy-checklist.md`; mitigations+rollback approved |
-| 13-deploy-smoke | yes | full | in_progress | Validate-existing: H0c–H5 PASS; Playwright 5/5; user sign-off next |
+| 13-deploy-smoke | yes | full | completed | Validate-existing + API SUPABASE_* cleanup; H0c–H5 PASS; Playwright 5/5 |
 
 ## Skip rationale
 
@@ -46,3 +46,4 @@
 | 11 UI preview | Declined — reports/tests only (D-S023-11-ui-preview-declined) | 2026-07-28 |
 | 11-verify-impl | **COMPLETE** — F21/F22 approved; F5/F7.h ack; advisories disposed; T3→13 | 2026-07-28 |
 | 12-verify-deploy | **COMPLETE** — mitigations+rollback approved; checklist READY → 13 | 2026-07-28 |
+| 13-deploy-smoke | **COMPLETE** — smoke approved; API SUPABASE_* deleted + redeploy live | 2026-07-28 |
