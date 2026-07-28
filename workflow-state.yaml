@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'Phase A+B passed; 04 COMPLETE; 07-build in_progress — M1 complete (T1.1–T1.4); active M2 / T2.1; progress 4/~28; interim draft PR #786 open; #783'
+  note: 'Phase A+B passed; 04 COMPLETE; 07-build in_progress — M1 complete; M2 T2.1–T2.3 complete; active M2 / T2.4; progress 7/~28; interim draft PR #786 open; #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1 complete (T1.1–T1.4); active M2 / T2.1; progress 4/~28; interim draft PR #786 open; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1 complete; M2 T2.1–T2.3 complete; active M2 / T2.4; progress 7/~28; interim draft PR #786 open; #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-28'
-    note: 'S023/EV-017 07-build in_progress — M1 complete (T1.1–T1.4); active milestone M2 / active_task T2.1; progress 4/~28; tip 8ecd271; #783'
+    note: 'S023/EV-017 07-build in_progress — M1 complete; M2 T2.1–T2.3 complete; active milestone M2 / active_task T2.4; progress 7/~28; tip 70738ab; #783'
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2917,11 +2917,11 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-28'
-      note: 'S023/EV-017 07-build — M1 complete (T1.1–T1.4); active milestone M2 / active_task T2.1; progress 4/~28; tip 8ecd271; #783'
+      note: 'S023/EV-017 07-build — M1 complete; M2 T2.1–T2.3 complete; active milestone M2 / active_task T2.4; progress 7/~28; tip 70738ab; #783'
       active_milestone: M2
-      active_task: T2.1
+      active_task: T2.4
       active_task_status: in_progress
-      progress: 4/~28
+      progress: 7/~28
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -3146,15 +3146,15 @@ stages:
       started_at: '2026-07-28'
       started: '2026-07-28'
       mode: full
-      note: 'S023/EV-017 07-build — M1 complete (T1.1–T1.4); active milestone M2 / active_task T2.1; progress 4/~28; tip 8ecd271; #783'
+      note: 'S023/EV-017 07-build — M1 complete; M2 T2.1–T2.3 complete; active milestone M2 / active_task T2.4; progress 7/~28; tip 70738ab; #783'
       active_milestone: M2
-      active_task: T2.1
+      active_task: T2.4
       active_task_status: in_progress
       decision_id: D-S023-04-plan-approve-A
       branch: evolve/EV-017-public-app-privacy
-      progress: 4/~28
-      tip_sha: 8ecd271
-      tip_sha_full: 8ecd271514cc675b90af931d2b71003dcc94a42f
+      progress: 7/~28
+      tip_sha: 70738ab
+      tip_sha_full: 70738ab0398c586d0a695757834172e2c6178088
       feature_ids:
       - F21
       - F22
@@ -3264,6 +3264,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-28 S023/EV-017 T2.3 COMPLETE — M2 T2.1–T2.3 done; active_task T2.4; progress 7/~28; tip 70738ab; #783'
     - '2026-07-28 S023/EV-017 M1 COMPLETE (T1.1–T1.4) — ADR-031 Accepted; dependency inventory; env-contract rewrite; rate-limit env back-add; next T2.1; progress 4/~28; tip 8ecd271; #783'
     - '2026-07-28 S023/EV-017 07-build STARTED (D-S023-04-plan-approve-A B→C) — active task T1.1 (Accept ADR-031; mark ADR-020 Superseded); M1–M7 / 27 tasks; progress 0/27; #783'
     - 2026-07-26 S021/EV-016 07-build COMPLETE (E16-17) — M1–M3 / 11 tasks (T1.1–T3.4); FE Vitest 688 passed; tip 1896829; current_stage→08-verify-build pending/ready; gates.c_to_d remains pending until 08
@@ -10591,10 +10592,10 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07-build — M1 done; active M2/T2.1; progress 4/~28; interim draft PR #786 open.'
+    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07-build — M1 done; M2 T2.1–T2.3 done; active M2/T2.4; progress 7/~28; interim draft PR #786 open.'
   current_stage: 07-build
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 Phase A+B PASSED — gates.a_to_b+b_to_c passed; current_stage 07-build — M1 complete (T1.1–T1.4); active M2 / T2.1; progress 4/~28; 03/05/06 skipped; interim draft PR #786 open; #783.'
+  note: 'S023/EV-017 Phase A+B PASSED — gates.a_to_b+b_to_c passed; current_stage 07-build — M1 complete; M2 T2.1–T2.3 complete; active M2 / T2.4; progress 7/~28; 03/05/06 skipped; interim draft PR #786 open; #783.'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
@@ -10621,6 +10622,7 @@ evolve_cycles:
   - D-S023-04-batch3
   - D-S023-04-plan-approve-A
   notes:
+  - '2026-07-28 S023/EV-017 T2.3 COMPLETE — M2 T2.1–T2.3 done (IndexedDB store via idb; TC-004 green); active_task T2.4; progress 7/~28; tip 70738ab; commits a64256d/a4b61bd/70738ab (+ f1b6c12 chore); #783'
   - '2026-07-28 S023/EV-017 M1 COMPLETE (T1.1–T1.4) — progress 4/~28; next T2.1 (IDB unit tests); tip 8ecd271; #783'
   - '2026-07-28 S023/EV-017 04 COMPLETE (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved (7 milestones; delete packages/auth; single-deploy cutover; slowapi baselines); 05/06 skipped (Standard); B→C passed; handoff 07-build @ T1.1; #783'
   - '2026-07-28 S023/EV-017 07-build STARTED (D-S023-04-plan-approve-A B→C) — active task T1.1 (Accept ADR-031; mark ADR-020 Superseded); M1–M7 / 27 tasks; progress 0/27; #783'
@@ -10687,10 +10689,10 @@ evolve_cycles:
       status: in_progress
       started: '2026-07-28'
       mode: full
-      note: 'S023/EV-017 07-build — M1 complete (T1.1–T1.4); active milestone M2 / active_task T2.1; progress 4/~28; tip 8ecd271; #783'
-      active_task: T2.1
+      note: 'S023/EV-017 07-build — M1 complete; M2 T2.1–T2.3 complete; active milestone M2 / active_task T2.4; progress 7/~28; tip 70738ab; #783'
+      active_task: T2.4
       active_milestone: M2
-      progress: 4/~28
+      progress: 7/~28
     08-verify-build:
       status: pending
     09-qa:
@@ -14305,13 +14307,14 @@ evolve_cycles:
   merge_sha: '4660602'
 git_history:
   current_branch: evolve/EV-017-public-app-privacy
-  ahead_of_origin: 12
+  ahead_of_origin: 16
   pushed: false
   pending_commit:
-  tip_sha: 8ecd271
-  tip_sha_full: 8ecd271514cc675b90af931d2b71003dcc94a42f
-  note: 'S023/EV-017 tip 8ecd271 — M1 complete (T1.1–T1.4); next T2.1; progress 4/~28; interim draft PR #786'
+  tip_sha: 70738ab
+  tip_sha_full: 70738ab0398c586d0a695757834172e2c6178088
+  note: 'S023/EV-017 tip 70738ab — M1 complete; M2 T2.1–T2.3 complete; next T2.4; progress 7/~28; interim draft PR #786'
   notes:
+  - '2026-07-28 S023/EV-017 tip synced — 70738ab (70738ab0398c586d0a695757834172e2c6178088); T2.3 COMPLETE (T2.1–T2.3); stage 07-build; next T2.4; progress 7/~28; recorded a64256d/a4b61bd/70738ab + f1b6c12; pending_commit cleared'
   - '2026-07-28 S023/EV-017 tip synced — 8ecd271 (8ecd271514cc675b90af931d2b71003dcc94a42f); M1 COMPLETE (T1.1–T1.4); stage 07-build; next T2.1; progress 4/~28; pending_commit cleared'
   - '2026-07-28 S023/EV-017 tip synced — c73cc62 (c73cc62e5289b494812c493206cde98b88f3ca95); "[S023/EV-017] docs: Phase A pass; start 04-tech-plan"; stage 04-tech-plan; pending_commit=evolve-decisions Batch 1 (E17-12..15 / D-S023-04-batch1-arch); no new SHA invented for uncommitted evolve-decisions'
   - '2026-07-27 S023/EV-017 tip recorded — ac11fb0 (ac11fb0ec7b3450d75b1022d7e92547b9d11973b); "[S023/EV-017] docs: resolve C-EV017.1–6 corpus contradictions (02)"; stage 02-verify-plan; pending_commit_note cleared'
@@ -14487,7 +14490,7 @@ git_history:
     created_at: '2026-07-27'
     session_id: S023-public-app-privacy
     evolve_cycle_id: EV-017
-    note: 'Open/in_progress (base main). 04 COMPLETE (D-S023-04-plan-approve-A); ADR-031 Accepted; plan approved; 07-build @ T1.1; interim draft PR #786 open.'
+    note: 'Open/in_progress (base main). 04 COMPLETE (D-S023-04-plan-approve-A); ADR-031 Accepted; plan approved; 07-build — M1 done; M2 T2.1–T2.3 done; active T2.4; progress 7/~28; interim draft PR #786 open.'
     pushed: true
     pr_id: PR-EV-017
     pr_number: 786
@@ -15188,6 +15191,61 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 70738ab0398c586d0a695757834172e2c6178088
+    short: 70738ab
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T2.3] feat: IndexedDB local work-session store via idb (TC-004 green)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/package.json
+    - apps/frontend/src/test/setup.ts
+    - apps/frontend/src/utils/localWorkSessionStore.test.ts
+    - apps/frontend/src/utils/localWorkSessionStore.ts
+    - apps/frontend/src/utils/migrateGuestSessionStorage.test.ts
+    - docs/dependency-inventory.md
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    - pnpm-lock.yaml
+    timestamp: '2026-07-28T12:41:30Z'
+    date: '2026-07-28'
+  - sha: a4b61bd1511fdfa18a280d8be74f94c417e40801
+    short: a4b61bd
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T2.2] test: guest sessionStorage → IndexedDB migrate (E17-14, red)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/utils/localWorkSessionStore.ts
+    - apps/frontend/src/utils/migrateGuestSessionStorage.test.ts
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T12:37:24Z'
+    date: '2026-07-28'
+  - sha: a64256d436636d3e35b41932d064183f1cda6884
+    short: a64256d
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T2.1] test: TC-004 local IndexedDB store contract (red until T2.3)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/utils/localWorkSessionStore.test.ts
+    - apps/frontend/src/utils/localWorkSessionStore.ts
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T12:34:47Z'
+    date: '2026-07-28'
+  - sha: f1b6c12e4dedb33d255da1eb7726a51e1c674886
+    short: f1b6c12
+    branch: evolve/EV-017-public-app-privacy
+    message: 'chore: workflow-state M1 complete → T2.1'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - workflow-state.yaml
+    timestamp: '2026-07-28T12:31:10Z'
+    date: '2026-07-28'
   - sha: 8ecd271514cc675b90af931d2b71003dcc94a42f
     short: 8ecd271
     branch: evolve/EV-017-public-app-privacy
