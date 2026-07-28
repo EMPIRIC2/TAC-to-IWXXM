@@ -3,9 +3,109 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 22
-evolve_cycle_counter: 16
+session_counter: 23
+evolve_cycle_counter: 17
 active_session:
+  id: S023-public-app-privacy
+  type: feature
+  intent: "Remove end-user auth; public/stateless converter; IndexedDB local F5/F7 history; privacy-minimizing preference center + GPC (#783)"
+  status: in_progress
+  branch: evolve/EV-017-public-app-privacy
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-017
+  github_issue: 783
+  artifacts_dir: docs/sessions/S023-public-app-privacy/
+  current_stage: 07-build
+  feature_ids:
+  - F21
+  - F22
+  feature_note: Also deepen F5/F7 (IndexedDB); deprecate operator M4
+  started_at: '2026-07-27'
+  preset: Standard
+  routing_decision_id: D-S023-00-open
+  context_briefs: []
+  note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.3 completed @ f5aa024; T7.4 blocked (checklist committed @ d459164; awaiting RENDER_API_KEY for live env cutover); T7.2 pending (needs deploy after T7.4); progress 27/~28; tip d459164; interim draft PR #786; #783'
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    skip_rationale:
+    started: '2026-07-27'
+    completed: '2026-07-27'
+    note: 'S023/EV-017 00-context COMPLETE — E17-4A..E17-11 locked; F21/F22; handoff 16-evolve → 01-requirements'
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    skip_rationale:
+    started: '2026-07-27'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    skip_rationale:
+    started: '2026-07-27'
+    completed: '2026-07-27'
+    note: 'S023/EV-017 01-requirements COMPLETE 2026-07-27 (delta) — F21/F22 corpus deltas; deepen F5/F7; D-S023-01-requirements-delta; handoff 02-verify-plan (pending)'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    skip_rationale:
+    started: '2026-07-27'
+    completed: '2026-07-27'
+    note: 'S023/EV-017 02-verify-plan COMPLETE 2026-07-27 (delta) — 10 auto-approved; C-EV017.1–6 resolved via D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A PASSED (D-S023-02-phase-a-A) → 04'
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    skip_rationale:
+    started: '2026-07-28'
+    note: 'S023/EV-017 04-tech-plan COMPLETE 2026-07-28 (delta) — D-S023-04-plan-approve-A (option A); ADR-031 Accepted; execution plan approved; B→C; handoff 07 @ T1.1'
+    completed: '2026-07-28'
+  - stage: 07-build
+    required: true
+    mode: full
+    status: in_progress
+    skip_rationale:
+    started: '2026-07-28'
+    note: 'S023/EV-017 07-build in_progress — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164'
+  - stage: 08-verify-build
+    required: true
+    mode: full
+    status: pending
+    skip_rationale:
+  - stage: 09-qa
+    required: true
+    mode: full
+    status: pending
+    skip_rationale:
+  - stage: 10-e2e
+    required: true
+    mode: full
+    status: pending
+    skip_rationale:
+  - stage: 11-verify-impl
+    required: true
+    mode: full
+    status: pending
+    skip_rationale:
+  - stage: 12-verify-deploy
+    required: true
+    mode: full
+    status: pending
+    skip_rationale:
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: pending
+    skip_rationale:
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
 sessions:
 - id: S022-rename-cutover
   type: ops
@@ -1662,22 +1762,25 @@ template:
 stages:
   00-context:
     status: completed
-    mode: session
-    scoped_slug: golden-examples-ui
-    session_id: S022-rename-cutover
-    evolve_cycle_id:
-    started_at: '2026-07-22'
+    mode: scoped
+    scoped_slug: public-app-privacy
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    started_at: '2026-07-27'
     completed_at: '2026-07-27'
+    completed: '2026-07-27'
     substeps:
       phase0: completed
       phase1a: completed
-      phase1b: skipped
-      phase1c: skipped
+      phase1b: completed
+      phase1c: completed
       phase2: completed
       phase3: completed
       phase4: completed
-    note: 'S022-rename-cutover 00-context COMPLETE 2026-07-27 — ops session open approved (D-S022-00-approve-routing); routing 00→15→13; #781 full rename cutover; prior_session S021 (live H4–H5 deferred from EV-016); handoff 15-service-health'
+    note: 'S023/EV-017 00-context COMPLETE 2026-07-27 — E17-4A..E17-11 locked (D-S023-E17-scope-lock); F21/F22; IndexedDB F5/F7; Solution A privacy; handoff 16-evolve → 01-requirements; #783'
     artifacts:
+    - docs/sessions/S023-public-app-privacy/
+    - docs/context/public-app-privacy.md
     - docs/context/rename-cutover-781.md
     - docs/sessions/S022-rename-cutover/
     - docs/sessions/S021-golden-examples-ui/session-brief.md
@@ -1707,6 +1810,8 @@ stages:
     - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
     - docs/context/manual-tac-input-modes.md
     notes:
+    - '2026-07-27 S023/EV-017 00-context COMPLETE — E17-4A..E17-11 locked (D-S023-E17-scope-lock); F21/F22; IndexedDB F5/F7; Solution A privacy + GPC; abuse controls; 30d legacy archive; handoff 01-requirements'
+    - 2026-07-27 — S023-public-app-privacy/EV-017 opened (feature); D-S023-00-open; 00 in_progress; Standard routing; #783; architecture baseline with tweaks; feature_ids TBD
     - 2026-07-27 — S022-rename-cutover opened (ops); D-S022-00-approve-routing; 00 completed; current_stage=15-service-health; no evolve cycle
     - '2026-07-22 S021/EV-016 00-context COMPLETE — Batch1 E16-1..E16-4 all A; Phase 0 scope locked; Lean+build; handoff 01-requirements (deepen F7 / #780)'
     - 2026-07-22 S020/EV-015 00-context COMPLETE — Batch2 E15-5..E15-8 all A; Phase 0 scope approved; F20 written to feature-list; handoff 01-requirements
@@ -1741,17 +1846,19 @@ stages:
   01-requirements:
     status: completed
     mode: delta
-    started_at: '2026-07-22'
-    completed_at: '2026-07-22'
-    session_id: S021-golden-examples-ui
-    evolve_cycle_id: EV-016
-    note: S021/EV-016 01-requirements COMPLETE 2026-07-22 (E16-5..E16-9 all A) — F7.g / UJ-032 / TC-F7-008; deepen F7; handoff 02-verify-plan (pending). Historical baseline S020 completed 2026-07-22.
+    started_at: '2026-07-27'
+    started: '2026-07-27'
+    completed_at: '2026-07-27'
+    completed: '2026-07-27'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    note: 'S023/EV-017 01-requirements COMPLETE 2026-07-27 (delta) — F21/F22 corpus deltas from recommended architecture; deepen F5/F7 IndexedDB; deprecate operator M4; D-S023-01-requirements-delta; handoff 02-verify-plan (pending); historical S021 COMPLETE 2026-07-22'
     substeps:
       interviews:
         status: completed
-        completed: 6
-        total: 6
-        current_template:
+        completed: 1
+        total: 1
+        current_template: complete
         current_section: complete
         planned_docs:
           status:
@@ -1759,61 +1866,106 @@ stages:
             spec: completed
             user-journeys: completed
             test-plan: completed
-            api-contract: skipped
+            api-contract: completed
             coverage-matrix: skipped
-            ADR: skipped
+            ADR: deferred
     active_session:
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
       status: completed
       mode: delta
-      started_at: '2026-07-22'
-      completed_at: '2026-07-22'
-      note: 'S021/EV-016 01-requirements COMPLETE 2026-07-22 (E16-5..E16-9 all A) — deepen F7.g / #780; handoff 02-verify-plan (pending user approval)'
-      proposed_features: []
+      started_at: '2026-07-27'
+      started: '2026-07-27'
+      completed_at: '2026-07-27'
+      note: 'S023/EV-017 01-requirements COMPLETE (delta) — F21/F22 + deepen F5/F7; D-S023-01-requirements-delta; handoff 02-verify-plan (pending)'
+      proposed_features:
+      - F21
+      - F22
       deepen:
+      - F5
       - F7
+      feature_ids:
+      - F21
+      - F22
       document_manifest:
         status: approved
-        approved_at: '2026-07-22'
-        decision_id: E16-9
+        approved_at: '2026-07-27'
+        decision_id: D-S023-01-requirements-delta
         mode: delta
         approved_documents:
         - feature-list
+        - spec
         - user-journeys
         - test-plan
-        - spec
-        skipped_documents:
         - api-contract
-        - config-spec
+        - evolve-decisions
+        - requirements-decisions
+        skipped_documents:
         - coverage-matrix
+        deferred_documents:
         - ADR
-        skip_note: E16-9 — light spec set only; no api/config/deploy env
+      artifacts:
+      - docs/feature-list.md
+      - docs/spec.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/api-contract.md
+      - docs/decisions/evolve-decisions.md
+      - docs/context/public-app-privacy.md
+      - docs/sessions/S023-public-app-privacy/reports/01-requirements.md
+      - docs/sessions/S023-public-app-privacy/reports/impact-analysis.md
+    delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      started_at: '2026-07-27'
+      started: '2026-07-27'
+      completed_at: '2026-07-27'
+      note: 'S023/EV-017 01-requirements delta COMPLETE — F21/F22 corpus deltas; deepen F5/F7 IndexedDB; deprecate operator M4; D-S023-01-requirements-delta; handoff 02-verify-plan (pending)'
+      proposed_features:
+      - F21
+      - F22
+      deepen:
+      - F5
+      - F7
+      feature_ids:
+      - F21
+      - F22
+      artifacts:
+      - docs/feature-list.md
+      - docs/spec.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/api-contract.md
+      - docs/decisions/evolve-decisions.md
+      - docs/context/public-app-privacy.md
+      - docs/sessions/S023-public-app-privacy/reports/01-requirements.md
+      - docs/sessions/S023-public-app-privacy/reports/impact-analysis.md
+      document_manifest:
+        status: approved
+        approved_at: '2026-07-27'
+        decision_id: D-S023-01-requirements-delta
+        mode: delta
+        approved_documents:
+        - feature-list
+        - spec
+        - user-journeys
+        - test-plan
+        - api-contract
+        - evolve-decisions
+        - requirements-decisions
+        skipped_documents:
+        - coverage-matrix
+        deferred_documents:
+        - ADR
       substeps:
         interviews:
           status: completed
-          completed: 6
-          total: 6
-          current_template:
+          completed: 1
+          total: 1
+          current_template: complete
           current_section: complete
-          planned_docs:
-            status:
-              feature-list: completed
-              spec: completed
-              user-journeys: completed
-              test-plan: completed
-              api-contract: skipped
-              coverage-matrix: skipped
-              ADR: skipped
-      artifacts:
-      - docs/feature-list.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/spec.md
-      - docs/sessions/S021-golden-examples-ui/reports/01-requirements.md
-      - docs/decisions/evolve-decisions.md
-      - docs/decisions/requirements-decisions.md
-    delta_substages:
     - status: completed
       mode: delta
       session_id: S021-golden-examples-ui
@@ -2121,6 +2273,8 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - '2026-07-27 S023/EV-017 01-requirements COMPLETE (D-S023-01-requirements-delta) — F21/F22 corpus deltas from recommended architecture; deepen F5/F7; reports 01-requirements.md + impact-analysis.md; handoff 02-verify-plan (pending user gate)'
+    - '2026-07-27 S023/EV-017 01-requirements STARTED (delta) — F21/F22; deepen F5/F7 IndexedDB; D-S023-E17-scope-lock; interview pending'
     - '2026-07-22 S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780 goldens UI; interview in progress'
     - 2026-07-22 S020/EV-015 01-requirements COMPLETE (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; manifest B; ADR skipped (ADR-028 reuse); handoff 02-verify-plan
     - 2026-07-22 S020/EV-015 01-requirements interviews 6/6 written — manifest B approved (D-S020-EV015-manifest-1 / E15-9); ADR skipped (ADR-028 reuse); current_template=user_confirm / pending_confirm; status remains in_progress pending user confirm of written deltas
@@ -2158,38 +2312,88 @@ stages:
   02-verify-plan:
     status: completed
     mode: delta
-    started_at: '2026-07-22'
-    completed_at: '2026-07-22'
-    session_id: S021-golden-examples-ui
-    evolve_cycle_id: EV-016
-    note: S021-golden-examples-ui/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS. Prior S020/EV-015 COMPLETE retained in delta_substages. Phase A / gates.a_to_b pending before 04-tech-plan.
+    started_at: '2026-07-27'
+    completed: '2026-07-27'
+    previous_completed_at: '2026-07-22'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    note: 'S023/EV-017 02-verify-plan COMPLETE 2026-07-27 (delta) — 10 auto-approved; C-EV017.1–6 resolved via D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A PASSED (D-S023-02-phase-a-A) → 04'
+    auto_approved: 10
+    contradictions_resolved:
+    - C-EV017.1
+    - C-EV017.2
+    - C-EV017.3
+    - C-EV017.4
+    - C-EV017.6
+    contradictions_deferred:
+    - C-EV017.5
+    decision_refs:
+    - D-S023-02-verify-plan-gate-A
+    - D-S023-02-C-EV017-A
+    - D-S023-02-phase-a-A
     substeps:
       inventory:
         status: completed
       consistency_check:
         status: completed
       statement_review:
-        auto_approved: 8
+        auto_approved: 10
         pending: 0
-        reviewed: 8
+        reviewed: 0
     current_document:
     current_statement:
     active_session:
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
       skill_id: 02-verify-plan
       status: completed
       mode: delta
-      started_at: '2026-07-22'
-      completed_at: '2026-07-22'
-      note: S021/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS (F7.g / UJ-032 / TC-F7-008); artifact docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md; Phase A / gates.a_to_b pending before 04; do not start 04
+      started_at: '2026-07-27'
+      completed_at: '2026-07-27'
+      note: 'S023/EV-017 02-verify-plan COMPLETE 2026-07-27 (delta) — 10 auto-approved; C-EV017.1–6 resolved via D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A PASSED (D-S023-02-phase-a-A) → 04'
     artifacts:
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
+    - docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
     - docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-07-27'
+      completed_at: '2026-07-27'
+      mode: delta
+      feature_ids:
+      - F21
+      - F22
+      deepen:
+      - F5
+      - F7
+      deprecate:
+      - M4
+      user_gate:
+        decision: A
+        approved_at: '2026-07-27'
+        note: User authorized the 02-verify-plan delta consistency pass.
+      auto_approved: 10
+      contradictions_resolved:
+      - C-EV017.1
+      - C-EV017.2
+      - C-EV017.3
+      - C-EV017.4
+      - C-EV017.6
+      contradictions_deferred:
+      - C-EV017.5
+      decision_refs:
+      - D-S023-02-verify-plan-gate-A
+      - D-S023-02-C-EV017-A
+      - D-S023-02-phase-a-A
+      artifacts:
+      - docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
+      note: 'S023/EV-017 02-verify-plan COMPLETE 2026-07-27 (delta) — 10 auto-approved; C-EV017.1–6 resolved via D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A PASSED (D-S023-02-phase-a-A) → 04'
     - session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
       skill_id: 02-verify-plan
@@ -2251,6 +2455,8 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-07-28 S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A) — gates.a_to_b passed; 04-tech-plan STARTED; 03 skipped (04 prerequisite waived)'
+    - '2026-07-27 S023/EV-017 02-verify-plan COMPLETE — 10 auto-approved; D-S023-02-C-EV017-A (C1–4+C6 fixed; C5 banner+defer 04/12); report docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md; Phase A PASSED (D-S023-02-phase-a-A) → 04; corpus fixes may be pending commit (no SHA invented)'
     - 2026-07-22 S021-golden-examples-ui/EV-016 02-verify-plan COMPLETE — PASS; Phase A / a_to_b pending before 04; do not start 04
     - 2026-07-22 S021-golden-examples-ui/EV-016 02-verify-plan STARTED (delta) — in_progress
     - 2026-07-22 S020/EV-015 02-verify-plan COMPLETE (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1) — PASS; 12 auto + medium verdicts; renamed S020-aerodrome-quality / evolve/EV-015-aerodrome-quality; Phase A checkpoint pending before 04-tech-plan; do not start 04
@@ -2288,20 +2494,30 @@ stages:
     - docs/sessions/S019-dissemination-upload/reports/03-plan-tooling.md
     - .cursor/rules/optional/dissemination-egress-ssrf.mdc
     notes:
+    - '2026-07-28 S023/EV-017 03-plan-tooling skipped — Standard routing skip; 04 prerequisite waived (D-S023-02-phase-a-A)'
     - 2026-07-21 S019/EV-014 03 COMPLETE (D-S019-EV014-Q30A-03-tooling) — plan-adherence F16–F19; dissemination-egress-ssrf; feature_drift/scope_check; Phase A awaiting checkpoint
     - 2026-07-21 S019/EV-014 03-plan-tooling delta starting (Q29=A) — F16–F19 dissemination guardrails
     - 2026-07-19 S015/EV-011 03-plan-tooling COMPLETE (D-S015-EV011-03-tooling-12) — plan-adherence + registry rule + issue_registry_guard hook; Phase A 01–03 done; gates.a_to_b passed; awaiting user to start 04-tech-plan
     - 10 guardrails installed; hooks smoke-tested; connectivity linked via plan-adherence + 07-build
     active_session:
-      session_id: S019-dissemination-upload
-      evolve_cycle_id: EV-014
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
       skill_id: 03-plan-tooling
-      status: completed
+      status: skipped
       mode: delta
-      started_at: '2026-07-21'
-      completed_at: '2026-07-21'
-      note: S019/EV-014 03 COMPLETE (D-S019-EV014-Q30A-03-tooling) — plan-adherence F16–F19; dissemination-egress-ssrf; feature_drift/scope_check; Phase A awaiting checkpoint
+      note: Standard routing skip; 04 prerequisite waived
     delta_substages:
+    - session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 03-plan-tooling
+      status: skipped
+      mode: delta
+      feature_ids:
+      - F21
+      - F22
+      note: Standard routing skip; 04 prerequisite waived
+      started_at: '2026-07-28'
+      completed_at: '2026-07-28'
     - session_id: S019-dissemination-upload
       evolve_cycle_id: EV-014
       skill_id: 03-plan-tooling
@@ -2374,6 +2590,63 @@ stages:
     - docs/adr/ADR-011-work-sessions-data-access.md
     - docs/adr/ADR-012-metar-work-sessions-retention.md
     delta_substages:
+    - session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 04-tech-plan
+      status: completed
+      started_at: '2026-07-28'
+      started: '2026-07-28'
+      mode: delta
+      feature_ids:
+      - F21
+      - F22
+      note: 'COMPLETE 2026-07-28 (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved (7 milestones; delete packages/auth; single-deploy; slowapi); 04-exit via Standard skip 05/06; B→C passed; handoff 07 @ T1.1'
+      artifacts:
+      - docs/adr/ADR-031-public-app-indexeddb-history.md
+      - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+      - docs/sessions/S023-public-app-privacy/reports/04-tech-plan.md
+      interview:
+        batch_1_architecture:
+          status: locked
+          decision_id: D-S023-04-batch1-arch
+          decision_ids:
+          - E17-12
+          - E17-13
+          - E17-14
+          - E17-15
+          locked_at: '2026-07-28'
+          note: idb; reuse workSessionPayload; one-time sessionStorage→IndexedDB migrate; slowapi
+        batch_2_privacy_ops:
+          status: locked
+          decision_id: D-S023-04-batch2-privacy-ops
+          decision_ids:
+          - E17-16
+          - E17-17
+          - E17-18
+          - E17-19
+          - E17-20
+          locked_at: '2026-07-28'
+          note: GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON export v1
+        batch_3_milestones_adr_env:
+          status: locked
+          decision_id: D-S023-04-batch3
+          decision_ids:
+          - E17-21
+          - E17-22
+          - E17-23
+          - E17-24
+          - E17-25
+          locked_at: '2026-07-28'
+          note: 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve
+        plan_approve:
+          status: locked
+          note: Option A — ADR-031 Accepted + execution plan approved; complete 04; start 07 @ T1.1 (05/06 skipped Standard)
+          decision_id: D-S023-04-plan-approve-A
+          answers:
+            '1': A
+          locked_at: '2026-07-28'
+      completed: '2026-07-28'
+      completed_at: '2026-07-28'
     - session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
       skill_id: 04-tech-plan
@@ -2612,6 +2885,11 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - 2026-07-28 S023/EV-017 04-tech-plan COMPLETE (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved; 05/06 skipped Standard; B→C; start 07 @ T1.1
+    - '2026-07-28 S023/EV-017 04 Batch 3 locked (E17-21..25 / D-S023-04-batch3) — 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve; artifacts drafted; awaiting plan approve AskQuestion'
+    - '2026-07-28 S023/EV-017 04 Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops) — GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON tac-work-sessions-export-v1; interview Batch 3 pending'
+    - '2026-07-28 S023/EV-017 04 Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch) — idb; reuse workSessionPayload; one-time sessionStorage→IndexedDB; slowapi; interview Batch 2 pending'
+    - '2026-07-28 S023/EV-017 04-tech-plan STARTED (D-S023-02-phase-a-A) — Phase A PASSED; gates.a_to_b passed; mode delta; interview pending; C5 env rewrite in scope; ADR public-app pending'
     - 2026-07-26 S021/EV-016 04-tech-plan COMPLETE (E16-16=A) — Batch 2 approve execution plan as written (M1–M3, 11 tasks); artifacts approved; 05/06 skipped Lean+build; B→C; start 07 @ T1.1
     - 2026-07-26 S021/EV-016 04-tech-plan STARTED (E16-10 Phase A→B) — gates.a_to_b passed; mode delta; FE catalog + FileConverter wiring; execution plan TBD by parent
     - 2026-07-22 S021/EV-016 04-tech-plan remains pending — awaiting Phase A→B (gates.a_to_b); do not start
@@ -2633,14 +2911,19 @@ stages:
     - S014/EV-010 delta 04-tech-plan completed 2026-07-18 — M1–M6 approved (43A); ADR-027 xsdata
     - S015/EV-011 delta 04-tech-plan completed 2026-07-19 — E11-31 GET lint-issue-catalog; 31 tasks approved
     active_session:
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
-      skill_id: 04-tech-plan
-      status: completed
-      mode: delta
-      started_at: '2026-07-26'
-      completed_at: '2026-07-26'
-      note: COMPLETE 2026-07-26 (E16-16) — plan approved; B→C; next 07-build @ T1.1 (historical baseline status remains completed)
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 07-build
+      status: in_progress
+      mode: full
+      started_at: '2026-07-28'
+      note: 'T7.3 COMPLETE @ f5aa024; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28'
+      active_milestone: M7
+      active_task: T7.4
+      active_task_status: blocked
+      progress: 27/~28
+      tip_sha: d459164
+      tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -2857,6 +3140,27 @@ stages:
         milestone: M11
         notes: T11.4 complete — H0c+H4+H5 green on staging; TC-M001–M005 pass; Phase 4 gate criteria met on main
     delta_substages:
+    - id: S023-public-app-privacy
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-07-28'
+      started: '2026-07-28'
+      mode: full
+      note: 'T7.3 COMPLETE @ f5aa024; T7.4 blocked — checklist committed @ d459164; awaiting RENDER_API_KEY for live env deletes; artifact docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md; T7.2 pending (needs deploy after T7.4); progress 27/~28'
+      active_milestone: M7
+      active_task: T7.4
+      active_task_status: blocked
+      decision_id: D-S023-07-T7.4-blocked
+      branch: evolve/EV-017-public-app-privacy
+      progress: 27/~28
+      tip_sha: d459164
+      tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+      report: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
+      feature_ids:
+      - F21
+      - F22
     - id: S021-golden-examples-ui
       session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
@@ -2963,6 +3267,20 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked) awaiting RENDER_API_KEY for live env cutover; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
+    - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — F21 public deploy corpus + EV-017 CHANGELOG draft; T7.4 blocked (D-S023-07-T7.4-blocked, no RENDER_API_KEY); T7.2 pending after T7.4 deploy; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
+    - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
+    - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
+    - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
+    - '2026-07-28 S023/EV-017 T5.3 COMPLETE @ 5772a42 — unmount work-sessions API; TC-F21-auth-gone green; active_task T5.4 in_progress (delete packages/auth); progress 21/~28; tip 5772a42; #783'
+    - '2026-07-28 S023/EV-017 T5.2 COMPLETE @ 5800cfc — strip auth routers/JWT/DISABLE_AUTH; active_task T5.3; progress 20/~28; tip 5800cfc; #783'
+    - '2026-07-28 S023/EV-017 T5.1 committed red @ a38da22 — auth router/JWT gate removal red TDD; active_task T5.2 in_progress (strip auth routers/JWT gates); progress 19/~28; tip a38da22; #783'
+    - '2026-07-28 S023/EV-017 M4 COMPLETE (T4.1–T4.3) — retire api.disableAuth from runtime config.json path; active_milestone M5 (Backend Auth + work-sessions teardown); active_task T5.1 in_progress; progress 18/~28; tip 13c9cf3; commit 13c9cf3; #783'
+    - '2026-07-28 S023/EV-017 T4.1–T4.2 COMPLETE — FE auth-gone tests + remove Auth UX / stop Bearer on public API; active_milestone M4; active_task T4.3; progress 14/~28; tip be1e848; commits 277b903/be1e848; #783'
+    - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress 12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
+    - '2026-07-28 S023/EV-017 T2.3 COMPLETE — M2 T2.1–T2.3 done; active_task T2.4; progress 7/~28; tip 70738ab; #783'
+    - '2026-07-28 S023/EV-017 M1 COMPLETE (T1.1–T1.4) — ADR-031 Accepted; dependency inventory; env-contract rewrite; rate-limit env back-add; next T2.1; progress 4/~28; tip 8ecd271; #783'
+    - '2026-07-28 S023/EV-017 07-build STARTED (D-S023-04-plan-approve-A B→C) — active task T1.1 (Accept ADR-031; mark ADR-020 Superseded); M1–M7 / 27 tasks; progress 0/27; #783'
     - 2026-07-26 S021/EV-016 07-build COMPLETE (E16-17) — M1–M3 / 11 tasks (T1.1–T3.4); FE Vitest 688 passed; tip 1896829; current_stage→08-verify-build pending/ready; gates.c_to_d remains pending until 08
     - 2026-07-26 S021/EV-016 07-build STARTED (E16-16 B→C) — active task T1.1 catalog completeness tests; M1–M3 / 11 tasks; progress 0/11
     - ? 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1); message "[T5.6] docs
@@ -4042,15 +4360,36 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S021-golden-examples-ui
-    evolve_cycle_id: EV-016
-    started_at: '2026-07-22'
-    completed_at: '2026-07-27'
-    current_stage:
-    note: 'S021/EV-016 COMPLETE — Phase 4 close D-S021-EV016-phase4-close; idle (no active evolve cycle); next_backlog_issue=781 (no new session opened)'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    started_at: '2026-07-27'
+    completed_at:
+    current_stage: 07-build
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B PASSED; current_stage 07-build; M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; 03/05/06 skipped; #783'
     notes:
+    - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked) awaiting RENDER_API_KEY; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
+    - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — T7.4 blocked (D-S023-07-T7.4-blocked); T7.2 pending after T7.4; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
+    - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
+    - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
+    - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
+    - '2026-07-28 S023/EV-017 T5.3 COMPLETE @ 5772a42 — unmount work-sessions API; TC-F21-auth-gone green; active_task T5.4 in_progress (delete packages/auth); progress 21/~28; tip 5772a42; #783'
+    - '2026-07-28 S023/EV-017 T5.2 COMPLETE @ 5800cfc — strip auth routers/JWT/DISABLE_AUTH; active_task T5.3; progress 20/~28; tip 5800cfc; #783'
+    - '2026-07-28 S023/EV-017 T5.1 committed red @ a38da22 — auth router/JWT gate removal red TDD; active_task T5.2 in_progress (strip auth routers/JWT gates); progress 19/~28; tip a38da22; #783'
+    - '2026-07-28 S023/EV-017 M4 COMPLETE (T4.1–T4.3) — retire api.disableAuth from runtime config.json path; active_milestone M5 (Backend Auth + work-sessions teardown); active_task T5.1 in_progress; progress 18/~28; tip 13c9cf3; commit 13c9cf3; #783'
+    - '2026-07-28 S023/EV-017 T4.1–T4.2 COMPLETE — FE auth-gone tests + remove Auth UX / stop Bearer on public API; active_milestone M4; active_task T4.3; progress 14/~28; tip be1e848; commits 277b903/be1e848; #783'
+    - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress 12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
+    - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress 12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
+    - '2026-07-28 S023/EV-017 M2 COMPLETE (T2.1–T2.5) — IndexedDB wire + export/import UI + verification-report-M2; active_milestone M3; active_task T3.1; progress 9/~28; tip 2783bcb; commits dac094a/303083d/2783bcb; #783'
+    - '2026-07-28 S023/EV-017 04 COMPLETE (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved (7 milestones; delete packages/auth; single-deploy cutover; slowapi baselines); 05/06 skipped (Standard); B→C passed; handoff 07-build @ T1.1; #783'
+    - '2026-07-28 S023/EV-017 07-build STARTED (D-S023-04-plan-approve-A B→C) — active task T1.1 (Accept ADR-031; mark ADR-020 Superseded); M1–M7 / 27 tasks; progress 0/27; #783'
+    - '2026-07-28 S023/EV-017 04 Batch 3 locked (E17-21..25 / D-S023-04-batch3) — 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve; artifacts drafted; awaiting plan approve AskQuestion; #783'
+    - '2026-07-28 S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A) — gates.a_to_b passed; 04-tech-plan STARTED (delta); 03 skipped (04 prerequisite waived); #783'
+    - '2026-07-27 S023/EV-017 02 COMPLETE — D-S023-02-C-EV017-A; 10 auto-approved; C1–4+C6 fixed; C5 deferred 04/12; Phase A AskQuestion next → 04-tech-plan (03 skipped); #783'
+    - '2026-07-27 S023/EV-017 01 COMPLETE — D-S023-01-requirements-delta; F21/F22 corpus deltas; handoff 02-verify-plan (pending user gate); #783'
+    - '2026-07-27 S023/EV-017 16-evolve STARTED — 00-context COMPLETE; E17-4A..E17-11 locked (D-S023-E17-scope-lock); F21/F22; current_stage 01-requirements; #783'
+    - '2026-07-27 S023/EV-017 16-evolve PENDING — session opened (D-S023-00-open); awaiting 00-context Phase 0 completion before orchestrator start; #783'
     - '2026-07-27 S021/EV-016 16-evolve COMPLETE — Phase 4 close D-S021-EV016-phase4-close — EV-016/S021 complete; PR #782 c49f22b; #780 CLOSED; live H4–H5/UJ-032 waived to #781 (D-S021-EV016-13-waive-live-h4h5); next_backlog_issue=781; no new session opened'
     - '2026-07-27 S021/EV-016 PR #782 MERGED (c49f22b); #780 CLOSED; current_stage→13-deploy-smoke in_progress; user directed finish EV-016 (H4–H5) then close; #781 next backlog (no new cycle yet)'
     - S021/EV-016 08-verify-build COMPLETE 2026-07-26 — PASS; artifact docs/sessions/S021-golden-examples-ui/reports/verification-report.md; tip 90a8507; C→D still pending until 09+10+11; ready for 09-qa and 10-e2e (parallel)
@@ -7943,7 +8282,497 @@ decisions_log:
   decision: 'Close S022-rename-cutover (option 1); archive status=completed; active_session=null; primary #781 cutover + live UJ-032 PASS; PyPI Trusted Publisher and optional Actions secrets remain follow-ups on #781 (D-S022-00-approve-routing scope)'
   related_issue: 781
   related_decision: D-S022-00-approve-routing
+- id: D-S023-00-open
+  date: '2026-07-27'
+  timestamp: '2026-07-27'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  category: session
+  status: confirmed
+  topic: Open session S023 / allocate EV-017
+  summary: User 1A 2B 3A — open S023; architecture baseline with tweaks; Standard routing
+  decision: "Open S023-public-app-privacy / EV-017 for #783; architecture baseline with tweaks; Standard routing"
+  related_issue: 783
+  prior_session: S022-rename-cutover
+- id: D-S023-E17-scope-lock
+  date: '2026-07-27'
+  timestamp: '2026-07-27'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 00-context
+  category: scope
+  status: confirmed
+  topic: EV-017 Phase 0 scope lock — F21/F22
+  summary: E17-4A..E17-11 locked — F21/F22, IndexedDB F5/F7, Solution A privacy, abuse controls, 30d legacy archive
+  decision: "E17-4A..E17-11 locked — F21/F22, IndexedDB F5/F7, Solution A privacy, abuse controls, 30d legacy archive"
+  related_issue: 783
+- id: D-S023-01-requirements-delta
+  date: '2026-07-27'
+  timestamp: '2026-07-27'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: requirements
+  status: confirmed
+  topic: F21/F22 corpus deltas from recommended architecture
+  summary: 01-requirements delta COMPLETE — F21/F22 + deepen F5/F7 written; ADR deferred to 04; handoff 02-verify-plan (pending)
+  decision: 'F21/F22 corpus deltas written from recommended architecture (feature-list, spec, user-journeys, test-plan, api-contract, evolve-decisions, context brief). Mark 01-requirements completed 2026-07-27; hand off to 02-verify-plan (pending until user confirms / Phase A gate). Related: D-S023-E17-scope-lock, #783.'
+  related_issue: 783
+  related_decision: D-S023-E17-scope-lock
+- id: D-S023-02-C-EV017-A
+  date: '2026-07-27'
+  timestamp: '2026-07-27'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: contradiction
+  status: confirmed
+  topic: Contradiction batch A — C-EV017.1–6
+  summary: Contradiction batch A — apply C1–4+C6 now; C5 env-contract banner + defer full rewrite to 04/12
+  decision: 'Apply C-EV017.1–4 and C-EV017.6 now; for C-EV017.5 add env-contract banner and defer full rewrite to 04-tech-plan / 12-verify-deploy. Completes 02-verify-plan delta; Phase A checkpoint pending before 04 (03 skipped). Related: D-S023-02-verify-plan-gate-A, #783.'
+  related_issue: 783
+  related_decision: D-S023-02-verify-plan-gate-A
+  contradictions_resolved:
+  - C-EV017.1
+  - C-EV017.2
+  - C-EV017.3
+  - C-EV017.4
+  - C-EV017.6
+  contradictions_deferred:
+  - C-EV017.5
+- id: D-S023-02-phase-a-A
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  skill: 16-evolve
+  skill_id: 04-tech-plan
+  stage: 16-evolve
+  category: checkpoint
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: Phase A checkpoint — approve → start 04-tech-plan
+  summary: Phase A pass (user A); start 04-tech-plan; 03 skipped per Standard routing
+  decision: 'User Phase A checkpoint = A (2026-07-28). Approve Phase A → start 04-tech-plan. checkpoints.phase_a=passed; gates.a_to_b=passed; current_stage=04-tech-plan; 04-tech-plan in_progress (mode delta). 03-plan-tooling skipped (Standard routing); 04 prerequisite waived. Related: D-S023-02-C-EV017-A; #783.'
+  related_issue: 783
+  related_decision: D-S023-02-C-EV017-A
+- id: E17-12
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — IndexedDB library
+  summary: E17-12 — IndexedDB library = idb (Jake Archibald)
+  decision: IndexedDB library = idb (Jake Archibald). Locked 2026-07-28 Batch 1 (D-S023-04-batch1-arch).
+  related_issue: 783
+  related_decision: D-S023-04-batch1-arch
+- id: E17-13
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — local session schema
+  summary: E17-13 — reuse workSessionPayload / ConverterSnapshot schema
+  decision: Local session schema = reuse workSessionPayload / ConverterSnapshot. Locked 2026-07-28 Batch 1 (D-S023-04-batch1-arch).
+  related_issue: 783
+  related_decision: D-S023-04-batch1-arch
+- id: E17-14
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — sessionStorage → IndexedDB migrate
+  summary: E17-14 — one-time migrate guest sessionStorage → IndexedDB on first F7.h load
+  decision: One-time migrate guest sessionStorage → IndexedDB on first F7.h load. Locked 2026-07-28 Batch 1 (D-S023-04-batch1-arch).
+  related_issue: 783
+  related_decision: D-S023-04-batch1-arch
+- id: E17-15
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch1 — abuse controls
+  summary: E17-15 — abuse controls = slowapi (in-memory; Render single-instance baseline)
+  decision: Abuse controls = slowapi (in-memory; Render single-instance baseline). Locked 2026-07-28 Batch 1 (D-S023-04-batch1-arch).
+  related_issue: 783
+  related_decision: D-S023-04-batch1-arch
+- id: D-S023-04-batch1-arch
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch 1 architecture lock — E17-12..15
+  summary: Batch 1 architecture locked (E17-12..15); interview Batch 2 pending
+  decision: '04 Batch 1 architecture LOCKED (D-S023-04-batch1-arch / 2026-07-28): E17-12=idb; E17-13=reuse workSessionPayload/ConverterSnapshot; E17-14=one-time sessionStorage→IndexedDB migrate; E17-15=slowapi abuse controls. Interview Batch 2 pending. Related: #783.'
+  related_issue: 783
+  related_decisions:
+  - E17-12
+  - E17-13
+  - E17-14
+  - E17-15
+- id: E17-16
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — GPC honor Sec-GPC + navigator
+  summary: 'E17-16 — GPC = honor Sec-GPC: 1 + navigator.globalPrivacyControl → opt-out non-essential prefs'
+  decision: 'GPC = honor Sec-GPC: 1 + navigator.globalPrivacyControl → opt-out non-essential prefs. Locked 2026-07-28 Batch 2 (D-S023-04-batch2-privacy-ops).'
+  related_issue: 783
+  related_decision: D-S023-04-batch2-privacy-ops
+- id: E17-17
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — prefs localStorage / sessions IndexedDB
+  summary: E17-17 — prefs in localStorage; work sessions in IndexedDB only
+  decision: Prefs in localStorage; work sessions in IndexedDB only. Locked 2026-07-28 Batch 2 (D-S023-04-batch2-privacy-ops).
+  related_issue: 783
+  related_decision: D-S023-04-batch2-privacy-ops
+- id: E17-18
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — single deploy cutover
+  summary: E17-18 — single deploy cutover IndexedDB live + /auth/* + work-sessions → 404 same release
+  decision: Single deploy cutover — IndexedDB live + /auth/* + work-sessions → 404 same release. Locked 2026-07-28 Batch 2 (D-S023-04-batch2-privacy-ops).
+  related_issue: 783
+  related_decision: D-S023-04-batch2-privacy-ops
+- id: E17-19
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — slowapi baseline rates
+  summary: E17-19 — slowapi 60/min/IP convert+lint+decode; 10/min dissemination; 2 MB body
+  decision: slowapi baseline 60/min/IP convert+lint+decode; 10/min dissemination; 2 MB body (exact table in ADR-031). Locked 2026-07-28 Batch 2 (D-S023-04-batch2-privacy-ops).
+  related_issue: 783
+  related_decision: D-S023-04-batch2-privacy-ops
+- id: E17-20
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch2 — export/import JSON v1
+  summary: E17-20 — export/import JSON tac-work-sessions-export-v1 download/upload
+  decision: Export/import = JSON tac-work-sessions-export-v1 download/upload in Privacy or History UI. Locked 2026-07-28 Batch 2 (D-S023-04-batch2-privacy-ops).
+  related_issue: 783
+  related_decision: D-S023-04-batch2-privacy-ops
+- id: D-S023-04-batch2-privacy-ops
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch 2 privacy/ops lock — E17-16..20
+  summary: Batch 2 privacy/ops locked (E17-16..20); interview Batch 3 pending
+  decision: '04 Batch 2 privacy/ops LOCKED (D-S023-04-batch2-privacy-ops / 2026-07-28): E17-16=GPC Sec-GPC+navigator; E17-17=prefs localStorage / sessions IndexedDB; E17-18=single deploy cutover; E17-19=slowapi 60/10 + 2MB; E17-20=JSON tac-work-sessions-export-v1. Interview Batch 3 pending. Related: #783.'
+  related_issue: 783
+  related_decisions:
+  - E17-16
+  - E17-17
+  - E17-18
+  - E17-19
+  - E17-20
+- id: E17-21
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch3 — 7 milestones
+  summary: E17-21 — 7 milestones (ADR+deps → IndexedDB+migrate+export → slowapi → FE Auth strip → BE Auth/work-sessions 404 → Privacy+GPC → env/E2E/docs)
+  decision: 7 milestones — ADR+deps → IndexedDB+migrate+export → slowapi → FE Auth strip → BE Auth/work-sessions 404 → Privacy+GPC → env/E2E/docs. Locked 2026-07-28 Batch 3 (D-S023-04-batch3).
+  related_issue: 783
+  related_decision: D-S023-04-batch3
+- id: E17-22
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch3 — delete packages/auth
+  summary: E17-22 — delete packages/auth entirely this cycle; inline any F8 helpers if needed
+  decision: Delete packages/auth entirely this cycle; inline any F8 helpers if needed. Locked 2026-07-28 Batch 3 (D-S023-04-batch3).
+  related_issue: 783
+  related_decision: D-S023-04-batch3
+- id: E17-23
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch3 — ADR-031 supersedes ADR-020
+  summary: E17-23 — supersede ADR-020 with ADR-031 (IndexedDB local history)
+  decision: Supersede ADR-020 with ADR-031 (IndexedDB local history). Locked 2026-07-28 Batch 3 (D-S023-04-batch3).
+  related_issue: 783
+  related_decision: D-S023-04-batch3
+  related_adr: ADR-031
+- id: E17-24
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch3 — full env-contract rewrite
+  summary: E17-24 — full env-contract rewrite now (closes C-EV017.5)
+  decision: Full env-contract rewrite now (closes C-EV017.5). Locked 2026-07-28 Batch 3 (D-S023-04-batch3).
+  related_issue: 783
+  related_decision: D-S023-04-batch3
+- id: E17-25
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch3 — draft ADR+plan+inventory then approve
+  summary: E17-25 — draft then approve; APPROVED option A (D-S023-04-plan-approve-A)
+  decision: Draft ADR-031 + execution-plan + dependency-inventory; then approve plan. Locked 2026-07-28 Batch 3 (D-S023-04-batch3). Plan APPROVED 2026-07-28 via D-S023-04-plan-approve-A (option A).
+  related_issue: 783
+  related_decision: D-S023-04-batch3
+- id: D-S023-04-batch3
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch 3 milestones/ADR/env lock — E17-21..25
+  summary: Batch 3 locked (E17-21..25); artifacts drafted; awaiting plan approve AskQuestion
+  decision: '04 Batch 3 LOCKED (D-S023-04-batch3 / 2026-07-28): E17-21=7 milestones; E17-22=delete packages/auth; E17-23=ADR-031 supersedes ADR-020; E17-24=full env-contract rewrite; E17-25=draft ADR+plan+inventory then approve. Artifacts drafted (ADR-031, execution-plan, 04-tech-plan); awaiting plan approve AskQuestion. Related: #783.'
+  related_issue: 783
+  related_decisions:
+  - E17-21
+  - E17-22
+  - E17-23
+  - E17-24
+  - E17-25
+- id: D-S023-04-plan-approve-A
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  skill: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: 04 Batch 3 / Decision A — ADR-031 Accepted + execution plan approve
+  summary: Option A — ADR-031 Accepted; execution plan approved; delete packages/auth; 7 milestones; single-deploy cutover; slowapi baselines; complete 04; start 07 @ T1.1
+  decision: 'User Batch 3 / Decision A approved 2026-07-28 (D-S023-04-plan-approve-A). ADR-031 Accepted (record only; ADR file not edited here). Execution plan approved (7 milestones; delete packages/auth; single-deploy cutover; slowapi 60/10 + 2MB baselines). 04-tech-plan COMPLETE; 05/06 remain skipped (Standard / D-S023-00-open); gates.b_to_c + checkpoints.phase_b passed; 07-build STARTED @ T1.1 (Accept ADR-031; mark ADR-020 Superseded). Related: D-S023-04-batch3, E17-21..25, #783.'
+  related_issue: 783
+  related_decisions:
+  - D-S023-04-batch3
+  - E17-21
+  - E17-22
+  - E17-23
+  - E17-24
+  - E17-25
+  answers:
+    '1': A
+- id: D-S023-07-resume-T7.1
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 07-build
+  skill_id: 07-build
+  skill: 07-build
+  category: build
+  status: confirmed
+  resolved_at: '2026-07-28'
+  topic: Resume 07-build at T7.1 after user Continue
+  summary: User Continue → resume 07-build at T7.1 (M7); leave unrelated dirty WIP unstaged
+  decision: User Continue → resume 07-build at T7.1 (M7); leave unrelated dirty security-static-analysis / abuse_controls WIP unstaged
+  related_issue: 783
+  related_decision: D-S023-04-plan-approve-A
+- id: D-S023-07-T7.4-blocked
+  date: '2026-07-28'
+  timestamp: '2026-07-28'
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  stage: 07-build
+  skill_id: 07-build
+  skill: 07-build
+  category: build
+  status: blocked
+  resolved_at:
+  topic: T7.4 Render env cutover blocked without RENDER_API_KEY
+  summary: Render env cutover blocked without RENDER_API_KEY; checklist committed @ d459164 (docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md); live env deletes still pending
+  decision: T7.4 blocked — checklist committed @ d459164; unblock by providing RENDER_API_KEY then apply Render env cutover; T7.2 (H4–H5) waits on deploy after T7.4
+  related_issue: 783
+  related_decision: D-S023-07-resume-T7.1
+  artifact: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
 artifacts:
+- path: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
+  type: session-report
+  kind: checklist
+  stage: 07-build
+  skill_id: 07-build
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: blocked
+  decision_id: D-S023-07-T7.4-blocked
+  tip_sha: d459164
+  note: 'S023/EV-017 T7.4 Render env cutover checklist committed @ d459164 — blocked without RENDER_API_KEY for live env deletes'
+- path: docs/adr/ADR-031-public-app-indexeddb-history.md
+  type: adr
+  kind: adr
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: accepted
+  decision_id: D-S023-04-plan-approve-A
+  note: 'S023/EV-017 ADR-031 Accepted (D-S023-04-plan-approve-A / option A) — IndexedDB local history; supersedes ADR-020; file Accept status applied by build T1.1'
+- path: docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+  type: session-report
+  kind: execution-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: approved
+  decision_id: D-S023-04-plan-approve-A
+  note: 'S023/EV-017 execution-plan APPROVED (D-S023-04-plan-approve-A) — 7 milestones / ~27 tasks; 07-build @ T1.1'
+- path: docs/sessions/S023-public-app-privacy/reports/04-tech-plan.md
+  type: session-report
+  kind: tech-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: completed
+  decision_id: D-S023-04-plan-approve-A
+  note: 'S023/EV-017 04-tech-plan COMPLETE (D-S023-04-plan-approve-A) — Batches 1–3 locked; plan approved'
+- path: docs/sessions/S023-public-app-privacy/checkpoints/phase-a.md
+  type: checkpoint
+  kind: phase-a
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-28'
+  updated_at: '2026-07-28'
+  status: pending
+  decision_id: D-S023-02-phase-a-A
+  note: 'S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A); checkpoint file will be written by orchestrator; gates.a_to_b passed; 04-tech-plan started'
+- path: docs/sessions/S023-public-app-privacy/reports/01-requirements.md
+  type: session-report
+  kind: requirements
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-27'
+  updated_at: '2026-07-27'
+  status: completed
+  decision_id: D-S023-01-requirements-delta
+  note: 'S023/EV-017 01-requirements COMPLETE — F21/F22 corpus deltas; deepen F5/F7; handoff 02-verify-plan (pending)'
+- path: docs/sessions/S023-public-app-privacy/reports/impact-analysis.md
+  type: session-report
+  kind: impact-analysis
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-27'
+  updated_at: '2026-07-27'
+  status: completed
+  decision_id: D-S023-01-requirements-delta
+  note: 'S023/EV-017 Phase 1 impact analysis — FE/BE/auth/E2E/docs; ADR deferred to 04'
+- path: docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
+  type: session-report
+  kind: verify-plan
+  stage: 02-verify-plan
+  skill_id: 02-verify-plan
+  session_id: S023-public-app-privacy
+  evolve_cycle_id: EV-017
+  created_at: '2026-07-27'
+  updated_at: '2026-07-27'
+  status: completed
+  decision_id: D-S023-02-C-EV017-A
+  note: 'S023/EV-017 02-verify-plan COMPLETE — 10 auto-approved; C1–4+C6 fixed; C5 deferred 04/12; Phase A PASSED (D-S023-02-phase-a-A) → 04'
 - path: docs/sessions/S021-golden-examples-ui/reports/verify-impl.md
   type: session-report
   stage: 11-verify-impl
@@ -9795,6 +10624,283 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-017
+  session_id: S023-public-app-privacy
+  cycle_type: feature
+  feature_ids:
+  - F21
+  - F22
+  feature_id:
+  feature_note: Also deepen F5/F7 (IndexedDB); deprecate operator M4
+  title: "Public app + local history + privacy (#783)"
+  status: in_progress
+  started: '2026-07-27'
+  completed:
+  scope_summary: |
+    Public/stateless operator app (F21); IndexedDB F5/F7 history; privacy Solution A
+    preference center + GPC (F22); baseline API abuse controls; ~30-day legacy session
+    archive then drop; local history before auth teardown; F8 service-role private.
+  github_issue: 783
+  related_issues:
+  - 783
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    approved: true
+    provisional: false
+    preset: Standard
+    decision_id: D-S023-00-open
+    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07-build — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786.'
+  current_stage: 07-build
+  branch: evolve/EV-017-public-app-privacy
+  note: 'S023/EV-017 Phase A+B PASSED — gates.a_to_b+b_to_c passed; current_stage 07-build — M1–M6 complete; M7 active; T7.3 completed @ f5aa024; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28; tip d459164; 03/05/06 skipped; interim draft PR #786; #783.'
+  decision_refs:
+  - D-S023-00-open
+  - D-S023-E17-scope-lock
+  - D-S023-01-requirements-delta
+  - D-S023-02-verify-plan-gate-A
+  - D-S023-02-C-EV017-A
+  - D-S023-02-phase-a-A
+  - E17-12
+  - E17-13
+  - E17-14
+  - E17-15
+  - D-S023-04-batch1-arch
+  - E17-16
+  - E17-17
+  - E17-18
+  - E17-19
+  - E17-20
+  - D-S023-04-batch2-privacy-ops
+  - E17-21
+  - E17-22
+  - E17-23
+  - E17-24
+  - E17-25
+  - D-S023-04-batch3
+  - D-S023-04-plan-approve-A
+  - D-S023-07-resume-T7.1
+  - D-S023-07-T7.4-blocked
+  notes:
+  - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked) awaiting RENDER_API_KEY for live env cutover; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
+  - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — F21 public deploy corpus + EV-017 CHANGELOG draft; T7.4 blocked (D-S023-07-T7.4-blocked, no RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
+  - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
+  - '2026-07-28 S023/EV-017 07-build resume T7.1 (D-S023-07-resume-T7.1) — User Continue; M1–M6 complete; active M7; active_task T7.1 in_progress; progress 25/~28; tip 3c0a5a0; leave unrelated security-static-analysis / abuse_controls WIP unstaged; #783'
+  - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
+  - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
+  - '2026-07-28 S023/EV-017 T5.3 COMPLETE @ 5772a42 — unmount work-sessions API; TC-F21-auth-gone green; active_task T5.4 in_progress (delete packages/auth); progress 21/~28; tip 5772a42; #783'
+  - '2026-07-28 S023/EV-017 T5.2 COMPLETE @ 5800cfc — strip auth routers/JWT/DISABLE_AUTH; active_task T5.3; progress 20/~28; tip 5800cfc; #783'
+  - '2026-07-28 S023/EV-017 T5.1 committed red @ a38da22 — auth router/JWT gate removal red TDD; active_task T5.2 in_progress (strip auth routers/JWT gates); progress 19/~28; tip a38da22; #783'
+  - '2026-07-28 S023/EV-017 M4 COMPLETE (T4.1–T4.3) — retire api.disableAuth from runtime config.json path; active_milestone M5 (Backend Auth + work-sessions teardown); active_task T5.1 in_progress; progress 18/~28; tip 13c9cf3; commit 13c9cf3; #783'
+  - '2026-07-28 S023/EV-017 M2 COMPLETE (T2.1–T2.5) — IndexedDB wire + export/import UI + verification-report-M2; active_milestone M3; active_task T3.1; progress 9/~28; tip 2783bcb; commits dac094a/303083d/2783bcb; #783'
+  - '2026-07-28 S023/EV-017 T2.3 COMPLETE — M2 T2.1–T2.3 done (IndexedDB store via idb; TC-004 green); active_task T2.4; progress 7/~28; tip 70738ab; commits a64256d/a4b61bd/70738ab (+ f1b6c12 chore); #783'
+  - '2026-07-28 S023/EV-017 M1 COMPLETE (T1.1–T1.4) — progress 4/~28; next T2.1 (IDB unit tests); tip 8ecd271; #783'
+  - '2026-07-28 S023/EV-017 04 COMPLETE (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved (7 milestones; delete packages/auth; single-deploy cutover; slowapi baselines); 05/06 skipped (Standard); B→C passed; handoff 07-build @ T1.1; #783'
+  - '2026-07-28 S023/EV-017 07-build STARTED (D-S023-04-plan-approve-A B→C) — active task T1.1 (Accept ADR-031; mark ADR-020 Superseded); M1–M7 / 27 tasks; progress 0/27; #783'
+  - '2026-07-28 S023/EV-017 04 Batch 3 locked (E17-21..25 / D-S023-04-batch3) — 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve; artifacts drafted; awaiting plan approve AskQuestion'
+  - '2026-07-28 S023/EV-017 04 Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops) — GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON tac-work-sessions-export-v1; interview Batch 3 pending'
+  - '2026-07-28 S023/EV-017 04 Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch) — idb; reuse workSessionPayload; one-time sessionStorage→IndexedDB; slowapi; interview Batch 2 pending'
+  - '2026-07-28 S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A) — user A; gates.a_to_b passed; checkpoints.phase_a=passed; 03 skipped (04 prerequisite waived); 04-tech-plan STARTED (delta); interview pending; C5 env rewrite in scope; ADR public-app pending'
+  - '2026-07-27 S023/EV-017 02-verify-plan COMPLETE — D-S023-02-C-EV017-A; 10 auto-approved; C1–4+C6 fixed; C5 banner+defer 04/12; report 02-verify-plan.md; Phase A checkpoint next → 04-tech-plan (03 skipped); corpus commit may be pending'
+  - '2026-07-27 S023/EV-017 02-verify-plan STARTED (delta) — user gate A approved; F21/F22, F5/F7 IndexedDB, and M4 operator Auth deprecation consistency audit in progress'
+  - '2026-07-27 S023/EV-017 01 docs committed+pushed; interim draft PR #786 open (evolve/EV-017-public-app-privacy); next gate 02-verify-plan pending user gate A/B'
+  - '2026-07-27 S023/EV-017 01-requirements COMPLETE — D-S023-01-requirements-delta; F21/F22 corpus deltas from recommended architecture; deepen F5/F7; reports 01-requirements.md + impact-analysis.md; current_stage → 02-verify-plan (pending user gate)'
+  - '2026-07-27 S023/EV-017 scope locked — D-S023-E17-scope-lock (E17-4A..E17-11); F21/F22; IndexedDB F5/F7; Solution A privacy + GPC; abuse controls; 30d legacy archive; 00 COMPLETE; 16+01 in_progress'
+  - '2026-07-27 S023/EV-017 open — D-S023-00-open (User 1A 2B 3A); architecture baseline with tweaks; Standard routing; branch evolve/EV-017-public-app-privacy; feature_ids TBD after Fn allocation'
+  stages:
+    00-context:
+      status: completed
+      mode: scoped
+      started: '2026-07-27'
+      completed: '2026-07-27'
+      note: E17-4A..E17-11 locked (D-S023-E17-scope-lock); F21/F22 allocated
+    16-evolve:
+      status: in_progress
+      started: '2026-07-27'
+      note: Orchestrator active; Phase A+B PASSED; current_stage 07-build — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; 03/05/06 skipped
+    01-requirements:
+      status: completed
+      mode: delta
+      started: '2026-07-27'
+      completed: '2026-07-27'
+      note: COMPLETE (D-S023-01-requirements-delta) — F21/F22 corpus deltas; deepen F5/F7; ADR deferred to 04
+    02-verify-plan:
+      status: completed
+      started: '2026-07-27'
+      completed: '2026-07-27'
+      mode: delta
+      note: 'COMPLETE (D-S023-02-C-EV017-A) — 10 auto-approved; C1–4+C6 fixed; C5 banner+defer 04/12; Phase A PASSED (D-S023-02-phase-a-A) → 04'
+      auto_approved: 10
+      contradictions_resolved:
+      - C-EV017.1
+      - C-EV017.2
+      - C-EV017.3
+      - C-EV017.4
+      - C-EV017.6
+      contradictions_deferred:
+      - C-EV017.5
+      decision_refs:
+      - D-S023-02-verify-plan-gate-A
+      - D-S023-02-C-EV017-A
+      - D-S023-02-phase-a-A
+      report: docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
+    04-tech-plan:
+      status: completed
+      mode: delta
+      started: '2026-07-28'
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      note: 'COMPLETE (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved; B→C; handoff 07 @ T1.1'
+      artifacts:
+      - docs/adr/ADR-031-public-app-indexeddb-history.md
+      - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+      - docs/sessions/S023-public-app-privacy/reports/04-tech-plan.md
+      completed: '2026-07-28'
+    07-build:
+      status: in_progress
+      started: '2026-07-28'
+      mode: full
+      note: 'T7.3 COMPLETE @ f5aa024; T7.4 blocked (checklist @ d459164; D-S023-07-T7.4-blocked awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28'
+      active_task: T7.4
+      active_milestone: M7
+      active_task_status: blocked
+      progress: 27/~28
+      tip: d459164
+      tip_sha: d459164
+      tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+      decision_id: D-S023-07-T7.4-blocked
+      report: docs/sessions/S023-public-app-privacy/reports/t7.4-render-env-checklist.md
+    08-verify-build:
+      status: pending
+    09-qa:
+      status: pending
+    10-e2e:
+      status: pending
+    11-verify-impl:
+      status: pending
+    12-verify-deploy:
+      status: pending
+    13-deploy-smoke:
+      status: pending
+    03-plan-tooling:
+      status: skipped
+      note: Standard routing skip; 04 prerequisite waived
+    05-verify-tech:
+      status: skipped
+      note: Standard skip (D-S023-00-open)
+    06-tech-tooling:
+      status: skipped
+      note: Standard skip (D-S023-00-open)
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs:
+  - docs/adr/ADR-031-public-app-indexeddb-history.md
+  artifacts:
+  - path: docs/sessions/S023-public-app-privacy/session-brief.md
+    status: completed
+  - path: docs/sessions/S023-public-app-privacy/routing-plan.md
+    status: completed
+  - path: docs/sessions/S023-public-app-privacy/reports/01-requirements.md
+    status: completed
+  - path: docs/sessions/S023-public-app-privacy/reports/impact-analysis.md
+    status: completed
+  - path: docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
+    status: completed
+    stage: 02-verify-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
+  - path: docs/adr/ADR-031-public-app-indexeddb-history.md
+    status: accepted
+    stage: 04-tech-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    decision_id: D-S023-04-plan-approve-A
+    note: Accepted via D-S023-04-plan-approve-A (option A); file Accept applied by T1.1
+  - path: docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    status: approved
+    stage: 04-tech-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    decision_id: D-S023-04-plan-approve-A
+  - path: docs/sessions/S023-public-app-privacy/reports/04-tech-plan.md
+    status: completed
+    stage: 04-tech-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    decision_id: D-S023-04-plan-approve-A
+  - path: docs/ops/legacy-tac-work-sessions-archive.md
+    status: completed
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    task: T5.5
+    note: '~30-day legacy tac_work_sessions archive ops note'
+  - path: docs/sessions/S023-public-app-privacy/checkpoints/phase-a.md
+    status: pending
+    stage: 16-evolve
+    kind: phase-a
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    decision_id: D-S023-02-phase-a-A
+    date: '2026-07-28'
+    note: Will be written by orchestrator (Phase A passed D-S023-02-phase-a-A)
+  - path: docs/decisions/evolve-decisions.md
+    status: completed
+  - path: docs/feature-list.md
+    status: completed
+  - path: docs/spec.md
+    status: completed
+  - path: docs/user-journeys.md
+    status: completed
+  - path: docs/test-plan.md
+    status: completed
+  - path: docs/api-contract.md
+    status: completed
+  - path: docs/context/public-app-privacy.md
+    status: completed
+  - path: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786
+    status: draft
+    stage: 16-evolve
+    kind: interim_pr
+    note: 'Interim docs PR for S023/EV-017; Phase B passed; 04 COMPLETE; 07-build in_progress @ T1.1.'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
+  pr_id: PR-EV-017
+  pr_number: 786
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786
+  pr_status: draft
+  pr_base: main
+  pr_head: evolve/EV-017-public-app-privacy
 - id: EV-016
   session_id: S021-golden-examples-ui
   cycle_type: feature
@@ -13300,14 +14406,30 @@ evolve_cycles:
   pr_number: 723
   merge_sha: '4660602'
 git_history:
-  current_branch: infra/S022-rename-cutover
-  ahead_of_origin: 0
-  pushed: true
+  current_branch: evolve/EV-017-public-app-privacy
+  ahead_of_origin: 3
+  pushed: false
   pending_commit:
-  tip_sha: 2c9f643
-  tip_sha_full: 2c9f643acef912e15a89df7c5944c2c8e6813fde
-  note: '11-verify-impl approved (E16-19); PR #782 open; next after merge: 13-deploy-smoke (H4–H5); do not start 13 until merge unless user asks; phase_d/deploy pending; tip 2c9f643'
+  tip_sha: d459164
+  tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+  note: 'S023/EV-017 tip d459164 — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist committed; awaiting RENDER_API_KEY for live env cutover); T7.2 pending after T7.4; progress 27/~28; interim draft PR #786; #783'
   notes:
+  - '2026-07-28 S023/EV-017 tip synced — d459164 (d459164efe76caacb46ef38adaaa33d72beb731e); T7.4 checklist COMMITTED (still blocked awaiting RENDER_API_KEY for live env deletes); stage 07-build; active T7.4 blocked / T7.2 pending after T7.4; progress 27/~28; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — f5aa024 (f5aa024483d2eef87611a4173ae0803efa1d372e); T7.3 COMPLETE (F21 public deploy corpus + EV-017 CHANGELOG draft); T7.4 blocked (D-S023-07-T7.4-blocked); stage 07-build; active T7.4 blocked / T7.2 pending after T7.4; progress 27/~28'
+  - '2026-07-28 S023/EV-017 tip synced — ad28389 (ad28389d47325bcf74f994af24d1f878ebc617b7); T7.1 COMPLETE (Playwright public UJ + Auth-gone + privacy smoke); stage 07-build; active T7.2 pending; progress 26/~28; leave unrelated security-static-analysis / abuse_controls WIP unstaged'
+  - '2026-07-28 S023/EV-017 tip synced — 3c0a5a0 (3c0a5a03324a0b38ac002d148767a0aa336add01); resume 07-build at T7.1 (M7); progress 25/~28; D-S023-07-resume-T7.1; leave unrelated security-static-analysis / abuse_controls WIP unstaged'
+  - '2026-07-28 S023/EV-017 tip synced — 91fd231 (91fd2314cd318c60d9be974b52bcb14dd7258f8a); M5 COMPLETE (T5.4–T5.5); stage 07-build; active M6/T6.1 (Privacy preference center); progress 22/~28; recorded c9cebfa/91fd231; pending_commit cleared; interim draft PR #786 stale until push (ahead 33)'
+  - '2026-07-28 S023/EV-017 tip synced — 5772a42 (5772a4227b61480e2cdc142b3a9c9cb2bf116287); T5.3 COMPLETE (unmount work-sessions; TC-F21-auth-gone green); stage 07-build; active T5.4 (delete packages/auth); progress 21/~28; recorded 5800cfc/5772a42; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — a38da22 (a38da2255cf007218e5dff1b8edd228d5985d563); T5.1 committed red; stage 07-build; active T5.2 (strip auth); progress 19/~28; no git_history.commits row until parent records [T5.1]; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — 13c9cf3 (13c9cf370143907f195951d894baf83915c15cc7); M4 COMPLETE (T4.1–T4.3); stage 07-build; next T5.1; progress 18/~28; recorded 13c9cf3; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — be1e848 (be1e848e2bee44db875ef8c4d028836c6f5ef7df); T4.1–T4.2 COMPLETE; stage 07-build; next T4.3; progress 14/~28; recorded 277b903/be1e848; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — ce4bf45 (ce4bf4595790eb44ac0de7cee33432980c730d70); M3 COMPLETE (T3.1–T3.3); stage 07-build; next T4.1; progress 12/~28; recorded 151a1c2/452c86f/ce4bf45; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — 2783bcb (2783bcb0df5f3a7aae98f8b6cf368f6a6a622134); M2 COMPLETE (T2.1–T2.5); stage 07-build; next T3.1; progress 9/~28; recorded dac094a/303083d/2783bcb; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — 70738ab (70738ab0398c586d0a695757834172e2c6178088); T2.3 COMPLETE (T2.1–T2.3); stage 07-build; next T2.4; progress 7/~28; recorded a64256d/a4b61bd/70738ab + f1b6c12; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — 8ecd271 (8ecd271514cc675b90af931d2b71003dcc94a42f); M1 COMPLETE (T1.1–T1.4); stage 07-build; next T2.1; progress 4/~28; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — c73cc62 (c73cc62e5289b494812c493206cde98b88f3ca95); "[S023/EV-017] docs: Phase A pass; start 04-tech-plan"; stage 04-tech-plan; pending_commit=evolve-decisions Batch 1 (E17-12..15 / D-S023-04-batch1-arch); no new SHA invented for uncommitted evolve-decisions'
+  - '2026-07-27 S023/EV-017 tip recorded — ac11fb0 (ac11fb0ec7b3450d75b1022d7e92547b9d11973b); "[S023/EV-017] docs: resolve C-EV017.1–6 corpus contradictions (02)"; stage 02-verify-plan; pending_commit_note cleared'
+  - '2026-07-27 S023/EV-017 open — branch evolve/EV-017-public-app-privacy recorded active (base main; git create deferred to parent); D-S023-00-open; Standard routing; feature_ids TBD; #783'
   - '2026-07-26 S021/EV-016 — 11-verify-impl approved (E16-19); PR #782 opened; next after merge: 13-deploy-smoke (H4–H5). Do not start 13 until merge unless user asks. phase_d/deploy still pending; tip 2c9f643'
   - 2026-07-26 S021/EV-016 tip remains 3d1c58b after 09+10 COMPLETE (qa-report.md / e2e-report.md may be uncommitted); do not advance tip until user commits report docs
   - 2026-07-26 S021/EV-016 08-verify-build PASS commit recorded — 90a8507 (90a850758ac4157af4c4c366db05f60c64f68a81); stage 08-verify-build; C→D still pending until 09+10+11
@@ -13471,6 +14593,24 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-017-public-app-privacy
+    purpose: 'S023/EV-017 public app + local history + privacy (#783)'
+    base: main
+    status: open
+    created: '2026-07-27'
+    created_at: '2026-07-27'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    note: 'Open/in_progress (base main). 07-build — M1–M6 complete; M7 active; T7.3 completed; T7.4 blocked (checklist @ d459164; awaiting RENDER_API_KEY); T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786 open.'
+    tip_sha: d459164
+    tip_sha_full: d459164efe76caacb46ef38adaaa33d72beb731e
+    pushed: true
+    pr_id: PR-EV-017
+    pr_number: 786
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786
+    pr_base: main
+    pr_head: evolve/EV-017-public-app-privacy
+    pr_status: draft
   - name: evolve/EV-016-golden-examples-ui
     purpose: S021/EV-016 UI pre-loaded golden examples (#780); deepen F7; FE-only
     base: main
@@ -14164,6 +15304,431 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: d459164efe76caacb46ef38adaaa33d72beb731e
+    short: d459164
+    branch: evolve/EV-017-public-app-privacy
+    message: "[T7.4] docs: Render Auth secret cutover checklist (blocked on API key)"
+    stage: 07-build
+    files_changed: 2
+    timestamp: '2026-07-28T19:55:05Z'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    task_id: T7.4
+
+  - sha: f5aa024483d2eef87611a4173ae0803efa1d372e
+    short: f5aa024
+    branch: evolve/EV-017-public-app-privacy
+    message: "[T7.3] docs: F21 public deploy corpus + EV-017 CHANGELOG draft"
+    stage: 07-build
+    files_changed: 6
+    timestamp: '2026-07-28T19:54:12Z'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    task_id: T7.3
+
+  - sha: ad28389d47325bcf74f994af24d1f878ebc617b7
+    short: ad28389
+    branch: evolve/EV-017-public-app-privacy
+    message: "[T7.1] test: Playwright public UJ + Auth-gone + privacy smoke"
+    stage: 07-build
+    files_changed: 16
+    timestamp: '2026-07-28T19:50:00Z'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+
+  - sha: 15f69d910eaa40af5a34560013fe08da6c446ec8
+    short: 15f69d9
+    branch: evolve/EV-017-public-app-privacy
+    message: "[T6.3] feat: honor GPC for privacy preference opt-outs"
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    timestamp: '2026-07-28T14:34:10Z'
+
+  - sha: 1926e19e30c76f835e617e94611cd5f730bdc111
+    short: 1926e19
+    branch: evolve/EV-017-public-app-privacy
+    message: "[T6.1] test: TC-F22-001..003 privacy prefs contract (red until T6.2/T6.3)"
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/utils/privacyPreferences.ts
+    - apps/frontend/src/utils/privacyPreferences.test.ts
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    - workflow-state.yaml
+    timestamp: '2026-07-28T14:28:51Z'
+
+  - sha: 91fd2314cd318c60d9be974b52bcb14dd7258f8a
+    short: 91fd231
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T5.5] docs: ops note for ~30-day legacy tac_work_sessions archive'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - docs/ops/legacy-tac-work-sessions-archive.md
+    - docs/ops/staging-secrets-matrix.md
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T14:11:44Z'
+    date: '2026-07-28'
+  - sha: c9cebfa53a998164f56cc15165dbef931a29530c
+    short: c9cebfa
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T5.4] chore: delete packages/auth; drop Docker/CI/Makefile coverage gates'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - packages/auth/ (deleted)
+    - apps/backend/src/routers/work_sessions.py
+    - apps/backend/src/schemas/work_session.py
+    - apps/backend/src/services/work_session_service.py
+    - apps/backend/docker/Dockerfile
+    - apps/backend/pyproject.toml
+    - Makefile
+    - .github/workflows/ci-cd.yml
+    - .codecov.yml
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    - uv.lock
+    timestamp: '2026-07-28T14:11:06Z'
+    date: '2026-07-28'
+    note: '96 files — delete packages/auth; drop work-sessions backend leftovers; CI/Docker/Makefile coverage gate cleanup'
+  - sha: 5772a4227b61480e2cdc142b3a9c9cb2bf116287
+    short: 5772a42
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T5.3] feat: unmount work-sessions API; IndexedDB is the operator store'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/backend/src/api.py
+    - apps/backend/tests/api/test_f7_ui_connection_integration.py
+    - apps/backend/tests/integration/test_h0i_connectivity.py
+    - apps/backend/tests/integration/test_work_session_tc004.py
+    - apps/backend/tests/unit/test_api_import_fallback_unit.py
+    - apps/backend/tests/unit/test_tc_f7_005_unified_sessions.py
+    - apps/backend/tests/unit/test_work_session_product_api.py
+    - apps/backend/tests/unit/test_work_sessions_router_unit.py
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T13:54:49Z'
+    date: '2026-07-28'
+  - sha: 5800cfcbff2120d154cd092092d649bcc1f57ac8
+    short: 5800cfc
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T5.2] feat: strip auth routers and JWT gates; retire DISABLE_AUTH'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/backend/src/api.py
+    - apps/backend/src/routers/dissemination.py
+    - apps/backend/src/routers/evaluation.py
+    - apps/backend/src/routers/icao_opmet.py
+    - apps/backend/src/routers/validation.py
+    - apps/backend/src/utilities/security.py
+    - apps/backend/tests/conftest.py
+    - apps/backend/tests/evaluation/test_evaluation_endpoints_comprehensive.py
+    - apps/backend/tests/infrastructure/test_security_comprehensive.py
+    - apps/backend/tests/infrastructure/test_smoke.py
+    - apps/backend/tests/unit/test_api_helper_functions_unit.py
+    - apps/backend/tests/unit/test_api_helpers_middleware_unit.py
+    - apps/backend/tests/unit/test_api_import_fallback_unit.py
+    - apps/backend/tests/unit/test_api_routes_validation_unit.py
+    - apps/backend/tests/unit/test_auth_router_mount_unit.py
+    - apps/backend/tests/unit/test_dissemination_api.py
+    - apps/backend/tests/unit/test_evaluation_router_unit.py
+    - apps/backend/tests/unit/test_icao_opmet_router_unit.py
+    - apps/backend/tests/unit/test_security_unit.py
+    - apps/backend/tests/unit/test_tc_f11_001_msgspec_http_parity.py
+    - apps/backend/tests/unit/test_tc_f15_001_lint_issue_catalog.py
+    - apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py
+    - apps/backend/tests/unit/test_validation_router_unit.py
+    - apps/backend/tests/validation/test_validation_router.py
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T13:51:20Z'
+    date: '2026-07-28'
+  - sha: 13c9cf370143907f195951d894baf83915c15cc7
+    short: 13c9cf3
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T4.3] feat: retire api.disableAuth from runtime config.json path'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/e2e/playwright-e2e-helpers.ts
+    - apps/frontend/public/config.json
+    - apps/frontend/src/app/App.test.tsx
+    - apps/frontend/src/test/tc-f21-auth-gone.test.tsx
+    - apps/frontend/src/utils/runtime-config.test.ts
+    - apps/frontend/src/utils/runtime-config.ts
+    - config/e2e.json
+    - config/local.json
+    - config/prod.json
+    - docs/config-spec.md
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    - scripts/deploy/verify_connectivity.sh
+    - start-dev-servers.sh
+    timestamp: '2026-07-28T13:23:15Z'
+    date: '2026-07-28'
+  - sha: be1e848e2bee44db875ef8c4d028836c6f5ef7df
+    short: be1e848
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T4.2] feat: remove FE Auth UX and stop Bearer on public API'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/app/App.test.tsx
+    - apps/frontend/src/app/App.tsx
+    - apps/frontend/src/app/components/DatabaseUploadDialog.test.tsx
+    - apps/frontend/src/app/components/DatabaseUploadDialog.tsx
+    - apps/frontend/src/app/components/DisseminationDrawer.test.tsx
+    - apps/frontend/src/app/components/DisseminationDrawer.tsx
+    - apps/frontend/src/app/components/FileConverter.test.tsx
+    - apps/frontend/src/app/components/FileConverter.tsx
+    - apps/frontend/src/app/components/FileConverter.work-session.test.tsx
+    - apps/frontend/src/test/bug-2026-07-15-empty-bearer-lint-tac.test.tsx
+    - apps/frontend/src/utils/api.test.ts
+    - apps/frontend/src/utils/api.ts
+    - apps/frontend/src/utils/databaseUpload.test.ts
+    - apps/frontend/src/utils/databaseUpload.ts
+    - apps/frontend/src/utils/dissemination.test.ts
+    - apps/frontend/src/utils/dissemination.ts
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T13:17:55Z'
+    date: '2026-07-28'
+  - sha: 277b903b33828bff920f4c6c6c42f9ebea78c014
+    short: 277b903
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T4.1] test: TC-F21-auth-gone FE — no login chrome, no JWT headers'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/test/tc-f21-auth-gone.test.tsx
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T13:08:25Z'
+    date: '2026-07-28'
+  - sha: ce4bf4595790eb44ac0de7cee33432980c730d70
+    short: ce4bf45
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T3.3] feat: stricter dissemination rate limit decorator'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/backend/src/routers/dissemination.py
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T13:03:56Z'
+    date: '2026-07-28'
+  - sha: 452c86fd81ac5606e25a3087dbb27f0672b32a30
+    short: 452c86f
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T3.2] feat: wire slowapi and max-body abuse controls on API'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/backend/src/api.py
+    timestamp: '2026-07-28T13:03:43Z'
+    date: '2026-07-28'
+  - sha: 151a1c270adb6d5ecd295a10e56066d2898432da
+    short: 151a1c2
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T3.1] test: rate-limit and body-size unit tests (429/413)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/backend/pyproject.toml
+    - apps/backend/src/utilities/abuse_controls.py
+    - apps/backend/tests/unit/test_abuse_controls_unit.py
+    - uv.lock
+    timestamp: '2026-07-28T13:03:30Z'
+    date: '2026-07-28'
+  - sha: 2783bcb0df5f3a7aae98f8b6cf368f6a6a622134
+    short: 2783bcb
+    branch: evolve/EV-017-public-app-privacy
+    message: '[M2] docs: add M2 IndexedDB verification report'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - docs/sessions/S023-public-app-privacy/reports/verification-report-M2.md
+    timestamp: '2026-07-28T12:55:02Z'
+    date: '2026-07-28'
+  - sha: 303083dd442d3f8e52ffea41ec0072c059e92d45
+    short: 303083d
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T2.5] feat: export/import UI for tac-work-sessions-export-v1'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/app/components/MyMetarsPage.test.tsx
+    - apps/frontend/src/app/components/MyMetarsPage.tsx
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T12:54:04Z'
+    date: '2026-07-28'
+  - sha: dac094a724b9a014c912d0cfc2f27ece8af2d03a
+    short: dac094a
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T2.4] feat: wire autosave/resume/sidebar/My METARs to IndexedDB'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/app/App.test.tsx
+    - apps/frontend/src/app/App.tsx
+    - apps/frontend/src/app/components/FileConverter.tsx
+    - apps/frontend/src/app/components/MyMetarsPage.test.tsx
+    - apps/frontend/src/app/components/MyMetarsPage.tsx
+    - apps/frontend/src/app/components/WorkHistorySidebar.test.tsx
+    - apps/frontend/src/app/components/WorkHistorySidebar.tsx
+    - apps/frontend/src/hooks/useWorkSessionSync.test.ts
+    - apps/frontend/src/hooks/useWorkSessionSync.ts
+    - apps/frontend/src/test/bug-2026-07-15-empty-bearer-lint-tac.test.tsx
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T12:52:11Z'
+    date: '2026-07-28'
+  - sha: 70738ab0398c586d0a695757834172e2c6178088
+    short: 70738ab
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T2.3] feat: IndexedDB local work-session store via idb (TC-004 green)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/package.json
+    - apps/frontend/src/test/setup.ts
+    - apps/frontend/src/utils/localWorkSessionStore.test.ts
+    - apps/frontend/src/utils/localWorkSessionStore.ts
+    - apps/frontend/src/utils/migrateGuestSessionStorage.test.ts
+    - docs/dependency-inventory.md
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    - pnpm-lock.yaml
+    timestamp: '2026-07-28T12:41:30Z'
+    date: '2026-07-28'
+  - sha: a4b61bd1511fdfa18a280d8be74f94c417e40801
+    short: a4b61bd
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T2.2] test: guest sessionStorage → IndexedDB migrate (E17-14, red)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/utils/localWorkSessionStore.ts
+    - apps/frontend/src/utils/migrateGuestSessionStorage.test.ts
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T12:37:24Z'
+    date: '2026-07-28'
+  - sha: a64256d436636d3e35b41932d064183f1cda6884
+    short: a64256d
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T2.1] test: TC-004 local IndexedDB store contract (red until T2.3)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/utils/localWorkSessionStore.test.ts
+    - apps/frontend/src/utils/localWorkSessionStore.ts
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T12:34:47Z'
+    date: '2026-07-28'
+  - sha: f1b6c12e4dedb33d255da1eb7726a51e1c674886
+    short: f1b6c12
+    branch: evolve/EV-017-public-app-privacy
+    message: 'chore: workflow-state M1 complete → T2.1'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - workflow-state.yaml
+    timestamp: '2026-07-28T12:31:10Z'
+    date: '2026-07-28'
+  - sha: 8ecd271514cc675b90af931d2b71003dcc94a42f
+    short: 8ecd271
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T1.4] docs: back-add F21 rate-limit env to config-spec and secrets matrix'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - docs/config-spec.md
+    - docs/ops/staging-secrets-matrix.md
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T12:00:00Z'
+    date: '2026-07-28'
+  - sha: f4fa7fb08a1cc913a77d197039483d3d275ded7c
+    short: f4fa7fb
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T1.3] docs: accept F21 env-contract rewrite (closes C-EV017.5)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - docs/env-contract.md
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T12:00:00Z'
+    date: '2026-07-28'
+  - sha: 7342fbfc08f7f910d7f3723e50bef2684441fc4f
+    short: 7342fbf
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T1.2] docs: accept dependency inventory (idb, slowapi; drop packages/auth)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - docs/dependency-inventory.md
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T12:00:00Z'
+    date: '2026-07-28'
+  - sha: 1d62c1422d5a0832c3d6ba5427d64b60bbf42842
+    short: 1d62c14
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T1.1] docs: accept ADR-031; supersede ADR-020 (F21)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - docs/adr/ADR-031-public-app-indexeddb-history.md
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T12:00:00Z'
+    date: '2026-07-28'
+  - sha: bbf4fdd
+    short: bbf4fdd
+    branch: evolve/EV-017-public-app-privacy
+    message: 'docs(S023/EV-017): lock F21/F22 public-app privacy requirements'
+    stage: 16-evolve
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
+  - sha: 79ea20b
+    short: 79ea20b
+    branch: evolve/EV-017-public-app-privacy
+    message: 'chore(hooks): resolve uv/pnpm on Cursor commit PATH'
+    stage: 16-evolve
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
+  - sha: e1d8302
+    short: e1d8302
+    branch: evolve/EV-017-public-app-privacy
+    message: 'fix(ci): make frontend audit-ci portable on macOS bash'
+    stage: 16-evolve
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
+  - sha: 64fca66
+    short: 64fca66
+    branch: evolve/EV-017-public-app-privacy
+    message: 'chore(hooks): also prepend ~/.cargo/bin for native builds'
+    stage: 16-evolve
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-27'
   - sha: d604db73fde878e22a4a6a6a03e221dfb2d98859
     short: d604db7
     branch: evolve/EV-015-aerodrome-quality
@@ -17235,6 +18800,39 @@ git_history:
     timestamp: '2026-07-26T21:52:12Z'
     date: '2026-07-26'
     note: 'audit chore on EV-016 tip before PR #782; tip_sha 2c9f643'
+  - sha: ac11fb0ec7b3450d75b1022d7e92547b9d11973b
+    short: ac11fb0
+    branch: evolve/EV-017-public-app-privacy
+    message: '[S023/EV-017] docs: resolve C-EV017.1–6 corpus contradictions (02)'
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - docs/api-contract.md
+    - docs/spec.md
+    - docs/user-journeys.md
+    - docs/test-plan.md
+    - docs/env-contract.md
+    - docs/decisions/*
+    - docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
+    - workflow-state.yaml
+    timestamp: '2026-07-27'
+    date: '2026-07-27'
+  - sha: c73cc62e5289b494812c493206cde98b88f3ca95
+    short: c73cc62
+    branch: evolve/EV-017-public-app-privacy
+    message: '[S023/EV-017] docs: Phase A pass; start 04-tech-plan'
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - workflow-state.yaml
+    - docs/sessions/S023-public-app-privacy/checkpoints/phase-a.md
+    timestamp: '2026-07-28'
+    date: '2026-07-28'
+    note: 'Tip sync; pending_commit remains for evolve-decisions Batch 1 (E17-12..15) until orchestrator commits'
 pr_review_cycles:
 - id: PRR-001
   pr_number: 679

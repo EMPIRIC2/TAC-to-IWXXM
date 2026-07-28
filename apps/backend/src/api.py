@@ -23,7 +23,7 @@ try:
     # Try relative imports first (when run as module in Docker)
     from .config.icao_opmet import get_icao_region, get_translation_centre_info
     from .msgspec_http import msgspec_json_response
-    from .routers import dissemination, evaluation, icao_opmet, validation, work_sessions
+    from .routers import dissemination, evaluation, icao_opmet, validation
     from .schemas.conversion import (
         ConversionIssue,
         ConversionIssueSeverity,
@@ -57,16 +57,16 @@ try:
     from .services.validation import ValidationService
     from .services.validation_orchestrator import get_validation_orchestrator
     from .services.webhooks import webhook_service
+    from .utilities.abuse_controls import install_abuse_controls
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
     from .utilities.observability import install_fastapi_observability, setup_logging
-    from .utilities.security import verify_supabase_token
     from .utilities.tac_parser import extract_airport_code
 except ImportError:
     # Fall back to direct imports (when sys.path is set for local development)
     from config.icao_opmet import get_icao_region, get_translation_centre_info
     from msgspec_http import msgspec_json_response
-    from routers import dissemination, evaluation, icao_opmet, validation, work_sessions
+    from routers import dissemination, evaluation, icao_opmet, validation
     from schemas.conversion import (
         ConversionIssue,
         ConversionIssueSeverity,
@@ -100,10 +100,10 @@ except ImportError:
     from services.validation import ValidationService
     from services.validation_orchestrator import get_validation_orchestrator
     from services.webhooks import webhook_service
+    from utilities.abuse_controls import install_abuse_controls
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from utilities.metar_normalizer import normalize_recent_weather_tokens
     from utilities.observability import install_fastapi_observability, setup_logging
-    from utilities.security import verify_supabase_token
     from utilities.tac_parser import extract_airport_code
 
 # Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033 / F13)
@@ -144,17 +144,11 @@ app = FastAPI(
             "name": "ICAO OPMET Statistics",
             "description": "Translation Centre statistics and ICAO OPMET Data Exchange compliance",
         },
-        {
-            "name": "Auth",
-            "description": "Authentication endpoints (Supabase proxy) — merged from packages/auth",
-        },
     ],
-    swagger_ui_parameters={
-        "persistAuthorization": True,
-    },
 )
 
 install_fastapi_observability(app=app, service_name="backend")
+install_abuse_controls(app)
 
 
 class ConvertRequestLoggingMiddleware:
@@ -571,7 +565,7 @@ def _product_uses_metar_tac_layers(product: Optional[str]) -> bool:
     return product_u in {"METAR", "SPECI"}
 
 
-# Customize OpenAPI schema to add Bearer token authentication
+# OpenAPI schema — public operator API (F21 / ADR-031); no Bearer JWT scheme.
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -585,16 +579,10 @@ def custom_openapi():
         routes=app.routes,
         tags=app.openapi_tags,
     )
-
-    # Add Bearer token security scheme
-    openapi_schema["components"]["securitySchemes"] = {
-        "BearerAuth": {
-            "type": "http",
-            "scheme": "bearer",
-            "bearerFormat": "JWT",
-            "description": "Enter your JWT token from the auth service (login at auth service or use DISABLE_AUTH=true for dev)",
-        }
-    }
+    # Ensure no leftover security schemes from FastAPI defaults.
+    components = openapi_schema.setdefault("components", {})
+    components.pop("securitySchemes", None)
+    openapi_schema.pop("security", None)
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
@@ -621,12 +609,8 @@ try:
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include evaluation router: {e}", exc_info=True)
 
-try:
-    app.include_router(work_sessions.router, prefix="/api/v1/work-sessions", tags=["Work Sessions"])
-    # Admin work-sessions list removed (S011 / ADR-021 / #697).
-    logger.info("DEBUG: included work sessions routers successfully")
-except Exception as e:  # pragma: no cover - defensive
-    logger.error(f"DEBUG: Failed to include work sessions routers: {e}", exc_info=True)
+# Work-sessions HTTP API removed (F7.h / ADR-031 / T5.3) — IndexedDB is the operator store.
+# /api/v1/work-sessions* returns 404.
 
 try:
     app.include_router(dissemination.router)
@@ -640,16 +624,7 @@ try:
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include ICAO OPMET router: {e}", exc_info=True)
 
-try:
-    from auth.api_supabase import legacy_router as auth_legacy_router
-    from auth.api_supabase import router as auth_router
-
-    app.include_router(auth_router)
-    app.include_router(auth_legacy_router)
-    # Product /admin/* routers not mounted (S011 / ADR-021 / #697).
-    logger.info("DEBUG: included auth routers at /auth/* successfully (admin product routes removed)")
-except Exception as e:
-    logger.error(f"DEBUG: Failed to include auth routers: {e}", exc_info=True)
+# Auth routers removed (F21 / ADR-031 / T5.2) — /auth/* returns 404.
 
 logger.info(f"DEBUG: total routes = {len(app.routes)}")
 
@@ -831,16 +806,12 @@ def get_schema_status():
     "/api/v1/lint-issue-catalog",
     tags=["Validation"],
     response_model=LintIssueCatalogResponse,
-    responses={
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
-    },
+    responses={},
 )
 async def lint_issue_catalog(
     product: Optional[str] = None,
-    user: dict = Depends(verify_supabase_token),
 ) -> Response:
     """Export the tac-validate issue registry for FE tooltips / catalog panel (E11-31)."""
-    _ = user
     entries = tac_catalog_entries(product=product)
     return msgspec_json_response(
         LintIssueCatalogResponse(
@@ -863,7 +834,6 @@ async def lint_issue_catalog(
     tags=["Validation"],
     response_model=LintTacResponse,
     responses={
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
         415: {"description": "Unsupported Media Type — multipart/form-data required"},
     },
 )
@@ -872,7 +842,6 @@ async def lint_tac(
     manual_text: str = Form(default="", description="TAC text to lint"),
     product: str = Form(default="METAR", description="Product hint when known"),
     files: Optional[List[UploadFile]] = File(None),
-    user: dict = Depends(verify_supabase_token),
 ) -> Response:
     """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A)."""
     content_type = (request.headers.get("content-type") or "").lower()
@@ -916,7 +885,6 @@ async def lint_tac(
     tags=["Conversion"],
     response_model=DecodeTacResponse,
     responses={
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
         415: {"description": "Unsupported Media Type — multipart/form-data required"},
         422: {"description": "Missing required product field"},
     },
@@ -926,10 +894,8 @@ async def decode_tac_endpoint(
     product: str = Form(..., description="TAC product (required)"),
     manual_text: str = Form(default="", description="TAC text to decode"),
     files: Optional[List[UploadFile]] = File(None),
-    user: dict = Depends(verify_supabase_token),
 ) -> Response:
     """Thin wrapper over ``tac2iwxxm.decode_tac`` (S011 / #702 / TC-F7-002)."""
-    _ = user
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -970,7 +936,6 @@ async def decode_tac_endpoint(
     response_model=ConvertBulletinResponse,
     responses={
         400: {"description": "Empty bulletin (no reports after split)"},
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
         415: {"description": "Unsupported Media Type — multipart/form-data required"},
         422: {"description": "AHL split failed or missing required fields"},
     },
@@ -983,7 +948,6 @@ async def convert_bulletin(
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
     iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
     lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
-    user: dict = Depends(verify_supabase_token),
 ) -> Response:
     """Split a WMO AHL bulletin and convert each TAC report (F6.bulletin / TC-F6-030).
 
@@ -1104,7 +1068,6 @@ async def convert_bulletin(
     "/api/v1/ingest-collect",
     tags=["Conversion"],
     responses={
-        401: {"description": "Unauthorized"},
         501: {"description": "COLLECT / FTBP ingest not implemented yet (placeholder)"},
     },
 )
@@ -1114,14 +1077,12 @@ async def ingest_collect(
     manual_text: str = Form(default="", description="COLLECT IWXXM XML or inflated gzip text"),
     profile: str = Form(default="annex3"),
     iwxxm_version: str = Form(default="2025-2"),
-    user: dict = Depends(verify_supabase_token),
 ) -> dict[str, Any]:
     """Placeholder for IWXXM COLLECT / FTBP ingest (ADR-024).
 
     Accepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI
     can exercise the path; returns HTTP 501 until member extraction + validate is shipped.
     """
-    _ = user
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -1172,9 +1133,7 @@ async def ingest_collect(
     "/api/v1/validate",
     tags=["Validation"],
     response_model=ValidateResponse,
-    responses={
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
-    },
+    responses={},
 )
 async def validate_comprehensive(
     request_body: Optional[ValidateRequest] = None,
@@ -1189,7 +1148,6 @@ async def validate_comprehensive(
     ),
     stop_on_error: bool = Form(default=True, description="Stop at first blocking layer failure"),
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
-    user: dict = Depends(verify_supabase_token),
 ):
     """Perform comprehensive 7-layer IWXXM validation.
 
@@ -1203,7 +1161,7 @@ async def validate_comprehensive(
     6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references
     7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists
 
-    **Authentication**: Requires valid Supabase JWT token
+    **Authentication**: Public (no JWT) — F21 / ADR-031
 
     **Request Parameters**:
     - **manual_text** (required): METAR TAC text to validate
@@ -1385,9 +1343,7 @@ async def validate_comprehensive(
     "/api/v1/convert",
     response_model=ConversionResponse,
     tags=["Conversion"],
-    responses={
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
-    },
+    responses={},
 )
 async def convert(
     request: Request,
@@ -1419,7 +1375,6 @@ async def convert(
         default="INFO",
         description="Minimum severity for conversion/validation/lint process issues echoed to the client",
     ),
-    user: dict = Depends(verify_supabase_token),
 ) -> Response:
     logger.info(
         "[CONVERT] Request received method=%s path=%s origin=%s content_type=%s has_auth_header=%s",
@@ -1488,7 +1443,7 @@ async def convert(
     - Input validation (ICAO code and TAC syntax)
     - Optional output validation (full 7-layer IWXXM validation)
 
-    **Authentication**: Requires valid Supabase JWT token in Authorization header
+    **Authentication**: Public (no JWT) — F21 / ADR-031
 
     **Request Parameters**:
     - **files** (array): Optional uploaded text files containing METAR TAC
@@ -1896,7 +1851,7 @@ async def convert(
                                     validation_errors={"validation": validation_summary},
                                     translation_duration_ms=0,
                                     icao_airport_code=extract_airport_code(metar_text.strip()),
-                                    user_id=user.get("sub"),
+                                    user_id=None,
                                 )
                                 airport_code = extract_airport_code(metar_text.strip())
                                 await webhook_service.notify_translation_failed(
@@ -1931,7 +1886,7 @@ async def convert(
                             validation_errors={"error": str(ve)},
                             translation_duration_ms=0,
                             icao_airport_code=extract_airport_code(metar_text.strip()),
-                            user_id=user.get("sub"),
+                            user_id=None,
                         )
                         airport_code = extract_airport_code(metar_text.strip())
                         await webhook_service.notify_translation_failed(
@@ -2030,7 +1985,7 @@ async def convert(
                         validation_layers_passed=validation_layers_passed,
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code(normalized_metar_text),
-                        user_id=user.get("sub"),
+                        user_id=None,
                     )
 
                     airport_code = extract_airport_code(normalized_metar_text)
@@ -2076,7 +2031,7 @@ async def convert(
                         validation_errors={"error": str(ce)},
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code(normalized_metar_text),
-                        user_id=user.get("sub"),
+                        user_id=None,
                     )
 
                     airport_code = extract_airport_code(normalized_metar_text)
@@ -2157,7 +2112,7 @@ async def convert(
                                     validation_errors={"validation": validation_summary},
                                     translation_duration_ms=0,
                                     icao_airport_code=extract_airport_code(manual_entry),
-                                    user_id=user.get("sub"),
+                                    user_id=None,
                                 )
                                 airport_code = extract_airport_code(manual_entry)
                                 await webhook_service.notify_translation_failed(
@@ -2193,7 +2148,7 @@ async def convert(
                             validation_errors={"error": str(ve)},
                             translation_duration_ms=0,
                             icao_airport_code=extract_airport_code(manual_entry),
-                            user_id=user.get("sub"),
+                            user_id=None,
                         )
                         airport_code = extract_airport_code(manual_entry)
                         await webhook_service.notify_translation_failed(
@@ -2271,7 +2226,7 @@ async def convert(
                     validation_errors=validation_errors_dict if validation_errors_dict else None,
                     translation_duration_ms=duration_ms,
                     icao_airport_code=extract_airport_code(manual_entry),
-                    user_id=user.get("sub"),
+                    user_id=None,
                 )
                 airport_code = extract_airport_code(manual_entry)
                 icao_region = get_icao_region(airport_code) if airport_code else "UNKNOWN"
@@ -2388,7 +2343,7 @@ async def convert(
                                         validation_errors={"validation": validation_summary},
                                         translation_duration_ms=0,
                                         icao_airport_code=extract_airport_code((data or "").strip()),
-                                        user_id=user.get("sub"),
+                                        user_id=None,
                                     )
                                     airport_code = extract_airport_code((data or "").strip())
                                     await webhook_service.notify_translation_failed(
@@ -2422,7 +2377,7 @@ async def convert(
                                 validation_errors={"error": str(ve)},
                                 translation_duration_ms=0,
                                 icao_airport_code=extract_airport_code((data or "").strip()),
-                                user_id=user.get("sub"),
+                                user_id=None,
                             )
                             airport_code = extract_airport_code((data or "").strip())
                             await webhook_service.notify_translation_failed(
@@ -2537,7 +2492,7 @@ async def convert(
                         validation_errors=validation_errors_dict if validation_errors_dict else None,
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code((data or "").strip()),
-                        user_id=user.get("sub"),
+                        user_id=None,
                     )
                     if soft_incomplete:
                         await webhook_service.notify_translation_failed(
@@ -2587,7 +2542,7 @@ async def convert(
                         validation_errors={"conversion_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
                         icao_airport_code=extract_airport_code((data or "").strip()) or None,
-                        user_id=user.get("sub"),
+                        user_id=None,
                     )
                     airport_code = extract_airport_code((data or "").strip()) or None
                     await webhook_service.notify_translation_failed(
@@ -2620,7 +2575,7 @@ async def convert(
                         validation_errors={"unexpected_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
                         icao_airport_code=extract_airport_code((data or "").strip()) or None,
-                        user_id=user.get("sub"),
+                        user_id=None,
                     )
                     airport_code = extract_airport_code((data or "").strip()) or None
                     await webhook_service.notify_translation_failed(
@@ -2671,9 +2626,7 @@ async def convert(
     "/api/v1/convert-zip",
     response_class=StreamingResponse,
     tags=["Conversion"],
-    responses={
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
-    },
+    responses={},
 )
 async def convert_zip(
     request: Request,
@@ -2683,7 +2636,6 @@ async def convert_zip(
         default="2025-2",
         description="Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
     ),
-    user: dict = Depends(verify_supabase_token),
 ) -> StreamingResponse:
     # Try to parse JSON body if Content-Type is application/json
     request_body = None
@@ -2703,7 +2655,7 @@ async def convert_zip(
     Similar to `/api/v1/convert` but returns results as a ZIP archive instead of JSON.
     Useful for batch processing or downloading multiple converted files.
 
-    **Authentication**: Requires valid Supabase JWT token in Authorization header
+    **Authentication**: Public (no JWT) — F21 / ADR-031
 
     **Request Parameters**:
     - **files** (array): Optional uploaded text files containing METAR TAC
@@ -2803,7 +2755,7 @@ async def convert_zip(
                     validation_errors=None,
                     translation_duration_ms=duration_ms,
                     icao_airport_code=extract_airport_code(manual_entry),
-                    user_id=user.get("sub"),
+                    user_id=None,
                 )
                 if translation_id:
                     translation_ids.append(translation_id)
@@ -2821,7 +2773,7 @@ async def convert_zip(
                     validation_errors={"conversion_error": str(e)},
                     translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
                     icao_airport_code=extract_airport_code(manual_entry),
-                    user_id=user.get("sub"),
+                    user_id=None,
                 )
                 airport_code = extract_airport_code(manual_entry)
                 await webhook_service.notify_translation_failed(
@@ -2880,7 +2832,7 @@ async def convert_zip(
                         validation_errors=None,
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code(data or ""),
-                        user_id=user.get("sub"),
+                        user_id=None,
                     )
                     if translation_id:
                         translation_ids.append(translation_id)
@@ -2899,7 +2851,7 @@ async def convert_zip(
                         validation_errors={"conversion_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
                         icao_airport_code=extract_airport_code(data or "") or None,
-                        user_id=user.get("sub"),
+                        user_id=None,
                     )
                     airport_code = extract_airport_code(data or "") or None
                     await webhook_service.notify_translation_failed(
@@ -2923,7 +2875,7 @@ async def convert_zip(
                         validation_errors={"unexpected_error": str(e)},
                         translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
                         icao_airport_code=extract_airport_code(data or "") or None,
-                        user_id=user.get("sub"),
+                        user_id=None,
                     )
                     airport_code = extract_airport_code(data or "") or None
                     await webhook_service.notify_translation_failed(
@@ -2964,7 +2916,7 @@ async def convert_zip(
                             validation_errors={"validation": validation_summary},
                             translation_duration_ms=0,
                             icao_airport_code=extract_airport_code(metar_text.strip()),
-                            user_id=user.get("sub"),
+                            user_id=None,
                         )
                         airport_code = extract_airport_code(metar_text.strip())
                         await webhook_service.notify_translation_failed(
@@ -2989,7 +2941,7 @@ async def convert_zip(
                         validation_errors={"validation_service_error": str(ve)},
                         translation_duration_ms=0,
                         icao_airport_code=extract_airport_code(metar_text.strip()),
-                        user_id=user.get("sub"),
+                        user_id=None,
                     )
                     airport_code = extract_airport_code(metar_text.strip())
                     await webhook_service.notify_translation_failed(
@@ -3024,7 +2976,7 @@ async def convert_zip(
                     validation_layers_passed=[],
                     translation_duration_ms=duration_ms,
                     icao_airport_code=extract_airport_code(metar_text.strip()),
-                    user_id=user.get("sub"),
+                    user_id=None,
                 )
                 if translation_id:
                     translation_ids.append(translation_id)
@@ -3043,7 +2995,7 @@ async def convert_zip(
                     validation_errors={"conversion_error": str(e)},
                     translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
                     icao_airport_code=extract_airport_code(metar_text.strip()),
-                    user_id=user.get("sub"),
+                    user_id=None,
                 )
                 airport_code = extract_airport_code(metar_text.strip())
                 await webhook_service.notify_translation_failed(
@@ -3067,7 +3019,7 @@ async def convert_zip(
                     validation_errors={"unexpected_error": str(e)},
                     translation_duration_ms=int((time.perf_counter() - start_time) * 1000) if start_time else 0,
                     icao_airport_code=extract_airport_code(metar_text.strip()),
-                    user_id=user.get("sub"),
+                    user_id=None,
                 )
                 airport_code = extract_airport_code(metar_text.strip())
                 await webhook_service.notify_translation_failed(

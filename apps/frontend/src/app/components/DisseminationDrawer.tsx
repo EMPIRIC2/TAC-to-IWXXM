@@ -22,7 +22,6 @@ import {
 export interface DisseminationDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  accessToken?: string;
   /** Converted IWXXM XML (convert-then-send path). */
   iwxxmXml?: string;
   /** Optional TAC text for drag-drop / convert paths. */
@@ -35,7 +34,6 @@ export interface DisseminationDrawerProps {
  *
  * @param props.open - Whether the drawer panel is visible
  * @param props.onOpenChange - Open-state callback
- * @param props.accessToken - Bearer JWT (required for preflight/send)
  * @param props.iwxxmXml - Optional in-session convert result
  * @param props.tacText - Optional TAC payload
  * @param props.product - Product tag for API (default metar)
@@ -43,7 +41,6 @@ export interface DisseminationDrawerProps {
 export function DisseminationDrawer({
   open,
   onOpenChange,
-  accessToken,
   iwxxmXml: propIwxxm,
   tacText: propTac,
   product = 'metar',
@@ -92,10 +89,6 @@ export function DisseminationDrawer({
   }, [preflight]);
 
   const runPreflight = useCallback(async () => {
-    if (!accessToken) {
-      setError('Authentication required. Please log in again.');
-      return;
-    }
     const params = parseByocParams();
     if (params === null) return;
     setBusy(true);
@@ -103,7 +96,7 @@ export function DisseminationDrawer({
     setSendResult(null);
     setPreflight(null);
     try {
-      const result = await disseminationPreflight(accessToken, {
+      const result = await disseminationPreflight({
         sink_type: sinkType,
         uri: needsUri ? uri : undefined,
         ddl: needsUri ? ddl : false,
@@ -120,10 +113,10 @@ export function DisseminationDrawer({
     } finally {
       setBusy(false);
     }
-  }, [accessToken, ddl, needsUri, parseByocParams, product, sinkType, uri]);
+  }, [ddl, needsUri, parseByocParams, product, sinkType, uri]);
 
   const runSend = useCallback(async () => {
-    if (!accessToken || !canSend || !preflight?.handle) return;
+    if (!canSend || !preflight?.handle) return;
     if (!hasPayload) {
       setError('Provide IWXXM or TAC payload (convert or drag-drop) before Send.');
       return;
@@ -131,7 +124,7 @@ export function DisseminationDrawer({
     setBusy(true);
     setError(null);
     try {
-      const result = await disseminationSend(accessToken, {
+      const result = await disseminationSend({
         handle: preflight.handle,
         iwxxm_xml: iwxxmXml.trim() || undefined,
         tac_text: tacText.trim() || undefined,
@@ -143,7 +136,7 @@ export function DisseminationDrawer({
     } finally {
       setBusy(false);
     }
-  }, [accessToken, canSend, hasPayload, iwxxmXml, preflight, product, tacText]);
+  }, [canSend, hasPayload, iwxxmXml, preflight, product, tacText]);
 
   const onDropFiles = useCallback((files: FileList | null) => {
     if (!files?.length) return;

@@ -26,7 +26,8 @@ export const CONVERT_AND_SEND_UPLOAD_OPTIONS: DatabaseUploadOptions = {
 
 export interface UploadConvertedFilesParams {
   files: ConvertedFileUpload[];
-  accessToken: string;
+  /** @deprecated F21 public — ignored when present */
+  accessToken?: string;
   options: DatabaseUploadOptions;
 }
 
@@ -67,21 +68,18 @@ function uploadErrorMessage(
  * Upload converted METAR/IWXXM files to the Supabase database edge function.
  *
  * @param params.files - Converted file payloads from the converter UI
- * @param params.accessToken - Supabase JWT for authorization
  * @param params.options - Storage format, destination, and include-original flag
  * @returns Parsed JSON response from the upload endpoint
  * @throws Error when the request fails or the server returns a non-OK status
  */
 export async function uploadConvertedFiles({
   files,
-  accessToken,
   options,
 }: UploadConvertedFilesParams): Promise<{ message?: string }> {
   const response = await fetch(edgeFunctionUrl(DATABASE_UPLOAD_SUBPATH), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       files,

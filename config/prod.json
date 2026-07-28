@@ -3,8 +3,7 @@
   "api": {
     "baseUrl": "https://metar-to-iwxxm-api.onrender.com",
     "corsOrigins": ["https://metar-to-iwxxm-frontend-v4-web.onrender.com"],
-    "frontendUrl": "https://metar-to-iwxxm-frontend-v4-web.onrender.com",
-    "disableAuth": false
+    "frontendUrl": "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
   },
   "supabase": {
     "url": "https://ktvxijislbtgqapllmuk.supabase.co"

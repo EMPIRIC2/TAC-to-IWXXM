@@ -295,26 +295,23 @@ class TestValidateMultipleEndpoint:
             assert data.get("total_execution_time_ms", 0) >= 0
 
 
-class TestValidationAuthenticationRequired:
-    """Test that validation endpoints require authentication."""
+class TestValidationIsPublic:
+    """F21: validation endpoints do not require JWT."""
 
-    def test_validate_multi_requires_auth(self):
-        """Test that validate-multi requires authentication."""
+    def test_validate_multi_is_public(self):
+        """validate-multi must not return 401/403 without Authorization."""
         client = TestClient(app)
         response = client.post("/api/v1/validation/validate-multi", json={"items": [{"content": "METAR FAOR"}]})
-        # Should fail without auth
-        assert response.status_code in [401, 403]
+        assert response.status_code not in [401, 403]
 
-    def test_validate_single_no_auth_required(self):
-        """Test that validate single endpoint doesn't require auth."""
+    def test_validate_single_is_public(self):
+        """validate must not require auth."""
         client = TestClient(app)
         response = client.post("/api/v1/validation/validate", json={"content": "METAR FAOR"})
-        # Single validate may or may not require auth - both are acceptable
-        assert response.status_code in [200, 401, 422]
+        assert response.status_code not in [401, 403]
 
-    def test_layers_no_auth_required(self):
-        """Test that layers endpoint doesn't require auth."""
+    def test_layers_is_public(self):
+        """layers endpoint must not require auth."""
         client = TestClient(app)
         response = client.get("/api/v1/validation/layers")
-        # Layers endpoint may or may not require auth
-        assert response.status_code in [200, 401]
+        assert response.status_code not in [401, 403]

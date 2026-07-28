@@ -218,12 +218,7 @@ vi.mock('./ui/sonner', () => ({
 }));
 
 describe('FileConverter Component', () => {
-  const defaultProps = {
-    onLogout: vi.fn(),
-    userEmail: 'test@example.com',
-    accessToken: 'test-token',
-    onSwitchToAdmin: vi.fn(),
-  };
+  const defaultProps = {};
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -240,6 +235,39 @@ describe('FileConverter Component', () => {
     it('should render the file converter', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       expect(container).toBeTruthy();
+    });
+
+    it('shows first-visit privacy notice and opens settings from footer', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      expect(screen.getByTestId('privacy-notice')).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: /dismiss privacy notice/i }));
+      expect(screen.queryByTestId('privacy-notice')).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole('button', { name: /open privacy settings/i }));
+      expect(screen.getByTestId('privacy-settings-dialog')).toBeInTheDocument();
+    });
+
+    it('opens privacy settings from the first-visit notice CTA', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(
+        screen.getByRole('button', { name: /open privacy settings from notice/i }),
+      );
+      expect(screen.queryByTestId('privacy-notice')).not.toBeInTheDocument();
+      expect(screen.getByTestId('privacy-settings-dialog')).toBeInTheDocument();
+    });
+
+    it('hides the privacy notice after it was previously acknowledged', async () => {
+      const { acknowledgePrivacyNotice } = await import('@/utils/privacyPreferences');
+      acknowledgePrivacyNotice();
+      render(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('privacy-notice')).not.toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /open privacy settings/i }),
+      ).toBeInTheDocument();
     });
 
     it('should display user email', () => {
@@ -592,77 +620,6 @@ describe('FileConverter Component', () => {
         await user.clear(bulletinInput);
         await user.type(bulletinInput, 'TEST01');
       }
-    });
-  });
-
-  describe('Logout Functionality', () => {
-    it('should have logout menu', async () => {
-      render(<FileConverter {...defaultProps} />);
-      const logoutMenuBtn = await screen.findByText(/logout/i, { selector: 'button' });
-      expect(logoutMenuBtn).toBeInTheDocument();
-    });
-
-    it('should call logout handler', async () => {
-      const user = userEvent.setup();
-      const onLogout = vi.fn();
-      render(<FileConverter {...defaultProps} onLogout={onLogout} />);
-
-      const logoutMenuBtn = await screen.findByText(/logout/i, { selector: 'button' });
-      await user.click(logoutMenuBtn);
-
-      // Menu should show options
-      await waitFor(() => {
-        const globalLogout = screen.queryByText(/all devices/i);
-        expect(globalLogout || logoutMenuBtn).toBeInTheDocument();
-      });
-    });
-
-    it('should handle global logout', async () => {
-      const user = userEvent.setup();
-      const onLogout = vi.fn();
-
-      render(<FileConverter {...defaultProps} onLogout={onLogout} />);
-
-      const logoutMenuBtn = await screen.findByLabelText(/logout options/i);
-      await user.click(logoutMenuBtn);
-
-      // Menu opens successfully
-      expect(screen.getByText(/this device/i)).toBeInTheDocument();
-    });
-  });
-
-  describe('Admin Features', () => {
-    it('should show admin button when onSwitchToAdmin is provided', async () => {
-      const onSwitchToAdmin = vi.fn();
-      render(<FileConverter {...defaultProps} onSwitchToAdmin={onSwitchToAdmin} />);
-
-      const adminSelect = await screen.findByLabelText(/switch view/i);
-      expect(adminSelect).toBeInTheDocument();
-      expect(screen.getByText(/admin dashboard/i)).toBeInTheDocument();
-    });
-
-    it('should call onSwitchToAdmin when admin button is clicked', async () => {
-      const user = userEvent.setup();
-      const onSwitchToAdmin = vi.fn();
-
-      render(<FileConverter {...defaultProps} onSwitchToAdmin={onSwitchToAdmin} />);
-
-      const adminSelect = await screen.findByLabelText(/switch view/i);
-      await user.selectOptions(adminSelect, 'admin');
-
-      await waitFor(() => {
-        expect(onSwitchToAdmin).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    it('should not show admin button when onSwitchToAdmin is undefined', () => {
-      render(<FileConverter {...defaultProps} onSwitchToAdmin={undefined} />);
-
-      const adminBtn = screen.queryByText(/admin|dashboard/i, { selector: 'button' });
-      // Admin-specific buttons should not be visible
-      expect(
-        adminBtn === null || adminBtn?.textContent?.includes('admin') === false,
-      ).toBe(true);
     });
   });
 
@@ -1058,35 +1015,6 @@ describe('FileConverter Component', () => {
       );
     });
 
-    it('uses local logout scope and triggers onLogout after timeout', async () => {
-      const user = userEvent.setup();
-      const onLogout = vi.fn();
-
-      render(<FileConverter {...defaultProps} onLogout={onLogout} />);
-
-      await user.click(screen.getByLabelText(/logout options/i));
-      await user.click(screen.getByLabelText(/sign out from this device only/i));
-
-      expect(mockSignOutWithScope).toHaveBeenCalledWith('local');
-      await waitFor(() => {
-        expect(onLogout).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    it('invokes global and others logout scopes', async () => {
-      const user = userEvent.setup();
-
-      render(<FileConverter {...defaultProps} />);
-
-      await user.click(screen.getByLabelText(/logout options/i));
-      await user.click(screen.getByLabelText(/sign out from all devices/i));
-      expect(mockSignOutWithScope).toHaveBeenCalledWith('global');
-
-      await user.click(screen.getByLabelText(/logout options/i));
-      await user.click(screen.getByLabelText(/sign out from other devices/i));
-      expect(mockSignOutWithScope).toHaveBeenCalledWith('others');
-    });
-
     it('shows toast when reading one dropped file fails', async () => {
       const user = userEvent.setup();
       const badFile = {
@@ -1454,22 +1382,6 @@ describe('FileConverter Component', () => {
       expect(mockToast.error).toHaveBeenCalledWith('validation parsing failed');
     });
 
-    it('keeps logout menu open when scoped logout fails', async () => {
-      const user = userEvent.setup();
-      const onLogout = vi.fn();
-      mockSignOutWithScope.mockResolvedValueOnce(false);
-
-      render(<FileConverter {...defaultProps} onLogout={onLogout} />);
-
-      await user.click(screen.getByLabelText(/logout options/i));
-      await user.click(screen.getByLabelText(/sign out from this device only/i));
-
-      await waitFor(() => {
-        expect(onLogout).not.toHaveBeenCalled();
-        expect(screen.getByText(/sign out scope/i)).toBeInTheDocument();
-      });
-    });
-
     it('handles result with xml fallback field when iwxxm_xml is missing', async () => {
       const user = userEvent.setup();
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
@@ -1789,7 +1701,6 @@ describe('FileConverter Component', () => {
 
       expect(mockUploadConvertedFiles).toHaveBeenCalledWith(
         expect.objectContaining({
-          accessToken: 'test-token',
           options: {
             format: 'iwxxm',
             destination: 'primary',
@@ -1821,42 +1732,14 @@ describe('FileConverter Component', () => {
       expect(screen.getByText(/send failed: upload rejected/i)).toBeInTheDocument();
     });
 
-    it('requires auth token for Convert&Send', async () => {
+    it('enables Convert&Send without auth token (F21)', async () => {
       const user = userEvent.setup();
-      const { container } = render(
-        <FileConverter {...defaultProps} accessToken={undefined} />,
-      );
+      const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       await user.type(textarea, 'METAR NO TOKEN');
 
       const convertAndSend = screen.getByTestId('convert-and-send-button');
-      expect(convertAndSend).toBeDisabled();
-      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
-    });
-
-    it('shows auth toast when Convert&Send is force-clicked without token', async () => {
-      const user = userEvent.setup();
-      const { container } = render(
-        <FileConverter {...defaultProps} accessToken={undefined} />,
-      );
-      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-      await user.type(textarea, 'METAR NO TOKEN');
-
-      const convertAndSend = screen.getByTestId('convert-and-send-button');
-      const reactPropsKey = Object.keys(convertAndSend).find((key) =>
-        key.startsWith('__reactProps'),
-      );
-      const onClick = reactPropsKey
-        ? (convertAndSend as unknown as Record<string, { onClick?: () => void }>)[
-            reactPropsKey
-          ]?.onClick
-        : undefined;
-      onClick?.();
-
-      expect(mockToast.error).toHaveBeenCalledWith(
-        'Authentication required. Please log in again.',
-      );
-      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+      expect(convertAndSend).not.toBeDisabled();
     });
 
     it('replaces prior result cards on successful convert (#555 / F1-R555-1)', async () => {

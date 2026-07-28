@@ -1,7 +1,8 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-26 (S021 — husky pre-push + restored remote CI test matrix)
+> **Last updated**: 2026-07-28 (S023 / EV-017 — F21 public app: `idb`, `slowapi`; delete `packages/auth`)
+> **Status**: **Accepted** for build (07-build T1.2 / D-S023-04-plan-approve-A) — drafted in bf4eaf1
 
 ## Runtime Dependencies
 
@@ -16,12 +17,13 @@
 | httpx | HTTP client | BSD | PyPI |
 | httpx2 | Starlette TestClient (dev) | BSD | PyPI |
 | python-multipart | File uploads | Apache-2.0 | PyPI |
-| supabase | Auth (via packages/auth) | MIT | PyPI |
+| slowapi | Public API rate limits (F21 / ADR-031) | MIT | PyPI (E17-15) |
 | tac2iwxxm | Conversion (F6) | MIT | workspace path |
 | tac-validate | TAC lint / rules | MIT | workspace path |
 | iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
 | gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
 | dissemination | F16–F19 sinks | MIT | workspace path (ADR-030) |
+| ~~supabase~~ (operator Auth) | ~~via packages/auth~~ | — | **Removed F21** (ADR-031); F8 uses service-role env only |
 
 ### packages/dissemination (S019 / EV-014 — M1)
 
@@ -85,12 +87,11 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 |---------|---------|---------|--------|
 | (historical GIFTs deps) | METAR parsing, XML | Per former pyproject | Removed per ADR-014; REQ-014 deprecated |
 
-### packages/auth
+### packages/auth — **Deleted (F21 / ADR-031)**
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| fastapi | Router mounting | MIT | PyPI |
-| supabase | JWT validation | MIT | PyPI |
+| (historical) | Operator JWT / `/auth/*` via Supabase | — | **Removed** S023 / EV-017 (E17-22=B); M4 deprecated |
 
 ### apps/frontend
 
@@ -98,7 +99,9 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 |---------|---------|---------|--------|
 | react | UI | MIT | npm |
 | vite | Bundler | MIT | npm |
-| @supabase/supabase-js | Client auth | MIT | npm |
+| **idb** | IndexedDB wrapper for local work sessions (F7.h) | ISC | npm (E17-12 / ADR-031) |
+| fake-indexeddb | Vitest IndexedDB polyfill for TC-004 | Unlicense | npm (dev; T2.3) |
+| ~~@supabase/supabase-js~~ | ~~Client auth~~ | — | **Removed** from operator Auth path (F21); drop dep when Auth code deleted |
 | CodeMirror 6 | F7 workbench editor | MIT | npm — pinned S011 M2 T2.5: `codemirror@6.0.2`, `@codemirror/view@6.43.6`, `@codemirror/state@6.7.1`, `@codemirror/commands@6.10.4`, `@codemirror/language@6.12.4` (autocomplete deferred until needed) |
 
 ## Workspace Tooling

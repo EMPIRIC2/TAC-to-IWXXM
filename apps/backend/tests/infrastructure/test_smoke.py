@@ -63,11 +63,12 @@ class TestSmokeAuthentication:
 
         assert response.status_code == 200
 
-    def test_unauthenticated_request_rejected(self, unauthenticated_client):
-        """Test authenticated endpoint rejects requests without token."""
+    def test_unauthenticated_convert_is_public(self, unauthenticated_client):
+        """F21: convert is public — missing Authorization must not yield 401."""
         response = unauthenticated_client.post("/api/v1/convert", json={"metars": ["METAR TEST"]})
 
-        assert response.status_code == 401
+        assert response.status_code != 401
+        assert response.status_code != 403
 
 
 @pytest.mark.smoke

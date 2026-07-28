@@ -24,7 +24,6 @@ dev = [
   "xsdata[cli]>=24.5",
   "xsdata-pydantic>=24.5",
   "metar-shared",
-  "metar-auth",
   "metar-backend",
   "metar-worker",
   "tac2iwxxm",
@@ -36,7 +35,6 @@ dev = [
 
 [tool.uv.sources]
 metar-shared = { workspace = true }
-metar-auth = { workspace = true }
 metar-backend = { workspace = true }
 metar-worker = { workspace = true }
 tac2iwxxm = { workspace = true }
@@ -47,7 +45,6 @@ dissemination = { workspace = true }
 [tool.uv.workspace]
 members = [
   "packages/shared",
-  "packages/auth",
   "packages/tac2iwxxm",
   "packages/iwxxm-validate",
   "packages/tac-validate",

@@ -63,24 +63,9 @@ describe('runtime-config', () => {
     expect(runtime.getSupabasePublishableKey()).toBe('publishable-key');
   });
 
-  it('reports disableAuth from loaded config', async () => {
-    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      ok: true,
-      json: vi.fn().mockResolvedValueOnce({
-        environment: 'e2e',
-        api: {
-          baseUrl: 'http://api.test',
-          frontendUrl: 'http://frontend.test',
-          disableAuth: false,
-        },
-        supabase: { url: 'https://project.supabase.co' },
-      }),
-    });
-
+  it('does not expose isAuthDisabled (F21 — public by default)', async () => {
     const runtime = await import('./runtime-config');
-    await runtime.initRuntimeConfig();
-
-    expect(runtime.isAuthDisabled()).toBe(false);
+    expect('isAuthDisabled' in runtime).toBe(false);
   });
 
   it('reuses cached config on subsequent initRuntimeConfig calls', async () => {
@@ -111,26 +96,6 @@ describe('runtime-config', () => {
     const config = await runtime.initRuntimeConfig();
 
     expect(config.api.baseUrl).toBe('http://localhost:18001/');
-  });
-
-  it('reports disableAuth true from loaded config', async () => {
-    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      ok: true,
-      json: vi.fn().mockResolvedValueOnce({
-        environment: 'local',
-        api: {
-          baseUrl: 'http://api.test',
-          frontendUrl: 'http://frontend.test',
-          disableAuth: true,
-        },
-        supabase: { url: 'https://project.supabase.co' },
-      }),
-    });
-
-    const runtime = await import('./runtime-config');
-    await runtime.initRuntimeConfig();
-
-    expect(runtime.isAuthDisabled()).toBe(true);
   });
 
   it('defaults environment mode when Vite MODE is unset', async () => {

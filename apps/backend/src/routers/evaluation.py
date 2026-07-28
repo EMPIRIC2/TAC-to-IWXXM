@@ -3,7 +3,7 @@
 from datetime import UTC, datetime
 from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 
 from ..clients.aviation_weather_client import AviationWeatherClient
 from ..schemas.evaluation import (
@@ -30,7 +30,6 @@ from ..services.evaluation_store import (
     update_job_status,
 )
 from ..utilities.conversion import ConversionError, convert_metar_tac
-from ..utilities.security import verify_supabase_token
 from ..utilities.station_sampler import StationSampler
 
 router = APIRouter()
@@ -141,14 +140,11 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
     "/jobs",
     response_model=EvaluationJobResponse,
     tags=["Evaluation"],
-    responses={
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
-    },
+    responses={},
 )
 async def create_evaluation_job(
     request: EvaluationRequest,
     background_tasks: BackgroundTasks,
-    user: dict = Depends(verify_supabase_token),
 ):
     """Create a new evaluation job."""
     if request.mode == EvaluationMode.SINGLE and not request.station_ids:
@@ -166,7 +162,7 @@ async def create_evaluation_job(
         station_count = len(all_stations)
 
     job_id = await create_job_in_db(
-        user_id=user["sub"],
+        user_id="anonymous",
         mode=request.mode.value,
         total_stations=station_count,
     )
@@ -185,16 +181,13 @@ async def create_evaluation_job(
     "/jobs/{job_id}",
     response_model=EvaluationJobStatus,
     tags=["Evaluation"],
-    responses={
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
-    },
+    responses={},
 )
 async def get_job_status(
     job_id: str,
-    user: dict = Depends(verify_supabase_token),
 ):
     """Get the status of an evaluation job."""
-    job = await get_job_for_user(job_id, user["sub"])
+    job = await get_job_for_user(job_id, "anonymous")
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
 
@@ -223,19 +216,16 @@ async def get_job_status(
     "/jobs/{job_id}/results",
     response_model=EvaluationResultsResponse,
     tags=["Evaluation"],
-    responses={
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
-    },
+    responses={},
 )
 async def get_job_results(
     job_id: str,
     page: int = Query(1, ge=1),
     per_page: int = Query(50, ge=1, le=100),
     status_filter: Optional[ComparisonStatus] = None,
-    user: dict = Depends(verify_supabase_token),
 ):
     """Get evaluation results for a job (paginated)."""
-    job = await get_job_for_user(job_id, user["sub"])
+    job = await get_job_for_user(job_id, "anonymous")
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
 
@@ -277,18 +267,12 @@ async def get_job_results(
     "/jobs",
     response_model=JobListResponse,
     tags=["Evaluation"],
-    responses={
-        401: {"description": "Unauthorized - Invalid or missing authentication token"},
-    },
+    responses={},
 )
-async def list_user_jobs(
-    page: int = Query(1, ge=1),
-    per_page: int = Query(20, ge=1, le=100),
-    user: dict = Depends(verify_supabase_token),
-):
+async def list_user_jobs(page: int = Query(1, ge=1), per_page: int = Query(20, ge=1, le=100)):
     """List all evaluation jobs for the current user."""
     offset = (page - 1) * per_page
-    jobs_data, total_count = await list_jobs_for_user(user["sub"], per_page, offset)
+    jobs_data, total_count = await list_jobs_for_user("anonymous", per_page, offset)
 
     jobs = []
     for job in jobs_data:

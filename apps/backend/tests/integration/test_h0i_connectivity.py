@@ -1,19 +1,17 @@
 """H0i connectivity gate — in-process cross-package integration (test-plan.md §H0i).
 
-Verifies apps/backend wires packages/auth, packages/tac2iwxxm, and CORS on one host
-without a separate auth microservice. No docker-compose or live Supabase required.
+Verifies apps/backend wires packages/tac2iwxxm and CORS on one host without a
+separate auth microservice (F21 / ADR-031). No docker-compose required.
 """
 
 from __future__ import annotations
 
 from collections.abc import Iterator
-from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
 
 from src.api import app
-from src.utilities.security import verify_supabase_token
 
 pytestmark = [pytest.mark.integration, pytest.mark.h0i]
 
@@ -23,27 +21,19 @@ BROWSER_ORIGIN = "http://localhost:18000"
 
 @pytest.fixture
 def h0i_client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
-    """Authenticated in-process client with auth enforcement enabled."""
-    monkeypatch.setenv("DISABLE_AUTH", "false")
+    """Public in-process client (operator Auth removed)."""
     monkeypatch.setenv("METAR_CONFIG_ENV", "local")
     monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
     monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "true")
 
-    from src.utilities import security as sec
-
-    monkeypatch.setattr(sec, "DISABLE_AUTH", False)
-
-    async def _auth_user() -> dict[str, str]:
-        return {"sub": "h0i-user", "aud": "test"}
-
-    app.dependency_overrides[verify_supabase_token] = _auth_user
+    app.dependency_overrides.clear()
     client = TestClient(app)
     yield client
     app.dependency_overrides.clear()
 
 
 class TestH0iCorsPreflight:
-    """Browser CORS preflight against merged API host."""
+    """Browser CORS preflight against public API host."""
 
     def test_options_convert_allows_post(self, h0i_client: TestClient) -> None:
         response = h0i_client.options(
@@ -57,7 +47,8 @@ class TestH0iCorsPreflight:
         allow_methods = response.headers.get("access-control-allow-methods", "")
         assert "POST" in allow_methods.upper()
 
-    def test_options_auth_login_allows_post(self, h0i_client: TestClient) -> None:
+    def test_options_auth_login_gone(self, h0i_client: TestClient) -> None:
+        """F21: /auth/login is not mounted — CORS may still answer OPTIONS with 200."""
         response = h0i_client.options(
             "/auth/login",
             headers={
@@ -65,11 +56,16 @@ class TestH0iCorsPreflight:
                 "Access-Control-Request-Method": "POST",
             },
         )
-        assert response.status_code == 200
-        allow_methods = response.headers.get("access-control-allow-methods", "")
-        assert "POST" in allow_methods.upper()
+        assert response.status_code in {200, 404, 405}
+        # Actual route must be gone (POST).
+        post = h0i_client.post(
+            "/auth/login",
+            json={"email": "h0i@example.test", "password": "x"},
+        )
+        assert post.status_code == 404
 
-    def test_options_work_sessions_allows_patch_and_delete(self, h0i_client: TestClient) -> None:
+    def test_options_work_sessions_gone(self, h0i_client: TestClient) -> None:
+        """F21 / F7.h: work-sessions HTTP removed — OPTIONS may be CORS-only."""
         for method in ("PATCH", "DELETE"):
             response = h0i_client.options(
                 "/api/v1/work-sessions",
@@ -78,9 +74,8 @@ class TestH0iCorsPreflight:
                     "Access-Control-Request-Method": method,
                 },
             )
-            assert response.status_code == 200
-            allow_methods = response.headers.get("access-control-allow-methods", "").upper()
-            assert method in allow_methods
+            assert response.status_code in {200, 404, 405}
+        assert h0i_client.get("/api/v1/work-sessions").status_code == 404
 
     @pytest.mark.parametrize(
         "path",
@@ -100,26 +95,10 @@ class TestH0iCorsPreflight:
         assert "POST" in allow_methods.upper()
 
 
-class TestH0iAuthConversionWiring:
-    """Auth package + tac2iwxxm conversion on single backend deployable."""
+class TestH0iPublicConversionWiring:
+    """tac2iwxxm conversion on single backend deployable without Auth."""
 
-    def test_convert_requires_auth_when_enforced(self, h0i_client: TestClient) -> None:
-        app.dependency_overrides.clear()
-        try:
-            response = TestClient(app).post(
-                "/api/v1/convert",
-                data={"manual_text": SAMPLE_METAR},
-            )
-        finally:
-
-            async def _auth_user() -> dict[str, str]:
-                return {"sub": "h0i-user", "aud": "test"}
-
-            app.dependency_overrides[verify_supabase_token] = _auth_user
-
-        assert response.status_code == 401
-
-    def test_convert_returns_iwxxm_when_authenticated(self, h0i_client: TestClient) -> None:
+    def test_convert_succeeds_without_authorization(self, h0i_client: TestClient) -> None:
         response = h0i_client.post(
             "/api/v1/convert",
             data={"manual_text": SAMPLE_METAR},
@@ -129,34 +108,12 @@ class TestH0iAuthConversionWiring:
         assert payload["successful"] >= 1
         assert "<iwxxm" in payload["results"][0]["content"].lower()
 
-    def test_auth_login_route_on_same_host(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        from auth.api_supabase import get_supabase_proxy
-
-        mock_proxy = MagicMock()
-        mock_proxy.sign_in.return_value = {
-            "user": {"id": "h0i-user", "email": "h0i@example.test", "metadata": {}},
-            "session": {
-                "access_token": "h0i-token",
-                "refresh_token": "h0i-refresh",
-                "expires_at": 4_102_444_800,
-            },
-        }
-
-        def _override() -> MagicMock:
-            return mock_proxy
-
-        app.dependency_overrides[get_supabase_proxy] = _override
-        try:
-            client = TestClient(app)
-            response = client.post(
-                "/auth/login",
-                json={"email": "h0i@example.test", "password": "SecretPass1!"},
-            )
-        finally:
-            app.dependency_overrides.pop(get_supabase_proxy, None)
-
-        assert response.status_code == 200
-        assert response.json()["session"]["access_token"] == "h0i-token"
+    def test_auth_login_route_gone(self, h0i_client: TestClient) -> None:
+        response = h0i_client.post(
+            "/auth/login",
+            json={"email": "h0i@example.test", "password": "SecretPass1!"},
+        )
+        assert response.status_code == 404
 
 
 class TestH0iPublicEndpoints:

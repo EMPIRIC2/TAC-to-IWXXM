@@ -2,9 +2,9 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: Render (Docker web service + static site + Background Worker)
-> **Last updated**: 2026-07-21 (S019 / EV-014 T3.3 — wis2box Compose harness)
+> **Last updated**: 2026-07-28 (S023 / EV-017 — F21 public app + F22 privacy)
 
-## Topology (post-monorepo + F8)
+## Topology (post-monorepo + F8 + F21)
 
 | Service | Type | Source | Port |
 |---------|------|--------|------|
@@ -17,8 +17,9 @@
 merges to `main`). Dashboard:
 https://dashboard.render.com/worker/srv-d99u0i8k1i2s73eq5oqg
 
-Auth is **not** a separate deployable — included in metar-api via packages/auth.
-F8 worker shares packages with the API image family but is a **separate** Render service.
+**F21**: Operator Auth is **removed** — no `packages/auth`, no `/auth/*`, no browser JWT.
+`packages/auth` is deleted from the monorepo (EV-017 / ADR-031). The API remains a single
+deployable for convert/validate/dissemination; F8 worker stays a **separate** Render service.
 
 **Observability**: Render built-in logs only — Loki/Prometheus/Grafana removed from Blueprint (ADR-006).
 
@@ -26,15 +27,22 @@ F8 worker shares packages with the API image family but is a **separate** Render
 
 > **S003 delta:** Secrets-only `.env`; non-secrets in `config/{local,prod}.json`. See
 > [config-spec.md](config-spec.md), [env-contract.md](env-contract.md), ADR-010.
+> **F21**: Canonical env contract rewritten for public app — [env-contract.md](env-contract.md).
 
-### Secrets (API runtime — Render dashboard, `sync: false`)
+### Secrets (API runtime — Render dashboard)
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `SUPABASE_PUBLISHABLE_KEY` | Yes | `sb_publishable_*` — JWT validation |
-| `SUPABASE_SECRET_KEY` | Yes | `sb_secret_*` — Auth Admin API scripts only |
-| `DATABASE_URL` | Yes | Postgres pooler from Supabase Connect |
+| `RATE_LIMIT_PUBLIC_PER_MIN` | No (default 60) | Public convert/validate rate limit |
+| `RATE_LIMIT_DISSEMINATION_PER_MIN` | No (default 10) | Dissemination preflight/send rate limit |
+| `MAX_REQUEST_BODY_BYTES` | No (default 2 MiB) | Request body cap |
+| `DISSEMINATION_EGRESS_ALLOWLIST` | Yes for F16–F19 | Host/CIDR allowlist (empty ⇒ deny) |
+| `DATABASE_URL` | Optional | Legacy ops / F8-adjacent Postgres only — **not** operator Auth |
 | `METAR_CONFIG_ENV` | Yes (prod) | `prod` on Render; selects `config/prod.json` |
+
+**Retired for operator API (F21 — remove from Render if still set):**
+`SUPABASE_PUBLISHABLE_KEY` (browser Auth), `DISABLE_AUTH`, operator Auth JWTs.
+`SUPABASE_SECRET_KEY` remains optional for **server ops / archive scripts only**.
 
 ### Secrets (Worker runtime — F8, ADR-018)
 
@@ -49,51 +57,50 @@ F8 worker shares packages with the API image family but is a **separate** Render
 
 | Field | Description |
 |-------|-------------|
-| `api.baseUrl` | HTTPS URL of metar-api (`/api/v1`, `/auth`) — **no** `/admin` |
-| `api.frontendUrl` | Public static site URL (auth redirects) |
+| `api.baseUrl` | HTTPS URL of metar-api (`/api/v1` only — **no** `/auth`) |
+| `api.frontendUrl` | Public static site URL |
 | `api.corsOrigins` | Allowed browser origins |
-| `api.disableAuth` | `false` in production |
-| `supabase.url` | Supabase project URL |
 | `validation.*`, `observability.*` | WMO validation and logging flags |
 | `liveE2e.*` | Canonical URLs for `make test-live*` |
+
+**Removed (F21):** `api.disableAuth`, frontend Auth / Supabase publishable key injection for login.
 
 ### Frontend static deploy
 
 1. Copy `config/prod.json` → `public/config.json` at build.
-2. Inject `supabase.publishableKey` from `SUPABASE_PUBLISHABLE_KEY` (dashboard secret — not in git).
-3. App fetches `/config.json` at bootstrap (replaces `VITE_*` build-time embed per ADR-010).
+2. App fetches `/config.json` at bootstrap (replaces `VITE_*` build-time embed per ADR-010).
+3. No Auth key injection — work history is IndexedDB (F7.h / ADR-031); privacy prefs are localStorage (F22).
 
 ### Local development
 
 | Setting | Source |
 |---------|--------|
-| Secrets | Repo-root `.env` (five vars — see `.env.example`) |
+| Secrets | Repo-root `.env` (see `.env.example` + env-contract) |
 | URLs / CORS / flags | `config/local.json` via `METAR_CONFIG_ENV=local` |
 | Ports | Frontend **18000**, API **18001** (standardized S003-R4) |
 
-### Live test (manual T3 — credentials in `.env` only)
+### Live test (manual T3 — public app, F21)
 
 | Variable | Source |
 |----------|--------|
 | `LIVE_API_URL` | `config/prod.json` → `liveE2e.apiUrl` (override via env optional) |
 | `LIVE_FRONTEND_URL` | `config/prod.json` → `liveE2e.frontendUrl` |
 | `PLAYWRIGHT_BASE_URL` | Same as `LIVE_FRONTEND_URL` for H6 |
-| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Local `.env` / CI — ordinary user for live login (replaces `ADMIN_*`) |
 
-JWT via `POST ${LIVE_API_URL}/auth/login` — no long-lived tokens in `.env`.
+**No** `E2E_USER_*` / Auth login fixture — public convert; Auth-gone coverage is `TC-F21-auth-gone`.
 
-**Deprecated** (one-release shim): `VITE_*`, `SUPABASE_ANON_KEY` (frontend),
-`METAR_CORS_ORIGINS`, `FRONTEND_URL`, `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
+**Deprecated** (do not set for operator product): `VITE_*` Auth embeds, `SUPABASE_ANON_KEY` (frontend),
+`METAR_CORS_ORIGINS`, `FRONTEND_URL`, `ADMIN_*`, `E2E_USER_*`, `DISABLE_AUTH`.
 (`SUPABASE_SERVICE_ROLE_KEY` remains canonical for **F8 worker** writers per env-contract.)
 
 Operator sync: [env-sync-runbook.md](ops/env-sync-runbook.md). Verify: `make env-check`.
 
 ### Redeploy order
 
-1. Deploy **metar-api** with secrets + `METAR_CONFIG_ENV=prod` (CORS from `config/prod.json`).
-2. Rebuild **metar-frontend** with `/config.json` injection.
-3. Deploy **metar-worker** with poller + service-role secrets (after F8 migrations applied).
-4. Run H4 CORS preflight + H5 bundle verification + H6/H7 as applicable + `make env-check`.
+1. Deploy **metar-api** with rate-limit / allowlist env + `METAR_CONFIG_ENV=prod` (CORS from `config/prod.json`).
+2. Rebuild **metar-frontend** with `/config.json` (no Auth key injection).
+3. Deploy **metar-worker** with poller + service-role secrets (unchanged F8 path).
+4. Run H4 CORS preflight + H5 bundle verification + H6 (public Playwright) + `make env-check`.
 
 See `.cursor/skills/connectivity-gates.md` for H-tier definitions.
 
@@ -185,8 +192,9 @@ BYOC.
 | Frontend | repo root | `apps/frontend/Dockerfile` |
 | Worker | repo root | `apps/worker/Dockerfile` (T6.2) |
 
-API image must include: apps/backend, packages/auth, packages/tac2iwxxm (post-cutover; gifts
-until then), packages/tac-validate, packages/iwxxm-validate, packages/shared, vendor/schemas.
+API image must include: apps/backend, packages/tac2iwxxm, packages/tac-validate,
+packages/iwxxm-validate, packages/dissemination, packages/shared, vendor/schemas.
+(**No** `packages/auth` — deleted F21 / EV-017.)
 
 Worker image must include: apps/worker, same packages as API (no frontend).
 
@@ -204,9 +212,13 @@ Render health check path: `/health` on metar-api.
 
 Supabase migrations live in `supabase/migrations/` and are applied externally (not at API boot).
 
-### F5 work sessions (EV-004)
+### F5 work sessions (EV-004) — **historical; superseded by F21 IndexedDB**
 
-Before deploying F5 to production:
+Server `tac_work_sessions` + Auth/RLS path is **retired** for the operator product (F21 /
+ADR-031). Work history is browser IndexedDB. Legacy rows may be archived ~30 days (ops note
+from T5.5) — not a product API.
+
+Historical apply steps (archive only):
 
 1. **S003 gate** — rotate to `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY`; run `make env-check`.
 2. **Advisor migrations** — apply `003`–`006` (security advisors) on the METAR Supabase project.
@@ -282,12 +294,12 @@ make test-live                # H4–H5 → H3 → H6
 
 | Tier | What | Command | Required env |
 |------|------|---------|--------------|
-| H3 | Live API smoke | `make test-live-api` | `LIVE_API_URL`, `E2E_USER_*` (when auth on) |
+| H3 | Live API smoke | `make test-live-api` | `LIVE_API_URL` (public — no Auth) |
 | H0c | CORS policy (in-process) | `pytest apps/backend/tests/unit/test_cors_policy.py` | — |
 | H0i | API integration | `pytest apps/backend/tests/integration` | local stack |
 | H4 | Live CORS preflight | `make test-live-connectivity` | `LIVE_API_URL`, `LIVE_FRONTEND_URL` |
 | H5 | Frontend bundle URLs | `make test-live-connectivity` | `LIVE_FRONTEND_URL`, `VITE_API_BASE_URL` |
-| H6 | Live Playwright | `make test-live-e2e` | `PLAYWRIGHT_BASE_URL`, `E2E_USER_*` |
+| H6 | Live Playwright | `make test-live-e2e` | `PLAYWRIGHT_BASE_URL` (public; `TC-F21-auth-gone`) |
 
 ### Post-deploy sequence
 
@@ -299,7 +311,7 @@ make test-live                # H4–H5 → H3 → H6
    export LIVE_FRONTEND_URL="https://metar-to-iwxxm-frontend-v4-web.onrender.com"
    export PLAYWRIGHT_BASE_URL="${LIVE_FRONTEND_URL}"
    export VITE_API_BASE_URL="${LIVE_API_URL}"
-   # E2E_USER_EMAIL / E2E_USER_PASSWORD from .env (when auth enabled)
+   # F21: no E2E_USER_* — public convert
    make test-live
    ```
 

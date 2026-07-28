@@ -18,7 +18,6 @@ vi.mock('/utils/apiBase', () => ({
 const defaultProps = {
   open: true,
   onOpenChange: vi.fn(),
-  accessToken: 'drawer-token',
   iwxxmXml: '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"/>',
   product: 'metar',
 };
@@ -147,7 +146,7 @@ describe('DisseminationDrawer', () => {
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
-          Authorization: 'Bearer drawer-token',
+          'Content-Type': 'application/json',
         }),
       }),
     );
@@ -281,9 +280,19 @@ describe('DisseminationDrawer', () => {
     expect(sendBody.tac_text).toContain('METAR KJFK');
   });
 
-  it('keeps Send disabled without auth token even after typing URI', async () => {
+  it('allows preflight without auth token (F21 public)', async () => {
     const user = userEvent.setup();
-    render(<DisseminationDrawer {...defaultProps} accessToken={undefined} />);
+    vi.mocked(global.fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        ok: true,
+        connectivity_ok: true,
+        diffs: [],
+        handle: 'h1',
+      }),
+    } as Response);
+
+    render(<DisseminationDrawer {...defaultProps} />);
 
     await user.type(
       screen.getByTestId('dissemination-uri-input'),
@@ -292,12 +301,12 @@ describe('DisseminationDrawer', () => {
     await user.click(screen.getByTestId('dissemination-preflight-button'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('dissemination-error')).toHaveTextContent(
-        /authentication/i,
-      );
+      expect(global.fetch).toHaveBeenCalled();
     });
-    expect(screen.getByTestId('dissemination-send-button')).toBeDisabled();
-    expect(global.fetch).not.toHaveBeenCalled();
+    const init = vi.mocked(global.fetch).mock.calls[0][1] as RequestInit;
+    expect(
+      (init.headers as Record<string, string> | undefined)?.Authorization,
+    ).toBeUndefined();
   });
 
   it('rejects invalid BYOC JSON before calling preflight', async () => {

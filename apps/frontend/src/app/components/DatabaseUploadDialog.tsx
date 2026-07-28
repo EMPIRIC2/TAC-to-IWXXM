@@ -15,14 +15,12 @@ interface DatabaseUploadDialogProps {
   convertedFiles: ConvertedFileUpload[];
   isOpen: boolean;
   onClose: () => void;
-  accessToken?: string;
 }
 
 export function DatabaseUploadDialog({
   convertedFiles,
   isOpen,
   onClose,
-  accessToken,
 }: DatabaseUploadDialogProps) {
   const [format, setFormat] = useState<DatabaseFormat>('iwxxm');
   const [destination, setDestination] = useState<UploadDestination>('primary');
@@ -35,18 +33,12 @@ export function DatabaseUploadDialog({
   if (!isOpen) return null;
 
   const handleUpload = async () => {
-    if (!accessToken) {
-      toast.error('Authentication required. Please log in again.');
-      return;
-    }
-
     setIsUploading(true);
     setUploadStatus('idle');
 
     try {
       const data = await uploadConvertedFiles({
         files: convertedFiles,
-        accessToken,
         options: {
           format,
           destination,

@@ -132,8 +132,10 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
         validateOutput: true,
         validationLevel: 'comprehensive',
         stopOnError: false,
-        accessToken: 'mapping-token',
       }),
+    );
+    expect(mockConvertMetarToIwxxm.mock.calls[0]?.[0]).not.toHaveProperty(
+      'accessToken',
     );
   });
 

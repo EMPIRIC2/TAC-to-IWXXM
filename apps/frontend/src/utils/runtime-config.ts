@@ -8,7 +8,6 @@ export type MetarRuntimeConfig = {
     baseUrl: string;
     frontendUrl: string;
     corsOrigins?: string[];
-    disableAuth?: boolean;
   };
   supabase: {
     url: string;
@@ -72,12 +71,7 @@ export function getSupabaseUrl(): string {
   return getRuntimeConfig().supabase.url;
 }
 
-/** Supabase publishable key for browser client. */
+/** Supabase publishable key for browser client (edge helpers only — F21 has no Auth). */
 export function getSupabasePublishableKey(): string {
   return getRuntimeConfig().supabase.publishableKey || '';
-}
-
-/** Whether auth UI and enforcement are bypassed (local dev only). */
-export function isAuthDisabled(): boolean {
-  return getRuntimeConfig().api.disableAuth === true;
 }

@@ -11,24 +11,14 @@ docs/test-plan.md TC-F7-002–005; connectivity-gates H0i.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
-from uuid import UUID, uuid4
+from typing import Any
+from uuid import uuid4
 
 import pytest
-from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 from src.api import app
-from src.routers import work_sessions as ws_router
-from src.schemas.work_session import (
-    WorkSession,
-    WorkSessionCreate,
-    WorkSessionProduct,
-    WorkSessionStatus,
-    WorkSessionUpdate,
-)
 from src.utilities.security import verify_supabase_token
 
 FIXTURES = Path(__file__).resolve().parents[4] / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "product_matrix"
@@ -36,7 +26,6 @@ VALID_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
 BAD_METAR_TAC = "METAR XXXX NOT_A_REAL_REPORT GARBAGE="
 BROWSER_ORIGIN = "http://localhost:18000"
 USER_ID = uuid4()
-NOW = datetime(2026, 7, 14, 22, 0, tzinfo=timezone.utc)
 
 pytestmark = [pytest.mark.integration]
 
@@ -152,88 +141,10 @@ class TestUiSoftPreviewConnection:
             _assert_optional_offsets(span)
 
 
-def _session_row(
-    *,
-    product: WorkSessionProduct,
-    status: WorkSessionStatus = WorkSessionStatus.DRAFT,
-    session_id: UUID | None = None,
-    manual_tac: str = "",
-) -> WorkSession:
-    return WorkSession(
-        id=session_id or uuid4(),
-        user_id=USER_ID,
-        product=product,
-        status=status,
-        title=f"{product.value} draft",
-        manual_tac=manual_tac,
-        created_at=NOW,
-        updated_at=NOW,
-    )
-
-
-class _SessionStore:
-    def __init__(self) -> None:
-        self.rows: dict[UUID, WorkSession] = {}
-
-    def list_sessions(self, **kwargs: Any) -> tuple[list[WorkSession], int]:
-        products: Optional[list[WorkSessionProduct]] = kwargs.get("products")
-        items = list(self.rows.values())
-        if products:
-            allowed = {p.value for p in products}
-            items = [r for r in items if r.product.value in allowed]
-        return items, len(items)
-
-    def get_session(self, session_id: UUID) -> WorkSession:
-        row = self.rows.get(session_id)
-        if row is None:
-            raise HTTPException(status_code=404, detail="Work session not found")
-        return row
-
-    def create_session(self, user_id: str, payload: WorkSessionCreate) -> WorkSession:
-        row = _session_row(
-            product=payload.product,
-            status=payload.status or WorkSessionStatus.DRAFT,
-            manual_tac=payload.manual_tac or "",
-        )
-        self.rows[row.id] = row
-        return row
-
-    def update_session(self, session_id: UUID, payload: WorkSessionUpdate) -> WorkSession:
-        row = self.get_session(session_id)
-        data = row.model_dump()
-        if payload.manual_tac is not None:
-            data["manual_tac"] = payload.manual_tac
-        if payload.product is not None:
-            data["product"] = payload.product
-        if payload.status is not None:
-            data["status"] = payload.status
-        updated = WorkSession(**data)
-        self.rows[session_id] = updated
-        return updated
-
-    def soft_delete(self, session_id: UUID) -> WorkSession:
-        return self.get_session(session_id)
-
-    def restore_session(self, session_id: UUID) -> WorkSession:
-        return self.get_session(session_id)
-
-
 class TestUiWorkSessionsConnection:
-    """UI connection: My METARs / workbench history → /api/v1/work-sessions*."""
+    """F21 / F7.h: work-sessions HTTP is gone; FE uses IndexedDB."""
 
-    @pytest.fixture
-    def sessions_client(self, client: TestClient):
-        store = _SessionStore()
-        store.rows[uuid4()] = _session_row(product=WorkSessionProduct.METAR, manual_tac=VALID_METAR)
-        store.rows[uuid4()] = _session_row(product=WorkSessionProduct.TAF, manual_tac="TAF KJFK 121730Z ...")
-        app.dependency_overrides[ws_router.work_session_service] = lambda: store
-        yield client, store
-        app.dependency_overrides.pop(ws_router.work_session_service, None)
-
-    def test_create_and_list_include_product_for_frontend(
-        self, sessions_client: tuple[TestClient, _SessionStore]
-    ) -> None:
-        client, store = sessions_client
+    def test_work_sessions_http_gone_for_frontend(self, client: TestClient) -> None:
         created = client.post(
             "/api/v1/work-sessions",
             headers={"Authorization": "Bearer t"},
@@ -244,38 +155,13 @@ class TestUiWorkSessionsConnection:
                 "manual_tac": "TAF KJFK 121730Z 1218/1324 18010KT=",
             },
         )
-        assert created.status_code in {200, 201}, created.text
-        body = created.json()
-        assert body["product"] == "taf"
-        assert isinstance(body["id"], str)
-        assert isinstance(body["manual_tac"], str)
-        assert isinstance(body["status"], str)
+        assert created.status_code == 404, created.text
 
-        # Seed My METARs filter after create so list totals stay stable.
-        store.rows[uuid4()] = _session_row(product=WorkSessionProduct.SPECI)
-
-        my_metars = client.get(
+        listed = client.get(
             "/api/v1/work-sessions?product=metar,speci",
             headers={"Authorization": "Bearer t"},
         )
-        assert my_metars.status_code == 200
-        listing = my_metars.json()
-        assert isinstance(listing["items"], list)
-        assert isinstance(listing["total"], int)
-        assert isinstance(listing["page"], int)
-        assert isinstance(listing["limit"], int)
-        products = {item["product"] for item in listing["items"]}
-        assert products <= {"metar", "speci"}
-        assert "taf" not in products
-
-        workbench = client.get(
-            "/api/v1/work-sessions?limit=50",
-            headers={"Authorization": "Bearer t"},
-        )
-        assert workbench.status_code == 200
-        all_products = {item["product"] for item in workbench.json()["items"]}
-        assert "taf" in all_products
-        assert "metar" in all_products
+        assert listed.status_code == 404
 
 
 class TestUiBrowserCorsConnection:

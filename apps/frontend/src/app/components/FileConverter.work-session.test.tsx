@@ -113,13 +113,7 @@ describe('FileConverter F5 workflow', () => {
   });
 
   it('shows draft saved indicator when authenticated (T4.11)', () => {
-    render(
-      <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
-      />,
-    );
+    render(<FileConverter />);
     expect(screen.getByTestId('autosave-indicator')).toHaveTextContent('Draft saved');
     expect(screen.getByTestId('new-metar-button')).toBeInTheDocument();
   });
@@ -127,9 +121,6 @@ describe('FileConverter F5 workflow', () => {
   it('disables convert buttons for finished sessions (F5-R35)', () => {
     render(
       <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
         loadedWorkSession={
           {
             id: 'sess-1',
@@ -162,9 +153,6 @@ describe('FileConverter F5 workflow', () => {
 
     render(
       <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
         loadedWorkSession={
           {
             id: 'sess-1',
@@ -210,14 +198,7 @@ describe('FileConverter F5 workflow', () => {
     const user = userEvent.setup();
     const onNewMetar = vi.fn();
 
-    render(
-      <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
-        onNewMetar={onNewMetar}
-      />,
-    );
+    render(<FileConverter onNewMetar={onNewMetar} />);
 
     await user.click(screen.getByTestId('new-metar-button'));
     expect(onNewMetar).toHaveBeenCalled();
@@ -232,13 +213,7 @@ describe('FileConverter F5 workflow', () => {
       issues: [],
     } as any);
 
-    const { container } = render(
-      <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
-      />,
-    );
+    const { container } = render(<FileConverter />);
 
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
     await user.type(textarea, 'METAR KJFK 121251Z 18012KT 10SM');
@@ -260,13 +235,7 @@ describe('FileConverter F5 workflow', () => {
       issues: [],
     } as any);
 
-    const { container } = render(
-      <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
-      />,
-    );
+    const { container } = render(<FileConverter />);
 
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
     await user.type(textarea, 'METAR KJFK 121251Z 18012KT 10SM');
@@ -289,13 +258,7 @@ describe('FileConverter F5 workflow', () => {
       issues: [],
     } as any);
 
-    const { container } = render(
-      <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
-      />,
-    );
+    const { container } = render(<FileConverter />);
 
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
     await user.type(textarea, 'NOT VALID');
@@ -311,13 +274,7 @@ describe('FileConverter F5 workflow', () => {
 
   it('persists WIP after successful Convert&Send', async () => {
     const user = userEvent.setup();
-    const { container } = render(
-      <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
-      />,
-    );
+    const { container } = render(<FileConverter />);
 
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
     await user.type(textarea, 'METAR KJFK 121251Z 18012KT 10SM');
@@ -336,13 +293,7 @@ describe('FileConverter F5 workflow', () => {
     const user = userEvent.setup();
     mockUpload.mockRejectedValueOnce(new Error('upload failed'));
 
-    const { container } = render(
-      <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
-      />,
-    );
+    const { container } = render(<FileConverter />);
 
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
     await user.type(textarea, 'METAR KJFK 121251Z 18012KT 10SM');
@@ -356,29 +307,9 @@ describe('FileConverter F5 workflow', () => {
     });
   });
 
-  it('prompts guest users to sign in from the header', async () => {
-    const user = userEvent.setup();
-    const onRequestLogin = vi.fn();
-
-    render(
-      <FileConverter
-        onLogout={vi.fn()}
-        userEmail="guest@example.com"
-        isGuest
-        onRequestLogin={onRequestLogin}
-      />,
-    );
-
-    await user.click(screen.getByRole('button', { name: /sign in to save work/i }));
-    expect(onRequestLogin).toHaveBeenCalled();
-  });
-
   it('hydrates converter from loaded work session including converted results', async () => {
     render(
       <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
         loadedWorkSession={
           {
             id: 'sess-hydrate',
@@ -416,9 +347,6 @@ describe('FileConverter F5 workflow', () => {
   it('hydrates multi-line manual line chips from converted_results (#655)', async () => {
     render(
       <FileConverter
-        onLogout={vi.fn()}
-        userEmail="user@example.com"
-        accessToken="token"
         loadedWorkSession={
           {
             id: 'sess-multi-line',

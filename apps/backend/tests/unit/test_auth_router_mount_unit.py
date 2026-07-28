@@ -1,4 +1,4 @@
-"""Unit tests for auth router mounting on the backend API (T5.3 / ADR-002)."""
+"""Unit tests: Auth routers are not mounted (F21 / ADR-031 / T5.2)."""
 
 from __future__ import annotations
 
@@ -20,15 +20,13 @@ def _iter_route_paths(routes) -> list[str]:
 
 
 @pytest.mark.unit
-def test_backend_mounts_auth_routes() -> None:
-    """Auth package routers must be available at /auth/* on the backend app."""
+def test_backend_does_not_mount_auth_routes() -> None:
+    """Operator /auth/* routers are removed (F21)."""
     from src.api import app
 
     paths = set(_iter_route_paths(app.routes))
 
-    assert "/auth/login" in paths
-    assert "/auth/register" in paths
-    assert "/auth/me" in paths
-    assert "/auth/verify" in paths
-    assert "/auth/refresh" in paths
-    assert "/logout" in paths
+    assert "/auth/login" not in paths
+    assert "/auth/register" not in paths
+    assert "/auth/me" not in paths
+    assert not any(p.startswith("/auth/") for p in paths)

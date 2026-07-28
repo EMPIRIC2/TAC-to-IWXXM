@@ -4,7 +4,7 @@ name: Supabase Sync
 # Sync the linked Supabase project (ktvxijislbtgqapllmuk):
 #   - Database migrations in supabase/ (primary — docs/deploy.md §Migrations)
 #   - Edge functions in apps/frontend/supabase/functions/ (legacy upload path;
-#     auth lives in packages/auth on metar-api — retire when upload migrates)
+#     operator Auth package removed F21 / ADR-031 — retire when upload migrates)
 #
 # Applies on push to main and manual dispatch. On pull requests it runs a
 # read-only dry-run / diff only — it never writes to the project.
@@ -96,7 +96,7 @@ jobs:
 
   # ==========================================================================
   # FUNCTIONS — legacy upload edge functions (apps/frontend/supabase/functions/)
-  # Auth is on metar-api (packages/auth). Keep until database upload migrates.
+  # Operator Auth package removed (F21 / ADR-031). Keep until database upload migrates.
   # ==========================================================================
   functions:
     runs-on: ubuntu-latest

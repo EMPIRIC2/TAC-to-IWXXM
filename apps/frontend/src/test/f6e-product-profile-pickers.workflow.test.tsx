@@ -184,8 +184,10 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
         product: 'METAR',
         profile: 'annex3',
         iwxxmVersion: '2023-1',
-        accessToken: 'f6e-token',
       }),
+    );
+    expect(mockConvertMetarToIwxxm.mock.calls[0]?.[0]).not.toHaveProperty(
+      'accessToken',
     );
   });
 

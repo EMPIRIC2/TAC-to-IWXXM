@@ -1,12 +1,18 @@
 # ADR-020: Unified `tac_work_sessions` (override R2 separate F7 table)
 
-> **Status**: Accepted  
-> **Date**: 2026-07-13  
+> **Status**: **Superseded** by [ADR-031](ADR-031-public-app-indexeddb-history.md) (S023 / EV-017 / F21 / F7.h)  
+> **Date**: 2026-07-13 (superseded 2026-07-28)  
 > **Deciders**: User (S011 Spec Batch 2 contradiction resolution option A)  
 > **Stage**: 01-requirements  
-> **Related**: ADR-011, ADR-012; feature-list.md F5/F7; spec.md §F5/F7  
+> **Related**: ADR-011, ADR-012; feature-list.md F5/F7; spec.md §F5/F7; **ADR-031**  
 > **Session**: S011-f7-operator-ui / EV-008  
 > **Decision id**: D-S011-01-spec-r2-prime
+
+## Supersession note (2026-07-28)
+
+Operator work history moved to **browser IndexedDB** (ADR-031). Server
+`tac_work_sessions` is historical/archive-only (~30-day retention, no public API).
+RLS/`user_id` rules below no longer apply to the public product surface.
 
 ## Context
 

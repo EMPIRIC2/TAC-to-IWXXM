@@ -3,6 +3,7 @@
  *
  * Aligns with packages/dissemination DRAWER_SINK_TYPES and api-contract
  * POST /api/v1/dissemination/preflight|send (ADR-030 / E14-03).
+ * F21: public API — no Bearer JWT (ADR-031).
  */
 
 import { apiUrl } from './apiBase';
@@ -70,12 +71,9 @@ export interface SendResponse {
   detail?: string | null;
 }
 
-function authHeaders(accessToken: string): HeadersInit {
-  return {
-    Authorization: `Bearer ${accessToken}`,
-    'Content-Type': 'application/json',
-  };
-}
+const JSON_HEADERS: HeadersInit = {
+  'Content-Type': 'application/json',
+};
 
 async function parseJson<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -109,16 +107,14 @@ export function isPreflightGreen(
 /**
  * Call POST /api/v1/dissemination/preflight.
  *
- * @param accessToken - Bearer JWT
  * @param body - Sink-typed preflight request
  */
 export async function disseminationPreflight(
-  accessToken: string,
   body: PreflightRequest,
 ): Promise<PreflightResponse> {
   const response = await fetch(apiUrl('/dissemination/preflight'), {
     method: 'POST',
-    headers: authHeaders(accessToken),
+    headers: JSON_HEADERS,
     body: JSON.stringify(body),
   });
   return parseJson<PreflightResponse>(response);
@@ -127,16 +123,12 @@ export async function disseminationPreflight(
 /**
  * Call POST /api/v1/dissemination/send.
  *
- * @param accessToken - Bearer JWT
  * @param body - Handle from green preflight and/or payload
  */
-export async function disseminationSend(
-  accessToken: string,
-  body: SendRequest,
-): Promise<SendResponse> {
+export async function disseminationSend(body: SendRequest): Promise<SendResponse> {
   const response = await fetch(apiUrl('/dissemination/send'), {
     method: 'POST',
-    headers: authHeaders(accessToken),
+    headers: JSON_HEADERS,
     body: JSON.stringify(body),
   });
   return parseJson<SendResponse>(response);

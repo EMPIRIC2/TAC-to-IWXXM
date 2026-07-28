@@ -24,6 +24,24 @@ def pytest_configure(config):
 
 
 @pytest.fixture(autouse=True)
+def reset_abuse_rate_limiter():
+    """Reset slowapi in-memory counters between tests (F21 public rate limits)."""
+    try:
+        from src.utilities.abuse_controls import get_limiter
+
+        get_limiter().reset()
+    except Exception:
+        pass
+    yield
+    try:
+        from src.utilities.abuse_controls import get_limiter
+
+        get_limiter().reset()
+    except Exception:
+        pass
+
+
+@pytest.fixture(autouse=True)
 def check_live_api_tests(request):
     """Enable live_api tests by default, skip only if explicitly disabled.
 

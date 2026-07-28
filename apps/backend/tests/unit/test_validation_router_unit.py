@@ -61,7 +61,7 @@ class TestValidateContent:
         monkeypatch.setattr(validation_router, "get_validation_service", lambda: FakeService())
         request = validation_router.ValidationRequest(content="METAR TEST", content_type="tac")
 
-        result = await validation_router.validate_content(request, user={"sub": "user-1"})
+        result = await validation_router.validate_content(request)
 
         assert result == expected
 
@@ -75,7 +75,7 @@ class TestValidateContent:
         request = validation_router.ValidationRequest(content="BAD", content_type="tac")
 
         with pytest.raises(HTTPException) as exc_info:
-            await validation_router.validate_content(request, user={"sub": "user-1"})
+            await validation_router.validate_content(request)
 
         assert exc_info.value.status_code == 400
         assert exc_info.value.detail == "bad input: BAD"
@@ -90,7 +90,7 @@ class TestValidateContent:
         request = validation_router.ValidationRequest(content="BAD", content_type="tac")
 
         with pytest.raises(HTTPException) as exc_info:
-            await validation_router.validate_content(request, user={"sub": "user-1"})
+            await validation_router.validate_content(request)
 
         assert exc_info.value.status_code == 500
         assert exc_info.value.detail == "Validation error: boom: BAD"
@@ -118,7 +118,7 @@ class TestValidateMultiple:
             layers=[ValidationLayer.TAC_SYNTAX],
         )
 
-        result = await validation_router.validate_multiple(request, user={"sub": "user-1"})
+        result = await validation_router.validate_multiple(request)
 
         assert result.total_items == 2
         assert result.passed_items == 1
@@ -138,7 +138,7 @@ class TestValidateMultiple:
         )
 
         with pytest.raises(HTTPException) as exc_info:
-            await validation_router.validate_multiple(request, user={"sub": "user-1"})
+            await validation_router.validate_multiple(request)
 
         assert exc_info.value.status_code == 400
         assert exc_info.value.detail == "bad batch item: BAD"
@@ -155,7 +155,7 @@ class TestValidateMultiple:
         )
 
         with pytest.raises(HTTPException) as exc_info:
-            await validation_router.validate_multiple(request, user={"sub": "user-1"})
+            await validation_router.validate_multiple(request)
 
         assert exc_info.value.status_code == 500
         assert exc_info.value.detail == "Batch validation error: explode: BAD"
@@ -164,7 +164,7 @@ class TestValidateMultiple:
 class TestGetValidationLayers:
     @pytest.mark.asyncio
     async def test_get_validation_layers_returns_expected_layer_metadata(self):
-        response = await validation_router.get_validation_layers(user={"sub": "user-1"})
+        response = await validation_router.get_validation_layers()
 
         assert len(response.layers) == 7
         assert response.layers[0].layer == ValidationLayer.AIRPORT_ICAO

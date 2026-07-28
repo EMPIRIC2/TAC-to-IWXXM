@@ -1,10 +1,13 @@
 /**
- * F5 debounced auto-save and status transitions for the converter.
+ * F5/F7.h debounced auto-save for the converter — browser IndexedDB (ADR-031).
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { WorkSession, WorkSessionStatus } from '@metar/shared';
-import { createWorkSession, updateWorkSession } from '/utils/workSessionApi';
+import {
+  createLocalWorkSession,
+  updateLocalWorkSession,
+} from '/utils/localWorkSessionStore';
 import {
   buildWorkSessionPayload,
   type ConverterSnapshot,
@@ -15,6 +18,7 @@ export const AUTOSAVE_DEBOUNCE_MS = 3000;
 export type AutoSaveIndicator = 'idle' | 'pending' | 'saving' | 'saved' | 'error';
 
 export interface UseWorkSessionSyncOptions {
+  /** @deprecated F21 — ignored; local IndexedDB needs no JWT */
   accessToken?: string;
   sessionId: string | null;
   sessionStatus?: WorkSessionStatus | null;
@@ -23,7 +27,6 @@ export interface UseWorkSessionSyncOptions {
 }
 
 export function useWorkSessionSync({
-  accessToken,
   sessionId,
   sessionStatus,
   onSessionSaved,
@@ -52,7 +55,7 @@ export function useWorkSessionSync({
       snapshot: ConverterSnapshot,
       options?: { status?: WorkSessionStatus; kvUploadKey?: string },
     ): Promise<WorkSession | null> => {
-      if (!accessToken || isReadOnly) {
+      if (isReadOnly) {
         return null;
       }
 
@@ -66,9 +69,9 @@ export function useWorkSessionSync({
         let saved: WorkSession;
         const activeId = sessionIdRef.current;
         if (activeId) {
-          saved = await updateWorkSession(accessToken, activeId, payload);
+          saved = await updateLocalWorkSession(activeId, payload);
         } else {
-          saved = await createWorkSession(accessToken, payload);
+          saved = await createLocalWorkSession(payload);
           onSessionIdAssigned(saved.id);
         }
         onSessionSaved(saved);
@@ -80,12 +83,12 @@ export function useWorkSessionSync({
         return null;
       }
     },
-    [accessToken, isReadOnly, onSessionIdAssigned, onSessionSaved],
+    [isReadOnly, onSessionIdAssigned, onSessionSaved],
   );
 
   const scheduleAutoSave = useCallback(
     (snapshot: ConverterSnapshot) => {
-      if (!accessToken || isReadOnly) {
+      if (isReadOnly) {
         return;
       }
       setSaveIndicator('pending');
@@ -96,7 +99,7 @@ export function useWorkSessionSync({
         void persistSession(snapshot);
       }, AUTOSAVE_DEBOUNCE_MS);
     },
-    [accessToken, isReadOnly, persistSession],
+    [isReadOnly, persistSession],
   );
 
   const flushAutoSave = useCallback(

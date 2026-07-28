@@ -73,7 +73,6 @@ jobs:
           [
             shared,
             backend,
-            auth,
             frontend,
             tac2iwxxm,
             iwxxm-validate,
@@ -132,14 +131,6 @@ jobs:
         if: matrix.package == 'backend'
         run: |
           cd apps/backend && uv run pytest tests/unit \
-            --cov=src --cov-config=pyproject.toml --cov-branch \
-            --cov-report=xml:coverage.xml --cov-report=term-missing \
-            --cov-fail-under=98 -v
-
-      - name: Run auth unit tests with coverage
-        if: matrix.package == 'auth'
-        run: |
-          cd packages/auth && uv run pytest tests \
             --cov=src --cov-config=pyproject.toml --cov-branch \
             --cov-report=xml:coverage.xml --cov-report=term-missing \
             --cov-fail-under=98 -v
@@ -214,8 +205,8 @@ jobs:
         run: |
           docker compose up -d backend frontend
           sleep 30
-          uv run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_integration.py -v
-          cd apps/backend && uv run pytest tests/integration/test_h0i_connectivity.py -v --no-cov
+          uv run pytest tests/test_backend_frontend_integration.py tests/test_integration.py -v
+          cd apps/backend && uv run pytest tests/integration/test_h0i_connectivity.py tests/unit/test_tc_f21_auth_gone_unit.py -v --no-cov
           cd apps/backend && uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
           docker compose down
 
@@ -245,26 +236,6 @@ jobs:
           flags: backend
           name: backend-coverage
           # Codecov project not yet linked for EMPIRIC2/TAC-to-IWXXM rename.
-          fail_ci_if_error: false
-
-      - name: Upload auth coverage artifact
-        if: always() && matrix.package == 'auth'
-        uses: actions/upload-artifact@v4
-        with:
-          name: auth-coverage-report
-          path: |
-            packages/auth/htmlcov/
-            packages/auth/coverage.xml
-
-      - name: Upload auth coverage to Codecov
-        if: always() && matrix.package == 'auth'
-        uses: codecov/codecov-action@v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: EMPIRIC2/TAC-to-IWXXM
-          files: ./packages/auth/coverage.xml
-          flags: auth
-          name: auth-coverage
           fail_ci_if_error: false
 
       - name: Upload frontend coverage artifact

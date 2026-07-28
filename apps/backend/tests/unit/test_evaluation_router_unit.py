@@ -15,7 +15,7 @@ async def test_create_evaluation_job_requires_station_ids_for_single_mode():
     request = EvaluationRequest(mode=EvaluationMode.SINGLE, station_ids=None)
 
     with pytest.raises(HTTPException) as exc:
-        await eval_router.create_evaluation_job(request, BackgroundTasks(), user={"sub": "u1"})
+        await eval_router.create_evaluation_job(request, BackgroundTasks())
 
     assert exc.value.status_code == 400
 
@@ -29,7 +29,7 @@ async def test_create_evaluation_job_random_mode_adds_background_task(monkeypatc
             return ["KJFK", "KLAX"]
 
     async def fake_create_job_in_db(user_id, mode, total_stations):
-        assert user_id == "u1"
+        assert user_id == "anonymous"
         assert mode == "random"
         assert total_stations == 3
         return "job-123"
@@ -38,7 +38,7 @@ async def test_create_evaluation_job_random_mode_adds_background_task(monkeypatc
     monkeypatch.setattr(eval_router, "create_job_in_db", fake_create_job_in_db)
 
     bg = BackgroundTasks()
-    response = await eval_router.create_evaluation_job(request, bg, user={"sub": "u1"})
+    response = await eval_router.create_evaluation_job(request, bg)
 
     assert response.job_id == "job-123"
     assert response.station_count == 3
@@ -50,7 +50,7 @@ async def test_create_evaluation_job_single_mode_happy_path(monkeypatch):
     request = EvaluationRequest(mode=EvaluationMode.SINGLE, station_ids=["KJFK", "KLAX"])
 
     async def fake_create_job_in_db(user_id, mode, total_stations):
-        assert user_id == "u1"
+        assert user_id == "anonymous"
         assert mode == "single"
         assert total_stations == 2
         return "job-single"
@@ -58,7 +58,7 @@ async def test_create_evaluation_job_single_mode_happy_path(monkeypatch):
     monkeypatch.setattr(eval_router, "create_job_in_db", fake_create_job_in_db)
 
     bg = BackgroundTasks()
-    response = await eval_router.create_evaluation_job(request, bg, user={"sub": "u1"})
+    response = await eval_router.create_evaluation_job(request, bg)
 
     assert response.job_id == "job-single"
     assert response.station_count == 2
@@ -73,7 +73,7 @@ async def test_create_evaluation_job_all_mode_uses_sampler(monkeypatch):
             return ["KJFK", "KLAX", "KSEA"]
 
     async def fake_create_job_in_db(user_id, mode, total_stations):
-        assert user_id == "u1"
+        assert user_id == "anonymous"
         assert mode == "all"
         assert total_stations == 3
         return "job-all"
@@ -82,7 +82,7 @@ async def test_create_evaluation_job_all_mode_uses_sampler(monkeypatch):
     monkeypatch.setattr(eval_router, "create_job_in_db", fake_create_job_in_db)
 
     bg = BackgroundTasks()
-    response = await eval_router.create_evaluation_job(request, bg, user={"sub": "u1"})
+    response = await eval_router.create_evaluation_job(request, bg)
 
     assert response.job_id == "job-all"
     assert response.station_count == 3
@@ -103,7 +103,7 @@ async def test_create_evaluation_job_db_error_propagates(monkeypatch):
     monkeypatch.setattr(eval_router, "create_job_in_db", fake_create_job_in_db)
 
     with pytest.raises(RuntimeError):
-        await eval_router.create_evaluation_job(request, BackgroundTasks(), user={"sub": "u1"})
+        await eval_router.create_evaluation_job(request, BackgroundTasks())
 
 
 class _SupabaseClientStub:
@@ -142,7 +142,7 @@ async def test_get_job_status_not_found(monkeypatch):
     monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
 
     with pytest.raises(HTTPException) as exc:
-        await eval_router.get_job_status("job-x", user={"sub": "u1"})
+        await eval_router.get_job_status("job-x")
 
     assert exc.value.status_code == 404
 
@@ -165,7 +165,7 @@ async def test_get_job_status_completed_with_summary(monkeypatch):
 
     monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
 
-    result = await eval_router.get_job_status("job-1", user={"sub": "u1"})
+    result = await eval_router.get_job_status("job-1")
 
     assert result.job_id == "job-1"
     assert result.summary.passed == 8
@@ -210,7 +210,6 @@ async def test_get_job_results_with_status_filter(monkeypatch):
         page=2,
         per_page=1,
         status_filter=ComparisonStatus.PASS,
-        user={"sub": "u1"},
     )
 
     assert result.page == 2
@@ -226,7 +225,7 @@ async def test_get_job_results_not_found(monkeypatch):
     monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
 
     with pytest.raises(HTTPException) as exc:
-        await eval_router.get_job_results("job-x", user={"sub": "u1"})
+        await eval_router.get_job_results("job-x")
 
     assert exc.value.status_code == 404
 
@@ -251,7 +250,7 @@ async def test_list_user_jobs_with_summary(monkeypatch):
 
     monkeypatch.setattr(eval_router, "list_jobs_for_user", fake_list_jobs_for_user)
 
-    result = await eval_router.list_user_jobs(page=1, per_page=20, user={"sub": "u1"})
+    result = await eval_router.list_user_jobs(page=1, per_page=20)
 
     assert result.total == 1
     assert result.jobs[0].summary.passed == 5

@@ -34,20 +34,20 @@ def test_config_profiles_have_required_runtime_keys(profile: str) -> None:
     assert supabase.get("url")
 
 
-def test_e2e_profile_enables_auth_for_playwright() -> None:
-    """Playwright UJ-003 UI specs require auth-enabled runtime config."""
+def test_e2e_profile_omits_retired_disable_auth() -> None:
+    """F21 / T4.3 — ``api.disableAuth`` retired; public app needs no auth bypass flag."""
     cfg = _load_config_profile("e2e")
     api = cfg["api"]
     assert isinstance(api, dict)
-    assert api.get("disableAuth") is False
+    assert "disableAuth" not in api
 
 
-def test_prod_profile_disables_auth_bypass() -> None:
-    """Production runtime config must not bypass authentication."""
+def test_prod_profile_omits_retired_disable_auth() -> None:
+    """F21 / T4.3 — production profiles must not carry retired ``disableAuth``."""
     cfg = _load_config_profile("prod")
     api = cfg["api"]
     assert isinstance(api, dict)
-    assert api.get("disableAuth") is False
+    assert "disableAuth" not in api
 
 
 def test_h5_api_base_url_matches_live_e2e() -> None:

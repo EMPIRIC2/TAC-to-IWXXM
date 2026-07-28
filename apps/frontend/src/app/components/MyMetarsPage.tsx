@@ -1,18 +1,21 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { WorkSession, WorkSessionStatus } from '@metar/shared';
-import { ArrowLeft, Loader2, Trash2, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Download, Loader2, RotateCcw, Trash2, Upload } from 'lucide-react';
 import {
-  MY_METARS_PRODUCTS,
-  deleteWorkSession,
-  listWorkSessions,
-  restoreWorkSession,
-} from '/utils/workSessionApi';
+  EXPORT_SCHEMA_ID,
+  deleteLocalWorkSession,
+  exportLocalWorkSessions,
+  importLocalWorkSessions,
+  listMyMetars,
+  restoreLocalWorkSession,
+  type LocalWorkSessionExportV1,
+} from '/utils/localWorkSessionStore';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 
 interface MyMetarsPageProps {
-  accessToken: string;
-  userEmail: string;
+  /** Optional subtitle (local history — no account required). */
+  userEmail?: string;
   onBack: () => void;
   onOpenSession: (session: WorkSession) => void;
 }
@@ -26,8 +29,7 @@ const STATUS_OPTIONS: Array<WorkSessionStatus | 'all'> = [
 ];
 
 export function MyMetarsPage({
-  accessToken,
-  userEmail,
+  userEmail = 'Local history',
   onBack,
   onOpenSession,
 }: MyMetarsPageProps) {
@@ -36,14 +38,15 @@ export function MyMetarsPage({
   const [sessions, setSessions] = useState<WorkSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [importMessage, setImportMessage] = useState<string | null>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const loadSessions = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await listWorkSessions(accessToken, {
+      const response = await listMyMetars({
         status: statusFilter === 'all' ? undefined : statusFilter,
-        product: MY_METARS_PRODUCTS,
         include_deleted: includeDeleted,
         limit: 50,
       });
@@ -53,7 +56,7 @@ export function MyMetarsPage({
     } finally {
       setLoading(false);
     }
-  }, [accessToken, includeDeleted, statusFilter]);
+  }, [includeDeleted, statusFilter]);
 
   /* eslint-disable react-hooks/set-state-in-effect -- refetch list when filters change */
   useEffect(() => {
@@ -62,13 +65,52 @@ export function MyMetarsPage({
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleDelete = async (sessionId: string) => {
-    await deleteWorkSession(accessToken, sessionId);
+    await deleteLocalWorkSession(sessionId);
     await loadSessions();
   };
 
   const handleRestore = async (sessionId: string) => {
-    await restoreWorkSession(accessToken, sessionId);
+    await restoreLocalWorkSession(sessionId);
     await loadSessions();
+  };
+
+  const handleExport = async () => {
+    setError(null);
+    setImportMessage(null);
+    try {
+      const doc = await exportLocalWorkSessions();
+      const blob = new Blob([JSON.stringify(doc, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${EXPORT_SCHEMA_ID}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setImportMessage(`Exported ${doc.sessions.length} session(s)`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Export failed');
+    }
+  };
+
+  const handleImportFile = async (file: File | undefined) => {
+    if (!file) {
+      return;
+    }
+    setError(null);
+    setImportMessage(null);
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text) as LocalWorkSessionExportV1;
+      const result = await importLocalWorkSessions(parsed);
+      setImportMessage(`Imported ${result.imported} session(s)`);
+      await loadSessions();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Import failed');
+    }
   };
 
   return (
@@ -113,7 +155,50 @@ export function MyMetarsPage({
               />
               Show trash
             </label>
+            <div className="ml-auto flex flex-wrap gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => void handleExport()}
+                data-testid="export-sessions"
+              >
+                <Download className="mr-1 h-4 w-4" aria-hidden="true" />
+                Export
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => importInputRef.current?.click()}
+                data-testid="import-sessions"
+              >
+                <Upload className="mr-1 h-4 w-4" aria-hidden="true" />
+                Import
+              </Button>
+              <input
+                ref={importInputRef}
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                data-testid="import-sessions-input"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  void handleImportFile(file);
+                  e.target.value = '';
+                }}
+              />
+            </div>
           </div>
+
+          {importMessage && (
+            <p
+              className="mb-3 text-sm text-green-700 dark:text-green-400"
+              role="status"
+            >
+              {importMessage}
+            </p>
+          )}
 
           {loading && (
             <div className="flex items-center gap-2 text-sm text-gray-500">

@@ -5,7 +5,6 @@ PNPM := pnpm
 
 PY_TREES := apps packages tests
 PY_LINT := apps/backend/src apps/backend/tests \
-	packages/auth/src packages/auth/tests \
 	packages/shared packages/shared/tests \
 	packages/tac2iwxxm/src packages/tac2iwxxm/tests \
 	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
@@ -15,7 +14,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 
 .PHONY: install test test-unit vendor-sync \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
-	test-unit-backend test-unit-auth test-unit-frontend \
+	test-unit-backend test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
 	test-integration-dissemination \
@@ -24,13 +23,13 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	compose-mock-byoc-all-up compose-mock-byoc-all-down \
 	test-mock-byoc-smoke test-mock-byoc-compose test-mock-byoc-all-sinks \
 	format format-check typecheck typecheck-py typecheck-js \
-	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-shared \
+	lint lint-py lint-js lint-backend lint-frontend lint-shared \
 	lint-tac2iwxxm lint-iwxxm-validate lint-tac-validate lint-dissemination \
-	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
+	lint-fix lint-fix-py lint-fix-backend lint-fix-frontend \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
 	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live-bulletin test-live \
-	test-integration coverage coverage-backend coverage-auth coverage-frontend coverage-shared \
+	test-integration coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
@@ -96,7 +95,6 @@ typecheck-py:
 	$(UV) run basedpyright packages/tac2iwxxm/src
 	$(UV) run basedpyright packages/iwxxm-validate/src
 	$(UV) run basedpyright packages/tac-validate/src
-	cd packages/auth && $(UV) run basedpyright
 	cd apps/backend && $(UV) run basedpyright
 
 typecheck-js:
@@ -114,9 +112,6 @@ lint-js:
 
 lint-backend:
 	$(UV) run ruff check --force-exclude apps/backend/src apps/backend/tests
-
-lint-auth:
-	$(UV) run ruff check --force-exclude packages/auth/src packages/auth/tests
 
 lint-shared:
 	$(UV) run ruff check --force-exclude packages/shared packages/shared/tests
@@ -145,9 +140,6 @@ lint-fix-py:
 lint-fix-backend:
 	$(UV) run ruff check --fix --force-exclude apps/backend/src apps/backend/tests
 
-lint-fix-auth:
-	$(UV) run ruff check --fix --force-exclude packages/auth/src packages/auth/tests
-
 lint-fix-frontend:
 	$(PNPM) --filter @metar/frontend exec eslint src --fix
 
@@ -170,12 +162,6 @@ test-unit-workspace: test-unit-workspace-py test-unit-shared-py test-unit-shared
 
 test-unit-backend:
 	cd apps/backend && $(UV) run pytest tests/unit \
-		--cov=src --cov-config=pyproject.toml --cov-branch \
-		--cov-report=xml:coverage.xml --cov-report=term-missing \
-		--cov-fail-under=98 -v
-
-test-unit-auth:
-	cd packages/auth && $(UV) run pytest tests \
 		--cov=src --cov-config=pyproject.toml --cov-branch \
 		--cov-report=xml:coverage.xml --cov-report=term-missing \
 		--cov-fail-under=98 -v
@@ -278,7 +264,7 @@ test-unit-worker:
 test-bugs:
 	$(UV) run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
-test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
+test-unit: test-unit-workspace test-unit-backend test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs
 
@@ -308,13 +294,10 @@ test-e2e-playwright:
 
 test-e2e-playwright-smoke:
 	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test \
-		auth-service-integration.e2e.spec.ts \
 		tac-file-conversion.e2e.spec.ts
 
 test-e2e-t2-product:
 	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test tac-file-conversion.e2e.spec.ts
-	cd apps/e2e && METAR_CONFIG_ENV=e2e DISABLE_AUTH=false PLAYWRIGHT_API_BASE_URL=http://localhost:18001 \
-		$(PNPM) exec playwright test auth.e2e.spec.ts
 
 # --- Live E2E harness (H3–H6, manual signoff) ---
 
@@ -380,11 +363,6 @@ coverage-backend:
 		--cov=src --cov-config=pyproject.toml --cov-branch \
 		--cov-report=xml:coverage.xml --cov-report=term-missing -v
 
-coverage-auth:
-	cd packages/auth && $(UV) run pytest tests \
-		--cov=src --cov-config=pyproject.toml --cov-branch \
-		--cov-report=xml:coverage.xml --cov-report=term-missing -v
-
 coverage-frontend:
 	$(PNPM) --filter @metar/frontend run test:coverage
 
@@ -394,7 +372,7 @@ coverage-shared:
 
 coverage-dissemination: test-unit-dissemination
 
-coverage-modules: coverage-backend coverage-auth coverage-frontend coverage-shared \
+coverage-modules: coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination
 
 coverage-all: coverage-modules
@@ -454,8 +432,8 @@ test-integration:
 		fi; \
 		sleep 2; \
 	done
-	$(UV) run pytest tests/test_backend_auth_integration.py tests/test_backend_frontend_integration.py tests/test_auth_frontend_integration.py tests/test_integration.py -v
-	cd apps/backend && $(UV) run pytest tests/integration/test_h0i_connectivity.py -v --no-cov
+	$(UV) run pytest tests/test_backend_frontend_integration.py tests/test_integration.py -v
+	cd apps/backend && $(UV) run pytest tests/integration/test_h0i_connectivity.py tests/unit/test_tc_f21_auth_gone_unit.py -v --no-cov
 	cd apps/backend && $(UV) run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
 	$(COMPOSE) down
 
@@ -505,7 +483,7 @@ validate-ci: validate-fast config-guard env-check audit-frontend
 
 # Unit/matrix parity for pre-push (CI test job packages without local Compose).
 # Use `make ci` / `make test-integration` when Docker ports 18000/18001 are free.
-ci-prepush: format-check typecheck lint test-unit-workspace test-unit-backend test-unit-auth \
+ci-prepush: format-check typecheck lint test-unit-workspace test-unit-backend \
 	test-unit-frontend test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs badge-audit
 

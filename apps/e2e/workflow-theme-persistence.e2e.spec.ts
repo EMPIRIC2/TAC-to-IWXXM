@@ -1,20 +1,14 @@
+/**
+ * Theme persistence on the public converter (F21 — no Auth).
+ */
 import { expect, test } from '@playwright/test';
-import {
-  ADMIN_EMAIL,
-  ADMIN_PASSWORD,
-  loginAndOpenConverter,
-} from './playwright-e2e-helpers';
+import { openPublicConverter } from './playwright-e2e-helpers';
 
 test.describe('Workflow: Theme Behavior And Persistence', () => {
-  test('theme toggle works in converter, persists across reload, and remains consistent in admin view', async ({
+  test('theme toggle works in converter and persists across reload', async ({
     page,
   }) => {
-    test.skip(
-      !ADMIN_EMAIL || !ADMIN_PASSWORD,
-      'Requires PLAYWRIGHT_ADMIN_EMAIL and PLAYWRIGHT_ADMIN_PASSWORD',
-    );
-
-    await loginAndOpenConverter(page);
+    await openPublicConverter(page);
 
     const themeSwitch = page.getByRole('switch', { name: /Switch to .* mode/i });
     await expect(themeSwitch).toBeVisible();
@@ -28,31 +22,10 @@ test.describe('Workflow: Theme Behavior And Persistence', () => {
 
     const toggledState = await themeSwitch.getAttribute('aria-checked');
 
-    // Check admin view while isAdmin is still set from login (before reload clears it).
-    const viewSelect = page.getByLabel(/Switch view/i);
-    await viewSelect.selectOption('admin');
-    await expect(page.getByRole('heading', { name: /Admin Dashboard/i })).toBeVisible();
-
-    const adminThemeSwitch = page.getByRole('switch', { name: /Switch to .* mode/i });
-    await expect(adminThemeSwitch).toHaveAttribute(
-      'aria-checked',
-      toggledState || 'false',
-    );
-
     await page.reload();
+    await openPublicConverter(page);
 
-    // Session reload restores converter view; theme preference must persist in storage.
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible({ timeout: 15000 });
-
-    const reloadedThemeSwitch = page.getByRole('switch', {
-      name: /Switch to .* mode/i,
-    });
-    await expect(reloadedThemeSwitch).toBeVisible();
-    await expect(reloadedThemeSwitch).toHaveAttribute(
-      'aria-checked',
-      toggledState || 'false',
-    );
+    const afterReload = page.getByRole('switch', { name: /Switch to .* mode/i });
+    await expect(afterReload).toHaveAttribute('aria-checked', toggledState ?? '');
   });
 });

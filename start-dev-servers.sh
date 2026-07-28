@@ -288,26 +288,9 @@ parse_args "$@"
 
 load_repo_env
 
+# F21: DISABLE_AUTH / api.disableAuth retired — public app by default.
 sync_disable_auth_from_config() {
-  if [[ -n "${DISABLE_AUTH+x}" ]]; then
-    return 0
-  fi
-
-  local config_env="${METAR_CONFIG_ENV:-local}"
-  local config_file="${ROOT_DIR}/config/${config_env}.json"
-  if [[ ! -f "${config_file}" ]]; then
-    return 0
-  fi
-
-  DISABLE_AUTH="$(
-    python3 - <<PY
-import json
-with open("${config_file}", encoding="utf-8") as handle:
-    cfg = json.load(handle)
-print("true" if cfg.get("api", {}).get("disableAuth") else "false")
-PY
-  )"
-  export DISABLE_AUTH
+  unset DISABLE_AUTH 2>/dev/null || true
 }
 
 trap cleanup INT TERM EXIT

@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
 
 from ..schemas.validation import (
@@ -11,7 +11,6 @@ from ..schemas.validation import (
     ValidationRequest,
 )
 from ..services.validation import ValidationService
-from ..utilities.security import verify_supabase_token
 
 router = APIRouter()
 
@@ -144,11 +143,9 @@ def get_validation_service() -> ValidationService:
     response_model=AggregatedValidationResult,
     tags=["Validation"],
     summary="Validate METAR TAC or IWXXM XML content",
-    responses={401: {"description": "Unauthorized - Invalid or missing authentication token"}},
 )
 async def validate_content(
     request: ValidationRequest,
-    user: dict = Depends(verify_supabase_token),
 ):
     """Validate METAR TAC or IWXXM XML content through multiple validation layers.
 
@@ -232,11 +229,9 @@ async def validate_content(
     response_model=BatchValidationResponse,
     tags=["Validation"],
     summary="Validate multiple METAR TAC or IWXXM XML inputs",
-    responses={401: {"description": "Unauthorized - Invalid or missing authentication token"}},
 )
 async def validate_multiple(
     request: BatchValidationRequest,
-    user: dict = Depends(verify_supabase_token),
 ):
     """Validate multiple METAR TAC or IWXXM XML inputs in a single request.
 
@@ -331,11 +326,8 @@ async def validate_multiple(
     response_model=ValidationLayersResponse,
     tags=["Validation"],
     summary="Get available validation layers",
-    responses={401: {"description": "Unauthorized - Invalid or missing authentication token"}},
 )
-async def get_validation_layers(
-    user: dict = Depends(verify_supabase_token),
-):
+async def get_validation_layers():
     """Get information about available validation layers.
 
     Each layer validates specific aspects of METAR TAC or IWXXM XML content.

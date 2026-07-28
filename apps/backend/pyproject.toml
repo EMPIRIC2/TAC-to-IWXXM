@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "Backend API for METAR to IWXXM conversion"
 requires-python = ">=3.12"
 dependencies = [
-    "metar-auth",
     "metar-shared",
     "tac2iwxxm",
     "tac-validate",
@@ -17,15 +16,16 @@ dependencies = [
     "pydantic-settings>=2.14.2",
     "msgspec>=0.19",
     "pyjwt>=2.8.0",
-	"python-jose[cryptography]>=3.3.0",
-	"httpx>=0.28.1",
+    "python-jose[cryptography]>=3.3.0",
+    "httpx>=0.28.1",
     "requests>=2.31.0",
     "prometheus-client>=0.22.1",
-	"lxml>=4.9.0",
+    "lxml>=4.9.0",
     "skyfield>=1.45",
-	"sqlalchemy>=2.0.0",
-	"asyncpg>=0.29.0",
-	"psycopg[binary]>=3.0.0",
+    "sqlalchemy>=2.0.0",
+    "asyncpg>=0.29.0",
+    "psycopg[binary]>=3.0.0",
+    "slowapi>=0.1.10",
 ]
 
 [build-system]
@@ -121,7 +121,6 @@ ignore = ["E501", "E741"]
 
 [tool.uv.sources]
 tac2iwxxm = { workspace = true }
-metar-auth = { workspace = true }
 metar-shared = { workspace = true }
 tac-validate = { workspace = true }
 iwxxm-validate = { workspace = true }

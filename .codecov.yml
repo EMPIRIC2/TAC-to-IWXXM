@@ -10,10 +10,6 @@ coverage:
       carryforward: true
       paths:
         - apps/backend/src/
-    auth:
-      carryforward: true
-      paths:
-        - packages/auth/src/
     frontend:
       carryforward: true
       paths:
@@ -34,11 +30,6 @@ coverage:
     backend:
       default:
         flags: [backend]
-        target: 95%
-        threshold: 0%
-    auth:
-      default:
-        flags: [auth]
         target: 95%
         threshold: 0%
     frontend:

@@ -277,20 +277,17 @@ def test_convert_zip_returns_application_zip(client: TestClient, monkeypatch: py
         assert zf.namelist(), "ZIP must contain at least one member"
 
 
-# --- Auth stays pydantic ------------------------------------------------------------
+# --- Auth routes gone (F21) ---------------------------------------------------------
 
 
-def test_auth_login_response_model_is_pydantic() -> None:
-    """ADR-026: /auth/* stays pydantic — not msgspec Struct response models."""
-    route = _route_for("/auth/login")
-    assert route.response_model is not None
-    assert issubclass(route.response_model, BaseModel)
-    # Must not be a msgspec Struct
-    assert not hasattr(route.response_model, "__struct_fields__")
+def test_auth_login_route_absent() -> None:
+    """F21 / ADR-031: /auth/login is not mounted (msgspec/pydantic auth path retired)."""
+    with pytest.raises(AssertionError, match="/auth/login"):
+        _route_for("/auth/login")
 
 
-def test_auth_login_does_not_call_msgspec_helper(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Auth encode path must not go through msgspec_json_response."""
+def test_auth_login_http_404_without_msgspec(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """POST /auth/login returns 404; msgspec helper must not be involved."""
     from src import msgspec_http
 
     calls: list[Any] = []
@@ -304,13 +301,12 @@ def test_auth_login_does_not_call_msgspec_helper(client: TestClient, monkeypatch
     if hasattr(api_module, "msgspec_json_response"):
         monkeypatch.setattr(api_module, "msgspec_json_response", spy)
 
-    # Login will fail without Supabase; we only care that msgspec helper is unused.
     response = client.post(
         "/auth/login",
         json={"email": "nobody@example.com", "password": "not-a-real-password"},
     )
-    assert response.status_code != 200 or "access_token" in response.json()
-    assert calls == [], f"auth must not use msgspec_json_response, got {len(calls)} calls"
+    assert response.status_code == 404
+    assert calls == [], f"404 auth path must not use msgspec_json_response, got {len(calls)} calls"
 
 
 # --- Contract shape smoke (parity for FE) -------------------------------------------
