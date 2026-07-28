@@ -16,6 +16,7 @@ import {
 } from './ui/dialog';
 import {
   STORAGE_INVENTORY,
+  detectGlobalPrivacyControl,
   loadPrivacyPreferences,
   savePrivacyPreferences,
   type PrivacyPreferences,
@@ -30,6 +31,7 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
   const [prefs, setPrefs] = useState<PrivacyPreferences>(() =>
     loadPrivacyPreferences(),
   );
+  const gpcEnabled = detectGlobalPrivacyControl();
 
   const handleSave = () => {
     const saved = savePrivacyPreferences({
@@ -51,6 +53,17 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
           browser only. Clearing site data resets them.
         </DialogDescription>
       </DialogHeader>
+
+      {gpcEnabled ? (
+        <p
+          role="status"
+          data-testid="privacy-gpc-active"
+          className="rounded border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-100"
+        >
+          Global Privacy Control (GPC) detected — sale/sharing and targeted advertising
+          opt-outs are enforced.
+        </p>
+      ) : null}
 
       <div className="space-y-4 text-sm text-gray-700 dark:text-gray-200">
         <section aria-labelledby="privacy-storage-heading">

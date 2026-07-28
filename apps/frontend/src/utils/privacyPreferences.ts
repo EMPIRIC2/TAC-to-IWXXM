@@ -62,10 +62,6 @@ export type PrivacyPreferencesPatch = Partial<
   schemaVersion?: number;
 };
 
-function notImplemented(op: string): never {
-  throw new Error(`privacyPreferences.${op}: not implemented (T6.3)`);
-}
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -130,9 +126,13 @@ function writeStoredPreferences(prefs: PrivacyPreferences): void {
   localStorage.setItem(PRIVACY_PREFS_STORAGE_KEY, JSON.stringify(prefs));
 }
 
-/** Load preferences from localStorage (GPC overrides applied in T6.3). */
+/** Load preferences from localStorage; apply GPC opt-out overrides (E17-16). */
 export function loadPrivacyPreferences(): PrivacyPreferences {
-  return readStoredPreferences();
+  const prefs = readStoredPreferences();
+  const gpcEnabled = detectGlobalPrivacyControl({
+    navigatorGpc: readNavigatorGlobalPrivacyControl(),
+  });
+  return applyGpcToPreferences(prefs, gpcEnabled);
 }
 
 /** Persist preferences to localStorage (client-only; no server PII). */
@@ -146,7 +146,10 @@ export function savePrivacyPreferences(
     necessary: true,
   });
   writeStoredPreferences(next);
-  return next;
+  const gpcEnabled = detectGlobalPrivacyControl({
+    navigatorGpc: readNavigatorGlobalPrivacyControl(),
+  });
+  return applyGpcToPreferences(next, gpcEnabled);
 }
 
 /** Acknowledge / dismiss the first-visit privacy notice for the current schema. */
@@ -174,28 +177,58 @@ export function shouldShowPrivacyNotice(): boolean {
 
 /**
  * Detect Global Privacy Control from `navigator.globalPrivacyControl` and/or an
- * explicit Sec-GPC signal (E17-16). Implemented in T6.3.
+ * explicit Sec-GPC signal (E17-16).
  *
  * @param options.navigatorGpc - `navigator.globalPrivacyControl` when available
  * @param options.secGpc - request/header Sec-GPC value (`"1"` ⇒ enabled)
  */
-export function detectGlobalPrivacyControl(_options?: {
+export function detectGlobalPrivacyControl(options?: {
   navigatorGpc?: boolean | undefined;
   secGpc?: string | null | undefined;
 }): boolean {
-  notImplemented('detectGlobalPrivacyControl');
+  if (options?.navigatorGpc === true) {
+    return true;
+  }
+  if (options?.secGpc === '1') {
+    return true;
+  }
+  if (options !== undefined) {
+    return false;
+  }
+  return readNavigatorGlobalPrivacyControl() === true;
+}
+
+function readNavigatorGlobalPrivacyControl(): boolean | undefined {
+  if (typeof navigator === 'undefined') {
+    return undefined;
+  }
+  const gpc = (navigator as Navigator & { globalPrivacyControl?: boolean })
+    .globalPrivacyControl;
+  return typeof gpc === 'boolean' ? gpc : undefined;
 }
 
 /**
  * Force sale/sharing and targeted-advertising opt-outs when GPC is on.
  * Does not disable disclosed necessary IndexedDB work history.
- * Implemented in T6.3.
  */
 export function applyGpcToPreferences(
-  _prefs: PrivacyPreferences,
-  _gpcEnabled: boolean,
+  prefs: PrivacyPreferences,
+  gpcEnabled: boolean,
 ): PrivacyPreferences {
-  notImplemented('applyGpcToPreferences');
+  if (!gpcEnabled) {
+    return {
+      ...prefs,
+      necessary: true,
+    };
+  }
+  return {
+    ...prefs,
+    necessary: true,
+    analytics: false,
+    marketing: false,
+    saleOrSharingOptOut: true,
+    targetedAdvertisingOptOut: true,
+  };
 }
 
 /** Clear privacy preferences from localStorage (site-data wipe / tests). */

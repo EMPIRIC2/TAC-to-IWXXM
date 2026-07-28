@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M6 — Privacy preference center |
-| **Active task** | T6.3 — Honor GPC (next) |
-| **Tasks** | 24 / ~28 completed |
+| **Active milestone** | M6 — Privacy preference center (complete) |
+| **Active task** | — (M6 complete; next M7 E2E / docs / connectivity) |
+| **Tasks** | 25 / ~28 completed |
 | **Last updated** | 2026-07-28 |
 
 ## Tech Stack Summary (S023 delta)
@@ -109,7 +109,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T6.1 | Test | TC-F22-001..003: notice, settings, GPC | UJ-033; TC-F22-* | T4.2 | completed |
 | T6.2 | Code | First-visit notice + Privacy settings; localStorage prefs; disclose IndexedDB | F22; E17-7/16/17 | T6.1 | completed |
-| T6.3 | Code | Honor Sec-GPC + `navigator.globalPrivacyControl` | E17-16 | T6.2 | pending |
+| T6.3 | Code | Honor Sec-GPC + `navigator.globalPrivacyControl` | E17-16 | T6.2 | completed |
 
 ### M7 — E2E / docs / connectivity gate
 
