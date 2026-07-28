@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'Phase A+B passed; 04 COMPLETE; 07-build in_progress — M1+M2 complete (T2.1–T2.5); active M3 / T3.1; progress 9/~28; interim draft PR #786 open; #783'
+  note: 'Phase A+B passed; 04 COMPLETE; 07-build in_progress — M1–M5 complete; active M6 (Privacy preference center); next T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 open (stale until push; ahead 33); #783'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1+M2 complete; active M3 / T3.1; progress 9/~28; interim draft PR #786 open; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B passed; current_stage 07-build; M1–M5 complete; active M6 (Privacy preference center); next T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 open (stale until push; ahead 33); #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -71,7 +71,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-28'
-    note: 'S023/EV-017 07-build in_progress — M1+M2 complete (T2.1–T2.5); active milestone M3 / active_task T3.1; progress 9/~28; tip 2783bcb; #783'
+    note: 'S023/EV-017 07-build in_progress — M1–M5 complete; active milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; #783'
   - stage: 08-verify-build
     required: true
     mode: full
@@ -2917,11 +2917,11 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-28'
-      note: 'S023/EV-017 07-build — M1+M2 complete (T2.1–T2.5); active milestone M3 / active_task T3.1; progress 9/~28; tip 2783bcb; #783'
-      active_milestone: M3
-      active_task: T3.1
-      active_task_status: in_progress
-      progress: 9/~28
+      note: 'S023/EV-017 07-build — M1–M5 complete; active milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; #783'
+      active_milestone: M6
+      active_task: T6.1
+      active_task_status: pending
+      progress: 22/~28
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -3146,15 +3146,15 @@ stages:
       started_at: '2026-07-28'
       started: '2026-07-28'
       mode: full
-      note: 'S023/EV-017 07-build — M1+M2 complete (T2.1–T2.5); active milestone M3 / active_task T3.1; progress 9/~28; tip 2783bcb; #783'
-      active_milestone: M3
-      active_task: T3.1
-      active_task_status: in_progress
+      note: 'S023/EV-017 07-build — M1–M5 complete; active milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; #783'
+      active_milestone: M6
+      active_task: T6.1
+      active_task_status: pending
       decision_id: D-S023-04-plan-approve-A
       branch: evolve/EV-017-public-app-privacy
-      progress: 9/~28
-      tip_sha: 2783bcb
-      tip_sha_full: 2783bcb0df5f3a7aae98f8b6cf368f6a6a622134
+      progress: 22/~28
+      tip_sha: 91fd231
+      tip_sha_full: 91fd2314cd318c60d9be974b52bcb14dd7258f8a
       feature_ids:
       - F21
       - F22
@@ -3264,6 +3264,14 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
+    - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
+    - '2026-07-28 S023/EV-017 T5.3 COMPLETE @ 5772a42 — unmount work-sessions API; TC-F21-auth-gone green; active_task T5.4 in_progress (delete packages/auth); progress 21/~28; tip 5772a42; #783'
+    - '2026-07-28 S023/EV-017 T5.2 COMPLETE @ 5800cfc — strip auth routers/JWT/DISABLE_AUTH; active_task T5.3; progress 20/~28; tip 5800cfc; #783'
+    - '2026-07-28 S023/EV-017 T5.1 committed red @ a38da22 — auth router/JWT gate removal red TDD; active_task T5.2 in_progress (strip auth routers/JWT gates); progress 19/~28; tip a38da22; #783'
+    - '2026-07-28 S023/EV-017 M4 COMPLETE (T4.1–T4.3) — retire api.disableAuth from runtime config.json path; active_milestone M5 (Backend Auth + work-sessions teardown); active_task T5.1 in_progress; progress 18/~28; tip 13c9cf3; commit 13c9cf3; #783'
+    - '2026-07-28 S023/EV-017 T4.1–T4.2 COMPLETE — FE auth-gone tests + remove Auth UX / stop Bearer on public API; active_milestone M4; active_task T4.3; progress 14/~28; tip be1e848; commits 277b903/be1e848; #783'
+    - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress 12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
     - '2026-07-28 S023/EV-017 T2.3 COMPLETE — M2 T2.1–T2.3 done; active_task T2.4; progress 7/~28; tip 70738ab; #783'
     - '2026-07-28 S023/EV-017 M1 COMPLETE (T1.1–T1.4) — ADR-031 Accepted; dependency inventory; env-contract rewrite; rate-limit env back-add; next T2.1; progress 4/~28; tip 8ecd271; #783'
     - '2026-07-28 S023/EV-017 07-build STARTED (D-S023-04-plan-approve-A B→C) — active task T1.1 (Accept ADR-031; mark ADR-020 Superseded); M1–M7 / 27 tasks; progress 0/27; #783'
@@ -4353,8 +4361,17 @@ stages:
     started_at: '2026-07-27'
     completed_at:
     current_stage: 07-build
-    note: 'S023/EV-017 16-evolve in_progress — Phase A+B PASSED; current_stage 07-build; M1+M2 complete; active M3 / T3.1; progress 9/~28; interim draft PR #786; 03/05/06 skipped; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A+B PASSED; current_stage 07-build; M1–M5 complete; active M6 (Privacy preference center); next T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 (stale until push; ahead 33); 03/05/06 skipped; #783'
     notes:
+    - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
+    - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
+    - '2026-07-28 S023/EV-017 T5.3 COMPLETE @ 5772a42 — unmount work-sessions API; TC-F21-auth-gone green; active_task T5.4 in_progress (delete packages/auth); progress 21/~28; tip 5772a42; #783'
+    - '2026-07-28 S023/EV-017 T5.2 COMPLETE @ 5800cfc — strip auth routers/JWT/DISABLE_AUTH; active_task T5.3; progress 20/~28; tip 5800cfc; #783'
+    - '2026-07-28 S023/EV-017 T5.1 committed red @ a38da22 — auth router/JWT gate removal red TDD; active_task T5.2 in_progress (strip auth routers/JWT gates); progress 19/~28; tip a38da22; #783'
+    - '2026-07-28 S023/EV-017 M4 COMPLETE (T4.1–T4.3) — retire api.disableAuth from runtime config.json path; active_milestone M5 (Backend Auth + work-sessions teardown); active_task T5.1 in_progress; progress 18/~28; tip 13c9cf3; commit 13c9cf3; #783'
+    - '2026-07-28 S023/EV-017 T4.1–T4.2 COMPLETE — FE auth-gone tests + remove Auth UX / stop Bearer on public API; active_milestone M4; active_task T4.3; progress 14/~28; tip be1e848; commits 277b903/be1e848; #783'
+    - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress 12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
+    - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress 12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
     - '2026-07-28 S023/EV-017 M2 COMPLETE (T2.1–T2.5) — IndexedDB wire + export/import UI + verification-report-M2; active_milestone M3; active_task T3.1; progress 9/~28; tip 2783bcb; commits dac094a/303083d/2783bcb; #783'
     - '2026-07-28 S023/EV-017 04 COMPLETE (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved (7 milestones; delete packages/auth; single-deploy cutover; slowapi baselines); 05/06 skipped (Standard); B→C passed; handoff 07-build @ T1.1; #783'
     - '2026-07-28 S023/EV-017 07-build STARTED (D-S023-04-plan-approve-A B→C) — active task T1.1 (Accept ADR-031; mark ADR-020 Superseded); M1–M7 / 27 tasks; progress 0/27; #783'
@@ -10593,10 +10610,10 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07-build — M1+M2 done (T2.1–T2.5); active M3/T3.1; progress 9/~28; interim draft PR #786 open.'
+    note: 'Approved Standard routing (D-S023-00-open). Skip 03/05/06. Phase A+B passed; 04 COMPLETE; 07-build — M1–M5 complete; active M6/T6.1; progress 22/~28; interim draft PR #786 open (stale until push; ahead 33).'
   current_stage: 07-build
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 Phase A+B PASSED — gates.a_to_b+b_to_c passed; current_stage 07-build — M1+M2 complete (T2.1–T2.5); active M3 / T3.1; progress 9/~28; 03/05/06 skipped; interim draft PR #786 open; #783.'
+  note: 'S023/EV-017 Phase A+B PASSED — gates.a_to_b+b_to_c passed; current_stage 07-build — M1–M5 complete; active M6 (Privacy preference center); next T6.1; progress 22/~28; 03/05/06 skipped; interim draft PR #786 open (stale until push; ahead 33); #783.'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
@@ -10623,6 +10640,12 @@ evolve_cycles:
   - D-S023-04-batch3
   - D-S023-04-plan-approve-A
   notes:
+  - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33); #783'
+  - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
+  - '2026-07-28 S023/EV-017 T5.3 COMPLETE @ 5772a42 — unmount work-sessions API; TC-F21-auth-gone green; active_task T5.4 in_progress (delete packages/auth); progress 21/~28; tip 5772a42; #783'
+  - '2026-07-28 S023/EV-017 T5.2 COMPLETE @ 5800cfc — strip auth routers/JWT/DISABLE_AUTH; active_task T5.3; progress 20/~28; tip 5800cfc; #783'
+  - '2026-07-28 S023/EV-017 T5.1 committed red @ a38da22 — auth router/JWT gate removal red TDD; active_task T5.2 in_progress (strip auth routers/JWT gates); progress 19/~28; tip a38da22; #783'
+  - '2026-07-28 S023/EV-017 M4 COMPLETE (T4.1–T4.3) — retire api.disableAuth from runtime config.json path; active_milestone M5 (Backend Auth + work-sessions teardown); active_task T5.1 in_progress; progress 18/~28; tip 13c9cf3; commit 13c9cf3; #783'
   - '2026-07-28 S023/EV-017 M2 COMPLETE (T2.1–T2.5) — IndexedDB wire + export/import UI + verification-report-M2; active_milestone M3; active_task T3.1; progress 9/~28; tip 2783bcb; commits dac094a/303083d/2783bcb; #783'
   - '2026-07-28 S023/EV-017 T2.3 COMPLETE — M2 T2.1–T2.3 done (IndexedDB store via idb; TC-004 green); active_task T2.4; progress 7/~28; tip 70738ab; commits a64256d/a4b61bd/70738ab (+ f1b6c12 chore); #783'
   - '2026-07-28 S023/EV-017 M1 COMPLETE (T1.1–T1.4) — progress 4/~28; next T2.1 (IDB unit tests); tip 8ecd271; #783'
@@ -10648,7 +10671,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-27'
-      note: Orchestrator active; Phase A+B PASSED; current_stage 07-build — M1+M2 complete; active M3 / T3.1; progress 9/~28; 03/05/06 skipped
+      note: Orchestrator active; Phase A+B PASSED; current_stage 07-build — M1–M5 complete; active M6 / T6.1; progress 22/~28; 03/05/06 skipped
     01-requirements:
       status: completed
       mode: delta
@@ -10691,10 +10714,10 @@ evolve_cycles:
       status: in_progress
       started: '2026-07-28'
       mode: full
-      note: 'S023/EV-017 07-build — M1+M2 complete (T2.1–T2.5); active milestone M3 / active_task T3.1; progress 9/~28; tip 2783bcb; #783'
-      active_task: T3.1
-      active_milestone: M3
-      progress: 9/~28
+      note: 'S023/EV-017 07-build — M1–M5 complete; active milestone M6 (Privacy preference center); active_task T6.1; progress 22/~28; tip 91fd231; #783'
+      active_task: T6.1
+      active_milestone: M6
+      progress: 22/~28
     08-verify-build:
       status: pending
     09-qa:
@@ -10766,6 +10789,14 @@ evolve_cycles:
     evolve_cycle_id: EV-017
     date: '2026-07-28'
     decision_id: D-S023-04-plan-approve-A
+  - path: docs/ops/legacy-tac-work-sessions-archive.md
+    status: completed
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    date: '2026-07-28'
+    task: T5.5
+    note: '~30-day legacy tac_work_sessions archive ops note'
   - path: docs/sessions/S023-public-app-privacy/checkpoints/phase-a.md
     status: pending
     stage: 16-evolve
@@ -14309,13 +14340,19 @@ evolve_cycles:
   merge_sha: '4660602'
 git_history:
   current_branch: evolve/EV-017-public-app-privacy
-  ahead_of_origin: 20
+  ahead_of_origin: 33
   pushed: false
   pending_commit:
-  tip_sha: 2783bcb
-  tip_sha_full: 2783bcb0df5f3a7aae98f8b6cf368f6a6a622134
-  note: 'S023/EV-017 tip 2783bcb — M1+M2 complete (T2.1–T2.5); next T3.1; progress 9/~28; interim draft PR #786'
+  tip_sha: 91fd231
+  tip_sha_full: 91fd2314cd318c60d9be974b52bcb14dd7258f8a
+  note: 'S023/EV-017 tip 91fd231 — M5 complete (T5.4–T5.5); active M6/T6.1 (Privacy preference center); progress 22/~28; interim draft PR #786 (stale until push; ahead 33)'
   notes:
+  - '2026-07-28 S023/EV-017 tip synced — 91fd231 (91fd2314cd318c60d9be974b52bcb14dd7258f8a); M5 COMPLETE (T5.4–T5.5); stage 07-build; active M6/T6.1 (Privacy preference center); progress 22/~28; recorded c9cebfa/91fd231; pending_commit cleared; interim draft PR #786 stale until push (ahead 33)'
+  - '2026-07-28 S023/EV-017 tip synced — 5772a42 (5772a4227b61480e2cdc142b3a9c9cb2bf116287); T5.3 COMPLETE (unmount work-sessions; TC-F21-auth-gone green); stage 07-build; active T5.4 (delete packages/auth); progress 21/~28; recorded 5800cfc/5772a42; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — a38da22 (a38da2255cf007218e5dff1b8edd228d5985d563); T5.1 committed red; stage 07-build; active T5.2 (strip auth); progress 19/~28; no git_history.commits row until parent records [T5.1]; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — 13c9cf3 (13c9cf370143907f195951d894baf83915c15cc7); M4 COMPLETE (T4.1–T4.3); stage 07-build; next T5.1; progress 18/~28; recorded 13c9cf3; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — be1e848 (be1e848e2bee44db875ef8c4d028836c6f5ef7df); T4.1–T4.2 COMPLETE; stage 07-build; next T4.3; progress 14/~28; recorded 277b903/be1e848; pending_commit cleared'
+  - '2026-07-28 S023/EV-017 tip synced — ce4bf45 (ce4bf4595790eb44ac0de7cee33432980c730d70); M3 COMPLETE (T3.1–T3.3); stage 07-build; next T4.1; progress 12/~28; recorded 151a1c2/452c86f/ce4bf45; pending_commit cleared'
   - '2026-07-28 S023/EV-017 tip synced — 2783bcb (2783bcb0df5f3a7aae98f8b6cf368f6a6a622134); M2 COMPLETE (T2.1–T2.5); stage 07-build; next T3.1; progress 9/~28; recorded dac094a/303083d/2783bcb; pending_commit cleared'
   - '2026-07-28 S023/EV-017 tip synced — 70738ab (70738ab0398c586d0a695757834172e2c6178088); T2.3 COMPLETE (T2.1–T2.3); stage 07-build; next T2.4; progress 7/~28; recorded a64256d/a4b61bd/70738ab + f1b6c12; pending_commit cleared'
   - '2026-07-28 S023/EV-017 tip synced — 8ecd271 (8ecd271514cc675b90af931d2b71003dcc94a42f); M1 COMPLETE (T1.1–T1.4); stage 07-build; next T2.1; progress 4/~28; pending_commit cleared'
@@ -15194,6 +15231,194 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 91fd2314cd318c60d9be974b52bcb14dd7258f8a
+    short: 91fd231
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T5.5] docs: ops note for ~30-day legacy tac_work_sessions archive'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - docs/ops/legacy-tac-work-sessions-archive.md
+    - docs/ops/staging-secrets-matrix.md
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T14:11:44Z'
+    date: '2026-07-28'
+  - sha: c9cebfa53a998164f56cc15165dbef931a29530c
+    short: c9cebfa
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T5.4] chore: delete packages/auth; drop Docker/CI/Makefile coverage gates'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - packages/auth/ (deleted)
+    - apps/backend/src/routers/work_sessions.py
+    - apps/backend/src/schemas/work_session.py
+    - apps/backend/src/services/work_session_service.py
+    - apps/backend/docker/Dockerfile
+    - apps/backend/pyproject.toml
+    - Makefile
+    - .github/workflows/ci-cd.yml
+    - .codecov.yml
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    - uv.lock
+    timestamp: '2026-07-28T14:11:06Z'
+    date: '2026-07-28'
+    note: '96 files — delete packages/auth; drop work-sessions backend leftovers; CI/Docker/Makefile coverage gate cleanup'
+  - sha: 5772a4227b61480e2cdc142b3a9c9cb2bf116287
+    short: 5772a42
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T5.3] feat: unmount work-sessions API; IndexedDB is the operator store'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/backend/src/api.py
+    - apps/backend/tests/api/test_f7_ui_connection_integration.py
+    - apps/backend/tests/integration/test_h0i_connectivity.py
+    - apps/backend/tests/integration/test_work_session_tc004.py
+    - apps/backend/tests/unit/test_api_import_fallback_unit.py
+    - apps/backend/tests/unit/test_tc_f7_005_unified_sessions.py
+    - apps/backend/tests/unit/test_work_session_product_api.py
+    - apps/backend/tests/unit/test_work_sessions_router_unit.py
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T13:54:49Z'
+    date: '2026-07-28'
+  - sha: 5800cfcbff2120d154cd092092d649bcc1f57ac8
+    short: 5800cfc
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T5.2] feat: strip auth routers and JWT gates; retire DISABLE_AUTH'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/backend/src/api.py
+    - apps/backend/src/routers/dissemination.py
+    - apps/backend/src/routers/evaluation.py
+    - apps/backend/src/routers/icao_opmet.py
+    - apps/backend/src/routers/validation.py
+    - apps/backend/src/utilities/security.py
+    - apps/backend/tests/conftest.py
+    - apps/backend/tests/evaluation/test_evaluation_endpoints_comprehensive.py
+    - apps/backend/tests/infrastructure/test_security_comprehensive.py
+    - apps/backend/tests/infrastructure/test_smoke.py
+    - apps/backend/tests/unit/test_api_helper_functions_unit.py
+    - apps/backend/tests/unit/test_api_helpers_middleware_unit.py
+    - apps/backend/tests/unit/test_api_import_fallback_unit.py
+    - apps/backend/tests/unit/test_api_routes_validation_unit.py
+    - apps/backend/tests/unit/test_auth_router_mount_unit.py
+    - apps/backend/tests/unit/test_dissemination_api.py
+    - apps/backend/tests/unit/test_evaluation_router_unit.py
+    - apps/backend/tests/unit/test_icao_opmet_router_unit.py
+    - apps/backend/tests/unit/test_security_unit.py
+    - apps/backend/tests/unit/test_tc_f11_001_msgspec_http_parity.py
+    - apps/backend/tests/unit/test_tc_f15_001_lint_issue_catalog.py
+    - apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py
+    - apps/backend/tests/unit/test_validation_router_unit.py
+    - apps/backend/tests/validation/test_validation_router.py
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T13:51:20Z'
+    date: '2026-07-28'
+  - sha: 13c9cf370143907f195951d894baf83915c15cc7
+    short: 13c9cf3
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T4.3] feat: retire api.disableAuth from runtime config.json path'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/e2e/playwright-e2e-helpers.ts
+    - apps/frontend/public/config.json
+    - apps/frontend/src/app/App.test.tsx
+    - apps/frontend/src/test/tc-f21-auth-gone.test.tsx
+    - apps/frontend/src/utils/runtime-config.test.ts
+    - apps/frontend/src/utils/runtime-config.ts
+    - config/e2e.json
+    - config/local.json
+    - config/prod.json
+    - docs/config-spec.md
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    - scripts/deploy/verify_connectivity.sh
+    - start-dev-servers.sh
+    timestamp: '2026-07-28T13:23:15Z'
+    date: '2026-07-28'
+  - sha: be1e848e2bee44db875ef8c4d028836c6f5ef7df
+    short: be1e848
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T4.2] feat: remove FE Auth UX and stop Bearer on public API'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/app/App.test.tsx
+    - apps/frontend/src/app/App.tsx
+    - apps/frontend/src/app/components/DatabaseUploadDialog.test.tsx
+    - apps/frontend/src/app/components/DatabaseUploadDialog.tsx
+    - apps/frontend/src/app/components/DisseminationDrawer.test.tsx
+    - apps/frontend/src/app/components/DisseminationDrawer.tsx
+    - apps/frontend/src/app/components/FileConverter.test.tsx
+    - apps/frontend/src/app/components/FileConverter.tsx
+    - apps/frontend/src/app/components/FileConverter.work-session.test.tsx
+    - apps/frontend/src/test/bug-2026-07-15-empty-bearer-lint-tac.test.tsx
+    - apps/frontend/src/utils/api.test.ts
+    - apps/frontend/src/utils/api.ts
+    - apps/frontend/src/utils/databaseUpload.test.ts
+    - apps/frontend/src/utils/databaseUpload.ts
+    - apps/frontend/src/utils/dissemination.test.ts
+    - apps/frontend/src/utils/dissemination.ts
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T13:17:55Z'
+    date: '2026-07-28'
+  - sha: 277b903b33828bff920f4c6c6c42f9ebea78c014
+    short: 277b903
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T4.1] test: TC-F21-auth-gone FE — no login chrome, no JWT headers'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/frontend/src/test/tc-f21-auth-gone.test.tsx
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T13:08:25Z'
+    date: '2026-07-28'
+  - sha: ce4bf4595790eb44ac0de7cee33432980c730d70
+    short: ce4bf45
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T3.3] feat: stricter dissemination rate limit decorator'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/backend/src/routers/dissemination.py
+    - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
+    timestamp: '2026-07-28T13:03:56Z'
+    date: '2026-07-28'
+  - sha: 452c86fd81ac5606e25a3087dbb27f0672b32a30
+    short: 452c86f
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T3.2] feat: wire slowapi and max-body abuse controls on API'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/backend/src/api.py
+    timestamp: '2026-07-28T13:03:43Z'
+    date: '2026-07-28'
+  - sha: 151a1c270adb6d5ecd295a10e56066d2898432da
+    short: 151a1c2
+    branch: evolve/EV-017-public-app-privacy
+    message: '[T3.1] test: rate-limit and body-size unit tests (429/413)'
+    stage: 07-build
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    files_changed:
+    - apps/backend/pyproject.toml
+    - apps/backend/src/utilities/abuse_controls.py
+    - apps/backend/tests/unit/test_abuse_controls_unit.py
+    - uv.lock
+    timestamp: '2026-07-28T13:03:30Z'
+    date: '2026-07-28'
   - sha: 2783bcb0df5f3a7aae98f8b6cf368f6a6a622134
     short: 2783bcb
     branch: evolve/EV-017-public-app-privacy
