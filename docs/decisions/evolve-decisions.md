@@ -90,6 +90,16 @@ Privacy: Solution A + one global preference center + GPC. Retire operator Auth U
 | E17-14 | decision | **One-time** migrate guest `sessionStorage` → IndexedDB on first F7.h load |
 | E17-15 | decision | Abuse controls = **`slowapi`** (in-memory; Render single-instance baseline) |
 
+### Tech plan Batch 2 — Privacy / Auth / ops (2026-07-28)
+
+| ID | Category | Decision |
+|----|----------|----------|
+| E17-16 | decision | GPC = honor **`Sec-GPC: 1`** + `navigator.globalPrivacyControl` → opt-out non-essential prefs |
+| E17-17 | decision | Prefs in **`localStorage`**; work sessions in **IndexedDB** only |
+| E17-18 | decision | **Single deploy** cutover: IndexedDB live + `/auth/*` + work-sessions → 404 same release |
+| E17-19 | decision | slowapi baseline: **60/min/IP** convert+lint+decode; **10/min** dissemination; **2 MB** body (exact table in ADR-031) |
+| E17-20 | decision | Export/import = JSON **`tac-work-sessions-export-v1`** download/upload in Privacy or History UI |
+
 ---
 
 ## Cycle EV-016 — Workbench golden examples (#780) (S021)

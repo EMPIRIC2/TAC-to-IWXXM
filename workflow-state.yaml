@@ -24,7 +24,7 @@ active_session:
   preset: Standard
   routing_decision_id: D-S023-00-open
   context_briefs: []
-  note: 'Phase A passed (D-S023-02-phase-a-A); 03 skipped (waive prerequisite for 04); 04-tech-plan in_progress — Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch); interview Batch 2 pending'
+  note: 'Phase A passed (D-S023-02-phase-a-A); 03 skipped (waive prerequisite for 04); 04-tech-plan in_progress — Batch 1+2 locked (E17-12..20 / D-S023-04-batch1-arch + D-S023-04-batch2-privacy-ops); interview Batch 3 pending'
   routing_plan:
   - stage: 00-context
     required: true
@@ -40,7 +40,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-27'
-    note: 'S023/EV-017 16-evolve in_progress — Phase A passed (D-S023-02-phase-a-A); current_stage 04-tech-plan; Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch); interview Batch 2 pending; interim draft PR #786 open; #783'
+    note: 'S023/EV-017 16-evolve in_progress — Phase A passed (D-S023-02-phase-a-A); current_stage 04-tech-plan; Batch 1+2 locked (E17-12..20 / D-S023-04-batch1-arch + D-S023-04-batch2-privacy-ops); interview Batch 3 pending; interim draft PR #786 open; #783'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -63,7 +63,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: '2026-07-28'
-    note: 'S023/EV-017 04-tech-plan in_progress 2026-07-28 (delta) — Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch); interview Batch 2 pending; C5 env rewrite in scope; ADR public-app pending'
+    note: 'S023/EV-017 04-tech-plan in_progress 2026-07-28 (delta) — Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops); interview Batch 3 pending; C5 env rewrite in scope; ADR public-app pending'
   - stage: 07-build
     required: true
     mode: full
@@ -2597,7 +2597,7 @@ stages:
       feature_ids:
       - F21
       - F22
-      note: 'Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch); interview Batch 2 pending; C5 env rewrite in scope; ADR public-app pending'
+      note: 'Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops); Batch 1 arch locked (E17-12..15); interview Batch 3 pending; C5 env rewrite in scope; ADR public-app pending'
       interview:
         batch_1_architecture:
           status: locked
@@ -2608,10 +2608,21 @@ stages:
           - E17-14
           - E17-15
           locked_at: '2026-07-28'
-          note: idb; reuse workSessionPayload; one-time sessionStorage→IndexedDB migrate; slowapi; Batch 2 pending
-        batch_2_approve_plan:
+          note: idb; reuse workSessionPayload; one-time sessionStorage→IndexedDB migrate; slowapi
+        batch_2_privacy_ops:
+          status: locked
+          decision_id: D-S023-04-batch2-privacy-ops
+          decision_ids:
+          - E17-16
+          - E17-17
+          - E17-18
+          - E17-19
+          - E17-20
+          locked_at: '2026-07-28'
+          note: GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON export v1
+        batch_3_approve_plan:
           status: pending
-          note: Interview Batch 2 pending after Batch 1 lock
+          note: Interview Batch 3 pending after Batch 2 lock
     - session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
       skill_id: 04-tech-plan
@@ -2850,6 +2861,7 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-28 S023/EV-017 04 Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops) — GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON tac-work-sessions-export-v1; interview Batch 3 pending'
     - '2026-07-28 S023/EV-017 04 Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch) — idb; reuse workSessionPayload; one-time sessionStorage→IndexedDB; slowapi; interview Batch 2 pending'
     - '2026-07-28 S023/EV-017 04-tech-plan STARTED (D-S023-02-phase-a-A) — Phase A PASSED; gates.a_to_b passed; mode delta; interview pending; C5 env rewrite in scope; ADR public-app pending'
     - 2026-07-26 S021/EV-016 04-tech-plan COMPLETE (E16-16=A) — Batch 2 approve execution plan as written (M1–M3, 11 tasks); artifacts approved; 05/06 skipped Lean+build; B→C; start 07 @ T1.1
