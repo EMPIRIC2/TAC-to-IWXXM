@@ -28,6 +28,19 @@ fi
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$repo_root"
 
+# Cursor beforeShellExecution often has a minimal PATH (no ~/.local/bin / nvm).
+# Prepend common tool locations so `uv` / `pnpm` resolve the same as interactive shells.
+_hook_path_extras=()
+[[ -d "${HOME}/.local/bin" ]] && _hook_path_extras+=("${HOME}/.local/bin")
+if [[ -d "${HOME}/.nvm/versions/node" ]]; then
+  _nvm_node_bin="$(find "${HOME}/.nvm/versions/node" -maxdepth 2 -type d -name bin 2>/dev/null | sort -V | tail -1 || true)"
+  [[ -n "${_nvm_node_bin}" ]] && _hook_path_extras+=("${_nvm_node_bin}")
+fi
+[[ -d /opt/homebrew/bin ]] && _hook_path_extras+=("/opt/homebrew/bin")
+if [[ ${#_hook_path_extras[@]} -gt 0 ]]; then
+  export PATH="$(IFS=:; echo "${_hook_path_extras[*]}"):${PATH}"
+fi
+
 failures=()
 detail=""
 
