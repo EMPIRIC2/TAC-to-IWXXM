@@ -51,9 +51,10 @@ active_session:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: pending
+    status: in_progress
     skip_rationale:
-    note: 'Ready to start after user gate — F21/F22 / UJ-033 / api-contract Auth removal consistency pass'
+    started: '2026-07-27'
+    note: 'S023/EV-017 02-verify-plan STARTED (delta) — user gate A approved; F21/F22 / UJ-033 / api-contract Auth removal consistency pass'
   - stage: 04-tech-plan
     required: true
     mode: delta
@@ -2302,33 +2303,32 @@ stages:
     - 2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. interviews.completed 7/7; planned_docs api-contract+adr completed
     - 2026-07-12 S008-realtime-ingest amend COMPLETE — delta status completed; overall 01-requirements completed; advancing to 04-tech-plan (pending)
   02-verify-plan:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-07-22'
-    completed_at: '2026-07-22'
-    session_id: S021-golden-examples-ui
-    evolve_cycle_id: EV-016
-    note: S021-golden-examples-ui/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS. Prior S020/EV-015 COMPLETE retained in delta_substages. Phase A / gates.a_to_b pending before 04-tech-plan.
+    started_at: '2026-07-27'
+    previous_completed_at: '2026-07-22'
+    session_id: S023-public-app-privacy
+    evolve_cycle_id: EV-017
+    note: S023/EV-017 02-verify-plan STARTED 2026-07-27 (delta) — user gate A approved; full cross-document consistency pass for F21/F22, F5/F7 IndexedDB, and M4 operator Auth deprecation.
     substeps:
       inventory:
-        status: completed
+        status: pending
       consistency_check:
-        status: completed
+        status: pending
       statement_review:
-        auto_approved: 8
+        auto_approved: 0
         pending: 0
-        reviewed: 8
+        reviewed: 0
     current_document:
     current_statement:
     active_session:
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
+      session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
       skill_id: 02-verify-plan
-      status: completed
+      status: in_progress
       mode: delta
-      started_at: '2026-07-22'
-      completed_at: '2026-07-22'
-      note: S021/EV-016 02-verify-plan COMPLETE 2026-07-22 — PASS (F7.g / UJ-032 / TC-F7-008); artifact docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md; Phase A / gates.a_to_b pending before 04; do not start 04
+      started_at: '2026-07-27'
+      note: S023/EV-017 02-verify-plan STARTED (delta) — user gate A approved; F21/F22 scope and corpus consistency pass in progress.
     artifacts:
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
@@ -2336,6 +2336,25 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S023-public-app-privacy
+      evolve_cycle_id: EV-017
+      skill_id: 02-verify-plan
+      status: in_progress
+      started_at: '2026-07-27'
+      mode: delta
+      feature_ids:
+      - F21
+      - F22
+      deepen:
+      - F5
+      - F7
+      deprecate:
+      - M4
+      user_gate:
+        decision: A
+        approved_at: '2026-07-27'
+        note: User authorized the 02-verify-plan delta consistency pass.
+      note: S023/EV-017 02-verify-plan STARTED (delta) — user gate A approved; audit F21/F22 plus F5/F7 IndexedDB and M4 operator Auth deprecation.
     - session_id: S021-golden-examples-ui
       evolve_cycle_id: EV-016
       skill_id: 02-verify-plan
@@ -10053,15 +10072,17 @@ evolve_cycles:
     provisional: false
     preset: Standard
     decision_id: D-S023-00-open
-    note: 'Approved Standard routing (D-S023-00-open / User 1A 2B 3A). Skip 03/05/06. 01 docs committed+pushed; interim draft PR #786 open; next gate 02-verify-plan (pending user gate A/B).'
+    note: 'Approved Standard routing (D-S023-00-open / User 1A 2B 3A). Skip 03/05/06. 01 docs committed+pushed; interim draft PR #786 open; user gate A approved 02-verify-plan.'
   current_stage: 02-verify-plan
   branch: evolve/EV-017-public-app-privacy
-  note: 'S023/EV-017 01 docs committed+pushed; interim draft PR #786 open; next gate 02-verify-plan (pending user gate A/B); #783'
+  note: 'S023/EV-017 02-verify-plan in_progress (delta) — user gate A approved; interim draft PR #786 open; #783.'
   decision_refs:
   - D-S023-00-open
   - D-S023-E17-scope-lock
   - D-S023-01-requirements-delta
+  - D-S023-02-verify-plan-gate-A
   notes:
+  - '2026-07-27 S023/EV-017 02-verify-plan STARTED (delta) — user gate A approved; F21/F22, F5/F7 IndexedDB, and M4 operator Auth deprecation consistency audit in progress'
   - '2026-07-27 S023/EV-017 01 docs committed+pushed; interim draft PR #786 open (evolve/EV-017-public-app-privacy); next gate 02-verify-plan pending user gate A/B'
   - '2026-07-27 S023/EV-017 01-requirements COMPLETE — D-S023-01-requirements-delta; F21/F22 corpus deltas from recommended architecture; deepen F5/F7; reports 01-requirements.md + impact-analysis.md; current_stage → 02-verify-plan (pending user gate)'
   - '2026-07-27 S023/EV-017 scope locked — D-S023-E17-scope-lock (E17-4A..E17-11); F21/F22; IndexedDB F5/F7; Solution A privacy + GPC; abuse controls; 30d legacy archive; 00 COMPLETE; 16+01 in_progress'
@@ -10076,7 +10097,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-27'
-      note: Orchestrator active; current_stage 02-verify-plan (pending)
+      note: Orchestrator active; current_stage 02-verify-plan (in_progress; user gate A approved)
     01-requirements:
       status: completed
       mode: delta
@@ -10084,8 +10105,10 @@ evolve_cycles:
       completed: '2026-07-27'
       note: COMPLETE (D-S023-01-requirements-delta) — F21/F22 corpus deltas; deepen F5/F7; ADR deferred to 04
     02-verify-plan:
-      status: pending
-      note: Ready to start after user gate
+      status: in_progress
+      started: '2026-07-27'
+      mode: delta
+      note: User gate A approved; F21/F22, F5/F7 IndexedDB, and M4 operator Auth deprecation audit in progress.
     04-tech-plan:
       status: pending
     07-build:

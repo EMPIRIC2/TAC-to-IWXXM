@@ -9,7 +9,7 @@
 | 00-context | yes | scoped | completed | Session open + `docs/context/public-app-privacy.md` |
 | 16-evolve | yes | orchestrator | in_progress | EV-017 |
 | 01-requirements | yes | delta | completed | F21/F22 + F5/F7/M4 deltas — `reports/01-requirements.md` |
-| 02-verify-plan | yes | delta | pending | Consistency across product / API / tests / env |
+| 02-verify-plan | yes | delta | in_progress | Gate A 2026-07-27; contradiction batch open |
 | 03-plan-tooling | **no** | — | skipped | No new Cursor rules/hooks expected at open; add if ADR needs guardrails |
 | 04-tech-plan | yes | delta | pending | IndexedDB design, auth teardown tasks, abuse controls, privacy UI |
 | 05-verify-tech | **no** | — | skipped | Standard skip unless 04 adds deps/ADR conflict |
