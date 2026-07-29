@@ -18,6 +18,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
 	test-sigmet-quality \
+	test-wmo-quality \
 	test-integration-dissemination \
 	compose-wis2box-up compose-wis2box-down compose-wis2box-harness \
 	compose-mock-byoc-up compose-mock-byoc-down compose-mock-byoc-full-up \
@@ -219,9 +220,13 @@ test-unit-tac-validate:
 		--cov-config=packages/tac-validate/pyproject.toml --cov-branch \
 		--cov-report=term-missing --cov-fail-under=95 -v
 
-# F23 / EV-019 — focused SIGMET + VA pack (E19-19); complements full package jobs
-test-sigmet-quality:
-	bash scripts/ci/run_sigmet_quality.sh
+# F23 / EV-019 — focused SIGMET + VA pack (E19-19); superseded by combined WMO pack (E20-F3)
+# Kept as thin alias for older docs / local muscle memory.
+test-sigmet-quality: test-wmo-quality
+
+# F24/F25 / EV-020 — combined WMO quality pack (E20-F3=3): SIGMET keep-green + AIRMET + METAR/SPECI/TAF
+test-wmo-quality:
+	bash scripts/ci/run_wmo_quality.sh
 
 # F16–F19 / T0.1 — coverage paths; skips until packages/dissemination exists (T1.1/T1.2).
 test-unit-dissemination:

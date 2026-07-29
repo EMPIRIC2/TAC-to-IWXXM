@@ -56,7 +56,7 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | **SPECI** | ✅ same as METAR (+ App 3 §2.3.2 shall / §2.3.3 Rec thresholds) | ✅ same package `metarSpeci.xsd` | ✅ same | **F15** R1–R8 + adjacency closed; **F20 / #734** S1–S3 themes closed (lint deepen + misclass guards + annex3/`iwxxm_us` goldens) — [research catalog](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md) · S020/EV-015 |
 | **TAF** | ✅ Annex 3 App 5 (§1.3 change/PROB; Table A5-2) / Doc 8896 (paywall); vocab via 49-2 / 306 | ✅ Guidance + examples (CNL/NIL/AMD) | ✅ `taf.xsd` + SCH | **F20 / #735** T1–T4 themes closed (lint + annex3 goldens; residual convert deepen filed below) — [research catalog](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md) · S020/EV-015 |
 | **SIGMET** | ✅ Annex 3 Ch.7 + App 6 phenomena/validity (paywall); SigWxPhenomena registry; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) public TAC guide | ✅ Guidance + examples + FM 205 (+ METCE for TC/VA members); EUR Doc 014 AHL `WS`/`WV`/`WC`→`LS`/`LV`/`LY` | ✅ `sigmet.xsd` + SCH (+ METCE 1.2) | **F23 / #733+#739** S025/EV-019 — **G1–G3 / V1–V3 / C1 closed or deferred** (lint + convert + annex3 goldens; residuals below); TC SIGMET #738 OOS |
-| **AIRMET** | ✅ Annex 3 Ch.7 + App 6; AirWxPhenomena + VIS-cause lists; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) | ✅ Guidance + examples + FM 205; EUR Doc 014 AHL `WA`→`LW` | ✅ `airmet.xsd` + SCH | Entire product outside GIFTs |
+| **AIRMET** | ✅ Annex 3 Ch.7 + App 6; AirWxPhenomena + VIS-cause lists; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) | ✅ Guidance + examples + FM 205; EUR Doc 014 AHL `WA`→`LW` | ✅ `airmet.xsd` + SCH | **F24 / #731** S026/EV-020 — WMO `airmet-A6-1a-TS` default golden + registry (in progress) |
 | **VAA** | ✅ Annex 3 App 2 §3.1.2 **shall** IWXXM + Table **A2-1** ([dig](../mining/icao-annex-3-mining-notes.md)); Doc 9766 paywall for colour **meanings**; colour machine IDs via registry ✅ | ✅ Guidance + examples + AviationColourCode + [METCE 1.2](https://schemas.wmo.int/metce/1.2/) `Volcano` | ✅ `volcanicAshAdvisory.xsd` (+ METCE embed) | Entire product outside GIFTs |
 | **TCA** | ✅ Annex 3 App 2 §5.1.1 (≥34 kt) · §5.1.3 **shall** IWXXM + Table **A2-2** | ✅ Guidance + examples + FM 205 + METCE `TropicalCyclone` | ✅ `tropicalCycloneAdvisory.xsd` (+ METCE embed) | Entire product outside GIFTs |
 | **METAR (US)** | ✅ FMH-1 Ch.12 + SPECI §2.5.2 ([dig](../mining/fmh1-2019-mining-notes.md)) + NWS FMH-1 registry | ✅ Body + RMK → iwxxm-us `extension` | ✅ WMO base + iwxxm-us 3.0 | GIFTs stripped REMARKS |
@@ -217,3 +217,34 @@ without TAC lint surface follow F20 C1 pattern — not silent omission.
 - [x] F15 acc3 — METAR/SPECI rows + R1–R8 closed (S015 / EV-011; see table above)
 - [x] F20 acc — TAF + SPECI themes T1–T4 / S1–S3 / C1 closed or deferred (S020 / EV-015; see table above)
 - [x] F23 acc — SIGMET + VA SIGMET themes G1–G3 / V1–V3 / C1 closed or deferred (S025 / EV-019)
+- [ ] F24 acc — AIRMET WMO default golden + registry (S026 / EV-020; #731)
+- [ ] F25 acc — METAR/SPECI/TAF WMO default goldens + Examples catalog gate (S026 / EV-020)
+
+---
+
+## AIRMET — F24 quality themes (S026 / EV-020)
+
+Hard themes from #731 + WMO `TAC-to-XML-Guidance.txt` + vendor `airmet-A6-1a-TS` (defaults only).  
+**Research catalog:** [wmo-quality-research-catalog.md](../../sessions/S026-airmet-quality-wmo-examples/reports/wmo-quality-research-catalog.md) (T0.1).
+
+| Theme | Lint | Convert / golden | Validate | Status |
+|-------|------|------------------|----------|--------|
+| **A1** Header / sequence / validity / FIR | Registry | IR header | — | ✅ Closed (S026 T1.1–T1.2) — sequence/FIR registry + rules |
+| **A2** Phenomenon + intensity (ISOL TS, STNR, WKN, …) | Registry | Encode | SCH | ✅ Closed (S026 T1.3–T1.4) — OBS/STNR/WKN/TOP ABV + STNR+MOV / missing OBS·FCST |
+| **A3** Geometry + vertical (AirspaceVolume / posList / FL) | — | **M-golden (F23 encoder pattern)** | M-xsd/M-sch | ✅ Closed (S026 T2.1–T2.2) — `airmet-A6-1a-TS` AirspaceVolume/posList/TOP ABV; residuals below |
+| **A4** Negatives + translation-failed adjacency | Negatives | Not happy-path | — | ✅ Closed (S026 T2.4) — TC-F24-004 registry codes + translation-failed root guard |
+| **C1** Common rules (shared with SIGMET family) | ✅ where TAC | Deferred convert-only per F23 C1 pattern | — | Cite F23 |
+
+**A3 residuals (documented, not deferred themes):** vendor XML labels MWO as `YUDD` while TAC uses `YUSO` — encoder follows TAC; STNR encodes `#731` shared motion nils (vendor omits motion). Golden is encoder-shaped under `canonicalize_xml` (ADR-032 / F23 pattern), not byte-identical vendor UUIDs.
+
+## METAR / SPECI / TAF — F25 WMO official example parity (S026 / EV-020)
+
+**Research catalog:** [wmo-quality-research-catalog.md](../../sessions/S026-airmet-quality-wmo-examples/reports/wmo-quality-research-catalog.md) (T0.1).  
+Paywalled Annex 3 / FMH: cite mining notes only — do not copy prose into wheels.
+
+| Theme | Convert / golden (defaults) | UI catalog | Status |
+|-------|------------------------------|------------|--------|
+| **W1** `metar-A3-1` | `canonicalize_xml` == vendor | Include when green | **Closed** (S026 T3.1–T3.2) |
+| **W2** `speci-A3-2` | same | Include when green | **Closed** (S026 T3.1–T3.2) |
+| **W3** `taf-A5-1` + `taf-A5-2` | same | Include when green | **Closed** (S026 T4.1–T4.3; E20-E1) |
+| **W4** Examples gate | — | Only WMO-passers for in-scope products | **Closed** (S026 T5.3–T5.4; E20-F4) |

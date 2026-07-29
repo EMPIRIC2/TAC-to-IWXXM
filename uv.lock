@@ -2335,6 +2335,7 @@ version = "0.1.0"
 source = { editable = "packages/tac2iwxxm" }
 dependencies = [
     { name = "msgspec" },
+    { name = "pyyaml" },
 ]
 
 [package.optional-dependencies]
@@ -2347,6 +2348,7 @@ validate = [
 requires-dist = [
     { name = "iwxxm-validate", marker = "extra == 'validate'", editable = "packages/iwxxm-validate" },
     { name = "msgspec", specifier = ">=0.19" },
+    { name = "pyyaml", specifier = ">=6.0" },
     { name = "tac-validate", marker = "extra == 'validate'", editable = "packages/tac-validate" },
 ]
 provides-extras = ["validate"]

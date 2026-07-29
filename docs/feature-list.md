@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-29 (S025 / EV-019 — F23 Done; PR #792; UJ-034 / TC-F23)
+> **Last updated**: 2026-07-29 (S026 / EV-020 — F24/F25 Planned; deepen F9/F7.g)
 
 ## Summary
 
@@ -31,6 +31,8 @@
 | F21 | Public unauthenticated operator app | Implemented | Product | S023 / EV-017; #783 |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783 |
 | F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792 |
+| F24 | AIRMET quality bar | Planned | Product | S026 / EV-020; #731 |
+| F25 | WMO official example parity (METAR/SPECI/TAF) + UI gate | Planned | Product | S026 / EV-020 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -701,6 +703,58 @@
 
 - **Status note**: F12 remains **Implemented**; this cycle expands SIGMET / VA SIGMET rules
   through the ADR-028 registry and accept/negative packs to full-depth checklist targets.
+
+### F24: AIRMET Quality Bar — S026 / EV-020
+
+- **Status**: **Planned** — S026 / EV-020 (intake + 01 manifest locked 2026-07-29).
+- **What it does**: Raises **AIRMET** TAC lint, convert, and IWXXM-validate quality to the
+  F15/F20/F23 bar. Target: WMO vendor `airmet-A6-1a-TS` TAC→IWXXM **`canonicalize_xml`-equal**
+  under **default** convert settings (`profile=annex3`, default pinned `iwxxm_version`).
+  Reuses **ADR-028** registry; **ADR-032** golden/glossary policy.
+- **Issues**: [#731](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/731).
+- **Deepens**: **F6** (AIRMET encode), **F12** (AIRMET checklist), **F7.g** (examples when passing).
+- **Acceptance**:
+  1. Registry-backed AIRMET lint codes; accept + negative fixtures (**TC-F24-001/004**)
+  2. Convert of WMO `airmet-A6-1a-TS.tac` → `canonicalize_xml` equal to vendor XML under defaults;
+     geometry present (**TC-F24-002**)
+  3. XSD+Schematron pass on that golden (**TC-F24-003**)
+  4. Workbench product-path smoke; H4–H5 when FE touched (**TC-F24-005** / **UJ-035**)
+- **Journeys / tests**: **UJ-035**; **TC-F24-001..005**
+- **Out of scope**: TC SIGMET #738; treating translation-failed WMO examples as happy-path goldens;
+  non-default profile/version golden equality
+- **Source**: E20-*; ADR-032; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-020
+
+### F25: WMO Official Example Parity (METAR/SPECI/TAF) + UI Gate — S026 / EV-020
+
+- **Status**: **Planned** — S026 / EV-020 (intake + 01 manifest locked 2026-07-29).
+- **What it does**: Brings **METAR / SPECI / TAF** convert output to **`canonicalize_xml`-equal**
+  match against WMO IWXXM `2025-2` vendor examples under **default** settings. Updates the F7.g
+  **Examples** catalog so **only** demos that pass the strict WMO bar are offered (SIGMET keepers
+  from F23; AIRMET when F24 passes).
+- **Deepens**: **F6** encode fidelity; **F15** / **F20** quality bars; **F7.g** catalog policy.
+- **Acceptance**:
+  1. Listed WMO TAC→XML cases equal under defaults (**TC-F25-001**; **E20-E1**: `metar-A3-1`,
+     `speci-A3-2`, `taf-A5-1`, `taf-A5-2` — A5-2 is WMO AMD/CNL cancel example)
+  2. XSD+Schematron on those goldens (**TC-F25-002**)
+  3. FE catalog WMO-passers only; provenance vendor/mirrored (**TC-F25-003**; deepen TC-F7-008)
+  4. Load example → convert smoke; H4–H5 when FE deploys (**TC-F25-004** / **UJ-036**)
+- **Journeys / tests**: **UJ-036**; **TC-F25-001..004**; deepen **UJ-032** / **TC-F7-008**
+- **Out of scope**: New SWX/VONA/VAA/TCA quality bars; forcing translation-failed examples to
+  happy-path encode; non-default profile/version equality
+- **Source**: E20-A=2; E20-3; E20-D3; ADR-032; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-020
+
+### F9 deepen (S026 / EV-020 — decode glossary)
+
+- **Status note**: F9 remains **Done**; this cycle deepens plain-language decode across **all
+  seven** products using **official / near-official** meanings (WMO codes, Annex cites, F3 /
+  OpenAIP) with a packaged YAML file as **overrides** only (E20-E2). Tests: **TC-F9-003/004**;
+  journey deepen **UJ-020**. Policy: **ADR-032**.
+
+### F7.g deepen (S026 / EV-020 — WMO-passing examples only)
+
+- **Status note**: F7.g remains under F7 Planned; this cycle replaces catalog bodies/policy so
+  the workbench Examples control only offers **strict WMO-passing** demos for in-scope products
+  (**UJ-036** / **TC-F25-003**).
 
 ## Platform Feature Details (Monorepo Migration)
 

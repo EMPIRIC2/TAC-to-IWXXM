@@ -1,4 +1,4 @@
-"""Annex-3 profile XML writer for METAR/SPECI (F6.a / F20 S3)."""
+"""Annex-3 profile XML writer for METAR/SPECI (F6.a / F20 S3 / F25 W1–W2)."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ NS = {
 }
 
 CLOUD_HREF = "http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/{amt}"
+CLOUD_TYPE_HREF = "http://codes.wmo.int/49-2/SigConvectiveCloudType/{ctype}"
 WX_HREF = "http://codes.wmo.int/306/4678/{code}"
 NIL_MISSING = "http://codes.wmo.int/common/nil/missing"
 NIL_NOSIG = "http://codes.wmo.int/common/nil/noSignificantChange"
@@ -18,20 +19,46 @@ NIL_NSC = "http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"
 NIL_NCD = "http://codes.wmo.int/common/nil/notDetectedByAutoSystem"
 NIL_NOT_OBS = "http://codes.wmo.int/common/nil/notObservable"
 
+# WMO Annex 3 / IWXXM examples use fictional YUDO = DONLON/INTERNATIONAL.
+_YUDO_NAME = "DONLON/INTERNATIONAL"
+_YUDO_POS = "12.34 -12.34"
+_YUDO_ELEV_M = "12"
+
 
 def obs_timestamp(ir: dict[str, Any]) -> str:
     """Build observation/issue time matching annex3 golden fixtures."""
     day = int(ir["day"])
     hour = int(ir["hour"])
     minute = int(ir["minute"])
-    # WMO YUDO NIL example uses 2012-08; other pack cases use 2023-06.
-    if ir.get("nil") and ir.get("station") == "YUDO":
+    # WMO YUDO examples (NIL + A3-1 / A3-2) use 2012-08; other pack cases use 2023-06.
+    if ir.get("station") == "YUDO":
         return f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
     return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
 
 
+def _fmt_cel(value: Any) -> str:
+    """Format Celsius for IWXXM (WMO examples use one decimal place)."""
+    return f"{float(value):.1f}"
+
+
+def _fmt_hpa(value: Any) -> str:
+    """Format QNH: whole hPa without trailing .0; tenths otherwise."""
+    fval = float(value)
+    if fval == int(fval):
+        return str(int(fval))
+    return str(fval)
+
+
+def _fmt_speed(value: Any, *, force_one_decimal: bool = False) -> str:
+    """Format wind speed; WMO mean speeds often use one decimal."""
+    fval = float(value)
+    if force_one_decimal or fval != int(fval):
+        return f"{fval:.1f}"
+    return str(int(fval))
+
+
 def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
-    """Stable gml:id for annex3 METAR/SPECI goldens (theme-aware for S3)."""
+    """Stable gml:id for annex3 METAR/SPECI goldens (theme-aware for S3 / W1–W2)."""
     root = product.lower()
     station = str(ir["station"]).lower()
     if ir.get("nil"):
@@ -54,6 +81,9 @@ def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
         return f"{root}.rvr.{station}"
     if ir.get("wind_dir_ccw_deg") is not None:
         return f"{root}.wind.{station}"
+    # F25 WMO official seeds.
+    if station == "yudo" and not ir.get("nil"):
+        return f"{root}.wmo.{station}"
     return f"{root}.basic.{station}"
 
 
@@ -61,9 +91,17 @@ def _visibility_block(ir: dict[str, Any]) -> str:
     vis_op = ""
     if ir.get("visibility_above"):
         vis_op = "\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
+    min_vis = ""
+    if ir.get("min_visibility_m") is not None:
+        min_vis = f'\n          <iwxxm:minimumVisibility uom="m">{ir["min_visibility_m"]}</iwxxm:minimumVisibility>'
+        if ir.get("min_visibility_dir_deg") is not None:
+            min_vis += (
+                f'\n          <iwxxm:minimumVisibilityDirection uom="deg">'
+                f"{ir['min_visibility_dir_deg']}</iwxxm:minimumVisibilityDirection>"
+            )
     return f"""      <iwxxm:visibility>
         <iwxxm:AerodromeHorizontalVisibility>
-          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}
+          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}{min_vis}
         </iwxxm:AerodromeHorizontalVisibility>
       </iwxxm:visibility>
 """
@@ -124,32 +162,66 @@ def _cloud_block(ir: dict[str, Any]) -> str:
         </iwxxm:AerodromeCloud>
       </iwxxm:cloud>
 """
-    if ir.get("cloud_amount") and ir.get("cloud_base_ft") is not None:
-        href = CLOUD_HREF.format(amt=ir["cloud_amount"])
-        return f"""      <iwxxm:cloud>
-        <iwxxm:AerodromeCloud>
-          <iwxxm:layer>
+    clouds_raw = ir.get("clouds")
+    layers: list[dict[str, Any]] = []
+    if isinstance(clouds_raw, list) and clouds_raw:
+        cloud_items = cast(list[Any], clouds_raw)
+        for item in cloud_items:
+            if isinstance(item, dict):
+                layers.append(cast(dict[str, Any], item))
+    elif ir.get("cloud_amount") and ir.get("cloud_base_ft") is not None:
+        layers = [{"amount": ir["cloud_amount"], "base_ft": ir["cloud_base_ft"]}]
+    if not layers:
+        return ""
+    layer_xml: list[str] = []
+    for layer in layers:
+        href = CLOUD_HREF.format(amt=layer["amount"])
+        ctype = layer.get("cloud_type")
+        ctype_xml = ""
+        if ctype:
+            thref = escape(CLOUD_TYPE_HREF.format(ctype=str(ctype)))
+            ctype_xml = f'\n              <iwxxm:cloudType xlink:href="{thref}"/>'
+        layer_xml.append(
+            f"""          <iwxxm:layer>
             <iwxxm:CloudLayer>
               <iwxxm:amount xlink:href="{escape(href)}"/>
-              <iwxxm:base uom="[ft_i]">{ir["cloud_base_ft"]}</iwxxm:base>
+              <iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>{ctype_xml}
             </iwxxm:CloudLayer>
-          </iwxxm:layer>
+          </iwxxm:layer>"""
+        )
+    joined = "\n".join(layer_xml)
+    return f"""      <iwxxm:cloud>
+        <iwxxm:AerodromeCloud>
+{joined}
         </iwxxm:AerodromeCloud>
       </iwxxm:cloud>
 """
-    return ""
 
 
 def _surface_wind_inner(ir: dict[str, Any], *, peak_extension: str = "") -> str:
-    wind_gust = ""
-    if ir.get("wind_gust_kt") is not None:
-        wind_gust = f'\n          <iwxxm:windGustSpeed uom="[kn_i]">{ir["wind_gust_kt"]}</iwxxm:windGustSpeed>'
     variable = bool(ir.get("wind_variable"))
     var_attr = "true" if variable else "false"
     if variable:
         wind_dir = ""
     else:
         wind_dir = f'\n          <iwxxm:meanWindDirection uom="deg">{ir["wind_dir_deg"]}</iwxxm:meanWindDirection>'
+
+    if ir.get("wind_speed_mps") is not None:
+        speed_uom = "m/s"
+        speed_val = _fmt_speed(ir["wind_speed_mps"], force_one_decimal=True)
+        gust_raw = ir.get("wind_gust_mps")
+    else:
+        speed_uom = "[kn_i]"
+        # WMO SPECI A3-2 uses one decimal on mean; keep integers for pack fixtures via int values.
+        speed_val = _fmt_speed(ir["wind_speed_kt"], force_one_decimal=str(ir.get("station")) == "YUDO")
+        gust_raw = ir.get("wind_gust_kt")
+
+    wind_gust = ""
+    if gust_raw is not None:
+        # Vendor SPECI gust is integer; mean may be decimal.
+        gust_txt = _fmt_speed(gust_raw, force_one_decimal=False)
+        wind_gust = f'\n          <iwxxm:windGustSpeed uom="{speed_uom}">{gust_txt}</iwxxm:windGustSpeed>'
+
     extremes = ""
     if ir.get("wind_dir_ccw_deg") is not None and ir.get("wind_dir_cw_deg") is not None:
         # XSD sequence: extremeClockwise before extremeCounterClockwise.
@@ -159,30 +231,90 @@ def _surface_wind_inner(ir: dict[str, Any], *, peak_extension: str = "") -> str:
         )
     return f"""      <iwxxm:surfaceWind>
         <iwxxm:AerodromeSurfaceWind variableWindDirection="{var_attr}">{wind_dir}
-          <iwxxm:meanWindSpeed uom="[kn_i]">{ir["wind_speed_kt"]}</iwxxm:meanWindSpeed>{wind_gust}{extremes}
+          <iwxxm:meanWindSpeed uom="{speed_uom}">{speed_val}</iwxxm:meanWindSpeed>{wind_gust}{extremes}
 {peak_extension}        </iwxxm:AerodromeSurfaceWind>
       </iwxxm:surfaceWind>
 """
 
 
+def _trend_phenomenon_time(trend: dict[str, Any], idx: int) -> str:
+    if trend.get("phenomenon_begin") and trend.get("phenomenon_end"):
+        return f"""      <iwxxm:phenomenonTime>
+        <gml:TimePeriod gml:id="t.trend.{idx}">
+          <gml:beginPosition>{trend["phenomenon_begin"]}</gml:beginPosition>
+          <gml:endPosition>{trend["phenomenon_end"]}</gml:endPosition>
+        </gml:TimePeriod>
+      </iwxxm:phenomenonTime>"""
+    if trend.get("phenomenon_at"):
+        return f"""      <iwxxm:phenomenonTime>
+        <gml:TimeInstant gml:id="t.trend.{idx}">
+          <gml:timePosition>{trend["phenomenon_at"]}</gml:timePosition>
+        </gml:TimeInstant>
+      </iwxxm:phenomenonTime>"""
+    return f'      <iwxxm:phenomenonTime nilReason="{NIL_MISSING}"/>'
+
+
+def _trend_weather_block(trend: dict[str, Any]) -> str:
+    if trend.get("weather_nsw"):
+        return f'\n      <iwxxm:weather nilReason="{NIL_NSC}"/>'
+    codes_raw = trend.get("weather")
+    if not isinstance(codes_raw, list):
+        return ""
+    parts: list[str] = []
+    for raw_code in cast(list[Any], codes_raw):
+        href = escape(WX_HREF.format(code=str(raw_code)))
+        parts.append(f'\n      <iwxxm:weather xlink:href="{href}"/>')
+    return "".join(parts)
+
+
 def _trend_forecasts(ir: dict[str, Any]) -> str:
     parts: list[str] = []
-    if ir.get("nosig"):
-        parts.append(f'  <iwxxm:trendForecast nilReason="{NIL_NOSIG}"/>\n')
-    tempo_raw = ir.get("tempo_trend")
-    if isinstance(tempo_raw, dict):
-        tempo = cast(dict[str, Any], tempo_raw)
+    forecasts_raw = ir.get("trend_forecasts")
+    forecasts: list[dict[str, Any]] = []
+    if isinstance(forecasts_raw, list) and forecasts_raw:
+        for item in cast(list[Any], forecasts_raw):
+            if isinstance(item, dict):
+                forecasts.append(cast(dict[str, Any], item))
+    else:
+        # Legacy F20 path: nosig + single tempo_trend.
+        if ir.get("nosig") and not forecasts:
+            parts.append(f'  <iwxxm:trendForecast nilReason="{NIL_NOSIG}"/>\n')
+        tempo_raw = ir.get("tempo_trend")
+        if isinstance(tempo_raw, dict):
+            forecasts = [cast(dict[str, Any], tempo_raw)]
+
+    for idx, trend in enumerate(forecasts, start=1):
+        if trend.get("nil_nosig"):
+            parts.append(f'  <iwxxm:trendForecast nilReason="{NIL_NOSIG}"/>\n')
+            continue
+        indicator = str(trend.get("change_indicator") or "TEMPORARY_FLUCTUATIONS")
+        cavok = bool(trend.get("cavok"))
+        cavok_attr = ' cloudAndVisibilityOK="true"' if cavok else ' cloudAndVisibilityOK="false"'
+        # Second METAR BECMG AT1800 omits cloudAndVisibilityOK in vendor — keep false when weather/vis present.
+        if indicator == "BECOMING" and trend.get("weather_nsw") and not trend.get("cloud_nsc"):
+            # Vendor metar-A3-1 second trend has no cloudAndVisibilityOK attribute.
+            cavok_attr = ""
+
+        phen = _trend_phenomenon_time(trend, idx)
+        time_ind = ""
+        if trend.get("time_indicator"):
+            time_ind = f"\n      <iwxxm:timeIndicator>{trend['time_indicator']}</iwxxm:timeIndicator>"
+
         vis = ""
-        if tempo.get("visibility_m") is not None:
-            vis = f'\n      <iwxxm:prevailingVisibility uom="m">{tempo["visibility_m"]}</iwxxm:prevailingVisibility>'
-        weather = ""
-        if tempo.get("weather_nsw"):
-            weather = f'\n      <iwxxm:weather nilReason="{NIL_NSC}"/>'
-        indicator = str(tempo.get("change_indicator") or "TEMPORARY_FLUCTUATIONS")
+        if trend.get("visibility_m") is not None:
+            vis = f'\n      <iwxxm:prevailingVisibility uom="m">{trend["visibility_m"]}</iwxxm:prevailingVisibility>'
+            if trend.get("visibility_above"):
+                vis += "\n      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
+
+        weather = _trend_weather_block(trend)
+        cloud = ""
+        if trend.get("cloud_nsc"):
+            cloud = f'\n      <iwxxm:cloud nilReason="{NIL_NSC}"/>'
+
         parts.append(
             f"""  <iwxxm:trendForecast>
-    <iwxxm:MeteorologicalAerodromeTrendForecast gml:id="trend.1" changeIndicator="{indicator}" cloudAndVisibilityOK="false">
-      <iwxxm:phenomenonTime nilReason="{NIL_MISSING}"/>{vis}{weather}
+    <iwxxm:MeteorologicalAerodromeTrendForecast gml:id="trend.{idx}" changeIndicator="{indicator}"{cavok_attr}>
+{phen}{time_ind}{vis}{weather}{cloud}
     </iwxxm:MeteorologicalAerodromeTrendForecast>
   </iwxxm:trendForecast>
 """
@@ -230,13 +362,51 @@ def build_observation_and_trends(
 
     observation = f"""  <iwxxm:observation>
     <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="{cavok_attr}">
-      <iwxxm:airTemperature uom="Cel">{ir["temp_c"]}</iwxxm:airTemperature>
-      <iwxxm:dewpointTemperature uom="Cel">{ir["dewpoint_c"]}</iwxxm:dewpointTemperature>
-      <iwxxm:qnh uom="hPa">{ir["qnh_hpa"]}</iwxxm:qnh>
+      <iwxxm:airTemperature uom="Cel">{_fmt_cel(ir["temp_c"])}</iwxxm:airTemperature>
+      <iwxxm:dewpointTemperature uom="Cel">{_fmt_cel(ir["dewpoint_c"])}</iwxxm:dewpointTemperature>
+      <iwxxm:qnh uom="hPa">{_fmt_hpa(ir["qnh_hpa"])}</iwxxm:qnh>
 {_surface_wind_inner(ir, peak_extension=peak_extension)}{vis_block}{rvr_block}{wx_block}{cloud}{addendum_extension}    </iwxxm:MeteorologicalAerodromeObservation>
   </iwxxm:observation>
 """
     return observation, _trend_forecasts(ir)
+
+
+def _aerodrome_block(station: str) -> str:
+    if station == "YUDO":
+        return f"""  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.{station.lower()}">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.{station.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>{station}</aixm:designator>
+          <aixm:name>{_YUDO_NAME}</aixm:name>
+          <aixm:locationIndicatorICAO>{station}</aixm:locationIndicatorICAO>
+          <aixm:ARP>
+            <aixm:ElevatedPoint gml:id="arp.{station.lower()}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+              <gml:pos>{_YUDO_POS}</gml:pos>
+              <aixm:elevation uom="M">{_YUDO_ELEV_M}</aixm:elevation>
+              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>
+            </aixm:ElevatedPoint>
+          </aixm:ARP>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+"""
+    return f"""  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.{station.lower()}">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.{station.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>{station}</aixm:designator>
+          <aixm:locationIndicatorICAO>{station}</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+"""
 
 
 def emit_metar_speci_annex3(
@@ -273,6 +443,7 @@ def emit_metar_speci_annex3(
     report_status = "CORRECTION" if ir.get("correction") else "NORMAL"
     automated = "true" if ir.get("auto") else "false"
     observation, trends = build_observation_and_trends(ir)
+    aerodrome = _aerodrome_block(station)
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:{root} xmlns:iwxxm="{ns}"
@@ -289,19 +460,7 @@ def emit_metar_speci_annex3(
       <gml:timePosition>{stamp}</gml:timePosition>
     </gml:TimeInstant>
   </iwxxm:issueTime>
-  <iwxxm:aerodrome>
-    <aixm:AirportHeliport gml:id="ad.{station.lower()}">
-      <aixm:timeSlice>
-        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.{station.lower()}">
-          <gml:validTime/>
-          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
-          <aixm:designator>{station}</aixm:designator>
-          <aixm:locationIndicatorICAO>{station}</aixm:locationIndicatorICAO>
-        </aixm:AirportHeliportTimeSlice>
-      </aixm:timeSlice>
-    </aixm:AirportHeliport>
-  </iwxxm:aerodrome>
-  <iwxxm:observationTime>
+{aerodrome}  <iwxxm:observationTime>
     <gml:TimeInstant gml:id="t.obs">
       <gml:timePosition>{stamp}</gml:timePosition>
     </gml:TimeInstant>

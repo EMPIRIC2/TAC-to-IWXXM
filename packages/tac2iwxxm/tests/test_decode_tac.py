@@ -64,7 +64,8 @@ def test_decode_taf_change_groups() -> None:
 def test_decode_sigmet_airmet_hazards() -> None:
     sigmet = "YUDD SIGMET 2 VALID 101200/101600 YUSO- YUDD OBSC TS FCST ="
     result = decode_tac(sigmet, product="SIGMET")
-    assert any("phenomenon" in s.explanation.lower() or "hazard" in s.explanation.lower() for s in result.segments)
+    assert any("thunderstorm" in s.explanation.lower() for s in result.segments)
+    assert any("obscured" in s.explanation.lower() for s in result.segments)
 
 
 def test_decode_vaa_tca_residuals_allowed() -> None:

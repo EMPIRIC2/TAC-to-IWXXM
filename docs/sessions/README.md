@@ -25,7 +25,9 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S024-dissemination-file-select](S024-dissemination-file-select/session-brief.md) | feature | in_progress | Multi-file export selection in dissemination portal (#785) | evolve/EV-018-dissemination-file-select | 2026-07-28 | — |
+| [S026-airmet-quality-wmo-examples](S026-airmet-quality-wmo-examples/session-brief.md) | feature | in_progress | AIRMET quality (#731) + WMO goldens UI + decode translations | evolve/EV-020-airmet-quality | 2026-07-29 | — |
+| [S025-sigmet-quality](S025-sigmet-quality/session-brief.md) | feature | completed | SIGMET family quality (#733/#739); F23; PR #792 merged | evolve/EV-019-sigmet-quality | 2026-07-29 | 2026-07-29 |
+| [S024-dissemination-file-select](S024-dissemination-file-select/session-brief.md) | feature | completed | Multi-file export selection in dissemination portal (#785); PR #791 | evolve/EV-018-dissemination-file-select | 2026-07-28 | 2026-07-29 |
 | [S023-public-app-privacy](S023-public-app-privacy/session-brief.md) | feature | completed | Public app + local history + privacy (#783); PR #790 open (do not auto-merge) | evolve/EV-017-public-app-privacy | 2026-07-27 | 2026-07-28 |
 | [S001-convert-send-buttons](S001-convert-send-buttons/session-brief.md) | feature | completed | Convert & Convert&Send UI (#656) | feat/S001-convert-send-buttons | 2026-06-22 | 2026-06-22 |
 | [S002-issue-594-feedback](S002-issue-594-feedback/session-brief.md) | hotfix | in_progress | COR handling + TAC traceability (#594) | fix/S002-issue-594-feedback | 2026-06-22 | — |
@@ -52,11 +54,11 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 ## Active session
 
-**None** — S023 closed (`D-S023-close`). EV-017 completed; [PR #790](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790) open (CI green on tip `2e2f6c0`; mergeable; **do not auto-merge**).
+**[S026-airmet-quality-wmo-examples](S026-airmet-quality-wmo-examples/session-brief.md)** — AIRMET quality (#731) + WMO goldens UI + decode translations. Branch `evolve/EV-020-airmet-quality`. Lean+build **proposed** (routing pending AskQuestion). EV-020 cycle entry deferred until routing approved.
 
 Parked/other: see rows above (S016 paused; S017 process).
 
-Last closed: **[S023-public-app-privacy](S023-public-app-privacy/session-brief.md)** — Public app + IndexedDB history + privacy (F21/F22); PR #790 awaiting merge.
+Last closed: **[S025-sigmet-quality](S025-sigmet-quality/session-brief.md)** — F23 SIGMET family quality; PR #792 merged (`afffe86`).
 
 ## Folder layout
 

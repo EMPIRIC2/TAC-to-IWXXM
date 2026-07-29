@@ -302,7 +302,49 @@
     {
       "id": "accept_airmet_basic",
       "product": "AIRMET",
+      "theme": "A1",
+      "cite": "F24 theme A1 header/FIR happy path",
       "tac": "accept/airmet_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_airmet_a2_phenomenon",
+      "product": "AIRMET",
+      "theme": "A2",
+      "cite": "ISOL TS AirWx phenomenon; F24 theme A2 / #731",
+      "tac": "accept/airmet_a2_phenomenon.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_airmet_a2_obs",
+      "product": "AIRMET",
+      "theme": "A2",
+      "cite": "OBS timeIndicator; F24 theme A2 / #731",
+      "tac": "accept/airmet_a2_obs.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_airmet_a2_stnr",
+      "product": "AIRMET",
+      "theme": "A2",
+      "cite": "STNR stationary; F24 theme A2 / #731",
+      "tac": "accept/airmet_a2_stnr.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_airmet_a2_intensity",
+      "product": "AIRMET",
+      "theme": "A2",
+      "cite": "WKN intensityChange; F24 theme A2 / #731",
+      "tac": "accept/airmet_a2_intensity.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_airmet_a2_top_abv",
+      "product": "AIRMET",
+      "theme": "A2",
+      "cite": "TOP ABV FLnnn; F24 theme A2 / #731",
+      "tac": "accept/airmet_a2_top_abv.tac",
       "ok": true
     },
     {
@@ -1017,21 +1059,67 @@
     {
       "id": "airmet_missing_valid",
       "product": "AIRMET",
+      "theme": "A4",
       "depth": "template_gate",
-      "cite": "A6 VALID period",
+      "cite": "A6 VALID period; F24 theme A4",
       "tac": "negative/airmet/missing_valid.tac",
       "ok": false,
       "expected_codes": ["MISSING_VALID"],
       "require_spans": true
     },
     {
+      "id": "airmet_missing_sequence",
+      "product": "AIRMET",
+      "theme": "A1",
+      "depth": "full_checklist",
+      "cite": "EUR Doc 014 sequence required; F24 theme A1",
+      "tac": "negative/airmet/missing_sequence.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_SEQUENCE"],
+      "require_spans": true
+    },
+    {
+      "id": "airmet_missing_fir",
+      "product": "AIRMET",
+      "theme": "A1",
+      "depth": "full_checklist",
+      "cite": "FIR/CTA identity; F24 theme A1",
+      "tac": "negative/airmet/missing_fir.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_FIR_OR_CTA"],
+      "require_spans": true
+    },
+    {
       "id": "airmet_multi_phenomenon",
       "product": "AIRMET",
-      "depth": "template_gate",
-      "cite": "A6 one-phenomenon",
+      "theme": "A2",
+      "depth": "full_checklist",
+      "cite": "A6 one-phenomenon; F24 theme A2",
       "tac": "negative/airmet/multi_phenomenon.tac",
       "ok": false,
       "expected_codes": ["MULTIPLE_PHENOMENA"],
+      "require_spans": true
+    },
+    {
+      "id": "airmet_stnr_with_mov",
+      "product": "AIRMET",
+      "theme": "A2",
+      "depth": "full_checklist",
+      "cite": "STNR conflicts with MOV; F24 theme A2 / #731",
+      "tac": "negative/airmet/stnr_with_mov.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_STNR_MOVEMENT"],
+      "require_spans": true
+    },
+    {
+      "id": "airmet_missing_obs_fcst",
+      "product": "AIRMET",
+      "theme": "A2",
+      "depth": "full_checklist",
+      "cite": "missing OBS/FCST; F24 theme A2 / #731",
+      "tac": "negative/airmet/missing_obs_fcst.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_OBS_OR_FCST"],
       "require_spans": true
     },
     {
@@ -2365,6 +2453,87 @@
       "tac": "negative/sigmet/no_va_exp_with_cloud.tac",
       "ok": false,
       "expected_codes": ["INVALID_NO_VA_EXP"],
+      "require_spans": true
+    }
+  ],
+  "a2_modifier_info": [
+    {
+      "id": "airmet_a2_obs_info",
+      "product": "AIRMET",
+      "theme": "A2",
+      "cite": "OBS → OBS_OR_FCST; F24 theme A2",
+      "tac": "accept/airmet_a2_obs.tac",
+      "ok": true,
+      "expected_codes": ["OBS_OR_FCST"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "airmet_a2_stnr_info",
+      "product": "AIRMET",
+      "theme": "A2",
+      "cite": "STNR → STNR_MOVEMENT; F24 theme A2",
+      "tac": "accept/airmet_a2_stnr.tac",
+      "ok": true,
+      "expected_codes": ["STNR_MOVEMENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "airmet_a2_intensity_info",
+      "product": "AIRMET",
+      "theme": "A2",
+      "cite": "WKN → INTENSITY_CHANGE; F24 theme A2",
+      "tac": "accept/airmet_a2_intensity.tac",
+      "ok": true,
+      "expected_codes": ["INTENSITY_CHANGE"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "airmet_a2_top_abv_info",
+      "product": "AIRMET",
+      "theme": "A2",
+      "cite": "TOP ABV → TOP_ABV_OR_BLW; F24 theme A2",
+      "tac": "accept/airmet_a2_top_abv.tac",
+      "ok": true,
+      "expected_codes": ["TOP_ABV_OR_BLW"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "a2_errors": [
+    {
+      "id": "airmet_multi_phenomenon_a2",
+      "product": "AIRMET",
+      "theme": "A2",
+      "depth": "full_checklist",
+      "cite": "A6 one-phenomenon; F24 theme A2",
+      "tac": "negative/airmet/multi_phenomenon.tac",
+      "ok": false,
+      "expected_codes": ["MULTIPLE_PHENOMENA"],
+      "require_spans": true
+    },
+    {
+      "id": "airmet_stnr_with_mov_a2",
+      "product": "AIRMET",
+      "theme": "A2",
+      "depth": "full_checklist",
+      "cite": "STNR + MOV conflict; F24 theme A2",
+      "tac": "negative/airmet/stnr_with_mov.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_STNR_MOVEMENT"],
+      "require_spans": true
+    },
+    {
+      "id": "airmet_missing_obs_fcst_a2",
+      "product": "AIRMET",
+      "theme": "A2",
+      "depth": "full_checklist",
+      "cite": "missing OBS/FCST; F24 theme A2",
+      "tac": "negative/airmet/missing_obs_fcst.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_OBS_OR_FCST"],
       "require_spans": true
     }
   ]

@@ -142,12 +142,14 @@
     {
       "code": "INTENSITY_CHANGE",
       "severity": "info",
-      "message_template": "SIGMET intensity change INTSF/WKN/NC \u2014 research G2",
+      "message_template": "SIGMET/AIRMET intensity change INTSF/WKN/NC \u2014 research G2 / F24 A2",
       "product": "sigmet",
       "tags": [
         "intensity",
         "sigmet",
-        "g2"
+        "airmet",
+        "g2",
+        "a2"
       ]
     },
     {
@@ -263,13 +265,15 @@
     {
       "code": "INVALID_STNR_MOVEMENT",
       "severity": "error",
-      "message_template": "SIGMET STNR conflicts with MOV \u2014 research G1",
+      "message_template": "SIGMET/AIRMET STNR conflicts with MOV \u2014 research G1 / F24 A2",
       "product": "sigmet",
       "tags": [
         "stnr",
         "movement",
         "sigmet",
-        "g1"
+        "airmet",
+        "g1",
+        "a2"
       ]
     },
     {
@@ -356,13 +360,15 @@
     {
       "code": "MISSING_FIR_OR_CTA",
       "severity": "error",
-      "message_template": "SIGMET missing FIR/CTA/UIR airspace identity \u2014 research G2",
+      "message_template": "SIGMET/AIRMET missing FIR/CTA/UIR airspace identity \u2014 research G2 / F24 A1",
       "product": "sigmet",
       "tags": [
         "fir",
         "cta",
         "sigmet",
-        "g2"
+        "airmet",
+        "g2",
+        "a1"
       ]
     },
     {
@@ -388,13 +394,15 @@
     {
       "code": "MISSING_OBS_OR_FCST",
       "severity": "error",
-      "message_template": "SIGMET missing OBS or FCST \u2014 research G2",
+      "message_template": "SIGMET/AIRMET missing OBS or FCST \u2014 research G2 / F24 A2",
       "product": "sigmet",
       "tags": [
         "obs",
         "fcst",
         "sigmet",
-        "g2"
+        "airmet",
+        "g2",
+        "a2"
       ]
     },
     {
@@ -432,12 +440,14 @@
     {
       "code": "MISSING_SEQUENCE",
       "severity": "error",
-      "message_template": "SIGMET missing sequence number after SIGMET \u2014 research G2",
+      "message_template": "SIGMET/AIRMET missing sequence number \u2014 research G2 / F24 A1",
       "product": "sigmet",
       "tags": [
         "sequence",
         "sigmet",
-        "g2"
+        "airmet",
+        "g2",
+        "a1"
       ]
     },
     {
@@ -640,13 +650,15 @@
     {
       "code": "OBS_OR_FCST",
       "severity": "info",
-      "message_template": "SIGMET OBS or FCST analysis \u2014 research G2",
+      "message_template": "SIGMET/AIRMET OBS or FCST analysis \u2014 research G2 / F24 A2",
       "product": "sigmet",
       "tags": [
         "obs",
         "fcst",
         "sigmet",
-        "g2"
+        "airmet",
+        "g2",
+        "a2"
       ]
     },
     {
@@ -761,14 +773,16 @@
     {
       "code": "STNR_MOVEMENT",
       "severity": "info",
-      "message_template": "SIGMET STNR stationary movement \u2014 research G1 / C1",
+      "message_template": "SIGMET/AIRMET STNR stationary movement \u2014 research G1 / C1 / F24 A2",
       "product": "sigmet",
       "tags": [
         "stnr",
         "movement",
         "sigmet",
+        "airmet",
         "g1",
-        "c1"
+        "c1",
+        "a2"
       ]
     },
     {
@@ -801,13 +815,15 @@
     {
       "code": "TOP_ABV_OR_BLW",
       "severity": "info",
-      "message_template": "SIGMET TOP ABV/BLW level grammar \u2014 research G1",
+      "message_template": "SIGMET/AIRMET TOP ABV/BLW level grammar \u2014 research G1 / F24 A2",
       "product": "sigmet",
       "tags": [
         "altitude",
         "top",
         "sigmet",
-        "g1"
+        "airmet",
+        "g1",
+        "a2"
       ]
     },
     {

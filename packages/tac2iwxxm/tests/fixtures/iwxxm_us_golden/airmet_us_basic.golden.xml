@@ -65,7 +65,28 @@
       <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
       <iwxxm:member>
         <iwxxm:AIRMETEvolvingCondition gml:id="cond.yudd" intensityChange="WEAKEN">
-          <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/missing"/>
+              <iwxxm:geometry>
+                <aixm:AirspaceVolume gml:id="vol.yudd">
+              <aixm:upperLimit uom="FL">100</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>
+              <aixm:maximumLimit xsi:nil="true" nilReason="unknown"/>
+                  <aixm:horizontalProjection>
+                    <aixm:Surface gml:id="sfc.yudd" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                      <gml:patches>
+                        <gml:PolygonPatch>
+                          <gml:exterior>
+                            <gml:LinearRing>
+                              <gml:posList>-50.0 50.0 -50.0 70.0 -40.0 70.0 -40.0 50.0 -50.0 50.0</gml:posList>
+                            </gml:LinearRing>
+                          </gml:exterior>
+                        </gml:PolygonPatch>
+                      </gml:patches>
+                    </aixm:Surface>
+                  </aixm:horizontalProjection>
+                </aixm:AirspaceVolume>
+              </iwxxm:geometry>
+              <iwxxm:directionOfMotion uom="deg" xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
+              <iwxxm:speedOfMotion uom="[kn_i]">0</iwxxm:speedOfMotion>
         </iwxxm:AIRMETEvolvingCondition>
       </iwxxm:member>
     </iwxxm:AIRMETEvolvingConditionCollection>

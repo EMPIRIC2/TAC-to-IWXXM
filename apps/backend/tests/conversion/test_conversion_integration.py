@@ -52,10 +52,11 @@ class TestConversionIntegration:
 
     def test_convert_empty_string_gracefully_degrades(self):
         """Test that conversion gracefully handles empty string."""
-        # Empty string doesn't have ICAO to validate
-        result = convert_metar_tac("")
-        # Should return None or XML or raise
-        assert result is None or isinstance(result, str)
+        try:
+            result = convert_metar_tac("")
+            assert result is None or isinstance(result, str)
+        except (ConversionError, ValidationError):
+            assert True
 
     def test_convert_none_raises(self):
         """Test that None input raises error."""

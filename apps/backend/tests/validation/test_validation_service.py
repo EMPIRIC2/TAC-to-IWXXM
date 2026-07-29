@@ -13,46 +13,47 @@ class TestAirportValidation:
         """Test that valid ICAO codes pass validation."""
         validator = get_validation_service()
 
-        # Use FAOR (O.R. Tambo) which should be in our dataset
-        result = validator.validate_airport_icao("METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018")
+        # KJFK is reliably present in the bundled airport set used by CI/local.
+        result = validator.validate_airport_icao("METAR KJFK 101200Z 12012KT 9999 FEW020 22/14 Q1018")
 
-        assert result.passed == True
+        assert result.passed is True
         assert result.layer == ValidationLayer.AIRPORT_ICAO
         assert len(result.issues) == 0
         assert result.metadata is not None
-        assert result.metadata["icao"] == "FAOR"
+        assert result.metadata["icao"] == "KJFK"
 
     def test_valid_cor_icao_passes(self):
         """Test that corrected reports still pass ICAO validation."""
         validator = get_validation_service()
 
-        result = validator.validate_airport_icao("METAR COR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018")
+        result = validator.validate_airport_icao("METAR COR KJFK 101200Z 12012KT 9999 FEW020 22/14 Q1018")
 
         assert result.passed is True
         assert result.metadata is not None
-        assert result.metadata["icao"] == "FAOR"
+        assert result.metadata["icao"] == "KJFK"
 
-    def test_invalid_icao_raises(self):
-        """Test that invalid ICAO codes raise ValidationError."""
+    def test_unknown_icao_is_soft_fail_warning(self):
+        """Unknown ICAO codes warn but do not raise (WMO demos / UJ-036)."""
         validator = get_validation_service()
 
         tac = "METAR ZZZZ 101200Z 12012KT 9999 FEW020 22/14 Q1018"
-
-        with pytest.raises(ValidationError) as exc_info:
-            validator.validate_airport_icao(tac)
-
-        assert "Unknown ICAO code" in str(exc_info.value)
+        result = validator.validate_airport_icao(tac)
+        assert result.passed is True
+        assert any(i.code == "UNKNOWN_ICAO" for i in result.issues)
+        assert result.metadata is not None
+        assert result.metadata.get("icao") == "ZZZZ"
+        assert result.metadata.get("airport_known") is False
 
     def test_missing_icao_raises(self):
         """Test that missing ICAO code raises ValidationError."""
         validator = get_validation_service()
 
-        tac = "This is just random text with no valid code"
+        # No 4-letter alphabetic token — avoids false-positive ICAO extraction.
+        tac = "??"
 
         with pytest.raises(ValidationError) as exc_info:
             validator.validate_airport_icao(tac)
 
-        # May find false ICAO or report missing - either raises error
         assert "ICAO" in str(exc_info.value)
 
     def test_invalid_icao_format_raises(self):
@@ -122,29 +123,29 @@ class TestAggregatedValidation:
         """Test that valid TAC passes all synchronous layers."""
         validator = get_validation_service()
 
-        result = validator.validate_all_layers("METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018")
+        result = validator.validate_all_layers("METAR KJFK 101200Z 12012KT 9999 FEW020 22/14 Q1018")
 
-        assert result.passed == True
+        assert result.passed is True
         assert ValidationLayer.AIRPORT_ICAO in result.layers_validated
         assert ValidationLayer.TAC_SYNTAX in result.layers_validated
         assert result.total_issues == 0
 
-    def test_invalid_icao_stops_validation(self):
-        """Test that invalid ICAO stops further validation."""
+    def test_unknown_icao_continues_to_syntax_layer(self):
+        """Unknown ICAO soft-fails; TAC syntax layer still runs (UJ-036)."""
         validator = get_validation_service()
 
         result = validator.validate_all_layers("METAR ZZZZ 101200Z 12012KT 9999 FEW020 22/14 Q1018")
 
-        assert result.passed == False
-        # Only ICAO layer should be validated (validation stopped)
-        assert len(result.layers_validated) == 1
+        assert result.passed is True
         assert ValidationLayer.AIRPORT_ICAO in result.layers_validated
+        assert ValidationLayer.TAC_SYNTAX in result.layers_validated
+        assert any(i.code == "UNKNOWN_ICAO" for r in result.results for i in r.issues)
 
     def test_execution_time_recorded(self):
         """Test that execution time is recorded."""
         validator = get_validation_service()
 
-        result = validator.validate_all_layers("METAR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018")
+        result = validator.validate_all_layers("METAR KJFK 101200Z 12012KT 9999 FEW020 22/14 Q1018")
 
         assert result.execution_time_ms > 0
         assert all(r.execution_time_ms is not None and r.execution_time_ms > 0 for r in result.results)

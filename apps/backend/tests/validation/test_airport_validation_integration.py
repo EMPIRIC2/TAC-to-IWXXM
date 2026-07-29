@@ -12,7 +12,7 @@ if str(SRC_DIR) not in sys.path:
 
 from src.schemas.airport import get_airport_validator
 from src.schemas.validation import ValidationLayer
-from src.services.validation import ValidationError, get_validation_service
+from src.services.validation import get_validation_service
 
 
 @pytest.mark.integration
@@ -110,16 +110,14 @@ class TestValidationServiceIntegration:
             assert result.metadata is not None
             assert result.metadata["icao"] == icao
 
-    def test_validate_airport_icao_invalid_raises(self):
-        """Test that invalid ICAO raises ValidationError."""
+    def test_validate_airport_icao_unknown_is_soft_fail(self):
+        """Unknown ICAO soft-fails with WARNING (WMO demos / UJ-036)."""
         service = get_validation_service()
 
         tac = "METAR ZZZZ 101200Z 12012KT 9999 FEW020 22/14 Q1018"
-
-        with pytest.raises(ValidationError) as exc_info:
-            service.validate_airport_icao(tac)
-
-        assert "Unknown ICAO" in str(exc_info.value)
+        result = service.validate_airport_icao(tac)
+        assert result.passed is True
+        assert any(i.code == "UNKNOWN_ICAO" for i in result.issues)
 
     def test_validate_all_layers_with_valid_airport(self):
         """Test all layers validation with valid airport."""
@@ -137,16 +135,16 @@ class TestValidationServiceIntegration:
             assert ValidationLayer.TAC_SYNTAX in result.layers_validated
             assert result.passed is True
 
-    def test_validate_all_layers_with_invalid_airport(self):
-        """Test that invalid airport stops validation."""
+    def test_validate_all_layers_with_unknown_airport_continues(self):
+        """Unknown airport soft-fails; syntax layer still runs."""
         service = get_validation_service()
 
         tac = "METAR ZZZZ 101200Z 12012KT 10SM FEW020 22/14 A3005"
         result = service.validate_all_layers(tac)
 
-        assert result.passed is False
-        # Should only have ICAO layer (stops at first failure)
-        assert len(result.layers_validated) >= 1
+        assert result.passed is True
+        assert ValidationLayer.AIRPORT_ICAO in result.layers_validated
+        assert ValidationLayer.TAC_SYNTAX in result.layers_validated
 
 
 @pytest.mark.integration
@@ -162,6 +160,9 @@ class TestValidationServiceComparison:
 
     def test_airport_validator_same_instance(self):
         """Test that both services use same airport validator."""
+        import src.services.validation as val_mod
+
+        val_mod._validation_service = None
         service1 = get_validation_service()
         service2 = get_validation_service()
         validator = get_airport_validator()

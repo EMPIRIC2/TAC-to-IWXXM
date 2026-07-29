@@ -171,8 +171,8 @@ def test_convert_vrb_omits_mean_wind_direction() -> None:
     assert ">None<" not in result.xml
 
 
-def test_convert_mps_gust_converted_to_knots() -> None:
-    """Bugbot PR #705: MPS gust must convert to knots like mean speed."""
+def test_convert_mps_gust_emitted_in_metres_per_second() -> None:
+    """MPS wind group emits mean+gust as m/s (WMO A3-1 style; F25)."""
     result = convert(
         "METAR KJFK 231751Z 24004G12MPS 5SM FEW010 15/07 A2992=",
         product="METAR",
@@ -180,6 +180,7 @@ def test_convert_mps_gust_converted_to_knots() -> None:
     assert result.ok and result.ir is not None
     assert result.ir["wind_speed_mps"] == 4
     assert result.ir["wind_gust_mps"] == 12
-    # 12 m/s ≈ 23 kt
+    # Knots still recorded on IR for decode / US consumers.
     assert result.ir["wind_gust_kt"] == int(round(12 * 1.94384))
-    assert f'windGustSpeed uom="[kn_i]">{result.ir["wind_gust_kt"]}' in (result.xml or "")
+    assert 'meanWindSpeed uom="m/s">4.0</iwxxm:meanWindSpeed>' in (result.xml or "")
+    assert 'windGustSpeed uom="m/s">12</iwxxm:windGustSpeed>' in (result.xml or "")

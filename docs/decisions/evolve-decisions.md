@@ -3,6 +3,94 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-020 — AIRMET quality + WMO official golden parity + decode glossary (S026)
+
+**Session**: S026-airmet-quality-wmo-examples  
+**Features**: **F24** (AIRMET quality #731) + **F25** (WMO official golden parity METAR/SPECI/TAF + UI gate) + deepen **F9** / **F7.g** / **F6** / **F3** (lookup)  
+**Issues**: [#731](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/731) (AIRMET); deepen prior quality bars for vendor example parity  
+**Started**: 2026-07-29  
+**Branch**: `evolve/EV-020-airmet-quality`  
+**Status**: **in_progress** (Phase C — **07-build** @ T3.1; M0–M2 / A1–A4 done)
+
+### Scope (locked 2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E20-1 | decision | WMO golden bar? | **A** — strict vendor equality via **`canonicalize_xml`** under **default** convert settings (clarified E20-D3; not alternate profiles/versions) |
+| E20-2 | decision | Product encode scope? | **A=2** — AIRMET **and** METAR/SPECI/TAF official WMO examples to default golden equality this cycle (large) |
+| E20-3 | decision | UI Examples catalog? | **A** — only list examples that pass the strict bar; remove/hide non-passers for in-scope products |
+| E20-4 | decision | Decode glossary? | **B=2+3** — full 7-product plain-English token glossary + **OpenAIP/F3 names** where available + **extensible YAML/JSON registry** |
+| E20-5 | decision | Routing preset (initial)? | Lean+build proposed → **amended C=1** |
+| E20-6 | decision | UI preview now? | **No** — docs/repo only |
+| E20-A | decision | Confirm encode scope after gap audit? | **2** — keep METAR+SPECI+TAF+AIRMET WMO byte-parity in this cycle |
+| E20-B | decision | Glossary enrichment? | **2+3** — OpenAIP/F3 + operator-extensible registry |
+| E20-C | decision | Routing amend? | **C=1** — Lean+build **+ 11-verify-impl** (`00→16→01→02→04→07→08→10→11→13`) |
+| E20-8 | decision | Proceed? | **Yes** — Phase 0 locked; start **01-requirements** |
+| E20-D1 | decision | 01 Document Manifest? | **2** — all recommended (acceptance + coverage + ADR + api-contract + config-spec) |
+| E20-D2 | decision | Journeys / tests? | **1** — **UJ-035** AIRMET; **UJ-036** WMO catalog/METAR·SPECI·TAF; deepen UJ-020/032; TC-F24/TC-F25 |
+| E20-D3 | decision | Golden compare rule? | **1** — `canonicalize_xml` equality (F23 pattern); **under default convert settings only** (`profile=annex3`, default pinned `iwxxm_version` e.g. 2025-2; no special flags) |
+| E20-E1 | decision | TAF WMO cases? | **1** — both `taf-A5-1` and `taf-A5-2` |
+| E20-E2 | decision | Glossary data? | **1** — package `decode_glossary.yaml` as **overrides**; prefer **official / near-official** sources (WMO codes / Annex cites / F3·OpenAIP) as primary augmentation |
+| E20-E3 | decision | Close 01 → 02? | **Yes** |
+| E20-F1 | decision | Milestone order? | **1** — Research → AIRMET lint → AIRMET golden → METAR/SPECI → TAF → glossary+catalog → smoke |
+| E20-F2 | decision | Research depth? | **1** — full mining catalog AIRMET + METAR/SPECI/TAF → session research doc |
+| E20-F3 | decision | CI? | **3** — combined `wmo-quality.yml` (SIGMET + AIRMET + METAR/SPECI/TAF packs) |
+| E20-F4 | decision | FE Examples unlock? | **1** — incremental SIGMET-first until each product golden greens |
+
+### 02-verify-plan PASS (2026-07-29)
+
+18 auto-approved; Batch F all **1** (S02.M1/M2/L1/L2).  
+Report: `docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md`.
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| S02.M1 | uncertainty | Include `taf-A5-2` as F25 golden? | **1** — yes (AMD/CNL peer; `D-S026-EV020-s02m1-1`) |
+| S02.M2 | decision | ADR-032 status? | **1** — **Accepted** (`D-S026-EV020-s02m2-1`) |
+| S02.L1 | ambiguity | Glossary env name? | **1** — `TAC2IWXXM_DECODE_GLOSSARY_PATH` (`D-S026-EV020-s02l1-1`) |
+| S02.L2 | decision | Catalog unlock policy? | **1** — incremental (SIGMET-first until goldens green) (`D-S026-EV020-s02l2-1`) |
+| D-S026-02-phase-a | gate | Phase A → 04? | **PASS** — Lean skip AskQuestion; start **04-tech-plan** |
+
+### 04-tech-plan (approved 2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E20-F1 | decision | Milestone order? | **1** — Research → AIRMET lint → AIRMET golden → METAR/SPECI → TAF → glossary+catalog → smoke |
+| E20-F2 | decision | Research depth? | **1** — full mining catalog |
+| E20-F3 | decision | CI? | **3** — combined `wmo-quality.yml` |
+| E20-F4 | decision | FE unlock? | **1** — incremental SIGMET-first |
+| E20-F5 | decision | New deps? | **2** — PyYAML allowed if not usable transitively |
+| E20-F6 | decision | Deploy/smoke? | **1** — redeploy; H1–H3 if API; H4–H5 required |
+| E20-F7 | decision | Mid-build block? | **1** — AskQuestion kill-switch |
+| E20-F8 | decision | Approve plan → 07? | **1** — yes; skip 05/06; 07 @ T0.1 |
+
+Plan: `docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md`.
+
+### 07-build M2 close (2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| D-S026-T2.3-A | decision | Close F24 A1–A3? | **Close** — T2.1–T2.2 green; residuals (vendor MWO YUDD vs TAC YUSO; STNR motion) documented; A4 closed in T2.4 |
+
+Plan: `docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md`.
+
+**Scope (verbatim)**:
+Strict WMO vendor IWXXM golden equality via `canonicalize_xml` (2025-2) for AIRMET (#731) and
+METAR/SPECI/TAF official examples this cycle **under default convert settings**. UI Examples
+catalog only lists examples that pass that bar. Decode: official/near-official meanings + YAML
+**overrides** + OpenAIP/F3 names when available. SIGMET already passes (F23) — keep green.
+OOS unless added: TC SIGMET #738, new SWX/VONA quality bars, PyPI bumps.
+
+### Fn allocation (approved)
+
+| Fn | Title | Role |
+|----|-------|------|
+| **F24** | AIRMET quality bar | #731 lint/convert/validate/goldens/matrix (peer F15/F20/F23) |
+| **F25** | WMO official example parity (METAR/SPECI/TAF) + UI gate | Vendor A3/A5 TAC→XML `canonicalize_xml` equality (defaults); catalog policy |
+| Deepen **F9** | Decode glossary | Registry + 7-product meanings + summary |
+| Deepen **F7.g** | Examples catalog | Only WMO-passing demos |
+| Deepen **F6** | Encode fidelity | AIRMET + METAR/SPECI/TAF vendor shapes |
+| Deepen **F3** | Name lookup | Optional airport/FIR names for decode when resolvable |
+
 ## Cycle EV-019 — SIGMET quality: general + VA (#733 / #739) (S025)
 
 **Session**: S025-sigmet-quality  

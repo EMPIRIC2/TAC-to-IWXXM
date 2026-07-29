@@ -1,26 +1,23 @@
 /**
- * Frontend-only golden examples catalog (F7.g / #780).
+ * Frontend-only golden examples catalog (F7.g / #780 / F25 W4 / ADR-032).
  *
  * Bodies are copied from package fixtures — never import Python at runtime.
+ * In-scope METAR/SPECI/TAF/SIGMET/AIRMET TAC demos are **WMO-passers only**
+ * (E20-F4 incremental unlock; themes W1–W3 + A3 + F23 SIGMET keepers closed).
  */
 
 import type { OperatorInputMode } from '@/utils/inputKind';
 import type { TacProduct } from '@/utils/tacProduct';
 
-import airmetBasic from './bodies/airmet_basic.tac?raw';
-import airmetUsBasic from './bodies/airmet_us_basic.tac?raw';
+import airmetA61aTs from './bodies/airmet_a6_1a_ts.tac?raw';
+import metarA31 from './bodies/metar_a3_1.tac?raw';
 import metarBasicGolden from './bodies/metar_basic.golden.xml?raw';
-import metarBasic from './bodies/metar_basic.tac?raw';
-import metarCavok from './bodies/metar_cavok.tac?raw';
 import metarMultiAhl from './bodies/metar_multi_ahl.txt?raw';
-import metarUsAutoAo2 from './bodies/metar_us_auto_ao2.tac?raw';
-import sigmetBasic from './bodies/sigmet_basic.tac?raw';
-import sigmetUsBasic from './bodies/sigmet_us_basic.tac?raw';
-import speciBasic from './bodies/speci_basic.tac?raw';
-import speciCavok from './bodies/speci_cavok.tac?raw';
-import speciUsCavok from './bodies/speci_us_cavok.tac?raw';
-import tafBasic from './bodies/taf_basic.tac?raw';
-import tafCavok from './bodies/taf_cavok.tac?raw';
+import sigmetA61aTs from './bodies/sigmet_a6_1a_ts.tac?raw';
+import sigmetA61bCnl from './bodies/sigmet_a6_1b_cnl.tac?raw';
+import speciA32 from './bodies/speci_a3_2.tac?raw';
+import tafA51 from './bodies/taf_a5_1.tac?raw';
+import tafA52 from './bodies/taf_a5_2.tac?raw';
 import tcaBasic from './bodies/tca_basic.tac?raw';
 import vaaBasic from './bodies/vaa_basic.tac?raw';
 
@@ -33,6 +30,15 @@ export const EXAMPLE_PRODUCTS: readonly TacProduct[] = [
   'AIRMET',
   'VAA',
   'TCA',
+] as const;
+
+/** Products gated to strict WMO default golden parity (F24/F25). */
+export const WMO_SCOPE_PRODUCTS: readonly TacProduct[] = [
+  'METAR',
+  'SPECI',
+  'TAF',
+  'SIGMET',
+  'AIRMET',
 ] as const;
 
 /**
@@ -51,12 +57,19 @@ export interface GoldenExample {
   body: string;
   /** Always true — demo / non-operational */
   nonOperational: true;
-  /** Package-relative provenance path */
+  /** Package-relative provenance path (mirrored vendor / annex3 golden) */
   provenance: string;
+  /**
+   * True when this TAC demo passes ADR-032 WMO default golden bar (or SIGMET keeper).
+   * Required for WMO_SCOPE_PRODUCTS TAC rows (TC-F25-003).
+   */
+  wmoPass?: boolean;
+  /** Vendor / annex3 seed id when ``wmoPass`` (e.g. ``metar-A3-1``). */
+  wmoSeed?: string;
 }
 
 /**
- * Documented 1-fixture gap (E16-8 / E16-13).
+ * Documented 1-fixture gap (E16-8 / E16-13 / F25 WMO-only).
  */
 export interface FixtureGap {
   product: TacProduct;
@@ -64,118 +77,92 @@ export interface FixtureGap {
 }
 
 const PKG = 'packages/tac2iwxxm/tests/fixtures';
+const VENDOR =
+  'vendor/schemas/iwxxm/2025-2/IWXXM/examples (mirrored under annex3_golden)';
 
 /**
  * Curated demo examples for convert + validate workbench.
+ *
+ * WMO-scope TAC rows: only unlocked WMO-passers (E20-F4). AHL / IWXXM modes and
+ * VAA/TCA remain as non-WMO-scope demos.
  */
 export const EXAMPLES: readonly GoldenExample[] = [
   {
-    id: 'metar_basic',
-    label: 'METAR basic (annex3)',
+    id: 'metar_a3_1',
+    label: 'METAR WMO A3-1 (annex3)',
     product: 'METAR',
     inputMode: 'tac',
-    body: metarBasic,
+    body: metarA31,
     nonOperational: true,
-    provenance: `${PKG}/annex3_golden/metar_basic.tac`,
+    provenance: `${PKG}/annex3_golden/metar_a3_1.tac`,
+    wmoPass: true,
+    wmoSeed: 'metar-A3-1',
   },
   {
-    id: 'metar_cavok',
-    label: 'METAR CAVOK (annex3)',
-    product: 'METAR',
-    inputMode: 'tac',
-    body: metarCavok,
-    nonOperational: true,
-    provenance: `${PKG}/annex3_golden/metar_cavok.tac`,
-  },
-  {
-    id: 'metar_us_auto_ao2',
-    label: 'METAR AUTO AO2 (iwxxm_us)',
-    product: 'METAR',
-    inputMode: 'tac',
-    body: metarUsAutoAo2,
-    nonOperational: true,
-    provenance: `${PKG}/iwxxm_us_golden/metar_us_auto_ao2.tac`,
-  },
-  {
-    id: 'speci_basic',
-    label: 'SPECI basic (annex3)',
+    id: 'speci_a3_2',
+    label: 'SPECI WMO A3-2 (annex3)',
     product: 'SPECI',
     inputMode: 'tac',
-    body: speciBasic,
+    body: speciA32,
     nonOperational: true,
-    provenance: `${PKG}/annex3_golden/speci_basic.tac`,
+    provenance: `${PKG}/annex3_golden/speci_a3_2.tac`,
+    wmoPass: true,
+    wmoSeed: 'speci-A3-2',
   },
   {
-    id: 'speci_cavok',
-    label: 'SPECI CAVOK (annex3)',
-    product: 'SPECI',
-    inputMode: 'tac',
-    body: speciCavok,
-    nonOperational: true,
-    provenance: `${PKG}/annex3_golden/speci_cavok.tac`,
-  },
-  {
-    id: 'speci_us_cavok',
-    label: 'SPECI CAVOK (iwxxm_us)',
-    product: 'SPECI',
-    inputMode: 'tac',
-    body: speciUsCavok,
-    nonOperational: true,
-    provenance: `${PKG}/iwxxm_us_golden/speci_us_cavok.tac`,
-  },
-  {
-    id: 'taf_basic',
-    label: 'TAF basic (annex3)',
+    id: 'taf_a5_1',
+    label: 'TAF WMO A5-1 (annex3)',
     product: 'TAF',
     inputMode: 'tac',
-    body: tafBasic,
+    body: tafA51,
     nonOperational: true,
-    provenance: `${PKG}/annex3_golden/taf_basic.tac`,
+    provenance: `${PKG}/annex3_golden/taf_a5_1.tac`,
+    wmoPass: true,
+    wmoSeed: 'taf-A5-1',
   },
   {
-    id: 'taf_cavok',
-    label: 'TAF CAVOK (annex3)',
+    id: 'taf_a5_2',
+    label: 'TAF WMO A5-2 AMD/CNL (annex3)',
     product: 'TAF',
     inputMode: 'tac',
-    body: tafCavok,
+    body: tafA52,
     nonOperational: true,
-    provenance: `${PKG}/annex3_golden/taf_cavok.tac`,
+    provenance: `${PKG}/annex3_golden/taf_a5_2.tac`,
+    wmoPass: true,
+    wmoSeed: 'taf-A5-2',
   },
   {
-    id: 'sigmet_basic',
-    label: 'SIGMET basic (product_matrix)',
+    id: 'sigmet_a6_1a_ts',
+    label: 'SIGMET WMO A6-1a-TS (annex3)',
     product: 'SIGMET',
     inputMode: 'tac',
-    body: sigmetBasic,
+    body: sigmetA61aTs,
     nonOperational: true,
-    provenance: `${PKG}/product_matrix/sigmet_basic.tac`,
+    provenance: `${PKG}/annex3_golden/sigmet_a6_1a_ts.tac`,
+    wmoPass: true,
+    wmoSeed: 'sigmet-A6-1a-TS',
   },
   {
-    id: 'sigmet_us_basic',
-    label: 'SIGMET basic (iwxxm_us)',
+    id: 'sigmet_a6_1b_cnl',
+    label: 'SIGMET WMO A6-1b-CNL (annex3)',
     product: 'SIGMET',
     inputMode: 'tac',
-    body: sigmetUsBasic,
+    body: sigmetA61bCnl,
     nonOperational: true,
-    provenance: `${PKG}/iwxxm_us_golden/sigmet_us_basic.tac`,
+    provenance: `${PKG}/annex3_golden/sigmet_a6_1b_cnl.tac`,
+    wmoPass: true,
+    wmoSeed: 'sigmet-A6-1b-CNL',
   },
   {
-    id: 'airmet_basic',
-    label: 'AIRMET basic (product_matrix)',
+    id: 'airmet_a6_1a_ts',
+    label: 'AIRMET WMO A6-1a-TS (annex3)',
     product: 'AIRMET',
     inputMode: 'tac',
-    body: airmetBasic,
+    body: airmetA61aTs,
     nonOperational: true,
-    provenance: `${PKG}/product_matrix/airmet_basic.tac`,
-  },
-  {
-    id: 'airmet_us_basic',
-    label: 'AIRMET basic (iwxxm_us)',
-    product: 'AIRMET',
-    inputMode: 'tac',
-    body: airmetUsBasic,
-    nonOperational: true,
-    provenance: `${PKG}/iwxxm_us_golden/airmet_us_basic.tac`,
+    provenance: `${PKG}/annex3_golden/airmet_a6_1a_ts.tac`,
+    wmoPass: true,
+    wmoSeed: 'airmet-A6-1a-TS',
   },
   {
     id: 'vaa_basic',
@@ -220,6 +207,21 @@ export const EXAMPLES: readonly GoldenExample[] = [
  */
 export const FIXTURE_GAPS: readonly FixtureGap[] = [
   {
+    product: 'METAR',
+    reason:
+      'WMO-only catalog (F25): single unlocked seed metar-A3-1; second WMO METAR deferred.',
+  },
+  {
+    product: 'SPECI',
+    reason:
+      'WMO-only catalog (F25): single unlocked seed speci-A3-2; second WMO SPECI deferred.',
+  },
+  {
+    product: 'AIRMET',
+    reason:
+      'WMO-only catalog (F24): single unlocked seed airmet-A6-1a-TS; CNL peer deferred.',
+  },
+  {
     product: 'VAA',
     reason:
       'Only product_matrix/vaa_basic.tac exists in-repo; second golden deferred (E16-8).',
@@ -230,6 +232,9 @@ export const FIXTURE_GAPS: readonly FixtureGap[] = [
       'Only product_matrix/tca_basic.tac exists in-repo; second golden deferred (E16-8).',
   },
 ] as const;
+
+/** Provenance note for operators (vendor mirror policy). */
+export const WMO_PROVENANCE_NOTE = VENDOR;
 
 /**
  * Look up an example by id.

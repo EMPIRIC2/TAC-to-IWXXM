@@ -62,7 +62,7 @@ def test_manifest_schema_and_fixture_files_exist() -> None:
 
 
 def test_negative_depth_split_matches_e10_21() -> None:
-    """E10-21 depth split; F23 deepens SIGMET to full_checklist for G1+ themes."""
+    """E10-21 depth split; F23/F24 deepen SIGMET/AIRMET to full_checklist for themes."""
     data = _load_manifest()
     for case in data["negative"]:
         product = case["product"]
@@ -70,6 +70,8 @@ def test_negative_depth_split_matches_e10_21() -> None:
         if product in {"METAR", "SPECI", "TAF"}:
             assert depth == "full_checklist"
         elif product == "SIGMET" and case.get("theme") in {"G1", "G2", "V1", "V2", "C1"}:
+            assert depth == "full_checklist"
+        elif product == "AIRMET" and case.get("theme") in {"A1", "A2"}:
             assert depth == "full_checklist"
         else:
             assert depth == "template_gate"

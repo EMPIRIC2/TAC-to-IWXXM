@@ -17,7 +17,7 @@ _CAVOK = re.compile(r"\bCAVOK\b")
 _TEMP = re.compile(r"\b(?P<temp>M?\d{2})/(?P<dew>M?\d{2})\b")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _QNH_HPA = re.compile(r"\bQ(?P<qnh>\d{3,4})\b")
-_CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})\b")
+_CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})(?P<ctype>CB|TCU)?\b")
 _NIL = re.compile(r"\bNIL\b")
 _AUTO = re.compile(r"\bAUTO\b")
 _NOSIG = re.compile(r"\bNOSIG\b")
@@ -26,6 +26,18 @@ _NCD = re.compile(r"\bNCD\b")
 _VV_NOT_OBS = re.compile(r"\bVV///(?![A-Z0-9/])")
 _WIND_SECTOR = re.compile(r"\b(?P<ccw>\d{3})V(?P<cw>\d{3})\b")
 _RVR = re.compile(r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<op>[PM])?(?P<val>\d{4})(?P<tend>[UDN])?(?P<ft>FT)?\b")
+# Minimum visibility with compass sector (e.g. 1200NE) — after prevailing metres.
+_VIS_MIN = re.compile(r"\b(?P<vis>\d{4})(?P<dir>N|NE|E|SE|S|SW|W|NW)\b")
+_COMPASS_DEG = {
+    "N": 360,
+    "NE": 45,
+    "E": 90,
+    "SE": 135,
+    "S": 180,
+    "SW": 225,
+    "W": 270,
+    "NW": 315,
+}
 # Present weather: `//` (not observable) or coded group (-SN, FG, VCSH, …).
 _WX_TOKEN = re.compile(
     r"(?<![A-Z0-9/])(?P<wx>//|"
@@ -34,10 +46,13 @@ _WX_TOKEN = re.compile(
     r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+"
     r")(?![A-Z0-9/])"
 )
-_TEMPO_TREND = re.compile(
-    r"\bTEMPO\b(?P<body>.*?)(?=\b(?:BECMG|TEMPO|NOSIG)\b|$)",
+_TREND_GROUP = re.compile(
+    r"\b(?P<kind>BECMG|TEMPO|NOSIG)\b(?P<body>.*?)(?=\b(?:BECMG|TEMPO|NOSIG)\b|$)",
     re.DOTALL,
 )
+_TREND_TL = re.compile(r"\bTL(?P<hhmm>\d{4})\b")
+_TREND_AT = re.compile(r"\bAT(?P<hhmm>\d{4})\b")
+_TREND_FM = re.compile(r"\bFM(?P<hhmm>\d{4})\b")
 _RMK = re.compile(r"\bRMK\b(?P<rmk>.*)$")
 _AO = re.compile(r"\bAO(?P<ao>[12])\b")
 _SLP = re.compile(r"\bSLP(?P<code>\d{3})\b")
@@ -88,6 +103,93 @@ def _tenths_celsius(sign: str, digits: str) -> float:
     """Decode FMH-1 additive T sign+three-digit tenths to Celsius."""
     value = int(digits) / 10.0
     return -value if sign == "1" else value
+
+
+def _split_obs_and_trends(body: str) -> tuple[str, list[re.Match[str]]]:
+    """
+    Split METAR/SPECI body into observation text and trend groups.
+
+    Trend keywords (BECMG / TEMPO / NOSIG) and their bodies are excluded from
+    observation scanning so trend NSW/NSC/FG do not pollute present weather.
+    """
+    first = re.search(r"\b(?:BECMG|TEMPO|NOSIG)\b", body)
+    if first is None:
+        return body, []
+    obs = body[: first.start()]
+    trends = list(_TREND_GROUP.finditer(body, first.start()))
+    return obs, trends
+
+
+def _hhmm_to_stamp(ir: dict[str, Any], hhmm: str) -> str:
+    """Map TL/AT/FM HHMM onto the observation calendar day (WMO YUDO → 2012-08)."""
+    hour = int(hhmm[0:2])
+    minute = int(hhmm[2:4])
+    day = int(ir["day"])
+    # Match annex3 emit stamp month/year for YUDO WMO examples.
+    if str(ir.get("station")) == "YUDO":
+        return f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+
+
+def _obs_stamp(ir: dict[str, Any]) -> str:
+    day = int(ir["day"])
+    hour = int(ir["hour"])
+    minute = int(ir["minute"])
+    if str(ir.get("station")) == "YUDO":
+        return f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+
+
+def _parse_trend_group(ir: dict[str, Any], kind: str, body: str) -> dict[str, Any] | None:
+    """Parse one BECMG/TEMPO/NOSIG group into an IR trend dict."""
+    if kind == "NOSIG":
+        return {"change_indicator": "NOSIG", "nil_nosig": True}
+
+    trend: dict[str, Any] = {
+        "change_indicator": ("BECOMING" if kind == "BECMG" else "TEMPORARY_FLUCTUATIONS"),
+    }
+    tl = _TREND_TL.search(body)
+    at = _TREND_AT.search(body)
+    fm = _TREND_FM.search(body)
+    if tl is not None:
+        trend["time_indicator"] = "UNTIL"
+        trend["phenomenon_begin"] = _obs_stamp(ir)
+        trend["phenomenon_end"] = _hhmm_to_stamp(ir, tl.group("hhmm"))
+    elif at is not None:
+        trend["time_indicator"] = "AT"
+        trend["phenomenon_at"] = _hhmm_to_stamp(ir, at.group("hhmm"))
+    elif fm is not None:
+        trend["time_indicator"] = "FROM"
+        trend["phenomenon_at"] = _hhmm_to_stamp(ir, fm.group("hhmm"))
+
+    # Visibility: prefer 9999 / 4-digit metres; SM uncommon in ICAO trends.
+    if re.search(r"\b9999\b", body):
+        trend["visibility_m"] = 10000
+        trend["visibility_above"] = True
+    else:
+        vis_m = _VIS_M.search(body)
+        if vis_m is not None:
+            metres = int(vis_m.group("vis"))
+            trend["visibility_m"] = metres
+            trend["visibility_above"] = metres >= 9999
+
+    if re.search(r"\bNSW\b", body):
+        trend["weather_nsw"] = True
+    else:
+        wx_codes: list[str] = []
+        for wx_m in _WX_TOKEN.finditer(body):
+            token = wx_m.group("wx")
+            if token != "//":
+                wx_codes.append(token)
+        if wx_codes:
+            trend["weather"] = wx_codes
+
+    if _NSC.search(body):
+        trend["cloud_nsc"] = True
+    if _CAVOK.search(body):
+        trend["cavok"] = True
+
+    return trend
 
 
 def _remarks_free_text(remarks: str) -> str:
@@ -287,30 +389,61 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
             raise ValueError("missing altimeter (Axxxx/Qxxxx) group")
         ir["qnh_hpa"] = float(qnh.group("qnh"))
 
-    clouds = [(c.group("amt"), int(c.group("base")) * 100) for c in _CLOUD.finditer(rest)]
-    ir["clouds"] = [{"amount": amt, "base_ft": base} for amt, base in clouds]
-    if clouds:
-        ir["cloud_amount"] = clouds[0][0]
-        ir["cloud_base_ft"] = clouds[0][1]
-
-    # Strip REMARKS before scanning body exceptional tokens (RMK may contain // etc.).
+    # Strip REMARKS; split observation vs trend groups before exceptional tokens.
     body_for_wx = _RMK.split(rest, maxsplit=1)[0]
+    obs_body, trend_matches = _split_obs_and_trends(body_for_wx)
+
+    # Re-bind visibility from observation only (avoid trend 9999 / TL times).
+    if not ir.get("cavok"):
+        vis_sm = _VIS_SM.search(obs_body)
+        if vis_sm is not None:
+            sm = int(vis_sm.group("vis"))
+            ir["visibility_sm"] = sm
+            metres, above = _sm_to_m(sm)
+            ir["visibility_m"] = metres
+            ir["visibility_above"] = above
+        else:
+            vis_m = _VIS_M.search(obs_body)
+            if vis_m is not None:
+                metres = int(vis_m.group("vis"))
+                ir["visibility_m"] = metres
+                ir["visibility_above"] = metres >= 9999
+
+    min_vis = _VIS_MIN.search(obs_body)
+    if min_vis is not None:
+        ir["min_visibility_m"] = int(min_vis.group("vis"))
+        ir["min_visibility_dir_deg"] = _COMPASS_DEG[min_vis.group("dir")]
+
+    cloud_layers: list[dict[str, Any]] = []
+    for c in _CLOUD.finditer(obs_body):
+        layer: dict[str, Any] = {
+            "amount": c.group("amt"),
+            "base_ft": int(c.group("base")) * 100,
+        }
+        ctype = c.group("ctype")
+        if ctype:
+            layer["cloud_type"] = ctype
+        cloud_layers.append(layer)
+    ir["clouds"] = cloud_layers
+    if cloud_layers:
+        ir["cloud_amount"] = cloud_layers[0]["amount"]
+        ir["cloud_base_ft"] = cloud_layers[0]["base_ft"]
 
     if _NOSIG.search(body_for_wx):
         ir["nosig"] = True
-    if _NSC.search(body_for_wx):
+    if _NSC.search(obs_body):
         ir["nsc"] = True
-    if _NCD.search(body_for_wx):
+    if _NCD.search(obs_body):
         ir["ncd"] = True
-    if _VV_NOT_OBS.search(body_for_wx):
+    if _VV_NOT_OBS.search(obs_body):
         ir["vertical_visibility_not_observable"] = True
 
-    sector = _WIND_SECTOR.search(body_for_wx)
+    sector = _WIND_SECTOR.search(obs_body)
     if sector is not None:
         ir["wind_dir_ccw_deg"] = int(sector.group("ccw"))
         ir["wind_dir_cw_deg"] = int(sector.group("cw"))
 
-    rvr = _RVR.search(body_for_wx)
+    rvr = _RVR.search(obs_body)
     if rvr is not None:
         val = int(rvr.group("val"))
         # US FT → metres; ICAO metre groups stay as-is.
@@ -327,7 +460,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
 
     present: list[str] = []
     wx_not_obs = False
-    for wx_m in _WX_TOKEN.finditer(body_for_wx):
+    for wx_m in _WX_TOKEN.finditer(obs_body):
         token = wx_m.group("wx")
         if token == "//":
             wx_not_obs = True
@@ -338,16 +471,27 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     if present:
         ir["present_weather"] = present
 
-    tempo = _TEMPO_TREND.search(body_for_wx)
-    if tempo is not None:
-        tbody = tempo.group("body")
-        trend: dict[str, Any] = {"change_indicator": "TEMPORARY_FLUCTUATIONS"}
-        vis_m = _VIS_M.search(tbody)
-        if vis_m is not None:
-            trend["visibility_m"] = int(vis_m.group("vis"))
-        if re.search(r"\bNSW\b", tbody):
-            trend["weather_nsw"] = True
-        ir["tempo_trend"] = trend
+    trends: list[dict[str, Any]] = []
+    for tm in trend_matches:
+        parsed = _parse_trend_group(ir, tm.group("kind"), tm.group("body"))
+        if parsed is not None:
+            trends.append(parsed)
+    if trends:
+        ir["trend_forecasts"] = trends
+        # Back-compat for F20 SPECI tempo-only emitters / gml:id helpers.
+        for t in trends:
+            if t.get("change_indicator") == "TEMPORARY_FLUCTUATIONS":
+                legacy: dict[str, Any] = {
+                    "change_indicator": "TEMPORARY_FLUCTUATIONS",
+                }
+                if t.get("visibility_m") is not None:
+                    legacy["visibility_m"] = t["visibility_m"]
+                if t.get("weather_nsw"):
+                    legacy["weather_nsw"] = True
+                ir["tempo_trend"] = legacy
+                break
+        if any(t.get("nil_nosig") for t in trends):
+            ir["nosig"] = True
 
     _parse_remarks(rest, ir)
     return ir

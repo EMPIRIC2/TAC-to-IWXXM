@@ -32,9 +32,9 @@
   </iwxxm:observationTime>
   <iwxxm:observation>
     <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="true">
-      <iwxxm:airTemperature uom="Cel">15</iwxxm:airTemperature>
-      <iwxxm:dewpointTemperature uom="Cel">7</iwxxm:dewpointTemperature>
-      <iwxxm:qnh uom="hPa">1013.0</iwxxm:qnh>
+      <iwxxm:airTemperature uom="Cel">15.0</iwxxm:airTemperature>
+      <iwxxm:dewpointTemperature uom="Cel">7.0</iwxxm:dewpointTemperature>
+      <iwxxm:qnh uom="hPa">1013</iwxxm:qnh>
       <iwxxm:surfaceWind>
         <iwxxm:AerodromeSurfaceWind variableWindDirection="false">
           <iwxxm:meanWindDirection uom="deg">180</iwxxm:meanWindDirection>

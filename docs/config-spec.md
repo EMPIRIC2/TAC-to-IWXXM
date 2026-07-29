@@ -246,6 +246,24 @@ apply. Single-deploy cutover with Auth strip (E17-18).
 - S019 / EV-014 (2026-07-21): `DISSEMINATION_EGRESS_ALLOWLIST` (E14-08=A); no config JSON for sinks
 - S019 / EV-014 T6.6 (2026-07-21): document local/CI recommended allowlist value; Render live value still operator-set (no `RENDER_API_KEY` in cloud agent)
 - S023 / EV-017 (2026-07-28): F21 — rate-limit + body env; retire `DISABLE_AUTH` / `E2E_USER_*` / FE Auth keys (ADR-031)
+- S026 / EV-020 (2026-07-29): F9 glossary package data + optional override; F3/OpenAIP reuse for
+  decode names (ADR-032) — see §F24/F25/F9 below
+
+## F24 / F25 / F9 deepen — WMO goldens + glossary (S026 / EV-020)
+
+No new Render secrets required for convert goldens (package-side). Decode glossary ships as
+**package data**; optional override for operators/maintainers:
+
+| Concern | Where it lives | Notes |
+|---------|----------------|-------|
+| WMO golden defaults | Code defaults | `profile=annex3`, pinned default `iwxxm_version` — ADR-032 |
+| Decode glossary | Official/near-official sources + YAML **overrides** | E20-E2; ADR-032 |
+| Glossary override path | Packaged `decode_glossary.yaml` + optional `TAC2IWXXM_DECODE_GLOSSARY_PATH` | Overlay only |
+| OpenAIP / F3 names | Existing F3 / OpenAIP config | Enrich decode when available; miss → ICAO only |
+| FE Examples catalog | Static FE fixtures | No env; WMO-passers only |
+
+**Connectivity**: H4–H5 when FE catalog / decode copy changes. Redeploy API before frontend if
+decode-tac string behavior ships in API image.
 
 ## References
 
@@ -259,6 +277,7 @@ apply. Single-deploy cutover with Auth strip (E17-18).
 - [ADR-021](adr/ADR-021-byo-credentials-admin-removal.md)
 - [ADR-029](adr/ADR-029-dissemination-ssrf-allowlist.md)
 - [ADR-030](adr/ADR-030-dissemination-package-architecture.md)
+- [ADR-032](adr/ADR-032-wmo-default-golden-glossary.md) — WMO default goldens + glossary
 - [deploy.md](deploy.md) §Integration
 - [api-contract.md](api-contract.md)
 - Supabase: [API keys](https://supabase.com/docs/guides/api/api-keys)

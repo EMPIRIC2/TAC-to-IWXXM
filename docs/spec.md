@@ -366,7 +366,7 @@ metar-to-IWXXM/
 - **Source**: [feature-list.md](feature-list.md) F20; #735/#734; [context/aerodrome-quality.md](context/aerodrome-quality.md);
   evolve-decisions EV-015; ADR-028.
 
-### F23 — SIGMET family quality bar (general + VA) (S025 / EV-019) — Planned
+### F23 — SIGMET family quality bar (general + VA) (S025 / EV-019) — Done
 
 - **Purpose**: F15/F20 sequel — raise **General SIGMET** (#733) and **VA SIGMET** (#739)
   lint / convert / IWXXM-validate quality. Reuse ADR-028 registry; deepen F6.d and F12.
@@ -380,7 +380,7 @@ metar-to-IWXXM/
   `iwxxm:VolcanicAshSIGMET` (not `iwxxm:SIGMET`, not VAA).
 - **API**: `product=sigmet` unchanged; root selection is package-side from TAC content
   (E19-13=A). No new routes.
-- **Status**: **Planned** — flips Done after verify/deploy gate (Lean+build routing).
+- **Status**: **Done** (S025 / EV-019; PR #792).
 - **Journeys / tests**: UJ-034; TC-F23-001..006; matrix themes G1–G3 / V1–V3 / C1.
 - **Non-goals**: #738 TC SIGMET; AIRMET / VAA / TCA / SWX / VONA; PyPI bumps; F16–F19;
   new `product` enum (E19-13). FE: **additive catalog filters for SIGMET/VA tags** in scope
@@ -388,18 +388,36 @@ metar-to-IWXXM/
 - **Source**: [feature-list.md](feature-list.md) F23; #733/#739;
   [context/sigmet-quality.md](context/sigmet-quality.md); evolve-decisions EV-019; ADR-028.
 
+### F24 — AIRMET quality bar (S026 / EV-020) — Planned
+
+- **Purpose**: #731 AIRMET quality peer to F23; WMO `airmet-A6-1a-TS` golden under **defaults**.
+- **Status**: **Planned**.
+- **Journeys / tests**: UJ-035; TC-F24-001..005.
+- **Policy**: ADR-032 (default `canonicalize_xml` equality).
+- **Source**: feature-list F24; evolve-decisions EV-020; ADR-028/032.
+
+### F25 — WMO official example parity + UI gate (S026 / EV-020) — Planned
+
+- **Purpose**: METAR/SPECI/TAF vendor golden equality under defaults; Examples catalog =
+  WMO-passers only (plus SIGMET/AIRMET keepers when green).
+- **Status**: **Planned**.
+- **Journeys / tests**: UJ-036; TC-F25-001..004; deepen UJ-032 / TC-F7-008.
+- **Policy**: ADR-032.
+- **Source**: feature-list F25; evolve-decisions EV-020.
+
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
 
 - **Purpose**: F9 — value-aware decode explanations + deterministic plain-language `summary`
   (packages/tac2iwxxm + decode panel). F10 — side-by-side IWXXM preview pane, plain-language
   soft-fail copy, `MISSING_TERMINATOR` info-level + "Add `=`" quick fix
   (apps/frontend + packages/tac-validate).
-- **Status**: **Planned (build this cycle)** — flips Implemented after verify/deploy gate.
+- **Status**: **Done** (S013). **S026 deepen (F9)**: extensible glossary registry + optional
+  OpenAIP/F3 names (ADR-032; TC-F9-003/004; UJ-020 deepen).
 - **Component deltas**: see §packages/tac2iwxxm S013 delta, §packages/tac-validate S013 delta,
   §apps/frontend F9/F10 delta.
-- **Non-goals**: LLM-generated text; new endpoints; Layer 1–2 / Schematron semantic changes.
-- **Source**: [feature-list.md](feature-list.md) F9/F10; ADR-025;
-  [evolve-decisions §EV-009](decisions/evolve-decisions.md).
+- **Non-goals**: LLM-generated text; Layer 1–2 / Schematron semantic changes.
+- **Source**: [feature-list.md](feature-list.md) F9/F10; ADR-025; ADR-032;
+  [evolve-decisions §EV-009](decisions/evolve-decisions.md) / §EV-020.
 
 ## Data Flow
 
