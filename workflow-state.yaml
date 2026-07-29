@@ -3,9 +3,74 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 24
-evolve_cycle_counter: 18
-active_session: null
+session_counter: 25
+evolve_cycle_counter: 19
+active_session:
+  id: S025-sigmet-quality
+  type: feature
+  intent: "SIGMET family quality bars (#733 general + #739 VA); F23 + deepen F6.d/F12; ADR-028"
+  status: active
+  branch: evolve/EV-019-sigmet-quality
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-019
+  github_issue: "733,739"
+  artifacts_dir: docs/sessions/S025-sigmet-quality/
+  current_stage: null
+  feature_ids:
+    - F23
+  feature_note: "F23 Planned; deepen F6.d/F12; ADR-028"
+  started_at: "2026-07-29"
+  preset: Lean+build
+  routing_decision_id: D-S025-E19-batch2
+  context_briefs:
+    - docs/context/sigmet-quality.md
+  tip_sha: 7c750a2
+  tip_sha_full: 7c750a204d98e9e96d54ea8c1ddf612f1bdd022d
+  do_not_auto_merge: true
+  note: "Phase 0 locked E19-1..8; F23 Planned in feature-list; PAUSED before 01-requirements (E19-8=B); resume when user asks"
+  routing_plan:
+    - stage: 00-context
+      required: true
+      mode: scoped
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      note: "Phase 0 locked Batch1+2"
+    - stage: 16-evolve
+      required: true
+      mode: orchestrator
+      status: in_progress
+      started: "2026-07-29"
+      note: "Phase 0 done paused before 01"
+    - stage: 01-requirements
+      required: true
+      mode: delta
+      status: pending
+      note: "paused — start when user resumes (E19-8=B)"
+    - stage: 02-verify-plan
+      required: true
+      mode: delta
+      status: pending
+    - stage: 04-tech-plan
+      required: true
+      mode: delta
+      status: pending
+    - stage: 07-build
+      required: true
+      mode: full
+      status: pending
+    - stage: 08-verify-build
+      required: true
+      mode: full
+      status: pending
+    - stage: 10-e2e
+      required: true
+      mode: full
+      status: pending
+    - stage: 13-deploy-smoke
+      required: true
+      mode: full
+      status: pending
 sessions:
 - id: S024-dissemination-file-select
   type: feature
@@ -1906,22 +1971,28 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: dissemination-file-select
-    session_id: S024-dissemination-file-select
-    evolve_cycle_id: EV-018
-    started_at: '2026-07-28'
-    completed_at: '2026-07-28'
-    completed: '2026-07-28'
+    scoped_slug: sigmet-quality
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    started_at: '2026-07-29'
+    completed_at: '2026-07-29'
+    completed: '2026-07-29'
     substeps:
       phase0: completed
-      phase1a: completed
+      phase1a: pending
       phase1b: skipped
       phase1c: skipped
-      phase2: completed
-      phase3: completed
-      phase4: completed
-    note: 'S024/EV-018 00-context COMPLETE 2026-07-28 — D-S024-E18-scope-lock; E18-1..8; Lean+build; handoff 01-requirements; #785'
+      phase2: pending
+      phase3: pending
+      phase4: pending
+    note: 'S025 Phase 0 lock — Batch1+2 E19-1..8; F23 Planned; paused before 01 (E19-8=B); #733/#739'
     artifacts:
+    - docs/sessions/S025-sigmet-quality/
+    - docs/sessions/S025-sigmet-quality/session-brief.md
+    - docs/sessions/S025-sigmet-quality/routing-plan.md
+    - docs/context/sigmet-quality.md
+    - docs/decisions/evolve-decisions.md
+    - docs/feature-list.md
     - docs/sessions/S023-public-app-privacy/
     - docs/context/public-app-privacy.md
     - docs/context/rename-cutover-781.md
@@ -1953,6 +2024,8 @@ stages:
     - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
     - docs/context/manual-tac-input-modes.md
     notes:
+    - '2026-07-29 S025/EV-019 00-context COMPLETE — Phase 0 locked Batch1+2 E19-1..8 (D-S025-E19-batch2); F23 Planned in feature-list; paused before 01 (E19-8=B); #733/#739'
+    - '2026-07-29 S025/EV-019 00-context OPEN — Batch 1 E19-1..4 all A locked (D-S025-E19-batch1); Lean+build; Batch 2 pending; F23 provisional'
     - '2026-07-27 S023/EV-017 00-context COMPLETE — E17-4A..E17-11 locked (D-S023-E17-scope-lock); F21/F22; IndexedDB F5/F7; Solution A privacy + GPC; abuse controls; 30d legacy archive; handoff 01-requirements'
     - 2026-07-27 — S023-public-app-privacy/EV-017 opened (feature); D-S023-00-open; 00 in_progress; Standard routing; #783; architecture baseline with tweaks; feature_ids TBD
     - 2026-07-27 — S022-rename-cutover opened (ops); D-S022-00-approve-routing; 00 completed; current_stage=15-service-health; no evolve cycle
@@ -5154,6 +5227,173 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S025-E19-batch2
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  resolved_at: '2026-07-29'
+  topic: Phase 0 Batch 2 lock — E19-5..E19-8 + E19-ui
+  summary: D-S025-E19-batch2 — E19-5..7 A; E19-8=B pause before 01; E19-ui assumed B
+  decision: 'Batch 2 locked (E19-5=A full #733/#739 AC; E19-6=A siblings OOS / no PyPI / no F16–F19 / F7 Planned smoke only; E19-7=A redeploy+H1–H5 when changed; E19-8=B lock Phase 0, write F23, pause before 01-requirements; E19-ui assumed B docs/repo only). Phase 0 complete; F23 Planned in feature-list; 00-context completed; do not start 01 until user resumes.'
+  related_issue: "733,739"
+  related_decisions: [E19-5, E19-6, E19-7, E19-8, E19-ui]
+  answers:
+    '5': A
+    '6': A
+    '7': A
+    '8': B
+    ui: B
+  note: 'E19-ui Assumed B — Q9 omitted in reply; AskQuestion waived (written interview)'
+- id: E19-5
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  resolved_at: '2026-07-29'
+  topic: Research / encode depth
+  summary: E19-5 / D-S025-E19-batch2 — full #733/#739 AC
+  decision: 'A — Full #733/#739 AC (guidance + fixtures + goldens + matrix) for general and VA SIGMET. Locked 2026-07-29 Batch 2 (D-S025-E19-batch2).'
+  related_issue: "733,739"
+  related_decision: D-S025-E19-batch2
+- id: E19-6
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  resolved_at: '2026-07-29'
+  topic: Out of scope
+  summary: E19-6 / D-S025-E19-batch2 — siblings OOS; no PyPI; no F16–F19
+  decision: 'A — Siblings OOS; no PyPI; no F16–F19; F7 Planned (smoke only). Locked 2026-07-29 Batch 2 (D-S025-E19-batch2).'
+  related_issue: "733,739"
+  related_decision: D-S025-E19-batch2
+- id: E19-7
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  resolved_at: '2026-07-29'
+  topic: Deploy / smoke (13)
+  summary: E19-7 / D-S025-E19-batch2 — H1–H5 when changed
+  decision: 'A — Redeploy if API/FE changes; H1–H3 if API; H4–H5 workbench sigmet + VA smoke. Locked 2026-07-29 Batch 2 (D-S025-E19-batch2).'
+  related_issue: "733,739"
+  related_decision: D-S025-E19-batch2
+- id: E19-8
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  resolved_at: '2026-07-29'
+  topic: Phase 0 close / proceed
+  summary: E19-8 / D-S025-E19-batch2 — B pause before 01
+  decision: 'B — Lock Phase 0; write F23 to feature-list; pause before 01-requirements. Resume 01 when user asks. Locked 2026-07-29 Batch 2 (D-S025-E19-batch2).'
+  related_issue: "733,739"
+  related_decision: D-S025-E19-batch2
+- id: E19-ui
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: assumed
+  resolved_at: '2026-07-29'
+  topic: Non-deployed UI preview
+  summary: E19-ui / D-S025-E19-batch2 — Assumed B docs/repo only
+  decision: 'Assumed B — No non-deployed UI preview; docs/repo only (Q9 omitted in reply). Locked 2026-07-29 Batch 2 (D-S025-E19-batch2).'
+  related_issue: "733,739"
+  related_decision: D-S025-E19-batch2
+  note: Assumed — AskQuestion waived (written interview); Q9 omitted
+- id: D-S025-E19-batch1
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  resolved_at: '2026-07-29'
+  topic: Phase 0 Batch 1 lock — E19-1..E19-4
+  summary: D-S025-E19-batch1 — E19-1..4 all A; Batch 2 pending
+  decision: 'Batch 1 locked all A (E19-1 open S025/EV-019; E19-2 #733+#739 full bars, #738 OOS; E19-3 F23 + deepen F6.d/F12, ADR-028 reuse; E19-4 Lean+build). Batch 2 pending before Phase 0 close / F23 feature-list write / 01-requirements.'
+  related_issue: "733,739"
+  related_decisions: [E19-1, E19-2, E19-3, E19-4]
+  answers:
+    '1': A
+    '2': A
+    '3': A
+    '4': A
+- id: E19-1
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  resolved_at: '2026-07-29'
+  topic: Open S025 / EV-019
+  summary: E19-1 / D-S025-E19-batch1 — open S025/EV-019
+  decision: 'A — Open S025-sigmet-quality (feature) → 16-evolve / EV-019; scoped context docs/context/sigmet-quality.md. Locked 2026-07-29 Batch 1 (D-S025-E19-batch1).'
+  related_issue: "733,739"
+  related_decision: D-S025-E19-batch1
+- id: E19-2
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  resolved_at: '2026-07-29'
+  topic: Product scope
+  summary: E19-2 / D-S025-E19-batch1 — #733+#739; #738 OOS
+  decision: 'A — Full quality bars for both #733 (general SIGMET) and #739 (VA SIGMET); #738 TC SIGMET out of scope. Locked 2026-07-29 Batch 1 (D-S025-E19-batch1).'
+  related_issue: "733,739"
+  related_decision: D-S025-E19-batch1
+- id: E19-3
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  resolved_at: '2026-07-29'
+  topic: Fn allocation
+  summary: E19-3 / D-S025-E19-batch1 — F23 + deepen F6.d/F12; ADR-028
+  decision: 'A — New F23 (SIGMET family quality: general + VA) + deepen F6.d/F12; reuse ADR-028. F23 provisional until Batch 2. Locked 2026-07-29 Batch 1 (D-S025-E19-batch1).'
+  related_issue: "733,739"
+  related_decision: D-S025-E19-batch1
+- id: E19-4
+  date: '2026-07-29'
+  timestamp: '2026-07-29'
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  resolved_at: '2026-07-29'
+  topic: Routing preset
+  summary: E19-4 / D-S025-E19-batch1 — Lean+build
+  decision: 'A — Lean+build (00→16→01→02→04→07→08→10→13); skip 03/05/06/09/11/12 unless needed. Locked 2026-07-29 Batch 1 (D-S025-E19-batch1).'
+  related_issue: "733,739"
+  related_decision: D-S025-E19-batch1
 - id: D-S024-04-plan-approve-A
   date: '2026-07-28'
   timestamp: '2026-07-28T23:21:03Z'
@@ -11891,6 +12131,22 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-019
+  status: in_progress
+  cycle_type: feature
+  session_id: S025-sigmet-quality
+  feature_ids: [F23]
+  deepen: [F6.d, F12]
+  github_issues: [733, 739]
+  branch: evolve/EV-019-sigmet-quality
+  started_at: "2026-07-29"
+  current_stage: paused-before-01
+  preset: Lean+build
+  tip_sha: 7c750a2
+  tip_sha_full: 7c750a204d98e9e96d54ea8c1ddf612f1bdd022d
+  do_not_auto_merge: true
+  note: "Phase 0 locked; F23 written; paused before 01 (E19-8=B)"
+  decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2]
 - id: EV-018
   session_id: S024-dissemination-file-select
   cycle_type: feature
@@ -16051,14 +16307,15 @@ evolve_cycles:
   pr_number: 723
   merge_sha: '4660602'
 git_history:
-  current_branch: evolve/EV-018-dissemination-file-select
+  current_branch: evolve/EV-019-sigmet-quality
   ahead_of_origin: 0
   pushed: false
   pending_commit:
-  tip_sha: a426948
-  tip_sha_full: a426948dd0916b9eb59011634e1ce547f905f421
-  note: 'S024/EV-018 tip a426948; 10 COMPLETE; 13 pending deploy approval (FE-only; await push/PR); #785'
+  tip_sha: 7c750a2
+  tip_sha_full: 7c750a204d98e9e96d54ea8c1ddf612f1bdd022d
+  note: 'S025/EV-019 open; tip 7c750a2; 00-context in_progress; Batch 1 locked; Batch 2 pending; #733/#739'
   notes:
+  - '2026-07-29 S025/EV-019 open — branch evolve/EV-019-sigmet-quality recorded active (base main); Batch1 E19-1..4 all A; Lean+build; Batch 2 pending; tip 7c750a2'
   - '2026-07-28 S024/EV-018 tip synced — a426948 (a426948dd0916b9eb59011634e1ce547f905f421); "[EV-018] docs: 13 deploy readiness (FE-only; await push/PR)"; stage 13-deploy-smoke; 10 COMPLETE; 13 pending deploy approval; #785'
   - '2026-07-28 S024/EV-018 tip synced — 4146052 (4146052415df0806c6a3057ddb6118b45dac7a7a); "[EV-018] test: UJ-027–030 e2e PASS + progress screenshot baseline"; stage 10-e2e; 10 COMPLETE; 13 pending deploy approval; #785'
   - '2026-07-28 S023/EV-017 CLOSED (D-S023-close) — user option 2 push then close; PR #790 opened https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790; tip 2e2f6c0 (merge resolve main); CI run 30404410993 success; mergeable; do not auto-merge; active_session=null'
@@ -16243,6 +16500,18 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-019-sigmet-quality
+    purpose: "S025/EV-019 SIGMET family quality bars (#733 general + #739 VA)"
+    base: main
+    status: active
+    created: '2026-07-29'
+    created_at: '2026-07-29'
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    note: "Session opened; Phase 0 Batch 1 locked; Batch 2 pending; not pushed"
+    tip_sha: 7c750a2
+    tip_sha_full: 7c750a204d98e9e96d54ea8c1ddf612f1bdd022d
+    pushed: false
   - name: evolve/EV-018-dissemination-file-select
     purpose: 'S024/EV-018 dissemination multi-file export selection (#785)'
     base: main

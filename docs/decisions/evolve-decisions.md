@@ -3,6 +3,43 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-019 — SIGMET quality: general + VA (#733 / #739) (S025)
+
+**Session**: S025-sigmet-quality  
+**Features**: **F23** (Planned) + deepen **F6.d** / **F12**  
+**Issues**: [#733](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/733), [#739](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/739)  
+**Started**: 2026-07-29  
+**Branch**: `evolve/EV-019-sigmet-quality`  
+**Status**: Phase 0 **locked**; F23 in feature-list; **paused before 01** (E19-8=B)
+
+### Scope (Batch 1 — locked 2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E19-1 | decision | Open session? | **A** — `S025-sigmet-quality` → 16-evolve / EV-019; scoped context |
+| E19-2 | decision | Product scope? | **A** — Full #733 + #739; #738 TC SIGMET OOS |
+| E19-3 | decision | Fn allocation? | **A** — F23 (general+VA quality) + deepen F6.d/F12; ADR-028 reuse |
+| E19-4 | decision | Routing preset? | **A** — Lean+build (`00→16→01→02→04→07→08→10→13`) |
+
+### Scope (Batch 2 — locked 2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E19-5 | decision | Research / encode depth? | **A** — full #733/#739 AC (guidance + fixtures + goldens + matrix) |
+| E19-6 | decision | Out of scope? | **A** — siblings OOS; no PyPI; no F16–F19; F7 Planned (smoke only) |
+| E19-7 | decision | Deploy / smoke (13)? | **A** — redeploy if API/FE changes; H1–H3 if API; H4–H5 workbench sigmet + VA |
+| E19-8 | decision | Proceed? | **B** — lock Phase 0; write F23; **pause before 01-requirements** |
+| E19-ui | decision | Non-deployed UI preview? | **⚠️ Assumed B** — docs/repo only (Q9 omitted in reply) |
+
+**Phase 0 scope approved** — F23 written to `feature-list.md`. Next: **01-requirements** when user resumes.
+
+### Routing (`D-S025-E19-batch1` + Batch 2)
+
+**Required:** 00 → 16 → 01 → 02 → 04 → 07 → 08 → 10 → 13  
+**Skipped:** 03, 05, 06, 09, 11, 12 (unless later needed)
+
+---
+
 ## Cycle EV-018 — Dissemination multi-file export selection (#785) (S024)
 
 **Session**: S024-dissemination-file-select  

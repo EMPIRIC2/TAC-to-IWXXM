@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-28 (S024 / EV-018 — F16 multi-file export selection deepen; #785)
+> **Last updated**: 2026-07-29 (S025 / EV-019 — F23 SIGMET quality bar planned; #733/#739)
 
 ## Summary
 
@@ -30,6 +30,7 @@
 | F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778 |
 | F21 | Public unauthenticated operator app | Planned | Product | S023 / EV-017; #783 |
 | F22 | Privacy preference center (Solution A + GPC) | Planned | Product | S023 / EV-017; #783 |
+| F23 | SIGMET family quality bar (general + VA) | Planned | Product | S025 / EV-019; #733/#739 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -641,6 +642,58 @@
   5. UJ-033 + TC-F22-* cover notice + settings + GPC
 - **Source**: #783; E17-7/E17-9; ICO / CPPA baselines (engineering only)
 
+### F23: SIGMET Family Quality Bar (General + VA) — S025 / EV-019
+
+- **Status**: **Planned** — S025 / EV-019 Phase 0 locked 2026-07-29 (E19-1..E19-8;
+  Lean+build). Spec deltas pending **01-requirements**.
+- **What it does**: Raises **General SIGMET** and **Volcanic-ash SIGMET** TAC lint, convert,
+  and IWXXM-validate quality to the same bar F15/F20 set for aerodrome products. Reuses the
+  **ADR-028** issue registry (new SIGMET / VA SIGMET codes as needed; no new registry
+  architecture). Audits encode paths against WMO `TAC-to-XML-Guidance.txt` **plus** 2025-2
+  corrections. Expands accept/negative fixtures, golden TAC→IWXXM→XSD+Schematron, and
+  coverage-matrix **SIGMET** + **VA SIGMET** rows. Distinguishes VA SIGMET
+  (`iwxxm:VolcanicAshSIGMET`) from VAA advisory (`iwxxm:VolcanicAshAdvisory`).
+- **Issues**: [#733](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/733) (general SIGMET),
+  [#739](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/739) (VA SIGMET).
+- **Deepens**:
+  | Feature | Role this cycle |
+  |---------|-----------------|
+  | **F6** | F6.d SIGMET (+ VA SIGMET root) convert/golden fidelity per guidance |
+  | **F12** | SIGMET + VA SIGMET checklist rules via registry; accept + negative fixtures |
+  | **F15** | Registry already product-agnostic; this cycle adds/extends codes only (F15 stays Done) |
+- **Acceptance** (product-level; journeys/tests refined in 01):
+  1. SIGMET and VA SIGMET lint emissions use registry codes; CI fails on unknown codes
+  2. #733 exceptional-rule table (CNL, point→circle, single altitude, STNR, polygon/line CRS, …)
+     has accept + negative fixtures (or explicit deferrals with rationale)
+  3. #739 exceptional-rule table (volcano identity, ash geometry/forecast, `NO VA EXP`, CNL
+     FIR-moved-ash) has accept + negative fixtures; not confused with VAA encode
+  4. Common rules covered: `reportStatus` / `permissibleUsage`, `translationFailedTAC`,
+     geometry CRS, nilReasons, one-IWXXM-per-TAC-report
+  5. Coverage-matrix SIGMET + VA SIGMET rows updated; guidance gaps filed or closed
+  6. Accept fixtures → convert → `iwxxm-validate` XSD+Schematron pass (pinned versions);
+     roots match `iwxxm:SIGMET` / `iwxxm:VolcanicAshSIGMET` for pinned `iwxxm_version`
+     (esp. 2025-2)
+  7. Workbench / product path lint+convert smoke documented (F7 remains Planned; smoke only
+     under F23); H1–H3 if API ships; H4–H5 when FE touched (E19-7)
+- **Out of scope**: [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) TC SIGMET;
+  [#731](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/731) AIRMET; [#736](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/736)
+  VAA; [#737](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/737) TCA; #740 SWX; #741 VONA;
+  PyPI release bumps; F16–F19; COLLECT — unless shared common-rule touch (E19-6)
+- **Source**: #733/#739; E19-1..E19-8; [context/sigmet-quality.md](context/sigmet-quality.md);
+  ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`; predecessors F15 / EV-011, F20 / EV-015
+
+### F6 deepen (S025 / EV-019 — SIGMET + VA SIGMET)
+
+- **Status note**: F6 remains **Implemented**; this cycle **deepens F6.d** (general SIGMET +
+  VA SIGMET root) convert/golden fidelity under F23 acceptance (not a new Fn). Track gaps vs
+  #733/#739 exceptional-rule tables and WMO guidance + 2025-2 corrections. TC SIGMET remains
+  sibling #738.
+
+### F12 deepen (S025 / EV-019 — SIGMET + VA SIGMET)
+
+- **Status note**: F12 remains **Implemented**; this cycle expands SIGMET / VA SIGMET rules
+  through the ADR-028 registry and accept/negative packs to full-depth checklist targets.
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout
@@ -729,6 +782,7 @@
 | F20 | Yes (TAF/SPECI workbench smoke) | Yes (`lint-tac` / convert `taf`/`speci`) | Yes (goldens + matrix) | Yes if API/FE contract changes |
 | F21 | Yes (no login) | Yes (public + rate limits) | Yes (abuse tests) | Yes (API + static; Auth secrets optional) |
 | F22 | Yes (privacy settings) | — | Yes | Yes (static) |
+| F23 | Yes (SIGMET/VA SIGMET workbench smoke) | Yes (`lint-tac` / convert sigmet + VA) | Yes (goldens + matrix) | Yes if API/FE contract changes |
 | M1–M6 | — | — | Yes | Yes |
 
 | F6 capability | Library | HTTP API | Web UI | CI metrics |
