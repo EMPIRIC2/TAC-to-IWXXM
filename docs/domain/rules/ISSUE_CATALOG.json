@@ -528,6 +528,18 @@
       ]
     },
     {
+      "code": "MISSING_VOLCANO",
+      "severity": "error",
+      "message_template": "VAA missing VOLCANO: template field \u2014 F26 theme V1 / A2-1",
+      "product": "vaa",
+      "tags": [
+        "volcano",
+        "vaa",
+        "v1",
+        "f26"
+      ]
+    },
+    {
       "code": "MISSING_WIND",
       "severity": "error",
       "message_template": "{product} missing surface wind group \u2014 A3-2 #5",
@@ -844,6 +856,70 @@
       "product": null,
       "tags": [
         "parse_gate"
+      ]
+    },
+    {
+      "code": "VAA_FCST_NO_VA_EXP",
+      "severity": "info",
+      "message_template": "VAA forecast NO VA EXP \u2014 status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)",
+      "product": "vaa",
+      "tags": [
+        "forecast",
+        "no_va_exp",
+        "vaa",
+        "v1",
+        "f26"
+      ]
+    },
+    {
+      "code": "VAA_NO_FURTHER_ADVISORIES",
+      "severity": "info",
+      "message_template": "VAA NXT ADVISORY NO FURTHER ADVISORIES \u2014 next time inapplicable (F26 theme V1)",
+      "product": "vaa",
+      "tags": [
+        "next_advisory",
+        "vaa",
+        "v1",
+        "f26"
+      ]
+    },
+    {
+      "code": "VAA_RMK_NIL",
+      "severity": "info",
+      "message_template": "VAA RMK NIL \u2014 remarks inapplicable (F26 theme V1)",
+      "product": "vaa",
+      "tags": [
+        "remarks",
+        "nil",
+        "vaa",
+        "v1",
+        "f26"
+      ]
+    },
+    {
+      "code": "VAA_VOLCANO_UNKNOWN",
+      "severity": "info",
+      "message_template": "VAA VOLCANO UNKNOWN \u2014 exceptional name allowed (F26 theme V1)",
+      "product": "vaa",
+      "tags": [
+        "volcano",
+        "unknown",
+        "vaa",
+        "v1",
+        "f26"
+      ]
+    },
+    {
+      "code": "VAA_VOLCANO_UNNAMED",
+      "severity": "info",
+      "message_template": "VAA VOLCANO UNNAMED \u2014 exceptional name allowed (F26 theme V1)",
+      "product": "vaa",
+      "tags": [
+        "volcano",
+        "unnamed",
+        "vaa",
+        "v1",
+        "f26"
       ]
     },
     {
