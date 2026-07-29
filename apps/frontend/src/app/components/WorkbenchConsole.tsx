@@ -2,6 +2,7 @@
  * Pull-up structured console for the F7 live workbench (UJ-017 / #694).
  * F15: registry code tooltips + lightweight catalog panel (E11-29 / E11-31).
  * F20 / E15-14: catalog tag filter + enriched list copy (TAF tags).
+ * F23 / E19-17: preferred tag options include ``sigmet`` / ``va`` when present.
  */
 
 import { useState, type ReactNode } from 'react';
@@ -16,6 +17,32 @@ import {
 import { consoleLevelPasses, type ConvertLogLevel } from '/utils/convertParams';
 
 const CODE_TOKEN = /(\[[A-Z][A-Z0-9_]*\])/g;
+
+/** Product / theme tags operators filter most often — listed first when present. */
+const PREFERRED_CATALOG_TAGS = [
+  'metar',
+  'speci',
+  'taf',
+  'sigmet',
+  'va',
+  'airmet',
+] as const;
+
+function catalogTagOptionsFromEntries(entries: LintIssueCatalogEntry[]): string[] {
+  const present = new Set(
+    entries.flatMap((entry) => (entry.tags ?? []).map((t) => t.toLowerCase())),
+  );
+  const preferred = PREFERRED_CATALOG_TAGS.filter((tag) => present.has(tag));
+  const rest = [...present]
+    .filter(
+      (tag) =>
+        !PREFERRED_CATALOG_TAGS.includes(
+          tag as (typeof PREFERRED_CATALOG_TAGS)[number],
+        ),
+    )
+    .sort((a, b) => a.localeCompare(b));
+  return [...preferred, ...rest];
+}
 
 export interface WorkbenchConsoleProps {
   lines: LiveWorkbenchConsoleLine[];
@@ -81,9 +108,7 @@ export function WorkbenchConsole({
     consoleLevelPasses(line.level, minLogLevel),
   );
   const filteredCatalog = filterCatalogByTag(catalogEntries, tagFilter);
-  const catalogTagOptions = [
-    ...new Set(catalogEntries.flatMap((entry) => entry.tags ?? [])),
-  ].sort((a, b) => a.localeCompare(b));
+  const catalogTagOptions = catalogTagOptionsFromEntries(catalogEntries);
 
   return (
     <section

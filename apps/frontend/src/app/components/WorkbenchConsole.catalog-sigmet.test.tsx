@@ -113,5 +113,13 @@ describe('WorkbenchConsole catalog SIGMET/VA tags (T5.1 / E19-17)', () => {
       .map((el) => el.getAttribute('value'));
     expect(options).toContain('sigmet');
     expect(options).toContain('va');
+    // Preferred product tags appear before theme-only tags when present.
+    const sigmetIdx = options.indexOf('sigmet');
+    const vaIdx = options.indexOf('va');
+    const cnlIdx = options.indexOf('cnl');
+    expect(sigmetIdx).toBeGreaterThan(-1);
+    expect(vaIdx).toBeGreaterThan(-1);
+    expect(sigmetIdx).toBeLessThan(cnlIdx);
+    expect(vaIdx).toBeLessThan(cnlIdx);
   });
 });

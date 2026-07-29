@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M5 — FE catalog SIGMET/VA tags + smoke + verify (F23) |
-| **Active task** | T5.2 (pending) |
-| **Tasks** | 22 / 29 completed |
+| **Active task** | T5.3 (pending) |
+| **Tasks** | 23 / 29 completed |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -103,7 +103,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T5.1 | Test | Vitest: catalog panel filters/copy for SIGMET (+ VA) tags | E19-17; TC-F23-005 | T4.6 | completed |
-| T5.2 | Code | FE: extend catalog panel filters/copy for SIGMET/VA (additive) | E19-17; UJ-034 | T5.1 | pending |
+| T5.2 | Code | FE: extend catalog panel filters/copy for SIGMET/VA (additive) | E19-17; UJ-034 | T5.1 | completed |
 | T5.3 | Test | API/workbench smoke `product=sigmet` lint+convert (general + VA fixtures) + catalog GET | TC-F23-005 | T5.2 | pending |
 | T5.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M4, T5.2 | pending |
 | T5.5 | Test | 10-e2e — UJ-034 / TC-F23-001..006 (09 skipped Lean+build) | 10 | T5.4 | pending |
