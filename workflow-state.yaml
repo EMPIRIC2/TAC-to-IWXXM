@@ -24,8 +24,8 @@ active_session:
   routing_decision_id: D-S025-E19-batch2
   context_briefs:
     - docs/context/sigmet-quality.md
-  tip_sha: 7c750a2
-  tip_sha_full: 7c750a204d98e9e96d54ea8c1ddf612f1bdd022d
+  tip_sha: 0ac44d7
+  tip_sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
   do_not_auto_merge: true
   note: "Phase 0 locked E19-1..8; F23 Planned in feature-list; PAUSED before 01-requirements (E19-8=B); resume when user asks"
   routing_plan:
@@ -12142,8 +12142,8 @@ evolve_cycles:
   started_at: "2026-07-29"
   current_stage: paused-before-01
   preset: Lean+build
-  tip_sha: 7c750a2
-  tip_sha_full: 7c750a204d98e9e96d54ea8c1ddf612f1bdd022d
+  tip_sha: 0ac44d7
+  tip_sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
   do_not_auto_merge: true
   note: "Phase 0 locked; F23 written; paused before 01 (E19-8=B)"
   decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2]
@@ -16311,8 +16311,8 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit:
-  tip_sha: 7c750a2
-  tip_sha_full: 7c750a204d98e9e96d54ea8c1ddf612f1bdd022d
+  tip_sha: 0ac44d7
+  tip_sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
   note: 'S025/EV-019 open; tip 7c750a2; 00-context in_progress; Batch 1 locked; Batch 2 pending; #733/#739'
   notes:
   - '2026-07-29 S025/EV-019 open — branch evolve/EV-019-sigmet-quality recorded active (base main); Batch1 E19-1..4 all A; Lean+build; Batch 2 pending; tip 7c750a2'
@@ -17237,6 +17237,21 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 0ac44d7
+    sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
+    branch: evolve/EV-019-sigmet-quality
+    message: "[EV-019] docs: open S025 Phase 0 — F23 SIGMET quality (#733/#739)"
+    stage: 00-context
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T11:16:40Z"
+    files_changed:
+      - docs/feature-list.md
+      - docs/sessions/S025-sigmet-quality/
+      - docs/context/sigmet-quality.md
+      - docs/decisions/evolve-decisions.md
+      - workflow-state.yaml
+      - .cursor/rules/core/plan-adherence.mdc
   - sha: a426948dd0916b9eb59011634e1ce547f905f421
     short: a426948
     branch: evolve/EV-018-dissemination-file-select
