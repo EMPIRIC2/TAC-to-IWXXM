@@ -25,6 +25,7 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
+| [S024-dissemination-file-select](S024-dissemination-file-select/session-brief.md) | feature | in_progress | Multi-file export selection in dissemination portal (#785) | evolve/EV-018-dissemination-file-select | 2026-07-28 | — |
 | [S023-public-app-privacy](S023-public-app-privacy/session-brief.md) | feature | completed | Public app + local history + privacy (#783); PR #790 open (do not auto-merge) | evolve/EV-017-public-app-privacy | 2026-07-27 | 2026-07-28 |
 | [S001-convert-send-buttons](S001-convert-send-buttons/session-brief.md) | feature | completed | Convert & Convert&Send UI (#656) | feat/S001-convert-send-buttons | 2026-06-22 | 2026-06-22 |
 | [S002-issue-594-feedback](S002-issue-594-feedback/session-brief.md) | hotfix | in_progress | COR handling + TAC traceability (#594) | fix/S002-issue-594-feedback | 2026-06-22 | — |

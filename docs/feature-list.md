@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-27 (S023 / EV-017 — F21/F22 public app + privacy; #783)
+> **Last updated**: 2026-07-28 (S024 / EV-018 — F16 multi-file export selection deepen; #785)
 
 ## Summary
 
@@ -23,7 +23,7 @@
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; shipped 2026-07-20 (#742) |
-| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; shipped 2026-07-21 (#771/#772) |
+| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785) |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; mock-BYOC close (Q15 waive) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; mock-BYOC close (Q15 waive) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; staging stubs; live optional |
@@ -467,31 +467,56 @@
 
 ### F16: Dissemination drawer + multi-DB upload (BYOC URI) — S019 / EV-014
 
-- **Status**: **Done** (EV-014 closed 2026-07-21; #771/#772).
-- **What it does**: Unified **dissemination drawer** for Convert&Send / Upload: any authenticated
-  user pastes a **one-shot** destination URI (memory-only on API; never persisted; no saved
-  profiles). Backend-mediated preflight + send with structured schema diff; **block Send** until
-  green. Supports **convert-then-send** and **drag-drop** of external IWXXM/TAC. **DDL /
-  create-if-missing** against a versioned writer contract when the target table is missing or
-  mismatched. Multi-DB sinks: **Postgres, MySQL/MariaDB, SQL Server, SQLite** (Q23=A–D; no other
-  named vendor).
-- **Auth vs destination**: Supabase **Auth + F5 work history** remain deploy-time BYO (ADR-021 /
-  Q10A=D / Q19=A). Destination secrets are **not** Supabase and are never stored on sessions
-  (only `kv_upload_key` / metadata).
+- **Status**: **Done** (EV-014 closed 2026-07-21; #771/#772). **Deepen** S024 / EV-018 / [#785](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/785) — multi-file export selection (in progress).
+- **What it does**: Unified **dissemination drawer** for Convert&Send / Upload: any **public**
+  operator (F21 — no login) pastes a **one-shot** destination URI (memory-only on API; never
+  persisted; no saved profiles). Backend-mediated preflight + send with structured schema diff;
+  **block Send** until green. Supports **convert-then-send** and **drag-drop** of external
+  IWXXM/TAC. **DDL / create-if-missing** against a versioned writer contract when the target
+  table is missing or mismatched. Multi-DB sinks: **Postgres, MySQL/MariaDB, SQL Server,
+  SQLite** (Q23=A–D; no other named vendor).
+- **Auth vs destination**: Destination secrets are **not** Supabase and are never stored
+  (IndexedDB may hold `kv_upload_key` / metadata only after F21).
 - **Security (Q11=A+B)**: Backend-only egress; deny private/metadata ranges; DNS rebinding guard;
   TLS preferred; timeouts/size limits; secret redaction; rate limits; **required**
   `DISSEMINATION_EGRESS_ALLOWLIST` (empty ⇒ no user-URI egress).
 - **UI**: Sink chooser in same drawer — Postgres/MySQL/… (F16), WIS2 (F17), EDIS (F18),
   AMHS/SWIM/AFS (F19).
-- **Acceptance**:
+- **EV-018 deepen (#785) — multi-file export selection**:
+  1. **Export selection** panel lists eligible candidates (name, product type, size/status,
+     source) from **current-session conversion outputs** and **dropped files** only (Finished
+     IndexedDB history **out of scope** for v1 — E18-4).
+  2. **Multi-select** — checkboxes + select-all / clear; Disseminate / Preflight-only operate on
+     the **current selection only**.
+  3. **Empty selection** disables Disseminate and Preflight-only with a clear message.
+  4. Client runs **N sequential interleaved** `/preflight` then `/send` **per file**, then next
+     (E18-10); continues after failures and **aggregates** per-file pass/fail/skip — **no**
+     batched multi-payload API in v1 (E18-5/11). Primary **Disseminate**; optional
+     **Preflight only** (E18-15).
+  5. Selection **count cap ≤20**; reuse existing body/size limits; clear error when over (E18-6).
+     Sole candidate: auto-selected; Export selection collapsed/optional (E18-9).
+  6. Per-file **progress graphic**: mail travels along an arrow to the destination sink icon;
+     green check on success, red mark on fail (E18-10/13). When `prefers-reduced-motion`,
+     hide graphic and show text-only status (E18-14).
+  7. F17–F19 **reuse the same selection contract** in the drawer (E18-2).
+- **Acceptance** (base EV-014 + EV-018):
   1. Preflight returns actionable schema/permission/auth diffs; Send disabled until green
-  2. One-shot URI never appears in logs, session JSON, or F5 rows
+  2. One-shot URI never appears in logs, session JSON, or IndexedDB rows
   3. Allowlist enforced; private-IP / metadata targets rejected
   4. DDL path creates/migrates to versioned writer contract when opted
   5. Drag-drop and convert-then-send both reach the same preflight→send path
   6. All four DB engines covered by contract tests (SQLite may be file/local harness)
-- **Out of scope**: Saved/encrypted connection profiles; pasting Supabase **auth** keys in-app
-- **Source**: #729; S019 / EV-014; ADR-021 amend; ADR-029 (SSRF); ADR-030 (package/API)
+  7. When >1 candidate exists, drawer shows selectable list; select-all / clear work
+  8. Disseminate / Preflight-only apply only to selection; empty selection disables both with message
+  9. After run, per-file success/failure/skip is visible (progress graphic or text); one failure
+     does not silently drop the rest without reporting
+  10. BYOC credentials remain memory-only; no new destination-secret persistence
+  11. Playwright visual snapshot of progress row (in-flight + failed) passes (E18-16)
+- **Out of scope**: Saved/encrypted connection profiles; pasting Supabase **auth** keys in-app;
+  F8 auto-push; Finished work-history as export sources (v1); batched multi-payload API (v1);
+  browser zip archive download unrelated to sink send
+- **Source**: #729; S019 / EV-014; ADR-021 amend; ADR-029 (SSRF); ADR-030 (package/API);
+  **#785; S024 / EV-018** (multi-select deepen)
 
 ### F17: WIS2 dissemination pathway — S019 / EV-014
 
@@ -503,8 +528,9 @@
   disposable Docker host). **Live**: user BYOC WIS2 node/endpoint credentials (memory-only);
   EV-014 close used mock/harness evidence instead of live destination demos (Q15/Q21 amended).
 - **Acceptance**: Staging wis2box e2e in CI/staging; mock BYOC close-gate evidence for EV-014;
-  drawer sink type WIS2 with preflight-equivalent connectivity checks.
-- **Source**: #2; WIS2 overview / wis2box; S019 / EV-014
+  drawer sink type WIS2 with preflight-equivalent connectivity checks; **EV-018** reuses F16
+  export multi-select contract when multiple candidates exist.
+- **Source**: #2; WIS2 overview / wis2box; S019 / EV-014; S024 / EV-018 (#785 selection reuse)
 
 ### F18: EDIS → RTH Washington dissemination — S019 / EV-014
 
