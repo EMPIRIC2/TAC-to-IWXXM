@@ -32,8 +32,8 @@
   </iwxxm:observationTime>
   <iwxxm:observation>
     <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="false">
-      <iwxxm:airTemperature uom="Cel">12</iwxxm:airTemperature>
-      <iwxxm:dewpointTemperature uom="Cel">6</iwxxm:dewpointTemperature>
+      <iwxxm:airTemperature uom="Cel">12.0</iwxxm:airTemperature>
+      <iwxxm:dewpointTemperature uom="Cel">6.0</iwxxm:dewpointTemperature>
       <iwxxm:qnh uom="hPa">1016.3</iwxxm:qnh>
       <iwxxm:surfaceWind>
         <iwxxm:AerodromeSurfaceWind variableWindDirection="false">
@@ -45,7 +45,7 @@
       <iwxxm:visibility>
         <iwxxm:AerodromeHorizontalVisibility>
           <iwxxm:prevailingVisibility uom="m">12875</iwxxm:prevailingVisibility>
-                  </iwxxm:AerodromeHorizontalVisibility>
+        </iwxxm:AerodromeHorizontalVisibility>
       </iwxxm:visibility>
       <iwxxm:presentWeather xlink:href="http://codes.wmo.int/306/4678/-SN"/>
       <iwxxm:cloud>
@@ -54,6 +54,12 @@
             <iwxxm:CloudLayer>
               <iwxxm:amount xlink:href="http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN"/>
               <iwxxm:base uom="[ft_i]">2000</iwxxm:base>
+            </iwxxm:CloudLayer>
+          </iwxxm:layer>
+          <iwxxm:layer>
+            <iwxxm:CloudLayer>
+              <iwxxm:amount xlink:href="http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/OVC"/>
+              <iwxxm:base uom="[ft_i]">4000</iwxxm:base>
             </iwxxm:CloudLayer>
           </iwxxm:layer>
         </iwxxm:AerodromeCloud>
