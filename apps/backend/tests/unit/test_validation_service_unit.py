@@ -58,12 +58,15 @@ def test_validate_airport_icao_invalid_format(monkeypatch):
         service.validate_airport_icao("METAR ABC 010000Z")
 
 
-def test_validate_airport_icao_unknown_code(monkeypatch):
+def test_validate_airport_icao_unknown_code_is_soft_fail(monkeypatch):
+    """Unknown ICAO is WARNING (non-blocking) so WMO fictional stations convert (UJ-036)."""
     service = _make_service(monkeypatch, {"KLAX"})
     monkeypatch.setattr(service, "_extract_icao_from_tac", lambda _tac: "KJFK")
 
-    with pytest.raises(val.ValidationError, match="Unknown ICAO code"):
-        service.validate_airport_icao("METAR KJFK 010000Z")
+    result = service.validate_airport_icao("METAR KJFK 010000Z")
+    assert result.passed is True
+    assert result.issues[0].code == "UNKNOWN_ICAO"
+    assert result.metadata == {"icao": "KJFK", "airport_known": False}
 
 
 def test_validate_airport_icao_wraps_unexpected_exception(monkeypatch):
