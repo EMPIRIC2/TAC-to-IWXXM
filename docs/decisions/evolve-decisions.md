@@ -10,7 +10,7 @@
 **Issues**: [#731](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/731) (AIRMET); deepen prior quality bars for vendor example parity  
 **Started**: 2026-07-29  
 **Branch**: `evolve/EV-020-airmet-quality`  
-**Status**: **in_progress** (Phase C — **07-build** @ T1.3; M0 + A1 done)
+**Status**: **in_progress** (Phase C — **07-build** @ T3.1; M0–M2 / A1–A4 done)
 
 ### Scope (locked 2026-07-29)
 
@@ -62,6 +62,14 @@ Report: `docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-a
 | E20-F6 | decision | Deploy/smoke? | **1** — redeploy; H1–H3 if API; H4–H5 required |
 | E20-F7 | decision | Mid-build block? | **1** — AskQuestion kill-switch |
 | E20-F8 | decision | Approve plan → 07? | **1** — yes; skip 05/06; 07 @ T0.1 |
+
+Plan: `docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md`.
+
+### 07-build M2 close (2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| D-S026-T2.3-A | decision | Close F24 A1–A3? | **Close** — T2.1–T2.2 green; residuals (vendor MWO YUDD vs TAC YUSO; STNR motion) documented; A4 closed in T2.4 |
 
 Plan: `docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md`.
 

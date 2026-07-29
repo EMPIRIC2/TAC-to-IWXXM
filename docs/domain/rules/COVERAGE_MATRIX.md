@@ -231,9 +231,11 @@ Hard themes from #731 + WMO `TAC-to-XML-Guidance.txt` + vendor `airmet-A6-1a-TS`
 |-------|------|------------------|----------|--------|
 | **A1** Header / sequence / validity / FIR | Registry | IR header | — | ✅ Closed (S026 T1.1–T1.2) — sequence/FIR registry + rules |
 | **A2** Phenomenon + intensity (ISOL TS, STNR, WKN, …) | Registry | Encode | SCH | ✅ Closed (S026 T1.3–T1.4) — OBS/STNR/WKN/TOP ABV + STNR+MOV / missing OBS·FCST |
-| **A3** Geometry + vertical (AirspaceVolume / posList / FL) | — | **M-golden vs vendor** | M-xsd/M-sch | Planned (gap today: nil geometry) |
-| **A4** Negatives + translation-failed adjacency | Negatives | Not happy-path | — | Planned |
+| **A3** Geometry + vertical (AirspaceVolume / posList / FL) | — | **M-golden (F23 encoder pattern)** | M-xsd/M-sch | ✅ Closed (S026 T2.1–T2.2) — `airmet-A6-1a-TS` AirspaceVolume/posList/TOP ABV; residuals below |
+| **A4** Negatives + translation-failed adjacency | Negatives | Not happy-path | — | ✅ Closed (S026 T2.4) — TC-F24-004 registry codes + translation-failed root guard |
 | **C1** Common rules (shared with SIGMET family) | ✅ where TAC | Deferred convert-only per F23 C1 pattern | — | Cite F23 |
+
+**A3 residuals (documented, not deferred themes):** vendor XML labels MWO as `YUDD` while TAC uses `YUSO` — encoder follows TAC; STNR encodes `#731` shared motion nils (vendor omits motion). Golden is encoder-shaped under `canonicalize_xml` (ADR-032 / F23 pattern), not byte-identical vendor UUIDs.
 
 ## METAR / SPECI / TAF — F25 WMO official example parity (S026 / EV-020)
 
