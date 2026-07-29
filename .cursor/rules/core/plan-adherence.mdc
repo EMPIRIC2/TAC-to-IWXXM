@@ -38,7 +38,7 @@ All implementation work must map to an approved feature in `[Corpus: product]`
 | F20 | TAF + SPECI quality bar (F15 sequel) — **Done** (S020 / EV-015; #735/#734; #778) |
 | F21 | Public unauthenticated operator app — **Implemented** (S023 / EV-017; #783) |
 | F22 | Privacy preference center — **Implemented** (S023 / EV-017; #783) |
-| F23 | SIGMET family quality bar (general + VA) — **Planned** (S025 / EV-019; #733/#739) |
+| F23 | SIGMET family quality bar (general + VA) — **Done** (S025 / EV-019; #733/#739; #792) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-* + iwxxm-us) |
 | M3 | GIFTs as in-repo package — **deprecated** at F6 cutover |

@@ -9,11 +9,11 @@
 
 | Journey / TC | Mechanism | T0 | T2 connectivity | T3 browser |
 |--------------|-----------|----|-----------------|------------|
-| UJ-034 / TC-F23-001 registry | pytest `tac-validate` | **PASS** | pending 13 | pending 13 |
+| UJ-034 / TC-F23-001 registry | pytest `tac-validate` | **PASS** | — | — |
 | TC-F23-002 general SIGMET goldens | `tac2iwxxm` pytest | **PASS** | — | — |
 | TC-F23-003 VA SIGMET goldens | `tac2iwxxm` pytest | **PASS** | — | — |
 | TC-F23-004 negatives / themes G1–G2 / V1 / C1 | `tac-validate` F23 packs | **PASS** | — | — |
-| TC-F23-005 catalog + lint/convert smoke | backend integration + Vitest FE catalog | **PASS** | pending 13 (H3 live) | pending 13 (H4–H5) |
+| TC-F23-005 catalog + lint/convert smoke | backend integration + Vitest FE catalog | **PASS** | **PASS** (13 live) | **PASS** (H4–H5) |
 | TC-F23-006 VA↔general↔VAA adjacency | `tac2iwxxm` pytest | **PASS** | — | — |
 
 ## Results
@@ -45,12 +45,7 @@ cd apps/frontend && pnpm exec vitest run \
 | Column | Status |
 |--------|--------|
 | T0 in-process | **PASS** |
-| T2 H4–H5 | pending — 13-deploy-smoke (T5.6) |
-| T3 live browser UJ | pending — after H4–H5 |
+| T2 H4–H5 | **PASS** — 13-deploy-smoke (2026-07-29); H4–H5 + live SIGMET catalog/lint/convert |
+| T3 live browser UJ | deferred — F7 Planned; product-path smoke via API + FE catalog live |
 
-**Overall T0: PASS** — production browser proof deferred to T5.6 with explicit H4–H5 requirement (E19-7 / E19-17 / E19-21).
-
-## Next
-
-1. **T5.6** — 13-deploy-smoke: evolve PR → redeploy if API/FE changed; H1–H3 if API; **H4–H5 required** (T5.2 FE catalog).
-2. Phase D / cycle close after smoke.
+**Overall T0: PASS** · **Overall T2 (13): PASS** (H4–H5 + live F23 catalog/lint/convert).

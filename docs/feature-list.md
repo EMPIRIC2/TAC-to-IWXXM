@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-29 (S025 / EV-019 — F23 01-requirements delta; UJ-034 / TC-F23)
+> **Last updated**: 2026-07-29 (S025 / EV-019 — F23 Done; PR #792; UJ-034 / TC-F23)
 
 ## Summary
 
@@ -30,7 +30,7 @@
 | F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778 |
 | F21 | Public unauthenticated operator app | Implemented | Product | S023 / EV-017; #783 |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783 |
-| F23 | SIGMET family quality bar (general + VA) | Planned | Product | S025 / EV-019; #733/#739 |
+| F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -644,9 +644,8 @@
 
 ### F23: SIGMET Family Quality Bar (General + VA) — S025 / EV-019
 
-- **Status**: **Planned** — S025 / EV-019 01-requirements delta locked 2026-07-29
-  (E19-1..E19-18; Lean+build; E19-17 amends E19-14 for FE catalog). Flips **Done** after
-  verify/deploy gate.
+- **Status**: **Done** — S025 / EV-019 closed 2026-07-29 (PR [#792](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/792)
+  merged `afffe86`; H1–H5 + live SIGMET catalog/lint/convert PASS).
 - **What it does**: Raises **General SIGMET** and **Volcanic-ash SIGMET** TAC lint, convert,
   and IWXXM-validate quality to the same bar F15/F20 set for aerodrome products. Reuses the
   **ADR-028** issue registry (new SIGMET / VA SIGMET codes as needed; no new registry

@@ -6,11 +6,20 @@
 ## Cycle EV-019 — SIGMET quality: general + VA (#733 / #739) (S025)
 
 **Session**: S025-sigmet-quality  
-**Features**: **F23** (Planned) + deepen **F6.d** / **F12**  
+**Features**: **F23** (Done) + deepen **F6.d** / **F12**  
 **Issues**: [#733](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/733), [#739](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/739)  
 **Started**: 2026-07-29  
+**Completed**: 2026-07-29  
 **Branch**: `evolve/EV-019-sigmet-quality`  
-**Status**: Phase 0 **locked**; **01** COMPLETE; **02-verify-plan PASS**; Phase A → 04 pending
+**PR**: [#792](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/792) **merged** (`afffe86`); API `dep-d9l11761egvs738ho3r0` + FE `dep-d9l1187avr4c739rfl10` live  
+**Status**: **completed** (D-S025-close)
+
+### Close (2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| D-S025-13-deploy-A | gate | Merge #792 + live smoke + close? | **A** — merge; H1–H5 + F23 catalog/lint/convert; close cycle |
+| D-S025-close | gate | Close cycle + session? | **A** — commit/push closeout docs to `main` |
 
 ### Scope (Batch 1 — locked 2026-07-29)
 

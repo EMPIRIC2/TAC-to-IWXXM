@@ -5,90 +5,109 @@ project:
   output_directory: docs/
 session_counter: 25
 evolve_cycle_counter: 19
-active_session:
-  id: S025-sigmet-quality
+active_session: null
+sessions:
+- id: S025-sigmet-quality
   type: feature
   intent: "SIGMET family quality bars (#733 general + #739 VA); F23 + deepen F6.d/F12; ADR-028"
-  status: active
+  status: completed
   branch: evolve/EV-019-sigmet-quality
   orchestrator: 16-evolve
   evolve_cycle_id: EV-019
   github_issue: "733,739"
   artifacts_dir: docs/sessions/S025-sigmet-quality/
-  current_stage: 13-deploy-smoke
+  current_stage:
   feature_ids:
-    - F23
-  feature_note: "F23 Planned; deepen F6.d/F12; ADR-028"
+  - F23
+  feature_note: "F23 Done; deepen F6.d/F12; ADR-028"
   started_at: "2026-07-29"
   preset: Lean+build
   routing_decision_id: D-S025-E19-batch2
   context_briefs:
-    - docs/context/sigmet-quality.md
-  tip_sha: 1a6dc9a
-  tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+  - docs/context/sigmet-quality.md
+  tip_sha: afffe86
+  tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
+  pr_number: 792
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/792
+  pr_status: merged
   do_not_auto_merge: true
-  note: "T5.5 PASS; T5.6 13-deploy-smoke in_progress"
+  note: "D-S025-close — F23 Done; H1–H5 + live SIGMET smoke PASS; PR #792"
+  completed_at: "2026-07-29"
+  close_decision_id: D-S025-close
+  close_note: "D-S025-close — F23 Done; H1–H5 + live SIGMET smoke PASS; PR #792 merged afffe86; #733/#739"
   routing_plan:
-    - stage: 00-context
-      required: true
-      mode: scoped
-      status: completed
-      started: "2026-07-29"
-      completed: "2026-07-29"
-      note: "Phase 0 locked Batch1+2"
-    - stage: 16-evolve
-      required: true
-      mode: orchestrator
-      status: in_progress
-      started: "2026-07-29"
-      note: "Phase C / 13-deploy-smoke in_progress"
-    - stage: 01-requirements
-      required: true
-      mode: delta
-      status: completed
-      started: "2026-07-29"
-      completed: "2026-07-29"
-      note: "COMPLETE — user confirmed Continue→02; E19-9..14; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md"
-    - stage: 02-verify-plan
-      required: true
-      mode: delta
-      status: completed
-      started: "2026-07-29"
-      completed: "2026-07-29"
-      note: "COMPLETE — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1; F21/F22 summary fix; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04"
-    - stage: 04-tech-plan
-      required: true
-      mode: delta
-      status: completed
-      started: "2026-07-29"
-      completed: "2026-07-29"
-      note: "COMPLETE — E19-15..22; plan approved D-S025-04-plan-approve-A; 04-exit PASS; handoff 07 @ T0.1"
-    - stage: 07-build
-      required: true
-      mode: full
-      status: in_progress
-      started: "2026-07-29"
-      note: "M5 T5.1–T5.5 done; T5.6 remaining"
-    - stage: 08-verify-build
-      required: true
-      mode: full
-      status: completed
-      started: "2026-07-29"
-      completed: "2026-07-29"
-      note: "T5.4 PASS; report verification-report.md"
-    - stage: 10-e2e
-      required: true
-      mode: full
-      status: completed
-      started: "2026-07-29"
-      completed: "2026-07-29"
-      note: "T0 PASS — e2e-report.md"
-    - stage: 13-deploy-smoke
-      required: true
-      mode: full
-      status: in_progress
-      started: "2026-07-29"
-sessions:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "Phase 0 locked Batch1+2"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "COMPLETE — Phase 4 close D-S025-close; EV-019 completed; PR #792 merged; #733/#739"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "COMPLETE — user confirmed Continue→02; E19-9..14; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "COMPLETE — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1; F21/F22 summary fix; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04"
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "COMPLETE — E19-15..22; plan approved D-S025-04-plan-approve-A; 04-exit PASS; handoff 07 @ T0.1"
+  - stage: 07-build
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "COMPLETE — M0–M5 / 29 tasks; tip afffe86; PR #792 merged; #733/#739"
+  - stage: 08-verify-build
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "T5.4 PASS; report verification-report.md"
+  - stage: 10-e2e
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "T0 PASS — UJ-034 / TC-F23-001..006; e2e-report.md"
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "COMPLETE — PASS; H1–H5 + live SIGMET smoke; PR #792 merged afffe86; report deploy-smoke.md"
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 11-verify-impl
+  - 12-verify-deploy
+  note_skipped: "Lean+build E19-7 — skip 03/05/06/09/11/12"
+
 - id: S024-dissemination-file-select
   type: feature
   intent: "Multi-file selection in dissemination portal for export preflight/send (#785)"
@@ -3540,40 +3559,43 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
+    status: completed
     started_at: '2026-07-29'
+    completed_at: '2026-07-29'
     previous_started_at: '2026-07-28T23:21:03Z'
     previous_completed_at: '2026-07-28T23:30:05Z'
     session_id: S025-sigmet-quality
     evolve_cycle_id: EV-019
-    tip_sha: 1a6dc9a
-    tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
-    note: 'S025/EV-019 07-build M5: T5.5 10-e2e PASS; active_task T5.6; progress 26/29; tip 1a6dc9a; #733/#739'
+    tip_sha: afffe86
+    tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
+    note: 'S025/EV-019 07-build COMPLETE — M0–M5 / 29 tasks; PR #792 merged afffe86; #733/#739'
     substeps:
       task_loop:
-        status: in_progress
+        status: completed
         current_task: T5.6
         phase: C
         milestone: M5
-        notes: S025/EV-019 M5 T5.5 PASS; next T5.6 13-deploy-smoke (26/29)
+        notes: S025/EV-019 M5 COMPLETE — 29/29; PR #792 merged afffe86
     delta_substages:
     - id: S025-sigmet-quality
       session_id: S025-sigmet-quality
       evolve_cycle_id: EV-019
       skill_id: 07-build
-      status: in_progress
+      status: completed
       started_at: '2026-07-29'
       started: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
       mode: full
-      note: 'M5 T5.1–T5.5 done; T5.6 13-deploy-smoke remaining; progress 26/29; tip 1a6dc9a; #733/#739'
+      note: 'COMPLETE — M0–M5 / 29 tasks; PR #792 merged afffe86; #733/#739'
       active_milestone: M5
       active_task: T5.6
-      active_task_status: in_progress
+      active_task_status: completed
       decision_id: D-S025-T2.3-A
       branch: evolve/EV-019-sigmet-quality
-      tip_sha: 1a6dc9a
-      tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
-      progress: 26/29; next T5.6 13-deploy-smoke
+      tip_sha: afffe86
+      tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
+      progress: 29/29
       feature_ids:
       - F23
       deepen:
@@ -3730,6 +3752,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-29 S025/EV-019 07-build COMPLETE — M0–M5 / 29 tasks; PR #792 merged afffe86; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M5 T5.5 PASS — 10-e2e T0 PASS UJ-034 / TC-F23-001..006; next T5.6 13-deploy-smoke; progress 26/29; tip 1a6dc9a; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M5 T5.4 PASS — 08-verify-build PASS; next T5.5 10-e2e UJ-034 / TC-F23; progress 25/29; tip 846d50f; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M5 T5.3 DONE — API smoke SIGMET/VA lint+convert + catalog GET (TC-F23-005); next T5.4 08-verify-build; progress 24/29; tip 6335842; #733/#739'
@@ -4843,33 +4866,45 @@ stages:
     - S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
   13-deploy-smoke:
-    status: in_progress
+    status: completed
     started_at: '2026-07-29'
+    completed_at: '2026-07-29'
     started: '2026-07-29'
     session_id: S025-sigmet-quality
     evolve_cycle_id: EV-019
-    note: 'S025/EV-019 13-deploy-smoke in_progress — T5.6; tip 1a6dc9a; handoff from 10-e2e T5.5 PASS; #733/#739'
-    tip_sha: 1a6dc9a
-    tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+    note: 'S025/EV-019 13-deploy-smoke COMPLETE — PASS; H1–H5 + live SIGMET smoke; PR #792 merged afffe86; #733/#739'
+    tip_sha: afffe86
+    tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
     prior_tip_10: 1a6dc9a
+    overall: pass
+    decision_id: D-S025-13-deploy-A
+    report: docs/sessions/S025-sigmet-quality/reports/deploy-smoke.md
     delta_substages:
     - id: S025-sigmet-quality
       session_id: S025-sigmet-quality
       evolve_cycle_id: EV-019
       skill_id: 13-deploy-smoke
-      status: in_progress
+      status: completed
       mode: full
       started: '2026-07-29'
       started_at: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
       branch: evolve/EV-019-sigmet-quality
-      tip_sha: 1a6dc9a
-      tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+      tip_sha: afffe86
+      tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
       prior_tip_10: 1a6dc9a
-      note: 'T5.6 13-deploy-smoke in_progress; handoff from 10-e2e T5.5 PASS; progress 26/29; #733/#739'
+      note: 'COMPLETE — PASS; H1–H5 + live SIGMET smoke; PR #792 merged afffe86; report deploy-smoke.md; #733/#739'
       active_milestone: M5
       active_task: T5.6
-      active_task_status: in_progress
-      progress: 26/29
+      active_task_status: completed
+      progress: 29/29
+      overall: pass
+      decision_id: D-S025-13-deploy-A
+      pr_number: 792
+      api_deploy: dep-d9l11761egvs738ho3r0
+      fe_deploy: dep-d9l1187avr4c739rfl10
+      report: docs/sessions/S025-sigmet-quality/reports/deploy-smoke.md
       feature_ids:
       - F23
       deepen:
@@ -5054,6 +5089,7 @@ stages:
       report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
       hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+    - '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE (D-S025-13-deploy-A) — PASS; H1–H5 + live SIGMET smoke; PR #792 merged afffe86; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; #733/#739'
     - '2026-07-29 S025/EV-019 13-deploy-smoke STARTED — T5.6; handoff from 10-e2e T5.5 PASS; tip 1a6dc9a; progress 26/29; #733/#739'
     - 2026-07-27 S022 13-deploy-smoke COMPLETE — H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending
     - 2026-07-27 S022 13-deploy-smoke STARTED (in_progress) — after 15-service-health completed; commit 6b9d2b9; empiric2 main-latest live; goldens_ui_live; PyPI/secrets remaining
@@ -5112,17 +5148,20 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
     session_id: S025-sigmet-quality
     evolve_cycle_id: EV-019
     started_at: '2026-07-29'
-    completed_at:
-    current_stage: 13-deploy-smoke
-    tip_sha: 1a6dc9a
-    tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
-    note: 'S025/EV-019 16-evolve in_progress — T5.5 10-e2e PASS; T5.6 13-deploy-smoke in_progress; progress 26/29; tip 1a6dc9a; #733/#739'
+    completed_at: '2026-07-29'
+    current_stage:
+    tip_sha: afffe86
+    tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
+    note: 'S025/EV-019 16-evolve COMPLETE — Phase 4 close D-S025-close; EV-019 completed; PR #792 merged afffe86; F23 Done; #733/#739'
     notes:
+    - '2026-07-29 S025/EV-019 Phase 4 close D-S025-close — cycle+session completed; PR #792 merged afffe86; H1–H5 + live SIGMET smoke PASS; F23 Done; #733/#739'
+    - '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE (D-S025-13-deploy-A) — PASS; H1–H5 + live SIGMET smoke; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; report deploy-smoke.md; #733/#739'
+    - '2026-07-29 S025/EV-019 07-build COMPLETE — M0–M5 / 29 tasks; PR #792 merged afffe86; #733/#739'
     - '2026-07-29 S025/EV-019 10-e2e COMPLETE — T5.5 T0 PASS UJ-034 / TC-F23-001..006; report e2e-report.md; handoff 13-deploy-smoke T5.6; progress 26/29; tip 1a6dc9a; #733/#739'
     - '2026-07-29 S025/EV-019 08-verify-build COMPLETE PASS — T5.4 @ 846d50f; handoff 10-e2e T5.5; progress 25/29; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M5 T5.1–T5.2 DONE — FE catalog SIGMET/VA; next T5.3 API smoke; progress 23/29; tip e300168; #733/#739'
@@ -5236,16 +5275,16 @@ deployment:
     t0_journeys_passed: 4
   staging:
     status: deployed
-    last_verified: '2026-07-28'
-    commit_deployed: 6b9d2b9
-    commit_head: 6b9d2b9
+    last_verified: '2026-07-29'
+    commit_deployed: afffe86
+    commit_head: afffe86
     drift: false
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
     deploy_ids:
-      api: dep-d9kii12jobas73fl4bi0
-      frontend: dep-d9khdedbedkc73aodib0
+      api: dep-d9l11761egvs738ho3r0
+      frontend: dep-d9l1187avr4c739rfl10
     ci_deploy_run: '30227888075'
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
@@ -5272,6 +5311,7 @@ deployment:
       h0ci: note_deploy_hook_may_still_need_verify
       uj032: pass
     notes:
+    - '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE — PR #792 merged afffe86; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; H1–H5 + live SIGMET smoke PASS; F23 Done; #733/#739'
     - '2026-07-28 S023/EV-017 13 COMPLETE — API SUPABASE_* Auth leftovers removed; redeploy dep-d9kii12jobas73fl4bi0; health/convert/H4–H5 re-PASS; tip 7837cd1'
     - '2026-07-28 S023/EV-017 13-deploy-smoke validate-existing PASS — H0c–H5 PASS; Playwright F21/F22 5/5; tip 7837cd1; deploys dep-d9khddad0e5s73dmm4r0 / dep-d9khdedbedkc73aodib0; pending user approve + optional API SUPABASE_* cleanup'
     - 2026-07-27 S022 13-deploy-smoke PASS — UJ-032 live verified; PyPI Trusted Publisher still pending
@@ -5450,6 +5490,53 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S025-close
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  status: confirmed
+  topic: Phase 4 cycle/session close
+  summary: 'Close EV-019/S025; F23 Done; PR #792 afffe86 merged; H1–H5 + live SIGMET smoke PASS'
+  decision: 'Close S025/EV-019 (Phase 4). D-S025-close — F23 Done; H1–H5 + live SIGMET smoke PASS; PR #792 merged afffe86; archive session; active_session=null; #733/#739.'
+  related_prs:
+  - 792
+  related_issues:
+  - 733
+  - 739
+  related_pr: 792
+  tip_sha: afffe86
+  tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
+  related_decisions:
+  - D-S025-13-deploy-A
+- id: D-S025-13-deploy-A
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  status: confirmed
+  topic: Deploy approval + live smoke
+  summary: 'Merge PR #792 now + live H1–H5 + SIGMET smoke; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10'
+  decision: 'User approved 2026-07-29 (D-S025-13-deploy-A / option A). Merge PR #792; redeploy API+FE; live H1–H5 + F23 SIGMET/VA catalog lint+convert smoke PASS; tip afffe86; report deploy-smoke.md; handoff 16-evolve close.'
+  related_prs:
+  - 792
+  related_issues:
+  - 733
+  - 739
+  related_pr: 792
+  tip_sha: afffe86
+  tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
+  api_deploy: dep-d9l11761egvs738ho3r0
+  fe_deploy: dep-d9l1187avr4c739rfl10
+  artifact: docs/sessions/S025-sigmet-quality/reports/deploy-smoke.md
 - id: D-S025-T2.3-A
   date: "2026-07-29"
   timestamp: "2026-07-29"
@@ -12562,7 +12649,7 @@ retrospective_cycles:
     status: completed
 evolve_cycles:
 - id: EV-019
-  status: in_progress
+  status: completed
   cycle_type: feature
   session_id: S025-sigmet-quality
   feature_ids: [F23]
@@ -12570,13 +12657,83 @@ evolve_cycles:
   github_issues: [733, 739]
   branch: evolve/EV-019-sigmet-quality
   started_at: "2026-07-29"
-  current_stage: 13-deploy-smoke
+  completed: "2026-07-29"
+  current_stage:
   preset: Lean+build
-  tip_sha: 1a6dc9a
-  tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+  tip_sha: afffe86
+  tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
+  pr_number: 792
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/792
+  pr_status: merged
   do_not_auto_merge: true
-  note: "T5.5 PASS; T5.6 13-deploy-smoke in_progress; progress 26/29; tip 1a6dc9a"
-  decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2, D-S025-01-complete, D-S025-02-pass, D-S025-EV019-s1m1-1, D-S025-EV019-s6m1-1, D-S025-EV019-s9m1-1, D-S025-02-phase-a-A, D-S025-04-plan-approve-A, E19-19, E19-20, E19-21, E19-22, D-S025-16-continue, D-S025-T2.3-A]
+  note: "D-S025-close — F23 Done; H1–H5 + live SIGMET smoke PASS; PR #792"
+  decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2, D-S025-01-complete, D-S025-02-pass, D-S025-EV019-s1m1-1, D-S025-EV019-s6m1-1, D-S025-EV019-s9m1-1, D-S025-02-phase-a-A, D-S025-04-plan-approve-A, E19-19, E19-20, E19-21, E19-22, D-S025-16-continue, D-S025-T2.3-A, D-S025-13-deploy-A, D-S025-close]
+  notes:
+  - '2026-07-29 S025/EV-019 Phase 4 close D-S025-close — cycle+session completed; PR #792 merged afffe86; H1–H5 + live SIGMET smoke PASS; F23 Done; #733/#739'
+  - '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE (D-S025-13-deploy-A) — PASS; H1–H5 + live SIGMET smoke; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; report deploy-smoke.md; #733/#739'
+  stages:
+    07-build:
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      mode: full
+      progress: 29/29
+      tip_sha: afffe86
+      note: "COMPLETE — M0–M5 / 29 tasks; PR #792 merged afffe86; #733/#739"
+      artifacts_updated:
+      - docs/sessions/S025-sigmet-quality/reports/execution-plan.md
+    08-verify-build:
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      mode: full
+      overall: pass
+      tip_sha: 846d50f
+      note: "COMPLETE — T5.4 PASS; report verification-report.md; #733/#739"
+      artifacts_updated:
+      - docs/sessions/S025-sigmet-quality/reports/verification-report.md
+    10-e2e:
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      mode: full
+      overall: pass
+      tip_sha: 1a6dc9a
+      report: docs/sessions/S025-sigmet-quality/reports/e2e-report.md
+      note: "COMPLETE — T0 PASS UJ-034 / TC-F23-001..006; #733/#739"
+      artifacts_updated:
+      - docs/sessions/S025-sigmet-quality/reports/e2e-report.md
+    13-deploy-smoke:
+      status: completed
+      mode: full
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      decision_id: D-S025-13-deploy-A
+      pr_number: 792
+      tip_sha: afffe86
+      api_deploy: dep-d9l11761egvs738ho3r0
+      fe_deploy: dep-d9l1187avr4c739rfl10
+      overall: pass
+      note: "COMPLETE — PASS; H1–H5 + live SIGMET smoke; report deploy-smoke.md"
+      artifacts_updated:
+      - docs/sessions/S025-sigmet-quality/reports/deploy-smoke.md
+      - docs/sessions/S025-sigmet-quality/reports/evolve-summary.md
+    16-evolve:
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      note: "COMPLETE — Phase 4 close D-S025-close; EV-019 completed"
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    deploy: passed
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_d: passed
+    deploy: passed
 - id: EV-018
   session_id: S024-dissemination-file-select
   cycle_type: feature
