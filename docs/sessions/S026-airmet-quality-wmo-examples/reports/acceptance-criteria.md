@@ -41,7 +41,10 @@
 
 | Fn | Reviewer | Date | Result |
 |----|----------|------|--------|
-| F24 | | | pending |
-| F25 | | | pending |
-| F9 deepen | | | pending |
-| F7.g deepen | | | pending |
+| F24 | user | 2026-07-29 | **APPROVED** — D-S026-E20-11-ac-all |
+| F25 | user | 2026-07-29 | **APPROVED** — D-S026-E20-11-ac-all |
+| F9 deepen | user | 2026-07-29 | **APPROVED** — D-S026-E20-11-ac-all |
+| F7.g deepen | user | 2026-07-29 | **APPROVED** — D-S026-E20-11-ac-all |
+
+UI preview: **declined** (D-S026-E20-11-preview-no) — approve from reports/tests only.  
+H4–H5 for F24.5 / F25.4: deferred to **T6.5 / 13-deploy-smoke**.
