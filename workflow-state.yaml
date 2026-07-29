@@ -24,8 +24,8 @@ active_session:
   routing_decision_id: D-S025-E19-batch2
   context_briefs:
     - docs/context/sigmet-quality.md
-  tip_sha: e041786
-  tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
+  tip_sha: b67558f
+  tip_sha_full: b67558f2b903d9b44b013c64943d6647d8ccac07
   do_not_auto_merge: true
   note: "07-build M3 complete (T3.1–T3.4); next T4.1 VA goldens V3"
   routing_plan:
@@ -3539,8 +3539,8 @@ stages:
     previous_completed_at: '2026-07-28T23:30:05Z'
     session_id: S025-sigmet-quality
     evolve_cycle_id: EV-019
-    tip_sha: e041786
-    tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
+    tip_sha: b67558f
+    tip_sha_full: b67558f2b903d9b44b013c64943d6647d8ccac07
     note: 'S025/EV-019 07-build M3 complete — T3.1–T3.4 V1 lint + V2 adjacency + content-selected VolcanicAshSIGMET; next T4.1 VA goldens; #733/#739'
     substeps:
       task_loop:
@@ -3564,8 +3564,8 @@ stages:
       active_task_status: pending
       decision_id: D-S025-T2.3-A
       branch: evolve/EV-019-sigmet-quality
-      tip_sha: e041786
-      tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
+      tip_sha: b67558f
+      tip_sha_full: b67558f2b903d9b44b013c64943d6647d8ccac07
       progress: 15/29; M3 done; next T4.1
       feature_ids:
       - F23
@@ -5035,9 +5035,9 @@ stages:
     started_at: '2026-07-29'
     completed_at:
     current_stage: 07-build
-    tip_sha: e041786
-    tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
-    note: 'S025/EV-019 16-evolve in_progress — Phase C 07-build M3 complete (T3.1–T3.4); next T4.1 VA goldens; tip pending T3.3-T3.4 commit; #733/#739'
+    tip_sha: b67558f
+    tip_sha_full: b67558f2b903d9b44b013c64943d6647d8ccac07
+    note: 'S025/EV-019 16-evolve in_progress — Phase C 07-build M3 complete (T3.1–T3.4); next T4.1 VA goldens; tip b67558f; #733/#739'
     notes:
     - '2026-07-29 S025/EV-019 07-build M3 COMPLETE — T3.3–T3.4 adjacency + VolcanicAshSIGMET root; next T4.1; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M3 T3.1–T3.2 DONE @ e041786 — V1 VA SIGMET fixtures/lint (#739); next T3.3 adjacency (encode root → T3.4); #733/#739'
@@ -12486,7 +12486,7 @@ evolve_cycles:
   tip_sha: e041786
   tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
   do_not_auto_merge: true
-  note: "07-build M3: T3.1–T3.2 V1 lint done; next T3.3 adjacency (encode root → T3.4)"
+  note: "07-build M3 complete (T3.1–T3.4); next T4.1 VA goldens V3"
   decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2, D-S025-01-complete, D-S025-02-pass, D-S025-EV019-s1m1-1, D-S025-EV019-s6m1-1, D-S025-EV019-s9m1-1, D-S025-02-phase-a-A, D-S025-04-plan-approve-A, E19-19, E19-20, E19-21, E19-22, D-S025-16-continue, D-S025-T2.3-A]
 - id: EV-018
   session_id: S024-dissemination-file-select
@@ -16656,6 +16656,7 @@ git_history:
   tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
   note: 'S025/EV-019 07-build M3: T3.1–T3.2 V1 lint done; next T3.3 adjacency (encode root → T3.4); tip e041786; #733/#739'
   notes:
+  - '2026-07-29 S025/EV-019 tip synced — b67558f (b67558f2b903d9b44b013c64943d6647d8ccac07); "[T3.3-T3.4] feat: F23 V2 SIGMET/VA/VAA adjacency + VolcanicAshSIGMET root (#739)"; stage 07-build; M4 next T4.1 VA goldens'
   - '2026-07-29 S025/EV-019 tip synced — e041786 (e04178645f1e81561e6faf023bcd7d7ff83fbaed); "[T3.1-T3.2] feat: F23 theme V1 VA SIGMET fixtures and lint rules (#739)"; stage 07-build; M3 next T3.3 adjacency (encode root → T3.4)'
   - '2026-07-29 S025/EV-019 tip synced — e4ac4bc (e4ac4bc9a11a9bf0debd89a2d1ba9d0167834f11); "[T2.3] docs: close F23 themes G1–G3 (D-S025-T2.3-A)"; stage 07-build; M3 next T3.3; T3.1–T3.2 V1 done (no commit yet)'
   - '2026-07-29 S025/EV-019 open — branch evolve/EV-019-sigmet-quality recorded active (base main); Batch1 E19-1..4 all A; Lean+build; Batch 2 pending; tip 7c750a2'
@@ -17580,6 +17581,15 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: b67558f
+    sha_full: b67558f2b903d9b44b013c64943d6647d8ccac07
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T3.3-T3.4] feat: F23 V2 SIGMET/VA/VAA adjacency + VolcanicAshSIGMET root (#739)"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T13:29:21Z"
+    files_changed: 5
   - sha: e041786
     sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
     branch: evolve/EV-019-sigmet-quality

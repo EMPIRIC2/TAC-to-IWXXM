@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M4 — VA goldens + C1 / matrix close (F23 themes V3 / C1) |
-| **Active task** | T4.1 (pending) |
-| **Tasks** | 15 / 29 completed |
+| **Active task** | T4.2 (pending) |
+| **Tasks** | 16 / 29 completed |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -91,7 +91,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Test | Expand VA SIGMET goldens (`sigmet-VA-EGGX`, …); root `iwxxm:VolcanicAshSIGMET`; M-xsd/M-sch | TC-F23-003; V3 | T3.4 | pending |
+| T4.1 | Test | Expand VA SIGMET goldens (`sigmet-VA-EGGX`, …); root `iwxxm:VolcanicAshSIGMET`; M-xsd/M-sch | TC-F23-003; V3 | T3.4 | completed |
 | T4.2 | Code | Convert fidelity for VA goldens | F6.d; #739 | T4.1 | pending |
 | T4.3 | Test | Common-rule fixtures (reportStatus/nilReasons/CRS/one-report/`translationFailedTAC`) where lint applies | matrix C1 | T4.2 | pending |
 | T4.4 | Code | Encode/defer C1 with rationale (F20 C1 pattern) | F23; guidance | T4.3 | pending |

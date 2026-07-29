@@ -186,6 +186,22 @@
       "tac": "sigmet_stnr.tac",
       "golden": "sigmet_stnr.golden.xml",
       "note": "G1 STNR seed for G3 pack expansion beyond product_matrix"
+    },
+    {
+      "id": "sigmet_va_eggx",
+      "product": "SIGMET",
+      "theme": "V3",
+      "tac": "sigmet_va_eggx.tac",
+      "golden": "sigmet_va_eggx.golden.xml",
+      "seed": "sigmet-VA-EGGX"
+    },
+    {
+      "id": "sigmet_va_no_va_exp",
+      "product": "SIGMET",
+      "theme": "V3",
+      "tac": "sigmet_va_no_va_exp.tac",
+      "golden": "sigmet_va_no_va_exp.golden.xml",
+      "note": "V1 NO VA EXP seed expanded into V3 golden pack"
     }
   ]
 }
