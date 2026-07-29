@@ -244,7 +244,7 @@ Paywalled Annex 3 / FMH: cite mining notes only — do not copy prose into wheel
 
 | Theme | Convert / golden (defaults) | UI catalog | Status |
 |-------|------------------------------|------------|--------|
-| **W1** `metar-A3-1` | `canonicalize_xml` == vendor | Include when green | Planned (structurally far) |
-| **W2** `speci-A3-2` | same | Include when green | Planned |
-| **W3** `taf-A5-1` + `taf-A5-2` | same | Include when green | Planned (E20-E1) |
+| **W1** `metar-A3-1` | `canonicalize_xml` == vendor | Include when green | **Closed** (S026 T3.1–T3.2) |
+| **W2** `speci-A3-2` | same | Include when green | **Closed** (S026 T3.1–T3.2) |
+| **W3** `taf-A5-1` + `taf-A5-2` | same | Include when green | **Closed** (S026 T4.1–T4.3; E20-E1) |
 | **W4** Examples gate | — | Only WMO-passers for in-scope products | Planned |

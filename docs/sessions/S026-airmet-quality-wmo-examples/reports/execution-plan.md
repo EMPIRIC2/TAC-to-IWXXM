@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M3 — F25 METAR / SPECI |
-| **Active task** | T3.1 (next) |
-| **Tasks** | 11 / ~28 completed (M0–M2) |
+| **Active milestone** | M5 — F9 glossary + F7.g / W4 catalog |
+| **Active task** | T5.1 (next) |
+| **Tasks** | 18 / ~28 completed (M0–M4) |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -81,18 +81,18 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Test | Golden manifests `metar-A3-1`, `speci-A3-2`; canonicalize vs vendor | TC-F25-001; W1–W2 | T2.4 | pending |
-| T3.2 | Code | Convert fidelity METAR/SPECI toward vendor shapes | F6; F25 | T3.1 | pending |
-| T3.3 | Test | XSD+SCH on those goldens | TC-F25-002 | T3.2 | pending |
+| T3.1 | Test | Golden manifests `metar-A3-1`, `speci-A3-2`; canonicalize vs vendor | TC-F25-001; W1–W2 | T2.4 | **completed** |
+| T3.2 | Code | Convert fidelity METAR/SPECI toward vendor shapes | F6; F25 | T3.1 | **completed** |
+| T3.3 | Test | XSD+SCH on those goldens | TC-F25-002 | T3.2 | **completed** |
 
 ### M4 — F25 TAF (theme W3)
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Test | Golden `taf-A5-1` + `taf-A5-2` (AMD/CNL peer) | TC-F25-001; E20-E1; S02.M1 | T3.3 | pending |
-| T4.2 | Code | Convert fidelity TAF (incl. cancel/AMD) | F6; F25 | T4.1 | pending |
-| T4.3 | Test | XSD+SCH on TAF goldens | TC-F25-002 | T4.2 | pending |
-| T4.4 | Docs | Mark W1–W3 closed or AskQuestion-deferred | E20-F7 | T4.3 | pending |
+| T4.1 | Test | Golden `taf-A5-1` + `taf-A5-2` (AMD/CNL peer) | TC-F25-001; E20-E1; S02.M1 | T3.3 | **completed** |
+| T4.2 | Code | Convert fidelity TAF (incl. cancel/AMD) | F6; F25 | T4.1 | **completed** |
+| T4.3 | Test | XSD+SCH on TAF goldens | TC-F25-002 | T4.2 | **completed** |
+| T4.4 | Docs | Mark W1–W3 closed or AskQuestion-deferred | E20-F7 | T4.3 | **completed** |
 
 ### M5 — F9 glossary + F7.g / W4 catalog
 
