@@ -2026,16 +2026,16 @@ describe('FileConverter Component', () => {
     it('loads a TAC example into the editor and sets product (C2)', async () => {
       render(<FileConverter {...defaultProps} />);
 
-      await selectGoldenExample(/METAR basic \(annex3\)/i);
+      await selectGoldenExample(/METAR WMO A3-1 \(annex3\)/i);
 
       const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
-      expect(editor.value).toContain('METAR KJFK');
+      expect(editor.value).toContain('METAR YUDO');
       expect(screen.getByTestId('product-type-select')).toHaveValue('METAR');
       expect(screen.getByTestId('demo-example-banner')).toHaveTextContent(
-        /Demo \/ non-operational example: METAR basic/i,
+        /Demo \/ non-operational example: METAR WMO A3-1 \(annex3\)/i,
       );
       expect(mockToast.info).toHaveBeenCalledWith(
-        expect.stringContaining('Loaded METAR basic'),
+        expect.stringContaining('Loaded METAR WMO A3-1 (annex3)'),
       );
     });
 
@@ -2078,7 +2078,7 @@ describe('FileConverter Component', () => {
         ).toBeInTheDocument();
       });
 
-      await selectGoldenExample(/METAR basic \(annex3\)/i);
+      await selectGoldenExample(/METAR WMO A3-1 \(annex3\)/i);
 
       expect(
         screen.queryByRole('region', { name: /conversion results/i }),
@@ -2104,7 +2104,7 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
 
-      await selectGoldenExample(/METAR basic \(annex3\)/i);
+      await selectGoldenExample(/METAR WMO A3-1 \(annex3\)/i);
       expect(screen.getByTestId('demo-example-banner')).toBeInTheDocument();
 
       await user.click(
