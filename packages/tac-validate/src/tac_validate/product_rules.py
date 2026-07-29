@@ -90,6 +90,13 @@ _SIGMET_STNR = re.compile(r"\bSTNR\b")
 _SIGMET_MOV = re.compile(r"\bMOV\b")
 _SIGMET_CNL = re.compile(r"\bCNL\b")
 _SIGMET_COR = re.compile(r"\bCOR\b")
+_SIGMET_SEQ = re.compile(r"\bSIGMET\s+(\d{1,3})\b")
+_SIGMET_NO_SEQ = re.compile(r"\bSIGMET\s+VALID\b")
+_SIGMET_VALID_PAIR = re.compile(r"\bVALID\s+(\d{6})/(\d{6})\b")
+_SIGMET_FIR_CTA = re.compile(r"\b(?:FIR(?:/UIR)?|CTA|UIR)\b")
+_SIGMET_OBS_FCST = re.compile(r"\b(?:OBS|FCST)\b")
+_SIGMET_INTENSITY = re.compile(r"\b(?:INTSF|WKN|NC)\b")
+_WS_MAX_VALIDITY_HOURS = 4.0
 
 # Phenomenon family markers (template+gate — not exhaustive Annex vocab).
 _SIGMET_FAMILIES: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -1331,6 +1338,122 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
     return issues
 
 
+def _sigmet_validity_hours(start: str, end: str) -> float | None:
+    """Return VALID period length in hours (coarse midnight/month wrap)."""
+    if len(start) != 6 or len(end) != 6 or not start.isdigit() or not end.isdigit():
+        return None
+    sd, sh, sm = int(start[:2]), int(start[2:4]), int(start[4:6])
+    ed, eh, em = int(end[:2]), int(end[2:4]), int(end[4:6])
+    if not (1 <= sd <= 31 and 1 <= ed <= 31 and sh < 24 and eh < 24 and sm < 60 and em < 60):
+        return None
+    start_m = sd * 24 * 60 + sh * 60 + sm
+    end_m = ed * 24 * 60 + eh * 60 + em
+    if end_m < start_m:
+        # Day/month wrap (e.g. 312200/010200) — add one 31-day month bucket.
+        end_m += 31 * 24 * 60
+    return (end_m - start_m) / 60.0
+
+
+def _check_sigmet_g2(*, start: int, end: int, upper: str) -> list[Issue]:
+    """F23 theme G2 — sequence / validity duration / FIR / OBS·FCST / intensity."""
+    issues: list[Issue] = []
+    core = upper[:-1] if upper.endswith("=") else upper
+
+    seq = _SIGMET_SEQ.search(core)
+    if seq is not None:
+        _emit_token_info(
+            issues,
+            code="SIGMET_SEQUENCE",
+            message="SIGMET sequence number present — research G2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token=seq.group(1),
+        )
+    elif _SIGMET_NO_SEQ.search(core):
+        _emit_token_info(
+            issues,
+            code="MISSING_SEQUENCE",
+            message="SIGMET missing sequence number after SIGMET — research G2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="SIGMET",
+        )
+
+    valid = _SIGMET_VALID_PAIR.search(core)
+    if valid is not None:
+        hours = _sigmet_validity_hours(valid.group(1), valid.group(2))
+        if hours is not None and hours > _WS_MAX_VALIDITY_HOURS:
+            _emit_token_info(
+                issues,
+                code="INVALID_VALIDITY_DURATION",
+                message="SIGMET VALID period exceeds 4 hours (WS) — research G2",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="VALID",
+            )
+
+    fir = _SIGMET_FIR_CTA.search(core)
+    if fir is not None:
+        _emit_token_info(
+            issues,
+            code="FIR_OR_CTA",
+            message="SIGMET FIR/CTA/UIR airspace identity — research G2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token=fir.group(0).split("/")[0],
+        )
+    else:
+        _emit_token_info(
+            issues,
+            code="MISSING_FIR_OR_CTA",
+            message="SIGMET missing FIR/CTA/UIR airspace identity — research G2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="SIGMET",
+        )
+
+    obs = _SIGMET_OBS_FCST.search(core)
+    if obs is not None:
+        _emit_token_info(
+            issues,
+            code="OBS_OR_FCST",
+            message="SIGMET OBS or FCST analysis — research G2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token=obs.group(0),
+        )
+    else:
+        _emit_token_info(
+            issues,
+            code="MISSING_OBS_OR_FCST",
+            message="SIGMET missing OBS or FCST — research G2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="SIGMET",
+        )
+
+    intensity = _SIGMET_INTENSITY.search(core)
+    if intensity is not None:
+        _emit_token_info(
+            issues,
+            code="INTENSITY_CHANGE",
+            message="SIGMET intensity change INTSF/WKN/NC — research G2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token=intensity.group(0),
+        )
+
+    return issues
+
+
 def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
     start, end, body = _body_span(tac)
     upper = body.upper()
@@ -1349,9 +1472,10 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
 
     if product == "SIGMET":
         issues.extend(_check_sigmet_g1(start=start, end=end, upper=upper))
-        # CNL reports intentionally omit phenomenon — skip multi-family gate.
+        # CNL reports intentionally omit phenomenon — skip multi-family + G2 body gates.
         if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
             return issues
+        issues.extend(_check_sigmet_g2(start=start, end=end, upper=upper))
 
     families = _SIGMET_FAMILIES if product == "SIGMET" else _AIRMET_FAMILIES
     hit = _count_families(upper, families)

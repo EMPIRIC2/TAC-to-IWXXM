@@ -27,7 +27,7 @@ active_session:
   tip_sha: 0ac44d7
   tip_sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
   do_not_auto_merge: true
-  note: "07-build M1 G1 done (5/29); next T1.3 G2 fixtures"
+  note: "07-build M1 complete (7/29); next T2.1 G3 goldens"
   routing_plan:
     - stage: 00-context
       required: true

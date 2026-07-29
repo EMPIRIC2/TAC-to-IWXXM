@@ -69,6 +69,8 @@ Diagnostics assertions require product-rule codes/spans from
 | `c1_errors`          | `false` | F20 C1 NIL-with-body (INVALID_NIL)                          |
 | `g1_modifier_info`   | `true`  | F23 G1 SIGMET CNL/STNR/point/alt/polygon/TOP ABV info       |
 | `g1_errors`          | `false` | F23 G1 bad CNL / COR / STNR+MOV                             |
+| `g2_modifier_info`   | `true`  | F23 G2 SIGMET sequence/FIR/OBS·FCST/intensity info          |
+| `g2_errors`          | `false` | F23 G2 missing sequence/FIR/OBS·FCST / long validity        |
 
 ## Tooling
 

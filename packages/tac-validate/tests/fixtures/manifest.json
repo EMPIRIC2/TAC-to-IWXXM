@@ -244,6 +244,38 @@
       "ok": true
     },
     {
+      "id": "accept_sigmet_g2_sequence",
+      "product": "SIGMET",
+      "theme": "G2",
+      "cite": "EUR Doc 014 first line sequence; research G2",
+      "tac": "accept/sigmet_g2_sequence.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_g2_fir",
+      "product": "SIGMET",
+      "theme": "G2",
+      "cite": "A6 FIR/CTA identity; research G2",
+      "tac": "accept/sigmet_g2_fir.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_g2_obs",
+      "product": "SIGMET",
+      "theme": "G2",
+      "cite": "OBS/FCST analysis; research G2",
+      "tac": "accept/sigmet_g2_obs.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_g2_intensity",
+      "product": "SIGMET",
+      "theme": "G2",
+      "cite": "INTSF/WKN/NC intensity; research G2",
+      "tac": "accept/sigmet_g2_intensity.tac",
+      "ok": true
+    },
+    {
       "id": "accept_airmet_basic",
       "product": "AIRMET",
       "tac": "accept/airmet_basic.tac",
@@ -856,6 +888,50 @@
       "tac": "negative/sigmet/stnr_with_mov.tac",
       "ok": false,
       "expected_codes": ["INVALID_STNR_MOVEMENT"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_missing_sequence",
+      "product": "SIGMET",
+      "theme": "G2",
+      "depth": "full_checklist",
+      "cite": "EUR Doc 014 sequence required; research G2",
+      "tac": "negative/sigmet/missing_sequence.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_SEQUENCE"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_validity_too_long",
+      "product": "SIGMET",
+      "theme": "G2",
+      "depth": "full_checklist",
+      "cite": "WS validity <= 4h; research G2",
+      "tac": "negative/sigmet/validity_too_long.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_VALIDITY_DURATION"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_missing_fir",
+      "product": "SIGMET",
+      "theme": "G2",
+      "depth": "full_checklist",
+      "cite": "FIR/CTA identity; research G2",
+      "tac": "negative/sigmet/missing_fir.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_FIR_OR_CTA"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_missing_obs_fcst",
+      "product": "SIGMET",
+      "theme": "G2",
+      "depth": "full_checklist",
+      "cite": "OBS or FCST required; research G2",
+      "tac": "negative/sigmet/missing_obs_fcst.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_OBS_OR_FCST"],
       "require_spans": true
     },
     {
@@ -1977,6 +2053,98 @@
       "tac": "negative/sigmet/stnr_with_mov.tac",
       "ok": false,
       "expected_codes": ["INVALID_STNR_MOVEMENT"],
+      "require_spans": true
+    }
+  ],
+  "g2_modifier_info": [
+    {
+      "id": "sigmet_g2_sequence_info",
+      "product": "SIGMET",
+      "theme": "G2",
+      "cite": "sequence → info; research G2",
+      "tac": "accept/sigmet_g2_sequence.tac",
+      "ok": true,
+      "expected_codes": ["SIGMET_SEQUENCE"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_g2_fir_info",
+      "product": "SIGMET",
+      "theme": "G2",
+      "cite": "FIR → info; research G2",
+      "tac": "accept/sigmet_g2_fir.tac",
+      "ok": true,
+      "expected_codes": ["FIR_OR_CTA"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_g2_obs_info",
+      "product": "SIGMET",
+      "theme": "G2",
+      "cite": "OBS → info; research G2",
+      "tac": "accept/sigmet_g2_obs.tac",
+      "ok": true,
+      "expected_codes": ["OBS_OR_FCST"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_g2_intensity_info",
+      "product": "SIGMET",
+      "theme": "G2",
+      "cite": "INTSF → info; research G2",
+      "tac": "accept/sigmet_g2_intensity.tac",
+      "ok": true,
+      "expected_codes": ["INTENSITY_CHANGE"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "g2_errors": [
+    {
+      "id": "sigmet_missing_sequence_g2",
+      "product": "SIGMET",
+      "theme": "G2",
+      "depth": "full_checklist",
+      "cite": "missing sequence; research G2",
+      "tac": "negative/sigmet/missing_sequence.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_SEQUENCE"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_validity_too_long_g2",
+      "product": "SIGMET",
+      "theme": "G2",
+      "depth": "full_checklist",
+      "cite": "validity > 4h; research G2",
+      "tac": "negative/sigmet/validity_too_long.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_VALIDITY_DURATION"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_missing_fir_g2",
+      "product": "SIGMET",
+      "theme": "G2",
+      "depth": "full_checklist",
+      "cite": "missing FIR; research G2",
+      "tac": "negative/sigmet/missing_fir.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_FIR_OR_CTA"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_missing_obs_fcst_g2",
+      "product": "SIGMET",
+      "theme": "G2",
+      "depth": "full_checklist",
+      "cite": "missing OBS/FCST; research G2",
+      "tac": "negative/sigmet/missing_obs_fcst.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_OBS_OR_FCST"],
       "require_spans": true
     }
   ]

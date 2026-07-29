@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M1 — General SIGMET lint (F23 themes G1–G2) |
-| **Active task** | T1.3 (pending) |
-| **Tasks** | 5 / 29 completed |
+| **Active milestone** | M2 — General SIGMET goldens (F23 theme G3 / F6.d) |
+| **Active task** | T2.1 (pending) |
+| **Tasks** | 7 / 29 completed |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -67,8 +67,8 @@
 |------|------|-------------|-------------|------------|--------|
 | T1.1 | Test | Accept/negative fixtures F23 theme G1 (CNL, point→circle, single alt, STNR, polygon/line CRS) | TC-F23-004; matrix G1 | T0.2 | completed |
 | T1.2 | Code | Registry rows + SIGMET rules for G1 | F23; ADR-028 | T1.1 | completed |
-| T1.3 | Test | Fixtures F23 theme G2 (sequence / validity / FIR·CTA / phenomenon / movement·intensity) | matrix G2 | T1.2 | pending |
-| T1.4 | Code | Encode G2 checklist rules | F23 | T1.3 | pending |
+| T1.3 | Test | Fixtures F23 theme G2 (sequence / validity / FIR·CTA / phenomenon / movement·intensity) | matrix G2 | T1.2 | completed |
+| T1.4 | Code | Encode G2 checklist rules | F23 | T1.3 | completed |
 
 ### M2 — General SIGMET goldens (F23 theme G3 / F6.d)
 
