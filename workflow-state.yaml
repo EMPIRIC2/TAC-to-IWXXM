@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-020
   github_issue: "731"
   artifacts_dir: docs/sessions/S026-airmet-quality-wmo-examples/
-  current_stage: 07-build
+  current_stage: 13-deploy-smoke
   feature_ids: [F24, F25]
   feature_note: "F24 AIRMET quality #731; F25 WMO official golden parity METAR/SPECI/TAF + UI gate; deepen F9 glossary registry+OpenAIP; deepen F7.g examples catalog"
   started_at: "2026-07-29"
@@ -23,7 +23,7 @@ active_session:
   preset_status: approved
   routing_decision_id: D-S026-E20-routing-C1
   context_briefs: []
-  note: "M0–M2 done (T0.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28; #731"
+  note: "T6.4 PASS D-S026-E20-11-ac-all; preview-no; next T6.5 13-deploy-smoke; progress 26/~28"
   routing_plan:
   - stage: 00-context
     required: true
@@ -64,24 +64,34 @@ active_session:
     mode: full
     status: in_progress
     started: "2026-07-29"
-    note: "M0–M2 done (T0.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28; #731"
+    note: "M0–M6 T6.1–T6.4 done; next T6.5"
   - stage: 08-verify-build
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "T6.2 PASS — verification-report.md; FileConverter WMO A3-1 label fix tip e839a6e"
   - stage: 10-e2e
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "T6.3 PASS — e2e-report.md; UJ-035/036 T0; tip 3027305"
   - stage: 11-verify-impl
     required: true
     mode: full
-    status: pending
-    note: "Re-added Confirm C=1 for F24/F25 AC sign-off"
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "T6.4 PASS — AC all approved; preview declined; verify-impl.md"
   - stage: 13-deploy-smoke
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: "2026-07-29"
+    note: "T6.5 H4–H5 required; PR+merge then live smoke"
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
@@ -3780,14 +3790,14 @@ stages:
     previous_tip_sha: afffe86
     session_id: S026-airmet-quality-wmo-examples
     evolve_cycle_id: EV-020
-    note: 'M0–M2 done (T0.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28; #731'
+    note: 'M0–M6 T6.1–T6.4 done; next T6.5; progress 26/~28; tip 3027305'
     substeps:
       task_loop:
         status: in_progress
-        current_task: T3.1
-        phase: C
-        milestone: M3
-        notes: M2 complete T2.1–T2.4; D-S026-T2.3-A closed A1–A3; next T3.1 METAR/SPECI golden; progress 11/~28; uncommitted
+        current_task: T6.5
+        phase: D
+        milestone: M6
+        notes: M0–M6 T6.1–T6.4 done; next T6.5 13-deploy-smoke; progress 26/~28; tip 3027305
     delta_substages:
     - id: S026-airmet-quality-wmo-examples
       session_id: S026-airmet-quality-wmo-examples
@@ -3797,15 +3807,15 @@ stages:
       started_at: '2026-07-29'
       started: '2026-07-29'
       mode: full
-      note: 'M0–M2 done (T0.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28; #731'
-      active_milestone: M3
-      active_task: T3.1
-      active_task_status: pending
-      decision_id: D-S026-07-M2-complete
+      note: 'M0–M6 T6.1–T6.4 done; next T6.5'
+      active_milestone: M6
+      active_task: T6.5
+      active_task_status: in_progress
+      decision_id: D-S026-E20-11-ac-all
       branch: evolve/EV-020-airmet-quality
-      tip_sha: bbd5b6d
-      tip_sha_full: bbd5b6d504e345d68709ac2f91e67ddb7b21a3c6
-      progress: 11/~28
+      tip_sha: 3027305
+      tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
+      progress: 26/~28
       feature_ids:
       - F24
       - F25
@@ -3987,6 +3997,11 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-29 S026/EV-020 T6.4 PASS 11-verify-impl (D-S026-E20-11-ac-all + D-S026-E20-11-preview-no) — AC all approved; preview declined; next T6.5 13-deploy-smoke; progress 26/~28; tip 3027305; #731'
+    - '2026-07-29 S026/EV-020 T6.3 PASS 10-e2e — UJ-035/036 T0; e2e-report.md; next T6.4=11-verify-impl; progress 25/~28; tip c963a0a (no [T6.3] commit yet); #731'
+    - '2026-07-29 S026/EV-020 T6.2 PASS 08-verify-build @ e839a6e; next T6.3=10-e2e; progress 24/~28; #731'
+    - '2026-07-29 S026/EV-020 T6.1 COMPLETE API smoke (AIRMET + WMO METAR/SPECI/TAF); next T6.2=08-verify-build; progress 23/~28; tip 7e75fff; #731'
+    - '2026-07-29 S026/EV-020 M5 COMPLETE T5.1–T5.4 (F9 glossary + F25 W4 catalog); next T6.1 smoke; progress 22/~28; tip ff1e32f; #731'
     - '2026-07-29 S026/EV-020 M2 COMPLETE T2.1–T2.4 (A3 golden + A4 negatives); D-S026-T2.3-A closed A1–A3; next T3.1 METAR/SPECI golden (F25); progress 11/~28; uncommitted pending user commit ask; tip bbd5b6d; #731'
     - '2026-07-29 S026/EV-020 07-build resume @ T2.1 A3 golden airmet-A6-1a-TS (user continue); M0–M1 done; tip bbd5b6d; #731'
     - '2026-07-29 S026/EV-020 M0–M1 committed (T0.1–T1.4 @ a5bb2f2); next T2.1 (A3 golden); progress 7/~28; #731'
@@ -4318,14 +4333,25 @@ stages:
     note: FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5 advisory→13
   11-verify-impl:
     status: completed
-    started_at: '2026-07-26'
-    completed: '2026-07-28'
-    completed_at: '2026-07-28'
-    session_id: S023-public-app-privacy
-    evolve_cycle_id: EV-017
-    note: 'S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; tip 17ad563; next 12-verify-deploy; #783'
-    report: docs/sessions/S023-public-app-privacy/reports/verify-impl.md
-    overall: approved
+    started_at: '2026-07-29'
+    started: '2026-07-29'
+    completed: '2026-07-29'
+    completed_at: '2026-07-29'
+    previous_started_at: '2026-07-26'
+    previous_completed_at: '2026-07-28'
+    previous_session_id: S023-public-app-privacy
+    previous_evolve_cycle_id: EV-017
+    previous_tip_sha: 17ad563
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    tip_sha: 3027305
+    tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
+    note: 'S026/EV-020 11-verify-impl COMPLETE — T6.4 PASS; D-S026-E20-11-ac-all; preview-no; verify-impl.md; next T6.5 13-deploy-smoke; tip 3027305; progress 26/~28; #731'
+    report: docs/sessions/S026-airmet-quality-wmo-examples/reports/verify-impl.md
+    overall: pass
+    decision_ids:
+    - D-S026-E20-11-ac-all
+    - D-S026-E20-11-preview-no
     substeps:
       collect_results:
         status: completed
@@ -4333,24 +4359,44 @@ stages:
         status: completed
       journey_signoff:
         status: completed
-        approved: 4
-        flagged: 0
-        total: 4
-        notes: UJ-001/004/018/033 approved; T3 waived to 13-deploy-smoke (D-S023-11-uj-001-004, D-S023-11-uj-018-033)
       feature_approval:
         status: completed
-        approved: 2
-        flagged: 0
-        total: 2
-        notes: F21/F22 approved; F5/F7.h deepen acknowledged
       fixes_applied:
         status: completed
-        notes: QA-003 fixed @ 657d440; QA-001/002 accept; QA-004→13 (D-S023-11-advisories)
       scope_analysis:
         status: completed
       summary:
         status: completed
     delta_substages:
+    - id: S026-airmet-quality-wmo-examples
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
+      skill_id: 11-verify-impl
+      status: completed
+      started: '2026-07-29'
+      started_at: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
+      mode: full
+      branch: evolve/EV-020-airmet-quality
+      tip_sha: 3027305
+      tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
+      note: 'T6.4 PASS — AC all approved; preview declined; verify-impl.md'
+      active_milestone: M6
+      active_task: T6.4
+      active_task_status: completed
+      progress: 26/~28
+      overall: pass
+      decision_ids:
+      - D-S026-E20-11-ac-all
+      - D-S026-E20-11-preview-no
+      feature_ids:
+      - F24
+      - F25
+      deepen:
+      - F9
+      - F7.g
+      report: docs/sessions/S026-airmet-quality-wmo-examples/reports/verify-impl.md
     - id: S023-public-app-privacy
       session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
@@ -4515,32 +4561,62 @@ stages:
   10-e2e:
     status: completed
     started_at: '2026-07-29'
+    started: '2026-07-29'
+    completed: '2026-07-29'
     completed_at: '2026-07-29'
-    previous_started_at: '2026-07-28T23:47:35Z'
-    previous_completed_at: '2026-07-28T23:54:49Z'
-    session_id: S025-sigmet-quality
-    evolve_cycle_id: EV-019
-    tip_sha: 1a6dc9a
-    tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+    previous_started_at: '2026-07-29'
+    previous_completed_at: '2026-07-29'
+    previous_session_id: S025-sigmet-quality
+    previous_evolve_cycle_id: EV-019
+    previous_tip_sha: 1a6dc9a
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    tip_sha: 3027305
+    tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
     overall: pass
-    report: docs/sessions/S025-sigmet-quality/reports/e2e-report.md
-    note: 'S025/EV-019 10-e2e COMPLETE — T5.5 T0 PASS UJ-034 / TC-F23-001..006; report docs/sessions/S025-sigmet-quality/reports/e2e-report.md; tip 1a6dc9a; handoff 13-deploy-smoke T5.6; #733/#739'
+    report: docs/sessions/S026-airmet-quality-wmo-examples/reports/e2e-report.md
+    note: 'S026/EV-020 10-e2e COMPLETE PASS — T6.3 UJ-035/036 T0; e2e-report.md; tip 3027305; handoff 11-verify-impl T6.4; progress 25/~28; #731'
     substeps:
       extract_journeys:
         status: completed
       t0_t1:
         status: completed
-        notes: H0i 8/8 PASS; env-check PASS
       t2_playwright:
         status: completed
-        notes: Core UJ-001 11/11; S004 delta 1/4 (2 locator strict-mode, 1 session-load gap)
+        note: deferred_to_13_or_vitest
       t2_connectivity:
-        status: completed
-        notes: H0c 6/6 PASS; H4 staging FAIL (CORS origin); H5 skipped
+        status: deferred
+        note: deferred_to_13
       t3_live:
-        status: completed
-        notes: H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred
+        status: deferred
+        note: deferred_to_13
     delta_substages:
+    - id: S026-airmet-quality-wmo-examples
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
+      skill_id: 10-e2e
+      status: completed
+      mode: full
+      started: '2026-07-29'
+      started_at: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
+      branch: evolve/EV-020-airmet-quality
+      tip_sha: 3027305
+      tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
+      overall: pass
+      report: docs/sessions/S026-airmet-quality-wmo-examples/reports/e2e-report.md
+      note: 'T6.3 PASS — e2e-report.md; UJ-035/036 T0; tip 3027305'
+      active_milestone: M6
+      active_task: T6.3
+      active_task_status: completed
+      progress: 25/~28
+      feature_ids:
+      - F24
+      - F25
+      deepen:
+      - F9
+      - F7.g
     - id: S025-sigmet-quality
       session_id: S025-sigmet-quality
       evolve_cycle_id: EV-019
@@ -4703,6 +4779,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
       note: T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk
     notes:
+    - '2026-07-29 S026/EV-020 10-e2e COMPLETE PASS — T6.3 UJ-035/036 T0; e2e-report.md; tip c963a0a (no [T6.3] commit yet); handoff 11-verify-impl T6.4; progress 25/~28; #731'
+    - '2026-07-29 S026/EV-020 10-e2e STARTED — T6.3 UJ-035/036; tip e839a6e; progress 24/~28; #731'
     - '2026-07-29 S025/EV-019 10-e2e COMPLETE — T5.5 T0 PASS UJ-034 / TC-F23-001..006; report e2e-report.md; tip 1a6dc9a; handoff 13-deploy-smoke T5.6; progress 26/29; #733/#739'
     - '2026-07-29 S025/EV-019 10-e2e STARTED — T5.5 UJ-034 / TC-F23; tip 846d50f; progress 25/29; #733/#739'
     - '2026-07-28 S024/EV-018 tip synced — 4146052; 10 COMPLETE; 13 pending deploy approval; #785'
@@ -4726,56 +4804,88 @@ stages:
     - 2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md
     started: '2026-07-29'
     active_session:
-      session_id: S025-sigmet-quality
-      evolve_cycle_id: EV-019
-      skill_id: 13-deploy-smoke
-      status: in_progress
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
+      skill_id: 10-e2e
+      status: completed
       started_at: '2026-07-29'
       started: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
       mode: full
-      note: 'T5.6 13-deploy-smoke in_progress; handoff from 10-e2e T5.5 PASS; tip 1a6dc9a; #733/#739'
-      branch: evolve/EV-019-sigmet-quality
-      tip_sha: 1a6dc9a
-      tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
-      active_milestone: M5
-      active_task: T5.6
-      active_task_status: in_progress
-      progress: 26/29
+      note: 'T6.3 PASS — e2e-report.md; UJ-035/036 T0; tip after T6.3 commit'
+      branch: evolve/EV-020-airmet-quality
+      tip_sha: c963a0a
+      tip_sha_full: c963a0aa16c94de68a59800a07bb7ac063e06c95
+      overall: pass
+      report: docs/sessions/S026-airmet-quality-wmo-examples/reports/e2e-report.md
+      active_milestone: M6
+      active_task: T6.3
+      active_task_status: completed
+      progress: 25/~28
       feature_ids:
-      - F23
+      - F24
+      - F25
       deepen:
-      - F6.d
-      - F12
+      - F9
+      - F7.g
   08-verify-build:
     status: completed
     started_at: '2026-07-29'
     completed_at: '2026-07-29'
-    previous_started_at: '2026-07-28T23:30:05Z'
-    previous_completed_at: '2026-07-28T23:42:27Z'
-    session_id: S025-sigmet-quality
-    evolve_cycle_id: EV-019
-    tip_sha: 846d50f
-    tip_sha_full: 846d50fb27b732616e56a0eeb3bb55b953e2a317
-    note: 'S025/EV-019 08-verify-build COMPLETE PASS — T5.4 @ 846d50f; report docs/sessions/S025-sigmet-quality/reports/verification-report.md; handoff 10-e2e T5.5; #733/#739'
-    report: docs/sessions/S025-sigmet-quality/reports/verification-report.md
+    completed: '2026-07-29'
+    previous_started_at: '2026-07-29'
+    previous_completed_at: '2026-07-29'
+    previous_session_id: S025-sigmet-quality
+    previous_evolve_cycle_id: EV-019
+    previous_tip_sha: 846d50f
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    tip_sha: e839a6e
+    tip_sha_full: e839a6e0d9a7e898e03e69d90865039eeb634610
+    overall: pass
+    note: 'S026/EV-020 08-verify-build COMPLETE PASS — T6.2 @ e839a6e; report docs/sessions/S026-airmet-quality-wmo-examples/reports/verification-report.md; FileConverter WMO A3-1 label fix; handoff 10-e2e T6.3; #731'
+    report: docs/sessions/S026-airmet-quality-wmo-examples/reports/verification-report.md
     substeps:
       lint:
         status: completed
-        notes: Python PASS; JS FAIL — 4 react-hooks errors (S004 work-session delta)
       format:
         status: completed
-        notes: Auto-fixed 2 ruff files + Prettier on delta TSX
       typecheck:
         status: completed
       tests:
         status: completed
-        notes: FAIL — FileConverter requires auth token for Convert&Send; gifts not run
       security:
         status: completed
-        notes: gitleaks PASS; pip-audit 0 CVEs on uv lockfile export
       report:
         status: completed
     delta_substages:
+    - id: S026-airmet-quality-wmo-examples
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
+      mode: full
+      overall: pass
+      note: 'T6.2 PASS — verification-report.md; FileConverter WMO A3-1 label fix tip e839a6e'
+      report: docs/sessions/S026-airmet-quality-wmo-examples/reports/verification-report.md
+      branch: evolve/EV-020-airmet-quality
+      tip_sha: e839a6e
+      tip_sha_full: e839a6e0d9a7e898e03e69d90865039eeb634610
+      active_milestone: M6
+      active_task: T6.2
+      active_task_status: completed
+      progress: 24/~28
+      feature_ids:
+      - F24
+      - F25
+      deepen:
+      - F9
+      - F7.g
     - id: S025-sigmet-quality
       session_id: S025-sigmet-quality
       evolve_cycle_id: EV-019
@@ -4941,6 +5051,7 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass
     notes:
+    - '2026-07-29 S026/EV-020 08-verify-build COMPLETE PASS — T6.2 @ e839a6e; report docs/sessions/S026-airmet-quality-wmo-examples/reports/verification-report.md; FileConverter WMO A3-1 label fix; handoff 10-e2e T6.3; #731'
     - '2026-07-29 S025/EV-019 08-verify-build COMPLETE PASS — T5.4 @ 846d50f; report docs/sessions/S025-sigmet-quality/reports/verification-report.md; handoff 10-e2e T5.5; #733/#739'
     - '2026-07-29 S025/EV-019 08-verify-build STARTED — T5.4 milestone verify; tip 6335842; report docs/sessions/S025-sigmet-quality/reports/verification-report.md; #733/#739'
     - '2026-07-28 S024/EV-018 08-verify-build COMPLETE — PASS; report verification-report.md; work still uncommitted; handoff 10-e2e after commit; #785'
@@ -4965,26 +5076,31 @@ stages:
     - 2026-07-12 S008 / EV-006 — Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c); Overall PASS; awaiting C→D AskQuestion; c_to_d/phase_c remain pending
     - 2026-07-14 S011/EV-008 08-verify-build completed (T6.1 PASS; verification-report.md); C→D passed D-S011-EV008-c-to-d-pass
     active_session:
-      session_id: S025-sigmet-quality
-      evolve_cycle_id: EV-019
-      skill_id: 13-deploy-smoke
-      status: in_progress
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
+      skill_id: 08-verify-build
+      status: completed
       started_at: '2026-07-29'
       started: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
       mode: full
-      note: 'T5.6 13-deploy-smoke in_progress; handoff from 10-e2e T5.5 PASS; tip 1a6dc9a; #733/#739'
-      branch: evolve/EV-019-sigmet-quality
-      tip_sha: 1a6dc9a
-      tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
-      active_milestone: M5
-      active_task: T5.6
-      active_task_status: in_progress
-      progress: 26/29
+      overall: pass
+      note: 'T6.2 PASS — verification-report.md; FileConverter WMO A3-1 label fix tip e839a6e; handoff 10-e2e T6.3; #731'
+      report: docs/sessions/S026-airmet-quality-wmo-examples/reports/verification-report.md
+      branch: evolve/EV-020-airmet-quality
+      tip_sha: e839a6e
+      tip_sha_full: e839a6e0d9a7e898e03e69d90865039eeb634610
+      active_milestone: M6
+      active_task: T6.2
+      active_task_status: completed
+      progress: 24/~28
       feature_ids:
-      - F23
+      - F24
+      - F25
       deepen:
-      - F6.d
-      - F12
+      - F9
+      - F7.g
   18-pr-review:
     status: completed
     started: '2026-07-12'
@@ -5108,20 +5224,47 @@ stages:
     - S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
   13-deploy-smoke:
-    status: completed
+    status: in_progress
     started_at: '2026-07-29'
-    completed_at: '2026-07-29'
     started: '2026-07-29'
-    session_id: S025-sigmet-quality
-    evolve_cycle_id: EV-019
-    note: 'S025/EV-019 13-deploy-smoke COMPLETE — PASS; H1–H5 + live SIGMET smoke; PR #792 merged afffe86; #733/#739'
-    tip_sha: afffe86
-    tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
-    prior_tip_10: 1a6dc9a
-    overall: pass
-    decision_id: D-S025-13-deploy-A
-    report: docs/sessions/S025-sigmet-quality/reports/deploy-smoke.md
+    previous_started_at: '2026-07-29'
+    previous_completed_at: '2026-07-29'
+    previous_session_id: S025-sigmet-quality
+    previous_evolve_cycle_id: EV-019
+    previous_tip_sha: afffe86
+    previous_overall: pass
+    previous_decision_id: D-S025-13-deploy-A
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    note: 'S026/EV-020 13-deploy-smoke in_progress — T6.5 H4–H5 required; PR+merge then live smoke; tip 3027305; progress 26/~28; #731'
+    tip_sha: 3027305
+    tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
+    overall: pending
+    active_task: T6.5
+    report: null
     delta_substages:
+    - id: S026-airmet-quality-wmo-examples
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
+      skill_id: 13-deploy-smoke
+      status: in_progress
+      mode: full
+      started: '2026-07-29'
+      started_at: '2026-07-29'
+      branch: evolve/EV-020-airmet-quality
+      tip_sha: 3027305
+      tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
+      note: 'T6.5 H4–H5 required; PR+merge then live smoke'
+      active_milestone: M6
+      active_task: T6.5
+      active_task_status: in_progress
+      progress: 26/~28
+      feature_ids:
+      - F24
+      - F25
+      deepen:
+      - F9
+      - F7.g
     - id: S025-sigmet-quality
       session_id: S025-sigmet-quality
       evolve_cycle_id: EV-019
@@ -5732,6 +5875,38 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S026-E20-11-ac-all
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 11-verify-impl
+  skill: 11-verify-impl
+  stage: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: Approve all F24/F25/F9/F7.g at 11-verify-impl
+  summary: "T6.4 PASS — approve all F24/F25/F9/F7.g AC; handoff T6.5 13-deploy-smoke"
+  decision: "User approved 2026-07-29 (D-S026-E20-11-ac-all). Approve all F24/F25/F9/F7.g acceptance criteria at 11-verify-impl. Artifact: docs/sessions/S026-airmet-quality-wmo-examples/reports/verify-impl.md. Next: T6.5 13-deploy-smoke (H4–H5 after PR+merge)."
+  related_issue: "731"
+  related_decisions: [D-S026-E20-11-preview-no]
+- id: D-S026-E20-11-preview-no
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 11-verify-impl
+  skill: 11-verify-impl
+  stage: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: UI preview declined — approve from reports/tests only
+  summary: "No UI preview; continue from reports/tests only (verify-impl.md)"
+  decision: "User declined 2026-07-29 (D-S026-E20-11-preview-no). No live UI preview; approve from reports/tests only."
+  related_issue: "731"
+  related_decisions: [D-S026-E20-11-ac-all]
 - id: D-S026-07-M2-complete
   date: "2026-07-29"
   timestamp: "2026-07-29"
@@ -11316,6 +11491,48 @@ decisions_log:
   do_not_auto_merge: true
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790
 artifacts:
+- path: docs/sessions/S026-airmet-quality-wmo-examples/reports/verify-impl.md
+  type: session-report
+  kind: verify-impl
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  created_at: '2026-07-29'
+  updated_at: '2026-07-29'
+  status: in_progress
+  overall: pending
+  tip_sha: 3027305
+  tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
+  note: 'T6.3 PASS tip 3027305; T6.4 11-verify-impl awaiting user AC + UI preview; progress 25/~28; #731'
+- path: docs/sessions/S026-airmet-quality-wmo-examples/reports/e2e-report.md
+  type: session-report
+  kind: e2e-report
+  stage: 10-e2e
+  skill_id: 10-e2e
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  created_at: '2026-07-29'
+  updated_at: '2026-07-29'
+  status: completed
+  overall: pass
+  tip_sha: 3027305
+  tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
+  note: 'S026/EV-020 T6.3 PASS — e2e-report.md; UJ-035/036 T0; tip 3027305; handoff 11-verify-impl T6.4; #731'
+- path: docs/sessions/S026-airmet-quality-wmo-examples/reports/verification-report.md
+  type: session-report
+  kind: verification-report
+  stage: 08-verify-build
+  skill_id: 08-verify-build
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  created_at: '2026-07-29'
+  updated_at: '2026-07-29'
+  status: completed
+  overall: pass
+  tip_sha: e839a6e
+  tip_sha_full: e839a6e0d9a7e898e03e69d90865039eeb634610
+  note: 'S026/EV-020 T6.2 PASS — verification-report.md; FileConverter WMO A3-1 label fix tip e839a6e; handoff 10-e2e T6.3; #731'
 - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md
   status: pending
   stage: 01-requirements
@@ -13466,24 +13683,38 @@ evolve_cycles:
     required_stages: [00-context, 16-evolve, 01-requirements, 02-verify-plan, 04-tech-plan, 07-build, 08-verify-build, 10-e2e, 11-verify-impl, 13-deploy-smoke]
     skipped_stages: [03-plan-tooling, 05-verify-tech, 06-tech-tooling, 09-qa, 12-verify-deploy]
     note: "Lean+build+11 approved Confirm C=1 (D-S026-E20-routing-C1); 11-verify-impl re-added for F24/F25 AC"
-  current_stage: 07-build
+  current_stage: 13-deploy-smoke
   stages:
     00-context: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
     16-evolve: {status: in_progress, started: "2026-07-29"}
     01-requirements: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
     02-verify-plan: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
     04-tech-plan: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
-    07-build: {status: in_progress, started: "2026-07-29", progress: "11/~28", active_task: T3.1, active_task_status: pending, tip_sha: bbd5b6d}
-    08-verify-build: {status: pending}
-    10-e2e: {status: pending}
-    11-verify-impl: {status: pending}
-    13-deploy-smoke: {status: pending}
+    07-build: {status: in_progress, started: "2026-07-29", progress: "26/~28", active_task: T6.5, active_task_status: in_progress, tip_sha: 3027305, note: "M0–M6 T6.1–T6.4 done; next T6.5"}
+    08-verify-build: {status: completed, started: "2026-07-29", completed: "2026-07-29", active_task: T6.2, active_task_status: completed, tip_sha: e839a6e, overall: pass, note: "T6.2 PASS — verification-report.md; FileConverter WMO A3-1 label fix tip e839a6e"}
+    10-e2e: {status: completed, started: "2026-07-29", completed: "2026-07-29", active_task: T6.3, active_task_status: completed, tip_sha: 3027305, overall: pass, note: "T6.3 PASS — e2e-report.md; UJ-035/036 T0; tip 3027305"}
+    11-verify-impl: {status: completed, started: "2026-07-29", completed: "2026-07-29", active_task: T6.4, active_task_status: completed, tip_sha: 3027305, overall: pass, note: "T6.4 PASS — AC all approved; preview declined; verify-impl.md", decision_ids: [D-S026-E20-11-ac-all, D-S026-E20-11-preview-no]}
+    13-deploy-smoke: {status: in_progress, started: "2026-07-29", active_task: T6.5, active_task_status: in_progress, tip_sha: 3027305, note: "T6.5 H4–H5 required; PR+merge then live smoke"}
   gates: {a_to_b: passed, b_to_c: passed, c_to_d: pending, deploy: pending}
-  checkpoints: {phase_a: passed, phase_b: passed, phase_c: pending, phase_d: pending, deploy: pending}
+  checkpoints: {phase_a: passed, phase_b: passed, phase_c: pending, phase_d: in_progress, deploy: pending}
   adrs:
   - path: docs/adr/ADR-032-wmo-default-golden-glossary.md
     status: accepted
   artifacts:
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/verify-impl.md
+    status: completed
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
+    overall: pass
+    tip_sha: 3027305
+    note: "T6.4 PASS — AC all approved (D-S026-E20-11-ac-all); preview declined (D-S026-E20-11-preview-no)"
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/e2e-report.md
+    status: completed
+    stage: 10-e2e
+    skill_id: 10-e2e
+    overall: pass
+    tip_sha: 3027305
+    note: "T6.3 PASS — UJ-035/036 T0; tip 3027305"
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
   - path: docs/sessions/S026-airmet-quality-wmo-examples/session-brief.md
@@ -13504,10 +13735,19 @@ evolve_cycles:
     status: in_progress
   - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/wmo-quality-research-catalog.md
     status: completed
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/verification-report.md
+    status: completed
   issues: []
-  decision_refs: [E20-1, E20-2, E20-3, E20-4, E20-5, E20-6, E20-A, E20-B, D-S026-E20-intake, D-S026-E20-routing-C1, E20-8, E20-E1, E20-E2, E20-E3, S02.M1, S02.M2, S02.L1, S02.L2, D-S026-EV020-s02m1-1, D-S026-EV020-s02m2-1, D-S026-EV020-s02l1-1, D-S026-EV020-s02l2-1, D-S026-02-phase-a, E20-F1, E20-F2, E20-F3, E20-F4, E20-F5, E20-F6, E20-F7, E20-F8, D-S026-04-plan-approve, D-S026-07-resume-T1.3, D-S026-07-T1.3-T1.4-complete, D-S026-07-resume-T2.1, D-S026-T2.3-A, D-S026-07-M2-complete]
-  note: "M0–M2 done (T0.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28; #731"
+  decision_refs: [E20-1, E20-2, E20-3, E20-4, E20-5, E20-6, E20-A, E20-B, D-S026-E20-intake, D-S026-E20-routing-C1, E20-8, E20-E1, E20-E2, E20-E3, S02.M1, S02.M2, S02.L1, S02.L2, D-S026-EV020-s02m1-1, D-S026-EV020-s02m2-1, D-S026-EV020-s02l1-1, D-S026-EV020-s02l2-1, D-S026-02-phase-a, E20-F1, E20-F2, E20-F3, E20-F4, E20-F5, E20-F6, E20-F7, E20-F8, D-S026-04-plan-approve, D-S026-07-resume-T1.3, D-S026-07-T1.3-T1.4-complete, D-S026-07-resume-T2.1, D-S026-T2.3-A, D-S026-07-M2-complete, D-S026-E20-11-ac-all, D-S026-E20-11-preview-no]
+  note: "T6.4 PASS D-S026-E20-11-ac-all; preview-no; next T6.5 13-deploy-smoke; progress 26/~28; tip 3027305; phase_d in_progress"
+  tip_sha: 3027305
+  tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
   notes:
+  - '2026-07-29 S026/EV-020 T6.4 PASS 11-verify-impl (D-S026-E20-11-ac-all + D-S026-E20-11-preview-no) — AC all approved; UI preview declined; verify-impl.md; next T6.5 13-deploy-smoke; progress 26/~28; phase_d in_progress; #731'
+  - '2026-07-29 S026/EV-020 T6.3 PASS 10-e2e — UJ-035/036 T0; e2e-report.md; tip c963a0a (no [T6.3] commit yet); next T6.4=11-verify-impl; progress 25/~28; phase_c/c_to_d still pending; #731'
+  - '2026-07-29 S026/EV-020 T6.2 PASS 08-verify-build (FileConverter WMO A3-1); tip e839a6e; next T6.3=10-e2e; progress 24/~28; phase_c/c_to_d still pending; #731'
+  - '2026-07-29 S026/EV-020 T6.1 COMPLETE API smoke (AIRMET + WMO METAR/SPECI/TAF); next T6.2=08-verify-build; progress 23/~28; tip 7e75fff; #731'
+  - '2026-07-29 S026/EV-020 M5 COMPLETE T5.1–T5.4 (F9 glossary + F25 W4 catalog); next T6.1 smoke; progress 22/~28; tip ff1e32f; #731'
   - '2026-07-29 S026/EV-020 M2 COMPLETE T2.1–T2.4 (A3 golden + A4 negatives); D-S026-T2.3-A closed A1–A3 themes; next T3.1 METAR/SPECI golden (F25); progress 11/~28; uncommitted pending user commit ask; tip bbd5b6d; #731'
   - '2026-07-29 S026/EV-020 07-build resume @ T2.1 A3 golden airmet-A6-1a-TS (user continue); M0–M1 done; tip bbd5b6d; #731'
   - '2026-07-29 S026/EV-020 M0–M1 committed (T0.1–T1.4 @ a5bb2f2); next T2.1 (A3 golden); progress 7/~28; #731'
@@ -17772,10 +18012,13 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit:
-  tip_sha: bbd5b6d
-  tip_sha_full: bbd5b6d504e345d68709ac2f91e67ddb7b21a3c6
-  note: 'S026/EV-020 07-build M2 T2.1 in_progress; tip bbd5b6d; progress 7/~28; #731'
+  tip_sha: e839a6e
+  tip_sha_full: e839a6e0d9a7e898e03e69d90865039eeb634610
+  note: 'S026/EV-020 T6.2 PASS 08-verify-build; tip e839a6e; next T6.3=10-e2e; progress 24/~28; #731'
   notes:
+  - '2026-07-29 S026/EV-020 tip synced — e839a6e (e839a6e0d9a7e898e03e69d90865039eeb634610); T6.2 PASS 08-verify-build FileConverter WMO A3-1; stage 10-e2e; next T6.3; progress 24/~28; #731'
+  - '2026-07-29 S026/EV-020 tip synced — 7e75fff (7e75fff59bd2a2577d3683699f7791d66246ab2b); T6.1 COMPLETE API smoke; stage 07-build; next T6.2=08-verify-build; progress 23/~28; #731'
+  - '2026-07-29 S026/EV-020 tip synced — ff1e32f (ff1e32f91f208d2ca3bd282dc789b9de06408967); M5 COMPLETE T5.1–T5.4; stage 07-build; next T6.1 smoke; progress 22/~28; #731'
   - '2026-07-29 S026/EV-020 tip synced — bbd5b6d (bbd5b6d504e345d68709ac2f91e67ddb7b21a3c6); M2 T2.1 in_progress A3 golden; stage 07-build; progress 7/~28; #731'
   - '2026-07-29 S026/EV-020 tip synced — a5bb2f2 (a5bb2f2abd15ad9f01c087425b63372a9ec89f90); M0–M1 committed T0.1–T1.4; stage 07-build; next T2.1; progress 7/~28; #731'
   - '2026-07-29 S026/EV-020 01-requirements STARTED (delta) — current_stage=01-requirements; artifact reports/01-requirements.md pending; #731'
@@ -18727,6 +18970,110 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 3027305
+    sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
+    branch: evolve/EV-020-airmet-quality
+    message: "[T6.3] test: UJ-035/036 T0 e2e report PASS"
+    stage: 10-e2e
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T15:21:26-04:00"
+    files_changed:
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/e2e-report.md
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/verify-impl.md
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
+  - sha: e839a6e
+    sha_full: e839a6e0d9a7e898e03e69d90865039eeb634610
+    branch: evolve/EV-020-airmet-quality
+    message: "[T6.2] test: align FileConverter goldens with WMO A3-1 catalog"
+    stage: 08-verify-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T15:11:56-04:00"
+    files_changed:
+      - apps/frontend/src/app/components/FileConverter.test.tsx
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/verification-report.md
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
+  - sha: 7e75fff
+    sha_full: 7e75fff59bd2a2577d3683699f7791d66246ab2b
+    branch: evolve/EV-020-airmet-quality
+    message: "[T6.1] test: AIRMET + WMO METAR/SPECI/TAF API smoke"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T14:56:34-04:00"
+  - sha: ff1e32f
+    sha_full: ff1e32f91f208d2ca3bd282dc789b9de06408967
+    branch: evolve/EV-020-airmet-quality
+    message: "[T5.4] feat: close F25 theme W4 Examples catalog gate"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T14:48:41-04:00"
+  - sha: 7b28cc3
+    sha_full: 7b28cc3f11928ad599d3263e3ed606cedf3c7711
+    branch: evolve/EV-020-airmet-quality
+    message: "[T5.3] test: TC-F25-003 WMO-passers Examples catalog Vitest"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T14:48:27-04:00"
+  - sha: 2d41a10
+    sha_full: 2d41a10c41436c9333e637643aa65ecb2dd1d8c2
+    branch: evolve/EV-020-airmet-quality
+    message: "[T5.2] feat: decode glossary YAML loader and SIGMET/AIRMET meanings"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T14:45:54-04:00"
+  - sha: 642683b
+    sha_full: 642683befd9d29ddfac06c304e2bd94147dff1f0
+    branch: evolve/EV-020-airmet-quality
+    message: "[T5.1] test: TC-F9-003/004 decode glossary meanings and YAML load"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T14:41:17-04:00"
+  - sha: 58d9bb3
+    sha_full: 58d9bb393f0c2d9ffd5d67675f8b31545eed1e77
+    branch: evolve/EV-020-airmet-quality
+    message: "[T4.4] docs: close F25 themes W1–W3"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T14:37:51-04:00"
+  - sha: 5dc4afb
+    sha_full: 5dc4afb282836efb06fae7ac9a56017d6c10e4d9
+    branch: evolve/EV-020-airmet-quality
+    message: "[T4.1] test: WMO taf-A5-1 / taf-A5-2 annex3 goldens"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T14:37:38-04:00"
+  - sha: f1d0844
+    sha_full: f1d08440510727ea20c9b80bff575899af9f2e3c
+    branch: evolve/EV-020-airmet-quality
+    message: "[T4.2] feat: TAF convert fidelity for WMO A5-1/A5-2 shapes"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T14:37:26-04:00"
+  - sha: ce97fa6
+    sha_full: ce97fa60ad3e8ef7f902f8a39896a4064bc60343
+    branch: evolve/EV-020-airmet-quality
+    message: "[T3.1] test: WMO metar-A3-1 / speci-A3-2 annex3 goldens"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T14:37:15-04:00"
+  - sha: dbbc335
+    sha_full: dbbc335caf79bc3e05134ed21e720a2b3d3014e9
+    branch: evolve/EV-020-airmet-quality
+    message: "[T3.2] feat: METAR/SPECI convert fidelity toward WMO vendor shapes"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T14:36:33-04:00"
   - sha: a5bb2f2
     sha_full: a5bb2f2abd15ad9f01c087425b63372a9ec89f90
     branch: evolve/EV-020-airmet-quality
