@@ -3,9 +3,92 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 25
-evolve_cycle_counter: 19
-active_session: null
+session_counter: 26
+evolve_cycle_counter: 20
+active_session:
+  id: S026-airmet-quality-wmo-examples
+  type: feature
+  intent: "AIRMET quality (#731) + WMO official golden parity (AIRMET + METAR/SPECI/TAF) + UI catalog gate + 7-product decode glossary (registry + OpenAIP/F3)"
+  status: in_progress
+  branch: evolve/EV-020-airmet-quality
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-020
+  github_issue: "731"
+  artifacts_dir: docs/sessions/S026-airmet-quality-wmo-examples/
+  current_stage: 07-build
+  feature_ids: [F24, F25]
+  feature_note: "F24 AIRMET quality #731; F25 WMO official golden parity METAR/SPECI/TAF + UI gate; deepen F9 glossary registry+OpenAIP; deepen F7.g examples catalog"
+  started_at: "2026-07-29"
+  preset: Lean+build+11
+  preset_status: approved
+  routing_decision_id: D-S026-E20-routing-C1
+  context_briefs: []
+  note: "T1.3+T1.4 COMPLETE (F24 A2 fixtures + rules); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); uncommitted pending user commit ask; #731"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "Phase 0 intake locked; routing Confirm C=1 approved (D-S026-E20-routing-C1)"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: "2026-07-29"
+    note: "EV-020; Lean+build+11; orchestrating 07-build after 04"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "COMPLETE — Batch E E20-E1..E3; TAF A5-1+A5-2; glossary official+YAML overrides; report reports/01-requirements.md"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "PASS — 18 auto + S02.M1/M2/L1/L2=1; ADR-032 Accepted; report reports/02-verify-plan-audit.md"
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "plan approved E20-F8"
+  - stage: 07-build
+    required: true
+    mode: full
+    status: in_progress
+    started: "2026-07-29"
+    note: "T1.3+T1.4 COMPLETE (F24 A2 fixtures + rules); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); uncommitted pending user commit ask; #731"
+  - stage: 08-verify-build
+    required: true
+    mode: full
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: full
+    status: pending
+  - stage: 11-verify-impl
+    required: true
+    mode: full
+    status: pending
+    note: "Re-added Confirm C=1 for F24/F25 AC sign-off"
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: pending
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 12-verify-deploy
+  note_skipped: "Lean+build+11 approved — skip 03/05/06/09/12; 11-verify-impl required (D-S026-E20-routing-C1)"
 sessions:
 - id: S025-sigmet-quality
   type: feature
@@ -2102,9 +2185,9 @@ stages:
     started: '2026-07-29'
     completed_at: '2026-07-29'
     completed: '2026-07-29'
-    session_id: S025-sigmet-quality
-    evolve_cycle_id: EV-019
-    note: 'S025/EV-019 01-requirements COMPLETE 2026-07-29 (delta) — E19-9..14; F23 + deepen F6.d/F12; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md; handoff 02-verify-plan'
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    note: 'S026/EV-020 01-requirements COMPLETE 2026-07-29 (delta) — E20-E1..E3; F24/F25; deepen F9/F7.g; glossary=official+YAML overrides; TAF A5-1+A5-2; report docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md; handoff 02-verify-plan'
     substeps:
       interviews:
         status: completed
@@ -2122,27 +2205,27 @@ stages:
             coverage-matrix: skipped
             ADR: deferred
     active_session:
-      session_id: S025-sigmet-quality
-      evolve_cycle_id: EV-019
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
       status: completed
       mode: delta
       started_at: '2026-07-29'
       started: '2026-07-29'
       completed_at: '2026-07-29'
-      note: 'S025/EV-019 01-requirements COMPLETE (delta) — E19-9..14; F23 + deepen F6.d/F12; D-S025-01-complete; handoff 02-verify-plan'
+      note: 'S026/EV-020 01-requirements COMPLETE (delta) — E20-E1..E3; F24/F25; deepen F9/F7.g; glossary=official+YAML overrides; TAF A5-1+A5-2; handoff 02-verify-plan'
       proposed_features:
-      - F21
-      - F22
+      - F24
+      - F25
       deepen:
-      - F5
-      - F7
+      - F9
+      - F7.g
       feature_ids:
-      - F21
-      - F22
+      - F24
+      - F25
       document_manifest:
         status: approved
-        approved_at: '2026-07-27'
-        decision_id: D-S023-01-requirements-delta
+        approved_at: '2026-07-29'
+        decision_id: E20-E3
         mode: delta
         approved_documents:
         - feature-list
@@ -2150,23 +2233,44 @@ stages:
         - user-journeys
         - test-plan
         - api-contract
-        - evolve-decisions
-        - requirements-decisions
-        skipped_documents:
+        - config-spec
         - coverage-matrix
-        deferred_documents:
-        - ADR
+        - evolve-decisions
+        - ADR-032
       artifacts:
       - docs/feature-list.md
       - docs/spec.md
       - docs/user-journeys.md
       - docs/test-plan.md
       - docs/api-contract.md
+      - docs/config-spec.md
+      - docs/domain/rules/COVERAGE_MATRIX.md
       - docs/decisions/evolve-decisions.md
-      - docs/context/public-app-privacy.md
-      - docs/sessions/S023-public-app-privacy/reports/01-requirements.md
-      - docs/sessions/S023-public-app-privacy/reports/impact-analysis.md
+      - docs/adr/ADR-032-wmo-default-golden-glossary.md
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/acceptance-criteria.md
     delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      completed_at: '2026-07-29'
+      note: 'S026/EV-020 01-requirements COMPLETE (delta) — E20-E1..E3; F24/F25; deepen F9/F7.g; glossary=official+YAML overrides; TAF A5-1+A5-2; report docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md; handoff 02-verify-plan'
+      feature_ids:
+      - F24
+      - F25
+      deepen:
+      - F9
+      - F7.g
+      artifacts:
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/acceptance-criteria.md
+      decision_refs:
+      - E20-E1
+      - E20-E2
+      - E20-E3
     - status: completed
       mode: delta
       session_id: S025-sigmet-quality
@@ -2543,6 +2647,7 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - '2026-07-29 S026/EV-020 01-requirements COMPLETE (E20-E1..E3) — F24/F25; deepen F9/F7.g; glossary=official sources+YAML overrides; TAF both A5-1+A5-2; report docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md; handoff 02-verify-plan'
     - '2026-07-29 S025/EV-019 01-requirements COMPLETE (D-S025-01-complete) — E19-9..14; F23 + deepen F6.d/F12; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md; handoff 02-verify-plan'
     - '2026-07-27 S023/EV-017 01-requirements COMPLETE (D-S023-01-requirements-delta) — F21/F22 corpus deltas from recommended architecture; deepen F5/F7; reports 01-requirements.md + impact-analysis.md; handoff 02-verify-plan (pending user gate)'
     - '2026-07-27 S023/EV-017 01-requirements STARTED (delta) — F21/F22; deepen F5/F7 IndexedDB; D-S023-E17-scope-lock; interview pending'
@@ -2586,54 +2691,92 @@ stages:
     started_at: '2026-07-29'
     started: '2026-07-29'
     completed_at: '2026-07-29'
-    previous_completed_at: '2026-07-28'
-    session_id: S025-sigmet-quality
-    evolve_cycle_id: EV-019
-    note: 'S025/EV-019 02-verify-plan COMPLETE 2026-07-29 (delta) — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1; F21/F22 summary fix; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04'
-    auto_approved: 14
+    completed: '2026-07-29'
+    previous_completed_at: '2026-07-29'
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    note: 'S026/EV-020 02-verify-plan COMPLETE 2026-07-29 (delta) — PASS; 18 auto + S02.M1/M2/L1/L2=1; ADR-032 Accepted; Gate A PASS (Lean); report docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md; handoff 04-tech-plan; #731'
+    auto_approved: 18
     contradictions_resolved:
-    - C-EV018-1
-    - C-EV018-2
     contradictions_deferred:
-    - M1
-    - M2
     decision_refs:
-    - D-S025-02-pass
-    - D-S025-EV019-s1m1-1
-    - D-S025-EV019-s6m1-1
-    - D-S025-EV019-s9m1-1
-    - D-S024-02-phase-a-A
-    - C-EV018-1
-    - C-EV018-2
+    - E20-E1
+    - E20-E2
+    - E20-E3
+    - S02.M1
+    - S02.M2
+    - S02.L1
+    - S02.L2
+    - D-S026-EV020-s02m1-1
+    - D-S026-EV020-s02m2-1
+    - D-S026-EV020-s02l1-1
+    - D-S026-EV020-s02l2-1
+    - D-S026-02-phase-a
     substeps:
       inventory:
         status: completed
       consistency_check:
         status: completed
       statement_review:
-        auto_approved: 14
-        pending: 0
-        reviewed: 3
+        auto_approved: 18
+        pending:
+        reviewed:
+        - S02.M1
+        - S02.M2
+        - S02.L1
+        - S02.L2
     current_document:
     current_statement:
     active_session:
-      session_id: S025-sigmet-quality
-      evolve_cycle_id: EV-019
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
       skill_id: 02-verify-plan
       status: completed
       mode: delta
       started_at: '2026-07-29'
       completed_at: '2026-07-29'
-      note: 'S025/EV-019 02-verify-plan COMPLETE (delta) — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04'
+      note: 'S026/EV-020 02-verify-plan COMPLETE — PASS; Batch F all 1; ADR-032 Accepted; Gate A PASS (Lean) → 04'
     artifacts:
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
+    - docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md
     - docs/sessions/S024-dissemination-file-select/reports/02-verify-plan.md
     - docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
     - docs/sessions/S021-golden-examples-ui/reports/02-verify-plan-audit.md
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-07-29'
+      completed_at: '2026-07-29'
+      mode: delta
+      feature_ids:
+      - F24
+      - F25
+      deepen:
+      - F9
+      - F7.g
+      auto_approved: 18
+      note: 'S026/EV-020 02-verify-plan COMPLETE 2026-07-29 (delta) — PASS; 18 auto + S02.M1/M2/L1/L2=1; ADR-032 Accepted; Gate A PASS (Lean); report docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md; handoff 04-tech-plan; #731'
+      decision_refs:
+      - E20-E1
+      - E20-E2
+      - E20-E3
+      - S02.M1
+      - S02.M2
+      - S02.L1
+      - S02.L2
+      - D-S026-EV020-s02m1-1
+      - D-S026-EV020-s02m2-1
+      - D-S026-EV020-s02l1-1
+      - D-S026-EV020-s02l2-1
+      - D-S026-02-phase-a
+      artifacts:
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md
+      - docs/adr/ADR-032-wmo-default-golden-glossary.md
     - session_id: S025-sigmet-quality
       evolve_cycle_id: EV-019
       skill_id: 02-verify-plan
@@ -2784,6 +2927,7 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-07-29 S026/EV-020 02-verify-plan COMPLETE (D-S026-02-phase-a) — PASS; 18 auto + S02.M1/M2/L1/L2=1; ADR-032 Accepted; Gate A PASS (Lean auto); report docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md; handoff 04-tech-plan; #731'
     - '2026-07-29 S025/EV-019 02-verify-plan COMPLETE (D-S025-02-pass) — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1 (D-S025-EV019-s1m1-1/s6m1-1/s9m1-1); F21/F22 summary fix; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04; do not start 04'
     - '2026-07-28 S024/EV-018 Phase A PASSED (D-S024-02-phase-a-A) — gates.a_to_b passed; M1/M2 deferred to 04; 04-tech-plan STARTED; 03 skipped (Lean+build)'
     - '2026-07-28 S024/EV-018 02-verify-plan COMPLETE — Phase A PASSED (D-S024-02-phase-a-A); C1/C2 fixed; M1/M2 deferred to 04; report docs/sessions/S024-dissemination-file-select/reports/02-verify-plan.md; handoff 04-tech-plan'
@@ -2893,27 +3037,29 @@ stages:
   04-tech-plan:
     status: completed
     started_at: '2026-07-29'
+    started: '2026-07-29'
     completed_at: '2026-07-29'
-    previous_started_at: '2026-07-28T23:04:36Z'
-    previous_completed_at: '2026-07-28T23:21:03Z'
-    session_id: S025-sigmet-quality
-    evolve_cycle_id: EV-019
-    note: 'S025/EV-019 04-tech-plan COMPLETE 2026-07-29 (D-S025-04-plan-approve-A) — E19-15..22; plan approved (~29 tasks); 04-exit PASS; B→C; handoff 07 @ T0.1; #733/#739'
+    completed: '2026-07-29'
+    previous_started_at: '2026-07-29'
+    previous_completed_at: '2026-07-29'
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    note: 'S026/EV-020 04 COMPLETE 2026-07-29 — E20-F1..F8; plan approved (D-S026-04-plan-approve); Gate B→C PASS; handoff 07 @ T0.1; #731'
     substeps:
       phase_1_toolchain:
         status: completed
         notes: Monorepo toolchain baseline from 2026-06-15 plan; EV-004 delta reuses pins
       phase_2_interview:
         status: completed
-        notes: Batch 1 confirmed — JWT client, shared types, pg_cron 03:00 UTC, WIP index
+        notes: Batch1 E20-F1..F4 + Batch2 E20-F5..F8 locked; plan approved
       phase_3_execution_plan:
         status: completed
       phase_4_user_review:
         status: completed
-        notes: User approved 5-phase / 38-task plan as drafted
+        notes: E20-F8=1 approve M0–M6; B→C → 07 @ T0.1
       phase_5_back_add:
         status: completed
-        notes: ADR-011, ADR-012 accepted
+        notes: ADR-032 Accepted; standing corpus deltas applied
       phase_6_documents:
         status: completed
     artifacts:
@@ -2924,7 +3070,68 @@ stages:
     - docs/adr/ADR-007-universal-coverage-gate.md
     - docs/adr/ADR-011-work-sessions-data-access.md
     - docs/adr/ADR-012-metar-work-sessions-retention.md
+    - docs/adr/ADR-032-wmo-default-golden-glossary.md
+    - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
+    - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     delta_substages:
+    - session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
+      skill_id: 04-tech-plan
+      status: completed
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      completed_at: '2026-07-29'
+      completed: '2026-07-29'
+      mode: delta
+      feature_ids:
+      - F24
+      - F25
+      deepen:
+      - F9
+      - F7.g
+      decision_refs:
+      - D-S026-02-phase-a
+      - S02.M1
+      - S02.M2
+      - S02.L1
+      - S02.L2
+      - D-S026-EV020-s02m1-1
+      - D-S026-EV020-s02m2-1
+      - D-S026-EV020-s02l1-1
+      - D-S026-EV020-s02l2-1
+      - E20-F1
+      - E20-F2
+      - E20-F3
+      - E20-F4
+      - E20-F5
+      - E20-F6
+      - E20-F7
+      - E20-F8
+      - D-S026-04-plan-approve
+      note: 'S026/EV-020 04 COMPLETE 2026-07-29 — E20-F1..F8; plan approved (D-S026-04-plan-approve); Gate B→C PASS; handoff 07 @ T0.1; #731'
+      interview:
+        batch_1:
+          status: locked
+          decision_ids:
+          - E20-F1
+          - E20-F2
+          - E20-F3
+          - E20-F4
+          locked_at: '2026-07-29'
+          note: 'E20-F1=1 milestone order; E20-F2=1 full mining; E20-F3=3 wmo-quality.yml; E20-F4=1 incremental catalog'
+        batch_2:
+          status: locked
+          decision_ids:
+          - E20-F5
+          - E20-F6
+          - E20-F7
+          - E20-F8
+          - D-S026-04-plan-approve
+          locked_at: '2026-07-29'
+          note: 'E20-F5=2 PyYAML; E20-F6=1 H4–H5; E20-F7=1 kill-switch; E20-F8=1 plan approve B→C → 07 @ T0.1'
+      artifacts:
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     - session_id: S025-sigmet-quality
       evolve_cycle_id: EV-019
       skill_id: 04-tech-plan
@@ -3315,6 +3522,9 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-29 S026/EV-020 04 COMPLETE E20-F1..F8; plan approved (D-S026-04-plan-approve); Gate B→C PASS; handoff 07 @ T0.1; #731'
+    - '2026-07-29 S026/EV-020 04 Batch1 locked E20-F1=1 F2=1 F3=3 (wmo-quality.yml) F4=1 (incremental catalog); Batch2 pending; #731'
+    - '2026-07-29 S026/EV-020 04-tech-plan STARTED (D-S026-02-phase-a) — Gate A PASS (Lean auto — Batch F + consistency PASS); ADR-032 Accepted; gates.a_to_b passed; mode delta; interview pending; #731'
     - '2026-07-29 S025/EV-019 04-tech-plan COMPLETE (D-S025-04-plan-approve-A) — E19-15..22; plan approved (~29 tasks); 04-exit PASS; B→C; handoff 07 @ T0.1; #733/#739'
     - '2026-07-29 S025/EV-019 04-tech-plan STARTED (D-S025-02-phase-a-A) — Phase A PASSED; gates.a_to_b passed; mode delta; Batch 1 interview pending; #733/#739'
     - '2026-07-28 S024/EV-018 04-tech-plan COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C; start 07 @ T1.1; #785'
@@ -3347,13 +3557,14 @@ stages:
     - S014/EV-010 delta 04-tech-plan completed 2026-07-18 — M1–M6 approved (43A); ADR-027 xsdata
     - S015/EV-011 delta 04-tech-plan completed 2026-07-19 — E11-31 GET lint-issue-catalog; 31 tasks approved
     active_session:
-      session_id: S025-sigmet-quality
-      evolve_cycle_id: EV-019
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-07-29'
-      note: '04-tech-plan in_progress — Phase A passed (D-S025-02-phase-a-A); Batch 1 interview pending'
+      completed_at: '2026-07-29'
+      note: '04 COMPLETE (E20-F1..F8); Gate B→C PASS; handoff 07 @ T0.1; #731'
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -3559,24 +3770,47 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
+    status: in_progress
     started_at: '2026-07-29'
-    completed_at: '2026-07-29'
-    previous_started_at: '2026-07-28T23:21:03Z'
-    previous_completed_at: '2026-07-28T23:30:05Z'
-    session_id: S025-sigmet-quality
-    evolve_cycle_id: EV-019
-    tip_sha: afffe86
-    tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
-    note: 'S025/EV-019 07-build COMPLETE — M0–M5 / 29 tasks; PR #792 merged afffe86; #733/#739'
+    started: '2026-07-29'
+    previous_started_at: '2026-07-29'
+    previous_completed_at: '2026-07-29'
+    previous_session_id: S025-sigmet-quality
+    previous_evolve_cycle_id: EV-019
+    previous_tip_sha: afffe86
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    note: 'S026/EV-020 T1.3+T1.4 COMPLETE (F24 A2); M1 A1–A2 done; next T2.1 (A3 golden); uncommitted; #731'
     substeps:
       task_loop:
-        status: completed
-        current_task: T5.6
+        status: in_progress
+        current_task: T2.1
         phase: C
-        milestone: M5
-        notes: S025/EV-019 M5 COMPLETE — 29/29; PR #792 merged afffe86
+        milestone: M2
+        notes: S026/EV-020 M1 complete (A1–A2); next T2.1 A3 golden; uncommitted pending user commit ask
     delta_substages:
+    - id: S026-airmet-quality-wmo-examples
+      session_id: S026-airmet-quality-wmo-examples
+      evolve_cycle_id: EV-020
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      mode: full
+      note: 'T1.3+T1.4 COMPLETE (F24 A2 fixtures + rules); M1 done; next T2.1 (A3 golden); uncommitted; #731'
+      active_milestone: M2
+      active_task: T2.1
+      active_task_status: pending
+      decision_id: D-S026-04-plan-approve
+      branch: evolve/EV-020-airmet-quality
+      uncommitted: true
+      progress: 7/~28
+      feature_ids:
+      - F24
+      - F25
+      deepen:
+      - F9
+      - F7.g
     - id: S025-sigmet-quality
       session_id: S025-sigmet-quality
       evolve_cycle_id: EV-019
@@ -3752,6 +3986,10 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-29 S026/EV-020 07-build T1.3+T1.4 A2 complete (uncommitted); next T2.1'
+    - '2026-07-29 S026/EV-020 07-build resume @ T1.3 A2 fixtures (user continue); prior T0–T1.2 uncommitted pending user commit ask'
+    - '2026-07-29 S026/EV-020 T1.1+T1.2 COMPLETE (AIRMET A1); next T1.3; #731'
+    - '2026-07-29 S026/EV-020 07-build STARTED (D-S026-04-plan-approve B→C) — active task T0.1; M0 research catalog; E20-F1..F8; #731'
     - '2026-07-29 S025/EV-019 07-build COMPLETE — M0–M5 / 29 tasks; PR #792 merged afffe86; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M5 T5.5 PASS — 10-e2e T0 PASS UJ-034 / TC-F23-001..006; next T5.6 13-deploy-smoke; progress 26/29; tip 1a6dc9a; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M5 T5.4 PASS — 08-verify-build PASS; next T5.5 10-e2e UJ-034 / TC-F23; progress 25/29; tip 846d50f; #733/#739'
@@ -5490,6 +5728,507 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S026-07-T1.3-T1.4-complete
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 07-build
+  stage: 07-build
+  category: session-note
+  status: confirmed
+  topic: 07-build T1.3+T1.4 complete
+  summary: "T1.3+T1.4 A2 complete (uncommitted); M1 A1–A2 done; next T2.1"
+  decision: "2026-07-29 S026/EV-020 07-build T1.3+T1.4 A2 complete (uncommitted); next T2.1"
+  related_issue: "731"
+  related_decisions: [D-S026-04-plan-approve, D-S026-07-resume-T1.3]
+- id: D-S026-07-resume-T1.3
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 07-build
+  stage: 07-build
+  category: session-note
+  status: confirmed
+  topic: 07-build resume
+  summary: "Resume @ T1.3 A2 fixtures; T0–T1.2 uncommitted"
+  decision: "2026-07-29 S026/EV-020 07-build resume @ T1.3 A2 fixtures (user continue); prior T0–T1.2 uncommitted pending user commit ask"
+  related_issue: "731"
+  related_decisions: [D-S026-04-plan-approve]
+- id: D-S026-04-plan-approve
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 04-tech-plan
+  skill: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: 04 Decision — Approve execution plan (E20-F8)
+  summary: "E20-F8=1 — Approve M0–M6; skip 05/06; B→C → 07 @ T0.1"
+  decision: "User approved 2026-07-29 (D-S026-04-plan-approve / E20-F8=1). Execution plan approved (M0–M6). 04-tech-plan COMPLETE (E20-F1..F8); 05/06 remain skipped (Lean+build+11); gates.b_to_c + checkpoints.phase_b passed; 07-build STARTED @ T0.1. Related: E20-F5..F8, #731."
+  related_issue: "731"
+  related_decisions: [E20-F5, E20-F6, E20-F7, E20-F8, E20-F1, E20-F2, E20-F3, E20-F4]
+- id: E20-F8
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  status: confirmed
+  topic: Plan approve / B→C
+  summary: "E20-F8=1 — Approve M0–M6; skip 05/06; B→C → 07 @ T0.1"
+  decision: "Option 1 locked 2026-07-29 04 Batch2 — approve execution plan M0–M6; skip 05/06; Gate B→C PASS; start 07-build @ T0.1."
+  related_issue: "731"
+  related_decisions: [E20-F5, E20-F6, E20-F7, D-S026-04-plan-approve]
+- id: E20-F7
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  status: confirmed
+  topic: Kill-switch mid-build
+  summary: "E20-F7=1 — AskQuestion; no silent defer"
+  decision: "Option 1 locked 2026-07-29 04 Batch2 — HARD themes; mid-build block → AskQuestion (no silent defer)."
+  related_issue: "731"
+  related_decisions: [E20-F5, E20-F6, E20-F8, D-S026-04-plan-approve]
+- id: E20-F6
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  status: confirmed
+  topic: Deploy / H4–H5
+  summary: "E20-F6=1 — Redeploy; H1–H3 if API; H4–H5 required"
+  decision: "Option 1 locked 2026-07-29 04 Batch2 — API+FE redeploy if changed; H1–H3 if API; H4–H5 required."
+  related_issue: "731"
+  related_decisions: [E20-F5, E20-F7, E20-F8, D-S026-04-plan-approve]
+- id: E20-F5
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  status: confirmed
+  topic: New dependencies
+  summary: "E20-F5=2 — PyYAML only if not already usable transitively"
+  decision: "Option 2 locked 2026-07-29 04 Batch2 — prefer no new deps; PyYAML allowed as sole new direct dep on tac2iwxxm if not already usable transitively."
+  related_issue: "731"
+  related_decisions: [E20-F6, E20-F7, E20-F8, D-S026-04-plan-approve]
+- id: E20-F1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  status: confirmed
+  topic: Milestone order
+  summary: "E20-F1=1 — Research → AIRMET lint → golden → METAR/SPECI → TAF → glossary+catalog → smoke"
+  decision: "Option 1 locked 2026-07-29 04 Batch1 — milestone order Research → AIRMET lint → AIRMET golden → METAR/SPECI → TAF → glossary+catalog → smoke. Batch2 pending."
+  related_issue: "731"
+  related_decisions: [E20-F2, E20-F3, E20-F4]
+- id: E20-F2
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  status: confirmed
+  topic: Research mining scope
+  summary: "E20-F2=1 — Full mining catalog AIRMET + METAR/SPECI/TAF"
+  decision: "Option 1 locked 2026-07-29 04 Batch1 — full mining catalog AIRMET + METAR/SPECI/TAF → session research doc. Batch2 pending."
+  related_issue: "731"
+  related_decisions: [E20-F1, E20-F3, E20-F4]
+- id: E20-F3
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  status: confirmed
+  topic: CI fixture catalog
+  summary: "E20-F3=3 — Combined wmo-quality.yml (migrate/replace sigmet-quality.yml)"
+  decision: "Option 3 locked 2026-07-29 04 Batch1 — combined wmo-quality.yml (SIGMET+AIRMET+METAR packs; migrate/replace sigmet-quality.yml). Batch2 pending."
+  related_issue: "731"
+  related_decisions: [E20-F1, E20-F2, E20-F4]
+- id: E20-F4
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  status: confirmed
+  topic: FE catalog unlock
+  summary: "E20-F4=1 — Incremental SIGMET-first until each golden greens"
+  decision: "Option 1 locked 2026-07-29 04 Batch1 — incremental catalog unlock (SIGMET-first until each golden greens). Batch2 pending."
+  related_issue: "731"
+  related_decisions: [E20-F1, E20-F2, E20-F3]
+- id: D-S026-02-phase-a
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 16-evolve
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: checkpoint
+  status: confirmed
+  topic: Gate A → 04-tech-plan (Lean auto)
+  summary: "Gate A PASS (Lean) — 02 COMPLETE → 04-tech-plan STARTED"
+  decision: >-
+    Gate A PASS (Lean auto — Batch F all 1 + consistency PASS). 02-verify-plan
+    completed; ADR-032 Accepted; gates.a_to_b passed; checkpoints.phase_a passed;
+    advance to 04-tech-plan (in_progress). Report:
+    docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md.
+  related_issue: "731"
+  related_decisions: [D-S026-EV020-s02m1-1, D-S026-EV020-s02m2-1, D-S026-EV020-s02l1-1, D-S026-EV020-s02l2-1, S02.M1, S02.M2, S02.L1, S02.L2]
+- id: D-S026-EV020-s02l2-1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  status: confirmed
+  topic: S02.L2 incremental catalog unlock
+  summary: "S02.L2 = 1 — Approve incremental catalog unlock (SIGMET-only until other goldens green)"
+  decision: >-
+    S02.L2 option 1 confirmed 2026-07-29 — Approve incremental Examples catalog
+    unlock (SIGMET-only until other product goldens are green). Batch F / 02-verify-plan.
+  related_issue: "731"
+  related_decisions: [S02.L2, D-S026-02-phase-a]
+- id: D-S026-EV020-s02l1-1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  status: confirmed
+  topic: S02.L1 TAC2IWXXM_DECODE_GLOSSARY_PATH env name
+  summary: "S02.L1 = 1 — Approve exact env name TAC2IWXXM_DECODE_GLOSSARY_PATH"
+  decision: >-
+    S02.L1 option 1 confirmed 2026-07-29 — Approve exact env var name
+    TAC2IWXXM_DECODE_GLOSSARY_PATH for glossary YAML override path. Batch F / 02-verify-plan.
+  related_issue: "731"
+  related_decisions: [S02.L1, D-S026-02-phase-a]
+- id: D-S026-EV020-s02m2-1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  status: confirmed
+  topic: S02.M2 ADR-032 Accepted now
+  summary: "S02.M2 = 1 — ADR-032 → Accepted"
+  decision: >-
+    S02.M2 option 1 confirmed 2026-07-29 — Accept ADR-032
+    (docs/adr/ADR-032-wmo-default-golden-glossary.md) now. Batch F / 02-verify-plan.
+  related_issue: "731"
+  related_decisions: [S02.M2, D-S026-02-phase-a]
+- id: D-S026-EV020-s02m1-1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  status: confirmed
+  topic: S02.M1 taf-A5-2 still F25 golden
+  summary: "S02.M1 = 1 — Approve taf-A5-2 (WMO AMD/CNL cancel TAF) remains F25 golden"
+  decision: >-
+    S02.M1 option 1 confirmed 2026-07-29 — taf-A5-2 is WMO AMD/CNL cancel TAF and
+    remains in F25 golden parity scope (E20-E1=both). Batch F / 02-verify-plan.
+  related_issue: "731"
+  related_decisions: [S02.M1, E20-E1, D-S026-02-phase-a]
+- id: E20-E3
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  topic: Close 01-requirements → 02-verify-plan
+  summary: "E20-E3 — Close 01 → 02-verify-plan"
+  decision: >-
+    Close 01-requirements (completed 2026-07-29) and advance to 02-verify-plan
+    (in_progress). Batch E locked with E20-E1 (TAF A5-1+A5-2) and E20-E2
+    (glossary = official/near-official sources primary + YAML overrides under
+    tac2iwxxm data). Report: docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md.
+  related_issue: "731"
+  related_decisions: [E20-E1, E20-E2]
+- id: E20-E2
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  topic: Decode glossary sources — official primary + YAML overrides
+  summary: "E20-E2 — glossary = official/near-official sources + YAML overrides"
+  decision: >-
+    Official/near-official sources are primary for the 7-product decode glossary;
+    YAML (under tac2iwxxm data path) provides overrides only. Extensible registry
+    remains (E20-B). Locked 2026-07-29 (Batch E / 01-requirements).
+  related_issue: "731"
+  related_decisions: [E20-B, E20-4, E20-E3]
+- id: E20-E1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  topic: TAF WMO golden scope — A5-1 and A5-2
+  summary: "E20-E1 — TAF both taf-A5-1 and taf-A5-2"
+  decision: >-
+    Include both WMO TAF examples taf-A5-1 and taf-A5-2 in F25 golden parity
+    scope this cycle. Locked 2026-07-29 (Batch E / 01-requirements).
+  related_issue: "731"
+  related_decisions: [E20-A, E20-2, E20-E3]
+- id: D-S026-E20-routing-C1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  status: confirmed
+  topic: Routing confirm — Lean+build with 11-verify-impl re-added
+  summary: "D-S026-E20-routing-C1 — Confirm C=1 Lean+build+11 approved"
+  decision: >-
+    Confirm C=1 approved 2026-07-29. Preset Lean+build+11 (Lean+build with 11-verify-impl
+    re-added for F24/F25 AC sign-off). Path: 00→16→01→02→04→07→08→10→11→13. Skip:
+    03, 05, 06, 09, 12. preset_status=approved; routing_decision_id=D-S026-E20-routing-C1.
+    00-context completed; 16-evolve in_progress orchestrating into 01 (see E20-8).
+  related_issue: "731"
+  related_decisions: [E20-5, E20-8, D-S026-E20-intake]
+  answers:
+    C: '1'
+- id: E20-8
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  status: confirmed
+  topic: Proceed to 01-requirements
+  summary: "E20-8 — proceed to 01-requirements after routing C=1"
+  decision: >-
+    Proceed to 01-requirements. Routing Confirm C=1 (D-S026-E20-routing-C1) locked
+    Lean+build+11; Phase 0 / 00-context complete; 16-evolve orchestrates into 01-requirements
+    for F24/F25 + F9/F7.g deepen corpus work. Locked 2026-07-29.
+  related_issue: "731"
+  related_decision: D-S026-E20-routing-C1
+- id: D-S026-E20-intake
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  status: confirmed
+  topic: Phase 0 intake lock — E20-1..6 + A/B confirms
+  summary: "D-S026-E20-intake — Phase 0 locked; A=2 B=2+3; Fn proposed F24/F25; Lean+build amend pending"
+  decision: >-
+    Phase 0 intake locked 2026-07-29. Batch1: E20-1=1 strict WMO byte-identical goldens;
+    E20-2→E20-A=2 full AIRMET+#731 plus METAR/SPECI/TAF WMO byte-parity this cycle;
+    E20-3=1 UI catalog only listing examples that pass that bar; E20-4→E20-B=2+3 full
+    7-product glossary + OpenAIP/F3 names + extensible YAML/JSON registry; E20-5=1
+    Lean+build proposed (amend AskQuestion pending given A=2 size); E20-6=2 docs/repo
+    only. Fn proposed: F24 (#731 AIRMET quality), F25 (WMO official golden parity
+    METAR/SPECI/TAF + UI gate); deepen F9 + F7.g. EV-020 created. OOS: #738 TC SIGMET,
+    new SWX/VONA bars, PyPI unless required. SIGMET (F23) keep green.
+  related_issue: "731"
+  related_decisions: [E20-1, E20-2, E20-3, E20-4, E20-5, E20-6, E20-A, E20-B]
+  answers:
+    '1': '1'
+    '2': '2'
+    '3': '1'
+    '4': '2'
+    A: '2'
+    B: '2+3'
+    '5': '1'
+    '6': '2'
+- id: E20-A
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Confirm product / golden scope
+  summary: "E20-A=2 — METAR+SPECI+TAF+AIRMET WMO byte-parity this cycle"
+  decision: >-
+    A=2 — Still do METAR+SPECI+TAF+AIRMET WMO byte-parity in this cycle (accept large
+    plan / likely multi-milestone; may need Full or extend past Lean+build). Locked
+    2026-07-29 (D-S026-E20-intake). Routing amend AskQuestion pending.
+  related_issue: "731"
+  related_decision: D-S026-E20-intake
+- id: E20-B
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Confirm decode glossary depth
+  summary: "E20-B=2+3 — 7-product glossary + OpenAIP/F3 + extensible registry"
+  decision: >-
+    B=2+3 — Full 7-product plain-English glossary plus OpenAIP/F3 name enrichment
+    where available, plus extensible YAML/JSON glossary registry operators can extend.
+    Locked 2026-07-29 (D-S026-E20-intake).
+  related_issue: "731"
+  related_decision: D-S026-E20-intake
+- id: E20-1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: WMO golden bar definition
+  summary: "E20-1=1 — strict byte-identical to vendor *.xml"
+  decision: >-
+    1 — Byte-identical to vendor *.xml (strict) for in-scope products; UI only lists
+    those that pass. Locked 2026-07-29 (D-S026-E20-intake).
+  related_issue: "731"
+  related_decision: D-S026-E20-intake
+- id: E20-2
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Product scope this cycle
+  summary: "E20-2=2 — also force METAR/SPECI/TAF to WMO byte-goldens (confirmed E20-A=2)"
+  decision: >-
+    2 — Also force METAR/SPECI/TAF to WMO byte-goldens (large); confirmed by E20-A=2
+    for full AIRMET+METAR/SPECI/TAF parity this cycle. Locked 2026-07-29 (D-S026-E20-intake).
+  related_issue: "731"
+  related_decision: D-S026-E20-intake
+- id: E20-3
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: UI examples catalog gate
+  summary: "E20-3=1 — catalog only lists examples that pass WMO golden bar"
+  decision: >-
+    1 — Replace catalog bodies with WMO vendor TAC for products that pass the chosen
+    golden bar; hide/remove non-passing demos for those products. Locked 2026-07-29
+    (D-S026-E20-intake).
+  related_issue: "731"
+  related_decision: D-S026-E20-intake
+- id: E20-4
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Decode English depth
+  summary: "E20-4=2 — all seven products full glossary (extended by E20-B=2+3)"
+  decision: >-
+    2 — All seven products full glossary this cycle; extended by E20-B=2+3 (OpenAIP/F3
+    + extensible registry). Locked 2026-07-29 (D-S026-E20-intake).
+  related_issue: "731"
+  related_decision: D-S026-E20-intake
+- id: E20-5
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Routing preset
+  summary: "E20-5=1 — Lean+build proposed; amend AskQuestion pending (A=2 size)"
+  decision: >-
+    1 — Lean+build (00→16→01→02→04→07→08→10→13). Locked as proposed 2026-07-29;
+    preset_status=proposed_amend_pending given E20-A=2 size — routing amend
+    AskQuestion still required before treating routing as final.
+  related_issue: "731"
+  related_decision: D-S026-E20-intake
+- id: E20-6
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  stage: 00-context
+  skill_id: 00-context
+  status: confirmed
+  topic: Local UI preview
+  summary: "E20-6=2 — docs/repo only for now"
+  decision: >-
+    2 — No non-deployed local UI preview; docs/repo only for now. Locked 2026-07-29
+    (D-S026-E20-intake).
+  related_issue: "731"
+  related_decision: D-S026-E20-intake
 - id: D-S025-close
   date: "2026-07-29"
   timestamp: "2026-07-29"
@@ -10529,6 +11268,11 @@ decisions_log:
   do_not_auto_merge: true
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790
 artifacts:
+- path: docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md
+  status: pending
+  stage: 01-requirements
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
 - path: docs/sessions/S025-sigmet-quality/reports/01-requirements.md
   status: pending_confirm
   session_id: S025-sigmet-quality
@@ -12648,6 +13392,85 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-020
+  session_id: S026-airmet-quality-wmo-examples
+  cycle_type: feature
+  feature_ids: [F24, F25]
+  deepen: [F9, F7.g]
+  feature_note: "F24 AIRMET quality #731; F25 WMO official golden parity METAR/SPECI/TAF + UI gate; deepen F9 glossary registry+OpenAIP; deepen F7.g examples catalog"
+  title: "AIRMET quality + WMO official golden parity + decode glossary"
+  status: in_progress
+  started: "2026-07-29"
+  started_at: "2026-07-29"
+  completed: null
+  github_issues: [731]
+  branch: evolve/EV-020-airmet-quality
+  preset: Lean+build+11
+  preset_status: approved
+  scope_summary: |
+    Strict byte-identical WMO vendor IWXXM goldens (2025-2) for AIRMET (#731) AND
+    METAR/SPECI/TAF official examples this cycle. UI Examples catalog only lists
+    examples that pass that bar. Decode: full 7-product plain-English glossary
+    (extensible YAML/JSON registry) + OpenAIP/F3 name enrichment where available.
+    SIGMET already passes (F23) — keep green. OOS: TC SIGMET #738, new SWX/VONA
+    quality bars, PyPI bumps unless required.
+  routing_plan:
+    required_stages: [00-context, 16-evolve, 01-requirements, 02-verify-plan, 04-tech-plan, 07-build, 08-verify-build, 10-e2e, 11-verify-impl, 13-deploy-smoke]
+    skipped_stages: [03-plan-tooling, 05-verify-tech, 06-tech-tooling, 09-qa, 12-verify-deploy]
+    note: "Lean+build+11 approved Confirm C=1 (D-S026-E20-routing-C1); 11-verify-impl re-added for F24/F25 AC"
+  current_stage: 07-build
+  stages:
+    00-context: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
+    16-evolve: {status: in_progress, started: "2026-07-29"}
+    01-requirements: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
+    02-verify-plan: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
+    04-tech-plan: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
+    07-build: {status: in_progress, started: "2026-07-29"}
+    08-verify-build: {status: pending}
+    10-e2e: {status: pending}
+    11-verify-impl: {status: pending}
+    13-deploy-smoke: {status: pending}
+  gates: {a_to_b: passed, b_to_c: passed, c_to_d: pending, deploy: pending}
+  checkpoints: {phase_a: passed, phase_b: passed, phase_c: pending, phase_d: pending, deploy: pending}
+  adrs:
+  - path: docs/adr/ADR-032-wmo-default-golden-glossary.md
+    status: accepted
+  artifacts:
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/session-brief.md
+    status: in_progress
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/routing-plan.md
+    status: in_progress
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md
+    status: completed
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/acceptance-criteria.md
+    status: completed
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md
+    status: completed
+  - path: docs/adr/ADR-032-wmo-default-golden-glossary.md
+    status: accepted
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
+    status: completed
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
+    status: in_progress
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/wmo-quality-research-catalog.md
+    status: completed
+  issues: []
+  decision_refs: [E20-1, E20-2, E20-3, E20-4, E20-5, E20-6, E20-A, E20-B, D-S026-E20-intake, D-S026-E20-routing-C1, E20-8, E20-E1, E20-E2, E20-E3, S02.M1, S02.M2, S02.L1, S02.L2, D-S026-EV020-s02m1-1, D-S026-EV020-s02m2-1, D-S026-EV020-s02l1-1, D-S026-EV020-s02l2-1, D-S026-02-phase-a, E20-F1, E20-F2, E20-F3, E20-F4, E20-F5, E20-F6, E20-F7, E20-F8, D-S026-04-plan-approve, D-S026-07-resume-T1.3, D-S026-07-T1.3-T1.4-complete]
+  note: "T1.3+T1.4 COMPLETE (F24 A2 fixtures + rules); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); uncommitted pending user commit ask; #731"
+  notes:
+  - '2026-07-29 S026/EV-020 07-build T1.3+T1.4 A2 complete (uncommitted); next T2.1'
+  - '2026-07-29 S026/EV-020 07-build resume @ T1.3 A2 fixtures (user continue); prior T0–T1.2 uncommitted pending user commit ask'
+  - '2026-07-29 S026/EV-020 T1.1+T1.2 COMPLETE (AIRMET A1); next T1.3; #731'
+  - '2026-07-29 S026/EV-020 M0 COMPLETE T0.1–T0.3; make test-wmo-quality green; next T1.1; #731'
+  - '2026-07-29 S026/EV-020 04 COMPLETE E20-F1..F8; plan approved; Gate B→C PASS; 07 @ T0.1; #731'
+  - '2026-07-29 S026/EV-020 04 Batch1 locked E20-F1=1 F2=1 F3=3 (wmo-quality.yml) F4=1 (incremental catalog); Batch2 pending; #731'
+  - '2026-07-29 S026/EV-020 02-verify-plan PASS (Batch F all 1); ADR-032 Accepted; Gate A PASS (Lean); 04-tech-plan STARTED; #731'
+  - '2026-07-29 S026/EV-020 01-requirements COMPLETE (E20-E1..E3) — F24/F25; deepen F9/F7.g; glossary=official sources+YAML overrides; TAF both A5-1+A5-2; report reports/01-requirements.md; current_stage→02-verify-plan in_progress; #731'
+  - '2026-07-29 S026/EV-020 01-requirements STARTED (delta) — F24/F25; deepen F9/F7.g; artifact reports/01-requirements.md pending; #731'
+  - '2026-07-29 S026/EV-020 routing Confirm C=1 Lean+build+11 approved (D-S026-E20-routing-C1); 00 completed; 16 in_progress → 01 (E20-8); path 00→16→01→02→04→07→08→10→11→13; #731'
+  - '2026-07-29 S026/EV-020 Phase 0 intake locked A=2 B=2+3 (D-S026-E20-intake); Fn proposed F24/F25; Lean+build amend AskQuestion pending; #731'
 - id: EV-019
   status: completed
   cycle_type: feature
@@ -16894,14 +17717,18 @@ evolve_cycles:
   pr_number: 723
   merge_sha: '4660602'
 git_history:
-  current_branch: evolve/EV-019-sigmet-quality
+  current_branch: evolve/EV-020-airmet-quality
   ahead_of_origin: 0
   pushed: false
   pending_commit:
-  tip_sha: 1a6dc9a
-  tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
-  note: 'S025/EV-019 T5.5 10-e2e PASS; T5.6 13-deploy-smoke in_progress; active_task T5.6; progress 26/29; tip 1a6dc9a; #733/#739'
+  tip_sha: a02d8ea
+  tip_sha_full: a02d8ea434f38b11b49ac98ed491bbcc2e05aa47
+  note: 'S026/EV-020 — 01-requirements STARTED (delta); 16 orchestrating; F24/F25; #731'
   notes:
+  - '2026-07-29 S026/EV-020 01-requirements STARTED (delta) — current_stage=01-requirements; artifact reports/01-requirements.md pending; #731'
+  - '2026-07-29 S026/EV-020 routing Confirm C=1 Lean+build+11 approved (D-S026-E20-routing-C1); 00 completed; 16 in_progress → 01 (E20-8); 11-verify-impl required; #731'
+  - '2026-07-29 S026/EV-020 Phase 0 intake locked A=2 B=2+3 (D-S026-E20-intake); evolve_cycle_counter=20; EV-020 created; Fn proposed F24/F25; Lean+build amend pending; #731'
+  - '2026-07-29 S026 open — branch evolve/EV-020-airmet-quality recorded active (base main @ a02d8ea); session_counter 26; evolve_cycle_counter remains 19 (EV-020 reserved, cycle entry deferred); Lean+build proposed; #731'
   - '2026-07-29 S025/EV-019 tip synced — 1a6dc9a (1a6dc9a5259f7d3688bcd42a4a26119be9686b4c); T5.5 10-e2e PASS; stage 13-deploy-smoke; T5.6 in progress; progress 26/29'
   - '2026-07-29 S025/EV-019 tip synced — 846d50f (846d50fb27b732616e56a0eeb3bb55b953e2a317); T5.4 08-verify-build PASS; stage 10-e2e; T5.5 in progress; progress 25/29'
   - '2026-07-29 S025/EV-019 tip synced — 6335842 (63358426574799d7c0f849dd7a3fc09f804a05a7); T5.3 API smoke DONE; stage 08-verify-build; T5.4 in progress; progress 24/29'
@@ -17095,18 +17922,33 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
-  - name: evolve/EV-019-sigmet-quality
-    purpose: "S025/EV-019 SIGMET family quality bars (#733 general + #739 VA)"
+  - name: evolve/EV-020-airmet-quality
+    purpose: "S026/EV-020 AIRMET quality (#731) + WMO golden parity + decode glossary; F24/F25"
     base: main
     status: active
     created: '2026-07-29'
     created_at: '2026-07-29'
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    note: "Lean+build+11 approved (D-S026-E20-routing-C1); 16→01; not pushed"
+    tip_sha: a02d8ea
+    tip_sha_full: a02d8ea434f38b11b49ac98ed491bbcc2e05aa47
+    pushed: false
+  - name: evolve/EV-019-sigmet-quality
+    purpose: "S025/EV-019 SIGMET family quality bars (#733 general + #739 VA)"
+    base: main
+    status: merged
+    created: '2026-07-29'
+    created_at: '2026-07-29'
     session_id: S025-sigmet-quality
     evolve_cycle_id: EV-019
-    note: "Session opened; Phase 0 Batch 1 locked; Batch 2 pending; not pushed"
-    tip_sha: 7c750a2
-    tip_sha_full: 7c750a204d98e9e96d54ea8c1ddf612f1bdd022d
-    pushed: false
+    note: "S025/EV-019 completed; PR #792 merged afffe86; branch superseded by main"
+    tip_sha: afffe86
+    tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
+    pushed: true
+    pr_number: 792
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/792
+    pr_status: merged
   - name: evolve/EV-018-dissemination-file-select
     purpose: 'S024/EV-018 dissemination multi-file export selection (#785)'
     base: main
