@@ -88,8 +88,7 @@ See [routing-plan.md](./routing-plan.md) — **approved** Lean+build (E19-4).
 
 ## Current stage
 
-**00-context COMPLETE** — Phase 0 locked; F23 written to `feature-list.md`.
-**Paused** before **01-requirements** per E19-8=B. Say when to resume.
+**07-build** — M0 complete (T0.1–T0.3); next **T1.1** F23 theme G1 accept/negative fixtures.
 
 ## Links
 
@@ -98,3 +97,4 @@ See [routing-plan.md](./routing-plan.md) — **approved** Lean+build (E19-4).
 - Corpus: F23 + deepen F6/F12 — `docs/feature-list.md`
 - Domain: `docs/domain/rules/COVERAGE_MATRIX.md`, ADR-028
 - Encode: `vendor/schemas/iwxxm/2025-2/IWXXM/examples/TAC-to-XML-Guidance.txt`
+- 01 report: [reports/01-requirements.md](./reports/01-requirements.md)

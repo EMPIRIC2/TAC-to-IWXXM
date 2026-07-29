@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-29 (S025 / EV-019 — F23 SIGMET quality bar planned; #733/#739)
+> **Last updated**: 2026-07-29 (S025 / EV-019 — F23 01-requirements delta; UJ-034 / TC-F23)
 
 ## Summary
 
@@ -28,8 +28,8 @@
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; mock-BYOC close (Q15 waive) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; staging stubs; live optional |
 | F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778 |
-| F21 | Public unauthenticated operator app | Planned | Product | S023 / EV-017; #783 |
-| F22 | Privacy preference center (Solution A + GPC) | Planned | Product | S023 / EV-017; #783 |
+| F21 | Public unauthenticated operator app | Implemented | Product | S023 / EV-017; #783 |
+| F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783 |
 | F23 | SIGMET family quality bar (general + VA) | Planned | Product | S025 / EV-019; #733/#739 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
@@ -644,15 +644,18 @@
 
 ### F23: SIGMET Family Quality Bar (General + VA) — S025 / EV-019
 
-- **Status**: **Planned** — S025 / EV-019 Phase 0 locked 2026-07-29 (E19-1..E19-8;
-  Lean+build). Spec deltas pending **01-requirements**.
+- **Status**: **Planned** — S025 / EV-019 01-requirements delta locked 2026-07-29
+  (E19-1..E19-18; Lean+build; E19-17 amends E19-14 for FE catalog). Flips **Done** after
+  verify/deploy gate.
 - **What it does**: Raises **General SIGMET** and **Volcanic-ash SIGMET** TAC lint, convert,
   and IWXXM-validate quality to the same bar F15/F20 set for aerodrome products. Reuses the
   **ADR-028** issue registry (new SIGMET / VA SIGMET codes as needed; no new registry
   architecture). Audits encode paths against WMO `TAC-to-XML-Guidance.txt` **plus** 2025-2
   corrections. Expands accept/negative fixtures, golden TAC→IWXXM→XSD+Schematron, and
-  coverage-matrix **SIGMET** + **VA SIGMET** rows. Distinguishes VA SIGMET
+  coverage-matrix themes **G1–G3 / V1–V3 / C1**. Distinguishes VA SIGMET
   (`iwxxm:VolcanicAshSIGMET`) from VAA advisory (`iwxxm:VolcanicAshAdvisory`).
+  API keeps `product=sigmet`; converter selects root from TAC (VA phenomenon / WV AHL) —
+  **no new product enum** (E19-13=A).
 - **Issues**: [#733](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/733) (general SIGMET),
   [#739](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/739) (VA SIGMET).
 - **Deepens**:
@@ -661,33 +664,39 @@
   | **F6** | F6.d SIGMET (+ VA SIGMET root) convert/golden fidelity per guidance |
   | **F12** | SIGMET + VA SIGMET checklist rules via registry; accept + negative fixtures |
   | **F15** | Registry already product-agnostic; this cycle adds/extends codes only (F15 stays Done) |
-- **Acceptance** (product-level; journeys/tests refined in 01):
+- **Acceptance**:
   1. SIGMET and VA SIGMET lint emissions use registry codes; CI fails on unknown codes
+     (**TC-F23-001**)
   2. #733 exceptional-rule table (CNL, point→circle, single altitude, STNR, polygon/line CRS, …)
-     has accept + negative fixtures (or explicit deferrals with rationale)
+     has accept + negative fixtures (or explicit deferrals with rationale) (**G1**; TC-F23-002/004)
   3. #739 exceptional-rule table (volcano identity, ash geometry/forecast, `NO VA EXP`, CNL
      FIR-moved-ash) has accept + negative fixtures; not confused with VAA encode
+     (**V1–V2**; TC-F23-003/004/006)
   4. Common rules covered: `reportStatus` / `permissibleUsage`, `translationFailedTAC`,
-     geometry CRS, nilReasons, one-IWXXM-per-TAC-report
-  5. Coverage-matrix SIGMET + VA SIGMET rows updated; guidance gaps filed or closed
+     geometry CRS, nilReasons, one-IWXXM-per-TAC-report (**C1**)
+  5. Coverage-matrix SIGMET + VA SIGMET / F23 themes updated; guidance gaps filed or closed
   6. Accept fixtures → convert → `iwxxm-validate` XSD+Schematron pass (pinned versions);
      roots match `iwxxm:SIGMET` / `iwxxm:VolcanicAshSIGMET` for pinned `iwxxm_version`
-     (esp. 2025-2)
-  7. Workbench / product path lint+convert smoke documented (F7 remains Planned; smoke only
-     under F23); H1–H3 if API ships; H4–H5 when FE touched (E19-7)
+     (esp. 2025-2) (**G3/V3**; TC-F23-002/003)
+  7. Workbench / product path lint+convert smoke (**UJ-034** / **TC-F23-005**; F7 remains
+     Planned; smoke only for product path); **additive FE catalog filters/copy for SIGMET
+     (+ VA) tags** (E19-17=B amends E19-14); H1–H3 if API ships; **H4–H5 required** when FE
+     touched (E19-7 / E19-17)
+- **Journeys / tests**: **UJ-034**; **TC-F23-001..006**
 - **Out of scope**: [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) TC SIGMET;
   [#731](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/731) AIRMET; [#736](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/736)
   VAA; [#737](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/737) TCA; #740 SWX; #741 VONA;
-  PyPI release bumps; F16–F19; COLLECT — unless shared common-rule touch (E19-6)
-- **Source**: #733/#739; E19-1..E19-8; [context/sigmet-quality.md](context/sigmet-quality.md);
+  PyPI release bumps; F16–F19; COLLECT; new `product` enum values — unless shared
+  common-rule touch (E19-6 / E19-13)
+- **Source**: #733/#739; E19-1..E19-18; [context/sigmet-quality.md](context/sigmet-quality.md);
   ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`; predecessors F15 / EV-011, F20 / EV-015
 
 ### F6 deepen (S025 / EV-019 — SIGMET + VA SIGMET)
 
 - **Status note**: F6 remains **Implemented**; this cycle **deepens F6.d** (general SIGMET +
-  VA SIGMET root) convert/golden fidelity under F23 acceptance (not a new Fn). Track gaps vs
-  #733/#739 exceptional-rule tables and WMO guidance + 2025-2 corrections. TC SIGMET remains
-  sibling #738.
+  content-selected **`iwxxm:VolcanicAshSIGMET`** root) convert/golden fidelity under F23
+  acceptance (not a new Fn). Track gaps vs #733/#739 exceptional-rule tables and WMO
+  guidance + 2025-2 corrections. TC SIGMET remains sibling #738.
 
 ### F12 deepen (S025 / EV-019 — SIGMET + VA SIGMET)
 

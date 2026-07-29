@@ -57,3 +57,9 @@
 | 2026-07-27 | C-EV017.5 | deferred | env-contract stale-until-F21 banner; full rewrite 04/12 |
 | 2026-07-27 | C-EV017.6 | modified | Added TC-F21-auth-gone + TC-F22-001..003 stubs |
 | 2026-07-27 | D-S023-02-C-EV017-A | approved | Contradiction batch option A |
+| 2026-07-29 | EV019-S1.1–S6.1 | auto-approved | 14 high-confidence F23 locks from E19-2..E19-14 (S025 02-verify-plan-audit) |
+| 2026-07-29 | C-EV019-F21F22 | modified | feature-list summary F21/F22 Planned → Implemented (S023 sync) |
+| 2026-07-29 | S1.M1 | approved | D-S025-EV019-s1m1-1 — full HARD themes; 04 kill-switch |
+| 2026-07-29 | S6.M1 | approved | D-S025-EV019-s6m1-1 — keep G1–G3; prefix F23 theme vs gate |
+| 2026-07-29 | S9.M1 | approved | D-S025-EV019-s9m1-1 — keep skip 05; light pass at 04 exit |
+| 2026-07-29 | D-S025-02-phase-a | approved | Phase A PASS → 04-tech-plan (user A) |

@@ -553,6 +553,10 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 - S024 / EV-018 (2026-07-28): F16 multi-file selection deepen (#785) — **no new routes**;
   document client N-sequential preflight/send + ≤20 selection cap; single-payload request
   shape unchanged (E18-5/E18-6).
+- S025 / EV-019 (2026-07-29): F23 SIGMET + VA SIGMET quality — **full endpoint review**; no
+  new routes; wire shapes unchanged. `product=sigmet` selects root `iwxxm:SIGMET` vs
+  `iwxxm:VolcanicAshSIGMET` from TAC content (E19-13=A). Registry codes flow through existing
+  `lint-tac` + `GET /lint-issue-catalog`. Dissemination routes unchanged (OOS).
 
 ## S020 / EV-015 — Endpoint review (F20)
 
@@ -569,3 +573,20 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 
 **Breaking changes**: None expected. Frontend OpenAPI types update only if catalog/issue
 content requires new documented code enums (prefer additive).
+
+## S025 / EV-019 — Endpoint review (F23)
+
+| Endpoint | Change for F23? | Notes |
+|----------|-----------------|-------|
+| `POST /api/v1/convert` | **None (wire)** | `product=sigmet` already required enum; package selects `iwxxm:SIGMET` vs `iwxxm:VolcanicAshSIGMET` from TAC (VA / WV); **no** `va_sigmet` enum (E19-13=A) |
+| `POST /api/v1/convert-bulletin` | **None (wire)** | Per-report root identity for general vs VA SIGMET in bulletins; TC-F23-006 |
+| `POST /api/v1/lint-tac` | **None (wire)** | New SIGMET (+ VA) registry codes in issue payloads; catalog stays source of truth |
+| `GET /api/v1/lint-issue-catalog` | **Additive content** | New codes appear in catalog export; response schema unchanged; **FE catalog panel** adds SIGMET/VA tag filters/copy (E19-17=B amends E19-14) |
+| `POST /api/v1/decode-tac` | **None (wire)** | SIGMET/VA best-effort decode already F9 sparse-product scope; fixtures may expand |
+| `POST /api/v1/validate` | **None (wire)** | Round-trip goldens use existing validate levels |
+| `POST /api/v1/dissemination/*` | **OOS** | No F16–F19 changes this cycle (E19-6) |
+| `/auth/*`, work-sessions | **None** | Unchanged (F21 public) |
+
+**Breaking changes**: None expected. Root selection is package-side behavior under existing
+`product=sigmet`; FE OpenAPI types update only if catalog/issue content requires new
+documented code enums (prefer additive).

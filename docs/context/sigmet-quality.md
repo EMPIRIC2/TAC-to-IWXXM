@@ -62,5 +62,8 @@ Confirm Batch 2: siblings remain cite-only unless shared common-rule touch.
 | R4 | Full AC depth — guidance + fixtures + goldens + matrix (E19-5) |
 | R5 | Siblings OOS; F7 smoke only (E19-6) |
 | R6 | Deploy smoke H1–H5 when API/FE change (E19-7) |
-| R7 | Phase 0 locked; pause before 01 (E19-8=B) |
-| R8 | No local UI preview — docs/repo only (E19-ui assumed B) |
+| R7 | Phase 0 locked; resumed 01-requirements (user continue) |
+| R8 | No local UI preview — docs/repo only (E19-10=A) |
+| R9 | UJ-034; TC-F23-001..006; themes G1–G3/V1–V3/C1 (E19-11/12) |
+| R10 | `product=sigmet` + content-selected VA root (E19-13); FE catalog SIGMET/VA filters (E19-17 amends E19-14) |
+| R11 | 04 Batch 1: order A; full mining B; FE filters B; deps AskQuestion B (E19-15..18) |

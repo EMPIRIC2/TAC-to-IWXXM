@@ -10,7 +10,7 @@
 **Issues**: [#733](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/733), [#739](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/739)  
 **Started**: 2026-07-29  
 **Branch**: `evolve/EV-019-sigmet-quality`  
-**Status**: Phase 0 **locked**; F23 in feature-list; **paused before 01** (E19-8=B)
+**Status**: Phase 0 **locked**; **01** COMPLETE; **02-verify-plan PASS**; Phase A → 04 pending
 
 ### Scope (Batch 1 — locked 2026-07-29)
 
@@ -29,9 +29,54 @@
 | E19-6 | decision | Out of scope? | **A** — siblings OOS; no PyPI; no F16–F19; F7 Planned (smoke only) |
 | E19-7 | decision | Deploy / smoke (13)? | **A** — redeploy if API/FE changes; H1–H3 if API; H4–H5 workbench sigmet + VA |
 | E19-8 | decision | Proceed? | **B** — lock Phase 0; write F23; **pause before 01-requirements** |
-| E19-ui | decision | Non-deployed UI preview? | **⚠️ Assumed B** — docs/repo only (Q9 omitted in reply) |
+| E19-ui | decision | Non-deployed UI preview? | **B** confirmed at 01 (E19-10=A — docs/repo only) |
 
-**Phase 0 scope approved** — F23 written to `feature-list.md`. Next: **01-requirements** when user resumes.
+### 01-requirements (locked 2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E19-9 | decision | Document manifest? | **A** — mandatory + coverage matrix + full API review + light plan-adherence |
+| E19-10 | decision | UI reference preview? | **A** — docs/repo only |
+| E19-11 | decision | Journey + TCs? | **A** — UJ-034; TC-F23-001..006 |
+| E19-12 | decision | Matrix themes? | **A** — G1–G3 / V1–V3 / C1 |
+| E19-13 | decision | VA product / API wire? | **A** — keep `product=sigmet`; content-selected `VolcanicAshSIGMET` root |
+| E19-14 | decision | FE catalog? | **A** — no new FE filters; smoke only |
+
+**01 complete** (user confirmed Continue → 02, 2026-07-29).  
+**02-verify-plan PASS** (2026-07-29): 14 auto-approved; F21/F22 summary fix; medium all **1**
+(S1.M1 full HARD + kill-switch; S6.M1 keep G1–G3 with prefix; S9.M1 skip 05).  
+Report: `docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md`.
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| S1.M1 | uncertainty | Full themes under Lean+build? | **1** — HARD G1–G3/V1–V3/C1; 04 kill-switch (`D-S025-EV019-s1m1-1`) |
+| S6.M1 | ambiguity | G1–G3 theme vs gate collision? | **1** — keep ids; prefix “F23 theme” vs “gate” (`D-S025-EV019-s6m1-1`) |
+| S9.M1 | uncertainty | Skip 05? | **1** — keep skip; light pass at 04 exit (`D-S025-EV019-s9m1-1`) |
+| D-S025-02-phase-a-A | gate | Phase A → 04? | **A** — Pass Gate A; start **04-tech-plan** (2026-07-29) |
+
+### 04-tech-plan (in progress)
+
+#### Batch 1 (locked 2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E19-15 | decision | Milestone order? | **A** — Research → G1–G2 lint → G3 goldens → V1–V2 → V3 → C1/matrix → smoke |
+| E19-16 | decision | Research depth (M0)? | **B** — Full mining pass → `reports/sigmet-research-catalog.md` |
+| E19-17 | decision | FE / catalog UI? | **B** — Add SIGMET/VA tag filters (**amends E19-14**) |
+| E19-18 | decision | New deps? | **B** — AskQuestion per new dep (prefer none) |
+
+**E19-14 amend**: Prior “no new FE catalog filters” superseded by **E19-17=B** for this cycle — additive catalog panel filters/copy for SIGMET (+ VA) tags; H4–H5 required after FE deploy.
+
+#### Batch 2 (locked 2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E19-19 | decision | CI? | **B** — dedicated `.github/workflows/sigmet-quality.yml` |
+| E19-20 | decision | Mining siblings? | **B+A** — dig SIGMET+VA; light sibling notes (cite-only) |
+| E19-21 | decision | Deploy/smoke M5? | **A** — redeploy; H1–H3 if API; H4–H5 required |
+| E19-22 | gate | Approve plan? | **A** — M0–M5 (~29 tasks); skip 05/06; B→C → **07 @ T0.1** (`D-S025-04-plan-approve-A`) |
+
+**04 COMPLETE** — 04-exit consistency PASS; handoff **07-build** @ T0.1.
 
 ### Routing (`D-S025-E19-batch1` + Batch 2)
 

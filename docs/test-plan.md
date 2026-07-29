@@ -2,26 +2,28 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-27 (S023 / EV-017 — F21 public + F22 privacy; IndexedDB TC rewrite)
+> **Last updated**: 2026-07-29 (S025 / EV-019 — F23 SIGMET + VA quality; UJ-034 / TC-F23)
 
 ## Scope
 
-**In scope**: Product features F1–F22 (F1 superseded by F6 engine; F7 Planned — workbench
-smoke under F15/F20; **F7.g** golden examples #780 / UJ-032; **F7.h** IndexedDB sessions;
+**In scope**: Product features F1–F23 (F1 superseded by F6 engine; F7 Planned — workbench
+smoke under F15/F20/F23; **F7.g** golden examples #780 / UJ-032; **F7.h** IndexedDB sessions;
 F8–F15 as prior cycles; **F16–F19 Done** dissemination epic; **F20** TAF+SPECI quality;
-**F21** public unauthenticated app; **F22** privacy preference center);
+**F21** public unauthenticated app; **F22** privacy preference center; **F23** SIGMET family
+quality bar);
 monorepo migration validation M1–M6 (M3 deprecated at F6 cutover); connectivity tiers
 **H0c–H7** (local + live Render); tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics
 (library/CI); backend thin wrappers; F7 decode/spans/soft-preview/workbench/unified sessions;
 admin-route negative tests; **F15** issue registry + METAR golden/negative packs (UJ-024);
 **F16–F19** dissemination drawer, multi-DB upload, WIS2, EDIS, AMHS/SWIM/AFS (UJ-027–030);
-**F20** TAF + SPECI quality bar (UJ-031; #735/#734).
+**F20** TAF + SPECI quality bar (UJ-031; #735/#734); **F23** SIGMET + VA SIGMET quality bar
+(UJ-034; #733/#739).
 
 **Out of scope**: Performance/load testing; wmo-im / IWXXM-US schema correctness beyond our fixtures;
 scheduled CI live jobs (manual/Makefile only); **convert-response metrics fields** (F6-R11);
 teaching CMS; saved/encrypted destination profiles; in-app paste of **Supabase auth** keys
 (destination BYOC paste is **in scope** for F16–F19); sibling product-quality tickets beyond
-#735/#734 this cycle.
+#733/#739 this cycle (TC SIGMET #738, AIRMET, VAA, TCA, SWX, VONA).
 
 ### Live harness (delta 2026-06-22; H7 2026-07-12)
 
@@ -80,6 +82,7 @@ Unified manual live test harness against Render staging:
 | UJ-031 | F20 | TAF/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F20-001..006 |
 | UJ-032 | F7 | Golden examples load (convert + validate) | H4–H5 if FE | TC-F7-008 |
 | UJ-033 | F22 | Privacy notice + settings + GPC | H4–H5 if FE | TC-F22-001..003 |
+| UJ-034 | F23 | SIGMET/VA SIGMET registry + convert→validate golden | H4–H5 if FE | TC-F23-001..006 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -613,6 +616,65 @@ Before closing S013 / EV-009:
 - [ ] TC-F20-001..006 green
 - [ ] Coverage-matrix TAF + SPECI rows updated; guidance gaps filed or closed
 - [ ] H1–H3 if API ships; H4–H5 when FE touched (E15-7)
+
+## F23 Test Cases (S025 / EV-019) — SIGMET + VA SIGMET quality
+
+### TC-F23-001: SIGMET/VA SIGMET registry completeness (UJ-034)
+
+- **Level**: T0 / CI
+- **Objective**: Every SIGMET / VA SIGMET lint emission uses a registered code; catalog export
+  in sync
+- **Pass criteria**: CI fails on unknown codes; registry row required for new rules; ADR-028
+- **Source**: F23; #733/#739; E19-5
+
+### TC-F23-002: General SIGMET accept → convert → XSD+Schematron (UJ-034)
+
+- **Level**: T0 / CI (`tac2iwxxm` + `iwxxm-validate`)
+- **Objective**: Expanded general SIGMET golden pack converts; root `iwxxm:SIGMET`; M-xsd /
+  M-sch on pinned versions
+- **Pass criteria**: annex3 goldens green; #733 exceptional rules covered or deferred with
+  rationale (matrix G1–G3)
+- **Source**: F23 + F6.d deepen; #733
+
+### TC-F23-003: VA SIGMET accept → convert → XSD+Schematron (UJ-034)
+
+- **Level**: T0 / CI (`tac2iwxxm` + `iwxxm-validate`)
+- **Objective**: Full #739 VA SIGMET golden bar; root `iwxxm:VolcanicAshSIGMET` (not
+  `iwxxm:SIGMET`, not VAA)
+- **Pass criteria**: annex3 goldens green; exceptional-rule table covered or deferred
+  (matrix V1–V3); still submitted with HTTP `product=sigmet`
+- **Source**: F23 + F6.d deepen; #739; E19-13
+
+### TC-F23-004: SIGMET/VA negative fixtures → registry diagnostics (UJ-034)
+
+- **Level**: T0 / CI (`tac-validate`)
+- **Objective**: Rule-violating SIGMET / VA SIGMET TAC never silent-succeeds
+- **Pass criteria**: Each negative asserts expected registry `code`(s); useful messages
+- **Source**: F23 + F12 deepen; #733/#739
+
+### TC-F23-005: Workbench SIGMET (+ VA) lint+convert smoke (UJ-034)
+
+- **Level**: T2 / T3 (H4–H5 when redeployed)
+- **Objective**: Operator Product=SIGMET lint + convert for general and VA fixtures; catalog
+  via `GET /api/v1/lint-issue-catalog`
+- **Pass criteria**: Console shows registry codes; convert+strict validation works;
+  **additive FE catalog filters/copy for SIGMET (+ VA) tags** (E19-17=B); H4–H5 after FE deploy
+- **Source**: F23; E19-7; E19-17; F7 remains Planned (product-path smoke + catalog filters)
+
+### TC-F23-006: SIGMET / VA SIGMET / VAA adjacency guards (UJ-034)
+
+- **Level**: T0 / T2
+- **Objective**: Never silent-swap roots or products — VA TAC → `VolcanicAshSIGMET`; general
+  non-VA/TC → `SIGMET`; VAA advisory remains `product=vaa` / advisory root
+- **Pass criteria**: Content-based root selection under `product=sigmet`; negative or
+  mismatch fixtures keep identity; lint codes registry-backed
+- **Source**: F23; #733/#739; complements TC-F20-006 / TC-F15-005 adjacency pattern
+
+### F23 verify/deploy gate
+
+- [ ] TC-F23-001..006 green
+- [ ] Coverage-matrix themes G1–G3 / V1–V3 / C1 updated; guidance gaps filed or closed
+- [ ] H1–H3 if API ships; H4–H5 when FE touched (E19-7)
 
 ## F21 / F22 Test Cases (S023 / EV-017) — stubs
 

@@ -48,6 +48,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-031 | TAF + SPECI lint / convert→validate golden | UI / API / CI | F20 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-032 | Load golden example → convert / validate | apps/frontend | F7 (#780) | T0 / T2 / H4–H5 |
 | UJ-033 | Privacy notice + settings + GPC | apps/frontend | F22 | T0 / T2 / H4–H5 |
+| UJ-034 | SIGMET + VA SIGMET lint / convert→validate golden | UI / API / CI | F23 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -837,6 +838,52 @@ H4–H5 when FE deploys.
 
 ---
 
+### UJ-034: SIGMET + VA SIGMET Lint / Convert→Validate Golden (F23 / #733 / #739)
+
+**Actor**: Operator / CI maintainer
+
+**Goal**: Lint **General SIGMET** and **VA SIGMET** TAC with stable registry issue codes;
+convert accept fixtures to IWXXM (`iwxxm:SIGMET` / `iwxxm:VolcanicAshSIGMET`); validate with
+XSD+Schematron; useful diagnostics on negative fixtures. VA path stays on API
+`product=sigmet` with content-selected root (not a separate enum; not VAA).
+
+**Feature**: F23 (+ deepen F6.d / F12) — S025 / EV-019
+
+**Steps (operator — T2/T3)**:
+
+1. Open workbench; set Product = **SIGMET** (or Auto-detect when unambiguous).
+2. Paste a valid general SIGMET accept fixture; run lint — registry codes only
+   (`GET /api/v1/lint-issue-catalog` for tooltips).
+3. Convert → Strict Validation — XSD+Schematron pass for pinned `iwxxm_version`; root
+   `iwxxm:SIGMET`.
+4. Paste a known-bad SIGMET negative fixture — lint returns registry codes (no silent success).
+5. Paste a valid **VA SIGMET** accept fixture (still Product = SIGMET) — convert root
+   `iwxxm:VolcanicAshSIGMET`; never emit VAA advisory root.
+6. Confirm adjacency: VA phenomenon / WV-shaped TAC does not silent-succeed as general
+   `iwxxm:SIGMET`; VAA advisory TAC is not treated as VA SIGMET.
+
+**Steps (CI — T0)**:
+
+1. Registry CI: every emitted SIGMET / VA SIGMET code is registered; catalog export in sync.
+2. Golden pack: general + VA SIGMET TAC → `tac2iwxxm` → `iwxxm-validate` (M-xsd / M-sch) green.
+3. Negative pack: expected registry codes for both (#733/#739 exceptional-rule tables).
+4. Guidance audit: exceptional rules covered or explicitly deferred with rationale in coverage
+   matrix (themes G1–G3 / V1–V3 / C1).
+
+**Acceptance**:
+
+1. TC-F23-001..006 green (or deferred with rationale in matrix)
+2. Roots match `iwxxm:SIGMET` / `iwxxm:VolcanicAshSIGMET` for pinned versions (esp. 2025-2)
+3. No new HTTP product enum / routes (E19-13=A)
+4. F7 remains Planned — smoke only for product path under F23; **additive FE catalog
+   filters/copy for SIGMET (+ VA) tags** (E19-17=B amends E19-14)
+5. H1–H3 if API ships; **H4–H5 required** when FE touched (E19-7 / E19-17)
+
+**Automated tests**: Package/CI TC-F23-001..004/006; API/workbench smoke TC-F23-005;
+staging H4–H5 when FE redeployed.
+
+---
+
 ### UJ-027: Dissemination drawer — multi-DB upload (F16 / #729; multi-select #785)
 
 **Actor**: Anyone (public — F21; no login)
@@ -937,3 +984,5 @@ live smoke (T7.4) when scheduled.
   (F21/F22; #783)
 - S024 / EV-018 (2026-07-28): UJ-027 multi-file export selection (F16 deepen; #785); UJ-028–030
   reuse same selection contract
+- S025 / EV-019 (2026-07-29): UJ-034 SIGMET + VA SIGMET lint / convert→validate golden
+  (F23; #733/#739)

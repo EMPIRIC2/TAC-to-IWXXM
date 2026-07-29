@@ -152,14 +152,19 @@ metar-to-IWXXM/
   fidelity — exceptional-rule tables from #735/#734; guidance + 2025-2 corrections; expanded
   annex3 / `iwxxm_us` goldens; convert → `iwxxm-validate` round-trip. Roots `iwxxm:TAF` /
   `iwxxm:SPECI`.
+- **S025 / EV-019 delta (F23)**: Deepen **SIGMET (F6.d)** — general `iwxxm:SIGMET` plus
+  content-selected **`iwxxm:VolcanicAshSIGMET`** (VA phenomenon / WV AHL; still
+  `product=sigmet` on HTTP). Exceptional-rule tables from #733/#739; guidance + 2025-2
+  corrections; expanded goldens; convert → `iwxxm-validate` round-trip. TC SIGMET OOS (#738).
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
 - **IR**: **msgspec.Struct** (ADR-016); HTTP high-churn paths also msgspec (ADR-026).
-- **Source**: [feature-list.md](feature-list.md) F6/F14/F20; ADR-013; ADR-014; ADR-026;
+- **Source**: [feature-list.md](feature-list.md) F6/F14/F20/F23; ADR-013; ADR-014; ADR-026;
   [context/general-tac-iwxxm-converter.md](context/general-tac-iwxxm-converter.md);
   [context/package-publish-validation.md](context/package-publish-validation.md);
-  [context/aerodrome-quality.md](context/aerodrome-quality.md).
+  [context/aerodrome-quality.md](context/aerodrome-quality.md);
+  [context/sigmet-quality.md](context/sigmet-quality.md).
 
 ### packages/tac-validate
 
@@ -183,9 +188,13 @@ metar-to-IWXXM/
   rules/fixtures to the #734 full quality bar (not residual-only). Coverage-matrix TAF + SPECI
   rows; exceptional-rule accept/negative packs. Workbench `product=taf` / `product=speci` smoke
   under F20 (F7 status unchanged). No new registry architecture (ADR-028 reuse).
+- **S025 / EV-019 delta (F23)**: Same registry — add/extend **SIGMET** (+ VA SIGMET) codes and
+  fixtures to the #733/#739 full quality bar. Coverage-matrix themes G1–G3 / V1–V3 / C1;
+  exceptional-rule accept/negative packs. Workbench `product=sigmet` (+ VA fixture) smoke
+  under F23 (F7 status unchanged). No new registry architecture (ADR-028 reuse).
 - **SoC**: **No** FastAPI or Supabase imports.
-- **Source**: feature-list F6/F12/F15/F20; S011 / EV-008; S013 / EV-009; S014 / EV-010;
-  S015 / EV-011; S020 / EV-015.
+- **Source**: feature-list F6/F12/F15/F20/F23; S011 / EV-008; S013 / EV-009; S014 / EV-010;
+  S015 / EV-011; S020 / EV-015; S025 / EV-019.
 
 ### packages/iwxxm-validate
 
@@ -341,7 +350,7 @@ metar-to-IWXXM/
 - **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014;
   **#785; evolve-decisions EV-018**.
 
-### F20 — TAF + SPECI quality bar (S020 / EV-015) — Planned
+### F20 — TAF + SPECI quality bar (S020 / EV-015) — Done
 
 - **Purpose**: F15 sequel — raise **TAF** (#735) and **SPECI** (#734) lint / convert /
   IWXXM-validate quality to the METAR/SPECI bar. Reuse ADR-028 registry; deepen F6.b/F6.c and F12.
@@ -351,11 +360,33 @@ metar-to-IWXXM/
   NSW, VV///, FM/TL/AT, TX/TN on base forecast, change groups FM/BECMG/TEMPO/PROB.
 - **SPECI**: Full #734 AC parallel to TAF — shared METAR/SPECI pack + mis-classification guards
   (Auto-detect / product hint never silent-swap SPECI↔METAR).
-- **Status**: **Planned** — flips Done after verify/deploy gate (Lean+build routing).
+- **Status**: **Done** (S020 / EV-015; #778).
 - **Non-goals**: Sibling product-quality tickets; PyPI bumps; F16–F19 changes; new ADR unless
   registry architecture changes.
 - **Source**: [feature-list.md](feature-list.md) F20; #735/#734; [context/aerodrome-quality.md](context/aerodrome-quality.md);
   evolve-decisions EV-015; ADR-028.
+
+### F23 — SIGMET family quality bar (general + VA) (S025 / EV-019) — Planned
+
+- **Purpose**: F15/F20 sequel — raise **General SIGMET** (#733) and **VA SIGMET** (#739)
+  lint / convert / IWXXM-validate quality. Reuse ADR-028 registry; deepen F6.d and F12.
+- **Encode authority**: WMO `TAC-to-XML-Guidance.txt` + 2025-2 corrections; FM 205 /
+  Manual on Codes I.3; pinned XSD + Schematron; EUR Doc 014 (public TAC shape) cite-only.
+- **General SIGMET exceptional rules** (fixtures or explicit deferrals): CNL, single-point →
+  `gml:CircleByCenterPoint` radius zero, single altitude (same lower/upper), STNR, polygon/line
+  with declared CRS; sequence / validity / FIR/CTA / phenomenon / movement / intensity.
+- **VA SIGMET**: Apply general mapping then volcano identity + ash geometry / forecast;
+  `NO VA EXP` → `nothingOfOperationalSignificance`; CNL FIR-moved-ash; root
+  `iwxxm:VolcanicAshSIGMET` (not `iwxxm:SIGMET`, not VAA).
+- **API**: `product=sigmet` unchanged; root selection is package-side from TAC content
+  (E19-13=A). No new routes.
+- **Status**: **Planned** — flips Done after verify/deploy gate (Lean+build routing).
+- **Journeys / tests**: UJ-034; TC-F23-001..006; matrix themes G1–G3 / V1–V3 / C1.
+- **Non-goals**: #738 TC SIGMET; AIRMET / VAA / TCA / SWX / VONA; PyPI bumps; F16–F19;
+  new `product` enum (E19-13). FE: **additive catalog filters for SIGMET/VA tags** in scope
+  (E19-17=B amends E19-14); new ADR unless registry architecture changes.
+- **Source**: [feature-list.md](feature-list.md) F23; #733/#739;
+  [context/sigmet-quality.md](context/sigmet-quality.md); evolve-decisions EV-019; ADR-028.
 
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
 
