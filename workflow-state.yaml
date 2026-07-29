@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-019
   github_issue: "733,739"
   artifacts_dir: docs/sessions/S025-sigmet-quality/
-  current_stage: 07-build
+  current_stage: 13-deploy-smoke
   feature_ids:
     - F23
   feature_note: "F23 Planned; deepen F6.d/F12; ADR-028"
@@ -24,10 +24,10 @@ active_session:
   routing_decision_id: D-S025-E19-batch2
   context_briefs:
     - docs/context/sigmet-quality.md
-  tip_sha: 0d0f875
-  tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
+  tip_sha: 1a6dc9a
+  tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
   do_not_auto_merge: true
-  note: "07-build M5: M4 complete (T4.3–T4.6); next T5.1 Vitest SIGMET/VA catalog; tip 0d0f875"
+  note: "T5.5 PASS; T5.6 13-deploy-smoke in_progress"
   routing_plan:
     - stage: 00-context
       required: true
@@ -41,7 +41,7 @@ active_session:
       mode: orchestrator
       status: in_progress
       started: "2026-07-29"
-      note: "Phase C / 07 in progress"
+      note: "Phase C / 13-deploy-smoke in_progress"
     - stage: 01-requirements
       required: true
       mode: delta
@@ -68,19 +68,26 @@ active_session:
       mode: full
       status: in_progress
       started: "2026-07-29"
-      note: "M4 complete; M5 T5.1 pending"
+      note: "M5 T5.1–T5.5 done; T5.6 remaining"
     - stage: 08-verify-build
       required: true
       mode: full
-      status: pending
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      note: "T5.4 PASS; report verification-report.md"
     - stage: 10-e2e
       required: true
       mode: full
-      status: pending
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      note: "T0 PASS — e2e-report.md"
     - stage: 13-deploy-smoke
       required: true
       mode: full
-      status: pending
+      status: in_progress
+      started: "2026-07-29"
 sessions:
 - id: S024-dissemination-file-select
   type: feature
@@ -3539,16 +3546,16 @@ stages:
     previous_completed_at: '2026-07-28T23:30:05Z'
     session_id: S025-sigmet-quality
     evolve_cycle_id: EV-019
-    tip_sha: 0d0f875
-    tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
-    note: 'S025/EV-019 07-build M5: M4 complete (T4.3–T4.6); active_task T5.1; progress 21/29; tip 0d0f875; #733/#739'
+    tip_sha: 1a6dc9a
+    tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+    note: 'S025/EV-019 07-build M5: T5.5 10-e2e PASS; active_task T5.6; progress 26/29; tip 1a6dc9a; #733/#739'
     substeps:
       task_loop:
         status: in_progress
-        current_task: T5.1
+        current_task: T5.6
         phase: C
         milestone: M5
-        notes: S025/EV-019 M4 complete (T4.3–T4.6); next T5.1 Vitest SIGMET/VA catalog (21/29)
+        notes: S025/EV-019 M5 T5.5 PASS; next T5.6 13-deploy-smoke (26/29)
     delta_substages:
     - id: S025-sigmet-quality
       session_id: S025-sigmet-quality
@@ -3558,15 +3565,15 @@ stages:
       started_at: '2026-07-29'
       started: '2026-07-29'
       mode: full
-      note: 'M4 complete (T4.3–T4.6); M5 T5.1 Vitest SIGMET/VA catalog pending; progress 21/29; tip 0d0f875; #733/#739'
+      note: 'M5 T5.1–T5.5 done; T5.6 13-deploy-smoke remaining; progress 26/29; tip 1a6dc9a; #733/#739'
       active_milestone: M5
-      active_task: T5.1
-      active_task_status: pending
+      active_task: T5.6
+      active_task_status: in_progress
       decision_id: D-S025-T2.3-A
       branch: evolve/EV-019-sigmet-quality
-      tip_sha: 0d0f875
-      tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
-      progress: 21/29; next T5.1 Vitest SIGMET/VA catalog
+      tip_sha: 1a6dc9a
+      tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+      progress: 26/29; next T5.6 13-deploy-smoke
       feature_ids:
       - F23
       deepen:
@@ -3723,6 +3730,10 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-29 S025/EV-019 07-build M5 T5.5 PASS — 10-e2e T0 PASS UJ-034 / TC-F23-001..006; next T5.6 13-deploy-smoke; progress 26/29; tip 1a6dc9a; #733/#739'
+    - '2026-07-29 S025/EV-019 07-build M5 T5.4 PASS — 08-verify-build PASS; next T5.5 10-e2e UJ-034 / TC-F23; progress 25/29; tip 846d50f; #733/#739'
+    - '2026-07-29 S025/EV-019 07-build M5 T5.3 DONE — API smoke SIGMET/VA lint+convert + catalog GET (TC-F23-005); next T5.4 08-verify-build; progress 24/29; tip 6335842; #733/#739'
+    - '2026-07-29 S025/EV-019 07-build M5 T5.1–T5.2 DONE — FE catalog SIGMET/VA; next T5.3 API smoke; progress 23/29; tip e300168; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M4 COMPLETE — T4.3–T4.6 done; next T5.1 Vitest SIGMET/VA catalog; progress 21/29; tip 0d0f875; #733/#739'
     - '2026-07-29 S025/EV-019 07-build T4.3 STARTED — C1 fixtures in_progress (F20 pattern); progress 17/29 → working on 18th; tip 5f37aed; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M3 COMPLETE — T3.3–T3.4 TC-F23-006 adjacency + content-selected VolcanicAshSIGMET under product=sigmet; next T4.1; #733/#739'
@@ -4238,16 +4249,17 @@ stages:
     decision_id: E16-19
   10-e2e:
     status: completed
-    started_at: '2026-07-28T23:47:35Z'
-    completed_at: '2026-07-28T23:54:49Z'
-    completed: '2026-07-28'
-    previous_started_at: '2026-07-26'
-    previous_completed_at: '2026-07-28'
-    report: docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
+    started_at: '2026-07-29'
+    completed_at: '2026-07-29'
+    previous_started_at: '2026-07-28T23:47:35Z'
+    previous_completed_at: '2026-07-28T23:54:49Z'
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    tip_sha: 1a6dc9a
+    tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
     overall: pass
-    session_id: S024-dissemination-file-select
-    evolve_cycle_id: EV-018
-    note: 'S024/EV-018 10-e2e COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report docs/sessions/S024-dissemination-file-select/reports/e2e-report.md; tip 4146052; handoff 13; #785'
+    report: docs/sessions/S025-sigmet-quality/reports/e2e-report.md
+    note: 'S025/EV-019 10-e2e COMPLETE — T5.5 T0 PASS UJ-034 / TC-F23-001..006; report docs/sessions/S025-sigmet-quality/reports/e2e-report.md; tip 1a6dc9a; handoff 13-deploy-smoke T5.6; #733/#739'
     substeps:
       extract_journeys:
         status: completed
@@ -4264,6 +4276,31 @@ stages:
         status: completed
         notes: H3 13 pass 8 skip (legacy Supabase keys); T3 browser deferred
     delta_substages:
+    - id: S025-sigmet-quality
+      session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
+      skill_id: 10-e2e
+      status: completed
+      mode: full
+      started: '2026-07-29'
+      started_at: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
+      branch: evolve/EV-019-sigmet-quality
+      tip_sha: 1a6dc9a
+      tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+      overall: pass
+      report: docs/sessions/S025-sigmet-quality/reports/e2e-report.md
+      note: 'T5.5 COMPLETE — T0 PASS UJ-034 / TC-F23-001..006; e2e-report.md; progress 26/29; tip 1a6dc9a; #733/#739'
+      active_milestone: M5
+      active_task: T5.5
+      active_task_status: completed
+      progress: 26/29
+      feature_ids:
+      - F23
+      deepen:
+      - F6.d
+      - F12
     - id: S024-dissemination-file-select
       session_id: S024-dissemination-file-select
       evolve_cycle_id: EV-018
@@ -4401,6 +4438,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
       note: T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk
     notes:
+    - '2026-07-29 S025/EV-019 10-e2e COMPLETE — T5.5 T0 PASS UJ-034 / TC-F23-001..006; report e2e-report.md; tip 1a6dc9a; handoff 13-deploy-smoke T5.6; progress 26/29; #733/#739'
+    - '2026-07-29 S025/EV-019 10-e2e STARTED — T5.5 UJ-034 / TC-F23; tip 846d50f; progress 25/29; #733/#739'
     - '2026-07-28 S024/EV-018 tip synced — 4146052; 10 COMPLETE; 13 pending deploy approval; #785'
     - '2026-07-28 S024/EV-018 10-e2e COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report e2e-report.md; tip 4146052; handoff 13-deploy-smoke (pending deploy approval); #785'
     - '2026-07-28 S024/EV-018 10-e2e STARTED after commit bf90a02; tip bf90a02; #785'
@@ -4420,38 +4459,40 @@ stages:
     - 2026-07-12 S008 / EV-006 — PASS after COR hotfix re-verify (12/12 Playwright smoke); T0 PASS
     - 2026-07-14 S011/EV-008 10-e2e in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md
-    started: '2026-07-28T23:47:35Z'
+    started: '2026-07-29'
     active_session:
-      session_id: S024-dissemination-file-select
-      evolve_cycle_id: EV-018
-      skill_id: 10-e2e
-      status: completed
-      started_at: '2026-07-28T23:47:35Z'
-      started: '2026-07-28T23:47:35Z'
-      completed: '2026-07-28T23:54:49Z'
-      completed_at: '2026-07-28T23:54:49Z'
+      session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
+      skill_id: 13-deploy-smoke
+      status: in_progress
+      started_at: '2026-07-29'
+      started: '2026-07-29'
       mode: full
-      overall: pass
-      note: 'COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report docs/sessions/S024-dissemination-file-select/reports/e2e-report.md; tip 4146052; handoff 13; #785'
-      branch: evolve/EV-018-dissemination-file-select
-      tip_sha: '4146052'
-      tip_sha_full: 4146052415df0806c6a3057ddb6118b45dac7a7a
-      report: docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
-    completed: '2026-07-28'
-    evolve_cycle_id: EV-018
-    note: 'S024/EV-018 10-e2e COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; tip bf90a02; handoff 13; #785'
+      note: 'T5.6 13-deploy-smoke in_progress; handoff from 10-e2e T5.5 PASS; tip 1a6dc9a; #733/#739'
+      branch: evolve/EV-019-sigmet-quality
+      tip_sha: 1a6dc9a
+      tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+      active_milestone: M5
+      active_task: T5.6
+      active_task_status: in_progress
+      progress: 26/29
+      feature_ids:
+      - F23
+      deepen:
+      - F6.d
+      - F12
   08-verify-build:
     status: completed
-    started_at: '2026-07-28T23:30:05Z'
-    completed_at: '2026-07-28T23:42:27Z'
-    completed: '2026-07-28'
-    previous_started_at: '2026-06-22T17:27:00Z'
-    previous_completed_at: '2026-06-24T14:30:00Z'
-    overall: pass
-    session_id: S024-dissemination-file-select
-    evolve_cycle_id: EV-018
-    note: 'S024/EV-018 08-verify-build COMPLETE 2026-07-28 — PASS; FE 727 Vitest; coverage F 96.3% B 85.27%; prettier+queue edge tests; tip base a4b75f2 uncommitted; report docs/sessions/S024-dissemination-file-select/reports/verification-report.md; handoff 10-e2e; #785'
-    report: docs/sessions/S024-dissemination-file-select/reports/verification-report.md
+    started_at: '2026-07-29'
+    completed_at: '2026-07-29'
+    previous_started_at: '2026-07-28T23:30:05Z'
+    previous_completed_at: '2026-07-28T23:42:27Z'
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    tip_sha: 846d50f
+    tip_sha_full: 846d50fb27b732616e56a0eeb3bb55b953e2a317
+    note: 'S025/EV-019 08-verify-build COMPLETE PASS — T5.4 @ 846d50f; report docs/sessions/S025-sigmet-quality/reports/verification-report.md; handoff 10-e2e T5.5; #733/#739'
+    report: docs/sessions/S025-sigmet-quality/reports/verification-report.md
     substeps:
       lint:
         status: completed
@@ -4470,6 +4511,31 @@ stages:
       report:
         status: completed
     delta_substages:
+    - id: S025-sigmet-quality
+      session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
+      mode: full
+      overall: pass
+      note: 'T5.4 PASS @ 846d50f; report docs/sessions/S025-sigmet-quality/reports/verification-report.md; handoff 10-e2e T5.5; #733/#739'
+      report: docs/sessions/S025-sigmet-quality/reports/verification-report.md
+      branch: evolve/EV-019-sigmet-quality
+      tip_sha: 846d50f
+      tip_sha_full: 846d50fb27b732616e56a0eeb3bb55b953e2a317
+      active_milestone: M5
+      active_task: T5.4
+      active_task_status: completed
+      progress: 25/29
+      feature_ids:
+      - F23
+      deepen:
+      - F6.d
+      - F12
     - id: S024-dissemination-file-select
       session_id: S024-dissemination-file-select
       evolve_cycle_id: EV-018
@@ -4610,6 +4676,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass
     notes:
+    - '2026-07-29 S025/EV-019 08-verify-build COMPLETE PASS — T5.4 @ 846d50f; report docs/sessions/S025-sigmet-quality/reports/verification-report.md; handoff 10-e2e T5.5; #733/#739'
+    - '2026-07-29 S025/EV-019 08-verify-build STARTED — T5.4 milestone verify; tip 6335842; report docs/sessions/S025-sigmet-quality/reports/verification-report.md; #733/#739'
     - '2026-07-28 S024/EV-018 08-verify-build COMPLETE — PASS; report verification-report.md; work still uncommitted; handoff 10-e2e after commit; #785'
     - '2026-07-28 S024/EV-018 08-verify-build STARTED — after 07 M1–M4 complete (14/14); tip a4b75f2; lint/typecheck/full FE Vitest; #785'
     - S021/EV-016 08-verify-build COMPLETE 2026-07-26 — PASS; artifact docs/sessions/S021-golden-examples-ui/reports/verification-report.md; tip 90a8507; C→D still pending until 09+10+11; ready for 09-qa and 10-e2e (parallel)
@@ -4632,25 +4700,26 @@ stages:
     - 2026-07-12 S008 / EV-006 — Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c); Overall PASS; awaiting C→D AskQuestion; c_to_d/phase_c remain pending
     - 2026-07-14 S011/EV-008 08-verify-build completed (T6.1 PASS; verification-report.md); C→D passed D-S011-EV008-c-to-d-pass
     active_session:
-      session_id: S024-dissemination-file-select
-      evolve_cycle_id: EV-018
-      skill_id: 08-verify-build
-      status: completed
-      started_at: '2026-07-28T23:30:05Z'
-      started: '2026-07-28'
-      completed: '2026-07-28'
-      completed_at: '2026-07-28T23:42:27Z'
+      session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
+      skill_id: 13-deploy-smoke
+      status: in_progress
+      started_at: '2026-07-29'
+      started: '2026-07-29'
       mode: full
-      overall: pass
-      note: 'COMPLETE — PASS; FE 727 Vitest; coverage F 96.3% B 85.27%; prettier+queue edge tests; tip base a4b75f2 uncommitted; report docs/sessions/S024-dissemination-file-select/reports/verification-report.md; handoff 10-e2e'
-      report: docs/sessions/S024-dissemination-file-select/reports/verification-report.md
-      branch: evolve/EV-018-dissemination-file-select
-      tip_sha: a4b75f2
-      tip_sha_full: a4b75f222ae71d959de0939da3f391adc97a832c
-      progress: 14/14
+      note: 'T5.6 13-deploy-smoke in_progress; handoff from 10-e2e T5.5 PASS; tip 1a6dc9a; #733/#739'
+      branch: evolve/EV-019-sigmet-quality
+      tip_sha: 1a6dc9a
+      tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+      active_milestone: M5
+      active_task: T5.6
+      active_task_status: in_progress
+      progress: 26/29
       feature_ids:
-      - F16
-      uncommitted: true
+      - F23
+      deepen:
+      - F6.d
+      - F12
   18-pr-review:
     status: completed
     started: '2026-07-12'
@@ -4774,26 +4843,38 @@ stages:
     - S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
   13-deploy-smoke:
-    status: completed
-    started_at: '2026-07-28'
-    started: '2026-07-28'
-    completed: '2026-07-28'
-    completed_at: '2026-07-28'
-    session_id: S023-public-app-privacy
-    evolve_cycle_id: EV-017
-    note: 'S023/EV-017 13-deploy-smoke COMPLETE — smoke approved; API SUPABASE_* removed; redeploy dep-d9kii12jobas73fl4bi0; tip 7837cd1; #783'
-    tip_sha: 7837cd1
-    tip_sha_full: 7837cd1bd50b75279e195293eab696073fa284ce
-    prior_tip_12: 62af980
-    prior_tip_started: 52c14e9
-    overall: pass
-    decision_id: D-S023-13-approve-cleanup
-    report: docs/sessions/S023-public-app-privacy/reports/deploy-smoke.md
-    report_expected: docs/sessions/S023-public-app-privacy/reports/deploy-smoke.md
-    checklist: docs/sessions/S023-public-app-privacy/reports/deploy-checklist.md
-    t7_2_report: docs/sessions/S023-public-app-privacy/reports/t7.2-h4-h5-connectivity.md
-    deploy_id_api: dep-d9kii12jobas73fl4bi0
+    status: in_progress
+    started_at: '2026-07-29'
+    started: '2026-07-29'
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    note: 'S025/EV-019 13-deploy-smoke in_progress — T5.6; tip 1a6dc9a; handoff from 10-e2e T5.5 PASS; #733/#739'
+    tip_sha: 1a6dc9a
+    tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+    prior_tip_10: 1a6dc9a
     delta_substages:
+    - id: S025-sigmet-quality
+      session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
+      skill_id: 13-deploy-smoke
+      status: in_progress
+      mode: full
+      started: '2026-07-29'
+      started_at: '2026-07-29'
+      branch: evolve/EV-019-sigmet-quality
+      tip_sha: 1a6dc9a
+      tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+      prior_tip_10: 1a6dc9a
+      note: 'T5.6 13-deploy-smoke in_progress; handoff from 10-e2e T5.5 PASS; progress 26/29; #733/#739'
+      active_milestone: M5
+      active_task: T5.6
+      active_task_status: in_progress
+      progress: 26/29
+      feature_ids:
+      - F23
+      deepen:
+      - F6.d
+      - F12
     - id: S023-public-app-privacy
       session_id: S023-public-app-privacy
       evolve_cycle_id: EV-017
@@ -4973,6 +5054,7 @@ stages:
       report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
       hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+    - '2026-07-29 S025/EV-019 13-deploy-smoke STARTED — T5.6; handoff from 10-e2e T5.5 PASS; tip 1a6dc9a; progress 26/29; #733/#739'
     - 2026-07-27 S022 13-deploy-smoke COMPLETE — H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending
     - 2026-07-27 S022 13-deploy-smoke STARTED (in_progress) — after 15-service-health completed; commit 6b9d2b9; empiric2 main-latest live; goldens_ui_live; PyPI/secrets remaining
     - '2026-07-27 S021/EV-016 13-deploy-smoke COMPLETE (waived) — live H4–H5 / UJ-032 waived to #781 (D-S021-EV016-13-waive-live-h4h5); user option 3 on 2026-07-27; blocked/cleared'
@@ -5036,11 +5118,14 @@ stages:
     evolve_cycle_id: EV-019
     started_at: '2026-07-29'
     completed_at:
-    current_stage: 07-build
-    tip_sha: 0d0f875
-    tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
-    note: 'S025/EV-019 16-evolve in_progress — Phase C / M4 complete; next T5.1; tip 0d0f875; #733/#739'
+    current_stage: 13-deploy-smoke
+    tip_sha: 1a6dc9a
+    tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+    note: 'S025/EV-019 16-evolve in_progress — T5.5 10-e2e PASS; T5.6 13-deploy-smoke in_progress; progress 26/29; tip 1a6dc9a; #733/#739'
     notes:
+    - '2026-07-29 S025/EV-019 10-e2e COMPLETE — T5.5 T0 PASS UJ-034 / TC-F23-001..006; report e2e-report.md; handoff 13-deploy-smoke T5.6; progress 26/29; tip 1a6dc9a; #733/#739'
+    - '2026-07-29 S025/EV-019 08-verify-build COMPLETE PASS — T5.4 @ 846d50f; handoff 10-e2e T5.5; progress 25/29; #733/#739'
+    - '2026-07-29 S025/EV-019 07-build M5 T5.1–T5.2 DONE — FE catalog SIGMET/VA; next T5.3 API smoke; progress 23/29; tip e300168; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M4 COMPLETE — T4.3–T4.6 done; next T5.1 Vitest SIGMET/VA catalog; progress 21/29; tip 0d0f875; #733/#739'
     - '2026-07-29 S025/EV-019 07-build T4.3 STARTED — C1 fixtures in_progress (F20 pattern); progress 17/29 → 18th; tip 5f37aed; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M3 COMPLETE — T3.3–T3.4 adjacency + VolcanicAshSIGMET root; next T4.1; #733/#739'
@@ -12485,12 +12570,12 @@ evolve_cycles:
   github_issues: [733, 739]
   branch: evolve/EV-019-sigmet-quality
   started_at: "2026-07-29"
-  current_stage: 07-build
+  current_stage: 13-deploy-smoke
   preset: Lean+build
-  tip_sha: 0d0f875
-  tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
+  tip_sha: 1a6dc9a
+  tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
   do_not_auto_merge: true
-  note: "M4 complete; next T5.1"
+  note: "T5.5 PASS; T5.6 13-deploy-smoke in_progress; progress 26/29; tip 1a6dc9a"
   decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2, D-S025-01-complete, D-S025-02-pass, D-S025-EV019-s1m1-1, D-S025-EV019-s6m1-1, D-S025-EV019-s9m1-1, D-S025-02-phase-a-A, D-S025-04-plan-approve-A, E19-19, E19-20, E19-21, E19-22, D-S025-16-continue, D-S025-T2.3-A]
 - id: EV-018
   session_id: S024-dissemination-file-select
@@ -16656,10 +16741,14 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit:
-  tip_sha: 0d0f875
-  tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
-  note: 'S025/EV-019 07-build M5: M4 complete (T4.3–T4.6); next T5.1 Vitest SIGMET/VA catalog; tip 0d0f875; #733/#739'
+  tip_sha: 1a6dc9a
+  tip_sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+  note: 'S025/EV-019 T5.5 10-e2e PASS; T5.6 13-deploy-smoke in_progress; active_task T5.6; progress 26/29; tip 1a6dc9a; #733/#739'
   notes:
+  - '2026-07-29 S025/EV-019 tip synced — 1a6dc9a (1a6dc9a5259f7d3688bcd42a4a26119be9686b4c); T5.5 10-e2e PASS; stage 13-deploy-smoke; T5.6 in progress; progress 26/29'
+  - '2026-07-29 S025/EV-019 tip synced — 846d50f (846d50fb27b732616e56a0eeb3bb55b953e2a317); T5.4 08-verify-build PASS; stage 10-e2e; T5.5 in progress; progress 25/29'
+  - '2026-07-29 S025/EV-019 tip synced — 6335842 (63358426574799d7c0f849dd7a3fc09f804a05a7); T5.3 API smoke DONE; stage 08-verify-build; T5.4 in progress; progress 24/29'
+  - '2026-07-29 S025/EV-019 tip synced — e300168 (e3001685e545d4c17ccc77d6c1d4892ae94a8148); T5.1–T5.2 FE catalog SIGMET/VA done; stage 07-build; next T5.3 API smoke; progress 23/29'
   - '2026-07-29 S025/EV-019 tip synced — 0d0f875 (0d0f875a2d37650c605f6270e8672677e9ec98a8); M4 complete (T4.3–T4.6); stage 07-build; next T5.1; progress 21/29'
   - '2026-07-29 S025/EV-019 tip synced — b67558f (b67558f2b903d9b44b013c64943d6647d8ccac07); "[T3.3-T3.4] feat: F23 V2 SIGMET/VA/VAA adjacency + VolcanicAshSIGMET root (#739)"; stage 07-build; M4 next T4.1 VA goldens'
   - '2026-07-29 S025/EV-019 tip synced — e041786 (e04178645f1e81561e6faf023bcd7d7ff83fbaed); "[T3.1-T3.2] feat: F23 theme V1 VA SIGMET fixtures and lint rules (#739)"; stage 07-build; M3 next T3.3 adjacency (encode root → T3.4)'
@@ -17586,6 +17675,58 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 1a6dc9a
+    sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T5.5] test: 10-e2e UJ-034 / TC-F23-001..006 T0 PASS"
+    stage: 10-e2e
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29"
+    files_changed:
+      - docs/sessions/S025-sigmet-quality/reports/e2e-report.md
+      - docs/sessions/S025-sigmet-quality/reports/execution-plan.md
+  - sha: 846d50f
+    sha_full: 846d50fb27b732616e56a0eeb3bb55b953e2a317
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T5.4] test: 08-verify-build PASS for F23 SIGMET quality"
+    stage: 08-verify-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29"
+    files_changed:
+      - docs/sessions/S025-sigmet-quality/reports/verification-report.md
+      - docs/sessions/S025-sigmet-quality/reports/execution-plan.md
+  - sha: 6335842
+    sha_full: 63358426574799d7c0f849dd7a3fc09f804a05a7
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T5.3] test: API smoke SIGMET/VA lint+convert + catalog GET (TC-F23-005)"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29"
+    files_changed:
+      - apps/backend/tests/integration/test_tc_f23_005_sigmet_catalog_smoke.py
+      - docs/sessions/S025-sigmet-quality/reports/execution-plan.md
+      - docs/sessions/S025-sigmet-quality/reports/t5.3-api-sigmet-catalog-smoke.md
+  - sha: e300168
+    sha_full: e3001685e545d4c17ccc77d6c1d4892ae94a8148
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T5.2] feat: pin SIGMET/VA preferred catalog tag filters (E19-17)"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T13:50:57Z"
+    files_changed: 5
+  - sha: dcccfdc
+    sha_full: dcccfdc646e3bb2023eac0aa54b29021118b64d5
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T5.1] test: Vitest catalog panel SIGMET/VA tag filters (E19-17)"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T13:49:32Z"
+    files_changed: 5
   - sha: 0d0f875
     sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
     branch: evolve/EV-019-sigmet-quality

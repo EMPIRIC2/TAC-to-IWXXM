@@ -13,7 +13,7 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M5 — FE catalog SIGMET/VA tags + smoke + verify (F23) |
-| **Active task** | T5.6 (pending — 13-deploy-smoke) |
+| **Active task** | T5.6 (in_progress — 13-deploy-smoke) |
 | **Tasks** | 26 / 29 completed |
 | **Last updated** | 2026-07-29 |
 
@@ -107,7 +107,7 @@
 | T5.3 | Test | API/workbench smoke `product=sigmet` lint+convert (general + VA fixtures) + catalog GET | TC-F23-005 | T5.2 | completed |
 | T5.4 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M4, T5.2 | completed |
 | T5.5 | Test | 10-e2e — UJ-034 / TC-F23-001..006 (09 skipped Lean+build) | 10 | T5.4 | completed |
-| T5.6 | Test | 13-deploy-smoke — redeploy if API/FE changed; H1–H3 if API; **H4–H5 required** (T5.2) | 13; E19-7 | T5.5 | pending |
+| T5.6 | Test | 13-deploy-smoke — redeploy if API/FE changed; H1–H3 if API; **H4–H5 required** (T5.2) | 13; E19-7 | T5.5 | in_progress |
 
 ## Data Dependencies
 
