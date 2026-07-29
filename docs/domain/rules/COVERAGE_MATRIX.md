@@ -57,8 +57,8 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | **TAF** | ✅ Annex 3 App 5 (§1.3 change/PROB; Table A5-2) / Doc 8896 (paywall); vocab via 49-2 / 306 | ✅ Guidance + examples (CNL/NIL/AMD) | ✅ `taf.xsd` + SCH | **F20 / #735** T1–T4 themes closed (lint + annex3 goldens; residual convert deepen filed below) — [research catalog](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md) · S020/EV-015 |
 | **SIGMET** | ✅ Annex 3 Ch.7 + App 6 phenomena/validity (paywall); SigWxPhenomena registry; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) public TAC guide | ✅ Guidance + examples + FM 205 (+ METCE for TC/VA members); EUR Doc 014 AHL `WS`/`WV`/`WC`→`LS`/`LV`/`LY` | ✅ `sigmet.xsd` + SCH (+ METCE 1.2) | **F23 / #733+#739** S025/EV-019 — **G1–G3 / V1–V3 / C1 closed or deferred** (lint + convert + annex3 goldens; residuals below); TC SIGMET #738 OOS |
 | **AIRMET** | ✅ Annex 3 Ch.7 + App 6; AirWxPhenomena + VIS-cause lists; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) | ✅ Guidance + examples + FM 205; EUR Doc 014 AHL `WA`→`LW` | ✅ `airmet.xsd` + SCH | **F24 / #731** S026/EV-020 — WMO `airmet-A6-1a-TS` default golden + registry (in progress) |
-| **VAA** | ✅ Annex 3 App 2 §3.1.2 **shall** IWXXM + Table **A2-1** ([dig](../mining/icao-annex-3-mining-notes.md)); Doc 9766 paywall for colour **meanings**; colour machine IDs via registry ✅ | ✅ Guidance + examples + AviationColourCode + [METCE 1.2](https://schemas.wmo.int/metce/1.2/) `Volcano` | ✅ `volcanicAshAdvisory.xsd` (+ METCE embed) | Entire product outside GIFTs |
-| **TCA** | ✅ Annex 3 App 2 §5.1.1 (≥34 kt) · §5.1.3 **shall** IWXXM + Table **A2-2** | ✅ Guidance + examples + FM 205 + METCE `TropicalCyclone` | ✅ `tropicalCycloneAdvisory.xsd` (+ METCE embed) | Entire product outside GIFTs |
+| **VAA** | ✅ Annex 3 App 2 §3.1.2 **shall** IWXXM + Table **A2-1** ([dig](../mining/icao-annex-3-mining-notes.md)); Doc 9766 paywall for colour **meanings**; colour machine IDs via registry ✅ | ✅ Guidance + examples + AviationColourCode + [METCE 1.2](https://schemas.wmo.int/metce/1.2/) `Volcano` | ✅ `volcanicAshAdvisory.xsd` (+ METCE embed) | **F26 / #736** S027/EV-021 — V1–V3/C1 (in progress); inventory [wmo-vaa-tca-examples-inventory.md](../../sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md) |
+| **TCA** | ✅ Annex 3 App 2 §5.1.1 (≥34 kt) · §5.1.3 **shall** IWXXM + Table **A2-2** | ✅ Guidance + examples + FM 205 + METCE `TropicalCyclone` | ✅ `tropicalCycloneAdvisory.xsd` (+ METCE embed) | **F27 / #737** S027/EV-021 — T1–T3/C1 (in progress); same inventory |
 | **METAR (US)** | ✅ FMH-1 Ch.12 + SPECI §2.5.2 ([dig](../mining/fmh1-2019-mining-notes.md)) + NWS FMH-1 registry | ✅ Body + RMK → iwxxm-us `extension` | ✅ WMO base + iwxxm-us 3.0 | GIFTs stripped REMARKS |
 | **Bulletin / AHL** | ✅ WMO AHL page | ✅ AHL T1T2 TAC↔IWXXM + [OPMET Guidelines 5th](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) (`A_…xml.gz`, COLLECT) | COLLECT / iwxxm-collect (vendor `externalSchema`; = `wmo-im/collect` 1.2) | Outside GIFTs; WIS2 path ≠ COLLECT (one resource/notification — [Tier B](../mining/wmo-im-tier-b-mining-notes.md)) |
 
@@ -217,8 +217,10 @@ without TAC lint surface follow F20 C1 pattern — not silent omission.
 - [x] F15 acc3 — METAR/SPECI rows + R1–R8 closed (S015 / EV-011; see table above)
 - [x] F20 acc — TAF + SPECI themes T1–T4 / S1–S3 / C1 closed or deferred (S020 / EV-015; see table above)
 - [x] F23 acc — SIGMET + VA SIGMET themes G1–G3 / V1–V3 / C1 closed or deferred (S025 / EV-019)
-- [ ] F24 acc — AIRMET WMO default golden + registry (S026 / EV-020; #731)
-- [ ] F25 acc — METAR/SPECI/TAF WMO default goldens + Examples catalog gate (S026 / EV-020)
+- [x] F24 acc — AIRMET WMO default golden + registry (S026 / EV-020; #731)
+- [x] F25 acc — METAR/SPECI/TAF WMO default goldens + Examples catalog gate (S026 / EV-020)
+- [ ] F26 acc — VAA WMO default golden + registry themes V1–V3/C1 (S027 / EV-021; #736)
+- [ ] F27 acc — TCA WMO default golden + registry themes T1–T3/C1 (S027 / EV-021; #737)
 
 ---
 
@@ -248,3 +250,40 @@ Paywalled Annex 3 / FMH: cite mining notes only — do not copy prose into wheel
 | **W2** `speci-A3-2` | same | Include when green | **Closed** (S026 T3.1–T3.2) |
 | **W3** `taf-A5-1` + `taf-A5-2` | same | Include when green | **Closed** (S026 T4.1–T4.3; E20-E1) |
 | **W4** Examples gate | — | Only WMO-passers for in-scope products | **Closed** (S026 T5.3–T5.4; E20-F4) |
+
+---
+
+## VAA — F26 quality themes (S027 / EV-021)
+
+Hard themes from #736 + WMO `TAC-to-XML-Guidance.txt` §Volcanic Ash Advisory + vendor
+`va-advisory-A7-2` (defaults only). Mine TAC themes from
+`iwxxm-translation` Amd79-80-2023; **no** Amd79 XML byte-match under 2025-2 (E21-D4).  
+**Inventory:** [wmo-vaa-tca-examples-inventory.md](../../sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md).  
+**Theme→fixture map (T0.1):** [vaa-tca-theme-fixture-map.md](../../sessions/S027-vaa-quality/reports/vaa-tca-theme-fixture-map.md).
+
+> **Naming (`D-S027-EV021-s02m1-1`)**: Theme ids **V1–V3 / C1** below are **F26 themes**.
+> F23 also used **V1–V3** for VA *SIGMET* — always write “F26 theme V1” vs “F23 theme V1”
+> in plans/PRs (do not rename to A1–A3).
+
+| Theme | Lint (F12/F26) | Convert (F6.f) | Validate / goldens | Status |
+|-------|----------------|----------------|--------------------|--------|
+| **V1** VAA exceptional (UNKNOWN/UNNAMED, OBS/FCST status, nilReasons, remarks NIL, `NO FURTHER ADVISORIES`) | Registry + accept/negatives | Exceptional encode | SCH soft-skip platform-wide | Planned |
+| **V2** VAA ↔ VA SIGMET adjacency | Product/root guards | Never emit `VolcanicAshSIGMET` under `product=vaa` | TC-F26-006 | Planned |
+| **V3** VAA golden convert + SCH | — | `va-advisory-A7-2` defaults `canonicalize_xml` | M-xsd / M-sch / M-golden (TC-F26-002/003) | Planned |
+| **C1** Common rules | ✅ where TAC | Shared with F23 C1 pattern | translation-failed not happy-path | Planned |
+
+## TCA — F27 quality themes (S027 / EV-021)
+
+Hard themes from #737 + guidance §Tropical Cyclone Advisory + vendor `tc-advisory-A2-2`
+(defaults only). Same translation-package mine policy (E21-D4).  
+**Theme→fixture map (T0.1):** [vaa-tca-theme-fixture-map.md](../../sessions/S027-vaa-quality/reports/vaa-tca-theme-fixture-map.md).
+
+> **Naming (`D-S027-EV021-s02m1-1`)**: Theme ids **T1–T3 / C1** below are **F27 themes** —
+> always write “F27 theme T1” in plans/PRs.
+
+| Theme | Lint (F12/F27) | Convert (F6.f) | Validate / goldens | Status |
+|-------|----------------|----------------|--------------------|--------|
+| **T1** TCA exceptional (`UNNAMED`, CB NIL, remarks NIL, `NO MSG EXP`, wind &lt;34 kt, no-longer-TC) | Registry + accept/negatives | Exceptional encode | SCH soft-skip | Planned |
+| **T2** TCA ↔ TC SIGMET adjacency | Product/root guards | Never emit `TropicalCycloneSIGMET` under `product=tca` | TC-F27-006 | Planned |
+| **T3** TCA golden convert + SCH | — | `tc-advisory-A2-2` defaults `canonicalize_xml` | M-xsd / M-sch / M-golden (TC-F27-002/003) | Planned |
+| **C1** Common rules | ✅ where TAC | Shared pattern | translation-failed not happy-path | Planned |

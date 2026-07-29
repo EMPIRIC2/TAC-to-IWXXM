@@ -2,28 +2,28 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-29 (S026 / EV-020 — F24/F25 WMO goldens + decode glossary; UJ-035/036)
+> **Last updated**: 2026-07-29 (S027 / EV-021 — F26/F27 VAA+TCA; UJ-037/038)
 
 ## Scope
 
-**In scope**: Product features F1–F23 (F1 superseded by F6 engine; F7 Planned — workbench
-smoke under F15/F20/F23; **F7.g** golden examples #780 / UJ-032; **F7.h** IndexedDB sessions;
+**In scope**: Product features F1–F27 (F1 superseded by F6 engine; F7 Planned — workbench
+smoke under F15/F20/F23–F27; **F7.g** golden examples #780 / UJ-032; **F7.h** IndexedDB sessions;
 F8–F15 as prior cycles; **F16–F19 Done** dissemination epic; **F20** TAF+SPECI quality;
 **F21** public unauthenticated app; **F22** privacy preference center; **F23** SIGMET family
-quality bar);
+quality bar; **F24** AIRMET; **F25** WMO METAR/SPECI/TAF parity; **F26** VAA; **F27** TCA);
 monorepo migration validation M1–M6 (M3 deprecated at F6 cutover); connectivity tiers
 **H0c–H7** (local + live Render); tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics
 (library/CI); backend thin wrappers; F7 decode/spans/soft-preview/workbench/unified sessions;
 admin-route negative tests; **F15** issue registry + METAR golden/negative packs (UJ-024);
 **F16–F19** dissemination drawer, multi-DB upload, WIS2, EDIS, AMHS/SWIM/AFS (UJ-027–030);
 **F20** TAF + SPECI quality bar (UJ-031; #735/#734); **F23** SIGMET + VA SIGMET quality bar
-(UJ-034; #733/#739).
+(UJ-034; #733/#739); **F26/F27** VAA + TCA quality (UJ-037/038; #736/#737).
 
 **Out of scope**: Performance/load testing; wmo-im / IWXXM-US schema correctness beyond our fixtures;
 scheduled CI live jobs (manual/Makefile only); **convert-response metrics fields** (F6-R11);
 teaching CMS; saved/encrypted destination profiles; in-app paste of **Supabase auth** keys
 (destination BYOC paste is **in scope** for F16–F19); sibling product-quality tickets beyond
-#733/#739 this cycle (TC SIGMET #738, AIRMET, VAA, TCA, SWX, VONA).
+#736/#737 this cycle (TC SIGMET #738, SWX #740, VONA #741).
 
 ### Live harness (delta 2026-06-22; H7 2026-07-12)
 
@@ -85,6 +85,8 @@ Unified manual live test harness against Render staging:
 | UJ-034 | F23 | SIGMET/VA SIGMET registry + convert→validate golden | H4–H5 if FE | TC-F23-001..006 |
 | UJ-035 | F24 | AIRMET registry + WMO golden (defaults) | H4–H5 if FE | TC-F24-001..005 |
 | UJ-036 | F25 | WMO-passing Examples + METAR/SPECI/TAF goldens | H4–H5 if FE | TC-F25-001..004 |
+| UJ-037 | F26 | VAA registry + WMO golden (defaults) | H4–H5 if FE | TC-F26-001..006 |
+| UJ-038 | F27 | TCA registry + WMO golden (defaults) | H4–H5 if FE | TC-F27-001..006 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -761,6 +763,114 @@ Before closing S013 / EV-009:
 
 - [ ] TC-F25-001..004 green
 - [ ] TC-F7-008 deepen green
+- [ ] H4–H5 when FE touched
+
+## F26 Test Cases (S027 / EV-021) — VAA quality / WMO golden
+
+### TC-F26-001: VAA registry completeness (UJ-037)
+
+- **Level**: T0
+- **Objective**: All VAA lint codes registered (ADR-028); CI fails on unknown codes
+- **Pass criteria**: registry export includes VAA product codes used by rules; drift check green
+- **Source**: F26; #736; E21-D1
+
+### TC-F26-002: WMO va-advisory-A7-2 → convert → M-golden (UJ-037)
+
+- **Level**: T0 / T2
+- **Objective**: Vendor `va-advisory-A7-2.tac` → convert under defaults → `canonicalize_xml`
+  equal to vendor XML; root `iwxxm:VolcanicAshAdvisory` (includes `NO VA EXP` → forecast status)
+- **Pass criteria**: golden assert; profile=annex3; default pinned iwxxm_version (ADR-032)
+- **Source**: F26 + F6.f deepen; E21-2; E21-D3 **F26 theme V3**
+
+### TC-F26-003: VAA accept → XSD+Schematron (UJ-037)
+
+- **Level**: T0 / T2
+- **Objective**: Golden / accept VAA IWXXM validates XSD+Schematron (`iwxxm-validate`)
+- **Pass criteria**: M-xsd / M-sch pass on F26 goldens
+- **Source**: F26
+
+### TC-F26-004: VAA negatives → registry diagnostics (UJ-037)
+
+- **Level**: T0 / T2
+- **Objective**: Negative fixtures (missing DTG/VAAC; exceptional-rule violations) emit
+  registry codes; translation-package TAC themes mined as accept/neg where useful (E21-D4)
+- **Pass criteria**: no silent success; codes in ADR-028 catalog
+- **Source**: F26 + F12 deepen; #736; E21-D3 **F26 themes V1–V2**
+
+### TC-F26-005: Workbench VAA lint+convert smoke (UJ-037)
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Product=VAA path + Examples load when F26 golden passes; hide non-passers;
+  unlock VAA catalog independently of TCA (**S02.M2** incremental)
+- **Pass criteria**: lint+convert ok; catalog policy; H4–H5 when FE deploys
+- **Source**: F26; F7 Planned (smoke); E21-3; S02.M2; deepen UJ-032 / TC-F7-008
+
+### TC-F26-006: VAA / VA SIGMET adjacency guards (UJ-037)
+
+- **Level**: T0 / T2
+- **Objective**: VAA encode never emits `iwxxm:VolcanicAshSIGMET`; VA SIGMET path never emits
+  `iwxxm:VolcanicAshAdvisory` (F23 keepers stay green)
+- **Pass criteria**: adjacency fixtures; complements TC-F23-006
+- **Source**: F26; #736/#739
+
+### F26 verify/deploy gate
+
+- [ ] TC-F26-001..006 green
+- [ ] Coverage-matrix **F26 themes** V1–V3/C1 closed or deferred
+- [ ] H4–H5 when FE touched
+
+## F27 Test Cases (S027 / EV-021) — TCA quality / WMO golden
+
+### TC-F27-001: TCA registry completeness (UJ-038)
+
+- **Level**: T0
+- **Objective**: All TCA lint codes registered (ADR-028); CI fails on unknown codes
+- **Pass criteria**: registry export includes TCA codes; drift check green
+- **Source**: F27; #737
+
+### TC-F27-002: WMO tc-advisory-A2-2 → convert → M-golden (UJ-038)
+
+- **Level**: T0 / T2
+- **Objective**: Vendor `tc-advisory-A2-2.tac` → convert under defaults → `canonicalize_xml`
+  equal to vendor XML; root `iwxxm:TropicalCycloneAdvisory` (RMK NIL → remarks inapplicable)
+- **Pass criteria**: golden assert; defaults only (ADR-032)
+- **Source**: F27 + F6.f deepen; E21-2; E21-D3 **F27 theme T3**
+
+### TC-F27-003: TCA accept → XSD+Schematron (UJ-038)
+
+- **Level**: T0 / T2
+- **Objective**: Golden / accept TCA IWXXM validates XSD+Schematron
+- **Pass criteria**: M-xsd / M-sch pass on F27 goldens
+- **Source**: F27
+
+### TC-F27-004: TCA negatives → registry diagnostics (UJ-038)
+
+- **Level**: T0 / T2
+- **Objective**: Negative fixtures + exceptional-rule table; translation-package TAC themes
+  mined (E21-D4); no Amd79 XML byte-match under 2025-2
+- **Pass criteria**: registry diagnostics; explicit deferrals allowed with rationale
+- **Source**: F27 + F12 deepen; #737; E21-D3 **F27 themes T1–T2**
+
+### TC-F27-005: Workbench TCA lint+convert smoke (UJ-038)
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Product=TCA path + Examples load when F27 golden passes; hide non-passers;
+  unlock TCA catalog independently of VAA (**S02.M2** incremental)
+- **Pass criteria**: lint+convert ok; catalog policy; H4–H5 when FE deploys
+- **Source**: F27; E21-3; S02.M2; deepen UJ-032 / TC-F7-008
+
+### TC-F27-006: TCA / TC SIGMET adjacency guards (UJ-038)
+
+- **Level**: T0 / T2
+- **Objective**: TCA encode never emits `iwxxm:TropicalCycloneSIGMET`; product=`tca` path
+  stays advisory root
+- **Pass criteria**: adjacency fixtures; #738 remains OOS for quality bar
+- **Source**: F27; #737/#738
+
+### F27 verify/deploy gate
+
+- [ ] TC-F27-001..006 green
+- [ ] Coverage-matrix **F27 themes** T1–T3/C1 closed or deferred
 - [ ] H4–H5 when FE touched
 
 ## F9 deepen (S026 / EV-020) — glossary registry

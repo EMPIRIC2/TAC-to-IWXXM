@@ -3,7 +3,7 @@
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
 > **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
-> **Last updated**: 2026-07-22 (S020 / EV-015 F20 TAF+SPECI quality Planned)
+> **Last updated**: 2026-07-29 (S027 / EV-021 — F26/F27 VAA+TCA Planned; F24/F25 Done)
 
 ## Overview
 
@@ -388,22 +388,51 @@ metar-to-IWXXM/
 - **Source**: [feature-list.md](feature-list.md) F23; #733/#739;
   [context/sigmet-quality.md](context/sigmet-quality.md); evolve-decisions EV-019; ADR-028.
 
-### F24 — AIRMET quality bar (S026 / EV-020) — Planned
+### F24 — AIRMET quality bar (S026 / EV-020) — Done
 
 - **Purpose**: #731 AIRMET quality peer to F23; WMO `airmet-A6-1a-TS` golden under **defaults**.
-- **Status**: **Planned**.
+- **Status**: **Done** (S026 / EV-020; PR #793).
 - **Journeys / tests**: UJ-035; TC-F24-001..005.
 - **Policy**: ADR-032 (default `canonicalize_xml` equality).
 - **Source**: feature-list F24; evolve-decisions EV-020; ADR-028/032.
 
-### F25 — WMO official example parity + UI gate (S026 / EV-020) — Planned
+### F25 — WMO official example parity + UI gate (S026 / EV-020) — Done
 
 - **Purpose**: METAR/SPECI/TAF vendor golden equality under defaults; Examples catalog =
   WMO-passers only (plus SIGMET/AIRMET keepers when green).
-- **Status**: **Planned**.
+- **Status**: **Done** (S026 / EV-020; PR #793).
 - **Journeys / tests**: UJ-036; TC-F25-001..004; deepen UJ-032 / TC-F7-008.
 - **Policy**: ADR-032.
 - **Source**: feature-list F25; evolve-decisions EV-020.
+
+### F26 — VAA quality bar (S027 / EV-021) — Planned
+
+- **Purpose**: #736 VAA (`iwxxm:VolcanicAshAdvisory`) quality peer to F23/F24. WMO
+  `va-advisory-A7-2` TAC→IWXXM **`canonicalize_xml`-equal** under default convert settings
+  (ADR-032). Registry-backed lint (ADR-028). Themes **F26 V1–V3 / C1**. Do not confuse with
+  VA SIGMET (`iwxxm:VolcanicAshSIGMET`).
+- **Status**: **Planned** (S027 / EV-021).
+- **API**: `product=vaa` already in enum; no new routes.
+- **Journeys / tests**: UJ-037; TC-F26-001..006; deepen UJ-032 / TC-F7-008.
+- **Fixtures**: Mine TAC themes from `iwxxm-translation` Amd79-80-2023; no Amd79 XML
+  byte-match under 2025-2 (E21-D4).
+- **Non-goals**: VA SIGMET #739; TCA is F27; SWX #740; VONA #741; translation-failed as
+  happy-path golden; PyPI bumps.
+- **Source**: feature-list F26; evolve-decisions EV-021; ADR-028/032;
+  sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md.
+
+### F27 — TCA quality bar (S027 / EV-021) — Planned
+
+- **Purpose**: #737 TCA (`iwxxm:TropicalCycloneAdvisory`) quality peer. WMO
+  `tc-advisory-A2-2` golden under defaults. Themes **F27 T1–T3 / C1**. Do not confuse with
+  TC SIGMET (`iwxxm:TropicalCycloneSIGMET` — #738 OOS).
+- **Status**: **Planned** (S027 / EV-021).
+- **API**: `product=tca` already in enum; no new routes.
+- **Journeys / tests**: UJ-038; TC-F27-001..006; deepen UJ-032 / TC-F7-008.
+- **Fixtures**: Same translation-package mine policy as F26 (E21-D4).
+- **Non-goals**: TC SIGMET #738; VAA is F26; SWX/VONA; translation-failed happy-path; PyPI.
+- **Source**: feature-list F27; evolve-decisions EV-021; ADR-028/032;
+  sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md.
 
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
 

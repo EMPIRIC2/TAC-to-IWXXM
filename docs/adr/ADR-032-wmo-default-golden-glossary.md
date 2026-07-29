@@ -4,8 +4,8 @@
 > **Date**: 2026-07-29  
 > **Deciders**: User (E20-D3; E20-B=2+3; S02.M2 Batch F)  
 > **Stage**: 02-verify-plan  
-> **Related**: F24, F25, F9 deepen, F7.g deepen; ADR-025 (summary); feature-list  
-> **Session**: S026-airmet-quality-wmo-examples / EV-020
+> **Related**: F24, F25, F26, F27, F9 deepen, F7.g deepen; ADR-025 (summary); feature-list  
+> **Session**: S026-airmet-quality-wmo-examples / EV-020 (origin); S027 / EV-021 applies same bar to VAA/TCA
 
 ## Context
 
@@ -17,11 +17,12 @@ diverge structurally. Separately, decode explanations for SIGMET/AIRMET use cate
 
 ## Decision
 
-1. **Default-settings WMO golden bar (F24/F25)**: A case **passes** when
+1. **Default-settings WMO golden bar (F24/F25; also F26/F27)**: A case **passes** when
    `convert(tac, product=…, profile=annex3, iwxxm_version=<default pin>)` yields XML such that
    `canonicalize_xml(ours) == canonicalize_xml(vendor_xml)`. No requirement to match under
    non-default profiles, alternate IWXXM versions, or special flags. Encoder may use stable
-   `gml:id` strategy as needed for equality (same pattern as F23).
+   `gml:id` strategy as needed for equality (same pattern as F23). Applies to VAA
+   (`va-advisory-A7-2`) and TCA (`tc-advisory-A2-2`) under S027 / EV-021 (E21-2).
 2. **UI catalog gate (F7.g deepen)**: Examples control lists **only** demos that pass (1) for
    in-scope products; SIGMET keepers retained; translation-failed WMO fixtures are not
    happy-path Examples.

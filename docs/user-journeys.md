@@ -6,7 +6,7 @@
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783)
-> **Last updated**: 2026-07-29 (S026 / EV-020 — UJ-035 AIRMET; UJ-036 WMO examples)
+> **Last updated**: 2026-07-29 (S027 / EV-021 — UJ-037 VAA; UJ-038 TCA)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -51,6 +51,8 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-034 | SIGMET + VA SIGMET lint / convert→validate golden | UI / API / CI | F23 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-035 | AIRMET lint / convert→validate WMO golden | UI / API / CI | F24 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-036 | WMO-passing Examples catalog + METAR/SPECI/TAF goldens | apps/frontend / CI | F25 (+F7.g) | T0 / T2 / **T3** / H4–H5 |
+| UJ-037 | VAA lint / convert→validate WMO golden | UI / API / CI | F26 (+F6.f/F12) | T0 / T2 / **T3** |
+| UJ-038 | TCA lint / convert→validate WMO golden | UI / API / CI | F27 (+F6.f/F12) | T0 / T2 / **T3** |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -950,6 +952,68 @@ AIRMET when F24 passes). Non-passers removed/hidden.
 
 ---
 
+### UJ-037: VAA Lint / Convert→Validate WMO Golden (F26 / #736)
+
+**Actor**: Operator / CI maintainer
+
+**Goal**: Lint VAA TAC with registry codes; convert accept fixtures (esp. WMO
+`va-advisory-A7-2`) to `iwxxm:VolcanicAshAdvisory` that is **`canonicalize_xml`-equal** to the
+vendor IWXXM example **under default convert settings**; XSD+Schematron pass; useful
+diagnostics on negatives. Never confuse with VA SIGMET (`iwxxm:VolcanicAshSIGMET`).
+
+**Feature**: F26 (+ deepen F6.f / F12 / F7.g) — S027 / EV-021
+
+**Steps (operator — T2/T3)**:
+
+1. Open workbench; Product = **VAA** (or Auto-detect).
+2. Load / paste WMO VAA accept TAC; lint — registry codes only.
+3. Convert → Strict Validation — pass; root `iwxxm:VolcanicAshAdvisory`.
+4. Paste a known-bad VAA negative — lint returns registry codes (no silent success).
+5. Examples control lists VAA demos **only** when they pass the golden bar (E21-3).
+
+**Steps (CI — T0)**:
+
+1. Registry completeness for VAA codes.
+2. Golden: vendor `va-advisory-A7-2.tac` → convert (defaults) → `canonicalize_xml` == vendor XML.
+3. Exceptional + translation-package TAC themes as fixtures; negatives + matrix V1–V3/C1.
+
+**Acceptance**: TC-F26-001..006 green; H4–H5 when FE touched.
+
+**Automated tests**: TC-F26-*; deepen TC-F7-008 / UJ-032.
+
+---
+
+### UJ-038: TCA Lint / Convert→Validate WMO Golden (F27 / #737)
+
+**Actor**: Operator / CI maintainer
+
+**Goal**: Lint TCA TAC with registry codes; convert accept fixtures (esp. WMO
+`tc-advisory-A2-2`) to `iwxxm:TropicalCycloneAdvisory` that is **`canonicalize_xml`-equal**
+under defaults; XSD+Schematron pass; negatives diagnostic. Never confuse with TC SIGMET
+(`iwxxm:TropicalCycloneSIGMET`).
+
+**Feature**: F27 (+ deepen F6.f / F12 / F7.g) — S027 / EV-021
+
+**Steps (operator — T2/T3)**:
+
+1. Open workbench; Product = **TCA** (or Auto-detect).
+2. Load / paste WMO TCA accept TAC; lint — registry codes only.
+3. Convert → Strict Validation — pass; root `iwxxm:TropicalCycloneAdvisory`.
+4. Paste a known-bad TCA negative — lint returns registry codes.
+5. Examples control lists TCA demos **only** when they pass the golden bar (E21-3).
+
+**Steps (CI — T0)**:
+
+1. Registry completeness for TCA codes.
+2. Golden: vendor `tc-advisory-A2-2.tac` → convert (defaults) → `canonicalize_xml` == vendor XML.
+3. Exceptional + translation-package TAC themes; negatives + matrix T1–T3/C1.
+
+**Acceptance**: TC-F27-001..006 green; H4–H5 when FE touched.
+
+**Automated tests**: TC-F27-*; deepen TC-F7-008 / UJ-032.
+
+---
+
 ### UJ-027: Dissemination drawer — multi-DB upload (F16 / #729; multi-select #785)
 
 **Actor**: Anyone (public — F21; no login)
@@ -1054,3 +1118,5 @@ live smoke (T7.4) when scheduled.
   (F23; #733/#739)
 - S026 / EV-020 (2026-07-29): UJ-035 AIRMET WMO golden (F24/#731); UJ-036 WMO-passing
   Examples + METAR/SPECI/TAF parity (F25); deepen UJ-020/032
+- S027 / EV-021 (2026-07-29): UJ-037 VAA WMO golden (F26/#736); UJ-038 TCA WMO golden
+  (F27/#737); deepen UJ-032 / TC-F7-008

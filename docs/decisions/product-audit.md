@@ -212,3 +212,31 @@ Phase A checkpoint → **04-tech-plan** (03 skipped per Standard routing).
 ### Next
 
 Phase A checkpoint → **04-tech-plan** (Lean+build; 05 skipped per S9.M1).
+
+---
+
+## S027 / EV-021 delta (2026-07-29) — F26 VAA + F27 TCA quality
+
+**Session**: S027-vaa-quality  
+**Report**: `docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md`  
+**Status**: **PASS** — Batch F S02.M1/M2/L1 all option **1** (2026-07-29)
+
+| Metric | Count |
+|--------|-------|
+| Documents audited | 11 |
+| Auto-approved (high) | 12 |
+| Fix-in-place | 1 (`spec.md` F24/F25 Done + F26/F27 Planned) |
+| User-approved (medium/low) | 3 (all option 1) |
+
+### Consistency
+
+| Check | Result |
+|-------|--------|
+| Feature ↔ Spec / Journey / Test / API | Pass (after spec fix) |
+| Cross-doc theme naming F23 vs F26 V1–V3 | Pass — mandatory Fn-theme prefix (S02.M1=1) |
+| Catalog unlock incremental | Pass (S02.M2=1; peer E20-F4) |
+| Connectivity H4–H5 | Pass (UJ-037/038) |
+
+### Next
+
+Gate A PASS (Lean) → **04-tech-plan** (`D-S027-02-phase-a`).

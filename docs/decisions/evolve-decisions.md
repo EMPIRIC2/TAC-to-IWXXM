@@ -3,6 +3,88 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-021 — VAA + TCA quality bars (#736 / #737) (S027)
+
+**Session**: S027-vaa-quality  
+**Features**: **F26** (VAA quality #736) + **F27** (TCA quality #737) + deepen **F6.f** / **F12** / **F7.g**  
+**Issues**: [#736](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/736) (VAA), [#737](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/737) (TCA)  
+**Started**: 2026-07-29  
+**Branch**: `evolve/EV-021-vaa-quality`  
+**Status**: **in_progress** (Phase C — **07-build** @ T1.1; M0 done)
+
+### Scope (Batch 1 — locked 2026-07-29)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E21-1 | decision | Product encode scope? | **2** — VAA #736 **and** TCA #737 this cycle (assign **F26** + **F27**) |
+| E21-2 | decision | WMO golden bar? | **1** — strict **`canonicalize_xml`** equality under **default** convert settings (`profile=annex3`, pinned 2025-2) for vendor goldens |
+| E21-3 | decision | UI Examples catalog? | **1** — only list VAA/TCA examples that pass the golden bar; hide non-passers; **research/dig WMO IWXXM examples** (vendor + translation package) |
+| E21-4 | decision | Routing + lock? | **1** — Lean+build+11 (`00→16→01→02→04→07→08→10→11→13`); lock Phase 0 → **01-requirements** |
+| E21-ui | decision | Non-deployed UI preview? | **No** (default) — docs/repo only unless re-asked |
+| E21-D1 | decision | Document Manifest? | **2** — all recommended (feature-list + AC + journeys/tests + coverage + ADR note + api + config) |
+| E21-D2 | decision | Journeys / tests? | **1** — **UJ-037** VAA + **UJ-038** TCA; TC-F26-001..006 / TC-F27-001..006; deepen UJ-032 / TC-F7-008 |
+| E21-D3 | decision | Matrix themes? | **1** — VAA **V1–V3+C1**; TCA **T1–T3+C1** |
+| E21-D4 | decision | Translation-package fixtures? | **1** — mine TAC themes into accept/negatives; no Amd79 XML byte-match under 2025-2 |
+| E21-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** |
+
+**Scope (verbatim)**:
+Raise VAA (`iwxxm:VolcanicAshAdvisory`) and TCA (`iwxxm:TropicalCycloneAdvisory`) to the
+F15/F20/F23/F24 quality bar: registry-backed lint, WMO vendor TAC→IWXXM
+`canonicalize_xml`-equal under defaults (`va-advisory-A7-2`, `tc-advisory-A2-2`),
+XSD+Schematron round-trip, exceptional-rule accept/negative fixtures from #736/#737
+tables + guidance, F7.g catalog only for passers. Mine WMO examples from
+`vendor/schemas/iwxxm/2025-2/IWXXM/examples/` and
+`vendor/schemas/iwxxm-translation/Amd79-80-2023/{volcanic-ash,tropical-cyclone}-advisory/`.
+Do not conflate with VA SIGMET (#739) or TC SIGMET (#738). OOS: SWX #740, VONA #741,
+PyPI bumps, non-default profile/version golden equality, treating `*-translation-failed`
+as happy-path golden.
+
+### Fn allocation (approved)
+
+| Fn | Title | Role |
+|----|-------|------|
+| **F26** | VAA quality bar | #736 lint/convert/validate/goldens/matrix |
+| **F27** | TCA quality bar | #737 lint/convert/validate/goldens/matrix |
+| Deepen **F6.f** | VAA + TCA plugins | Encode fidelity to vendor shapes |
+| Deepen **F12** | tac-validate | ADR-028 registry codes for VAA/TCA |
+| Deepen **F7.g** | Examples catalog | Only WMO-passing VAA/TCA demos |
+
+### Routing (approved)
+
+**Required:** 00 → 16 → 01 → 02 → 04 → 07 → 08 → 10 → 11 → 13  
+**Skipped:** 03, 05, 06, 09, 12 (re-add if 04 introduces deps/ADR tooling)
+
+### Research seed
+
+See `docs/sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md`.
+
+### 02-verify-plan PASS (2026-07-29)
+
+12 auto-approved; Batch F all **1** (S02.M1/M2/L1).  
+Report: `docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md`.  
+Consistency: `spec.md` F24/F25 → Done; F26/F27 Planned (fixed in audit).
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| S02.M1 | ambiguity | Theme ids collide with F23 V1–V3? | **1** — keep F26 V1–V3 / F27 T1–T3 + mandatory “F26/F27 theme” prefix (`D-S027-EV021-s02m1-1`) |
+| S02.M2 | decision | Catalog unlock cadence? | **1** — incremental per product (VAA when F26 greens; TCA when F27 greens) (`D-S027-EV021-s02m2-1`; peer E20-F4) |
+| S02.L1 | uncertainty | CI packaging? | **1** — extend combined `wmo-quality.yml` with VAA+TCA; finalize in 04 (`D-S027-EV021-s02l1-1`) |
+| D-S027-02-phase-a | gate | Phase A → 04? | **PASS** — Lean skip AskQuestion; start **04-tech-plan** |
+
+### 04-tech-plan approved (2026-07-29)
+
+Batch T all **1**. Report: `docs/sessions/S027-vaa-quality/reports/04-tech-plan.md`.  
+Execution plan: `docs/sessions/S027-vaa-quality/reports/execution-plan.md`.
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E21-T1 | decision | Milestone order? | **1** — M0→VAA lint→VAA golden→TCA lint→TCA golden→catalog→smoke |
+| E21-T2 | decision | Research depth? | **1** — close inventory; light dig |
+| E21-T3 | decision | New deps? | **1** — none |
+| E21-T4 | decision | Deploy/smoke? | **1** — redeploy; H1–H3 if API; H4–H5 when FE |
+| E21-T5 | decision | Kill-switch? | **1** — AskQuestion if theme scope explodes |
+| E21-T6 | decision | Approve plan → 07? | **1** — yes; skip 05/06; 07 @ T0.1 |
+
 ## Cycle EV-020 — AIRMET quality + WMO official golden parity + decode glossary (S026)
 
 **Session**: S026-airmet-quality-wmo-examples  

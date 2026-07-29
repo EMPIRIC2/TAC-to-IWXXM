@@ -248,6 +248,7 @@ apply. Single-deploy cutover with Auth strip (E17-18).
 - S023 / EV-017 (2026-07-28): F21 — rate-limit + body env; retire `DISABLE_AUTH` / `E2E_USER_*` / FE Auth keys (ADR-031)
 - S026 / EV-020 (2026-07-29): F9 glossary package data + optional override; F3/OpenAIP reuse for
   decode names (ADR-032) — see §F24/F25/F9 below
+- S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA WMO goldens — **no new env vars**; see §F26/F27
 
 ## F24 / F25 / F9 deepen — WMO goldens + glossary (S026 / EV-020)
 
@@ -264,6 +265,20 @@ No new Render secrets required for convert goldens (package-side). Decode glossa
 
 **Connectivity**: H4–H5 when FE catalog / decode copy changes. Redeploy API before frontend if
 decode-tac string behavior ships in API image.
+
+## F26 / F27 — VAA + TCA quality (S027 / EV-021)
+
+No new Render secrets or env vars. Package-side goldens under ADR-032 defaults; FE Examples
+catalog remains static fixtures (WMO-passers only for VAA/TCA when F26/F27 green — E21-3).
+
+| Concern | Where it lives | Notes |
+|---------|----------------|-------|
+| WMO golden defaults | Code defaults | `profile=annex3`, pinned default `iwxxm_version` — ADR-032 |
+| VAA/TCA lint codes | `tac-validate` ADR-028 registry | Additive codes only; no new HTTP config |
+| FE Examples catalog | Static FE fixtures | No env; hide non-passers until goldens green |
+
+**Connectivity**: H4–H5 when FE catalog changes. Redeploy API before frontend if convert/lint
+behavior ships in API image.
 
 ## References
 

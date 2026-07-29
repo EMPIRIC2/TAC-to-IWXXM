@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-29 (S026 / EV-020 — F24/F25 Done; PR #793; deepen F9/F7.g)
+> **Last updated**: 2026-07-29 (S027 / EV-021 — F26/F27 Planned; VAA+TCA #736/#737)
 
 ## Summary
 
@@ -33,6 +33,8 @@
 | F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792 |
 | F24 | AIRMET quality bar | Done | Product | S026 / EV-020; #731; PR #793 |
 | F25 | WMO official example parity (METAR/SPECI/TAF) + UI gate | Done | Product | S026 / EV-020; PR #793 |
+| F26 | VAA quality bar (VolcanicAshAdvisory) | Planned | Product | S027 / EV-021; #736 |
+| F27 | TCA quality bar (TropicalCycloneAdvisory) | Planned | Product | S027 / EV-021; #737 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -757,6 +759,87 @@
 - **Status note**: F7.g remains under F7 Planned; this cycle replaces catalog bodies/policy so
   the workbench Examples control only offers **strict WMO-passing** demos for in-scope products
   (**UJ-036** / **TC-F25-003**).
+
+### F26: VAA Quality Bar — S027 / EV-021
+
+- **Status**: **Planned** — S027 / EV-021 (in progress).
+- **What it does**: Raises **Volcanic Ash Advisory** TAC lint, convert, and IWXXM-validate
+  quality to the F15/F20/F23/F24 bar. Target: WMO vendor `va-advisory-A7-2` TAC→IWXXM
+  **`canonicalize_xml`-equal** under **default** convert settings (`profile=annex3`, default
+  pinned `iwxxm_version`). Root `iwxxm:VolcanicAshAdvisory`. Reuses **ADR-028** registry
+  (new VAA codes as needed); golden policy **ADR-032**. Distinguishes VAA from VA SIGMET
+  (`iwxxm:VolcanicAshSIGMET` — F23 / #739).
+- **Issues**: [#736](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/736).
+- **Deepens**: **F6.f** (VAA encode), **F12** (VAA checklist), **F7.g** (Examples when passing).
+- **Acceptance**:
+  1. Registry-backed VAA lint codes; CI fails on unknown codes (**TC-F26-001**)
+  2. #736 exceptional-rule table (UNKNOWN/UNNAMED, nilReasons, OBS/FCST status, `NO VA EXP`,
+     remarks NIL, `NO FURTHER ADVISORIES`, …) has accept + negative fixtures (or explicit
+     deferrals) (**F26 themes V1–V2**; TC-F26-002/004) — mine TAC themes from
+     `iwxxm-translation` Amd79-80-2023; **no** byte-match of those XMLs under 2025-2 (E21-D4)
+  3. Common rules: `reportStatus` / `permissibleUsage`, `translationFailedTAC`, geometry CRS,
+     nilReasons, one-IWXXM-per-TAC-report (**F26 theme C1**)
+  4. WMO `va-advisory-A7-2.tac` → convert (defaults) → `canonicalize_xml` == vendor XML;
+     XSD+Schematron pass; root `iwxxm:VolcanicAshAdvisory` (**F26 theme V3**; TC-F26-002/003)
+  5. Coverage-matrix VAA / F26 themes updated; guidance gaps filed or closed
+  6. Workbench product-path lint+convert smoke; Examples list **only** VAA passers
+     (**UJ-037** / **TC-F26-005**; deepen UJ-032 / TC-F7-008); unlock VAA Examples when
+     F26 golden greens (**S02.M2** incremental); H4–H5 when FE touched
+- **Journeys / tests**: **UJ-037**; **TC-F26-001..006**
+- **Out of scope**: VA SIGMET #739 (Done); TCA handled by **F27**; SWX #740; VONA #741;
+  treating `va-advisory-translation-failed` as happy-path golden; non-default profile/version
+  equality; PyPI bumps
+- **Source**: E21-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-021;
+  [wmo-vaa-tca-examples-inventory.md](sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md);
+  ADR-028; ADR-032; `docs/domain/rules/COVERAGE_MATRIX.md`
+
+### F27: TCA Quality Bar — S027 / EV-021
+
+- **Status**: **Planned** — S027 / EV-021 (in progress).
+- **What it does**: Raises **Tropical Cyclone Advisory** TAC lint, convert, and IWXXM-validate
+  quality to the same bar. Target: WMO vendor `tc-advisory-A2-2` TAC→IWXXM
+  **`canonicalize_xml`-equal** under **default** convert settings. Root
+  `iwxxm:TropicalCycloneAdvisory`. Reuses **ADR-028** / **ADR-032**. Distinguishes TCA from
+  TC SIGMET (`iwxxm:TropicalCycloneSIGMET` — #738 OOS).
+- **Issues**: [#737](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/737).
+- **Deepens**: **F6.f** (TCA encode), **F12** (TCA checklist), **F7.g** (Examples when passing).
+- **Acceptance**:
+  1. Registry-backed TCA lint codes; CI fails on unknown codes (**TC-F27-001**)
+  2. #737 exceptional-rule table (`UNNAMED`, CB NIL, remarks NIL, `NO MSG EXP`, forecast wind
+     &lt;34 kt, no-longer-TC position, …) has accept + negative fixtures (or explicit deferrals)
+     (**F27 themes T1–T2**; TC-F27-002/004) — mine TAC themes from translation package; no Amd79 XML
+     byte-match under 2025-2 (E21-D4)
+  3. Common rules covered (**F27 theme C1**)
+  4. WMO `tc-advisory-A2-2.tac` → convert (defaults) → `canonicalize_xml` == vendor XML;
+     XSD+Schematron pass; root `iwxxm:TropicalCycloneAdvisory` (**F27 theme T3**; TC-F27-002/003)
+  5. Coverage-matrix TCA / F27 themes updated; guidance gaps filed or closed
+  6. Workbench product-path smoke; Examples list **only** TCA passers (**UJ-038** /
+     **TC-F27-005**; deepen UJ-032 / TC-F7-008); unlock TCA Examples when F27 golden greens
+     (**S02.M2** incremental); H4–H5 when FE touched
+- **Journeys / tests**: **UJ-038**; **TC-F27-001..006**
+- **Out of scope**: TC SIGMET #738; VAA handled by **F26**; SWX #740; VONA #741;
+  treating `tc-advisory-translation-failed` as happy-path golden; non-default profile/version
+  equality; PyPI bumps
+- **Source**: E21-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-021;
+  [wmo-vaa-tca-examples-inventory.md](sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md);
+  ADR-028; ADR-032; `docs/domain/rules/COVERAGE_MATRIX.md`
+
+### F6.f deepen (S027 / EV-021 — VAA + TCA)
+
+- **Status note**: F6 remains **Implemented**; this cycle **deepens F6.f** convert/golden
+  fidelity for VAA + TCA under F26/F27 acceptance (not a new Fn).
+
+### F12 deepen (S027 / EV-021 — VAA + TCA)
+
+- **Status note**: F12 remains **Implemented**; this cycle expands VAA/TCA rules through the
+  ADR-028 registry and accept/negative packs.
+
+### F7.g deepen (S027 / EV-021 — VAA/TCA WMO-passers)
+
+- **Status note**: Catalog only lists VAA/TCA demos that pass the F26/F27 golden bar (E21-3);
+  hide `vaa_basic` / `tca_basic` until replaced by WMO passers (**UJ-037/038**; TC-F7-008 deepen).
+  **Unlock cadence (`D-S027-EV021-s02m2-1`)**: incremental per product — unlock VAA Examples
+  when F26 golden greens; TCA when F27 greens (may differ mid-cycle; peer E20-F4).
 
 ## Platform Feature Details (Monorepo Migration)
 
