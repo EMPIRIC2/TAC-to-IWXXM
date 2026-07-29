@@ -133,15 +133,15 @@ enums under Advisory types) as VA **SIGMET** encode — those are #736 / VAA pat
 
 ## Theme detail — Common (F23 theme C1)
 
-Reuse F20 C1 pattern:
+Reuse F20 C1 pattern (T4.3 fixtures / T4.4 encode):
 
 | Rule | Lint surface? | Convert |
 |------|---------------|---------|
-| `reportStatus` / `permissibleUsage` | Limited (SIGMET rarely AMD/COR — EUR: no COR) | Required on report |
-| `translationFailedTAC` | No TAC token | Convert-only; defer with rationale if no surface |
-| 2-D CRS attrs | Partial (polygon/line cases overlap G1) | Always on geometry |
-| nilReasons | Token-driven (STNR, NO VA EXP, …) | Correct WMO URIs |
-| One IWXXM per TAC report | Bulletin multi-report awareness | Packing / COLLECT OOS |
+| `reportStatus` / `permissibleUsage` | ✅ CNL cancel + COR ban (`SIGMET_CNL` / `INVALID_SIGMET_COR`; EUR: no COR) | Required on report |
+| `translationFailedTAC` | No TAC token | **Deferred** convert-only (no lint surface) |
+| 2-D CRS attrs | Partial (polygon/line cases overlap G1) | **Deferred** convert-only for attrs; G1 polygon lint remains |
+| nilReasons | ✅ STNR / `NO VA EXP` / VA CNL FIR-moved | Correct WMO URIs |
+| One IWXXM per TAC report | ✅ `MULTI_REPORT_BULLETIN` on SIGMET | Packing / COLLECT OOS |
 
 ---
 

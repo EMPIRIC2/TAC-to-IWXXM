@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "TC-F12-001 / E10-21 / TC-F15-003 / TC-F20-004 / TC-F23-004 fixture pack for tac-validate (F12 + F15 R1–R8 + F20 T1–T3 TAF + S1 SPECI + C1 + F23 G1 SIGMET).",
+  "description": "TC-F12-001 / E10-21 / TC-F15-003 / TC-F20-004 / TC-F23-004 fixture pack for tac-validate (F12 + F15 R1–R8 + F20 T1–T3 TAF + S1 SPECI + C1 + F23 G1–G2 / V1 / C1 SIGMET).",
   "cite": [
     "docs/domain/TAC_VALIDATION.md (A3-2, A5-1, A6, A2-1, A2-2 paraphrase)",
     "docs/domain/rules/COVERAGE_MATRIX.md",
@@ -691,6 +691,62 @@
       "theme": "C1",
       "cite": "NIL → nilReason missing; research C1",
       "tac": "accept/taf_c1_nil.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_c1_normal",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "reportStatus NORMAL (default); research C1",
+      "tac": "accept/sigmet_c1_normal.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_c1_cnl",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "CNL → cancel reportStatus path; research C1",
+      "tac": "accept/sigmet_c1_cnl.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_c1_stnr",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "STNR → nilReason stationary; research C1",
+      "tac": "accept/sigmet_c1_stnr.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_c1_multi_report",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "one IWXXM report per TAC report; research C1",
+      "tac": "accept/sigmet_c1_multi_report.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_c1_va_normal",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "VA reportStatus NORMAL; research C1",
+      "tac": "accept/sigmet_c1_va_normal.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_c1_va_no_va_exp",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "NO VA EXP → nilReason absence; research C1",
+      "tac": "accept/sigmet_c1_va_no_va_exp.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_c1_va_cnl_fir_moved",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "VA CNL FIR-moved cancel; research C1",
+      "tac": "accept/sigmet_c1_va_cnl_fir_moved.tac",
       "ok": true
     }
   ],
@@ -1974,6 +2030,76 @@
       "tac": "negative/taf/c1_nil_with_body.tac",
       "ok": false,
       "expected_codes": ["INVALID_NIL"],
+      "require_spans": true
+    }
+  ],
+  "f23_c1_modifier_info": [
+    {
+      "id": "sigmet_c1_cnl_info",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "CNL → SIGMET_CNL; research C1",
+      "tac": "accept/sigmet_c1_cnl.tac",
+      "ok": true,
+      "expected_codes": ["SIGMET_CNL"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_c1_stnr_info",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "STNR → STNR_MOVEMENT; research C1",
+      "tac": "accept/sigmet_c1_stnr.tac",
+      "ok": true,
+      "expected_codes": ["STNR_MOVEMENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_c1_multi_report_info",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "multi-report → MULTI_REPORT_BULLETIN; research C1",
+      "tac": "accept/sigmet_c1_multi_report.tac",
+      "ok": true,
+      "expected_codes": ["MULTI_REPORT_BULLETIN"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_c1_va_no_va_exp_info",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "NO VA EXP → NO_VA_EXP; research C1",
+      "tac": "accept/sigmet_c1_va_no_va_exp.tac",
+      "ok": true,
+      "expected_codes": ["NO_VA_EXP"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_c1_va_cnl_fir_moved_info",
+      "product": "SIGMET",
+      "theme": "C1",
+      "cite": "VA CNL FIR-moved → VA_CNL_FIR_MOVED; research C1",
+      "tac": "accept/sigmet_c1_va_cnl_fir_moved.tac",
+      "ok": true,
+      "expected_codes": ["VA_CNL_FIR_MOVED"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "f23_c1_errors": [
+    {
+      "id": "sigmet_c1_cor_not_allowed",
+      "product": "SIGMET",
+      "theme": "C1",
+      "depth": "full_checklist",
+      "cite": "COR banned (cancel + re-issue); research C1 / G1",
+      "tac": "negative/sigmet/c1_cor_not_allowed.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_SIGMET_COR"],
       "require_spans": true
     }
   ],

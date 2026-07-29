@@ -43,34 +43,36 @@ Convert goldens live under `packages/tac2iwxxm/tests/fixtures/{annex3_golden,iwx
 Diagnostics assertions require product-rule codes/spans from
 `check_product_rules`.
 
-| Manifest key         | `ok`    | Role                                                        |
-| -------------------- | ------- | ----------------------------------------------------------- |
-| `accept`             | `true`  | Thin accept / theme accept (R1, R2 SM/9999/meters)          |
-| `negative`           | `false` | Error-severity checklist / template gates                   |
-| `order_warnings`     | `true`  | Warning-only R1 odd field order (`ODD_FIELD_ORDER`)         |
-| `r2_fraction_accept` | `true`  | US SM fractions / M-prefix (encoded in T3.4)                |
-| `visibility_errors`  | `false` | R2 malformed visibility (`INVALID_VISIBILITY`)              |
-| `weather_errors`     | `false` | R3 malformed present weather (`INVALID_WEATHER`)            |
-| `cloud_errors`       | `false` | R4 malformed cloud/VV height/suffix (`INVALID_CLOUD_TOKEN`) |
-| `cloud_cb_tcu_info`  | `true`  | R4 CB/TCU convective type (`CLOUD_CB_OR_TCU` info)          |
-| `remark_us_info`     | `true`  | R5 known US RMK tokens (`REMARK_US_EXTENSION` info)         |
-| `remark_errors`      | `false` | R5 malformed RMK groups (`INVALID_REMARK`)                  |
-| `r8_modifier_info`   | `true`  | R8 AUTO/COR/NIL/NOSIG/TEMPO/RVR/VRB·gust info codes         |
-| `r8_errors`          | `false` | R8 malformed NIL/RVR/wind (`INVALID_*`)                     |
-| `t1_modifier_info`   | `true`  | F20 T1 TAF NIL/CNL/AMD/COR info codes                       |
-| `t1_errors`          | `false` | F20 T1 malformed TAF NIL/CNL                                |
-| `t2_modifier_info`   | `true`  | F20 T2 TAF FM/BECMG/TEMPO/PROB/TL/AT info                   |
-| `t2_errors`          | `false` | F20 T2 invalid PROB                                         |
-| `t3_modifier_info`   | `true`  | F20 T3 TX/TN CAVOK NSC NSW VV/// info                       |
-| `t3_errors`          | `false` | F20 T3 TX/TN on change group                                |
-| `s1_modifier_info`   | `true`  | F20 S1 SPECI exceptional NIL/CAVOK/NSC/NCD/… info           |
-| `s1_errors`          | `false` | F20 S1 SPECI malformed NIL                                  |
-| `c1_modifier_info`   | `true`  | F20/F23 C1 reportStatus / nil / multi-report info           |
-| `c1_errors`          | `false` | F20/F23 C1 NIL-with-body / SIGMET COR (INVALID\_\*)         |
-| `g1_modifier_info`   | `true`  | F23 G1 SIGMET CNL/STNR/point/alt/polygon/TOP ABV info       |
-| `g1_errors`          | `false` | F23 G1 bad CNL / COR / STNR+MOV                             |
-| `g2_modifier_info`   | `true`  | F23 G2 SIGMET sequence/FIR/OBS·FCST/intensity info          |
-| `g2_errors`          | `false` | F23 G2 missing sequence/FIR/OBS·FCST / long validity        |
+| Manifest key           | `ok`    | Role                                                        |
+| ---------------------- | ------- | ----------------------------------------------------------- |
+| `accept`               | `true`  | Thin accept / theme accept (R1, R2 SM/9999/meters)          |
+| `negative`             | `false` | Error-severity checklist / template gates                   |
+| `order_warnings`       | `true`  | Warning-only R1 odd field order (`ODD_FIELD_ORDER`)         |
+| `r2_fraction_accept`   | `true`  | US SM fractions / M-prefix (encoded in T3.4)                |
+| `visibility_errors`    | `false` | R2 malformed visibility (`INVALID_VISIBILITY`)              |
+| `weather_errors`       | `false` | R3 malformed present weather (`INVALID_WEATHER`)            |
+| `cloud_errors`         | `false` | R4 malformed cloud/VV height/suffix (`INVALID_CLOUD_TOKEN`) |
+| `cloud_cb_tcu_info`    | `true`  | R4 CB/TCU convective type (`CLOUD_CB_OR_TCU` info)          |
+| `remark_us_info`       | `true`  | R5 known US RMK tokens (`REMARK_US_EXTENSION` info)         |
+| `remark_errors`        | `false` | R5 malformed RMK groups (`INVALID_REMARK`)                  |
+| `r8_modifier_info`     | `true`  | R8 AUTO/COR/NIL/NOSIG/TEMPO/RVR/VRB·gust info codes         |
+| `r8_errors`            | `false` | R8 malformed NIL/RVR/wind (`INVALID_*`)                     |
+| `t1_modifier_info`     | `true`  | F20 T1 TAF NIL/CNL/AMD/COR info codes                       |
+| `t1_errors`            | `false` | F20 T1 malformed TAF NIL/CNL                                |
+| `t2_modifier_info`     | `true`  | F20 T2 TAF FM/BECMG/TEMPO/PROB/TL/AT info                   |
+| `t2_errors`            | `false` | F20 T2 invalid PROB                                         |
+| `t3_modifier_info`     | `true`  | F20 T3 TX/TN CAVOK NSC NSW VV/// info                       |
+| `t3_errors`            | `false` | F20 T3 TX/TN on change group                                |
+| `s1_modifier_info`     | `true`  | F20 S1 SPECI exceptional NIL/CAVOK/NSC/NCD/… info           |
+| `s1_errors`            | `false` | F20 S1 SPECI malformed NIL                                  |
+| `c1_modifier_info`     | `true`  | F20/F23 C1 reportStatus / nil / multi-report info           |
+| `c1_errors`            | `false` | F20/F23 C1 NIL-with-body / SIGMET COR (INVALID\_\*)         |
+| `f23_c1_modifier_info` | `true`  | F23 C1 SIGMET/VA reportStatus / nil / multi-report info     |
+| `f23_c1_errors`        | `false` | F23 C1 SIGMET COR ban (`INVALID_SIGMET_COR`)                |
+| `g1_modifier_info`     | `true`  | F23 G1 SIGMET CNL/STNR/point/alt/polygon/TOP ABV info       |
+| `g1_errors`            | `false` | F23 G1 bad CNL / COR / STNR+MOV                             |
+| `g2_modifier_info`     | `true`  | F23 G2 SIGMET sequence/FIR/OBS·FCST/intensity info          |
+| `g2_errors`            | `false` | F23 G2 missing sequence/FIR/OBS·FCST / long validity        |
 
 ## Tooling
 

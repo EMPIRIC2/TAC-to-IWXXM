@@ -1542,6 +1542,8 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
     start, end, body = _body_span(tac)
     upper = body.upper()
     issues: list[Issue] = []
+    # F23 theme C1 — one IWXXM report per TAC report (shared with METAR/SPECI/TAF).
+    issues.extend(_check_c1_multi_report(tac, product))
 
     if not _VALID_PERIOD.search(upper):
         issues.append(

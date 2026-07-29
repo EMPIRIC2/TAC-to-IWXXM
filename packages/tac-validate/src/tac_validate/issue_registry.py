@@ -200,7 +200,7 @@ ISSUES: tuple[IssueSpec, ...] = (
         "MULTI_REPORT_BULLETIN",
         "info",
         "{product} bulletin has multiple TAC reports — one IWXXM report per TAC (Guidance C1)",
-        tags=("bulletin", "metar", "speci", "taf", "c1", "one_report"),
+        tags=("bulletin", "metar", "speci", "taf", "sigmet", "airmet", "c1", "one_report"),
     ),
     _row(
         "NOSIG_PRESENT",
@@ -380,16 +380,16 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "SIGMET_CNL",
         "info",
-        "SIGMET CNL cancel report — research G1",
+        "SIGMET CNL cancel report — research G1 / C1",
         product="sigmet",
-        tags=("cnl", "sigmet", "g1"),
+        tags=("cnl", "sigmet", "g1", "c1"),
     ),
     _row(
         "STNR_MOVEMENT",
         "info",
-        "SIGMET STNR stationary movement — research G1",
+        "SIGMET STNR stationary movement — research G1 / C1",
         product="sigmet",
-        tags=("stnr", "movement", "sigmet", "g1"),
+        tags=("stnr", "movement", "sigmet", "g1", "c1"),
     ),
     _row(
         "POINT_LOCATION",
@@ -429,9 +429,9 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "INVALID_SIGMET_COR",
         "error",
-        "SIGMET must not use COR (cancel + re-issue) — research G1",
+        "SIGMET must not use COR (cancel + re-issue) — research G1 / C1",
         product="sigmet",
-        tags=("cor", "sigmet", "g1"),
+        tags=("cor", "sigmet", "g1", "c1"),
     ),
     _row(
         "INVALID_STNR_MOVEMENT",
@@ -515,16 +515,16 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "NO_VA_EXP",
         "info",
-        "VA SIGMET NO VA EXP absence token — research V1",
+        "VA SIGMET NO VA EXP absence token — research V1 / C1",
         product="sigmet",
-        tags=("va", "no_va_exp", "sigmet", "v1"),
+        tags=("va", "no_va_exp", "sigmet", "v1", "c1"),
     ),
     _row(
         "VA_CNL_FIR_MOVED",
         "info",
-        "VA SIGMET CNL identifies FIR to which ash has moved — research V1",
+        "VA SIGMET CNL identifies FIR to which ash has moved — research V1 / C1",
         product="sigmet",
-        tags=("va", "cnl", "fir", "sigmet", "v1"),
+        tags=("va", "cnl", "fir", "sigmet", "v1", "c1"),
     ),
     _row(
         "MISSING_VA_VOLCANO",

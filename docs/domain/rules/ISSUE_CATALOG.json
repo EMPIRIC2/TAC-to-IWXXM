@@ -251,12 +251,13 @@
     {
       "code": "INVALID_SIGMET_COR",
       "severity": "error",
-      "message_template": "SIGMET must not use COR (cancel + re-issue) \u2014 research G1",
+      "message_template": "SIGMET must not use COR (cancel + re-issue) \u2014 research G1 / C1",
       "product": "sigmet",
       "tags": [
         "cor",
         "sigmet",
-        "g1"
+        "g1",
+        "c1"
       ]
     },
     {
@@ -548,6 +549,8 @@
         "metar",
         "speci",
         "taf",
+        "sigmet",
+        "airmet",
         "c1",
         "one_report"
       ]
@@ -595,13 +598,14 @@
     {
       "code": "NO_VA_EXP",
       "severity": "info",
-      "message_template": "VA SIGMET NO VA EXP absence token \u2014 research V1",
+      "message_template": "VA SIGMET NO VA EXP absence token \u2014 research V1 / C1",
       "product": "sigmet",
       "tags": [
         "va",
         "no_va_exp",
         "sigmet",
-        "v1"
+        "v1",
+        "c1"
       ]
     },
     {
@@ -723,12 +727,13 @@
     {
       "code": "SIGMET_CNL",
       "severity": "info",
-      "message_template": "SIGMET CNL cancel report \u2014 research G1",
+      "message_template": "SIGMET CNL cancel report \u2014 research G1 / C1",
       "product": "sigmet",
       "tags": [
         "cnl",
         "sigmet",
-        "g1"
+        "g1",
+        "c1"
       ]
     },
     {
@@ -756,13 +761,14 @@
     {
       "code": "STNR_MOVEMENT",
       "severity": "info",
-      "message_template": "SIGMET STNR stationary movement \u2014 research G1",
+      "message_template": "SIGMET STNR stationary movement \u2014 research G1 / C1",
       "product": "sigmet",
       "tags": [
         "stnr",
         "movement",
         "sigmet",
-        "g1"
+        "g1",
+        "c1"
       ]
     },
     {
@@ -839,14 +845,15 @@
     {
       "code": "VA_CNL_FIR_MOVED",
       "severity": "info",
-      "message_template": "VA SIGMET CNL identifies FIR to which ash has moved \u2014 research V1",
+      "message_template": "VA SIGMET CNL identifies FIR to which ash has moved \u2014 research V1 / C1",
       "product": "sigmet",
       "tags": [
         "va",
         "cnl",
         "fir",
         "sigmet",
-        "v1"
+        "v1",
+        "c1"
       ]
     },
     {

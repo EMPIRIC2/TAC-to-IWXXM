@@ -200,7 +200,7 @@ API: `product=sigmet`; root `iwxxm:SIGMET` vs `iwxxm:VolcanicAshSIGMET` from TAC
 | **V1** VA-specific (volcano identity, ash geometry/forecast, `NO VA EXP`, CNL FIR-moved) | Registry + negatives | `VolcanicAshSIGMET` fields | SCH | ⏳ Planned (TC-F23-003/004) |
 | **V2** VA SIGMET ↔ general SIGMET ↔ VAA adjacency | Product/root guards | Content-selected root under `product=sigmet`; never VAA | TC-F23-006 | ⏳ Planned |
 | **V3** VA SIGMET golden convert + SCH | — | Expand annex3 (`sigmet-VA-EGGX`, …) | M-xsd / M-sch / M-golden | ⏳ Planned (TC-F23-003) |
-| **C1** Common rules (reportStatus, nilReasons, CRS, one-report, translationFailedTAC) | ✅ where TAC tokens; convert-only may defer with rationale | Guidance common table | Round-trip | ⏳ Planned (reuse F20 C1 pattern) |
+| **C1** Common rules (reportStatus, nilReasons, CRS, one-report, translationFailedTAC) | ✅ where TAC tokens (CNL/STNR/`NO VA EXP`/COR ban + `MULTI_REPORT_BULLETIN`); **convert-only** (lint N/A): 2-D CRS (`srsName`/`srsDimension`/`axisLabels`), `translationFailedTAC`, COLLECT packing, code-list URIs — no TAC surface; catalog §C1 | Guidance common table | Round-trip | ✅ lint closed (T4.4); **deferred** convert-only CRS / `translationFailedTAC` / COLLECT / code-list URIs (no TAC lint surface; F20 C1 pattern) |
 
 HARD themes close or explicitly defer during build (E19-5). Residual convert-only items
 without TAC lint surface follow F20 C1 pattern — not silent omission.
