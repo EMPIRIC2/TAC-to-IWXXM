@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry  
-> **Generated**: 2026-07-23 via `make catalog-regen`  
+> **Generated**: 2026-07-29 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -25,6 +25,9 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `INVALID_PROB` | `error` | {product} invalid PROB (only 30|40; must not qualify BECMG/FM) — App 5 §1.4 / research T2 | taf | change, taf, t2, prob |
 | `INVALID_REMARK` | `error` | {product} malformed remark group {token!r} | — | remark, metar, speci, r5, iwxxm_us |
 | `INVALID_RVR` | `error` | {product} invalid RVR token {token!r} — research R8 | — | rvr, metar, speci, r8 |
+| `INVALID_SIGMET_CNL` | `error` | SIGMET CNL must omit phenomenon/analysis body — research G1 | sigmet | cnl, sigmet, g1 |
+| `INVALID_SIGMET_COR` | `error` | SIGMET must not use COR (cancel + re-issue) — research G1 | sigmet | cor, sigmet, g1 |
+| `INVALID_STNR_MOVEMENT` | `error` | SIGMET STNR conflicts with MOV — research G1 | sigmet | stnr, movement, sigmet, g1 |
 | `INVALID_TX_TN` | `error` | {product} TX/TN allowed on base forecast only — research T3 | taf | temperature, taf, t3 |
 | `INVALID_VISIBILITY` | `error` | {product} invalid visibility token (use SM, meters, or CAVOK) | — | visibility, metar, speci, r2 |
 | `INVALID_WEATHER` | `error` | {product} invalid present weather token {token!r} — A3-2 #8 | — | weather, metar, speci, r3 |
@@ -51,11 +54,17 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `NSC_PRESENT` | `info` | {product} NSC present — research T3 / S1 / C1 | — | cloud, metar, speci, taf, t3, s1, c1 |
 | `NSW_PRESENT` | `info` | {product} NSW present — research T3 / S1 | — | weather, metar, speci, taf, t3, s1 |
 | `ODD_FIELD_ORDER` | `warning` | {product} groups out of A3-2 order (CCCC → ddhhmmZ → wind) | — | order, station, time, metar, speci, r1 |
+| `POINT_LOCATION` | `info` | SIGMET single-point location (encode CircleByCenterPoint r=0) — research G1 | sigmet | geometry, point, sigmet, g1 |
+| `POLYGON_LOCATION` | `info` | SIGMET polygon/line WI geometry — research G1 | sigmet | geometry, polygon, sigmet, g1 |
 | `PROB_PRESENT` | `info` | {product} PROB30/40 change group present — research T2 | taf | change, taf, t2, prob |
 | `REMARK_US_EXTENSION` | `info` | {product} US remarks present — iwxxm_us profile awareness | — | remark, metar, speci, r5, iwxxm_us |
 | `RVR_PRESENT` | `info` | {product} RVR group present — research R8 | — | rvr, metar, speci, r8 |
+| `SIGMET_CNL` | `info` | SIGMET CNL cancel report — research G1 | sigmet | cnl, sigmet, g1 |
+| `SINGLE_ALTITUDE` | `info` | SIGMET single altitude (same lower/upper) — research G1 | sigmet | altitude, sigmet, g1 |
+| `STNR_MOVEMENT` | `info` | SIGMET STNR stationary movement — research G1 | sigmet | stnr, movement, sigmet, g1 |
 | `TEMPO_PRESENT` | `info` | {product} TEMPO trend present — research R8 / T2 | — | trend, change, metar, speci, taf, r8, t2 |
 | `TL_PRESENT` | `info` | {product} TL time group present — research T2 | taf | change, taf, t2, tl |
+| `TOP_ABV_OR_BLW` | `info` | SIGMET TOP ABV/BLW level grammar — research G1 | sigmet | altitude, top, sigmet, g1 |
 | `TX_TN_PRESENT` | `info` | {product} TX/TN temperature forecasts on base — research T3 | taf | temperature, taf, t3 |
 | `UNKNOWN_PRODUCT` | `error` | Unknown product {product!r}; expected one of {expected} | — | parse_gate |
 | `VV_NOT_OBSERVABLE` | `info` | {product} VV/// — verticalVisibility nil notObservable — research S1 | — | cloud, metar, speci, s1, vv |

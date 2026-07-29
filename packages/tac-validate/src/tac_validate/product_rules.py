@@ -78,6 +78,18 @@ _VALID_PERIOD = re.compile(r"\bVALID\s+\d{6}/\d{6}\b", re.IGNORECASE)
 _DTG_LINE = re.compile(r"(?m)^\s*DTG\s*:", re.IGNORECASE)
 _VAAC_LINE = re.compile(r"(?m)^\s*VAAC\s*:", re.IGNORECASE)
 _MAX_WIND_LINE = re.compile(r"(?m)^\s*MAX\s+WIND\s*:", re.IGNORECASE)
+# F23 theme G1 — general SIGMET exceptional TAC shapes (#733).
+_SIGMET_POINT_COORD = re.compile(r"\b[NS]\d{4,5}\s+[EW]\d{5,7}\b")
+_SIGMET_LEVEL_RANGE = re.compile(
+    r"\b(?:FL\d{3}/\d{3}|SFC/FL\d{3}|\d{4}/\d{4}FT)\b",
+)
+_SIGMET_SINGLE_LEVEL = re.compile(r"\b(?:FL\d{3}|\d{4}(?:FT|M))\b")
+_SIGMET_TOP_ABV_BLW = re.compile(r"\bTOP\s+(?:ABV|BLW)\b")
+_SIGMET_WI = re.compile(r"\bWI\b")
+_SIGMET_STNR = re.compile(r"\bSTNR\b")
+_SIGMET_MOV = re.compile(r"\bMOV\b")
+_SIGMET_CNL = re.compile(r"\bCNL\b")
+_SIGMET_COR = re.compile(r"\bCOR\b")
 
 # Phenomenon family markers (template+gate — not exhaustive Annex vocab).
 _SIGMET_FAMILIES: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -1207,6 +1219,118 @@ def _count_families(text: str, families: tuple[tuple[str, re.Pattern[str]], ...]
     return found
 
 
+def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
+    """F23 theme G1 — CNL / COR / STNR / geometry / single-alt / TOP ABV|BLW."""
+    issues: list[Issue] = []
+    core = upper[:-1] if upper.endswith("=") else upper
+
+    if _SIGMET_COR.search(core):
+        _emit_token_info(
+            issues,
+            code="INVALID_SIGMET_COR",
+            message="SIGMET must not use COR (cancel + re-issue) — research G1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="COR",
+        )
+
+    if _SIGMET_CNL.search(core):
+        # Cancel reports omit phenomenon/analysis (Guidance AIRMET/SIGMET CNL).
+        hit = _count_families(core, _SIGMET_FAMILIES)
+        if hit:
+            _emit_token_info(
+                issues,
+                code="INVALID_SIGMET_CNL",
+                message="SIGMET CNL must omit phenomenon/analysis body — research G1",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="CNL",
+            )
+        else:
+            _emit_token_info(
+                issues,
+                code="SIGMET_CNL",
+                message="SIGMET CNL cancel report — research G1",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="CNL",
+            )
+        return issues
+
+    if _SIGMET_STNR.search(core):
+        if _SIGMET_MOV.search(core):
+            _emit_token_info(
+                issues,
+                code="INVALID_STNR_MOVEMENT",
+                message="SIGMET STNR conflicts with MOV — research G1",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="STNR",
+            )
+        else:
+            _emit_token_info(
+                issues,
+                code="STNR_MOVEMENT",
+                message="SIGMET STNR stationary movement — research G1",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="STNR",
+            )
+
+    if _SIGMET_WI.search(core):
+        _emit_token_info(
+            issues,
+            code="POLYGON_LOCATION",
+            message="SIGMET polygon/line WI geometry — research G1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="WI",
+        )
+    elif _SIGMET_POINT_COORD.search(core):
+        m = _SIGMET_POINT_COORD.search(core)
+        assert m is not None
+        _emit_token_info(
+            issues,
+            code="POINT_LOCATION",
+            message=("SIGMET single-point location (encode CircleByCenterPoint r=0) — research G1"),
+            core=core,
+            body_start=start,
+            body_end=end,
+            token=m.group(0).split()[0],
+        )
+
+    if _SIGMET_TOP_ABV_BLW.search(core):
+        _emit_token_info(
+            issues,
+            code="TOP_ABV_OR_BLW",
+            message="SIGMET TOP ABV/BLW level grammar — research G1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="TOP",
+        )
+    elif not _SIGMET_LEVEL_RANGE.search(core) and _SIGMET_SINGLE_LEVEL.search(core):
+        m = _SIGMET_SINGLE_LEVEL.search(core)
+        assert m is not None
+        _emit_token_info(
+            issues,
+            code="SINGLE_ALTITUDE",
+            message="SIGMET single altitude (same lower/upper) — research G1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token=m.group(0),
+        )
+
+    return issues
+
+
 def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
     start, end, body = _body_span(tac)
     upper = body.upper()
@@ -1222,6 +1346,12 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
                 location="valid",
             )
         )
+
+    if product == "SIGMET":
+        issues.extend(_check_sigmet_g1(start=start, end=end, upper=upper))
+        # CNL reports intentionally omit phenomenon — skip multi-family gate.
+        if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
+            return issues
 
     families = _SIGMET_FAMILIES if product == "SIGMET" else _AIRMET_FAMILIES
     hit = _count_families(upper, families)

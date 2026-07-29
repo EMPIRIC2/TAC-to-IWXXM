@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry",
-  "generated": "2026-07-23",
+  "generated": "2026-07-29",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -200,6 +200,40 @@
         "metar",
         "speci",
         "r8"
+      ]
+    },
+    {
+      "code": "INVALID_SIGMET_CNL",
+      "severity": "error",
+      "message_template": "SIGMET CNL must omit phenomenon/analysis body \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "cnl",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
+      "code": "INVALID_SIGMET_COR",
+      "severity": "error",
+      "message_template": "SIGMET must not use COR (cancel + re-issue) \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "cor",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
+      "code": "INVALID_STNR_MOVEMENT",
+      "severity": "error",
+      "message_template": "SIGMET STNR conflicts with MOV \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "stnr",
+        "movement",
+        "sigmet",
+        "g1"
       ]
     },
     {
@@ -509,6 +543,30 @@
       ]
     },
     {
+      "code": "POINT_LOCATION",
+      "severity": "info",
+      "message_template": "SIGMET single-point location (encode CircleByCenterPoint r=0) \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "geometry",
+        "point",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
+      "code": "POLYGON_LOCATION",
+      "severity": "info",
+      "message_template": "SIGMET polygon/line WI geometry \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "geometry",
+        "polygon",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
       "code": "PROB_PRESENT",
       "severity": "info",
       "message_template": "{product} PROB30/40 change group present \u2014 research T2",
@@ -546,6 +604,40 @@
       ]
     },
     {
+      "code": "SIGMET_CNL",
+      "severity": "info",
+      "message_template": "SIGMET CNL cancel report \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "cnl",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
+      "code": "SINGLE_ALTITUDE",
+      "severity": "info",
+      "message_template": "SIGMET single altitude (same lower/upper) \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "altitude",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
+      "code": "STNR_MOVEMENT",
+      "severity": "info",
+      "message_template": "SIGMET STNR stationary movement \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "stnr",
+        "movement",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
       "code": "TEMPO_PRESENT",
       "severity": "info",
       "message_template": "{product} TEMPO trend present \u2014 research R8 / T2",
@@ -570,6 +662,18 @@
         "taf",
         "t2",
         "tl"
+      ]
+    },
+    {
+      "code": "TOP_ABV_OR_BLW",
+      "severity": "info",
+      "message_template": "SIGMET TOP ABV/BLW level grammar \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "altitude",
+        "top",
+        "sigmet",
+        "g1"
       ]
     },
     {
