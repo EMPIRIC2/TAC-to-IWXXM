@@ -78,6 +78,15 @@ Report: `docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md`.
 
 **04 COMPLETE** — 04-exit consistency PASS; handoff **07-build** @ T0.1.
 
+### 07-build (in progress)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| D-S025-16-continue | decision | Resume CONTINUE? | Resume @ T2.1 (2026-07-29) |
+| D-S025-T2.3-A | decision | F23 themes G1–G3 close? | **1 / A** — Close G1–G3 with documented residuals (TOP ABV/BLW light; OBS/FCST collections thin); continue M3 VA lint |
+
+**M2 complete** — T2.1 annex3 goldens + T2.2 exceptional convert + T2.3 matrix close (`D-S025-T2.3-A`).
+
 ### Routing (`D-S025-E19-batch1` + Batch 2)
 
 **Required:** 00 → 16 → 01 → 02 → 04 → 07 → 08 → 10 → 13  

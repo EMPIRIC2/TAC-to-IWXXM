@@ -185,3 +185,12 @@ do not expand sibling fixture packs under F23.
 | TC-F23-005 workbench + catalog | Smoke + FE | M5 |
 | TC-F23-006 adjacency | V2 | M3 |
 | Matrix G1–G3 / V1–V3 / C1 closed or deferred | All | M2 T2.3 / M4 T4.5 |
+
+---
+
+## Theme close log
+
+| Theme | Decision | Date | Notes |
+|-------|----------|------|-------|
+| G1–G3 | **Closed** (`D-S025-T2.3-A`) | 2026-07-29 | Lint M1 + convert T2.2 + TC-F23-002 goldens; residuals in COVERAGE_MATRIX |
+| V1–V3 / C1 | Open | — | M3–M4 |
