@@ -1,16 +1,17 @@
-# F24/F25 / EV-020 — combined WMO quality pack (E20-F3=3)
-# SIGMET (F23 keep-green) + AIRMET + METAR/SPECI/TAF. Complements ci-cd.yml; does not replace it.
-# Migrates/replaces dedicated sigmet-quality.yml.
+# F26/F27 / EV-021 — combined WMO quality pack (extends E20-F3 / S02.L1)
+# SIGMET (F23 keep-green) + AIRMET + METAR/SPECI/TAF + VAA + TCA.
+# Complements ci-cd.yml; does not replace it.
 name: WMO quality
 
 on:
   push:
-    branches: [main, evolve/EV-020-airmet-quality]
+    branches: [main, evolve/EV-020-airmet-quality, evolve/EV-021-vaa-quality]
     paths:
       - "packages/tac-validate/**"
       - "packages/tac2iwxxm/**"
       - "packages/iwxxm-validate/**"
       - "docs/domain/rules/**"
+      - "docs/sessions/S027-vaa-quality/**"
       - "docs/sessions/S026-airmet-quality-wmo-examples/**"
       - "docs/sessions/S025-sigmet-quality/**"
       - "scripts/ci/run_wmo_quality.sh"
@@ -22,6 +23,7 @@ on:
       - "packages/tac2iwxxm/**"
       - "packages/iwxxm-validate/**"
       - "docs/domain/rules/**"
+      - "docs/sessions/S027-vaa-quality/**"
       - "docs/sessions/S026-airmet-quality-wmo-examples/**"
       - "docs/sessions/S025-sigmet-quality/**"
       - "scripts/ci/run_wmo_quality.sh"
