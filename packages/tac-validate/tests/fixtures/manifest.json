@@ -1059,8 +1059,9 @@
     {
       "id": "airmet_missing_valid",
       "product": "AIRMET",
+      "theme": "A4",
       "depth": "template_gate",
-      "cite": "A6 VALID period",
+      "cite": "A6 VALID period; F24 theme A4",
       "tac": "negative/airmet/missing_valid.tac",
       "ok": false,
       "expected_codes": ["MISSING_VALID"],

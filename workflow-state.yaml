@@ -23,7 +23,7 @@ active_session:
   preset_status: approved
   routing_decision_id: D-S026-E20-routing-C1
   context_briefs: []
-  note: "M0–M1 committed (T0.1–T1.4); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); progress 7/~28; branch evolve/EV-020-airmet-quality; #731"
+  note: "M0–M2 done (T0.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28; #731"
   routing_plan:
   - stage: 00-context
     required: true
@@ -64,7 +64,7 @@ active_session:
     mode: full
     status: in_progress
     started: "2026-07-29"
-    note: "M0–M1 committed (T0.1–T1.4); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); progress 7/~28; branch evolve/EV-020-airmet-quality; #731"
+    note: "M0–M2 done (T0.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28; #731"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -3780,14 +3780,14 @@ stages:
     previous_tip_sha: afffe86
     session_id: S026-airmet-quality-wmo-examples
     evolve_cycle_id: EV-020
-    note: 'S026/EV-020 M0–M1 committed (T0.1–T1.4); M1 A1–A2 done; next T2.1 (A3 golden); progress 7/~28; #731'
+    note: 'M0–M2 done (T0.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28; #731'
     substeps:
       task_loop:
         status: in_progress
-        current_task: T2.1
+        current_task: T3.1
         phase: C
-        milestone: M2
-        notes: S026/EV-020 M0–M1 committed (T0.1–T1.4); next T2.1 A3 golden; progress 7/~28
+        milestone: M3
+        notes: M2 complete T2.1–T2.4; D-S026-T2.3-A closed A1–A3; next T3.1 METAR/SPECI golden; progress 11/~28; uncommitted
     delta_substages:
     - id: S026-airmet-quality-wmo-examples
       session_id: S026-airmet-quality-wmo-examples
@@ -3797,15 +3797,15 @@ stages:
       started_at: '2026-07-29'
       started: '2026-07-29'
       mode: full
-      note: 'M0–M1 committed (T0.1–T1.4); M1 AIRMET A1–A2 done; next T2.1 (A3 golden); progress 7/~28'
-      active_milestone: M2
-      active_task: T2.1
+      note: 'M0–M2 done (T0.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28; #731'
+      active_milestone: M3
+      active_task: T3.1
       active_task_status: pending
-      decision_id: D-S026-04-plan-approve
+      decision_id: D-S026-07-M2-complete
       branch: evolve/EV-020-airmet-quality
-      tip_sha: a5bb2f2
-      tip_sha_full: a5bb2f2abd15ad9f01c087425b63372a9ec89f90
-      progress: 7/~28
+      tip_sha: bbd5b6d
+      tip_sha_full: bbd5b6d504e345d68709ac2f91e67ddb7b21a3c6
+      progress: 11/~28
       feature_ids:
       - F24
       - F25
@@ -3987,6 +3987,8 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-29 S026/EV-020 M2 COMPLETE T2.1–T2.4 (A3 golden + A4 negatives); D-S026-T2.3-A closed A1–A3; next T3.1 METAR/SPECI golden (F25); progress 11/~28; uncommitted pending user commit ask; tip bbd5b6d; #731'
+    - '2026-07-29 S026/EV-020 07-build resume @ T2.1 A3 golden airmet-A6-1a-TS (user continue); M0–M1 done; tip bbd5b6d; #731'
     - '2026-07-29 S026/EV-020 M0–M1 committed (T0.1–T1.4 @ a5bb2f2); next T2.1 (A3 golden); progress 7/~28; #731'
     - '2026-07-29 S026/EV-020 07-build T1.3+T1.4 A2 complete (uncommitted); next T2.1'
     - '2026-07-29 S026/EV-020 07-build resume @ T1.3 A2 fixtures (user continue); prior T0–T1.2 uncommitted pending user commit ask'
@@ -5730,6 +5732,50 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S026-07-M2-complete
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 07-build
+  stage: 07-build
+  category: milestone-close
+  status: confirmed
+  topic: M2 complete → T3.1
+  summary: "M2 done (T2.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28"
+  decision: "2026-07-29 S026/EV-020 M2 COMPLETE T2.1–T2.4 (A3 golden + A4 negatives); next T3.1 METAR/SPECI golden (F25); progress 11/~28; work uncommitted pending user commit ask; tip bbd5b6d."
+  related_issue: "731"
+  related_decisions: [D-S026-T2.3-A, D-S026-07-resume-T2.1]
+- id: D-S026-T2.3-A
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 07-build
+  skill: 07-build
+  stage: 07-build
+  category: theme-close
+  status: confirmed
+  topic: F24 themes A1–A3 close
+  summary: "Close A1–A3 with documented residuals; A4 negatives done"
+  decision: "User approved 2026-07-29 (D-S026-T2.3-A). Close F24 AIRMET themes A1–A3 with documented residuals. A4 negative fixtures complete (T2.4). Artifacts: t2.3-theme-a1-a3-close.md, COVERAGE_MATRIX A1–A3 Closed."
+  related_issue: "731"
+  related_decisions: [D-S026-07-resume-T2.1, D-S026-07-M2-complete]
+- id: D-S026-07-resume-T2.1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill_id: 07-build
+  stage: 07-build
+  category: session-note
+  status: confirmed
+  topic: 07-build resume T2.1
+  summary: "Resume @ T2.1 A3 golden airmet-A6-1a-TS; M0–M1 done"
+  decision: "2026-07-29 S026/EV-020 07-build resume @ T2.1 A3 golden (user continue)"
+  related_issue: "731"
+  related_decisions: [D-S026-07-T1.3-T1.4-complete]
 - id: D-S026-07-T1.3-T1.4-complete
   date: "2026-07-29"
   timestamp: "2026-07-29"
@@ -13427,7 +13473,7 @@ evolve_cycles:
     01-requirements: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
     02-verify-plan: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
     04-tech-plan: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
-    07-build: {status: in_progress, started: "2026-07-29", progress: "7/~28", active_task: T2.1, tip_sha: a5bb2f2}
+    07-build: {status: in_progress, started: "2026-07-29", progress: "11/~28", active_task: T3.1, active_task_status: pending, tip_sha: bbd5b6d}
     08-verify-build: {status: pending}
     10-e2e: {status: pending}
     11-verify-impl: {status: pending}
@@ -13459,9 +13505,11 @@ evolve_cycles:
   - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/wmo-quality-research-catalog.md
     status: completed
   issues: []
-  decision_refs: [E20-1, E20-2, E20-3, E20-4, E20-5, E20-6, E20-A, E20-B, D-S026-E20-intake, D-S026-E20-routing-C1, E20-8, E20-E1, E20-E2, E20-E3, S02.M1, S02.M2, S02.L1, S02.L2, D-S026-EV020-s02m1-1, D-S026-EV020-s02m2-1, D-S026-EV020-s02l1-1, D-S026-EV020-s02l2-1, D-S026-02-phase-a, E20-F1, E20-F2, E20-F3, E20-F4, E20-F5, E20-F6, E20-F7, E20-F8, D-S026-04-plan-approve, D-S026-07-resume-T1.3, D-S026-07-T1.3-T1.4-complete]
-  note: "M0–M1 committed (T0.1–T1.4); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); progress 7/~28; branch evolve/EV-020-airmet-quality; #731"
+  decision_refs: [E20-1, E20-2, E20-3, E20-4, E20-5, E20-6, E20-A, E20-B, D-S026-E20-intake, D-S026-E20-routing-C1, E20-8, E20-E1, E20-E2, E20-E3, S02.M1, S02.M2, S02.L1, S02.L2, D-S026-EV020-s02m1-1, D-S026-EV020-s02m2-1, D-S026-EV020-s02l1-1, D-S026-EV020-s02l2-1, D-S026-02-phase-a, E20-F1, E20-F2, E20-F3, E20-F4, E20-F5, E20-F6, E20-F7, E20-F8, D-S026-04-plan-approve, D-S026-07-resume-T1.3, D-S026-07-T1.3-T1.4-complete, D-S026-07-resume-T2.1, D-S026-T2.3-A, D-S026-07-M2-complete]
+  note: "M0–M2 done (T0.1–T2.4); A1–A4 closed; next T3.1 METAR/SPECI golden; progress 11/~28; #731"
   notes:
+  - '2026-07-29 S026/EV-020 M2 COMPLETE T2.1–T2.4 (A3 golden + A4 negatives); D-S026-T2.3-A closed A1–A3 themes; next T3.1 METAR/SPECI golden (F25); progress 11/~28; uncommitted pending user commit ask; tip bbd5b6d; #731'
+  - '2026-07-29 S026/EV-020 07-build resume @ T2.1 A3 golden airmet-A6-1a-TS (user continue); M0–M1 done; tip bbd5b6d; #731'
   - '2026-07-29 S026/EV-020 M0–M1 committed (T0.1–T1.4 @ a5bb2f2); next T2.1 (A3 golden); progress 7/~28; #731'
   - '2026-07-29 S026/EV-020 07-build T1.3+T1.4 A2 complete (uncommitted); next T2.1'
   - '2026-07-29 S026/EV-020 07-build resume @ T1.3 A2 fixtures (user continue); prior T0–T1.2 uncommitted pending user commit ask'
@@ -17724,10 +17772,11 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit:
-  tip_sha: a5bb2f2
-  tip_sha_full: a5bb2f2abd15ad9f01c087425b63372a9ec89f90
-  note: 'S026/EV-020 07-build M0–M1 committed; next T2.1; progress 7/~28; tip a5bb2f2; #731'
+  tip_sha: bbd5b6d
+  tip_sha_full: bbd5b6d504e345d68709ac2f91e67ddb7b21a3c6
+  note: 'S026/EV-020 07-build M2 T2.1 in_progress; tip bbd5b6d; progress 7/~28; #731'
   notes:
+  - '2026-07-29 S026/EV-020 tip synced — bbd5b6d (bbd5b6d504e345d68709ac2f91e67ddb7b21a3c6); M2 T2.1 in_progress A3 golden; stage 07-build; progress 7/~28; #731'
   - '2026-07-29 S026/EV-020 tip synced — a5bb2f2 (a5bb2f2abd15ad9f01c087425b63372a9ec89f90); M0–M1 committed T0.1–T1.4; stage 07-build; next T2.1; progress 7/~28; #731'
   - '2026-07-29 S026/EV-020 01-requirements STARTED (delta) — current_stage=01-requirements; artifact reports/01-requirements.md pending; #731'
   - '2026-07-29 S026/EV-020 routing Confirm C=1 Lean+build+11 approved (D-S026-E20-routing-C1); 00 completed; 16 in_progress → 01 (E20-8); 11-verify-impl required; #731'

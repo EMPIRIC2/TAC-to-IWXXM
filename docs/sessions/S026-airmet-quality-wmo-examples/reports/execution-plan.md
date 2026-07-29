@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M1 — F24 AIRMET lint |
-| **Active task** | T2.1 (next) |
-| **Tasks** | 7 / ~28 completed (M0 + T1.1–T1.4) |
+| **Active milestone** | M3 — F25 METAR / SPECI |
+| **Active task** | T3.1 (next) |
+| **Tasks** | 11 / ~28 completed (M0–M2) |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -72,10 +72,10 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | Annex3 golden `airmet-A6-1a-TS`; M-xsd/M-sch stubs; root `iwxxm:AIRMET` | TC-F24-002/003; A3 | T1.4 | pending |
-| T2.2 | Code | Convert fidelity — AirspaceVolume / posList / FL (close nil-geometry gap) | F6; #731 | T2.1 | pending |
-| T2.3 | Docs | Mark A1–A3 closed or AskQuestion-deferred (E20-F7) | E20-F7 | T2.2 | pending |
-| T2.4 | Test | A4 negatives + translation-failed adjacency | TC-F24-004; A4 | T2.3 | pending |
+| T2.1 | Test | Annex3 golden `airmet-A6-1a-TS`; M-xsd/M-sch stubs; root `iwxxm:AIRMET` | TC-F24-002/003; A3 | T1.4 | **completed** |
+| T2.2 | Code | Convert fidelity — AirspaceVolume / posList / FL (close nil-geometry gap) | F6; #731 | T2.1 | **completed** |
+| T2.3 | Docs | Mark A1–A3 closed or AskQuestion-deferred (E20-F7) | E20-F7 | T2.2 | **completed** |
+| T2.4 | Test | A4 negatives + translation-failed adjacency | TC-F24-004; A4 | T2.3 | **completed** |
 
 ### M3 — F25 METAR / SPECI (themes W1–W2)
 
