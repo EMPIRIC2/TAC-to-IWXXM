@@ -329,6 +329,13 @@ def _sigmet_geometry_xml(ir: dict[str, Any], *, fir: str) -> str:
         limits = f"""
               <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
               <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+        if ir.get("top_qualifier") == "ABV":
+            # WMO Guidance / airmet-A6-1a-TS: TOP ABV → maximumLimit nil unknown.
+            limits += """
+              <aixm:maximumLimit xsi:nil="true" nilReason="unknown"/>"""
+        elif ir.get("top_qualifier") == "BLW":
+            limits += """
+              <aixm:minimumLimit xsi:nil="true" nilReason="unknown"/>"""
 
     if isinstance(geom, dict):
         g = cast(dict[str, Any], geom)
@@ -485,13 +492,17 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit a minimal IWXXM AIRMET document for the annex3 profile."""
+    """Emit an IWXXM AIRMET document (F6.d / F24 A3 geometry fidelity / #731)."""
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     issue, begin, end = _hazard_stamp(ir, "airmet")
     phenom = _AIR_PHENOM_HREF.format(code=ir["phenomenon"])
     gml_id = f"airmet.basic.{fir.lower()}"
+    intensity = str(ir.get("intensity_change", "NO_CHANGE"))
+    time_indicator = str(ir.get("time_indicator", "OBSERVATION"))
+    geometry = _sigmet_geometry_xml(ir, fir=fir)
+    motion = _sigmet_motion_xml(ir)
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:AIRMET xmlns:iwxxm="{ns}"
@@ -555,11 +566,10 @@ def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
   </iwxxm:validPeriod>
   <iwxxm:phenomenon xlink:href="{escape(phenom)}"/>
   <iwxxm:analysis>
-    <iwxxm:AIRMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="OBSERVATION">
+    <iwxxm:AIRMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="{escape(time_indicator)}">
       <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
       <iwxxm:member>
-        <iwxxm:AIRMETEvolvingCondition gml:id="cond.{fir.lower()}" intensityChange="WEAKEN">
-          <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/missing"/>
+        <iwxxm:AIRMETEvolvingCondition gml:id="cond.{fir.lower()}" intensityChange="{escape(intensity)}">{geometry}{motion}
         </iwxxm:AIRMETEvolvingCondition>
       </iwxxm:member>
     </iwxxm:AIRMETEvolvingConditionCollection>

@@ -28,6 +28,8 @@ _SE_BOX = re.compile(
     r"\bS OF N(?P<lat>\d{1,2})\s+AND E OF W(?P<lon>\d{1,3})\b",
     re.IGNORECASE,
 )
+# WMO airmet-A6-1a-TS: "N OF S50" → sample box north of S50 (Guidance / vendor XML).
+_N_OF_S = re.compile(r"\bN OF S(?P<lat>\d{1,2})\b", re.IGNORECASE)
 _POINT = re.compile(
     r"\bN(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
     r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
@@ -112,8 +114,8 @@ def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
     return lat, lon
 
 
-def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
-    """Attach G1/V1 exceptional-rule fields from the SIGMET body (F23 / #733/#739)."""
+def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
+    """Attach exceptional-rule fields from SIGMET/AIRMET body (F23 / F24 / #733/#731)."""
     upper = body.upper()
     cnl = _CNL.search(body)
     if cnl is not None:
@@ -132,6 +134,10 @@ def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
 
     ir["intensity_change"] = _detect_intensity(body)
     ir["stationary"] = bool(re.search(r"\bSTNR\b", upper))
+    if re.search(r"\bOBS\b", upper):
+        ir["time_indicator"] = "OBSERVATION"
+    elif re.search(r"\bFCST\b", upper):
+        ir["time_indicator"] = "FORECAST"
     if _NO_VA_EXP.search(body):
         ir["no_va_exp"] = True
 
@@ -180,6 +186,16 @@ def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
         }
         return
 
+    n_of_s = _N_OF_S.search(body)
+    if n_of_s is not None:
+        # Vendor airmet-A6-1a-TS box north of Slat (lat…lat+10, lon 50…70).
+        lat = -float(n_of_s.group("lat"))
+        ir["geometry"] = {
+            "kind": "polygon",
+            "pos_list": (f"{lat:.1f} 50.0 {lat:.1f} 70.0 {lat + 10:.1f} 70.0 {lat + 10:.1f} 50.0 {lat:.1f} 50.0"),
+        }
+        return
+
     # Prefer VA CLD / hazard WI polygon over volcano PSN point (F23 V3 / #739).
     wi = _WI_BLOCK.search(body)
     if wi is not None:
@@ -195,6 +211,11 @@ def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
     if point is not None:
         lat, lon = _point_lat_lon(point)
         ir["geometry"] = {"kind": "point", "lat": lat, "lon": lon}
+
+
+def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
+    """Backward-compatible alias for SIGMET body enrichment."""
+    _enrich_hazard_body(ir, body)
 
 
 def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
@@ -274,7 +295,7 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     body = match.group("body")
     from_d, from_h, from_m = _parse_valid(match.group("from"))
     to_d, to_h, to_m = _parse_valid(match.group("to"))
-    return {
+    ir: dict[str, Any] = {
         "ir_version": 1,
         "product": "AIRMET",
         "fir": match.group("fir").upper(),
@@ -290,6 +311,8 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         "fir_name": "SHANLON FIR" if "SHANLON" in body.upper() else match.group("fir").upper(),
         "raw": text,
     }
+    _enrich_hazard_body(ir, body)
+    return ir
 
 
 __all__ = ["parse_airmet", "parse_sigmet"]
