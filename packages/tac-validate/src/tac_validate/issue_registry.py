@@ -387,9 +387,9 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "STNR_MOVEMENT",
         "info",
-        "SIGMET STNR stationary movement — research G1 / C1",
+        "SIGMET/AIRMET STNR stationary movement — research G1 / C1 / F24 A2",
         product="sigmet",
-        tags=("stnr", "movement", "sigmet", "g1", "c1"),
+        tags=("stnr", "movement", "sigmet", "airmet", "g1", "c1", "a2"),
     ),
     _row(
         "POINT_LOCATION",
@@ -415,9 +415,9 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "TOP_ABV_OR_BLW",
         "info",
-        "SIGMET TOP ABV/BLW level grammar — research G1",
+        "SIGMET/AIRMET TOP ABV/BLW level grammar — research G1 / F24 A2",
         product="sigmet",
-        tags=("altitude", "top", "sigmet", "g1"),
+        tags=("altitude", "top", "sigmet", "airmet", "g1", "a2"),
     ),
     _row(
         "INVALID_SIGMET_CNL",
@@ -436,9 +436,9 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "INVALID_STNR_MOVEMENT",
         "error",
-        "SIGMET STNR conflicts with MOV — research G1",
+        "SIGMET/AIRMET STNR conflicts with MOV — research G1 / F24 A2",
         product="sigmet",
-        tags=("stnr", "movement", "sigmet", "g1"),
+        tags=("stnr", "movement", "sigmet", "airmet", "g1", "a2"),
     ),
     # F23 theme G2 — sequence / validity / FIR / OBS·FCST / intensity (#733)
     _row(
@@ -458,16 +458,16 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "OBS_OR_FCST",
         "info",
-        "SIGMET OBS or FCST analysis — research G2",
+        "SIGMET/AIRMET OBS or FCST analysis — research G2 / F24 A2",
         product="sigmet",
-        tags=("obs", "fcst", "sigmet", "g2"),
+        tags=("obs", "fcst", "sigmet", "airmet", "g2", "a2"),
     ),
     _row(
         "INTENSITY_CHANGE",
         "info",
-        "SIGMET intensity change INTSF/WKN/NC — research G2",
+        "SIGMET/AIRMET intensity change INTSF/WKN/NC — research G2 / F24 A2",
         product="sigmet",
-        tags=("intensity", "sigmet", "g2"),
+        tags=("intensity", "sigmet", "airmet", "g2", "a2"),
     ),
     _row(
         "MISSING_SEQUENCE",
@@ -493,9 +493,9 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MISSING_OBS_OR_FCST",
         "error",
-        "SIGMET missing OBS or FCST — research G2",
+        "SIGMET/AIRMET missing OBS or FCST — research G2 / F24 A2",
         product="sigmet",
-        tags=("obs", "fcst", "sigmet", "g2"),
+        tags=("obs", "fcst", "sigmet", "airmet", "g2", "a2"),
     ),
     # F23 theme V1 — VA SIGMET (#739 / research V1)
     _row(

@@ -20,7 +20,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `EMPTY_TAC` | `error` | TAC text is empty | — | parse_gate, body |
 | `FIR_OR_CTA` | `info` | SIGMET FIR/CTA/UIR airspace identity — research G2 | sigmet | fir, cta, sigmet, g2 |
 | `FM_PRESENT` | `info` | {product} FM change group present — research T2 | taf | change, taf, t2, fm |
-| `INTENSITY_CHANGE` | `info` | SIGMET intensity change INTSF/WKN/NC — research G2 | sigmet | intensity, sigmet, g2 |
+| `INTENSITY_CHANGE` | `info` | SIGMET/AIRMET intensity change INTSF/WKN/NC — research G2 / F24 A2 | sigmet | intensity, sigmet, airmet, g2, a2 |
 | `INVALID_CLOUD_TOKEN` | `error` | {product} invalid cloud/VV token {token!r} — A3-2 #9 | — | cloud, metar, speci, r4 |
 | `INVALID_CNL_SHAPE` | `error` | TAF CNL must end the message — A5-1 #6 | taf | cnl, taf, t1 |
 | `INVALID_NIL` | `error` | {product} NIL must not include body groups — research R8 / T1 / C1 | — | nil, metar, speci, taf, r8, t1, c1 |
@@ -30,7 +30,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `INVALID_RVR` | `error` | {product} invalid RVR token {token!r} — research R8 | — | rvr, metar, speci, r8 |
 | `INVALID_SIGMET_CNL` | `error` | SIGMET CNL must omit phenomenon/analysis body — research G1 | sigmet | cnl, sigmet, g1 |
 | `INVALID_SIGMET_COR` | `error` | SIGMET must not use COR (cancel + re-issue) — research G1 / C1 | sigmet | cor, sigmet, g1, c1 |
-| `INVALID_STNR_MOVEMENT` | `error` | SIGMET STNR conflicts with MOV — research G1 | sigmet | stnr, movement, sigmet, g1 |
+| `INVALID_STNR_MOVEMENT` | `error` | SIGMET/AIRMET STNR conflicts with MOV — research G1 / F24 A2 | sigmet | stnr, movement, sigmet, airmet, g1, a2 |
 | `INVALID_TX_TN` | `error` | {product} TX/TN allowed on base forecast only — research T3 | taf | temperature, taf, t3 |
 | `INVALID_VALIDITY_DURATION` | `error` | SIGMET VALID period exceeds 4 hours (WS) — research G2 | sigmet | valid, sigmet, g2 |
 | `INVALID_VISIBILITY` | `error` | {product} invalid visibility token (use SM, meters, or CAVOK) | — | visibility, metar, speci, r2 |
@@ -41,7 +41,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_FIR_OR_CTA` | `error` | SIGMET/AIRMET missing FIR/CTA/UIR airspace identity — research G2 / F24 A1 | sigmet | fir, cta, sigmet, airmet, g2, a1 |
 | `MISSING_ISSUE_TIME` | `error` | TAF missing issue time ddhhmmZ — A5-1 #3 | taf | time, taf |
 | `MISSING_MAX_WIND` | `error` | TCA missing MAX WIND: template field — A2-2 | tca | max_wind, tca |
-| `MISSING_OBS_OR_FCST` | `error` | SIGMET missing OBS or FCST — research G2 | sigmet | obs, fcst, sigmet, g2 |
+| `MISSING_OBS_OR_FCST` | `error` | SIGMET/AIRMET missing OBS or FCST — research G2 / F24 A2 | sigmet | obs, fcst, sigmet, airmet, g2, a2 |
 | `MISSING_OBS_TIME` | `error` | {product} missing observation time ddhhmmZ — A3-2 #3 | — | time, metar, speci |
 | `MISSING_PRODUCT_KEYWORD` | `error` | {product} TAC must contain one of {keywords} | — | parse_gate, header |
 | `MISSING_QNH` | `error` | {product} missing QNH/altimeter (Qnnnn/Annnn) — A3-2 #11 | — | pressure, metar, speci |
@@ -62,7 +62,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `NO_VA_EXP` | `info` | VA SIGMET NO VA EXP absence token — research V1 / C1 | sigmet | va, no_va_exp, sigmet, v1, c1 |
 | `NSC_PRESENT` | `info` | {product} NSC present — research T3 / S1 / C1 | — | cloud, metar, speci, taf, t3, s1, c1 |
 | `NSW_PRESENT` | `info` | {product} NSW present — research T3 / S1 | — | weather, metar, speci, taf, t3, s1 |
-| `OBS_OR_FCST` | `info` | SIGMET OBS or FCST analysis — research G2 | sigmet | obs, fcst, sigmet, g2 |
+| `OBS_OR_FCST` | `info` | SIGMET/AIRMET OBS or FCST analysis — research G2 / F24 A2 | sigmet | obs, fcst, sigmet, airmet, g2, a2 |
 | `ODD_FIELD_ORDER` | `warning` | {product} groups out of A3-2 order (CCCC → ddhhmmZ → wind) | — | order, station, time, metar, speci, r1 |
 | `POINT_LOCATION` | `info` | SIGMET single-point location (encode CircleByCenterPoint r=0) — research G1 | sigmet | geometry, point, sigmet, g1 |
 | `POLYGON_LOCATION` | `info` | SIGMET polygon/line WI geometry — research G1 | sigmet | geometry, polygon, sigmet, g1 |
@@ -72,10 +72,10 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `SIGMET_CNL` | `info` | SIGMET CNL cancel report — research G1 / C1 | sigmet | cnl, sigmet, g1, c1 |
 | `SIGMET_SEQUENCE` | `info` | SIGMET sequence number present — research G2 | sigmet | sequence, sigmet, g2 |
 | `SINGLE_ALTITUDE` | `info` | SIGMET single altitude (same lower/upper) — research G1 | sigmet | altitude, sigmet, g1 |
-| `STNR_MOVEMENT` | `info` | SIGMET STNR stationary movement — research G1 / C1 | sigmet | stnr, movement, sigmet, g1, c1 |
+| `STNR_MOVEMENT` | `info` | SIGMET/AIRMET STNR stationary movement — research G1 / C1 / F24 A2 | sigmet | stnr, movement, sigmet, airmet, g1, c1, a2 |
 | `TEMPO_PRESENT` | `info` | {product} TEMPO trend present — research R8 / T2 | — | trend, change, metar, speci, taf, r8, t2 |
 | `TL_PRESENT` | `info` | {product} TL time group present — research T2 | taf | change, taf, t2, tl |
-| `TOP_ABV_OR_BLW` | `info` | SIGMET TOP ABV/BLW level grammar — research G1 | sigmet | altitude, top, sigmet, g1 |
+| `TOP_ABV_OR_BLW` | `info` | SIGMET/AIRMET TOP ABV/BLW level grammar — research G1 / F24 A2 | sigmet | altitude, top, sigmet, airmet, g1, a2 |
 | `TX_TN_PRESENT` | `info` | {product} TX/TN temperature forecasts on base — research T3 | taf | temperature, taf, t3 |
 | `UNKNOWN_PRODUCT` | `error` | Unknown product {product!r}; expected one of {expected} | — | parse_gate |
 | `VA_ASH_GEOMETRY` | `info` | VA SIGMET ash cloud geometry / forecast position — research V1 | sigmet | va, geometry, sigmet, v1 |

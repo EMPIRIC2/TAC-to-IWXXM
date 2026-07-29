@@ -1526,6 +1526,81 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
     return issues
 
 
+def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
+    """F24 theme A2 — AIRMET phenomenon modifiers (OBS/STNR/WKN/TOP ABV)."""
+    issues: list[Issue] = []
+    core = upper[:-1] if upper.endswith("=") else upper
+
+    if _SIGMET_STNR.search(core):
+        if _SIGMET_MOV.search(core):
+            _emit_token_info(
+                issues,
+                code="INVALID_STNR_MOVEMENT",
+                message="AIRMET STNR conflicts with MOV — F24 theme A2",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="STNR",
+            )
+        else:
+            _emit_token_info(
+                issues,
+                code="STNR_MOVEMENT",
+                message="AIRMET STNR stationary movement — F24 theme A2",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="STNR",
+            )
+
+    if _SIGMET_TOP_ABV_BLW.search(core):
+        _emit_token_info(
+            issues,
+            code="TOP_ABV_OR_BLW",
+            message="AIRMET TOP ABV/BLW level grammar — F24 theme A2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="TOP",
+        )
+
+    obs = _SIGMET_OBS_FCST.search(core)
+    if obs is not None:
+        _emit_token_info(
+            issues,
+            code="OBS_OR_FCST",
+            message="AIRMET OBS or FCST analysis — F24 theme A2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token=obs.group(0),
+        )
+    else:
+        _emit_token_info(
+            issues,
+            code="MISSING_OBS_OR_FCST",
+            message="AIRMET missing OBS or FCST — F24 theme A2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="AIRMET",
+        )
+
+    intensity = _SIGMET_INTENSITY.search(core)
+    if intensity is not None:
+        _emit_token_info(
+            issues,
+            code="INTENSITY_CHANGE",
+            message="AIRMET intensity change INTSF/WKN/NC — F24 theme A2",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token=intensity.group(0),
+        )
+
+    return issues
+
+
 def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
     """F23 theme V1 — VA volcano identity / ash geometry / NO VA EXP / CNL FIR-moved."""
     issues: list[Issue] = []
@@ -1624,6 +1699,8 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
         issues.extend(_check_airmet_a1(start=start, end=end, upper=upper))
         if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
             return issues
+        # F24 theme A2 — OBS/STNR/intensity/TOP ABV (phenomenon families below).
+        issues.extend(_check_airmet_a2(start=start, end=end, upper=upper))
 
     families = _SIGMET_FAMILIES if product == "SIGMET" else _AIRMET_FAMILIES
     hit = _count_families(upper, families)
