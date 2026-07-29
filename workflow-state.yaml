@@ -24,10 +24,10 @@ active_session:
   routing_decision_id: D-S025-E19-batch2
   context_briefs:
     - docs/context/sigmet-quality.md
-  tip_sha: b67558f
-  tip_sha_full: b67558f2b903d9b44b013c64943d6647d8ccac07
+  tip_sha: 445c58d
+  tip_sha_full: 445c58d00288b8f425d14cd1a26d614d0b49dcd4
   do_not_auto_merge: true
-  note: "07-build M3 complete (T3.1–T3.4); next T4.1 VA goldens V3"
+  note: "07-build M4: T4.1–T4.2 VA goldens+fidelity done; next T4.3 C1"
   routing_plan:
     - stage: 00-context
       required: true
@@ -12486,7 +12486,7 @@ evolve_cycles:
   tip_sha: e041786
   tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
   do_not_auto_merge: true
-  note: "07-build M3 complete (T3.1–T3.4); next T4.1 VA goldens V3"
+  note: "07-build M4: T4.1–T4.2 VA goldens+fidelity done; next T4.3 C1"
   decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2, D-S025-01-complete, D-S025-02-pass, D-S025-EV019-s1m1-1, D-S025-EV019-s6m1-1, D-S025-EV019-s9m1-1, D-S025-02-phase-a-A, D-S025-04-plan-approve-A, E19-19, E19-20, E19-21, E19-22, D-S025-16-continue, D-S025-T2.3-A]
 - id: EV-018
   session_id: S024-dissemination-file-select
@@ -17581,6 +17581,15 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 445c58d
+    sha_full: 445c58d00288b8f425d14cd1a26d614d0b49dcd4
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T4.2] feat: VA SIGMET convert fidelity for WI polygon and NO VA EXP (#739)"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T13:40:00Z"
+    files_changed: 6
   - sha: b67558f
     sha_full: b67558f2b903d9b44b013c64943d6647d8ccac07
     branch: evolve/EV-019-sigmet-quality
