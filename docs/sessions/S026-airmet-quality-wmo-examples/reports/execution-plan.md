@@ -13,7 +13,7 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M5 — F9 glossary + F7.g / W4 catalog |
-| **Active task** | T5.1 (next) |
+| **Active task** | T5.1 (in_progress) |
 | **Tasks** | 18 / ~28 completed (M0–M4) |
 | **Last updated** | 2026-07-29 |
 
@@ -98,7 +98,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T5.1 | Test | TC-F9-003/004 — token meanings + registry load + OpenAIP miss | F9 deepen | T4.4 | pending |
+| T5.1 | Test | TC-F9-003/004 — token meanings + registry load + OpenAIP miss | F9 deepen | T4.4 | in_progress |
 | T5.2 | Code | Package `decode_glossary.yaml` + loader; env override; PyYAML per E20-F5 | ADR-032; S02.L1 | T5.1 | pending |
 | T5.3 | Test | Vitest: Examples catalog = WMO-passers only; incremental unlock | TC-F25-003; E20-F4 | T5.2 | pending |
 | T5.4 | Code | FE catalog gate + provenance; unlock products as goldens green | F7.g; W4; UJ-036 | T5.3 | pending |
