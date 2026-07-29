@@ -29,12 +29,13 @@ Convert goldens live under `packages/tac2iwxxm/tests/fixtures/{annex3_golden,iwx
 
 ## Depth
 
-| Product            | Fixture intent                            |
-| ------------------ | ----------------------------------------- |
-| METAR / SPECI      | Full checklist + R1–R8 (HARD this cycle)  |
-| TAF                | Full checklist negatives                  |
-| SIGMET             | Template + gate + **F23 G1–G2 / V1 / C1** |
-| AIRMET / VAA / TCA | Template + gate negatives only            |
+| Product       | Fixture intent                            |
+| ------------- | ----------------------------------------- |
+| METAR / SPECI | Full checklist + R1–R8 (HARD this cycle)  |
+| TAF           | Full checklist negatives                  |
+| SIGMET        | Template + gate + **F23 G1–G2 / V1 / C1** |
+| AIRMET        | Template + gate + **F24 A1**              |
+| VAA / TCA     | Template + gate negatives only            |
 
 ## Expectation contract
 

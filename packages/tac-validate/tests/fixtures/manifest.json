@@ -303,7 +303,9 @@
       "id": "accept_airmet_basic",
       "product": "AIRMET",
       "tac": "accept/airmet_basic.tac",
-      "ok": true
+      "ok": true,
+      "theme": "A1",
+      "cite": "F24 theme A1 header/FIR happy path"
     },
     {
       "id": "accept_vaa_basic",
@@ -1022,6 +1024,28 @@
       "tac": "negative/airmet/missing_valid.tac",
       "ok": false,
       "expected_codes": ["MISSING_VALID"],
+      "require_spans": true
+    },
+    {
+      "id": "airmet_missing_sequence",
+      "product": "AIRMET",
+      "theme": "A1",
+      "depth": "full_checklist",
+      "cite": "EUR Doc 014 sequence required; F24 theme A1",
+      "tac": "negative/airmet/missing_sequence.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_SEQUENCE"],
+      "require_spans": true
+    },
+    {
+      "id": "airmet_missing_fir",
+      "product": "AIRMET",
+      "theme": "A1",
+      "depth": "full_checklist",
+      "cite": "FIR/CTA identity; F24 theme A1",
+      "tac": "negative/airmet/missing_fir.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_FIR_OR_CTA"],
       "require_spans": true
     },
     {
