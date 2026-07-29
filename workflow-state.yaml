@@ -23,7 +23,7 @@ active_session:
   preset: Lean+build+11
   preset_status: approved
   context_briefs: []
-  note: "04 PASS; M0 T0.1–T0.3 done; next T1.1 F26 VAA lint"
+  note: "M0 done; T1.1+T1.2 done; next T1.3 F26 theme V2"
   routing_plan:
   - stage: 00-context
     required: true
@@ -4068,16 +4068,16 @@ stages:
     previous_tip_sha: 0f77194
     session_id: S027-vaa-quality
     evolve_cycle_id: EV-021
-    note: 'M0 complete (T0.1–T0.3); active T1.1'
-    tip_sha: 0f77194
-    tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+    note: 'M0 done; T1.1+T1.2 done; next T1.3 F26 theme V2'
+    tip_sha: a43fc50
+    tip_sha_full: a43fc505c53fff9c7afdbfdf0eec830b8920fdb1
     substeps:
       task_loop:
         status: in_progress
-        current_task: T1.1
+        current_task: T1.3
         phase: C
         milestone: M1
-        notes: M0 complete (T0.1–T0.3); active T1.1 F26 VAA lint
+        notes: M0 done; T1.1+T1.2 done; next T1.3 F26 theme V2
     delta_substages:
     - id: S027-vaa-quality
       session_id: S027-vaa-quality
@@ -4087,9 +4087,9 @@ stages:
       started_at: '2026-07-29'
       started: '2026-07-29'
       mode: full
-      note: 'M0 complete (T0.1–T0.3); active T1.1 F26 VAA lint; #736/#737'
+      note: 'M0 done; T1.1+T1.2 done; next T1.3 F26 theme V2; #736/#737'
       active_milestone: M1
-      active_task: T1.1
+      active_task: T1.3
       active_task_status: in_progress
       decision_id: D-S027-04-plan-approve
       branch: evolve/EV-021-vaa-quality
@@ -6204,6 +6204,24 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S027-07-T1.1-T1.2
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: T1.1/T1.2 complete — F26 V1 VAA lint
+  summary: "T1.1/T1.2 complete F26 V1 VAA lint; next T1.3 F26 theme V2"
+  decision: >-
+    T1.1 fixtures + T1.2 registry/lint rules for F26 theme V1 VAA complete
+    (a43fc50 / 92dffc9). Active task advanced to T1.3 F26 theme V2.
+  related_issues: ["736", "737"]
+  related_commits: [a43fc50, 92dffc9, 7a5db2f, 4b3210c]
 - id: D-S027-04-plan-approve
   date: "2026-07-29"
   timestamp: "2026-07-29"
@@ -19646,6 +19664,63 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: a43fc50
+    sha_full: a43fc505c53fff9c7afdbfdf0eec830b8920fdb1
+    branch: evolve/EV-021-vaa-quality
+    message: "[T1.2] feat: F26 theme V1 VAA registry codes and lint rules"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T18:14:00-04:00"
+    files_changed:
+      - docs/domain/rules/ISSUE_CATALOG.json
+      - docs/domain/rules/ISSUE_CATALOG.md
+      - packages/tac-validate/src/tac_validate/issue_registry.py
+      - packages/tac-validate/src/tac_validate/product_rules.py
+  - sha: 92dffc9
+    sha_full: 92dffc95bfb5bb8c8efdf27a4122fafadfce3006
+    branch: evolve/EV-021-vaa-quality
+    message: "[T1.1] test: F26 theme V1 VAA exceptional fixtures"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T18:10:00-04:00"
+    files_changed:
+      - packages/tac-validate/tests/fixtures/accept/vaa_v1_no_further.tac
+      - packages/tac-validate/tests/fixtures/accept/vaa_v1_rmk_nil_fcst_no_va.tac
+      - packages/tac-validate/tests/fixtures/accept/vaa_v1_volcano_unknown.tac
+      - packages/tac-validate/tests/fixtures/accept/vaa_v1_volcano_unnamed.tac
+      - packages/tac-validate/tests/fixtures/manifest.json
+      - packages/tac-validate/tests/fixtures/negative/vaa/missing_volcano.tac
+      - packages/tac-validate/tests/test_tc_f26_v1_vaa.py
+  - sha: 7a5db2f
+    sha_full: 7a5db2f0d7c7ffd7a8ec2a8409d018ff6d766ebb
+    branch: evolve/EV-021-vaa-quality
+    message: "[T0.3] config: extend wmo-quality pack for VAA+TCA"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T18:05:00-04:00"
+    files_changed:
+      - .github/workflows/wmo-quality.yml
+      - Makefile
+      - scripts/ci/run_wmo_quality.sh
+  - sha: 4b3210c
+    sha_full: 4b3210c54e567a4462f1c10d4b50636dd57541d9
+    branch: evolve/EV-021-vaa-quality
+    message: "[T0.1] docs: S027 F26/F27 plan + VAA/TCA theme→fixture map"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T18:00:00-04:00"
+    files_changed:
+      - docs/sessions/S027-vaa-quality/reports/execution-plan.md
+      - docs/sessions/S027-vaa-quality/reports/vaa-tca-theme-fixture-map.md
+      - docs/sessions/S027-vaa-quality/session-brief.md
+      - docs/feature-list.md
+      - docs/spec.md
+      - docs/test-plan.md
+      - workflow-state.yaml
   - sha: 5cd0412
     sha_full: 5cd04128b6a9758dd78ff51071c7f2632cad75c1
     branch: evolve/EV-020-airmet-quality
