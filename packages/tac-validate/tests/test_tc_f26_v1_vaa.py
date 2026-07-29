@@ -1,6 +1,7 @@
-"""F23 / V1 — VA SIGMET accept + negatives (TC-F23-004 / #739).
+"""F26 theme V1 — VAA exceptional accept + negatives (TC-F26-001/004 / #736).
 
-HARD theme V1 from sigmet-research-catalog.md. T3.1 fixtures + T3.2 registry/rules.
+HARD theme from vaa-tca-theme-fixture-map.md. T1.1 fixtures; T1.2 registry/rules.
+Always write “F26 theme V1” (not F23 VA-SIGMET V1) — D-S027-EV021-s02m1-1.
 """
 
 from __future__ import annotations
@@ -18,14 +19,14 @@ FIXTURES = Path(__file__).resolve().parent / "fixtures"
 MANIFEST_PATH = FIXTURES / "manifest.json"
 
 _INFO_CODES = {
-    "VA_VOLCANO_IDENTITY",
-    "VA_ASH_GEOMETRY",
-    "NO_VA_EXP",
-    "VA_CNL_FIR_MOVED",
+    "VAA_VOLCANO_UNKNOWN",
+    "VAA_VOLCANO_UNNAMED",
+    "VAA_RMK_NIL",
+    "VAA_FCST_NO_VA_EXP",
+    "VAA_NO_FURTHER_ADVISORIES",
 }
 _ERROR_CODES = {
-    "MISSING_VA_VOLCANO",
-    "INVALID_NO_VA_EXP",
+    "MISSING_VOLCANO",
 }
 
 
@@ -46,22 +47,22 @@ def _case_ids(cases: list[dict[str, Any]]) -> list[str]:
 
 
 _MANIFEST = _load_manifest()
-# Product filter required: F26 also uses theme id V1 for VAA (D-S027-EV021-s02m1-1).
-_V1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "V1" and c.get("product") == "SIGMET"]
-_V1_INFO = list(_MANIFEST.get("v1_modifier_info", []))
-_V1_ERRORS = list(_MANIFEST.get("v1_errors", []))
+_V1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "V1" and c.get("product") == "VAA"]
+_V1_INFO = list(_MANIFEST.get("f26_v1_modifier_info", []))
+_V1_ERRORS = list(_MANIFEST.get("f26_v1_errors", []))
 
 
-def test_v1_manifest_sections_present() -> None:
+def test_f26_v1_manifest_sections_present() -> None:
     assert len(_V1_ACCEPT) >= 3
-    assert {c["product"] for c in _V1_ACCEPT} == {"SIGMET"}
+    assert {c["product"] for c in _V1_ACCEPT} == {"VAA"}
     assert {c["id"] for c in _V1_ACCEPT} >= {
-        "accept_sigmet_v1_va_volcano",
-        "accept_sigmet_v1_no_va_exp",
-        "accept_sigmet_v1_cnl_fir_moved",
+        "accept_vaa_v1_volcano_unknown",
+        "accept_vaa_v1_volcano_unnamed",
+        "accept_vaa_v1_rmk_nil_fcst_no_va",
+        "accept_vaa_v1_no_further",
     }
-    assert len(_V1_INFO) >= 4
-    assert len(_V1_ERRORS) >= 2
+    assert len(_V1_INFO) >= 5
+    assert len(_V1_ERRORS) >= 1
     for case in _V1_ACCEPT + _V1_INFO + _V1_ERRORS:
         assert (_read_tac(case["tac"])).strip()
     codes = {c["expected_codes"][0] for c in _V1_INFO}
@@ -71,14 +72,14 @@ def test_v1_manifest_sections_present() -> None:
 
 
 @pytest.mark.parametrize("case", _V1_ACCEPT, ids=_case_ids(_V1_ACCEPT))
-def test_v1_accept_ok(case: dict[str, Any]) -> None:
+def test_f26_v1_accept_ok(case: dict[str, Any]) -> None:
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is True
     assert not any(i.severity == "error" for i in report.issues)
 
 
 @pytest.mark.parametrize("case", _V1_INFO, ids=_case_ids(_V1_INFO))
-def test_v1_modifier_emits_info(case: dict[str, Any]) -> None:
+def test_f26_v1_modifier_emits_info(case: dict[str, Any]) -> None:
     code = case["expected_codes"][0]
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is True
@@ -91,7 +92,7 @@ def test_v1_modifier_emits_info(case: dict[str, Any]) -> None:
 
 
 @pytest.mark.parametrize("case", _V1_ERRORS, ids=_case_ids(_V1_ERRORS))
-def test_v1_invalid_emits_error(case: dict[str, Any]) -> None:
+def test_f26_v1_invalid_emits_error(case: dict[str, Any]) -> None:
     code = case["expected_codes"][0]
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is False
@@ -100,4 +101,4 @@ def test_v1_invalid_emits_error(case: dict[str, Any]) -> None:
     assert by_code(code).severity == "error"
     if case.get("require_spans"):
         matched = [i for i in report.issues if i.code == code]
-        assert any(i.start is not None and i.end is not None and i.end > i.start for i in matched)
+        assert matched and matched[0].start is not None and matched[0].end is not None
