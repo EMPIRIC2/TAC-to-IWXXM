@@ -1,7 +1,23 @@
 {
   "schema_version": 1,
-  "description": "TC-F6-020/021 / TC-F15-002 / TC-F20-002 / TC-F20-003 / TC-F23-002 / TC-F24-002 / TC-F25-001 annex3 METAR/SPECI/TAF/SIGMET/AIRMET golden pack (WMO-shaped; R6 + F20 T4/S3 + F23 G3 + F24 A3 + F25 W1\u2013W2)",
+  "description": "TC-F6-020/021 / TC-F15-002 / TC-F20-002 / TC-F20-003 / TC-F23-002 / TC-F24-002 / TC-F25-001 annex3 METAR/SPECI/TAF/SIGMET/AIRMET golden pack (WMO-shaped; R6 + F20 T4/S3 + F23 G3 + F24 A3 + F25 W1\u2013W3)",
   "cases": [
+    {
+      "id": "taf_a5_1",
+      "product": "TAF",
+      "theme": "W3",
+      "tac": "taf_a5_1.tac",
+      "golden": "taf_a5_1.golden.xml",
+      "seed": "taf-A5-1"
+    },
+    {
+      "id": "taf_a5_2",
+      "product": "TAF",
+      "theme": "W3",
+      "tac": "taf_a5_2.tac",
+      "golden": "taf_a5_2.golden.xml",
+      "seed": "taf-A5-2"
+    },
     {
       "id": "metar_a3_1",
       "product": "METAR",
