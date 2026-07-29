@@ -1,7 +1,7 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-28 (S023 / EV-017 — F21 public app: `idb`, `slowapi`; delete `packages/auth`)
+> **Last updated**: 2026-07-29 (S026 / EV-020 — PyYAML on tac2iwxxm for F9 glossary)
 > **Status**: **Accepted** for build (07-build T1.2 / D-S023-04-plan-approve-A) — drafted in bf4eaf1
 
 ## Runtime Dependencies
@@ -53,8 +53,9 @@ Package license: **MIT**. No FastAPI/Supabase imports. Backend already has `sqla
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| lxml | XML encode/validate support | BSD | PyPI |
-| IR library | Versioned IR models | Apache-2.0 | **msgspec** (ADR-016); reuse module-level `msgspec.json.Encoder` / `Decoder` on hot paths (`tac2iwxxm.codec`) |
+| msgspec | Versioned IR / convert issue models (ADR-016) | Apache-2.0 | PyPI (`>=0.19`) |
+| PyYAML | Decode glossary YAML overlays (F9 / ADR-032; E20-F5) | MIT | PyPI (`>=6.0`) |
+| lxml | XML encode/validate support (optional / transitional) | BSD | PyPI |
 | PyO3 / maturin / rustc | Native hotspots | Apache-2.0 / MIT (typical) | **Required before cutover** (ADR-017) |
 
 Package license: **MIT**. No FastAPI/Supabase imports.
@@ -194,3 +195,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
   for CI cost (E14-04 / Q17); not a Render service
 - S019 / EV-014 T3.4 (2026-07-21): **httpx** + **aiomqtt≥2.3,<3** — concrete WIS2 transports
   for TC-F17-001 harness publish (D-S019-EV014-T34-transports); reject aiomqtt 3.x alpha
+- S026 / EV-020 (2026-07-29): **PyYAML≥6.0** on `tac2iwxxm` for decode glossary YAML overlays
+  (F9 / ADR-032; E20-F5)

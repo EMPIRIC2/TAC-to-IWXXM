@@ -11,6 +11,11 @@ from typing import Callable
 
 import msgspec
 
+from tac2iwxxm.glossary import (
+    explain_glossary_token,
+    resolve_location_name,
+)
+
 _SUPPORTED = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA"})
 
 _WIND = re.compile(r"^(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<unit>KT|MPS)$")
@@ -191,7 +196,10 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return "Report terminator"
     if _STATION.match(upper) and seen.get("station", 0) == 0 and seen.get("rtype", 0):
         seen["station"] = 1
-        return "ICAO station location indicator"
+        place = resolve_location_name(upper)
+        if place:
+            return f"ICAO station {upper} ({place})"
+        return f"ICAO station location indicator ({upper})"
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Observation time")
     if m := _WIND.match(upper):
@@ -229,7 +237,10 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return "Report terminator"
     if _STATION.match(upper) and seen.get("station", 0) == 0:
         seen["station"] = 1
-        return "ICAO station location indicator"
+        place = resolve_location_name(upper)
+        if place:
+            return f"ICAO station {upper} ({place})"
+        return f"ICAO station location indicator ({upper})"
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Issue time")
     if m := _TAF_VALID.match(upper):
@@ -276,17 +287,17 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return "Report terminator"
     if _STATION.match(upper) and seen.get("station", 0) == 0:
         seen["station"] = 1
-        return "Originating FIR / location indicator"
+        place = resolve_location_name(upper)
+        if place:
+            return f"Originating FIR / location indicator {upper} ({place})"
+        return f"Originating FIR / location indicator ({upper})"
     if m := _SIG_VALID.match(upper):
         return (
             f"Valid day {int(m.group('d1'))} {m.group('h1')}:{m.group('m1')} UTC"
             f" to day {int(m.group('d2'))} {m.group('h2')}:{m.group('m2')} UTC"
         )
-    if upper in {"OBSC", "EMBD", "FRQ", "SQL", "SEV", "MOD", "ISOL", "OCNL"}:
-        return "Phenomenon intensity / distribution"
-    if upper in {"TS", "ICE", "TURB", "MTW", "DS", "SS", "VA", "TC"}:
-        return "Hazard phenomenon"
-    return None
+    # Glossary-backed intensity / hazard / movement tokens (F9 deepen).
+    return explain_glossary_token(upper)
 
 
 def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str | None:
@@ -295,24 +306,24 @@ def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str 
     if product == "VAA":
         if upper == "VA" and seen.get("va", 0) == 0:
             seen["va"] = 1
-            return "Volcanic ash advisory marker"
+            return explain_glossary_token(upper, fallback="Volcanic ash advisory marker")
         if upper == "ADVISORY" and seen.get("adv", 0) == 0:
             seen["adv"] = 1
-            return "Advisory product header"
+            return explain_glossary_token(upper, fallback="Advisory product header")
         if upper == "VAA":
-            return "Volcanic ash advisory abbreviation"
+            return explain_glossary_token(upper, fallback="Volcanic ash advisory abbreviation")
     if product == "TCA":
         if upper == "TC" and seen.get("tc", 0) == 0:
             seen["tc"] = 1
-            return "Tropical cyclone advisory marker"
+            return explain_glossary_token(upper, fallback="Tropical cyclone advisory marker")
         if upper == "ADVISORY" and seen.get("adv", 0) == 0:
             seen["adv"] = 1
-            return "Advisory product header"
+            return explain_glossary_token(upper, fallback="Advisory product header")
         if upper == "TCA":
-            return "Tropical cyclone advisory abbreviation"
+            return explain_glossary_token(upper, fallback="Tropical cyclone advisory abbreviation")
     if upper in {"DTG", "VOLCANO", "PSN", "AREA", "SUMMIT", "ADVISORY", "NR", "INFO"}:
-        return f"{product} field label"
-    return None
+        return explain_glossary_token(upper, fallback=f"{product} field label")
+    return explain_glossary_token(upper)
 
 
 def _classify(
