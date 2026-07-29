@@ -1,0 +1,95 @@
+"""T5.3 / TC-F23-005 — SIGMET (+ VA) lint/convert + catalog GET smoke (H3-shaped).
+
+Spec: docs/test-plan.md TC-F23-005; docs/api-contract.md §lint-issue-catalog;
+execution-plan T5.3. In-process client (CI); live H3/H4–H5 reuse paths.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Iterator
+from pathlib import Path
+
+import pytest
+from fastapi.testclient import TestClient
+from tac_validate.issue_registry import ISSUES
+
+from src.api import app
+from src.utilities.security import verify_supabase_token
+
+pytestmark = [pytest.mark.integration, pytest.mark.smoke]
+
+FIXTURES = Path(__file__).resolve().parents[4] / "packages" / "tac-validate" / "tests" / "fixtures" / "accept"
+SIGMET_TAC = (FIXTURES / "sigmet_c1_normal.tac").read_text(encoding="utf-8").strip().replace("\n", " ")
+VA_SIGMET_TAC = (FIXTURES / "sigmet_c1_va_normal.tac").read_text(encoding="utf-8").strip().replace("\n", " ")
+
+
+@pytest.fixture
+def smoke_client() -> Iterator[TestClient]:
+    async def _auth_user() -> dict[str, str]:
+        return {"sub": "f23-smoke-user", "aud": "test"}
+
+    app.dependency_overrides[verify_supabase_token] = _auth_user
+    client = TestClient(app)
+    yield client
+    app.dependency_overrides.clear()
+
+
+def _multipart_post(client: TestClient, path: str, fields: dict[str, str]):
+    return client.post(path, files={k: (None, v) for k, v in fields.items()})
+
+
+@pytest.mark.parametrize(
+    ("tac", "root_hint"),
+    [
+        (SIGMET_TAC, "sigmet"),
+        (VA_SIGMET_TAC, "volcanicashsigmet"),
+    ],
+    ids=["general_sigmet", "va_sigmet"],
+)
+def test_tc_f23_005_lint_and_convert_smoke(
+    smoke_client: TestClient,
+    tac: str,
+    root_hint: str,
+) -> None:
+    lint = _multipart_post(
+        smoke_client,
+        "/api/v1/lint-tac",
+        {"manual_text": tac, "product": "SIGMET"},
+    )
+    assert lint.status_code == 200, lint.text[:500]
+    lint_body = lint.json()
+    assert lint_body["ok"] is True
+    for issue in lint_body.get("issues", []):
+        assert issue["code"] in {spec.code for spec in ISSUES}
+
+    convert = _multipart_post(
+        smoke_client,
+        "/api/v1/convert",
+        {
+            "manual_text": tac,
+            "product": "SIGMET",
+            "profile": "annex3",
+            "lint": "false",
+        },
+    )
+    assert convert.status_code == 200, convert.text[:800]
+    convert_body = convert.json()
+    assert convert_body.get("successful", 0) >= 1 or convert_body.get("ok") is True
+    results = convert_body.get("results") or []
+    assert results, "convert must return at least one result"
+    xml = results[0].get("content") or results[0].get("xml") or ""
+    assert "iwxxm" in xml.lower() or "<" in xml
+    xml_compact = xml.lower().replace(":", "").replace("_", "")
+    assert root_hint in xml_compact, f"expected root hint {root_hint!r} in convert XML"
+
+
+def test_tc_f23_005_catalog_get_smoke(smoke_client: TestClient) -> None:
+    response = smoke_client.get("/api/v1/lint-issue-catalog", params={"product": "sigmet"})
+    assert response.status_code == 200, response.text[:400]
+    issues = response.json()["issues"]
+    assert len(issues) >= 1
+    codes = {row["code"] for row in issues}
+    assert "SIGMET_CNL" in codes
+    assert "NO_VA_EXP" in codes
+    registry = {spec.code for spec in ISSUES}
+    assert codes <= registry
