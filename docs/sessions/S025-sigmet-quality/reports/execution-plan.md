@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M4 — VA goldens + C1 / matrix close (F23 themes V3 / C1) |
-| **Active task** | T4.6 (pending) |
-| **Tasks** | 20 / 29 completed |
+| **Active milestone** | M5 — FE catalog SIGMET/VA tags + smoke + verify (F23) |
+| **Active task** | T5.1 (pending) |
+| **Tasks** | 21 / 29 completed |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -96,7 +96,7 @@
 | T4.3 | Test | Common-rule fixtures (reportStatus/nilReasons/CRS/one-report/`translationFailedTAC`) where lint applies | matrix C1 | T4.2 | completed |
 | T4.4 | Code | Encode/defer C1 with rationale (F20 C1 pattern) | F23; guidance | T4.3 | completed |
 | T4.5 | Docs | COVERAGE_MATRIX F23 acc checklist; ISSUE_CATALOG regen; mark V1–V3/C1 closed or deferred | F23 acc5; S1.M1 | T4.4 | completed |
-| T4.6 | Test | TC-F23-001 registry completeness green | TC-F23-001 | T4.5 | pending |
+| T4.6 | Test | TC-F23-001 registry completeness green | TC-F23-001 | T4.5 | completed |
 
 ### M5 — FE catalog SIGMET/VA tags + smoke + verify (F23)
 
