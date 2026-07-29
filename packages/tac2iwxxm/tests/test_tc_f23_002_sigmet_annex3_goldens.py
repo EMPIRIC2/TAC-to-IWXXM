@@ -83,3 +83,75 @@ def test_tc_f23_002_sigmet_m_golden(case_id: str) -> None:
     )
     assert result.ok is True
     assert canonicalize_xml(result.xml) == canonicalize_xml(golden)
+
+
+def test_tc_f23_002_cnl_exceptional_encode() -> None:
+    """#733 CNL: isCancelReport + cancelled seq/period; omit phenomenon/analysis."""
+    from tac2iwxxm import convert
+
+    tac = (FIXTURES / "sigmet_a6_1b_cnl.tac").read_text(encoding="utf-8")
+    result = convert(tac, product="SIGMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
+    assert result.ok is True
+    xml = result.xml
+    assert 'isCancelReport="true"' in xml
+    assert "<iwxxm:cancelledReportSequenceNumber>2</iwxxm:cancelledReportSequenceNumber>" in xml
+    assert "<iwxxm:cancelledReportValidPeriod>" in xml
+    assert "<iwxxm:phenomenon" not in xml
+    assert "<iwxxm:analysisCollection>" not in xml
+
+
+def test_tc_f23_002_stnr_exceptional_encode() -> None:
+    """#733 STNR: direction nilReason inapplicable; speedOfMotion 0."""
+    from tac2iwxxm import convert
+
+    tac = (FIXTURES / "sigmet_stnr.tac").read_text(encoding="utf-8")
+    result = convert(tac, product="SIGMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
+    assert result.ok is True
+    xml = result.xml
+    assert 'nilReason="http://codes.wmo.int/common/nil/inapplicable"' in xml
+    assert 'speedOfMotion uom="[kn_i]">0</iwxxm:speedOfMotion>' in xml or ">0</iwxxm:speedOfMotion>" in xml
+
+
+def test_tc_f23_002_a6_1a_motion_intensity_encode() -> None:
+    """A6-1a-TS: WKN→WEAKEN, MOV E 20KT, TOP FL390 present in evolving condition."""
+    from tac2iwxxm import convert
+
+    tac = (FIXTURES / "sigmet_a6_1a_ts.tac").read_text(encoding="utf-8")
+    result = convert(tac, product="SIGMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
+    assert result.ok is True
+    xml = result.xml
+    assert 'intensityChange="WEAKEN"' in xml
+    assert "<iwxxm:directionOfMotion" in xml and ">90</iwxxm:directionOfMotion>" in xml
+    assert ">20</iwxxm:speedOfMotion>" in xml
+    assert 'upperLimit uom="FL">390</aixm:upperLimit>' in xml
+
+
+def test_tc_f23_002_point_circle_zero_radius() -> None:
+    """#733 single point → CircleByCenterPoint radius 0."""
+    from tac2iwxxm import convert
+
+    tac = Path(__file__).resolve().parents[2] / "tac-validate" / "tests" / "fixtures" / "accept" / "sigmet_g1_point.tac"
+    text = tac.read_text(encoding="utf-8")
+    result = convert(text, product="SIGMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
+    assert result.ok is True
+    assert "<gml:CircleByCenterPoint" in result.xml
+    assert 'radius uom="[nmi_i]">0</gml:radius>' in result.xml
+
+
+def test_tc_f23_002_single_altitude_same_limits() -> None:
+    """#733 single altitude → same lower and upper FL limits."""
+    from tac2iwxxm import convert
+
+    tac = (
+        Path(__file__).resolve().parents[2]
+        / "tac-validate"
+        / "tests"
+        / "fixtures"
+        / "accept"
+        / "sigmet_g1_single_alt.tac"
+    )
+    text = tac.read_text(encoding="utf-8")
+    result = convert(text, product="SIGMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
+    assert result.ok is True
+    assert 'lowerLimit uom="FL">180</aixm:lowerLimit>' in result.xml
+    assert 'upperLimit uom="FL">180</aixm:upperLimit>' in result.xml

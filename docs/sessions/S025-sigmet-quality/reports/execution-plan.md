@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M2 — General SIGMET goldens (F23 theme G3 / F6.d) |
-| **Active task** | T2.2 (pending) |
-| **Tasks** | 7 / 29 completed |
+| **Active task** | T2.3 (pending) |
+| **Tasks** | 10 / 29 completed |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -75,7 +75,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T2.1 | Test | Expand annex3 general SIGMET golden manifests (`sigmet-A6-1a-TS`, CNL, …); M-xsd/M-sch stubs; root `iwxxm:SIGMET` | TC-F23-002 | T1.4 | completed |
-| T2.2 | Code | Convert fidelity fixes for general SIGMET exceptional rules | F6.d; #733 | T2.1 | pending |
+| T2.2 | Code | Convert fidelity fixes for general SIGMET exceptional rules | F6.d; #733 | T2.1 | completed |
 | T2.3 | Docs | Mark F23 themes G1–G3 closed or AskQuestion-deferred | S1.M1 | T2.2 | pending |
 
 ### M3 — VA SIGMET lint + adjacency (F23 themes V1–V2)

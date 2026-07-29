@@ -4,9 +4,10 @@
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    gml:id="sigmet.basic.yudd"
+    gml:id="sigmet.cnl.yudd"
     reportStatus="NORMAL"
-    permissibleUsage="OPERATIONAL">
+    permissibleUsage="OPERATIONAL"
+    isCancelReport="true">
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
       <gml:timePosition>2012-08-10T13:45:00Z</gml:timePosition>
@@ -58,19 +59,11 @@
       <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>
     </gml:TimePeriod>
   </iwxxm:validPeriod>
-  <iwxxm:phenomenon xlink:href="http://codes.wmo.int/49-2/SigWxPhenomena/TS"/>
-  <iwxxm:analysisCollection>
-    <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.yudd">
-      <iwxxm:analysis>
-        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.yudd" timeIndicator="FORECAST">
-          <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
-          <iwxxm:member>
-            <iwxxm:SIGMETEvolvingCondition gml:id="cond.yudd" intensityChange="WEAKEN">
-              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/missing"/>
-            </iwxxm:SIGMETEvolvingCondition>
-          </iwxxm:member>
-        </iwxxm:SIGMETEvolvingConditionCollection>
-      </iwxxm:analysis>
-    </iwxxm:analysisAndForecastPositionAnalysis>
-  </iwxxm:analysisCollection>
+  <iwxxm:cancelledReportSequenceNumber>2</iwxxm:cancelledReportSequenceNumber>
+  <iwxxm:cancelledReportValidPeriod>
+    <gml:TimePeriod gml:id="t.cancelled">
+      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>
+      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:cancelledReportValidPeriod>
 </iwxxm:SIGMET>
