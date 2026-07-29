@@ -356,13 +356,15 @@
     {
       "code": "MISSING_FIR_OR_CTA",
       "severity": "error",
-      "message_template": "SIGMET missing FIR/CTA/UIR airspace identity \u2014 research G2",
+      "message_template": "SIGMET/AIRMET missing FIR/CTA/UIR airspace identity \u2014 research G2 / F24 A1",
       "product": "sigmet",
       "tags": [
         "fir",
         "cta",
         "sigmet",
-        "g2"
+        "airmet",
+        "g2",
+        "a1"
       ]
     },
     {
@@ -432,12 +434,14 @@
     {
       "code": "MISSING_SEQUENCE",
       "severity": "error",
-      "message_template": "SIGMET missing sequence number after SIGMET \u2014 research G2",
+      "message_template": "SIGMET/AIRMET missing sequence number \u2014 research G2 / F24 A1",
       "product": "sigmet",
       "tags": [
         "sequence",
         "sigmet",
-        "g2"
+        "airmet",
+        "g2",
+        "a1"
       ]
     },
     {

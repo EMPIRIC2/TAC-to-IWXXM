@@ -229,7 +229,7 @@ Hard themes from #731 + WMO `TAC-to-XML-Guidance.txt` + vendor `airmet-A6-1a-TS`
 
 | Theme | Lint | Convert / golden | Validate | Status |
 |-------|------|------------------|----------|--------|
-| **A1** Header / sequence / validity / FIR | Registry | IR header | — | Planned |
+| **A1** Header / sequence / validity / FIR | Registry | IR header | — | ✅ Closed (S026 T1.1–T1.2) — sequence/FIR registry + rules |
 | **A2** Phenomenon + intensity (ISOL TS, STNR, WKN, …) | Registry | Encode | SCH | Planned |
 | **A3** Geometry + vertical (AirspaceVolume / posList / FL) | — | **M-golden vs vendor** | M-xsd/M-sch | Planned (gap today: nil geometry) |
 | **A4** Negatives + translation-failed adjacency | Negatives | Not happy-path | — | Planned |

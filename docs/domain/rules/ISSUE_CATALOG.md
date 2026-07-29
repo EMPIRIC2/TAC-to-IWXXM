@@ -38,14 +38,14 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `INVALID_WIND` | `error` | {product} invalid wind token {token!r} — research R8 | — | wind, metar, speci, r8 |
 | `MISSING_CCCC` | `error` | {product} missing ICAO location (CCCC) | — | station, metar, speci, taf |
 | `MISSING_DTG` | `error` | {product} missing DTG: template field | — | dtg, vaa, tca |
-| `MISSING_FIR_OR_CTA` | `error` | SIGMET missing FIR/CTA/UIR airspace identity — research G2 | sigmet | fir, cta, sigmet, g2 |
+| `MISSING_FIR_OR_CTA` | `error` | SIGMET/AIRMET missing FIR/CTA/UIR airspace identity — research G2 / F24 A1 | sigmet | fir, cta, sigmet, airmet, g2, a1 |
 | `MISSING_ISSUE_TIME` | `error` | TAF missing issue time ddhhmmZ — A5-1 #3 | taf | time, taf |
 | `MISSING_MAX_WIND` | `error` | TCA missing MAX WIND: template field — A2-2 | tca | max_wind, tca |
 | `MISSING_OBS_OR_FCST` | `error` | SIGMET missing OBS or FCST — research G2 | sigmet | obs, fcst, sigmet, g2 |
 | `MISSING_OBS_TIME` | `error` | {product} missing observation time ddhhmmZ — A3-2 #3 | — | time, metar, speci |
 | `MISSING_PRODUCT_KEYWORD` | `error` | {product} TAC must contain one of {keywords} | — | parse_gate, header |
 | `MISSING_QNH` | `error` | {product} missing QNH/altimeter (Qnnnn/Annnn) — A3-2 #11 | — | pressure, metar, speci |
-| `MISSING_SEQUENCE` | `error` | SIGMET missing sequence number after SIGMET — research G2 | sigmet | sequence, sigmet, g2 |
+| `MISSING_SEQUENCE` | `error` | SIGMET/AIRMET missing sequence number — research G2 / F24 A1 | sigmet | sequence, sigmet, airmet, g2, a1 |
 | `MISSING_TEMP_DEWPOINT` | `error` | {product} missing temperature/dewpoint tt/td — A3-2 #10 | — | temperature, metar, speci |
 | `MISSING_TERMINATOR` | `info` | Reports in bulletins end with '=' — add it before publishing | — | terminator, metar, speci, taf |
 | `MISSING_VAAC` | `error` | VAA missing VAAC: template field — A2-1 | vaa | vaac, vaa |

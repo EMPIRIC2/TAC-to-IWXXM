@@ -92,6 +92,8 @@ _SIGMET_CNL = re.compile(r"\bCNL\b")
 _SIGMET_COR = re.compile(r"\bCOR\b")
 _SIGMET_SEQ = re.compile(r"\bSIGMET\s+(\d{1,3})\b")
 _SIGMET_NO_SEQ = re.compile(r"\bSIGMET\s+VALID\b")
+_AIRMET_SEQ = re.compile(r"\bAIRMET\s+(\d{1,3})\b")
+_AIRMET_NO_SEQ = re.compile(r"\bAIRMET\s+VALID\b")
 _SIGMET_VALID_PAIR = re.compile(r"\bVALID\s+(\d{6})/(\d{6})\b")
 _SIGMET_FIR_CTA = re.compile(r"\b(?:FIR(?:/UIR)?|CTA|UIR)\b")
 _SIGMET_OBS_FCST = re.compile(r"\b(?:OBS|FCST)\b")
@@ -1472,6 +1474,58 @@ def _check_sigmet_g2(*, start: int, end: int, upper: str, is_va: bool = False) -
     return issues
 
 
+def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
+    """F24 theme A1 — AIRMET sequence number + FIR/CTA identity."""
+    issues: list[Issue] = []
+    core = upper[:-1] if upper.endswith("=") else upper
+
+    seq = _AIRMET_SEQ.search(core)
+    if seq is not None:
+        _emit_token_info(
+            issues,
+            code="SIGMET_SEQUENCE",
+            message="AIRMET sequence number present — F24 theme A1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token=seq.group(1),
+        )
+    elif _AIRMET_NO_SEQ.search(core):
+        _emit_token_info(
+            issues,
+            code="MISSING_SEQUENCE",
+            message="AIRMET missing sequence number after AIRMET — F24 theme A1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="AIRMET",
+        )
+
+    fir = _SIGMET_FIR_CTA.search(core)
+    if fir is not None:
+        _emit_token_info(
+            issues,
+            code="FIR_OR_CTA",
+            message="AIRMET FIR/CTA/UIR airspace identity — F24 theme A1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token=fir.group(0).split("/")[0],
+        )
+    else:
+        _emit_token_info(
+            issues,
+            code="MISSING_FIR_OR_CTA",
+            message="AIRMET missing FIR/CTA/UIR airspace identity — F24 theme A1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="AIRMET",
+        )
+
+    return issues
+
+
 def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
     """F23 theme V1 — VA volcano identity / ash geometry / NO VA EXP / CNL FIR-moved."""
     issues: list[Issue] = []
@@ -1565,6 +1619,11 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
         issues.extend(_check_sigmet_g2(start=start, end=end, upper=upper, is_va=is_va))
         if is_va:
             issues.extend(_check_sigmet_v1(start=start, end=end, upper=upper))
+    elif product == "AIRMET":
+        # F24 theme A1 — sequence + FIR (CNL still needs identity; skip multi-family below).
+        issues.extend(_check_airmet_a1(start=start, end=end, upper=upper))
+        if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
+            return issues
 
     families = _SIGMET_FAMILIES if product == "SIGMET" else _AIRMET_FAMILIES
     hit = _count_families(upper, families)

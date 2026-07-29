@@ -472,9 +472,9 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MISSING_SEQUENCE",
         "error",
-        "SIGMET missing sequence number after SIGMET — research G2",
+        "SIGMET/AIRMET missing sequence number — research G2 / F24 A1",
         product="sigmet",
-        tags=("sequence", "sigmet", "g2"),
+        tags=("sequence", "sigmet", "airmet", "g2", "a1"),
     ),
     _row(
         "INVALID_VALIDITY_DURATION",
@@ -486,9 +486,9 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MISSING_FIR_OR_CTA",
         "error",
-        "SIGMET missing FIR/CTA/UIR airspace identity — research G2",
+        "SIGMET/AIRMET missing FIR/CTA/UIR airspace identity — research G2 / F24 A1",
         product="sigmet",
-        tags=("fir", "cta", "sigmet", "g2"),
+        tags=("fir", "cta", "sigmet", "airmet", "g2", "a1"),
     ),
     _row(
         "MISSING_OBS_OR_FCST",
