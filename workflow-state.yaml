@@ -24,10 +24,10 @@ active_session:
   routing_decision_id: D-S025-E19-batch2
   context_briefs:
     - docs/context/sigmet-quality.md
-  tip_sha: 5f37aed
-  tip_sha_full: 5f37aedd326212b35f7a65b039b8e143d35b2efe
+  tip_sha: 0d0f875
+  tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
   do_not_auto_merge: true
-  note: "07-build M4: T4.3 C1 fixtures in_progress (F20 pattern)"
+  note: "07-build M5: M4 complete (T4.3–T4.6); next T5.1 Vitest SIGMET/VA catalog; tip 0d0f875"
   routing_plan:
     - stage: 00-context
       required: true
@@ -68,7 +68,7 @@ active_session:
       mode: full
       status: in_progress
       started: "2026-07-29"
-      note: "M4 T4.3 C1 fixtures in_progress"
+      note: "M4 complete; M5 T5.1 pending"
     - stage: 08-verify-build
       required: true
       mode: full
@@ -3539,16 +3539,16 @@ stages:
     previous_completed_at: '2026-07-28T23:30:05Z'
     session_id: S025-sigmet-quality
     evolve_cycle_id: EV-019
-    tip_sha: 5f37aed
-    tip_sha_full: 5f37aedd326212b35f7a65b039b8e143d35b2efe
-    note: 'S025/EV-019 07-build M4 T4.3 C1 fixtures in_progress (F20 pattern); progress 17/29 → working on 18th; tip 5f37aed; #733/#739'
+    tip_sha: 0d0f875
+    tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
+    note: 'S025/EV-019 07-build M5: M4 complete (T4.3–T4.6); active_task T5.1; progress 21/29; tip 0d0f875; #733/#739'
     substeps:
       task_loop:
         status: in_progress
-        current_task: T4.3
+        current_task: T5.1
         phase: C
-        milestone: M4
-        notes: S025/EV-019 M4 T4.1–T4.2 done; T4.3 C1 fixtures in_progress (17/29 → 18th)
+        milestone: M5
+        notes: S025/EV-019 M4 complete (T4.3–T4.6); next T5.1 Vitest SIGMET/VA catalog (21/29)
     delta_substages:
     - id: S025-sigmet-quality
       session_id: S025-sigmet-quality
@@ -3558,15 +3558,15 @@ stages:
       started_at: '2026-07-29'
       started: '2026-07-29'
       mode: full
-      note: 'M4 T4.3 C1 fixtures in_progress (F20 pattern); T4.1–T4.2 done; progress 17/29 → working on 18th; tip 5f37aed; #733/#739'
-      active_milestone: M4
-      active_task: T4.3
-      active_task_status: in_progress
+      note: 'M4 complete (T4.3–T4.6); M5 T5.1 Vitest SIGMET/VA catalog pending; progress 21/29; tip 0d0f875; #733/#739'
+      active_milestone: M5
+      active_task: T5.1
+      active_task_status: pending
       decision_id: D-S025-T2.3-A
       branch: evolve/EV-019-sigmet-quality
-      tip_sha: 5f37aed
-      tip_sha_full: 5f37aedd326212b35f7a65b039b8e143d35b2efe
-      progress: 17/29; working on 18th (T4.3 C1 fixtures)
+      tip_sha: 0d0f875
+      tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
+      progress: 21/29; next T5.1 Vitest SIGMET/VA catalog
       feature_ids:
       - F23
       deepen:
@@ -3723,6 +3723,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-29 S025/EV-019 07-build M4 COMPLETE — T4.3–T4.6 done; next T5.1 Vitest SIGMET/VA catalog; progress 21/29; tip 0d0f875; #733/#739'
     - '2026-07-29 S025/EV-019 07-build T4.3 STARTED — C1 fixtures in_progress (F20 pattern); progress 17/29 → working on 18th; tip 5f37aed; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M3 COMPLETE — T3.3–T3.4 TC-F23-006 adjacency + content-selected VolcanicAshSIGMET under product=sigmet; next T4.1; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M3 T3.1–T3.2 DONE @ e041786 — V1 VA SIGMET fixtures/lint (#739); tip e041786; next T3.3 adjacency (encode root → T3.4); #733/#739'
@@ -5036,10 +5037,11 @@ stages:
     started_at: '2026-07-29'
     completed_at:
     current_stage: 07-build
-    tip_sha: 5f37aed
-    tip_sha_full: 5f37aedd326212b35f7a65b039b8e143d35b2efe
-    note: 'S025/EV-019 16-evolve in_progress — Phase C / T4.3 in_progress; tip 5f37aed; #733/#739'
+    tip_sha: 0d0f875
+    tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
+    note: 'S025/EV-019 16-evolve in_progress — Phase C / M4 complete; next T5.1; tip 0d0f875; #733/#739'
     notes:
+    - '2026-07-29 S025/EV-019 07-build M4 COMPLETE — T4.3–T4.6 done; next T5.1 Vitest SIGMET/VA catalog; progress 21/29; tip 0d0f875; #733/#739'
     - '2026-07-29 S025/EV-019 07-build T4.3 STARTED — C1 fixtures in_progress (F20 pattern); progress 17/29 → 18th; tip 5f37aed; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M3 COMPLETE — T3.3–T3.4 adjacency + VolcanicAshSIGMET root; next T4.1; #733/#739'
     - '2026-07-29 S025/EV-019 07-build M3 T3.1–T3.2 DONE @ e041786 — V1 VA SIGMET fixtures/lint (#739); next T3.3 adjacency (encode root → T3.4); #733/#739'
@@ -12485,10 +12487,10 @@ evolve_cycles:
   started_at: "2026-07-29"
   current_stage: 07-build
   preset: Lean+build
-  tip_sha: 5f37aed
-  tip_sha_full: 5f37aedd326212b35f7a65b039b8e143d35b2efe
+  tip_sha: 0d0f875
+  tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
   do_not_auto_merge: true
-  note: "T4.3 C1 in_progress"
+  note: "M4 complete; next T5.1"
   decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2, D-S025-01-complete, D-S025-02-pass, D-S025-EV019-s1m1-1, D-S025-EV019-s6m1-1, D-S025-EV019-s9m1-1, D-S025-02-phase-a-A, D-S025-04-plan-approve-A, E19-19, E19-20, E19-21, E19-22, D-S025-16-continue, D-S025-T2.3-A]
 - id: EV-018
   session_id: S024-dissemination-file-select
@@ -16654,10 +16656,11 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit:
-  tip_sha: e041786
-  tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
-  note: 'S025/EV-019 07-build M3: T3.1–T3.2 V1 lint done; next T3.3 adjacency (encode root → T3.4); tip e041786; #733/#739'
+  tip_sha: 0d0f875
+  tip_sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
+  note: 'S025/EV-019 07-build M5: M4 complete (T4.3–T4.6); next T5.1 Vitest SIGMET/VA catalog; tip 0d0f875; #733/#739'
   notes:
+  - '2026-07-29 S025/EV-019 tip synced — 0d0f875 (0d0f875a2d37650c605f6270e8672677e9ec98a8); M4 complete (T4.3–T4.6); stage 07-build; next T5.1; progress 21/29'
   - '2026-07-29 S025/EV-019 tip synced — b67558f (b67558f2b903d9b44b013c64943d6647d8ccac07); "[T3.3-T3.4] feat: F23 V2 SIGMET/VA/VAA adjacency + VolcanicAshSIGMET root (#739)"; stage 07-build; M4 next T4.1 VA goldens'
   - '2026-07-29 S025/EV-019 tip synced — e041786 (e04178645f1e81561e6faf023bcd7d7ff83fbaed); "[T3.1-T3.2] feat: F23 theme V1 VA SIGMET fixtures and lint rules (#739)"; stage 07-build; M3 next T3.3 adjacency (encode root → T3.4)'
   - '2026-07-29 S025/EV-019 tip synced — e4ac4bc (e4ac4bc9a11a9bf0debd89a2d1ba9d0167834f11); "[T2.3] docs: close F23 themes G1–G3 (D-S025-T2.3-A)"; stage 07-build; M3 next T3.3; T3.1–T3.2 V1 done (no commit yet)'
@@ -17583,6 +17586,42 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 0d0f875
+    sha_full: 0d0f875a2d37650c605f6270e8672677e9ec98a8
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T4.6] test: TC-F23-001 SIGMET/VA registry completeness"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T13:46:41Z"
+    files_changed: 3
+  - sha: 98a75b7
+    sha_full: 98a75b76fb450bb3e14d8e044638a0d759c365ef
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T4.5] docs: close F23 themes V1–V3/C1 on COVERAGE_MATRIX"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T13:45:55Z"
+    files_changed: 3
+  - sha: 3b763e5
+    sha_full: 3b763e5a4e4e9f5274acda64e4804ffb37af9786
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T4.4] feat: encode/defer F23 C1 common lint for SIGMET/VA"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T13:44:13Z"
+    files_changed: 11
+  - sha: 6985bd3
+    sha_full: 6985bd37244fef2bfe52562f5f3cd09ae5257000
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T4.3] test: add SIGMET/VA C1 common-rule fixture seeds"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T13:40:37Z"
+    files_changed: 12
   - sha: 445c58d
     sha_full: 445c58d00288b8f425d14cd1a26d614d0b49dcd4
     branch: evolve/EV-019-sigmet-quality
