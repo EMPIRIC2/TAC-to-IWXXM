@@ -108,7 +108,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T6.1 | Test | API/workbench smoke AIRMET + WMO examples (lint/convert/decode) | TC-F24-005; TC-F25-004 | T5.4 | **completed** |
-| T6.2 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M5 | **in_progress** |
+| T6.2 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M5 | **completed** |
 | T6.3 | Test | 10-e2e — UJ-035 / UJ-036 (+ UJ-020/032 deepen) | 10 | T6.2 | pending |
 | T6.4 | Docs | 11-verify-impl — per-Fn AC sign-off F24/F25/F9/F7.g | 11; C=1 | T6.3 | pending |
 | T6.5 | Test | 13-deploy-smoke — redeploy if API/FE; H1–H3 if API; **H4–H5 required** | 13; E20-F6 | T6.4 | pending |

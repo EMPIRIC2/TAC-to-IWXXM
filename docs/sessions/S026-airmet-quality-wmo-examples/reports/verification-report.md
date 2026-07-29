@@ -4,7 +4,7 @@
 **Scope**: Phase C closeout — M0–M5 through T6.1; T6.2 08-verify-build  
 **Branch**: `evolve/EV-020-airmet-quality`  
 **Tip (pre-fix)**: `7e75fff` (`[T6.1] test: AIRMET + WMO METAR/SPECI/TAF API smoke`)  
-**Tip (post T6.2 fix)**: see git after `[T6.2]` commit
+**Tip (post T6.2)**: `e839a6e` (`[T6.2] test: align FileConverter goldens with WMO A3-1 catalog`)
 
 ## Result: **PASS**
 
