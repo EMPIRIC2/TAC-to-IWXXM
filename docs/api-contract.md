@@ -380,6 +380,13 @@ from decoded values — present for all seven products (best-effort / "partial d
 for sparse products); when residuals exist the summary ends with a "Not decoded: …" clause.
 No offset or field removals — response stays backward-compatible (TC-F9-001/002).
 
+**S026 / EV-020 (F9 deepen / ADR-032)**: `segments[].explanation` strings deepen to
+**registry-backed English token meanings** (all seven products) plus optional OpenAIP/F3
+**names** when resolvable. Response **shape unchanged** (no new required fields); richer
+string content only. Optional additive fields require a follow-on api-contract amend in 04
+if proven necessary. Glossary is package data (YAML/JSON); see config-spec for optional
+override path.
+
 VAA/TCA may be residual-heavy (G4). Must support TC-F7-002.
 
 ### Validation
@@ -590,3 +597,20 @@ content requires new documented code enums (prefer additive).
 **Breaking changes**: None expected. Root selection is package-side behavior under existing
 `product=sigmet`; FE OpenAPI types update only if catalog/issue content requires new
 documented code enums (prefer additive).
+
+## S026 / EV-020 — Endpoint review (F24 / F25 / F9 deepen)
+
+| Endpoint | Change for EV-020? | Notes |
+|----------|--------------------|-------|
+| `POST /api/v1/convert` | **None (wire)** | Package-side WMO default golden fidelity (AIRMET + METAR/SPECI/TAF); no new params |
+| `POST /api/v1/lint-tac` | **None (wire)** | New AIRMET registry codes in payloads |
+| `GET /api/v1/lint-issue-catalog` | **Additive content** | AIRMET codes; schema unchanged |
+| `POST /api/v1/decode-tac` | **None (wire)** | Richer explanation strings via glossary; **no new required fields** (ADR-032) |
+| `POST /api/v1/validate` | **None (wire)** | Existing levels |
+| Airport / OpenAIP (F3) | **Reuse** | Optional name enrichment for decode; miss → designator only |
+| `POST /api/v1/dissemination/*` | **OOS** | — |
+
+**Breaking changes**: None. FE Examples catalog is static (no new API).
+
+- S026 / EV-020 (2026-07-29): F24/F25 WMO default goldens + F9 glossary deepen — wire shapes
+  unchanged; ADR-032.

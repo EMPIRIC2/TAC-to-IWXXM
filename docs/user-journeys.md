@@ -6,7 +6,7 @@
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783)
-> **Last updated**: 2026-07-27
+> **Last updated**: 2026-07-29 (S026 / EV-020 — UJ-035 AIRMET; UJ-036 WMO examples)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -49,6 +49,8 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-032 | Load golden example → convert / validate | apps/frontend | F7 (#780) | T0 / T2 / H4–H5 |
 | UJ-033 | Privacy notice + settings + GPC | apps/frontend | F22 | T0 / T2 / H4–H5 |
 | UJ-034 | SIGMET + VA SIGMET lint / convert→validate golden | UI / API / CI | F23 (+F6/F12) | T0 / T2 / **T3** |
+| UJ-035 | AIRMET lint / convert→validate WMO golden | UI / API / CI | F24 (+F6/F12) | T0 / T2 / **T3** |
+| UJ-036 | WMO-passing Examples catalog + METAR/SPECI/TAF goldens | apps/frontend / CI | F25 (+F7.g) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -516,6 +518,10 @@ renders live for all seven products; residuals named when present.
 
 **Browser wiring**: Same public decode-tac call as UJ-015 — no new origins (H4–H5 unchanged).
 
+**S026 / EV-020 deepen**: Explanations use **glossary registry** English meanings for all seven
+products (e.g. `OBSC` → “Obscured”, `TS` → “Thunderstorm”); optional OpenAIP/F3 **names** when
+available. Tests: TC-F9-003/004; ADR-032.
+
 ---
 
 ### UJ-021: IWXXM Preview Pane + Terminator Quick Fix (F10)
@@ -884,6 +890,66 @@ staging H4–H5 when FE redeployed.
 
 ---
 
+### UJ-035: AIRMET Lint / Convert→Validate WMO Golden (F24 / #731)
+
+**Actor**: Operator / CI maintainer
+
+**Goal**: Lint AIRMET TAC with registry codes; convert accept fixtures (esp. WMO
+`airmet-A6-1a-TS`) to `iwxxm:AIRMET` that is **`canonicalize_xml`-equal** to the vendor
+IWXXM example **under default convert settings** (`profile=annex3`, default pinned
+`iwxxm_version`); XSD+Schematron pass; useful diagnostics on negatives.
+
+**Feature**: F24 (+ deepen F6 / F12) — S026 / EV-020
+
+**Steps (operator — T2/T3)**:
+
+1. Open workbench; Product = **AIRMET** (or Auto-detect).
+2. Load / paste WMO AIRMET accept TAC; lint — registry codes only.
+3. Convert → Strict Validation — pass; root `iwxxm:AIRMET`; geometry present (not nil-only).
+4. Paste a known-bad AIRMET negative — lint returns registry codes (no silent success).
+5. Optionally open decode (UJ-020) — token meanings from glossary (not category-only labels).
+
+**Steps (CI — T0)**:
+
+1. Registry completeness for AIRMET codes.
+2. Golden: vendor `airmet-A6-1a-TS.tac` → convert (defaults) → `canonicalize_xml` == vendor XML.
+3. Negatives + coverage-matrix AIRMET themes closed or deferred with rationale.
+
+**Acceptance**: TC-F24-001..005 green; H4–H5 when FE touched.
+
+**Automated tests**: TC-F24-*; deepen TC-F9 for AIRMET glossary tokens.
+
+---
+
+### UJ-036: WMO-Passing Examples Catalog + METAR/SPECI/TAF Goldens (F25)
+
+**Actor**: Operator / CI maintainer
+
+**Goal**: METAR/SPECI/TAF convert matches WMO vendor XML under **default** settings; workbench
+**Examples** control offers **only** demos that pass that bar (plus SIGMET keepers from F23;
+AIRMET when F24 passes). Non-passers removed/hidden.
+
+**Feature**: F25 (+ deepen F6 / F7.g / F15 / F20) — S026 / EV-020
+
+**Steps (operator)**:
+
+1. Open **Examples** — only WMO-passing (or documented keepers) appear for in-scope products.
+2. Load METAR / SPECI / TAF / SIGMET / AIRMET (when ready) WMO example — editor + product set;
+   demo banner shows non-operational provenance pointing at vendor (or mirrored fixture).
+3. Convert → Strict Validation succeeds; decode shows glossary English (UJ-020 deepen).
+
+**Steps (CI)**:
+
+1. Golden pack: listed WMO TAC→XML cases equal under defaults + `canonicalize_xml`.
+2. Catalog unit tests: no non-passing in-scope demo ids; provenance policy enforced.
+3. Deepen TC-F7-008 for WMO-only policy.
+
+**Acceptance**: TC-F25-001..004 green; H4–H5 when FE redeployed.
+
+**Automated tests**: TC-F25-*; TC-F7-008 deepen; TC-F9 deepen.
+
+---
+
 ### UJ-027: Dissemination drawer — multi-DB upload (F16 / #729; multi-select #785)
 
 **Actor**: Anyone (public — F21; no login)
@@ -986,3 +1052,5 @@ live smoke (T7.4) when scheduled.
   reuse same selection contract
 - S025 / EV-019 (2026-07-29): UJ-034 SIGMET + VA SIGMET lint / convert→validate golden
   (F23; #733/#739)
+- S026 / EV-020 (2026-07-29): UJ-035 AIRMET WMO golden (F24/#731); UJ-036 WMO-passing
+  Examples + METAR/SPECI/TAF parity (F25); deepen UJ-020/032

@@ -63,3 +63,9 @@
 | 2026-07-29 | S6.M1 | approved | D-S025-EV019-s6m1-1 — keep G1–G3; prefix F23 theme vs gate |
 | 2026-07-29 | S9.M1 | approved | D-S025-EV019-s9m1-1 — keep skip 05; light pass at 04 exit |
 | 2026-07-29 | D-S025-02-phase-a | approved | Phase A PASS → 04-tech-plan (user A) |
+| 2026-07-29 | EV020-S02.H1–18 | auto-approved | 18 high-confidence F24/F25/F9 locks from E20-* (S026 02-verify-plan-audit) |
+| 2026-07-29 | S02.M1 | approved | D-S026-EV020-s02m1-1 — taf-A5-2 remains F25 golden (AMD/CNL peer) |
+| 2026-07-29 | S02.M2 | approved | D-S026-EV020-s02m2-1 — ADR-032 → Accepted |
+| 2026-07-29 | S02.L1 | approved | D-S026-EV020-s02l1-1 — lock TAC2IWXXM_DECODE_GLOSSARY_PATH |
+| 2026-07-29 | S02.L2 | approved | D-S026-EV020-s02l2-1 — incremental Examples catalog unlock OK |
+| 2026-07-29 | D-S026-02-phase-a | approved | Gate A PASS (Lean skip AskQuestion) → 04-tech-plan |

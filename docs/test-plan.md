@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-29 (S025 / EV-019 — F23 SIGMET + VA quality; UJ-034 / TC-F23)
+> **Last updated**: 2026-07-29 (S026 / EV-020 — F24/F25 WMO goldens + decode glossary; UJ-035/036)
 
 ## Scope
 
@@ -83,6 +83,8 @@ Unified manual live test harness against Render staging:
 | UJ-032 | F7 | Golden examples load (convert + validate) | H4–H5 if FE | TC-F7-008 |
 | UJ-033 | F22 | Privacy notice + settings + GPC | H4–H5 if FE | TC-F22-001..003 |
 | UJ-034 | F23 | SIGMET/VA SIGMET registry + convert→validate golden | H4–H5 if FE | TC-F23-001..006 |
+| UJ-035 | F24 | AIRMET registry + WMO golden (defaults) | H4–H5 if FE | TC-F24-001..005 |
+| UJ-036 | F25 | WMO-passing Examples + METAR/SPECI/TAF goldens | H4–H5 if FE | TC-F25-001..004 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -675,6 +677,112 @@ Before closing S013 / EV-009:
 - [ ] TC-F23-001..006 green
 - [ ] Coverage-matrix themes G1–G3 / V1–V3 / C1 updated; guidance gaps filed or closed
 - [ ] H1–H3 if API ships; H4–H5 when FE touched (E19-7)
+
+## F24 Test Cases (S026 / EV-020) — AIRMET quality / WMO golden
+
+> Golden equality uses `canonicalize_xml` under **default** convert settings only
+> (`profile=annex3`, default pinned `iwxxm_version`). E20-D3.
+
+### TC-F24-001: AIRMET registry completeness (UJ-035)
+
+- **Level**: T0 / CI
+- **Objective**: Every AIRMET lint emission uses a registered ADR-028 code
+- **Pass criteria**: CI fails on unknown codes; catalog export in sync
+- **Source**: F24; #731
+
+### TC-F24-002: WMO airmet-A6-1a-TS → convert → M-golden (UJ-035)
+
+- **Level**: T0 / CI
+- **Objective**: Vendor TAC converts to XML equal to vendor `airmet-A6-1a-TS.xml` under defaults
+- **Pass criteria**: `canonicalize_xml(result) == canonicalize_xml(vendor)`; root `iwxxm:AIRMET`;
+  geometry not nil-only (`AirspaceVolume` / vertical / horizontal projection per WMO)
+- **Source**: F24 + F6 deepen; E20-D3
+
+### TC-F24-003: AIRMET accept → XSD+Schematron (UJ-035)
+
+- **Level**: T0 / CI
+- **Objective**: AIRMET goldens validate M-xsd / M-sch on pinned versions
+- **Pass criteria**: no blocking errors (SCHEMATRON_SKIPPED allowed per project policy)
+- **Source**: F24
+
+### TC-F24-004: AIRMET negatives → registry diagnostics (UJ-035)
+
+- **Level**: T0 / CI
+- **Objective**: Rule-violating AIRMET never silent-succeeds
+- **Pass criteria**: expected registry codes; useful messages
+- **Source**: F24 + F12 deepen
+
+### TC-F24-005: Workbench AIRMET lint+convert smoke (UJ-035)
+
+- **Level**: T2 / T3 (H4–H5 when redeployed)
+- **Objective**: Product=AIRMET path + Examples load when F24 golden passes
+- **Pass criteria**: lint+convert+strict validation; H4–H5 after FE deploy
+- **Source**: F24; F7 Planned (smoke)
+
+### F24 verify/deploy gate
+
+- [ ] TC-F24-001..005 green
+- [ ] Coverage-matrix AIRMET themes updated
+- [ ] H1–H3 if API ships; H4–H5 when FE touched
+
+## F25 Test Cases (S026 / EV-020) — WMO METAR/SPECI/TAF parity + UI gate
+
+### TC-F25-001: WMO METAR/SPECI/TAF defaults → M-golden (UJ-036)
+
+- **Level**: T0 / CI
+- **Objective**: Listed vendor TAC examples convert equal to vendor XML under **defaults**
+- **Pass criteria**: `metar-A3-1`, `speci-A3-2`, **`taf-A5-1` and `taf-A5-2`** pass
+  `canonicalize_xml` equality; translation-failed examples are **not** happy-path goldens
+- **Source**: F25; E20-A; E20-D3; **E20-E1**
+
+### TC-F25-002: XSD+Schematron on F25 goldens (UJ-036)
+
+- **Level**: T0 / CI
+- **Objective**: F25 golden XML validates
+- **Pass criteria**: no blocking XSD/SCH errors
+- **Source**: F25
+
+### TC-F25-003: Examples catalog WMO-passers only (UJ-036 / deepen UJ-032)
+
+- **Level**: T0 / T2 (Vitest)
+- **Objective**: FE catalog lists only demos that pass the strict WMO bar for in-scope products
+- **Pass criteria**: Non-passers removed/hidden; SIGMET keepers retained; AIRMET appears when
+  F24 green; provenance points at vendor or mirrored fixture; deepen TC-F7-008
+- **Source**: F25 + F7.g; E20-3
+
+### TC-F25-004: Workbench load WMO example → convert smoke (UJ-036)
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Operator loads a catalog WMO example and converts successfully
+- **Pass criteria**: editor+product set; convert ok; demo banner; H4–H5 when FE deploys
+- **Source**: F25; UJ-032 deepen
+
+### F25 verify/deploy gate
+
+- [ ] TC-F25-001..004 green
+- [ ] TC-F7-008 deepen green
+- [ ] H4–H5 when FE touched
+
+## F9 deepen (S026 / EV-020) — glossary registry
+
+### TC-F9-003: Seven-product glossary meanings (UJ-020 deepen)
+
+- **Level**: T0 / T2
+- **Objective**: Token explanations use plain-English **meanings** from official/near-official
+  sources first (e.g. `OBSC`→obscured, `TS`→thunderstorm), with YAML **overrides** where
+  present; not category-only labels; optional F3/OpenAIP names
+- **Pass criteria**: SIGMET/AIRMET sample tokens match expected strings; METAR/SPECI/TAF keep
+  value-aware quality; VAA/TCA keywords expanded where sourced; missing OpenAIP → ICAO
+  designator only (no fail); YAML override wins when set
+- **Source**: F9 deepen; E20-B; E20-E2; ADR-032
+
+### TC-F9-004: Official sources + YAML override load (UJ-020 deepen)
+
+- **Level**: T0
+- **Objective**: Official/near-official tables load; YAML overlay merges; unknown tokens remain
+  residual or generic fallback
+- **Pass criteria**: unit tests for merge order (official → YAML override); no LLM
+- **Source**: F9 deepen; E20-E2; ADR-032
 
 ## F21 / F22 Test Cases (S023 / EV-017) — stubs
 
