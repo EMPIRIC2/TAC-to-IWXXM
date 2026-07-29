@@ -1,8 +1,11 @@
 # Deploy readiness — S024 / EV-018 (#785)
 
-> Status: **pending approval** — FE-only; no API/env changes  
-> Tip: `4146052` on `evolve/EV-018-dissemination-file-select`  
-> Branch has **no upstream** yet (not pushed)
+> Status: **PASS** — FE live; H4–H5 + H6′ 7/7  
+> Tip merged: `2f552b9` on `main`  
+> PR: [#791](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/791) **merged**  
+> FE deploy: `dep-d9kkjj5bedkc73au0aeg` live  
+> Decision: **D-S024-13-deploy-A**  
+> Report: `reports/deploy-smoke.md`
 
 ## Preconditions
 

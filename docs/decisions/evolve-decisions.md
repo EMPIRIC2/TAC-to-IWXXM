@@ -9,9 +9,10 @@
 **Features**: **Deepen F16** (F17–F19 reuse selection contract); no F23  
 **Issues**: [#785](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/785)  
 **Started**: 2026-07-28  
-**Completed**: —  
+**Completed**: 2026-07-29  
 **Branch**: `evolve/EV-018-dissemination-file-select`  
-**Status**: **in_progress** — Phase B passed; **07-build** @ T1.1
+**PR**: [#791](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/791) **merged** (`2f552b9`); FE `dep-d9kkjj5bedkc73au0aeg` live  
+**Status**: **completed** (D-S024-close)
 
 ### Scope (Batch 1 — locked 2026-07-28)
 
@@ -48,7 +49,10 @@ sources, no saved profiles in v1. Routing: **Lean+build**.
 | 01-requirements | 2026-07-28 | D-S024-01-requirements-delta — corpus deltas approved |
 | 02-verify-plan | 2026-07-28 | Phase A PASSED (D-S024-02-phase-a-A); C1/C2 fixed; M1/M2 → 04 |
 | 04-tech-plan | 2026-07-28 | D-S024-04-plan-approve-A — plan approved; B→C; handoff 07 @ T1.1 |
-| 07-build | *in_progress* | STARTED @ T1.1 (D-S024-04-plan-approve-A) |
+| 07-build | 2026-07-28 | M1–M4 / 14 tasks COMPLETE |
+| 08-verify-build | 2026-07-28 | PASS |
+| 10-e2e | 2026-07-28 | UJ-027–030 7/7 PASS |
+| 13-deploy-smoke | 2026-07-29 | **PASS** — PR #791 merged; H4–H5 + H6′ 7/7 |
 
 ### Phase A checkpoint (2026-07-28)
 
@@ -81,6 +85,22 @@ sources, no saved profiles in v1. Routing: **Lean+build**.
 | D-S024-04-plan-approve-A | gate | **A** — Approve execution plan (M1–M4 / 14 tasks); skip 05/06 (Lean+build); start **07-build** @ T1.1 |
 
 **Execution plan artifact**: `docs/sessions/S024-dissemination-file-select/reports/execution-plan.md` (**approved** — D-S024-04-plan-approve-A).
+
+### Deploy gate (2026-07-29)
+
+| ID | Category | Decision |
+|----|----------|----------|
+| D-S024-13-deploy-A | gate | **A** — Push + open PR #791; after merge run live H4–H5 + H6′ |
+
+**Deploy smoke**: `docs/sessions/S024-dissemination-file-select/reports/deploy-smoke.md` — **PASS** (2026-07-29). PR [#791](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/791) merged `2f552b9`; FE `dep-d9kkjj5bedkc73au0aeg` live; main CI [30411047349](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30411047349) success.
+
+### Phase 4 close (2026-07-29)
+
+| ID | Category | Decision |
+|----|----------|----------|
+| D-S024-close | gate | **A** — Close cycle + session; commit/push closeout docs to `main` |
+
+**Report**: `docs/evolve-report-EV-018.md` · `docs/sessions/S024-dissemination-file-select/reports/evolve-summary.md`
 
 ---
 

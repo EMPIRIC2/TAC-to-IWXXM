@@ -109,7 +109,7 @@
 
 | PR                    | Scope                                              | Status  |
 | --------------------- | -------------------------------------------------- | ------- |
-| S024 / F16 deepen     | Multi-select + interleaved queue + progress graphic | pending |
+| S024 / F16 deepen     | Multi-select + interleaved queue + progress graphic | **merged** — [#791](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/791) @ `2f552b9` |
 
 ## Phase Gate Log
 
@@ -117,8 +117,8 @@
 | ------ | ------- | ---------- | ------------------------------------------ |
 | A→B    | passed  | 2026-07-28 | D-S024-02-phase-a-A; M1/M2 → 04            |
 | B→C    | passed  | 2026-07-28 | D-S024-04-plan-approve-A; start 07 @ T1.1   |
-| C→D    | pending | —          | after 07+08                                |
-| Deploy | pending | —          | 13 H6′                                     |
+| C→D    | passed  | 2026-07-28 | 07+08+10 PASS                                  |
+| Deploy | passed  | 2026-07-29 | 13 H4–H5 + H6′ 7/7; PR #791 merged             |
 
 ## ADR / dependency note
 

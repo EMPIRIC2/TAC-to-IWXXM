@@ -10,13 +10,13 @@
 
 | Journey / TC | Mechanism | T0 | T2 connectivity | T3 browser |
 |--------------|-----------|----|-----------------|------------|
-| UJ-027 multi-DB BYOC + retry | Playwright `uj027-030` | **PASS** | pending 13 H6′ | pending 13 |
-| UJ-027 drag-drop TAC (TC-F16-004) | Playwright | **PASS** | — | pending 13 |
-| UJ-027 multi-select + continue-on-fail + screenshot (TC-F16-005) | Playwright | **PASS** | — | pending 13 |
-| UJ-027 SSRF/allowlist smoke (TC-F16-002) | Playwright | **PASS** | — | pending 13 |
-| UJ-028 WIS2 BYOC params | Playwright | **PASS** | — | pending 13 |
-| UJ-029 EDIS BYOC (mocked; live cycle-close) | Playwright | **PASS** | — | pending 13 |
-| UJ-030 AMHS / SWIM / AFS | Playwright | **PASS** | — | pending 13 |
+| UJ-027 multi-DB BYOC + retry | Playwright `uj027-030` | **PASS** | **PASS** (13) | **PASS** (13) |
+| UJ-027 drag-drop TAC (TC-F16-004) | Playwright | **PASS** | **PASS** | **PASS** |
+| UJ-027 multi-select + continue-on-fail + screenshot (TC-F16-005) | Playwright | **PASS** | **PASS** | **PASS** |
+| UJ-027 SSRF/allowlist smoke (TC-F16-002) | Playwright | **PASS** | **PASS** | **PASS** |
+| UJ-028 WIS2 BYOC params | Playwright | **PASS** | **PASS** | **PASS** |
+| UJ-029 EDIS BYOC (mocked; live cycle-close) | Playwright | **PASS** | **PASS** | **PASS** |
+| UJ-030 AMHS / SWIM / AFS | Playwright | **PASS** | **PASS** | **PASS** |
 
 ## Results
 
@@ -52,11 +52,11 @@ First attempt with default `PLAYWRIGHT_BASE_URL=http://localhost:18000` timed ou
 | Column | Status |
 |--------|--------|
 | T0 local browser (mocked dissemination APIs) | **PASS** |
-| T2 H4–H5 / H6′ live | pending — **13-deploy-smoke** |
-| T3 live browser UJ | pending — 13 / optional 15 |
+| T2 H4–H5 / H6′ live | **PASS** — 13-deploy-smoke (2026-07-29); H4–H5 + UJ-027–030 7/7 vs live FE |
+| T3 live browser UJ | **PASS** — same H6′ suite (stubbed BYOC) |
 
-**Overall T0: PASS**
+**Overall T0: PASS** · **Overall T2/T3 (13): PASS**
 
 ## Next
 
-**13-deploy-smoke** — FE redeploy + live H6′ when approved.
+- Cycle close / evolve summary

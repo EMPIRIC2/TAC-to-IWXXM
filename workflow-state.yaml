@@ -5,17 +5,18 @@ project:
   output_directory: docs/
 session_counter: 24
 evolve_cycle_counter: 18
-active_session:
-  id: S024-dissemination-file-select
+active_session: null
+sessions:
+- id: S024-dissemination-file-select
   type: feature
   intent: "Multi-file selection in dissemination portal for export preflight/send (#785)"
-  status: in_progress
+  status: completed
   branch: evolve/EV-018-dissemination-file-select
   orchestrator: 16-evolve
   evolve_cycle_id: EV-018
   github_issue: 785
   artifacts_dir: docs/sessions/S024-dissemination-file-select/
-  current_stage: 13-deploy-smoke
+  current_stage:
   feature_ids:
   - F16
   feature_note: "Deepen F16 (E18-2); F17–F19 reuse selection contract; no F23"
@@ -24,9 +25,16 @@ active_session:
   routing_decision_id: D-S024-E18-scope-lock
   context_briefs:
   - docs/context/dissemination-file-select.md
-  tip_sha: a426948
-  tip_sha_full: a426948dd0916b9eb59011634e1ce547f905f421
-  note: "tip a426948; 10 COMPLETE; 13 pending deploy approval (FE-only; await push/PR); #785"
+  tip_sha: 2f552b9
+  tip_sha_full: 2f552b953b26bb5ebdc8fcaf5a650565dcf23287
+  pr_number: 791
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/791
+  pr_status: merged
+  do_not_auto_merge: true
+  note: "D-S024-close — EV-018/S024 complete; PR #791 merged 2f552b9; FE live; H4–H5 + H6′ 7/7; #785"
+  completed_at: "2026-07-29"
+  close_decision_id: D-S024-close
+  close_note: "D-S024-close — option A; commit/push closeout docs to main; #785"
   routing_plan:
   - stage: 00-context
     required: true
@@ -39,10 +47,11 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     skip_rationale:
     started: "2026-07-28"
-    note: "orchestrating 13-deploy-smoke (READY — awaiting push/PR/deploy approval; tip a426948)"
+    completed: "2026-07-29"
+    note: "COMPLETE — Phase 4 close D-S024-close; EV-018 completed; PR #791 merged; #785"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -94,9 +103,11 @@ active_session:
   - stage: 13-deploy-smoke
     required: true
     mode: full
-    status: pending
+    status: completed
     skip_rationale:
-    note: "READY — awaiting push/PR/deploy approval (FE-only EV-018); H6′ after FE live"
+    started: "2026-07-29T00:15:00Z"
+    completed: "2026-07-29T00:35:00Z"
+    note: "COMPLETE — PASS; PR #791 merged 2f552b9; FE live; H4–H5 + H6′ 7/7; report deploy-smoke.md"
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
@@ -105,7 +116,6 @@ active_session:
   - 11-verify-impl
   - 12-verify-deploy
   note_skipped: "Lean+build E18-7 — skip 03/05/06/09/11/12"
-sessions:
 - id: S023-public-app-privacy
   type: feature
   intent: "Remove end-user auth; public/stateless converter; IndexedDB local F5/F7 history; privacy-minimizing preference center + GPC (#783)"
@@ -11889,9 +11899,9 @@ evolve_cycles:
   feature_id:
   feature_note: "Deepen F16 (E18-2); F17–F19 reuse selection contract; no F23"
   title: "Dissemination multi-file export selection (#785)"
-  status: in_progress
+  status: completed
   started: "2026-07-28"
-  completed: null
+  completed: \"2026-07-29\"
   scope_summary: |
     Deepen F16 multi-file export selection: current-session + drops only;
     multi-select; N sequential preflight/send with UI aggregation; ≤20 cap;
@@ -11923,11 +11933,15 @@ evolve_cycles:
     preset: Lean+build
     decision_id: D-S024-E18-scope-lock
     note: "Phase 0 locked; Lean+build approved; handoff 01-requirements"
-  current_stage: 13-deploy-smoke
-  tip_sha: a426948
-  tip_sha_full: a426948dd0916b9eb59011634e1ce547f905f421
+  current_stage: 
+  tip_sha: 2f552b9
+  tip_sha_full: 2f552b953b26bb5ebdc8fcaf5a650565dcf23287
   branch: evolve/EV-018-dissemination-file-select
-  note: "S024/EV-018 tip a426948; 10 COMPLETE; 13 pending deploy approval (FE-only; await push/PR); #785"
+  pr_number: 791
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/791
+  pr_status: merged
+  do_not_auto_merge: true
+  note: "S024/EV-018 COMPLETE (D-S024-close) — PR #791 merged 2f552b9; 13 PASS; #785"
   decision_refs:
   - E18-1
   - E18-2
@@ -11958,6 +11972,7 @@ evolve_cycles:
   - D-S024-04-E18-16
   - D-S024-04-plan-approve-A
   notes:
+  - '2026-07-29 S024/EV-018 Phase 4 close D-S024-close — cycle+session completed; PR #791 merged 2f552b9; H4–H5 + H6′ 7/7; #785'
   - '2026-07-28 S024/EV-018 tip synced — a426948; 10 COMPLETE; 13 pending deploy approval (READY — awaiting push/PR/deploy approval FE-only; H6′ after FE live); #785'
   - '2026-07-28 S024/EV-018 tip synced — 4146052; 10 COMPLETE; 13 pending deploy approval (READY — awaiting push/PR/deploy approval FE-only; H6′ after FE live); #785'
   - '2026-07-28 S024/EV-018 10-e2e COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report e2e-report.md; tip 4146052; handoff 13-deploy-smoke (pending deploy approval); #785'
@@ -12040,25 +12055,35 @@ evolve_cycles:
       artifacts_updated:
       - docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
     13-deploy-smoke:
-      status: pending
+      status: completed
       mode: full
-      note: "READY — awaiting push/PR/deploy approval (FE-only EV-018); H6′ after FE live"
+      started: "2026-07-29T00:15:00Z"
+      completed: "2026-07-29T00:35:00Z"
+      decision_id: D-S024-13-deploy-A
+      pr_number: 791
+      tip_sha: 2f552b9
+      fe_deploy: dep-d9kkjj5bedkc73au0aeg
+      overall: pass
+      note: "COMPLETE — PASS; H4–H5 + H6′ 7/7; report deploy-smoke.md"
+      artifacts_updated:
+      - docs/sessions/S024-dissemination-file-select/reports/deploy-smoke.md
+      - docs/sessions/S024-dissemination-file-select/reports/evolve-summary.md
     16-evolve:
-      status: in_progress
+      status: completed
       started: "2026-07-28"
-      completed: null
-      note: "orchestrating 13-deploy-smoke (READY — awaiting push/PR/deploy approval; tip a426948)"
+      completed: "2026-07-29"
+      note: "COMPLETE — Phase 4 close D-S024-close; EV-018 completed"
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
-    deploy: pending
+    c_to_d: passed
+    deploy: passed
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
-    phase_d: pending
-    deploy: pending
+    phase_c: passed
+    phase_d: passed
+    deploy: passed
   adrs: []
   artifacts:
   - path: docs/decisions/evolve-decisions.md
