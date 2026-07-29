@@ -62,28 +62,35 @@ def test_manifest_schema_and_fixture_files_exist() -> None:
 
 
 def test_negative_depth_split_matches_e10_21() -> None:
+    """E10-21 depth split; F23 deepens SIGMET to full_checklist for G1+ themes."""
     data = _load_manifest()
     for case in data["negative"]:
-        if case["product"] in {"METAR", "SPECI", "TAF"}:
-            assert case["depth"] == "full_checklist"
+        product = case["product"]
+        depth = case["depth"]
+        if product in {"METAR", "SPECI", "TAF"}:
+            assert depth == "full_checklist"
+        elif product == "SIGMET" and case.get("theme") in {"G1", "G2", "V1", "V2", "C1"}:
+            assert depth == "full_checklist"
         else:
-            assert case["depth"] == "template_gate"
+            assert depth == "template_gate"
 
 
 def test_full_checklist_products_have_multiple_negatives() -> None:
     data = _load_manifest()
-    counts = {"METAR": 0, "SPECI": 0, "TAF": 0}
+    counts = {"METAR": 0, "SPECI": 0, "TAF": 0, "SIGMET": 0}
     for case in data["negative"]:
-        if case["product"] in counts:
+        if case["product"] in counts and case["depth"] == "full_checklist":
             counts[case["product"]] += 1
     assert counts["METAR"] >= 6
     assert counts["SPECI"] >= 3
     assert counts["TAF"] >= 3
+    assert counts["SIGMET"] >= 3
 
 
 def test_template_gate_products_covered() -> None:
     data = _load_manifest()
     gates = {c["product"] for c in data["negative"] if c["depth"] == "template_gate"}
+    assert gates >= {"SIGMET", "AIRMET", "VAA", "TCA"}
     assert gates == {"SIGMET", "AIRMET", "VAA", "TCA"}
 
 

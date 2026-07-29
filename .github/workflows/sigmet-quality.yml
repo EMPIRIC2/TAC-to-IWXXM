@@ -1,0 +1,48 @@
+# F23 / EV-019 — dedicated SIGMET + VA SIGMET quality pack (E19-19)
+# Complements full package jobs in ci-cd.yml; does not replace them.
+name: SIGMET quality
+
+on:
+  push:
+    branches: [main, evolve/EV-019-sigmet-quality]
+    paths:
+      - "packages/tac-validate/**"
+      - "packages/tac2iwxxm/**"
+      - "packages/iwxxm-validate/**"
+      - "docs/domain/rules/**"
+      - "docs/sessions/S025-sigmet-quality/**"
+      - "scripts/ci/run_sigmet_quality.sh"
+      - ".github/workflows/sigmet-quality.yml"
+  pull_request:
+    paths:
+      - "packages/tac-validate/**"
+      - "packages/tac2iwxxm/**"
+      - "packages/iwxxm-validate/**"
+      - "docs/domain/rules/**"
+      - "docs/sessions/S025-sigmet-quality/**"
+      - "scripts/ci/run_sigmet_quality.sh"
+      - ".github/workflows/sigmet-quality.yml"
+  workflow_dispatch:
+
+jobs:
+  sigmet-quality:
+    runs-on: ubuntu-latest
+    name: SIGMET / VA quality pack
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run SIGMET quality pack
+        run: make test-sigmet-quality

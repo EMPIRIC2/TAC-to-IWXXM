@@ -270,3 +270,25 @@
 | EV-017/manifest | Docs | feature-list, spec, journeys, test-plan, api-contract | confirmed |
 | EV-017/UI-preview | Preview | Deferred to 11-verify-impl | confirmed |
 
+## EV-019 / F23 — SIGMET + VA SIGMET quality (2026-07-29)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-019/F23-R1 | Scope | Full #733 general + #739 VA quality bars; #738 TC OOS | confirmed |
+| EV-019/F23-R2 | Fn | New F23 + deepen F6.d/F12; ADR-028 reuse | confirmed |
+| EV-019/F23-R3 | Routing | Lean+build (01/02/04/07/08/10/13; skip 03/05/06/09/11/12) | confirmed |
+| EV-019/F23-R4 | Depth | Guidance audit + fixtures + goldens + matrix themes | confirmed |
+| EV-019/F23-R5 | OOS | Sibling product tickets; PyPI; F16–F19; F7 Planned | confirmed |
+| EV-019/F23-R6 | Smoke | H1–H3 if API; H4–H5 workbench sigmet + VA when FE | confirmed |
+| EV-019/F23-R7 | Journeys | UJ-034; TC-F23-001..006 | confirmed |
+| EV-019/F23-R8 | API | Full endpoint review; no new routes; `product=sigmet` + content-selected VA root | confirmed |
+| EV-019/E19-9 | Manifest | Mandatory + coverage matrix + API review + light plan-adherence | confirmed |
+| EV-019/E19-10 | UI preview | Docs/repo only | confirmed |
+| EV-019/E19-12 | Themes | G1–G3 / V1–V3 / C1 | confirmed |
+| EV-019/E19-14 | FE catalog | No new filters; smoke only | **amended** by E19-17=B |
+| EV-019/E19-15 | Milestone order | Research → G1–G2 → G3 → V1–V2 → V3 → C1 → smoke | confirmed |
+| EV-019/E19-16 | Research M0 | Full mining → sigmet-research-catalog.md | confirmed |
+| EV-019/E19-17 | FE catalog | Additive SIGMET/VA tag filters (amends E19-14) | confirmed |
+| EV-019/E19-18 | Deps | AskQuestion per new dep (prefer none) | confirmed |
+| EV-019/manifest | Docs | Spec, journeys, test-plan, coverage matrix, API contract | confirmed |
+

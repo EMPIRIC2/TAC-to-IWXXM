@@ -55,7 +55,7 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | **METAR** | ✅ Annex 3 (paywall; [dig](../mining/icao-annex-3-mining-notes.md) Table A3-2, CAVOK, AUTO/missing) + codes.wmo.int weather/nils; FMH-1 for US | ✅ TAC-to-XML-Guidance + FM 205 + examples | ✅ schemas.wmo.int/2025-2 + SCH | **S015/EV-011 (#732)**: F15 registry + **R1–R8 themes closed** (lint/fixtures/goldens/adjacency) — [research catalog](../../sessions/S015-metar-lint-quality/reports/metar-research-catalog.md) · [ISSUE_CATALOG](./ISSUE_CATALOG.md) · [context](../../context/metar-lint-quality.md) |
 | **SPECI** | ✅ same as METAR (+ App 3 §2.3.2 shall / §2.3.3 Rec thresholds) | ✅ same package `metarSpeci.xsd` | ✅ same | **F15** R1–R8 + adjacency closed; **F20 / #734** S1–S3 themes closed (lint deepen + misclass guards + annex3/`iwxxm_us` goldens) — [research catalog](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md) · S020/EV-015 |
 | **TAF** | ✅ Annex 3 App 5 (§1.3 change/PROB; Table A5-2) / Doc 8896 (paywall); vocab via 49-2 / 306 | ✅ Guidance + examples (CNL/NIL/AMD) | ✅ `taf.xsd` + SCH | **F20 / #735** T1–T4 themes closed (lint + annex3 goldens; residual convert deepen filed below) — [research catalog](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md) · S020/EV-015 |
-| **SIGMET** | ✅ Annex 3 Ch.7 + App 6 phenomena/validity (paywall); SigWxPhenomena registry; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) public TAC guide | ✅ Guidance + examples + FM 205 (+ METCE for TC/VA members); EUR Doc 014 AHL `WS`/`WV`/`WC`→`LS`/`LV`/`LY` | ✅ `sigmet.xsd` + SCH (+ METCE 1.2) | **Entire product** outside GIFTs |
+| **SIGMET** | ✅ Annex 3 Ch.7 + App 6 phenomena/validity (paywall); SigWxPhenomena registry; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) public TAC guide | ✅ Guidance + examples + FM 205 (+ METCE for TC/VA members); EUR Doc 014 AHL `WS`/`WV`/`WC`→`LS`/`LV`/`LY` | ✅ `sigmet.xsd` + SCH (+ METCE 1.2) | **F23 / #733+#739** S025/EV-019 — **G1–G3 / V1–V3 / C1 closed or deferred** (lint + convert + annex3 goldens; residuals below); TC SIGMET #738 OOS |
 | **AIRMET** | ✅ Annex 3 Ch.7 + App 6; AirWxPhenomena + VIS-cause lists; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) | ✅ Guidance + examples + FM 205; EUR Doc 014 AHL `WA`→`LW` | ✅ `airmet.xsd` + SCH | Entire product outside GIFTs |
 | **VAA** | ✅ Annex 3 App 2 §3.1.2 **shall** IWXXM + Table **A2-1** ([dig](../mining/icao-annex-3-mining-notes.md)); Doc 9766 paywall for colour **meanings**; colour machine IDs via registry ✅ | ✅ Guidance + examples + AviationColourCode + [METCE 1.2](https://schemas.wmo.int/metce/1.2/) `Volcano` | ✅ `volcanicAshAdvisory.xsd` (+ METCE embed) | Entire product outside GIFTs |
 | **TCA** | ✅ Annex 3 App 2 §5.1.1 (≥34 kt) · §5.1.3 **shall** IWXXM + Table **A2-2** | ✅ Guidance + examples + FM 205 + METCE `TropicalCyclone` | ✅ `tropicalCycloneAdvisory.xsd` (+ METCE embed) | Entire product outside GIFTs |
@@ -178,6 +178,35 @@ HARD themes closed or explicitly deferred above (E15-5). Residual convert deepen
 
 ---
 
+## SIGMET / VA SIGMET — F23 quality themes (S025 / EV-019)
+
+Hard themes from #733 / #739 exceptional-rule tables + WMO `TAC-to-XML-Guidance.txt` +
+2025-2 corrections + [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md)
+(public TAC shape). Paywalled Annex 3 / FM 205 prose: **cite-only** via mining notes.
+Research catalog: [`docs/sessions/S025-sigmet-quality/reports/sigmet-research-catalog.md`](../../sessions/S025-sigmet-quality/reports/sigmet-research-catalog.md)
+(T0.1 · E19-16). Codes extend [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) / ADR-028 registry.
+API: `product=sigmet`; root `iwxxm:SIGMET` vs `iwxxm:VolcanicAshSIGMET` from TAC content
+(E19-13=A). TC SIGMET (#738), AIRMET, VAA, TCA OOS this cycle.
+
+> **Naming (D-S025-EV019-s6m1-1)**: Theme ids **G1–G3 / V1–V3 / C1** below are **F23
+> themes**, not the pipeline gates **G1–G7** in the table above (G1 TAC lint … G7 Bulletin).
+> In execution plans / PRs, write “F23 theme G1” or “gate G1” — never bare `G1` alone.
+
+| Theme | Lint (F12/F23) | Convert (F6.d) | Validate / goldens | Status |
+|-------|----------------|----------------|--------------------|--------|
+| **G1** General SIGMET exceptional (CNL, point→circle, single alt, STNR, polygon/line CRS) | Registry + accept/negatives (M1) | Exceptional encode (T2.2) | SCH soft-skip platform-wide | ✅ Closed (S025 T2.3 / D-S025-T2.3-A) — residual: `TOP ABV`/`BLW` qualifier encode light; arbitrary polygon heuristics |
+| **G2** Sequence / validity / FIR·CTA / phenomenon / movement·intensity | Checklist rules (M1) | Intensity/MOV/STNR in convert | SCH soft-skip | ✅ Closed (S025 T2.3 / D-S025-T2.3-A) — residual: full OBS/FCST analysis-time + forecast-position collections thin |
+| **G3** General SIGMET golden convert + SCH | — | annex3 `sigmet_a6_1a_ts` / CNL / STNR | M-xsd / M-sch / M-golden (TC-F23-002) | ✅ Closed (S025 T2.3 / D-S025-T2.3-A) |
+| **V1** VA-specific (volcano identity, ash geometry/forecast, `NO VA EXP`, CNL FIR-moved) | Registry + negatives (T3.1–T3.2) | `VolcanicAshSIGMET` fields | SCH soft-skip | ✅ Closed (S025 T3.1–T3.2) |
+| **V2** VA SIGMET ↔ general SIGMET ↔ VAA adjacency | Product/root guards (T3.3–T3.4) | Content-selected root under `product=sigmet`; never VAA | TC-F23-006 | ✅ Closed (S025 T3.3–T3.4) |
+| **V3** VA SIGMET golden convert + SCH | — | Expand annex3 (`sigmet-VA-EGGX`, …) (T4.1–T4.2) | M-xsd / M-sch / M-golden | ✅ Closed (S025 T4.1–T4.2; TC-F23-003) |
+| **C1** Common rules (reportStatus, nilReasons, CRS, one-report, translationFailedTAC) | ✅ where TAC tokens (CNL/STNR/`NO VA EXP`/COR ban + `MULTI_REPORT_BULLETIN`); **convert-only** (lint N/A): 2-D CRS (`srsName`/`srsDimension`/`axisLabels`), `translationFailedTAC`, COLLECT packing, code-list URIs — no TAC surface; catalog §C1 | Guidance common table | Round-trip | ✅ lint closed (T4.4); **deferred** convert-only CRS / `translationFailedTAC` / COLLECT / code-list URIs (no TAC lint surface; F20 C1 pattern) |
+
+HARD themes close or explicitly defer during build (E19-5). Residual convert-only items
+without TAC lint surface follow F20 C1 pattern — not silent omission.
+
+---
+
 ## Acceptance checklist (#719)
 
 - [x] ≥1 normative or semi-official URL (or explicit paywall/TBD) per F6 product for validation
@@ -187,3 +216,4 @@ HARD themes closed or explicitly deferred above (E15-5). Residual convert deepen
 - [x] No secrets or scraped copyrighted full-text in-repo
 - [x] F15 acc3 — METAR/SPECI rows + R1–R8 closed (S015 / EV-011; see table above)
 - [x] F20 acc — TAF + SPECI themes T1–T4 / S1–S3 / C1 closed or deferred (S020 / EV-015; see table above)
+- [x] F23 acc — SIGMET + VA SIGMET themes G1–G3 / V1–V3 / C1 closed or deferred (S025 / EV-019)

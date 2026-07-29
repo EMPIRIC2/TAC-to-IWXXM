@@ -22,7 +22,7 @@ All implementation work must map to an approved feature in `[Corpus: product]`
 | F4 | IWXXM version handling |
 | F5 | Work history (METAR/SPECI sessions) |
 | F6 | General TAC→IWXXM (`tac2iwxxm` + bulletin + products) |
-| F7 | Multi-product operator UI — **Planned** (S011 / EV-008 closed; PR #716 merged; smoke under F15/F20; **F7.g** #780 S021) |
+| F7 | Multi-product operator UI — **Planned** (S011 / EV-008 closed; PR #716 merged; smoke under F15/F20/F23; **F7.g** #780 S021) |
 | F8 | Near-RT ingest worker (`apps/worker`) — **Done** (ADR-018) |
 | F9 | Value-aware live decode + plain-language summary — **Done** (S013) |
 | F10 | Workbench IWXXM preview + soft-fail/terminator lint UX — **Done** (S013) |
@@ -36,6 +36,9 @@ All implementation work must map to an approved feature in `[Corpus: product]`
 | F18 | EDIS → RTH Washington — **Done** (S019 / EV-014; #6) |
 | F19 | AMHS / SWIM / AFS adapters — **Done** (S019 / EV-014) |
 | F20 | TAF + SPECI quality bar (F15 sequel) — **Done** (S020 / EV-015; #735/#734; #778) |
+| F21 | Public unauthenticated operator app — **Implemented** (S023 / EV-017; #783) |
+| F22 | Privacy preference center — **Implemented** (S023 / EV-017; #783) |
+| F23 | SIGMET family quality bar (general + VA) — **Planned** (S025 / EV-019; #733/#739) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-* + iwxxm-us) |
 | M3 | GIFTs as in-repo package — **deprecated** at F6 cutover |

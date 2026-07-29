@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:VolcanicAshSIGMET xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="sigmet.va.eggx"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2012-08-25T18:00:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:issuingAirTrafficServicesUnit>
+    <aixm:Unit gml:id="unit.atsu.eggx">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.atsu.ts.eggx">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>EGGX FIC</aixm:name>
+          <aixm:type>FIC</aixm:type>
+          <aixm:designator>EGGX</aixm:designator>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:issuingAirTrafficServicesUnit>
+  <iwxxm:originatingMeteorologicalWatchOffice>
+    <aixm:Unit gml:id="unit.mwo.egrr">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.mwo.ts.egrr">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>EGRR MWO</aixm:name>
+          <aixm:type>MWO</aixm:type>
+          <aixm:designator>EGRR</aixm:designator>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:originatingMeteorologicalWatchOffice>
+  <iwxxm:issuingAirTrafficServicesRegion>
+    <aixm:Airspace gml:id="as.eggx">
+      <aixm:timeSlice>
+        <aixm:AirspaceTimeSlice gml:id="as.ts.eggx">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:type>OTHER:FIR_UIR</aixm:type>
+          <aixm:designator>EGGX</aixm:designator>
+          <aixm:name>EGGX</aixm:name>
+        </aixm:AirspaceTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Airspace>
+  </iwxxm:issuingAirTrafficServicesRegion>
+  <iwxxm:sequenceNumber>5</iwxxm:sequenceNumber>
+  <iwxxm:validPeriod>
+    <gml:TimePeriod gml:id="t.valid">
+      <gml:beginPosition>2012-08-25T18:00:00Z</gml:beginPosition>
+      <gml:endPosition>2012-08-25T22:00:00Z</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:validPeriod>
+  <iwxxm:phenomenon xlink:href="http://codes.wmo.int/49-2/SigWxPhenomena/VA"/>
+  <iwxxm:analysisCollection>
+    <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.eggx">
+      <iwxxm:analysis>
+        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.eggx" timeIndicator="FORECAST">
+          <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
+          <iwxxm:member>
+            <iwxxm:SIGMETEvolvingCondition gml:id="cond.eggx" intensityChange="NO_CHANGE">
+              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>
+            </iwxxm:SIGMETEvolvingCondition>
+          </iwxxm:member>
+        </iwxxm:SIGMETEvolvingConditionCollection>
+      </iwxxm:analysis>
+    </iwxxm:analysisAndForecastPositionAnalysis>
+  </iwxxm:analysisCollection>
+</iwxxm:VolcanicAshSIGMET>

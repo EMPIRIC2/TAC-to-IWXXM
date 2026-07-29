@@ -183,3 +183,32 @@
 ### Next
 
 Phase A checkpoint → **04-tech-plan** (03 skipped per Standard routing).
+
+---
+
+## S025 / EV-019 delta (2026-07-29) — F23 SIGMET + VA quality
+
+**Session**: S025-sigmet-quality  
+**Report**: `docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md`  
+**Status**: **PASS** — medium S1.M1 / S6.M1 / S9.M1 all option **1** (2026-07-29)
+
+| Metric | Count |
+|--------|-------|
+| Documents audited | 8 (ADR N/A) |
+| Auto-approved (high) | 14 |
+| Fix-in-place | 1 (F21/F22 summary → Implemented) |
+| User-approved (medium) | 3 (all option 1) |
+
+### Consistency
+
+| Check | Result |
+|-------|--------|
+| Feature ↔ Spec / Journey / Test / API | Pass |
+| Scope (#738 + siblings OOS) | Pass |
+| Connectivity H4–H5 | Pass (TC-F23-005 / E19-7) |
+| Cross-doc F21/F22 status | Fixed in-place |
+| F23 theme vs gate naming | Clarified in COVERAGE_MATRIX (S6.M1=1) |
+
+### Next
+
+Phase A checkpoint → **04-tech-plan** (Lean+build; 05 skipped per S9.M1).

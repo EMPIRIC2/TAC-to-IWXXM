@@ -1,7 +1,8 @@
 /**
- * Lint issue catalog helpers for workbench tooltips and panel copy (F15 / F20).
+ * Lint issue catalog helpers for workbench tooltips and panel copy (F15 / F20 / F23).
  *
  * F15 / E11-29 / E11-31: tooltip resolver. F20 / E15-14: tag filter + list copy.
+ * F23 / E19-17: same helpers cover ``sigmet`` / ``va`` tags (additive).
  */
 
 import type { LintIssueCatalogEntry } from './api';

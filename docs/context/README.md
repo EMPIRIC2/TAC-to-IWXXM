@@ -26,6 +26,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 | [manual-tac-input-modes](manual-tac-input-modes.md) | Validate Manual TAC Input modes TAC/AHL/COLLECT (#730 / ADR-024) | active | 2026-07-20 | F7, S016/EV-012 |
 | [aerodrome-quality](aerodrome-quality.md) | TAF + SPECI quality bar (#735/#734) | active | 2026-07-22 | F20, S020/EV-015 |
 | [golden-examples-ui](golden-examples-ui.md) | Pre-loaded workbench golden examples (#780) | active | 2026-07-22 | F7, S021/EV-016 |
+| [sigmet-quality](sigmet-quality.md) | General + VA SIGMET quality bars (#733/#739) | active | 2026-07-29 | F23, S025/EV-019 |
 
 **Convention**: One brief per topic at `docs/context/<slug>.md`. Reference downstream as
 `[Context: <slug> R#]`.

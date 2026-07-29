@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry",
-  "generated": "2026-07-23",
+  "generated": "2026-07-29",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -116,6 +116,18 @@
       ]
     },
     {
+      "code": "FIR_OR_CTA",
+      "severity": "info",
+      "message_template": "SIGMET FIR/CTA/UIR airspace identity \u2014 research G2",
+      "product": "sigmet",
+      "tags": [
+        "fir",
+        "cta",
+        "sigmet",
+        "g2"
+      ]
+    },
+    {
       "code": "FM_PRESENT",
       "severity": "info",
       "message_template": "{product} FM change group present \u2014 research T2",
@@ -125,6 +137,17 @@
         "taf",
         "t2",
         "fm"
+      ]
+    },
+    {
+      "code": "INTENSITY_CHANGE",
+      "severity": "info",
+      "message_template": "SIGMET intensity change INTSF/WKN/NC \u2014 research G2",
+      "product": "sigmet",
+      "tags": [
+        "intensity",
+        "sigmet",
+        "g2"
       ]
     },
     {
@@ -166,6 +189,18 @@
       ]
     },
     {
+      "code": "INVALID_NO_VA_EXP",
+      "severity": "error",
+      "message_template": "VA SIGMET NO VA EXP must not include VA CLD body \u2014 research V1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "no_va_exp",
+        "sigmet",
+        "v1"
+      ]
+    },
+    {
       "code": "INVALID_PROB",
       "severity": "error",
       "message_template": "{product} invalid PROB (only 30|40; must not qualify BECMG/FM) \u2014 App 5 \u00a71.4 / research T2",
@@ -203,6 +238,41 @@
       ]
     },
     {
+      "code": "INVALID_SIGMET_CNL",
+      "severity": "error",
+      "message_template": "SIGMET CNL must omit phenomenon/analysis body \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "cnl",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
+      "code": "INVALID_SIGMET_COR",
+      "severity": "error",
+      "message_template": "SIGMET must not use COR (cancel + re-issue) \u2014 research G1 / C1",
+      "product": "sigmet",
+      "tags": [
+        "cor",
+        "sigmet",
+        "g1",
+        "c1"
+      ]
+    },
+    {
+      "code": "INVALID_STNR_MOVEMENT",
+      "severity": "error",
+      "message_template": "SIGMET STNR conflicts with MOV \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "stnr",
+        "movement",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
       "code": "INVALID_TX_TN",
       "severity": "error",
       "message_template": "{product} TX/TN allowed on base forecast only \u2014 research T3",
@@ -211,6 +281,17 @@
         "temperature",
         "taf",
         "t3"
+      ]
+    },
+    {
+      "code": "INVALID_VALIDITY_DURATION",
+      "severity": "error",
+      "message_template": "SIGMET VALID period exceeds 4 hours (WS) \u2014 research G2",
+      "product": "sigmet",
+      "tags": [
+        "valid",
+        "sigmet",
+        "g2"
       ]
     },
     {
@@ -273,6 +354,18 @@
       ]
     },
     {
+      "code": "MISSING_FIR_OR_CTA",
+      "severity": "error",
+      "message_template": "SIGMET missing FIR/CTA/UIR airspace identity \u2014 research G2",
+      "product": "sigmet",
+      "tags": [
+        "fir",
+        "cta",
+        "sigmet",
+        "g2"
+      ]
+    },
+    {
       "code": "MISSING_ISSUE_TIME",
       "severity": "error",
       "message_template": "TAF missing issue time ddhhmmZ \u2014 A5-1 #3",
@@ -290,6 +383,18 @@
       "tags": [
         "max_wind",
         "tca"
+      ]
+    },
+    {
+      "code": "MISSING_OBS_OR_FCST",
+      "severity": "error",
+      "message_template": "SIGMET missing OBS or FCST \u2014 research G2",
+      "product": "sigmet",
+      "tags": [
+        "obs",
+        "fcst",
+        "sigmet",
+        "g2"
       ]
     },
     {
@@ -322,6 +427,17 @@
         "pressure",
         "metar",
         "speci"
+      ]
+    },
+    {
+      "code": "MISSING_SEQUENCE",
+      "severity": "error",
+      "message_template": "SIGMET missing sequence number after SIGMET \u2014 research G2",
+      "product": "sigmet",
+      "tags": [
+        "sequence",
+        "sigmet",
+        "g2"
       ]
     },
     {
@@ -379,6 +495,18 @@
       ]
     },
     {
+      "code": "MISSING_VA_VOLCANO",
+      "severity": "error",
+      "message_template": "VA SIGMET missing volcano identity (MT \u2026 PSN) \u2014 research V1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "volcano",
+        "sigmet",
+        "v1"
+      ]
+    },
+    {
       "code": "MISSING_VISIBILITY",
       "severity": "error",
       "message_template": "{product} missing visibility or CAVOK \u2014 A3-2 #6",
@@ -421,6 +549,8 @@
         "metar",
         "speci",
         "taf",
+        "sigmet",
+        "airmet",
         "c1",
         "one_report"
       ]
@@ -466,6 +596,19 @@
       ]
     },
     {
+      "code": "NO_VA_EXP",
+      "severity": "info",
+      "message_template": "VA SIGMET NO VA EXP absence token \u2014 research V1 / C1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "no_va_exp",
+        "sigmet",
+        "v1",
+        "c1"
+      ]
+    },
+    {
       "code": "NSC_PRESENT",
       "severity": "info",
       "message_template": "{product} NSC present \u2014 research T3 / S1 / C1",
@@ -495,6 +638,18 @@
       ]
     },
     {
+      "code": "OBS_OR_FCST",
+      "severity": "info",
+      "message_template": "SIGMET OBS or FCST analysis \u2014 research G2",
+      "product": "sigmet",
+      "tags": [
+        "obs",
+        "fcst",
+        "sigmet",
+        "g2"
+      ]
+    },
+    {
       "code": "ODD_FIELD_ORDER",
       "severity": "warning",
       "message_template": "{product} groups out of A3-2 order (CCCC \u2192 ddhhmmZ \u2192 wind)",
@@ -506,6 +661,30 @@
         "metar",
         "speci",
         "r1"
+      ]
+    },
+    {
+      "code": "POINT_LOCATION",
+      "severity": "info",
+      "message_template": "SIGMET single-point location (encode CircleByCenterPoint r=0) \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "geometry",
+        "point",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
+      "code": "POLYGON_LOCATION",
+      "severity": "info",
+      "message_template": "SIGMET polygon/line WI geometry \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "geometry",
+        "polygon",
+        "sigmet",
+        "g1"
       ]
     },
     {
@@ -546,6 +725,53 @@
       ]
     },
     {
+      "code": "SIGMET_CNL",
+      "severity": "info",
+      "message_template": "SIGMET CNL cancel report \u2014 research G1 / C1",
+      "product": "sigmet",
+      "tags": [
+        "cnl",
+        "sigmet",
+        "g1",
+        "c1"
+      ]
+    },
+    {
+      "code": "SIGMET_SEQUENCE",
+      "severity": "info",
+      "message_template": "SIGMET sequence number present \u2014 research G2",
+      "product": "sigmet",
+      "tags": [
+        "sequence",
+        "sigmet",
+        "g2"
+      ]
+    },
+    {
+      "code": "SINGLE_ALTITUDE",
+      "severity": "info",
+      "message_template": "SIGMET single altitude (same lower/upper) \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "altitude",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
+      "code": "STNR_MOVEMENT",
+      "severity": "info",
+      "message_template": "SIGMET STNR stationary movement \u2014 research G1 / C1",
+      "product": "sigmet",
+      "tags": [
+        "stnr",
+        "movement",
+        "sigmet",
+        "g1",
+        "c1"
+      ]
+    },
+    {
       "code": "TEMPO_PRESENT",
       "severity": "info",
       "message_template": "{product} TEMPO trend present \u2014 research R8 / T2",
@@ -573,6 +799,18 @@
       ]
     },
     {
+      "code": "TOP_ABV_OR_BLW",
+      "severity": "info",
+      "message_template": "SIGMET TOP ABV/BLW level grammar \u2014 research G1",
+      "product": "sigmet",
+      "tags": [
+        "altitude",
+        "top",
+        "sigmet",
+        "g1"
+      ]
+    },
+    {
       "code": "TX_TN_PRESENT",
       "severity": "info",
       "message_template": "{product} TX/TN temperature forecasts on base \u2014 research T3",
@@ -590,6 +828,44 @@
       "product": null,
       "tags": [
         "parse_gate"
+      ]
+    },
+    {
+      "code": "VA_ASH_GEOMETRY",
+      "severity": "info",
+      "message_template": "VA SIGMET ash cloud geometry / forecast position \u2014 research V1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "geometry",
+        "sigmet",
+        "v1"
+      ]
+    },
+    {
+      "code": "VA_CNL_FIR_MOVED",
+      "severity": "info",
+      "message_template": "VA SIGMET CNL identifies FIR to which ash has moved \u2014 research V1 / C1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "cnl",
+        "fir",
+        "sigmet",
+        "v1",
+        "c1"
+      ]
+    },
+    {
+      "code": "VA_VOLCANO_IDENTITY",
+      "severity": "info",
+      "message_template": "VA SIGMET erupting volcano identity (MT/PSN) \u2014 research V1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "volcano",
+        "sigmet",
+        "v1"
       ]
     },
     {

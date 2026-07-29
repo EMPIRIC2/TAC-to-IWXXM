@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import Any, cast
 from xml.sax.saxutils import escape
 
 _NS = {
@@ -227,24 +227,30 @@ def _hazard_stamp(ir: dict[str, Any], prefix: str) -> tuple[str, str, str]:
     return issue, begin, end
 
 
-def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit a minimal IWXXM SIGMET document for the annex3 profile."""
-    ns = _ns(iwxxm_version)
+def _sigmet_root_local(ir: dict[str, Any]) -> str:
+    """
+    Content-select IWXXM SIGMET family root under HTTP ``product=sigmet`` (E19-13 / F23 V2).
+
+    VA phenomenon TAC → ``VolcanicAshSIGMET``; general non-VA/TC → ``SIGMET``.
+    """
+    if ir.get("phenomenon") == "VA" or ir.get("iwxxm_root") == "VolcanicAshSIGMET":
+        return "VolcanicAshSIGMET"
+    return "SIGMET"
+
+
+def _sigmet_header_units(ir: dict[str, Any], *, ns: str, gml_id: str, issue: str) -> str:
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
-    issue, begin, end = _hazard_stamp(ir, "sigmet")
-    phenom = _SIG_PHENOM_HREF.format(code=ir["phenomenon"])
-    gml_id = f"sigmet.basic.{fir.lower()}"
-
+    root = _sigmet_root_local(ir)
     return f"""<?xml version="1.0" encoding="UTF-8"?>
-<iwxxm:SIGMET xmlns:iwxxm="{ns}"
+<iwxxm:{root} xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     gml:id="{gml_id}"
     reportStatus="NORMAL"
-    permissibleUsage="OPERATIONAL">
+    permissibleUsage="OPERATIONAL"{{cancel_attr}}>
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
       <gml:timePosition>{issue}</gml:timePosition>
@@ -290,7 +296,170 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     </aixm:Airspace>
   </iwxxm:issuingAirTrafficServicesRegion>
   <iwxxm:sequenceNumber>{int(ir["sequence"])}</iwxxm:sequenceNumber>
-  <iwxxm:validPeriod>
+"""
+
+
+def _sigmet_geometry_xml(ir: dict[str, Any], *, fir: str) -> str:
+    """Build evolving-condition geometry from IR (G1 exceptional rules / #733/#739)."""
+    if ir.get("no_va_exp"):
+        return """
+              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>"""
+
+    geom = ir.get("geometry")
+    top_fl = ir.get("top_fl")
+    lower_fl = ir.get("lower_fl")
+    upper_fl = ir.get("upper_fl", top_fl)
+    if top_fl is not None and upper_fl is None:
+        upper_fl = top_fl
+
+    limits = ""
+    if ir.get("lower_surface") in {"SFC", "GND"} and upper_fl is not None:
+        limits = f"""
+              <aixm:lowerLimit>GND</aixm:lowerLimit>
+              <aixm:lowerLimitReference>SFC</aixm:lowerLimitReference>
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+    elif lower_fl is not None and upper_fl is not None:
+        limits = f"""
+              <aixm:lowerLimit uom="FL">{int(lower_fl)}</aixm:lowerLimit>
+              <aixm:lowerLimitReference>STD</aixm:lowerLimitReference>
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+    elif upper_fl is not None:
+        limits = f"""
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+
+    if isinstance(geom, dict):
+        g = cast(dict[str, Any], geom)
+        if g.get("kind") == "point":
+            lat = float(g["lat"])
+            lon = float(g["lon"])
+            return f"""
+              <iwxxm:geometry>
+                <aixm:AirspaceVolume gml:id="vol.{fir.lower()}">{limits}
+                  <aixm:horizontalProjection>
+                    <aixm:Surface gml:id="sfc.{fir.lower()}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                      <gml:patches>
+                        <gml:PolygonPatch>
+                          <gml:exterior>
+                            <gml:Ring>
+                              <gml:curveMember>
+                                <gml:Curve gml:id="curve.{fir.lower()}">
+                                  <gml:segments>
+                                    <gml:CircleByCenterPoint numArc="1">
+                                      <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                                      <gml:radius uom="[nmi_i]">0</gml:radius>
+                                    </gml:CircleByCenterPoint>
+                                  </gml:segments>
+                                </gml:Curve>
+                              </gml:curveMember>
+                            </gml:Ring>
+                          </gml:exterior>
+                        </gml:PolygonPatch>
+                      </gml:patches>
+                    </aixm:Surface>
+                  </aixm:horizontalProjection>
+                </aixm:AirspaceVolume>
+              </iwxxm:geometry>"""
+
+        if g.get("kind") == "polygon":
+            pos_list = str(g["pos_list"])
+            return f"""
+              <iwxxm:geometry>
+                <aixm:AirspaceVolume gml:id="vol.{fir.lower()}">{limits}
+                  <aixm:horizontalProjection>
+                    <aixm:Surface gml:id="sfc.{fir.lower()}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                      <gml:patches>
+                        <gml:PolygonPatch>
+                          <gml:exterior>
+                            <gml:LinearRing>
+                              <gml:posList>{escape(pos_list)}</gml:posList>
+                            </gml:LinearRing>
+                          </gml:exterior>
+                        </gml:PolygonPatch>
+                      </gml:patches>
+                    </aixm:Surface>
+                  </aixm:horizontalProjection>
+                </aixm:AirspaceVolume>
+              </iwxxm:geometry>"""
+
+    if limits:
+        return f"""
+              <iwxxm:geometry>
+                <aixm:AirspaceVolume gml:id="vol.{fir.lower()}">{limits}
+                </aixm:AirspaceVolume>
+              </iwxxm:geometry>"""
+
+    return """
+              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/missing"/>"""
+
+
+def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
+    if ir.get("stationary"):
+        return """
+              <iwxxm:directionOfMotion uom="deg" xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
+              <iwxxm:speedOfMotion uom="[kn_i]">0</iwxxm:speedOfMotion>"""
+    if "motion_dir_deg" in ir and "motion_speed_kt" in ir:
+        return f"""
+              <iwxxm:directionOfMotion uom="deg">{int(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>
+              <iwxxm:speedOfMotion uom="[kn_i]">{int(ir["motion_speed_kt"])}</iwxxm:speedOfMotion>"""
+    return ""
+
+
+def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """Emit an IWXXM SIGMET / VolcanicAshSIGMET document (F6.d / F23 G1–G3 / V2)."""
+    ns = _ns(iwxxm_version)
+    fir = str(ir["fir"])
+    issue, begin, end = _hazard_stamp(ir, "sigmet")
+    cancel = bool(ir.get("cancel"))
+    root = _sigmet_root_local(ir)
+    if cancel:
+        gml_id = f"sigmet.cnl.{fir.lower()}"
+    elif root == "VolcanicAshSIGMET":
+        gml_id = f"sigmet.va.{fir.lower()}"
+    else:
+        gml_id = f"sigmet.basic.{fir.lower()}"
+
+    if cancel:
+        c_begin = (
+            f"2012-08-{int(ir['cancelled_from_day']):02d}T"
+            f"{int(ir['cancelled_from_hour']):02d}:{int(ir['cancelled_from_minute']):02d}:00Z"
+        )
+        c_end = (
+            f"2012-08-{int(ir['cancelled_to_day']):02d}T"
+            f"{int(ir['cancelled_to_hour']):02d}:{int(ir['cancelled_to_minute']):02d}:00Z"
+        )
+        head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue).format(
+            cancel_attr='\n    isCancelReport="true"'
+        )
+        return (
+            head
+            + f"""  <iwxxm:validPeriod>
+    <gml:TimePeriod gml:id="t.valid">
+      <gml:beginPosition>{begin}</gml:beginPosition>
+      <gml:endPosition>{end}</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:validPeriod>
+  <iwxxm:cancelledReportSequenceNumber>{int(ir["cancelled_sequence"])}</iwxxm:cancelledReportSequenceNumber>
+  <iwxxm:cancelledReportValidPeriod>
+    <gml:TimePeriod gml:id="t.cancelled">
+      <gml:beginPosition>{c_begin}</gml:beginPosition>
+      <gml:endPosition>{c_end}</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:cancelledReportValidPeriod>
+</iwxxm:{root}>
+"""
+        )
+
+    phenom = _SIG_PHENOM_HREF.format(code=ir["phenomenon"])
+    intensity = str(ir.get("intensity_change", "NO_CHANGE"))
+    geometry = _sigmet_geometry_xml(ir, fir=fir)
+    motion = _sigmet_motion_xml(ir)
+    head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue).format(cancel_attr="")
+    return (
+        head
+        + f"""  <iwxxm:validPeriod>
     <gml:TimePeriod gml:id="t.valid">
       <gml:beginPosition>{begin}</gml:beginPosition>
       <gml:endPosition>{end}</gml:endPosition>
@@ -303,16 +472,16 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="FORECAST">
           <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
           <iwxxm:member>
-            <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}" intensityChange="WEAKEN">
-              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/missing"/>
+            <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}" intensityChange="{escape(intensity)}">{geometry}{motion}
             </iwxxm:SIGMETEvolvingCondition>
           </iwxxm:member>
         </iwxxm:SIGMETEvolvingConditionCollection>
       </iwxxm:analysis>
     </iwxxm:analysisAndForecastPositionAnalysis>
   </iwxxm:analysisCollection>
-</iwxxm:SIGMET>
+</iwxxm:{root}>
 """
+    )
 
 
 def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:

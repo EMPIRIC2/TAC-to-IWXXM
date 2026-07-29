@@ -17,6 +17,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-backend test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
+	test-sigmet-quality \
 	test-integration-dissemination \
 	compose-wis2box-up compose-wis2box-down compose-wis2box-harness \
 	compose-mock-byoc-up compose-mock-byoc-down compose-mock-byoc-full-up \
@@ -217,6 +218,10 @@ test-unit-tac-validate:
 	$(UV) run pytest packages/tac-validate/tests --cov=tac_validate \
 		--cov-config=packages/tac-validate/pyproject.toml --cov-branch \
 		--cov-report=term-missing --cov-fail-under=95 -v
+
+# F23 / EV-019 — focused SIGMET + VA pack (E19-19); complements full package jobs
+test-sigmet-quality:
+	bash scripts/ci/run_sigmet_quality.sh
 
 # F16–F19 / T0.1 — coverage paths; skips until packages/dissemination exists (T1.1/T1.2).
 test-unit-dissemination:

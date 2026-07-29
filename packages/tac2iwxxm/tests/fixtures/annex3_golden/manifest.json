@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "TC-F6-020/021 / TC-F15-002 / TC-F20-002 / TC-F20-003 annex3 METAR/SPECI/TAF golden pack (WMO-shaped; R6 + F20 T4/S3 expand)",
+  "description": "TC-F6-020/021 / TC-F15-002 / TC-F20-002 / TC-F20-003 / TC-F23-002 annex3 METAR/SPECI/TAF/SIGMET golden pack (WMO-shaped; R6 + F20 T4/S3 + F23 G3 expand)",
   "cases": [
     {
       "id": "metar_basic",
@@ -162,6 +162,46 @@
       "theme": "S3",
       "tac": "speci_wind_sector.tac",
       "golden": "speci_wind_sector.golden.xml"
+    },
+    {
+      "id": "sigmet_a6_1a_ts",
+      "product": "SIGMET",
+      "theme": "G3",
+      "tac": "sigmet_a6_1a_ts.tac",
+      "golden": "sigmet_a6_1a_ts.golden.xml",
+      "seed": "sigmet-A6-1a-TS"
+    },
+    {
+      "id": "sigmet_a6_1b_cnl",
+      "product": "SIGMET",
+      "theme": "G3",
+      "tac": "sigmet_a6_1b_cnl.tac",
+      "golden": "sigmet_a6_1b_cnl.golden.xml",
+      "seed": "sigmet-A6-1b-CNL"
+    },
+    {
+      "id": "sigmet_stnr",
+      "product": "SIGMET",
+      "theme": "G3",
+      "tac": "sigmet_stnr.tac",
+      "golden": "sigmet_stnr.golden.xml",
+      "note": "G1 STNR seed for G3 pack expansion beyond product_matrix"
+    },
+    {
+      "id": "sigmet_va_eggx",
+      "product": "SIGMET",
+      "theme": "V3",
+      "tac": "sigmet_va_eggx.tac",
+      "golden": "sigmet_va_eggx.golden.xml",
+      "seed": "sigmet-VA-EGGX"
+    },
+    {
+      "id": "sigmet_va_no_va_exp",
+      "product": "SIGMET",
+      "theme": "V3",
+      "tac": "sigmet_va_no_va_exp.tac",
+      "golden": "sigmet_va_no_va_exp.golden.xml",
+      "note": "V1 NO VA EXP seed expanded into V3 golden pack"
     }
   ]
 }
