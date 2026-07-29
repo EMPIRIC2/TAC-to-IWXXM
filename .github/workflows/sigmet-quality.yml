@@ -1,33 +1,14 @@
-# F23 / EV-019 — dedicated SIGMET + VA SIGMET quality pack (E19-19)
-# Complements full package jobs in ci-cd.yml; does not replace them.
-name: SIGMET quality
+# Deprecated (EV-020 / E20-F3=3): replaced by wmo-quality.yml combined pack.
+# Kept temporarily so open PRs / bookmarks that reference this path still run the pack.
+name: SIGMET quality (deprecated → WMO quality)
 
 on:
-  push:
-    branches: [main, evolve/EV-019-sigmet-quality]
-    paths:
-      - "packages/tac-validate/**"
-      - "packages/tac2iwxxm/**"
-      - "packages/iwxxm-validate/**"
-      - "docs/domain/rules/**"
-      - "docs/sessions/S025-sigmet-quality/**"
-      - "scripts/ci/run_sigmet_quality.sh"
-      - ".github/workflows/sigmet-quality.yml"
-  pull_request:
-    paths:
-      - "packages/tac-validate/**"
-      - "packages/tac2iwxxm/**"
-      - "packages/iwxxm-validate/**"
-      - "docs/domain/rules/**"
-      - "docs/sessions/S025-sigmet-quality/**"
-      - "scripts/ci/run_sigmet_quality.sh"
-      - ".github/workflows/sigmet-quality.yml"
   workflow_dispatch:
 
 jobs:
-  sigmet-quality:
+  redirect:
     runs-on: ubuntu-latest
-    name: SIGMET / VA quality pack
+    name: Redirect to WMO quality pack
     steps:
       - uses: actions/checkout@v5
         with:
@@ -44,5 +25,5 @@ jobs:
           python -m pip install --upgrade pip uv
           uv sync
 
-      - name: Run SIGMET quality pack
-        run: make test-sigmet-quality
+      - name: Run WMO quality pack (alias)
+        run: make test-wmo-quality

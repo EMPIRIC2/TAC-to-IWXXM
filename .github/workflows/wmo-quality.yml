@@ -1,0 +1,53 @@
+# F24/F25 / EV-020 — combined WMO quality pack (E20-F3=3)
+# SIGMET (F23 keep-green) + AIRMET + METAR/SPECI/TAF. Complements ci-cd.yml; does not replace it.
+# Migrates/replaces dedicated sigmet-quality.yml.
+name: WMO quality
+
+on:
+  push:
+    branches: [main, evolve/EV-020-airmet-quality]
+    paths:
+      - "packages/tac-validate/**"
+      - "packages/tac2iwxxm/**"
+      - "packages/iwxxm-validate/**"
+      - "docs/domain/rules/**"
+      - "docs/sessions/S026-airmet-quality-wmo-examples/**"
+      - "docs/sessions/S025-sigmet-quality/**"
+      - "scripts/ci/run_wmo_quality.sh"
+      - "scripts/ci/run_sigmet_quality.sh"
+      - ".github/workflows/wmo-quality.yml"
+  pull_request:
+    paths:
+      - "packages/tac-validate/**"
+      - "packages/tac2iwxxm/**"
+      - "packages/iwxxm-validate/**"
+      - "docs/domain/rules/**"
+      - "docs/sessions/S026-airmet-quality-wmo-examples/**"
+      - "docs/sessions/S025-sigmet-quality/**"
+      - "scripts/ci/run_wmo_quality.sh"
+      - "scripts/ci/run_sigmet_quality.sh"
+      - ".github/workflows/wmo-quality.yml"
+  workflow_dispatch:
+
+jobs:
+  wmo-quality:
+    runs-on: ubuntu-latest
+    name: WMO quality pack
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run WMO quality pack
+        run: make test-wmo-quality
