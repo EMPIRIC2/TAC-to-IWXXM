@@ -66,32 +66,7 @@
           <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
           <iwxxm:member>
             <iwxxm:SIGMETEvolvingCondition gml:id="cond.eggx" intensityChange="NO_CHANGE">
-              <iwxxm:geometry>
-                <aixm:AirspaceVolume gml:id="vol.eggx">
-                  <aixm:horizontalProjection>
-                    <aixm:Surface gml:id="sfc.eggx" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
-                      <gml:patches>
-                        <gml:PolygonPatch>
-                          <gml:exterior>
-                            <gml:Ring>
-                              <gml:curveMember>
-                                <gml:Curve gml:id="curve.eggx">
-                                  <gml:segments>
-                                    <gml:CircleByCenterPoint numArc="1">
-                                      <gml:pos>63.9833 -19.6667</gml:pos>
-                                      <gml:radius uom="[nmi_i]">0</gml:radius>
-                                    </gml:CircleByCenterPoint>
-                                  </gml:segments>
-                                </gml:Curve>
-                              </gml:curveMember>
-                            </gml:Ring>
-                          </gml:exterior>
-                        </gml:PolygonPatch>
-                      </gml:patches>
-                    </aixm:Surface>
-                  </aixm:horizontalProjection>
-                </aixm:AirspaceVolume>
-              </iwxxm:geometry>
+              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>
             </iwxxm:SIGMETEvolvingCondition>
           </iwxxm:member>
         </iwxxm:SIGMETEvolvingConditionCollection>

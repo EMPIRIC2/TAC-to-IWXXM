@@ -106,3 +106,36 @@ def test_tc_f23_003_va_eggx_content_signals() -> None:
     assert result.ok is True
     assert 'gml:id="sigmet.va.' in result.xml
     assert 'xlink:href="http://codes.wmo.int/49-2/SigWxPhenomena/VA"' in result.xml or "SigWxPhenomena/VA" in result.xml
+
+
+def test_tc_f23_003_va_eggx_ash_cloud_polygon_and_sfc_fl() -> None:
+    """#739: prefer VA CLD WI polygon over volcano PSN; encode SFC/FL550."""
+    from tac2iwxxm import convert
+    from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+
+    tac = (FIXTURES / "sigmet_va_eggx.tac").read_text(encoding="utf-8")
+    ir = parse_sigmet(tac, product="SIGMET")
+    assert ir.get("geometry", {}).get("kind") == "polygon"
+    assert ir.get("lower_surface") == "SFC"
+    assert ir.get("upper_fl") == 550
+    result = convert(tac, product="SIGMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
+    assert result.ok is True
+    assert "<gml:LinearRing>" in result.xml
+    assert "<gml:posList>" in result.xml
+    assert "<gml:CircleByCenterPoint" not in result.xml
+    assert "<aixm:lowerLimit>GND</aixm:lowerLimit>" in result.xml
+    assert 'upperLimit uom="FL">550</aixm:upperLimit>' in result.xml
+
+
+def test_tc_f23_003_no_va_exp_nil_geometry() -> None:
+    """#739 NO VA EXP → geometry nilReason nothingOfOperationalSignificance."""
+    from tac2iwxxm import convert
+    from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+
+    tac = (FIXTURES / "sigmet_va_no_va_exp.tac").read_text(encoding="utf-8")
+    ir = parse_sigmet(tac, product="SIGMET")
+    assert ir.get("no_va_exp") is True
+    assert "geometry" not in ir
+    result = convert(tac, product="SIGMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
+    assert result.ok is True
+    assert 'nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"' in result.xml

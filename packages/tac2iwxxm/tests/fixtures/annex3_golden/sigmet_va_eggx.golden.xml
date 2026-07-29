@@ -68,8 +68,8 @@
             <iwxxm:SIGMETEvolvingCondition gml:id="cond.eggx" intensityChange="NO_CHANGE">
               <iwxxm:geometry>
                 <aixm:AirspaceVolume gml:id="vol.eggx">
-              <aixm:lowerLimit uom="FL">550</aixm:lowerLimit>
-              <aixm:lowerLimitReference>STD</aixm:lowerLimitReference>
+              <aixm:lowerLimit>GND</aixm:lowerLimit>
+              <aixm:lowerLimitReference>SFC</aixm:lowerLimitReference>
               <aixm:upperLimit uom="FL">550</aixm:upperLimit>
               <aixm:upperLimitReference>STD</aixm:upperLimitReference>
                   <aixm:horizontalProjection>
@@ -77,18 +77,9 @@
                       <gml:patches>
                         <gml:PolygonPatch>
                           <gml:exterior>
-                            <gml:Ring>
-                              <gml:curveMember>
-                                <gml:Curve gml:id="curve.eggx">
-                                  <gml:segments>
-                                    <gml:CircleByCenterPoint numArc="1">
-                                      <gml:pos>63.9833 -19.6667</gml:pos>
-                                      <gml:radius uom="[nmi_i]">0</gml:radius>
-                                    </gml:CircleByCenterPoint>
-                                  </gml:segments>
-                                </gml:Curve>
-                              </gml:curveMember>
-                            </gml:Ring>
+                            <gml:LinearRing>
+                              <gml:posList>60.0000 -11.8333 59.0000 -13.0000 60.0000 -16.0000 60.0000 -11.8333</gml:posList>
+                            </gml:LinearRing>
                           </gml:exterior>
                         </gml:PolygonPatch>
                       </gml:patches>

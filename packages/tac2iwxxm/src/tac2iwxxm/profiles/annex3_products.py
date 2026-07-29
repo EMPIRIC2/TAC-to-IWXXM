@@ -300,7 +300,11 @@ def _sigmet_header_units(ir: dict[str, Any], *, ns: str, gml_id: str, issue: str
 
 
 def _sigmet_geometry_xml(ir: dict[str, Any], *, fir: str) -> str:
-    """Build evolving-condition geometry from IR (G1 exceptional rules / #733)."""
+    """Build evolving-condition geometry from IR (G1 exceptional rules / #733/#739)."""
+    if ir.get("no_va_exp"):
+        return """
+              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>"""
+
     geom = ir.get("geometry")
     top_fl = ir.get("top_fl")
     lower_fl = ir.get("lower_fl")
@@ -309,7 +313,13 @@ def _sigmet_geometry_xml(ir: dict[str, Any], *, fir: str) -> str:
         upper_fl = top_fl
 
     limits = ""
-    if lower_fl is not None and upper_fl is not None:
+    if ir.get("lower_surface") in {"SFC", "GND"} and upper_fl is not None:
+        limits = f"""
+              <aixm:lowerLimit>GND</aixm:lowerLimit>
+              <aixm:lowerLimitReference>SFC</aixm:lowerLimitReference>
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+    elif lower_fl is not None and upper_fl is not None:
         limits = f"""
               <aixm:lowerLimit uom="FL">{int(lower_fl)}</aixm:lowerLimit>
               <aixm:lowerLimitReference>STD</aixm:lowerLimitReference>

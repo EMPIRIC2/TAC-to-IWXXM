@@ -35,6 +35,12 @@ _POINT = re.compile(
 )
 _FL_BAND = re.compile(r"\bFL(?P<lo>\d{2,3})/(?P<hi>\d{2,3})\b", re.IGNORECASE)
 _SINGLE_FL = re.compile(r"\bFL(?P<fl>\d{2,3})\b", re.IGNORECASE)
+_SFC_FL = re.compile(r"\bSFC/FL(?P<fl>\d{2,3})\b", re.IGNORECASE)
+_WI_BLOCK = re.compile(
+    r"\bWI\b(?P<body>.*?)(?=\bSFC/|\bTOP\b|\bMOV\b|\bSTNR\b|\bNC\b|\bWKN\b|\bINTSF\b|=|$)",
+    re.IGNORECASE | re.DOTALL,
+)
+_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b", re.IGNORECASE)
 
 # Common phenomenon tokens → WMO codelist local name.
 _SIG_PHENOMENA = (
@@ -98,8 +104,16 @@ def _detect_intensity(body: str) -> str:
     return "NO_CHANGE"
 
 
+def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
+    lat = int(match.group("lat_deg")) + int(match.group("lat_min")) / 60.0
+    lon = int(match.group("lon_deg")) + int(match.group("lon_min")) / 60.0
+    if match.group("lon_hemi").upper() == "W":
+        lon = -lon
+    return lat, lon
+
+
 def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
-    """Attach G1 exceptional-rule fields from the SIGMET body (F23 / #733)."""
+    """Attach G1/V1 exceptional-rule fields from the SIGMET body (F23 / #733/#739)."""
     upper = body.upper()
     cnl = _CNL.search(body)
     if cnl is not None:
@@ -118,6 +132,8 @@ def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
 
     ir["intensity_change"] = _detect_intensity(body)
     ir["stationary"] = bool(re.search(r"\bSTNR\b", upper))
+    if _NO_VA_EXP.search(body):
+        ir["no_va_exp"] = True
 
     mov = _MOV.search(body)
     if mov is not None and not ir["stationary"]:
@@ -132,17 +148,26 @@ def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
         elif "BLW" in top.group(0).upper():
             ir["top_qualifier"] = "BLW"
 
-    band = _FL_BAND.search(body)
-    if band is not None:
-        ir["lower_fl"] = int(band.group("lo"))
-        ir["upper_fl"] = int(band.group("hi"))
-    elif "top_fl" not in ir:
-        # Single FL token that is not TOP FLnnn (e.g. FL180 alone).
-        singles = list(_SINGLE_FL.finditer(body))
-        if len(singles) == 1 and "TOP" not in body.upper()[max(0, singles[0].start() - 4) : singles[0].start()]:
-            fl = int(singles[0].group("fl"))
-            ir["lower_fl"] = fl
-            ir["upper_fl"] = fl
+    sfc_fl = _SFC_FL.search(body)
+    if sfc_fl is not None:
+        ir["lower_surface"] = "SFC"
+        ir["upper_fl"] = int(sfc_fl.group("fl"))
+    else:
+        band = _FL_BAND.search(body)
+        if band is not None:
+            ir["lower_fl"] = int(band.group("lo"))
+            ir["upper_fl"] = int(band.group("hi"))
+        elif "top_fl" not in ir:
+            # Single FL token that is not TOP FLnnn (e.g. FL180 alone).
+            singles = list(_SINGLE_FL.finditer(body))
+            if len(singles) == 1 and "TOP" not in body.upper()[max(0, singles[0].start() - 4) : singles[0].start()]:
+                fl = int(singles[0].group("fl"))
+                ir["lower_fl"] = fl
+                ir["upper_fl"] = fl
+
+    if ir.get("no_va_exp"):
+        # Forecast absence of ash — no geometry ring (V1 / #739).
+        return
 
     se_box = _SE_BOX.search(body)
     if se_box is not None:
@@ -155,12 +180,20 @@ def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
         }
         return
 
+    # Prefer VA CLD / hazard WI polygon over volcano PSN point (F23 V3 / #739).
+    wi = _WI_BLOCK.search(body)
+    if wi is not None:
+        pts = [_point_lat_lon(m) for m in _POINT.finditer(wi.group("body"))]
+        if len(pts) >= 3:
+            if pts[0] != pts[-1]:
+                pts.append(pts[0])
+            pos_list = " ".join(f"{lat:.4f} {lon:.4f}" for lat, lon in pts)
+            ir["geometry"] = {"kind": "polygon", "pos_list": pos_list}
+            return
+
     point = _POINT.search(body)
     if point is not None:
-        lat = int(point.group("lat_deg")) + int(point.group("lat_min")) / 60.0
-        lon = int(point.group("lon_deg")) + int(point.group("lon_min")) / 60.0
-        if point.group("lon_hemi").upper() == "W":
-            lon = -lon
+        lat, lon = _point_lat_lon(point)
         ir["geometry"] = {"kind": "point", "lat": lat, "lon": lon}
 
 
