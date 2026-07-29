@@ -208,6 +208,9 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         "raw": text,
     }
     _enrich_sigmet_body(ir, body)
+    # Content-selected IWXXM root under product=sigmet (E19-13 / F23 V2 / TC-F23-006).
+    if ir.get("phenomenon") == "VA":
+        ir["iwxxm_root"] = "VolcanicAshSIGMET"
     return ir
 
 

@@ -24,10 +24,10 @@ active_session:
   routing_decision_id: D-S025-E19-batch2
   context_briefs:
     - docs/context/sigmet-quality.md
-  tip_sha: 0ac44d7
-  tip_sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
+  tip_sha: e041786
+  tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
   do_not_auto_merge: true
-  note: "07-build M1 complete (7/29); next T2.1 G3 goldens"
+  note: "07-build M3 complete (T3.1–T3.4); next T4.1 VA goldens V3"
   routing_plan:
     - stage: 00-context
       required: true
@@ -68,7 +68,7 @@ active_session:
       mode: full
       status: in_progress
       started: "2026-07-29"
-      note: "M0 complete; next T1.1 G1 fixtures"
+      note: "M3 complete — T3.3–T3.4 adjacency + VolcanicAshSIGMET root; next T4.1 VA goldens"
     - stage: 08-verify-build
       required: true
       mode: full
@@ -3539,14 +3539,16 @@ stages:
     previous_completed_at: '2026-07-28T23:30:05Z'
     session_id: S025-sigmet-quality
     evolve_cycle_id: EV-019
-    note: 'S025/EV-019 07-build M0 complete 2026-07-29 — T0.1–T0.3 done (research catalog, matrix link, sigmet-quality.yml); progress 3/29; next T1.1 G1 fixtures; #733/#739'
+    tip_sha: e041786
+    tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
+    note: 'S025/EV-019 07-build M3 complete — T3.1–T3.4 V1 lint + V2 adjacency + content-selected VolcanicAshSIGMET; next T4.1 VA goldens; #733/#739'
     substeps:
       task_loop:
         status: in_progress
-        current_task: T1.1
+        current_task: T4.1
         phase: C
-        milestone: M1
-        notes: S025/EV-019 M1 T1.1 G1 fixtures next
+        milestone: M4
+        notes: S025/EV-019 M3 done; next T4.1 VA goldens (TC-F23-003 / V3)
     delta_substages:
     - id: S025-sigmet-quality
       session_id: S025-sigmet-quality
@@ -3556,13 +3558,15 @@ stages:
       started_at: '2026-07-29'
       started: '2026-07-29'
       mode: full
-      note: 'M0 complete 2026-07-29 — T0.1–T0.3 done (research catalog, matrix link, sigmet-quality.yml); progress 3/29; next T1.1 G1 fixtures; #733/#739'
-      active_milestone: M1
-      active_task: T1.1
+      note: 'M3 complete — T3.3–T3.4 TC-F23-006 adjacency + content-selected VolcanicAshSIGMET root; next T4.1; #733/#739'
+      active_milestone: M4
+      active_task: T4.1
       active_task_status: pending
-      decision_id: D-S025-04-plan-approve-A
+      decision_id: D-S025-T2.3-A
       branch: evolve/EV-019-sigmet-quality
-      progress: 3/29
+      tip_sha: e041786
+      tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
+      progress: 15/29; M3 done; next T4.1
       feature_ids:
       - F23
       deepen:
@@ -3719,6 +3723,9 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-29 S025/EV-019 07-build M3 COMPLETE — T3.3–T3.4 TC-F23-006 adjacency + content-selected VolcanicAshSIGMET under product=sigmet; next T4.1; #733/#739'
+    - '2026-07-29 S025/EV-019 07-build M3 T3.1–T3.2 DONE @ e041786 — V1 VA SIGMET fixtures/lint (#739); tip e041786; next T3.3 adjacency (encode root → T3.4); #733/#739'
+    - '2026-07-29 S025/EV-019 07-build M3 T3.3 next (D-S025-T2.3-A) — M2 complete (T2.3 G1–G3 closed); T3.1–T3.2 V1 lint done (WIP uncommitted); tip e4ac4bc; next T3.3 adjacency; #733/#739'
     - '2026-07-29 S025/EV-019 07-build STARTED (D-S025-04-plan-approve-A B→C) — active task T0.1; M0 research catalog; plan ~29 tasks; progress 0/29; #733/#739'
     - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked) awaiting RENDER_API_KEY for live env cutover; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — F21 public deploy corpus + EV-017 CHANGELOG draft; T7.4 blocked (D-S023-07-T7.4-blocked, no RENDER_API_KEY); T7.2 pending after T7.4 deploy; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
@@ -5023,13 +5030,19 @@ stages:
   16-evolve:
     status: in_progress
     mode: orchestrator
-    session_id: S023-public-app-privacy
-    evolve_cycle_id: EV-017
-    started_at: '2026-07-27'
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    started_at: '2026-07-29'
     completed_at:
-    current_stage: close
-    note: 'S023/EV-017 16-evolve — Phase D 13 COMPLETE; EV-017 completed; session close AskQuestion pending; tip 7837cd1; #783'
+    current_stage: 07-build
+    tip_sha: e041786
+    tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
+    note: 'S025/EV-019 16-evolve in_progress — Phase C 07-build M3 complete (T3.1–T3.4); next T4.1 VA goldens; tip pending T3.3-T3.4 commit; #733/#739'
     notes:
+    - '2026-07-29 S025/EV-019 07-build M3 COMPLETE — T3.3–T3.4 adjacency + VolcanicAshSIGMET root; next T4.1; #733/#739'
+    - '2026-07-29 S025/EV-019 07-build M3 T3.1–T3.2 DONE @ e041786 — V1 VA SIGMET fixtures/lint (#739); next T3.3 adjacency (encode root → T3.4); #733/#739'
+    - '2026-07-29 S025/EV-019 07-build M3 T3.3 next (D-S025-T2.3-A) — M2 complete; T3.1–T3.2 V1 done; tip e4ac4bc; #733/#739'
+    - '2026-07-29 S025/EV-019 CONTINUE resume 07-build @ T2.1 (D-S025-16-continue) — pointer synced from stale S023/EV-017; M0+M1 done; tip 1391270; #733/#739'
     - '2026-07-28 S023/EV-017 13-deploy-smoke COMPLETE — smoke approved; API SUPABASE_* removed; redeploy dep-d9kii12jobas73fl4bi0; tip 7837cd1; #783'
     - '2026-07-28 S023/EV-017 13-deploy-smoke SMOKE PASS (pending user approve) — H0c–H5 PASS; Playwright 5/5; tip 7837cd1; optional SUPABASE_* cleanup; validate-existing 2026-07-28; report deploy-smoke.md; #783'
     - '2026-07-28 S023/EV-017 13-deploy-smoke STARTED — tip 52c14e9 (12 tip 62af980); checklist READY; optional API SUPABASE_* cleanup; #783'
@@ -5348,6 +5361,41 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S025-T2.3-A
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 07-build
+  skill_id: 07-build
+  skill: 07-build
+  category: theme-close
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: F23 themes G1–G3 close
+  summary: Option A — Close G1–G3 with documented residuals; continue M3 VA lint
+  decision: "User approved 2026-07-29 (D-S025-T2.3-A / option 1). Close F23 themes G1–G3 with documented residuals (TOP ABV/BLW light; OBS/FCST collections thin; Schematron soft-skip unchanged). M2 complete @ e4ac4bc; continue M3 VA SIGMET lint (T3.1+). Artifacts: t2.3-theme-g1-g3-close.md, COVERAGE_MATRIX G1–G3 Closed, evolve-decisions.md."
+  related_issue: "733,739"
+  related_decisions:
+  - D-S025-16-continue
+  - D-S025-04-plan-approve-A
+- id: D-S025-16-continue
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 07-build
+  skill_id: 16-evolve
+  skill: 16-evolve
+  category: resume
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: CONTINUE resume 07-build at T2.1
+  summary: User CONTINUE — resume 07-build at T2.1 G3 goldens after M1 complete
+  decision: "User CONTINUE 2026-07-29 (D-S025-16-continue). Resume S025/EV-019 07-build at T2.1 general SIGMET goldens (F23 theme G3 / F6.d). M0+M1 complete; tip 1391270 on evolve/EV-019-sigmet-quality. stages.16-evolve pointer synced to S025/EV-019 (cleared stale S023/EV-017)."
+  related_issue: "733,739"
+  related_decisions:
+  - D-S025-04-plan-approve-A
 - id: D-S025-04-plan-approve-A
   date: "2026-07-29"
   timestamp: "2026-07-29"
@@ -12435,11 +12483,11 @@ evolve_cycles:
   started_at: "2026-07-29"
   current_stage: 07-build
   preset: Lean+build
-  tip_sha: 0ac44d7
-  tip_sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
+  tip_sha: e041786
+  tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
   do_not_auto_merge: true
-  note: "07-build M0 complete (3/29); next T1.1 G1 fixtures"
-  decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2, D-S025-01-complete, D-S025-02-pass, D-S025-EV019-s1m1-1, D-S025-EV019-s6m1-1, D-S025-EV019-s9m1-1, D-S025-02-phase-a-A, D-S025-04-plan-approve-A, E19-19, E19-20, E19-21, E19-22]
+  note: "07-build M3: T3.1–T3.2 V1 lint done; next T3.3 adjacency (encode root → T3.4)"
+  decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2, D-S025-01-complete, D-S025-02-pass, D-S025-EV019-s1m1-1, D-S025-EV019-s6m1-1, D-S025-EV019-s9m1-1, D-S025-02-phase-a-A, D-S025-04-plan-approve-A, E19-19, E19-20, E19-21, E19-22, D-S025-16-continue, D-S025-T2.3-A]
 - id: EV-018
   session_id: S024-dissemination-file-select
   cycle_type: feature
@@ -16604,10 +16652,12 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit:
-  tip_sha: 0ac44d7
-  tip_sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
-  note: 'S025/EV-019 open; tip 7c750a2; 00-context in_progress; Batch 1 locked; Batch 2 pending; #733/#739'
+  tip_sha: e041786
+  tip_sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
+  note: 'S025/EV-019 07-build M3: T3.1–T3.2 V1 lint done; next T3.3 adjacency (encode root → T3.4); tip e041786; #733/#739'
   notes:
+  - '2026-07-29 S025/EV-019 tip synced — e041786 (e04178645f1e81561e6faf023bcd7d7ff83fbaed); "[T3.1-T3.2] feat: F23 theme V1 VA SIGMET fixtures and lint rules (#739)"; stage 07-build; M3 next T3.3 adjacency (encode root → T3.4)'
+  - '2026-07-29 S025/EV-019 tip synced — e4ac4bc (e4ac4bc9a11a9bf0debd89a2d1ba9d0167834f11); "[T2.3] docs: close F23 themes G1–G3 (D-S025-T2.3-A)"; stage 07-build; M3 next T3.3; T3.1–T3.2 V1 done (no commit yet)'
   - '2026-07-29 S025/EV-019 open — branch evolve/EV-019-sigmet-quality recorded active (base main); Batch1 E19-1..4 all A; Lean+build; Batch 2 pending; tip 7c750a2'
   - '2026-07-28 S024/EV-018 tip synced — a426948 (a426948dd0916b9eb59011634e1ce547f905f421); "[EV-018] docs: 13 deploy readiness (FE-only; await push/PR)"; stage 13-deploy-smoke; 10 COMPLETE; 13 pending deploy approval; #785'
   - '2026-07-28 S024/EV-018 tip synced — 4146052 (4146052415df0806c6a3057ddb6118b45dac7a7a); "[EV-018] test: UJ-027–030 e2e PASS + progress screenshot baseline"; stage 10-e2e; 10 COMPLETE; 13 pending deploy approval; #785'
@@ -17530,6 +17580,61 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: e041786
+    sha_full: e04178645f1e81561e6faf023bcd7d7ff83fbaed
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T3.1-T3.2] feat: F23 theme V1 VA SIGMET fixtures and lint rules (#739)"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T13:24:32Z"
+    files_changed: 12
+  - sha: e4ac4bc
+    sha_full: e4ac4bc9a11a9bf0debd89a2d1ba9d0167834f11
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T2.3] docs: close F23 themes G1–G3 (D-S025-T2.3-A)"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T13:18:56Z"
+    files_changed: 5
+    note: "T3.1–T3.2 V1 not yet committed on branch (WIP present)"
+  - sha: fc3228d
+    sha_full: fc3228dec6e94012a3d756c406147326e02d4f4d
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T2.2] feat: general SIGMET exceptional-rule convert fidelity (#733)"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T12:29:29Z"
+    files_changed: 9
+  - sha: 32dd25f
+    sha_full: 32dd25f6c76fded208faf14ced056605268011de
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T2.1] test: expand annex3 general SIGMET goldens (TC-F23-002 / F23 G3)"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T12:26:02Z"
+    files_changed: 9
+  - sha: 1391270
+    sha_full: 13912707d724e22e2ad8b2a79f5a27c24356d0c6
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T1.3-T1.4] feat: F23 theme G2 SIGMET checklist fixtures and rules"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T12:15:00Z"
+    files_changed: null
+  - sha: 604e5d5
+    sha_full: 604e5d508e2683548933d4599e1d175ab30217cd
+    branch: evolve/EV-019-sigmet-quality
+    message: "[T1.1-T1.2] feat: F23 theme G1 SIGMET fixtures and lint rules"
+    stage: 07-build
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    timestamp: "2026-07-29T12:12:35Z"
+    files_changed: null
   - sha: 0ac44d7
     sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
     branch: evolve/EV-019-sigmet-quality

@@ -227,11 +227,23 @@ def _hazard_stamp(ir: dict[str, Any], prefix: str) -> tuple[str, str, str]:
     return issue, begin, end
 
 
+def _sigmet_root_local(ir: dict[str, Any]) -> str:
+    """
+    Content-select IWXXM SIGMET family root under HTTP ``product=sigmet`` (E19-13 / F23 V2).
+
+    VA phenomenon TAC → ``VolcanicAshSIGMET``; general non-VA/TC → ``SIGMET``.
+    """
+    if ir.get("phenomenon") == "VA" or ir.get("iwxxm_root") == "VolcanicAshSIGMET":
+        return "VolcanicAshSIGMET"
+    return "SIGMET"
+
+
 def _sigmet_header_units(ir: dict[str, Any], *, ns: str, gml_id: str, issue: str) -> str:
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
+    root = _sigmet_root_local(ir)
     return f"""<?xml version="1.0" encoding="UTF-8"?>
-<iwxxm:SIGMET xmlns:iwxxm="{ns}"
+<iwxxm:{root} xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
@@ -386,12 +398,18 @@ def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
 
 
 def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit an IWXXM SIGMET document for the annex3 profile (F6.d / F23 G1–G3)."""
+    """Emit an IWXXM SIGMET / VolcanicAshSIGMET document (F6.d / F23 G1–G3 / V2)."""
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
     issue, begin, end = _hazard_stamp(ir, "sigmet")
     cancel = bool(ir.get("cancel"))
-    gml_id = f"sigmet.cnl.{fir.lower()}" if cancel else f"sigmet.basic.{fir.lower()}"
+    root = _sigmet_root_local(ir)
+    if cancel:
+        gml_id = f"sigmet.cnl.{fir.lower()}"
+    elif root == "VolcanicAshSIGMET":
+        gml_id = f"sigmet.va.{fir.lower()}"
+    else:
+        gml_id = f"sigmet.basic.{fir.lower()}"
 
     if cancel:
         c_begin = (
@@ -420,7 +438,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
       <gml:endPosition>{c_end}</gml:endPosition>
     </gml:TimePeriod>
   </iwxxm:cancelledReportValidPeriod>
-</iwxxm:SIGMET>
+</iwxxm:{root}>
 """
         )
 
@@ -451,7 +469,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
       </iwxxm:analysis>
     </iwxxm:analysisAndForecastPositionAnalysis>
   </iwxxm:analysisCollection>
-</iwxxm:SIGMET>
+</iwxxm:{root}>
 """
     )
 
