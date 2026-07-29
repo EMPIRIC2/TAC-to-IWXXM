@@ -29,12 +29,12 @@ Convert goldens live under `packages/tac2iwxxm/tests/fixtures/{annex3_golden,iwx
 
 ## Depth
 
-| Product            | Fixture intent                           |
-| ------------------ | ---------------------------------------- |
-| METAR / SPECI      | Full checklist + R1–R8 (HARD this cycle) |
-| TAF                | Full checklist negatives                 |
-| SIGMET             | Template + gate + **F23 G1** exceptional |
-| AIRMET / VAA / TCA | Template + gate negatives only           |
+| Product            | Fixture intent                            |
+| ------------------ | ----------------------------------------- |
+| METAR / SPECI      | Full checklist + R1–R8 (HARD this cycle)  |
+| TAF                | Full checklist negatives                  |
+| SIGMET             | Template + gate + **F23 G1–G2 / V1 / C1** |
+| AIRMET / VAA / TCA | Template + gate negatives only            |
 
 ## Expectation contract
 
@@ -65,8 +65,8 @@ Diagnostics assertions require product-rule codes/spans from
 | `t3_errors`          | `false` | F20 T3 TX/TN on change group                                |
 | `s1_modifier_info`   | `true`  | F20 S1 SPECI exceptional NIL/CAVOK/NSC/NCD/… info           |
 | `s1_errors`          | `false` | F20 S1 SPECI malformed NIL                                  |
-| `c1_modifier_info`   | `true`  | F20 C1 reportStatus / nil / multi-report info               |
-| `c1_errors`          | `false` | F20 C1 NIL-with-body (INVALID_NIL)                          |
+| `c1_modifier_info`   | `true`  | F20/F23 C1 reportStatus / nil / multi-report info           |
+| `c1_errors`          | `false` | F20/F23 C1 NIL-with-body / SIGMET COR (INVALID\_\*)         |
 | `g1_modifier_info`   | `true`  | F23 G1 SIGMET CNL/STNR/point/alt/polygon/TOP ABV info       |
 | `g1_errors`          | `false` | F23 G1 bad CNL / COR / STNR+MOV                             |
 | `g2_modifier_info`   | `true`  | F23 G2 SIGMET sequence/FIR/OBS·FCST/intensity info          |
