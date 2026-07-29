@@ -276,6 +276,30 @@
       "ok": true
     },
     {
+      "id": "accept_sigmet_v1_va_volcano",
+      "product": "SIGMET",
+      "theme": "V1",
+      "cite": "VA volcano + ash geometry; #739; research V1",
+      "tac": "accept/sigmet_v1_va_volcano.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_v1_no_va_exp",
+      "product": "SIGMET",
+      "theme": "V1",
+      "cite": "NO VA EXP; #739; research V1",
+      "tac": "accept/sigmet_v1_no_va_exp.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_sigmet_v1_cnl_fir_moved",
+      "product": "SIGMET",
+      "theme": "V1",
+      "cite": "CNL FIR-moved ash; #739; research V1",
+      "tac": "accept/sigmet_v1_cnl_fir_moved.tac",
+      "ok": true
+    },
+    {
       "id": "accept_airmet_basic",
       "product": "AIRMET",
       "tac": "accept/airmet_basic.tac",
@@ -2145,6 +2169,76 @@
       "tac": "negative/sigmet/missing_obs_fcst.tac",
       "ok": false,
       "expected_codes": ["MISSING_OBS_OR_FCST"],
+      "require_spans": true
+    }
+  ],
+  "v1_modifier_info": [
+    {
+      "id": "sigmet_v1_va_volcano_info",
+      "product": "SIGMET",
+      "theme": "V1",
+      "cite": "VA volcano identity → info; research V1",
+      "tac": "accept/sigmet_v1_va_volcano.tac",
+      "ok": true,
+      "expected_codes": ["VA_VOLCANO_IDENTITY"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_v1_va_ash_geom_info",
+      "product": "SIGMET",
+      "theme": "V1",
+      "cite": "VA ash geometry → info; research V1",
+      "tac": "accept/sigmet_v1_va_volcano.tac",
+      "ok": true,
+      "expected_codes": ["VA_ASH_GEOMETRY"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_v1_no_va_exp_info",
+      "product": "SIGMET",
+      "theme": "V1",
+      "cite": "NO VA EXP → info; research V1",
+      "tac": "accept/sigmet_v1_no_va_exp.tac",
+      "ok": true,
+      "expected_codes": ["NO_VA_EXP"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_v1_cnl_fir_moved_info",
+      "product": "SIGMET",
+      "theme": "V1",
+      "cite": "CNL FIR-moved → info; research V1",
+      "tac": "accept/sigmet_v1_cnl_fir_moved.tac",
+      "ok": true,
+      "expected_codes": ["VA_CNL_FIR_MOVED"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "v1_errors": [
+    {
+      "id": "sigmet_va_missing_volcano_v1",
+      "product": "SIGMET",
+      "theme": "V1",
+      "depth": "full_checklist",
+      "cite": "VA without MT/PSN; research V1",
+      "tac": "negative/sigmet/va_missing_volcano.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_VA_VOLCANO"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_no_va_exp_with_cloud_v1",
+      "product": "SIGMET",
+      "theme": "V1",
+      "depth": "full_checklist",
+      "cite": "NO VA EXP with VA CLD; research V1",
+      "tac": "negative/sigmet/no_va_exp_with_cloud.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_NO_VA_EXP"],
       "require_spans": true
     }
   ]

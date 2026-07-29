@@ -96,7 +96,13 @@ _SIGMET_VALID_PAIR = re.compile(r"\bVALID\s+(\d{6})/(\d{6})\b")
 _SIGMET_FIR_CTA = re.compile(r"\b(?:FIR(?:/UIR)?|CTA|UIR)\b")
 _SIGMET_OBS_FCST = re.compile(r"\b(?:OBS|FCST)\b")
 _SIGMET_INTENSITY = re.compile(r"\b(?:INTSF|WKN|NC)\b")
+_SIGMET_VA_TOKEN = re.compile(r"\bVA\b")
+_SIGMET_VA_VOLCANO = re.compile(r"\bMT\b.+\bPSN\b|\bPSN\b.+\bMT\b")
+_SIGMET_VA_CLD = re.compile(r"\bVA\s+CLD\b")
+_SIGMET_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b")
+_SIGMET_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b")
 _WS_MAX_VALIDITY_HOURS = 4.0
+_WV_MAX_VALIDITY_HOURS = 6.0
 
 # Phenomenon family markers (template+gate — not exhaustive Annex vocab).
 _SIGMET_FAMILIES: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -1265,6 +1271,16 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
                 body_end=end,
                 token="CNL",
             )
+            if _SIGMET_CNL_FIR_MOVED.search(core):
+                _emit_token_info(
+                    issues,
+                    code="VA_CNL_FIR_MOVED",
+                    message="VA SIGMET CNL identifies FIR to which ash has moved — research V1",
+                    core=core,
+                    body_start=start,
+                    body_end=end,
+                    token="FIR",
+                )
         return issues
 
     if _SIGMET_STNR.search(core):
@@ -1354,7 +1370,7 @@ def _sigmet_validity_hours(start: str, end: str) -> float | None:
     return (end_m - start_m) / 60.0
 
 
-def _check_sigmet_g2(*, start: int, end: int, upper: str) -> list[Issue]:
+def _check_sigmet_g2(*, start: int, end: int, upper: str, is_va: bool = False) -> list[Issue]:
     """F23 theme G2 — sequence / validity duration / FIR / OBS·FCST / intensity."""
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
@@ -1384,11 +1400,13 @@ def _check_sigmet_g2(*, start: int, end: int, upper: str) -> list[Issue]:
     valid = _SIGMET_VALID_PAIR.search(core)
     if valid is not None:
         hours = _sigmet_validity_hours(valid.group(1), valid.group(2))
-        if hours is not None and hours > _WS_MAX_VALIDITY_HOURS:
+        max_hours = _WV_MAX_VALIDITY_HOURS if is_va else _WS_MAX_VALIDITY_HOURS
+        if hours is not None and hours > max_hours:
+            label = "6 hours (WV)" if is_va else "4 hours (WS)"
             _emit_token_info(
                 issues,
                 code="INVALID_VALIDITY_DURATION",
-                message="SIGMET VALID period exceeds 4 hours (WS) — research G2",
+                message=f"SIGMET VALID period exceeds {label} — research G2",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -1428,7 +1446,7 @@ def _check_sigmet_g2(*, start: int, end: int, upper: str) -> list[Issue]:
             body_end=end,
             token=obs.group(0),
         )
-    else:
+    elif not _SIGMET_NO_VA_EXP.search(core):
         _emit_token_info(
             issues,
             code="MISSING_OBS_OR_FCST",
@@ -1449,6 +1467,72 @@ def _check_sigmet_g2(*, start: int, end: int, upper: str) -> list[Issue]:
             body_start=start,
             body_end=end,
             token=intensity.group(0),
+        )
+
+    return issues
+
+
+def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
+    """F23 theme V1 — VA volcano identity / ash geometry / NO VA EXP / CNL FIR-moved."""
+    issues: list[Issue] = []
+    core = upper[:-1] if upper.endswith("=") else upper
+
+    if _SIGMET_NO_VA_EXP.search(core):
+        if _SIGMET_VA_CLD.search(core):
+            _emit_token_info(
+                issues,
+                code="INVALID_NO_VA_EXP",
+                message="VA SIGMET NO VA EXP must not include VA CLD body — research V1",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="NO",
+            )
+        else:
+            _emit_token_info(
+                issues,
+                code="NO_VA_EXP",
+                message="VA SIGMET NO VA EXP absence token — research V1",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="NO",
+            )
+
+    if not _SIGMET_VA_TOKEN.search(core):
+        return issues
+
+    # Volcano identity required for active VA (including NO VA EXP with volcano named).
+    if _SIGMET_VA_VOLCANO.search(core):
+        _emit_token_info(
+            issues,
+            code="VA_VOLCANO_IDENTITY",
+            message="VA SIGMET erupting volcano identity (MT/PSN) — research V1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="MT",
+        )
+    elif not _SIGMET_CNL.search(core):
+        _emit_token_info(
+            issues,
+            code="MISSING_VA_VOLCANO",
+            message="VA SIGMET missing volcano identity (MT … PSN) — research V1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="VA",
+        )
+
+    if _SIGMET_VA_CLD.search(core) and (_SIGMET_WI.search(core) or _SIGMET_POINT_COORD.search(core)):
+        _emit_token_info(
+            issues,
+            code="VA_ASH_GEOMETRY",
+            message="VA SIGMET ash cloud geometry / forecast position — research V1",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="VA",
         )
 
     return issues
@@ -1475,7 +1559,10 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
         # CNL reports intentionally omit phenomenon — skip multi-family + G2 body gates.
         if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
             return issues
-        issues.extend(_check_sigmet_g2(start=start, end=end, upper=upper))
+        is_va = bool(_SIGMET_VA_TOKEN.search(upper))
+        issues.extend(_check_sigmet_g2(start=start, end=end, upper=upper, is_va=is_va))
+        if is_va:
+            issues.extend(_check_sigmet_v1(start=start, end=end, upper=upper))
 
     families = _SIGMET_FAMILIES if product == "SIGMET" else _AIRMET_FAMILIES
     hit = _count_families(upper, families)

@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — VA SIGMET lint + adjacency (F23 themes V1–V2) |
-| **Active task** | T3.1 (in_progress) |
-| **Tasks** | 11 / 29 completed |
+| **Active task** | T3.3 (pending) |
+| **Tasks** | 13 / 29 completed |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -82,8 +82,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Test | VA accept/negative fixtures (volcano identity, ash geometry/forecast, `NO VA EXP`, CNL FIR-moved) | TC-F23-004; #739; V1 | T2.3 | in_progress |
-| T3.2 | Code | VA SIGMET registry rules + encode path toward `VolcanicAshSIGMET` | F12; F23 | T3.1 | pending |
+| T3.1 | Test | VA accept/negative fixtures (volcano identity, ash geometry/forecast, `NO VA EXP`, CNL FIR-moved) | TC-F23-004; #739; V1 | T2.3 | completed |
+| T3.2 | Code | VA SIGMET registry rules + encode path toward `VolcanicAshSIGMET` | F12; F23 | T3.1 | completed |
 | T3.3 | Test | Adjacency guards: VA↔general SIGMET↔VAA (never silent root/product swap) | TC-F23-006; V2 | T3.2 | pending |
 | T3.4 | Code | Content-selected root under `product=sigmet`; product-hint / Auto-detect fixes if any fail | E19-13; F23 | T3.3 | pending |
 

@@ -24,6 +24,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `INVALID_CLOUD_TOKEN` | `error` | {product} invalid cloud/VV token {token!r} — A3-2 #9 | — | cloud, metar, speci, r4 |
 | `INVALID_CNL_SHAPE` | `error` | TAF CNL must end the message — A5-1 #6 | taf | cnl, taf, t1 |
 | `INVALID_NIL` | `error` | {product} NIL must not include body groups — research R8 / T1 / C1 | — | nil, metar, speci, taf, r8, t1, c1 |
+| `INVALID_NO_VA_EXP` | `error` | VA SIGMET NO VA EXP must not include VA CLD body — research V1 | sigmet | va, no_va_exp, sigmet, v1 |
 | `INVALID_PROB` | `error` | {product} invalid PROB (only 30|40; must not qualify BECMG/FM) — App 5 §1.4 / research T2 | taf | change, taf, t2, prob |
 | `INVALID_REMARK` | `error` | {product} malformed remark group {token!r} | — | remark, metar, speci, r5, iwxxm_us |
 | `INVALID_RVR` | `error` | {product} invalid RVR token {token!r} — research R8 | — | rvr, metar, speci, r8 |
@@ -50,6 +51,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_VAAC` | `error` | VAA missing VAAC: template field — A2-1 | vaa | vaac, vaa |
 | `MISSING_VALID` | `error` | {product} missing VALID ddhhmm/ddhhmm period — A6 identity | — | valid, sigmet, airmet |
 | `MISSING_VALIDITY` | `error` | TAF missing validity period ddhh/ddhh — A5-1 #5 | taf | validity, taf |
+| `MISSING_VA_VOLCANO` | `error` | VA SIGMET missing volcano identity (MT … PSN) — research V1 | sigmet | va, volcano, sigmet, v1 |
 | `MISSING_VISIBILITY` | `error` | {product} missing visibility or CAVOK — A3-2 #6 | — | visibility, metar, speci |
 | `MISSING_WIND` | `error` | {product} missing surface wind group — A3-2 #5 | — | wind, metar, speci |
 | `MULTIPLE_PHENOMENA` | `error` | {product} encodes multiple phenomenon families {hit} — A6 one-phenomenon gate | — | phenomenon, sigmet, airmet |
@@ -57,6 +59,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `NCD_PRESENT` | `info` | {product} NCD present — research S1 | — | cloud, metar, speci, s1, auto |
 | `NIL_REPORT` | `info` | {product} NIL report — research R8 / T1 / C1 | — | nil, metar, speci, taf, r8, t1, c1 |
 | `NOSIG_PRESENT` | `info` | {product} NOSIG trend present — research R8 | — | trend, metar, speci, r8 |
+| `NO_VA_EXP` | `info` | VA SIGMET NO VA EXP absence token — research V1 | sigmet | va, no_va_exp, sigmet, v1 |
 | `NSC_PRESENT` | `info` | {product} NSC present — research T3 / S1 / C1 | — | cloud, metar, speci, taf, t3, s1, c1 |
 | `NSW_PRESENT` | `info` | {product} NSW present — research T3 / S1 | — | weather, metar, speci, taf, t3, s1 |
 | `OBS_OR_FCST` | `info` | SIGMET OBS or FCST analysis — research G2 | sigmet | obs, fcst, sigmet, g2 |
@@ -75,6 +78,9 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `TOP_ABV_OR_BLW` | `info` | SIGMET TOP ABV/BLW level grammar — research G1 | sigmet | altitude, top, sigmet, g1 |
 | `TX_TN_PRESENT` | `info` | {product} TX/TN temperature forecasts on base — research T3 | taf | temperature, taf, t3 |
 | `UNKNOWN_PRODUCT` | `error` | Unknown product {product!r}; expected one of {expected} | — | parse_gate |
+| `VA_ASH_GEOMETRY` | `info` | VA SIGMET ash cloud geometry / forecast position — research V1 | sigmet | va, geometry, sigmet, v1 |
+| `VA_CNL_FIR_MOVED` | `info` | VA SIGMET CNL identifies FIR to which ash has moved — research V1 | sigmet | va, cnl, fir, sigmet, v1 |
+| `VA_VOLCANO_IDENTITY` | `info` | VA SIGMET erupting volcano identity (MT/PSN) — research V1 | sigmet | va, volcano, sigmet, v1 |
 | `VV_NOT_OBSERVABLE` | `info` | {product} VV/// — verticalVisibility nil notObservable — research S1 | — | cloud, metar, speci, s1, vv |
 | `VV_OMIT` | `info` | {product} VV/// — omit verticalVisibility without nilReason — research T3 | taf | cloud, taf, t3, vv |
 | `WIND_DIR_VARIATION` | `info` | {product} wind direction variation dddVddd — research S1 | — | wind, metar, speci, s1 |

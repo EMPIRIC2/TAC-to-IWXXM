@@ -189,6 +189,18 @@
       ]
     },
     {
+      "code": "INVALID_NO_VA_EXP",
+      "severity": "error",
+      "message_template": "VA SIGMET NO VA EXP must not include VA CLD body \u2014 research V1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "no_va_exp",
+        "sigmet",
+        "v1"
+      ]
+    },
+    {
       "code": "INVALID_PROB",
       "severity": "error",
       "message_template": "{product} invalid PROB (only 30|40; must not qualify BECMG/FM) \u2014 App 5 \u00a71.4 / research T2",
@@ -482,6 +494,18 @@
       ]
     },
     {
+      "code": "MISSING_VA_VOLCANO",
+      "severity": "error",
+      "message_template": "VA SIGMET missing volcano identity (MT \u2026 PSN) \u2014 research V1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "volcano",
+        "sigmet",
+        "v1"
+      ]
+    },
+    {
       "code": "MISSING_VISIBILITY",
       "severity": "error",
       "message_template": "{product} missing visibility or CAVOK \u2014 A3-2 #6",
@@ -566,6 +590,18 @@
         "metar",
         "speci",
         "r8"
+      ]
+    },
+    {
+      "code": "NO_VA_EXP",
+      "severity": "info",
+      "message_template": "VA SIGMET NO VA EXP absence token \u2014 research V1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "no_va_exp",
+        "sigmet",
+        "v1"
       ]
     },
     {
@@ -786,6 +822,43 @@
       "product": null,
       "tags": [
         "parse_gate"
+      ]
+    },
+    {
+      "code": "VA_ASH_GEOMETRY",
+      "severity": "info",
+      "message_template": "VA SIGMET ash cloud geometry / forecast position \u2014 research V1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "geometry",
+        "sigmet",
+        "v1"
+      ]
+    },
+    {
+      "code": "VA_CNL_FIR_MOVED",
+      "severity": "info",
+      "message_template": "VA SIGMET CNL identifies FIR to which ash has moved \u2014 research V1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "cnl",
+        "fir",
+        "sigmet",
+        "v1"
+      ]
+    },
+    {
+      "code": "VA_VOLCANO_IDENTITY",
+      "severity": "info",
+      "message_template": "VA SIGMET erupting volcano identity (MT/PSN) \u2014 research V1",
+      "product": "sigmet",
+      "tags": [
+        "va",
+        "volcano",
+        "sigmet",
+        "v1"
       ]
     },
     {
