@@ -23,7 +23,7 @@ active_session:
   preset_status: approved
   routing_decision_id: D-S026-E20-routing-C1
   context_briefs: []
-  note: "T1.3+T1.4 COMPLETE (F24 A2 fixtures + rules); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); uncommitted pending user commit ask; #731"
+  note: "M0–M1 committed (T0.1–T1.4); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); progress 7/~28; branch evolve/EV-020-airmet-quality; #731"
   routing_plan:
   - stage: 00-context
     required: true
@@ -64,7 +64,7 @@ active_session:
     mode: full
     status: in_progress
     started: "2026-07-29"
-    note: "T1.3+T1.4 COMPLETE (F24 A2 fixtures + rules); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); uncommitted pending user commit ask; #731"
+    note: "M0–M1 committed (T0.1–T1.4); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); progress 7/~28; branch evolve/EV-020-airmet-quality; #731"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -3780,14 +3780,14 @@ stages:
     previous_tip_sha: afffe86
     session_id: S026-airmet-quality-wmo-examples
     evolve_cycle_id: EV-020
-    note: 'S026/EV-020 T1.3+T1.4 COMPLETE (F24 A2); M1 A1–A2 done; next T2.1 (A3 golden); uncommitted; #731'
+    note: 'S026/EV-020 M0–M1 committed (T0.1–T1.4); M1 A1–A2 done; next T2.1 (A3 golden); progress 7/~28; #731'
     substeps:
       task_loop:
         status: in_progress
         current_task: T2.1
         phase: C
         milestone: M2
-        notes: S026/EV-020 M1 complete (A1–A2); next T2.1 A3 golden; uncommitted pending user commit ask
+        notes: S026/EV-020 M0–M1 committed (T0.1–T1.4); next T2.1 A3 golden; progress 7/~28
     delta_substages:
     - id: S026-airmet-quality-wmo-examples
       session_id: S026-airmet-quality-wmo-examples
@@ -3797,13 +3797,14 @@ stages:
       started_at: '2026-07-29'
       started: '2026-07-29'
       mode: full
-      note: 'T1.3+T1.4 COMPLETE (F24 A2 fixtures + rules); M1 done; next T2.1 (A3 golden); uncommitted; #731'
+      note: 'M0–M1 committed (T0.1–T1.4); M1 AIRMET A1–A2 done; next T2.1 (A3 golden); progress 7/~28'
       active_milestone: M2
       active_task: T2.1
       active_task_status: pending
       decision_id: D-S026-04-plan-approve
       branch: evolve/EV-020-airmet-quality
-      uncommitted: true
+      tip_sha: a5bb2f2
+      tip_sha_full: a5bb2f2abd15ad9f01c087425b63372a9ec89f90
       progress: 7/~28
       feature_ids:
       - F24
@@ -3986,6 +3987,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-29 S026/EV-020 M0–M1 committed (T0.1–T1.4 @ a5bb2f2); next T2.1 (A3 golden); progress 7/~28; #731'
     - '2026-07-29 S026/EV-020 07-build T1.3+T1.4 A2 complete (uncommitted); next T2.1'
     - '2026-07-29 S026/EV-020 07-build resume @ T1.3 A2 fixtures (user continue); prior T0–T1.2 uncommitted pending user commit ask'
     - '2026-07-29 S026/EV-020 T1.1+T1.2 COMPLETE (AIRMET A1); next T1.3; #731'
@@ -5738,8 +5740,8 @@ decisions_log:
   category: session-note
   status: confirmed
   topic: 07-build T1.3+T1.4 complete
-  summary: "T1.3+T1.4 A2 complete (uncommitted); M1 A1–A2 done; next T2.1"
-  decision: "2026-07-29 S026/EV-020 07-build T1.3+T1.4 A2 complete (uncommitted); next T2.1"
+  summary: "M0–M1 committed (T0.1–T1.4); M1 A1–A2 done; next T2.1; progress 7/~28"
+  decision: "2026-07-29 S026/EV-020 M0–M1 committed T0.1–T1.4 @ a5bb2f2; next T2.1 (A3 golden)"
   related_issue: "731"
   related_decisions: [D-S026-04-plan-approve, D-S026-07-resume-T1.3]
 - id: D-S026-07-resume-T1.3
@@ -13425,7 +13427,7 @@ evolve_cycles:
     01-requirements: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
     02-verify-plan: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
     04-tech-plan: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
-    07-build: {status: in_progress, started: "2026-07-29"}
+    07-build: {status: in_progress, started: "2026-07-29", progress: "7/~28", active_task: T2.1, tip_sha: a5bb2f2}
     08-verify-build: {status: pending}
     10-e2e: {status: pending}
     11-verify-impl: {status: pending}
@@ -13458,8 +13460,9 @@ evolve_cycles:
     status: completed
   issues: []
   decision_refs: [E20-1, E20-2, E20-3, E20-4, E20-5, E20-6, E20-A, E20-B, D-S026-E20-intake, D-S026-E20-routing-C1, E20-8, E20-E1, E20-E2, E20-E3, S02.M1, S02.M2, S02.L1, S02.L2, D-S026-EV020-s02m1-1, D-S026-EV020-s02m2-1, D-S026-EV020-s02l1-1, D-S026-EV020-s02l2-1, D-S026-02-phase-a, E20-F1, E20-F2, E20-F3, E20-F4, E20-F5, E20-F6, E20-F7, E20-F8, D-S026-04-plan-approve, D-S026-07-resume-T1.3, D-S026-07-T1.3-T1.4-complete]
-  note: "T1.3+T1.4 COMPLETE (F24 A2 fixtures + rules); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); uncommitted pending user commit ask; #731"
+  note: "M0–M1 committed (T0.1–T1.4); M1 AIRMET lint A1–A2 done; next T2.1 (A3 golden); progress 7/~28; branch evolve/EV-020-airmet-quality; #731"
   notes:
+  - '2026-07-29 S026/EV-020 M0–M1 committed (T0.1–T1.4 @ a5bb2f2); next T2.1 (A3 golden); progress 7/~28; #731'
   - '2026-07-29 S026/EV-020 07-build T1.3+T1.4 A2 complete (uncommitted); next T2.1'
   - '2026-07-29 S026/EV-020 07-build resume @ T1.3 A2 fixtures (user continue); prior T0–T1.2 uncommitted pending user commit ask'
   - '2026-07-29 S026/EV-020 T1.1+T1.2 COMPLETE (AIRMET A1); next T1.3; #731'
@@ -17721,10 +17724,11 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit:
-  tip_sha: a02d8ea
-  tip_sha_full: a02d8ea434f38b11b49ac98ed491bbcc2e05aa47
-  note: 'S026/EV-020 — 01-requirements STARTED (delta); 16 orchestrating; F24/F25; #731'
+  tip_sha: a5bb2f2
+  tip_sha_full: a5bb2f2abd15ad9f01c087425b63372a9ec89f90
+  note: 'S026/EV-020 07-build M0–M1 committed; next T2.1; progress 7/~28; tip a5bb2f2; #731'
   notes:
+  - '2026-07-29 S026/EV-020 tip synced — a5bb2f2 (a5bb2f2abd15ad9f01c087425b63372a9ec89f90); M0–M1 committed T0.1–T1.4; stage 07-build; next T2.1; progress 7/~28; #731'
   - '2026-07-29 S026/EV-020 01-requirements STARTED (delta) — current_stage=01-requirements; artifact reports/01-requirements.md pending; #731'
   - '2026-07-29 S026/EV-020 routing Confirm C=1 Lean+build+11 approved (D-S026-E20-routing-C1); 00 completed; 16 in_progress → 01 (E20-8); 11-verify-impl required; #731'
   - '2026-07-29 S026/EV-020 Phase 0 intake locked A=2 B=2+3 (D-S026-E20-intake); evolve_cycle_counter=20; EV-020 created; Fn proposed F24/F25; Lean+build amend pending; #731'
@@ -17930,9 +17934,9 @@ git_history:
     created_at: '2026-07-29'
     session_id: S026-airmet-quality-wmo-examples
     evolve_cycle_id: EV-020
-    note: "Lean+build+11 approved (D-S026-E20-routing-C1); 16→01; not pushed"
-    tip_sha: a02d8ea
-    tip_sha_full: a02d8ea434f38b11b49ac98ed491bbcc2e05aa47
+    note: "M0–M1 committed (T0.1–T1.4); 07-build @ T2.1; progress 7/~28; not pushed"
+    tip_sha: a5bb2f2
+    tip_sha_full: a5bb2f2abd15ad9f01c087425b63372a9ec89f90
     pushed: false
   - name: evolve/EV-019-sigmet-quality
     purpose: "S025/EV-019 SIGMET family quality bars (#733 general + #739 VA)"
@@ -18674,6 +18678,90 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: a5bb2f2
+    sha_full: a5bb2f2abd15ad9f01c087425b63372a9ec89f90
+    branch: evolve/EV-020-airmet-quality
+    message: "chore: sync workflow-state after EV-020 M0–M1 (T0.1–T1.4)"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T12:42:54-04:00"
+    files_changed:
+      - workflow-state.yaml
+  - sha: f8dae81
+    sha_full: f8dae81eb36ca419b2363c95e7eda3a52c7f1933
+    branch: evolve/EV-020-airmet-quality
+    message: "[T1.4] feat: encode AIRMET A2 phenomenon/STNR/WKN rules"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T12:42:07-04:00"
+    files_changed: 5
+  - sha: 1444250
+    sha_full: 144425031123e6877fd35a93008e100d841a4a89
+    branch: evolve/EV-020-airmet-quality
+    message: "[T1.3] test: AIRMET A2 phenomenon/STNR/WKN fixtures"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T12:39:48-04:00"
+    files_changed: 11
+  - sha: f909410
+    sha_full: f9094100af7c487366f81a20cec602bd953a8e47
+    branch: evolve/EV-020-airmet-quality
+    message: "[T1.2] feat: encode AIRMET A1 sequence/FIR lint rules"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T12:38:59-04:00"
+    files_changed: 5
+  - sha: 58d7fb6
+    sha_full: 58d7fb63de24bc3d97aafb0ddad1d0b688788da3
+    branch: evolve/EV-020-airmet-quality
+    message: "[T1.1] test: AIRMET A1 header/sequence/FIR fixtures"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T12:37:29-04:00"
+    files_changed: 6
+  - sha: 3eec286
+    sha_full: 3eec286db6d90f7f36c431a28fbab3381b2aadd0
+    branch: evolve/EV-020-airmet-quality
+    message: "[T0.3] chore: add wmo-quality.yml combined CI pack"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T12:35:34-04:00"
+    files_changed: 4
+  - sha: f141bf1
+    sha_full: f141bf1966f75f24fa2b3e0d7ff1eca48315e169
+    branch: evolve/EV-020-airmet-quality
+    message: "[T0.2] docs: link F24/F25 themes in COVERAGE_MATRIX"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T12:34:22-04:00"
+    files_changed:
+      - docs/domain/rules/COVERAGE_MATRIX.md
+  - sha: 199a824
+    sha_full: 199a824c21c0e52e7a8e5fe52f27cd97f9e8a927
+    branch: evolve/EV-020-airmet-quality
+    message: "[T0.1] docs: WMO quality research catalog for F24/F25 themes"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T12:34:10-04:00"
+    files_changed:
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/wmo-quality-research-catalog.md
+  - sha: 079517c
+    sha_full: 079517c041f05259ff7c01284f2812ddbd5306a9
+    branch: evolve/EV-020-airmet-quality
+    message: "docs: S026/EV-020 corpus — F24/F25 + ADR-032 + session artifacts"
+    stage: 07-build
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T12:33:41-04:00"
+    files_changed: 17
   - sha: 1a6dc9a
     sha_full: 1a6dc9a5259f7d3688bcd42a4a26119be9686b4c
     branch: evolve/EV-019-sigmet-quality
