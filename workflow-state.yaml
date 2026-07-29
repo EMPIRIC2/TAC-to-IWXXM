@@ -24,9 +24,9 @@ active_session:
   routing_decision_id: D-S024-E18-scope-lock
   context_briefs:
   - docs/context/dissemination-file-select.md
-  tip_sha: '4146052'
-  tip_sha_full: 4146052415df0806c6a3057ddb6118b45dac7a7a
-  note: "tip 4146052; 10 COMPLETE; 13 pending deploy approval; #785"
+  tip_sha: a426948
+  tip_sha_full: a426948dd0916b9eb59011634e1ce547f905f421
+  note: "tip a426948; 10 COMPLETE; 13 pending deploy approval (FE-only; await push/PR); #785"
   routing_plan:
   - stage: 00-context
     required: true
@@ -42,7 +42,7 @@ active_session:
     status: in_progress
     skip_rationale:
     started: "2026-07-28"
-    note: "orchestrating 13-deploy-smoke (READY — awaiting push/PR/deploy approval; tip 4146052)"
+    note: "orchestrating 13-deploy-smoke (READY — awaiting push/PR/deploy approval; tip a426948)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -11924,10 +11924,10 @@ evolve_cycles:
     decision_id: D-S024-E18-scope-lock
     note: "Phase 0 locked; Lean+build approved; handoff 01-requirements"
   current_stage: 13-deploy-smoke
-  tip_sha: '4146052'
-  tip_sha_full: 4146052415df0806c6a3057ddb6118b45dac7a7a
+  tip_sha: a426948
+  tip_sha_full: a426948dd0916b9eb59011634e1ce547f905f421
   branch: evolve/EV-018-dissemination-file-select
-  note: "S024/EV-018 tip 4146052; 10 COMPLETE; 13 pending deploy approval; #785"
+  note: "S024/EV-018 tip a426948; 10 COMPLETE; 13 pending deploy approval (FE-only; await push/PR); #785"
   decision_refs:
   - E18-1
   - E18-2
@@ -11958,6 +11958,7 @@ evolve_cycles:
   - D-S024-04-E18-16
   - D-S024-04-plan-approve-A
   notes:
+  - '2026-07-28 S024/EV-018 tip synced — a426948; 10 COMPLETE; 13 pending deploy approval (READY — awaiting push/PR/deploy approval FE-only; H6′ after FE live); #785'
   - '2026-07-28 S024/EV-018 tip synced — 4146052; 10 COMPLETE; 13 pending deploy approval (READY — awaiting push/PR/deploy approval FE-only; H6′ after FE live); #785'
   - '2026-07-28 S024/EV-018 10-e2e COMPLETE — PASS; UJ-027–030 7/7; snapshot darwin baseline; report e2e-report.md; tip 4146052; handoff 13-deploy-smoke (pending deploy approval); #785'
   - '2026-07-28 S024/EV-018 10-e2e STARTED after commit bf90a02; tip bf90a02; #785'
@@ -12046,7 +12047,7 @@ evolve_cycles:
       status: in_progress
       started: "2026-07-28"
       completed: null
-      note: "orchestrating 13-deploy-smoke (READY — awaiting push/PR/deploy approval; tip 4146052)"
+      note: "orchestrating 13-deploy-smoke (READY — awaiting push/PR/deploy approval; tip a426948)"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -16029,10 +16030,11 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit:
-  tip_sha: '4146052'
-  tip_sha_full: 4146052415df0806c6a3057ddb6118b45dac7a7a
-  note: 'S024/EV-018 tip 4146052; 10 COMPLETE; 13 pending deploy approval; #785'
+  tip_sha: a426948
+  tip_sha_full: a426948dd0916b9eb59011634e1ce547f905f421
+  note: 'S024/EV-018 tip a426948; 10 COMPLETE; 13 pending deploy approval (FE-only; await push/PR); #785'
   notes:
+  - '2026-07-28 S024/EV-018 tip synced — a426948 (a426948dd0916b9eb59011634e1ce547f905f421); "[EV-018] docs: 13 deploy readiness (FE-only; await push/PR)"; stage 13-deploy-smoke; 10 COMPLETE; 13 pending deploy approval; #785'
   - '2026-07-28 S024/EV-018 tip synced — 4146052 (4146052415df0806c6a3057ddb6118b45dac7a7a); "[EV-018] test: UJ-027–030 e2e PASS + progress screenshot baseline"; stage 10-e2e; 10 COMPLETE; 13 pending deploy approval; #785'
   - '2026-07-28 S023/EV-017 CLOSED (D-S023-close) — user option 2 push then close; PR #790 opened https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790; tip 2e2f6c0 (merge resolve main); CI run 30404410993 success; mergeable; do not auto-merge; active_session=null'
   - '2026-07-28 S023/EV-017 tip synced — 2e2f6c0 (2e2f6c022324585423f30765541f7ddc435def68); "merge: resolve main into evolve/EV-017 for PR #790"; stage 16-evolve close; PR #790 open'
@@ -16941,6 +16943,16 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: a426948dd0916b9eb59011634e1ce547f905f421
+    short: a426948
+    branch: evolve/EV-018-dissemination-file-select
+    message: "[EV-018] docs: 13 deploy readiness (FE-only; await push/PR)"
+    stage: 13-deploy-smoke
+    session_id: S024-dissemination-file-select
+    evolve_cycle_id: EV-018
+    files_changed: 2
+    timestamp: "2026-07-29T00:05:15Z"
+
   - sha: 4146052415df0806c6a3057ddb6118b45dac7a7a
     short: '4146052'
     branch: evolve/EV-018-dissemination-file-select
