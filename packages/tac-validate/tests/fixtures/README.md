@@ -34,7 +34,7 @@ Convert goldens live under `packages/tac2iwxxm/tests/fixtures/{annex3_golden,iwx
 | METAR / SPECI | Full checklist + R1–R8 (HARD this cycle)  |
 | TAF           | Full checklist negatives                  |
 | SIGMET        | Template + gate + **F23 G1–G2 / V1 / C1** |
-| AIRMET        | Template + gate + **F24 A1**              |
+| AIRMET        | Template + gate + **F24 A1–A2**           |
 | VAA / TCA     | Template + gate negatives only            |
 
 ## Expectation contract
@@ -74,6 +74,8 @@ Diagnostics assertions require product-rule codes/spans from
 | `g1_errors`            | `false` | F23 G1 bad CNL / COR / STNR+MOV                             |
 | `g2_modifier_info`     | `true`  | F23 G2 SIGMET sequence/FIR/OBS·FCST/intensity info          |
 | `g2_errors`            | `false` | F23 G2 missing sequence/FIR/OBS·FCST / long validity        |
+| `a2_modifier_info`     | `true`  | F24 A2 AIRMET OBS/STNR/WKN/TOP ABV info                     |
+| `a2_errors`            | `false` | F24 A2 multi-phenomenon / STNR+MOV / missing OBS·FCST       |
 
 ## Tooling
 
