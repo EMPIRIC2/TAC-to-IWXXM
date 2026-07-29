@@ -11,10 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase D — 13-deploy-smoke (T6.5) |
+| **Active phase** | Phase D — **closed** (T6.5 PASS) |
 | **Active milestone** | M6 — Smoke / verify / AC / deploy |
-| **Active task** | T6.5 (next) |
-| **Tasks** | 26 / ~28 completed (M0–M6 partial) |
+| **Active task** | — (all tasks done) |
+| **Tasks** | 28 / ~28 completed |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -111,7 +111,7 @@
 | T6.2 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M5 | **completed** |
 | T6.3 | Test | 10-e2e — UJ-035 / UJ-036 (+ UJ-020/032 deepen) | 10 | T6.2 | **completed** |
 | T6.4 | Docs | 11-verify-impl — per-Fn AC sign-off F24/F25/F9/F7.g | 11; C=1 | T6.3 | **completed** |
-| T6.5 | Test | 13-deploy-smoke — redeploy if API/FE; H1–H3 if API; **H4–H5 required** | 13; E20-F6 | T6.4 | pending |
+| T6.5 | Test | 13-deploy-smoke — redeploy if API/FE; H1–H3 if API; **H4–H5 required** | 13; E20-F6 | T6.4 | **completed** |
 
 ## Data Dependencies
 
@@ -162,3 +162,9 @@
 | E20-F7 kill-switch ↔ T2.3/T4.4 | **PASS** |
 | Template (static+api+worker) | **PASS** — no new deployable |
 | New deps inventory | **PASS** — pyyaml only if T5.2 needs direct declare; back-add inventory then |
+
+## PR Plan
+
+| PR | Scope | Status |
+|----|-------|--------|
+| [#793](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793) | S026 / EV-020 — F24/F25 AIRMET + WMO golden parity + glossary | **merged** `0f77194` — T6.5 H1–H5 + live F24/F25 smoke **PASS** |

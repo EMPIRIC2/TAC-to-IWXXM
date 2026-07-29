@@ -1,29 +1,39 @@
-overall_status: in_progress
+overall_status: completed
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
 session_counter: 26
 evolve_cycle_counter: 20
-active_session:
-  id: S026-airmet-quality-wmo-examples
+active_session: null
+sessions:
+- id: S026-airmet-quality-wmo-examples
   type: feature
   intent: "AIRMET quality (#731) + WMO official golden parity (AIRMET + METAR/SPECI/TAF) + UI catalog gate + 7-product decode glossary (registry + OpenAIP/F3)"
-  status: in_progress
+  status: completed
   branch: evolve/EV-020-airmet-quality
   orchestrator: 16-evolve
   evolve_cycle_id: EV-020
   github_issue: "731"
   artifacts_dir: docs/sessions/S026-airmet-quality-wmo-examples/
-  current_stage: 13-deploy-smoke
+  current_stage:
   feature_ids: [F24, F25]
   feature_note: "F24 AIRMET quality #731; F25 WMO official golden parity METAR/SPECI/TAF + UI gate; deepen F9 glossary registry+OpenAIP; deepen F7.g examples catalog"
   started_at: "2026-07-29"
   preset: Lean+build+11
   preset_status: approved
   routing_decision_id: D-S026-E20-routing-C1
+  tip_sha: 0f77194
+  tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+  pr_number: 793
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793
+  pr_status: merged
+  do_not_auto_merge: true
+  completed_at: "2026-07-29"
+  close_decision_id: D-S026-close
+  close_note: "F24/F25 Done; H1–H5 + live smoke PASS; PR #793 merged 0f77194; #731"
   context_briefs: []
-  note: "T6.4 PASS D-S026-E20-11-ac-all; preview-no; next T6.5 13-deploy-smoke; progress 26/~28"
+  note: "D-S026-close — F24/F25 Done; H1–H5 + live smoke PASS; PR #793"
   routing_plan:
   - stage: 00-context
     required: true
@@ -35,9 +45,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: "2026-07-29"
-    note: "EV-020; Lean+build+11; orchestrating 07-build after 04"
+    completed: "2026-07-29"
+    note: "COMPLETE — Phase 4 close D-S026-close; EV-020 completed; PR #793 merged 0f77194; #731"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -62,9 +73,10 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: "2026-07-29"
-    note: "M0–M6 T6.1–T6.4 done; next T6.5"
+    completed: "2026-07-29"
+    note: "M0–M6 all tasks done; tip merge 0f77194"
   - stage: 08-verify-build
     required: true
     mode: full
@@ -89,9 +101,10 @@ active_session:
   - stage: 13-deploy-smoke
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: "2026-07-29"
-    note: "T6.5 H4–H5 required; PR+merge then live smoke"
+    completed: "2026-07-29"
+    note: "T6.5 PASS — deploy-smoke.md; H1–H5 + live F24/F25; PR #793 merged 0f77194; API dep-d9l5ihf10e5c73fs5420; FE dep-d9l5ii9t0dsc73fr60gg"
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
@@ -99,7 +112,6 @@ active_session:
   - 09-qa
   - 12-verify-deploy
   note_skipped: "Lean+build+11 approved — skip 03/05/06/09/12; 11-verify-impl required (D-S026-E20-routing-C1)"
-sessions:
 - id: S025-sigmet-quality
   type: feature
   intent: "SIGMET family quality bars (#733 general + #739 VA); F23 + deepen F6.d/F12; ADR-028"
@@ -3780,9 +3792,11 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
+    status: completed
     started_at: '2026-07-29'
     started: '2026-07-29'
+    completed: '2026-07-29'
+    completed_at: '2026-07-29'
     previous_started_at: '2026-07-29'
     previous_completed_at: '2026-07-29'
     previous_session_id: S025-sigmet-quality
@@ -3790,32 +3804,40 @@ stages:
     previous_tip_sha: afffe86
     session_id: S026-airmet-quality-wmo-examples
     evolve_cycle_id: EV-020
-    note: 'M0–M6 T6.1–T6.4 done; next T6.5; progress 26/~28; tip 3027305'
+    note: 'S026/EV-020 07-build COMPLETE — M0–M6 all tasks done; tip merge 0f77194; PR #793 merged; #731'
+    tip_sha: 0f77194
+    tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
     substeps:
       task_loop:
-        status: in_progress
+        status: completed
         current_task: T6.5
         phase: D
         milestone: M6
-        notes: M0–M6 T6.1–T6.4 done; next T6.5 13-deploy-smoke; progress 26/~28; tip 3027305
+        notes: M0–M6 all tasks done; tip merge 0f77194; PR #793 merged
     delta_substages:
     - id: S026-airmet-quality-wmo-examples
       session_id: S026-airmet-quality-wmo-examples
       evolve_cycle_id: EV-020
       skill_id: 07-build
-      status: in_progress
+      status: completed
       started_at: '2026-07-29'
       started: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
       mode: full
-      note: 'M0–M6 T6.1–T6.4 done; next T6.5'
+      note: 'COMPLETE — M0–M6 all tasks done; tip merge 0f77194; PR #793 merged; #731'
       active_milestone: M6
       active_task: T6.5
-      active_task_status: in_progress
-      decision_id: D-S026-E20-11-ac-all
+      active_task_status: completed
+      decision_id: D-S026-E20-13-merge
       branch: evolve/EV-020-airmet-quality
-      tip_sha: 3027305
-      tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
-      progress: 26/~28
+      tip_sha: 0f77194
+      tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+      progress: 28/28
+      pr_number: 793
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793
+      pr_status: merged
+      do_not_auto_merge: true
       feature_ids:
       - F24
       - F25
@@ -5224,9 +5246,11 @@ stages:
     - S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
   13-deploy-smoke:
-    status: in_progress
+    status: completed
     started_at: '2026-07-29'
     started: '2026-07-29'
+    completed: '2026-07-29'
+    completed_at: '2026-07-29'
     previous_started_at: '2026-07-29'
     previous_completed_at: '2026-07-29'
     previous_session_id: S025-sigmet-quality
@@ -5236,29 +5260,46 @@ stages:
     previous_decision_id: D-S025-13-deploy-A
     session_id: S026-airmet-quality-wmo-examples
     evolve_cycle_id: EV-020
-    note: 'S026/EV-020 13-deploy-smoke in_progress — T6.5 H4–H5 required; PR+merge then live smoke; tip 3027305; progress 26/~28; #731'
-    tip_sha: 3027305
-    tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
-    overall: pending
+    note: 'S026/EV-020 13-deploy-smoke COMPLETE — T6.5 PASS; H1–H5 + live F24/F25; PR #793 merged 0f77194; API dep-d9l5ihf10e5c73fs5420; FE dep-d9l5ii9t0dsc73fr60gg; report deploy-smoke.md; #731'
+    tip_sha: 0f77194
+    tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+    overall: pass
     active_task: T6.5
-    report: null
+    active_task_status: completed
+    pr_number: 793
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793
+    pr_status: merged
+    do_not_auto_merge: true
+    decision_id: D-S026-E20-13-merge
+    report: docs/sessions/S026-airmet-quality-wmo-examples/reports/deploy-smoke.md
     delta_substages:
     - id: S026-airmet-quality-wmo-examples
       session_id: S026-airmet-quality-wmo-examples
       evolve_cycle_id: EV-020
       skill_id: 13-deploy-smoke
-      status: in_progress
+      status: completed
       mode: full
       started: '2026-07-29'
       started_at: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
       branch: evolve/EV-020-airmet-quality
-      tip_sha: 3027305
-      tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
-      note: 'T6.5 H4–H5 required; PR+merge then live smoke'
+      tip_sha: 0f77194
+      tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+      note: 'COMPLETE — PASS; H1–H5 + live F24/F25; PR #793 merged 0f77194; report deploy-smoke.md; #731'
       active_milestone: M6
       active_task: T6.5
-      active_task_status: in_progress
-      progress: 26/~28
+      active_task_status: completed
+      progress: 28/28
+      overall: pass
+      decision_id: D-S026-E20-13-merge
+      pr_number: 793
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793
+      pr_status: merged
+      do_not_auto_merge: true
+      api_deploy: dep-d9l5ihf10e5c73fs5420
+      fe_deploy: dep-d9l5ii9t0dsc73fr60gg
+      report: docs/sessions/S026-airmet-quality-wmo-examples/reports/deploy-smoke.md
       feature_ids:
       - F24
       - F25
@@ -5474,7 +5515,8 @@ stages:
       report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
       hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
-    - '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE (D-S025-13-deploy-A) — PASS; H1–H5 + live SIGMET smoke; PR #792 merged afffe86; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; #733/#739'
+    - '2026-07-29 S026/EV-020 13-deploy-smoke COMPLETE (D-S026-E20-13-merge) — PASS; H1–H5 + live F24/F25; PR #793 merged 0f77194; deploys dep-d9l5ihf10e5c73fs5420 / dep-d9l5ii9t0dsc73fr60gg; #731'
+- '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE (D-S025-13-deploy-A) — PASS; H1–H5 + live SIGMET smoke; PR #792 merged afffe86; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; #733/#739'
     - '2026-07-29 S025/EV-019 13-deploy-smoke STARTED — T5.6; handoff from 10-e2e T5.5 PASS; tip 1a6dc9a; progress 26/29; #733/#739'
     - 2026-07-27 S022 13-deploy-smoke COMPLETE — H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending
     - 2026-07-27 S022 13-deploy-smoke STARTED (in_progress) — after 15-service-health completed; commit 6b9d2b9; empiric2 main-latest live; goldens_ui_live; PyPI/secrets remaining
@@ -5535,15 +5577,19 @@ stages:
   16-evolve:
     status: completed
     mode: orchestrator
-    session_id: S025-sigmet-quality
-    evolve_cycle_id: EV-019
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
     started_at: '2026-07-29'
     completed_at: '2026-07-29'
+    completed: '2026-07-29'
     current_stage:
-    tip_sha: afffe86
-    tip_sha_full: afffe861c83d5bccea43742891e831e97ca28326
-    note: 'S025/EV-019 16-evolve COMPLETE — Phase 4 close D-S025-close; EV-019 completed; PR #792 merged afffe86; F23 Done; #733/#739'
+    tip_sha: 0f77194
+    tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+    note: 'S026/EV-020 16-evolve COMPLETE — Phase 4 close D-S026-close; EV-020 completed; PR #793 merged 0f77194; F24/F25 Done; #731'
     notes:
+    - '2026-07-29 S026/EV-020 Phase 4 close D-S026-close — cycle+session completed; PR #793 merged 0f77194; H1–H5 + live F24/F25 smoke PASS; F24/F25 Done; #731'
+    - '2026-07-29 S026/EV-020 13-deploy-smoke COMPLETE (D-S026-E20-13-merge) — PASS; H1–H5 + live F24/F25; deploys dep-d9l5ihf10e5c73fs5420 / dep-d9l5ii9t0dsc73fr60gg; report deploy-smoke.md; #731'
+    - '2026-07-29 S026/EV-020 07-build COMPLETE — M0–M6 all tasks done; tip merge 0f77194; #731'
     - '2026-07-29 S025/EV-019 Phase 4 close D-S025-close — cycle+session completed; PR #792 merged afffe86; H1–H5 + live SIGMET smoke PASS; F23 Done; #733/#739'
     - '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE (D-S025-13-deploy-A) — PASS; H1–H5 + live SIGMET smoke; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; report deploy-smoke.md; #733/#739'
     - '2026-07-29 S025/EV-019 07-build COMPLETE — M0–M5 / 29 tasks; PR #792 merged afffe86; #733/#739'
@@ -5661,15 +5707,15 @@ deployment:
   staging:
     status: deployed
     last_verified: '2026-07-29'
-    commit_deployed: afffe86
-    commit_head: afffe86
+    commit_deployed: 0f77194
+    commit_head: 0f77194
     drift: false
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
     deploy_ids:
-      api: dep-d9l11761egvs738ho3r0
-      frontend: dep-d9l1187avr4c739rfl10
+      api: dep-d9l5ihf10e5c73fs5420
+      frontend: dep-d9l5ii9t0dsc73fr60gg
     ci_deploy_run: '30227888075'
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
@@ -5696,7 +5742,8 @@ deployment:
       h0ci: note_deploy_hook_may_still_need_verify
       uj032: pass
     notes:
-    - '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE — PR #792 merged afffe86; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; H1–H5 + live SIGMET smoke PASS; F23 Done; #733/#739'
+    - '2026-07-29 S026/EV-020 13-deploy-smoke COMPLETE — PR #793 merged 0f77194; deploys dep-d9l5ihf10e5c73fs5420 / dep-d9l5ii9t0dsc73fr60gg; H1–H5 + live F24/F25 smoke PASS; F24/F25 Done; #731'
+- '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE — PR #792 merged afffe86; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; H1–H5 + live SIGMET smoke PASS; F23 Done; #733/#739'
     - '2026-07-28 S023/EV-017 13 COMPLETE — API SUPABASE_* Auth leftovers removed; redeploy dep-d9kii12jobas73fl4bi0; health/convert/H4–H5 re-PASS; tip 7837cd1'
     - '2026-07-28 S023/EV-017 13-deploy-smoke validate-existing PASS — H0c–H5 PASS; Playwright F21/F22 5/5; tip 7837cd1; deploys dep-d9khddad0e5s73dmm4r0 / dep-d9khdedbedkc73aodib0; pending user approve + optional API SUPABASE_* cleanup'
     - 2026-07-27 S022 13-deploy-smoke PASS — UJ-032 live verified; PyPI Trusted Publisher still pending
@@ -5875,6 +5922,54 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S026-close
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  status: confirmed
+  category: session-close
+  topic: Phase 4 cycle/session close
+  summary: 'Close EV-020/S026; F24/F25 Done; PR #793 0f77194 merged; H1–H5 + live smoke PASS'
+  decision: 'Close S026/EV-020 (Phase 4). D-S026-close — F24/F25 Done; H1–H5 + live smoke PASS; PR #793 merged 0f77194; archive session; active_session=null; #731.'
+  related_prs:
+  - 793
+  related_issues:
+  - 731
+  related_pr: 793
+  tip_sha: 0f77194
+  tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+  related_decisions:
+  - D-S026-E20-13-merge
+  close_note: "F24/F25 Done; H1–H5 + live smoke PASS; PR #793 merged 0f77194; #731"
+- id: D-S026-E20-13-merge
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  status: confirmed
+  category: deploy
+  topic: "PR #793 merge + deploy smoke PASS"
+  summary: 'T6.5 PASS — H1–H5 + live F24/F25; PR #793 merged 0f77194; deploys dep-d9l5ihf10e5c73fs5420 / dep-d9l5ii9t0dsc73fr60gg'
+  decision: '2026-07-29 S026/EV-020 (D-S026-E20-13-merge). PR #793 merged 0f77194; API dep-d9l5ihf10e5c73fs5420; FE dep-d9l5ii9t0dsc73fr60gg; live H1–H5 + F24/F25 smoke PASS; report docs/sessions/S026-airmet-quality-wmo-examples/reports/deploy-smoke.md; handoff 16-evolve Phase 4 close.'
+  related_prs:
+  - 793
+  related_issues:
+  - 731
+  related_pr: 793
+  tip_sha: 0f77194
+  tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+  api_deploy: dep-d9l5ihf10e5c73fs5420
+  fe_deploy: dep-d9l5ii9t0dsc73fr60gg
+  artifact: docs/sessions/S026-airmet-quality-wmo-examples/reports/deploy-smoke.md
 - id: D-S026-E20-11-ac-all
   date: "2026-07-29"
   timestamp: "2026-07-29"
@@ -11491,6 +11586,34 @@ decisions_log:
   do_not_auto_merge: true
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790
 artifacts:
+- path: docs/sessions/S026-airmet-quality-wmo-examples/reports/deploy-smoke.md
+  type: session-report
+  kind: deploy-smoke
+  stage: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  created_at: '2026-07-29'
+  updated_at: '2026-07-29'
+  status: completed
+  overall: pass
+  tip_sha: 0f77194
+  tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+  note: 'S026/EV-020 T6.5 PASS — deploy-smoke.md; H1–H5 + live F24/F25; PR #793 merged 0f77194; API dep-d9l5ihf10e5c73fs5420; FE dep-d9l5ii9t0dsc73fr60gg; #731'
+- path: docs/sessions/S026-airmet-quality-wmo-examples/reports/evolve-summary.md
+  type: session-report
+  kind: evolve-summary
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S026-airmet-quality-wmo-examples
+  evolve_cycle_id: EV-020
+  created_at: '2026-07-29'
+  updated_at: '2026-07-29'
+  status: completed
+  overall: pass
+  tip_sha: 0f77194
+  tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+  note: 'S026/EV-020 evolve-summary — Phase 4 close; F24/F25 Done; PR #793 merged 0f77194; #731'
 - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/verify-impl.md
   type: session-report
   kind: verify-impl
@@ -13664,10 +13787,10 @@ evolve_cycles:
   deepen: [F9, F7.g]
   feature_note: "F24 AIRMET quality #731; F25 WMO official golden parity METAR/SPECI/TAF + UI gate; deepen F9 glossary registry+OpenAIP; deepen F7.g examples catalog"
   title: "AIRMET quality + WMO official golden parity + decode glossary"
-  status: in_progress
+  status: completed
   started: "2026-07-29"
   started_at: "2026-07-29"
-  completed: null
+  completed: "2026-07-29"
   github_issues: [731]
   branch: evolve/EV-020-airmet-quality
   preset: Lean+build+11
@@ -13683,24 +13806,38 @@ evolve_cycles:
     required_stages: [00-context, 16-evolve, 01-requirements, 02-verify-plan, 04-tech-plan, 07-build, 08-verify-build, 10-e2e, 11-verify-impl, 13-deploy-smoke]
     skipped_stages: [03-plan-tooling, 05-verify-tech, 06-tech-tooling, 09-qa, 12-verify-deploy]
     note: "Lean+build+11 approved Confirm C=1 (D-S026-E20-routing-C1); 11-verify-impl re-added for F24/F25 AC"
-  current_stage: 13-deploy-smoke
+  current_stage:
   stages:
     00-context: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
-    16-evolve: {status: in_progress, started: "2026-07-29"}
+    16-evolve: {status: completed, started: "2026-07-29", completed: "2026-07-29", note: "COMPLETE — Phase 4 close D-S026-close; EV-020 completed"}
     01-requirements: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
     02-verify-plan: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
     04-tech-plan: {status: completed, started: "2026-07-29", completed: "2026-07-29"}
-    07-build: {status: in_progress, started: "2026-07-29", progress: "26/~28", active_task: T6.5, active_task_status: in_progress, tip_sha: 3027305, note: "M0–M6 T6.1–T6.4 done; next T6.5"}
+    07-build: {status: completed, started: "2026-07-29", completed: "2026-07-29", progress: "28/28", active_task: T6.5, active_task_status: completed, tip_sha: 0f77194, note: "M0–M6 all tasks done; tip merge 0f77194"}
     08-verify-build: {status: completed, started: "2026-07-29", completed: "2026-07-29", active_task: T6.2, active_task_status: completed, tip_sha: e839a6e, overall: pass, note: "T6.2 PASS — verification-report.md; FileConverter WMO A3-1 label fix tip e839a6e"}
     10-e2e: {status: completed, started: "2026-07-29", completed: "2026-07-29", active_task: T6.3, active_task_status: completed, tip_sha: 3027305, overall: pass, note: "T6.3 PASS — e2e-report.md; UJ-035/036 T0; tip 3027305"}
-    11-verify-impl: {status: completed, started: "2026-07-29", completed: "2026-07-29", active_task: T6.4, active_task_status: completed, tip_sha: 3027305, overall: pass, note: "T6.4 PASS — AC all approved; preview declined; verify-impl.md", decision_ids: [D-S026-E20-11-ac-all, D-S026-E20-11-preview-no]}
-    13-deploy-smoke: {status: in_progress, started: "2026-07-29", active_task: T6.5, active_task_status: in_progress, tip_sha: 3027305, note: "T6.5 H4–H5 required; PR+merge then live smoke"}
-  gates: {a_to_b: passed, b_to_c: passed, c_to_d: pending, deploy: pending}
-  checkpoints: {phase_a: passed, phase_b: passed, phase_c: pending, phase_d: in_progress, deploy: pending}
+    11-verify-impl: {status: completed, started: "2026-07-29", completed: "2026-07-29", active_task: T6.4, active_task_status: completed, tip_sha: 0b17179, overall: pass, note: "T6.4 PASS — AC all approved; preview declined; verify-impl.md", decision_ids: [D-S026-E20-11-ac-all, D-S026-E20-11-preview-no, D-S026-E20-13-merge, D-S026-close]}
+    13-deploy-smoke: {status: completed, started: "2026-07-29", completed: "2026-07-29", active_task: T6.5, active_task_status: completed, tip_sha: 0f77194, overall: pass, note: "T6.5 PASS — deploy-smoke.md; H1–H5 + live F24/F25; PR #793 merged 0f77194; API dep-d9l5ihf10e5c73fs5420; FE dep-d9l5ii9t0dsc73fr60gg", pr_number: 793, pr_url: "https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793", pr_status: merged, do_not_auto_merge: true, api_deploy: dep-d9l5ihf10e5c73fs5420, fe_deploy: dep-d9l5ii9t0dsc73fr60gg, report: docs/sessions/S026-airmet-quality-wmo-examples/reports/deploy-smoke.md, decision_id: D-S026-E20-13-merge}
+  gates: {a_to_b: passed, b_to_c: passed, c_to_d: passed, deploy: passed}
+  checkpoints: {phase_a: passed, phase_b: passed, phase_c: passed, phase_d: passed, deploy: passed}
   adrs:
   - path: docs/adr/ADR-032-wmo-default-golden-glossary.md
     status: accepted
   artifacts:
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/deploy-smoke.md
+    status: completed
+    stage: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    overall: pass
+    tip_sha: 0f77194
+    note: "T6.5 PASS — H1–H5 + live F24/F25; PR #793 merged 0f77194"
+  - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/evolve-summary.md
+    status: completed
+    stage: 16-evolve
+    skill_id: 16-evolve
+    overall: pass
+    tip_sha: 0f77194
+    note: "EV-020 Phase 4 close; F24/F25 Done; PR #793 merged"
   - path: docs/sessions/S026-airmet-quality-wmo-examples/reports/verify-impl.md
     status: completed
     stage: 11-verify-impl
@@ -13739,10 +13876,18 @@ evolve_cycles:
     status: completed
   issues: []
   decision_refs: [E20-1, E20-2, E20-3, E20-4, E20-5, E20-6, E20-A, E20-B, D-S026-E20-intake, D-S026-E20-routing-C1, E20-8, E20-E1, E20-E2, E20-E3, S02.M1, S02.M2, S02.L1, S02.L2, D-S026-EV020-s02m1-1, D-S026-EV020-s02m2-1, D-S026-EV020-s02l1-1, D-S026-EV020-s02l2-1, D-S026-02-phase-a, E20-F1, E20-F2, E20-F3, E20-F4, E20-F5, E20-F6, E20-F7, E20-F8, D-S026-04-plan-approve, D-S026-07-resume-T1.3, D-S026-07-T1.3-T1.4-complete, D-S026-07-resume-T2.1, D-S026-T2.3-A, D-S026-07-M2-complete, D-S026-E20-11-ac-all, D-S026-E20-11-preview-no]
-  note: "T6.4 PASS D-S026-E20-11-ac-all; preview-no; next T6.5 13-deploy-smoke; progress 26/~28; tip 3027305; phase_d in_progress"
-  tip_sha: 3027305
-  tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
+  note: "D-S026-close — F24/F25 Done; H1–H5 + live smoke PASS; PR #793 merged 0f77194"
+  tip_sha: 0f77194
+  tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+  pr_number: 793
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793
+  pr_status: merged
+  do_not_auto_merge: true
   notes:
+  - '2026-07-29 S026/EV-020 Phase 4 close D-S026-close — cycle+session completed; PR #793 merged 0f77194; H1–H5 + live F24/F25 smoke PASS; F24/F25 Done; #731'
+  - '2026-07-29 S026/EV-020 13-deploy-smoke COMPLETE (D-S026-E20-13-merge) — PASS; H1–H5 + live F24/F25; deploys dep-d9l5ihf10e5c73fs5420 / dep-d9l5ii9t0dsc73fr60gg; report deploy-smoke.md; #731'
+  - '2026-07-29 S026/EV-020 07-build COMPLETE — M0–M6 all tasks done; tip merge 0f77194; #731'
+  - '2026-07-29 S026/EV-020 PR #793 open (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793); do_not_auto_merge; T6.5 awaiting merge then live H4–H5; tip 5cd0412; progress 26/~28; #731'
   - '2026-07-29 S026/EV-020 T6.4 PASS 11-verify-impl (D-S026-E20-11-ac-all + D-S026-E20-11-preview-no) — AC all approved; UI preview declined; verify-impl.md; next T6.5 13-deploy-smoke; progress 26/~28; phase_d in_progress; #731'
   - '2026-07-29 S026/EV-020 T6.3 PASS 10-e2e — UJ-035/036 T0; e2e-report.md; tip c963a0a (no [T6.3] commit yet); next T6.4=11-verify-impl; progress 25/~28; phase_c/c_to_d still pending; #731'
   - '2026-07-29 S026/EV-020 T6.2 PASS 08-verify-build (FileConverter WMO A3-1); tip e839a6e; next T6.3=10-e2e; progress 24/~28; phase_c/c_to_d still pending; #731'
@@ -18010,12 +18155,13 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-020-airmet-quality
   ahead_of_origin: 0
-  pushed: false
+  pushed: true
   pending_commit:
-  tip_sha: e839a6e
-  tip_sha_full: e839a6e0d9a7e898e03e69d90865039eeb634610
-  note: 'S026/EV-020 T6.2 PASS 08-verify-build; tip e839a6e; next T6.3=10-e2e; progress 24/~28; #731'
+  tip_sha: 5cd0412
+  tip_sha_full: 5cd04128b6a9758dd78ff51071c7f2632cad75c1
+  note: 'S026/EV-020 T6.5 awaiting merge of PR #793 then live H4–H5; tip 5cd0412; progress 26/~28; #731'
   notes:
+  - '2026-07-29 S026/EV-020 PR #793 open; tip 5cd0412 (5cd04128b6a9758dd78ff51071c7f2632cad75c1); T6.5 awaiting merge then live H4–H5; do_not_auto_merge; stage 13-deploy-smoke; progress 26/~28; #731'
   - '2026-07-29 S026/EV-020 tip synced — e839a6e (e839a6e0d9a7e898e03e69d90865039eeb634610); T6.2 PASS 08-verify-build FileConverter WMO A3-1; stage 10-e2e; next T6.3; progress 24/~28; #731'
   - '2026-07-29 S026/EV-020 tip synced — 7e75fff (7e75fff59bd2a2577d3683699f7791d66246ab2b); T6.1 COMPLETE API smoke; stage 07-build; next T6.2=08-verify-build; progress 23/~28; #731'
   - '2026-07-29 S026/EV-020 tip synced — ff1e32f (ff1e32f91f208d2ca3bd282dc789b9de06408967); M5 COMPLETE T5.1–T5.4; stage 07-build; next T6.1 smoke; progress 22/~28; #731'
@@ -18221,15 +18367,19 @@ git_history:
   - name: evolve/EV-020-airmet-quality
     purpose: "S026/EV-020 AIRMET quality (#731) + WMO golden parity + decode glossary; F24/F25"
     base: main
-    status: active
+    status: open
     created: '2026-07-29'
     created_at: '2026-07-29'
     session_id: S026-airmet-quality-wmo-examples
     evolve_cycle_id: EV-020
-    note: "M0–M1 committed (T0.1–T1.4); 07-build @ T2.1; progress 7/~28; not pushed"
-    tip_sha: a5bb2f2
-    tip_sha_full: a5bb2f2abd15ad9f01c087425b63372a9ec89f90
-    pushed: false
+    note: "T6.5 awaiting merge of PR #793 then live H4–H5; tip 5cd0412; progress 26/~28"
+    tip_sha: 5cd0412
+    tip_sha_full: 5cd04128b6a9758dd78ff51071c7f2632cad75c1
+    pushed: true
+    pr_number: 793
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793
+    pr_status: open
+    do_not_auto_merge: true
   - name: evolve/EV-019-sigmet-quality
     purpose: "S025/EV-019 SIGMET family quality bars (#733 general + #739 VA)"
     base: main
@@ -18970,6 +19120,28 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: 5cd0412
+    sha_full: 5cd04128b6a9758dd78ff51071c7f2632cad75c1
+    branch: evolve/EV-020-airmet-quality
+    message: "chore: sync workflow-state after T6.4 AC approve → T6.5"
+    stage: 13-deploy-smoke
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T15:30:24-04:00"
+    files_changed:
+      - workflow-state.yaml
+  - sha: 0b17179
+    sha_full: 0b171791ff23b82757f3e0d8e13c7c868122197f
+    branch: evolve/EV-020-airmet-quality
+    message: "[T6.4] docs: approve F24/F25/F9/F7.g AC; decline UI preview"
+    stage: 11-verify-impl
+    session_id: S026-airmet-quality-wmo-examples
+    evolve_cycle_id: EV-020
+    timestamp: "2026-07-29T15:25:05-04:00"
+    files_changed:
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/acceptance-criteria.md
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
+      - docs/sessions/S026-airmet-quality-wmo-examples/reports/verify-impl.md
   - sha: 3027305
     sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
     branch: evolve/EV-020-airmet-quality

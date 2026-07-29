@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-29 (S026 / EV-020 — F24/F25 Planned; deepen F9/F7.g)
+> **Last updated**: 2026-07-29 (S026 / EV-020 — F24/F25 Done; PR #793; deepen F9/F7.g)
 
 ## Summary
 
@@ -31,8 +31,8 @@
 | F21 | Public unauthenticated operator app | Implemented | Product | S023 / EV-017; #783 |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783 |
 | F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792 |
-| F24 | AIRMET quality bar | Planned | Product | S026 / EV-020; #731 |
-| F25 | WMO official example parity (METAR/SPECI/TAF) + UI gate | Planned | Product | S026 / EV-020 |
+| F24 | AIRMET quality bar | Done | Product | S026 / EV-020; #731; PR #793 |
+| F25 | WMO official example parity (METAR/SPECI/TAF) + UI gate | Done | Product | S026 / EV-020; PR #793 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -706,7 +706,8 @@
 
 ### F24: AIRMET Quality Bar — S026 / EV-020
 
-- **Status**: **Planned** — S026 / EV-020 (intake + 01 manifest locked 2026-07-29).
+- **Status**: **Done** — S026 / EV-020 closed 2026-07-29 (PR [#793](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793)
+  merged `0f77194`; H1–H5 + live AIRMET smoke PASS).
 - **What it does**: Raises **AIRMET** TAC lint, convert, and IWXXM-validate quality to the
   F15/F20/F23 bar. Target: WMO vendor `airmet-A6-1a-TS` TAC→IWXXM **`canonicalize_xml`-equal**
   under **default** convert settings (`profile=annex3`, default pinned `iwxxm_version`).
@@ -726,7 +727,8 @@
 
 ### F25: WMO Official Example Parity (METAR/SPECI/TAF) + UI Gate — S026 / EV-020
 
-- **Status**: **Planned** — S026 / EV-020 (intake + 01 manifest locked 2026-07-29).
+- **Status**: **Done** — S026 / EV-020 closed 2026-07-29 (PR [#793](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793)
+  merged `0f77194`; H1–H5 + live WMO METAR/SPECI/TAF + catalog smoke PASS).
 - **What it does**: Brings **METAR / SPECI / TAF** convert output to **`canonicalize_xml`-equal**
   match against WMO IWXXM `2025-2` vendor examples under **default** settings. Updates the F7.g
   **Examples** catalog so **only** demos that pass the strict WMO bar are offered (SIGMET keepers
