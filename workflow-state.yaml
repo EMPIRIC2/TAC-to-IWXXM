@@ -15,7 +15,7 @@ active_session:
   evolve_cycle_id: EV-019
   github_issue: "733,739"
   artifacts_dir: docs/sessions/S025-sigmet-quality/
-  current_stage: null
+  current_stage: 07-build
   feature_ids:
     - F23
   feature_note: "F23 Planned; deepen F6.d/F12; ADR-028"
@@ -27,7 +27,7 @@ active_session:
   tip_sha: 0ac44d7
   tip_sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
   do_not_auto_merge: true
-  note: "Phase 0 locked E19-1..8; F23 Planned in feature-list; PAUSED before 01-requirements (E19-8=B); resume when user asks"
+  note: "07-build M0 done (3/29); next T1.1 G1 fixtures"
   routing_plan:
     - stage: 00-context
       required: true
@@ -41,24 +41,34 @@ active_session:
       mode: orchestrator
       status: in_progress
       started: "2026-07-29"
-      note: "Phase 0 done paused before 01"
+      note: "Phase C / 07 in progress"
     - stage: 01-requirements
       required: true
       mode: delta
-      status: pending
-      note: "paused — start when user resumes (E19-8=B)"
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      note: "COMPLETE — user confirmed Continue→02; E19-9..14; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md"
     - stage: 02-verify-plan
       required: true
       mode: delta
-      status: pending
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      note: "COMPLETE — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1; F21/F22 summary fix; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04"
     - stage: 04-tech-plan
       required: true
       mode: delta
-      status: pending
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      note: "COMPLETE — E19-15..22; plan approved D-S025-04-plan-approve-A; 04-exit PASS; handoff 07 @ T0.1"
     - stage: 07-build
       required: true
       mode: full
-      status: pending
+      status: in_progress
+      started: "2026-07-29"
+      note: "M0 complete; next T1.1 G1 fixtures"
     - stage: 08-verify-build
       required: true
       mode: full
@@ -2062,13 +2072,13 @@ stages:
   01-requirements:
     status: completed
     mode: delta
-    started_at: '2026-07-27'
-    started: '2026-07-27'
-    completed_at: '2026-07-27'
-    completed: '2026-07-27'
-    session_id: S023-public-app-privacy
-    evolve_cycle_id: EV-017
-    note: 'S023/EV-017 01-requirements COMPLETE 2026-07-27 (delta) — F21/F22 corpus deltas from recommended architecture; deepen F5/F7 IndexedDB; deprecate operator M4; D-S023-01-requirements-delta; handoff 02-verify-plan (pending); historical S021 COMPLETE 2026-07-22'
+    started_at: '2026-07-29'
+    started: '2026-07-29'
+    completed_at: '2026-07-29'
+    completed: '2026-07-29'
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    note: 'S025/EV-019 01-requirements COMPLETE 2026-07-29 (delta) — E19-9..14; F23 + deepen F6.d/F12; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md; handoff 02-verify-plan'
     substeps:
       interviews:
         status: completed
@@ -2086,14 +2096,14 @@ stages:
             coverage-matrix: skipped
             ADR: deferred
     active_session:
-      session_id: S023-public-app-privacy
-      evolve_cycle_id: EV-017
+      session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
       status: completed
       mode: delta
-      started_at: '2026-07-27'
-      started: '2026-07-27'
-      completed_at: '2026-07-27'
-      note: 'S023/EV-017 01-requirements COMPLETE (delta) — F21/F22 + deepen F5/F7; D-S023-01-requirements-delta; handoff 02-verify-plan (pending)'
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      completed_at: '2026-07-29'
+      note: 'S025/EV-019 01-requirements COMPLETE (delta) — E19-9..14; F23 + deepen F6.d/F12; D-S025-01-complete; handoff 02-verify-plan'
       proposed_features:
       - F21
       - F22
@@ -2131,6 +2141,24 @@ stages:
       - docs/sessions/S023-public-app-privacy/reports/01-requirements.md
       - docs/sessions/S023-public-app-privacy/reports/impact-analysis.md
     delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      completed_at: '2026-07-29'
+      note: 'S025/EV-019 01-requirements delta COMPLETE — E19-9..14; F23 + deepen F6.d/F12; D-S025-01-complete; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md; handoff 02-verify-plan'
+      feature_ids:
+      - F23
+      deepen:
+      - F6.d
+      - F12
+      artifacts:
+      - docs/sessions/S025-sigmet-quality/reports/01-requirements.md
+      decision_refs:
+      - D-S025-01-complete
+      - D-S025-E19-01-batch3
     - status: completed
       mode: delta
       session_id: S023-public-app-privacy
@@ -2489,6 +2517,7 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - '2026-07-29 S025/EV-019 01-requirements COMPLETE (D-S025-01-complete) — E19-9..14; F23 + deepen F6.d/F12; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md; handoff 02-verify-plan'
     - '2026-07-27 S023/EV-017 01-requirements COMPLETE (D-S023-01-requirements-delta) — F21/F22 corpus deltas from recommended architecture; deepen F5/F7; reports 01-requirements.md + impact-analysis.md; handoff 02-verify-plan (pending user gate)'
     - '2026-07-27 S023/EV-017 01-requirements STARTED (delta) — F21/F22; deepen F5/F7 IndexedDB; D-S023-E17-scope-lock; interview pending'
     - '2026-07-22 S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780 goldens UI; interview in progress'
@@ -2528,14 +2557,14 @@ stages:
   02-verify-plan:
     status: completed
     mode: delta
-    started_at: '2026-07-28'
-    completed: '2026-07-28'
-    completed_at: '2026-07-28'
-    previous_completed_at: '2026-07-27'
-    session_id: S024-dissemination-file-select
-    evolve_cycle_id: EV-018
-    note: 'S024/EV-018 02-verify-plan COMPLETE 2026-07-28 (delta) — Phase A PASSED (D-S024-02-phase-a-A); C1/C2 fixed; M1/M2 deferred to 04; report docs/sessions/S024-dissemination-file-select/reports/02-verify-plan.md; handoff 04-tech-plan'
-    auto_approved: 9
+    started_at: '2026-07-29'
+    started: '2026-07-29'
+    completed_at: '2026-07-29'
+    previous_completed_at: '2026-07-28'
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    note: 'S025/EV-019 02-verify-plan COMPLETE 2026-07-29 (delta) — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1; F21/F22 summary fix; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04'
+    auto_approved: 14
     contradictions_resolved:
     - C-EV018-1
     - C-EV018-2
@@ -2543,6 +2572,10 @@ stages:
     - M1
     - M2
     decision_refs:
+    - D-S025-02-pass
+    - D-S025-EV019-s1m1-1
+    - D-S025-EV019-s6m1-1
+    - D-S025-EV019-s9m1-1
     - D-S024-02-phase-a-A
     - C-EV018-1
     - C-EV018-2
@@ -2552,20 +2585,20 @@ stages:
       consistency_check:
         status: completed
       statement_review:
-        auto_approved: 10
+        auto_approved: 14
         pending: 0
-        reviewed: 0
+        reviewed: 3
     current_document:
     current_statement:
     active_session:
-      session_id: S024-dissemination-file-select
-      evolve_cycle_id: EV-018
+      session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
       skill_id: 02-verify-plan
       status: completed
       mode: delta
-      started_at: '2026-07-28'
-      completed_at: '2026-07-28'
-      note: 'S024/EV-018 02-verify-plan COMPLETE 2026-07-28 — Phase A PASSED (D-S024-02-phase-a-A); M1/M2 deferred to 04; handoff 04-tech-plan'
+      started_at: '2026-07-29'
+      completed_at: '2026-07-29'
+      note: 'S025/EV-019 02-verify-plan COMPLETE (delta) — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04'
     artifacts:
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
@@ -2575,6 +2608,30 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-07-29'
+      completed_at: '2026-07-29'
+      mode: delta
+      feature_ids:
+      - F23
+      deepen:
+      - F6.d
+      - F12
+      auto_approved: 14
+      note: 'S025/EV-019 02-verify-plan COMPLETE 2026-07-29 (delta) — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1 (D-S025-EV019-s1m1-1/s6m1-1/s9m1-1); F21/F22 summary fix; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04'
+      decision_refs:
+      - D-S025-02-pass
+      - D-S025-02-start
+      - D-S025-EV019-s1m1-1
+      - D-S025-EV019-s6m1-1
+      - D-S025-EV019-s9m1-1
+      artifacts:
+      - docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md
+      fix_in_place:
+      - docs/feature-list.md
     - session_id: S024-dissemination-file-select
       evolve_cycle_id: EV-018
       skill_id: 02-verify-plan
@@ -2701,6 +2758,7 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-07-29 S025/EV-019 02-verify-plan COMPLETE (D-S025-02-pass) — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1 (D-S025-EV019-s1m1-1/s6m1-1/s9m1-1); F21/F22 summary fix; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04; do not start 04'
     - '2026-07-28 S024/EV-018 Phase A PASSED (D-S024-02-phase-a-A) — gates.a_to_b passed; M1/M2 deferred to 04; 04-tech-plan STARTED; 03 skipped (Lean+build)'
     - '2026-07-28 S024/EV-018 02-verify-plan COMPLETE — Phase A PASSED (D-S024-02-phase-a-A); C1/C2 fixed; M1/M2 deferred to 04; report docs/sessions/S024-dissemination-file-select/reports/02-verify-plan.md; handoff 04-tech-plan'
     - '2026-07-28 S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A) — gates.a_to_b passed; 04-tech-plan STARTED; 03 skipped (04 prerequisite waived)'
@@ -2808,13 +2866,13 @@ stages:
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
     status: completed
-    started_at: '2026-07-28T23:04:36Z'
-    completed_at: '2026-07-28T23:21:03Z'
-    previous_started_at: '2026-06-15T00:30:00Z'
-    previous_completed_at: '2026-06-23T12:00:00Z'
-    session_id: S024-dissemination-file-select
-    evolve_cycle_id: EV-018
-    note: 'S024/EV-018 04-tech-plan COMPLETE 2026-07-28 (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C; handoff 07 @ T1.1; #785'
+    started_at: '2026-07-29'
+    completed_at: '2026-07-29'
+    previous_started_at: '2026-07-28T23:04:36Z'
+    previous_completed_at: '2026-07-28T23:21:03Z'
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    note: 'S025/EV-019 04-tech-plan COMPLETE 2026-07-29 (D-S025-04-plan-approve-A) — E19-15..22; plan approved (~29 tasks); 04-exit PASS; B→C; handoff 07 @ T0.1; #733/#739'
     substeps:
       phase_1_toolchain:
         status: completed
@@ -2841,6 +2899,48 @@ stages:
     - docs/adr/ADR-011-work-sessions-data-access.md
     - docs/adr/ADR-012-metar-work-sessions-retention.md
     delta_substages:
+    - session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
+      skill_id: 04-tech-plan
+      status: completed
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      completed: '2026-07-29'
+      completed_at: '2026-07-29'
+      mode: delta
+      feature_ids:
+      - F23
+      deepen:
+      - F6.d
+      - F12
+      decision_refs:
+      - D-S025-02-phase-a-A
+      - D-S025-02-pass
+      - D-S025-04-plan-approve-A
+      - E19-19
+      - E19-20
+      - E19-21
+      - E19-22
+      note: 'S025/EV-019 04-tech-plan COMPLETE 2026-07-29 (D-S025-04-plan-approve-A) — E19-15..22; plan approved (~29 tasks); 04-exit PASS; B→C; handoff 07 @ T0.1; #733/#739'
+      interview:
+        batch_1:
+          status: locked
+          decision_ids:
+          - E19-19
+          - E19-20
+          - E19-21
+          - E19-22
+          locked_at: '2026-07-29'
+          note: 'E19-19 dedicated sigmet-quality.yml; E19-20 B+A sibling light notes; E19-21 H4-H5 required; E19-22 approve plan'
+        plan_approve:
+          status: locked
+          note: Option A — execution plan approved (~29 tasks); complete 04; skip 05/06; start 07 @ T0.1
+          decision_id: D-S025-04-plan-approve-A
+          answers:
+            '1': A
+          locked_at: '2026-07-29'
+      artifacts:
+      - docs/sessions/S025-sigmet-quality/reports/execution-plan.md
     - session_id: S024-dissemination-file-select
       evolve_cycle_id: EV-018
       skill_id: 04-tech-plan
@@ -3189,6 +3289,8 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-29 S025/EV-019 04-tech-plan COMPLETE (D-S025-04-plan-approve-A) — E19-15..22; plan approved (~29 tasks); 04-exit PASS; B→C; handoff 07 @ T0.1; #733/#739'
+    - '2026-07-29 S025/EV-019 04-tech-plan STARTED (D-S025-02-phase-a-A) — Phase A PASSED; gates.a_to_b passed; mode delta; Batch 1 interview pending; #733/#739'
     - '2026-07-28 S024/EV-018 04-tech-plan COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C; start 07 @ T1.1; #785'
     - '2026-07-28 S024/EV-018 04 Batch 2 locked (E18-13..16 / D-S024-04-E18-13..16) — progress A CSS+motion+lucide; reduced-motion C hide; Disseminate A + optional Preflight-only; tests B Vitest+Playwright+screenshot; H6′ @ 13; execution-plan.md pending_approval (B→C); stage remains in_progress; #785'
     - '2026-07-28 S024/EV-018 04 Batch 1 locked (E18-9..12 / D-S024-04-E18-9..12) — single-candidate A; sequencing B interleaved+progress graphic; mid-run A continue; milestones A M1–M4; Batch 2 pending (progress graphic impl + tests); stage remains in_progress; #785'
@@ -3219,14 +3321,13 @@ stages:
     - S014/EV-010 delta 04-tech-plan completed 2026-07-18 — M1–M6 approved (43A); ADR-027 xsdata
     - S015/EV-011 delta 04-tech-plan completed 2026-07-19 — E11-31 GET lint-issue-catalog; 31 tasks approved
     active_session:
-      session_id: S024-dissemination-file-select
-      evolve_cycle_id: EV-018
+      session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
       skill_id: 04-tech-plan
-      status: completed
+      status: in_progress
       mode: delta
-      started_at: '2026-07-28T23:04:36Z'
-      completed_at: '2026-07-28T23:21:03Z'
-      note: 'COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved; B→C; handoff 07 @ T1.1; #785'
+      started_at: '2026-07-29'
+      note: '04-tech-plan in_progress — Phase A passed (D-S025-02-phase-a-A); Batch 1 interview pending'
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -3432,22 +3533,41 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
-    started_at: '2026-07-28T23:21:03Z'
-    completed_at: '2026-07-28T23:30:05Z'
-    previous_started_at: '2026-06-14T12:45:00Z'
-    previous_completed_at: '2026-06-22T02:30:00Z'
-    session_id: S024-dissemination-file-select
-    evolve_cycle_id: EV-018
-    note: 'S024/EV-018 07-build COMPLETE 2026-07-28 — M1–M4 / 14 tasks (FE multi-select + interleaved queue + progress graphic + e2e); tip a4b75f2; HANDOFF; ready for 08-verify-build; #785'
+    status: in_progress
+    started_at: '2026-07-29'
+    previous_started_at: '2026-07-28T23:21:03Z'
+    previous_completed_at: '2026-07-28T23:30:05Z'
+    session_id: S025-sigmet-quality
+    evolve_cycle_id: EV-019
+    note: 'S025/EV-019 07-build M0 complete 2026-07-29 — T0.1–T0.3 done (research catalog, matrix link, sigmet-quality.yml); progress 3/29; next T1.1 G1 fixtures; #733/#739'
     substeps:
       task_loop:
-        status: completed
-        current_task: T4.x
+        status: in_progress
+        current_task: T1.1
         phase: C
-        milestone: M4
-        notes: S024/EV-018 M1–M4 all 14 tasks completed — handoff 08-verify-build
+        milestone: M1
+        notes: S025/EV-019 M1 T1.1 G1 fixtures next
     delta_substages:
+    - id: S025-sigmet-quality
+      session_id: S025-sigmet-quality
+      evolve_cycle_id: EV-019
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      mode: full
+      note: 'M0 complete 2026-07-29 — T0.1–T0.3 done (research catalog, matrix link, sigmet-quality.yml); progress 3/29; next T1.1 G1 fixtures; #733/#739'
+      active_milestone: M1
+      active_task: T1.1
+      active_task_status: pending
+      decision_id: D-S025-04-plan-approve-A
+      branch: evolve/EV-019-sigmet-quality
+      progress: 3/29
+      feature_ids:
+      - F23
+      deepen:
+      - F6.d
+      - F12
     - id: S024-dissemination-file-select
       session_id: S024-dissemination-file-select
       evolve_cycle_id: EV-018
@@ -3599,6 +3719,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-29 S025/EV-019 07-build STARTED (D-S025-04-plan-approve-A B→C) — active task T0.1; M0 research catalog; plan ~29 tasks; progress 0/29; #733/#739'
     - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked) awaiting RENDER_API_KEY for live env cutover; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — F21 public deploy corpus + EV-017 CHANGELOG draft; T7.4 blocked (D-S023-07-T7.4-blocked, no RENDER_API_KEY); T7.2 pending after T7.4 deploy; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
     - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke; active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
@@ -5227,6 +5348,174 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S025-04-plan-approve-A
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  skill: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: 04 Decision A — Approve execution plan (~29 tasks)
+  summary: Option A — Approve execution plan; B→C; start 07 @ T0.1
+  decision: "User approved 2026-07-29 (D-S025-04-plan-approve-A / option A). Execution plan approved (~29 tasks). 04-tech-plan COMPLETE; 05/06 remain skipped (Lean+build); gates.b_to_c + checkpoints.phase_b passed; 07-build STARTED @ T0.1. Related: E19-19..22, #733/#739."
+  related_issue: "733,739"
+  related_decisions:
+  - E19-19
+  - E19-20
+  - E19-21
+  - E19-22
+- id: E19-19
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: Dedicated sigmet-quality.yml
+  summary: E19-19 — dedicated sigmet-quality.yml fixture catalog
+  decision: "A — Dedicated sigmet-quality.yml fixture catalog for general + VA SIGMET quality bars. Locked 2026-07-29 04-tech-plan Batch 1 (D-S025-04-plan-approve-A)."
+  related_issue: "733,739"
+  related_decision: D-S025-04-plan-approve-A
+- id: E19-20
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: B+A sibling light notes
+  summary: E19-20 — B+A sibling light notes for general/VA SIGMET
+  decision: "A — B+A sibling light notes pattern for general/VA SIGMET quality themes. Locked 2026-07-29 04-tech-plan Batch 1 (D-S025-04-plan-approve-A)."
+  related_issue: "733,739"
+  related_decision: D-S025-04-plan-approve-A
+- id: E19-21
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: H4-H5 required
+  summary: E19-21 — H4-H5 required when API/FE changed
+  decision: "A — H4-H5 required when API/FE changed; workbench SIGMET + VA smoke. Locked 2026-07-29 04-tech-plan Batch 1 (D-S025-04-plan-approve-A)."
+  related_issue: "733,739"
+  related_decision: D-S025-04-plan-approve-A
+- id: E19-22
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: Approve plan
+  summary: E19-22 — Approve execution plan as written
+  decision: "A — Approve execution plan as written (~29 tasks); complete 04; B→C; start 07 @ T0.1. Locked 2026-07-29 (D-S025-04-plan-approve-A)."
+  related_issue: "733,739"
+  related_decision: D-S025-04-plan-approve-A
+- id: D-S025-02-phase-a-A
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  skill: 16-evolve
+  skill_id: 04-tech-plan
+  stage: 16-evolve
+  category: checkpoint
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: Phase A checkpoint — approve → start 04-tech-plan
+  summary: Phase A PASS; proceed 04-tech-plan (user A)
+  decision: Phase A PASS; proceed 04-tech-plan (user A)
+  related_issue: "733,739"
+  related_decision: D-S025-02-pass
+- id: D-S025-02-pass
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  stage: 02-verify-plan
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: 02-verify-plan gate — PASS
+  summary: "02-verify-plan COMPLETE — PASS; 14 auto-approved; medium S1.M1/S6.M1/S9.M1 all option 1; Phase A checkpoint pending → 04-tech-plan"
+  decision: "02-verify-plan PASS 2026-07-29 — consistency OK; fix-in-place F21/F22 summary; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending before 04; do not start 04 yet. Related: D-S025-EV019-s1m1-1, D-S025-EV019-s6m1-1, D-S025-EV019-s9m1-1."
+- id: D-S025-EV019-s1m1-1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  stage: 02-verify-plan
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: S1.M1 full HARD themes + 04 kill-switch
+  summary: S1.M1 = 1 — keep full HARD themes G1–G3 / V1–V3 / C1; 04 milestones with AskQuestion kill-switch
+  decision: "S1.M1 option 1 confirmed 2026-07-29 — keep full HARD matrix themes (G1–G3 / V1–V3 / C1) for general + VA SIGMET; 04-tech-plan milestones use AskQuestion kill-switch if blocked. Related: E19-5, E19-12."
+- id: D-S025-EV019-s6m1-1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  stage: 02-verify-plan
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: Keep G1–G3 theme ids; prefix F23 theme vs gate
+  summary: S6.M1 = 1 — keep G1–G3 theme ids; always prefix "F23 theme" vs "gate" in tables
+  decision: "S6.M1 option 1 confirmed 2026-07-29 — keep G1–G3 F23 quality theme ids in COVERAGE_MATRIX; always prefix disambiguation (F23 theme vs pipeline gate) in tables. COVERAGE_MATRIX F23 section note added during 02 pass."
+- id: D-S025-EV019-s9m1-1
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  stage: 02-verify-plan
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  status: confirmed
+  resolved_at: "2026-07-29"
+  topic: Keep skip 05; light pass at 04 exit
+  summary: S9.M1 = 1 — keep skip 05-verify-tech; lightweight consistency at 04 exit
+  decision: "S9.M1 option 1 confirmed 2026-07-29 — keep Lean+build skip of 05-verify-tech; run a lightweight consistency pass at 04-tech-plan exit. Do not re-add 05 to routing now."
+- id: D-S025-02-start
+  date: "2026-07-29"
+  skill: 02-verify-plan
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  decision: "02-verify-plan started — delta audit in progress; 14 auto-approved; medium S1.M1/S6.M1/S9.M1 pending"
+- id: D-S025-01-complete
+  date: "2026-07-29"
+  skill: 01-requirements
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  decision: "01 confirmed complete → 02-verify-plan; user Continue→02; E19-9..14; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md"
+- id: D-S025-E19-01-batch3
+  date: "2026-07-29"
+  skill: 01-requirements
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  decision: "E19-9..14 all A — manifest A; UI docs-only; UJ-034 + TC-F23-001..006; themes G1-G3/V1-V3/C1; product=sigmet content-selected VA root; no FE catalog filters. Deltas written pending confirm."
+- id: D-S025-E19-resume-01
+  date: '2026-07-29'
+  skill: 16-evolve
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
+  decision: "User /16-evolve continue — resume from pause; start 01-requirements delta"
 - id: D-S025-E19-batch2
   date: '2026-07-29'
   timestamp: '2026-07-29'
@@ -10016,6 +10305,10 @@ decisions_log:
   do_not_auto_merge: true
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/790
 artifacts:
+- path: docs/sessions/S025-sigmet-quality/reports/01-requirements.md
+  status: pending_confirm
+  session_id: S025-sigmet-quality
+  evolve_cycle_id: EV-019
 - path: docs/sessions/S024-dissemination-file-select/reports/e2e-report.md
   type: session-report
   kind: e2e-report
@@ -12140,13 +12433,13 @@ evolve_cycles:
   github_issues: [733, 739]
   branch: evolve/EV-019-sigmet-quality
   started_at: "2026-07-29"
-  current_stage: paused-before-01
+  current_stage: 07-build
   preset: Lean+build
   tip_sha: 0ac44d7
   tip_sha_full: 0ac44d78e3ee0ac4c573c60a67becee409129ebc
   do_not_auto_merge: true
-  note: "Phase 0 locked; F23 written; paused before 01 (E19-8=B)"
-  decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2]
+  note: "07-build M0 complete (3/29); next T1.1 G1 fixtures"
+  decision_refs: [E19-1, E19-2, E19-3, E19-4, E19-5, E19-6, E19-7, E19-8, E19-ui, D-S025-E19-batch1, D-S025-E19-batch2, D-S025-01-complete, D-S025-02-pass, D-S025-EV019-s1m1-1, D-S025-EV019-s6m1-1, D-S025-EV019-s9m1-1, D-S025-02-phase-a-A, D-S025-04-plan-approve-A, E19-19, E19-20, E19-21, E19-22]
 - id: EV-018
   session_id: S024-dissemination-file-select
   cycle_type: feature
