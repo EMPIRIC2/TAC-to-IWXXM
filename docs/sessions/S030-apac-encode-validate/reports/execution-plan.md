@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M3 — P0 translationFailedTAC |
-| **Active task** | T3.1 (in_progress) |
-| **Tasks** | 8 / 24 |
+| **Active milestone** | M4 — P1 dual-register + translationCentre |
+| **Active task** | T4.1 |
+| **Tasks** | 10 / 24 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -74,8 +74,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Test | Official `*-translation-failed.xml` attr matrix | TC-EV023-003 | T2.2 | **in_progress** |
-| T3.2 | Code | Quarantine emits original TAC | F6 | T3.1 | pending |
+| T3.1 | Test | Official `*-translation-failed.xml` attr matrix | TC-EV023-003 | T2.2 | **completed** |
+| T3.2 | Code | Quarantine emits original TAC | F6 | T3.1 | **completed** |
 
 ### M4 — P1 dual-register + translationCentre
 

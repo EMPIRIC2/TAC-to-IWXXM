@@ -105,10 +105,6 @@ def test_tc_ev023_003_collect_failed_member_keeps_translation_attrs() -> None:
     assert _attr(xml, "translationFailedTAC")
 
 
-@pytest.mark.xfail(
-    reason="T3.2: quarantine shell with translationFailedTAC for unreliable METAR TAC",
-    strict=True,
-)
 def test_tc_ev023_003_metar_invalid_convert_emits_quarantine() -> None:
     """Official metar-translation-failed.tac → quarantine METAR with original TAC."""
     from tac2iwxxm import convert
@@ -130,10 +126,6 @@ def test_tc_ev023_003_metar_invalid_convert_emits_quarantine() -> None:
     assert_no_tac_in_xml_comments(result.xml)
 
 
-@pytest.mark.xfail(
-    reason="T3.2: do not partial-translate unreliable TAC — emit quarantine instead",
-    strict=True,
-)
 def test_tc_ev023_003_taf_invalid_must_not_partial_translate() -> None:
     """Unreliable TAF must quarantine rather than emit a partial operational baseForecast."""
     from tac2iwxxm import convert
