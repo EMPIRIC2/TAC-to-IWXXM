@@ -44,8 +44,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
-    note: Orchestrator EV-023; PR #801 open; T7.4 13 pending merge/deploy; progress 23/24
+    status: completed
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    note: 'COMPLETE — EV-023 cycle done; PR #801 merged af98690; H1–H5 + live convert PASS; Phase 4 close pending user AskQuestion'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -70,9 +72,10 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-07-30'
-    note: T7.4 prep pushed; PR #801 open; 23/24
+    completed: '2026-07-30'
+    note: 'COMPLETE — M7 T7.4 done; PR #801 merged af98690; progress 24/24; #800'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -94,19 +97,22 @@ active_session:
   - stage: 13-deploy-smoke
     required: true
     mode: when_ships
-    status: pending
-    note: E23-4 when_ships — after PR #801 merge/deploy
-  current_stage: 13-deploy-smoke
+    status: completed
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    note: 'COMPLETE — PASS; PR #801 merged af98690; CI 30586719518; H1/H0c/H3/H4/H5 + live convert themes; report deploy-smoke.md; #800'
+  current_stage: 16-evolve
   started_at: '2026-07-30'
   context_briefs: []
-  tip_sha: f859f31
-  tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+  tip_sha: af98690
+  tip_sha_full: af98690
   pushed: true
   pr_number: 801
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
-  pr_status: open
+  pr_status: merged
+  merge_sha: af98690
   do_not_auto_merge: true
-  note: 'PR #801 open (pushed f859f31); T7.4 13 pending merge/deploy (E23-4); progress 23/24; pre-push gate fixed (F7 quarantine + tac2iwxxm coverage)'
+  note: 'PR #801 merged af98690; T7.4 + 13-deploy-smoke COMPLETE; EV-023 cycle done; progress 24/24; Phase 4 close pending user AskQuestion; #800'
 sessions:
 - id: S028-sigmet-multiline-split
   type: hotfix
@@ -4725,9 +4731,11 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
+    status: completed
     started_at: '2026-07-30'
     started: '2026-07-30'
+    completed: '2026-07-30'
+    completed_at: '2026-07-30'
     previous_started_at: '2026-07-29'
     previous_completed_at: '2026-07-30'
     previous_session_id: S027-vaa-quality
@@ -4735,41 +4743,51 @@ stages:
     previous_tip_sha: b5f5c32
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'T7.4 prep pushed; PR #801 open; 23/24; tip f859f31; branch evolve/EV-023-apac-encode-validate; #800'
-    tip_sha: f859f31
-    tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
-    current_stage: 13-deploy-smoke
+    note: 'COMPLETE — M7 T7.4 done; PR #801 merged af98690; progress 24/24; #800'
+    tip_sha: af98690
+    tip_sha_full: af98690
+    current_stage: 16-evolve
     active_milestone: M7
     active_task: T7.4
-    active_task_status: pending
-    progress: 23/24
+    active_task_status: completed
+    progress: 24/24
+    pr_number: 801
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
+    pr_status: merged
+    merge_sha: af98690
     substeps:
       task_loop:
-        status: in_progress
+        status: completed
         current_task: T7.4
-        active_task_status: pending
+        active_task_status: completed
         active_milestone: M7
         phase: C
         milestone: M7
-        notes: T7.4 prep pushed; PR #801 open; awaiting merge/deploy; 23/24
+        notes: T7.4 COMPLETE — PR #801 merged af98690; 13-deploy-smoke PASS; progress 24/24
     delta_substages:
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
       evolve_cycle_id: EV-023
       skill_id: 07-build
-      status: in_progress
+      status: completed
       started_at: '2026-07-30'
       started: '2026-07-30'
+      completed: '2026-07-30'
+      completed_at: '2026-07-30'
       mode: full
-      note: 'T7.4 prep pushed; PR #801 open; 23/24; tip f859f31; branch evolve/EV-023-apac-encode-validate; #800'
+      note: 'COMPLETE — M7 T7.4 done; PR #801 merged af98690; progress 24/24; #800'
       active_milestone: M7
       active_task: T7.4
-      active_task_status: pending
-      progress: 23/24
+      active_task_status: completed
+      progress: 24/24
       decision_id: D-S030-E23-M0
-      tip_sha: f859f31
-      tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+      tip_sha: af98690
+      tip_sha_full: af98690
       branch: evolve/EV-023-apac-encode-validate
+      pr_number: 801
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
+      pr_status: merged
+      merge_sha: af98690
       feature_ids:
       - F6
       - F2
@@ -6588,11 +6606,11 @@ stages:
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json);
       operator T1.3 + S003 keys + redeploy required before 13
   13-deploy-smoke:
-    status: pending
-    started_at: null
-    started: null
-    completed: null
-    completed_at: null
+    status: completed
+    started_at: '2026-07-30'
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    completed_at: '2026-07-30'
     previous_started_at: '2026-07-30'
     previous_completed_at: '2026-07-30'
     previous_session_id: S027-vaa-quality
@@ -6602,33 +6620,47 @@ stages:
     previous_decision_id: D-S027-E21-13-merge
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'E23-4 when_ships — PR #801 open; T7.4 pending merge/deploy; progress 23/24; tip f859f31; #800'
-    tip_sha: f859f31
-    tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
-    overall: null
+    note: 'COMPLETE — PASS; PR #801 merged af98690; CI 30586719518; H1/H0c/H3/H4/H5 + live convert themes; report deploy-smoke.md; #800'
+    tip_sha: af98690
+    tip_sha_full: af98690
+    overall: pass
     active_task: T7.4
-    active_task_status: pending
-    progress: 23/24
+    active_task_status: completed
+    progress: 24/24
     do_not_auto_merge: true
     pr_number: 801
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
-    pr_status: open
-    report: null
+    pr_status: merged
+    merge_sha: af98690
+    ci_run: '30586719518'
+    report: docs/sessions/S030-apac-encode-validate/reports/deploy-smoke.md
     delta_substages:
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
       evolve_cycle_id: EV-023
       skill_id: 13-deploy-smoke
-      status: pending
+      status: completed
       mode: when_ships
+      started: '2026-07-30'
+      started_at: '2026-07-30'
+      completed: '2026-07-30'
+      completed_at: '2026-07-30'
       branch: evolve/EV-023-apac-encode-validate
-      tip_sha: f859f31
-      tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
-      note: E23-4 when_ships — after PR #801 merge/deploy
+      tip_sha: af98690
+      tip_sha_full: af98690
+      note: 'COMPLETE — PASS; PR #801 merged af98690; CI 30586719518; H1/H0c/H3/H4/H5 + live convert themes; report deploy-smoke.md; #800'
       active_milestone: M7
       active_task: T7.4
-      active_task_status: pending
-      progress: 23/24
+      active_task_status: completed
+      progress: 24/24
+      overall: pass
+      pr_number: 801
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
+      pr_status: merged
+      merge_sha: af98690
+      api_deploy: dep-d9lsvabm8hqs739dpqlg
+      report: docs/sessions/S030-apac-encode-validate/reports/deploy-smoke.md
+      ci_run: '30586719518'
       feature_ids:
       - F6
       - F2
@@ -7018,18 +7050,19 @@ stages:
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006;
       RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
     started_at: '2026-07-30'
-    completed_at: null
-    completed: '2026-07-27'
-    current_stage: 13-deploy-smoke
-    tip_sha: f859f31
-    tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
-    note: 'S030/EV-023 PR #801 open (pushed f859f31); T7.4 13 pending merge/deploy; progress 23/24; branch evolve/EV-023-apac-encode-validate; #800'
+    completed_at: '2026-07-30'
+    completed: '2026-07-30'
+    current_stage: null
+    tip_sha: af98690
+    tip_sha_full: af98690
+    note: 'S030/EV-023 COMPLETE — PR #801 merged af98690; H1–H5 + live convert PASS; Phase 4 close pending user AskQuestion; #800'
     notes:
+    - '2026-07-30 S030/EV-023 13-deploy-smoke COMPLETE — PR #801 merged af98690; CI 30586719518 SUCCESS (incl. Deploy); API dep-d9lsvabm8hqs739dpqlg LIVE; H1/H0c/H3/H4/H5 + live convert themes PASS; report deploy-smoke.md; progress 24/24; Phase 4 close pending; #800'
     - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; T7.4 13 pending merge/deploy; progress 23/24; #800'
     - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
     - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
@@ -7304,25 +7337,26 @@ deployment:
   staging:
     status: deployed
     last_verified: '2026-07-30'
-    commit_deployed: df56d1f
-    commit_head: df56d1f
+    commit_deployed: af98690
+    commit_head: af98690
     drift: false
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
     deploy_ids:
-      api: dep-d9lmsdflk1mc739232ug
+      api: dep-d9lsvabm8hqs739dpqlg
       frontend: dep-d9lmsefqj5pc739d3it0
-    ci_deploy_run: '30227888075'
+    ci_deploy_run: '30586719518'
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:main-latest
       note: S023/EV-017 13 COMPLETE — Auth leftovers removed; API redeploy dep-d9kii12jobas73fl4bi0; health
         tiers pass; empiric2 imagePath
     health_tiers:
-      H0ci: note_deploy_hook_may_still_need_verify
+      H0ci: pass
       H0c: pass
       H1: pass
+      H2: pass
       H3: pass
       H4: pass
       H5: pass
@@ -7334,12 +7368,14 @@ deployment:
       goldens_ui: pass
       h0c: pass
       h1: pass
+      h2: pass
       h3: pass
       h4: pass
       h5: pass
-      h0ci: note_deploy_hook_may_still_need_verify
+      h0ci: pass
       uj032: pass
     notes:
+    - '2026-07-30 S030/EV-023 13-deploy-smoke COMPLETE — PR #801 merged af98690; CI 30586719518 SUCCESS (incl. Deploy); API dep-d9lsvabm8hqs739dpqlg LIVE; H1/H0c/H3/H4/H5 + live convert themes PASS; #800'
     - '2026-07-30 S027/EV-021 13-deploy-smoke COMPLETE — PR #794 merged df56d1f; deploys dep-d9lmsdflk1mc739232ug
       / dep-d9lmsefqj5pc739d3it0; H1–H5 + live VAA/TCA smoke PASS; F26/F27 Done; #736/#737'
     - '2026-07-29 S026/EV-020 13-deploy-smoke COMPLETE — PR #793 merged 0f77194; deploys dep-d9l5ihf10e5c73fs5420
@@ -7373,7 +7409,7 @@ deployment:
       Playwright workbench PASS
     - Phase D / Phase 4 close still pending user deploy approval (session open)
     ci_tests: green
-    ci_deploy: note_may_still_need_verify
+    ci_deploy: green
     images_attempted:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260727004311-c49f22b
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260727004311-c49f22b
@@ -22383,10 +22419,11 @@ evolve_cycles:
   - F12
   - F13
   title: APAC FAQ + codes + WMO-306 encode/validate deltas (#800)
-  status: in_progress
+  status: completed
   started: '2026-07-30'
   started_at: '2026-07-30'
-  completed: null
+  completed: '2026-07-30'
+  completed_at: '2026-07-30'
   scope_summary: 'Deepen F6/F2/F12/F13 (no new Fn); full #800 P0+P1+actionable P2 — P0 NSC/WX-nils/translationFailedTAC;
     P1 dual-register colour/nil + iwxxm-translation + translationCentre*; P2 FIR/S-OF helpers + COLLECT/multi-version
     + optional #798 QA; vendor pin v2025-2; 13 when_ships (E23-4)'
@@ -22415,7 +22452,7 @@ evolve_cycles:
     - 09-qa
     - 12-verify-deploy
     note: Lean+build approved — skip 03/05/06/09/12; 11 optional; 13 when_ships (E23-4)
-  current_stage: 13-deploy-smoke
+  current_stage: null
   stages:
     00-context:
       status: completed
@@ -22423,8 +22460,10 @@ evolve_cycles:
       completed: '2026-07-30'
       note: Phase 0 locked E23-1..4 (D-S030-E23-phase0)
     16-evolve:
-      status: in_progress
-      note: Orchestrator EV-023; PR #801 open; T7.4 13 pending merge/deploy; progress 23/24
+      status: completed
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      note: 'COMPLETE — EV-023 cycle done; PR #801 merged af98690; Phase 4 close pending user AskQuestion'
     01-requirements:
       status: completed
       mode: delta
@@ -22444,13 +22483,15 @@ evolve_cycles:
       completed: '2026-07-30'
       note: COMPLETE — Batch T E23-T1..T6=1,1,2,2,1,1; execution-plan approved; Gate B Lean → 07 @ T0.1
     07-build:
-      status: in_progress
+      status: completed
       mode: full
       started: '2026-07-30'
+      completed: '2026-07-30'
       active_task: T7.4
-      active_task_status: pending
+      active_task_status: completed
       active_milestone: M7
-      note: 'T7.4 prep pushed; PR #801 open; 23/24; tip f859f31; branch evolve/EV-023-apac-encode-validate; #800'
+      note: 'COMPLETE — M7 T7.4 done; PR #801 merged af98690; progress 24/24; #800'
+      tip_sha: af98690
     08-verify-build:
       status: completed
       mode: delta
@@ -22467,20 +22508,31 @@ evolve_cycles:
       status: pending
       mode: optional
     13-deploy-smoke:
-      status: pending
+      status: completed
       mode: when_ships
-      note: E23-4 when_ships — after PR #801 merge/deploy
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      tip_sha: af98690
+      overall: pass
+      pr_number: 801
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
+      pr_status: merged
+      merge_sha: af98690
+      api_deploy: dep-d9lsvabm8hqs739dpqlg
+      ci_run: '30586719518'
+      report: docs/sessions/S030-apac-encode-validate/reports/deploy-smoke.md
+      note: 'COMPLETE — PASS; PR #801 merged af98690; CI 30586719518; H1/H0c/H3/H4/H5 + live convert themes; #800'
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
-    deploy: pending
+    c_to_d: passed
+    deploy: passed
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
-    phase_d: pending
-    deploy: pending
+    phase_c: passed
+    phase_d: passed
+    deploy: passed
   adrs: []
   artifacts:
   - path: docs/sessions/S030-apac-encode-validate/reports/execution-plan.md
@@ -22506,6 +22558,20 @@ evolve_cycles:
     status: completed
     session_id: S030-apac-encode-validate
     note: T7.3 10-e2e smoke PASS — browser N/A
+  - path: docs/sessions/S030-apac-encode-validate/reports/deploy-smoke.md
+    status: completed
+    session_id: S030-apac-encode-validate
+    stage: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    overall: pass
+    tip_sha: af98690
+    note: 'T7.4 PASS — PR #801 merged af98690; H1/H0c/H3/H4/H5 + live convert themes'
+  - path: docs/sessions/S030-apac-encode-validate/reports/evolve-summary.md
+    status: completed
+    session_id: S030-apac-encode-validate
+    stage: 16-evolve
+    skill_id: 16-evolve
+    note: EV-023 cycle complete; Phase 4 close pending user AskQuestion
   issues: []
   decision_refs:
   - D-S030-open
@@ -22520,18 +22586,20 @@ evolve_cycles:
   - D-S030-04-plan-approve
   active_milestone: M7
   active_task: T7.4
-  active_task_status: pending
-  progress: 23/24
+  active_task_status: completed
+  progress: 24/24
   pushed: true
   pr_number: 801
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
-  pr_status: open
+  pr_status: merged
+  merge_sha: af98690
   pr_title: '[EV-023] APAC encode–validate deepen (S030 / #800)'
   do_not_auto_merge: true
-  note: 'PR #801 open (pushed f859f31); T7.4 13 pending merge/deploy (E23-4); progress 23/24; pre-push gate fixed (F7 quarantine + tac2iwxxm coverage); #800'
-  tip_sha: f859f31
-  tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+  note: 'EV-023 COMPLETE — PR #801 merged af98690; H1–H5 + live convert PASS; Phase 4 close pending user AskQuestion; #800'
+  tip_sha: af98690
+  tip_sha_full: af98690
   notes:
+  - '2026-07-30 S030/EV-023 13-deploy-smoke COMPLETE — PR #801 merged af98690; CI 30586719518 SUCCESS (incl. Deploy); API dep-d9lsvabm8hqs739dpqlg LIVE; H1/H0c/H3/H4/H5 + live convert themes PASS; report deploy-smoke.md + evolve-summary.md; progress 24/24; Phase 4 close pending; #800'
   - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; T7.4 13 pending merge/deploy; progress 23/24; #800'
   - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
   - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
@@ -22555,17 +22623,19 @@ evolve_cycles:
   - '2026-07-30 S030/EV-023 OPEN — after D-S029-park; branch evolve/EV-023-apac-encode-validate; Lean+build
     proposed; Phase 0 intake pending; tip dead991; #800'
 git_history:
-  current_branch: evolve/EV-023-apac-encode-validate
+  current_branch: main
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: f859f31
-  tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+  tip_sha: af98690
+  tip_sha_full: af98690
   pr_number: 801
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
-  pr_status: open
-  note: 'S030/EV-023 PR #801 open (pushed f859f31); T7.4 13 pending merge/deploy; progress 23/24; tip f859f31 on evolve/EV-023-apac-encode-validate; #800'
+  pr_status: merged
+  merge_sha: af98690
+  note: 'S030/EV-023 PR #801 merged af98690; 13-deploy-smoke PASS; EV-023 cycle complete; Phase 4 close pending; active_session open; #800'
   notes:
+  - '2026-07-30 S030/EV-023 PR #801 merged af98690 — CI 30586719518 SUCCESS (incl. Deploy); API dep-d9lsvabm8hqs739dpqlg LIVE; H1/H0c/H3/H4/H5 + live convert themes PASS; progress 24/24; #800'
   - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; #800'
   - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
   - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
@@ -23843,14 +23913,16 @@ git_history:
   - name: evolve/EV-023-apac-encode-validate
     purpose: 'S030/EV-023 #800 APAC FAQ encode/validate/lint deltas'
     base: main
-    status: active
+    status: merged
     created: '2026-07-30'
     created_at: '2026-07-30'
+    merged_at: '2026-07-30'
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'S030/EV-023 PR #801 open; T7.4 prep pushed f859f31; T7.4 13 pending merge/deploy; progress 23/24; #800'
-    tip_sha: f859f31
-    tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+    note: 'S030/EV-023 PR #801 merged af98690; 13-deploy-smoke PASS; EV-023 cycle complete; #800'
+    tip_sha: af98690
+    tip_sha_full: af98690
+    merge_sha: af98690
     pushed: true
     pr_id: PR-EV-023
     pr_number: 801
@@ -23858,7 +23930,7 @@ git_history:
     pr_title: '[EV-023] APAC encode–validate deepen (S030 / #800)'
     pr_base: main
     pr_head: evolve/EV-023-apac-encode-validate
-    pr_status: open
+    pr_status: merged
     do_not_auto_merge: true
   commits:
   - sha: f859f31
