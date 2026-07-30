@@ -127,7 +127,7 @@ Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quaran
 | FMH-1 / iwxxm-us | US profile | extensions | combined catalog | US samples |
 | PPT-02 Framework (informative) | TAC sunset ~2030; AHL TAC bulletin heading | translation attrs + `translationFailedTAC`; METAR/SIGMET capacity vs TAC; package×line matrix | package versions + ≤2021-2 deprecation messaging | cite |
 | OPMET IWXXM Exchange Guidelines 5th (public) | — | Translation Centre; partial translation; `permissibleUsage` | Schematron-by-version / partial % (ROC stats) | cite + bulletin AMHS |
-| ICAO APAC IWXXM FAQs 3rd (public, informative) | NSC exclusivity warn | NSC omit layers; `translationFailedTAC`; translationCentre gate; FIR→polygon | NSC co-occurrence SCH smoke | cite · #800 · [theme map](../../sessions/S030-apac-encode-validate/reports/apac-encode-theme-fixture-map.md) |
+| ICAO APAC IWXXM FAQs 3rd (public, informative) | NSC exclusivity warn | NSC omit layers; `translationFailedTAC`; translationCentre gate; FIR→polygon | NSC co-occurrence SCH smoke | COLLECT multi-version NS hooks (F16–F19; `dissemination.collect_namespaces`) · cite · #800 · [theme map](../../sessions/S030-apac-encode-validate/reports/apac-encode-theme-fixture-map.md) |
 | WIS2 aviation (cookbook/guide/WTH) | — | — (no TAC encode) | — | F8 routing / Annex 3 use-rights; not COLLECT packing |
 | Doc 10003 published (paywall) | — | translation-centre metadata / exchange | version/transition prose if present | cite |
 | Doc 10003 Advance 2014 draft (historical) | — | IWXXM v1 lineage; weather lists obsolete | 1.0RC2 sample only | lineage notes |
