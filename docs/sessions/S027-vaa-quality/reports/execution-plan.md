@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M5 — F7.g catalog unlock (incremental) + keepers |
-| **Active task** | T5.1 |
-| **Tasks** | 19 / ~24 completed |
+| **Active milestone** | M6 — Smoke / verify / AC / deploy |
+| **Active task** | T6.1 |
+| **Tasks** | 22 / ~24 completed |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -100,9 +100,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T5.1 | Test | Vitest: VAA Examples unlock only when F26 golden greens; TCA independently (S02.M2); hide `vaa_basic`/`tca_basic` until replaced | TC-F26-005; TC-F27-005; TC-F7-008 | T4.4 | **pending** |
-| T5.2 | Code | FE catalog gate + provenance; unlock VAA/TCA as respective goldens green | F7.g; UJ-037/038; S02.M2 | T5.1 | **pending** |
-| T5.3 | Test | Keep F23–F25 WMO packs green (regression) | F23–F25 | T5.2 | **pending** |
+| T5.1 | Test | Vitest: VAA Examples unlock only when F26 golden greens; TCA independently (S02.M2); hide `vaa_basic`/`tca_basic` until replaced | TC-F26-005; TC-F27-005; TC-F7-008 | T4.4 | **completed** |
+| T5.2 | Code | FE catalog gate + provenance; unlock VAA/TCA as respective goldens green | F7.g; UJ-037/038; S02.M2 | T5.1 | **completed** |
+| T5.3 | Test | Keep F23–F25 WMO packs green (regression) | F23–F25 | T5.2 | **completed** |
 
 ### M6 — Smoke / verify / AC / deploy
 
