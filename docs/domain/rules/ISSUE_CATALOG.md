@@ -46,6 +46,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_PRODUCT_KEYWORD` | `error` | {product} TAC must contain one of {keywords} | — | parse_gate, header |
 | `MISSING_QNH` | `error` | {product} missing QNH/altimeter (Qnnnn/Annnn) — A3-2 #11 | — | pressure, metar, speci |
 | `MISSING_SEQUENCE` | `error` | SIGMET/AIRMET missing sequence number — research G2 / F24 A1 | sigmet | sequence, sigmet, airmet, g2, a1 |
+| `MISSING_TC` | `error` | TCA missing TC: template field — F27 theme T1 / A2-2 | tca | tropical_cyclone, tca, t1, f27 |
 | `MISSING_TEMP_DEWPOINT` | `error` | {product} missing temperature/dewpoint tt/td — A3-2 #10 | — | temperature, metar, speci |
 | `MISSING_TERMINATOR` | `info` | Reports in bulletins end with '=' — add it before publishing | — | terminator, metar, speci, taf |
 | `MISSING_VAAC` | `error` | VAA missing VAAC: template field — A2-1 | vaa | vaac, vaa |
@@ -74,6 +75,10 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `SIGMET_SEQUENCE` | `info` | SIGMET sequence number present — research G2 | sigmet | sequence, sigmet, g2 |
 | `SINGLE_ALTITUDE` | `info` | SIGMET single altitude (same lower/upper) — research G1 | sigmet | altitude, sigmet, g1 |
 | `STNR_MOVEMENT` | `info` | SIGMET/AIRMET STNR stationary movement — research G1 / C1 / F24 A2 | sigmet | stnr, movement, sigmet, airmet, g1, c1, a2 |
+| `TCA_CB_NIL` | `info` | TCA CB NIL — CB missing (F27 theme T1) | tca | cb, nil, tca, t1, f27 |
+| `TCA_CYCLONE_UNNAMED` | `info` | TCA TC UNNAMED — exceptional name allowed (F27 theme T1) | tca | tropical_cyclone, unnamed, tca, t1, f27 |
+| `TCA_NO_MSG_EXP` | `info` | TCA NXT MSG NO MSG EXP — next time inapplicable (F27 theme T1) | tca | next_advisory, tca, t1, f27 |
+| `TCA_RMK_NIL` | `info` | TCA RMK NIL — remarks inapplicable (F27 theme T1) | tca | remarks, nil, tca, t1, f27 |
 | `TEMPO_PRESENT` | `info` | {product} TEMPO trend present — research R8 / T2 | — | trend, change, metar, speci, taf, r8, t2 |
 | `TL_PRESENT` | `info` | {product} TL time group present — research T2 | taf | change, taf, t2, tl |
 | `TOP_ABV_OR_BLW` | `info` | SIGMET/AIRMET TOP ABV/BLW level grammar — research G1 / F24 A2 | sigmet | altitude, top, sigmet, airmet, g1, a2 |

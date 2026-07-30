@@ -82,6 +82,9 @@ _RMK_LINE = re.compile(r"(?m)^\s*RMK\s*:\s*(.*)$", re.IGNORECASE)
 _NXT_ADVISORY_LINE = re.compile(r"(?m)^\s*NXT\s+ADVISORY\s*:\s*(.*)$", re.IGNORECASE)
 _NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b", re.IGNORECASE)
 _MAX_WIND_LINE = re.compile(r"(?m)^\s*MAX\s+WIND\s*:", re.IGNORECASE)
+_TC_LINE = re.compile(r"(?m)^\s*TC\s*:\s*(.*)$", re.IGNORECASE)
+_CB_LINE = re.compile(r"(?m)^\s*CB\s*:\s*(.*)$", re.IGNORECASE)
+_NXT_MSG_LINE = re.compile(r"(?m)^\s*NXT\s+MSG\s*:\s*(.*)$", re.IGNORECASE)
 # F23 theme G1 — general SIGMET exceptional TAC shapes (#733).
 _SIGMET_POINT_COORD = re.compile(r"\b[NS]\d{4,5}\s+[EW]\d{5,7}\b")
 _SIGMET_LEVEL_RANGE = re.compile(
@@ -1849,6 +1852,78 @@ def _check_tca(tac: str) -> list[Issue]:
                 start=start,
                 end=end,
                 location="max_wind",
+            )
+        )
+    # F27 theme T1 — exceptional cyclone / CB / remarks / next-msg cues (#737).
+    tc_m = _TC_LINE.search(body)
+    if not tc_m:
+        issues.append(
+            _issue(
+                "MISSING_TC",
+                "TCA missing TC: template field — F27 theme T1 / A2-2",
+                start=start,
+                end=end,
+                location="tropical_cyclone",
+            )
+        )
+    else:
+        tc_val = tc_m.group(1).strip().upper()
+        t_start, t_end = tc_m.start(1), tc_m.end(1)
+        if not tc_val:
+            issues.append(
+                _issue(
+                    "MISSING_TC",
+                    "TCA missing TC: template field — F27 theme T1 / A2-2",
+                    start=tc_m.start(),
+                    end=tc_m.end(),
+                    location="tropical_cyclone",
+                )
+            )
+        elif tc_val.split()[0] == "UNNAMED":
+            issues.append(
+                _issue(
+                    "TCA_CYCLONE_UNNAMED",
+                    "TCA TC UNNAMED — exceptional name allowed (F27 theme T1)",
+                    start=t_start,
+                    end=t_end,
+                    location="tropical_cyclone",
+                )
+            )
+    cb_m = _CB_LINE.search(body)
+    if cb_m:
+        cb_val = cb_m.group(1).strip().rstrip("=").upper()
+        if cb_val == "NIL":
+            issues.append(
+                _issue(
+                    "TCA_CB_NIL",
+                    "TCA CB NIL — CB missing (F27 theme T1)",
+                    start=cb_m.start(1),
+                    end=cb_m.end(1),
+                    location="cb",
+                )
+            )
+    rmk_m = _RMK_LINE.search(body)
+    if rmk_m:
+        rmk_val = rmk_m.group(1).strip().rstrip("=").upper()
+        if rmk_val == "NIL":
+            issues.append(
+                _issue(
+                    "TCA_RMK_NIL",
+                    "TCA RMK NIL — remarks inapplicable (F27 theme T1)",
+                    start=rmk_m.start(1),
+                    end=rmk_m.end(1),
+                    location="remarks",
+                )
+            )
+    nxt_m = _NXT_MSG_LINE.search(body)
+    if nxt_m and "NO MSG EXP" in nxt_m.group(1).upper():
+        issues.append(
+            _issue(
+                "TCA_NO_MSG_EXP",
+                "TCA NXT MSG NO MSG EXP — next time inapplicable (F27 theme T1)",
+                start=nxt_m.start(1),
+                end=nxt_m.end(1),
+                location="next_advisory",
             )
         )
     return issues

@@ -451,6 +451,18 @@
       ]
     },
     {
+      "code": "MISSING_TC",
+      "severity": "error",
+      "message_template": "TCA missing TC: template field \u2014 F27 theme T1 / A2-2",
+      "product": "tca",
+      "tags": [
+        "tropical_cyclone",
+        "tca",
+        "t1",
+        "f27"
+      ]
+    },
+    {
       "code": "MISSING_TEMP_DEWPOINT",
       "severity": "error",
       "message_template": "{product} missing temperature/dewpoint tt/td \u2014 A3-2 #10",
@@ -795,6 +807,57 @@
         "g1",
         "c1",
         "a2"
+      ]
+    },
+    {
+      "code": "TCA_CB_NIL",
+      "severity": "info",
+      "message_template": "TCA CB NIL \u2014 CB missing (F27 theme T1)",
+      "product": "tca",
+      "tags": [
+        "cb",
+        "nil",
+        "tca",
+        "t1",
+        "f27"
+      ]
+    },
+    {
+      "code": "TCA_CYCLONE_UNNAMED",
+      "severity": "info",
+      "message_template": "TCA TC UNNAMED \u2014 exceptional name allowed (F27 theme T1)",
+      "product": "tca",
+      "tags": [
+        "tropical_cyclone",
+        "unnamed",
+        "tca",
+        "t1",
+        "f27"
+      ]
+    },
+    {
+      "code": "TCA_NO_MSG_EXP",
+      "severity": "info",
+      "message_template": "TCA NXT MSG NO MSG EXP \u2014 next time inapplicable (F27 theme T1)",
+      "product": "tca",
+      "tags": [
+        "next_advisory",
+        "tca",
+        "t1",
+        "f27"
+      ]
+    },
+    {
+      "code": "TCA_RMK_NIL",
+      "severity": "info",
+      "message_template": "TCA RMK NIL \u2014 remarks inapplicable (F27 theme T1)",
+      "product": "tca",
+      "tags": [
+        "remarks",
+        "nil",
+        "tca",
+        "t1",
+        "f27"
       ]
     },
     {

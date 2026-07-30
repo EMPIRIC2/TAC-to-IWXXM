@@ -602,6 +602,41 @@ ISSUES: tuple[IssueSpec, ...] = (
         product="tca",
         tags=("max_wind", "tca"),
     ),
+    _row(
+        "MISSING_TC",
+        "error",
+        "TCA missing TC: template field — F27 theme T1 / A2-2",
+        product="tca",
+        tags=("tropical_cyclone", "tca", "t1", "f27"),
+    ),
+    _row(
+        "TCA_CYCLONE_UNNAMED",
+        "info",
+        "TCA TC UNNAMED — exceptional name allowed (F27 theme T1)",
+        product="tca",
+        tags=("tropical_cyclone", "unnamed", "tca", "t1", "f27"),
+    ),
+    _row(
+        "TCA_RMK_NIL",
+        "info",
+        "TCA RMK NIL — remarks inapplicable (F27 theme T1)",
+        product="tca",
+        tags=("remarks", "nil", "tca", "t1", "f27"),
+    ),
+    _row(
+        "TCA_NO_MSG_EXP",
+        "info",
+        "TCA NXT MSG NO MSG EXP — next time inapplicable (F27 theme T1)",
+        product="tca",
+        tags=("next_advisory", "tca", "t1", "f27"),
+    ),
+    _row(
+        "TCA_CB_NIL",
+        "info",
+        "TCA CB NIL — CB missing (F27 theme T1)",
+        product="tca",
+        tags=("cb", "nil", "tca", "t1", "f27"),
+    ),
 )
 
 _BY_CODE: dict[str, IssueSpec] = {spec.code: spec for spec in ISSUES}
