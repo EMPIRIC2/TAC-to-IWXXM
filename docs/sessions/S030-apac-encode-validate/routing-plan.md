@@ -8,17 +8,17 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Session open; Phase 0 locked |
-| 16-evolve | yes | orchestrator | **in_progress** | EV-023 |
+| 16-evolve | yes | orchestrator | **in_progress** | EV-023 — T7.4 done; close pending |
 | 01-requirements | yes | delta | **completed** | E23-E1 — report 01-requirements.md |
 | 02-verify-plan | yes | delta | **completed** | PASS Batch F 1,1,1; Gate A → 04 |
 | 04-tech-plan | yes | delta | **completed** | E23-T1..T6 1,1,2,2,1,1; B→C |
-| 07-build | yes | full | **in_progress** | M0 done; next T1.1 NSC fixtures |
-| 08-verify-build | yes | delta | pending | — |
+| 07-build | yes | full | **completed** | M0–M7 24/24; tip merge `af98690` |
+| 08-verify-build | yes | delta | **completed** | verification-report.md |
 | 09-qa | no | — | skipped | 08+10 cover |
-| 10-e2e | yes | smoke | pending | Convert/validate smoke if API surface changes |
-| 11-verify-impl | optional | — | pending | — |
+| 10-e2e | yes | smoke | **completed** | e2e-report.md (API/library) |
+| 11-verify-impl | optional | — | skipped | Not requested |
 | 12-verify-deploy | no | — | skipped | — |
-| 13-deploy-smoke | when ships | full | pending | E23-4 — required if convert/validate behavior deploys |
+| 13-deploy-smoke | when ships | full | **completed** | #801 merged; deploy-smoke.md PASS |
 
 ## Skip rationale
 
@@ -32,3 +32,4 @@ No new deployable / no new Fn. 13 included when API image behavior changes.
 | Session open | S030 / `evolve/EV-023-apac-encode-validate` | 2026-07-30 |
 | Intake | E23-1=A, E23-2=all ticket, E23-3=A, E23-4=B | 2026-07-30 |
 | Routing | Lean+build + 13-when-ships approved | 2026-07-30 |
+| Deploy smoke | T7.4 PASS after #801 merge | 2026-07-30 |
