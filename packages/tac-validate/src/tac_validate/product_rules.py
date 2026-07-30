@@ -59,6 +59,8 @@ _CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
 # R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
 _CLOUD_OK = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$")
 _CLOUD_LIKE = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})")
+# Layered amounts only (NSC exclusivity / TC-EV023-001) — not VV/NSC/NCD/SKC/CLR.
+_LAYER_CLOUD_TOKEN = re.compile(r"^(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?$")
 # R5: US METAR remarks (iwxxm_us) — AO1/AO2, SLP###, P####, T########, PK WND dddss/tt.
 _RMK_AO = frozenset({"AO1", "AO2"})
 _RMK_SLP_OK = re.compile(r"^SLP\d{3}$")
@@ -427,6 +429,55 @@ def _emit_token_info(
     else:
         start, end = span
     issues.append(_issue(code, message, start=start, end=end, location="modifier"))
+
+
+def _forecast_or_obs_segments(tokens: list[str]) -> list[list[str]]:
+    """Split tokens on TEMPO/BECMG/NOSIG/FM*/PROB* so exclusivity is per group."""
+    segments: list[list[str]] = []
+    current: list[str] = []
+    for tok in tokens:
+        if tok in {"TEMPO", "BECMG", "NOSIG"} or _TAF_FM.fullmatch(tok) or _TAF_PROB.fullmatch(tok):
+            if current:
+                segments.append(current)
+            current = [tok]
+        else:
+            current.append(tok)
+    if current:
+        segments.append(current)
+    return segments
+
+
+def _emit_nsc_layer_exclusivity(
+    issues: list[Issue],
+    *,
+    product: str,
+    tokens: list[str],
+    core: str,
+    body_start: int,
+    body_end: int,
+) -> None:
+    """Warn when NSC co-occurs with FEW/SCT/BKN/OVC in the same obs/change group."""
+    for segment in _forecast_or_obs_segments(tokens):
+        if "NSC" not in segment:
+            continue
+        layer = next((t for t in segment if _LAYER_CLOUD_TOKEN.fullmatch(t)), None)
+        if layer is None:
+            continue
+        span = _token_span_in_core(core, "NSC", body_start)
+        if span is None:
+            start, end = body_start, body_end
+        else:
+            start, end = span
+        issues.append(
+            _issue(
+                "NSC_WITH_CLOUD_LAYERS",
+                f"{product} NSC with FEW/SCT/BKN/OVC in same group — FAQ §14.3 exclusivity (TC-EV023-001)",
+                start=start,
+                end=end,
+                location="cloud",
+            )
+        )
+        break
 
 
 def _check_r8_pack(
@@ -841,6 +892,14 @@ def _check_s1_exceptional(
             body_end=body_end,
             token="NSC",
         )
+        _emit_nsc_layer_exclusivity(
+            issues,
+            product=product,
+            tokens=tokens,
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+        )
     if "NCD" in tokens:
         _emit_token_info(
             issues,
@@ -1116,6 +1175,14 @@ def _check_taf_t3_elements(
             body_start=body_start,
             body_end=body_end,
             token="NSC",
+        )
+        _emit_nsc_layer_exclusivity(
+            issues,
+            product=product,
+            tokens=tokens,
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
         )
     if "NSW" in tokens:
         _emit_token_info(

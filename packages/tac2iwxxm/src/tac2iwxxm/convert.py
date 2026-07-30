@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from typing import Any, Callable, cast
+from xml.sax.saxutils import escape
 
 from tac2iwxxm.models import ConvertIssue, ConvertResult
 from tac2iwxxm.products.metar_speci import parse_metar_speci
@@ -43,6 +44,31 @@ _PREVIEW_NS = {
     "2025-2": "http://icao.int/iwxxm/2025-2",
     "2023-1": "http://icao.int/iwxxm/2023-1",
 }
+
+# Official *-translation-failed examples mark unreliable TAC with INVALID (FAQ §8.6).
+_UNRELIABLE_TAC = re.compile(r"\bINVALID\b", re.IGNORECASE)
+_PRODUCT_LEAD = {
+    "METAR": re.compile(r"^\s*METAR\b", re.IGNORECASE),
+    "SPECI": re.compile(r"^\s*SPECI\b", re.IGNORECASE),
+    "TAF": re.compile(r"^\s*TAF\b", re.IGNORECASE),
+    "SIGMET": re.compile(r"^\s*(?:[A-Z]{4}\s+)?SIGMET\b", re.IGNORECASE | re.MULTILINE),
+    "AIRMET": re.compile(r"^\s*(?:[A-Z]{4}\s+)?AIRMET\b", re.IGNORECASE | re.MULTILINE),
+    "VAA": re.compile(r"VA\s+ADVISORY\b", re.IGNORECASE),
+    "TCA": re.compile(r"TC\s+ADVISORY\b", re.IGNORECASE),
+}
+_QUARANTINE_ROOT = {
+    "METAR": "METAR",
+    "SPECI": "SPECI",
+    "TAF": "TAF",
+    "SIGMET": "SIGMET",
+    "AIRMET": "AIRMET",
+    "VAA": "VolcanicAshAdvisory",
+    "TCA": "TropicalCycloneAdvisory",
+}
+_STATION_AFTER_PRODUCT = re.compile(
+    r"^\s*(?:METAR|SPECI|TAF)\s+(?:COR\s+)?(?P<station>[A-Z][A-Z0-9]{3})\b",
+    re.IGNORECASE,
+)
 
 
 def _content_bounds(tac: str) -> tuple[int, int]:
@@ -84,6 +110,103 @@ def _preview_stub_xml(product: str, iwxxm_version: str, reason: str) -> str:
         f'gml:id="{gml_id}" reportStatus="NORMAL">\n'
         f"  <!-- soft-preview: {note} -->\n"
         '  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
+        f"</iwxxm:{root}>\n"
+    )
+
+
+def _tac_looks_like_product(tac: str, product: str) -> bool:
+    """Return True when TAC appears to be the requested product (header / keyword)."""
+    pattern = _PRODUCT_LEAD.get(product)
+    if pattern is None:
+        return False
+    return pattern.search(tac) is not None
+
+
+def _should_quarantine(tac: str, product: str) -> bool:
+    """
+    Whether failed/unreliable TAC should emit ``translationFailedTAC`` quarantine.
+
+    Explicit ``INVALID`` (official failed examples) or a product-shaped TAC that
+    cannot be translated operationally.
+    """
+    if _UNRELIABLE_TAC.search(tac):
+        return True
+    return _tac_looks_like_product(tac, product)
+
+
+def _quarantine_xml(product: str, tac: str, iwxxm_version: str) -> str:
+    """
+    Emit official-shaped quarantine shell with ``@translationFailedTAC``.
+
+    Parameters
+    ----------
+    product :
+        F6 product code.
+    tac :
+        Original TAC text (stored on translationFailedTAC).
+    iwxxm_version :
+        IWXXM release line for namespace.
+
+    Returns
+    -------
+    str
+        Quarantine IWXXM document (no operational observation/baseForecast).
+    """
+    from datetime import datetime, timezone
+    from xml.sax.saxutils import escape
+
+    root = _QUARANTINE_ROOT.get(product, product)
+    ns = _PREVIEW_NS.get(iwxxm_version, _PREVIEW_NS["2025-2"])
+    gml_id = f"{product.lower()}.translation.failed"
+    failed_tac = escape(" ".join(tac.split()))
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    station_m = _STATION_AFTER_PRODUCT.search(tac)
+    station = station_m.group("station").upper() if station_m else "YUDO"
+    aerodrome = ""
+    if product in {"METAR", "SPECI", "TAF"}:
+        aerodrome = f"""  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.{station.lower()}">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.{station.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>{station}</aixm:designator>
+          <aixm:locationIndicatorICAO>{station}</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+"""
+    time_block = f"""  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>{now}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+"""
+    if product in {"METAR", "SPECI"}:
+        time_block += f"""  <iwxxm:observationTime>
+    <gml:TimeInstant gml:id="t.obs">
+      <gml:timePosition>{now}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:observationTime>
+"""
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        f'<iwxxm:{root} xmlns:iwxxm="{ns}" '
+        'xmlns:gml="http://www.opengis.net/gml/3.2" '
+        'xmlns:aixm="http://www.aixm.aero/schema/5.1.1" '
+        'xmlns:xlink="http://www.w3.org/1999/xlink" '
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+        f'gml:id="{gml_id}" '
+        'reportStatus="NORMAL" '
+        'permissibleUsage="OPERATIONAL" '
+        'translatedBulletinID="TTAAiiCCCYYGGgg" '
+        f'translatedBulletinReceptionTime="{now}" '
+        'translationCentreDesignator="YUZZ" '
+        'translationCentreName="Fictional translation centre" '
+        f'translationTime="{now}" '
+        f'translationFailedTAC="{failed_tac}">\n'
+        f"{time_block}{aerodrome}"
         f"</iwxxm:{root}>\n"
     )
 
@@ -149,6 +272,39 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
     raise ValueError(f"no emitter for product {product!r}")
 
 
+_ROOT_OPEN = re.compile(r"(<iwxxm:[A-Za-z]+\b)([^>]*)(>)", re.DOTALL)
+
+
+def _inject_translation_centre(
+    xml: str,
+    *,
+    designator: str,
+    name: str,
+) -> str:
+    """
+    Insert ``translationCentre*`` attributes on the IWXXM root element.
+
+    Parameters
+    ----------
+    xml : str
+        Successful convert document (not a quarantine shell).
+    designator : str
+        ``translationCentreDesignator`` value.
+    name : str
+        ``translationCentreName`` value.
+
+    Returns
+    -------
+    str
+        XML with centre attributes on the first ``iwxxm:*`` root start tag.
+    """
+    extra = f'\n    translationCentreDesignator="{escape(designator)}"\n    translationCentreName="{escape(name)}"'
+    match = _ROOT_OPEN.search(xml)
+    if match is None:
+        return xml
+    return xml[: match.start()] + match.group(1) + match.group(2) + extra + match.group(3) + xml[match.end() :]
+
+
 def convert(
     tac: str,
     *,
@@ -156,6 +312,9 @@ def convert(
     profile: str = "annex3",
     iwxxm_version: str = "2025-2",
     preview: bool = False,
+    emit_translation_centre: bool = False,
+    translation_centre_designator: str = "",
+    translation_centre_name: str = "",
 ) -> ConvertResult:
     """
     Convert a TAC report to IWXXM XML.
@@ -173,6 +332,15 @@ def convert(
     preview :
         When ``True``, fatal parse/profile failures still return best-effort stub XML
         (soft-preview / ADR-022). Does not imply Schematron-passed publish.
+    emit_translation_centre :
+        When ``True``, emit ``translationCentreDesignator`` / ``translationCentreName``
+        on successful convert (cross-State / Translation Centre mode; FAQ §14.5).
+        Default ``False`` omits them for in-State convert. Quarantine shells always
+        include centre attrs (official ``*-translation-failed`` model).
+    translation_centre_designator :
+        Designator when ``emit_translation_centre`` is true.
+    translation_centre_name :
+        Human-readable centre name when ``emit_translation_centre`` is true.
 
     Returns
     -------
@@ -214,10 +382,33 @@ def convert(
         )
 
     try:
+        if _UNRELIABLE_TAC.search(tac):
+            raise ValueError("unreliable TAC marked INVALID — quarantine")
         ir = _parse(product_u, tac)
         xml = _emit(product_u, profile_l, ir, iwxxm_version)
     except ValueError as exc:
-        return _fail("PARSE_ERROR", str(exc), span=True)
+        message = str(exc)
+        if preview:
+            return _fail("PARSE_ERROR", message, span=True)
+        if _should_quarantine(tac, product_u):
+            span_start, span_end = _content_bounds(tac)
+            return ConvertResult(
+                ok=True,
+                product=product_u,
+                profile=profile_l,
+                iwxxm_version=iwxxm_version,
+                xml=_quarantine_xml(product_u, tac.strip(), iwxxm_version),
+                issues=[
+                    ConvertIssue(
+                        severity="warning",
+                        code="TRANSLATION_FAILED",
+                        message=message,
+                        start=span_start,
+                        end=span_end,
+                    )
+                ],
+            )
+        return _fail("PARSE_ERROR", message, span=True)
 
     issues: list[ConvertIssue] = []
     if profile_l == "annex3" and product_u in {"METAR", "SPECI"} and ir.get("remarks_present"):
@@ -251,6 +442,13 @@ def convert(
                         end=remark_end,
                     )
                 )
+
+    if emit_translation_centre:
+        xml = _inject_translation_centre(
+            xml,
+            designator=translation_centre_designator,
+            name=translation_centre_name,
+        )
 
     return ConvertResult(
         ok=True,

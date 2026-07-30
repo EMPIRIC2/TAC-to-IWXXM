@@ -74,13 +74,13 @@ Product × role coverage: [rules/COVERAGE_MATRIX.md](./rules/COVERAGE_MATRIX.md)
 **Rules catalog strategy:** [rules/README.md](./rules/README.md) (role routing + **apply playbooks**) ·
 [rules/COVERAGE_MATRIX.md](./rules/COVERAGE_MATRIX.md) (G1–G7 gates · product × strategy cites).
 
-**Canonical strategy deep dives (2026-07-14 continue):**
+**Canonical strategy deep dives (2026-07-14 continue · 2026-07-30 promote #797):**
 
 | Doc | Added for this pass |
 |-----|---------------------|
-| [TAC_VALIDATION.md](./TAC_VALIDATION.md) | **A3-2** METAR/SPECI · **A5-1** TAF · **A6** SIGMET/AIRMET checklists · VAA/TCA A2 · US SPECI §2.5.2.a · **RMK→iwxxm-us keep-list** |
-| [IWXXM_CONVERSION.md](./IWXXM_CONVERSION.md) | Product encode playbook · VAA colour table · **structured RMK→iwxxm-us elements** |
-| [IWXXM_VALIDATION.md](./IWXXM_VALIDATION.md) | “How to validate one document” · golden prefixes · **per-product validate playbook** |
+| [TAC_VALIDATION.md](./TAC_VALIDATION.md) | **A3-2** METAR/SPECI · **A5-1** TAF · **A6** SIGMET/AIRMET checklists · VAA/TCA A2 · US SPECI §2.5.2.a · **RMK→iwxxm-us keep-list** · NSC exclusivity footnote (APAC FAQ) |
+| [IWXXM_CONVERSION.md](./IWXXM_CONVERSION.md) | Product encode playbook · VAA colour table · **structured RMK→iwxxm-us elements** · APAC FAQ encode/ops · translation-suite P2 policy |
+| [IWXXM_VALIDATION.md](./IWXXM_VALIDATION.md) | “How to validate one document” · golden prefixes · **per-product validate playbook** · dual colour/nil/MetFeature (`VOLCANIC_ASH`) + NSC FAQ cite |
 
 
 ## Mining workflow

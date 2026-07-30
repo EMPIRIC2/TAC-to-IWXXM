@@ -37,8 +37,12 @@ module-name = "tac2iwxxm._rust"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+# E23-T4=2 / TC-EV023-005: informative Amd79 suite uses @pytest.mark.xfail(strict=False);
+# do not harden to xfail_strict so soft failures never hard-fail PR CI.
+xfail_strict = false
 markers = [
   "slow: longer local/CI smokes (clean-venv wheel installs)",
+  "iwxxm_translation_informative: Amd79-80-2023 TAC→2025-2 informative suite (EV-023; soft/xfail in CI)",
 ]
 
 [tool.coverage.run]

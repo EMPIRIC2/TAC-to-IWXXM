@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-30 (S027 / EV-021 — F26/F27 Done; PR #794 live)
+> **Last updated**: 2026-07-30 (S030 / EV-023 — #800 APAC/codes encode–validate deepen in progress)
 
 ## Summary
 
@@ -840,6 +840,41 @@
   hide `vaa_basic` / `tca_basic` until replaced by WMO passers (**UJ-037/038**; TC-F7-008 deepen).
   **Unlock cadence (`D-S027-EV021-s02m2-1`)**: incremental per product — unlock VAA Examples
   when F26 golden greens; TCA when F27 greens (may differ mid-cycle; peer E20-F4).
+
+### F6 / F2 / F12 / F13 deepen (S030 / EV-023 — APAC FAQ + codes + WMO-306 encode deltas)
+
+- **Status**: **In progress** (S030 / EV-023) — no new Fn; deepen existing convert / validate / lint
+- **Issue**: [#800](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/800) (supersedes #797 impl backlog)
+- **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2** (FAQ / 2019 Manual / translation suite are informative only)
+- **What it does**: Close encode/lint/SCH gaps from APAC IWXXM FAQs 3rd, codes.wmo.int dual
+  registers, iwxxm-translation parity notes, and optional WMO-306 2019/upd-2021 corroboration
+- **P0 acceptance**:
+  1. TAC `NSC` → IWXXM must not also emit layered `<iwxxm:cloud>`; convert + XSD/SCH **negative** fixtures; tighten lint beyond research `NSC_PRESENT` if needed
+  2. Missing WX / related gaps match `TAC-to-XML-Guidance.txt` + translation examples (`common/nil` vs `iwxxm/nil` per product/XSD vocabulary)
+  3. Unreliable TAC → quarantine with original TAC on `translationFailedTAC`; no operational TAC-in-XML-comments; no partial translate; regression vs official `*-translation-failed.xml` attr matrix
+- **P1 acceptance**:
+  4. Dual-register colour href policy tested offline (`49-2/AviationColourCode` vs `iwxxm/AviationColourCode`; dual nil SCH RDF); vendor CSV/RDF SoT (not live HTML)
+  5. Amd79-80-2023 METAR/TAF/VAA/TCA **TAC** → our **2025-2** IWXXM → XSD+SCH as **informative** CI/nightly (no 2023-1 XML byte-match; ignore `gml:id`, translation* attrs, clock fields); SIGMET/AIRMET stay on official schemas.wmo.int examples
+  6. `translationCentre*` designator/name only for cross-State / Translation Centre; default in-State omit or config-gate
+- **P2 acceptance** (actionable; coordinate siblings):
+  7. SIGMET FIR / “S OF” → polygon helpers — coordinate [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) / F23 geometry
+  8. COLLECT / multi-version namespaces — F16–F19 dissemination/bulletin; not single-report convert SoT
+  9. Optional #798/#719 encode QA only if gaps survive defer-to-latest; coverage matrix citations stay accurate
+- **Out of scope**: #740/#741; PDF remine; AMHS/FTBP ops; FAQ/2019 as equal-weight SoT; `.local/` binaries; SAF/runway-state under 2025-2
+- **Packages**: `packages/tac2iwxxm`, `packages/tac-validate`, `packages/iwxxm-validate` (+ thin backend wrappers)
+- **Source**: E23-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-023; mining notes under `docs/domain/mining/`; standing `IWXXM_CONVERSION.md` / `IWXXM_VALIDATION.md` / `TAC_VALIDATION.md` / `COVERAGE_MATRIX.md`
+
+### F6 deepen (S030 / EV-023)
+
+- **Status note**: F6 remains **Implemented**; this cycle deepens encode correctness + informative goldens + geometry/COLLECT hooks per #800.
+
+### F2 / F13 deepen (S030 / EV-023)
+
+- **Status note**: F2/F13 remain **Implemented**; add SCH/XSD negative fixtures and dual-register / nil policy tests under pin v2025-2.
+
+### F12 deepen (S030 / EV-023)
+
+- **Status note**: F12 remains **Implemented**; tighten NSC / related lint codes via ADR-028 registry as needed for P0.
 
 ## Platform Feature Details (Monorepo Migration)
 

@@ -13,9 +13,10 @@
 | **ICAO Doc 8896 / 10003 / 9766** | ICAO Store | **Paywall** | Same |
 | **WMO-No. 306** (Vol I.1 / I.3) | WMO e-Library | Public catalog; viewer often **slider captcha** | Official `library.wmo.int/idurl/…` + mining notes; local extracts **gitignored** under `.local/reference/` |
 | **WMO-No. 49 Vol II** | Discontinued | SARPs moved to **Annex 3** (2023) | Cite discontinuation page; keep `codes.wmo.int/49-2` as **vocabulary** namespace only |
-| **codes.wmo.int** | Public Linked Data | None | Stable `http://codes.wmo.int/…` URIs; offline RDF already in vendor |
+| **codes.wmo.int** | Public Linked Data | HTML often needs `Accept: text/html` (bare curl may **404**) | Stable `http://codes.wmo.int/…` URIs; offline RDF already in vendor |
 | **schemas.wmo.int / wmo-im/iwxxm** | Public HTTP + GitHub | None | Pin tag from `vendor/manifest.json` (`v2025-2`) |
-| **iwxxm-translation** | Public GitHub | None | Label **informative** (no official WMO/ICAO status) |
+| **iwxxm-translation** | Public GitHub | Suite tip = **2023-1** XML vs pin **2025-2** | Label **informative**; no byte-match to pin encode ([parity dig](../mining/iwxxm-translation-parity-mining-notes.md)) |
+| **ICAO APAC IWXXM FAQs** | Public APAC MET eDocs PDF | None | Label **informative**; cite edition + section; PDF under `.local/` only |
 | **FMH-1** | Public OFCM/ICAMS PDF | None | Handbook URL; still do not claim ICAO copyright |
 | **iwxxm-us** | Public nws.weather.gov | None | Pin 3.0 tarball SHA in manifest |
 | **NWS Codes Registry** | Public | None | `codes.nws.noaa.gov/FMH-1` |
@@ -56,8 +57,9 @@ Schema: https://schemas.wmo.int/iwxxm/2025-2/metarSpeci.xsd
 | Path | Contents |
 |------|----------|
 | `.local/reference/wmo-306-vI-3-2023/` | PDF + `fulltext.txt` + extracts |
+| `.local/reference/wmo-306-vI-3-2019-upd-2021/` | Historical 2019/upd-2021 PDF + extract (dig **1–272 complete**) |
 | `.local/reference/icao-doc-10003-draft-en/` | Advance 2014 unedited Doc 10003 PDF + extract |
-| Tracked notes | `docs/domain/mining/WMO-306-vI-3-2023-mining-notes.md` · `docs/domain/mining/ICAO-Doc-10003-draft-2014-mining-notes.md` |
+| Tracked notes | `docs/domain/mining/WMO-306-vI-3-2023-mining-notes.md` · `docs/domain/mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md` · `docs/domain/mining/ICAO-Doc-10003-draft-2014-mining-notes.md` |
 
 Ensure `.gitignore` covers `.local/reference/` before storing PDFs.
 

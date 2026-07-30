@@ -5,7 +5,7 @@
 **Does not** re-litigate packaging design — cite official landings + vendor pins only.
 
 Hub: [README.md](README.md) · Runtime: `packages/iwxxm-validate` · Engine notes: [validation/COMPREHENSIVE_VALIDATION.md](validation/COMPREHENSIVE_VALIDATION.md).  
-Source digs (not SoT): [mining/](mining/).
+Source digs (not SoT): [mining/](mining/) — especially Tier A vendor pins, [codes.wmo.int aviation](mining/codes-wmo-int-aviation-mining-notes.md), historical Manual I.3 D-1…D-10 landings ([2019/upd-2021 dig complete](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798; prefer [2023 dig](mining/WMO-306-vI-3-2023-mining-notes.md) + pin SCH/RDF).
 
 ---
 
@@ -177,13 +177,15 @@ Non-F6 but present: `spaceWxAdvisory.xsd`, `WAFSSigWxFC.xsd`, `vona.xsd`, `qvaci
 |--------|-----|----------|--------------------|
 | `iwxxm-codelists` | `49-2` | https://github.com/wmo-im/iwxxm-codelists | Codelist RDF SoT (**pin by SHA** — no Git tag named `49-2`) |
 | `iwxxm-modelling` | `v2025-2` | https://github.com/wmo-im/iwxxm-modelling/tree/v2025-2 | UML + XSLT **generators** for XSD/SCH (not runtime). See [mining/iwxxm-modelling-v2025-2-mining-notes.md](mining/iwxxm-modelling-v2025-2-mining-notes.md) |
-| `iwxxm-translation` | `master` pin | https://github.com/wmo-im/iwxxm-translation | Extra fixtures — **informative**; Amd79-80-2023 = METAR/TAF/VAA/TCA only |
+| `iwxxm-translation` | `master` pin | https://github.com/wmo-im/iwxxm-translation | Extra fixtures — **informative**; Amd79-80-2023 = METAR/TAF/VAA/TCA only · suite XML is **2023-1** — re-encode under pin **2025-2** for SCH; no byte-match ([parity dig](mining/iwxxm-translation-parity-mining-notes.md) · #797) |
 | `iwxxm-us` | `3.0` | https://nws.weather.gov/schemas/iwxxm-us/3.0/ | Combined WMO+US catalogs when profile = US |
 
 US landing: https://nws.weather.gov/schemas/iwxxm-us/  
 Examples: https://nws.weather.gov/schemas/iwxxm-us/3.0/examples/
 
-**Nil / colour registers (2025-2):** Schematron ships **both** `codes.wmo.int-common-nil.rdf` (`IWXXM.nilReasonCheckLegacy`) and `codes.wmo.int-iwxxm-nil.rdf` (`IWXXM.nilReasonCheck`), plus `49-2` and `iwxxm` AviationColourCode RDF. Official METAR examples use `common/nil`; VONA uses `iwxxm/AviationColourCode` and often `iwxxm/nil`. Encode per XSD `vocabulary=` + official examples — see [mining/wmo-im-tier-a-mining-notes.md](mining/wmo-im-tier-a-mining-notes.md).
+**Nil / colour / MetFeature registers (2025-2):** Schematron ships **both** `codes.wmo.int-common-nil.rdf` (`IWXXM.nilReasonCheckLegacy`) and `codes.wmo.int-iwxxm-nil.rdf` (`IWXXM.nilReasonCheck`), plus `49-2` and `iwxxm` AviationColourCode RDF. Official METAR examples use `common/nil`; VONA uses `iwxxm/AviationColourCode` and often `iwxxm/nil`. Encode per XSD `vocabulary=` + official examples — see [mining/wmo-im-tier-a-mining-notes.md](mining/wmo-im-tier-a-mining-notes.md) · live inventory refresh [mining/codes-wmo-int-aviation-mining-notes.md](mining/codes-wmo-int-aviation-mining-notes.md) (2026-07-30): `49-2/AviationColourCode` has NIL/NOT_GIVEN/UNKNOWN; `iwxxm/AviationColourCode` has **UNASSIGNED** instead; `iwxxm/MeteorologicalFeature` is **28** members vs **27** on `49-2/` (**+`VOLCANIC_ASH`**) — pin SCH RDF matches live. Live HTML browse needs `Accept: text/html` (bare curl often 404). Weather table **`306/4678`**: prefer vendor CSV (**402** stable notations) — live HTML browse shows only a **~101** subset.
+
+**NSC vs layered cloud (informative FAQ):** APAC IWXXM FAQs 3rd §14.3 — when NSC is reported, layered `cloud` content is not required and co-occurrence can fail format validation. Prefer convert omit + SCH fixture under #797; cite [mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md).
 
 ---
 
@@ -194,9 +196,12 @@ Prefer offline RDF in CI; optional live:
 | Register | URL |
 |----------|-----|
 | Root | https://codes.wmo.int/ |
-| IWXXM lists | https://codes.wmo.int/iwxxm |
-| Nil | https://codes.wmo.int/common/nil |
-| Weather / phenomena | https://codes.wmo.int/49-2/… |
+| IWXXM lists | https://codes.wmo.int/iwxxm (`AviationColourCode`, `MeteorologicalFeature`, `nil`) |
+| Nil (legacy classic F6) | https://codes.wmo.int/common/nil |
+| Nil (IWXXM-native) | https://codes.wmo.int/iwxxm/nil |
+| Weather / phenomena | https://codes.wmo.int/49-2/… · weather tokens https://codes.wmo.int/306/4678 |
+
+Inventory dig (2026-07-30): [mining/codes-wmo-int-aviation-mining-notes.md](mining/codes-wmo-int-aviation-mining-notes.md). Prefer offline RDF in CI; live browse is optional smoke / discovery.
 
 Community index: https://community.wmo.int/iwxxm (**404** as of 2026-07-14) — recovered package table: [Wayback 2026-03-14](https://web.archive.org/web/20260314162354/https://community.wmo.int/iwxxm) · [mining/community-wmo-iwxxm-wayback-mining-notes.md](mining/community-wmo-iwxxm-wayback-mining-notes.md) · [VERSION_SUPPORT_POLICY Appendix A](iwxxm/VERSION_SUPPORT_POLICY.md#appendix-a--package--iwxxm-line-matrix-informative).  
 Live / recent operational METAR·TAF TAC+IWXXM (informative only): [Aviation Weather Center Data API](https://aviationweather.gov/data/api/) — [mining/awc-data-api-mining-notes.md](mining/awc-data-api-mining-notes.md).  

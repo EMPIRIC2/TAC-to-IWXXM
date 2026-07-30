@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  TC-EV023-002 positive excerpt: VONA / volcanic products may use iwxxm/nil
+  where official 2025-2 examples do (vona-A7-1 phenomenonProperty).
+-->
+<iwxxm:VolcanoObservatoryNoticeForAviation
+    xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="vona.iwxxm.nil.positive"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2024-02-22T01:30:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:feature>
+    <iwxxm:MeteorologicalFeature gml:id="feat.1">
+      <iwxxm:phenomenonProperty
+          nilReason="http://codes.wmo.int/iwxxm/nil/inapplicable"/>
+    </iwxxm:MeteorologicalFeature>
+  </iwxxm:feature>
+</iwxxm:VolcanoObservatoryNoticeForAviation>

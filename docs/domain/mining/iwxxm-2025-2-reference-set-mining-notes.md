@@ -2,7 +2,7 @@
 
 **Status:** working notes (not normative). Tracks the user-supplied reference inventory against repo mining + vendor pin.  
 **Focus of this pass:** Product TAC checklists (A3-2/A5-1/A6) + US RMK→iwxxm-us map  
-**Date mined:** 2026-07-14 (product checklists continue)  
+**Date mined:** 2026-07-14 (product checklists) · **continue 2026-07-30** (#797 APAC FAQ / codes / translation parity promote)  
 **Vendor pin:** `vendor/manifest.json` → `iwxxm` **v2025-2** (SHA `35180cbe…`), `iwxxm-codelists` **49-2**, `iwxxm-modelling` **v2025-2**, `iwxxm-translation` **master**, `iwxxm-us` **3.0**
 
 **Promote durable findings into:**
@@ -30,11 +30,12 @@ Legend: ✅ done / catalogued · ⚠ partial / caveat · ❌ gap · ⊘ project-
 | [IWXXM releases](https://github.com/wmo-im/iwxxm/releases) | ✅ | catalog | Latest = **`v2025-2`** (published 2025-11-25); Amd 82 |
 | [schemas.wmo.int/iwxxm/2025-2/](https://schemas.wmo.int/iwxxm/2025-2/) | ✅ | `IWXXM_VALIDATION.md` | Production package SoT for citations |
 | [ReleaseNotes-IWXXM.txt](https://schemas.wmo.int/iwxxm/2025-2/ReleaseNotes-IWXXM.txt) | ✅ | catalog | **Byte-identical** to vendor |
-| [codes.wmo.int/iwxxm](https://codes.wmo.int/iwxxm) | ✅ | catalog | Needs `Accept: text/html` |
+| [codes.wmo.int/iwxxm](https://codes.wmo.int/iwxxm) | ✅ | catalog + [aviation dig](./codes-wmo-int-aviation-mining-notes.md) | Needs `Accept: text/html`; dual colour/nil confirmed 2026-07-30 |
 | [iwxxm-codelists](https://github.com/wmo-im/iwxxm-codelists) | ✅ | Tier A + catalog | Pin by SHA |
 | [iwxxm-modelling](https://github.com/wmo-im/iwxxm-modelling) | ✅ | [modelling dig](./iwxxm-modelling-v2025-2-mining-notes.md) | Informative tooling |
-| [iwxxm-translation](https://github.com/wmo-im/iwxxm-translation) | ✅ | Tier A + catalog | Informative |
+| [iwxxm-translation](https://github.com/wmo-im/iwxxm-translation) | ✅ | Tier A + [parity dig](./iwxxm-translation-parity-mining-notes.md) | Informative; tip **2023-1** — no byte-match to pin (#797) |
 | [ICAO OPMET Guidelines 5th](https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf) | ✅ | [OPMET dig](./OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) | PDF in `.local/` |
+| [ICAO APAC IWXXM FAQs 3rd](https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2025-03_IWXXM-FAQs_3rd-Ed.pdf) | ✅ | [FAQ dig](./icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) | Informative; promoted 2026-07-30 · #797 |
 | [AWC Data API](https://aviationweather.gov/data/api/) | ✅ | [AWC dig](./awc-data-api-mining-notes.md) | Informative; smoke caveats below |
 
 ---

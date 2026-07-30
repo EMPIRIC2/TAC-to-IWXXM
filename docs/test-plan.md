@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-29 (S027 / EV-021 — F26/F27 VAA+TCA; UJ-037/038)
+> **Last updated**: 2026-07-30 (S030 / EV-023 — TC-EV023-001..009 #800)
 
 ## Scope
 
@@ -872,6 +872,91 @@ Before closing S013 / EV-009:
 - [ ] TC-F27-001..006 green
 - [ ] Coverage-matrix **F27 themes** T1–T3/C1 closed or deferred
 - [ ] H4–H5 when FE touched
+
+## S030 / EV-023 — APAC FAQ + codes encode/validate deepen (#800)
+
+> No new UJ — library/CI + existing convert/validate journeys (UJ-001/005/006/016 deepen).
+> Runtime pin **v2025-2**. Informative sources do not replace Annex 3 / vendor XSD/SCH.
+
+### TC-EV023-001: NSC without layered cloud (P0)
+
+- **Level**: T0 / T2
+- **Objective**: TAC with `NSC` encodes empty/nil cloud (`nothingOfOperationalSignificance`);
+  must **not** emit layered `<iwxxm:cloud>` content; XSD/SCH **negative** fixtures; lint beyond
+  research `NSC_PRESENT` if needed
+- **Pass criteria**: convert + validate green; negative fixture fails when layers present with NSC
+- **Source**: F6/F12/F2 deepen; #800 P0; FAQ §14.3
+
+### TC-EV023-002: Missing WX / Guidance nils (P0)
+
+- **Level**: T0 / T2
+- **Objective**: Missing weather (and related TAC gaps) match `TAC-to-XML-Guidance.txt` +
+  iwxxm-translation examples; `common/nil` vs `iwxxm/nil` per product/XSD vocabulary
+- **Pass criteria**: fixtures assert correct nil URI family under v2025-2
+- **Source**: F6/F2; #800 P0; FAQ §3.2; WMO-306 D-1 lineage (corroborate only)
+
+### TC-EV023-003: translationFailedTAC quarantine (P0)
+
+- **Level**: T0 / T2
+- **Objective**: Unreliable TAC → quarantine shape with original TAC on `translationFailedTAC`;
+  no operational TAC-in-XML-comments; no partial translate; attr matrix vs official
+  `*-translation-failed.xml`
+- **Pass criteria**: regression fixtures; deepen UJ-016 soft-fail path consistency
+- **Source**: F6/F2; #800 P0; FAQ §4.1 / §8.6
+
+### TC-EV023-004: Dual-register colour + nil encode policy (P1)
+
+- **Level**: T0
+- **Objective**: Encode href policy for `49-2/AviationColourCode` vs `iwxxm/AviationColourCode`;
+  dual nil SCH RDF (`common/nil` + `iwxxm/nil`); offline vendor RDF/CSV only
+- **Pass criteria**: unit/integration tests; no live codes.wmo.int HTML dependency in CI
+- **Source**: F6/F13; #800 P1
+
+### TC-EV023-005: iwxxm-translation informative suite (P1)
+
+- **Level**: T0 / CI or nightly
+- **Objective**: Amd79-80-2023 METAR/TAF/VAA/TCA **TAC** → our 2025-2 → XSD+SCH; mark
+  **informative**; do not fail on 2023-1 XML byte diffs (`gml:id`, translation* attrs, clocks)
+- **Pass criteria**: suite wired; SIGMET/AIRMET remain on official schemas.wmo.int examples
+- **Source**: F6/F2; #800 P1
+
+### TC-EV023-006: translationCentre* gate (P1)
+
+- **Level**: T0 / T2
+- **Objective**: Default in-State convert omits `translationCentre*`; emit only when
+  config/cross-State Translation Centre mode enabled
+- **Pass criteria**: default omit; config-on emits designator/name
+- **Source**: F6; config-spec; #800 P1; FAQ §14.5
+
+### TC-EV023-007: SIGMET FIR / “S OF” polygon helpers (P2)
+
+- **Level**: T0
+- **Objective**: Prefer polygon TAC; FIR-boundary intersection helpers; coordinate #738 / F23
+- **Pass criteria**: helper unit tests; full TC SIGMET quality remains #738
+- **Source**: F6 deepen; #800 P2; #738
+
+### TC-EV023-008: COLLECT / multi-version namespaces (P2)
+
+- **Level**: T0 / package
+- **Objective**: AFS COLLECT mandate + per-group `http://icao.int/iwxxm/{version}` documented
+  and hooked under F16–F19 / bulletin — not single-report convert SoT
+- **Pass criteria**: tests or deferred-with-rationale on dissemination path; convert SoT unchanged
+- **Source**: F16–F19 deepen; #800 P2
+
+### TC-EV023-009: Optional #798 encode QA + coverage matrix (P2)
+
+- **Level**: T0 / docs
+- **Objective**: Only if gaps survive defer-to-latest (aviation nilReasons, VAA/VONA METCE,
+  TCA METCE name-only); confirm `COVERAGE_MATRIX` / conversion citations after P0/P1
+- **Pass criteria**: gaps closed or explicitly deferred; matrix accurate; no `.local/` in git
+- **Source**: #800 P2; #798/#719
+
+### EV-023 verify/deploy gate
+
+- [ ] TC-EV023-001..006 green (P0+P1)
+- [ ] TC-EV023-007..009 green or deferred with rationale (P2)
+- [ ] Informative translation suite does not fail CI on 2023-1 XML byte diffs
+- [ ] 13-deploy-smoke when convert/validate behavior ships (E23-4)
 
 ## F9 deepen (S026 / EV-020) — glossary registry
 

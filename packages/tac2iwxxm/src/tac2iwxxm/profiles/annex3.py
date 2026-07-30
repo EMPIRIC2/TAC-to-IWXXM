@@ -88,6 +88,8 @@ def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
 
 
 def _visibility_block(ir: dict[str, Any]) -> str:
+    if ir.get("visibility_not_observable"):
+        return f'      <iwxxm:visibility xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
     vis_op = ""
     if ir.get("visibility_above"):
         vis_op = "\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
@@ -110,6 +112,10 @@ def _visibility_block(ir: dict[str, Any]) -> str:
 def _rvr_block(ir: dict[str, Any]) -> str:
     rvr_raw = ir.get("rvr")
     if not isinstance(rvr_raw, dict):
+        # Guidance / Amd79 CWFD: when vis is missing/notObservable and no RVR group,
+        # emit empty rvr with common/nil/missing (sensors absent / not reported).
+        if ir.get("visibility_not_observable"):
+            return f'      <iwxxm:rvr xsi:nil="true" nilReason="{NIL_MISSING}"/>\n'
         return ""
     rvr = cast(dict[str, Any], rvr_raw)
     rwy = escape(str(rvr["runway"]))
@@ -360,12 +366,24 @@ def build_observation_and_trends(
         wx_block = _present_weather_block(ir)
         cloud = _cloud_block(ir)
 
+    if ir.get("temp_not_observable"):
+        temp_xml = f'      <iwxxm:airTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
+    else:
+        temp_xml = f'      <iwxxm:airTemperature uom="Cel">{_fmt_cel(ir["temp_c"])}</iwxxm:airTemperature>\n'
+    if ir.get("dewpoint_not_observable"):
+        dew_xml = f'      <iwxxm:dewpointTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
+    else:
+        dew_xml = (
+            f'      <iwxxm:dewpointTemperature uom="Cel">{_fmt_cel(ir["dewpoint_c"])}</iwxxm:dewpointTemperature>\n'
+        )
+    if ir.get("qnh_not_observable"):
+        qnh_xml = f'      <iwxxm:qnh uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
+    else:
+        qnh_xml = f'      <iwxxm:qnh uom="hPa">{_fmt_hpa(ir["qnh_hpa"])}</iwxxm:qnh>\n'
+
     observation = f"""  <iwxxm:observation>
     <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="{cavok_attr}">
-      <iwxxm:airTemperature uom="Cel">{_fmt_cel(ir["temp_c"])}</iwxxm:airTemperature>
-      <iwxxm:dewpointTemperature uom="Cel">{_fmt_cel(ir["dewpoint_c"])}</iwxxm:dewpointTemperature>
-      <iwxxm:qnh uom="hPa">{_fmt_hpa(ir["qnh_hpa"])}</iwxxm:qnh>
-{_surface_wind_inner(ir, peak_extension=peak_extension)}{vis_block}{rvr_block}{wx_block}{cloud}{addendum_extension}    </iwxxm:MeteorologicalAerodromeObservation>
+{temp_xml}{dew_xml}{qnh_xml}{_surface_wind_inner(ir, peak_extension=peak_extension)}{vis_block}{rvr_block}{wx_block}{cloud}{addendum_extension}    </iwxxm:MeteorologicalAerodromeObservation>
   </iwxxm:observation>
 """
     return observation, _trend_forecasts(ir)

@@ -157,6 +157,9 @@ def convert_metar_tac_with_metadata(
     profile: str = "annex3",
     preview: bool = False,
     soft_preview_out: Optional[dict] = None,
+    emit_translation_centre: bool = False,
+    translation_centre_designator: str = "",
+    translation_centre_name: str = "",
 ) -> Tuple[str, Optional[ComprehensiveValidationResult]]:
     """
     Convert TAC to IWXXM via ``tac2iwxxm`` and optionally validate.
@@ -191,6 +194,12 @@ def convert_metar_tac_with_metadata(
         ``failed_spans``. On any successful convert, also filled with
         ``convert_issues`` (tac2iwxxm non-fatal issues such as ``REMARKS_EXCLUDED``)
         when the caller passes a dict — including hard convert (EV-013 / #667).
+    emit_translation_centre :
+        When ``True``, emit ``translationCentre*`` on successful convert (E23-T2).
+    translation_centre_designator :
+        Designator when ``emit_translation_centre`` is true.
+    translation_centre_name :
+        Centre name when ``emit_translation_centre`` is true.
 
     Returns
     -------
@@ -221,6 +230,9 @@ def convert_metar_tac_with_metadata(
         profile=profile_l,
         iwxxm_version=version,
         preview=preview,
+        emit_translation_centre=emit_translation_centre,
+        translation_centre_designator=translation_centre_designator,
+        translation_centre_name=translation_centre_name,
     )
     if not result.ok or not result.xml:
         msgs = "; ".join(f"{i.code}: {i.message}" for i in result.issues) or "unknown convert failure"

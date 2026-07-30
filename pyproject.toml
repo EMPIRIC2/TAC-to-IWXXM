@@ -83,6 +83,8 @@ addopts = [
   "--strict-markers",
   "--tb=short",
 ]
+# E23-T4=2: keep informative iwxxm_translation suite soft (xfail strict=False in tests).
+xfail_strict = false
 markers = [
   "unit: unit tests",
   "integration: integration tests",
@@ -91,6 +93,7 @@ markers = [
   "smoke: deploy smoke tests",
   "migration: monorepo migration gate tests (TC-M001–M005)",
   "slow: longer local/CI smokes (clean-venv wheel installs)",
+  "iwxxm_translation_informative: Amd79-80-2023 TAC→2025-2 informative suite (EV-023; soft/xfail in CI)",
 ]
 filterwarnings = [
   "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning:passlib.utils",

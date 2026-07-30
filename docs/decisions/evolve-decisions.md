@@ -3,6 +3,73 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-023 — APAC FAQ + codes + WMO-306 encode/validate deltas (#800) (S030)
+
+**Session**: S030-apac-encode-validate  
+**Features**: Deepen **F6** / **F2** / **F12** / **F13** (no new Fn)  
+**Issues**: [#800](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/800) (supersedes #797 implementation backlog; continues optional QA from #798/#719)  
+**Started**: 2026-07-30  
+**Branch**: `evolve/EV-023-apac-encode-validate`  
+**Status**: **in_progress** (Phase A — **01-requirements**)
+
+### Scope (Phase 0 — locked 2026-07-30)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E23-1 | decision | Feature allocation? | **A** — deepen **F6 + F2 + F12** (+ **F13** SCH as needed); no new Fn; `cycle_type: general` |
+| E23-2 | decision | Scope this cycle? | **All ticket backlog items** (P0 + P1 + actionable P2) — see verbatim scope; exclude Out-of-scope section + #740/#741 |
+| E23-3 | decision | Routing? | **A** — Lean+build `00→16→01→02→04→07→08→10`; skip 03/05/06/09/12; **11 optional** |
+| E23-4 | decision | Deploy? | **B** — include **13-deploy-smoke** when convert/validate behavior ships |
+| E23-ui | decision | Non-deployed UI preview? | **N/A** — engine + goldens; no new UI surface |
+| E23-park | decision | Prior cycle? | **D-S029-park** — cancel/park EV-022 (F9 decode) to prioritize #800 |
+| E23-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** |
+| S02.M1 | decision | translationCentre wire? | **1** — defer Form field name to **04**; default omit locked |
+| S02.M2 | decision | COLLECT P2 depth? | **1** — F16–F19/bulletin hooks only; not full dissemination re-epic |
+| S02.L1 | decision | Informative suite CI? | **1** — pytest marker; job wiring in **04** |
+| E23-02 | decision | Gate A / 02 close? | **PASS** — Batch F 1,1,1; Lean → **04-tech-plan** (`D-S030-02-phase-a`) |
+| E23-T1 | decision | Milestone order? | **1** — M0→P0→P1→P2→smoke |
+| E23-T2 | decision | translationCentre wire? | **1** — Form `emit_translation_centre` + optional designator/name |
+| E23-T3 | decision | New deps? | **2** — AskQuestion per new dep (prefer none) |
+| E23-T4 | decision | Informative suite CI? | **2** — marker in main CI as **soft/xfail** |
+| E23-T5 | decision | Kill-switch? | **1** — AskQuestion; no silent defer HARD P0 |
+| E23-T6 | decision | Approve plan → 07? | **1** — M0–M7 approved; B→C → 07 @ T0.1 |
+
+**Scope (verbatim)**:
+Implement encode / lint / Schematron / fixture deltas from completed mining (#800) under
+runtime SoT `vendor/manifest.json` → IWXXM **v2025-2**. Digs are done — engine + goldens only.
+
+**P0:** NSC vs layered cloud (FAQ §14.3); missing WX / Guidance nils (`common/nil` vs `iwxxm/nil`);
+`translationFailedTAC` quarantine (no partial translate; no operational TAC-in-XML-comments;
+attr matrix vs official `*-translation-failed.xml`).
+
+**P1:** codes.wmo.int dual-register colour + dual nil encode policy (offline vendor RDF/CSV);
+iwxxm-translation Amd79-80-2023 METAR/TAF/VAA/TCA TAC → our 2025-2 as **informative**
+(XSD+SCH; no 2023-1 XML byte-match); `translationCentre*` emit only for cross-State /
+Translation Centre use (default in-State omit or config-gate).
+
+**P2 (actionable this cycle):** SIGMET FIR / “S OF” → polygon helpers coordinated with #738 /
+F23 geometry; COLLECT / multi-version namespaces as dissemination/bulletin work (F16–F19)
+with convert SoT remaining single-report; optional #798/#719 encode QA if gaps survive
+defer-to-latest; confirm coverage matrix / conversion citations after P0/P1.
+**Not in cycle:** #740 SWX / #741 VONA / QVA; PDF remine; AMHS/FTBP ops; replacing Annex 3 /
+vendor XSD with FAQ; 2019/upd-2021 as equal-weight SoT; `.local/` binaries; SAF/runway-state
+under 2025-2.
+
+### Fn allocation (approved)
+
+| Fn | Role |
+|----|------|
+| Deepen **F6** | Encode correctness (NSC, nils, translationFailedTAC, translationCentre gate, FIR polygon helpers, COLLECT hooks as needed) |
+| Deepen **F2** / **F13** | SCH/XSD negative fixtures + dual-register / nil policy tests |
+| Deepen **F12** | Lint tighten beyond research `NSC_PRESENT` if needed; registry codes |
+| Coord **F16–F19** / **#738** | COLLECT namespaces; SIGMET geometry — implement helpers here, full product bars stay on those tickets |
+
+### Routing (approved)
+
+Lean+build + **13 when behavior ships**: `00→16→01→02→04→07→08→10` (+ `13` if API/convert ships).
+
+---
+
 ## Cycle EV-021 — VAA + TCA quality bars (#736 / #737) (S027)
 
 **Session**: S027-vaa-quality  

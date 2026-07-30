@@ -292,3 +292,17 @@
 | EV-019/E19-18 | Deps | AskQuestion per new dep (prefer none) | confirmed |
 | EV-019/manifest | Docs | Spec, journeys, test-plan, coverage matrix, API contract | confirmed |
 
+## EV-023 / #800 — APAC FAQ + codes encode/validate deepen (2026-07-30)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-023/E23-1 | Fn | Deepen F6+F2+F12(+F13); no new Fn | confirmed |
+| EV-023/E23-2 | Scope | Full #800 backlog P0+P1+actionable P2; OOS per ticket Out-of-scope + #740/#741 | confirmed |
+| EV-023/E23-3 | Routing | Lean+build 01/02/04/07/08/10; 13 when behavior ships; skip 03/05/06/09/12 | confirmed |
+| EV-023/E23-4 | Deploy | 13-deploy-smoke when convert/validate ships | confirmed |
+| EV-023/E23-ui | UI | N/A — no new UI; no new UJ | confirmed |
+| EV-023/manifest | Docs | feature-list deepen + test-plan TC-EV023 + config-spec translationCentre + journeys note | confirmed |
+| EV-023/journeys | Tests | TC-EV023-001..009; deepen UJ-001/005/006/016 | confirmed |
+| EV-023/api | API | No new routes expected; optional convert flag for translationCentre (name in 04) | confirmed |
+
+

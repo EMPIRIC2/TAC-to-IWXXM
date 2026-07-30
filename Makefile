@@ -229,6 +229,11 @@ test-sigmet-quality: test-wmo-quality
 test-wmo-quality:
 	bash scripts/ci/run_wmo_quality.sh
 
+# EV-023 / TC-EV023-005 — Amd79 informative suite (T5.1+T5.2; soft xfail strict=False / E23-T4=2)
+test-iwxxm-translation-informative:
+	$(UV) run pytest packages/tac2iwxxm/tests \
+		-m iwxxm_translation_informative -v --tb=short --no-cov
+
 # F16–F19 / T0.1 — coverage paths; skips until packages/dissemination exists (T1.1/T1.2).
 test-unit-dissemination:
 	bash scripts/ci/run_dissemination_coverage.sh

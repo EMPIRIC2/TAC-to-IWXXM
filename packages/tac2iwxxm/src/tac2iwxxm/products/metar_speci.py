@@ -13,10 +13,18 @@ _REPORT = re.compile(
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
 _VIS_SM = re.compile(r"\b(?P<vis>\d{1,2})SM\b")
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
+# AUTO missing visibility: ////SM (statute) or //// (metres); avoid matching ////SM as ////.
+# Note: ``\b`` does not fire before ``/`` (non-word), so use explicit lookarounds.
+_VIS_SM_NOT_OBS = re.compile(r"(?<![A-Z0-9/])////SM(?![A-Z0-9/])")
+_VIS_M_NOT_OBS = re.compile(r"(?<![A-Z0-9/])////(?!SM)(?![A-Z0-9/])")
 _CAVOK = re.compile(r"\bCAVOK\b")
 _TEMP = re.compile(r"\b(?P<temp>M?\d{2})/(?P<dew>M?\d{2})\b")
+# AUTO missing temperature/dewpoint group (five slashes).
+_TEMP_NOT_OBS = re.compile(r"(?<![A-Z0-9/])/////(?![A-Z0-9/])")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
+_ALT_NOT_OBS = re.compile(r"(?<![A-Z0-9])A////(?![A-Z0-9/])")
 _QNH_HPA = re.compile(r"\bQ(?P<qnh>\d{3,4})\b")
+_QNH_NOT_OBS = re.compile(r"(?<![A-Z0-9])Q////(?![A-Z0-9/])")
 _CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})(?P<ctype>CB|TCU)?\b")
 _NIL = re.compile(r"\bNIL\b")
 _AUTO = re.compile(r"\bAUTO\b")
@@ -356,6 +364,9 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         ir["cavok"] = True
         ir["visibility_m"] = 10000
         ir["visibility_above"] = True
+    elif _VIS_SM_NOT_OBS.search(rest) or _VIS_M_NOT_OBS.search(rest):
+        # Guidance / TC-EV023-002: AUTO missing vis → common/nil/notObservable.
+        ir["visibility_not_observable"] = True
     else:
         vis_sm = _VIS_SM.search(rest)
         if vis_sm is not None:
@@ -373,21 +384,28 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
             # ICAO 9999 means 10 km or more.
             ir["visibility_above"] = metres >= 9999
 
-    temp = _TEMP.search(rest)
-    if temp is None:
-        raise ValueError("missing temperature/dewpoint group")
-    ir["temp_c"] = _celsius(temp.group("temp"))
-    ir["dewpoint_c"] = _celsius(temp.group("dew"))
-
-    alt = _ALT_INHG.search(rest)
-    if alt is not None:
-        ir["altimeter_inhg"] = int(alt.group("alt")) / 100.0
-        ir["qnh_hpa"] = _inhg_to_hpa(alt.group("alt"))
+    if _TEMP_NOT_OBS.search(rest):
+        ir["temp_not_observable"] = True
+        ir["dewpoint_not_observable"] = True
     else:
-        qnh = _QNH_HPA.search(rest)
-        if qnh is None:
-            raise ValueError("missing altimeter (Axxxx/Qxxxx) group")
-        ir["qnh_hpa"] = float(qnh.group("qnh"))
+        temp = _TEMP.search(rest)
+        if temp is None:
+            raise ValueError("missing temperature/dewpoint group")
+        ir["temp_c"] = _celsius(temp.group("temp"))
+        ir["dewpoint_c"] = _celsius(temp.group("dew"))
+
+    if _ALT_NOT_OBS.search(rest) or _QNH_NOT_OBS.search(rest):
+        ir["qnh_not_observable"] = True
+    else:
+        alt = _ALT_INHG.search(rest)
+        if alt is not None:
+            ir["altimeter_inhg"] = int(alt.group("alt")) / 100.0
+            ir["qnh_hpa"] = _inhg_to_hpa(alt.group("alt"))
+        else:
+            qnh = _QNH_HPA.search(rest)
+            if qnh is None:
+                raise ValueError("missing altimeter (Axxxx/Qxxxx) group")
+            ir["qnh_hpa"] = float(qnh.group("qnh"))
 
     # Strip REMARKS; split observation vs trend groups before exceptional tokens.
     body_for_wx = _RMK.split(rest, maxsplit=1)[0]
@@ -395,19 +413,25 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
 
     # Re-bind visibility from observation only (avoid trend 9999 / TL times).
     if not ir.get("cavok"):
-        vis_sm = _VIS_SM.search(obs_body)
-        if vis_sm is not None:
-            sm = int(vis_sm.group("vis"))
-            ir["visibility_sm"] = sm
-            metres, above = _sm_to_m(sm)
-            ir["visibility_m"] = metres
-            ir["visibility_above"] = above
+        if _VIS_SM_NOT_OBS.search(obs_body) or _VIS_M_NOT_OBS.search(obs_body):
+            ir["visibility_not_observable"] = True
+            ir.pop("visibility_m", None)
+            ir.pop("visibility_sm", None)
+            ir.pop("visibility_above", None)
         else:
-            vis_m = _VIS_M.search(obs_body)
-            if vis_m is not None:
-                metres = int(vis_m.group("vis"))
+            vis_sm = _VIS_SM.search(obs_body)
+            if vis_sm is not None:
+                sm = int(vis_sm.group("vis"))
+                ir["visibility_sm"] = sm
+                metres, above = _sm_to_m(sm)
                 ir["visibility_m"] = metres
-                ir["visibility_above"] = metres >= 9999
+                ir["visibility_above"] = above
+            else:
+                vis_m = _VIS_M.search(obs_body)
+                if vis_m is not None:
+                    metres = int(vis_m.group("vis"))
+                    ir["visibility_m"] = metres
+                    ir["visibility_above"] = metres >= 9999
 
     min_vis = _VIS_MIN.search(obs_body)
     if min_vis is not None:
@@ -432,7 +456,11 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     if _NOSIG.search(body_for_wx):
         ir["nosig"] = True
     if _NSC.search(obs_body):
+        # FAQ §14.3 / TC-EV023-001: NSC is exclusive — drop any FEW/SCT/… layers.
         ir["nsc"] = True
+        ir["clouds"] = []
+        ir.pop("cloud_amount", None)
+        ir.pop("cloud_base_ft", None)
     if _NCD.search(obs_body):
         ir["ncd"] = True
     if _VV_NOT_OBS.search(obs_body):

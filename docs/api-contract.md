@@ -141,8 +141,10 @@ the same public convert path. Work history is **not** server-persisted (IndexedD
 
 - HTTP **200** allowed when parse/convert is partial; response may include best-effort IWXXM,
   `ok: false`, and `failed_spans: [{ start, end, code?, message? }]`.
-- Does **not** imply Schematron-passed publish; hard convert (default) keeps existing failure
-  HTTP semantics.
+- Does **not** imply Schematron-passed publish; hard convert (default) keeps failure HTTP
+  semantics for non-quarantine errors. **EV-023 / TC-EV023-003:** product-shaped unreliable
+  TAC emits a successful quarantine document (`@translationFailedTAC`) with HTTP **200**
+  (not the soft-preview `ok:false` envelope).
 - Prefer this flag over a separate `/preview-convert` route (D-S011-01-api-A).
 
 **S011 spans on convert issues/errors** (when present): optional integer `start` / `end` alongside
@@ -567,6 +569,11 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
   new routes; wire shapes unchanged. `product=sigmet` selects root `iwxxm:SIGMET` vs
   `iwxxm:VolcanicAshSIGMET` from TAC content (E19-13=A). Registry codes flow through existing
   `lint-tac` + `GET /lint-issue-catalog`. Dissemination routes unchanged (OOS).
+- S030 / EV-023 (2026-07-30): #800 APAC/codes encode deepen — **no new routes**;
+  package-side NSC/nils/`translationFailedTAC`/dual-register/informative translation suite.
+  Convert multipart Form (E23-T2): `emit_translation_centre` (bool, default false) + optional
+  `translation_centre_designator` / `translation_centre_name` when emit true. Dissemination
+  COLLECT multi-version remains F16–F19. Informative suite: soft/xfail in main CI (E23-T4).
 
 ## S020 / EV-015 — Endpoint review (F20)
 

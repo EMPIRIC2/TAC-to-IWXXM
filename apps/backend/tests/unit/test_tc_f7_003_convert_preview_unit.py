@@ -80,21 +80,56 @@ def test_convert_preview_partial_failure_returns_200_failed_spans_and_xml(
     assert "<" in xml and "iwxxm" in xml.lower(), "best-effort body must look like IWXXM XML"
 
 
-def test_convert_without_preview_keeps_hard_fail(client: TestClient) -> None:
-    """TC-F7-003: hard convert failure semantics unchanged when preview not selected."""
+def test_convert_without_preview_unreliable_tac_quarantines(client: TestClient) -> None:
+    """EV-023 / TC-EV023-003: product-shaped unreliable TAC → quarantine (not soft-preview).
+
+    Default convert emits ``translationFailedTAC`` shell with HTTP 200 / successful=1.
+    Soft-preview ``ok:false`` + ``failed_spans`` remains preview=true only (ADR-022).
+    """
     response = _multipart_convert(client, manual_text=BAD_METAR_TAC, preview=None)
-    assert response.status_code in {400, 422}, response.text[:500]
-    # Must not look like soft-preview success envelope
-    if response.headers.get("content-type", "").startswith("application/json"):
-        body = response.json()
-        assert body.get("ok") is not True
-        # Soft-preview fields should not redefine hard-fail into 200
-        assert "failed_spans" not in body or response.status_code != 200
+    assert response.status_code == 200, response.text[:500]
+    body = response.json()
+    assert body.get("successful", 0) >= 1
+    assert not body.get("failed_spans")
+    xml = (body.get("results") or [{}])[0].get("content") or ""
+    assert "translationFailedTAC" in xml
+    assert body.get("ok") is not False  # not soft-preview envelope
 
 
-def test_convert_preview_false_keeps_hard_fail(client: TestClient) -> None:
-    """Explicit preview=false retains hard-fail HTTP semantics."""
+def test_convert_preview_false_unreliable_tac_quarantines(client: TestClient) -> None:
+    """Explicit preview=false still quarantines unreliable METAR (EV-023), not soft-preview."""
     response = _multipart_convert(client, manual_text=BAD_METAR_TAC, preview="false")
+    assert response.status_code == 200, response.text[:500]
+    body = response.json()
+    assert body.get("successful", 0) >= 1
+    xml = (body.get("results") or [{}])[0].get("content") or ""
+    assert "translationFailedTAC" in xml
+    assert body.get("ok") is not False
+
+
+def test_convert_without_preview_keeps_hard_fail_for_unsupported_product(
+    client: TestClient,
+) -> None:
+    """ADR-022: non-quarantine failures still hard-fail when preview is omitted."""
+    response = _multipart_convert(
+        client,
+        manual_text="METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
+        product="NOTAPRODUCT",
+        preview=None,
+    )
+    assert response.status_code in {400, 422}, response.text[:500]
+
+
+def test_convert_preview_false_keeps_hard_fail_for_unsupported_product(
+    client: TestClient,
+) -> None:
+    """Explicit preview=false retains hard-fail for non-quarantine convert errors."""
+    response = _multipart_convert(
+        client,
+        manual_text="METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
+        product="NOTAPRODUCT",
+        preview="false",
+    )
     assert response.status_code in {400, 422}, response.text[:500]
 
 

@@ -8,6 +8,14 @@ sink adapters, and SSRF/allowlist helpers ([ADR-030](../../docs/adr/ADR-030-diss
 - No FastAPI or Supabase imports
 - HTTP routers stay in `apps/backend` (thin)
 
+**COLLECT / multi-version namespaces (EV-023 / TC-EV023-008)**
+
+- `dissemination.collect_namespaces` — AFS COLLECT mandate constant + helpers to
+  detect `collect:MeteorologicalBulletin` and list per-member
+  `http://icao.int/iwxxm/{version}` declarations (APAC FAQ §3.4 / §14.7)
+- Hooks for the F16–F19 / bulletin path only — **not** single-report
+  `tac2iwxxm.convert` SoT (S02.M2)
+
 **Coverage**
 
 - Local/CI: `make test-unit-dissemination` (95% branch gate)
