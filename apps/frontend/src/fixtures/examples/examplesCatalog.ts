@@ -1,9 +1,9 @@
 /**
- * Frontend-only golden examples catalog (F7.g / #780 / F25 W4 / ADR-032).
+ * Frontend-only golden examples catalog (F7.g / #780 / F25 W4 / F26–F27 / ADR-032).
  *
  * Bodies are copied from package fixtures — never import Python at runtime.
- * In-scope METAR/SPECI/TAF/SIGMET/AIRMET TAC demos are **WMO-passers only**
- * (E20-F4 incremental unlock; themes W1–W3 + A3 + F23 SIGMET keepers closed).
+ * In-scope METAR/SPECI/TAF/SIGMET/AIRMET/VAA/TCA TAC demos are **WMO-passers only**
+ * (E20-F4 + S02.M2 incremental unlock; F26/F27 goldens green → unlock VAA/TCA).
  */
 
 import type { OperatorInputMode } from '@/utils/inputKind';
@@ -18,8 +18,8 @@ import sigmetA61bCnl from './bodies/sigmet_a6_1b_cnl.tac?raw';
 import speciA32 from './bodies/speci_a3_2.tac?raw';
 import tafA51 from './bodies/taf_a5_1.tac?raw';
 import tafA52 from './bodies/taf_a5_2.tac?raw';
-import tcaBasic from './bodies/tca_basic.tac?raw';
-import vaaBasic from './bodies/vaa_basic.tac?raw';
+import tcaA22 from './bodies/tca_a2_2.tac?raw';
+import vaaA72 from './bodies/vaa_a7_2.tac?raw';
 
 /** Seven F6 products covered by the Examples catalog. */
 export const EXAMPLE_PRODUCTS: readonly TacProduct[] = [
@@ -32,13 +32,15 @@ export const EXAMPLE_PRODUCTS: readonly TacProduct[] = [
   'TCA',
 ] as const;
 
-/** Products gated to strict WMO default golden parity (F24/F25). */
+/** Products gated to strict WMO default golden parity (F24/F25/F26/F27). */
 export const WMO_SCOPE_PRODUCTS: readonly TacProduct[] = [
   'METAR',
   'SPECI',
   'TAF',
   'SIGMET',
   'AIRMET',
+  'VAA',
+  'TCA',
 ] as const;
 
 /**
@@ -61,7 +63,7 @@ export interface GoldenExample {
   provenance: string;
   /**
    * True when this TAC demo passes ADR-032 WMO default golden bar (or SIGMET keeper).
-   * Required for WMO_SCOPE_PRODUCTS TAC rows (TC-F25-003).
+   * Required for WMO_SCOPE_PRODUCTS TAC rows (TC-F25-003 / TC-F26-005 / TC-F27-005).
    */
   wmoPass?: boolean;
   /** Vendor / annex3 seed id when ``wmoPass`` (e.g. ``metar-A3-1``). */
@@ -69,7 +71,7 @@ export interface GoldenExample {
 }
 
 /**
- * Documented 1-fixture gap (E16-8 / E16-13 / F25 WMO-only).
+ * Documented 1-fixture gap (E16-8 / E16-13 / F25–F27 WMO-only).
  */
 export interface FixtureGap {
   product: TacProduct;
@@ -83,8 +85,8 @@ const VENDOR =
 /**
  * Curated demo examples for convert + validate workbench.
  *
- * WMO-scope TAC rows: only unlocked WMO-passers (E20-F4). AHL / IWXXM modes and
- * VAA/TCA remain as non-WMO-scope demos.
+ * WMO-scope TAC rows: only unlocked WMO-passers (E20-F4 / S02.M2). AHL / IWXXM modes
+ * remain non-WMO-scope demos.
  */
 export const EXAMPLES: readonly GoldenExample[] = [
   {
@@ -165,22 +167,26 @@ export const EXAMPLES: readonly GoldenExample[] = [
     wmoSeed: 'airmet-A6-1a-TS',
   },
   {
-    id: 'vaa_basic',
-    label: 'VAA basic (product_matrix)',
+    id: 'vaa_a7_2',
+    label: 'VAA WMO A7-2 (annex3)',
     product: 'VAA',
     inputMode: 'tac',
-    body: vaaBasic,
+    body: vaaA72,
     nonOperational: true,
-    provenance: `${PKG}/product_matrix/vaa_basic.tac`,
+    provenance: `${PKG}/annex3_golden/vaa_a7_2.tac`,
+    wmoPass: true,
+    wmoSeed: 'va-advisory-A7-2',
   },
   {
-    id: 'tca_basic',
-    label: 'TCA basic (product_matrix)',
+    id: 'tca_a2_2',
+    label: 'TCA WMO A2-2 (annex3)',
     product: 'TCA',
     inputMode: 'tac',
-    body: tcaBasic,
+    body: tcaA22,
     nonOperational: true,
-    provenance: `${PKG}/product_matrix/tca_basic.tac`,
+    provenance: `${PKG}/annex3_golden/tca_a2_2.tac`,
+    wmoPass: true,
+    wmoSeed: 'tc-advisory-A2-2',
   },
   {
     id: 'ahl_metar_multi',
@@ -224,12 +230,12 @@ export const FIXTURE_GAPS: readonly FixtureGap[] = [
   {
     product: 'VAA',
     reason:
-      'Only product_matrix/vaa_basic.tac exists in-repo; second golden deferred (E16-8).',
+      'WMO-only catalog (F26): single unlocked seed va-advisory-A7-2; second WMO VAA deferred.',
   },
   {
     product: 'TCA',
     reason:
-      'Only product_matrix/tca_basic.tac exists in-repo; second golden deferred (E16-8).',
+      'WMO-only catalog (F27): single unlocked seed tc-advisory-A2-2; second WMO TCA deferred.',
   },
 ] as const;
 
