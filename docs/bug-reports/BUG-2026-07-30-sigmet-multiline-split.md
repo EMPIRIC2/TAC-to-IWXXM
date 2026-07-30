@@ -9,7 +9,7 @@
 | **Remediation path** | local-first — deploy only after explicit approval |
 | **Session** | S028-sigmet-multiline-split |
 | **Branch** | fix/BUG-2026-07-30-sigmet-multiline-split |
-| **PR** | — |
+| **PR** | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/796 |
 
 ## Error description
 
@@ -112,6 +112,7 @@ TDD iteration log:
 | confirm_hotfix_plan | Proceed |
 | repro_test_matches_symptom | Yes |
 | investigation_root_cause | Agree — line-split of SIGMET/AIRMET; proceed to fix |
+| hotfix_commit_pr | Commit + push + open PR (#796) |
 
 ## Prevention & countermeasures
 
