@@ -45,7 +45,7 @@ active_session:
     required: true
     mode: orchestrator
     status: in_progress
-    note: Orchestrator EV-023; M4+M5 complete; 07 @ T6.1; M6
+    note: Orchestrator EV-023; M6 COMPLETE; T7.1 COMPLETE; next T7.2 08-verify-build; progress 21/24
   - stage: 01-requirements
     required: true
     mode: delta
@@ -72,7 +72,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-30'
-    note: M4+M5 COMPLETE; next T6.1 FIR/S OF polygon helpers; progress 16/24
+    note: M6 done; T7.1 done; T7.2 08-verify-build in_progress; 21/24
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -94,9 +94,9 @@ active_session:
   current_stage: 07-build
   started_at: '2026-07-30'
   context_briefs: []
-  tip_sha: 970288f
-  tip_sha_full: 970288fb41fca09b9f2e22f9328dfa430d4ee4a4
-  note: 'M4+M5 COMPLETE @ 970288f (informative suite + soft/xfail CI); next T6.1 FIR/S OF polygon helpers; progress 16/24; tip 970288f; branch evolve/EV-023-apac-encode-validate'
+  tip_sha: 495670b
+  tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
+  note: 'M6 COMPLETE; T7.1 COMPLETE; next T7.2 08-verify-build; progress 21/24'
 sessions:
 - id: S028-sigmet-multiline-split
   type: hotfix
@@ -4725,23 +4725,23 @@ stages:
     previous_tip_sha: b5f5c32
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'M4+M5 COMPLETE @ 970288f — T5.1–T5.2 informative suite + soft/xfail CI; next T6.1 FIR/S OF polygon helpers; progress 16/24; tip 970288f; branch evolve/EV-023-apac-encode-validate; #800'
-    tip_sha: 970288f
-    tip_sha_full: 970288fb41fca09b9f2e22f9328dfa430d4ee4a4
+    note: 'M6 COMPLETE; T7.1 COMPLETE @ 495670b; next T7.2 08-verify-build; progress 21/24; tip 495670b; branch evolve/EV-023-apac-encode-validate; #800'
+    tip_sha: 495670b
+    tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
     current_stage: 07-build
-    active_milestone: M6
-    active_task: T6.1
-    active_task_status: pending
-    progress: 16/24
+    active_milestone: M7
+    active_task: T7.2
+    active_task_status: in_progress
+    progress: 21/24
     substeps:
       task_loop:
         status: in_progress
-        current_task: T6.1
-        active_task_status: pending
-        active_milestone: M6
+        current_task: T7.2
+        active_task_status: in_progress
+        active_milestone: M7
         phase: C
-        milestone: M6
-        notes: M4+M5 COMPLETE @ 970288f (T5.1–T5.2); next T6.1 FIR/S OF polygon helpers
+        milestone: M7
+        notes: M6 COMPLETE; T7.1 COMPLETE @ 495670b; next T7.2 08-verify-build; 21/24
     delta_substages:
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
@@ -4751,14 +4751,14 @@ stages:
       started_at: '2026-07-30'
       started: '2026-07-30'
       mode: full
-      note: 'M4+M5 COMPLETE @ 970288f — T5.1–T5.2 informative suite + soft/xfail CI; next T6.1 FIR/S OF polygon helpers; progress 16/24; tip 970288f; branch evolve/EV-023-apac-encode-validate; #800'
-      active_milestone: M6
-      active_task: T6.1
-      active_task_status: pending
-      progress: 16/24
+      note: 'M6 COMPLETE; T7.1 COMPLETE @ 495670b; next T7.2 08-verify-build; progress 21/24; tip 495670b; branch evolve/EV-023-apac-encode-validate; #800'
+      active_milestone: M7
+      active_task: T7.2
+      active_task_status: in_progress
+      progress: 21/24
       decision_id: D-S030-E23-M0
-      tip_sha: 970288f
-      tip_sha_full: 970288fb41fca09b9f2e22f9328dfa430d4ee4a4
+      tip_sha: 495670b
+      tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
       branch: evolve/EV-023-apac-encode-validate
       feature_ids:
       - F6
@@ -5006,6 +5006,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-30 M6 complete (T6.1–T6.4); T7.1 API smoke done; T7.2 next'
     - '2026-07-30 S030/EV-023 M4 COMPLETE (T4.1–T4.4 dual-register colour/nil + translationCentre) @ 5c131b7 (5c131b77a66b35c4bc0ab270c36fa52879fbaf8c) — commits 50d576d/6a63de9/9b5b29f/5c131b7; next T5.1 / M5; progress 14/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
     - '2026-07-30 S030/EV-023 T4.1 COMPLETE @ 50d576d (50d576de1c28a6ba8062a56ee8732747d400635e) — offline dual-register colour + dual nil TC-EV023-004; next T4.2 encode href policy (in_progress); progress 11/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
     - '2026-07-30 S030/EV-023 07-build M3 complete T3.1–T3.2 translationFailedTAC quarantine; next T4.1 / M4; tip 69d4cf5 [T3.1]; T3.2 staged; branch evolve/EV-023-apac-encode-validate; #800'
@@ -6929,10 +6930,11 @@ stages:
     completed_at: null
     completed: '2026-07-27'
     current_stage: 07-build
-    tip_sha: 970288f
-    tip_sha_full: 970288fb41fca09b9f2e22f9328dfa430d4ee4a4
-    note: 'S030/EV-023 07-build M4+M5 COMPLETE @ 970288f; next T6.1 / M6; progress 16/24; tip 970288f; branch evolve/EV-023-apac-encode-validate; #800'
+    tip_sha: 18f1d68
+    tip_sha_full: 18f1d68a494acd55a60357fc714087295982747b
+    note: 'S030/EV-023 07-build M6 T6.1+T6.2 COMPLETE @ 18f1d68; next T6.3 COLLECT; progress 18/24; tip 18f1d68; branch evolve/EV-023-apac-encode-validate; #800'
     notes:
+    - '2026-07-30 T6.1+T6.2 complete (06372ce, 18f1d68); T6.3 in_progress'
     - '2026-07-30 S030/EV-023 M4 COMPLETE (T4.1–T4.4 dual-register colour/nil + translationCentre) @ 5c131b7 (5c131b77a66b35c4bc0ab270c36fa52879fbaf8c) — commits 50d576d/6a63de9/9b5b29f/5c131b7; next T5.1 / M5; progress 14/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
     - '2026-07-30 S030/EV-023 T4.1 COMPLETE @ 50d576d (50d576de1c28a6ba8062a56ee8732747d400635e) — offline dual-register colour + dual nil TC-EV023-004; next T4.2 encode href policy (in_progress); progress 11/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
     - '2026-07-30 S030/EV-023 tip synced — 3b28479 (3b28479c47e705ae99b5b83b4e7845542c7a201b); M3 complete T3.1–T3.2; next T4.1; stage 07-build; recorded 69d4cf5/11edba3/3b28479; branch evolve/EV-023-apac-encode-validate; not pushed; #800'
@@ -22295,7 +22297,7 @@ evolve_cycles:
       note: Phase 0 locked E23-1..4 (D-S030-E23-phase0)
     16-evolve:
       status: in_progress
-      note: Orchestrator EV-023; M4+M5 complete; 07 @ T6.1; M6
+      note: Orchestrator EV-023; M6 COMPLETE; T7.1 COMPLETE; next T7.2 08-verify-build; progress 21/24
     01-requirements:
       status: completed
       mode: delta
@@ -22318,10 +22320,10 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-07-30'
-      active_task: T6.1
-      active_task_status: pending
-      active_milestone: M6
-      note: 'M4+M5 COMPLETE @ 970288f — T5.1–T5.2 informative suite + soft/xfail CI; next T6.1 FIR/S OF polygon helpers; progress 16/24; tip 970288f; branch evolve/EV-023-apac-encode-validate; #800'
+      active_task: T7.2
+      active_task_status: in_progress
+      active_milestone: M7
+      note: 'M6 COMPLETE; T7.1 COMPLETE @ 495670b; next T7.2 08-verify-build; progress 21/24; tip 495670b; branch evolve/EV-023-apac-encode-validate; #800'
     08-verify-build:
       status: pending
       mode: delta
@@ -22375,14 +22377,17 @@ evolve_cycles:
   - D-S030-02-phase-a
   - D-S030-E23-T-batch
   - D-S030-04-plan-approve
-  active_milestone: M6
-  active_task: T6.1
-  active_task_status: pending
-  progress: 16/24
-  note: 'M4+M5 COMPLETE (T4.1–T5.2 dual-register + translationCentre + informative suite); next T6.1 FIR/S OF polygon helpers; progress 16/24; tip 970288f; branch evolve/EV-023-apac-encode-validate; #800'
-  tip_sha: 970288f
-  tip_sha_full: 970288fb41fca09b9f2e22f9328dfa430d4ee4a4
+  active_milestone: M7
+  active_task: T7.2
+  active_task_status: in_progress
+  progress: 21/24
+  note: 'M6 COMPLETE (T6.1–T6.4); T7.1 COMPLETE @ 495670b; next T7.2 08-verify-build; progress 21/24; tip 495670b; branch evolve/EV-023-apac-encode-validate; #800'
+  tip_sha: 495670b
+  tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
   notes:
+  - '2026-07-30 M6 complete (T6.1–T6.4); T7.1 API smoke done; T7.2 next'
+  - '2026-07-30 T6.1+T6.2 complete (06372ce, 18f1d68); T6.3 in_progress'
+  - '2026-07-30 resume 07-build at T6.1 (user Continue /16-evolve)'
   - '2026-07-30 S030/EV-023 M4+M5 COMPLETE (T5.1–T5.2 informative suite + soft/xfail CI) @ 970288f (970288fb41fca09b9f2e22f9328dfa430d4ee4a4) — commits 9d487c4/970288f; next T6.1 FIR/S OF polygon helpers / M6; progress 16/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
   - '2026-07-30 S030/EV-023 M4 COMPLETE (T4.1–T4.4 dual-register colour/nil + translationCentre) @ 5c131b7 (5c131b77a66b35c4bc0ab270c36fa52879fbaf8c) — commits 50d576d/6a63de9/9b5b29f/5c131b7; next T5.1 / M5; progress 14/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
   - '2026-07-30 S030/EV-023 T4.1 COMPLETE @ 50d576d (50d576de1c28a6ba8062a56ee8732747d400635e) — offline dual-register colour + dual nil TC-EV023-004; next T4.2 encode href policy (in_progress); progress 11/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
@@ -22404,10 +22409,12 @@ git_history:
   ahead_of_origin: null
   pushed: false
   pending_commit: null
-  tip_sha: 970288f
-  tip_sha_full: 970288fb41fca09b9f2e22f9328dfa430d4ee4a4
-  note: 'S030/EV-023 M4+M5 COMPLETE; next T6.1; progress 16/24; tip 970288f on evolve/EV-023-apac-encode-validate; #800'
+  tip_sha: 495670b
+  tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
+  note: 'S030/EV-023 M6 COMPLETE; T7.1 COMPLETE; next T7.2; progress 21/24; tip 495670b on evolve/EV-023-apac-encode-validate; #800'
   notes:
+  - '2026-07-30 M6 complete (T6.1–T6.4); T7.1 API smoke done; T7.2 next'
+  - '2026-07-30 T6.1+T6.2 complete (06372ce, 18f1d68); T6.3 in_progress'
   - '2026-07-30 S030/EV-023 tip synced — 970288f (970288fb41fca09b9f2e22f9328dfa430d4ee4a4); M4+M5 COMPLETE T5.1–T5.2; next T6.1; progress 16/24; stage 07-build; recorded 9d487c4/970288f; branch evolve/EV-023-apac-encode-validate; not pushed; #800'
   - '2026-07-30 S030/EV-023 tip synced — 5c131b7 (5c131b77a66b35c4bc0ab270c36fa52879fbaf8c); M4 COMPLETE T4.1–T4.4; next T5.1; progress 14/24; stage 07-build; recorded 6a63de9/9b5b29f/5c131b7; branch evolve/EV-023-apac-encode-validate; not pushed; #800'
   - '2026-07-30 S030/EV-023 tip synced — 50d576d (50d576de1c28a6ba8062a56ee8732747d400635e); T4.1 COMPLETE; next T4.2; progress 11/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
@@ -23685,11 +23692,61 @@ git_history:
     created_at: '2026-07-30'
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'S030/EV-023 M4+M5 COMPLETE @ 970288f; next T6.1; progress 16/24; tip 970288f; base main @ dead991; not pushed'
-    tip_sha: 970288f
-    tip_sha_full: 970288fb41fca09b9f2e22f9328dfa430d4ee4a4
+    note: 'S030/EV-023 M6 COMPLETE; T7.1 COMPLETE @ 495670b; next T7.2; progress 21/24; tip 495670b; base main @ dead991; not pushed'
+    tip_sha: 495670b
+    tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
     pushed: false
   commits:
+  - sha: 495670b
+    sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T7.1] test: API convert/validate smoke for EV-023 themes'
+    stage: 07-build
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    files_changed: 2
+    timestamp: '2026-07-30T21:41:59Z'
+    pushed: false
+  - sha: f104c0e
+    sha_full: f104c0ea51fee5514e94715ecae8afcd2331cd28
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T6.4] docs: defer optional #798 QA and confirm coverage matrix'
+    stage: 07-build
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    files_changed: 3
+    timestamp: '2026-07-30T21:40:42Z'
+    pushed: false
+  - sha: b1242bd
+    sha_full: b1242bd610db28096b6094734288e7c3b10738f9
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T6.3] test: COLLECT multi-version namespace hooks (TC-EV023-008)'
+    stage: 07-build
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    files_changed: 5
+    timestamp: '2026-07-30T21:39:23Z'
+    pushed: false
+  - sha: 18f1d68
+    sha_full: 18f1d68a494acd55a60357fc714087295982747b
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T6.2] feat: FIR relative-phrase polygon helpers for SIGMET geometry'
+    stage: 07-build
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    files_changed: 2
+    timestamp: '2026-07-30T21:33:40Z'
+    pushed: false
+  - sha: 06372ce
+    sha_full: 06372cefc2a4b9ddcdb2e5469ac55a71aad7756c
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T6.1] test: FIR/S OF polygon helper unit tests (TC-EV023-007)'
+    stage: 07-build
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    files_changed: 1
+    timestamp: '2026-07-30T21:33:00Z'
+    pushed: false
   - sha: 970288f
     sha_full: 970288fb41fca09b9f2e22f9328dfa430d4ee4a4
     branch: evolve/EV-023-apac-encode-validate
