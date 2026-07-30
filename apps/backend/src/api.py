@@ -1400,6 +1400,21 @@ async def convert(
         default=True,
         description="When false, prefer omitting nilReason attributes (engine may still emit NIL report shells; ADR-024)",
     ),
+    emit_translation_centre: bool = Form(
+        default=False,
+        description=(
+            "When true, emit translationCentreDesignator/Name on successful convert "
+            "(cross-State / Translation Centre mode; FAQ §14.5). Default omit for in-State."
+        ),
+    ),
+    translation_centre_designator: str = Form(
+        default="",
+        description="Optional translationCentreDesignator when emit_translation_centre is true",
+    ),
+    translation_centre_name: str = Form(
+        default="",
+        description="Optional translationCentreName when emit_translation_centre is true",
+    ),
     log_level: str = Form(
         default="INFO",
         description="Minimum severity for conversion/validation/lint process issues echoed to the client",
@@ -1949,6 +1964,9 @@ async def convert(
                     profile=profile,
                     preview=preview,
                     soft_preview_out=soft_preview_buf,
+                    emit_translation_centre=emit_translation_centre,
+                    translation_centre_designator=translation_centre_designator,
+                    translation_centre_name=translation_centre_name,
                 )
                 absorb_soft_preview(soft_preview_buf, source=metar_name)
                 if preview and soft_preview_buf.get("ok") is False:
@@ -2206,6 +2224,9 @@ async def convert(
                 profile=profile,
                 preview=preview,
                 soft_preview_out=soft_preview_buf,
+                emit_translation_centre=emit_translation_centre,
+                translation_centre_designator=translation_centre_designator,
+                translation_centre_name=translation_centre_name,
             )
             absorb_soft_preview(soft_preview_buf, base_offset=entry_offset, source=manual_source)
             if preview and soft_preview_buf.get("ok") is False:
@@ -2435,6 +2456,9 @@ async def convert(
                     profile=profile,
                     preview=preview,
                     soft_preview_out=soft_preview_buf,
+                    emit_translation_centre=emit_translation_centre,
+                    translation_centre_designator=translation_centre_designator,
+                    translation_centre_name=translation_centre_name,
                 )
                 absorb_soft_preview(soft_preview_buf, source=source_name)
                 if preview and soft_preview_buf.get("ok") is False:

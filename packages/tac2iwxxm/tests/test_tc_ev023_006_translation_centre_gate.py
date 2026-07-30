@@ -10,8 +10,6 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import pytest
-
 _REPO = Path(__file__).resolve().parents[3]
 _VENDOR_EX = _REPO / "vendor" / "schemas" / "iwxxm" / "2025-2" / "IWXXM" / "examples"
 
@@ -102,10 +100,6 @@ def test_tc_ev023_006_quarantine_keeps_translation_centre_model() -> None:
         assert _attr(result.xml, name), f"quarantine convert missing {name}"
 
 
-@pytest.mark.xfail(
-    reason="T4.4: convert emit_translation_centre + optional designator/name",
-    strict=True,
-)
 def test_tc_ev023_006_flag_emits_translation_centre() -> None:
     """``emit_translation_centre=True`` adds designator/name on successful convert."""
     from tac2iwxxm import convert
@@ -128,10 +122,6 @@ def test_tc_ev023_006_flag_emits_translation_centre() -> None:
     )
 
 
-@pytest.mark.xfail(
-    reason="T4.4: flag false / omitted must still omit centre attrs",
-    strict=True,
-)
 def test_tc_ev023_006_explicit_false_still_omits() -> None:
     """Explicit ``emit_translation_centre=False`` keeps default omit behaviour."""
     from tac2iwxxm import convert

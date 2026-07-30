@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from typing import Any, Callable, cast
+from xml.sax.saxutils import escape
 
 from tac2iwxxm.models import ConvertIssue, ConvertResult
 from tac2iwxxm.products.metar_speci import parse_metar_speci
@@ -271,6 +272,39 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
     raise ValueError(f"no emitter for product {product!r}")
 
 
+_ROOT_OPEN = re.compile(r"(<iwxxm:[A-Za-z]+\b)([^>]*)(>)", re.DOTALL)
+
+
+def _inject_translation_centre(
+    xml: str,
+    *,
+    designator: str,
+    name: str,
+) -> str:
+    """
+    Insert ``translationCentre*`` attributes on the IWXXM root element.
+
+    Parameters
+    ----------
+    xml : str
+        Successful convert document (not a quarantine shell).
+    designator : str
+        ``translationCentreDesignator`` value.
+    name : str
+        ``translationCentreName`` value.
+
+    Returns
+    -------
+    str
+        XML with centre attributes on the first ``iwxxm:*`` root start tag.
+    """
+    extra = f'\n    translationCentreDesignator="{escape(designator)}"\n    translationCentreName="{escape(name)}"'
+    match = _ROOT_OPEN.search(xml)
+    if match is None:
+        return xml
+    return xml[: match.start()] + match.group(1) + match.group(2) + extra + match.group(3) + xml[match.end() :]
+
+
 def convert(
     tac: str,
     *,
@@ -278,6 +312,9 @@ def convert(
     profile: str = "annex3",
     iwxxm_version: str = "2025-2",
     preview: bool = False,
+    emit_translation_centre: bool = False,
+    translation_centre_designator: str = "",
+    translation_centre_name: str = "",
 ) -> ConvertResult:
     """
     Convert a TAC report to IWXXM XML.
@@ -295,6 +332,15 @@ def convert(
     preview :
         When ``True``, fatal parse/profile failures still return best-effort stub XML
         (soft-preview / ADR-022). Does not imply Schematron-passed publish.
+    emit_translation_centre :
+        When ``True``, emit ``translationCentreDesignator`` / ``translationCentreName``
+        on successful convert (cross-State / Translation Centre mode; FAQ §14.5).
+        Default ``False`` omits them for in-State convert. Quarantine shells always
+        include centre attrs (official ``*-translation-failed`` model).
+    translation_centre_designator :
+        Designator when ``emit_translation_centre`` is true.
+    translation_centre_name :
+        Human-readable centre name when ``emit_translation_centre`` is true.
 
     Returns
     -------
@@ -396,6 +442,13 @@ def convert(
                         end=remark_end,
                     )
                 )
+
+    if emit_translation_centre:
+        xml = _inject_translation_centre(
+            xml,
+            designator=translation_centre_designator,
+            name=translation_centre_name,
+        )
 
     return ConvertResult(
         ok=True,
