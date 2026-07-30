@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — Build |
 | **Active milestone** | M2 — P0 missing WX / Guidance nils |
-| **Active task** | T2.1 |
-| **Tasks** | 6 / 24 |
+| **Active task** | T2.2 |
+| **Tasks** | 7 / 24 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -67,8 +67,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | `common/nil` vs `iwxxm/nil` fixtures | TC-EV023-002 | T1.3 | pending |
-| T2.2 | Code | Align missing WX with Guidance | F6 | T2.1 | pending |
+| T2.1 | Test | `common/nil` vs `iwxxm/nil` fixtures | TC-EV023-002 | T1.3 | **completed** |
+| T2.2 | Code | Align missing WX with Guidance | F6 | T2.1 | **in_progress** |
 
 ### M3 — P0 translationFailedTAC
 
