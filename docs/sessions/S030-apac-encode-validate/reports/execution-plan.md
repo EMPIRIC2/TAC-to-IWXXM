@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M5 — P1 informative translation suite |
-| **Active task** | T5.1 |
-| **Tasks** | 14 / 24 |
+| **Active milestone** | M6 — P2 geometry / COLLECT / QA / matrix |
+| **Active task** | T6.1 |
+| **Tasks** | 16 / 24 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -91,7 +91,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T5.1 | Test | Amd79 TAC → 2025-2 → XSD+SCH under marker | TC-EV023-005 | T0.3; T4.4 | completed |
-| T5.2 | Config | Soft/xfail in main CI (no hard-fail on 2023-1 bytes) | E23-T4=2 | T5.1 | pending |
+| T5.2 | Config | Soft/xfail in main CI (no hard-fail on 2023-1 bytes) | E23-T4=2 | T5.1 | completed |
 
 ### M6 — P2 geometry / COLLECT / QA / matrix
 

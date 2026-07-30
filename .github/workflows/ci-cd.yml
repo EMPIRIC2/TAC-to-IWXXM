@@ -135,6 +135,8 @@ jobs:
             --cov-report=xml:coverage.xml --cov-report=term-missing \
             --cov-fail-under=98 -v
 
+      # EV-023 / E23-T4=2: TC-EV023-005 Amd79 informative cases use xfail(strict=False);
+      # xfail_strict=false in packages/tac2iwxxm/pyproject.toml — soft failures must not hard-fail.
       - name: Run tac2iwxxm unit tests with coverage
         if: matrix.package == 'tac2iwxxm'
         run: |

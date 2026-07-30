@@ -83,6 +83,8 @@ addopts = [
   "--strict-markers",
   "--tb=short",
 ]
+# E23-T4=2: keep informative iwxxm_translation suite soft (xfail strict=False in tests).
+xfail_strict = false
 markers = [
   "unit: unit tests",
   "integration: integration tests",
