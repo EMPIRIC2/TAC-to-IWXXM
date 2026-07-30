@@ -45,7 +45,7 @@ active_session:
     required: true
     mode: orchestrator
     status: in_progress
-    note: Orchestrator EV-023; T7.3 10-e2e smoke COMPLETE; T7.4 13 pending PR/deploy; progress 23/24
+    note: Orchestrator EV-023; PR #801 open; T7.4 13 pending merge/deploy; progress 23/24
   - stage: 01-requirements
     required: true
     mode: delta
@@ -72,7 +72,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-30'
-    note: T7.3 done; T7.4 pending deploy; 23/24
+    note: T7.4 prep pushed; PR #801 open; 23/24
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -95,13 +95,18 @@ active_session:
     required: true
     mode: when_ships
     status: pending
-    note: E23-4 when_ships — after PR merge/deploy
+    note: E23-4 when_ships — after PR #801 merge/deploy
   current_stage: 13-deploy-smoke
   started_at: '2026-07-30'
   context_briefs: []
-  tip_sha: 9c040ee
-  tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
-  note: 'T7.3 10-e2e smoke COMPLETE; T7.4 13 pending PR/deploy (E23-4); progress 23/24'
+  tip_sha: f859f31
+  tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+  pushed: true
+  pr_number: 801
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
+  pr_status: open
+  do_not_auto_merge: true
+  note: 'PR #801 open (pushed f859f31); T7.4 13 pending merge/deploy (E23-4); progress 23/24; pre-push gate fixed (F7 quarantine + tac2iwxxm coverage)'
 sessions:
 - id: S028-sigmet-multiline-split
   type: hotfix
@@ -4730,9 +4735,9 @@ stages:
     previous_tip_sha: b5f5c32
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'T7.3 done; T7.4 pending deploy; 23/24; tip 9c040ee; branch evolve/EV-023-apac-encode-validate; #800'
-    tip_sha: 9c040ee
-    tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+    note: 'T7.4 prep pushed; PR #801 open; 23/24; tip f859f31; branch evolve/EV-023-apac-encode-validate; #800'
+    tip_sha: f859f31
+    tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
     current_stage: 13-deploy-smoke
     active_milestone: M7
     active_task: T7.4
@@ -4746,7 +4751,7 @@ stages:
         active_milestone: M7
         phase: C
         milestone: M7
-        notes: T7.3 done; T7.4 pending deploy; 23/24
+        notes: T7.4 prep pushed; PR #801 open; awaiting merge/deploy; 23/24
     delta_substages:
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
@@ -4756,14 +4761,14 @@ stages:
       started_at: '2026-07-30'
       started: '2026-07-30'
       mode: full
-      note: 'T7.3 done; T7.4 pending deploy; 23/24; tip 9c040ee; branch evolve/EV-023-apac-encode-validate; #800'
+      note: 'T7.4 prep pushed; PR #801 open; 23/24; tip f859f31; branch evolve/EV-023-apac-encode-validate; #800'
       active_milestone: M7
       active_task: T7.4
       active_task_status: pending
       progress: 23/24
       decision_id: D-S030-E23-M0
-      tip_sha: 9c040ee
-      tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+      tip_sha: f859f31
+      tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
       branch: evolve/EV-023-apac-encode-validate
       feature_ids:
       - F6
@@ -5011,6 +5016,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; T7.4 13 pending merge/deploy; progress 23/24; #800'
     - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
     - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
     - '2026-07-30 M6 complete (T6.1–T6.4); T7.1 API smoke done; T7.2 next'
@@ -5799,11 +5805,11 @@ stages:
     previous_tip_sha: 3027305
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    tip_sha: 9c040ee
-    tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+    tip_sha: f859f31
+    tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
     overall: pass
     report: docs/sessions/S030-apac-encode-validate/reports/e2e-report.md
-    note: 'S030/EV-023 10-e2e COMPLETE (smoke) — PASS; reports/e2e-report.md; browser N/A; T7.3 done; next T7.4 13; progress 23/24; #800'
+    note: 'S030/EV-023 10-e2e COMPLETE (smoke) — PASS; reports/e2e-report.md; browser N/A; T7.3 done; PR #801 open; next T7.4 13; progress 23/24; #800'
     substeps:
       extract_journeys:
         status: completed
@@ -5830,9 +5836,9 @@ stages:
       completed: '2026-07-30'
       completed_at: '2026-07-30'
       branch: evolve/EV-023-apac-encode-validate
-      tip_sha: 9c040ee
-      tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
-      note: smoke PASS — reports/e2e-report.md; browser N/A
+      tip_sha: f859f31
+      tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+      note: smoke PASS — reports/e2e-report.md; browser N/A; PR #801 open
       report: docs/sessions/S030-apac-encode-validate/reports/e2e-report.md
       overall: pass
       active_milestone: M7
@@ -6596,14 +6602,17 @@ stages:
     previous_decision_id: D-S027-E21-13-merge
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'E23-4 when_ships — after PR merge/deploy; T7.4 pending; progress 23/24; tip 9c040ee; #800'
-    tip_sha: 9c040ee
-    tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+    note: 'E23-4 when_ships — PR #801 open; T7.4 pending merge/deploy; progress 23/24; tip f859f31; #800'
+    tip_sha: f859f31
+    tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
     overall: null
     active_task: T7.4
     active_task_status: pending
     progress: 23/24
     do_not_auto_merge: true
+    pr_number: 801
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
+    pr_status: open
     report: null
     delta_substages:
     - id: S030-apac-encode-validate
@@ -6613,9 +6622,9 @@ stages:
       status: pending
       mode: when_ships
       branch: evolve/EV-023-apac-encode-validate
-      tip_sha: 9c040ee
-      tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
-      note: E23-4 when_ships — after PR merge/deploy
+      tip_sha: f859f31
+      tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+      note: E23-4 when_ships — after PR #801 merge/deploy
       active_milestone: M7
       active_task: T7.4
       active_task_status: pending
@@ -7017,10 +7026,11 @@ stages:
     completed_at: null
     completed: '2026-07-27'
     current_stage: 13-deploy-smoke
-    tip_sha: 9c040ee
-    tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
-    note: 'S030/EV-023 T7.3 10-e2e smoke COMPLETE; T7.4 13 pending PR/deploy; progress 23/24; tip 9c040ee; branch evolve/EV-023-apac-encode-validate; #800'
+    tip_sha: f859f31
+    tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+    note: 'S030/EV-023 PR #801 open (pushed f859f31); T7.4 13 pending merge/deploy; progress 23/24; branch evolve/EV-023-apac-encode-validate; #800'
     notes:
+    - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; T7.4 13 pending merge/deploy; progress 23/24; #800'
     - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
     - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
     - '2026-07-30 T6.1+T6.2 complete (06372ce, 18f1d68); T6.3 in_progress'
@@ -22414,7 +22424,7 @@ evolve_cycles:
       note: Phase 0 locked E23-1..4 (D-S030-E23-phase0)
     16-evolve:
       status: in_progress
-      note: Orchestrator EV-023; T7.3 10-e2e smoke COMPLETE; T7.4 13 pending PR/deploy; progress 23/24
+      note: Orchestrator EV-023; PR #801 open; T7.4 13 pending merge/deploy; progress 23/24
     01-requirements:
       status: completed
       mode: delta
@@ -22440,7 +22450,7 @@ evolve_cycles:
       active_task: T7.4
       active_task_status: pending
       active_milestone: M7
-      note: 'T7.3 done; T7.4 pending deploy; 23/24; tip 9c040ee; branch evolve/EV-023-apac-encode-validate; #800'
+      note: 'T7.4 prep pushed; PR #801 open; 23/24; tip f859f31; branch evolve/EV-023-apac-encode-validate; #800'
     08-verify-build:
       status: completed
       mode: delta
@@ -22459,7 +22469,7 @@ evolve_cycles:
     13-deploy-smoke:
       status: pending
       mode: when_ships
-      note: E23-4 when_ships — after PR merge/deploy
+      note: E23-4 when_ships — after PR #801 merge/deploy
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -22512,10 +22522,17 @@ evolve_cycles:
   active_task: T7.4
   active_task_status: pending
   progress: 23/24
-  note: 'T7.3 10-e2e smoke COMPLETE; T7.4 13 pending PR/deploy (E23-4); progress 23/24; tip 9c040ee; branch evolve/EV-023-apac-encode-validate; #800'
-  tip_sha: 9c040ee
-  tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+  pushed: true
+  pr_number: 801
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
+  pr_status: open
+  pr_title: '[EV-023] APAC encode–validate deepen (S030 / #800)'
+  do_not_auto_merge: true
+  note: 'PR #801 open (pushed f859f31); T7.4 13 pending merge/deploy (E23-4); progress 23/24; pre-push gate fixed (F7 quarantine + tac2iwxxm coverage); #800'
+  tip_sha: f859f31
+  tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
   notes:
+  - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; T7.4 13 pending merge/deploy; progress 23/24; #800'
   - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
   - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
   - '2026-07-30 M6 complete (T6.1–T6.4); T7.1 API smoke done; T7.2 next'
@@ -22539,13 +22556,17 @@ evolve_cycles:
     proposed; Phase 0 intake pending; tip dead991; #800'
 git_history:
   current_branch: evolve/EV-023-apac-encode-validate
-  ahead_of_origin: null
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit: null
-  tip_sha: 9c040ee
-  tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
-  note: 'S030/EV-023 T7.3 10-e2e smoke PASS; T7.4 13 pending; progress 23/24; tip 9c040ee on evolve/EV-023-apac-encode-validate; #800'
+  tip_sha: f859f31
+  tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+  pr_number: 801
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
+  pr_status: open
+  note: 'S030/EV-023 PR #801 open (pushed f859f31); T7.4 13 pending merge/deploy; progress 23/24; tip f859f31 on evolve/EV-023-apac-encode-validate; #800'
   notes:
+  - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; #800'
   - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
   - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
   - '2026-07-30 M6 complete (T6.1–T6.4); T7.1 API smoke done; T7.2 next'
@@ -23827,11 +23848,39 @@ git_history:
     created_at: '2026-07-30'
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'S030/EV-023 M6 COMPLETE; T7.1 COMPLETE @ 495670b; next T7.2; progress 21/24; tip 495670b; base main @ dead991; not pushed'
-    tip_sha: 495670b
-    tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
-    pushed: false
+    note: 'S030/EV-023 PR #801 open; T7.4 prep pushed f859f31; T7.4 13 pending merge/deploy; progress 23/24; #800'
+    tip_sha: f859f31
+    tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+    pushed: true
+    pr_id: PR-EV-023
+    pr_number: 801
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
+    pr_title: '[EV-023] APAC encode–validate deepen (S030 / #800)'
+    pr_base: main
+    pr_head: evolve/EV-023-apac-encode-validate
+    pr_status: open
+    do_not_auto_merge: true
   commits:
+  - sha: f859f31
+    sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T7.4] test: raise tac2iwxxm coverage for EV-023 helpers'
+    stage: 16-evolve
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    files_changed: 2
+    timestamp: '2026-07-30T22:02:45Z'
+    pushed: true
+  - sha: 634cfb6
+    sha_full: 634cfb6de0683d02839d45c4ecb3a1b5775d27ae
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T7.4] fix: align F7 hard-fail tests with EV-023 quarantine'
+    stage: 16-evolve
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    files_changed: 3
+    timestamp: '2026-07-30T21:59:05Z'
+    pushed: true
   - sha: 9c040ee
     sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
     branch: evolve/EV-023-apac-encode-validate
