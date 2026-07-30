@@ -374,21 +374,47 @@ async def parse_files(request: Request) -> List[UploadFile]:
         )
 
 
-def split_manual_entries(manual_text: str) -> List[str]:
-    """Split manual text input into one TAC entry per non-empty line."""
-    if not manual_text:
-        return []
-    return [line.strip() for line in manual_text.splitlines() if line.strip()]
+# Multi-line template advisories (F26/F27) — keep the whole buffer as one TAC entry.
+_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"VAA", "TCA"})
 
 
-def manual_entries_with_offsets(manual_text: str) -> List[Tuple[str, int]]:
-    """Split like ``split_manual_entries`` with start offsets into the original buffer.
+def _is_multiline_template_product(product: Optional[str]) -> bool:
+    """Return True for VAA/TCA advisory products that must not be line-split."""
+    return (product or "").strip().upper() in _MULTILINE_TEMPLATE_PRODUCTS
 
-    Offsets point at the first non-whitespace character of each kept line so
-    soft-preview ``failed_spans`` can be remapped onto the full editor document.
+
+def split_manual_entries(manual_text: str, product: Optional[str] = None) -> List[str]:
+    """Split manual text into TAC entries.
+
+    Default (METAR/SPECI/TAF/SIGMET/AIRMET): one entry per non-empty line.
+    VAA/TCA (F26/F27): entire buffer is one multi-line advisory document —
+    line-splitting would shred template fields (``VA ADVISORY`` / ``DTG:`` / …).
     """
     if not manual_text:
         return []
+    if _is_multiline_template_product(product):
+        text = manual_text.strip()
+        return [text] if text else []
+    return [line.strip() for line in manual_text.splitlines() if line.strip()]
+
+
+def manual_entries_with_offsets(manual_text: str, product: Optional[str] = None) -> List[Tuple[str, int]]:
+    """Split like ``split_manual_entries`` with start offsets into the original buffer.
+
+    Offsets point at the first non-whitespace character of each kept entry so
+    soft-preview ``failed_spans`` can be remapped onto the full editor document.
+    For VAA/TCA the single entry offset is the first non-whitespace character of
+    the buffer (document preserved with internal newlines).
+    """
+    if not manual_text:
+        return []
+    if _is_multiline_template_product(product):
+        stripped = manual_text.strip()
+        if not stripped:
+            return []
+        lead = len(manual_text) - len(manual_text.lstrip())
+        # Preserve internal newlines; only trim outer whitespace for the entry text.
+        return [(stripped, lead)]
     out: List[Tuple[str, int]] = []
     offset = 0
     for line in manual_text.splitlines(keepends=True):
@@ -1764,7 +1790,7 @@ async def convert(
     if request_body is not None and request_body.metars:
         metars_list = request_body.metars
 
-    manual_with_offsets = manual_entries_with_offsets(manual_text or "")
+    manual_with_offsets = manual_entries_with_offsets(manual_text or "", product=product)
     manual_entries = [entry for entry, _ in manual_with_offsets]
 
     request_metadata = {

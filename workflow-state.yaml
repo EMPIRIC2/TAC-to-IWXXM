@@ -23,7 +23,7 @@ active_session:
   preset: Lean+build+11
   preset_status: approved
   context_briefs: []
-  note: "M0 done; T1.1+T1.2 done; next T1.3 F26 theme V2"
+  note: "T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build"
   routing_plan:
   - stage: 00-context
     required: true
@@ -103,7 +103,7 @@ sessions:
   preset: Lean+build+11
   preset_status: approved
   context_briefs: []
-  note: "04 PASS; M0 T0.1–T0.3 done; next T1.1 F26 VAA lint"
+  note: "T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build"
   routing_plan:
   - stage: 00-context
     required: true
@@ -4068,16 +4068,19 @@ stages:
     previous_tip_sha: 0f77194
     session_id: S027-vaa-quality
     evolve_cycle_id: EV-021
-    note: 'M0 done; T1.1+T1.2 done; next T1.3 F26 theme V2'
-    tip_sha: a43fc50
-    tip_sha_full: a43fc505c53fff9c7afdbfdf0eec830b8920fdb1
+    note: "T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build; tip pending; #736/#737"
+    tip_sha: a2ebef0
+    tip_sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
+    current_stage: 07-build
     substeps:
       task_loop:
         status: in_progress
-        current_task: T1.3
+        current_task: T6.2
+        active_task_status: pending
+        active_milestone: M6
         phase: C
-        milestone: M1
-        notes: M0 done; T1.1+T1.2 done; next T1.3 F26 theme V2
+        milestone: M6
+        notes: "T6.1 complete; next T6.2 08-verify-build"
     delta_substages:
     - id: S027-vaa-quality
       session_id: S027-vaa-quality
@@ -4087,11 +4090,13 @@ stages:
       started_at: '2026-07-29'
       started: '2026-07-29'
       mode: full
-      note: 'M0 done; T1.1+T1.2 done; next T1.3 F26 theme V2; #736/#737'
-      active_milestone: M1
-      active_task: T1.3
-      active_task_status: in_progress
-      decision_id: D-S027-04-plan-approve
+      note: "T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build; #736/#737"
+      active_milestone: M6
+      active_task: T6.2
+      active_task_status: pending
+      decision_id: D-S027-07-T6.1-complete
+      tip_sha: a2ebef0
+      tip_sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
       branch: evolve/EV-021-vaa-quality
       feature_ids:
       - F26
@@ -4304,6 +4309,10 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-30 S027/EV-021 M5 COMPLETE (T5.1–T5.3 F7.g catalog unlock + WMO golden packs); next M6 T6.1 API/workbench smoke VAA+TCA; tip a2ebef0; commits 1d4595d/a2ebef0; #736/#737'
+    - '2026-07-30 S027/EV-021 M4 COMPLETE (T4.1–T4.4 F27 T3+A2-2 convert + T1–T3 close + C1 adjacency); next M5 T5.1 F7.g catalog unlock Vitest; tip 3f9cc13; commits c20296b/2338f1d/3f9cc13; #737'
+    - '2026-07-29 S027/EV-021 T2.2 COMPLETE (F26 V3 VAA convert fidelity A7-2); next T2.3 F26 V1–V3 close AskQuestion; tip d089ea2; #736'
+    - '2026-07-29 S027/EV-021 M1 complete (T1.3–T1.4) + T2.1 COMPLETE (V3 golden stubs, M-golden xfail); next T2.2 convert fidelity; tip 57cb9e1; commits b260bdd/57cb9e1; #736'
     - '2026-07-29 S027/EV-021 07-build in_progress — M0 complete (T0.1–T0.3); active T1.1 F26 VAA lint; D-S027-04-plan-approve B→C; #736/#737'
     - '2026-07-29 S026/EV-020 T6.4 PASS 11-verify-impl (D-S026-E20-11-ac-all + D-S026-E20-11-preview-no) — AC all approved; preview declined; next T6.5 13-deploy-smoke; progress 26/~28; tip 3027305; #731'
     - '2026-07-29 S026/EV-020 T6.3 PASS 10-e2e — UJ-035/036 T0; e2e-report.md; next T6.4=11-verify-impl; progress 25/~28; tip c963a0a (no [T6.3] commit yet); #731'
@@ -4470,11 +4479,11 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-29'
-      note: 'M0 complete (T0.1–T0.3); active T1.1 F26 VAA lint; #736/#737'
-      active_milestone: M1
-      active_task: T1.1
-      active_task_status: in_progress
-      decision_id: D-S027-04-plan-approve
+      note: 'T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build; #736/#737'
+      active_milestone: M6
+      active_task: T6.1
+      active_task_status: pending
+      decision_id: D-S027-07-T4.1-complete
       branch: evolve/EV-021-vaa-quality
   09-qa:
     status: completed
@@ -6204,6 +6213,90 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S027-07-T2.2-complete
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: "07-build T2.2 complete"
+  summary: "T2.2 F26 V3 convert fidelity — va-advisory-A7-2 canonicalize_xml green; OBS ring order follows TAC"
+  decision: "Vendor-shaped emit; one OBS triangle posList uses TAC vertex order (WMO example reordered)"
+  related_issues: ["736"]
+  related_commits: [d089ea2]
+  branch: evolve/EV-021-vaa-quality
+- id: D-S027-07-T2.1-complete
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: "07-build T2.1 complete"
+  summary: "T2.1 F26 V3 golden stubs — va-advisory-A7-2 pack; root+xsd/sch green; M-golden xfail until T2.2"
+  decision: "M-golden xfail(strict) documents red phase without breaking commit gates"
+  related_issues: ["736"]
+  related_commits: [57cb9e1]
+  branch: evolve/EV-021-vaa-quality
+- id: D-S027-07-T1.4-complete
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: "07-build T1.4 complete"
+  summary: "T1.4 F26 V2 product/root guards — emit_vaa refuses forbidden iwxxm_root; tip b260bdd"
+  decision: "User chose option 1 light hardening; M1 V1–V2 closed for lint/adjacency"
+  related_issues: ["736"]
+  related_commits: [b260bdd]
+  branch: evolve/EV-021-vaa-quality
+- id: D-S027-07-T1.3-complete
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: "07-build T1.3 complete"
+  summary: "T1.3 F26 theme V2 adjacency fixtures (TC-F26-006) — 17 passed green without new encode; tip 2f23b5c"
+  decision: "Completed T1.3 regression lock; surface [Uncertainty] for T1.4 because adjacency already satisfied by F23 + emit_vaa_annex3"
+  related_issues: ["736", "739"]
+  related_commits: [2f23b5c]
+  branch: evolve/EV-021-vaa-quality
+- id: D-S027-07-T1.3-start
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: "07-build T1.3 start"
+  summary: "Start T1.3 F26 theme V2 adjacency fixtures (TC-F26-006)"
+  decision: "User directed Next T1.3; branch evolve/EV-021-vaa-quality"
+  related_issues: ["736", "739"]
+  branch: evolve/EV-021-vaa-quality
 - id: D-S027-07-T1.1-T1.2
   date: "2026-07-29"
   timestamp: "2026-07-29"
@@ -14388,7 +14481,9 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: "2026-07-29"
-      note: "M0 complete (T0.1–T0.3); active T1.1"
+      tip_sha: a2ebef0
+      tip_sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
+      note: "M5 complete (T5.1–T5.3); next M6 T6.1 API/workbench smoke VAA+TCA; tip a2ebef0; #736/#737"
     08-verify-build:
       status: pending
     10-e2e:
@@ -14447,10 +14542,17 @@ evolve_cycles:
   issues: []
   github_issues: ["736", "737"]
   notes:
+    - '2026-07-30 S027/EV-021 M5 COMPLETE (T5.1–T5.3 F7.g catalog unlock + WMO golden packs); next M6 T6.1 API/workbench smoke VAA+TCA; tip a2ebef0; commits 1d4595d/a2ebef0; #736/#737'
+    - '2026-07-30 S027/EV-021 M4 F27 T3+C1 complete (T4.1–T4.4); next M5 T5.1 F7.g catalog unlock Vitest; tip 3f9cc13; #737'
+    - '2026-07-29 S027/EV-021 T4.1 COMPLETE (F27 theme T3 tc-advisory-A2-2 golden stubs); next T4.2 convert fidelity A2-2; tip 9dc0295; #737'
+    - '2026-07-29 S027/EV-021 M3 T3.1–T3.4 done; next T4.1 F27 theme T3 TCA golden A2-2; tip 86ae9a1; #737'
+    - '2026-07-29 S027/EV-021 T3.2 COMPLETE (F27 T1 TCA registry+lint); next T3.3 F27 theme T2 adjacency; tip 75bacde; #737'
+    - '2026-07-29 S027/EV-021 T2.2 COMPLETE (F26 V3 VAA convert fidelity A7-2); next T2.3 F26 V1–V3 close; tip d089ea2; #736'
+    - '2026-07-29 S027/EV-021 M1 complete (T1.3–T1.4) + T2.1 COMPLETE (V3 golden stubs); next T2.2; tip 57cb9e1; #736'
     - '2026-07-29 S027/EV-021 04 COMPLETE Batch T 1×6; M0 done; 07 @ T1.1; Gate B Lean passed; #736/#737'
     - '2026-07-29 S027/EV-021 04-tech-plan STARTED (D-S027-02-phase-a) — Gate A Lean; Batch F 1,1,1; handoff from 02 PASS; #736/#737'
     - '2026-07-29 S027/EV-021 02-verify-plan COMPLETE — PASS; 12 auto + S02.M1/M2/L1=1; spec F24/F25/F26/F27 consistency fix; report reports/02-verify-plan-audit.md; Gate A Lean → 04'
-  decision_refs: [E21-1, E21-2, E21-3, E21-4, E21-D1, E21-D2, E21-D3, E21-D4, E21-E1, S02.M1, S02.M2, S02.L1, D-S027-EV021-s02m1-1, D-S027-EV021-s02m2-1, D-S027-EV021-s02l1-1, D-S027-02-phase-a, E21-T1, E21-T2, E21-T3, E21-T4, E21-T5, E21-T6, D-S027-04-plan-approve]
+  decision_refs: [E21-1, E21-2, E21-3, E21-4, E21-D1, E21-D2, E21-D3, E21-D4, E21-E1, S02.M1, S02.M2, S02.L1, D-S027-EV021-s02m1-1, D-S027-EV021-s02m2-1, D-S027-EV021-s02l1-1, D-S027-02-phase-a, E21-T1, E21-T2, E21-T3, E21-T4, E21-T5, E21-T6, D-S027-04-plan-approve, D-S027-07-T1.3-complete, D-S027-07-T1.4-complete, D-S027-07-T2.1-complete, D-S027-07-T2.2-complete]
 - id: EV-019
   status: completed
   cycle_type: feature
@@ -18697,14 +18799,20 @@ evolve_cycles:
   pr_number: 723
   merge_sha: '4660602'
 git_history:
-  current_branch: evolve/EV-020-airmet-quality
-  ahead_of_origin: 0
-  pushed: true
+  current_branch: evolve/EV-021-vaa-quality
+  ahead_of_origin: null
+  pushed: false
   pending_commit:
-  tip_sha: 5cd0412
-  tip_sha_full: 5cd04128b6a9758dd78ff51071c7f2632cad75c1
-  note: 'S026/EV-020 T6.5 awaiting merge of PR #793 then live H4–H5; tip 5cd0412; progress 26/~28; #731'
+  tip_sha: a2ebef0
+  tip_sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
+  note: 'T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build; branch not pushed; #736/#737'
   notes:
+  - '2026-07-30 S027/EV-021 tip synced — a2ebef0 (a2ebef070b6ae31aaa71e0f2014ecb84799431bd); M5 complete T5.1–T5.3; stage 07-build; next M6 T6.1; not pushed; #736/#737'
+  - '2026-07-30 S027/EV-021 tip synced — 3f9cc13 (3f9cc13d5c0f4be9c0b6dd8d356e8b0b2e41e644); M4 complete T4.1–T4.4; stage 07-build; next M5 T5.1; not pushed; #737'
+  - '2026-07-29 S027/EV-021 tip synced — 9dc0295 (9dc02952138dc0dd1b1c53d14b8a71dcd142d029); T4.1 F27 theme T3 tc-advisory-A2-2 golden stubs; stage 07-build; next T4.2; not pushed; #737'
+  - '2026-07-29 S027/EV-021 tip synced — 75bacde (75bacde86a9403475c2c5fbae65012bdb3b755d4); T3.2 F27 T1 TCA registry+lint; stage 07-build; next T3.3; not pushed; #737'
+  - '2026-07-29 S027/EV-021 tip synced — d089ea2 (d089ea21a08f619e55b0f9e72586cdf12b733352); T2.2 F26 V3 VAA convert fidelity; stage 07-build; next T2.3; not pushed; #736'
+  - '2026-07-29 S027/EV-021 tip synced — 57cb9e1 (57cb9e18b66d6aca616d8b744c6022b8bf31d006); M1 complete (T1.3–T1.4) + T2.1 V3 golden stubs; stage 07-build; next T2.2; not pushed; #736'
   - '2026-07-29 S026/EV-020 PR #793 open; tip 5cd0412 (5cd04128b6a9758dd78ff51071c7f2632cad75c1); T6.5 awaiting merge then live H4–H5; do_not_auto_merge; stage 13-deploy-smoke; progress 26/~28; #731'
   - '2026-07-29 S026/EV-020 tip synced — e839a6e (e839a6e0d9a7e898e03e69d90865039eeb634610); T6.2 PASS 08-verify-build FileConverter WMO A3-1; stage 10-e2e; next T6.3; progress 24/~28; #731'
   - '2026-07-29 S026/EV-020 tip synced — 7e75fff (7e75fff59bd2a2577d3683699f7791d66246ab2b); T6.1 COMPLETE API smoke; stage 07-build; next T6.2=08-verify-build; progress 23/~28; #731'
@@ -19664,6 +19772,168 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: a2ebef0
+    sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
+    branch: evolve/EV-021-vaa-quality
+    message: "[T5.3] test: keep F23–F27 WMO golden packs green"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-30T10:37:14-04:00"
+    files_changed:
+      - docs/sessions/S027-vaa-quality/reports/execution-plan.md
+    pushed: false
+  - sha: 1d4595d
+    sha_full: 1d4595db44d73f53eb284d1a86d0eb1a7c041900
+    branch: evolve/EV-021-vaa-quality
+    message: "[T5.2] feat: unlock VAA/TCA WMO passers in Examples catalog"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-30T10:37:04-04:00"
+    files_changed:
+      - apps/frontend/src/fixtures/examples/FIXTURE_GAPS.md
+      - apps/frontend/src/fixtures/examples/bodies/tca_a2_2.tac
+      - apps/frontend/src/fixtures/examples/bodies/vaa_a7_2.tac
+      - apps/frontend/src/fixtures/examples/examplesCatalog.test.ts
+      - apps/frontend/src/fixtures/examples/examplesCatalog.ts
+    pushed: false
+  - sha: 3f9cc13
+    sha_full: 3f9cc13d5c0f4be9c0b6dd8d356e8b0b2e41e644
+    branch: evolve/EV-021-vaa-quality
+    message: "[T4.4] test: F27 theme C1 TCA translation-failed adjacency"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-30T10:33:12-04:00"
+    files_changed: "test_tc_f27_004_tca_c1 + execution-plan (2)"
+    pushed: false
+  - sha: 2338f1d
+    sha_full: 2338f1d37c0660cc4835277551a0492a074d65cd
+    branch: evolve/EV-021-vaa-quality
+    message: "[T4.3] docs: close F27 themes T1–T3 after TCA golden green"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-30T10:33:02-04:00"
+    files_changed: "t4.3-theme-t1-t3-close + COVERAGE_MATRIX (2)"
+    pushed: false
+  - sha: c20296b
+    sha_full: c20296b7f6a9605c2921fc8d26a31c031e2cc3a0
+    branch: evolve/EV-021-vaa-quality
+    message: "[T4.2] feat: F27 theme T3 TCA convert fidelity for tc-advisory-A2-2"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-30T10:32:51-04:00"
+    files_changed: "vaa_tca + annex3 goldens + test_tc_f27_002 + execution-plan (5)"
+    pushed: false
+  - sha: 9dc0295
+    sha_full: 9dc02952138dc0dd1b1c53d14b8a71dcd142d029
+    branch: evolve/EV-021-vaa-quality
+    message: "[T4.1] test: F27 theme T3 tc-advisory-A2-2 golden stubs"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29"
+    files_changed: "annex3 golden tca_a2_2 + test_tc_f27_002 + manifest + execution-plan (5)"
+    pushed: false
+  - sha: 86ae9a1
+    sha_full: 86ae9a13485f8d4be1e08b221e7acc5234afb580
+    branch: evolve/EV-021-vaa-quality
+    message: "[T3.4] feat: F27 theme T2 TCA product/root guards"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29"
+    files_changed: "vaa_tca + annex3_products + adjacency tests + execution-plan (5)"
+    pushed: false
+  - sha: a5bdc27
+    sha_full: a5bdc2735a08a429ed9299fcfb05ec670ee2e9c4
+    branch: evolve/EV-021-vaa-quality
+    message: "[T3.3] test: F27 theme T2 TCA↔SIGMET adjacency fixtures"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29"
+    files_changed: "test_tc_f27_006_adjacency + execution-plan (2)"
+    pushed: false
+  - sha: 75bacde
+    sha_full: 75bacde86a9403475c2c5fbae65012bdb3b755d4
+    branch: evolve/EV-021-vaa-quality
+    message: "[T3.2] feat: F27 theme T1 TCA registry codes and lint rules"
+    stage: "07-build"
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T21:21:00-04:00"
+    files_changed: "ISSUE_CATALOG + tac-validate registry/product_rules + execution-plan (5)"
+    pushed: false
+  - sha: 10c0242
+    sha_full: 10c02422e6682685b238bb0ee9f11aebac3a8722
+    branch: evolve/EV-021-vaa-quality
+    message: "[T3.1] test: F27 theme T1 TCA exceptional fixtures"
+    stage: "07-build"
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T21:19:00-04:00"
+    files_changed: "TCA accept/negative fixtures + manifest + test_tc_f27_t1_tca (7)"
+    pushed: false
+  - sha: 58a5d7c
+    sha_full: 58a5d7cb8140869e83ed8948ae9865e3b31a140e
+    branch: evolve/EV-021-vaa-quality
+    message: "[T2.4] test: F26 theme C1 translation-failed adjacency for VAA"
+    stage: "07-build"
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T21:16:00-04:00"
+    files_changed: "test_tc_f26_004_vaa_c1 + COVERAGE_MATRIX + execution-plan (3)"
+    pushed: false
+  - sha: ffe9e01
+    sha_full: ffe9e0180b481940810b312da7adfd22f4d00d75
+    branch: evolve/EV-021-vaa-quality
+    message: "[T2.3] docs: close F26 themes V1–V3 after green evidence"
+    stage: "07-build"
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T21:15:00-04:00"
+    files_changed: "t2.3-theme-v1-v3-close.md + COVERAGE_MATRIX + execution-plan (3)"
+    pushed: false
+  - sha: d089ea2
+    sha_full: d089ea21a08f619e55b0f9e72586cdf12b733352
+    branch: evolve/EV-021-vaa-quality
+    message: "[T2.2] feat: F26 theme V3 VAA convert fidelity for va-advisory-A7-2"
+    stage: "07-build"
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T20:52:00-04:00"
+    files_changed: 6
+  - sha: 57cb9e1
+    sha_full: 57cb9e18b66d6aca616d8b744c6022b8bf31d006
+    branch: evolve/EV-021-vaa-quality
+    message: "[T2.1] test: F26 theme V3 va-advisory-A7-2 golden stubs"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T20:50:00-04:00"
+    files_changed: 6
+  - sha: b260bdd
+    sha_full: b260bdd12bde68b4b75f055bb66c8fce01b2fc28
+    branch: evolve/EV-021-vaa-quality
+    message: "[T1.4] feat: F26 theme V2 VAA product/root guards"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T20:45:00-04:00"
+    files_changed: 4
+  - sha: 2f23b5c
+    sha_full: 2f23b5c769aa2e2780ef4faa956561de12209b6b
+    branch: evolve/EV-021-vaa-quality
+    message: "[T1.3] test: F26 theme V2 VAA↔VA SIGMET adjacency fixtures"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T20:30:00-04:00"
+    files_changed: 3
   - sha: a43fc50
     sha_full: a43fc505c53fff9c7afdbfdf0eec830b8920fdb1
     branch: evolve/EV-021-vaa-quality

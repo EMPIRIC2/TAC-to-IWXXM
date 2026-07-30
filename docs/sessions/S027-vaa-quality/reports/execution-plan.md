@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — Build |
 | **Active milestone** | M6 — Smoke / verify / AC / deploy |
-| **Active task** | T6.1 |
-| **Tasks** | 22 / ~24 completed |
+| **Active task** | T6.2 |
+| **Tasks** | 23 / ~24 completed |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -108,7 +108,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.1 | Test | API/workbench smoke VAA + TCA (lint/convert) | TC-F26-005; TC-F27-005 | T5.3 | **pending** |
+| T6.1 | Test | API/workbench smoke VAA + TCA (lint/convert) | TC-F26-005; TC-F27-005 | T5.3 | **completed** |
 | T6.2 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M5 | **pending** |
 | T6.3 | Test | 10-e2e — UJ-037 / UJ-038 (+ UJ-032 deepen) | 10 | T6.2 | **pending** |
 | T6.4 | Docs | 11-verify-impl — per-Fn AC sign-off F26/F27 + deepen | 11 | T6.3 | **pending** |

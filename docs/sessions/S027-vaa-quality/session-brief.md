@@ -62,7 +62,8 @@ See [routing-plan.md](./routing-plan.md). **Approved** Lean+build+11 (E21-4).
 
 ## Current stage
 
-**01-requirements** (delta) — Batch D locked; specs written; close → 02 pending.
+**07-build** — M0–M5 + T6.1 complete; next **T6.2** 08-verify-build → 10/11/13.
+Tip: pending T6.1 commit.
 
 ## Links
 

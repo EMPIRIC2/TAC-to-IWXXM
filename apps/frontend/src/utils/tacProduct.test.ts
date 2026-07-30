@@ -2,7 +2,11 @@
  * Unit tests for F6.e TAC product auto-detect helpers.
  */
 import { describe, expect, it } from 'vitest';
-import { detectTacProduct, resolveConvertProduct } from './tacProduct';
+import {
+  detectTacProduct,
+  resolveConvertProduct,
+  splitManualEntries,
+} from './tacProduct';
 
 describe('detectTacProduct', () => {
   it('detects SPECI before METAR default', () => {
@@ -42,5 +46,24 @@ describe('resolveConvertProduct', () => {
     expect(resolveConvertProduct('TAF', 'METAR KJFK 121851Z 24008KT 10SM=')).toBe(
       'TAF',
     );
+  });
+});
+
+describe('splitManualEntries', () => {
+  it('splits METAR-style products one entry per non-empty line', () => {
+    expect(splitManualEntries('METAR A\n\n METAR B ', 'METAR')).toEqual([
+      'METAR A',
+      'METAR B',
+    ]);
+  });
+
+  it('keeps VAA multi-line advisory as a single document', () => {
+    const vaa = 'VA ADVISORY\nDTG: 20240923/0130Z\nVAAC: TOKYO\n';
+    expect(splitManualEntries(vaa, 'VAA')).toEqual([vaa.trim()]);
+  });
+
+  it('keeps TCA multi-line advisory as a single document', () => {
+    const tca = 'TC ADVISORY\nDTG: 20040925/1900Z\nMAX WIND: 22MPS\n';
+    expect(splitManualEntries(tca, 'TCA')).toEqual([tca.trim()]);
   });
 });
