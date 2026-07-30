@@ -45,7 +45,7 @@ active_session:
     required: true
     mode: orchestrator
     status: in_progress
-    note: Orchestrator EV-023; T7.2 08-verify PASS; T7.3 10-e2e smoke in_progress; progress 22/24
+    note: Orchestrator EV-023; T7.3 10-e2e smoke COMPLETE; T7.4 13 pending PR/deploy; progress 23/24
   - stage: 01-requirements
     required: true
     mode: delta
@@ -72,7 +72,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-30'
-    note: T7.2 done; T7.3 in_progress; 22/24
+    note: T7.3 done; T7.4 pending deploy; 23/24
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -83,9 +83,10 @@ active_session:
   - stage: 10-e2e
     required: true
     mode: smoke
-    status: in_progress
+    status: completed
     started: '2026-07-30'
-    note: Smoke only — T7.3 in_progress
+    completed: '2026-07-30'
+    note: smoke PASS — reports/e2e-report.md; browser N/A
   - stage: 11-verify-impl
     required: false
     mode: optional
@@ -94,13 +95,13 @@ active_session:
     required: true
     mode: when_ships
     status: pending
-    note: E23-4 — required when convert/validate behavior ships
-  current_stage: 07-build
+    note: E23-4 when_ships — after PR merge/deploy
+  current_stage: 13-deploy-smoke
   started_at: '2026-07-30'
   context_briefs: []
-  tip_sha: 495670b
-  tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
-  note: 'T7.2 08-verify PASS; next T7.3 10-e2e smoke; progress 22/24'
+  tip_sha: 9c040ee
+  tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+  note: 'T7.3 10-e2e smoke COMPLETE; T7.4 13 pending PR/deploy (E23-4); progress 23/24'
 sessions:
 - id: S028-sigmet-multiline-split
   type: hotfix
@@ -4729,23 +4730,23 @@ stages:
     previous_tip_sha: b5f5c32
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'T7.2 08-verify PASS; next T7.3 10-e2e smoke; progress 22/24; tip 495670b; branch evolve/EV-023-apac-encode-validate; #800'
-    tip_sha: 495670b
-    tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
-    current_stage: 07-build
+    note: 'T7.3 done; T7.4 pending deploy; 23/24; tip 9c040ee; branch evolve/EV-023-apac-encode-validate; #800'
+    tip_sha: 9c040ee
+    tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+    current_stage: 13-deploy-smoke
     active_milestone: M7
-    active_task: T7.3
-    active_task_status: in_progress
-    progress: 22/24
+    active_task: T7.4
+    active_task_status: pending
+    progress: 23/24
     substeps:
       task_loop:
         status: in_progress
-        current_task: T7.3
-        active_task_status: in_progress
+        current_task: T7.4
+        active_task_status: pending
         active_milestone: M7
         phase: C
         milestone: M7
-        notes: T7.2 done; T7.3 in_progress; 22/24
+        notes: T7.3 done; T7.4 pending deploy; 23/24
     delta_substages:
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
@@ -4755,14 +4756,14 @@ stages:
       started_at: '2026-07-30'
       started: '2026-07-30'
       mode: full
-      note: 'T7.2 08-verify PASS; next T7.3 10-e2e smoke; progress 22/24; tip 495670b; branch evolve/EV-023-apac-encode-validate; #800'
+      note: 'T7.3 done; T7.4 pending deploy; 23/24; tip 9c040ee; branch evolve/EV-023-apac-encode-validate; #800'
       active_milestone: M7
-      active_task: T7.3
-      active_task_status: in_progress
-      progress: 22/24
+      active_task: T7.4
+      active_task_status: pending
+      progress: 23/24
       decision_id: D-S030-E23-M0
-      tip_sha: 495670b
-      tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
+      tip_sha: 9c040ee
+      tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
       branch: evolve/EV-023-apac-encode-validate
       feature_ids:
       - F6
@@ -5010,6 +5011,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
     - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
     - '2026-07-30 M6 complete (T6.1–T6.4); T7.1 API smoke done; T7.2 next'
     - '2026-07-30 S030/EV-023 M4 COMPLETE (T4.1–T4.4 dual-register colour/nil + translationCentre) @ 5c131b7 (5c131b77a66b35c4bc0ab270c36fa52879fbaf8c) — commits 50d576d/6a63de9/9b5b29f/5c131b7; next T5.1 / M5; progress 14/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
@@ -5785,11 +5787,11 @@ stages:
       completed_at: '2026-07-26'
     decision_id: E16-19
   10-e2e:
-    status: in_progress
+    status: completed
     started_at: '2026-07-30'
     started: '2026-07-30'
-    completed: null
-    completed_at: null
+    completed: '2026-07-30'
+    completed_at: '2026-07-30'
     previous_started_at: '2026-07-29'
     previous_completed_at: '2026-07-29'
     previous_session_id: S026-airmet-quality-wmo-examples
@@ -5797,39 +5799,46 @@ stages:
     previous_tip_sha: 3027305
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    tip_sha: 495670b
-    tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
-    overall: null
-    report: null
-    note: 'S030/EV-023 10-e2e STARTED (smoke) — T7.3 in_progress; after T7.2 08-verify PASS; progress 22/24; #800'
+    tip_sha: 9c040ee
+    tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+    overall: pass
+    report: docs/sessions/S030-apac-encode-validate/reports/e2e-report.md
+    note: 'S030/EV-023 10-e2e COMPLETE (smoke) — PASS; reports/e2e-report.md; browser N/A; T7.3 done; next T7.4 13; progress 23/24; #800'
     substeps:
       extract_journeys:
-        status: pending
+        status: completed
       t0_t1:
-        status: pending
+        status: completed
       t2_playwright:
-        status: pending
+        status: skipped
+        note: browser N/A — API/library smoke only
       t2_connectivity:
-        status: pending
+        status: skipped
+        note: browser N/A
       t3_live:
-        status: pending
+        status: skipped
+        note: deferred to 13 when_ships
     delta_substages:
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
       evolve_cycle_id: EV-023
       skill_id: 10-e2e
-      status: in_progress
+      status: completed
       mode: smoke
       started: '2026-07-30'
       started_at: '2026-07-30'
+      completed: '2026-07-30'
+      completed_at: '2026-07-30'
       branch: evolve/EV-023-apac-encode-validate
-      tip_sha: 495670b
-      tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
-      note: T7.3 10-e2e smoke in_progress; after T7.2 PASS
+      tip_sha: 9c040ee
+      tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+      note: smoke PASS — reports/e2e-report.md; browser N/A
+      report: docs/sessions/S030-apac-encode-validate/reports/e2e-report.md
+      overall: pass
       active_milestone: M7
       active_task: T7.3
-      active_task_status: in_progress
-      progress: 22/24
+      active_task_status: completed
+      progress: 23/24
       feature_ids:
       - F6
       - F2
@@ -6032,7 +6041,7 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
       note: T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk
     notes:
-    - '2026-07-30 S030/EV-023 10-e2e STARTED (smoke) — T7.3 in_progress; after T7.2 08-verify PASS; progress 22/24; #800'
+    - '2026-07-30 S030/EV-023 10-e2e COMPLETE (smoke) — PASS; e2e-report.md; browser N/A; T7.3 done; next T7.4 13; progress 23/24; tip 9c040ee; #800'
     - '2026-07-29 S026/EV-020 10-e2e COMPLETE PASS — T6.3 UJ-035/036 T0; e2e-report.md; tip c963a0a (no
       [T6.3] commit yet); handoff 11-verify-impl T6.4; progress 25/~28; #731'
     - '2026-07-29 S026/EV-020 10-e2e STARTED — T6.3 UJ-035/036; tip e839a6e; progress 24/~28; #731'
@@ -6573,34 +6582,49 @@ stages:
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json);
       operator T1.3 + S003 keys + redeploy required before 13
   13-deploy-smoke:
-    status: completed
-    started_at: '2026-07-30'
-    started: '2026-07-27'
-    completed: '2026-07-27'
-    completed_at: '2026-07-27'
-    previous_started_at: '2026-07-29'
-    previous_completed_at: '2026-07-29'
-    previous_session_id: S026-airmet-quality-wmo-examples
-    previous_evolve_cycle_id: EV-020
-    previous_tip_sha: 0f77194
+    status: pending
+    started_at: null
+    started: null
+    completed: null
+    completed_at: null
+    previous_started_at: '2026-07-30'
+    previous_completed_at: '2026-07-30'
+    previous_session_id: S027-vaa-quality
+    previous_evolve_cycle_id: EV-021
+    previous_tip_sha: df56d1f
     previous_overall: pass
-    previous_decision_id: D-S026-E20-13-merge
-    session_id: S027-vaa-quality
-    evolve_cycle_id: EV-016
-    note: H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher
-      still pending
-    tip_sha: df56d1f
-    tip_sha_full: df56d1fce29a22970d72b49c77733e0616369e43
-    overall: pass
-    active_task: T6.5
-    active_task_status: completed
-    pr_number: 794
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/794
-    pr_status: merged
+    previous_decision_id: D-S027-E21-13-merge
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    note: 'E23-4 when_ships — after PR merge/deploy; T7.4 pending; progress 23/24; tip 9c040ee; #800'
+    tip_sha: 9c040ee
+    tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+    overall: null
+    active_task: T7.4
+    active_task_status: pending
+    progress: 23/24
     do_not_auto_merge: true
-    decision_id: D-S027-E21-13-merge
-    report: docs/sessions/S027-vaa-quality/reports/deploy-smoke.md
+    report: null
     delta_substages:
+    - id: S030-apac-encode-validate
+      session_id: S030-apac-encode-validate
+      evolve_cycle_id: EV-023
+      skill_id: 13-deploy-smoke
+      status: pending
+      mode: when_ships
+      branch: evolve/EV-023-apac-encode-validate
+      tip_sha: 9c040ee
+      tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+      note: E23-4 when_ships — after PR merge/deploy
+      active_milestone: M7
+      active_task: T7.4
+      active_task_status: pending
+      progress: 23/24
+      feature_ids:
+      - F6
+      - F2
+      - F12
+      - F13
     - id: S027-vaa-quality
       session_id: S027-vaa-quality
       evolve_cycle_id: EV-021
@@ -6992,11 +7016,12 @@ stages:
     started_at: '2026-07-30'
     completed_at: null
     completed: '2026-07-27'
-    current_stage: 07-build
-    tip_sha: 495670b
-    tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
-    note: 'S030/EV-023 T7.2 08-verify PASS; T7.3 10-e2e smoke in_progress; progress 22/24; tip 495670b; branch evolve/EV-023-apac-encode-validate; #800'
+    current_stage: 13-deploy-smoke
+    tip_sha: 9c040ee
+    tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+    note: 'S030/EV-023 T7.3 10-e2e smoke COMPLETE; T7.4 13 pending PR/deploy; progress 23/24; tip 9c040ee; branch evolve/EV-023-apac-encode-validate; #800'
     notes:
+    - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
     - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
     - '2026-07-30 T6.1+T6.2 complete (06372ce, 18f1d68); T6.3 in_progress'
     - '2026-07-30 S030/EV-023 M4 COMPLETE (T4.1–T4.4 dual-register colour/nil + translationCentre) @ 5c131b7 (5c131b77a66b35c4bc0ab270c36fa52879fbaf8c) — commits 50d576d/6a63de9/9b5b29f/5c131b7; next T5.1 / M5; progress 14/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
@@ -14654,6 +14679,20 @@ decisions_log:
   preset: Lean+build
   preset_status: proposed
 artifacts:
+- path: docs/sessions/S030-apac-encode-validate/reports/e2e-report.md
+  type: session-report
+  kind: e2e-report
+  stage: 10-e2e
+  skill_id: 10-e2e
+  session_id: S030-apac-encode-validate
+  evolve_cycle_id: EV-023
+  created_at: '2026-07-30'
+  updated_at: '2026-07-30'
+  status: completed
+  overall: pass
+  tip_sha: 9c040ee
+  tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+  note: 'S030/EV-023 T7.3 10-e2e smoke PASS — e2e-report.md; browser N/A; next T7.4 13; progress 23/24; #800'
 - path: docs/sessions/S030-apac-encode-validate/reports/verification-report.md
   type: session-report
   kind: verification-report
@@ -22366,7 +22405,7 @@ evolve_cycles:
     - 09-qa
     - 12-verify-deploy
     note: Lean+build approved — skip 03/05/06/09/12; 11 optional; 13 when_ships (E23-4)
-  current_stage: 07-build
+  current_stage: 13-deploy-smoke
   stages:
     00-context:
       status: completed
@@ -22375,7 +22414,7 @@ evolve_cycles:
       note: Phase 0 locked E23-1..4 (D-S030-E23-phase0)
     16-evolve:
       status: in_progress
-      note: Orchestrator EV-023; T7.2 08-verify PASS; T7.3 10-e2e smoke in_progress; progress 22/24
+      note: Orchestrator EV-023; T7.3 10-e2e smoke COMPLETE; T7.4 13 pending PR/deploy; progress 23/24
     01-requirements:
       status: completed
       mode: delta
@@ -22398,10 +22437,10 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-07-30'
-      active_task: T7.3
-      active_task_status: in_progress
+      active_task: T7.4
+      active_task_status: pending
       active_milestone: M7
-      note: 'T7.2 done; T7.3 in_progress; 22/24; tip 495670b; branch evolve/EV-023-apac-encode-validate; #800'
+      note: 'T7.3 done; T7.4 pending deploy; 23/24; tip 9c040ee; branch evolve/EV-023-apac-encode-validate; #800'
     08-verify-build:
       status: completed
       mode: delta
@@ -22409,17 +22448,18 @@ evolve_cycles:
       completed: '2026-07-30'
       note: PASS — reports/verification-report.md
     10-e2e:
-      status: in_progress
+      status: completed
       mode: smoke
       started: '2026-07-30'
-      note: T7.3 smoke in_progress
+      completed: '2026-07-30'
+      note: smoke PASS — reports/e2e-report.md; browser N/A
     11-verify-impl:
       status: pending
       mode: optional
     13-deploy-smoke:
       status: pending
       mode: when_ships
-      note: E23-4
+      note: E23-4 when_ships — after PR merge/deploy
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -22452,6 +22492,10 @@ evolve_cycles:
     status: completed
     session_id: S030-apac-encode-validate
     note: T7.2 08-verify-build PASS
+  - path: docs/sessions/S030-apac-encode-validate/reports/e2e-report.md
+    status: completed
+    session_id: S030-apac-encode-validate
+    note: T7.3 10-e2e smoke PASS — browser N/A
   issues: []
   decision_refs:
   - D-S030-open
@@ -22465,13 +22509,14 @@ evolve_cycles:
   - D-S030-E23-T-batch
   - D-S030-04-plan-approve
   active_milestone: M7
-  active_task: T7.3
-  active_task_status: in_progress
-  progress: 22/24
-  note: 'T7.2 08-verify PASS; next T7.3 10-e2e smoke; progress 22/24; tip 495670b; branch evolve/EV-023-apac-encode-validate; #800'
-  tip_sha: 495670b
-  tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
+  active_task: T7.4
+  active_task_status: pending
+  progress: 23/24
+  note: 'T7.3 10-e2e smoke COMPLETE; T7.4 13 pending PR/deploy (E23-4); progress 23/24; tip 9c040ee; branch evolve/EV-023-apac-encode-validate; #800'
+  tip_sha: 9c040ee
+  tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
   notes:
+  - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
   - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
   - '2026-07-30 M6 complete (T6.1–T6.4); T7.1 API smoke done; T7.2 next'
   - '2026-07-30 T6.1+T6.2 complete (06372ce, 18f1d68); T6.3 in_progress'
@@ -22497,10 +22542,11 @@ git_history:
   ahead_of_origin: null
   pushed: false
   pending_commit: null
-  tip_sha: 495670b
-  tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
-  note: 'S030/EV-023 T7.2 08-verify PASS; next T7.3; progress 22/24; tip 495670b on evolve/EV-023-apac-encode-validate; #800'
+  tip_sha: 9c040ee
+  tip_sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+  note: 'S030/EV-023 T7.3 10-e2e smoke PASS; T7.4 13 pending; progress 23/24; tip 9c040ee on evolve/EV-023-apac-encode-validate; #800'
   notes:
+  - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
   - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
   - '2026-07-30 M6 complete (T6.1–T6.4); T7.1 API smoke done; T7.2 next'
   - '2026-07-30 T6.1+T6.2 complete (06372ce, 18f1d68); T6.3 in_progress'
@@ -23786,6 +23832,36 @@ git_history:
     tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
     pushed: false
   commits:
+  - sha: 9c040ee
+    sha_full: 9c040eea33fc753ad08bf5a8832291b6fbdeccdf
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T7.3] docs: 10-e2e smoke report for EV-023 (API/library)'
+    stage: 10-e2e
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    files_changed: 2
+    timestamp: '2026-07-30T21:48:40Z'
+    pushed: false
+  - sha: f9f1620
+    sha_full: f9f16207d94bf90af963befb2fd5c1eaa6495da1
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T7.2] docs: 08-verify-build PASS for EV-023 delta'
+    stage: 08-verify-build
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    files_changed: 3
+    timestamp: '2026-07-30T21:48:04Z'
+    pushed: false
+  - sha: ae7bdba
+    sha_full: ae7bdba731e1c1bd6b53233065eaac3e51e2f8db
+    branch: evolve/EV-023-apac-encode-validate
+    message: 'chore: sync workflow-state for S030/EV-023 through T7.1'
+    stage: 07-build
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    files_changed: 1
+    timestamp: '2026-07-30T21:43:43Z'
+    pushed: false
   - sha: 495670b
     sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
     branch: evolve/EV-023-apac-encode-validate
