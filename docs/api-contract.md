@@ -141,8 +141,10 @@ the same public convert path. Work history is **not** server-persisted (IndexedD
 
 - HTTP **200** allowed when parse/convert is partial; response may include best-effort IWXXM,
   `ok: false`, and `failed_spans: [{ start, end, code?, message? }]`.
-- Does **not** imply Schematron-passed publish; hard convert (default) keeps existing failure
-  HTTP semantics.
+- Does **not** imply Schematron-passed publish; hard convert (default) keeps failure HTTP
+  semantics for non-quarantine errors. **EV-023 / TC-EV023-003:** product-shaped unreliable
+  TAC emits a successful quarantine document (`@translationFailedTAC`) with HTTP **200**
+  (not the soft-preview `ok:false` envelope).
 - Prefer this flag over a separate `/preview-convert` route (D-S011-01-api-A).
 
 **S011 spans on convert issues/errors** (when present): optional integer `start` / `end` alongside

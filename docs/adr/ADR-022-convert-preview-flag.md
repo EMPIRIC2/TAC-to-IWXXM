@@ -19,7 +19,10 @@ dedicated `/preview-convert` route vs a flag on the existing convert endpoint.
 1. Soft-preview is **`preview=true`** (multipart/form field) on `POST /api/v1/convert`.
 2. Preview may return **HTTP 200** with `ok: false`, best-effort IWXXM, and `failed_spans`
    (`start`/`end`/+message).
-3. Default (`preview` omitted/false) keeps existing hard-fail HTTP semantics.
+3. Default (`preview` omitted/false) keeps hard-fail HTTP semantics for non-quarantine
+   failures. **EV-023 amend:** product-shaped unreliable TAC returns HTTP 200 with a
+   `@translationFailedTAC` quarantine shell (successful convert of the quarantine
+   document) — distinct from soft-preview `ok:false` + `failed_spans`.
 4. Preview does **not** mean Schematron-passed publish.
 
 ## Alternatives Considered
