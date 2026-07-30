@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — Build |
 | **Active milestone** | M4 — P1 dual-register + translationCentre |
-| **Active task** | T4.1 |
-| **Tasks** | 10 / 24 |
+| **Active task** | T4.3 |
+| **Tasks** | 12 / 24 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -82,7 +82,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T4.1 | Test | Offline dual-register colour + dual nil | TC-EV023-004 | T3.2 | completed |
-| T4.2 | Code | Encode href policy from vendor RDF/CSV | F6/F13 | T4.1 | pending |
+| T4.2 | Code | Encode href policy from vendor RDF/CSV | F6/F13 | T4.1 | **completed** |
 | T4.3 | Test | Default omit centre*; emit when flag on | TC-EV023-006 | T4.2 | pending |
 | T4.4 | Code | Convert + Form `emit_translation_centre` (+ optional fields) | E23-T2 | T4.3 | pending |
 

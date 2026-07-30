@@ -4,7 +4,7 @@ Locks offline vendor RDF/CSV as CI SoT for:
 - ``49-2/AviationColourCode`` vs ``iwxxm/AviationColourCode`` member divergence
 - dual nil SCH RDF (``common/nil`` + ``iwxxm/nil``)
 
-Encode href policy helpers are asserted with xfail until T4.2.
+Encode href policy helpers live in ``tac2iwxxm.codelists`` (T4.2).
 No live codes.wmo.int HTML dependency.
 """
 
@@ -200,10 +200,6 @@ def test_tc_ev023_004_amd79_vaa_suite_may_lag_on_49_2_colour() -> None:
     assert f"{IWXXM_COLOUR_PREFIX}RED" not in xml
 
 
-@pytest.mark.xfail(
-    reason="T4.2: encode href policy from vendor RDF/CSV (iwxxm colour for 2025-2)",
-    strict=True,
-)
 def test_tc_ev023_004_policy_red_uses_iwxxm_register() -> None:
     """2025-2 colour encode maps RED → ``iwxxm/AviationColourCode/RED``."""
     from tac2iwxxm.codelists import aviation_colour_href
@@ -212,10 +208,6 @@ def test_tc_ev023_004_policy_red_uses_iwxxm_register() -> None:
     assert href == f"{IWXXM_COLOUR_PREFIX}RED"
 
 
-@pytest.mark.xfail(
-    reason="T4.2: UNKNOWN/NOT GIVEN/NIL → UNASSIGNED (or nilReason), never invent 49-2 NIL href",
-    strict=True,
-)
 @pytest.mark.parametrize(
     "token",
     ["UNKNOWN", "NOT GIVEN", "NOT_GIVEN", "NIL"],
@@ -229,10 +221,6 @@ def test_tc_ev023_004_policy_unassigned_tokens(token: str) -> None:
     assert LEGACY_COLOUR_PREFIX not in href
 
 
-@pytest.mark.xfail(
-    reason="T4.2: nilReason family follows product vocabulary (common vs iwxxm)",
-    strict=True,
-)
 @pytest.mark.parametrize(
     ("notation", "family", "prefix"),
     [
@@ -246,14 +234,10 @@ def test_tc_ev023_004_policy_nil_family(notation: str, family: str, prefix: str)
     """Nil href policy selects ``common/nil`` or ``iwxxm/nil`` from offline registers."""
     from tac2iwxxm.codelists import nil_reason_href
 
-    href = nil_reason_href(notation, family=family)
+    href = nil_reason_href(notation, family=family)  # type: ignore[arg-type]
     assert href == f"{prefix}{notation}"
 
 
-@pytest.mark.xfail(
-    reason="T4.2: load register members from offline RDF only",
-    strict=True,
-)
 def test_tc_ev023_004_policy_loads_offline_members() -> None:
     """Policy loader returns pin member sets without network I/O."""
     from tac2iwxxm.codelists import load_aviation_colour_members, load_nil_members
