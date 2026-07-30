@@ -82,7 +82,8 @@ App 3 §2.3 (not this table).
 | 13 | TREND | O | `NOSIG` / `BECMG` / `TEMPO` + FM/TL/AT (≤2 h; App 5 §2) |
 
 \*Cloud mandatory when not CAVOK / NSC/NCD path. Footnote: TAC `/` missing → mark
-**missing in IWXXM** (Guidance nilReasons — not defined in Annex 3).
+**missing in IWXXM** (Guidance nilReasons — not defined in Annex 3).  
+**NSC exclusivity (encode + optional lint):** do not combine `NSC` with FEW/SCT/BKN/OVC cloud layers in the same observation/forecast group — IWXXM expects NSC as empty-cloud + `nothingOfOperationalSignificance`, not layered cloud (APAC FAQ §14.3 · #797 · [IWXXM_CONVERSION](IWXXM_CONVERSION.md)). Lint may warn before convert.
 
 **Shall IWXXM:** App 3 §**2.1.3** (dual TAC + IWXXM GML).
 

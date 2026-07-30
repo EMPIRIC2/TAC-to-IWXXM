@@ -22,6 +22,7 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [wmo-im-tier-b-mining-notes.md](./wmo-im-tier-b-mining-notes.md) | Local Tier B (collect, WIS2*, GTStoWIS2, CCT, foundation pkgs) |
 | [iwxxm-modelling-v2025-2-mining-notes.md](./iwxxm-modelling-v2025-2-mining-notes.md) | UML/EA generators |
 | [WMO-306-vI-3-2023-mining-notes.md](./WMO-306-vI-3-2023-mining-notes.md) | Manual on Codes Vol I.3 / FM 205 |
+| [WMO-306-vI-3-2019-upd-2021-mining-notes.md](./WMO-306-vI-3-2019-upd-2021-mining-notes.md) | Manual on Codes Vol I.3 (2019/upd-2021) — historical; dig pp.1–230 (through FM 205-2018 nilReason tables + CRS) · #798 |
 | [OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md](./OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) | ICAO OPMET exchange Guidelines 5th |
 | [icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md](./icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) | ICAO EUR Doc 014 (5th Ed. 2023): EUR SIGMET/AIRMET Guide — TAC structure, AHL, CNL, dual IWXXM |
 | [PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) | Informative workshop deck (TAC↔IWXXM + package matrix) |
@@ -33,3 +34,6 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [schemas-wmo-int-saf-mining-notes.md](./schemas-wmo-int-saf-mining-notes.md) | SAF (Simple Aeronautical Features) at schemas.wmo.int/saf (1.0–1.1; deprecated) |
 | [schemas-wmo-int-tsml-mining-notes.md](./schemas-wmo-int-tsml-mining-notes.md) | OGC TimeseriesML (TSML) 1.0 mirror at schemas.wmo.int/tsml — not on IWXXM F6 path |
 | [schemas-wmo-int-rule-mining-notes.md](./schemas-wmo-int-rule-mining-notes.md) | Centralized Schematron index at schemas.wmo.int/rule (1.0–1.2; not IWXXM pin path) |
+| [icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](./icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) | ICAO APAC IWXXM FAQs 3rd Ed. (Mar 2025) — translation/NSC/COLLECT gotchas · #797 |
+| [codes-wmo-int-aviation-mining-notes.md](./codes-wmo-int-aviation-mining-notes.md) | codes.wmo.int aviation registers (colour/nil/MetFeature 28 vs 27; 4678 CSV=402 vs HTML≈101; SCH RDF match) · #797 |
+| [iwxxm-translation-parity-mining-notes.md](./iwxxm-translation-parity-mining-notes.md) | iwxxm-translation Amd79-80-2023 vs 2025-2 (NSC/SPECI seeds; TestCases; translation-failed attrs) · #797 |

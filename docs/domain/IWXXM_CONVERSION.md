@@ -5,7 +5,7 @@
 **Vendor pin:** `iwxxm` **v2025-2** · namespace `http://icao.int/iwxxm/2025-2`.
 
 Hub: [README.md](README.md) · Companions: [TAC_VALIDATION.md](TAC_VALIDATION.md) · [IWXXM_VALIDATION.md](IWXXM_VALIDATION.md).  
-Source digs (not SoT): [mining/](mining/) — especially Tier A, FM 205, OPMET Guidelines, modelling, [Annex 3](mining/icao-annex-3-mining-notes.md) (dual TAC+IWXXM **shall** obligation only — encoding still 306 I.3 / Doc 10003 / pin).
+Source digs (not SoT): [mining/](mining/) — especially Tier A, FM 205 ([2023](mining/WMO-306-vI-3-2023-mining-notes.md); historical [2019/upd-2021 pp.1–230](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798 — 3.0 nilReason tables corroborate Guidance below), OPMET Guidelines, modelling, [Annex 3](mining/icao-annex-3-mining-notes.md) (dual TAC+IWXXM **shall** obligation only — encoding still 306 I.3 / Doc 10003 / pin), [APAC IWXXM FAQs 3rd](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) (informative encode gotchas · #797).
 
 ---
 
@@ -60,7 +60,7 @@ Output: IWXXM XML for the **vendored** year line, then [IWXXM_VALIDATION.md](IWX
 |----------|--------|-----|
 | **P0** | Official `schemas.wmo.int/iwxxm/2025-2/examples/` TAC+XML pairs | CI convert golden; structure SoT |
 | **P1** | Same dir `TAC-to-XML-Guidance.txt` | nilReason / omission cookbook |
-| **P2** | `iwxxm-translation` Amd79-80 trees | Informative regression (METAR/TAF/VAA/TCA only) |
+| **P2** | `iwxxm-translation` Amd79-80-2023 TAC inputs | Informative regression (METAR/TAF/VAA/TCA only) — convert to **pin 2025-2**, then XSD+SCH; **no** XML byte-match to suite’s **2023-1** fixtures ([parity dig](mining/iwxxm-translation-parity-mining-notes.md) · #797) |
 | **P3** | AWC Data API `format=iwxxm` | Live smoke only — not encode SoT |
 
 ### Product encode playbook (F6 quick apply)
@@ -116,11 +116,12 @@ Full Guidance paraphrase tables: §Conversion highlights below.
 | AHL headings | https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs | normative-exchange |
 | WIS2 aviation publish (ops) | https://github.com/wmo-im/wis2-cookbook (`publishing-aviation-data.adoc`) · https://github.com/wmo-im/wis2-guide §2.8.1.1 · WTH https://github.com/wmo-im/wis2-topic-hierarchy | informative / normative-exchange (topics) — [Tier B](mining/wmo-im-tier-b-mining-notes.md) |
 | Community IWXXM + compatibility table | https://community.wmo.int/en/activity-areas/wis/iwxxm (**404** 2026-07-14 — see catalog) | informative index |
-| Extra fixtures | https://github.com/wmo-im/iwxxm-translation | informative |
+| Extra fixtures | https://github.com/wmo-im/iwxxm-translation | informative — tip Amd79-80-2023 / suite IWXXM **2023-1**; [parity dig](mining/iwxxm-translation-parity-mining-notes.md) |
 | Live TAC/IWXXM (US centre) | https://aviationweather.gov/data/api/ | informative — [mining](mining/awc-data-api-mining-notes.md) |
 | US extensions | https://nws.weather.gov/schemas/iwxxm-us/3.0/ | normative-schema (national) |
 | PPT-02 IWXXM Framework (workshop) | https://www.icao.int/filebrowser/download/26741?fid=26741 | informative |
 | OPMET IWXXM Exchange Guidelines (5th Ed.) | https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf | normative-exchange |
+| ICAO APAC IWXXM FAQs (3rd Ed., Mar 2025) | https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2025-03_IWXXM-FAQs_3rd-Ed.pdf | informative — NSC/cloud, `translationFailedTAC`, translationCentre, COLLECT; [mining](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) · #797 |
 | EUR Doc 014 SIGMET/AIRMET Guide (5th Ed. 2023) | https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf | normative-conversion-notes (regional TAC/AHL; [mining](mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md)) |
 
 Local vendor mirrors: `vendor/schemas/iwxxm`, `iwxxm-modelling` (UML generators only), `iwxxm-translation`, `iwxxm-us`.
@@ -166,8 +167,9 @@ Full tables: vendor `TAC-to-XML-Guidance.txt` + FM 205-2025-2 AsciiDoc. Summary 
 |-----|-------|
 | NIL | empty observation + `…/nil/missing` |
 | CAVOK | `@cloudAndVisibilityOK=true`; omit vis/RVR/weather/cloud |
-| NSC | empty cloud + `nothingOfOperationalSignificance` |
+| NSC | empty cloud + `nothingOfOperationalSignificance` — **do not** also emit layered cloud amount/base (APAC FAQ §14.3; #797) |
 | NCD (AUTO) | empty cloud + `notDetectedByAutoSystem` |
+| Missing present weather (no WX group) | Follow `TAC-to-XML-Guidance.txt` nil/omission; cross-check iwxxm-translation examples (FAQ §3.2) — prefer example URI family (`common/nil` vs `iwxxm/nil`) |
 | NOSIG | trendForecast + `noSignificantChange` |
 | NSW | weather + `nothingOfOperationalSignificance` |
 | Present weather `//` | `notObservable` |
@@ -213,13 +215,14 @@ Full tables: vendor `TAC-to-XML-Guidance.txt` + FM 205-2025-2 AsciiDoc. Summary 
 | STNR | `speedOfMotion=0`; direction `inapplicable` |
 | Single point | `gml:CircleByCenterPoint` radius **0** |
 | NO VA EXP | empty VA member + `nothingOfOperationalSignificance` |
+| Prefer polygon TAC; “S OF” / “W OF” / “ENTIRE FIR” | Close geometry with FIR boundary intersection when Annex 3 allows relative phrases (APAC FAQ §3.3; wiki [Geospatial objects in IWXXM](https://github.com/wmo-im/iwxxm/wiki/Geospatial-objects-in-IWXXM) — `issuingAirTrafficServicesRegion` / FIR as `aixm:Airspace` + optional `gml:PolygonPatch`) — engine deepen tracked under #797 / #738 |
 
 ### TCA / VAA
 
 | Product | Key encodings |
 |---------|----------------|
 | TCA | Issue when forecast max 10-min mean wind ≥ **34 kt** (Annex 3 App 2 §5.1.1); Table **A2-2**. Encode: `UNNAMED`; NIL CB → `cumulonimbusCloudLocation` + `missing`; NIL remarks / `NO MSG EXP` → `inapplicable`; wind < 34 kt forecast → `nothingOfOperationalSignificance`; no-longer-TC position → `inapplicable`; cyclone via **`metce:TropicalCyclone`** |
-| VAA | Table **A2-1** + §3.1.2 shall IWXXM. Colour → `iwxxm/AviationColourCode/{GREEN\|YELLOW\|ORANGE\|RED\|UNASSIGNED}` (TAC UNKNOWN/NOT GIVEN/NIL → registry/nilReason per Guidance — **no** invented colour hrefs); UNKNOWN/UNNAMED volcano; unknown location/elev/state/eruptionDetails → `unknown`; NIL remarks / no further advisories → `inapplicable`; ash OBS/FCST status enums; volcano via **`metce:Volcano`** (`VolcanoPropertyType` on 2025-2) |
+| VAA | Table **A2-1** + §3.1.2 shall IWXXM. Colour → `iwxxm/AviationColourCode/{GREEN\|YELLOW\|ORANGE\|RED\|UNASSIGNED}` (TAC UNKNOWN/NOT GIVEN/NIL → registry/nilReason per Guidance — **no** invented colour hrefs); MetFeature ash → `iwxxm/MeteorologicalFeature/VOLCANIC_ASH` when vocabulary requires it (**not** present on `49-2/MeteorologicalFeature` — [codes dig](mining/codes-wmo-int-aviation-mining-notes.md)); UNKNOWN/UNNAMED volcano; unknown location/elev/state/eruptionDetails → `unknown`; NIL remarks / no further advisories → `inapplicable`; ash OBS/FCST status enums; volcano via **`metce:Volcano`** (`VolcanoPropertyType` on 2025-2) |
 | SIGMET TC / VA | Same METCE types on `tropicalCyclone` / `eruptingVolcano` properties in `sigmet.xsd` |
 
 ### Space weather (beyond F6 core — informative)
@@ -291,7 +294,9 @@ GIFTs stripping REMARKS is a **historical gap**, not allowed behavior for `iwxxm
 When emitting translation-centre attributes, align with **published** Doc 10003 / project guide + pin schema:
 
 - **Machine SoT:** vendored `common.xsd` attrs on IWXXM **v2025-2**: `reportStatus`, `permissibleUsage` (+ optional `permissibleUsageReason` / `permissibleUsageSupplementary`), `translatedBulletinID`, `translatedBulletinReceptionTime`, `translationCentreDesignator`, `translationCentreName`, `translationTime`, `translationFailedTAC`
+- **Official quarantine goldens:** `vendor/schemas/iwxxm/IWXXM/examples/*-translation-failed.xml` (METAR/TAF/AIRMET/VAA/TCA/SWX + `sigmet-translation-failed-collect`) — each sets the full translation* attr set above with `@translationFailedTAC` holding the original TAC shell (no MET body). Use as encode shape SoT; fictional `YUZZ` / `TTAAiiCCCYYGGgg` are placeholders.
 - **Public ops SoT:** [OPMET IWXXM Exchange Guidelines 5th Ed.](mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) — Translation Centre bulletin basis (§4.1.3 / §5.3); identify centre + translation time when translating; `permissibleUsage` TEST/EXERCISE rules; partial-translation shell + min fields (§5.3.3); COLLECT aggregation + UUIDv4 `gml:id` guidance (§5.2)
+- **APAC FAQ (informative, Mar 2025):** [mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) — reinforce: do **not** put operational TAC in XML comments (§4.1); on unreliable convert use `@translationFailedTAC` (§8.6); emit `translationCentreDesignator` / `translationCentreName` only when translating **on behalf of another State** (§14.5) — omit for in-State producer self-translate; multi-version COLLECT must declare `http://icao.int/iwxxm/{version}` per group (§14.7). Engine/ops backlog: #797. Same no-partial-translate rule appears in Manual I.3 FM 205-16 (p.166) and FM 205-2018 Report (p.222) — [historical dig](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798.
 - In-repo ops guide: [ICAO_OPMET_COMPLIANCE.md](iwxxm/ICAO_OPMET_COMPLIANCE.md) (cites Doc 10003 §7 — **not** present in Advance 2014 draft; Guidelines §7 is ROC/RODB *exchange* stats — complementary)
 - Doc 10003 store: https://store.icao.int/en/manual-on-the-icao-meteorological-information-exchange-model-doc-10003 (**paywall**)
 - Lineage / FAQ only: [mining/ICAO-Doc-10003-draft-2014-mining-notes.md](mining/ICAO-Doc-10003-draft-2014-mining-notes.md) — early ROC convert-at-centre FAQ; Ch.5 metadata empty
@@ -304,6 +309,8 @@ PPT-02 (2025-10-22) notes that some IWXXM reports can carry more than classic TA
 ### Round-trip (IWXXM → TAC) — out of reference-set SoT
 
 Official `examples/*.tac` + `*.xml` pairs and `TAC-to-XML-Guidance.txt` are **encode-direction** artifacts. There is **no** F6-wide WMO “XML-to-TAC Guidance” in the 2025-2 package. Do not invent a reverse SoT from AWC or GIFTs. Optional semantic compare of converter output against official XML is the supported regression path; any IWXXM→TAC round-trip remains **product-specific / out of domain release gate** until an authoritative reverse mapping is adopted.
+
+APAC FAQ §8.3 (informative): TAC→IWXXM translation under agreement is allowed; **IWXXM→TAC is not permitted** when the original TAC from the source is available — aligns with “no reverse SoT” above.
 
 ### Package versions on supported lines (informative)
 

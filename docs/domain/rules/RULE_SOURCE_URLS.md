@@ -1,7 +1,7 @@
 # Rule source URL catalog
 
 **Status:** living catalog (discovery from [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)).  
-**Updated:** 2026-07-20 (EUR Doc 014 SIGMET/AIRMET Guide 5th · public PDF dig).  
+**Updated:** 2026-07-30 (… · WMO-306 I.3 2019/upd-2021 dig pp.1–230 · #798).  
 **Vendor pin:** `vendor/manifest.json` → `iwxxm` **v2025-2**, `iwxxm-codelists` **49-2**, `iwxxm-us` **3.0**.
 
 **Inventory pass:** [mining/iwxxm-2025-2-reference-set-mining-notes.md](../mining/iwxxm-2025-2-reference-set-mining-notes.md)
@@ -143,6 +143,18 @@ Canonical companions:
 - **Working notes:** [mining/WMO-306-vI-3-2023-mining-notes.md](../mining/WMO-306-vI-3-2023-mining-notes.md)
 - **Caveats:** FM **205-2023-1** defers machine detail to online schemas (often **2023-1**); runtime pin is **2025-2**
 
+### WMO-No. 306 Vol. I.3 (2019 ed., upd. 2021) — historical Part D PDF
+
+- **Publisher:** WMO
+- **URL:** WMO e-Library (ISBN 978-92-63-10306-2); standing cites prefer later 2023 entry https://library.wmo.int/idurl/4/35769
+- **Access:** e-Library captcha / local PDF — **do not commit**
+- **Applies to:** products=[all F6 + bulletin]; profiles=[annex3]; role=[conversion] (historical)
+- **Gap vs GIFTs:** COLLECT; METCE volcano/TC; IWXXM 1.1–3.0 NIL–CNL / NOSIG / field nilReasons; SAF→AIXM; AIRMET/TCA/VAA/SWX; `translationFailedTAC`; CRS 2-D (dig pp.1–230)
+- **Consumer:** `tac2iwxxm`, dissemination (COLLECT)
+- **Label:** normative (historical)
+- **Working notes:** [mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md](../mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md)
+- **Caveats:** Superseded for package selection by 2023 dig + vendor **v2025-2** / `FM205.adoc`; SAF = 1.1 lineage only; 2.1 NOSIG→`inapplicable` deferred vs pin `noSignificantChange`
+
 ### WMO-No. 49 Vol. II — Meteorological Service for International Air Navigation
 
 - **Publisher:** WMO (historical)
@@ -173,6 +185,7 @@ Canonical companions:
 - **Consumer:** `tac-validate`, `tac2iwxxm`, `iwxxm-validate`, UI-decode
 - **Label:** normative-vocabulary
 - **Offline:** `vendor/schemas/iwxxm/IWXXM/rule/codes.wmo.int-*.rdf` + bundle `iwxxm-codelists`
+- **Refresh:** aviation inventory re-checked 2026-07-30 — [mining/codes-wmo-int-aviation-mining-notes.md](../mining/codes-wmo-int-aviation-mining-notes.md)
 
 ### IWXXM register (`_iwxxm`)
 
@@ -183,8 +196,8 @@ Canonical companions:
 - **Gap vs GIFTs:** VAA colour + MetFeature; aviation nils (NOSIG/NSC/NSW/NCD)
 - **Consumer:** `tac2iwxxm`, `iwxxm-validate`, UI-decode
 - **Label:** normative-vocabulary
-- **Caveats:** Prefer **`iwxxm/AviationColourCode`** over `49-2/AviationColourCode` for 2025-2; prefer example-aligned **`iwxxm/nil`** vs converter’s current `common/nil/missing`; `RESUSPENDED_VOLCANIC_ASH` cited in some XSD docs but **404** on registry (2026-07-14)
-- **Mined:** 2026-07-14 (Accept / link-check)
+- **Caveats:** Prefer **`iwxxm/AviationColourCode`** over `49-2/AviationColourCode` for 2025-2; prefer example-aligned **`iwxxm/nil`** vs converter’s current `common/nil/missing`; **`iwxxm/MeteorologicalFeature/VOLCANIC_ASH`** is not on `49-2/` (live 2026-07-30); `RESUSPENDED_VOLCANIC_ASH` cited in some XSD docs but **404** on registry (2026-07-14)
+- **Mined:** 2026-07-14 (Accept / link-check); member-set refresh 2026-07-30 — [codes dig](../mining/codes-wmo-int-aviation-mining-notes.md)
 
 ### WMO No. 49 Vol II code lists (`49-2`)
 
@@ -213,11 +226,13 @@ Canonical companions:
 ### Code Table 4678 (significant weather)
 
 - **URL:** https://codes.wmo.int/306/4678
-- **Access:** public
+- **Access:** public Linked Data; HTML browse may show a **subset** (~101 links observed 2026-07-30)
 - **Applies to:** METAR, SPECI, TAF (present/forecast weather hrefs)
 - **Gap vs GIFTs:** URI pattern for weather groups (avoid tribal GIFTs hrefs)
-- **Consumer:** `tac2iwxxm`
+- **Consumer:** `tac2iwxxm`, `tac-validate`
 - **Label:** normative-vocabulary
+- **Offline SoT:** `vendor/schemas/iwxxm-codelists/CSV/306/4678/4678_entity.csv` (**402** stable notations) + TTL entities under `TTL/306/4678/`
+- **Caveats:** Prefer vendor CSV/RDF for membership gates; Manual on Codes wins if CSV ≠ Manual (codelists README); do not gate CI on live HTML count — [codes dig](../mining/codes-wmo-int-aviation-mining-notes.md)
 
 ---
 
@@ -366,7 +381,7 @@ Canonical companions:
 |------|-----|------|-------|
 | iwxxm-codelists | https://github.com/wmo-im/iwxxm-codelists | RDF → codes.wmo.int | normative-vocabulary |
 | iwxxm-modelling | https://github.com/wmo-im/iwxxm-modelling/tree/v2025-2 | UML / EA→XSD+SCH generation (not runtime) | informative (tooling) — [mining notes](../mining/iwxxm-modelling-v2025-2-mining-notes.md) |
-| iwxxm-translation | https://github.com/wmo-im/iwxxm-translation | Extra TAC/XML pairs + translator list | **informative** (README: no official WMO/ICAO status) |
+| iwxxm-translation | https://github.com/wmo-im/iwxxm-translation | Extra TAC/XML pairs + translator list | **informative** (README: no official WMO/ICAO status) — tip Amd79-80-2023 / IWXXM **2023-1**; parity policy [mining](../mining/iwxxm-translation-parity-mining-notes.md) · #797 |
 
 ### wmo-im/iwxxm-modelling (UML + EA→XSD/SCH tooling)
 
@@ -407,7 +422,9 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
   - `iwxxm-codelists` label `49-2` is **not** a Git tag on the remote — pin by SHA
   - Dual nil/colour registers: classic F6 examples use `common/nil`; VONA/MetFeature/WAFS/QVACI prefer `iwxxm/nil` + `iwxxm/AviationColourCode` / `iwxxm/MeteorologicalFeature`
   - `TAC-to-XML-Guidance.txt` still mentions `runwayState` — **removed** in 2025-2 RC1; do not encode for this pin
-  - `iwxxm-translation` Amd79-80-2023 fixtures: METAR/TAF/VAA/TCA only (no SIGMET/AIRMET trees)
+  - `iwxxm-translation` Amd79-80-2023 fixtures: METAR/TAF/VAA/TCA only (no SIGMET/AIRMET trees); suite XML year **2023-1** — convert under pin **2025-2** without byte-match ([parity dig](../mining/iwxxm-translation-parity-mining-notes.md) · #797)
+  - Dual colour members confirmed live 2026-07-30: `49-2` NIL/NOT_GIVEN/UNKNOWN vs `iwxxm` **UNASSIGNED**; MetFeature: `iwxxm/` **28** vs `49-2/` **27** (**+`VOLCANIC_ASH`**); pin SCH RDF matches ([codes dig](../mining/codes-wmo-int-aviation-mining-notes.md))
+  - Live `306/4678` HTML browse ≈ **101** notations is **incomplete** — vendor CSV has **402** stable; CI uses CSV/RDF, not HTML count
 
 ### Tier B local clones (deep mine 2026-07-14)
 
@@ -462,6 +479,19 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 - **Caveats:** Complementary to Doc **10003** (do not equate); §3.1.7 defers operational version matrix to [community IWXXM home](https://community.wmo.int/en/activity-areas/wis/iwxxm) — this edition does **not** contain PPT-02’s “deprecate ≤2021-2 after 2025-2” wording; translation-centre XSD attribute names are prose-only (use vendored `common.xsd`). Local: `.local/reference/opmet-iwxxm-exchange-guidelines-5th/`
 - **Detail:** [mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md)
 - **Mined:** 2026-07-14 · pin v2025-2
+
+### ICAO APAC — IWXXM Implementation FAQs (3rd Edition, March 2025)
+
+- **Publisher:** ICAO Asia/Pacific (MET eDocs)
+- **URL:** https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2025-03_IWXXM-FAQs_3rd-Ed.pdf
+- **Access:** **public** PDF (16 pp.)
+- **Applies to:** products=[METAR,SPECI,TAF,SIGMET,AIRMET,VAA,TCA,SWX]; profiles=[annex3]; role=[conversion, iwxxm-validation, bulletin]
+- **Gap vs GIFTs:** Practical encode/ops FAQ — missing TAC → Guidance + iwxxm-translation; NSC vs cloud co-occurrence; `translationFailedTAC`; translationCentre attrs only for cross-State translation; COLLECT multi-version namespaces; SIGMET FIR→polygon; AFS COLLECT mandate
+- **Consumer:** `tac2iwxxm`, `tac-validate`, `iwxxm-validate`, bulletin / F16–F19
+- **Label:** **informative** (regional FAQ; cites Doc 10003, OPMET Guidelines, schemas.wmo.int, Package Compatibility wiki)
+- **Caveats:** Complementary to OPMET Guidelines 5th — do not treat as encode SoT. Some examples still cite IWXXM **2023-1** / **2021-2** context diagrams; runtime pin remains **v2025-2**. Local: `.local/reference/icao-apac-iwxxm-faqs-3rd-2025/`
+- **Detail:** [mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](../mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md)
+- **Mined:** 2026-07-30 · companions [codes-wmo-int-aviation](../mining/codes-wmo-int-aviation-mining-notes.md), [iwxxm-translation-parity](../mining/iwxxm-translation-parity-mining-notes.md)
 
 ---
 

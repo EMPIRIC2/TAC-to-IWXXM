@@ -105,6 +105,7 @@ README: if CSV ≠ Manual on Codes, **Manual wins**.
 - Product dirs: **metar** (69 files), **taf** (15), **volcanic-ash-advisory** (9), **tropical-cyclone-advisory** (9).
 - **No** dedicated SPECI / SIGMET / AIRMET amendment trees (SPECI appears inside metar test notes only).
 - Do not override official `iwxxm` examples.
+- **Caveat (2026-07-30 / #797):** suite `IWXXM_VERSION` = **2023-1**. Treat TAC as informative convert inputs under pin **2025-2**; **do not** require XML byte-match to suite fixtures — see [iwxxm-translation-parity-mining-notes.md](./iwxxm-translation-parity-mining-notes.md). Colour dual-register TBD below is **closed** for AviationColourCode members — [codes-wmo-int-aviation-mining-notes.md](./codes-wmo-int-aviation-mining-notes.md).
 
 ### 4. `iwxxm-modelling`
 
@@ -145,13 +146,14 @@ Already mined: [mining/iwxxm-modelling-v2025-2-mining-notes.md](./iwxxm-modellin
 - **F6 / tac2iwxxm:** Keep nilReasons from Guidance (`common/nil`) for METAR/SPECI/TAF/SIGMET/AIRMET/VAA/TCA; do **not** emit removed `runwayState` for 2025-2; use `iwxxm/*` lists where XSD `vocabulary=` says so (VONA colour, MetFeature, etc.).
 - **tac-validate:** Still no Annex 3 text here; FM205.adoc paraphrases product scope only.
 - **iwxxm-validate:** Continue offline SCH+RDF under `vendor/schemas/iwxxm/2025-2/IWXXM/rule/`; ensure both nil RDF files stay in catalog for CI.
-- **Caveats / TBD:** Optional dedicated pass comparing `49-2` vs `iwxxm` AviationColourCode member sets (NIL/NOT_GIVEN/UNKNOWN vs UNASSIGNED). Vendor sync when remote retags `v2025-2` to post-reorg SHA.
+- **Caveats / TBD:** ~~Optional dedicated pass comparing `49-2` vs `iwxxm` AviationColourCode member sets (NIL/NOT_GIVEN/UNKNOWN vs UNASSIGNED).~~ **Done 2026-07-30** — [codes-wmo-int-aviation-mining-notes.md](./codes-wmo-int-aviation-mining-notes.md). Vendor sync when remote retags `v2025-2` to post-reorg SHA still open.
 
 ---
 
 ## Suggested next mining passes
 
-1. Diff `49-2` vs `iwxxm` colour + MetFeature concept sets and note schema↔registry casing.
+1. ~~Diff `49-2` vs `iwxxm` colour + MetFeature concept sets and note schema↔registry casing.~~ **Done** (#797 dig): colour NIL/NOT_GIVEN/UNKNOWN vs **UNASSIGNED**; MetFeature `iwxxm/` **28** vs `49-2/` **27** (**+`VOLCANIC_ASH`**) — [codes-wmo-int-aviation-mining-notes.md](./codes-wmo-int-aviation-mining-notes.md).
 2. Refresh [mining/WMO-306-vI-3-2023-mining-notes.md](./WMO-306-vI-3-2023-mining-notes.md) with “superseded package tables → see FM205.adoc 2025-2”.
 3. Inventory which SCH patterns fire on official examples (legacy vs iwxxm nil) for CI fixture policy.
+4. APAC FAQ encode gotchas — [icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](./icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) (promoted; engine #797).
 ```

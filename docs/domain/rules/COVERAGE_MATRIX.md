@@ -1,7 +1,7 @@
 # Coverage matrix — F6 product × profile × rule sources
 
-**Ticket:** [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)  
-**Mined:** 2026-07-20 (EUR Doc 014 SIGMET/AIRMET Guide dig · prior 2026-07-14 A3/A5/A6 checklists)  
+**Ticket:** [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719) · adjust backlog [#797](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/797)  
+**Mined:** 2026-07-30 (APAC FAQs / codes / translation · #797 · WMO-306 I.3 2019/upd-2021 dig pp.1–230 · #798 · prior EUR Doc 014)  
 **Legend:** ✅ normative URL present · ⚠ partial / paywall cite · ❌ blocked / TBD
 
 “Validation” in matrices = TAC token/template/vocab rules (not always full grammar offline).  
@@ -30,8 +30,9 @@ Profiles: **`annex3`** (ICAO/WMO core) · **`iwxxm_us`** (US national extensions
 | **G6 Golden** | all | `schemas.wmo.int/iwxxm/2025-2/examples/` | Pair still passes G2–G5 |
 | **G7 Bulletin** (when packed) | bulletin | OPMET Guidelines 5th + COLLECT / AHL | Aggregated message ops-ready |
 
-**Release:** G4 **and** G5 on the document’s year line. AWC / iwxxm-translation = smoke only.  
-**IWXXM→TAC round-trip:** not a domain gate.
+**Release:** G4 **and** G5 on the document’s year line. AWC / iwxxm-translation = smoke only
+(translation suite: TAC→**2025-2** encode + SCH; **no** byte-match to suite **2023-1** XML — #797).  
+**IWXXM→TAC round-trip:** not a domain gate (APAC FAQ §8.3: reverse translate not permitted when source TAC exists).
 
 ### Product × strategy cite (quick)
 
@@ -70,13 +71,14 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 |--------------|--------|----------|------------------|
 | ICAO Annex 3 / Doc 8896 | ✅ (paywall) | National differences → FMH-1 / NWS instructions | `tac-validate` |
 | WMO 306 Vol I.1 (TAC FM) | ✅ (e-Library) | — | `tac-validate` |
-| WMO 306 Vol I.3 / FM 205 | ✅ | extension hook only | `tac2iwxxm` |
+| WMO 306 Vol I.3 / FM 205 | ✅ ([2023 dig](../mining/WMO-306-vI-3-2023-mining-notes.md); historical [2019/upd-2021](../mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) pp.1–230 · #798) | extension hook only | `tac2iwxxm` |
 | codes.wmo.int | ✅ | + BUFR flags for some US attrs | both encode + validate |
 | wmo-im/iwxxm XSD+SCH | ✅ (`…/iwxxm/<pin>/rule/`; **not** top-level [schemas.wmo.int/rule/](https://schemas.wmo.int/rule/) — that index is IWXXM 1.x / foundation mirror only — [dig](../mining/schemas-wmo-int-rule-mining-notes.md)) | base only | `iwxxm-validate` |
 | iwxxm-us 3.0 | — | ✅ | `tac2iwxxm` + combined validate |
 | FMH-1 / codes.nws.noaa.gov | — | ✅ | US REMARKS / national TAC |
-| iwxxm-translation | informative fixtures | examples under us site | golden tests (Amd79-80: METAR/TAF/VAA/TCA only — see [mining/wmo-im-tier-a-mining-notes.md](../mining/wmo-im-tier-a-mining-notes.md)) |
+| iwxxm-translation | informative fixtures | examples under us site | golden tests (Amd79-80-2023: 14 METAR + 20 SPECI under `metar/` + TAF/VAA/TCA; suite IWXXM **2023-1** — [parity dig](../mining/iwxxm-translation-parity-mining-notes.md) · #797) |
 | iwxxm-modelling (UML/EA) | informative provenance for SCH/XSD generation | — | design only — see [notes](../mining/iwxxm-modelling-v2025-2-mining-notes.md) |
+| ICAO APAC IWXXM FAQs (3rd Ed. Mar 2025) | informative | — | encode/ops gotchas (NSC, `translationFailedTAC`, translationCentre, COLLECT) — [dig](../mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) · #797 |
 
 ---
 
@@ -84,12 +86,13 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 
 | Product | Key registers | Normative? | Notes |
 |---------|---------------|------------|-------|
-| METAR/SPECI | Present/forecast weather, recent weather, cloud amount, CB/TCU, nils | ✅ | Weather concept IDs mostly `306/4678/{TAC}` |
+| METAR/SPECI | Present/forecast weather, recent weather, cloud amount, CB/TCU, nils | ✅ | Weather concept IDs mostly `306/4678/{TAC}` — membership SoT = vendor CSV (**402** stable); live HTML browse ≈101 is incomplete |
 | TAF | Same weather/cloud + nils (NOSIG/NSW) | ✅ | Change-group schedule still Annex 3 prose |
 | SIGMET | SigWxPhenomena; MetFeature secondary | ✅ | Outside GIFTs |
 | AIRMET | AirWxPhenomena; WeatherCausingVisibilityReduction | ✅ | Prefer 2023-1.4 for D-10 vs AirWx split |
-| VAA | `iwxxm/AviationColourCode` + MetFeature VOLCANO/VOLCANIC_ASH | ✅ | Prefer iwxxm/ colour set for 2025-2 |
-| TCA | MetFeature `TROPICAL_CYCLONE` + nils | Partial | TAC geometry/template elsewhere |
+| VAA | `iwxxm/AviationColourCode` + MetFeature VOLCANO/**VOLCANIC_ASH** | ✅ | Prefer `iwxxm/` colour (GREEN/YELLOW/ORANGE/RED/**UNASSIGNED**); **`VOLCANIC_ASH` only on `iwxxm/MeteorologicalFeature`** (not `49-2/`) — [codes dig](../mining/codes-wmo-int-aviation-mining-notes.md) |
+| TCA | MetFeature `TROPICAL_CYCLONE` + nils | Partial | `TROPICAL_CYCLONE` shared on both MetFeature registers; TAC geometry/template elsewhere |
+| All (nil) | `common/nil` **and** `iwxxm/nil` | ✅ | Dual SCH RDF; classic F6 examples prefer `common/nil` — [codes dig](../mining/codes-wmo-int-aviation-mining-notes.md) |
 
 ---
 
@@ -123,6 +126,7 @@ Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quaran
 | FMH-1 / iwxxm-us | US profile | extensions | combined catalog | US samples |
 | PPT-02 Framework (informative) | TAC sunset ~2030; AHL TAC bulletin heading | translation attrs + `translationFailedTAC`; METAR/SIGMET capacity vs TAC; package×line matrix | package versions + ≤2021-2 deprecation messaging | cite |
 | OPMET IWXXM Exchange Guidelines 5th (public) | — | Translation Centre; partial translation; `permissibleUsage` | Schematron-by-version / partial % (ROC stats) | cite + bulletin AMHS |
+| ICAO APAC IWXXM FAQs 3rd (public, informative) | NSC exclusivity warn | NSC omit layers; `translationFailedTAC`; translationCentre gate; FIR→polygon | NSC co-occurrence SCH smoke | cite · #797 |
 | WIS2 aviation (cookbook/guide/WTH) | — | — (no TAC encode) | — | F8 routing / Annex 3 use-rights; not COLLECT packing |
 | Doc 10003 published (paywall) | — | translation-centre metadata / exchange | version/transition prose if present | cite |
 | Doc 10003 Advance 2014 draft (historical) | — | IWXXM v1 lineage; weather lists obsolete | 1.0RC2 sample only | lineage notes |
