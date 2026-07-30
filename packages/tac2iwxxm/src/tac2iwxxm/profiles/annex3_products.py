@@ -689,6 +689,16 @@ _VAA_FORBIDDEN_ROOTS = frozenset(
     }
 )
 
+_TCA_FORBIDDEN_ROOTS = frozenset(
+    {
+        "TropicalCycloneSIGMET",
+        "SIGMET",
+        "VolcanicAshSIGMET",
+        "AIRMET",
+        "VolcanicAshAdvisory",
+    }
+)
+
 
 def _vaa_cloud_extent_xml(cloud: dict[str, Any], *, gid: str) -> str:
     """Emit ashCloudExtent AirspaceVolume (+ optional motion) for one cloud."""
@@ -896,7 +906,26 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit a minimal IWXXM TropicalCycloneAdvisory document."""
+    """
+    Emit a minimal IWXXM ``TropicalCycloneAdvisory`` document (F6.f / F27 themes T2–T3).
+
+    Product/root guard (TC-F27-006 / #737): under ``product=tca`` this emitter
+    always opens ``iwxxm:TropicalCycloneAdvisory`` and never
+    ``TropicalCycloneSIGMET`` (or other SIGMET-family / VAA roots). Rejects IR
+    that claims a forbidden ``iwxxm_root`` or non-TCA ``product``.
+    """
+    product = str(ir.get("product", "TCA")).upper()
+    if product != "TCA":
+        raise ValueError(f"TCA emitter product/root guard: expected product TCA, found {product!r}")
+    claimed = ir.get("iwxxm_root")
+    if claimed is not None and str(claimed) in _TCA_FORBIDDEN_ROOTS:
+        raise ValueError(
+            f"TCA emitter product/root guard: refusing forbidden iwxxm_root={claimed!r} "
+            "(never emit TropicalCycloneSIGMET under product=tca)"
+        )
+    if claimed is not None and str(claimed) not in {"TropicalCycloneAdvisory", "TCA"}:
+        raise ValueError(f"TCA emitter product/root guard: unexpected iwxxm_root={claimed!r}")
+
     ns = _ns(iwxxm_version)
     tcac = str(ir["tcac"])
     name = str(ir["tc_name"])
@@ -920,7 +949,7 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     if ir.get("central_pressure_hpa") is not None:
         pressure = f'  <iwxxm:centralPressure uom="hPa">{ir["central_pressure_hpa"]}</iwxxm:centralPressure>\n'
 
-    return f"""<?xml version="1.0" encoding="UTF-8"?>
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:TropicalCycloneAdvisory xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -950,6 +979,15 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
   <iwxxm:advisoryNumber>{escape(str(ir.get("advisory_number", "")))}</iwxxm:advisoryNumber>
 {pos}{pressure}{wind}</iwxxm:TropicalCycloneAdvisory>
 """
+    return _assert_tca_advisory_xml(xml)
+
+
+def _assert_tca_advisory_xml(xml: str) -> str:
+    if "<iwxxm:TropicalCycloneAdvisory " not in xml:
+        raise ValueError("TCA emitter product/root guard: missing TropicalCycloneAdvisory root")
+    if "<iwxxm:TropicalCycloneSIGMET " in xml or "iwxxm:TropicalCycloneSIGMET" in xml:
+        raise ValueError("TCA emitter product/root guard: TropicalCycloneSIGMET must not appear under product=tca")
+    return xml
 
 
 __all__ = [

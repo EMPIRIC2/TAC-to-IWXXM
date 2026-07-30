@@ -303,6 +303,7 @@ def parse_tca(tac: str, *, product: str = "TCA") -> dict[str, Any]:
         "max_wind_mps": int(wind_m.group(1)) if wind_m else None,
         "central_pressure_hpa": int(pressure_m.group(1)) if pressure_m else None,
         "movement": fields.get("MOV", ""),
+        "iwxxm_root": "TropicalCycloneAdvisory",
         "raw": text,
     }
 

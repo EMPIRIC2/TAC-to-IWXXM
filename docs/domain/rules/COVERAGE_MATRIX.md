@@ -283,7 +283,7 @@ Hard themes from #737 + guidance §Tropical Cyclone Advisory + vendor `tc-adviso
 
 | Theme | Lint (F12/F27) | Convert (F6.f) | Validate / goldens | Status |
 |-------|----------------|----------------|--------------------|--------|
-| **T1** TCA exceptional (`UNNAMED`, CB NIL, remarks NIL, `NO MSG EXP`, wind &lt;34 kt, no-longer-TC) | Registry + accept/negatives | Exceptional encode | SCH soft-skip | Planned |
-| **T2** TCA ↔ TC SIGMET adjacency | Product/root guards | Never emit `TropicalCycloneSIGMET` under `product=tca` | TC-F27-006 | Planned |
+| **T1** TCA exceptional (`UNNAMED`, CB NIL, remarks NIL, `NO MSG EXP`, wind &lt;34 kt, no-longer-TC) | Registry + accept/negatives (T3.1–T3.2) | Exceptional encode | SCH soft-skip | ✅ Closed (S027 T3.1–T3.2) |
+| **T2** TCA ↔ TC SIGMET adjacency | Product/root guards (T3.3–T3.4) | Never emit `TropicalCycloneSIGMET` under `product=tca` | TC-F27-006 | ✅ Closed (S027 T3.3–T3.4) |
 | **T3** TCA golden convert + SCH | — | `tc-advisory-A2-2` defaults `canonicalize_xml` | M-xsd / M-sch / M-golden (TC-F27-002/003) | Planned |
 | **C1** Common rules | ✅ where TAC | Shared pattern | translation-failed not happy-path | Planned |
