@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "TC-F6-020/021 / TC-F15-002 / TC-F20-002 / TC-F20-003 / TC-F23-002 / TC-F24-002 / TC-F25-001 annex3 METAR/SPECI/TAF/SIGMET/AIRMET golden pack (WMO-shaped; R6 + F20 T4/S3 + F23 G3 + F24 A3 + F25 W1\u2013W3)",
+  "description": "TC-F6-020/021 / TC-F15-002 / TC-F20-002 / TC-F20-003 / TC-F23-002 / TC-F24-002 / TC-F25-001 / TC-F26-002 / TC-F27-002 annex3 METAR/SPECI/TAF/SIGMET/AIRMET/VAA/TCA golden pack (WMO-shaped; R6 + F20 T4/S3 + F23 G3 + F24 A3 + F25 W1\u2013W3 + F26 V3 + F27 T3)",
   "cases": [
     {
       "id": "taf_a5_1",
@@ -251,6 +251,15 @@
       "golden": "vaa_a7_2.golden.xml",
       "seed": "va-advisory-A7-2",
       "note": "F26 theme V3 — WMO Karymsky/TOKYO vendor golden (TC-F26-002/003)"
+    },
+    {
+      "id": "tca_a2_2",
+      "product": "TCA",
+      "theme": "T3",
+      "tac": "tca_a2_2.tac",
+      "golden": "tca_a2_2.golden.xml",
+      "seed": "tc-advisory-A2-2",
+      "note": "F27 theme T3 — WMO GLORIA/YUFO vendor golden (TC-F27-002/003); equality fidelity T4.2"
     }
   ]
 }
