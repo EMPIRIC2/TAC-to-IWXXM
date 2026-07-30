@@ -220,7 +220,7 @@ without TAC lint surface follow F20 C1 pattern — not silent omission.
 - [x] F24 acc — AIRMET WMO default golden + registry (S026 / EV-020; #731)
 - [x] F25 acc — METAR/SPECI/TAF WMO default goldens + Examples catalog gate (S026 / EV-020)
 - [ ] F26 acc — VAA WMO default golden + registry themes V1–V3/C1 (S027 / EV-021; #736)
-- [ ] F27 acc — TCA WMO default golden + registry themes T1–T3/C1 (S027 / EV-021; #737)
+- [x] F27 acc — TCA WMO default golden + registry themes T1–T3/C1 (S027 / EV-021; #737)
 
 ---
 
@@ -285,5 +285,5 @@ Hard themes from #737 + guidance §Tropical Cyclone Advisory + vendor `tc-adviso
 |-------|----------------|----------------|--------------------|--------|
 | **T1** TCA exceptional (`UNNAMED`, CB NIL, remarks NIL, `NO MSG EXP`, wind &lt;34 kt, no-longer-TC) | Registry + accept/negatives (T3.1–T3.2) | Exceptional encode | SCH soft-skip | ✅ Closed (S027 T3.1–T3.2) |
 | **T2** TCA ↔ TC SIGMET adjacency | Product/root guards (T3.3–T3.4) | Never emit `TropicalCycloneSIGMET` under `product=tca` | TC-F27-006 | ✅ Closed (S027 T3.3–T3.4) |
-| **T3** TCA golden convert + SCH | — | `tc-advisory-A2-2` defaults `canonicalize_xml` | M-xsd / M-sch / M-golden (TC-F27-002/003) | Planned |
-| **C1** Common rules | ✅ where TAC | Shared pattern | translation-failed not happy-path | Planned |
+| **T3** TCA golden convert + SCH | — | `tc-advisory-A2-2` defaults `canonicalize_xml` (T4.1–T4.2) | M-xsd / M-sch / M-golden (TC-F27-002/003) | ✅ Closed (S027 T4.1–T4.2; T4.3) |
+| **C1** Common rules | ✅ where TAC | Shared pattern | translation-failed not happy-path (TC-F27-004) | ✅ Closed (S027 T4.4) |
