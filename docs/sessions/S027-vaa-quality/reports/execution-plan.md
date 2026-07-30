@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — Build |
 | **Active milestone** | M3 — F27 TCA lint (themes T1–T2) |
-| **Active task** | T3.3 |
-| **Tasks** | 13 / ~24 completed |
+| **Active task** | T3.4 |
+| **Tasks** | 14 / ~24 completed |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -84,7 +84,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T3.1 | Test | Accept/negative fixtures **F27 theme T1** (UNNAMED, CB NIL, remarks NIL, `NO MSG EXP`, wind &lt;34 kt, no-longer-TC, …) | TC-F27-001/004; T1 | T2.4 | **completed** |
 | T3.2 | Code | Registry rows + TCA rules for T1 | F27; ADR-028; F12 | T3.1 | **completed** |
-| T3.3 | Test | Fixtures **F27 theme T2** (TCA ↔ TC SIGMET adjacency) | TC-F27-006; T2 | T3.2 | **pending** |
+| T3.3 | Test | Fixtures **F27 theme T2** (TCA ↔ TC SIGMET adjacency) | TC-F27-006; T2 | T3.2 | **completed** |
 | T3.4 | Code | Product/root guards — never emit `TropicalCycloneSIGMET` under `product=tca` | F27; #737/#738 | T3.3 | **pending** |
 
 ### M4 — F27 TCA golden (theme T3) + C1
