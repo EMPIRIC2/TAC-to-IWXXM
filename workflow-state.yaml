@@ -1,23 +1,80 @@
-overall_status: in_progress  # S028 hotfix open — SIGMET multiline split (BUG-2026-07-30)
+overall_status: in_progress  # S029/EV-022 open — F9 SIGMET/AIRMET decode residuals
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 28
-evolve_cycle_counter: 21
+session_counter: 29
+evolve_cycle_counter: 22
 active_session:
-  id: S028-sigmet-multiline-split
+  id: S029-sigmet-decode-residuals
+  type: feature
+  intent: "F9 deepen — SIGMET/AIRMET decode explains A6-1a tokens currently residual (sequence, VALID, MWO, FIR name, SE-box, FL, MOV dir/spd)"
+  status: in_progress
+  branch: feat/EV-022-sigmet-decode-residuals
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-022
+  artifacts_dir: docs/sessions/S029-sigmet-decode-residuals/
+  current_stage: 00-context
+  started_at: "2026-07-30"
+  context_briefs: []
+  feature_ids: [F9]
+  feature_note: "F9 deepen (SIGMET/AIRMET decode)"
+  preset: Lean
+  preset_status: proposed
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: in_progress
+    started: "2026-07-30"
+    note: "Session open via workflow-state-manager; Lean routing 00→16→01 light→07→10 smoke→13 optional"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: pending
+    note: "Orchestrator EV-022; Phase 0 intake pending"
+  - stage: 01-requirements
+    required: true
+    mode: light
+    status: pending
+    note: "Light delta — F9 deepen SIGMET/AIRMET decode residual tokens"
+  - stage: 07-build
+    required: true
+    mode: full
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: smoke
+    status: pending
+    note: "Smoke only"
+  - stage: 13-deploy-smoke
+    required: false
+    mode: optional
+    status: pending
+    note: "Optional — run if API/FE changes need live verify"
+  note_skipped: "Lean — skip 02/03/04/05/06/08/09/11/12 unless re-added; 13 optional"
+sessions:
+- id: S028-sigmet-multiline-split
   type: hotfix
   intent: "Hotfix BUG-2026-07-30 — SIGMET/AIRMET multi-line manual TAC incorrectly line-split → PARSE_ERROR unable to parse SIGMET header on WMO A6-1a-TS UI example"
-  status: in_progress
+  status: completed
   branch: fix/BUG-2026-07-30-sigmet-multiline-split
   orchestrator: 14-hotfix
   evolve_cycle_id: null
   artifacts_dir: docs/sessions/S028-sigmet-multiline-split/
-  current_stage: 14-hotfix
-  started_at: "2026-07-30"
-  context_briefs: []
+  current_stage:
   bug_report: docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md
+  started_at: "2026-07-30"
+  completed_at: "2026-07-30"
+  tip_sha: 17c93bd
+  tip_sha_full: 17c93bdeba4c26a5f9d43bdc2faf1906fcae39df
+  pr_number: 796
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/796
+  pr_status: merged
+  merge_sha: 17c93bd
+  close_note: "PR #796 merged 17c93bd; main CI Deploy PASS; live API soft-preview PASS (posList+WEAKEN); UI production_verified deferred (user moved to F9 decode deepen)"
+  note: "COMPLETE — PR #796 merged 17c93bd; main CI Deploy PASS; live API soft-preview PASS (posList+WEAKEN); UI production_verified deferred (user moved to F9 decode deepen)"
+  context_briefs: []
   routing_plan:
   - stage: 00-context
     required: true
@@ -28,10 +85,10 @@ active_session:
   - stage: 14-hotfix
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: "2026-07-30"
-    note: "BUG-2026-07-30 open — pointer docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md"
-sessions:
+    completed: "2026-07-30"
+    note: "COMPLETE — PR #796 merged 17c93bd; main CI Deploy PASS; live API soft-preview PASS (posList+WEAKEN); UI production_verified deferred"
 - id: S027-vaa-quality
   type: feature
   intent: "VAA + TCA quality bars (#736/#737) — lint, convert, validate, workbench"
@@ -2229,23 +2286,24 @@ template:
   confirmed_at: '2026-06-14'
 stages:
   00-context:
-    status: completed
+    status: in_progress
     mode: scoped
-    scoped_slug: sigmet-quality
-    session_id: S025-sigmet-quality
-    evolve_cycle_id: EV-019
-    started_at: '2026-07-29'
-    completed_at: '2026-07-29'
-    completed: '2026-07-29'
+    scoped_slug: sigmet-decode-residuals
+    session_id: S029-sigmet-decode-residuals
+    evolve_cycle_id: EV-022
+    started_at: '2026-07-30'
+    completed_at:
+    completed:
     substeps:
-      phase0: completed
+      phase0: pending
       phase1a: pending
       phase1b: skipped
       phase1c: skipped
       phase2: pending
       phase3: pending
       phase4: pending
-    note: 'S025 Phase 0 lock — Batch1+2 E19-1..8; F23 Planned; paused before 01 (E19-8=B); #733/#739'
+    note: 'S029/EV-022 OPEN — F9 deepen SIGMET/AIRMET decode residuals; Lean proposed; Phase 0 intake pending'
+    prior_note: 'S025 Phase 0 lock — Batch1+2 E19-1..8; F23 Planned; paused before 01 (E19-8=B); #733/#739'
     artifacts:
     - docs/sessions/S025-sigmet-quality/
     - docs/sessions/S025-sigmet-quality/session-brief.md
@@ -5832,20 +5890,29 @@ stages:
     completed_at: '2026-07-27'
     note: 'H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending'
   14-hotfix:
-    status: in_progress
+    status: completed
     session_id: S028-sigmet-multiline-split
     current_bug: docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md
-    bug_status: open
+    bug_status: resolved
     remediation_path: local-first
     started_at: '2026-07-30'
     started: '2026-07-30'
-    note: 'S028 open — BUG-2026-07-30 SIGMET/AIRMET multi-line manual TAC line-split → PARSE_ERROR; prior S012 resolved (kept in notes)'
+    completed: '2026-07-30'
+    completed_at: '2026-07-30'
+    tip_sha: 17c93bd
+    tip_sha_full: 17c93bdeba4c26a5f9d43bdc2faf1906fcae39df
+    pr_number: 796
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/796
+    pr_status: merged
+    merge_sha: 17c93bd
+    note: 'S028 COMPLETE — PR #796 merged 17c93bd; main CI Deploy PASS; live API soft-preview PASS (posList+WEAKEN); UI production_verified deferred (user moved to F9 decode deepen)'
     prior_session_id: S012-empty-bearer-lint-tac
     prior_bug: docs/bug-reports/BUG-2026-07-15-empty-bearer-lint-tac.md
     prior_bug_status: resolved
     prior_pr_number: 721
     prior_merge_sha: 6412b21
     notes:
+    - 2026-07-30 — S028 CLOSED — PR #796 merged 17c93bd; main CI Deploy PASS; live API soft-preview PASS (posList+WEAKEN); UI production_verified deferred (user moved to F9 decode deepen).
     - 2026-07-30 — S028-sigmet-multiline-split open (BUG-2026-07-30 SIGMET/AIRMET multi-line split); pointer docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md; cleared S012 as current.
     - 2026-07-15 — S012-empty-bearer-lint-tac open (empty Bearer on lint-tac/decode-tac + lint UX issue details); cleared stale S009 pointer.
     - 2026-07-12 — Docs reorg via /14-hotfix rejected (not a bug/hotfix); deferred until S006 complete (S006-R4).
@@ -5862,18 +5929,19 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S027-vaa-quality
-    evolve_cycle_id: EV-021
-    started_at: '2026-07-29'
-    completed_at: '2026-07-30'
-    completed: '2026-07-30'
-    current_stage:
-    tip_sha: df56d1f
-    tip_sha_full: df56d1fce29a22970d72b49c77733e0616369e43
-    note: 'S027/EV-021 16-evolve COMPLETE — Phase 4 close D-S027-close; EV-021 completed; PR #794 merged df56d1f; F26/F27 Done; #736/#737'
+    session_id: S029-sigmet-decode-residuals
+    evolve_cycle_id: EV-022
+    started_at: '2026-07-30'
+    completed_at:
+    completed:
+    current_stage: 00-context
+    tip_sha: 17c93bd
+    tip_sha_full: 17c93bdeba4c26a5f9d43bdc2faf1906fcae39df
+    note: 'S029/EV-022 OPEN — F9 deepen SIGMET/AIRMET decode residuals; Lean 00→16→01 light→07→10 smoke→13 optional; Phase 0 intake pending'
     notes:
+    - '2026-07-30 S029/EV-022 OPEN — F9 deepen SIGMET/AIRMET decode residuals; branch feat/EV-022-sigmet-decode-residuals; Lean routing; tip 17c93bd'
     - '2026-07-30 S027/EV-021 Phase 4 close D-S027-close — cycle+session completed; PR #794 merged df56d1f; H1–H5 + live VAA/TCA smoke PASS; F26/F27 Done; #736/#737'
     - '2026-07-30 S027/EV-021 13-deploy-smoke COMPLETE (D-S027-E21-13-merge) — PASS; H1–H5 + live VAA/TCA; deploys dep-d9lmsdflk1mc739232ug / dep-d9lmsefqj5pc739d3it0; report deploy-smoke.md; #736/#737'
     - '2026-07-29 S026/EV-020 Phase 4 close D-S026-close — cycle+session completed; PR #793 merged 0f77194; H1–H5 + live F24/F25 smoke PASS; F24/F25 Done; #731'
@@ -6212,6 +6280,44 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S029-open
+  date: "2026-07-30"
+  timestamp: "2026-07-30"
+  resolved_at: "2026-07-30"
+  session_id: S029-sigmet-decode-residuals
+  evolve_cycle_id: EV-022
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: 00-context
+  status: confirmed
+  category: session-open
+  topic: Open S029 / EV-022 F9 SIGMET/AIRMET decode residuals
+  summary: 'Opened S029-sigmet-decode-residuals (feature) with orchestrator 16-evolve; allocated EV-022; branch feat/EV-022-sigmet-decode-residuals; Lean 00→16→01 light→07→10 smoke→13 optional; F9 deepen'
+  decision: 'Open S029/EV-022 after S028 close. Feature deepen F9 — SIGMET/AIRMET decode explains A6-1a residual tokens (sequence, VALID, MWO, FIR name, SE-box, FL, MOV dir/spd). Preset Lean. Git create deferred to parent.'
+  tip_sha: 17c93bd
+  tip_sha_full: 17c93bdeba4c26a5f9d43bdc2faf1906fcae39df
+  related_decisions:
+  - D-S028-close
+- id: D-S028-close
+  date: "2026-07-30"
+  timestamp: "2026-07-30"
+  resolved_at: "2026-07-30"
+  session_id: S028-sigmet-multiline-split
+  evolve_cycle_id: null
+  skill: 14-hotfix
+  skill_id: 14-hotfix
+  stage: 14-hotfix
+  status: confirmed
+  category: session-close
+  topic: Close S028 SIGMET multiline split hotfix
+  summary: 'Close S028; PR #796 merged 17c93bd; main CI Deploy PASS; live API soft-preview PASS (posList+WEAKEN); UI production_verified deferred'
+  decision: 'Close S028-sigmet-multiline-split. PR #796 merged 17c93bd; main CI Deploy PASS; live API soft-preview PASS (posList+WEAKEN); UI production_verified deferred (user moved to F9 decode deepen); archive session; stages.14-hotfix completed.'
+  related_prs:
+  - 796
+  related_pr: 796
+  tip_sha: 17c93bd
+  tip_sha_full: 17c93bdeba4c26a5f9d43bdc2faf1906fcae39df
+  close_note: "PR #796 merged 17c93bd; main CI Deploy PASS; live API soft-preview PASS (posList+WEAKEN); UI production_verified deferred (user moved to F9 decode deepen)"
 - id: D-S027-close
   date: "2026-07-30"
   timestamp: "2026-07-30"
@@ -14356,6 +14462,83 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-022
+  session_id: S029-sigmet-decode-residuals
+  cycle_type: feature
+  feature_ids: [F9]
+  feature_id: F9
+  title: "F9 deepen — SIGMET/AIRMET decode residual A6-1a tokens"
+  status: in_progress
+  started: "2026-07-30"
+  completed:
+  scope_summary: |
+    F9 deepen: SIGMET/AIRMET decode explains WMO A6-1a tokens that currently remain residual —
+    sequence, VALID, MWO, FIR name, SE-box, FL, MOV dir/spd. Lean routing
+    00→16→01 light→07→10 smoke→13 optional. Phase 0 intake pending.
+  routing_plan:
+    required_stages:
+      - 00-context
+      - 16-evolve
+      - 01-requirements
+      - 07-build
+      - 10-e2e
+    optional_stages:
+      - 13-deploy-smoke
+    skipped_stages:
+      - 02-verify-plan
+      - 03-plan-tooling
+      - 04-tech-plan
+      - 05-verify-tech
+      - 06-tech-tooling
+      - 08-verify-build
+      - 09-qa
+      - 11-verify-impl
+      - 12-verify-deploy
+    note: "Lean — 01 light; 10 smoke; 13 optional; skip 02/03/04/05/06/08/09/11/12 unless re-added"
+  current_stage: 00-context
+  stages:
+    00-context:
+      status: in_progress
+      started: "2026-07-30"
+      note: "Session open; routing proposed Lean"
+    16-evolve:
+      status: pending
+      note: "Orchestrator; Phase 0 intake pending"
+    01-requirements:
+      status: pending
+      mode: light
+    07-build:
+      status: pending
+    10-e2e:
+      status: pending
+      mode: smoke
+    13-deploy-smoke:
+      status: pending
+      mode: optional
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+    - path: docs/sessions/S029-sigmet-decode-residuals/session-brief.md
+      status: in_progress
+    - path: docs/sessions/S029-sigmet-decode-residuals/routing-plan.md
+      status: in_progress
+  issues: []
+  decision_refs: [D-S029-open, D-S028-close]
+  note: "OPEN — F9 deepen SIGMET/AIRMET decode residuals; Lean; tip 17c93bd"
+  tip_sha: 17c93bd
+  tip_sha_full: 17c93bdeba4c26a5f9d43bdc2faf1906fcae39df
+  notes:
+  - '2026-07-30 S029/EV-022 OPEN — allocated after S028 close; branch feat/EV-022-sigmet-decode-residuals; Phase 0 intake pending'
 - id: EV-020
   session_id: S026-airmet-quality-wmo-examples
   cycle_type: feature
@@ -18910,10 +19093,12 @@ git_history:
   ahead_of_origin: null
   pushed: true
   pending_commit:
-  tip_sha: df56d1f
-  tip_sha_full: df56d1fce29a22970d72b49c77733e0616369e43
-  note: 'S028 open — hotfix BUG-2026-07-30 sigmet-multiline-split; branch fix/BUG-2026-07-30-sigmet-multiline-split recorded active (base main); session_counter 28; tip remains df56d1f on main until checkout'
+  tip_sha: 17c93bd
+  tip_sha_full: 17c93bdeba4c26a5f9d43bdc2faf1906fcae39df
+  note: 'S029/EV-022 OPEN — F9 SIGMET/AIRMET decode residuals; branch feat/EV-022-sigmet-decode-residuals recorded active (base main @ 17c93bd); session_counter 29; evolve_cycle_counter 22; S028 closed PR #796'
   notes:
+  - '2026-07-30 S029/EV-022 OPEN — branch feat/EV-022-sigmet-decode-residuals recorded active (base main @ 17c93bd); session_counter 29; evolve_cycle_counter 22; Lean 00→16→01 light→07→10 smoke→13 optional; F9 deepen'
+  - '2026-07-30 S028 CLOSED — PR #796 merged 17c93bd; main CI Deploy PASS; live API soft-preview PASS (posList+WEAKEN); UI production_verified deferred; stages.14-hotfix completed'
   - '2026-07-30 S028-sigmet-multiline-split open — branch fix/BUG-2026-07-30-sigmet-multiline-split recorded active (base main @ df56d1f); session_counter 28; stages.14-hotfix in_progress; bug docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md'
   - '2026-07-30 S027/EV-021 CLOSED (D-S027-close) — PR #794 merged df56d1f; workflow-state update + upcoming docs close commit pending; active_session=null; pipeline idle on main; #736/#737'
   - '2026-07-30 S027/EV-021 13-deploy-smoke COMPLETE (D-S027-E21-13-merge) — tip df56d1f; H1–H5 + live VAA/TCA PASS; deploys dep-d9lmsdflk1mc739232ug / dep-d9lmsefqj5pc739d3it0; #736/#737'
@@ -19126,17 +19311,34 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
-  - name: fix/BUG-2026-07-30-sigmet-multiline-split
-    purpose: "S028 hotfix BUG-2026-07-30 — SIGMET/AIRMET multi-line manual TAC incorrectly line-split"
+  - name: feat/EV-022-sigmet-decode-residuals
+    purpose: "S029/EV-022 F9 deepen — SIGMET/AIRMET decode residual A6-1a tokens"
     base: main
     status: active
     created: '2026-07-30'
     created_at: '2026-07-30'
-    session_id: S028-sigmet-multiline-split
-    note: 'Session opened; git create deferred to parent/14-hotfix; base main @ df56d1f'
-    tip_sha: df56d1f
-    tip_sha_full: df56d1fce29a22970d72b49c77733e0616369e43
+    session_id: S029-sigmet-decode-residuals
+    evolve_cycle_id: EV-022
+    note: 'Session opened; git create deferred to parent/00-context; base main @ 17c93bd'
+    tip_sha: 17c93bd
+    tip_sha_full: 17c93bdeba4c26a5f9d43bdc2faf1906fcae39df
     pushed: false
+  - name: fix/BUG-2026-07-30-sigmet-multiline-split
+    purpose: "S028 hotfix BUG-2026-07-30 — SIGMET/AIRMET multi-line manual TAC incorrectly line-split"
+    base: main
+    status: merged
+    created: '2026-07-30'
+    created_at: '2026-07-30'
+    merged_at: '2026-07-30'
+    session_id: S028-sigmet-multiline-split
+    note: 'S028 COMPLETE — PR #796 merged 17c93bd; branch superseded by main'
+    tip_sha: 17c93bd
+    tip_sha_full: 17c93bdeba4c26a5f9d43bdc2faf1906fcae39df
+    pushed: true
+    pr_number: 796
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/796
+    pr_status: merged
+    merge_sha: 17c93bd
   - name: evolve/EV-021-vaa-quality
     purpose: "S027/EV-021 VAA + TCA quality bars (#736/#737); F26/F27"
     base: main

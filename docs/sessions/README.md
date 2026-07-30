@@ -25,7 +25,9 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S027-vaa-quality](S027-vaa-quality/session-brief.md) | feature | in_progress | VAA+TCA quality (#736/#737); F26/F27 | evolve/EV-021-vaa-quality | 2026-07-29 | — |
+| [S029-sigmet-decode-residuals](S029-sigmet-decode-residuals/session-brief.md) | feature | in_progress | F9 deepen — SIGMET/AIRMET decode residual A6-1a tokens; EV-022 | feat/EV-022-sigmet-decode-residuals | 2026-07-30 | — |
+| [S028-sigmet-multiline-split](S028-sigmet-multiline-split/session-brief.md) | hotfix | completed | BUG-2026-07-30 SIGMET multiline split; PR #796 | fix/BUG-2026-07-30-sigmet-multiline-split | 2026-07-30 | 2026-07-30 |
+| [S027-vaa-quality](S027-vaa-quality/session-brief.md) | feature | completed | VAA+TCA quality (#736/#737); F26/F27; PR #794 | evolve/EV-021-vaa-quality | 2026-07-29 | 2026-07-30 |
 | [S026-airmet-quality-wmo-examples](S026-airmet-quality-wmo-examples/session-brief.md) | feature | completed | AIRMET + WMO METAR/SPECI/TAF parity (#731); F24/F25; PR #793 | evolve/EV-020-airmet-quality | 2026-07-29 | 2026-07-29 |
 | [S025-sigmet-quality](S025-sigmet-quality/session-brief.md) | feature | completed | SIGMET family quality (#733/#739); F23; PR #792 merged | evolve/EV-019-sigmet-quality | 2026-07-29 | 2026-07-29 |
 | [S024-dissemination-file-select](S024-dissemination-file-select/session-brief.md) | feature | completed | Multi-file export selection in dissemination portal (#785); PR #791 | evolve/EV-018-dissemination-file-select | 2026-07-28 | 2026-07-29 |

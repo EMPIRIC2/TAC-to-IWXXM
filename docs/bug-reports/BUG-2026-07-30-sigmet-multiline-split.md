@@ -2,14 +2,14 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | fixed (awaiting commit / PR / deploy approval) |
+| **Status** | deployed — awaiting production_verified |
 | **Feature** | F7 soft-preview / convert + F23 SIGMET quality (UI path) |
 | **Severity** | high (WMO demo example fails in workbench) |
 | **Classification** | code bug (product-aware entry split) |
 | **Remediation path** | local-first — deploy only after explicit approval |
 | **Session** | S028-sigmet-multiline-split |
 | **Branch** | fix/BUG-2026-07-30-sigmet-multiline-split |
-| **PR** | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/796 |
+| **PR** | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/796 **merged** `17c93bd` |
 
 ## Error description
 
@@ -113,6 +113,8 @@ TDD iteration log:
 | repro_test_matches_symptom | Yes |
 | investigation_root_cause | Agree — line-split of SIGMET/AIRMET; proceed to fix |
 | hotfix_commit_pr | Commit + push + open PR (#796) |
+| hotfix_pr_merge | Approve merge — merged `17c93bd` |
+| deploy_hotfix | Deploy via main CI Deploy (run 30566625055) — live soft-preview PASS (1 result, posList, WEAKEN) |
 
 ## Prevention & countermeasures
 
