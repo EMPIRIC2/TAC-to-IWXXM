@@ -374,21 +374,24 @@ async def parse_files(request: Request) -> List[UploadFile]:
         )
 
 
-# Multi-line template advisories (F26/F27) — keep the whole buffer as one TAC entry.
-_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"VAA", "TCA"})
+# Multi-line TAC products — keep the whole buffer as one entry (do not line-split).
+# SIGMET/AIRMET: WMO examples are header- + body= across lines (BUG-2026-07-30 / F23 UI).
+# VAA/TCA: advisory templates with labeled fields (F26/F27).
+_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA"})
 
 
 def _is_multiline_template_product(product: Optional[str]) -> bool:
-    """Return True for VAA/TCA advisory products that must not be line-split."""
+    """Return True for products whose TAC must not be split one-entry-per-line."""
     return (product or "").strip().upper() in _MULTILINE_TEMPLATE_PRODUCTS
 
 
 def split_manual_entries(manual_text: str, product: Optional[str] = None) -> List[str]:
     """Split manual text into TAC entries.
 
-    Default (METAR/SPECI/TAF/SIGMET/AIRMET): one entry per non-empty line.
-    VAA/TCA (F26/F27): entire buffer is one multi-line advisory document —
-    line-splitting would shred template fields (``VA ADVISORY`` / ``DTG:`` / …).
+    Default (METAR/SPECI/TAF): one entry per non-empty line.
+    SIGMET/AIRMET/VAA/TCA: entire buffer is one multi-line document —
+    line-splitting would shred the header/body (SIGMET/AIRMET) or template
+    fields (``VA ADVISORY`` / ``DTG:`` / …).
     """
     if not manual_text:
         return []
@@ -403,8 +406,8 @@ def manual_entries_with_offsets(manual_text: str, product: Optional[str] = None)
 
     Offsets point at the first non-whitespace character of each kept entry so
     soft-preview ``failed_spans`` can be remapped onto the full editor document.
-    For VAA/TCA the single entry offset is the first non-whitespace character of
-    the buffer (document preserved with internal newlines).
+    For SIGMET/AIRMET/VAA/TCA the single entry offset is the first non-whitespace
+    character of the buffer (document preserved with internal newlines).
     """
     if not manual_text:
         return []

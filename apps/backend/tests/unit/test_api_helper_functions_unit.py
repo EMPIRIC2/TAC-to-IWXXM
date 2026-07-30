@@ -77,6 +77,15 @@ def test_split_manual_entries_and_normalizers():
     tca = "TC ADVISORY\nDTG: 20040925/1900Z\n"
     assert api_module.split_manual_entries(tca, product="TCA") == [tca.strip()]
 
+    sigmet = (
+        "YUDD SIGMET 2 VALID 101200/101600 YUSO-\n"
+        "YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN=\n"
+    )
+    assert api_module.split_manual_entries(sigmet, product="SIGMET") == [sigmet.strip()]
+    sig_off = api_module.manual_entries_with_offsets(sigmet, product="SIGMET")
+    assert len(sig_off) == 1
+    assert "SHANLON" in sig_off[0][0]
+
     assert api_module.normalize_code(" kjfk ", 4) == "KJFK"
     assert api_module.normalize_code("", 4) is None
     assert api_module.normalize_validation_level("icao-opmet") == "icao_opmet"

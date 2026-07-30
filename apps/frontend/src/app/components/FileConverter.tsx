@@ -663,7 +663,7 @@ export function FileConverter({
       console.log('[FileConverter] Conversion response:', response);
 
       if (response.results && Array.isArray(response.results)) {
-        // Match backend split_manual_entries (product-aware: VAA/TCA stay one doc).
+        // Match backend split_manual_entries (SIGMET/AIRMET/VAA/TCA stay one doc).
         const manualLines = splitManualEntries(manualInput, resolvedProduct);
         const manualResultCount = manualLines.length;
 

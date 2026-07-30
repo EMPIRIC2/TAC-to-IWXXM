@@ -57,6 +57,20 @@ describe('splitManualEntries', () => {
     ]);
   });
 
+  it('keeps SIGMET multi-line report as a single document', () => {
+    const sigmet =
+      'YUDD SIGMET 2 VALID 101200/101600 YUSO-\n' +
+      'YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN=\n';
+    expect(splitManualEntries(sigmet, 'SIGMET')).toEqual([sigmet.trim()]);
+  });
+
+  it('keeps AIRMET multi-line report as a single document', () => {
+    const airmet =
+      'YUDD AIRMET 1 VALID 101200/101600 YUSO-\n' +
+      'YUDD SHANLON FIR/UIR ISOL TS FCST N OF S50 TOP FL350 MOV E 20KT WKN=\n';
+    expect(splitManualEntries(airmet, 'AIRMET')).toEqual([airmet.trim()]);
+  });
+
   it('keeps VAA multi-line advisory as a single document', () => {
     const vaa = 'VA ADVISORY\nDTG: 20240923/0130Z\nVAAC: TOKYO\n';
     expect(splitManualEntries(vaa, 'VAA')).toEqual([vaa.trim()]);
