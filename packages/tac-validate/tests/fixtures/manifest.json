@@ -393,6 +393,30 @@
       "ok": true
     },
     {
+      "id": "accept_tca_t1_unnamed",
+      "product": "TCA",
+      "theme": "T1",
+      "cite": "F27 theme T1 \u2014 TC UNNAMED; #737 / guidance",
+      "tac": "accept/tca_t1_unnamed.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_tca_t1_rmk_nil_no_msg",
+      "product": "TCA",
+      "theme": "T1",
+      "cite": "F27 theme T1 \u2014 RMK NIL + NXT MSG NO MSG EXP; #737",
+      "tac": "accept/tca_t1_rmk_nil_no_msg.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_tca_t1_cb_nil",
+      "product": "TCA",
+      "theme": "T1",
+      "cite": "F27 theme T1 \u2014 CB NIL; #737 / guidance",
+      "tac": "accept/tca_t1_cb_nil.tac",
+      "ok": true
+    },
+    {
       "id": "accept_metar_r3_wx_light_rain",
       "product": "METAR",
       "theme": "R3",
@@ -2647,6 +2671,64 @@
       "tac": "negative/vaa/missing_volcano.tac",
       "ok": false,
       "expected_codes": ["MISSING_VOLCANO"],
+      "require_spans": true
+    }
+  ],
+  "f27_t1_modifier_info": [
+    {
+      "id": "tca_t1_unnamed_info",
+      "product": "TCA",
+      "theme": "T1",
+      "cite": "F27 theme T1 \u2014 UNNAMED cyclone \u2192 info",
+      "tac": "accept/tca_t1_unnamed.tac",
+      "ok": true,
+      "expected_codes": ["TCA_CYCLONE_UNNAMED"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "tca_t1_rmk_nil_info",
+      "product": "TCA",
+      "theme": "T1",
+      "cite": "F27 theme T1 \u2014 RMK NIL \u2192 info",
+      "tac": "accept/tca_t1_rmk_nil_no_msg.tac",
+      "ok": true,
+      "expected_codes": ["TCA_RMK_NIL"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "tca_t1_no_msg_exp_info",
+      "product": "TCA",
+      "theme": "T1",
+      "cite": "F27 theme T1 \u2014 NO MSG EXP \u2192 info",
+      "tac": "accept/tca_t1_rmk_nil_no_msg.tac",
+      "ok": true,
+      "expected_codes": ["TCA_NO_MSG_EXP"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "tca_t1_cb_nil_info",
+      "product": "TCA",
+      "theme": "T1",
+      "cite": "F27 theme T1 \u2014 CB NIL \u2192 info",
+      "tac": "accept/tca_t1_cb_nil.tac",
+      "ok": true,
+      "expected_codes": ["TCA_CB_NIL"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "f27_t1_errors": [
+    {
+      "id": "tca_t1_missing_tc",
+      "product": "TCA",
+      "theme": "T1",
+      "cite": "A2-2 TC; F27 theme T1 \u2014 missing TC \u2192 error",
+      "tac": "negative/tca/missing_tc.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_TC"],
       "require_spans": true
     }
   ]
