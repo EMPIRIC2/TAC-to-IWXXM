@@ -90,6 +90,8 @@ def parse_vaa(tac: str, *, product: str = "VAA") -> dict[str, Any]:
     return {
         "ir_version": 1,
         "product": "VAA",
+        # F26 theme V2 / TC-F26-006 — advisory root under product=vaa (never VolcanicAshSIGMET).
+        "iwxxm_root": "VolcanicAshAdvisory",
         "issue_time": issue,
         "vaac": fields.get("VAAC", "UNKNOWN"),
         "volcano": fields.get("VOLCANO", "UNKNOWN"),

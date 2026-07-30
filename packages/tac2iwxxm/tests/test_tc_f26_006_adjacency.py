@@ -131,3 +131,15 @@ def test_tc_f26_006_bulletin_neighbors_no_silent_swap() -> None:
 
     assert convert(vaa, product="SIGMET", profile=_PROFILE, iwxxm_version=_VERSION).ok is False
     assert convert(va, product="VAA", profile=_PROFILE, iwxxm_version=_VERSION).ok is False
+
+
+def test_tc_f26_006_emit_rejects_forbidden_sigmet_root() -> None:
+    """T1.4 hardening: emit_vaa_annex3 refuses IR claiming VolcanicAshSIGMET."""
+    from tac2iwxxm.products.vaa_tca import parse_vaa
+    from tac2iwxxm.profiles.annex3_products import emit_vaa_annex3
+
+    ir = parse_vaa(_read_accept("vaa_basic.tac"), product="VAA")
+    assert ir.get("iwxxm_root") == "VolcanicAshAdvisory"
+    ir["iwxxm_root"] = "VolcanicAshSIGMET"
+    with pytest.raises(ValueError, match="forbidden iwxxm_root"):
+        emit_vaa_annex3(ir, iwxxm_version=_VERSION)

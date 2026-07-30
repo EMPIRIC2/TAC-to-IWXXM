@@ -679,8 +679,38 @@ def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 """
 
 
+_VAA_FORBIDDEN_ROOTS = frozenset(
+    {
+        "VolcanicAshSIGMET",
+        "SIGMET",
+        "TropicalCycloneSIGMET",
+        "AIRMET",
+        "TropicalCycloneAdvisory",
+    }
+)
+
+
 def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit a minimal IWXXM VolcanicAshAdvisory document."""
+    """
+    Emit an IWXXM ``VolcanicAshAdvisory`` document (F6.f / F26 theme V2).
+
+    Product/root guard (TC-F26-006 / #736): under ``product=vaa`` this emitter
+    always opens ``iwxxm:VolcanicAshAdvisory`` and never ``VolcanicAshSIGMET``
+    (or other SIGMET-family / TCA roots). Rejects IR that claims a forbidden
+    ``iwxxm_root`` or non-VAA ``product``.
+    """
+    product = str(ir.get("product", "VAA")).upper()
+    if product != "VAA":
+        raise ValueError(f"VAA emitter product/root guard: expected product VAA, found {product!r}")
+    claimed = ir.get("iwxxm_root")
+    if claimed is not None and str(claimed) in _VAA_FORBIDDEN_ROOTS:
+        raise ValueError(
+            f"VAA emitter product/root guard: refusing forbidden iwxxm_root={claimed!r} "
+            "(never emit VolcanicAshSIGMET under product=vaa)"
+        )
+    if claimed is not None and str(claimed) not in {"VolcanicAshAdvisory", "VAA"}:
+        raise ValueError(f"VAA emitter product/root guard: unexpected iwxxm_root={claimed!r}")
+
     ns = _ns(iwxxm_version)
     vaac = str(ir["vaac"])
     volcano = str(ir["volcano"])
@@ -704,7 +734,7 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     if ir.get("area"):
         area = f"  <iwxxm:stateOrRegion>{escape(str(ir['area']))}</iwxxm:stateOrRegion>\n"
 
-    return f"""<?xml version="1.0" encoding="UTF-8"?>
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:VolcanicAshAdvisory xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -742,6 +772,11 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
   <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>
 </iwxxm:VolcanicAshAdvisory>
 """
+    if "<iwxxm:VolcanicAshAdvisory " not in xml:
+        raise ValueError("VAA emitter product/root guard: missing VolcanicAshAdvisory root")
+    if "<iwxxm:VolcanicAshSIGMET " in xml or "iwxxm:VolcanicAshSIGMET" in xml:
+        raise ValueError("VAA emitter product/root guard: VolcanicAshSIGMET must not appear under product=vaa")
+    return xml
 
 
 def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:

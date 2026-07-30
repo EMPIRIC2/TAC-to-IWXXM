@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M1 — F26 VAA lint (themes V1–V2) |
-| **Active task** | T1.4 |
-| **Tasks** | 6 / ~24 completed |
+| **Active milestone** | M2 — F26 VAA golden (theme V3) + C1 |
+| **Active task** | T2.1 |
+| **Tasks** | 7 / ~24 completed |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -67,7 +67,7 @@
 | T1.1 | Test | Accept/negative fixtures **F26 theme V1** (UNKNOWN/UNNAMED, nilReasons, OBS/FCST status, remarks NIL, `NO FURTHER ADVISORIES`, …) | TC-F26-001/004; V1 | T0.2 | **completed** |
 | T1.2 | Code | Registry rows + VAA rules for V1 | F26; ADR-028; F12 | T1.1 | **completed** |
 | T1.3 | Test | Fixtures **F26 theme V2** (VAA ↔ VA SIGMET adjacency) | TC-F26-006; V2 | T1.2 | **completed** |
-| T1.4 | Code | Product/root guards — never emit `VolcanicAshSIGMET` under `product=vaa` | F26; #736/#739 | T1.3 | **pending** |
+| T1.4 | Code | Product/root guards — never emit `VolcanicAshSIGMET` under `product=vaa` | F26; #736/#739 | T1.3 | **completed** |
 
 ### M2 — F26 VAA golden (theme V3) + C1
 
