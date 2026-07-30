@@ -2,6 +2,25 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-30 — S027 EV-021 (F26 VAA + F27 TCA quality)
+
+### Added
+- **F26**: VAA quality bar — registry lint, WMO `va-advisory-A7-2` golden convert,
+  XSD+SCH, workbench Examples unlock (`iwxxm:VolcanicAshAdvisory`).
+- **F27**: TCA quality bar — same bar for `tc-advisory-A2-2` /
+  `iwxxm:TropicalCycloneAdvisory`.
+- Combined `wmo-quality.yml` pack extended for VAA+TCA (S02.L1).
+
+### Changed
+- Convert path keeps multi-line VAA/TCA TAC whole (no line-split shredding).
+- Examples catalog incremental unlock for VAA/TCA WMO passers (S02.M2).
+
+### Deploy
+- PR [#794](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/794) merged (`df56d1f`).
+- Live smoke COMPLETE (H0c–H5 + VAA/TCA catalog/lint/convert).
+  API `dep-d9lmsdflk1mc739232ug` · FE `dep-d9lmsefqj5pc739d3it0`.
+  Report: [deploy-smoke.md](sessions/S027-vaa-quality/reports/deploy-smoke.md).
+
 ## 2026-07-28 — S023 EV-017 (F21 public app + F22 privacy)
 
 ### Added

@@ -12,10 +12,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase D — Verify / Deploy |
+| **Active phase** | Phase D — Complete |
 | **Active milestone** | M6 — Smoke / verify / AC / deploy |
-| **Active task** | T6.5 |
-| **Tasks** | 25 / ~26 completed (T6.5 remain) |
+| **Active task** | — (all done) |
+| **Tasks** | 26 / 26 completed |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -112,7 +112,7 @@
 | T6.2 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M5 | **completed** |
 | T6.3 | Test | 10-e2e — UJ-037 / UJ-038 (+ UJ-032 deepen) | 10 | T6.2 | **completed** |
 | T6.4 | Docs | 11-verify-impl — per-Fn AC sign-off F26/F27 + deepen | 11 | T6.3 | **completed** (D-S027-11-approve) |
-| T6.5 | Test | 13-deploy-smoke — redeploy if API/FE; H1–H3 if API; **H4–H5 when FE** | 13; E21-T4 | T6.4 | **in_progress** |
+| T6.5 | Test | 13-deploy-smoke — redeploy if API/FE; H1–H3 if API; **H4–H5 when FE** | 13; E21-T4 | T6.4 | **completed** (D-S027-E21-13-merge) |
 
 ## Data Dependencies
 
@@ -169,4 +169,4 @@
 
 | PR | Scope | Status |
 |----|-------|--------|
-| (pending) | S027 / EV-021 — F26/F27 VAA + TCA quality | open after M6 |
+| [#794](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/794) | S027 / EV-021 — F26/F27 VAA + TCA quality | **merged** `df56d1f` |

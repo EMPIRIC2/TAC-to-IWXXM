@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-29 (S027 / EV-021 — F26/F27 Planned; VAA+TCA #736/#737)
+> **Last updated**: 2026-07-30 (S027 / EV-021 — F26/F27 Done; PR #794 live)
 
 ## Summary
 
@@ -33,8 +33,8 @@
 | F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792 |
 | F24 | AIRMET quality bar | Done | Product | S026 / EV-020; #731; PR #793 |
 | F25 | WMO official example parity (METAR/SPECI/TAF) + UI gate | Done | Product | S026 / EV-020; PR #793 |
-| F26 | VAA quality bar (VolcanicAshAdvisory) | Planned | Product | S027 / EV-021; #736 |
-| F27 | TCA quality bar (TropicalCycloneAdvisory) | Planned | Product | S027 / EV-021; #737 |
+| F26 | VAA quality bar (VolcanicAshAdvisory) | Done | Product | S027 / EV-021; #736; PR #794 |
+| F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -762,7 +762,7 @@
 
 ### F26: VAA Quality Bar — S027 / EV-021
 
-- **Status**: **Planned** — S027 / EV-021 (in progress).
+- **Status**: **Done** — shipped S027 / EV-021 (2026-07-30, PR [#794](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/794)); #736 closed.
 - **What it does**: Raises **Volcanic Ash Advisory** TAC lint, convert, and IWXXM-validate
   quality to the F15/F20/F23/F24 bar. Target: WMO vendor `va-advisory-A7-2` TAC→IWXXM
   **`canonicalize_xml`-equal** under **default** convert settings (`profile=annex3`, default
@@ -795,7 +795,7 @@
 
 ### F27: TCA Quality Bar — S027 / EV-021
 
-- **Status**: **Planned** — S027 / EV-021 (in progress).
+- **Status**: **Done** — shipped S027 / EV-021 (2026-07-30, PR [#794](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/794)); #737 closed.
 - **What it does**: Raises **Tropical Cyclone Advisory** TAC lint, convert, and IWXXM-validate
   quality to the same bar. Target: WMO vendor `tc-advisory-A2-2` TAC→IWXXM
   **`canonicalize_xml`-equal** under **default** convert settings. Root

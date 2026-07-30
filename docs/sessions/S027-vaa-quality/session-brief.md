@@ -1,7 +1,7 @@
 ---
 session_id: S027-vaa-quality
 type: feature
-status: in_progress
+status: completed
 branch: evolve/EV-021-vaa-quality
 started_at: 2026-07-29
 intent: "VAA + TCA quality bars (#736/#737) — lint, convert, validate, workbench"
@@ -62,9 +62,8 @@ See [routing-plan.md](./routing-plan.md). **Approved** Lean+build+11 (E21-4).
 
 ## Current stage
 
-**13-deploy-smoke** — T6.4 / 11-verify-impl **Approved** (D-S027-11-approve; UI preview declined).
-Next: evolve PR → merge approval → Render redeploy → H1–H5.
-Tip: `b5f5c32`.
+**COMPLETE** — D-S027-E21-13-merge; PR #794 merged `df56d1f`; H1–H5 + VAA/TCA live smoke **PASS**.
+F26/F27 **Done**. Report: [reports/deploy-smoke.md](./reports/deploy-smoke.md).
 
 ## Links
 
