@@ -39,6 +39,7 @@ testpaths = ["tests"]
 pythonpath = ["src"]
 markers = [
   "slow: longer local/CI smokes (clean-venv wheel installs)",
+  "iwxxm_translation_informative: Amd79-80-2023 TAC→2025-2 informative suite (EV-023; soft/xfail in CI)",
 ]
 
 [tool.coverage.run]
