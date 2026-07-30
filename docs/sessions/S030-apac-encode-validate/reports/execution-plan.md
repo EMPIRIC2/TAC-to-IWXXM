@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — Build |
 | **Active milestone** | M6 — P2 geometry / COLLECT / QA / matrix |
-| **Active task** | T6.1 |
-| **Tasks** | 16 / 24 |
+| **Active task** | T6.2 |
+| **Tasks** | 17 / 24 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -97,8 +97,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.1 | Test | FIR / “S OF” polygon helper tests | TC-EV023-007 | T5.2 | pending |
-| T6.2 | Code | Helper impl (coord #738) | F6 | T6.1 | pending |
+| T6.1 | Test | FIR / “S OF” polygon helper tests | TC-EV023-007 | T5.2 | completed |
+| T6.2 | Code | Helper impl (coord #738) | F6 | T6.1 | in_progress |
 | T6.3 | Test/Docs | COLLECT multi-version hooks F16–F19 | TC-EV023-008 | T6.2 | pending |
 | T6.4 | Test/Docs | Optional #798 QA + matrix confirm | TC-EV023-009 | T6.3 | pending |
 
