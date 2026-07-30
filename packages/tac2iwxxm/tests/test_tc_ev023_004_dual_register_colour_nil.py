@@ -246,3 +246,37 @@ def test_tc_ev023_004_policy_loads_offline_members() -> None:
     assert load_aviation_colour_members("49-2", iwxxm_version="2025-2") == LEGACY_COLOUR_MEMBERS
     assert load_nil_members("common", iwxxm_version="2025-2") == NIL_CONCEPT_NOTATIONS
     assert load_nil_members("iwxxm", iwxxm_version="2025-2") == NIL_CONCEPT_NOTATIONS
+
+
+def test_tc_ev023_004_codelist_edge_errors_and_legacy_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Cover repo-root override, missing pin, unknown register/family, and 49-2 default."""
+    from tac2iwxxm import codelists as cl
+
+    cl.clear_codelist_caches()
+    monkeypatch.setenv("TAC2IWXXM_REPO_ROOT", str(_REPO))
+    assert cl.repo_root() == _REPO.resolve()
+
+    with pytest.raises(FileNotFoundError):
+        cl.load_aviation_colour_members("iwxxm", iwxxm_version="no-such-pin")
+
+    with pytest.raises(ValueError, match="unknown colour register"):
+        cl.load_aviation_colour_members("bogus")  # type: ignore[arg-type]
+
+    with pytest.raises(ValueError, match="unknown nil family"):
+        cl.load_nil_members("bogus")  # type: ignore[arg-type]
+
+    # Explicit 49-2 register keeps UNKNOWN (not remapped to iwxxm UNASSIGNED).
+    href = cl.aviation_colour_href("UNKNOWN", iwxxm_version="2025-2", register="49-2")
+    assert href == f"{LEGACY_COLOUR_PREFIX}UNKNOWN"
+
+    # Non-2025-2 default register selection (still loads from that pin's rule dir).
+    href_default = cl.aviation_colour_href("RED", iwxxm_version="2025-2", register=None)
+    assert href_default == f"{IWXXM_COLOUR_PREFIX}RED"
+
+    with pytest.raises(ValueError, match="colour notation"):
+        cl.aviation_colour_href("PURPLE", iwxxm_version="2025-2")
+
+    with pytest.raises(ValueError, match="nil notation"):
+        cl.nil_reason_href("notANil", family="common")
+
+    cl.clear_codelist_caches()

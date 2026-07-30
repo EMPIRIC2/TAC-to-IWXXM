@@ -155,3 +155,88 @@ def test_tc_ev023_007_single_axis_constraints() -> None:
     )
     for _lat, lon in clipped:
         assert lon <= 10.0 + 1e-9
+
+
+def test_tc_ev023_007_wi_southern_western_hemisphere_points() -> None:
+    """WI points south/west of equator/prime meridian keep signed lat/lon."""
+    from tac2iwxxm.products.fir_geometry import resolve_fir_relative_polygon
+
+    body = "YUDD FIR OBSC TS FCST WI S1000 W02000 - S1000 W01000 - S2000 W01000 - S2000 W02000 TOP FL100"
+    geom = resolve_fir_relative_polygon(body, fir_boundary=None)
+    assert geom is not None
+    ring = _parse_pos_list(geom["pos_list"])
+    assert any(lat < 0 and lon < 0 for lat, lon in ring)
+
+
+def test_tc_ev023_007_parse_none_and_invalid_half_plane_sides() -> None:
+    from tac2iwxxm.products import fir_geometry as fg
+    from tac2iwxxm.products.fir_geometry import (
+        _constraint_from_half,
+        parse_relative_geometry_phrase,
+    )
+
+    assert parse_relative_geometry_phrase("YUDD FIR OBSC TS FCST TOP FL100=") is None
+
+    bad_lat = fg._HALF.search("E OF N54 TOP")
+    assert bad_lat is not None
+    with pytest.raises(ValueError, match="lat half-plane"):
+        _constraint_from_half(bad_lat)
+
+    bad_lon = fg._HALF.search("N OF W012 TOP")
+    assert bad_lon is not None
+    with pytest.raises(ValueError, match="lon half-plane"):
+        _constraint_from_half(bad_lon)
+
+
+def test_tc_ev023_007_close_ring_and_clip_edge_cases() -> None:
+    from tac2iwxxm.products.fir_geometry import (
+        RelativeConstraint,
+        RelativeGeometryPhrase,
+        _clip_ring_one,
+        _intersect,
+        clip_ring_to_relative,
+        close_ring,
+    )
+
+    assert close_ring([]) == []
+    assert close_ring([(0.0, 0.0), (1.0, 0.0)]) == []
+    # Three identical vertices → closed length < 4 after dedupe path
+    assert close_ring([(1.0, 1.0), (1.0, 1.0), (1.0, 1.0)]) == []
+
+    open_box = [(0.0, 0.0), (0.0, 10.0), (10.0, 10.0), (10.0, 0.0)]
+    closed = close_ring(open_box)
+    assert closed[0] == closed[-1]
+
+    assert _clip_ring_one([], RelativeConstraint("lat", 5.0, "north")) == []
+
+    # Vertical segment (same lon) + lat constraint hits vertical intersect branch
+    a, b = (0.0, 5.0), (10.0, 5.0)
+    assert _intersect(a, b, RelativeConstraint("lat", 4.0, "south"))[0] == pytest.approx(4.0)
+
+    # Horizontal segment (same lat) + lon constraint
+    c, d = (5.0, 0.0), (5.0, 10.0)
+    assert _intersect(c, d, RelativeConstraint("lon", 3.0, "east"))[1] == pytest.approx(3.0)
+
+    # Clip that empties the ring (keep north of 100 on a box below 10)
+    phrase = RelativeGeometryPhrase(
+        kind="relative",
+        constraints=(RelativeConstraint("lat", 100.0, "north"),),
+    )
+    assert clip_ring_to_relative(open_box, phrase) == []
+
+
+def test_tc_ev023_007_resolve_none_and_degenerate_wi() -> None:
+    from tac2iwxxm.products.fir_geometry import resolve_fir_relative_polygon
+
+    assert resolve_fir_relative_polygon("YUDD FIR OBSC TS FCST TOP FL100=", fir_boundary=_FIR_RING) is None
+
+    # Two WI points → kind none / not wi_polygon
+    two_pts = "YUDD FIR OBSC TS FCST WI N5400 W01200 - N5000 W00800 TOP FL100"
+    assert resolve_fir_relative_polygon(two_pts, fir_boundary=_FIR_RING) is None
+
+    # Relative with FIR that clips to empty
+    empty = resolve_fir_relative_polygon(
+        "S OF N10 TOP FL100",
+        fir_boundary=[(50.0, 0.0), (50.0, 1.0), (51.0, 1.0), (51.0, 0.0), (50.0, 0.0)],
+    )
+    assert empty is None
