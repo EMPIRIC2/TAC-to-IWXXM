@@ -67,6 +67,16 @@ def test_split_manual_entries_and_normalizers():
     assert with_offsets[0][1] == 1  # leading newline
     assert with_offsets[1][1] == len("\nMETAR KJFK\n\n")
 
+    vaa = "VA ADVISORY\nDTG: 20240923/0130Z\nVAAC: TOKYO\n"
+    assert api_module.split_manual_entries(vaa, product="VAA") == [vaa.strip()]
+    vaa_off = api_module.manual_entries_with_offsets("\n" + vaa, product="VAA")
+    assert len(vaa_off) == 1
+    assert vaa_off[0][0] == vaa.strip()
+    assert vaa_off[0][1] == 1
+
+    tca = "TC ADVISORY\nDTG: 20040925/1900Z\n"
+    assert api_module.split_manual_entries(tca, product="TCA") == [tca.strip()]
+
     assert api_module.normalize_code(" kjfk ", 4) == "KJFK"
     assert api_module.normalize_code("", 4) is None
     assert api_module.normalize_validation_level("icao-opmet") == "icao_opmet"

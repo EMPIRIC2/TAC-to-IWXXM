@@ -67,3 +67,35 @@ export function resolveConvertProduct(
   }
   return selection;
 }
+
+/** Products whose TAC is a multi-line template document (must not be line-split). */
+const MULTILINE_TEMPLATE_PRODUCTS = new Set<TacProduct>(['VAA', 'TCA']);
+
+/**
+ * Split manual TAC input into conversion entries (mirrors backend
+ * ``split_manual_entries``).
+ *
+ * METAR/SPECI/TAF/SIGMET/AIRMET: one entry per non-empty line.
+ * VAA/TCA: entire buffer is one advisory document (F26/F27).
+ *
+ * @param manualText - Editor buffer
+ * @param product - Resolved convert product
+ * @returns Entry texts in convert order
+ */
+export function splitManualEntries(
+  manualText: string,
+  product: TacProduct | string,
+): string[] {
+  if (!manualText) {
+    return [];
+  }
+  const productU = product.trim().toUpperCase();
+  if (MULTILINE_TEMPLATE_PRODUCTS.has(productU as TacProduct)) {
+    const text = manualText.trim();
+    return text ? [text] : [];
+  }
+  return manualText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}

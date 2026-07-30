@@ -225,6 +225,7 @@ test-unit-tac-validate:
 test-sigmet-quality: test-wmo-quality
 
 # F24/F25 / EV-020 — combined WMO quality pack (E20-F3=3): SIGMET keep-green + AIRMET + METAR/SPECI/TAF
+# Extended F26/F27 / EV-021 (S02.L1): + VAA + TCA keyword filters
 test-wmo-quality:
 	bash scripts/ci/run_wmo_quality.sh
 

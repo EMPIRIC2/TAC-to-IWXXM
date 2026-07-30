@@ -54,7 +54,7 @@ describe('examplesCatalog (TC-F7-008 C1)', () => {
     }
   });
 
-  it('documents WMO single-seed gaps plus VAA/TCA', () => {
+  it('documents WMO single-seed gaps for METAR/SPECI/AIRMET/VAA/TCA', () => {
     expect(FIXTURE_GAPS.map((gap) => gap.product).sort()).toEqual([
       'AIRMET',
       'METAR',
@@ -144,5 +144,35 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
   it('documents vendor mirror provenance policy', () => {
     expect(WMO_PROVENANCE_NOTE).toMatch(/vendor\/schemas\/iwxxm/);
     expect(WMO_PROVENANCE_NOTE.toLowerCase()).toMatch(/mirror/);
+  });
+});
+
+describe('examplesCatalog VAA/TCA unlock (TC-F26-005 / TC-F27-005 / S02.M2)', () => {
+  it('unlocks WMO A7-2 / A2-2 independently with wmoPass + annex3 provenance', () => {
+    const vaa = getExampleById('vaa_a7_2');
+    expect(vaa?.product).toBe('VAA');
+    expect(vaa?.wmoPass).toBe(true);
+    expect(vaa?.wmoSeed).toBe('va-advisory-A7-2');
+    expect(vaa?.provenance).toMatch(/annex3_golden\/vaa_a7_2\.tac/);
+
+    const tca = getExampleById('tca_a2_2');
+    expect(tca?.product).toBe('TCA');
+    expect(tca?.wmoPass).toBe(true);
+    expect(tca?.wmoSeed).toBe('tc-advisory-A2-2');
+    expect(tca?.provenance).toMatch(/annex3_golden\/tca_a2_2\.tac/);
+  });
+
+  it('hides product_matrix vaa_basic / tca_basic once WMO passers replace them', () => {
+    expect(getExampleById('vaa_basic')).toBeUndefined();
+    expect(getExampleById('tca_basic')).toBeUndefined();
+  });
+
+  it('treats VAA and TCA as WMO-scope products with independent single-seed gaps', () => {
+    expect(WMO_SCOPE_PRODUCTS).toContain('VAA');
+    expect(WMO_SCOPE_PRODUCTS).toContain('TCA');
+    expect(getTacExamplesForProduct('VAA').every((ex) => ex.wmoPass)).toBe(true);
+    expect(getTacExamplesForProduct('TCA').every((ex) => ex.wmoPass)).toBe(true);
+    expect(getTacExamplesForProduct('VAA')).toHaveLength(1);
+    expect(getTacExamplesForProduct('TCA')).toHaveLength(1);
   });
 });

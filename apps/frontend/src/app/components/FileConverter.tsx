@@ -57,6 +57,7 @@ import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
   resolveConvertProduct,
+  splitManualEntries,
   type IwxxmProfile,
   type TacProductSelection,
 } from '/utils/tacProduct';
@@ -662,11 +663,8 @@ export function FileConverter({
       console.log('[FileConverter] Conversion response:', response);
 
       if (response.results && Array.isArray(response.results)) {
-        // Match backend split_manual_entries: manual results precede file results.
-        const manualLines = manualInput
-          .split(/\r?\n/)
-          .map((line) => line.trim())
-          .filter(Boolean);
+        // Match backend split_manual_entries (product-aware: VAA/TCA stay one doc).
+        const manualLines = splitManualEntries(manualInput, resolvedProduct);
         const manualResultCount = manualLines.length;
 
         response.results.forEach(

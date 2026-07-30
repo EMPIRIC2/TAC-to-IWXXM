@@ -46,7 +46,8 @@ def _case_ids(cases: list[dict[str, Any]]) -> list[str]:
 
 
 _MANIFEST = _load_manifest()
-_V1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "V1"]
+# Product filter required: F26 also uses theme id V1 for VAA (D-S027-EV021-s02m1-1).
+_V1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "V1" and c.get("product") == "SIGMET"]
 _V1_INFO = list(_MANIFEST.get("v1_modifier_info", []))
 _V1_ERRORS = list(_MANIFEST.get("v1_errors", []))
 

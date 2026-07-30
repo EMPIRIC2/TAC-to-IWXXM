@@ -1,12 +1,12 @@
 VA ADVISORY
 DTG:                        20240923/0130Z
 VAAC:                       TOKYO
-VOLCANO:                    KARYMSKY 1000-13
+VOLCANO:                    UNNAMED
 PSN:                        N5403 E15927
 AREA:                       RUSSIA
 SOURCE ELEV:                1536M AMSL
 ADVISORY NR:                2024/4
-INFO SOURCE:                HIMAWARI-8 KVERT KEMSD
+INFO SOURCE:                HIMAWARI-8
 ERUPTION DETAILS:           ERUPTION AT 20240923/0000Z FL300 REPORTED
 OBS VA DTG:                 23/0100Z
 OBS VA CLD:                 FL250/300 N5400 E15930 - N5400 E16100 - N5300 E15945 MOV SE 20KT

@@ -39,7 +39,7 @@ def _case_ids(cases: list[dict[str, Any]]) -> list[str]:
 
 
 _MANIFEST = _load_manifest()
-_T1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "T1"]
+_T1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "T1" and c.get("product") == "TAF"]
 _T1_INFO = list(_MANIFEST.get("t1_modifier_info", []))
 _T1_ERRORS = list(_MANIFEST.get("t1_errors", []))
 

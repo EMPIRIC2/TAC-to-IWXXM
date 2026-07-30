@@ -126,6 +126,9 @@ the same public convert path. Work history is **not** server-persisted (IndexedD
 - Sessions may **store** `product`/`profile` in `conversion_params` for UI restore; on submit the UI
   **copies** them into multipart fields.
 - No `engine` field; converter is always `tac2iwxxm` after cutover.
+- **Manual entry split**: default is one TAC per non-empty line. For **`product=VAA` or `TCA`**
+  (F26/F27), `manual_text` is kept as a **single multi-line advisory document** (template
+  fields must not be line-split).
 - **F7 / ADR-023**: Hard Convert from FileConverter sends `bulletin_id`, `issuing_center`,
   `stop_on_error`, `validate_output`, and `validation_level` from Conversion Parameters.
   Soft-preview forces `validate_output=false`. Operator **Log Level** filters conversion /
@@ -614,3 +617,24 @@ documented code enums (prefer additive).
 
 - S026 / EV-020 (2026-07-29): F24/F25 WMO default goldens + F9 glossary deepen — wire shapes
   unchanged; ADR-032.
+
+## S027 / EV-021 — Endpoint review (F26 / F27)
+
+| Endpoint | Change for EV-021? | Notes |
+|----------|--------------------|-------|
+| `POST /api/v1/convert` | **Behavior clarify** | `product=vaa` \| `tca`: `manual_text` kept as one multi-line advisory (not line-split); wire schema unchanged |
+| `POST /api/v1/convert-bulletin` | **None (wire)** | Per-report product identity for VAA/TCA in bulletins; TC-F26-006 / TC-F27-006 |
+| `POST /api/v1/lint-tac` | **None (wire)** | New VAA/TCA registry codes in issue payloads; catalog stays source of truth |
+| `GET /api/v1/lint-issue-catalog` | **Additive content** | New VAA/TCA codes appear in catalog export; response schema unchanged |
+| `POST /api/v1/decode-tac` | **None (wire)** | VAA/TCA best-effort decode already F9 sparse-product scope (G4); fixtures may expand |
+| `POST /api/v1/validate` | **None (wire)** | Round-trip goldens use existing validate levels |
+| `POST /api/v1/dissemination/*` | **OOS** | No F16–F19 changes this cycle |
+| `/auth/*`, work-sessions | **None** | Unchanged (F21 public) |
+
+**Breaking changes**: None expected. FE Examples catalog is static (no new API). FE OpenAPI
+types update only if catalog/issue content requires new documented code enums (prefer additive).
+
+- S027 / EV-021 (2026-07-30): T6.1 — VAA/TCA `manual_text` multi-line keep-whole for convert
+  (TC-F26-005 / TC-F27-005); FE `splitManualEntries` aligned.
+- S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA quality — **full endpoint review**; no new
+  routes; wire shapes unchanged. ADR-028 deepen (codes only); ADR-032 golden bar.

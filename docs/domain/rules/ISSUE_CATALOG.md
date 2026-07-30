@@ -46,6 +46,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_PRODUCT_KEYWORD` | `error` | {product} TAC must contain one of {keywords} | — | parse_gate, header |
 | `MISSING_QNH` | `error` | {product} missing QNH/altimeter (Qnnnn/Annnn) — A3-2 #11 | — | pressure, metar, speci |
 | `MISSING_SEQUENCE` | `error` | SIGMET/AIRMET missing sequence number — research G2 / F24 A1 | sigmet | sequence, sigmet, airmet, g2, a1 |
+| `MISSING_TC` | `error` | TCA missing TC: template field — F27 theme T1 / A2-2 | tca | tropical_cyclone, tca, t1, f27 |
 | `MISSING_TEMP_DEWPOINT` | `error` | {product} missing temperature/dewpoint tt/td — A3-2 #10 | — | temperature, metar, speci |
 | `MISSING_TERMINATOR` | `info` | Reports in bulletins end with '=' — add it before publishing | — | terminator, metar, speci, taf |
 | `MISSING_VAAC` | `error` | VAA missing VAAC: template field — A2-1 | vaa | vaac, vaa |
@@ -53,6 +54,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_VALIDITY` | `error` | TAF missing validity period ddhh/ddhh — A5-1 #5 | taf | validity, taf |
 | `MISSING_VA_VOLCANO` | `error` | VA SIGMET missing volcano identity (MT … PSN) — research V1 | sigmet | va, volcano, sigmet, v1 |
 | `MISSING_VISIBILITY` | `error` | {product} missing visibility or CAVOK — A3-2 #6 | — | visibility, metar, speci |
+| `MISSING_VOLCANO` | `error` | VAA missing VOLCANO: template field — F26 theme V1 / A2-1 | vaa | volcano, vaa, v1, f26 |
 | `MISSING_WIND` | `error` | {product} missing surface wind group — A3-2 #5 | — | wind, metar, speci |
 | `MULTIPLE_PHENOMENA` | `error` | {product} encodes multiple phenomenon families {hit} — A6 one-phenomenon gate | — | phenomenon, sigmet, airmet |
 | `MULTI_REPORT_BULLETIN` | `info` | {product} bulletin has multiple TAC reports — one IWXXM report per TAC (Guidance C1) | — | bulletin, metar, speci, taf, sigmet, airmet, c1, one_report |
@@ -73,11 +75,20 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `SIGMET_SEQUENCE` | `info` | SIGMET sequence number present — research G2 | sigmet | sequence, sigmet, g2 |
 | `SINGLE_ALTITUDE` | `info` | SIGMET single altitude (same lower/upper) — research G1 | sigmet | altitude, sigmet, g1 |
 | `STNR_MOVEMENT` | `info` | SIGMET/AIRMET STNR stationary movement — research G1 / C1 / F24 A2 | sigmet | stnr, movement, sigmet, airmet, g1, c1, a2 |
+| `TCA_CB_NIL` | `info` | TCA CB NIL — CB missing (F27 theme T1) | tca | cb, nil, tca, t1, f27 |
+| `TCA_CYCLONE_UNNAMED` | `info` | TCA TC UNNAMED — exceptional name allowed (F27 theme T1) | tca | tropical_cyclone, unnamed, tca, t1, f27 |
+| `TCA_NO_MSG_EXP` | `info` | TCA NXT MSG NO MSG EXP — next time inapplicable (F27 theme T1) | tca | next_advisory, tca, t1, f27 |
+| `TCA_RMK_NIL` | `info` | TCA RMK NIL — remarks inapplicable (F27 theme T1) | tca | remarks, nil, tca, t1, f27 |
 | `TEMPO_PRESENT` | `info` | {product} TEMPO trend present — research R8 / T2 | — | trend, change, metar, speci, taf, r8, t2 |
 | `TL_PRESENT` | `info` | {product} TL time group present — research T2 | taf | change, taf, t2, tl |
 | `TOP_ABV_OR_BLW` | `info` | SIGMET/AIRMET TOP ABV/BLW level grammar — research G1 / F24 A2 | sigmet | altitude, top, sigmet, airmet, g1, a2 |
 | `TX_TN_PRESENT` | `info` | {product} TX/TN temperature forecasts on base — research T3 | taf | temperature, taf, t3 |
 | `UNKNOWN_PRODUCT` | `error` | Unknown product {product!r}; expected one of {expected} | — | parse_gate |
+| `VAA_FCST_NO_VA_EXP` | `info` | VAA forecast NO VA EXP — status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1) | vaa | forecast, no_va_exp, vaa, v1, f26 |
+| `VAA_NO_FURTHER_ADVISORIES` | `info` | VAA NXT ADVISORY NO FURTHER ADVISORIES — next time inapplicable (F26 theme V1) | vaa | next_advisory, vaa, v1, f26 |
+| `VAA_RMK_NIL` | `info` | VAA RMK NIL — remarks inapplicable (F26 theme V1) | vaa | remarks, nil, vaa, v1, f26 |
+| `VAA_VOLCANO_UNKNOWN` | `info` | VAA VOLCANO UNKNOWN — exceptional name allowed (F26 theme V1) | vaa | volcano, unknown, vaa, v1, f26 |
+| `VAA_VOLCANO_UNNAMED` | `info` | VAA VOLCANO UNNAMED — exceptional name allowed (F26 theme V1) | vaa | volcano, unnamed, vaa, v1, f26 |
 | `VA_ASH_GEOMETRY` | `info` | VA SIGMET ash cloud geometry / forecast position — research V1 | sigmet | va, geometry, sigmet, v1 |
 | `VA_CNL_FIR_MOVED` | `info` | VA SIGMET CNL identifies FIR to which ash has moved — research V1 / C1 | sigmet | va, cnl, fir, sigmet, v1, c1 |
 | `VA_VOLCANO_IDENTITY` | `info` | VA SIGMET erupting volcano identity (MT/PSN) — research V1 | sigmet | va, volcano, sigmet, v1 |

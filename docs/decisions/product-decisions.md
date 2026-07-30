@@ -69,3 +69,8 @@
 | 2026-07-29 | S02.L1 | approved | D-S026-EV020-s02l1-1 — lock TAC2IWXXM_DECODE_GLOSSARY_PATH |
 | 2026-07-29 | S02.L2 | approved | D-S026-EV020-s02l2-1 — incremental Examples catalog unlock OK |
 | 2026-07-29 | D-S026-02-phase-a | approved | Gate A PASS (Lean skip AskQuestion) → 04-tech-plan |
+| 2026-07-29 | EV021-S02.H1–12 | auto-approved | 12 high-confidence F26/F27 locks from E21-* (S027 02-verify-plan-audit) |
+| 2026-07-29 | S02.M1 | approved | D-S027-EV021-s02m1-1 — keep F26 V1–V3 / F27 T1–T3 + “F26/F27 theme” prefix |
+| 2026-07-29 | S02.M2 | approved | D-S027-EV021-s02m2-1 — incremental catalog unlock per product (peer E20-F4) |
+| 2026-07-29 | S02.L1 | approved | D-S027-EV021-s02l1-1 — extend combined wmo-quality.yml; finalize in 04 |
+| 2026-07-29 | D-S027-02-phase-a | approved | Gate A PASS (Lean skip AskQuestion) → 04-tech-plan |

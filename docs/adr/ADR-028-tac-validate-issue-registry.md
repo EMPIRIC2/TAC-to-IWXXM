@@ -4,8 +4,8 @@
 > **Date**: 2026-07-19  
 > **Deciders**: User (S015 intake E11-8 / Feature List E11-9–E11-10)  
 > **Stage**: 01-requirements  
-> **Related**: feature-list F15; packages/tac-validate; #732  
-> **Session**: S015-metar-lint-quality / EV-011  
+> **Related**: feature-list F15; packages/tac-validate; #732; deepen F20/F23/F24/F26/F27  
+> **Session**: S015-metar-lint-quality / EV-011 (origin); S027 / EV-021 reuses for VAA/TCA codes  
 > **Decision id**: E11-8 / E11-9 / E11-10; amended E11-32 (05-verify-tech)
 
 ## Context

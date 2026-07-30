@@ -1,12 +1,176 @@
-overall_status: completed
+overall_status: in_progress
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 26
-evolve_cycle_counter: 20
-active_session: null
+session_counter: 27
+evolve_cycle_counter: 21
+active_session:
+  id: S027-vaa-quality
+  type: feature
+  intent: "VAA + TCA quality bars (#736/#737) — lint, convert, validate, workbench"
+  status: in_progress
+  branch: evolve/EV-021-vaa-quality
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-021
+  github_issue: "736,737"
+  github_issues: ["736", "737"]
+  artifacts_dir: docs/sessions/S027-vaa-quality/
+  current_stage: 13-deploy-smoke
+  feature_ids: [F26, F27]
+  feature_note: "F26 VAA #736; F27 TCA #737; deepen F6.f / F12 / F7.g"
+  started_at: "2026-07-29"
+  preset: Lean+build+11
+  preset_status: approved
+  context_briefs: []
+  note: "D-S027-11-approve; UI preview declined; T6.5/13 in progress; tip b5f5c32"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    completed: "2026-07-29"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: "2026-07-29"
+    note: "orchestrator continues"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "delta F26+F27"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "PASS — 12 auto + S02.M1/M2/L1=1; report reports/02-verify-plan-audit.md; D-S027-02-phase-a"
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+  - stage: 07-build
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-29"
+  - stage: 08-verify-build
+    required: true
+    mode: full
+    status: completed
+  - stage: 10-e2e
+    required: true
+    mode: full
+    status: completed
+  - stage: 11-verify-impl
+    required: true
+    mode: full
+    status: completed
+    completed: "2026-07-30"
+    note: "D-S027-11-approve"
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: in_progress
+    started: "2026-07-30"
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 12-verify-deploy
+  note_skipped: "Lean+build+11 approved — skip 03/05/06/09/12; 11-verify-impl required (E21-4)"
+
 sessions:
+- id: S027-vaa-quality
+  type: feature
+  intent: "VAA + TCA quality bars (#736/#737) — lint, convert, validate, workbench"
+  status: in_progress
+  branch: evolve/EV-021-vaa-quality
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-021
+  github_issue: "736,737"
+  github_issues: ["736", "737"]
+  artifacts_dir: docs/sessions/S027-vaa-quality/
+  current_stage: 13-deploy-smoke
+  feature_ids: [F26, F27]
+  feature_note: "F26 VAA #736; F27 TCA #737; deepen F6.f / F12 / F7.g"
+  started_at: "2026-07-29"
+  preset: Lean+build+11
+  preset_status: approved
+  context_briefs: []
+  note: "D-S027-11-approve; UI preview declined; T6.5/13 in progress; tip b5f5c32"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    completed: "2026-07-29"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: "2026-07-29"
+    note: "orchestrator continues"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "delta F26+F27"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+    note: "PASS — 12 auto + S02.M1/M2/L1=1; report reports/02-verify-plan-audit.md; D-S027-02-phase-a"
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: "2026-07-29"
+    completed: "2026-07-29"
+  - stage: 07-build
+    required: true
+    mode: full
+    status: completed
+    started: "2026-07-29"
+  - stage: 08-verify-build
+    required: true
+    mode: full
+    status: completed
+  - stage: 10-e2e
+    required: true
+    mode: full
+    status: completed
+  - stage: 11-verify-impl
+    required: true
+    mode: full
+    status: completed
+    completed: "2026-07-30"
+    note: "D-S027-11-approve"
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: in_progress
+    started: "2026-07-30"
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 12-verify-deploy
+  note_skipped: "Lean+build+11 approved — skip 03/05/06/09/12; 11-verify-impl required (E21-4)"
+
 - id: S026-airmet-quality-wmo-examples
   type: feature
   intent: "AIRMET quality (#731) + WMO official golden parity (AIRMET + METAR/SPECI/TAF) + UI catalog gate + 7-product decode glossary (registry + OpenAIP/F3)"
@@ -2207,9 +2371,9 @@ stages:
     started: '2026-07-29'
     completed_at: '2026-07-29'
     completed: '2026-07-29'
-    session_id: S026-airmet-quality-wmo-examples
-    evolve_cycle_id: EV-020
-    note: 'S026/EV-020 01-requirements COMPLETE 2026-07-29 (delta) — E20-E1..E3; F24/F25; deepen F9/F7.g; glossary=official+YAML overrides; TAF A5-1+A5-2; report docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md; handoff 02-verify-plan'
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    note: 'S027/EV-021 01-requirements COMPLETE 2026-07-29 (delta) — E21-E1=1; F26/F27; D-S027-EV021-01-close; report docs/sessions/S027-vaa-quality/reports/01-requirements.md; handoff 02-verify-plan'
     substeps:
       interviews:
         status: completed
@@ -2227,23 +2391,24 @@ stages:
             coverage-matrix: skipped
             ADR: deferred
     active_session:
-      session_id: S026-airmet-quality-wmo-examples
-      evolve_cycle_id: EV-020
+      session_id: S027-vaa-quality
+      evolve_cycle_id: EV-021
       status: completed
       mode: delta
       started_at: '2026-07-29'
       started: '2026-07-29'
       completed_at: '2026-07-29'
-      note: 'S026/EV-020 01-requirements COMPLETE (delta) — E20-E1..E3; F24/F25; deepen F9/F7.g; glossary=official+YAML overrides; TAF A5-1+A5-2; handoff 02-verify-plan'
+      note: 'S027/EV-021 01-requirements COMPLETE (delta) — E21-E1=1; F26/F27; D-S027-EV021-01-close; handoff 02-verify-plan'
       proposed_features:
-      - F24
-      - F25
+      - F26
+      - F27
       deepen:
-      - F9
+      - F6.f
+      - F12
       - F7.g
       feature_ids:
-      - F24
-      - F25
+      - F26
+      - F27
       document_manifest:
         status: approved
         approved_at: '2026-07-29'
@@ -2272,6 +2437,28 @@ stages:
       - docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md
       - docs/sessions/S026-airmet-quality-wmo-examples/reports/acceptance-criteria.md
     delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S027-vaa-quality
+      evolve_cycle_id: EV-021
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      completed_at: '2026-07-29'
+      note: 'S027/EV-021 01-requirements COMPLETE (delta) — E21-E1=1; F26/F27; D-S027-EV021-01-close; report docs/sessions/S027-vaa-quality/reports/01-requirements.md; handoff 02-verify-plan'
+      feature_ids:
+      - F26
+      - F27
+      deepen:
+      - F6.f
+      - F12
+      - F7.g
+      artifacts:
+      - docs/sessions/S027-vaa-quality/reports/01-requirements.md
+      - docs/sessions/S027-vaa-quality/reports/acceptance-criteria.md
+      decision_refs:
+      - D-S027-EV021-01-close
+      - D-S027-EV021-01-batch-d
+      - E21-E1
     - status: completed
       mode: delta
       session_id: S026-airmet-quality-wmo-examples
@@ -2714,53 +2901,56 @@ stages:
     started: '2026-07-29'
     completed_at: '2026-07-29'
     completed: '2026-07-29'
-    previous_completed_at: '2026-07-29'
-    session_id: S026-airmet-quality-wmo-examples
-    evolve_cycle_id: EV-020
-    note: 'S026/EV-020 02-verify-plan COMPLETE 2026-07-29 (delta) — PASS; 18 auto + S02.M1/M2/L1/L2=1; ADR-032 Accepted; Gate A PASS (Lean); report docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md; handoff 04-tech-plan; #731'
-    auto_approved: 18
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    note: 'S027/EV-021 02-verify-plan COMPLETE 2026-07-29 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; spec F24/F25/F26/F27 consistency fix; report docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md; Gate A Lean → 04'
+    auto_approved: 12
     contradictions_resolved:
     contradictions_deferred:
     decision_refs:
-    - E20-E1
-    - E20-E2
-    - E20-E3
+    - E21-1
+    - E21-2
+    - E21-3
+    - E21-4
+    - E21-D1
+    - E21-D2
+    - E21-D3
+    - E21-D4
+    - E21-E1
     - S02.M1
     - S02.M2
     - S02.L1
-    - S02.L2
-    - D-S026-EV020-s02m1-1
-    - D-S026-EV020-s02m2-1
-    - D-S026-EV020-s02l1-1
-    - D-S026-EV020-s02l2-1
-    - D-S026-02-phase-a
+    - D-S027-EV021-s02m1-1
+    - D-S027-EV021-s02m2-1
+    - D-S027-EV021-s02l1-1
+    - D-S027-02-phase-a
     substeps:
       inventory:
         status: completed
       consistency_check:
         status: completed
       statement_review:
-        auto_approved: 18
+        auto_approved: 12
         pending:
         reviewed:
         - S02.M1
         - S02.M2
         - S02.L1
-        - S02.L2
     current_document:
     current_statement:
     active_session:
-      session_id: S026-airmet-quality-wmo-examples
-      evolve_cycle_id: EV-020
+      session_id: S027-vaa-quality
+      evolve_cycle_id: EV-021
       skill_id: 02-verify-plan
       status: completed
       mode: delta
       started_at: '2026-07-29'
       completed_at: '2026-07-29'
-      note: 'S026/EV-020 02-verify-plan COMPLETE — PASS; Batch F all 1; ADR-032 Accepted; Gate A PASS (Lean) → 04'
+      note: 'S027/EV-021 02-verify-plan COMPLETE — PASS; Gate A Lean → 04'
     artifacts:
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
+    - docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md
     - docs/sessions/S024-dissemination-file-select/reports/02-verify-plan.md
     - docs/sessions/S023-public-app-privacy/reports/02-verify-plan.md
@@ -2768,6 +2958,41 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S027-vaa-quality
+      evolve_cycle_id: EV-021
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-07-29'
+      completed_at: '2026-07-29'
+      mode: delta
+      feature_ids:
+      - F26
+      - F27
+      deepen:
+      - F6.f
+      - F12
+      - F7.g
+      auto_approved: 12
+      note: 'S027/EV-021 02-verify-plan COMPLETE 2026-07-29 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; spec F24/F25/F26/F27 consistency fix; report docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md; Gate A Lean → 04; #736/#737'
+      decision_refs:
+      - E21-1
+      - E21-2
+      - E21-3
+      - E21-4
+      - E21-D1
+      - E21-D2
+      - E21-D3
+      - E21-D4
+      - E21-E1
+      - S02.M1
+      - S02.M2
+      - S02.L1
+      - D-S027-EV021-s02m1-1
+      - D-S027-EV021-s02m2-1
+      - D-S027-EV021-s02l1-1
+      - D-S027-02-phase-a
+      artifacts:
+      - docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md
     - session_id: S026-airmet-quality-wmo-examples
       evolve_cycle_id: EV-020
       skill_id: 02-verify-plan
@@ -2949,6 +3174,7 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-07-29 S027/EV-021 02-verify-plan COMPLETE (D-S027-02-phase-a) — PASS; 12 auto + S02.M1/M2/L1=1; spec F24/F25/F26/F27 consistency fix; Gate A Lean → 04; report docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md; #736/#737'
     - '2026-07-29 S026/EV-020 02-verify-plan COMPLETE (D-S026-02-phase-a) — PASS; 18 auto + S02.M1/M2/L1/L2=1; ADR-032 Accepted; Gate A PASS (Lean auto); report docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md; handoff 04-tech-plan; #731'
     - '2026-07-29 S025/EV-019 02-verify-plan COMPLETE (D-S025-02-pass) — PASS; 14 auto + S1.M1/S6.M1/S9.M1=1 (D-S025-EV019-s1m1-1/s6m1-1/s9m1-1); F21/F22 summary fix; report docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md; Phase A pending → 04; do not start 04'
     - '2026-07-28 S024/EV-018 Phase A PASSED (D-S024-02-phase-a-A) — gates.a_to_b passed; M1/M2 deferred to 04; 04-tech-plan STARTED; 03 skipped (Lean+build)'
@@ -3058,30 +3284,37 @@ stages:
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
     status: completed
+    mode: delta
     started_at: '2026-07-29'
     started: '2026-07-29'
     completed_at: '2026-07-29'
     completed: '2026-07-29'
     previous_started_at: '2026-07-29'
     previous_completed_at: '2026-07-29'
-    session_id: S026-airmet-quality-wmo-examples
-    evolve_cycle_id: EV-020
-    note: 'S026/EV-020 04 COMPLETE 2026-07-29 — E20-F1..F8; plan approved (D-S026-04-plan-approve); Gate B→C PASS; handoff 07 @ T0.1; #731'
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    note: 'COMPLETE Batch T all 1; execution-plan approved; Gate B Lean → 07 @ T0.1'
+    decision_refs:
+    - E21-T1
+    - E21-T2
+    - E21-T3
+    - E21-T4
+    - E21-T5
+    - E21-T6
+    - D-S027-04-plan-approve
     substeps:
       phase_1_toolchain:
         status: completed
         notes: Monorepo toolchain baseline from 2026-06-15 plan; EV-004 delta reuses pins
       phase_2_interview:
         status: completed
-        notes: Batch1 E20-F1..F4 + Batch2 E20-F5..F8 locked; plan approved
+        notes: S027 Batch T E21-T1..T6 all 1; prior S026 E20-F1..F8 locked
       phase_3_execution_plan:
         status: completed
       phase_4_user_review:
         status: completed
-        notes: E20-F8=1 approve M0–M6; B→C → 07 @ T0.1
       phase_5_back_add:
         status: completed
-        notes: ADR-032 Accepted; standing corpus deltas applied
       phase_6_documents:
         status: completed
     artifacts:
@@ -3093,9 +3326,46 @@ stages:
     - docs/adr/ADR-011-work-sessions-data-access.md
     - docs/adr/ADR-012-metar-work-sessions-retention.md
     - docs/adr/ADR-032-wmo-default-golden-glossary.md
+    - docs/sessions/S027-vaa-quality/reports/04-tech-plan.md
+    - docs/sessions/S027-vaa-quality/reports/execution-plan.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     delta_substages:
+    - session_id: S027-vaa-quality
+      evolve_cycle_id: EV-021
+      skill_id: 04-tech-plan
+      status: completed
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      completed_at: '2026-07-29'
+      completed: '2026-07-29'
+      mode: delta
+      feature_ids:
+      - F26
+      - F27
+      deepen:
+      - F6.f
+      - F12
+      - F7.g
+      decision_refs:
+      - D-S027-02-phase-a
+      - S02.M1
+      - S02.M2
+      - S02.L1
+      - D-S027-EV021-s02m1-1
+      - D-S027-EV021-s02m2-1
+      - D-S027-EV021-s02l1-1
+      - E21-T1
+      - E21-T2
+      - E21-T3
+      - E21-T4
+      - E21-T5
+      - E21-T6
+      - D-S027-04-plan-approve
+      note: 'S027/EV-021 04 COMPLETE 2026-07-29 — Batch T all 1; plan approved (D-S027-04-plan-approve); Gate B Lean → 07 @ T0.1; #736/#737'
+      artifacts:
+      - docs/sessions/S027-vaa-quality/reports/04-tech-plan.md
+      - docs/sessions/S027-vaa-quality/reports/execution-plan.md
     - session_id: S026-airmet-quality-wmo-examples
       evolve_cycle_id: EV-020
       skill_id: 04-tech-plan
@@ -3544,6 +3814,8 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-29 S027/EV-021 04 COMPLETE Batch T all 1; execution-plan approved (D-S027-04-plan-approve); Gate B Lean → 07 @ T0.1; #736/#737'
+    - '2026-07-29 S027/EV-021 04-tech-plan STARTED (D-S027-02-phase-a) — Gate A Lean (Batch F 1,1,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #736/#737'
     - '2026-07-29 S026/EV-020 04 COMPLETE E20-F1..F8; plan approved (D-S026-04-plan-approve); Gate B→C PASS; handoff 07 @ T0.1; #731'
     - '2026-07-29 S026/EV-020 04 Batch1 locked E20-F1=1 F2=1 F3=3 (wmo-quality.yml) F4=1 (incremental catalog); Batch2 pending; #731'
     - '2026-07-29 S026/EV-020 04-tech-plan STARTED (D-S026-02-phase-a) — Gate A PASS (Lean auto — Batch F + consistency PASS); ADR-032 Accepted; gates.a_to_b passed; mode delta; interview pending; #731'
@@ -3579,14 +3851,14 @@ stages:
     - S014/EV-010 delta 04-tech-plan completed 2026-07-18 — M1–M6 approved (43A); ADR-027 xsdata
     - S015/EV-011 delta 04-tech-plan completed 2026-07-19 — E11-31 GET lint-issue-catalog; 31 tasks approved
     active_session:
-      session_id: S026-airmet-quality-wmo-examples
-      evolve_cycle_id: EV-020
+      session_id: S027-vaa-quality
+      evolve_cycle_id: EV-021
       skill_id: 04-tech-plan
       status: completed
       mode: delta
       started_at: '2026-07-29'
       completed_at: '2026-07-29'
-      note: '04 COMPLETE (E20-F1..F8); Gate B→C PASS; handoff 07 @ T0.1; #731'
+      note: 'S027/EV-021 04 COMPLETE — Batch T all 1; Gate B Lean → 07 @ T0.1'
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -3792,29 +4064,53 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
+    status: in_progress
     started_at: '2026-07-29'
     started: '2026-07-29'
-    completed: '2026-07-29'
-    completed_at: '2026-07-29'
     previous_started_at: '2026-07-29'
     previous_completed_at: '2026-07-29'
-    previous_session_id: S025-sigmet-quality
-    previous_evolve_cycle_id: EV-019
-    previous_tip_sha: afffe86
-    session_id: S026-airmet-quality-wmo-examples
-    evolve_cycle_id: EV-020
-    note: 'S026/EV-020 07-build COMPLETE — M0–M6 all tasks done; tip merge 0f77194; PR #793 merged; #731'
-    tip_sha: 0f77194
-    tip_sha_full: 0f7719481e6fcdc2538cf4d70fd473664d6fa2f2
+    previous_session_id: S026-airmet-quality-wmo-examples
+    previous_evolve_cycle_id: EV-020
+    previous_tip_sha: 0f77194
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    note: "T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip b5f5c32; tip 0580c78; #736/#737"
+    tip_sha: b5f5c32
+    tip_sha_full: b5f5c321d6762ae50d0d90785aaf4e19f06f290da531e6af158724606f0da8799fed
+    current_stage: 07-build
     substeps:
       task_loop:
-        status: completed
-        current_task: T6.5
-        phase: D
+        status: in_progress
+        current_task: T6.3
+        active_task_status: pending
+        active_milestone: M6
+        phase: C
         milestone: M6
-        notes: M0–M6 all tasks done; tip merge 0f77194; PR #793 merged
+        notes: "T6.2 08-verify-build PASS; next T6.3 10-e2e"
     delta_substages:
+    - id: S027-vaa-quality
+      session_id: S027-vaa-quality
+      evolve_cycle_id: EV-021
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-07-29'
+      started: '2026-07-29'
+      mode: full
+      note: "T6.2 08-verify-build PASS; next T6.3 10-e2e UJ-037/038; #736/#737"
+      active_milestone: M6
+      active_task: T6.3
+      active_task_status: pending
+      decision_id: D-S027-07-T6.2-complete
+      tip_sha: b5f5c32
+      tip_sha_full: b5f5c321d6762ae50d0d90785aaf4e19f06f290da531e6af158724606f0da8799fed
+      branch: evolve/EV-021-vaa-quality
+      feature_ids:
+      - F26
+      - F27
+      deepen:
+      - F6.f
+      - F12
+      - F7.g
     - id: S026-airmet-quality-wmo-examples
       session_id: S026-airmet-quality-wmo-examples
       evolve_cycle_id: EV-020
@@ -4019,6 +4315,11 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-30 S027/EV-021 M5 COMPLETE (T5.1–T5.3 F7.g catalog unlock + WMO golden packs); next M6 T6.1 API/workbench smoke VAA+TCA; tip a2ebef0; commits 1d4595d/a2ebef0; #736/#737'
+    - '2026-07-30 S027/EV-021 M4 COMPLETE (T4.1–T4.4 F27 T3+A2-2 convert + T1–T3 close + C1 adjacency); next M5 T5.1 F7.g catalog unlock Vitest; tip 3f9cc13; commits c20296b/2338f1d/3f9cc13; #737'
+    - '2026-07-29 S027/EV-021 T2.2 COMPLETE (F26 V3 VAA convert fidelity A7-2); next T2.3 F26 V1–V3 close AskQuestion; tip d089ea2; #736'
+    - '2026-07-29 S027/EV-021 M1 complete (T1.3–T1.4) + T2.1 COMPLETE (V3 golden stubs, M-golden xfail); next T2.2 convert fidelity; tip 57cb9e1; commits b260bdd/57cb9e1; #736'
+    - '2026-07-29 S027/EV-021 07-build in_progress — M0 complete (T0.1–T0.3); active T1.1 F26 VAA lint; D-S027-04-plan-approve B→C; #736/#737'
     - '2026-07-29 S026/EV-020 T6.4 PASS 11-verify-impl (D-S026-E20-11-ac-all + D-S026-E20-11-preview-no) — AC all approved; preview declined; next T6.5 13-deploy-smoke; progress 26/~28; tip 3027305; #731'
     - '2026-07-29 S026/EV-020 T6.3 PASS 10-e2e — UJ-035/036 T0; e2e-report.md; next T6.4=11-verify-impl; progress 25/~28; tip c963a0a (no [T6.3] commit yet); #731'
     - '2026-07-29 S026/EV-020 T6.2 PASS 08-verify-build @ e839a6e; next T6.3=10-e2e; progress 24/~28; #731'
@@ -4178,22 +4479,18 @@ stages:
     - 2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories (qa-report.md + e2e-report.md); Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted; active_task T6.3 pending
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
     active_session:
-      session_id: S024-dissemination-file-select
-      evolve_cycle_id: EV-018
+      session_id: S027-vaa-quality
+      evolve_cycle_id: EV-021
       skill_id: 07-build
-      status: completed
+      status: in_progress
       mode: full
-      started_at: '2026-07-28T23:21:03Z'
-      completed_at: '2026-07-28T23:30:05Z'
-      note: 'COMPLETE 2026-07-28 — M1–M4 / 14 tasks; tip a4b75f2; HANDOFF; ready for 08-verify-build; #785'
-      active_milestone: M4
-      active_task: T4.x
-      active_task_status: completed
-      decision_id: D-S024-04-plan-approve-A
-      branch: evolve/EV-018-dissemination-file-select
-      progress: 14/14
-      tip_sha: a4b75f2
-      report: docs/sessions/S024-dissemination-file-select/reports/HANDOFF.md
+      started_at: '2026-07-29'
+      note: 'T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip b5f5c32; #736/#737'
+      active_milestone: M6
+      active_task: T6.1
+      active_task_status: pending
+      decision_id: D-S027-07-T4.1-complete
+      branch: evolve/EV-021-vaa-quality
   09-qa:
     status: completed
     started_at: '2026-07-26'
@@ -5516,7 +5813,7 @@ stages:
       hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
     - '2026-07-29 S026/EV-020 13-deploy-smoke COMPLETE (D-S026-E20-13-merge) — PASS; H1–H5 + live F24/F25; PR #793 merged 0f77194; deploys dep-d9l5ihf10e5c73fs5420 / dep-d9l5ii9t0dsc73fr60gg; #731'
-- '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE (D-S025-13-deploy-A) — PASS; H1–H5 + live SIGMET smoke; PR #792 merged afffe86; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; #733/#739'
+    - '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE (D-S025-13-deploy-A) — PASS; H1–H5 + live SIGMET smoke; PR #792 merged afffe86; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; #733/#739'
     - '2026-07-29 S025/EV-019 13-deploy-smoke STARTED — T5.6; handoff from 10-e2e T5.5 PASS; tip 1a6dc9a; progress 26/29; #733/#739'
     - 2026-07-27 S022 13-deploy-smoke COMPLETE — H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending
     - 2026-07-27 S022 13-deploy-smoke STARTED (in_progress) — after 15-service-health completed; commit 6b9d2b9; empiric2 main-latest live; goldens_ui_live; PyPI/secrets remaining
@@ -5743,7 +6040,7 @@ deployment:
       uj032: pass
     notes:
     - '2026-07-29 S026/EV-020 13-deploy-smoke COMPLETE — PR #793 merged 0f77194; deploys dep-d9l5ihf10e5c73fs5420 / dep-d9l5ii9t0dsc73fr60gg; H1–H5 + live F24/F25 smoke PASS; F24/F25 Done; #731'
-- '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE — PR #792 merged afffe86; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; H1–H5 + live SIGMET smoke PASS; F23 Done; #733/#739'
+    - '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE — PR #792 merged afffe86; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; H1–H5 + live SIGMET smoke PASS; F23 Done; #733/#739'
     - '2026-07-28 S023/EV-017 13 COMPLETE — API SUPABASE_* Auth leftovers removed; redeploy dep-d9kii12jobas73fl4bi0; health/convert/H4–H5 re-PASS; tip 7837cd1'
     - '2026-07-28 S023/EV-017 13-deploy-smoke validate-existing PASS — H0c–H5 PASS; Playwright F21/F22 5/5; tip 7837cd1; deploys dep-d9khddad0e5s73dmm4r0 / dep-d9khdedbedkc73aodib0; pending user approve + optional API SUPABASE_* cleanup'
     - 2026-07-27 S022 13-deploy-smoke PASS — UJ-032 live verified; PyPI Trusted Publisher still pending
@@ -5922,6 +6219,242 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S027-11-approve
+  date: "2026-07-30"
+  timestamp: "2026-07-30"
+  resolved_at: "2026-07-30"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: "11-verify-impl approve F26+F27 — UI preview declined"
+  summary: "UI preview declined (option 2); F26+F27+deepen approved from reports; proceed to 13-deploy-smoke; tip b5f5c32"
+  decision: "UI preview declined (option 2); F26+F27+deepen approved from reports; proceed to 13-deploy-smoke"
+  related_issues: ["736", "737"]
+  related_commits: [b5f5c32]
+  branch: evolve/EV-021-vaa-quality
+  artifacts:
+    - docs/sessions/S027-vaa-quality/reports/verify-impl.md
+- id: D-S027-07-T2.2-complete
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: "07-build T2.2 complete"
+  summary: "T2.2 F26 V3 convert fidelity — va-advisory-A7-2 canonicalize_xml green; OBS ring order follows TAC"
+  decision: "Vendor-shaped emit; one OBS triangle posList uses TAC vertex order (WMO example reordered)"
+  related_issues: ["736"]
+  related_commits: [d089ea2]
+  branch: evolve/EV-021-vaa-quality
+- id: D-S027-07-T2.1-complete
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: "07-build T2.1 complete"
+  summary: "T2.1 F26 V3 golden stubs — va-advisory-A7-2 pack; root+xsd/sch green; M-golden xfail until T2.2"
+  decision: "M-golden xfail(strict) documents red phase without breaking commit gates"
+  related_issues: ["736"]
+  related_commits: [57cb9e1]
+  branch: evolve/EV-021-vaa-quality
+- id: D-S027-07-T1.4-complete
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: "07-build T1.4 complete"
+  summary: "T1.4 F26 V2 product/root guards — emit_vaa refuses forbidden iwxxm_root; tip b260bdd"
+  decision: "User chose option 1 light hardening; M1 V1–V2 closed for lint/adjacency"
+  related_issues: ["736"]
+  related_commits: [b260bdd]
+  branch: evolve/EV-021-vaa-quality
+- id: D-S027-07-T1.3-complete
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: "07-build T1.3 complete"
+  summary: "T1.3 F26 theme V2 adjacency fixtures (TC-F26-006) — 17 passed green without new encode; tip 2f23b5c"
+  decision: "Completed T1.3 regression lock; surface [Uncertainty] for T1.4 because adjacency already satisfied by F23 + emit_vaa_annex3"
+  related_issues: ["736", "739"]
+  related_commits: [2f23b5c]
+  branch: evolve/EV-021-vaa-quality
+- id: D-S027-07-T1.3-start
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: "07-build T1.3 start"
+  summary: "Start T1.3 F26 theme V2 adjacency fixtures (TC-F26-006)"
+  decision: "User directed Next T1.3; branch evolve/EV-021-vaa-quality"
+  related_issues: ["736", "739"]
+  branch: evolve/EV-021-vaa-quality
+- id: D-S027-07-T1.1-T1.2
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: T1.1/T1.2 complete — F26 V1 VAA lint
+  summary: "T1.1/T1.2 complete F26 V1 VAA lint; next T1.3 F26 theme V2"
+  decision: >-
+    T1.1 fixtures + T1.2 registry/lint rules for F26 theme V1 VAA complete
+    (a43fc50 / 92dffc9). Active task advanced to T1.3 F26 theme V2.
+  related_issues: ["736", "737"]
+  related_commits: [a43fc50, 92dffc9, 7a5db2f, 4b3210c]
+- id: D-S027-04-plan-approve
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: 04 Decision — Approve execution plan (E21-T6)
+  summary: "S027/EV-021 04 COMPLETE Batch T 1×6; M0 done; 07 @ T1.1"
+  decision: >-
+    Batch T E21-T1..T6 all 1; execution-plan approved (D-S027-04-plan-approve);
+    Gate B Lean → 07 @ T0.1. M0 T0.1–T0.3 done; active T1.1 F26 VAA lint.
+  related_issues: ["736", "737"]
+  related_decisions: [E21-T1, E21-T2, E21-T3, E21-T4, E21-T5, E21-T6]
+- id: D-S027-02-phase-a
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 16-evolve
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: checkpoint
+  status: confirmed
+  topic: Gate A Lean → 04-tech-plan
+  summary: "S027/EV-021 02-verify-plan COMPLETE Batch F 1,1,1 → 04-tech-plan"
+  decision: >-
+    Gate A Lean (Batch F S02.M1/M2/L1 all Approve=1). 02-verify-plan PASS —
+    12 auto-approved; spec F24/F25/F26/F27 consistency fix; advance to
+    04-tech-plan (in_progress). Report:
+    docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md.
+  related_issues: ["736", "737"]
+  related_decisions: [D-S027-EV021-s02m1-1, D-S027-EV021-s02m2-1, D-S027-EV021-s02l1-1, S02.M1, S02.M2, S02.L1]
+- id: D-S027-EV021-01-close
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  category: requirements
+  topic: 01-requirements close — E21-E1=1
+  summary: "E21-E1=1 — close 01-requirements; start 02-verify-plan"
+  decision: "E21-E1=1 — close 01-requirements; start 02-verify-plan"
+  related_issues: ["736", "737"]
+  related_decision: D-S027-EV021-01-batch-d
+  answers:
+    E1: '1'
+- id: D-S027-EV021-01-batch-d
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  category: requirements
+  topic: 01-requirements Batch D — E21-D1..E21-D4
+  summary: "Batch D locked — E21-D1=2 all recommended docs; E21-D2=1 UJ-037/038 + TC-F26/F27; E21-D3=1 V1–V3/C1 + T1–T3/C1; E21-D4=1 mine translation TAC (no Amd79 XML golden); specs written; close 01 AskQuestion pending"
+  decision: >-
+    Batch D locked 2026-07-29. E21-D1=2 — all recommended docs in manifest;
+    E21-D2=1 — UJ-037/038 + TC-F26/F27; E21-D3=1 — VAA themes V1–V3/C1 + TCA
+    themes T1–T3/C1; E21-D4=1 — mine iwxxm-translation advisory TAC fixtures;
+    no Amd79 XML golden parity this cycle. Corpus deltas written; 01-requirements
+    remains in_progress pending user close AskQuestion → 02-verify-plan.
+  related_issues: ["736", "737"]
+  related_decision: D-S027-EV021-phase0-lock
+  answers:
+    D1: '2'
+    D2: '1'
+    D3: '1'
+    D4: '1'
+- id: D-S027-EV021-phase0-lock
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  resolved_at: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  status: confirmed
+  category: evolve
+  topic: Phase 0 intake lock — E21-1..E21-4
+  summary: "Phase 0 locked — E21-1=2 (VAA+TCA F26+F27), E21-2=1 canonicalize_xml defaults, E21-3=1 catalog passers + mine WMO examples, E21-4=1 Lean+build+11; start 01-requirements"
+  decision: "Phase 0 locked — E21-1=2 (VAA+TCA F26+F27), E21-2=1 canonicalize_xml defaults, E21-3=1 catalog passers + mine WMO examples, E21-4=1 Lean+build+11; start 01-requirements"
+  related_issues: ["736", "737"]
+  answers:
+    '1': '2'
+    '2': '1'
+    '3': '1'
+    '4': '1'
+- id: D-S027-EV021-16-start
+  date: "2026-07-29"
+  timestamp: "2026-07-29"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill_id: 16-evolve
+  skill: 16-evolve
+  stage: 16-evolve
+  status: confirmed
+  category: evolve
+  topic: Phase 0 16-evolve start
+  summary: Started 16-evolve Phase 0 for S027/EV-021; EV-021 cycle created; intake AskQuestion pending
+  decision: Started 16-evolve Phase 0 for S027/EV-021; EV-021 cycle created; intake AskQuestion pending
 - id: D-S026-close
   date: "2026-07-29"
   timestamp: "2026-07-29"
@@ -13907,6 +14440,153 @@ evolve_cycles:
   - '2026-07-29 S026/EV-020 01-requirements STARTED (delta) — F24/F25; deepen F9/F7.g; artifact reports/01-requirements.md pending; #731'
   - '2026-07-29 S026/EV-020 routing Confirm C=1 Lean+build+11 approved (D-S026-E20-routing-C1); 00 completed; 16 in_progress → 01 (E20-8); path 00→16→01→02→04→07→08→10→11→13; #731'
   - '2026-07-29 S026/EV-020 Phase 0 intake locked A=2 B=2+3 (D-S026-E20-intake); Fn proposed F24/F25; Lean+build amend AskQuestion pending; #731'
+- id: EV-021
+  session_id: S027-vaa-quality
+  cycle_type: feature
+  feature_ids: [F26, F27]
+  feature_id: null
+  title: "VAA + TCA quality bars (VolcanicAshAdvisory + TropicalCycloneAdvisory)"
+  status: in_progress
+  started: "2026-07-29"
+  completed: null
+  scope_summary: |
+    Phase 0 locked 2026-07-29 (D-S027-EV021-phase0-lock). E21-1=2 VAA+TCA F26 (#736) + F27 (#737):
+    va-advisory-A7-2 and tc-advisory-A2-2 TAC→IWXXM canonicalize_xml-equal under default convert settings.
+    E21-2=1 canonicalize_xml defaults. E21-3=1 catalog/workbench only list passers + mine WMO examples
+    (2025-2 vendor goldens + iwxxm-translation Amd79-80-2023 advisory cases). Exceptional rules from
+    issues + TAC-to-XML-Guidance.txt (VAA + TCA); ADR-028 registry deepen; accept + negative fixtures.
+    Keep F23–F25 passers green; do not conflate with VA/TC SIGMET. E21-4=1 Lean+build+11 approved.
+    OOS unless added: TC SIGMET #738, SWX #740, VONA #741; *-translation-failed happy-path; non-default
+    profile/version golden equality; PyPI release bumps.
+  routing_plan:
+    required_stages:
+      - 00-context
+      - 16-evolve
+      - 01-requirements
+      - 02-verify-plan
+      - 04-tech-plan
+      - 07-build
+      - 08-verify-build
+      - 10-e2e
+      - 11-verify-impl
+      - 13-deploy-smoke
+    skipped_stages:
+      - 03-plan-tooling
+      - 05-verify-tech
+      - 06-tech-tooling
+      - 09-qa
+      - 12-verify-deploy
+    note: "Lean+build+11 approved E21-4"
+  current_stage: 13-deploy-smoke
+  stages:
+    00-context:
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+    16-evolve:
+      status: in_progress
+      started: "2026-07-29"
+      completed: null
+      note: "orchestrator"
+    01-requirements:
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      note: "E21-E1=1; D-S027-EV021-01-close; report reports/01-requirements.md"
+    02-verify-plan:
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      note: "PASS — 12 auto + S02.M1/M2/L1=1; D-S027-02-phase-a; report reports/02-verify-plan-audit.md; Gate A Lean → 04"
+    04-tech-plan:
+      status: completed
+      started: "2026-07-29"
+      completed: "2026-07-29"
+      note: "COMPLETE Batch T all 1; execution-plan approved; Gate B Lean → 07 @ T0.1"
+    07-build:
+      status: completed
+      started: "2026-07-29"
+      tip_sha: b5f5c32
+      note: "COMPLETE — M0–M6; tip b5f5c32; D-S027-11-approve → 13; #736/#737"
+    08-verify-build:
+      status: completed
+    10-e2e:
+      status: completed
+    11-verify-impl:
+      status: completed
+      completed: "2026-07-30"
+      note: "D-S027-11-approve — UI preview declined; F26+F27+deepen approved; tip b5f5c32"
+      artifacts:
+        - docs/sessions/S027-vaa-quality/reports/verify-impl.md
+    13-deploy-smoke:
+      status: in_progress
+      started: "2026-07-30"
+      tip_sha: b5f5c32
+      note: "T6.5/13 in progress; D-S027-11-approve; tip b5f5c32; #736/#737"
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+    - path: docs/feature-list.md
+      status: completed
+    - path: docs/user-journeys.md
+      status: completed
+    - path: docs/test-plan.md
+      status: completed
+    - path: docs/domain/rules/COVERAGE_MATRIX.md
+      status: completed
+    - path: docs/api-contract.md
+      status: completed
+    - path: docs/config-spec.md
+      status: completed
+    - path: docs/adr/ADR-028-tac-validate-issue-registry.md
+      status: completed
+    - path: docs/adr/ADR-032-wmo-default-golden-glossary.md
+      status: completed
+    - path: docs/sessions/S027-vaa-quality/reports/acceptance-criteria.md
+      status: completed
+    - path: docs/sessions/S027-vaa-quality/reports/01-requirements.md
+      status: completed
+    - path: docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md
+      status: completed
+    - path: docs/sessions/S027-vaa-quality/reports/04-tech-plan.md
+      status: completed
+    - path: docs/sessions/S027-vaa-quality/reports/execution-plan.md
+      status: completed
+    - path: docs/sessions/S027-vaa-quality/reports/verify-impl.md
+      status: completed
+    - path: docs/sessions/S027-vaa-quality/session-brief.md
+      status: in_progress
+    - path: docs/sessions/S027-vaa-quality/routing-plan.md
+      status: in_progress
+    - path: docs/decisions/evolve-decisions.md
+      status: completed
+    - path: docs/sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md
+      status: completed
+  issues: []
+  github_issues: ["736", "737"]
+  notes:
+    - '2026-07-30 S027/EV-021 D-S027-11-approve — UI preview declined (option 2); F26+F27+deepen approved from reports; 11-verify-impl COMPLETE; C→D + phase_c passed; 13-deploy-smoke STARTED (T6.5); tip b5f5c32; #736/#737'
+    - '2026-07-30 S027/EV-021 M5 COMPLETE (T5.1–T5.3 F7.g catalog unlock + WMO golden packs); next M6 T6.1 API/workbench smoke VAA+TCA; tip a2ebef0; commits 1d4595d/a2ebef0; #736/#737'
+    - '2026-07-30 S027/EV-021 M4 F27 T3+C1 complete (T4.1–T4.4); next M5 T5.1 F7.g catalog unlock Vitest; tip 3f9cc13; #737'
+    - '2026-07-29 S027/EV-021 T4.1 COMPLETE (F27 theme T3 tc-advisory-A2-2 golden stubs); next T4.2 convert fidelity A2-2; tip 9dc0295; #737'
+    - '2026-07-29 S027/EV-021 M3 T3.1–T3.4 done; next T4.1 F27 theme T3 TCA golden A2-2; tip 86ae9a1; #737'
+    - '2026-07-29 S027/EV-021 T3.2 COMPLETE (F27 T1 TCA registry+lint); next T3.3 F27 theme T2 adjacency; tip 75bacde; #737'
+    - '2026-07-29 S027/EV-021 T2.2 COMPLETE (F26 V3 VAA convert fidelity A7-2); next T2.3 F26 V1–V3 close; tip d089ea2; #736'
+    - '2026-07-29 S027/EV-021 M1 complete (T1.3–T1.4) + T2.1 COMPLETE (V3 golden stubs); next T2.2; tip 57cb9e1; #736'
+    - '2026-07-29 S027/EV-021 04 COMPLETE Batch T 1×6; M0 done; 07 @ T1.1; Gate B Lean passed; #736/#737'
+    - '2026-07-29 S027/EV-021 04-tech-plan STARTED (D-S027-02-phase-a) — Gate A Lean; Batch F 1,1,1; handoff from 02 PASS; #736/#737'
+    - '2026-07-29 S027/EV-021 02-verify-plan COMPLETE — PASS; 12 auto + S02.M1/M2/L1=1; spec F24/F25/F26/F27 consistency fix; report reports/02-verify-plan-audit.md; Gate A Lean → 04'
+  decision_refs: [E21-1, E21-2, E21-3, E21-4, E21-D1, E21-D2, E21-D3, E21-D4, E21-E1, S02.M1, S02.M2, S02.L1, D-S027-EV021-s02m1-1, D-S027-EV021-s02m2-1, D-S027-EV021-s02l1-1, D-S027-02-phase-a, E21-T1, E21-T2, E21-T3, E21-T4, E21-T5, E21-T6, D-S027-04-plan-approve, D-S027-07-T1.3-complete, D-S027-07-T1.4-complete, D-S027-07-T2.1-complete, D-S027-07-T2.2-complete, D-S027-11-approve]
 - id: EV-019
   status: completed
   cycle_type: feature
@@ -18153,14 +18833,20 @@ evolve_cycles:
   pr_number: 723
   merge_sha: '4660602'
 git_history:
-  current_branch: evolve/EV-020-airmet-quality
-  ahead_of_origin: 0
-  pushed: true
+  current_branch: evolve/EV-021-vaa-quality
+  ahead_of_origin: null
+  pushed: false
   pending_commit:
-  tip_sha: 5cd0412
-  tip_sha_full: 5cd04128b6a9758dd78ff51071c7f2632cad75c1
-  note: 'S026/EV-020 T6.5 awaiting merge of PR #793 then live H4–H5; tip 5cd0412; progress 26/~28; #731'
+  tip_sha: a2ebef0
+  tip_sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
+  note: 'T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip b5f5c32; branch not pushed; #736/#737'
   notes:
+  - '2026-07-30 S027/EV-021 tip synced — a2ebef0 (a2ebef070b6ae31aaa71e0f2014ecb84799431bd); M5 complete T5.1–T5.3; stage 07-build; next M6 T6.1; not pushed; #736/#737'
+  - '2026-07-30 S027/EV-021 tip synced — 3f9cc13 (3f9cc13d5c0f4be9c0b6dd8d356e8b0b2e41e644); M4 complete T4.1–T4.4; stage 07-build; next M5 T5.1; not pushed; #737'
+  - '2026-07-29 S027/EV-021 tip synced — 9dc0295 (9dc02952138dc0dd1b1c53d14b8a71dcd142d029); T4.1 F27 theme T3 tc-advisory-A2-2 golden stubs; stage 07-build; next T4.2; not pushed; #737'
+  - '2026-07-29 S027/EV-021 tip synced — 75bacde (75bacde86a9403475c2c5fbae65012bdb3b755d4); T3.2 F27 T1 TCA registry+lint; stage 07-build; next T3.3; not pushed; #737'
+  - '2026-07-29 S027/EV-021 tip synced — d089ea2 (d089ea21a08f619e55b0f9e72586cdf12b733352); T2.2 F26 V3 VAA convert fidelity; stage 07-build; next T2.3; not pushed; #736'
+  - '2026-07-29 S027/EV-021 tip synced — 57cb9e1 (57cb9e18b66d6aca616d8b744c6022b8bf31d006); M1 complete (T1.3–T1.4) + T2.1 V3 golden stubs; stage 07-build; next T2.2; not pushed; #736'
   - '2026-07-29 S026/EV-020 PR #793 open; tip 5cd0412 (5cd04128b6a9758dd78ff51071c7f2632cad75c1); T6.5 awaiting merge then live H4–H5; do_not_auto_merge; stage 13-deploy-smoke; progress 26/~28; #731'
   - '2026-07-29 S026/EV-020 tip synced — e839a6e (e839a6e0d9a7e898e03e69d90865039eeb634610); T6.2 PASS 08-verify-build FileConverter WMO A3-1; stage 10-e2e; next T6.3; progress 24/~28; #731'
   - '2026-07-29 S026/EV-020 tip synced — 7e75fff (7e75fff59bd2a2577d3683699f7791d66246ab2b); T6.1 COMPLETE API smoke; stage 07-build; next T6.2=08-verify-build; progress 23/~28; #731'
@@ -18242,7 +18928,7 @@ git_history:
   - 2026-07-21 S019/EV-014 workflow-state update — T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29; gates.c_to_d=pending_checkpoint; session/cycle remain open (5b3db91)
   - '2026-07-21 S019/EV-014 T6.6 docs @ 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked" on cursor/s019-t66-deploy-smoke-151c; H0c/H1/H4/H5 PASS; allowlist/auth/BYOC still pending; progress 28/29 (D-S019-EV014-T66-partial)'
   - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — branch cursor/s019-t66-deploy-smoke-151c (base tip of #771 / t64 @ 7fba0a5); H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending; commit later recorded @ 8fc9fec; progress 28/29'
-  - 2026-07-21 S019/EV-014 T6.5 COMPLETE — deploy-checklist.md PASS; next T6.6; progress 28/29; tip pending
+  - 2026-07-21 S019/EV-014 T6.5 COMPLETE — deploy-checklist.md PASS; next T6.6; progress 28/29; tip b5f5c32
   - '2026-07-21 S019/EV-014 PR #771 CI/CD Pipeline success (29846488131); tip 2ce8bb9; T6.4 complete; next T6.5'
   - 2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS on cursor/s019-t64-verify-build-7820 (prettier UJ e2e + badge_audit gifts drop); next T6.5; progress 27/29; report verification-report.md
   - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/770); next T6.4; progress 26/29'
@@ -19120,6 +19806,225 @@ git_history:
     session_id: S022-rename-cutover
     pr_url:
   commits:
+  - sha: a2ebef0
+    sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
+    branch: evolve/EV-021-vaa-quality
+    message: "[T5.3] test: keep F23–F27 WMO golden packs green"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-30T10:37:14-04:00"
+    files_changed:
+      - docs/sessions/S027-vaa-quality/reports/execution-plan.md
+    pushed: false
+  - sha: 1d4595d
+    sha_full: 1d4595db44d73f53eb284d1a86d0eb1a7c041900
+    branch: evolve/EV-021-vaa-quality
+    message: "[T5.2] feat: unlock VAA/TCA WMO passers in Examples catalog"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-30T10:37:04-04:00"
+    files_changed:
+      - apps/frontend/src/fixtures/examples/FIXTURE_GAPS.md
+      - apps/frontend/src/fixtures/examples/bodies/tca_a2_2.tac
+      - apps/frontend/src/fixtures/examples/bodies/vaa_a7_2.tac
+      - apps/frontend/src/fixtures/examples/examplesCatalog.test.ts
+      - apps/frontend/src/fixtures/examples/examplesCatalog.ts
+    pushed: false
+  - sha: 3f9cc13
+    sha_full: 3f9cc13d5c0f4be9c0b6dd8d356e8b0b2e41e644
+    branch: evolve/EV-021-vaa-quality
+    message: "[T4.4] test: F27 theme C1 TCA translation-failed adjacency"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-30T10:33:12-04:00"
+    files_changed: "test_tc_f27_004_tca_c1 + execution-plan (2)"
+    pushed: false
+  - sha: 2338f1d
+    sha_full: 2338f1d37c0660cc4835277551a0492a074d65cd
+    branch: evolve/EV-021-vaa-quality
+    message: "[T4.3] docs: close F27 themes T1–T3 after TCA golden green"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-30T10:33:02-04:00"
+    files_changed: "t4.3-theme-t1-t3-close + COVERAGE_MATRIX (2)"
+    pushed: false
+  - sha: c20296b
+    sha_full: c20296b7f6a9605c2921fc8d26a31c031e2cc3a0
+    branch: evolve/EV-021-vaa-quality
+    message: "[T4.2] feat: F27 theme T3 TCA convert fidelity for tc-advisory-A2-2"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-30T10:32:51-04:00"
+    files_changed: "vaa_tca + annex3 goldens + test_tc_f27_002 + execution-plan (5)"
+    pushed: false
+  - sha: 9dc0295
+    sha_full: 9dc02952138dc0dd1b1c53d14b8a71dcd142d029
+    branch: evolve/EV-021-vaa-quality
+    message: "[T4.1] test: F27 theme T3 tc-advisory-A2-2 golden stubs"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29"
+    files_changed: "annex3 golden tca_a2_2 + test_tc_f27_002 + manifest + execution-plan (5)"
+    pushed: false
+  - sha: 86ae9a1
+    sha_full: 86ae9a13485f8d4be1e08b221e7acc5234afb580
+    branch: evolve/EV-021-vaa-quality
+    message: "[T3.4] feat: F27 theme T2 TCA product/root guards"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29"
+    files_changed: "vaa_tca + annex3_products + adjacency tests + execution-plan (5)"
+    pushed: false
+  - sha: a5bdc27
+    sha_full: a5bdc2735a08a429ed9299fcfb05ec670ee2e9c4
+    branch: evolve/EV-021-vaa-quality
+    message: "[T3.3] test: F27 theme T2 TCA↔SIGMET adjacency fixtures"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29"
+    files_changed: "test_tc_f27_006_adjacency + execution-plan (2)"
+    pushed: false
+  - sha: 75bacde
+    sha_full: 75bacde86a9403475c2c5fbae65012bdb3b755d4
+    branch: evolve/EV-021-vaa-quality
+    message: "[T3.2] feat: F27 theme T1 TCA registry codes and lint rules"
+    stage: "07-build"
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T21:21:00-04:00"
+    files_changed: "ISSUE_CATALOG + tac-validate registry/product_rules + execution-plan (5)"
+    pushed: false
+  - sha: 10c0242
+    sha_full: 10c02422e6682685b238bb0ee9f11aebac3a8722
+    branch: evolve/EV-021-vaa-quality
+    message: "[T3.1] test: F27 theme T1 TCA exceptional fixtures"
+    stage: "07-build"
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T21:19:00-04:00"
+    files_changed: "TCA accept/negative fixtures + manifest + test_tc_f27_t1_tca (7)"
+    pushed: false
+  - sha: 58a5d7c
+    sha_full: 58a5d7cb8140869e83ed8948ae9865e3b31a140e
+    branch: evolve/EV-021-vaa-quality
+    message: "[T2.4] test: F26 theme C1 translation-failed adjacency for VAA"
+    stage: "07-build"
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T21:16:00-04:00"
+    files_changed: "test_tc_f26_004_vaa_c1 + COVERAGE_MATRIX + execution-plan (3)"
+    pushed: false
+  - sha: ffe9e01
+    sha_full: ffe9e0180b481940810b312da7adfd22f4d00d75
+    branch: evolve/EV-021-vaa-quality
+    message: "[T2.3] docs: close F26 themes V1–V3 after green evidence"
+    stage: "07-build"
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T21:15:00-04:00"
+    files_changed: "t2.3-theme-v1-v3-close.md + COVERAGE_MATRIX + execution-plan (3)"
+    pushed: false
+  - sha: d089ea2
+    sha_full: d089ea21a08f619e55b0f9e72586cdf12b733352
+    branch: evolve/EV-021-vaa-quality
+    message: "[T2.2] feat: F26 theme V3 VAA convert fidelity for va-advisory-A7-2"
+    stage: "07-build"
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T20:52:00-04:00"
+    files_changed: 6
+  - sha: 57cb9e1
+    sha_full: 57cb9e18b66d6aca616d8b744c6022b8bf31d006
+    branch: evolve/EV-021-vaa-quality
+    message: "[T2.1] test: F26 theme V3 va-advisory-A7-2 golden stubs"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T20:50:00-04:00"
+    files_changed: 6
+  - sha: b260bdd
+    sha_full: b260bdd12bde68b4b75f055bb66c8fce01b2fc28
+    branch: evolve/EV-021-vaa-quality
+    message: "[T1.4] feat: F26 theme V2 VAA product/root guards"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T20:45:00-04:00"
+    files_changed: 4
+  - sha: 2f23b5c
+    sha_full: 2f23b5c769aa2e2780ef4faa956561de12209b6b
+    branch: evolve/EV-021-vaa-quality
+    message: "[T1.3] test: F26 theme V2 VAA↔VA SIGMET adjacency fixtures"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T20:30:00-04:00"
+    files_changed: 3
+  - sha: a43fc50
+    sha_full: a43fc505c53fff9c7afdbfdf0eec830b8920fdb1
+    branch: evolve/EV-021-vaa-quality
+    message: "[T1.2] feat: F26 theme V1 VAA registry codes and lint rules"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T18:14:00-04:00"
+    files_changed:
+      - docs/domain/rules/ISSUE_CATALOG.json
+      - docs/domain/rules/ISSUE_CATALOG.md
+      - packages/tac-validate/src/tac_validate/issue_registry.py
+      - packages/tac-validate/src/tac_validate/product_rules.py
+  - sha: 92dffc9
+    sha_full: 92dffc95bfb5bb8c8efdf27a4122fafadfce3006
+    branch: evolve/EV-021-vaa-quality
+    message: "[T1.1] test: F26 theme V1 VAA exceptional fixtures"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T18:10:00-04:00"
+    files_changed:
+      - packages/tac-validate/tests/fixtures/accept/vaa_v1_no_further.tac
+      - packages/tac-validate/tests/fixtures/accept/vaa_v1_rmk_nil_fcst_no_va.tac
+      - packages/tac-validate/tests/fixtures/accept/vaa_v1_volcano_unknown.tac
+      - packages/tac-validate/tests/fixtures/accept/vaa_v1_volcano_unnamed.tac
+      - packages/tac-validate/tests/fixtures/manifest.json
+      - packages/tac-validate/tests/fixtures/negative/vaa/missing_volcano.tac
+      - packages/tac-validate/tests/test_tc_f26_v1_vaa.py
+  - sha: 7a5db2f
+    sha_full: 7a5db2f0d7c7ffd7a8ec2a8409d018ff6d766ebb
+    branch: evolve/EV-021-vaa-quality
+    message: "[T0.3] config: extend wmo-quality pack for VAA+TCA"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T18:05:00-04:00"
+    files_changed:
+      - .github/workflows/wmo-quality.yml
+      - Makefile
+      - scripts/ci/run_wmo_quality.sh
+  - sha: 4b3210c
+    sha_full: 4b3210c54e567a4462f1c10d4b50636dd57541d9
+    branch: evolve/EV-021-vaa-quality
+    message: "[T0.1] docs: S027 F26/F27 plan + VAA/TCA theme→fixture map"
+    stage: 07-build
+    session_id: S027-vaa-quality
+    evolve_cycle_id: EV-021
+    timestamp: "2026-07-29T18:00:00-04:00"
+    files_changed:
+      - docs/sessions/S027-vaa-quality/reports/execution-plan.md
+      - docs/sessions/S027-vaa-quality/reports/vaa-tca-theme-fixture-map.md
+      - docs/sessions/S027-vaa-quality/session-brief.md
+      - docs/feature-list.md
+      - docs/spec.md
+      - docs/test-plan.md
+      - workflow-state.yaml
   - sha: 5cd0412
     sha_full: 5cd04128b6a9758dd78ff51071c7f2632cad75c1
     branch: evolve/EV-020-airmet-quality

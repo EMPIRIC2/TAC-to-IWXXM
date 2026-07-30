@@ -25,7 +25,8 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S026-airmet-quality-wmo-examples](S026-airmet-quality-wmo-examples/session-brief.md) | feature | in_progress | AIRMET quality (#731) + WMO goldens UI + decode translations | evolve/EV-020-airmet-quality | 2026-07-29 | — |
+| [S027-vaa-quality](S027-vaa-quality/session-brief.md) | feature | in_progress | VAA+TCA quality (#736/#737); F26/F27 | evolve/EV-021-vaa-quality | 2026-07-29 | — |
+| [S026-airmet-quality-wmo-examples](S026-airmet-quality-wmo-examples/session-brief.md) | feature | completed | AIRMET + WMO METAR/SPECI/TAF parity (#731); F24/F25; PR #793 | evolve/EV-020-airmet-quality | 2026-07-29 | 2026-07-29 |
 | [S025-sigmet-quality](S025-sigmet-quality/session-brief.md) | feature | completed | SIGMET family quality (#733/#739); F23; PR #792 merged | evolve/EV-019-sigmet-quality | 2026-07-29 | 2026-07-29 |
 | [S024-dissemination-file-select](S024-dissemination-file-select/session-brief.md) | feature | completed | Multi-file export selection in dissemination portal (#785); PR #791 | evolve/EV-018-dissemination-file-select | 2026-07-28 | 2026-07-29 |
 | [S023-public-app-privacy](S023-public-app-privacy/session-brief.md) | feature | completed | Public app + local history + privacy (#783); PR #790 open (do not auto-merge) | evolve/EV-017-public-app-privacy | 2026-07-27 | 2026-07-28 |
@@ -54,11 +55,13 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 ## Active session
 
-**[S026-airmet-quality-wmo-examples](S026-airmet-quality-wmo-examples/session-brief.md)** — AIRMET quality (#731) + WMO goldens UI + decode translations. Branch `evolve/EV-020-airmet-quality`. Lean+build **proposed** (routing pending AskQuestion). EV-020 cycle entry deferred until routing approved.
+**[S027-vaa-quality](S027-vaa-quality/session-brief.md)** — VAA quality bar (#736); F26. Branch
+`evolve/EV-021-vaa-quality`. Lean+build+11 **proposed** (intake + routing pending).
 
 Parked/other: see rows above (S016 paused; S017 process).
 
-Last closed: **[S025-sigmet-quality](S025-sigmet-quality/session-brief.md)** — F23 SIGMET family quality; PR #792 merged (`afffe86`).
+Last closed: **[S026-airmet-quality-wmo-examples](S026-airmet-quality-wmo-examples/session-brief.md)** —
+F24 AIRMET + F25 WMO METAR/SPECI/TAF parity; PR #793 merged (`0f77194`); #731 closed.
 
 ## Folder layout
 
