@@ -155,10 +155,6 @@ def test_tc_ev023_002_auto_wx_slash_uses_common_nil_not_observable() -> None:
     assert_aerodrome_nils_use_common_family(result.xml)
 
 
-@pytest.mark.xfail(
-    reason="T2.2: parse AUTO ////SM visibility + emit Guidance common/nil notObservable",
-    strict=True,
-)
 def test_tc_ev023_002_cwfd_auto_missing_wx_and_vis_common_nil() -> None:
     """Amd79 CWFD: AUTO ////SM // → visibility + presentWeather common/nil/notObservable."""
     from tac2iwxxm import convert
@@ -179,10 +175,6 @@ def test_tc_ev023_002_cwfd_auto_missing_wx_and_vis_common_nil() -> None:
     assert NIL_MISSING in nil_reasons(result.xml) or "rvr" in result.xml.lower()
 
 
-@pytest.mark.xfail(
-    reason="T2.2: parse AUTO //// visibility + emit Guidance common/nil notObservable",
-    strict=True,
-)
 def test_tc_ev023_002_enfb_auto_vis_slash_uses_common_nil() -> None:
     """Amd79 ENFB: AUTO //// visibility → common/nil/notObservable."""
     from tac2iwxxm import convert
