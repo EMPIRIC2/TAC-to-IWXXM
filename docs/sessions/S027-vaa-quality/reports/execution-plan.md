@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — Build |
 | **Active milestone** | M2 — F26 VAA golden (theme V3) + C1 |
-| **Active task** | T2.1 |
-| **Tasks** | 7 / ~24 completed |
+| **Active task** | T2.2 |
+| **Tasks** | 8 / ~24 completed |
 | **Last updated** | 2026-07-29 |
 
 ## Tech Stack Summary
@@ -73,7 +73,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | Golden `va-advisory-A7-2`; M-xsd/M-sch stubs; root `iwxxm:VolcanicAshAdvisory` | TC-F26-002/003; V3 | T1.4 | **pending** |
+| T2.1 | Test | Golden `va-advisory-A7-2`; M-xsd/M-sch stubs; root `iwxxm:VolcanicAshAdvisory` | TC-F26-002/003; V3 | T1.4 | **completed** |
 | T2.2 | Code | Convert fidelity toward vendor shape (defaults only) | F6.f; #736 | T2.1 | **pending** |
 | T2.3 | Docs | Mark F26 themes V1–V3 closed or AskQuestion-deferred (E21-T5) | E21-T5 | T2.2 | **pending** |
 | T2.4 | Test | **F26 theme C1** + translation-failed not happy-path | TC-F26-004; C1 | T2.3 | **pending** |

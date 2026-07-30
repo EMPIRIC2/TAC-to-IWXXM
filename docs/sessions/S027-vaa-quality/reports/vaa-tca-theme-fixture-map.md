@@ -25,9 +25,10 @@ Always write **F26 theme Vn** vs **F23 theme Vn** (`D-S027-EV021-s02m1-1`).
 |------|------|
 | TAC | `vendor/schemas/iwxxm/2025-2/IWXXM/examples/va-advisory-A7-2.tac` |
 | XML | `…/va-advisory-A7-2.xml` |
+| Pack | `packages/tac2iwxxm/tests/fixtures/annex3_golden/vaa_a7_2.{tac,golden.xml}` |
 | Assert | convert(defaults) → `canonicalize_xml` == vendor; root `iwxxm:VolcanicAshAdvisory` |
-| TC | TC-F26-002 / TC-F26-003 |
-| Notes | Karymsky / TOKYO; FCST +18 HR `NO VA EXP` → `status="NO_VOLCANIC_ASH_EXPECTED"` |
+| TC | TC-F26-002 / TC-F26-003 — `test_tc_f26_002_vaa_annex3_goldens.py` |
+| Notes | Karymsky / TOKYO; FCST +18 HR `NO VA EXP` → `status="NO_VOLCANIC_ASH_EXPECTED"`; M-golden xfail until T2.2 |
 
 ### F26 theme V1 — exceptional lint/encode (HARD)
 

@@ -242,6 +242,15 @@
       "tac": "sigmet_va_no_va_exp.tac",
       "golden": "sigmet_va_no_va_exp.golden.xml",
       "note": "V1 NO VA EXP seed expanded into V3 golden pack"
+    },
+    {
+      "id": "vaa_a7_2",
+      "product": "VAA",
+      "theme": "V3",
+      "tac": "vaa_a7_2.tac",
+      "golden": "vaa_a7_2.golden.xml",
+      "seed": "va-advisory-A7-2",
+      "note": "F26 theme V3 — WMO Karymsky/TOKYO vendor golden (TC-F26-002/003)"
     }
   ]
 }
