@@ -3,7 +3,7 @@
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
 > **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
-> **Last updated**: 2026-07-29 (S027 / EV-021 — F26/F27 VAA+TCA Planned; F24/F25 Done)
+> **Last updated**: 2026-07-30 (S030 / EV-023 — #800 encode deepen; F26/F27 Done)
 
 ## Overview
 
@@ -156,12 +156,21 @@ metar-to-IWXXM/
   content-selected **`iwxxm:VolcanicAshSIGMET`** (VA phenomenon / WV AHL; still
   `product=sigmet` on HTTP). Exceptional-rule tables from #733/#739; guidance + 2025-2
   corrections; expanded goldens; convert → `iwxxm-validate` round-trip. TC SIGMET OOS (#738).
+- **S027 / EV-021 delta (F26/F27)**: Deepen **VAA (F6.f)** + **TCA (F6.f)** WMO golden bar —
+  `canonicalize_xml` under defaults; see feature-list F26/F27 (**Done**).
+- **S030 / EV-023 delta (#800)**: Cross-product encode correctness deepen — NSC vs layered
+  cloud; Guidance nils (`common/nil` vs `iwxxm/nil`); `translationFailedTAC` quarantine;
+  dual-register colour href policy (offline vendor RDF/CSV); iwxxm-translation Amd79-80-2023
+  TAC → 2025-2 as **informative** (no 2023-1 XML byte-match); default omit `translationCentre*`
+  (optional config/request gate for Translation Centre); FIR/“S OF” polygon helpers (#738
+  coord); COLLECT/multi-version hooks under F16–F19 (not single-report SoT). Runtime pin
+  **v2025-2**.
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
 - **IR**: **msgspec.Struct** (ADR-016); HTTP high-churn paths also msgspec (ADR-026).
-- **Source**: [feature-list.md](feature-list.md) F6/F14/F20/F23; ADR-013; ADR-014; ADR-026;
-  [context/general-tac-iwxxm-converter.md](context/general-tac-iwxxm-converter.md);
+- **Source**: [feature-list.md](feature-list.md) F6/F14/F20/F23/F26/F27; ADR-013; ADR-014; ADR-026;
+  evolve-decisions EV-023; [context/general-tac-iwxxm-converter.md](context/general-tac-iwxxm-converter.md);
   [context/package-publish-validation.md](context/package-publish-validation.md);
   [context/aerodrome-quality.md](context/aerodrome-quality.md);
   [context/sigmet-quality.md](context/sigmet-quality.md).
@@ -192,9 +201,11 @@ metar-to-IWXXM/
   fixtures to the #733/#739 full quality bar. Coverage-matrix themes G1–G3 / V1–V3 / C1;
   exceptional-rule accept/negative packs. Workbench `product=sigmet` (+ VA fixture) smoke
   under F23 (F7 status unchanged). No new registry architecture (ADR-028 reuse).
+- **S030 / EV-023 delta (#800)**: Tighten NSC / related lint beyond research `NSC_PRESENT` if
+  needed for P0 exclusivity with layered cloud; ADR-028 registry codes only (no new architecture).
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Source**: feature-list F6/F12/F15/F20/F23; S011 / EV-008; S013 / EV-009; S014 / EV-010;
-  S015 / EV-011; S020 / EV-015; S025 / EV-019.
+  S015 / EV-011; S020 / EV-015; S025 / EV-019; S030 / EV-023.
 
 ### packages/iwxxm-validate
 
@@ -205,10 +216,13 @@ metar-to-IWXXM/
   via PyO3; Python SDK; pinned schemas **bundled** in the wheel; PyPI `iwxxm-validate` `0.1.0`.
   Parity suite vs historical lxml isoschematron. Optional **XSD-derived** typed models
   (codegen; F11) — UML modelling is provenance only; TAC has no official model.
+- **S030 / EV-023 delta (#800)**: SCH/XSD **negative** fixtures for NSC+layers; dual-register
+  colour / dual nil RDF policy tests under offline vendor SoT (v2025-2 pin).
 - **SoC**: **No** FastAPI or Supabase imports; **read-only** consumption of `vendor/schemas/*`
   (and bundled copies in published wheels).
 - **Source**: feature-list F2/F13; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md);
-  [context/package-publish-validation.md](context/package-publish-validation.md).
+  [context/package-publish-validation.md](context/package-publish-validation.md);
+  evolve-decisions EV-023.
 
 ### packages/gifts — removed
 
@@ -405,13 +419,13 @@ metar-to-IWXXM/
 - **Policy**: ADR-032.
 - **Source**: feature-list F25; evolve-decisions EV-020.
 
-### F26 — VAA quality bar (S027 / EV-021) — Planned
+### F26 — VAA quality bar (S027 / EV-021) — Done
 
 - **Purpose**: #736 VAA (`iwxxm:VolcanicAshAdvisory`) quality peer to F23/F24. WMO
   `va-advisory-A7-2` TAC→IWXXM **`canonicalize_xml`-equal** under default convert settings
   (ADR-032). Registry-backed lint (ADR-028). Themes **F26 V1–V3 / C1**. Do not confuse with
   VA SIGMET (`iwxxm:VolcanicAshSIGMET`).
-- **Status**: **Planned** (S027 / EV-021).
+- **Status**: **Done** (S027 / EV-021; PR #794).
 - **API**: `product=vaa` already in enum; no new routes.
 - **Journeys / tests**: UJ-037; TC-F26-001..006; deepen UJ-032 / TC-F7-008.
 - **Fixtures**: Mine TAC themes from `iwxxm-translation` Amd79-80-2023; no Amd79 XML
@@ -421,18 +435,28 @@ metar-to-IWXXM/
 - **Source**: feature-list F26; evolve-decisions EV-021; ADR-028/032;
   sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md.
 
-### F27 — TCA quality bar (S027 / EV-021) — Planned
+### F27 — TCA quality bar (S027 / EV-021) — Done
 
 - **Purpose**: #737 TCA (`iwxxm:TropicalCycloneAdvisory`) quality peer. WMO
   `tc-advisory-A2-2` golden under defaults. Themes **F27 T1–T3 / C1**. Do not confuse with
   TC SIGMET (`iwxxm:TropicalCycloneSIGMET` — #738 OOS).
-- **Status**: **Planned** (S027 / EV-021).
+- **Status**: **Done** (S027 / EV-021; PR #794).
 - **API**: `product=tca` already in enum; no new routes.
 - **Journeys / tests**: UJ-038; TC-F27-001..006; deepen UJ-032 / TC-F7-008.
 - **Fixtures**: Same translation-package mine policy as F26 (E21-D4).
 - **Non-goals**: TC SIGMET #738; VAA is F26; SWX/VONA; translation-failed happy-path; PyPI.
 - **Source**: feature-list F27; evolve-decisions EV-021; ADR-028/032;
   sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md.
+
+### S030 / EV-023 — APAC FAQ + codes encode/validate deepen (#800)
+
+- **Purpose**: Cross-cutting encode/lint/SCH deltas from APAC FAQs, codes.wmo.int, and
+  iwxxm-translation mining — **deepen F6/F2/F12/F13** (no new Fn). Full #800 P0+P1+actionable P2.
+- **Status**: **In progress** (S030 / EV-023).
+- **Journeys / tests**: No new UJ; TC-EV023-001..009; deepen UJ-001/005/006/016.
+- **API**: No new routes expected; optional convert flag for `translationCentre*` (name in 04).
+- **Non-goals**: #740/#741; PDF remine; FAQ/2019 as equal-weight SoT; `.local/` binaries.
+- **Source**: feature-list F6/F2/F12/F13 deepen; evolve-decisions EV-023; #800.
 
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
 

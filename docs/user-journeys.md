@@ -6,7 +6,7 @@
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783)
-> **Last updated**: 2026-07-29 (S027 / EV-021 — UJ-037 VAA; UJ-038 TCA)
+> **Last updated**: 2026-07-30 (S030 / EV-023 — #800 deepen UJ-001/005/006/016; no new UJ)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -53,6 +53,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-036 | WMO-passing Examples catalog + METAR/SPECI/TAF goldens | apps/frontend / CI | F25 (+F7.g) | T0 / T2 / **T3** / H4–H5 |
 | UJ-037 | VAA lint / convert→validate WMO golden | UI / API / CI | F26 (+F6.f/F12) | T0 / T2 / **T3** |
 | UJ-038 | TCA lint / convert→validate WMO golden | UI / API / CI | F27 (+F6.f/F12) | T0 / T2 / **T3** |
+| — | **EV-023 #800** — no new UJ; deepen UJ-001/005/006/016 + TC-EV023-001..009 | library / API / CI | F6/F2/F12/F13 | T0 / T2 (+ T3 smoke if API ships) |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |

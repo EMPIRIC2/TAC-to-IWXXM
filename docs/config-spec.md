@@ -280,6 +280,18 @@ catalog remains static fixtures (WMO-passers only for VAA/TCA when F26/F27 green
 **Connectivity**: H4–H5 when FE catalog changes. Redeploy API before frontend if convert/lint
 behavior ships in API image.
 
+## S030 / EV-023 — APAC encode deltas + translationCentre gate (#800)
+
+| Parameter | Source | Notes |
+|-----------|--------|-------|
+| Default `translationCentre*` | Code default **omit** | In-State / self-produced convert — FAQ §14.5 |
+| Emit `translationCentreDesignator` / `translationCentreName` | Optional convert request/config flag (name TBD in 04) | Cross-State / Translation Centre only |
+| Dual-register / nil hrefs | Offline vendor RDF/CSV under `vendor/` | No live codes.wmo.int HTML in CI |
+| Informative translation suite | CI or nightly marker | No 2023-1 XML byte-match required |
+
+No new Render secrets required for P0/P1 library fixtures. Redeploy API before claiming
+13-deploy-smoke if convert quarantine / nil / NSC behavior changes.
+
 ## References
 
 - [env-contract.md](env-contract.md) — per-environment matrix (**canonical F21**)

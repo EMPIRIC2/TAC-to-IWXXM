@@ -567,6 +567,11 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
   new routes; wire shapes unchanged. `product=sigmet` selects root `iwxxm:SIGMET` vs
   `iwxxm:VolcanicAshSIGMET` from TAC content (E19-13=A). Registry codes flow through existing
   `lint-tac` + `GET /lint-issue-catalog`. Dissemination routes unchanged (OOS).
+- S030 / EV-023 (2026-07-30): #800 APAC/codes encode deepen — **no new routes**;
+  package-side NSC/nils/`translationFailedTAC`/dual-register/informative translation suite.
+  Convert multipart Form (E23-T2): `emit_translation_centre` (bool, default false) + optional
+  `translation_centre_designator` / `translation_centre_name` when emit true. Dissemination
+  COLLECT multi-version remains F16–F19. Informative suite: soft/xfail in main CI (E23-T4).
 
 ## S020 / EV-015 — Endpoint review (F20)
 
