@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M6 — P2 geometry / COLLECT / QA / matrix |
-| **Active task** | T6.4 |
-| **Tasks** | 19 / 24 |
+| **Active milestone** | M7 — Smoke / verify / deploy |
+| **Active task** | T7.1 |
+| **Tasks** | 20 / 24 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -100,13 +100,13 @@
 | T6.1 | Test | FIR / “S OF” polygon helper tests | TC-EV023-007 | T5.2 | completed |
 | T6.2 | Code | Helper impl (coord #738) | F6 | T6.1 | completed |
 | T6.3 | Test/Docs | COLLECT multi-version hooks F16–F19 | TC-EV023-008 | T6.2 | completed |
-| T6.4 | Test/Docs | Optional #798 QA + matrix confirm | TC-EV023-009 | T6.3 | in_progress |
+| T6.4 | Test/Docs | Optional #798 QA + matrix confirm | TC-EV023-009 | T6.3 | completed |
 
 ### M7 — Smoke / verify / deploy
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T7.1 | Test | API convert/validate smoke | TC-EV023 | T6.4 | pending |
+| T7.1 | Test | API convert/validate smoke | TC-EV023 | T6.4 | in_progress |
 | T7.2 | Config | 08-verify-build | 08 | M0–M6 | pending |
 | T7.3 | Test | 10-e2e smoke | 10 | T7.2 | pending |
 | T7.4 | Test | 13-deploy-smoke when behavior ships | 13; E23-4 | T7.3 | pending |
