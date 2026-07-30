@@ -44,7 +44,7 @@ def test_product_rules_dispatch_covers_all_seven_products() -> None:
             "YUDD AIRMET 1 VALID 151520/151800 YUSO-\nYUDD SHANLON FIR ISOL TS OBS N OF S50 TOP ABV FL100 STNR WKN="
         ),
         "VAA": "VA ADVISORY\nDTG: 20240923/0130Z\nVAAC: TOKYO\nVOLCANO: KARYMSKY 1000-13\n",
-        "TCA": "TC ADVISORY\nDTG: 20040925/1900Z\nMAX WIND: 22MPS\n",
+        "TCA": "TC ADVISORY\nDTG: 20040925/1900Z\nTC: GLORIA\nMAX WIND: 22MPS\n",
     }
     assert set(samples) == set(PRODUCTS)
     for product, tac in samples.items():

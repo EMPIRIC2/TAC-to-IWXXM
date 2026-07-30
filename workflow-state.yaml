@@ -23,7 +23,7 @@ active_session:
   preset: Lean+build+11
   preset_status: approved
   context_briefs: []
-  note: "T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build"
+  note: "T6.2 08-verify-build PASS; next T6.3 10-e2e; tip pending"
   routing_plan:
   - stage: 00-context
     required: true
@@ -103,7 +103,7 @@ sessions:
   preset: Lean+build+11
   preset_status: approved
   context_briefs: []
-  note: "T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build"
+  note: "T6.2 08-verify-build PASS; next T6.3 10-e2e; tip pending"
   routing_plan:
   - stage: 00-context
     required: true
@@ -4068,19 +4068,19 @@ stages:
     previous_tip_sha: 0f77194
     session_id: S027-vaa-quality
     evolve_cycle_id: EV-021
-    note: "T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build; tip pending; #736/#737"
-    tip_sha: a2ebef0
-    tip_sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
+    note: "T6.2 08-verify-build PASS; next T6.3 10-e2e; tip pending; tip 0580c78; #736/#737"
+    tip_sha: 0580c78
+    tip_sha_full: 0580c78f5f8ab31c88efad11e4559782d9a5d873
     current_stage: 07-build
     substeps:
       task_loop:
         status: in_progress
-        current_task: T6.2
+        current_task: T6.3
         active_task_status: pending
         active_milestone: M6
         phase: C
         milestone: M6
-        notes: "T6.1 complete; next T6.2 08-verify-build"
+        notes: "T6.2 08-verify-build PASS; next T6.3 10-e2e"
     delta_substages:
     - id: S027-vaa-quality
       session_id: S027-vaa-quality
@@ -4090,13 +4090,13 @@ stages:
       started_at: '2026-07-29'
       started: '2026-07-29'
       mode: full
-      note: "T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build; #736/#737"
+      note: "T6.2 08-verify-build PASS; next T6.3 10-e2e UJ-037/038; #736/#737"
       active_milestone: M6
-      active_task: T6.2
+      active_task: T6.3
       active_task_status: pending
-      decision_id: D-S027-07-T6.1-complete
-      tip_sha: a2ebef0
-      tip_sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
+      decision_id: D-S027-07-T6.2-complete
+      tip_sha: 0580c78
+      tip_sha_full: 0580c78f5f8ab31c88efad11e4559782d9a5d873
       branch: evolve/EV-021-vaa-quality
       feature_ids:
       - F26
@@ -4479,7 +4479,7 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-29'
-      note: 'T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build; #736/#737'
+      note: 'T6.2 08-verify-build PASS; next T6.3 10-e2e; tip pending; #736/#737'
       active_milestone: M6
       active_task: T6.1
       active_task_status: pending
@@ -18805,7 +18805,7 @@ git_history:
   pending_commit:
   tip_sha: a2ebef0
   tip_sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
-  note: 'T6.1 complete — VAA/TCA convert keep-whole + smoke; next T6.2 08-verify-build; branch not pushed; #736/#737'
+  note: 'T6.2 08-verify-build PASS; next T6.3 10-e2e; tip pending; branch not pushed; #736/#737'
   notes:
   - '2026-07-30 S027/EV-021 tip synced — a2ebef0 (a2ebef070b6ae31aaa71e0f2014ecb84799431bd); M5 complete T5.1–T5.3; stage 07-build; next M6 T6.1; not pushed; #736/#737'
   - '2026-07-30 S027/EV-021 tip synced — 3f9cc13 (3f9cc13d5c0f4be9c0b6dd8d356e8b0b2e41e644); M4 complete T4.1–T4.4; stage 07-build; next M5 T5.1; not pushed; #737'
