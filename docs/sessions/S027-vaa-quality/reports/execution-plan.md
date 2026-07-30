@@ -13,10 +13,10 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M4 — F27 TCA golden (theme T3) + C1 |
-| **Active task** | T4.2 |
-| **Tasks** | 16 / ~24 completed |
-| **Last updated** | 2026-07-29 |
+| **Active milestone** | M5 — F7.g catalog unlock (incremental) + keepers |
+| **Active task** | T5.1 |
+| **Tasks** | 19 / ~24 completed |
+| **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
 
@@ -92,9 +92,9 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T4.1 | Test | Golden `tc-advisory-A2-2`; M-xsd/M-sch; root `iwxxm:TropicalCycloneAdvisory` | TC-F27-002/003; T3 | T3.4 | **completed** |
-| T4.2 | Code | Convert fidelity toward vendor shape (defaults only; RMK NIL → remarks inapplicable) | F6.f; #737 | T4.1 | **pending** |
-| T4.3 | Docs | Mark F27 themes T1–T3 closed or AskQuestion-deferred | E21-T5 | T4.2 | **pending** |
-| T4.4 | Test | **F27 theme C1** + translation-failed adjacency | TC-F27-004; C1 | T4.3 | **pending** |
+| T4.2 | Code | Convert fidelity toward vendor shape (defaults only; RMK NIL → remarks inapplicable) | F6.f; #737 | T4.1 | **completed** |
+| T4.3 | Docs | Mark F27 themes T1–T3 closed or AskQuestion-deferred | E21-T5 | T4.2 | **completed** |
+| T4.4 | Test | **F27 theme C1** + translation-failed adjacency | TC-F27-004; C1 | T4.3 | **completed** |
 
 ### M5 — F7.g catalog unlock (incremental) + keepers
 
