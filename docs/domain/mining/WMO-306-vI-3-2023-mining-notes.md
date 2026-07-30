@@ -27,7 +27,7 @@
 
 **Supersession note (2026-07-14):** Printed FM **205-2023-1** package tables in this edition are **historical** for runtime encode/validate. Prefer vendor pin + working **FM 205-2025-2** AsciiDoc in `vendor/schemas/iwxxm/documentation/manual/FM205.adoc` (or local clone `.local/reference/wmo-im-tier-a/iwxxm/`) and [mining/wmo-im-tier-a-mining-notes.md](./wmo-im-tier-a-mining-notes.md). Keep this PDF mine for I.3 prose / NIL–CNL requirements classes that still apply as policy text.
 
-**Earlier edition (2026-07-30):** Local dig of **2019 edition, Updated in 2021** (PDF pp.**1–230**: through FM **205-2018** IWXXM 3.0 richest nilReason tables + CRS) lives at [WMO-306-vI-3-2019-upd-2021-mining-notes.md](./WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798. Treat as historical; this 2023 dig remains the preferred Manual I.3 cite path before vendor pin.
+**Earlier edition (2026-07-30):** Local dig of **2019 edition, Updated in 2021** (PDF pp.**1–272 complete**: FM **205-2018** nilReason tables + Appendix **D-1…D-10** + schema pins through IWXXM 3.0) lives at [WMO-306-vI-3-2019-upd-2021-mining-notes.md](./WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798. Treat as historical; this 2023 dig remains the preferred Manual I.3 cite path before vendor pin (and is the only path for FM **205-2021-2 / 2023-1**).
 
 ---
 

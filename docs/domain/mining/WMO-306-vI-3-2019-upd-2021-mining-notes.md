@@ -283,22 +283,42 @@ Change-forecast `@changeIndicator` enum includes BECOMING, TEMPORARY_FLUCTUATION
 
 **Runway state (pp.183–185):** fully specified in this 3.0 print — **historical for pin**; IWXXM **2025-2** removed runway-state from METAR (already caveated in conversion SoT).
 
+### Extension + non-aviation FM + Appendix D/B (pp.231–272)
+
+**Extension (p.231):** `iwxxm:extension` last child; `<any processContents='strict'>` — national XSD must be resolvable for validation (`iwxxm_us` lineage).
+
+**FM 221/231/232/241 (pp.232–236):** TSML / WaterML / WMDR — **not** F6 TAC→IWXXM encode path.
+
+**D-1 nil reasons (p.237)** — published at `http://codes.wmo.int/common/nil`. Printed notations include:
+`AboveDetectionRange`, `BelowDetectionRange`, `inapplicable`, `missing`, `noSignificantChange` (NOSIG), `notDetectedByAutoSystem` (NCD), `notObservable`, `nothingOfOperationalSignificance` (NSC/NSW), `template`, `unknown`, `withheld`.
+→ Corroborates conversion SoT; prefer live RDF / pin SCH over reprinting full table in git.
+
+**D-4 (pp.246–251):** Version-split observation-type code-spaces `49-2/observation-type/IWXXM/1.0/` vs `/2.1/` — historical; encode/`om:type` → pin-era URIs.
+
+**D-6 / D-7 (pp.253–266):** Landings `49-2/AerodromeRecentWeather` and `49-2/AerodromePresentOrForecastWeather`; **concept URIs** use **`http://codes.wmo.int/306/4678/{TAC}`** (RE* recent weather maps to base TAC token in URI). Aligns with #797 Manual-wins / vendor CSV SoT.
+
+**D-8 / D-9 (pp.267–268):** Landings `CloudAmountReportedAtAerodrome` / `SigConvectiveCloudType` (CB, TCU). Printed rows may show `bufr4/codeflag/…` paths — **prefer** live `49-2/` / vendor RDF concept URIs used by examples/SCH.
+
+**D-10 (p.269):** Landing **`http://codes.wmo.int/49-2/SigWxPhenomena`** — entries include TC, VA, SEV_ICE, SEV_TURB, FRQ_TS, … **No AirWxPhenomena** in this table (supports 2023 dig AIRMET D-10 mis-cite caveat).
+
+**Appendix B (pp.270–271):** Schema URL inventory through COLLECT 1.1/1.2, METCE 1.1/1.2, OPM, SAF 1.1, IWXXM **2.1** and **3.0** (incl. `spaceWxAdvisory.xsd`). **Does not** list 2021-2 / 2023-1 / 2025-2 — defer package selection to 2023 dig + vendor pin.
+
 ---
 
-## Product × artifact matrix (pp.1–230)
+## Product × artifact matrix (pp.1–272)
 
 | Product | Input | Output hook (this PDF) | Official cue | Gap vs GIFTs | Consumer |
 |---------|-------|------------------------|--------------|--------------|----------|
-| Bulletin | multi-report | COLLECT | FM 201 | packaging | dissemination |
-| VAA / VONA / VA SIGMET | volcano TAC | METCE + VAA colour nils | FM 202 / 205-16/2018 | name/pos/colour | `tac2iwxxm` |
-| TCA / TC SIGMET | TC name | METCE TC; TCA; SigWx `TC` | FM 202 / 205-* | name; advisory OM | `tac2iwxxm` |
-| METAR / SPECI | TAC | 1.1→3.0 field nils + CAVOK/NSC/NCD/NOSIG | FM 205-* | pin Guidance | convert + validate |
-| TAF | TAC | `@isCancelReport` / NIL `missing` / VV omit | FM 205-2018 | F20 goldens | convert |
-| SIGMET | TAC | `@isCancelReport`; omit phenom+analysis | FM 205-2018 | F23 | convert |
-| AIRMET | TAC | Same cancel; from **2.1** | FM 205-16/2018 | F24 | convert |
+| Bulletin | multi-report | COLLECT | FM 201 + App B | packaging | dissemination |
+| VAA / VONA / VA SIGMET | volcano TAC | METCE + VAA colour nils; D-10 `VA` | FM 202 / 205-* / D-10 | name/pos/colour | `tac2iwxxm` |
+| TCA / TC SIGMET | TC name | METCE TC; D-10 `TC` | FM 202 / 205-* / D-10 | name; advisory OM | `tac2iwxxm` |
+| METAR / SPECI | TAC | 1.1→3.0 field nils; D-1/D-6/D-7/D-8/D-9 | FM 205-* + App A | pin Guidance | convert + validate |
+| TAF | TAC | `@isCancelReport` / NIL / VV omit; D-7 | FM 205-2018 | F20 goldens | convert |
+| SIGMET / AIRMET | TAC | `@isCancelReport`; D-10 SigWx | FM 205-2018 / D-10 | F23/F24 | convert |
 | SWX | — | Scope + remarks nils from **3.0** | FM 205-2018 | #740 | later |
-| Translate fail | bad TAC | `@translationFailedTAC` | p.166 + **p.222** | #797 | convert quarantine |
+| Translate fail | bad TAC | `@translationFailedTAC` | p.166 + p.222 | #797 | convert quarantine |
 | Geometry | coords | CRS 2-D attrs | p.230 | C1 convert-only | convert |
+| National ext | — | `iwxxm:extension` strict | p.231 | `iwxxm_us` | validate |
 
 ---
 
@@ -311,11 +331,11 @@ Change-forecast `@changeIndicator` enum includes BECOMING, TEMPORARY_FLUCTUATION
 - **URL:** WMO e-Library (ISBN 978-92-63-10306-2); prefer later 2023 catalog entry https://library.wmo.int/idurl/4/35769
 - **Access:** e-Library captcha / local PDF — do not commit
 - **Applies to:** products=[all F6 + bulletin + SWX scope]; profiles=[annex3]; role=[conversion] (historical)
-- **Gap vs GIFTs:** COLLECT; METCE volcano/TC; IWXXM 1.1–3.0 NIL–CNL / NOSIG; SAF→AIXM; AIRMET/TCA/VAA/SWX; translationFailedTAC; field nilReasons; CRS 2-D
-- **Consumer:** `tac2iwxxm`, dissemination (COLLECT)
+- **Gap vs GIFTs:** Full dig 1–272: COLLECT; METCE; IWXXM 1.1–3.0 NIL–CNL/NOSIG/field nils; SAF→AIXM; AIRMET/TCA/VAA/SWX; translationFailedTAC; CRS; Extension; D-1…D-10 landings (4678 / SigWx / CloudAmount)
+- **Consumer:** `tac2iwxxm`, `iwxxm-validate` (vocab landings), dissemination (COLLECT)
 - **Label:** normative (historical)
 - **Working notes:** mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md
-- **Caveats:** Dig pp.1–230; package maps superseded by 2023 dig + vendor v2025-2; do not equal-weight 2.1 NOSIG→inapplicable vs pin noSignificantChange; runway-state tables historical vs 2025-2 removal
+- **Caveats:** Dig **complete**; package maps stop at IWXXM 3.0 — superseded by 2023 dig + vendor v2025-2; 2.1 NOSIG→inapplicable deferred; runway-state historical vs 2025-2 removal; prefer live codes.wmo.int / vendor RDF over printed bufr4 path quirks in D-8
 ```
 
 ---
@@ -324,29 +344,27 @@ Change-forecast `@changeIndicator` enum includes BECOMING, TEMPORARY_FLUCTUATION
 
 | Older / this claim | Later source | Action |
 |--------------------|--------------|--------|
-| This PDF = 2019/upd-2021 Part D | [2023 dig](./WMO-306-vI-3-2023-mining-notes.md) | Historical only |
-| IWXXM 1.1 + SAF geometry (pp.84–126) | vendor **2025-2** + AIXM | Do not encode SAF; lineage cite only |
-| IWXXM 2.1 AIXM 5.1.1 (p.129) | vendor 2025-2 AIXM pin | Prefer vendor AIXM version |
-| NOSIG → `inapplicable` (2.1 p.131) | **3.0 p.179** / 2023 dig / pin `noSignificantChange` | Prefer pin SCH/Guidance |
-| 1.1/2.1 TAF `@status` CANCELLATION | **3.0 `@isCancelReport`** (p.193) | Prefer pin / Guidance cancel model |
-| Field nilReason tables (pp.181–215) | Guidance + vendor examples + 2023 dig | **Corroborate** — already SoT in IWXXM_CONVERSION |
-| Runway-state reqs (pp.183–185) | IWXXM **2025-2** RC1 removed types | Keep as historical; do not encode on pin |
-| `@translationFailedTAC` (p.166 + **p.222**) | vendor `common.xsd` + FAQ · #797 | **Already SoT** |
-| AIRMET “D-10 → AirWxPhenomena” print risk | 2023 dig + SIGMET notes → `SigWxPhenomena` | Prefer SigWx / pin vocab |
-| CRS 2-D (p.230) | pin SCH / Guidance | Already convert-only C1 |
-| METCE TC name-only (p.51) | later METCE / TCA XSD | Name required; richer TC in product schemas |
-| COLLECT NIL-in-bulletin (p.40) | #797 FAQ COLLECT | Dissemination cross-link |
+| This PDF = 2019/upd-2021 Part D (complete) | [2023 dig](./WMO-306-vI-3-2023-mining-notes.md) (+ FM 205-2021-2 / 2023-1) | Historical only; 2023 for later FM lines |
+| App B pins through IWXXM 3.0 (pp.270–271) | vendor **2025-2** + `FM205.adoc` | Do not use App B as runtime package map |
+| IWXXM 1.1 + SAF geometry | vendor 2025-2 + AIXM | Do not encode SAF |
+| NOSIG → `inapplicable` (2.1) | D-1 + 3.0 p.179 `noSignificantChange` | Prefer pin |
+| TAF `@status` CANCELLATION | 3.0 `@isCancelReport` | Prefer pin / Guidance |
+| Field nilReason tables | Guidance + examples + 2023 dig | Corroborate — already SoT |
+| Runway-state (3.0 print) | 2025-2 removed | Reject for pin encode |
+| D-10 = SigWxPhenomena (p.269) | 2023 AIRMET AirWx mis-cite | Prefer SigWx / pin vocab |
+| D-6/D-7 → `306/4678/{TAC}` | vendor CSV + #797 | Prefer vendor CSV (402) over live HTML count |
+| D-8 printed bufr4 URIs | live `49-2/CloudAmount…` / RDF | Prefer registry/examples |
+| `@translationFailedTAC` | vendor + FAQ · #797 | Already SoT |
+| Extension strict (p.231) | `iwxxm_us` / pin extension | Lineage only unless profile requires |
 
 ---
 
 ## Implications for this repo
 
-- **F6 / tac2iwxxm:** Pass D **corroborates** standing conversion tables (NIL/CNL/CAVOK/NSC/NCD/NOSIG/VV-omit/colour nils/CRS). No new conflicting SoT vs pin. Engine gap remains stubbing aviation nils as `missing` (#719).
-- **tac-validate:** Still Vol I.1 / Annex 3 for TAC shape.
-- **iwxxm-validate:** External SCH from 2.1 onward; pin remains vendor 2025-2.
-- **Dissemination / #797:** COLLECT + translationFailedTAC (also under 3.0 Report p.222).
-- **#740:** SWX remarks/nextAdvisoryTime nils documented in this window.
-- **Runway state:** do not reintroduce from this Manual line under 2025-2.
+- **F6 / tac2iwxxm:** Dig complete — **no new conflicting SoT**. D-1/D-6/D-7/D-10 landings corroborate conversion + codes catalog. Engine gap (stubbing aviation nils as `missing`) unchanged (#719).
+- **tac-validate:** Vol I.1 / Annex 3 for TAC; 4678 inventory → vendor CSV.
+- **iwxxm-validate:** Pin SCH + RDF; App B package list is historical through 3.0 only.
+- **#798 acceptance:** All dig windows done; durable items already in canonicals/catalog or closed as corroboration.
 
 ---
 
@@ -354,18 +372,18 @@ Change-forecast `@changeIndicator` enum includes BECOMING, TEMPORARY_FLUCTUATION
 
 | Item | Status |
 |------|--------|
-| Catalog historical row | Done (RULE_SOURCE_URLS) — bump dig range |
+| Catalog historical row | Done — dig **complete** |
 | Mining index | Done |
-| IWXXM_CONVERSION | Dig cross-link; field tables already SoT; 3.0 corroboration |
-| COVERAGE_MATRIX | Dig pointer on I.3 row |
-| Re-promote 1.1/2.1/3.0 package tables as SoT | **Deferred** |
-| NOSIG as `inapplicable` | **Deferred** — 3.0 + pin use `noSignificantChange` |
-| Runway-state encode from this PDF | **Deferred / rejected** for 2025-2 pin |
+| IWXXM_CONVERSION | Dig cross-link; field/D-* corroboration |
+| IWXXM_VALIDATION | Vocab landings already catalogued; no package-map promote from App B |
+| COVERAGE_MATRIX | Dig pointer complete |
+| Re-promote printed package/D-tables as SoT | **Deferred** (vendor + live registry win) |
+| Close #798 dig windows | **Done** (pp.1–272) |
 
 ---
 
 ## Suggested next mining passes
 
-1. PDF **pp.231–272** — finish Extension + later FM 205 lines + Code tables D-* (gaps only vs 2023 dig).
-2. Close #798 dig windows or explicitly defer remaining pages with rationale.
-3. Optional: spot-diff vendor `TAC-to-XML-Guidance.txt` vs this Pass D table (engine backlog, not docs SoT).
+1. None for this PDF — dig **complete**. Optional: close #798 after review.
+2. Prefer ongoing encode work against vendor Guidance / 2025-2 examples (engine backlog), not further OCR of this edition.
+3. For later Manual lines (WAFS / 2023-1 deferral prose) stay on [2023 dig](./WMO-306-vI-3-2023-mining-notes.md).

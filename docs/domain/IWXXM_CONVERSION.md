@@ -5,7 +5,7 @@
 **Vendor pin:** `iwxxm` **v2025-2** · namespace `http://icao.int/iwxxm/2025-2`.
 
 Hub: [README.md](README.md) · Companions: [TAC_VALIDATION.md](TAC_VALIDATION.md) · [IWXXM_VALIDATION.md](IWXXM_VALIDATION.md).  
-Source digs (not SoT): [mining/](mining/) — especially Tier A, FM 205 ([2023](mining/WMO-306-vI-3-2023-mining-notes.md); historical [2019/upd-2021 pp.1–230](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798 — 3.0 nilReason tables corroborate Guidance below), OPMET Guidelines, modelling, [Annex 3](mining/icao-annex-3-mining-notes.md) (dual TAC+IWXXM **shall** obligation only — encoding still 306 I.3 / Doc 10003 / pin), [APAC IWXXM FAQs 3rd](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) (informative encode gotchas · #797).
+Source digs (not SoT): [mining/](mining/) — especially Tier A, FM 205 ([2023](mining/WMO-306-vI-3-2023-mining-notes.md); historical [2019/upd-2021 **1–272 complete**](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798 — 3.0 nilReason + D-* landings corroborate Guidance below), OPMET Guidelines, modelling, [Annex 3](mining/icao-annex-3-mining-notes.md) (dual TAC+IWXXM **shall** obligation only — encoding still 306 I.3 / Doc 10003 / pin), [APAC IWXXM FAQs 3rd](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) (informative encode gotchas · #797).
 
 ---
 

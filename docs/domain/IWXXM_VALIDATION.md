@@ -5,7 +5,7 @@
 **Does not** re-litigate packaging design — cite official landings + vendor pins only.
 
 Hub: [README.md](README.md) · Runtime: `packages/iwxxm-validate` · Engine notes: [validation/COMPREHENSIVE_VALIDATION.md](validation/COMPREHENSIVE_VALIDATION.md).  
-Source digs (not SoT): [mining/](mining/).
+Source digs (not SoT): [mining/](mining/) — especially Tier A vendor pins, [codes.wmo.int aviation](mining/codes-wmo-int-aviation-mining-notes.md), historical Manual I.3 D-1…D-10 landings ([2019/upd-2021 dig complete](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798; prefer [2023 dig](mining/WMO-306-vI-3-2023-mining-notes.md) + pin SCH/RDF).
 
 ---
 

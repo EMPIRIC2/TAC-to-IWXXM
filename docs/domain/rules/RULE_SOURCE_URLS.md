@@ -1,7 +1,7 @@
 # Rule source URL catalog
 
 **Status:** living catalog (discovery from [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)).  
-**Updated:** 2026-07-30 (… · WMO-306 I.3 2019/upd-2021 dig pp.1–230 · #798).  
+**Updated:** 2026-07-30 (… · WMO-306 I.3 2019/upd-2021 dig **1–272 complete** · #798).  
 **Vendor pin:** `vendor/manifest.json` → `iwxxm` **v2025-2**, `iwxxm-codelists` **49-2**, `iwxxm-us` **3.0**.
 
 **Inventory pass:** [mining/iwxxm-2025-2-reference-set-mining-notes.md](../mining/iwxxm-2025-2-reference-set-mining-notes.md)
@@ -148,12 +148,12 @@ Canonical companions:
 - **Publisher:** WMO
 - **URL:** WMO e-Library (ISBN 978-92-63-10306-2); standing cites prefer later 2023 entry https://library.wmo.int/idurl/4/35769
 - **Access:** e-Library captcha / local PDF — **do not commit**
-- **Applies to:** products=[all F6 + bulletin]; profiles=[annex3]; role=[conversion] (historical)
-- **Gap vs GIFTs:** COLLECT; METCE volcano/TC; IWXXM 1.1–3.0 NIL–CNL / NOSIG / field nilReasons; SAF→AIXM; AIRMET/TCA/VAA/SWX; `translationFailedTAC`; CRS 2-D (dig pp.1–230)
-- **Consumer:** `tac2iwxxm`, dissemination (COLLECT)
+- **Applies to:** products=[all F6 + bulletin + SWX scope]; profiles=[annex3]; role=[conversion] (historical)
+- **Gap vs GIFTs:** Full dig 1–272: COLLECT; METCE volcano/TC; IWXXM 1.1–3.0 NIL–CNL / NOSIG / field nilReasons; SAF→AIXM; AIRMET/TCA/VAA/SWX; `translationFailedTAC`; CRS 2-D; Extension; D-1…D-10 (4678 / SigWx / CloudAmount)
+- **Consumer:** `tac2iwxxm`, `iwxxm-validate` (vocab landings), dissemination (COLLECT)
 - **Label:** normative (historical)
 - **Working notes:** [mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md](../mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md)
-- **Caveats:** Superseded for package selection by 2023 dig + vendor **v2025-2** / `FM205.adoc`; SAF = 1.1 lineage only; 2.1 NOSIG→`inapplicable` deferred vs pin `noSignificantChange`
+- **Caveats:** Dig **complete**; App B package map stops at IWXXM **3.0** — superseded by 2023 dig + vendor **v2025-2** / `FM205.adoc`; SAF = 1.1 lineage only; 2.1 NOSIG→`inapplicable` deferred vs pin `noSignificantChange`; 3.0 runway-state historical vs 2025-2 removal; prefer live codes.wmo.int / vendor RDF over printed bufr4 path quirks in D-8
 
 ### WMO-No. 49 Vol. II — Meteorological Service for International Air Navigation
 

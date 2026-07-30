@@ -57,7 +57,7 @@ Schema: https://schemas.wmo.int/iwxxm/2025-2/metarSpeci.xsd
 | Path | Contents |
 |------|----------|
 | `.local/reference/wmo-306-vI-3-2023/` | PDF + `fulltext.txt` + extracts |
-| `.local/reference/wmo-306-vI-3-2019-upd-2021/` | Historical 2019/upd-2021 PDF + extract (dig pp.1–230) |
+| `.local/reference/wmo-306-vI-3-2019-upd-2021/` | Historical 2019/upd-2021 PDF + extract (dig **1–272 complete**) |
 | `.local/reference/icao-doc-10003-draft-en/` | Advance 2014 unedited Doc 10003 PDF + extract |
 | Tracked notes | `docs/domain/mining/WMO-306-vI-3-2023-mining-notes.md` · `docs/domain/mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md` · `docs/domain/mining/ICAO-Doc-10003-draft-2014-mining-notes.md` |
 

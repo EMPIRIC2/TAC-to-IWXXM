@@ -22,7 +22,7 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [wmo-im-tier-b-mining-notes.md](./wmo-im-tier-b-mining-notes.md) | Local Tier B (collect, WIS2*, GTStoWIS2, CCT, foundation pkgs) |
 | [iwxxm-modelling-v2025-2-mining-notes.md](./iwxxm-modelling-v2025-2-mining-notes.md) | UML/EA generators |
 | [WMO-306-vI-3-2023-mining-notes.md](./WMO-306-vI-3-2023-mining-notes.md) | Manual on Codes Vol I.3 / FM 205 |
-| [WMO-306-vI-3-2019-upd-2021-mining-notes.md](./WMO-306-vI-3-2019-upd-2021-mining-notes.md) | Manual on Codes Vol I.3 (2019/upd-2021) — historical; dig pp.1–230 (through FM 205-2018 nilReason tables + CRS) · #798 |
+| [WMO-306-vI-3-2019-upd-2021-mining-notes.md](./WMO-306-vI-3-2019-upd-2021-mining-notes.md) | Manual on Codes Vol I.3 (2019/upd-2021) — historical; dig **1–272 complete** (FM 205-2018 + D-1…D-10) · #798 |
 | [OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md](./OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) | ICAO OPMET exchange Guidelines 5th |
 | [icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md](./icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) | ICAO EUR Doc 014 (5th Ed. 2023): EUR SIGMET/AIRMET Guide — TAC structure, AHL, CNL, dual IWXXM |
 | [PPT-02-IWXXM-Framework-WMO-mining-notes.md](./PPT-02-IWXXM-Framework-WMO-mining-notes.md) | Informative workshop deck (TAC↔IWXXM + package matrix) |

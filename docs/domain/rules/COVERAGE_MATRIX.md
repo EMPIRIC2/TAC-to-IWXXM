@@ -1,7 +1,7 @@
 # Coverage matrix — F6 product × profile × rule sources
 
 **Ticket:** [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719) · adjust backlog [#797](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/797)  
-**Mined:** 2026-07-30 (APAC FAQs / codes / translation · #797 · WMO-306 I.3 2019/upd-2021 dig pp.1–230 · #798 · prior EUR Doc 014)  
+**Mined:** 2026-07-30 (APAC FAQs / codes / translation · #797 · WMO-306 I.3 2019/upd-2021 dig **1–272 complete** · #798 · prior EUR Doc 014)  
 **Legend:** ✅ normative URL present · ⚠ partial / paywall cite · ❌ blocked / TBD
 
 “Validation” in matrices = TAC token/template/vocab rules (not always full grammar offline).  
@@ -71,7 +71,7 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 |--------------|--------|----------|------------------|
 | ICAO Annex 3 / Doc 8896 | ✅ (paywall) | National differences → FMH-1 / NWS instructions | `tac-validate` |
 | WMO 306 Vol I.1 (TAC FM) | ✅ (e-Library) | — | `tac-validate` |
-| WMO 306 Vol I.3 / FM 205 | ✅ ([2023 dig](../mining/WMO-306-vI-3-2023-mining-notes.md); historical [2019/upd-2021](../mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) pp.1–230 · #798) | extension hook only | `tac2iwxxm` |
+| WMO 306 Vol I.3 / FM 205 | ✅ ([2023 dig](../mining/WMO-306-vI-3-2023-mining-notes.md); historical [2019/upd-2021](../mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) **1–272 complete** · #798) | extension hook only | `tac2iwxxm` |
 | codes.wmo.int | ✅ | + BUFR flags for some US attrs | both encode + validate |
 | wmo-im/iwxxm XSD+SCH | ✅ (`…/iwxxm/<pin>/rule/`; **not** top-level [schemas.wmo.int/rule/](https://schemas.wmo.int/rule/) — that index is IWXXM 1.x / foundation mirror only — [dig](../mining/schemas-wmo-int-rule-mining-notes.md)) | base only | `iwxxm-validate` |
 | iwxxm-us 3.0 | — | ✅ | `tac2iwxxm` + combined validate |
