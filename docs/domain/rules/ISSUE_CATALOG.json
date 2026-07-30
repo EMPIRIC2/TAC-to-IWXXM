@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry",
-  "generated": "2026-07-29",
+  "generated": "2026-07-30",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -655,6 +655,22 @@
         "t3",
         "s1",
         "c1"
+      ]
+    },
+    {
+      "code": "NSC_WITH_CLOUD_LAYERS",
+      "severity": "warning",
+      "message_template": "{product} NSC with FEW/SCT/BKN/OVC in same group \u2014 FAQ \u00a714.3 exclusivity (TC-EV023-001)",
+      "product": null,
+      "tags": [
+        "cloud",
+        "metar",
+        "speci",
+        "taf",
+        "t3",
+        "s1",
+        "c1",
+        "ev023"
       ]
     },
     {

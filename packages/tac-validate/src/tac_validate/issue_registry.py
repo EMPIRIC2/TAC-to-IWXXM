@@ -328,6 +328,12 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("cloud", "metar", "speci", "taf", "t3", "s1", "c1"),
     ),
     _row(
+        "NSC_WITH_CLOUD_LAYERS",
+        "warning",
+        "{product} NSC with FEW/SCT/BKN/OVC in same group — FAQ §14.3 exclusivity (TC-EV023-001)",
+        tags=("cloud", "metar", "speci", "taf", "t3", "s1", "c1", "ev023"),
+    ),
+    _row(
         "NCD_PRESENT",
         "info",
         "{product} NCD present — research S1",

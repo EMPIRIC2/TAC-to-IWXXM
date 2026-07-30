@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry  
-> **Generated**: 2026-07-29 via `make catalog-regen`  
+> **Generated**: 2026-07-30 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -63,6 +63,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `NOSIG_PRESENT` | `info` | {product} NOSIG trend present — research R8 | — | trend, metar, speci, r8 |
 | `NO_VA_EXP` | `info` | VA SIGMET NO VA EXP absence token — research V1 / C1 | sigmet | va, no_va_exp, sigmet, v1, c1 |
 | `NSC_PRESENT` | `info` | {product} NSC present — research T3 / S1 / C1 | — | cloud, metar, speci, taf, t3, s1, c1 |
+| `NSC_WITH_CLOUD_LAYERS` | `warning` | {product} NSC with FEW/SCT/BKN/OVC in same group — FAQ §14.3 exclusivity (TC-EV023-001) | — | cloud, metar, speci, taf, t3, s1, c1, ev023 |
 | `NSW_PRESENT` | `info` | {product} NSW present — research T3 / S1 | — | weather, metar, speci, taf, t3, s1 |
 | `OBS_OR_FCST` | `info` | SIGMET/AIRMET OBS or FCST analysis — research G2 / F24 A2 | sigmet | obs, fcst, sigmet, airmet, g2, a2 |
 | `ODD_FIELD_ORDER` | `warning` | {product} groups out of A3-2 order (CCCC → ddhhmmZ → wind) | — | order, station, time, metar, speci, r1 |
