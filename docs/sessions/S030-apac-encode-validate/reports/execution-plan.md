@@ -90,7 +90,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T5.1 | Test | Amd79 TAC → 2025-2 → XSD+SCH under marker | TC-EV023-005 | T0.3; T4.4 | pending |
+| T5.1 | Test | Amd79 TAC → 2025-2 → XSD+SCH under marker | TC-EV023-005 | T0.3; T4.4 | completed |
 | T5.2 | Config | Soft/xfail in main CI (no hard-fail on 2023-1 bytes) | E23-T4=2 | T5.1 | pending |
 
 ### M6 — P2 geometry / COLLECT / QA / matrix
