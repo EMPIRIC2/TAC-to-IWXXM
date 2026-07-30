@@ -58,6 +58,11 @@ Guidance (`TAC-to-XML-Guidance.txt` §VAA) + #736 table → accept + negative fi
 | `product=vaa` never emits `iwxxm:VolcanicAshSIGMET` | VAA TAC → advisory root only | TC-F26-006 |
 | VA SIGMET path never emits `iwxxm:VolcanicAshAdvisory` | Keep F23 VA SIGMET green | complements TC-F23-006 |
 
+**Fixtures (T1.3):** `packages/tac2iwxxm/tests/test_tc_f26_006_adjacency.py` —
+parametrizes F26 V1 VAA accept pack + `vaa_basic` and F23 VA SIGMET accept
+(`sigmet_v1_va_volcano`, `sigmet_v1_no_va_exp`); cross-product lint/convert
+rejection + bulletin-neighbor no silent-swap.
+
 ### F26 theme C1 — common rules
 
 | Rule | Fixture |
