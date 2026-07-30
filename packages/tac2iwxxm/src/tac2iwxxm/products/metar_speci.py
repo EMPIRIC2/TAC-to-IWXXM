@@ -432,7 +432,11 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     if _NOSIG.search(body_for_wx):
         ir["nosig"] = True
     if _NSC.search(obs_body):
+        # FAQ §14.3 / TC-EV023-001: NSC is exclusive — drop any FEW/SCT/… layers.
         ir["nsc"] = True
+        ir["clouds"] = []
+        ir.pop("cloud_amount", None)
+        ir.pop("cloud_base_ft", None)
     if _NCD.search(obs_body):
         ir["ncd"] = True
     if _VV_NOT_OBS.search(obs_body):

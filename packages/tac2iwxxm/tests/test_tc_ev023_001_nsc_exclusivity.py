@@ -111,8 +111,13 @@ def test_tc_ev023_001_nsc_convert_no_layered_cloud(tac_path: Path, product: str)
 def test_tc_ev023_001_nsc_cooccurrence_omits_layers(tac: str) -> None:
     """When TAC has both NSC and layered amounts, encode must keep NSC exclusivity."""
     from tac2iwxxm import convert
+    from tac2iwxxm.products.metar_speci import parse_metar_speci
 
     product = "METAR" if tac.startswith("METAR") else "SPECI"
+    ir = parse_metar_speci(tac, product=product)
+    assert ir.get("nsc") is True
+    assert ir.get("clouds") == []
+    assert "cloud_amount" not in ir
     result = convert(
         tac,
         product=product,

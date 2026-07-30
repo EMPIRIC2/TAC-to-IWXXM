@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — Build |
 | **Active milestone** | M1 — P0 NSC exclusivity |
-| **Active task** | T1.2 |
-| **Tasks** | 4 / 24 |
+| **Active task** | T1.3 |
+| **Tasks** | 5 / 24 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -60,7 +60,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T1.1 | Test | NSC → no layered cloud; SCH/XSD negative | TC-EV023-001 | T0.1 | **completed** |
-| T1.2 | Code | Convert omit layered cloud on NSC | F6 | T1.1 | pending |
+| T1.2 | Code | Convert omit layered cloud on NSC | F6 | T1.1 | **completed** |
 | T1.3 | Code | Lint tighten beyond `NSC_PRESENT` if needed | F12 | T1.2 | pending |
 
 ### M2 — P0 missing WX / Guidance nils
