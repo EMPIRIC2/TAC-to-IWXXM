@@ -63,7 +63,7 @@ See [routing-plan.md](./routing-plan.md). **Approved** Lean+build+11 (E21-4).
 ## Current stage
 
 **07-build** — T6.1 + T6.2 (08-verify-build) **PASS**; next **T6.3** 10-e2e (UJ-037/038).
-Tip: pending T6.2 commit.
+Tip: `0886093`.
 
 ## Links
 

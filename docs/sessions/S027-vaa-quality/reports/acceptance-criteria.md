@@ -38,6 +38,8 @@
 
 | Fn | Reviewer | Date | Result |
 |----|----------|------|--------|
-| F26 | — | — | pending |
-| F27 | — | — | pending |
-| F6.f / F12 / F7.g deepen | — | — | pending |
+| F26 | agent (evidence) | 2026-07-30 | **MET** — pending user confirm; H4–H5 → 13 |
+| F27 | agent (evidence) | 2026-07-30 | **MET** — pending user confirm; H4–H5 → 13 |
+| F6.f / F12 / F7.g deepen | agent (evidence) | 2026-07-30 | **MET** — pending user confirm; H4–H5 → 13 |
+
+See [verify-impl.md](./verify-impl.md).
