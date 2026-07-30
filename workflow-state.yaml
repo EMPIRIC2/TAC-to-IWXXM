@@ -45,7 +45,7 @@ active_session:
     required: true
     mode: orchestrator
     status: in_progress
-    note: Orchestrator EV-023; M1 complete; 07 @ T2.1
+    note: Orchestrator EV-023; M2 complete; 07 @ T3.1
   - stage: 01-requirements
     required: true
     mode: delta
@@ -72,7 +72,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-30'
-    note: M1 complete; next T2.1
+    note: M2 complete; next T3.1
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -94,9 +94,9 @@ active_session:
   current_stage: 07-build
   started_at: '2026-07-30'
   context_briefs: []
-  tip_sha: 6f1067d
-  tip_sha_full: 6f1067dd34b500ace1be9677db6ac443940522c0
-  note: 'S030/EV-023 M1 complete (T1.1–T1.3); next T2.1; tip 6f1067d; branch evolve/EV-023-apac-encode-validate'
+  tip_sha: 83bc386
+  tip_sha_full: 83bc38677d849ce53a3f8d1fedbe15875741e113
+  note: 'S030/EV-023 M2 complete (T2.1–T2.2 missing WX / Guidance nils); next T3.1; tip 83bc386; branch evolve/EV-023-apac-encode-validate'
 sessions:
 - id: S028-sigmet-multiline-split
   type: hotfix
@@ -4725,19 +4725,19 @@ stages:
     previous_tip_sha: b5f5c32
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'S030/EV-023 07-build M1 complete (T1.1–T1.3); next T2.1; tip branch evolve/EV-023-apac-encode-validate; #800'
-    tip_sha: 6f1067d
-    tip_sha_full: 6f1067dd34b500ace1be9677db6ac443940522c0
+    note: 'S030/EV-023 07-build M2 complete (T2.1–T2.2); next T3.1; tip branch evolve/EV-023-apac-encode-validate; #800'
+    tip_sha: 83bc386
+    tip_sha_full: 83bc38677d849ce53a3f8d1fedbe15875741e113
     current_stage: 07-build
     substeps:
       task_loop:
         status: in_progress
-        current_task: T2.1
+        current_task: T3.1
         active_task_status: pending
-        active_milestone: M2
+        active_milestone: M3
         phase: C
-        milestone: M2
-        notes: M1 complete (T1.1–T1.3); next T2.1
+        milestone: M3
+        notes: M2 complete (T2.1–T2.2); next T3.1
     delta_substages:
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
@@ -4747,13 +4747,13 @@ stages:
       started_at: '2026-07-30'
       started: '2026-07-30'
       mode: full
-      note: 'M1 complete (T1.1–T1.3); next T2.1; tip branch evolve/EV-023-apac-encode-validate; #800'
-      active_milestone: M2
-      active_task: T2.1
+      note: 'M2 complete (T2.1–T2.2); next T3.1; tip branch evolve/EV-023-apac-encode-validate; #800'
+      active_milestone: M3
+      active_task: T3.1
       active_task_status: pending
       decision_id: D-S030-E23-M0
-      tip_sha: 6f1067d
-      tip_sha_full: 6f1067dd34b500ace1be9677db6ac443940522c0
+      tip_sha: 83bc386
+      tip_sha_full: 83bc38677d849ce53a3f8d1fedbe15875741e113
       branch: evolve/EV-023-apac-encode-validate
       feature_ids:
       - F6
@@ -5001,6 +5001,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-30 S030/EV-023 07-build M2 complete T2.1–T2.2 missing WX / Guidance nils; next T3.1 / M3; tip 83bc386 [T2.2]; branch evolve/EV-023-apac-encode-validate; #800'
     - '2026-07-30 S030/EV-023 07-build M1 complete T1.1–T1.3; next T2.1 / M2; tip 6f1067d [T1.3]; branch evolve/EV-023-apac-encode-validate; #800'
     - '2026-07-30 S030/EV-023 07-build M1 complete; next T2.1 missing WX nils; tip 9280a31 (HEAD=T1.2; T1.3 uncommitted at update); branch evolve/EV-023-apac-encode-validate; #800'
     - '2026-07-30 S030/EV-023 07-build M0 complete (T0.1–T0.3); next T1.1 NSC fixtures;
@@ -6920,10 +6921,11 @@ stages:
     completed_at: null
     completed: '2026-07-27'
     current_stage: 07-build
-    tip_sha: 6f1067d
-    tip_sha_full: 6f1067dd34b500ace1be9677db6ac443940522c0
-    note: 'S030/EV-023 07-build M1 complete; next T2.1 / M2; tip 6f1067d; tip branch evolve/EV-023-apac-encode-validate; D-S030-E23-M0'
+    tip_sha: 83bc386
+    tip_sha_full: 83bc38677d849ce53a3f8d1fedbe15875741e113
+    note: 'S030/EV-023 07-build M2 complete; next T3.1 / M3; tip 83bc386; tip branch evolve/EV-023-apac-encode-validate; D-S030-E23-M0'
     notes:
+    - '2026-07-30 S030/EV-023 07-build M2 complete T2.1–T2.2 missing WX / Guidance nils; next T3.1 / M3; tip 83bc386 [T2.2]; branch evolve/EV-023-apac-encode-validate; #800'
     - '2026-07-30 S030/EV-023 07-build M1 complete T1.1–T1.3; next T2.1 / M2; tip 6f1067d [T1.3]; branch evolve/EV-023-apac-encode-validate; #800'
     - '2026-07-30 S030/EV-023 07-build M1 complete; next T2.1 missing WX nils; tip 9280a31 (HEAD=T1.2; T1.3 uncommitted at update); branch evolve/EV-023-apac-encode-validate; #800'
     - '2026-07-30 S030/EV-023 07-build M0 complete (T0.1–T0.3); next T1.1 NSC fixtures;
@@ -22281,7 +22283,7 @@ evolve_cycles:
       note: Phase 0 locked E23-1..4 (D-S030-E23-phase0)
     16-evolve:
       status: in_progress
-      note: Orchestrator; M1 complete; 07 @ T2.1
+      note: Orchestrator EV-023; M2 complete; 07 @ T3.1
     01-requirements:
       status: completed
       mode: delta
@@ -22304,10 +22306,10 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-07-30'
-      active_task: T2.1
+      active_task: T3.1
       active_task_status: pending
-      active_milestone: M2
-      note: 'M1 complete (T1.1–T1.3); next T2.1 / M2; tip 6f1067d; branch evolve/EV-023-apac-encode-validate; #800'
+      active_milestone: M3
+      note: 'M2 complete (T2.1–T2.2 missing WX / Guidance nils); next T3.1; tip 83bc386; branch evolve/EV-023-apac-encode-validate; #800'
     08-verify-build:
       status: pending
       mode: delta
@@ -22361,10 +22363,15 @@ evolve_cycles:
   - D-S030-02-phase-a
   - D-S030-E23-T-batch
   - D-S030-04-plan-approve
-  note: 'Phase 0 locked — deepen F6/F2/F12/F13; full #800 P0+P1+actionable P2; Batch T E23-T1..T6=1,1,2,2,1,1; M1 complete; 07-build in_progress @ T2.1 / M2; tip 6f1067d'
-  tip_sha: 6f1067d
-  tip_sha_full: 6f1067dd34b500ace1be9677db6ac443940522c0
+  active_milestone: M3
+  active_task: T3.1
+  active_task_status: pending
+  progress: 8/24
+  note: 'S030/EV-023 M2 complete (T2.1–T2.2 missing WX / Guidance nils); next T3.1; tip 83bc386; branch evolve/EV-023-apac-encode-validate; #800'
+  tip_sha: 83bc386
+  tip_sha_full: 83bc38677d849ce53a3f8d1fedbe15875741e113
   notes:
+  - '2026-07-30 S030/EV-023 07-build M2 complete T2.1–T2.2 missing WX / Guidance nils; next T3.1 / M3; tip 83bc386 [T2.2]; branch evolve/EV-023-apac-encode-validate; #800'
   - '2026-07-30 S030/EV-023 07-build M1 complete T1.1–T1.3; next T2.1 / M2; tip 6f1067d [T1.3] NSC exclusivity lint; branch evolve/EV-023-apac-encode-validate; #800'
   - '2026-07-30 S030/EV-023 07-build M1 complete; next T2.1 missing WX nils; tip 9280a31 (HEAD=T1.2; T1.3 uncommitted at update); branch evolve/EV-023-apac-encode-validate; #800'
   - '2026-07-30 S030/EV-023 04 COMPLETE → 07 @ T0.1 (Batch T 1,1,2,2,1,1 / D-S030-04-plan-approve) — gates.b_to_c + phase_b passed; #800'
@@ -22379,10 +22386,11 @@ git_history:
   ahead_of_origin: null
   pushed: false
   pending_commit: null
-  tip_sha: 6f1067d
-  tip_sha_full: 6f1067dd34b500ace1be9677db6ac443940522c0
-  note: 'S030/EV-023 M1 complete T1.1–T1.3; next T2.1; tip 6f1067d on evolve/EV-023-apac-encode-validate; #800'
+  tip_sha: 83bc386
+  tip_sha_full: 83bc38677d849ce53a3f8d1fedbe15875741e113
+  note: 'S030/EV-023 M2 complete (T2.1–T2.2); next T3.1; tip 83bc386 on evolve/EV-023-apac-encode-validate; #800'
   notes:
+  - '2026-07-30 S030/EV-023 tip synced — 83bc386 (83bc38677d849ce53a3f8d1fedbe15875741e113); M2 complete T2.1–T2.2; next T3.1; stage 07-build; recorded 7a790a2/83bc386; branch evolve/EV-023-apac-encode-validate; not pushed; #800'
   - '2026-07-30 S030/EV-023 tip synced — 6f1067d (6f1067dd34b500ace1be9677db6ac443940522c0); M1 complete T1.1–T1.3; next T2.1; stage 07-build; recorded 6f1067d [T1.3]; branch evolve/EV-023-apac-encode-validate; not pushed; #800'
   - '2026-07-30 S030/EV-023 tip synced — 9280a31 (9280a31cfad4610c3f970127a721f77e80a65397); M1 complete pointer next T2.1; stage
     07-build; recorded commits 97749e3/5b91a9d/1c5a425/9280a31; T1.3 uncommitted; not pushed; #800'
@@ -23653,11 +23661,31 @@ git_history:
     created_at: '2026-07-30'
     session_id: S030-apac-encode-validate
     evolve_cycle_id: EV-023
-    note: 'S030/EV-023 M1 complete T1.1–T1.3; next T2.1; tip 6f1067d; base main @ dead991; not pushed'
-    tip_sha: 6f1067d
-    tip_sha_full: 6f1067dd34b500ace1be9677db6ac443940522c0
+    note: 'S030/EV-023 M2 complete (T2.1–T2.2); next T3.1; tip 83bc386; base main @ dead991; not pushed'
+    tip_sha: 83bc386
+    tip_sha_full: 83bc38677d849ce53a3f8d1fedbe15875741e113
     pushed: false
   commits:
+  - sha: 83bc386
+    sha_full: 83bc38677d849ce53a3f8d1fedbe15875741e113
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T2.2] fix: parse AUTO missing vis/temp/alt and emit Guidance common/nil'
+    stage: 07-build
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    timestamp: '2026-07-30'
+    files_changed: 4
+    pushed: false
+  - sha: 7a790a2
+    sha_full: 7a790a29c30927eb33c659aff089a3623585b762
+    branch: evolve/EV-023-apac-encode-validate
+    message: '[T2.1] test: common/nil vs iwxxm/nil fixtures for TC-EV023-002'
+    stage: 07-build
+    session_id: S030-apac-encode-validate
+    evolve_cycle_id: EV-023
+    timestamp: '2026-07-30'
+    files_changed: 4
+    pushed: false
   - sha: 6f1067d
     sha_full: 6f1067dd34b500ace1be9677db6ac443940522c0
     branch: evolve/EV-023-apac-encode-validate
