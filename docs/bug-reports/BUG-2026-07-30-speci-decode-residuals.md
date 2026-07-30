@@ -9,7 +9,7 @@
 | **Remediation path** | local-first — deploy only after explicit approval |
 | **Session** | ad-hoc 14-hotfix (active_session was null) |
 | **Branch** | fix/BUG-2026-07-30-speci-decode-residuals |
-| **PR** | — |
+| **PR** | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/805 |
 
 ## Error description
 
